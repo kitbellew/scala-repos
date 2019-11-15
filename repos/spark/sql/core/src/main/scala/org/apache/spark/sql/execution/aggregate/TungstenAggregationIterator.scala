@@ -238,7 +238,7 @@ class TungstenAggregationIterator(
   // The iterator created from hashMap. It is used to generate output rows when we
   // are using hash-based aggregation.
   private[this] var aggregationBufferMapIterator
-    : KVIterator[UnsafeRow, UnsafeRow] = null
+      : KVIterator[UnsafeRow, UnsafeRow] = null
 
   // Indicates if aggregationBufferMapIterator still has key-value pairs.
   private[this] var mapIteratorHasNext: Boolean = false

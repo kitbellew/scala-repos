@@ -81,7 +81,7 @@ class VectorOps_DoubleTest
 
   val N = 30
   implicit def genTriple
-    : Arbitrary[(Vector[Double], Vector[Double], Vector[Double])] = {
+      : Arbitrary[(Vector[Double], Vector[Double], Vector[Double])] = {
     Arbitrary {
       for {
         x <- Arbitrary.arbitrary[Double].map { _ % 1e100 }
@@ -117,7 +117,7 @@ class VectorOps_FloatTest
   override val TOL: Double = 1e-2
   val N = 30
   implicit def genTriple
-    : Arbitrary[(Vector[Float], Vector[Float], Vector[Float])] = {
+      : Arbitrary[(Vector[Float], Vector[Float], Vector[Float])] = {
     Arbitrary {
       for {
         x <- Arbitrary.arbitrary[Float].map { _ % 1000f }
@@ -197,7 +197,7 @@ class VectorOps_ComplexTest
 
   val N = 30
   implicit def genTriple
-    : Arbitrary[(Vector[Complex], Vector[Complex], Vector[Complex])] = {
+      : Arbitrary[(Vector[Complex], Vector[Complex], Vector[Complex])] = {
     Arbitrary {
       for {
         x <- Arbitrary.arbitrary[Complex]

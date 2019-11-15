@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory
 
 import scala.util.control.NonFatal
 
-class MarathonLeaderInfo @Inject()(
+class MarathonLeaderInfo @Inject() (
     @Named(ModuleNames.CANDIDATE) candidate: Option[Candidate],
     @Named(ModuleNames.LEADER_ATOMIC_BOOLEAN) leader: AtomicBoolean,
     @Named(EventModule.busName) eventStream: EventStream,
@@ -63,7 +63,7 @@ class MarathonLeaderInfo @Inject()(
   }
 }
 
-class MarathonLeaderInfoMetrics @Inject()(metrics: Metrics) {
+class MarathonLeaderInfoMetrics @Inject() (metrics: Metrics) {
   val getLeaderDataTimer: Timer = metrics.timer(
     metrics.name(MetricPrefixes.SERVICE, getClass, "current-leader-host-port"))
 }

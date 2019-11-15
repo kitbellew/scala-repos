@@ -996,7 +996,7 @@ abstract class BTypes {
       info.map(_.nestedInfo.isDefined)
 
     def enclosingNestedClassesChain
-      : Either[NoClassBTypeInfo, List[ClassBType]] = {
+        : Either[NoClassBTypeInfo, List[ClassBType]] = {
       isNestedClass.flatMap(isNested => {
         // if isNested is true, we know that info.get is defined, and nestedInfo.get is also defined.
         if (isNested)
@@ -1007,7 +1007,7 @@ abstract class BTypes {
     }
 
     def innerClassAttributeEntry
-      : Either[NoClassBTypeInfo, Option[InnerClassEntry]] =
+        : Either[NoClassBTypeInfo, Option[InnerClassEntry]] =
       info.map(i =>
         i.nestedInfo map {
           case NestedInfo(_, outerName, innerName, isStaticNestedClass) =>

@@ -62,20 +62,18 @@ final class TeamApi(
     for {
       requests ← RequestRepo findByTeam team.id
       users ← $find.byOrderedIds[User](requests map (_.user))
-    } yield
-      requests zip users map {
-        case (request, user) => RequestWithUser(request, user)
-      }
+    } yield requests zip users map {
+      case (request, user) => RequestWithUser(request, user)
+    }
 
   def requestsWithUsers(user: User): Fu[List[RequestWithUser]] =
     for {
       teamIds ← TeamRepo teamIdsByCreator user.id
       requests ← RequestRepo findByTeams teamIds
       users ← $find.byOrderedIds[User](requests map (_.user))
-    } yield
-      requests zip users map {
-        case (request, user) => RequestWithUser(request, user)
-      }
+    } yield requests zip users map {
+      case (request, user) => RequestWithUser(request, user)
+    }
 
   def join(teamId: String)(implicit ctx: UserContext): Fu[Option[Requesting]] =
     for {

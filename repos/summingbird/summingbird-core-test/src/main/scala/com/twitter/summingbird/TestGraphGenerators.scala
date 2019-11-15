@@ -275,11 +275,10 @@ object TestGraphGenerators {
       postMerge <- arbitrary[((Int, (Int, Option[Int]))) => List[(Int, Int)]]
       in <- genProd2
       service <- genService2.arbitrary
-    } yield
-      IdentityKeyedProducer(
-        FlatMappedProducer[P, (Int, (Int, Option[Int])), (Int, Int)](
-          in.leftJoin(service),
-          postMerge))
+    } yield IdentityKeyedProducer(
+      FlatMappedProducer[P, (Int, (Int, Option[Int])), (Int, Int)](
+        in.leftJoin(service),
+        postMerge))
 
   def summed[P <: Platform[P]](
       implicit genSource1: Arbitrary[Producer[P, Int]],

@@ -19,7 +19,7 @@ case class BroadcastedRows[T, RowType](underlying: T)
 
   def foldLeft[B](z: B)(f: (B, RowType) => B)(
       implicit canTraverseAxis: CanTraverseAxis[T, Axis._1.type, RowType])
-    : B = {
+      : B = {
     var acc = z
     canTraverseAxis(underlying, Axis._1) { c =>
       acc = f(acc, c)
@@ -38,7 +38,7 @@ object BroadcastedRows {
 
   implicit def canMapValues[T, RowType, ResultRow, Result](
       implicit cc: CanCollapseAxis[T, Axis._1.type, RowType, ResultRow, Result])
-    : CanMapValues[BroadcastedRows[T, RowType], RowType, ResultRow, Result] = {
+      : CanMapValues[BroadcastedRows[T, RowType], RowType, ResultRow, Result] = {
     new CanMapValues[BroadcastedRows[T, RowType], RowType, ResultRow, Result] {
       def apply(
           from: BroadcastedRows[T, RowType],
@@ -49,13 +49,13 @@ object BroadcastedRows {
   }
 
   implicit def scalarOf[T, RowType]
-    : ScalarOf[BroadcastedRows[T, RowType], RowType] = ScalarOf.dummy
+      : ScalarOf[BroadcastedRows[T, RowType], RowType] = ScalarOf.dummy
 
   implicit def broadcastOp[Op, T, RowType, OpResult, Result](
       implicit handhold: CanCollapseAxis.HandHold[T, Axis._1.type, RowType],
       op: UImpl[Op, RowType, OpResult],
       cc: CanCollapseAxis[T, Axis._1.type, RowType, OpResult, Result])
-    : UImpl[Op, BroadcastedRows[T, RowType], Result] = {
+      : UImpl[Op, BroadcastedRows[T, RowType], Result] = {
     new UImpl[Op, BroadcastedRows[T, RowType], Result] {
       def apply(v: BroadcastedRows[T, RowType]): Result = {
         cc(v.underlying, Axis._1) { op(_) }
@@ -67,7 +67,7 @@ object BroadcastedRows {
       implicit handhold: CanCollapseAxis.HandHold[T, Axis._1.type, RowType],
       op: InPlaceImpl[Op, RowType],
       cc: CanTraverseAxis[T, Axis._1.type, RowType])
-    : InPlaceImpl[Op, BroadcastedRows[T, RowType]] = {
+      : InPlaceImpl[Op, BroadcastedRows[T, RowType]] = {
     new InPlaceImpl[Op, BroadcastedRows[T, RowType]] {
       def apply(v: BroadcastedRows[T, RowType]) {
         cc(v.underlying, Axis._1) { op(_) }
@@ -79,7 +79,7 @@ object BroadcastedRows {
       implicit handhold: CanCollapseAxis.HandHold[T, Axis._1.type, RowType],
       op: UImpl2[Op, RowType, RHS, OpResult],
       cc: CanCollapseAxis[T, Axis._1.type, RowType, OpResult, Result])
-    : UImpl2[Op, BroadcastedRows[T, RowType], RHS, Result] = {
+      : UImpl2[Op, BroadcastedRows[T, RowType], RHS, Result] = {
     new UImpl2[Op, BroadcastedRows[T, RowType], RHS, Result] {
       def apply(v: BroadcastedRows[T, RowType], v2: RHS): Result = {
         cc(v.underlying, Axis._1) { op(_, v2) }
@@ -91,7 +91,7 @@ object BroadcastedRows {
       implicit handhold: CanCollapseAxis.HandHold[T, Axis._1.type, RowType],
       op: InPlaceImpl2[Op, RowType, RHS],
       cc: CanTraverseAxis[T, Axis._1.type, RowType])
-    : InPlaceImpl2[Op, BroadcastedRows[T, RowType], RHS] = {
+      : InPlaceImpl2[Op, BroadcastedRows[T, RowType], RHS] = {
     new InPlaceImpl2[Op, BroadcastedRows[T, RowType], RHS] {
       def apply(v: BroadcastedRows[T, RowType], v2: RHS) {
         cc(v.underlying, Axis._1) { op(_, v2) }
@@ -101,7 +101,7 @@ object BroadcastedRows {
 
   implicit def canForeachRows[T, RowType, ResultRow, Result](
       implicit iter: CanTraverseAxis[T, Axis._1.type, RowType])
-    : CanForeachValues[BroadcastedRows[T, RowType], RowType] = {
+      : CanForeachValues[BroadcastedRows[T, RowType], RowType] = {
     new CanForeachValues[BroadcastedRows[T, RowType], RowType] {
 
       /** Maps all key-value pairs from the given collection. */

@@ -54,7 +54,7 @@ trait StreamDecoder extends Decoder { outer ⇒
       override def maxBytesPerChunk: Int = newMaxBytesPerChunk
 
       def newDecompressorStage(maxBytesPerChunk: Int)
-        : () ⇒ GraphStage[FlowShape[ByteString, ByteString]] =
+          : () ⇒ GraphStage[FlowShape[ByteString, ByteString]] =
         outer.newDecompressorStage(maxBytesPerChunk)
     }
 

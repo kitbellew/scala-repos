@@ -314,8 +314,9 @@ class EnsembleAdvCandleStickChart extends EnsembleExample {
     override protected def updateAxisRange() {
 
       if (xAxis.isAutoRanging) {
-        val xData = for (series <- data; seriesData <- series.data())
-          yield seriesData.XValue()
+        val xData =
+          for (series <- data; seriesData <- series.data())
+            yield seriesData.XValue()
         xAxis.invalidateRange(xData)
       }
 

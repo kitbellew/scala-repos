@@ -182,7 +182,8 @@ class MutableSettings(val errorFn: String => Unit)
             parseColonArg(arg) match {
               case Some(_) => rest
               case None    => args
-            } else
+            }
+          else
             parseNormalArg(arg, rest) match {
               case Some(xs) => xs
               case None     => args
@@ -831,7 +832,8 @@ class MutableSettings(val errorFn: String => Unit)
           case Some(defaults) => defaults foreach add
           case None =>
             errorFn(s"'$name' requires an option. See '$name:help'.")
-        } else {
+        }
+      else {
         added foreach add
       }
 

@@ -210,7 +210,7 @@ private[data] sealed abstract class XorInstances extends XorInstances1 {
     }
 
   implicit def xorInstances[A]
-    : Traverse[A Xor ?] with MonadError[Xor[A, ?], A] =
+      : Traverse[A Xor ?] with MonadError[Xor[A, ?], A] =
     new Traverse[A Xor ?] with MonadError[Xor[A, ?], A] {
       def traverse[F[_]: Applicative, B, C](fa: A Xor B)(
           f: B => F[C]): F[A Xor C] = fa.traverse(f)
@@ -247,7 +247,7 @@ private[data] sealed abstract class XorInstances1 extends XorInstances2 {
     }
 
   implicit def xorPartialOrder[A: PartialOrder, B: PartialOrder]
-    : PartialOrder[A Xor B] =
+      : PartialOrder[A Xor B] =
     new PartialOrder[A Xor B] {
       def partialCompare(x: A Xor B, y: A Xor B): Double = x partialCompare y
       override def eqv(x: A Xor B, y: A Xor B): Boolean = x === y

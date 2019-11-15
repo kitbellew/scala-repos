@@ -41,7 +41,7 @@ object Engine0 {
     def readTraining(sc: SparkContext): TrainingData = TrainingData(id)
 
     override def readEval(sc: SparkContext)
-      : Seq[(TrainingData, EvalInfo, RDD[(Query, Actual)])] = {
+        : Seq[(TrainingData, EvalInfo, RDD[(Query, Actual)])] = {
       (0 until en).map { ex =>
         {
           val qaSeq: Seq[(Query, Actual)] = (0 until qn).map { qx =>
@@ -65,7 +65,7 @@ object Engine0 {
     def readTraining(sc: SparkContext): TrainingData = TrainingData(id)
 
     override def readEval(sc: SparkContext)
-      : Seq[(TrainingData, EvalInfo, RDD[(Query, Actual)])] = {
+        : Seq[(TrainingData, EvalInfo, RDD[(Query, Actual)])] = {
       (0 until params.en).map { ex =>
         {
           val qaSeq: Seq[(Query, Actual)] = (0 until params.qn).map { qx =>
@@ -97,7 +97,7 @@ object Engine0 {
     def readTraining(sc: SparkContext): TrainingData = TrainingData(id)
 
     override def readEval(sc: SparkContext)
-      : Seq[(TrainingData, EvalInfo, RDD[(Query, Actual)])] = {
+        : Seq[(TrainingData, EvalInfo, RDD[(Query, Actual)])] = {
       (0 until params.en).map { ex =>
         {
           val qaSeq: Seq[(Query, Actual)] = (0 until params.qn).map { qx =>
@@ -480,7 +480,7 @@ class Metric0
       evalDataSet: Seq[(
           Engine1.EvalInfo,
           RDD[(Engine1.Query, Engine1.Prediction, Engine1.Actual)])])
-    : Double = {
+      : Double = {
     evalDataSet.head._1.v
   }
 }
@@ -503,7 +503,7 @@ class Metric1
       evalDataSet: Seq[(
           Engine1.EvalInfo,
           RDD[(Engine1.Query, Engine1.Prediction, Engine1.Actual)])])
-    : Metric1.Result = {
+      : Metric1.Result = {
     Metric1.Result(0, evalDataSet.head._1.v)
   }
 }

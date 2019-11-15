@@ -4,7 +4,7 @@ object Test extends App {
   }
 
   class B extends A {
-    def f[T[+ _]](x: T[Int]): T[Any] = x
+    def f[T[+_]](x: T[Int]): T[Any] = x
   }
 
   class P[Y](var y: Y)

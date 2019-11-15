@@ -198,7 +198,7 @@ object ScopeSuggester {
         module: Module,
         result: ArrayBuffer[(PsiPackage, PsiDirectory)],
         dirContainingFile: Array[PsiDirectory])
-      : ArrayBuffer[(PsiPackage, PsiDirectory)] = {
+        : ArrayBuffer[(PsiPackage, PsiDirectory)] = {
 
       if (currentPackage != null && currentPackage.getName != null) {
         val subPackages =

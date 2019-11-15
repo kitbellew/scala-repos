@@ -108,7 +108,7 @@ object PersistenceQueryDocSpec {
         persistenceId: String,
         fromSequenceNr: Long = 0L,
         toSequenceNr: Long = Long.MaxValue)
-      : javadsl.Source[EventEnvelope, NotUsed] =
+        : javadsl.Source[EventEnvelope, NotUsed] =
       scaladslReadJournal
         .eventsByPersistenceId(persistenceId, fromSequenceNr, toSequenceNr)
         .asJava
@@ -122,7 +122,7 @@ object PersistenceQueryDocSpec {
     // possibility to add more plugin specific queries
 
     def byTagsWithMeta(tags: java.util.Set[String])
-      : javadsl.Source[RichEvent, QueryMetadata] = {
+        : javadsl.Source[RichEvent, QueryMetadata] = {
       import scala.collection.JavaConverters._
       scaladslReadJournal.byTagsWithMeta(tags.asScala.toSet).asJava
     }

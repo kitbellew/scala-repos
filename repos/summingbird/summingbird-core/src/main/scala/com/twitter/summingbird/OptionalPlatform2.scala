@@ -25,16 +25,18 @@ case class OptionalUnzip2[P1 <: Platform[P1], P2 <: Platform[P2]]() {
     p.asInstanceOf[(Option[Producer[P1, T]], Option[Producer[P2, T]])]
 
   def apply[T](root: Producer[OptionalPlatform2[P1, P2], T])
-    : (Option[Producer[P1, T]], Option[Producer[P2, T]]) =
+      : (Option[Producer[P1, T]], Option[Producer[P2, T]]) =
     root match {
       case AlsoProducer(ensure, result) =>
         val (le, re) = apply(ensure)
         val (lr, rr) = apply(result)
-        val alsol = for (e <- le; r <- lr)
-          yield e.asInstanceOf[TailProducer[P1, Any]].also(r)
-        val alsor = for (e <- re; r <- rr)
-          yield
-            e.asInstanceOf[TailProducer[P2, Any]]
+        val alsol =
+          for (e <- le; r <- lr)
+            yield e.asInstanceOf[TailProducer[P1, Any]].also(r)
+        val alsor =
+          for (e <- re; r <- rr)
+            yield e
+              .asInstanceOf[TailProducer[P2, Any]]
               .also(r)
         (alsol, alsor)
 
@@ -72,28 +74,34 @@ case class OptionalUnzip2[P1 <: Platform[P1], P2 <: Platform[P2]]() {
       case WrittenProducer(producer, sink) =>
         val (l, r) = apply(producer)
         val (leftSink, rightSink) = sink
-        val sinkl = for (li <- l; leftSinki <- leftSink)
-          yield li.write(leftSinki)
-        val sinkr = for (ri <- r; rightSinki <- rightSink)
-          yield ri.write(rightSinki)
+        val sinkl =
+          for (li <- l; leftSinki <- leftSink)
+            yield li.write(leftSinki)
+        val sinkr =
+          for (ri <- r; rightSinki <- rightSink)
+            yield ri.write(rightSinki)
         (sinkl, sinkr)
 
       case LeftJoinedProducer(producer, service) =>
         val (l, r) = apply(producer)
         val (leftService, rightService) = service
-        val left = for (li <- l; leftServicei <- leftService)
-          yield li.leftJoin(leftServicei)
-        val right = for (ri <- r; rightServicei <- rightService)
-          yield ri.leftJoin(rightServicei)
+        val left =
+          for (li <- l; leftServicei <- leftService)
+            yield li.leftJoin(leftServicei)
+        val right =
+          for (ri <- r; rightServicei <- rightService)
+            yield ri.leftJoin(rightServicei)
         cast((left, right))
 
       case Summer(producer, store, monoid) =>
         val (l, r) = apply(producer)
         val (leftStore, rightStore) = store
-        val left = for (li <- l; leftStorei <- leftStore)
-          yield Summer(li, leftStorei, monoid)
-        val right = for (ri <- r; rightStorei <- rightStore)
-          yield Summer(ri, rightStorei, monoid)
+        val left =
+          for (li <- l; leftStorei <- leftStore)
+            yield Summer(li, leftStorei, monoid)
+        val right =
+          for (ri <- r; rightStorei <- rightStore)
+            yield Summer(ri, rightStorei, monoid)
         cast((left, right))
     }
 }
@@ -112,7 +120,7 @@ class OptionalPlatform2[P1 <: Platform[P1], P2 <: Platform[P2]](p1: P1, p2: P2)
   type Plan[T] = (Option[P1#Plan[T]], Option[P2#Plan[T]])
 
   private def tCast[T](p: (Option[Producer[P1, T]], Option[Producer[P2, T]]))
-    : (Option[TailProducer[P1, T]], Option[TailProducer[P2, T]]) =
+      : (Option[TailProducer[P1, T]], Option[TailProducer[P2, T]]) =
     p.asInstanceOf[(Option[TailProducer[P1, T]], Option[TailProducer[P2, T]])]
 
   override def plan[T](

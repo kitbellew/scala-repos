@@ -124,7 +124,7 @@ private[hive] case class ScriptTransformation(
       val reader = new BufferedReader(
         new InputStreamReader(inputStream, StandardCharsets.UTF_8))
       val outputIterator: Iterator[InternalRow] = new Iterator[InternalRow]
-      with HiveInspectors {
+        with HiveInspectors {
         var curLine: String = null
         val scriptOutputStream = new DataInputStream(inputStream)
 
@@ -372,7 +372,7 @@ private[hive] case class HiveScriptIOSchema(
   }
 
   def initOutputSerDe(output: Seq[Attribute])
-    : Option[(AbstractSerDe, StructObjectInspector)] = {
+      : Option[(AbstractSerDe, StructObjectInspector)] = {
     outputSerdeClass.map { serdeClass =>
       val (columns, columnTypes) = parseAttrs(output)
       val serde = initSerDe(serdeClass, columns, columnTypes, outputSerdeProps)

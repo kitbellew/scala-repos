@@ -34,7 +34,7 @@ import scala.collection.JavaConversions._
 
 object ScalaRenameUtil {
   def filterAliasedReferences(allReferences: util.Collection[PsiReference])
-    : util.ArrayList[PsiReference] = {
+      : util.ArrayList[PsiReference] = {
     val filtered = allReferences.filterNot(isAliased)
     new util.ArrayList(filtered)
   }
@@ -66,7 +66,7 @@ object ScalaRenameUtil {
   }
 
   def replaceImportClassReferences(allReferences: util.Collection[PsiReference])
-    : util.Collection[PsiReference] = {
+      : util.Collection[PsiReference] = {
     val result = allReferences.map {
       case ref: ScStableCodeReferenceElement =>
         val isInImport =

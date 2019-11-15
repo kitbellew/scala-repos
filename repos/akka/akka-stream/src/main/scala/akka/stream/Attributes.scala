@@ -165,7 +165,8 @@ final case class Attributes(attributeList: List[Attributes.Attribute] = Nil) {
               concatNames(i, null, b.append(first).append('-').append(nn))
             } else concatNames(i, nn, null)
           case _ ⇒ concatNames(i, first, buf)
-        } else if (buf eq null) first
+        }
+      else if (buf eq null) first
       else buf.toString
 
     concatNames(attributeList.iterator, null, null) match {
@@ -291,7 +292,7 @@ object ActorAttributes {
     */
   def withSupervisionStrategy(
       decider: function.Function[Throwable, Supervision.Directive])
-    : Attributes =
+      : Attributes =
     ActorAttributes.supervisionStrategy(decider.apply _)
 
   /**

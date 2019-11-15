@@ -18,7 +18,7 @@ import scala.concurrent.Future
 @Path("v2/eventSubscriptions")
 @Produces(Array(MarathonMediaType.PREFERRED_APPLICATION_JSON))
 @Consumes(Array(MediaType.APPLICATION_JSON))
-class EventSubscriptionsResource @Inject()(val config: MarathonConf)
+class EventSubscriptionsResource @Inject() (val config: MarathonConf)
     extends RestResource {
 
   //scalastyle:off null

@@ -54,7 +54,7 @@ trait IngestSupport extends Logging {
       path: Path,
       timestampO: Option[Instant] = None)(
       f: Authorities => Future[HttpResponse[JValue]])
-    : Future[HttpResponse[JValue]] = {
+      : Future[HttpResponse[JValue]] = {
     val timestamp = timestampO getOrElse clock.now().toInstant
     val requestAuthorities = for {
       paramIds <- request.parameters.get('ownerAccountId)

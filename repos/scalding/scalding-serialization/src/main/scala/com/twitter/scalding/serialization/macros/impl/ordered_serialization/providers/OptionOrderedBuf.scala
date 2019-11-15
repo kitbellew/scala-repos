@@ -30,7 +30,7 @@ import com.twitter.scalding.serialization.OrderedSerialization
 object OptionOrderedBuf {
   def dispatch(c: Context)(
       buildDispatcher: => PartialFunction[c.Type, TreeOrderedBuf[c.type]])
-    : PartialFunction[c.Type, TreeOrderedBuf[c.type]] = {
+      : PartialFunction[c.Type, TreeOrderedBuf[c.type]] = {
     case tpe if tpe.erasure =:= c.universe.typeOf[Option[Any]] =>
       OptionOrderedBuf(c)(buildDispatcher, tpe)
   }

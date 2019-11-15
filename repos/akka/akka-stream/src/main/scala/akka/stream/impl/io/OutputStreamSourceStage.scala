@@ -63,7 +63,7 @@ final private[stream] class OutputStreamSourceStage(
         }
 
       private val upstreamCallback
-        : AsyncCallback[(AdapterToStageMessage, Promise[Unit])] =
+          : AsyncCallback[(AdapterToStageMessage, Promise[Unit])] =
         getAsyncCallback(onAsyncMessage)
 
       override def wakeUp(msg: AdapterToStageMessage): Future[Unit] = {

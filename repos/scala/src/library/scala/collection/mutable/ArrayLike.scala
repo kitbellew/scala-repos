@@ -40,7 +40,7 @@ trait ArrayLike[A, +Repr] extends Any with IndexedSeqOptimized[A, Repr] {
     */
   def deep: scala.collection.IndexedSeq[Any] =
     new scala.collection.AbstractSeq[Any]
-    with scala.collection.IndexedSeq[Any] {
+      with scala.collection.IndexedSeq[Any] {
       def length = self.length
       def apply(idx: Int): Any = self.apply(idx) match {
         case x: AnyRef if x.getClass.isArray => WrappedArray.make(x).deep

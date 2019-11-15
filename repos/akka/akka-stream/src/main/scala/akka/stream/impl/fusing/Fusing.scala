@@ -446,7 +446,7 @@ private[stream] object Fusing {
           }
           // now rewrite the materialized value computation based on the copied modules and their computation nodes
           val matNodeMapping
-            : ju.Map[MaterializedValueNode, MaterializedValueNode] =
+              : ju.Map[MaterializedValueNode, MaterializedValueNode] =
             new ju.HashMap
           val newMat =
             rewriteMat(subMat, m.materializedValueComputation, matNodeMapping)
@@ -502,7 +502,7 @@ private[stream] object Fusing {
       subMat: Predef.Map[Module, MaterializedValueNode],
       mat: MaterializedValueNode,
       mapping: ju.Map[MaterializedValueNode, MaterializedValueNode])
-    : MaterializedValueNode =
+      : MaterializedValueNode =
     mat match {
       case Atomic(sub) ⇒
         val ret = subMat(sub)

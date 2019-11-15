@@ -98,7 +98,7 @@ final class Semantics private (
       strictFloats: Boolean = this.strictFloats,
       productionMode: Boolean = this.productionMode,
       runtimeClassName: RuntimeClassNameFunction = this.runtimeClassName)
-    : Semantics = {
+      : Semantics = {
     new Semantics(
       asInstanceOfs = asInstanceOfs,
       moduleInit = moduleInit,

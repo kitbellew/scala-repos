@@ -54,7 +54,7 @@ object union {
         implicit selector: Selector[C, K]): Aux[C, K, selector.V] = selector
 
     implicit def hdSelector[K, V0, T <: Coproduct]
-      : Aux[FieldType[K, V0] :+: T, K, V0] =
+        : Aux[FieldType[K, V0] :+: T, K, V0] =
       new Selector[FieldType[K, V0] :+: T, K] {
         type V = V0
         def apply(u: FieldType[K, V] :+: T): Out = u match {
@@ -148,7 +148,7 @@ object union {
     implicit def cconsFields[K, V, T <: Coproduct](
         implicit key: Witness.Aux[K],
         tailFields: Fields[T])
-      : Aux[FieldType[K, V] :+: T, (K, V) :+: tailFields.Out] =
+        : Aux[FieldType[K, V] :+: T, (K, V) :+: tailFields.Out] =
       new Fields[FieldType[K, V] :+: T] {
         type Out = (K, V) :+: tailFields.Out
         def apply(u: FieldType[K, V] :+: T) =

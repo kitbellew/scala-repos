@@ -49,7 +49,7 @@ class CallGraphTest extends ClearAfterClass {
   def compile(
       code: String,
       allowMessage: StoreReporter#Info => Boolean = _ => false)
-    : List[ClassNode] = {
+      : List[ClassNode] = {
     CallGraphTest.notPerRun.foreach(_.clear())
     compileClasses(compiler)(code, allowMessage = allowMessage)
       .map(c => byteCodeRepository.classNode(c.name).get)

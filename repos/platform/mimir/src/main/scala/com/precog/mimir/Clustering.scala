@@ -570,7 +570,7 @@ trait KMediansCoreSetClustering {
   }
 }
 
-trait ClusteringLibModule[M[+ _]]
+trait ClusteringLibModule[M[+_]]
     extends ColumnarTableModule[M]
     with AssignClusterModule[M] {
   trait ClusteringLib extends ColumnarTableLib with AssignClusterSupport {

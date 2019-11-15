@@ -554,9 +554,9 @@ trait DocComments { self: Global =>
 
       // the Boolean tells us whether we can normalize: if we found an actual type, then yes, we can normalize, else no,
       // use the synthetic alias created for the variable
-      val aliasExpansions: List[(Type, Boolean)] = for (alias <- aliases)
-        yield
-          lookupVariable(alias.name.toString.substring(1), site) match {
+      val aliasExpansions: List[(Type, Boolean)] =
+        for (alias <- aliases)
+          yield lookupVariable(alias.name.toString.substring(1), site) match {
             case Some(repl) =>
               val repl2 = cleanupVariable(repl)
               val tpe = getType(repl2, alias.name.toString)

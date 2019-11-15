@@ -20,7 +20,7 @@ trait MatrixNorms[M, S] {
   implicit def canNorm_Float(
       implicit iter: CanTraverseValues[M, Float]): norm.Impl2[M, Float, Double]
   implicit def canNorm_Double(implicit iter: CanTraverseValues[M, Double])
-    : norm.Impl2[M, Double, Double]
+      : norm.Impl2[M, Double, Double]
   implicit def canNorm_Field(
       implicit field: Field[S]): norm.Impl2[M, Double, Double]
 }
@@ -103,7 +103,7 @@ object EntrywiseMatrixNorms {
 
     override implicit def canNorm_Float(
         implicit iter: CanTraverseValues[M, Float])
-      : norm.Impl2[M, Float, Double] = new norm.Impl2[M, Float, Double] {
+        : norm.Impl2[M, Float, Double] = new norm.Impl2[M, Float, Double] {
       def apply(v: M, n: Float): Double = {
 
         class NormVisitor extends ValuesVisitor[Float] {
@@ -143,7 +143,7 @@ object EntrywiseMatrixNorms {
 
     override implicit def canNorm_Double(
         implicit iter: CanTraverseValues[M, Double])
-      : norm.Impl2[M, Double, Double] = new norm.Impl2[M, Double, Double] {
+        : norm.Impl2[M, Double, Double] = new norm.Impl2[M, Double, Double] {
       def apply(v: M, n: Double): Double = {
 
         class NormVisitor extends ValuesVisitor[Double] {

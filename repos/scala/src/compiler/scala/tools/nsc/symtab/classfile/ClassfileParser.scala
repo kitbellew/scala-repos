@@ -469,8 +469,9 @@ abstract class ClassfileParser {
             } else
               pool.getSuperClass(u2).tpe_*
           val ifaceCount = u2
-          var ifaces = for (i <- List.range(0, ifaceCount))
-            yield pool.getSuperClass(u2).tpe_*
+          var ifaces =
+            for (i <- List.range(0, ifaceCount))
+              yield pool.getSuperClass(u2).tpe_*
           if (jflags.isAnnotation) ifaces ::= ClassfileAnnotationClass.tpe
           superType :: ifaces
         }
@@ -1043,12 +1044,14 @@ abstract class ClassfileParser {
             parseScalaSigBytes match {
               case Some(c) => nvpairs += ((name, c))
               case None    => hasError = true
-            } else if ((attrType == ScalaLongSignatureAnnotation.tpe) &&
-                       (name == nme.bytes))
+            }
+          else if ((attrType == ScalaLongSignatureAnnotation.tpe) &&
+                   (name == nme.bytes))
             parseScalaLongSigBytes match {
               case Some(c) => nvpairs += ((name, c))
               case None    => hasError = true
-            } else
+            }
+          else
             parseAnnotArg match {
               case Some(c) => nvpairs += ((name, c))
               case None    => hasError = true

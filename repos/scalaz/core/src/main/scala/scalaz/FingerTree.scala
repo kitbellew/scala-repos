@@ -415,7 +415,7 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
       empty: V => B,
       single: (V, A) => B,
       deep: (V, Finger[V, A], => FingerTree[V, Node[V, A]], Finger[V, A]) => B)
-    : B
+      : B
 
   /** Prepends an element to the left of the tree. O(1). */
   def +:(a: => A): FingerTree[V, A] = {
@@ -1276,7 +1276,7 @@ object FingerTree extends FingerTreeInstances {
           b: V => B,
           s: (V, A) => B,
           d: (V, Finger[V, A], => FingerTree[V, Node[V, A]], Finger[V, A]) => B)
-        : B = b(ms.monoid.zero)
+          : B = b(ms.monoid.zero)
     }
 
   def single[V, A](a: A)(implicit ms: Reducer[A, V]): FingerTree[V, A] =
@@ -1289,7 +1289,7 @@ object FingerTree extends FingerTreeInstances {
           b: V => B,
           s: (V, A) => B,
           d: (V, Finger[V, A], => FingerTree[V, Node[V, A]], Finger[V, A]) => B)
-        : B = s(v, a)
+          : B = s(v, a)
     }
 
   def deep[V, A](
@@ -1312,7 +1312,7 @@ object FingerTree extends FingerTreeInstances {
           b: V => B,
           f: (V, A) => B,
           d: (V, Finger[V, A], => FingerTree[V, Node[V, A]], Finger[V, A]) => B)
-        : B =
+          : B =
         d(v, pr, mz, sf)
     }
 
@@ -1407,9 +1407,11 @@ sealed abstract class IndSeqInstances {
     Equal.equalBy(_.self)
 
   implicit val indSeqInstance
-    : MonadPlus[IndSeq] with Traverse[IndSeq] with IsEmpty[IndSeq] =
-    new MonadPlus[IndSeq] with Traverse[IndSeq] with IsEmpty[IndSeq]
-    with IsomorphismFoldable[IndSeq, FingerTree[Int, ?]] {
+      : MonadPlus[IndSeq] with Traverse[IndSeq] with IsEmpty[IndSeq] =
+    new MonadPlus[IndSeq]
+      with Traverse[IndSeq]
+      with IsEmpty[IndSeq]
+      with IsomorphismFoldable[IndSeq, FingerTree[Int, ?]] {
       def G = implicitly
       override val naturalTrans = new (IndSeq ~> FingerTree[Int, ?]) {
         def apply[A](a: IndSeq[A]) =

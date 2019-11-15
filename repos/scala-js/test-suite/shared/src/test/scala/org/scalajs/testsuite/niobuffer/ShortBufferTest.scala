@@ -51,12 +51,12 @@ class WrappedShortBufferTest extends ShortBufferTest {
 
 class WrappedShortReadOnlyBufferTest extends ShortBufferTest {
   val factory: Factory = new WrappedShortBufferFactory
-  with BufferFactory.ReadOnlyBufferFactory
+    with BufferFactory.ReadOnlyBufferFactory
 }
 
 class AllocShortSlicedBufferTest extends ShortBufferTest {
   val factory: Factory = new AllocShortBufferFactory
-  with BufferFactory.SlicedBufferFactory
+    with BufferFactory.SlicedBufferFactory
 }
 
 // Short views of byte buffers
@@ -109,7 +109,7 @@ abstract class ReadOnlyShortViewOfByteBufferTest(
 
   val factory: BufferFactory.ShortBufferFactory = {
     new ByteBufferShortViewFactory(byteBufferFactory, order)
-    with BufferFactory.ReadOnlyBufferFactory
+      with BufferFactory.ReadOnlyBufferFactory
   }
 }
 

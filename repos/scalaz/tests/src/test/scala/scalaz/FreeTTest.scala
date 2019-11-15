@@ -12,8 +12,9 @@ case class FreeTListOption[A](f: FreeT[List, Option, A])
 
 object FreeTListOption {
   implicit def freeTListOptionMonad =
-    new MonadPlus[FreeTListOption] with Traverse[FreeTListOption]
-    with BindRec[FreeTListOption] {
+    new MonadPlus[FreeTListOption]
+      with Traverse[FreeTListOption]
+      with BindRec[FreeTListOption] {
       def point[A](a: => A): FreeTListOption[A] =
         FreeTListOption(Monad[FreeT[List, Option, ?]].point(a))
 

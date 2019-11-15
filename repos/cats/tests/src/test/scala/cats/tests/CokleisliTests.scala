@@ -59,7 +59,7 @@ class CokleisliTests extends SlowCatsSuite {
     type CokleisliNEL[A, B] = Cokleisli[NonEmptyList, A, B]
 
     implicit def ev0[A: Arbitrary, B: Arbitrary]
-      : Arbitrary[CokleisliNEL[A, B]] =
+        : Arbitrary[CokleisliNEL[A, B]] =
       cokleisliArbitrary
 
     implicit def ev1[A: Arbitrary, B: Eq]: Eq[CokleisliNEL[A, B]] =

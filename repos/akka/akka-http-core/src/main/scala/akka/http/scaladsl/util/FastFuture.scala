@@ -94,11 +94,11 @@ object FastFuture {
     def ready(atMost: Duration)(implicit permit: CanAwait) = this
     def transform[S](f: scala.util.Try[A] => scala.util.Try[S])(
         implicit executor: scala.concurrent.ExecutionContext)
-      : scala.concurrent.Future[S] =
+        : scala.concurrent.Future[S] =
       FastFuture(f(Success(a)))
     def transformWith[S](f: scala.util.Try[A] => scala.concurrent.Future[S])(
         implicit executor: scala.concurrent.ExecutionContext)
-      : scala.concurrent.Future[S] =
+        : scala.concurrent.Future[S] =
       new FastFuture(this).transformWith(f)
   }
   private case class ErrorFuture(error: Throwable) extends Future[Nothing] {
@@ -111,12 +111,12 @@ object FastFuture {
     def ready(atMost: Duration)(implicit permit: CanAwait) = this
     def transform[S](f: scala.util.Try[Nothing] => scala.util.Try[S])(
         implicit executor: scala.concurrent.ExecutionContext)
-      : scala.concurrent.Future[S] =
+        : scala.concurrent.Future[S] =
       FastFuture(f(Failure(error)))
     def transformWith[S](
         f: scala.util.Try[Nothing] => scala.concurrent.Future[S])(
         implicit executor: scala.concurrent.ExecutionContext)
-      : scala.concurrent.Future[S] =
+        : scala.concurrent.Future[S] =
       new FastFuture(this).transformWith(f)
   }
 

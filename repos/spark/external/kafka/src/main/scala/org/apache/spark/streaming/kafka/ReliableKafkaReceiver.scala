@@ -83,12 +83,12 @@ private[streaming] class ReliableKafkaReceiver[
     * synchronized block, so mutable HashMap will not meet concurrency issue.
     */
   private var topicPartitionOffsetMap
-    : mutable.HashMap[TopicAndPartition, Long] =
+      : mutable.HashMap[TopicAndPartition, Long] =
     null
 
   /** A concurrent HashMap to store the stream block id and related offset snapshot. */
   private var blockOffsetMap
-    : ConcurrentHashMap[StreamBlockId, Map[TopicAndPartition, Long]] = null
+      : ConcurrentHashMap[StreamBlockId, Map[TopicAndPartition, Long]] = null
 
   /**
     * Manage the BlockGenerator in receiver itself for better managing block store and offset

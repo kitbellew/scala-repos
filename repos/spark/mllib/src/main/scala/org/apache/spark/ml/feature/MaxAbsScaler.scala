@@ -60,7 +60,7 @@ private[feature] trait MaxAbsScalerParams
   * any sparsity.
   */
 @Experimental
-class MaxAbsScaler @Since("2.0.0")(override val uid: String)
+class MaxAbsScaler @Since("2.0.0") (override val uid: String)
     extends Estimator[MaxAbsScalerModel]
     with MaxAbsScalerParams
     with DefaultParamsWritable {

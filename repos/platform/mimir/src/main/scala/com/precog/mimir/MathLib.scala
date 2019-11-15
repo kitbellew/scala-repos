@@ -28,7 +28,7 @@ import yggdrasil._
 import yggdrasil.table._
 import TransSpecModule._
 
-trait MathLibModule[M[+ _]]
+trait MathLibModule[M[+_]]
     extends ColumnarTableLibModule[M]
     with InfixLibModule[M] {
   trait MathLib extends ColumnarTableLib with InfixLib {

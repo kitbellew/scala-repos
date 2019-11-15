@@ -175,10 +175,14 @@ sealed abstract class NonEmptyListInstances extends NonEmptyListInstances0 {
     with Zip[NonEmptyList]
     with Unzip[NonEmptyList]
     with Align[NonEmptyList] =
-    new Traverse1[NonEmptyList] with Monad[NonEmptyList]
-    with BindRec[NonEmptyList] with Plus[NonEmptyList]
-    with Comonad[NonEmptyList] with Zip[NonEmptyList] with Unzip[NonEmptyList]
-    with Align[NonEmptyList] {
+    new Traverse1[NonEmptyList]
+      with Monad[NonEmptyList]
+      with BindRec[NonEmptyList]
+      with Plus[NonEmptyList]
+      with Comonad[NonEmptyList]
+      with Zip[NonEmptyList]
+      with Unzip[NonEmptyList]
+      with Align[NonEmptyList] {
       override def findLeft[A](fa: NonEmptyList[A])(f: A => Boolean) =
         if (f(fa.head)) Some(fa.head) else fa.tail.find(f)
 

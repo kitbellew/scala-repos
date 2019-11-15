@@ -197,7 +197,7 @@ trait Extractors { self: Utils =>
     }
 
     def unapply(tree: Tree)
-      : Option[(Tree, Tree, SymbolTable, Tree, Type, Tree, Boolean)] =
+        : Option[(Tree, Tree, SymbolTable, Tree, Type, Tree, Boolean)] =
       tree match {
         case Block(
             List(

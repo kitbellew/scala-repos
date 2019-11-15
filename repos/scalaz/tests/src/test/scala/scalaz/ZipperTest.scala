@@ -74,9 +74,8 @@ object ZipperTest extends SpecLite {
 
   "Previous Affects Lengths" ! forAll { (xs: Stream[Int]) =>
     (for (z <- xs.zipperEnd; zn <- z.previous)
-      yield
-        zn.lefts.length must_=== (z.lefts.length - 1) and
-          (zn.rights.length must_=== (z.rights.length + 1))) getOrElse {
+      yield zn.lefts.length must_=== (z.lefts.length - 1) and
+        (zn.rights.length must_=== (z.rights.length + 1))) getOrElse {
       xs.length mustBe_< (2)
     }
   }

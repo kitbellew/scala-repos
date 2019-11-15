@@ -3730,7 +3730,7 @@ abstract class GenJSCode
       */
     private def tryGenAndRecordAnonFunctionClassGeneric(cd: ClassDef)(
         fail: (=> String) => Nothing)
-      : (List[js.Tree] => js.Tree, MethodInfo, Int) = {
+        : (List[js.Tree] => js.Tree, MethodInfo, Int) = {
       implicit val pos = cd.pos
       val sym = cd.symbol
 

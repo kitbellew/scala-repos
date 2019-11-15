@@ -106,7 +106,7 @@ private[impl] class OfferMatcherManagerActor private (
   private[this] var matchers: Set[OfferMatcher] = Set.empty
 
   private[this] var offerQueues
-    : Map[OfferID, OfferMatcherManagerActor.OfferData] = Map.empty
+      : Map[OfferID, OfferMatcherManagerActor.OfferData] = Map.empty
 
   override def receive: Receive = LoggingReceive {
     Seq[Receive](

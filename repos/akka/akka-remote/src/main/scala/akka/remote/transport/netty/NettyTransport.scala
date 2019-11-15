@@ -678,10 +678,10 @@ class NettyTransport(
       } yield handle) recover {
         case c: CancellationException ⇒
           throw new NettyTransportException("Connection was cancelled")
-          with NoStackTrace
+            with NoStackTrace
         case NonFatal(t) ⇒
           throw new NettyTransportException(t.getMessage, t.getCause)
-          with NoStackTrace
+            with NoStackTrace
       }
     }
   }

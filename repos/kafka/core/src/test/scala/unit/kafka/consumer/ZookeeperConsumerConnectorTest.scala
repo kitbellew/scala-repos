@@ -573,7 +573,7 @@ class ZookeeperConsumerConnectorTest
     var beforeStartingFetchersCalled: Boolean = false
     var consumerId: String = "";
     var partitionOwnership
-      : java.util.Map[String, java.util.Set[java.lang.Integer]] = null
+        : java.util.Map[String, java.util.Set[java.lang.Integer]] = null
     var globalPartitionOwnership: java.util.Map[
       String,
       java.util.Map[java.lang.Integer, ConsumerThreadId]] = null

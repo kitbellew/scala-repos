@@ -179,8 +179,9 @@ sealed abstract class KleisliInstances7 extends KleisliInstances8 {
 sealed abstract class KleisliInstances6 extends KleisliInstances7 {
   implicit def kleisliApplicativePlus[F[_], R](
       implicit F0: ApplicativePlus[F]): ApplicativePlus[Kleisli[F, R, ?]] =
-    new ApplicativePlus[Kleisli[F, R, ?]] with KleisliApplicative[F, R]
-    with KleisliPlusEmpty[F, R] {
+    new ApplicativePlus[Kleisli[F, R, ?]]
+      with KleisliApplicative[F, R]
+      with KleisliPlusEmpty[F, R] {
       implicit def F: ApplicativePlus[F] = F0
     }
 
@@ -248,7 +249,7 @@ sealed abstract class KleisliInstances0 extends KleisliInstances1 {
 
 abstract class KleisliInstances extends KleisliInstances0 {
   implicit def kleisliArrow[F[_]](implicit F0: Monad[F])
-    : Arrow[Kleisli[F, ?, ?]] with Choice[Kleisli[F, ?, ?]] =
+      : Arrow[Kleisli[F, ?, ?]] with Choice[Kleisli[F, ?, ?]] =
     new KleisliArrow[F] {
       implicit def F: Monad[F] = F0
     }

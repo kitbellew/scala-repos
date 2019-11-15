@@ -62,7 +62,7 @@ object MongoAPIKeyManagerSettings {
 
 object MongoAPIKeyManager extends Logging {
   def apply(config: Configuration)(implicit executor: ExecutionContext)
-    : (APIKeyManager[Future], Stoppable) = {
+      : (APIKeyManager[Future], Stoppable) = {
     // TODO: should only require either the executor or M, not both.
     implicit val M: Monad[Future] = new FutureMonad(executor)
 

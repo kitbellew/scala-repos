@@ -53,7 +53,7 @@ import org.apache.spark.sql.DataFrame
   */
 @Since("1.4.0")
 @Experimental
-final class DecisionTreeClassifier @Since("1.4.0")(
+final class DecisionTreeClassifier @Since("1.4.0") (
     @Since("1.4.0") override val uid: String)
     extends ProbabilisticClassifier[
       Vector,

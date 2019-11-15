@@ -180,7 +180,7 @@ class StreamingKMeansSuite extends SparkFunSuite with TestSuiteBase {
       r: Double,
       seed: Int,
       initCenters: Array[Vector] = null)
-    : (IndexedSeq[IndexedSeq[Vector]], Array[Vector]) = {
+      : (IndexedSeq[IndexedSeq[Vector]], Array[Vector]) = {
     val rand = new XORShiftRandom(seed)
     val centers = initCenters match {
       case null =>

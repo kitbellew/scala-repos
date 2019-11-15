@@ -310,7 +310,7 @@ object Heap extends HeapInstances {
     }
 
     def adjustZ[A](f: Tree[Ranked[A]] => Tree[Ranked[A]])
-      : ForestZipper[A] => ForestZipper[A] = {
+        : ForestZipper[A] => ForestZipper[A] = {
       case (path, x #:: xs) => (path, f(x) #:: xs)
       case z                => z
     }
@@ -338,7 +338,7 @@ object Heap extends HeapInstances {
     }
 
     def minZp[A](leq: (A, A) => Boolean)
-      : (ForestZipper[A], ForestZipper[A]) => ForestZipper[A] = {
+        : (ForestZipper[A], ForestZipper[A]) => ForestZipper[A] = {
       case (lo, (_, Stream())) => lo
       case (lo, z) =>
         minZp(leq)(if (leq(rootZ(lo), rootZ(z))) lo else z, rightZ(z))
@@ -377,7 +377,7 @@ object Heap extends HeapInstances {
     }
 
     def link[A](f: (A, A) => Boolean)
-      : (Tree[Ranked[A]], Tree[Ranked[A]]) => Tree[Ranked[A]] = {
+        : (Tree[Ranked[A]], Tree[Ranked[A]]) => Tree[Ranked[A]] = {
       case (t1 @ Node(Ranked(r1, x1), cf1), t2 @ Node(Ranked(r2, x2), cf2)) =>
         if (f(x1, x2)) Node(Ranked(r1 + 1, x1), t2 #:: cf1)
         else Node(Ranked(r2 + 1, x2), t1 #:: cf2)

@@ -39,7 +39,7 @@ import com.precog.bytecode._
 import scala.util.Random
 import scalaz.syntax.comonad._
 
-trait TransformSpec[M[+ _]]
+trait TransformSpec[M[+_]]
     extends TableModuleTestSupport[M]
     with Specification
     with ScalaCheck {

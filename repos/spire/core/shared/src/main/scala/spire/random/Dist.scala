@@ -491,12 +491,12 @@ trait DistInstances6 extends DistInstances5 {
 
 trait DistInstances7 extends DistInstances6 {
   implicit def NormedVectorSpace[V, K](implicit ev: NormedVectorSpace[V, K])
-    : NormedVectorSpace[Dist[V], Dist[K]] =
+      : NormedVectorSpace[Dist[V], Dist[K]] =
     new DistNormedVectorSpace[V, K] { def alg = ev }
 }
 
 trait DistInstances8 extends DistInstances7 {
   implicit def InnerProductSpace[V, K](implicit ev: InnerProductSpace[V, K])
-    : InnerProductSpace[Dist[V], Dist[K]] =
+      : InnerProductSpace[Dist[V], Dist[K]] =
     new DistInnerProductSpace[V, K] { def alg = ev }
 }

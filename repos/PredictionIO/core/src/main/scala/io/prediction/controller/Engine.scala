@@ -534,10 +534,10 @@ object Engine {
   object DataSourceMap {
     implicit def cToMap[TD, EI, Q, A](
         c: Class[_ <: BaseDataSource[TD, EI, Q, A]])
-      : DataSourceMap[TD, EI, Q, A] = new DataSourceMap(c)
+        : DataSourceMap[TD, EI, Q, A] = new DataSourceMap(c)
     implicit def mToMap[TD, EI, Q, A](
         m: Map[String, Class[_ <: BaseDataSource[TD, EI, Q, A]]])
-      : DataSourceMap[TD, EI, Q, A] = new DataSourceMap(m)
+        : DataSourceMap[TD, EI, Q, A] = new DataSourceMap(m)
   }
 
   /** Helper class to accept either a single preparator, or a map of
@@ -561,7 +561,7 @@ object Engine {
       new PreparatorMap(c)
     implicit def mToMap[TD, PD](
         m: Map[String, Class[_ <: BasePreparator[TD, PD]]])
-      : PreparatorMap[TD, PD] = new PreparatorMap(m)
+        : PreparatorMap[TD, PD] = new PreparatorMap(m)
   }
 
   /** Helper class to accept either a single serving, or a map of serving, with

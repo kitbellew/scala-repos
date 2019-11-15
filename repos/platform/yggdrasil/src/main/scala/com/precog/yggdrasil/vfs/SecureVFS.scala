@@ -57,7 +57,7 @@ import scalaz.syntax.std.option._
 import scalaz.effect.IO
 import scala.math.Ordered._
 
-trait VFSMetadata[M[+ _]] {
+trait VFSMetadata[M[+_]] {
   def findDirectChildren(
       apiKey: APIKey,
       path: Path): EitherT[M, ResourceError, Set[PathMetadata]]
@@ -72,7 +72,7 @@ trait VFSMetadata[M[+ _]] {
       version: Version): EitherT[M, ResourceError, Long]
 }
 
-trait SecureVFSModule[M[+ _], Block] extends VFSModule[M, Block] {
+trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
   case class StoredQueryResult(
       data: StreamT[M, Block],
       cachedAt: Option[Instant],
@@ -205,7 +205,7 @@ trait SecureVFSModule[M[+ _], Block] extends VFSModule[M, Block] {
         ctx: EvaluationContext,
         path: Path,
         queryOptions: QueryOptions)(implicit M: Monad[M])
-      : EitherT[M, EvaluationError, StoredQueryResult] = {
+        : EitherT[M, EvaluationError, StoredQueryResult] = {
       import queryOptions.cacheControl._
       import EvaluationError._
 
@@ -301,7 +301,7 @@ trait SecureVFSModule[M[+ _], Block] extends VFSModule[M, Block] {
         queryOptions: QueryOptions,
         cacheAt: Option[Path],
         jobName: Option[String] = None)(implicit M: Monad[M])
-      : EitherT[M, EvaluationError, StoredQueryResult] = {
+        : EitherT[M, EvaluationError, StoredQueryResult] = {
       import EvaluationError._
       logger.debug(
         "Executing query for %s and caching to %s".format(path, cacheAt))

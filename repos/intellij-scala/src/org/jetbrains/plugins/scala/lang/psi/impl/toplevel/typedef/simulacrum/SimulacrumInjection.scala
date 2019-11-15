@@ -222,9 +222,8 @@ class SimulacrumInjection extends SyntheticMembersInjector {
                           (for {
                             ScParameterizedTypeElement(pte, _) <- Option(te)
                             ScSimpleTypeElement(Some(ref)) <- Option(pte)
-                          } yield
-                            Seq(
-                              s" with ${ref.getText}.AllOps[$tpName$additionalWithComma]"))
+                          } yield Seq(
+                            s" with ${ref.getText}.AllOps[$tpName$additionalWithComma]"))
                             .getOrElse(fromType)
                         case _ => Seq.empty
                       }

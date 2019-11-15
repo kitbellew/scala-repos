@@ -88,16 +88,16 @@ trait JdbcProfile
 
     implicit def queryDeleteActionExtensionMethods[C[_]](
         q: Query[_ <: RelationalProfile#Table[_], _, C])
-      : DeleteActionExtensionMethods =
+        : DeleteActionExtensionMethods =
       createDeleteActionExtensionMethods(deleteCompiler.run(q.toNode).tree, ())
     implicit def runnableCompiledDeleteActionExtensionMethods[RU, C[_]](
         c: RunnableCompiled[_ <: Query[_, _, C], C[RU]])
-      : DeleteActionExtensionMethods =
+        : DeleteActionExtensionMethods =
       createDeleteActionExtensionMethods(c.compiledDelete, c.param)
 
     implicit def runnableCompiledUpdateActionExtensionMethods[RU, C[_]](
         c: RunnableCompiled[_ <: Query[_, _, C], C[RU]])
-      : UpdateActionExtensionMethods[RU] =
+        : UpdateActionExtensionMethods[RU] =
       createUpdateActionExtensionMethods(c.compiledUpdate, c.param)
 
     implicit def jdbcActionExtensionMethods[E <: Effect, R, S <: NoStream](

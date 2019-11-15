@@ -26,7 +26,7 @@ import com.precog.yggdrasil._
 
 import scalaz._
 
-trait NormalizationSpecs[M[+ _]]
+trait NormalizationSpecs[M[+_]]
     extends Specification
     with EvaluatorTestSupport[M]
     with LongIdMemoryDatasetConsumer[M] {

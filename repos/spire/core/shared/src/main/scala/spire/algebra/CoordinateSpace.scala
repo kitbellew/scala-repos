@@ -39,7 +39,7 @@ object CoordinateSpace {
 
   def seq[A: Field, CC[A] <: SeqLike[A, CC[A]]](dimensions: Int)(
       implicit cbf0: CanBuildFrom[CC[A], A, CC[A]])
-    : SeqCoordinateSpace[A, CC[A]] =
+      : SeqCoordinateSpace[A, CC[A]] =
     new SeqCoordinateSpace[A, CC[A]](dimensions)
 
   def array[@sp(Float, Double) A: Field: ClassTag](

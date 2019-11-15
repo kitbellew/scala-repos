@@ -15,7 +15,7 @@ import scala.concurrent.Future
 /**
   * Notify the launch queue of this update.
   */
-class NotifyLaunchQueueStepImpl @Inject()(launchQueue: LaunchQueue)
+class NotifyLaunchQueueStepImpl @Inject() (launchQueue: LaunchQueue)
     extends TaskStatusUpdateStep {
   override def name: String = "notifyLaunchQueue"
 

@@ -56,7 +56,7 @@ object TextFieldTreeTableCell {
     */
   implicit def sfxTextFieldTreeTableCell2jfx[S, T](
       cell: TextFieldTreeTableCell[S, T])
-    : jfxsc.cell.TextFieldTreeTableCell[S, T] =
+      : jfxsc.cell.TextFieldTreeTableCell[S, T] =
     if (cell != null) cell.delegate else null
 
   /**
@@ -76,7 +76,7 @@ object TextFieldTreeTableCell {
     * @return $FLVRET
     */
   def forTreeTableColumn[S, T](converter: StringConverter[T])
-    : (jfxsc.TreeTableColumn[S, T] => TreeTableCell[S, T]) =
+      : (jfxsc.TreeTableColumn[S, T] => TreeTableCell[S, T]) =
     (view: jfxsc.TreeTableColumn[S, T]) =>
       jfxscc.TextFieldTreeTableCell
         .forTreeTableColumn[S, T](converter)

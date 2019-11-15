@@ -132,6 +132,6 @@ private object RenderSupport {
       log: LoggingAdapter,
       h: HttpHeader,
       msg: String = "the akka-http-core layer sets this header automatically!")
-    : Unit =
+      : Unit =
     log.warning("Explicitly set HTTP header '{}' is ignored, {}", h, msg)
 }

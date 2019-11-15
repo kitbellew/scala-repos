@@ -39,7 +39,7 @@ class InMemoryFileStorageSpec extends Specification {
   })
 }
 
-trait FileStorageSpec[M[+ _]] extends Specification {
+trait FileStorageSpec[M[+_]] extends Specification {
   lazy val TEXT = MimeTypes.text / plain
   lazy val HTML = MimeTypes.text / html
 

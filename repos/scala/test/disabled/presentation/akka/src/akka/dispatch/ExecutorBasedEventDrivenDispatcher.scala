@@ -152,8 +152,9 @@ class ExecutorBasedEventDrivenDispatcher(
 
   def createMailbox(actorRef: ActorRef): AnyRef = mailboxType match {
     case b: UnboundedMailbox =>
-      new ConcurrentLinkedQueue[MessageInvocation] with MessageQueue
-      with ExecutableMailbox {
+      new ConcurrentLinkedQueue[MessageInvocation]
+        with MessageQueue
+        with ExecutableMailbox {
         @inline
         final def dispatcher = ExecutorBasedEventDrivenDispatcher.this
         @inline
@@ -163,7 +164,7 @@ class ExecutorBasedEventDrivenDispatcher(
       }
     case b: BoundedMailbox =>
       new DefaultBoundedMessageQueue(b.capacity, b.pushTimeOut)
-      with ExecutableMailbox {
+        with ExecutableMailbox {
         @inline
         final def dispatcher = ExecutorBasedEventDrivenDispatcher.this
       }
@@ -400,7 +401,7 @@ trait PriorityMailbox { self: ExecutorBasedEventDrivenDispatcher =>
 
       case b: BoundedMailbox =>
         new BoundedPriorityMessageQueue(b.capacity, b.pushTimeOut, comparator)
-        with ExecutableMailbox {
+          with ExecutableMailbox {
           @inline
           final def dispatcher = self
         }

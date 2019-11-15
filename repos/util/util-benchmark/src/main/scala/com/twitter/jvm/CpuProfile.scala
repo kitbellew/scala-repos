@@ -60,9 +60,9 @@ object CpuProfileBenchmark {
     @Setup(Level.Iteration)
     def setUp() {
       val stack = new Stack(new Random(rngSeed), stackMeanSize, stackStddev)
-      threads = for (_ <- 0 until nthreads)
-        yield
-          new Thread {
+      threads =
+        for (_ <- 0 until nthreads)
+          yield new Thread {
             override def run() {
               try stack()
               catch {

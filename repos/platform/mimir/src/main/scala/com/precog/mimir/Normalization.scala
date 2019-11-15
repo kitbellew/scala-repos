@@ -37,7 +37,7 @@ class BigDecimalPrecision(num: BigDecimal) {
   def addContext: BigDecimal = BigDecimal(num.toString, context)
 }
 
-trait NormalizationHelperModule[M[+ _]]
+trait NormalizationHelperModule[M[+_]]
     extends ColumnarTableLibModule[M]
     with ReductionLibModule[M] {
 
@@ -252,7 +252,7 @@ trait NormalizationHelperModule[M[+ _]]
   }
 }
 
-trait NormalizationLibModule[M[+ _]] extends NormalizationHelperModule[M] {
+trait NormalizationLibModule[M[+_]] extends NormalizationHelperModule[M] {
   trait NormalizationLib extends NormalizationHelperLib {
 
     override def _libMorphism2 =

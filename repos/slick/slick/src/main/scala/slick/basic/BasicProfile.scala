@@ -56,7 +56,7 @@ trait BasicProfile extends BasicActionComponent { self: BasicProfile =>
 
     implicit final def anyToShapedValue[T, U](value: T)(
         implicit shape: Shape[_ <: FlatShapeLevel, T, U, _])
-      : ShapedValue[T, U] =
+        : ShapedValue[T, U] =
       new ShapedValue[T, U](value, shape)
 
     implicit def repQueryActionExtensionMethods[U](
@@ -74,7 +74,7 @@ trait BasicProfile extends BasicActionComponent { self: BasicProfile =>
       createQueryActionExtensionMethods[RU, NoStream](c.compiledQuery, c.param)
     implicit def streamableCompiledQueryActionExtensionMethods[RU, EU](
         c: StreamableCompiled[_, RU, EU])
-      : StreamingQueryActionExtensionMethods[RU, EU] =
+        : StreamingQueryActionExtensionMethods[RU, EU] =
       createStreamingQueryActionExtensionMethods[RU, EU](
         c.compiledQuery,
         c.param)
@@ -84,13 +84,13 @@ trait BasicProfile extends BasicActionComponent { self: BasicProfile =>
         RU,
         EU,
         C[_]](c: AppliedCompiledFunction[_, Query[R, EU, C], RU])
-      : StreamingQueryActionExtensionMethods[RU, EU] =
+        : StreamingQueryActionExtensionMethods[RU, EU] =
       createStreamingQueryActionExtensionMethods[RU, EU](
         c.compiledQuery,
         c.param)
     implicit def recordQueryActionExtensionMethods[M, R](q: M)(
         implicit shape: Shape[_ <: FlatShapeLevel, M, R, _])
-      : QueryActionExtensionMethods[R, NoStream] =
+        : QueryActionExtensionMethods[R, NoStream] =
       createQueryActionExtensionMethods[R, NoStream](
         queryCompiler.run(shape.toNode(q)).tree,
         ())

@@ -51,12 +51,12 @@ class WrappedLongBufferTest extends LongBufferTest {
 
 class WrappedLongReadOnlyBufferTest extends LongBufferTest {
   val factory: Factory = new WrappedLongBufferFactory
-  with BufferFactory.ReadOnlyBufferFactory
+    with BufferFactory.ReadOnlyBufferFactory
 }
 
 class AllocLongSlicedBufferTest extends LongBufferTest {
   val factory: Factory = new AllocLongBufferFactory
-  with BufferFactory.SlicedBufferFactory
+    with BufferFactory.SlicedBufferFactory
 }
 
 // Long views of byte buffers
@@ -109,7 +109,7 @@ abstract class ReadOnlyLongViewOfByteBufferTest(
 
   val factory: BufferFactory.LongBufferFactory = {
     new ByteBufferLongViewFactory(byteBufferFactory, order)
-    with BufferFactory.ReadOnlyBufferFactory
+      with BufferFactory.ReadOnlyBufferFactory
   }
 }
 

@@ -502,7 +502,7 @@ object QueryStringBindable {
     * QueryString binder for Java Optional.
     */
   implicit def bindableJavaOption[T: QueryStringBindable]
-    : QueryStringBindable[Optional[T]] =
+      : QueryStringBindable[Optional[T]] =
     new QueryStringBindable[Optional[T]] {
       def bind(key: String, params: Map[String, Seq[String]]) = {
         Some(
@@ -528,7 +528,7 @@ object QueryStringBindable {
     * QueryString binder for Seq
     */
   implicit def bindableSeq[T: QueryStringBindable]
-    : QueryStringBindable[Seq[T]] = new QueryStringBindable[Seq[T]] {
+      : QueryStringBindable[Seq[T]] = new QueryStringBindable[Seq[T]] {
     def bind(key: String, params: Map[String, Seq[String]]) =
       bindSeq[T](key, params)
     def unbind(key: String, values: Seq[T]) = unbindSeq(key, values)
@@ -540,14 +540,14 @@ object QueryStringBindable {
     * QueryString binder for List
     */
   implicit def bindableList[T: QueryStringBindable]
-    : QueryStringBindable[List[T]] =
+      : QueryStringBindable[List[T]] =
     bindableSeq[T].transform(_.toList, _.toSeq)
 
   /**
     * QueryString binder for java.util.List
     */
   implicit def bindableJavaList[T: QueryStringBindable]
-    : QueryStringBindable[java.util.List[T]] =
+      : QueryStringBindable[java.util.List[T]] =
     new QueryStringBindable[java.util.List[T]] {
       def bind(key: String, params: Map[String, Seq[String]]) =
         bindSeq[T](key, params).map(_.right.map(_.asJava))
@@ -813,7 +813,7 @@ object PathBindable {
     * This is used by the Java RouterBuilder DSL.
     */
   private[play] lazy val pathBindableRegister
-    : Map[Class[_], PathBindable[_]] = {
+      : Map[Class[_], PathBindable[_]] = {
     def register[T](implicit pb: PathBindable[T], ct: ClassTag[T]) =
       ct.runtimeClass -> pb
     Map(

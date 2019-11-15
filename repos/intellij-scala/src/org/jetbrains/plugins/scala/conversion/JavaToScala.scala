@@ -798,7 +798,7 @@ object JavaToScala {
             member.asInstanceOf[PsiMethod].isConstructor
 
         def sort(targetMap: mutable.HashMap[PsiMethod, PsiMethod])
-          : Seq[PsiMember] = {
+            : Seq[PsiMember] = {
           def compareAsConstructors(left: PsiMethod, right: PsiMethod) = {
             val rightFromMap = targetMap.get(left)
             if (rightFromMap.isDefined && rightFromMap.get == right) {
@@ -937,7 +937,7 @@ object JavaToScala {
       implicit associations: ListBuffer[AssociationHelper] = new ListBuffer(),
       refs: Seq[ReferenceData] = Seq.empty,
       withComments: Boolean = false)
-    : (Option[Seq[PsiMember]], Option[PrimaryConstruction]) = {
+      : (Option[Seq[PsiMember]], Option[PrimaryConstruction]) = {
 
     val dropFields = new ArrayBuffer[PsiField]()
     def createPrimaryConstructor(
@@ -951,7 +951,7 @@ object JavaToScala {
       }
 
       def getSuperCall(dropStatements: ArrayBuffer[PsiExpressionStatement])
-        : IntermediateNode = {
+          : IntermediateNode = {
         val firstStatement = getFirstStatement(constructor)
         val isSuper = firstStatement.map(_.getExpression).flatMap {
           case mc: PsiMethodCallExpression
@@ -991,7 +991,8 @@ object JavaToScala {
                       f.getInitializer == null =>
                   Some(f)
                 case _ => None
-              } else None
+              }
+            else None
 
           var statement: Option[PsiExpressionStatement] =
             if (field.isDefined && parent.isDefined &&

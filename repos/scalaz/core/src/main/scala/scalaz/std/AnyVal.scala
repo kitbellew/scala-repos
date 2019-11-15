@@ -67,7 +67,7 @@ trait AnyValInstances {
   import Tags.{Conjunction, Disjunction}
 
   implicit val booleanDisjunctionNewTypeInstance
-    : Monoid[Boolean @@ Disjunction] with Enum[Boolean @@ Disjunction] =
+      : Monoid[Boolean @@ Disjunction] with Enum[Boolean @@ Disjunction] =
     new Monoid[Boolean @@ Disjunction] with Enum[Boolean @@ Disjunction] {
       def append(f1: Boolean @@ Disjunction, f2: => Boolean @@ Disjunction) =
         Disjunction(Tag.unwrap(f1) || Tag.unwrap(f2))
@@ -95,7 +95,7 @@ trait AnyValInstances {
     }
 
   implicit val booleanConjunctionNewTypeInstance
-    : Monoid[Boolean @@ Conjunction] with Enum[Boolean @@ Conjunction] =
+      : Monoid[Boolean @@ Conjunction] with Enum[Boolean @@ Conjunction] =
     new Monoid[Boolean @@ Conjunction] with Enum[Boolean @@ Conjunction] {
       def append(f1: Boolean @@ Conjunction, f2: => Boolean @@ Conjunction) =
         Conjunction(Tag.unwrap(f1) && Tag.unwrap(f2))
@@ -146,7 +146,7 @@ trait AnyValInstances {
   import Tags.{Multiplication}
 
   implicit val byteMultiplicationNewType
-    : Monoid[Byte @@ Multiplication] with Enum[Byte @@ Multiplication] =
+      : Monoid[Byte @@ Multiplication] with Enum[Byte @@ Multiplication] =
     new Monoid[Byte @@ Multiplication] with Enum[Byte @@ Multiplication] {
       def append(f1: Byte @@ Multiplication, f2: => Byte @@ Multiplication) =
         Multiplication((Tag.unwrap(f1) * Tag.unwrap(f2)).toByte)
@@ -197,7 +197,7 @@ trait AnyValInstances {
     }
 
   implicit val charMultiplicationNewType
-    : Monoid[Char @@ Multiplication] with Enum[Char @@ Multiplication] =
+      : Monoid[Char @@ Multiplication] with Enum[Char @@ Multiplication] =
     new Monoid[Char @@ Multiplication] with Enum[Char @@ Multiplication] {
       def append(f1: Char @@ Multiplication, f2: => Char @@ Multiplication) =
         Multiplication((Tag.unwrap(f1) * Tag.unwrap(f2)).toChar)
@@ -248,7 +248,7 @@ trait AnyValInstances {
     }
 
   implicit val shortMultiplicationNewType
-    : Monoid[Short @@ Multiplication] with Enum[Short @@ Multiplication] =
+      : Monoid[Short @@ Multiplication] with Enum[Short @@ Multiplication] =
     new Monoid[Short @@ Multiplication] with Enum[Short @@ Multiplication] {
       def append(f1: Short @@ Multiplication, f2: => Short @@ Multiplication) =
         Multiplication((Tag.unwrap(f1) * Tag.unwrap(f2)).toShort)
@@ -297,7 +297,7 @@ trait AnyValInstances {
     }
 
   implicit val intMultiplicationNewType
-    : Monoid[Int @@ Multiplication] with Enum[Int @@ Multiplication] =
+      : Monoid[Int @@ Multiplication] with Enum[Int @@ Multiplication] =
     new Monoid[Int @@ Multiplication] with Enum[Int @@ Multiplication] {
       def append(f1: Int @@ Multiplication, f2: => Int @@ Multiplication) =
         Multiplication(Tag.unwrap(f1) * Tag.unwrap(f2))
@@ -346,7 +346,7 @@ trait AnyValInstances {
     }
 
   implicit val longMultiplicationNewType
-    : Monoid[Long @@ Multiplication] with Enum[Long @@ Multiplication] =
+      : Monoid[Long @@ Multiplication] with Enum[Long @@ Multiplication] =
     new Monoid[Long @@ Multiplication] with Enum[Long @@ Multiplication] {
       def append(f1: Long @@ Multiplication, f2: => Long @@ Multiplication) =
         Multiplication(Tag.unwrap(f1) * Tag.unwrap(f2))
@@ -374,7 +374,7 @@ trait AnyValInstances {
     }
 
   implicit val floatInstance: Order[Float] with Show[Float] = new Order[Float]
-  with Show[Float] {
+    with Show[Float] {
     override def shows(f: Float) = f.toString
 
     override def equalIsNatural: Boolean = true

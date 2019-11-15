@@ -652,7 +652,8 @@ private[collection] final class CNode[K, V](
       array(0) match {
         case sn: SNode[K, V] => sn.copyTombed
         case _               => this
-      } else this
+      }
+    else this
 
   // - if the branching factor is 1 for this CNode, and the child
   //   is a tombed SNode, returns its tombed version

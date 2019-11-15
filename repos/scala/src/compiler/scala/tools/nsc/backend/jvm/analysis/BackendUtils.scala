@@ -135,7 +135,7 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
   def cloneInstructions(
       methodNode: MethodNode,
       labelMap: Map[LabelNode, LabelNode])
-    : (InsnList, Map[AbstractInsnNode, AbstractInsnNode], Boolean) = {
+      : (InsnList, Map[AbstractInsnNode, AbstractInsnNode], Boolean) = {
     val javaLabelMap = labelMap.asJava
     val result = new InsnList
     var map = Map.empty[AbstractInsnNode, AbstractInsnNode]

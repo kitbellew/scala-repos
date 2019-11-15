@@ -67,7 +67,7 @@ with AbstractTestConfigurationProducer {
 
   override def createConfigurationByLocation(
       location: Location[_ <: PsiElement])
-    : Option[(PsiElement, RunnerAndConfigurationSettings)] = {
+      : Option[(PsiElement, RunnerAndConfigurationSettings)] = {
     val element = location.getPsiElement
     if (element == null) return None
 

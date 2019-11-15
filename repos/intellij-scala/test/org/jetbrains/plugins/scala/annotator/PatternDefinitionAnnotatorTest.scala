@@ -60,7 +60,7 @@ class PatternDefinitionAnnotatorTest extends SimpleTestCase {
   }
 
   def messages(@Language(value = "Scala", prefix = Header) code: String)
-    : List[Message] = {
+      : List[Message] = {
     val definition = (Header +
       code).parse.depthFirst.findByType(classOf[ScPatternDefinition]).get
 

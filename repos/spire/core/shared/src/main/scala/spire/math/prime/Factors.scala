@@ -107,7 +107,7 @@ case class Factors(factors: Map[SafeLong, Int], sign: Sign)
     lhs * Factors(rhs)
 
   private[prime] def qm(rhs: Factors)
-    : (Int, Map[SafeLong, Int], Map[SafeLong, Int], Map[SafeLong, Int]) = {
+      : (Int, Map[SafeLong, Int], Map[SafeLong, Int], Map[SafeLong, Int]) = {
     val sign = (lhs.sign * rhs.sign).toInt
     val (nn, dd) =
       (lhs.factors - rhs.factors).filter(_._2 != 0).partition(_._2 > 0)

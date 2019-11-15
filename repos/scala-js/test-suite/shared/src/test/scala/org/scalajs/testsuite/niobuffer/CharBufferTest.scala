@@ -55,12 +55,12 @@ class WrappedCharBufferTest extends CharBufferTest {
 
 class WrappedCharReadOnlyBufferTest extends CharBufferTest {
   val factory: CharBufferFactory = new WrappedCharBufferFactory
-  with BufferFactory.ReadOnlyBufferFactory
+    with BufferFactory.ReadOnlyBufferFactory
 }
 
 class AllocCharSlicedBufferTest extends CharBufferTest {
   val factory: CharBufferFactory = new AllocCharBufferFactory
-  with BufferFactory.SlicedBufferFactory
+    with BufferFactory.SlicedBufferFactory
 }
 
 class CharBufferWrappingACharSequenceTest extends CharBufferTest {
@@ -178,7 +178,7 @@ abstract class ReadOnlyCharViewOfByteBufferTest(
     extends CharBufferTest {
   val factory: CharBufferFactory =
     new ByteBufferCharViewFactory(byteBufferFactory, order)
-    with BufferFactory.ReadOnlyBufferFactory
+      with BufferFactory.ReadOnlyBufferFactory
 }
 
 class ReadOnlyCharViewOfAllocByteBufferBigEndianTest

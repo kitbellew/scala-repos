@@ -433,7 +433,7 @@ abstract class SymbolTable
     * Adds the `sm` String interpolator to a [[scala.StringContext]].
     */
   implicit val StringContextStripMarginOps
-    : StringContext => StringContextStripMarginOps =
+      : StringContext => StringContextStripMarginOps =
     util.StringContextStripMarginOps
 }
 

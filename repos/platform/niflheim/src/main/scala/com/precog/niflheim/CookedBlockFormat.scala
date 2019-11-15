@@ -48,7 +48,7 @@ case class CookedBlockMetadata(
 
 trait CookedBlockFormat {
   def readCookedBlock(channel: ReadableByteChannel)
-    : Validation[IOException, CookedBlockMetadata]
+      : Validation[IOException, CookedBlockMetadata]
   def writeCookedBlock(
       channel: WritableByteChannel,
       metadata: CookedBlockMetadata): Validation[IOException, PrecogUnit]
@@ -97,7 +97,7 @@ object V1CookedBlockFormat extends CookedBlockFormat with Chunker {
   }
 
   def readCookedBlock(channel: ReadableByteChannel)
-    : Validation[IOException, CookedBlockMetadata] = {
+      : Validation[IOException, CookedBlockMetadata] = {
     read(channel) map { buffer =>
       val blockid = buffer.getLong()
       val length = buffer.getInt()
@@ -126,7 +126,7 @@ case class VersionedCookedBlockFormat(formats: Map[Int, CookedBlockFormat])
   }
 
   def readCookedBlock(channel: ReadableByteChannel)
-    : Validation[IOException, CookedBlockMetadata] = {
+      : Validation[IOException, CookedBlockMetadata] = {
     readVersion(channel) flatMap { version =>
       formats get version map { format =>
         format.readCookedBlock(channel)

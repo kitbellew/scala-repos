@@ -651,7 +651,7 @@ class ExportsTest {
 
   @Test
   def exports_for_classes_with_qualified_name_SJSDefinedExportedClass()
-    : Unit = {
+      : Unit = {
     val constr = js.Dynamic.global.qualified.testclass.SJSDefinedExportedClass
     assertJSNotUndefined(constr)
     assertEquals("function", js.typeOf(constr))

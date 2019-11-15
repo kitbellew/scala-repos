@@ -87,7 +87,7 @@ trait RequestBuilding extends TransformerPipelineSupport {
     _.mapHeaders(_ ++ (first +: more))
 
   def mapHeaders(f: immutable.Seq[HttpHeader] ⇒ immutable.Seq[HttpHeader])
-    : RequestTransformer = _.mapHeaders(f)
+      : RequestTransformer = _.mapHeaders(f)
 
   def removeHeader(headerName: String): RequestTransformer =
     _ mapHeaders (_ filterNot (_.name equalsIgnoreCase headerName))

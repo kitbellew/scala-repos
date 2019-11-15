@@ -182,7 +182,7 @@ private[scalding] object InternalService {
       def recurse(
           p: Producer[Scalding, Any],
           cummulativeFn: Option[(Any) => TraversableOnce[Any]])
-        : Option[(Any) => TraversableOnce[Any]] =
+          : Option[(Any) => TraversableOnce[Any]] =
         p match {
           case ValueFlatMappedProducer(prod, fn) =>
             cummulativeFn match {

@@ -54,7 +54,7 @@ object TypeConstruction {
   def getParts(
       scType: ScType,
       buffer: ArrayBuffer[(IntermediateNode, Option[String])])
-    : IntermediateNode = {
+      : IntermediateNode = {
     scType match {
       case p @ ScParameterizedType(des, args) =>
         val typeConstruction: IntermediateNode = TypeConstruction(

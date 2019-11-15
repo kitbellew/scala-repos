@@ -36,7 +36,7 @@ import org.quartz.CronExpression
 
 import scalaz._
 
-trait Scheduler[M[+ _]] {
+trait Scheduler[M[+_]] {
   def enabled: Boolean
 
   def addTask(
@@ -51,7 +51,7 @@ trait Scheduler[M[+ _]] {
   def deleteTask(id: UUID): EitherT[M, String, PrecogUnit]
 
   def statusForTask(id: UUID, limit: Option[Int])
-    : EitherT[M, String, Option[(ScheduledTask, Seq[ScheduledRunReport])]]
+      : EitherT[M, String, Option[(ScheduledTask, Seq[ScheduledRunReport])]]
 }
 
 class ActorScheduler(scheduler: ActorRef, timeout: Timeout)
@@ -89,10 +89,10 @@ class ActorScheduler(scheduler: ActorRef, timeout: Timeout)
 }
 
 object NoopScheduler {
-  def apply[M[+ _]: Monad] = new NoopScheduler[M]
+  def apply[M[+_]: Monad] = new NoopScheduler[M]
 }
 
-class NoopScheduler[M[+ _]](implicit M: Monad[M]) extends Scheduler[M] {
+class NoopScheduler[M[+_]](implicit M: Monad[M]) extends Scheduler[M] {
   val enabled = false
 
   def addTask(

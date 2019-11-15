@@ -51,14 +51,14 @@ trait Unzip[F[_]] { self =>
   }
 
   def unzip6[A, B, C, D, E, G](x: F[(A, (B, (C, (D, (E, G)))))])
-    : (F[A], F[B], F[C], F[D], F[E], F[G]) = {
+      : (F[A], F[B], F[C], F[D], F[E], F[G]) = {
     val (a, b, c, d, eg) = unzip5(x)
     val (e, g) = unzip(eg)
     (a, b, c, d, e, g)
   }
 
   def unzip7[A, B, C, D, E, G, H](x: F[(A, (B, (C, (D, (E, (G, (H)))))))])
-    : (F[A], F[B], F[C], F[D], F[E], F[G], F[H]) = {
+      : (F[A], F[B], F[C], F[D], F[E], F[G], F[H]) = {
     val (a, b, c, d, e, gh) = unzip6(x)
     val (g, h) = unzip(gh)
     (a, b, c, d, e, g, h)

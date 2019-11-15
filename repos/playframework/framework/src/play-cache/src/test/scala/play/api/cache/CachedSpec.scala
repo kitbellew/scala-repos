@@ -309,18 +309,18 @@ class CachedSpec extends PlaySpecification {
   }
 }
 
-class SomeComponent @Inject()(@NamedCache("custom") cache: CacheApi) {
+class SomeComponent @Inject() (@NamedCache("custom") cache: CacheApi) {
   def get(key: String) = cache.get[String](key)
   def set(key: String, value: String) = cache.set(key, value)
 }
 
-class CachedController @Inject()(cached: Cached) {
+class CachedController @Inject() (cached: Cached) {
   val invoked = new AtomicInteger()
   val action =
     cached(_ => "foo")(Action(Results.Ok("" + invoked.incrementAndGet())))
 }
 
-class NamedCachedController @Inject()(
+class NamedCachedController @Inject() (
     @NamedCache("custom") val cache: CacheApi,
     @NamedCache("custom") val cached: Cached) {
   val invoked = new AtomicInteger()

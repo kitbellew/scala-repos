@@ -19,7 +19,7 @@ object AgeRange {
       implicit intBinder: QueryStringBindable[Int]) =
     new QueryStringBindable[AgeRange] {
       override def bind(key: String, params: Map[String, Seq[String]])
-        : Option[Either[String, AgeRange]] = {
+          : Option[Either[String, AgeRange]] = {
         for {
           from <- intBinder.bind("from", params)
           to <- intBinder.bind("to", params)

@@ -39,45 +39,44 @@ final class JsonView(
       playerInfoJson <- playerInfoExt ?? { pie =>
         playerInfo(pie).map(_.some)
       }
-    } yield
-      Json
-        .obj(
-          "id" -> tour.id,
-          "createdBy" -> tour.createdBy,
-          "system" -> tour.system.toString.toLowerCase,
-          "fullName" -> tour.fullName,
-          "greatPlayer" -> GreatPlayer
-            .wikiUrl(tour.name)
-            .map { url =>
-              Json.obj("name" -> tour.name, "url" -> url)
-            },
-          "nbPlayers" -> tour.nbPlayers,
-          "minutes" -> tour.minutes,
-          "clock" -> clockJson(tour.clock),
-          "position" -> tour.position.some
-            .filterNot(_.initial)
-            .map(positionJson),
-          "private" -> tour.`private`.option(true),
-          "variant" -> tour.variant.key,
-          "isStarted" -> tour.isStarted,
-          "isFinished" -> tour.isFinished,
-          "isRecentlyFinished" -> tour.isRecentlyFinished.option(true),
-          "schedule" -> tour.schedule.map(scheduleJson),
-          "secondsToFinish" -> tour.isStarted.option(tour.secondsToFinish),
-          "secondsToStart" -> tour.isCreated.option(tour.secondsToStart),
-          "startsAt" -> tour.isCreated.option(
-            ISODateTimeFormat.dateTime.print(tour.startsAt)),
-          "pairings" -> data.pairings,
-          "standing" -> stand,
-          "me" -> myInfo.map(myInfoJson),
-          "featured" -> data.featured,
-          "podium" -> data.podium,
-          "playerInfo" -> playerInfoJson,
-          "quote" -> tour.isCreated.option(lila.quote.Quote.one(tour.id)),
-          "spotlight" -> tour.spotlight,
-          "socketVersion" -> socketVersion
-        )
-        .noNull
+    } yield Json
+      .obj(
+        "id" -> tour.id,
+        "createdBy" -> tour.createdBy,
+        "system" -> tour.system.toString.toLowerCase,
+        "fullName" -> tour.fullName,
+        "greatPlayer" -> GreatPlayer
+          .wikiUrl(tour.name)
+          .map { url =>
+            Json.obj("name" -> tour.name, "url" -> url)
+          },
+        "nbPlayers" -> tour.nbPlayers,
+        "minutes" -> tour.minutes,
+        "clock" -> clockJson(tour.clock),
+        "position" -> tour.position.some
+          .filterNot(_.initial)
+          .map(positionJson),
+        "private" -> tour.`private`.option(true),
+        "variant" -> tour.variant.key,
+        "isStarted" -> tour.isStarted,
+        "isFinished" -> tour.isFinished,
+        "isRecentlyFinished" -> tour.isRecentlyFinished.option(true),
+        "schedule" -> tour.schedule.map(scheduleJson),
+        "secondsToFinish" -> tour.isStarted.option(tour.secondsToFinish),
+        "secondsToStart" -> tour.isCreated.option(tour.secondsToStart),
+        "startsAt" -> tour.isCreated.option(
+          ISODateTimeFormat.dateTime.print(tour.startsAt)),
+        "pairings" -> data.pairings,
+        "standing" -> stand,
+        "me" -> myInfo.map(myInfoJson),
+        "featured" -> data.featured,
+        "podium" -> data.podium,
+        "playerInfo" -> playerInfoJson,
+        "quote" -> tour.isCreated.option(lila.quote.Quote.one(tour.id)),
+        "spotlight" -> tour.spotlight,
+        "socketVersion" -> socketVersion
+      )
+      .noNull
 
   def standing(tour: Tournament, page: Int): Fu[JsObject] =
     if (page == 1) firstPageCache(tour.id)
@@ -95,42 +94,39 @@ final class JsonView(
       sheet = info.tour.system.scoringSystem
         .sheet(info.tour, info.user.id, pairings)
       tpr <- performance(info.tour, info.player, pairings)
-    } yield
-      info match {
-        case PlayerInfoExt(tour, user, player, povs) =>
-          Json.obj(
-            "player" -> Json
+    } yield info match {
+      case PlayerInfoExt(tour, user, player, povs) =>
+        Json.obj(
+          "player" -> Json
+            .obj(
+              "id" -> user.id,
+              "name" -> user.username,
+              "title" -> user.title,
+              "rank" -> ranking.get(user.id).map(1 +),
+              "rating" -> player.rating,
+              "provisional" -> player.provisional.option(true),
+              "withdraw" -> player.withdraw.option(true),
+              "score" -> player.score,
+              "ratingDiff" -> player.ratingDiff,
+              "fire" -> player.fire,
+              "nb" -> sheetNbs(user.id, sheet, pairings),
+              "performance" -> tpr
+            )
+            .noNull,
+          "pairings" -> povs.map { pov =>
+            Json
               .obj(
-                "id" -> user.id,
-                "name" -> user.username,
-                "title" -> user.title,
-                "rank" -> ranking.get(user.id).map(1 +),
-                "rating" -> player.rating,
-                "provisional" -> player.provisional.option(true),
-                "withdraw" -> player.withdraw.option(true),
-                "score" -> player.score,
-                "ratingDiff" -> player.ratingDiff,
-                "fire" -> player.fire,
-                "nb" -> sheetNbs(user.id, sheet, pairings),
-                "performance" -> tpr
+                "id" -> pov.gameId,
+                "color" -> pov.color.name,
+                "op" -> gameUserJson(pov.opponent.userId, pov.opponent.rating),
+                "win" -> pov.win,
+                "status" -> pov.game.status.id,
+                "berserk" -> pov.player.berserk.option(true)
               )
-              .noNull,
-            "pairings" -> povs.map { pov =>
-              Json
-                .obj(
-                  "id" -> pov.gameId,
-                  "color" -> pov.color.name,
-                  "op" -> gameUserJson(
-                    pov.opponent.userId,
-                    pov.opponent.rating),
-                  "win" -> pov.win,
-                  "status" -> pov.game.status.id,
-                  "berserk" -> pov.player.berserk.option(true)
-                )
-                .noNull
-            }
-          )
-      }
+              .noNull
+          }
+        )
+    }
 
   private def fetchFeaturedGame(tour: Tournament): Fu[Option[FeaturedGame]] =
     tour.featuredId.ifTrue(tour.isStarted) ?? PairingRepo.byId flatMap {
@@ -181,11 +177,10 @@ final class JsonView(
         }
         .sequenceFu
         .map(_.toMap)
-    } yield
-      Json.obj(
-        "page" -> page,
-        "players" -> rankedPlayers.map(playerJson(sheets, tour))
-      )
+    } yield Json.obj(
+      "page" -> page,
+      "players" -> rankedPlayers.map(playerJson(sheets, tour))
+    )
 
   private val firstPageCache = lila.memo.AsyncCache[String, JsObject](
     (id: String) =>
@@ -201,11 +196,10 @@ final class JsonView(
         tour <- TournamentRepo byId id
         featured <- tour ?? fetchFeaturedGame
         podium <- podiumJson(id)
-      } yield
-        CachableData(
-          JsArray(pairings map pairingJson),
-          featured map featuredJson,
-          podium),
+      } yield CachableData(
+        JsArray(pairings map pairingJson),
+        featured map featuredJson,
+        podium),
     timeToLive = 1 second
   )
 
@@ -305,10 +299,9 @@ final class JsonView(
                 sheet = tour.system.scoringSystem
                   .sheet(tour, player.userId, pairings)
                 tpr <- performance(tour, player, pairings)
-              } yield
-                playerJson(sheet.some, tour, rp) ++ Json.obj(
-                  "nb" -> sheetNbs(player.userId, sheet, pairings),
-                  "performance" -> tpr)
+              } yield playerJson(sheet.some, tour, rp) ++ Json.obj(
+                "nb" -> sheetNbs(player.userId, sheet, pairings),
+                "performance" -> tpr)
           }.sequenceFu
         } map { l =>
           JsArray(l).some
@@ -329,7 +322,8 @@ final class JsonView(
              case Some(w) if w == p.user1 => 2
              case Some(w)                 => 3
              case _                       => 1
-           } else 0)
+           }
+         else 0)
     )
 }
 

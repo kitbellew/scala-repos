@@ -199,7 +199,8 @@ trait InputIncludes {
     * @return $SFX $KYCB
     */
   implicit def jfxKeyCombination2sfx(kc: jfxsi.KeyCombination): KeyCombination =
-    if (kc != null) new KeyCombination(kc) {} else null
+    if (kc != null) new KeyCombination(kc) {}
+    else null
 
   /**
     * $START$KCMV.html $KCMV$END
@@ -248,7 +249,8 @@ trait InputIncludes {
     */
   implicit def jfxKeyCombinationModifier2sfx(
       m: jfxsi.KeyCombination.Modifier): Modifier =
-    if (m != null) new KeyCombination.Modifier(m) {} else null
+    if (m != null) new KeyCombination.Modifier(m) {}
+    else null
 
   /**
     * $START$KEEV.html $KEEV$END
@@ -325,7 +327,7 @@ trait InputIncludes {
     */
   implicit def jfxScrollEventHorizontalTextScrollUnits2sfx(
       h: jfxsi.ScrollEvent.HorizontalTextScrollUnits)
-    : HorizontalTextScrollUnits =
+      : HorizontalTextScrollUnits =
     ScrollEvent.HorizontalTextScrollUnits.jfxEnum2sfx(h)
 
   /**

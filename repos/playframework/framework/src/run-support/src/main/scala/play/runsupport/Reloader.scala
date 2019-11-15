@@ -77,7 +77,7 @@ object Reloader {
       defaultHttpPort: Int,
       defaultHttpAddress: String,
       devSettings: Seq[(String, String)])
-    : (Seq[(String, String)], Option[Int], Option[Int], String) = {
+      : (Seq[(String, String)], Option[Int], Option[Int], String) = {
     val (propertyArgs, otherArgs) = args.partition(_.startsWith("-D"))
 
     val properties =

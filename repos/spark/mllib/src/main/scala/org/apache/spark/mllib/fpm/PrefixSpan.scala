@@ -588,7 +588,7 @@ object PrefixSpan extends Logging {
     * @tparam Item item type
     */
   @Since("1.5.0")
-  class FreqSequence[Item] @Since("1.5.0")(
+  class FreqSequence[Item] @Since("1.5.0") (
       @Since("1.5.0") val sequence: Array[Array[Item]],
       @Since("1.5.0") val freq: Long)
       extends Serializable {
@@ -608,6 +608,6 @@ object PrefixSpan extends Logging {
   * @tparam Item item type
   */
 @Since("1.5.0")
-class PrefixSpanModel[Item] @Since("1.5.0")(
+class PrefixSpanModel[Item] @Since("1.5.0") (
     @Since("1.5.0") val freqSequences: RDD[PrefixSpan.FreqSequence[Item]])
     extends Serializable

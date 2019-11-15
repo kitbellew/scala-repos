@@ -23,7 +23,7 @@ trait AbstractTestConfigurationProducer {
   def createConfigurationByElement(
       location: Location[_ <: PsiElement],
       context: ConfigurationContext)
-    : Option[(PsiElement, RunnerAndConfigurationSettings)] = {
+      : Option[(PsiElement, RunnerAndConfigurationSettings)] = {
     if (context.getModule == null) return null
     val scope: GlobalSearchScope =
       GlobalSearchScope.moduleWithDependenciesAndLibrariesScope(
@@ -49,7 +49,7 @@ trait AbstractTestConfigurationProducer {
   }
 
   def createConfigurationByLocation(location: Location[_ <: PsiElement])
-    : Option[(PsiElement, RunnerAndConfigurationSettings)]
+      : Option[(PsiElement, RunnerAndConfigurationSettings)]
 
   def isConfigurationByLocation(
       configuration: RunConfiguration,

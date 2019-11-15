@@ -35,10 +35,10 @@ private[http] trait J2SMapping[J] {
 /** INTERNAL API */
 private[http] object J2SMapping {
   implicit def fromJavaMapping[J](implicit mapping: JavaMapping[J, _])
-    : J2SMapping[J] { type S = mapping.S } = mapping
+      : J2SMapping[J] { type S = mapping.S } = mapping
 
   implicit def fromJavaSeqMapping[J](implicit mapping: J2SMapping[J])
-    : J2SMapping[Seq[J]] { type S = immutable.Seq[mapping.S] } =
+      : J2SMapping[Seq[J]] { type S = immutable.Seq[mapping.S] } =
     new J2SMapping[Seq[J]] {
       type S = immutable.Seq[mapping.S]
       def toScala(javaObject: Seq[J]): S =
@@ -55,7 +55,7 @@ private[http] trait S2JMapping[S] {
 /** INTERNAL API */
 private[http] object S2JMapping {
   implicit def fromScalaMapping[S](implicit mapping: JavaMapping[_, S])
-    : S2JMapping[S] { type J = mapping.J } = mapping
+      : S2JMapping[S] { type J = mapping.J } = mapping
 }
 
 /** INTERNAL API */
@@ -109,7 +109,7 @@ private[http] object JavaMapping {
     }
 
   implicit def iterableMapping[_J, _S](implicit mapping: JavaMapping[_J, _S])
-    : JavaMapping[jl.Iterable[_J], immutable.Seq[_S]] =
+      : JavaMapping[jl.Iterable[_J], immutable.Seq[_S]] =
     new JavaMapping[jl.Iterable[_J], immutable.Seq[_S]] {
       import collection.JavaConverters._
 
@@ -128,7 +128,7 @@ private[http] object JavaMapping {
         scalaObject.asJava
     }
   implicit def option[_J, _S](implicit mapping: JavaMapping[_J, _S])
-    : JavaMapping[Optional[_J], Option[_S]] =
+      : JavaMapping[Optional[_J], Option[_S]] =
     new JavaMapping[Optional[_J], Option[_S]] {
       def toScala(javaObject: Optional[_J]): Option[_S] =
         javaObject.asScala.map(mapping.toScala)
@@ -139,7 +139,7 @@ private[http] object JavaMapping {
   implicit def flowMapping[JIn, SIn, JOut, SOut, M](
       implicit inMapping: JavaMapping[JIn, SIn],
       outMapping: JavaMapping[JOut, SOut])
-    : JavaMapping[javadsl.Flow[JIn, JOut, M], scaladsl.Flow[SIn, SOut, M]] =
+      : JavaMapping[javadsl.Flow[JIn, JOut, M], scaladsl.Flow[SIn, SOut, M]] =
     new JavaMapping[javadsl.Flow[JIn, JOut, M], scaladsl.Flow[SIn, SOut, M]] {
       def toScala(javaObject: javadsl.Flow[JIn, JOut, M]): S =
         scaladsl
@@ -190,7 +190,7 @@ private[http] object JavaMapping {
   def adapterBidiFlow[JIn, SIn, SOut, JOut](
       implicit inMapping: JavaMapping[JIn, SIn],
       outMapping: JavaMapping[JOut, SOut])
-    : scaladsl.BidiFlow[JIn, SIn, SOut, JOut, NotUsed] =
+      : scaladsl.BidiFlow[JIn, SIn, SOut, JOut, NotUsed] =
     scaladsl.BidiFlow.fromFlowsMat(
       javaToScalaAdapterFlow(inMapping),
       scalaToJavaAdapterFlow(outMapping))(scaladsl.Keep.none)

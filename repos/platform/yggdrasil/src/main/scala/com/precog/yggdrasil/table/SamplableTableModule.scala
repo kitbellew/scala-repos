@@ -35,7 +35,7 @@ import scalaz._
 import scalaz.std.list._
 import scalaz.syntax.monad._
 
-trait SamplableTableModule[M[+ _]] extends TableModule[M] {
+trait SamplableTableModule[M[+_]] extends TableModule[M] {
   import TableModule._
 
   type Table <: SamplableTable
@@ -46,7 +46,7 @@ trait SamplableTableModule[M[+ _]] extends TableModule[M] {
   }
 }
 
-trait SamplableColumnarTableModule[M[+ _]] extends SamplableTableModule[M] {
+trait SamplableColumnarTableModule[M[+_]] extends SamplableTableModule[M] {
   self: ColumnarTableModule[M] with SliceTransforms[M] =>
 
   import trans._

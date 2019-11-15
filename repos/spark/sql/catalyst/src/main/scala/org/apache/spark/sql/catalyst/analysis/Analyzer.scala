@@ -1165,7 +1165,7 @@ class Analyzer(
       *          seq of non-window expressions)
       */
     private def extract(expressions: Seq[NamedExpression])
-      : (Seq[NamedExpression], Seq[NamedExpression]) = {
+        : (Seq[NamedExpression], Seq[NamedExpression]) = {
       // First, we partition the input expressions to two part. For the first part,
       // every expression in it contain at least one WindowExpression.
       // Expressions in the second part do not have any WindowExpression.

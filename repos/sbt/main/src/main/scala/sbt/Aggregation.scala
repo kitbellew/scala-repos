@@ -67,7 +67,7 @@ final object Aggregation {
       ts: Values[Task[T]],
       extra: DummyTaskMap,
       show: ShowConfig)(implicit display: Show[ScopedKey[_]])
-    : (State, Result[Seq[KeyValue[T]]]) = {
+      : (State, Result[Seq[KeyValue[T]]]) = {
     val complete = timedRun[T](s, ts, extra)
     showRun(complete, show)
     (complete.state, complete.results)
@@ -167,8 +167,9 @@ final object Aggregation {
       inputs: Values[InputTask[I]],
       show: ShowConfig)(
       implicit display: Show[ScopedKey[_]]): Parser[() => State] = {
-    val parsers = for (KeyValue(k, it) <- inputs)
-      yield it.parser(s).map(v => KeyValue(k, v))
+    val parsers =
+      for (KeyValue(k, it) <- inputs)
+        yield it.parser(s).map(v => KeyValue(k, v))
     Command.applyEffect(seq(parsers)) { roots =>
       import EvaluateTask._
       runTasks(s, structure, roots, DummyTaskMap(Nil), show)
@@ -181,7 +182,7 @@ final object Aggregation {
     // to make the call sites clearer
     def separate[L](in: Seq[KeyValue[_]])(
         f: KeyValue[_] => Either[KeyValue[L], KeyValue[_]])
-      : (Seq[KeyValue[L]], Seq[KeyValue[_]]) =
+        : (Seq[KeyValue[L]], Seq[KeyValue[_]]) =
       Util.separate(in)(f)
 
     val kvs = keys.toList

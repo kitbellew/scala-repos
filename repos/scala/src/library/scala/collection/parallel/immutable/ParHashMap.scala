@@ -157,7 +157,7 @@ object ParHashMap extends ParMapFactory[ParHashMap] {
     HashMapCombiner[K, V]
 
   implicit def canBuildFrom[K, V]
-    : CanCombineFrom[Coll, (K, V), ParHashMap[K, V]] = {
+      : CanCombineFrom[Coll, (K, V), ParHashMap[K, V]] = {
     new CanCombineFromMap[K, V]
   }
 

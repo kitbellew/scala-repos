@@ -179,7 +179,7 @@ class SubFlow[-In, +Out, +Mat](
     */
   def statefulMapConcat[T](
       f: function.Creator[function.Function[Out, java.lang.Iterable[T]]])
-    : SubFlow[In, T, Mat] =
+      : SubFlow[In, T, Mat] =
     new SubFlow(delegate.statefulMapConcat { () ⇒
       val fun = f.create()
       elem ⇒ Util.immutableSeq(fun(elem))
@@ -443,7 +443,7 @@ class SubFlow[-In, +Out, +Mat](
     * '''Cancels when''' downstream cancels
     */
   def reduce(f: function.Function2[Out, Out, Out @uncheckedVariance])
-    : SubFlow[In, Out, Mat] =
+      : SubFlow[In, Out, Mat] =
     new SubFlow(delegate.reduce(f.apply))
 
   /**
@@ -524,7 +524,7 @@ class SubFlow[-In, +Out, +Mat](
     * IllegalArgumentException is thrown.
     */
   def groupedWithin(n: Int, d: FiniteDuration)
-    : SubFlow[In, java.util.List[Out @uncheckedVariance], Mat] =
+      : SubFlow[In, java.util.List[Out @uncheckedVariance], Mat] =
     new SubFlow(delegate.groupedWithin(n, d).map(_.asJava)) // TODO optimize to one step
 
   /**
@@ -659,7 +659,7 @@ class SubFlow[-In, +Out, +Mat](
     */
   def recoverWith[T >: Out](
       pf: PartialFunction[Throwable, _ <: Graph[SourceShape[T], NotUsed]])
-    : SubFlow[In, T, Mat @uncheckedVariance] =
+      : SubFlow[In, T, Mat @uncheckedVariance] =
     new SubFlow(delegate.recoverWith(pf))
 
   /**
@@ -849,7 +849,7 @@ class SubFlow[-In, +Out, +Mat](
     *                    state.
     */
   def expand[U](extrapolate: function.Function[Out, java.util.Iterator[U]])
-    : SubFlow[In, U, Mat] =
+      : SubFlow[In, U, Mat] =
     new SubFlow(delegate.expand(in ⇒ extrapolate(in).asScala))
 
   /**
@@ -936,7 +936,7 @@ class SubFlow[-In, +Out, +Mat](
     */
   def flatMapConcat[T, M](
       f: function.Function[Out, _ <: Graph[SourceShape[T], M]])
-    : SubFlow[In, T, Mat] =
+      : SubFlow[In, T, Mat] =
     new SubFlow(delegate.flatMapConcat(x ⇒ f(x)))
 
   /**
@@ -955,7 +955,7 @@ class SubFlow[-In, +Out, +Mat](
   def flatMapMerge[T, M](
       breadth: Int,
       f: function.Function[Out, _ <: Graph[SourceShape[T], M]])
-    : SubFlow[In, T, Mat] =
+      : SubFlow[In, T, Mat] =
     new SubFlow(delegate.flatMapMerge(breadth, o ⇒ f(o)))
 
   /**
@@ -1091,7 +1091,7 @@ class SubFlow[-In, +Out, +Mat](
     * '''Cancels when''' downstream cancels
     */
   def zip[T](source: Graph[SourceShape[T], _])
-    : SubFlow[In, Out @uncheckedVariance Pair T, Mat] =
+      : SubFlow[In, Out @uncheckedVariance Pair T, Mat] =
     new SubFlow(delegate.zip(source))
 
   /**

@@ -142,7 +142,7 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
       ins: TypedPipe[(Timestamp, (K1, V))],
       capturedBatcher: Batcher,
       commutativity: Commutativity)
-    : TypedPipe[(LTuple2[K1, BatchID], (Timestamp, V))] = {
+      : TypedPipe[(LTuple2[K1, BatchID], (Timestamp, V))] = {
     implicit val timeValueSemigroup: Semigroup[(Timestamp, V)] =
       IteratorSums.optimizedPairSemigroup[Timestamp, V](1000)
 
@@ -220,7 +220,7 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
     val capturedBatcher = batcher //avoid a closure on the whole store
 
     def prepareDeltas(ins: TypedPipe[(Timestamp, (K, V))])
-      : TypedPipe[(K, (BatchID, (Timestamp, V)))] =
+        : TypedPipe[(K, (BatchID, (Timestamp, V)))] =
       sumByBatches(ins, capturedBatcher, commutativity).map {
         case (LTuple2(k, batch), (ts, v)) => (k, (batch, (ts, v)))
       }
@@ -268,7 +268,7 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
     // This builds the format we write to disk, which is the total sum
     def toLastFormat(res: TypedPipe[
       (K, (BatchID, (Option[Option[(Timestamp, V)]], Option[(Timestamp, V)])))])
-      : TypedPipe[(BatchID, (K, V))] =
+        : TypedPipe[(BatchID, (K, V))] =
       res.flatMap {
         case (k, (batchid, (prev, v))) =>
           val totalSum =
@@ -279,7 +279,7 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
     // This builds the format we send to consumer nodes
     def toOutputFormat(res: TypedPipe[
       (K, (BatchID, (Option[Option[(Timestamp, V)]], Option[(Timestamp, V)])))])
-      : TypedPipe[(Timestamp, (K, (Option[V], V)))] =
+        : TypedPipe[(Timestamp, (K, (Option[V], V)))] =
       res.flatMap {
         case (k, (batchid, (optopt, opt))) =>
           opt.map {
@@ -323,7 +323,7 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
     * This is the monadic version of readLast, returns the BatchID actually on disk
     */
   final def planReadLast
-    : PlannerOutput[(BatchID, FlowProducer[TypedPipe[(K, V)]])] =
+      : PlannerOutput[(BatchID, FlowProducer[TypedPipe[(K, V)]])] =
     for {
       batches <- timeSpanToBatches
       tsMode <- getState[FactoryInput]

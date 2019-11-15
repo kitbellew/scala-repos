@@ -601,7 +601,8 @@ object ScalaPsiUtil {
                  ScalaPsiElementFactory.createExpressionFromText(
                    "{val x: Nothing = null; x}",
                    call.getManager)) //we can't to not add something => add Nothing expression
-           } else Seq.empty)
+           }
+         else Seq.empty)
     val (expr, exprTp, typeArgs: Seq[ScTypeElement]) =
       call.getEffectiveInvokedExpr match {
         case gen: ScGenericCall =>
@@ -856,7 +857,7 @@ object ScalaPsiUtil {
   }
 
   val collectImplicitObjectsCache
-    : ConcurrentMap[(ScType, Project, GlobalSearchScope), Seq[ScType]] =
+      : ConcurrentMap[(ScType, Project, GlobalSearchScope), Seq[ScType]] =
     ContainerUtil
       .newConcurrentMap[(ScType, Project, GlobalSearchScope), Seq[ScType]]()
 
@@ -1419,7 +1420,7 @@ object ScalaPsiUtil {
   def superTypeMembersAndSubstitutors(
       element: PsiNamedElement,
       withSelfType: Boolean = false)
-    : Seq[TypeDefinitionMembers.TypeNodes.Node] = {
+      : Seq[TypeDefinitionMembers.TypeNodes.Node] = {
     val clazz: ScTemplateDefinition = nameContext(element) match {
       case e @ (_: ScTypeAlias | _: ScTrait | _: ScClass)
           if e.getParent.isInstanceOf[ScTemplateBody] =>

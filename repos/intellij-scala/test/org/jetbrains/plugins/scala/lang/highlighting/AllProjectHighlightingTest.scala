@@ -43,7 +43,7 @@ class AllProjectHighlightingTest
     extends ExternalSystemImportingTestCase
     with SbtStructureSetup {
   override protected def getCurrentExternalProjectSettings
-    : ExternalProjectSettings = {
+      : ExternalProjectSettings = {
     val settings = new SbtProjectSettings
     val internalSdk = JavaAwareProjectJdkTableImpl.getInstanceEx.getInternalJdk
     val sdk =

@@ -43,19 +43,19 @@ sealed trait EitherInstances0 {
     Last.subst(Equal[LeftProjection[A, X]])
 
   implicit def eitherFirstLeftSemigroup[A: Semigroup, X]
-    : Semigroup[LeftProjection[A, X] @@ First] =
+      : Semigroup[LeftProjection[A, X] @@ First] =
     new EitherFirstLeftSemigroup[A, X] {}
 
   implicit def eitherFirstRightSemigroup[X, A: Semigroup]
-    : Semigroup[RightProjection[X, A] @@ First] =
+      : Semigroup[RightProjection[X, A] @@ First] =
     new EitherFirstRightSemigroup[X, A] {}
 
   implicit def eitherLastLeftSemigroup[A: Semigroup, X]
-    : Semigroup[LeftProjection[A, X] @@ Last] =
+      : Semigroup[LeftProjection[A, X] @@ Last] =
     new EitherLastLeftSemigroup[A, X] {}
 
   implicit def eitherLastRightSemigroup[X, A: Semigroup]
-    : Semigroup[RightProjection[X, A] @@ Last] =
+      : Semigroup[RightProjection[X, A] @@ Last] =
     new EitherLastRightSemigroup[X, A] {}
 
   implicit def eitherLeftSemigroup[A, X](
@@ -95,8 +95,10 @@ trait EitherInstances extends EitherInstances0 {
     with MonadError[Either[L, ?], L]
     with BindRec[Either[L, ?]]
     with Cozip[Either[L, ?]] =
-    new Traverse[Either[L, ?]] with MonadError[Either[L, ?], L]
-    with BindRec[Either[L, ?]] with Cozip[Either[L, ?]] {
+    new Traverse[Either[L, ?]]
+      with MonadError[Either[L, ?], L]
+      with BindRec[Either[L, ?]]
+      with Cozip[Either[L, ?]] {
       def bind[A, B](fa: Either[L, A])(f: A => Either[L, B]) = fa match {
         case Left(a)  => Left(a)
         case Right(b) => f(b)
@@ -150,12 +152,12 @@ trait EitherInstances extends EitherInstances0 {
 
   /** [[scala.Either.LeftProjection]] is isomorphic to [[scala.Either]], when the type parameter `E` is partially applied. */
   def FirstLeftProjectionEIso2[E]
-    : λ[α => LeftProjection[E, α] @@ First] <~> Either[E, ?] =
+      : λ[α => LeftProjection[E, α] @@ First] <~> Either[E, ?] =
     FirstLeftProjectionIso2.unlift1[E]
 
   /** [[scala.Either.LeftProjection]] is isomorphic to [[scala.Either]], when the type parameter `E` is partially applied. */
   def LastLeftProjectionEIso2[E]
-    : λ[α => LeftProjection[E, α] @@ Last] <~> Either[E, ?] =
+      : λ[α => LeftProjection[E, α] @@ Last] <~> Either[E, ?] =
     LastLeftProjectionIso2.unlift1[E]
 
   /** [[scala.Either.LeftProjection]] is isomorphic to [[scala.Either]] */
@@ -167,7 +169,7 @@ trait EitherInstances extends EitherInstances0 {
 
   /** [[scala.Either.LeftProjection]] is isomorphic to [[scala.Either]] */
   val FirstLeftProjectionIso2
-    : λ[(α, β) => LeftProjection[α, β] @@ First] <~~> Either =
+      : λ[(α, β) => LeftProjection[α, β] @@ First] <~~> Either =
     new IsoBifunctorTemplate[λ[(α, β) => LeftProjection[α, β] @@ First], Either] {
       def to[A, B](fa: LeftProjection[A, B] @@ First) = Tag.unwrap(fa).e
       def from[A, B](ga: Either[A, B]) = First(ga.left)
@@ -175,7 +177,7 @@ trait EitherInstances extends EitherInstances0 {
 
   /** [[scala.Either.LeftProjection]] is isomorphic to [[scala.Either]] */
   val LastLeftProjectionIso2
-    : λ[(α, β) => LeftProjection[α, β] @@ Last] <~~> Either =
+      : λ[(α, β) => LeftProjection[α, β] @@ Last] <~~> Either =
     new IsoBifunctorTemplate[λ[(α, β) => LeftProjection[α, β] @@ Last], Either] {
       def to[A, B](fa: LeftProjection[A, B] @@ Last) = Tag.unwrap(fa).e
       def from[A, B](ga: Either[A, B]) = Last(ga.left)
@@ -187,12 +189,12 @@ trait EitherInstances extends EitherInstances0 {
 
   /** [[scala.Either.RightProjection]] is isomorphic to [[scala.Either]], when the type parameter `A` is partially applied. */
   def FirstRightProjectionAIso2[A]
-    : λ[α => RightProjection[α, A] @@ First] <~> Either[?, A] =
+      : λ[α => RightProjection[α, A] @@ First] <~> Either[?, A] =
     FirstRightProjectionIso2.unlift2[A]
 
   /** [[scala.Either.RightProjection]] is isomorphic to [[scala.Either]], when the type parameter `A` is partially applied. */
   def LastRightProjectionAIso2[A]
-    : λ[α => RightProjection[α, A] @@ Last] <~> Either[?, A] =
+      : λ[α => RightProjection[α, A] @@ Last] <~> Either[?, A] =
     LastRightProjectionIso2.unlift2[A]
 
   /** [[scala.Either.RightProjection]] is isomorphic to [[scala.Either]] */
@@ -204,7 +206,7 @@ trait EitherInstances extends EitherInstances0 {
 
   /** [[scala.Either.RightProjection]] is isomorphic to [[scala.Either]] */
   val FirstRightProjectionIso2
-    : λ[(α, β) => RightProjection[α, β] @@ First] <~~> Either =
+      : λ[(α, β) => RightProjection[α, β] @@ First] <~~> Either =
     new IsoBifunctorTemplate[
       λ[(α, β) => RightProjection[α, β] @@ First],
       Either] {
@@ -214,7 +216,7 @@ trait EitherInstances extends EitherInstances0 {
 
   /** [[scala.Either.RightProjection]] is isomorphic to [[scala.Either]] */
   val LastRightProjectionIso2
-    : λ[(α, β) => RightProjection[α, β] @@ Last] <~~> Either =
+      : λ[(α, β) => RightProjection[α, β] @@ Last] <~~> Either =
     new IsoBifunctorTemplate[λ[(α, β) => RightProjection[α, β] @@ Last], Either] {
       def to[A, B](fa: RightProjection[A, B] @@ Last) = Tag.unwrap(fa).e
       def from[A, B](ga: Either[A, B]) = Last(ga.right)
@@ -248,12 +250,12 @@ trait EitherInstances extends EitherInstances0 {
     }
 
   implicit def eitherFirstRightLInstance[L]
-    : Monad[λ[α => RightProjection[L, α] @@ First]] =
+      : Monad[λ[α => RightProjection[L, α] @@ First]] =
     Tags.First
       .subst1[Monad, RightProjection[L, ?]](Monad[RightProjection[L, ?]])
 
   implicit def eitherLastRightLInstance[L]
-    : Monad[λ[α => RightProjection[L, α] @@ Last]] =
+      : Monad[λ[α => RightProjection[L, α] @@ Last]] =
     Tags.Last
       .subst1[Monad, RightProjection[L, ?]](Monad[RightProjection[L, ?]])
 
@@ -268,11 +270,11 @@ trait EitherInstances extends EitherInstances0 {
     }
 
   implicit def eitherFirstLeftRInstance[R]
-    : Monad[λ[α => LeftProjection[α, R] @@ First]] =
+      : Monad[λ[α => LeftProjection[α, R] @@ First]] =
     Tags.First.subst1[Monad, LeftProjection[?, R]](Monad[LeftProjection[?, R]])
 
   implicit def eitherLastLeftRInstance[R]
-    : Monad[λ[α => LeftProjection[α, R] @@ Last]] =
+      : Monad[λ[α => LeftProjection[α, R] @@ Last]] =
     Tags.Last.subst1[Monad, LeftProjection[?, R]](Monad[LeftProjection[?, R]])
 
   implicit def eitherOrder[A, B](

@@ -20,7 +20,7 @@ import mesosphere.marathon.{
 
 import scala.concurrent.Future
 
-class TaskKiller @Inject()(
+class TaskKiller @Inject() (
     taskTracker: TaskTracker,
     groupManager: GroupManager,
     service: MarathonSchedulerService,

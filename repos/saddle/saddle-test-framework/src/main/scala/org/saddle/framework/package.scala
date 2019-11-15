@@ -23,11 +23,11 @@ package object framework {
 
   /** Yield an arbitrary Series of 100 values. */
   implicit def arbSeries[X: Gen: Ordering: ClassManifest, S: ClassManifest: Gen]
-    : Arbitrary[Series[X, S]] = arbSeriesOfN[X, S](100)
+      : Arbitrary[Series[X, S]] = arbSeriesOfN[X, S](100)
 
   /** Yield an arbitrary 10 x 100 Frame. */
   implicit def arbFrame[X: Gen: Ordering: ClassManifest, S: ClassManifest: Gen]
-    : Arbitrary[Frame[X, Int, S]] = arbFrameOfN[X, S](10, 100)
+      : Arbitrary[Frame[X, Int, S]] = arbFrameOfN[X, S](10, 100)
 
   /** A generator for doubles with bounds at .5 the size of the min/max valyes. */
   def boundedDouble: Gen[Double] = Gen.choose(-1000000d, 1000000d)

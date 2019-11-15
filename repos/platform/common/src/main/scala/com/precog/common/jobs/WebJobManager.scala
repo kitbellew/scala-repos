@@ -56,7 +56,7 @@ import scalaz.syntax.std.option._
 
 object WebJobManager {
   def apply(config: Configuration)(implicit ec: ExecutionContext)
-    : Validation[NEL[String], JobManager[Response]] = {
+      : Validation[NEL[String], JobManager[Response]] = {
     (config
       .get[String]("service.protocol")
       .toSuccess(NEL("Configuraiton property service.protocol is required.")) |@| config

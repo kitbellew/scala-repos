@@ -289,7 +289,7 @@ class GroupMetadataManager(
       generationId: Int,
       offsetMetadata: immutable.Map[TopicPartition, OffsetAndMetadata],
       responseCallback: immutable.Map[TopicPartition, Short] => Unit)
-    : DelayedStore = {
+      : DelayedStore = {
     // first filter out partitions with offset metadata size exceeding limit
     val filteredOffsetMetadata = offsetMetadata.filter {
       case (topicPartition, offsetAndMetadata) =>
@@ -386,7 +386,7 @@ class GroupMetadataManager(
     * returns the current offset or it begins to sync the cache from the log (and returns an error code).
     */
   def getOffsets(group: String, topicPartitions: Seq[TopicPartition])
-    : Map[TopicPartition, OffsetFetchResponse.PartitionData] = {
+      : Map[TopicPartition, OffsetFetchResponse.PartitionData] = {
     trace("Getting offsets %s for group %s.".format(topicPartitions, group))
 
     if (isGroupLocal(group)) {

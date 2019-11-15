@@ -51,7 +51,7 @@ import scalaz.syntax.std.boolean._
 
 import TableModule._
 
-trait StatsLibModule[M[+ _]]
+trait StatsLibModule[M[+_]]
     extends ColumnarTableLibModule[M]
     with ReductionLibModule[M] {
   //import library._

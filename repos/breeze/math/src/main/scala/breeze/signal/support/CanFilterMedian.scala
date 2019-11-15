@@ -24,7 +24,7 @@ object CanFilterMedian {
   //Int, Long and Float will calculate in Double (see algorithm, needs infinitesimal small numbers for ordering)
   @expand
   implicit def dvFilterMedianT[@expand.args(Int, Long, Double, Float) T]
-    : CanFilterMedian[T] =
+      : CanFilterMedian[T] =
     new CanFilterMedian[T] {
       def apply(
           data: DenseVector[T],

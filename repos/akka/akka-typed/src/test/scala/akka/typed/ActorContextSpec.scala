@@ -233,7 +233,7 @@ class ActorContextSpec
           monitor: ActorRef[Event],
           self: ActorRef[Event],
           inert: Boolean = false)
-        : StepWise.Steps[Event, (ActorRef[Command], ActorRef[Command])] = {
+          : StepWise.Steps[Event, (ActorRef[Command], ActorRef[Command])] = {
         val s = startWith
           .keep { subj ⇒
             subj ! MkChild(name, monitor, self)

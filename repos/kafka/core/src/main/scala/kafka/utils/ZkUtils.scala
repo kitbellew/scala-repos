@@ -712,7 +712,7 @@ class ZkUtils(
   def getPartitionLeaderAndIsrForTopics(
       zkClient: ZkClient,
       topicAndPartitions: Set[TopicAndPartition])
-    : mutable.Map[TopicAndPartition, LeaderIsrAndControllerEpoch] = {
+      : mutable.Map[TopicAndPartition, LeaderIsrAndControllerEpoch] = {
     val ret =
       new mutable.HashMap[TopicAndPartition, LeaderIsrAndControllerEpoch]
     for (topicAndPartition <- topicAndPartitions) {
@@ -757,7 +757,7 @@ class ZkUtils(
   }
 
   def getPartitionAssignmentForTopics(topics: Seq[String])
-    : mutable.Map[String, collection.Map[Int, Seq[Int]]] = {
+      : mutable.Map[String, collection.Map[Int, Seq[Int]]] = {
     val ret = new mutable.HashMap[String, Map[Int, Seq[Int]]]()
     topics.foreach { topic =>
       val jsonPartitionMapOpt = readDataMaybeNull(getTopicPath(topic))._1
@@ -922,7 +922,7 @@ class ZkUtils(
   }
 
   def getConsumersPerTopic(group: String, excludeInternalTopics: Boolean)
-    : mutable.Map[String, List[ConsumerThreadId]] = {
+      : mutable.Map[String, List[ConsumerThreadId]] = {
     val dirs = new ZKGroupDirs(group)
     val consumers = getChildrenParentMayNotExist(dirs.consumerRegistryDir)
     val consumersPerTopicMap =

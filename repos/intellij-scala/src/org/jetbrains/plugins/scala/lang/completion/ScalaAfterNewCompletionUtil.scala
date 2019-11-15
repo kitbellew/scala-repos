@@ -82,7 +82,7 @@ object ScalaAfterNewCompletionUtil {
       expectedTypes: Array[ScType],
       clazz: PsiClass,
       renamesMap: mutable.HashMap[String, (String, PsiNamedElement)])
-    : LookupElement = {
+      : LookupElement = {
     val undefines: Seq[ScUndefinedType] = clazz.getTypeParameters.map(ptp =>
       new ScUndefinedType(new ScTypeParameterType(ptp, ScSubstitutor.empty)))
     val predefinedType =
@@ -185,7 +185,7 @@ object ScalaAfterNewCompletionUtil {
           ScSubstitutor) => LookupElementRenderer[LookupElement],
       insertHandler: InsertHandler[LookupElement],
       renamesMap: mutable.HashMap[String, (String, PsiNamedElement)])
-    : ScalaLookupItem = {
+      : ScalaLookupItem = {
     val name: String = psiClass.name
     val isRenamed = renamesMap
       .filter {
@@ -236,7 +236,7 @@ object ScalaAfterNewCompletionUtil {
           ScSubstitutor) => LookupElementRenderer[LookupElement],
       insertHandler: InsertHandler[LookupElement],
       renamesMap: mutable.HashMap[String, (String, PsiNamedElement)])
-    : ScalaLookupItem = {
+      : ScalaLookupItem = {
     ScType.extractClassType(tp, Some(place.getProject)) match {
       case Some((clazz: PsiClass, subst: ScSubstitutor)) =>
         //filter base types (it's important for scala 2.9)

@@ -350,7 +350,7 @@ object FSpec extends Specification with ExecutionSpecification {
     }
 
     def orDriver()
-      : (Promise[Int], Promise[String], F.Promise[F.Either[Int, String]]) = {
+        : (Promise[Int], Promise[String], F.Promise[F.Either[Int, String]]) = {
       val pl = Promise[Int]()
       val pr = Promise[String]()
       val por = F.Promise

@@ -135,7 +135,7 @@ object StateTTests extends StateTTestsInstances {
     stateTEq[Eval, S, A]
 
   implicit def stateArbitrary[S: Arbitrary, A: Arbitrary]
-    : Arbitrary[State[S, A]] =
+      : Arbitrary[State[S, A]] =
     stateTArbitrary[Eval, S, A]
 
   val add1: State[Int, Int] = State(n => (n + 1, n))

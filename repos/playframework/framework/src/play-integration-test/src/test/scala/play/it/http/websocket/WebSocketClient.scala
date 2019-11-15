@@ -202,7 +202,7 @@ object WebSocketClient {
 
     def webSocketProtocol(
         clientConnection: Flow[WebSocketFrame, WebSocketFrame, _])
-      : Flow[ExtendedMessage, ExtendedMessage, _] = {
+        : Flow[ExtendedMessage, ExtendedMessage, _] = {
       val clientInitiatedClose = new AtomicBoolean
 
       val captureClientClose = Flow[WebSocketFrame].transform(() =>

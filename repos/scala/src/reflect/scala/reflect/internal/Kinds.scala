@@ -352,7 +352,8 @@ trait Kinds { self: SymbolTable =>
               ts map {
                 case Head(`o`, _, a) => Head(o, None, a)
                 case t               => t
-              } else ts
+              }
+            else ts
         })
       }
       // Replace Head(o, n, Some(_)) with Head(o, n, None), so F[F] becomes F[A].

@@ -61,19 +61,16 @@ class Tutorial5(args: Args) extends Job(args) {
     .project('score, 'dictWord)
 
   TextLine(args("input")).read
-
   //split and normalize to lowercase
     .flatMap('line -> 'word) { line: String =>
       line.split("\\s").map { _.toLowerCase }
     }
-
     /**
     When we join, we need to specify which fields from each side of the join should match.
     This is like a SQL inner join: we end up with a new row that combines each possible
     matching pair, with all of the fields of both the left and right side.
       **/
     .joinWithLarger('word -> 'dictWord, scores)
-
     /**
     Now that we have a score for each word, we can group back to the original lines
     and sum up the word scores. Sum is another common aggregation that GroupBuilder

@@ -4221,7 +4221,8 @@ trait Typers
                   reportAnnotationError(
                     ArrayConstantsTypeMismatchError(tree, pt))
                   None
-              } else tryConst(tree, pt)
+              }
+            else tryConst(tree, pt)
 
           case Typed(t, _) =>
             tree2ConstArg(t, pt)
@@ -4999,9 +5000,9 @@ trait Typers
             val arity =
               if (isFunctionType(pt)) pt.dealiasWiden.typeArgs.length - 1
               else 1
-            val params = for (i <- List.range(0, arity))
-              yield
-                atPos(tree.pos.focusStart) {
+            val params =
+              for (i <- List.range(0, arity))
+                yield atPos(tree.pos.focusStart) {
                   ValDef(
                     Modifiers(PARAM | SYNTHETIC),
                     unit.freshTermName("x" + i + "$"),

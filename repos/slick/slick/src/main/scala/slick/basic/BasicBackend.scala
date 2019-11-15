@@ -134,7 +134,7 @@ trait BasicBackend { self =>
     protected[this] def createPublisher[T](
         a: DBIOAction[_, Streaming[T], Nothing],
         createCtx: Subscriber[_ >: T] => StreamingContext)
-      : DatabasePublisher[T] = new DatabasePublisher[T] {
+        : DatabasePublisher[T] = new DatabasePublisher[T] {
       def subscribe(s: Subscriber[_ >: T]) = {
         if (s eq null) throw new NullPointerException("Subscriber is null")
         val ctx = createCtx(s)
@@ -535,7 +535,7 @@ trait BasicBackend { self =>
 
     /** The streaming action which may need to be continued with the suspended state */
     private[BasicBackend] var streamingAction
-      : SynchronousDatabaseAction[_, _ <: NoStream, This, _ <: Effect] = null
+        : SynchronousDatabaseAction[_, _ <: NoStream, This, _ <: Effect] = null
 
     @volatile private[this] var cancelRequested = false
 

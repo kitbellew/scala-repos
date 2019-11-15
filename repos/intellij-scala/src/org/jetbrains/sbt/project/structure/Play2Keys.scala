@@ -105,7 +105,7 @@ object Play2Keys {
 
     class StringParsedKey(name: String) extends ParsedKey[String](name) {
       override def allIn(allKeys: Map[String, Map[String, ParsedValue[_]]])
-        : Seq[(String, String)] = {
+          : Seq[(String, String)] = {
         in(allKeys) map {
           case vs =>
             vs.toSeq flatMap {
@@ -120,7 +120,7 @@ object Play2Keys {
     class SeqStringParsedKey(name: String)
         extends ParsedKey[Seq[String]](name) {
       override def allIn(allKeys: Map[String, Map[String, ParsedValue[_]]])
-        : Seq[(String, Seq[String])] = {
+          : Seq[(String, Seq[String])] = {
         in(allKeys) map {
           case vs =>
             vs.toSeq flatMap {

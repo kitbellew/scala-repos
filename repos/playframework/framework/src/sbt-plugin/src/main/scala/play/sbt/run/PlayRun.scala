@@ -60,7 +60,7 @@ object PlayRun {
       reloaderClasspath: TaskKey[Classpath],
       reloaderClassLoader: TaskKey[ClassLoaderCreator],
       assetsClassLoader: TaskKey[ClassLoader => ClassLoader])
-    : Def.Initialize[InputTask[Unit]] = Def.inputTask {
+      : Def.Initialize[InputTask[Unit]] = Def.inputTask {
 
     val args = Def.spaceDelimited().parsed
 

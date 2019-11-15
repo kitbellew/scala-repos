@@ -260,7 +260,7 @@ object UFunc {
       implicit handhold: CanCollapseAxis.HandHold[V1, AxisT, TA],
       impl: UImpl[Tag, TA, VR],
       collapse: CanCollapseAxis[V1, AxisT, TA, VR, Result])
-    : UImpl2[Tag, V1, AxisT, Result] = {
+      : UImpl2[Tag, V1, AxisT, Result] = {
     new UImpl2[Tag, V1, AxisT, Result] {
       def apply(v: V1, v2: AxisT): Result = collapse.apply(v, v2)(impl(_))
     }
@@ -270,7 +270,7 @@ object UFunc {
       implicit handhold: CanCollapseAxis.HandHold[V1, AxisT, TA],
       impl: UImpl2[Tag, TA, V3, VR],
       collapse: CanCollapseAxis[V1, AxisT, TA, VR, Result])
-    : UImpl3[Tag, V1, AxisT, V3, Result] = {
+      : UImpl3[Tag, V1, AxisT, V3, Result] = {
     new UImpl3[Tag, V1, AxisT, V3, Result] {
       def apply(v: V1, v2: AxisT, v3: V3): Result =
         collapse.apply(v, v2)(impl(_, v3))
@@ -307,7 +307,7 @@ object WrappedUFunc extends UFunc with WrappedUFuncLowPrio {
   }
 
   implicit def simpleApply2[A1, A2, R]
-    : Impl3[WrappedUFunc2[A1, A2, R], A1, A2, R] = {
+      : Impl3[WrappedUFunc2[A1, A2, R], A1, A2, R] = {
     new Impl3[WrappedUFunc2[A1, A2, R], A1, A2, R] {
       override def apply(v: WrappedUFunc2[A1, A2, R], v2: A1, v3: A2): R =
         v.f(v2, v3)
@@ -315,14 +315,14 @@ object WrappedUFunc extends UFunc with WrappedUFuncLowPrio {
   }
 
   implicit def apply1[V, A1, R, V2](implicit cmv: CanMapValues[V, A1, R, V2])
-    : Impl2[WrappedUFunc1[A1, R], V, V2] = {
+      : Impl2[WrappedUFunc1[A1, R], V, V2] = {
     new Impl2[WrappedUFunc1[A1, R], V, V2] {
       override def apply(v: WrappedUFunc1[A1, R], v2: V): V2 = cmv(v2, v.f)
     }
   }
 
   implicit def apply2[V, A1, R, V2](implicit cmv: CanZipMapValues[V, A1, R, V2])
-    : Impl3[WrappedUFunc2[A1, A1, R], V, V, V2] = {
+      : Impl3[WrappedUFunc2[A1, A1, R], V, V, V2] = {
     new Impl3[WrappedUFunc2[A1, A1, R], V, V, V2] {
       override def apply(v: WrappedUFunc2[A1, A1, R], v2: V, v3: V): V2 =
         cmv.map(v2, v3, v.f)
@@ -331,7 +331,7 @@ object WrappedUFunc extends UFunc with WrappedUFuncLowPrio {
 
   implicit def apply2a[V, A1, A2, R, V2](
       implicit cmv: CanMapValues[V, A1, R, V2])
-    : Impl3[WrappedUFunc2[A1, A2, R], V, A2, V2] = {
+      : Impl3[WrappedUFunc2[A1, A2, R], V, A2, V2] = {
     new Impl3[WrappedUFunc2[A1, A2, R], V, A2, V2] {
       override def apply(v: WrappedUFunc2[A1, A2, R], v2: V, v3: A2): V2 =
         cmv(v2, v.f(_, v3))
@@ -343,7 +343,7 @@ trait WrappedUFuncLowPrio {
   this: WrappedUFunc.type =>
   implicit def apply2b[V, A1, A2, R, V2](
       implicit cmv: CanMapValues[V, A2, R, V2])
-    : Impl3[WrappedUFunc2[A1, A2, R], A1, V, V2] = {
+      : Impl3[WrappedUFunc2[A1, A2, R], A1, V, V2] = {
     new Impl3[WrappedUFunc2[A1, A2, R], A1, V, V2] {
       override def apply(v: WrappedUFunc2[A1, A2, R], v2: A1, v3: V): V2 =
         cmv(v3, v.f(v2, _))

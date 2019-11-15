@@ -51,7 +51,7 @@ object CachingAPIKeyManagerSettings {
   )
 }
 
-class CachingAPIKeyManager[M[+ _]](
+class CachingAPIKeyManager[M[+_]](
     manager: APIKeyManager[M],
     settings: CachingAPIKeyManagerSettings =
       CachingAPIKeyManagerSettings.Default)

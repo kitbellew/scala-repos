@@ -121,8 +121,11 @@ class ReceivePipelineSpec extends AkkaSpec with ImplicitSender {
     "support any number of interceptors" in {
       val replier =
         system.actorOf(
-          Props(new ReplierActor with ListBuilderInterceptor
-          with AdderInterceptor with ToStringInterceptor))
+          Props(
+            new ReplierActor
+              with ListBuilderInterceptor
+              with AdderInterceptor
+              with ToStringInterceptor))
       replier ! 8
       expectMsg("List(18, 19, 20)")
     }
@@ -131,8 +134,11 @@ class ReceivePipelineSpec extends AkkaSpec with ImplicitSender {
 
       val replier =
         system.actorOf(
-          Props(new ReplierActor with ListBuilderInterceptor
-          with AdderInterceptor with ToStringInterceptor))
+          Props(
+            new ReplierActor
+              with ListBuilderInterceptor
+              with AdderInterceptor
+              with ToStringInterceptor))
       replier ! 8L // unhandled by all interceptors but still replied
       expectMsg(8L)
       replier ! Set(8f) // unhandled by all but ToString Interceptor, so replied as String
@@ -143,8 +149,11 @@ class ReceivePipelineSpec extends AkkaSpec with ImplicitSender {
 
       val replier =
         system.actorOf(
-          Props(new ReplierActor with ListBuilderInterceptor
-          with AdderInterceptor with ToStringInterceptor))
+          Props(
+            new ReplierActor
+              with ListBuilderInterceptor
+              with AdderInterceptor
+              with ToStringInterceptor))
       replier ! "explicitly ignored"
       replier ! 8L // unhandled by all interceptors but still replied
       expectMsg(8L)
@@ -153,8 +162,11 @@ class ReceivePipelineSpec extends AkkaSpec with ImplicitSender {
     "support changing behavior without losing the interceptions" in {
       val replier =
         system.actorOf(
-          Props(new ReplierActor with ListBuilderInterceptor
-          with AdderInterceptor with ToStringInterceptor))
+          Props(
+            new ReplierActor
+              with ListBuilderInterceptor
+              with AdderInterceptor
+              with ToStringInterceptor))
       replier ! 8
       expectMsg("List(18, 19, 20)")
       replier ! "become"
@@ -211,15 +223,20 @@ class PersistentReceivePipelineSpec(config: Config)
   "A PersistentActor with ReceivePipeline" must {
     "support any number of interceptors" in {
       val replier = system.actorOf(
-        Props(new PersistentReplierActor with ListBuilderInterceptor
-        with AdderInterceptor with ToStringInterceptor))
+        Props(
+          new PersistentReplierActor
+            with ListBuilderInterceptor
+            with AdderInterceptor
+            with ToStringInterceptor))
       replier ! 8
       expectMsg("List(18, 19, 20)")
     }
     "allow messages explicitly passed on by interceptors to be handled by the actor" in {
       val replier = system.actorOf(
-        Props(new IntReplierActor(10) with EvenHalverInterceptor
-        with OddDoublerInterceptor))
+        Props(
+          new IntReplierActor(10)
+            with EvenHalverInterceptor
+            with OddDoublerInterceptor))
 
       // 6 -> 3 -> 6
       replier ! 6
@@ -228,8 +245,10 @@ class PersistentReceivePipelineSpec(config: Config)
 
     "allow messages not handled by some interceptors to be handled by the actor" in {
       val replier = system.actorOf(
-        Props(new IntReplierActor(10) with EvenHalverInterceptor
-        with OddDoublerInterceptor))
+        Props(
+          new IntReplierActor(10)
+            with EvenHalverInterceptor
+            with OddDoublerInterceptor))
 
       // 8 -> 4 ( -> not handled by OddDoublerInterceptor)
       replier ! 8
@@ -241,10 +260,12 @@ class PersistentReceivePipelineSpec(config: Config)
       val probeRef = probe.ref
 
       val replier = system.actorOf(
-        Props(new IntReplierActor(10) with EvenHalverInterceptor
-        with OddDoublerInterceptor {
-          override def unhandled(message: Any) = probeRef ! message
-        }))
+        Props(
+          new IntReplierActor(10)
+            with EvenHalverInterceptor
+            with OddDoublerInterceptor {
+            override def unhandled(message: Any) = probeRef ! message
+          }))
 
       // 22 -> 11 -> 22 but > 10 so not handled in main receive: falls back to unhandled implementation...
       replier ! 22
@@ -256,10 +277,12 @@ class PersistentReceivePipelineSpec(config: Config)
       val probeRef = probe.ref
 
       val replier = system.actorOf(
-        Props(new IntReplierActor(10) with EvenHalverInterceptor
-        with OddDoublerInterceptor {
-          override def unhandled(message: Any) = probeRef ! message
-        }))
+        Props(
+          new IntReplierActor(10)
+            with EvenHalverInterceptor
+            with OddDoublerInterceptor {
+            override def unhandled(message: Any) = probeRef ! message
+          }))
 
       // 11 ( -> not handled by EvenHalverInterceptor) -> 22 but > 10 so not handled in main receive:
       // original message falls back to unhandled implementation...
@@ -272,10 +295,12 @@ class PersistentReceivePipelineSpec(config: Config)
       val probeRef = probe.ref
 
       val replier = system.actorOf(
-        Props(new IntReplierActor(10) with EvenHalverInterceptor
-        with OddDoublerInterceptor {
-          override def unhandled(message: Any) = probeRef ! message
-        }))
+        Props(
+          new IntReplierActor(10)
+            with EvenHalverInterceptor
+            with OddDoublerInterceptor {
+            override def unhandled(message: Any) = probeRef ! message
+          }))
 
       replier ! "hi there!"
       probe.expectMsg("hi there!")
@@ -286,10 +311,12 @@ class PersistentReceivePipelineSpec(config: Config)
       val probeRef = probe.ref
 
       val replier = system.actorOf(
-        Props(new IntReplierActor(10) with EvenHalverInterceptor
-        with OddDoublerInterceptor {
-          override def unhandled(message: Any) = probeRef ! message
-        }))
+        Props(
+          new IntReplierActor(10)
+            with EvenHalverInterceptor
+            with OddDoublerInterceptor {
+            override def unhandled(message: Any) = probeRef ! message
+          }))
 
       replier ! 4
       expectMsg(2)
@@ -301,10 +328,12 @@ class PersistentReceivePipelineSpec(config: Config)
       val probeRef = probe.ref
 
       val replier = system.actorOf(
-        Props(new IntReplierActor(10) with EvenHalverInterceptor
-        with OddDoublerInterceptor {
-          override def unhandled(message: Any) = probeRef ! message
-        }))
+        Props(
+          new IntReplierActor(10)
+            with EvenHalverInterceptor
+            with OddDoublerInterceptor {
+            override def unhandled(message: Any) = probeRef ! message
+          }))
 
       replier ! "hi there!"
       replier ! 8
@@ -314,8 +343,10 @@ class PersistentReceivePipelineSpec(config: Config)
 
     "call side-effecting receive code only once" in {
       val totaller = system.actorOf(
-        Props(new TotallerActor with EvenHalverInterceptor
-        with OddDoublerInterceptor))
+        Props(
+          new TotallerActor
+            with EvenHalverInterceptor
+            with OddDoublerInterceptor))
 
       totaller ! 8
       totaller ! 6
@@ -325,8 +356,10 @@ class PersistentReceivePipelineSpec(config: Config)
 
     "not cache the result of the same message" in {
       val totaller = system.actorOf(
-        Props(new TotallerActor with EvenHalverInterceptor
-        with OddDoublerInterceptor))
+        Props(
+          new TotallerActor
+            with EvenHalverInterceptor
+            with OddDoublerInterceptor))
 
       totaller ! 6
       totaller ! 6

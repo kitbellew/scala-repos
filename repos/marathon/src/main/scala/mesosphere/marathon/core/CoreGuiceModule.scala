@@ -81,7 +81,7 @@ class CoreGuiceModule extends AbstractModule {
   def leadershipCoordinator(
       leadershipModule: LeadershipModule,
       makeSureToInitializeThisBeforeCreatingCoordinator: TaskStatusUpdateProcessor)
-    : LeadershipCoordinator =
+      : LeadershipCoordinator =
     leadershipModule.coordinator()
 
   @Provides
@@ -149,7 +149,7 @@ class CoreGuiceModule extends AbstractModule {
       taskStatusEmitterPublishImpl: TaskStatusEmitterPublishStepImpl,
       postToEventStreamStepImpl: PostToEventStreamStepImpl,
       scaleAppUpdateStepImpl: ScaleAppUpdateStepImpl)
-    : Seq[TaskStatusUpdateStep] = {
+      : Seq[TaskStatusUpdateStep] = {
 
     // This is a sequence on purpose. The specified steps are executed in order for every
     // task status update.

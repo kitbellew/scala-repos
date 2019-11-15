@@ -6,7 +6,7 @@ import cats.syntax.show._
 
 trait StreamInstances {
   implicit val streamInstance
-    : Traverse[Stream] with MonadCombine[Stream] with CoflatMap[Stream] =
+      : Traverse[Stream] with MonadCombine[Stream] with CoflatMap[Stream] =
     new Traverse[Stream] with MonadCombine[Stream] with CoflatMap[Stream] {
 
       def empty[A]: Stream[A] = Stream.Empty

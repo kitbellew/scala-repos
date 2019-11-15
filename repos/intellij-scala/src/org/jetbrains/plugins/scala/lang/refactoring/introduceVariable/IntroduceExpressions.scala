@@ -141,7 +141,7 @@ trait IntroduceExpressions {
                 .INTRODUCE_VARIABLE_EXPLICIT_TYPE)
             val selectedType = if (needExplicitType) types(0) else null
             val introduceRunnable
-              : Computable[SmartPsiElementPointer[PsiElement]] =
+                : Computable[SmartPsiElementPointer[PsiElement]] =
               introduceVariable(
                 startOffset,
                 endOffset,
@@ -378,7 +378,8 @@ trait IntroduceExpressions {
               if isFunExpr && block.statements.size == 1 =>
             Seq(infix)
           case expr => Seq(expr)
-        } else
+        }
+      else
         replacedOccurences.toSeq.map(
           ScalaRefactoringUtil.findParentExpr(file, _))
     val commonParent: PsiElement =

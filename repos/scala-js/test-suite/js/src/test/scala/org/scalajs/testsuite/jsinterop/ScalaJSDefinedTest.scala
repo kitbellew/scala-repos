@@ -789,7 +789,7 @@ class ScalaJSDefinedTest {
   }
 
   @Test def `constructors_with_default_parameters_(ScalaJSDefined/-)`()
-    : Unit = {
+      : Unit = {
     assertEquals(-1, new ConstructorDefaultParamJSNonNativeNone().foo)
     assertEquals(1, new ConstructorDefaultParamJSNonNativeNone(1).foo)
     assertEquals(5, new ConstructorDefaultParamJSNonNativeNone(5).foo)

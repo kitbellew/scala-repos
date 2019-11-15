@@ -28,10 +28,12 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
   lazy val employees = TableQuery[Employees]
 
   def testBasicUnions = {
-    val q1 = for (m <- managers filter { _.department === "IT" })
-      yield (m.id, m.name)
-    val q2 = for (e <- employees filter { _.departmentIs("IT") })
-      yield (e.id, e.name)
+    val q1 =
+      for (m <- managers filter { _.department === "IT" })
+        yield (m.id, m.name)
+    val q2 =
+      for (e <- employees filter { _.departmentIs("IT") })
+        yield (e.id, e.name)
     val q3 = (q1 union q2).sortBy(_._2.asc)
     val q4 = managers.map(_.id)
     val q4b = q4 union q4

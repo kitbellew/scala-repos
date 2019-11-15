@@ -31,13 +31,13 @@ final case class TracedT[W[_], A, B](run: W[A => B]) {
 
 sealed abstract class TracedTInstances5 {
   implicit final def tracedTFunctor[W[_]: Functor, C]
-    : Functor[TracedT[W, C, ?]] =
+      : Functor[TracedT[W, C, ?]] =
     new TracedTFunctor[W, C] {
       def W = implicitly
     }
 
   implicit final def tracedTContravariant[W[_]: Functor, C]
-    : Contravariant[TracedT[W, ?, C]] =
+      : Contravariant[TracedT[W, ?, C]] =
     new Contravariant[TracedT[W, ?, C]] {
       override def contramap[A, B](r: TracedT[W, A, C])(f: B => A) =
         r contramap f
@@ -46,7 +46,7 @@ sealed abstract class TracedTInstances5 {
 
 sealed abstract class TracedTInstances4 extends TracedTInstances5 {
   implicit final def tracedTDistributive[W[_]: Distributive, C]
-    : Distributive[TracedT[W, C, ?]] =
+      : Distributive[TracedT[W, C, ?]] =
     new TracedTDistributive[W, C] {
       def W = implicitly
     }
@@ -61,7 +61,7 @@ sealed abstract class TracedTInstances3 extends TracedTInstances4 {
 
 sealed abstract class TracedTInstances2 extends TracedTInstances3 {
   implicit final def tracedTApplicative[W[_]: Applicative, C]
-    : Applicative[TracedT[W, C, ?]] =
+      : Applicative[TracedT[W, C, ?]] =
     new TracedTApplicative[W, C] {
       def W = implicitly
     }
@@ -69,7 +69,7 @@ sealed abstract class TracedTInstances2 extends TracedTInstances3 {
 
 sealed abstract class TracedTInstances1 extends TracedTInstances2 {
   implicit final def tracedTCobind[W[_]: Cobind, C: Semigroup]
-    : Cobind[TracedT[W, C, ?]] =
+      : Cobind[TracedT[W, C, ?]] =
     new TracedTCobind[W, C] {
       def W = implicitly
       def C = implicitly
@@ -79,14 +79,14 @@ sealed abstract class TracedTInstances1 extends TracedTInstances2 {
 sealed abstract class TracedTInstances0 extends TracedTInstances1 {
 
   implicit final def tracedTComonad[W[_]: Comonad, C: Monoid]
-    : Comonad[TracedT[W, C, ?]] =
+      : Comonad[TracedT[W, C, ?]] =
     new TracedTComonad[W, C] {
       def W = implicitly
       def C = implicitly
     }
 
   implicit final def tracedTCohoist[C: Monoid]
-    : Cohoist[Lambda[(w[_], b) => TracedT[w, C, b]]] =
+      : Cohoist[Lambda[(w[_], b) => TracedT[w, C, b]]] =
     new Cohoist[Lambda[(w[_], b) => TracedT[w, C, b]]] {
       override def cohoist[M[_], N[_]: Comonad](f: M ~> N) =
         new (TracedT[M, C, ?] ~> TracedT[N, C, ?]) {

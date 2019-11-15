@@ -92,7 +92,7 @@ final class ClusterSingletonProxySettings(
 
   def withSingletonIdentificationInterval(
       singletonIdentificationInterval: FiniteDuration)
-    : ClusterSingletonProxySettings =
+      : ClusterSingletonProxySettings =
     copy(singletonIdentificationInterval = singletonIdentificationInterval)
 
   def withBufferSize(bufferSize: Int): ClusterSingletonProxySettings =

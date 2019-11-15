@@ -179,7 +179,7 @@ private[kafka] class ZookeeperConsumerConnector(
   def this(config: ConsumerConfig) = this(config, true)
 
   def createMessageStreams(topicCountMap: Map[String, Int])
-    : Map[String, List[KafkaStream[Array[Byte], Array[Byte]]]] =
+      : Map[String, List[KafkaStream[Array[Byte], Array[Byte]]]] =
     createMessageStreams(
       topicCountMap,
       new DefaultDecoder(),
@@ -1031,7 +1031,7 @@ private[kafka] class ZookeeperConsumerConnector(
 
     private def reflectPartitionOwnershipDecision(
         partitionAssignment: Map[TopicAndPartition, ConsumerThreadId])
-      : Boolean = {
+        : Boolean = {
       var successfullyOwnedPartitions: List[(String, Int)] = Nil
       val partitionOwnershipSuccessful = partitionAssignment.map {
         partitionOwner =>

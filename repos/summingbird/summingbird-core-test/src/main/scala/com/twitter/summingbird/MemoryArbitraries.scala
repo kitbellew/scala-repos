@@ -28,13 +28,13 @@ object MemoryArbitraries {
         .listOfN(100, Arbitrary.arbitrary[K])
         .map(Producer.source[Memory, K](_)))
   implicit def arbSource2[K: Arbitrary, V: Arbitrary]
-    : Arbitrary[KeyedProducer[Memory, K, V]] =
+      : Arbitrary[KeyedProducer[Memory, K, V]] =
     Arbitrary(
       Gen
         .listOfN(100, Arbitrary.arbitrary[(K, V)])
         .map(Producer.source[Memory, (K, V)](_)))
   implicit def arbService[K: Arbitrary, V: Arbitrary]
-    : Arbitrary[MemoryService[K, V]] =
+      : Arbitrary[MemoryService[K, V]] =
     Arbitrary(
       for {
         k <- Gen.listOfN(100, Arbitrary.arbitrary[K])

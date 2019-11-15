@@ -265,9 +265,9 @@ object TaskTest extends SpecLite {
 
       val seenThreadNames = scala.collection.JavaConversions
         .asScalaSet(ju.Collections.synchronizedSet(new ju.HashSet[String]()))
-      val t = for (i <- 0 to 5)
-        yield
-          fork {
+      val t =
+        for (i <- 0 to 5)
+          yield fork {
             seenThreadNames += currentThread().getName()
             //Prevent the execution scheduler from reusing threads. This will only
             //proceed after all 6 threads reached this point.

@@ -163,7 +163,7 @@ abstract class StreamingLinearAlgorithm[
     */
   @Since("1.3.0")
   def predictOnValues[K](data: JavaPairDStream[K, Vector])
-    : JavaPairDStream[K, java.lang.Double] = {
+      : JavaPairDStream[K, java.lang.Double] = {
     implicit val tag = fakeClassTag[K]
     JavaPairDStream.fromPairDStream(
       predictOnValues(data.dstream)

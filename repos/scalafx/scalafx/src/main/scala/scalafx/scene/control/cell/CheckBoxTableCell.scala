@@ -60,9 +60,9 @@ object CheckBoxTableCell {
 
   private[cell] implicit def selectedIntPropertyToGetSelectedProperty(
       selectedProperty: Int => ObservableValue[Boolean, java.lang.Boolean])
-    : jfxu.Callback[
-      java.lang.Integer,
-      jfxbv.ObservableValue[java.lang.Boolean]] =
+      : jfxu.Callback[
+        java.lang.Integer,
+        jfxbv.ObservableValue[java.lang.Boolean]] =
     new jfxu.Callback[
       java.lang.Integer,
       jfxbv.ObservableValue[java.lang.Boolean]] {
@@ -76,7 +76,7 @@ object CheckBoxTableCell {
     */
   def forTableColumn[S, T](
       selectedProperty: Int => ObservableValue[Boolean, java.lang.Boolean])
-    : (TableColumn[S, T] => TableCell[S, T]) =
+      : (TableColumn[S, T] => TableCell[S, T]) =
     (column: TableColumn[S, T]) =>
       jfxscc.CheckBoxTableCell.forTableColumn(selectedProperty).call(column)
 

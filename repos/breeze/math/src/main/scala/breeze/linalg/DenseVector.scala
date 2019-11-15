@@ -373,7 +373,7 @@ object DenseVector
   // capabilities
 
   implicit def canCreateZerosLike[V: ClassTag: Zero]
-    : CanCreateZerosLike[DenseVector[V], DenseVector[V]] =
+      : CanCreateZerosLike[DenseVector[V], DenseVector[V]] =
     new CanCreateZerosLike[DenseVector[V], DenseVector[V]] {
       def apply(v1: DenseVector[V]): DenseVector[V] = {
         zeros[V](v1.length)
@@ -401,7 +401,7 @@ object DenseVector
   implicit def canMapValues[
       @specialized(Int, Float, Double) V,
       @specialized(Int, Float, Double) V2](implicit man: ClassTag[V2])
-    : CanMapValues[DenseVector[V], V, V2, DenseVector[V2]] = {
+      : CanMapValues[DenseVector[V], V, V2, DenseVector[V2]] = {
     new CanMapValues[DenseVector[V], V, V2, DenseVector[V2]] {
 
       /**Maps all key-value pairs from the given collection. */
@@ -470,7 +470,7 @@ object DenseVector
     }
 
   implicit def canTraverseZipValues[V, W]
-    : CanZipAndTraverseValues[DenseVector[V], DenseVector[W], V, W] =
+      : CanZipAndTraverseValues[DenseVector[V], DenseVector[W], V, W] =
     new CanZipAndTraverseValues[DenseVector[V], DenseVector[W], V, W] {
 
       /** Iterates all key-value pairs from the given collection. */
@@ -489,7 +489,7 @@ object DenseVector
     }
 
   implicit def canTraverseKeyValuePairs[V]
-    : CanTraverseKeyValuePairs[DenseVector[V], Int, V] =
+      : CanTraverseKeyValuePairs[DenseVector[V], Int, V] =
     new CanTraverseKeyValuePairs[DenseVector[V], Int, V] {
       def isTraversableAgain(from: DenseVector[V]): Boolean = true
 
@@ -508,7 +508,7 @@ object DenseVector
     }
 
   implicit def canTransformValues[@specialized(Int, Float, Double) V]
-    : CanTransformValues[DenseVector[V], V] =
+      : CanTransformValues[DenseVector[V], V] =
     new CanTransformValues[DenseVector[V], V] {
       def transform(from: DenseVector[V], fn: (V) => V) {
         val data = from.data
@@ -545,7 +545,7 @@ object DenseVector
     }
 
   implicit def canMapPairs[V, V2](implicit man: ClassTag[V2])
-    : CanMapKeyValuePairs[DenseVector[V], Int, V, V2, DenseVector[V2]] =
+      : CanMapKeyValuePairs[DenseVector[V], Int, V, V2, DenseVector[V2]] =
     new CanMapKeyValuePairs[DenseVector[V], Int, V, V2, DenseVector[V2]] {
 
       /**Maps all key-value pairs from the given collection. */
@@ -594,7 +594,7 @@ object DenseVector
   }
 
   implicit def canTransposeComplex
-    : CanTranspose[DenseVector[Complex], DenseMatrix[Complex]] = {
+      : CanTranspose[DenseVector[Complex], DenseMatrix[Complex]] = {
     new CanTranspose[DenseVector[Complex], DenseMatrix[Complex]] {
       def apply(from: DenseVector[Complex]): DenseMatrix[Complex] = {
         new DenseMatrix(
@@ -669,7 +669,7 @@ object DenseVector
     new CanZipMapKeyValuesDenseVector[V, R]
 
   implicit val canAddIntoD
-    : OpAdd.InPlaceImpl2[DenseVector[Double], DenseVector[Double]] = {
+      : OpAdd.InPlaceImpl2[DenseVector[Double], DenseVector[Double]] = {
     new OpAdd.InPlaceImpl2[DenseVector[Double], DenseVector[Double]] {
       def apply(a: DenseVector[Double], b: DenseVector[Double]) = {
         canDaxpy(a, 1.0, b)
@@ -720,7 +720,7 @@ object DenseVector
     .register(canAddD)
 
   implicit val canSubIntoD
-    : OpSub.InPlaceImpl2[DenseVector[Double], DenseVector[Double]] = {
+      : OpSub.InPlaceImpl2[DenseVector[Double], DenseVector[Double]] = {
     new OpSub.InPlaceImpl2[DenseVector[Double], DenseVector[Double]] {
       def apply(a: DenseVector[Double], b: DenseVector[Double]) = {
         canDaxpy(a, -1.0, b)
@@ -790,7 +790,7 @@ object DenseVector
   @expand
   @expand.valify
   implicit def canNorm[@expand.args(Int, Float, Long, BigInt, Complex) T]
-    : norm.Impl2[DenseVector[T], Double, Double] = {
+      : norm.Impl2[DenseVector[T], Double, Double] = {
 
     new norm.Impl2[DenseVector[T], Double, Double] {
       def apply(v: DenseVector[T], n: Double): Double = {
@@ -820,7 +820,7 @@ object DenseVector
     *  Returns the p-norm of this Vector (specialized for Double).
     */
   implicit def canNorm_Double
-    : norm.Impl2[DenseVector[Double], Double, Double] = {
+      : norm.Impl2[DenseVector[Double], Double, Double] = {
     new norm.Impl2[DenseVector[Double], Double, Double] {
       def apply(v: DenseVector[Double], p: Double): Double = {
         if (p == 2) {
@@ -855,29 +855,29 @@ object DenseVector
 
   // this produces bad spaces for builtins (inefficient because of bad implicit lookup)
   implicit def space[E](implicit field: Field[E], man: ClassTag[E])
-    : MutableFiniteCoordinateField[DenseVector[E], Int, E] = {
+      : MutableFiniteCoordinateField[DenseVector[E], Int, E] = {
     import field._
     implicit val cmv = canMapValues[E, E]
     MutableFiniteCoordinateField.make[DenseVector[E], Int, E]
   }
 
   implicit val space_Double
-    : MutableFiniteCoordinateField[DenseVector[Double], Int, Double] = {
+      : MutableFiniteCoordinateField[DenseVector[Double], Int, Double] = {
     MutableFiniteCoordinateField.make[DenseVector[Double], Int, Double]
   }
 
   implicit val space_Float
-    : MutableFiniteCoordinateField[DenseVector[Float], Int, Float] = {
+      : MutableFiniteCoordinateField[DenseVector[Float], Int, Float] = {
     MutableFiniteCoordinateField.make[DenseVector[Float], Int, Float]
   }
 
   implicit val space_Int
-    : MutableFiniteCoordinateField[DenseVector[Int], Int, Int] = {
+      : MutableFiniteCoordinateField[DenseVector[Int], Int, Int] = {
     MutableFiniteCoordinateField.make[DenseVector[Int], Int, Int]
   }
 
   implicit val space_Long
-    : MutableFiniteCoordinateField[DenseVector[Long], Int, Long] = {
+      : MutableFiniteCoordinateField[DenseVector[Long], Int, Long] = {
     MutableFiniteCoordinateField.make[DenseVector[Long], Int, Long]
   }
 

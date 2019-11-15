@@ -117,7 +117,7 @@ object VersionUtil {
     }
 
   private lazy val generateVersionPropertiesFileImpl
-    : Def.Initialize[Task[File]] = Def.task {
+      : Def.Initialize[Task[File]] = Def.task {
     writeProps(
       versionProperties.value.toMap +
         ("copyright.string" -> copyrightString.value),
@@ -125,7 +125,7 @@ object VersionUtil {
   }
 
   private lazy val generateBuildCharacterPropertiesFileImpl
-    : Def.Initialize[Task[File]] = Def.task {
+      : Def.Initialize[Task[File]] = Def.task {
     writeProps(
       versionProperties.value.toMap,
       (baseDirectory in ThisBuild).value / "buildcharacter.properties")

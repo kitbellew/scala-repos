@@ -217,7 +217,7 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
       t.bucketSpec match {
         case Some(spec) if t.sqlContext.conf.bucketingEnabled =>
           val scanBuilder
-            : (Seq[Attribute], Array[Filter]) => RDD[InternalRow] = {
+              : (Seq[Attribute], Array[Filter]) => RDD[InternalRow] = {
             (requiredColumns: Seq[Attribute], filters: Array[Filter]) =>
               {
                 val bucketed = t.location

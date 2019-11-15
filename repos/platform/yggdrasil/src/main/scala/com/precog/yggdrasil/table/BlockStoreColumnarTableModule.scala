@@ -63,7 +63,7 @@ trait BlockStoreColumnarTableModuleConfig {
   def hashJoins: Boolean = true
 }
 
-trait BlockStoreColumnarTableModule[M[+ _]]
+trait BlockStoreColumnarTableModule[M[+_]]
     extends ColumnarTableModule[M]
     with YggConfigComponent { self =>
 
@@ -1081,7 +1081,7 @@ trait BlockStoreColumnarTableModule[M[+ _]]
               jdbmState: JDBMState,
               transforms: List[(SliceTransform1[_], String)],
               updatedTransforms: List[(SliceTransform1[_], String)])
-            : M[(JDBMState, List[(SliceTransform1[_], String)])] =
+              : M[(JDBMState, List[(SliceTransform1[_], String)])] =
             transforms match {
               case (keyTransform, streamId) :: tail =>
                 keyTransform.advance(slice) flatMap {
@@ -1503,7 +1503,7 @@ trait BlockStoreColumnarTableModule[M[+ _]]
       * otherwise it will stay an `ExternalTable`.
       */
     def toInternalTable(limit: Int = yggConfig.maxSliceSize)
-      : EitherT[M, ExternalTable, InternalTable]
+        : EitherT[M, ExternalTable, InternalTable]
 
     /**
       * Forces a table to an external table, possibly de-optimizing it.

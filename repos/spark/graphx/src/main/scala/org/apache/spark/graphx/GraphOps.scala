@@ -278,7 +278,7 @@ class GraphOps[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED])
       epred: (EdgeTriplet[VD2, ED2]) => Boolean = (x: EdgeTriplet[VD2, ED2]) =>
         true,
       vpred: (VertexId, VD2) => Boolean = (v: VertexId, d: VD2) => true)
-    : Graph[VD, ED] = {
+      : Graph[VD, ED] = {
     graph.mask(preprocess(graph).subgraph(epred, vpred))
   }
 

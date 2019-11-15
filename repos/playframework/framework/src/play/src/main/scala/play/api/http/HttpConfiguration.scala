@@ -111,7 +111,7 @@ case class ActionCompositionConfiguration(
 object HttpConfiguration {
 
   @Singleton
-  class HttpConfigurationProvider @Inject()(configuration: Configuration)
+  class HttpConfigurationProvider @Inject() (configuration: Configuration)
       extends Provider[HttpConfiguration] {
     lazy val get = fromConfiguration(configuration)
   }

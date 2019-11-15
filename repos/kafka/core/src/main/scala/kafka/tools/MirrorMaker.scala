@@ -648,7 +648,7 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
       throw new IllegalArgumentException(
         "New consumer only supports whitelist."))
     var recordIter
-      : java.util.Iterator[ConsumerRecord[Array[Byte], Array[Byte]]] = null
+        : java.util.Iterator[ConsumerRecord[Array[Byte], Array[Byte]]] = null
 
     // TODO: we need to manually maintain the consumed offsets for new consumer
     // since its internal consumed position is updated in batch rather than one
@@ -820,13 +820,13 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
     */
   trait MirrorMakerMessageHandler {
     def handle(record: BaseConsumerRecord)
-      : util.List[ProducerRecord[Array[Byte], Array[Byte]]]
+        : util.List[ProducerRecord[Array[Byte], Array[Byte]]]
   }
 
   private object defaultMirrorMakerMessageHandler
       extends MirrorMakerMessageHandler {
     override def handle(record: BaseConsumerRecord)
-      : util.List[ProducerRecord[Array[Byte], Array[Byte]]] = {
+        : util.List[ProducerRecord[Array[Byte], Array[Byte]]] = {
       Collections.singletonList(
         new ProducerRecord[Array[Byte], Array[Byte]](
           record.topic,

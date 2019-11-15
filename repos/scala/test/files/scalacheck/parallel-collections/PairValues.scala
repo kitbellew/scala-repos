@@ -15,9 +15,8 @@ trait PairValues[K, V] {
     for {
       kg <- kvalues
       vg <- vvalues
-    } yield
-      for {
-        k <- kg
-        v <- vg
-      } yield (k, v)
+    } yield for {
+      k <- kg
+      v <- vg
+    } yield (k, v)
 }

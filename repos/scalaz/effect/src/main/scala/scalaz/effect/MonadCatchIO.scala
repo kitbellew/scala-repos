@@ -87,7 +87,7 @@ sealed abstract class MonadCatchIOFunctions {
   implicit def KleisliMonadCatchIO[F[_], R](
       implicit F: MonadCatchIO[F]): MonadCatchIO[Kleisli[F, R, ?]] =
     new MonadCatchIO[Kleisli[F, R, ?]]
-    with MonadIO.FromLiftIO[Kleisli[F, R, ?]] {
+      with MonadIO.FromLiftIO[Kleisli[F, R, ?]] {
       def FM = MonadIO.kleisliMonadIO[F, R]
       def FLO = MonadIO.kleisliMonadIO[F, R]
       def except[A](k: Kleisli[F, R, A])(h: Throwable => Kleisli[F, R, A]) =

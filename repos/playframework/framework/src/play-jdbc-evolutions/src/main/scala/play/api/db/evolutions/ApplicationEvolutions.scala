@@ -18,7 +18,7 @@ import play.api.db.evolutions.DatabaseUrlPatterns._
   * Run evolutions on application startup. Automatically runs on construction.
   */
 @Singleton
-class ApplicationEvolutions @Inject()(
+class ApplicationEvolutions @Inject() (
     config: EvolutionsConfig,
     reader: EvolutionsReader,
     evolutions: EvolutionsApi,
@@ -296,7 +296,7 @@ class DefaultEvolutionsConfig(
   * A provider that creates an EvolutionsConfig from the play.api.Configuration.
   */
 @Singleton
-class DefaultEvolutionsConfigParser @Inject()(configuration: Configuration)
+class DefaultEvolutionsConfigParser @Inject() (configuration: Configuration)
     extends Provider[EvolutionsConfig] {
 
   private val logger = Logger(classOf[DefaultEvolutionsConfigParser])
@@ -420,7 +420,7 @@ class DynamicEvolutions {
   * Web command handler for applying evolutions on application start.
   */
 @Singleton
-class EvolutionsWebCommands @Inject()(
+class EvolutionsWebCommands @Inject() (
     evolutions: EvolutionsApi,
     reader: EvolutionsReader,
     config: EvolutionsConfig)

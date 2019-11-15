@@ -332,9 +332,9 @@ abstract class ActorModelSpec(config: String)
         msgsProcessed = 0,
         restarts = 0)
 
-      val futures = for (i ← 1 to 10)
-        yield
-          Future {
+      val futures =
+        for (i ← 1 to 10)
+          yield Future {
             i
           }
       assertDispatcher(dispatcher)(stops = 2)
@@ -641,8 +641,7 @@ object DispatcherModelSpec {
     """ +
       // use unique dispatcher id for each test, since MessageDispatcherInterceptor holds state
       (for (n ← 1 to 30)
-        yield
-          """
+        yield """
         test-dispatcher-%s {
           type = "akka.actor.dispatch.DispatcherModelSpec$MessageDispatcherInterceptorConfigurator"
         }""".format(n)).mkString
@@ -735,8 +734,7 @@ object BalancingDispatcherModelSpec {
     """ +
       // use unique dispatcher id for each test, since MessageDispatcherInterceptor holds state
       (for (n ← 1 to 30)
-        yield
-          """
+        yield """
         test-balancing-dispatcher-%s {
           type = "akka.actor.dispatch.BalancingDispatcherModelSpec$BalancingMessageDispatcherInterceptorConfigurator"
           throughput=1

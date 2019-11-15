@@ -935,8 +935,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
               elems
             case VarRef(rhsIdent) =>
               for (RecordType.Field(fName, fOrigName, fTpe, _) <- fields)
-                yield
-                  VarRef(makeRecordFieldIdent(rhsIdent, fName, fOrigName))(fTpe)
+                yield VarRef(makeRecordFieldIdent(rhsIdent, fName, fOrigName))(
+                  fTpe)
           }
           js.Block(for {
             (RecordType.Field(fName, fOrigName, fTpe, fMutable), fRhs) <- fields zip elems
@@ -977,8 +977,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
           val elems = (rhs: @unchecked) match {
             case VarRef(rhsIdent) =>
               for (RecordType.Field(fName, fOrigName, fTpe, fMutable) <- fields)
-                yield
-                  VarRef(makeRecordFieldIdent(rhsIdent, fName, fOrigName))(fTpe)
+                yield VarRef(makeRecordFieldIdent(rhsIdent, fName, fOrigName))(
+                  fTpe)
           }
           js.Block(for {
             (RecordType.Field(fName, fOrigName, fTpe, fMutable), fRhs) <- fields zip elems

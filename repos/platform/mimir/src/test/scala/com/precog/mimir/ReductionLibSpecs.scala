@@ -32,7 +32,7 @@ import scalaz.std.list._
 
 import com.precog.util.IdGen
 
-trait ReductionLibSpecs[M[+ _]]
+trait ReductionLibSpecs[M[+_]]
     extends Specification
     with EvaluatorTestSupport[M]
     with LongIdMemoryDatasetConsumer[M] {

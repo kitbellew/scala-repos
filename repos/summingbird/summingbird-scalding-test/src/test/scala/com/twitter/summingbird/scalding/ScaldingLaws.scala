@@ -470,7 +470,7 @@ class ScaldingLaws extends WordSpec {
         TestUtil.pruneToBatchCoveredWithTime(inWithTime2, intr, batcher)
 
       def toTime[T, U](fn: T => TraversableOnce[U])
-        : ((Long, T)) => TraversableOnce[(Long, U)] =
+          : ((Long, T)) => TraversableOnce[(Long, U)] =
         (x: (Long, T)) => fn(x._2).map((x._1, _))
 
       val fnAWithTime = toTime(fnA)
@@ -558,7 +558,7 @@ class ScaldingLaws extends WordSpec {
         }
 
       def toTime[T, U](fn: T => TraversableOnce[U])
-        : ((Long, T)) => TraversableOnce[(Long, U)] =
+          : ((Long, T)) => TraversableOnce[(Long, U)] =
         (x: (Long, T)) => fn(x._2).map((x._1, _))
 
       val fnAWithTime = toTime(fnA)
@@ -631,7 +631,7 @@ class ScaldingLaws extends WordSpec {
       val flatMapFn = sample[((Int, (Int, Option[Int]))) => List[(Int, Int)]]
 
       def toTime[T, U](fn: T => TraversableOnce[U])
-        : ((Long, T)) => TraversableOnce[(Long, U)] =
+          : ((Long, T)) => TraversableOnce[(Long, U)] =
         (x: (Long, T)) => fn(x._2).map((x._1, _))
 
       val fnAWithTime = toTime(fnA)

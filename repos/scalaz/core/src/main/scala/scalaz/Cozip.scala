@@ -18,16 +18,16 @@ trait Cozip[F[_]] { self =>
     cozip(x).map(cozip(_) map (cozip(_)))
 
   def cozip5[A, B, C, D, E](x: F[(A \/ (B \/ (C \/ (D \/ E))))])
-    : (F[A] \/ (F[B] \/ (F[C] \/ (F[D] \/ F[E])))) =
+      : (F[A] \/ (F[B] \/ (F[C] \/ (F[D] \/ F[E])))) =
     cozip(x).map(cozip(_) map (cozip(_) map (cozip(_))))
 
   def cozip6[A, B, C, D, E, G](x: F[(A \/ (B \/ (C \/ (D \/ (E \/ G)))))])
-    : (F[A] \/ (F[B] \/ (F[C] \/ (F[D] \/ (F[E] \/ F[G]))))) =
+      : (F[A] \/ (F[B] \/ (F[C] \/ (F[D] \/ (F[E] \/ F[G]))))) =
     cozip(x).map(cozip(_) map (cozip(_) map (cozip(_) map (cozip(_)))))
 
   def cozip7[A, B, C, D, E, G, H](
       x: F[(A \/ (B \/ (C \/ (D \/ (E \/ (G \/ H))))))])
-    : (F[A] \/ (F[B] \/ (F[C] \/ (F[D] \/ (F[E] \/ (F[G] \/ F[H])))))) =
+      : (F[A] \/ (F[B] \/ (F[C] \/ (F[D] \/ (F[E] \/ (F[G] \/ F[H])))))) =
     cozip(x).map(
       cozip(_) map (cozip(_) map (cozip(_) map (cozip(_) map (cozip(_))))))
 
@@ -50,10 +50,10 @@ object Cozip {
     F.cozip5(x)
   def cofzip6[F[_], A, B, C, D, E, G](
       x: F[(A \/ (B \/ (C \/ (D \/ (E \/ G)))))])(implicit F: Cozip[F])
-    : (F[A] \/ (F[B] \/ (F[C] \/ (F[D] \/ (F[E] \/ F[G]))))) = F.cozip6(x)
+      : (F[A] \/ (F[B] \/ (F[C] \/ (F[D] \/ (F[E] \/ F[G]))))) = F.cozip6(x)
   def cofzip7[F[_], A, B, C, D, E, G, H](
       x: F[(A \/ (B \/ (C \/ (D \/ (E \/ (G \/ H))))))])(implicit F: Cozip[F])
-    : (F[A] \/ (F[B] \/ (F[C] \/ (F[D] \/ (F[E] \/ (F[G] \/ F[H])))))) =
+      : (F[A] \/ (F[B] \/ (F[C] \/ (F[D] \/ (F[E] \/ (F[G] \/ F[H])))))) =
     F.cozip7(x)
   ////
 }

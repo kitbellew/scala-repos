@@ -49,7 +49,7 @@ object ResourceError {
     NotFound(message)
 
   def all(errors: NonEmptyList[ResourceError])
-    : ResourceError with FatalError with UserError = new ResourceErrors(
+      : ResourceError with FatalError with UserError = new ResourceErrors(
     errors flatMap {
       case ResourceErrors(e0) => e0
       case other              => NonEmptyList(other)

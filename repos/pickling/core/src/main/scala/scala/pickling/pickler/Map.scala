@@ -33,7 +33,7 @@ trait MapPicklers {
       pairTag: FastTypeTag[(K, V)],
       collTag: FastTypeTag[Map[K, V]],
       cbf: CanBuildFrom[Map[K, V], (K, V), Map[K, V]])
-    : Pickler[Map[K, V]] with Unpickler[Map[K, V]] =
+      : Pickler[Map[K, V]] with Unpickler[Map[K, V]] =
     MapPickler[K, V, Map]
 
   locally {
@@ -86,7 +86,7 @@ trait MutableMapPicklers {
       pairTag: FastTypeTag[(K, V)],
       collTag: FastTypeTag[mutable.Map[K, V]],
       cbf: CanBuildFrom[mutable.Map[K, V], (K, V), mutable.Map[K, V]])
-    : Pickler[mutable.Map[K, V]] with Unpickler[mutable.Map[K, V]] =
+      : Pickler[mutable.Map[K, V]] with Unpickler[mutable.Map[K, V]] =
     MapPickler[K, V, mutable.Map]
 
   locally {

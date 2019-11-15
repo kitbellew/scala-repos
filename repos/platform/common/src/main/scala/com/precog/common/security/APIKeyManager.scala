@@ -46,7 +46,7 @@ object APIKeyManager {
     (newUUID() + newUUID() + newUUID()).toLowerCase.replace("-", "")
 }
 
-trait APIKeyManager[M[+ _]] extends Logging { self =>
+trait APIKeyManager[M[+_]] extends Logging { self =>
   implicit def M: Monad[M]
 
   def rootGrantId: M[GrantId]

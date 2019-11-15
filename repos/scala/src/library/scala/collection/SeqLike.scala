@@ -723,7 +723,8 @@ object SeqLike {
         new AbstractSeq[B] with IndexedSeq[B] {
           val length = n1 - n0
           def apply(x: Int) = iso(n0 + x).asInstanceOf[B]
-        } else
+        }
+      else
         new AbstractSeq[B] with IndexedSeq[B] {
           def length = n1 - n0
           def apply(x: Int) = iso(n1 - 1 - x).asInstanceOf[B]

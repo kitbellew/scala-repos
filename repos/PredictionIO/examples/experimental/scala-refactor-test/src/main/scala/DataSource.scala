@@ -28,7 +28,7 @@ class DataSource
   }
 
   override def readEval(sc: SparkContext)
-    : Seq[(TrainingData, EmptyEvaluationInfo, RDD[(Query, ActualResult)])] = {
+      : Seq[(TrainingData, EmptyEvaluationInfo, RDD[(Query, ActualResult)])] = {
     logger.error("Datasource!!!")
     (0 until 3).map { ex =>
       (

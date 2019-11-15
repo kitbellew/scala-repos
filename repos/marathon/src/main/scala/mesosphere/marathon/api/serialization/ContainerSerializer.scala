@@ -142,7 +142,7 @@ object DockerSerializer {
 
 object PortMappingSerializer {
   def toProto(mapping: Container.Docker.PortMapping)
-    : Protos.ExtendedContainerInfo.DockerInfo.PortMapping = {
+      : Protos.ExtendedContainerInfo.DockerInfo.PortMapping = {
     val builder =
       Protos.ExtendedContainerInfo.DockerInfo.PortMapping.newBuilder
         .setContainerPort(mapping.containerPort)
@@ -175,7 +175,7 @@ object PortMappingSerializer {
     )
 
   def toMesos(mapping: Container.Docker.PortMapping)
-    : mesos.Protos.ContainerInfo.DockerInfo.PortMapping = {
+      : mesos.Protos.ContainerInfo.DockerInfo.PortMapping = {
     mesos.Protos.ContainerInfo.DockerInfo.PortMapping.newBuilder
       .setContainerPort(mapping.containerPort)
       .setHostPort(mapping.hostPort)

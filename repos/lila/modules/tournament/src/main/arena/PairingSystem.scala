@@ -159,7 +159,8 @@ object PairingSystem extends AbstractPairingSystem {
                     case Found(b) => b.some
                     case End      => next.some
                     case NoBetter => current
-                  } else current
+                  }
+                else current
             } match {
               case Some(best) => Found(best)
               case None       => NoBetter

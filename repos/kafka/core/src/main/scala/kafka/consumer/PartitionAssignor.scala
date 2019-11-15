@@ -30,7 +30,7 @@ trait PartitionAssignor {
     *         to the same consumer group.
     */
   def assign(ctx: AssignmentContext)
-    : Pool[String, mutable.Map[TopicAndPartition, ConsumerThreadId]]
+      : Pool[String, mutable.Map[TopicAndPartition, ConsumerThreadId]]
 }
 
 object PartitionAssignor {
@@ -46,7 +46,7 @@ class AssignmentContext(
     excludeInternalTopics: Boolean,
     zkUtils: ZkUtils) {
   val myTopicThreadIds
-    : collection.Map[String, collection.Set[ConsumerThreadId]] = {
+      : collection.Map[String, collection.Set[ConsumerThreadId]] = {
     val myTopicCount = TopicCount.constructTopicCount(
       group,
       consumerId,

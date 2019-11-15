@@ -34,7 +34,7 @@ import org.apache.spark.rdd.RDD
   *
   */
 @Since("0.8.0")
-class LinearRegressionModel @Since("1.1.0")(
+class LinearRegressionModel @Since("1.1.0") (
     @Since("1.0.0") override val weights: Vector,
     @Since("0.8.0") override val intercept: Double)
     extends GeneralizedLinearModel(weights, intercept)

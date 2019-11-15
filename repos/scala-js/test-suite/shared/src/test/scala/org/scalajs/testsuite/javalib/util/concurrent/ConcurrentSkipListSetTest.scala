@@ -163,7 +163,7 @@ class ConcurrentSkipListSetTest {
   }
 
   @Test def should_check_contained_values_even_in_double_corner_cases()
-    : Unit = {
+      : Unit = {
     val csls = factory.empty[Double]
 
     assertTrue(csls.add(11111.0))

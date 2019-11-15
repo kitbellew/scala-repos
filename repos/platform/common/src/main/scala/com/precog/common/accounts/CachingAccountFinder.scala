@@ -48,7 +48,7 @@ object CachingAccountFinderSettings {
   )
 }
 
-class CachingAccountFinder[M[+ _]: Monad](
+class CachingAccountFinder[M[+_]: Monad](
     delegate: AccountFinder[M],
     settings: CachingAccountFinderSettings =
       CachingAccountFinderSettings.Default)

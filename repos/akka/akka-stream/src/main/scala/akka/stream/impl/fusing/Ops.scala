@@ -1109,7 +1109,8 @@ private[stream] final class Delay[T](
                 case Backpressure ⇒
                   throw new IllegalStateException(
                     "Delay buffer must never overflow in Backpressure mode")
-              } else {
+              }
+            else {
               grabAndPull(
                 strategy != Backpressure || buffer.capacity < size - 1)
               if (!isTimerActive(timerName)) scheduleOnce(timerName, d)

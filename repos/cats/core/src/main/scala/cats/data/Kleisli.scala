@@ -129,7 +129,7 @@ private[data] sealed abstract class KleisliInstances extends KleisliInstances0 {
     }
 
   implicit def kleisliTransLift[M[_], A]
-    : TransLift[({ type λ[α[_], β] = Kleisli[α, A, β] })#λ, M] =
+      : TransLift[({ type λ[α[_], β] = Kleisli[α, A, β] })#λ, M] =
     new TransLift[({ type λ[α[_], β] = Kleisli[α, A, β] })#λ, M] {
       def liftT[B](ma: M[B]): Kleisli[M, A, B] = Kleisli[M, A, B](a => ma)
     }
@@ -167,7 +167,7 @@ private[data] sealed abstract class KleisliInstances0
 private[data] sealed abstract class KleisliInstances1
     extends KleisliInstances2 {
   implicit def kleisliApplicative[F[_]: Applicative, A]
-    : Applicative[Kleisli[F, A, ?]] = new Applicative[Kleisli[F, A, ?]] {
+      : Applicative[Kleisli[F, A, ?]] = new Applicative[Kleisli[F, A, ?]] {
     def pure[B](x: B): Kleisli[F, A, B] =
       Kleisli.pure[F, A, B](x)
 
@@ -215,7 +215,7 @@ private[data] sealed abstract class KleisliInstances3
 private[data] sealed abstract class KleisliInstances4 {
 
   implicit def kleisliMonadReader[F[_]: Monad, A]
-    : MonadReader[Kleisli[F, A, ?], A] =
+      : MonadReader[Kleisli[F, A, ?], A] =
     new MonadReader[Kleisli[F, A, ?], A] {
       def pure[B](x: B): Kleisli[F, A, B] =
         Kleisli.pure[F, A, B](x)

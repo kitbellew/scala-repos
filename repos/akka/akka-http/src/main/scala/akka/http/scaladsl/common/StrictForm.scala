@@ -132,7 +132,7 @@ object StrictForm {
   implicit def unmarshaller(
       implicit formDataUM: FromEntityUnmarshaller[FormData],
       multipartUM: FromEntityUnmarshaller[Multipart.FormData])
-    : FromEntityUnmarshaller[StrictForm] =
+      : FromEntityUnmarshaller[StrictForm] =
     Unmarshaller.withMaterializer { implicit ec ⇒ implicit fm ⇒ entity ⇒
       def tryUnmarshalToQueryForm: Future[StrictForm] =
         for (formData ← formDataUM(entity).fast) yield {

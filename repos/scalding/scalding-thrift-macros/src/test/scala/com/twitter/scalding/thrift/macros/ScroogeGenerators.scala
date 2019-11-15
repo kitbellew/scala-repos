@@ -145,17 +145,16 @@ object ScroogeGenerators {
         TestEnum.Large,
         TestEnum.Huge)
       aBinary <- Gen.alphaStr.map(s => ByteBuffer.wrap(s.getBytes("UTF-8")))
-    } yield
-      TestTypes(
-        aBool,
-        aByte,
-        aI16,
-        aI32,
-        aI64,
-        aDouble,
-        aString,
-        aEnum,
-        aBinary)
+    } yield TestTypes(
+      aBool,
+      aByte,
+      aI16,
+      aI32,
+      aI64,
+      aDouble,
+      aString,
+      aEnum,
+      aBinary)
   }
 
   implicit def arbitraryTestUnion: Arbitrary[TestUnion] = Arbitrary {
@@ -187,19 +186,18 @@ object ScroogeGenerators {
       aListList <- Gen.listOf(Gen.listOf(Gen.alphaStr))
       aSetList <- Gen.listOf(Gen.listOf(Gen.alphaStr).map(_.toSet))
       aMapList <- Gen.listOf(Gen.listOf(arb[(Int, Int)]).map(_.toMap))
-    } yield
-      TestLists(
-        aBoolList,
-        aByteList,
-        aI16List,
-        aI32List,
-        aI64List,
-        aDoubleList,
-        aStringList,
-        aStructList,
-        aListList,
-        aSetList,
-        aMapList)
+    } yield TestLists(
+      aBoolList,
+      aByteList,
+      aI16List,
+      aI32List,
+      aI64List,
+      aDoubleList,
+      aStringList,
+      aStructList,
+      aListList,
+      aSetList,
+      aMapList)
   }
   case class TestListsPair(a: TestLists, b: TestLists)
   implicit def arbitraryTestListsPair: Arbitrary[TestListsPair] = Arbitrary {
@@ -231,19 +229,18 @@ object ScroogeGenerators {
             .listOf(arb[(Int, Int)])
             .map(l => l.toMap.asInstanceOf[collection.Map[Int, Int]]))
         .map(_.to[collection.Set])
-    } yield
-      TestSets(
-        aBoolSet,
-        aByteSet,
-        aI16Set,
-        aI32Set,
-        aI64Set,
-        aDoubleSet,
-        aStringSet,
-        aStructSet,
-        aListSet,
-        aSetSet,
-        aMapSet)
+    } yield TestSets(
+      aBoolSet,
+      aByteSet,
+      aI16Set,
+      aI32Set,
+      aI64Set,
+      aDoubleSet,
+      aStringSet,
+      aStructSet,
+      aListSet,
+      aSetSet,
+      aMapSet)
   }
   case class TestSetsPair(a: TestSets, b: TestSets)
   implicit def arbitraryTestSetsPair: Arbitrary[TestSetsPair] = Arbitrary {
@@ -290,19 +287,18 @@ object ScroogeGenerators {
             .asInstanceOf[collection.Map[
               collection.Map[Int, Int],
               collection.Map[Int, Int]]])
-    } yield
-      TestMaps(
-        aBoolMap,
-        aByteMap,
-        aI16Map,
-        aI32Map,
-        aI64Map,
-        aDoubleMap,
-        aStringMap,
-        aStructMap,
-        aListMap,
-        aSetMap,
-        aMapMap)
+    } yield TestMaps(
+      aBoolMap,
+      aByteMap,
+      aI16Map,
+      aI32Map,
+      aI64Map,
+      aDoubleMap,
+      aStringMap,
+      aStructMap,
+      aListMap,
+      aSetMap,
+      aMapMap)
   }
   case class TestMapsPair(a: TestMaps, b: TestMaps)
   implicit def arbitraryTestMapsPair: Arbitrary[TestMapsPair] = Arbitrary {

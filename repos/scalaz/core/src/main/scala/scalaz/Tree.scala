@@ -67,9 +67,8 @@ sealed abstract class Tree[A] {
           for {
             subtree <- suspend(t.draw)
             otherSubtrees <- suspend(drawSubTrees(ts))
-          } yield
-            new StringBuilder("|") +:
-              (shift(branch, trunk, subtree) ++ otherSubtrees)
+          } yield new StringBuilder("|") +:
+            (shift(branch, trunk, subtree) ++ otherSubtrees)
       }
 
     def shift(
@@ -158,8 +157,11 @@ sealed abstract class TreeInstances {
     with Monad[Tree]
     with Comonad[Tree]
     with Align[Tree]
-    with Zip[Tree] = new Traverse1[Tree] with Monad[Tree] with Comonad[Tree]
-  with Align[Tree] with Zip[Tree] {
+    with Zip[Tree] = new Traverse1[Tree]
+    with Monad[Tree]
+    with Comonad[Tree]
+    with Align[Tree]
+    with Zip[Tree] {
     def point[A](a: => A): Tree[A] = Tree.Leaf(a)
     def cobind[A, B](fa: Tree[A])(f: Tree[A] => B): Tree[B] = fa cobind f
     def copoint[A](p: Tree[A]): A = p.rootLabel

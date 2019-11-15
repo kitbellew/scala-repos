@@ -870,7 +870,7 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(
       other2: RDD[(K, W2)],
       other3: RDD[(K, W3)],
       partitioner: Partitioner)
-    : RDD[(K, (Iterable[V], Iterable[W1], Iterable[W2], Iterable[W3]))] =
+      : RDD[(K, (Iterable[V], Iterable[W1], Iterable[W2], Iterable[W3]))] =
     self.withScope {
       if (partitioner.isInstanceOf[HashPartitioner] && keyClass.isArray) {
         throw new SparkException(
@@ -915,7 +915,7 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(
       other1: RDD[(K, W1)],
       other2: RDD[(K, W2)],
       partitioner: Partitioner)
-    : RDD[(K, (Iterable[V], Iterable[W1], Iterable[W2]))] = self.withScope {
+      : RDD[(K, (Iterable[V], Iterable[W1], Iterable[W2]))] = self.withScope {
     if (partitioner.isInstanceOf[HashPartitioner] && keyClass.isArray) {
       throw new SparkException(
         "Default partitioner cannot partition array keys.")
@@ -939,7 +939,7 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(
       other1: RDD[(K, W1)],
       other2: RDD[(K, W2)],
       other3: RDD[(K, W3)])
-    : RDD[(K, (Iterable[V], Iterable[W1], Iterable[W2], Iterable[W3]))] =
+      : RDD[(K, (Iterable[V], Iterable[W1], Iterable[W2], Iterable[W3]))] =
     self.withScope {
       cogroup(
         other1,
@@ -962,7 +962,7 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(
     * tuple with the list of values for that key in `this`, `other1` and `other2`.
     */
   def cogroup[W1, W2](other1: RDD[(K, W1)], other2: RDD[(K, W2)])
-    : RDD[(K, (Iterable[V], Iterable[W1], Iterable[W2]))] = self.withScope {
+      : RDD[(K, (Iterable[V], Iterable[W1], Iterable[W2]))] = self.withScope {
     cogroup(other1, other2, defaultPartitioner(self, other1, other2))
   }
 
@@ -999,7 +999,7 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(
       other2: RDD[(K, W2)],
       other3: RDD[(K, W3)],
       numPartitions: Int)
-    : RDD[(K, (Iterable[V], Iterable[W1], Iterable[W2], Iterable[W3]))] =
+      : RDD[(K, (Iterable[V], Iterable[W1], Iterable[W2], Iterable[W3]))] =
     self.withScope {
       cogroup(other1, other2, other3, new HashPartitioner(numPartitions))
     }
@@ -1012,7 +1012,7 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(
 
   /** Alias for cogroup. */
   def groupWith[W1, W2](other1: RDD[(K, W1)], other2: RDD[(K, W2)])
-    : RDD[(K, (Iterable[V], Iterable[W1], Iterable[W2]))] = self.withScope {
+      : RDD[(K, (Iterable[V], Iterable[W1], Iterable[W2]))] = self.withScope {
     cogroup(other1, other2, defaultPartitioner(self, other1, other2))
   }
 
@@ -1021,7 +1021,7 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(
       other1: RDD[(K, W1)],
       other2: RDD[(K, W2)],
       other3: RDD[(K, W3)])
-    : RDD[(K, (Iterable[V], Iterable[W1], Iterable[W2], Iterable[W3]))] =
+      : RDD[(K, (Iterable[V], Iterable[W1], Iterable[W2], Iterable[W3]))] =
     self.withScope {
       cogroup(
         other1,
@@ -1268,7 +1268,8 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(
       committer.setupTask(hadoopContext)
 
       val outputMetricsAndBytesWrittenCallback
-        : Option[(OutputMetrics, () => Long)] = initHadoopOutputMetrics(context)
+          : Option[(OutputMetrics, () => Long)] =
+        initHadoopOutputMetrics(context)
 
       val writer = format
         .getRecordWriter(hadoopContext)
@@ -1364,7 +1365,8 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(
       val taskAttemptId = (context.taskAttemptId % Int.MaxValue).toInt
 
       val outputMetricsAndBytesWrittenCallback
-        : Option[(OutputMetrics, () => Long)] = initHadoopOutputMetrics(context)
+          : Option[(OutputMetrics, () => Long)] =
+        initHadoopOutputMetrics(context)
 
       writer.setup(context.stageId, context.partitionId, taskAttemptId)
       writer.open()

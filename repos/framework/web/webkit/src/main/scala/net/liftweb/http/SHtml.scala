@@ -66,7 +66,7 @@ trait SHtml extends Loggable {
     type EnumerationTypeWorkaround = Enumeration#Value
 
     implicit def enumToStrValPromo[EnumerationTypeWorkaround]
-      : SHtml.PairStringPromoter[EnumerationTypeWorkaround] =
+        : SHtml.PairStringPromoter[EnumerationTypeWorkaround] =
       new SHtml.PairStringPromoter[EnumerationTypeWorkaround] {
         def apply(in: EnumerationTypeWorkaround): String =
           in.toString
@@ -377,7 +377,7 @@ trait SHtml extends Loggable {
     * explicitly capture the template
     */
   def idMemoize(f: IdMemoizeTransform => NodeSeqFuncOrSeqNodeSeqFunc)
-    : IdMemoizeTransform = {
+      : IdMemoizeTransform = {
     new IdMemoizeTransform {
       var latestElem: Elem = <span/>
 
@@ -757,7 +757,7 @@ trait SHtml extends Loggable {
     jsonText(value, exp => json(cmd, exp), attrs: _*)
 
   def ajaxTextElem(settable: Settable { type ValueType = String }, attrs: ElemAttr*)
-    : Elem =
+      : Elem =
     ajaxText(settable.get, (b: String) => { settable.set(b); Noop }, attrs: _*)
 
   def ajaxText(value: String, func: String => JsCmd, attrs: ElemAttr*): Elem =
@@ -958,7 +958,7 @@ trait SHtml extends Loggable {
   }
 
   def ajaxCheckboxElem(settable: Settable { type ValueType = Boolean }, attrs: ElemAttr*)
-    : Elem =
+      : Elem =
     ajaxCheckbox(
       settable.get,
       (b: Boolean) => { settable.set(b); Noop },
@@ -975,7 +975,7 @@ trait SHtml extends Loggable {
       attrs: _*)
 
   def ajaxCheckboxElem(settable: Settable { type ValueType = Boolean }, jsFunc: Call, attrs: ElemAttr*)
-    : Elem =
+      : Elem =
     ajaxCheckbox_*(settable.get, Full(jsFunc), LFuncHolder(in => {
       settable.set(in.exists(toBoolean(_)));
       Noop
@@ -1649,7 +1649,7 @@ trait SHtml extends Loggable {
     * Generate an input element for the Settable
     */
   def textElem(settable: Settable { type ValueType = String }, attrs: ElemAttr*)
-    : Elem =
+      : Elem =
     text_*(settable.get, SFuncHolder(s => settable.set(s)), attrs: _*)
 
   /**
@@ -1664,7 +1664,7 @@ trait SHtml extends Loggable {
     * there will be graceful fallback for non-HTML5 browsers. FIXME
     */
   def email(settable: Settable { type ValueType = String }, attrs: ElemAttr*)
-    : Elem =
+      : Elem =
     email_*(settable.get, SFuncHolder(s => settable.set(s)), attrs: _*)
 
   private def email_*(
@@ -1688,7 +1688,7 @@ trait SHtml extends Loggable {
     * there will be graceful fallback for non-HTML5 browsers. FIXME
     */
   def url(settable: Settable { type ValueType = String }, attrs: ElemAttr*)
-    : Elem =
+      : Elem =
     url_*(settable.get, SFuncHolder(s => settable.set(s)), attrs: _*)
 
   private def url_*(value: String, func: AFuncHolder, attrs: ElemAttr*): Elem =
@@ -1719,7 +1719,7 @@ trait SHtml extends Loggable {
     * there will be graceful fallback for non-HTML5 browsers. FIXME
     */
   def number(settable: Settable { type ValueType = Int }, min: Int, max: Int, attrs: ElemAttr*)
-    : Elem =
+      : Elem =
     number_*(
       settable.get,
       min,
@@ -1767,7 +1767,7 @@ trait SHtml extends Loggable {
     * there will be graceful fallback for non-HTML5 browsers. FIXME
     */
   def number(settable: Settable { type ValueType = Double }, min: Double, max: Double, step: Double, attrs: ElemAttr*)
-    : Elem =
+      : Elem =
     number_double_*(
       settable.get,
       min,
@@ -1813,7 +1813,7 @@ trait SHtml extends Loggable {
     * there will be graceful fallback for non-HTML5 browsers. FIXME
     */
   def range(settable: Settable { type ValueType = Int }, min: Int, max: Int, attrs: ElemAttr*)
-    : Elem =
+      : Elem =
     range_*(
       settable.get,
       min,
@@ -1854,7 +1854,7 @@ trait SHtml extends Loggable {
       Null)
 
   def passwordElem(settable: Settable { type ValueType = String }, attrs: ElemAttr*)
-    : Elem =
+      : Elem =
     makeFormElement("password", SFuncHolder(s => settable.set(s)), attrs: _*) % new UnprefixedAttribute(
       "value",
       Text(settable.get),
@@ -2092,7 +2092,7 @@ trait SHtml extends Loggable {
       options: Seq[SelectableOption[T]],
       default: Box[T],
       onSubmit: T => Any)
-    : (Seq[SelectableOption[String]], Box[String], AFuncHolder) = {
+      : (Seq[SelectableOption[String]], Box[String], AFuncHolder) = {
     val secure = options.map { selectableOption =>
       SelectableOptionWithNonce(
         selectableOption.value,
@@ -2479,7 +2479,7 @@ trait SHtml extends Loggable {
       options: Seq[SelectableOption[T]],
       default: Seq[T],
       onSubmit: List[T] => Any)
-    : (Seq[SelectableOption[String]], Seq[String], AFuncHolder) = {
+      : (Seq[SelectableOption[String]], Seq[String], AFuncHolder) = {
     val o2 = options.toList
 
     val secure: List[SelectableOptionWithNonce[T]] = o2.map {
@@ -2524,7 +2524,7 @@ trait SHtml extends Loggable {
     textarea_*(value, SFuncHolder(func), attrs: _*)
 
   def textareaElem(settable: Settable { type ValueType = String }, attrs: ElemAttr*)
-    : Elem =
+      : Elem =
     textarea_*(settable.get, SFuncHolder(s => settable.set(s)), attrs: _*)
 
   def textarea_*(value: String, func: AFuncHolder, attrs: ElemAttr*): Elem =
@@ -2590,11 +2590,10 @@ trait SHtml extends Loggable {
       attrs: ElemAttr*): ChoiceHolder[String] = {
     fmapFunc(func) { name =>
       val itemList =
-        opts.map(
-          v =>
-            ChoiceItem(v, attrs.foldLeft(<input type="radio" name={name} value={
-              v
-            }/>)(_ % _) % checked(deflt.filter((s: String) => s == v).isDefined)))
+        opts.map(v =>
+          ChoiceItem(v, attrs.foldLeft(<input type="radio" name={name} value={
+            v
+          }/>)(_ % _) % checked(deflt.filter((s: String) => s == v).isDefined)))
       ChoiceHolder(itemList)
     }
   }
@@ -2764,7 +2763,7 @@ trait SHtml extends Loggable {
     * Defines a new checkbox for the Settable
     */
   def checkboxElem(settable: Settable { type ValueType = Boolean }, attrs: ElemAttr*)
-    : NodeSeq = {
+      : NodeSeq = {
     checkbox_id(settable.get, s => settable.set(s), Empty, attrs: _*)
   }
 
@@ -2783,7 +2782,7 @@ trait SHtml extends Loggable {
     * Defines a new checkbox for the Settable
     */
   def checkbox_id(settable: Settable { type ValueType = Boolean }, id: Box[String], attrs: ElemAttr*)
-    : NodeSeq = {
+      : NodeSeq = {
     def from(f: Boolean => Any): List[String] => Boolean =
       (in: List[String]) => {
         f(in.exists(toBoolean(_)))

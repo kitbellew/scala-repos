@@ -108,8 +108,9 @@ object Menu extends DispatchSnippet {
     val expandAny: Boolean =
       S.attr("expand").map(Helpers.toBoolean) openOr true
 
-    val level: Box[Int] = for (lvs <- S.attr("level"); i <- Helpers.asInt(lvs))
-      yield i
+    val level: Box[Int] =
+      for (lvs <- S.attr("level"); i <- Helpers.asInt(lvs))
+        yield i
 
     val toRender: Seq[MenuItem] = (S.attr("item"), S.attr("group")) match {
       case (Full(item), _) =>
@@ -171,15 +172,11 @@ object Menu extends DispatchSnippet {
             case MenuItem(text, uri, kids, true, _, _) if linkToSelf =>
               Helpers.addCssClass(
                 i.cssClass,
-                Elem(
-                  null,
-                  innerTag,
-                  Null,
-                  TopScope,
-                  true,
-                  <xml:group> <a href={uri}>{text}</a>{
-                    ifExpandCurrent(buildUlLine(kids))
-                  }</xml:group>) % S
+                Elem(null, innerTag, Null, TopScope, true, <xml:group> <a href={
+                  uri
+                }>{text}</a>{
+                  ifExpandCurrent(buildUlLine(kids))
+                }</xml:group>) % S
                   .prefixedAttrsToMetaData("li_item", liMap)
               )
 
@@ -312,8 +309,9 @@ object Menu extends DispatchSnippet {
     * </p>
     */
   def title(text: NodeSeq): NodeSeq = {
-    val r = for (request <- S.request;
-                 loc <- request.location) yield loc.title
+    val r =
+      for (request <- S.request;
+           loc <- request.location) yield loc.title
 
     text match {
       case TitleText(attrs, str) => {

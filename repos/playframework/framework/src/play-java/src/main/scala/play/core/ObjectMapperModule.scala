@@ -26,7 +26,7 @@ class ObjectMapperModule extends Module {
 }
 
 @Singleton
-class ObjectMapperProvider @Inject()(lifecycle: ApplicationLifecycle)
+class ObjectMapperProvider @Inject() (lifecycle: ApplicationLifecycle)
     extends Provider[ObjectMapper] {
   lazy val get = {
     val objectMapper = Json.newDefaultMapper()

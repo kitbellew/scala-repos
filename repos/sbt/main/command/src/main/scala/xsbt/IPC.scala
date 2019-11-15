@@ -39,7 +39,8 @@ object IPC {
           new ServerSocket(nextPort, 1, loopback)
         } catch {
           case _: Exception => createServer(attempts - 1)
-        } else
+        }
+      else
         sys.error("Could not connect to socket: maximum attempts exceeded")
     createServer(10)
   }

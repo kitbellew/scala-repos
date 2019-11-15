@@ -42,10 +42,10 @@ import scalaz._
 
 import WebJobManager._
 
-trait AuthService[M[+ _]] { self =>
+trait AuthService[M[+_]] { self =>
   def isValid(apiKey: APIKey): M[Boolean]
 
-  def withM[N[+ _]](implicit t: M ~> N) = new AuthService[N] {
+  def withM[N[+_]](implicit t: M ~> N) = new AuthService[N] {
     def isValid(apiKey: APIKey): N[Boolean] = t(self.isValid(apiKey))
   }
 }
@@ -72,7 +72,7 @@ case class WebAuthService(
   }
 }
 
-case class TestAuthService[M[+ _]](validAPIKeys: Set[APIKey])(
+case class TestAuthService[M[+_]](validAPIKeys: Set[APIKey])(
     implicit M: Applicative[M])
     extends AuthService[M] {
   final def isValid(apiKey: APIKey): M[Boolean] =

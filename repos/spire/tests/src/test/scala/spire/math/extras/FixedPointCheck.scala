@@ -44,7 +44,7 @@ class FixedPointCheck
   }
 
   def build(x: Long, y0: Long, z: Byte, noZero: Boolean)
-    : (Int, Int, FixedPoint, FixedPoint, Rational, Rational) = {
+      : (Int, Int, FixedPoint, FixedPoint, Rational, Rational) = {
     val y = if (y0 == 0L && noZero) 1L else y0
     val d = z.toInt.abs % 11
     val denom = 10 ** (d)

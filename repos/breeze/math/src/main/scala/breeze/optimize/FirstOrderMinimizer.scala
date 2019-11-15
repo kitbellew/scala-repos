@@ -207,7 +207,7 @@ object FirstOrderMinimizer {
   object ConvergenceCheck {
     implicit def fromPartialFunction[T](
         pf: PartialFunction[State[T, _, _], ConvergenceReason])
-      : ConvergenceCheck[T] = new ConvergenceCheck[T] {
+        : ConvergenceCheck[T] = new ConvergenceCheck[T] {
       override type Info = Unit
 
       def update(
@@ -250,7 +250,7 @@ object FirstOrderMinimizer {
     override def apply(
         state: State[T, _, _],
         info: IndexedSeq[ConvergenceCheck[T]#Info])
-      : Option[ConvergenceReason] = {
+        : Option[ConvergenceReason] = {
       (checks zip info).iterator
         .flatMap {
           case (c, i) => c(state, i.asInstanceOf[c.Info])
@@ -472,7 +472,7 @@ object FirstOrderMinimizer {
       "0.10")
     def iterations[T](f: BatchDiffFunction[T], init: T)(
         implicit space: MutableFiniteCoordinateField[T, _, Double])
-      : Iterator[FirstOrderMinimizer[T, BatchDiffFunction[T]]#State] = {
+        : Iterator[FirstOrderMinimizer[T, BatchDiffFunction[T]]#State] = {
       val it =
         if (useStochastic) {
           this.iterations(f.withRandomBatches(batchSize), init)(space)
@@ -489,7 +489,7 @@ object FirstOrderMinimizer {
       "0.10")
     def iterations[T](f: StochasticDiffFunction[T], init: T)(
         implicit space: MutableFiniteCoordinateField[T, _, Double])
-      : Iterator[FirstOrderMinimizer[T, StochasticDiffFunction[T]]#State] = {
+        : Iterator[FirstOrderMinimizer[T, StochasticDiffFunction[T]]#State] = {
       val r =
         if (useL1) {
           new AdaptiveGradientDescent.L1Regularization[T](
@@ -511,7 +511,7 @@ object FirstOrderMinimizer {
       "0.10")
     def iterations[T, K](f: DiffFunction[T], init: T)(
         implicit space: MutableEnumeratedCoordinateField[T, K, Double])
-      : Iterator[LBFGS[T]#State] = {
+        : Iterator[LBFGS[T]#State] = {
       if (useL1)
         new OWLQN[K, T](maxIterations, 5, regularization, tolerance)(space)
           .iterations(f, init)

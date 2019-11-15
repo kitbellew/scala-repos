@@ -258,7 +258,7 @@ class BoundFieldDescriptor[S, T](
       value)
 
   def validateWith(bindingValidators: BindingValidator[T]*)
-    : DataboundFieldDescriptor[S, T] = {
+      : DataboundFieldDescriptor[S, T] = {
     val nwFld = field.validateWith(bindingValidators: _*)
     copy(field = nwFld, validator = nwFld.validator)
   }
@@ -271,7 +271,7 @@ class BoundFieldDescriptor[S, T](
       value: FieldValidation[T] = value,
       field: FieldDescriptor[T] = field,
       validator: Option[Validator[T]] = validator)
-    : DataboundFieldDescriptor[S, T] =
+      : DataboundFieldDescriptor[S, T] =
     new BoundFieldDescriptor(original, value, field, validator)
 
   def transform(endo: T => T): DataboundFieldDescriptor[S, T] =
@@ -346,14 +346,14 @@ class ValidatedBoundFieldDescriptor[S, T](
       value)
 
   def validateWith(bindingValidators: BindingValidator[T]*)
-    : DataboundFieldDescriptor[S, T] = {
+      : DataboundFieldDescriptor[S, T] = {
     copy(field = field.validateWith(bindingValidators: _*))
   }
 
   def copy(
       value: FieldValidation[T] = value,
       field: DataboundFieldDescriptor[S, T] = field)
-    : ValidatedFieldDescriptor[S, T] =
+      : ValidatedFieldDescriptor[S, T] =
     new ValidatedBoundFieldDescriptor(value, field)
 
   def transform(endo: T => T): DataboundFieldDescriptor[S, T] =
@@ -422,23 +422,23 @@ object BindingValidators {
     def greaterThan(
         min: T,
         messageFormat: String = "%%s must be greater than %s")
-      : FieldDescriptor[T] =
+        : FieldDescriptor[T] =
       b.validateWith(BindingValidators.greaterThan(min, messageFormat))
 
     def lessThan(max: T, messageFormat: String = "%%s must be less than %s")
-      : FieldDescriptor[T] =
+        : FieldDescriptor[T] =
       b.validateWith(BindingValidators.lessThan(max, messageFormat))
 
     def greaterThanOrEqualTo(
         min: T,
         messageFormat: String = "%%s must be greater than or equal to %s")
-      : FieldDescriptor[T] =
+        : FieldDescriptor[T] =
       b.validateWith(BindingValidators.greaterThanOrEqualTo(min, messageFormat))
 
     def lessThanOrEqualTo(
         max: T,
         messageFormat: String = "%%s must be less than or equal to %s")
-      : FieldDescriptor[T] =
+        : FieldDescriptor[T] =
       b.validateWith(BindingValidators.lessThanOrEqualTo(max, messageFormat))
   }
 
@@ -457,7 +457,7 @@ object BindingValidators {
 
     def validEmail: FieldDescriptor[String] = validEmail()
     def validEmail(messageFormat: String = "%s must be a valid email address.")
-      : FieldDescriptor[String] =
+        : FieldDescriptor[String] =
       b.validateWith(BindingValidators.validEmail(messageFormat))
 
     def validAbsoluteUrl(
@@ -489,13 +489,13 @@ object BindingValidators {
     def minLength(
         min: Int,
         messageFormat: String = "%%s must be at least %s characters long.")
-      : FieldDescriptor[String] =
+        : FieldDescriptor[String] =
       b.validateWith(BindingValidators.minLength(min, messageFormat))
 
     def enumValue(
         enum: Enumeration,
         messageFormat: String = "%%s must be one of %s.")
-      : FieldDescriptor[String] =
+        : FieldDescriptor[String] =
       b.validateWith(BindingValidators.enumValue(enum, messageFormat))
   }
 
@@ -530,14 +530,14 @@ object BindingValidators {
     nonEmptyCollection[TResult]()
   def nonEmptyCollection[TResult <: Traversable[_]](
       messageFormat: String = "%s must not be empty.")
-    : BindingValidator[TResult] =
+      : BindingValidator[TResult] =
     (s: String) => {
       _ flatMap (Validation.nonEmptyCollection(s, _, messageFormat))
     }
 
   def validEmail: BindingValidator[String] = validEmail()
   def validEmail(messageFormat: String = "%s must be a valid email address.")
-    : BindingValidator[String] =
+      : BindingValidator[String] =
     (s: String) => {
       _ flatMap (Validation.validEmail(s, _, messageFormat))
     }
@@ -587,7 +587,7 @@ object BindingValidators {
   def greaterThan[T <% Ordered[T]](
       min: T,
       messageFormat: String = "%%s must be greater than %s.")
-    : BindingValidator[T] =
+      : BindingValidator[T] =
     (s: String) => {
       _ flatMap Validators.greaterThan(s, min, messageFormat).validate
     }
@@ -595,7 +595,7 @@ object BindingValidators {
   def lessThan[T <% Ordered[T]](
       max: T,
       messageFormat: String = "%%s must be less than %s.")
-    : BindingValidator[T] =
+      : BindingValidator[T] =
     (s: String) => {
       _ flatMap Validators.lessThan(s, max, messageFormat).validate
     }
@@ -603,7 +603,7 @@ object BindingValidators {
   def greaterThanOrEqualTo[T <% Ordered[T]](
       min: T,
       messageFormat: String = "%%s must be greater than or equal to %s.")
-    : BindingValidator[T] =
+      : BindingValidator[T] =
     (s: String) => {
       _ flatMap Validators
         .greaterThanOrEqualTo(s, min, messageFormat)
@@ -613,7 +613,7 @@ object BindingValidators {
   def lessThanOrEqualTo[T <% Ordered[T]](
       max: T,
       messageFormat: String = "%%s must be less than or equal to %s.")
-    : BindingValidator[T] =
+      : BindingValidator[T] =
     (s: String) => {
       _ flatMap Validators.lessThanOrEqualTo(s, max, messageFormat).validate
     }
@@ -621,7 +621,7 @@ object BindingValidators {
   def minLength(
       min: Int,
       messageFormat: String = "%%s must be at least %s characters long.")
-    : BindingValidator[String] =
+      : BindingValidator[String] =
     (s: String) => {
       _ flatMap Validators.minLength(s, min, messageFormat).validate
     }
@@ -636,7 +636,7 @@ object BindingValidators {
   def enumValue(
       enum: Enumeration,
       messageFormat: String = "%%s must be one of %s.")
-    : BindingValidator[String] =
+      : BindingValidator[String] =
     oneOf(messageFormat, enum.values.map(_.toString).toSeq)
 }
 

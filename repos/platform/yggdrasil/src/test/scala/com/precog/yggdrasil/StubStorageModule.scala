@@ -46,7 +46,7 @@ import scalaz.syntax.std.boolean._
 import scala.collection.immutable.SortedMap
 import scala.collection.immutable.TreeMap
 
-trait StubProjectionModule[M[+ _], Block] extends ProjectionModule[M, Block] {
+trait StubProjectionModule[M[+_], Block] extends ProjectionModule[M, Block] {
   self =>
   implicit def M: Monad[M]
 

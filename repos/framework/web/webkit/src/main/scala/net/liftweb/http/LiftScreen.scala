@@ -214,7 +214,7 @@ trait AbstractScreen extends Factory with Loggable {
     }
 
     protected def otherFuncVendors(what: Manifest[ValueType])
-      : Box[(ValueType, ValueType => Any) => NodeSeq] = Empty
+        : Box[(ValueType, ValueType => Any) => NodeSeq] = Empty
 
     def validate: List[FieldError] = currentField.doWith(this) {
       validations.flatMap(_.apply(is))
@@ -837,7 +837,7 @@ trait AbstractScreen extends Factory with Loggable {
       } => Box[NodeSeq]),
       otherValue: OtherValueInitializer[OV],
       stuff: FilterOrValidate[T]*)
-    : Field { type ValueType = T; type OtherValueType = OV } = {
+      : Field { type ValueType = T; type OtherValueType = OV } = {
     val newBinding: Box[FieldBinding] = (stuff.collect {
       case AFieldBinding(i) => i
     }).headOption
@@ -1050,7 +1050,7 @@ trait AbstractScreen extends Factory with Loggable {
       default: => T,
       choices: => Seq[T],
       stuff: FilterOrValidate[T]*)(implicit f: SHtml.PairStringPromoter[T])
-    : Field { type ValueType = T; type OtherValueType = Seq[T] } = {
+      : Field { type ValueType = T; type OtherValueType = Seq[T] } = {
     val eAttr = grabParams(stuff)
 
     makeField[T, Seq[T]](
@@ -1080,7 +1080,7 @@ trait AbstractScreen extends Factory with Loggable {
       default: => Seq[T],
       choices: => Seq[T],
       stuff: FilterOrValidate[Seq[T]]*)(implicit f: SHtml.PairStringPromoter[T])
-    : Field { type ValueType = Seq[T]; type OtherValueType = Seq[T] } = {
+      : Field { type ValueType = Seq[T]; type OtherValueType = Seq[T] } = {
     val eAttr = grabParams(stuff)
 
     makeField[Seq[T], Seq[T]](
@@ -1123,7 +1123,7 @@ trait AbstractScreen extends Factory with Loggable {
       default: => String,
       choices: => Seq[String],
       stuff: FilterOrValidate[String]*)
-    : Field { type ValueType = String; type OtherValueType = Seq[String] } = {
+      : Field { type ValueType = String; type OtherValueType = Seq[String] } = {
     val eAttr = grabParams(stuff)
 
     makeField[String, Seq[String]](
@@ -1264,20 +1264,18 @@ trait ScreenWizardRendered extends Loggable {
 
     def selfFields: List[CssBindFunc] =
       for ((bindingInfo, field) <- bindingInfoWithFields(Self))
-        yield
-          traceInline(
-            "Binding self field %s".format(bindingInfo.selector(formName)),
-            bindingInfo.selector(formName) #> bindField(field))
+        yield traceInline(
+          "Binding self field %s".format(bindingInfo.selector(formName)),
+          bindingInfo.selector(formName) #> bindField(field))
 
     def defaultFields: List[CssBindFunc] =
       for ((bindingInfo, field) <- bindingInfoWithFields(Default))
-        yield
-          traceInline(
-            "Binding default field %s to %s"
-              .format(bindingInfo.selector(formName), defaultFieldNodeSeq),
-            bindingInfo.selector(formName) #> bindField(field)(
-              defaultFieldNodeSeq)
-          )
+        yield traceInline(
+          "Binding default field %s to %s"
+            .format(bindingInfo.selector(formName), defaultFieldNodeSeq),
+          bindingInfo.selector(formName) #> bindField(field)(
+            defaultFieldNodeSeq)
+        )
 
     def customFields: List[CssBindFunc] =
       for {
@@ -1286,12 +1284,11 @@ trait ScreenWizardRendered extends Loggable {
         custom <- Some(bindingInfo.bindingStyle) collect {
           case c: Custom => c
         }
-      } yield
-        traceInline(
-          "Binding custom field %s to %s"
-            .format(bindingInfo.selector(formName), custom.template),
-          bindingInfo.selector(formName) #> bindField(field)(custom.template)
-        )
+      } yield traceInline(
+        "Binding custom field %s to %s"
+          .format(bindingInfo.selector(formName), custom.template),
+        bindingInfo.selector(formName) #> bindField(field)(custom.template)
+      )
 
     def dynamicFields: List[CssBindFunc] =
       for {

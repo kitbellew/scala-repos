@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory
 
 import scala.collection.JavaConverters._
 
-class TaskOpFactoryImpl @Inject()(config: MarathonConf, clock: Clock)
+class TaskOpFactoryImpl @Inject() (config: MarathonConf, clock: Clock)
     extends TaskOpFactory {
 
   private[this] val log = LoggerFactory.getLogger(getClass)
@@ -148,7 +148,7 @@ class TaskOpFactoryImpl @Inject()(config: MarathonConf, clock: Clock)
       task: Task,
       resourceMatch: Option[ResourceMatcher.ResourceMatch],
       volumeMatch: Option[PersistentVolumeMatcher.VolumeMatch])
-    : Option[TaskOp] = {
+      : Option[TaskOp] = {
 
     // create a TaskBuilder that used the id of the existing task as id for the created TaskInfo
     new TaskBuilder(app, (_) => task.taskId, config)

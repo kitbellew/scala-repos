@@ -461,24 +461,22 @@ trait EntityPage extends HtmlPage {
         {
       // linearization
       NodeSeq fromSeq (for ((superTpl, superType) <- (tpl.linearizationTemplates zip tpl.linearizationTypes))
-        yield
-          <div class="parent" name={superTpl.qualifiedName}>
+        yield <div class="parent" name={superTpl.qualifiedName}>
               <h3>Inherited from {
-            typeToHtmlWithStupidTypes(tpl, superTpl, superType)
-          }</h3>
+          typeToHtmlWithStupidTypes(tpl, superTpl, superType)
+        }</h3>
             </div>)
     }
         {
       // implicitly inherited
       NodeSeq fromSeq (for (conversion <- (tpl.conversions))
-        yield
-          <div class="conversion" name={conversion.conversionQualifiedName}>
+        yield <div class="conversion" name={conversion.conversionQualifiedName}>
               <h3>Inherited by implicit conversion {
-            conversion.conversionShortName
-          } from
+          conversion.conversionShortName
+        } from
                 {typeToHtml(tpl.resultType, hasLinks = true)} to {
-            typeToHtml(conversion.targetType, hasLinks = true)
-          }
+          typeToHtml(conversion.targetType, hasLinks = true)
+        }
               </h3>
             </div>)
     }
@@ -493,16 +491,15 @@ trait EntityPage extends HtmlPage {
         .map(_._2)
       // linearization
       NodeSeq fromSeq (for (group <- orderedGroups)
-        yield
-          <div class="group" name={group}>
+        yield <div class="group" name={group}>
               <h3>{tpl.groupName(group)}</h3>
               {
-            tpl.groupDescription(group) match {
-              case Some(body) =>
-                <div class="comment cmt">{bodyToHtml(body)}</div>
-              case _ => NodeSeq.Empty
-            }
+          tpl.groupDescription(group) match {
+            case Some(body) =>
+              <div class="comment cmt">{bodyToHtml(body)}</div>
+            case _ => NodeSeq.Empty
           }
+        }
             </div>)
     }
         </div>
@@ -884,8 +881,9 @@ trait EntityPage extends HtmlPage {
               if (comment.example.length > 1) "s" else ""
             }:
                <ol>{
-              val exampleXml: List[NodeSeq] = for (ex <- comment.example)
-                yield <li class="cmt">{bodyToHtml(ex)}</li>
+              val exampleXml: List[NodeSeq] =
+                for (ex <- comment.example)
+                  yield <li class="cmt">{bodyToHtml(ex)}</li>
               exampleXml.reduceLeft(_ ++ Text(", ") ++ _)
             }</ol>
             </div>
@@ -907,8 +905,9 @@ trait EntityPage extends HtmlPage {
           orEmpty(comment.note) {
             <dt>Note</dt>
             <dd>{
-              val noteXml: List[NodeSeq] = for (note <- comment.note)
-                yield <span class="cmt">{bodyToHtml(note)}</span>
+              val noteXml: List[NodeSeq] =
+                for (note <- comment.note)
+                  yield <span class="cmt">{bodyToHtml(note)}</span>
               noteXml.reduceLeft(_ ++ Text(", ") ++ _)
             }</dd>
           }
@@ -917,8 +916,9 @@ trait EntityPage extends HtmlPage {
           orEmpty(comment.see) {
             <dt>See also</dt>
             <dd>{
-              val seeXml: List[NodeSeq] = for (see <- comment.see)
-                yield <span class="cmt">{bodyToHtml(see)}</span>
+              val seeXml: List[NodeSeq] =
+                for (see <- comment.see)
+                  yield <span class="cmt">{bodyToHtml(see)}</span>
               seeXml.reduceLeft(_ ++ _)
             }</dd>
           }
@@ -938,8 +938,9 @@ trait EntityPage extends HtmlPage {
           orEmpty(comment.todo) {
             <dt>To do</dt>
             <dd>{
-              val todoXml: List[NodeSeq] = (for (todo <- comment.todo)
-                yield <span class="cmt">{bodyToHtml(todo)}</span>)
+              val todoXml: List[NodeSeq] =
+                (for (todo <- comment.todo)
+                  yield <span class="cmt">{bodyToHtml(todo)}</span>)
               todoXml.reduceLeft(_ ++ _)
             }</dd>
           }
@@ -1027,7 +1028,8 @@ trait EntityPage extends HtmlPage {
             } else NodeSeq.Empty
           } else NodeSeq.Empty
         case _ => NodeSeq.Empty
-      } else NodeSeq.Empty // diagrams not generated
+      }
+      else NodeSeq.Empty // diagrams not generated
 
     val typeHierarchy = createDiagram(
       _.inheritanceDiagram,
@@ -1364,7 +1366,8 @@ trait EntityPage extends HtmlPage {
           sig
         case tpl: TemplateEntity =>
           Text(tpl.name)
-      } else
+      }
+    else
       typeToHtml(superType, hasLinks = true)
 
   private def constraintToHtml(constraint: Constraint): NodeSeq =

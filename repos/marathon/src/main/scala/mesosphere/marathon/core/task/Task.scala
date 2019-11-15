@@ -114,9 +114,8 @@ object Task {
           current <- status.mesosStatus
           update <- taskStatus.mesosStatus
           newStatus <- updatedHealthOrState(current, update)
-        } yield
-          TaskStateChange.Update(
-            copy(status = status.copy(mesosStatus = Some(newStatus))))
+        } yield TaskStateChange.Update(
+          copy(status = status.copy(mesosStatus = Some(newStatus))))
 
         healthOrStateChange.getOrElse {
           log.debug(
@@ -226,9 +225,8 @@ object Task {
           current <- status.mesosStatus
           update <- taskStatus.mesosStatus
           newStatus <- updatedHealthOrState(current, update)
-        } yield
-          TaskStateChange.Update(
-            copy(status = status.copy(mesosStatus = Some(newStatus))))
+        } yield TaskStateChange.Update(
+          copy(status = status.copy(mesosStatus = Some(newStatus))))
 
         healthOrStateChange.getOrElse {
           log.debug(

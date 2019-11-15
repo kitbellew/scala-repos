@@ -118,7 +118,7 @@ object InteriorPoint {
       x: DenseVector[Double],
       s: DenseVector[Double],
       z: DenseVector[Double])
-    : (DenseVector[Double], DenseVector[Double], DenseVector[Double]) = {
+      : (DenseVector[Double], DenseVector[Double], DenseVector[Double]) = {
     val XiZ = diag(z :/ s)
 
     val AtXiZ = (A.t * XiZ).asInstanceOf[DenseMatrix[Double]]

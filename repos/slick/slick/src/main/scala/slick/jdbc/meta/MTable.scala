@@ -46,7 +46,7 @@ object MTable {
       else MTable(MQName.from(r), r.<<, r.<<, None, None, None)
     }
   def getTables(namePattern: String)
-    : BasicStreamingAction[Vector[MTable], MTable, Effect.Read] =
+      : BasicStreamingAction[Vector[MTable], MTable, Effect.Read] =
     getTables(Some(""), Some(""), Some(namePattern), None)
   def getTables: BasicStreamingAction[Vector[MTable], MTable, Effect.Read] =
     getTables(Some(""), Some(""), None, None)

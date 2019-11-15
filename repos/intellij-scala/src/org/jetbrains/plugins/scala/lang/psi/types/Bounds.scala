@@ -404,7 +404,7 @@ object Bounds {
       depth: Int,
       checkWeak: Boolean,
       count: Int = 1)(implicit stopAddingUpperBound: Boolean)
-    : (ScType, Option[ScExistentialArgument]) = {
+      : (ScType, Option[ScExistentialArgument]) = {
     if (substed1 equiv substed2) (substed1, None)
     else {
       if (substed1 conforms substed2) {

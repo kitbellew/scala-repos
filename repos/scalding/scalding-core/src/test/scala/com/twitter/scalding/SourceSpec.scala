@@ -105,7 +105,6 @@ case class RemoveOneTsv(p: String)
 
 class AddRemoveOneJob(args: Args) extends Job(args) {
   AddOneTsv("input").read
-
   //just for fun lets just switch all 1s with 2s
     .map('three -> 'three) { s: String =>
       "2"

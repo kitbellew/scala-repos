@@ -96,9 +96,9 @@ class NamedDatabaseSpec extends PlaySpecification {
   }
 }
 
-case class DefaultComponent @Inject()(db: Database)
+case class DefaultComponent @Inject() (db: Database)
 
-case class NamedDefaultComponent @Inject()(
+case class NamedDefaultComponent @Inject() (
     @NamedDatabase("default") db: Database)
 
-case class NamedOtherComponent @Inject()(@NamedDatabase("other") db: Database)
+case class NamedOtherComponent @Inject() (@NamedDatabase("other") db: Database)

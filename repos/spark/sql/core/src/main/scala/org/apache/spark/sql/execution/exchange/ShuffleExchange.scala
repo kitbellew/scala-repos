@@ -98,7 +98,7 @@ case class ShuffleExchange(
   private[sql] def preparePostShuffleRDD(
       shuffleDependency: ShuffleDependency[Int, InternalRow, InternalRow],
       specifiedPartitionStartIndices: Option[Array[Int]] = None)
-    : ShuffledRowRDD = {
+      : ShuffledRowRDD = {
     // If an array of partition start indices is provided, we need to use this array
     // to create the ShuffledRowRDD. Also, we need to update newPartitioning to
     // update the number of post-shuffle partitions.
@@ -216,7 +216,7 @@ object ShuffleExchange {
       outputAttributes: Seq[Attribute],
       newPartitioning: Partitioning,
       serializer: Serializer)
-    : ShuffleDependency[Int, InternalRow, InternalRow] = {
+      : ShuffleDependency[Int, InternalRow, InternalRow] = {
     val part: Partitioner = newPartitioning match {
       case RoundRobinPartitioning(numPartitions) =>
         new HashPartitioner(numPartitions)

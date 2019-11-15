@@ -59,7 +59,7 @@ trait JobQueryStateMonad extends SwappableMonad[JobQueryState] {
   /** Force the job to immediately abort. */
   def abort(): Boolean
 
-  def swap[M[+ _], A](state: JobQueryState[M[A]])(
+  def swap[M[+_], A](state: JobQueryState[M[A]])(
       implicit M: Monad[M]): M[JobQueryState[A]] = {
     state match {
       case Running(resources, ma) => M.map(ma)(Running(resources, _))

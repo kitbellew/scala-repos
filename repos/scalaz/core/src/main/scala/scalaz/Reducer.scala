@@ -145,7 +145,7 @@ sealed abstract class ReducerInstances {
     unitReducer(s => Tag[Short, Multiplication](s))
 
   implicit val BigIntProductReducer
-    : Reducer[BigInt, BigInt @@ Multiplication] = {
+      : Reducer[BigInt, BigInt @@ Multiplication] = {
     import std.math.bigInt._
     unitReducer(b => Tag[BigInt, Multiplication](b))
   }

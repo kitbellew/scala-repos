@@ -292,7 +292,7 @@ class YahooDataSource(val params: YahooDataSource.Params)
   }
 
   override def read(sc: SparkContext)
-    : Seq[(RDD[TrainingData], DataParams, RDD[(QueryDate, AnyRef)])] = {
+      : Seq[(RDD[TrainingData], DataParams, RDD[(QueryDate, AnyRef)])] = {
     val historicalSet = getHistoricalDataSet()
     //data.foreach { println }
     val rawData = getRawData(historicalSet)

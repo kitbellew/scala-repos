@@ -86,7 +86,7 @@ object arbitrary extends ArbitraryInstances0 {
     Arbitrary(F.arbitrary.map(fb => Func.appFunc[F, A, B](_ => fb)))
 
   implicit def writerArbitrary[L: Arbitrary, V: Arbitrary]
-    : Arbitrary[Writer[L, V]] =
+      : Arbitrary[Writer[L, V]] =
     writerTArbitrary[Id, L, V]
 
   // until this is provided by scalacheck

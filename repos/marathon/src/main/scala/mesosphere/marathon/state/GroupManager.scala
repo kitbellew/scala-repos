@@ -29,7 +29,7 @@ import scala.util.{Failure, Success}
   * The group manager is the facade for all group related actions.
   * It persists the state of a group and initiates deployments.
   */
-class GroupManager @Singleton @Inject()(
+class GroupManager @Singleton @Inject() (
     @Named(ModuleNames.SERIALIZE_GROUP_UPDATES) serializeUpdates: CapConcurrentExecutions,
     scheduler: MarathonSchedulerService,
     groupRepo: GroupRepository,

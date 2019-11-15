@@ -53,9 +53,8 @@ object PhoneCode {
               if (matchingWords.nonEmpty) //spead the tree
                 for ((translated, remaining) <- matchingWords.map(
                        e => e -> matchAgainst.drop(e.count(_.isLetter))))
-                  yield
-                    (current
-                      .copy(current.translated + " " + translated, remaining))
+                  yield (current
+                    .copy(current.translated + " " + translated, remaining))
               else current.asFallback(matchAgainst)
             }
             allMatches(current.remaining).flatMap(collectPossibleTranslations)

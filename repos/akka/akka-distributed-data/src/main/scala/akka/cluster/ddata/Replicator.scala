@@ -148,7 +148,7 @@ final class ReplicatorSettings(
       dispatcher: String = dispatcher,
       pruningInterval: FiniteDuration = pruningInterval,
       maxPruningDissemination: FiniteDuration = maxPruningDissemination)
-    : ReplicatorSettings =
+      : ReplicatorSettings =
     new ReplicatorSettings(
       role,
       gossipInterval,
@@ -914,9 +914,9 @@ final class Replicator(settings: ReplicatorSettings)
   var statusTotChunks = 0
 
   val subscribers = new mutable.HashMap[String, mutable.Set[ActorRef]]
-  with mutable.MultiMap[String, ActorRef]
+    with mutable.MultiMap[String, ActorRef]
   val newSubscribers = new mutable.HashMap[String, mutable.Set[ActorRef]]
-  with mutable.MultiMap[String, ActorRef]
+    with mutable.MultiMap[String, ActorRef]
   var subscriptionKeys = Map.empty[String, KeyR]
 
   override def preStart(): Unit = {

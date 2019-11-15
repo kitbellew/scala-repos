@@ -52,7 +52,7 @@ object TestTapFactory extends Serializable {
   def apply[A, B](
       src: Source,
       scheme: Scheme[JobConf, RecordReader[_, _], OutputCollector[_, _], A, B])
-    : TestTapFactory = apply(src, scheme, SinkMode.REPLACE)
+      : TestTapFactory = apply(src, scheme, SinkMode.REPLACE)
   def apply[A, B](
       src: Source,
       scheme: Scheme[JobConf, RecordReader[_, _], OutputCollector[_, _], A, B],
@@ -73,8 +73,8 @@ class TestTapFactory(src: Source, sinkMode: SinkMode) extends Serializable {
       .map { _.getSinkFields }
       .getOrElse(sys.error("No sinkFields defined"))
 
-  def hdfsScheme
-    : Option[Scheme[JobConf, RecordReader[_, _], OutputCollector[_, _], _, _]] =
+  def hdfsScheme: Option[
+    Scheme[JobConf, RecordReader[_, _], OutputCollector[_, _], _, _]] =
     None
 
   def createTap(readOrWrite: AccessMode)(implicit mode: Mode): Tap[_, _, _] = {

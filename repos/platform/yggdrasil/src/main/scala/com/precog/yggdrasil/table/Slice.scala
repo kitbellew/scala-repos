@@ -1082,7 +1082,7 @@ trait Slice { source =>
     }
   }
 
-  def renderJson[M[+ _]](delimiter: String)(
+  def renderJson[M[+_]](delimiter: String)(
       implicit M: Monad[M]): (StreamT[M, CharBuffer], Boolean) = {
     if (columns.isEmpty) {
       (StreamT.empty, false)
@@ -1999,7 +1999,7 @@ object Slice {
       sliceIndex: Int,
       sliceSize: Int,
       remapPath: Option[JPath => CPath] = None)
-    : Map[ColumnRef, ArrayColumn[_]] = {
+      : Map[ColumnRef, ArrayColumn[_]] = {
     jv.flattenWithPath.foldLeft(into) {
       case (acc, (jpath, JUndefined)) => acc
       case (acc, (jpath, v)) =>

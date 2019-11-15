@@ -30,7 +30,7 @@ trait ParSeq[T]
     with ParSeqLike[T, ParSeq[T], scala.collection.mutable.Seq[T]] {
   self =>
   override def companion
-    : GenericCompanion[ParSeq] with GenericParCompanion[ParSeq] = ParSeq
+      : GenericCompanion[ParSeq] with GenericParCompanion[ParSeq] = ParSeq
   //protected[this] override def newBuilder = ParSeq.newBuilder[T]
 
   def update(i: Int, elem: T): Unit

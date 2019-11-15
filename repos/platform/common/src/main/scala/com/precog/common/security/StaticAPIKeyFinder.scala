@@ -33,7 +33,7 @@ import scalaz.std.option._
 import scalaz.syntax.monad._
 import Permission._
 
-class StaticAPIKeyFinder[M[+ _]](apiKey: APIKey)(implicit val M: Monad[M])
+class StaticAPIKeyFinder[M[+_]](apiKey: APIKey)(implicit val M: Monad[M])
     extends APIKeyFinder[M]
     with Logging { self =>
   private val permissions = Set[Permission](

@@ -163,7 +163,7 @@ class TupleTest {
   @Test def should_support_tuple_of_8(): Unit = {
     val jsObj = js.Tuple8("1", "2", "3", "4", "5", "6", "7", 8)
     val scalaObj
-      : (String, String, String, String, String, String, String, Int) = jsObj
+        : (String, String, String, String, String, String, String, Int) = jsObj
     val t8IsInt: Int = js.Tuple8.unapply(jsObj).get._8
 
     assertEquals(8, jsObj._8)
@@ -177,8 +177,16 @@ class TupleTest {
 
   @Test def should_support_tuple_of_9(): Unit = {
     val jsObj = js.Tuple9("1", "2", "3", "4", "5", "6", "7", "8", 9)
-    val scalaObj
-      : (String, String, String, String, String, String, String, String, Int) =
+    val scalaObj: (
+        String,
+        String,
+        String,
+        String,
+        String,
+        String,
+        String,
+        String,
+        Int) =
       jsObj
     val t9IsInt: Int = js.Tuple9.unapply(jsObj).get._9
 

@@ -87,11 +87,10 @@ private[twitter] object ZipkinTracerTest {
       ann <- genAnnotation
       tid <- arbitrary[Long]
       sid <- arbitrary[Long]
-    } yield
-      events.Event(
-        etype,
-        Time.now,
-        objectVal = ann,
-        traceIdVal = tid,
-        spanIdVal = sid)
+    } yield events.Event(
+      etype,
+      Time.now,
+      objectVal = ann,
+      traceIdVal = tid,
+      spanIdVal = sid)
 }

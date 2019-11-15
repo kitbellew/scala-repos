@@ -36,7 +36,7 @@ class SyntaxTest extends SpireTests with Checkers with BaseSyntaxTest {
   case class Positive[A](val x: A)
 
   implicit def ArbPositive[A: Ring: Eq: Signed: Arbitrary]
-    : Arbitrary[Positive[A]] = {
+      : Arbitrary[Positive[A]] = {
     Arbitrary(
       arbitrary[A]
         .map { a =>

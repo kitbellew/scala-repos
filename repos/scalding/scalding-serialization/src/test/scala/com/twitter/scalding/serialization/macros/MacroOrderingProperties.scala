@@ -74,15 +74,14 @@ object TestCC {
       anStrOption <- arb[Option[String]]
       anOptionOfAListOfStrings <- arb[Option[List[String]]]
       aBB <- arb[ByteBuffer]
-    } yield
-      TestCC(
-        aInt,
-        aLong,
-        anOption,
-        aDouble,
-        anStrOption,
-        anOptionOfAListOfStrings,
-        aBB)
+    } yield TestCC(
+      aInt,
+      aLong,
+      anOption,
+      aDouble,
+      anStrOption,
+      anOptionOfAListOfStrings,
+      aBB)
   }
 
   implicit def arbitraryTestCaseClassB: Arbitrary[TestCaseClassB] = Arbitrary {
@@ -124,7 +123,7 @@ object TestCC {
     }
 
   implicit def arbitraryTestSealedAbstractClass
-    : Arbitrary[TestSealedAbstractClass] = Arbitrary {
+      : Arbitrary[TestSealedAbstractClass] = Arbitrary {
     for {
       testSealedAbstractClass <- Gen.oneOf(A, B)
     } yield testSealedAbstractClass
@@ -263,7 +262,7 @@ class MacroOrderingProperties
 
   def collectionArb[C[_], T: Arbitrary](
       implicit cbf: collection.generic.CanBuildFrom[Nothing, T, C[T]])
-    : Arbitrary[C[T]] = Arbitrary {
+      : Arbitrary[C[T]] = Arbitrary {
     gen[List[T]].map { l =>
       val builder = cbf()
       l.foreach { builder += _ }

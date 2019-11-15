@@ -246,7 +246,7 @@ case class CatalogTable(
       outputFormat: Option[String] = storage.outputFormat,
       serde: Option[String] = storage.serde,
       serdeProperties: Map[String, String] = storage.serdeProperties)
-    : CatalogTable = {
+      : CatalogTable = {
     copy(
       storage = CatalogStorageFormat(
         locationUri,

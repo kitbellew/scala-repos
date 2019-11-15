@@ -192,7 +192,7 @@ object SparkEnv extends Logging {
       listenerBus: LiveListenerBus,
       numCores: Int,
       mockOutputCommitCoordinator: Option[OutputCommitCoordinator] = None)
-    : SparkEnv = {
+      : SparkEnv = {
     assert(
       conf.contains("spark.driver.host"),
       "spark.driver.host is not set on the driver!")
@@ -251,7 +251,7 @@ object SparkEnv extends Logging {
       numUsableCores: Int,
       listenerBus: LiveListenerBus = null,
       mockOutputCommitCoordinator: Option[OutputCommitCoordinator] = None)
-    : SparkEnv = {
+      : SparkEnv = {
 
     // Listener bus is only used on the driver
     if (isDriver) {

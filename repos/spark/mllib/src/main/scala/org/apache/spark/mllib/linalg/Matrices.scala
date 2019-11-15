@@ -284,7 +284,7 @@ private[spark] class MatrixUDT extends UserDefinedType[Matrix] {
   */
 @Since("1.0.0")
 @SQLUserDefinedType(udt = classOf[MatrixUDT])
-class DenseMatrix @Since("1.3.0")(
+class DenseMatrix @Since("1.3.0") (
     @Since("1.0.0") val numRows: Int,
     @Since("1.0.0") val numCols: Int,
     @Since("1.0.0") val values: Array[Double],
@@ -585,7 +585,7 @@ object DenseMatrix {
   */
 @Since("1.2.0")
 @SQLUserDefinedType(udt = classOf[MatrixUDT])
-class SparseMatrix @Since("1.3.0")(
+class SparseMatrix @Since("1.3.0") (
     @Since("1.2.0") val numRows: Int,
     @Since("1.2.0") val numCols: Int,
     @Since("1.2.0") val colPtrs: Array[Int],

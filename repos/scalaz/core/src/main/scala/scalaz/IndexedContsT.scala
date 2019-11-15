@@ -105,7 +105,7 @@ trait IndexedContsTFunctions {
 
   def xhoist[W[_], M[_], N[_], R, O](f: M ~> N, g: N ~> M)(
       implicit W: Functor[W])
-    : IndexedContsT[W, M, R, O, ?] ~> IndexedContsT[W, N, R, O, ?] =
+      : IndexedContsT[W, M, R, O, ?] ~> IndexedContsT[W, N, R, O, ?] =
     new (IndexedContsT[W, M, R, O, ?] ~> IndexedContsT[W, N, R, O, ?]) {
       def apply[A](
           fa: IndexedContsT[W, M, R, O, A]): IndexedContsT[W, N, R, O, A] =
@@ -120,7 +120,7 @@ trait IndexedContsTFunctions {
     }
 
   def contracohoist[W[_], V[_], M[_], R, O](f: V ~> W)
-    : (IndexedContsT[W, M, R, O, ?] ~> IndexedContsT[V, M, R, O, ?]) =
+      : (IndexedContsT[W, M, R, O, ?] ~> IndexedContsT[V, M, R, O, ?]) =
     new (IndexedContsT[W, M, R, O, ?] ~> IndexedContsT[V, M, R, O, ?]) {
       def apply[A](
           fa: IndexedContsT[W, M, R, O, A]): IndexedContsT[V, M, R, O, A] =

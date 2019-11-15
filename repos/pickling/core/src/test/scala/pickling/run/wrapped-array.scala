@@ -13,7 +13,7 @@ class WrappedArrayTest extends FunSuite {
       implicit pf: PickleFormat): Pickler[WrappedArray.ofRef[AnyRef]]
     with Unpickler[WrappedArray.ofRef[AnyRef]] =
     new Pickler[WrappedArray.ofRef[AnyRef]]
-    with Unpickler[WrappedArray.ofRef[AnyRef]] {
+      with Unpickler[WrappedArray.ofRef[AnyRef]] {
 
       val format: PickleFormat = pf
 

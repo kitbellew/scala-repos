@@ -72,7 +72,7 @@ object ChiSquared
     Gamma.sufficientStatisticFor(t)
 
   def likelihoodFunction(stats: ChiSquared.SufficientStatistic)
-    : DiffFunction[ChiSquared.Parameter] = {
+      : DiffFunction[ChiSquared.Parameter] = {
     val inner = Gamma.likelihoodFunction(stats)
     new DiffFunction[ChiSquared.Parameter] {
       def calculate(x: ChiSquared.Parameter): (Double, ChiSquared.Parameter) = {

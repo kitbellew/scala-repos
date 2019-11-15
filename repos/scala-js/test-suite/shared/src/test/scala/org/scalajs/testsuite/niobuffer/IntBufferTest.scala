@@ -51,12 +51,12 @@ class WrappedIntBufferTest extends IntBufferTest {
 
 class WrappedIntReadOnlyBufferTest extends IntBufferTest {
   val factory: Factory = new WrappedIntBufferFactory
-  with BufferFactory.ReadOnlyBufferFactory
+    with BufferFactory.ReadOnlyBufferFactory
 }
 
 class AllocIntSlicedBufferTest extends IntBufferTest {
   val factory: Factory = new AllocIntBufferFactory
-  with BufferFactory.SlicedBufferFactory
+    with BufferFactory.SlicedBufferFactory
 }
 
 // Int views of byte buffers
@@ -109,7 +109,7 @@ abstract class ReadOnlyIntViewOfByteBufferTest(
 
   val factory: BufferFactory.IntBufferFactory = {
     new ByteBufferIntViewFactory(byteBufferFactory, order)
-    with BufferFactory.ReadOnlyBufferFactory
+      with BufferFactory.ReadOnlyBufferFactory
   }
 }
 

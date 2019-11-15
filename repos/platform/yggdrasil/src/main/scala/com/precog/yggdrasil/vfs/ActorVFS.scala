@@ -201,7 +201,7 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
     /**
       * Creates a blob from a data stream.
       */
-    def createBlob[M[+ _]](
+    def createBlob[M[+_]](
         versionDir: File,
         mimeType: MimeType,
         authorities: Authorities,
@@ -371,7 +371,7 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
     }
 
     def writeAllSync(data: Seq[(Long, EventMessage)])
-      : EitherT[Future, ResourceError, PrecogUnit] = EitherT {
+        : EitherT[Future, ResourceError, PrecogUnit] = EitherT {
       implicit val timeout = sliceIngestTimeout
       for {
         // it's necessary to group by path then traverse since each path will respond to ingest independently.

@@ -87,7 +87,8 @@ object Decode {
         if (inner == "") {
           case x: MethodSymbol if x.isCaseAccessor && (x.name endsWith " ") =>
             List(x.name dropRight 1)
-        } else {
+        }
+        else {
           case x: ClassSymbol if x.name == inner =>
             val xs =
               x.children filter

@@ -118,13 +118,12 @@ private[twitter] object ThriftUtil {
         cons <- findConstructor(
           clientCls,
           scrooge3FinagleClientWithRepClassifierParamTypes: _*)
-      } yield
-        cons.newInstance(
-          underlying,
-          protocolFactory,
-          "",
-          sr,
-          responseClassifier)
+      } yield cons.newInstance(
+        underlying,
+        protocolFactory,
+        "",
+        sr,
+        responseClassifier)
 
     def tryScrooge3FinagledClient: Option[Iface] =
       for {

@@ -256,7 +256,7 @@ private[data] sealed abstract class ValidatedInstances
     }
 
   implicit def validatedInstances[E](implicit E: Semigroup[E])
-    : Traverse[Validated[E, ?]] with ApplicativeError[Validated[E, ?], E] =
+      : Traverse[Validated[E, ?]] with ApplicativeError[Validated[E, ?], E] =
     new Traverse[Validated[E, ?]] with ApplicativeError[Validated[E, ?], E] {
       def traverse[F[_]: Applicative, A, B](fa: Validated[E, A])(
           f: A => F[B]): F[Validated[E, B]] =
@@ -306,7 +306,7 @@ private[data] sealed abstract class ValidatedInstances1
     }
 
   implicit def validatedPartialOrder[A: PartialOrder, B: PartialOrder]
-    : PartialOrder[Validated[A, B]] =
+      : PartialOrder[Validated[A, B]] =
     new PartialOrder[Validated[A, B]] {
       def partialCompare(x: Validated[A, B], y: Validated[A, B]): Double =
         x partialCompare y

@@ -9,7 +9,7 @@ import scala.collection.JavaConverters._
 
 import javax.inject.Inject
 
-class Application @Inject()(env: Environment, configuration: Configuration)
+class Application @Inject() (env: Environment, configuration: Configuration)
     extends Controller {
 
   def index = Action {

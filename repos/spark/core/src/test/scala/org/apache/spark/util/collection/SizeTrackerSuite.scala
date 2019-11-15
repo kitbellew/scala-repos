@@ -130,26 +130,26 @@ private object SizeTrackerSuite {
     *   SizeEstimator    2000 ms
     */
   def vectorSpeedTest(numElements: Int): Unit = {
-    val baseTimes = for (i <- 0 until 10)
-      yield
-        time {
+    val baseTimes =
+      for (i <- 0 until 10)
+        yield time {
           val vector = new PrimitiveVector[LargeDummyClass]
           for (i <- 0 until numElements) {
             vector += new LargeDummyClass
           }
         }
-    val sampledTimes = for (i <- 0 until 10)
-      yield
-        time {
+    val sampledTimes =
+      for (i <- 0 until 10)
+        yield time {
           val vector = new SizeTrackingVector[LargeDummyClass]
           for (i <- 0 until numElements) {
             vector += new LargeDummyClass
             vector.estimateSize()
           }
         }
-    val unsampledTimes = for (i <- 0 until 3)
-      yield
-        time {
+    val unsampledTimes =
+      for (i <- 0 until 3)
+        yield time {
           val vector = new PrimitiveVector[LargeDummyClass]
           for (i <- 0 until numElements) {
             vector += new LargeDummyClass
@@ -172,26 +172,26 @@ private object SizeTrackerSuite {
     *   SizeEstimator  1666 ms
     */
   def mapSpeedTest(numElements: Int): Unit = {
-    val baseTimes = for (i <- 0 until 10)
-      yield
-        time {
+    val baseTimes =
+      for (i <- 0 until 10)
+        yield time {
           val map = new AppendOnlyMap[Int, LargeDummyClass]
           for (i <- 0 until numElements) {
             map(i) = new LargeDummyClass
           }
         }
-    val sampledTimes = for (i <- 0 until 10)
-      yield
-        time {
+    val sampledTimes =
+      for (i <- 0 until 10)
+        yield time {
           val map = new SizeTrackingAppendOnlyMap[Int, LargeDummyClass]
           for (i <- 0 until numElements) {
             map(i) = new LargeDummyClass
             map.estimateSize()
           }
         }
-    val unsampledTimes = for (i <- 0 until 3)
-      yield
-        time {
+    val unsampledTimes =
+      for (i <- 0 until 3)
+        yield time {
           val map = new AppendOnlyMap[Int, LargeDummyClass]
           for (i <- 0 until numElements) {
             map(i) = new LargeDummyClass

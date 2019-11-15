@@ -480,7 +480,8 @@ class LazyMacros(val c: whitebox.Context)
           derive(tmpState)(innerTpe).right.toOption.flatMap {
             case (state2, inst) =>
               if (inst.inst.isEmpty)
-                resolve0(state2)(innerTpe).map { case (_, tree, _) => tree } else
+                resolve0(state2)(innerTpe).map { case (_, tree, _) => tree }
+              else
                 Some(inst.inst.get)
           }
 

@@ -45,7 +45,7 @@ import scalaz._
 
 import scala.collection.mutable
 
-trait PrecogLibModule[M[+ _]]
+trait PrecogLibModule[M[+_]]
     extends ColumnarTableLibModule[M]
     with TransSpecModule
     with HttpClientModule[M] {

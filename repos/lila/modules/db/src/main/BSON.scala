@@ -36,7 +36,7 @@ object BSON {
   object MapDocument {
 
     implicit def MapReader[V](implicit vr: BSONDocumentReader[V])
-      : BSONDocumentReader[Map[String, V]] =
+        : BSONDocumentReader[Map[String, V]] =
       new BSONDocumentReader[Map[String, V]] {
         def read(bson: BSONDocument): Map[String, V] = {
           // mutable optimized implementation
@@ -49,7 +49,7 @@ object BSON {
       }
 
     implicit def MapWriter[V](implicit vw: BSONDocumentWriter[V])
-      : BSONDocumentWriter[Map[String, V]] =
+        : BSONDocumentWriter[Map[String, V]] =
       new BSONDocumentWriter[Map[String, V]] {
         def write(map: Map[String, V]): BSONDocument = BSONDocument {
           map.toStream.map { tuple =>
@@ -72,7 +72,7 @@ object BSON {
   object MapValue {
 
     implicit def MapReader[V](implicit vr: BSONReader[_ <: BSONValue, V])
-      : BSONDocumentReader[Map[String, V]] =
+        : BSONDocumentReader[Map[String, V]] =
       new BSONDocumentReader[Map[String, V]] {
         def read(bson: BSONDocument): Map[String, V] = {
           val valueReader = vr.asInstanceOf[BSONReader[BSONValue, V]]
@@ -86,7 +86,7 @@ object BSON {
       }
 
     implicit def MapWriter[V](implicit vw: BSONWriter[V, _ <: BSONValue])
-      : BSONDocumentWriter[Map[String, V]] =
+        : BSONDocumentWriter[Map[String, V]] =
       new BSONDocumentWriter[Map[String, V]] {
         def write(map: Map[String, V]): BSONDocument = BSONDocument {
           map.toStream.map { tuple =>
@@ -98,7 +98,7 @@ object BSON {
     implicit def MapHandler[V](
         implicit vr: BSONReader[_ <: BSONValue, V],
         vw: BSONWriter[V, _ <: BSONValue])
-      : BSONHandler[BSONDocument, Map[String, V]] =
+        : BSONHandler[BSONDocument, Map[String, V]] =
       new BSONHandler[BSONDocument, Map[String, V]] {
         private val reader = MapReader[V]
         private val writer = MapWriter[V]
@@ -128,7 +128,7 @@ object BSON {
   implicit def bsonArrayToVectorHandler[T](
       implicit reader: BSONReader[_ <: BSONValue, T],
       writer: BSONWriter[T, _ <: BSONValue])
-    : BSONHandler[BSONArray, Vector[T]] =
+      : BSONHandler[BSONArray, Vector[T]] =
     new BSONHandler[BSONArray, Vector[T]] {
       def read(array: BSONArray) =
         readStream(array, reader.asInstanceOf[BSONReader[BSONValue, T]]).toVector

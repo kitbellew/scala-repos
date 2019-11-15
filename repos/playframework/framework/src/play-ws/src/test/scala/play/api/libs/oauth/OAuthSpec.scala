@@ -67,7 +67,7 @@ class OAuthSpec extends PlaySpecification {
   }
 
   def receiveRequest(makeRequest: Application => String => Future[_])
-    : (RequestHeader, ByteString, String) = {
+      : (RequestHeader, ByteString, String) = {
     val hostUrl = "http://localhost:" + testServerPort
     val promise = Promise[(RequestHeader, ByteString)]()
     val app = GuiceApplicationBuilder()

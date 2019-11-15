@@ -13,7 +13,7 @@ object squaredDistance extends UFunc with squaredDistanceLowPrio {
 
   implicit def squaredDistanceFromZippedValues[T, U](
       implicit zipImpl: zipValues.Impl2[T, U, ZippedValues[Double, Double]])
-    : Impl2[T, U, Double] = {
+      : Impl2[T, U, Double] = {
     new Impl2[T, U, Double] {
       def apply(v: T, v2: U): Double = {
         var squaredDistance = 0.0

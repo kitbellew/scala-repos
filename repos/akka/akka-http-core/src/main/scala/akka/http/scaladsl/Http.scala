@@ -56,7 +56,7 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
   // configured default HttpsContext for the client-side
   // SYNCHRONIZED ACCESS ONLY!
   private[this] var _defaultClientHttpsConnectionContext
-    : HttpsConnectionContext =
+      : HttpsConnectionContext =
     _
   private[this] var _defaultServerConnectionContext: ConnectionContext = _
 
@@ -91,7 +91,7 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
       connectionContext: ConnectionContext = defaultServerHttpContext,
       settings: ServerSettings = ServerSettings(system),
       log: LoggingAdapter = system.log)(implicit fm: Materializer)
-    : Source[IncomingConnection, Future[ServerBinding]] = {
+      : Source[IncomingConnection, Future[ServerBinding]] = {
     val effectivePort = if (port >= 0) port else connectionContext.defaultPort
     val tlsStage = sslTlsStage(connectionContext, Server)
     val connections: Source[Tcp.IncomingConnection, Future[Tcp.ServerBinding]] =
@@ -260,7 +260,7 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
       localAddress: Option[InetSocketAddress] = None,
       settings: ClientConnectionSettings = ClientConnectionSettings(system),
       log: LoggingAdapter = system.log)
-    : Flow[HttpRequest, HttpResponse, Future[OutgoingConnection]] =
+      : Flow[HttpRequest, HttpResponse, Future[OutgoingConnection]] =
     _outgoingConnection(
       host,
       port,
@@ -285,7 +285,7 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
       localAddress: Option[InetSocketAddress] = None,
       settings: ClientConnectionSettings = ClientConnectionSettings(system),
       log: LoggingAdapter = system.log)
-    : Flow[HttpRequest, HttpResponse, Future[OutgoingConnection]] =
+      : Flow[HttpRequest, HttpResponse, Future[OutgoingConnection]] =
     _outgoingConnection(
       host,
       port,
@@ -301,7 +301,7 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
       settings: ClientConnectionSettings,
       connectionContext: ConnectionContext,
       log: LoggingAdapter)
-    : Flow[HttpRequest, HttpResponse, Future[OutgoingConnection]] = {
+      : Flow[HttpRequest, HttpResponse, Future[OutgoingConnection]] = {
     val hostHeader =
       if (port == connectionContext.defaultPort) Host(host)
       else Host(host, port)
@@ -323,7 +323,7 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
       settings: ClientConnectionSettings,
       connectionContext: ConnectionContext,
       log: LoggingAdapter)
-    : Flow[SslTlsOutbound, SslTlsInbound, Future[OutgoingConnection]] = {
+      : Flow[SslTlsOutbound, SslTlsInbound, Future[OutgoingConnection]] = {
     val tlsStage = sslTlsStage(connectionContext, Client, Some(host -> port))
     val transportFlow = Tcp().outgoingConnection(
       new InetSocketAddress(host, port),
@@ -383,7 +383,7 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
       port: Int = 80,
       settings: ConnectionPoolSettings = defaultConnectionPoolSettings,
       log: LoggingAdapter = system.log)(implicit fm: Materializer)
-    : Flow[(HttpRequest, T), (Try[HttpResponse], T), HostConnectionPool] = {
+      : Flow[(HttpRequest, T), (Try[HttpResponse], T), HostConnectionPool] = {
     val cps =
       ConnectionPoolSetup(settings, ConnectionContext.noEncryption(), log)
     newHostConnectionPool(HostConnectionPoolSetup(host, port, cps))
@@ -404,7 +404,7 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
       connectionContext: HttpsConnectionContext = defaultClientHttpsContext,
       settings: ConnectionPoolSettings = defaultConnectionPoolSettings,
       log: LoggingAdapter = system.log)(implicit fm: Materializer)
-    : Flow[(HttpRequest, T), (Try[HttpResponse], T), HostConnectionPool] = {
+      : Flow[(HttpRequest, T), (Try[HttpResponse], T), HostConnectionPool] = {
     val cps = ConnectionPoolSetup(settings, connectionContext, log)
     newHostConnectionPool(HostConnectionPoolSetup(host, port, cps))
   }
@@ -427,7 +427,7 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
     */
   private[akka] def newHostConnectionPool[T](setup: HostConnectionPoolSetup)(
       implicit fm: Materializer)
-    : Flow[(HttpRequest, T), (Try[HttpResponse], T), HostConnectionPool] = {
+      : Flow[(HttpRequest, T), (Try[HttpResponse], T), HostConnectionPool] = {
     val gatewayFuture =
       FastFuture.successful(new PoolGateway(setup, Promise()))
     gatewayClientFlow(setup, gatewayFuture)
@@ -458,7 +458,7 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
       port: Int = 80,
       settings: ConnectionPoolSettings = defaultConnectionPoolSettings,
       log: LoggingAdapter = system.log)(implicit fm: Materializer)
-    : Flow[(HttpRequest, T), (Try[HttpResponse], T), HostConnectionPool] = {
+      : Flow[(HttpRequest, T), (Try[HttpResponse], T), HostConnectionPool] = {
     val cps =
       ConnectionPoolSetup(settings, ConnectionContext.noEncryption(), log)
     val setup = HostConnectionPoolSetup(host, port, cps)
@@ -480,7 +480,7 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
       connectionContext: HttpsConnectionContext = defaultClientHttpsContext,
       settings: ConnectionPoolSettings = defaultConnectionPoolSettings,
       log: LoggingAdapter = system.log)(implicit fm: Materializer)
-    : Flow[(HttpRequest, T), (Try[HttpResponse], T), HostConnectionPool] = {
+      : Flow[(HttpRequest, T), (Try[HttpResponse], T), HostConnectionPool] = {
     val cps = ConnectionPoolSetup(settings, connectionContext, log)
     val setup = HostConnectionPoolSetup(host, port, cps)
     cachedHostConnectionPool(setup)
@@ -505,7 +505,7 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
     */
   private def cachedHostConnectionPool[T](setup: HostConnectionPoolSetup)(
       implicit fm: Materializer)
-    : Flow[(HttpRequest, T), (Try[HttpResponse], T), HostConnectionPool] =
+      : Flow[(HttpRequest, T), (Try[HttpResponse], T), HostConnectionPool] =
     gatewayClientFlow(setup, cachedGateway(setup))
 
   /**
@@ -529,7 +529,7 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
       connectionContext: HttpsConnectionContext = defaultClientHttpsContext,
       settings: ConnectionPoolSettings = defaultConnectionPoolSettings,
       log: LoggingAdapter = system.log)(implicit fm: Materializer)
-    : Flow[(HttpRequest, T), (Try[HttpResponse], T), NotUsed] =
+      : Flow[(HttpRequest, T), (Try[HttpResponse], T), NotUsed] =
     clientFlow[T](settings) { request ⇒
       request -> cachedGateway(request, settings, connectionContext, log)
     }
@@ -580,7 +580,7 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
       localAddress: Option[InetSocketAddress] = None,
       settings: ClientConnectionSettings = ClientConnectionSettings(system),
       log: LoggingAdapter = system.log)
-    : Flow[Message, Message, Future[WebSocketUpgradeResponse]] = {
+      : Flow[Message, Message, Future[WebSocketUpgradeResponse]] = {
     import request.uri
     require(
       uri.isAbsolute,
@@ -737,7 +737,7 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
   private def gatewayClientFlow[T](
       hcps: HostConnectionPoolSetup,
       gatewayFuture: Future[PoolGateway])(implicit fm: Materializer)
-    : Flow[(HttpRequest, T), (Try[HttpResponse], T), HostConnectionPool] =
+      : Flow[(HttpRequest, T), (Try[HttpResponse], T), HostConnectionPool] =
     clientFlow[T](hcps.setup.settings)(_ -> gatewayFuture)
       .mapMaterializedValue(_ ⇒ HostConnectionPool(hcps)(gatewayFuture))
 
@@ -745,7 +745,7 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
       f: HttpRequest ⇒ (HttpRequest, Future[PoolGateway]))(
       implicit system: ActorSystem,
       fm: Materializer)
-    : Flow[(HttpRequest, T), (Try[HttpResponse], T), NotUsed] = {
+      : Flow[(HttpRequest, T), (Try[HttpResponse], T), NotUsed] = {
     // a connection pool can never have more than pipeliningLimit * maxConnections requests in flight at any point
     val parallelism = settings.pipeliningLimit * settings.maxConnections
     Flow[(HttpRequest, T)].mapAsyncUnordered(parallelism) {

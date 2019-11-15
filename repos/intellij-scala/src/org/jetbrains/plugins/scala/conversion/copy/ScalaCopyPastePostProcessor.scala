@@ -176,13 +176,12 @@ class ScalaCopyPastePostProcessor
       association <- value.associations
       element <- elementFor(association, file, offset)
       if !association.isSatisfiedIn(element)
-    } yield
-      Binding(
-        element,
-        association.path.asString(
-          ScalaCodeStyleSettings
-            .getInstance(project)
-            .isImportMembersUsingUnderScore))).filter {
+    } yield Binding(
+      element,
+      association.path.asString(
+        ScalaCodeStyleSettings
+          .getInstance(project)
+          .isImportMembersUsingUnderScore))).filter {
       case Binding(_, path) =>
         val index = path.lastIndexOf('.')
         index != -1 && !Set("scala", "java.lang", "scala.Predef").contains(

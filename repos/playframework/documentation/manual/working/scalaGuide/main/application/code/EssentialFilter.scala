@@ -11,7 +11,7 @@ import play.api.libs.streams.Accumulator
 import play.api.mvc._
 import scala.concurrent.ExecutionContext
 
-class LoggingFilter @Inject()(implicit ec: ExecutionContext)
+class LoggingFilter @Inject() (implicit ec: ExecutionContext)
     extends EssentialFilter {
   def apply(nextFilter: EssentialAction) = new EssentialAction {
     def apply(requestHeader: RequestHeader) = {

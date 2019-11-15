@@ -115,7 +115,7 @@ final class ClusterSingletonManagerSettings(
       role: Option[String] = role,
       removalMargin: FiniteDuration = removalMargin,
       handOverRetryInterval: FiniteDuration = handOverRetryInterval)
-    : ClusterSingletonManagerSettings =
+      : ClusterSingletonManagerSettings =
     new ClusterSingletonManagerSettings(
       singletonName,
       role,

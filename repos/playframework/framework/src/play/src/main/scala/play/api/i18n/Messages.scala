@@ -163,7 +163,7 @@ trait Langs {
 }
 
 @Singleton
-class DefaultLangs @Inject()(configuration: Configuration) extends Langs {
+class DefaultLangs @Inject() (configuration: Configuration) extends Langs {
 
   private val config = PlayConfig(configuration)
 
@@ -264,7 +264,7 @@ object Messages {
     * Parse all messages of a given input.
     */
   def parse(messageSource: MessageSource, messageSourceName: String)
-    : Either[PlayException.ExceptionSource, Map[String, String]] = {
+      : Either[PlayException.ExceptionSource, Map[String, String]] = {
     new Messages.MessagesParser(messageSource, "").parse.right.map { messages =>
       messages.map { message =>
         message.key -> message.pattern
@@ -511,7 +511,7 @@ trait MessagesApi {
   * The internationalisation API.
   */
 @Singleton
-class DefaultMessagesApi @Inject()(
+class DefaultMessagesApi @Inject() (
     environment: Environment,
     configuration: Configuration,
     langs: Langs)

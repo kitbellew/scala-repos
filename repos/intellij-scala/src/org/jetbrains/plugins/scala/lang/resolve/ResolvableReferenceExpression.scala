@@ -444,7 +444,8 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
                             CachesUtil.NAMED_PARAM_KEY,
                             java.lang.Boolean.TRUE))
                     case None =>
-                  } else {
+                  }
+                else {
                   //for completion only!
                   funCollectNamedCompletions(
                     constructor.parameterList,

@@ -537,7 +537,7 @@ object LongMap {
     throw new NoSuchElementException(k.toString)
 
   implicit def canBuildFrom[V, U]
-    : CanBuildFrom[LongMap[V], (Long, U), LongMap[U]] =
+      : CanBuildFrom[LongMap[V], (Long, U), LongMap[U]] =
     new CanBuildFrom[LongMap[V], (Long, U), LongMap[U]] {
       def apply(from: LongMap[V]): LongMapBuilder[U] = apply()
       def apply(): LongMapBuilder[U] = new LongMapBuilder[U]

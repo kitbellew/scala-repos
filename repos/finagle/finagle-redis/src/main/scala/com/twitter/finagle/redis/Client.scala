@@ -60,7 +60,7 @@ class BaseClient(service: Service[Command, Reply]) {
     * @return ChannelBuffer with collection of \r\n terminated lines if server has info on section
     */
   def info(section: ChannelBuffer = ChannelBuffers.EMPTY_BUFFER)
-    : Future[Option[ChannelBuffer]] =
+      : Future[Option[ChannelBuffer]] =
     doRequest(Info(section)) {
       case BulkReply(message) => Future.value(Some(message))
       case EmptyBulkReply()   => Future.value(None)

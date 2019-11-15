@@ -20,7 +20,7 @@ object Default extends Default
   * GET   /xxx             controllers.Default.error
   * }}}
   */
-class Default @Inject()() extends Controller {
+class Default @Inject() () extends Controller {
 
   /**
     * Returns a 501 NotImplemented response.

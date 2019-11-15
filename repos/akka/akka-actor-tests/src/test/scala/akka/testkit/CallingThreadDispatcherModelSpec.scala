@@ -22,8 +22,7 @@ object CallingThreadDispatcherModelSpec {
     """ +
       // use unique dispatcher id for each test, since MessageDispatcherInterceptor holds state
       (for (n ← 1 to 30)
-        yield
-          """
+        yield """
         test-calling-thread-%s {
           type = "akka.testkit.CallingThreadDispatcherModelSpec$CallingThreadDispatcherInterceptorConfigurator"
         }""".format(n)).mkString
@@ -35,7 +34,7 @@ object CallingThreadDispatcherModelSpec {
       extends MessageDispatcherConfigurator(config, prerequisites) {
 
     private val instance: MessageDispatcher = new CallingThreadDispatcher(this)
-    with MessageDispatcherInterceptor {
+      with MessageDispatcherInterceptor {
       override def id: String = config.getString("id")
     }
 

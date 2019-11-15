@@ -203,7 +203,7 @@ object TreeTableView {
       * @return JavaFX TableViewFocusModel
       */
     implicit def sfxTableViewFocusModel2jfx[S](tvfm: TreeTableViewFocusModel[S])
-      : jfxsc.TreeTableView.TreeTableViewFocusModel[S] =
+        : jfxsc.TreeTableView.TreeTableViewFocusModel[S] =
       if (tvfm != null) tvfm.delegate else null
   }
 
@@ -292,7 +292,7 @@ object TreeTableView {
       */
     implicit def sfxTreeTableViewSelectionModel2jfx[S](
         v: TreeTableView.TreeTableViewSelectionModel[S])
-      : jfxsc.TreeTableView.TreeTableViewSelectionModel[S] = v.delegate
+        : jfxsc.TreeTableView.TreeTableViewSelectionModel[S] = v.delegate
   }
 
   /**
@@ -586,7 +586,7 @@ object TreeTableView {
     * @since 8.0
     */
   def classCssMetaData
-    : mutable.Buffer[jfxcss.CssMetaData[_ <: jfxcss.Styleable, _]] =
+      : mutable.Buffer[jfxcss.CssMetaData[_ <: jfxcss.Styleable, _]] =
     jfxsc.PopupControl.getClassCssMetaData
 }
 
@@ -669,7 +669,7 @@ class TreeTableView[S](
     * must match the type of the TreeTableView itself.
     */
   def selectionModel
-    : ObjectProperty[jfxsc.TreeTableView.TreeTableViewSelectionModel[S]] =
+      : ObjectProperty[jfxsc.TreeTableView.TreeTableViewSelectionModel[S]] =
     delegate.selectionModelProperty
   def selectionModel_=(
       v: TreeTableView.TreeTableViewSelectionModel[S]): Unit = {
@@ -681,7 +681,7 @@ class TreeTableView[S](
     * TreeTableView. Generally the default implementation should be more than sufficient.
     */
   def focusModel
-    : ObjectProperty[jfxsc.TreeTableView.TreeTableViewFocusModel[S]] =
+      : ObjectProperty[jfxsc.TreeTableView.TreeTableViewFocusModel[S]] =
     delegate.focusModelProperty
   def focusModel_=(v: TreeTableView.TreeTableViewFocusModel[S]): Unit = {
     focusModel() = v
@@ -729,7 +729,7 @@ class TreeTableView[S](
     * [[TreeTableView#CONSTRAINED_RESIZE_POLICY]].
     */
   def columnResizePolicy
-    : ObjectProperty[TreeTableView.ResizeFeatures[S] => Boolean] =
+      : ObjectProperty[TreeTableView.ResizeFeatures[S] => Boolean] =
     ObjectProperty((features: TreeTableView.ResizeFeatures[S]) =>
       delegate.columnResizePolicyProperty.value.call(features))
   def columnResizePolicy_=(
@@ -821,7 +821,7 @@ class TreeTableView[S](
     * on the headers themselves.
     */
   def comparator
-    : ReadOnlyObjectProperty[java.util.Comparator[jfxsc.TreeItem[S]]] =
+      : ReadOnlyObjectProperty[java.util.Comparator[jfxsc.TreeItem[S]]] =
     delegate.comparatorProperty
 
   /** The sort policy specifies how sorting in this TreeTableView should be performed. For example, a basic sort policy
@@ -899,7 +899,7 @@ class TreeTableView[S](
     delegate.onScrollToColumnProperty
   def onScrollToColumn_=(
       v: jfxe.EventHandler[jfxsc.ScrollToEvent[jfxsc.TreeTableColumn[S, _]]])
-    : Unit = {
+      : Unit = {
     ObjectProperty.fillProperty[
       jfxe.EventHandler[jfxsc.ScrollToEvent[jfxsc.TreeTableColumn[S, _]]]](
       onScrollToColumn,

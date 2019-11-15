@@ -164,7 +164,7 @@ object UnionLike {
   @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.OptionPartial"))
   def length(c: Context)(element: c.Tree)(
       subData: List[(Int, c.Type, Option[TreeOrderedBuf[c.type]])])
-    : CompileTimeLengthTypes[c.type] = {
+      : CompileTimeLengthTypes[c.type] = {
     import CompileTimeLengthTypes._
     import c.universe._
     def freshT(id: String) = newTermName(c.fresh(id))

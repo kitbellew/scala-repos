@@ -120,14 +120,14 @@ object product {
 
   object ToTraversable {
     def apply[P, M[_]](implicit toTraversable: ToTraversable[P, M])
-      : Aux[P, M, toTraversable.Lub] = toTraversable
+        : Aux[P, M, toTraversable.Lub] = toTraversable
 
     type Aux[P, M[_], Lub0] = ToTraversable[P, M] { type Lub = Lub0 }
 
     implicit def productToTraversable[P, M[_], Lub0, L <: HList](
         implicit gen: Generic.Aux[P, L],
         toTraversable: ops.hlist.ToTraversable.Aux[L, M, Lub0])
-      : Aux[P, M, Lub0] =
+        : Aux[P, M, Lub0] =
       new ToTraversable[P, M] {
         type Lub = Lub0
         def apply(p: P) = toTraversable(gen.to(p))
@@ -136,7 +136,7 @@ object product {
     implicit def emptyProductToTraversableNothing[P, M[_]](
         implicit gen: Generic.Aux[P, HNil],
         toTraversable: ops.hlist.ToTraversable.Aux[HNil, M, Nothing])
-      : Aux[P, M, Nothing] = productToTraversable[P, M, Nothing, HNil]
+        : Aux[P, M, Nothing] = productToTraversable[P, M, Nothing, HNil]
   }
 
   trait ToSized[P, M[_]] extends DepFn1[P] {
@@ -166,6 +166,6 @@ object product {
     implicit def emptyProductToSizedNothing[P, M[_]](
         implicit gen: Generic.Aux[P, HNil],
         toSized: ops.hlist.ToSized.Aux[HNil, M, Nothing, _0])
-      : Aux[P, M, Nothing, _0] = productToSized[P, M, Nothing, _0, HNil]
+        : Aux[P, M, Nothing, _0] = productToSized[P, M, Nothing, _0, HNil]
   }
 }

@@ -2951,7 +2951,7 @@ object functions {
       A7: TypeTag,
       A8: TypeTag,
       A9: TypeTag](f: Function9[A1, A2, A3, A4, A5, A6, A7, A8, A9, RT])
-    : UserDefinedFunction = {
+      : UserDefinedFunction = {
     val inputTypes = Try(
       ScalaReflection.schemaFor(typeTag[A1]).dataType :: ScalaReflection
         .schemaFor(typeTag[A2])
@@ -2995,7 +2995,7 @@ object functions {
       A8: TypeTag,
       A9: TypeTag,
       A10: TypeTag](f: Function10[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, RT])
-    : UserDefinedFunction = {
+      : UserDefinedFunction = {
     val inputTypes = Try(
       ScalaReflection.schemaFor(typeTag[A1]).dataType :: ScalaReflection
         .schemaFor(typeTag[A2])

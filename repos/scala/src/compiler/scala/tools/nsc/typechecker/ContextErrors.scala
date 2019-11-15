@@ -543,7 +543,8 @@ trait ContextErrors { self: Analyzer =>
               MissingParameterTypeAnonMatchError(vparam, pt)
             case _ =>
               issue("missing parameter type for expanded function " + fun)
-          } else issue("missing parameter type")
+          }
+        else issue("missing parameter type")
       }
 
       def MissingParameterTypeAnonMatchError(vparam: Tree, pt: Type) =

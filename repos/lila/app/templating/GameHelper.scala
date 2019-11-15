@@ -221,7 +221,8 @@ trait GameHelper {
           case Some(true)  => "1-0"
           case Some(false) => "0-1"
           case None        => "½-½"
-        } else "*"
+        }
+      else "*"
     s"${usernameOrId(whiteUserId)} $res ${usernameOrId(blackUserId)}"
   }
 
@@ -231,7 +232,8 @@ trait GameHelper {
         case Some(chess.White) => "1-0"
         case Some(chess.Black) => "0-1"
         case None              => "½-½"
-      } else "*"
+      }
+    else "*"
 
   lazy val miniBoardContent = Html(
     """<div class="cg-board-wrap"><div class="cg-board"></div></div>""")

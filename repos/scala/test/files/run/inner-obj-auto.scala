@@ -1121,9 +1121,9 @@ class Class54_1 {
     object Obj { ObjCounter += 1 }
 
     def multiThreadedAccess() {
-      val threads = for (i <- 1 to 5)
-        yield
-          new Thread(new Runnable {
+      val threads =
+        for (i <- 1 to 5)
+          yield new Thread(new Runnable {
             def run = Obj
           })
 
@@ -1156,9 +1156,9 @@ object Object55_1 {
     object Obj { ObjCounter += 1 }
 
     def multiThreadedAccess() {
-      val threads = for (i <- 1 to 5)
-        yield
-          new Thread(new Runnable {
+      val threads =
+        for (i <- 1 to 5)
+          yield new Thread(new Runnable {
             def run = Obj
           })
 
@@ -1191,9 +1191,9 @@ trait Trait56_1 {
     object Obj { ObjCounter += 1 }
 
     def multiThreadedAccess() {
-      val threads = for (i <- 1 to 5)
-        yield
-          new Thread(new Runnable {
+      val threads =
+        for (i <- 1 to 5)
+          yield new Thread(new Runnable {
             def run = Obj
           })
 
@@ -1226,9 +1226,9 @@ class Class58_1 {
     object Obj { ObjCounter += 1 }
 
     def multiThreadedAccess() {
-      val threads = for (i <- 1 to 5)
-        yield
-          new Thread(new Runnable {
+      val threads =
+        for (i <- 1 to 5)
+          yield new Thread(new Runnable {
             def run = Obj
           })
 
@@ -1261,9 +1261,9 @@ object Object59_1 {
     object Obj { ObjCounter += 1 }
 
     def multiThreadedAccess() {
-      val threads = for (i <- 1 to 5)
-        yield
-          new Thread(new Runnable {
+      val threads =
+        for (i <- 1 to 5)
+          yield new Thread(new Runnable {
             def run = Obj
           })
 
@@ -1296,9 +1296,9 @@ trait Trait60_1 {
     object Obj { ObjCounter += 1 }
 
     def multiThreadedAccess() {
-      val threads = for (i <- 1 to 5)
-        yield
-          new Thread(new Runnable {
+      val threads =
+        for (i <- 1 to 5)
+          yield new Thread(new Runnable {
             def run = Obj
           })
 
@@ -1331,9 +1331,9 @@ class Class62_1 {
     object Obj { ObjCounter += 1 }
 
     def multiThreadedAccess() {
-      val threads = for (i <- 1 to 5)
-        yield
-          new Thread(new Runnable {
+      val threads =
+        for (i <- 1 to 5)
+          yield new Thread(new Runnable {
             def run = Obj
           })
 
@@ -1366,9 +1366,9 @@ object Object63_1 {
     object Obj { ObjCounter += 1 }
 
     def multiThreadedAccess() {
-      val threads = for (i <- 1 to 5)
-        yield
-          new Thread(new Runnable {
+      val threads =
+        for (i <- 1 to 5)
+          yield new Thread(new Runnable {
             def run = Obj
           })
 
@@ -1401,9 +1401,9 @@ trait Trait64_1 {
     object Obj { ObjCounter += 1 }
 
     def multiThreadedAccess() {
-      val threads = for (i <- 1 to 5)
-        yield
-          new Thread(new Runnable {
+      val threads =
+        for (i <- 1 to 5)
+          yield new Thread(new Runnable {
             def run = Obj
           })
 
@@ -1436,9 +1436,9 @@ class Class66_1 {
     object Obj { ObjCounter += 1 }
 
     def multiThreadedAccess() {
-      val threads = for (i <- 1 to 5)
-        yield
-          new Thread(new Runnable {
+      val threads =
+        for (i <- 1 to 5)
+          yield new Thread(new Runnable {
             def run = Obj
           })
 
@@ -1471,9 +1471,9 @@ object Object67_1 {
     object Obj { ObjCounter += 1 }
 
     def multiThreadedAccess() {
-      val threads = for (i <- 1 to 5)
-        yield
-          new Thread(new Runnable {
+      val threads =
+        for (i <- 1 to 5)
+          yield new Thread(new Runnable {
             def run = Obj
           })
 
@@ -1506,9 +1506,9 @@ trait Trait68_1 {
     object Obj { ObjCounter += 1 }
 
     def multiThreadedAccess() {
-      val threads = for (i <- 1 to 5)
-        yield
-          new Thread(new Runnable {
+      val threads =
+        for (i <- 1 to 5)
+          yield new Thread(new Runnable {
             def run = Obj
           })
 
@@ -1541,9 +1541,9 @@ class Class70_1 {
     object Obj { ObjCounter += 1 }
 
     def multiThreadedAccess() {
-      val threads = for (i <- 1 to 5)
-        yield
-          new Thread(new Runnable {
+      val threads =
+        for (i <- 1 to 5)
+          yield new Thread(new Runnable {
             def run = Obj
           })
 
@@ -1576,9 +1576,9 @@ object Object71_1 {
     object Obj { ObjCounter += 1 }
 
     def multiThreadedAccess() {
-      val threads = for (i <- 1 to 5)
-        yield
-          new Thread(new Runnable {
+      val threads =
+        for (i <- 1 to 5)
+          yield new Thread(new Runnable {
             def run = Obj
           })
 
@@ -1611,9 +1611,9 @@ trait Trait72_1 {
     object Obj { ObjCounter += 1 }
 
     def multiThreadedAccess() {
-      val threads = for (i <- 1 to 5)
-        yield
-          new Thread(new Runnable {
+      val threads =
+        for (i <- 1 to 5)
+          yield new Thread(new Runnable {
             def run = Obj
           })
 
@@ -1646,9 +1646,9 @@ class Class74_1 {
     object Obj { ObjCounter += 1 }
 
     def multiThreadedAccess() {
-      val threads = for (i <- 1 to 5)
-        yield
-          new Thread(new Runnable {
+      val threads =
+        for (i <- 1 to 5)
+          yield new Thread(new Runnable {
             def run = Obj
           })
 
@@ -1681,9 +1681,9 @@ object Object75_1 {
     object Obj { ObjCounter += 1 }
 
     def multiThreadedAccess() {
-      val threads = for (i <- 1 to 5)
-        yield
-          new Thread(new Runnable {
+      val threads =
+        for (i <- 1 to 5)
+          yield new Thread(new Runnable {
             def run = Obj
           })
 
@@ -1716,9 +1716,9 @@ trait Trait76_1 {
     object Obj { ObjCounter += 1 }
 
     def multiThreadedAccess() {
-      val threads = for (i <- 1 to 5)
-        yield
-          new Thread(new Runnable {
+      val threads =
+        for (i <- 1 to 5)
+          yield new Thread(new Runnable {
             def run = Obj
           })
 
@@ -1753,9 +1753,9 @@ class Class78_1 {
       object Obj { ObjCounter += 1 }
 
       def multiThreadedAccess() {
-        val threads = for (i <- 1 to 5)
-          yield
-            new Thread(new Runnable {
+        val threads =
+          for (i <- 1 to 5)
+            yield new Thread(new Runnable {
               def run = Obj
             })
 
@@ -1791,9 +1791,9 @@ object Object79_1 {
       object Obj { ObjCounter += 1 }
 
       def multiThreadedAccess() {
-        val threads = for (i <- 1 to 5)
-          yield
-            new Thread(new Runnable {
+        val threads =
+          for (i <- 1 to 5)
+            yield new Thread(new Runnable {
               def run = Obj
             })
 
@@ -1829,9 +1829,9 @@ trait Trait80_1 {
       object Obj { ObjCounter += 1 }
 
       def multiThreadedAccess() {
-        val threads = for (i <- 1 to 5)
-          yield
-            new Thread(new Runnable {
+        val threads =
+          for (i <- 1 to 5)
+            yield new Thread(new Runnable {
               def run = Obj
             })
 
@@ -1867,9 +1867,9 @@ class Class82_1 {
       object Obj { ObjCounter += 1 }
 
       def multiThreadedAccess() {
-        val threads = for (i <- 1 to 5)
-          yield
-            new Thread(new Runnable {
+        val threads =
+          for (i <- 1 to 5)
+            yield new Thread(new Runnable {
               def run = Obj
             })
 
@@ -1905,9 +1905,9 @@ object Object83_1 {
       object Obj { ObjCounter += 1 }
 
       def multiThreadedAccess() {
-        val threads = for (i <- 1 to 5)
-          yield
-            new Thread(new Runnable {
+        val threads =
+          for (i <- 1 to 5)
+            yield new Thread(new Runnable {
               def run = Obj
             })
 
@@ -1943,9 +1943,9 @@ trait Trait84_1 {
       object Obj { ObjCounter += 1 }
 
       def multiThreadedAccess() {
-        val threads = for (i <- 1 to 5)
-          yield
-            new Thread(new Runnable {
+        val threads =
+          for (i <- 1 to 5)
+            yield new Thread(new Runnable {
               def run = Obj
             })
 
@@ -1979,9 +1979,9 @@ class Class90_1 {
     object Obj { ObjCounter += 1 }
 
     def multiThreadedAccess() {
-      val threads = for (i <- 1 to 5)
-        yield
-          new Thread(new Runnable {
+      val threads =
+        for (i <- 1 to 5)
+          yield new Thread(new Runnable {
             def run = Obj
           })
 
@@ -2014,9 +2014,9 @@ trait Trait92_1 {
     object Obj { ObjCounter += 1 }
 
     def multiThreadedAccess() {
-      val threads = for (i <- 1 to 5)
-        yield
-          new Thread(new Runnable {
+      val threads =
+        for (i <- 1 to 5)
+          yield new Thread(new Runnable {
             def run = Obj
           })
 

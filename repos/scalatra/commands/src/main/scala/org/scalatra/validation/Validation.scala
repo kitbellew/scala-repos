@@ -23,14 +23,14 @@ object Validation {
       fieldName: String,
       value: ⇒ TResult,
       messageFormat: String = "%s must not be empty.")
-    : FieldValidation[TResult] =
+      : FieldValidation[TResult] =
     Validators.nonEmptyCollection(fieldName, messageFormat).validate(value)
 
   def validEmail(
       fieldName: String,
       value: ⇒ String,
       messageFormat: String = "%s must be a valid email.")
-    : FieldValidation[String] =
+      : FieldValidation[String] =
     Validators.validEmail(fieldName, messageFormat).validate(value)
 
   def validAbsoluteUrl(
@@ -79,7 +79,7 @@ object Validation {
       value: ⇒ T,
       min: T,
       messageFormat: String = "%%s must be greater than %s.")
-    : FieldValidation[T] =
+      : FieldValidation[T] =
     Validators.greaterThan(fieldName, min, messageFormat).validate(value)
 
   def lessThan[T <% Ordered[T]](
@@ -94,7 +94,7 @@ object Validation {
       value: ⇒ T,
       min: T,
       messageFormat: String = "%%s must be greater than or equal to %s.")
-    : FieldValidation[T] =
+      : FieldValidation[T] =
     Validators
       .greaterThanOrEqualTo(fieldName, min, messageFormat)
       .validate(value)
@@ -104,7 +104,7 @@ object Validation {
       value: ⇒ T,
       max: T,
       messageFormat: String = "%%s must be less than or equal to %s.")
-    : FieldValidation[T] =
+      : FieldValidation[T] =
     Validators.lessThanOrEqualTo(fieldName, max, messageFormat).validate(value)
 
   def minLength(
@@ -112,7 +112,7 @@ object Validation {
       value: ⇒ String,
       min: Int,
       messageFormat: String = "%%s must be at least %s characters long.")
-    : FieldValidation[String] =
+      : FieldValidation[String] =
     Validators.minLength(fieldName, min, messageFormat).validate(value)
 
   def oneOf[TResult](
@@ -127,6 +127,6 @@ object Validation {
       value: ⇒ String,
       enum: Enumeration,
       messageFormat: String = "%%s must be one of %s.")
-    : FieldValidation[String] =
+      : FieldValidation[String] =
     oneOf(fieldName, value, messageFormat, enum.values.map(_.toString).toSeq)
 }

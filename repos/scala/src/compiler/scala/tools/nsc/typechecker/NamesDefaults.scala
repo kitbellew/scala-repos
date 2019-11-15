@@ -311,7 +311,8 @@ trait NamesDefaults { self: Analyzer =>
                             arg match {
                               case WildcardStarArg(expr) => expr.tpe
                               case _                     => seqType(arg.tpe)
-                            } else {
+                            }
+                          else {
                             // TODO In 83c9c764b, we tried to a stable type here to fix SI-7234. But the resulting TypeTree over a
                             //      singleton type without an original TypeTree fails to retypecheck after a resetAttrs (SI-7516),
                             //      which is important for (at least) macros.
@@ -341,7 +342,8 @@ trait NamesDefaults { self: Analyzer =>
                 arg match {
                   case WildcardStarArg(expr) => expr
                   case _                     => blockTyper typed gen.mkSeqApply(resetAttrs(arg))
-                } else arg
+                }
+              else arg
             }
           Some(atPos(body.pos)(ValDef(sym, body).setType(NoType)))
       }

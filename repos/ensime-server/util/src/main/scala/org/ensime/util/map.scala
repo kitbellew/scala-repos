@@ -27,7 +27,7 @@ package object map {
     def merge(other: Map[K, Set[V]]): Map[K, Set[V]] = {
       import collection.mutable
       val builder = new mutable.HashMap[K, mutable.Set[V]]
-      with mutable.MultiMap[K, V]
+        with mutable.MultiMap[K, V]
       builder ++= map.mapValuesEagerly { v =>
         v.to[mutable.Set]
       }

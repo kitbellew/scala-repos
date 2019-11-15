@@ -160,7 +160,7 @@ sealed trait OptionLift[M, O] {
 object OptionLift extends OptionLiftLowPriority {
   final implicit def repOptionLift[M <: Rep[_], P](
       implicit shape: Shape[_ <: FlatShapeLevel, M, _, Rep[P]])
-    : OptionLift[M, Rep[Option[P]]] = new OptionLift[M, Rep[Option[P]]] {
+      : OptionLift[M, Rep[Option[P]]] = new OptionLift[M, Rep[Option[P]]] {
     def lift(v: M): Rep[Option[P]] = {
       val n = OptionApply(v.toNode)
       val packed = shape.pack(v)
@@ -178,7 +178,7 @@ object OptionLift extends OptionLiftLowPriority {
 sealed trait OptionLiftLowPriority {
   final implicit def anyOptionLift[M, P](
       implicit shape: Shape[_ <: FlatShapeLevel, M, _, P])
-    : OptionLift[M, Rep[Option[P]]] = new OptionLift[M, Rep[Option[P]]] {
+      : OptionLift[M, Rep[Option[P]]] = new OptionLift[M, Rep[Option[P]]] {
     def lift(v: M): Rep[Option[P]] =
       RepOption[P](
         ShapedValue(shape.pack(v), shape.packedShape),

@@ -130,25 +130,25 @@ object EvolutionsSpec extends Specification {
     "apply down scripts derby" in new DownScripts with WithDerbyEvolutions
 
     "report inconsistent state and resolve" in new ReportInconsistentStateAndResolve
-    with WithEvolutions
+      with WithEvolutions
     "report inconsistent state and resolve derby" in new ReportInconsistentStateAndResolve
-    with WithDerbyEvolutions
+      with WithDerbyEvolutions
 
     "reset the database" in new ResetDatabase with WithEvolutions
     "reset the database derby" in new ResetDatabase with WithDerbyEvolutions
 
     "provide a helper for testing" in new ProvideHelperForTesting
-    with WithEvolutions
+      with WithEvolutions
     "provide a helper for testing derby" in new ProvideHelperForTesting
-    with WithDerbyEvolutions
+      with WithDerbyEvolutions
 
     // Test if the play_evolutions table gets created within a schema
     "create test schema derby" in new CreateSchema
-    with WithDerbyEvolutionsSchema
+      with WithDerbyEvolutionsSchema
     "reset the database to trigger creation of the play_evolutions table in the testschema derby" in new ResetDatabase
-    with WithDerbyEvolutionsSchema
+      with WithDerbyEvolutionsSchema
     "provide a helper for testing derby schema" in new ProvideHelperForTestingSchema
-    with WithDerbyEvolutionsSchema
+      with WithDerbyEvolutionsSchema
   }
 
   trait WithEvolutions extends After {

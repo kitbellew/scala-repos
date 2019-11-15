@@ -63,13 +63,13 @@ trait DAG extends Instructions {
         roots: List[Either[BucketSpec, DepGraph]],
         splits: List[OpenSplit],
         stream: Vector[Instruction])
-      : Trampoline[Either[StackError, DepGraph]] = {
+        : Trampoline[Either[StackError, DepGraph]] = {
       @inline
       def continue(
           f: List[Either[BucketSpec, DepGraph]] => Either[
             StackError,
             List[Either[BucketSpec, DepGraph]]])
-        : Trampoline[Either[StackError, DepGraph]] = {
+          : Trampoline[Either[StackError, DepGraph]] = {
         Free.suspend(
           M.sequence(f(roots).right map { roots2 =>
               loop(loc, roots2, splits, stream.tail)
@@ -430,7 +430,7 @@ trait DAG extends Instructions {
     }
 
     def findFirstRoot(line: Option[Line], stream: Vector[Instruction])
-      : Either[StackError, (Root, Vector[Instruction])] = {
+        : Either[StackError, (Root, Vector[Instruction])] = {
       def buildConstRoot(
           instr: RootInstr): Either[StackError, (Root, Vector[Instruction])] = {
         val rvalue = instr match {
@@ -549,13 +549,13 @@ trait DAG extends Instructions {
     def valueKeys: Set[Int]
 
     def isSingleton
-      : Boolean //true implies that the node is a singleton; false doesn't imply anything
+        : Boolean //true implies that the node is a singleton; false doesn't imply anything
 
     def containsSplitArg: Boolean
 
     def mapDown(
         body: (DepGraph => DepGraph) => PartialFunction[DepGraph, DepGraph])
-      : DepGraph = {
+        : DepGraph = {
       val memotable = mutable.Map[DepGraphWrapper, DepGraph]()
 
       def memoized(node: DepGraph): DepGraph = {
@@ -784,13 +784,13 @@ trait DAG extends Instructions {
               (_: DepGraph) match {
                 // not using extractors due to bug
                 case s: dag.SplitParam =>
-                  for { state <- monadState.gets(identity) } yield
-                    dag.SplitParam(s.id, s.parentId)(s.loc)
+                  for { state <- monadState.gets(identity) } yield dag
+                    .SplitParam(s.id, s.parentId)(s.loc)
 
                 // not using extractors due to bug
                 case s: dag.SplitGroup =>
-                  for { state <- monadState.gets(identity) } yield
-                    dag.SplitGroup(s.id, s.identities, s.parentId)(s.loc)
+                  for { state <- monadState.gets(identity) } yield dag
+                    .SplitGroup(s.id, s.identities, s.parentId)(s.loc)
 
                 case graph @ dag.Const(_) =>
                   for { _ <- monadState.gets(identity) } yield graph
@@ -799,12 +799,12 @@ trait DAG extends Instructions {
                   for { _ <- monadState.gets(identity) } yield graph
 
                 case graph @ dag.New(parent) =>
-                  for { newParent <- memoized(parent) } yield
-                    dag.New(newParent)(graph.loc)
+                  for { newParent <- memoized(parent) } yield dag.New(
+                    newParent)(graph.loc)
 
                 case graph @ dag.Morph1(m, parent) =>
-                  for { newParent <- memoized(parent) } yield
-                    dag.Morph1(m, newParent)(graph.loc)
+                  for { newParent <- memoized(parent) } yield dag
+                    .Morph1(m, newParent)(graph.loc)
 
                 case graph @ dag.Morph2(m, left, right) =>
                   for {
@@ -813,24 +813,24 @@ trait DAG extends Instructions {
                   } yield dag.Morph2(m, newLeft, newRight)(graph.loc)
 
                 case graph @ dag.Distinct(parent) =>
-                  for { newParent <- memoized(parent) } yield
-                    dag.Distinct(newParent)(graph.loc)
+                  for { newParent <- memoized(parent) } yield dag.Distinct(
+                    newParent)(graph.loc)
 
                 case graph @ dag.AbsoluteLoad(parent, jtpe) =>
-                  for { newParent <- memoized(parent) } yield
-                    dag.AbsoluteLoad(newParent, jtpe)(graph.loc)
+                  for { newParent <- memoized(parent) } yield dag
+                    .AbsoluteLoad(newParent, jtpe)(graph.loc)
 
                 case graph @ dag.Operate(op, parent) =>
-                  for { newParent <- memoized(parent) } yield
-                    dag.Operate(op, newParent)(graph.loc)
+                  for { newParent <- memoized(parent) } yield dag
+                    .Operate(op, newParent)(graph.loc)
 
                 case graph @ dag.Reduce(red, parent) =>
-                  for { newParent <- memoized(parent) } yield
-                    dag.Reduce(red, newParent)(graph.loc)
+                  for { newParent <- memoized(parent) } yield dag
+                    .Reduce(red, newParent)(graph.loc)
 
                 case dag.MegaReduce(reds, parent) =>
-                  for { newParent <- memoized(parent) } yield
-                    dag.MegaReduce(reds, newParent)
+                  for { newParent <- memoized(parent) } yield dag
+                    .MegaReduce(reds, newParent)
 
                 case s @ dag.Split(spec, child, id) => {
                   for {
@@ -876,12 +876,12 @@ trait DAG extends Instructions {
                   } yield dag.Filter(joinSort, newTarget, newBoolean)(graph.loc)
 
                 case dag.AddSortKey(parent, sortField, valueField, id) =>
-                  for { newParent <- memoized(parent) } yield
-                    dag.AddSortKey(newParent, sortField, valueField, id)
+                  for { newParent <- memoized(parent) } yield dag
+                    .AddSortKey(newParent, sortField, valueField, id)
 
                 case dag.Memoize(parent, priority) =>
-                  for { newParent <- memoized(parent) } yield
-                    dag.Memoize(newParent, priority)
+                  for { newParent <- memoized(parent) } yield dag
+                    .Memoize(newParent, priority)
               }
             )
           }
@@ -937,8 +937,8 @@ trait DAG extends Instructions {
                 } yield dag.Group(id, newTarget, newChild)
 
               case dag.UnfixedSolution(id, target) =>
-                for { newTarget <- memoized(target) } yield
-                  dag.UnfixedSolution(id, newTarget)
+                for { newTarget <- memoized(target) } yield dag
+                  .UnfixedSolution(id, newTarget)
 
               case dag.Extra(target) =>
                 for { newTarget <- memoized(target) } yield dag.Extra(newTarget)

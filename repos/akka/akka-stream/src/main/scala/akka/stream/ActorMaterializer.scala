@@ -447,7 +447,7 @@ final class ActorMaterializerSettings private (
     */
   def withSupervisionStrategy(
       decider: function.Function[Throwable, Supervision.Directive])
-    : ActorMaterializerSettings = {
+      : ActorMaterializerSettings = {
     import Supervision._
     copy(supervisionDecider = decider match {
       case `resumingDecider` ⇒ resumingDecider

@@ -129,7 +129,7 @@ private[regression] trait GeneralizedLinearRegressionBase
   */
 @Experimental
 @Since("2.0.0")
-class GeneralizedLinearRegression @Since("2.0.0")(
+class GeneralizedLinearRegression @Since("2.0.0") (
     @Since("2.0.0") override val uid: String)
     extends Regressor[
       Vector,
@@ -381,7 +381,7 @@ object GeneralizedLinearRegression
       * at each iteration of [[IterativelyReweightedLeastSquares]].
       */
     val reweightFunc
-      : (Instance, WeightedLeastSquaresModel) => (Double, Double) = {
+        : (Instance, WeightedLeastSquaresModel) => (Double, Double) = {
       (instance: Instance, model: WeightedLeastSquaresModel) =>
         {
           val eta = model.predict(instance.features)

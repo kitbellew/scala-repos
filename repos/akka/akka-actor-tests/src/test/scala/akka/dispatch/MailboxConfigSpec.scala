@@ -158,8 +158,9 @@ abstract class MailboxSpec
 
       val producers = {
         val step = 500
-        val ps = for (i ← (1 to enqueueN by step).toList)
-          yield createProducer(i, Math.min(enqueueN, i + step - 1))
+        val ps =
+          for (i ← (1 to enqueueN by step).toList)
+            yield createProducer(i, Math.min(enqueueN, i + step - 1))
 
         if (parallel == false)
           ps foreach { Await.ready(_, remainingOrDefault) }

@@ -291,11 +291,10 @@ trait TimeAmountsGen {
     m <- choose(0, 59)
     s <- choose(0, 59)
     ml <- choose(0, 999)
-  } yield
-    (
-      TimeSpan(weeks(w) + days(d) + hours(h) + minutes(m) + seconds(s) + ml).toString,
-      (w, "week") :: (d, "day") :: (h, "hour") :: (m, "minute") :: (s, "second") :: (
-        ml,
-        "milli") :: Nil
-    )
+  } yield (
+    TimeSpan(weeks(w) + days(d) + hours(h) + minutes(m) + seconds(s) + ml).toString,
+    (w, "week") :: (d, "day") :: (h, "hour") :: (m, "minute") :: (s, "second") :: (
+      ml,
+      "milli") :: Nil
+  )
 }

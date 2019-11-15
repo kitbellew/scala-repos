@@ -612,7 +612,7 @@ object Vectors {
   */
 @Since("1.0.0")
 @SQLUserDefinedType(udt = classOf[VectorUDT])
-class DenseVector @Since("1.0.0")(@Since("1.0.0") val values: Array[Double])
+class DenseVector @Since("1.0.0") (@Since("1.0.0") val values: Array[Double])
     extends Vector {
 
   @Since("1.0.0")
@@ -737,7 +737,7 @@ object DenseVector {
   */
 @Since("1.0.0")
 @SQLUserDefinedType(udt = classOf[VectorUDT])
-class SparseVector @Since("1.0.0")(
+class SparseVector @Since("1.0.0") (
     @Since("1.0.0") override val size: Int,
     @Since("1.0.0") val indices: Array[Int],
     @Since("1.0.0") val values: Array[Double])

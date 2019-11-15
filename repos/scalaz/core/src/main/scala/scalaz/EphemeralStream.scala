@@ -149,10 +149,14 @@ sealed abstract class EphemeralStreamInstances {
     with Traverse[EphemeralStream]
     with Cobind[EphemeralStream]
     with IsEmpty[EphemeralStream] =
-    new MonadPlus[EphemeralStream] with BindRec[EphemeralStream]
-    with Zip[EphemeralStream] with Unzip[EphemeralStream]
-    with Align[EphemeralStream] with Traverse[EphemeralStream]
-    with Cobind[EphemeralStream] with IsEmpty[EphemeralStream] {
+    new MonadPlus[EphemeralStream]
+      with BindRec[EphemeralStream]
+      with Zip[EphemeralStream]
+      with Unzip[EphemeralStream]
+      with Align[EphemeralStream]
+      with Traverse[EphemeralStream]
+      with Cobind[EphemeralStream]
+      with IsEmpty[EphemeralStream] {
       import EphemeralStream._
       override def isEmpty[A](fa: EphemeralStream[A]) = fa.isEmpty
       override def cojoin[A](

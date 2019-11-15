@@ -40,7 +40,8 @@ import scala.compat.java8.FunctionConverters._
   * responses.
   */
 @Singleton
-class GzipFilter @Inject()(config: GzipFilterConfig)(implicit mat: Materializer)
+class GzipFilter @Inject() (config: GzipFilterConfig)(
+    implicit mat: Materializer)
     extends EssentialFilter {
 
   import play.api.http.HeaderNames._
@@ -262,7 +263,7 @@ object GzipFilterConfig {
   * The gzip filter configuration provider.
   */
 @Singleton
-class GzipFilterConfigProvider @Inject()(config: Configuration)
+class GzipFilterConfigProvider @Inject() (config: Configuration)
     extends Provider[GzipFilterConfig] {
   lazy val get = GzipFilterConfig.fromConfiguration(config)
 }

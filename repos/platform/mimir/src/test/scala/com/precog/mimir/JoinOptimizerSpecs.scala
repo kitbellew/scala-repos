@@ -37,7 +37,7 @@ import scala.Function._
 import scalaz.Failure
 import scalaz.Success
 
-trait JoinOptimizerSpecs[M[+ _]]
+trait JoinOptimizerSpecs[M[+_]]
     extends Specification
     with EvaluatorTestSupport[M]
     with LongIdMemoryDatasetConsumer[M] {

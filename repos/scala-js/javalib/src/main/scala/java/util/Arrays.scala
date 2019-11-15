@@ -858,7 +858,7 @@ object Arrays {
   private def hashCodeImpl[T](
       a: Array[T],
       elementHashCode: T => Int = (x: T) => x.asInstanceOf[AnyRef].hashCode)
-    : Int = {
+      : Int = {
     if (a == null) 0
     else
       a.foldLeft(1)((acc, x) =>

@@ -174,7 +174,7 @@ object Compilable extends CompilableFunctions {
       implicit ashape: Shape[ColumnsShapeLevel, A, P, A],
       pshape: Shape[ColumnsShapeLevel, P, P, _],
       bexe: Executable[B, U])
-    : Compilable[A => B, CompiledFunction[A => B, A, P, B, U]] =
+      : Compilable[A => B, CompiledFunction[A => B, A, P, B, U]] =
     new Compilable[A => B, CompiledFunction[A => B, A, P, B, U]] {
       def compiled(raw: A => B, profile: BasicProfile) =
         new CompiledFunction[A => B, A, P, B, U](
@@ -185,7 +185,7 @@ object Compilable extends CompilableFunctions {
     }
   implicit def streamingExecutableIsCompilable[T, U, EU](
       implicit e: StreamingExecutable[T, U, EU])
-    : Compilable[T, CompiledStreamingExecutable[T, U, EU]] =
+      : Compilable[T, CompiledStreamingExecutable[T, U, EU]] =
     new Compilable[T, CompiledStreamingExecutable[T, U, EU]] {
       def compiled(raw: T, profile: BasicProfile) =
         new CompiledStreamingExecutable[T, U, EU](raw, profile) {
@@ -221,6 +221,6 @@ final class Parameters[PU, PP](pshape: Shape[ColumnsShapeLevel, PU, PU, _]) {
 object Parameters {
   @inline
   def apply[U](implicit pshape: Shape[ColumnsShapeLevel, U, U, _])
-    : Parameters[U, pshape.Packed] =
+      : Parameters[U, pshape.Packed] =
     new Parameters[U, pshape.Packed](pshape)
 }

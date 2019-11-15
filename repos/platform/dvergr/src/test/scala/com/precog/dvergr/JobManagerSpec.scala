@@ -112,7 +112,7 @@ class MongoJobManagerSpec extends Specification with RealMongoSpecSupport {
   }
 }
 
-trait JobManagerSpec[M[+ _]] extends Specification {
+trait JobManagerSpec[M[+_]] extends Specification {
   import JobState._
 
   import scalaz.syntax.monad._

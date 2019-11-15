@@ -180,7 +180,8 @@ trait RingLaws[A] extends GroupLaws[A] {
           val bases = Seq("base-nonzero" → ml.base(nonZeroLaws))
           val parent = ml.parent
           val props = ml.props
-        } else ml
+        }
+      else ml
 
     def bases = Seq("additive" → al, "multiplicative" → _ml)
   }

@@ -200,7 +200,7 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     */
   def mapPartitionsToPair[K2, V2](
       f: PairFlatMapFunction[java.util.Iterator[T], K2, V2])
-    : JavaPairRDD[K2, V2] = {
+      : JavaPairRDD[K2, V2] = {
     def fn: (Iterator[T]) => Iterator[(K2, V2)] = { (x: Iterator[T]) =>
       f.call(x.asJava).asScala
     }
@@ -322,7 +322,7 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
   def zipPartitions[U, V](
       other: JavaRDDLike[U, _],
       f: FlatMapFunction2[java.util.Iterator[T], java.util.Iterator[U], V])
-    : JavaRDD[V] = {
+      : JavaRDD[V] = {
     def fn: (Iterator[T], Iterator[U]) => Iterator[V] = {
       (x: Iterator[T], y: Iterator[U]) =>
         f.call(x.asJava, y.asJava).asScala

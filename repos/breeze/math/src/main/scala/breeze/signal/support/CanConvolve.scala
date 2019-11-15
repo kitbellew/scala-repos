@@ -49,7 +49,7 @@ object CanConvolve extends SerializableLogging {
   @expand
   @expand.valify
   implicit def dvT1DConvolve[@expand.args(Int, Long, Float, Double) T]
-    : CanConvolve[DenseVector[T], DenseVector[T], DenseVector[T]] = {
+      : CanConvolve[DenseVector[T], DenseVector[T], DenseVector[T]] = {
     new CanConvolve[DenseVector[T], DenseVector[T], DenseVector[T]] {
       def apply(
           data: DenseVector[T],
@@ -186,7 +186,7 @@ object CanConvolve extends SerializableLogging {
   @expand
   @expand.valify
   implicit def dvTKernel1DConvolve[@expand.args(Int, Long, Float, Double) T]
-    : CanConvolve[DenseVector[T], FIRKernel1D[T], DenseVector[T]] = {
+      : CanConvolve[DenseVector[T], FIRKernel1D[T], DenseVector[T]] = {
     new CanConvolve[DenseVector[T], FIRKernel1D[T], DenseVector[T]] {
       def apply(
           data: DenseVector[T],
@@ -220,7 +220,7 @@ object CanConvolve extends SerializableLogging {
   @expand
   @expand.valify
   implicit def correlateLoopNoOverhangRangeT[@expand.args(Double, Float, Long) T]
-    : CanCorrelateNoOverhang[DenseVector[T], DenseVector[T], DenseVector[T]] =
+      : CanCorrelateNoOverhang[DenseVector[T], DenseVector[T], DenseVector[T]] =
     new CanCorrelateNoOverhang[DenseVector[T], DenseVector[T], DenseVector[T]] {
       def apply(
           data: DenseVector[T],

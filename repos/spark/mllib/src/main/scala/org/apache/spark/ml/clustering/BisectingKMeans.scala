@@ -145,7 +145,7 @@ class BisectingKMeansModel private[ml] (
   */
 @Since("2.0.0")
 @Experimental
-class BisectingKMeans @Since("2.0.0")(@Since("2.0.0") override val uid: String)
+class BisectingKMeans @Since("2.0.0") (@Since("2.0.0") override val uid: String)
     extends Estimator[BisectingKMeansModel]
     with BisectingKMeansParams {
 

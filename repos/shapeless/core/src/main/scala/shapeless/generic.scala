@@ -893,7 +893,8 @@ trait CaseClassMacros extends ReprTypes {
             Some(args)
           case TypeRef(_, _, args @ List(arg)) => Some(args)
           case _                               => None
-        } else None
+        }
+      else None
     }
   }
 

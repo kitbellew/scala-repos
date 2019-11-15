@@ -369,7 +369,8 @@ trait Erasure {
             MethodType(
               cloneSymbolsAndModify(params, specialErasure(sym)),
               typeRef(specialErasure(sym)(pre), sym1, args))
-        } else if (sym.name == nme.apply) tp
+        }
+      else if (sym.name == nme.apply) tp
       else if (sym.name == nme.update)
         (tp: @unchecked) match {
           case MethodType(List(index, tvar), restpe) =>
@@ -378,7 +379,8 @@ trait Erasure {
                 index.cloneSymbol.setInfo(specialErasure(sym)(index.tpe)),
                 tvar),
               UnitTpe)
-        } else specialErasure(sym)(tp)
+        }
+      else specialErasure(sym)(tp)
     } else if (sym.owner != NoSymbol && sym.owner.owner == ArrayClass &&
                sym == Array_update.paramss.head(1)) {
       // special case for Array.update: the non-erased type remains, i.e. (Int,A)Unit

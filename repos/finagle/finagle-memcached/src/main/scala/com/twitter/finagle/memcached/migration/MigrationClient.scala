@@ -70,20 +70,22 @@ class MigrationClient(
       case MigrationState.Pending =>
         proxyClient = new FrontendClient(oldClient)
       case MigrationState.Warming if (config.readRepairBack) =>
-        proxyClient = new FrontendClient(oldClient) with DarkRead
-        with ReadWarmup with DarkWrite {
+        proxyClient = new FrontendClient(oldClient)
+          with DarkRead
+          with ReadWarmup
+          with DarkWrite {
           val backendClient = newClient
         }
       case MigrationState.Warming =>
-        proxyClient = new FrontendClient(oldClient) with DarkRead
-        with DarkWrite {
-          val backendClient = newClient
-        }
+        proxyClient =
+          new FrontendClient(oldClient) with DarkRead with DarkWrite {
+            val backendClient = newClient
+          }
       case MigrationState.Verifying if (config.readRepairFront) =>
-        proxyClient = new FrontendClient(newClient) with FallbackRead
-        with ReadRepair {
-          val backendClient = oldClient
-        }
+        proxyClient =
+          new FrontendClient(newClient) with FallbackRead with ReadRepair {
+            val backendClient = oldClient
+          }
       case MigrationState.Verifying =>
         proxyClient = new FrontendClient(newClient) with FallbackRead {
           val backendClient = oldClient

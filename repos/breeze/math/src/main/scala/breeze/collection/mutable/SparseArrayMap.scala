@@ -50,7 +50,7 @@ class SparseArrayMap[@specialized T: ClassTag: Zero](
 
 object SparseArrayMap {
   implicit def canMapValues[T, U: ClassTag: Zero]
-    : CanBuildFrom[SparseArrayMap[T], (Int, U), SparseArrayMap[U]] =
+      : CanBuildFrom[SparseArrayMap[T], (Int, U), SparseArrayMap[U]] =
     new CanBuildFrom[SparseArrayMap[T], (Int, U), SparseArrayMap[U]] {
       def apply(): Builder[(Int, U), SparseArrayMap[U]] =
         new Builder[(Int, U), SparseArrayMap[U]] {

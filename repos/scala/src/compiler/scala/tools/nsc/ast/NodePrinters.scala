@@ -322,7 +322,8 @@ abstract class NodePrinters {
                   p match {
                     case x: RefTree => showRefTree(x)
                     case x          => showPosition(x) + x
-                  } else showName(newTypeName(p.tpe.typeSymbol.fullName))
+                  }
+                else showName(newTypeName(p.tpe.typeSymbol.fullName))
               }
             printLine(ps0 mkString ", ", "parents")
             traverse(self)

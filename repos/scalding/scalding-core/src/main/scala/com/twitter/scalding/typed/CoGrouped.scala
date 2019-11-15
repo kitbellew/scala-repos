@@ -49,7 +49,7 @@ object CoGroupable {
    * This is the default empty join function needed for CoGroupable and HashJoinable
    */
   def castingJoinFunction[V]
-    : (Any, Iterator[CTuple], Seq[Iterable[CTuple]]) => Iterator[V] = {
+      : (Any, Iterator[CTuple], Seq[Iterable[CTuple]]) => Iterator[V] = {
     (k, iter, empties) =>
       assert(
         empties.isEmpty,
@@ -82,7 +82,7 @@ trait CoGroupable[K, +R]
     * would actually help anyone for it to be type-safe
     */
   protected def joinFunction
-    : (K, Iterator[CTuple], Seq[Iterable[CTuple]]) => Iterator[R]
+      : (K, Iterator[CTuple], Seq[Iterable[CTuple]]) => Iterator[R]
 
   /**
     * Smaller is about average values/key not total size (that does not matter, but is

@@ -28,7 +28,7 @@ trait Enumeratee2TFunctions {
         // in the pathological case, this degrades to the cartesian product, which will blow up
         // your memory. Sorry!
         def advance(j: J, buf: List[K], s: StepT[Either3[J, (J, K), K], F, A])
-          : IterateeT[Either3[J, (J, K), K], F, A] = {
+            : IterateeT[Either3[J, (J, K), K], F, A] = {
           s mapCont { contf =>
             buf match {
               case k :: Nil if order(j, k) == EQ =>
@@ -98,7 +98,7 @@ trait Enumeratee2TFunctions {
     new Enumeratee2T[J, K, (J, K), F] {
       def apply[A] = {
         def cstep(step: StepT[(J, K), F, A])
-          : StepT[Either3[J, (J, K), K], F, StepT[(J, K), F, A]] = step.fold(
+            : StepT[Either3[J, (J, K), K], F, StepT[(J, K), F, A]] = step.fold(
           cont = contf =>
             scont { in: Input[Either3[J, (J, K), K]] =>
               val nextInput =
@@ -164,7 +164,7 @@ trait Enumeratee2TFunctions {
     new Enumeratee2T[J, K, J, F] {
       def apply[A] = {
         def cstep(step: StepT[J, F, A])
-          : StepT[Either3[J, (J, K), K], F, StepT[J, F, A]] = step.fold(
+            : StepT[Either3[J, (J, K), K], F, StepT[J, F, A]] = step.fold(
           cont = contf =>
             scont { in: Input[Either3[J, (J, K), K]] =>
               val nextInput =

@@ -238,7 +238,7 @@ trait Loc[T] {
     * Find the stateless calculation Loc params
     */
   protected def findStatelessCalc
-    : (Box[Loc.CalcStateless], Box[Loc.CalcParamStateless[T]]) =
+      : (Box[Loc.CalcStateless], Box[Loc.CalcParamStateless[T]]) =
     (allParams.collect {
       case v @ Loc.CalcStateless(_) => v
     }.headOption, allParams.collect {
@@ -249,11 +249,11 @@ trait Loc[T] {
     * The cached Loc params
     */
   protected lazy val _foundStatelessCalc
-    : (Box[Loc.CalcStateless], Box[Loc.CalcParamStateless[T]]) =
+      : (Box[Loc.CalcStateless], Box[Loc.CalcParamStateless[T]]) =
     findStatelessCalc
 
   protected def foundStatelessCalc
-    : (Box[Loc.CalcStateless], Box[Loc.CalcParamStateless[T]]) =
+      : (Box[Loc.CalcStateless], Box[Loc.CalcParamStateless[T]]) =
     if (Props.devMode) findStatelessCalc else _foundStatelessCalc
 
   /**
@@ -431,18 +431,17 @@ trait Loc[T] {
     for {
       p <- childValues
       l <- link.createLink(p).map(appendQueryParams(p))
-    } yield
-      MenuItem(
-        text.text(p),
-        l,
-        Nil,
-        false,
-        false,
-        allParams.flatMap {
-          case v: Loc.LocInfo[_] => List(v())
-          case _                 => Nil
-        }
-      )
+    } yield MenuItem(
+      text.text(p),
+      l,
+      Nil,
+      false,
+      false,
+      allParams.flatMap {
+        case v: Loc.LocInfo[_] => List(v())
+        case _                 => Nil
+      }
+    )
 
   def buildMenu: CompleteMenu = {
     CompleteMenu(
@@ -458,20 +457,19 @@ trait Loc[T] {
         for {
           p <- currentValue
           t <- link.createLink(p).map(appendQueryParams(p))
-        } yield
-          new MenuItem(
-            text.text(p),
-            t,
-            kids,
-            current,
-            path,
-            allParams.flatMap {
-              case v: Loc.LocInfo[_] => List(v())
-              case _                 => Nil
-            },
-            placeHolder_?,
-            this
-          )
+        } yield new MenuItem(
+          text.text(p),
+          t,
+          kids,
+          current,
+          path,
+          allParams.flatMap {
+            case v: Loc.LocInfo[_] => List(v())
+            case _                 => Nil
+          },
+          placeHolder_?,
+          this
+        )
       }
 
       case _ => Empty
@@ -717,7 +715,7 @@ object Loc {
       * to a snippet function (`NodeSeq` => `NodeSeq`).
       */
     def apply[A](pf: PartialFunction[(String, Box[A]), NodeSeq => NodeSeq])
-      : ValueSnippets[A] = new ValueSnippets[A] {
+        : ValueSnippets[A] = new ValueSnippets[A] {
       def snippets = pf
     }
   }

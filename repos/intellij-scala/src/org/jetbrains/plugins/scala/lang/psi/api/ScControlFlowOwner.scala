@@ -34,7 +34,7 @@ trait ScControlFlowOwner extends ScalaPsiElement {
 
   def getControlFlow(
       policy: ScControlFlowPolicy = AllVariablesControlFlowPolicy)
-    : Seq[Instruction] = {
+      : Seq[Instruction] = {
     val provider = myControlFlowCache.getOrElseUpdate(
       policy,
       new ControlFlowCacheProvider(policy))

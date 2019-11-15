@@ -20,7 +20,7 @@ trait SchedulerCallbacks {
   def disconnected(): Unit
 }
 
-class MarathonScheduler @Inject()(
+class MarathonScheduler @Inject() (
     @Named(EventModule.busName) eventBus: EventStream,
     clock: Clock,
     offerProcessor: OfferProcessor,

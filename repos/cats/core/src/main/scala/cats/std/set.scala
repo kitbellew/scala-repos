@@ -5,7 +5,7 @@ import cats.syntax.show._
 
 trait SetInstances extends algebra.std.SetInstances {
   implicit val setInstance: Foldable[Set] with MonoidK[Set] = new Foldable[Set]
-  with MonoidK[Set] {
+    with MonoidK[Set] {
 
     def empty[A]: Set[A] = Set.empty[A]
 

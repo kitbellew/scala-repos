@@ -54,7 +54,7 @@ package object financial {
     implicit def reduce[@expand.args(Double, Float, Int) Scalar, T](
         implicit iter: CanTraverseValues[T, Scalar],
         @expand.sequence[Scalar](0.0, 0.0f, 0) zero: Scalar)
-      : Impl2[Double, T, Double] = new Impl2[Double, T, Double] {
+        : Impl2[Double, T, Double] = new Impl2[Double, T, Double] {
       def apply(rate: Double, revenueStream: T): Double = {
 
         val visit = new ValuesVisitor[Scalar] {
@@ -99,7 +99,7 @@ package object financial {
       presentValue: Double,
       futureValue: Double = 0.0,
       when: PaymentTime = End)
-    : (DenseVector[Double], DenseVector[Double], DenseVector[Double]) = {
+      : (DenseVector[Double], DenseVector[Double], DenseVector[Double]) = {
     if (when == Start) {
       throw new IllegalArgumentException(
         "This method is broken for payment at the start of the period!")

@@ -348,10 +348,10 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * application, <code>LiftRules.sessionCreator = LiftRules.sessionCreatorForMigratorySessions</code>
     */
   def sessionCreatorForMigratorySessions
-    : (HTTPSession, String) => LiftSession = {
+      : (HTTPSession, String) => LiftSession = {
     case (httpSession, contextPath) =>
       new LiftSession(contextPath, httpSession.sessionId, Full(httpSession))
-      with MigratorySession
+        with MigratorySession
   }
 
   @volatile var enableContainerSessions = true
@@ -472,8 +472,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * A factory that will vend comet creators
     */
   val cometCreationFactory
-    : FactoryMaker[CometCreationInfo => Box[LiftCometActor]] = new FactoryMaker(
-    () => noComet _) {}
+      : FactoryMaker[CometCreationInfo => Box[LiftCometActor]] =
+    new FactoryMaker(() => noComet _) {}
 
   /**
     * Should codes that represent entities be converted to XML
@@ -493,7 +493,7 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     new FactoryMaker(
       (req: Req) =>
         new LiftSession(req.contextPath, Helpers.nextFuncName, Empty)
-        with StatelessSession) {}
+          with StatelessSession) {}
 
   /**
     * Holds user functions that are executed after the response is sent to client. The functions' result
@@ -1622,7 +1622,7 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
 
   @volatile
   var defaultHeaders
-    : PartialFunction[(NodeSeq, Req), List[(String, String)]] = {
+      : PartialFunction[(NodeSeq, Req), List[(String, String)]] = {
     case _ =>
       val d = Helpers.nowAsInternetDate
 
@@ -1842,10 +1842,10 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   val onBeginServicing = RulesSeq[Req => Unit]
 
   val preAccessControlResponse_!! = new RulesSeq[Req => Box[LiftResponse]]
-  with FirstBox[Req, LiftResponse]
+    with FirstBox[Req, LiftResponse]
 
   val earlyResponse = new RulesSeq[Req => Box[LiftResponse]]
-  with FirstBox[Req, LiftResponse]
+    with FirstBox[Req, LiftResponse]
 
   /**
     * Holds user function hooks when the request was processed
@@ -1905,7 +1905,7 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     */
   @volatile
   var contentSecurityPolicyViolationReport
-    : (ContentSecurityPolicyViolation) => Box[LiftResponse] = { violation =>
+      : (ContentSecurityPolicyViolation) => Box[LiftResponse] = { violation =>
     logger.warn(
       s"""Content security policy violation reported on page
        | '${violation.documentUri}' from referrer '${violation.referrer}':
@@ -2372,18 +2372,17 @@ abstract class GenericValidator extends XHtmlValidator with Loggable {
       v <- tryo(sc.newValidator)
       source = new StreamSource(
         new ByteArrayInputStream(in.toString.getBytes("UTF-8")))
-    } yield
-      try {
-        v.validate(source)
-        Nil
-      } catch {
-        case e: org.xml.sax.SAXParseException =>
-          List(
-            XHTMLValidationError(
-              e.getMessage,
-              e.getLineNumber,
-              e.getColumnNumber))
-      }) match {
+    } yield try {
+      v.validate(source)
+      Nil
+    } catch {
+      case e: org.xml.sax.SAXParseException =>
+        List(
+          XHTMLValidationError(
+            e.getMessage,
+            e.getLineNumber,
+            e.getColumnNumber))
+    }) match {
       case Full(x) => x
       case Failure(msg, _, _) =>
         logger.info("XHTML Validation Failure: " + msg)
@@ -2466,7 +2465,7 @@ trait FormVendor {
   private def prependBuilder(
       builder: FormBuilderLocator[_],
       to: Map[String, List[FormBuilderLocator[_]]])
-    : Map[String, List[FormBuilderLocator[_]]] = {
+      : Map[String, List[FormBuilderLocator[_]]] = {
     val name = builder.manifest.toString
     to + (name -> (builder :: to.getOrElse(name, Nil)))
   }
@@ -2474,7 +2473,7 @@ trait FormVendor {
   private def appendBuilder(
       builder: FormBuilderLocator[_],
       to: Map[String, List[FormBuilderLocator[_]]])
-    : Map[String, List[FormBuilderLocator[_]]] = {
+      : Map[String, List[FormBuilderLocator[_]]] = {
     val name = builder.manifest.toString
     to + (name -> (builder :: to.getOrElse(name, Nil)))
   }

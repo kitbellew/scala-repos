@@ -12,7 +12,7 @@ import play.api.libs.crypto._
 @deprecated(
   "This class is deprecated and will be removed in future versions",
   "2.5.0")
-class Crypto @Inject()(
+class Crypto @Inject() (
     signer: CookieSigner,
     tokenSigner: CSRFTokenSigner,
     aesCrypter: AESCrypter)

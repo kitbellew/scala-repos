@@ -122,7 +122,7 @@ object eigSym extends UFunc {
   }
 
   private def doEigSym(X: Matrix[Double], rightEigenvectors: Boolean)
-    : (DenseVector[Double], Option[DenseMatrix[Double]]) = {
+      : (DenseVector[Double], Option[DenseMatrix[Double]]) = {
     requireNonEmptyMatrix(X)
 
     // As LAPACK doesn't check if the given matrix is in fact symmetric,

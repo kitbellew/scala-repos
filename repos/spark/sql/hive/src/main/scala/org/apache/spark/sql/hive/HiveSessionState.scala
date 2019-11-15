@@ -43,7 +43,7 @@ private[hive] class HiveSessionState(ctx: HiveContext)
     * A metadata catalog that points to the Hive metastore.
     */
   override lazy val catalog = new HiveMetastoreCatalog(ctx.metadataHive, ctx)
-  with OverrideCatalog
+    with OverrideCatalog
 
   /**
     * Internal catalog for managing functions registered by the user.
@@ -76,7 +76,7 @@ private[hive] class HiveSessionState(ctx: HiveContext)
     */
   override lazy val planner: SparkPlanner = {
     new SparkPlanner(ctx.sparkContext, conf, experimentalMethods)
-    with HiveStrategies {
+      with HiveStrategies {
       override val hiveContext = ctx
 
       override def strategies: Seq[Strategy] = {

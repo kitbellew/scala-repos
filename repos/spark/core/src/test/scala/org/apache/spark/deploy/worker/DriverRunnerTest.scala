@@ -46,7 +46,7 @@ class DriverRunnerTest extends SparkFunSuite {
   }
 
   private def createProcessBuilderAndProcess()
-    : (ProcessBuilderLike, Process) = {
+      : (ProcessBuilderLike, Process) = {
     val processBuilder = mock(classOf[ProcessBuilderLike])
     when(processBuilder.command).thenReturn(Seq("mocked", "command"))
     val process = mock(classOf[Process])

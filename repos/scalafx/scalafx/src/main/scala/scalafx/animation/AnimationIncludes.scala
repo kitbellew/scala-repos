@@ -123,7 +123,8 @@ trait AnimationIncludes {
     * $GENERATE `Animation` $FROM
     */
   implicit def jfxAnimation2sfx(v: jfxa.Animation): Animation =
-    if (v != null) new Animation(v) {} else null
+    if (v != null) new Animation(v) {}
+    else null
 
   /**
     * $GENERATE `Animation.Status` $FROM
@@ -135,7 +136,8 @@ trait AnimationIncludes {
     * $GENERATE `AnimationTimer` $FROM
     */
   implicit def jfxAnimationTimer2sfx(at: jfxa.AnimationTimer): AnimationTimer =
-    if (at != null) new AnimationTimer(at) {} else null
+    if (at != null) new AnimationTimer(at) {}
+    else null
 
   /**
     * $GENERATE `FadeTransition` $FROM
@@ -226,7 +228,8 @@ trait AnimationIncludes {
     * $GENERATE `Transition` $FROM
     */
   implicit def jfxTransition2sfx(v: jfxa.Transition): Transition =
-    if (v != null) new Transition(v) {} else null
+    if (v != null) new Transition(v) {}
+    else null
 
   /**
     * $GENERATE `TranslateTransition` $FROM

@@ -34,7 +34,7 @@ import scalaz.syntax.comonad._
 import org.specs2.ScalaCheck
 import org.specs2.mutable._
 
-trait CompactSpec[M[+ _]]
+trait CompactSpec[M[+_]]
     extends ColumnarTableModuleTestSupport[M]
     with Specification
     with ScalaCheck {

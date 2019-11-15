@@ -77,15 +77,14 @@ class SbtDependencyAnnotator extends Annotator {
       parentExpr @ ScInfixExpr(leftPart, operation, _) <- Option(
         literal.getParent)
       if isOneOrTwoPercents(operation)
-    } yield
-      leftPart match {
-        case _: ScLiteral =>
-          extractArtifactInfo(parentExpr.getParent)
-            .foreach(findDependencyOrAnnotate)
-        case leftExp: ScInfixExpr if isOneOrTwoPercents(leftExp.operation) =>
-          extractArtifactInfo(parentExpr).foreach(findDependencyOrAnnotate)
-        case _ => // do nothing
-      }
+    } yield leftPart match {
+      case _: ScLiteral =>
+        extractArtifactInfo(parentExpr.getParent)
+          .foreach(findDependencyOrAnnotate)
+      case leftExp: ScInfixExpr if isOneOrTwoPercents(leftExp.operation) =>
+        extractArtifactInfo(parentExpr).foreach(findDependencyOrAnnotate)
+      case _ => // do nothing
+    }
   }
 
   private def isOneOrTwoPercents(op: ScReferenceExpression) =

@@ -32,7 +32,7 @@ import com.precog.util.IdGen
 import org.joda.time._
 import org.joda.time.format._
 
-trait TimeComparisonSpecs[M[+ _]]
+trait TimeComparisonSpecs[M[+_]]
     extends Specification
     with EvaluatorTestSupport[M]
     with LongIdMemoryDatasetConsumer[M] {

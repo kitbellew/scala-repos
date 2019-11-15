@@ -94,7 +94,7 @@ object Lan extends LanInstances {
   import Id._
 
   implicit def lanApplicative[G[_]: Functor, H[_]: Applicative]
-    : Applicative[Lan[G, H, ?]] =
+      : Applicative[Lan[G, H, ?]] =
     new Applicative[Lan[G, H, ?]] with LanApply[G, H] {
       def G = implicitly
       def H = implicitly

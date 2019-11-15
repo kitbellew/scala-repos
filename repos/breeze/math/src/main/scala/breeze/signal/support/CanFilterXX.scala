@@ -52,7 +52,7 @@ object CanFilterBPBS {
     *
     */
   implicit val dvDouble1DFilterBPBS
-    : CanFilterBPBS[DenseVector[Double], DenseVector[Double]] = {
+      : CanFilterBPBS[DenseVector[Double], DenseVector[Double]] = {
     new CanFilterBPBS[DenseVector[Double], DenseVector[Double]] {
       def apply(
           data: DenseVector[Double],
@@ -92,7 +92,7 @@ object CanFilterLPHP {
     *
     */
   implicit val dvDouble1DFilterLPHP
-    : CanFilterLPHP[DenseVector[Double], DenseVector[Double]] = {
+      : CanFilterLPHP[DenseVector[Double], DenseVector[Double]] = {
     new CanFilterLPHP[DenseVector[Double], DenseVector[Double]] {
       def apply(
           data: DenseVector[Double],

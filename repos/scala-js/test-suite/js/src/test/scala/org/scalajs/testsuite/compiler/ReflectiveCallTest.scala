@@ -209,7 +209,7 @@ class ReflectiveCallTest {
   }
 
   @Test def should_properly_generate_forwarders_for_inherited_methods()
-    : Unit = {
+      : Unit = {
     trait A {
       def foo: Int
     }
@@ -227,7 +227,7 @@ class ReflectiveCallTest {
 
   @Test
   def should_be_bug_compatible_with_Scala_JVM_for_inherited_overloads()
-    : Unit = {
+      : Unit = {
     class Base {
       def foo(x: Option[Int]): String = "a"
     }

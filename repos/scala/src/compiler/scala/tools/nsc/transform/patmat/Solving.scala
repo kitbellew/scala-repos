@@ -423,7 +423,7 @@ trait Solving extends Logic {
           clauses: Array[Clause],
           models: List[TseitinSolution],
           recursionDepthAllowed: Int = AnalysisBudget.maxDPLLdepth)
-        : List[TseitinSolution] =
+          : List[TseitinSolution] =
         if (recursionDepthAllowed == 0) {
           uncheckedWarning(pos, AnalysisBudget.recursionDepthReached)
           models

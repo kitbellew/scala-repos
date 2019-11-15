@@ -98,7 +98,7 @@ final class Tcp(system: ExtendedActorSystem) extends akka.actor.Extension {
       options: immutable.Traversable[SocketOption] = Nil,
       halfClose: Boolean = false,
       idleTimeout: Duration = Duration.Inf)
-    : Source[IncomingConnection, Future[ServerBinding]] =
+      : Source[IncomingConnection, Future[ServerBinding]] =
     Source.fromGraph(
       new ConnectionSourceStage(
         IO(IoTcp)(system),
@@ -171,7 +171,7 @@ final class Tcp(system: ExtendedActorSystem) extends akka.actor.Extension {
       halfClose: Boolean = true,
       connectTimeout: Duration = Duration.Inf,
       idleTimeout: Duration = Duration.Inf)
-    : Flow[ByteString, ByteString, Future[OutgoingConnection]] = {
+      : Flow[ByteString, ByteString, Future[OutgoingConnection]] = {
 
     val tcpFlow = Flow
       .fromGraph(

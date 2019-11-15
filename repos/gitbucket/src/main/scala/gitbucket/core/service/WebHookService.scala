@@ -129,7 +129,7 @@ trait WebHookService {
       event: WebHook.Event,
       webHooks: List[WebHook],
       payload: WebHookPayload)(implicit c: JsonFormat.Context)
-    : List[(WebHook, String, Future[HttpRequest], Future[HttpResponse])] = {
+      : List[(WebHook, String, Future[HttpRequest], Future[HttpResponse])] = {
     import org.apache.http.impl.client.HttpClientBuilder
     import ExecutionContext.Implicits.global
     import org.apache.http.protocol.HttpContext
@@ -292,7 +292,7 @@ trait WebHookPullRequestService extends WebHookService {
       userName: String,
       repositoryName: String,
       branch: String)(implicit s: Session)
-    : Map[(Issue, Account, PullRequest, Account, Account), List[WebHook]] =
+      : Map[(Issue, Account, PullRequest, Account, Account), List[WebHook]] =
     (for {
       is <- Issues if is.closed === false.bind
       pr <- PullRequests

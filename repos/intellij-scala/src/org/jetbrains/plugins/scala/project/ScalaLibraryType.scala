@@ -32,7 +32,7 @@ class ScalaLibraryType
 
   def createPropertiesEditor(
       editorComponent: LibraryEditorComponent[ScalaLibraryProperties])
-    : LibraryPropertiesEditor =
+      : LibraryPropertiesEditor =
     new ScalaLibraryPropertiesEditor(editorComponent)
 }
 

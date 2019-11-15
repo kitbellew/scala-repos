@@ -89,7 +89,7 @@ object Probes {
       processor: Processor[In, Out],
       inLogger: In => String = (in: In) => in.toString,
       outLogger: Out => String = (out: Out) => out.toString)
-    : Processor[In, Out] = {
+      : Processor[In, Out] = {
     val subscriber = subscriberProbe(name + "-in", processor, inLogger)
     val publisher = publisherProbe(name + "-out", processor, outLogger)
     new Processor[In, Out] {

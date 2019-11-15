@@ -134,7 +134,7 @@ private[spark] class StreamInputFormat
   override def createRecordReader(
       split: InputSplit,
       taContext: TaskAttemptContext)
-    : CombineFileRecordReader[String, PortableDataStream] = {
+      : CombineFileRecordReader[String, PortableDataStream] = {
     new CombineFileRecordReader[String, PortableDataStream](
       split.asInstanceOf[CombineFileSplit],
       taContext,

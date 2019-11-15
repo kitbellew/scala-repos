@@ -348,7 +348,7 @@ object Scalding {
       dependants: Dependants[Scalding],
       built: Map[Producer[Scalding, _], PipeFactory[_]],
       forceFanOut: Boolean = false)
-    : (PipeFactory[T], Map[Producer[Scalding, _], PipeFactory[_]]) = {
+      : (PipeFactory[T], Map[Producer[Scalding, _], PipeFactory[_]]) = {
 
     val names = dependants.namesOf(producer).map(_.id)
 
@@ -356,7 +356,7 @@ object Scalding {
         p: Producer[Scalding, U],
         built: Map[Producer[Scalding, _], PipeFactory[_]] = built,
         forceFanOut: Boolean = forceFanOut)
-      : (PipeFactory[U], Map[Producer[Scalding, _], PipeFactory[_]]) = {
+        : (PipeFactory[U], Map[Producer[Scalding, _], PipeFactory[_]]) = {
       buildFlow(options, p, fanOuts, dependants, built, forceFanOut)
     }
 

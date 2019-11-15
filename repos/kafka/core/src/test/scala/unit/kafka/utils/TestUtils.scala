@@ -282,7 +282,7 @@ object TestUtils extends Logging {
       replicationFactor: Int = 1,
       servers: Seq[KafkaServer],
       topicConfig: Properties = new Properties)
-    : scala.collection.immutable.Map[Int, Option[Int]] = {
+      : scala.collection.immutable.Map[Int, Option[Int]] = {
     // create topic
     AdminUtils.createTopic(
       zkUtils,
@@ -308,7 +308,7 @@ object TestUtils extends Logging {
       topic: String,
       partitionReplicaAssignment: collection.Map[Int, Seq[Int]],
       servers: Seq[KafkaServer])
-    : scala.collection.immutable.Map[Int, Option[Int]] = {
+      : scala.collection.immutable.Map[Int, Option[Int]] = {
     // create topic
     AdminUtils.createOrUpdateTopicPartitionAssignmentPathInZK(
       zkUtils,
@@ -623,7 +623,7 @@ object TestUtils extends Logging {
       securityProtocol: SecurityProtocol,
       trustStoreFile: Option[File] = None,
       props: Option[Properties] = None)
-    : KafkaConsumer[Array[Byte], Array[Byte]] = {
+      : KafkaConsumer[Array[Byte], Array[Byte]] = {
     import org.apache.kafka.clients.consumer.ConsumerConfig
 
     val consumerProps = props.getOrElse(new Properties())

@@ -70,7 +70,7 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
   // cache: jarFilePath -> jarManifest
   private var jarCache: InjectorPersistentCache = null
   private val loadedInjectors
-    : mutable.HashMap[Class[_], mutable.HashSet[String]] = mutable.HashMap()
+      : mutable.HashMap[Class[_], mutable.HashSet[String]] = mutable.HashMap()
 
   private val myLibraryTableListener = new LibraryTable.Listener {
 

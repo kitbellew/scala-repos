@@ -205,16 +205,17 @@ object SessionSettings {
     */
   def saveSomeSettings(s: State)(include: ProjectRef => Boolean): State =
     withSettings(s) { session =>
-      val newSettings = for ((ref, settings) <- session.append
-                             if settings.nonEmpty &&
-                               include(ref)) yield {
-        val (news, olds) = writeSettings(
-          ref,
-          settings.toList,
-          session.original,
-          Project.structure(s))
-        (ref -> news, olds)
-      }
+      val newSettings =
+        for ((ref, settings) <- session.append
+             if settings.nonEmpty &&
+               include(ref)) yield {
+          val (news, olds) = writeSettings(
+            ref,
+            settings.toList,
+            session.original,
+            Project.structure(s))
+          (ref -> news, olds)
+        }
       val (newAppend, newOriginal) = newSettings.unzip
       val newSession = session.copy(
         append = newAppend.toMap,

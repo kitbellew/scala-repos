@@ -175,7 +175,7 @@ final case class ConsistentHashingRoutingLogic(
     * Java API: Setting the mapping from message to the data to use for the consistent hash key.
     */
   def withHashMapper(mapper: ConsistentHashingRouter.ConsistentHashMapper)
-    : ConsistentHashingRoutingLogic =
+      : ConsistentHashingRoutingLogic =
     copy(hashMapping = ConsistentHashingRouter.hashMappingAdapter(mapper))
 
   // tuple of routees and the ConsistentHash, updated together in updateConsistentHash
@@ -350,7 +350,7 @@ final case class ConsistentHashingPool(
     * Java API: Setting the mapping from message to the data to use for the consistent hash key.
     */
   def withHashMapper(mapper: ConsistentHashingRouter.ConsistentHashMapper)
-    : ConsistentHashingPool =
+      : ConsistentHashingPool =
     copy(hashMapping = ConsistentHashingRouter.hashMappingAdapter(mapper))
 
   /**
@@ -432,7 +432,7 @@ final case class ConsistentHashingGroup(
     * Java API: Setting the mapping from message to the data to use for the consistent hash key.
     */
   def withHashMapper(mapper: ConsistentHashingRouter.ConsistentHashMapper)
-    : ConsistentHashingGroup =
+      : ConsistentHashingGroup =
     copy(hashMapping = ConsistentHashingRouter.hashMappingAdapter(mapper))
 
   /**

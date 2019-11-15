@@ -40,7 +40,7 @@ class ExceptionSourceFilter[Req, Rep](serviceName: String)
     extends SimpleFilter[Req, Rep] {
 
   private[this] val addExceptionSource
-    : PartialFunction[Throwable, Future[Rep]] = {
+      : PartialFunction[Throwable, Future[Rep]] = {
     case f: Failure =>
       Future.exception(f.withSource(Failure.Source.Service, serviceName))
     case e: SourcedException =>

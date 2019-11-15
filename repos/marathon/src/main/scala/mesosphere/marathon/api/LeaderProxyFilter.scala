@@ -53,7 +53,7 @@ trait LeaderInfo {
 /**
   * Servlet filter that proxies requests to the leader if we are not the leader.
   */
-class LeaderProxyFilter @Inject()(
+class LeaderProxyFilter @Inject() (
     httpConf: HttpConf,
     leaderInfo: LeaderInfo,
     @Named(ModuleNames.HOST_PORT) myHostPort: String,
@@ -189,7 +189,7 @@ trait RequestForwarder {
       response: HttpServletResponse): Unit
 }
 
-class JavaUrlConnectionRequestForwarder @Inject()(
+class JavaUrlConnectionRequestForwarder @Inject() (
     @Named(JavaUrlConnectionRequestForwarder.NAMED_LEADER_PROXY_SSL_CONTEXT) sslContext: SSLContext,
     leaderProxyConf: LeaderProxyConf,
     @Named(ModuleNames.HOST_PORT) myHostPort: String)

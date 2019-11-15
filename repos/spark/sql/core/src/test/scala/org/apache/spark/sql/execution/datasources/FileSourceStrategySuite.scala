@@ -330,7 +330,7 @@ class TestFileFormat extends FileFormat {
       dataSchema: StructType,
       filters: Seq[Filter],
       options: Map[String, String])
-    : PartitionedFile => Iterator[InternalRow] = {
+      : PartitionedFile => Iterator[InternalRow] = {
 
     // Record the arguments so they can be checked in the test case.
     LastArguments.partitionSchema = partitionSchema

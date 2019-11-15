@@ -174,7 +174,7 @@ object CSRFConfig {
 }
 
 @Singleton
-class CSRFConfigProvider @Inject()(config: Configuration)
+class CSRFConfigProvider @Inject() (config: Configuration)
     extends Provider[CSRFConfig] {
   lazy val get = CSRFConfig.fromConfiguration(config)
 }
@@ -230,7 +230,7 @@ object CSRF {
     def compareTokens(tokenA: String, tokenB: String): Boolean
   }
 
-  class TokenProviderProvider @Inject()(
+  class TokenProviderProvider @Inject() (
       config: CSRFConfig,
       tokenSigner: CSRFTokenSigner)
       extends Provider[TokenProvider] {
@@ -271,7 +271,7 @@ object CSRF {
     def handle(req: RequestHeader, msg: String): Future[Result]
   }
 
-  class CSRFHttpErrorHandler @Inject()(httpErrorHandler: HttpErrorHandler)
+  class CSRFHttpErrorHandler @Inject() (httpErrorHandler: HttpErrorHandler)
       extends ErrorHandler {
     import play.api.http.Status.FORBIDDEN
     def handle(req: RequestHeader, msg: String) =
@@ -283,13 +283,13 @@ object CSRF {
       Future.successful(Forbidden(msg))
   }
 
-  class JavaCSRFErrorHandlerAdapter @Inject()(underlying: CSRFErrorHandler)
+  class JavaCSRFErrorHandlerAdapter @Inject() (underlying: CSRFErrorHandler)
       extends ErrorHandler {
     def handle(request: RequestHeader, msg: String) =
       JavaHelpers.invokeWithContext(request, req => underlying.handle(req, msg))
   }
 
-  class JavaCSRFErrorHandlerDelegate @Inject()(delegate: ErrorHandler)
+  class JavaCSRFErrorHandlerDelegate @Inject() (delegate: ErrorHandler)
       extends CSRFErrorHandler {
     import play.api.libs.iteratee.Execution.Implicits.trampoline
 

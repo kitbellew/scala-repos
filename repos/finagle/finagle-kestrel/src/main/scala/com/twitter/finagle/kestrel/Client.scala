@@ -365,7 +365,7 @@ ItemId](underlying: CommandExecutorFactory[CommandExecutor])
       openCommand: CommandExecutor => Future[Reply],
       closeAndOpenCommand: ItemId => (CommandExecutor => Future[Reply]),
       abortCommand: ItemId => (CommandExecutor => Future[Reply]))
-    : ReadHandle = {
+      : ReadHandle = {
 
     val error = new Broker[Throwable] // this is sort of like a latch...
     val messages = new Broker[ReadMessage] // todo: buffer?

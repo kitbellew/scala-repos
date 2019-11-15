@@ -13,7 +13,7 @@ import play.api.inject.Module
 /**
   * Provider for CORSConfig.
   */
-class CORSConfigProvider @Inject()(configuration: Configuration)
+class CORSConfigProvider @Inject() (configuration: Configuration)
     extends Provider[CORSConfig] {
   lazy val get = CORSConfig.fromConfiguration(configuration)
 }
@@ -21,7 +21,7 @@ class CORSConfigProvider @Inject()(configuration: Configuration)
 /**
   * Provider for CORSFilter.
   */
-class CORSFilterProvider @Inject()(
+class CORSFilterProvider @Inject() (
     configuration: Configuration,
     errorHandler: HttpErrorHandler,
     corsConfig: CORSConfig,

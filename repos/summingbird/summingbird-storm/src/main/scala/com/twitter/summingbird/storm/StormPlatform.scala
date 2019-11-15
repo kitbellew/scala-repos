@@ -296,7 +296,7 @@ abstract class Storm(
       }
 
     val wrappedStore
-      : MergeableStoreFactory[ExecutorKeyType, ExecutorValueType] =
+        : MergeableStoreFactory[ExecutorKeyType, ExecutorValueType] =
       MergeableStoreFactoryAlgebra.wrapOnlineFactory(supplier)
 
     val anchorTuples = getOrElse(stormDag, node, AnchorTuples.default)

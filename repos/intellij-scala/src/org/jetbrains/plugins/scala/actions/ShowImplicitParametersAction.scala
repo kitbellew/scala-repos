@@ -80,7 +80,7 @@ class ShowImplicitParametersAction
   private def implicitParams(
       expr: PsiElement): Option[Seq[ScalaResolveResult]] = {
     def checkTypeElement(element: ScTypeElement)
-      : Option[Option[scala.Seq[ScalaResolveResult]]] = {
+        : Option[Option[scala.Seq[ScalaResolveResult]]] = {
       def checkSimpleType(s: ScSimpleTypeElement) = {
         s.findImplicitParameters
       }

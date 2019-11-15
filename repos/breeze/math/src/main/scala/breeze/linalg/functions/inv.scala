@@ -16,7 +16,7 @@ import breeze.linalg.support.CanTranspose
 object inv extends UFunc {
   implicit def canInvUsingLU_Double[T](
       implicit luImpl: LU.Impl[T, (DenseMatrix[Double], Array[Int])])
-    : Impl[T, DenseMatrix[Double]] = {
+      : Impl[T, DenseMatrix[Double]] = {
     new Impl[T, DenseMatrix[Double]] {
       def apply(X: T): DenseMatrix[Double] = {
         // Should these type hints be necessary?
@@ -47,7 +47,7 @@ object inv extends UFunc {
 
   implicit def canInvUsingLU_Float[T](
       implicit luImpl: LU.Impl[T, (DenseMatrix[Float], Array[Int])])
-    : Impl[T, DenseMatrix[Float]] = {
+      : Impl[T, DenseMatrix[Float]] = {
     new Impl[T, DenseMatrix[Float]] {
       def apply(X: T): DenseMatrix[Float] = {
         // Should these type hints be necessary?
@@ -92,7 +92,7 @@ object pinv extends UFunc with pinvLowPrio {
   @expand
   @expand.valify
   implicit def pinvFromSVD[@expand.args(Float, Double) T]
-    : Impl[DenseMatrix[T], DenseMatrix[T]] = {
+      : Impl[DenseMatrix[T], DenseMatrix[T]] = {
     new Impl[DenseMatrix[T], DenseMatrix[T]] {
       // http://en.wikipedia.org/wiki/Singular_value_decomposition#Applications_of_the_SVD
       override def apply(v: DenseMatrix[T]): DenseMatrix[T] = {

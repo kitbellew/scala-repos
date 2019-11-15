@@ -40,10 +40,10 @@ private[persistence] trait LeveldbStore
 
   private val persistenceIdSubscribers =
     new mutable.HashMap[String, mutable.Set[ActorRef]]
-    with mutable.MultiMap[String, ActorRef]
+      with mutable.MultiMap[String, ActorRef]
   private val tagSubscribers =
     new mutable.HashMap[String, mutable.Set[ActorRef]]
-    with mutable.MultiMap[String, ActorRef]
+      with mutable.MultiMap[String, ActorRef]
   private var allPersistenceIdsSubscribers = Set.empty[ActorRef]
 
   private var tagSequenceNr = Map.empty[String, Long]
@@ -58,7 +58,7 @@ private[persistence] trait LeveldbStore
   import Key._
 
   def asyncWriteMessages(messages: immutable.Seq[AtomicWrite])
-    : Future[immutable.Seq[Try[Unit]]] = {
+      : Future[immutable.Seq[Try[Unit]]] = {
     var persistenceIds = Set.empty[String]
     var allTags = Set.empty[String]
 

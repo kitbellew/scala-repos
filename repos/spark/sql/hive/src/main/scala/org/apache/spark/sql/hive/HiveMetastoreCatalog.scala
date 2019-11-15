@@ -138,7 +138,7 @@ private[hive] class HiveMetastoreCatalog(
 
   /** A cache of Spark SQL data source tables that have been accessed. */
   protected[hive] val cachedDataSourceTables
-    : LoadingCache[QualifiedTableName, LogicalPlan] = {
+      : LoadingCache[QualifiedTableName, LogicalPlan] = {
     val cacheLoader = new CacheLoader[QualifiedTableName, LogicalPlan]() {
       override def load(in: QualifiedTableName): LogicalPlan = {
         logDebug(s"Creating new cached data source for $in")
@@ -523,7 +523,7 @@ private[hive] class HiveMetastoreCatalog(
         pathsInMetastore: Seq[String],
         schemaInMetastore: StructType,
         partitionSpecInMetastore: Option[PartitionSpec])
-      : Option[LogicalRelation] = {
+        : Option[LogicalRelation] = {
       cachedDataSourceTables.getIfPresent(tableIdentifier) match {
         case null => None // Cache miss
         case logical @ LogicalRelation(

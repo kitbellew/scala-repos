@@ -44,7 +44,7 @@ object ScalaI18nUtil {
   private final val FOLD_MAX_LENGTH: Int = 50
   private final val CACHE: Key[IProperty] = Key.create("i18n.property.cache")
   private final val TOP_LEVEL_EXPRESSION
-    : Key[ParameterizedCachedValue[ScExpression, (Project, ScExpression)]] =
+      : Key[ParameterizedCachedValue[ScExpression, (Project, ScExpression)]] =
     Key.create("TOP_LEVEL_EXPRESSION")
   private final val TOP_LEVEL_PROVIDER: ParameterizedCachedValueProvider[
     ScExpression,
@@ -52,12 +52,12 @@ object ScalaI18nUtil {
     ScExpression,
     (Project, ScExpression)] {
     def compute(pair: (Project, ScExpression))
-      : CachedValueProvider.Result[ScExpression] = {
+        : CachedValueProvider.Result[ScExpression] = {
       val param: ScExpression = pair._2
       val project: Project = pair._1
       val topLevel: ScExpression = getTopLevel(project, param)
       val cachedValue
-        : ParameterizedCachedValue[ScExpression, (Project, ScExpression)] =
+          : ParameterizedCachedValue[ScExpression, (Project, ScExpression)] =
         param.getUserData(TOP_LEVEL_EXPRESSION)
       assert(cachedValue != null)
       var i: Int = 0
@@ -108,7 +108,7 @@ object ScalaI18nUtil {
       @NotNull project: Project,
       @NotNull expression: ScLiteral,
       @NotNull annotationAttributeValues: mutable.HashMap[String, AnyRef])
-    : Boolean = {
+      : Boolean = {
     isPassedToAnnotatedParam(
       project,
       expression,
@@ -123,7 +123,7 @@ object ScalaI18nUtil {
       annFqn: String,
       @Nullable annotationAttributeValues: mutable.HashMap[String, AnyRef],
       @Nullable nonNlsTargets: mutable.HashSet[PsiModifierListOwner])
-    : Boolean = {
+      : Boolean = {
     val expression = getToplevelExpression(project, myExpression)
     val parent: PsiElement = expression.getParent
     if (!parent.isInstanceOf[ScArgumentExprList]) return false
@@ -207,7 +207,7 @@ object ScalaI18nUtil {
       if (expression.isInstanceOf[PsiAssignmentExpression]) flag = false
       if (i > 10 && expression.isInstanceOf[PsiBinaryExpression]) {
         val value
-          : ParameterizedCachedValue[ScExpression, (Project, ScExpression)] =
+            : ParameterizedCachedValue[ScExpression, (Project, ScExpression)] =
           expression.getUserData(TOP_LEVEL_EXPRESSION)
         if (value != null && value.hasUpToDateValue) {
           return getToplevelExpression(project, expression)
@@ -224,7 +224,7 @@ object ScalaI18nUtil {
       annFqn: String,
       @Nullable annotationAttributeValues: mutable.HashMap[String, AnyRef],
       @Nullable nonNlsTargets: mutable.HashSet[PsiModifierListOwner])
-    : Boolean = {
+      : Boolean = {
     var processed = myProcessed
     if (processed != null) {
       if (processed.contains(method)) return false

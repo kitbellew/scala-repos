@@ -147,7 +147,8 @@ sealed abstract class Future[+A] {
         case BindSuspend(thunk, f) =>
           (thunk() flatMap f).stepInterruptibly(cancel)
         case _ => this
-      } else this
+      }
+    else this
 
   /**
     * Begins running this `Future` and returns a new future that blocks
@@ -462,7 +463,7 @@ object Future {
     */
   def fork[A](a: => Future[A])(
       implicit pool: ExecutorService = Strategy.DefaultExecutorService)
-    : Future[A] =
+      : Future[A] =
     Future(a).join
 
   /**
@@ -488,14 +489,14 @@ object Future {
   /** Create a `Future` that will evaluate `a` using the given `ExecutorService`. */
   def apply[A](a: => A)(
       implicit pool: ExecutorService = Strategy.DefaultExecutorService)
-    : Future[A] = Async { cb =>
+      : Future[A] = Async { cb =>
     pool.submit { new Callable[Unit] { def call = cb(a).run } }
   }
 
   /** Create a `Future` that will evaluate `a` after at least the given delay. */
   def schedule[A](a: => A, delay: Duration)(
       implicit pool: ScheduledExecutorService = Strategy.DefaultTimeoutScheduler)
-    : Future[A] =
+      : Future[A] =
     Async { cb =>
       pool.schedule(new Callable[Unit] {
         def call = cb(a).run

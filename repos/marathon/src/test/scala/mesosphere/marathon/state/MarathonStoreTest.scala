@@ -283,7 +283,7 @@ class MarathonStoreTest extends MarathonSpec with Matchers {
     }
     val config =
       new ScallopConf(Seq("--master", "foo", "--marathon_store_timeout", "1"))
-      with MarathonConf
+        with MarathonConf
     config.afterInit()
 
     val store = new MarathonStore[AppDefinition](

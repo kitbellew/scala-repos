@@ -38,7 +38,7 @@ trait HikariCPComponents {
 }
 
 @Singleton
-class HikariCPConnectionPool @Inject()(environment: Environment)
+class HikariCPConnectionPool @Inject() (environment: Environment)
     extends ConnectionPool {
 
   import HikariCPConnectionPool._

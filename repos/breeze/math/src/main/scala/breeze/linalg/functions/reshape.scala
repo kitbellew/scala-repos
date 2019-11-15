@@ -25,7 +25,7 @@ import scala.reflect.ClassTag
   */
 object reshape extends UFunc {
   implicit def svReshape[T: ClassTag: Semiring: Zero]
-    : Impl3[SparseVector[T], Int, Int, CSCMatrix[T]] =
+      : Impl3[SparseVector[T], Int, Int, CSCMatrix[T]] =
     new Impl3[SparseVector[T], Int, Int, CSCMatrix[T]] {
       def apply(sv: SparseVector[T], rows: Int, cols: Int): CSCMatrix[T] = {
         var i = 0
@@ -39,7 +39,7 @@ object reshape extends UFunc {
     }
 
   implicit def dvReshape[T: ClassTag: Semiring: Zero]
-    : Impl3[DenseVector[T], Int, Int, DenseMatrix[T]] =
+      : Impl3[DenseVector[T], Int, Int, DenseMatrix[T]] =
     new Impl3[DenseVector[T], Int, Int, DenseMatrix[T]] {
       def apply(v: DenseVector[T], rows: Int, cols: Int): DenseMatrix[T] = {
         require(
@@ -50,7 +50,7 @@ object reshape extends UFunc {
     }
 
   implicit def dmReshape[T: ClassTag: Semiring: Zero]
-    : Impl3[DenseMatrix[T], Int, Int, DenseMatrix[T]] =
+      : Impl3[DenseMatrix[T], Int, Int, DenseMatrix[T]] =
     new Impl3[DenseMatrix[T], Int, Int, DenseMatrix[T]] {
       def apply(dm: DenseMatrix[T], rows: Int, cols: Int): DenseMatrix[T] = {
         require(
@@ -73,7 +73,7 @@ object reshape extends UFunc {
     }
 
   implicit def cscReshape[T: ClassTag: Semiring: Zero]
-    : Impl3[CSCMatrix[T], Int, Int, CSCMatrix[T]] =
+      : Impl3[CSCMatrix[T], Int, Int, CSCMatrix[T]] =
     new Impl3[CSCMatrix[T], Int, Int, CSCMatrix[T]] {
       def apply(csc: CSCMatrix[T], rows: Int, cols: Int): CSCMatrix[T] = {
         require(

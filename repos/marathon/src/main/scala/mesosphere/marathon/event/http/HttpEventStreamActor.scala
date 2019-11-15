@@ -21,7 +21,7 @@ trait HttpEventStreamHandle {
   def close(): Unit
 }
 
-class HttpEventStreamActorMetrics @Inject()(metrics: Metrics) {
+class HttpEventStreamActorMetrics @Inject() (metrics: Metrics) {
   val numberOfStreams: AtomicIntGauge = metrics.gauge(
     metrics.name(MetricPrefixes.API, getClass, "number-of-streams"),
     new AtomicIntGauge)

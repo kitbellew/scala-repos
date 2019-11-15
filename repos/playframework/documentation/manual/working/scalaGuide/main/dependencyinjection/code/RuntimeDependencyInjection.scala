@@ -36,7 +36,7 @@ package constructor {
   import javax.inject._
   import play.api.libs.ws._
 
-  class MyComponent @Inject()(ws: WSClient) {
+  class MyComponent @Inject() (ws: WSClient) {
     // ...
   }
 //#constructor
@@ -70,7 +70,7 @@ package cleanup {
   import play.api.inject.ApplicationLifecycle
 
   @Singleton
-  class MessageQueueConnection @Inject()(lifecycle: ApplicationLifecycle) {
+  class MessageQueueConnection @Inject() (lifecycle: ApplicationLifecycle) {
     val connection = connectToMessageQueue()
     lifecycle.addStopHook { () =>
       Future.successful(connection.stop())
@@ -252,9 +252,9 @@ package circular {
 //#circular
   import javax.inject.Inject
 
-  class Foo @Inject()(bar: Bar)
-  class Bar @Inject()(baz: Baz)
-  class Baz @Inject()(foo: Foo)
+  class Foo @Inject() (bar: Bar)
+  class Bar @Inject() (baz: Baz)
+  class Baz @Inject() (foo: Foo)
 //#circular
 }
 
@@ -263,8 +263,8 @@ package circularProvider {
 //#circular-provider
   import javax.inject.{Inject, Provider}
 
-  class Foo @Inject()(bar: Bar)
-  class Bar @Inject()(baz: Baz)
-  class Baz @Inject()(foo: Provider[Foo])
+  class Foo @Inject() (bar: Bar)
+  class Bar @Inject() (baz: Baz)
+  class Baz @Inject() (foo: Provider[Foo])
 //#circular-provider
 }

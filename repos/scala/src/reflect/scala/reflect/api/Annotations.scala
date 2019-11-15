@@ -65,7 +65,7 @@ trait Annotations { self: Universe =>
       "Use `Annotation.tree` to inspect annotation arguments",
       "2.11.0")
     def unapply(ann: Annotation)
-      : Option[(Type, List[Tree], ListMap[Name, JavaArgument])]
+        : Option[(Type, List[Tree], ListMap[Name, JavaArgument])]
   }
 
   /** The API of `Annotation` instances.

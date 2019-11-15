@@ -133,7 +133,7 @@ object GzipFilterSpec extends PlaySpecification with DataTables {
     }
   }
 
-  class Filters @Inject()(gzipFilter: GzipFilter) extends HttpFilters {
+  class Filters @Inject() (gzipFilter: GzipFilter) extends HttpFilters {
     def filters = Seq(gzipFilter)
   }
 

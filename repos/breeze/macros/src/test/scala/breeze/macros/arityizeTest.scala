@@ -60,7 +60,7 @@ class arityizeTest extends FunSuite {
     def getKernel[@arityize.replicate T](
         name: String,
         blockDims: Array[Int] = Array(32, 1, 1))
-      : (CuKernel[T @arityize.replicate] @arityize.relative(getKernel)) = {
+        : (CuKernel[T @arityize.replicate] @arityize.relative(getKernel)) = {
       new (CuKernel[T @arityize.replicate] @arityize.relative(getKernel))(
         name,
         blockDims)
@@ -73,7 +73,7 @@ class arityizeTest extends FunSuite {
 
     @arityize(6)
     implicit def tuple[V]
-      : LiteralRow[Tuple[V @arityize.repeat] @arityize.relative(tuple), V] =
+        : LiteralRow[Tuple[V @arityize.repeat] @arityize.relative(tuple), V] =
       new LiteralRow[Tuple[V @arityize.repeat] @arityize.relative(tuple), V] {
         def foreach[X](
             tup: Tuple[V @arityize.repeat] @arityize.relative(tuple),

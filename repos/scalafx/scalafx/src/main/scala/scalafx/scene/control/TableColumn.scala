@@ -268,7 +268,7 @@ class TableColumn[S, T](
         jfxsc.TableColumn.CellDataFeatures[S, T],
         jfxbv.ObservableValue[T]] {
         def call(v: jfxsc.TableColumn.CellDataFeatures[S, T])
-          : jfxbv.ObservableValue[T] = {
+            : jfxbv.ObservableValue[T] = {
           f(v).delegate
         }
       })

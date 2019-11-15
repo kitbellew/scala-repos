@@ -30,7 +30,7 @@ import org.quartz.CronExpression
 
 import scalaz.EitherT
 
-trait ScheduleStorage[M[+ _]] {
+trait ScheduleStorage[M[+_]] {
   def addTask(task: ScheduledTask): EitherT[M, String, ScheduledTask]
 
   def deleteTask(id: UUID): EitherT[M, String, Option[ScheduledTask]]
@@ -38,7 +38,7 @@ trait ScheduleStorage[M[+ _]] {
   def reportRun(report: ScheduledRunReport): M[PrecogUnit]
 
   def statusFor(id: UUID, lastLimit: Option[Int])
-    : M[Option[(ScheduledTask, Seq[ScheduledRunReport])]]
+      : M[Option[(ScheduledTask, Seq[ScheduledRunReport])]]
 
   def listTasks: M[Seq[ScheduledTask]]
 }

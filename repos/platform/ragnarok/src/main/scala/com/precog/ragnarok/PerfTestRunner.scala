@@ -23,7 +23,7 @@ import scalaz._
 
 // TODO: The Timer should just be a member.
 
-trait PerfTestRunner[M[+ _], T] {
+trait PerfTestRunner[M[+_], T] {
   import scalaz.syntax.monad._
   import scalaz.syntax.monoid._
   import scalaz.syntax.comonad._
@@ -130,7 +130,7 @@ trait PerfTestRunner[M[+ _], T] {
   }
 }
 
-class MockPerfTestRunner[M[+ _]](evalTime: => Int)(
+class MockPerfTestRunner[M[+_]](evalTime: => Int)(
     implicit val M: Monad[M] with Comonad[M])
     extends PerfTestRunner[M, Long] {
   import scalaz.syntax.monad._

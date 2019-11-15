@@ -70,7 +70,8 @@ private[stream] class Throttle[T](
                     failStage(
                       new RateExceededException(
                         "Maximum throttle throughput exceeded"))
-                } else {
+                }
+              else {
                 lastTokens = currentTokens - elementCost
                 previousTime = currentTime
                 push(out, elem)

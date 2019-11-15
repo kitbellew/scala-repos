@@ -17,7 +17,7 @@ private[pickling] trait AlgorithmLogger {
 private[pickling] sealed trait AlgorithmResult {
   def join(other: => AlgorithmResult): AlgorithmResult
   def map(f: PickleUnpickleImplementation => PickleUnpickleImplementation)
-    : AlgorithmResult =
+      : AlgorithmResult =
     this match {
       case AlgorithmSucccess(i) => AlgorithmSucccess(f(i))
       case x                    => x

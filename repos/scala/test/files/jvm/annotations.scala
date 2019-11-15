@@ -87,7 +87,7 @@ object Test4 {
     @SourceAnnotation("file:///dev/zero")
     def bar: Int = 0
   }
-  class Foo6 @SourceAnnotation("primary constructor")(s: String) {
+  class Foo6 @SourceAnnotation("primary constructor") (s: String) {
     // to guarantee that primary constructor annotations
     // are not applied to secondary constructors
     def this() = this("")

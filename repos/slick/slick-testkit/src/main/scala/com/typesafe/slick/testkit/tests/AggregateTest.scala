@@ -175,10 +175,12 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
           us.map(_.id.asColumnOf[String] ++ "test")
             .groupBy(x => x)
             .map(_._2.max)
-        val q8b = for ((key, group) <- us.map(_ => "x").groupBy(co => co))
-          yield (key, group.map(co => co).max)
-        val q8c = for ((key, group) <- us.map(_ => 5).groupBy(co => co))
-          yield (key, group.map(co => co + co).sum)
+        val q8b =
+          for ((key, group) <- us.map(_ => "x").groupBy(co => co))
+            yield (key, group.map(co => co).max)
+        val q8c =
+          for ((key, group) <- us.map(_ => 5).groupBy(co => co))
+            yield (key, group.map(co => co + co).sum)
         val q8d =
           us.map(_ => LiteralColumn("te") ++ "st").groupBy(x => x).map(_._2.max)
         db.run(for {

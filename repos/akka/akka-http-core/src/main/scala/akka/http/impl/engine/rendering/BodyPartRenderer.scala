@@ -29,7 +29,7 @@ private[http] object BodyPartRenderer {
       nioCharset: Charset,
       partHeadersSizeHint: Int,
       log: LoggingAdapter)
-    : PushPullStage[Multipart.BodyPart, Source[ChunkStreamPart, Any]] =
+      : PushPullStage[Multipart.BodyPart, Source[ChunkStreamPart, Any]] =
     new PushPullStage[Multipart.BodyPart, Source[ChunkStreamPart, Any]] {
       var firstBoundaryRendered = false
 

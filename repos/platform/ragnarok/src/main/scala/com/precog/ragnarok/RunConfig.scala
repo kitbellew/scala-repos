@@ -75,7 +75,7 @@ object RunConfig {
   def fromCommandLine(
       args: List[String],
       config: ValidationNel[String, RunConfig] = RunConfig().successNel)
-    : ValidationNel[String, RunConfig] = args match {
+      : ValidationNel[String, RunConfig] = args match {
     case Nil =>
       config
 

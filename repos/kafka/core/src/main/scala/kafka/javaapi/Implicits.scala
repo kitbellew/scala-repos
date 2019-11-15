@@ -22,7 +22,7 @@ private[javaapi] object Implicits extends Logging {
 
   implicit def scalaMessageSetToJavaMessageSet(
       messageSet: kafka.message.ByteBufferMessageSet)
-    : kafka.javaapi.message.ByteBufferMessageSet = {
+      : kafka.javaapi.message.ByteBufferMessageSet = {
     new kafka.javaapi.message.ByteBufferMessageSet(messageSet.buffer)
   }
 
@@ -32,7 +32,7 @@ private[javaapi] object Implicits extends Logging {
 
   implicit def toJavaTopicMetadataResponse(
       response: kafka.api.TopicMetadataResponse)
-    : kafka.javaapi.TopicMetadataResponse =
+      : kafka.javaapi.TopicMetadataResponse =
     new kafka.javaapi.TopicMetadataResponse(response)
 
   implicit def toJavaOffsetResponse(
@@ -41,12 +41,12 @@ private[javaapi] object Implicits extends Logging {
 
   implicit def toJavaOffsetFetchResponse(
       response: kafka.api.OffsetFetchResponse)
-    : kafka.javaapi.OffsetFetchResponse =
+      : kafka.javaapi.OffsetFetchResponse =
     new kafka.javaapi.OffsetFetchResponse(response)
 
   implicit def toJavaOffsetCommitResponse(
       response: kafka.api.OffsetCommitResponse)
-    : kafka.javaapi.OffsetCommitResponse =
+      : kafka.javaapi.OffsetCommitResponse =
     new kafka.javaapi.OffsetCommitResponse(response)
 
   implicit def optionToJavaRef[T](opt: Option[T]): T = {

@@ -137,7 +137,7 @@ sealed abstract class NullArgumentInstances extends NullArgumentInstances0 {
     }
 
   implicit val nullArgumentCategory
-    : Split[NullArgument] with Profunctor[NullArgument] =
+      : Split[NullArgument] with Profunctor[NullArgument] =
     new Split[NullArgument] with Profunctor[NullArgument] {
       override def compose[A, B, C](
           f: NullArgument[B, C],
@@ -154,7 +154,7 @@ sealed abstract class NullArgumentInstances extends NullArgumentInstances0 {
     }
 
   implicit def nullArgumentMonad[X]
-    : Monad[NullArgument[X, ?]] with BindRec[NullArgument[X, ?]] =
+      : Monad[NullArgument[X, ?]] with BindRec[NullArgument[X, ?]] =
     new Monad[NullArgument[X, ?]] with BindRec[NullArgument[X, ?]] {
       override def ap[A, B](a: => NullArgument[X, A])(
           f: => NullArgument[X, A => B]) =

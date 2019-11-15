@@ -173,7 +173,7 @@ class P2CBalancerTest extends FunSuite with App with P2CSuite {
     val bal = newBal(Var.value(init))
 
     var byIndex = new mutable.HashMap[Int, mutable.Set[Closable]]
-    with mutable.MultiMap[Int, Closable]
+      with mutable.MultiMap[Int, Closable]
 
     def run(n: Int) {
       for (_ <- 0 until n) {

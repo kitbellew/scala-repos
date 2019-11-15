@@ -171,7 +171,7 @@ trait EnumerateeTFunctions {
     new EnumerateeT[E1, (E1, E2), F] {
       def apply[A] = {
         def outerLoop(step: StepT[(E1, E2), F, A])
-          : IterateeT[E1, F, StepT[(E1, E2), F, A]] =
+            : IterateeT[E1, F, StepT[(E1, E2), F, A]] =
           for {
             outerOpt <- head[E1, F]
             sa <- outerOpt match {
@@ -193,7 +193,7 @@ trait EnumerateeTFunctions {
 
   def doneOr[O, I, F[_]: Applicative, A](
       f: (Input[I] => IterateeT[I, F, A]) => IterateeT[O, F, StepT[I, F, A]])
-    : StepT[I, F, A] => IterateeT[O, F, StepT[I, F, A]] = {
+      : StepT[I, F, A] => IterateeT[O, F, StepT[I, F, A]] = {
     (s: StepT[I, F, A]) =>
       s.mapContOr(k => f(k), done(s, emptyInput))
   }

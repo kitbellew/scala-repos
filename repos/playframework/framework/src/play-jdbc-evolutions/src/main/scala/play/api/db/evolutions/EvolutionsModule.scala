@@ -53,7 +53,7 @@ trait EvolutionsComponents {
 }
 
 @Singleton
-class ApplicationEvolutionsProvider @Inject()(
+class ApplicationEvolutionsProvider @Inject() (
     config: EvolutionsConfig,
     reader: EvolutionsReader,
     evolutions: EvolutionsApi,

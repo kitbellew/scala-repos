@@ -7,7 +7,7 @@ import mesosphere.marathon.{MarathonConf}
 
 import scala.collection.JavaConverters._
 
-class CORSFilter @Inject()(config: MarathonConf) extends Filter {
+class CORSFilter @Inject() (config: MarathonConf) extends Filter {
 
   // Map access_control_allow_origin flag into separate headers
   lazy val maybeOrigins: Option[Seq[String]] =

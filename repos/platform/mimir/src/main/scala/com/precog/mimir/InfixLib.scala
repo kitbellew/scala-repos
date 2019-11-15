@@ -34,7 +34,7 @@ import yggdrasil.table._
 
 import com.precog.util.NumericComparisons
 
-trait InfixLibModule[M[+ _]] extends ColumnarTableLibModule[M] {
+trait InfixLibModule[M[+_]] extends ColumnarTableLibModule[M] {
   trait InfixLib extends ColumnarTableLib {
     import StdLib.{
       BoolFrom,

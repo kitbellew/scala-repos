@@ -37,9 +37,9 @@ class MainTest extends AsyncTest[JdbcTestDB] { mainTest =>
     val q1 = (for (u <- users) yield (u.id, u.first, u.last)).sortBy(_._1)
     q1.result.statements.toSeq.length.should(_ >= 1)
 
-    val q1b = for (u <- users)
-      yield
-        (
+    val q1b =
+      for (u <- users)
+        yield (
           u.id,
           u.first.?,
           u.last,
@@ -98,18 +98,19 @@ class MainTest extends AsyncTest[JdbcTestDB] { mainTest =>
       }
       .flatMap { allUsers =>
         //TODO verifyable non-random test
-        val ordersInserts = for (u <- allUsers if u.first != "Apu" &&
-                                   u.first != "Snowball"; i <- 1 to 2)
-          yield
-            orders.map(o => (o.userID, o.product, o.shipped, o.rebate)) +=
+        val ordersInserts =
+          for (u <- allUsers if u.first != "Apu" &&
+                 u.first != "Snowball"; i <- 1 to 2)
+            yield orders.map(o => (o.userID, o.product, o.shipped, o.rebate)) +=
               (u.id, "Gizmo " + ((scala.math.random * 10) + 1).toInt, i == 2,
               Some(u.first == "Marge"))
         db.run(seq(ordersInserts: _*))
       }
       .flatMap { _ =>
-        val q3 = for (u <- users.sortBy(_.first) if u.last.isDefined;
-                      o <- u.orders)
-          yield (u.first, u.last, o.orderID, o.product, o.shipped, o.rebate)
+        val q3 =
+          for (u <- users.sortBy(_.first) if u.last.isDefined;
+               o <- u.orders)
+            yield (u.first, u.last, o.orderID, o.product, o.shipped, o.rebate)
         q3.result.statements.toSeq.length.should(_ >= 1)
         // All Orders by Users with a last name by first name:
         materialize(db.stream(q3.result)).map(s => s.length shouldBe 8)
@@ -129,14 +130,16 @@ class MainTest extends AsyncTest[JdbcTestDB] { mainTest =>
             m(o) === (for { o2 <- c if p(o) === p(o2) } yield m(o2)).max
           }
 
-        val q4b = for (u <- users;
-                       o <- maxOfPer(orders)(_.orderID, _.userID)
-                       if o.userID === u.id) yield (u.first, o.orderID)
+        val q4b =
+          for (u <- users;
+               o <- maxOfPer(orders)(_.orderID, _.userID)
+               if o.userID === u.id) yield (u.first, o.orderID)
         q4b.result.statements.toSeq.length.should(_ >= 1)
 
-        val q4d = for (u <- users if u.first inSetBind List("Homer", "Marge");
-                       o <- orders if o.userID === u.id)
-          yield (u.first, (LiteralColumn(1) + o.orderID, 1), o.product)
+        val q4d =
+          for (u <- users if u.first inSetBind List("Homer", "Marge");
+               o <- orders if o.userID === u.id)
+            yield (u.first, (LiteralColumn(1) + o.orderID, 1), o.product)
         q4d.result.statements.toSeq.length.should(_ >= 1)
 
         db.run(for {

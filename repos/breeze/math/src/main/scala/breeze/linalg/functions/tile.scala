@@ -17,7 +17,7 @@ object tile extends UFunc {
       implicit ct: ClassTag[T],
       z: Zero[T],
       set: OpSet.InPlaceImpl2[DenseVector[T], DenseVector[T]])
-    : Impl2[DenseVector[T], Int, DenseVector[T]] = {
+      : Impl2[DenseVector[T], Int, DenseVector[T]] = {
     new Impl2[DenseVector[T], Int, DenseVector[T]] {
       def apply(x: DenseVector[T], n: Int): DenseVector[T] = {
         // DenseVector is column-major, i.e., it can be considered a matrix of size (v.length x 1)
@@ -35,7 +35,7 @@ object tile extends UFunc {
   implicit def tile_DV_Impl3[T: ClassTag: Zero](
       implicit impl2: Impl2[DenseVector[T], Int, DenseVector[T]],
       set: OpSet.InPlaceImpl2[DenseVector[T], DenseVector[T]])
-    : Impl3[DenseVector[T], Int, Int, DenseMatrix[T]] =
+      : Impl3[DenseVector[T], Int, Int, DenseMatrix[T]] =
     new Impl3[DenseVector[T], Int, Int, DenseMatrix[T]] {
       def apply(x: DenseVector[T], m: Int, n: Int): DenseMatrix[T] = {
         // DenseVector is column-major, i.e., it can be considered a matrix of size (v.length x 1)
@@ -54,7 +54,7 @@ object tile extends UFunc {
 
   implicit def tile_DM_Impl2[T: ClassTag: Zero](
       implicit set: OpSet.InPlaceImpl2[DenseVector[T], DenseVector[T]])
-    : Impl2[DenseMatrix[T], Int, DenseMatrix[T]] =
+      : Impl2[DenseMatrix[T], Int, DenseMatrix[T]] =
     new Impl2[DenseMatrix[T], Int, DenseMatrix[T]] {
       def apply(x: DenseMatrix[T], m: Int): DenseMatrix[T] = {
         // Replicate each column 'm' times.
@@ -76,7 +76,7 @@ object tile extends UFunc {
   implicit def tile_DM_Impl3[T: ClassTag: Zero](
       implicit impl2: Impl2[DenseMatrix[T], Int, DenseMatrix[T]],
       set: OpSet.InPlaceImpl2[DenseMatrix[T], DenseMatrix[T]])
-    : Impl3[DenseMatrix[T], Int, Int, DenseMatrix[T]] =
+      : Impl3[DenseMatrix[T], Int, Int, DenseMatrix[T]] =
     new Impl3[DenseMatrix[T], Int, Int, DenseMatrix[T]] {
       def apply(x: DenseMatrix[T], m: Int, n: Int): DenseMatrix[T] = {
         // First, replicate each column 'm' times.

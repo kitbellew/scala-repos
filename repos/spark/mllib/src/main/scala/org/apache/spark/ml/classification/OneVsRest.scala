@@ -171,7 +171,7 @@ final class OneVsRestModel private[ml] (
   */
 @Since("1.4.0")
 @Experimental
-final class OneVsRest @Since("1.4.0")(@Since("1.4.0") override val uid: String)
+final class OneVsRest @Since("1.4.0") (@Since("1.4.0") override val uid: String)
     extends Estimator[OneVsRestModel]
     with OneVsRestParams {
 

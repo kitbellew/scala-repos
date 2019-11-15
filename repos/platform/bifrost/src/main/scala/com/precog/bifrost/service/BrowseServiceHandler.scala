@@ -48,7 +48,7 @@ import scalaz.syntax.bifunctor._
 import scalaz.syntax.show._
 import scalaz.syntax.apply._
 
-class BrowseSupport[M[+ _]: Bind](vfs: VFSMetadata[M]) {
+class BrowseSupport[M[+_]: Bind](vfs: VFSMetadata[M]) {
   // Essentially doing a leftFlatMap here
   def size(apiKey: APIKey, path: Path): EitherT[M, ResourceError, JNum] =
     EitherT {

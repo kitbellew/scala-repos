@@ -38,7 +38,7 @@ trait WebSocketUpgradeResponse {
 object WebSocketUpgradeResponse {
   import akka.http.impl.util.JavaMapping.Implicits._
   def adapt(scalaResponse: scaladsl.model.ws.WebSocketUpgradeResponse)
-    : WebSocketUpgradeResponse =
+      : WebSocketUpgradeResponse =
     scalaResponse match {
       case ValidUpgrade(resp, chosen) ⇒
         new WebSocketUpgradeResponse {

@@ -509,7 +509,7 @@ object InferUtil {
       shouldUndefineParameters: Boolean = true,
       safeCheck: Boolean = false,
       filterTypeParams: Boolean = true)
-    : (ScTypePolymorphicType, Seq[ApplicabilityProblem]) = {
+      : (ScTypePolymorphicType, Seq[ApplicabilityProblem]) = {
     val (tp, problems, _, _) = localTypeInferenceWithApplicabilityExt(
       retType,
       params,

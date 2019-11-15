@@ -20,7 +20,7 @@ abstract class ImplicitProcessor(kinds: Set[Value], withoutPrecedence: Boolean)
   protected val precedence: util.HashMap[String, Int] =
     new util.HashMap[String, Int]()
   protected val levelMap
-    : util.HashMap[String, util.HashSet[ScalaResolveResult]] =
+      : util.HashMap[String, util.HashSet[ScalaResolveResult]] =
     new util.HashMap[String, util.HashSet[ScalaResolveResult]]()
 
   protected def getQualifiedName(result: ScalaResolveResult): String = {

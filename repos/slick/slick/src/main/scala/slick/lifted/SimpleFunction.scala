@@ -107,7 +107,7 @@ trait SimpleExpression extends Node {
 object SimpleExpression {
   def apply[T: TypedType](
       f: (Seq[Node], JdbcStatementBuilderComponent#QueryBuilder) => Unit)
-    : (Seq[Rep[_]] => Rep[T]) = {
+      : (Seq[Rep[_]] => Rep[T]) = {
     def build(params: IndexedSeq[Node]): SimpleFeatureNode[T] =
       new SimpleFeatureNode[T] with SimpleExpression {
         def toSQL(qb: JdbcStatementBuilderComponent#QueryBuilder) =
@@ -131,7 +131,7 @@ object SimpleExpression {
 
   def unary[T1, R: TypedType](
       f: (Node, JdbcStatementBuilderComponent#QueryBuilder) => Unit)
-    : (Rep[T1] => Rep[R]) = {
+      : (Rep[T1] => Rep[R]) = {
     val g = apply({
       (ch: Seq[Node], qb: JdbcStatementBuilderComponent#QueryBuilder) =>
         f(ch(0), qb)
@@ -143,7 +143,7 @@ object SimpleExpression {
 
   def binary[T1, T2, R: TypedType](
       f: (Node, Node, JdbcStatementBuilderComponent#QueryBuilder) => Unit)
-    : ((Rep[T1], Rep[T2]) => Rep[R]) = {
+      : ((Rep[T1], Rep[T2]) => Rep[R]) = {
     val g = apply({
       (ch: Seq[Node], qb: JdbcStatementBuilderComponent#QueryBuilder) =>
         f(ch(0), ch(1), qb)
@@ -155,7 +155,7 @@ object SimpleExpression {
 
   def ternary[T1, T2, T3, R: TypedType](
       f: (Node, Node, Node, JdbcStatementBuilderComponent#QueryBuilder) => Unit)
-    : ((Rep[T1], Rep[T2], Rep[T3]) => Rep[R]) = {
+      : ((Rep[T1], Rep[T2], Rep[T3]) => Rep[R]) = {
     val g = apply({
       (ch: Seq[Node], qb: JdbcStatementBuilderComponent#QueryBuilder) =>
         f(ch(0), ch(1), ch(2), qb)

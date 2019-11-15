@@ -15,7 +15,7 @@ import play.core.j.JavaHttpErrorHandlerAdapter
 /**
   * A filter that denies requests by hosts that do not match a configured list of allowed hosts.
   */
-case class AllowedHostsFilter @Inject()(
+case class AllowedHostsFilter @Inject() (
     config: AllowedHostsConfig,
     errorHandler: HttpErrorHandler)
     extends EssentialFilter {
@@ -95,7 +95,7 @@ object AllowedHostsConfig {
 }
 
 @Singleton
-class AllowedHostsConfigProvider @Inject()(configuration: Configuration)
+class AllowedHostsConfigProvider @Inject() (configuration: Configuration)
     extends Provider[AllowedHostsConfig] {
   lazy val get = AllowedHostsConfig.fromConfiguration(configuration)
 }

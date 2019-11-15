@@ -107,7 +107,7 @@ trait BatchedSink[T] extends Sink[T] {
 
       def mergeExistingAndBuilt(
           optBuilt: Option[(Interval[BatchID], FlowToPipe[T])])
-        : Try[((Interval[Timestamp], Mode), FlowToPipe[T])] = {
+          : Try[((Interval[Timestamp], Mode), FlowToPipe[T])] = {
         val (aBatches, aFlows) = existing.unzip
         val flows = aFlows ++ (optBuilt.map { _._2 })
         val batches =

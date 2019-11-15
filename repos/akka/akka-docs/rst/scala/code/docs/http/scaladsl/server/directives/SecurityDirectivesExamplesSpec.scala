@@ -203,7 +203,7 @@ class SecurityDirectivesExamplesSpec extends RoutingSpec {
     def auth(creds: HttpCredentials): Boolean = true
 
     def myUserPassAuthenticator(credentials: Option[HttpCredentials])
-      : Future[AuthenticationResult[String]] =
+        : Future[AuthenticationResult[String]] =
       Future {
         credentials match {
           case Some(creds) if auth(creds) => Right("some-user-name-from-creds")

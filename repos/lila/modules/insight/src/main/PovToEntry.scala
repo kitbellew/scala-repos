@@ -60,22 +60,21 @@ object PovToEntry {
                 .toOption
                 .flatMap(_.toNel)
               movetimes <- game.moveTimes(pov.color).toNel
-            } yield
-              RichPov(
-                pov = pov,
-                provisional = provisional,
-                initialFen = fen,
-                analysis = an,
-                division = chess.Divider(boards.list),
-                moveAccuracy = an.map { Accuracy.diffsList(pov, _) },
-                boards = boards,
-                movetimes = movetimes,
-                advices = an.?? {
-                  _.advices.map { a =>
-                    a.info.ply -> a
-                  }.toMap
-                }
-              )
+            } yield RichPov(
+              pov = pov,
+              provisional = provisional,
+              initialFen = fen,
+              analysis = an,
+              division = chess.Divider(boards.list),
+              moveAccuracy = an.map { Accuracy.diffsList(pov, _) },
+              boards = boards,
+              movetimes = movetimes,
+              advices = an.?? {
+                _.advices.map { a =>
+                  a.info.ply -> a
+                }.toMap
+              }
+            )
         }
       }
 
@@ -158,30 +157,29 @@ object PovToEntry {
       myRating <- pov.player.rating
       opRating <- pov.opponent.rating
       perfType <- pov.game.perfType
-    } yield
-      Entry(
-        id = Entry povToId pov,
-        number = 0, // temporary :-/ the Indexer will set it
-        userId = myId,
-        color = pov.color,
-        perf = perfType,
-        eco = Ecopening fromGame pov.game,
-        myCastling = Castling.fromMoves(pov.game pgnMoves pov.color),
-        opponentRating = opRating,
-        opponentStrength = RelativeStrength(opRating - myRating),
-        opponentCastling = Castling.fromMoves(pov.game pgnMoves !pov.color),
-        moves = makeMoves(from),
-        queenTrade = queenTrade(from),
-        result = pov.game.winnerUserId match {
-          case None                 => Result.Draw
-          case Some(u) if u == myId => Result.Win
-          case _                    => Result.Loss
-        },
-        termination = Termination fromStatus pov.game.status,
-        ratingDiff = ~pov.player.ratingDiff,
-        analysed = analysis.isDefined,
-        provisional = provisional,
-        date = pov.game.createdAt
-      )
+    } yield Entry(
+      id = Entry povToId pov,
+      number = 0, // temporary :-/ the Indexer will set it
+      userId = myId,
+      color = pov.color,
+      perf = perfType,
+      eco = Ecopening fromGame pov.game,
+      myCastling = Castling.fromMoves(pov.game pgnMoves pov.color),
+      opponentRating = opRating,
+      opponentStrength = RelativeStrength(opRating - myRating),
+      opponentCastling = Castling.fromMoves(pov.game pgnMoves !pov.color),
+      moves = makeMoves(from),
+      queenTrade = queenTrade(from),
+      result = pov.game.winnerUserId match {
+        case None                 => Result.Draw
+        case Some(u) if u == myId => Result.Win
+        case _                    => Result.Loss
+      },
+      termination = Termination fromStatus pov.game.status,
+      ratingDiff = ~pov.player.ratingDiff,
+      analysed = analysis.isDefined,
+      provisional = provisional,
+      date = pov.game.createdAt
+    )
   }
 }

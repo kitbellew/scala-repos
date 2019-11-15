@@ -18,5 +18,6 @@ object DatabaseMeta {
         case "YES" => Some(true)
         case "NO"  => Some(false)
         case _     => None
-      } else None
+      }
+    else None
 }

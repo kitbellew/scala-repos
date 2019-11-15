@@ -12,7 +12,8 @@ object Main {
           if (postcondition(result)) result
           else sys.error("Assertion error")
         }
-      } else sys.error("Assertion error");
+      }
+    else sys.error("Assertion error");
 
   def arb[a](s: List[a]) =
     require(!s.isEmpty) {

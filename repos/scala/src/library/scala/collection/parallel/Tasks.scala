@@ -494,8 +494,9 @@ private[parallel] final class FutureTasks(executor: ExecutionContext)
     def compute(task: Task[R, Tp], depth: Int): Future[Task[R, Tp]] = {
       if (task.shouldSplitFurther && depth < maxdepth) {
         val subtasks = task.split
-        val subfutures = for (subtask <- subtasks.iterator)
-          yield compute(subtask, depth + 1)
+        val subfutures =
+          for (subtask <- subtasks.iterator)
+            yield compute(subtask, depth + 1)
         subfutures.reduceLeft { (firstFuture, nextFuture) =>
           for {
             firstTask <- firstFuture

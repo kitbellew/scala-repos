@@ -42,26 +42,26 @@ object ThisFunction {
     identity((x1: T1, x2: T2, x3: T3, x4: T4) => f(x1, x2, x3, x4))
   implicit def fromFunction5[T1, T2, T3, T4, T5, R](
       f: scala.Function5[T1, T2, T3, T4, T5, R])
-    : ThisFunction4[T1, T2, T3, T4, T5, R] =
+      : ThisFunction4[T1, T2, T3, T4, T5, R] =
     identity((x1: T1, x2: T2, x3: T3, x4: T4, x5: T5) => f(x1, x2, x3, x4, x5))
   implicit def fromFunction6[T1, T2, T3, T4, T5, T6, R](
       f: scala.Function6[T1, T2, T3, T4, T5, T6, R])
-    : ThisFunction5[T1, T2, T3, T4, T5, T6, R] =
+      : ThisFunction5[T1, T2, T3, T4, T5, T6, R] =
     identity((x1: T1, x2: T2, x3: T3, x4: T4, x5: T5, x6: T6) =>
       f(x1, x2, x3, x4, x5, x6))
   implicit def fromFunction7[T1, T2, T3, T4, T5, T6, T7, R](
       f: scala.Function7[T1, T2, T3, T4, T5, T6, T7, R])
-    : ThisFunction6[T1, T2, T3, T4, T5, T6, T7, R] =
+      : ThisFunction6[T1, T2, T3, T4, T5, T6, T7, R] =
     identity((x1: T1, x2: T2, x3: T3, x4: T4, x5: T5, x6: T6, x7: T7) =>
       f(x1, x2, x3, x4, x5, x6, x7))
   implicit def fromFunction8[T1, T2, T3, T4, T5, T6, T7, T8, R](
       f: scala.Function8[T1, T2, T3, T4, T5, T6, T7, T8, R])
-    : ThisFunction7[T1, T2, T3, T4, T5, T6, T7, T8, R] =
+      : ThisFunction7[T1, T2, T3, T4, T5, T6, T7, T8, R] =
     identity((x1: T1, x2: T2, x3: T3, x4: T4, x5: T5, x6: T6, x7: T7, x8: T8) =>
       f(x1, x2, x3, x4, x5, x6, x7, x8))
   implicit def fromFunction9[T1, T2, T3, T4, T5, T6, T7, T8, T9, R](
       f: scala.Function9[T1, T2, T3, T4, T5, T6, T7, T8, T9, R])
-    : ThisFunction8[T1, T2, T3, T4, T5, T6, T7, T8, T9, R] =
+      : ThisFunction8[T1, T2, T3, T4, T5, T6, T7, T8, T9, R] =
     identity(
       (
           x1: T1,
@@ -75,7 +75,7 @@ object ThisFunction {
           x9: T9) => f(x1, x2, x3, x4, x5, x6, x7, x8, x9))
   implicit def fromFunction10[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, R](
       f: scala.Function10[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, R])
-    : ThisFunction9[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, R] =
+      : ThisFunction9[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, R] =
     identity(
       (
           x1: T1,
@@ -90,7 +90,7 @@ object ThisFunction {
           x10: T10) => f(x1, x2, x3, x4, x5, x6, x7, x8, x9, x10))
   implicit def fromFunction11[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R](
       f: scala.Function11[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R])
-    : ThisFunction10[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R] =
+      : ThisFunction10[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R] =
     identity(
       (
           x1: T1,
@@ -119,7 +119,7 @@ object ThisFunction {
       T12,
       R](
       f: scala.Function12[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, R])
-    : ThisFunction11[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, R] =
+      : ThisFunction11[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, R] =
     identity(
       (
           x1: T1,
@@ -1061,33 +1061,33 @@ object ThisFunction {
     (x1, x2, x3, x4) => f(x1, x2, x3, x4)
   implicit def toFunction5[T1, T2, T3, T4, T5, R](
       f: ThisFunction4[T1, T2, T3, T4, T5, R])
-    : scala.Function5[T1, T2, T3, T4, T5, R] =
+      : scala.Function5[T1, T2, T3, T4, T5, R] =
     (x1, x2, x3, x4, x5) => f(x1, x2, x3, x4, x5)
   implicit def toFunction6[T1, T2, T3, T4, T5, T6, R](
       f: ThisFunction5[T1, T2, T3, T4, T5, T6, R])
-    : scala.Function6[T1, T2, T3, T4, T5, T6, R] =
+      : scala.Function6[T1, T2, T3, T4, T5, T6, R] =
     (x1, x2, x3, x4, x5, x6) => f(x1, x2, x3, x4, x5, x6)
   implicit def toFunction7[T1, T2, T3, T4, T5, T6, T7, R](
       f: ThisFunction6[T1, T2, T3, T4, T5, T6, T7, R])
-    : scala.Function7[T1, T2, T3, T4, T5, T6, T7, R] =
+      : scala.Function7[T1, T2, T3, T4, T5, T6, T7, R] =
     (x1, x2, x3, x4, x5, x6, x7) => f(x1, x2, x3, x4, x5, x6, x7)
   implicit def toFunction8[T1, T2, T3, T4, T5, T6, T7, T8, R](
       f: ThisFunction7[T1, T2, T3, T4, T5, T6, T7, T8, R])
-    : scala.Function8[T1, T2, T3, T4, T5, T6, T7, T8, R] =
+      : scala.Function8[T1, T2, T3, T4, T5, T6, T7, T8, R] =
     (x1, x2, x3, x4, x5, x6, x7, x8) => f(x1, x2, x3, x4, x5, x6, x7, x8)
   implicit def toFunction9[T1, T2, T3, T4, T5, T6, T7, T8, T9, R](
       f: ThisFunction8[T1, T2, T3, T4, T5, T6, T7, T8, T9, R])
-    : scala.Function9[T1, T2, T3, T4, T5, T6, T7, T8, T9, R] =
+      : scala.Function9[T1, T2, T3, T4, T5, T6, T7, T8, T9, R] =
     (x1, x2, x3, x4, x5, x6, x7, x8, x9) =>
       f(x1, x2, x3, x4, x5, x6, x7, x8, x9)
   implicit def toFunction10[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, R](
       f: ThisFunction9[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, R])
-    : scala.Function10[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, R] =
+      : scala.Function10[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, R] =
     (x1, x2, x3, x4, x5, x6, x7, x8, x9, x10) =>
       f(x1, x2, x3, x4, x5, x6, x7, x8, x9, x10)
   implicit def toFunction11[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R](
       f: ThisFunction10[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R])
-    : scala.Function11[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R] =
+      : scala.Function11[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R] =
     (x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11) =>
       f(x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11)
   implicit def toFunction12[
@@ -1105,7 +1105,7 @@ object ThisFunction {
       T12,
       R](
       f: ThisFunction11[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, R])
-    : scala.Function12[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, R] =
+      : scala.Function12[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, R] =
     (x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12) =>
       f(x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12)
   implicit def toFunction13[

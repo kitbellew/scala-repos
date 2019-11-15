@@ -36,7 +36,7 @@ import scalaz.std.set._
 import scalaz.syntax.monad._
 import scalaz.syntax.foldable._
 
-trait RandomLibModule[M[+ _]] extends ColumnarTableLibModule[M] {
+trait RandomLibModule[M[+_]] extends ColumnarTableLibModule[M] {
   trait RandomLib extends ColumnarTableLib {
     import trans._
 

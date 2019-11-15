@@ -7,8 +7,10 @@ trait OptionInstances extends OptionInstances1 {
   implicit val optionInstance: Traverse[Option]
     with MonadCombine[Option]
     with CoflatMap[Option]
-    with Alternative[Option] = new Traverse[Option] with MonadCombine[Option]
-  with CoflatMap[Option] with Alternative[Option] {
+    with Alternative[Option] = new Traverse[Option]
+    with MonadCombine[Option]
+    with CoflatMap[Option]
+    with Alternative[Option] {
 
     def empty[A]: Option[A] = None
 

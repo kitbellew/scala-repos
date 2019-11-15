@@ -36,7 +36,7 @@ import org.apache.spark.mllib.linalg.{
   * @param p Normalization in L^p^ space, p = 2 by default.
   */
 @Since("1.1.0")
-class Normalizer @Since("1.1.0")(p: Double) extends VectorTransformer {
+class Normalizer @Since("1.1.0") (p: Double) extends VectorTransformer {
 
   @Since("1.1.0")
   def this() = this(2)

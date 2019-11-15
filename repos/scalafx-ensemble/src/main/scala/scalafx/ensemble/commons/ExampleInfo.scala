@@ -109,8 +109,9 @@ class ExampleInfo(exampleName: String, exampleGroupName: String) {
 
   private def extractStageProperties(sourceRaw: String): Seq[String] = {
     val pattern = """@stage-property\s*(.*)""".r
-    val properties = for (pattern(property) <- pattern findAllIn sourceRaw)
-      yield property.trim
+    val properties =
+      for (pattern(property) <- pattern findAllIn sourceRaw)
+        yield property.trim
     properties.toSeq
   }
 

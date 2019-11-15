@@ -62,8 +62,9 @@ private object PoolSlot {
       remoteAddress: InetSocketAddress, // TODO: remove after #16168 is cleared
       settings: ConnectionPoolSettings)(
       implicit system: ActorSystem,
-      fm: Materializer)
-    : Graph[FanOutShape2[RequestContext, ResponseContext, RawSlotEvent], Any] =
+      fm: Materializer): Graph[
+    FanOutShape2[RequestContext, ResponseContext, RawSlotEvent],
+    Any] =
     GraphDSL.create() { implicit b ⇒
       import GraphDSL.Implicits._
 

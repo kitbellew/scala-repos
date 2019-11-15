@@ -73,7 +73,7 @@ import scalaz.syntax.applicative._
 
 import java.nio.CharBuffer
 
-trait ColumnarTableTypes[M[+ _]] {
+trait ColumnarTableTypes[M[+_]] {
   type F1 = CF1
   type F2 = CF2
   type Scanner = CScanner
@@ -96,7 +96,7 @@ trait ColumnarTableModuleConfig {
 }
 
 object ColumnarTableModule extends Logging {
-  def renderJson[M[+ _]](
+  def renderJson[M[+_]](
       slices: StreamT[M, Slice],
       prefix: String,
       delimiter: String,
@@ -161,7 +161,7 @@ object ColumnarTableModule extends Logging {
     *
     * "the fox said: ""hello, my name is fred."""
     */
-  def renderCsv[M[+ _]](slices: StreamT[M, Slice])(
+  def renderCsv[M[+_]](slices: StreamT[M, Slice])(
       implicit M: Monad[M]): StreamT[M, CharBuffer] = {
     import scala.collection.{Map => GenMap}
     import scala.util.Sorting
@@ -346,7 +346,7 @@ object ColumnarTableModule extends Logging {
     }
   }
 
-  def toCharBuffers[N[+ _]: Monad](
+  def toCharBuffers[N[+_]: Monad](
       output: MimeType,
       slices: StreamT[N, Slice]): StreamT[N, CharBuffer] = {
     import FileContent._
@@ -372,7 +372,7 @@ object ColumnarTableModule extends Logging {
     }
   }
 
-  def byteStream[M[+ _]](
+  def byteStream[M[+_]](
       blockStream: StreamT[M, Slice],
       mimeType: Option[MimeType])(
       implicit M: Monad[M]): Option[StreamT[M, Array[Byte]]] = {
@@ -395,7 +395,7 @@ object ColumnarTableModule extends Logging {
   }
 }
 
-trait ColumnarTableModule[M[+ _]]
+trait ColumnarTableModule[M[+_]]
     extends TableModule[M]
     with ColumnarTableTypes[M]
     with IdSourceScannerModule
@@ -515,7 +515,7 @@ trait ColumnarTableModule[M[+ _]]
         Slice(
           Map(
             ColumnRef(CPath.Identity, CNull) -> new InfiniteColumn
-            with NullColumn),
+              with NullColumn),
           1) :: StreamT.empty[M, Slice],
         ExactSize(1))
 
@@ -524,7 +524,7 @@ trait ColumnarTableModule[M[+ _]]
         Slice(
           Map(
             ColumnRef(CPath.Identity, CEmptyObject) -> new InfiniteColumn
-            with EmptyObjectColumn),
+              with EmptyObjectColumn),
           1) :: StreamT.empty[M, Slice],
         ExactSize(1))
 
@@ -533,7 +533,7 @@ trait ColumnarTableModule[M[+ _]]
         Slice(
           Map(
             ColumnRef(CPath.Identity, CEmptyArray) -> new InfiniteColumn
-            with EmptyArrayColumn),
+              with EmptyArrayColumn),
           1) :: StreamT.empty[M, Slice],
         ExactSize(1))
 
@@ -566,7 +566,7 @@ trait ColumnarTableModule[M[+ _]]
     /**
       * Merge controls the iteration over the table of group key values.
       */
-    def merge[N[+ _]](grouping: GroupingSpec)(
+    def merge[N[+_]](grouping: GroupingSpec)(
         body: (RValue, GroupId => M[Table]) => N[Table])(
         implicit nt: N ~> M): M[Table] = {
       import GroupKeySpec.{dnf, toVector}
@@ -616,7 +616,7 @@ trait ColumnarTableModule[M[+ _]]
 
         def unionOfIntersections(
             indicesGroupedBySource: Seq[Seq[(TableIndex, KeySchema)]])
-          : Set[Key] = {
+            : Set[Key] = {
           def allSourceDNF[T](l: Seq[Seq[T]]): Seq[Seq[T]] = {
             l match {
               case Seq(hd) => hd.map(Seq(_))
@@ -635,8 +635,8 @@ trait ColumnarTableModule[M[+ _]]
               keySchema: KeySchema): collection.Set[Key] = {
             val schemaMap = for (k <- fullSchema) yield keySchema.indexOf(k)
             for (key <- index.getUniqueKeys)
-              yield
-                for (k <- schemaMap) yield if (k == -1) CUndefined else key(k)
+              yield for (k <- schemaMap)
+                yield if (k == -1) CUndefined else key(k)
           }
 
           def intersect(
@@ -701,8 +701,9 @@ trait ColumnarTableModule[M[+ _]]
               .filter(_.groupId == gid)
               .map { indexedSource =>
                 val keySchema = indexedSource.keySchema
-                val projectedKeyIndices = for (k <- fullSchema)
-                  yield keySchema.indexOf(k)
+                val projectedKeyIndices =
+                  for (k <- fullSchema)
+                    yield keySchema.indexOf(k)
                 (indexedSource.index, projectedKeyIndices, groupKey)
               })
               .toList
@@ -975,7 +976,7 @@ trait ColumnarTableModule[M[+ _]]
       }
 
       def step(sliceSize: Int, acc: List[Slice], stream: StreamT[M, Slice])
-        : M[StreamT.Step[Slice, StreamT[M, Slice]]] = {
+          : M[StreamT.Step[Slice, StreamT[M, Slice]]] = {
         stream.uncons flatMap {
           case Some((head, tail)) =>
             if (head.size == 0) {
@@ -1838,8 +1839,9 @@ trait ColumnarTableModule[M[+ _]]
         case _                  => None
       }
 
-      val sizeCheck = for (resultSize <- newSizeM)
-        yield resultSize < yggConfig.maxSaneCrossSize && resultSize >= 0
+      val sizeCheck =
+        for (resultSize <- newSizeM)
+          yield resultSize < yggConfig.maxSaneCrossSize && resultSize >= 0
 
       if (sizeCheck getOrElse true) {
         Table(StreamT(cross0(composeSliceTransform2(spec)) map { tail =>

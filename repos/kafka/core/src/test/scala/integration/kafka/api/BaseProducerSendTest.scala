@@ -93,7 +93,7 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
       retries: Int = 0,
       lingerMs: Long = 0,
       props: Option[Properties] = None)
-    : KafkaProducer[Array[Byte], Array[Byte]] = {
+      : KafkaProducer[Array[Byte], Array[Byte]] = {
     val producer = TestUtils.createNewProducer(
       brokerList,
       securityProtocol = securityProtocol,
@@ -377,9 +377,9 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
         leader1.isDefined)
 
       val now = System.currentTimeMillis()
-      val responses = for (i <- 1 to numRecords)
-        yield
-          producer.send(
+      val responses =
+        for (i <- 1 to numRecords)
+          yield producer.send(
             new ProducerRecord[Array[Byte], Array[Byte]](
               topic,
               partition,

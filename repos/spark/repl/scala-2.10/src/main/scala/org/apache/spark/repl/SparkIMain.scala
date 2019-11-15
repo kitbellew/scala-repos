@@ -532,7 +532,7 @@ class SparkIMain(
       case null => ScalaClassLoader fromURLs compilerClasspath
       case p =>
         _runtimeClassLoader = new URLClassLoader(compilerClasspath, p)
-        with ExposeAddUrl
+          with ExposeAddUrl
         _runtimeClassLoader
     })
 

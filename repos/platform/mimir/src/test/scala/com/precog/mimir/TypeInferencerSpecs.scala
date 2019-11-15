@@ -32,7 +32,7 @@ import blueeyes.json._
 
 import scalaz._
 
-trait TypeInferencerSpecs[M[+ _]]
+trait TypeInferencerSpecs[M[+_]]
     extends Specification
     with EvaluatorTestSupport[M]
     with LongIdMemoryDatasetConsumer[M] {
@@ -81,7 +81,7 @@ trait TypeInferencerSpecs[M[+ _]]
     def merge(
         left: Map[String, Map[JPath, Set[CType]]],
         right: Map[String, Map[JPath, Set[CType]]])
-      : Map[String, Map[JPath, Set[CType]]] = {
+        : Map[String, Map[JPath, Set[CType]]] = {
       def mergeAux(
           left: Map[JPath, Set[CType]],
           right: Map[JPath, Set[CType]]): Map[JPath, Set[CType]] = {

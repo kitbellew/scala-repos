@@ -40,7 +40,7 @@ import scalaz.syntax.std.boolean._
 
 import TableModule._
 
-trait ColumnarTableModuleTestSupport[M[+ _]]
+trait ColumnarTableModuleTestSupport[M[+_]]
     extends ColumnarTableModule[M]
     with TableModuleTestSupport[M] {
   def newGroupId: GroupId

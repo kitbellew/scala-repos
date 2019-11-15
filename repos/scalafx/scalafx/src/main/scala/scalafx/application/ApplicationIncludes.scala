@@ -56,7 +56,8 @@ trait ApplicationIncludes {
         def named = p.getNamed
         def unnamed = p.getUnnamed
         def delegate = p
-      } else null
+      }
+    else null
 
   /**
     * Converts a

@@ -86,7 +86,7 @@ private[graphx] object ShippableVertexPartition {
     */
   implicit def shippablePartitionToOps[VD: ClassTag](
       partition: ShippableVertexPartition[VD])
-    : ShippableVertexPartitionOps[VD] =
+      : ShippableVertexPartitionOps[VD] =
     new ShippableVertexPartitionOps(partition)
 
   /**
@@ -98,7 +98,7 @@ private[graphx] object ShippableVertexPartition {
   implicit object ShippableVertexPartitionOpsConstructor
       extends VertexPartitionBaseOpsConstructor[ShippableVertexPartition] {
     def toOps[VD: ClassTag](partition: ShippableVertexPartition[VD])
-      : VertexPartitionBaseOps[VD, ShippableVertexPartition] =
+        : VertexPartitionBaseOps[VD, ShippableVertexPartition] =
       shippablePartitionToOps(partition)
   }
 }

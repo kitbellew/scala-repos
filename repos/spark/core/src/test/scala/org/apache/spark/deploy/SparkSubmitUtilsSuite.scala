@@ -141,8 +141,9 @@ class SparkSubmitUtilsSuite extends SparkFunSuite with BeforeAndAfterAll {
 
   test("ivy path works correctly") {
     val md = SparkSubmitUtils.getModuleDescriptor
-    val artifacts = for (i <- 0 until 3)
-      yield new MDArtifact(md, s"jar-$i", "jar", "jar")
+    val artifacts =
+      for (i <- 0 until 3)
+        yield new MDArtifact(md, s"jar-$i", "jar", "jar")
     var jPaths = SparkSubmitUtils.resolveDependencyPaths(
       artifacts.toArray,
       new File(tempIvyPath))

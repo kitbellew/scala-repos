@@ -34,7 +34,7 @@ class DottyLibraryType
 
   def createPropertiesEditor(
       editorComponent: LibraryEditorComponent[ScalaLibraryProperties])
-    : LibraryPropertiesEditor =
+      : LibraryPropertiesEditor =
     new DottyLibraryPropertiesEditor(editorComponent)
 }
 

@@ -497,7 +497,7 @@ abstract class MultiReaderBuilder[Req, Rep, Builder] private[kestrel] (
 
   protected[kestrel] def withConfig(
       f: MultiReaderConfig[Req, Rep] => MultiReaderConfig[Req, Rep])
-    : Builder = {
+      : Builder = {
     copy(f(config))
   }
 
@@ -663,7 +663,7 @@ class ClusterMultiReaderBuilder private[kestrel] (
 
   protected[kestrel] def withConfig(
       f: ClusterMultiReaderConfig => ClusterMultiReaderConfig)
-    : ClusterMultiReaderBuilder = {
+      : ClusterMultiReaderBuilder = {
     copy(f(config))
   }
 }
@@ -677,7 +677,7 @@ class MultiReaderBuilderMemcache private[kestrel] (
     extends MultiReaderBuilderMemcacheBase[MultiReaderBuilderMemcache](config) {
 
   protected[kestrel] def copy(config: MultiReaderConfig[Command, Response])
-    : MultiReaderBuilderMemcache =
+      : MultiReaderBuilderMemcache =
     new MultiReaderBuilderMemcache(config)
 }
 
@@ -700,7 +700,7 @@ class MultiReaderBuilderThrift private[kestrel] (
 
   protected[kestrel] def copy(
       config: MultiReaderConfig[ThriftClientRequest, Array[Byte]])
-    : MultiReaderBuilderThrift =
+      : MultiReaderBuilderThrift =
     new MultiReaderBuilderThrift(config)
 
   protected[kestrel] def defaultClientBuilder: ThriftClientBuilder =

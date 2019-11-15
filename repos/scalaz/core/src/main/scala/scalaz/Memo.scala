@@ -21,7 +21,7 @@ object Memo extends MemoInstances {
   }
 
   def nilMemo[@specialized(Int) K, @specialized(Int, Long, Double) V]
-    : Memo[K, V] = memo[K, V](z => z)
+      : Memo[K, V] = memo[K, V](z => z)
 
   private class ArrayMemo[V >: Null: ClassTag](n: Int) extends Memo[Int, V] {
     override def apply(f: (Int) => V) = {

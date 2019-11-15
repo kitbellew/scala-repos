@@ -718,7 +718,7 @@ trait MatchAnalysis extends MatchApproximation {
     case class ListExample(ctorArgs: List[CounterExample])
         extends CounterExample {
       protected[MatchAnalyzer] override def flattenConsArgs
-        : List[CounterExample] = ctorArgs match {
+          : List[CounterExample] = ctorArgs match {
         case hd :: tl :: Nil => hd :: tl.flattenConsArgs
         case _               => Nil
       }
@@ -901,7 +901,7 @@ trait MatchAnalysis extends MatchApproximation {
     //  since we didn't realize the tail of the outer cons was a Nil)
     def modelToCounterExample(scrutVar: Var)(
         varAssignment: Map[Var, (Seq[Const], Seq[Const])])
-      : Option[CounterExample] = {
+        : Option[CounterExample] = {
       // chop a path into a list of symbols
       def chop(path: Tree): List[Symbol] = path match {
         case Ident(_)          => List(path.symbol)

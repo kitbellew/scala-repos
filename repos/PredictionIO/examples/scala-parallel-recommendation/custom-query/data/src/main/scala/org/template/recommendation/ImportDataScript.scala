@@ -40,14 +40,13 @@ object ImportDataScript extends App {
         entityId ← eventObj(0)
         targetEntityId ← eventObj(1)
         rating ← eventObj(2)
-      } yield
-        new Event()
-          .event("rate")
-          .entityId(entityId)
-          .entityType("user")
-          .properties(javaMap("rating" → new java.lang.Double(rating)))
-          .targetEntityId(targetEntityId)
-          .targetEntityType("movie")).map(client.createEvent)
+      } yield new Event()
+        .event("rate")
+        .entityId(entityId)
+        .entityType("user")
+        .properties(javaMap("rating" → new java.lang.Double(rating)))
+        .targetEntityId(targetEntityId)
+        .targetEntityType("movie")).map(client.createEvent)
     }
 
   def importUsers(implicit ec: EventClient): Iterator[_] =

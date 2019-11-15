@@ -132,7 +132,8 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
                 Indent.getNormalIndent
               else Indent.getNoneIndent
             case _ => Indent.getNoneIndent
-          } else Indent.getNoneIndent
+          }
+        else Indent.getNoneIndent
       case _: ScMatchStmt =>
         child.getPsi match {
           case _: ScCaseClauses if settings.INDENT_CASE_FROM_SWITCH =>

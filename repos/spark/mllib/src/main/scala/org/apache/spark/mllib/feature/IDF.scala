@@ -42,7 +42,7 @@ import org.apache.spark.rdd.RDD
   *                   should appear for filtering
   */
 @Since("1.1.0")
-class IDF @Since("1.2.0")(@Since("1.2.0") val minDocFreq: Int) {
+class IDF @Since("1.2.0") (@Since("1.2.0") val minDocFreq: Int) {
 
   @Since("1.1.0")
   def this() = this(0)

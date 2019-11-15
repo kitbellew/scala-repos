@@ -746,7 +746,7 @@ class LiftServlet extends Loggable {
       // meaning we will return the result of whatever satisfies the
       // future.
       val nextAction
-        : Either[LAFuture[Box[LiftResponse]], LAFuture[Box[LiftResponse]]] =
+          : Either[LAFuture[Box[LiftResponse]], LAFuture[Box[LiftResponse]]] =
         versionInfo match {
           case Full(AjaxVersionInfo(_, handlerVersion, pendingRequests)) =>
             val renderVersion = RenderVersion.get
@@ -921,7 +921,7 @@ class LiftServlet extends Loggable {
       requestState: Req,
       sessionActor: LiftSession,
       originalRequest: Req)
-    : Either[Box[LiftResponse], () => Box[LiftResponse]] = {
+      : Either[Box[LiftResponse], () => Box[LiftResponse]] = {
     val actors: List[(LiftCometActor, Long)] =
       requestState.params.toList.flatMap {
         case (name, when) =>
@@ -1068,8 +1068,9 @@ class LiftServlet extends Loggable {
           })
 
     def pairFromRequest(req: Req): (Box[Req], Box[String]) = {
-      val acceptHeader = for (innerReq <- Box.legacyNullTest(req.request);
-                              accept <- innerReq.header("Accept")) yield accept
+      val acceptHeader =
+        for (innerReq <- Box.legacyNullTest(req.request);
+             accept <- innerReq.header("Accept")) yield accept
 
       (Full(req), acceptHeader)
     }

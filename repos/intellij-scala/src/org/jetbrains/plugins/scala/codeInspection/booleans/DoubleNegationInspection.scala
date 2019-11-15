@@ -57,7 +57,8 @@ object DoubleNegationUtil {
         case ScInfixExpr(left, _, right) =>
           hasNegation(left) || hasNegation(right)
         case _ => false
-      } else
+      }
+    else
       expr match {
         case ScInfixExpr(left, operation, right) =>
           operation.refName == "==" && hasNegation(left) && hasNegation(right)

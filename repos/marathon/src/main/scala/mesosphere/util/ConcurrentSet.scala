@@ -48,7 +48,7 @@ object ConcurrentSet extends MutableSetFactory[ConcurrentSet] {
     setCanBuildFrom[A]
 
   override def setCanBuildFrom[A]
-    : CanBuildFrom[ConcurrentSet[_], A, ConcurrentSet[A]] =
+      : CanBuildFrom[ConcurrentSet[_], A, ConcurrentSet[A]] =
     new CanBuildFrom[ConcurrentSet[_], A, ConcurrentSet[A]] {
       override def apply(
           from: ConcurrentSet[_]): mutable.Builder[A, ConcurrentSet[A]] =

@@ -315,7 +315,7 @@ object Matrix2Props extends Properties("Matrix2") {
       target: Int,
       prevCol: Long,
       result: List[MatrixLiteral[Any, Any, Double]])
-    : List[MatrixLiteral[Any, Any, Double]] = {
+      : List[MatrixLiteral[Any, Any, Double]] = {
     if (current == target) result
     else {
       val (randomMatrix, cols) = genLeaf((prevCol, 0))
@@ -360,7 +360,7 @@ object Matrix2Props extends Properties("Matrix2") {
       i: Int,
       j: Int,
       p: IndexedSeq[MatrixLiteral[Any, Any, Double]])
-    : Matrix2[Any, Any, Double] = {
+      : Matrix2[Any, Any, Double] = {
     if (i == j) p(i)
     else {
       val genK = Gen.choose(i, j - 1)

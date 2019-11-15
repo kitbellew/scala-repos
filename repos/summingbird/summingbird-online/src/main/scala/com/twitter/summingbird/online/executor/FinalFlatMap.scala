@@ -83,7 +83,7 @@ class FinalFlatMap[Event, Key, Value: Semigroup, S <: InputState[_], D, RC](
   )
 
   private def formatResult(outData: Map[Key, (Seq[S], Value)])
-    : TraversableOnce[(Seq[S], Future[TraversableOnce[OutputElement]])] = {
+      : TraversableOnce[(Seq[S], Future[TraversableOnce[OutputElement]])] = {
     if (outData.isEmpty) {
       noData
     } else {

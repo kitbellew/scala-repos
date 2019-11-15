@@ -339,7 +339,8 @@ object GameRepo {
         case None if game.variant == chess.variant.Chess960 =>
           Forsyth.initial.some
         case fen => fen
-      } else fuccess(none)
+      }
+    else fuccess(none)
 
   def featuredCandidates: Fu[List[Game]] = $find(
     Query.playable ++ Query.clock(true) ++ Json.obj(

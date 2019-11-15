@@ -37,7 +37,7 @@ class HttpServerExampleSpec
     implicit val executionContext = system.dispatcher
 
     val serverSource
-      : Source[Http.IncomingConnection, Future[Http.ServerBinding]] =
+        : Source[Http.IncomingConnection, Future[Http.ServerBinding]] =
       Http().bind(interface = "localhost", port = 8080)
     val bindingFuture: Future[Http.ServerBinding] = serverSource
       .to(Sink.foreach { connection =>
@@ -75,7 +75,7 @@ class HttpServerExampleSpec
 
   // mock values:
   val handleConnections
-    : Sink[Http.IncomingConnection, Future[Http.ServerBinding]] =
+      : Sink[Http.IncomingConnection, Future[Http.ServerBinding]] =
     Sink.ignore.mapMaterializedValue(_ => Future.failed(new Exception("")))
 
   "binding-failure-handling" in compileOnlySpec {

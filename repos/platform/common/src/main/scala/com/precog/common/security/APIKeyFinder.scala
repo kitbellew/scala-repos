@@ -37,7 +37,7 @@ import scalaz.syntax.traverse._
 import scalaz.syntax.bitraverse._
 import scalaz.syntax.std.option._
 
-trait APIKeyFinder[M[+ _]] extends AccessControl[M] with Logging { self =>
+trait APIKeyFinder[M[+_]] extends AccessControl[M] with Logging { self =>
   def findAPIKey(
       apiKey: APIKey,
       rootKey: Option[APIKey]): M[Option[v1.APIKeyDetails]]
@@ -51,7 +51,7 @@ trait APIKeyFinder[M[+ _]] extends AccessControl[M] with Logging { self =>
 
   def addGrant(accountKey: APIKey, grantId: GrantId): M[Boolean]
 
-  def withM[N[+ _]](implicit t: M ~> N) = new APIKeyFinder[N] {
+  def withM[N[+_]](implicit t: M ~> N) = new APIKeyFinder[N] {
     def findAPIKey(apiKey: APIKey, rootKey: Option[APIKey]) =
       t(self.findAPIKey(apiKey, rootKey))
 
@@ -75,7 +75,7 @@ trait APIKeyFinder[M[+ _]] extends AccessControl[M] with Logging { self =>
   }
 }
 
-class DirectAPIKeyFinder[M[+ _]](underlying: APIKeyManager[M])(
+class DirectAPIKeyFinder[M[+_]](underlying: APIKeyManager[M])(
     implicit val M: Monad[M])
     extends APIKeyFinder[M]
     with Logging {
@@ -85,7 +85,7 @@ class DirectAPIKeyFinder[M[+ _]](underlying: APIKeyManager[M])(
   }
 
   def recordDetails(rootKey: Option[APIKey])
-    : PartialFunction[APIKeyRecord, M[v1.APIKeyDetails]] = {
+      : PartialFunction[APIKeyRecord, M[v1.APIKeyDetails]] = {
     case APIKeyRecord(apiKey, name, description, issuer, grantIds, false) =>
       underlying.findAPIKeyAncestry(apiKey).flatMap { ancestors =>
         val ancestorKeys =

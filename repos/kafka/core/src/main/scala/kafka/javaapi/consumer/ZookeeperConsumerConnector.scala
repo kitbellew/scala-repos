@@ -78,7 +78,7 @@ private[kafka] class ZookeeperConsumerConnector(
       topicCountMap: java.util.Map[String, java.lang.Integer],
       keyDecoder: Decoder[K],
       valueDecoder: Decoder[V])
-    : java.util.Map[String, java.util.List[KafkaStream[K, V]]] = {
+      : java.util.Map[String, java.util.List[KafkaStream[K, V]]] = {
 
     if (messageStreamCreated.getAndSet(true))
       throw new MessageStreamsExistException(

@@ -176,7 +176,7 @@ final class CreateCaseClausesIntention extends PsiElementBaseIntentionAction {
     * @return (matchStmt, matchExpression, matchExpressionClass)
     */
   private def findSurroundingMatch(element: PsiElement)
-    : Option[((Project, Editor, PsiElement) => Unit, String)] = {
+      : Option[((Project, Editor, PsiElement) => Unit, String)] = {
     element.getParent match {
       case x: ScMatchStmt if x.caseClauses.isEmpty =>
         val classType: Option[(PsiClass, ScSubstitutor)] = x.expr

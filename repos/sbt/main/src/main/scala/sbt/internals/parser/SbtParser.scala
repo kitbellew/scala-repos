@@ -61,7 +61,7 @@ private[sbt] case class SbtParser(file: File, lines: Seq[String])
   val (imports, settings, settingsTrees) = splitExpressions(file, lines)
 
   private def splitExpressions(file: File, lines: Seq[String])
-    : (Seq[(String, Int)], Seq[(String, LineRange)], Seq[(String, Tree)]) = {
+      : (Seq[(String, Int)], Seq[(String, LineRange)], Seq[(String, Tree)]) = {
     import sbt.internals.parser.MissingBracketHandler._
 
     import scala.compat.Platform.EOL

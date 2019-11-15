@@ -30,10 +30,10 @@ import scala.language.implicitConversions
 trait Evaluation extends Deployment {
   protected[this] var _evaluatorSet: Boolean = false
   protected[this] var _evaluator
-    : BaseEvaluator[_, _, _, _, _ <: BaseEvaluatorResult] = _
+      : BaseEvaluator[_, _, _, _, _ <: BaseEvaluatorResult] = _
 
   private[prediction] def evaluator
-    : BaseEvaluator[_, _, _, _, _ <: BaseEvaluatorResult] = {
+      : BaseEvaluator[_, _, _, _, _ <: BaseEvaluatorResult] = {
     assert(_evaluatorSet, "Evaluator not set")
     _evaluator
   }
@@ -42,7 +42,7 @@ trait Evaluation extends Deployment {
     * [[io.prediction.core.BaseEvaluator]]
     */
   def engineEvaluator
-    : (BaseEngine[_, _, _, _], BaseEvaluator[_, _, _, _, _]) = {
+      : (BaseEngine[_, _, _, _], BaseEvaluator[_, _, _, _, _]) = {
     assert(_evaluatorSet, "Evaluator not set")
     (engine, _evaluator)
   }
@@ -94,7 +94,7 @@ trait Evaluation extends Deployment {
   }
 
   private[prediction] def engineMetrics
-    : (BaseEngine[_, _, _, _], Metric[_, _, _, _, _]) = {
+      : (BaseEngine[_, _, _, _], Metric[_, _, _, _, _]) = {
     throw new NotImplementedError("This method is to keep the compiler happy")
   }
 

@@ -223,7 +223,7 @@ sealed abstract class Query[+E, U, C[_]] extends QueryBase[C[U]] { self =>
   def groupBy[K, T, G, P](f: E => K)(
       implicit kshape: Shape[_ <: FlatShapeLevel, K, T, G],
       vshape: Shape[_ <: FlatShapeLevel, E, _, P])
-    : Query[(G, Query[P, U, Seq]), (T, Query[P, U, Seq]), C] = {
+      : Query[(G, Query[P, U, Seq]), (T, Query[P, U, Seq]), C] = {
     val sym = new AnonSymbol
     val key =
       ShapedValue(f(shaped.encodeRef(Ref(sym)).value), kshape).packedValue
@@ -334,7 +334,7 @@ object Query {
   /** Lift a scalar value to a Query. */
   def apply[E, U, R](value: E)(
       implicit unpack: Shape[_ <: FlatShapeLevel, E, U, R])
-    : Query[R, U, Seq] = {
+      : Query[R, U, Seq] = {
     val shaped = ShapedValue(value, unpack).packedValue
     new WrappingQuery[R, U, Seq](Pure(shaped.toNode), shaped)
   }
@@ -361,12 +361,12 @@ object CanBeQueryCondition {
   // because otherwise they would not be found in this file above this line.
   // See https://github.com/slick/slick/pull/217
   implicit val BooleanColumnCanBeQueryCondition
-    : CanBeQueryCondition[Rep[Boolean]] =
+      : CanBeQueryCondition[Rep[Boolean]] =
     new CanBeQueryCondition[Rep[Boolean]] {
       def apply(value: Rep[Boolean]) = value
     }
   implicit val BooleanOptionColumnCanBeQueryCondition
-    : CanBeQueryCondition[Rep[Option[Boolean]]] =
+      : CanBeQueryCondition[Rep[Option[Boolean]]] =
     new CanBeQueryCondition[Rep[Option[Boolean]]] {
       def apply(value: Rep[Option[Boolean]]) = value
     }

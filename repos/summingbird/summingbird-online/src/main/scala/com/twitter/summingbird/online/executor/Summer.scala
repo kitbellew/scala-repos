@@ -113,7 +113,7 @@ class Summer[Key, Value: Semigroup, Event, S, D, RC](
   }
 
   private def handleResult(kvs: Map[Key, (Seq[InputState[S]], Value)])
-    : TraversableOnce[(Seq[InputState[S]], Future[TraversableOnce[Event]])] =
+      : TraversableOnce[(Seq[InputState[S]], Future[TraversableOnce[Event]])] =
     store
       .multiMerge(kvs.mapValues(_._2))
       .iterator

@@ -120,7 +120,7 @@ trait MutableInnerProductModule[V, S]
 trait VectorSpace[V, S] extends Module[V, S] {
   implicit def scalars: Field[S]
   implicit def divVS
-    : OpDiv.Impl2[V, S, V] // Inverse module operator since Fields have multiplicative inverse
+      : OpDiv.Impl2[V, S, V] // Inverse module operator since Fields have multiplicative inverse
 }
 
 trait MutableVectorSpace[V, S]
@@ -236,7 +236,7 @@ trait FiniteCoordinateField[V, I, S]
   implicit def tabulateTensor: CanTabulate[I, V, S]
 
   implicit def addVS
-    : OpAdd.Impl2[V, S, V] // Implicitly Broadcast scalars to vector-space
+      : OpAdd.Impl2[V, S, V] // Implicitly Broadcast scalars to vector-space
   implicit def subVS: OpSub.Impl2[V, S, V]
 }
 
@@ -381,7 +381,7 @@ object MutableInnerProductVectorSpace {
       _subIntoVV: OpSub.InPlaceImpl2[V, V],
       _setIntoVV: OpSet.InPlaceImpl2[V, V],
       _scaleAddVSV: scaleAdd.InPlaceImpl3[V, S, V])
-    : MutableInnerProductVectorSpace[V, S] =
+      : MutableInnerProductVectorSpace[V, S] =
     new MutableInnerProductVectorSpace[V, S] {
       def scalars: Field[S] = _field
       override implicit def hasOps(v: V): NumericOps[V] = _ops(v)
@@ -420,7 +420,7 @@ object MutableInnerProductModule {
       _subIntoVV: OpSub.InPlaceImpl2[V, V],
       _setIntoVV: OpSet.InPlaceImpl2[V, V],
       _scaleAddVSV: scaleAdd.InPlaceImpl3[V, S, V])
-    : MutableInnerProductModule[V, S] = new MutableInnerProductModule[V, S] {
+      : MutableInnerProductModule[V, S] = new MutableInnerProductModule[V, S] {
     def scalars: Ring[S] = _ring
     override implicit def hasOps(v: V): NumericOps[V] = _ops(v)
     override implicit def zeroLike: CanCreateZerosLike[V, V] = _zeroLike
@@ -775,7 +775,7 @@ object MutableOptimizationSpace {
 
   object SparseFieldOptimizationSpace {
     implicit def sparseOptSpace[S: Field: Zero: ClassTag]
-      : MutableOptimizationSpace[CSCMatrix[S], SparseVector[S], S] = {
+        : MutableOptimizationSpace[CSCMatrix[S], SparseVector[S], S] = {
       val norms = EntrywiseMatrixNorms.make[CSCMatrix[S], S]
       import norms._
       make[CSCMatrix[S], SparseVector[S], S](_.asCscRow, _.flatten())
@@ -784,7 +784,7 @@ object MutableOptimizationSpace {
 
   object DenseFieldOptimizationSpace {
     implicit def denseOptSpace[S: Field: ClassTag]
-      : MutableOptimizationSpace[DenseMatrix[S], DenseVector[S], S] = {
+        : MutableOptimizationSpace[DenseMatrix[S], DenseVector[S], S] = {
       val norms = EntrywiseMatrixNorms.make[DenseMatrix[S], S]
       import norms._
       import DenseMatrix.canMapValues
@@ -894,7 +894,7 @@ object MutableOptimizationSpace {
       _mulMVV: OpMulMatrix.Impl2[M, V, V],
       _mulVTM: OpMulMatrix.Impl2[V, Transpose[V], M],
       _canTrans: CanTranspose[V, Transpose[V]])
-    : MutableOptimizationSpace[M, V, S] =
+      : MutableOptimizationSpace[M, V, S] =
     new MutableOptimizationSpace[M, V, S] {
       def toMatrix(v: V): M = toMat(v)
       def toVector(m: M): V = toVec(m)
@@ -947,7 +947,7 @@ object MutableOptimizationSpace {
       implicit def setIntoVS: OpSet.InPlaceImpl2[V, S] = _setIntoVS
       implicit def zipMapValues: CanZipMapValues[V, S, S, V] = _zipMapVals
       override implicit def zipMapKeyValues
-        : CanZipMapKeyValues[V, Int, S, S, V] = _zipMapKeyVals
+          : CanZipMapKeyValues[V, Int, S, S, V] = _zipMapKeyVals
       implicit def iterateValues: CanTraverseValues[V, S] = _traverseVals
       implicit def mapValues: CanMapValues[V, S, S, V] = _mapVals
 

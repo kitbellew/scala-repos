@@ -109,7 +109,8 @@ trait ShapeIncludes {
     * @return $SFX Box
     */
   implicit def jfxBox2sfx(b: jfxss.Box): Box =
-    if (b != null) new Box(b) {} else null
+    if (b != null) new Box(b) {}
+    else null
 
   /**
     * $START$CLC.html $CLC$END
@@ -241,7 +242,8 @@ trait ShapeIncludes {
     * @return $SFX $PTE
     */
   implicit def jfxPathElement2sfx(e: jfxss.PathElement): PathElement =
-    if (e != null) new PathElement(e) {} else null
+    if (e != null) new PathElement(e) {}
+    else null
 
   /**
     * $START$PLG.html $PLG$END
@@ -295,7 +297,8 @@ trait ShapeIncludes {
     * @return $SFX $SHA
     */
   implicit def jfxShape2sfx(s: jfxss.Shape): Shape =
-    if (s != null) new Shape(s) {} else null
+    if (s != null) new Shape(s) {}
+    else null
 
   /**
     * $START$SHA3D.html $SHA3D$END
@@ -304,7 +307,8 @@ trait ShapeIncludes {
     * @return $SFX $SHA3D
     */
   implicit def jfxShape3D2sfx(s: jfxss.Shape3D): Shape3D =
-    if (s != null) new Shape3D(s) {} else null
+    if (s != null) new Shape3D(s) {}
+    else null
 
   implicit def jfxSphere2sfx(s: jfxss.Sphere): Sphere =
     if (s != null) new Sphere(s) else null

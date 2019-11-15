@@ -161,7 +161,7 @@ trait MemoryProfile extends RelationalProfile with MemoryQueryingProfile {
   protected[this] def dbAction[R, S <: NoStream, E <: Effect](
       f: Backend#Session => R): ProfileAction[R, S, E] =
     new ProfileAction[R, S, E]
-    with SynchronousDatabaseAction[R, S, Backend#This, E] {
+      with SynchronousDatabaseAction[R, S, Backend#This, E] {
       def run(ctx: Backend#Context): R = f(ctx.session)
       def getDumpInfo = DumpInfo("MemoryProfile.ProfileAction")
     }
@@ -198,17 +198,17 @@ trait MemoryProfile extends RelationalProfile with MemoryQueryingProfile {
     }
     def head: ProfileAction[T, NoStream, Effect.Read] =
       new ProfileAction[T, NoStream, Effect.Read]
-      with SynchronousDatabaseAction[T, NoStream, Backend#This, Effect.Read] {
+        with SynchronousDatabaseAction[T, NoStream, Backend#This, Effect.Read] {
         def run(ctx: Backend#Context): T = getIterator(ctx).next
         def getDumpInfo = DumpInfo("MemoryProfile.StreamingQueryAction.first")
       }
     def headOption: ProfileAction[Option[T], NoStream, Effect.Read] =
       new ProfileAction[Option[T], NoStream, Effect.Read]
-      with SynchronousDatabaseAction[
-        Option[T],
-        NoStream,
-        Backend#This,
-        Effect.Read] {
+        with SynchronousDatabaseAction[
+          Option[T],
+          NoStream,
+          Backend#This,
+          Effect.Read] {
         def run(ctx: Backend#Context): Option[T] = {
           val it = getIterator(ctx)
           if (it.hasNext) Some(it.next) else None
@@ -275,7 +275,7 @@ trait MemoryProfile extends RelationalProfile with MemoryQueryingProfile {
       table.profileTable.asInstanceOf[Table[_]].create_*.zipWithIndex.toMap
 
     def createColumnConverter(n: Node, idx: Int, column: Option[FieldSymbol])
-      : ResultConverter[MemoryResultConverterDomain, _] =
+        : ResultConverter[MemoryResultConverterDomain, _] =
       new InsertResultConverter(tableColumnIdxs(column.get))
 
     class InsertResultConverter(tidx: Int)

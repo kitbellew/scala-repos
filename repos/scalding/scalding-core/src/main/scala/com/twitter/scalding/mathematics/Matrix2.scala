@@ -749,7 +749,7 @@ object Matrix2 {
   def optimizeProductChain[V](
       p: IndexedSeq[Matrix2[Any, Any, V]],
       product: Option[(Ring[V], MatrixJoiner2)])
-    : (BigInt, Matrix2[Any, Any, V]) = {
+      : (BigInt, Matrix2[Any, Any, V]) = {
 
     val subchainCosts = HashMap.empty[(Int, Int), BigInt]
 

@@ -173,7 +173,7 @@ sealed abstract class NullResultInstances extends NullResultInstances0 {
     }
 
   implicit val nullResultArrow
-    : Arrow[NullResult] with Choice[NullResult] with ProChoice[NullResult] =
+      : Arrow[NullResult] with Choice[NullResult] with ProChoice[NullResult] =
     new Arrow[NullResult] with Choice[NullResult] with ProChoice[NullResult] {
       def id[A] =
         NullResult.lift(identity)
@@ -205,7 +205,7 @@ sealed abstract class NullResultInstances extends NullResultInstances0 {
     }
 
   implicit def nullResultMonadPlus[X]
-    : MonadPlus[NullResult[X, ?]] with BindRec[NullResult[X, ?]] =
+      : MonadPlus[NullResult[X, ?]] with BindRec[NullResult[X, ?]] =
     new MonadPlus[NullResult[X, ?]] with BindRec[NullResult[X, ?]] {
       import std.option._
       override def tailrecM[A, B](f: A => NullResult[X, A \/ B])(a: A) =

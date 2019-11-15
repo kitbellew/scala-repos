@@ -109,7 +109,7 @@ object SaddleWrapper {
   }
 
   def FromFrame[A](data: Frame[DateTime, String, A])
-    : (Array[DateTime], Array[(String, Array[A])]) = {
+      : (Array[DateTime], Array[(String, Array[A])]) = {
     val timeIndex = data.rowIx.toVec.contents
     val tickers = data.colIx.toVec.contents
 

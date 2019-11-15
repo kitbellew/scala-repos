@@ -215,12 +215,12 @@ class ScNewTemplateDefinitionImpl private (
   }
 
   override def getAllMethodsAndTheirSubstitutors
-    : JList[IPair[PsiMethod, PsiSubstitutor]] = {
+      : JList[IPair[PsiMethod, PsiSubstitutor]] = {
     super[ScNewTemplateDefinition].getAllMethodsAndTheirSubstitutors
   }
 
   override def getVisibleSignatures
-    : JCollection[HierarchicalMethodSignature] = {
+      : JCollection[HierarchicalMethodSignature] = {
     super[ScNewTemplateDefinition].getVisibleSignatures
   }
 

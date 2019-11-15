@@ -72,7 +72,7 @@ trait LeadershipAbdication {
 /**
   * Wrapper class for the scheduler
   */
-class MarathonSchedulerService @Inject()(
+class MarathonSchedulerService @Inject() (
     leadershipCoordinator: LeadershipCoordinator,
     healthCheckManager: HealthCheckManager,
     @Named(ModuleNames.CANDIDATE) candidate: Option[Candidate],

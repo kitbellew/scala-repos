@@ -126,7 +126,7 @@ private[storage] class BlockInfoManager extends Logging {
   @GuardedBy("this")
   private[this] val writeLocksByTask =
     new mutable.HashMap[TaskAttemptId, mutable.Set[BlockId]]
-    with mutable.MultiMap[TaskAttemptId, BlockId]
+      with mutable.MultiMap[TaskAttemptId, BlockId]
 
   /**
     * Tracks the set of blocks that each task has locked for reading, along with the number of times

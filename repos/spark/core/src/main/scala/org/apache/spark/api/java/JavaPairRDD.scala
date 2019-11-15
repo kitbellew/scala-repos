@@ -343,7 +343,7 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
     * not finish within a timeout.
     */
   def countByKeyApprox(timeout: Long, confidence: Double = 0.95)
-    : PartialResult[java.util.Map[K, BoundedDouble]] =
+      : PartialResult[java.util.Map[K, BoundedDouble]] =
     rdd.countByKeyApprox(timeout, confidence).map(mapAsSerializableJavaMap)
 
   /**
@@ -770,7 +770,7 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
       other1: JavaPairRDD[K, W1],
       other2: JavaPairRDD[K, W2],
       partitioner: Partitioner)
-    : JavaPairRDD[K, (JIterable[V], JIterable[W1], JIterable[W2])] =
+      : JavaPairRDD[K, (JIterable[V], JIterable[W1], JIterable[W2])] =
     fromRDD(cogroupResult2ToJava(rdd.cogroup(other1, other2, partitioner)))
 
   /**
@@ -801,7 +801,7 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
     * tuple with the list of values for that key in `this`, `other1` and `other2`.
     */
   def cogroup[W1, W2](other1: JavaPairRDD[K, W1], other2: JavaPairRDD[K, W2])
-    : JavaPairRDD[K, (JIterable[V], JIterable[W1], JIterable[W2])] =
+      : JavaPairRDD[K, (JIterable[V], JIterable[W1], JIterable[W2])] =
     fromRDD(cogroupResult2ToJava(rdd.cogroup(other1, other2)))
 
   /**
@@ -834,7 +834,7 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
       other1: JavaPairRDD[K, W1],
       other2: JavaPairRDD[K, W2],
       numPartitions: Int)
-    : JavaPairRDD[K, (JIterable[V], JIterable[W1], JIterable[W2])] =
+      : JavaPairRDD[K, (JIterable[V], JIterable[W1], JIterable[W2])] =
     fromRDD(cogroupResult2ToJava(rdd.cogroup(other1, other2, numPartitions)))
 
   /**
@@ -859,7 +859,7 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
 
   /** Alias for cogroup. */
   def groupWith[W1, W2](other1: JavaPairRDD[K, W1], other2: JavaPairRDD[K, W2])
-    : JavaPairRDD[K, (JIterable[V], JIterable[W1], JIterable[W2])] =
+      : JavaPairRDD[K, (JIterable[V], JIterable[W1], JIterable[W2])] =
     fromRDD(cogroupResult2ToJava(rdd.groupWith(other1, other2)))
 
   /** Alias for cogroup. */
@@ -1124,20 +1124,20 @@ object JavaPairRDD {
 
   private[spark] def cogroupResultToJava[K: ClassTag, V, W](
       rdd: RDD[(K, (Iterable[V], Iterable[W]))])
-    : RDD[(K, (JIterable[V], JIterable[W]))] = {
+      : RDD[(K, (JIterable[V], JIterable[W]))] = {
     rddToPairRDDFunctions(rdd).mapValues(x => (x._1.asJava, x._2.asJava))
   }
 
   private[spark] def cogroupResult2ToJava[K: ClassTag, V, W1, W2](
       rdd: RDD[(K, (Iterable[V], Iterable[W1], Iterable[W2]))])
-    : RDD[(K, (JIterable[V], JIterable[W1], JIterable[W2]))] = {
+      : RDD[(K, (JIterable[V], JIterable[W1], JIterable[W2]))] = {
     rddToPairRDDFunctions(rdd).mapValues(x =>
       (x._1.asJava, x._2.asJava, x._3.asJava))
   }
 
-  private[spark] def cogroupResult3ToJava[K: ClassTag, V, W1, W2, W3](
-      rdd: RDD[(K, (Iterable[V], Iterable[W1], Iterable[W2], Iterable[W3]))])
-    : RDD[(K, (JIterable[V], JIterable[W1], JIterable[W2], JIterable[W3]))] = {
+  private[spark] def cogroupResult3ToJava[K: ClassTag, V, W1, W2, W3](rdd: RDD[
+    (K, (Iterable[V], Iterable[W1], Iterable[W2], Iterable[W3]))]): RDD[
+    (K, (JIterable[V], JIterable[W1], JIterable[W2], JIterable[W3]))] = {
     rddToPairRDDFunctions(rdd).mapValues(x =>
       (x._1.asJava, x._2.asJava, x._3.asJava, x._4.asJava))
   }

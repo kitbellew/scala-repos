@@ -105,7 +105,7 @@ object Comet {
     * }}}
     */
   def flow(callbackName: String, initialChunk: ByteString = initialByteString)
-    : Flow[ByteString, ByteString, NotUsed] = {
+      : Flow[ByteString, ByteString, NotUsed] = {
     val cb: ByteString = ByteString.fromString(callbackName)
     Flow
       .apply[ByteString]

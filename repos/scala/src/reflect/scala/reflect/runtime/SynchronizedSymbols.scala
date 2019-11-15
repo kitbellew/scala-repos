@@ -34,7 +34,7 @@ private[reflect] trait SynchronizedSymbols extends internal.Symbols {
       flags: Long = 0L,
       origin: String = null): FreeTermSymbol =
     new FreeTermSymbol(name, value, origin)
-    with SynchronizedTermSymbol initFlags flags
+      with SynchronizedTermSymbol initFlags flags
 
   override def newFreeTypeSymbol(
       name: TypeName,
@@ -186,14 +186,14 @@ private[reflect] trait SynchronizedSymbols extends internal.Symbols {
         pos: Position,
         newFlags: Long): AbstractTypeSymbol =
       new AbstractTypeSymbol(this, pos, name)
-      with SynchronizedTypeSymbol initFlags newFlags
+        with SynchronizedTypeSymbol initFlags newFlags
 
     override protected def createAliasTypeSymbol(
         name: TypeName,
         pos: Position,
         newFlags: Long): AliasTypeSymbol =
       new AliasTypeSymbol(this, pos, name)
-      with SynchronizedTypeSymbol initFlags newFlags
+        with SynchronizedTypeSymbol initFlags newFlags
 
     override protected def createTypeSkolemSymbol(
         name: TypeName,
@@ -201,54 +201,54 @@ private[reflect] trait SynchronizedSymbols extends internal.Symbols {
         pos: Position,
         newFlags: Long): TypeSkolem =
       new TypeSkolem(this, pos, name, origin)
-      with SynchronizedTypeSymbol initFlags newFlags
+        with SynchronizedTypeSymbol initFlags newFlags
 
     override protected def createClassSymbol(
         name: TypeName,
         pos: Position,
         newFlags: Long): ClassSymbol =
       new ClassSymbol(this, pos, name)
-      with SynchronizedClassSymbol initFlags newFlags
+        with SynchronizedClassSymbol initFlags newFlags
 
     override protected def createModuleClassSymbol(
         name: TypeName,
         pos: Position,
         newFlags: Long): ModuleClassSymbol =
       new ModuleClassSymbol(this, pos, name)
-      with SynchronizedModuleClassSymbol initFlags newFlags
+        with SynchronizedModuleClassSymbol initFlags newFlags
 
     override protected def createPackageClassSymbol(
         name: TypeName,
         pos: Position,
         newFlags: Long): PackageClassSymbol =
       new PackageClassSymbol(this, pos, name)
-      with SynchronizedModuleClassSymbol initFlags newFlags
+        with SynchronizedModuleClassSymbol initFlags newFlags
 
     override protected def createRefinementClassSymbol(
         pos: Position,
         newFlags: Long): RefinementClassSymbol =
       new RefinementClassSymbol(this, pos)
-      with SynchronizedClassSymbol initFlags newFlags
+        with SynchronizedClassSymbol initFlags newFlags
 
     override protected def createPackageObjectClassSymbol(
         pos: Position,
         newFlags: Long): PackageObjectClassSymbol =
       new PackageObjectClassSymbol(this, pos)
-      with SynchronizedClassSymbol initFlags newFlags
+        with SynchronizedClassSymbol initFlags newFlags
 
     override protected def createMethodSymbol(
         name: TermName,
         pos: Position,
         newFlags: Long): MethodSymbol =
       new MethodSymbol(this, pos, name)
-      with SynchronizedMethodSymbol initFlags newFlags
+        with SynchronizedMethodSymbol initFlags newFlags
 
     override protected def createModuleSymbol(
         name: TermName,
         pos: Position,
         newFlags: Long): ModuleSymbol =
       new ModuleSymbol(this, pos, name)
-      with SynchronizedTermSymbol initFlags newFlags
+        with SynchronizedTermSymbol initFlags newFlags
 
     override protected def createPackageSymbol(
         name: TermName,
@@ -261,14 +261,14 @@ private[reflect] trait SynchronizedSymbols extends internal.Symbols {
         pos: Position,
         newFlags: Long) =
       new TermSymbol(this, pos, name)
-      with SynchronizedTermSymbol initFlags newFlags
+        with SynchronizedTermSymbol initFlags newFlags
 
     override protected def createValueMemberSymbol(
         name: TermName,
         pos: Position,
         newFlags: Long) =
       new TermSymbol(this, pos, name)
-      with SynchronizedTermSymbol initFlags newFlags
+        with SynchronizedTermSymbol initFlags newFlags
   }
 
 // ------- subclasses ---------------------------------------------------------------------

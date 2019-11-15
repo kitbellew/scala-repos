@@ -87,7 +87,7 @@ sealed abstract class IndexedStateT[F[_], -S1, S2, A] { self =>
       implicit M: Comonad[M],
       F: Monad[λ[α => M[FF[α]]]],
       ev: this.type <~< IndexedStateT[λ[α => M[FF[α]]], S, S2, A])
-    : IndexedStateT[FF, S, S2, A] = IndexedStateT.createState(
+      : IndexedStateT[FF, S, S2, A] = IndexedStateT.createState(
     (m: Monad[FF]) =>
       (s: S) => {
         M.copoint(ev(self)(s))
@@ -120,7 +120,7 @@ sealed abstract class IndexedStateT[F[_], -S1, S2, A] { self =>
     Free.liftF[IndexedStateT[F, S, S2, ?], A](self)
 
   def mapsf[X1, X2, B](f: (S1 => F[(S2, A)]) => (X1 => F[(X2, B)]))
-    : IndexedStateT[F, X1, X2, B] =
+      : IndexedStateT[F, X1, X2, B] =
     IndexedStateT.createState((m: Monad[F]) => f((s: S1) => run(s)(m)))
 }
 
@@ -144,7 +144,7 @@ object IndexedStateT extends StateTInstances with StateTFunctions {
 
 sealed abstract class IndexedStateTInstances2 {
   implicit def indexedStateTContravariant[S2, A0, F[_]]
-    : Contravariant[IndexedStateT[F, ?, S2, A0]] =
+      : Contravariant[IndexedStateT[F, ?, S2, A0]] =
     new IndexedStateTContravariant[S2, A0, F] {}
 }
 
@@ -172,7 +172,7 @@ sealed abstract class IndexedStateTInstances extends IndexedStateTInstances0 {
     }
 
   implicit def indexedStateTPlus[F[_]: Monad: Plus, S1, S2]
-    : Plus[IndexedStateT[F, S1, S2, ?]] =
+      : Plus[IndexedStateT[F, S1, S2, ?]] =
     new IndexedStateTPlus[F, S1, S2] {
       def F = implicitly
       def G = implicitly

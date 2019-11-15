@@ -117,10 +117,16 @@ sealed abstract class LazyOptionInstances {
     with Cobind[LazyOption]
     with Optional[LazyOption]
     with IsEmpty[LazyOption] =
-    new Traverse[LazyOption] with MonadPlus[LazyOption] with BindRec[LazyOption]
-    with Cozip[LazyOption] with Zip[LazyOption] with Unzip[LazyOption]
-    with Align[LazyOption] with Cobind[LazyOption] with Optional[LazyOption]
-    with IsEmpty[LazyOption] {
+    new Traverse[LazyOption]
+      with MonadPlus[LazyOption]
+      with BindRec[LazyOption]
+      with Cozip[LazyOption]
+      with Zip[LazyOption]
+      with Unzip[LazyOption]
+      with Align[LazyOption]
+      with Cobind[LazyOption]
+      with Optional[LazyOption]
+      with IsEmpty[LazyOption] {
       def cobind[A, B](fa: LazyOption[A])(
           f: LazyOption[A] => B): LazyOption[B] = map(cojoin(fa))(f)
       override def cojoin[A](a: LazyOption[A]) = a match {

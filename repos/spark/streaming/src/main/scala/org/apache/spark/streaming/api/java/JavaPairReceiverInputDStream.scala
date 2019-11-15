@@ -40,7 +40,7 @@ object JavaPairReceiverInputDStream {
     */
   implicit def fromReceiverInputDStream[K: ClassTag, V: ClassTag](
       receiverInputDStream: ReceiverInputDStream[(K, V)])
-    : JavaPairReceiverInputDStream[K, V] = {
+      : JavaPairReceiverInputDStream[K, V] = {
     new JavaPairReceiverInputDStream[K, V](receiverInputDStream)
   }
 }

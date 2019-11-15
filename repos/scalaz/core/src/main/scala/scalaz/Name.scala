@@ -27,9 +27,15 @@ object Name {
     with Zip[Name]
     with Unzip[Name]
     with Align[Name]
-    with Cozip[Name] = new Monad[Name] with BindRec[Name] with Comonad[Name]
-  with Distributive[Name] with Traverse1[Name] with Zip[Name] with Unzip[Name]
-  with Align[Name] with Cozip[Name] {
+    with Cozip[Name] = new Monad[Name]
+    with BindRec[Name]
+    with Comonad[Name]
+    with Distributive[Name]
+    with Traverse1[Name]
+    with Zip[Name]
+    with Unzip[Name]
+    with Align[Name]
+    with Cozip[Name] {
     override def foldMap1[A, B: Semigroup](fa: Name[A])(f: A => B) =
       f(fa.value)
     override def foldLeft[A, B](fa: Name[A], z: B)(f: (B, A) => B) =
@@ -87,9 +93,15 @@ object Need {
     with Zip[Need]
     with Unzip[Need]
     with Align[Need]
-    with Cozip[Need] = new Monad[Need] with BindRec[Need] with Comonad[Need]
-  with Distributive[Need] with Traverse1[Need] with Zip[Need] with Unzip[Need]
-  with Align[Need] with Cozip[Need] {
+    with Cozip[Need] = new Monad[Need]
+    with BindRec[Need]
+    with Comonad[Need]
+    with Distributive[Need]
+    with Traverse1[Need]
+    with Zip[Need]
+    with Unzip[Need]
+    with Align[Need]
+    with Cozip[Need] {
     override def foldMap1[A, B: Semigroup](fa: Need[A])(f: A => B) =
       f(fa.value)
     override def foldLeft[A, B](fa: Need[A], z: B)(f: (B, A) => B) =
@@ -139,9 +151,15 @@ object Value {
     with Zip[Value]
     with Unzip[Value]
     with Align[Value]
-    with Cozip[Value] = new Monad[Value] with BindRec[Value] with Comonad[Value]
-  with Distributive[Value] with Traverse1[Value] with Zip[Value]
-  with Unzip[Value] with Align[Value] with Cozip[Value] {
+    with Cozip[Value] = new Monad[Value]
+    with BindRec[Value]
+    with Comonad[Value]
+    with Distributive[Value]
+    with Traverse1[Value]
+    with Zip[Value]
+    with Unzip[Value]
+    with Align[Value]
+    with Cozip[Value] {
     override def foldMap1[A, B: Semigroup](fa: Value[A])(f: A => B) =
       f(fa.value)
     override def foldLeft[A, B](fa: Value[A], z: B)(f: (B, A) => B) =

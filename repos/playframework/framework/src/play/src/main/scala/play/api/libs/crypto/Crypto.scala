@@ -216,7 +216,7 @@ class CryptoException(
     extends RuntimeException(message, throwable)
 
 @Singleton
-class CookieSignerProvider @Inject()(config: CryptoConfig)
+class CookieSignerProvider @Inject() (config: CryptoConfig)
     extends Provider[CookieSigner] {
   lazy val get: CookieSigner = new HMACSHA1CookieSigner(config)
 }
@@ -224,7 +224,7 @@ class CookieSignerProvider @Inject()(config: CryptoConfig)
 /**
   * Uses an HMAC-SHA1 for signing cookies.
   */
-class HMACSHA1CookieSigner @Inject()(config: CryptoConfig)
+class HMACSHA1CookieSigner @Inject() (config: CryptoConfig)
     extends CookieSigner {
 
   /**
@@ -259,7 +259,7 @@ class HMACSHA1CookieSigner @Inject()(config: CryptoConfig)
 }
 
 @Singleton
-class CSRFTokenSignerProvider @Inject()(signer: CookieSigner)
+class CSRFTokenSignerProvider @Inject() (signer: CookieSigner)
     extends Provider[CSRFTokenSigner] {
   lazy val get: CSRFTokenSigner =
     new DefaultCSRFTokenSigner(signer, Clock.systemUTC())
@@ -268,7 +268,7 @@ class CSRFTokenSignerProvider @Inject()(signer: CookieSigner)
 /**
   * This class is used for generating random tokens for CSRF.
   */
-class DefaultCSRFTokenSigner @Inject()(signer: CookieSigner, clock: Clock)
+class DefaultCSRFTokenSigner @Inject() (signer: CookieSigner, clock: Clock)
     extends CSRFTokenSigner {
 
   // If you're running on an older version of Windows, you may be using
@@ -364,7 +364,7 @@ object CSRFTokenSigner {
 }
 
 @Singleton
-class AESCrypterProvider @Inject()(config: CryptoConfig)
+class AESCrypterProvider @Inject() (config: CryptoConfig)
     extends Provider[AESCrypter] {
   lazy val get = new AESCTRCrypter(config)
 }
@@ -372,7 +372,7 @@ class AESCrypterProvider @Inject()(config: CryptoConfig)
 /**
   * Symmetric encryption using AES/CTR/NoPadding.
   */
-class AESCTRCrypter @Inject()(config: CryptoConfig) extends AESCrypter {
+class AESCTRCrypter @Inject() (config: CryptoConfig) extends AESCrypter {
 
   def encryptAES(value: String): String = {
     encryptAES(value, config.secret)
@@ -489,7 +489,7 @@ case class CryptoConfig(
       "2.5.0") aesTransformation: String = "AES/CTR/NoPadding")
 
 @Singleton
-class CryptoConfigParser @Inject()(
+class CryptoConfigParser @Inject() (
     environment: Environment,
     configuration: Configuration)
     extends Provider[CryptoConfig] {

@@ -81,7 +81,7 @@ object SerializationProperties extends Properties("SerializationProperties") {
       implicitly[Arbitrary[Int]].arbitrary.map(new IntTryWrapperClass(_)))
 
   implicit def tuple[A: OrderedSerialization, B: OrderedSerialization]
-    : OrderedSerialization[(A, B)] =
+      : OrderedSerialization[(A, B)] =
     new OrderedSerialization2[A, B](implicitly, implicitly)
 
   def serializeSequenceCompare[T: OrderedSerialization](g: Gen[T]): Prop =

@@ -66,7 +66,7 @@ class ScalastyleCodeInspection extends LocalInspectionTool {
       isOnTheFly: Boolean): Array[ProblemDescriptor] = {
     def withConfiguration(
         f: ScalastyleConfiguration => Iterable[ProblemDescriptor])
-      : Array[ProblemDescriptor] = {
+        : Array[ProblemDescriptor] = {
       ScalastyleCodeInspection
         .configuration(file.getProject)
         .map(c => f(c).toArray)

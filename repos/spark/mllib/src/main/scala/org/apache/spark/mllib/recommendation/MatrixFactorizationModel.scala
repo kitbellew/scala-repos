@@ -53,7 +53,7 @@ import org.apache.spark.storage.StorageLevel
   *                        and the features computed for this product.
   */
 @Since("0.8.0")
-class MatrixFactorizationModel @Since("0.8.0")(
+class MatrixFactorizationModel @Since("0.8.0") (
     @Since("0.8.0") val rank: Int,
     @Since("0.8.0") val userFeatures: RDD[(Int, Array[Double])],
     @Since("0.8.0") val productFeatures: RDD[(Int, Array[Double])])

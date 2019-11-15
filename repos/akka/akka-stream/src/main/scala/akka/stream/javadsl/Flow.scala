@@ -25,12 +25,12 @@ object Flow {
   def create[T](): javadsl.Flow[T, T, NotUsed] = fromGraph(scaladsl.Flow[T])
 
   def fromProcessor[I, O](processorFactory: function.Creator[Processor[I, O]])
-    : javadsl.Flow[I, O, NotUsed] =
+      : javadsl.Flow[I, O, NotUsed] =
     new Flow(scaladsl.Flow.fromProcessor(() ⇒ processorFactory.create()))
 
   def fromProcessorMat[I, O, Mat](
       processorFactory: function.Creator[Pair[Processor[I, O], Mat]])
-    : javadsl.Flow[I, O, Mat] =
+      : javadsl.Flow[I, O, Mat] =
     new Flow(scaladsl.Flow.fromProcessorMat { () ⇒
       val javaPair = processorFactory.create()
       (javaPair.first, javaPair.second)
@@ -322,7 +322,7 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
     * '''Cancels when''' downstream cancels
     */
   def mapConcat[T](f: function.Function[Out, java.lang.Iterable[T]])
-    : javadsl.Flow[In, T, Mat] =
+      : javadsl.Flow[In, T, Mat] =
     new Flow(delegate.mapConcat { elem ⇒
       Util.immutableSeq(f(elem))
     })
@@ -353,7 +353,7 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
     */
   def statefulMapConcat[T](
       f: function.Creator[function.Function[Out, java.lang.Iterable[T]]])
-    : javadsl.Flow[In, T, Mat] =
+      : javadsl.Flow[In, T, Mat] =
     new Flow(delegate.statefulMapConcat { () ⇒
       val fun = f.create()
       elem ⇒ Util.immutableSeq(fun(elem))
@@ -561,7 +561,7 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
     * '''Cancels when''' downstream cancels
     */
   def sliding(n: Int, step: Int = 1)
-    : javadsl.Flow[In, java.util.List[Out @uncheckedVariance], Mat] =
+      : javadsl.Flow[In, java.util.List[Out @uncheckedVariance], Mat] =
     new Flow(delegate.sliding(n, step).map(_.asJava)) // TODO optimize to one step
 
   /**
@@ -621,7 +621,7 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
     * '''Cancels when''' downstream cancels
     */
   def reduce(f: function.Function2[Out, Out, Out @uncheckedVariance])
-    : javadsl.Flow[In, Out, Mat] =
+      : javadsl.Flow[In, Out, Mat] =
     new Flow(delegate.reduce(f.apply))
 
   /**
@@ -705,7 +705,7 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
     * IllegalArgumentException is thrown.
     */
   def groupedWithin(n: Int, d: FiniteDuration)
-    : javadsl.Flow[In, java.util.List[Out @uncheckedVariance], Mat] =
+      : javadsl.Flow[In, java.util.List[Out @uncheckedVariance], Mat] =
     new Flow(delegate.groupedWithin(n, d).map(_.asJava)) // TODO optimize to one step
 
   /**
@@ -841,7 +841,7 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
     */
   def recoverWith[T >: Out](
       pf: PartialFunction[Throwable, _ <: Graph[SourceShape[T], NotUsed]])
-    : javadsl.Flow[In, T, Mat @uncheckedVariance] =
+      : javadsl.Flow[In, T, Mat @uncheckedVariance] =
     new Flow(delegate.recoverWith(pf))
 
   /**
@@ -1035,7 +1035,7 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
     *                    state.
     */
   def expand[U](extrapolate: function.Function[Out, java.util.Iterator[U]])
-    : javadsl.Flow[In, U, Mat] =
+      : javadsl.Flow[In, U, Mat] =
     new Flow(delegate.expand(in ⇒ extrapolate(in).asScala))
 
   /**
@@ -1292,7 +1292,7 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
     */
   def flatMapConcat[T, M](
       f: function.Function[Out, _ <: Graph[SourceShape[T], M]])
-    : Flow[In, T, Mat] =
+      : Flow[In, T, Mat] =
     new Flow(delegate.flatMapConcat[T, M](x ⇒ f(x)))
 
   /**
@@ -1311,7 +1311,7 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
   def flatMapMerge[T, M](
       breadth: Int,
       f: function.Function[Out, _ <: Graph[SourceShape[T], M]])
-    : Flow[In, T, Mat] =
+      : Flow[In, T, Mat] =
     new Flow(delegate.flatMapMerge(breadth, o ⇒ f(o)))
 
   /**
@@ -1591,7 +1591,7 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
     * '''Cancels when''' downstream cancels
     */
   def zip[T](source: Graph[SourceShape[T], _])
-    : javadsl.Flow[In, Out @uncheckedVariance Pair T, Mat] =
+      : javadsl.Flow[In, Out @uncheckedVariance Pair T, Mat] =
     zipMat(source, Keep.left)
 
   /**
@@ -1605,7 +1605,7 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
   def zipMat[T, M, M2](
       that: Graph[SourceShape[T], M],
       matF: function.Function2[Mat, M, M2])
-    : javadsl.Flow[In, Out @uncheckedVariance Pair T, M2] =
+      : javadsl.Flow[In, Out @uncheckedVariance Pair T, M2] =
     this.viaMat(
       Flow.fromGraph(
         GraphDSL.create(
@@ -1615,7 +1615,7 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
             SourceShape[T],
             FlowShape[Out, Out @uncheckedVariance Pair T]] {
             def apply(b: GraphDSL.Builder[M], s: SourceShape[T])
-              : FlowShape[Out, Out @uncheckedVariance Pair T] = {
+                : FlowShape[Out, Out @uncheckedVariance Pair T] = {
               val zip: FanInShape2[Out, T, Out Pair T] =
                 b.add(Zip.create[Out, T])
               b.from(s).toInlet(zip.in1)
@@ -1641,7 +1641,7 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
   def zipWith[Out2, Out3](
       that: Graph[SourceShape[Out2], _],
       combine: function.Function2[Out, Out2, Out3])
-    : javadsl.Flow[In, Out3, Mat] =
+      : javadsl.Flow[In, Out3, Mat] =
     new Flow(delegate.zipWith[Out2, Out3](that)(combinerToScala(combine)))
 
   /**
@@ -1814,7 +1814,7 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
     */
   def watchTermination[M]()(
       matF: function.Function2[Mat, CompletionStage[Done], M])
-    : javadsl.Flow[In, Out, M] =
+      : javadsl.Flow[In, Out, M] =
     new Flow(
       delegate.watchTermination()((left, right) ⇒ matF(left, right.toJava)))
 

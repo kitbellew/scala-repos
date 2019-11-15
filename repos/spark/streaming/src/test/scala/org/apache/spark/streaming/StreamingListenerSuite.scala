@@ -360,7 +360,7 @@ class OutputOperationInfoCollector extends StreamingListener {
 
   override def onOutputOperationCompleted(
       outputOperationCompleted: StreamingListenerOutputOperationCompleted)
-    : Unit = {
+      : Unit = {
     completedOutputOperationIds.add(
       outputOperationCompleted.outputOperationInfo.id)
   }
@@ -392,7 +392,7 @@ class FailureReasonsCollector extends StreamingListener {
 
   override def onOutputOperationCompleted(
       outputOperationCompleted: StreamingListenerOutputOperationCompleted)
-    : Unit = {
+      : Unit = {
     outputOperationCompleted.outputOperationInfo.failureReason.foreach { f =>
       failureReasons.synchronized {
         failureReasons(outputOperationCompleted.outputOperationInfo.id) = f

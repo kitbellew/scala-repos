@@ -41,7 +41,7 @@ import scalaz.std.stream._
 import scalaz.std.set._
 import scalaz.syntax.traverse._
 
-trait LinearRegressionLibModule[M[+ _]]
+trait LinearRegressionLibModule[M[+_]]
     extends ColumnarTableLibModule[M]
     with ReductionLibModule[M]
     with PredictionLibModule[M] {

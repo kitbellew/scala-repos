@@ -70,7 +70,8 @@ trait CssIncludes {
     * @return $SFX $PS
     */
   implicit def jfxPseudoClass2sfx(d: jfxcss.PseudoClass): PseudoClass =
-    if (d != null) new PseudoClass(d) {} else null
+    if (d != null) new PseudoClass(d) {}
+    else null
 
   /**
     * $START$ST.html $ST$END
@@ -82,7 +83,8 @@ trait CssIncludes {
     if (s != null)
       new Styleable {
         override val delegate = s
-      } else null
+      }
+    else null
 
   /*
    * $START$SP.html $SP$END

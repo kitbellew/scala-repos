@@ -165,28 +165,25 @@ object gen {
   def freeMonoid[A: Arbitrary]: Gen[FreeMonoid[A]] =
     for {
       as <- arbitrary[List[A]]
-    } yield
-      as.foldLeft(FreeMonoid.id[A]) { (acc, a) =>
-        acc |+| FreeMonoid(a)
-      }
+    } yield as.foldLeft(FreeMonoid.id[A]) { (acc, a) =>
+      acc |+| FreeMonoid(a)
+    }
 
   def freeGroup[A: Arbitrary]: Gen[FreeGroup[A]] =
     for {
       aas <- arbitrary[List[Either[A, A]]]
-    } yield
-      aas.foldLeft(FreeGroup.id[A]) {
-        case (acc, Left(a))  => acc |-| FreeGroup(a)
-        case (acc, Right(a)) => acc |+| FreeGroup(a)
-      }
+    } yield aas.foldLeft(FreeGroup.id[A]) {
+      case (acc, Left(a))  => acc |-| FreeGroup(a)
+      case (acc, Right(a)) => acc |+| FreeGroup(a)
+    }
 
   def freeAbGroup[A: Arbitrary]: Gen[FreeAbGroup[A]] =
     for {
       tpls <- arbitrary[List[(A, Short)]]
-    } yield
-      tpls.foldLeft(FreeAbGroup.id[A]) {
-        case (acc, (a, n)) =>
-          acc |+| Group[FreeAbGroup[A]].combinen(FreeAbGroup(a), n.toInt)
-      }
+    } yield tpls.foldLeft(FreeAbGroup.id[A]) {
+      case (acc, (a, n)) =>
+        acc |+| Group[FreeAbGroup[A]].combinen(FreeAbGroup(a), n.toInt)
+    }
 
   val perm: Gen[Perm] = Gen.parameterized { params =>
     import params.rng.nextInt

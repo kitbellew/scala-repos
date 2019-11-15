@@ -51,7 +51,7 @@ import org.scalacheck.Arbitrary._
 import SampleData._
 import CValueGenerators._
 
-trait BlockLoadSpec[M[+ _]]
+trait BlockLoadSpec[M[+_]]
     extends BlockStoreTestSupport[M]
     with Specification
     with ScalaCheck {

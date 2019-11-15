@@ -782,7 +782,7 @@ final class BigDecimal(val bigDecimal: BigDec, val mc: MathContext)
     *  @return       the partially constructed NumericRange
     */
   def until(end: BigDecimal)
-    : Range.Partial[BigDecimal, NumericRange.Exclusive[BigDecimal]] =
+      : Range.Partial[BigDecimal, NumericRange.Exclusive[BigDecimal]] =
     new Range.Partial(until(end, _))
 
   /** Same as the one-argument `until`, but creates the range immediately. */
@@ -791,7 +791,7 @@ final class BigDecimal(val bigDecimal: BigDec, val mc: MathContext)
 
   /** Like `until`, but inclusive of the end value. */
   def to(end: BigDecimal)
-    : Range.Partial[BigDecimal, NumericRange.Inclusive[BigDecimal]] =
+      : Range.Partial[BigDecimal, NumericRange.Inclusive[BigDecimal]] =
     new Range.Partial(to(end, _))
 
   /** Like `until`, but inclusive of the end value. */

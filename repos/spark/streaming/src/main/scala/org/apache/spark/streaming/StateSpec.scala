@@ -212,7 +212,7 @@ object StateSpec {
         Optional[ValueType],
         State[StateType],
         Optional[MappedType]])
-    : StateSpec[KeyType, ValueType, StateType, MappedType] = {
+      : StateSpec[KeyType, ValueType, StateType, MappedType] = {
     val wrappedFunc =
       (time: Time, k: KeyType, v: Option[ValueType], s: State[StateType]) => {
         val t = mappingFunction.call(time, k, JavaUtils.optionToOptional(v), s)

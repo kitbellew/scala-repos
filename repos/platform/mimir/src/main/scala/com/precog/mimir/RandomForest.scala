@@ -377,7 +377,7 @@ object ClassificationForest {
     }
 }
 
-trait RandomForestLibModule[M[+ _]] extends ColumnarTableLibModule[M] {
+trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
   private def makeArrays(table: Table): M[Array[Array[Double]]] = {
     extract(table) {
       case (c: HomogeneousArrayColumn[_]) => { (row: Int) =>

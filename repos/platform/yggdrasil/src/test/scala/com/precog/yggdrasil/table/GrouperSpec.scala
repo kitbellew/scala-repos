@@ -69,7 +69,7 @@ solve 'a, 'b
   ...
  */
 
-trait GrouperSpec[M[+ _]]
+trait GrouperSpec[M[+_]]
     extends BlockStoreTestSupport[M]
     with Specification
     with ScalaCheck {

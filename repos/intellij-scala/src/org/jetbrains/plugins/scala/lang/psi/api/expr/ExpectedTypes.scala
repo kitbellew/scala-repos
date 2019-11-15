@@ -54,7 +54,7 @@ private[expr] object ExpectedTypes {
     smartExpectedTypeEx(expr, fromUnderscore).map(_._1)
 
   def smartExpectedTypeEx(expr: ScExpression, fromUnderscore: Boolean = true)
-    : Option[(ScType, Option[ScTypeElement])] = {
+      : Option[(ScType, Option[ScTypeElement])] = {
     val types = expectedExprTypes(
       expr,
       withResolvedFunction = true,
@@ -66,7 +66,7 @@ private[expr] object ExpectedTypes {
   }
 
   def expectedExprType(expr: ScExpression, fromUnderscore: Boolean = true)
-    : Option[(ScType, Option[ScTypeElement])] = {
+      : Option[(ScType, Option[ScTypeElement])] = {
     val types = expr.expectedTypesEx(fromUnderscore)
     types.length match {
       case 1 => Some(types(0))
@@ -81,10 +81,10 @@ private[expr] object ExpectedTypes {
       expr: ScExpression,
       withResolvedFunction: Boolean = false,
       fromUnderscore: Boolean = true)
-    : Array[(ScType, Option[ScTypeElement])] = {
+      : Array[(ScType, Option[ScTypeElement])] = {
     @tailrec
     def fromFunction(tp: (ScType, Option[ScTypeElement]))
-      : Array[(ScType, Option[ScTypeElement])] = {
+        : Array[(ScType, Option[ScTypeElement])] = {
       tp._1 match {
         case ScFunctionType(retType, _) =>
           Array[(ScType, Option[ScTypeElement])]((retType, None))
@@ -103,7 +103,7 @@ private[expr] object ExpectedTypes {
     def mapResolves(
         resolves: Array[ResolveResult],
         types: Array[TypeResult[ScType]])
-      : Array[(TypeResult[ScType], Boolean)] = {
+        : Array[(TypeResult[ScType], Boolean)] = {
       resolves.zip(types).map {
         case (r: ScalaResolveResult, tp) =>
           val isNamedDynamic =

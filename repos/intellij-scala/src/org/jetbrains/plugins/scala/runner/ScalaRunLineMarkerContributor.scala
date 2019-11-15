@@ -30,7 +30,8 @@ class ScalaRunLineMarkerContributor extends RunLineMarkerContributor {
               firstTemplateDefOnly = true) != null =>
           createInfo(0)
         case _ => null
-      } else null
+      }
+    else null
 
   private def createInfo(order: Int) =
     new Info(

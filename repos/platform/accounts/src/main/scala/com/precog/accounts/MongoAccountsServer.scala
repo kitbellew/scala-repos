@@ -55,7 +55,7 @@ object MongoAccountServer
     val database = config[String]("mongo.database", "accounts_v1")
 
     val settings0 = new MongoAccountManagerSettings
-    with ZkAccountManagerSettings {
+      with ZkAccountManagerSettings {
       val zkAccountIdPath = config[String]("zookeeper.accountId.path")
       val accounts = config[String]("mongo.collection", "accounts")
       val deletedAccounts =
@@ -68,7 +68,7 @@ object MongoAccountServer
 
     val accountManager =
       new MongoAccountManager(mongo, mongo.database(database), settings0)
-      with ZKAccountIdSource {
+        with ZKAccountIdSource {
         val zkc = new ZkClient(zkHosts)
         val settings = settings0
       }

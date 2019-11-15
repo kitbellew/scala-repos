@@ -34,9 +34,9 @@ class WebSocketClientSpec
     with WithMaterializerSpec {
   "The client-side WebSocket implementation should" - {
     "establish a websocket connection when the user requests it" in new EstablishedConnectionSetup
-    with ClientEchoes
+      with ClientEchoes
     "establish connection with case insensitive header values" in new TestSetup
-    with ClientEchoes {
+      with ClientEchoes {
       expectWireData(UpgradeRequestBytes)
       sendWireData("""HTTP/1.1 101 Switching Protocols
                      |Upgrade: wEbSOckET
@@ -114,7 +114,7 @@ class WebSocketClientSpec
           "WebSocket server at ws://example.org/ws returned response that was missing required `Upgrade` header.")
       }
       "missing `Connection: upgrade` header" in new TestSetup
-      with ClientEchoes {
+        with ClientEchoes {
         expectWireData(UpgradeRequestBytes)
 
         sendWireData("""HTTP/1.1 101 Switching Protocols
@@ -153,7 +153,7 @@ class WebSocketClientSpec
       expectNetworkClose()
     }
     "receive first frame in same chunk as HTTP upgrade response" in new TestSetup
-    with ClientProbes {
+      with ClientProbes {
       expectWireData(UpgradeRequestBytes)
 
       val firstFrame = WSTestUtils.frame(
@@ -167,7 +167,7 @@ class WebSocketClientSpec
     }
 
     "manual scenario client sends first" in new EstablishedConnectionSetup
-    with ClientProbes {
+      with ClientProbes {
       messagesOut.sendNext(TextMessage("Message 1"))
 
       expectMaskedFrameOnNetwork(
@@ -184,7 +184,7 @@ class WebSocketClientSpec
       messagesIn.requestNext(BinaryMessage(ByteString("Response")))
     }
     "client echoes scenario" in new EstablishedConnectionSetup
-    with ClientEchoes {
+      with ClientEchoes {
       sendWSFrame(Protocol.Opcode.Text, ByteString("Message 1"), fin = true)
       expectMaskedFrameOnNetwork(
         Protocol.Opcode.Text,
@@ -219,7 +219,7 @@ class WebSocketClientSpec
     }
     "support subprotocols" - {
       "accept if server supports subprotocol" in new TestSetup
-      with ClientEchoes {
+        with ClientEchoes {
         override protected def requestedSubProtocol: Option[String] =
           Some("v2")
 
@@ -278,7 +278,7 @@ class WebSocketClientSpec
             "WebSocket server at ws://example.org/ws returned response that indicated that the given subprotocol was not supported. (client supported: v2, server supported: None)")
         }
         "if different protocol was selected" in new TestSetup
-        with ClientProbes {
+          with ClientProbes {
           override protected def requestedSubProtocol: Option[String] =
             Some("v2")
 

@@ -372,7 +372,8 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
                 java.util.regex.Matcher
                   .quoteReplacement(substitute(m.group(1))))
             new java.net.URL(patchedString)
-        } else None
+        }
+      else None
     }
 
     private def templateAndType(ancestor: Symbol): (TemplateImpl, TypeEntity) =
@@ -394,7 +395,7 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
 
     /* Implicitly convertible class cache */
     private var implicitlyConvertibleClassesCache
-      : mutable.ListBuffer[(DocTemplateImpl, ImplicitConversionImpl)] = null
+        : mutable.ListBuffer[(DocTemplateImpl, ImplicitConversionImpl)] = null
     def registerImplicitlyConvertibleClass(
         dtpl: DocTemplateImpl,
         conv: ImplicitConversionImpl): Unit = {
@@ -405,7 +406,7 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
     }
 
     def incomingImplicitlyConvertedClasses
-      : List[(DocTemplateImpl, ImplicitConversionImpl)] =
+        : List[(DocTemplateImpl, ImplicitConversionImpl)] =
       if (implicitlyConvertibleClassesCache == null) List()
       else implicitlyConvertibleClassesCache.toList
 
@@ -469,7 +470,7 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
     var implicitsShadowing = Map[MemberEntity, ImplicitMemberShadowing]()
 
     lazy val outgoingImplicitlyConvertedClasses
-      : List[(TemplateEntity, TypeEntity, ImplicitConversionImpl)] =
+        : List[(TemplateEntity, TypeEntity, ImplicitConversionImpl)] =
       conversions flatMap
         (conv =>
           if (!implicitExcluded(conv.conversionQualifiedName))
@@ -481,7 +482,8 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
                   case _ => // nothing
                 }
                 (template, tpe, conv)
-            } else List())
+            }
+          else List())
 
     override def isDocTemplate = true
     private[this] lazy val companionSymbol =
@@ -513,7 +515,8 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
       }
 
     def constructors: List[MemberImpl with Constructor] =
-      if (isClass) members collect { case d: Constructor => d } else Nil
+      if (isClass) members collect { case d: Constructor => d }
+      else Nil
     def primaryConstructor: Option[MemberImpl with Constructor] =
       if (isClass) constructors find { _.isPrimary } else None
     override def valueParams =
@@ -523,7 +526,8 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
           case Some(const) =>
             const.sym.paramss map (_ map (makeValueParam(_, this)))
           case None => List()
-        } else List.empty
+        }
+      else List.empty
 
     // These are generated on-demand, make sure you don't call them more than once
     def inheritanceDiagram = makeInheritanceDiagram(this)
@@ -765,15 +769,20 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
         if (bSym.isAliasType && bSym != AnyRefClass)
           new DocTemplateImpl(bSym, inTpl) with AliasImpl with AliasType {
             override def isAliasType = true
-          } else if (bSym.isAbstractType)
-          new DocTemplateImpl(bSym, inTpl) with TypeBoundsImpl
-          with AbstractType {
-            override def isAbstractType = true
-          } else if (bSym.isModule)
-          new DocTemplateImpl(bSym, inTpl) with Object {} else if (bSym.isTrait)
+          }
+        else if (bSym.isAbstractType)
           new DocTemplateImpl(bSym, inTpl)
-          with Trait {} else if (bSym.isClass || bSym == AnyRefClass)
-          new DocTemplateImpl(bSym, inTpl) with Class {} else
+            with TypeBoundsImpl
+            with AbstractType {
+            override def isAbstractType = true
+          }
+        else if (bSym.isModule)
+          new DocTemplateImpl(bSym, inTpl) with Object {}
+        else if (bSym.isTrait)
+          new DocTemplateImpl(bSym, inTpl) with Trait {}
+        else if (bSym.isClass || bSym == AnyRefClass)
+          new DocTemplateImpl(bSym, inTpl) with Class {}
+        else
           sys.error(
             "'" + bSym +
               "' isn't a class, trait or object thus cannot be built as a documentable template.")
@@ -817,7 +826,8 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
               } else Some(pack)
             case _ =>
               sys.error("'" + bSym + "' must be in a package")
-          } else {
+          }
+      else {
         // no class inheritance at this point
         assert(inOriginalOwner(bSym, inTpl), bSym + " in " + inTpl)
         Some(createDocTemplate(bSym, inTpl))
@@ -840,15 +850,16 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
           inTpl: DocTemplateImpl): MemberTemplateImpl = {
         assert(modelFinished) // only created AFTER the model is finished
         if (bSym.isModule || (bSym.isAliasType && bSym.tpe.typeSymbol.isModule))
-          new MemberTemplateImpl(bSym, inTpl)
-          with Object {} else if (bSym.isTrait ||
-                                  (bSym.isAliasType &&
-                                  bSym.tpe.typeSymbol.isTrait))
-          new MemberTemplateImpl(bSym, inTpl)
-          with Trait {} else if (bSym.isClass ||
-                                 (bSym.isAliasType &&
-                                 bSym.tpe.typeSymbol.isClass))
-          new MemberTemplateImpl(bSym, inTpl) with Class {} else
+          new MemberTemplateImpl(bSym, inTpl) with Object {}
+        else if (bSym.isTrait ||
+                 (bSym.isAliasType &&
+                 bSym.tpe.typeSymbol.isTrait))
+          new MemberTemplateImpl(bSym, inTpl) with Trait {}
+        else if (bSym.isClass ||
+                 (bSym.isAliasType &&
+                 bSym.tpe.typeSymbol.isClass))
+          new MemberTemplateImpl(bSym, inTpl) with Class {}
+        else
           sys.error(
             "'" + bSym +
               "' isn't a class, trait or object thus cannot be built as a member template.")
@@ -885,13 +896,13 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
       if (bSym.isGetter && bSym.isLazy)
         Some(
           new NonTemplateMemberImpl(bSym, conversion, useCaseOf, inTpl)
-          with Val {
+            with Val {
             override def isLazyVal = true
           })
       else if (bSym.isGetter && bSym.accessed.isMutable)
         Some(
           new NonTemplateMemberImpl(bSym, conversion, useCaseOf, inTpl)
-          with Val {
+            with Val {
             override def isVar = true
           })
       else if (bSym.isMethod && !bSym.hasAccessorFlag && !bSym.isConstructor &&
@@ -911,7 +922,8 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
         }
         Some(
           new NonTemplateParamMemberImpl(cSym, conversion, useCaseOf, inTpl)
-          with HigherKindedImpl with Def {
+            with HigherKindedImpl
+            with Def {
             override def isDef = true
           })
       } else if (bSym.isConstructor)
@@ -924,20 +936,21 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
         else
           Some(
             new NonTemplateParamMemberImpl(bSym, conversion, useCaseOf, inTpl)
-            with Constructor {
+              with Constructor {
               override def isConstructor = true
               def isPrimary = sym.isPrimaryConstructor
             })
       else if (bSym.isGetter) // Scala field accessor or Java field
         Some(
           new NonTemplateMemberImpl(bSym, conversion, useCaseOf, inTpl)
-          with Val {
+            with Val {
             override def isVal = true
           })
       else if (bSym.isAbstractType && !typeShouldDocument(bSym, inTpl))
         Some(
-          new MemberTemplateImpl(bSym, inTpl) with TypeBoundsImpl
-          with AbstractType {
+          new MemberTemplateImpl(bSym, inTpl)
+            with TypeBoundsImpl
+            with AbstractType {
             override def isAbstractType = true
           })
       else if (bSym.isAliasType && !typeShouldDocument(bSym, inTpl))
@@ -998,7 +1011,7 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
       annot: AnnotationInfo): scala.tools.nsc.doc.model.Annotation = {
     val aSym = annot.symbol
     new EntityImpl(aSym, makeTemplate(aSym.owner))
-    with scala.tools.nsc.doc.model.Annotation {
+      with scala.tools.nsc.doc.model.Annotation {
       lazy val annotationClass = makeTemplate(annot.symbol)
       val arguments = {
         val paramsOpt: Option[List[ValueParam]] = annotationClass match {
@@ -1034,8 +1047,10 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
 
   /** */
   def makeTypeParam(aSym: Symbol, inTpl: TemplateImpl): TypeParam =
-    new ParameterImpl(aSym, inTpl) with TypeBoundsImpl with HigherKindedImpl
-    with TypeParam {
+    new ParameterImpl(aSym, inTpl)
+      with TypeBoundsImpl
+      with HigherKindedImpl
+      with TypeParam {
       def variance: String = {
         if (sym hasFlag Flags.COVARIANT) "+"
         else if (sym hasFlag Flags.CONTRAVARIANT) "-"

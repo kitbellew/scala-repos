@@ -36,7 +36,7 @@ trait MatrixLike[@spec(Double, Int, Float, Long) V, +Self <: Matrix[V]]
     with TensorLike[(Int, Int), V, Self] {
   def map[V2, That](fn: V => V2)(
       implicit canMapValues: CanMapValues[Self @uncheckedVariance, V, V2, That])
-    : That =
+      : That =
     values map fn
 }
 
@@ -63,8 +63,9 @@ trait Matrix[@spec(Double, Int, Float, Long) V]
     def -(elem: (Int, Int)): Set[(Int, Int)] = Set() ++ iterator - elem
 
     def iterator: Iterator[(Int, Int)] =
-      for { j <- Iterator.range(0, cols); i <- Iterator.range(0, rows) } yield
-        (i, j)
+      for { j <- Iterator.range(0, cols); i <- Iterator.range(0, rows) } yield (
+        i,
+        j)
   }
 
   def iterator =
@@ -217,7 +218,7 @@ object Matrix
   }
 
   implicit def canTraverseKeyValuePairs[V]
-    : CanTraverseKeyValuePairs[Matrix[V], (Int, Int), V] = {
+      : CanTraverseKeyValuePairs[Matrix[V], (Int, Int), V] = {
     new CanTraverseKeyValuePairs[Matrix[V], (Int, Int), V] {
       def isTraversableAgain(from: Matrix[V]): Boolean = true
 
@@ -225,7 +226,7 @@ object Matrix
       def traverse(
           from: Matrix[V],
           fn: CanTraverseKeyValuePairs.KeyValuePairsVisitor[(Int, Int), V])
-        : Unit = {
+          : Unit = {
         from.iterator.foreach((fn.visit _).tupled)
       }
     }
@@ -302,7 +303,7 @@ trait MatrixConstructors[Mat[T] <: Matrix[T]] {
   }
 
   implicit def canCreateZeros[T: ClassTag: Zero]
-    : CanCreateZeros[Mat[T], (Int, Int)] =
+      : CanCreateZeros[Mat[T], (Int, Int)] =
     new CanCreateZeros[Mat[T], (Int, Int)] {
       def apply(dims: (Int, Int)): Mat[T] = {
         zeros[T](dims._1, dims._2)

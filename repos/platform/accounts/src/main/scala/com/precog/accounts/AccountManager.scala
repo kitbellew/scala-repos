@@ -35,7 +35,7 @@ import scalaz.syntax.traverse._
 import scalaz.std.stream._
 import scalaz.syntax.std.option._
 
-trait AccountManager[M[+ _]] extends AccountFinder[M] {
+trait AccountManager[M[+_]] extends AccountFinder[M] {
   import Account._
 
   implicit def M: Monad[M]

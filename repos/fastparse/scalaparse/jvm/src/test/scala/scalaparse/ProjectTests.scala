@@ -27,18 +27,17 @@ object ProjectTests extends TestSuite {
       val files = for {
         f0 <- Option(listFiles(new java.io.File(path))).toVector
         filename <- f0
-      } yield
-        Future {
-          if (filename.endsWith(".scala") && filter(filename)) {
-            val code = new String(
-              java.nio.file.Files
-                .readAllBytes(java.nio.file.Paths.get(filename)))
-            if (!ScalacParser.checkParseFails(code)) {
-              print(".")
-              TestUtil.check(code, tag = filename)
-            }
+      } yield Future {
+        if (filename.endsWith(".scala") && filter(filename)) {
+          val code = new String(
+            java.nio.file.Files
+              .readAllBytes(java.nio.file.Paths.get(filename)))
+          if (!ScalacParser.checkParseFails(code)) {
+            print(".")
+            TestUtil.check(code, tag = filename)
           }
         }
+      }
 
       files.foreach(Await.result(_, Duration.Inf))
       println()

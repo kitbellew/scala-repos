@@ -735,7 +735,7 @@ object AdminUtils extends Logging {
       zkUtils: ZkUtils,
       cachedBrokerInfo: mutable.HashMap[Int, Broker],
       protocol: SecurityProtocol = SecurityProtocol.PLAINTEXT)
-    : MetadataResponse.TopicMetadata = {
+      : MetadataResponse.TopicMetadata = {
     if (zkUtils.pathExists(getTopicPath(topic))) {
       val topicPartitionAssignment =
         zkUtils.getPartitionAssignmentForTopics(List(topic)).get(topic).get

@@ -139,9 +139,8 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
                      .dropWhile(_.prop == True)
                      .headOption;
                    lastReused <- lastShared.reuses)
-                yield
-                  ReusingCondTreeMaker(sharedPrefix, reusedOrOrig) :: suffix
-                    .map(_.treeMaker)
+                yield ReusingCondTreeMaker(sharedPrefix, reusedOrOrig) :: suffix
+                  .map(_.treeMaker)
             }
 
           collapsedTreeMakers getOrElse tests.map(_.treeMaker) // sharedPrefix need not be empty (but it only contains True-tests, which are dropped above)
@@ -746,10 +745,9 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
       val optCases = doCSE(prevBinder, cases, pt)
       val toHoist =
         (for (treeMakers <- optCases)
-          yield
-            treeMakers.collect {
-              case tm: ReusedCondTreeMaker => tm.treesToHoist
-            }).flatten.flatten
+          yield treeMakers.collect {
+            case tm: ReusedCondTreeMaker => tm.treesToHoist
+          }).flatten.flatten
           .toList
       (optCases, toHoist)
     }

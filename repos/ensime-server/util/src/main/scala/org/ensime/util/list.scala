@@ -27,7 +27,7 @@ package object list {
     def toMultiMapSet: Map[K, Set[V]] = {
       import collection.mutable
       val builder = new mutable.HashMap[K, mutable.Set[V]]
-      with mutable.MultiMap[K, V]
+        with mutable.MultiMap[K, V]
 
       list.foreach {
         case (k, v) => builder.addBinding(k, v)

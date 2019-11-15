@@ -527,8 +527,9 @@ trait Implicits { self: Analyzer =>
         // `t.typeSymbol` returns the symbol of the normalized type. If that normalized type
         // is a `PolyType`, the symbol of the result type is collected. This is precisely
         // what we require for SI-5318.
-        val syms = for (t <- tp; if t.typeSymbol.isTypeParameter)
-          yield t.typeSymbol
+        val syms =
+          for (t <- tp; if t.typeSymbol.isTypeParameter)
+            yield t.typeSymbol
         deriveTypeWithWildcards(syms.distinct)(tp)
       }
       def complexity(tp: Type): Int = tp.dealias match {
@@ -1117,7 +1118,7 @@ trait Implicits { self: Analyzer =>
       @tailrec private def rankImplicits(
           pending: Infos,
           acc: List[(SearchResult, ImplicitInfo)])
-        : List[(SearchResult, ImplicitInfo)] = pending match {
+          : List[(SearchResult, ImplicitInfo)] = pending match {
         case Nil => acc
         case firstPending :: otherPending =>
           def firstPendingImproves(alt: ImplicitInfo) =
@@ -1217,7 +1218,7 @@ trait Implicits { self: Analyzer =>
       *  @return                  map from infos to search results
       */
     def applicableInfos(iss: Infoss, isLocalToCallsite: Boolean)
-      : mutable.LinkedHashMap[ImplicitInfo, SearchResult] = {
+        : mutable.LinkedHashMap[ImplicitInfo, SearchResult] = {
       val start =
         if (Statistics.canEnable) Statistics.startCounter(subtypeAppInfos)
         else null

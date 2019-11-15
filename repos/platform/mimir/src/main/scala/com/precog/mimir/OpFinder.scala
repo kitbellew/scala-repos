@@ -30,7 +30,7 @@ import bytecode.{
   Instructions
 }
 
-trait OpFinderModule[M[+ _]]
+trait OpFinderModule[M[+_]]
     extends Instructions
     with TableModule[M]
     with TableLibModule[M] {
@@ -42,7 +42,7 @@ trait OpFinderModule[M[+ _]]
   }
 }
 
-trait StdLibOpFinderModule[M[+ _]]
+trait StdLibOpFinderModule[M[+_]]
     extends Instructions
     with StdLibModule[M]
     with OpFinderModule[M] {

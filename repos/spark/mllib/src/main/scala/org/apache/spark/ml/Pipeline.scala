@@ -88,7 +88,7 @@ abstract class PipelineStage extends Params with Logging {
   */
 @Since("1.2.0")
 @Experimental
-class Pipeline @Since("1.4.0")(@Since("1.4.0") override val uid: String)
+class Pipeline @Since("1.4.0") (@Since("1.4.0") override val uid: String)
     extends Estimator[PipelineModel]
     with MLWritable {
 

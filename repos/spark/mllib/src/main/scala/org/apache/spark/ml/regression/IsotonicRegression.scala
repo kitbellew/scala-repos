@@ -147,7 +147,7 @@ private[regression] trait IsotonicRegressionBase
   */
 @Since("1.5.0")
 @Experimental
-class IsotonicRegression @Since("1.5.0")(
+class IsotonicRegression @Since("1.5.0") (
     @Since("1.5.0") override val uid: String)
     extends Estimator[IsotonicRegressionModel]
     with IsotonicRegressionBase

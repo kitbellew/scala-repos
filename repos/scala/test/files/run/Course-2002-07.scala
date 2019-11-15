@@ -525,7 +525,8 @@ object MB {
             if (l equ r) Lit(this.count + that.count) * r
             else Add(this, that)
           }
-        } else that + this;
+        }
+      else that + this;
 
     private def *<(that: Expr): Boolean = (this *<? that) < 0;
     private def *<=(that: Expr): Boolean = (this *<? that) <= 0;
@@ -557,7 +558,8 @@ object MB {
           case (Pow(ll, lr), Pow(rl, rr)) if (ll equ rl) => Pow(ll, lr + rr)
           case (l, Mul(rl, rr)) if (rl *<= l)            => (rl * l) * rr
           case (_, _)                                    => Mul(this, that)
-        } else that * this;
+        }
+      else that * this;
 
     def ^(that: Int): Expr = (this, that) match {
       case (_, 1)         => this

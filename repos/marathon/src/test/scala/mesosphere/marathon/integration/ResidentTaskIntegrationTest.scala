@@ -263,7 +263,7 @@ class ResidentTaskIntegrationTest
         instances: Int = 1,
         backoffDuration: FiniteDuration = 1.hour,
         portDefinitions: Seq[PortDefinition] = PortDefinitions(0))
-      : AppDefinition = {
+        : AppDefinition = {
 
       val appId: PathId = PathId(
         s"/$testBasePath/app-${IdGenerator.generate()}")

@@ -252,7 +252,7 @@ trait Poly extends PolyApply with Serializable {
     import ops.function.FnToProduct
     implicit def fnCaseBuilder[F, H, T <: HList, Result](
         implicit fntp: FnToProduct.Aux[F, ((H :: T) => Result)])
-      : CaseBuilder[F, H :: T, Result] =
+        : CaseBuilder[F, H :: T, Result] =
       new CaseBuilder[F, H :: T, Result] {
         def apply(f: F) = ProductCase((l: H :: T) => fntp(f)(l))
       }
@@ -293,7 +293,7 @@ class PolyMacros(val c: whitebox.Context) {
   import PolyDefns.Case
 
   def materializeFromValueImpl[P: WeakTypeTag, FT: WeakTypeTag, T: WeakTypeTag]
-    : Tree = {
+      : Tree = {
     val pTpe = weakTypeOf[P]
     val ftTpe = weakTypeOf[FT]
     val tTpe = weakTypeOf[T]

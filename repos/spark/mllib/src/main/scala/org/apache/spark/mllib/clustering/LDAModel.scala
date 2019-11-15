@@ -459,7 +459,7 @@ class LocalLDAModel private[spark] (
     */
   @Since("1.4.1")
   def topicDistributions(documents: JavaPairRDD[java.lang.Long, Vector])
-    : JavaPairRDD[java.lang.Long, Vector] = {
+      : JavaPairRDD[java.lang.Long, Vector] = {
     val distributions = topicDistributions(
       documents.rdd.asInstanceOf[RDD[(Long, Vector)]])
     JavaPairRDD.fromRDD(
@@ -734,8 +734,10 @@ class DistributedLDAModel private[clustering] (
     val W = vocabSize
     val alpha = docConcentration(0)
     val N_k = globalTopicTotals
-    val sendMsg
-      : EdgeContext[TopicCounts, TokenCount, (Array[Int], Array[Int])] => Unit =
+    val sendMsg: EdgeContext[
+      TopicCounts,
+      TokenCount,
+      (Array[Int], Array[Int])] => Unit =
       (edgeContext) => {
         // E-STEP: Compute gamma_{wjk} (smoothed topic distributions).
         val scaledTopicDistribution: TopicCounts = computePTopic(
@@ -775,7 +777,7 @@ class DistributedLDAModel private[clustering] (
   /** Java-friendly version of [[topicAssignments]] */
   @Since("1.5.0")
   lazy val javaTopicAssignments
-    : JavaRDD[(java.lang.Long, Array[Int], Array[Int])] = {
+      : JavaRDD[(java.lang.Long, Array[Int], Array[Int])] = {
     topicAssignments
       .asInstanceOf[RDD[(java.lang.Long, Array[Int], Array[Int])]]
       .toJavaRDD()

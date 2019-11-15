@@ -836,7 +836,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
                           noInlineAnnotatedCallsites += m
                         else inlineAnnotatedCallsites += m
                       case _ =>
-                    } else
+                    }
+                  else
                     t match {
                       case Apply(fun, _) => checkInlineAnnotated(fun)
                       case _             =>

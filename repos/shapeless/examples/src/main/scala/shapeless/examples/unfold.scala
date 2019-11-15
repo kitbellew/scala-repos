@@ -71,7 +71,7 @@ object UnfoldExamples extends App {
         implicit shrink: Case1.Aux[F, PCoS, (PCoSV, CoS)],
         f: Case1.Aux[F, S, (OutH, SS)],
         ut: UnfoldAux[F, E, SS, PCoS, OutT])
-      : UnfoldAux[F, E, S, CoS, OutH :: OutT] =
+        : UnfoldAux[F, E, S, CoS, OutH :: OutT] =
       new UnfoldAux[F, E, S, CoS, OutH :: OutT] {
         def apply(s: S): OutH :: OutT = {
           val (outH, sn) = f(s :: HNil)

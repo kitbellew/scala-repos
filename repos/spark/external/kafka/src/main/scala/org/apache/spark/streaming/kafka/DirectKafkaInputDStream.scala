@@ -94,7 +94,7 @@ private[streaming] class DirectKafkaInputDStream[
 
   protected[streaming] def maxMessagesPerPartition(
       offsets: Map[TopicAndPartition, Long])
-    : Option[Map[TopicAndPartition, Long]] = {
+      : Option[Map[TopicAndPartition, Long]] = {
     val estimatedRateLimit = rateController.map(_.getLatestRate().toInt)
 
     // calculate a per-partition rate limit based on current lag
@@ -153,7 +153,7 @@ private[streaming] class DirectKafkaInputDStream[
 
   // limits the maximum number of messages per partition
   protected def clamp(leaderOffsets: Map[TopicAndPartition, LeaderOffset])
-    : Map[TopicAndPartition, LeaderOffset] = {
+      : Map[TopicAndPartition, LeaderOffset] = {
     val offsets = leaderOffsets.mapValues(lo => lo.offset)
 
     maxMessagesPerPartition(offsets)
@@ -211,7 +211,7 @@ private[streaming] class DirectKafkaInputDStream[
   private[streaming] class DirectKafkaInputDStreamCheckpointData
       extends DStreamCheckpointData(this) {
     def batchForTime
-      : mutable.HashMap[Time, Array[(String, Int, Long, Long)]] = {
+        : mutable.HashMap[Time, Array[(String, Int, Long, Long)]] = {
       data.asInstanceOf[
         mutable.HashMap[Time, Array[OffsetRange.OffsetRangeTuple]]]
     }

@@ -117,7 +117,7 @@ object Forms {
       a7: (String, Mapping[A7]))(
       apply: Function7[A1, A2, A3, A4, A5, A6, A7, R])(
       unapply: Function1[R, Option[(A1, A2, A3, A4, A5, A6, A7)]])
-    : Mapping[R] = {
+      : Mapping[R] = {
     new ObjectMapping7(apply, unapply, a1, a2, a3, a4, a5, a6, a7)
   }
 
@@ -132,7 +132,7 @@ object Forms {
       a8: (String, Mapping[A8]))(
       apply: Function8[A1, A2, A3, A4, A5, A6, A7, A8, R])(
       unapply: Function1[R, Option[(A1, A2, A3, A4, A5, A6, A7, A8)]])
-    : Mapping[R] = {
+      : Mapping[R] = {
     new ObjectMapping8(apply, unapply, a1, a2, a3, a4, a5, a6, a7, a8)
   }
 
@@ -148,7 +148,7 @@ object Forms {
       a9: (String, Mapping[A9]))(
       apply: Function9[A1, A2, A3, A4, A5, A6, A7, A8, A9, R])(
       unapply: Function1[R, Option[(A1, A2, A3, A4, A5, A6, A7, A8, A9)]])
-    : Mapping[R] = {
+      : Mapping[R] = {
     new ObjectMapping9(apply, unapply, a1, a2, a3, a4, a5, a6, a7, a8, a9)
   }
 
@@ -165,7 +165,7 @@ object Forms {
       a10: (String, Mapping[A10]))(
       apply: Function10[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, R])(
       unapply: Function1[R, Option[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10)]])
-    : Mapping[R] = {
+      : Mapping[R] = {
     new ObjectMapping10(apply, unapply, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
   }
 
@@ -218,7 +218,7 @@ object Forms {
       unapply: Function1[
         R,
         Option[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12)]])
-    : Mapping[R] = {
+      : Mapping[R] = {
     new ObjectMapping12(
       apply,
       unapply,
@@ -268,7 +268,7 @@ object Forms {
       unapply: Function1[
         R,
         Option[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13)]])
-    : Mapping[R] = {
+      : Mapping[R] = {
     new ObjectMapping13(
       apply,
       unapply,
@@ -321,7 +321,7 @@ object Forms {
       unapply: Function1[
         R,
         Option[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14)]])
-    : Mapping[R] = {
+      : Mapping[R] = {
     new ObjectMapping14(
       apply,
       unapply,
@@ -394,7 +394,7 @@ object Forms {
         R,
         Option[
           (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15)]])
-    : Mapping[R] = {
+      : Mapping[R] = {
     new ObjectMapping15(
       apply,
       unapply,
@@ -1281,7 +1281,7 @@ object Forms {
       a7: (String, Mapping[A7]),
       a8: (String, Mapping[A8]),
       a9: (String, Mapping[A9]))
-    : Mapping[(A1, A2, A3, A4, A5, A6, A7, A8, A9)] =
+      : Mapping[(A1, A2, A3, A4, A5, A6, A7, A8, A9)] =
     mapping(a1, a2, a3, a4, a5, a6, a7, a8, a9)(
       (
           a1: A1,
@@ -1306,7 +1306,7 @@ object Forms {
       a8: (String, Mapping[A8]),
       a9: (String, Mapping[A9]),
       a10: (String, Mapping[A10]))
-    : Mapping[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10)] =
+      : Mapping[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10)] =
     mapping(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)(
       (
           a1: A1,
@@ -1333,7 +1333,7 @@ object Forms {
       a9: (String, Mapping[A9]),
       a10: (String, Mapping[A10]),
       a11: (String, Mapping[A11]))
-    : Mapping[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11)] =
+      : Mapping[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11)] =
     mapping(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11)(
       (
           a1: A1,
@@ -1362,7 +1362,7 @@ object Forms {
       a10: (String, Mapping[A10]),
       a11: (String, Mapping[A11]),
       a12: (String, Mapping[A12]))
-    : Mapping[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12)] =
+      : Mapping[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12)] =
     mapping(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12)(
       (
           a1: A1,
@@ -1393,7 +1393,7 @@ object Forms {
       a11: (String, Mapping[A11]),
       a12: (String, Mapping[A12]),
       a13: (String, Mapping[A13]))
-    : Mapping[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13)] =
+      : Mapping[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13)] =
     mapping(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13)(
       (
           a1: A1,
@@ -1427,7 +1427,7 @@ object Forms {
       a12: (String, Mapping[A12]),
       a13: (String, Mapping[A13]),
       a14: (String, Mapping[A14]))
-    : Mapping[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14)] =
+      : Mapping[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14)] =
     mapping(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14)(
       (
           a1: A1,
@@ -2785,7 +2785,7 @@ object Forms {
   def date(
       pattern: String,
       timeZone: java.util.TimeZone = java.util.TimeZone.getDefault)
-    : Mapping[java.util.Date] =
+      : Mapping[java.util.Date] =
     of[java.util.Date] as dateFormat(pattern, timeZone)
 
   /**
@@ -2812,7 +2812,7 @@ object Forms {
   def sqlDate(
       pattern: String,
       timeZone: java.util.TimeZone = java.util.TimeZone.getDefault)
-    : Mapping[java.sql.Date] =
+      : Mapping[java.sql.Date] =
     of[java.sql.Date] as sqlDateFormat(pattern, timeZone)
 
   /**
@@ -2840,7 +2840,7 @@ object Forms {
       pattern: String,
       timeZone: org.joda.time.DateTimeZone =
         org.joda.time.DateTimeZone.getDefault)
-    : Mapping[org.joda.time.DateTime] =
+      : Mapping[org.joda.time.DateTime] =
     of[org.joda.time.DateTime] as jodaDateTimeFormat(pattern, timeZone)
 
   /**

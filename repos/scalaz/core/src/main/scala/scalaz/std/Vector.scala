@@ -18,9 +18,13 @@ trait VectorInstances extends VectorInstances0 {
     with Zip[Vector]
     with Unzip[Vector]
     with IsEmpty[Vector]
-    with Align[Vector] = new Traverse[Vector] with MonadPlus[Vector]
-  with BindRec[Vector] with Zip[Vector] with Unzip[Vector] with IsEmpty[Vector]
-  with Align[Vector] {
+    with Align[Vector] = new Traverse[Vector]
+    with MonadPlus[Vector]
+    with BindRec[Vector]
+    with Zip[Vector]
+    with Unzip[Vector]
+    with IsEmpty[Vector]
+    with Align[Vector] {
     override def index[A](fa: Vector[A], i: Int) = fa.lift.apply(i)
     override def length[A](fa: Vector[A]) = fa.length
     def point[A](a: => A) = empty :+ a

@@ -66,10 +66,10 @@ object VariantExtractor {
     FunctorExtractor(implicitly[Functor[M]])
 
   implicit def contravariantFunctor[M[_]: ContravariantFunctor]
-    : ContravariantFunctorExtractor[M] =
+      : ContravariantFunctorExtractor[M] =
     ContravariantFunctorExtractor(implicitly[ContravariantFunctor[M]])
 
   implicit def invariantFunctor[M[_]: InvariantFunctor]
-    : InvariantFunctorExtractor[M] =
+      : InvariantFunctorExtractor[M] =
     InvariantFunctorExtractor(implicitly[InvariantFunctor[M]])
 }

@@ -192,12 +192,12 @@ object FormFieldDirectives extends FormFieldDirectives {
         filter(nr.name, fu)
       }
     implicit def forNUR[T](implicit sfu: SFU)
-      : FieldDefAux[NameUnmarshallerReceptacle[T], Directive1[T]] =
+        : FieldDefAux[NameUnmarshallerReceptacle[T], Directive1[T]] =
       extractField[NameUnmarshallerReceptacle[T], T] { nr ⇒
         filter(nr.name, StrictForm.Field.unmarshallerFromFSU(nr.um))
       }
     implicit def forNOR[T](implicit sfu: SFU, fu: FSFFOU[T])
-      : FieldDefAux[NameOptionReceptacle[T], Directive1[Option[T]]] =
+        : FieldDefAux[NameOptionReceptacle[T], Directive1[Option[T]]] =
       extractField[NameOptionReceptacle[T], Option[T]] { nr ⇒
         filter[Option[T]](nr.name, fu)
       }
@@ -216,7 +216,7 @@ object FormFieldDirectives extends FormFieldDirectives {
           StrictForm.Field.unmarshallerFromFSU(nr.um): FSFFOU[T])
       }
     implicit def forNDUR[T](implicit sfu: SFU)
-      : FieldDefAux[NameDefaultUnmarshallerReceptacle[T], Directive1[T]] =
+        : FieldDefAux[NameDefaultUnmarshallerReceptacle[T], Directive1[T]] =
       extractField[NameDefaultUnmarshallerReceptacle[T], T] { nr ⇒
         filter(
           nr.name,
@@ -243,7 +243,7 @@ object FormFieldDirectives extends FormFieldDirectives {
         requiredFilter(rvr.name, fu, rvr.requiredValue)
       }
     implicit def forRVDR[T](implicit sfu: SFU)
-      : FieldDefAux[RequiredValueUnmarshallerReceptacle[T], Directive0] =
+        : FieldDefAux[RequiredValueUnmarshallerReceptacle[T], Directive0] =
       fieldDef[RequiredValueUnmarshallerReceptacle[T], Directive0] { rvr ⇒
         requiredFilter(
           rvr.name,
@@ -265,7 +265,7 @@ object FormFieldDirectives extends FormFieldDirectives {
         handleFieldResult(fieldName, result)
       }
     implicit def forRepVR[T](implicit sfu: SFU, fu: FSFFU[T])
-      : FieldDefAux[RepeatedValueReceptacle[T], Directive1[Iterable[T]]] =
+        : FieldDefAux[RepeatedValueReceptacle[T], Directive1[Iterable[T]]] =
       extractField[RepeatedValueReceptacle[T], Iterable[T]] { rvr ⇒
         repeatedFilter(rvr.name, fu)
       }

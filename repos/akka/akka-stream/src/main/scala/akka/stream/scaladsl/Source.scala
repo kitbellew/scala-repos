@@ -178,7 +178,7 @@ final class Source[+Out, +Mat](private[stream] override val module: Module)
       second: Source[T, _],
       rest: Source[T, _]*)(
       strategy: Int ⇒ Graph[UniformFanInShape[T, U], NotUsed])
-    : Source[U, NotUsed] =
+      : Source[U, NotUsed] =
     Source.fromGraph(GraphDSL.create() { implicit b ⇒
       import GraphDSL.Implicits._
       val c = b.add(strategy(rest.size + 2))
@@ -451,7 +451,7 @@ object Source {
       second: Source[T, _],
       rest: Source[T, _]*)(
       strategy: Int ⇒ Graph[UniformFanInShape[T, U], NotUsed])
-    : Source[U, NotUsed] =
+      : Source[U, NotUsed] =
     Source.fromGraph(GraphDSL.create() { implicit b ⇒
       import GraphDSL.Implicits._
       val c = b.add(strategy(rest.size + 2))
@@ -498,7 +498,7 @@ object Source {
     * @param overflowStrategy Strategy that is used when incoming elements cannot fit inside the buffer
     */
   def queue[T](bufferSize: Int, overflowStrategy: OverflowStrategy)
-    : Source[T, SourceQueueWithComplete[T]] =
+      : Source[T, SourceQueueWithComplete[T]] =
     Source.fromGraph(
       new QueueSource(bufferSize, overflowStrategy)
         .withAttributes(DefaultAttributes.queueSource))

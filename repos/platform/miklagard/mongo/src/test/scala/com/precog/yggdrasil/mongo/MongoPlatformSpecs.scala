@@ -189,8 +189,8 @@ trait MongoPlatformSpecs
       yggConfig.maxEvalDuration)
 
   val report = new LoggingQueryLogger[Future, instructions.Line]
-  with ExceptionQueryLogger[Future, instructions.Line]
-  with TimingQueryLogger[Future, instructions.Line] {
+    with ExceptionQueryLogger[Future, instructions.Line]
+    with TimingQueryLogger[Future, instructions.Line] {
 
     implicit def M = self.M
   }
@@ -242,12 +242,12 @@ trait MongoPlatformSpecs
   override def map(fs: => Fragments): Fragments =
     (Step { startup() }) ^ fs ^ (Step { shutdown() })
 
-  def Evaluator[N[+ _]](
+  def Evaluator[N[+_]](
       N0: Monad[N])(implicit mn: Future ~> N, nm: N ~> Future) =
     new Evaluator[N](N0)(mn, nm) {
       val report = new LoggingQueryLogger[N, instructions.Line]
-      with ExceptionQueryLogger[N, instructions.Line]
-      with TimingQueryLogger[N, instructions.Line] {
+        with ExceptionQueryLogger[N, instructions.Line]
+        with TimingQueryLogger[N, instructions.Line] {
 
         val M = N0
       }

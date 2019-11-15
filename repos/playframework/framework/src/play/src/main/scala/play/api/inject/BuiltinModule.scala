@@ -79,7 +79,7 @@ class ConfigurationProvider(val get: Configuration)
     extends Provider[Configuration]
 
 @Singleton
-class RoutesProvider @Inject()(
+class RoutesProvider @Inject() (
     injector: Injector,
     environment: Environment,
     configuration: Configuration,

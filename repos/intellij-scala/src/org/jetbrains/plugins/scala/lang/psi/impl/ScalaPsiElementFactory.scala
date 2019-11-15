@@ -1163,8 +1163,9 @@ object ScalaPsiElementFactory {
             s"$variance${typeParam.name}$clauseText$boundsText"
           }
 
-          val typeParamTexts = for (t <- method.typeParameters)
-            yield buildText(t)
+          val typeParamTexts =
+            for (t <- method.typeParameters)
+              yield buildText(t)
           builder ++= typeParamTexts.mkString("[", ", ", "]")
         }
         if (method.paramClauses != null) {

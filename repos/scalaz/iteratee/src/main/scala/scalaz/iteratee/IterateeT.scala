@@ -210,7 +210,7 @@ sealed abstract class IterateeTInstances0 {
   implicit def IterateeMonad[E]: Monad[Iteratee[E, ?]] = IterateeTMonad[E, Id]
 
   implicit def IterateeTMonadTransT[E, H[_[_], _]](implicit T0: MonadTrans[H])
-    : MonadTrans[λ[(α[_], β) => IterateeT[E, H[α, ?], β]]] =
+      : MonadTrans[λ[(α[_], β) => IterateeT[E, H[α, ?], β]]] =
     new IterateeTMonadTransT[E, H] {
       implicit def T = T0
     }
@@ -218,7 +218,7 @@ sealed abstract class IterateeTInstances0 {
 
 sealed abstract class IterateeTInstances extends IterateeTInstances0 {
   implicit def IterateeTMonadTrans[E]
-    : Hoist[λ[(α[_], β) => IterateeT[E, α, β]]] =
+      : Hoist[λ[(α[_], β) => IterateeT[E, α, β]]] =
     new IterateeTHoist[E] {}
 
   implicit def IterateeTHoistT[E, H[_[_], _]](
@@ -234,7 +234,7 @@ sealed abstract class IterateeTInstances extends IterateeTInstances0 {
     }
 
   implicit def IterateeTContravariant[F[_]: Monad, A]
-    : Contravariant[IterateeT[?, F, A]] =
+      : Contravariant[IterateeT[?, F, A]] =
     new Contravariant[IterateeT[?, F, A]] {
       def contramap[E, EE](r: IterateeT[E, F, A])(f: EE => E) = r.contramap(f)
     }
@@ -268,7 +268,7 @@ trait IterateeTFunctions {
     * An iteratee that consumes all of the input into something that is PlusEmpty and Applicative.
     */
   def consume[E, F[_]: Monad, A[_]: PlusEmpty: Applicative]
-    : IterateeT[E, F, A[E]] = {
+      : IterateeT[E, F, A[E]] = {
     import scalaz.syntax.plus._
     def step(e: Input[E]): IterateeT[E, F, A[E]] =
       e.fold(

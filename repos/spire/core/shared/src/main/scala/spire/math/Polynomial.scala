@@ -567,7 +567,7 @@ trait PolynomialEq[@sp(Double) C] extends Eq[Polynomial[C]] {
 
 trait PolynomialInstances0 {
   implicit def semiring[@sp(Double) C: ClassTag: Semiring: Eq]
-    : PolynomialSemiring[C] =
+      : PolynomialSemiring[C] =
     new PolynomialSemiring[C] {
       val scalar = Semiring[C]
       val eq = Eq[C]
@@ -609,7 +609,7 @@ trait PolynomialInstances2 extends PolynomialInstances1 {
 
 trait PolynomialInstances3 extends PolynomialInstances2 {
   implicit def euclideanRing[@sp(Double) C: ClassTag: Field: Eq]
-    : PolynomialEuclideanRing[C] =
+      : PolynomialEuclideanRing[C] =
     new PolynomialEuclideanRing[C] {
       val scalar = Field[C]
       val eq = Eq[C]

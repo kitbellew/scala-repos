@@ -82,7 +82,7 @@ class SyntaxTests extends AllInstances with AllSyntax {
   }
 
   def testFoldable[F[_]: Foldable, G[_]: Applicative: MonoidK, A: Monoid, B, Z]
-    : Unit = {
+      : Unit = {
     val fa = mock[F[A]]
     val b = mock[B]
     val f1 = mock[(B, A) => B]
@@ -203,7 +203,7 @@ class SyntaxTests extends AllInstances with AllSyntax {
   }
 
   def testBitraverse[F[_, _]: Bitraverse, G[_]: Applicative, A, B, C, D]
-    : Unit = {
+      : Unit = {
     val f = mock[A => G[C]]
     val g = mock[B => G[D]]
 

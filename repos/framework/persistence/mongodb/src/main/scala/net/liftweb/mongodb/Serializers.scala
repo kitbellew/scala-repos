@@ -34,7 +34,7 @@ class ObjectIdSerializer extends Serializer[ObjectId] {
   private val ObjectIdClass = classOf[ObjectId]
 
   def deserialize(implicit format: Formats)
-    : PartialFunction[(TypeInfo, JValue), ObjectId] = {
+      : PartialFunction[(TypeInfo, JValue), ObjectId] = {
     case (TypeInfo(ObjectIdClass, _), json) =>
       json match {
         case JsonObjectId(objectId) => objectId
@@ -59,7 +59,7 @@ class PatternSerializer extends Serializer[Pattern] {
   private val PatternClass = classOf[Pattern]
 
   def deserialize(implicit format: Formats)
-    : PartialFunction[(TypeInfo, JValue), Pattern] = {
+      : PartialFunction[(TypeInfo, JValue), Pattern] = {
     case (TypeInfo(PatternClass, _), json) =>
       json match {
         case JsonRegex(regex) => regex
@@ -106,7 +106,7 @@ class DateTimeSerializer extends Serializer[DateTime] {
   private val DateTimeClass = classOf[DateTime]
 
   def deserialize(implicit format: Formats)
-    : PartialFunction[(TypeInfo, JValue), DateTime] = {
+      : PartialFunction[(TypeInfo, JValue), DateTime] = {
     case (TypeInfo(DateTimeClass, _), json) =>
       json match {
         case JsonDateTime(dt) => dt

@@ -441,12 +441,12 @@ class AhcWSModule extends Module {
   }
 }
 
-class WSClientProvider @Inject()(wsApi: WSAPI) extends Provider[WSClient] {
+class WSClientProvider @Inject() (wsApi: WSAPI) extends Provider[WSClient] {
   def get() = wsApi.client
 }
 
 @Singleton
-class AhcWSAPI @Inject()(
+class AhcWSAPI @Inject() (
     environment: Environment,
     clientConfig: AhcWSClientConfig,
     lifecycle: ApplicationLifecycle)(implicit materializer: Materializer)

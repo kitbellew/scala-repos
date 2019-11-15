@@ -29,7 +29,7 @@ import org.apache.spark.rdd.RDD
   * @param k number of principal components
   */
 @Since("1.4.0")
-class PCA @Since("1.4.0")(@Since("1.4.0") val k: Int) {
+class PCA @Since("1.4.0") (@Since("1.4.0") val k: Int) {
   require(
     k >= 1,
     s"PCA requires a number of principal components k >= 1 but was given $k")

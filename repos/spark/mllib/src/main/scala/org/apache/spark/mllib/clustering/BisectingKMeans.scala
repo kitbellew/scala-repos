@@ -365,7 +365,7 @@ private object BisectingKMeans extends Serializable {
       assignments: RDD[(Long, VectorWithNorm)],
       divisibleIndices: Set[Long],
       newClusterCenters: Map[Long, VectorWithNorm])
-    : RDD[(Long, VectorWithNorm)] = {
+      : RDD[(Long, VectorWithNorm)] = {
     assignments.map {
       case (index, v) =>
         if (divisibleIndices.contains(index)) {

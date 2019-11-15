@@ -36,7 +36,7 @@ import org.apache.spark.sql.types.{DoubleType, FloatType}
   */
 @Since("1.4.0")
 @Experimental
-final class RegressionEvaluator @Since("1.4.0")(
+final class RegressionEvaluator @Since("1.4.0") (
     @Since("1.4.0") override val uid: String)
     extends Evaluator
     with HasPredictionCol

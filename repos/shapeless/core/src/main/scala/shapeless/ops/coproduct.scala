@@ -111,7 +111,7 @@ object coproduct {
 
   object Partition {
     def apply[C <: Coproduct, U](implicit partition: Partition[C, U])
-      : Aux[C, U, partition.Prefix, partition.Suffix] = partition
+        : Aux[C, U, partition.Prefix, partition.Suffix] = partition
 
     type Aux[C <: Coproduct, U, Prefix0 <: Coproduct, Suffix0 <: Coproduct] =
       Partition[C, U] {
@@ -243,7 +243,7 @@ object coproduct {
     // - the first element of type I in C is removed
     implicit def removeTail[H, T <: Coproduct, U](
         implicit tailRemove: Remove[T, U])
-      : Aux[H :+: T, U, H :+: tailRemove.Rest] = new Remove[H :+: T, U] {
+        : Aux[H :+: T, U, H :+: tailRemove.Rest] = new Remove[H :+: T, U] {
       type Rest = H :+: tailRemove.Rest
 
       def apply(c: H :+: T) = c match {
@@ -324,7 +324,7 @@ object coproduct {
 
     implicit def removeLastTail[H, T <: Coproduct, I](
         implicit tailRemoveLast: RemoveLast[T, I])
-      : Aux[H :+: T, I, H :+: tailRemoveLast.Rest] =
+        : Aux[H :+: T, I, H :+: tailRemoveLast.Rest] =
       fromRemove(Remove.removeTail(toRemove(tailRemoveLast)))
   }
 
@@ -509,7 +509,7 @@ object coproduct {
     implicit def cpZipWithKeys[KH, VH, KT <: HList, VT <: Coproduct](
         implicit zipWithKeys: ZipWithKeys[KT, VT],
         wkh: Witness.Aux[KH])
-      : Aux[KH :: KT, VH :+: VT, FieldType[KH, VH] :+: zipWithKeys.Out] =
+        : Aux[KH :: KT, VH :+: VT, FieldType[KH, VH] :+: zipWithKeys.Out] =
       new ZipWithKeys[KH :: KT, VH :+: VT] {
         type Out = FieldType[KH, VH] :+: zipWithKeys.Out
         def apply(v: VH :+: VT): Out = v match {
@@ -539,7 +539,7 @@ object coproduct {
       ZipOne[C1, C2] { type Out = Out0 }
 
     implicit def singleZipOne[C1H, C2H]
-      : Aux[C1H :+: CNil, C2H :+: CNil, (C1H, C2H) :+: CNil] =
+        : Aux[C1H :+: CNil, C2H :+: CNil, (C1H, C2H) :+: CNil] =
       new ZipOne[C1H :+: CNil, C2H :+: CNil] {
         type Out = (C1H, C2H) :+: CNil
 
@@ -555,7 +555,7 @@ object coproduct {
         OutC <: Coproduct](
         implicit zot: ZipOne.Aux[C1T, C2T, OutC],
         extend: ExtendRightBy[(C1H, C2H) :+: CNil, OutC])
-      : Aux[C1H :+: C1T, C2H :+: C2T, extend.Out] =
+        : Aux[C1H :+: C1T, C2H :+: C2T, extend.Out] =
       new ZipOne[C1H :+: C1T, C2H :+: C2T] {
         type Out = extend.Out
 
@@ -681,7 +681,7 @@ object coproduct {
     }
 
     implicit def extendRightSingleton[H, A]
-      : Aux[H :+: CNil, A, H :+: A :+: CNil] =
+        : Aux[H :+: CNil, A, H :+: A :+: CNil] =
       new ExtendRight[H :+: CNil, A] {
         type Out = H :+: A :+: CNil
 
@@ -737,7 +737,7 @@ object coproduct {
   object ExtendLeftBy {
     def apply[L <: Coproduct, R <: Coproduct](
         implicit extendLeftBy: ExtendLeftBy[L, R])
-      : Aux[L, R, extendLeftBy.Out] = extendLeftBy
+        : Aux[L, R, extendLeftBy.Out] = extendLeftBy
 
     type Aux[L <: Coproduct, R <: Coproduct, Out0 <: Coproduct] =
       ExtendLeftBy[L, R] { type Out = Out0 }
@@ -790,7 +790,7 @@ object coproduct {
   object ExtendRightBy {
     def apply[L <: Coproduct, R <: Coproduct](
         implicit extendRightBy: ExtendRightBy[L, R])
-      : Aux[L, R, extendRightBy.Out] = extendRightBy
+        : Aux[L, R, extendRightBy.Out] = extendRightBy
 
     type Aux[L <: Coproduct, R <: Coproduct, Out0 <: Coproduct] =
       ExtendRightBy[L, R] { type Out = Out0 }
@@ -961,7 +961,7 @@ object coproduct {
         mod: nat.Mod.Aux[N, Size, NModSize],
         diff: nat.Diff.Aux[Size, NModSize, Size_Diff_NModSize],
         rotateLeft: RotateLeft.Impl[C, Size_Diff_NModSize])
-      : Aux[C, N, rotateLeft.Out] = new RotateRight[C, N] {
+        : Aux[C, N, rotateLeft.Out] = new RotateRight[C, N] {
       type Out = rotateLeft.Out
       def apply(c: C): Out = rotateLeft(c)
     }
@@ -983,7 +983,7 @@ object coproduct {
         mod: nat.Mod.Aux[N, Size, NModSize],
         diff: nat.Diff.Aux[Size, NModSize, Size_Diff_NModSize],
         rotateLeft: RotateLeft[C, Size_Diff_NModSize])
-      : RotateRight.Aux[C, N, rotateLeft.Out] = new RotateRight[C, N] {
+        : RotateRight.Aux[C, N, rotateLeft.Out] = new RotateRight[C, N] {
       type Out = rotateLeft.Out
 
       def apply(c: C): Out = rotateLeft(c)
@@ -1070,7 +1070,7 @@ object coproduct {
 
     implicit def splitSucc[H, T <: Coproduct, N <: Nat](
         implicit tail: Split[T, N])
-      : Aux[H :+: T, Succ[N], H :+: tail.Left, tail.Right] =
+        : Aux[H :+: T, Succ[N], H :+: tail.Left, tail.Right] =
       new Split[H :+: T, Succ[N]] {
         type Left = H :+: tail.Left
         type Right = tail.Right
@@ -1196,7 +1196,7 @@ object coproduct {
           InH,
           InT <: Coproduct,
           Out <: Coproduct](implicit rt: Reverse0[InH :+: Acc, InT, Out])
-        : Reverse0[Acc, InH :+: InT, Out] =
+          : Reverse0[Acc, InH :+: InT, Out] =
         new Reverse0[Acc, InH :+: InT, Out] {
           def apply(e: Either[Acc, InH :+: InT]) =
             rt(e match {

@@ -71,7 +71,7 @@ final case class GuiceApplicationBuilder(
     * Overrides the default or any previously configured values.
     */
   def load(loader: (Environment, Configuration) => Seq[GuiceableModule])
-    : GuiceApplicationBuilder =
+      : GuiceApplicationBuilder =
     copy(loadModules = loader)
 
   /**
@@ -84,7 +84,7 @@ final case class GuiceApplicationBuilder(
     * Override the router with a fake router having the given routes, before falling back to the default router
     */
   def routes(routes: PartialFunction[(String, String), Handler])
-    : GuiceApplicationBuilder =
+      : GuiceApplicationBuilder =
     bindings(bind[FakeRouterConfig] to FakeRouterConfig(routes))
       .overrides(bind[Router].toProvider[FakeRouterProvider])
 
@@ -262,7 +262,7 @@ private class FakeRoutes(
 private case class FakeRouterConfig(
     withRoutes: PartialFunction[(String, String), Handler])
 
-private class FakeRouterProvider @Inject()(
+private class FakeRouterProvider @Inject() (
     config: FakeRouterConfig,
     parent: RoutesProvider)
     extends Provider[Router] {

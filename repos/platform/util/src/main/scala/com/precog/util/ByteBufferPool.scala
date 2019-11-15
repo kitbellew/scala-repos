@@ -37,7 +37,7 @@ import scalaz.State
 /**
   * A `Monad` for working with `ByteBuffer`s.
   */
-trait ByteBufferMonad[M[+ _]] extends Monad[M] {
+trait ByteBufferMonad[M[+_]] extends Monad[M] {
   def getBuffer(min: Int): M[ByteBuffer]
 }
 

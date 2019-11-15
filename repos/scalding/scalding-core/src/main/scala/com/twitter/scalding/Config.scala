@@ -369,7 +369,7 @@ trait Config extends Serializable {
 
   def addFlowStepStrategy(
       flowStrategyProvider: (Mode, Config) => FlowStepStrategy[JobConf])
-    : Config = {
+      : Config = {
     val serializedListener = flowStepStrategiesSerializer(flowStrategyProvider)
     update(Config.FlowStepStrategies) {
       case None      => (Some(serializedListener), ())
@@ -381,7 +381,7 @@ trait Config extends Serializable {
     this.-(Config.FlowStepStrategies)
 
   def getFlowStepStrategies
-    : List[Try[(Mode, Config) => FlowStepStrategy[JobConf]]] =
+      : List[Try[(Mode, Config) => FlowStepStrategy[JobConf]]] =
     get(Config.FlowStepStrategies).toIterable
       .flatMap(s => StringUtility.fastSplit(s, ","))
       .map(flowStepStrategiesSerializer.invert(_))
@@ -608,7 +608,7 @@ object Config {
   }
 
   private[this] def buildInj[T: ExternalizerInjection: ExternalizerCodec]
-    : Injection[T, String] =
+      : Injection[T, String] =
     Injection.connect[T, Externalizer[T], Array[Byte], Base64String, String]
 
   @transient private[scalding] lazy val flowStepListenerSerializer =

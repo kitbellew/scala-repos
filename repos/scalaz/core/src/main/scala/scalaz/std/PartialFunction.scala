@@ -3,7 +3,8 @@ package std
 
 trait PartialFunctionInstances {
   implicit val partialFunctionInstance = new Arrow[PartialFunction]
-  with Category[PartialFunction] with Choice[PartialFunction] {
+    with Category[PartialFunction]
+    with Choice[PartialFunction] {
     def arr[A, B](f: A => B) = {
       case a => f(a)
     }

@@ -11,7 +11,7 @@ package scaladoc {
 
     trait MyComponent
 
-    class MyComponentImpl @Inject()(lifecycle: ApplicationLifecycle)
+    class MyComponentImpl @Inject() (lifecycle: ApplicationLifecycle)
         extends MyComponent {
       // previous contents of Plugin.onStart
       lifecycle.addStopHook { () =>

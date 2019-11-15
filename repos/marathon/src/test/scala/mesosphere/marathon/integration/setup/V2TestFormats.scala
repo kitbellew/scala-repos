@@ -49,13 +49,16 @@ object V2TestFormats {
   implicit lazy val MesosStatusUpdateEventReads: Reads[MesosStatusUpdateEvent] =
     Json.reads[MesosStatusUpdateEvent]
   implicit lazy val MesosFrameworkMessageEventReads
-    : Reads[MesosFrameworkMessageEvent] = Json.reads[MesosFrameworkMessageEvent]
+      : Reads[MesosFrameworkMessageEvent] =
+    Json.reads[MesosFrameworkMessageEvent]
   implicit lazy val SchedulerDisconnectedEventReads
-    : Reads[SchedulerDisconnectedEvent] = Json.reads[SchedulerDisconnectedEvent]
+      : Reads[SchedulerDisconnectedEvent] =
+    Json.reads[SchedulerDisconnectedEvent]
   implicit lazy val SchedulerRegisteredEventWritesReads
-    : Reads[SchedulerRegisteredEvent] = Json.reads[SchedulerRegisteredEvent]
+      : Reads[SchedulerRegisteredEvent] = Json.reads[SchedulerRegisteredEvent]
   implicit lazy val SchedulerReregisteredEventWritesReads
-    : Reads[SchedulerReregisteredEvent] = Json.reads[SchedulerReregisteredEvent]
+      : Reads[SchedulerReregisteredEvent] =
+    Json.reads[SchedulerReregisteredEvent]
 
   implicit lazy val eventSubscribersReads: Reads[EventSubscribers] = Reads {
     subscribersJson =>

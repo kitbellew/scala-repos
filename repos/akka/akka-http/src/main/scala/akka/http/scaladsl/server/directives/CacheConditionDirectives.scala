@@ -137,7 +137,8 @@ trait CacheConditionDirectives {
                   if lastModified.isDefined && !unmodified(ims) ⇒
                 innerRouteWithRangeHeaderFilteredOut
               case _ ⇒ step6()
-            } else step6()
+            }
+          else step6()
         def step6(): Route = addResponseHeaders(route)
 
         step1()

@@ -127,7 +127,7 @@ private object LabelConverter {
   */
 @Since("1.5.0")
 @Experimental
-class MultilayerPerceptronClassifier @Since("1.5.0")(
+class MultilayerPerceptronClassifier @Since("1.5.0") (
     @Since("1.5.0") override val uid: String)
     extends Predictor[
       Vector,

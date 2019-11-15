@@ -128,17 +128,16 @@ object User extends LilaController {
       blocked <- ctx.userId ?? { relationApi.fetchBlocks(u.id, _) }
       searchForm = GameFilterMenu.searchForm(userGameSearch, filters.current)(
         ctx.body)
-    } yield
-      html.user.show(
-        u,
-        info,
-        pag,
-        filters,
-        searchForm,
-        relation,
-        notes,
-        followable,
-        blocked)
+    } yield html.user.show(
+      u,
+      info,
+      pag,
+      filters,
+      searchForm,
+      relation,
+      notes,
+      followable,
+      blocked)
 
   private def userGames(u: UserModel, filterOption: Option[String], page: Int)(
       implicit ctx: BodyContext[_]) = {

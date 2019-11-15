@@ -149,10 +149,12 @@ trait LayoutIncludes {
     */
   implicit def jfxConstraintsBase2sfx(
       v: jfxsl.ConstraintsBase): ConstraintsBase =
-    if (v != null) new ConstraintsBase(v) {} else null
+    if (v != null) new ConstraintsBase(v) {}
+    else null
 
   implicit def jfxCornerRadii2sfx(v: jfxsl.CornerRadii): CornerRadii =
-    if (v != null) new CornerRadii(v) {} else null
+    if (v != null) new CornerRadii(v) {}
+    else null
 
   /**
     * $START$FLPN.html $FLPN$END

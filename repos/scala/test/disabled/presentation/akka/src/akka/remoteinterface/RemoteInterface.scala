@@ -20,7 +20,7 @@ trait RemoteModule {
   val UUID_PREFIX = "uuid:".intern
 
   def optimizeLocalScoped_?()
-    : Boolean //Apply optimizations for remote operations in local scope
+      : Boolean //Apply optimizations for remote operations in local scope
   protected[akka] def notifyListeners(message: => Any): Unit
 
   private[akka] def actors: ConcurrentHashMap[String, ActorRef]
@@ -29,7 +29,7 @@ trait RemoteModule {
   private[akka] def typedActors: ConcurrentHashMap[String, AnyRef]
   private[akka] def typedActorsByUuid: ConcurrentHashMap[String, AnyRef]
   private[akka] def typedActorsFactories
-    : ConcurrentHashMap[String, () => AnyRef]
+      : ConcurrentHashMap[String, () => AnyRef]
 
   /** Lookup methods **/
   private[akka] def findActorById(id: String): ActorRef = actors.get(id)

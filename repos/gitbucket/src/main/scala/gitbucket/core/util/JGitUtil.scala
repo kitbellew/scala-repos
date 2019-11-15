@@ -290,7 +290,7 @@ object JGitUtil {
       @tailrec
       def simplifyPath(
           tuple: (ObjectId, FileMode, String, Option[String], RevCommit))
-        : (ObjectId, FileMode, String, Option[String], RevCommit) =
+          : (ObjectId, FileMode, String, Option[String], RevCommit) =
         tuple match {
           case (oid, FileMode.TREE, name, _, commit) =>
             (using(new TreeWalk(git.getRepository)) { walk =>
@@ -327,7 +327,7 @@ object JGitUtil {
               (ObjectId, FileMode, String, Option[String]),
               Map[RevCommit, RevCommit])],
           revIterator: java.util.Iterator[RevCommit])
-        : List[(ObjectId, FileMode, String, Option[String], RevCommit)] = {
+          : List[(ObjectId, FileMode, String, Option[String], RevCommit)] = {
         if (restList.isEmpty) {
           result
         } else if (!revIterator.hasNext) {

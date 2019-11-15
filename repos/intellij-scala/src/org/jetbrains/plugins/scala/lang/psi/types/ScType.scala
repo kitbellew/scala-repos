@@ -282,7 +282,7 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
       t: ScType,
       project: Option[Project] = None,
       visitedAlias: HashSet[ScTypeAlias] = HashSet.empty)
-    : Option[(PsiClass, ScSubstitutor)] = {
+      : Option[(PsiClass, ScSubstitutor)] = {
     t match {
       case n: NonValueType =>
         extractClassType(n.inferValueType, project, visitedAlias)

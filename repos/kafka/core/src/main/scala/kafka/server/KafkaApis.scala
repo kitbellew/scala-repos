@@ -864,7 +864,7 @@ class KafkaApis(
       numPartitions: Int,
       replicationFactor: Int,
       properties: Properties = new Properties())
-    : MetadataResponse.TopicMetadata = {
+      : MetadataResponse.TopicMetadata = {
     try {
       AdminUtils.createTopic(
         zkUtils,
@@ -921,7 +921,7 @@ class KafkaApis(
   private def getTopicMetadata(
       topics: Set[String],
       securityProtocol: SecurityProtocol)
-    : Seq[MetadataResponse.TopicMetadata] = {
+      : Seq[MetadataResponse.TopicMetadata] = {
     val topicResponses =
       metadataCache.getTopicMetadata(topics, securityProtocol)
     if (topics.isEmpty || topicResponses.size == topics.size) {

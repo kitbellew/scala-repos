@@ -58,15 +58,14 @@ object TeamInfo {
       cachable <- cache(team.id)
       forumNbPosts ← getForumNbPosts(team.id)
       forumPosts ← getForumPosts(team.id)
-    } yield
-      TeamInfo(
-        mine = mine,
-        createdByMe = ~me.map(m => team.isCreator(m.id)),
-        requestedByMe = requestedByMe,
-        requests = requests,
-        bestUserIds = cachable.bestUserIds,
-        toints = cachable.toints,
-        forumNbPosts = forumNbPosts,
-        forumPosts = forumPosts
-      )
+    } yield TeamInfo(
+      mine = mine,
+      createdByMe = ~me.map(m => team.isCreator(m.id)),
+      requestedByMe = requestedByMe,
+      requests = requests,
+      bestUserIds = cachable.bestUserIds,
+      toints = cachable.toints,
+      forumNbPosts = forumNbPosts,
+      forumPosts = forumPosts
+    )
 }

@@ -332,7 +332,7 @@ trait RestHelper extends LiftRules.DispatchPF {
       selection: Req => BoxOrRaw[SelectType])(
       pf: PartialFunction[Req, BoxOrRaw[T]])(
       implicit cvt: PartialFunction[(SelectType, T, Req), LiftResponse])
-    : Unit = {
+      : Unit = {
     serve(new PartialFunction[Req, () => Box[LiftResponse]] {
       def isDefinedAt(r: Req): Boolean =
         selection(r).isDefined && pf.isDefinedAt(r)
@@ -405,7 +405,7 @@ trait RestHelper extends LiftRules.DispatchPF {
     * The default way to convert a JsonXmlAble into JSON or XML
     */
   protected implicit lazy val convertJsonXmlAble
-    : PartialFunction[(JsonXmlSelect, JsonXmlAble, Req), LiftResponse] = {
+      : PartialFunction[(JsonXmlSelect, JsonXmlAble, Req), LiftResponse] = {
     case (JsonSelect, obj, _) => Extraction.decompose(obj)
 
     case (XmlSelect, obj, _) =>
@@ -437,7 +437,7 @@ trait RestHelper extends LiftRules.DispatchPF {
     * JSON or XML
     */
   protected implicit lazy val convertAutoJsonXmlAble
-    : PartialFunction[(JsonXmlSelect, AutoJsonXmlAble, Req), LiftResponse] = {
+      : PartialFunction[(JsonXmlSelect, AutoJsonXmlAble, Req), LiftResponse] = {
     case (JsonSelect, AutoJsonXmlAble(obj), _) =>
       Extraction.decompose(obj)
     case (XmlSelect, AutoJsonXmlAble(obj), _) =>
@@ -755,7 +755,7 @@ final class ListServeMagic(list: List[String]) {
     * </code>
     */
   def prefixJx[T](pf: PartialFunction[Req, BoxOrRaw[T]])
-    : PartialFunction[Req, BoxOrRaw[T]] =
+      : PartialFunction[Req, BoxOrRaw[T]] =
     new PartialFunction[Req, BoxOrRaw[T]] {
       def isDefinedAt(req: Req): Boolean =
         req.path.partPath.startsWith(list) && {
@@ -777,7 +777,7 @@ final class ListServeMagic(list: List[String]) {
     * </code>
     */
   def prefix(pf: PartialFunction[Req, () => Box[LiftResponse]])
-    : PartialFunction[Req, () => Box[LiftResponse]] =
+      : PartialFunction[Req, () => Box[LiftResponse]] =
     new PartialFunction[Req, () => Box[LiftResponse]] {
       def isDefinedAt(req: Req): Boolean =
         req.path.partPath.startsWith(list) && {

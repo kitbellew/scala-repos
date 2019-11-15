@@ -659,7 +659,7 @@ object Future {
     */
   def apply[T](body: => T)(
       implicit @deprecatedName('execctx) executor: ExecutionContext)
-    : Future[T] =
+      : Future[T] =
     unit.map(_ => body)
 
   /** Simple version of `Future.traverse`. Asynchronously and non-blockingly transforms a `TraversableOnce[Future[A]]`

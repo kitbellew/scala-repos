@@ -59,7 +59,7 @@ object AhcWSClientConfigFactory {
   * This class creates a DefaultWSClientConfig object from the play.api.Configuration.
   */
 @Singleton
-class AhcWSClientConfigParser @Inject()(
+class AhcWSClientConfigParser @Inject() (
     wsClientConfig: WSClientConfig,
     configuration: Configuration,
     environment: Environment)
@@ -126,7 +126,7 @@ class AhcConfigBuilder(ahcConfig: AhcWSClientConfig = AhcWSClientConfig()) {
     this(AhcWSClientConfig(wsClientConfig = config))
 
   protected val addCustomSettings
-    : DefaultAsyncHttpClientConfig.Builder => DefaultAsyncHttpClientConfig.Builder =
+      : DefaultAsyncHttpClientConfig.Builder => DefaultAsyncHttpClientConfig.Builder =
     identity
 
   /**
@@ -169,7 +169,7 @@ class AhcConfigBuilder(ahcConfig: AhcWSClientConfig = AhcWSClientConfig()) {
     */
   def modifyUnderlying(
       modify: DefaultAsyncHttpClientConfig.Builder => DefaultAsyncHttpClientConfig.Builder)
-    : AhcConfigBuilder = {
+      : AhcConfigBuilder = {
     new AhcConfigBuilder(ahcConfig) {
       override val addCustomSettings =
         modify compose AhcConfigBuilder.this.addCustomSettings

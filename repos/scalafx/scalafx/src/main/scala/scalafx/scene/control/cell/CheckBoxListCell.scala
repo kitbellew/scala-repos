@@ -63,7 +63,7 @@ object CheckBoxListCell {
     */
   def forListView[T](
       selectedProperty: T => ObservableValue[Boolean, java.lang.Boolean])
-    : (ListView[T] => ListCell[T]) = { (view: ListView[T]) =>
+      : (ListView[T] => ListCell[T]) = { (view: ListView[T]) =>
     jfxscc.CheckBoxListCell.forListView(selectedProperty).call(view)
   }
 

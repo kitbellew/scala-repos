@@ -239,7 +239,7 @@ final case class Failure[+T](exception: Throwable) extends Try[T] {
   override def filter(p: T => Boolean): Try[T] = this
   override def recover[U >: T](
       @deprecatedName('rescueException) pf: PartialFunction[Throwable, U])
-    : Try[U] =
+      : Try[U] =
     try {
       if (pf isDefinedAt exception) Success(pf(exception)) else this
     } catch {
@@ -288,7 +288,7 @@ final case class Success[+T](value: T) extends Try[T] {
     } catch { case NonFatal(e) => Failure(e) }
   override def recover[U >: T](
       @deprecatedName('rescueException) pf: PartialFunction[Throwable, U])
-    : Try[U] = this
+      : Try[U] = this
   override def recoverWith[U >: T](
       @deprecatedName('f) pf: PartialFunction[Throwable, Try[U]]): Try[U] =
     this

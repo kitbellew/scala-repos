@@ -29,7 +29,7 @@ class VectorBuilderTest extends FunSuite with Checkers {
   }
 
   implicit def genPair
-    : Arbitrary[(VectorBuilder[Double], VectorBuilder[Double])] = {
+      : Arbitrary[(VectorBuilder[Double], VectorBuilder[Double])] = {
     Arbitrary {
       for {
         x <- Arbitrary.arbitrary[Double].map { _ % 1e3 }

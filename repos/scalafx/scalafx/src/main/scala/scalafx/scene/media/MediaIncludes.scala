@@ -192,7 +192,8 @@ trait MediaIncludes {
     * @return $SFX $TRAC
     */
   implicit def jfxTrack2sfx(t: jfxsm.Track): Track =
-    if (t != null) new Track(t) {} else null
+    if (t != null) new Track(t) {}
+    else null
 
   /**
     * $START$VDTC.html $VDTC$END

@@ -83,7 +83,7 @@ private[ml] trait NaiveBayesParams extends PredictorParams {
   */
 @Since("1.5.0")
 @Experimental
-class NaiveBayes @Since("1.5.0")(@Since("1.5.0") override val uid: String)
+class NaiveBayes @Since("1.5.0") (@Since("1.5.0") override val uid: String)
     extends ProbabilisticClassifier[Vector, NaiveBayes, NaiveBayesModel]
     with NaiveBayesParams
     with DefaultParamsWritable {

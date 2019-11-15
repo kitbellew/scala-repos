@@ -37,7 +37,7 @@ trait BinaryUpdateRegistry[A <: AnyRef, B, Op <: OpType]
       a: A,
       b: B,
       m: Map[(Class[_], Class[_]), UFunc.InPlaceImpl2[Op, _ <: A, _ <: B]])
-    : Unit = {
+      : Unit = {
     throw new RuntimeException("Multiple bindings for method: " + m)
   }
 

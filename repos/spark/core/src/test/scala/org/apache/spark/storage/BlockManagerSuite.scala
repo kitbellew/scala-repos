@@ -78,7 +78,7 @@ class BlockManagerSuite
       name: String = SparkContext.DRIVER_IDENTIFIER,
       master: BlockManagerMaster = this.master,
       transferService: Option[BlockTransferService] = Option.empty)
-    : BlockManager = {
+      : BlockManager = {
     val serializer = new KryoSerializer(conf)
     val transfer = transferService.getOrElse(
       new NettyBlockTransferService(conf, securityMgr, numCores = 1))

@@ -278,7 +278,7 @@ trait ConstraintWrites {
   def seq[A](implicit writes: Writes[A]): Writes[Seq[A]] =
     Writes.traversableWrites[A]
   def map[A](implicit writes: Writes[A])
-    : OWrites[collection.immutable.Map[String, A]] = Writes.mapWrites[A]
+      : OWrites[collection.immutable.Map[String, A]] = Writes.mapWrites[A]
 
   /**
     * Pure Option Writer[T] which writes "null" when None which is different

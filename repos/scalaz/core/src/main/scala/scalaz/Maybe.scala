@@ -301,9 +301,16 @@ sealed abstract class MaybeInstances {
     with IsEmpty[Maybe]
     with Cobind[Maybe]
     with Optional[Maybe] =
-    new Traverse[Maybe] with MonadPlus[Maybe] with BindRec[Maybe]
-    with Cozip[Maybe] with Zip[Maybe] with Unzip[Maybe] with Align[Maybe]
-    with IsEmpty[Maybe] with Cobind[Maybe] with Optional[Maybe] {
+    new Traverse[Maybe]
+      with MonadPlus[Maybe]
+      with BindRec[Maybe]
+      with Cozip[Maybe]
+      with Zip[Maybe]
+      with Unzip[Maybe]
+      with Align[Maybe]
+      with IsEmpty[Maybe]
+      with Cobind[Maybe]
+      with Optional[Maybe] {
 
       def point[A](a: => A) = just(a)
 

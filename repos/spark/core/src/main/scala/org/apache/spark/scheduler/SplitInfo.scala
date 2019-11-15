@@ -79,7 +79,7 @@ object SplitInfo {
       inputFormatClazz: Class[_],
       path: String,
       mapreduceSplit: org.apache.hadoop.mapreduce.InputSplit)
-    : Seq[SplitInfo] = {
+      : Seq[SplitInfo] = {
     val retval = new ArrayBuffer[SplitInfo]()
     val length = mapreduceSplit.getLength
     for (host <- mapreduceSplit.getLocations) {

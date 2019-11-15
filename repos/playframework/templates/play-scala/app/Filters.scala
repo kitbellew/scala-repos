@@ -19,7 +19,7 @@ import filters.ExampleFilter
   * each response.
   */
 @Singleton
-class Filters @Inject()(env: Environment, exampleFilter: ExampleFilter)
+class Filters @Inject() (env: Environment, exampleFilter: ExampleFilter)
     extends HttpFilters {
 
   override val filters = {

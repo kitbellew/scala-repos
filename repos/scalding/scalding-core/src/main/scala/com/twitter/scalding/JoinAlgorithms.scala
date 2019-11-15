@@ -369,7 +369,8 @@ trait JoinAlgorithms {
     p.using(new Random(Seed) with Stateful).flatMap(() -> f) {
       (rand: Random, _: Unit) =>
         val rfs = getReplicationFields(rand, replication, otherReplication)
-        if (swap) rfs.map { case (i, j) => (j, i) } else rfs
+        if (swap) rfs.map { case (i, j) => (j, i) }
+        else rfs
     }
   }
 

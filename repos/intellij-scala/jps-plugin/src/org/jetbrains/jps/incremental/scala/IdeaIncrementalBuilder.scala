@@ -51,7 +51,7 @@ class IdeaIncrementalBuilder(category: BuilderCategory)
         JavaSourceRootDescriptor,
         ModuleBuildTarget],
       outputConsumer: ModuleLevelBuilder.OutputConsumer)
-    : ModuleLevelBuilder.ExitCode = {
+      : ModuleLevelBuilder.ExitCode = {
 
     if (isDisabled(context, chunk) || ChunkExclusionService.isExcluded(chunk))
       return ExitCode.NOTHING_DONE

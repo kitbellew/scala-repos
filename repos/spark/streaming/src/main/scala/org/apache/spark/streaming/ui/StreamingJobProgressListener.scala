@@ -48,7 +48,7 @@ private[streaming] class StreamingJobProgressListener(ssc: StreamingContext)
     new LinkedHashMap[Time, ConcurrentLinkedQueue[OutputOpIdAndSparkJobId]] {
       override def removeEldestEntry(
           p1: JMap.Entry[Time, ConcurrentLinkedQueue[OutputOpIdAndSparkJobId]])
-        : Boolean = {
+          : Boolean = {
         // If a lot of "onBatchCompleted"s happen before "onJobStart" (image if
         // SparkContext.listenerBus is very slow), "batchTimeToOutputOpIdToSparkJobIds"
         // may add some information for a removed batch when processing "onJobStart". It will be a
@@ -135,7 +135,7 @@ private[streaming] class StreamingJobProgressListener(ssc: StreamingContext)
 
   override def onOutputOperationCompleted(
       outputOperationCompleted: StreamingListenerOutputOperationCompleted)
-    : Unit = synchronized {
+      : Unit = synchronized {
     // This method is called before onBatchCompleted
     runningBatchUIData(outputOperationCompleted.outputOperationInfo.batchTime)
       .updateOutputOperationInfo(outputOperationCompleted.outputOperationInfo)

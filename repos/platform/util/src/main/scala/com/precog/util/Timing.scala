@@ -57,7 +57,7 @@ object Timing {
     result
   }
 
-  def timeM[M[+ _]: Monad, A](s: String)(ma: => M[A]): M[A] = {
+  def timeM[M[+_]: Monad, A](s: String)(ma: => M[A]): M[A] = {
     val t0 = System.nanoTime()
     ma map { a =>
       val t = System.nanoTime() - t0
@@ -66,7 +66,7 @@ object Timing {
     }
   }
 
-  def timeM[M[+ _]: Monad, A](f: A => String)(ma: => M[A]): M[A] = {
+  def timeM[M[+_]: Monad, A](f: A => String)(ma: => M[A]): M[A] = {
     val t0 = System.nanoTime()
     ma map { a =>
       val t = System.nanoTime() - t0
@@ -75,7 +75,7 @@ object Timing {
     }
   }
 
-  def timeStreamT[M[+ _]: Monad, A](s: String)(
+  def timeStreamT[M[+_]: Monad, A](s: String)(
       stream: => StreamT[M, A]): StreamT[M, A] = {
     val t0 = System.nanoTime()
     val end = StreamT(
@@ -89,7 +89,7 @@ object Timing {
     stream ++ end
   }
 
-  def timeStreamTElem[M[+ _]: Monad, A](s: String)(
+  def timeStreamTElem[M[+_]: Monad, A](s: String)(
       stream0: => StreamT[M, A]): StreamT[M, A] = {
     def timeElem(stream: StreamT[M, A]): StreamT[M, A] = {
       val t0 = System.nanoTime()

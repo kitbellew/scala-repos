@@ -435,7 +435,7 @@ class TcpConnectionSpec extends AkkaSpec("""
     }
 
     "close the connection and reply with `Closed` upon reception of a `Close` command" in new EstablishedConnectionTest()
-    with SmallRcvBuffer {
+      with SmallRcvBuffer {
       run {
         // we should test here that a pending write command is properly finished first
 
@@ -499,7 +499,7 @@ class TcpConnectionSpec extends AkkaSpec("""
      * SO_SNDBUF to 0."
      */
     "close the connection and reply with `ConfirmedClosed` upon reception of an `ConfirmedClose` command (simplified)" in new EstablishedConnectionTest()
-    with SmallRcvBuffer {
+      with SmallRcvBuffer {
       run {
         // we should test here that a pending write command is properly finished first
 
@@ -530,7 +530,7 @@ class TcpConnectionSpec extends AkkaSpec("""
     }
 
     "close the connection and reply with `ConfirmedClosed` upon reception of an `ConfirmedClose` command" in new EstablishedConnectionTest()
-    with SmallRcvBuffer {
+      with SmallRcvBuffer {
       run {
         ignoreIfWindows()
 

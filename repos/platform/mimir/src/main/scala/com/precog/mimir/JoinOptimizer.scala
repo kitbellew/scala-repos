@@ -28,7 +28,7 @@ import com.precog.util.IdGen
 import com.precog.util.Timing
 import com.precog.common._
 
-trait JoinOptimizerModule[M[+ _]]
+trait JoinOptimizerModule[M[+_]]
     extends DAGTransform
     with TransSpecableModule[M] {
 

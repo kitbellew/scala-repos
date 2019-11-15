@@ -67,7 +67,7 @@ trait Mapper[A <: Mapper[A]]
   def connectionIdentifier = dbConnectionIdentifier openOr calcDbId
 
   def dbCalculateConnectionIdentifier
-    : PartialFunction[A, ConnectionIdentifier] =
+      : PartialFunction[A, ConnectionIdentifier] =
     Map.empty
 
   private def calcDbId =
@@ -143,9 +143,8 @@ trait Mapper[A <: Mapper[A]]
     for {
       mf <- getSingleton.fieldNamesAsMap.get(name.toLowerCase)
       f <- fieldByName[mf.ST](name)
-    } yield
-      SourceFieldInfoRep[mf.ST](f.get.asInstanceOf[mf.ST], mf)
-        .asInstanceOf[SourceFieldInfo]
+    } yield SourceFieldInfoRep[mf.ST](f.get.asInstanceOf[mf.ST], mf)
+      .asInstanceOf[SourceFieldInfo]
 
   /**
     * Get a list of all the fields
@@ -188,7 +187,7 @@ trait Mapper[A <: Mapper[A]]
     */
   def flatMapFieldTitleForm[T](
       func: (NodeSeq, Box[NodeSeq], NodeSeq) => scala.collection.Seq[T])
-    : List[T] =
+      : List[T] =
     getSingleton.flatMapFieldTitleForm(this, func)
 
   /**
@@ -197,7 +196,7 @@ trait Mapper[A <: Mapper[A]]
     */
   def flatMapFieldTitleForm2[T](
       func: (NodeSeq, MappedField[_, A], NodeSeq) => scala.collection.Seq[T])
-    : List[T] =
+      : List[T] =
     getSingleton.flatMapFieldTitleForm2(this, func)
 
   /**
@@ -322,7 +321,7 @@ trait Mapper[A <: Mapper[A]]
     */
   def fieldMapperTransforms(
       fieldTransform: (BaseOwnedMappedField[A] => NodeSeq))
-    : scala.collection.Seq[CssSel] = {
+      : scala.collection.Seq[CssSel] = {
     getSingleton.fieldMapperTransforms(fieldTransform, this)
   }
 
@@ -363,7 +362,7 @@ trait BaseKeyedMapper extends BaseMapper {
   type KeyedMapperType <: KeyedMapper[TheKeyType, KeyedMapperType]
 
   def primaryKeyField
-    : MappedField[TheKeyType, MapperType] with IndexedField[TheKeyType]
+      : MappedField[TheKeyType, MapperType] with IndexedField[TheKeyType]
 
   /**
     * Delete the model from the RDBMS
@@ -459,7 +458,7 @@ trait KeyedMapper[KeyType, OwnerType <: KeyedMapper[KeyType, OwnerType]]
   type KeyedMapperType = OwnerType
 
   def primaryKeyField
-    : MappedField[KeyType, OwnerType] with IndexedField[KeyType]
+      : MappedField[KeyType, OwnerType] with IndexedField[KeyType]
   def getSingleton: KeyedMetaMapper[KeyType, OwnerType];
 
   override def comparePrimaryKeys(other: OwnerType) =
@@ -497,7 +496,7 @@ object StopValidationOnError {
     }
 
   def apply[T](f: PartialFunction[T, List[FieldError]])
-    : PartialFunction[T, List[FieldError]] with StopValidationOnError[T] =
+      : PartialFunction[T, List[FieldError]] with StopValidationOnError[T] =
     new PartialFunction[T, List[FieldError]] with StopValidationOnError[T] {
       def apply(in: T): List[FieldError] = f(in)
       def isDefinedAt(in: T): Boolean = f.isDefinedAt(in)

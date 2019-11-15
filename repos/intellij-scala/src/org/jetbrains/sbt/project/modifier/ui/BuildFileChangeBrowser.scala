@@ -76,8 +76,9 @@ class BuildFileChangeBrowser(
       changesArray: Array[Change],
       indexInSelection: Int) {
     val context: ShowDiffUIContext = new ShowDiffUIContext(false)
-    val changesArraySwapped: Array[Change] = for (change <- changesArray)
-      yield BuildFileChange.swap(change.asInstanceOf[BuildFileChange])
+    val changesArraySwapped: Array[Change] =
+      for (change <- changesArray)
+        yield BuildFileChange.swap(change.asInstanceOf[BuildFileChange])
 
     ShowDiffAction.showDiffForChange(
       changesArraySwapped,

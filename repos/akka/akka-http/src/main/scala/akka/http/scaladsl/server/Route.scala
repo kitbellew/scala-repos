@@ -49,7 +49,7 @@ object Route {
       executionContext: ExecutionContextExecutor = null,
       rejectionHandler: RejectionHandler = RejectionHandler.default,
       exceptionHandler: ExceptionHandler = null)
-    : Flow[HttpRequest, HttpResponse, NotUsed] =
+      : Flow[HttpRequest, HttpResponse, NotUsed] =
     Flow[HttpRequest].mapAsync(1)(asyncHandler(route))
 
   /**
@@ -63,7 +63,7 @@ object Route {
       executionContext: ExecutionContextExecutor = null,
       rejectionHandler: RejectionHandler = RejectionHandler.default,
       exceptionHandler: ExceptionHandler = null)
-    : HttpRequest ⇒ Future[HttpResponse] = {
+      : HttpRequest ⇒ Future[HttpResponse] = {
     val effectiveEC =
       if (executionContext ne null) executionContext
       else materializer.executionContext

@@ -81,6 +81,6 @@ object ChangesConfirmationDialog {
       project: IJProject,
       changes: List[BuildFileChange],
       fileChangesMap: mutable.Map[VirtualFile, (BuildFileModifiedStatus, Long)])
-    : ChangesConfirmationDialog =
+      : ChangesConfirmationDialog =
     new ChangesConfirmationDialog(project, changes, null, fileChangesMap)
 }

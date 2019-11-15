@@ -145,7 +145,7 @@ private[mllib] object GridPartitioner {
   *              zero, the number of columns will be calculated when `numCols` is invoked.
   */
 @Since("1.3.0")
-class BlockMatrix @Since("1.3.0")(
+class BlockMatrix @Since("1.3.0") (
     @Since("1.3.0") val blocks: RDD[((Int, Int), Matrix)],
     @Since("1.3.0") val rowsPerBlock: Int,
     @Since("1.3.0") val colsPerBlock: Int,

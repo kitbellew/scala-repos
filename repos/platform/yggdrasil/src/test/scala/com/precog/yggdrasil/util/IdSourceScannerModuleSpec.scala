@@ -28,7 +28,7 @@ import org.specs2.mutable._
 
 import scalaz._
 
-trait IdSourceScannerModuleSpec[M[+ _]]
+trait IdSourceScannerModuleSpec[M[+_]]
     extends IdSourceScannerModule
     with TableModuleTestSupport[M]
     with Specification {

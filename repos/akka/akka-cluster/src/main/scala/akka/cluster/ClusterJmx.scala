@@ -141,7 +141,7 @@ private[akka] class ClusterJmx(cluster: Cluster, log: LoggingAdapter) {
     */
   def createMBean() = {
     val mbean = new StandardMBean(classOf[ClusterNodeMBean])
-    with ClusterNodeMBean {
+      with ClusterNodeMBean {
 
       // JMX attributes (bean-style)
 

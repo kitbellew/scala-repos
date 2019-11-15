@@ -47,7 +47,7 @@ import TransSpecModule._
  * revert this and only accept JTextT (StrColumn).
  */
 
-trait StringLibModule[M[+ _]] extends ColumnarTableLibModule[M] {
+trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
   trait StringLib extends ColumnarTableLib {
     import trans._
     import StdLib.{

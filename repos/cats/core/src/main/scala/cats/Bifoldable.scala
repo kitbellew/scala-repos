@@ -22,7 +22,7 @@ trait Bifoldable[F[_, _]] extends Any with Serializable { self =>
     )
 
   def compose[G[_, _]](implicit ev: Bifoldable[G])
-    : Bifoldable[Lambda[(A, B) => F[G[A, B], G[A, B]]]] =
+      : Bifoldable[Lambda[(A, B) => F[G[A, B], G[A, B]]]] =
     new CompositeBifoldable[F, G] {
       val F = self
       val G = ev

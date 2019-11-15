@@ -19,7 +19,7 @@ import play.api.libs.json.{JsObject, Json}
 @Path("v2/deployments")
 @Consumes(Array(MediaType.APPLICATION_JSON))
 @Produces(Array(MarathonMediaType.PREFERRED_APPLICATION_JSON))
-class DeploymentsResource @Inject()(
+class DeploymentsResource @Inject() (
     service: MarathonSchedulerService,
     groupManager: GroupManager,
     val authenticator: Authenticator,

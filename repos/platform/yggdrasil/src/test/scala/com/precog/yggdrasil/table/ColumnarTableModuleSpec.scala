@@ -55,8 +55,7 @@ import java.nio.CharBuffer
 import TableModule._
 import SampleData._
 
-trait TestColumnarTableModule[M[+ _]]
-    extends ColumnarTableModuleTestSupport[M] {
+trait TestColumnarTableModule[M[+_]] extends ColumnarTableModuleTestSupport[M] {
   type GroupId = Int
   import trans._
   import constants._
@@ -97,7 +96,7 @@ trait TestColumnarTableModule[M[+ _]]
   object Table extends TableCompanion
 }
 
-trait ColumnarTableModuleSpec[M[+ _]]
+trait ColumnarTableModuleSpec[M[+_]]
     extends TestColumnarTableModule[M]
     with TableModuleSpec[M]
     with CogroupSpec[M]
@@ -724,8 +723,9 @@ trait ColumnarTableModuleSpec[M[+ _]]
 object ColumnarTableModuleSpec
     extends ColumnarTableModuleSpec[Free.Trampoline] {
   implicit def M =
-    new Monad[Free.Trampoline] with Comonad[Free.Trampoline]
-    with Cobind.FromCojoin[Free.Trampoline] {
+    new Monad[Free.Trampoline]
+      with Comonad[Free.Trampoline]
+      with Cobind.FromCojoin[Free.Trampoline] {
       import scalaz.Free._
       import scalaz.std.function._
       override def point[A](a: => A) = freeMonad[Function0].point(a)

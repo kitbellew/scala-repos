@@ -1564,7 +1564,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     _statefulSnip.set(_statefulSnip.is - cls)
 
   private var _queryAnalyzer
-    : List[(Box[Req], Long, List[(String, Long)]) => Any] = Nil
+      : List[(Box[Req], Long, List[(String, Long)]) => Any] = Nil
 
   /**
     * Add a query analyzer (passed queries for analysis or logging). The analyzer

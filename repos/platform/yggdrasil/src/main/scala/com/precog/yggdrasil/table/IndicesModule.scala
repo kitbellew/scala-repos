@@ -60,7 +60,7 @@ object IndicesHelper {
 
 import IndicesHelper._
 
-trait IndicesModule[M[+ _]]
+trait IndicesModule[M[+_]]
     extends Logging
     with TransSpecModule
     with ColumnarTableTypes[M]

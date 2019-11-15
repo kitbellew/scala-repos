@@ -126,7 +126,7 @@ object TableModule {
   }
 }
 
-trait TableModule[M[+ _]] extends TransSpecModule {
+trait TableModule[M[+_]] extends TransSpecModule {
   import TableModule._
 
   implicit def M: Monad[M]
@@ -161,7 +161,7 @@ trait TableModule[M[+ _]] extends TransSpecModule {
         values: Stream[RValue],
         maxSliceSize: Option[Int] = None): Table
 
-    def merge[N[+ _]](grouping: GroupingSpec)(
+    def merge[N[+_]](grouping: GroupingSpec)(
         body: (RValue, GroupId => M[Table]) => N[Table])(
         implicit nt: N ~> M): M[Table]
     def align(

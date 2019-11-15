@@ -5,7 +5,7 @@ import com.google.inject.Inject
 /**
   * Makes the [[MarathonSchedulerService]] service usable as [[SchedulerCallbacks]].
   */
-class SchedulerCallbacksServiceAdapter @Inject()(
+class SchedulerCallbacksServiceAdapter @Inject() (
     schedulerService: MarathonSchedulerService)
     extends SchedulerCallbacks {
   override def disconnected(): Unit = {

@@ -69,7 +69,7 @@ object ADTPartitionExample extends App {
 
     implicit def cpPartitioner[K, H, T <: Coproduct, OutT <: HList](
         implicit cp: Aux[T, OutT])
-      : Aux[FieldType[K, H] :+: T, FieldType[K, List[H]] :: OutT] =
+        : Aux[FieldType[K, H] :+: T, FieldType[K, List[H]] :: OutT] =
       new Partitioner[FieldType[K, H] :+: T] {
         type Out = FieldType[K, List[H]] :: OutT
 

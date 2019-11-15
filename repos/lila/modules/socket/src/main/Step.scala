@@ -57,12 +57,12 @@ object Step {
       })
     }
   private implicit val crazyhouseDataWriter
-    : OWrites[chess.variant.Crazyhouse.Data] = OWrites { v =>
+      : OWrites[chess.variant.Crazyhouse.Data] = OWrites { v =>
     Json.obj("pockets" -> List(v.pockets.white, v.pockets.black))
   }
 
   private[socket] implicit val openingWriter
-    : OWrites[chess.opening.FullOpening] = OWrites { o =>
+      : OWrites[chess.opening.FullOpening] = OWrites { o =>
     Json.obj("eco" -> o.eco, "name" -> o.name)
   }
 

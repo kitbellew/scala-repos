@@ -448,7 +448,7 @@ object Scoped {
     new RichTaskable2(t2)
   implicit def t3ToTable3[A, B, C](
       t3: (ScopedTaskable[A], ScopedTaskable[B], ScopedTaskable[C]))
-    : RichTaskable3[A, B, C] = new RichTaskable3(t3)
+      : RichTaskable3[A, B, C] = new RichTaskable3(t3)
   implicit def t4ToTable4[A, B, C, D](
       t4: (
           ScopedTaskable[A],
@@ -702,7 +702,7 @@ object Scoped {
     new Apply3(t3)
   implicit def t4ToApp4[A, B, C, D](
       t4: (Initialize[A], Initialize[B], Initialize[C], Initialize[D]))
-    : Apply4[A, B, C, D] = new Apply4(t4)
+      : Apply4[A, B, C, D] = new Apply4(t4)
   implicit def t5ToApp5[A, B, C, D, E](
       t5: (
           Initialize[A],

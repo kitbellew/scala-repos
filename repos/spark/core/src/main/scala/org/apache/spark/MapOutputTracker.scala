@@ -577,7 +577,7 @@ private[spark] object MapOutputTracker extends Logging {
       startPartition: Int,
       endPartition: Int,
       statuses: Array[MapStatus])
-    : Seq[(BlockManagerId, Seq[(BlockId, Long)])] = {
+      : Seq[(BlockManagerId, Seq[(BlockId, Long)])] = {
     assert(statuses != null)
     val splitsByAddress =
       new HashMap[BlockManagerId, ArrayBuffer[(BlockId, Long)]]

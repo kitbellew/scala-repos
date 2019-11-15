@@ -81,13 +81,12 @@ private final class Captcher extends Actor {
           moves = rewinded.situation.destinations map {
             case (from, dests) => from.key -> dests.mkString
           }
-        } yield
-          Captcha(
-            game.id,
-            fen(rewinded),
-            rewinded.player.white,
-            solutions,
-            moves = moves)
+        } yield Captcha(
+          game.id,
+          fen(rewinded),
+          rewinded.player.white,
+          solutions,
+          moves = moves)
       })
 
     private def solve(game: ChessGame): Option[Captcha.Solutions] =

@@ -100,29 +100,28 @@ object ResourceServer {
       path = rw.mkString("/", "/", "")
       url <- LiftRules.getResource(path)
       lastModified = calcLastModified(url)
-    } yield
-      request.testFor304(
-        lastModified,
-        "Expires" -> toInternetDate(millis + 30.days)) openOr {
-        val stream = url.openStream
-        val uc = url.openConnection
-        StreamingResponse(
-          stream,
-          () => stream.close,
-          uc.getContentLength,
-          (if (lastModified == 0L) Nil
-           else
-             List("Last-Modified" -> toInternetDate(lastModified))) ::: List(
-            "Expires" -> toInternetDate(millis + 30.days),
-            "Date" -> Helpers.nowAsInternetDate,
-            "Pragma" -> "",
-            "Cache-Control" -> "",
-            "Content-Type" -> detectContentType(rw.last)
-          ),
-          Nil,
-          200
-        )
-      }
+    } yield request.testFor304(
+      lastModified,
+      "Expires" -> toInternetDate(millis + 30.days)) openOr {
+      val stream = url.openStream
+      val uc = url.openConnection
+      StreamingResponse(
+        stream,
+        () => stream.close,
+        uc.getContentLength,
+        (if (lastModified == 0L) Nil
+         else
+           List("Last-Modified" -> toInternetDate(lastModified))) ::: List(
+          "Expires" -> toInternetDate(millis + 30.days),
+          "Date" -> Helpers.nowAsInternetDate,
+          "Pragma" -> "",
+          "Cache-Control" -> "",
+          "Content-Type" -> detectContentType(rw.last)
+        ),
+        Nil,
+        200
+      )
+    }
 
   /**
     * detect the Content-Type of file (path) with context-defined content-types

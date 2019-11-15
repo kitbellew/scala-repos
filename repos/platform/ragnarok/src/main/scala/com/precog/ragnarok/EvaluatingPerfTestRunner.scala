@@ -68,7 +68,7 @@ trait EvaluatingPerfTestRunnerConfig extends PerfTestRunnerConfig {
   val idSource = new FreshAtomicIdSource
 }
 
-trait EvaluatingPerfTestRunner[M[+ _], T]
+trait EvaluatingPerfTestRunner[M[+_], T]
     extends ParseEvalStack[M]
     with IdSourceScannerModule
     with PerfTestRunner[M, T] {
@@ -78,7 +78,7 @@ trait EvaluatingPerfTestRunner[M[+ _], T]
   type YggConfig <: PerfTestRunnerConfig
 
   private implicit val nt = NaturalTransformation.refl[M]
-  def Evaluator[N[+ _]](
+  def Evaluator[N[+_]](
       N0: Monad[N])(implicit mn: M ~> N, nm: N ~> M): EvaluatorLike[N]
 
   val dummyAccount = AccountDetails(

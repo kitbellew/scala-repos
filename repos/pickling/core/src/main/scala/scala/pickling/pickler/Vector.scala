@@ -11,6 +11,6 @@ trait VectorPicklers {
       elemUnpickler: Unpickler[T],
       collTag: FastTypeTag[Vector[T]],
       cbf: CanBuildFrom[Vector[T], T, Vector[T]])
-    : Pickler[Vector[T]] with Unpickler[Vector[T]] =
+      : Pickler[Vector[T]] with Unpickler[Vector[T]] =
     SeqSetPickler[T, Vector]
 }

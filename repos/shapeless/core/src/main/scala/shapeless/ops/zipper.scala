@@ -28,7 +28,7 @@ object zipper {
     type Aux[Z, Out0] = Right[Z] { type Out = Out0 }
 
     implicit def right[C, L <: HList, RH, RT <: HList, P]
-      : Aux[Zipper[C, L, RH :: RT, P], Zipper[C, RH :: L, RT, P]] =
+        : Aux[Zipper[C, L, RH :: RT, P], Zipper[C, RH :: L, RT, P]] =
       new Right[Zipper[C, L, RH :: RT, P]] {
         type Out = Zipper[C, RH :: L, RT, P]
         def apply(z: Zipper[C, L, RH :: RT, P]) =
@@ -44,7 +44,7 @@ object zipper {
     type Aux[Z, Out0] = Left[Z] { type Out = Out0 }
 
     implicit def left[C, LH, LT <: HList, R <: HList, P]
-      : Aux[Zipper[C, LH :: LT, R, P], Zipper[C, LT, LH :: R, P]] =
+        : Aux[Zipper[C, LH :: LT, R, P], Zipper[C, LT, LH :: R, P]] =
       new Left[Zipper[C, LH :: LT, R, P]] {
         type Out = Zipper[C, LT, LH :: R, P]
         def apply(z: Zipper[C, LH :: LT, R, P]) =
@@ -61,7 +61,7 @@ object zipper {
 
     implicit def first[C, L <: HList, R <: HList, RP <: HList, P](
         implicit rp: ReversePrepend.Aux[L, R, RP])
-      : Aux[Zipper[C, L, R, P], Zipper[C, HNil, RP, P]] =
+        : Aux[Zipper[C, L, R, P], Zipper[C, HNil, RP, P]] =
       new First[Zipper[C, L, R, P]] {
         type Out = Zipper[C, HNil, RP, P]
         def apply(z: Zipper[C, L, R, P]) =
@@ -78,7 +78,7 @@ object zipper {
 
     implicit def last[C, L <: HList, R <: HList, RP <: HList, P](
         implicit rp: ReversePrepend.Aux[R, L, RP])
-      : Aux[Zipper[C, L, R, P], Zipper[C, RP, HNil, P]] =
+        : Aux[Zipper[C, L, R, P], Zipper[C, RP, HNil, P]] =
       new Last[Zipper[C, L, R, P]] {
         type Out = Zipper[C, RP, HNil, P]
         def apply(z: Zipper[C, L, R, P]) =
@@ -104,7 +104,7 @@ object zipper {
         RS <: HList](
         implicit split: Split.Aux[R, N, LP, RS],
         reverse: ReversePrepend[LP, L])
-      : Aux[Zipper[C, L, R, P], N, Zipper[C, reverse.Out, RS, P]] =
+        : Aux[Zipper[C, L, R, P], N, Zipper[C, reverse.Out, RS, P]] =
       new RightBy[Zipper[C, L, R, P], N] {
         type Out = Zipper[C, reverse.Out, RS, P]
         def apply(z: Zipper[C, L, R, P]) = {
@@ -132,7 +132,7 @@ object zipper {
         LS <: HList](
         implicit split: Split.Aux[L, N, RP, LS],
         reverse: ReversePrepend[RP, R])
-      : Aux[Zipper[C, L, R, P], N, Zipper[C, LS, reverse.Out, P]] =
+        : Aux[Zipper[C, L, R, P], N, Zipper[C, LS, reverse.Out, P]] =
       new LeftBy[Zipper[C, L, R, P], N] {
         type Out = Zipper[C, LS, reverse.Out, P]
         def apply(z: Zipper[C, L, R, P]) = {
@@ -160,7 +160,7 @@ object zipper {
         RS <: HList](
         implicit split: SplitLeft.Aux[R, T, LP, RS],
         reverse: ReversePrepend[LP, L])
-      : Aux[Zipper[C, L, R, P], T, Zipper[C, reverse.Out, RS, P]] =
+        : Aux[Zipper[C, L, R, P], T, Zipper[C, reverse.Out, RS, P]] =
       new RightTo[Zipper[C, L, R, P], T] {
         type Out = Zipper[C, reverse.Out, RS, P]
         def apply(z: Zipper[C, L, R, P]) = {
@@ -252,7 +252,7 @@ object zipper {
     type Aux[Z, Out0] = Root[Z] { type Out = Out0 }
 
     implicit def rootRoot[C, L <: HList, R <: HList]
-      : Aux[Zipper[C, L, R, None.type], Zipper[C, L, R, None.type]] =
+        : Aux[Zipper[C, L, R, None.type], Zipper[C, L, R, None.type]] =
       new Root[Zipper[C, L, R, None.type]] {
         type Out = Zipper[C, L, R, None.type]
         def apply(z: Zipper[C, L, R, None.type]) = z
@@ -275,7 +275,7 @@ object zipper {
     type Aux[Z, Out0] = Get[Z] { type Out = Out0 }
 
     implicit def get[C, L <: HList, RH, RT <: HList, P]
-      : Aux[Zipper[C, L, RH :: RT, P], RH] =
+        : Aux[Zipper[C, L, RH :: RT, P], RH] =
       new Get[Zipper[C, L, RH :: RT, P]] {
         type Out = RH
         def apply(z: Zipper[C, L, RH :: RT, P]) = z.suffix.head
@@ -292,7 +292,7 @@ object zipper {
     implicit def genericPut[C, L <: HList, RH, RT <: HList, P, E, CL <: HList](
         implicit gen: Generic.Aux[C, CL],
         rp: ReversePrepend.Aux[L, E :: RT, CL])
-      : Aux[Zipper[C, L, RH :: RT, P], E, Zipper[C, L, E :: RT, P]] =
+        : Aux[Zipper[C, L, RH :: RT, P], E, Zipper[C, L, E :: RT, P]] =
       new Put[Zipper[C, L, RH :: RT, P], E] {
         type Out = Zipper[C, L, E :: RT, P]
         def apply(z: Zipper[C, L, RH :: RT, P], e: E) =
@@ -307,7 +307,7 @@ object zipper {
         P,
         E,
         CL <: HList](implicit rp: ReversePrepend.Aux[L, E :: RT, CL])
-      : Aux[Zipper[C, L, RH :: RT, P], E, Zipper[CL, L, E :: RT, P]] =
+        : Aux[Zipper[C, L, RH :: RT, P], E, Zipper[CL, L, E :: RT, P]] =
       new Put[Zipper[C, L, RH :: RT, P], E] {
         type Out = Zipper[CL, L, E :: RT, P]
         def apply(z: Zipper[C, L, RH :: RT, P], e: E) =
@@ -329,8 +329,11 @@ object zipper {
         put: Put.Aux[
           Zipper[C, L, RH1 :: RT, P],
           RH2,
-          Zipper[C, L, RH2 :: RT, P]])
-      : Aux[Zipper[C, L, RH1 :: RT, P], RH1, RH2, Zipper[C, L, RH2 :: RT, P]] =
+          Zipper[C, L, RH2 :: RT, P]]): Aux[
+      Zipper[C, L, RH1 :: RT, P],
+      RH1,
+      RH2,
+      Zipper[C, L, RH2 :: RT, P]] =
       new Modify[Zipper[C, L, RH1 :: RT, P], RH1, RH2] {
         type Out = Zipper[C, L, RH2 :: RT, P]
         def apply(z: Zipper[C, L, RH1 :: RT, P], f: RH1 => RH2) =
@@ -353,7 +356,7 @@ object zipper {
         P,
         E,
         CL <: HList](implicit rp: ReversePrepend.Aux[E :: L, R, CL])
-      : Aux[Zipper[C, L, R, P], E, Zipper[CL, E :: L, R, P]] =
+        : Aux[Zipper[C, L, R, P], E, Zipper[CL, E :: L, R, P]] =
       new Insert[Zipper[C, L, R, P], E] {
         type Out = Zipper[CL, E :: L, R, P]
         def apply(z: Zipper[C, L, R, P], e: E) =
@@ -375,7 +378,7 @@ object zipper {
         RT <: HList,
         P,
         CL <: HList](implicit rp: ReversePrepend.Aux[L, RT, CL])
-      : Aux[Zipper[C, L, RH :: RT, P], Zipper[CL, L, RT, P]] =
+        : Aux[Zipper[C, L, RH :: RT, P], Zipper[CL, L, RT, P]] =
       new Delete[Zipper[C, L, RH :: RT, P]] {
         type Out = Zipper[CL, L, RT, P]
         def apply(z: Zipper[C, L, RH :: RT, P]) =
@@ -392,7 +395,7 @@ object zipper {
 
     implicit def hlistReify[LR <: HList, L <: HList, R <: HList, P](
         implicit rp: ReversePrepend.Aux[L, R, LR])
-      : Aux[Zipper[LR, L, R, P], LR] =
+        : Aux[Zipper[LR, L, R, P], LR] =
       new Reify[Zipper[LR, L, R, P]] {
         type Out = LR
         def apply(z: Zipper[LR, L, R, P]) = z.prefix reverse_::: z.suffix

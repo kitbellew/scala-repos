@@ -119,8 +119,9 @@ class TsvWithHeader(p: String, f: Fields = Fields.UNKNOWN)(implicit mode: Mode)
 
   override def writeFrom(pipe: Pipe)(implicit flowDef: FlowDef, mode: Mode) = {
     val ret = super.writeFrom(pipe)(flowDef, mode)
-    val fieldNames = for (i <- (0 until fields.size))
-      yield fields.get(i).asInstanceOf[String]
+    val fieldNames =
+      for (i <- (0 until fields.size))
+        yield fields.get(i).asInstanceOf[String]
     val headerFileText = fieldNames.mkString("\t")
     writeToFile(headerPath, headerFileText)
     ret

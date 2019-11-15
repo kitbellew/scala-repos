@@ -53,7 +53,7 @@ trait Tuples {
     }
 
   implicit def Tuple4JSON[A: JSON, B: JSON, C: JSON, D: JSON]
-    : JSON[(A, B, C, D)] = new JSON[(A, B, C, D)] {
+      : JSON[(A, B, C, D)] = new JSON[(A, B, C, D)] {
     def read(json: JValue) = json match {
       case JArray(a :: b :: c :: d :: _) =>
         (fromJSON[A](a) |@| fromJSON[B](b) |@| fromJSON[C](c) |@| fromJSON[D](
@@ -71,7 +71,7 @@ trait Tuples {
   }
 
   implicit def Tuple5JSON[A: JSON, B: JSON, C: JSON, D: JSON, E: JSON]
-    : JSON[(A, B, C, D, E)] =
+      : JSON[(A, B, C, D, E)] =
     new JSON[(A, B, C, D, E)] {
       def read(json: JValue) = json match {
         case JArray(a :: b :: c :: d :: e :: _) =>
@@ -90,7 +90,7 @@ trait Tuples {
     }
 
   implicit def Tuple6JSON[A: JSON, B: JSON, C: JSON, D: JSON, E: JSON, F: JSON]
-    : JSON[(A, B, C, D, E, F)] = new JSON[(A, B, C, D, E, F)] {
+      : JSON[(A, B, C, D, E, F)] = new JSON[(A, B, C, D, E, F)] {
     def read(json: JValue) = json match {
       case JArray(a :: b :: c :: d :: e :: f :: _) =>
         (fromJSON[A](a) |@| fromJSON[B](b) |@| fromJSON[C](c) |@| fromJSON[D](d) |@| fromJSON[

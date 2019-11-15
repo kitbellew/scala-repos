@@ -108,7 +108,7 @@ trait StandaloneQueryExecutor
   }
 
   protected def executor(implicit shardQueryMonad: JobQueryTFMonad)
-    : QueryExecutor[JobQueryTF, StreamT[JobQueryTF, Slice]] = {
+      : QueryExecutor[JobQueryTF, StreamT[JobQueryTF, Slice]] = {
     implicit val mn = new (Future ~> JobQueryTF) {
       def apply[A](fut: Future[A]) = fut.liftM[JobQueryT]
     }
@@ -128,7 +128,7 @@ trait StandaloneQueryExecutor
   }
 
   def asyncExecutorFor(apiKey: APIKey)
-    : Future[Validation[String, QueryExecutor[Future, JobId]]] = {
+      : Future[Validation[String, QueryExecutor[Future, JobId]]] = {
     logger.debug(
       "Creating new async executor for %s => %s"
         .format(apiKey, executionContext))

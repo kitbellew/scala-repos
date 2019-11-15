@@ -40,7 +40,7 @@ trait StandardFormats extends ThreadLocalSupport {
   import scala.util.Failure
   import SexpFormatUtils._
   implicit def eitherFormat[L: SexpFormat, R: SexpFormat]
-    : SexpFormat[Either[L, R]] =
+      : SexpFormat[Either[L, R]] =
     new SexpFormat[Either[L, R]] {
       def write(either: Either[L, R]) = either match {
         case Left(b)  => b.toSexp

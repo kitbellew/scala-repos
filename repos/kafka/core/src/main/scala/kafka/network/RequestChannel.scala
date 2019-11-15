@@ -79,7 +79,7 @@ object RequestChannel extends Logging {
     // request types should only use the client-side versions which are parsed with
     // o.a.k.common.requests.AbstractRequest.getRequest()
     private val keyToNameAndDeserializerMap
-      : Map[Short, (ByteBuffer) => RequestOrResponse] = Map(
+        : Map[Short, (ByteBuffer) => RequestOrResponse] = Map(
       ApiKeys.FETCH.id -> FetchRequest.readFrom,
       ApiKeys.CONTROLLED_SHUTDOWN_KEY.id -> ControlledShutdownRequest.readFrom)
 
@@ -110,7 +110,8 @@ object RequestChannel extends Logging {
             throw new InvalidRequestException(
               s"Error getting request for apiKey: ${header.apiKey} and apiVersion: ${header.apiVersion}",
               ex)
-        } else null
+        }
+      else null
 
     buffer = null
     private val requestLogger = Logger.getLogger("kafka.request.logger")

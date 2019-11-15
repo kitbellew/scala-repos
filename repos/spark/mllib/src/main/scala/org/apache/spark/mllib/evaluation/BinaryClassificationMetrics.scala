@@ -41,7 +41,7 @@ import org.apache.spark.sql.DataFrame
   *                partition boundaries.
   */
 @Since("1.0.0")
-class BinaryClassificationMetrics @Since("1.3.0")(
+class BinaryClassificationMetrics @Since("1.3.0") (
     @Since("1.3.0") val scoreAndLabels: RDD[(Double, Double)],
     @Since("1.3.0") val numBins: Int)
     extends Logging {

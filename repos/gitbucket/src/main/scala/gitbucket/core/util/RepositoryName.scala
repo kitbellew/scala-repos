@@ -19,7 +19,7 @@ object RepositoryName {
       repository: gitbucket.core.util.JGitUtil.RepositoryInfo): RepositoryName =
     RepositoryName(repository.owner, repository.name)
   def apply(repository: gitbucket.core.service.RepositoryService.RepositoryInfo)
-    : RepositoryName = RepositoryName(repository.owner, repository.name)
+      : RepositoryName = RepositoryName(repository.owner, repository.name)
   def apply(repository: gitbucket.core.model.CommitStatus): RepositoryName =
     RepositoryName(repository.userName, repository.repositoryName)
 }

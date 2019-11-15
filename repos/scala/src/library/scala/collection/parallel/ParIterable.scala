@@ -29,7 +29,7 @@ trait ParIterable[+T]
     with GenericParTemplate[T, ParIterable]
     with ParIterableLike[T, ParIterable[T], Iterable[T]] {
   override def companion
-    : GenericCompanion[ParIterable] with GenericParCompanion[ParIterable] =
+      : GenericCompanion[ParIterable] with GenericParCompanion[ParIterable] =
     ParIterable
   //protected[this] override def newBuilder = ParIterable.newBuilder[T]
 

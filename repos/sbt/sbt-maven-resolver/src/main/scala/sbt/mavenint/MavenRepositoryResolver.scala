@@ -625,7 +625,7 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
 
   def getClassifier(
       art: org.apache.ivy.core.module.descriptor.DependencyArtifactDescriptor)
-    : Option[String] =
+      : Option[String] =
     art.getType match {
       case "doc" | "javadoc"   => Some("javadoc")
       case "src" | "source"    => Some("sources")

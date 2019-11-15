@@ -12,7 +12,7 @@ import scala.collection.mutable.ListBuffer
 
 trait ListInstances extends ListInstances1 {
   implicit val listInstance
-    : Traverse[List] with MonadCombine[List] with CoflatMap[List] =
+      : Traverse[List] with MonadCombine[List] with CoflatMap[List] =
     new Traverse[List] with MonadCombine[List] with CoflatMap[List] {
 
       def empty[A]: List[A] = Nil

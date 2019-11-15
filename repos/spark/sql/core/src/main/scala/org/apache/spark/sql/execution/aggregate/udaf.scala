@@ -420,7 +420,7 @@ private[sql] case class ScalaUDAF(
 
   // This buffer is only used at executor side.
   private[this] lazy val mutableAggregateBuffer
-    : MutableAggregationBufferImpl = {
+      : MutableAggregationBufferImpl = {
     new MutableAggregationBufferImpl(
       aggBufferSchema,
       bufferValuesToCatalystConverters,

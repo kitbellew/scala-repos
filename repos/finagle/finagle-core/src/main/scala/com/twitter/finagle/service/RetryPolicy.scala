@@ -197,7 +197,7 @@ object RetryPolicy extends JavaSingleton {
   ): RetryPolicy[(Req, Try[Rep])] =
     new RetryPolicy[(Req, Try[Rep])] {
       def apply(input: (Req, Try[Rep]))
-        : Option[(Duration, RetryPolicy[(Req, Try[Rep])])] =
+          : Option[(Duration, RetryPolicy[(Req, Try[Rep])])] =
         input match {
           case (_, t @ Throw(_)) =>
             policy(t.asInstanceOf[Throw[Nothing]]) match {

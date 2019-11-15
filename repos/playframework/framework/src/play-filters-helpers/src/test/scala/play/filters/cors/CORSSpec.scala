@@ -18,7 +18,7 @@ import scala.concurrent.Future
 
 object CORSFilterSpec extends CORSCommonSpec {
 
-  class Filters @Inject()(corsFilter: CORSFilter) extends HttpFilters {
+  class Filters @Inject() (corsFilter: CORSFilter) extends HttpFilters {
     def filters = Seq(corsFilter)
   }
 
@@ -57,12 +57,12 @@ object CORSFilterSpec extends CORSCommonSpec {
 }
 
 object CORSWithCSRFSpec extends CORSCommonSpec {
-  class Filters @Inject()(corsFilter: CORSFilter, csrfFilter: CSRFFilter)
+  class Filters @Inject() (corsFilter: CORSFilter, csrfFilter: CSRFFilter)
       extends HttpFilters {
     def filters = Seq(corsFilter, csrfFilter)
   }
 
-  class FiltersWithoutCors @Inject()(csrfFilter: CSRFFilter)
+  class FiltersWithoutCors @Inject() (csrfFilter: CSRFFilter)
       extends HttpFilters {
     def filters = Seq(csrfFilter)
   }

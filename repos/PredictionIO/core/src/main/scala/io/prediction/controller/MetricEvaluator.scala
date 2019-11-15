@@ -119,7 +119,7 @@ object MetricEvaluator {
   def apply[EI, Q, P, A, R](
       metric: Metric[EI, Q, P, A, R],
       otherMetrics: Seq[Metric[EI, Q, P, A, _]])
-    : MetricEvaluator[EI, Q, P, A, R] = {
+      : MetricEvaluator[EI, Q, P, A, R] = {
     new MetricEvaluator[EI, Q, P, A, R](metric, otherMetrics, None)
   }
 

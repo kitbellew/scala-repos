@@ -32,7 +32,7 @@ import common._
 import scalaz._
 import Scalaz._
 
-trait ModelLibModule[M[+ _]] {
+trait ModelLibModule[M[+_]] {
   trait ModelSupport {
     import TableModule.paths
 
@@ -231,7 +231,8 @@ trait ModelLibModule[M[+ _]] {
                 res.head match {
                   case (col: DoubleColumn) => Some(col)
                   case _                   => sys.error("Expected DoubleColumn.")
-                } else if (res.length == 0) {
+                }
+              else if (res.length == 0) {
                 None
               } else {
                 sys.error("Incorrect number of columns.")
@@ -249,7 +250,7 @@ trait ModelLibModule[M[+ _]] {
     def alignWithModels(
         schema: CSchema,
         modelWithPaths: Map[String, Set[CPath]])
-      : Map[String, Map[CPath, DoubleColumn]] = {
+        : Map[String, Map[CPath, DoubleColumn]] = {
       modelWithPaths map {
         case (modelName, cpaths) =>
           (modelName, determineColumns(schema, cpaths))

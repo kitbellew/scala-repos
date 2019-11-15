@@ -52,7 +52,8 @@ object Opening extends LilaController {
     if (HTTPRequest isXhr ctx.req)
       env.selector(ctx.me) zip (env userInfos ctx.me) flatMap {
         case (opening, infos) => makeData(opening, infos, true, none, none)
-      } else
+      }
+    else
       env.selector(ctx.me) flatMap { opening =>
         renderShow(opening) map { Ok(_) }
       }

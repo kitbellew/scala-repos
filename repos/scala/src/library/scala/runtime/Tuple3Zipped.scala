@@ -159,7 +159,7 @@ object Tuple3Zipped {
         implicit w1: T1 => TraversableLike[El1, Repr1],
         w2: T2 => IterableLike[El2, Repr2],
         w3: T3 => IterableLike[El3, Repr3])
-      : Tuple3Zipped[El1, Repr1, El2, Repr2, El3, Repr3] =
+        : Tuple3Zipped[El1, Repr1, El2, Repr2, El3, Repr3] =
       new Tuple3Zipped((x._1, x._2, x._3))
   }
 }

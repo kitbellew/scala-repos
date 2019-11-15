@@ -94,7 +94,7 @@ trait ManagedQueryModule extends YggConfigComponent with Logging {
     * A mix-in for `QueryLogger`s that forcefully aborts a bifrost query on fatal
     * errors.
     */
-  trait ShardQueryLogger[M[+ _], P] extends QueryLogger[M, P] {
+  trait ShardQueryLogger[M[+_], P] extends QueryLogger[M, P] {
     def M: JobQueryTFMonad
 
     abstract override def die(): M[Unit] = {
@@ -203,7 +203,7 @@ trait ManagedQueryModule extends YggConfigComponent with Logging {
     * This also turns the result stream into a simple StreamT[Future, A], as
     * this method is essentially the sink for managed queries.
     */
-  def completeJob[N[+ _], A](result: StreamT[JobQueryTF, A])(
+  def completeJob[N[+_], A](result: StreamT[JobQueryTF, A])(
       implicit M: JobQueryTFMonad,
       t: JobQueryTF ~> N): StreamT[N, A] = {
     val finish: StreamT[JobQueryTF, A] =

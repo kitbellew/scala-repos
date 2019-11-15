@@ -123,17 +123,16 @@ private[tournament] final class TournamentApi(
       tourId <- game.tournamentId
       whiteId <- game.whitePlayer.userId
       blackId <- game.blackPlayer.userId
-    } yield
-      TournamentRepo byId tourId flatMap {
-        _ ?? { tour =>
-          cached ranking tour map { ranking =>
-            ranking.get(whiteId) |@| ranking.get(blackId) apply {
-              case (whiteR, blackR) =>
-                TourAndRanks(tour, whiteR + 1, blackR + 1)
-            }
+    } yield TournamentRepo byId tourId flatMap {
+      _ ?? { tour =>
+        cached ranking tour map { ranking =>
+          ranking.get(whiteId) |@| ranking.get(blackId) apply {
+            case (whiteR, blackR) =>
+              TourAndRanks(tour, whiteR + 1, blackR + 1)
           }
         }
       }
+    }
   }
 
   def start(oldTour: Tournament) {

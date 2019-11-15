@@ -37,7 +37,7 @@ trait Function11[-T1, -T2, -T3, -T4, -T5, -T6, -T7, -T8, -T9, -T10, -T11, +R]
     */
   @annotation.unspecialized
   def curried
-    : T1 => T2 => T3 => T4 => T5 => T6 => T7 => T8 => T9 => T10 => T11 => R = {
+      : T1 => T2 => T3 => T4 => T5 => T6 => T7 => T8 => T9 => T10 => T11 => R = {
     (x1: T1) =>
       (
           (

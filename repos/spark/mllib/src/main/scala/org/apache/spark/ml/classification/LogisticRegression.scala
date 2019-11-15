@@ -179,7 +179,7 @@ private[classification] trait LogisticRegressionParams
   */
 @Since("1.2.0")
 @Experimental
-class LogisticRegression @Since("1.2.0")(
+class LogisticRegression @Since("1.2.0") (
     @Since("1.4.0") override val uid: String)
     extends ProbabilisticClassifier[
       Vector,

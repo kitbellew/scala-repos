@@ -66,7 +66,7 @@ object SessionMaster extends LiftActor with Loggable {
     */
   @volatile
   var sessionCheckFuncs
-    : List[(Map[String, SessionInfo], SessionInfo => Unit) => Unit] =
+      : List[(Map[String, SessionInfo], SessionInfo => Unit) => Unit] =
     ((ses: Map[String, SessionInfo], destroyer: SessionInfo => Unit) => {
       val now = millis
 

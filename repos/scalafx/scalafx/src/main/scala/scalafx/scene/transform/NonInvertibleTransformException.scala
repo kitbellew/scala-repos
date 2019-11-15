@@ -34,7 +34,7 @@ import scalafx.delegate.SFXDelegate
 object NonInvertibleTransformException {
   implicit def sfxNonInvertibleTransformException2jfx(
       v: NonInvertibleTransformException)
-    : jfxst.NonInvertibleTransformException =
+      : jfxst.NonInvertibleTransformException =
     if (v != null) v.delegate else null
 }
 

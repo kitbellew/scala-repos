@@ -21,5 +21,5 @@ trait Series {
       defaultName: Int => String,
       defaultColor: Int => Paint,
       defaultStroke: Int => Stroke)
-    : (org.jfree.data.xy.XYDataset, XYItemRenderer)
+      : (org.jfree.data.xy.XYDataset, XYItemRenderer)
 }

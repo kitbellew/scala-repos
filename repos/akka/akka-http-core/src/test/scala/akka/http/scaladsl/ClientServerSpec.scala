@@ -628,7 +628,7 @@ class ClientServerSpec
     def readAll(socket: Socket)(
         reader: BufferedReader = new BufferedReader(
           new InputStreamReader(socket.getInputStream)))
-      : (String, BufferedReader) = {
+        : (String, BufferedReader) = {
       val sb = new java.lang.StringBuilder
       val cbuf = new Array[Char](256)
       @tailrec def drain(): (String, BufferedReader) =

@@ -40,7 +40,6 @@ class Tutorial4(args: Args) extends Job(args) {
     .flatMap('line -> 'word) { line: String =>
       line.split("\\s")
     }
-
     /**
     To count the words, first we need to group by word.
     groupBy takes any number of fields as the group key. In this
@@ -60,7 +59,6 @@ class Tutorial4(args: Args) extends Job(args) {
     .groupBy('word) { group =>
       group.size
     }
-
     /**
     No project is needed here because the groupBy has eliminated everything but 'word
     and the size field.

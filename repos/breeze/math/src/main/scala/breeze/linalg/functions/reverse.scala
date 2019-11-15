@@ -17,7 +17,7 @@ object reverse extends UFunc {
     }
 
   implicit def svReverse[T: ClassTag: Zero]
-    : Impl[SparseVector[T], SparseVector[T]] =
+      : Impl[SparseVector[T], SparseVector[T]] =
     new Impl[SparseVector[T], SparseVector[T]] {
       def apply(sv: SparseVector[T]): SparseVector[T] = {
         val nIndex = new Array[Int](sv.activeSize)

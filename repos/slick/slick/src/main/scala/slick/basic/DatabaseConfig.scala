@@ -74,7 +74,7 @@ object DatabaseConfig {
       path: String,
       config: Config = ConfigFactory.load(),
       classLoader: ClassLoader = ClassLoaderUtil.defaultClassLoader)
-    : DatabaseConfig[P] = {
+      : DatabaseConfig[P] = {
     val basePath = (if (path.isEmpty) "" else path + ".")
     val n = config.getStringOpt(basePath + "profile").getOrElse {
       val nOld = config.getStringOpt(basePath + "driver").map {
@@ -129,7 +129,7 @@ object DatabaseConfig {
   def forURI[P <: BasicProfile: ClassTag](
       uri: URI,
       classLoader: ClassLoader = ClassLoaderUtil.defaultClassLoader)
-    : DatabaseConfig[P] = {
+      : DatabaseConfig[P] = {
     val (base, path) = {
       val f = uri.getRawFragment
       val s = uri.toString

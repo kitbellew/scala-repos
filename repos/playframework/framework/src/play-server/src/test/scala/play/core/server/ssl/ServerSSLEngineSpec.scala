@@ -83,7 +83,7 @@ class ServerSSLEngineSpec extends Specification with Mockito {
   "ServerSSLContext" should {
 
     "default create a SSL engine suitable for development" in new ApplicationContext
-    with TempConfDir {
+      with TempConfDir {
       createEngine(None, Some(tempDir)) must beAnInstanceOf[SSLEngine]
     }
 

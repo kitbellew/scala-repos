@@ -390,13 +390,13 @@ final class HttpResponse(
     if (headers eq this.headers) this else copy(headers = headers)
 
   override def withProtocol(protocol: akka.http.javadsl.model.HttpProtocol)
-    : akka.http.javadsl.model.HttpResponse =
+      : akka.http.javadsl.model.HttpResponse =
     copy(protocol = protocol.asInstanceOf[HttpProtocol])
   override def withStatus(
       statusCode: Int): akka.http.javadsl.model.HttpResponse =
     copy(status = statusCode)
   override def withStatus(statusCode: akka.http.javadsl.model.StatusCode)
-    : akka.http.javadsl.model.HttpResponse =
+      : akka.http.javadsl.model.HttpResponse =
     copy(status = statusCode.asInstanceOf[StatusCode])
 
   override def withHeadersAndEntity(

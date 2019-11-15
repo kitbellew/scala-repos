@@ -24,7 +24,7 @@ class TaskTrackerModule(
   def taskCreationHandler: TaskCreationHandler = taskTrackerCreatorAndUpdater
 
   private[this] def statusUpdateResolver(taskTrackerRef: ActorRef)
-    : TaskOpProcessorImpl.StatusUpdateActionResolver =
+      : TaskOpProcessorImpl.StatusUpdateActionResolver =
     new TaskOpProcessorImpl.StatusUpdateActionResolver(
       clock,
       new TaskTrackerDelegate(None, config, taskTrackerRef))

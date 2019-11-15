@@ -232,7 +232,7 @@ object KMeansModel extends MLReadable[KMeansModel] {
   */
 @Since("1.5.0")
 @Experimental
-class KMeans @Since("1.5.0")(@Since("1.5.0") override val uid: String)
+class KMeans @Since("1.5.0") (@Since("1.5.0") override val uid: String)
     extends Estimator[KMeansModel]
     with KMeansParams
     with DefaultParamsWritable {

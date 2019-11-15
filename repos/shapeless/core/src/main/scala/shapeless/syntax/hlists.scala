@@ -159,10 +159,10 @@ final class HListOps[L <: HList](l: L) extends Serializable {
     partition.filterNot(l)
 
   def partition[U](implicit partition: Partition[L, U])
-    : (partition.Prefix, partition.Suffix) = partition(l)
+      : (partition.Prefix, partition.Suffix) = partition(l)
 
   def partitionP[U](implicit partition: Partition[L, U])
-    : partition.Prefix :: partition.Suffix :: HNil = partition.product(l)
+      : partition.Prefix :: partition.Suffix :: HNil = partition.product(l)
 
   /**
     * Returns the first element of type `U` of this `HList` plus the remainder of the `HList`. An explicit type argument
@@ -364,7 +364,7 @@ final class HListOps[L <: HList](l: L) extends Serializable {
     split(l)
 
   def reverse_splitP[N <: Nat](implicit split: ReverseSplit[L, N])
-    : split.Prefix :: split.Suffix :: HNil = split.product(l)
+      : split.Prefix :: split.Suffix :: HNil = split.product(l)
 
   /**
     * Splits this `HList` at the ''nth'' element, returning the reverse of the prefix and suffix as a pair. Available
@@ -375,7 +375,7 @@ final class HListOps[L <: HList](l: L) extends Serializable {
     split(l)
 
   def reverse_splitP(n: Nat)(implicit split: ReverseSplit[L, n.N])
-    : split.Prefix :: split.Suffix :: HNil = split.product(l)
+      : split.Prefix :: split.Suffix :: HNil = split.product(l)
 
   /**
     * Splits this `HList` at the first occurrence of an element of type `U`, returning the prefix and suffix as a pair.
@@ -398,7 +398,7 @@ final class HListOps[L <: HList](l: L) extends Serializable {
     split(l)
 
   def reverse_splitLeftP[U](implicit split: ReverseSplitLeft[L, U])
-    : split.Prefix :: split.Suffix :: HNil = split.product(l)
+      : split.Prefix :: split.Suffix :: HNil = split.product(l)
 
   /**
     * Splits this `HList` at the last occurrence of an element of type `U`, returning the prefix and suffix as a pair.
@@ -422,7 +422,7 @@ final class HListOps[L <: HList](l: L) extends Serializable {
     split(l)
 
   def reverse_splitRightP[U](implicit split: ReverseSplitRight[L, U])
-    : split.Prefix :: split.Suffix :: HNil = split.product(l)
+      : split.Prefix :: split.Suffix :: HNil = split.product(l)
 
   /**
     * Permutes this `HList` into the same order as another `HList`. An explicit type argument must be supplied.
@@ -649,7 +649,7 @@ final class HListOps[L <: HList](l: L) extends Serializable {
     * of this `HList`.
     */
   def toList[Lub](implicit toTraversableAux: ToTraversable.Aux[L, List, Lub])
-    : toTraversableAux.Out = toTraversableAux(l)
+      : toTraversableAux.Out = toTraversableAux(l)
 
   /**
     * Converts this `HList` to an `Array` of elements typed as the least upper bound of the types of the elements
@@ -660,7 +660,7 @@ final class HListOps[L <: HList](l: L) extends Serializable {
     * `CC`) which interacts badly with the invariance of `Array`s.
     */
   def toArray[Lub](implicit toTraversableAux: ToTraversable.Aux[L, Array, Lub])
-    : toTraversableAux.Out = toTraversableAux(l)
+      : toTraversableAux.Out = toTraversableAux(l)
 
   /**
     * Converts this `HList` to a `M` of elements embedded in a minimal `Coproduct` encompassing the types of every
@@ -676,7 +676,7 @@ final class HListOps[L <: HList](l: L) extends Serializable {
     */
   def toCoproduct[M[_] <: Traversable[_]](
       implicit toCoproductTraversable: ToCoproductTraversable[L, M])
-    : toCoproductTraversable.Out = toCoproductTraversable(l)
+      : toCoproductTraversable.Out = toCoproductTraversable(l)
 
   /**
     * Converts this `HList` to a - sized - `M` of elements typed as the least upper bound of the types of the elements

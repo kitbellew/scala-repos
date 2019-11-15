@@ -90,7 +90,8 @@ trait ChartIncludes {
     * @return $SFX $AXIS
     */
   implicit def jfxAxis2sfx[X](a: jfxsc.Axis[X]): Axis[X] =
-    if (a != null) new Axis[X](a) {} else null
+    if (a != null) new Axis[X](a) {}
+    else null
 
   /**
     * $START$BRCH.html $BRCH$END
@@ -122,7 +123,8 @@ trait ChartIncludes {
     * @return $SFX $CHAR
     */
   implicit def jfxChart2sfx(c: jfxsc.Chart): Chart =
-    if (c != null) new Chart(c) {} else null
+    if (c != null) new Chart(c) {}
+    else null
 
   /**
     * $START$LNCH.html $LNCH$END
@@ -241,7 +243,8 @@ trait ChartIncludes {
     */
   implicit def jfxValueAxis2sfx[X <: Number](
       a: jfxsc.ValueAxis[X]): ValueAxis[X] =
-    if (a != null) new ValueAxis[X](a) {} else null
+    if (a != null) new ValueAxis[X](a) {}
+    else null
 
   /**
     * $START$XYCH.html $XYCH$END
@@ -252,7 +255,8 @@ trait ChartIncludes {
     * @return $SFX $XYCH
     */
   implicit def jfxXYChart2sfx[X, Y](c: jfxsc.XYChart[X, Y]): XYChart[X, Y] =
-    if (c != null) new XYChart[X, Y](c) {} else null
+    if (c != null) new XYChart[X, Y](c) {}
+    else null
 
   /**
     * $START$XYDT.html $XYDT$END

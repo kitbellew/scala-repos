@@ -222,7 +222,7 @@ object ThreadPoolsSpec extends PlaySpecification {
 }
 
 // since specs provides defaultContext, implicitly importing it doesn't work
-class Samples @Inject()(wsClient: WSClient) {
+class Samples @Inject() (wsClient: WSClient) {
 
   //#global-thread-pool
   import play.api.libs.concurrent.Execution.Implicits._

@@ -31,7 +31,7 @@ trait ParIterable[T]
     with ParIterableLike[T, ParIterable[T], Iterable[T]]
     with Mutable {
   override def companion
-    : GenericCompanion[ParIterable] with GenericParCompanion[ParIterable] =
+      : GenericCompanion[ParIterable] with GenericParCompanion[ParIterable] =
     ParIterable
   //protected[this] override def newBuilder = ParIterable.newBuilder[T]
 

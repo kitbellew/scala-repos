@@ -193,7 +193,8 @@ object Round extends LilaController with TheftPrevention {
                       simul,
                       crosstable,
                       userTv = userTv))
-              } else
+              }
+            else
               // web crawlers don't need the full thing
               GameRepo.initialFen(pov.game.id) zip Env.game.crosstableApi(
                 pov.game) map {

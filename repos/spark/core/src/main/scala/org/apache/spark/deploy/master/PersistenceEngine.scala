@@ -82,7 +82,7 @@ abstract class PersistenceEngine {
     * sorted by time of creation).
     */
   final def readPersistedData(rpcEnv: RpcEnv)
-    : (Seq[ApplicationInfo], Seq[DriverInfo], Seq[WorkerInfo]) = {
+      : (Seq[ApplicationInfo], Seq[DriverInfo], Seq[WorkerInfo]) = {
     rpcEnv.deserialize { () =>
       (
         read[ApplicationInfo]("app_"),

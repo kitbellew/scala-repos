@@ -308,8 +308,8 @@ final class Flow[-In, +Out, +Mat](private[stream] override val module: Module)
     *
     * @return A [[RunnableGraph]] that materializes to a Processor when run() is called on it.
     */
-  def toProcessor
-    : RunnableGraph[Processor[In @uncheckedVariance, Out @uncheckedVariance]] =
+  def toProcessor: RunnableGraph[
+    Processor[In @uncheckedVariance, Out @uncheckedVariance]] =
     Source
       .asSubscriber[In]
       .via(this)
@@ -965,7 +965,7 @@ trait FlowOps[+Out, +Mat] {
   def delay(
       of: FiniteDuration,
       strategy: DelayOverflowStrategy = DelayOverflowStrategy.dropTail)
-    : Repr[Out] =
+      : Repr[Out] =
     via(new Delay[Out](of, strategy))
 
   /**
@@ -1679,7 +1679,7 @@ trait FlowOps[+Out, +Mat] {
     via(zipGraph(that))
 
   protected def zipGraph[U, M](that: Graph[SourceShape[U], M])
-    : Graph[FlowShape[Out @uncheckedVariance, (Out, U)], M] =
+      : Graph[FlowShape[Out @uncheckedVariance, (Out, U)], M] =
     GraphDSL.create(that) { implicit b ⇒ r ⇒
       val zip = b.add(Zip[Out, U]())
       r ~> zip.in1
@@ -1704,7 +1704,7 @@ trait FlowOps[+Out, +Mat] {
 
   protected def zipWithGraph[Out2, Out3, M](that: Graph[SourceShape[Out2], M])(
       combine: (Out, Out2) ⇒ Out3)
-    : Graph[FlowShape[Out @uncheckedVariance, Out3], M] =
+      : Graph[FlowShape[Out @uncheckedVariance, Out3], M] =
     GraphDSL.create(that) { implicit b ⇒ r ⇒
       val zip = b.add(ZipWith[Out, Out2, Out3](combine))
       r ~> zip.in1
@@ -1795,7 +1795,7 @@ trait FlowOps[+Out, +Mat] {
 
   protected def mergeSortedGraph[U >: Out, M](that: Graph[SourceShape[U], M])(
       implicit ord: Ordering[U])
-    : Graph[FlowShape[Out @uncheckedVariance, U], M] =
+      : Graph[FlowShape[Out @uncheckedVariance, U], M] =
     GraphDSL.create(that) { implicit b ⇒ r ⇒
       val merge = b.add(new MergeSorted[U])
       r ~> merge.in1
@@ -1824,7 +1824,7 @@ trait FlowOps[+Out, +Mat] {
     via(concatGraph(that))
 
   protected def concatGraph[U >: Out, Mat2](that: Graph[SourceShape[U], Mat2])
-    : Graph[FlowShape[Out @uncheckedVariance, U], Mat2] =
+      : Graph[FlowShape[Out @uncheckedVariance, U], Mat2] =
     GraphDSL.create(that) { implicit b ⇒ r ⇒
       val merge = b.add(Concat[U]())
       r ~> merge.in(1)
@@ -1853,7 +1853,7 @@ trait FlowOps[+Out, +Mat] {
     via(prependGraph(that))
 
   protected def prependGraph[U >: Out, Mat2](that: Graph[SourceShape[U], Mat2])
-    : Graph[FlowShape[Out @uncheckedVariance, U], Mat2] =
+      : Graph[FlowShape[Out @uncheckedVariance, U], Mat2] =
     GraphDSL.create(that) { implicit b ⇒ r ⇒
       val merge = b.add(Concat[U]())
       r ~> merge.in(0)
@@ -1904,7 +1904,7 @@ trait FlowOps[+Out, +Mat] {
     via(alsoToGraph(that))
 
   protected def alsoToGraph[M](that: Graph[SinkShape[Out], M])
-    : Graph[FlowShape[Out @uncheckedVariance, Out], M] =
+      : Graph[FlowShape[Out @uncheckedVariance, Out], M] =
     GraphDSL.create(that) { implicit b ⇒ r ⇒
       import GraphDSL.Implicits._
       val bcast = b.add(Broadcast[Out](2))

@@ -383,7 +383,7 @@ class ScParameterizedType private (
 
 object ScParameterizedType {
   val substitutorCache
-    : ConcurrentWeakHashMap[ScParameterizedType, ScSubstitutor] =
+      : ConcurrentWeakHashMap[ScParameterizedType, ScSubstitutor] =
     new ConcurrentWeakHashMap()
 
   def apply(designator: ScType, typeArgs: Seq[ScType]): ValueType = {

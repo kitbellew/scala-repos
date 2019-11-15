@@ -21,7 +21,7 @@ object ContentTypeOverrider {
     }
 
   implicit def forHeadersAndEntity[T <: HttpEntity]
-    : ContentTypeOverrider[(immutable.Seq[HttpHeader], T)] =
+      : ContentTypeOverrider[(immutable.Seq[HttpHeader], T)] =
     new ContentTypeOverrider[(immutable.Seq[HttpHeader], T)] {
       def apply(
           value: (immutable.Seq[HttpHeader], T),

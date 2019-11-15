@@ -65,7 +65,7 @@ trait EvaluatorConfig extends IdSourceConfig {
   def maxSliceSize: Int
 }
 
-trait EvaluatorModule[M[+ _]]
+trait EvaluatorModule[M[+_]]
     extends CrossOrdering
     with Memoizer
     with TypeInferencer
@@ -84,9 +84,9 @@ trait EvaluatorModule[M[+ _]]
 
   type GroupId = Int
 
-  type Evaluator[N[+ _]] <: EvaluatorLike[N]
+  type Evaluator[N[+_]] <: EvaluatorLike[N]
 
-  abstract class EvaluatorLike[N[+ _]](N0: Monad[N])(
+  abstract class EvaluatorLike[N[+_]](N0: Monad[N])(
       implicit mn: M ~> N,
       nm: N ~> M)
       extends OpFinder
@@ -181,7 +181,7 @@ trait EvaluatorModule[M[+ _]]
       def resolveTopLevelGroup(
           spec: BucketSpec,
           splits: Map[Identifier, Int => N[Table]])
-        : StateT[N, EvaluatorState, N[GroupingSpec]] = spec match {
+          : StateT[N, EvaluatorState, N[GroupingSpec]] = spec match {
         case UnionBucketSpec(left, right) =>
           for {
             leftSpec <- resolveTopLevelGroup(left, splits)
@@ -193,13 +193,12 @@ trait EvaluatorModule[M[+ _]]
             for {
               leftRes <- leftSpec
               rightRes <- rightSpec
-            } yield
-              GroupingAlignment(
-                keySpec,
-                keySpec,
-                leftRes,
-                rightRes,
-                GroupingSpec.Union)
+            } yield GroupingAlignment(
+              keySpec,
+              keySpec,
+              leftRes,
+              rightRes,
+              GroupingSpec.Union)
           }
 
         case IntersectBucketSpec(left, right) =>
@@ -213,13 +212,12 @@ trait EvaluatorModule[M[+ _]]
             for {
               leftRes <- leftSpec
               rightRes <- rightSpec
-            } yield
-              GroupingAlignment(
-                keySpec,
-                keySpec,
-                leftRes,
-                rightRes,
-                GroupingSpec.Intersection)
+            } yield GroupingAlignment(
+              keySpec,
+              keySpec,
+              leftRes,
+              rightRes,
+              GroupingSpec.Intersection)
           }
 
         case dag.Group(id, target, forest) =>
@@ -265,7 +263,7 @@ trait EvaluatorModule[M[+ _]]
           commonGraph: DepGraph,
           forest: BucketSpec,
           splits: Map[Identifier, Int => N[Table]])
-        : StateT[N, EvaluatorState, GroupKeySpec] = forest match {
+          : StateT[N, EvaluatorState, GroupKeySpec] = forest match {
         case UnionBucketSpec(left, right) =>
           for {
             leftRes <- resolveLowLevelGroup(
@@ -313,23 +311,22 @@ trait EvaluatorModule[M[+ _]]
             liftedTrans = TransSpec.deepMap(spec) {
               case Leaf(_) => DerefObjectStatic(Leaf(Source), paths.Value)
             }
-          } yield
-            GroupKeySpecSource(
-              CPathField("extra" + extraId),
-              trans.Filter(liftedTrans, liftedTrans))
+          } yield GroupKeySpecSource(
+            CPathField("extra" + extraId),
+            trans.Filter(liftedTrans, liftedTrans))
 
         case dag.Group(_, _, _) =>
           sys.error("assertion error")
       }
 
       def prepareEval(graph: DepGraph, splits: Map[Identifier, Int => N[Table]])
-        : StateT[N, EvaluatorState, PendingTable] = {
+          : StateT[N, EvaluatorState, PendingTable] = {
         evalLogger.trace("Loop on %s".format(graph))
 
         val startTime = System.nanoTime
 
         def assumptionCheck(graph: DepGraph)
-          : StateT[N, EvaluatorState, Option[(Table, TableOrder)]] =
+            : StateT[N, EvaluatorState, Option[(Table, TableOrder)]] =
           for (state <- monadState.gets(identity)) yield state.assume.get(graph)
 
         def memoized(
@@ -370,7 +367,7 @@ trait EvaluatorModule[M[+ _]]
           (pt.trans, pt.graph)
 
         def set0(pt: PendingTable, tg: (TransSpec1, DepGraph))
-          : StateT[N, EvaluatorState, PendingTable] = {
+            : StateT[N, EvaluatorState, PendingTable] = {
           for {
             _ <- monadState.modify { state =>
               state.copy(assume = state.assume + (tg._2 -> (pt.table, pt.sort)))
@@ -379,7 +376,7 @@ trait EvaluatorModule[M[+ _]]
         }
 
         def init0(tg: (TransSpec1, DepGraph))
-          : StateT[N, EvaluatorState, PendingTable] =
+            : StateT[N, EvaluatorState, PendingTable] =
           memoized(tg._2, evalNotTransSpecable)
 
         /**
@@ -391,7 +388,7 @@ trait EvaluatorModule[M[+ _]]
             right: DepGraph,
             hint: Option[CrossOrder])(
             spec: (TransSpec2, TransSpec2) => TransSpec2)
-          : StateT[N, EvaluatorState, PendingTable] = {
+            : StateT[N, EvaluatorState, PendingTable] = {
           import CrossOrder._
           def valueSpec = DerefObjectStatic(Leaf(Source), paths.Value)
           (prepareEval(left, splits) |@| prepareEval(right, splits)).tupled flatMap {
@@ -464,7 +461,7 @@ trait EvaluatorModule[M[+ _]]
             left: DepGraph,
             right: DepGraph,
             joinSort: JoinSort)(spec: (TransSpec2, TransSpec2) => TransSpec2)
-          : StateT[N, EvaluatorState, PendingTable] = {
+            : StateT[N, EvaluatorState, PendingTable] = {
 
           import JoinOrder._
 
@@ -483,9 +480,9 @@ trait EvaluatorModule[M[+ _]]
             if (ids.isEmpty) {
               trans.ConstLiteral(CEmptyArray, SourceKey.Single) // join with undefined, probably
             } else {
-              val components = for (i <- ids)
-                yield
-                  trans.WrapArray(DerefArrayStatic(
+              val components =
+                for (i <- ids)
+                  yield trans.WrapArray(DerefArrayStatic(
                     SourceKey.Single,
                     CPathIndex(i))): TransSpec1
               components reduceLeft { trans.InnerArrayConcat(_, _) }
@@ -695,12 +692,11 @@ trait EvaluatorModule[M[+ _]]
                 tableM2 = pendingTable.table
                   .transform(liftToValues(pendingTable.trans))
                   .transform(idSpec)
-              } yield
-                PendingTable(
-                  tableM2,
-                  graph,
-                  TransSpec1.Id,
-                  IdentityOrder(graph))
+              } yield PendingTable(
+                tableM2,
+                graph,
+                TransSpec1.Id,
+                IdentityOrder(graph))
 
             // TODO abstract over absolute/relative load
             case dag.AbsoluteLoad(parent, jtpe) =>
@@ -730,8 +726,11 @@ trait EvaluatorModule[M[+ _]]
                     table => table.point[N]
                   )
                 back <- transState liftM mn(loaded).join
-              } yield
-                PendingTable(back, graph, TransSpec1.Id, IdentityOrder(graph))
+              } yield PendingTable(
+                back,
+                graph,
+                TransSpec1.Id,
+                IdentityOrder(graph))
 
             case dag.RelativeLoad(parent, jtpe) =>
               for {
@@ -765,8 +764,11 @@ trait EvaluatorModule[M[+ _]]
                     table => table.point[N]
                   )
                 back <- transState liftM mn(loaded).join
-              } yield
-                PendingTable(back, graph, TransSpec1.Id, IdentityOrder(graph))
+              } yield PendingTable(
+                back,
+                graph,
+                TransSpec1.Id,
+                IdentityOrder(graph))
 
             case dag.Morph1(mor, parent) =>
               for {
@@ -796,7 +798,7 @@ trait EvaluatorModule[M[+ _]]
               }
 
               val joined
-                : StateT[N, EvaluatorState, (Morph1Apply, PendingTable)] =
+                  : StateT[N, EvaluatorState, (Morph1Apply, PendingTable)] =
                 mor.alignment match {
                   case MorphismAlignment.Cross(morph1) =>
                     ((transState liftM mn(morph1)) |@| cross(
@@ -966,12 +968,11 @@ trait EvaluatorModule[M[+ _]]
                       DerefObjectStatic(liftedTrans, paths.Value)),
                     MorphContext(ctx, graph)))
                 wrapped = result transform buildConstantWrapSpec(Leaf(Source))
-              } yield
-                PendingTable(
-                  wrapped,
-                  graph,
-                  TransSpec1.Id,
-                  IdentityOrder(graph))
+              } yield PendingTable(
+                wrapped,
+                graph,
+                TransSpec1.Id,
+                IdentityOrder(graph))
 
             case s @ dag.Split(spec, child, id) =>
               val idSpec = makeTableTrans(
@@ -1036,8 +1037,11 @@ trait EvaluatorModule[M[+ _]]
 
                 result = childPending.table transform liftToValues(
                   childPending.trans)
-              } yield
-                PendingTable(result, graph, TransSpec1.Id, childPending.sort)
+              } yield PendingTable(
+                result,
+                graph,
+                TransSpec1.Id,
+                childPending.sort)
 
             case c @ dag.Cond(pred, left, _, right, _) =>
               evalNotTransSpecable(c.peer)
@@ -1248,8 +1252,8 @@ trait EvaluatorModule[M[+ _]]
         optimize: Boolean) =
       for {
         reductions <- monadState.gets(_.reductions)
-      } yield
-        stagedRewriteDAG(optimize, ctx)(reductions.toList.foldLeft(graph) {
+      } yield stagedRewriteDAG(optimize, ctx)(
+        reductions.toList.foldLeft(graph) {
           case (graph, (from, Some(result))) if optimize =>
             inlineNodeValue(graph, from, result)
           case (graph, _) => graph
@@ -1584,7 +1588,7 @@ trait EvaluatorModule[M[+ _]]
     private def zip[A](
         table1: StateT[N, EvaluatorState, A],
         table2: StateT[N, EvaluatorState, A])
-      : StateT[N, EvaluatorState, (A, A)] =
+        : StateT[N, EvaluatorState, (A, A)] =
       monadState.apply2(table1, table2) { (_, _) }
 
     private case class EvaluatorState(

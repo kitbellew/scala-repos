@@ -81,7 +81,8 @@ trait ImageIncludes {
     */
   implicit def jfxPixelFormat2sfx[B <: Buffer](
       pf: jfxsi.PixelFormat[B]): PixelFormat[B] =
-    if (pf != null) new PixelFormat[B](pf) {} else null
+    if (pf != null) new PixelFormat[B](pf) {}
+    else null
 
   /**
     * $START$PFT.html $PFT$END
@@ -102,7 +103,8 @@ trait ImageIncludes {
     if (pr != null)
       new PixelReader {
         override val delegate = pr
-      } else null
+      }
+    else null
 
   /**
     * $START$PXW.html $PXW$END
@@ -114,7 +116,8 @@ trait ImageIncludes {
     if (pw != null)
       new PixelWriter {
         override val delegate = pw
-      } else null
+      }
+    else null
 
   /**
     * $START$WRI.html $WRI$END

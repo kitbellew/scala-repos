@@ -184,8 +184,9 @@ object SampleData extends CValueGenerators {
     val gen = for {
       sampleData <- arbitrary(sample)
     } yield {
-      val rows = for (row <- sampleData.data)
-        yield if (Random.nextDouble < 0.25) JUndefined else row
+      val rows =
+        for (row <- sampleData.data)
+          yield if (Random.nextDouble < 0.25) JUndefined else row
       SampleData(rows, sampleData.schema)
     }
 

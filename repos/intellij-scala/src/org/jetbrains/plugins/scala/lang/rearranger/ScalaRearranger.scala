@@ -42,7 +42,7 @@ class ScalaRearranger
       ranges: java.util.Collection[TextRange],
       element: PsiElement,
       settings: ArrangementSettings)
-    : Pair[ScalaArrangementEntry, java.util.List[ScalaArrangementEntry]] = {
+      : Pair[ScalaArrangementEntry, java.util.List[ScalaArrangementEntry]] = {
     val groupingRules = getGroupingRules(settings)
 
     val existingInfo = new ScalaArrangementParseInfo

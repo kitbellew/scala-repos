@@ -140,7 +140,7 @@ private[remote] class Remoting(
 
   @volatile private var endpointManager: Option[ActorRef] = None
   @volatile private var transportMapping
-    : Map[String, Set[(AkkaProtocolTransport, Address)]] = _
+      : Map[String, Set[(AkkaProtocolTransport, Address)]] = _
   // This is effectively a write-once variable similar to a lazy val. The reason for not using a lazy val is exception
   // handling.
   @volatile var addresses: Set[Address] = _

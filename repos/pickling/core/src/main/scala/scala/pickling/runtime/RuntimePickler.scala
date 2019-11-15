@@ -225,7 +225,8 @@ class RuntimePickler(
           builder.hintOid(oid)
           // Note: Now we always pickle fully, and the format decides whether to share.
           pickler.pickle(fieldValue, builder)
-      } else pickler.pickle(fieldValue, builder)
+      }
+    else pickler.pickle(fieldValue, builder)
   }
 
   def mkPickler: Pickler[_] = {

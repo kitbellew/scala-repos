@@ -1015,7 +1015,7 @@ private[finagle] class KetamaPartitionedClient(
 
   // exposed for testing
   private[memcached] val ketamaNodeGrp
-    : Group[(KetamaClientKey, KetamaNode[Client])] = cacheNodeGroup.map {
+      : Group[(KetamaClientKey, KetamaNode[Client])] = cacheNodeGroup.map {
     node =>
       val key = KetamaClientKey.fromCacheNode(node)
       val underlying = TwemcacheClient(newService(node))
@@ -1267,7 +1267,7 @@ case class KetamaClientBuilder private[memcached] (
     copy(numReps = numReps)
 
   def clientBuilder(clientBuilder: ClientBuilder[_, _, _, _, ClientConfig.Yes])
-    : KetamaClientBuilder =
+      : KetamaClientBuilder =
     copy(_clientBuilder = Some(clientBuilder))
 
   def failureAccrualParams(
@@ -1379,7 +1379,7 @@ case class RubyMemCacheClientBuilder(
     }.toSeq)
 
   def clientBuilder(clientBuilder: ClientBuilder[_, _, _, _, ClientConfig.Yes])
-    : RubyMemCacheClientBuilder =
+      : RubyMemCacheClientBuilder =
     copy(_clientBuilder = Some(clientBuilder))
 
   def build(): PartitionedClient = {
@@ -1438,7 +1438,7 @@ case class PHPMemCacheClientBuilder(
     copy(_hashName = Some(hashName))
 
   def clientBuilder(clientBuilder: ClientBuilder[_, _, _, _, ClientConfig.Yes])
-    : PHPMemCacheClientBuilder =
+      : PHPMemCacheClientBuilder =
     copy(_clientBuilder = Some(clientBuilder))
 
   def build(): PartitionedClient = {

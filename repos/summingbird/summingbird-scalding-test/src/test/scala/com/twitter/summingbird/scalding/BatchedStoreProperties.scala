@@ -38,7 +38,7 @@ import org.scalacheck.Properties
 object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
 
   implicit def intersectionArb[T: Arbitrary: Ordering]
-    : Arbitrary[Intersection[InclusiveLower, ExclusiveUpper, T]] =
+      : Arbitrary[Intersection[InclusiveLower, ExclusiveUpper, T]] =
     Arbitrary {
       for {
         l <- Arbitrary.arbitrary[T]
@@ -73,18 +73,19 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
     TestUtil.simpleTimeExtractor[T]
 
   implicit val arbitraryInputWithTimeStampAndBatcher
-    : Arbitrary[(List[(Long, Int)], Batcher, TestStore[Int, Int])] = Arbitrary {
-    for {
-      arbInt <- Arbitrary.arbitrary[List[Int]]
-      in = arbInt.zipWithIndex.map {
-        case (item: Int, time: Int) => (time.toLong, item)
-      }
-      arbMap <- Arbitrary.arbitrary[Map[Int, Int]]
-      batcher = TestUtil.randomBatcher(in)
-      lastTimeStamp = in.size
-      testStore = TestStore[Int, Int]("test", batcher, arbMap, lastTimeStamp)
-    } yield (in, batcher, testStore)
-  }
+      : Arbitrary[(List[(Long, Int)], Batcher, TestStore[Int, Int])] =
+    Arbitrary {
+      for {
+        arbInt <- Arbitrary.arbitrary[List[Int]]
+        in = arbInt.zipWithIndex.map {
+          case (item: Int, time: Int) => (time.toLong, item)
+        }
+        arbMap <- Arbitrary.arbitrary[Map[Int, Int]]
+        batcher = TestUtil.randomBatcher(in)
+        lastTimeStamp = in.size
+        testStore = TestStore[Int, Int]("test", batcher, arbMap, lastTimeStamp)
+      } yield (in, batcher, testStore)
+    }
 
   implicit def arbitraryLocalMode: Arbitrary[Mode] = Arbitrary {
     Gen.const(Local(true))

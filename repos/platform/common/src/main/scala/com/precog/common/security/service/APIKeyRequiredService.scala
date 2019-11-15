@@ -42,13 +42,13 @@ import scalaz.syntax.std.option._
 trait APIKeyServiceCombinators extends HttpRequestHandlerCombinators {
   def apiKeyIsValid[A, B](error: String => Future[B])(
       service: HttpService[A, APIKey => Future[B]])
-    : HttpService[A, Validation[String, APIKey] => Future[B]] = {
+      : HttpService[A, Validation[String, APIKey] => Future[B]] = {
     new APIKeyValidService(service, error)
   }
 
   def apiKeyRequired[A, B](keyFinder: APIKey => Future[Option[APIKey]])(
       service: HttpService[A, Validation[String, APIKey] => Future[B]])
-    : HttpService[A, Future[B]] = {
+      : HttpService[A, Future[B]] = {
     new APIKeyRequiredService[A, B](keyFinder, service)
   }
 

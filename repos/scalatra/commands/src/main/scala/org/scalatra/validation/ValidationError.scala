@@ -86,7 +86,7 @@ class ErrorCodeSerializer(knownCodes: ErrorCode*)
   val Class = classOf[ErrorCode]
 
   def deserialize(implicit format: Formats)
-    : PartialFunction[(TypeInfo, JValue), ErrorCode] = {
+      : PartialFunction[(TypeInfo, JValue), ErrorCode] = {
     case (TypeInfo(Class, _), JString(c)) if ecs contains c.toUpperCase =>
       ecs get c.toUpperCase getOrElse UnknownError
     case (TypeInfo(Class, _), json) =>

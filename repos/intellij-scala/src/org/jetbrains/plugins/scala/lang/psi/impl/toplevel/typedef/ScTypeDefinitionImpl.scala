@@ -394,12 +394,12 @@ abstract class ScTypeDefinitionImpl protected (
   }
 
   override def getAllMethodsAndTheirSubstitutors
-    : JList[IPair[PsiMethod, PsiSubstitutor]] = {
+      : JList[IPair[PsiMethod, PsiSubstitutor]] = {
     super[ScTypeDefinition].getAllMethodsAndTheirSubstitutors
   }
 
   override def getVisibleSignatures
-    : JCollection[HierarchicalMethodSignature] = {
+      : JCollection[HierarchicalMethodSignature] = {
     super[ScTypeDefinition].getVisibleSignatures
   }
 

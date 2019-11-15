@@ -37,7 +37,7 @@ class Performance(
       test: => T,
       warmupParams: BenchmarkParameters = warmupDefaults,
       benchmarkParams: BenchmarkParameters = benchmarkDefaults)
-    : BenchmarkResults[T] = {
+      : BenchmarkResults[T] = {
     benchmarkOnly(test, warmupParams)
     benchmarkOnly(test, benchmarkParams)
   }
@@ -45,7 +45,7 @@ class Performance(
   def benchmarkOnly[T](
       test: => T,
       parameters: BenchmarkParameters = benchmarkDefaults)
-    : BenchmarkResults[T] = {
+      : BenchmarkResults[T] = {
 
     @tailrec
     def benchmark[A](

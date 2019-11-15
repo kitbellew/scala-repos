@@ -37,9 +37,9 @@ abstract class ParserSettings private[akka] () extends BodyPartParser.Settings {
   def getIncludeTlsSessionInfoHeader: Boolean
   def headerValueCacheLimits: Map[String, Int]
   def getCustomMethods
-    : java.util.function.Function[String, Optional[HttpMethod]]
+      : java.util.function.Function[String, Optional[HttpMethod]]
   def getCustomStatusCodes
-    : java.util.function.Function[Int, Optional[StatusCode]]
+      : java.util.function.Function[Int, Optional[StatusCode]]
 
   // ---
 

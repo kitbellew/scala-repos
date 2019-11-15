@@ -87,7 +87,7 @@ object CheckBoxTreeTableCell {
     * @see $URL0#forTreeTableColumn-javafx.util.Callback- $ORIGINALDOC
     */
   def forTreeTableColumn[S, T](selectedProperty: IntToBool)
-    : (jfxsc.TreeTableColumn[S, T] => TreeTableCell[S, T]) = {
+      : (jfxsc.TreeTableColumn[S, T] => TreeTableCell[S, T]) = {
     (column: jfxsc.TreeTableColumn[S, T]) =>
       jfxscc.CheckBoxTreeTableCell
         .forTreeTableColumn(selectedProperty)
@@ -115,7 +115,7 @@ object CheckBoxTreeTableCell {
     * @see $URL0#forTreeTableColumn-javafx.util.Callback-boolean- $ORIGINALDOC
     */
   def forTreeTableColumn[S, T](selectedProperty: IntToBool, showLabel: Boolean)
-    : (jfxsc.TreeTableColumn[S, T] => TreeTableCell[S, T]) = {
+      : (jfxsc.TreeTableColumn[S, T] => TreeTableCell[S, T]) = {
     (column: jfxsc.TreeTableColumn[S, T]) =>
       jfxscc.CheckBoxTreeTableCell
         .forTreeTableColumn(selectedProperty, showLabel)
@@ -149,7 +149,7 @@ object CheckBoxTreeTableCell {
   def forTreeTableColumn[S, T](
       selectedProperty: IntToBool,
       converter: StringConverter[T])
-    : (jfxsc.TreeTableColumn[S, T] => TreeTableCell[S, T]) = {
+      : (jfxsc.TreeTableColumn[S, T] => TreeTableCell[S, T]) = {
     (column: jfxsc.TreeTableColumn[S, T]) =>
       jfxscc.CheckBoxTreeTableCell
         .forTreeTableColumn(selectedProperty, converter)
@@ -177,7 +177,7 @@ object CheckBoxTreeTableCell {
     * @see $URL0#forTreeTableColumn-javafx.scene.control.TreeTableColumn- $ORIGINALDOC
     */
   def forTreeTableColumn[S](column: jfxsc.TreeTableColumn[S, JBoolean])
-    : (jfxsc.TreeTableColumn[S, JBoolean] => TreeTableCell[S, JBoolean]) = {
+      : (jfxsc.TreeTableColumn[S, JBoolean] => TreeTableCell[S, JBoolean]) = {
     (c: jfxsc.TreeTableColumn[S, JBoolean]) =>
       jfxscc.CheckBoxTreeTableCell.forTreeTableColumn(column).call(c)
   }

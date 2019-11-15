@@ -169,7 +169,7 @@ class AnnotationMacros(val c: whitebox.Context) extends CaseClassMacros {
   }
 
   def materializeAnnotations[A: WeakTypeTag, T: WeakTypeTag, Out: WeakTypeTag]
-    : Tree = {
+      : Tree = {
     val annTpe = weakTypeOf[A]
 
     if (!isProduct(annTpe)) abort(s"$annTpe is not a case class-like type")

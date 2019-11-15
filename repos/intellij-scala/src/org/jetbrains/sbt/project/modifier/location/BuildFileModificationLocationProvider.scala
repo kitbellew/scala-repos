@@ -33,5 +33,5 @@ trait BuildFileModificationLocationProvider {
       module: IJModule,
       elementType: BuildFileElementType,
       elementCondition: Option[PsiElement => Boolean])
-    : Option[(PsiElement, Int)]
+      : Option[(PsiElement, Int)]
 }

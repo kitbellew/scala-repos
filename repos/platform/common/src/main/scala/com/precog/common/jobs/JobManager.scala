@@ -41,7 +41,7 @@ object JobManager {
   }
 }
 
-trait JobManager[M[+ _]] { self =>
+trait JobManager[M[+_]] { self =>
   import Message._
 
   /**
@@ -159,9 +159,9 @@ trait JobManager[M[+ _]] { self =>
       data: StreamT[M, Array[Byte]]): M[Either[String, Unit]]
 
   def getResult(job: JobId)
-    : M[Either[String, (Option[MimeType], StreamT[M, Array[Byte]])]]
+      : M[Either[String, (Option[MimeType], StreamT[M, Array[Byte]])]]
 
-  def withM[N[+ _]](implicit t: M ~> N, u: N ~> M, M: Monad[M], N: Monad[N]) =
+  def withM[N[+_]](implicit t: M ~> N, u: N ~> M, M: Monad[M], N: Monad[N]) =
     new JobManager[N] {
       import scalaz.syntax.monad._
 
@@ -240,7 +240,7 @@ trait JobManager[M[+ _]] { self =>
         t(self.setResult(job, mimeType, transformStreamBack(data)))
 
       def getResult(job: JobId)
-        : N[Either[String, (Option[MimeType], StreamT[N, Array[Byte]])]] =
+          : N[Either[String, (Option[MimeType], StreamT[N, Array[Byte]])]] =
         t(self.getResult(job)) map {
           case Left(s) => Left(s)
           case Right((mimeType, data)) =>
@@ -253,7 +253,7 @@ trait JobManager[M[+ _]] { self =>
   * Given a method that can transition a Job between states, this provides
   * default implementations of the explicit state transition methods.
   */
-trait JobStateManager[M[+ _]] { self: JobManager[M] =>
+trait JobStateManager[M[+_]] { self: JobManager[M] =>
   import JobState._
 
   protected def transition(job: JobId)(
@@ -314,7 +314,7 @@ trait JobStateManager[M[+ _]] { self: JobManager[M] =>
     }
 }
 
-trait JobResultManager[M[+ _]] { self: JobManager[M] =>
+trait JobResultManager[M[+_]] { self: JobManager[M] =>
   import scalaz.syntax.monad._
 
   implicit def M: Monad[M]
@@ -331,7 +331,7 @@ trait JobResultManager[M[+ _]] { self: JobManager[M] =>
   }
 
   def getResult(job: JobId)
-    : M[Either[String, (Option[MimeType], StreamT[M, Array[Byte]])]] = {
+      : M[Either[String, (Option[MimeType], StreamT[M, Array[Byte]])]] = {
     fs.load(job) map
       (_ map {
         case FileData(mimeType, data) =>

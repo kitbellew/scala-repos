@@ -693,7 +693,7 @@ trait Internals { self: Universe =>
           paramss: List[List[Tree]],
           implparams: List[Tree]): List[List[Tree]]
       def unapply(vparamss: List[List[ValDef]])
-        : Some[(List[List[ValDef]], List[ValDef])]
+          : Some[(List[List[ValDef]], List[ValDef])]
     }
 
     val ScalaDot: ScalaDotExtractor
@@ -797,7 +797,7 @@ trait Internals { self: Universe =>
           selfType: Tree,
           body: List[Tree]): PackageDef
       def unapply(tree: Tree)
-        : Option[(TermName, List[Tree], List[Tree], ValDef, List[Tree])]
+          : Option[(TermName, List[Tree], List[Tree], ValDef, List[Tree])]
     }
 
     val SyntacticTuple: SyntacticTupleExtractor

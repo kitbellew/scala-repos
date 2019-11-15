@@ -925,7 +925,7 @@ abstract class RDD[T: ClassTag](
       rdd4: RDD[D],
       preservesPartitioning: Boolean)(
       f: (Iterator[T], Iterator[B], Iterator[C], Iterator[D]) => Iterator[V])
-    : RDD[V] = withScope {
+      : RDD[V] = withScope {
     new ZippedPartitionsRDD4(
       sc,
       sc.clean(f),
@@ -941,7 +941,7 @@ abstract class RDD[T: ClassTag](
       rdd3: RDD[C],
       rdd4: RDD[D])(
       f: (Iterator[T], Iterator[B], Iterator[C], Iterator[D]) => Iterator[V])
-    : RDD[V] = withScope {
+      : RDD[V] = withScope {
     zipPartitions(rdd2, rdd3, rdd4, preservesPartitioning = false)(f)
   }
 
@@ -1960,7 +1960,7 @@ object RDD {
       vt: ClassTag[V],
       keyWritableFactory: WritableFactory[K],
       valueWritableFactory: WritableFactory[V])
-    : SequenceFileRDDFunctions[K, V] = {
+      : SequenceFileRDDFunctions[K, V] = {
     implicit val keyConverter = keyWritableFactory.convert
     implicit val valueConverter = valueWritableFactory.convert
     new SequenceFileRDDFunctions(

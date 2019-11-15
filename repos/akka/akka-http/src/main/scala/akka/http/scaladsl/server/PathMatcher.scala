@@ -187,7 +187,7 @@ object PathMatcher extends ImplicitPathMatcherConstruction {
       }
   }
 
-  sealed trait Lift[L, M[+ _]] {
+  sealed trait Lift[L, M[+_]] {
     type Out
     def OutIsTuple: Tuple[Out]
     def apply(): Out
@@ -195,7 +195,7 @@ object PathMatcher extends ImplicitPathMatcherConstruction {
     def apply(value: L, more: Out): Out
   }
   object Lift extends LowLevelLiftImplicits {
-    trait MOps[M[+ _]] {
+    trait MOps[M[+_]] {
       def apply(): M[Nothing]
       def apply[T](value: T): M[T]
       def apply[T](value: T, more: M[T]): M[T]
@@ -212,7 +212,7 @@ object PathMatcher extends ImplicitPathMatcherConstruction {
         def apply[T](value: T, more: List[T]): List[T] = value :: more
       }
     }
-    implicit def liftUnit[M[+ _]]: Lift[Unit, M] { type Out = Unit } =
+    implicit def liftUnit[M[+_]]: Lift[Unit, M] { type Out = Unit } =
       new Lift[Unit, M] {
         type Out = Unit
         def OutIsTuple = implicitly[Tuple[Out]]
@@ -220,8 +220,8 @@ object PathMatcher extends ImplicitPathMatcherConstruction {
         def apply(value: Unit) = value
         def apply(value: Unit, more: Out) = value
       }
-    implicit def liftSingleElement[A, M[+ _]](implicit mops: MOps[M])
-      : Lift[Tuple1[A], M] { type Out = Tuple1[M[A]] } =
+    implicit def liftSingleElement[A, M[+_]](implicit mops: MOps[M])
+        : Lift[Tuple1[A], M] { type Out = Tuple1[M[A]] } =
       new Lift[Tuple1[A], M] {
         type Out = Tuple1[M[A]]
         def OutIsTuple = implicitly[Tuple[Out]]
@@ -234,7 +234,7 @@ object PathMatcher extends ImplicitPathMatcherConstruction {
 
   trait LowLevelLiftImplicits {
     import Lift._
-    implicit def default[T, M[+ _]](
+    implicit def default[T, M[+_]](
         implicit mops: MOps[M]): Lift[T, M] { type Out = Tuple1[M[T]] } =
       new Lift[T, M] {
         type Out = Tuple1[M[T]]

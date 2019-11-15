@@ -17,7 +17,7 @@ import scala.concurrent.Future
 /**
   * Trigger rescale of affected app if a task died.
   */
-class ScaleAppUpdateStepImpl @Inject()(
+class ScaleAppUpdateStepImpl @Inject() (
     @Named("schedulerActor") schedulerActor: ActorRef)
     extends TaskStatusUpdateStep {
   private[this] val log = LoggerFactory.getLogger(getClass)

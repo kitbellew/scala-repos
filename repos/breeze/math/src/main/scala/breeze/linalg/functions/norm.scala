@@ -10,7 +10,7 @@ object norm extends UFunc {
   @expand
   @expand.valify
   implicit def scalarNorm[@expand.args(Int, Long, Float, Double) T]
-    : Impl[T, Double] = new Impl[T, Double] {
+      : Impl[T, Double] = new Impl[T, Double] {
     def apply(v1: T): Double = v1.abs.toDouble
   }
 

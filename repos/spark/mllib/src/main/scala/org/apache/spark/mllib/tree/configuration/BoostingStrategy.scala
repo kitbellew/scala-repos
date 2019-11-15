@@ -46,7 +46,7 @@ import org.apache.spark.mllib.tree.loss.{LogLoss, Loss, SquaredError}
   *                      [[org.apache.spark.mllib.tree.GradientBoostedTrees.run()]] is used.
   */
 @Since("1.2.0")
-case class BoostingStrategy @Since("1.4.0")(
+case class BoostingStrategy @Since("1.4.0") (
     // Required boosting parameters
     @Since("1.2.0") @BeanProperty var treeStrategy: Strategy,
     @Since("1.2.0") @BeanProperty var loss: Loss,

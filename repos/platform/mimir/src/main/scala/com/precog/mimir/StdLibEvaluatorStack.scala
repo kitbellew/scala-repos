@@ -23,7 +23,7 @@ import com.precog.yggdrasil._
 import com.precog.yggdrasil.table.cf
 import scalaz._
 
-trait StdLibEvaluatorStack[M[+ _]]
+trait StdLibEvaluatorStack[M[+_]]
     extends EvaluatorModule[M]
     with StdLibModule[M]
     with StdLibOpFinderModule[M]
@@ -35,9 +35,7 @@ trait StdLibEvaluatorStack[M[+ _]]
   trait Lib extends StdLib with StdLibOpFinder
   object library extends Lib
 
-  abstract class Evaluator[N[+ _]](N0: Monad[N])(
-      implicit mn: M ~> N,
-      nm: N ~> M)
+  abstract class Evaluator[N[+_]](N0: Monad[N])(implicit mn: M ~> N, nm: N ~> M)
       extends EvaluatorLike[N](N0)(mn, nm)
       with StdLibOpFinder
       with StdLibStaticInliner {

@@ -650,7 +650,7 @@ private[scala] abstract class LowPriorityImplicits {
     if (ws ne null) ws.self else null
 
   implicit def fallbackStringCanBuildFrom[T]
-    : CanBuildFrom[String, T, immutable.IndexedSeq[T]] =
+      : CanBuildFrom[String, T, immutable.IndexedSeq[T]] =
     new CanBuildFrom[String, T, immutable.IndexedSeq[T]] {
       def apply(from: String) = immutable.IndexedSeq.newBuilder[T]
       def apply() = immutable.IndexedSeq.newBuilder[T]

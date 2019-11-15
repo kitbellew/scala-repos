@@ -248,7 +248,7 @@ sealed abstract class OneAndInstances4 extends OneAndInstances5 {
 
 sealed abstract class OneAndInstances3 extends OneAndInstances4 {
   implicit def oneAndApplicative[F[_]: ApplicativePlus]
-    : Applicative[OneAnd[F, ?]] =
+      : Applicative[OneAnd[F, ?]] =
     new OneAndApplicative[F] {
       def F = implicitly
       def G = implicitly
@@ -341,7 +341,7 @@ sealed abstract class OneAndInstances extends OneAndInstances0 {
     }
 
   implicit def oneAndSemigroup[F[_]: Applicative: Plus, A]
-    : Semigroup[OneAnd[F, A]] =
+      : Semigroup[OneAnd[F, A]] =
     oneAndPlus[F].semigroup
 
   implicit def oneAndZip[F[_]: Zip]: Zip[OneAnd[F, ?]] =

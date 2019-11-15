@@ -86,21 +86,20 @@ object StepBuilder {
         (for {
           before <- steps lift (index - 1)
           after <- steps lift index
-        } yield
-          steps
-            .updated(
-              index,
-              after
-                .copy(
-                  nag = ad.nag.symbol.some,
-                  comments = ad.makeComment(false, true) :: after.comments,
-                  variations =
-                    if (ad.info.variation.isEmpty)
-                      after.variations
-                    else
-                      makeVariation(gameId, before, ad.info, variant).toList :: after.variations
-                )
-            )) | steps
+        } yield steps
+          .updated(
+            index,
+            after
+              .copy(
+                nag = ad.nag.symbol.some,
+                comments = ad.makeComment(false, true) :: after.comments,
+                variations =
+                  if (ad.info.variation.isEmpty)
+                    after.variations
+                  else
+                    makeVariation(gameId, before, ad.info, variant).toList :: after.variations
+              )
+          )) | steps
     }
 
   private def makeVariation(

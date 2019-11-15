@@ -138,7 +138,7 @@ class TlsSpec
           leftClosing: TLSClosing,
           rightClosing: TLSClosing,
           rhs: Flow[SslTlsInbound, SslTlsOutbound, Any])
-        : Flow[SslTlsOutbound, SslTlsInbound, NotUsed]
+          : Flow[SslTlsOutbound, SslTlsInbound, NotUsed]
       def cleanup(): Unit = ()
     }
 

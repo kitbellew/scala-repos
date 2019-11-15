@@ -537,7 +537,7 @@ class GroupCoordinator(
   }
 
   def handleFetchOffsets(groupId: String, partitions: Seq[TopicPartition])
-    : Map[TopicPartition, OffsetFetchResponse.PartitionData] = {
+      : Map[TopicPartition, OffsetFetchResponse.PartitionData] = {
     if (!isActive.get) {
       partitions.map {
         case topicPartition =>

@@ -62,8 +62,12 @@ object TLS {
   def create(
       sslContext: SSLContext,
       firstSession: NegotiateNewSession,
-      role: TLSRole)
-    : BidiFlow[SslTlsOutbound, ByteString, ByteString, SslTlsInbound, NotUsed] =
+      role: TLSRole): BidiFlow[
+    SslTlsOutbound,
+    ByteString,
+    ByteString,
+    SslTlsInbound,
+    NotUsed] =
     new javadsl.BidiFlow(scaladsl.TLS.apply(sslContext, firstSession, role))
 
   /**
@@ -87,8 +91,12 @@ object TLS {
       firstSession: NegotiateNewSession,
       role: TLSRole,
       hostInfo: Optional[japi.Pair[String, java.lang.Integer]],
-      closing: TLSClosing)
-    : BidiFlow[SslTlsOutbound, ByteString, ByteString, SslTlsInbound, NotUsed] =
+      closing: TLSClosing): BidiFlow[
+    SslTlsOutbound,
+    ByteString,
+    ByteString,
+    SslTlsInbound,
+    NotUsed] =
     new javadsl.BidiFlow(
       scaladsl.TLS.apply(
         sslContext,

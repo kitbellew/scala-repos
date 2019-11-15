@@ -214,7 +214,7 @@ object util {
           val emptyObjectColumns = copyCastArray[EmptyObjectColumn](columns)
           Some(
             new NConcatColumn(offsets, emptyObjectColumns)
-            with EmptyObjectColumn)
+              with EmptyObjectColumn)
 
         case (_, _: NullColumn) :: _
             if Loop.forall(columns)(_.isInstanceOf[NullColumn]) =>
@@ -402,7 +402,7 @@ object util {
     case c: PeriodColumn => new EmptyColumn[PeriodColumn] with PeriodColumn
     case c: HomogeneousArrayColumn[a] =>
       new EmptyColumn[HomogeneousArrayColumn[a]]
-      with HomogeneousArrayColumn[a] {
+        with HomogeneousArrayColumn[a] {
         val tpe = c.tpe
       }
     case c: EmptyArrayColumn =>
@@ -473,7 +473,7 @@ object util {
         }
       case c: HomogeneousArrayColumn[a] =>
         new RemapFilterColumn(c, filter, offset)
-        with HomogeneousArrayColumn[a] {
+          with HomogeneousArrayColumn[a] {
           val tpe = c.tpe
           def apply(row: Int) = c(row + offset)
         }
@@ -558,16 +558,16 @@ object util {
         }
       case c: HomogeneousArrayColumn[a] =>
         new BitsetColumn(definedAt & c.definedAt(from, to))
-        with HomogeneousArrayColumn[a] {
+          with HomogeneousArrayColumn[a] {
           val tpe = c.tpe
           def apply(row: Int) = c(row)
         }
       case c: EmptyArrayColumn =>
         new BitsetColumn(definedAt & c.definedAt(from, to))
-        with EmptyArrayColumn
+          with EmptyArrayColumn
       case c: EmptyObjectColumn =>
         new BitsetColumn(definedAt & c.definedAt(from, to))
-        with EmptyObjectColumn
+          with EmptyObjectColumn
       case c: NullColumn =>
         new BitsetColumn(definedAt & c.definedAt(from, to)) with NullColumn
     }

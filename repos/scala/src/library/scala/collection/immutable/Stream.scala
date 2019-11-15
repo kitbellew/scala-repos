@@ -1039,7 +1039,7 @@ abstract class Stream[+A]
     */
   override def flatten[B](
       implicit asTraversable: A => /*<:<!!!*/ GenTraversableOnce[B])
-    : Stream[B] = {
+      : Stream[B] = {
     var st: Stream[A] = this
     while (st.nonEmpty) {
       val h = asTraversable(st.head)

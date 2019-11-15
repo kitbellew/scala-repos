@@ -302,7 +302,7 @@ class MapWithStateRDDSuite
         testStateRDD: MapWithStateRDD[String, Int, Int, Int],
         testData: Seq[(String, Int)],
         expectedStates: Set[(String, Int, Int)])
-      : MapWithStateRDD[String, Int, Int, Int] = {
+        : MapWithStateRDD[String, Int, Int, Int] = {
 
       // Persist the test MapWithStateRDD so that its not recomputed while doing the next operation.
       // This is to make sure that we only touch which state keys are being touched in the next op.
@@ -424,7 +424,7 @@ class MapWithStateRDDSuite
       * - the data RDD and the parent MapWithStateRDD.
       */
     def rddCollectFunc(rdd: RDD[MapWithStateRDDRecord[Int, Int, Int]])
-      : Set[(List[(Int, Int, Long)], List[Int])] = {
+        : Set[(List[(Int, Int, Long)], List[Int])] = {
       rdd
         .map { record =>
           (record.stateMap.getAll().toList, record.mappedData.toList)

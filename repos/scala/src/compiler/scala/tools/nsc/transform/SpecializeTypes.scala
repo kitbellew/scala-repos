@@ -71,7 +71,7 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
   def emptyEnv: TypeEnv = Map[Symbol, Type]()
 
   private implicit val typeOrdering
-    : Ordering[Type] = Ordering[String] on ("" + _.typeSymbol.name)
+      : Ordering[Type] = Ordering[String] on ("" + _.typeSymbol.name)
 
   /** TODO - this is a lot of maps.
     */
@@ -561,8 +561,9 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
       syms: List[Symbol],
       nowner: Symbol,
       env: TypeEnv) = {
-    val cloned = for (s <- syms)
-      yield if (!env.contains(s)) s.cloneSymbol(nowner) else env(s).typeSymbol
+    val cloned =
+      for (s <- syms)
+        yield if (!env.contains(s)) s.cloneSymbol(nowner) else env(s).typeSymbol
     // log("producing type params: " + cloned.map(t => (t, t.tpe.bounds.hi)))
     foreach2(syms, cloned) { (orig, cln) =>
       cln.removeAnnotation(SpecializedClass)
@@ -638,9 +639,9 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
 
       val decls1 = newScope // declarations of the newly specialized class 'sClass'
       var oldClassTParams
-        : List[Symbol] = Nil // original unspecialized type parameters
+          : List[Symbol] = Nil // original unspecialized type parameters
       var newClassTParams
-        : List[Symbol] = Nil // unspecialized type parameters of 'specializedClass' (cloned)
+          : List[Symbol] = Nil // unspecialized type parameters of 'specializedClass' (cloned)
 
       // has to be a val in order to be computed early. It is later called
       // within 'enteringPhase(next)', which would lead to an infinite cycle otherwise
@@ -1710,7 +1711,8 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
         if (ignoreEnv) overloads(symbol) find (_ matchesSym symbol) match {
           case Some(Overload(member, _)) => typedOp(member)
           case _                         => copySelect
-        } else {
+        }
+        else {
           val env = unify(symbol.tpe, tree.tpe, emptyEnv, false)
           overloads(symbol) find (_ matchesEnv env) match {
             case Some(Overload(member, _)) => typedOp(member)

@@ -1294,7 +1294,7 @@ object SMultiAutoCompleteTextView
       )(
       implicit context: android.content.Context,
       defaultLayoutParam: SMultiAutoCompleteTextView => LP)
-    : SMultiAutoCompleteTextView = {
+      : SMultiAutoCompleteTextView = {
     val v = new SMultiAutoCompleteTextView
     v.<<.parent.+=(v)
     v
@@ -6021,7 +6021,7 @@ trait TraitListPopupWindow[This <: android.widget.ListPopupWindow] {
   @inline
   def onItemClick[U](
       f: (android.widget.AdapterView[_], android.view.View, Int, Long) => U)
-    : This = {
+      : This = {
     basis.setOnItemClickListener(
       new android.widget.AdapterView.OnItemClickListener {
         def onItemClick(
@@ -6048,7 +6048,7 @@ trait TraitListPopupWindow[This <: android.widget.ListPopupWindow] {
   @inline
   def onItemSelected[U](
       f: (android.widget.AdapterView[_], android.view.View, Int, Long) => U)
-    : This = {
+      : This = {
     basis.setOnItemSelectedListener(
       new android.widget.AdapterView.OnItemSelectedListener {
         def onItemSelected(
@@ -8129,7 +8129,7 @@ trait TraitAdapterView[This <: android.widget.AdapterView[_]]
   @inline
   def onItemClick[U](
       f: (android.widget.AdapterView[_], android.view.View, Int, Long) => U)
-    : This = {
+      : This = {
     basis.setOnItemClickListener(
       new android.widget.AdapterView.OnItemClickListener {
         def onItemClick(
@@ -8186,7 +8186,7 @@ trait TraitAdapterView[This <: android.widget.AdapterView[_]]
   @inline
   def onItemSelected[U](
       f: (android.widget.AdapterView[_], android.view.View, Int, Long) => U)
-    : This = {
+      : This = {
     basis.setOnItemSelectedListener(
       new android.widget.AdapterView.OnItemSelectedListener {
         def onItemSelected(
@@ -8344,7 +8344,7 @@ object SHorizontalScrollView {
   def apply[LP <: ViewGroupLayoutParams[_, SHorizontalScrollView]]()(
       implicit context: android.content.Context,
       defaultLayoutParam: SHorizontalScrollView => LP)
-    : SHorizontalScrollView = {
+      : SHorizontalScrollView = {
     val v = new SHorizontalScrollView
     v.<<.parent.+=(v)
     v
@@ -10740,7 +10740,7 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   @inline
   def onEditorAction(
       f: (android.widget.TextView, Int, android.view.KeyEvent) => Boolean)
-    : This = {
+      : This = {
     basis.setOnEditorActionListener(
       new android.widget.TextView.OnEditorActionListener {
         def onEditorAction(
@@ -11433,7 +11433,7 @@ trait TraitAutoCompleteTextView[This <: android.widget.AutoCompleteTextView]
   @inline
   def onItemClick[U](
       f: (android.widget.AdapterView[_], android.view.View, Int, Long) => U)
-    : This = {
+      : This = {
     basis.setOnItemClickListener(
       new android.widget.AdapterView.OnItemClickListener {
         def onItemClick(
@@ -11460,7 +11460,7 @@ trait TraitAutoCompleteTextView[This <: android.widget.AutoCompleteTextView]
   @inline
   def onItemSelected[U](
       f: (android.widget.AdapterView[_], android.view.View, Int, Long) => U)
-    : This = {
+      : This = {
     basis.setOnItemSelectedListener(
       new android.widget.AdapterView.OnItemSelectedListener {
         def onItemSelected(
@@ -11552,7 +11552,7 @@ object SAutoCompleteTextView extends TextViewCompanion[SAutoCompleteTextView] {
   def apply[LP <: ViewGroupLayoutParams[_, SAutoCompleteTextView]]()(
       implicit context: android.content.Context,
       defaultLayoutParam: SAutoCompleteTextView => LP)
-    : SAutoCompleteTextView = {
+      : SAutoCompleteTextView = {
     val v = new SAutoCompleteTextView
     v.<<.parent.+=(v)
     v
@@ -12838,7 +12838,7 @@ trait TraitGestureOverlayView[This <: android.gesture.GestureOverlayView]
   @inline
   def onGesture[U](
       f: (android.gesture.GestureOverlayView, android.view.MotionEvent) => U)
-    : This = {
+      : This = {
     basis.addOnGestureListener(
       new android.gesture.GestureOverlayView.OnGestureListener {
         def onGesture(
@@ -12879,7 +12879,7 @@ trait TraitGestureOverlayView[This <: android.gesture.GestureOverlayView]
   @inline
   def onGestureCancelled[U](
       f: (android.gesture.GestureOverlayView, android.view.MotionEvent) => U)
-    : This = {
+      : This = {
     basis.addOnGestureListener(
       new android.gesture.GestureOverlayView.OnGestureListener {
         def onGesture(
@@ -12922,7 +12922,7 @@ trait TraitGestureOverlayView[This <: android.gesture.GestureOverlayView]
   @inline
   def onGestureEnded[U](
       f: (android.gesture.GestureOverlayView, android.view.MotionEvent) => U)
-    : This = {
+      : This = {
     basis.addOnGestureListener(
       new android.gesture.GestureOverlayView.OnGestureListener {
         def onGesture(
@@ -12963,7 +12963,7 @@ trait TraitGestureOverlayView[This <: android.gesture.GestureOverlayView]
   @inline
   def onGesturePerformed[U](
       f: (android.gesture.GestureOverlayView, android.gesture.Gesture) => U)
-    : This = {
+      : This = {
     basis.addOnGesturePerformedListener(
       new android.gesture.GestureOverlayView.OnGesturePerformedListener {
         def onGesturePerformed(
@@ -12986,7 +12986,7 @@ trait TraitGestureOverlayView[This <: android.gesture.GestureOverlayView]
   @inline
   def onGestureStarted[U](
       f: (android.gesture.GestureOverlayView, android.view.MotionEvent) => U)
-    : This = {
+      : This = {
     basis.addOnGestureListener(
       new android.gesture.GestureOverlayView.OnGestureListener {
         def onGesture(

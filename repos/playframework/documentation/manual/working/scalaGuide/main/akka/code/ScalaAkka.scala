@@ -125,7 +125,7 @@ package scalaguide.akka {
     import actors.HelloActor
 
     @Singleton
-    class Application @Inject()(system: ActorSystem) extends Controller {
+    class Application @Inject() (system: ActorSystem) extends Controller {
 
       val helloActor = system.actorOf(HelloActor.props, "hello-actor")
 
@@ -146,7 +146,7 @@ package scalaguide.akka {
     import scala.concurrent.duration._
 
     @Singleton
-    class Application @Inject()(
+    class Application @Inject() (
         @Named("configured-actor") configuredActor: ActorRef)(
         implicit ec: ExecutionContext)
         extends Controller {
@@ -222,7 +222,7 @@ package scalaguide.akka {
       case object GetConfig
     }
 
-    class ConfiguredActor @Inject()(configuration: Configuration)
+    class ConfiguredActor @Inject() (configuration: Configuration)
         extends Actor {
       import ConfiguredActor._
 
@@ -249,7 +249,7 @@ package scalaguide.akka {
       }
     }
 
-    class ConfiguredChildActor @Inject()(
+    class ConfiguredChildActor @Inject() (
         configuration: Configuration,
         @Assisted key: String)
         extends Actor {
@@ -273,7 +273,7 @@ package scalaguide.akka {
       case class GetChild(key: String)
     }
 
-    class ParentActor @Inject()(
+    class ParentActor @Inject() (
         childFactory: ConfiguredChildActor.Factory
     ) extends Actor
         with InjectedActorSupport {

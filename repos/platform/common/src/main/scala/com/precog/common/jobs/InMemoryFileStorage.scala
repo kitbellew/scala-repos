@@ -26,13 +26,13 @@ import blueeyes.core.http.{MimeType, MimeTypes}
 
 import scalaz._
 
-final class InMemoryFileStorage[M[+ _]](implicit M: Monad[M])
+final class InMemoryFileStorage[M[+_]](implicit M: Monad[M])
     extends FileStorage[M] {
   import scalaz.syntax.monad._
 
   private val files =
     new mutable.HashMap[String, (Option[MimeType], Array[Byte])]
-    with mutable.SynchronizedMap[String, (Option[MimeType], Array[Byte])]
+      with mutable.SynchronizedMap[String, (Option[MimeType], Array[Byte])]
 
   def exists(file: String): M[Boolean] = M.point { files contains file }
 

@@ -418,9 +418,9 @@ class H5StoreSpec extends Specification {
 
       // simultaneous writes
 
-      val taskListW = for (i <- 1 to 100)
-        yield
-          new Callable[Unit] {
+      val taskListW =
+        for (i <- 1 to 100)
+          yield new Callable[Unit] {
             def call() {
               H5Store.writeFrame(tmp, "f%s".format(i), df1)
               H5Store.writeFrame(tmp, "f%s".format(100 + i), df2)
@@ -431,9 +431,9 @@ class H5StoreSpec extends Specification {
 
       // simultaneous reads
 
-      val taskListR = for (i <- 1 to 100)
-        yield
-          new Callable[Unit] {
+      val taskListR =
+        for (i <- 1 to 100)
+          yield new Callable[Unit] {
             def call() {
               H5Store.readFrame[DateTime, Int, Double](
                 tmp,
@@ -446,9 +446,9 @@ class H5StoreSpec extends Specification {
 
       // interleaved reads & writes
 
-      val taskListRW = for (i <- 1 to 100)
-        yield
-          new Callable[Unit] {
+      val taskListRW =
+        for (i <- 1 to 100)
+          yield new Callable[Unit] {
             def call() {
               if (i % 2 == 0)
                 H5Store.writeFrame(tmp, "f%s".format(100 + i), df1)

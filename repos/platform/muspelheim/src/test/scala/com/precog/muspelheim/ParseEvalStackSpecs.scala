@@ -65,7 +65,7 @@ import org.slf4j.LoggerFactory
 import akka.actor.ActorSystem
 import akka.dispatch.ExecutionContext
 
-trait ParseEvalStackSpecs[M[+ _]] extends Specification {
+trait ParseEvalStackSpecs[M[+_]] extends Specification {
   type TestStack <: TestStackLike[M]
 }
 
@@ -79,7 +79,7 @@ trait ActorPlatformSpecs {
   implicit val executor = ExecutionContext.defaultExecutionContext(actorSystem)
 }
 
-trait TestStackLike[M[+ _]]
+trait TestStackLike[M[+_]]
     extends ParseEvalStack[M]
     with EchoHttpClientModule[M]
     with MemoryDatasetConsumer[M]

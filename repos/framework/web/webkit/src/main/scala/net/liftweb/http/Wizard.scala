@@ -239,8 +239,11 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
           field <- screen.screenFields.collect {
             case c: ConfirmField => c
           } if field.show_? && field.onConfirm_?
-        } yield
-          ScreenFieldInfo(field, field.displayHtml, Empty, Full(field.asHtml))
+        } yield ScreenFieldInfo(
+          field,
+          field.displayHtml,
+          Empty,
+          Full(field.asHtml))
       } else Nil
 
     renderAll(
@@ -539,7 +542,7 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
       override def onConfirm_? = Screen.this.onConfirm_?
 
       override protected def otherFuncVendors(what: Manifest[ValueType])
-        : Box[(ValueType, ValueType => Any) => NodeSeq] =
+          : Box[(ValueType, ValueType => Any) => NodeSeq] =
         Wizard.this.vendForm(manifest) or WizardRules.vendForm(manifest)
     }
 

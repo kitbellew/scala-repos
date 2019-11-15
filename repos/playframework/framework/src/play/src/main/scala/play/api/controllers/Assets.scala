@@ -396,7 +396,7 @@ object Assets extends AssetsBuilder(LazyHttpErrorHandler) {
 }
 
 @Singleton
-class Assets @Inject()(errorHandler: HttpErrorHandler)
+class Assets @Inject() (errorHandler: HttpErrorHandler)
     extends AssetsBuilder(errorHandler)
 
 class AssetsBuilder(errorHandler: HttpErrorHandler) extends Controller {

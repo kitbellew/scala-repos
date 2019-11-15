@@ -225,7 +225,7 @@ trait TestManagedPlatform
   }
 
   protected def executor(implicit shardQueryMonad: JobQueryTFMonad)
-    : QueryExecutor[JobQueryTF, StreamT[JobQueryTF, Slice]] = {
+      : QueryExecutor[JobQueryTF, StreamT[JobQueryTF, Slice]] = {
     new QueryExecutor[JobQueryTF, StreamT[JobQueryTF, Slice]] {
 
       import UserQuery.Serialization._

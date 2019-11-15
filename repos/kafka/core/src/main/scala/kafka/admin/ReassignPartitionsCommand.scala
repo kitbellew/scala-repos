@@ -131,7 +131,7 @@ object ReassignPartitionsCommand extends Logging {
       brokerListToReassign: Seq[Int],
       topicsToMoveJsonString: String,
       disableRackAware: Boolean)
-    : (Map[TopicAndPartition, Seq[Int]], Map[TopicAndPartition, Seq[Int]]) = {
+      : (Map[TopicAndPartition, Seq[Int]], Map[TopicAndPartition, Seq[Int]]) = {
     val topicsToReassign = zkUtils.parseTopicsData(topicsToMoveJsonString)
     val duplicateTopicsToReassign = CoreUtils.duplicates(topicsToReassign)
     if (duplicateTopicsToReassign.nonEmpty)
@@ -231,7 +231,7 @@ object ReassignPartitionsCommand extends Logging {
   private def checkIfReassignmentSucceeded(
       zkUtils: ZkUtils,
       partitionsToBeReassigned: Map[TopicAndPartition, Seq[Int]])
-    : Map[TopicAndPartition, ReassignmentStatus] = {
+      : Map[TopicAndPartition, ReassignmentStatus] = {
     val partitionsBeingReassigned =
       zkUtils.getPartitionsBeingReassigned().mapValues(_.newReplicas)
     partitionsToBeReassigned.map { topicAndPartition =>
@@ -252,7 +252,7 @@ object ReassignPartitionsCommand extends Logging {
       reassignedReplicas: Seq[Int],
       partitionsToBeReassigned: Map[TopicAndPartition, Seq[Int]],
       partitionsBeingReassigned: Map[TopicAndPartition, Seq[Int]])
-    : ReassignmentStatus = {
+      : ReassignmentStatus = {
     val newReplicas = partitionsToBeReassigned(topicAndPartition)
     partitionsBeingReassigned.get(topicAndPartition) match {
       case Some(partition) => ReassignmentInProgress

@@ -74,15 +74,14 @@ trait ArbitraryEventMessage extends ArbitraryJValue {
         .map(l => Vector(l: _*)) if !content.isEmpty
       jobId <- oneOf(identifier.map(Option.apply), None)
       streamRef <- genStreamRef
-    } yield
-      Ingest(
-        apiKey,
-        path,
-        Some(Authorities(ownerAccountId)),
-        content,
-        jobId,
-        new Instant(),
-        streamRef)
+    } yield Ingest(
+      apiKey,
+      path,
+      Some(Authorities(ownerAccountId)),
+      content,
+      jobId,
+      new Instant(),
+      streamRef)
 
   def genRandomArchive: Gen[Archive] =
     for {
@@ -115,13 +114,12 @@ trait ArbitraryEventMessage extends ArbitraryJValue {
     for {
       eventId <- genEventId
       archive <- genRandomArchive
-    } yield
-      ArchiveMessage(
-        archive.apiKey,
-        archive.path,
-        archive.jobId,
-        eventId,
-        archive.timestamp)
+    } yield ArchiveMessage(
+      archive.apiKey,
+      archive.path,
+      archive.jobId,
+      eventId,
+      archive.timestamp)
 
   def genRandomEventMessage: Gen[EventMessage] =
     frequency(
@@ -189,15 +187,14 @@ trait RealisticEventMessage extends ArbitraryEventMessage {
       ingestData <- containerOf[List, JValue](genIngestData)
         .map(l => Vector(l: _*))
       streamRef <- genStreamRef
-    } yield
-      Ingest(
-        ingestAPIKey,
-        Path(path),
-        Some(ingestOwnerAccountId),
-        ingestData,
-        None,
-        new Instant(),
-        streamRef)
+    } yield Ingest(
+      ingestAPIKey,
+      Path(path),
+      Some(ingestOwnerAccountId),
+      ingestData,
+      None,
+      new Instant(),
+      streamRef)
 
   def genIngestMessage: Gen[IngestMessage] =
     for {

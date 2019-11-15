@@ -556,7 +556,7 @@ object RandomForest extends Serializable with Logging {
       maxMemoryUsage: Long,
       metadata: DecisionTreeMetadata,
       rng: scala.util.Random)
-    : (Map[Int, Array[Node]], Map[Int, Map[Int, NodeIndexInfo]]) = {
+      : (Map[Int, Array[Node]], Map[Int, Map[Int, NodeIndexInfo]]) = {
     // Collect some nodes to split:
     //  nodesForGroup(treeIndex) = nodes to split
     val mutableNodesForGroup =

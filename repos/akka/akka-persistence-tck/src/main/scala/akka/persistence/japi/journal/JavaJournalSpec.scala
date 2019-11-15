@@ -24,6 +24,6 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class JavaJournalSpec(config: Config) extends JournalSpec(config) {
   override protected def supportsRejectingNonSerializableObjects
-    : CapabilityFlag =
+      : CapabilityFlag =
     CapabilityFlag.on
 }

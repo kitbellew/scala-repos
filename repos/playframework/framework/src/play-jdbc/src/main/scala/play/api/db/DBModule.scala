@@ -66,7 +66,7 @@ trait DBComponents {
   * Inject provider for DB implementation of DB API.
   */
 @Singleton
-class DBApiProvider @Inject()(
+class DBApiProvider @Inject() (
     environment: Environment,
     configuration: Configuration,
     defaultConnectionPool: ConnectionPool,

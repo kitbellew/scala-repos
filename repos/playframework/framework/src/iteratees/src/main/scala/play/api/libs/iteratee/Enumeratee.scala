@@ -71,7 +71,7 @@ trait Enumeratee[From, To] { parent =>
   def composeConcat[X](other: Enumeratee[To, To])(
       implicit p: To => scala.collection.TraversableLike[X, To],
       bf: scala.collection.generic.CanBuildFrom[To, X, To])
-    : Enumeratee[From, To] = {
+      : Enumeratee[From, To] = {
     new Enumeratee[From, To] {
       def applyOn[A](
           iteratee: Iteratee[To, A]): Iteratee[From, Iteratee[To, A]] = {
@@ -86,7 +86,7 @@ trait Enumeratee[From, To] { parent =>
   def >+>[X](other: Enumeratee[To, To])(
       implicit p: To => scala.collection.TraversableLike[X, To],
       bf: scala.collection.generic.CanBuildFrom[To, X, To])
-    : Enumeratee[From, To] = composeConcat[X](other)
+      : Enumeratee[From, To] = composeConcat[X](other)
 }
 
 /**
@@ -153,10 +153,10 @@ object Enumeratee {
     } // Shadow ec to make this the only implicit EC in scope
 
     def getNext(it1: Iteratee[E, A], it2: Iteratee[E, B]): Iteratee[E, C] = {
-      val eventuallyIter = for ((a1, it1_) <- getInside(it1);
-                                (a2, it2_) <- getInside(it2))
-        yield
-          checkDone(a1, a2) match {
+      val eventuallyIter =
+        for ((a1, it1_) <- getInside(it1);
+             (a2, it2_) <- getInside(it2))
+          yield checkDone(a1, a2) match {
             case Left((msg, in))             => Error(msg, in)
             case Right(None)                 => Cont(step(it1_, it2_))
             case Right(Some(Left(Left(a))))  => it2_.map(b => zipper(a, b))(pec)

@@ -18,12 +18,12 @@ object Traversable {
     */
   trait Head[E] {
     def apply[A](implicit p: E => scala.collection.TraversableLike[A, E])
-      : Iteratee[E, Option[A]]
+        : Iteratee[E, Option[A]]
   }
 
   def head[E] = new Head[E] {
     def apply[A](implicit p: E => scala.collection.TraversableLike[A, E])
-      : Iteratee[E, Option[A]] = {
+        : Iteratee[E, Option[A]] = {
 
       def step: K[E, Option[A]] = {
         case Input.Empty => Cont(step)
@@ -38,7 +38,7 @@ object Traversable {
 
   def takeUpTo[M](count: Long)(
       implicit p: M => scala.collection.TraversableLike[_, M])
-    : Enumeratee[M, M] = new Enumeratee[M, M] {
+      : Enumeratee[M, M] = new Enumeratee[M, M] {
 
     def applyOn[A](it: Iteratee[M, A]): Iteratee[M, Iteratee[M, A]] = {
 
@@ -71,7 +71,7 @@ object Traversable {
 
   def take[M](count: Int)(
       implicit p: M => scala.collection.TraversableLike[_, M])
-    : Enumeratee[M, M] = new Enumeratee[M, M] {
+      : Enumeratee[M, M] = new Enumeratee[M, M] {
 
     def applyOn[A](it: Iteratee[M, A]): Iteratee[M, Iteratee[M, A]] = {
 
@@ -145,7 +145,7 @@ object Traversable {
 
   def drop[M](count: Int)(
       implicit p: M => scala.collection.TraversableLike[_, M])
-    : Enumeratee[M, M] = new Enumeratee[M, M] {
+      : Enumeratee[M, M] = new Enumeratee[M, M] {
 
     def applyOn[A](inner: Iteratee[M, A]): Iteratee[M, Iteratee[M, A]] = {
 

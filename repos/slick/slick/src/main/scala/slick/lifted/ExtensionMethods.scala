@@ -334,11 +334,11 @@ trait ExtensionMethodConversions {
     new SingleColumnQueryExtensionMethods[B1, B1, C](q)
   implicit def singleOptionColumnQueryExtensionMethods[B1: BaseTypedType, C[_]](
       q: Query[Rep[Option[B1]], _, C])
-    : SingleColumnQueryExtensionMethods[B1, Option[B1], C] =
+      : SingleColumnQueryExtensionMethods[B1, Option[B1], C] =
     new SingleColumnQueryExtensionMethods[B1, Option[B1], C](q)
 
   implicit def anyOptionExtensionMethods[T, P](v: Rep[Option[T]])(
       implicit ol: OptionLift[P, Rep[Option[T]]])
-    : AnyOptionExtensionMethods[Rep[Option[T]], P] =
+      : AnyOptionExtensionMethods[Rep[Option[T]], P] =
     new AnyOptionExtensionMethods[Rep[Option[T]], P](v)
 }

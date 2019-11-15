@@ -50,7 +50,7 @@ import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary._
 import SampleData._
 
-trait BlockAlignSpec[M[+ _]]
+trait BlockAlignSpec[M[+_]]
     extends BlockStoreTestSupport[M]
     with Specification
     with ScalaCheck {

@@ -102,7 +102,8 @@ class InterpretedPicklerRuntime(classLoader: ClassLoader, preclazz: Class[_])(
               val oid = scala.pickling.internal.lookupPicklee(picklee)
               builder.hintOid(oid)
               pickler.pickle(picklee, builder)
-          } else pickler.pickle(picklee, builder)
+          }
+        else pickler.pickle(picklee, builder)
       }
 
       def pickle(picklee: Any, builder: PBuilder): Unit = {

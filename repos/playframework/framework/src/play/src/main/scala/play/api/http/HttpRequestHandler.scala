@@ -226,7 +226,7 @@ class DefaultHttpRequestHandler(
 @deprecated(
   "GlobalSettings is deprecated. Use DefaultHttpRequestHandler or JavaCompatibleHttpRequestHandler.",
   "2.5.0")
-class GlobalSettingsHttpRequestHandler @Inject()(
+class GlobalSettingsHttpRequestHandler @Inject() (
     global: Provider[GlobalSettings])
     extends HttpRequestHandler {
   def handlerForRequest(request: RequestHeader) =
@@ -243,7 +243,7 @@ class GlobalSettingsHttpRequestHandler @Inject()(
   * If your application routes to Java actions, then you must use this request handler as the base class as is or as
   * the base class for your custom [[HttpRequestHandler]].
   */
-class JavaCompatibleHttpRequestHandler @Inject()(
+class JavaCompatibleHttpRequestHandler @Inject() (
     router: Router,
     errorHandler: HttpErrorHandler,
     configuration: HttpConfiguration,

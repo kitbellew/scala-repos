@@ -34,7 +34,7 @@ class ScalaGenerateEqualsWizard(
 
   private def getSelectedFields(
       panel: AbstractMemberSelectionPanel[ScNamedElement, ScalaMemberInfo])
-    : Seq[ScNamedElement] =
+      : Seq[ScNamedElement] =
     if (panel == null) Seq.empty
     else panel.getTable.getSelectedMemberInfos.map(_.getMember).toSeq
 
@@ -93,10 +93,10 @@ private class ScalaGenerateEqualsWizardBuilder(
   protected def getFieldsToHashCode: HashMap[ScNamedElement, ScalaMemberInfo] =
     fieldsToHashCode
   protected def getEqualsPanel
-    : AbstractMemberSelectionPanel[ScNamedElement, ScalaMemberInfo] =
+      : AbstractMemberSelectionPanel[ScNamedElement, ScalaMemberInfo] =
     equalsPanel
   protected def getHashCodePanel
-    : AbstractMemberSelectionPanel[ScNamedElement, ScalaMemberInfo] =
+      : AbstractMemberSelectionPanel[ScNamedElement, ScalaMemberInfo] =
     hashCodePanel
 
   protected def updateHashCodeMemberInfos(
@@ -127,7 +127,7 @@ private class ScalaGenerateEqualsWizardBuilder(
   protected def getFieldsToNonNull: HashMap[ScNamedElement, ScalaMemberInfo] =
     null
   protected def getNonNullPanel
-    : AbstractMemberSelectionPanel[ScNamedElement, ScalaMemberInfo] = null
+      : AbstractMemberSelectionPanel[ScNamedElement, ScalaMemberInfo] = null
   protected def updateNonNullMemberInfos(
       equalsMemberInfos: util.Collection[ScalaMemberInfo]) {}
 }

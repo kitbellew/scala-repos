@@ -26,7 +26,7 @@ import com.twitter.scalding.serialization.macros.impl.ordered_serialization.prov
 object OrderedSerializationProviderImpl {
   def normalizedDispatcher(c: Context)(
       buildDispatcher: => PartialFunction[c.Type, TreeOrderedBuf[c.type]])
-    : PartialFunction[c.Type, TreeOrderedBuf[c.type]] = {
+      : PartialFunction[c.Type, TreeOrderedBuf[c.type]] = {
     case tpe
         if (!tpe.toString.contains(ImplicitOrderedBuf.macroMarker) &&
           !(tpe.normalize == tpe)) =>
@@ -35,7 +35,7 @@ object OrderedSerializationProviderImpl {
 
   def scaldingBasicDispatchers(c: Context)(
       buildDispatcher: => PartialFunction[c.Type, TreeOrderedBuf[c.type]])
-    : PartialFunction[c.Type, TreeOrderedBuf[c.type]] = {
+      : PartialFunction[c.Type, TreeOrderedBuf[c.type]] = {
 
     val primitiveDispatcher = PrimitiveOrderedBuf.dispatch(c)
     val optionDispatcher = OptionOrderedBuf.dispatch(c)(buildDispatcher)

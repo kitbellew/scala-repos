@@ -59,7 +59,7 @@ object GraphXUtils {
       mapFunc: EdgeTriplet[VD, ED] => Iterator[(VertexId, A)],
       reduceFunc: (A, A) => A,
       activeSetOpt: Option[(VertexRDD[_], EdgeDirection)] = None)
-    : VertexRDD[A] = {
+      : VertexRDD[A] = {
     def sendMsg(ctx: EdgeContext[VD, ED, A]) {
       mapFunc(ctx.toEdgeTriplet).foreach { kv =>
         val id = kv._1

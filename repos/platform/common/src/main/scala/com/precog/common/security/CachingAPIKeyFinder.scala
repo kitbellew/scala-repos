@@ -44,7 +44,7 @@ object CachingAPIKeyFinderSettings {
   )
 }
 
-class CachingAPIKeyFinder[M[+ _]: Monad](
+class CachingAPIKeyFinder[M[+_]: Monad](
     delegate: APIKeyFinder[M],
     settings: CachingAPIKeyFinderSettings = CachingAPIKeyFinderSettings.Default)
     extends APIKeyFinder[M] {

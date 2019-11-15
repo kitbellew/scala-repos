@@ -33,7 +33,7 @@ object Opt {
     def -->(body: => Unit): Boolean // if --opt is set, execute body
     def --| : Option[String] // --opt <arg: String> is optional, result is Option[String]
     def --^[T: FromString]
-      : Option[T] // --opt <arg: T> is optional, result is Option[T]
+        : Option[T] // --opt <arg: T> is optional, result is Option[T]
 
     def optMap[T](f: String => T) = --| map f
 

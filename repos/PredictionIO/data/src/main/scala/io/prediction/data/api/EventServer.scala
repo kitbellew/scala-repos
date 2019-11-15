@@ -422,7 +422,7 @@ class EventServiceActor(
               val channelId = authData.channelId
               val allowedEvents = authData.events
               val handleEvent
-                : PartialFunction[Try[Event], Future[Map[String, Any]]] = {
+                  : PartialFunction[Try[Event], Future[Map[String, Any]]] = {
                 case Success(event) => {
                   if (allowedEvents.isEmpty ||
                       allowedEvents.contains(event.event)) {

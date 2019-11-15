@@ -37,7 +37,7 @@ import scala.collection.immutable.Seq
 @Path("v2/apps")
 @Consumes(Array(MediaType.APPLICATION_JSON))
 @Produces(Array(MarathonMediaType.PREFERRED_APPLICATION_JSON))
-class AppsResource @Inject()(
+class AppsResource @Inject() (
     clock: Clock,
     @Named(EventModule.busName) eventBus: EventStream,
     appTasksRes: AppTasksResource,

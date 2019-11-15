@@ -30,7 +30,7 @@ trait BitVectorOps {
         (a, b) =>
           a.clear(); a.or(b)
       }) op: Op.InPlaceImpl2[java.util.BitSet, java.util.BitSet])
-    : Op.InPlaceImpl2[BitVector, BitVector] =
+      : Op.InPlaceImpl2[BitVector, BitVector] =
     new Op.InPlaceImpl2[BitVector, BitVector] {
       def apply(a: BitVector, b: BitVector) {
         if (!a.lengthsMatch(b))
@@ -89,7 +89,7 @@ trait BitVectorOps {
   @expand
   implicit def axpy[@expand.args(Int, Double, Float, Long) V, Vec](
       implicit ev: Vec <:< Vector[V])
-    : scaleAdd.InPlaceImpl3[Vec, V, BitVector] = {
+      : scaleAdd.InPlaceImpl3[Vec, V, BitVector] = {
     new scaleAdd.InPlaceImpl3[Vec, V, BitVector] {
       def apply(a: Vec, s: V, b: BitVector) {
         require(b.lengthsMatch(a), "Vectors must be the same length!")
@@ -132,7 +132,7 @@ trait BitVectorOps {
   @expand.valify
   implicit def canDot_BV_DenseVector[@expand.args(Double, Float, Int, Long) T](
       implicit @expand.sequence[T](0.0, 0.0f, 0, 0L) zero: T)
-    : breeze.linalg.operators.OpMulInner.Impl2[BitVector, DenseVector[T], T] = {
+      : breeze.linalg.operators.OpMulInner.Impl2[BitVector, DenseVector[T], T] = {
     new breeze.linalg.operators.OpMulInner.Impl2[BitVector, DenseVector[T], T] {
       def apply(a: BitVector, b: DenseVector[T]) = {
         val ad = a.data
@@ -156,7 +156,10 @@ trait BitVectorOps {
   @expand.valify
   implicit def canDot_BV_SV[@expand.args(Int, Long, BigInt, Complex) T](
       implicit @expand.sequence[T](0, 0L, BigInt(0), Complex.zero) zero: T)
-    : breeze.linalg.operators.OpMulInner.Impl2[BitVector, SparseVector[T], T] = {
+      : breeze.linalg.operators.OpMulInner.Impl2[
+        BitVector,
+        SparseVector[T],
+        T] = {
     new breeze.linalg.operators.OpMulInner.Impl2[BitVector, SparseVector[T], T] {
       def apply(a: BitVector, b: SparseVector[T]): T = {
         require(a.lengthsMatch(b), "Vectors must be the same length!")
@@ -177,7 +180,7 @@ trait BitVectorOps {
 
   implicit def canDot_Other_BV[T, Other](
       implicit op: OpMulInner.Impl2[BitVector, Other, T])
-    : OpMulInner.Impl2[Other, BitVector, T] = {
+      : OpMulInner.Impl2[Other, BitVector, T] = {
     new OpMulInner.Impl2[Other, BitVector, T] {
       def apply(a: Other, b: BitVector): T = {
         op(b, a)

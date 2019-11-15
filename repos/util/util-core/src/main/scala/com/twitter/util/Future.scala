@@ -690,7 +690,7 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
       o: Future[O],
       p: Future[P],
       q: Future[Q])
-    : Future[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)] =
+      : Future[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)] =
     join(Seq(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q)) map { _ =>
       (
         Await.result(a),
@@ -736,7 +736,7 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
       p: Future[P],
       q: Future[Q],
       r: Future[R])
-    : Future[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)] =
+      : Future[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)] =
     join(Seq(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r)) map { _ =>
       (
         Await.result(a),
@@ -784,7 +784,7 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
       q: Future[Q],
       r: Future[R],
       s: Future[S])
-    : Future[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)] =
+      : Future[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)] =
     join(Seq(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s)) map {
       _ =>
         (
@@ -835,7 +835,7 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
       r: Future[R],
       s: Future[S],
       t: Future[T])
-    : Future[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)] =
+      : Future[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)] =
     join(Seq(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t)) map {
       _ =>
         (
@@ -887,8 +887,8 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
       r: Future[R],
       s: Future[S],
       t: Future[T],
-      u: Future[U])
-    : Future[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)] =
+      u: Future[U]): Future[
+    (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)] =
     join(Seq(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u)) map {
       _ =>
         (
@@ -2504,7 +2504,7 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
       o: Future[O],
       p: Future[P],
       q: Future[Q])
-    : Future[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)] =
+      : Future[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)] =
     Future.join(Seq(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q)) map {
       _ =>
         (
@@ -2551,7 +2551,7 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
       p: Future[P],
       q: Future[Q],
       r: Future[R])
-    : Future[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)] =
+      : Future[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)] =
     Future.join(Seq(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r)) map {
       _ =>
         (
@@ -2600,7 +2600,7 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
       q: Future[Q],
       r: Future[R],
       s: Future[S])
-    : Future[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)] =
+      : Future[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)] =
     Future.join(Seq(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s)) map {
       _ =>
         (
@@ -2651,7 +2651,7 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
       r: Future[R],
       s: Future[S],
       t: Future[T])
-    : Future[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)] =
+      : Future[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)] =
     Future.join(Seq(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t)) map {
       _ =>
         (
@@ -2703,8 +2703,8 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
       r: Future[R],
       s: Future[S],
       t: Future[T],
-      u: Future[U])
-    : Future[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)] =
+      u: Future[U]): Future[
+    (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)] =
     Future.join(
       Seq(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u)) map {
       _ =>

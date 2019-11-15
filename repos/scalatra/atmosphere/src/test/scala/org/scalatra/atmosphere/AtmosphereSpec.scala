@@ -136,8 +136,10 @@ class AtmosphereSpec extends MutableScalatraSpec {
       val latch = new CountDownLatch(1)
 
       // yay?
-      val client
-        : Client[DefaultOptions, DefaultOptionsBuilder, DefaultRequestBuilder] =
+      val client: Client[
+        DefaultOptions,
+        DefaultOptionsBuilder,
+        DefaultRequestBuilder] =
         ClientFactory.getDefault.newClient
           .asInstanceOf[Client[
             DefaultOptions,

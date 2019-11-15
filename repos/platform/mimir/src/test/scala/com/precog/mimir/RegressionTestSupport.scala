@@ -28,7 +28,7 @@ import com.precog.yggdrasil.util.CPathUtils._
 
 import blueeyes.json._
 
-trait RegressionTestSupport[M[+ _]] {
+trait RegressionTestSupport[M[+_]] {
   def makeTBounded: Double = {
     val theta = Random.nextGaussian * 10
     // we omit values of theta close to zero

@@ -43,7 +43,7 @@ import org.scalacheck.Gen._
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary._
 
-trait CogroupSpec[M[+ _]]
+trait CogroupSpec[M[+_]]
     extends TableModuleTestSupport[M]
     with Specification
     with ScalaCheck {

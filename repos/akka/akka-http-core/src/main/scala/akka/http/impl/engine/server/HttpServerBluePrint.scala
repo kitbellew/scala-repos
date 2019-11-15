@@ -117,8 +117,12 @@ private[http] object HttpServerBluePrint {
     NotUsed] =
     BidiFlow.fromFlows(Flow[HttpResponse], new PrepareRequests(settings))
 
-  def requestTimeoutSupport(timeout: Duration)
-    : BidiFlow[HttpResponse, HttpResponse, HttpRequest, HttpRequest, NotUsed] =
+  def requestTimeoutSupport(timeout: Duration): BidiFlow[
+    HttpResponse,
+    HttpResponse,
+    HttpRequest,
+    HttpRequest,
+    NotUsed] =
     timeout match {
       case x: FiniteDuration ⇒
         BidiFlow.fromGraph(new RequestTimeoutSupport(x)).reversed
@@ -205,7 +209,7 @@ private[http] object HttpServerBluePrint {
         }
 
         def createEntity(creator: EntityCreator[RequestOutput, RequestEntity])
-          : RequestEntity =
+            : RequestEntity =
           creator match {
             case StrictEntityCreator(entity) ⇒ entity
             case StreamedEntityCreator(creator) ⇒ streamRequestEntity(creator)
@@ -214,7 +218,7 @@ private[http] object HttpServerBluePrint {
         def streamRequestEntity(
             creator: (
                 Source[ParserOutput.RequestOutput, NotUsed]) => RequestEntity)
-          : RequestEntity = {
+            : RequestEntity = {
           // stream incoming chunks into the request entity until we reach the end of it
           // and then toggle back to "idle"
 
@@ -313,7 +317,7 @@ private[http] object HttpServerBluePrint {
   }
 
   def rendering(settings: ServerSettings, log: LoggingAdapter)
-    : Flow[ResponseRenderingContext, ResponseRenderingOutput, NotUsed] = {
+      : Flow[ResponseRenderingContext, ResponseRenderingOutput, NotUsed] = {
     import settings._
 
     val responseRendererFactory =
@@ -726,8 +730,12 @@ private[http] object HttpServerBluePrint {
     *  - produces exactly one response per request
     *  - has not more than `pipeliningLimit` responses outstanding
     */
-  def userHandlerGuard(pipeliningLimit: Int)
-    : BidiFlow[HttpResponse, HttpResponse, HttpRequest, HttpRequest, NotUsed] =
+  def userHandlerGuard(pipeliningLimit: Int): BidiFlow[
+    HttpResponse,
+    HttpResponse,
+    HttpRequest,
+    HttpRequest,
+    NotUsed] =
     One2OneBidiFlow[HttpRequest, HttpResponse](pipeliningLimit).reversed
 
   private class ProtocolSwitchStage(

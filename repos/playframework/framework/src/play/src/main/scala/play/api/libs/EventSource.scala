@@ -72,7 +72,7 @@ object EventSource {
     * }}}
     */
   def flow[E: EventDataExtractor: EventNameExtractor: EventIdExtractor]
-    : Flow[E, Event, _] = {
+      : Flow[E, Event, _] = {
     Flow[E].map(Event(_))
   }
 

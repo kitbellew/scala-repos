@@ -31,7 +31,7 @@ import com.twitter.scalding.serialization.OrderedSerialization
 object ProductOrderedBuf {
   def dispatch(c: Context)(
       buildDispatcher: => PartialFunction[c.Type, TreeOrderedBuf[c.type]])
-    : PartialFunction[c.Type, TreeOrderedBuf[c.type]] = {
+      : PartialFunction[c.Type, TreeOrderedBuf[c.type]] = {
     import c.universe._
     val validTypes: List[Type] = List(
       typeOf[Product1[Any]],

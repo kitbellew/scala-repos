@@ -31,7 +31,7 @@ case class Unzip2[P1 <: Platform[P1], P2 <: Platform[P2]]() {
     p.asInstanceOf[(Producer[P1, T], Producer[P2, T])]
 
   def apply[T](root: Producer[Platform2[P1, P2], T])
-    : (Producer[P1, T], Producer[P2, T]) =
+      : (Producer[P1, T], Producer[P2, T]) =
     root match {
       case AlsoProducer(ensure, result) =>
         val (le, re) = apply(ensure)
@@ -100,7 +100,7 @@ class Platform2[P1 <: Platform[P1], P2 <: Platform[P2]](p1: P1, p2: P2)
   type Plan[T] = (P1#Plan[T], P2#Plan[T])
 
   private def tCast[T](p: (Producer[P1, T], Producer[P2, T]))
-    : (TailProducer[P1, T], TailProducer[P2, T]) =
+      : (TailProducer[P1, T], TailProducer[P2, T]) =
     p.asInstanceOf[(TailProducer[P1, T], TailProducer[P2, T])]
 
   def plan[T](producer: TailProducer[Platform2[P1, P2], T]): Plan[T] = {

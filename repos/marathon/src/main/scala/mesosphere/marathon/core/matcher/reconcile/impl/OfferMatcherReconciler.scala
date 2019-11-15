@@ -61,7 +61,7 @@ private[reconcile] class OfferMatcherReconciler(
   private[this] def processResourcesByTaskId(
       offer: Offer,
       resourcesByTaskId: Map[Id, Iterable[Resource]])
-    : Future[MatchedTaskOps] = {
+      : Future[MatchedTaskOps] = {
     // do not query taskTracker in the common case
     if (resourcesByTaskId.isEmpty)
       Future.successful(MatchedTaskOps.noMatch(offer.getId))
@@ -92,8 +92,9 @@ private[reconcile] class OfferMatcherReconciler(
       val tasksByAppFuture = taskTracker.tasksByApp()
       val rootGroupFuture = groupRepository.rootGroupOrEmpty()
 
-      for { tasksByApp <- tasksByAppFuture; rootGroup <- rootGroupFuture } yield
-        createTaskOps(tasksByApp, rootGroup)
+      for { tasksByApp <- tasksByAppFuture; rootGroup <- rootGroupFuture } yield createTaskOps(
+        tasksByApp,
+        rootGroup)
     }
   }
 

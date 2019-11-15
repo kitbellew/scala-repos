@@ -100,7 +100,7 @@ package object concurrent {
   // removal planned for 2.13.0
   def future[T](body: => T)(
       implicit @deprecatedName('execctx) executor: ExecutionContext)
-    : Future[T] = Future[T](body)
+      : Future[T] = Future[T](body)
 
   /** Creates a promise object which can be completed with a value or an exception.
     *

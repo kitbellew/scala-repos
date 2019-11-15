@@ -572,7 +572,8 @@ object WorksheetEditorPrinter {
           case _ if worksheetViewer.getUserData(DIFF_SPLITTER_KEY) != null =>
             worksheetViewer.getUserData(DIFF_SPLITTER_KEY).getProportion
           case _ => 0.5f
-        } else 0.5f
+        }
+      else 0.5f
 
     val dimension = editorComponent.getSize()
     val prefDim = new Dimension(dimension.width / 2, dimension.height)
@@ -626,7 +627,8 @@ object WorksheetEditorPrinter {
               parent.add(diffPane, 1)
             }
           case _ => patchEditor()
-        } else patchEditor()
+        }
+      else patchEditor()
     }
 
     WorksheetViewerInfo.addViewer(worksheetViewer, editor)

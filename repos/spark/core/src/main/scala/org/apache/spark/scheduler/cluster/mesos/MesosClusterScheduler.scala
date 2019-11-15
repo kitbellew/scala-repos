@@ -644,7 +644,7 @@ private[spark] class MesosClusterScheduler(
   }
 
   private def copyBuffer(buffer: ArrayBuffer[MesosDriverDescription])
-    : ArrayBuffer[MesosDriverDescription] = {
+      : ArrayBuffer[MesosDriverDescription] = {
     val newBuffer = new ArrayBuffer[MesosDriverDescription](buffer.size)
     buffer.copyToBuffer(newBuffer)
     newBuffer

@@ -33,7 +33,7 @@ import blueeyes.json._
 
 import scalaz._
 
-trait ClusteringLibSpecs[M[+ _]]
+trait ClusteringLibSpecs[M[+_]]
     extends Specification
     with EvaluatorTestSupport[M]
     with ClusteringTestSupport

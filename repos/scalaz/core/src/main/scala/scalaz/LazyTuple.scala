@@ -239,7 +239,7 @@ sealed abstract class LazyTuple4Instances0 {
     }
 
   implicit def lazyTuple4Functor[A1, A2, A3]
-    : Functor[LazyTuple4[A1, A2, A3, ?]] =
+      : Functor[LazyTuple4[A1, A2, A3, ?]] =
     new LazyTuple4Functor[A1, A2, A3] {}
 
   implicit def lazyTuple4Equal[A1, A2, A3, A4](

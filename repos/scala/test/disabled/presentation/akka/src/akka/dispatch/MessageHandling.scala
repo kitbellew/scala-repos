@@ -272,7 +272,7 @@ abstract class MessageDispatcherConfigurator {
   def configureThreadPool(
       config: Configuration,
       createDispatcher: => (ThreadPoolConfig) => MessageDispatcher)
-    : ThreadPoolConfigDispatcherBuilder = {
+      : ThreadPoolConfigDispatcherBuilder = {
     import ThreadPoolConfigDispatcherBuilder.conf_?
 
     //Apply the following options to the config if they are present in the config

@@ -51,7 +51,7 @@ object hist extends UFunc {
       T,
       @expand.args(Int, Double, Float, Long) S](
       implicit iter: CanTraverseValues[T, S])
-    : Impl3[T, Int, (Double, Double), Histogram[S]] =
+      : Impl3[T, Int, (Double, Double), Histogram[S]] =
     new Impl3[T, Int, (Double, Double), Histogram[S]] {
 
       def apply(v: T, bins: Int, range: (Double, Double)): Histogram[S] = {
@@ -123,7 +123,7 @@ object hist extends UFunc {
       U,
       @expand.args(Int, Double, Float, Long) S](
       implicit iter: CanZipAndTraverseValues[T, U, S, S])
-    : Impl4[T, Int, (Double, Double), U, Histogram[S]] =
+      : Impl4[T, Int, (Double, Double), U, Histogram[S]] =
     new Impl4[T, Int, (Double, Double), U, Histogram[S]] {
 
       def apply(

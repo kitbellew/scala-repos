@@ -25,7 +25,7 @@ trait PredefinedToRequestMarshallers {
 
   implicit def fromMethodAndUriAndHeadersAndValue[T](
       implicit mt: ToEntityMarshaller[T])
-    : TRM[(HttpMethod, Uri, immutable.Seq[HttpHeader], T)] =
+      : TRM[(HttpMethod, Uri, immutable.Seq[HttpHeader], T)] =
     Marshaller(implicit ec ⇒ {
       case (m, u, h, v) ⇒
         mt(v).fast map (_ map (_ map (HttpRequest(m, u, h, _))))

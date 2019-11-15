@@ -61,7 +61,7 @@ object ScalaConsoleInfo {
   }
 
   private def get(project: Project)
-    : (ScalaLanguageConsole, ConsoleHistoryController, ProcessHandler) = {
+      : (ScalaLanguageConsole, ConsoleHistoryController, ProcessHandler) = {
     synchronized {
       allConsoles.get(project) match {
         case null => NULL

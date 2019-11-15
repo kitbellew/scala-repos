@@ -39,7 +39,7 @@ case class ParallelDataSource(val dsp: DataSourceParams)
       Vector,
       Double] {
   override def read(sc: SparkContext)
-    : Seq[(Integer, RDD[LabeledPoint], RDD[(Vector, Double)])] = {
+      : Seq[(Integer, RDD[LabeledPoint], RDD[(Vector, Double)])] = {
     val input = sc.textFile(dsp.filepath)
     val points = input.map { line =>
       val parts = line.split(' ').map(_.toDouble)

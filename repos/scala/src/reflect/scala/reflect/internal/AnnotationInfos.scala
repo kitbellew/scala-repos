@@ -194,7 +194,7 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
       new CompleteAnnotationInfo(atp, args, assocs)
 
     def unapply(info: AnnotationInfo)
-      : Option[(Type, List[Tree], List[(Name, ClassfileAnnotArg)])] =
+        : Option[(Type, List[Tree], List[(Name, ClassfileAnnotArg)])] =
       Some((info.atp, info.args, info.assocs))
 
     def mkFilter(category: Symbol, defaultRetention: Boolean)(
@@ -397,7 +397,7 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
         javaArgs: ListMap[Name, ClassfileAnnotArg]): Annotation =
       AnnotationInfo(tpe, scalaArgs, javaArgs.toList)
     def unapply(annotation: Annotation)
-      : Option[(Type, List[Tree], ListMap[Name, ClassfileAnnotArg])] =
+        : Option[(Type, List[Tree], ListMap[Name, ClassfileAnnotArg])] =
       Some((annotation.tpe, annotation.scalaArgs, annotation.javaArgs))
   }
   implicit val AnnotationTag =

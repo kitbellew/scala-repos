@@ -118,7 +118,7 @@ class ConsumerFetcherThread(
 
   protected def buildFetchRequest(
       partitionMap: collection.Map[TopicAndPartition, PartitionFetchState])
-    : FetchRequest = {
+      : FetchRequest = {
     partitionMap.foreach {
       case ((topicAndPartition, partitionFetchState)) =>
         if (partitionFetchState.isActive)
@@ -133,7 +133,7 @@ class ConsumerFetcherThread(
   }
 
   protected def fetch(fetchRequest: FetchRequest)
-    : collection.Map[TopicAndPartition, PartitionData] =
+      : collection.Map[TopicAndPartition, PartitionData] =
     simpleConsumer.fetch(fetchRequest.underlying).data.map {
       case (key, value) =>
         key -> new PartitionData(value)

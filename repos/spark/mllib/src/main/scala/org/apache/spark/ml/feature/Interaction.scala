@@ -44,7 +44,7 @@ import org.apache.spark.sql.types._
   */
 @Since("1.6.0")
 @Experimental
-class Interaction @Since("1.6.0")(override val uid: String)
+class Interaction @Since("1.6.0") (override val uid: String)
     extends Transformer
     with HasInputCols
     with HasOutputCol

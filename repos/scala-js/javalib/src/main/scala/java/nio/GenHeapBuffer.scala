@@ -23,7 +23,7 @@ private[nio] object GenHeapBuffer {
       initialLength: Int,
       isReadOnly: Boolean)(
       implicit newHeapBuffer: NewHeapBuffer[BufferType, ElementType])
-    : BufferType = {
+      : BufferType = {
     if (arrayOffset < 0 || capacity < 0 ||
         arrayOffset + capacity > array.length)
       throw new IndexOutOfBoundsException

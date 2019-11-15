@@ -196,7 +196,7 @@ package Generic1TestsAux {
 
     // HACKING the fact that CNil can't be pointed
     implicit def isCPointedSimpleType
-      : Pointed[({ type λ[A] = A :+: Const[CNil]#λ[A] })#λ] =
+        : Pointed[({ type λ[A] = A :+: Const[CNil]#λ[A] })#λ] =
       new Pointed[({ type λ[A] = A :+: Const[CNil]#λ[A] })#λ] {
         def point[A](a: A): A :+: Const[CNil]#λ[A] = Inl(a)
       }
@@ -553,10 +553,10 @@ class Generic1Tests {
   def testPartiallyApplied3 {
     def materialize1[F[_]](
         implicit gen: Generic1[F, ({ type λ[r[_]] = TC3[r, Option] })#λ])
-      : Unit = ()
+        : Unit = ()
     def materialize2[F[_]](
         implicit gen: Generic1[F, ({ type λ[r[_]] = TC3[Option, r] })#λ])
-      : Unit = ()
+        : Unit = ()
 
     materialize1[List]
     materialize2[List]

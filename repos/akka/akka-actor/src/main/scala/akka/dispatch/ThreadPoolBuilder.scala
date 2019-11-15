@@ -132,7 +132,7 @@ final case class ThreadPoolConfigBuilder(config: ThreadPoolConfig) {
     withNewThreadPoolWithCustomBlockingQueue(reusableQueue(queue))
 
   def withNewThreadPoolWithLinkedBlockingQueueWithUnboundedCapacity
-    : ThreadPoolConfigBuilder =
+      : ThreadPoolConfigBuilder =
     this.copy(config = config.copy(queueFactory = linkedBlockingQueue()))
 
   def withNewThreadPoolWithLinkedBlockingQueueWithCapacity(
@@ -189,7 +189,7 @@ final case class ThreadPoolConfigBuilder(config: ThreadPoolConfig) {
 
   def configure(
       fs: Option[Function[ThreadPoolConfigBuilder, ThreadPoolConfigBuilder]]*)
-    : ThreadPoolConfigBuilder =
+      : ThreadPoolConfigBuilder =
     fs.foldLeft(this)((c, f) ⇒ f.map(_(c)).getOrElse(c))
 }
 

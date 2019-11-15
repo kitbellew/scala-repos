@@ -176,7 +176,7 @@ class SubSource[+Out, +Mat](
     */
   def statefulMapConcat[T](
       f: function.Creator[function.Function[Out, java.lang.Iterable[T]]])
-    : SubSource[T, Mat] =
+      : SubSource[T, Mat] =
     new SubSource(delegate.statefulMapConcat { () ⇒
       val fun = f.create()
       elem ⇒ Util.immutableSeq(fun(elem))
@@ -439,7 +439,7 @@ class SubSource[+Out, +Mat](
     * '''Cancels when''' downstream cancels
     */
   def reduce(f: function.Function2[Out, Out, Out @uncheckedVariance])
-    : SubSource[Out, Mat] =
+      : SubSource[Out, Mat] =
     new SubSource(delegate.reduce(f.apply))
 
   /**
@@ -520,7 +520,7 @@ class SubSource[+Out, +Mat](
     * IllegalArgumentException is thrown.
     */
   def groupedWithin(n: Int, d: FiniteDuration)
-    : SubSource[java.util.List[Out @uncheckedVariance], Mat] =
+      : SubSource[java.util.List[Out @uncheckedVariance], Mat] =
     new SubSource(delegate.groupedWithin(n, d).map(_.asJava)) // TODO optimize to one step
 
   /**
@@ -654,7 +654,7 @@ class SubSource[+Out, +Mat](
     */
   def recoverWith[T >: Out](
       pf: PartialFunction[Throwable, _ <: Graph[SourceShape[T], NotUsed]])
-    : SubSource[T, Mat @uncheckedVariance] =
+      : SubSource[T, Mat @uncheckedVariance] =
     new SubSource(delegate.recoverWith(pf))
 
   /**
@@ -844,7 +844,7 @@ class SubSource[+Out, +Mat](
     *                    state.
     */
   def expand[U](extrapolate: function.Function[Out, java.util.Iterator[U]])
-    : SubSource[U, Mat] =
+      : SubSource[U, Mat] =
     new SubSource(delegate.expand(in ⇒ extrapolate(in).asScala))
 
   /**
@@ -930,7 +930,7 @@ class SubSource[+Out, +Mat](
     */
   def flatMapConcat[T, M](
       f: function.Function[Out, _ <: Graph[SourceShape[T], M]])
-    : SubSource[T, Mat] =
+      : SubSource[T, Mat] =
     new SubSource(delegate.flatMapConcat(x ⇒ f(x)))
 
   /**
@@ -949,7 +949,7 @@ class SubSource[+Out, +Mat](
   def flatMapMerge[T, M](
       breadth: Int,
       f: function.Function[Out, _ <: Graph[SourceShape[T], M]])
-    : SubSource[T, Mat] =
+      : SubSource[T, Mat] =
     new SubSource(delegate.flatMapMerge(breadth, o ⇒ f(o)))
 
   /**
@@ -1086,7 +1086,7 @@ class SubSource[+Out, +Mat](
     * '''Cancels when''' downstream cancels
     */
   def zip[T](source: Graph[SourceShape[T], _])
-    : SubSource[Out @uncheckedVariance Pair T, Mat] =
+      : SubSource[Out @uncheckedVariance Pair T, Mat] =
     new SubSource(delegate.zip(source))
 
   /**

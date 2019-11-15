@@ -57,7 +57,7 @@ private[http] class HttpResponseRendererFactory(
   protected def currentTimeMillis(): Long = System.currentTimeMillis()
 
   def renderer
-    : Flow[ResponseRenderingContext, ResponseRenderingOutput, NotUsed] =
+      : Flow[ResponseRenderingContext, ResponseRenderingOutput, NotUsed] =
     Flow.fromGraph(HttpResponseRenderer)
 
   object HttpResponseRenderer
@@ -331,7 +331,7 @@ private[http] class HttpResponseRendererFactory(
             else r
 
           def byteStrings(entityBytes: ⇒ Source[ByteString, Any])
-            : Source[ResponseRenderingOutput, Any] =
+              : Source[ResponseRenderingOutput, Any] =
             renderByteStrings(r, entityBytes, skipEntity = noEntity)
               .map(ResponseRenderingOutput.HttpData(_))
 

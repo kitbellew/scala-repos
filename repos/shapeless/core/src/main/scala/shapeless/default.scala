@@ -108,7 +108,7 @@ object Default {
           T <: HList,
           LabT <: HList,
           OutT <: HList](implicit tailHelper: Aux[T, LabT, OutT])
-        : Aux[Some[H] :: T, K :: LabT, FieldType[K, H] :: OutT] =
+          : Aux[Some[H] :: T, K :: LabT, FieldType[K, H] :: OutT] =
         new Helper[Some[H] :: T, K :: LabT] {
           type Out = FieldType[K, H] :: OutT
           def apply(l: Some[H] :: T) = field[K](l.head.x) :: tailHelper(l.tail)
@@ -119,7 +119,7 @@ object Default {
           T <: HList,
           LabT <: HList,
           OutT <: HList](implicit tailHelper: Aux[T, LabT, OutT])
-        : Aux[None.type :: T, K :: LabT, OutT] =
+          : Aux[None.type :: T, K :: LabT, OutT] =
         new Helper[None.type :: T, K :: LabT] {
           type Out = OutT
           def apply(l: None.type :: T) = tailHelper(l.tail)
@@ -195,7 +195,7 @@ object Default {
           T <: HList,
           ReprT <: HList,
           OutT <: HList](implicit tailHelper: Aux[T, ReprT, OutT])
-        : Aux[Some[H] :: T, H :: ReprT, Option[H] :: OutT] =
+          : Aux[Some[H] :: T, H :: ReprT, Option[H] :: OutT] =
         new Helper[Some[H] :: T, H :: ReprT] {
           type Out = Option[H] :: OutT
           def apply(l: Some[H] :: T) = l.head :: tailHelper(l.tail)
@@ -206,7 +206,7 @@ object Default {
           T <: HList,
           ReprT <: HList,
           OutT <: HList](implicit tailHelper: Aux[T, ReprT, OutT])
-        : Aux[None.type :: T, H :: ReprT, Option[H] :: OutT] =
+          : Aux[None.type :: T, H :: ReprT, Option[H] :: OutT] =
         new Helper[None.type :: T, H :: ReprT] {
           type Out = Option[H] :: OutT
           def apply(l: None.type :: T) = None :: tailHelper(l.tail)

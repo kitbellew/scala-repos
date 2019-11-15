@@ -438,7 +438,7 @@ class ImplicitCollector(
             }
 
             def checkForFunctionType(noReturnType: Boolean)
-              : Option[(ScalaResolveResult, ScSubstitutor)] = {
+                : Option[(ScalaResolveResult, ScSubstitutor)] = {
               val ft =
                 if (noReturnType)
                   fun.getTypeNoImplicits(
@@ -448,7 +448,7 @@ class ImplicitCollector(
               ft match {
                 case Success(_funType: ScType, _) =>
                   def checkType(ret: ScType)
-                    : Option[(ScalaResolveResult, ScSubstitutor)] = {
+                      : Option[(ScalaResolveResult, ScSubstitutor)] = {
                     def compute(
                         ): Option[(ScalaResolveResult, ScSubstitutor)] = {
                       val typeParameters = fun.typeParameters
@@ -514,7 +514,7 @@ class ImplicitCollector(
                           Some(place))
                         try {
                           def reportWrong(result: ImplicitResult)
-                            : Some[(ScalaResolveResult, ScSubstitutor)] = {
+                              : Some[(ScalaResolveResult, ScSubstitutor)] = {
                             Some(
                               c.copy(
                                 problems = Seq(WrongTypeParameterInferred),
@@ -592,7 +592,7 @@ class ImplicitCollector(
                               def addImportsUsed(
                                   result: ScalaResolveResult,
                                   results: Seq[ScalaResolveResult])
-                                : ScalaResolveResult = {
+                                  : ScalaResolveResult = {
                                 results.foldLeft(result) {
                                   case (
                                       r1: ScalaResolveResult,
@@ -762,7 +762,7 @@ class ImplicitCollector(
       val mostSpecific: MostSpecificUtil = new MostSpecificUtil(place, 1)
 
       def mapCandidates(withLocalTypeInference: Boolean)
-        : collection.Set[(ScalaResolveResult, ScSubstitutor)] = {
+          : collection.Set[(ScalaResolveResult, ScSubstitutor)] = {
         var candidatesSeq = candidates.toSeq.filter(c =>
           forMap(c, withLocalTypeInference, checkFast = true).isDefined)
         val results: ArrayBuffer[(ScalaResolveResult, ScSubstitutor)] =

@@ -457,7 +457,7 @@ sealed abstract class ValidationInstances0 extends ValidationInstances1 {
     }
 
   implicit def ValidationMonoid[E: Semigroup, A: Monoid]
-    : Monoid[Validation[E, A]] =
+      : Monoid[Validation[E, A]] =
     new Monoid[Validation[E, A]] {
       def append(a1: Validation[E, A], a2: => Validation[E, A]) =
         a1 +++ a2
@@ -511,7 +511,7 @@ sealed abstract class ValidationInstances1 extends ValidationInstances2 {
     Show.show(_.show)
 
   implicit def ValidationSemigroup[E: Semigroup, A: Semigroup]
-    : Semigroup[Validation[E, A]] =
+      : Semigroup[Validation[E, A]] =
     new Semigroup[Validation[E, A]] {
       def append(a1: Validation[E, A], a2: => Validation[E, A]) =
         a1 +++ a2
@@ -523,8 +523,10 @@ sealed abstract class ValidationInstances2 extends ValidationInstances3 {
     with Cozip[Validation[L, ?]]
     with Plus[Validation[L, ?]]
     with Optional[Validation[L, ?]] =
-    new Traverse[Validation[L, ?]] with Cozip[Validation[L, ?]]
-    with Plus[Validation[L, ?]] with Optional[Validation[L, ?]] {
+    new Traverse[Validation[L, ?]]
+      with Cozip[Validation[L, ?]]
+      with Plus[Validation[L, ?]]
+      with Optional[Validation[L, ?]] {
 
       override def map[A, B](fa: Validation[L, A])(f: A => B) =
         fa map f
@@ -567,7 +569,7 @@ sealed abstract class ValidationInstances3 {
     }
 
   implicit def ValidationApplicative[L: Semigroup]
-    : Applicative[Validation[L, ?]] =
+      : Applicative[Validation[L, ?]] =
     new Applicative[Validation[L, ?]] {
       override def map[A, B](fa: Validation[L, A])(f: A => B) =
         fa map f

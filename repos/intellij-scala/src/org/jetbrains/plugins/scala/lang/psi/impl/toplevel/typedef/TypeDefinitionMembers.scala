@@ -1203,7 +1203,7 @@ object TypeDefinitionMembers {
 
         def runIterator(
             iterator: Iterator[(SignatureNodes.T, SignatureNodes.Node)])
-          : Option[Boolean] = {
+            : Option[Boolean] = {
           while (iterator.hasNext) {
             val (_, n) = iterator.next()
             ProgressManager.checkCanceled()

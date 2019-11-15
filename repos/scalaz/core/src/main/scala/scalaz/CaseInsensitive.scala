@@ -28,7 +28,7 @@ object CaseInsensitive extends CaseInsensitiveInstances {
 
 sealed abstract class CaseInsensitiveInstances {
   implicit def CaseInsensitiveMonoid[A: FoldCase: Monoid]
-    : Monoid[CaseInsensitive[A]] =
+      : Monoid[CaseInsensitive[A]] =
     new Monoid[CaseInsensitive[A]] {
       def zero = CaseInsensitive.mk(Monoid[A].zero, Monoid[A].zero)
       def append(a: CaseInsensitive[A], b: => CaseInsensitive[A]) =

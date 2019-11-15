@@ -100,7 +100,8 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
     if (suitable)
       expressions collect {
         case x: ScLiteral if x.isString => x
-      } else Seq.empty
+      }
+    else Seq.empty
   }
 
   def injectUsingAnnotation(

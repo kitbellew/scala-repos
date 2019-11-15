@@ -16,7 +16,7 @@ import play.api.data._
 import play.api.data.Forms._
 import play.api.libs.openid._
 
-class Application @Inject()(openIdClient: OpenIdClient) extends Controller {}
+class Application @Inject() (openIdClient: OpenIdClient) extends Controller {}
 //#dependency
 
 object ScalaOpenIdSpec extends PlaySpecification {

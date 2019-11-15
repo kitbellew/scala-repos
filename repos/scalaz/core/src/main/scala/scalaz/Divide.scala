@@ -211,7 +211,7 @@ trait Divide[F[_]] extends Contravariant[F] { self =>
       a13: F[A13],
       a14: F[A14])(
       f: Z => (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14))
-    : F[Z] =
+      : F[Z] =
     divide4(
       tuple4(a1, a2, a3, a4),
       tuple4(a5, a6, a7, a8),
@@ -258,7 +258,7 @@ trait Divide[F[_]] extends Contravariant[F] { self =>
       a14: F[A14],
       a15: F[A15])(
       f: Z => (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15))
-    : F[Z] =
+      : F[Z] =
     divide4(
       tuple4(a1, a2, a3, a4),
       tuple4(a5, a6, a7, a8),
@@ -914,7 +914,7 @@ trait Divide[F[_]] extends Contravariant[F] { self =>
       a11: F[A11],
       a12: F[A12],
       a13: F[A13])
-    : F[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13)] =
+      : F[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13)] =
     divide13(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13)(identity)
 
   def tuple14[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14](
@@ -932,7 +932,7 @@ trait Divide[F[_]] extends Contravariant[F] { self =>
       a12: F[A12],
       a13: F[A13],
       a14: F[A14])
-    : F[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14)] =
+      : F[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14)] =
     divide14(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14)(
       identity)
 
@@ -952,7 +952,7 @@ trait Divide[F[_]] extends Contravariant[F] { self =>
       a13: F[A13],
       a14: F[A14],
       a15: F[A15])
-    : F[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15)] =
+      : F[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15)] =
     divide15(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15)(
       identity)
 

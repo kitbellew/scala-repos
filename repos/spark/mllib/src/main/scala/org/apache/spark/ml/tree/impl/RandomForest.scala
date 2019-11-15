@@ -495,7 +495,7 @@ private[ml] object RandomForest extends Logging {
     def binSeqOpWithNodeIdCache(
         agg: Array[DTStatsAggregator],
         dataPoint: (BaggedPoint[TreePoint], Array[Int]))
-      : Array[DTStatsAggregator] = {
+        : Array[DTStatsAggregator] = {
       treeToNodeToIndexInfo.foreach {
         case (treeIndex, nodeIndexToInfo) =>
           val baggedPoint = dataPoint._1
@@ -517,7 +517,7 @@ private[ml] object RandomForest extends Logging {
       */
     def getNodeToFeatures(
         treeToNodeToIndexInfo: Map[Int, Map[Int, NodeIndexInfo]])
-      : Option[Map[Int, Array[Int]]] = {
+        : Option[Map[Int, Array[Int]]] = {
       if (!metadata.subsamplingFeatures) {
         None
       } else {
@@ -1201,7 +1201,7 @@ private[ml] object RandomForest extends Logging {
       maxMemoryUsage: Long,
       metadata: DecisionTreeMetadata,
       rng: Random)
-    : (Map[Int, Array[LearningNode]], Map[Int, Map[Int, NodeIndexInfo]]) = {
+      : (Map[Int, Array[LearningNode]], Map[Int, Map[Int, NodeIndexInfo]]) = {
     // Collect some nodes to split:
     //  nodesForGroup(treeIndex) = nodes to split
     val mutableNodesForGroup =

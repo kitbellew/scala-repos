@@ -76,7 +76,7 @@ private[streaming] class ReceiverSchedulingPolicy {
   def scheduleReceivers(
       receivers: Seq[Receiver[_]],
       executors: Seq[ExecutorCacheTaskLocation])
-    : Map[Int, Seq[TaskLocation]] = {
+      : Map[Int, Seq[TaskLocation]] = {
     if (receivers.isEmpty) {
       return Map.empty
     }
@@ -220,7 +220,7 @@ private[streaming] class ReceiverSchedulingPolicy {
     */
   private def convertReceiverTrackingInfoToExecutorWeights(
       receiverTrackingInfo: ReceiverTrackingInfo)
-    : Seq[(ExecutorCacheTaskLocation, Double)] = {
+      : Seq[(ExecutorCacheTaskLocation, Double)] = {
     receiverTrackingInfo.state match {
       case ReceiverState.INACTIVE => Nil
       case ReceiverState.SCHEDULED =>

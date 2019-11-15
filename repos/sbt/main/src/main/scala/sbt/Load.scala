@@ -400,7 +400,7 @@ object Load {
 
   @deprecated("No longer used.", "0.13.0")
   def extractSettings(plugins: Seq[Plugin])
-    : (Seq[Setting[_]], Seq[Setting[_]], Seq[Setting[_]]) =
+      : (Seq[Setting[_]], Seq[Setting[_]], Seq[Setting[_]]) =
     (
       plugins.flatMap(_.settings),
       plugins.flatMap(_.projectSettings),
@@ -1253,7 +1253,7 @@ object Load {
   def pluginDefinitionLoader(
       config: sbt.LoadBuildConfiguration,
       dependencyClasspath: Seq[Attributed[File]])
-    : (Seq[Attributed[File]], ClassLoader) =
+      : (Seq[Attributed[File]], ClassLoader) =
     pluginDefinitionLoader(config, dependencyClasspath, Nil)
   def pluginDefinitionLoader(
       config: sbt.LoadBuildConfiguration,

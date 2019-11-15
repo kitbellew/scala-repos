@@ -124,7 +124,7 @@ abstract class AkkaSpec(_system: ActorSystem)
     }
 
   implicit def setEqualityConstraint[A, T <: Set[_ <: A]]
-    : Constraint[Set[A], T] =
+      : Constraint[Set[A], T] =
     new Constraint[Set[A], T] {
       def areEqual(a: Set[A], b: T) = a == b
     }

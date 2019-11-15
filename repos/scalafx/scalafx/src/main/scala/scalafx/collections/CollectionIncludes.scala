@@ -69,7 +69,8 @@ trait CollectionIncludes extends TransformationIncludes {
     if (om != null)
       new ObservableMap[K, V] {
         override val delegate = om
-      } else null
+      }
+    else null
 
   /**
     * Converts a JavaFX [[http://docs.oracle.com/javase/8/javafx/api/javafx/collections/ObservableSet.html `ObservableSet`]]
@@ -84,7 +85,8 @@ trait CollectionIncludes extends TransformationIncludes {
     if (os != null)
       new ObservableHashSet[T] {
         override val delegate = os
-      } else null
+      }
+    else null
 
   /**
     * Converts a JavaFX [[http://docs.oracle.com/javase/8/javafx/api/javafx/collections/ObservableFloatArray.html]] `ObservableFloatArray` to a ScalaFX [[scalafx.collections.ObservableFloatArray]].

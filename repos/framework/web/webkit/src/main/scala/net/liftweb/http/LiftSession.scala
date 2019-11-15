@@ -107,7 +107,7 @@ object LiftSession {
   var onEndServicing: List[(LiftSession, Req, Box[LiftResponse]) => Unit] = Nil
 
   @volatile private var constructorCache
-    : Map[(Class[_], Box[Class[_]]), Box[ConstructorType]] = Map()
+      : Map[(Class[_], Box[Class[_]]), Box[ConstructorType]] = Map()
 
   private[http] def constructFrom[T](
       session: LiftSession,
@@ -389,7 +389,7 @@ class LiftSession(
     LiftSession.onFunctionOwnersRemoved
 
   @volatile private[http] var notices
-    : Seq[(NoticeType.Value, NodeSeq, Box[String])] = Nil
+      : Seq[(NoticeType.Value, NodeSeq, Box[String])] = Nil
 
   private case class CometId(cometType: String, cometName: Box[String])
 
@@ -501,7 +501,7 @@ class LiftSession(
   // NullPointerExceptions when their server name or otherwise are
   // accessed.
   def cometForHost(hostAndPath: String)
-    : (Vector[(LiftActor, Req)], Vector[(LiftActor, Req)]) =
+      : (Vector[(LiftActor, Req)], Vector[(LiftActor, Req)]) =
     asyncSync
       .synchronized {
         cometList
@@ -1820,8 +1820,10 @@ class LiftSession(
                         meth <- tryo(inst.getClass.getMethod(method))
                         if classOf[CssBindFunc].isAssignableFrom(
                           meth.getReturnType)
-                      } yield
-                        meth.invoke(inst).asInstanceOf[CssBindFunc].apply(kids)
+                      } yield meth
+                        .invoke(inst)
+                        .asInstanceOf[CssBindFunc]
+                        .apply(kids)
 
                     import java.lang.reflect.{Type, ParameterizedType}
 
@@ -1867,11 +1869,10 @@ class LiftSession(
                       for {
                         meth <- tryo(inst.getClass.getMethod(method))
                         if isFuncNodeSeq(meth)
-                      } yield
-                        meth
-                          .invoke(inst)
-                          .asInstanceOf[Function1[NodeSeq, NodeSeq]]
-                          .apply(kids)
+                      } yield meth
+                        .invoke(inst)
+                        .asInstanceOf[Function1[NodeSeq, NodeSeq]]
+                        .apply(kids)
 
                     (gotIt or nodeSeqFunc) openOr {
 

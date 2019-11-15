@@ -158,7 +158,7 @@ object lasso extends UFunc {
     }
 
   implicit val matrixVector
-    : Impl3[DenseMatrix[Double], DenseVector[Double], Double, LassoResult] =
+      : Impl3[DenseMatrix[Double], DenseVector[Double], Double, LassoResult] =
     new Impl3[DenseMatrix[Double], DenseVector[Double], Double, LassoResult] {
       def apply(
           data: DenseMatrix[Double],

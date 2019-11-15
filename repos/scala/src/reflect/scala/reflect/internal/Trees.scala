@@ -1249,7 +1249,7 @@ trait Trees extends api.Trees { self: SymbolTable =>
     // We silently ignore attempts to add attachments to `EmptyTree`. See SI-8947 for an
     // example of a bug in macro expansion that this solves.
     override def setAttachments(attachments: Attachments { type Pos = Position })
-      : this.type =
+        : this.type =
       attachmentWarning()
     override def updateAttachment[T: ClassTag](attachment: T): this.type =
       attachmentWarning()

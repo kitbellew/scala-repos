@@ -53,7 +53,7 @@ import org.apache.spark.util.random.XORShiftRandom
   *              columns will be determined by the size of the first row.
   */
 @Since("1.0.0")
-class RowMatrix @Since("1.0.0")(
+class RowMatrix @Since("1.0.0") (
     @Since("1.0.0") val rows: RDD[Vector],
     private var nRows: Long,
     private var nCols: Int)

@@ -242,11 +242,11 @@ object Split {
   case object SplitAfter extends SplitDecision
 
   def when[T](p: T ⇒ Boolean, substreamCancelStrategy: SubstreamCancelStrategy)
-    : Graph[FlowShape[T, Source[T, NotUsed]], NotUsed] =
+      : Graph[FlowShape[T, Source[T, NotUsed]], NotUsed] =
     new Split(Split.SplitBefore, p, substreamCancelStrategy)
 
   def after[T](p: T ⇒ Boolean, substreamCancelStrategy: SubstreamCancelStrategy)
-    : Graph[FlowShape[T, Source[T, NotUsed]], NotUsed] =
+      : Graph[FlowShape[T, Source[T, NotUsed]], NotUsed] =
     new Split(Split.SplitAfter, p, substreamCancelStrategy)
 }
 

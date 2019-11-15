@@ -224,7 +224,7 @@ object ParquetReadSupportProvider {
         .toList
 
     def unzip(treeTuples: List[(Tree, Tree, Tree, Tree)])
-      : (List[Tree], List[Tree], List[Tree], List[Tree]) = {
+        : (List[Tree], List[Tree], List[Tree], List[Tree]) = {
       val emptyTreeList = List[Tree]()
       treeTuples.foldRight(
         emptyTreeList,

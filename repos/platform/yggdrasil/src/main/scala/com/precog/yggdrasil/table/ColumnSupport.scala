@@ -325,7 +325,7 @@ object ArraySetColumn {
         new ArraySetColumn[HomogeneousArrayColumn[a]](
           ctype,
           columnSet.map(_.asInstanceOf[HomogeneousArrayColumn[a]]))
-        with HomogeneousArrayColumn[a] {
+          with HomogeneousArrayColumn[a] {
           override val tpe = ctype
           def apply(row: Int): Array[a] =
             backing(firstDefinedIndexAt(row))
@@ -342,13 +342,13 @@ object ArraySetColumn {
         new ArraySetColumn[EmptyObjectColumn](
           ctype,
           columnSet.map(_.asInstanceOf[EmptyObjectColumn]))
-        with EmptyObjectColumn {}
+          with EmptyObjectColumn {}
 
       case CEmptyArray =>
         new ArraySetColumn[EmptyArrayColumn](
           ctype,
           columnSet.map(_.asInstanceOf[EmptyArrayColumn]))
-        with EmptyArrayColumn {}
+          with EmptyArrayColumn {}
 
       case CUndefined => UndefinedColumn(columnSet(0))
     }

@@ -34,7 +34,8 @@ final class Player(moveDb: MoveDB, uciMemo: UciMemo) {
               acquired = None,
               createdAt = DateTime.now
             )
-        } else
+        }
+      else
         fufail(
           s"[fishnet] Too many moves (${game.turns}), won't play ${game.id}")
     else fufail("[fishnet] invalid position")

@@ -33,7 +33,7 @@ object Parsing {
       }
 
       def applyOn[A](inner: Iteratee[MatchInfo[Array[Byte]], A])
-        : Iteratee[Array[Byte], Iteratee[MatchInfo[Array[Byte]], A]] = {
+          : Iteratee[Array[Byte], Iteratee[MatchInfo[Array[Byte]], A]] = {
 
         Iteratee.flatten(
           inner.fold1(
@@ -77,7 +77,7 @@ object Parsing {
       def step[A](
           rest: Array[Byte],
           inner: Iteratee[MatchInfo[Array[Byte]], A])(in: Input[Array[Byte]])
-        : Iteratee[Array[Byte], Iteratee[MatchInfo[Array[Byte]], A]] = {
+          : Iteratee[Array[Byte], Iteratee[MatchInfo[Array[Byte]], A]] = {
 
         in match {
           case Input.Empty =>

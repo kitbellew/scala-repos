@@ -193,12 +193,12 @@ class MatrixMappableExtensions[T](mappable: Mappable[T])(
       implicit ev: <:<[T, (Group, Row, Col, Val)],
       ord: Ordering[(Group, Row)],
       setter: TupleSetter[(Group, Row, Col, Val)])
-    : BlockMatrix[Group, Row, Col, Val] =
+      : BlockMatrix[Group, Row, Col, Val] =
     mapToBlockMatrix { _.asInstanceOf[(Group, Row, Col, Val)] }
 
   def mapToBlockMatrix[Group, Row, Col, Val](fn: (T) => (Group, Row, Col, Val))(
       implicit ord: Ordering[(Group, Row)])
-    : BlockMatrix[Group, Row, Col, Val] = {
+      : BlockMatrix[Group, Row, Col, Val] = {
     val matPipe = TypedPipe
       .from(mappable)
       .map(fn)
@@ -616,7 +616,7 @@ class Matrix[RowT, ColT, ValT](
 
   def *[That, Res](that: That)(
       implicit prod: MatrixProduct[Matrix[RowT, ColT, ValT], That, Res])
-    : Res = {
+      : Res = {
     prod(this, that)
   }
 
@@ -809,7 +809,7 @@ class Matrix[RowT, ColT, ValT](
   // Zip the given row with all the rows of the matrix
   def zip[ValU](that: ColVector[RowT, ValU])(
       implicit pairMonoid: Monoid[(ValT, ValU)])
-    : Matrix[RowT, ColT, (ValT, ValU)] = {
+      : Matrix[RowT, ColT, (ValT, ValU)] = {
     val (newRFields, newRPipe) =
       ensureUniqueFields(rowColValSymbols, (that.rowS, that.valS), that.pipe)
     // we must do an outer join to preserve zeros on one side or the other.
@@ -836,7 +836,7 @@ class Matrix[RowT, ColT, ValT](
   // Zip the given row with all the rows of the matrix
   def zip[ValU](that: RowVector[ColT, ValU])(
       implicit pairMonoid: Monoid[(ValT, ValU)])
-    : Matrix[RowT, ColT, (ValT, ValU)] = {
+      : Matrix[RowT, ColT, (ValT, ValU)] = {
     val (newRFields, newRPipe) =
       ensureUniqueFields(rowColValSymbols, (that.colS, that.valS), that.pipe)
     // we must do an outer join to preserve zeros on one side or the other.
@@ -864,7 +864,7 @@ class Matrix[RowT, ColT, ValT](
   // This creates the matrix with pairs for the entries
   def zip[ValU](that: Matrix[RowT, ColT, ValU])(
       implicit pairMonoid: Monoid[(ValT, ValU)])
-    : Matrix[RowT, ColT, (ValT, ValU)] = {
+      : Matrix[RowT, ColT, (ValT, ValU)] = {
     val (newRFields, newRPipe) =
       ensureUniqueFields(rowColValSymbols, that.rowColValSymbols, that.pipe)
     // we must do an outer join to preserve zeros on one side or the other.
@@ -1070,7 +1070,7 @@ class DiagonalMatrix[IdxT, ValT](
 
   def *[That, Res](that: That)(
       implicit prod: MatrixProduct[DiagonalMatrix[IdxT, ValT], That, Res])
-    : Res = { prod(this, that) }
+      : Res = { prod(this, that) }
 
   def pipe = inPipe
   def fields = (idxSym, valSym)

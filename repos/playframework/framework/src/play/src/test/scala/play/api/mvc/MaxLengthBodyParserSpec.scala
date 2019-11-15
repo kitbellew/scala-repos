@@ -33,7 +33,7 @@ object MaxLengthBodyParserSpec extends Specification with AfterAll {
   }
 
   def bodyParser
-    : (Accumulator[ByteString, Either[Result, ByteString]], Future[Unit]) = {
+      : (Accumulator[ByteString, Either[Result, ByteString]], Future[Unit]) = {
     val bodyParsed = Promise[Unit]()
     val parser = Accumulator(
       Sink

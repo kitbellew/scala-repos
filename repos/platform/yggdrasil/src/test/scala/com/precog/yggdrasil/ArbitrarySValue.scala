@@ -149,7 +149,7 @@ trait CValueGenerators extends ArbitraryBigDecimal {
   }
 
   def genEventColumns(jschema: JSchema)
-    : Gen[(Int, Stream[(Identities, Seq[(JPath, JValue)])])] =
+      : Gen[(Int, Stream[(Identities, Seq[(JPath, JValue)])])] =
     for {
       idCount <- choose(1, 3)
       dataSize <- choose(0, 20)

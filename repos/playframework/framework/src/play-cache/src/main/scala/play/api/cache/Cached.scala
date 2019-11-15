@@ -18,7 +18,7 @@ import scala.concurrent.duration._
 /**
   * A helper to add caching to an Action.
   */
-class Cached @Inject()(cache: CacheApi) {
+class Cached @Inject() (cache: CacheApi) {
 
   /**
     * Cache an action.
@@ -112,7 +112,7 @@ object Cached {
   def apply(
       key: RequestHeader => String,
       caching: PartialFunction[ResponseHeader, Duration])
-    : UnboundCachedBuilder = new UnboundCachedBuilder(key, caching)
+      : UnboundCachedBuilder = new UnboundCachedBuilder(key, caching)
 
   /**
     * Cache an action.
@@ -431,7 +431,7 @@ class UnboundCachedBuilder(
     *        we should cache for
     */
   def compose(alternative: PartialFunction[ResponseHeader, Duration])
-    : UnboundCachedBuilder = new UnboundCachedBuilder(
+      : UnboundCachedBuilder = new UnboundCachedBuilder(
     key = key,
     caching = caching.orElse(alternative)
   )

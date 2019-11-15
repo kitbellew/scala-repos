@@ -133,7 +133,7 @@ private[regression] trait AFTSurvivalRegressionParams
   */
 @Experimental
 @Since("1.6.0")
-class AFTSurvivalRegression @Since("1.6.0")(
+class AFTSurvivalRegression @Since("1.6.0") (
     @Since("1.6.0") override val uid: String)
     extends Estimator[AFTSurvivalRegressionModel]
     with AFTSurvivalRegressionParams

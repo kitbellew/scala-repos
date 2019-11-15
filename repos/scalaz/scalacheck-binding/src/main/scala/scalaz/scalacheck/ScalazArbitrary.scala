@@ -19,7 +19,7 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
   private def arb[A: Arbitrary]: Arbitrary[A] = implicitly[Arbitrary[A]]
 
   implicit def monoidCoproductArbitrary[M: Arbitrary, N: Arbitrary]
-    : Arbitrary[M :+: N] =
+      : Arbitrary[M :+: N] =
     Functor[Arbitrary].map(arb[Vector[M \/ N]])(new :+:(_))
 
   /** @since 7.0.3 */
@@ -58,11 +58,11 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
     Functor[Arbitrary].map(arb[BigInt])(_.bigInteger)
 
   implicit val BigIntegerMultiplicationArbitrary
-    : Arbitrary[BigInteger @@ Multiplication] =
+      : Arbitrary[BigInteger @@ Multiplication] =
     Tag.subst[BigInteger, Arbitrary, Multiplication](arb[BigInteger])
 
   implicit val BigIntMultiplicationArbitrary
-    : Arbitrary[BigInt @@ Multiplication] = Tag.subst(arb[BigInt])
+      : Arbitrary[BigInt @@ Multiplication] = Tag.subst(arb[BigInt])
 
   implicit val ByteMultiplicationArbitrary: Arbitrary[Byte @@ Multiplication] =
     Tag.subst(arb[Byte])
@@ -71,7 +71,7 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
     Tag.subst(arb[Char])
 
   implicit val ShortMultiplicationArbitrary
-    : Arbitrary[Short @@ Multiplication] =
+      : Arbitrary[Short @@ Multiplication] =
     Tag.subst(arb[Short])
 
   implicit val IntMultiplicationArbitrary: Arbitrary[Int @@ Multiplication] =
@@ -81,11 +81,11 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
     Tag.subst(arb[Long])
 
   implicit val FloatMultiplicationArbitrary
-    : Arbitrary[Float @@ Multiplication] =
+      : Arbitrary[Float @@ Multiplication] =
     Tag.subst(arb[Float])
 
   implicit val DoubleMultiplicationArbitrary
-    : Arbitrary[Double @@ Multiplication] = Tag.subst(arb[Double])
+      : Arbitrary[Double @@ Multiplication] = Tag.subst(arb[Double])
 
   implicit val DigitArbitrary: Arbitrary[Digit] = Arbitrary(oneOf(Digit.digits))
 
@@ -215,14 +215,14 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
     Arbitrary(Gen.sized(n => Gen.choose(0, n).flatMap(treeLocGenSized[A])))
 
   implicit def DisjunctionArbitrary[A: Arbitrary, B: Arbitrary]
-    : Arbitrary[A \/ B] =
+      : Arbitrary[A \/ B] =
     Functor[Arbitrary].map(arb[Either[A, B]]) {
       case Left(a)  => -\/(a)
       case Right(b) => \/-(b)
     }
 
   implicit def ValidationArbitrary[A: Arbitrary, B: Arbitrary]
-    : Arbitrary[Validation[A, B]] =
+      : Arbitrary[Validation[A, B]] =
     Functor[Arbitrary].map(arb[A \/ B])(_.validation)
 
 //  implicit def ZipStreamArbitrary[A](implicit a: Arbitrary[A]): Arbitrary[ZipStream[A]] = arb[Stream[A]] ∘ ((s: Stream[A]) => s.ʐ)
@@ -234,7 +234,7 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
     Functor[Arbitrary].map(arb[A])(() => _)
 
   implicit def FirstOptionArbitrary[A: Arbitrary]
-    : Arbitrary[Option[A] @@ First] =
+      : Arbitrary[Option[A] @@ First] =
     Functor[Arbitrary].map(arb[Option[A]])(_.first)
 
   implicit def LastOptionArbitrary[A: Arbitrary]: Arbitrary[Option[A] @@ Last] =
@@ -259,27 +259,27 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
     Tag.subst(arb[Maybe[A]])
 
   implicit def EitherLeftProjectionArbitrary[A: Arbitrary, B: Arbitrary]
-    : Arbitrary[Either.LeftProjection[A, B]] =
+      : Arbitrary[Either.LeftProjection[A, B]] =
     Functor[Arbitrary].map(arb[Either[A, B]])(_.left)
 
   implicit def EitherRightProjectionArbitrary[A: Arbitrary, B: Arbitrary]
-    : Arbitrary[Either.RightProjection[A, B]] =
+      : Arbitrary[Either.RightProjection[A, B]] =
     Functor[Arbitrary].map(arb[Either[A, B]])(_.right)
 
   implicit def EitherFirstLeftProjectionArbitrary[A: Arbitrary, B: Arbitrary]
-    : Arbitrary[Either.LeftProjection[A, B] @@ First] =
+      : Arbitrary[Either.LeftProjection[A, B] @@ First] =
     Functor[Arbitrary].map(arb[Either[A, B]])(x => Tag(x.left))
 
   implicit def EitherFirstRightProjectionArbitrary[A: Arbitrary, B: Arbitrary]
-    : Arbitrary[Either.RightProjection[A, B] @@ First] =
+      : Arbitrary[Either.RightProjection[A, B] @@ First] =
     Functor[Arbitrary].map(arb[Either[A, B]])(x => Tag(x.right))
 
   implicit def EitherLastLeftProjectionArbitrary[A: Arbitrary, B: Arbitrary]
-    : Arbitrary[Either.LeftProjection[A, B] @@ Last] =
+      : Arbitrary[Either.LeftProjection[A, B] @@ Last] =
     Functor[Arbitrary].map(arb[Either[A, B]])(x => Tag(x.left))
 
   implicit def EitherLastRightProjectionArbitrary[A: Arbitrary, B: Arbitrary]
-    : Arbitrary[Either.RightProjection[A, B] @@ Last] =
+      : Arbitrary[Either.RightProjection[A, B] @@ Last] =
     Functor[Arbitrary].map(arb[Either[A, B]])(x => Tag(x.right))
 
   implicit def ArraySeqArbitrary[A: Arbitrary]: Arbitrary[ArraySeq[A]] =
@@ -377,7 +377,7 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
     Functor[Arbitrary].map(A)(LazyOptionT[F, A](_))
 
   implicit def lazyEitherArb[F[_], A: Arbitrary, B: Arbitrary]
-    : Arbitrary[LazyEither[A, B]] =
+      : Arbitrary[LazyEither[A, B]] =
     Functor[Arbitrary].map(arb[Either[A, B]]) {
       case Left(a)  => LazyEither.lazyLeft(a)
       case Right(b) => LazyEither.lazyRight(b)
@@ -385,11 +385,11 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
 
   implicit def lazyEitherTArb[F[_], A, B](
       implicit A: Arbitrary[F[LazyEither[A, B]]])
-    : Arbitrary[LazyEitherT[F, A, B]] =
+      : Arbitrary[LazyEitherT[F, A, B]] =
     Functor[Arbitrary].map(A)(LazyEitherT[F, A, B](_))
 
   // backwards compatibility
-  def stateTArb[F[+ _], S, A](
+  def stateTArb[F[+_], S, A](
       implicit A: Arbitrary[S => F[(S, A)]],
       F: Monad[F]): Arbitrary[StateT[F, S, A]] =
     indexedStateTArb[F, S, S, A](A, F)
@@ -416,11 +416,11 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
     Functor[Arbitrary].map(A)(Dequeue.apply)
 
   implicit def lazyTuple2Arbitrary[A: Arbitrary, B: Arbitrary]
-    : Arbitrary[LazyTuple2[A, B]] =
+      : Arbitrary[LazyTuple2[A, B]] =
     Applicative[Arbitrary].apply2(arb[A], arb[B])(LazyTuple2(_, _))
 
   implicit def lazyTuple3Arbitrary[A: Arbitrary, B: Arbitrary, C: Arbitrary]
-    : Arbitrary[LazyTuple3[A, B, C]] =
+      : Arbitrary[LazyTuple3[A, B, C]] =
     Applicative[Arbitrary].apply3(arb[A], arb[B], arb[C])(LazyTuple3(_, _, _))
 
   implicit def lazyTuple4Arbitrary[
@@ -436,13 +436,13 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
   }
 
   // backwards compatibility
-  def storeTArb[F[+ _], A, B](
+  def storeTArb[F[+_], A, B](
       implicit A: Arbitrary[(F[A => B], A)]): Arbitrary[StoreT[F, A, B]] =
     indexedStoreTArb[F, A, A, B](A)
 
   implicit def indexedStoreTArb[F[_], I, A, B](
       implicit A: Arbitrary[(F[A => B], I)])
-    : Arbitrary[IndexedStoreT[F, I, A, B]] =
+      : Arbitrary[IndexedStoreT[F, I, A, B]] =
     Functor[Arbitrary].map(A)(IndexedStoreT[F, I, A, B](_))
 
   implicit def listTArb[F[_], A](
@@ -478,7 +478,7 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
     })
 
   implicit def iterateeInputArbitrary[A: Arbitrary]
-    : Arbitrary[scalaz.iteratee.Input[A]] = {
+      : Arbitrary[scalaz.iteratee.Input[A]] = {
     import scalaz.iteratee.Input._
     Arbitrary(
       Gen.oneOf(

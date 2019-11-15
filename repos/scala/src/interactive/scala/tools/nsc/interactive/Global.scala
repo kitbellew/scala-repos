@@ -385,7 +385,7 @@ with ContextTrees with RichCompilationUnits with Picklers {
   /** The top level classes and objects no longer seen in the presentation compiler
     */
   val deletedTopLevelSyms = new mutable.LinkedHashSet[Symbol]
-  with mutable.SynchronizedSet[Symbol]
+    with mutable.SynchronizedSet[Symbol]
 
   /** Called from typechecker every time a top-level class or object is entered.
     */

@@ -487,7 +487,7 @@ object GuiceKey {
 /**
   * Play Injector backed by a Guice Injector.
   */
-class GuiceInjector @Inject()(injector: com.google.inject.Injector)
+class GuiceInjector @Inject() (injector: com.google.inject.Injector)
     extends PlayInjector {
 
   /**

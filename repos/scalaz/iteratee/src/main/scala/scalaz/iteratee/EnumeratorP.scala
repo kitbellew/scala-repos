@@ -103,7 +103,7 @@ trait EnumeratorPFunctions {
     }
 
   def liftE2[J, K, I, F[_]](e2t: ForallM[λ[β[_] => Enumeratee2T[J, K, I, β]]])
-    : (EnumeratorP[J, F], EnumeratorP[K, F]) => EnumeratorP[I, F] = {
+      : (EnumeratorP[J, F], EnumeratorP[K, F]) => EnumeratorP[I, F] = {
     (e1: EnumeratorP[J, F], e2: EnumeratorP[K, F]) =>
       new EnumeratorP[I, F] {
         def apply[G[_]](

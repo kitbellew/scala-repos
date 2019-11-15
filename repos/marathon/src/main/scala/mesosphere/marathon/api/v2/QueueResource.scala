@@ -24,7 +24,7 @@ import scala.concurrent.duration._
 
 @Path("v2/queue")
 @Consumes(Array(MediaType.APPLICATION_JSON))
-class QueueResource @Inject()(
+class QueueResource @Inject() (
     clock: Clock,
     launchQueue: LaunchQueue,
     val authenticator: Authenticator,

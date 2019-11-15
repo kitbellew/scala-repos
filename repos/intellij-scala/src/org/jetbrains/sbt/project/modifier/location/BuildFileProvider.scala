@@ -20,7 +20,7 @@ trait BuildFileProvider {
       module: IJModule,
       elementType: BuildFileElementType,
       vfsFileToCopy: mutable.Map[VirtualFile, LightVirtualFile])
-    : Option[BuildFileEntry[PsiFile]] = {
+      : Option[BuildFileEntry[PsiFile]] = {
 
     def findVirtualFile(file: File) =
       Option(VfsUtil.findFileByIoFile(file, true))

@@ -199,7 +199,7 @@ final class ClusterClientSettings(
       acceptableHeartbeatPause: FiniteDuration = acceptableHeartbeatPause,
       bufferSize: Int = bufferSize,
       reconnectTimeout: Option[FiniteDuration] = reconnectTimeout)
-    : ClusterClientSettings =
+      : ClusterClientSettings =
     new ClusterClientSettings(
       initialContacts,
       establishingGetContactsInterval,
@@ -590,7 +590,7 @@ final class ClusterReceptionistSettings(
 
   def withResponseTunnelReceiveTimeout(
       responseTunnelReceiveTimeout: FiniteDuration)
-    : ClusterReceptionistSettings =
+      : ClusterReceptionistSettings =
     copy(responseTunnelReceiveTimeout = responseTunnelReceiveTimeout)
 
   private def copy(

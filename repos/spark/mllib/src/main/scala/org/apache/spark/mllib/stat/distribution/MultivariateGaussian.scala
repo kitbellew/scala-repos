@@ -42,7 +42,7 @@ import org.apache.spark.mllib.util.MLUtils
   */
 @Since("1.3.0")
 @DeveloperApi
-class MultivariateGaussian @Since("1.3.0")(
+class MultivariateGaussian @Since("1.3.0") (
     @Since("1.3.0") val mu: Vector,
     @Since("1.3.0") val sigma: Matrix)
     extends Serializable {

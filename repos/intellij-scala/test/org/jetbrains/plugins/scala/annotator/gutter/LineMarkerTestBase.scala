@@ -46,8 +46,7 @@ abstract class LineMarkerTestBase extends LightCodeInsightFixtureTestCase {
   }
 
   def getSeparatorsFrom(text: String) = {
-    for { (line, i) <- text.split("\n").zipWithIndex if line.contains(marker) } yield
-      i + 1
+    for { (line, i) <- text.split("\n").zipWithIndex if line.contains(marker) } yield i + 1
   }
 
   def getSeparatorsFrom(editor: Editor, project: Project) = {

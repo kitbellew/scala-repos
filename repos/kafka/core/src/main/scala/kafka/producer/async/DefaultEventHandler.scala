@@ -126,7 +126,7 @@ class DefaultEventHandler[K, V](
   }
 
   private def dispatchSerializedData(messages: Seq[KeyedMessage[K, Message]])
-    : Seq[KeyedMessage[K, Message]] = {
+      : Seq[KeyedMessage[K, Message]] = {
     val partitionedDataOpt = partitionAndCollate(messages)
     partitionedDataOpt match {
       case Some(partitionedData) =>
@@ -201,11 +201,11 @@ class DefaultEventHandler[K, V](
   }
 
   def partitionAndCollate(messages: Seq[KeyedMessage[K, Message]])
-    : Option[Map[
-      Int,
-      collection.mutable.Map[
-        TopicAndPartition,
-        Seq[KeyedMessage[K, Message]]]]] = {
+      : Option[Map[
+        Int,
+        collection.mutable.Map[
+          TopicAndPartition,
+          Seq[KeyedMessage[K, Message]]]]] = {
     val ret =
       new HashMap[
         Int,
@@ -223,7 +223,7 @@ class DefaultEventHandler[K, V](
         val leaderBrokerId = brokerPartition.leaderBrokerIdOpt.getOrElse(-1)
 
         var dataPerBroker
-          : HashMap[TopicAndPartition, Seq[KeyedMessage[K, Message]]] = null
+            : HashMap[TopicAndPartition, Seq[KeyedMessage[K, Message]]] = null
         ret.get(leaderBrokerId) match {
           case Some(element) =>
             dataPerBroker = element.asInstanceOf[

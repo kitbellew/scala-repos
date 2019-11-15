@@ -92,10 +92,10 @@ trait OptionInstances extends OptionInstances0 {
   implicit def OptionCMonoid[A: CSemigroup]: OptionCMonoid[A] =
     new OptionCMonoid[A]
   implicit def OptionAdditiveMonoid[A: AdditiveSemigroup]
-    : OptionAdditiveMonoid[A] =
+      : OptionAdditiveMonoid[A] =
     new OptionAdditiveMonoid[A]
   implicit def OptionMultiplicativeMonoid[A: MultiplicativeSemigroup]
-    : OptionMultiplicativeMonoid[A] =
+      : OptionMultiplicativeMonoid[A] =
     new OptionMultiplicativeMonoid[A]
 
   implicit def OptionOrder[A: Order]: OptionOrder[A] = new OptionOrder[A]

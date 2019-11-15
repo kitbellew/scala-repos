@@ -35,7 +35,7 @@ class HttpEventSSEHandle(request: HttpServletRequest, emitter: Emitter)
 /**
   * Handle a server side event client stream by delegating events to the stream actor.
   */
-class HttpEventStreamServlet @Inject()(
+class HttpEventStreamServlet @Inject() (
     @Named(ModuleNames.HTTP_EVENT_STREAM) streamActor: ActorRef)
     extends EventSourceServlet {
 

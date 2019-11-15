@@ -54,7 +54,7 @@ object CanFilter {
     *
     */
   implicit val dvInt1DFilter
-    : CanFilter[DenseVector[Int], FIRKernel1D[Int], DenseVector[Int]] = {
+      : CanFilter[DenseVector[Int], FIRKernel1D[Int], DenseVector[Int]] = {
     new CanFilter[DenseVector[Int], FIRKernel1D[Int], DenseVector[Int]] {
       def apply(
           data: DenseVector[Int],

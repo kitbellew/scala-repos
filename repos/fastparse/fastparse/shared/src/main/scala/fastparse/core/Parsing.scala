@@ -151,8 +151,9 @@ object Parsed {
         input: String,
         index: Int,
         last: String) = {
-      val body = for (Frame(index, p) <- stack)
-        yield formatParser(p, input, index)
+      val body =
+        for (Frame(index, p) <- stack)
+          yield formatParser(p, input, index)
       (body :+ last).mkString(" / ") + " ..." + literalize(
         input.slice(index, index + 10))
     }
@@ -402,7 +403,7 @@ trait Parser[+T] extends ParserResults[T] with Precedence {
       input: String,
       index: Int = 0,
       instrument: (Parser[_], Int, () => Parsed[_]) => Unit = null)
-    : Parsed[T] = {
+      : Parsed[T] = {
     parseRec(new ParseCtx(input, 0, -1, this, index, instrument), index).toResult
   }
 

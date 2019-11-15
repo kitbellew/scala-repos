@@ -46,7 +46,7 @@ import org.apache.spark.util.Utils
   * @param trees tree ensembles
   */
 @Since("1.2.0")
-class RandomForestModel @Since("1.2.0")(
+class RandomForestModel @Since("1.2.0") (
     @Since("1.2.0") override val algo: Algo,
     @Since("1.2.0") override val trees: Array[DecisionTreeModel])
     extends TreeEnsembleModel(
@@ -128,7 +128,7 @@ object RandomForestModel extends Loader[RandomForestModel] {
   * @param treeWeights tree ensemble weights
   */
 @Since("1.2.0")
-class GradientBoostedTreesModel @Since("1.2.0")(
+class GradientBoostedTreesModel @Since("1.2.0") (
     @Since("1.2.0") override val algo: Algo,
     @Since("1.2.0") override val trees: Array[DecisionTreeModel],
     @Since("1.2.0") override val treeWeights: Array[Double])

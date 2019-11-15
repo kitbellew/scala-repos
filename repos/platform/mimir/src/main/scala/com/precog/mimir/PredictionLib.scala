@@ -43,7 +43,7 @@ import scalaz.syntax.monad._
 import scalaz.syntax.std.boolean._
 import scalaz.syntax.traverse._
 
-trait PredictionLibModule[M[+ _]]
+trait PredictionLibModule[M[+_]]
     extends ColumnarTableLibModule[M]
     with ModelLibModule[M] {
   import trans._

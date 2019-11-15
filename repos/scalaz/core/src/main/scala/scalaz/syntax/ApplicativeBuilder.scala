@@ -132,7 +132,7 @@ private[scalaz] trait ApplicativeBuilder[M[_], A, B] {
                     ap.apply10(a, b, c, d, e, ff, g, h, i, j)(f)
 
                   def tupled(implicit ap: Apply[M])
-                    : M[(A, B, C, D, E, F, G, H, I, J)] = apply(Tuple10.apply)
+                      : M[(A, B, C, D, E, F, G, H, I, J)] = apply(Tuple10.apply)
 
                   def ⊛[K](kk: M[K]) = new ApplicativeBuilder11[K] {
                     val k = kk
@@ -148,7 +148,7 @@ private[scalaz] trait ApplicativeBuilder[M[_], A, B] {
                       ap.apply11(a, b, c, d, e, ff, g, h, i, j, k)(f)
 
                     def tupled(implicit ap: Apply[M])
-                      : M[(A, B, C, D, E, F, G, H, I, J, K)] =
+                        : M[(A, B, C, D, E, F, G, H, I, J, K)] =
                       apply(Tuple11.apply)
 
                     def ⊛[L](ll: M[L]) = new ApplicativeBuilder12[L] {
@@ -166,7 +166,7 @@ private[scalaz] trait ApplicativeBuilder[M[_], A, B] {
                         ap.apply12(a, b, c, d, e, ff, g, h, i, j, k, l)(f)
 
                       def tupled(implicit ap: Apply[M])
-                        : M[(A, B, C, D, E, F, G, H, I, J, K, L)] =
+                          : M[(A, B, C, D, E, F, G, H, I, J, K, L)] =
                         apply(Tuple12.apply)
                     }
                   }

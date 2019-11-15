@@ -446,7 +446,7 @@ trait ScExpression
     getTypeAfterImplicitConversion(ignoreBaseTypes = true).tr
 
   def getTypeExt(ctx: TypingContext = TypingContext.empty)
-    : ScExpression.ExpressionTypeResult = getTypeAfterImplicitConversion()
+      : ScExpression.ExpressionTypeResult = getTypeAfterImplicitConversion()
 
   def getShape(ignoreAssign: Boolean = false): (ScType, String) = {
     this match {
@@ -588,7 +588,7 @@ trait ScExpression
     Array.empty[(ScType, Option[ScTypeElement])],
     ModCount.getBlockModificationCount)
   def expectedTypesEx(fromUnderscore: Boolean = true)
-    : Array[(ScType, Option[ScTypeElement])] = {
+      : Array[(ScType, Option[ScTypeElement])] = {
     ExpectedTypes.expectedExprTypes(
       ScExpression.this,
       fromUnderscore = fromUnderscore)

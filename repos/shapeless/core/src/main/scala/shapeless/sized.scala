@@ -232,7 +232,7 @@ object AdditiveCollection {
   import scala.collection.LinearSeq
 
   implicit def linearSeqAdditiveCollection[T]
-    : AdditiveCollection[LinearSeq[T]] =
+      : AdditiveCollection[LinearSeq[T]] =
     new AdditiveCollection[LinearSeq[T]] {}
 
   implicit def vectorAdditiveCollection[T]: AdditiveCollection[Vector[T]] =
@@ -254,10 +254,10 @@ object AdditiveCollection {
     new AdditiveCollection[Queue[T]] {}
 
   implicit def indexedSeqAdditiveCollection[T]
-    : AdditiveCollection[IndexedSeq[T]] =
+      : AdditiveCollection[IndexedSeq[T]] =
     new AdditiveCollection[IndexedSeq[T]] {}
 
   implicit def defaultAdditiveCollection[T]
-    : AdditiveCollection[collection.immutable.IndexedSeq[T]] =
+      : AdditiveCollection[collection.immutable.IndexedSeq[T]] =
     new AdditiveCollection[collection.immutable.IndexedSeq[T]] {}
 }

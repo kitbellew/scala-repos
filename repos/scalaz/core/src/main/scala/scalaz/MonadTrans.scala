@@ -72,7 +72,7 @@ sealed abstract class MonadPartialOrderFunctions
     }
 
   implicit def transformer[M[_]: Monad, F[_[_], _]: MonadTrans]
-    : MonadPartialOrder[F[M, ?], M] =
+      : MonadPartialOrder[F[M, ?], M] =
     id[M].transform[F]
 }
 

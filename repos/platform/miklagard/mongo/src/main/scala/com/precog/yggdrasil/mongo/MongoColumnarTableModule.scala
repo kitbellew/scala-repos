@@ -283,7 +283,7 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
     }
 
     private def buildColumns(dbObjs: java.util.List[DBObject])
-      : (Boolean, Int, Map[ColumnRef, Column]) = {
+        : (Boolean, Int, Map[ColumnRef, Column]) = {
       val sliceSize = dbObjs.size
 
       val acc = mutable.Map.empty[(List[CPathNode], CType), ArrayColumn[_]]

@@ -12,7 +12,7 @@ package scala
 object Product8 {
   def unapply[T1, T2, T3, T4, T5, T6, T7, T8](
       x: Product8[T1, T2, T3, T4, T5, T6, T7, T8])
-    : Option[Product8[T1, T2, T3, T4, T5, T6, T7, T8]] =
+      : Option[Product8[T1, T2, T3, T4, T5, T6, T7, T8]] =
     Some(x)
 }
 

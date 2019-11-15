@@ -188,7 +188,7 @@ trait ControlIncludes extends CellIncludes {
 
   implicit def jfxDoubleSpinnerValueFactory2sfx(
       ev: jfxsc.SpinnerValueFactory.DoubleSpinnerValueFactory)
-    : SpinnerValueFactory.DoubleSpinnerValueFactory =
+      : SpinnerValueFactory.DoubleSpinnerValueFactory =
     if (ev != null) new SpinnerValueFactory.DoubleSpinnerValueFactory(ev)
     else null
 
@@ -226,7 +226,8 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $BTBS
     */
   implicit def jfxButtonBase2sfx(b: jfxsc.ButtonBase): ButtonBase =
-    if (b != null) new ButtonBase(b) {} else null
+    if (b != null) new ButtonBase(b) {}
+    else null
 
   /**
     * $START$BUTN.html $BUTN$END
@@ -315,7 +316,8 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $CTRL
     */
   implicit def jfxControl2sfx(c: jfxsc.Control): Control =
-    if (c != null) new Control(c) {} else null
+    if (c != null) new Control(c) {}
+    else null
 
   /**
     * $START$CLPK.html $CLPK$END
@@ -335,7 +337,8 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxComboBoxBase2sfx[T](
       v: jfxsc.ComboBoxBase[T]): ComboBoxBase[T] =
-    if (v != null) new ComboBoxBase[T](v) {} else null
+    if (v != null) new ComboBoxBase[T](v) {}
+    else null
 
   /**
     * $START$CBBX.html $CBBX$END
@@ -375,7 +378,8 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $FCMD
     */
   implicit def jfxFocusModel2sfx[T](v: jfxsc.FocusModel[T]): FocusModel[T] =
-    if (v != null) new FocusModel[T](v) {} else null
+    if (v != null) new FocusModel[T](v) {}
+    else null
 
   /**
     * $START$HYLK.html $HYLK$END
@@ -407,7 +411,7 @@ trait ControlIncludes extends CellIncludes {
 
   implicit def jfxIntegerSpinnerValueFactory2sfx(
       ev: jfxsc.SpinnerValueFactory.IntegerSpinnerValueFactory)
-    : SpinnerValueFactory.IntegerSpinnerValueFactory =
+      : SpinnerValueFactory.IntegerSpinnerValueFactory =
     if (ev != null) new SpinnerValueFactory.IntegerSpinnerValueFactory(ev)
     else null
 
@@ -427,7 +431,8 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $LBLD
     */
   implicit def jfxLabeled2sfx(l: jfxsc.Labeled): Labeled =
-    if (l != null) new Labeled(l) {} else null
+    if (l != null) new Labeled(l) {}
+    else null
 
   /**
     * $START$LSCL.html $LSCL$END
@@ -441,7 +446,7 @@ trait ControlIncludes extends CellIncludes {
 
   implicit def jfxListSpinnerValueFactory2sfx[T](
       ev: jfxsc.SpinnerValueFactory.ListSpinnerValueFactory[T])
-    : SpinnerValueFactory.ListSpinnerValueFactory[T] =
+      : SpinnerValueFactory.ListSpinnerValueFactory[T] =
     if (ev != null) new SpinnerValueFactory.ListSpinnerValueFactory(ev)
     else null
 
@@ -529,7 +534,8 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxMultipleSelectionModel2sfx[T](
       v: jfxsc.MultipleSelectionModel[T]): MultipleSelectionModel[T] =
-    if (v != null) new MultipleSelectionModel[T](v) {} else null
+    if (v != null) new MultipleSelectionModel[T](v) {}
+    else null
 
   /**
     * $START$ORST.html $ORST$END
@@ -610,7 +616,8 @@ trait ControlIncludes extends CellIncludes {
 
   implicit def jfxSpinnerValueFactory2sfx[T](
       ev: jfxsc.SpinnerValueFactory[T]): SpinnerValueFactory[T] =
-    if (ev != null) new SpinnerValueFactory(ev) {} else null
+    if (ev != null) new SpinnerValueFactory(ev) {}
+    else null
 
   /**
     * $START$SPMB.html $SPMB$END
@@ -700,7 +707,8 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxTablePositionBase2sfx[TC <: jfxsc.TableColumnBase[_, _]](
       tpb: jfxsc.TablePositionBase[TC]): TablePositionBase[TC] =
-    if (tpb != null) new TablePositionBase[TC](tpb) {} else null
+    if (tpb != null) new TablePositionBase[TC](tpb) {}
+    else null
 
   /**
     * $START$TBRW.html $TBRW$END
@@ -753,8 +761,9 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxTableViewSelectionModel2sfx[S](
       tvsm: jfxsc.TableView.TableViewSelectionModel[S])
-    : TableViewSelectionModel[S] =
-    if (tvsm != null) new TableView.TableViewSelectionModel[S](tvsm) {} else
+      : TableViewSelectionModel[S] =
+    if (tvsm != null) new TableView.TableViewSelectionModel[S](tvsm) {}
+    else
       null
 
   /**
@@ -766,7 +775,8 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxTableSelectionModel2sfx[T](
       tsm: jfxsc.TableSelectionModel[T]): TableSelectionModel[T] =
-    if (tsm != null) new TableSelectionModel[T](tsm) {} else null
+    if (tsm != null) new TableSelectionModel[T](tsm) {}
+    else null
   /*
    * $START$TBCB.html $TBCB$END
    *
@@ -809,7 +819,8 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxTableFocusModel2sfx[T, TC <: jfxsc.TableColumnBase[T, _]](
       tfm: jfxsc.TableFocusModel[T, TC]): TableFocusModel[T, TC] =
-    if (tfm != null) new TableFocusModel[T, TC](tfm) {} else null
+    if (tfm != null) new TableFocusModel[T, TC](tfm) {}
+    else null
 
   implicit def jfxTextFormatter2sfx[V](
       t: jfxsc.TextFormatter[V]): TextFormatter[V] =
@@ -842,7 +853,8 @@ trait ControlIncludes extends CellIncludes {
         def userData_=(v: AnyRef) {
           delegate.setUserData(v)
         }
-      } else null
+      }
+    else null
 
   /**
     * $START$SPRT.html $SPRT$END
@@ -865,7 +877,8 @@ trait ControlIncludes extends CellIncludes {
     if (s != null)
       new Skin[C] {
         override val delegate = s
-      } else null
+      }
+    else null
 
   /**
     * $START$SNBE.html $SNBE$END
@@ -875,7 +888,8 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxSkinBase2sfx[C <: jfxsc.Control](
       sb: jfxsc.SkinBase[C]): SkinBase[C] =
-    if (sb != null) new SkinBase[C](sb) {} else null
+    if (sb != null) new SkinBase[C](sb) {}
+    else null
 
   /**
     * $START$SKNB.html $SKNB$END
@@ -887,7 +901,8 @@ trait ControlIncludes extends CellIncludes {
     if (s != null)
       new Skinnable {
         override val delegate = s
-      } else null
+      }
+    else null
 
   /**
     * $START$PRGI.html $PRGI$END
@@ -944,7 +959,8 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxSelectionModel2sfx[T](
       v: jfxsc.SelectionModel[T]): SelectionModel[T] =
-    if (v != null) new SelectionModel[T](v) {} else null
+    if (v != null) new SelectionModel[T](v) {}
+    else null
 
   /**
     * $START$SSMD.html $SSMD$END
@@ -955,7 +971,8 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxSingleSelectionModel2sfx[T](
       v: jfxsc.SingleSelectionModel[T]): SingleSelectionModel[T] =
-    if (v != null) new SingleSelectionModel[T](v) {} else null
+    if (v != null) new SingleSelectionModel[T](v) {}
+    else null
 
   /**
     * $START$SPPN.html $SPPN$END
@@ -1040,7 +1057,8 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxTextInputControl2sfx(
       t: jfxsc.TextInputControl): TextInputControl =
-    if (t != null) new TextInputControl(t) {} else null
+    if (t != null) new TextInputControl(t) {}
+    else null
 
   /**
     * $START$TOTP.html $TOTP$END
@@ -1049,7 +1067,8 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $TOTP
     */
   implicit def jfxTooltip2sfx(t: jfxsc.Tooltip): Tooltip =
-    if (t != null) new Tooltip(t) {} else null
+    if (t != null) new Tooltip(t) {}
+    else null
 
   /**
     * $START$TOBR.html $TOBR$END
@@ -1058,7 +1077,8 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $TOBR
     */
   implicit def jfxToolBar2sfx(t: jfxsc.ToolBar): ToolBar =
-    if (t != null) new ToolBar(t) {} else null
+    if (t != null) new ToolBar(t) {}
+    else null
 
   /**
     * $START$TRCL.html $TRCL$END
@@ -1220,7 +1240,8 @@ trait ControlIncludes extends CellIncludes {
   implicit def jfxTreeTableViewSelectionModel2sfx[S](
       ttvsm: jfxsc.TreeTableView.TreeTableViewSelectionModel[S]) =
     if (ttvsm != null)
-      new TreeTableView.TreeTableViewSelectionModel[S](ttvsm) {} else null
+      new TreeTableView.TreeTableViewSelectionModel[S](ttvsm) {}
+    else null
 
   /**
     * $START$TTVF.html $TTVF$END

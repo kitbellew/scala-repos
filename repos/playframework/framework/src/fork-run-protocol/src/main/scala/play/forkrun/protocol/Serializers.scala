@@ -23,7 +23,7 @@ object Serializers {
       tupleTag: FastTypeTag[Tuple2[A, B]],
       aTag: FastTypeTag[A],
       bTag: FastTypeTag[B])
-    : Pickler[Tuple2[A, B]] with Unpickler[Tuple2[A, B]] =
+      : Pickler[Tuple2[A, B]] with Unpickler[Tuple2[A, B]] =
     new Pickler[Tuple2[A, B]] with Unpickler[Tuple2[A, B]] {
       override def tag: FastTypeTag[Tuple2[A, B]] = tupleTag
 
@@ -68,31 +68,31 @@ object Serializers {
     }
 
   implicit val defaultWatchServicePickler
-    : Pickler[ForkConfig.DefaultWatchService.type] =
+      : Pickler[ForkConfig.DefaultWatchService.type] =
     genPickler[ForkConfig.DefaultWatchService.type]
   implicit val defaultWatchServiceUnpickler
-    : Unpickler[ForkConfig.DefaultWatchService.type] =
+      : Unpickler[ForkConfig.DefaultWatchService.type] =
     genUnpickler[ForkConfig.DefaultWatchService.type]
 
   implicit val jDK7WatchServicePickler
-    : Pickler[ForkConfig.JDK7WatchService.type] =
+      : Pickler[ForkConfig.JDK7WatchService.type] =
     genPickler[ForkConfig.JDK7WatchService.type]
   implicit val jDK7WatchServiceUnpickler
-    : Unpickler[ForkConfig.JDK7WatchService.type] =
+      : Unpickler[ForkConfig.JDK7WatchService.type] =
     genUnpickler[ForkConfig.JDK7WatchService.type]
 
   implicit val jNotifyWatchServicePickler
-    : Pickler[ForkConfig.JNotifyWatchService.type] =
+      : Pickler[ForkConfig.JNotifyWatchService.type] =
     genPickler[ForkConfig.JNotifyWatchService.type]
   implicit val jNotifyWatchServiceUnpickler
-    : Unpickler[ForkConfig.JNotifyWatchService.type] =
+      : Unpickler[ForkConfig.JNotifyWatchService.type] =
     genUnpickler[ForkConfig.JNotifyWatchService.type]
 
   implicit val pollingWatchServicePickler
-    : Pickler[ForkConfig.PollingWatchService] =
+      : Pickler[ForkConfig.PollingWatchService] =
     genPickler[ForkConfig.PollingWatchService]
   implicit val pollingWatchServiceUnpickler
-    : Unpickler[ForkConfig.PollingWatchService] =
+      : Unpickler[ForkConfig.PollingWatchService] =
     genUnpickler[ForkConfig.PollingWatchService]
 
   implicit val watchServicePickler: Pickler[ForkConfig.WatchService] =
@@ -108,7 +108,7 @@ object Serializers {
   implicit val sourceFileUnpickler: Unpickler[Source] = genUnpickler[Source]
 
   implicit val sourceMapPickler
-    : Pickler[Map[String, Source]] with Unpickler[Map[String, Source]] =
+      : Pickler[Map[String, Source]] with Unpickler[Map[String, Source]] =
     stringMapPickler[Source]
 
   implicit object playExceptionPickler

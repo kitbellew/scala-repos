@@ -99,8 +99,7 @@ class InsertTest extends AsyncTest[JdbcTestDB] {
           id5 shouldBe (6, "k", "l")
         }
       }
-    } yield
-      ()).withPinnedSession // Some database servers (e.g. DB2) preallocate ID blocks per session
+    } yield ()).withPinnedSession // Some database servers (e.g. DB2) preallocate ID blocks per session
   }
 
   def testForced = {

@@ -52,7 +52,7 @@ abstract class Filter[-ReqIn, +RepOut, +ReqOut, -RepIn]
     * @param next another filter to follow after this one
     */
   def andThen[Req2, Rep2](next: Filter[ReqOut, RepIn, Req2, Rep2])
-    : Filter[ReqIn, RepOut, Req2, Rep2] =
+      : Filter[ReqIn, RepOut, Req2, Rep2] =
     if (next eq Filter.identity)
       this.asInstanceOf[Filter[ReqIn, RepOut, Req2, Rep2]]
     // Rewrites Filter composition via `andThen` with AndThen's composition
@@ -159,7 +159,7 @@ object Filter {
 
   private case object Identity extends SimpleFilter[Any, Nothing] {
     override def andThen[Req2, Rep2](next: Filter[Any, Nothing, Req2, Rep2])
-      : Filter[Any, Nothing, Req2, Rep2] = next
+        : Filter[Any, Nothing, Req2, Rep2] = next
 
     override def andThen(
         service: Service[Any, Nothing]): Service[Any, Nothing] = service
@@ -173,7 +173,7 @@ object Filter {
   }
 
   implicit def canStackFromSvc[Req, Rep]
-    : CanStackFrom[Filter[Req, Rep, Req, Rep], Service[Req, Rep]] =
+      : CanStackFrom[Filter[Req, Rep, Req, Rep], Service[Req, Rep]] =
     new CanStackFrom[Filter[Req, Rep, Req, Rep], Service[Req, Rep]] {
       def toStackable(_role: Stack.Role, filter: Filter[Req, Rep, Req, Rep]) =
         new Stack.Module0[Service[Req, Rep]] {
@@ -184,7 +184,7 @@ object Filter {
     }
 
   implicit def canStackFromFac[Req, Rep]
-    : CanStackFrom[Filter[Req, Rep, Req, Rep], ServiceFactory[Req, Rep]] =
+      : CanStackFrom[Filter[Req, Rep, Req, Rep], ServiceFactory[Req, Rep]] =
     new CanStackFrom[Filter[Req, Rep, Req, Rep], ServiceFactory[Req, Rep]] {
       def toStackable(_role: Stack.Role, filter: Filter[Req, Rep, Req, Rep]) =
         new Stack.Module0[ServiceFactory[Req, Rep]] {

@@ -374,7 +374,7 @@ sealed abstract class ZipperInstances {
   import Zipper._
 
   implicit val zipperInstance
-    : Traverse1[Zipper] with Applicative[Zipper] with Comonad[Zipper] =
+      : Traverse1[Zipper] with Applicative[Zipper] with Comonad[Zipper] =
     new Traverse1[Zipper] with Applicative[Zipper] with Comonad[Zipper] {
       import std.stream._
       override def cojoin[A](a: Zipper[A]): Zipper[Zipper[A]] =

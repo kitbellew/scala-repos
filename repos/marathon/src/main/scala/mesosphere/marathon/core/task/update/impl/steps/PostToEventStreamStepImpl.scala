@@ -26,7 +26,7 @@ import scala.concurrent.Future
 /**
   * Post this update to the internal event stream.
   */
-class PostToEventStreamStepImpl @Inject()(
+class PostToEventStreamStepImpl @Inject() (
     @Named(EventModule.busName) eventBus: EventStream)
     extends TaskStatusUpdateStep {
   private[this] val log = LoggerFactory.getLogger(getClass)

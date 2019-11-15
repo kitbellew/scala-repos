@@ -19,7 +19,7 @@ object SbtWatcherMain {
   private val MESSAGE_LIMIT = 12
   private val WAIT_TIME = 150
   private var currentExec
-    : Option[(SbtWatcherExec, CachingMessageConsumer, Seq[String])] = None
+      : Option[(SbtWatcherExec, CachingMessageConsumer, Seq[String])] = None
 
   def nailMain(context: NGContext) {
     handle(context.getArgs.toSeq, context.out)
@@ -70,7 +70,8 @@ object SbtWatcherMain {
                   case ex: Exception =>
                 }
               }
-            } else
+            }
+          else
             new MessageConsumer {
               override def consume(message: String) {
                 val encoded = Base64Converter.encode(

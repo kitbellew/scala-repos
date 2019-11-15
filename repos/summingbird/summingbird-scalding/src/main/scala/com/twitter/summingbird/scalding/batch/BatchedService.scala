@@ -57,7 +57,7 @@ trait BatchedService[K, V] extends ExternalService[K, V] {
   def lookup[W](
       incoming: TypedPipe[(Timestamp, (K, W))],
       servStream: TypedPipe[(Timestamp, (K, Option[V]))])
-    : TypedPipe[(Timestamp, (K, (W, Option[V])))] = {
+      : TypedPipe[(Timestamp, (K, (W, Option[V])))] = {
 
     def flatOpt[T](o: Option[Option[T]]): Option[T] = o.flatMap(identity)
 
@@ -72,7 +72,7 @@ trait BatchedService[K, V] extends ExternalService[K, V] {
       getKeys: FlowToPipe[(K, W)],
       last: (BatchID, FlowProducer[TypedPipe[(K, V)]]),
       streams: Iterable[(BatchID, FlowToPipe[(K, Option[V])])])
-    : FlowToPipe[(K, (W, Option[V]))] =
+      : FlowToPipe[(K, (W, Option[V]))] =
     Reader[FlowInput, KeyValuePipe[K, (W, Option[V])]] {
       (flowMode: (FlowDef, Mode)) =>
         val left = getKeys(flowMode)
@@ -176,6 +176,6 @@ object BatchedService extends java.io.Serializable {
       store: BatchedStore[K, V],
       sink: BatchedSink[(K, V)],
       reducerOption: Option[Int] = None)
-    : scalding.service.BatchedDeltaService[K, V] =
+      : scalding.service.BatchedDeltaService[K, V] =
     new scalding.service.BatchedDeltaService[K, V](store, sink, reducerOption)
 }

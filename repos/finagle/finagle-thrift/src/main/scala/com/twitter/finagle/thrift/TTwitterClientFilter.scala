@@ -110,7 +110,7 @@ private[thrift] class TTwitterClientFilter(
   def apply(
       request: ThriftClientRequest,
       service: Service[ThriftClientRequest, Array[Byte]])
-    : Future[Array[Byte]] = {
+      : Future[Array[Byte]] = {
     // Create a new span identifier for this request.
     val msg =
       new InputBuffer(request.message, protocolFactory)().readMessageBegin()

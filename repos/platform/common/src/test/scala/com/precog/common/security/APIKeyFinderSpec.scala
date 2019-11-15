@@ -32,7 +32,7 @@ import scalaz._
 import scalaz.syntax.monad._
 import scalaz.syntax.comonad._
 
-trait APIKeyFinderSpec[M[+ _]] extends Specification {
+trait APIKeyFinderSpec[M[+_]] extends Specification {
   import Permission._
 
   implicit def M: Monad[M] with Comonad[M]

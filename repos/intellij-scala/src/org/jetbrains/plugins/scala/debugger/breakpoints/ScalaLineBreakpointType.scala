@@ -93,7 +93,7 @@ class ScalaLineBreakpointType
   override def computeVariants(
       @NotNull project: Project,
       @NotNull position: XSourcePosition)
-    : JList[JavaLineBreakpointType#JavaBreakpointVariant] = {
+      : JList[JavaLineBreakpointType#JavaBreakpointVariant] = {
     val emptyList =
       Collections.emptyList[JavaLineBreakpointType#JavaBreakpointVariant]
 

@@ -344,7 +344,7 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
         }
 
     private def convenientDefault
-      : Option[RelationalProfile.ColumnOption.Default[_]] =
+        : Option[RelationalProfile.ColumnOption.Default[_]] =
       try defaultColumnOption
       catch {
         case e: java.lang.NumberFormatException if ignoreInvalidDefaults =>

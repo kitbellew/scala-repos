@@ -39,16 +39,16 @@ object RunResult {
       `n/a`
     implicit def forF2[Y, Z, R, In0 <: HList, Out0 <: HList](
         implicit x: JA[Y :: Z :: HNil, R, In0, Out0])
-      : Aux[(Y, Z) ⇒ R, Rule[In0, Out0]] = `n/a`
+        : Aux[(Y, Z) ⇒ R, Rule[In0, Out0]] = `n/a`
     implicit def forF3[X, Y, Z, R, In0 <: HList, Out0 <: HList](
         implicit x: JA[X :: Y :: Z :: HNil, R, In0, Out0])
-      : Aux[(X, Y, Z) ⇒ R, Rule[In0, Out0]] = `n/a`
+        : Aux[(X, Y, Z) ⇒ R, Rule[In0, Out0]] = `n/a`
     implicit def forF4[W, X, Y, Z, R, In0 <: HList, Out0 <: HList](
         implicit x: JA[W :: X :: Y :: Z :: HNil, R, In0, Out0])
-      : Aux[(W, X, Y, Z) ⇒ R, Rule[In0, Out0]] = `n/a`
+        : Aux[(W, X, Y, Z) ⇒ R, Rule[In0, Out0]] = `n/a`
     implicit def forF5[V, W, X, Y, Z, R, In0 <: HList, Out0 <: HList](
         implicit x: JA[V :: W :: X :: Y :: Z :: HNil, R, In0, Out0])
-      : Aux[(V, W, X, Y, Z) ⇒ R, Rule[In0, Out0]] = `n/a`
+        : Aux[(V, W, X, Y, Z) ⇒ R, Rule[In0, Out0]] = `n/a`
   }
 
   abstract class Aux2 {

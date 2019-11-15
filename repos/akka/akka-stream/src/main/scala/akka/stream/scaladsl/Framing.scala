@@ -60,7 +60,7 @@ object Framing {
       fieldOffset: Int = 0,
       maximumFrameLength: Int,
       byteOrder: ByteOrder = ByteOrder.LITTLE_ENDIAN)
-    : Flow[ByteString, ByteString, NotUsed] = {
+      : Flow[ByteString, ByteString, NotUsed] = {
     require(
       fieldLength >= 1 && fieldLength <= 4,
       "Length field length must be 1, 2, 3 or 4.")
@@ -94,7 +94,7 @@ object Framing {
     *                             included in this limit.
     */
   def simpleFramingProtocol(maximumMessageLength: Int)
-    : BidiFlow[ByteString, ByteString, ByteString, ByteString, NotUsed] = {
+      : BidiFlow[ByteString, ByteString, ByteString, ByteString, NotUsed] = {
     BidiFlow.fromFlowsMat(
       simpleFramingProtocolEncoder(maximumMessageLength),
       simpleFramingProtocolDecoder(maximumMessageLength))(Keep.left)

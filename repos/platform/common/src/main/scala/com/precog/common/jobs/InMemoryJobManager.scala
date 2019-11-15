@@ -43,14 +43,14 @@ private[jobs] case class JobData(
     channels: Map[String, List[Message]],
     status: Option[Status])
 
-final class InMemoryJobManager[M[+ _]](implicit val M: Monad[M])
+final class InMemoryJobManager[M[+_]](implicit val M: Monad[M])
     extends BaseInMemoryJobManager[M] {
   private[jobs] val jobs: mutable.Map[JobId, JobData] =
     new mutable.HashMap[JobId, JobData]
-    with mutable.SynchronizedMap[JobId, JobData]
+      with mutable.SynchronizedMap[JobId, JobData]
 }
 
-final class ExpiringJobManager[M[+ _]](timeout: Duration)(
+final class ExpiringJobManager[M[+_]](timeout: Duration)(
     implicit val M: Monad[M])
     extends BaseInMemoryJobManager[M] {
   private[jobs] val jobs: mutable.Map[JobId, JobData] =
@@ -58,13 +58,13 @@ final class ExpiringJobManager[M[+ _]](timeout: Duration)(
 }
 
 object ExpiringJobManager {
-  def apply[M[+ _]: Monad](config: Configuration): ExpiringJobManager[M] = {
+  def apply[M[+_]: Monad](config: Configuration): ExpiringJobManager[M] = {
     val timeout = Duration(config[Int]("service.timeout", 900), "seconds")
     new ExpiringJobManager[M](timeout)
   }
 }
 
-trait BaseInMemoryJobManager[M[+ _]]
+trait BaseInMemoryJobManager[M[+_]]
     extends JobManager[M]
     with JobStateManager[M]
     with JobResultManager[M] {

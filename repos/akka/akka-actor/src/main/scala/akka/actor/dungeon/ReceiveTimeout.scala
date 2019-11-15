@@ -41,7 +41,8 @@ private[akka] trait ReceiveTimeout {
               this.dispatcher)
           receiveTimeoutData = (f, task)
         case _ ⇒ cancelReceiveTimeout()
-      } else cancelReceiveTimeout()
+      }
+    else cancelReceiveTimeout()
   }
 
   final def cancelReceiveTimeout(): Unit =

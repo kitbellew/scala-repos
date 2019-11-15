@@ -85,7 +85,7 @@ class ScalaInvalidPropertyKeyInspection extends LocalInspectionTool {
     def filterNotInLibrary(
         @NotNull project: Project,
         @NotNull propertiesFiles: util.List[PropertiesFile])
-      : util.List[PropertiesFile] = {
+        : util.List[PropertiesFile] = {
       val fileIndex: ProjectFileIndex =
         ProjectRootManager.getInstance(project).getFileIndex
       val result: util.List[PropertiesFile] =

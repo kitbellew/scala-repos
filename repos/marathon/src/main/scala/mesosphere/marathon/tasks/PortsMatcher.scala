@@ -165,12 +165,11 @@ class PortsMatcher(
       reservation = if (resource.hasReservation)
         Option(resource.getReservation)
       else None
-    } yield
-      PortRange(
-        resource.getRole,
-        rangeInResource.getBegin.toInt,
-        rangeInResource.getEnd.toInt,
-        reservation)
+    } yield PortRange(
+      resource.getRole,
+      rangeInResource.getBegin.toInt,
+      rangeInResource.getEnd.toInt,
+      reservation)
     portRangeIter.to[Seq]
   }
 

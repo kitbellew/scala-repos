@@ -111,12 +111,12 @@ trait RecordTypeMode extends PrimitiveTypeMode {
     fieldReference match {
       case Some(e) =>
         new SelectElementReference[String](e)(createOutMapperStringType)
-        with StringExpression[String]
-        with SquerylRecordNonNumericalExpression[String]
+          with StringExpression[String]
+          with SquerylRecordNonNumericalExpression[String]
       case None =>
         new ConstantExpressionNode[String](f.get)(createOutMapperStringType)
-        with StringExpression[String]
-        with SquerylRecordNonNumericalExpression[String]
+          with StringExpression[String]
+          with SquerylRecordNonNumericalExpression[String]
     }
 
   /** Conversion of optional String fields to Squeryl Expressions. */
@@ -124,12 +124,14 @@ trait RecordTypeMode extends PrimitiveTypeMode {
     fieldReference match {
       case Some(e) =>
         new SelectElementReference[Option[String]](e)(
-          createOutMapperStringTypeOption) with StringExpression[Option[String]]
-        with SquerylRecordNonNumericalExpression[Option[String]]
+          createOutMapperStringTypeOption)
+          with StringExpression[Option[String]]
+          with SquerylRecordNonNumericalExpression[Option[String]]
       case None =>
         new ConstantExpressionNode[Option[String]](f.get)(
-          createOutMapperStringTypeOption) with StringExpression[Option[String]]
-        with SquerylRecordNonNumericalExpression[Option[String]]
+          createOutMapperStringTypeOption)
+          with StringExpression[Option[String]]
+          with SquerylRecordNonNumericalExpression[Option[String]]
     }
 
   /** Needed for outer joins */
@@ -137,12 +139,13 @@ trait RecordTypeMode extends PrimitiveTypeMode {
     fieldReference match {
       case Some(e) =>
         new SelectElementReference[String](e)(createOutMapperStringType)
-        with StringExpression[String]
-        with SquerylRecordNonNumericalExpression[String]
+          with StringExpression[String]
+          with SquerylRecordNonNumericalExpression[String]
       case None =>
         new ConstantExpressionNode[String](getValueOrNull(f))(
-          createOutMapperStringType) with StringExpression[String]
-        with SquerylRecordNonNumericalExpression[String]
+          createOutMapperStringType)
+          with StringExpression[String]
+          with SquerylRecordNonNumericalExpression[String]
     }
 
   /** Conversion of mandatory Boolean fields to Squeryl Expressions. */
@@ -150,12 +153,12 @@ trait RecordTypeMode extends PrimitiveTypeMode {
     fieldReference match {
       case Some(e) =>
         new SelectElementReference[Boolean](e)(createOutMapperBooleanType)
-        with BooleanExpression[Boolean]
-        with SquerylRecordNonNumericalExpression[Boolean]
+          with BooleanExpression[Boolean]
+          with SquerylRecordNonNumericalExpression[Boolean]
       case None =>
         new ConstantExpressionNode[Boolean](f.get)(createOutMapperBooleanType)
-        with BooleanExpression[Boolean]
-        with SquerylRecordNonNumericalExpression[Boolean]
+          with BooleanExpression[Boolean]
+          with SquerylRecordNonNumericalExpression[Boolean]
     }
 
   /** Conversion of optional Boolean fields to Squeryl Expressions. */
@@ -164,13 +167,13 @@ trait RecordTypeMode extends PrimitiveTypeMode {
       case Some(e) =>
         new SelectElementReference[Option[Boolean]](e)(
           createOutMapperBooleanTypeOption)
-        with BooleanExpression[Option[Boolean]]
-        with SquerylRecordNonNumericalExpression[Option[Boolean]]
+          with BooleanExpression[Option[Boolean]]
+          with SquerylRecordNonNumericalExpression[Option[Boolean]]
       case None =>
         new ConstantExpressionNode[Option[Boolean]](f.get)(
           createOutMapperBooleanTypeOption)
-        with BooleanExpression[Option[Boolean]]
-        with SquerylRecordNonNumericalExpression[Option[Boolean]]
+          with BooleanExpression[Option[Boolean]]
+          with SquerylRecordNonNumericalExpression[Option[Boolean]]
     }
 
   /** Needed for outer joins. */
@@ -178,12 +181,13 @@ trait RecordTypeMode extends PrimitiveTypeMode {
     fieldReference match {
       case Some(e) =>
         new SelectElementReference[Boolean](e)(createOutMapperBooleanType)
-        with BooleanExpression[Boolean]
-        with SquerylRecordNonNumericalExpression[Boolean]
+          with BooleanExpression[Boolean]
+          with SquerylRecordNonNumericalExpression[Boolean]
       case None =>
         new ConstantExpressionNode[Boolean](getValue(f).getOrElse(false))(
-          createOutMapperBooleanType) with BooleanExpression[Boolean]
-        with SquerylRecordNonNumericalExpression[Boolean]
+          createOutMapperBooleanType)
+          with BooleanExpression[Boolean]
+          with SquerylRecordNonNumericalExpression[Boolean]
     }
 
   /** Conversion of mandatory Calendar fields to Squeryl Expressions. */
@@ -191,13 +195,13 @@ trait RecordTypeMode extends PrimitiveTypeMode {
     fieldReference match {
       case Some(e) =>
         new SelectElementReference[Timestamp](e)(createOutMapperTimestampType)
-        with DateExpression[Timestamp]
-        with SquerylRecordNonNumericalExpression[Timestamp]
+          with DateExpression[Timestamp]
+          with SquerylRecordNonNumericalExpression[Timestamp]
       case None =>
         new ConstantExpressionNode[Timestamp](
           new Timestamp(f.get.getTimeInMillis))(createOutMapperTimestampType)
-        with DateExpression[Timestamp]
-        with SquerylRecordNonNumericalExpression[Timestamp]
+          with DateExpression[Timestamp]
+          with SquerylRecordNonNumericalExpression[Timestamp]
     }
 
   /** Conversion of optional Calendar fields to Squeryl Expressions. */
@@ -206,8 +210,8 @@ trait RecordTypeMode extends PrimitiveTypeMode {
       case Some(e) =>
         new SelectElementReference[Option[Timestamp]](e)(
           createOutMapperTimestampTypeOption)
-        with DateExpression[Option[Timestamp]]
-        with SquerylRecordNonNumericalExpression[Option[Timestamp]]
+          with DateExpression[Option[Timestamp]]
+          with SquerylRecordNonNumericalExpression[Option[Timestamp]]
       case None => {
         val date = f.get match {
           case Some(calendar) =>
@@ -216,8 +220,8 @@ trait RecordTypeMode extends PrimitiveTypeMode {
         }
         new ConstantExpressionNode[Option[Timestamp]](date)(
           createOutMapperTimestampTypeOption)
-        with DateExpression[Option[Timestamp]]
-        with SquerylRecordNonNumericalExpression[Option[Timestamp]]
+          with DateExpression[Option[Timestamp]]
+          with SquerylRecordNonNumericalExpression[Option[Timestamp]]
       }
     }
 
@@ -230,15 +234,15 @@ trait RecordTypeMode extends PrimitiveTypeMode {
     fieldReference match {
       case Some(e) =>
         new SelectElementReference[Timestamp](e)(createOutMapperTimestampType)
-        with DateExpression[Timestamp]
-        with SquerylRecordNonNumericalExpression[Timestamp]
+          with DateExpression[Timestamp]
+          with SquerylRecordNonNumericalExpression[Timestamp]
       case None =>
         new ConstantExpressionNode[Timestamp](
           getValue(f)
             .map(field => new Timestamp(field.getTimeInMillis))
             .orNull)(createOutMapperTimestampType)
-        with DateExpression[Timestamp]
-        with SquerylRecordNonNumericalExpression[Timestamp]
+          with DateExpression[Timestamp]
+          with SquerylRecordNonNumericalExpression[Timestamp]
     }
 
   /** Needed for inner queries on date fields */
@@ -258,8 +262,9 @@ trait RecordTypeMode extends PrimitiveTypeMode {
     */
   implicit def dateToTimestampExpression(d: java.util.Date) =
     new ConstantExpressionNode[Timestamp](new java.sql.Timestamp(d.getTime))(
-      createOutMapperTimestampType) with DateExpression[Timestamp]
-    with SquerylRecordNonNumericalExpression[Timestamp]
+      createOutMapperTimestampType)
+      with DateExpression[Timestamp]
+      with SquerylRecordNonNumericalExpression[Timestamp]
 
   /** Conversion of mandatory Enum fields to Squeryl Expressions. */
   implicit def enum2EnumExpr[EnumType <: Enumeration](
@@ -267,12 +272,13 @@ trait RecordTypeMode extends PrimitiveTypeMode {
     case Some(e) =>
       new SelectElementReference[Enumeration#Value](e)(
         e.createEnumerationMapper(f.defaultValue))
-      with EnumExpression[Enumeration#Value]
-      with SquerylRecordNonNumericalExpression[Enumeration#Value]
+        with EnumExpression[Enumeration#Value]
+        with SquerylRecordNonNumericalExpression[Enumeration#Value]
     case None =>
       new ConstantExpressionNode[Enumeration#Value](f.get)(
-        outMapperFromEnumValue(f.get)) with EnumExpression[Enumeration#Value]
-      with SquerylRecordNonNumericalExpression[Enumeration#Value]
+        outMapperFromEnumValue(f.get))
+        with EnumExpression[Enumeration#Value]
+        with SquerylRecordNonNumericalExpression[Enumeration#Value]
   }
 
   def reifySingleton[T](m: Manifest[T]) = {
@@ -289,13 +295,13 @@ trait RecordTypeMode extends PrimitiveTypeMode {
         new SelectElementReference[Option[Enumeration#Value]](e)(
           e.createEnumerationOptionMapper(
             Some(reifySingleton(m).values.iterator.next)))
-        with EnumExpression[Option[Enumeration#Value]]
-        with SquerylRecordNonNumericalExpression[Option[Enumeration#Value]]
+          with EnumExpression[Option[Enumeration#Value]]
+          with SquerylRecordNonNumericalExpression[Option[Enumeration#Value]]
       case None =>
         new ConstantExpressionNode[Option[Enumeration#Value]](f.get)(
           outMapperOptionFromOptionEnumValue(f.get).orNull)
-        with EnumExpression[Option[Enumeration#Value]]
-        with SquerylRecordNonNumericalExpression[Option[Enumeration#Value]]
+          with EnumExpression[Option[Enumeration#Value]]
+          with SquerylRecordNonNumericalExpression[Option[Enumeration#Value]]
     }
 
   /** Needed for outer joins. */
@@ -305,8 +311,8 @@ trait RecordTypeMode extends PrimitiveTypeMode {
       case Some(e) =>
         new SelectElementReference[Enumeration#Value](e)(
           e.createEnumerationMapper(reifySingleton(m).values.iterator.next))
-        with EnumExpression[Enumeration#Value]
-        with SquerylRecordNonNumericalExpression[Enumeration#Value]
+          with EnumExpression[Enumeration#Value]
+          with SquerylRecordNonNumericalExpression[Enumeration#Value]
       case None =>
         new ConstantExpressionNode[Enumeration#Value](getValue(f).orNull)({
           val enumOption =
@@ -319,7 +325,7 @@ trait RecordTypeMode extends PrimitiveTypeMode {
             }
           outMapperOption.orNull
         }) with EnumExpression[Enumeration#Value]
-        with SquerylRecordNonNumericalExpression[Enumeration#Value]
+          with SquerylRecordNonNumericalExpression[Enumeration#Value]
     }
 
   implicit def enumFieldQuery2RightHandSideOfIn[
@@ -342,11 +348,13 @@ trait RecordTypeMode extends PrimitiveTypeMode {
       outMapper: OutMapper[T]) =
     fieldReference match {
       case Some(e) =>
-        new SelectElementReference[T](e)(outMapper) with NumericalExpression[T]
-        with SquerylRecordNumericalExpression[T]
+        new SelectElementReference[T](e)(outMapper)
+          with NumericalExpression[T]
+          with SquerylRecordNumericalExpression[T]
       case None =>
         new ConstantExpressionNode[T](f.get)(outMapper)
-        with NumericalExpression[T] with SquerylRecordNumericalExpression[T]
+          with NumericalExpression[T]
+          with SquerylRecordNumericalExpression[T]
     }
 
   /**
@@ -358,12 +366,12 @@ trait RecordTypeMode extends PrimitiveTypeMode {
     fieldReference match {
       case Some(e: SelectElement) =>
         new SelectElementReference[Option[T]](e)(outMapper)
-        with NumericalExpression[Option[T]]
-        with SquerylRecordNumericalExpression[Option[T]]
+          with NumericalExpression[Option[T]]
+          with SquerylRecordNumericalExpression[Option[T]]
       case None =>
         new ConstantExpressionNode[Option[T]](f.get)(outMapper)
-        with NumericalExpression[Option[T]]
-        with SquerylRecordNumericalExpression[Option[T]]
+          with NumericalExpression[Option[T]]
+          with SquerylRecordNumericalExpression[Option[T]]
     }
 
   private def convertNumericalOption[T](
@@ -372,12 +380,12 @@ trait RecordTypeMode extends PrimitiveTypeMode {
     fieldReference match {
       case Some(e) =>
         new SelectElementReference[Option[T]](e)(outMapper)
-        with NumericalExpression[Option[T]]
-        with SquerylRecordNumericalExpression[Option[T]]
+          with NumericalExpression[Option[T]]
+          with SquerylRecordNumericalExpression[Option[T]]
       case None =>
         new ConstantExpressionNode[Option[T]](getValue(f))(outMapper)
-        with NumericalExpression[Option[T]]
-        with SquerylRecordNumericalExpression[Option[T]]
+          with NumericalExpression[Option[T]]
+          with SquerylRecordNumericalExpression[Option[T]]
     }
 
   private def getValue[T](f: Option[TypedField[T]]): Option[T] = f match {

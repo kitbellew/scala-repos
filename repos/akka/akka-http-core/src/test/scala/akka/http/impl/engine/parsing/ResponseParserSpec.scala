@@ -423,7 +423,7 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
       }
 
     private def compactEntityChunks(data: Source[ChunkStreamPart, Any])
-      : Future[Source[ChunkStreamPart, Any]] =
+        : Future[Source[ChunkStreamPart, Any]] =
       data
         .limit(100000)
         .runWith(Sink.seq)

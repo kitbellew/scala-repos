@@ -219,7 +219,7 @@ trait JavaDStreamLike[
     */
   def mapPartitionsToPair[K2, V2](
       f: PairFlatMapFunction[java.util.Iterator[T], K2, V2])
-    : JavaPairDStream[K2, V2] = {
+      : JavaPairDStream[K2, V2] = {
     def fn: (Iterator[T]) => Iterator[(K2, V2)] = { (x: Iterator[T]) =>
       f.call(x.asJava).asScala
     }
@@ -334,7 +334,7 @@ trait JavaDStreamLike[
     * on each RDD of 'this' DStream.
     */
   def transformToPair[K2, V2](transformFunc: JFunction[R, JavaPairRDD[K2, V2]])
-    : JavaPairDStream[K2, V2] = {
+      : JavaPairDStream[K2, V2] = {
     implicit val cmk: ClassTag[K2] = fakeClassTag
     implicit val cmv: ClassTag[V2] = fakeClassTag
 
@@ -349,7 +349,7 @@ trait JavaDStreamLike[
     */
   def transformToPair[K2, V2](
       transformFunc: JFunction2[R, Time, JavaPairRDD[K2, V2]])
-    : JavaPairDStream[K2, V2] = {
+      : JavaPairDStream[K2, V2] = {
     implicit val cmk: ClassTag[K2] = fakeClassTag
     implicit val cmv: ClassTag[V2] = fakeClassTag
 

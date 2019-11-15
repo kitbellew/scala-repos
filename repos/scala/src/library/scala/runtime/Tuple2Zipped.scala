@@ -124,7 +124,7 @@ object Tuple2Zipped {
         implicit w1: T1 <:< CC1[El1],
         w2: T2 <:< CC2[El2],
         bf: scala.collection.generic.CanBuildFrom[CC1[_], (El1, El2), That])
-      : That = {
+        : That = {
       val buf = bf(x._1)
       val it1 = x._1.toIterator
       val it2 = x._2.toIterator
@@ -136,6 +136,6 @@ object Tuple2Zipped {
     def zipped[El1, Repr1, El2, Repr2](
         implicit w1: T1 => TraversableLike[El1, Repr1],
         w2: T2 => IterableLike[El2, Repr2])
-      : Tuple2Zipped[El1, Repr1, El2, Repr2] = new Tuple2Zipped((x._1, x._2))
+        : Tuple2Zipped[El1, Repr1, El2, Repr2] = new Tuple2Zipped((x._1, x._2))
   }
 }

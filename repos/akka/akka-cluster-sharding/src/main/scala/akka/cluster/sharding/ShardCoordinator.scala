@@ -82,7 +82,7 @@ object ShardCoordinator {
         requester: ActorRef,
         shardId: ShardId,
         currentShardAllocations: Map[ActorRef, immutable.IndexedSeq[ShardId]])
-      : Future[ActorRef]
+        : Future[ActorRef]
 
     /**
       * Invoked periodically to decide which shards to rebalance to another location.
@@ -107,7 +107,7 @@ object ShardCoordinator {
         requester: ActorRef,
         shardId: ShardId,
         currentShardAllocations: Map[ActorRef, immutable.IndexedSeq[ShardId]])
-      : Future[ActorRef] = {
+        : Future[ActorRef] = {
 
       import scala.collection.JavaConverters._
       allocateShard(requester, shardId, currentShardAllocations.asJava)
@@ -152,7 +152,7 @@ object ShardCoordinator {
           ActorRef,
           immutable.IndexedSeq[String]],
         rebalanceInProgress: java.util.Set[String])
-      : Future[java.util.Set[String]]
+        : Future[java.util.Set[String]]
   }
 
   private val emptyRebalanceResult = Future.successful(Set.empty[ShardId])
@@ -176,7 +176,7 @@ object ShardCoordinator {
         requester: ActorRef,
         shardId: ShardId,
         currentShardAllocations: Map[ActorRef, immutable.IndexedSeq[ShardId]])
-      : Future[ActorRef] = {
+        : Future[ActorRef] = {
       val (regionWithLeastShards, _) = currentShardAllocations.minBy {
         case (_, v) ⇒ v.size
       }

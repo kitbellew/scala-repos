@@ -53,7 +53,8 @@ object Templates {
       what(whole) match {
         case Left(func) => func()
         case _          => Empty
-      } else Empty
+      }
+    else Empty
 
   private def findInViews(
       whole: List[String],

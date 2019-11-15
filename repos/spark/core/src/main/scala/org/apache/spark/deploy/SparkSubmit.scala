@@ -247,7 +247,7 @@ object SparkSubmit {
     * Exposed for testing.
     */
   private[deploy] def prepareSubmitEnvironment(args: SparkSubmitArguments)
-    : (Seq[String], Seq[String], Map[String, String], String) = {
+      : (Seq[String], Seq[String], Map[String, String], String) = {
     // Return values
     val childArgs = new ArrayBuffer[String]()
     val childClasspath = new ArrayBuffer[String]()

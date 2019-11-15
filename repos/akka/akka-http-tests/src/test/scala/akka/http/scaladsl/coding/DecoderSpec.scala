@@ -47,7 +47,7 @@ class DecoderSpec extends WordSpec with CodecSpecSupport {
     val encoding = HttpEncodings.compress
 
     override def newDecompressorStage(maxBytesPerChunk: Int)
-      : () ⇒ GraphStage[FlowShape[ByteString, ByteString]] =
+        : () ⇒ GraphStage[FlowShape[ByteString, ByteString]] =
       () ⇒
         new SimpleLinearGraphStage[ByteString] {
           override def createLogic(

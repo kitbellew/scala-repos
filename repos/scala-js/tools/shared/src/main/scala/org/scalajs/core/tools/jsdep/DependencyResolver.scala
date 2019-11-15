@@ -53,7 +53,7 @@ object DependencyResolver {
     */
   private def collectAllResourceNames(
       manifests: Traversable[JSDependencyManifest])
-    : Map[String, List[Origin]] = {
+      : Map[String, List[Origin]] = {
 
     def allResources(dep: JSDependency) =
       dep.resourceName :: dep.dependencies ::: dep.minifiedResourceName.toList

@@ -49,7 +49,7 @@ object SliceVector {
   implicit def scalarOf[K, T]: ScalarOf[SliceVector[K, T], T] = ScalarOf.dummy
 
   implicit def canMapKeyValuePairs[K, V, V2: ClassTag]
-    : CanMapKeyValuePairs[SliceVector[K, V], Int, V, V2, DenseVector[V2]] = {
+      : CanMapKeyValuePairs[SliceVector[K, V], Int, V, V2, DenseVector[V2]] = {
     new CanMapKeyValuePairs[SliceVector[K, V], Int, V, V2, DenseVector[V2]] {
       override def map(
           from: SliceVector[K, V],
@@ -66,7 +66,7 @@ object SliceVector {
   }
 
   implicit def canMapValues[K, V, V2: ClassTag]
-    : CanMapValues[SliceVector[K, V], V, V2, DenseVector[V2]] = {
+      : CanMapValues[SliceVector[K, V], V, V2, DenseVector[V2]] = {
     new CanMapValues[SliceVector[K, V], V, V2, DenseVector[V2]] {
       override def apply(
           from: SliceVector[K, V],
@@ -77,7 +77,7 @@ object SliceVector {
   }
 
   implicit def canCreateZerosLike[K, V: ClassTag: Zero]
-    : CanCreateZerosLike[SliceVector[K, V], DenseVector[V]] = {
+      : CanCreateZerosLike[SliceVector[K, V], DenseVector[V]] = {
     new CanCreateZerosLike[SliceVector[K, V], DenseVector[V]] {
       def apply(v1: SliceVector[K, V]): DenseVector[V] = {
         DenseVector.zeros[V](v1.length)
@@ -99,7 +99,7 @@ object SliceVector {
     }
 
   implicit def canIterateKeyValuePairs[K, V]
-    : CanTraverseKeyValuePairs[SliceVector[K, V], Int, V] = {
+      : CanTraverseKeyValuePairs[SliceVector[K, V], Int, V] = {
     new CanTraverseKeyValuePairs[SliceVector[K, V], Int, V] {
 
       /** Traverses all values from the given collection. */
@@ -116,7 +116,7 @@ object SliceVector {
   }
 
   implicit def canTransformValues[K, V]
-    : CanTransformValues[SliceVector[K, V], V] = {
+      : CanTransformValues[SliceVector[K, V], V] = {
     new CanTransformValues[SliceVector[K, V], V] {
       def transform(from: SliceVector[K, V], fn: (V) => V) {
         for (i <- 0 until from.length) {

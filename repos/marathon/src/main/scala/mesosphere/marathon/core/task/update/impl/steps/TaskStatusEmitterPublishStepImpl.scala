@@ -14,7 +14,7 @@ import scala.concurrent.Future
 /**
   * Forward the update to the taskStatusEmitter.
   */
-class TaskStatusEmitterPublishStepImpl @Inject()(
+class TaskStatusEmitterPublishStepImpl @Inject() (
     taskStatusEmitter: TaskStatusEmitter)
     extends TaskStatusUpdateStep {
   override def name: String = "emitUpdate"

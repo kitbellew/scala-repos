@@ -141,7 +141,7 @@ private[tracker] class TaskOpProcessorImpl(
     */
   private[this] def tryToRecover(op: Operation)(
       expectedTaskState: Option[Task])(implicit ec: ExecutionContext)
-    : PartialFunction[Throwable, Future[Unit]] = {
+      : PartialFunction[Throwable, Future[Unit]] = {
 
     case NonFatal(cause) =>
       def ack(actualTaskState: Option[MarathonTask]): TaskTrackerActor.Ack = {

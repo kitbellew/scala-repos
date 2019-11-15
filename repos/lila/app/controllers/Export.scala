@@ -25,16 +25,15 @@ object Export extends LilaController {
               pgn = Env.api.pgnDump(game, initialFen)
               analysis ← !get("as").contains("raw") ??
                 (Env.analyse.analyser get game.id)
-            } yield
-              Env.analyse
-                .annotator(
-                  pgn,
-                  analysis,
-                  game.opening,
-                  game.winnerColor,
-                  game.status,
-                  game.clock)
-                .toString
+            } yield Env.analyse
+              .annotator(
+                pgn,
+                analysis,
+                game.opening,
+                game.winnerColor,
+                game.status,
+                game.clock)
+              .toString
         }) map { content =>
           Ok(content).withHeaders(
             CONTENT_TYPE -> ContentTypes.TEXT,

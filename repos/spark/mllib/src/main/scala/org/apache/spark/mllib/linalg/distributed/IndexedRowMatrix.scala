@@ -41,7 +41,7 @@ case class IndexedRow(index: Long, vector: Vector)
   *              columns will be determined by the size of the first row.
   */
 @Since("1.0.0")
-class IndexedRowMatrix @Since("1.0.0")(
+class IndexedRowMatrix @Since("1.0.0") (
     @Since("1.0.0") val rows: RDD[IndexedRow],
     private var nRows: Long,
     private var nCols: Int)
@@ -155,7 +155,7 @@ class IndexedRowMatrix @Since("1.0.0")(
     */
   @Since("1.0.0")
   def computeSVD(k: Int, computeU: Boolean = false, rCond: Double = 1e-9)
-    : SingularValueDecomposition[IndexedRowMatrix, Matrix] = {
+      : SingularValueDecomposition[IndexedRowMatrix, Matrix] = {
 
     val n = numCols().toInt
     require(

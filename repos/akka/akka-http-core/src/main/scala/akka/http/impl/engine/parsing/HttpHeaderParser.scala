@@ -664,7 +664,8 @@ private[http] object HttpHeaderParser {
         case c if tchar(c) ⇒
           scanHeaderNameAndReturnIndexOfColon(input, start, limit)(ix + 1)
         case c ⇒ fail(s"Illegal character '${escape(c)}' in header name")
-      } else
+      }
+    else
       fail(
         s"HTTP header name exceeds the configured limit of ${limit - start - 1} characters")
 
@@ -743,7 +744,8 @@ private[http] object HttpHeaderParser {
               }
             } else fail(s"Illegal character '${escape(c)}' in header value")
           scanHeaderValue(hhp, input, start, limit)(nsb, nix)
-      } else
+      }
+    else
       fail(
         s"HTTP header value exceeds the configured limit of ${limit - start - 2} characters")
   }

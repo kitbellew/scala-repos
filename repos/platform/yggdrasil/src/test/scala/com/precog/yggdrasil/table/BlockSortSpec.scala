@@ -51,7 +51,7 @@ import TableModule._
 
 import PrecogJValueOrder._
 
-trait BlockSortSpec[M[+ _]]
+trait BlockSortSpec[M[+_]]
     extends BlockStoreTestSupport[M]
     with Specification
     with ScalaCheck {

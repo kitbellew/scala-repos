@@ -42,7 +42,7 @@ import Validation._
 
 import blueeyes.json._
 
-trait MemoryDatasetConsumer[M[+ _]] extends EvaluatorModule[M] {
+trait MemoryDatasetConsumer[M[+_]] extends EvaluatorModule[M] {
   type IdType
 
   type X = Throwable
@@ -50,7 +50,7 @@ trait MemoryDatasetConsumer[M[+ _]] extends EvaluatorModule[M] {
 
   implicit def M: Monad[M] with Comonad[M]
 
-  def Evaluator[N[+ _]](
+  def Evaluator[N[+_]](
       N0: Monad[N])(implicit mn: M ~> N, nm: N ~> M): EvaluatorLike[N]
 
   def extractIds(jv: JValue): Seq[IdType]
@@ -104,7 +104,7 @@ trait MemoryDatasetConsumer[M[+ _]] extends EvaluatorModule[M] {
   }
 }
 
-trait LongIdMemoryDatasetConsumer[M[+ _]] extends MemoryDatasetConsumer[M] {
+trait LongIdMemoryDatasetConsumer[M[+_]] extends MemoryDatasetConsumer[M] {
   type IdType = SValue
   def extractIds(jv: JValue): Seq[SValue] =
     (jv --> classOf[JArray]).elements map jvalueToSValue
@@ -115,7 +115,7 @@ trait LongIdMemoryDatasetConsumer[M[+ _]] extends MemoryDatasetConsumer[M] {
   * represents the event identity. We still need to handle JNum entries in the
   * case of reductions.
   */
-trait StringIdMemoryDatasetConsumer[M[+ _]] extends MemoryDatasetConsumer[M] {
+trait StringIdMemoryDatasetConsumer[M[+_]] extends MemoryDatasetConsumer[M] {
   type IdType = String
   //
   def extractIds(jv: JValue): Seq[String] =

@@ -55,7 +55,8 @@ class ScGenericCallImpl(node: ASTNode)
                    ScalaPsiElementFactory.createExpressionFromText(
                      "{val x: Nothing = null; x}",
                      getManager)) //we can't to not add something => add Nothing expression
-             } else Seq.empty) :: Nil
+             }
+           else Seq.empty) :: Nil
       }
     val typeArgs: Seq[ScTypeElement] = this.arguments
     import org.jetbrains.plugins.scala.lang.psi.types.Compatibility.Expression._

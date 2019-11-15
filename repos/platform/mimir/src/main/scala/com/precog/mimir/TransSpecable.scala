@@ -29,7 +29,7 @@ import scalaz._
 import scalaz.std.option._
 import scalaz.syntax.monadPlus._
 
-trait TransSpecableModule[M[+ _]]
+trait TransSpecableModule[M[+_]]
     extends TransSpecModule
     with TableModule[M]
     with EvaluatorMethodsModule[M] {
@@ -154,7 +154,7 @@ trait TransSpecableModule[M[+ _]]
         snd,
         some).map(_._2)
 
-    def transFold[N[+ _]: Monad, S](
+    def transFold[N[+_]: Monad, S](
         to: DepGraph,
         from: Option[DepGraph],
         ctx: EvaluationContext,
@@ -299,7 +299,7 @@ trait TransSpecableModule[M[+ _]]
       }
     }
 
-    def mkTransSpecWithState[N[+ _]: Monad, S](
+    def mkTransSpecWithState[N[+_]: Monad, S](
         to: DepGraph,
         from: Option[DepGraph],
         ctx: EvaluationContext,
@@ -311,7 +311,7 @@ trait TransSpecableModule[M[+ _]]
         transFold[N, S](to, from, ctx, get, set, init))
     }
 
-    def mkTransSpecOrderWithState[N[+ _]: Monad, S](
+    def mkTransSpecOrderWithState[N[+_]: Monad, S](
         to: DepGraph,
         from: Option[DepGraph],
         ctx: EvaluationContext,

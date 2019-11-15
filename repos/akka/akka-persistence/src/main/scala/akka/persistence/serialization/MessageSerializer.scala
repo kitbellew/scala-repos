@@ -89,7 +89,7 @@ class MessageSerializer(val system: ExtendedActorSystem)
   //
 
   def atLeastOnceDeliverySnapshotBuilder(snap: AtLeastOnceDeliverySnapshot)
-    : mf.AtLeastOnceDeliverySnapshot.Builder = {
+      : mf.AtLeastOnceDeliverySnapshot.Builder = {
     val builder = mf.AtLeastOnceDeliverySnapshot.newBuilder
     builder.setCurrentDeliveryId(snap.currentDeliveryId)
     snap.unconfirmedDeliveries.foreach { unconfirmed ⇒
@@ -116,7 +116,7 @@ class MessageSerializer(val system: ExtendedActorSystem)
 
   def atLeastOnceDeliverySnapshot(
       atLeastOnceDeliverySnapshot: mf.AtLeastOnceDeliverySnapshot)
-    : AtLeastOnceDeliverySnapshot = {
+      : AtLeastOnceDeliverySnapshot = {
     import scala.collection.JavaConverters._
     val unconfirmedDeliveries = new VectorBuilder[UnconfirmedDelivery]()
     atLeastOnceDeliverySnapshot
@@ -136,7 +136,7 @@ class MessageSerializer(val system: ExtendedActorSystem)
   }
 
   def stateChange(persistentStateChange: mf.PersistentStateChangeEvent)
-    : StateChangeEvent = {
+      : StateChangeEvent = {
     StateChangeEvent(
       persistentStateChange.getStateIdentifier,
       if (persistentStateChange.hasTimeout)

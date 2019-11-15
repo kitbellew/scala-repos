@@ -111,7 +111,7 @@ trait PojoSRTestSupport extends Suite with BeforeAndAfterAll {
 
   protected def buildTestBundles(
       builders: immutable.Seq[BundleDescriptorBuilder])
-    : immutable.Seq[BundleDescriptor] =
+      : immutable.Seq[BundleDescriptor] =
     builders map (_.build)
 
   def filterErrors()(block: ⇒ Unit): Unit =

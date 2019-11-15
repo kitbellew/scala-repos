@@ -52,7 +52,7 @@ class Promise[+A](
   def `then`[B >: A](
       onFulfilled: Unit,
       onRejected: js.UndefOr[js.Function1[scala.Any, B | Thenable[B]]])
-    : Thenable[B] = js.native
+      : Thenable[B] = js.native
 
   def `catch`[B >: A](
       onRejected: js.UndefOr[js.Function1[scala.Any, B | Thenable[B]]] =

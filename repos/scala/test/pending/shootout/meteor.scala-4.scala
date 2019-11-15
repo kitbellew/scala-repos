@@ -171,13 +171,10 @@ final class Board {
 
   private val cache: Array[Array[Array[Array[Array[BoardCell]]]]] =
     for (i <- Array.range(0, Board.pieces))
-      yield
-        for (j <- Array.range(0, Piece.orientations))
-          yield
-            for (k <- Array.range(0, Piece.size)) // piece cell index
-              yield
-                for (m <- Array.range(0, Board.size)) // board cell index
-                  yield (null: BoardCell)
+      yield for (j <- Array.range(0, Piece.orientations))
+        yield for (k <- Array.range(0, Piece.size)) // piece cell index
+          yield for (m <- Array.range(0, Board.size)) // board cell index
+            yield (null: BoardCell)
 
   def add(pieceIndex: Int, boardIndex: Int, p: Piece): Boolean = {
     var a = cache(p.number)(p.orientation)(pieceIndex)(boardIndex)
@@ -313,8 +310,9 @@ final class Piece(_number: Int) {
 
   def cells = cache(orientation)
 
-  private val cache = for (i <- Array.range(0, Piece.orientations))
-    yield pieceOrientation(i)
+  private val cache =
+    for (i <- Array.range(0, Piece.orientations))
+      yield pieceOrientation(i)
 
   var orientation = 0
 

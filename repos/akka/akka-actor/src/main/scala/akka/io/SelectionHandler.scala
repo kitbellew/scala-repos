@@ -103,7 +103,7 @@ private[io] object SelectionHandler {
 
     final def workerForCommandHandler(
         pf: PartialFunction[HasFailureMessage, ChannelRegistry ⇒ Props])
-      : Receive = {
+        : Receive = {
       case cmd: HasFailureMessage if pf.isDefinedAt(cmd) ⇒
         selectorPool ! WorkerForCommand(cmd, sender(), pf(cmd))
     }

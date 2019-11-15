@@ -254,7 +254,7 @@ class EndToEndTest
         .newService(dest)
 
       def toIface(svc: Service[ThriftClientRequest, Array[Byte]])
-        : TestService$FinagleClient =
+          : TestService$FinagleClient =
         new TestService.FinagledClient(svc, pf)
 
       Seq(

@@ -220,7 +220,7 @@ final class JSONIngestProcessing(
           state: JSONParseState,
           streamRef: StreamRef)(
           continue: => JSONParseState => Future[JSONParseState])
-        : Future[JSONParseState] = {
+          : Future[JSONParseState] = {
         (errorHandling: @unchecked) match {
           case IngestAllPossible =>
             val (toIngest, overLarge) =

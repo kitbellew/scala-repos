@@ -66,8 +66,8 @@ object KMeans {
       k: Int,
       s: Stat,
       clusters: ValuePipe[List[LabeledVector]],
-      points: TypedPipe[LabeledVector])
-    : Execution[(ValuePipe[List[LabeledVector]], TypedPipe[LabeledVector])] = {
+      points: TypedPipe[LabeledVector]): Execution[
+    (ValuePipe[List[LabeledVector]], TypedPipe[LabeledVector])] = {
 
     // Do a cross product to produce all point, cluster pairs
     // in scalding, the smaller pipe should go on the right.
@@ -104,7 +104,7 @@ object KMeans {
   }
 
   def initializeClusters(k: Int, points: TypedPipe[Vector[Double]])
-    : (ValuePipe[List[LabeledVector]], TypedPipe[LabeledVector]) = {
+      : (ValuePipe[List[LabeledVector]], TypedPipe[LabeledVector]) = {
     val rng = new java.util.Random(123)
     // take a random k vectors:
     val clusters = points

@@ -238,7 +238,7 @@ object Dtab {
   def newBuilder: DtabBuilder = new DtabBuilder
 
   implicit val canBuildFrom
-    : CanBuildFrom[TraversableOnce[Dentry], Dentry, Dtab] =
+      : CanBuildFrom[TraversableOnce[Dentry], Dentry, Dtab] =
     new CanBuildFrom[TraversableOnce[Dentry], Dentry, Dtab] {
       def apply(_ign: TraversableOnce[Dentry]): DtabBuilder = newBuilder
       def apply(): DtabBuilder = newBuilder

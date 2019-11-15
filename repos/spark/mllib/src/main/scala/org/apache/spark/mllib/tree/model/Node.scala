@@ -41,7 +41,7 @@ import org.apache.spark.mllib.tree.configuration.FeatureType._
   */
 @Since("1.0.0")
 @DeveloperApi
-class Node @Since("1.2.0")(
+class Node @Since("1.2.0") (
     @Since("1.0.0") val id: Int,
     @Since("1.0.0") var predict: Predict,
     @Since("1.2.0") var impurity: Double,

@@ -20,7 +20,7 @@ object JavaParsers {
   val parse = BodyParsers.parse
 
   def toJavaMultipartFormData[A](multipart: MultipartFormData[TemporaryFile])
-    : play.mvc.Http.MultipartFormData[File] = {
+      : play.mvc.Http.MultipartFormData[File] = {
     new play.mvc.Http.MultipartFormData[File] {
       lazy val asFormUrlEncoded = {
         multipart.asFormUrlEncoded.mapValues(_.toArray).asJava

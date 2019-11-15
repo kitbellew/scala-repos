@@ -39,7 +39,7 @@ import scalaz.std.anyVal._
 import scalaz.syntax.comonad._
 import scalaz.syntax.monad._
 
-trait MergeSpec[M[+ _]]
+trait MergeSpec[M[+_]]
     extends ColumnarTableModuleTestSupport[M]
     with TableModuleSpec[M]
     with IndicesModule[M] {

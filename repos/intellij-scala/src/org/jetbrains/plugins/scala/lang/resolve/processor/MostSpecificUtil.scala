@@ -63,7 +63,7 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
 
   def mostSpecificForImplicitParameters(
       applicable: Set[(ScalaResolveResult, ScSubstitutor)])
-    : Option[ScalaResolveResult] = {
+      : Option[ScalaResolveResult] = {
     mostSpecificGeneric(
       applicable.map {
         case (r, subst) =>
@@ -91,7 +91,7 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
   def nextLayerSpecificForImplicitParameters(
       filterRest: Option[ScalaResolveResult],
       rest: Seq[ScalaResolveResult])
-    : (Option[ScalaResolveResult], Seq[ScalaResolveResult]) = {
+      : (Option[ScalaResolveResult], Seq[ScalaResolveResult]) = {
     def update(
         r: ScalaResolveResult): InnerScalaResolveResult[ScalaResolveResult] = {
       r.innerResolveResult match {
@@ -448,8 +448,9 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
 
   private def nextLayerSpecificGeneric[T](
       filterRest: Option[InnerScalaResolveResult[T]],
-      rest: Seq[InnerScalaResolveResult[T]])
-    : (Option[InnerScalaResolveResult[T]], Seq[InnerScalaResolveResult[T]]) = {
+      rest: Seq[InnerScalaResolveResult[T]]): (
+      Option[InnerScalaResolveResult[T]],
+      Seq[InnerScalaResolveResult[T]]) = {
 
     val filteredRest = filterRest match {
       case Some(r) =>

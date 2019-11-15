@@ -13,7 +13,7 @@ sealed abstract class IntervalTrie[T] extends IntervalSet[T, IntervalTrie[T]]
 object IntervalTrie {
 
   implicit def algebra[T: Element]
-    : Bool[IntervalTrie[T]] with Eq[IntervalTrie[T]] =
+      : Bool[IntervalTrie[T]] with Eq[IntervalTrie[T]] =
     new Bool[IntervalTrie[T]] with Eq[IntervalTrie[T]] {
 
       def eqv(x: IntervalTrie[T], y: IntervalTrie[T]): Boolean = x == y
@@ -361,7 +361,8 @@ object IntervalTrie {
             // $COVERAGE-OFF$
             case _ => unreachable
             // $COVERAGE-ON$
-          } else
+          }
+        else
           leaf match {
             case Both(x) =>
               val upper = Open(fromLong(x))

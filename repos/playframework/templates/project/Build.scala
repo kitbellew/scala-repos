@@ -309,8 +309,8 @@ object Templates {
                         status <- (links \ "activator/templates/status")
                           .asOpt[JsObject]
                         url <- (status \ "href").asOpt[String]
-                      } yield
-                        url).getOrElse(s"/activator/template/status/$uuid")
+                      } yield url)
+                        .getOrElse(s"/activator/template/status/$uuid")
                       waitUntilNotPending(uuid, statusUrl)
                   }
                   .map(result => (name, key, result))
@@ -345,11 +345,10 @@ object Templates {
               streams.log.info("Cleaning up S3...")
               s3delete
             }
-          } yield
-            result match {
-              case true  => ()
-              case false => throw new TemplatePublishFailed
-            }
+          } yield result match {
+            case true  => ()
+            case false => throw new TemplatePublishFailed
+          }
       },
       commands += templatesCommand
     )

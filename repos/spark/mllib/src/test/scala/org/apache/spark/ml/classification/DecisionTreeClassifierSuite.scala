@@ -46,7 +46,7 @@ class DecisionTreeClassifierSuite
   private var categoricalDataPointsForMulticlassRDD: RDD[LabeledPoint] = _
   private var continuousDataPointsForMulticlassRDD: RDD[LabeledPoint] = _
   private var categoricalDataPointsForMulticlassForOrderedFeaturesRDD
-    : RDD[LabeledPoint] = _
+      : RDD[LabeledPoint] = _
 
   override def beforeAll() {
     super.beforeAll()

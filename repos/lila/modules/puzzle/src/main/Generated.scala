@@ -17,12 +17,11 @@ case class Generated(position: String, solution: JsObject, id: String) {
       _ ← if (history.isEmpty) Failure(new Exception("Empty history"))
       else Success(true)
       fen ← Generated fenOf history
-    } yield
-      Puzzle.make(
-        gameId = id.some,
-        history = position.trim.split(' ').toList,
-        fen = fen,
-        lines = lines)
+    } yield Puzzle.make(
+      gameId = id.some,
+      history = position.trim.split(' ').toList,
+      fen = fen,
+      lines = lines)
 }
 
 object Generated {

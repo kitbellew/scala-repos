@@ -133,7 +133,7 @@ trait JdbcBackend extends RelationalBackend {
         executor: AsyncExecutor = AsyncExecutor.default(),
         keepAliveConnection: Boolean = false,
         classLoader: ClassLoader = ClassLoaderUtil.defaultClassLoader)
-      : DatabaseDef =
+        : DatabaseDef =
       forDataSource(
         new DriverDataSource(
           url,
@@ -320,7 +320,7 @@ trait JdbcBackend extends RelationalBackend {
         config: Config = ConfigFactory.load(),
         driver: Driver = null,
         classLoader: ClassLoader = ClassLoaderUtil.defaultClassLoader)
-      : Database = {
+        : Database = {
       val usedConfig = if (path.isEmpty) config else config.getConfig(path)
       val source =
         JdbcDataSource.forConfig(usedConfig, driver, path, classLoader)
@@ -350,7 +350,7 @@ trait JdbcBackend extends RelationalBackend {
         defaultType: ResultSetType = ResultSetType.ForwardOnly,
         defaultConcurrency: ResultSetConcurrency = ResultSetConcurrency.ReadOnly,
         defaultHoldability: ResultSetHoldability = ResultSetHoldability.Default)
-      : PreparedStatement = {
+        : PreparedStatement = {
       JdbcBackend.logStatement("Preparing statement", sql)
       val s = loggingPreparedStatement(
         decorateStatement(
@@ -377,7 +377,7 @@ trait JdbcBackend extends RelationalBackend {
     final def prepareInsertStatement(
         sql: String,
         columnNames: Array[String] = new Array[String](0))
-      : PreparedStatement = {
+        : PreparedStatement = {
       if (JdbcBackend.statementLogger.isDebugEnabled)
         JdbcBackend.logStatement(
           "Preparing insert statement (returning: " +
@@ -407,7 +407,7 @@ trait JdbcBackend extends RelationalBackend {
         defaultType: ResultSetType = ResultSetType.ForwardOnly,
         defaultConcurrency: ResultSetConcurrency = ResultSetConcurrency.ReadOnly,
         defaultHoldability: ResultSetHoldability = ResultSetHoldability.Default)
-      : Statement = {
+        : Statement = {
       val s = loggingStatement(
         decorateStatement(
           resultSetHoldability.withDefault(defaultHoldability) match {
@@ -574,7 +574,7 @@ trait JdbcBackend extends RelationalBackend {
 
   trait JdbcActionContext extends BasicActionContext {
     private[JdbcBackend] var statementParameters
-      : List[JdbcBackend.StatementParameters] = null
+        : List[JdbcBackend.StatementParameters] = null
 
     def pushStatementParameters(p: JdbcBackend.StatementParameters): Unit = {
       val p2 =

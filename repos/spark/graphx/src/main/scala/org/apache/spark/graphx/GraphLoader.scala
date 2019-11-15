@@ -61,7 +61,7 @@ object GraphLoader extends Logging {
       numEdgePartitions: Int = -1,
       edgeStorageLevel: StorageLevel = StorageLevel.MEMORY_ONLY,
       vertexStorageLevel: StorageLevel = StorageLevel.MEMORY_ONLY)
-    : Graph[Int, Int] = {
+      : Graph[Int, Int] = {
     val startTime = System.currentTimeMillis
 
     // Parse the edge data table directly into edge partitions

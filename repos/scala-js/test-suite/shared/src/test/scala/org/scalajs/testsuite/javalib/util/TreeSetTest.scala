@@ -208,7 +208,7 @@ abstract class TreeSetTest(val factory: TreeSetFactory)
   }
 
   @Test def should_check_contained_values_even_in_double_corner_cases()
-    : Unit = {
+      : Unit = {
     val ts = factory.empty[Double]
 
     assertTrue(ts.add(11111.0))
@@ -261,7 +261,7 @@ abstract class TreeSetTest(val factory: TreeSetFactory)
   }
 
   @Test def should_not_put_a_whole_Collection_with_null_elements_into()
-    : Unit = {
+      : Unit = {
     val l = List[String]("ONE", "TWO", (null: String))
     val ts1 = factory.empty[String]
 

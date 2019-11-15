@@ -33,7 +33,7 @@ import org.apache.spark.util.StatCounter
   */
 @Since("1.6.0")
 @BeanInfo
-case class BinarySample @Since("1.6.0")(
+case class BinarySample @Since("1.6.0") (
     @Since("1.6.0") isExperiment: Boolean,
     @Since("1.6.0") value: Double) {
   override def toString: String = {
@@ -69,7 +69,7 @@ case class BinarySample @Since("1.6.0")(
   */
 @Experimental
 @Since("1.6.0")
-class StreamingTest @Since("1.6.0")() extends Logging with Serializable {
+class StreamingTest @Since("1.6.0") () extends Logging with Serializable {
   private var peacePeriod: Int = 0
   private var windowSize: Int = 0
   private var testMethod: StreamingTestMethod = WelchTTest
@@ -171,7 +171,7 @@ class StreamingTest @Since("1.6.0")() extends Logging with Serializable {
     */
   private[stat] def pairSummaries(
       summarizedData: DStream[(Boolean, StatCounter)])
-    : DStream[(StatCounter, StatCounter)] = {
+      : DStream[(StatCounter, StatCounter)] = {
     summarizedData
       .map[(Int, StatCounter)](x => (0, x._2))
       .groupByKey() // should be length two (control/experiment group)

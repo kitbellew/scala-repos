@@ -170,7 +170,7 @@ sealed abstract class CoyonedaInstances3 extends CoyonedaInstances4 {
 
 sealed abstract class CoyonedaInstances4 extends CoyonedaInstances5 {
   implicit def coyonedaApplicativePlus[F[_]: ApplicativePlus]
-    : ApplicativePlus[Coyoneda[F, ?]] =
+      : ApplicativePlus[Coyoneda[F, ?]] =
     new IsomorphismApplicativePlus[Coyoneda[F, ?], F] {
       def G = implicitly
       def iso = Coyoneda.iso
@@ -185,7 +185,7 @@ sealed abstract class CoyonedaInstances5 extends CoyonedaInstances6 {
     }
 
   implicit def coyonedaPlusEmpty[F[_]: PlusEmpty: Functor]
-    : PlusEmpty[Coyoneda[F, ?]] =
+      : PlusEmpty[Coyoneda[F, ?]] =
     new IsomorphismEmpty[Coyoneda[F, ?], F] {
       def G = implicitly
       def iso = Coyoneda.iso
@@ -208,7 +208,7 @@ sealed abstract class CoyonedaInstances6 extends CoyonedaInstances7 {
 
 sealed abstract class CoyonedaInstances7 extends CoyonedaInstances8 {
   implicit def coyonedaApplicative[F[_]: Applicative]
-    : Applicative[Coyoneda[F, ?]] =
+      : Applicative[Coyoneda[F, ?]] =
     new IsomorphismApplicative[Coyoneda[F, ?], F] {
       def G = implicitly
       def iso = Coyoneda.iso
@@ -234,7 +234,7 @@ sealed abstract class CoyonedaInstances9 extends CoyonedaInstances10 {
     }
 
   implicit def coyonedaContravariant[F[_]: Contravariant: Functor]
-    : Contravariant[Coyoneda[F, ?]] =
+      : Contravariant[Coyoneda[F, ?]] =
     new IsomorphismContravariant[Coyoneda[F, ?], F] {
       def G = implicitly
       def iso = Coyoneda.iso

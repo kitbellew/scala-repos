@@ -40,7 +40,7 @@ object Files {
     * is deleted when the application stops.
     */
   @Singleton
-  class DefaultTemporaryFileCreator @Inject()(
+  class DefaultTemporaryFileCreator @Inject() (
       applicationLifecycle: ApplicationLifecycle)
       extends TemporaryFileCreator {
     private lazy val playTempFolder = JFiles.createTempDirectory("playtemp")

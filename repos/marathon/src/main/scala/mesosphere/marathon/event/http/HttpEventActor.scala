@@ -46,7 +46,7 @@ object HttpEventActor {
       event: MarathonEvent,
       subscribers: EventSubscribers)
 
-  class HttpEventActorMetrics @Inject()(metrics: Metrics) {
+  class HttpEventActorMetrics @Inject() (metrics: Metrics) {
     private val pre = MetricPrefixes.SERVICE
     private val clazz = classOf[HttpEventActor]
     // the number of requests that are open without response

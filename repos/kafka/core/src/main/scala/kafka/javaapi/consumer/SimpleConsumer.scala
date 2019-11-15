@@ -69,7 +69,7 @@ class SimpleConsumer(
     *  @return metadata for each topic in the request.
     */
   def send(request: kafka.javaapi.TopicMetadataRequest)
-    : kafka.javaapi.TopicMetadataResponse = {
+      : kafka.javaapi.TopicMetadataResponse = {
     import kafka.javaapi.Implicits._
     underlying.send(request.underlying)
   }
@@ -91,7 +91,7 @@ class SimpleConsumer(
     * @return a [[kafka.javaapi.OffsetCommitResponse]] object.
     */
   def commitOffsets(request: kafka.javaapi.OffsetCommitRequest)
-    : kafka.javaapi.OffsetCommitResponse = {
+      : kafka.javaapi.OffsetCommitResponse = {
     import kafka.javaapi.Implicits._
     underlying.commitOffsets(request.underlying)
   }
@@ -102,7 +102,7 @@ class SimpleConsumer(
     * @return a [[kafka.javaapi.OffsetFetchResponse]] object.
     */
   def fetchOffsets(request: kafka.javaapi.OffsetFetchRequest)
-    : kafka.javaapi.OffsetFetchResponse = {
+      : kafka.javaapi.OffsetFetchResponse = {
     import kafka.javaapi.Implicits._
     underlying.fetchOffsets(request.underlying)
   }

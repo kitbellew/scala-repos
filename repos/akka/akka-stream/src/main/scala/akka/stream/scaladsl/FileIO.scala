@@ -59,7 +59,7 @@ object FileIO {
     * @param options File open options, defaults to Set(WRITE, CREATE)
     */
   def toFile(f: File, options: Set[StandardOpenOption] = Set(WRITE, CREATE))
-    : Sink[ByteString, Future[IOResult]] =
+      : Sink[ByteString, Future[IOResult]] =
     new Sink(
       new FileSink(
         f,

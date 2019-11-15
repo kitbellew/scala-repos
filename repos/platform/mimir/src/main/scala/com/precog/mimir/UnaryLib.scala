@@ -27,7 +27,7 @@ import yggdrasil.table._
 
 import TransSpecModule._
 
-trait UnaryLibModule[M[+ _]] extends ColumnarTableLibModule[M] {
+trait UnaryLibModule[M[+_]] extends ColumnarTableLibModule[M] {
   trait UnaryLib extends ColumnarTableLib {
     import trans._
     import StdLib.{

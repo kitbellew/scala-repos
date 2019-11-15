@@ -208,7 +208,7 @@ object EvaluateConfigurations {
     p.copy(base = IO.resolve(f, p.base))
   @deprecated("Will no longer be public.", "0.13.6")
   def flatten(mksettings: Seq[ClassLoader => Seq[Setting[_]]])
-    : ClassLoader => Seq[Setting[_]] =
+      : ClassLoader => Seq[Setting[_]] =
     loader => mksettings.flatMap(_ apply loader)
   def addOffset(offset: Int, lines: Seq[(String, Int)]): Seq[(String, Int)] =
     lines.map { case (s, i) => (s, i + offset) }
@@ -361,7 +361,7 @@ object EvaluateConfigurations {
   }
 
   private[this] def splitSettingsDefinitions(lines: Seq[(String, LineRange)])
-    : (Seq[(String, LineRange)], Seq[(String, LineRange)]) =
+      : (Seq[(String, LineRange)], Seq[(String, LineRange)]) =
     lines partition { case (line, range) => isDefinition(line) }
   private[this] def isDefinition(line: String): Boolean = {
     val trimmed = line.trim
@@ -394,12 +394,12 @@ object Index {
   def taskToKeyMap(data: Settings[Scope]): Map[Task[_], ScopedKey[Task[_]]] = {
     // AttributeEntry + the checked type test 'value: Task[_]' ensures that the cast is correct.
     //  (scalac couldn't determine that 'key' is of type AttributeKey[Task[_]] on its own and a type match still required the cast)
-    val pairs = for (scope <- data.scopes;
-                     AttributeEntry(key, value: Task[_]) <- data
-                       .data(scope)
-                       .entries)
-      yield
-        (value, ScopedKey(scope, key.asInstanceOf[AttributeKey[Task[_]]])) // unclear why this cast is needed even with a type test in the above filter
+    val pairs =
+      for (scope <- data.scopes;
+           AttributeEntry(key, value: Task[_]) <- data
+             .data(scope)
+             .entries)
+        yield (value, ScopedKey(scope, key.asInstanceOf[AttributeKey[Task[_]]])) // unclear why this cast is needed even with a type test in the above filter
     pairs.toMap[Task[_], ScopedKey[Task[_]]]
   }
   def allKeys(settings: Seq[Setting[_]]): Set[ScopedKey[_]] =

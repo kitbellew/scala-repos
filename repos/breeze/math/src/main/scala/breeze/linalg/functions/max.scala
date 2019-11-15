@@ -18,7 +18,7 @@ object max
   @expand
   @expand.valify
   implicit def maxImpl2[@expand.args(Int, Double, Float, Long) T]
-    : Impl2[T, T, T] =
+      : Impl2[T, T, T] =
     new Impl2[T, T, T] {
       def apply(t1: T, t2: T): T = scala.math.max(t1, t2)
     }
@@ -26,7 +26,7 @@ object max
   @expand
   @expand.valify
   implicit def maxImpl3[@expand.args(Int, Double, Float, Long) T]
-    : Impl3[T, T, T, T] =
+      : Impl3[T, T, T, T] =
     new Impl3[T, T, T, T] {
       def apply(t1: T, t2: T, t3: T): T =
         scala.math.max(scala.math.max(t1, t2), t3)
@@ -145,7 +145,7 @@ object min extends UFunc {
   @expand
   @expand.valify
   implicit def minImpl2[@expand.args(Int, Double, Float, Long) T]
-    : Impl2[T, T, T] =
+      : Impl2[T, T, T] =
     new Impl2[T, T, T] {
       def apply(t1: T, t2: T): T = scala.math.min(t1, t2)
     }
@@ -153,7 +153,7 @@ object min extends UFunc {
   @expand
   @expand.valify
   implicit def minImpl3[@expand.args(Int, Double, Float, Long) T]
-    : Impl3[T, T, T, T] =
+      : Impl3[T, T, T, T] =
     new Impl3[T, T, T, T] {
       def apply(t1: T, t2: T, t3: T): T =
         scala.math.min(scala.math.min(t1, t2), t3)

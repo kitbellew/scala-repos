@@ -274,7 +274,7 @@ class HashVectorOps_FloatTest
   override val TOL: Double = 1e-2
   val N = 30
   implicit def genTriple
-    : Arbitrary[(HashVector[Float], HashVector[Float], HashVector[Float])] = {
+      : Arbitrary[(HashVector[Float], HashVector[Float], HashVector[Float])] = {
     Arbitrary {
       for {
         x <- Arbitrary.arbitrary[Float].map { _ % 100 }
@@ -310,7 +310,7 @@ class HashVectorOps_IntTest
 
   val N = 100
   implicit def genTriple
-    : Arbitrary[(HashVector[Int], HashVector[Int], HashVector[Int])] = {
+      : Arbitrary[(HashVector[Int], HashVector[Int], HashVector[Int])] = {
     Arbitrary {
       for {
         x <- Arbitrary.arbitrary[Int].map { _ % 100 }

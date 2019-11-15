@@ -38,7 +38,7 @@ private[prediction] class FakeEngine
   }
 
   def eval(sc: SparkContext, engineParams: EngineParams, params: WorkflowParams)
-    : Seq[(EmptyParams, RDD[(EmptyParams, EmptyParams, EmptyParams)])] = {
+      : Seq[(EmptyParams, RDD[(EmptyParams, EmptyParams, EmptyParams)])] = {
     return Seq[(EmptyParams, RDD[(EmptyParams, EmptyParams, EmptyParams)])]()
   }
 }

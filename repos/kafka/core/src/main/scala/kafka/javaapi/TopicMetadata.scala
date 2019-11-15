@@ -22,14 +22,14 @@ import scala.collection.JavaConversions
 private[javaapi] object MetadataListImplicits {
   implicit def toJavaTopicMetadataList(
       topicMetadataSeq: Seq[kafka.api.TopicMetadata])
-    : java.util.List[kafka.javaapi.TopicMetadata] = {
+      : java.util.List[kafka.javaapi.TopicMetadata] = {
     import JavaConversions._
     topicMetadataSeq.map(new kafka.javaapi.TopicMetadata(_))
   }
 
   implicit def toPartitionMetadataList(
       partitionMetadataSeq: Seq[kafka.api.PartitionMetadata])
-    : java.util.List[kafka.javaapi.PartitionMetadata] = {
+      : java.util.List[kafka.javaapi.PartitionMetadata] = {
     import JavaConversions._
     partitionMetadataSeq.map(new kafka.javaapi.PartitionMetadata(_))
   }

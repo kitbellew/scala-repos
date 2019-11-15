@@ -45,7 +45,7 @@ object SecurityHeadersFilter {
     * @return a configured SecurityHeadersFilter.
     */
   def apply(config: SecurityHeadersConfig = SecurityHeadersConfig())
-    : SecurityHeadersFilter = {
+      : SecurityHeadersFilter = {
     new SecurityHeadersFilter(config)
   }
 
@@ -93,7 +93,7 @@ case class SecurityHeadersConfig(
     copy(contentTypeOptions = contentTypeOptions.asScala)
   def withPermittedCrossDomainPolicies(
       permittedCrossDomainPolicies: ju.Optional[String])
-    : SecurityHeadersConfig =
+      : SecurityHeadersConfig =
     copy(permittedCrossDomainPolicies = permittedCrossDomainPolicies.asScala)
   def withContentSecurityPolicy(
       contentSecurityPolicy: ju.Optional[String]): SecurityHeadersConfig =
@@ -125,7 +125,7 @@ object SecurityHeadersConfig {
   * method on the companion singleton for convenience.
   */
 @Singleton
-class SecurityHeadersFilter @Inject()(config: SecurityHeadersConfig)
+class SecurityHeadersFilter @Inject() (config: SecurityHeadersConfig)
     extends EssentialFilter {
   import SecurityHeadersFilter._
 
@@ -156,7 +156,7 @@ class SecurityHeadersFilter @Inject()(config: SecurityHeadersConfig)
   * Provider for security headers configuration.
   */
 @Singleton
-class SecurityHeadersConfigProvider @Inject()(configuration: Configuration)
+class SecurityHeadersConfigProvider @Inject() (configuration: Configuration)
     extends Provider[SecurityHeadersConfig] {
   lazy val get = SecurityHeadersConfig.fromConfiguration(configuration)
 }

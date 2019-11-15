@@ -272,6 +272,6 @@ class JavaErrorHandler extends CSRFErrorHandler {
     CompletableFuture.completedFuture(play.mvc.Results.unauthorized())
 }
 
-class CsrfFilters @Inject()(filter: CSRFFilter) extends HttpFilters {
+class CsrfFilters @Inject() (filter: CSRFFilter) extends HttpFilters {
   def filters = Seq(filter)
 }

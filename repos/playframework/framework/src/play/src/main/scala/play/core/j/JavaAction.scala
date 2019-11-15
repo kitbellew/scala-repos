@@ -171,7 +171,7 @@ trait JavaHandlerComponents {
 /**
   * The components necessary to handle a Java handler.
   */
-class DefaultJavaHandlerComponents @Inject()(
+class DefaultJavaHandlerComponents @Inject() (
     injector: Injector,
     val actionCreator: play.http.ActionCreator)
     extends JavaHandlerComponents {

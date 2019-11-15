@@ -1079,7 +1079,7 @@ class GroupCoordinatorResponseTest extends JUnitSuite {
   }
 
   private def setupJoinGroupCallback
-    : (Future[JoinGroupResult], JoinGroupCallback) = {
+      : (Future[JoinGroupResult], JoinGroupCallback) = {
     val responsePromise = Promise[JoinGroupResult]
     val responseFuture = responsePromise.future
     val responseCallback: JoinGroupCallback = responsePromise.success(_)
@@ -1087,7 +1087,7 @@ class GroupCoordinatorResponseTest extends JUnitSuite {
   }
 
   private def setupSyncGroupCallback
-    : (Future[SyncGroupCallbackParams], SyncGroupCallback) = {
+      : (Future[SyncGroupCallbackParams], SyncGroupCallback) = {
     val responsePromise = Promise[SyncGroupCallbackParams]
     val responseFuture = responsePromise.future
     val responseCallback: SyncGroupCallback = (assignment, errorCode) =>
@@ -1096,7 +1096,7 @@ class GroupCoordinatorResponseTest extends JUnitSuite {
   }
 
   private def setupHeartbeatCallback
-    : (Future[HeartbeatCallbackParams], HeartbeatCallback) = {
+      : (Future[HeartbeatCallbackParams], HeartbeatCallback) = {
     val responsePromise = Promise[HeartbeatCallbackParams]
     val responseFuture = responsePromise.future
     val responseCallback: HeartbeatCallback = errorCode =>
@@ -1105,7 +1105,7 @@ class GroupCoordinatorResponseTest extends JUnitSuite {
   }
 
   private def setupCommitOffsetsCallback
-    : (Future[CommitOffsetCallbackParams], CommitOffsetCallback) = {
+      : (Future[CommitOffsetCallbackParams], CommitOffsetCallback) = {
     val responsePromise = Promise[CommitOffsetCallbackParams]
     val responseFuture = responsePromise.future
     val responseCallback: CommitOffsetCallback = offsets =>
@@ -1143,7 +1143,7 @@ class GroupCoordinatorResponseTest extends JUnitSuite {
     val (responseFuture, responseCallback) = setupSyncGroupCallback
 
     val capturedArgument
-      : Capture[Map[TopicPartition, PartitionResponse] => Unit] =
+        : Capture[Map[TopicPartition, PartitionResponse] => Unit] =
       EasyMock.newCapture()
 
     EasyMock
@@ -1261,11 +1261,11 @@ class GroupCoordinatorResponseTest extends JUnitSuite {
       consumerId: String,
       generationId: Int,
       offsets: immutable.Map[TopicPartition, OffsetAndMetadata])
-    : CommitOffsetCallbackParams = {
+      : CommitOffsetCallbackParams = {
     val (responseFuture, responseCallback) = setupCommitOffsetsCallback
 
     val capturedArgument
-      : Capture[Map[TopicPartition, PartitionResponse] => Unit] =
+        : Capture[Map[TopicPartition, PartitionResponse] => Unit] =
       EasyMock.newCapture()
 
     EasyMock

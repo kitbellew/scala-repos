@@ -51,7 +51,7 @@ import org.scalacheck.Arbitrary._
 import TableModule._
 import TableModule.paths._
 
-trait BlockStoreColumnarTableModuleSpec[M[+ _]]
+trait BlockStoreColumnarTableModuleSpec[M[+_]]
     extends TableModuleSpec[M]
     with BlockLoadSpec[M]
     with BlockSortSpec[M]

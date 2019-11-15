@@ -222,7 +222,7 @@ private[yarn] class LocalityPreferredContainerPlacementStrategy(
     */
   private def pendingHostToContainerCount(
       localityMatchedPendingAllocations: Seq[ContainerRequest])
-    : Map[String, Double] = {
+      : Map[String, Double] = {
     val pendingHostToContainerCount = new HashMap[String, Int]()
     localityMatchedPendingAllocations.foreach { cr =>
       cr.getNodes.asScala.foreach { n =>

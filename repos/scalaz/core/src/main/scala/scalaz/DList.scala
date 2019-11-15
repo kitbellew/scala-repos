@@ -109,8 +109,11 @@ sealed abstract class DListInstances {
     with Traverse[DList]
     with BindRec[DList]
     with Zip[DList]
-    with IsEmpty[DList] = new MonadPlus[DList] with Traverse[DList]
-  with BindRec[DList] with Zip[DList] with IsEmpty[DList] {
+    with IsEmpty[DList] = new MonadPlus[DList]
+    with Traverse[DList]
+    with BindRec[DList]
+    with Zip[DList]
+    with IsEmpty[DList] {
     def point[A](a: => A) = DList(a)
     def bind[A, B](as: DList[A])(f: A => DList[B]) = as flatMap f
     def plus[A](a: DList[A], b: => DList[A]) = a ++ b

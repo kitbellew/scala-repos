@@ -30,7 +30,7 @@ private[v1] class AllJobsResource(ui: SparkUI) {
 
   @GET
   def jobsList(@QueryParam("status") statuses: JList[JobExecutionStatus])
-    : Seq[JobData] = {
+      : Seq[JobData] = {
     val statusToJobs: Seq[(JobExecutionStatus, Seq[JobUIData])] =
       AllJobsResource.getStatusToJobs(ui)
     val adjStatuses: JList[JobExecutionStatus] = {

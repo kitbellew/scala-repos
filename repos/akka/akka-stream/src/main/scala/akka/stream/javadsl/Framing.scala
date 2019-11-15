@@ -52,7 +52,7 @@ object Framing {
       delimiter: ByteString,
       maximumFrameLength: Int,
       allowTruncation: FramingTruncation)
-    : Flow[ByteString, ByteString, NotUsed] = {
+      : Flow[ByteString, ByteString, NotUsed] = {
     val truncationAllowed = allowTruncation == FramingTruncation.ALLOW
     scaladsl.Framing
       .delimiter(delimiter, maximumFrameLength, truncationAllowed)
@@ -124,6 +124,6 @@ object Framing {
     *                             included in this limit.
     */
   def simpleFramingProtocol(maximumMessageLength: Int)
-    : BidiFlow[ByteString, ByteString, ByteString, ByteString, NotUsed] =
+      : BidiFlow[ByteString, ByteString, ByteString, ByteString, NotUsed] =
     scaladsl.Framing.simpleFramingProtocol(maximumMessageLength).asJava
 }

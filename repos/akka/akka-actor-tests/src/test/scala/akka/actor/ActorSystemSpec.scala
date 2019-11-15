@@ -304,8 +304,9 @@ class ActorSystemSpec
     "reliably create waves of actors" in {
       import system.dispatcher
       implicit val timeout = Timeout((20 seconds).dilated)
-      val waves = for (i ← 1 to 3)
-        yield system.actorOf(Props[ActorSystemSpec.Waves]) ? 50000
+      val waves =
+        for (i ← 1 to 3)
+          yield system.actorOf(Props[ActorSystemSpec.Waves]) ? 50000
       Await.result(Future.sequence(waves), timeout.duration + 5.seconds) should ===(
         Vector("done", "done", "done"))
     }

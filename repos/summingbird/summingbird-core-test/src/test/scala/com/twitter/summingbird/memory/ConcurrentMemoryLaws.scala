@@ -148,7 +148,7 @@ class ConcurrentMemoryLaws extends WordSpec {
   }
 
   def lookupCollectChecker[T: Arbitrary: Equiv: Manifest, U: Arbitrary: Equiv]
-    : Boolean = {
+      : Boolean = {
     val mem = new ConcurrentMemory
     val input = sample[List[T]]
     val srv = sample[T => Option[U]]

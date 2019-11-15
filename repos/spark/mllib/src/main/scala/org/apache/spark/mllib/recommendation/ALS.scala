@@ -28,7 +28,7 @@ import org.apache.spark.storage.StorageLevel
   * A more compact class to represent a rating than Tuple3[Int, Int, Double].
   */
 @Since("0.8.0")
-case class Rating @Since("0.8.0")(
+case class Rating @Since("0.8.0") (
     @Since("0.8.0") user: Int,
     @Since("0.8.0") product: Int,
     @Since("0.8.0") rating: Double)

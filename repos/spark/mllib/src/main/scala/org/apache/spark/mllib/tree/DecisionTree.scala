@@ -45,7 +45,7 @@ import org.apache.spark.util.random.XORShiftRandom
   *                 categorical), depth of the tree, quantile calculation strategy, etc.
   */
 @Since("1.0.0")
-class DecisionTree @Since("1.0.0")(private val strategy: Strategy)
+class DecisionTree @Since("1.0.0") (private val strategy: Strategy)
     extends Serializable
     with Logging {
 
@@ -630,7 +630,7 @@ object DecisionTree extends Serializable with Logging {
     def binSeqOpWithNodeIdCache(
         agg: Array[DTStatsAggregator],
         dataPoint: (BaggedPoint[TreePoint], Array[Int]))
-      : Array[DTStatsAggregator] = {
+        : Array[DTStatsAggregator] = {
       treeToNodeToIndexInfo.foreach {
         case (treeIndex, nodeIndexToInfo) =>
           val baggedPoint = dataPoint._1
@@ -655,7 +655,7 @@ object DecisionTree extends Serializable with Logging {
       */
     def getNodeToFeatures(
         treeToNodeToIndexInfo: Map[Int, Map[Int, NodeIndexInfo]])
-      : Option[Map[Int, Array[Int]]] =
+        : Option[Map[Int, Array[Int]]] =
       if (!metadata.subsamplingFeatures) {
         None
       } else {
@@ -1147,7 +1147,7 @@ object DecisionTree extends Serializable with Logging {
   protected[tree] def findSplitsBins(
       input: RDD[LabeledPoint],
       metadata: DecisionTreeMetadata)
-    : (Array[Array[Split]], Array[Array[Bin]]) = {
+      : (Array[Array[Split]], Array[Array[Bin]]) = {
 
     logDebug("isMulticlass = " + metadata.isMulticlass)
 
@@ -1192,7 +1192,7 @@ object DecisionTree extends Serializable with Logging {
       input: RDD[LabeledPoint],
       metadata: DecisionTreeMetadata,
       continuousFeatures: IndexedSeq[Int])
-    : (Array[Array[Split]], Array[Array[Bin]]) = {
+      : (Array[Array[Split]], Array[Array[Bin]]) = {
     def findSplits(
         featureIndex: Int,
         featureSamples: Iterable[Double]): (Int, (Array[Split], Array[Bin])) = {

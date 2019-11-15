@@ -59,7 +59,7 @@ import scalaz.syntax.std.list._
 import scalaz.syntax.std.option._
 import scalaz.effect.IO
 
-trait InMemoryVFSModule[M[+ _]] extends VFSModule[M, Slice] { moduleSelf =>
+trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
   class Projection(slices0: Vector[Slice]) extends ProjectionLike[M, Slice] {
     type Key = Int
 
@@ -360,7 +360,7 @@ trait InMemoryVFSModule[M[+ _]] extends VFSModule[M, Slice] { moduleSelf =>
     }
 
     def writeAllSync(events: Seq[(Long, EventMessage)])
-      : EitherT[M, ResourceError, PrecogUnit] = {
+        : EitherT[M, ResourceError, PrecogUnit] = {
       EitherT.right(M.point(writeAll(events).unsafePerformIO))
     }
 

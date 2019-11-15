@@ -208,7 +208,7 @@ class JsonExporter(registry: Metrics, timer: Timer)
   }
 
   def filterSample(sample: collection.Map[String, Number])
-    : collection.Map[String, Number] = {
+      : collection.Map[String, Number] = {
     statsFilterRegex match {
       case Some(regex) => sample.filterKeys(!regex.pattern.matcher(_).matches)
       case None        => sample

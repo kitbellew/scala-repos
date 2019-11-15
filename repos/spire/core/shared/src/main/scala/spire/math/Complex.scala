@@ -679,7 +679,7 @@ trait ComplexInstances1 extends ComplexInstances0 {
 
 trait ComplexInstances extends ComplexInstances1 {
   implicit def ComplexAlgebra[@sp(Float, Double) A: Fractional: Trig: IsReal]
-    : ComplexAlgebra[A] =
+      : ComplexAlgebra[A] =
     new ComplexAlgebra[A]
 
   implicit def ComplexEq[A: Eq]: Eq[Complex[A]] = new ComplexEq[A]

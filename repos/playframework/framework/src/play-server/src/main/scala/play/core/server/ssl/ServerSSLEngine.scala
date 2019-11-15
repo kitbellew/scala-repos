@@ -107,7 +107,7 @@ object ServerSSLEngine {
       applicationProvider: ApplicationProvider): ScalaSSLEngineProvider = {
 
     var serverConfigProviderArgsConstructor
-      : Constructor[ScalaSSLEngineProvider] = null
+        : Constructor[ScalaSSLEngineProvider] = null
     var providerArgsConstructor: Constructor[ScalaSSLEngineProvider] = null
     var noArgsConstructor: Constructor[ScalaSSLEngineProvider] = null
     for (constructor <- providerClass.getConstructors) {

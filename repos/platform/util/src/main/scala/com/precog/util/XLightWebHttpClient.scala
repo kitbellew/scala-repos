@@ -30,7 +30,7 @@ import scalaz.syntax.monad._
 import scalaz.syntax.traverse._
 import scalaz.syntax.bifunctor._
 
-trait XLightWebHttpClientModule[M[+ _]] extends HttpClientModule[M] {
+trait XLightWebHttpClientModule[M[+_]] extends HttpClientModule[M] {
 
   private def liftJUCFuture[A](f: Future[A]): M[A] = M point f.get // Ugh.
 
@@ -77,7 +77,7 @@ trait XLightWebHttpClientModule[M[+ _]] extends HttpClientModule[M] {
           .sequence[M, IHttpResponse])
 
     def execute(request: Request[String])
-      : EitherT[M, HttpClientError, Response[String]] =
+        : EitherT[M, HttpClientError, Response[String]] =
       for {
         httpRequest <- EitherT(M point buildRequest(request))
         response <- execute0(httpRequest)

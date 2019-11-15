@@ -228,7 +228,7 @@ object Scope {
       configInherit: (ResolvedReference, ConfigKey) => Seq[ConfigKey],
       taskInherit: AttributeKey[_] => Seq[AttributeKey[_]],
       extraInherit: (ResolvedReference, AttributeMap) => Seq[AttributeMap])
-    : Scope => Seq[Scope] = {
+      : Scope => Seq[Scope] = {
     val index = delegates(refs, configurations, projectInherit, configInherit)
     scope =>
       indexedDelegates(resolve, index, rootProject, taskInherit, extraInherit)(
@@ -292,7 +292,7 @@ object Scope {
       configurations: Proj => Seq[ConfigKey],
       projectInherit: ProjectRef => Seq[ProjectRef],
       configInherit: (ResolvedReference, ConfigKey) => Seq[ConfigKey])
-    : DelegateIndex = {
+      : DelegateIndex = {
     val pDelegates = refs map {
       case (ref, project) =>
         (
@@ -306,7 +306,7 @@ object Scope {
   private[this] def delegateIndex(ref: ProjectRef, confs: Seq[ConfigKey])(
       projectInherit: ProjectRef => Seq[ProjectRef],
       configInherit: (ResolvedReference, ConfigKey) => Seq[ConfigKey])
-    : ProjectDelegates = {
+      : ProjectDelegates = {
     val refDelegates = withRawBuilds(
       linearize(Select(ref), false)(projectInherit))
     val configs =

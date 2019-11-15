@@ -52,8 +52,9 @@ trait ApplicationAnnotator {
           case f @ (_: ScFunction | _: PsiMethod | _: ScSyntheticFunction) =>
             reference.getContext match {
               case genCall: ScGenericCall =>
-                val missing = for (MissedTypeParameter(p) <- r.problems)
-                  yield p.name
+                val missing =
+                  for (MissedTypeParameter(p) <- r.problems)
+                    yield p.name
                 missing match {
                   case Seq() =>
                   case as =>
@@ -86,8 +87,9 @@ trait ApplicationAnnotator {
                   //holder.createErrorAnnotation(call.argsElement, "Not applicable to " + signatureOf(f))
                 }
               case call: MethodInvocation =>
-                val missed = for (MissedValueParameter(p) <- r.problems)
-                  yield p.name + ": " + p.paramType.presentableText
+                val missed =
+                  for (MissedValueParameter(p) <- r.problems)
+                    yield p.name + ": " + p.paramType.presentableText
 
                 if (missed.nonEmpty) {
                   holder.createErrorAnnotation(
@@ -246,8 +248,9 @@ trait ApplicationAnnotator {
     }
 
     val problems = call.applicationProblems
-    val missed = for (MissedValueParameter(p) <- problems)
-      yield p.name + ": " + p.paramType.presentableText
+    val missed =
+      for (MissedValueParameter(p) <- problems)
+        yield p.name + ": " + p.paramType.presentableText
 
     if (missed.nonEmpty)
       holder.createErrorAnnotation(

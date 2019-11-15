@@ -97,26 +97,25 @@ private[round] final class Rematcher(
         case variant => variant.pieces
       }
       users <- UserRepo byIds pov.game.userIds
-    } yield
-      Game.make(
-        game = ChessGame(
-          board = Board(pieces, variant = pov.game.variant).withCastles {
-            situation.fold(Castles.init)(_.situation.board.history.castles)
-          },
-          clock = pov.game.clock map (_.reset),
-          turns = situation ?? (_.turns),
-          startedAtTurn = situation ?? (_.turns)
-        ),
-        whitePlayer = returnPlayer(pov.game, White, users),
-        blackPlayer = returnPlayer(pov.game, Black, users),
-        mode =
-          if (users.exists(_.lame)) chess.Mode.Casual
-          else pov.game.mode,
-        variant = pov.game.variant,
-        source = pov.game.source | Source.Lobby,
-        daysPerTurn = pov.game.daysPerTurn,
-        pgnImport = None
-      )
+    } yield Game.make(
+      game = ChessGame(
+        board = Board(pieces, variant = pov.game.variant).withCastles {
+          situation.fold(Castles.init)(_.situation.board.history.castles)
+        },
+        clock = pov.game.clock map (_.reset),
+        turns = situation ?? (_.turns),
+        startedAtTurn = situation ?? (_.turns)
+      ),
+      whitePlayer = returnPlayer(pov.game, White, users),
+      blackPlayer = returnPlayer(pov.game, Black, users),
+      mode =
+        if (users.exists(_.lame)) chess.Mode.Casual
+        else pov.game.mode,
+      variant = pov.game.variant,
+      source = pov.game.source | Source.Lobby,
+      daysPerTurn = pov.game.daysPerTurn,
+      pgnImport = None
+    )
 
   private def returnPlayer(
       game: Game,

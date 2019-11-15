@@ -63,7 +63,7 @@ object Profunctor {
     }
 
   implicit def downStarProfunctor[F[_]: Functor]
-    : Profunctor[DownStar[F, ?, ?]] =
+      : Profunctor[DownStar[F, ?, ?]] =
     new Profunctor[DownStar[F, ?, ?]] {
       def mapfst[A, B, C](h: DownStar[F, A, B])(f: C => A): DownStar[F, C, B] =
         DownStar(fa => Tag.unwrap(h)(Functor[F].map(fa)(f)))

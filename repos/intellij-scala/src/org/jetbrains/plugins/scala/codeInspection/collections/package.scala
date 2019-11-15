@@ -185,7 +185,7 @@ package object collections {
 
   object IfStmt {
     def unapply(expr: ScExpression)
-      : Option[(ScExpression, ScExpression, ScExpression)] = {
+        : Option[(ScExpression, ScExpression, ScExpression)] = {
       expr match {
         case ScIfStmt(Some(c), Some(stripped(tb)), Some(stripped(eb))) =>
           Some(c, tb, eb)

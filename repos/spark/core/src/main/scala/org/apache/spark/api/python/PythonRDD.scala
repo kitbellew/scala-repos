@@ -780,7 +780,7 @@ private[spark] object PythonRDD extends Logging {
       keyConverterClass: String,
       valueConverterClass: String,
       defaultConverter: Converter[Any, Any])
-    : (Converter[Any, Any], Converter[Any, Any]) = {
+      : (Converter[Any, Any], Converter[Any, Any]) = {
     val keyConverter =
       Converter.getInstance(Option(keyConverterClass), defaultConverter)
     val valueConverter =

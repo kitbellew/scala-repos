@@ -22,7 +22,7 @@ object AkkaStreams {
     * flow.
     */
   def bypassWith[In, FlowIn, Out](splitter: In => Either[FlowIn, Out])
-    : Flow[FlowIn, Out, _] => Flow[In, Out, _] = {
+      : Flow[FlowIn, Out, _] => Flow[In, Out, _] = {
     bypassWith(Flow[In].map(splitter))
   }
 
@@ -36,7 +36,7 @@ object AkkaStreams {
       splitter: Flow[In, Either[FlowIn, Out], _],
       mergeStrategy: Graph[UniformFanInShape[Out, Out], _] =
         onlyFirstCanFinishMerge[Out](2))
-    : Flow[FlowIn, Out, _] => Flow[In, Out, _] = { flow =>
+      : Flow[FlowIn, Out, _] => Flow[In, Out, _] = { flow =>
     val bypasser = Flow.fromGraph(
       GraphDSL
         .create[FlowShape[Either[FlowIn, Out], Out]]() { implicit builder =>

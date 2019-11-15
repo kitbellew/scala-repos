@@ -55,7 +55,7 @@ object accumulateAndCount extends UFunc {
   implicit def reduce[T, @expand.args(Double, Complex, Float) Scalar](
       implicit iter: CanTraverseValues[T, Scalar],
       @expand.sequence[Scalar](0.0, Complex.zero, 0.0f) zero: Scalar)
-    : Impl[T, (Scalar, Int)] = new Impl[T, (Scalar, Int)] {
+      : Impl[T, (Scalar, Int)] = new Impl[T, (Scalar, Int)] {
     def apply(v: T): (Scalar, Int) = {
       val visit = new ValuesVisitor[Scalar] {
         var sum = zero
@@ -156,7 +156,7 @@ trait DescriptiveStats {
   object variance extends UFunc {
     implicit def reduceDouble[T](
         implicit mv: meanAndVariance.Impl[T, MeanAndVariance])
-      : Impl[T, Double] = new Impl[T, Double] {
+        : Impl[T, Double] = new Impl[T, Double] {
       def apply(v: T): Double = mv(v).variance
     }
   }
@@ -179,7 +179,7 @@ trait DescriptiveStats {
 
     @expand
     implicit def reduce[@expand.args(Int, Long, Double, Float) T]
-      : Impl[DenseVector[T], T] =
+        : Impl[DenseVector[T], T] =
       new Impl[DenseVector[T], T] {
         def apply(v: DenseVector[T]): T = {
           if (isOdd(v.length)) {
@@ -196,14 +196,14 @@ trait DescriptiveStats {
 
     @expand
     implicit def reduceSeq[@expand.args(Int, Long, Double, Float) T]
-      : Impl[Seq[T], T] =
+        : Impl[Seq[T], T] =
       new Impl[Seq[T], T] {
         def apply(v: Seq[T]): T = { median(DenseVector(v.toArray)) }
       }
 
     @expand
     implicit def reduceM[@expand.args(Int, Long, Double) T]
-      : Impl[DenseMatrix[T], Double] =
+        : Impl[DenseMatrix[T], Double] =
       new Impl[DenseMatrix[T], Double] {
         def apply(m: DenseMatrix[T]) = median(m.toDenseVector)
       }
@@ -211,13 +211,13 @@ trait DescriptiveStats {
 
   object covmat extends UFunc {
     implicit val matrixCovariance
-      : Impl[DenseMatrix[Double], DenseMatrix[Double]] =
+        : Impl[DenseMatrix[Double], DenseMatrix[Double]] =
       new Impl[DenseMatrix[Double], DenseMatrix[Double]] {
         def apply(data: DenseMatrix[Double]) = cov(data)
       }
 
     implicit val sequenceCovariance
-      : Impl[Seq[DenseVector[Double]], DenseMatrix[Double]] =
+        : Impl[Seq[DenseVector[Double]], DenseMatrix[Double]] =
       new Impl[Seq[DenseVector[Double]], DenseMatrix[Double]] {
         /*
          * We roughly follow the two_pass_covariance algorithm from here: http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Covariance
@@ -267,7 +267,7 @@ trait DescriptiveStats {
   object corrcoeff extends UFunc {
     implicit def matrixCorrelation[T](
         implicit covarianceCalculator: covmat.Impl[T, DenseMatrix[Double]])
-      : Impl[T, DenseMatrix[Double]] = new Impl[T, DenseMatrix[Double]] {
+        : Impl[T, DenseMatrix[Double]] = new Impl[T, DenseMatrix[Double]] {
       def apply(data: T) = {
         val covariance = covarianceCalculator(data)
         val d = new Array[Double](covariance.rows)
@@ -294,7 +294,7 @@ trait DescriptiveStats {
     implicit def reduce[T, @expand.args(Double, Complex, Float, Int) Scalar](
         implicit iter: CanTraverseValues[T, Scalar],
         @expand.sequence[Scalar](Double.NaN, Complex.nan, 0.0f, 0) initialValue: Scalar)
-      : Impl[T, ModeResult[Scalar]] =
+        : Impl[T, ModeResult[Scalar]] =
       new Impl[T, ModeResult[Scalar]] {
         def apply(v: T): ModeResult[Scalar] = {
           val visitor = new ModeVisitor[Scalar](initialValue)
@@ -339,7 +339,7 @@ trait DescriptiveStats {
 
     @expand
     implicit def arrayVersion[@expand.args(Int, Long, Double, Float) T]
-      : Impl2[Array[T], Array[Double], Array[Int]] =
+        : Impl2[Array[T], Array[Double], Array[Int]] =
       new Impl2[Array[T], Array[Double], Array[Int]] {
         def apply(x: Array[T], bins: Array[Double]): Array[Int] = {
           val vecResult = digitize(DenseVector(x), DenseVector(bins))
@@ -349,7 +349,7 @@ trait DescriptiveStats {
 
     @expand
     implicit def vecVersion[@expand.args(Int, Long, Double, Float) T]
-      : Impl2[DenseVector[T], DenseVector[Double], DenseVector[Int]] =
+        : Impl2[DenseVector[T], DenseVector[Double], DenseVector[Int]] =
       new Impl2[DenseVector[T], DenseVector[Double], DenseVector[Int]] {
         def apply(
             x: DenseVector[T],
@@ -398,7 +398,7 @@ trait DescriptiveStats {
 
     @expand
     implicit def vecVersion[@expand.args(Double, Complex, Float) T]
-      : Impl2[DenseVector[Int], DenseVector[T], DenseVector[T]] =
+        : Impl2[DenseVector[Int], DenseVector[T], DenseVector[T]] =
       new Impl2[DenseVector[Int], DenseVector[T], DenseVector[T]] {
         def apply(
             x: DenseVector[Int],
@@ -444,7 +444,7 @@ trait DescriptiveStats {
 
       @expand
       implicit def vecVersion[@expand.args(Double, Complex, Float) T]
-        : Impl2[DenseVector[Int], DenseVector[T], SparseVector[T]] =
+          : Impl2[DenseVector[Int], DenseVector[T], SparseVector[T]] =
         new Impl2[DenseVector[Int], DenseVector[T], SparseVector[T]] {
           def apply(
               x: DenseVector[Int],
@@ -462,7 +462,7 @@ trait DescriptiveStats {
         }
 
       implicit def reduce[T](implicit iter: CanTraverseValues[T, Int])
-        : Impl[T, SparseVector[Int]] =
+          : Impl[T, SparseVector[Int]] =
         new Impl[T, SparseVector[Int]] {
           def apply(x: T): SparseVector[Int] = {
             require(min(x) >= 0)

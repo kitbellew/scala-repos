@@ -79,9 +79,8 @@ class CoreBTypes[BTFS <: BTypesFromSymbols[_ <: Global]](val bTypes: BTFS) {
     */
   lazy val boxResultType: Map[Symbol, ClassBType] = {
     for ((valueClassSym, boxMethodSym) <- currentRun.runDefinitions.boxMethod)
-      yield
-        boxMethodSym -> boxedClassOfPrimitive(
-          primitiveTypeToBType(valueClassSym))
+      yield boxMethodSym -> boxedClassOfPrimitive(
+        primitiveTypeToBType(valueClassSym))
   }
 
   /**
@@ -117,7 +116,7 @@ class CoreBTypes[BTFS <: BTypesFromSymbols[_ <: Global]](val bTypes: BTFS) {
     JavaCharSequenceClass)
   lazy val jlThrowableRef: ClassBType = classBTypeFromSymbol(ThrowableClass)
   lazy val jlCloneableRef
-    : ClassBType = classBTypeFromSymbol(JavaCloneableClass) // java/lang/Cloneable
+      : ClassBType = classBTypeFromSymbol(JavaCloneableClass) // java/lang/Cloneable
   lazy val jiSerializableRef: ClassBType = classBTypeFromSymbol(
     JavaSerializableClass) // java/io/Serializable
   lazy val jlClassCastExceptionRef: ClassBType = classBTypeFromSymbol(
@@ -133,7 +132,7 @@ class CoreBTypes[BTFS <: BTypesFromSymbols[_ <: Global]](val bTypes: BTFS) {
   lazy val jliMethodHandlesRef: ClassBType = classBTypeFromSymbol(
     requiredClass[java.lang.invoke.MethodHandles])
   lazy val jliMethodHandlesLookupRef
-    : ClassBType = classBTypeFromSymbol(exitingPickler(getRequiredClass(
+      : ClassBType = classBTypeFromSymbol(exitingPickler(getRequiredClass(
     "java.lang.invoke.MethodHandles.Lookup"))) // didn't find a reliable non-stringly-typed way that works for inner classes in the backend
   lazy val jliMethodTypeRef: ClassBType = classBTypeFromSymbol(
     requiredClass[java.lang.invoke.MethodType])

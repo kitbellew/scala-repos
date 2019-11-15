@@ -73,7 +73,7 @@ object UnboxedBenchmark extends App {
   def createFakePR(
       len: Long,
       converter: ResultConverter[JdbcResultConverterDomain, _])
-    : PositionedResultIterator[Any] = {
+      : PositionedResultIterator[Any] = {
     val fakeRS = new DelegateResultSet(null) {
       var count: Long = 0
       var lastIndex: Int = 0

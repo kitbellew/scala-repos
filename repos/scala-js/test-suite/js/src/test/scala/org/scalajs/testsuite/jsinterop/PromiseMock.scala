@@ -209,7 +209,7 @@ object PromiseMock {
     def `then`[B](
         onFulfilled: js.Function1[A, B | Thenable[B]],
         onRejected: js.UndefOr[js.Function1[scala.Any, B | Thenable[B]]])
-      : MockPromise[B] = {
+        : MockPromise[B] = {
 
       new MockPromise[B]({
         (
@@ -252,14 +252,14 @@ object PromiseMock {
     def `then`[B >: A](
         onFulfilled: Unit,
         onRejected: js.UndefOr[js.Function1[scala.Any, B | Thenable[B]]])
-      : MockPromise[B] = {
+        : MockPromise[B] = {
       `then`((x: A) => (x: B | Thenable[B]), onRejected)
     }
 
     // 25.4.5.1 Promise.prototype.catch
     def `catch`[B >: A](
         onRejected: js.UndefOr[js.Function1[scala.Any, B | Thenable[B]]])
-      : MockPromise[B] = {
+        : MockPromise[B] = {
       `then`((), onRejected)
     }
   }

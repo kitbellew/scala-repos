@@ -624,8 +624,8 @@ class SecurityServiceSpec
           user1.apiKey,
           user1Grant.grantId)
         afterDelete = jgs.deserialize[Set[v1.GrantDetails]]
-      } yield
-        !afterDelete.exists(_.grantId == details.grantId)) must awaited(to) {
+      } yield !afterDelete.exists(_.grantId == details.grantId)) must awaited(
+        to) {
         beTrue
       }
     }

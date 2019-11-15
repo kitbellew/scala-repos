@@ -47,7 +47,6 @@ class Tutorial3(args: Args) extends Job(args) {
   val output = TextLine("tutorial/data/output3.txt")
 
   input.read
-
   /**
     flatMap is like map, but instead of returning a single item from the
     function, we return a collection of items. Each of these items will create
@@ -56,7 +55,6 @@ class Tutorial3(args: Args) extends Job(args) {
     .flatMap('line -> 'word) { line: String =>
       line.split("\\s")
     }
-
     /**
     We still want to project just the 'word field for our final output.
     For interest, though, let's stash a copy of the data before we do that.

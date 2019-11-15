@@ -189,7 +189,7 @@ object expand {
   private def solveSequence(context: Context)(
       v: context.mirror.universe.ValDef,
       typeMappings: Map[context.Name, List[context.Type]])
-    : (context.Name, Map[context.Type, context.Tree]) = {
+      : (context.Name, Map[context.Type, context.Tree]) = {
     import context.mirror.universe._
     val x = v.mods.annotations.collectFirst {
       case x @ q"new expand.sequence[${Ident(nme2)}](...$args)" =>

@@ -413,7 +413,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
           "Usage: :phase <expr> (e.g. typer, erasure.next, erasure+3)"
         case ph =>
           "Active phase is '%s'.  (To clear, :phase clear)".format(phased.get)
-      } else {
+      }
+    else {
       val what = phased.parse(name)
       if (what.isEmpty || !phased.set(what))
         "'" + name + "' does not appear to represent a valid phase."

@@ -10,7 +10,7 @@ trait MapSub {
   /** Evidence on key needed to construct new maps. */
   type BuildKeyConstraint[K]
   protected implicit def buildXMap[K, V, K2: BuildKeyConstraint, V2]
-    : CanBuildFrom[XMap[K, V], (K2, V2), XMap[K2, V2]]
+      : CanBuildFrom[XMap[K, V], (K2, V2), XMap[K2, V2]]
 
   /** How `MapLike#updated` might be typed in a sane world.  A world
     * that embraced higher kinds, instead of shunning them.
@@ -96,8 +96,11 @@ trait MapSubInstances extends MapSubInstances0 with MapSubFunctions {
     with IsEmpty[XMap[K, ?]]
     with Bind[XMap[K, ?]]
     with Align[XMap[K, ?]] =
-    new Traverse[XMap[K, ?]] with IsEmpty[XMap[K, ?]] with Bind[XMap[K, ?]]
-    with MapFoldable[K] with Align[XMap[K, ?]] {
+    new Traverse[XMap[K, ?]]
+      with IsEmpty[XMap[K, ?]]
+      with Bind[XMap[K, ?]]
+      with MapFoldable[K]
+      with Align[XMap[K, ?]] {
       def empty[V] = fromSeq[K, V]()
       def plus[V](a: XMap[K, V], b: => XMap[K, V]) = a ++ b
       def isEmpty[V](fa: XMap[K, V]) = fa.isEmpty
@@ -135,7 +138,7 @@ trait MapSubInstances extends MapSubInstances0 with MapSubFunctions {
 
   /** Map union monoid, unifying values with `V`'s `append`. */
   implicit def mapMonoid[K: BuildKeyConstraint, V: Semigroup]
-    : Monoid[XMap[K, V]] =
+      : Monoid[XMap[K, V]] =
     new Monoid[XMap[K, V]] {
       def zero = fromSeq[K, V]()
       def append(m1: XMap[K, V], m2: => XMap[K, V]) = {

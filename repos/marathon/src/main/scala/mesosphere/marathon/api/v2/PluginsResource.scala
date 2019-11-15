@@ -21,7 +21,7 @@ import mesosphere.marathon.plugin.http.{
 }
 
 @Path("v2/plugins")
-class PluginsResource @Inject()(
+class PluginsResource @Inject() (
     val config: MarathonConf,
     requestHandlers: Seq[HttpRequestHandler],
     definitions: PluginDefinitions)

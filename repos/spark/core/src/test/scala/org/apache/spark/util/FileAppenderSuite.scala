@@ -290,7 +290,7 @@ class FileAppenderSuite extends SparkFunSuite with BeforeAndAfter with Logging {
 
     val testOutputStream = new PipedOutputStream()
     val testInputStream = new PipedInputStream(testOutputStream)
-    with LatchedInputStream
+      with LatchedInputStream
 
     // Close the stream before appender tries to read will cause an IOException
     testInputStream.close()

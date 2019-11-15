@@ -547,16 +547,19 @@ object Conformance {
 
     override def visitStdType(x: StdType) {
       var rightVisitor: ScalaTypeVisitor = new ValDesignatorSimplification
-      with UndefinedSubstVisitor with AbstractVisitor
-      with ParameterizedAbstractVisitor {}
+        with UndefinedSubstVisitor
+        with AbstractVisitor
+        with ParameterizedAbstractVisitor {}
       r.visitType(rightVisitor)
       if (result != null) return
 
       checkEquiv()
       if (result != null) return
 
-      rightVisitor = new ExistentialSimplification with SkolemizeVisitor
-      with ParameterizedSkolemizeVisitor with OtherNonvalueTypesVisitor {}
+      rightVisitor = new ExistentialSimplification
+        with SkolemizeVisitor
+        with ParameterizedSkolemizeVisitor
+        with OtherNonvalueTypesVisitor {}
       r.visitType(rightVisitor)
       if (result != null) return
 
@@ -606,13 +609,16 @@ object Conformance {
       r.visitType(rightVisitor)
       if (result != null) return
 
-      rightVisitor = new ThisVisitor with DesignatorVisitor
-      with ParameterizedAliasVisitor {}
+      rightVisitor = new ThisVisitor
+        with DesignatorVisitor
+        with ParameterizedAliasVisitor {}
       r.visitType(rightVisitor)
       if (result != null) return
 
-      rightVisitor = new AliasDesignatorVisitor with CompoundTypeVisitor
-      with ExistentialVisitor with ProjectionVisitor {}
+      rightVisitor = new AliasDesignatorVisitor
+        with CompoundTypeVisitor
+        with ExistentialVisitor
+        with ProjectionVisitor {}
       r.visitType(rightVisitor)
       if (result != null) return
 
@@ -662,23 +668,28 @@ object Conformance {
 
     override def visitCompoundType(c: ScCompoundType) {
       var rightVisitor: ScalaTypeVisitor = new ValDesignatorSimplification
-      with UndefinedSubstVisitor with AbstractVisitor
-      with ParameterizedAbstractVisitor {}
+        with UndefinedSubstVisitor
+        with AbstractVisitor
+        with ParameterizedAbstractVisitor {}
       r.visitType(rightVisitor)
       if (result != null) return
 
       checkEquiv()
       if (result != null) return
 
-      rightVisitor = new ExistentialSimplification with SkolemizeVisitor
-      with ParameterizedSkolemizeVisitor with OtherNonvalueTypesVisitor
-      with NothingNullVisitor with TypeParameterTypeVisitor with ThisVisitor
-      with DesignatorVisitor {}
+      rightVisitor = new ExistentialSimplification
+        with SkolemizeVisitor
+        with ParameterizedSkolemizeVisitor
+        with OtherNonvalueTypesVisitor
+        with NothingNullVisitor
+        with TypeParameterTypeVisitor
+        with ThisVisitor
+        with DesignatorVisitor {}
       r.visitType(rightVisitor)
       if (result != null) return
 
       rightVisitor = new ParameterizedAliasVisitor
-      with AliasDesignatorVisitor {}
+        with AliasDesignatorVisitor {}
       r.visitType(rightVisitor)
       if (result != null) return
 
@@ -723,23 +734,31 @@ object Conformance {
 
     override def visitProjectionType(proj: ScProjectionType) {
       var rightVisitor: ScalaTypeVisitor = new ValDesignatorSimplification
-      with UndefinedSubstVisitor with AbstractVisitor
-      with ParameterizedAbstractVisitor {}
+        with UndefinedSubstVisitor
+        with AbstractVisitor
+        with ParameterizedAbstractVisitor {}
       r.visitType(rightVisitor)
       if (result != null) return
 
       checkEquiv()
       if (result != null) return
 
-      rightVisitor = new ExistentialSimplification with SkolemizeVisitor
-      with ParameterizedSkolemizeVisitor with OtherNonvalueTypesVisitor
-      with NothingNullVisitor with TypeParameterTypeVisitor with ThisVisitor
-      with DesignatorVisitor with ParameterizedAliasVisitor {}
+      rightVisitor = new ExistentialSimplification
+        with SkolemizeVisitor
+        with ParameterizedSkolemizeVisitor
+        with OtherNonvalueTypesVisitor
+        with NothingNullVisitor
+        with TypeParameterTypeVisitor
+        with ThisVisitor
+        with DesignatorVisitor
+        with ParameterizedAliasVisitor {}
       r.visitType(rightVisitor)
       if (result != null) return
 
-      rightVisitor = new ParameterizedAliasVisitor with AliasDesignatorVisitor
-      with CompoundTypeVisitor with ProjectionVisitor {}
+      rightVisitor = new ParameterizedAliasVisitor
+        with AliasDesignatorVisitor
+        with CompoundTypeVisitor
+        with ProjectionVisitor {}
       r.visitType(rightVisitor)
       if (result != null) return
 
@@ -812,18 +831,23 @@ object Conformance {
 
     override def visitJavaArrayType(a1: JavaArrayType) {
       var rightVisitor: ScalaTypeVisitor = new ValDesignatorSimplification
-      with UndefinedSubstVisitor with AbstractVisitor
-      with ParameterizedAbstractVisitor {}
+        with UndefinedSubstVisitor
+        with AbstractVisitor
+        with ParameterizedAbstractVisitor {}
       r.visitType(rightVisitor)
       if (result != null) return
 
       checkEquiv()
       if (result != null) return
 
-      rightVisitor = new ExistentialSimplification with SkolemizeVisitor
-      with ParameterizedSkolemizeVisitor with OtherNonvalueTypesVisitor
-      with NothingNullVisitor with TypeParameterTypeVisitor with ThisVisitor
-      with DesignatorVisitor {}
+      rightVisitor = new ExistentialSimplification
+        with SkolemizeVisitor
+        with ParameterizedSkolemizeVisitor
+        with OtherNonvalueTypesVisitor
+        with NothingNullVisitor
+        with TypeParameterTypeVisitor
+        with ThisVisitor
+        with DesignatorVisitor {}
       r.visitType(rightVisitor)
       if (result != null) return
 
@@ -1060,15 +1084,18 @@ object Conformance {
         case _ =>
       }
 
-      rightVisitor = new AliasDesignatorVisitor with CompoundTypeVisitor
-      with ExistentialVisitor with ProjectionVisitor {}
+      rightVisitor = new AliasDesignatorVisitor
+        with CompoundTypeVisitor
+        with ExistentialVisitor
+        with ProjectionVisitor {}
       r.visitType(rightVisitor)
       if (result != null) return
     }
 
     override def visitParameterizedType(p: ScParameterizedType) {
       var rightVisitor: ScalaTypeVisitor = new ValDesignatorSimplification
-      with UndefinedSubstVisitor with AbstractVisitor {}
+        with UndefinedSubstVisitor
+        with AbstractVisitor {}
       r.visitType(rightVisitor)
       if (result != null) return
 
@@ -1134,8 +1161,10 @@ object Conformance {
       }
 
       rightVisitor = new ParameterizedSkolemizeVisitor
-      with OtherNonvalueTypesVisitor with NothingNullVisitor with ThisVisitor
-      with DesignatorVisitor {}
+        with OtherNonvalueTypesVisitor
+        with NothingNullVisitor
+        with ThisVisitor
+        with DesignatorVisitor {}
       r.visitType(rightVisitor)
       if (result != null) return
 
@@ -1233,7 +1262,7 @@ object Conformance {
       }
 
       rightVisitor = new ParameterizedAliasVisitor
-      with TypeParameterTypeVisitor {}
+        with TypeParameterTypeVisitor {}
       r.visitType(rightVisitor)
       if (result != null) return
 
@@ -1600,16 +1629,19 @@ object Conformance {
         case _ =>
       }
 
-      rightVisitor = new AliasDesignatorVisitor with CompoundTypeVisitor
-      with ExistentialVisitor with ProjectionVisitor {}
+      rightVisitor = new AliasDesignatorVisitor
+        with CompoundTypeVisitor
+        with ExistentialVisitor
+        with ProjectionVisitor {}
       r.visitType(rightVisitor)
       if (result != null) return
     }
 
     override def visitExistentialType(e: ScExistentialType) {
       var rightVisitor: ScalaTypeVisitor = new ValDesignatorSimplification
-      with UndefinedSubstVisitor with AbstractVisitor
-      with ParameterizedAbstractVisitor {}
+        with UndefinedSubstVisitor
+        with AbstractVisitor
+        with ParameterizedAbstractVisitor {}
       r.visitType(rightVisitor)
       if (result != null) return
 
@@ -1623,15 +1655,19 @@ object Conformance {
         return
       }
 
-      rightVisitor = new ExistentialSimplification with SkolemizeVisitor
-      with ParameterizedSkolemizeVisitor with OtherNonvalueTypesVisitor
-      with NothingNullVisitor with TypeParameterTypeVisitor with ThisVisitor
-      with DesignatorVisitor {}
+      rightVisitor = new ExistentialSimplification
+        with SkolemizeVisitor
+        with ParameterizedSkolemizeVisitor
+        with OtherNonvalueTypesVisitor
+        with NothingNullVisitor
+        with TypeParameterTypeVisitor
+        with ThisVisitor
+        with DesignatorVisitor {}
       r.visitType(rightVisitor)
       if (result != null) return
 
       rightVisitor = new ParameterizedAliasVisitor
-      with AliasDesignatorVisitor {}
+        with AliasDesignatorVisitor {}
       r.visitType(rightVisitor)
       if (result != null) return
 
@@ -1722,7 +1758,7 @@ object Conformance {
             }
             if (result == null) {
               val filterFunction
-                : (((String, PsiElement), HashSet[ScType])) => Boolean = {
+                  : (((String, PsiElement), HashSet[ScType])) => Boolean = {
                 case (id: (String, PsiElement), types: HashSet[ScType]) =>
                   !tptsMap.values.exists {
                     case tpt: ScTypeParameterType =>
@@ -1745,17 +1781,21 @@ object Conformance {
 
     override def visitThisType(t: ScThisType) {
       var rightVisitor: ScalaTypeVisitor = new ValDesignatorSimplification
-      with UndefinedSubstVisitor with AbstractVisitor
-      with ParameterizedAbstractVisitor {}
+        with UndefinedSubstVisitor
+        with AbstractVisitor
+        with ParameterizedAbstractVisitor {}
       r.visitType(rightVisitor)
       if (result != null) return
 
       checkEquiv()
       if (result != null) return
 
-      rightVisitor = new ExistentialSimplification with SkolemizeVisitor
-      with ParameterizedSkolemizeVisitor with OtherNonvalueTypesVisitor
-      with NothingNullVisitor with TypeParameterTypeVisitor {}
+      rightVisitor = new ExistentialSimplification
+        with SkolemizeVisitor
+        with ParameterizedSkolemizeVisitor
+        with OtherNonvalueTypesVisitor
+        with NothingNullVisitor
+        with TypeParameterTypeVisitor {}
       r.visitType(rightVisitor)
       if (result != null) return
 
@@ -1774,17 +1814,20 @@ object Conformance {
       }
 
       var rightVisitor: ScalaTypeVisitor = new ValDesignatorSimplification
-      with UndefinedSubstVisitor with AbstractVisitor
-      with ParameterizedAbstractVisitor {}
+        with UndefinedSubstVisitor
+        with AbstractVisitor
+        with ParameterizedAbstractVisitor {}
       r.visitType(rightVisitor)
       if (result != null) return
 
       checkEquiv()
       if (result != null) return
 
-      rightVisitor = new ExistentialSimplification with SkolemizeVisitor
-      with ParameterizedSkolemizeVisitor with OtherNonvalueTypesVisitor
-      with NothingNullVisitor {}
+      rightVisitor = new ExistentialSimplification
+        with SkolemizeVisitor
+        with ParameterizedSkolemizeVisitor
+        with OtherNonvalueTypesVisitor
+        with NothingNullVisitor {}
       r.visitType(rightVisitor)
       if (result != null) return
 
@@ -1813,8 +1856,10 @@ object Conformance {
         case _ =>
       }
 
-      rightVisitor = new TypeParameterTypeVisitor with ThisVisitor
-      with DesignatorVisitor with ParameterizedAliasVisitor {}
+      rightVisitor = new TypeParameterTypeVisitor
+        with ThisVisitor
+        with DesignatorVisitor
+        with ParameterizedAliasVisitor {}
       r.visitType(rightVisitor)
       if (result != null) return
 
@@ -1864,8 +1909,9 @@ object Conformance {
 
     override def visitTypeParameterType(tpt1: ScTypeParameterType) {
       var rightVisitor: ScalaTypeVisitor = new ValDesignatorSimplification
-      with UndefinedSubstVisitor with AbstractVisitor
-      with ParameterizedAbstractVisitor {}
+        with UndefinedSubstVisitor
+        with AbstractVisitor
+        with ParameterizedAbstractVisitor {}
       r.visitType(rightVisitor)
       if (result != null) return
 
@@ -1882,9 +1928,12 @@ object Conformance {
         }
       }
 
-      rightVisitor = new ExistentialSimplification with SkolemizeVisitor
-      with ParameterizedSkolemizeVisitor with OtherNonvalueTypesVisitor
-      with TypeParameterTypeNothingNullVisitor with DesignatorVisitor {}
+      rightVisitor = new ExistentialSimplification
+        with SkolemizeVisitor
+        with ParameterizedSkolemizeVisitor
+        with OtherNonvalueTypesVisitor
+        with TypeParameterTypeNothingNullVisitor
+        with DesignatorVisitor {}
       r.visitType(rightVisitor)
       if (result != null) return
 
@@ -1907,8 +1956,11 @@ object Conformance {
         return
       }
 
-      rightVisitor = new ParameterizedAliasVisitor with AliasDesignatorVisitor
-      with CompoundTypeVisitor with ExistentialVisitor with ProjectionVisitor {}
+      rightVisitor = new ParameterizedAliasVisitor
+        with AliasDesignatorVisitor
+        with CompoundTypeVisitor
+        with ExistentialVisitor
+        with ProjectionVisitor {}
       r.visitType(rightVisitor)
       if (result != null) return
 
@@ -1917,8 +1969,9 @@ object Conformance {
 
     override def visitSkolemizedType(s: ScSkolemizedType) {
       var rightVisitor: ScalaTypeVisitor = new ValDesignatorSimplification
-      with UndefinedSubstVisitor with AbstractVisitor
-      with ParameterizedAbstractVisitor {}
+        with UndefinedSubstVisitor
+        with AbstractVisitor
+        with ParameterizedAbstractVisitor {}
       r.visitType(rightVisitor)
       if (result != null) return
 
@@ -1932,36 +1985,50 @@ object Conformance {
         return
       }
 
-      rightVisitor = new OtherNonvalueTypesVisitor with NothingNullVisitor
-      with TypeParameterTypeVisitor with ThisVisitor with DesignatorVisitor {}
+      rightVisitor = new OtherNonvalueTypesVisitor
+        with NothingNullVisitor
+        with TypeParameterTypeVisitor
+        with ThisVisitor
+        with DesignatorVisitor {}
       r.visitType(rightVisitor)
       if (result != null) return
 
-      rightVisitor = new ParameterizedAliasVisitor with AliasDesignatorVisitor
-      with CompoundTypeVisitor with ExistentialVisitor with ProjectionVisitor {}
+      rightVisitor = new ParameterizedAliasVisitor
+        with AliasDesignatorVisitor
+        with CompoundTypeVisitor
+        with ExistentialVisitor
+        with ProjectionVisitor {}
       r.visitType(rightVisitor)
       if (result != null) return
     }
 
     override def visitTypeVariable(t: ScTypeVariable) {
       var rightVisitor: ScalaTypeVisitor = new ValDesignatorSimplification
-      with UndefinedSubstVisitor with AbstractVisitor
-      with ParameterizedAbstractVisitor {}
+        with UndefinedSubstVisitor
+        with AbstractVisitor
+        with ParameterizedAbstractVisitor {}
       r.visitType(rightVisitor)
       if (result != null) return
 
       checkEquiv()
       if (result != null) return
 
-      rightVisitor = new ExistentialSimplification with SkolemizeVisitor
-      with ParameterizedSkolemizeVisitor with OtherNonvalueTypesVisitor
-      with NothingNullVisitor with TypeParameterTypeVisitor with ThisVisitor
-      with DesignatorVisitor {}
+      rightVisitor = new ExistentialSimplification
+        with SkolemizeVisitor
+        with ParameterizedSkolemizeVisitor
+        with OtherNonvalueTypesVisitor
+        with NothingNullVisitor
+        with TypeParameterTypeVisitor
+        with ThisVisitor
+        with DesignatorVisitor {}
       r.visitType(rightVisitor)
       if (result != null) return
 
-      rightVisitor = new ParameterizedAliasVisitor with AliasDesignatorVisitor
-      with CompoundTypeVisitor with ExistentialVisitor with ProjectionVisitor {}
+      rightVisitor = new ParameterizedAliasVisitor
+        with AliasDesignatorVisitor
+        with CompoundTypeVisitor
+        with ExistentialVisitor
+        with ProjectionVisitor {}
       r.visitType(rightVisitor)
       if (result != null) return
     }
@@ -1987,8 +2054,9 @@ object Conformance {
 
     override def visitMethodType(m1: ScMethodType) {
       var rightVisitor: ScalaTypeVisitor = new ValDesignatorSimplification
-      with UndefinedSubstVisitor with AbstractVisitor
-      with ParameterizedAbstractVisitor {}
+        with UndefinedSubstVisitor
+        with AbstractVisitor
+        with ParameterizedAbstractVisitor {}
       r.visitType(rightVisitor)
       if (result != null) return
 
@@ -2045,7 +2113,7 @@ object Conformance {
 
     override def visitAbstractType(a: ScAbstractType) {
       val rightVisitor = new ValDesignatorSimplification
-      with UndefinedSubstVisitor {}
+        with UndefinedSubstVisitor {}
       r.visitType(rightVisitor)
       if (result != null) return
       val right =
@@ -2062,8 +2130,9 @@ object Conformance {
 
     override def visitTypePolymorphicType(t1: ScTypePolymorphicType) {
       var rightVisitor: ScalaTypeVisitor = new ValDesignatorSimplification
-      with UndefinedSubstVisitor with AbstractVisitor
-      with ParameterizedAbstractVisitor {}
+        with UndefinedSubstVisitor
+        with AbstractVisitor
+        with ParameterizedAbstractVisitor {}
       r.visitType(rightVisitor)
       if (result != null) return
 

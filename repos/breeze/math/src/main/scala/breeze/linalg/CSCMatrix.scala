@@ -380,7 +380,7 @@ object CSCMatrix
     new CanCopyCSCMatrix[V]
 
   implicit def canCreateZerosLike[V: ClassTag: Zero]
-    : CanCreateZerosLike[CSCMatrix[V], CSCMatrix[V]] =
+      : CanCreateZerosLike[CSCMatrix[V], CSCMatrix[V]] =
     new CanCreateZerosLike[CSCMatrix[V], CSCMatrix[V]] {
       def apply(v1: CSCMatrix[V]): CSCMatrix[V] = {
         zeros[V](v1.rows, v1.cols)
@@ -388,7 +388,7 @@ object CSCMatrix
     }
 
   implicit def canMapValues[V, R: ClassTag: Zero: Semiring]
-    : CanMapValues[CSCMatrix[V], V, R, CSCMatrix[R]] = {
+      : CanMapValues[CSCMatrix[V], V, R, CSCMatrix[R]] = {
     val z = implicitly[Zero[R]].zero
     new CanMapValues[CSCMatrix[V], V, R, CSCMatrix[R]] {
       override def apply(from: CSCMatrix[V], fn: (V => R)) = {
@@ -427,7 +427,7 @@ object CSCMatrix
   }
 
   implicit def canMapActiveValues[V, R: ClassTag: Zero: Semiring]
-    : CanMapActiveValues[CSCMatrix[V], V, R, CSCMatrix[R]] = {
+      : CanMapActiveValues[CSCMatrix[V], V, R, CSCMatrix[R]] = {
     val z = implicitly[Zero[R]].zero
     new CanMapActiveValues[CSCMatrix[V], V, R, CSCMatrix[R]] {
       override def apply(from: CSCMatrix[V], fn: (V => R)) = {
@@ -463,7 +463,7 @@ object CSCMatrix
   }
 
   implicit def canIterateKeysValues[V: Zero]
-    : CanTraverseKeyValuePairs[CSCMatrix[V], (Int, Int), V] = {
+      : CanTraverseKeyValuePairs[CSCMatrix[V], (Int, Int), V] = {
     new CanTraverseKeyValuePairs[CSCMatrix[V], (Int, Int), V] {
 
       def isTraversableAgain(from: CSCMatrix[V]): Boolean = true
@@ -472,7 +472,7 @@ object CSCMatrix
       def traverse(
           from: CSCMatrix[V],
           fn: CanTraverseKeyValuePairs.KeyValuePairsVisitor[(Int, Int), V])
-        : Unit = {
+          : Unit = {
         val zero = implicitly[Zero[V]].zero
         fn.zeros(from.size - from.activeSize, from.iterator.collect {
           case (k, v) if v != zero => k
@@ -484,7 +484,7 @@ object CSCMatrix
   }
 
   implicit def canTranspose[V: ClassTag: Zero: Semiring]
-    : CanTranspose[CSCMatrix[V], CSCMatrix[V]] = {
+      : CanTranspose[CSCMatrix[V], CSCMatrix[V]] = {
     new CanTranspose[CSCMatrix[V], CSCMatrix[V]] {
       def apply(from: CSCMatrix[V]) = {
         val transposedMtx =
@@ -509,7 +509,7 @@ object CSCMatrix
   }
 
   implicit def canTransposeComplex
-    : CanTranspose[CSCMatrix[Complex], CSCMatrix[Complex]] = {
+      : CanTranspose[CSCMatrix[Complex], CSCMatrix[Complex]] = {
     new CanTranspose[CSCMatrix[Complex], CSCMatrix[Complex]] {
       def apply(from: CSCMatrix[Complex]) = {
         val transposedMtx = CSCMatrix.zeros[Complex](from.cols, from.rows)

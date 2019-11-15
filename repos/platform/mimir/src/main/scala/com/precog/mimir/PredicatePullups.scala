@@ -31,7 +31,7 @@ import scalaz.std.string._
 import scalaz.std.tuple._
 import scalaz.syntax.monoid._
 
-trait PredicatePullupsModule[M[+ _]] extends TransSpecableModule[M] {
+trait PredicatePullupsModule[M[+_]] extends TransSpecableModule[M] {
   trait PredicatePullups extends TransSpecable {
     import dag._
     import instructions.And
@@ -45,7 +45,7 @@ trait PredicatePullupsModule[M[+ _]] extends TransSpecableModule[M] {
       val edits = graph.foldDown(true) {
         case s @ Split(g @ Group(id, target, gchild), schild, _) =>
           def extractFilter(spec: dag.BucketSpec)
-            : Option[(List[DepGraph], List[dag.BucketSpec])] = spec match {
+              : Option[(List[DepGraph], List[dag.BucketSpec])] = spec match {
             case dag.IntersectBucketSpec(left, right) =>
               for {
                 fl <- extractFilter(left)

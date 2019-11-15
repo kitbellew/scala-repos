@@ -433,7 +433,7 @@ object Concurrent {
             case in =>
               if (!busy.single()) {
                 val readyOrNot
-                  : Future[Either[Iteratee[E, Iteratee[E, A]], Unit]] =
+                    : Future[Either[Iteratee[E, Iteratee[E, A]], Unit]] =
                   Future.firstCompletedOf(
                     Seq(
                       inner
@@ -638,7 +638,7 @@ object Concurrent {
         iteratees.single.swap(List())
 
       val commitReady
-        : Ref[List[(Int, (Iteratee[E, _], Promise[Iteratee[E, _]]))]] = Ref(
+          : Ref[List[(Int, (Iteratee[E, _], Promise[Iteratee[E, _]]))]] = Ref(
         List())
 
       val commitDone: Ref[List[Int]] = Ref(List())

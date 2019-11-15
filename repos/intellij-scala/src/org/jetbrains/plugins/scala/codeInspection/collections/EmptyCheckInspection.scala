@@ -45,7 +45,7 @@ object CheckIsEmpty extends SimplificationType {
   }
 
   def extractInner(firstLevel: Option[(ScExpression, Int, Int)])
-    : Option[(ScExpression, Int, Int)] = {
+      : Option[(ScExpression, Int, Int)] = {
     firstLevel match {
       case None => None
       case Some((inner @ coll `.headOption` (), start, end)) if coll != null =>

@@ -146,7 +146,7 @@ private[launcher] class OfferProcessorImpl(
       ops: Seq[TaskOpWithSource],
       savingDeadline: Timestamp): Future[Seq[TaskOpWithSource]] = {
     def saveTask(taskOpWithSource: TaskOpWithSource)
-      : Future[Option[TaskOpWithSource]] = {
+        : Future[Option[TaskOpWithSource]] = {
       val taskId = taskOpWithSource.taskId
 
       val persistedOp = taskOpWithSource.op.maybeNewTask match {

@@ -51,12 +51,12 @@ class WrappedFloatBufferTest extends FloatBufferTest {
 
 class WrappedFloatReadOnlyBufferTest extends FloatBufferTest {
   val factory: Factory = new WrappedFloatBufferFactory
-  with BufferFactory.ReadOnlyBufferFactory
+    with BufferFactory.ReadOnlyBufferFactory
 }
 
 class AllocFloatSlicedBufferTest extends FloatBufferTest {
   val factory: Factory = new AllocFloatBufferFactory
-  with BufferFactory.SlicedBufferFactory
+    with BufferFactory.SlicedBufferFactory
 }
 
 // Float views of byte buffers
@@ -109,7 +109,7 @@ abstract class ReadOnlyFloatViewOfByteBufferTest(
 
   val factory: BufferFactory.FloatBufferFactory = {
     new ByteBufferFloatViewFactory(byteBufferFactory, order)
-    with BufferFactory.ReadOnlyBufferFactory
+      with BufferFactory.ReadOnlyBufferFactory
   }
 }
 

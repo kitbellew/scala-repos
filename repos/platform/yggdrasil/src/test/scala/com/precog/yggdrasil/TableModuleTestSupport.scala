@@ -47,13 +47,13 @@ import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary._
 import CValueGenerators.JSchema
 
-trait TestLib[M[+ _]] extends TableModule[M] {
+trait TestLib[M[+_]] extends TableModule[M] {
   def lookupF1(namespace: List[String], name: String): F1
   def lookupF2(namespace: List[String], name: String): F2
   def lookupScanner(namespace: List[String], name: String): Scanner
 }
 
-trait TableModuleTestSupport[M[+ _]] extends TableModule[M] with TestLib[M] {
+trait TableModuleTestSupport[M[+_]] extends TableModule[M] with TestLib[M] {
   implicit def M: Monad[M] with Comonad[M]
 
   def fromJson(data: Stream[JValue], maxBlockSize: Option[Int] = None): Table
@@ -66,7 +66,7 @@ trait TableModuleTestSupport[M[+ _]] extends TableModule[M] with TestLib[M] {
     fromJson(sampleData.data, maxBlockSize)
 }
 
-trait TableModuleSpec[M[+ _]] extends Specification with ScalaCheck {
+trait TableModuleSpec[M[+_]] extends Specification with ScalaCheck {
   import SampleData._
   override val defaultPrettyParams = Pretty.Params(2)
 

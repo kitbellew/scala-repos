@@ -60,7 +60,7 @@ import scalaz.syntax.traverse._
 import scalaz.syntax.std.boolean._
 import scalaz.syntax.bifunctor._
 
-trait SliceTransforms[M[+ _]]
+trait SliceTransforms[M[+_]]
     extends TableModule[M]
     with ColumnarTableTypes[M]
     with ObjectConcatHelpers

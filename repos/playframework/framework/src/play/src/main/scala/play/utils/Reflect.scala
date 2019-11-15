@@ -114,7 +114,7 @@ object Reflect {
       implicit scalaTrait: SubClassOf[ScalaTrait],
       javaInterface: SubClassOf[JavaInterface],
       default: ClassTag[Default])
-    : Option[Either[Class[_ <: ScalaTrait], Class[_ <: JavaInterface]]] = {
+      : Option[Either[Class[_ <: ScalaTrait], Class[_ <: JavaInterface]]] = {
 
     def loadClass(
         className: String,

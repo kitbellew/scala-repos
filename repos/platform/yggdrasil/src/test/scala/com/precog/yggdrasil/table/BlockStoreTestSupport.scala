@@ -54,7 +54,7 @@ import org.scalacheck.Arbitrary._
 
 import TableModule._
 
-trait BlockStoreTestModule[M[+ _]] extends BaseBlockStoreTestModule[M] {
+trait BlockStoreTestModule[M[+_]] extends BaseBlockStoreTestModule[M] {
   type GroupId = String
   private val groupId = new java.util.concurrent.atomic.AtomicInteger
   def newGroupId = "groupId(" + groupId.getAndIncrement + ")"
@@ -76,7 +76,7 @@ trait BlockStoreTestModule[M[+ _]] extends BaseBlockStoreTestModule[M] {
   object Table extends TableCompanion
 }
 
-trait BaseBlockStoreTestModule[M[+ _]]
+trait BaseBlockStoreTestModule[M[+_]]
     extends ColumnarTableModuleTestSupport[M]
     with SliceColumnarTableModule[M]
     with StubProjectionModule[M, Slice] {
@@ -181,14 +181,14 @@ trait BaseBlockStoreTestModule[M[+ _]]
 }
 
 object BlockStoreTestModule {
-  def empty[M[+ _]](implicit M0: Monad[M] with Comonad[M]) =
+  def empty[M[+_]](implicit M0: Monad[M] with Comonad[M]) =
     new BlockStoreTestModule[M] {
       val M = M0
       val projections = Map.empty[Path, Projection]
     }
 }
 
-trait BlockStoreTestSupport[M[+ _]] { self =>
+trait BlockStoreTestSupport[M[+_]] { self =>
   implicit def M: Monad[M] with Comonad[M]
 
   def emptyTestModule = BlockStoreTestModule.empty[M]

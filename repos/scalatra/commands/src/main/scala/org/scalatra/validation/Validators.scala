@@ -164,7 +164,7 @@ object Validators {
       fieldName: String,
       min: T,
       messageFormat: String = "%%s must be greater than or equal to %s.")
-    : Validator[T] =
+      : Validator[T] =
     new PredicateValidator[T](fieldName, _ >= min, messageFormat format min)
 
   /**
@@ -174,7 +174,7 @@ object Validators {
       fieldName: String,
       max: T,
       messageFormat: String = "%%s must be less than or equal to %s.")
-    : Validator[T] =
+      : Validator[T] =
     new PredicateValidator[T](fieldName, _ <= max, messageFormat.format(max))
 
   /**
@@ -184,7 +184,7 @@ object Validators {
       fieldName: String,
       min: Int,
       messageFormat: String = "%%s must be at least %s characters long.")
-    : Validator[String] =
+      : Validator[String] =
     new PredicateValidator[String](
       fieldName,
       _.size >= min,

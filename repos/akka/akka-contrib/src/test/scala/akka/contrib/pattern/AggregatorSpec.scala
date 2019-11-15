@@ -90,7 +90,8 @@ class AccountBalanceRetriever extends Actor with Aggregator {
         case Checking ⇒ fetchCheckingAccountsBalance()
         case Savings ⇒ fetchSavingsAccountsBalance()
         case MoneyMarket ⇒ fetchMoneyMarketAccountsBalance()
-      } else collectBalances() // Empty type list yields empty response
+      }
+    else collectBalances() // Empty type list yields empty response
 
     context.system.scheduler.scheduleOnce(1.second, self, TimedOut)
     //#expect-timeout

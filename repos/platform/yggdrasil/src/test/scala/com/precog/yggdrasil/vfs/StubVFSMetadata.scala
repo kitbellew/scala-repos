@@ -50,7 +50,7 @@ import scalaz.syntax.std.option._
 import scala.collection.immutable.SortedMap
 import scala.collection.immutable.TreeMap
 
-class StubVFSMetadata[M[+ _]](
+class StubVFSMetadata[M[+_]](
     projectionMetadata: Map[Path, Map[ColumnRef, Long]])(implicit M: Monad[M])
     extends VFSMetadata[M] {
   def findDirectChildren(

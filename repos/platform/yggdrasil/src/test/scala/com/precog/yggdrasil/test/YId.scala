@@ -31,7 +31,8 @@ class YId[+A](a0: => A) {
 @deprecated("use scalaz.Need instead.", "2.7.0")
 trait YIdInstances {
   implicit lazy val M: Monad[YId] with Comonad[YId] = new Monad[YId]
-  with Comonad[YId] with Cobind.FromCojoin[YId] {
+    with Comonad[YId]
+    with Cobind.FromCojoin[YId] {
     def point[A](a: => A) = new YId(a)
     def bind[A, B](m: YId[A])(f: A => YId[B]) = f(m.a)
     def cojoin[A](a: YId[A]): YId[YId[A]] = point(a)

@@ -39,7 +39,7 @@ import scala.collection.JavaConverters._
 import scala.concurrent.{ExecutionContext, Future}
 
 @Path("v2/tasks")
-class TasksResource @Inject()(
+class TasksResource @Inject() (
     service: MarathonSchedulerService,
     taskTracker: TaskTracker,
     taskKiller: TaskKiller,

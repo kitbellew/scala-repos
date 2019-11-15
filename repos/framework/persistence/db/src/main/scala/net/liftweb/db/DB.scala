@@ -599,7 +599,7 @@ trait DB extends Loggable {
       query: String,
       params: List[Any],
       connectionIdentifier: ConnectionIdentifier)
-    : (List[String], List[List[String]]) = {
+      : (List[String], List[List[String]]) = {
     use(connectionIdentifier)(conn =>
       prepareStatement(query, conn) { ps =>
         resultSetTo(setPreparedParams(ps, params).executeQuery)
@@ -627,7 +627,7 @@ trait DB extends Loggable {
       query: String,
       params: List[Any],
       connectionIdentifier: ConnectionIdentifier)
-    : (List[String], List[List[Any]]) = {
+      : (List[String], List[List[Any]]) = {
     use(connectionIdentifier)(conn =>
       prepareStatement(query, conn) { ps =>
         resultSetToAny(setPreparedParams(ps, params).executeQuery)

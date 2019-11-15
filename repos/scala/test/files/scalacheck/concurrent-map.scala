@@ -25,9 +25,9 @@ object Test extends Properties("concurrent.TrieMap") {
   /* helpers */
 
   def inParallel[T](totalThreads: Int)(body: Int => T): Seq[T] = {
-    val threads = for (idx <- 0 until totalThreads)
-      yield
-        new Thread {
+    val threads =
+      for (idx <- 0 until totalThreads)
+        yield new Thread {
           setName("ParThread-" + idx)
           private var res: T = _
           override def run() {

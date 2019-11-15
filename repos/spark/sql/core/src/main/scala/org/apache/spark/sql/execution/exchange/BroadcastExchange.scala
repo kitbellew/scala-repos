@@ -85,7 +85,7 @@ case class BroadcastExchange(mode: BroadcastMode, child: SparkPlan)
   }
 
   override protected[sql] def doExecuteBroadcast[T]()
-    : broadcast.Broadcast[T] = {
+      : broadcast.Broadcast[T] = {
     val result = Await.result(relationFuture, timeout)
     result.asInstanceOf[broadcast.Broadcast[T]]
   }

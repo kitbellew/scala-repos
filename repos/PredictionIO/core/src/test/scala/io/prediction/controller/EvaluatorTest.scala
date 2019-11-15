@@ -27,7 +27,7 @@ object TestEvaluator {
         sc: SparkContext,
         engineParams: EngineParams,
         params: WorkflowParams)
-      : Seq[(EvalInfo, RDD[(Query, Prediction, Actual)])] = {
+        : Seq[(EvalInfo, RDD[(Query, Prediction, Actual)])] = {
       (0 until en).map { ex =>
         {
           val qpas = (0 until qn).map { qx =>

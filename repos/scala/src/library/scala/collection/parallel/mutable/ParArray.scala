@@ -60,7 +60,7 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
     arrayseq.array.asInstanceOf[Array[Any]]
 
   override def companion
-    : GenericCompanion[ParArray] with GenericParCompanion[ParArray] = ParArray
+      : GenericCompanion[ParArray] with GenericParCompanion[ParArray] = ParArray
 
   def this(sz: Int) = this {
     require(sz >= 0)

@@ -136,7 +136,7 @@ class ScalaLoggingSpec extends Specification with Mockito {
       import play.api.mvc._
       import play.api._
 
-      class AccessLoggingFilter @Inject()(implicit val mat: Materializer)
+      class AccessLoggingFilter @Inject() (implicit val mat: Materializer)
           extends Filter {
 
         val accessLogger = Logger("access")

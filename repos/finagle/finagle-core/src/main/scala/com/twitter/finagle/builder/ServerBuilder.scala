@@ -553,7 +553,7 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
   def build(
       service: Service[Req, Rep],
       THE_BUILDER_IS_NOT_FULLY_SPECIFIED_SEE_ServerBuilder_DOCUMENTATION: ThisConfig =:= FullySpecifiedConfig)
-    : Server =
+      : Server =
     build(
       ServiceFactory.const(service),
       THE_BUILDER_IS_NOT_FULLY_SPECIFIED_SEE_ServerBuilder_DOCUMENTATION)
@@ -635,7 +635,7 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
   def build(
       serviceFactory: ServiceFactory[Req, Rep],
       THE_BUILDER_IS_NOT_FULLY_SPECIFIED_SEE_ServerBuilder_DOCUMENTATION: ThisConfig =:= FullySpecifiedConfig)
-    : Server =
+      : Server =
     build(serviceFactory)(
       new ServerConfigEvidence[HasCodec, HasBindTo, HasName] {})
 

@@ -80,7 +80,7 @@ trait ScTypeDefinition
     SyntheticMembersInjector.injectInners(this)
 
   override protected def syntheticMethodsWithOverrideImpl
-    : scala.Seq[PsiMethod] =
+      : scala.Seq[PsiMethod] =
     SyntheticMembersInjector.inject(this, withOverride = true)
 
   def fakeCompanionModule: Option[ScObject] = {

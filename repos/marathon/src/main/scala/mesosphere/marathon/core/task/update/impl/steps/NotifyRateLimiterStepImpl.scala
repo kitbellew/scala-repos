@@ -9,7 +9,7 @@ import org.apache.mesos.Protos.TaskStatus
 
 import scala.concurrent.Future
 
-class NotifyRateLimiterStepImpl @Inject()(
+class NotifyRateLimiterStepImpl @Inject() (
     launchQueue: LaunchQueue,
     appRepository: AppRepository)
     extends TaskStatusUpdateStep {

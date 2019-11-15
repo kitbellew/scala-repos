@@ -12,7 +12,7 @@ object accumulate extends UFunc {
   @expand
   @expand.valify
   implicit def dvAccumulate[@expand.args(Int, Long, Float, Double) T]
-    : Impl[DenseVector[T], DenseVector[T]] =
+      : Impl[DenseVector[T], DenseVector[T]] =
     new Impl[DenseVector[T], DenseVector[T]] {
       def apply(dv: DenseVector[T]): DenseVector[T] = {
         DenseVector(

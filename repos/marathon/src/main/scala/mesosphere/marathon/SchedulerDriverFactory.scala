@@ -10,7 +10,7 @@ trait SchedulerDriverFactory {
   def createDriver(): SchedulerDriver
 }
 
-class MesosSchedulerDriverFactory @Inject()(
+class MesosSchedulerDriverFactory @Inject() (
     holder: MarathonSchedulerDriverHolder,
     config: MarathonConf,
     httpConfig: HttpConf,

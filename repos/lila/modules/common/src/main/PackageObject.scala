@@ -21,7 +21,7 @@ trait PackageObject extends Steroids with WithFuture {
   def nowTenths: Long = nowMillis / 100
   def nowSeconds: Int = (nowMillis / 1000).toInt
 
-  implicit final def runOptionT[F[+ _], A](ot: OptionT[F, A]): F[Option[A]] =
+  implicit final def runOptionT[F[+_], A](ot: OptionT[F, A]): F[Option[A]] =
     ot.run
 
   // from scalaz. We don't want to import all OptionTFunctions, because of the clash with `some`

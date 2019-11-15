@@ -420,8 +420,8 @@ object EvaluateTask {
       config: EvaluateTaskConfig): Option[(State, Result[T])] = {
     withStreams(structure, state) { str =>
       for ((task, toNode) <- getTask(structure, taskKey, state, str, ref))
-        yield
-          runTask(task, state, str, structure.index.triggers, config)(toNode)
+        yield runTask(task, state, str, structure.index.triggers, config)(
+          toNode)
     }
   }
   def logIncResult(result: Result[_], state: State, streams: Streams) =

@@ -340,7 +340,7 @@ object Execution {
       val self = this
       new EvalCache {
         override protected[EvalCache] val messageQueue
-          : LinkedBlockingQueue[EvalCache.FlowDefAction] = self.messageQueue
+            : LinkedBlockingQueue[EvalCache.FlowDefAction] = self.messageQueue
         override def start(): Unit =
           sys.error("Invalid to start child EvalCache")
         override def finished(): Unit =
@@ -409,14 +409,14 @@ object Execution {
     def finished(): Unit = messageQueue.put(Stop)
 
     def getOrLock(cfg: Config, write: ToWrite)
-      : Either[Promise[ExecutionCounters], Future[ExecutionCounters]] =
+        : Either[Promise[ExecutionCounters], Future[ExecutionCounters]] =
       toWriteCache.getOrPromise((cfg, write))
 
     def getOrElseInsertWithFeedback[T](
         cfg: Config,
         ex: Execution[T],
         res: => Future[(T, ExecutionCounters)])
-      : (Boolean, Future[(T, ExecutionCounters)]) =
+        : (Boolean, Future[(T, ExecutionCounters)]) =
       // This cast is safe because we always insert with match T types
       cache
         .getOrElseUpdateIsNew((cfg, ex), res)
@@ -426,7 +426,7 @@ object Execution {
         cfg: Config,
         ex: Execution[T],
         res: => Future[(T, ExecutionCounters)])
-      : Future[(T, ExecutionCounters)] =
+        : Future[(T, ExecutionCounters)] =
       getOrElseInsertWithFeedback(cfg, ex, res)._2
   }
   private case class FutureConst[T](

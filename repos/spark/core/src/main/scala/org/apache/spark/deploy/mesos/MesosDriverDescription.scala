@@ -57,7 +57,7 @@ private[spark] class MesosDriverDescription(
       submissionId: String = submissionId,
       submissionDate: Date = submissionDate,
       retryState: Option[MesosClusterRetryState] = retryState)
-    : MesosDriverDescription = {
+      : MesosDriverDescription = {
     new MesosDriverDescription(
       name,
       jarUrl,

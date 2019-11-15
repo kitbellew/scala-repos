@@ -378,7 +378,7 @@ final private[stream] class QueueSink[T]()
   override def createLogicAndMaterializedValue(
       inheritedAttributes: Attributes) = {
     val stageLogic = new GraphStageLogic(shape)
-    with CallbackWrapper[Requested[T]] {
+      with CallbackWrapper[Requested[T]] {
       type Received[E] = Try[Option[E]]
 
       val maxBuffer = inheritedAttributes

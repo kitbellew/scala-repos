@@ -42,7 +42,7 @@ trait PredefinedFromEntityUnmarshallers extends MultipartUnmarshallers {
     }
 
   implicit def defaultUrlEncodedFormDataUnmarshaller
-    : FromEntityUnmarshaller[FormData] =
+      : FromEntityUnmarshaller[FormData] =
     urlEncodedFormDataUnmarshaller(
       MediaTypes.`application/x-www-form-urlencoded`)
   def urlEncodedFormDataUnmarshaller(

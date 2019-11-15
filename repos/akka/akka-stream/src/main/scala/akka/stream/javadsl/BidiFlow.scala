@@ -12,7 +12,7 @@ import scala.concurrent.duration.FiniteDuration
 object BidiFlow {
 
   private[this] val _identity
-    : BidiFlow[Object, Object, Object, Object, NotUsed] =
+      : BidiFlow[Object, Object, Object, Object, NotUsed] =
     BidiFlow.fromFlows(Flow.of(classOf[Object]), Flow.of(classOf[Object]))
 
   def identity[A, B]: BidiFlow[A, A, B, B, NotUsed] =
@@ -155,7 +155,7 @@ final class BidiFlow[-I1, +O1, -I2, +O2, +Mat](
   def atop[OO1, II2, Mat2, M](
       bidi: BidiFlow[O1, OO1, II2, I2, Mat2],
       combine: function.Function2[Mat, Mat2, M])
-    : BidiFlow[I1, OO1, II2, O2, M] =
+      : BidiFlow[I1, OO1, II2, O2, M] =
     new BidiFlow(delegate.atopMat(bidi.asScala)(combinerToScala(combine)))
 
   /**

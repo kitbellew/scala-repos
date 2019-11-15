@@ -49,7 +49,7 @@ class SyncProducerTest extends KafkaServerTestHarness {
       timeout: Int = SyncProducerConfig.DefaultAckTimeoutMs,
       correlationId: Int = 0,
       clientId: String = SyncProducerConfig.DefaultClientId)
-    : ProducerRequest = {
+      : ProducerRequest = {
     TestUtils.produceRequest(
       topic,
       partition,

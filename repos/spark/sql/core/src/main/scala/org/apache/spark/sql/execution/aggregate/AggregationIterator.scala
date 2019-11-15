@@ -153,7 +153,7 @@ abstract class AggregationIterator(
 
   // All imperative AggregateFunctions.
   protected[this] val allImperativeAggregateFunctions
-    : Array[ImperativeAggregate] = allImperativeAggregateFunctionPositions
+      : Array[ImperativeAggregate] = allImperativeAggregateFunctionPositions
     .map(aggregateFunctions)
     .map(_.asInstanceOf[ImperativeAggregate])
 

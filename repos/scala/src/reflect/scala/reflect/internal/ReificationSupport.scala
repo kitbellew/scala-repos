@@ -282,7 +282,7 @@ trait ReificationSupport { self: SymbolTable =>
         else paramss
 
       def unapply(vparamss: List[List[ValDef]])
-        : Some[(List[List[ValDef]], List[ValDef])] = vparamss match {
+          : Some[(List[List[ValDef]], List[ValDef])] = vparamss match {
         case init :+ (last @ (initlast :: _)) if initlast.mods.isImplicit =>
           Some((init, last))
         case _ => Some((vparamss, Nil))
@@ -478,7 +478,8 @@ trait ReificationSupport { self: SymbolTable =>
                   tpnme.Product | tpnme.Serializable | tpnme.AnyRef) =>
                 false
               case _ => true
-            } else parents)
+            }
+          else parents)
         val body0 = earlyDefs ::: body
         val selfType0 = mkSelfType(selfType)
         val templ =
@@ -612,7 +613,7 @@ trait ReificationSupport { self: SymbolTable =>
           SyntacticObjectDef(NoMods, name, earlyDefs, parents, selfType, body))
 
       def unapply(tree: Tree)
-        : Option[(TermName, List[Tree], List[Tree], ValDef, List[Tree])] =
+          : Option[(TermName, List[Tree], List[Tree], ValDef, List[Tree])] =
         tree match {
           case PackageDef(
               Ident(name: TermName),

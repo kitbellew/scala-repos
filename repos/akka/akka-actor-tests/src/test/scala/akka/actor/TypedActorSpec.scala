@@ -461,12 +461,14 @@ class TypedActorSpec
     }
 
     "be able to use balancing dispatcher" in within(timeout.duration) {
-      val thais = for (i ← 1 to 60)
-        yield newFooBar("pooled-dispatcher", 6 seconds)
+      val thais =
+        for (i ← 1 to 60)
+          yield newFooBar("pooled-dispatcher", 6 seconds)
       val iterator = new CyclicIterator(thais)
 
-      val results = for (i ← 1 to 120)
-        yield (i, iterator.next.futurePigdog(200 millis, i))
+      val results =
+        for (i ← 1 to 120)
+          yield (i, iterator.next.futurePigdog(200 millis, i))
 
       for ((i, r) ← results) Await.result(r, remaining) should ===("Pigdog" + i)
 

@@ -51,12 +51,12 @@ class WrappedDoubleBufferTest extends DoubleBufferTest {
 
 class WrappedDoubleReadOnlyBufferTest extends DoubleBufferTest {
   val factory: Factory = new WrappedDoubleBufferFactory
-  with BufferFactory.ReadOnlyBufferFactory
+    with BufferFactory.ReadOnlyBufferFactory
 }
 
 class AllocDoubleSlicedBufferTest extends DoubleBufferTest {
   val factory: Factory = new AllocDoubleBufferFactory
-  with BufferFactory.SlicedBufferFactory
+    with BufferFactory.SlicedBufferFactory
 }
 
 // Double views of byte buffers
@@ -109,7 +109,7 @@ abstract class ReadOnlyDoubleViewOfByteBufferTest(
 
   val factory: BufferFactory.DoubleBufferFactory = {
     new ByteBufferDoubleViewFactory(byteBufferFactory, order)
-    with BufferFactory.ReadOnlyBufferFactory
+      with BufferFactory.ReadOnlyBufferFactory
   }
 }
 

@@ -211,8 +211,9 @@ object IteratorSpec extends Spec {
       val remover = new Remover
       remover.start()
       for (_ <- 0 until sgroupnum) {
-        val iters = for (_ <- 0 until sgroupsize)
-          yield consistentIteration(ct.iterator)
+        val iters =
+          for (_ <- 0 until sgroupsize)
+            yield consistentIteration(ct.iterator)
         iters.foreach(_.start())
         iters.foreach(_.join())
       }
@@ -254,8 +255,9 @@ object IteratorSpec extends Spec {
       val inserter = new Inserter
       inserter.start()
       for (_ <- 0 until sgroupnum) {
-        val iters = for (_ <- 0 until sgroupsize)
-          yield consistentIteration(ct.iterator)
+        val iters =
+          for (_ <- 0 until sgroupsize)
+            yield consistentIteration(ct.iterator)
         iters.foreach(_.start())
         iters.foreach(_.join())
       }

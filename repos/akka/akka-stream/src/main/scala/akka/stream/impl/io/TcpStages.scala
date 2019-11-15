@@ -46,7 +46,7 @@ private[stream] class ConnectionSourceStage(
 
   // TODO: Timeout on bind
   override def createLogicAndMaterializedValue(inheritedAttributes: Attributes)
-    : (GraphStageLogic, Future[ServerBinding]) = {
+      : (GraphStageLogic, Future[ServerBinding]) = {
     val bindingPromise = Promise[ServerBinding]
 
     val logic = new TimerGraphStageLogic(shape) {
@@ -386,7 +386,7 @@ private[stream] class OutgoingConnectionStage(
   val shape: FlowShape[ByteString, ByteString] = FlowShape(bytesIn, bytesOut)
 
   override def createLogicAndMaterializedValue(inheritedAttributes: Attributes)
-    : (GraphStageLogic, Future[StreamTcp.OutgoingConnection]) = {
+      : (GraphStageLogic, Future[StreamTcp.OutgoingConnection]) = {
     // FIXME: A method like this would make soo much sense on Duration (i.e. toOption)
     val connTimeout = connectTimeout match {
       case x: FiniteDuration ⇒ Some(x)

@@ -722,7 +722,7 @@ trait BodyParsers {
     def multipartFormData[A](
         filePartHandler: Multipart.FilePartHandler[A],
         maxLength: Long = DefaultMaxDiskLength)
-      : BodyParser[MultipartFormData[A]] = {
+        : BodyParser[MultipartFormData[A]] = {
       BodyParser("multipartFormData") { request =>
         val app = Play.privateMaybeApplication.get // throw exception
         implicit val mat = app.materializer
@@ -813,7 +813,7 @@ trait BodyParsers {
         request: RequestHeader,
         maxLength: Long,
         accumulator: Accumulator[ByteString, Either[Result, A]])
-      : Accumulator[ByteString, Either[Result, A]] = {
+        : Accumulator[ByteString, Either[Result, A]] = {
       val takeUpToFlow = Flow.fromGraph(new BodyParsers.TakeUpTo(maxLength))
       Accumulator(takeUpToFlow.toMat(accumulator.toSink) {
         (statusFuture, resultFuture) =>
@@ -882,7 +882,7 @@ object BodyParsers extends BodyParsers {
   private val hcCache = Application.instanceCache[HttpConfiguration]
 
   private[play] def takeUpTo(maxLength: Long)
-    : Graph[FlowShape[ByteString, ByteString], Future[MaxSizeStatus]] =
+      : Graph[FlowShape[ByteString, ByteString], Future[MaxSizeStatus]] =
     new TakeUpTo(maxLength)
 
   private[play] class TakeUpTo(maxLength: Long)
@@ -898,7 +898,7 @@ object BodyParsers extends BodyParsers {
 
     override def createLogicAndMaterializedValue(
         inheritedAttributes: Attributes)
-      : (GraphStageLogic, Future[MaxSizeStatus]) = {
+        : (GraphStageLogic, Future[MaxSizeStatus]) = {
       val status = Promise[MaxSizeStatus]()
       var pushedBytes: Long = 0
 

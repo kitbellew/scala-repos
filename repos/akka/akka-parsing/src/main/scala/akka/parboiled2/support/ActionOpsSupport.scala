@@ -54,7 +54,7 @@ object Join {
       R,
       In0 <: HList,
       Out0 <: HList](implicit x: Aux[I, L1, L2, R, HNil, In0, Out0])
-    : Join[I, L1, L2, R] { type In = In0; type Out = Out0 } = `n/a`
+      : Join[I, L1, L2, R] { type In = In0; type Out = Out0 } = `n/a`
 
   sealed trait Aux[
       I <: HList,
@@ -72,7 +72,7 @@ object Join {
         L2 <: HList,
         Acc <: HList,
         Out <: HList](implicit x: Aux[I, L1, L2, HNil, Acc, I, Out])
-      : Aux[I, L1, L2, Unit, Acc, I, Out] = `n/a`
+        : Aux[I, L1, L2, Unit, Acc, I, Out] = `n/a`
 
     // if R <: HList and L1 non-empty move head of L1 to Acc
     implicit def iter1[
@@ -83,7 +83,7 @@ object Join {
         R <: HList,
         Acc <: HList,
         Out <: HList](implicit x: Aux[I, T, L2, R, H :: Acc, I, Out])
-      : Aux[I, H :: T, L2, R, Acc, I, Out] = `n/a`
+        : Aux[I, H :: T, L2, R, Acc, I, Out] = `n/a`
 
     // if R <: HList and L1 empty and L2 non-empty move head of L2 to Acc
     implicit def iter2[
@@ -93,12 +93,12 @@ object Join {
         R <: HList,
         Acc <: HList,
         Out <: HList](implicit x: Aux[I, HNil, T, R, H :: Acc, I, Out])
-      : Aux[I, HNil, H :: T, R, Acc, I, Out] = `n/a`
+        : Aux[I, HNil, H :: T, R, Acc, I, Out] = `n/a`
 
     // if R <: HList and L1 and L2 empty set Out = reversePrepend Acc before R
     implicit def terminate[I <: HList, R <: HList, Acc <: HList, Out <: HList](
         implicit x: ReversePrepend.Aux[Acc, R, Out])
-      : Aux[I, HNil, HNil, R, Acc, I, Out] = `n/a`
+        : Aux[I, HNil, HNil, R, Acc, I, Out] = `n/a`
 
     // if R <: Rule and L1 non-empty move head of L1 to Acc
     implicit def iterRule1[
@@ -112,7 +112,7 @@ object Join {
         H,
         T <: HList](
         implicit x: Aux[I, T, L2, Rule[I2, O2], H :: Acc, In0, Out0])
-      : Aux[I, H :: T, L2, Rule[I2, O2], HNil, In0, Out0] = `n/a`
+        : Aux[I, H :: T, L2, Rule[I2, O2], HNil, In0, Out0] = `n/a`
 
     // if R <: Rule and L1 empty and Acc non-empty move head of Acc to L2
     implicit def iterRule2[
@@ -125,7 +125,7 @@ object Join {
         H,
         T <: HList](
         implicit x: Aux[I, HNil, H :: L2, Rule[I2, O2], T, In0, Out0])
-      : Aux[I, HNil, L2, Rule[I2, O2], H :: T, In0, Out0] = `n/a`
+        : Aux[I, HNil, L2, Rule[I2, O2], H :: T, In0, Out0] = `n/a`
 
     // if R <: Rule and L1 and Acc empty set In and Out to tailswitches result
     implicit def terminateRule[
@@ -137,7 +137,7 @@ object Join {
         Out <: HList](
         implicit i: TailSwitch.Aux[I2, I2, O, O, I, HNil, In],
         o: TailSwitch.Aux[O, O, I2, I2, O2, HNil, Out])
-      : Aux[I, HNil, O, Rule[I2, O2], HNil, In, Out] = `n/a`
+        : Aux[I, HNil, O, Rule[I2, O2], HNil, In, Out] = `n/a`
   }
   abstract class Aux1 {
     // convert R to R :: HNil
@@ -148,6 +148,6 @@ object Join {
         R,
         Acc <: HList,
         Out <: HList](implicit x: Aux[I, L1, L2, R :: HNil, Acc, I, Out])
-      : Aux[I, L1, L2, R, Acc, I, Out] = `n/a`
+        : Aux[I, L1, L2, R, Acc, I, Out] = `n/a`
   }
 }

@@ -29,7 +29,7 @@ import yggdrasil._
 import com.precog.yggdrasil.execution.EvaluationContext
 import yggdrasil.test._
 
-trait PredicatePullupSpecs[M[+ _]]
+trait PredicatePullupSpecs[M[+_]]
     extends Specification
     with EvaluatorTestSupport[M] {
   import dag._

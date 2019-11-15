@@ -319,14 +319,14 @@ class ScObjectImpl protected (
       Project,
       TypeDefinitionMembers.ParameterlessNodes.Map]
   def getHardParameterlessSignatures
-    : TypeDefinitionMembers.ParameterlessNodes.Map = {
+      : TypeDefinitionMembers.ParameterlessNodes.Map = {
     hardParameterlessSignatures.getOrElseUpdate(
       getProject,
       TypeDefinitionMembers.ParameterlessNodes.build(this))
   }
 
   private val hardTypes
-    : mutable.WeakHashMap[Project, TypeDefinitionMembers.TypeNodes.Map] =
+      : mutable.WeakHashMap[Project, TypeDefinitionMembers.TypeNodes.Map] =
     new mutable.WeakHashMap[Project, TypeDefinitionMembers.TypeNodes.Map]
   def getHardTypes: TypeDefinitionMembers.TypeNodes.Map = {
     hardTypes.getOrElseUpdate(
@@ -335,7 +335,7 @@ class ScObjectImpl protected (
   }
 
   private val hardSignatures
-    : mutable.WeakHashMap[Project, TypeDefinitionMembers.SignatureNodes.Map] =
+      : mutable.WeakHashMap[Project, TypeDefinitionMembers.SignatureNodes.Map] =
     new mutable.WeakHashMap[Project, TypeDefinitionMembers.SignatureNodes.Map]
   def getHardSignatures: TypeDefinitionMembers.SignatureNodes.Map = {
     hardSignatures.getOrElseUpdate(

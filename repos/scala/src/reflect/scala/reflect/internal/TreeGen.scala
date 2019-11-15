@@ -916,9 +916,9 @@ abstract class TreeGen {
                 matchExpr)
             }
             var cnt = 0
-            val restDefs = for ((vname, tpt, pos) <- vars)
-              yield
-                atPos(pos) {
+            val restDefs =
+              for ((vname, tpt, pos) <- vars)
+                yield atPos(pos) {
                   cnt += 1
                   ValDef(
                     mods,

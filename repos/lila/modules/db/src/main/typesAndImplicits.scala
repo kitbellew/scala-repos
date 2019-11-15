@@ -40,11 +40,10 @@ trait Implicits extends Types {
         b sort {
           BSONDocument(
             (for (sorter ← sorters)
-              yield
-                sorter._1 -> BSONInteger(sorter._2 match {
-                  case api.SortOrder.Ascending  => 1
-                  case api.SortOrder.Descending => -1
-                })).toStream)
+              yield sorter._1 -> BSONInteger(sorter._2 match {
+                case api.SortOrder.Ascending  => 1
+                case api.SortOrder.Descending => -1
+              })).toStream)
         }
 
     def skip(nb: Int): QueryBuilder = b.options(b.options skip nb)

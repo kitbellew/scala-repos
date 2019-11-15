@@ -104,7 +104,7 @@ object Reflector {
   private[reflect] def createDescriptor(
       tpe: ScalaType,
       paramNameReader: ParameterNameReader = ParanamerReader)
-    : ObjectDescriptor = {
+      : ObjectDescriptor = {
     if (tpe.isPrimitive) {
       PrimitiveDescriptor(tpe.simpleName, tpe.fullName, tpe)
     } else {

@@ -218,7 +218,7 @@ class EhCacheModule extends Module {
 }
 
 @Singleton
-class CacheManagerProvider @Inject()(
+class CacheManagerProvider @Inject() (
     env: Environment,
     config: Configuration,
     lifecycle: ApplicationLifecycle)
@@ -285,7 +285,7 @@ private[play] case class EhCacheExistsException(msg: String, cause: Throwable)
     extends RuntimeException(msg, cause)
 
 @Singleton
-class EhCacheApi @Inject()(cache: Ehcache) extends CacheApi {
+class EhCacheApi @Inject() (cache: Ehcache) extends CacheApi {
 
   def set(key: String, value: Any, expiration: Duration) = {
     val element = new Element(key, value)

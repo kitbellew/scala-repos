@@ -22,7 +22,7 @@ object ForwarderService {
   }
 
   @Path("hello")
-  class PingResource @Inject()() {
+  class PingResource @Inject() () {
     @GET
     def index(): Response = {
       Response.ok().entity("Hi").build()

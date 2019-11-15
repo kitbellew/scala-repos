@@ -43,13 +43,13 @@ object JsonUtil {
       implicit M: Monad[Future]): Future[Validation[Seq[Throwable], JValue]] =
     parseSingleFromStream[Future](bc.fold(_ :: StreamT.empty, identity))
 
-  def parseSingleFromStream[M[+ _]: Monad](stream: StreamT[M, Array[Byte]])
-    : M[Validation[Seq[Throwable], JValue]] = {
+  def parseSingleFromStream[M[+_]: Monad](stream: StreamT[M, Array[Byte]])
+      : M[Validation[Seq[Throwable], JValue]] = {
     def rec(
         stream: StreamT[M, Array[Byte]],
         parser: AsyncParser): M[Validation[Seq[Throwable], JValue]] = {
       def handle(ap: AsyncParse, next: => M[Validation[Seq[Throwable], JValue]])
-        : M[Validation[Seq[Throwable], JValue]] = ap match {
+          : M[Validation[Seq[Throwable], JValue]] = ap match {
         case AsyncParse(errors, _) if errors.nonEmpty =>
           Failure(errors).point[M]
         case AsyncParse(_, values) if values.nonEmpty =>
@@ -75,7 +75,7 @@ object JsonUtil {
       implicit M: Monad[Future]): StreamT[Future, AsyncParse] =
     parseManyFromStream[Future](bc.fold(_ :: StreamT.empty, identity))
 
-  def parseManyFromStream[M[+ _]: Monad](
+  def parseManyFromStream[M[+_]: Monad](
       stream: StreamT[M, Array[Byte]]): StreamT[M, AsyncParse] = {
     // create a new stream, using the current stream and parser
     StreamT.unfoldM((stream, AsyncParser.stream())) {

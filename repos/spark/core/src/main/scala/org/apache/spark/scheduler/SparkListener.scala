@@ -369,7 +369,7 @@ private[spark] object StatsReportListener extends Logging {
   def extractDoubleDistribution(
       taskInfoMetrics: Seq[(TaskInfo, TaskMetrics)],
       getMetric: (TaskInfo, TaskMetrics) => Option[Double])
-    : Option[Distribution] = {
+      : Option[Distribution] = {
     Distribution(taskInfoMetrics.flatMap {
       case (info, metric) => getMetric(info, metric)
     })
@@ -379,7 +379,7 @@ private[spark] object StatsReportListener extends Logging {
   def extractLongDistribution(
       taskInfoMetrics: Seq[(TaskInfo, TaskMetrics)],
       getMetric: (TaskInfo, TaskMetrics) => Option[Long])
-    : Option[Distribution] = {
+      : Option[Distribution] = {
     extractDoubleDistribution(taskInfoMetrics, (info, metric) => {
       getMetric(info, metric).map(_.toDouble)
     })

@@ -56,7 +56,7 @@ object StripNamedNode {
     }
 
   def apply[P <: Platform[P], T](tail: TailProducer[P, T])
-    : (Map[Producer[P, Any], List[String]], TailProducer[P, T]) = {
+      : (Map[Producer[P, Any], List[String]], TailProducer[P, T]) = {
     val dagOpt = new DagOptimizer[P] {}
     // It must be a tail, but the optimizer doesn't retain that information
     val newTail = castTail(dagOpt.optimize(tail, dagOpt.RemoveNames))

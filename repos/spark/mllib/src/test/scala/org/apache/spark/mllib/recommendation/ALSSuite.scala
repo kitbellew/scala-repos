@@ -36,7 +36,7 @@ object ALSSuite {
       samplingRate: Double,
       implicitPrefs: Boolean,
       negativeWeights: Boolean)
-    : (java.util.List[Rating], Array[Double], Array[Double]) = {
+      : (java.util.List[Rating], Array[Double], Array[Double]) = {
     val (sampledRatings, trueRatings, truePrefs) = generateRatings(
       users,
       products,
@@ -58,7 +58,7 @@ object ALSSuite {
       implicitPrefs: Boolean = false,
       negativeWeights: Boolean = false,
       negativeFactors: Boolean = true)
-    : (Seq[Rating], BDM[Double], BDM[Double]) = {
+      : (Seq[Rating], BDM[Double], BDM[Double]) = {
     val rand = new Random(42)
 
     // Create a random matrix with uniform values from -1 to 1
@@ -269,8 +269,9 @@ class ALSSuite extends SparkFunSuite with MLlibTestSparkContext {
     val predictedRatings =
       if (bulkPredict) {
         val allRatings = new BDM[Double](users, products)
-        val usersProducts = for (u <- 0 until users; p <- 0 until products)
-          yield (u, p)
+        val usersProducts =
+          for (u <- 0 until users; p <- 0 until products)
+            yield (u, p)
         val userProductsRDD = sc.parallelize(usersProducts)
         model.predict(userProductsRDD).collect().foreach { elem =>
           allRatings(elem.user, elem.product) = elem.rating

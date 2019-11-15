@@ -49,7 +49,7 @@ abstract class ImportingTestCase
     "" // Use default temp directory
 
   override protected def getCurrentExternalProjectSettings
-    : ExternalProjectSettings = {
+      : ExternalProjectSettings = {
     val settings = new SbtProjectSettings
     val internalSdk = JavaAwareProjectJdkTableImpl.getInstanceEx.getInternalJdk
     settings.setJdk(internalSdk.getName)

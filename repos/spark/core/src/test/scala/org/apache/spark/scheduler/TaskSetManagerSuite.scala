@@ -916,7 +916,7 @@ class TaskSetManagerSuite
   private def createTaskResult(
       id: Int,
       accumUpdates: Seq[AccumulableInfo] = Seq.empty[AccumulableInfo])
-    : DirectTaskResult[Int] = {
+      : DirectTaskResult[Int] = {
     val valueSer = SparkEnv.get.serializer.newInstance()
     new DirectTaskResult[Int](valueSer.serialize(id), accumUpdates)
   }

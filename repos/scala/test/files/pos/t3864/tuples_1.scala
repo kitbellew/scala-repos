@@ -61,7 +61,7 @@ trait Tuples {
         _13: (M => MM) = identity[M] _,
         _14: (N => NN) = identity[N] _,
         _15: (O => OO) = identity[O] _)
-      : (AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, LL, MM, NN, OO) =
+        : (AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, LL, MM, NN, OO) =
       (
         _1(value._1),
         _2(value._2),
@@ -82,7 +82,7 @@ trait Tuples {
 
   implicit def ToTuple15W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O](
       t: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O))
-    : Tuple15W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O] =
+      : Tuple15W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O] =
     new { val value = t }
     with Tuple15W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O]
 
@@ -164,7 +164,7 @@ trait Tuples {
         _14: (N => NN) = identity[N] _,
         _15: (O => OO) = identity[O] _,
         _16: (P => PP) = identity[P] _)
-      : (AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, LL, MM, NN, OO, PP) =
+        : (AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, LL, MM, NN, OO, PP) =
       (
         _1(value._1),
         _2(value._2),
@@ -186,7 +186,7 @@ trait Tuples {
 
   implicit def ToTuple16W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P](
       t: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P))
-    : Tuple16W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P] =
+      : Tuple16W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P] =
     new { val value = t }
     with Tuple16W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P]
 
@@ -289,7 +289,7 @@ trait Tuples {
         _15: (O => OO) = identity[O] _,
         _16: (P => PP) = identity[P] _,
         _17: (Q => QQ) = identity[Q] _)
-      : (AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, LL, MM, NN, OO, PP, QQ) =
+        : (AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, LL, MM, NN, OO, PP, QQ) =
       (
         _1(value._1),
         _2(value._2),
@@ -312,7 +312,7 @@ trait Tuples {
 
   implicit def ToTuple17W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q](
       t: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q))
-    : Tuple17W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q] =
+      : Tuple17W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q] =
     new { val value = t }
     with Tuple17W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q]
 
@@ -321,7 +321,7 @@ trait Tuples {
         Tuple18[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R]] {
     def fold[Z](
         f: => (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => Z)
-      : Z = {
+        : Z = {
       import value._;
       f(
         _1,
@@ -462,7 +462,7 @@ trait Tuples {
 
   implicit def ToTuple18W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R](
       t: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R))
-    : Tuple18W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R] =
+      : Tuple18W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R] =
     new { val value = t }
     with Tuple18W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R]
 
@@ -471,7 +471,7 @@ trait Tuples {
         Tuple19[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S]] {
     def fold[Z](
         f: => (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => Z)
-      : Z = {
+        : Z = {
       import value._;
       f(
         _1,
@@ -637,7 +637,7 @@ trait Tuples {
       Q,
       R,
       S](t: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S))
-    : Tuple19W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S] =
+      : Tuple19W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S] =
     new { val value = t }
     with Tuple19W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S]
 
@@ -646,7 +646,7 @@ trait Tuples {
         Tuple20[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T]] {
     def fold[Z](
         f: => (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => Z)
-      : Z = {
+        : Z = {
       import value._;
       f(
         _1,
@@ -820,7 +820,7 @@ trait Tuples {
       R,
       S,
       T](t: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T))
-    : Tuple20W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T] =
+      : Tuple20W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T] =
     new { val value = t }
     with Tuple20W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T]
 
@@ -1051,7 +1051,28 @@ trait Tuples {
       S,
       T,
       U](t: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U))
-    : Tuple21W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U] =
+      : Tuple21W[
+        A,
+        B,
+        C,
+        D,
+        E,
+        F,
+        G,
+        H,
+        I,
+        J,
+        K,
+        L,
+        M,
+        N,
+        O,
+        P,
+        Q,
+        R,
+        S,
+        T,
+        U] =
     new { val value = t }
     with Tuple21W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U]
 
@@ -1293,29 +1314,29 @@ trait Tuples {
       T,
       U,
       V](t: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V))
-    : Tuple22W[
-      A,
-      B,
-      C,
-      D,
-      E,
-      F,
-      G,
-      H,
-      I,
-      J,
-      K,
-      L,
-      M,
-      N,
-      O,
-      P,
-      Q,
-      R,
-      S,
-      T,
-      U,
-      V] =
+      : Tuple22W[
+        A,
+        B,
+        C,
+        D,
+        E,
+        F,
+        G,
+        H,
+        I,
+        J,
+        K,
+        L,
+        M,
+        N,
+        O,
+        P,
+        Q,
+        R,
+        S,
+        T,
+        U,
+        V] =
     new { val value = t } with Tuple22W[
       A,
       B,

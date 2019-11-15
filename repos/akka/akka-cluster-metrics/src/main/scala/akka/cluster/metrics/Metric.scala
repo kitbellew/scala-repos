@@ -42,7 +42,8 @@ final case class Metric private[metrics] (
         case None if latest.average.isDefined ⇒
           copy(value = latest.value, average = latest.average)
         case _ ⇒ copy(value = latest.value)
-      } else this
+      }
+    else this
 
   /**
     * The numerical value of the average, if defined, otherwise the latest value
@@ -139,17 +140,16 @@ object StandardMetrics {
       * @return if possible a tuple matching the HeapMemory constructor parameters
       */
     def unapply(nodeMetrics: NodeMetrics)
-      : Option[(Address, Long, Long, Long, Option[Long])] = {
+        : Option[(Address, Long, Long, Long, Option[Long])] = {
       for {
         used ← nodeMetrics.metric(HeapMemoryUsed)
         committed ← nodeMetrics.metric(HeapMemoryCommitted)
-      } yield
-        (
-          nodeMetrics.address,
-          nodeMetrics.timestamp,
-          used.smoothValue.longValue,
-          committed.smoothValue.longValue,
-          nodeMetrics.metric(HeapMemoryMax).map(_.smoothValue.longValue))
+      } yield (
+        nodeMetrics.address,
+        nodeMetrics.timestamp,
+        used.smoothValue.longValue,
+        committed.smoothValue.longValue,
+        nodeMetrics.metric(HeapMemoryMax).map(_.smoothValue.longValue))
     }
   }
 
@@ -200,14 +200,13 @@ object StandardMetrics {
       (Address, Long, Option[Double], Option[Double], Option[Double], Int)] = {
       for {
         processors ← nodeMetrics.metric(Processors)
-      } yield
-        (
-          nodeMetrics.address,
-          nodeMetrics.timestamp,
-          nodeMetrics.metric(SystemLoadAverage).map(_.smoothValue),
-          nodeMetrics.metric(CpuCombined).map(_.smoothValue),
-          nodeMetrics.metric(CpuStolen).map(_.smoothValue),
-          processors.value.intValue)
+      } yield (
+        nodeMetrics.address,
+        nodeMetrics.timestamp,
+        nodeMetrics.metric(SystemLoadAverage).map(_.smoothValue),
+        nodeMetrics.metric(CpuCombined).map(_.smoothValue),
+        nodeMetrics.metric(CpuStolen).map(_.smoothValue),
+        processors.value.intValue)
     }
   }
 

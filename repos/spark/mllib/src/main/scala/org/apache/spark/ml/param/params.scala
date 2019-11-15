@@ -581,7 +581,7 @@ class IntArrayParam(
   */
 @Since("1.2.0")
 @Experimental
-case class ParamPair[T] @Since("1.2.0")(
+case class ParamPair[T] @Since("1.2.0") (
     @Since("1.2.0") param: Param[T],
     @Since("1.2.0") value: T) {
   // This is *the* place Param.validate is called.  Whenever a parameter is specified, we should

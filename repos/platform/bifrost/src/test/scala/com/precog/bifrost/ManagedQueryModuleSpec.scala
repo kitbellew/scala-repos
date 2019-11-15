@@ -64,7 +64,7 @@ object ManagedQueryTestSupport {
   // If we have a natural transformation from M ~> Future, then we can go
   // through Future to get to TestFuture. This will let us use completeJob
   // with a StreamT[TestFuture, ?] by using `sink` in ManagedQueryModule.
-  implicit def transformThroughFuture[M[+ _]](implicit t: M ~> Future) =
+  implicit def transformThroughFuture[M[+_]](implicit t: M ~> Future) =
     new (M ~> TestFuture) {
       def apply[A](ma: M[A]): TestFuture[A] =
         WriterT(t(ma) map (Tag(None) -> _))
@@ -120,7 +120,7 @@ class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
 
   // Performs an incredibly intense compuation that requires numTicks ticks.
   def execute(numTicks: Int, ticksToTimeout: Option[Int] = None)
-    : Future[(JobId, AtomicInteger, Future[Int])] = {
+      : Future[(JobId, AtomicInteger, Future[Int])] = {
     val timeout =
       ticksToTimeout map { t =>
         Duration(clock.duration * t, TimeUnit.MILLISECONDS)

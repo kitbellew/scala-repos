@@ -125,7 +125,7 @@ object Iteratee {
     def apply[B, That]()(
         implicit t: E => TraversableOnce[B],
         bf: scala.collection.generic.CanBuildFrom[E, B, That])
-      : Iteratee[E, That]
+        : Iteratee[E, That]
   }
 
   /**
@@ -144,7 +144,7 @@ object Iteratee {
     def apply[B, That]()(
         implicit t: E => TraversableOnce[B],
         bf: scala.collection.generic.CanBuildFrom[E, B, That])
-      : Iteratee[E, That] = {
+        : Iteratee[E, That] = {
       fold[E, Seq[E]](Seq.empty) { (els, chunk) =>
         chunk +: els
       }(dec).map { elts =>

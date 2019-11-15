@@ -37,7 +37,7 @@ class TaskBuilder(
       offer: Offer,
       resourceMatchOpt: Option[ResourceMatcher.ResourceMatch],
       volumeMatchOpt: Option[PersistentVolumeMatcher.VolumeMatch] = None)
-    : Option[(TaskInfo, Seq[Int])] = {
+      : Option[(TaskInfo, Seq[Int])] = {
 
     def logInsufficientResources(): Unit = {
       val appHostPorts =
@@ -107,7 +107,7 @@ class TaskBuilder(
       offer: Offer,
       resourceMatch: ResourceMatch,
       volumeMatchOpt: Option[PersistentVolumeMatcher.VolumeMatch])
-    : Some[(TaskInfo, Seq[Int])] = {
+      : Some[(TaskInfo, Seq[Int])] = {
 
     val executor: Executor =
       if (app.executor == "") {
@@ -319,8 +319,9 @@ object TaskBuilder {
       host: Option[String],
       ports: Seq[Int],
       envPrefix: Option[String]): CommandInfo = {
-    val containerPorts = for (pms <- app.portMappings)
-      yield pms.map(_.containerPort)
+    val containerPorts =
+      for (pms <- app.portMappings)
+        yield pms.map(_.containerPort)
     val declaredPorts = containerPorts.getOrElse(app.portNumbers)
     val envMap: Map[String, String] =
       taskContextEnv(app, taskId) ++ addPrefix(

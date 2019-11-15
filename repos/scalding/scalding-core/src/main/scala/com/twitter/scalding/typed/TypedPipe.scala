@@ -665,7 +665,7 @@ trait TypedPipe[+T] extends Serializable {
     * and otherwise just read from it going forward, use this.
     */
   def make[U >: T](dest: Source with TypedSink[T] with TypedSource[U])
-    : Execution[TypedPipe[U]] =
+      : Execution[TypedPipe[U]] =
     Execution.getMode.flatMap { mode =>
       try {
         dest.validateTaps(mode)
@@ -771,7 +771,7 @@ trait TypedPipe[+T] extends Serializable {
   /** Do an leftjoin without shuffling this TypedPipe, but replicating argument to all tasks */
   def hashLeftJoin[K, V, W](smaller: HashJoinable[K, W])(
       implicit ev: TypedPipe[T] <:< TypedPipe[(K, V)])
-    : TypedPipe[(K, (V, Option[W]))] =
+      : TypedPipe[(K, (V, Option[W]))] =
     hashCogroup[K, V, W, (V, Option[W])](smaller)(Joiner.hashLeft2)
 
   /**
@@ -871,7 +871,7 @@ final case object EmptyTypedPipe extends TypedPipe[Nothing] {
   override def hashCogroup[K, V, W, R](smaller: HashJoinable[K, W])(
       joiner: (K, V, Iterable[W]) => Iterator[R])(
       implicit ev: TypedPipe[Nothing] <:< TypedPipe[(K, V)])
-    : TypedPipe[(K, R)] =
+      : TypedPipe[(K, R)] =
     this
 }
 
@@ -1077,7 +1077,7 @@ class TypedPipeInst[T] private[scalding] (
     * filtering or mapping
     */
   private[scalding] def openIfHead
-    : Option[(Tap[_, _, _], Fields, FlatMapFn[T])] =
+      : Option[(Tap[_, _, _], Fields, FlatMapFn[T])] =
     // Keep this local
     if (inpipe.getPrevious.isEmpty) {
       val srcs = localFlowDef.getSources

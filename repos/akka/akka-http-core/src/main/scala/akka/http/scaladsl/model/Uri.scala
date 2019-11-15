@@ -557,8 +557,7 @@ object Uri {
     def head: Head
     def tail: Path
     def length: Int
-    def charCount
-      : Int // count of decoded (!) chars, i.e. the ones contained directly in this high-level model
+    def charCount: Int // count of decoded (!) chars, i.e. the ones contained directly in this high-level model
     def ::(c: Char): Path = { require(c == '/'); Path.Slash(this) }
     def ::(segment: String): Path
     def +(pathString: String): Path = this ++ Path(pathString)
@@ -909,7 +908,8 @@ object Uri {
           decode(string, charset, lastPercentSignIndexPlus3)(sb)
 
         case x ⇒ decode(string, charset, ix + 1)(sb.append(x))
-      } else sb.toString
+      }
+    else sb.toString
 
   private[http] def normalizeScheme(scheme: String): String = {
     @tailrec

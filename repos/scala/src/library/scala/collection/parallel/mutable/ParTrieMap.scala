@@ -195,6 +195,6 @@ object ParTrieMap extends ParMapFactory[ParTrieMap] {
     new ParTrieMap[K, V]
 
   implicit def canBuildFrom[K, V]
-    : CanCombineFrom[Coll, (K, V), ParTrieMap[K, V]] =
+      : CanCombineFrom[Coll, (K, V), ParTrieMap[K, V]] =
     new CanCombineFromMap[K, V]
 }

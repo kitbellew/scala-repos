@@ -424,7 +424,7 @@ abstract class KafkaShardIngestActor(
         input: List[(Long, EventMessage)],
         batch: Vector[(Long, EventMessage)],
         checkpoint: YggCheckpoint)
-      : (Vector[(Long, EventMessage)], YggCheckpoint) = {
+        : (Vector[(Long, EventMessage)], YggCheckpoint) = {
 
       input match {
         case Nil =>
@@ -495,8 +495,8 @@ abstract class KafkaShardIngestActor(
         consumer.fetch(req)
       }
 
-      val eventMessages
-        : List[Validation[Error, (Long, EventMessage.EventMessageExtraction)]] =
+      val eventMessages: List[
+        Validation[Error, (Long, EventMessage.EventMessageExtraction)]] =
         msTime({ t =>
           logger.debug(
             "Raw kafka deserialization of %d events in %d ms"

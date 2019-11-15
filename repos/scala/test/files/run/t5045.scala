@@ -8,7 +8,7 @@ object Test extends App {
   val dateP2 =
     """(\d\d\d\d)-(\d\d)-(\d\d)""" r ("year", "month", "day") unanchored
   val dateP3 = new Regex("""(\d\d\d\d)-(\d\d)-(\d\d)""", "year", "month", "day")
-  with UnanchoredRegex
+    with UnanchoredRegex
 
   val yearStr = "2011"
   val dateStr = List(yearStr, "07", "15").mkString("-")

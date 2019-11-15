@@ -18,7 +18,7 @@ object DeltaSimRankRDD {
       g: Graph[Int, Int],
       prevDelta: RDD[((VertexId, VertexId), Double)],
       outDegreeMap: scala.collection.Map[VertexId, Long])
-    : RDD[((VertexId, VertexId), Double)] = {
+      : RDD[((VertexId, VertexId), Double)] = {
     // No changes in last iteration -> no changes this iteration.
     if (prevDelta.count() == 0) return prevDelta
 

@@ -80,7 +80,7 @@ object ReflectSpec extends Specification {
     def getQuack: String
   }
 
-  class JavaDuckAdapter @Inject()(underlying: JavaDuck) extends Duck {
+  class JavaDuckAdapter @Inject() (underlying: JavaDuck) extends Duck {
     def quack = underlying.getQuack
   }
 
@@ -96,7 +96,7 @@ object ReflectSpec extends Specification {
     def getQuack = "java quack"
   }
 
-  class JavaDuckDelegate @Inject()(delegate: Duck) extends JavaDuck {
+  class JavaDuckDelegate @Inject() (delegate: Duck) extends JavaDuck {
     def getQuack = delegate.quack
   }
 

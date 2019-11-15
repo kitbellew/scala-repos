@@ -60,18 +60,18 @@ import org.specs2.mutable._
 
 import blueeyes.json._
 
-trait EvaluatorTestSupport[M[+ _]]
+trait EvaluatorTestSupport[M[+_]]
     extends StdLibEvaluatorStack[M]
     with EchoHttpClientModule[M]
     with BaseBlockStoreTestModule[M]
     with IdSourceScannerModule {
   outer =>
 
-  def Evaluator[N[+ _]](N0: Monad[N])(implicit mn: M ~> N, nm: N ~> M) =
+  def Evaluator[N[+_]](N0: Monad[N])(implicit mn: M ~> N, nm: N ~> M) =
     new Evaluator[N](N0)(mn, nm) {
       val report = new LoggingQueryLogger[N, instructions.Line]
-      with ExceptionQueryLogger[N, instructions.Line]
-      with TimingQueryLogger[N, instructions.Line] {
+        with ExceptionQueryLogger[N, instructions.Line]
+        with TimingQueryLogger[N, instructions.Line] {
         val M = N0
       }
       class YggConfig extends EvaluatorConfig {
@@ -205,7 +205,7 @@ trait EvaluatorTestSupport[M[+ _]]
   object yggConfig extends YggConfig
 }
 
-trait EvaluatorSpecs[M[+ _]]
+trait EvaluatorSpecs[M[+_]]
     extends Specification
     with EvaluatorTestSupport[M]
     with LongIdMemoryDatasetConsumer[M] {

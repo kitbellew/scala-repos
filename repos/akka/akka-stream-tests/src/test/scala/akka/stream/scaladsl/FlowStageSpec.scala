@@ -379,7 +379,7 @@ class FlowStageSpec
               expectedNumberOfElements match {
                 case Some(expected) if count != expected ⇒
                   throw new RuntimeException(s"Expected $expected, got $count")
-                  with NoStackTrace
+                    with NoStackTrace
                 case _ ⇒ ctx.finish()
               }
           })

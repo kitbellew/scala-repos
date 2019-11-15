@@ -38,9 +38,8 @@ trait Tabulator {
         val h = 1 max padded.size /% groupSize
         val cols = (padded grouped h).toList
         for (i <- 0 until h)
-          yield
-            for (j <- 0 until groupSize)
-              yield if (i < cols(j).size) cols(j)(i) else ""
+          yield for (j <- 0 until groupSize)
+            yield if (i < cols(j).size) cols(j)(i) else ""
       }
     grouped
   }
@@ -77,9 +76,9 @@ trait VariColumnTabulator extends Tabulator {
       else if (xwise) resulting((items grouped ncols).toSeq)
       else {
         val cols = (items grouped nrows).toList
-        val rows = for (i <- 0 until nrows)
-          yield
-            for (j <- 0 until ncols)
+        val rows =
+          for (i <- 0 until nrows)
+            yield for (j <- 0 until ncols)
               yield if (j < cols.size && i < cols(j).size) cols(j)(i) else ""
         resulting(rows)
       }

@@ -104,7 +104,7 @@ final class EMLDAOptimizer extends LDAOptimizer {
   private[clustering] var topicConcentration: Double = 0
   private[clustering] var checkpointInterval: Int = 10
   private var graphCheckpointer
-    : PeriodicGraphCheckpointer[TopicCounts, TokenCount] = null
+      : PeriodicGraphCheckpointer[TopicCounts, TokenCount] = null
 
   /**
     * Compute bipartite term/doc graph.
@@ -190,7 +190,7 @@ final class EMLDAOptimizer extends LDAOptimizer {
 
     val N_k = globalTopicTotals
     val sendMsg
-      : EdgeContext[TopicCounts, TokenCount, (Boolean, TopicCounts)] => Unit =
+        : EdgeContext[TopicCounts, TokenCount, (Boolean, TopicCounts)] => Unit =
       (edgeContext) => {
         // Compute N_{wj} gamma_{wjk}
         val N_wj = edgeContext.attr

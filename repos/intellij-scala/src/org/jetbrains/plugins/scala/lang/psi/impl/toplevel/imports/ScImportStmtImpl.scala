@@ -183,7 +183,7 @@ class ScImportStmtImpl private (
             case s: ScalaResolveResult =>
               @tailrec
               def getFirstReference(ref: ScStableCodeReferenceElement)
-                : ScStableCodeReferenceElement = {
+                  : ScStableCodeReferenceElement = {
                 ref.qualifier match {
                   case Some(qual) => getFirstReference(qual)
                   case _          => ref

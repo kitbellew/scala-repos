@@ -54,6 +54,6 @@ object mapIntIntPermutation {
   implicit val MapIntIntGroup: Group[Map[Int, Int]] = new MapIntIntGroup
   implicit def MapIntIntSeqPartialAction[A, CC[A] <: SeqLike[A, CC[A]]](
       implicit cbf: CanBuildFrom[CC[A], A, CC[A]])
-    : PartialAction[CC[A], Map[Int, Int]] =
+      : PartialAction[CC[A], Map[Int, Int]] =
     new MapIntIntSeqPartialAction[A, CC[A]]
 }

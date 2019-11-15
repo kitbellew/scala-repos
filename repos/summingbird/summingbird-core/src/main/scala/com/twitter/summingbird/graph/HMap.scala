@@ -46,7 +46,7 @@ sealed abstract class HMap[K[_], V[_]] {
   def contains[T](id: K[T]): Boolean = get(id).isDefined
 
   def filter(pred: GenFunction[Pair, ({ type BoolT[T] = Boolean })#BoolT])
-    : HMap[K, V] = {
+      : HMap[K, V] = {
     val filtered =
       map.asInstanceOf[Map[K[Any], V[Any]]].filter(pred.apply[Any])
     HMap.from[K, V](filtered.asInstanceOf[Map[K[_], V[_]]])

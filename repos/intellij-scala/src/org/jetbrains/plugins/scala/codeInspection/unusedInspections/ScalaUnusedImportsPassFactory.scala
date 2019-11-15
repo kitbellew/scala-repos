@@ -46,7 +46,7 @@ class ScalaUnusedImportsPassFactory(
       file: PsiFile,
       document: Document,
       highlightInfoProcessor: HighlightInfoProcessor)
-    : TextEditorHighlightingPass = {
+      : TextEditorHighlightingPass = {
     create(file, document, null, highlightInfoProcessor)
   }
 
@@ -55,7 +55,7 @@ class ScalaUnusedImportsPassFactory(
       document: Document,
       editor: Editor,
       highlightInfoProcessor: HighlightInfoProcessor)
-    : TextEditorHighlightingPass = {
+      : TextEditorHighlightingPass = {
     new ScalaUnusedImportPass(file, editor, document, highlightInfoProcessor)
   }
 }

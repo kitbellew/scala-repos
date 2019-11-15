@@ -292,7 +292,7 @@ object Formats {
       pattern: String,
       timeZone: org.joda.time.DateTimeZone =
         org.joda.time.DateTimeZone.getDefault)
-    : Formatter[org.joda.time.DateTime] =
+      : Formatter[org.joda.time.DateTime] =
     new Formatter[org.joda.time.DateTime] {
 
       val formatter = org.joda.time.format.DateTimeFormat

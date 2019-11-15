@@ -78,7 +78,7 @@ class HttpEventModule(httpEventConfiguration: HttpEventConfiguration)
       conf: HttpEventConfiguration,
       system: ActorSystem,
       @Named(STORE_EVENT_SUBSCRIBERS) store: EntityStore[EventSubscribers])
-    : ActorRef = {
+      : ActorRef = {
     implicit val timeout = HttpEventModule.timeout
     val local_ip = java.net.InetAddress.getLocalHost.getHostAddress
 

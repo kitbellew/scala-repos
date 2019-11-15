@@ -115,7 +115,7 @@ class ConstructorAnnotatorTest extends SimpleTestCase {
   //new AA[Int](0)
 
   def messages(@Language(value = "Scala", prefix = Header) code: String)
-    : List[Message] = {
+      : List[Message] = {
     val annotator = new ConstructorAnnotator {}
     val mock = new AnnotatorHolderMock
 

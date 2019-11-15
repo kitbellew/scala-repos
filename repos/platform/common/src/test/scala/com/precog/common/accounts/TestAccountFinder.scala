@@ -28,7 +28,7 @@ import org.joda.time.DateTime
 import scalaz._
 import scalaz.syntax.monad._
 
-class TestAccountFinder[M[+ _]](
+class TestAccountFinder[M[+_]](
     accountIds: Map[APIKey, AccountId],
     accounts: Map[AccountId, Account])(implicit val M: Monad[M])
     extends AccountFinder[M] {
@@ -45,7 +45,7 @@ class TestAccountFinder[M[+ _]](
 object TestAccounts {
   def newAccountId() = java.util.UUID.randomUUID.toString.toUpperCase
 
-  def createAccount[M[+ _]: Monad](
+  def createAccount[M[+_]: Monad](
       email: String,
       password: String,
       creationDate: DateTime,

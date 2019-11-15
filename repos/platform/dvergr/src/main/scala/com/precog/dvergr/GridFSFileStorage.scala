@@ -40,7 +40,7 @@ object GridFSFileStorage {
 
   private val ServerAndPortPattern = "(.+):(.+)".r
 
-  def apply[M[+ _]: Monad](config: Configuration): GridFSFileStorage[M] = {
+  def apply[M[+_]: Monad](config: Configuration): GridFSFileStorage[M] = {
 
     // Shamefully ripped off from BlueEyes.
 
@@ -62,7 +62,7 @@ object GridFSFileStorage {
     apply(mongo.getDB(config[String]("database")))
   }
 
-  def apply[M[+ _]](db: DB)(implicit M0: Monad[M]) = new GridFSFileStorage[M] {
+  def apply[M[+_]](db: DB)(implicit M0: Monad[M]) = new GridFSFileStorage[M] {
     val M = M0
     val gridFS = new GridFS(db)
   }
@@ -72,7 +72,7 @@ object GridFSFileStorage {
   * A `FileStorage` implementation that uses Mongo's GridFS to store and
   * retrieve files.
   */
-trait GridFSFileStorage[M[+ _]] extends FileStorage[M] {
+trait GridFSFileStorage[M[+_]] extends FileStorage[M] {
   import GridFSFileStorage._
   import scalaz.syntax.monad._
 

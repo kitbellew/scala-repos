@@ -27,7 +27,7 @@ class ScImportExprStubImpl[ParentPsi <: PsiElement](
   var referenceText: StringRef = StringRef.fromString("")
   var singleWildcard: Boolean = _
   private var myReference
-    : SofterReference[Option[ScStableCodeReferenceElement]] = null
+      : SofterReference[Option[ScStableCodeReferenceElement]] = null
 
   def this(
       parent: StubElement[ParentPsi],

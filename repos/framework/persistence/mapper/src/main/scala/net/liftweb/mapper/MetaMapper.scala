@@ -123,7 +123,7 @@ object MapperRules extends Factory {
     * current request
     */
   val displayNameCalculator
-    : FactoryMaker[(BaseMapper, Locale, String) => String] =
+      : FactoryMaker[(BaseMapper, Locale, String) => String] =
     new FactoryMaker[(BaseMapper, Locale, String) => String](
       (m: BaseMapper, l: Locale, name: String) => name) {}
 
@@ -456,7 +456,7 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
       fields: Seq[SelectableField],
       conn: SuperConnection,
       by: QueryParam[A]*)
-    : (String, Box[Long], Box[Long], List[QueryParam[A]]) = {
+      : (String, Box[Long], Box[Long], List[QueryParam[A]]) = {
     val bl = by.toList ::: addlQueryParams.get
     val selectStatement =
       "SELECT " + distinct(by) + fields.map(_.dbSelectString).mkString(", ") +
@@ -1228,51 +1228,50 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
       for {
         pos <- (1 to colCnt).toList
         colName = meta.getColumnName(pos).toLowerCase
-      } yield
-        columnNameToMappee.get(colName) match {
-          case None =>
-            val colType = meta.getColumnType(pos)
+      } yield columnNameToMappee.get(colName) match {
+        case None =>
+          val colType = meta.getColumnType(pos)
 
-            Box(mappedColumns.get(colName)).flatMap { fieldInfo =>
-              val setTo = {
-                val tField =
-                  fieldInfo.invoke(this).asInstanceOf[MappedField[AnyRef, A]]
+          Box(mappedColumns.get(colName)).flatMap { fieldInfo =>
+            val setTo = {
+              val tField =
+                fieldInfo.invoke(this).asInstanceOf[MappedField[AnyRef, A]]
 
-                Some(colType match {
-                  case Types.INTEGER | Types.BIGINT => {
-                    val bsl = tField.buildSetLongValue(fieldInfo, colName)
-                    (rs: ResultSet, pos: Int, objInst: A) =>
-                      bsl(objInst, rs.getLong(pos), rs.wasNull)
+              Some(colType match {
+                case Types.INTEGER | Types.BIGINT => {
+                  val bsl = tField.buildSetLongValue(fieldInfo, colName)
+                  (rs: ResultSet, pos: Int, objInst: A) =>
+                    bsl(objInst, rs.getLong(pos), rs.wasNull)
+                }
+                case Types.VARCHAR => {
+                  val bsl = tField.buildSetStringValue(fieldInfo, colName)
+                  (rs: ResultSet, pos: Int, objInst: A) =>
+                    bsl(objInst, rs.getString(pos))
+                }
+                case Types.DATE | Types.TIME | Types.TIMESTAMP =>
+                  val bsl = tField.buildSetDateValue(fieldInfo, colName)
+                  (rs: ResultSet, pos: Int, objInst: A) =>
+                    bsl(objInst, rs.getTimestamp(pos))
+                case Types.BOOLEAN | Types.BIT => {
+                  val bsl = tField.buildSetBooleanValue(fieldInfo, colName)
+                  (rs: ResultSet, pos: Int, objInst: A) =>
+                    bsl(objInst, rs.getBoolean(pos), rs.wasNull)
+                }
+                case _ => { (rs: ResultSet, pos: Int, objInst: A) =>
+                  {
+                    val res = rs.getObject(pos)
+                    findApplier(colName, res).foreach(f => f(objInst, res))
                   }
-                  case Types.VARCHAR => {
-                    val bsl = tField.buildSetStringValue(fieldInfo, colName)
-                    (rs: ResultSet, pos: Int, objInst: A) =>
-                      bsl(objInst, rs.getString(pos))
-                  }
-                  case Types.DATE | Types.TIME | Types.TIMESTAMP =>
-                    val bsl = tField.buildSetDateValue(fieldInfo, colName)
-                    (rs: ResultSet, pos: Int, objInst: A) =>
-                      bsl(objInst, rs.getTimestamp(pos))
-                  case Types.BOOLEAN | Types.BIT => {
-                    val bsl = tField.buildSetBooleanValue(fieldInfo, colName)
-                    (rs: ResultSet, pos: Int, objInst: A) =>
-                      bsl(objInst, rs.getBoolean(pos), rs.wasNull)
-                  }
-                  case _ => { (rs: ResultSet, pos: Int, objInst: A) =>
-                    {
-                      val res = rs.getObject(pos)
-                      findApplier(colName, res).foreach(f => f(objInst, res))
-                    }
-                  }
-                })
-              }
-
-              columnNameToMappee(colName) = Box(setTo)
-              setTo
+                }
+              })
             }
 
-          case Some(of) => of
-        }
+            columnNameToMappee(colName) = Box(setTo)
+            setTo
+          }
+
+        case Some(of) => of
+      }
     }
 
   def createInstance(
@@ -2547,10 +2546,11 @@ trait KeyedMetaMapper[Type, A <: KeyedMapper[Type, A]]
     * don't have to implement new methods when I commit the CRUD snippets code.
     */
   def objFromIndexedParam: Box[A] = {
-    val found = for (req <- S.request.toList;
-                     (param, value :: _) <- req.params;
-                     fh <- mappedFieldList if fh.field.dbIndexed_? == true &&
-                       fh.name.equals(param)) yield find(value)
+    val found =
+      for (req <- S.request.toList;
+           (param, value :: _) <- req.params;
+           fh <- mappedFieldList if fh.field.dbIndexed_? == true &&
+             fh.name.equals(param)) yield find(value)
 
     found.filter(obj =>
       obj match {

@@ -264,14 +264,14 @@ class Task[+A](val get: Future[Throwable \/ A]) {
   def unsafePerformRetryAccumulating(
       delays: Seq[Duration],
       p: (Throwable => Boolean) = _.isInstanceOf[Exception])
-    : Task[(A, List[Throwable])] =
+      : Task[(A, List[Throwable])] =
     unsafeRetryInternal(delays, p, true)
 
   @deprecated("use unsafePerformRetryAccumulating", "7.2")
   def retryAccumulating(
       delays: Seq[Duration],
       p: (Throwable => Boolean) = _.isInstanceOf[Exception])
-    : Task[(A, List[Throwable])] =
+      : Task[(A, List[Throwable])] =
     unsafePerformRetryAccumulating(delays, p)
 
   /**
@@ -328,7 +328,9 @@ object Task {
     with BindRec[Task]
     with Catchable[Task]
     with MonadError[Task, Throwable] = new Nondeterminism[Task]
-  with BindRec[Task] with Catchable[Task] with MonadError[Task, Throwable] {
+    with BindRec[Task]
+    with Catchable[Task]
+    with MonadError[Task, Throwable] {
     val F = Nondeterminism[Future]
     def point[A](a: => A) = Task.point(a)
     def bind[A, B](a: Task[A])(f: A => Task[B]): Task[B] =
@@ -387,7 +389,7 @@ object Task {
   /** Create a `Task` that will evaluate `a` using the given `ExecutorService`. */
   def apply[A](a: => A)(
       implicit pool: ExecutorService = Strategy.DefaultExecutorService)
-    : Task[A] =
+      : Task[A] =
     new Task(Future(Try(a))(pool))
 
   /**
@@ -398,7 +400,7 @@ object Task {
     */
   def unsafeStart[A](a: => A)(
       implicit pool: ExecutorService = Strategy.DefaultExecutorService)
-    : Task[A] =
+      : Task[A] =
     new Task(Future(Task.Try(a))(pool).unsafeStart)
 
   /**
@@ -409,7 +411,7 @@ object Task {
     */
   def fork[A](a: => Task[A])(
       implicit pool: ExecutorService = Strategy.DefaultExecutorService)
-    : Task[A] =
+      : Task[A] =
     apply(a).join
 
   /**
@@ -423,7 +425,7 @@ object Task {
 
   def schedule[A](a: => A, delay: Duration)(
       implicit pool: ScheduledExecutorService = Strategy.DefaultTimeoutScheduler)
-    : Task[A] = new Task(Future.schedule(Try(a), delay))
+      : Task[A] = new Task(Future.schedule(Try(a), delay))
 
   /**
     * Like `Nondeterminism[Task].gatherUnordered`, but if `exceptionCancels` is true,

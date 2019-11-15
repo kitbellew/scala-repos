@@ -915,8 +915,8 @@ private[stream] abstract class MaterializerSession(
     new ju.HashMap[InPort, AnyRef] :: Nil
   private var publishersStack: List[ju.Map[OutPort, Publisher[Any]]] =
     new ju.HashMap[OutPort, Publisher[Any]] :: Nil
-  private var matValSrcStack
-    : List[ju.Map[MaterializedValueNode, List[MaterializedValueSource[Any]]]] =
+  private var matValSrcStack: List[
+    ju.Map[MaterializedValueNode, List[MaterializedValueSource[Any]]]] =
     new ju.HashMap[MaterializedValueNode, List[MaterializedValueSource[Any]]] :: Nil
 
   /*
@@ -934,7 +934,7 @@ private[stream] abstract class MaterializerSession(
     publishersStack.head
   private def currentLayout: Module = moduleStack.head
   private def matValSrc
-    : ju.Map[MaterializedValueNode, List[MaterializedValueSource[Any]]] =
+      : ju.Map[MaterializedValueNode, List[MaterializedValueSource[Any]]] =
     matValSrcStack.head
 
   // Enters a copied module and establishes a scope that prevents internals to leak out and interfere with copies

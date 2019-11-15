@@ -203,7 +203,7 @@ class ScalaChangeSignatureDialog(
   protected override def getTableEditor(
       t: JTable,
       item: ParameterTableModelItemBase[ScalaParameterInfo])
-    : JBTableRowEditor = {
+      : JBTableRowEditor = {
     val scalaItem = item match {
       case si: ScalaParameterTableModelItem => si
       case _                                => throw new IllegalArgumentException
@@ -363,7 +363,7 @@ class ScalaChangeSignatureDialog(
 
   protected def splittedItems: Seq[Seq[ScalaParameterTableModelItem]] = {
     def inner(items: Seq[ScalaParameterTableModelItem])
-      : Seq[Seq[ScalaParameterTableModelItem]] = {
+        : Seq[Seq[ScalaParameterTableModelItem]] = {
       if (items.isEmpty) return Seq(items)
 
       val index = items.tail.indexWhere(_.startsNewClause)
@@ -603,6 +603,6 @@ class ScalaChangeSignatureDialog(
 
     override def getRowEditor(
         item: ParameterTableModelItemBase[ScalaParameterInfo])
-      : JBTableRowEditor = getTableEditor(getTable, item)
+        : JBTableRowEditor = getTableEditor(getTable, item)
   }
 }

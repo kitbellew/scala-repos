@@ -31,7 +31,7 @@ import org.apache.spark.sql.DataFrame
   * @param predictionAndLabels an RDD of (prediction, label) pairs.
   */
 @Since("1.1.0")
-class MulticlassMetrics @Since("1.1.0")(
+class MulticlassMetrics @Since("1.1.0") (
     predictionAndLabels: RDD[(Double, Double)]) {
 
   /**

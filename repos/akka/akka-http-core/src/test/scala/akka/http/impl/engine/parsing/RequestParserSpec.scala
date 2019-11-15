@@ -604,7 +604,7 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
         parser)
 
     def multiParse(parser: HttpRequestParser)(input: Seq[String])
-      : Seq[Either[RequestOutput, StrictEqualHttpRequest]] =
+        : Seq[Either[RequestOutput, StrictEqualHttpRequest]] =
       Source(input.toList)
         .map(bytes ⇒ SessionBytes(TLSPlacebo.dummySession, ByteString(bytes)))
         .transform(() ⇒ parser.stage)

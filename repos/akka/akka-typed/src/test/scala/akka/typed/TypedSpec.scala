@@ -105,7 +105,7 @@ class TypedSpec(config: Config)
     }
 
   implicit def setEqualityConstraint[A, T <: Set[_ <: A]]
-    : Constraint[Set[A], T] =
+      : Constraint[Set[A], T] =
     new Constraint[Set[A], T] {
       def areEqual(a: Set[A], b: T) = a == b
     }
@@ -136,7 +136,7 @@ object TypedSpec {
   case object Timedout extends Status
 
   def guardian(outstanding: Map[ActorRef[_], ActorRef[Status]] = Map.empty)
-    : Behavior[Command] =
+      : Behavior[Command] =
     FullTotal {
       case Sig(ctx, f @ t.Failed(ex, test)) ⇒
         outstanding get test match {

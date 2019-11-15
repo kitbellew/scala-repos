@@ -57,7 +57,7 @@ private[ml] trait TrainValidationSplitParams extends ValidatorParams {
   */
 @Since("1.5.0")
 @Experimental
-class TrainValidationSplit @Since("1.5.0")(
+class TrainValidationSplit @Since("1.5.0") (
     @Since("1.5.0") override val uid: String)
     extends Estimator[TrainValidationSplitModel]
     with TrainValidationSplitParams

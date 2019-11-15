@@ -64,8 +64,8 @@ trait ManagedExecution
     extends Execution[Future, StreamT[Future, Slice]]
     with ManagedQueryModule {
   self =>
-  type AsyncExecution[M[+ _]] = Execution[M, JobId]
-  type SyncExecution[M[+ _]] =
+  type AsyncExecution[M[+_]] = Execution[M, JobId]
+  type SyncExecution[M[+_]] =
     Execution[M, (Option[JobId], StreamT[Future, Slice])]
 
   /**
@@ -101,8 +101,9 @@ trait ManagedExecution
         def apply[A](fa: Future[A]) = fa.liftM[JobQueryT]
       }
 
-      new JobQueryLogger[JobQueryTF, A] with ShardQueryLogger[JobQueryTF, A]
-      with TimingQueryLogger[JobQueryTF, A] {
+      new JobQueryLogger[JobQueryTF, A]
+        with ShardQueryLogger[JobQueryTF, A]
+        with TimingQueryLogger[JobQueryTF, A] {
         val M = shardQueryMonad
         val jobManager = self.jobManager.withM[JobQueryTF](
           lift,
@@ -114,18 +115,21 @@ trait ManagedExecution
         val decomposer = decomposer0
       }
     } getOrElse {
-      new LoggingQueryLogger[JobQueryTF, A] with ShardQueryLogger[JobQueryTF, A]
-      with TimingQueryLogger[JobQueryTF, A] {
+      new LoggingQueryLogger[JobQueryTF, A]
+        with ShardQueryLogger[JobQueryTF, A]
+        with TimingQueryLogger[JobQueryTF, A] {
         val M = shardQueryMonad
       }
     }
   }
 
   protected def executor(implicit shardQueryMonad: JobQueryTFMonad)
-    : QueryExecutor[JobQueryTF, StreamT[JobQueryTF, Slice]]
+      : QueryExecutor[JobQueryTF, StreamT[JobQueryTF, Slice]]
 
-  def executorFor(apiKey: APIKey)
-    : EitherT[Future, String, QueryExecutor[Future, StreamT[Future, Slice]]] = {
+  def executorFor(apiKey: APIKey): EitherT[
+    Future,
+    String,
+    QueryExecutor[Future, StreamT[Future, Slice]]] = {
     import scalaz.syntax.monad._
     for (queryExec <- syncExecutorFor(apiKey)) yield {
       new QueryExecutor[Future, StreamT[Future, Slice]] {
@@ -220,7 +224,7 @@ trait ManagedExecution
     def complete(
         resultE: EitherT[Future, EvaluationError, StreamT[JobQueryTF, Slice]],
         outputType: MimeType)(implicit M: JobQueryTFMonad)
-      : EitherT[Future, EvaluationError, JobId] = {
+        : EitherT[Future, EvaluationError, JobId] = {
       M.jobId map { jobId =>
         resultE map { result =>
           val derefed = result.map(_.deref(TransSpecModule.paths.Value))

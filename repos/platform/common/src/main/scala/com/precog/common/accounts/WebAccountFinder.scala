@@ -59,7 +59,7 @@ import scalaz.syntax.std.option._
 
 object WebAccountFinder extends Logging {
   def apply(config: Configuration)(implicit executor: ExecutionContext)
-    : Validation[NonEmptyList[String], AccountFinder[Response]] = {
+      : Validation[NonEmptyList[String], AccountFinder[Response]] = {
     val serviceConfig = config.detach("service")
     serviceConfig.get[String]("hardcoded_account") map { accountId =>
       implicit val M = ResponseMonad(new FutureMonad(executor))

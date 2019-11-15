@@ -366,7 +366,7 @@ class SparseOptimizationSpaceTest_Double
   def addToBuilder(bldr: CSCMatrix.Builder[Double], v: (Int, Int, Double)) =
     bldr.add(v._1, v._2, v._3)
   override implicit def genTripleM
-    : Arbitrary[(CSCMatrix[Double], CSCMatrix[Double], CSCMatrix[Double])] = {
+      : Arbitrary[(CSCMatrix[Double], CSCMatrix[Double], CSCMatrix[Double])] = {
     Arbitrary {
       val xb = new CSCMatrix.Builder[Double](N, N)
       val yb = new CSCMatrix.Builder[Double](N, N)
@@ -375,17 +375,16 @@ class SparseOptimizationSpaceTest_Double
         xvs <- Arbitrary.arbitrary[List[(Int, Int, Double)]]
         yvs <- Arbitrary.arbitrary[List[(Int, Int, Double)]]
         zvs <- Arbitrary.arbitrary[List[(Int, Int, Double)]]
-      } yield
-        ({
-          xvs.foreach(v => addToBuilder(xb, v))
-          xb.result()
-        }, {
-          yvs.foreach(v => addToBuilder(yb, v))
-          yb.result()
-        }, {
-          zvs.foreach(v => addToBuilder(zb, v))
-          zb.result()
-        })
+      } yield ({
+        xvs.foreach(v => addToBuilder(xb, v))
+        xb.result()
+      }, {
+        yvs.foreach(v => addToBuilder(yb, v))
+        yb.result()
+      }, {
+        zvs.foreach(v => addToBuilder(zb, v))
+        zb.result()
+      })
     }
   }
 

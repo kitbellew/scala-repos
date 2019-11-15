@@ -333,7 +333,8 @@ trait StringLike[+Repr]
         case "false" => false
         case _ =>
           throw new IllegalArgumentException("For input string: \"" + s + "\"")
-      } else throw new IllegalArgumentException("For input string: \"null\"")
+      }
+    else throw new IllegalArgumentException("For input string: \"null\"")
 
   override def toArray[B >: Char: ClassTag]: Array[B] =
     toString.toCharArray.asInstanceOf[Array[B]]

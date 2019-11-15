@@ -49,7 +49,7 @@ object MergeOperations {
   def mergeResults[K, V: Semigroup](
       m1: Map[K, Future[Seq[Option[(BatchID, V)]]]],
       m2: Map[K, Future[Seq[Option[(BatchID, V)]]]])
-    : Map[K, Future[Option[(BatchID, V)]]] =
+      : Map[K, Future[Option[(BatchID, V)]]] =
     Semigroup.plus(m1, m2).map {
       case (k, v) =>
         k -> v.map(sortedSum(_))
@@ -63,7 +63,7 @@ object MergeOperations {
     * Pivots each BatchID out of the key and into the Value's future.
     */
   def pivotBatches[K, V](m: Map[(K, BatchID), FOpt[V]])
-    : Map[K, Future[Seq[Option[(BatchID, V)]]]] =
+      : Map[K, Future[Seq[Option[(BatchID, V)]]]] =
     pivot.withValue(m).map {
       case (k, it) =>
         k -> collect(it.toSeq).map {
@@ -72,7 +72,7 @@ object MergeOperations {
     }
 
   def decrementOfflineBatch[K, V](m: Map[K, FOpt[(BatchID, V)]])
-    : Map[K, Future[Seq[Option[(BatchID, V)]]]] =
+      : Map[K, Future[Seq[Option[(BatchID, V)]]]] =
     m.map {
       case (k, futureOptV) =>
         k -> futureOptV.map { optV =>
@@ -102,7 +102,7 @@ object MergeOperations {
   def generateOnlineKeys[K](ks: Seq[K], nowBatch: BatchID, batchesToKeep: Int)(
       lookup: K => FOpt[BatchID])(
       implicit collect: FutureCollector[(K, Iterable[BatchID])])
-    : Future[Set[(K, BatchID)]] =
+      : Future[Set[(K, BatchID)]] =
     for {
       collected <- collect(
         ks.map { k =>

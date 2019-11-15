@@ -35,7 +35,7 @@ object AllowedHostsFilterSpec extends PlaySpecification {
 
   private val okWithHost = (req: RequestHeader) => Ok(req.host)
 
-  class Filters @Inject()(allowedHostsFilter: AllowedHostsFilter)
+  class Filters @Inject() (allowedHostsFilter: AllowedHostsFilter)
       extends HttpFilters {
     def filters = Seq(allowedHostsFilter)
   }

@@ -116,8 +116,8 @@ object Mod extends LilaController {
           }
           publicLines <- Env.shutup.api getPublicLines user.id
           spy <- Env.security userSpy user.id
-        } yield
-          html.mod.communication(user, povWithChats, threads, publicLines, spy)
+        } yield html.mod
+          .communication(user, povWithChats, threads, publicLines, spy)
       }
   }
 

@@ -34,7 +34,7 @@ import scalaz.std.stream._
 import scalaz.syntax.traverse._
 import scalaz.syntax.monad._
 
-trait SummaryLibModule[M[+ _]] extends ReductionLibModule[M] {
+trait SummaryLibModule[M[+_]] extends ReductionLibModule[M] {
   trait SummaryLib extends ReductionLib {
     import trans._
     import TransSpecModule._

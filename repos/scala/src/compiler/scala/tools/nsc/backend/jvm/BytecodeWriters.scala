@@ -62,8 +62,9 @@ trait BytecodeWriters {
       case (false, true)  => new ClassBytecodeWriter with DumpBytecodeWriter {}
       case (true, false)  => new ClassBytecodeWriter with AsmpBytecodeWriter
       case (true, true) =>
-        new ClassBytecodeWriter with AsmpBytecodeWriter
-        with DumpBytecodeWriter {}
+        new ClassBytecodeWriter
+          with AsmpBytecodeWriter
+          with DumpBytecodeWriter {}
     }
   }
 

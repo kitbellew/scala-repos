@@ -34,7 +34,7 @@ import scalaz.std.string._
 import org.specs2.ScalaCheck
 import org.specs2.mutable._
 
-trait PartitionMergeSpec[M[+ _]]
+trait PartitionMergeSpec[M[+_]]
     extends ColumnarTableModuleTestSupport[M]
     with Specification
     with ScalaCheck {

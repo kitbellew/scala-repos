@@ -84,7 +84,7 @@ object ClusterShardingCustomShardAllocationSpec {
           ActorRef,
           immutable.IndexedSeq[ShardRegion.ShardId]],
         rebalanceInProgress: Set[ShardRegion.ShardId])
-      : Future[Set[ShardRegion.ShardId]] = {
+        : Future[Set[ShardRegion.ShardId]] = {
       (ref ? RebalanceReq).mapTo[Set[String]]
     }
   }

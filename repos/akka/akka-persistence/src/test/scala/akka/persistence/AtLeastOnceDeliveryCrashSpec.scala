@@ -44,7 +44,7 @@ object AtLeastOnceDeliveryCrashSpec {
       case CrashMessage ⇒
         log.debug("Crash it")
         throw new IllegalStateException("Intentionally crashed")
-        with NoStackTrace
+          with NoStackTrace
       case msg ⇒ log.debug("Recover message: " + msg)
     }
 

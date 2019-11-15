@@ -138,7 +138,7 @@ object ResourceUtil {
   def consumeResources(
       resources: Iterable[MesosProtos.Resource],
       usedResources: Iterable[MesosProtos.Resource])
-    : Iterable[MesosProtos.Resource] = {
+      : Iterable[MesosProtos.Resource] = {
     val usedResourceMap: Map[ResourceMatchKey, Seq[MesosProtos.Resource]] =
       usedResources.groupBy(ResourceMatchKey(_)).mapValues(_.to[Seq])
 

@@ -233,7 +233,8 @@ class ScalaOverrideContributor extends ScalaCompletionContributor {
         //remove val, var, def or type
         case -1   => text
         case part => text.substring(part + 1)
-      } else "override " + text
+      }
+    else "override " + text
   }
 
   private def handleMembers(

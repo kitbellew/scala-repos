@@ -168,7 +168,7 @@ trait IntegrationTest {
     def buildConditions(
         names: Iterable[String],
         acc: List[AbstractTestProxy => Boolean] = List())
-      : List[AbstractTestProxy => Boolean] = names.size match {
+        : List[AbstractTestProxy => Boolean] = names.size match {
       case 0 => List(_ => true) //got an empty list of names as initial input
       case 1 =>
         ((node: AbstractTestProxy) =>

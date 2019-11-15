@@ -279,7 +279,7 @@ object FastEvalEngineWorkflow {
   def get[TD, EI, PD, Q, P, A](
       workflow: FastEvalEngineWorkflow[TD, EI, PD, Q, P, A],
       engineParamsList: Seq[EngineParams])
-    : Seq[(EngineParams, Seq[(EI, RDD[(Q, P, A)])])] = {
+      : Seq[(EngineParams, Seq[(EI, RDD[(Q, P, A)])])] = {
     engineParamsList.map { engineParams =>
       {
         (
@@ -346,7 +346,7 @@ class FastEvalEngine[TD, EI, PD, Q, P, A](
       sc: SparkContext,
       engineParamsList: Seq[EngineParams],
       params: WorkflowParams)
-    : Seq[(EngineParams, Seq[(EI, RDD[(Q, P, A)])])] = {
+      : Seq[(EngineParams, Seq[(EI, RDD[(Q, P, A)])])] = {
 
     val fastEngineWorkflow = new FastEvalEngineWorkflow(this, sc, params)
 

@@ -406,7 +406,7 @@ trait Trees { self: Universe =>
         tparams: List[TypeDef],
         impl: Template): ClassDef
     def unapply(classDef: ClassDef)
-      : Option[(Modifiers, TypeName, List[TypeDef], Template)]
+        : Option[(Modifiers, TypeName, List[TypeDef], Template)]
 
     /** @see [[InternalApi.classDef]] */
     @deprecated("Use `internal.classDef` instead", "2.11.0")
@@ -2176,7 +2176,7 @@ trait Trees { self: Universe =>
   abstract class ExistentialTypeTreeExtractor {
     def apply(tpt: Tree, whereClauses: List[MemberDef]): ExistentialTypeTree
     def unapply(existentialTypeTree: ExistentialTypeTree)
-      : Option[(Tree, List[MemberDef])]
+        : Option[(Tree, List[MemberDef])]
   }
 
   /** The API that all existential type trees support

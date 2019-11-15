@@ -188,7 +188,7 @@ abstract class PathDirectives extends MiscDirectives {
     Directives.custom(RouteStructure.RawPathPrefixTest(matchers))
 
   private def joinWithSlash(matchers: immutable.Seq[PathMatcher[_]])
-    : immutable.Seq[PathMatcher[_]] = {
+      : immutable.Seq[PathMatcher[_]] = {
     def join(
         result: immutable.Seq[PathMatcher[_]],
         next: PathMatcher[_]): immutable.Seq[PathMatcher[_]] =

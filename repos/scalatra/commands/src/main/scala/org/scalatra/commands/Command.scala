@@ -99,7 +99,7 @@ trait Command extends BindingSyntax with ParamsValueReaderProperties {
   }
 
   def typeConverterBuilder[I](tc: CommandTypeConverterFactory[_])
-    : PartialFunction[ValueReader[_, _], TypeConverter[I, _]] = {
+      : PartialFunction[ValueReader[_, _], TypeConverter[I, _]] = {
     case r: MultiParamsValueReader =>
       tc.resolveMultiParams.asInstanceOf[TypeConverter[I, _]]
     case r: MultiMapHeadViewValueReader[_] =>
@@ -132,7 +132,7 @@ trait Command extends BindingSyntax with ParamsValueReaderProperties {
       implicit r: S => ValueReader[S, I],
       mi: Manifest[I],
       multiParams: MultiParams => ValueReader[MultiParams, Seq[String]])
-    : this.type = {
+      : this.type = {
     doBeforeBindingActions()
 
     bindings = bindings map {

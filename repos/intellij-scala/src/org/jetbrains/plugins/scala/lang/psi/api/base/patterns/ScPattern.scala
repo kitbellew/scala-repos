@@ -585,9 +585,8 @@ object ScPattern {
                         .instance(place.getProject)
                         .getCachedClass(place.getResolveScope, productFqn)
                       clazz <- ScType.extractClass(tp, Some(place.getProject))
-                    } yield
-                      clazz == productClass ||
-                        clazz.isInheritor(productClass, true))
+                    } yield clazz == productClass ||
+                      clazz.isInheritor(productClass, true))
                       .filter(identity)
                       .fold(Seq(tp))(_ => productChance)
                   }

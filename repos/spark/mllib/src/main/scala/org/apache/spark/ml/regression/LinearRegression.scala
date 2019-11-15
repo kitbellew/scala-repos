@@ -77,7 +77,8 @@ private[regression] trait LinearRegressionParams
   */
 @Since("1.3.0")
 @Experimental
-class LinearRegression @Since("1.3.0")(@Since("1.3.0") override val uid: String)
+class LinearRegression @Since("1.3.0") (
+    @Since("1.3.0") override val uid: String)
     extends Regressor[Vector, LinearRegression, LinearRegressionModel]
     with LinearRegressionParams
     with DefaultParamsWritable

@@ -112,7 +112,8 @@ trait LowerPriorityIncludes {
     * @return $SFX $CAM
     */
   implicit def jfxCamera2sfx(v: jfxs.Camera): Camera =
-    if (v != null) new Camera(v) {} else null
+    if (v != null) new Camera(v) {}
+    else null
 
   /**
     * $START$CUR.html $CUR$END
@@ -121,7 +122,8 @@ trait LowerPriorityIncludes {
     * @return $SFX $CUR
     */
   implicit def jfxCursor2sfx(v: jfxs.Cursor): Cursor =
-    if (v != null) new Cursor(v) {} else null
+    if (v != null) new Cursor(v) {}
+    else null
 
   /**
     * $START$DPT.html $DPT$END
@@ -151,7 +153,8 @@ trait LowerPriorityIncludes {
     if (ic != null) new ImageCursor(ic) else null
 
   implicit def jfxLightBase2sfx(v: jfxs.LightBase): LightBase =
-    if (v != null) new LightBase(v) {} else null
+    if (v != null) new LightBase(v) {}
+    else null
 
   /**
     * $START$NOD.html $NOD$END
@@ -160,7 +163,8 @@ trait LowerPriorityIncludes {
     * @return $SFX $NOD
     */
   implicit def jfxNode2sfx(v: jfxs.Node): Node =
-    if (v != null) new Node(v) {} else null
+    if (v != null) new Node(v) {}
+    else null
 
   /**
     * $START$PRC.html $PRC$END
@@ -178,7 +182,8 @@ trait LowerPriorityIncludes {
     * @return $SFX $PAR
     */
   implicit def jfxParent2sfx(v: jfxs.Parent): Parent =
-    if (v != null) new Parent(v) {} else null
+    if (v != null) new Parent(v) {}
+    else null
 
   /**
     * $START$PEC.html $PEC$END

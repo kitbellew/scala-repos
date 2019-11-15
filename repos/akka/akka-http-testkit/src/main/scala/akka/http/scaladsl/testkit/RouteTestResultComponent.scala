@@ -25,7 +25,7 @@ trait RouteTestResultComponent {
     */
   class RouteTestResult(timeout: FiniteDuration)(implicit fm: Materializer) {
     private[this] var result
-      : Option[Either[immutable.Seq[Rejection], HttpResponse]] = None
+        : Option[Either[immutable.Seq[Rejection], HttpResponse]] = None
     private[this] val latch = new CountDownLatch(1)
 
     def handled: Boolean = synchronized {

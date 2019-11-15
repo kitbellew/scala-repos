@@ -283,7 +283,7 @@ object SparseVector
     new CanCopySparseVector[V]
 
   implicit def canMapValues[V, V2: ClassTag: Zero]
-    : CanMapValues[SparseVector[V], V, V2, SparseVector[V2]] = {
+      : CanMapValues[SparseVector[V], V, V2, SparseVector[V2]] = {
     new CanMapValues[SparseVector[V], V, V2, SparseVector[V2]] {
 
       /**Maps all key-value pairs from the given collection. */
@@ -296,7 +296,7 @@ object SparseVector
   }
 
   implicit def canMapActiveValues[V, V2: ClassTag: Zero]
-    : CanMapActiveValues[SparseVector[V], V, V2, SparseVector[V2]] = {
+      : CanMapActiveValues[SparseVector[V], V, V2, SparseVector[V2]] = {
     new CanMapActiveValues[SparseVector[V], V, V2, SparseVector[V2]] {
 
       /**Maps all active key-value pairs from the given collection. */
@@ -334,7 +334,7 @@ object SparseVector
   }
 
   implicit def canTraverseKeyValuePairs[V]
-    : CanTraverseKeyValuePairs[SparseVector[V], Int, V] = {
+      : CanTraverseKeyValuePairs[SparseVector[V], Int, V] = {
     new CanTraverseKeyValuePairs[SparseVector[V], Int, V] {
       def isTraversableAgain(from: SparseVector[V]): Boolean = true
 
@@ -356,7 +356,7 @@ object SparseVector
   }
 
   implicit def canCreateZeros[V: ClassTag: Zero]
-    : CanCreateZeros[SparseVector[V], Int] = {
+      : CanCreateZeros[SparseVector[V], Int] = {
     new CanCreateZeros[SparseVector[V], Int] {
       def apply(d: Int): SparseVector[V] = {
         zeros[V](d)
@@ -365,7 +365,7 @@ object SparseVector
   }
 
   implicit def canCreateZerosLike[V: ClassTag: Zero]
-    : CanCreateZerosLike[SparseVector[V], SparseVector[V]] = {
+      : CanCreateZerosLike[SparseVector[V], SparseVector[V]] = {
     new CanCreateZerosLike[SparseVector[V], SparseVector[V]] {
       def apply(d: SparseVector[V]): SparseVector[V] = {
         zeros[V](d.length)
@@ -374,7 +374,7 @@ object SparseVector
   }
 
   implicit def canTransformValues[V: Zero: ClassTag]
-    : CanTransformValues[SparseVector[V], V] = {
+      : CanTransformValues[SparseVector[V], V] = {
     new CanTransformValues[SparseVector[V], V] {
       val z = implicitly[Zero[V]]
 
@@ -408,7 +408,7 @@ object SparseVector
   }
 
   implicit def canMapPairs[V, V2: ClassTag: Zero]
-    : CanMapKeyValuePairs[SparseVector[V], Int, V, V2, SparseVector[V2]] = {
+      : CanMapKeyValuePairs[SparseVector[V], Int, V, V2, SparseVector[V2]] = {
     new CanMapKeyValuePairs[SparseVector[V], Int, V, V2, SparseVector[V2]] {
 
       /**Maps all key-value pairs from the given collection. */
@@ -451,7 +451,7 @@ object SparseVector
 //  }
 
   implicit def canTransposeComplex
-    : CanTranspose[SparseVector[Complex], CSCMatrix[Complex]] = {
+      : CanTranspose[SparseVector[Complex], CSCMatrix[Complex]] = {
     new CanTranspose[SparseVector[Complex], CSCMatrix[Complex]] {
       def apply(from: SparseVector[Complex]) = {
         val transposedMtx: CSCMatrix[Complex] =
@@ -473,13 +473,13 @@ object SparseVector
     }
 
   implicit def canTabulate[E: ClassTag: Zero]
-    : CanTabulate[Int, SparseVector[E], E] =
+      : CanTabulate[Int, SparseVector[E], E] =
     new CanTabulate[Int, SparseVector[E], E] {
       def apply(d: Int, f: (Int) => E): SparseVector[E] = tabulate[E](d)(f)
     }
 
   implicit def space[E: Field: ClassTag: Zero]
-    : MutableFiniteCoordinateField[SparseVector[E], Int, E] = {
+      : MutableFiniteCoordinateField[SparseVector[E], Int, E] = {
     MutableFiniteCoordinateField.make[SparseVector[E], Int, E]
   }
 

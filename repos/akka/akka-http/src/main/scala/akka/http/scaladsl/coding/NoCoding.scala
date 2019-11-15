@@ -29,7 +29,7 @@ object NoCoding extends Coder with StreamDecoder {
   def newCompressor = NoCodingCompressor
 
   def newDecompressorStage(maxBytesPerChunk: Int)
-    : () ⇒ GraphStage[FlowShape[ByteString, ByteString]] =
+      : () ⇒ GraphStage[FlowShape[ByteString, ByteString]] =
     () ⇒ StreamUtils.limitByteChunksStage(maxBytesPerChunk)
 }
 

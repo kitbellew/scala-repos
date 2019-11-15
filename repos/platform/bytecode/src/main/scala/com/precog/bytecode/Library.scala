@@ -85,7 +85,7 @@ trait Morphism1Like extends FunctionLike {
 
 object Morphism1Like {
   def unapply(m: Morphism1Like)
-    : Option[(Vector[String], String, Int, UnaryOperationType)] =
+      : Option[(Vector[String], String, Int, UnaryOperationType)] =
     Some(m.namespace, m.name, m.opcode, m.tpe)
 }
 
@@ -99,7 +99,7 @@ trait Morphism2Like extends FunctionLike {
 
 object Morphism2Like {
   def unapply(m: Morphism2Like)
-    : Option[(Vector[String], String, Int, BinaryOperationType)] =
+      : Option[(Vector[String], String, Int, BinaryOperationType)] =
     Some(m.namespace, m.name, m.opcode, m.tpe)
 }
 
@@ -119,7 +119,7 @@ trait Op2Like extends FunctionLike {
 
 object Op2Like {
   def unapply(op2: Op2Like)
-    : Option[(Vector[String], String, Int, BinaryOperationType)] =
+      : Option[(Vector[String], String, Int, BinaryOperationType)] =
     Some(op2.namespace, op2.name, op2.opcode, op2.tpe)
 }
 

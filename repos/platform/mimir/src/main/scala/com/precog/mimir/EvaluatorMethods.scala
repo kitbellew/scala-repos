@@ -31,7 +31,7 @@ import com.precog.yggdrasil.TableModule.paths
 
 import scalaz.std.map._
 
-trait EvaluatorMethodsModule[M[+ _]]
+trait EvaluatorMethodsModule[M[+_]]
     extends DAG
     with TableModule[M]
     with TableLibModule[M]
@@ -95,9 +95,10 @@ trait EvaluatorMethodsModule[M[+ _]]
       } get
 
     def buildJoinKeySpec(sharedLength: Int): TransSpec1 = {
-      val components = for (i <- 0 until sharedLength)
-        yield
-          trans.WrapArray(DerefArrayStatic(SourceKey.Single, CPathIndex(i))): TransSpec1
+      val components =
+        for (i <- 0 until sharedLength)
+          yield trans.WrapArray(
+            DerefArrayStatic(SourceKey.Single, CPathIndex(i))): TransSpec1
 
       components reduceLeft { trans.InnerArrayConcat(_, _) }
     }
@@ -109,15 +110,20 @@ trait EvaluatorMethodsModule[M[+ _]]
       val leftIdentitySpec = DerefObjectStatic(Leaf(SourceLeft), paths.Key)
       val rightIdentitySpec = DerefObjectStatic(Leaf(SourceRight), paths.Key)
 
-      val sharedDerefs = for ((i, _) <- idMatch.sharedIndices)
-        yield trans.WrapArray(DerefArrayStatic(leftIdentitySpec, CPathIndex(i)))
+      val sharedDerefs =
+        for ((i, _) <- idMatch.sharedIndices)
+          yield trans.WrapArray(
+            DerefArrayStatic(leftIdentitySpec, CPathIndex(i)))
 
-      val unsharedLeft = for (i <- idMatch.leftIndices)
-        yield trans.WrapArray(DerefArrayStatic(leftIdentitySpec, CPathIndex(i)))
+      val unsharedLeft =
+        for (i <- idMatch.leftIndices)
+          yield trans.WrapArray(
+            DerefArrayStatic(leftIdentitySpec, CPathIndex(i)))
 
-      val unsharedRight = for (i <- idMatch.rightIndices)
-        yield
-          trans.WrapArray(DerefArrayStatic(rightIdentitySpec, CPathIndex(i)))
+      val unsharedRight =
+        for (i <- idMatch.rightIndices)
+          yield trans.WrapArray(
+            DerefArrayStatic(rightIdentitySpec, CPathIndex(i)))
 
       val derefs: Seq[TransSpec2] =
         sharedDerefs ++ unsharedLeft ++ unsharedRight

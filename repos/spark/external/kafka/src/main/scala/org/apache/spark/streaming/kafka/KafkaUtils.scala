@@ -202,7 +202,7 @@ object KafkaUtils {
   private def leadersForRanges(
       kc: KafkaCluster,
       offsetRanges: Array[OffsetRange])
-    : Map[TopicAndPartition, (String, Int)] = {
+      : Map[TopicAndPartition, (String, Int)] = {
     val topics =
       offsetRanges.map(o => TopicAndPartition(o.topic, o.partition)).toSet
     val leaders = kc.findLeaders(topics)
@@ -686,7 +686,7 @@ private[kafka] class KafkaUtilsPythonHelper {
       kafkaParams: JMap[String, String],
       topics: JMap[String, JInt],
       storageLevel: StorageLevel)
-    : JavaPairReceiverInputDStream[Array[Byte], Array[Byte]] = {
+      : JavaPairReceiverInputDStream[Array[Byte], Array[Byte]] = {
     KafkaUtils
       .createStream[Array[Byte], Array[Byte], DefaultDecoder, DefaultDecoder](
         jssc,
@@ -704,7 +704,7 @@ private[kafka] class KafkaUtilsPythonHelper {
       kafkaParams: JMap[String, String],
       offsetRanges: JList[OffsetRange],
       leaders: JMap[TopicAndPartition, Broker])
-    : JavaRDD[(Array[Byte], Array[Byte])] = {
+      : JavaRDD[(Array[Byte], Array[Byte])] = {
     val messageHandler = (mmd: MessageAndMetadata[Array[Byte], Array[Byte]]) =>
       (mmd.key, mmd.message)
     new JavaRDD(
@@ -735,7 +735,7 @@ private[kafka] class KafkaUtilsPythonHelper {
       offsetRanges: JList[OffsetRange],
       leaders: JMap[TopicAndPartition, Broker],
       messageHandler: MessageAndMetadata[Array[Byte], Array[Byte]] => V)
-    : RDD[V] = {
+      : RDD[V] = {
     KafkaUtils
       .createRDD[Array[Byte], Array[Byte], DefaultDecoder, DefaultDecoder, V](
         jsc.sc,
@@ -751,7 +751,7 @@ private[kafka] class KafkaUtilsPythonHelper {
       kafkaParams: JMap[String, String],
       topics: JSet[String],
       fromOffsets: JMap[TopicAndPartition, JLong])
-    : JavaDStream[(Array[Byte], Array[Byte])] = {
+      : JavaDStream[(Array[Byte], Array[Byte])] = {
     val messageHandler = (mmd: MessageAndMetadata[Array[Byte], Array[Byte]]) =>
       (mmd.key, mmd.message)
     new JavaDStream(
@@ -787,7 +787,7 @@ private[kafka] class KafkaUtilsPythonHelper {
       topics: JSet[String],
       fromOffsets: JMap[TopicAndPartition, JLong],
       messageHandler: MessageAndMetadata[Array[Byte], Array[Byte]] => V)
-    : DStream[V] = {
+      : DStream[V] = {
 
     val currentFromOffsets =
       if (!fromOffsets.isEmpty) {

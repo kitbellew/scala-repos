@@ -27,7 +27,7 @@ import scalaz._
   * Very stupid-simple HTTP client.  If we need something more powerful, speak
   * to the management.
   */
-trait HttpClientModule[M[+ _]] {
+trait HttpClientModule[M[+_]] {
   implicit def M: Monad[M]
 
   type HttpClient <: HttpClientLike

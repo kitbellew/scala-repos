@@ -43,7 +43,7 @@ private[sql] object ParquetFilters {
   }
 
   private val makeEq
-    : PartialFunction[DataType, (String, Any) => FilterPredicate] = {
+      : PartialFunction[DataType, (String, Any) => FilterPredicate] = {
     case BooleanType =>
       (n: String, v: Any) =>
         FilterApi.eq(booleanColumn(n), v.asInstanceOf[java.lang.Boolean])
@@ -74,7 +74,7 @@ private[sql] object ParquetFilters {
   }
 
   private val makeNotEq
-    : PartialFunction[DataType, (String, Any) => FilterPredicate] = {
+      : PartialFunction[DataType, (String, Any) => FilterPredicate] = {
     case BooleanType =>
       (n: String, v: Any) =>
         FilterApi.notEq(booleanColumn(n), v.asInstanceOf[java.lang.Boolean])
@@ -105,7 +105,7 @@ private[sql] object ParquetFilters {
   }
 
   private val makeLt
-    : PartialFunction[DataType, (String, Any) => FilterPredicate] = {
+      : PartialFunction[DataType, (String, Any) => FilterPredicate] = {
     case IntegerType =>
       (n: String, v: Any) => FilterApi.lt(intColumn(n), v.asInstanceOf[Integer])
     case LongType =>
@@ -131,7 +131,7 @@ private[sql] object ParquetFilters {
   }
 
   private val makeLtEq
-    : PartialFunction[DataType, (String, Any) => FilterPredicate] = {
+      : PartialFunction[DataType, (String, Any) => FilterPredicate] = {
     case IntegerType =>
       (n: String, v: Any) =>
         FilterApi.ltEq(intColumn(n), v.asInstanceOf[java.lang.Integer])
@@ -158,7 +158,7 @@ private[sql] object ParquetFilters {
   }
 
   private val makeGt
-    : PartialFunction[DataType, (String, Any) => FilterPredicate] = {
+      : PartialFunction[DataType, (String, Any) => FilterPredicate] = {
     case IntegerType =>
       (n: String, v: Any) =>
         FilterApi.gt(intColumn(n), v.asInstanceOf[java.lang.Integer])
@@ -185,7 +185,7 @@ private[sql] object ParquetFilters {
   }
 
   private val makeGtEq
-    : PartialFunction[DataType, (String, Any) => FilterPredicate] = {
+      : PartialFunction[DataType, (String, Any) => FilterPredicate] = {
     case IntegerType =>
       (n: String, v: Any) =>
         FilterApi.gtEq(intColumn(n), v.asInstanceOf[java.lang.Integer])
@@ -212,7 +212,7 @@ private[sql] object ParquetFilters {
   }
 
   private val makeInSet
-    : PartialFunction[DataType, (String, Set[Any]) => FilterPredicate] = {
+      : PartialFunction[DataType, (String, Set[Any]) => FilterPredicate] = {
     case IntegerType =>
       (n: String, v: Set[Any]) =>
         FilterApi.userDefined(

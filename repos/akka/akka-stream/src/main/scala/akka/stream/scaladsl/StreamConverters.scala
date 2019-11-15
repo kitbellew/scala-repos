@@ -67,7 +67,7 @@ object StreamConverters {
     * @param writeTimeout the max time the write operation on the materialized OutputStream should block, defaults to 5 seconds
     */
   def asOutputStream(writeTimeout: FiniteDuration = 5.seconds)
-    : Source[ByteString, OutputStream] =
+      : Source[ByteString, OutputStream] =
     Source.fromGraph(new OutputStreamSourceStage(writeTimeout))
 
   /**

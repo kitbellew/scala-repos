@@ -100,7 +100,7 @@ private[data] sealed abstract class ConstInstances0 extends ConstInstances1 {
     }
 
   implicit def constPartialOrder[A: PartialOrder, B]
-    : PartialOrder[Const[A, B]] = new PartialOrder[Const[A, B]] {
+      : PartialOrder[Const[A, B]] = new PartialOrder[Const[A, B]] {
     def partialCompare(x: Const[A, B], y: Const[A, B]): Double =
       x partialCompare y
   }

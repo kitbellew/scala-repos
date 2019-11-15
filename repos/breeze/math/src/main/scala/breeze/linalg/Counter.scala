@@ -121,7 +121,7 @@ object Counter extends CounterOps {
   }
 
   implicit def canMapValues[K, V, RV: Zero]
-    : CanMapValues[Counter[K, V], V, RV, Counter[K, RV]] = {
+      : CanMapValues[Counter[K, V], V, RV, Counter[K, RV]] = {
     new CanMapValues[Counter[K, V], V, RV, Counter[K, RV]] {
       override def apply(from: Counter[K, V], fn: (V => RV)) = {
         val rv = Counter[K, RV]()
@@ -134,7 +134,7 @@ object Counter extends CounterOps {
   }
 
   implicit def canMapActiveValues[K, V, RV: Zero]
-    : CanMapActiveValues[Counter[K, V], V, RV, Counter[K, RV]] = {
+      : CanMapActiveValues[Counter[K, V], V, RV, Counter[K, RV]] = {
     new CanMapActiveValues[Counter[K, V], V, RV, Counter[K, RV]] {
       override def apply(from: Counter[K, V], fn: (V => RV)) = {
         val rv = Counter[K, RV]()
@@ -162,7 +162,7 @@ object Counter extends CounterOps {
   implicit def scalarOf[K, V]: ScalarOf[Counter[K, V], V] = ScalarOf.dummy
 
   implicit def canTraverseKeyValuePairs[K, V]
-    : CanTraverseKeyValuePairs[Counter[K, V], K, V] =
+      : CanTraverseKeyValuePairs[Counter[K, V], K, V] =
     new CanTraverseKeyValuePairs[Counter[K, V], K, V] {
 
       /** Traverses all values from the given collection. */
@@ -178,7 +178,7 @@ object Counter extends CounterOps {
     }
 
   implicit def normImplDouble[K, V: Field]
-    : norm.Impl2[Counter[K, V], Double, Double] =
+      : norm.Impl2[Counter[K, V], Double, Double] =
     new norm.Impl2[Counter[K, V], Double, Double] {
       override def apply(ctr: Counter[K, V], p: Double): Double = {
         var result = 0.0
@@ -190,7 +190,7 @@ object Counter extends CounterOps {
     }
 
   implicit def canCreateZeros[K, V: Zero: Semiring]
-    : CanCreateZeros[Counter[K, V], K] = {
+      : CanCreateZeros[Counter[K, V], K] = {
     new CanCreateZeros[Counter[K, V], K] {
       // Shouldn't need to supply a key value here, but it really mixes up the
       // VectorSpace hierarchy since it would require separate types for
@@ -202,7 +202,7 @@ object Counter extends CounterOps {
   }
 
   implicit def canCreateZerosLike[K, V: Zero: Semiring]
-    : CanCreateZerosLike[Counter[K, V], Counter[K, V]] = {
+      : CanCreateZerosLike[Counter[K, V], Counter[K, V]] = {
     new CanCreateZerosLike[Counter[K, V], Counter[K, V]] {
       // Shouldn't need to supply a key value here, but it really mixes up the
       // VectorSpace hierarchy since it would require separate types for
@@ -219,7 +219,7 @@ object Counter extends CounterOps {
   }
 
   implicit def space[K, V](implicit field: Field[V])
-    : MutableEnumeratedCoordinateField[Counter[K, V], K, V] = {
+      : MutableEnumeratedCoordinateField[Counter[K, V], K, V] = {
     implicit def zipMap = Counter.zipMap[K, V, V]
     MutableEnumeratedCoordinateField.make[Counter[K, V], K, V]
   }

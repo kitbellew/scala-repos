@@ -26,7 +26,7 @@ import scalaz.syntax.comonad._
 
 import blueeyes.json._
 
-trait ConcatSpec[M[+ _]]
+trait ConcatSpec[M[+_]]
     extends ColumnarTableModuleTestSupport[M]
     with Specification {
   def testConcat = {

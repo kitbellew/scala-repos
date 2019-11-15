@@ -353,7 +353,8 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
           member.children.foreach {
             case _: ScExpression =>
             case other           => other.accept(visitor)
-          } else member.accept(visitor)
+          }
+        else member.accept(visitor)
       }
 
       classesForSelfType.foreach {

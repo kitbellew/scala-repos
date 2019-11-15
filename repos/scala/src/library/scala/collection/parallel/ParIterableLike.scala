@@ -285,9 +285,9 @@ trait ParIterableLike[
     def mapResult[R1](mapping: R => R1): ResultMapping[R, Tp, R1]
     // public method with inaccessible types in parameters
     def compose[R3, R2, Tp2](t2: SSCTask[R2, Tp2])(resCombiner: (R, R2) => R3)
-      : SeqComposite[R, R2, R3, SSCTask[R, Tp], SSCTask[R2, Tp2]]
+        : SeqComposite[R, R2, R3, SSCTask[R, Tp], SSCTask[R2, Tp2]]
     def parallel[R3, R2, Tp2](t2: SSCTask[R2, Tp2])(resCombiner: (R, R2) => R3)
-      : ParComposite[R, R2, R3, SSCTask[R, Tp], SSCTask[R2, Tp2]]
+        : ParComposite[R, R2, R3, SSCTask[R, Tp], SSCTask[R2, Tp2]]
   }
 
   trait BuilderOps[Elem, To] {
@@ -619,7 +619,8 @@ trait ParIterableLike[
         val shared = combiner
         def apply() = shared
         def doesShareCombiners = true
-      } else
+      }
+    else
       new CombinerFactory[T, Repr] {
         def apply() = newCombiner
         def doesShareCombiners = false
@@ -634,7 +635,8 @@ trait ParIterableLike[
         val shared = combiner
         def apply() = shared
         def doesShareCombiners = true
-      } else
+      }
+    else
       new CombinerFactory[S, That] {
         def apply() = cbf()
         def doesShareCombiners = false
@@ -1023,7 +1025,7 @@ trait ParIterableLike[
 
   override def to[Col[_]](
       implicit cbf: CanBuildFrom[Nothing, T, Col[T @uncheckedVariance]])
-    : Col[T @uncheckedVariance] =
+      : Col[T @uncheckedVariance] =
     if (cbf().isCombiner) {
       toParCollection[T, Col[T]](() => cbf().asCombiner)
     } else seq.to(cbf)
@@ -1519,12 +1521,11 @@ trait ParIterableLike[
       val pits = pit.splitWithSignalling
       val sizes = pits.scanLeft(0)(_ + _.remaining)
       for ((p, untilp) <- pits zip sizes)
-        yield
-          new SplitAt(
-            (at max untilp min (untilp + p.remaining)) - untilp,
-            cbfBefore,
-            cbfAfter,
-            p)
+        yield new SplitAt(
+          (at max untilp min (untilp + p.remaining)) - untilp,
+          cbfBefore,
+          cbfAfter,
+          p)
     }
     override def merge(that: SplitAt[U, This]) =
       result =

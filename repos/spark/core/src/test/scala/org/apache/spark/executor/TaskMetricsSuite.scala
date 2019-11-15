@@ -674,7 +674,7 @@ private[spark] object TaskMetricsSuite extends Assertions {
       metricName: String,
       value: Any,
       assertEquals: (Any, Any) => Unit = (x: Any, y: Any) => assert(x === y))
-    : Unit = {
+      : Unit = {
     assertEquals(tmValue(tm), value)
     val accum = accums.find(_.name == Some(metricName))
     assert(accum.isDefined)

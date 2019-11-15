@@ -35,7 +35,7 @@ class SimpleBuildFileModifier(
   override protected def modifyInner(
       module: IJModule,
       fileToWorkingCopy: mutable.Map[VirtualFile, LightVirtualFile])
-    : Option[List[VirtualFile]] = {
+      : Option[List[VirtualFile]] = {
     val empty: Option[List[VirtualFile]] = Some(List())
     requiredElementTypes.foldLeft(empty)((acc, nextType) =>
       acc match {
@@ -49,7 +49,7 @@ class SimpleBuildFileModifier(
       module: IJModule,
       elementType: BuildFileElementType,
       fileToWorkingCopy: mutable.Map[VirtualFile, LightVirtualFile])
-    : Option[VirtualFile] = {
+      : Option[VirtualFile] = {
     val locationProvidersStream = buildFileLocationProviders.toStream
     //TODO: rewrite this?
     buildFileProviders

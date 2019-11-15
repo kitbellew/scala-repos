@@ -58,7 +58,7 @@ case class ReusedExchange(override val output: Seq[Attribute], child: Exchange)
   }
 
   override protected[sql] def doExecuteBroadcast[T]()
-    : broadcast.Broadcast[T] = {
+      : broadcast.Broadcast[T] = {
     child.executeBroadcast()
   }
 

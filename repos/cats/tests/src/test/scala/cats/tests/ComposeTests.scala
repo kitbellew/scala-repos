@@ -24,7 +24,7 @@ class ComposeTests extends CatsSuite {
     // Alternative composition
 
     implicit val alternativeListVector
-      : Alternative[Lambda[A => List[Vector[A]]]] =
+        : Alternative[Lambda[A => List[Vector[A]]]] =
       Alternative[List] compose Alternative[Vector]
     implicit val iso =
       CartesianTests.Isomorphisms.invariant[Lambda[A => List[Vector[A]]]]
@@ -39,7 +39,7 @@ class ComposeTests extends CatsSuite {
     // Applicative composition
 
     implicit val applicativeListVector
-      : Applicative[Lambda[A => List[Vector[A]]]] =
+        : Applicative[Lambda[A => List[Vector[A]]]] =
       Applicative[List] compose Applicative[Vector]
     implicit val iso =
       CartesianTests.Isomorphisms.invariant[Lambda[A => List[Vector[A]]]]
@@ -76,7 +76,7 @@ class ComposeTests extends CatsSuite {
     // Reducible composition
 
     implicit val reducibleListVector
-      : Reducible[Lambda[A => NonEmptyList[NonEmptyVector[A]]]] =
+        : Reducible[Lambda[A => NonEmptyList[NonEmptyVector[A]]]] =
       Reducible[NonEmptyList] compose Reducible[NonEmptyVector]
 
     // No Reducible-specific laws, so check the Foldable laws are satisfied
@@ -90,7 +90,7 @@ class ComposeTests extends CatsSuite {
     // SemigroupK composition
 
     implicit val semigroupKListVector
-      : SemigroupK[Lambda[A => List[Vector[A]]]] =
+        : SemigroupK[Lambda[A => List[Vector[A]]]] =
       SemigroupK[List].composeK[Vector]
 
     checkAll(

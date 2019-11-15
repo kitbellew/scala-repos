@@ -289,7 +289,7 @@ object GraphStages {
   }
 
   def terminationWatcher[T]
-    : GraphStageWithMaterializedValue[FlowShape[T, T], Future[Done]] =
+      : GraphStageWithMaterializedValue[FlowShape[T, T], Future[Done]] =
     TerminationWatcher.asInstanceOf[
       GraphStageWithMaterializedValue[FlowShape[T, T], Future[Done]]]
 

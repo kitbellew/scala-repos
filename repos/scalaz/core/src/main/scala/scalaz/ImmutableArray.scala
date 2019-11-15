@@ -38,7 +38,7 @@ sealed abstract class ImmutableArrayInstances {
     }
 
   implicit val immutableArrayInstance
-    : Foldable[ImmutableArray] with Zip[ImmutableArray] =
+      : Foldable[ImmutableArray] with Zip[ImmutableArray] =
     new Foldable[ImmutableArray] with Zip[ImmutableArray] {
       override def foldLeft[A, B](fa: ImmutableArray[A], z: B)(f: (B, A) => B) =
         fa.foldLeft(z)(f)
@@ -139,7 +139,7 @@ object ImmutableArray extends ImmutableArrayInstances {
     (new StringBuilder).mapResult(fromString(_))
 
   implicit def canBuildFrom[T](implicit m: ClassTag[T])
-    : CanBuildFrom[ImmutableArray[_], T, ImmutableArray[T]] =
+      : CanBuildFrom[ImmutableArray[_], T, ImmutableArray[T]] =
     new CanBuildFrom[ImmutableArray[_], T, ImmutableArray[T]] {
       def apply(from: ImmutableArray[_]): Builder[T, ImmutableArray[T]] =
         newBuilder(m)
@@ -148,7 +148,7 @@ object ImmutableArray extends ImmutableArrayInstances {
     }
 
   implicit def canBuildFromChar(implicit m: ClassTag[Char])
-    : CanBuildFrom[ImmutableArray[_], Char, ImmutableArray[Char]] =
+      : CanBuildFrom[ImmutableArray[_], Char, ImmutableArray[Char]] =
     new CanBuildFrom[ImmutableArray[_], Char, ImmutableArray[Char]] {
       def apply(from: ImmutableArray[_]): Builder[Char, ImmutableArray[Char]] =
         newStringArrayBuilder
@@ -290,7 +290,8 @@ object ImmutableArray extends ImmutableArrayInstances {
     protected[this] def arrayBuilder: Builder[A, ImmutableArray[A]]
 
     override protected[this] def newBuilder
-      : Builder[A, WrappedImmutableArray[A]] = arrayBuilder.mapResult(wrapArray)
+        : Builder[A, WrappedImmutableArray[A]] =
+      arrayBuilder.mapResult(wrapArray)
   }
 
   object WrappedImmutableArray {

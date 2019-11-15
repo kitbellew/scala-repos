@@ -517,7 +517,7 @@ trait Contexts { self: Analyzer =>
       val c =
         if (isImport)
           new Context(tree, owner, scope, unit, this, reporter)
-          with ImportContext
+            with ImportContext
         else new Context(tree, owner, scope, unit, this, reporter)
 
       // Fields that are directly propagated

@@ -55,7 +55,7 @@ class InlinerTest extends ClearAfterClass {
       scalaCode: String,
       javaCode: List[(String, String)] = Nil,
       allowMessage: StoreReporter#Info => Boolean = _ => false)
-    : List[ClassNode] = {
+      : List[ClassNode] = {
     InlinerTest.notPerRun.foreach(_.clear())
     compileClasses(compiler)(scalaCode, javaCode, allowMessage)
     // Use the class nodes stored in the byteCodeRepository. The ones returned by compileClasses are not the same,

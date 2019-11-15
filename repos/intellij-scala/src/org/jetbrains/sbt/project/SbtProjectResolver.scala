@@ -46,7 +46,7 @@ class SbtProjectResolver
       isPreview: Boolean,
       settings: SbtExecutionSettings,
       listener: ExternalSystemTaskNotificationListener)
-    : DataNode[ProjectData] = {
+      : DataNode[ProjectData] = {
     val root = {
       val file = new File(settings.realProjectPath)
       if (file.isDirectory) file.getPath else file.getParent

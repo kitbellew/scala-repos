@@ -274,7 +274,7 @@ abstract class ExternalJdbcTestDB(confName: String)
   override def isEnabled = super.isEnabled && config.getBoolean("enabled")
 
   override lazy val testClasses
-    : Seq[Class[_ <: GenericTest[_ >: Null <: TestDB]]] = TestkitConfig
+      : Seq[Class[_ <: GenericTest[_ >: Null <: TestDB]]] = TestkitConfig
     .getStrings(config, "testClasses")
     .map(
       _.map(

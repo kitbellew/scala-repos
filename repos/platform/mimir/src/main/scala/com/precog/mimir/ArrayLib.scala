@@ -26,7 +26,7 @@ import com.precog.common._
 import com.precog.yggdrasil._
 import com.precog.yggdrasil.table._
 
-trait ArrayLibModule[M[+ _]] extends ColumnarTableLibModule[M] {
+trait ArrayLibModule[M[+_]] extends ColumnarTableLibModule[M] {
   trait ArrayLib extends ColumnarTableLib {
     override def _libMorphism1 = super._libMorphism1 ++ Set(Flatten)
 
@@ -137,7 +137,7 @@ trait ArrayLibModule[M[+ _]] extends ColumnarTableLibModule[M] {
 
                   case (ref @ ColumnRef(_, CEmptyObject), colTable) => {
                     val col = new ModUnionColumn(colTable)
-                    with EmptyObjectColumn
+                      with EmptyObjectColumn
 
                     ref -> col
                   }
@@ -174,7 +174,7 @@ trait ArrayLibModule[M[+ _]] extends ColumnarTableLibModule[M] {
 
                   case (ref @ ColumnRef(_, arrTpe: CArrayType[a]), colTable) => {
                     val col = new ModUnionColumn(colTable)
-                    with HomogeneousArrayColumn[a] {
+                      with HomogeneousArrayColumn[a] {
                       val tpe = arrTpe
                       def apply(i: Int) =
                         col(i).asInstanceOf[HomogeneousArrayColumn[a]](row(i)) // primitive arrays are still objects, so the erasure here is not a problem

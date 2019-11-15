@@ -1779,7 +1779,8 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon { self =>
             prefixExpr() match {
               case EmptyTree => reduceExprStack(base, top)
               case next      => loop(next)
-            } else finishPostfixOp(start, base, popOpInfo())
+            }
+          else finishPostfixOp(start, base, popOpInfo())
         }
 
       reduceExprStack(base, loop(prefixExpr()))

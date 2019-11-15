@@ -102,8 +102,8 @@ object ThreadPoolConfigDispatcherBuilder {
   def conf_?[T](opt: Option[T])(
       fun: (
           T) => ThreadPoolConfigDispatcherBuilder => ThreadPoolConfigDispatcherBuilder)
-    : Option[(
-        ThreadPoolConfigDispatcherBuilder) => ThreadPoolConfigDispatcherBuilder] =
+      : Option[
+        (ThreadPoolConfigDispatcherBuilder) => ThreadPoolConfigDispatcherBuilder] =
     opt map fun
 }
 
@@ -136,7 +136,7 @@ case class ThreadPoolConfigDispatcherBuilder(
     withNewThreadPoolWithCustomBlockingQueue(reusableQueue(queue))
 
   def withNewThreadPoolWithLinkedBlockingQueueWithUnboundedCapacity
-    : ThreadPoolConfigDispatcherBuilder =
+      : ThreadPoolConfigDispatcherBuilder =
     this.copy(
       config = config.copy(
         queueFactory = linkedBlockingQueue(),
@@ -203,7 +203,7 @@ case class ThreadPoolConfigDispatcherBuilder(
       fs: Option[Function[
         ThreadPoolConfigDispatcherBuilder,
         ThreadPoolConfigDispatcherBuilder]]*)
-    : ThreadPoolConfigDispatcherBuilder =
+      : ThreadPoolConfigDispatcherBuilder =
     fs.foldLeft(this)((c, f) => f.map(_(c)).getOrElse(c))
 }
 

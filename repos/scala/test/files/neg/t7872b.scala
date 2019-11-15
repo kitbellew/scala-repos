@@ -1,6 +1,6 @@
 object coinv {
-  def up[F[+ _]](fa: F[String]): F[Object] = fa
-  def down[F[- _]](fa: F[Object]): F[String] = fa
+  def up[F[+_]](fa: F[String]): F[Object] = fa
+  def down[F[-_]](fa: F[Object]): F[String] = fa
 
   up(List("hi"))
 

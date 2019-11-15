@@ -464,11 +464,11 @@ object Menu extends MenuSingleton {
       */
     def /(pathElement: LocPath): Menuable with WithSlash =
       new Menuable(name, linkText, pathElement :: Nil, false, Nil, Nil)
-      with WithSlash
+        with WithSlash
 
     def path(pathElement: String): Menuable with WithSlash =
       new Menuable(name, linkText, pathElement :: Nil, false, Nil, Nil)
-      with WithSlash
+        with WithSlash
   }
 
   /**
@@ -619,7 +619,7 @@ object Menu extends MenuSingleton {
         newPath: List[LocPath],
         newHead: Boolean): BuiltType with WithSlash =
       new Menuable(name, linkText, newPath, newHead, params, submenus)
-      with WithSlash
+        with WithSlash
 
     /**
       * Append a LocParam to the Menu item
@@ -755,13 +755,13 @@ case class Menu(loc: Loc[_], private val convertableKids: ConvertableToMenu*)
   }
 
   private[sitemap] def testParentAccess
-    : Either[Boolean, Box[() => LiftResponse]] = _parent match {
+      : Either[Boolean, Box[() => LiftResponse]] = _parent match {
     case Full(p) => p.testAccess
     case _       => Left(true)
   }
 
   override private[sitemap] def testAccess
-    : Either[Boolean, Box[() => LiftResponse]] = loc.testAccess
+      : Either[Boolean, Box[() => LiftResponse]] = loc.testAccess
 
   def toMenu = this
 

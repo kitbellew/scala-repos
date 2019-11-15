@@ -579,7 +579,7 @@ package object numerics {
     @expand
     @expand.valify
     implicit def isOddImpl[@expand.args(Int, Double, Float, Long) T]
-      : Impl[T, Boolean] = {
+        : Impl[T, Boolean] = {
       new Impl[T, Boolean] {
         def apply(v: T) = { v % 2 == 1 }
       }
@@ -593,7 +593,7 @@ package object numerics {
     @expand
     @expand.valify
     implicit def isEvenImpl[@expand.args(Int, Double, Float, Long) T]
-      : Impl[T, Boolean] = {
+        : Impl[T, Boolean] = {
       new Impl[T, Boolean] {
         def apply(v: T) = { v % 2 == 0 }
       }
@@ -607,7 +607,7 @@ package object numerics {
     @expand
     @expand.valify
     implicit def isNonfiniteImpl[@expand.args(Double, Float) T]
-      : Impl[T, Boolean] = {
+        : Impl[T, Boolean] = {
       new Impl[T, Boolean] {
         override def apply(v: T): Boolean = {
           // TODO: only in Java 8
@@ -622,7 +622,7 @@ package object numerics {
     @expand
     @expand.valify
     implicit def isFiniteImpl[@expand.args(Double, Float) T]
-      : Impl[T, Boolean] = {
+        : Impl[T, Boolean] = {
       new Impl[T, Boolean] {
         override def apply(v: T): Boolean = {
           m.abs(v) <= Double.MaxValue

@@ -174,7 +174,7 @@ private[hive] trait HiveClient {
       db: String,
       table: String,
       spec: ExternalCatalog.TablePartitionSpec)
-    : Option[CatalogTablePartition] = {
+      : Option[CatalogTablePartition] = {
     getPartitionOption(getTable(db, table), spec)
   }
 

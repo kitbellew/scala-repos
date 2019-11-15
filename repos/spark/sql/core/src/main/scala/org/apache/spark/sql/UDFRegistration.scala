@@ -310,7 +310,7 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
       A8: TypeTag](
       name: String,
       func: Function8[A1, A2, A3, A4, A5, A6, A7, A8, RT])
-    : UserDefinedFunction = {
+      : UserDefinedFunction = {
     val dataType = ScalaReflection.schemaFor[RT].dataType
     val inputTypes = Try(
       ScalaReflection.schemaFor[A1].dataType :: ScalaReflection
@@ -346,7 +346,7 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
       A9: TypeTag](
       name: String,
       func: Function9[A1, A2, A3, A4, A5, A6, A7, A8, A9, RT])
-    : UserDefinedFunction = {
+      : UserDefinedFunction = {
     val dataType = ScalaReflection.schemaFor[RT].dataType
     val inputTypes = Try(
       ScalaReflection.schemaFor[A1].dataType :: ScalaReflection
@@ -383,7 +383,7 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
       A10: TypeTag](
       name: String,
       func: Function10[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, RT])
-    : UserDefinedFunction = {
+      : UserDefinedFunction = {
     val dataType = ScalaReflection.schemaFor[RT].dataType
     val inputTypes = Try(
       ScalaReflection.schemaFor[A1].dataType :: ScalaReflection
@@ -423,7 +423,7 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
       A11: TypeTag](
       name: String,
       func: Function11[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, RT])
-    : UserDefinedFunction = {
+      : UserDefinedFunction = {
     val dataType = ScalaReflection.schemaFor[RT].dataType
     val inputTypes = Try(
       ScalaReflection.schemaFor[A1].dataType :: ScalaReflection
@@ -464,7 +464,7 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
       A12: TypeTag](
       name: String,
       func: Function12[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, RT])
-    : UserDefinedFunction = {
+      : UserDefinedFunction = {
     val dataType = ScalaReflection.schemaFor[RT].dataType
     val inputTypes = Try(
       ScalaReflection.schemaFor[A1].dataType :: ScalaReflection

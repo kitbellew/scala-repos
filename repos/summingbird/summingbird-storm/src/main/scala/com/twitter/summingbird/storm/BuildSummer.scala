@@ -76,7 +76,7 @@ object BuildSummer {
     if (cacheSize.lowerBound == 0) {
       new SummerBuilder {
         def getSummer[K, V: Semigroup]
-          : com.twitter.algebird.util.summer.AsyncSummer[(K, V), Map[K, V]] = {
+            : com.twitter.algebird.util.summer.AsyncSummer[(K, V), Map[K, V]] = {
           new com.twitter.algebird.util.summer.NullSummer[K, V](
             tupleInCounter,
             tupleOutCounter)
@@ -96,7 +96,9 @@ object BuildSummer {
       if (!useAsyncCache.get) {
         new SummerBuilder {
           def getSummer[K, V: Semigroup]
-            : com.twitter.algebird.util.summer.AsyncSummer[(K, V), Map[K, V]] = {
+              : com.twitter.algebird.util.summer.AsyncSummer[
+                (K, V),
+                Map[K, V]] = {
             new SyncSummingQueue[K, V](
               BufferSize(cacheSize.lowerBound),
               FlushFrequency(flushFrequency.get),
@@ -121,7 +123,9 @@ object BuildSummer {
 
         new SummerBuilder {
           def getSummer[K, V: Semigroup]
-            : com.twitter.algebird.util.summer.AsyncSummer[(K, V), Map[K, V]] = {
+              : com.twitter.algebird.util.summer.AsyncSummer[
+                (K, V),
+                Map[K, V]] = {
             val executor = Executors.newFixedThreadPool(asyncPoolSize.get)
             val futurePool = FuturePool(executor)
             val summer = new AsyncListSum[K, V](
@@ -153,5 +157,5 @@ object BuildSummer {
 
   def counter(jobID: JobId, nodeName: Group, counterName: Name) =
     new Counter(Group("summingbird." + nodeName.getString), counterName)(jobID)
-    with Incrementor
+      with Incrementor
 }

@@ -214,7 +214,7 @@ class StringBuilderTest {
 
   @Test
   def should_allow_string_interpolation_to_survive_null_and_undefined()
-    : Unit = {
+      : Unit = {
     assertEquals("null", s"${null}")
   }
 

@@ -140,8 +140,9 @@ class ParHashMap[K, V] private[collection] (
 
   private[parallel] override def brokenInvariants = {
     // bucket by bucket, count elements
-    val buckets = for (i <- 0 until (table.length / sizeMapBucketSize))
-      yield checkBucket(i)
+    val buckets =
+      for (i <- 0 until (table.length / sizeMapBucketSize))
+        yield checkBucket(i)
 
     // check if each element is in the position corresponding to its key
     val elems = for (i <- 0 until table.length) yield checkEntry(i)
@@ -186,7 +187,7 @@ object ParHashMap extends ParMapFactory[ParHashMap] {
     ParHashMapCombiner.apply[K, V]
 
   implicit def canBuildFrom[K, V]
-    : CanCombineFrom[Coll, (K, V), ParHashMap[K, V]] =
+      : CanCombineFrom[Coll, (K, V), ParHashMap[K, V]] =
     new CanCombineFromMap[K, V]
 }
 

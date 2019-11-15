@@ -383,7 +383,7 @@ private[spark] class TaskSetManager(
       execId: String,
       host: String,
       maxLocality: TaskLocality.Value)
-    : Option[(Int, TaskLocality.Value, Boolean)] = {
+      : Option[(Int, TaskLocality.Value, Boolean)] = {
     for (index <- dequeueTaskFromList(
            execId,
            getPendingTasksForExecutor(execId))) {

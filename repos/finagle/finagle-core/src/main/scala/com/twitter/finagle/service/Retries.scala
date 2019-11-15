@@ -95,7 +95,7 @@ object Retries {
     * (see [[RetryPolicy.RetryableWriteException]]).
     */
   private[finagle] def moduleRequeueable[Req, Rep]
-    : Stackable[ServiceFactory[Req, Rep]] =
+      : Stackable[ServiceFactory[Req, Rep]] =
     new Stack.Module3[Stats, Budget, HighResTimer, ServiceFactory[Req, Rep]] {
       def role: Stack.Role = Retries.Role
 
@@ -139,7 +139,7 @@ object Retries {
     *       include exceptions, such as `Thrift`.
     */
   private[finagle] def moduleWithRetryPolicy[Req, Rep]
-    : Stackable[ServiceFactory[Req, Rep]] =
+      : Stackable[ServiceFactory[Req, Rep]] =
     new Stack.Module4[
       Stats,
       Budget,

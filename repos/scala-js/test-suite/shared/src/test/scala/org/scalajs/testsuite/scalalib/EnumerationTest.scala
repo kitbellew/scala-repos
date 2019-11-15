@@ -16,7 +16,7 @@ import org.scalajs.testsuite.utils.Platform._
 class EnumerationTest {
 
   @Test def should_use_explicit_naming_for_enumerated_values_issue_38()
-    : Unit = {
+      : Unit = {
     object HelpLevel extends Enumeration {
       type HelpLevel = Value
       val None = Value("None")

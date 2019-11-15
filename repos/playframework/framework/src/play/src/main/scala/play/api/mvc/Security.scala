@@ -204,7 +204,7 @@ object Security {
         userinfo: RequestHeader => Option[U],
         onUnauthorized: RequestHeader => Result = _ =>
           Unauthorized(views.html.defaultpages.unauthorized()))
-      : AuthenticatedBuilder[U] =
+        : AuthenticatedBuilder[U] =
       new AuthenticatedBuilder(userinfo, onUnauthorized)
 
     /**

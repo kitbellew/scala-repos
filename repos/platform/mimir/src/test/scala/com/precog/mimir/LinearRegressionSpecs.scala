@@ -34,7 +34,7 @@ import java.io.File
 
 import scalaz._
 
-trait LinearRegressionTestSupport[M[+ _]]
+trait LinearRegressionTestSupport[M[+_]]
     extends StdLibEvaluatorStack[M]
     with RegressionTestSupport[M] {
 
@@ -79,7 +79,7 @@ trait LinearRegressionTestSupport[M[+ _]]
   }
 }
 
-trait LinearRegressionSpecs[M[+ _]]
+trait LinearRegressionSpecs[M[+_]]
     extends Specification
     with EvaluatorTestSupport[M]
     with LinearRegressionTestSupport[M]
@@ -118,7 +118,7 @@ trait LinearRegressionSpecs[M[+ _]]
   val numPoints = 100
 
   def produceResult(cpaths: Seq[CPath], num: Int, actualThetas: Array[Double])
-    : (Set[SEvent], Seq[(Array[Double], Double)]) = {
+      : (Set[SEvent], Seq[(Array[Double], Double)]) = {
     val samples = createLinearSamplePoints(num, numPoints, actualThetas)
 
     val points = jvalues(samples, cpaths) map { _.renderCompact }

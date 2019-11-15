@@ -67,7 +67,7 @@ object OptimizationPackage {
         fn: SecondOrderFunction[Vector, Hessian],
         init: Vector,
         options: OptimizationOption*)
-      : Iterator[TruncatedNewtonMinimizer[Vector, Hessian]#State] = {
+        : Iterator[TruncatedNewtonMinimizer[Vector, Hessian]#State] = {
       val params = options.foldLeft(OptParams())((a, b) => b apply a)
       if (params.useL1)
         throw new UnsupportedOperationException(

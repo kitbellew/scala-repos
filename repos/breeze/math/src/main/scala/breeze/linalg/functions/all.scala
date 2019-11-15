@@ -27,7 +27,7 @@ object all extends UFunc {
   }
 
   implicit def reduceFun[T, S](implicit ctv: CanTraverseValues[T, S])
-    : Impl2[S => Boolean, T, Boolean] = {
+      : Impl2[S => Boolean, T, Boolean] = {
     new Impl2[S => Boolean, T, Boolean] {
       override def apply(f: S => Boolean, v2: T): Boolean = {
 

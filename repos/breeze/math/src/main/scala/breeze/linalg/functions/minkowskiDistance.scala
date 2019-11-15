@@ -24,7 +24,7 @@ sealed trait minkowskiDistanceLowPrio {
 
   implicit def minkowskiDistanceFromZippedValues[T, U](
       implicit zipImpl: zipValues.Impl2[T, U, ZippedValues[Double, Double]])
-    : Impl3[T, U, Double, Double] = {
+      : Impl3[T, U, Double, Double] = {
 
     new Impl3[T, U, Double, Double] {
       def apply(v: T, v2: U, exponent: Double): Double = {

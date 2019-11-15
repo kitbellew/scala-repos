@@ -123,26 +123,26 @@ object Any extends LowPrioAnyImplicits {
     identity((x1: T1, x2: T2, x3: T3, x4: T4) => f(x1, x2, x3, x4))
   implicit def fromFunction5[T1, T2, T3, T4, T5, R](
       f: scala.Function5[T1, T2, T3, T4, T5, R])
-    : Function5[T1, T2, T3, T4, T5, R] =
+      : Function5[T1, T2, T3, T4, T5, R] =
     identity((x1: T1, x2: T2, x3: T3, x4: T4, x5: T5) => f(x1, x2, x3, x4, x5))
   implicit def fromFunction6[T1, T2, T3, T4, T5, T6, R](
       f: scala.Function6[T1, T2, T3, T4, T5, T6, R])
-    : Function6[T1, T2, T3, T4, T5, T6, R] =
+      : Function6[T1, T2, T3, T4, T5, T6, R] =
     identity((x1: T1, x2: T2, x3: T3, x4: T4, x5: T5, x6: T6) =>
       f(x1, x2, x3, x4, x5, x6))
   implicit def fromFunction7[T1, T2, T3, T4, T5, T6, T7, R](
       f: scala.Function7[T1, T2, T3, T4, T5, T6, T7, R])
-    : Function7[T1, T2, T3, T4, T5, T6, T7, R] =
+      : Function7[T1, T2, T3, T4, T5, T6, T7, R] =
     identity((x1: T1, x2: T2, x3: T3, x4: T4, x5: T5, x6: T6, x7: T7) =>
       f(x1, x2, x3, x4, x5, x6, x7))
   implicit def fromFunction8[T1, T2, T3, T4, T5, T6, T7, T8, R](
       f: scala.Function8[T1, T2, T3, T4, T5, T6, T7, T8, R])
-    : Function8[T1, T2, T3, T4, T5, T6, T7, T8, R] =
+      : Function8[T1, T2, T3, T4, T5, T6, T7, T8, R] =
     identity((x1: T1, x2: T2, x3: T3, x4: T4, x5: T5, x6: T6, x7: T7, x8: T8) =>
       f(x1, x2, x3, x4, x5, x6, x7, x8))
   implicit def fromFunction9[T1, T2, T3, T4, T5, T6, T7, T8, T9, R](
       f: scala.Function9[T1, T2, T3, T4, T5, T6, T7, T8, T9, R])
-    : Function9[T1, T2, T3, T4, T5, T6, T7, T8, T9, R] =
+      : Function9[T1, T2, T3, T4, T5, T6, T7, T8, T9, R] =
     identity(
       (
           x1: T1,
@@ -156,7 +156,7 @@ object Any extends LowPrioAnyImplicits {
           x9: T9) => f(x1, x2, x3, x4, x5, x6, x7, x8, x9))
   implicit def fromFunction10[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, R](
       f: scala.Function10[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, R])
-    : Function10[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, R] =
+      : Function10[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, R] =
     identity(
       (
           x1: T1,
@@ -171,7 +171,7 @@ object Any extends LowPrioAnyImplicits {
           x10: T10) => f(x1, x2, x3, x4, x5, x6, x7, x8, x9, x10))
   implicit def fromFunction11[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R](
       f: scala.Function11[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R])
-    : Function11[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R] =
+      : Function11[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R] =
     identity(
       (
           x1: T1,
@@ -200,7 +200,7 @@ object Any extends LowPrioAnyImplicits {
       T12,
       R](
       f: scala.Function12[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, R])
-    : Function12[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, R] =
+      : Function12[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, R] =
     identity(
       (
           x1: T1,
@@ -245,7 +245,7 @@ object Any extends LowPrioAnyImplicits {
         T12,
         T13,
         R])
-    : Function13[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, R] =
+      : Function13[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, R] =
     identity(
       (
           x1: T1,
@@ -1130,33 +1130,33 @@ object Any extends LowPrioAnyImplicits {
     (x1, x2, x3, x4) => f(x1, x2, x3, x4)
   implicit def toFunction5[T1, T2, T3, T4, T5, R](
       f: Function5[T1, T2, T3, T4, T5, R])
-    : scala.Function5[T1, T2, T3, T4, T5, R] =
+      : scala.Function5[T1, T2, T3, T4, T5, R] =
     (x1, x2, x3, x4, x5) => f(x1, x2, x3, x4, x5)
   implicit def toFunction6[T1, T2, T3, T4, T5, T6, R](
       f: Function6[T1, T2, T3, T4, T5, T6, R])
-    : scala.Function6[T1, T2, T3, T4, T5, T6, R] =
+      : scala.Function6[T1, T2, T3, T4, T5, T6, R] =
     (x1, x2, x3, x4, x5, x6) => f(x1, x2, x3, x4, x5, x6)
   implicit def toFunction7[T1, T2, T3, T4, T5, T6, T7, R](
       f: Function7[T1, T2, T3, T4, T5, T6, T7, R])
-    : scala.Function7[T1, T2, T3, T4, T5, T6, T7, R] =
+      : scala.Function7[T1, T2, T3, T4, T5, T6, T7, R] =
     (x1, x2, x3, x4, x5, x6, x7) => f(x1, x2, x3, x4, x5, x6, x7)
   implicit def toFunction8[T1, T2, T3, T4, T5, T6, T7, T8, R](
       f: Function8[T1, T2, T3, T4, T5, T6, T7, T8, R])
-    : scala.Function8[T1, T2, T3, T4, T5, T6, T7, T8, R] =
+      : scala.Function8[T1, T2, T3, T4, T5, T6, T7, T8, R] =
     (x1, x2, x3, x4, x5, x6, x7, x8) => f(x1, x2, x3, x4, x5, x6, x7, x8)
   implicit def toFunction9[T1, T2, T3, T4, T5, T6, T7, T8, T9, R](
       f: Function9[T1, T2, T3, T4, T5, T6, T7, T8, T9, R])
-    : scala.Function9[T1, T2, T3, T4, T5, T6, T7, T8, T9, R] =
+      : scala.Function9[T1, T2, T3, T4, T5, T6, T7, T8, T9, R] =
     (x1, x2, x3, x4, x5, x6, x7, x8, x9) =>
       f(x1, x2, x3, x4, x5, x6, x7, x8, x9)
   implicit def toFunction10[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, R](
       f: Function10[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, R])
-    : scala.Function10[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, R] =
+      : scala.Function10[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, R] =
     (x1, x2, x3, x4, x5, x6, x7, x8, x9, x10) =>
       f(x1, x2, x3, x4, x5, x6, x7, x8, x9, x10)
   implicit def toFunction11[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R](
       f: Function11[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R])
-    : scala.Function11[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R] =
+      : scala.Function11[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R] =
     (x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11) =>
       f(x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11)
   implicit def toFunction12[
@@ -1173,7 +1173,7 @@ object Any extends LowPrioAnyImplicits {
       T11,
       T12,
       R](f: Function12[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, R])
-    : scala.Function12[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, R] =
+      : scala.Function12[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, R] =
     (x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12) =>
       f(x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12)
   implicit def toFunction13[
@@ -1192,21 +1192,21 @@ object Any extends LowPrioAnyImplicits {
       T13,
       R](
       f: Function13[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, R])
-    : scala.Function13[
-      T1,
-      T2,
-      T3,
-      T4,
-      T5,
-      T6,
-      T7,
-      T8,
-      T9,
-      T10,
-      T11,
-      T12,
-      T13,
-      R] =
+      : scala.Function13[
+        T1,
+        T2,
+        T3,
+        T4,
+        T5,
+        T6,
+        T7,
+        T8,
+        T9,
+        T10,
+        T11,
+        T12,
+        T13,
+        R] =
     (x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13) =>
       f(x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13)
   implicit def toFunction14[

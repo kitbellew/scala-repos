@@ -39,7 +39,7 @@ trait Server extends ServerWithStop {
     * - If an exception is thrown.
     */
   def getHandlerFor(request: RequestHeader)
-    : Either[Future[Result], (RequestHeader, Handler, Application)] = {
+      : Either[Future[Result], (RequestHeader, Handler, Application)] = {
 
     // Common code for handling an exception and returning an error result
     def logExceptionAndGetResult(

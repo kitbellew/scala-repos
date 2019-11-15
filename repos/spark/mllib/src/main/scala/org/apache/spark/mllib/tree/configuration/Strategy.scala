@@ -66,7 +66,7 @@ import org.apache.spark.mllib.tree.impurity.{Entropy, Gini, Impurity, Variance}
   *                           [[org.apache.spark.SparkContext]], this setting is ignored.
   */
 @Since("1.0.0")
-class Strategy @Since("1.3.0")(
+class Strategy @Since("1.3.0") (
     @Since("1.0.0") @BeanProperty var algo: Algo,
     @Since("1.0.0") @BeanProperty var impurity: Impurity,
     @Since("1.0.0") @BeanProperty var maxDepth: Int,

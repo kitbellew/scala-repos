@@ -174,7 +174,7 @@ object Counter2 extends LowPriorityCounter2 with Counter2Ops {
   }
 
   implicit def CanMapValuesCounter[K1, K2, V, RV: Semiring: Zero]
-    : CanMapValues[Counter2[K1, K2, V], V, RV, Counter2[K1, K2, RV]] = {
+      : CanMapValues[Counter2[K1, K2, V], V, RV, Counter2[K1, K2, RV]] = {
     new CanMapValues[Counter2[K1, K2, V], V, RV, Counter2[K1, K2, RV]] {
       override def apply(from: Counter2[K1, K2, V], fn: (V => RV)) = {
         val rv = Counter2[K1, K2, RV]()
@@ -187,7 +187,7 @@ object Counter2 extends LowPriorityCounter2 with Counter2Ops {
   }
 
   implicit def CanMapActiveValuesCounter[K1, K2, V, RV: Semiring: Zero]
-    : CanMapActiveValues[Counter2[K1, K2, V], V, RV, Counter2[K1, K2, RV]] = {
+      : CanMapActiveValues[Counter2[K1, K2, V], V, RV, Counter2[K1, K2, RV]] = {
     new CanMapActiveValues[Counter2[K1, K2, V], V, RV, Counter2[K1, K2, RV]] {
       override def apply(from: Counter2[K1, K2, V], fn: (V => RV)) = {
         val rv = Counter2[K1, K2, RV]()
@@ -200,7 +200,7 @@ object Counter2 extends LowPriorityCounter2 with Counter2Ops {
   }
 
   implicit def canIterateValues[K1, K2, V]
-    : CanTraverseValues[Counter2[K1, K2, V], V] =
+      : CanTraverseValues[Counter2[K1, K2, V], V] =
     new CanTraverseValues[Counter2[K1, K2, V], V] {
       def isTraversableAgain(from: Counter2[K1, K2, V]): Boolean = true
 
@@ -212,7 +212,7 @@ object Counter2 extends LowPriorityCounter2 with Counter2Ops {
     }
 
   implicit def canTraverseKeyValuePairs[K1, K2, V]
-    : CanTraverseKeyValuePairs[Counter2[K1, K2, V], (K1, K2), V] = {
+      : CanTraverseKeyValuePairs[Counter2[K1, K2, V], (K1, K2), V] = {
     new CanTraverseKeyValuePairs[Counter2[K1, K2, V], (K1, K2), V] {
 
       /** Traverses all values from the given collection. */
@@ -232,14 +232,14 @@ object Counter2 extends LowPriorityCounter2 with Counter2Ops {
   // slicing
 
   implicit def canSliceRow[K1, K2, V]
-    : CanSlice2[Counter2[K1, K2, V], K1, ::.type, Counter[K2, V]] =
+      : CanSlice2[Counter2[K1, K2, V], K1, ::.type, Counter[K2, V]] =
     new CanSlice2[Counter2[K1, K2, V], K1, ::.type, Counter[K2, V]] {
       override def apply(from: Counter2[K1, K2, V], row: K1, unused: ::.type) =
         from.innerGetOrElseUpdate(row, from.data)
     }
 
   implicit def canSliceCol[K1, K2, V]
-    : CanSlice2[Counter2[K1, K2, V], ::.type, K2, Counter[K1, V]] =
+      : CanSlice2[Counter2[K1, K2, V], ::.type, K2, Counter[K1, V]] =
     new CanSlice2[Counter2[K1, K2, V], ::.type, K2, Counter[K1, V]] {
       def apply(from: Counter2[K1, K2, V], x: ::.type, col: K2) =
         new Counter[K1, V] {
@@ -320,12 +320,12 @@ object Counter2 extends LowPriorityCounter2 with Counter2Ops {
     * @return
     */
   implicit def canMapCols[K1, K2, V, R: ClassTag: Zero: Semiring]
-    : CanCollapseAxis[
-      Counter2[K1, K2, V],
-      Axis._1.type,
-      Counter[K2, V],
-      Counter[K2, R],
-      Counter2[K1, K2, R]] =
+      : CanCollapseAxis[
+        Counter2[K1, K2, V],
+        Axis._1.type,
+        Counter[K2, V],
+        Counter[K2, R],
+        Counter2[K1, K2, R]] =
     new CanCollapseAxis[
       Counter2[K1, K2, V],
       Axis._1.type,
@@ -373,12 +373,12 @@ trait LowPriorityCounter2 {
     * @return
     */
   implicit def canCollapseRows[K1, K2, V, R: ClassTag: Zero: Semiring]
-    : CanCollapseAxis[
-      Counter2[K1, K2, V],
-      Axis._0.type,
-      Counter[K1, V],
-      R,
-      Counter[K2, R]] =
+      : CanCollapseAxis[
+        Counter2[K1, K2, V],
+        Axis._0.type,
+        Counter[K1, V],
+        R,
+        Counter[K2, R]] =
     new CanCollapseAxis[
       Counter2[K1, K2, V],
       Axis._0.type,
@@ -402,12 +402,12 @@ trait LowPriorityCounter2 {
     * @return
     */
   implicit def canCollapseCols[K1, K2, V, R: ClassTag: Zero: Semiring]
-    : CanCollapseAxis[
-      Counter2[K1, K2, V],
-      Axis._1.type,
-      Counter[K2, V],
-      R,
-      Counter[K1, R]] =
+      : CanCollapseAxis[
+        Counter2[K1, K2, V],
+        Axis._1.type,
+        Counter[K2, V],
+        R,
+        Counter[K1, R]] =
     new CanCollapseAxis[
       Counter2[K1, K2, V],
       Axis._1.type,

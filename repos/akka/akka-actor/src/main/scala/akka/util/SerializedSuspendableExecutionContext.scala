@@ -15,7 +15,7 @@ private[akka] object SerializedSuspendableExecutionContext {
   final val Suspended = 2
 
   def apply(throughput: Int)(implicit context: ExecutionContext)
-    : SerializedSuspendableExecutionContext =
+      : SerializedSuspendableExecutionContext =
     new SerializedSuspendableExecutionContext(throughput)(context match {
       case s: SerializedSuspendableExecutionContext ⇒ s.context
       case other ⇒ other

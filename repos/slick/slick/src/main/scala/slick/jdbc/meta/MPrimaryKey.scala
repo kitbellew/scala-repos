@@ -13,13 +13,13 @@ case class MPrimaryKey(
 
 object MPrimaryKey {
   def getPrimaryKeys(table: MQName)
-    : BasicStreamingAction[Vector[MPrimaryKey], MPrimaryKey, Effect.Read] =
+      : BasicStreamingAction[Vector[MPrimaryKey], MPrimaryKey, Effect.Read] =
     ResultSetAction[MPrimaryKey](
       _.metaData.getPrimaryKeys(table.catalog_?, table.schema_?, table.name)) {
       r =>
         MPrimaryKey(MQName.from(r), r.<<, r.<<, r.<<)
     }
   def getPrimaryKeys(table: String)
-    : BasicStreamingAction[Vector[MPrimaryKey], MPrimaryKey, Effect.Read] =
+      : BasicStreamingAction[Vector[MPrimaryKey], MPrimaryKey, Effect.Read] =
     getPrimaryKeys(MQName.local(table))
 }

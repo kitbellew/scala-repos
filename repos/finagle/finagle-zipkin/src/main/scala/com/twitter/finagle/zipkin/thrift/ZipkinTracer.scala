@@ -99,7 +99,7 @@ object ZipkinTracer {
             if etype eq this =>
           Throw(
             new IllegalArgumentException("unsupported format: " + event)
-            with NoStacktrace)
+              with NoStacktrace)
 
         case Event(etype, when, _, ann: Annotation, _, tid, sid)
             if etype eq this =>

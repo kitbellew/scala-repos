@@ -39,7 +39,7 @@ import org.apache.spark.util.random.XORShiftRandom
   * @param assignments an RDD of clustering [[PowerIterationClustering#Assignment]]s
   */
 @Since("1.3.0")
-class PowerIterationClusteringModel @Since("1.3.0")(
+class PowerIterationClusteringModel @Since("1.3.0") (
     @Since("1.3.0") val k: Int,
     @Since("1.3.0") val assignments: RDD[PowerIterationClustering.Assignment])
     extends Saveable
@@ -213,7 +213,7 @@ class PowerIterationClustering private[clustering] (
     */
   @Since("1.3.0")
   def run(similarities: RDD[(Long, Long, Double)])
-    : PowerIterationClusteringModel = {
+      : PowerIterationClusteringModel = {
     val w = normalize(similarities)
     val w0 = initMode match {
       case "random" => randomInit(w)
@@ -228,7 +228,7 @@ class PowerIterationClustering private[clustering] (
   @Since("1.3.0")
   def run(
       similarities: JavaRDD[(java.lang.Long, java.lang.Long, java.lang.Double)])
-    : PowerIterationClusteringModel = {
+      : PowerIterationClusteringModel = {
     run(similarities.rdd.asInstanceOf[RDD[(Long, Long, Double)]])
   }
 

@@ -244,7 +244,7 @@ class ScalaIntroduceFieldFromExpressionHandler
   protected def getDialog(
       ifc: IntroduceFieldContext[ScExpression],
       settings: IntroduceFieldSettings[ScExpression])
-    : ScalaIntroduceFieldDialog = {
+      : ScalaIntroduceFieldDialog = {
     val occCount = ifc.occurrences.length
     // Add occurrences highlighting
     if (occCount > 1)

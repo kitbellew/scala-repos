@@ -21,8 +21,8 @@ package com.precog.bifrost
 
 import scalaz._
 
-trait SwappableMonad[Q[+ _]] extends Monad[Q] {
-  def swap[M[+ _], A](qmb: Q[M[A]])(implicit M: Monad[M]): M[Q[A]]
+trait SwappableMonad[Q[+_]] extends Monad[Q] {
+  def swap[M[+_], A](qmb: Q[M[A]])(implicit M: Monad[M]): M[Q[A]]
 }
 
 /**
@@ -39,7 +39,7 @@ trait SwappableMonad[Q[+ _]] extends Monad[Q] {
   * }
   * }}}
   */
-final case class QueryT[Q[+ _], M[+ _], +A](run: M[Q[A]]) {
+final case class QueryT[Q[+_], M[+_], +A](run: M[Q[A]]) {
   import scalaz.syntax.monad._
 
   def map[B](
@@ -55,16 +55,16 @@ final case class QueryT[Q[+ _], M[+ _], +A](run: M[Q[A]]) {
   }
 }
 
-trait QueryTCompanion[Q[+ _]] extends QueryTInstances[Q] with QueryTHoist[Q] {
-  def apply[Q[+ _], M[+ _], A](a: M[A])(
+trait QueryTCompanion[Q[+_]] extends QueryTInstances[Q] with QueryTHoist[Q] {
+  def apply[Q[+_], M[+_], A](a: M[A])(
       implicit M: Functor[M],
       Q: SwappableMonad[Q]): QueryT[Q, M, A] = {
     QueryT(M.map(a)(Q.point(_)))
   }
 }
 
-trait QueryTInstances0[Q[+ _]] {
-  implicit def queryTFunctor[M[+ _]](
+trait QueryTInstances0[Q[+_]] {
+  implicit def queryTFunctor[M[+_]](
       implicit M0: Functor[M],
       Q0: Functor[Q]): Functor[({ type λ[α] = QueryT[Q, M, α] })#λ] =
     new QueryTFunctor[Q, M] {
@@ -73,13 +73,13 @@ trait QueryTInstances0[Q[+ _]] {
     }
 }
 
-trait QueryTInstances[Q[+ _]] extends QueryTInstances0[Q] {
+trait QueryTInstances[Q[+_]] extends QueryTInstances0[Q] {
   implicit def queryTMonadTrans(implicit Q0: SwappableMonad[Q])
-    : Hoist[({ type λ[μ[+ _], α] = QueryT[Q, μ, α] })#λ] = new QueryTHoist[Q] {
+      : Hoist[({ type λ[μ[+_], α] = QueryT[Q, μ, α] })#λ] = new QueryTHoist[Q] {
     def Q = Q0
   }
 
-  implicit def queryTMonad[M[+ _]](
+  implicit def queryTMonad[M[+_]](
       implicit M0: Monad[M],
       Q0: SwappableMonad[Q]): Monad[({ type λ[α] = QueryT[Q, M, α] })#λ] =
     new QueryTMonad[Q, M] {
@@ -88,7 +88,7 @@ trait QueryTInstances[Q[+ _]] extends QueryTInstances0[Q] {
     }
 }
 
-trait QueryTFunctor[Q[+ _], M[+ _]]
+trait QueryTFunctor[Q[+_], M[+_]]
     extends Functor[({ type λ[α] = QueryT[Q, M, α] })#λ] {
   implicit def M: Functor[M]
   implicit def Q: Functor[Q]
@@ -96,7 +96,7 @@ trait QueryTFunctor[Q[+ _], M[+ _]]
   def map[A, B](ma: QueryT[Q, M, A])(f: A => B): QueryT[Q, M, B] = ma map f
 }
 
-trait QueryTMonad[Q[+ _], M[+ _]]
+trait QueryTMonad[Q[+_], M[+_]]
     extends Monad[({ type λ[α] = QueryT[Q, M, α] })#λ]
     with QueryTFunctor[Q, M] {
   implicit def M: Monad[M]
@@ -118,21 +118,21 @@ trait QueryTMonad[Q[+ _], M[+ _]]
   }
 }
 
-trait QueryTHoist[Q[+ _]]
-    extends Hoist[({ type λ[m[+ _], α] = QueryT[Q, m, α] })#λ] { self =>
+trait QueryTHoist[Q[+_]]
+    extends Hoist[({ type λ[m[+_], α] = QueryT[Q, m, α] })#λ] { self =>
   implicit def Q: SwappableMonad[Q]
 
-  def liftM[M[+ _], A](ma: M[A])(implicit M: Monad[M]): QueryT[Q, M, A] =
+  def liftM[M[+_], A](ma: M[A])(implicit M: Monad[M]): QueryT[Q, M, A] =
     QueryT[Q, M, A](M.map(ma)(Q.point(_)))
 
-  def hoist[M[+ _]: Monad, N[+ _]](f: M ~> N) =
+  def hoist[M[+_]: Monad, N[+_]](f: M ~> N) =
     new (({ type λ[α] = QueryT[Q, M, α] })#λ ~> ({
       type λ[α] = QueryT[Q, N, α]
     })#λ) {
       def apply[A](ma: QueryT[Q, M, A]): QueryT[Q, N, A] = QueryT(f(ma.run))
     }
 
-  implicit def apply[M[+ _]](
+  implicit def apply[M[+_]](
       implicit M0: Monad[M]): Monad[({ type λ[+α] = QueryT[Q, M, α] })#λ] =
     new QueryTMonad[Q, M] {
       def Q = self.Q

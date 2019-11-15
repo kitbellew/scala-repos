@@ -168,8 +168,7 @@ private[sbt] object SettingCompletions {
         defineKey,
         a,
         inputScopedKey(keyFilter(defineKey.key)))
-    } yield
-      () // parser is currently only for completion and the parsed data structures are not used
+    } yield () // parser is currently only for completion and the parsed data structures are not used
 
     matched(full) | any.+.string
   }

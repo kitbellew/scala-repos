@@ -18,7 +18,7 @@ object WebSocketFlowHandler {
     * other control frames like ping/pong.
     */
   def webSocketProtocol(bufferLimit: Int)
-    : BidiFlow[RawMessage, Message, Message, Message, NotUsed] = {
+      : BidiFlow[RawMessage, Message, Message, Message, NotUsed] = {
     BidiFlow.fromGraph(
       new GraphStage[BidiShape[RawMessage, Message, Message, Message]] {
         // The stream of incoming messages from the websocket connection

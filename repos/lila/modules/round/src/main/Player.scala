@@ -93,7 +93,8 @@ private[round] final class Player(
                 },
                 fuccess(progress.events)
               )
-          } else
+          }
+      else
         requestFishnet(game) >> fufail(
           FishnetError("Invalid AI move current FEN"))
     } else fufail(FishnetError("Not AI turn"))

@@ -54,7 +54,7 @@ final class NIHDBProjection(
 
   def getBlockAfter(id0: Option[Long], columns: Option[Set[ColumnRef]])(
       implicit MP: Monad[Future])
-    : Future[Option[BlockProjectionData[Long, Slice]]] = MP.point {
+      : Future[Option[BlockProjectionData[Long, Slice]]] = MP.point {
     val id = id0.map(_ + 1)
     val index = id getOrElse 0L
     getSnapshotBlock(id, columns.map(_.map(_.selector))) map {

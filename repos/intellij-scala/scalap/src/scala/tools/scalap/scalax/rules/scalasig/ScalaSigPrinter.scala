@@ -162,7 +162,8 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
           case m: MethodSymbol if m.name == CONSTRUCTOR_NAME =>
             firstConsFiltered = true
           case _ => printSymbol(level + 1, child)
-        } else printSymbol(level + 1, child)
+        }
+      else printSymbol(level + 1, child)
     }
   }
 

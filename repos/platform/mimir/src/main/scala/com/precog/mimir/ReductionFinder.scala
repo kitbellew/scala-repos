@@ -32,7 +32,7 @@ import com.precog.yggdrasil.execution.EvaluationContext
 
 import scalaz.std.map._
 
-trait ReductionFinderModule[M[+ _]]
+trait ReductionFinderModule[M[+_]]
     extends DAG
     with EvaluatorMethodsModule[M]
     with TransSpecableModule[M] {

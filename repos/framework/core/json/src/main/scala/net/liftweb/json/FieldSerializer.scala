@@ -48,7 +48,7 @@ object FieldSerializer {
   }
 
   def renameTo(name: String, newName: String)
-    : PartialFunction[(String, Any), Option[(String, Any)]] = {
+      : PartialFunction[(String, Any), Option[(String, Any)]] = {
     case (`name`, x) => Some(newName, x)
   }
 }

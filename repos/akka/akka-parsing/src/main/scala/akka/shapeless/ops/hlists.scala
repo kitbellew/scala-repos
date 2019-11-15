@@ -81,7 +81,7 @@ object hlist {
 
       implicit def hlistReverse[Acc <: HList, InH, InT <: HList, Out <: HList](
           implicit rt: Reverse0[InH :: Acc, InT, Out])
-        : Reverse0[Acc, InH :: InT, Out] =
+          : Reverse0[Acc, InH :: InT, Out] =
         new Reverse0[Acc, InH :: InT, Out] {
           def apply(acc: Acc, l: InH :: InT): Out = rt(l.head :: acc, l.tail)
         }

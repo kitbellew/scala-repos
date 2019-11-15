@@ -277,7 +277,7 @@ trait IssuesService { self: AccountService =>
       offset: Int,
       limit: Int,
       repos: (String, String)*)(implicit s: Session)
-    : List[(Issue, Account, Int, PullRequest, Repository, Account)] = {
+      : List[(Issue, Account, Int, PullRequest, Repository, Account)] = {
     // get issues and comment count and labels
     searchIssueQueryBase(condition, true, offset, limit, repos)
       .innerJoin(PullRequests)

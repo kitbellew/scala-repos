@@ -400,7 +400,7 @@ private[python] class PythonMLLibAPI extends Serializable {
       initialModelWeights: java.util.ArrayList[Double],
       initialModelMu: java.util.ArrayList[Vector],
       initialModelSigma: java.util.ArrayList[Matrix])
-    : GaussianMixtureModelWrapper = {
+      : GaussianMixtureModelWrapper = {
     val gmmAlg = new GaussianMixture()
       .setK(k)
       .setConvergenceTol(convergenceTol)

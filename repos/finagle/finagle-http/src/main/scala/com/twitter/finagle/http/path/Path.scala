@@ -132,7 +132,8 @@ protected class Numeric[A <: AnyVal](cast: String => A) {
       } catch {
         case _: NumberFormatException =>
           None
-      } else None
+      }
+    else None
   }
 }
 

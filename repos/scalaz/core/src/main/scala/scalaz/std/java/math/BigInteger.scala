@@ -5,7 +5,7 @@ import java.math.BigInteger
 
 trait BigIntegerInstances {
   implicit val bigIntegerInstance
-    : Monoid[BigInteger] with Enum[BigInteger] with Show[BigInteger] =
+      : Monoid[BigInteger] with Enum[BigInteger] with Show[BigInteger] =
     new Monoid[BigInteger] with Enum[BigInteger] with Show[BigInteger] {
       override def shows(f: BigInteger) = f.toString
 
@@ -34,8 +34,8 @@ trait BigIntegerInstances {
     with Order[BigInteger @@ Multiplication]
     with Show[BigInteger @@ Multiplication] =
     new Monoid[BigInteger @@ Multiplication]
-    with Order[BigInteger @@ Multiplication]
-    with Show[BigInteger @@ Multiplication] {
+      with Order[BigInteger @@ Multiplication]
+      with Show[BigInteger @@ Multiplication] {
       override def shows(f: scalaz.@@[BigInteger, Multiplication]) = f.toString
 
       def append(

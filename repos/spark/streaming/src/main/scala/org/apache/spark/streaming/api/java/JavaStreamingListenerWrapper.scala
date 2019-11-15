@@ -135,7 +135,7 @@ private[streaming] class JavaStreamingListenerWrapper(
 
   override def onOutputOperationCompleted(
       outputOperationCompleted: StreamingListenerOutputOperationCompleted)
-    : Unit = {
+      : Unit = {
     javaStreamingListener.onOutputOperationCompleted(
       new JavaStreamingListenerOutputOperationCompleted(
         toJavaOutputOperationInfo(

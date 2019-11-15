@@ -26,7 +26,7 @@ import scalaz.syntax.comonad._
 
 import org.specs2.mutable._
 
-trait ToArraySpec[M[+ _]]
+trait ToArraySpec[M[+_]]
     extends ColumnarTableModuleTestSupport[M]
     with Specification {
   def testToArrayHomogeneous = {

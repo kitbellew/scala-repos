@@ -55,7 +55,7 @@ trait TBddDsl extends FieldConversions with TypedPipeOperationsConversions {
 
     def When[TypeOut: Manifest: TupleConverter: TupleSetter](
         op: TwoTypedPipesOperation[TypeIn1, TypeIn2, TypeOut])
-      : TestCaseWhen[TypeOut] = TestCaseWhen(List(source, other), op)
+        : TestCaseWhen[TypeOut] = TestCaseWhen(List(source, other), op)
   }
 
   case class TestCaseGiven3[TypeIn1, TypeIn2, TypeIn3](
@@ -67,7 +67,7 @@ trait TBddDsl extends FieldConversions with TypedPipeOperationsConversions {
 
     def When[TypeOut: Manifest: TupleConverter: TupleSetter](
         op: ThreeTypedPipesOperation[TypeIn1, TypeIn2, TypeIn3, TypeOut])
-      : TestCaseWhen[TypeOut] = TestCaseWhen(List(source, other, third), op)
+        : TestCaseWhen[TypeOut] = TestCaseWhen(List(source, other, third), op)
   }
 
   case class TestCaseGivenList(sources: List[TypedTestSource[_]]) {

@@ -8,7 +8,7 @@ import akka.event.EventStream
 import javax.inject.{Named, Inject}
 import scala.concurrent.Future
 
-class HttpCallbackSubscriptionService @Inject()(
+class HttpCallbackSubscriptionService @Inject() (
     @Named(HttpEventModule.SubscribersKeeperActor) val subscribersKeeper: ActorRef,
     @Named(EventModule.busName) eventBus: EventStream) {
 

@@ -153,7 +153,7 @@ private[data] sealed abstract class StateTInstances {
     }
 
   implicit def stateTLift[M[_], S](implicit M: Applicative[M])
-    : TransLift[({ type λ[α[_], β] = StateT[α, S, β] })#λ, M] =
+      : TransLift[({ type λ[α[_], β] = StateT[α, S, β] })#λ, M] =
     new TransLift[({ type λ[α[_], β] = StateT[α, S, β] })#λ, M] {
       def liftT[A](ma: M[A]): StateT[M, S, A] = StateT(s => M.map(ma)(s -> _))
     }

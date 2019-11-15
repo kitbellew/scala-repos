@@ -28,7 +28,8 @@ class ScalaMoveClassesOrPackagesProcessor(
         case td: ScTypeDefinition =>
           td :: ScalaPsiUtil.getBaseCompanionModule(td).toList
         case e => List(e)
-      } else elements
+      }
+    else elements
 } with MoveClassesOrPackagesProcessor(
   project,
   expandedElements,

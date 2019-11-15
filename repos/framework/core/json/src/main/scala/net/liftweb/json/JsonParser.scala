@@ -192,7 +192,8 @@ object JsonParser {
             vals.replace(JObject(JField(name, v) :: obj.obj))
           case a: JArray => vals.replace(JArray(v :: a.arr))
           case other     => p.fail("expected field or array but got " + other)
-        } else {
+        }
+      else {
         vals.push(v)
         root = Some(v)
       }

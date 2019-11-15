@@ -143,7 +143,8 @@ class ScLiteralImpl(node: ASTNode)
             java.lang.Float.valueOf(text.substring(0, text.length - 1))
           } catch {
             case e: Exception => null
-          } else
+          }
+        else
           try {
             java.lang.Double.valueOf(text)
           } catch {
@@ -265,7 +266,7 @@ class ScLiteralImpl(node: ASTNode)
    */
 
   private[this] var myAnnotationOwner
-    : Option[PsiAnnotationOwner with PsiElement] = None
+      : Option[PsiAnnotationOwner with PsiElement] = None
   private[this] var expirationTime = 0L
 
   private val expTimeLengthGenerator: Random = new Random(

@@ -42,7 +42,7 @@ object DBColumnTransformer {
   def columnDefnToDefinition(
       col: ColumnDefinition,
       columnMutator: PartialFunction[DBColumnDefinition, DBColumnDefinition])
-    : Definition = {
+      : Definition = {
     val preparedCol = columnMutator(DBColumnDefinition(col))
     val sizeStr = preparedCol.sizeOpt
       .map { siz =>
@@ -60,7 +60,7 @@ object DBColumnTransformer {
   }
 
   private def defaultColumnMutator
-    : PartialFunction[DBColumnDefinition, DBColumnDefinition] = {
+      : PartialFunction[DBColumnDefinition, DBColumnDefinition] = {
     case t @ DBColumnDefinition(BIGINT, _, _, None, _, _) =>
       t.copy(sizeOpt = Some(20))
     case t @ DBColumnDefinition(INT, _, _, None, _, _) =>

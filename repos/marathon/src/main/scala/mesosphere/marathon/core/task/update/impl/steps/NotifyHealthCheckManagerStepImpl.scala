@@ -12,7 +12,7 @@ import scala.concurrent.Future
 /**
   * Notify the health check manager of this update.
   */
-class NotifyHealthCheckManagerStepImpl @Inject()(
+class NotifyHealthCheckManagerStepImpl @Inject() (
     healthCheckManager: HealthCheckManager)
     extends TaskStatusUpdateStep {
   override def name: String = "notifyHealthCheckManager"

@@ -33,7 +33,7 @@ object StreamConverters {
     * @param f A Creator which creates an OutputStream to write to
     */
   def fromOutputStream(f: function.Creator[OutputStream])
-    : javadsl.Sink[ByteString, CompletionStage[IOResult]] =
+      : javadsl.Sink[ByteString, CompletionStage[IOResult]] =
     fromOutputStream(f, autoFlush = false)
 
   /**
@@ -129,7 +129,7 @@ object StreamConverters {
     * The created [[InputStream]] will be closed when the [[Source]] is cancelled.
     */
   def fromInputStream(in: function.Creator[InputStream])
-    : javadsl.Source[ByteString, CompletionStage[IOResult]] =
+      : javadsl.Source[ByteString, CompletionStage[IOResult]] =
     fromInputStream(in, 8192)
 
   /**

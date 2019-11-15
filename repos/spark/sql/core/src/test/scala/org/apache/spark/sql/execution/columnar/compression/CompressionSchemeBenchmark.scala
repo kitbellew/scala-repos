@@ -63,7 +63,7 @@ object CompressionSchemeBenchmark extends AllCompressionSchemes {
       tpe: NativeColumnType[T],
       supportedScheme: CompressionScheme,
       input: ByteBuffer)
-    : ((ByteBuffer, ByteBuffer) => ByteBuffer, Double, ByteBuffer) = {
+      : ((ByteBuffer, ByteBuffer) => ByteBuffer, Double, ByteBuffer) = {
     assert(supportedScheme.supports(tpe))
 
     def toRow(d: Any) = new GenericInternalRow(Array[Any](d))

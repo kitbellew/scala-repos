@@ -179,7 +179,7 @@ object Namer {
   ): Activity[NameTree[Name.Bound]] = {
 
     val weightedTreeVars
-      : Seq[Var[Activity.State[NameTree.Weighted[Name.Bound]]]] = trees.map {
+        : Seq[Var[Activity.State[NameTree.Weighted[Name.Bound]]]] = trees.map {
       case Weighted(w, t) =>
         val treesAct: Activity[NameTree[Name.Bound]] =
           bind(lookup, depth, Some(w))(t)

@@ -90,7 +90,7 @@ private object TrafficDistributorTest {
     var newBalancerCalls = 0
     var balancers: Set[Balancer] = Set.empty
     def newBalancer(eps: Activity[Set[ServiceFactory[Int, Int]]])
-      : ServiceFactory[Int, Int] = {
+        : ServiceFactory[Int, Int] = {
       newBalancerCalls += 1
       val b = Balancer(eps)
       balancers += b

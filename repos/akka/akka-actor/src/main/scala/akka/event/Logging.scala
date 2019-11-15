@@ -585,7 +585,7 @@ object Logging {
     val (str, clazz) = LogSource(logSource)
     val system = logSource.context.system.asInstanceOf[ExtendedActorSystem]
     new BusLogging(system.eventStream, str, clazz, system.logFilter)
-    with DiagnosticLoggingAdapter
+      with DiagnosticLoggingAdapter
   }
 
   /**
@@ -640,7 +640,7 @@ object Logging {
     val (str, clazz) = LogSource.fromAnyRef(logSource)
     val system = logSource.getContext().system.asInstanceOf[ExtendedActorSystem]
     new BusLogging(system.eventStream, str, clazz, system.logFilter)
-    with DiagnosticLoggingAdapter
+      with DiagnosticLoggingAdapter
   }
 
   /**

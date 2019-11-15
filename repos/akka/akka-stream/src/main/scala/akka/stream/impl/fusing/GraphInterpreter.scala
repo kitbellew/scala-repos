@@ -130,7 +130,7 @@ private[akka] object GraphInterpreter {
         copiedModules: Array[Module],
         matVal: ju.Map[Module, Any],
         register: MaterializedValueSource[Any] ⇒ Unit)
-      : (Array[InHandler], Array[OutHandler], Array[GraphStageLogic]) = {
+        : (Array[InHandler], Array[OutHandler], Array[GraphStageLogic]) = {
       val logics = Array.ofDim[GraphStageLogic](stages.length)
 
       var i = 0

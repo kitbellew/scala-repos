@@ -776,7 +776,8 @@ abstract class UnPickler {
                     decls,
                     typeSymbol)
                 case _ => tp
-              } else tp
+              }
+            else tp
 
           if (p ne null) {
             slowButSafeEnteringPhase(p)(sym setInfo fixLocalChildTp)

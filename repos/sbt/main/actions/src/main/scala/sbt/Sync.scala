@@ -26,7 +26,7 @@ object Sync {
       cacheFile: File,
       inStyle: FileInfo.Style = FileInfo.lastModified,
       outStyle: FileInfo.Style = FileInfo.exists)
-    : Traversable[(File, File)] => Relation[File, File] =
+      : Traversable[(File, File)] => Relation[File, File] =
     mappings => {
       val relation = Relation.empty ++ mappings
       noDuplicateTargets(relation)

@@ -56,7 +56,7 @@ trait ResultConverterCompiler[Domain <: ResultConverterDomain] {
     new GetOrElseResultConverter[Domain, T](rc, default)
 
   def createIsDefinedResultConverter[T](rc: ResultConverter[Domain, Option[T]])
-    : ResultConverter[Domain, Boolean] =
+      : ResultConverter[Domain, Boolean] =
     new IsDefinedResultConverter[Domain](
       rc.asInstanceOf[ResultConverter[Domain, Option[_]]])
 
@@ -68,7 +68,7 @@ trait ResultConverterCompiler[Domain <: ResultConverterDomain] {
   def createOptionRebuildingConverter(
       discriminator: ResultConverter[Domain, Boolean],
       data: ResultConverter[Domain, Any])
-    : ResultConverter[Domain, Option[Any]] =
+      : ResultConverter[Domain, Option[Any]] =
     new OptionRebuildingResultConverter(discriminator, data)
 
   def createColumnConverter(

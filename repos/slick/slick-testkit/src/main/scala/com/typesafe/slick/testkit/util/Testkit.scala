@@ -375,7 +375,7 @@ abstract class AsyncTest[TDB >: Null <: TestDB](
       p: Publisher[T],
       tr: T => Future[R],
       delay: Duration = Duration(100L, TimeUnit.MILLISECONDS))
-    : Future[Vector[R]] = {
+      : Future[Vector[R]] = {
     val exe = new ThreadPoolExecutor(
       1,
       1,

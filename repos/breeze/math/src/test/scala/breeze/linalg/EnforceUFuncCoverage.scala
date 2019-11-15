@@ -16,7 +16,7 @@ object EnforceUFuncCoverage {
       opSV: UFunc.UImpl[F, SparseVector[Double], Any],
       opHV: UFunc.UImpl[F, HashVector[Double], Any],
       opSlV: UFunc.UImpl[F, SliceVector[Int, Double], Any])
-    : Witness[F, One, Vector.type] = null
+      : Witness[F, One, Vector.type] = null
 
   implicit def matrices1[F <: UFunc](f: F)(
       implicit w: Witness[F, One, Matrix.type]): Unit = ()
@@ -25,19 +25,19 @@ object EnforceUFuncCoverage {
       opDV: UFunc.UImpl[F, DenseMatrix[Double], Any],
       opSV: UFunc.UImpl[F, CSCMatrix[Double], Any],
       opSlV: UFunc.UImpl[F, SliceMatrix[Int, Int, Double], Any])
-    : Witness[F, One, Matrix.type] = null
+      : Witness[F, One, Matrix.type] = null
 
   implicit def counters1[F <: UFunc](f: F)(
       implicit w: Witness[F, One, Counter.type]): Unit = ()
   implicit def wCounters1[F <: UFunc](
       implicit opC: UFunc.UImpl[F, Counter[String, Double], Any],
       opC2: UFunc.UImpl[F, Counter2[String, Long, Double], Any])
-    : Witness[F, One, Counter.type] = null
+      : Witness[F, One, Counter.type] = null
 
   implicit def vectorsAndMatrices1[F <: UFunc](f: F)(
       implicit wV: Witness[F, One, Vector.type],
       wM: Witness[F, One, Matrix.type])
-    : Witness[F, One, Vector.type with Matrix.type] = null
+      : Witness[F, One, Vector.type with Matrix.type] = null
 
   implicit def linalg1[F <: UFunc](f: F)(
       implicit wV: Witness[F, One, Vector.type],

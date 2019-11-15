@@ -114,7 +114,7 @@ package scalaguide.http.scalabodyparsers {
         import scala.concurrent.ExecutionContext
         import akka.util.ByteString
 
-        class MyController @Inject()(ws: WSClient)(
+        class MyController @Inject() (ws: WSClient)(
             implicit ec: ExecutionContext) {
 
           def forward(request: WSRequest): BodyParser[WSResponse] =

@@ -126,7 +126,7 @@ class MockServletContext(var target: String) extends ServletContext {
   def addServlet(
       servletNAme: String,
       servletClass: Class[_ <: javax.servlet.Servlet])
-    : ServletRegistration.Dynamic = null
+      : ServletRegistration.Dynamic = null
   def addServlet(
       servletName: String,
       servlet: javax.servlet.Servlet): ServletRegistration.Dynamic =

@@ -276,25 +276,34 @@ trait Apply[F[_]] extends Functor[F] { self =>
       f: (A, B, C, D, E) => R): (F[A], F[B], F[C], F[D], F[E]) => F[R] =
     apply5(_, _, _, _, _)(f)
   def lift6[A, B, C, D, E, FF, R](f: (A, B, C, D, E, FF) => R)
-    : (F[A], F[B], F[C], F[D], F[E], F[FF]) => F[R] =
+      : (F[A], F[B], F[C], F[D], F[E], F[FF]) => F[R] =
     apply6(_, _, _, _, _, _)(f)
   def lift7[A, B, C, D, E, FF, G, R](f: (A, B, C, D, E, FF, G) => R)
-    : (F[A], F[B], F[C], F[D], F[E], F[FF], F[G]) => F[R] =
+      : (F[A], F[B], F[C], F[D], F[E], F[FF], F[G]) => F[R] =
     apply7(_, _, _, _, _, _, _)(f)
   def lift8[A, B, C, D, E, FF, G, H, R](f: (A, B, C, D, E, FF, G, H) => R)
-    : (F[A], F[B], F[C], F[D], F[E], F[FF], F[G], F[H]) => F[R] =
+      : (F[A], F[B], F[C], F[D], F[E], F[FF], F[G], F[H]) => F[R] =
     apply8(_, _, _, _, _, _, _, _)(f)
   def lift9[A, B, C, D, E, FF, G, H, I, R](f: (A, B, C, D, E, FF, G, H, I) => R)
-    : (F[A], F[B], F[C], F[D], F[E], F[FF], F[G], F[H], F[I]) => F[R] =
+      : (F[A], F[B], F[C], F[D], F[E], F[FF], F[G], F[H], F[I]) => F[R] =
     apply9(_, _, _, _, _, _, _, _, _)(f)
   def lift10[A, B, C, D, E, FF, G, H, I, J, R](
       f: (A, B, C, D, E, FF, G, H, I, J) => R)
-    : (F[A], F[B], F[C], F[D], F[E], F[FF], F[G], F[H], F[I], F[J]) => F[R] =
+      : (F[A], F[B], F[C], F[D], F[E], F[FF], F[G], F[H], F[I], F[J]) => F[R] =
     apply10(_, _, _, _, _, _, _, _, _, _)(f)
   def lift11[A, B, C, D, E, FF, G, H, I, J, K, R](
-      f: (A, B, C, D, E, FF, G, H, I, J, K) => R)
-    : (F[A], F[B], F[C], F[D], F[E], F[FF], F[G], F[H], F[I], F[J], F[K]) => F[
-      R] =
+      f: (A, B, C, D, E, FF, G, H, I, J, K) => R): (
+      F[A],
+      F[B],
+      F[C],
+      F[D],
+      F[E],
+      F[FF],
+      F[G],
+      F[H],
+      F[I],
+      F[J],
+      F[K]) => F[R] =
     apply11(_, _, _, _, _, _, _, _, _, _, _)(f)
   def lift12[A, B, C, D, E, FF, G, H, I, J, K, L, R](
       f: (A, B, C, D, E, FF, G, H, I, J, K, L) => R): (

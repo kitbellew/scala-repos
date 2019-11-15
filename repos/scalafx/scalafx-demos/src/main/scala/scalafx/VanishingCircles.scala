@@ -50,9 +50,9 @@ object VanishingCircles extends JFXApp {
     height = 600
     scene = new Scene {
       fill = Black
-      circles = for (i <- 0 until 50)
-        yield
-          new Circle {
+      circles =
+        for (i <- 0 until 50)
+          yield new Circle {
             centerX = random * 800
             centerY = random * 600
             radius = 150
@@ -73,9 +73,9 @@ object VanishingCircles extends JFXApp {
   new Timeline {
     cycleCount = Indefinite
     autoReverse = true
-    keyFrames = for (circle <- circles)
-      yield
-        at(40 s) {
+    keyFrames =
+      for (circle <- circles)
+        yield at(40 s) {
           Set(
             circle.centerX -> random * stage.width(),
             circle.centerY -> random * stage.height()

@@ -179,7 +179,7 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
       //todo ugly recursion breakers, maybe we need general for type? What about performance?
       visitedAliases: HashSet[ScTypeAlias] = HashSet.empty,
       visitedTypeParameter: HashSet[ScTypeParameterType] = HashSet.empty)
-    : Boolean = {
+      : Boolean = {
     ProgressManager.checkCanceled()
 
     t match {

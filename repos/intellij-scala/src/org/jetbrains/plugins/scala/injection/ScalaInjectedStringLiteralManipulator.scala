@@ -76,7 +76,8 @@ class ScalaInjectedStringLiteralManipulator
             .shiftRight(prefixLength)
         case _ =>
           getLiteralRange(element.getText)
-      } else TextRange.from(0, element.getTextLength)
+      }
+    else TextRange.from(0, element.getTextLength)
   }
 
   private def getLiteralRange(text: String): TextRange = {

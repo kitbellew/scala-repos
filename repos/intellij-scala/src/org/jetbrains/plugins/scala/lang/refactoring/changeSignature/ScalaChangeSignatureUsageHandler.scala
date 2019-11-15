@@ -172,7 +172,8 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
           case (name, tpe) =>
             ScalaExtractMethodUtils
               .typedName(name, tpe.canonicalText, usage.expr.getProject)
-        } else names
+        }
+      else names
     val clause = params.mkString("(", ", ", ")")
     val newFunExprText = s"$clause => $exprText"
     val funExpr = ScalaPsiElementFactory.createExpressionFromText(

@@ -526,8 +526,8 @@ class ForwardedHeaderHandlerSpec extends Specification {
     new Headers(s.split("\n").flatMap(split(_, ":\\s*")))
   }
 
-  def processHeaders(config: Map[String, Any], headers: Headers)
-    : Seq[(ForwardedEntry, Either[String, ConnectionInfo], Option[Boolean])] = {
+  def processHeaders(config: Map[String, Any], headers: Headers): Seq[
+    (ForwardedEntry, Either[String, ConnectionInfo], Option[Boolean])] = {
     val configuration = ForwardedHeaderHandlerConfig(
       Some(Configuration.from(config)))
     configuration.forwardedHeaders(headers).map { forwardedEntry =>

@@ -51,7 +51,7 @@ import org.apache.spark.sql.functions._
   */
 @Since("1.4.0")
 @Experimental
-final class RandomForestClassifier @Since("1.4.0")(
+final class RandomForestClassifier @Since("1.4.0") (
     @Since("1.4.0") override val uid: String)
     extends ProbabilisticClassifier[
       Vector,

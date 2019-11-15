@@ -171,7 +171,8 @@ object ScSyntheticPackage {
                         if c.fakeCompanionModule.isDefined =>
                       Seq(td, c.fakeCompanionModule.get)
                     case td => Seq(td)
-                  } else Seq.empty): _*)
+                  }
+                else Seq.empty): _*)
           }
 
           def getClasses(scope: GlobalSearchScope) =

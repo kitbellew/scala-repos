@@ -197,5 +197,6 @@ trait PaintIncludes {
     * @return $SFX $PNT
     */
   implicit def jfxPaint2sfx(p: jfxsp.Paint): Paint =
-    if (p != null) new Paint(p) {} else null
+    if (p != null) new Paint(p) {}
+    else null
 }

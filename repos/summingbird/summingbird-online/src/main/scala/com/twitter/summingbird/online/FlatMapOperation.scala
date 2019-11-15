@@ -126,7 +126,7 @@ object FlatMapOperation {
   def combine[T, K, V, JoinedV](
       fmSupplier: => FlatMapOperation[T, (K, V)],
       storeSupplier: OnlineServiceFactory[K, JoinedV])
-    : FlatMapOperation[T, (K, (V, Option[JoinedV]))] =
+      : FlatMapOperation[T, (K, (V, Option[JoinedV]))] =
     new FlatMapOperation[T, (K, (V, Option[JoinedV]))] {
       lazy val fm = fmSupplier
       lazy val store = storeSupplier.serviceStore()

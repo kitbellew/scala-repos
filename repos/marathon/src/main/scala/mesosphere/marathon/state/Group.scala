@@ -304,11 +304,10 @@ object Group {
                   .map(_.servicePort)
                 if existingServicePort != 0 // ignore zero ports, which will be chosen at random
                 if servicePorts contains existingServicePort
-              } yield
-                RuleViolation(
-                  app.id,
-                  s"Requested service port $existingServicePort conflicts with a service port in app ${existingApp.id}",
-                  None)
+              } yield RuleViolation(
+                app.id,
+                s"Requested service port $existingServicePort conflicts with a service port in app ${existingApp.id}",
+                None)
           }
 
           if (ruleViolations.isEmpty) None

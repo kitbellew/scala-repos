@@ -34,7 +34,7 @@ trait JdbcMappingCompilerComponent { self: JdbcProfile =>
   class MappingCompiler
       extends ResultConverterCompiler[JdbcResultConverterDomain] {
     def createColumnConverter(n: Node, idx: Int, column: Option[FieldSymbol])
-      : ResultConverter[JdbcResultConverterDomain, _] = {
+        : ResultConverter[JdbcResultConverterDomain, _] = {
       val JdbcType(ti, option) = n.nodeType.structural
       if (option) createOptionResultConverter(ti, idx)
       else

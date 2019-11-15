@@ -118,7 +118,7 @@ class MemoryLaws extends WordSpec {
     val platform = new Memory
     val finalStore: Memory#Store[K, V] = MutableMap.empty[K, V]
     val storeAndService
-      : Memory#Store[K, JoinedU] with Memory#Service[K, JoinedU] =
+        : Memory#Store[K, JoinedU] with Memory#Service[K, JoinedU] =
       new MutableHashMap[K, JoinedU]() with MemoryService[K, JoinedU]
     val sourceMaker = Memory.toSource[T](_)
     val items1 = sample[List[T]]
@@ -194,7 +194,7 @@ class MemoryLaws extends WordSpec {
   }
 
   def lookupCollectChecker[T: Arbitrary: Equiv: Manifest, U: Arbitrary: Equiv]
-    : Boolean = {
+      : Boolean = {
     import MemoryArbitraries._
     val mem = new Memory
     val input = sample[List[T]]

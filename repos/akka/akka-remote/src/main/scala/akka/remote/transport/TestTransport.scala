@@ -46,7 +46,7 @@ class TestTransport(
   private val associationListenerPromise = Promise[AssociationEventListener]()
 
   private def defaultListen
-    : Future[(Address, Promise[AssociationEventListener])] = {
+      : Future[(Address, Promise[AssociationEventListener])] = {
     registry.registerTransport(this, associationListenerPromise.future)
     Future.successful((localAddress, associationListenerPromise))
   }
@@ -95,7 +95,7 @@ class TestTransport(
   private def createHandlePair(
       remoteTransport: TestTransport,
       remoteAddress: Address)
-    : (TestAssociationHandle, TestAssociationHandle) = {
+      : (TestAssociationHandle, TestAssociationHandle) = {
     val localHandle = new TestAssociationHandle(
       localAddress,
       remoteAddress,
@@ -357,7 +357,7 @@ object TestTransport {
     def remoteListenerRelativeTo(
         handle: TestAssociationHandle,
         listenerPair: (HandleEventListener, HandleEventListener))
-      : HandleEventListener = {
+        : HandleEventListener = {
       listenerPair match {
         case (initiator, receiver) ⇒
           if (handle.inbound) initiator else receiver
@@ -405,7 +405,7 @@ object TestTransport {
     def registerTransport(
         transport: TestTransport,
         associationEventListenerFuture: Future[AssociationEventListener])
-      : Unit = {
+        : Unit = {
       transportTable.put(
         transport.localAddress,
         (transport, associationEventListenerFuture))
@@ -449,7 +449,7 @@ object TestTransport {
       *   The original entries.
       */
     def deregisterAssociation(key: (Address, Address))
-      : Option[(HandleEventListener, HandleEventListener)] =
+        : Option[(HandleEventListener, HandleEventListener)] =
       Option(listenersTable.remove(key))
 
     /**
@@ -487,7 +487,7 @@ object TestTransport {
       * @return The transport if exists.
       */
     def transportFor(address: Address)
-      : Option[(TestTransport, Future[AssociationEventListener])] =
+        : Option[(TestTransport, Future[AssociationEventListener])] =
       Option(transportTable.get(address))
 
     /**

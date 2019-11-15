@@ -779,7 +779,7 @@ object DistributedLDAModel extends MLReadable[DistributedLDAModel] {
   */
 @Since("1.6.0")
 @Experimental
-class LDA @Since("1.6.0")(@Since("1.6.0") override val uid: String)
+class LDA @Since("1.6.0") (@Since("1.6.0") override val uid: String)
     extends Estimator[LDAModel]
     with LDAParams
     with DefaultParamsWritable {

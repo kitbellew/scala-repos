@@ -242,7 +242,7 @@ private[data] abstract class XorTInstances extends XorTInstances1 {
     }
 
   implicit def xortTransLift[M[_], E](implicit M: Functor[M])
-    : TransLift[({ type λ[α[_], β] = XorT[α, E, β] })#λ, M] =
+      : TransLift[({ type λ[α[_], β] = XorT[α, E, β] })#λ, M] =
     new TransLift[({ type λ[α[_], β] = XorT[α, E, β] })#λ, M] {
       def liftT[A](ma: M[A]): XorT[M, E, A] =
         XorT(M.map(ma)(Xor.right))

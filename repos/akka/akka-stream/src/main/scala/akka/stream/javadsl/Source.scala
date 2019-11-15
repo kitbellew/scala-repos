@@ -216,7 +216,7 @@ object Source {
   def unfoldAsync[S, E](
       s: S,
       f: function.Function[S, CompletionStage[Optional[Pair[S, E]]]])
-    : Source[E, NotUsed] =
+      : Source[E, NotUsed] =
     new Source(
       scaladsl.Source.unfoldAsync(s)(
         (s: S) ⇒
@@ -335,7 +335,7 @@ object Source {
     * @param overflowStrategy Strategy that is used when incoming elements cannot fit inside the buffer
     */
   def queue[T](bufferSize: Int, overflowStrategy: OverflowStrategy)
-    : Source[T, SourceQueueWithComplete[T]] =
+      : Source[T, SourceQueueWithComplete[T]] =
     new Source(
       scaladsl.Source
         .queue[T](bufferSize, overflowStrategy)
@@ -736,7 +736,7 @@ final class Source[+Out, +Mat](delegate: scaladsl.Source[Out, Mat])
     * '''Cancels when''' downstream cancels
     */
   def zip[T](that: Graph[SourceShape[T], _])
-    : javadsl.Source[Out @uncheckedVariance Pair T, Mat] =
+      : javadsl.Source[Out @uncheckedVariance Pair T, Mat] =
     zipMat(that, Keep.left)
 
   /**
@@ -750,7 +750,7 @@ final class Source[+Out, +Mat](delegate: scaladsl.Source[Out, Mat])
   def zipMat[T, M, M2](
       that: Graph[SourceShape[T], M],
       matF: function.Function2[Mat, M, M2])
-    : javadsl.Source[Out @uncheckedVariance Pair T, M2] =
+      : javadsl.Source[Out @uncheckedVariance Pair T, M2] =
     this.viaMat(Flow.create[Out].zipMat(that, Keep.right[NotUsed, M]), matF)
 
   /**
@@ -853,7 +853,7 @@ final class Source[+Out, +Mat](delegate: scaladsl.Source[Out, Mat])
     */
   def recoverWith[T >: Out](
       pf: PartialFunction[Throwable, _ <: Graph[SourceShape[T], NotUsed]])
-    : Source[T, Mat @uncheckedVariance] =
+      : Source[T, Mat @uncheckedVariance] =
     new Source(delegate.recoverWith(pf))
 
   /**
@@ -878,7 +878,7 @@ final class Source[+Out, +Mat](delegate: scaladsl.Source[Out, Mat])
     * '''Cancels when''' downstream cancels
     */
   def mapConcat[T](f: function.Function[Out, _ <: java.lang.Iterable[T]])
-    : javadsl.Source[T, Mat] =
+      : javadsl.Source[T, Mat] =
     new Source(delegate.mapConcat(elem ⇒ Util.immutableSeq(f.apply(elem))))
 
   /**
@@ -907,7 +907,7 @@ final class Source[+Out, +Mat](delegate: scaladsl.Source[Out, Mat])
     */
   def statefulMapConcat[T](
       f: function.Creator[function.Function[Out, java.lang.Iterable[T]]])
-    : javadsl.Source[T, Mat] =
+      : javadsl.Source[T, Mat] =
     new Source(delegate.statefulMapConcat { () ⇒
       val fun = f.create()
       elem ⇒ Util.immutableSeq(fun(elem))
@@ -1172,7 +1172,7 @@ final class Source[+Out, +Mat](delegate: scaladsl.Source[Out, Mat])
     * '''Cancels when''' downstream cancels
     */
   def reduce(f: function.Function2[Out, Out, Out @uncheckedVariance])
-    : javadsl.Source[Out, Mat] =
+      : javadsl.Source[Out, Mat] =
     new Source(delegate.reduce(f.apply))
 
   /**
@@ -1255,7 +1255,7 @@ final class Source[+Out, +Mat](delegate: scaladsl.Source[Out, Mat])
     * IllegalArgumentException is thrown.
     */
   def groupedWithin(n: Int, d: FiniteDuration)
-    : javadsl.Source[java.util.List[Out @uncheckedVariance], Mat] =
+      : javadsl.Source[java.util.List[Out @uncheckedVariance], Mat] =
     new Source(delegate.groupedWithin(n, d).map(_.asJava)) // TODO optimize to one step
 
   /**
@@ -1538,7 +1538,7 @@ final class Source[+Out, +Mat](delegate: scaladsl.Source[Out, Mat])
     *                    state.
     */
   def expand[U](extrapolate: function.Function[Out, java.util.Iterator[U]])
-    : javadsl.Source[U, Mat] =
+      : javadsl.Source[U, Mat] =
     new Source(delegate.expand(in ⇒ extrapolate(in).asScala))
 
   /**
@@ -1768,7 +1768,7 @@ final class Source[+Out, +Mat](delegate: scaladsl.Source[Out, Mat])
     */
   def flatMapConcat[T, M](
       f: function.Function[Out, _ <: Graph[SourceShape[T], M]])
-    : Source[T, Mat] =
+      : Source[T, Mat] =
     new Source(delegate.flatMapConcat[T, M](x ⇒ f(x)))
 
   /**
@@ -1787,7 +1787,7 @@ final class Source[+Out, +Mat](delegate: scaladsl.Source[Out, Mat])
   def flatMapMerge[T, M](
       breadth: Int,
       f: function.Function[Out, _ <: Graph[SourceShape[T], M]])
-    : Source[T, Mat] =
+      : Source[T, Mat] =
     new Source(delegate.flatMapMerge(breadth, o ⇒ f(o)))
 
   /**
@@ -1943,7 +1943,7 @@ final class Source[+Out, +Mat](delegate: scaladsl.Source[Out, Mat])
     */
   def watchTermination[M]()(
       matF: function.Function2[Mat, CompletionStage[Done], M])
-    : javadsl.Source[Out, M] =
+      : javadsl.Source[Out, M] =
     new Source(
       delegate.watchTermination()((left, right) ⇒ matF(left, right.toJava)))
 

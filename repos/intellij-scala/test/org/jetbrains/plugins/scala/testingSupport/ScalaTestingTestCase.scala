@@ -293,7 +293,7 @@ abstract class ScalaTestingTestCase(
       executorClass: Class[_ <: Executor],
       listener: ProcessListener,
       runner: ProgramRunner[_ <: RunnerSettings])
-    : (ProcessHandler, RunContentDescriptor) = {
+      : (ProcessHandler, RunContentDescriptor) = {
     val configuration = runConfiguration.getConfiguration
     val executor: Executor =
       Executor.EXECUTOR_EXTENSION_NAME.findExtension(executorClass)

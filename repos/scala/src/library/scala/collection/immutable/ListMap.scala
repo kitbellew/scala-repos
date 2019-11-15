@@ -232,7 +232,8 @@ class ListMap[A, +B]
       else if (k == cur.key)
         (cur.next /: acc) {
           case (t, h) => val tt = t; new tt.Node(h.key, h.value) // SI-7459
-        } else remove0(k, cur.next, cur :: acc)
+        }
+      else remove0(k, cur.next, cur :: acc)
 
     override protected def next: ListMap[A, B1] = ListMap.this
 

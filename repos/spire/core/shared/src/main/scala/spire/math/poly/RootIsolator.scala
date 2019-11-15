@@ -85,7 +85,7 @@ object RootIsolator {
     def rec(
         polys: List[TransformedPoly],
         acc: Vector[Interval[Rational]] = Vector.empty)
-      : Vector[Interval[Rational]] = polys match {
+        : Vector[Interval[Rational]] = polys match {
       case TransformedPoly(p, a, b, c, d) :: rest =>
         if (p(BigInt(0)) == BigInt(0)) {
           val p0 = p.mapTerms { case Term(coeff, exp) => Term(coeff, exp - 1) }

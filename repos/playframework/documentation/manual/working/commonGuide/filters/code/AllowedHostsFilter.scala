@@ -9,7 +9,7 @@ import javax.inject.Inject
 import play.api.http.HttpFilters
 import play.filters.hosts.AllowedHostsFilter
 
-class Filters @Inject()(allowedHostsFilter: AllowedHostsFilter)
+class Filters @Inject() (allowedHostsFilter: AllowedHostsFilter)
     extends HttpFilters {
   def filters = Seq(allowedHostsFilter)
 }

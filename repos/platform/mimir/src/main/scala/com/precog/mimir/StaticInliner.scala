@@ -27,7 +27,7 @@ import com.precog.util.Timing
 
 import Function._
 
-trait StaticInlinerModule[M[+ _]] extends DAG with EvaluatorMethodsModule[M] {
+trait StaticInlinerModule[M[+_]] extends DAG with EvaluatorMethodsModule[M] {
   import dag._
 
   trait StaticInliner extends EvaluatorMethods {
@@ -35,7 +35,7 @@ trait StaticInlinerModule[M[+ _]] extends DAG with EvaluatorMethodsModule[M] {
   }
 }
 
-trait StdLibStaticInlinerModule[M[+ _]]
+trait StdLibStaticInlinerModule[M[+_]]
     extends StaticInlinerModule[M]
     with StdLibModule[M] {
   import dag._

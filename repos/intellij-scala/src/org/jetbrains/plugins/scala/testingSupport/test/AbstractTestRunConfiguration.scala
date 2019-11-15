@@ -419,7 +419,7 @@ abstract class AbstractTestRunConfiguration(
     if (module == null) throw new ExecutionException("Module is not specified")
 
     val state = new JavaCommandLineState(env)
-    with AbstractTestRunConfiguration.TestCommandLinePatcher {
+      with AbstractTestRunConfiguration.TestCommandLinePatcher {
       val getClasses: Seq[String] = getClassFileNames(classes)
 
       protected override def createJavaParameters: JavaParameters = {

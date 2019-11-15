@@ -44,7 +44,7 @@ trait RuleDSLCombinators {
   @compileTimeOnly("Calls to `zeroOrMore` must be inside `rule` macro")
   def zeroOrMore[I <: HList, O <: HList](r: Rule[I, O])(
       implicit l: Lifter[immutable.Seq, I, O])
-    : Rule[l.In, l.OptionalOut] with Repeated = `n/a`
+      : Rule[l.In, l.OptionalOut] with Repeated = `n/a`
 
   /**
     * Runs its inner rule until it fails, succeeds if its inner rule succeeded at least once.
@@ -56,7 +56,7 @@ trait RuleDSLCombinators {
   @compileTimeOnly("Calls to `oneOrMore` must be inside `rule` macro")
   def oneOrMore[I <: HList, O <: HList](r: Rule[I, O])(
       implicit l: Lifter[immutable.Seq, I, O])
-    : Rule[l.In, l.StrictOut] with Repeated = `n/a`
+      : Rule[l.In, l.StrictOut] with Repeated = `n/a`
 
   /**
     * Runs its inner rule but resets the parser (cursor and value stack) afterwards,
@@ -111,7 +111,7 @@ trait RuleDSLCombinators {
     @compileTimeOnly("Calls to `times` must be inside `rule` macro")
     def times[I <: HList, O <: HList](r: Rule[I, O])(
         implicit s: Lifter[immutable.Seq, I, O])
-      : Rule[s.In, s.StrictOut] with Repeated
+        : Rule[s.In, s.StrictOut] with Repeated
   }
 
   @compileTimeOnly(

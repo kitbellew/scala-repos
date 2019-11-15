@@ -43,7 +43,7 @@ private[ml] object GradientBoostedTrees extends Logging {
     *         (array of decision tree models, array of model weights)
     */
   def run(input: RDD[LabeledPoint], boostingStrategy: OldBoostingStrategy)
-    : (Array[DecisionTreeRegressionModel], Array[Double]) = {
+      : (Array[DecisionTreeRegressionModel], Array[Double]) = {
     val algo = boostingStrategy.treeStrategy.algo
     algo match {
       case OldAlgo.Regression =>
@@ -176,7 +176,7 @@ private[ml] object GradientBoostedTrees extends Logging {
       validationInput: RDD[LabeledPoint],
       boostingStrategy: OldBoostingStrategy,
       validate: Boolean)
-    : (Array[DecisionTreeRegressionModel], Array[Double]) = {
+      : (Array[DecisionTreeRegressionModel], Array[Double]) = {
     val timer = new TimeTracker()
     timer.start("total")
     timer.start("init")

@@ -42,7 +42,7 @@ case class MatrixEntry(i: Long, j: Long, value: Double)
   *              columns will be determined by the max column index plus one.
   */
 @Since("1.0.0")
-class CoordinateMatrix @Since("1.0.0")(
+class CoordinateMatrix @Since("1.0.0") (
     @Since("1.0.0") val entries: RDD[MatrixEntry],
     private var nRows: Long,
     private var nCols: Long)

@@ -161,7 +161,7 @@ package scalaguide.cache {
     import play.api.mvc._
     import javax.inject.Inject
 
-    class Application @Inject()(cache: CacheApi) extends Controller {}
+    class Application @Inject() (cache: CacheApi) extends Controller {}
 //#inject
   }
 
@@ -171,7 +171,7 @@ package scalaguide.cache {
     import play.api.mvc._
     import javax.inject.Inject
 
-    class Application @Inject()(
+    class Application @Inject() (
         @NamedCache("session-cache") sessionCache: CacheApi
     ) extends Controller {}
 //#qualified
@@ -182,10 +182,10 @@ package scalaguide.cache {
     import play.api.cache.Cached
     import javax.inject.Inject
 
-    class Application @Inject()(cached: Cached) extends Controller {}
+    class Application @Inject() (cached: Cached) extends Controller {}
 //#cached-action-app
 
-    class Application1 @Inject()(cached: Cached) extends Controller {
+    class Application1 @Inject() (cached: Cached) extends Controller {
       //#cached-action
       def index = cached("homePage") {
         Action {
@@ -217,7 +217,7 @@ package scalaguide.cache {
       }
       //#cached-action-control
     }
-    class Application2 @Inject()(cached: Cached) extends Controller {
+    class Application2 @Inject() (cached: Cached) extends Controller {
       //#cached-action-control-404
       def get(index: Int) = {
         val caching =

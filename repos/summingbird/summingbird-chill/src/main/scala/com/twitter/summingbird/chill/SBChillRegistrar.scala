@@ -43,7 +43,7 @@ object SBChillRegistrar {
       implicitly[Codec[T]])
 
   def injectionDefaultRegistrar[T: Manifest: Codec]
-    : InjectionDefaultRegistrar[T] =
+      : InjectionDefaultRegistrar[T] =
     InjectionDefaultRegistrar(
       manifest[T].runtimeClass.asInstanceOf[Class[T]],
       implicitly[Codec[T]])

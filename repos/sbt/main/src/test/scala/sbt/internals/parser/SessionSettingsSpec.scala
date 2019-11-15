@@ -30,7 +30,7 @@ abstract class AbstractSessionSettingsSpec(folder: String)
 
   private def runTestOnFiles(
       expectedResultAndMap: File => Seq[(List[String], Seq[SessionSetting])])
-    : MatchResult[GenTraversableOnce[File]] = {
+      : MatchResult[GenTraversableOnce[File]] = {
 
     val allFiles = rootDir
       .listFiles(new FilenameFilter() {

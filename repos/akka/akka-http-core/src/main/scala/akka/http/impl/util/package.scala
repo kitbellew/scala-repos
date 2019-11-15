@@ -44,7 +44,7 @@ package object util {
     new EnhancedRegex(regex)
   private[http] implicit def enhanceByteStrings(
       byteStrings: TraversableOnce[ByteString])
-    : EnhancedByteStringTraversableOnce =
+      : EnhancedByteStringTraversableOnce =
     new EnhancedByteStringTraversableOnce(byteStrings)
   private[http] implicit def enhanceByteStringsMat[Mat](
       byteStrings: Source[ByteString, Mat]): EnhancedByteStringSource[Mat] =

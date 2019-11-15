@@ -318,28 +318,28 @@ package object linalg {
   import breeze.linalg.Options.{Zero => OZero, _}
   def padRight[T](v: DenseVector[T], dimensions: Dimensions1)(
       implicit canPad: CanPadRight[DenseVector[T], Dimensions1, DenseVector[T]])
-    : DenseVector[T] = canPad(v, dimensions, OZero)
+      : DenseVector[T] = canPad(v, dimensions, OZero)
   def padRight[T](v: DenseVector[T], dimensions: Dimensions1, mode: OptPadMode)(
       implicit canPad: CanPadRight[DenseVector[T], Dimensions1, DenseVector[T]])
-    : DenseVector[T] = canPad(v, dimensions, mode)
+      : DenseVector[T] = canPad(v, dimensions, mode)
   def padRight[T](v: DenseMatrix[T], dimensions: Dimensions1)(
       implicit canPad: CanPadRight[DenseMatrix[T], Dimensions1, DenseMatrix[T]])
-    : DenseMatrix[T] = canPad(v, dimensions, OZero)
+      : DenseMatrix[T] = canPad(v, dimensions, OZero)
   def padRight[T](v: DenseMatrix[T], dimensions: Dimensions2, mode: OptPadMode)(
       implicit canPad: CanPadRight[DenseMatrix[T], Dimensions2, DenseMatrix[T]])
-    : DenseMatrix[T] = canPad(v, dimensions, mode)
+      : DenseMatrix[T] = canPad(v, dimensions, mode)
   def padLeft[T](v: DenseVector[T], dimensions: Dimensions1)(
       implicit canPad: CanPadLeft[DenseVector[T], Dimensions1, DenseVector[T]])
-    : DenseVector[T] = canPad(v, dimensions, OZero)
+      : DenseVector[T] = canPad(v, dimensions, OZero)
   def padLeft[T](v: DenseVector[T], dimensions: Dimensions1, mode: OptPadMode)(
       implicit canPad: CanPadLeft[DenseVector[T], Dimensions1, DenseVector[T]])
-    : DenseVector[T] = canPad(v, dimensions, mode)
+      : DenseVector[T] = canPad(v, dimensions, mode)
   def padLeft[T](v: DenseMatrix[T], dimensions: Dimensions1)(
       implicit canPad: CanPadLeft[DenseMatrix[T], Dimensions1, DenseMatrix[T]])
-    : DenseMatrix[T] = canPad(v, dimensions, OZero)
+      : DenseMatrix[T] = canPad(v, dimensions, OZero)
   def padLeft[T](v: DenseMatrix[T], dimensions: Dimensions2, mode: OptPadMode)(
       implicit canPad: CanPadLeft[DenseMatrix[T], Dimensions2, DenseMatrix[T]])
-    : DenseMatrix[T] = canPad(v, dimensions, mode)
+      : DenseMatrix[T] = canPad(v, dimensions, mode)
 
   // </editor-fold>
 

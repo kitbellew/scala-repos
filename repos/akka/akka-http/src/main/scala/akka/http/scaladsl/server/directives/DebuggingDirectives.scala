@@ -81,7 +81,7 @@ object LoggingMagnet {
 
   implicit def forRequestResponseFromMarkerAndLevel(
       markerAndLevel: (String, LogLevel))
-    : LoggingMagnet[HttpRequest ⇒ RouteResult ⇒ Unit] =
+      : LoggingMagnet[HttpRequest ⇒ RouteResult ⇒ Unit] =
     // # request-response-magnets
     forRequestResponseFromFullShow {
       val (marker, level) = markerAndLevel
@@ -97,7 +97,7 @@ object LoggingMagnet {
 
   implicit def forRequestResponseFromFullShow(
       show: HttpRequest ⇒ RouteResult ⇒ Option[LogEntry])
-    : LoggingMagnet[HttpRequest ⇒ RouteResult ⇒ Unit] =
+      : LoggingMagnet[HttpRequest ⇒ RouteResult ⇒ Unit] =
     // # request-response-magnets
     LoggingMagnet { log ⇒ request ⇒
       val showResult = show(request)

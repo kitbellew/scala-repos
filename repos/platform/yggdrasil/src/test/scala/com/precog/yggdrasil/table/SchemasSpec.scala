@@ -32,7 +32,7 @@ import scalaz.syntax.comonad._
 import org.specs2.ScalaCheck
 import org.specs2.mutable._
 
-trait SchemasSpec[M[+ _]]
+trait SchemasSpec[M[+_]]
     extends ColumnarTableModuleTestSupport[M]
     with Specification
     with ScalaCheck {

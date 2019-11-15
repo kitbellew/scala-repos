@@ -57,7 +57,7 @@ object CORSHeaders {
 
   val defaultHeaders = genHeaders()
 
-  def apply[T, M[+ _]](M: Monad[M]) = M.point(
+  def apply[T, M[+_]](M: Monad[M]) = M.point(
     HttpResponse[T](headers = defaultHeaders)
   )
 }
@@ -65,7 +65,7 @@ object CORSHeaders {
 object CORSHeaderHandler {
   def allowOrigin[A, B](value: String, executor: ExecutionContext)(
       delegateService: HttpService[A, Future[HttpResponse[B]]])
-    : HttpService[A, Future[HttpResponse[B]]] =
+      : HttpService[A, Future[HttpResponse[B]]] =
     new DelegatingService[
       A,
       Future[HttpResponse[B]],

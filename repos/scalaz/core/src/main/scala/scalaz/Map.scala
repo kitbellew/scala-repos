@@ -961,7 +961,7 @@ sealed abstract class ==>>[A, B] {
 sealed abstract class MapInstances0 {
 
   implicit def scalazMapInstance[S: Order]
-    : Bind[S ==>> ?] with Align[S ==>> ?] with Zip[S ==>> ?] =
+      : Bind[S ==>> ?] with Align[S ==>> ?] with Zip[S ==>> ?] =
     new Bind[S ==>> ?] with Align[S ==>> ?] with Zip[S ==>> ?] {
       override def map[A, B](fa: S ==>> A)(f: A => B) =
         fa map f

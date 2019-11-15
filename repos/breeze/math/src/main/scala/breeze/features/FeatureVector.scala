@@ -63,7 +63,7 @@ object FeatureVector {
   @expand
   @expand.valify
   implicit def FVScaleAddIntoV[@expand.args(Int, Float, Double) T]
-    : TernaryUpdateRegistry[Vector[T], T, FeatureVector, scaleAdd.type] = {
+      : TernaryUpdateRegistry[Vector[T], T, FeatureVector, scaleAdd.type] = {
     new TernaryUpdateRegistry[Vector[T], T, FeatureVector, scaleAdd.type] {
       override def bindingMissing(y: Vector[T], a: T, x: FeatureVector) {
         if (a != 0.0) {
@@ -80,7 +80,7 @@ object FeatureVector {
   @expand
   @expand.valify
   implicit def FVScaleAddIntoDV[@expand.args(Int, Float, Double) T]
-    : scaleAdd.InPlaceImpl3[DenseVector[T], T, FeatureVector] = {
+      : scaleAdd.InPlaceImpl3[DenseVector[T], T, FeatureVector] = {
     new scaleAdd.InPlaceImpl3[DenseVector[T], T, FeatureVector] {
       def apply(y: DenseVector[T], a: T, x: FeatureVector) {
         var i = 0
@@ -99,7 +99,7 @@ object FeatureVector {
   @expand
   @expand.valify
   implicit def FVCanDaxpyIntoVB[@expand.args(Float, Double) T]
-    : InPlaceImpl3[scaleAdd.type, VectorBuilder[T], T, FeatureVector] = {
+      : InPlaceImpl3[scaleAdd.type, VectorBuilder[T], T, FeatureVector] = {
     new scaleAdd.InPlaceImpl3[VectorBuilder[T], T, FeatureVector] {
       def apply(y: VectorBuilder[T], a: T, x: FeatureVector) {
         if (a != 0.0) {
@@ -114,7 +114,7 @@ object FeatureVector {
   }
 
   implicit def FVCanDaxpyIntoVB_Generic[T]
-    : InPlaceImpl3[scaleAdd.type, VectorBuilder[T], T, FeatureVector] = {
+      : InPlaceImpl3[scaleAdd.type, VectorBuilder[T], T, FeatureVector] = {
     new scaleAdd.InPlaceImpl3[VectorBuilder[T], T, FeatureVector] {
       def apply(y: VectorBuilder[T], a: T, x: FeatureVector) {
         if (a != 0.0) {
@@ -131,7 +131,7 @@ object FeatureVector {
   @expand
   @expand.valify
   implicit def FVScaleAddIntoSV[@expand.args(Int, Float, Double) T]
-    : scaleAdd.InPlaceImpl3[SparseVector[T], T, FeatureVector] = {
+      : scaleAdd.InPlaceImpl3[SparseVector[T], T, FeatureVector] = {
     new scaleAdd.InPlaceImpl3[SparseVector[T], T, FeatureVector] {
       def apply(y: SparseVector[T], a: T, x: FeatureVector) {
         if (a != 0.0) {
@@ -151,7 +151,7 @@ object FeatureVector {
   @expand
   @expand.valify
   implicit def DotProductFVV[@expand.args(Int, Float, Double) T]
-    : BinaryRegistry[FeatureVector, Vector[T], OpMulInner.type, T] = {
+      : BinaryRegistry[FeatureVector, Vector[T], OpMulInner.type, T] = {
     new BinaryRegistry[FeatureVector, Vector[T], OpMulInner.type, T] {
       override def bindingMissing(a: FeatureVector, b: Vector[T]): T = {
         var score: T = 0
@@ -169,7 +169,7 @@ object FeatureVector {
   @expand
   @expand.valify
   implicit def DotProductFVDV[@expand.args(Int, Float, Double) T]
-    : OpMulInner.Impl2[FeatureVector, DenseVector[T], T] = {
+      : OpMulInner.Impl2[FeatureVector, DenseVector[T], T] = {
     new OpMulInner.Impl2[FeatureVector, DenseVector[T], T] {
       def apply(a: FeatureVector, b: DenseVector[T]): T = {
         var score: T = 0
@@ -186,7 +186,7 @@ object FeatureVector {
 
   implicit def dotProductVxFVfromFVxV[V, T](
       implicit op: OpMulInner.Impl2[FeatureVector, V, T])
-    : OpMulInner.Impl2[V, FeatureVector, T] = {
+      : OpMulInner.Impl2[V, FeatureVector, T] = {
     new OpMulInner.Impl2[V, FeatureVector, T] {
       def apply(b: V, a: FeatureVector): T = op(a, b)
     }
@@ -205,7 +205,7 @@ object FeatureVector {
   @expand
   @expand.valify
   implicit def CanMulDMFV[@expand.args(Int, Double, Float) T]
-    : OpMulMatrix.Impl2[DenseMatrix[T], FeatureVector, DenseVector[T]] = {
+      : OpMulMatrix.Impl2[DenseMatrix[T], FeatureVector, DenseVector[T]] = {
     new OpMulMatrix.Impl2[DenseMatrix[T], FeatureVector, DenseVector[T]] {
       def apply(a: DenseMatrix[T], b: FeatureVector): DenseVector[T] = {
         val result = DenseVector.zeros[T](a.rows)
@@ -220,7 +220,7 @@ object FeatureVector {
   @expand
   @expand.valify
   implicit def CanMulCSCFV[@expand.args(Int, Double, Float) T]
-    : OpMulMatrix.Impl2[CSCMatrix[T], FeatureVector, SparseVector[T]] = {
+      : OpMulMatrix.Impl2[CSCMatrix[T], FeatureVector, SparseVector[T]] = {
     new OpMulMatrix.Impl2[CSCMatrix[T], FeatureVector, SparseVector[T]] {
       def apply(a: CSCMatrix[T], b: FeatureVector): SparseVector[T] = {
         val result = new VectorBuilder[T](a.rows)
@@ -239,7 +239,7 @@ object FeatureVector {
       implicit trans: CanTranspose[M, MTrans],
       mul: OpMulMatrix.Impl2[MTrans, FeatureVector, MulResult],
       mrTrans: CanTranspose[MulResult, MRTrans])
-    : OpMulMatrix.Impl2[Transpose[FeatureVector], M, MRTrans] = {
+      : OpMulMatrix.Impl2[Transpose[FeatureVector], M, MRTrans] = {
     new OpMulMatrix.Impl2[Transpose[FeatureVector], M, MRTrans] {
       override def apply(v: Transpose[FeatureVector], v2: M): MRTrans = {
         mrTrans(mul(trans(v2), v.inner))

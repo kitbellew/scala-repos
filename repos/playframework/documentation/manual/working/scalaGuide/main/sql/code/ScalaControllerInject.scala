@@ -6,7 +6,7 @@ import play.api.Play.current
 import play.api.mvc._
 import play.api.db._
 
-class ScalaControllerInject @Inject()(db: Database) extends Controller {
+class ScalaControllerInject @Inject() (db: Database) extends Controller {
 
   def index = Action {
     var outString = "Number is "

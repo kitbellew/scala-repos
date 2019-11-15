@@ -61,7 +61,7 @@ class AkkaHttpServer(
 
     // TODO: pass in Inet.SocketOption, ServerSettings and LoggerAdapter params?
     val serverSource
-      : Source[Http.IncomingConnection, Future[Http.ServerBinding]] =
+        : Source[Http.IncomingConnection, Future[Http.ServerBinding]] =
       Http().bind(
         interface = config.address,
         port = port,
@@ -142,7 +142,7 @@ class AkkaHttpServer(
   }
 
   private def getHandler(requestHeader: RequestHeader)
-    : (RequestHeader, Handler, Try[Application]) = {
+      : (RequestHeader, Handler, Try[Application]) = {
     getHandlerFor(requestHeader) match {
       case Left(futureResult) =>
         (

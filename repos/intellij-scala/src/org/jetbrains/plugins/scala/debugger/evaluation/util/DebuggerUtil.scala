@@ -518,7 +518,7 @@ object DebuggerUtil {
   def localParamsForFunDef(
       fun: ScFunctionDefinition,
       visited: mutable.HashSet[PsiElement] = mutable.HashSet.empty)
-    : Seq[ScTypedDefinition] = {
+      : Seq[ScTypedDefinition] = {
     val container = ScalaEvaluatorBuilderUtil.getContextClass(fun)
     fun.body match {
       //to exclude references from default parameters
@@ -530,7 +530,7 @@ object DebuggerUtil {
   def localParamsForConstructor(
       cl: ScClass,
       visited: mutable.HashSet[PsiElement] = mutable.HashSet.empty)
-    : Seq[ScTypedDefinition] = {
+      : Seq[ScTypedDefinition] = {
     val container = ScalaEvaluatorBuilderUtil.getContextClass(cl)
     val extendsBlock =
       cl.extendsBlock //to exclude references from default parameters
@@ -540,7 +540,7 @@ object DebuggerUtil {
   def localParamsForDefaultParam(
       param: ScParameter,
       visited: mutable.HashSet[PsiElement] = mutable.HashSet.empty)
-    : Seq[ScTypedDefinition] = {
+      : Seq[ScTypedDefinition] = {
     val owner = param.owner
     val container = ScalaEvaluatorBuilderUtil.getContextClass {
       owner match {
@@ -559,7 +559,7 @@ object DebuggerUtil {
       excludeContext: PsiElement,
       container: PsiElement,
       visited: mutable.HashSet[PsiElement] = mutable.HashSet.empty)
-    : Seq[ScTypedDefinition] = {
+      : Seq[ScTypedDefinition] = {
     def atRightPlace(elem: PsiElement): Boolean = {
       if (PsiTreeUtil.isContextAncestor(excludeContext, elem, false))
         return false

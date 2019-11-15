@@ -44,8 +44,7 @@ import scalaz.std.anyVal._
 
 import TableModule._
 
-trait StubColumnarTableModule[M[+ _]]
-    extends ColumnarTableModuleTestSupport[M] {
+trait StubColumnarTableModule[M[+_]] extends ColumnarTableModuleTestSupport[M] {
   import trans._
 
   implicit def M: Monad[M] with Comonad[M]

@@ -172,7 +172,7 @@ private[hive] class HadoopTableReader(
     // SPARK-5068:get FileStatus and do the filtering locally when the path is not exists
     def verifyPartitionPath(
         partitionToDeserializer: Map[HivePartition, Class[_ <: Deserializer]])
-      : Map[HivePartition, Class[_ <: Deserializer]] = {
+        : Map[HivePartition, Class[_ <: Deserializer]] = {
       if (!sc.conf.verifyPartitionPath) {
         partitionToDeserializer
       } else {
@@ -310,7 +310,7 @@ private[hive] class HadoopTableReader(
       tableDesc: TableDesc,
       path: String,
       inputFormatClass: Class[InputFormat[Writable, Writable]])
-    : RDD[Writable] = {
+      : RDD[Writable] = {
 
     val initializeJobConfFunc =
       HadoopTableReader.initializeLocalJobConfFunc(path, tableDesc) _

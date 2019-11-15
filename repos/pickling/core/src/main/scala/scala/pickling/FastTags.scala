@@ -204,7 +204,8 @@ object FastTypeTag {
         case FastTypeTag.ArrayChar    => "[C"
         case FastTypeTag.ArrayShort   => "[S"
         case _                        => tag.key
-      } else clazz.getName
+      }
+    else clazz.getName
   }
 
   val raw = Map[Class[_], FastTypeTag[_]](

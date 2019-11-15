@@ -47,7 +47,7 @@ private[akka] final class FileSource(
   }
 
   override protected def newInstance(shape: SourceShape[ByteString])
-    : SourceModule[ByteString, Future[IOResult]] =
+      : SourceModule[ByteString, Future[IOResult]] =
     new FileSource(f, chunkSize, attributes, shape)
 
   override def withAttributes(attr: Attributes): Module =
@@ -88,7 +88,7 @@ private[akka] final class InputStreamSource(
   }
 
   override protected def newInstance(shape: SourceShape[ByteString])
-    : SourceModule[ByteString, Future[IOResult]] =
+      : SourceModule[ByteString, Future[IOResult]] =
     new InputStreamSource(createInputStream, chunkSize, attributes, shape)
 
   override def withAttributes(attr: Attributes): Module =

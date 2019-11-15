@@ -25,7 +25,7 @@ private[nio] object GenTypedArrayBuffer {
   def generic_fromTypedArrayByteBuffer[BufferType <: Buffer](
       byteBuffer: TypedArrayByteBuffer)(
       implicit newTypedArrayBuffer: NewTypedArrayBuffer[BufferType])
-    : BufferType = {
+      : BufferType = {
     val byteArray = byteBuffer._typedArray
     val byteBufferPos = byteBuffer.position
     val byteBufferLimit = byteBuffer.limit

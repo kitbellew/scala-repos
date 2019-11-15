@@ -3,7 +3,8 @@ package std
 
 trait SetInstances {
   implicit val setInstance: Foldable[Set] with IsEmpty[Set] = new Foldable[Set]
-  with IsEmpty[Set] with Foldable.FromFoldr[Set] {
+    with IsEmpty[Set]
+    with Foldable.FromFoldr[Set] {
     override def length[A](fa: Set[A]) = fa.size
     def empty[A] = Set()
     def plus[A](a: Set[A], b: => Set[A]) = a ++ b

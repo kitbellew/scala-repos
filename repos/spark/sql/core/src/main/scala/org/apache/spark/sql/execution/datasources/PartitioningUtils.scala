@@ -269,7 +269,7 @@ private[sql] object PartitioningUtils {
     */
   private[sql] def resolvePartitions(
       pathsWithPartitionValues: Seq[(Path, PartitionValues)])
-    : Seq[PartitionValues] = {
+      : Seq[PartitionValues] = {
     if (pathsWithPartitionValues.isEmpty) {
       Seq.empty
     } else {

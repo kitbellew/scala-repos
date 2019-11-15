@@ -1008,7 +1008,8 @@ trait Types
           case _ =>
             if (widen.toString.trim == "") str
             else s"$str (with underlying type $widen)"
-        } else str
+        }
+      else str
     }
 
     /** The string representation of this type when the direct object in a sentence.
@@ -3121,7 +3122,7 @@ trait Types
          } else if (args.size == params.size) {
            if (untouchable)
              new AppliedTypeVar(origin, constr, params zip args)
-             with UntouchableTypeVar
+               with UntouchableTypeVar
            else new AppliedTypeVar(origin, constr, params zip args)
          } else if (args.isEmpty) {
            if (untouchable)

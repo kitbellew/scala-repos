@@ -841,7 +841,7 @@ object ReallyRichPresentationCompilerFixture
       cc: RichPresentationCompiler,
       lines: String*)(
       testCode: (OffsetPosition, String, RichPresentationCompiler) => Any)
-    : Any = {
+      : Any = {
     val contents = lines.mkString("\n")
     var offset = 0
     var points = Queue.empty[(Int, String)]

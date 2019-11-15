@@ -27,7 +27,7 @@ import scala.concurrent.Future
 
 @Path("v2/groups")
 @Produces(Array(MarathonMediaType.PREFERRED_APPLICATION_JSON))
-class GroupsResource @Inject()(
+class GroupsResource @Inject() (
     groupManager: GroupManager,
     infoService: GroupInfoService,
     val authenticator: Authenticator,

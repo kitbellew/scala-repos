@@ -129,7 +129,7 @@ class WorksheetFoldGroup(
   private def offset2Line(offset: Int) = doc getLineNumber offset
 
   private def traverseRegions(target: WorksheetFoldRegionDelegate)
-    : (mutable.Iterable[((Int, Int), (Int, Int))], FoldRegionInfo, Int) = {
+      : (mutable.Iterable[((Int, Int), (Int, Int))], FoldRegionInfo, Int) = {
     if (regions.isEmpty) return (mutable.ArrayBuffer.empty, null, 0)
 
     def numbers(reg: FoldRegionInfo, stored: Int) =

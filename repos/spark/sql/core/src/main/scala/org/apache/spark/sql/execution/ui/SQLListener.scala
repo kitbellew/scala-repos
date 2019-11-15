@@ -343,7 +343,7 @@ private[sql] class SQLListener(conf: SparkConf)
   private def mergeAccumulatorUpdates(
       accumulatorUpdates: Seq[(Long, Any)],
       paramFunc: Long => SQLMetricParam[SQLMetricValue[Any], Any])
-    : Map[Long, String] = {
+      : Map[Long, String] = {
     accumulatorUpdates.groupBy(_._1).map {
       case (accumulatorId, values) =>
         val param = paramFunc(accumulatorId)

@@ -56,7 +56,7 @@ object sum extends UFunc with sumLowPrio with VectorizedReduceUFunc {
 
   @expand
   implicit def helper[@expand.args(Int, Float, Long, Double) T]
-    : VectorizeHelper[T] =
+      : VectorizeHelper[T] =
     new VectorizeHelper[T] {
       override def zerosLike(len: Int): DenseVector[T] =
         DenseVector.zeros[T](len)
@@ -76,11 +76,12 @@ trait VectorizedReduceUFunc extends UFunc {
 
   implicit def vectorizeRows[T: ClassTag](
       implicit helper: VectorizeHelper[T],
-      baseOp: UFunc.InPlaceImpl2[Op, DenseVector[T], DenseVector[T]])
-    : Impl[BroadcastedRows[DenseMatrix[T], DenseVector[T]], DenseVector[T]] = {
+      baseOp: UFunc.InPlaceImpl2[Op, DenseVector[T], DenseVector[T]]): Impl[
+    BroadcastedRows[DenseMatrix[T], DenseVector[T]],
+    DenseVector[T]] = {
     new Impl[BroadcastedRows[DenseMatrix[T], DenseVector[T]], DenseVector[T]] {
       override def apply(v: BroadcastedRows[DenseMatrix[T], DenseVector[T]])
-        : DenseVector[T] = {
+          : DenseVector[T] = {
         val mat = v.underlying
         val result = helper.zerosLike(mat.rows)
         cforRange(0 until mat.cols) { i =>
@@ -101,7 +102,7 @@ trait VectorizedReduceUFunc extends UFunc {
       BroadcastedColumns[DenseMatrix[T], DenseVector[T]],
       Transpose[DenseVector[T]]] {
       override def apply(v: BroadcastedColumns[DenseMatrix[T], DenseVector[T]])
-        : Transpose[DenseVector[T]] = {
+          : Transpose[DenseVector[T]] = {
         val mat = v.underlying
         val res = helper.zerosLike(mat.cols)
 

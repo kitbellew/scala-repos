@@ -38,7 +38,7 @@ final class BidiFlow[-I1, +O1, -I2, +O2, +Mat](
     * [[BidiFlow#atopMat atopMat]] if a different strategy is needed.
     */
   def atop[OO1, II2, Mat2](bidi: Graph[BidiShape[O1, OO1, II2, I2], Mat2])
-    : BidiFlow[I1, OO1, II2, O2, Mat] = atopMat(bidi)(Keep.left)
+      : BidiFlow[I1, OO1, II2, O2, Mat] = atopMat(bidi)(Keep.left)
 
   /**
     * Add the given BidiFlow as the next step in a bidirectional transformation
@@ -182,7 +182,7 @@ object BidiFlow {
     */
   def fromGraph[I1, O1, I2, O2, Mat](
       graph: Graph[BidiShape[I1, O1, I2, O2], Mat])
-    : BidiFlow[I1, O1, I2, O2, Mat] =
+      : BidiFlow[I1, O1, I2, O2, Mat] =
     graph match {
       case bidi: BidiFlow[I1, O1, I2, O2, Mat] ⇒ bidi
       case bidi: javadsl.BidiFlow[I1, O1, I2, O2, Mat] ⇒ bidi.asScala

@@ -136,7 +136,7 @@ class FlowGraphDocSpec extends AkkaSpec {
     //#flow-graph-components-create
     object PriorityWorkerPool {
       def apply[In, Out](worker: Flow[In, Out, Any], workerCount: Int)
-        : Graph[PriorityWorkerPoolShape[In, Out], NotUsed] = {
+          : Graph[PriorityWorkerPoolShape[In, Out], NotUsed] = {
 
         GraphDSL.create() { implicit b ⇒
           import GraphDSL.Implicits._

@@ -43,7 +43,7 @@ case object NotArray extends MaybeArray
 object TraversablesOrderedBuf {
   def dispatch(c: Context)(
       buildDispatcher: => PartialFunction[c.Type, TreeOrderedBuf[c.type]])
-    : PartialFunction[c.Type, TreeOrderedBuf[c.type]] = {
+      : PartialFunction[c.Type, TreeOrderedBuf[c.type]] = {
     case tpe if tpe.erasure =:= c.universe.typeOf[Iterable[Any]] =>
       TraversablesOrderedBuf(c)(buildDispatcher, tpe, NoSort, NotArray)
     case tpe if tpe.erasure =:= c.universe.typeOf[sci.Iterable[Any]] =>

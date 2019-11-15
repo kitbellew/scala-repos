@@ -575,7 +575,7 @@ private[http] trait CoreRequestVarHandler {
   private val logger = Logger(classOf[CoreRequestVarHandler])
   // This maps from the RV name to (RV instance, value, set-but-not-read flag)
   private val vals
-    : ThreadGlobal[ConcurrentHashMap[String, (MyType, Any, Boolean)]] =
+      : ThreadGlobal[ConcurrentHashMap[String, (MyType, Any, Boolean)]] =
     new ThreadGlobal
   private val cleanup: ThreadGlobal[ListBuffer[Box[LiftSession] => Unit]] =
     new ThreadGlobal
@@ -608,7 +608,7 @@ private[http] trait CoreRequestVarHandler {
   }
 
   protected def backingStore
-    : Box[ConcurrentHashMap[String, (MyType, Any, Boolean)]] =
+      : Box[ConcurrentHashMap[String, (MyType, Any, Boolean)]] =
     vals.value match {
       case null =>
         if (LiftRules.throwOnOutOfScopeVarAccess) {

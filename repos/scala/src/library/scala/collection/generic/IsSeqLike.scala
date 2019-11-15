@@ -53,7 +53,7 @@ object IsSeqLike {
     }
 
   implicit def seqLikeRepr[C[_], A0](implicit conv: C[A0] => SeqLike[A0, C[A0]])
-    : IsSeqLike[C[A0]] { type A = A0 } =
+      : IsSeqLike[C[A0]] { type A = A0 } =
     new IsSeqLike[C[A0]] {
       type A = A0
       val conversion = conv

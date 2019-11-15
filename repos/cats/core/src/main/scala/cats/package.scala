@@ -26,7 +26,7 @@ package object cats {
     */
   type Id[A] = A
   implicit val Id: Bimonad[Id] with Traverse[Id] = new Bimonad[Id]
-  with Traverse[Id] {
+    with Traverse[Id] {
     def pure[A](a: A): A = a
     def extract[A](a: A): A = a
     def flatMap[A, B](a: A)(f: A => B): B = f(a)

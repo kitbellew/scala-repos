@@ -92,7 +92,7 @@ abstract class AbstractTransportAdapter(
   protected def interceptListen(
       listenAddress: Address,
       listenerFuture: Future[AssociationEventListener])
-    : Future[AssociationEventListener]
+      : Future[AssociationEventListener]
 
   protected def interceptAssociate(
       remoteAddress: Address,
@@ -206,7 +206,7 @@ abstract class ActorTransportAdapter(
   override def interceptListen(
       listenAddress: Address,
       listenerPromise: Future[AssociationEventListener])
-    : Future[AssociationEventListener] = {
+      : Future[AssociationEventListener] = {
     registerManager().map { mgr ⇒
       // Side effecting: storing the manager instance in volatile var
       // This is done only once: during the initialization of the protocol stack. The variable manager is not read

@@ -324,7 +324,7 @@ object TypeRep {
       a8: TypeRep[A8],
       a9: TypeRep[A9],
       b: TypeRep[B])
-    : TypeRep[Function9[A1, A2, A3, A4, A5, A6, A7, A8, A9, B]] =
+      : TypeRep[Function9[A1, A2, A3, A4, A5, A6, A7, A8, A9, B]] =
     Function9Rep(a1, a2, a3, a4, a5, a6, a7, a8, a9, b)
   /*
   implicit def objectRep[A <: AnyRef](obj: A)(implicit rep: TypeRep[A]): TypeRep[AnyClass] =

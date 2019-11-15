@@ -108,7 +108,7 @@ object CanTraverseValues {
 
   implicit object OpArrayCC extends OpArray[Complex]
   implicit def canTraverseTraversable[V, X <: TraversableOnce[V]]
-    : CanTraverseValues[X, V] = {
+      : CanTraverseValues[X, V] = {
     new CanTraverseValues[X, V] {
 
       /** Traverses all values from the given collection. */

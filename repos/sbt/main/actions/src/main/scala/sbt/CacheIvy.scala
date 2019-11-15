@@ -104,7 +104,7 @@ object CacheIvy {
       implicit m: Format[String],
       mr: Format[Seq[ModuleReport]],
       oar: Format[Seq[OrganizationArtifactReport]])
-    : Format[ConfigurationReport] =
+      : Format[ConfigurationReport] =
     wrap[
       ConfigurationReport,
       (String, Seq[ModuleReport], Seq[OrganizationArtifactReport])](
@@ -339,7 +339,7 @@ object CacheIvy {
   import L4._
 
   implicit def inlineWithExcludesIC
-    : InputCache[InlineConfigurationWithExcludes] = wrapIn
+      : InputCache[InlineConfigurationWithExcludes] = wrapIn
   implicit def inlineIC: InputCache[InlineConfiguration] = wrapIn
   implicit def moduleConfIC: InputCache[ModuleConfiguration] = wrapIn
 

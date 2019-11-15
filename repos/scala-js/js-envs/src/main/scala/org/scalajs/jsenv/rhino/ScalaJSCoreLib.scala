@@ -76,8 +76,9 @@ private[rhino] class ScalaJSCoreLib(linkingUnit: LinkingUnit) {
     }
 
     // Map required files
-    val maps = for ((fileName, maxLine) <- neededMaps)
-      yield (fileName, getSourceMapper(fileName, maxLine))
+    val maps =
+      for ((fileName, maxLine) <- neededMaps)
+        yield (fileName, getSourceMapper(fileName, maxLine))
 
     // Create new stack trace to return
     val res = context.newArray(scope, count)

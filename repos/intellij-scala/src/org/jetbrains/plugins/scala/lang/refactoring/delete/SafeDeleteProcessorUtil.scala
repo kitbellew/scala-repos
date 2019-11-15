@@ -178,7 +178,7 @@ object SafeDeleteProcessorUtil {
       }
     }
     val methodToReferences
-      : util.HashMap[PsiNamedElement, util.Collection[PsiReference]] =
+        : util.HashMap[PsiNamedElement, util.Collection[PsiReference]] =
       new util.HashMap[PsiNamedElement, util.Collection[PsiReference]]
     for (overridingMethod <- overridingMethods) {
       val overridingReferences: util.Collection[PsiReference] =
@@ -230,7 +230,7 @@ object SafeDeleteProcessorUtil {
       usages: util.List[UsageInfo],
       allElementsToDelete: Array[PsiElement]): Condition[PsiElement] = {
     val constructorsToRefs
-      : util.HashMap[PsiMethod, util.Collection[PsiReference]] =
+        : util.HashMap[PsiMethod, util.Collection[PsiReference]] =
       new util.HashMap[PsiMethod, util.Collection[PsiReference]]
     val newConstructors: util.HashSet[PsiMethod] = new util.HashSet[PsiMethod]
     if (isTheOnlyEmptyDefaultConstructor(constructor)) return null
@@ -541,7 +541,7 @@ object SafeDeleteProcessorUtil {
                     true) {
                     override def deleteElement() {
                       val javadocMethodReference
-                        : PsiDocMethodOrFieldRef#MyReference =
+                          : PsiDocMethodOrFieldRef#MyReference =
                         element.getReference
                           .asInstanceOf[PsiDocMethodOrFieldRef#MyReference]
                       if (javadocMethodReference != null) {

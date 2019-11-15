@@ -85,7 +85,7 @@ trait Consumer extends Actor with CamelSupport {
     * not allowed to refer to the actor instance itself, since that can easily cause concurrent shared state issues.
     */
   def getRouteDefinitionHandler
-    : Mapper[RouteDefinition, ProcessorDefinition[_]] = identityRouteMapper
+      : Mapper[RouteDefinition, ProcessorDefinition[_]] = identityRouteMapper
 }
 
 /**
@@ -119,7 +119,7 @@ private[camel] object ConsumerConfig {
       replyTimeout: FiniteDuration,
       autoAck: Boolean,
       onRouteDefinition: RouteDefinition ⇒ ProcessorDefinition[_])
-    : ConsumerConfig =
+      : ConsumerConfig =
     new ConsumerConfig(
       activationTimeout,
       replyTimeout,

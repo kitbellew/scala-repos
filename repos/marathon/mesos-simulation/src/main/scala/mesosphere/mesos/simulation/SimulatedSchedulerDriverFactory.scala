@@ -9,7 +9,7 @@ import mesosphere.marathon.{
 }
 import org.apache.mesos.SchedulerDriver
 
-class SimulatedSchedulerDriverFactory @Inject()(
+class SimulatedSchedulerDriverFactory @Inject() (
     holder: MarathonSchedulerDriverHolder,
     newScheduler: MarathonScheduler)
     extends SchedulerDriverFactory {

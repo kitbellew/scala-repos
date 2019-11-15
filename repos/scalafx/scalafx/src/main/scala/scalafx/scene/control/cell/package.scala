@@ -163,7 +163,7 @@ package object cell {
     */
   private[cell] implicit def selectedBooleanPropertyToGetSelectedProperty[T](
       selectedProperty: T => ObservableValue[Boolean, java.lang.Boolean])
-    : jfxu.Callback[T, jfxbv.ObservableValue[java.lang.Boolean]] =
+      : jfxu.Callback[T, jfxbv.ObservableValue[java.lang.Boolean]] =
     new jfxu.Callback[T, jfxbv.ObservableValue[java.lang.Boolean]] {
       def call(x: T) = selectedProperty(x)
     }

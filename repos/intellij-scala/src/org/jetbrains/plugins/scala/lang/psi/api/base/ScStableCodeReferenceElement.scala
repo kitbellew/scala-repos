@@ -41,6 +41,6 @@ trait ScStableCodeReferenceElement
 object ScStableCodeReferenceElement {
   object withQualifier {
     def unapply(ref: ScStableCodeReferenceElement)
-      : Option[ScStableCodeReferenceElement] = ref.qualifier
+        : Option[ScStableCodeReferenceElement] = ref.qualifier
   }
 }

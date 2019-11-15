@@ -8,7 +8,7 @@ trait BroadcasterConf {
   def broadcasterClass: Class[_ <: ScalatraBroadcaster]
   def uri: URI
   def extraSetup
-    : Broadcaster => Unit // To perform optional plugin-specific Broadcaster setup
+      : Broadcaster => Unit // To perform optional plugin-specific Broadcaster setup
 }
 
 /**

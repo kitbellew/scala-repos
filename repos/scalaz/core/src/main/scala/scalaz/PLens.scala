@@ -186,7 +186,7 @@ sealed abstract class PLensFamily[A1, A2, B1, B2] {
 
   /** Two partial lenses that view a value of the same type can be joined */
   def sum[C1, C2](that: => PLensFamily[C1, C2, B1, B2])
-    : PLensFamily[A1 \/ C1, A2 \/ C2, B1, B2] =
+      : PLensFamily[A1 \/ C1, A2 \/ C2, B1, B2] =
     plensFamily {
       case -\/(a) =>
         run(a) map (_ map (\/.left))
@@ -196,11 +196,11 @@ sealed abstract class PLensFamily[A1, A2, B1, B2] {
 
   /** Alias for `sum` */
   def |||[C1, C2](that: => PLensFamily[C1, C2, B1, B2])
-    : PLensFamily[A1 \/ C1, A2 \/ C2, B1, B2] = sum(that)
+      : PLensFamily[A1 \/ C1, A2 \/ C2, B1, B2] = sum(that)
 
   /** Two disjoint partial lenses can be paired */
   def product[C1, C2, D1, D2](that: PLensFamily[C1, C2, D1, D2])
-    : PLensFamily[(A1, C1), (A2, C2), (B1, D1), (B2, D2)] =
+      : PLensFamily[(A1, C1), (A2, C2), (B1, D1), (B2, D2)] =
     plensFamily {
       case (a, c) =>
         for {
@@ -211,7 +211,7 @@ sealed abstract class PLensFamily[A1, A2, B1, B2] {
 
   /** alias for `product` */
   def ***[C1, C2, D1, D2](that: PLensFamily[C1, C2, D1, D2])
-    : PLensFamily[(A1, C1), (A2, C2), (B1, D1), (B2, D2)] = product(that)
+      : PLensFamily[(A1, C1), (A2, C2), (B1, D1), (B2, D2)] = product(that)
 }
 
 object PLensFamily extends PLensInstances with PLensFunctions {
@@ -233,7 +233,7 @@ trait PLensFamilyFunctions extends PLensInstances {
 
   def plensFamilyf[A1, A2, B1, B2](
       r: PartialFunction[A1, IndexedStore[B1, B2, A2]])
-    : PLensFamily[A1, A2, B1, B2] =
+      : PLensFamily[A1, A2, B1, B2] =
     plensFamily(r.lift)
 
   def plensFamilyg[A1, A2, B1, B2](
@@ -273,7 +273,7 @@ trait PLensFamilyFunctions extends PLensInstances {
     }
 
   def tuple2PLensFamily[S1, S2, A, B](lens: PLensFamily[S1, S2, (A, B), (A, B)])
-    : (PLensFamily[S1, S2, A, A], PLensFamily[S1, S2, B, B]) =
+      : (PLensFamily[S1, S2, A, A], PLensFamily[S1, S2, B, B]) =
     PLensFamilyUnzip[S1, S2].unzip(lens)
 
   def tuple3PLensFamily[S1, S2, A, B, C](
@@ -312,18 +312,18 @@ trait PLensFamilyFunctions extends PLensInstances {
 
   def tuple7PLensFamily[S1, S2, A, B, C, D, E, H, I](
       lens: PLensFamily[S1, S2, (A, B, C, D, E, H, I), (A, B, C, D, E, H, I)])
-    : (
-        PLensFamily[S1, S2, A, A],
-        PLensFamily[S1, S2, B, B],
-        PLensFamily[S1, S2, C, C],
-        PLensFamily[S1, S2, D, D],
-        PLensFamily[S1, S2, E, E],
-        PLensFamily[S1, S2, H, H],
-        PLensFamily[S1, S2, I, I]) =
+      : (
+          PLensFamily[S1, S2, A, A],
+          PLensFamily[S1, S2, B, B],
+          PLensFamily[S1, S2, C, C],
+          PLensFamily[S1, S2, D, D],
+          PLensFamily[S1, S2, E, E],
+          PLensFamily[S1, S2, H, H],
+          PLensFamily[S1, S2, I, I]) =
     PLensFamilyUnzip[S1, S2].unzip7(lens.xmapbB(tuple7B))
 
   def eitherLensFamily[S1, S2, A, B](l: PLensFamily[S1, S2, A \/ B, A \/ B])
-    : (PLensFamily[S1, S2, A, A], PLensFamily[S1, S2, B, B]) =
+      : (PLensFamily[S1, S2, A, A], PLensFamily[S1, S2, B, B]) =
     (
       leftPLensFamily compose l,
       rightPLensFamily compose l
@@ -332,17 +332,17 @@ trait PLensFamilyFunctions extends PLensInstances {
   import LazyOption._
 
   def lazySomePLensFamily[A1, A2]
-    : PLensFamily[LazyOption[A1], LazyOption[A2], A1, A2] =
+      : PLensFamily[LazyOption[A1], LazyOption[A2], A1, A2] =
     plensFamily(_.fold(z => Some(IndexedStore(lazySome(_), z)), None))
 
   import LazyEither._
 
   def lazyLeftPLensFamily[A1, A2, B]
-    : PLensFamily[LazyEither[A1, B], LazyEither[A2, B], A1, A2] =
+      : PLensFamily[LazyEither[A1, B], LazyEither[A2, B], A1, A2] =
     plensFamily(_.fold(a => Some(IndexedStore(lazyLeft(_), a)), _ => None))
 
   def lazyRightPLensFamily[A, B1, B2]
-    : PLensFamily[LazyEither[A, B1], LazyEither[A, B2], B1, B2] =
+      : PLensFamily[LazyEither[A, B1], LazyEither[A, B2], B1, B2] =
     plensFamily(_.fold(_ => None, b => Some(IndexedStore(lazyRight(_), b))))
 
   def factorPLensFamily[A1, A2, B1, B2, C1, C2]: PLensFamily[
@@ -421,11 +421,11 @@ trait PLensFunctions extends PLensInstances with PLensFamilyFunctions {
     PLensFamilyUnzip[S, S].unzip3(lens.xmapbB(tuple3B))
 
   def tuple4PLens[S, A, B, C, D](lens: PLens[S, (A, B, C, D)])
-    : (PLens[S, A], PLens[S, B], PLens[S, C], PLens[S, D]) =
+      : (PLens[S, A], PLens[S, B], PLens[S, C], PLens[S, D]) =
     PLensFamilyUnzip[S, S].unzip4(lens.xmapbB(tuple4B))
 
   def tuple5PLens[S, A, B, C, D, E](lens: PLens[S, (A, B, C, D, E)])
-    : (PLens[S, A], PLens[S, B], PLens[S, C], PLens[S, D], PLens[S, E]) =
+      : (PLens[S, A], PLens[S, B], PLens[S, C], PLens[S, D], PLens[S, E]) =
     PLensFamilyUnzip[S, S].unzip5(lens.xmapbB(tuple5B))
 
   def tuple6PLens[S, A, B, C, D, E, H](lens: PLens[S, (A, B, C, D, E, H)]): (
@@ -487,7 +487,7 @@ trait PLensFunctions extends PLensInstances with PLensFamilyFunctions {
   def listLookupByPLens[K, V](p: K => Boolean): List[(K, V)] @?> V = {
     @annotation.tailrec
     def lookupr(t: (List[(K, V)], (K, V), List[(K, V)]))
-      : Option[(List[(K, V)], (K, V), List[(K, V)])] =
+        : Option[(List[(K, V)], (K, V), List[(K, V)])] =
       t match {
         case (_, (k, _), _) if p(k) => Some(t)
         case (_, _, Nil)            => None
@@ -539,7 +539,7 @@ trait PLensFunctions extends PLensInstances with PLensFamilyFunctions {
   def streamLookupByPLens[K, V](p: K => Boolean): Stream[(K, V)] @?> V = {
     @annotation.tailrec
     def lookupr(t: (Stream[(K, V)], (K, V), Stream[(K, V)]))
-      : Option[(Stream[(K, V)], (K, V), Stream[(K, V)])] =
+        : Option[(Stream[(K, V)], (K, V), Stream[(K, V)])] =
       t match {
         case (_, (k, _), _) if p(k) => Some(t)
         case (_, _, Stream.Empty)   => None
@@ -580,7 +580,7 @@ trait PLensFunctions extends PLensInstances with PLensFamilyFunctions {
 
     @annotation.tailrec
     def lookupr(t: (EphemeralStream[(K, V)], (K, V), EphemeralStream[(K, V)]))
-      : Option[(EphemeralStream[(K, V)], (K, V), EphemeralStream[(K, V)])] =
+        : Option[(EphemeralStream[(K, V)], (K, V), EphemeralStream[(K, V)])] =
       t match {
         case (_, (k, _), _) if p(k) => Some(t)
         case (l, x, s) =>

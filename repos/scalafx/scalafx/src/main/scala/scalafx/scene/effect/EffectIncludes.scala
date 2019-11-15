@@ -151,7 +151,8 @@ trait EffectIncludes {
     * @return $SFX $EFF
     */
   implicit def jfxEffect2sfx(e: jfxse.Effect): Effect =
-    if (e != null) new Effect(e) {} else null
+    if (e != null) new Effect(e) {}
+    else null
 
   /**
     * $START$DPS.html $DPS$END
@@ -214,7 +215,8 @@ trait EffectIncludes {
     * @return $SFX $LIG
     */
   implicit def jfxLight2sfx(l: jfxse.Light): Light =
-    if (l != null) new Light(l) {} else null
+    if (l != null) new Light(l) {}
+    else null
 
   /**
     * $START$LDS.html $LDS$END

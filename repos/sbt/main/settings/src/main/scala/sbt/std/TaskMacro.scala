@@ -73,7 +73,7 @@ object FullInstance
     }
   }
   def flattenFun[S, T](in: Initialize[Task[S => Initialize[Task[T]]]])
-    : Initialize[S => Task[T]] = {
+      : Initialize[S => Task[T]] = {
     import Scoped._
     (in, settingsData, Def.capturedTransformations) apply {
       (a: Task[S => Initialize[Task[T]]], data: Task[SS], f) => (s: S) =>

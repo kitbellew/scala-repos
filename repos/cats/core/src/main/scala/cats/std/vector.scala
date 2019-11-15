@@ -9,7 +9,7 @@ import scala.collection.immutable.VectorBuilder
 
 trait VectorInstances {
   implicit val vectorInstance
-    : Traverse[Vector] with MonadCombine[Vector] with CoflatMap[Vector] =
+      : Traverse[Vector] with MonadCombine[Vector] with CoflatMap[Vector] =
     new Traverse[Vector] with MonadCombine[Vector] with CoflatMap[Vector] {
 
       def empty[A]: Vector[A] = Vector.empty[A]

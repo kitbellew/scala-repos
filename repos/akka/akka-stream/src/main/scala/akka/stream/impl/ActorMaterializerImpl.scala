@@ -237,7 +237,7 @@ private[akka] case class ActorMaterializerImpl(
             op: StageModule,
             effectiveAttributes: Attributes,
             effectiveSettings: ActorMaterializerSettings)
-          : (Processor[Any, Any], Any) = op match {
+            : (Processor[Any, Any], Any) = op match {
           case DirectProcessor(processorFactory, _) ⇒ processorFactory()
           case _ ⇒
             val (opprops, mat) = ActorProcessorFactory

@@ -9,9 +9,14 @@ trait StreamInstances {
     with Unzip[Stream]
     with Align[Stream]
     with IsEmpty[Stream]
-    with Cobind[Stream] = new Traverse[Stream] with MonadPlus[Stream]
-  with BindRec[Stream] with Zip[Stream] with Unzip[Stream] with Align[Stream]
-  with IsEmpty[Stream] with Cobind[Stream] {
+    with Cobind[Stream] = new Traverse[Stream]
+    with MonadPlus[Stream]
+    with BindRec[Stream]
+    with Zip[Stream]
+    with Unzip[Stream]
+    with Align[Stream]
+    with IsEmpty[Stream]
+    with Cobind[Stream] {
     override def cojoin[A](a: Stream[A]) = a.tails.toStream.init
     def cobind[A, B](fa: Stream[A])(f: Stream[A] => B): Stream[B] =
       map(cojoin(fa))(f)

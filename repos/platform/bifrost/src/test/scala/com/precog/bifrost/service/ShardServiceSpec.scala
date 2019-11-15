@@ -148,8 +148,9 @@ trait TestShardService
   def configureShardState(config: Configuration) = Future {
     val accountFinder = new StaticAccountFinder[Future]("test", testAPIKey)
     val scheduler = NoopScheduler[Future]
-    val platform = new TestPlatform with SecureVFSModule[Future, Slice]
-    with InMemoryVFSModule[Future] {
+    val platform = new TestPlatform
+      with SecureVFSModule[Future, Slice]
+      with InMemoryVFSModule[Future] {
       override val jobActorSystem = self.actorSystem
       override val actorSystem = self.actorSystem
       override val executionContext = self.executionContext
@@ -174,7 +175,7 @@ trait TestShardService
       )
 
       def stubValue(authorities: Authorities)
-        : ((Array[Byte], MimeType) \/ Vector[JValue], Authorities) =
+          : ((Array[Byte], MimeType) \/ Vector[JValue], Authorities) =
         (
           \/.right(
             Vector(
@@ -221,7 +222,7 @@ trait TestShardService
         }
 
       def unapply(fres: Future[HttpResponse[ByteChunk]])
-        : Future[HttpResponse[QueryResult]] =
+          : Future[HttpResponse[QueryResult]] =
         fres map { response =>
           val contentType = response.headers
             .header[`Content-Type`]
@@ -321,7 +322,7 @@ class ShardServiceSpec extends TestShardService {
   }
 
   def asyncQueryResults(jobId: JobId, apiKey: Option[String] = Some(testAPIKey))
-    : Future[HttpResponse[QueryResult]] = {
+      : Future[HttpResponse[QueryResult]] = {
     apiKey
       .map { asyncService.query("apiKey", _) }
       .getOrElse(asyncService)
@@ -590,7 +591,7 @@ trait TestPlatform extends ManagedPlatform { self =>
   val accessControl: AccessControl[Future]
   val ownerMap: Map[Path, Set[AccountId]]
 
-  private def toSlice[M[+ _]: Monad](a: JValue): StreamT[M, Slice] = {
+  private def toSlice[M[+_]: Monad](a: JValue): StreamT[M, Slice] = {
     Slice.fromJValues(Stream(a)) :: StreamT.empty[M, Slice]
   }
 
@@ -617,7 +618,7 @@ trait TestPlatform extends ManagedPlatform { self =>
   }
 
   protected def executor(implicit shardQueryMonad: JobQueryTFMonad)
-    : QueryExecutor[JobQueryTF, StreamT[JobQueryTF, Slice]] = {
+      : QueryExecutor[JobQueryTF, StreamT[JobQueryTF, Slice]] = {
     new QueryExecutor[JobQueryTF, StreamT[JobQueryTF, Slice]] {
       def execute(query: String, ctx: EvaluationContext, opts: QueryOptions) = {
         if (query == "bad query") {

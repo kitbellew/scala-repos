@@ -30,7 +30,7 @@ object CanDesignFilterDecimation {
     *
     */
   implicit def decimationFilterDouble
-    : CanDesignFilterDecimation[FIRKernel1D[Double]] = {
+      : CanDesignFilterDecimation[FIRKernel1D[Double]] = {
     new CanDesignFilterDecimation[FIRKernel1D[Double]] {
       def apply(
           factor: Int,
@@ -68,7 +68,7 @@ object CanDesignFilterDecimation {
     *
     */
   implicit def decimationFilterLong
-    : CanDesignFilterDecimation[FIRKernel1D[Long]] = {
+      : CanDesignFilterDecimation[FIRKernel1D[Long]] = {
     new CanDesignFilterDecimation[FIRKernel1D[Long]] {
       def apply(
           factor: Int,

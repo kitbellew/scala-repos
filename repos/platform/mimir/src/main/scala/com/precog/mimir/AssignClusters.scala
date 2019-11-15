@@ -41,7 +41,7 @@ import scalaz.syntax.traverse._
 
 import spire.implicits._
 
-trait AssignClusterModule[M[+ _]]
+trait AssignClusterModule[M[+_]]
     extends ColumnarTableLibModule[M]
     with ModelLibModule[M] {
   import trans._
@@ -66,8 +66,9 @@ trait AssignClusterModule[M[+ _]]
           val rowIdentities = Model.createRowIdentities(schema)
 
           val rowModels: Int => Set[Model] = {
-            val modelTuples
-              : Map[ModelId, Set[(ModelId, ClusterId, CPath, DoubleColumn)]] = {
+            val modelTuples: Map[
+              ModelId,
+              Set[(ModelId, ClusterId, CPath, DoubleColumn)]] = {
               schema.columnRefs.flatMap {
                 case ref @ ColumnRef(
                       CPath(

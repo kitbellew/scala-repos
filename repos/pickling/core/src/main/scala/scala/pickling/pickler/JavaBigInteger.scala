@@ -7,7 +7,7 @@ import java.math.BigInteger
 trait JavaBigIntegerPicklers extends PrimitivePicklers {
   // TODO(jsuereth) - Register runtime picklers
   implicit val javaBigIntegerPickler
-    : Pickler[BigInteger] with Unpickler[BigInteger] =
+      : Pickler[BigInteger] with Unpickler[BigInteger] =
     new AbstractPicklerUnpickler[BigInteger] {
       def tag = FastTypeTag[BigInteger]
       def pickle(picklee: BigInteger, builder: PBuilder): Unit = {

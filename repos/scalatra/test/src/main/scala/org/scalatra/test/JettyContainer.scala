@@ -69,7 +69,7 @@ trait JettyContainer extends Container {
       filter: Filter,
       path: String,
       dispatches: util.EnumSet[DispatcherType] = DefaultDispatcherTypes)
-    : FilterHolder = {
+      : FilterHolder = {
     val holder = new FilterHolder(filter)
     servletContextHandler.addFilter(holder, path, dispatches)
     holder

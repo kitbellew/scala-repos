@@ -27,7 +27,8 @@ import org.apache.spark.mllib.linalg._
   * @param scalingVec The values used to scale the reference vector's individual components.
   */
 @Since("1.4.0")
-class ElementwiseProduct @Since("1.4.0")(@Since("1.4.0") val scalingVec: Vector)
+class ElementwiseProduct @Since("1.4.0") (
+    @Since("1.4.0") val scalingVec: Vector)
     extends VectorTransformer {
 
   /**

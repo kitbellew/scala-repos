@@ -327,7 +327,7 @@ sealed trait ExpressionDag[N[_]] { self =>
 object ExpressionDag {
   private def empty[N[_]](
       n2l: GenFunction[N, ({ type L[t] = Literal[t, N] })#L])
-    : ExpressionDag[N] =
+      : ExpressionDag[N] =
     new ExpressionDag[N] {
       val idToExp = HMap.empty[Id, ({ type E[t] = Expr[t, N] })#E]
       val nodeToLiteral = n2l
@@ -341,7 +341,7 @@ object ExpressionDag {
   def apply[T, N[_]](
       n: N[T],
       nodeToLit: GenFunction[N, ({ type L[t] = Literal[t, N] })#L])
-    : (ExpressionDag[N], Id[T]) = {
+      : (ExpressionDag[N], Id[T]) = {
     val (dag, id) = empty(nodeToLit).ensure(n)
     (dag.addRoot(id), id)
   }

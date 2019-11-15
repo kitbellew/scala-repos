@@ -15,7 +15,7 @@ import mesosphere.marathon.api.{MarathonMediaType, RestResource}
 import mesosphere.marathon.io.storage.StorageProvider
 
 @Path("v2/artifacts")
-class ArtifactsResource @Inject()(
+class ArtifactsResource @Inject() (
     val config: MarathonConf,
     val storage: StorageProvider)
     extends RestResource {

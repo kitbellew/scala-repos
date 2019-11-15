@@ -46,26 +46,31 @@ object ExternalSystemDataDsl {
   trait ModuleAttribute
   trait LibraryAttribute
 
-  val name = new Attribute[String]("name") with ProjectAttribute
-  with ModuleAttribute with LibraryAttribute
+  val name = new Attribute[String]("name")
+    with ProjectAttribute
+    with ModuleAttribute
+    with LibraryAttribute
   val ideDirectoryPath = new Attribute[String]("ideDirectoryPath")
-  with ProjectAttribute
+    with ProjectAttribute
   val linkedProjectPath = new Attribute[String]("linkedProjectPath")
-  with ProjectAttribute
+    with ProjectAttribute
   val moduleFileDirectoryPath =
     new Attribute[String]("moduleFileDirectoryPath") with ModuleAttribute
   val externalConfigPath = new Attribute[String]("externalConfigPath")
-  with ModuleAttribute
-  val libraries = new Attribute[Seq[library]]("libraries") with ProjectAttribute
-  with ModuleAttribute
+    with ModuleAttribute
+  val libraries = new Attribute[Seq[library]]("libraries")
+    with ProjectAttribute
+    with ModuleAttribute
   val modules = new Attribute[Seq[module]]("modules") with ProjectAttribute
   val moduleDependencies = new Attribute[Seq[module]]("moduleDependencies")
-  with ModuleAttribute
+    with ModuleAttribute
   val libraryDependencies = new Attribute[Seq[library]]("libraryDependencies")
-  with ModuleAttribute
+    with ModuleAttribute
 
   val arbitraryNodes = new Attribute[Seq[Node[_]]]("arbitraryNodes")
-  with ProjectAttribute with ModuleAttribute with LibraryAttribute
+    with ProjectAttribute
+    with ModuleAttribute
+    with LibraryAttribute
 
   class project {
 

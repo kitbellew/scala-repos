@@ -514,8 +514,9 @@ trait Index[@spec(Boolean, Int, Long, Double) T] extends Serializable {
       buf.append("[Index %d x 1]\n" format (length))
 
       def createRow(r: Int) = {
-        val lst = for ((l, v) <- (vlens zip sm.strList(raw(r))))
-          yield v.formatted("%" + l + "s")
+        val lst =
+          for ((l, v) <- (vlens zip sm.strList(raw(r))))
+            yield v.formatted("%" + l + "s")
         lst.mkString(" ") + "\n"
       }
 

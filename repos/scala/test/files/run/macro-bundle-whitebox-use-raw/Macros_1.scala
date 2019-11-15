@@ -32,7 +32,7 @@ class FundepMaterializationBundle(val c: Context) {
   import Flag._
 
   def impl[T: c.WeakTypeTag, U: c.WeakTypeTag]
-    : c.Expr[FundepMaterialization[T, U]] = {
+      : c.Expr[FundepMaterialization[T, U]] = {
     val sym = c.weakTypeOf[T].typeSymbol
     if (!sym.isClass || !sym.asClass.isCaseClass)
       c.abort(c.enclosingPosition, s"$sym is not a case class")

@@ -75,7 +75,7 @@ object Shape
     }
 
   @inline implicit final def unitShape[Level <: ShapeLevel]
-    : Shape[Level, Unit, Unit, Unit] =
+      : Shape[Level, Unit, Unit, Unit] =
     unitShapePrototype.asInstanceOf[Shape[Level, Unit, Unit, Unit]]
 
   val unitShapePrototype: Shape[FlatShapeLevel, Unit, Unit, Unit] =
@@ -115,7 +115,7 @@ trait RepShapeImplicits extends OptionShapeImplicits {
   /** A Shape for Option-valued Reps. */
   @inline implicit def optionShape[M, U, P, Level <: ShapeLevel](
       implicit sh: Shape[_ <: Level, Rep[M], U, Rep[P]])
-    : Shape[Level, Rep[Option[M]], Option[U], Rep[Option[P]]] =
+      : Shape[Level, Rep[Option[M]], Option[U], Rep[Option[P]]] =
     RepShape
       .asInstanceOf[Shape[Level, Rep[Option[M]], Option[U], Rep[Option[P]]]]
 }
@@ -125,7 +125,7 @@ trait OptionShapeImplicits {
   /** A Shape for Option-valued non-Reps. */
   @inline implicit def anyOptionShape[M, U, P, Level <: ShapeLevel](
       implicit sh: Shape[_ <: Level, M, U, P])
-    : Shape[Level, Rep[Option[M]], Option[U], Rep[Option[P]]] =
+      : Shape[Level, Rep[Option[M]], Option[U], Rep[Option[P]]] =
     RepShape
       .asInstanceOf[Shape[Level, Rep[Option[M]], Option[U], Rep[Option[P]]]]
 }
@@ -508,7 +508,7 @@ object ProvenShape {
   /** The Shape for a ProvenShape */
   implicit def provenShapeShape[T, P](
       implicit shape: Shape[_ <: FlatShapeLevel, T, T, P])
-    : Shape[FlatShapeLevel, ProvenShape[T], T, P] =
+      : Shape[FlatShapeLevel, ProvenShape[T], T, P] =
     new Shape[FlatShapeLevel, ProvenShape[T], T, P] {
       def pack(value: Mixed): Packed =
         value.shape

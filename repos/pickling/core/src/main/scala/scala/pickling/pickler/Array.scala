@@ -9,5 +9,5 @@ trait ArrayPicklers {
       elemUnpickler: Unpickler[T],
       collTag: FastTypeTag[Array[T]],
       cbf: CanBuildFrom[Array[T], T, Array[T]])
-    : Pickler[Array[T]] with Unpickler[Array[T]] = TravPickler[T, Array[T]]
+      : Pickler[Array[T]] with Unpickler[Array[T]] = TravPickler[T, Array[T]]
 }

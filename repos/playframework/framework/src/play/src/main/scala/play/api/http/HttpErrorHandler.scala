@@ -82,7 +82,7 @@ object HttpErrorHandler {
   * GlobalSettings also require invoking this.
   */
 @Singleton
-private[play] class GlobalSettingsHttpErrorHandler @Inject()(
+private[play] class GlobalSettingsHttpErrorHandler @Inject() (
     global: Provider[GlobalSettings])
     extends HttpErrorHandler {
 
@@ -383,7 +383,7 @@ object LazyHttpErrorHandler extends HttpErrorHandler {
   * A Java error handler that's provided when a Scala one is configured, so that Java code can still have the error
   * handler injected.
   */
-private[play] class JavaHttpErrorHandlerDelegate @Inject()(
+private[play] class JavaHttpErrorHandlerDelegate @Inject() (
     delegate: HttpErrorHandler)
     extends play.http.HttpErrorHandler {
   import play.api.libs.iteratee.Execution.Implicits.trampoline

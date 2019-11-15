@@ -41,7 +41,7 @@ object fin {
 
     implicit def finSuccFromNat[M <: Nat, N <: Succ[_]](
         implicit fromNat: FromNat[M, N])
-      : Aux[Succ[M], Succ[N], FinSucc[N, fromNat.Out]] =
+        : Aux[Succ[M], Succ[N], FinSucc[N, fromNat.Out]] =
       new FromNat[Succ[M], Succ[N]] {
         type Out = FinSucc[N, fromNat.Out]
 

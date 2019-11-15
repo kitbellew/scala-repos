@@ -29,13 +29,13 @@ trait MultipartUnmarshallers {
   implicit def defaultMultipartGeneralUnmarshaller(
       implicit log: LoggingAdapter = NoLogging,
       parserSettings: ParserSettings = null)
-    : FromEntityUnmarshaller[Multipart.General] =
+      : FromEntityUnmarshaller[Multipart.General] =
     multipartGeneralUnmarshaller(`UTF-8`)
 
   def multipartGeneralUnmarshaller(defaultCharset: HttpCharset)(
       implicit log: LoggingAdapter = NoLogging,
       parserSettings: ParserSettings = null)
-    : FromEntityUnmarshaller[Multipart.General] =
+      : FromEntityUnmarshaller[Multipart.General] =
     multipartUnmarshaller[
       Multipart.General,
       Multipart.General.BodyPart,
@@ -51,7 +51,7 @@ trait MultipartUnmarshallers {
   implicit def multipartFormDataUnmarshaller(
       implicit log: LoggingAdapter = NoLogging,
       parserSettings: ParserSettings = null)
-    : FromEntityUnmarshaller[Multipart.FormData] =
+      : FromEntityUnmarshaller[Multipart.FormData] =
     multipartUnmarshaller[
       Multipart.FormData,
       Multipart.FormData.BodyPart,
@@ -72,13 +72,13 @@ trait MultipartUnmarshallers {
   implicit def defaultMultipartByteRangesUnmarshaller(
       implicit log: LoggingAdapter = NoLogging,
       parserSettings: ParserSettings = null)
-    : FromEntityUnmarshaller[Multipart.ByteRanges] =
+      : FromEntityUnmarshaller[Multipart.ByteRanges] =
     multipartByteRangesUnmarshaller(`UTF-8`)
 
   def multipartByteRangesUnmarshaller(defaultCharset: HttpCharset)(
       implicit log: LoggingAdapter = NoLogging,
       parserSettings: ParserSettings = null)
-    : FromEntityUnmarshaller[Multipart.ByteRanges] =
+      : FromEntityUnmarshaller[Multipart.ByteRanges] =
     multipartUnmarshaller[
       Multipart.ByteRanges,
       Multipart.ByteRanges.BodyPart,

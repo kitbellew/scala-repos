@@ -31,8 +31,13 @@ import parser._
 import typer._
 
 object QuirrelConsole {
-  val compiler = new Parser with StubPhases with ProvenanceChecker with Binder
-  with Compiler with Emitter with LineErrors {
+  val compiler = new Parser
+    with StubPhases
+    with ProvenanceChecker
+    with Binder
+    with Compiler
+    with Emitter
+    with LineErrors {
 
     class Lib extends Library {
       type Morphism1 = Morphism1Like

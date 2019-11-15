@@ -145,7 +145,7 @@ case class SourceBuilder[T: Manifest] private (
       keyMf: Manifest[K],
       valMf: Manifest[V],
       joinedMf: Manifest[JoinedValue])
-    : SourceBuilder[(K, (V, Option[JoinedValue]))] =
+      : SourceBuilder[(K, (V, Option[JoinedValue]))] =
     copy(
       node = node
         .asInstanceOf[Node[(K, V)]]

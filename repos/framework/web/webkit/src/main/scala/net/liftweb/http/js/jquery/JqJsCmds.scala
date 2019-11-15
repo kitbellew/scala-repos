@@ -619,7 +619,7 @@ object JqJsCmds {
         duration,
         JqJE.JqId(id) ~>
           (new JsRaw("fadeOut(" + fadeTime.millis + ")")
-          with JsMember))).toJsCmd
+            with JsMember))).toJsCmd
   }
 
   /**

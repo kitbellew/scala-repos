@@ -30,7 +30,7 @@ trait ParSeq[+T]
     with GenericParTemplate[T, ParSeq]
     with ParSeqLike[T, ParSeq[T], scala.collection.immutable.Seq[T]] {
   override def companion
-    : GenericCompanion[ParSeq] with GenericParCompanion[ParSeq] = ParSeq
+      : GenericCompanion[ParSeq] with GenericParCompanion[ParSeq] = ParSeq
   override def toSeq: ParSeq[T] = this
 }
 

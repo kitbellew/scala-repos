@@ -53,7 +53,7 @@ object MongoScheduleStorageSettings {
 
 object MongoScheduleStorage {
   def apply(config: Configuration)(implicit executor: ExecutionContext)
-    : (MongoScheduleStorage, Stoppable) = {
+      : (MongoScheduleStorage, Stoppable) = {
     val settings = MongoScheduleStorageSettings(
       config[String]("mongo.tasks", "tasks"),
       config[String]("mongo.tasks_deleted", "tasks_deleted"),

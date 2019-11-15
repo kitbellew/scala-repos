@@ -140,11 +140,10 @@ class SbtSubprojectReferenceProvider extends PsiReferenceProvider {
     for {
       listOfPatterns <- Option(ref.getParent)
       patternDef <- Option(listOfPatterns.getParent)
-    } yield
-      patternDef match {
-        case ScPatternDefinition.expr(e) => extractPathFromFileParam(e)
-        case _                           => None
-      }
+    } yield patternDef match {
+      case ScPatternDefinition.expr(e) => extractPathFromFileParam(e)
+      case _                           => None
+    }
   }.flatten
 }
 

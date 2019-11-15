@@ -132,7 +132,7 @@ object BitVector extends BitVectorOps {
   }
 
   implicit def canMapValues[V2](implicit man: ClassTag[V2])
-    : CanMapValues[BitVector, Boolean, V2, DenseVector[V2]] = {
+      : CanMapValues[BitVector, Boolean, V2, DenseVector[V2]] = {
     new CanMapValues[BitVector, Boolean, V2, DenseVector[V2]] {
 
       /**Maps all key-value pairs from the given collection. */
@@ -159,7 +159,7 @@ object BitVector extends BitVectorOps {
     }
 
   implicit def canTraverseKeyValuePairs
-    : CanTraverseKeyValuePairs[BitVector, Int, Boolean] =
+      : CanTraverseKeyValuePairs[BitVector, Int, Boolean] =
     new CanTraverseKeyValuePairs[BitVector, Int, Boolean] {
       def isTraversableAgain(from: BitVector): Boolean = true
 
@@ -167,7 +167,7 @@ object BitVector extends BitVectorOps {
       def traverse(
           from: BitVector,
           fn: CanTraverseKeyValuePairs.KeyValuePairsVisitor[Int, Boolean])
-        : Unit = {
+          : Unit = {
         for (i <- 0 until from.length) {
           fn.visit(i, from(i))
         }
@@ -188,7 +188,7 @@ object BitVector extends BitVectorOps {
     }
 
   implicit def canMapPairs[V2](implicit man: ClassTag[V2])
-    : CanMapKeyValuePairs[BitVector, Int, Boolean, V2, DenseVector[V2]] =
+      : CanMapKeyValuePairs[BitVector, Int, Boolean, V2, DenseVector[V2]] =
     new CanMapKeyValuePairs[BitVector, Int, Boolean, V2, DenseVector[V2]] {
 
       /**Maps all key-value pairs from the given collection. */

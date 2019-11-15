@@ -127,16 +127,15 @@ case class Handshake(
     for {
       _ <- isCompatibleVersion(init)
       _ <- isCompatibleCharset(init)
-    } yield
-      HandshakeResponse(
-        username,
-        password,
-        database,
-        newClientCap,
-        init.salt,
-        init.serverCap,
-        charset,
-        maxPacketSize.inBytes.toInt
-      )
+    } yield HandshakeResponse(
+      username,
+      password,
+      database,
+      newClientCap,
+      init.salt,
+      init.serverCap,
+      charset,
+      maxPacketSize.inBytes.toInt
+    )
   }
 }

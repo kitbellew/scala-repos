@@ -12,7 +12,7 @@ trait SeqPicklers {
       elemUnpickler: Unpickler[T],
       collTag: FastTypeTag[Seq[T]],
       cbf: CanBuildFrom[Seq[T], T, Seq[T]])
-    : Pickler[Seq[T]] with Unpickler[Seq[T]] =
+      : Pickler[Seq[T]] with Unpickler[Seq[T]] =
     SeqSetPickler[T, Seq]
 }
 
@@ -22,7 +22,7 @@ trait IndexedSeqPicklers {
       elemUnpickler: Unpickler[T],
       collTag: FastTypeTag[IndexedSeq[T]],
       cbf: CanBuildFrom[IndexedSeq[T], T, IndexedSeq[T]])
-    : Pickler[IndexedSeq[T]] with Unpickler[IndexedSeq[T]] =
+      : Pickler[IndexedSeq[T]] with Unpickler[IndexedSeq[T]] =
     SeqSetPickler[T, IndexedSeq]
 }
 
@@ -32,6 +32,6 @@ trait LinearSeqPicklers {
       elemUnpickler: Unpickler[T],
       collTag: FastTypeTag[LinearSeq[T]],
       cbf: CanBuildFrom[LinearSeq[T], T, LinearSeq[T]])
-    : Pickler[LinearSeq[T]] with Unpickler[LinearSeq[T]] =
+      : Pickler[LinearSeq[T]] with Unpickler[LinearSeq[T]] =
     SeqSetPickler[T, LinearSeq]
 }

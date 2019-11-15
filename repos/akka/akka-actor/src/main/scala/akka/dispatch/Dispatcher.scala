@@ -102,7 +102,7 @@ class Dispatcher(
       actor: akka.actor.Cell,
       mailboxType: MailboxType): Mailbox = {
     new Mailbox(mailboxType.create(Some(actor.self), Some(actor.system)))
-    with DefaultSystemMessageQueue
+      with DefaultSystemMessageQueue
   }
 
   private val esUpdater = AtomicReferenceFieldUpdater.newUpdater(

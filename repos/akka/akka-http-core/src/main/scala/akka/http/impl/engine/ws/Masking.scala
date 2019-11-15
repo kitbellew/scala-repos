@@ -33,7 +33,8 @@ private[http] object Masking {
         .map {
           case f: FrameEvent ⇒ f
           case FrameError(ex) ⇒ throw ex
-        } else Flow[FrameEvent]
+        }
+    else Flow[FrameEvent]
   def unmaskIf(
       condition: Boolean): Flow[FrameEvent, FrameEventOrError, NotUsed] =
     if (condition) Flow[FrameEvent].transform(() ⇒ new Unmasking())

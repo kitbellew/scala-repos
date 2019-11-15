@@ -47,12 +47,11 @@ object AnaMove {
       fen ← d str "fen"
       path ← d str "path"
       prom = d str "promotion" flatMap chess.Role.promotable
-    } yield
-      AnaMove(
-        orig = orig,
-        dest = dest,
-        variant = variant,
-        fen = fen,
-        path = path,
-        promotion = prom)
+    } yield AnaMove(
+      orig = orig,
+      dest = dest,
+      variant = variant,
+      fen = fen,
+      path = path,
+      promotion = prom)
 }

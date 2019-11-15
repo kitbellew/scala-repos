@@ -18,7 +18,7 @@ import mesosphere.marathon.state.{
 /**
   * Provides a service to query information related to apps.
   */
-class AppInfoModule @Inject()(
+class AppInfoModule @Inject() (
     clock: Clock,
     groupManager: GroupManager,
     appRepository: AppRepository,

@@ -86,7 +86,7 @@ sealed class Rule[-I <: HList, +O <: HList] extends RuleX {
     */
   @compileTimeOnly("Calls to `.?` must be inside `rule` macro")
   def ?(implicit l: Lifter[Option, I @uncheckedVariance, O @uncheckedVariance])
-    : Rule[l.In, l.OptionalOut] = `n/a`
+      : Rule[l.In, l.OptionalOut] = `n/a`
 
   /**
     * Postfix shortcut for `zeroOrMore`.

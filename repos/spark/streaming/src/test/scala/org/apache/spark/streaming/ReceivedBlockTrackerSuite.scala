@@ -375,7 +375,7 @@ class ReceivedBlockTrackerSuite
     * files in the test log directory.
     */
   def getWrittenLogData(logFiles: Seq[String] = getWriteAheadLogFiles)
-    : Seq[ReceivedBlockTrackerLogEvent] = {
+      : Seq[ReceivedBlockTrackerLogEvent] = {
     logFiles
       .flatMap { file =>
         new FileBasedWriteAheadLogReader(file, hadoopConf).toSeq

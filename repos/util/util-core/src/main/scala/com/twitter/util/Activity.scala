@@ -572,7 +572,7 @@ object Activity {
       n: Activity[N],
       o: Activity[O],
       p: Activity[P])
-    : Activity[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P)] =
+      : Activity[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P)] =
     collect(Seq(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p)) map { ss =>
       (
         ss(0).asInstanceOf[A],
@@ -616,7 +616,7 @@ object Activity {
       o: Activity[O],
       p: Activity[P],
       q: Activity[Q])
-    : Activity[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)] =
+      : Activity[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)] =
     collect(Seq(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q)) map { ss =>
       (
         ss(0).asInstanceOf[A],
@@ -662,7 +662,7 @@ object Activity {
       p: Activity[P],
       q: Activity[Q],
       r: Activity[R])
-    : Activity[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)] =
+      : Activity[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)] =
     collect(Seq(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r)) map {
       ss =>
         (
@@ -711,7 +711,7 @@ object Activity {
       q: Activity[Q],
       r: Activity[R],
       s: Activity[S])
-    : Activity[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)] =
+      : Activity[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)] =
     collect(Seq(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s)) map {
       ss =>
         (
@@ -762,7 +762,7 @@ object Activity {
       r: Activity[R],
       s: Activity[S],
       t: Activity[T])
-    : Activity[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)] =
+      : Activity[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)] =
     collect(Seq(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t)) map {
       ss =>
         (

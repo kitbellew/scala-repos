@@ -33,7 +33,7 @@ class HyperLogLogPlusPlusSuite extends SparkFunSuite {
 
   /** Create a HLL++ instance and an input and output buffer. */
   def createEstimator(rsd: Double, dt: DataType = IntegerType)
-    : (HyperLogLogPlusPlus, MutableRow, MutableRow) = {
+      : (HyperLogLogPlusPlus, MutableRow, MutableRow) = {
     val input = new SpecificMutableRow(Seq(dt))
     val hll = new HyperLogLogPlusPlus(new BoundReference(0, dt, true), rsd)
     val buffer = createBuffer(hll)

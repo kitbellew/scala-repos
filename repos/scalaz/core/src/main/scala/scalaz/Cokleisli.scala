@@ -43,7 +43,7 @@ sealed abstract class CokleisliInstances0 {
       override implicit def F = F0
     }
   implicit def cokleisliProfunctor[F[_]: Functor]
-    : Profunctor[Cokleisli[F, ?, ?]] =
+      : Profunctor[Cokleisli[F, ?, ?]] =
     new CokleisliProfunctor[F] {
       def F = implicitly
     }
@@ -51,11 +51,11 @@ sealed abstract class CokleisliInstances0 {
 
 sealed abstract class CokleisliInstances extends CokleisliInstances0 {
   implicit def cokleisliMonad[F[_], R]
-    : Monad[Cokleisli[F, R, ?]] with BindRec[Cokleisli[F, R, ?]] =
+      : Monad[Cokleisli[F, R, ?]] with BindRec[Cokleisli[F, R, ?]] =
     new CokleisliMonad[F, R] {}
 
   implicit def cokleisliArrow[F[_]](implicit F0: Comonad[F])
-    : Arrow[Cokleisli[F, ?, ?]] with ProChoice[Cokleisli[F, ?, ?]] =
+      : Arrow[Cokleisli[F, ?, ?]] with ProChoice[Cokleisli[F, ?, ?]] =
     new CokleisliArrow[F] {
       override implicit def F = F0
     }

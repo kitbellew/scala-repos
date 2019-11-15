@@ -377,7 +377,7 @@ class SparkContext(config: SparkConf)
   private[spark] def eventLogger: Option[EventLoggingListener] = _eventLogger
 
   private[spark] def executorAllocationManager
-    : Option[ExecutorAllocationManager] =
+      : Option[ExecutorAllocationManager] =
     _executorAllocationManager
 
   private[spark] def cleaner: Option[ContextCleaner] = _cleaner
@@ -980,7 +980,7 @@ class SparkContext(config: SparkConf)
     * @param minPartitions A suggestion value of the minimal splitting number for input data.
     */
   def binaryFiles(path: String, minPartitions: Int = defaultMinPartitions)
-    : RDD[(String, PortableDataStream)] = withScope {
+      : RDD[(String, PortableDataStream)] = withScope {
     assertNotStopped()
     val job = NewHadoopJob.getInstance(hadoopConfiguration)
     // Use setInputPaths so that binaryFiles aligns with hadoopFile/textFile in taking
@@ -2075,7 +2075,7 @@ class SparkContext(config: SparkConf)
     */
   private[spark] def submitMapStage[K, V, C](
       dependency: ShuffleDependency[K, V, C])
-    : SimpleFutureAction[MapOutputStatistics] = {
+      : SimpleFutureAction[MapOutputStatistics] = {
     assertNotStopped()
     val callSite = getCallSite()
     var result: MapOutputStatistics = null
@@ -2811,6 +2811,6 @@ object WritableFactory {
     simpleWritableFactory(new Text(_))
 
   implicit def writableWritableFactory[T <: Writable: ClassTag]
-    : WritableFactory[T] =
+      : WritableFactory[T] =
     simpleWritableFactory(w => w)
 }

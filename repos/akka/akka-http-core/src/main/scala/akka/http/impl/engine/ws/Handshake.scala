@@ -194,7 +194,7 @@ private[http] object Handshake {
         response: HttpResponse,
         subprotocols: Seq[String],
         key: `Sec-WebSocket-Key`)
-      : Either[String, NegotiatedWebSocketSettings] = {
+        : Either[String, NegotiatedWebSocketSettings] = {
       /*
        From http://tools.ietf.org/html/rfc6455#section-4.1
 

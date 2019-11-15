@@ -92,7 +92,7 @@ private[cluster] class Reachability private (
         }
 
         val observerRowsMap
-          : Map[UniqueAddress, Map[UniqueAddress, Reachability.Record]] =
+            : Map[UniqueAddress, Map[UniqueAddress, Reachability.Record]] =
           mapBuilder.toMap
         val allTerminated: Set[UniqueAddress] = terminatedBuilder.result()
         val allUnreachable: Set[UniqueAddress] =
@@ -110,7 +110,7 @@ private[cluster] class Reachability private (
   @transient private lazy val cache = new Cache
 
   private def observerRows(observer: UniqueAddress)
-    : Option[Map[UniqueAddress, Reachability.Record]] =
+      : Option[Map[UniqueAddress, Reachability.Record]] =
     cache.observerRowsMap.get(observer)
 
   def unreachable(

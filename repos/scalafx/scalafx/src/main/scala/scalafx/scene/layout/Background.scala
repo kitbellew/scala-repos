@@ -46,7 +46,7 @@ object Background {
   val EMPTY = Empty
 
   def classCssMetaData
-    : Seq[javafx.css.CssMetaData[_ <: javafx.css.Styleable, _]] =
+      : Seq[javafx.css.CssMetaData[_ <: javafx.css.Styleable, _]] =
     jfxsl.Background.getClassCssMetaData
 }
 

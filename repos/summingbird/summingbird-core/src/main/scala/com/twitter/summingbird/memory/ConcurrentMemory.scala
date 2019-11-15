@@ -202,7 +202,7 @@ class ConcurrentMemory(
           }
 
         def cast[A](out: (HMap[ProdCons, PhysicalNode], PhysicalNode[A]))
-          : (HMap[ProdCons, PhysicalNode], PhysicalNode[T]) = {
+            : (HMap[ProdCons, PhysicalNode], PhysicalNode[T]) = {
           out.asInstanceOf[(HMap[ProdCons, PhysicalNode], PhysicalNode[T])]
         }
 

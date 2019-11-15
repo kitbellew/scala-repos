@@ -358,7 +358,7 @@ object HttpBinApplication {
   def app = {
     new BuiltInComponentsFromContext(
       ApplicationLoader.createContext(Environment.simple()))
-    with AhcWSComponents {
+      with AhcWSComponents {
       def router = SimpleRouter(
         PartialFunction.empty
           .orElse(getIp)

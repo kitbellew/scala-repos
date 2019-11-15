@@ -341,7 +341,7 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
                 checkImplicits: Boolean,
                 isShape: Boolean,
                 _expectedOption: Option[ScType])
-              : (TypeResult[ScType], collection.Set[ImportUsed]) = {
+                : (TypeResult[ScType], collection.Set[ImportUsed]) = {
               val expectedOption = _expectedOption.map {
                 case ScTupleType(comps) if comps.length == 2 => comps(1)
                 case t                                       => t
@@ -482,10 +482,10 @@ object MethodInvocation {
     Some(invocation.getInvokedExpr, invocation.argumentExpressions)
 
   private val APPLICABILITY_PROBLEMS_VAR_KEY
-    : Key[(Long, Seq[ApplicabilityProblem])] =
+      : Key[(Long, Seq[ApplicabilityProblem])] =
     Key.create("applicability.problems.var.key")
   private val MATCHED_PARAMETERS_VAR_KEY
-    : Key[(Long, Seq[(Parameter, ScExpression)])] =
+      : Key[(Long, Seq[(Parameter, ScExpression)])] =
     Key.create("matched.parameter.var.key")
   private val IMPORTS_USED_KEY: Key[(Long, collection.Set[ImportUsed])] =
     Key.create("imports.used.method.invocation.key")

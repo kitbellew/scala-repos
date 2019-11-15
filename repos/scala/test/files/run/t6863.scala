@@ -129,7 +129,8 @@ object Test {
         try "42"
         catch {
           case _: Throwable => "43"
-        } else "44"
+        }
+      else "44"
     }
     assert({ () =>
       x

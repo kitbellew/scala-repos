@@ -109,7 +109,7 @@ trait EnumeratorTInstances extends EnumeratorTInstances0 {
     }
 
   implicit val enumeratorTMonadTrans
-    : MonadTrans[λ[(β[_], α) => EnumeratorT[α, β]]] =
+      : MonadTrans[λ[(β[_], α) => EnumeratorT[α, β]]] =
     new MonadTrans[λ[(β[_], α) => EnumeratorT[α, β]]] {
       def liftM[G[_]: Monad, E](ga: G[E]): EnumeratorT[E, G] =
         new EnumeratorT[E, G] {
@@ -217,7 +217,7 @@ trait EnumeratorTFunctions {
 
   def enumReader[F[_]](r: => java.io.Reader)(
       implicit MO: MonadPartialOrder[F, IO])
-    : EnumeratorT[IoExceptionOr[Char], F] = {
+      : EnumeratorT[IoExceptionOr[Char], F] = {
     lazy val src = r
     enumIoSource(
       get = () => IoExceptionOr(src.read),
@@ -227,7 +227,7 @@ trait EnumeratorTFunctions {
 
   def enumInputStream[F[_]](is: => java.io.InputStream)(
       implicit MO: MonadPartialOrder[F, IO])
-    : EnumeratorT[IoExceptionOr[Byte], F] = {
+      : EnumeratorT[IoExceptionOr[Byte], F] = {
     lazy val src = is
     enumIoSource(
       get = () => IoExceptionOr(src.read),

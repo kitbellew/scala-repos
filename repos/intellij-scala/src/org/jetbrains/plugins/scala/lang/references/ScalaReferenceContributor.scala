@@ -176,7 +176,7 @@ class FilePathReferenceProvider extends PsiReferenceProvider {
       }
 
       @NotNull override def computeDefaultContexts
-        : java.util.Collection[PsiFileSystemItem] = {
+          : java.util.Collection[PsiFileSystemItem] = {
         val module: Module = ModuleUtilCore.findModuleForPsiElement(getElement)
         getRoots(module, includingClasses = true)
       }
@@ -193,7 +193,7 @@ class FilePathReferenceProvider extends PsiReferenceProvider {
       }
 
       protected override def getReferenceCompletionFilter
-        : Condition[PsiFileSystemItem] = {
+          : Condition[PsiFileSystemItem] = {
         new Condition[PsiFileSystemItem] {
           def value(element: PsiFileSystemItem): Boolean = {
             isPsiElementAccepted(element)

@@ -232,7 +232,7 @@ object Dispatchers {
   def fromConfig(
       key: String,
       default: => MessageDispatcher = defaultGlobalDispatcher)
-    : MessageDispatcher =
+      : MessageDispatcher =
     config getSection key flatMap from getOrElse default
 
   /*

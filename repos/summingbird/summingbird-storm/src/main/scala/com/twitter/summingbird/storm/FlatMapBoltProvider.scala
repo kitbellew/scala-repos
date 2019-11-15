@@ -53,7 +53,7 @@ object FlatMapBoltProvider {
     LoggerFactory.getLogger(FlatMapBoltProvider.getClass)
   private def wrapTimeBatchIDKV[T, K, V](
       existingOp: FlatMapOperation[T, (K, V)])(batcher: Batcher)
-    : FlatMapOperation[(Timestamp, T), ((K, BatchID), (Timestamp, V))] =
+      : FlatMapOperation[(Timestamp, T), ((K, BatchID), (Timestamp, V))] =
     FlatMapOperation.generic[(Timestamp, T), ((K, BatchID), (Timestamp, V))]({
       case (ts, data) =>
         existingOp.apply(data).map { vals =>
@@ -65,7 +65,7 @@ object FlatMapBoltProvider {
     })
 
   def wrapTime[T, U](existingOp: FlatMapOperation[T, U])
-    : FlatMapOperation[(Timestamp, T), (Timestamp, U)] = {
+      : FlatMapOperation[(Timestamp, T), (Timestamp, U)] = {
     FlatMapOperation.generic({ x: (Timestamp, T) =>
       existingOp.apply(x._2).map { vals =>
         vals.map((x._1, _))

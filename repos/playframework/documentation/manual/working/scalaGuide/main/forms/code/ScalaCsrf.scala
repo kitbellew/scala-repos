@@ -44,7 +44,7 @@ object ScalaCsrf extends PlaySpecification {
       import play.filters.csrf.CSRFFilter
       import javax.inject.Inject
 
-      class Filters @Inject()(csrfFilter: CSRFFilter) extends HttpFilters {
+      class Filters @Inject() (csrfFilter: CSRFFilter) extends HttpFilters {
         def filters = Seq(csrfFilter)
       }
       //#http-filters

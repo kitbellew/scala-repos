@@ -363,7 +363,7 @@ class ReplicaFetcherThread(
 
   protected def buildFetchRequest(
       partitionMap: Map[TopicAndPartition, PartitionFetchState])
-    : FetchRequest = {
+      : FetchRequest = {
     val requestMap =
       mutable.Map.empty[TopicPartition, JFetchRequest.PartitionData]
 

@@ -118,10 +118,14 @@ trait NIHDBQueryExecutorComponent {
       extApiKeyFinder: APIKeyFinder[Future],
       extAccountFinder: AccountFinder[Future],
       extJobManager: JobManager[Future]) = {
-    new ManagedPlatform with SecureVFSModule[Future, Slice] with ActorVFSModule
-    with SchedulingActorModule with ShardQueryExecutorPlatform[Future]
-    with VFSColumnarTableModule with KafkaIngestActorProjectionSystem
-    with GracefulStopSupport {
+    new ManagedPlatform
+      with SecureVFSModule[Future, Slice]
+      with ActorVFSModule
+      with SchedulingActorModule
+      with ShardQueryExecutorPlatform[Future]
+      with VFSColumnarTableModule
+      with KafkaIngestActorProjectionSystem
+      with GracefulStopSupport {
       platform =>
 
       type YggConfig = NIHDBQueryExecutorConfig
@@ -243,13 +247,13 @@ trait NIHDBQueryExecutorComponent {
       }
 
       override def executor(implicit shardQueryMonad: JobQueryTFMonad)
-        : QueryExecutor[JobQueryTF, StreamT[JobQueryTF, Slice]] = {
+          : QueryExecutor[JobQueryTF, StreamT[JobQueryTF, Slice]] = {
         implicit val mn = new (Future ~> JobQueryTF) {
           def apply[A](fut: Future[A]) = fut.liftM[JobQueryT]
         }
 
         new ShardQueryExecutor[JobQueryTF](shardQueryMonad)
-        with IdSourceScannerModule {
+          with IdSourceScannerModule {
           val M = shardQueryMonad.M
           type YggConfig = NIHDBQueryExecutorConfig
           val yggConfig = platform.yggConfig

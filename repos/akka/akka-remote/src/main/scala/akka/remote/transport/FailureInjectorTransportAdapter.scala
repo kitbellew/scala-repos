@@ -95,7 +95,7 @@ private[remote] class FailureInjectorTransportAdapter(
   protected def interceptListen(
       listenAddress: Address,
       listenerFuture: Future[AssociationEventListener])
-    : Future[AssociationEventListener] = {
+      : Future[AssociationEventListener] = {
     log.warning(
       "FailureInjectorTransport is active on this system. Gremlins might munch your packets.")
     listenerFuture.onSuccess {

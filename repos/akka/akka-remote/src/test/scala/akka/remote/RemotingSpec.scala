@@ -519,8 +519,9 @@ class RemotingSpec
 
     "not fail ask across node boundaries" in within(5.seconds) {
       import system.dispatcher
-      val f = for (_ ← 1 to 1000)
-        yield here ? "ping" mapTo manifest[(String, ActorRef)]
+      val f =
+        for (_ ← 1 to 1000)
+          yield here ? "ping" mapTo manifest[(String, ActorRef)]
       Await
         .result(Future.sequence(f), timeout.duration)
         .map(_._1)

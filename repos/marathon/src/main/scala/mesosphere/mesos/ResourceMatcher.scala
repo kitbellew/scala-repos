@@ -164,10 +164,9 @@ object ResourceMatcher {
     if (scalarMatchResults.forall(_.matches)) {
       for {
         portsMatch <- portsMatchOpt if meetsAllConstraints
-      } yield
-        ResourceMatch(
-          scalarMatchResults.collect { case m: ScalarMatch => m },
-          portsMatch)
+      } yield ResourceMatch(scalarMatchResults.collect {
+        case m: ScalarMatch => m
+      }, portsMatch)
     } else {
       None
     }
@@ -179,7 +178,7 @@ object ResourceMatcher {
       name: String,
       requiredValue: Double,
       scope: ScalarMatchResult.Scope = ScalarMatchResult.Scope.NoneDisk)
-    : ScalarMatchResult = {
+      : ScalarMatchResult = {
 
     require(scope == ScalarMatchResult.Scope.NoneDisk || name == Resource.DISK)
 
@@ -188,7 +187,7 @@ object ResourceMatcher {
         valueLeft: Double,
         resourcesLeft: Iterable[Protos.Resource],
         resourcesConsumed: List[ScalarMatch.Consumption] = List.empty)
-      : ScalarMatchResult = {
+        : ScalarMatchResult = {
       if (valueLeft <= 0) {
         ScalarMatch(name, requiredValue, resourcesConsumed, scope = scope)
       } else {

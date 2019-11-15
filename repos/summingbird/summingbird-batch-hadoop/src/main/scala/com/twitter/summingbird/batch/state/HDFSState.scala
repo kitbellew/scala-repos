@@ -93,7 +93,7 @@ class HDFSCheckpointStore(val config: HDFSState.Config)(
 
   override def checkpointBatchStart(
       intersection: Intersection[InclusiveLower, ExclusiveUpper, Timestamp])
-    : Iterable[BatchID] =
+      : Iterable[BatchID] =
     BatchID.toIterable(batcher.batchesCoveredBy(intersection))
 
   override def checkpointSuccessfulRun(runningBatches: Iterable[BatchID]) =

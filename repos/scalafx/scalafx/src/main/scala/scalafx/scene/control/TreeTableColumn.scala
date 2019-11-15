@@ -34,7 +34,7 @@ object TreeTableColumn {
     */
   object CellDataFeatures {
     implicit def sfxCellDataFeatures2jfx[S, T](v: CellDataFeatures[S, T])
-      : jfxsc.TreeTableColumn.CellDataFeatures[S, T] =
+        : jfxsc.TreeTableColumn.CellDataFeatures[S, T] =
       if (v != null) v.delegate else null
   }
 
@@ -256,7 +256,7 @@ class TreeTableColumn[S, T](
     * Finally, there are a number of pre-built cell factories available in the javafx.scene.control.cell package.
     */
   def cellFactory
-    : ObjectProperty[TreeTableColumn[S, T] => TreeTableCell[S, T]] =
+      : ObjectProperty[TreeTableColumn[S, T] => TreeTableCell[S, T]] =
     ObjectProperty((column: TreeTableColumn[S, T]) =>
       new TreeTableCell(delegate.cellFactoryProperty.getValue.call(column)))
 
@@ -310,7 +310,7 @@ class TreeTableColumn[S, T](
         jfxsc.TreeTableColumn.CellDataFeatures[S, T],
         jfxbv.ObservableValue[T]] {
         def call(v: jfxsc.TreeTableColumn.CellDataFeatures[S, T])
-          : jfxbv.ObservableValue[T] = {
+            : jfxbv.ObservableValue[T] = {
           f(v).delegate
         }
       })

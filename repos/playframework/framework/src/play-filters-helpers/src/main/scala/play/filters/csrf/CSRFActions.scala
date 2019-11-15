@@ -578,7 +578,7 @@ object CSRFAction {
   *
   * Apply this to all actions that require a CSRF check.
   */
-case class CSRFCheck @Inject()(
+case class CSRFCheck @Inject() (
     config: CSRFConfig,
     tokenSigner: CSRFTokenSigner) {
 
@@ -674,7 +674,9 @@ object CSRFCheck {
   *
   * Apply this to all actions that render a form that contains a CSRF token.
   */
-case class CSRFAddToken @Inject()(config: CSRFConfig, crypto: CSRFTokenSigner) {
+case class CSRFAddToken @Inject() (
+    config: CSRFConfig,
+    crypto: CSRFTokenSigner) {
 
   private class CSRFAddTokenAction[A](
       config: CSRFConfig,

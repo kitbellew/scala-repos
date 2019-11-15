@@ -37,9 +37,9 @@ class PerformanceSpec
                 msg.ping ! Ping(msg.x, self, msg.report)
               })).withDispatcher(executor)
 
-            val actors = for (i ← 1 to pairs)
-              yield
-                (
+            val actors =
+              for (i ← 1 to pairs)
+                yield (
                   ctx.spawn(pinger, s"pinger-$i"),
                   ctx.spawn(ponger, s"ponger-$i"))
 

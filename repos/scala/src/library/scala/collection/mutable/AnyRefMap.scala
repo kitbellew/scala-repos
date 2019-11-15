@@ -438,7 +438,7 @@ object AnyRefMap {
     throw new NoSuchElementException(if (k == null) "(null)" else k.toString)
 
   implicit def canBuildFrom[K <: AnyRef, V, J <: AnyRef, U]
-    : CanBuildFrom[AnyRefMap[K, V], (J, U), AnyRefMap[J, U]] =
+      : CanBuildFrom[AnyRefMap[K, V], (J, U), AnyRefMap[J, U]] =
     new CanBuildFrom[AnyRefMap[K, V], (J, U), AnyRefMap[J, U]] {
       def apply(from: AnyRefMap[K, V]): AnyRefMapBuilder[J, U] = apply()
       def apply(): AnyRefMapBuilder[J, U] = new AnyRefMapBuilder[J, U]

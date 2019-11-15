@@ -732,7 +732,7 @@ private[transport] class ProtocolStateActor(
       wrappedHandle: AssociationHandle,
       handshakeInfo: HandshakeInfo,
       statusPromise: Promise[AssociationHandle])
-    : Future[HandleEventListener] = {
+      : Future[HandleEventListener] = {
     val readHandlerPromise = Promise[HandleEventListener]()
     listenForListenerRegistration(readHandlerPromise)
 
@@ -752,7 +752,7 @@ private[transport] class ProtocolStateActor(
       wrappedHandle: AssociationHandle,
       handshakeInfo: HandshakeInfo,
       associationListener: AssociationEventListener)
-    : Future[HandleEventListener] = {
+      : Future[HandleEventListener] = {
     val readHandlerPromise = Promise[HandleEventListener]()
     listenForListenerRegistration(readHandlerPromise)
 

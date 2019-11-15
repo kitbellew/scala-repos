@@ -30,7 +30,7 @@ import scalaz.std.anyVal.booleanInstance.disjunction
 import scalaz.std.option.optionFirst
 import scalaz.syntax.comonad._
 
-trait DAGRewriterSpecs[M[+ _]]
+trait DAGRewriterSpecs[M[+_]]
     extends Specification
     with EvaluatorTestSupport[M] {
 

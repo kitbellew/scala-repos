@@ -15,7 +15,7 @@ trait ProcessExtra {
     apply(command)
   implicit def buildersToProcess[T](builders: Seq[T])(
       implicit convert: T => ProcessBuilder.Source)
-    : Seq[ProcessBuilder.Source] = applySeq(builders)
+      : Seq[ProcessBuilder.Source] = applySeq(builders)
 
   implicit def stringToProcess(command: String): ProcessBuilder =
     apply(command)

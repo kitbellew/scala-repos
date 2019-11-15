@@ -72,7 +72,7 @@ object SwaggerSerializers {
         override val dateFormat: DateFormat = self.dateFormat
         override val typeHintFieldName: String = self.typeHintFieldName
         override val parameterNameReader
-          : org.json4s.reflect.ParameterNameReader =
+            : org.json4s.reflect.ParameterNameReader =
           self.parameterNameReader
         override val typeHints: TypeHints = self.typeHints
         override val customSerializers: List[Serializer[_]] =
@@ -90,7 +90,7 @@ object SwaggerSerializers {
         override val dateFormat: DateFormat = self.dateFormat
         override val typeHintFieldName: String = self.typeHintFieldName
         override val parameterNameReader
-          : org.json4s.reflect.ParameterNameReader =
+            : org.json4s.reflect.ParameterNameReader =
           self.parameterNameReader
         override val typeHints: TypeHints = self.typeHints + extraHints
         override val customSerializers: List[Serializer[_]] =
@@ -108,7 +108,7 @@ object SwaggerSerializers {
         override val dateFormat: DateFormat = self.dateFormat
         override val typeHintFieldName: String = self.typeHintFieldName
         override val parameterNameReader
-          : org.json4s.reflect.ParameterNameReader =
+            : org.json4s.reflect.ParameterNameReader =
           self.parameterNameReader
         override val typeHints: TypeHints = self.typeHints
         override val customSerializers: List[Serializer[_]] =
@@ -159,7 +159,7 @@ object SwaggerSerializers {
         override val dateFormat: DateFormat = self.dateFormat
         override val typeHintFieldName: String = self.typeHintFieldName
         override val parameterNameReader
-          : org.json4s.reflect.ParameterNameReader =
+            : org.json4s.reflect.ParameterNameReader =
           self.parameterNameReader
         override val typeHints: TypeHints = hints
         override val customSerializers: List[Serializer[_]] =
@@ -349,8 +349,9 @@ object SwaggerSerializers {
             )
         }, {
           case x: Model =>
-            val required = for ((key, value) <- x.properties
-                                if value.required) yield key
+            val required =
+              for ((key, value) <- x.properties
+                   if value.required) yield key
             ("id" -> x.id) ~ ("name" -> x.name) ~
               ("qualifiedType" -> x.qualifiedName) ~
               ("description" -> x.description) ~ ("required" -> required) ~

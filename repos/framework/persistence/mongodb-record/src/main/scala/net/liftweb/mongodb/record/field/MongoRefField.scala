@@ -96,7 +96,8 @@ trait MongoRefField[RefType <: MongoRecord[RefType], MyType]
       uniqueFieldId match {
         case Full(id) => Full(elem % ("id" -> id))
         case _        => Full(elem)
-      } else Empty
+      }
+    else Empty
 }
 
 class ObjectIdRefField[

@@ -65,7 +65,7 @@ trait TransformIncludes {
 
   implicit def jfxNonInvertibleTransformException2sfx(
       v: jfxst.NonInvertibleTransformException)
-    : NonInvertibleTransformException =
+      : NonInvertibleTransformException =
     if (v != null) new NonInvertibleTransformException(v) else null
 
   /**
@@ -102,7 +102,8 @@ trait TransformIncludes {
     * @return $SFX $TR
     */
   implicit def jfxTransform2sfx(v: jfxst.Transform): Transform =
-    if (v != null) new Transform(v) {} else null
+    if (v != null) new Transform(v) {}
+    else null
 
   implicit def jfxTransformChangedEvent2sfx(
       v: jfxst.TransformChangedEvent): TransformChangedEvent =

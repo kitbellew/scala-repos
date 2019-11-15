@@ -72,7 +72,7 @@ private[server] class MetadataCache(brokerId: Int) extends Logging {
     }
 
   private def getPartitionMetadata(topic: String, protocol: SecurityProtocol)
-    : Option[Iterable[MetadataResponse.PartitionMetadata]] = {
+      : Option[Iterable[MetadataResponse.PartitionMetadata]] = {
     cache.get(topic).map { partitions =>
       partitions.map {
         case (partitionId, partitionState) =>

@@ -442,7 +442,8 @@ trait Infer extends Checkable { self: Analyzer =>
         try solve()
         catch {
           case _: NoInstance => null
-        } else null
+        }
+      else null
     }
 
     /** Overload which allocates fresh type vars.
@@ -531,7 +532,7 @@ trait Infer extends Checkable { self: Analyzer =>
 
       object AllArgsAndUndets {
         def unapply(m: Result)
-          : Some[(List[Symbol], List[Type], List[Type], List[Symbol])] =
+            : Some[(List[Symbol], List[Type], List[Type], List[Symbol])] =
           Some(toLists {
             val (ok, nok) = m
               .map { case (p, a) => (p, a.getOrElse(null)) }

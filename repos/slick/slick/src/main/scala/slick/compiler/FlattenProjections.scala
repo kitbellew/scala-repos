@@ -67,7 +67,7 @@ class FlattenProjections extends Phase {
     * which has a NominalType of that symbol. `rest` is a (possibly empty) path of
     * symbols on top of `base`. */
   def splitPath(n: PathElement, candidates: scala.collection.Set[TypeSymbol])
-    : Option[(PathElement, List[TermSymbol], TypeSymbol)] = {
+      : Option[(PathElement, List[TermSymbol], TypeSymbol)] = {
     def checkType(
         tpe: Type): Option[(PathElement, List[TermSymbol], TypeSymbol)] =
       tpe match {

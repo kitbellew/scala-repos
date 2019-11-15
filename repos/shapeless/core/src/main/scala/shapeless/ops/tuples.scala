@@ -375,7 +375,7 @@ object tuple {
 
   object ModifierAt {
     def apply[T, N <: Nat, U, V](implicit modifier: ModifierAt[T, N, U, V])
-      : Aux[T, N, U, V, modifier.Out] = modifier
+        : Aux[T, N, U, V, modifier.Out] = modifier
 
     type Aux[T, N <: Nat, U, V, Out0] = ModifierAt[T, N, U, V] {
       type Out = Out0
@@ -1045,13 +1045,13 @@ object tuple {
 
   object ToTraversable {
     def apply[T, M[_]](implicit toTraversable: ToTraversable[T, M])
-      : Aux[T, M, toTraversable.Lub] = toTraversable
+        : Aux[T, M, toTraversable.Lub] = toTraversable
 
     type Aux[T, M[_], Lub0] = ToTraversable[T, M] { type Lub = Lub0 }
 
     implicit def toTraversableNothing[M[_]](
         implicit tt: hl.ToTraversable.Aux[HNil, M, Nothing])
-      : Aux[Unit, M, Nothing] =
+        : Aux[Unit, M, Nothing] =
       new ToTraversable[Unit, M] {
         type Lub = Nothing
         def apply(t: Unit) = tt(HNil)
@@ -1084,7 +1084,7 @@ object tuple {
 
     implicit def toList[T, Lub](
         implicit toTraversable: ToTraversable.Aux[T, List, Lub])
-      : Aux[T, Lub, List[Lub]] =
+        : Aux[T, Lub, List[Lub]] =
       new ToList[T, Lub] {
         type Out = List[Lub]
         def apply(t: T) = toTraversable(t)
@@ -1092,7 +1092,7 @@ object tuple {
 
     implicit def toListNothing[T](
         implicit toTraversable: ToTraversable.Aux[T, List, Nothing])
-      : Aux[T, Nothing, List[Nothing]] =
+        : Aux[T, Nothing, List[Nothing]] =
       toList[T, Nothing]
   }
 
@@ -1114,7 +1114,7 @@ object tuple {
 
     implicit def toArray[T, Lub](
         implicit toTraversable: ToTraversable.Aux[T, Array, Lub])
-      : Aux[T, Lub, Array[Lub]] =
+        : Aux[T, Lub, Array[Lub]] =
       new ToArray[T, Lub] {
         type Out = Array[Lub]
         def apply(t: T) = toTraversable(t)
@@ -1122,7 +1122,7 @@ object tuple {
 
     implicit def toArrayNothing[T](
         implicit toTraversable: ToTraversable.Aux[T, Array, Nothing])
-      : Aux[T, Nothing, Array[Nothing]] =
+        : Aux[T, Nothing, Array[Nothing]] =
       toArray[T, Nothing]
   }
 
@@ -1458,7 +1458,7 @@ object tuple {
   object PaddedGrouper {
     def apply[T, N <: Nat, Step <: Nat, Pad](
         implicit grouper: PaddedGrouper[T, N, Step, Pad])
-      : Aux[T, N, Step, Pad, grouper.Out] = grouper
+        : Aux[T, N, Step, Pad, grouper.Out] = grouper
 
     type Aux[T, N <: Nat, Step <: Nat, Pad, Out0] =
       PaddedGrouper[T, N, Step, Pad] { type Out = Out0 }

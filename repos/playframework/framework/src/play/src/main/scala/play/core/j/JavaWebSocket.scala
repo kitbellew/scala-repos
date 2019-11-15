@@ -92,7 +92,7 @@ object JavaWebSocket extends JavaHelpers {
 
   def promiseOfBytes(
       retrieveWebSocket: => CompletionStage[LegacyWebSocket[Array[Byte]]])
-    : WebSocket =
+      : WebSocket =
     webSocketWrapper[Array[Byte]](retrieveWebSocket)
 
   // -- String
@@ -103,7 +103,7 @@ object JavaWebSocket extends JavaHelpers {
 
   def promiseOfString(
       retrieveWebSocket: => CompletionStage[LegacyWebSocket[String]])
-    : WebSocket =
+      : WebSocket =
     webSocketWrapper[String](retrieveWebSocket)
 
   // -- Json (JsonNode)
@@ -120,6 +120,6 @@ object JavaWebSocket extends JavaHelpers {
 
   def promiseOfJson(
       retrieveWebSocket: => CompletionStage[LegacyWebSocket[JsonNode]])
-    : WebSocket =
+      : WebSocket =
     webSocketWrapper[JsonNode](retrieveWebSocket)
 }

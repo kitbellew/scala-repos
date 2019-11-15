@@ -37,7 +37,7 @@ import scala.util.Random
   * Its parameters represent guice wired dependencies.
   * [[CoreGuiceModule]] exports some dependencies back to guice.
   */
-class CoreModuleImpl @Inject()(
+class CoreModuleImpl @Inject() (
     // external dependencies still wired by guice
     zk: ZooKeeperClient,
     leader: LeadershipAbdication,

@@ -176,9 +176,8 @@ trait MetadataGenerators extends util.ArbitraryJValue {
   def genStringMetadata: Gen[StringValueStats] =
     for (count <- choose(0, 1000); a <- arbString.arbitrary;
          b <- arbString.arbitrary)
-      yield
-        StringValueStats(
-          count,
-          Order[String].min(a, b),
-          Order[String].max(a, b))
+      yield StringValueStats(
+        count,
+        Order[String].min(a, b),
+        Order[String].max(a, b))
 }

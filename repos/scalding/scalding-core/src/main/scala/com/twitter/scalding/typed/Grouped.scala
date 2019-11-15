@@ -176,7 +176,7 @@ object Grouped {
     }
 
   def addEmptyGuard[K, V1, V2](fn: (K, Iterator[V1]) => Iterator[V2])
-    : (K, Iterator[V1]) => Iterator[V2] = { (key: K, iter: Iterator[V1]) =>
+      : (K, Iterator[V1]) => Iterator[V2] = { (key: K, iter: Iterator[V1]) =>
     if (iter.nonEmpty) fn(key, iter) else Iterator.empty
   }
 }
@@ -186,7 +186,7 @@ object Grouped {
   * Hadoop secondary sort is external sorting. i.e. it won't materialize all values
   * of each key in memory on the reducer.
   */
-trait Sortable[+T, +Sorted[+ _]] {
+trait Sortable[+T, +Sorted[+_]] {
   def withSortOrdering[U >: T](so: Ordering[U]): Sorted[T]
 
   def sortBy[B: Ordering](fn: (T) => B): Sorted[T] =

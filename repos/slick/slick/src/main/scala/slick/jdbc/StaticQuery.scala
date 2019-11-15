@@ -63,7 +63,7 @@ object ActionBasedSQLInterpolation {
     }
   }
   def tsqlImpl(ctxt: whitebox.Context)(param: ctxt.Expr[Any]*)
-    : ctxt.Expr[SqlStreamingAction[Vector[Any], Any, Effect]] = {
+      : ctxt.Expr[SqlStreamingAction[Vector[Any], Any, Effect]] = {
     import ctxt.universe._
     val macroTreeBuilder = new MacroTreeBuilder[ctxt.type](ctxt)(param.toList)
 
@@ -112,7 +112,7 @@ case class SQLActionBuilder(
     queryParts: Seq[Any],
     unitPConv: SetParameter[Unit]) {
   def as[R](implicit rconv: GetResult[R])
-    : SqlStreamingAction[Vector[R], R, Effect] = {
+      : SqlStreamingAction[Vector[R], R, Effect] = {
     val query =
       if (queryParts.length == 1 && queryParts(0).isInstanceOf[String])
         queryParts(0).asInstanceOf[String]

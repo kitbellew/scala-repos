@@ -191,7 +191,7 @@ trait TraitView[This <: android.view.View]
   // TODO: Make the return type as Option[TraitViewGroup[_]]
   protected def parentViewGroupIfExists[LP <: ViewGroupLayoutParams[_, _]](
       implicit defaultLayoutParam: This => LP = (v: This) => null)
-    : TraitViewGroup[_] = {
+      : TraitViewGroup[_] = {
     val lp = defaultLayoutParam(basis)
     if (lp == null) null else lp.parent
   }
@@ -2024,7 +2024,7 @@ trait TraitView[This <: android.view.View]
   @inline
   def onLayoutChange[U](
       f: (android.view.View, Int, Int, Int, Int, Int, Int, Int, Int) => U)
-    : This = {
+      : This = {
     basis.addOnLayoutChangeListener(
       new android.view.View.OnLayoutChangeListener {
         def onLayoutChange(

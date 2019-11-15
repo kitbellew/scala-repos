@@ -54,7 +54,7 @@ trait ReductionHelper {
   def reduceDouble(seq: Seq[ColumnValues]): Result
 }
 
-trait LogisticRegressionLibModule[M[+ _]]
+trait LogisticRegressionLibModule[M[+_]]
     extends ColumnarTableLibModule[M]
     with ReductionLibModule[M]
     with PredictionLibModule[M] {

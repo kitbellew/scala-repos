@@ -12,7 +12,7 @@ import play.http.{HttpErrorHandler => JHttpErrorHandler}
 /**
   * Adapter from a Java HttpErrorHandler to a Scala HttpErrorHandler
   */
-class JavaHttpErrorHandlerAdapter @Inject()(underlying: JHttpErrorHandler)
+class JavaHttpErrorHandlerAdapter @Inject() (underlying: JHttpErrorHandler)
     extends HttpErrorHandler {
 
   def onClientError(

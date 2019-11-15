@@ -40,7 +40,7 @@ abstract class ParallelSeqCheck[T](collName: String)
       yield (inst, fromSeq(inst), s);
 
   def collectionPairsWithModifiedWithLengths
-    : Gen[(Seq[T], CollType, ParSeq[T], Int)] =
+      : Gen[(Seq[T], CollType, ParSeq[T], Int)] =
     for (inst <- instances(values); s <- choose(0, inst.size);
          updateStart <- choose(0, inst.size); howMany <- choose(0, inst.size))
       yield {
@@ -66,7 +66,7 @@ abstract class ParallelSeqCheck[T](collName: String)
     }
 
   def collectionTripletsWith2Indices
-    : Gen[(Seq[T], CollType, Seq[T], Int, Int)] =
+      : Gen[(Seq[T], CollType, Seq[T], Int, Int)] =
     for (inst <- instances(values); f <- choose(0, inst.size);
          s <- choose(0, inst.size - f);
          third <- instances(values); sliceStart <- choose(0, inst.size);

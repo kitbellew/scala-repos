@@ -55,7 +55,7 @@ object MergeableStoreFactoryAlgebra {
       Then looks back up the timestamp handed from the stream and outputs with that.
    */
   def wrapOnlineFactory[K, V](supplier: MergeableStoreFactory[K, V])
-    : MergeableStoreFactory[K, (Timestamp, V)] = {
+      : MergeableStoreFactory[K, (Timestamp, V)] = {
     val mergeable: () => Mergeable[K, (Timestamp, V)] = () => {
       new WrappedTSInMergeable(supplier.mergeableStore())
     }

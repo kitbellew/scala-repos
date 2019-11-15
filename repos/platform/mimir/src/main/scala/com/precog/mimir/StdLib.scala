@@ -42,7 +42,7 @@ import scalaz.syntax.monad._
 import scalaz.syntax.apply._
 import scala.annotation.tailrec
 
-trait TableLibModule[M[+ _]] extends TableModule[M] with TransSpecModule {
+trait TableLibModule[M[+_]] extends TableModule[M] with TransSpecModule {
   type Lib <: TableLib
   implicit def M: Monad[M]
 
@@ -213,7 +213,7 @@ trait TableLibModule[M[+ _]] extends TableModule[M] with TransSpecModule {
   }
 }
 
-trait ColumnarTableLibModule[M[+ _]]
+trait ColumnarTableLibModule[M[+_]]
     extends TableLibModule[M]
     with ColumnarTableModule[M] {
   trait ColumnarTableLib extends TableLib {
@@ -318,7 +318,7 @@ trait ColumnarTableLibModule[M[+ _]]
   }
 }
 
-trait StdLibModule[M[+ _]]
+trait StdLibModule[M[+_]]
     extends InfixLibModule[M]
     with UnaryLibModule[M]
     with ArrayLibModule[M]

@@ -128,8 +128,9 @@ private[sbt] object PluginsDebug {
         }
         s"In $uri${pluginStrings.mkString}"
       }
-      val buildStrings = for ((uri, build) <- structure.units)
-        yield helpBuild(uri, build)
+      val buildStrings =
+        for ((uri, build) <- structure.units)
+          yield helpBuild(uri, build)
       buildStrings.mkString("\n")
     } else "No project is currently loaded."
 

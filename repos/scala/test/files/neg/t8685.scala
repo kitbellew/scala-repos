@@ -1,7 +1,7 @@
 @deprecated("class C is depr", since = "now")
 case class C(i: Int)
 
-case class D @deprecated("ctor D is depr", since = "now")(i: Int)
+case class D @deprecated("ctor D is depr", since = "now") (i: Int)
 
 @deprecated("class E is depr", since = "now")
 case class E(i: Int)

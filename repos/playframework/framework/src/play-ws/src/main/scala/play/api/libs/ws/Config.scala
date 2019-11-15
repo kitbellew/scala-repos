@@ -29,7 +29,7 @@ case class WSClientConfig(
   * This class creates a DefaultWSClientConfig object from the play.api.Configuration.
   */
 @Singleton
-class WSConfigParser @Inject()(
+class WSConfigParser @Inject() (
     configuration: Configuration,
     environment: Environment)
     extends Provider[WSClientConfig] {

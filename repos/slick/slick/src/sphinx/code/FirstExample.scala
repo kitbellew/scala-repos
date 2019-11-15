@@ -109,9 +109,9 @@ object FirstExample extends App {
         //#projection
         println("Coffees (concatenated by DB):")
         //#projection
-        val q1 = for (c <- coffees)
-          yield
-            LiteralColumn("  ") ++ c.name ++ "\t" ++ c.supID
+        val q1 =
+          for (c <- coffees)
+            yield LiteralColumn("  ") ++ c.name ++ "\t" ++ c.supID
               .asColumnOf[String] ++ "\t" ++ c.price
               .asColumnOf[String] ++ "\t" ++ c.sales
               .asColumnOf[String] ++ "\t" ++ c.total

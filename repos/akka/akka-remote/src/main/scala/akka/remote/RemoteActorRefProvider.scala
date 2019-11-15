@@ -318,7 +318,8 @@ private[akka] class RemoteActorRefProvider(
             case "user" ⇒ deployer.lookup(elems.drop(1))
             case "remote" ⇒ lookupRemotes(elems)
             case _ ⇒ None
-          } else None
+          }
+        else None
 
       val deployment = {
         deploy.toList ::: lookup.toList match {

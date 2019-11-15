@@ -84,7 +84,7 @@ trait PerfTestSuite extends Logging {
       pred: (List[String], PerfTest) => Boolean): Option[Tree[PerfTest]] =
     selectTest(test, pred)
 
-  protected def run[M[+ _], T: MetricSpace](
+  protected def run[M[+_], T: MetricSpace](
       test: Tree[PerfTest] = test,
       runner: PerfTestRunner[M, T],
       runs: Int = 60,

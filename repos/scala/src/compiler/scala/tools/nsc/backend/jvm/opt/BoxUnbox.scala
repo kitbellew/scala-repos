@@ -490,7 +490,7 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
       initialCreation: BoxCreation,
       boxKind: BoxKind,
       prodCons: ProdConsAnalyzer)
-    : Option[(Set[BoxCreation], Set[BoxConsumer])] = {
+      : Option[(Set[BoxCreation], Set[BoxConsumer])] = {
     var creations = Set(initialCreation)
     var consumers = Set.empty[BoxConsumer]
 

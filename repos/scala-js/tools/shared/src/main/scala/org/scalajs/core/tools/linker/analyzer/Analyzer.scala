@@ -258,8 +258,9 @@ private final class Analyzer(
       isInterface && methodInfos.values.exists(_.isReachable)
 
     lazy val (methodInfos, staticMethodInfos) = {
-      val allInfos = for (methodData <- data.methods)
-        yield (methodData.encodedName, new MethodInfo(this, methodData))
+      val allInfos =
+        for (methodData <- data.methods)
+          yield (methodData.encodedName, new MethodInfo(this, methodData))
       val (staticMethodInfos, methodInfos) = allInfos.partition(_._2.isStatic)
       (mutable.Map(methodInfos: _*), mutable.Map(staticMethodInfos: _*))
     }

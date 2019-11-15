@@ -46,7 +46,7 @@ trait JValueByteChunkTranscoders {
         })
 
       def unapply(fres: Future[HttpResponse[ByteChunk]])
-        : Future[HttpResponse[JValue]] = {
+          : Future[HttpResponse[JValue]] = {
         fres.flatMap { res =>
           res.content match {
             case Some(bc) =>

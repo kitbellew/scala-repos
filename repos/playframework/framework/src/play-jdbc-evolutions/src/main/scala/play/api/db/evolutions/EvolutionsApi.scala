@@ -80,7 +80,7 @@ trait EvolutionsApi {
   * Default implementation of the evolutions API.
   */
 @Singleton
-class DefaultEvolutionsApi @Inject()(dbApi: DBApi) extends EvolutionsApi {
+class DefaultEvolutionsApi @Inject() (dbApi: DBApi) extends EvolutionsApi {
 
   private def databaseEvolutions(name: String, schema: String) =
     new DatabaseEvolutions(dbApi.database(name), schema)
@@ -536,7 +536,7 @@ abstract class ResourceEvolutionsReader extends EvolutionsReader {
   * Read evolution files from the application environment.
   */
 @Singleton
-class EnvironmentEvolutionsReader @Inject()(environment: Environment)
+class EnvironmentEvolutionsReader @Inject() (environment: Environment)
     extends ResourceEvolutionsReader {
 
   def loadResource(db: String, revision: Int) = {

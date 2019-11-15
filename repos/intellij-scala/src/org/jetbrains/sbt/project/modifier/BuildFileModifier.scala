@@ -37,7 +37,7 @@ trait BuildFileModifier {
   protected def modifyInner(
       module: IJModule,
       vfsFileToCopy: mutable.Map[VirtualFile, LightVirtualFile])
-    : Option[List[VirtualFile]]
+      : Option[List[VirtualFile]]
 
   /**
     * Performs modification(s) of sbt build file(s) associated with the module and refreshes external system.
@@ -84,7 +84,7 @@ trait BuildFileModifier {
       project: IJProject,
       changes: List[VirtualFile],
       filesToWorkingCopies: mutable.Map[VirtualFile, LightVirtualFile])
-    : Option[List[VirtualFile]] = {
+      : Option[List[VirtualFile]] = {
     //first, create changes and set their initial status
     val fileStatusMap =
       mutable.Map[VirtualFile, (BuildFileModifiedStatus, Long)]()

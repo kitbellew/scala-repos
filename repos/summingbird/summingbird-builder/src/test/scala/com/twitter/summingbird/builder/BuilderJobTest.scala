@@ -38,7 +38,7 @@ object TestJob {
   implicit val batcher: Batcher = Batcher.ofHours(1)
 
   implicit def keyPairInjection[T](implicit toS: Injection[T, String])
-    : Injection[(T, BatchID), Array[Byte]] =
+      : Injection[(T, BatchID), Array[Byte]] =
     Injection.build[(T, BatchID), Array[Byte]] {
       case (t, batchID) =>
         (t.as[String] + ":" + batchID.as[String]).as[Array[Byte]]
@@ -51,7 +51,7 @@ object TestJob {
       } yield (t, batchID)
     }
   implicit def valPairInjection[T](implicit toS: Injection[T, String])
-    : Injection[(BatchID, T), Array[Byte]] =
+      : Injection[(BatchID, T), Array[Byte]] =
     Injection.connect[(BatchID, T), (T, BatchID), Array[Byte]]
 
   def offlineStore = VersionedStore[Long, Int]("tmp")

@@ -53,7 +53,7 @@ import org.apache.spark.storage.StorageLevel
   * @tparam Item item type
   */
 @Since("1.3.0")
-class FPGrowthModel[Item: ClassTag] @Since("1.3.0")(
+class FPGrowthModel[Item: ClassTag] @Since("1.3.0") (
     @Since("1.3.0") val freqItemsets: RDD[FreqItemset[Item]])
     extends Saveable
     with Serializable {
@@ -339,7 +339,7 @@ object FPGrowth {
     *
     */
   @Since("1.3.0")
-  class FreqItemset[Item] @Since("1.3.0")(
+  class FreqItemset[Item] @Since("1.3.0") (
       @Since("1.3.0") val items: Array[Item],
       @Since("1.3.0") val freq: Long)
       extends Serializable {

@@ -32,7 +32,7 @@ import scalaz.syntax.monad._
 import com.precog.common._
 import com.precog.common.security._
 
-class StaticAccountFinder[M[+ _]: Monad](
+class StaticAccountFinder[M[+_]: Monad](
     accountId: AccountId,
     apiKey: APIKey,
     rootPath: Option[String] = None,

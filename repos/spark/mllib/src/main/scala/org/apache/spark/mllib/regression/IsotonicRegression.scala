@@ -47,7 +47,7 @@ import org.apache.spark.sql.SQLContext
   *
   */
 @Since("1.3.0")
-class IsotonicRegressionModel @Since("1.3.0")(
+class IsotonicRegressionModel @Since("1.3.0") (
     @Since("1.3.0") val boundaries: Array[Double],
     @Since("1.3.0") val predictions: Array[Double],
     @Since("1.3.0") val isotonic: Boolean)
@@ -351,7 +351,7 @@ class IsotonicRegression private (private var isotonic: Boolean)
     *         to form a monotone sequence as per isotonic regression definition.
     */
   private def poolAdjacentViolators(input: Array[(Double, Double, Double)])
-    : Array[(Double, Double, Double)] = {
+      : Array[(Double, Double, Double)] = {
 
     if (input.isEmpty) {
       return Array.empty

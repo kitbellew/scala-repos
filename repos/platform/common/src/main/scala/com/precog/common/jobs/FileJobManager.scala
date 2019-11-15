@@ -53,7 +53,7 @@ import java.util.UUID
 import scala.collection.mutable
 
 object FileJobManager {
-  def apply[M[+ _]](workDir: File, monadM: Monad[M]): FileJobManager[M] = {
+  def apply[M[+_]](workDir: File, monadM: Monad[M]): FileJobManager[M] = {
     assert(workDir.isDirectory)
     assert(workDir.canWrite)
 
@@ -61,7 +61,7 @@ object FileJobManager {
   }
 }
 
-class FileJobManager[M[+ _]] private[FileJobManager] (
+class FileJobManager[M[+_]] private[FileJobManager] (
     workDir: File,
     monadM: Monad[M])
     extends JobManager[M]

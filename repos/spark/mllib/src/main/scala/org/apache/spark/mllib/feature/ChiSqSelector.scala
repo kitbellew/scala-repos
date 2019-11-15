@@ -43,7 +43,7 @@ import org.apache.spark.sql.{Row, SQLContext}
   * @param selectedFeatures list of indices to select (filter). Must be ordered asc
   */
 @Since("1.3.0")
-class ChiSqSelectorModel @Since("1.3.0")(
+class ChiSqSelectorModel @Since("1.3.0") (
     @Since("1.3.0") val selectedFeatures: Array[Int])
     extends VectorTransformer
     with Saveable {
@@ -189,7 +189,7 @@ object ChiSqSelectorModel extends Loader[ChiSqSelectorModel] {
   *                       select all features.
   */
 @Since("1.3.0")
-class ChiSqSelector @Since("1.3.0")(@Since("1.3.0") val numTopFeatures: Int)
+class ChiSqSelector @Since("1.3.0") (@Since("1.3.0") val numTopFeatures: Int)
     extends Serializable {
 
   /**

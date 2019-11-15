@@ -33,7 +33,7 @@ class PipeFactoryOps[+T](pipeFactory: PipeFactory[T]) {
     })
 
   def mapPipe[U](fn: (TypedPipe[(Timestamp, T)] => TypedPipe[(Timestamp, U)]))
-    : PipeFactory[U] = {
+      : PipeFactory[U] = {
     pipeFactory.map { flowProducer =>
       flowProducer.map(fn(_))
     }

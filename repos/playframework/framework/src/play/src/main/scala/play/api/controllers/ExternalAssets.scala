@@ -27,7 +27,7 @@ import java.io._
   * }}}
   *
   */
-class ExternalAssets @Inject()(environment: Environment) extends Controller {
+class ExternalAssets @Inject() (environment: Environment) extends Controller {
 
   val AbsolutePath = """^(/|[a-zA-Z]:\\).*""".r
 

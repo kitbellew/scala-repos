@@ -41,7 +41,7 @@ object WebSocket {
 
   def apply(
       f: RequestHeader => Future[Either[Result, Flow[Message, Message, _]]])
-    : WebSocket = {
+      : WebSocket = {
     new WebSocket {
       def apply(request: RequestHeader) = f(request)
     }
@@ -106,7 +106,7 @@ object WebSocket {
   object MessageFlowTransformer {
 
     implicit val identityMessageFlowTransformer
-      : MessageFlowTransformer[Message, Message] = {
+        : MessageFlowTransformer[Message, Message] = {
       new MessageFlowTransformer[Message, Message] {
         def transform(flow: Flow[Message, Message, _]) = flow
       }
@@ -116,7 +116,7 @@ object WebSocket {
       * Converts text messages to/from Strings.
       */
     implicit val stringMessageFlowTransformer
-      : MessageFlowTransformer[String, String] = {
+        : MessageFlowTransformer[String, String] = {
       new MessageFlowTransformer[String, String] {
         def transform(flow: Flow[String, String, _]) = {
           AkkaStreams.bypassWith[Message, String, Message](
@@ -136,7 +136,7 @@ object WebSocket {
       * Converts binary messages to/from ByteStrings.
       */
     implicit val byteStringMessageFlowTransformer
-      : MessageFlowTransformer[ByteString, ByteString] = {
+        : MessageFlowTransformer[ByteString, ByteString] = {
       new MessageFlowTransformer[ByteString, ByteString] {
         def transform(flow: Flow[ByteString, ByteString, _]) = {
           AkkaStreams.bypassWith[Message, ByteString, Message](
@@ -156,7 +156,7 @@ object WebSocket {
       * Converts binary messages to/from byte arrays.
       */
     implicit val byteArrayMessageFlowTransformer
-      : MessageFlowTransformer[Array[Byte], Array[Byte]] = {
+        : MessageFlowTransformer[Array[Byte], Array[Byte]] = {
       byteStringMessageFlowTransformer.map(_.toArray, ByteString.apply)
     }
 
@@ -164,7 +164,7 @@ object WebSocket {
       * Converts messages to/from JsValue
       */
     implicit val jsonMessageFlowTransformer
-      : MessageFlowTransformer[JsValue, JsValue] = {
+        : MessageFlowTransformer[JsValue, JsValue] = {
       def closeOnException[T](block: => T) =
         try {
           Left(block)
@@ -197,7 +197,7 @@ object WebSocket {
       * serialised to JSON.
       */
     def jsonMessageFlowTransformer[In: Reads, Out: Writes]
-      : MessageFlowTransformer[In, Out] = {
+        : MessageFlowTransformer[In, Out] = {
       jsonMessageFlowTransformer.map(
         json =>
           Json

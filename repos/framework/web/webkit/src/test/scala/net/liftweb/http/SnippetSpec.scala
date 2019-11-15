@@ -100,8 +100,9 @@ object SnippetSpec extends Specification with XmlMatchers {
         S.mapSnippetsWith("foo" -> ((a: NodeSeq) => a)) {
           for {
             s <- S.session
-          } yield
-            s.processSurroundAndInclude("test", <lift:foo>{res}</lift:foo>)
+          } yield s.processSurroundAndInclude(
+            "test",
+            <lift:foo>{res}</lift:foo>)
         }
       }
 
@@ -150,10 +151,9 @@ object SnippetSpec extends Specification with XmlMatchers {
         S.mapSnippetsWith("foo" -> testAttrs _) {
           for {
             s <- S.session
-          } yield
-            s.processSurroundAndInclude(
-              "test",
-              <div class="l:foo?bing=bong?fuzz=faz+snark?noodle=FatPoodle" />)
+          } yield s.processSurroundAndInclude(
+            "test",
+            <div class="l:foo?bing=bong?fuzz=faz+snark?noodle=FatPoodle" />)
         }
       }
 
@@ -174,10 +174,9 @@ object SnippetSpec extends Specification with XmlMatchers {
         S.mapSnippetsWith("foo" -> testAttrs _) {
           for {
             s <- S.session
-          } yield
-            s.processSurroundAndInclude(
-              "test",
-              <div class="l:foo?bing=bong;fuzz=faz+snark;noodle=FatPoodle" />)
+          } yield s.processSurroundAndInclude(
+            "test",
+            <div class="l:foo?bing=bong;fuzz=faz+snark;noodle=FatPoodle" />)
         }
       }
 
@@ -220,10 +219,9 @@ object SnippetSpec extends Specification with XmlMatchers {
         S.mapSnippetsWith("foo" -> testAttrs _) {
           for {
             s <- S.session
-          } yield
-            s.processSurroundAndInclude(
-              "test",
-              <div class="l:foo?bing=bong?fuzz=faz+snark;noodle=FatPoodle" />)
+          } yield s.processSurroundAndInclude(
+            "test",
+            <div class="l:foo?bing=bong?fuzz=faz+snark;noodle=FatPoodle" />)
         }
       }
 
@@ -279,8 +277,9 @@ object SnippetSpec extends Specification with XmlMatchers {
         S.mapSnippetsWith("foo" -> ChangeVar.foo _) {
           for {
             s <- S.session
-          } yield
-            s.processSurroundAndInclude("test", <lift:foo>{res}</lift:foo>)
+          } yield s.processSurroundAndInclude(
+            "test",
+            <lift:foo>{res}</lift:foo>)
         }
       }
 
@@ -295,8 +294,9 @@ object SnippetSpec extends Specification with XmlMatchers {
         S.mapSnippetsWith("foo" -> ChangeVar.foo _) {
           for {
             s <- S.session
-          } yield
-            s.processSurroundAndInclude("test", <lift:foo>{res}</lift:foo>)
+          } yield s.processSurroundAndInclude(
+            "test",
+            <lift:foo>{res}</lift:foo>)
         }
       }
 
@@ -310,8 +310,9 @@ object SnippetSpec extends Specification with XmlMatchers {
         S.mapSnippetsWith("foo" -> Funky.foo _) {
           for {
             s <- S.session
-          } yield
-            s.processSurroundAndInclude("test", <lift:foo>{res}</lift:foo>)
+          } yield s.processSurroundAndInclude(
+            "test",
+            <lift:foo>{res}</lift:foo>)
         }
       }
 
@@ -326,8 +327,9 @@ object SnippetSpec extends Specification with XmlMatchers {
         S.mapSnippetsWith("foo" -> Funky.foo _) {
           for {
             s <- S.session
-          } yield
-            s.processSurroundAndInclude("test", <lift:foo>{res}</lift:foo>)
+          } yield s.processSurroundAndInclude(
+            "test",
+            <lift:foo>{res}</lift:foo>)
         }
       }
 
@@ -399,10 +401,9 @@ object SnippetSpec extends Specification with XmlMatchers {
         S.mapSnippetsWith("foo" -> ChangeVar.foo _) {
           for {
             s <- S.session
-          } yield
-            s.processSurroundAndInclude(
-              "test",
-              <div class="l:foo?eager_eval=true">a<lift:foo>b</lift:foo></div>)
+          } yield s.processSurroundAndInclude(
+            "test",
+            <div class="l:foo?eager_eval=true">a<lift:foo>b</lift:foo></div>)
         }
         myInfo.is must_== "ab"
       }

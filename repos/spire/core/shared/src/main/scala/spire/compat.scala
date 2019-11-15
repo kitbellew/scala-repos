@@ -21,7 +21,7 @@ import spire.math.{
 
 private[spire] trait CompatPriority1 {
   implicit def numeric[A: Ring: ConvertableFrom: Signed: Order]
-    : scala.math.Numeric[A] =
+      : scala.math.Numeric[A] =
     new ScalaNumericWrapper[A] {
       val partialOrder = PartialOrder[A]
       val order = Order[A]
@@ -48,7 +48,7 @@ private[spire] trait CompatPriority1 {
 
 private[spire] trait CompatPriority2 extends CompatPriority1 {
   implicit def fractional[A: Field: ConvertableFrom: Signed: Order]
-    : scala.math.Fractional[A] =
+      : scala.math.Fractional[A] =
     new ScalaFractionalWrapper[A] {
       val order = Order[A]
       val structure = Field[A]
@@ -59,7 +59,7 @@ private[spire] trait CompatPriority2 extends CompatPriority1 {
 
 private[spire] trait CompatPriority3 extends CompatPriority2 {
   implicit def integral[A: EuclideanRing: ConvertableFrom: Signed: Order]
-    : scala.math.Integral[A] =
+      : scala.math.Integral[A] =
     new ScalaIntegralWrapper[A] {
       val order = Order[A]
       val structure = EuclideanRing[A]

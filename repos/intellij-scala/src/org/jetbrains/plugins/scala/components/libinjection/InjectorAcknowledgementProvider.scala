@@ -21,7 +21,7 @@ trait InjectorAcknowledgementProvider {
   def askGlobalInjectorEnable(acceptCallback: => Any)
 
   def showReviewDialogAndFilter(candidates: ManifestToDescriptors)
-    : (ManifestToDescriptors, ManifestToDescriptors)
+      : (ManifestToDescriptors, ManifestToDescriptors)
 }
 
 // enable injector loading in tests, accept all injectors

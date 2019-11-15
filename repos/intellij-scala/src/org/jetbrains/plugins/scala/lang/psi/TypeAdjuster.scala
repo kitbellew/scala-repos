@@ -244,7 +244,7 @@ object TypeAdjuster extends ApplicationAdapter {
   private def collectImportHolders(
       rInfos: Set[ReplacementInfo]): Map[ReplacementInfo, ScImportsHolder] = {
     def findMaxHolders(infos: Set[ReplacementInfo])
-      : Set[(ReplacementInfo, ScImportsHolder)] = {
+        : Set[(ReplacementInfo, ScImportsHolder)] = {
       val infosToHolders = infos.map(
         info =>
           info -> ScalaImportTypeFix

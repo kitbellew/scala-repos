@@ -18,13 +18,13 @@ sealed trait TupleInstances0 {
   implicit def tuple5Functor[A1, A2, A3, A4]: Traverse[(A1, A2, A3, A4, ?)] =
     new Tuple5Functor[A1, A2, A3, A4] {}
   implicit def tuple6Functor[A1, A2, A3, A4, A5]
-    : Traverse[(A1, A2, A3, A4, A5, ?)] =
+      : Traverse[(A1, A2, A3, A4, A5, ?)] =
     new Tuple6Functor[A1, A2, A3, A4, A5] {}
   implicit def tuple7Functor[A1, A2, A3, A4, A5, A6]
-    : Traverse[(A1, A2, A3, A4, A5, A6, ?)] =
+      : Traverse[(A1, A2, A3, A4, A5, A6, ?)] =
     new Tuple7Functor[A1, A2, A3, A4, A5, A6] {}
   implicit def tuple8Functor[A1, A2, A3, A4, A5, A6, A7]
-    : Traverse[(A1, A2, A3, A4, A5, A6, A7, ?)] =
+      : Traverse[(A1, A2, A3, A4, A5, A6, A7, ?)] =
     new Tuple8Functor[A1, A2, A3, A4, A5, A6, A7] {}
 }
 
@@ -144,12 +144,12 @@ sealed trait TupleInstances1 extends TupleInstances0 {
 
   /** `Tuple1[A]` is isomorphic to `Id[X]` */
   implicit val tuple1Instance
-    : Traverse[Tuple1] with Monad[Tuple1] with Comonad[Tuple1] = new Tuple1Monad
-  with Tuple1Functor with Comonad[Tuple1] {
-    override def cojoin[A](a: Tuple1[A]) = Tuple1(a)
-    def copoint[A](p: Tuple1[A]) = p._1
-    def cobind[A, B](fa: Tuple1[A])(f: Tuple1[A] => B) = Tuple1(f(fa))
-  }
+      : Traverse[Tuple1] with Monad[Tuple1] with Comonad[Tuple1] =
+    new Tuple1Monad with Tuple1Functor with Comonad[Tuple1] {
+      override def cojoin[A](a: Tuple1[A]) = Tuple1(a)
+      def copoint[A](p: Tuple1[A]) = p._1
+      def cobind[A, B](fa: Tuple1[A])(f: Tuple1[A] => B) = Tuple1(f(fa))
+    }
 
   /** Product BindRec */
   implicit def tuple2BindRec[A1: Semigroup]: BindRec[(A1, ?)] =
@@ -157,12 +157,12 @@ sealed trait TupleInstances1 extends TupleInstances0 {
       def _1 = implicitly
     }
   implicit def tuple3BindRec[A1: Semigroup, A2: Semigroup]
-    : BindRec[(A1, A2, ?)] = new Tuple3BindRec[A1, A2] {
+      : BindRec[(A1, A2, ?)] = new Tuple3BindRec[A1, A2] {
     def _1 = implicitly
     def _2 = implicitly
   }
   implicit def tuple4BindRec[A1: Semigroup, A2: Semigroup, A3: Semigroup]
-    : BindRec[(A1, A2, A3, ?)] =
+      : BindRec[(A1, A2, A3, ?)] =
     new Tuple4BindRec[A1, A2, A3] {
       def _1 = implicitly
       def _2 = implicitly
@@ -621,10 +621,10 @@ sealed trait TupleInstances2 extends TupleInstances1 {
   implicit def tuple6Cozip[A1, A2, A3, A4, A5]: Cozip[(A1, A2, A3, A4, A5, ?)] =
     new Tuple6Cozip[A1, A2, A3, A4, A5] {}
   implicit def tuple7Cozip[A1, A2, A3, A4, A5, A6]
-    : Cozip[(A1, A2, A3, A4, A5, A6, ?)] =
+      : Cozip[(A1, A2, A3, A4, A5, A6, ?)] =
     new Tuple7Cozip[A1, A2, A3, A4, A5, A6] {}
   implicit def tuple8Cozip[A1, A2, A3, A4, A5, A6, A7]
-    : Cozip[(A1, A2, A3, A4, A5, A6, A7, ?)] =
+      : Cozip[(A1, A2, A3, A4, A5, A6, A7, ?)] =
     new Tuple8Cozip[A1, A2, A3, A4, A5, A6, A7] {}
 
   implicit def tuple2Monad[A1](implicit A1: Monoid[A1]): Monad[(A1, ?)] =

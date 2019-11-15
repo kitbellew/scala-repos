@@ -128,7 +128,7 @@ trait OpenIdClient {
 }
 
 @Singleton
-class WsOpenIdClient @Inject()(ws: WSClient, discovery: Discovery)
+class WsOpenIdClient @Inject() (ws: WSClient, discovery: Discovery)
     extends OpenIdClient {
 
   /**
@@ -263,7 +263,7 @@ trait Discovery {
   *   * The Discovery doesn't support XRIs at the moment
   */
 @Singleton
-class WsDiscovery @Inject()(ws: WSClient) extends Discovery {
+class WsDiscovery @Inject() (ws: WSClient) extends Discovery {
   import Discovery._
 
   case class UrlIdentifier(url: String) {

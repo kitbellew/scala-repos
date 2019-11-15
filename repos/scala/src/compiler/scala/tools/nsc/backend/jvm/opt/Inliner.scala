@@ -866,7 +866,7 @@ class Inliner[BT <: BTypes](val btypes: BT) {
       instructions: InsnList,
       calleeDeclarationClass: ClassBType,
       destinationClass: ClassBType)
-    : Option[(AbstractInsnNode, Option[OptimizerWarning])] = {
+      : Option[(AbstractInsnNode, Option[OptimizerWarning])] = {
 
     /**
       * Check if `instruction` can be transplanted to `destinationClass`.
@@ -922,7 +922,7 @@ class Inliner[BT <: BTypes](val btypes: BT) {
                 methodFlags: Int,
                 methodDeclClass: ClassBType,
                 methodRefClass: ClassBType)
-              : Either[OptimizerWarning, Boolean] = {
+                : Either[OptimizerWarning, Boolean] = {
               opcode match {
                 case INVOKESPECIAL
                     if mi.name != GenBCode.INSTANCE_CONSTRUCTOR_NAME =>

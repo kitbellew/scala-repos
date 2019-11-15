@@ -117,7 +117,7 @@ class CounterOps_IntTest
 
   val N = 30
   def genTriple
-    : Arbitrary[(Counter[Int, Int], Counter[Int, Int], Counter[Int, Int])] = {
+      : Arbitrary[(Counter[Int, Int], Counter[Int, Int], Counter[Int, Int])] = {
     implicitly
   }
 

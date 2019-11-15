@@ -162,7 +162,7 @@ class BaseReplicationClient(
     getAll(Seq(key)) map { _.values.head }
 
   def getAll(keys: Iterable[String])
-    : Future[Map[String, ReplicationStatus[Option[Buf]]]] = {
+      : Future[Map[String, ReplicationStatus[Option[Buf]]]] = {
     val keySet = keys.toSet
     Future.collect(clients map { _.getResult(keySet) }) map {
       results: Seq[GetResult] =>

@@ -94,12 +94,12 @@ object Fault {
   case class Error(pos: Option[FaultPosition], message: String) extends Fault
 }
 
-trait ShardQueryExecutorPlatform[M[+ _]]
+trait ShardQueryExecutorPlatform[M[+_]]
     extends ParseEvalStack[M]
     with XLightWebHttpClientModule[M] {
   case class StackException(error: StackError) extends Exception(error.toString)
 
-  abstract class ShardQueryExecutor[N[+ _]](N0: Monad[N])(
+  abstract class ShardQueryExecutor[N[+_]](N0: Monad[N])(
       implicit mn: M ~> N,
       nm: N ~> M)
       extends Evaluator[N](N0)
@@ -133,7 +133,7 @@ trait ShardQueryExecutorPlatform[M[+ _]]
         query: String,
         evaluationContext: EvaluationContext,
         opts: QueryOptions)
-      : EitherT[N, EvaluationError, (Set[Fault], StreamT[N, Slice])] = {
+        : EitherT[N, EvaluationError, (Set[Fault], StreamT[N, Slice])] = {
       import trans.constants._
 
       val qid = yggConfig.queryId.getAndIncrement()

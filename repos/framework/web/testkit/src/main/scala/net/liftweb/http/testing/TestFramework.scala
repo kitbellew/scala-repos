@@ -129,8 +129,9 @@ trait BaseGetPoster {
 
   protected def slurpApacheHeaders(
       in: Array[Header]): Map[String, List[String]] = {
-    val headerSet: List[(String, String)] = for (e <- in.toList)
-      yield (e.getName -> e.getValue)
+    val headerSet: List[(String, String)] =
+      for (e <- in.toList)
+        yield (e.getName -> e.getValue)
 
     headerSet.foldLeft[Map[String, List[String]]](Map.empty)((acc, e) =>
       acc + (e._1 -> (e._2 :: acc.getOrElse(e._1, Nil))))
@@ -149,7 +150,7 @@ trait BaseGetPoster {
       headers: List[(String, String)],
       faux_params: (String, Any)*)(
       implicit capture: (String, HttpClient, HttpMethodBase) => ResponseType)
-    : ResponseType = {
+      : ResponseType = {
     val params = faux_params.toList.map(x => (x._1, x._2.toString))
     val fullUrl =
       url +
@@ -178,7 +179,7 @@ trait BaseGetPoster {
       headers: List[(String, String)],
       faux_params: (String, Any)*)(
       implicit capture: (String, HttpClient, HttpMethodBase) => ResponseType)
-    : ResponseType = {
+      : ResponseType = {
     val params = faux_params.toList.map(x => (x._1, x._2.toString))
     val fullUrl =
       url +
@@ -207,7 +208,7 @@ trait BaseGetPoster {
       headers: List[(String, String)],
       faux_params: (String, Any)*)(
       implicit capture: (String, HttpClient, HttpMethodBase) => ResponseType)
-    : ResponseType = {
+      : ResponseType = {
     val params = faux_params.toList.map(x => (x._1, x._2.toString))
     val poster = new PostMethod(baseUrl + url)
     poster.getParams().setCookiePolicy(CookiePolicy.RFC_2965)
@@ -284,7 +285,7 @@ trait BaseGetPoster {
       body: Array[Byte],
       contentType: String)(
       implicit capture: (String, HttpClient, HttpMethodBase) => ResponseType)
-    : ResponseType = {
+      : ResponseType = {
     val poster = new PostMethod(baseUrl + url)
     poster.getParams().setCookiePolicy(CookiePolicy.RFC_2965)
     for ((name, value) <- headers) poster.setRequestHeader(name, value)
@@ -312,7 +313,7 @@ trait BaseGetPoster {
     */
   def put(url: String, httpClient: HttpClient, headers: List[(String, String)])(
       implicit capture: (String, HttpClient, HttpMethodBase) => ResponseType)
-    : ResponseType = {
+      : ResponseType = {
     val poster = new PutMethod(baseUrl + url)
     poster.getParams().setCookiePolicy(CookiePolicy.RFC_2965)
     for ((name, value) <- headers) poster.setRequestHeader(name, value)
@@ -357,7 +358,7 @@ trait BaseGetPoster {
       body: Array[Byte],
       contentType: String)(
       implicit capture: (String, HttpClient, HttpMethodBase) => ResponseType)
-    : ResponseType = {
+      : ResponseType = {
     val poster = new PutMethod(baseUrl + url)
     poster.getParams().setCookiePolicy(CookiePolicy.RFC_2965)
     for ((name, value) <- headers) poster.setRequestHeader(name, value)
@@ -401,7 +402,7 @@ trait GetPosterHelper { self: BaseGetPoster =>
     */
   def get(url: String, params: (String, Any)*)(
       implicit capture: (String, HttpClient, HttpMethodBase) => ResponseType)
-    : ResponseType =
+      : ResponseType =
     get(url, theHttpClient, Nil, params: _*)(capture)
 
   /**
@@ -412,7 +413,7 @@ trait GetPosterHelper { self: BaseGetPoster =>
     */
   def delete(url: String, params: (String, Any)*)(
       implicit capture: (String, HttpClient, HttpMethodBase) => ResponseType)
-    : ResponseType =
+      : ResponseType =
     delete(url, theHttpClient, Nil, params: _*)(capture)
 
   /**
@@ -423,7 +424,7 @@ trait GetPosterHelper { self: BaseGetPoster =>
     */
   def post(url: String, params: (String, Any)*)(
       implicit capture: (String, HttpClient, HttpMethodBase) => ResponseType)
-    : ResponseType =
+      : ResponseType =
     post(url, theHttpClient, Nil, params: _*)(capture)
 
   /**
@@ -446,7 +447,7 @@ trait GetPosterHelper { self: BaseGetPoster =>
     */
   def post(url: String, body: Array[Byte], contentType: String)(
       implicit capture: (String, HttpClient, HttpMethodBase) => ResponseType)
-    : ResponseType =
+      : ResponseType =
     post(url, theHttpClient, Nil, body, contentType)(capture)
 
   /**
@@ -469,7 +470,7 @@ trait GetPosterHelper { self: BaseGetPoster =>
     */
   def put(url: String, body: Array[Byte], contentType: String)(
       implicit capture: (String, HttpClient, HttpMethodBase) => ResponseType)
-    : ResponseType =
+      : ResponseType =
     put(url, theHttpClient, Nil, body, contentType)(capture)
 }
 

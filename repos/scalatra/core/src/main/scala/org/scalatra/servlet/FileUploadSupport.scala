@@ -207,7 +207,7 @@ trait FileUploadSupport extends ServletBase with HasMultipartConfig {
     *         of all multipart files submitted with the request
     */
   def fileParams(implicit request: HttpServletRequest)
-    : MultiMapHeadView[String, FileItem] = {
+      : MultiMapHeadView[String, FileItem] = {
     new MultiMapHeadView[String, FileItem] {
       protected def multiMap = fileMultiParams
     }

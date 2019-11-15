@@ -42,7 +42,7 @@ import org.apache.spark.util.Utils
   * @param algo algorithm type -- classification or regression
   */
 @Since("1.0.0")
-class DecisionTreeModel @Since("1.0.0")(
+class DecisionTreeModel @Since("1.0.0") (
     @Since("1.0.0") val topNode: Node,
     @Since("1.0.0") val algo: Algo)
     extends Serializable

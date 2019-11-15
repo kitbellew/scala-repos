@@ -343,7 +343,7 @@ abstract class MapKeyValueConverter[K, V](parent: CollectionConverter[(K, V)])
   val valueConverter: TupleFieldConverter[V]
 
   override lazy val delegate: TupleFieldConverter[(K, V)] = new GroupConverter
-  with TupleFieldConverter[(K, V)] {
+    with TupleFieldConverter[(K, V)] {
     override def currentValue: (K, V) =
       (keyConverter.currentValue, valueConverter.currentValue)
 

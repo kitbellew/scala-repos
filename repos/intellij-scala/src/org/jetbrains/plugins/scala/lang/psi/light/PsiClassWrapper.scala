@@ -206,7 +206,7 @@ class PsiClassWrapper(
   }
 
   def getAllMethodsAndTheirSubstitutors
-    : util.List[Pair[PsiMethod, PsiSubstitutor]] = {
+      : util.List[Pair[PsiMethod, PsiSubstitutor]] = {
     PsiClassImplUtil.getAllWithSubstitutorsByMap(this, MemberType.METHOD)
   }
 

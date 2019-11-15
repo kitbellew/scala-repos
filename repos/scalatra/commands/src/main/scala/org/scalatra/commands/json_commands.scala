@@ -14,11 +14,11 @@ trait JsonBindingImplicits
     with JsonImplicitConversions {
 
   implicit def jsonToDateTime(implicit df: DateParser = JodaDateFormats.Web)
-    : TypeConverter[JValue, DateTime] =
+      : TypeConverter[JValue, DateTime] =
     safeOption(_.extractOpt[String].flatMap(df.parse))
 
   implicit def jsonToDate(implicit df: DateParser = JodaDateFormats.Web)
-    : TypeConverter[JValue, Date] =
+      : TypeConverter[JValue, Date] =
     safeOption(_.extractOpt[String].flatMap(df.parse).map(_.toDate))
 }
 

@@ -80,14 +80,14 @@ object MergePreferred {
     * Create a new `MergePreferred` stage with the specified output type.
     */
   def create[T](secondaryPorts: Int)
-    : Graph[scaladsl.MergePreferred.MergePreferredShape[T], NotUsed] =
+      : Graph[scaladsl.MergePreferred.MergePreferredShape[T], NotUsed] =
     scaladsl.MergePreferred(secondaryPorts)
 
   /**
     * Create a new `MergePreferred` stage with the specified output type.
     */
   def create[T](clazz: Class[T], secondaryPorts: Int)
-    : Graph[scaladsl.MergePreferred.MergePreferredShape[T], NotUsed] =
+      : Graph[scaladsl.MergePreferred.MergePreferredShape[T], NotUsed] =
     create(secondaryPorts)
 
   /**
@@ -97,7 +97,7 @@ object MergePreferred {
     *                   finish as soon as one of its inputs completes
     */
   def create[T](secondaryPorts: Int, eagerComplete: Boolean)
-    : Graph[scaladsl.MergePreferred.MergePreferredShape[T], NotUsed] =
+      : Graph[scaladsl.MergePreferred.MergePreferredShape[T], NotUsed] =
     scaladsl.MergePreferred(secondaryPorts, eagerComplete = eagerComplete)
 
   /**
@@ -107,7 +107,7 @@ object MergePreferred {
     *                   finish as soon as one of its inputs completes
     */
   def create[T](clazz: Class[T], secondaryPorts: Int, eagerComplete: Boolean)
-    : Graph[scaladsl.MergePreferred.MergePreferredShape[T], NotUsed] =
+      : Graph[scaladsl.MergePreferred.MergePreferredShape[T], NotUsed] =
     create(secondaryPorts, eagerComplete)
 }
 
@@ -177,7 +177,7 @@ object Partition {
     * @param partitioner function deciding which output each element will be targeted
     */
   def create[T](outputCount: Int, partitioner: function.Function[T, Int])
-    : Graph[UniformFanOutShape[T, T], NotUsed] =
+      : Graph[UniformFanOutShape[T, T], NotUsed] =
     scaladsl.Partition(outputCount, partitioner = (t: T) ⇒ partitioner.apply(t))
 
   /**
@@ -190,7 +190,7 @@ object Partition {
       clazz: Class[T],
       outputCount: Int,
       partitioner: function.Function[T, Int])
-    : Graph[UniformFanOutShape[T, T], NotUsed] =
+      : Graph[UniformFanOutShape[T, T], NotUsed] =
     create(outputCount, partitioner)
 }
 
@@ -216,7 +216,7 @@ object Balance {
     *   elements to downstream outputs until all of them have requested at least one element
     */
   def create[T](outputCount: Int, waitForAllDownstreams: Boolean)
-    : Graph[UniformFanOutShape[T, T], NotUsed] =
+      : Graph[UniformFanOutShape[T, T], NotUsed] =
     scaladsl.Balance(outputCount, waitForAllDownstreams)
 
   /**
@@ -243,7 +243,7 @@ object Balance {
       clazz: Class[T],
       outputCount: Int,
       waitForAllDownstreams: Boolean)
-    : Graph[UniformFanOutShape[T, T], NotUsed] =
+      : Graph[UniformFanOutShape[T, T], NotUsed] =
     create(outputCount, waitForAllDownstreams)
 }
 

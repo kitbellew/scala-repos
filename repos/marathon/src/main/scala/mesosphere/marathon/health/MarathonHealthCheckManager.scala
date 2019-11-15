@@ -35,7 +35,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
 
-class MarathonHealthCheckManager @Inject()(
+class MarathonHealthCheckManager @Inject() (
     system: ActorSystem,
     scheduler: MarathonScheduler,
     driverHolder: MarathonSchedulerDriverHolder,
@@ -50,7 +50,7 @@ class MarathonHealthCheckManager @Inject()(
       actor: ActorRef)
 
   protected[this] var appHealthChecks
-    : RWLock[mutable.Map[PathId, Map[Timestamp, Set[ActiveHealthCheck]]]] =
+      : RWLock[mutable.Map[PathId, Map[Timestamp, Set[ActiveHealthCheck]]]] =
     RWLock(
       mutable.Map.empty
         .withDefaultValue(Map.empty.withDefaultValue(Set.empty)))

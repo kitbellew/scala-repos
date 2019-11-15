@@ -12,7 +12,7 @@ package simple {
   import play.api.mvc._
   import scala.concurrent.{ExecutionContext, Future}
 
-  class LoggingFilter @Inject()(
+  class LoggingFilter @Inject() (
       implicit val mat: Materializer,
       ec: ExecutionContext)
       extends Filter {
@@ -45,7 +45,7 @@ package httpfilters {
   import play.api.http.HttpFilters
   import play.filters.gzip.GzipFilter
 
-  class Filters @Inject()(
+  class Filters @Inject() (
       gzip: GzipFilter,
       log: LoggingFilter
   ) extends HttpFilters {

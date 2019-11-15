@@ -45,7 +45,7 @@ sealed trait CPathTraversal { self =>
       cpaths: List[CPath],
       left: Map[CPath, Set[Column]],
       optRight: Option[Map[CPath, Set[Column]]] = None)
-    : spire.math.Order[Int] = {
+      : spire.math.Order[Int] = {
     val right = optRight getOrElse left
 
     def plan0(

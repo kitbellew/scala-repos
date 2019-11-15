@@ -29,7 +29,7 @@ trait ParSet[T]
   override def empty: ParSet[T] = ParHashSet[T]()
 
   override def companion
-    : GenericCompanion[ParSet] with GenericParCompanion[ParSet] = ParSet
+      : GenericCompanion[ParSet] with GenericParCompanion[ParSet] = ParSet
 
   override def stringPrefix = "ParSet"
 

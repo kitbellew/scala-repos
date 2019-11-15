@@ -266,7 +266,7 @@ object ExecuteRequest {
   }
 
   def unapply(executeRequest: ExecuteRequest)
-    : Option[(Int, IndexedSeq[Parameter], Boolean, Byte)] = {
+      : Option[(Int, IndexedSeq[Parameter], Boolean, Byte)] = {
     Some(
       (
         executeRequest.stmtId,

@@ -802,7 +802,7 @@ object Project extends ProjectExtra {
   }
   def relation(structure: BuildStructure, actual: Boolean)(
       implicit display: Show[ScopedKey[_]])
-    : Relation[ScopedKey[_], ScopedKey[_]] =
+      : Relation[ScopedKey[_], ScopedKey[_]] =
     relation(structure.settings, actual)(
       structure.delegates,
       structure.scopeLocal,

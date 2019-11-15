@@ -59,7 +59,7 @@ object HttpHeader {
       name: String,
       value: String,
       settings: HeaderParser.Settings = HeaderParser.DefaultSettings)
-    : ParsingResult =
+      : ParsingResult =
     if (name.forall(CharacterClasses.tchar)) {
       import akka.parboiled2.Parser.DeliveryScheme.Try
       val parser = new HeaderParser(value, settings)

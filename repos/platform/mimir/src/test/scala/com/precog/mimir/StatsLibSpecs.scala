@@ -37,7 +37,7 @@ class AlmostEqual(d: Double) {
   def ~=(d2: Double)(implicit p: Precision) = (d - d2).abs <= p.p
 }
 
-trait StatsLibSpecs[M[+ _]]
+trait StatsLibSpecs[M[+_]]
     extends Specification
     with EvaluatorTestSupport[M]
     with LongIdMemoryDatasetConsumer[M] {

@@ -59,7 +59,7 @@ private[akka] class Mailboxes(
     def systemEnqueue(receiver: ActorRef, handle: SystemMessage): Unit =
       deadLetters ! DeadLetter(handle, receiver, receiver)
     def systemDrain(newContents: LatestFirstSystemMessageList)
-      : EarliestFirstSystemMessageList = SystemMessageList.ENil
+        : EarliestFirstSystemMessageList = SystemMessageList.ENil
     def hasSystemMessages = false
   }
 

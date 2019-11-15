@@ -119,7 +119,7 @@ object ScaladocAction {
     override def checkConfiguration() {}
 
     override def getConfigurationEditor
-      : SettingsEditor[_ <: ScaladocRunConfiguration] =
+        : SettingsEditor[_ <: ScaladocRunConfiguration] =
       new SettingsEditor[ScaladocRunConfiguration]() {
         override def createEditor(): JComponent = dialog.createCenterPanel()
 

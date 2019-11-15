@@ -49,7 +49,7 @@ class ConsumerFetcherManager(
       config.clientId,
       config.numConsumerFetchers) {
   private var partitionMap
-    : immutable.Map[TopicAndPartition, PartitionTopicInfo] = null
+      : immutable.Map[TopicAndPartition, PartitionTopicInfo] = null
   private var cluster: Cluster = null
   private val noLeaderPartitionSet = new mutable.HashSet[TopicAndPartition]
   private val lock = new ReentrantLock

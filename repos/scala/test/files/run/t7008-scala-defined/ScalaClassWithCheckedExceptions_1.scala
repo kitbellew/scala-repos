@@ -1,5 +1,5 @@
 class ScalaClassWithCheckedExceptions_1[E1 <: Exception] @throws[
-  NullPointerException]("")() {
+  NullPointerException]("") () {
   @throws[E1]("")
   def bar() {}
   @throws[IllegalStateException]("")

@@ -115,7 +115,7 @@ trait LabelledProductTypeClassCompanion[C[_]] extends Serializable {
       implicit ch: Lazy[C[HV]],
       key: Witness.Aux[HK],
       ct: Lazy[Wrap[TKV] { type V <: HList }])
-    : Wrap.Aux[FieldType[HK, HV] :: TKV, HV :: ct.value.V] =
+      : Wrap.Aux[FieldType[HK, HV] :: TKV, HV :: ct.value.V] =
     new Wrap[FieldType[HK, HV] :: TKV] {
       type V = HV :: ct.value.V
       val unwrap = typeClass.product(key.value.name, ch.value, ct.value.unwrap)
@@ -203,7 +203,7 @@ trait LabelledTypeClassCompanion[C[_]]
       implicit ch: Lazy[C[HV]],
       key: Witness.Aux[HK],
       ct: Lazy[Wrap[TKV] { type V <: Coproduct }])
-    : Wrap.Aux[FieldType[HK, HV] :+: TKV, HV :+: ct.value.V] =
+      : Wrap.Aux[FieldType[HK, HV] :+: TKV, HV :+: ct.value.V] =
     new Wrap[FieldType[HK, HV] :+: TKV] {
       type V = HV :+: ct.value.V
       val unwrap =

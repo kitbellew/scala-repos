@@ -52,7 +52,7 @@ trait ProvenanceChecker extends parser.AST with Binder {
         right: Expr,
         relations: Map[Provenance, Set[Provenance]],
         constraints: Map[Provenance, Expr])
-      : (Provenance, (Set[Error], Set[ProvConstraint])) = {
+        : (Provenance, (Set[Error], Set[ProvConstraint])) = {
 
       val (leftErrors, leftConstr) = loop(left, relations, constraints)
       val (rightErrors, rightConstr) = loop(right, relations, constraints)
@@ -99,7 +99,7 @@ trait ProvenanceChecker extends parser.AST with Binder {
         values: Vector[Expr],
         relations: Map[Provenance, Set[Provenance]],
         constraints: Map[Provenance, Expr])
-      : (Provenance, (Set[Error], Set[ProvConstraint])) = {
+        : (Provenance, (Set[Error], Set[ProvConstraint])) = {
 
       val (errorsVec, constrVec) = values map {
         loop(_, relations, constraints)
@@ -195,7 +195,7 @@ trait ProvenanceChecker extends parser.AST with Binder {
         right: Expr,
         relations: Map[Provenance, Set[Provenance]],
         constraints: Map[Provenance, Expr])
-      : (Provenance, (Set[Error], Set[ProvConstraint])) = {
+        : (Provenance, (Set[Error], Set[ProvConstraint])) = {
 
       val (predErrors, predConstr) = loop(pred, relations, constraints)
       val (leftErrors, leftConstr) = loop(left, relations, constraints)
@@ -238,7 +238,7 @@ trait ProvenanceChecker extends parser.AST with Binder {
         right: Expr,
         relations: Map[Provenance, Set[Provenance]],
         constraints: Map[Provenance, Expr])
-      : (Provenance, (Set[Error], Set[ProvConstraint])) = {
+        : (Provenance, (Set[Error], Set[ProvConstraint])) = {
 
       val (leftErrors, leftConstr) = loop(left, relations, constraints)
       val (rightErrors, rightConstr) = loop(right, relations, constraints)
@@ -300,7 +300,7 @@ trait ProvenanceChecker extends parser.AST with Binder {
         right: Expr,
         relations: Map[Provenance, Set[Provenance]],
         constraints: Map[Provenance, Expr])
-      : (Provenance, (Set[Error], Set[ProvConstraint])) = {
+        : (Provenance, (Set[Error], Set[ProvConstraint])) = {
 
       val (leftErrors, leftConstr) = loop(left, relations, constraints)
       val (rightErrors, rightConstr) = loop(right, relations, constraints)
@@ -383,7 +383,7 @@ trait ProvenanceChecker extends parser.AST with Binder {
         right: Expr,
         relations: Map[Provenance, Set[Provenance]],
         constraints: Map[Provenance, Expr])
-      : (Provenance, (Set[Error], Set[ProvConstraint])) = {
+        : (Provenance, (Set[Error], Set[ProvConstraint])) = {
 
       val (leftErrors, leftConstr) = loop(left, relations, constraints)
       val (rightErrors, rightConstr) = loop(right, relations, constraints)
@@ -457,7 +457,7 @@ trait ProvenanceChecker extends parser.AST with Binder {
         expr: Expr,
         relations: Map[Provenance, Set[Provenance]],
         constraints: Map[Provenance, Expr])
-      : (Set[Error], Set[ProvConstraint]) = {
+        : (Set[Error], Set[ProvConstraint]) = {
       val back: (Set[Error], Set[ProvConstraint]) = expr match {
         case expr @ Let(_, _, _, left, right) => {
           val (leftErrors, leftConst) = loop(left, relations, constraints)
@@ -862,7 +862,7 @@ trait ProvenanceChecker extends parser.AST with Binder {
                 unifyProvenance(relations)(left.provenance, right.provenance)
 
               def compute(paramProv: Provenance, prov: Provenance)
-                : (Set[Error], Set[ProvConstraint], Provenance) = {
+                  : (Set[Error], Set[ProvConstraint], Provenance) = {
                 if (left.provenance.isParametric ||
                     right.provenance.isParametric) {
                   if (unified.isDefined) (Set(), Set(), paramProv)
@@ -882,7 +882,7 @@ trait ProvenanceChecker extends parser.AST with Binder {
               }
 
               def rec(policy: IdentityPolicy)
-                : (Set[Error], Set[ProvConstraint], Provenance) =
+                  : (Set[Error], Set[ProvConstraint], Provenance) =
                 policy match {
                   case IdentityPolicy.Product(left0, right0) =>
                     val (leftErrors, leftConst, leftProv) = rec(left0)

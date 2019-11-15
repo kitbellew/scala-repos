@@ -286,7 +286,7 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
         .addAllRolesIndexes(member.roles.map(mapRole).asJava)
 
     def reachabilityToProto(reachability: Reachability)
-      : Iterable[cm.ObserverReachability.Builder] = {
+        : Iterable[cm.ObserverReachability.Builder] = {
       reachability.versions.map {
         case (observer, version) ⇒
           val subjectReachability = reachability
@@ -381,7 +381,7 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
 
     def reachabilityFromProto(
         observerReachability: Iterable[cm.ObserverReachability])
-      : Reachability = {
+        : Reachability = {
       val recordBuilder = new immutable.VectorBuilder[Reachability.Record]
       val versionsBuilder = new scala.collection.mutable.MapBuilder[
         UniqueAddress,

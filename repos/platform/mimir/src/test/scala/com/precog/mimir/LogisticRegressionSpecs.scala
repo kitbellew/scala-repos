@@ -35,7 +35,7 @@ import java.io.File
 
 import scalaz._
 
-trait LogisticRegressionTestSupport[M[+ _]]
+trait LogisticRegressionTestSupport[M[+_]]
     extends StdLibEvaluatorStack[M]
     with RegressionTestSupport[M] {
   import library._
@@ -91,7 +91,7 @@ trait LogisticRegressionTestSupport[M[+ _]]
   }
 }
 
-trait LogisticRegressionSpecs[M[+ _]]
+trait LogisticRegressionSpecs[M[+_]]
     extends Specification
     with EvaluatorTestSupport[M]
     with LogisticRegressionTestSupport[M]

@@ -52,7 +52,7 @@ import org.apache.spark.storage.StorageLevel
   * @param boostingStrategy Parameters for the gradient boosting algorithm.
   */
 @Since("1.2.0")
-class GradientBoostedTrees @Since("1.2.0")(
+class GradientBoostedTrees @Since("1.2.0") (
     private val boostingStrategy: BoostingStrategy)
     extends Serializable
     with Logging {

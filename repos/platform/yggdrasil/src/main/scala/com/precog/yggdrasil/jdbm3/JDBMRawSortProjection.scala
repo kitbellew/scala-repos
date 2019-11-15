@@ -43,7 +43,7 @@ import scalaz.syntax.monad._
   * A Projection wrapping a raw JDBM TreeMap index used for sorting. It's assumed that
   * the index has been created and filled prior to creating this wrapper.
   */
-class JDBMRawSortProjection[M[+ _]] private[yggdrasil] (
+class JDBMRawSortProjection[M[+_]] private[yggdrasil] (
     dbFile: File,
     indexName: String,
     sortKeyRefs: Seq[ColumnRef],
@@ -75,7 +75,7 @@ class JDBMRawSortProjection[M[+ _]] private[yggdrasil] (
   override def getBlockAfter(
       id: Option[Array[Byte]],
       columns: Option[Set[ColumnRef]])(implicit M: Monad[M])
-    : M[Option[BlockProjectionData[Array[Byte], Slice]]] = M.point {
+      : M[Option[BlockProjectionData[Array[Byte], Slice]]] = M.point {
     // TODO: Make this far, far less ugly
     if (columns.nonEmpty) {
       throw new IllegalArgumentException(

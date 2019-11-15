@@ -46,7 +46,7 @@ object FileIO {
     * @param options File open options
     */
   def toFile(f: File, options: util.Set[StandardOpenOption])
-    : javadsl.Sink[ByteString, CompletionStage[IOResult]] =
+      : javadsl.Sink[ByteString, CompletionStage[IOResult]] =
     new Sink(
       scaladsl.FileIO.toFile(f, options.asScala.toSet).toCompletionStage())
 

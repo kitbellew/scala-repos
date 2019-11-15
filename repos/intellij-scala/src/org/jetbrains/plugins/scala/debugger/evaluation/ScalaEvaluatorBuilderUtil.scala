@@ -1574,7 +1574,7 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
         collected: Seq[ScExpression] = Seq.empty,
         tailString: String = "",
         matchedParameters: Map[Parameter, Seq[ScExpression]] = Map.empty)
-      : Evaluator = {
+        : Evaluator = {
       if (call.isApplyOrUpdateCall) {
         if (!call.isUpdateCall) {
           val expr = applyCall(

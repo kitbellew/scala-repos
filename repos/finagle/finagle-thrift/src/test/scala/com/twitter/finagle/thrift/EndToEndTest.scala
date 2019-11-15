@@ -497,44 +497,46 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
   }
 
   private[this] val servers
-    : Seq[(String, (StatsReceiver, Echo.FutureIface) => ListeningServer)] = Seq(
-    "Thrift.server" ->
-      (
-          (
-              sr,
-              fi) =>
-            Thrift.server
-              .withLabel("server")
-              .withStatsReceiver(sr)
-              .serve(
-                "localhost:*",
-                new Echo.FinagledService(fi, Protocols.binaryFactory()))),
-    "ServerBuilder(stack)" ->
-      (
-          (
-              sr,
-              fi) =>
-            ServerBuilder()
-              .stack(Thrift.server)
-              .name("server")
-              .reportTo(sr)
-              .bindTo(new InetSocketAddress(0))
-              .build(new Echo.FinagledService(fi, Protocols.binaryFactory()))),
-    "ServerBuilder(codec)" ->
-      (
-          (
-              sr,
-              fi) =>
-            ServerBuilder()
-              .codec(ThriftServerFramedCodec())
-              .name("server")
-              .reportTo(sr)
-              .bindTo(new InetSocketAddress(0))
-              .build(new Echo.FinagledService(fi, Protocols.binaryFactory())))
-  )
+      : Seq[(String, (StatsReceiver, Echo.FutureIface) => ListeningServer)] =
+    Seq(
+      "Thrift.server" ->
+        (
+            (
+                sr,
+                fi) =>
+              Thrift.server
+                .withLabel("server")
+                .withStatsReceiver(sr)
+                .serve(
+                  "localhost:*",
+                  new Echo.FinagledService(fi, Protocols.binaryFactory()))),
+      "ServerBuilder(stack)" ->
+        (
+            (
+                sr,
+                fi) =>
+              ServerBuilder()
+                .stack(Thrift.server)
+                .name("server")
+                .reportTo(sr)
+                .bindTo(new InetSocketAddress(0))
+                .build(
+                  new Echo.FinagledService(fi, Protocols.binaryFactory()))),
+      "ServerBuilder(codec)" ->
+        (
+            (
+                sr,
+                fi) =>
+              ServerBuilder()
+                .codec(ThriftServerFramedCodec())
+                .name("server")
+                .reportTo(sr)
+                .bindTo(new InetSocketAddress(0))
+                .build(new Echo.FinagledService(fi, Protocols.binaryFactory())))
+    )
 
   private[this] val clients
-    : Seq[(String, (StatsReceiver, Address) => Echo.FutureIface)] = Seq(
+      : Seq[(String, (StatsReceiver, Address) => Echo.FutureIface)] = Seq(
     "Thrift.client" ->
       (
           (
@@ -574,28 +576,27 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
   for {
     (s, server) <- servers
     (c, client) <- clients
-  } yield
-    test(s"measures payload sizes: $s :: $c") {
-      val sr = new InMemoryStatsReceiver
+  } yield test(s"measures payload sizes: $s :: $c") {
+    val sr = new InMemoryStatsReceiver
 
-      val fi = new Echo.FutureIface {
-        def echo(x: String) = Future.value(x + x)
-      }
-
-      val ss = server(sr, fi)
-      val cc =
-        client(sr, Address(ss.boundAddress.asInstanceOf[InetSocketAddress]))
-
-      Await.ready(cc.echo("." * 10))
-
-      // 40 bytes messages are from protocol negotiation made by TTwitter*Filter
-      assert(sr.stat("client", "request_payload_bytes")() == Seq(40.0f, 163.0f))
-      assert(sr.stat("client", "response_payload_bytes")() == Seq(40.0f, 45.0f))
-      assert(sr.stat("server", "request_payload_bytes")() == Seq(40.0f, 163.0f))
-      assert(sr.stat("server", "response_payload_bytes")() == Seq(40.0f, 45.0f))
-
-      Await.ready(ss.close())
+    val fi = new Echo.FutureIface {
+      def echo(x: String) = Future.value(x + x)
     }
+
+    val ss = server(sr, fi)
+    val cc =
+      client(sr, Address(ss.boundAddress.asInstanceOf[InetSocketAddress]))
+
+    Await.ready(cc.echo("." * 10))
+
+    // 40 bytes messages are from protocol negotiation made by TTwitter*Filter
+    assert(sr.stat("client", "request_payload_bytes")() == Seq(40.0f, 163.0f))
+    assert(sr.stat("client", "response_payload_bytes")() == Seq(40.0f, 45.0f))
+    assert(sr.stat("server", "request_payload_bytes")() == Seq(40.0f, 163.0f))
+    assert(sr.stat("server", "response_payload_bytes")() == Seq(40.0f, 45.0f))
+
+    Await.ready(ss.close())
+  }
 
   test(
     "clientId is not sent and prep stats are not recorded when TTwitter upgrading is disabled") {

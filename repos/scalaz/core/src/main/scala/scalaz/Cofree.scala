@@ -185,7 +185,7 @@ sealed abstract class CofreeInstances1 extends CofreeInstances2 {
 
 sealed abstract class CofreeInstances0 extends CofreeInstances1 {
   implicit def cofreeZipApplicative[F[_]: Applicative]
-    : Applicative[CofreeZip[F, ?]] =
+      : Applicative[CofreeZip[F, ?]] =
     new CofreeZipApplicative[F] {
       def F = implicitly
     }

@@ -39,7 +39,7 @@ import org.apache.spark.sql.types.DoubleType
   */
 @Since("1.2.0")
 @Experimental
-class BinaryClassificationEvaluator @Since("1.4.0")(
+class BinaryClassificationEvaluator @Since("1.4.0") (
     @Since("1.4.0") override val uid: String)
     extends Evaluator
     with HasRawPredictionCol

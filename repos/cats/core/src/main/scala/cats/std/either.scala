@@ -29,7 +29,7 @@ trait EitherInstances extends EitherInstances1 {
   }
 
   implicit def eitherInstances[A]
-    : Monad[Either[A, ?]] with Traverse[Either[A, ?]] =
+      : Monad[Either[A, ?]] with Traverse[Either[A, ?]] =
     new Monad[Either[A, ?]] with Traverse[Either[A, ?]] {
       def pure[B](b: B): Either[A, B] = Right(b)
 

@@ -511,7 +511,7 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
   @Experimental
   def mapWithState[StateType, MappedType](
       spec: StateSpec[K, V, StateType, MappedType])
-    : JavaMapWithStateDStream[K, V, StateType, MappedType] = {
+      : JavaMapWithStateDStream[K, V, StateType, MappedType] = {
     new JavaMapWithStateDStream(
       dstream.mapWithState(spec)(
         JavaSparkContext.fakeClassTag,
@@ -520,7 +520,7 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
 
   private def convertUpdateStateFunction[S](
       in: JFunction2[JList[V], Optional[S], Optional[S]])
-    : (Seq[V], Option[S]) => Option[S] = {
+      : (Seq[V], Option[S]) => Option[S] = {
     val scalaFunc: (Seq[V], Option[S]) => Option[S] = (values, state) => {
       val list: JList[V] = values.asJava
       val scalaState: Optional[S] = JavaUtils.optionToOptional(state)
@@ -543,7 +543,7 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
     */
   def updateStateByKey[S](
       updateFunc: JFunction2[JList[V], Optional[S], Optional[S]])
-    : JavaPairDStream[K, S] = {
+      : JavaPairDStream[K, S] = {
     implicit val cm: ClassTag[S] = fakeClassTag
     dstream.updateStateByKey(convertUpdateStateFunction(updateFunc))
   }
@@ -637,7 +637,7 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
     * of partitions.
     */
   def cogroup[W](other: JavaPairDStream[K, W])
-    : JavaPairDStream[K, (JIterable[V], JIterable[W])] = {
+      : JavaPairDStream[K, (JIterable[V], JIterable[W])] = {
     implicit val cm: ClassTag[W] = fakeClassTag
     dstream.cogroup(other.dstream).mapValues(t => (t._1.asJava, t._2.asJava))
   }
@@ -788,7 +788,7 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
     * number of partitions.
     */
   def fullOuterJoin[W](other: JavaPairDStream[K, W])
-    : JavaPairDStream[K, (Optional[V], Optional[W])] = {
+      : JavaPairDStream[K, (Optional[V], Optional[W])] = {
     implicit val cm: ClassTag[W] = fakeClassTag
     val joinResult = dstream.fullOuterJoin(other.dstream)
     joinResult.mapValues {

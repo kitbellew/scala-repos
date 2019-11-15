@@ -101,7 +101,7 @@ private object ScalaProjectConverter {
   }
 
   private def merge(moduleSettings: Map[String, ScalaCompilerSettings])
-    : ScalaCompilerConfiguration = {
+      : ScalaCompilerConfiguration = {
     val settingsToModules =
       moduleSettings.groupBy(_._2).mapValues(_.keys.toSet).toSeq
 

@@ -92,7 +92,7 @@ object LEventAggregator {
   val eventNames = List("$set", "$unset", "$delete")
 
   private def dataMapAggregator
-    : ((Option[DataMap], Event) => Option[DataMap]) = { (p, e) =>
+      : ((Option[DataMap], Event) => Option[DataMap]) = { (p, e) =>
     {
       e.event match {
         case "$set" => {

@@ -121,7 +121,7 @@ abstract class Directive[L](implicit val ev: Tuple[L]) {
     */
   def recoverPF[R >: L: Tuple](
       recovery: PartialFunction[immutable.Seq[Rejection], Directive[R]])
-    : Directive[R] =
+      : Directive[R] =
     recover { rejections ⇒
       recovery.applyOrElse(
         rejections,
@@ -186,7 +186,7 @@ trait ConjunctionMagnet[L] {
 object ConjunctionMagnet {
   implicit def fromDirective[L, R](other: Directive[R])(
       implicit join: TupleOps.Join[L, R])
-    : ConjunctionMagnet[L] { type Out = Directive[join.Out] } =
+      : ConjunctionMagnet[L] { type Out = Directive[join.Out] } =
     new ConjunctionMagnet[L] {
       type Out = Directive[join.Out]
       def apply(underlying: Directive[L]) =
@@ -208,7 +208,7 @@ object ConjunctionMagnet {
     }
 
   implicit def fromRouteGenerator[T, R <: Route](generator: T ⇒ R)
-    : ConjunctionMagnet[Unit] { type Out = RouteGenerator[T] } =
+      : ConjunctionMagnet[Unit] { type Out = RouteGenerator[T] } =
     new ConjunctionMagnet[Unit] {
       type Out = RouteGenerator[T]
       def apply(underlying: Directive0) =

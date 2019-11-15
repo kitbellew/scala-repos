@@ -29,7 +29,7 @@ import com.precog.yggdrasil.execution.EvaluationContext
 
 import scala.collection.mutable
 
-trait ReductionFinderSpecs[M[+ _]]
+trait ReductionFinderSpecs[M[+_]]
     extends Specification
     with EvaluatorTestSupport[M] {
 

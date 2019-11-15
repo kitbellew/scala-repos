@@ -40,8 +40,9 @@ final private[stream] class QueueSource[T](
   override def createLogicAndMaterializedValue(
       inheritedAttributes: Attributes) = {
     val completion = Promise[Done]
-    val stageLogic = new GraphStageLogic(shape) with CallbackWrapper[Input[T]]
-    with OutHandler {
+    val stageLogic = new GraphStageLogic(shape)
+      with CallbackWrapper[Input[T]]
+      with OutHandler {
       var buffer: Buffer[T] = _
       var pendingOffer: Option[Offer[T]] = None
       var terminating = false

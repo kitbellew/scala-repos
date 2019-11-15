@@ -21,7 +21,7 @@ import scala.concurrent.Future
   * application's [[ApplicationLifecycle]] to register a stop hook.
   */
 @Singleton
-class ApplicationTimer @Inject()(
+class ApplicationTimer @Inject() (
     clock: Clock,
     appLifecycle: ApplicationLifecycle) {
 

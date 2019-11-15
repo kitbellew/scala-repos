@@ -202,7 +202,7 @@ private[concurrent] object ExecutionContextImpl {
   def fromExecutor(
       e: Executor,
       reporter: Throwable => Unit = ExecutionContext.defaultReporter)
-    : ExecutionContextImpl =
+      : ExecutionContextImpl =
     new ExecutionContextImpl(
       Option(e).getOrElse(createDefaultExecutorService(reporter)),
       reporter)
@@ -210,7 +210,7 @@ private[concurrent] object ExecutionContextImpl {
   def fromExecutorService(
       es: ExecutorService,
       reporter: Throwable => Unit = ExecutionContext.defaultReporter)
-    : ExecutionContextImpl with ExecutionContextExecutorService = {
+      : ExecutionContextImpl with ExecutionContextExecutorService = {
     new ExecutionContextImpl(
       Option(es).getOrElse(createDefaultExecutorService(reporter)),
       reporter) with ExecutionContextExecutorService {

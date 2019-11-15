@@ -48,7 +48,7 @@ trait PredefinedToResponseMarshallers
 
   implicit def fromStatusCodeAndHeadersAndValue[T](
       implicit mt: ToEntityMarshaller[T])
-    : TRM[(StatusCode, immutable.Seq[HttpHeader], T)] =
+      : TRM[(StatusCode, immutable.Seq[HttpHeader], T)] =
     Marshaller(implicit ec ⇒ {
       case (status, headers, value) ⇒
         mt(value).fast map (_ map (_ map (HttpResponse(status, headers, _))))

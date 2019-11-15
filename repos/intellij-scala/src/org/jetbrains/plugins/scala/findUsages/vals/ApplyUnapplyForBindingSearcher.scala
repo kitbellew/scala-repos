@@ -154,7 +154,7 @@ class ApplyUnapplyForBindingSearcher
 
   private object inAnonClassWithBinding {
     def unapply(fun: ScFunctionDefinition)
-      : Option[(ScBindingPattern, Boolean, Boolean)] =
+        : Option[(ScBindingPattern, Boolean, Boolean)] =
       inReadAction {
         val (checkApply, checkUnapply) = fun.name match {
           case "apply"                  => (true, false)

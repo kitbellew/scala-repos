@@ -135,7 +135,7 @@ object MultiJoin extends java.io.Serializable {
       i: CoGroupable[KEY, I],
       j: CoGroupable[KEY, J],
       k: CoGroupable[KEY, K])
-    : CoGrouped[KEY, (A, B, C, D, E, F, G, H, I, J, K)] =
+      : CoGrouped[KEY, (A, B, C, D, E, F, G, H, I, J, K)] =
     a.join(b)
       .join(c)
       .join(d)
@@ -163,7 +163,7 @@ object MultiJoin extends java.io.Serializable {
       j: CoGroupable[KEY, J],
       k: CoGroupable[KEY, K],
       l: CoGroupable[KEY, L])
-    : CoGrouped[KEY, (A, B, C, D, E, F, G, H, I, J, K, L)] =
+      : CoGrouped[KEY, (A, B, C, D, E, F, G, H, I, J, K, L)] =
     a.join(b)
       .join(c)
       .join(d)
@@ -193,7 +193,7 @@ object MultiJoin extends java.io.Serializable {
       k: CoGroupable[KEY, K],
       l: CoGroupable[KEY, L],
       m: CoGroupable[KEY, M])
-    : CoGrouped[KEY, (A, B, C, D, E, F, G, H, I, J, K, L, M)] =
+      : CoGrouped[KEY, (A, B, C, D, E, F, G, H, I, J, K, L, M)] =
     a.join(b)
       .join(c)
       .join(d)
@@ -225,7 +225,7 @@ object MultiJoin extends java.io.Serializable {
       l: CoGroupable[KEY, L],
       m: CoGroupable[KEY, M],
       n: CoGroupable[KEY, N])
-    : CoGrouped[KEY, (A, B, C, D, E, F, G, H, I, J, K, L, M, N)] =
+      : CoGrouped[KEY, (A, B, C, D, E, F, G, H, I, J, K, L, M, N)] =
     a.join(b)
       .join(c)
       .join(d)
@@ -259,7 +259,7 @@ object MultiJoin extends java.io.Serializable {
       m: CoGroupable[KEY, M],
       n: CoGroupable[KEY, N],
       o: CoGroupable[KEY, O])
-    : CoGrouped[KEY, (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O)] =
+      : CoGrouped[KEY, (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O)] =
     a.join(b)
       .join(c)
       .join(d)
@@ -295,7 +295,7 @@ object MultiJoin extends java.io.Serializable {
       n: CoGroupable[KEY, N],
       o: CoGroupable[KEY, O],
       p: CoGroupable[KEY, P])
-    : CoGrouped[KEY, (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P)] =
+      : CoGrouped[KEY, (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P)] =
     a.join(b)
       .join(c)
       .join(d)
@@ -333,7 +333,7 @@ object MultiJoin extends java.io.Serializable {
       o: CoGroupable[KEY, O],
       p: CoGroupable[KEY, P],
       q: CoGroupable[KEY, Q])
-    : CoGrouped[KEY, (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)] =
+      : CoGrouped[KEY, (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)] =
     a.join(b)
       .join(c)
       .join(d)
@@ -373,7 +373,7 @@ object MultiJoin extends java.io.Serializable {
       p: CoGroupable[KEY, P],
       q: CoGroupable[KEY, Q],
       r: CoGroupable[KEY, R])
-    : CoGrouped[KEY, (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)] =
+      : CoGrouped[KEY, (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)] =
     a.join(b)
       .join(c)
       .join(d)
@@ -624,7 +624,7 @@ object MultiJoin extends java.io.Serializable {
       b: CoGroupable[KEY, B],
       c: CoGroupable[KEY, C],
       d: CoGroupable[KEY, D])
-    : CoGrouped[KEY, (A, Option[B], Option[C], Option[D])] =
+      : CoGrouped[KEY, (A, Option[B], Option[C], Option[D])] =
     a.leftJoin(b).leftJoin(c).leftJoin(d).mapValues { tup =>
       flattenNestedTuple(tup)
     }
@@ -635,7 +635,7 @@ object MultiJoin extends java.io.Serializable {
       c: CoGroupable[KEY, C],
       d: CoGroupable[KEY, D],
       e: CoGroupable[KEY, E])
-    : CoGrouped[KEY, (A, Option[B], Option[C], Option[D], Option[E])] =
+      : CoGrouped[KEY, (A, Option[B], Option[C], Option[D], Option[E])] =
     a.leftJoin(b).leftJoin(c).leftJoin(d).leftJoin(e).mapValues { tup =>
       flattenNestedTuple(tup)
     }
@@ -1471,7 +1471,7 @@ object MultiJoin extends java.io.Serializable {
       a: CoGroupable[KEY, A],
       b: CoGroupable[KEY, B],
       c: CoGroupable[KEY, C])
-    : CoGrouped[KEY, (Option[A], Option[B], Option[C])] =
+      : CoGrouped[KEY, (Option[A], Option[B], Option[C])] =
     a.outerJoin(b).outerJoin(c).mapValues { tup =>
       flattenNestedOptionTuple(tup)
     }
@@ -1481,7 +1481,7 @@ object MultiJoin extends java.io.Serializable {
       b: CoGroupable[KEY, B],
       c: CoGroupable[KEY, C],
       d: CoGroupable[KEY, D])
-    : CoGrouped[KEY, (Option[A], Option[B], Option[C], Option[D])] =
+      : CoGrouped[KEY, (Option[A], Option[B], Option[C], Option[D])] =
     a.outerJoin(b).outerJoin(c).outerJoin(d).mapValues { tup =>
       flattenNestedOptionTuple(tup)
     }
@@ -1491,8 +1491,9 @@ object MultiJoin extends java.io.Serializable {
       b: CoGroupable[KEY, B],
       c: CoGroupable[KEY, C],
       d: CoGroupable[KEY, D],
-      e: CoGroupable[KEY, E])
-    : CoGrouped[KEY, (Option[A], Option[B], Option[C], Option[D], Option[E])] =
+      e: CoGroupable[KEY, E]): CoGrouped[
+    KEY,
+    (Option[A], Option[B], Option[C], Option[D], Option[E])] =
     a.outerJoin(b).outerJoin(c).outerJoin(d).outerJoin(e).mapValues { tup =>
       flattenNestedOptionTuple(tup)
     }

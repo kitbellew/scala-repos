@@ -320,7 +320,7 @@ private[json] object Meta {
         t: Type,
         names: ParameterNameReader,
         context: Option[Context])
-      : List[(JConstructor[_], List[(String, Type)])] =
+        : List[(JConstructor[_], List[(String, Type)])] =
       rawClassOf(t).getDeclaredConstructors
         .map(c => (c, constructorArgs(t, c, names, context)))
         .toList

@@ -456,7 +456,7 @@ trait ProdConsAnalyzerImpl {
 
   /** For each instruction, a set of potential consumers of the produced values. */
   private lazy val _consumersOfOutputsFrom
-    : Map[AbstractInsnNode, Vector[Set[AbstractInsnNode]]] = {
+      : Map[AbstractInsnNode, Vector[Set[AbstractInsnNode]]] = {
     var res = Map.empty[AbstractInsnNode, Vector[Set[AbstractInsnNode]]]
     for {
       insn <- methodNode.instructions.iterator.asScala
@@ -478,10 +478,10 @@ trait ProdConsAnalyzerImpl {
   }
 
   private val _initialProducersCache
-    : mutable.AnyRefMap[(AbstractInsnNode, Int), Set[AbstractInsnNode]] =
+      : mutable.AnyRefMap[(AbstractInsnNode, Int), Set[AbstractInsnNode]] =
     mutable.AnyRefMap.empty
   private val _ultimateConsumersCache
-    : mutable.AnyRefMap[(AbstractInsnNode, Int), Set[AbstractInsnNode]] =
+      : mutable.AnyRefMap[(AbstractInsnNode, Int), Set[AbstractInsnNode]] =
     mutable.AnyRefMap.empty
 }
 

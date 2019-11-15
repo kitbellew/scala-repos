@@ -51,7 +51,8 @@ trait TreeFactory { thisTreeFactory: ModelFactory with TreeFactory =>
                   case docTmpl: DocTemplateImpl =>
                     refs += ((start, (docTmpl, end)))
                   case _ =>
-                } else if (asym.isTerm && asym.owner.isClass) {
+                }
+              else if (asym.isTerm && asym.owner.isClass) {
                 if (asym.isSetter) asym = asym.getterIn(asym.owner)
                 makeTemplate(asym.owner) match {
                   case docTmpl: DocTemplateImpl =>

@@ -42,7 +42,7 @@ import org.apache.spark.sql.{Row, SQLContext}
   *                  the Multivariate Gaussian (Normal) Distribution for Gaussian i
   */
 @Since("1.3.0")
-class GaussianMixtureModel @Since("1.3.0")(
+class GaussianMixtureModel @Since("1.3.0") (
     @Since("1.3.0") val weights: Array[Double],
     @Since("1.3.0") val gaussians: Array[MultivariateGaussian])
     extends Serializable

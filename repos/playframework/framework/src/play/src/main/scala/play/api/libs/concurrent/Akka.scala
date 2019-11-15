@@ -198,7 +198,7 @@ trait AkkaGuiceSupport { self: AbstractModule =>
     * @tparam FactoryClass The class of the actor factory
     */
   def bindActorFactory[ActorClass <: Actor: ClassTag, FactoryClass: ClassTag]
-    : Unit = {
+      : Unit = {
     accessBinder.install(
       new FactoryModuleBuilder()
         .implement(
@@ -269,7 +269,7 @@ trait AkkaComponents {
   * Provider for the actor system
   */
 @Singleton
-class ActorSystemProvider @Inject()(
+class ActorSystemProvider @Inject() (
     environment: Environment,
     configuration: Configuration,
     applicationLifecycle: ApplicationLifecycle)
@@ -289,7 +289,7 @@ class ActorSystemProvider @Inject()(
   * Provider for the default flow materializer
   */
 @Singleton
-class MaterializerProvider @Inject()(actorSystem: ActorSystem)
+class MaterializerProvider @Inject() (actorSystem: ActorSystem)
     extends Provider[Materializer] {
   lazy val get: Materializer = ActorMaterializer()(actorSystem)
 }
@@ -298,7 +298,7 @@ class MaterializerProvider @Inject()(actorSystem: ActorSystem)
   * Provider for the default execution context
   */
 @Singleton
-class ExecutionContextProvider @Inject()(actorSystem: ActorSystem)
+class ExecutionContextProvider @Inject() (actorSystem: ActorSystem)
     extends Provider[ExecutionContextExecutor] {
   def get = actorSystem.dispatcher
 }

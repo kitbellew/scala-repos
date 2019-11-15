@@ -19,7 +19,7 @@ class SbtConfigLocator extends ExternalSystemConfigLocator {
   override def getTargetExternalSystemId: ProjectSystemId = SbtProjectSystem.Id
 
   override def findAll(externalProjectSettings: ExternalProjectSettings)
-    : util.List[VirtualFile] = {
+      : util.List[VirtualFile] = {
     val modules = externalProjectSettings.getModules.asScala
     modules
       .flatMap { path =>

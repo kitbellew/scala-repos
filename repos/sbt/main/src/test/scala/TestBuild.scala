@@ -55,8 +55,9 @@ object TestBuild {
     def showKeys(map: AttributeMap): String =
       map.keys.mkString("\n\t   ", ",", "\n")
     def showData: String = {
-      val scopeStrings = for ((scope, map) <- data.data)
-        yield (Scope.display(scope, "<key>"), showKeys(map))
+      val scopeStrings =
+        for ((scope, map) <- data.data)
+          yield (Scope.display(scope, "<key>"), showKeys(map))
       scopeStrings.toSeq.sorted.map(t => t._1 + t._2).mkString("\n\t")
     }
     val extra: BuildUtil[Proj] = {
@@ -79,10 +80,10 @@ object TestBuild {
       import mutable.HashSet
 
       // task axis of Scope is set to Global and the value of the second map is the original task axis
-      val taskAxesMappings = for ((scope, keys) <- data.data.toIterable;
-                                  key <- keys.keys)
-        yield
-          (ScopedKey(scope.copy(task = Global), key), scope.task): (
+      val taskAxesMappings =
+        for ((scope, keys) <- data.data.toIterable;
+             key <- keys.keys)
+          yield (ScopedKey(scope.copy(task = Global), key), scope.task): (
               ScopedKey[_],
               ScopeAxis[AttributeKey[_]])
 
@@ -184,12 +185,11 @@ object TestBuild {
     } toMap;
 
   implicit lazy val arbKeys: Arbitrary[Keys] = Arbitrary(keysGen)
-  lazy val keysGen: Gen[Keys] = for (env <- mkEnv;
-                                     keyCount <- chooseShrinkable(
-                                       1,
-                                       KeysPerEnv);
-                                     keys <- listOfN(keyCount, scope(env)))
-    yield new Keys(env, keys)
+  lazy val keysGen: Gen[Keys] =
+    for (env <- mkEnv;
+         keyCount <- chooseShrinkable(1, KeysPerEnv);
+         keys <- listOfN(keyCount, scope(env)))
+      yield new Keys(env, keys)
 
   def scope(env: Env): Gen[Scope] =
     for {
@@ -255,9 +255,10 @@ object TestBuild {
       yield cs.mkString
   implicit lazy val optIDGen: Gen[Option[String]] =
     frequency((1, idGen map some.fn), (1, None))
-  implicit lazy val uriGen: Gen[URI] = for (sch <- idGen; ssp <- idGen;
-                                            frag <- optIDGen)
-    yield new URI(sch, ssp, frag.orNull)
+  implicit lazy val uriGen: Gen[URI] =
+    for (sch <- idGen; ssp <- idGen;
+         frag <- optIDGen)
+      yield new URI(sch, ssp, frag.orNull)
 
   implicit def envGen(
       implicit bGen: Gen[Build],
@@ -340,8 +341,9 @@ object TestBuild {
     names match {
       case Nil => sequence(acc)
       case x :: xs =>
-        val next = for (depCount <- maxDeps;
-                        d <- pick(depCount min xs.size, xs)) yield (x, d.toList)
+        val next =
+          for (depCount <- maxDeps;
+               d <- pick(depCount min xs.size, xs)) yield (x, d.toList)
         genAcyclic(maxDeps, xs, next :: acc)
     }
   def sequence[T](gs: Seq[Gen[T]]): Gen[Seq[T]] = Gen.parameterized { prms =>

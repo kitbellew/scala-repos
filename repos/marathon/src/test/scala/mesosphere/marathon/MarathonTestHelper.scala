@@ -194,7 +194,7 @@ object MarathonTestHelper {
   }
 
   def reservation(principal: String, labels: Map[String, String] = Map.empty)
-    : Mesos.Resource.ReservationInfo = {
+      : Mesos.Resource.ReservationInfo = {
     val labelsBuilder = Mesos.Labels.newBuilder()
     labels.foreach {
       case (k, v) =>

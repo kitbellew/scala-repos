@@ -81,13 +81,13 @@ private[scala] trait JavaMirrors
     import runDefinitions._
 
     override lazy val RootPackage = (new RootPackage
-    with SynchronizedTermSymbol).markFlagsCompleted(mask = AllFlags)
+      with SynchronizedTermSymbol).markFlagsCompleted(mask = AllFlags)
     override lazy val RootClass = (new RootClass
-    with SynchronizedModuleClassSymbol).markFlagsCompleted(mask = AllFlags)
+      with SynchronizedModuleClassSymbol).markFlagsCompleted(mask = AllFlags)
     override lazy val EmptyPackage = (new EmptyPackage
-    with SynchronizedTermSymbol).markFlagsCompleted(mask = AllFlags)
+      with SynchronizedTermSymbol).markFlagsCompleted(mask = AllFlags)
     override lazy val EmptyPackageClass = (new EmptyPackageClass
-    with SynchronizedModuleClassSymbol).markFlagsCompleted(mask = AllFlags)
+      with SynchronizedModuleClassSymbol).markFlagsCompleted(mask = AllFlags)
 
     /** The lazy type for root.
       */
@@ -134,8 +134,8 @@ private[scala] trait JavaMirrors
     private implicit val constrHasJavaClass: HasJavaClass[jConstructor[_]] =
       new HasJavaClass(_.getDeclaringClass)
     private implicit val tparamHasJavaClass
-      : HasJavaClass[jTypeVariable[_ <: GenericDeclaration]] = new HasJavaClass(
-      (tparam: jTypeVariable[_ <: GenericDeclaration]) => {
+        : HasJavaClass[jTypeVariable[_ <: GenericDeclaration]] =
+      new HasJavaClass((tparam: jTypeVariable[_ <: GenericDeclaration]) => {
         tparam.getGenericDeclaration match {
           case jclazz: jClass[_]        => jclazz
           case jmeth: jMethod           => jmeth.getDeclaringClass

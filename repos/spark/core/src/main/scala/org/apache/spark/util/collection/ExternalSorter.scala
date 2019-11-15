@@ -334,7 +334,7 @@ private[spark] class ExternalSorter[K, V, C](
     * Guaranteed to return a key-value pair for each partition, in order of partition ID.
     */
   private def merge(spills: Seq[SpilledFile], inMemory: Iterator[((Int, K), C)])
-    : Iterator[(Int, Iterator[Product2[K, C]])] = {
+      : Iterator[(Int, Iterator[Product2[K, C]])] = {
     val readers = spills.map(new SpillReader(_))
     val inMemBuffered = inMemory.buffered
     (0 until numPartitions).iterator.map { p =>
@@ -735,7 +735,7 @@ private[spark] class ExternalSorter[K, V, C](
     * @param data an iterator of elements, assumed to already be sorted by partition ID
     */
   private def groupByPartition(data: Iterator[((Int, K), C)])
-    : Iterator[(Int, Iterator[Product2[K, C]])] = {
+      : Iterator[(Int, Iterator[Product2[K, C]])] = {
     val buffered = data.buffered
     (0 until numPartitions).iterator
       .map(p => (p, new IteratorForPartition(p, buffered)))

@@ -125,7 +125,7 @@ class PrintWriterTest {
   }
 
   @Test def println_and_forwards_do_not_flush_when_autoFlush_is_false()
-    : Unit = {
+      : Unit = {
     testPrintlnForward(_.println(), "\n", autoFlush = false)
     testPrintlnForward(_.println(true), "true\n", autoFlush = false)
     testPrintlnForward(_.println('Z'), "Z\n", autoFlush = false)

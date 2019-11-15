@@ -135,7 +135,7 @@ private[stat] object KolmogorovSmirnovTest extends Logging {
     * @return `Iterator[(Double, Double, Double)]` the local extrema and a count of elements
     */
   private def searchOneSampleCandidates(partDiffs: Iterator[(Double, Double)])
-    : Iterator[(Double, Double, Double)] = {
+      : Iterator[(Double, Double, Double)] = {
     val initAcc = (Double.MaxValue, Double.MinValue, 0.0)
     val pResults = partDiffs.foldLeft(initAcc) {
       case ((pMin, pMax, pCt), (dl, dp)) =>

@@ -139,7 +139,7 @@ class TypeOperatorTests {
   @Test
   def testTheQuantifiers {
     def bar0[T, U0](implicit b: Bar[T] { type U = U0 })
-      : Bar[T] { type U = U0 } = {
+        : Bar[T] { type U = U0 } = {
       val res = the[Bar[T]]
       res
     }

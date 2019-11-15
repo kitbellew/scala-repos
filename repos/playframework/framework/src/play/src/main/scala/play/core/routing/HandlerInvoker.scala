@@ -186,7 +186,7 @@ object HandlerInvokerFactory {
         CompletableFuture.completedFuture(call)
     }
   implicit def wrapJavaPromise
-    : HandlerInvokerFactory[CompletionStage[JResult]] =
+      : HandlerInvokerFactory[CompletionStage[JResult]] =
     new JavaActionInvokerFactory[CompletionStage[JResult]] {
       def resultCall(call: => CompletionStage[JResult]) = call
     }
@@ -207,28 +207,28 @@ object HandlerInvokerFactory {
   }
 
   implicit def javaBytesWebSocket
-    : HandlerInvokerFactory[LegacyWebSocket[Array[Byte]]] =
+      : HandlerInvokerFactory[LegacyWebSocket[Array[Byte]]] =
     new JavaWebSocketInvokerFactory[LegacyWebSocket[Array[Byte]], Array[Byte]] {
       def webSocketCall(call: => LegacyWebSocket[Array[Byte]]) =
         JavaWebSocket.ofBytes(call)
     }
 
   implicit def javaStringWebSocket
-    : HandlerInvokerFactory[LegacyWebSocket[String]] =
+      : HandlerInvokerFactory[LegacyWebSocket[String]] =
     new JavaWebSocketInvokerFactory[LegacyWebSocket[String], String] {
       def webSocketCall(call: => LegacyWebSocket[String]) =
         JavaWebSocket.ofString(call)
     }
 
   implicit def javaJsonWebSocket
-    : HandlerInvokerFactory[LegacyWebSocket[JsonNode]] =
+      : HandlerInvokerFactory[LegacyWebSocket[JsonNode]] =
     new JavaWebSocketInvokerFactory[LegacyWebSocket[JsonNode], JsonNode] {
       def webSocketCall(call: => LegacyWebSocket[JsonNode]) =
         JavaWebSocket.ofJson(call)
     }
 
   implicit def javaBytesPromiseWebSocket
-    : HandlerInvokerFactory[CompletionStage[LegacyWebSocket[Array[Byte]]]] =
+      : HandlerInvokerFactory[CompletionStage[LegacyWebSocket[Array[Byte]]]] =
     new JavaWebSocketInvokerFactory[
       CompletionStage[LegacyWebSocket[Array[Byte]]],
       Array[Byte]] {
@@ -238,7 +238,7 @@ object HandlerInvokerFactory {
     }
 
   implicit def javaStringPromiseWebSocket
-    : HandlerInvokerFactory[CompletionStage[LegacyWebSocket[String]]] =
+      : HandlerInvokerFactory[CompletionStage[LegacyWebSocket[String]]] =
     new JavaWebSocketInvokerFactory[
       CompletionStage[LegacyWebSocket[String]],
       String] {
@@ -247,7 +247,7 @@ object HandlerInvokerFactory {
     }
 
   implicit def javaJsonPromiseWebSocket
-    : HandlerInvokerFactory[CompletionStage[LegacyWebSocket[JsonNode]]] =
+      : HandlerInvokerFactory[CompletionStage[LegacyWebSocket[JsonNode]]] =
     new JavaWebSocketInvokerFactory[
       CompletionStage[LegacyWebSocket[JsonNode]],
       JsonNode] {

@@ -180,7 +180,7 @@ trait SecurityDirectives {
     */
   def authenticateOrRejectWithChallenge[T](
       authenticator: Option[HttpCredentials] ⇒ Future[AuthenticationResult[T]])
-    : AuthenticationDirective[T] =
+      : AuthenticationDirective[T] =
     extractExecutionContext.flatMap { implicit ec ⇒
       extractCredentials.flatMap { cred ⇒
         onSuccess(authenticator(cred)).flatMap {
@@ -200,7 +200,7 @@ trait SecurityDirectives {
     */
   def authenticateOrRejectWithChallenge[C <: HttpCredentials: ClassTag, T](
       authenticator: Option[C] ⇒ Future[AuthenticationResult[T]])
-    : AuthenticationDirective[T] =
+      : AuthenticationDirective[T] =
     authenticateOrRejectWithChallenge[T](cred ⇒
       authenticator(cred collect { case c: C ⇒ c }))
 

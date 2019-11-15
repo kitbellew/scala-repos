@@ -247,7 +247,7 @@ object AclCommand {
   private def getPrincipals(
       opts: AclCommandOptions,
       principalOptionSpec: ArgumentAcceptingOptionSpec[String])
-    : Set[KafkaPrincipal] = {
+      : Set[KafkaPrincipal] = {
     if (opts.options.has(principalOptionSpec))
       opts.options
         .valuesOf(principalOptionSpec)

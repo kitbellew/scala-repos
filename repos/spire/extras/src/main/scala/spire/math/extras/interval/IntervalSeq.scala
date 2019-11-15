@@ -604,7 +604,8 @@ object IntervalSeq {
               result = null
               lower = Open(value)
             case _ => wrong
-          } else
+          }
+        else
           (kind: @switch) match {
             case K01 =>
               val upper = Open(value)

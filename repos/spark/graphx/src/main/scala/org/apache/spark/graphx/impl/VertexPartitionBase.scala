@@ -31,7 +31,7 @@ private[graphx] object VertexPartitionBase {
     * entries arbitrarily.
     */
   def initFrom[VD: ClassTag](iter: Iterator[(VertexId, VD)])
-    : (VertexIdToIndexMap, Array[VD], BitSet) = {
+      : (VertexIdToIndexMap, Array[VD], BitSet) = {
     val map = new GraphXPrimitiveKeyOpenHashMap[VertexId, VD]
     iter.foreach { pair =>
       map(pair._1) = pair._2

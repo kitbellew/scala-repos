@@ -122,7 +122,7 @@ object CodeGenTools {
       scalaCode: String,
       javaCode: List[(String, String)] = Nil,
       allowMessage: StoreReporter#Info => Boolean = _ => false)
-    : List[(String, Array[Byte])] = {
+      : List[(String, Array[Byte])] = {
     val run = newRun(compiler)
     run.compileSources(
       makeSourceFile(scalaCode, "unitTestSource.scala") :: javaCode.map(p =>
@@ -135,7 +135,7 @@ object CodeGenTools {
       scalaCode: String,
       javaCode: List[(String, String)] = Nil,
       beforeBackend: compiler.Tree => compiler.Tree)
-    : List[(String, Array[Byte])] = {
+      : List[(String, Array[Byte])] = {
     compiler.settings.stopBefore.value = "jvm" :: Nil
     val run = newRun(compiler)
     import compiler._
@@ -166,7 +166,7 @@ object CodeGenTools {
       extraArgs: String = "",
       allowMessage: StoreReporter#Info => Boolean = _ => false,
       afterEach: AbstractFile => Unit = _ => ())
-    : List[(String, Array[Byte])] = {
+      : List[(String, Array[Byte])] = {
     val outDir = AbstractFile.getDirectory(TempDir.createTempDir())
     val outDirPath = outDir.canonicalPath
     val argsWithOutDir = extraArgs + s" -d $outDirPath -cp $outDirPath"
@@ -200,14 +200,14 @@ object CodeGenTools {
       code: String,
       javaCode: List[(String, String)] = Nil,
       allowMessage: StoreReporter#Info => Boolean = _ => false)
-    : List[ClassNode] = {
+      : List[ClassNode] = {
     readAsmClasses(compile(compiler)(code, javaCode, allowMessage))
   }
 
   def compileMethods(compiler: Global)(
       code: String,
       allowMessage: StoreReporter#Info => Boolean = _ => false)
-    : List[MethodNode] = {
+      : List[MethodNode] = {
     compileClasses(compiler)(s"class C { $code }", allowMessage = allowMessage).head.methods.asScala.toList
       .filterNot(_.name == "<init>")
   }
@@ -215,7 +215,7 @@ object CodeGenTools {
   def singleMethodInstructions(compiler: Global)(
       code: String,
       allowMessage: StoreReporter#Info => Boolean = _ => false)
-    : List[Instruction] = {
+      : List[Instruction] = {
     val List(m) = compileMethods(compiler)(code, allowMessage = allowMessage)
     instructionsFromMethod(m)
   }

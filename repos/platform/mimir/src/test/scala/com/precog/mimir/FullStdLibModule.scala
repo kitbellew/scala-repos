@@ -21,7 +21,7 @@ package com.precog.mimir
 
 import scalaz._
 
-trait FullStdLibModule[M[+ _]]
+trait FullStdLibModule[M[+_]]
     extends StdLibOpFinderModule[M]
     with ReductionFinderModule[M]
     with EvaluatorModule[M] {

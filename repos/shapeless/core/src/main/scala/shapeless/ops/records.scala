@@ -202,7 +202,7 @@ package record {
     implicit def hlistMerger2[K, V, T <: HList, M <: HList, MT <: HList](
         implicit rm: Remover.Aux[M, K, (V, MT)],
         mt: Merger[T, MT])
-      : Aux[FieldType[K, V] :: T, M, FieldType[K, V] :: mt.Out] =
+        : Aux[FieldType[K, V] :: T, M, FieldType[K, V] :: mt.Out] =
       new Merger[FieldType[K, V] :: T, M] {
         type Out = FieldType[K, V] :: mt.Out
         def apply(l: FieldType[K, V] :: T, m: M): Out = {
@@ -228,14 +228,14 @@ package record {
 
   object Modifier {
     def apply[L <: HList, F, A, B](implicit modifier: Modifier[L, F, A, B])
-      : Aux[L, F, A, B, modifier.Out] = modifier
+        : Aux[L, F, A, B, modifier.Out] = modifier
 
     type Aux[L <: HList, F, A, B, Out0 <: HList] = Modifier[L, F, A, B] {
       type Out = Out0
     }
 
     implicit def hlistModify1[F, A, B, T <: HList]
-      : Aux[FieldType[F, A] :: T, F, A, B, FieldType[F, B] :: T] =
+        : Aux[FieldType[F, A] :: T, F, A, B, FieldType[F, B] :: T] =
       new Modifier[FieldType[F, A] :: T, F, A, B] {
         type Out = FieldType[F, B] :: T
         def apply(l: FieldType[F, A] :: T, f: A => B): Out =
@@ -277,7 +277,7 @@ package record {
         implicit remover: Remover[L, K]): Aux[L, K, remover.Out] = remover
 
     implicit def hlistRemove1[K, V, T <: HList]
-      : Aux[FieldType[K, V] :: T, K, (V, T)] =
+        : Aux[FieldType[K, V] :: T, K, (V, T)] =
       new Remover[FieldType[K, V] :: T, K] {
         type Out = (V, T)
         def apply(l: FieldType[K, V] :: T): Out = (l.head, l.tail)
@@ -318,7 +318,7 @@ package record {
         implicit remove: Remove[L, E]): Aux[L, E, remove.Out] = remove
 
     implicit def removeHead[K, V, T <: HList]
-      : Aux[FieldType[K, V] :: T, FieldType[K, V], (FieldType[K, V], T)] =
+        : Aux[FieldType[K, V] :: T, FieldType[K, V], (FieldType[K, V], T)] =
       new Remove[FieldType[K, V] :: T, FieldType[K, V]] {
         type Out = (FieldType[K, V], T)
 
@@ -327,7 +327,7 @@ package record {
       }
 
     implicit def removeUnlabelledHead[K, V, T <: HList]
-      : Aux[FieldType[K, V] :: T, V, (V, T)] =
+        : Aux[FieldType[K, V] :: T, V, (V, T)] =
       new Remove[FieldType[K, V] :: T, V] {
         type Out = (V, T)
 
@@ -376,7 +376,7 @@ package record {
         RemainderT <: HList](
         implicit rt: RemoveAll.Aux[L, T, (RemovedT, RemainderT)],
         rh: Remove.Aux[RemainderT, H, (RemovedH, RemainderH)])
-      : Aux[L, H :: T, (RemovedH :: RemovedT, RemainderH)] =
+        : Aux[L, H :: T, (RemovedH :: RemovedT, RemainderH)] =
       new RemoveAll[L, H :: T] {
         type Out = (RemovedH :: RemovedT, RemainderH)
 
@@ -411,7 +411,7 @@ package record {
     }
 
     implicit def hlistRenamer1[T <: HList, K1, K2, V]
-      : Aux[FieldType[K1, V] :: T, K1, K2, FieldType[K2, V] :: T] =
+        : Aux[FieldType[K1, V] :: T, K1, K2, FieldType[K2, V] :: T] =
       new Renamer[FieldType[K1, V] :: T, K1, K2] {
         type Out = FieldType[K2, V] :: T
         def apply(l: FieldType[K1, V] :: T): Out =
@@ -505,7 +505,7 @@ package record {
     implicit def hlistSwapRecord[K, V, T <: HList](
         implicit wk: Witness.Aux[K],
         kt: SwapRecord[T])
-      : Aux[FieldType[K, V] :: T, FieldType[V, K] :: kt.Out] =
+        : Aux[FieldType[K, V] :: T, FieldType[V, K] :: kt.Out] =
       new SwapRecord[FieldType[K, V] :: T] {
         type Out = FieldType[V, K] :: kt.Out
         def apply(): Out = field[V](wk.value) :: kt()
@@ -536,7 +536,7 @@ package record {
     implicit def hconsFields[K, V, T <: HList](
         implicit key: Witness.Aux[K],
         tailFields: Fields[T])
-      : Aux[FieldType[K, V] :: T, (K, V) :: tailFields.Out] =
+        : Aux[FieldType[K, V] :: T, (K, V) :: tailFields.Out] =
       new Fields[FieldType[K, V] :: T] {
         type Out = (K, V) :: tailFields.Out
         def apply(l: FieldType[K, V] :: T) =

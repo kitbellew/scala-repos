@@ -63,7 +63,7 @@ import org.apache.spark.util.random.XORShiftRandom
   * as batches or points.
   */
 @Since("1.2.0")
-class StreamingKMeansModel @Since("1.2.0")(
+class StreamingKMeansModel @Since("1.2.0") (
     @Since("1.2.0") override val clusterCenters: Array[Vector],
     @Since("1.2.0") val clusterWeights: Array[Double])
     extends KMeansModel(clusterCenters)
@@ -173,7 +173,7 @@ class StreamingKMeansModel @Since("1.2.0")(
   * }}}
   */
 @Since("1.2.0")
-class StreamingKMeans @Since("1.2.0")(
+class StreamingKMeans @Since("1.2.0") (
     @Since("1.2.0") var k: Int,
     @Since("1.2.0") var decayFactor: Double,
     @Since("1.2.0") var timeUnit: String)
@@ -323,7 +323,7 @@ class StreamingKMeans @Since("1.2.0")(
     */
   @Since("1.4.0")
   def predictOnValues[K](data: JavaPairDStream[K, Vector])
-    : JavaPairDStream[K, java.lang.Integer] = {
+      : JavaPairDStream[K, java.lang.Integer] = {
     implicit val tag = fakeClassTag[K]
     JavaPairDStream.fromPairDStream(
       predictOnValues(data.dstream)

@@ -37,7 +37,7 @@ trait ConsumerConnector {
     *          an iterator over message/metadata pairs.
     */
   def createMessageStreams(topicCountMap: Map[String, Int])
-    : Map[String, List[KafkaStream[Array[Byte], Array[Byte]]]]
+      : Map[String, List[KafkaStream[Array[Byte], Array[Byte]]]]
 
   /**
     *  Create a list of MessageStreams for each topic.

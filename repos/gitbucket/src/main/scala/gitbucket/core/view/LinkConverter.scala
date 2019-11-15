@@ -56,7 +56,6 @@ trait LinkConverter { self: RequestCache =>
               .substring(0, 7)}</a>"""
           }
       }
-
       // convert username/project#Num to link
       .replaceBy(("(?<=(^|\\W))([a-zA-Z0-9\\-_]+)/([a-zA-Z0-9\\-_\\.]+)" +
         issueIdPrefix + "([0-9]+)(?=(\\W|$))").r) { m =>
@@ -73,7 +72,6 @@ trait LinkConverter { self: RequestCache =>
             Some(s"""${m.group(2)}/${m.group(3)}#${m.group(4)}""")
         }
       }
-
       // convert username@SHA to link
       .replaceBy(("(?<=(^|\\W))([a-zA-Z0-9\\-_]+)@([a-f0-9]{40})(?=(\\W|$))").r) {
         m =>
@@ -82,7 +80,6 @@ trait LinkConverter { self: RequestCache =>
               .group(3)}">${m.group(2)}@${m.group(3).substring(0, 7)}</a>"""
           }
       }
-
       // convert username#Num to link
       .replaceBy(("(?<=(^|\\W))([a-zA-Z0-9\\-_]+)" + issueIdPrefix +
         "([0-9]+)(?=(\\W|$))").r) { m =>
@@ -99,7 +96,6 @@ trait LinkConverter { self: RequestCache =>
             Some(s"""${m.group(2)}#${m.group(3)}""")
         }
       }
-
       // convert issue id to link
       .replaceBy(("(?<=(^|\\W))(GH-|" + issueIdPrefix +
         ")([0-9]+)(?=(\\W|$))").r) { m =>
@@ -117,14 +113,12 @@ trait LinkConverter { self: RequestCache =>
             Some(s"""${m.group(2)}${m.group(3)}""")
         }
       }
-
       // convert @username to link
       .replaceBy("(?<=(^|\\W))@([a-zA-Z0-9\\-_\\.]+)(?=(\\W|$))".r) { m =>
         getAccountByUserName(m.group(2)).map { _ =>
           s"""<a href="${context.path}/${m.group(2)}">@${m.group(2)}</a>"""
         }
       }
-
       // convert commit id to link
       .replaceAll(
         "(?<=(^|[^\\w/@]))([a-f0-9]{40})(?=(\\W|$))",

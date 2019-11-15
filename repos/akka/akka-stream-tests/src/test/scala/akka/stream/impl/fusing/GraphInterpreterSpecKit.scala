@@ -136,7 +136,7 @@ trait GraphInterpreterSpecKit extends AkkaSpec {
     }
 
     def builder(stages: GraphStageWithMaterializedValue[_ <: Shape, _]*)
-      : AssemblyBuilder = new AssemblyBuilder(stages)
+        : AssemblyBuilder = new AssemblyBuilder(stages)
   }
 
   abstract class TestSetup extends Builder {

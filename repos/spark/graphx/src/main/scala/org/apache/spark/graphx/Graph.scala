@@ -474,7 +474,7 @@ object Graph {
       uniqueEdges: Option[PartitionStrategy] = None,
       edgeStorageLevel: StorageLevel = StorageLevel.MEMORY_ONLY,
       vertexStorageLevel: StorageLevel = StorageLevel.MEMORY_ONLY)
-    : Graph[VD, Int] = {
+      : Graph[VD, Int] = {
     val edges = rawEdges.map(p => Edge(p._1, p._2, 1))
     val graph =
       GraphImpl(edges, defaultValue, edgeStorageLevel, vertexStorageLevel)
@@ -500,7 +500,7 @@ object Graph {
       defaultValue: VD,
       edgeStorageLevel: StorageLevel = StorageLevel.MEMORY_ONLY,
       vertexStorageLevel: StorageLevel = StorageLevel.MEMORY_ONLY)
-    : Graph[VD, ED] = {
+      : Graph[VD, ED] = {
     GraphImpl(edges, defaultValue, edgeStorageLevel, vertexStorageLevel)
   }
 
@@ -525,7 +525,7 @@ object Graph {
       defaultVertexAttr: VD = null.asInstanceOf[VD],
       edgeStorageLevel: StorageLevel = StorageLevel.MEMORY_ONLY,
       vertexStorageLevel: StorageLevel = StorageLevel.MEMORY_ONLY)
-    : Graph[VD, ED] = {
+      : Graph[VD, ED] = {
     GraphImpl(
       vertices,
       edges,

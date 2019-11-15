@@ -106,23 +106,23 @@ trait StandardDefinitions { self: Universe =>
 
     /** The method symbol of method `apply` in module `scala.Array`. */
     def ArrayModule_overloadedApply
-      : TermSymbol // todo. fix the bug in Definitions.getMemberMethod
+        : TermSymbol // todo. fix the bug in Definitions.getMemberMethod
 
     /** The method symbol of method `apply` in class `scala.Array`. */
     def Array_apply
-      : TermSymbol // todo. fix the bug in Definitions.getMemberMethod
+        : TermSymbol // todo. fix the bug in Definitions.getMemberMethod
 
     /** The method symbol of method `clone` in class `scala.Array`. */
     def Array_clone
-      : TermSymbol // todo. fix the bug in Definitions.getMemberMethod
+        : TermSymbol // todo. fix the bug in Definitions.getMemberMethod
 
     /** The method symbol of method `length` in class `scala.Array`. */
     def Array_length
-      : TermSymbol // todo. fix the bug in Definitions.getMemberMethod
+        : TermSymbol // todo. fix the bug in Definitions.getMemberMethod
 
     /** The method symbol of method `update` in class `scala.Array`. */
     def Array_update
-      : TermSymbol // todo. fix the bug in Definitions.getMemberMethod
+        : TermSymbol // todo. fix the bug in Definitions.getMemberMethod
 
     /** A dummy class symbol that is used to indicate by-name parameters.
       *
@@ -206,7 +206,7 @@ trait StandardDefinitions { self: Universe =>
 
     /** The method symbol of method `apply` in class `scala.List`. */
     def List_apply
-      : TermSymbol // todo. fix the bug in Definitions.getMemberMethod
+        : TermSymbol // todo. fix the bug in Definitions.getMemberMethod
 
     /** The module symbol of module `scala.collection.immutable.Nil`. */
     def NilModule: ModuleSymbol

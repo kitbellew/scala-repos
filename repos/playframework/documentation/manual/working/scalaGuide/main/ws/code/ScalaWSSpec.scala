@@ -35,7 +35,7 @@ import akka.util.ByteString
 
 import scala.concurrent.ExecutionContext
 
-class Application @Inject()(ws: WSClient) extends Controller {}
+class Application @Inject() (ws: WSClient) extends Controller {}
 //#dependency
 
 // #scalaws-person
@@ -50,7 +50,7 @@ case class Person(name: String, age: Int)
 class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
 
   // #scalaws-context-injected
-  class PersonService @Inject()(implicit context: ExecutionContext) {
+  class PersonService @Inject() (implicit context: ExecutionContext) {
     // ...
   }
   // #scalaws-context-injected

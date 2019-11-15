@@ -16,7 +16,7 @@ import scala.util.control.NonFatal
 /**
   * Utils for timer metrics collection.
   */
-class Metrics @Inject()(val registry: MetricRegistry) {
+class Metrics @Inject() (val registry: MetricRegistry) {
   private[this] val classNameCache = TrieMap[Class[_], String]()
 
   def timed[T](name: String)(block: => T): T = {

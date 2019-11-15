@@ -27,7 +27,7 @@ import yggdrasil._
 import com.precog.yggdrasil.execution.EvaluationContext
 import yggdrasil.test._
 
-trait StaticInlinerSpecs[M[+ _]]
+trait StaticInlinerSpecs[M[+_]]
     extends Specification
     with EvaluatorTestSupport[M] {
 

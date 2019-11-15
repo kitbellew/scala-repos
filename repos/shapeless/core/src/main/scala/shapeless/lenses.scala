@@ -354,7 +354,7 @@ trait LowPriorityMkSelectDynamicOptic {
       mkCSel: MkCtorPrism[A, I],
       mkPSel: MkFieldLens.Aux[I, K, E],
       compose: OpticComposer[Prism[A, E], R])
-    : Aux[R, A, K, Nothing, compose.Out] =
+      : Aux[R, A, K, Nothing, compose.Out] =
     new MkSelectDynamicOptic[R, A, K, Nothing] {
       type Out = compose.Out
       def apply(r: R): Out = compose(mkPSel() compose mkCSel(), r)
@@ -374,7 +374,7 @@ object MkSelectDynamicOptic extends LowPriorityMkSelectDynamicOptic {
   implicit def mkSelField[R, A, K, E](
       implicit mkLens: MkFieldLens.Aux[A, K, E],
       compose: OpticComposer[Lens[A, E], R])
-    : Aux[R, A, K, Nothing, compose.Out] =
+      : Aux[R, A, K, Nothing, compose.Out] =
     new MkSelectDynamicOptic[R, A, K, Nothing] {
       type Out = compose.Out
       def apply(r: R): Out = compose(mkLens(), r)
@@ -383,7 +383,7 @@ object MkSelectDynamicOptic extends LowPriorityMkSelectDynamicOptic {
   implicit def mkSelCtor[R, A, B](
       implicit mkPrism: MkCtorPrism[A, B],
       compose: OpticComposer[Prism[A, B], R])
-    : Aux[R, A, Nothing, B, compose.Out] =
+      : Aux[R, A, Nothing, B, compose.Out] =
     new MkSelectDynamicOptic[R, A, Nothing, B] {
       type Out = compose.Out
       def apply(r: R): Out = compose(mkPrism(), r)
@@ -537,7 +537,7 @@ trait LowPriorityMkPathOptic {
       mkPrism: MkCtorPrism[A, I],
       mkLens: MkFieldLens.Aux[I, K, E],
       compose: OpticComposer[Prism[A, E], R])
-    : Aux[S, Select[K] :: P, compose.Out, E] =
+      : Aux[S, Select[K] :: P, compose.Out, E] =
     new MkPathOptic[S, Select[K] :: P] {
       type Out = compose.Out
       type Elem = E
@@ -558,7 +558,7 @@ object MkPathOptic extends LowPriorityMkPathOptic {
       implicit mkPrefix: Aux[S, P, R, A],
       mkLens: MkFieldLens.Aux[A, K, E],
       compose: OpticComposer[Lens[A, E], R])
-    : Aux[S, Select[K] :: P, compose.Out, E] =
+      : Aux[S, Select[K] :: P, compose.Out, E] =
     new MkPathOptic[S, Select[K] :: P] {
       type Out = compose.Out
       type Elem = E
@@ -569,7 +569,7 @@ object MkPathOptic extends LowPriorityMkPathOptic {
       implicit mkPrefix: Aux[S, P, R, A],
       mkPrism: MkCtorPrism[A, B],
       compose: OpticComposer[Prism[A, B], R])
-    : Aux[S, Coselect[B] :: P, compose.Out, B] =
+      : Aux[S, Coselect[B] :: P, compose.Out, B] =
     new MkPathOptic[S, Coselect[B] :: P] {
       type Out = compose.Out
       type Elem = B
@@ -590,7 +590,7 @@ trait LowPrioritySegment {
   }
 
   implicit def two[P, S, T <: HList]
-    : Aux[P, S, T, Coselect[S] :: Select[Symbol @@ P] :: T] =
+      : Aux[P, S, T, Coselect[S] :: Select[Symbol @@ P] :: T] =
     new Segment[P, S, T] {
       type Out = Coselect[S] :: Select[Symbol @@ P] :: T
     }
@@ -598,7 +598,7 @@ trait LowPrioritySegment {
 
 object Segment extends LowPrioritySegment {
   implicit def one[P, T <: HList]
-    : Aux[P, Nothing, T, Select[Symbol @@ P] :: T] =
+      : Aux[P, Nothing, T, Select[Symbol @@ P] :: T] =
     new Segment[P, Nothing, T] {
       type Out = Select[Symbol @@ P] :: T
     }

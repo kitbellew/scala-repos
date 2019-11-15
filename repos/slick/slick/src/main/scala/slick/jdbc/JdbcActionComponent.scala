@@ -511,7 +511,7 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
       * count for some part of the batch. If any part of the batch fails, an
       * exception is thrown. */
     def ++=(values: Iterable[U])
-      : ProfileAction[MultiInsertResult, NoStream, Effect.Write]
+        : ProfileAction[MultiInsertResult, NoStream, Effect.Write]
 
     /** Insert multiple rows, including AutoInc columns.
       * This is not supported by all database engines (see
@@ -521,12 +521,12 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
       * count for some part of the batch. If any part of the batch fails, an
       * exception is thrown. */
     def forceInsertAll(values: Iterable[U])
-      : ProfileAction[MultiInsertResult, NoStream, Effect.Write]
+        : ProfileAction[MultiInsertResult, NoStream, Effect.Write]
 
     /** Insert a single row if its primary key does not exist in the table,
       * otherwise update the existing record. */
     def insertOrUpdate(value: U)
-      : ProfileAction[SingleInsertOrUpdateResult, NoStream, Effect.Write]
+        : ProfileAction[SingleInsertOrUpdateResult, NoStream, Effect.Write]
   }
 
   /** Extension methods to generate the JDBC-specific insert actions. */
@@ -545,21 +545,21 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
     /** Get the SQL statement for inserting data produced by another query */
     def forceInsertStatementFor[TT, C[_]](
         compiledQuery: CompiledStreamingExecutable[Query[TT, U, C], _, _])
-      : String
+        : String
 
     /** Insert a single row from a scalar expression */
     def forceInsertExpr[TT](c: TT)(
         implicit shape: Shape[_ <: FlatShapeLevel, TT, U, _])
-      : ProfileAction[QueryInsertResult, NoStream, Effect.Write]
+        : ProfileAction[QueryInsertResult, NoStream, Effect.Write]
 
     /** Insert data produced by another query */
     def forceInsertQuery[TT, C[_]](query: Query[TT, U, C])
-      : ProfileAction[QueryInsertResult, NoStream, Effect.Write]
+        : ProfileAction[QueryInsertResult, NoStream, Effect.Write]
 
     /** Insert data produced by another query */
     def forceInsertQuery[TT, C[_]](
         compiledQuery: CompiledStreamingExecutable[Query[TT, U, C], _, _])
-      : ProfileAction[QueryInsertResult, NoStream, Effect.Write]
+        : ProfileAction[QueryInsertResult, NoStream, Effect.Write]
   }
 
   /** An InsertInvoker that returns the number of affected rows. */
@@ -607,7 +607,7 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
 
     protected[this] def buildQueryBasedInsert[TT, C[_]](
         compiledQuery: CompiledStreamingExecutable[Query[TT, U, C], _, _])
-      : SQLBuilder.Result =
+        : SQLBuilder.Result =
       compiled.forceInsert.ibr.buildInsert(compiledQuery.compiledQuery)
 
     def insertStatement = compiled.standardInsert.sql
@@ -623,15 +623,15 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
       new SingleInsertAction(compiled.forceInsert, value)
 
     def ++=(values: Iterable[U])
-      : ProfileAction[MultiInsertResult, NoStream, Effect.Write] =
+        : ProfileAction[MultiInsertResult, NoStream, Effect.Write] =
       new MultiInsertAction(compiled.standardInsert, values)
 
     def forceInsertAll(values: Iterable[U])
-      : ProfileAction[MultiInsertResult, NoStream, Effect.Write] =
+        : ProfileAction[MultiInsertResult, NoStream, Effect.Write] =
       new MultiInsertAction(compiled.forceInsert, values)
 
     def insertOrUpdate(value: U)
-      : ProfileAction[SingleInsertOrUpdateResult, NoStream, Effect.Write] =
+        : ProfileAction[SingleInsertOrUpdateResult, NoStream, Effect.Write] =
       new InsertOrUpdateAction(value)
 
     def forceInsertStatementFor[TT](c: TT)(
@@ -647,16 +647,16 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
 
     def forceInsertExpr[TT](c: TT)(
         implicit shape: Shape[_ <: FlatShapeLevel, TT, U, _])
-      : ProfileAction[QueryInsertResult, NoStream, Effect.Write] =
+        : ProfileAction[QueryInsertResult, NoStream, Effect.Write] =
       new InsertQueryAction(buildQueryBasedInsert((Query(c)(shape))), null)
 
     def forceInsertQuery[TT, C[_]](query: Query[TT, U, C])
-      : ProfileAction[QueryInsertResult, NoStream, Effect.Write] =
+        : ProfileAction[QueryInsertResult, NoStream, Effect.Write] =
       new InsertQueryAction(buildQueryBasedInsert(query), null)
 
     def forceInsertQuery[TT, C[_]](
         compiledQuery: CompiledStreamingExecutable[Query[TT, U, C], _, _])
-      : ProfileAction[QueryInsertResult, NoStream, Effect.Write] =
+        : ProfileAction[QueryInsertResult, NoStream, Effect.Write] =
       new InsertQueryAction(
         buildQueryBasedInsert(compiledQuery),
         compiledQuery.param)

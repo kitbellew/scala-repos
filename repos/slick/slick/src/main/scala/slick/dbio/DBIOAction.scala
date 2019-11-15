@@ -70,7 +70,7 @@ sealed trait DBIOAction[+R, +S <: NoStream, -E <: Effect] extends Dumpable {
   /** Run another action after this action, if it completed successfully, and return the result
     * of both actions. If either of the two actions fails, the resulting action also fails. */
   def zip[R2, E2 <: Effect](a: DBIOAction[R2, NoStream, E2])
-    : DBIOAction[(R, R2), NoStream, E with E2] =
+      : DBIOAction[(R, R2), NoStream, E with E2] =
     SequenceAction[Any, ArrayBuffer[Any], E with E2](Vector(this, a)).map { r =>
       (r(0).asInstanceOf[R], r(1).asInstanceOf[R2])
     }(DBIO.sameThreadExecutionContext)
@@ -80,7 +80,7 @@ sealed trait DBIOAction[+R, +S <: NoStream, -E <: Effect] extends Dumpable {
     * If either of the two actions fails, the resulting action also fails. */
   def zipWith[R2, E2 <: Effect, R3](a: DBIOAction[R2, NoStream, E2])(
       f: (R, R2) => R3)(implicit executor: ExecutionContext)
-    : DBIOAction[R3, NoStream, E with E2] =
+      : DBIOAction[R3, NoStream, E with E2] =
     SequenceAction[Any, ArrayBuffer[Any], E with E2](Vector(this, a)).map { r =>
       f(r(0).asInstanceOf[R], r(1).asInstanceOf[R2])
     }(executor)
@@ -186,7 +186,7 @@ object DBIOAction {
 
   private[this] def groupBySynchronicity[R, E <: Effect](
       in: TraversableOnce[DBIOAction[R, NoStream, E]])
-    : Vector[Vector[DBIOAction[R, NoStream, E]]] = {
+      : Vector[Vector[DBIOAction[R, NoStream, E]]] = {
     var state = 0 // no current = 0, sync = 1, async = 2
     var current: mutable.Builder[
       DBIOAction[R, NoStream, E],
@@ -207,13 +207,13 @@ object DBIOAction {
   }
 
   /** Transform a `TraversableOnce[ DBIO[R] ]` into a `DBIO[ TraversableOnce[R] ]`. */
-  def sequence[R, M[+ _] <: TraversableOnce[_], E <: Effect](
+  def sequence[R, M[+_] <: TraversableOnce[_], E <: Effect](
       in: M[DBIOAction[R, NoStream, E]])(
       implicit cbf: CanBuildFrom[M[DBIOAction[R, NoStream, E]], R, M[R]])
-    : DBIOAction[M[R], NoStream, E] = {
+      : DBIOAction[M[R], NoStream, E] = {
     implicit val ec = DBIO.sameThreadExecutionContext
     def sequenceGroupAsM(g: Vector[DBIOAction[R, NoStream, E]])
-      : DBIOAction[M[R], NoStream, E] = {
+        : DBIOAction[M[R], NoStream, E] = {
       if (g.head.isInstanceOf[SynchronousDatabaseAction[_, _, _, _]]) {
         // fuse synchronous group
         new SynchronousDatabaseAction.Fused[M[R], NoStream, BasicBackend, E] {
@@ -232,7 +232,7 @@ object DBIOAction {
       } else SequenceAction[R, M[R], E](g)
     }
     def sequenceGroupAsSeq(g: Vector[DBIOAction[R, NoStream, E]])
-      : DBIOAction[Seq[R], NoStream, E] = {
+        : DBIOAction[Seq[R], NoStream, E] = {
       if (g.length == 1) {
         if (g.head.isInstanceOf[SynchronousDatabaseAction[_, _, _, _]]) {
           // fuse synchronous group
@@ -297,7 +297,7 @@ object DBIOAction {
       else AndThenAction[Any, NoStream, E](g)
     }
     def sequenceSync(g: Vector[DBIOAction[Any, NoStream, E]])
-      : DBIOAction[Unit, NoStream, E] = {
+        : DBIOAction[Unit, NoStream, E] = {
       new SynchronousDatabaseAction.Fused[Unit, NoStream, BasicBackend, E] {
         def run(context: BasicBackend#Context) = {
           g.foreach(
@@ -577,7 +577,7 @@ trait SynchronousDatabaseAction[
   private[this] def superZip[R2, E2 <: Effect](
       a: DBIOAction[R2, NoStream, E2]) = super.zip[R2, E2](a)
   override def zip[R2, E2 <: Effect](a: DBIOAction[R2, NoStream, E2])
-    : DBIOAction[(R, R2), NoStream, E with E2] = a match {
+      : DBIOAction[(R, R2), NoStream, E with E2] = a match {
     case a: SynchronousDatabaseAction[_, _, _, _] =>
       new SynchronousDatabaseAction.Fused[(R, R2), NoStream, B, E with E2] {
         def run(context: B#Context): (R, R2) = {
@@ -588,7 +588,7 @@ trait SynchronousDatabaseAction[
           (r1, r2)
         }
         override def nonFusedEquivalentAction
-          : DBIOAction[(R, R2), NoStream, E with E2] = superZip(a)
+            : DBIOAction[(R, R2), NoStream, E with E2] = superZip(a)
       }
     case a => superZip(a)
   }

@@ -13,7 +13,7 @@ object unique extends UFunc {
 
   @expand
   implicit def impl[@expand.args(Int, Double, Float, Long) S]
-    : Impl[DenseVector[S], DenseVector[S]] =
+      : Impl[DenseVector[S], DenseVector[S]] =
     new Impl[DenseVector[S], DenseVector[S]] {
       def apply(v: DenseVector[S]): DenseVector[S] =
         if (v.size > 0) {

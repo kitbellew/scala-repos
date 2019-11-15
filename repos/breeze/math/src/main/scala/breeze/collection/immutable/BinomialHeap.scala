@@ -135,7 +135,7 @@ object BinomialHeap {
   def apply[T <% Ordered[T]](t: T*): BinomialHeap[T] = empty[T] ++ t
 
   implicit def cbfForBinomialHeap[T <: B, B <% Ordered[B]]
-    : CanBuildFrom[BinomialHeap[T], B, BinomialHeap[B]] =
+      : CanBuildFrom[BinomialHeap[T], B, BinomialHeap[B]] =
     new CanBuildFrom[BinomialHeap[T], B, BinomialHeap[B]] {
       def apply(): Builder[B, BinomialHeap[B]] = {
         empty[B].newBuilder

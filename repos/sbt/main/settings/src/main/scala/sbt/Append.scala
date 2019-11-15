@@ -74,7 +74,7 @@ object Append {
       def appendValue(a: Set[T], b: V): Set[T] = a + b
     }
   implicit def appendMap[A, B, X <: A, Y <: B]
-    : Sequence[Map[A, B], Map[X, Y], (X, Y)] =
+      : Sequence[Map[A, B], Map[X, Y], (X, Y)] =
     new Sequence[Map[A, B], Map[X, Y], (X, Y)] {
       def appendValues(a: Map[A, B], b: Map[X, Y]): Map[A, B] = a ++ b
       def appendValue(a: Map[A, B], b: (X, Y)): Map[A, B] = a + b

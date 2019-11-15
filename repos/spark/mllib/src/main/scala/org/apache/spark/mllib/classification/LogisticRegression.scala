@@ -44,7 +44,7 @@ import org.apache.spark.storage.StorageLevel
   *                   so numClasses will be set to 2.
   */
 @Since("0.8.0")
-class LogisticRegressionModel @Since("1.3.0")(
+class LogisticRegressionModel @Since("1.3.0") (
     @Since("1.0.0") override val weights: Vector,
     @Since("1.0.0") override val intercept: Double,
     @Since("1.3.0") val numFeatures: Int,

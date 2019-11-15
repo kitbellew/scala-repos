@@ -34,7 +34,7 @@ object GroupedIterator {
       input: Iterator[InternalRow],
       keyExpressions: Seq[Expression],
       inputSchema: Seq[Attribute])
-    : Iterator[(InternalRow, Iterator[InternalRow])] = {
+      : Iterator[(InternalRow, Iterator[InternalRow])] = {
     if (input.hasNext) {
       new GroupedIterator(input.buffered, keyExpressions, inputSchema)
     } else {

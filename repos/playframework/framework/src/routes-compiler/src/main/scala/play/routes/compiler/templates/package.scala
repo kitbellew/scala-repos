@@ -301,7 +301,7 @@ package object templates {
       routes: Seq[Route],
       params: Seq[(Parameter, Int)])(
       block: (Route, String, String, Map[String, String]) => ScalaContent)
-    : Seq[ScalaContent] = {
+      : Seq[ScalaContent] = {
     ListMap(routes.reverse.map { route =>
       val localNames = reverseLocalNames(route, params)
       val parameters = reverseMatchParameters(params, false)

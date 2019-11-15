@@ -133,7 +133,7 @@ private[util] trait Props extends Logger {
     *                the new ones to use.
     */
   def updateProviders(updater: (List[PropProvider]) => List[PropProvider])
-    : List[PropProvider] = {
+      : List[PropProvider] = {
     providers = updater(providers)
     providers
   }
@@ -163,7 +163,7 @@ private[util] trait Props extends Logger {
     */
   def updateInterpolationValues(
       updater: (List[InterpolationValues]) => List[InterpolationValues])
-    : List[InterpolationValues] = {
+      : List[InterpolationValues] = {
     interpolationValues = updater(interpolationValues)
     interpolationValues
   }

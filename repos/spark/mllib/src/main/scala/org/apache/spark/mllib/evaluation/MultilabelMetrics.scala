@@ -27,7 +27,7 @@ import org.apache.spark.sql.DataFrame
   * both are non-null Arrays, each with unique elements.
   */
 @Since("1.2.0")
-class MultilabelMetrics @Since("1.2.0")(
+class MultilabelMetrics @Since("1.2.0") (
     predictionAndLabels: RDD[(Array[Double], Array[Double])]) {
 
   /**

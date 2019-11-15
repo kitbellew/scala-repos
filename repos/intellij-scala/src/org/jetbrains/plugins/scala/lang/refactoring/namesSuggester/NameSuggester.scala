@@ -302,7 +302,8 @@ object NameSuggester {
         name.charAt(0) match {
           case 'g' | 's' => name.substring(3, name.length)
           case _         => name.substring(2, name.length)
-        } else name
+        }
+      else name
     for (i <- 0 to s.length - 1) {
       if (i == 0) {
         val candidate = s.substring(0, 1).toLowerCase + s.substring(1)
@@ -322,7 +323,8 @@ object NameSuggester {
         name.charAt(0) match {
           case 'g' | 's' => name.substring(3, name.length)
           case _         => name.substring(2, name.length)
-        } else name
+        }
+      else name
     for (i <- 0 to s.length - 1) {
       if (i == 0) {
         val candidate = s.substring(0, 1).toLowerCase + s.substring(1)

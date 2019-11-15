@@ -83,7 +83,7 @@ private[http] object OutgoingConnectionBlueprint {
         val terminationMerge = b.add(TerminationMerge)
 
         val requestRendering
-          : Flow[RequestRenderingContext, ByteString, NotUsed] = {
+            : Flow[RequestRenderingContext, ByteString, NotUsed] = {
           val requestRendererFactory = new HttpRequestRendererFactory(
             userAgentHeader,
             requestHeaderSizeHint,
@@ -300,7 +300,7 @@ private[http] object OutgoingConnectionBlueprint {
 
         private def createEntity(
             creator: EntityCreator[ResponseOutput, ResponseEntity])
-          : ResponseEntity = {
+            : ResponseEntity = {
           creator match {
             case StrictEntityCreator(entity) ⇒
               // upstream demanded one element, which it just got

@@ -59,7 +59,7 @@ object PermissionsFinder {
   }
 }
 
-class PermissionsFinder[M[+ _]: Monad](
+class PermissionsFinder[M[+_]: Monad](
     val apiKeyFinder: APIKeyFinder[M],
     val accountFinder: AccountFinder[M],
     timestampRequiredAfter: Instant)

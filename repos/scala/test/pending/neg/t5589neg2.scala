@@ -12,9 +12,8 @@ class A {
           (((Int, (Double, (Float, String))), List[String]), List[Int]),
           List[Float])]) = {
     for (((((a, (b, (c, (d1, d2)))), es), fs), gs) <- x)
-      yield
-        (d :: es)
-          .mkString(", ") // not ok
+      yield (d :: es)
+        .mkString(", ") // not ok
   }
 
   def f3(

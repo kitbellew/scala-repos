@@ -65,7 +65,7 @@ private[ml] trait CrossValidatorParams extends ValidatorParams with HasSeed {
   */
 @Since("1.2.0")
 @Experimental
-class CrossValidator @Since("1.2.0")(@Since("1.4.0") override val uid: String)
+class CrossValidator @Since("1.2.0") (@Since("1.4.0") override val uid: String)
     extends Estimator[CrossValidatorModel]
     with CrossValidatorParams
     with MLWritable
@@ -309,7 +309,7 @@ object CrossValidator extends MLReadable[CrossValidator] {
         path: String,
         sc: SparkContext,
         expectedClassName: String)
-      : (Metadata, Estimator[M], Evaluator, Array[ParamMap], Int) = {
+        : (Metadata, Estimator[M], Evaluator, Array[ParamMap], Int) = {
 
       val metadata =
         DefaultParamsReader.loadMetadata(path, sc, expectedClassName)

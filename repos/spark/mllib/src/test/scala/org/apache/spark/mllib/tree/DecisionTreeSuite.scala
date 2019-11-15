@@ -1182,7 +1182,7 @@ object DecisionTreeSuite extends SparkFunSuite {
   }
 
   def generateCategoricalDataPointsAsJavaList()
-    : java.util.List[LabeledPoint] = {
+      : java.util.List[LabeledPoint] = {
     generateCategoricalDataPoints().toList.asJava
   }
 

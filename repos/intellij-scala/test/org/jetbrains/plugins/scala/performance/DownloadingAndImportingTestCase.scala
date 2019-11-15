@@ -36,7 +36,7 @@ abstract class DownloadingAndImportingTestCase
   }
 
   override protected def getCurrentExternalProjectSettings
-    : ExternalProjectSettings = {
+      : ExternalProjectSettings = {
     val settings = new SbtProjectSettings
     val internalSdk = JavaAwareProjectJdkTableImpl.getInstanceEx.getInternalJdk
     val sdk =

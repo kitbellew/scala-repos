@@ -310,7 +310,7 @@ class ReplicaManager(
   }
 
   def stopReplicas(stopReplicaRequest: StopReplicaRequest)
-    : (mutable.Map[TopicPartition, Short], Short) = {
+      : (mutable.Map[TopicPartition, Short], Short) = {
     replicaStateChangeLock synchronized {
       val responseMap = new collection.mutable.HashMap[TopicPartition, Short]
       if (stopReplicaRequest.controllerEpoch() < controllerEpoch) {
@@ -667,7 +667,7 @@ class ReplicaManager(
       fetchOnlyFromLeader: Boolean,
       readOnlyCommitted: Boolean,
       readPartitionInfo: Map[TopicAndPartition, PartitionFetchInfo])
-    : Map[TopicAndPartition, LogReadResult] = {
+      : Map[TopicAndPartition, LogReadResult] = {
 
     readPartitionInfo.map {
       case (
@@ -822,7 +822,7 @@ class ReplicaManager(
       leaderAndISRRequest: LeaderAndIsrRequest,
       metadataCache: MetadataCache,
       onLeadershipChange: (Iterable[Partition], Iterable[Partition]) => Unit)
-    : BecomeLeaderOrFollowerResult = {
+      : BecomeLeaderOrFollowerResult = {
     leaderAndISRRequest.partitionStates.asScala.foreach {
       case (topicPartition, stateInfo) =>
         stateChangeLogger.trace(

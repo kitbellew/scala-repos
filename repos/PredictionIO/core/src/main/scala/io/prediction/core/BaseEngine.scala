@@ -80,7 +80,7 @@ abstract class BaseEngine[EI, Q, P, A] extends Serializable {
       sc: SparkContext,
       engineParamsList: Seq[EngineParams],
       params: WorkflowParams)
-    : Seq[(EngineParams, Seq[(EI, RDD[(Q, P, A)])])] = {
+      : Seq[(EngineParams, Seq[(EI, RDD[(Q, P, A)])])] = {
     engineParamsList.map { engineParams =>
       (engineParams, eval(sc, engineParams, params))
     }

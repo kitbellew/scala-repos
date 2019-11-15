@@ -301,9 +301,9 @@ abstract class SymbolicXMLBuilder(p: Parsers#Parser, preserveWS: Boolean) {
     def handleUnprefixedAttribute(key: String, value: Tree) =
       mkAttributeTree(null, key, value)
 
-    val attributes: List[Tree] = for ((k, v) <- attrMap.toList.reverse)
-      yield
-        splitPrefix(k) match {
+    val attributes: List[Tree] =
+      for ((k, v) <- attrMap.toList.reverse)
+        yield splitPrefix(k) match {
           case (Some(pre), rest) => handlePrefixedAttribute(pre, rest, v)
           case _                 => handleUnprefixedAttribute(k, v)
         }

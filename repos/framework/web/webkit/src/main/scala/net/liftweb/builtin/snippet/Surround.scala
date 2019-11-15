@@ -40,7 +40,8 @@ object Surround extends DispatchSnippet {
           in.flatMap {
             case e: Elem => e.child
             case n       => n
-          } else in
+          }
+        else in
 
       WithParamVar.doWith(Map()) {
         lazy val mainParam =

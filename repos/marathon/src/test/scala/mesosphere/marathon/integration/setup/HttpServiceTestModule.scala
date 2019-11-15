@@ -72,7 +72,7 @@ case class CallbackEvent(eventType: String, info: Map[String, Any])
   * Callback
   */
 @Path("callback")
-class CallbackEventHandler @Inject()() {
+class CallbackEventHandler @Inject() () {
 
   private[this] val log = LoggerFactory.getLogger(getClass.getName)
 
@@ -92,7 +92,7 @@ class CallbackEventHandler @Inject()() {
 }
 
 @Path("health")
-class ApplicationHealthCheck @Inject()() {
+class ApplicationHealthCheck @Inject() () {
 
   @GET
   @Path("{appId:.+}/{versionId}/{port}")

@@ -134,7 +134,7 @@ class Tcp(system: ExtendedActorSystem) extends akka.actor.Extension {
       options: JIterable[SocketOption],
       halfClose: Boolean,
       idleTimeout: Duration)
-    : Source[IncomingConnection, CompletionStage[ServerBinding]] =
+      : Source[IncomingConnection, CompletionStage[ServerBinding]] =
     Source.fromGraph(
       delegate
         .bind(
@@ -187,7 +187,7 @@ class Tcp(system: ExtendedActorSystem) extends akka.actor.Extension {
       halfClose: Boolean,
       connectTimeout: Duration,
       idleTimeout: Duration)
-    : Flow[ByteString, ByteString, CompletionStage[OutgoingConnection]] =
+      : Flow[ByteString, ByteString, CompletionStage[OutgoingConnection]] =
     Flow.fromGraph(
       delegate
         .outgoingConnection(
@@ -204,7 +204,7 @@ class Tcp(system: ExtendedActorSystem) extends akka.actor.Extension {
     * It represents a prospective TCP client connection to the given endpoint.
     */
   def outgoingConnection(host: String, port: Int)
-    : Flow[ByteString, ByteString, CompletionStage[OutgoingConnection]] =
+      : Flow[ByteString, ByteString, CompletionStage[OutgoingConnection]] =
     Flow.fromGraph(
       delegate
         .outgoingConnection(new InetSocketAddress(host, port))

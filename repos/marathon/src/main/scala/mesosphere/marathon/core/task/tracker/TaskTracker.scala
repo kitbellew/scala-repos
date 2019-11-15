@@ -97,7 +97,7 @@ object TaskTracker {
     private val log = LoggerFactory.getLogger(getClass)
 
     def of(appTasks: collection.immutable.Map[PathId, TaskTracker.AppTasks])
-      : TasksByApp = {
+        : TasksByApp = {
       new TasksByApp(appTasks.withDefault(appId => TaskTracker.AppTasks(appId)))
     }
 

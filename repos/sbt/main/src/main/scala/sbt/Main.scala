@@ -501,19 +501,18 @@ object BuiltinCommands {
       kvs = Act.keyValues(structure)(lastOnly_keys._2)
       f <- if (lastOnly_keys._1) success(() => s)
       else Aggregation.evaluatingParser(s, structure, show)(kvs)
-    } yield
-      () => {
-        def export0(s: State): State = lastImpl(s, kvs, Some(ExportStream))
-        val newS = try f()
-        catch {
-          case e: Exception =>
-            try export0(s)
-            finally {
-              throw e
-            }
-        }
-        export0(newS)
+    } yield () => {
+      def export0(s: State): State = lastImpl(s, kvs, Some(ExportStream))
+      val newS = try f()
+      catch {
+        case e: Exception =>
+          try export0(s)
+          finally {
+            throw e
+          }
       }
+      export0(newS)
+    }
   }
 
   def lastGrepParser(s: State) =

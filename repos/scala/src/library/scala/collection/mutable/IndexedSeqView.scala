@@ -124,7 +124,7 @@ object IndexedSeqView {
       def apply() = new NoBuilder
     }
   implicit def arrCanBuildFrom[A]
-    : CanBuildFrom[TraversableView[_, Array[_]], A, SeqView[A, Array[A]]] =
+      : CanBuildFrom[TraversableView[_, Array[_]], A, SeqView[A, Array[A]]] =
     new CanBuildFrom[TraversableView[_, Array[_]], A, SeqView[A, Array[A]]] {
       def apply(from: TraversableView[_, Array[_]]) = new NoBuilder
       def apply() = new NoBuilder

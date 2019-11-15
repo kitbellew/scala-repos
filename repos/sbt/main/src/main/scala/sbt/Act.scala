@@ -70,16 +70,15 @@ object Act {
         baseMask: ScopeMask): Seq[Parser[ParsedKey]] =
       for {
         conf <- configs(confAmb, defaultConfigs, proj, index)
-      } yield
-        for {
-          taskAmb <- taskAxis(conf, index.tasks(proj, conf), keyMap)
-          task = resolveTask(taskAmb)
-          key <- key(index, proj, conf, task, keyMap)
-          extra <- extraAxis(keyMap, IMap.empty)
-        } yield {
-          val mask = baseMask.copy(task = taskAmb.isExplicit, extra = true)
-          new ParsedKey(makeScopedKey(proj, conf, task, extra, key), mask)
-        }
+      } yield for {
+        taskAmb <- taskAxis(conf, index.tasks(proj, conf), keyMap)
+        task = resolveTask(taskAmb)
+        key <- key(index, proj, conf, task, keyMap)
+        extra <- extraAxis(keyMap, IMap.empty)
+      } yield {
+        val mask = baseMask.copy(task = taskAmb.isExplicit, extra = true)
+        new ParsedKey(makeScopedKey(proj, conf, task, extra, key), mask)
+      }
 
     for {
       rawProject <- optProjectRef(index, current)
@@ -242,7 +241,7 @@ object Act {
       d: Option[String],
       tasks: Set[AttributeKey[_]],
       allKnown: Map[String, AttributeKey[_]])
-    : Parser[ParsedAxis[AttributeKey[_]]] = {
+      : Parser[ParsedAxis[AttributeKey[_]]] = {
     val taskSeq = tasks.toSeq
     def taskKeys(f: AttributeKey[_] => String): Seq[(String, AttributeKey[_])] =
       taskSeq.map(key => (f(key), key))

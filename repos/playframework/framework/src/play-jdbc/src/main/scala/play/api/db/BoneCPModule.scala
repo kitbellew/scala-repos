@@ -41,7 +41,7 @@ trait BoneCPComponents {
   * BoneCP implementation of connection pool interface.
   */
 @Singleton
-class BoneConnectionPool @Inject()(environment: Environment)
+class BoneConnectionPool @Inject() (environment: Environment)
     extends ConnectionPool {
 
   import BoneConnectionPool._

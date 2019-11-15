@@ -57,7 +57,7 @@ object Compatibility {
       (Success(typez, None), Set.empty),
       ModCount.getBlockModificationCount)
     private def eval(typez: ScType, expectedOption: Option[ScType])
-      : (TypeResult[ScType], Set[ImportUsed]) = {
+        : (TypeResult[ScType], Set[ImportUsed]) = {
       expectedOption match {
         case Some(expected) if typez.conforms(expected) =>
           (Success(typez, None), Set.empty)
@@ -124,7 +124,7 @@ object Compatibility {
         checkImplicits: Boolean,
         isShape: Boolean,
         expectedOption: Option[ScType])
-      : (TypeResult[ScType], collection.Set[ImportUsed]) = {
+        : (TypeResult[ScType], collection.Set[ImportUsed]) = {
       if (expr != null) {
         val expressionTypeResult = expr.getTypeAfterImplicitConversion(
           checkImplicits,
@@ -186,8 +186,9 @@ object Compatibility {
   }
 
   def clashedAssignmentsIn(exprs: Seq[Expression]): Seq[ScAssignStmt] = {
-    val pairs = for (Expression(assignment @ NamedAssignStmt(name)) <- exprs)
-      yield (name, assignment)
+    val pairs =
+      for (Expression(assignment @ NamedAssignStmt(name)) <- exprs)
+        yield (name, assignment)
     val names = pairs.unzip._1
     val clashedNames = names.diff(names.distinct)
     pairs.filter(p => clashedNames.contains(p._1)).map(_._2)
@@ -465,10 +466,11 @@ object Compatibility {
           matched,
           matchedTypes)
 
-      val missed = for ((parameter: Parameter, b) <- parameters.zip(used)
-                        if !b &&
-                          !parameter.isDefault)
-        yield MissedValueParameter(parameter)
+      val missed =
+        for ((parameter: Parameter, b) <- parameters.zip(used)
+             if !b &&
+               !parameter.isDefault)
+          yield MissedValueParameter(parameter)
       defaultParameterUsed = parameters.zip(used).exists {
         case (param, bool) => !bool && param.isDefault
       }

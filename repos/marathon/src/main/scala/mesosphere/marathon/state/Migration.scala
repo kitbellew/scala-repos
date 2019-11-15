@@ -17,7 +17,7 @@ import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
 import scala.util.control.NonFatal
 
-class Migration @Inject()(
+class Migration @Inject() (
     store: PersistentStore,
     appRepo: AppRepository,
     groupRepo: GroupRepository,

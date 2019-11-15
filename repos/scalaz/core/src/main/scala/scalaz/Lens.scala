@@ -186,7 +186,7 @@ sealed abstract class LensFamily[A1, A2, B1, B2] {
 
   /** Two lenses that view a value of the same type can be joined */
   def sum[C1, C2](that: => LensFamily[C1, C2, B1, B2])
-    : LensFamily[A1 \/ C1, A2 \/ C2, B1, B2] =
+      : LensFamily[A1 \/ C1, A2 \/ C2, B1, B2] =
     lensFamily {
       case -\/(a) =>
         run(a) map (\/.left)
@@ -196,18 +196,18 @@ sealed abstract class LensFamily[A1, A2, B1, B2] {
 
   /** Alias for `sum` */
   def |||[C1, C2](that: => LensFamily[C1, C2, B1, B2])
-    : LensFamily[A1 \/ C1, A2 \/ C2, B1, B2] = sum(that)
+      : LensFamily[A1 \/ C1, A2 \/ C2, B1, B2] = sum(that)
 
   /** Two disjoint lenses can be paired */
   def product[C1, C2, D1, D2](that: LensFamily[C1, C2, D1, D2])
-    : LensFamily[(A1, C1), (A2, C2), (B1, D1), (B2, D2)] =
+      : LensFamily[(A1, C1), (A2, C2), (B1, D1), (B2, D2)] =
     lensFamily {
       case (a, c) => run(a) *** that.run(c)
     }
 
   /** alias for `product` */
   def ***[C1, C2, D1, D2](that: LensFamily[C1, C2, D1, D2])
-    : LensFamily[(A1, C1), (A2, C2), (B1, D1), (B2, D2)] = product(that)
+      : LensFamily[(A1, C1), (A2, C2), (B1, D1), (B2, D2)] = product(that)
 
   trait LensLaw {
     def identity[A >: A2 <: A1, B >: B1 <: B2](a: A)(
@@ -282,12 +282,12 @@ trait LensFamilyFunctions {
 
   /** Polymorphically access the first field of a tuple */
   def lazyFirstLensFamily[A1, A2, B]
-    : LensFamily[LazyTuple2[A1, B], LazyTuple2[A2, B], A1, A2] =
+      : LensFamily[LazyTuple2[A1, B], LazyTuple2[A2, B], A1, A2] =
     lensFamily(z => IndexedStore(x => LazyTuple2(x, z._2), z._1))
 
   /** Polymorphically access the second field of a tuple */
   def lazySecondLensFamily[A, B1, B2]
-    : LensFamily[LazyTuple2[A, B1], LazyTuple2[A, B2], B1, B2] =
+      : LensFamily[LazyTuple2[A, B1], LazyTuple2[A, B2], B1, B2] =
     lensFamily(z => IndexedStore(x => LazyTuple2(z._1, x), z._2))
 
   def predicateLensFamily[A1, A2]: LensFamily[
@@ -708,7 +708,7 @@ abstract class LensInstances extends LensInstances0 {
 
   implicit def tuple2LensFamily[S1, S2, A, B](
       lens: LensFamily[S1, S2, (A, B), (A, B)])
-    : (LensFamily[S1, S2, A, A], LensFamily[S1, S2, B, B]) =
+      : (LensFamily[S1, S2, A, A], LensFamily[S1, S2, B, B]) =
     LensFamilyUnzip[S1, S2].unzip(lens)
 
   implicit def tuple3LensFamily[S1, S2, A, B, C](

@@ -205,7 +205,7 @@ abstract class BasicDirectives extends BasicDirectivesBase {
       def methodInvocator(
           method: Method,
           adaptParams: (RequestContext, Seq[Any]) ⇒ Seq[Any])
-        : (RequestContext, Seq[Any]) ⇒ RouteResult = {
+          : (RequestContext, Seq[Any]) ⇒ RouteResult = {
         val resultAdaptor = adaptResult(method)
         if (!method.isAccessible) method.setAccessible(true)
         if (adaptParams == IdentityAdaptor)(ctx, params) ⇒

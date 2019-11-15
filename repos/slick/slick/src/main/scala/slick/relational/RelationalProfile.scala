@@ -69,7 +69,7 @@ trait RelationalProfile
       createSchemaActionExtensionMethods(sd)
 
     implicit def fastPathExtensionMethods[T, P](mp: MappedProjection[T, P])
-      : FastPathExtensionMethods[ResultConverterDomain, T, P] =
+        : FastPathExtensionMethods[ResultConverterDomain, T, P] =
       new FastPathExtensionMethods[ResultConverterDomain, T, P](mp)
   }
 
@@ -277,7 +277,7 @@ trait RelationalTypesComponent { self: RelationalProfile =>
       MappedColumnType.base[A, B](iso.map, iso.comap)
     implicit def booleanColumnType: BaseColumnType[Boolean]
     implicit def bigDecimalColumnType
-      : BaseColumnType[BigDecimal] with NumericTypedType
+        : BaseColumnType[BigDecimal] with NumericTypedType
     implicit def byteColumnType: BaseColumnType[Byte] with NumericTypedType
     implicit def charColumnType: BaseColumnType[Char]
     implicit def doubleColumnType: BaseColumnType[Double] with NumericTypedType
@@ -312,7 +312,7 @@ trait RelationalActionComponent extends BasicActionComponent {
 
     /** An Action that inserts a collection of values. */
     def ++=(values: Iterable[T])
-      : ProfileAction[MultiInsertResult, NoStream, Effect.Write]
+        : ProfileAction[MultiInsertResult, NoStream, Effect.Write]
   }
 
   //////////////////////////////////////////////////////////// Schema Actions

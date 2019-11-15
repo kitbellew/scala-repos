@@ -115,7 +115,7 @@ trait MemoryQueryingProfile extends BasicProfile {
     }
 
     def createColumnConverter(n: Node, idx: Int, column: Option[FieldSymbol])
-      : ResultConverter[MemoryResultConverterDomain, _] =
+        : ResultConverter[MemoryResultConverterDomain, _] =
       new QueryResultConverter(idx, typeInfoFor(n.nodeType.structural).nullable)
 
     class QueryResultConverter(ridx: Int, nullable: Boolean)

@@ -587,7 +587,7 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
     }
 
     def unapply(insn: AbstractInsnNode)
-      : Option[(InvokeDynamicInsnNode, Type, Handle, Type)] = insn match {
+        : Option[(InvokeDynamicInsnNode, Type, Handle, Type)] = insn match {
       case indy: InvokeDynamicInsnNode
           if indy.bsm == metafactoryHandle ||
             indy.bsm == altMetafactoryHandle =>

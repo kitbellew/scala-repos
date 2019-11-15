@@ -183,7 +183,8 @@ private[camel] class ActorProducer(val endpoint: ActorEndpoint, camel: Camel)
                     (endpoint.path, endpoint.replyTimeout, endpoint))))
           case Failure(throwable) ⇒
             exchange.setFailure(FailureResult(throwable))
-        } else {
+        }
+        else {
           case Success(Ack) ⇒ () /* no response message to set */
           case Success(failure: FailureResult) ⇒ exchange.setFailure(failure)
           case Success(msg) ⇒

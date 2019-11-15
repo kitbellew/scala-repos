@@ -253,7 +253,7 @@ object HashEqualsArrayWrapper {
     }
 
   implicit val hashEqualsShortOrdering
-    : Ordering[HashEqualsArrayWrapper[Short]] =
+      : Ordering[HashEqualsArrayWrapper[Short]] =
     new Ordering[HashEqualsArrayWrapper[Short]] {
       override def compare(
           x: HashEqualsArrayWrapper[Short],
@@ -278,7 +278,7 @@ object HashEqualsArrayWrapper {
     }
 
   implicit val hashEqualsBooleanOrdering
-    : Ordering[HashEqualsArrayWrapper[Boolean]] =
+      : Ordering[HashEqualsArrayWrapper[Boolean]] =
     new Ordering[HashEqualsArrayWrapper[Boolean]] {
       override def compare(
           x: HashEqualsArrayWrapper[Boolean],
@@ -287,7 +287,7 @@ object HashEqualsArrayWrapper {
     }
 
   implicit val hashEqualsFloatOrdering
-    : Ordering[HashEqualsArrayWrapper[Float]] =
+      : Ordering[HashEqualsArrayWrapper[Float]] =
     new Ordering[HashEqualsArrayWrapper[Float]] {
       override def compare(
           x: HashEqualsArrayWrapper[Float],
@@ -296,7 +296,7 @@ object HashEqualsArrayWrapper {
     }
 
   implicit val hashEqualsDoubleOrdering
-    : Ordering[HashEqualsArrayWrapper[Double]] =
+      : Ordering[HashEqualsArrayWrapper[Double]] =
     new Ordering[HashEqualsArrayWrapper[Double]] {
       override def compare(
           x: HashEqualsArrayWrapper[Double],

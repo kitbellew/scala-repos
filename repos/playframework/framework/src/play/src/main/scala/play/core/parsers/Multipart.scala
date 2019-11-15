@@ -187,7 +187,7 @@ object Multipart {
     }
 
     def unapply(headers: Map[String, String])
-      : Option[(String, String, Option[String])] = {
+        : Option[(String, String, Option[String])] = {
 
       val KeyValue = """^([a-zA-Z_0-9]+)="?(.*?)"?$""".r
 

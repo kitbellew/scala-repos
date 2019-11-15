@@ -26,7 +26,7 @@ object TaskStatusUpdateProcessorImpl {
 /**
   * Executes the given TaskStatusUpdateSteps for every update.
   */
-class TaskStatusUpdateProcessorImpl @Inject()(
+class TaskStatusUpdateProcessorImpl @Inject() (
     metrics: Metrics,
     clock: Clock,
     taskTracker: TaskTracker,

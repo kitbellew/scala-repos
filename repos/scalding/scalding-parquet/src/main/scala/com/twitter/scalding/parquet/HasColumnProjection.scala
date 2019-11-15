@@ -43,7 +43,7 @@ trait HasColumnProjection {
     * Parquet accepts globs separated by the ; character
     */
   protected[parquet] final def columnProjectionString
-    : Option[ColumnProjectionString] = {
+      : Option[ColumnProjectionString] = {
     val deprecated = withColumns
     val strict = withColumnProjections
 

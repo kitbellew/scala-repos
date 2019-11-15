@@ -59,7 +59,7 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
   private val topicChangeListener = new TopicChangeListener()
   private val deleteTopicsListener = new DeleteTopicsListener()
   private val partitionModificationsListeners
-    : mutable.Map[String, PartitionModificationsListener] = mutable.Map.empty
+      : mutable.Map[String, PartitionModificationsListener] = mutable.Map.empty
   private val stateChangeLogger = KafkaController.stateChangeLogger
 
   this.logIdent = "[Partition state machine on Controller " + controllerId +

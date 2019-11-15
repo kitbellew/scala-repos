@@ -496,7 +496,7 @@ object HttpEntity {
 
     /** Java API */
     def getChunks
-      : stream.javadsl.Source[jm.HttpEntity.ChunkStreamPart, AnyRef] =
+        : stream.javadsl.Source[jm.HttpEntity.ChunkStreamPart, AnyRef] =
       stream.javadsl.Source.fromGraph(
         chunks.asInstanceOf[Source[jm.HttpEntity.ChunkStreamPart, AnyRef]])
   }

@@ -65,7 +65,7 @@ object Version {
 }
 
 object VFSModule {
-  def bufferOutput[M[+ _]: Monad](
+  def bufferOutput[M[+_]: Monad](
       stream0: StreamT[M, CharBuffer],
       charset: Charset = Charset.forName("UTF-8"),
       bufferSize: Int = 64 * 1024): StreamT[M, Array[Byte]] = {
@@ -101,7 +101,7 @@ object VFSModule {
   }
 }
 
-trait VFSModule[M[+ _], Block] extends Logging {
+trait VFSModule[M[+_], Block] extends Logging {
   import ResourceError._
 
   type Projection <: ProjectionLike[M, Block]
@@ -137,7 +137,7 @@ trait VFSModule[M[+ _], Block] extends Logging {
     }
 
     def asProjection(path: Path, version: Version)(implicit M: Monad[M])
-      : Resource => EitherT[M, ResourceError, Projection] = { resource =>
+        : Resource => EitherT[M, ResourceError, Projection] = { resource =>
       def notAProjection =
         notFound(
           "Requested resource at %s version %s cannot be interpreted as a Quirrel projection."
@@ -160,7 +160,7 @@ trait VFSModule[M[+ _], Block] extends Logging {
       projectionResource(this)
 
     def byteStream(requestedMimeTypes: Seq[MimeType])(implicit M: Monad[M])
-      : OptionT[M, (MimeType, StreamT[M, Array[Byte]])] = {
+        : OptionT[M, (MimeType, StreamT[M, Array[Byte]])] = {
       import FileContent._
       // Map to the type we'll use for conversion and the type we report to the user
       // FIXME: We're dealing with MimeType in too many places here
@@ -189,7 +189,7 @@ trait VFSModule[M[+ _], Block] extends Logging {
       blobResource(this)
 
     def byteStream(requestedMimeTypes: Seq[MimeType])(implicit M: Monad[M])
-      : OptionT[M, (MimeType, StreamT[M, Array[Byte]])] = {
+        : OptionT[M, (MimeType, StreamT[M, Array[Byte]])] = {
       import FileContent._
       val acceptableMimeTypes = Map(
         mimeType -> mimeType,
@@ -208,7 +208,7 @@ trait VFSModule[M[+ _], Block] extends Logging {
     def derefValue(block: Block): Block
     def blockSize(block: Block): Int
     def pathStructure(selector: CPath)(implicit M: Monad[M])
-      : Projection => EitherT[M, ResourceError, PathStructure]
+        : Projection => EitherT[M, ResourceError, PathStructure]
   }
 
   type VFSCompanion <: VFSCompanionLike

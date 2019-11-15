@@ -59,12 +59,12 @@ object NoHttpFilters extends NoHttpFilters
 /**
   * Adapter from the Java HttpFliters to the Scala HttpFilters interface.
   */
-class JavaHttpFiltersAdapter @Inject()(underlying: play.http.HttpFilters)
+class JavaHttpFiltersAdapter @Inject() (underlying: play.http.HttpFilters)
     extends HttpFilters {
   def filters = underlying.filters()
 }
 
-class JavaHttpFiltersDelegate @Inject()(delegate: HttpFilters)
+class JavaHttpFiltersDelegate @Inject() (delegate: HttpFilters)
     extends play.http.HttpFilters {
   def filters() = delegate.filters.map(_.asJava).toArray
 }

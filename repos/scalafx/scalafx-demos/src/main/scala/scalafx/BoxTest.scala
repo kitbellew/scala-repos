@@ -54,9 +54,9 @@ object BoxTest extends JFXApp {
           },
           new VBox {
             spacing = 10
-            children = for (i <- 0 until 3)
-              yield
-                new Circle {
+            children =
+              for (i <- 0 until 3)
+                yield new Circle {
                   radius = 25
                   fill = Color.Blue
                   stroke = Color.Blue.brighter

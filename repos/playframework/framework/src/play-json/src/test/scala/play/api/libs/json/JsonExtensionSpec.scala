@@ -387,7 +387,7 @@ object JsonExtensionSpec extends Specification {
       import play.api.libs.functional.syntax._
 
       implicit def genericEntityWrapperFormat[A: Format, B: Format]
-        : Format[GenericCaseClass2[A, B]] =
+          : Format[GenericCaseClass2[A, B]] =
         (((__ \ "obj1").format[A] and (__ \ "obj2").format[B]))(
           GenericCaseClass2[A, B] _,
           unlift(GenericCaseClass2.unapply[A, B]))

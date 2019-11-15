@@ -45,7 +45,7 @@ import TransSpecModule._
 
 import scala.collection.mutable.ArrayBuffer
 
-trait TimeLibModule[M[+ _]] extends ColumnarTableLibModule[M] {
+trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
   trait TimeLib extends ColumnarTableLib {
     import trans._
     import StdLib.{StrAndDateT, dateToStrCol}

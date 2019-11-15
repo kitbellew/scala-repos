@@ -23,7 +23,7 @@ object CanPadRight {
 
   @expand
   implicit def implDV_OptPadDim[@expand.args(Int, Long, Float, Double) T: ClassTag: Semiring]
-    : CanPadRight[DenseVector[T], Dimensions1, DenseVector[T]] =
+      : CanPadRight[DenseVector[T], Dimensions1, DenseVector[T]] =
     new CanPadRight[DenseVector[T], Dimensions1, DenseVector[T]] {
       def apply(
           v: DenseVector[T],
@@ -107,7 +107,7 @@ object CanPadRight {
     Long,
     Float,
     Double) T: ClassTag: Semiring]
-    : CanPadRight[DenseMatrix[T], Dimensions2, DenseMatrix[T]] =
+      : CanPadRight[DenseMatrix[T], Dimensions2, DenseMatrix[T]] =
     new CanPadRight[DenseMatrix[T], Dimensions2, DenseMatrix[T]] {
       def apply(
           m: DenseMatrix[T],
@@ -178,7 +178,7 @@ object CanPadLeft {
 
   @expand
   implicit def implDV_OptPadDim[@expand.args(Int, Long, Float, Double) T: ClassTag: Semiring]
-    : CanPadLeft[DenseVector[T], Dimensions1, DenseVector[T]] =
+      : CanPadLeft[DenseVector[T], Dimensions1, DenseVector[T]] =
     new CanPadLeft[DenseVector[T], Dimensions1, DenseVector[T]] {
       def apply(
           v: DenseVector[T],
@@ -262,7 +262,7 @@ object CanPadLeft {
     Long,
     Float,
     Double) T: ClassTag: Semiring]
-    : CanPadLeft[DenseMatrix[T], Dimensions2, DenseMatrix[T]] =
+      : CanPadLeft[DenseMatrix[T], Dimensions2, DenseMatrix[T]] =
     new CanPadLeft[DenseMatrix[T], Dimensions2, DenseMatrix[T]] {
       def apply(
           m: DenseMatrix[T],

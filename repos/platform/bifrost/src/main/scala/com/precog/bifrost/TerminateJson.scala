@@ -88,7 +88,7 @@ object TerminateJson {
     * least 1 value in the stream. If the stream is empty, then `null` will be
     * inserted.
     */
-  def ensure[M[+ _]: Monad](
+  def ensure[M[+_]: Monad](
       stream0: StreamT[M, CharBuffer]): StreamT[M, CharBuffer] = {
     def build(
         stack0: ArrayStack[Int],

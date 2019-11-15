@@ -81,7 +81,7 @@ object CofreeTest extends SpecLite {
     }
 
   implicit def CofreeLazyOptionArb[A: Arbitrary]
-    : Arbitrary[CofreeLazyOption[A]] =
+      : Arbitrary[CofreeLazyOption[A]] =
     Functor[Arbitrary].map(implicitly[Arbitrary[OneAndStream[A]]])(
       oneAndStreamCofreeLazyOptionIso.to(_))
 
@@ -118,7 +118,7 @@ object CofreeTest extends SpecLite {
     type CofreeZipLazyOption[A] = CofreeZip[LazyOption, A]
 
     implicit def CofreeZipLazyOptionArb[A: Arbitrary]
-      : Arbitrary[CofreeZipLazyOption[A]] =
+        : Arbitrary[CofreeZipLazyOption[A]] =
       Tags.Zip.subst(CofreeLazyOptionArb[A])
 
     // Hack: avoid stack overflow because `Applicative[CofreeLazyOption].point` is infinite stream
@@ -141,7 +141,7 @@ object CofreeTest extends SpecLite {
     type CofreeZipStream[A] = CofreeZip[Stream, A]
 
     implicit def CofreeZipStreamArb[A: Arbitrary]
-      : Arbitrary[CofreeZipStream[A]] =
+        : Arbitrary[CofreeZipStream[A]] =
       Tags.Zip.subst(CofreeStreamArb[A])
 
     checkAll("CofreeZipStream", ScalazProperties.apply.laws[CofreeZipStream])

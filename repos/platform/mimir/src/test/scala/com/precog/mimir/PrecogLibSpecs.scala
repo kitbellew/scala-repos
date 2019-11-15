@@ -31,7 +31,7 @@ import scalaz.std.list._
 import com.precog.util.IdGen
 import com.precog.util.IOUtils
 
-trait PrecogLibSpecs[M[+ _]]
+trait PrecogLibSpecs[M[+_]]
     extends Specification
     with EvaluatorTestSupport[M]
     with LongIdMemoryDatasetConsumer[M] {

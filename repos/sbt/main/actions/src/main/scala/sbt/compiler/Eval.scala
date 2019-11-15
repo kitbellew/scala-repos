@@ -518,7 +518,7 @@ final class Eval(
   private[this] def mkDefsUnit(
       srcName: String,
       definitions: Seq[(String, scala.Range)])
-    : (CompilationUnit, Seq[CompilationUnit]) = {
+      : (CompilationUnit, Seq[CompilationUnit]) = {
     def fragmentUnit(content: String, lineMap: Array[Int]) =
       new CompilationUnit(fragmentSourceFile(srcName, content, lineMap))
 

@@ -31,7 +31,7 @@ import scala.reflect.macros.Context
 object ScroogeOrderedBuf {
   def dispatch(c: Context)(
       buildDispatcher: => PartialFunction[c.Type, TreeOrderedBuf[c.type]])
-    : PartialFunction[c.Type, TreeOrderedBuf[c.type]] = {
+      : PartialFunction[c.Type, TreeOrderedBuf[c.type]] = {
     import c.universe._
 
     val pf: PartialFunction[c.Type, TreeOrderedBuf[c.type]] = {

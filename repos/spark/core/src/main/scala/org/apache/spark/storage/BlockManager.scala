@@ -964,7 +964,7 @@ private[spark] class BlockManager(
       putBlockInfo =>
         val startTimeMs = System.currentTimeMillis
         var iteratorFromFailedMemoryStorePut
-          : Option[PartiallyUnrolledIterator] =
+            : Option[PartiallyUnrolledIterator] =
           None
         // Size of the block in bytes
         var size = 0L
@@ -1475,7 +1475,7 @@ private[spark] object BlockManager {
       blockIds: Array[BlockId],
       env: SparkEnv,
       blockManagerMaster: BlockManagerMaster = null)
-    : Map[BlockId, Seq[String]] = {
+      : Map[BlockId, Seq[String]] = {
 
     // blockManagerMaster != null is used in tests
     assert(env != null || blockManagerMaster != null)

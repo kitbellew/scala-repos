@@ -30,7 +30,7 @@ package object client {
     * channel, the left side of the EitherT, for reporting errors related
     * strictly to unexpected communication issues with the server.
     */
-  type ResponseM[M[+ _], +A] = EitherT[M, String, A]
+  type ResponseM[M[+_], +A] = EitherT[M, String, A]
 
   type Response[+A] = ResponseM[Future, A]
 

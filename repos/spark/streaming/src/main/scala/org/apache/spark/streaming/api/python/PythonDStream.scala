@@ -192,7 +192,7 @@ private[python] object PythonDStream {
     * convert list of RDD into queue of RDDs, for ssc.queueStream()
     */
   def toRDDQueue(rdds: JArrayList[JavaRDD[Array[Byte]]])
-    : java.util.Queue[JavaRDD[Array[Byte]]] = {
+      : java.util.Queue[JavaRDD[Array[Byte]]] = {
     val queue = new java.util.LinkedList[JavaRDD[Array[Byte]]]
     rdds.asScala.foreach(queue.add)
     queue

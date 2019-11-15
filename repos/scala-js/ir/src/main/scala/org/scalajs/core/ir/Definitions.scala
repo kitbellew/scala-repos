@@ -150,7 +150,7 @@ object Definitions {
     *  information from `encodedName.indexOf("__p") >= 0`.
     */
   def decodeMethodName(encodedName: String)
-    : (String, List[ReferenceType], Option[ReferenceType]) = {
+      : (String, List[ReferenceType], Option[ReferenceType]) = {
     val (simpleName, privateAndSigString) =
       if (isConstructorName(encodedName)) {
         val privateAndSigString =

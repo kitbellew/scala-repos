@@ -59,7 +59,7 @@ trait AbsSettings extends scala.reflect.internal.settings.AbsSettings {
     def name: String
     def helpDescription: String
     def unparse
-      : List[String] // A list of Strings which can recreate this setting.
+        : List[String] // A list of Strings which can recreate this setting.
 
     /* For tools which need to populate lists of available choices */
     def choices: List[String] = Nil

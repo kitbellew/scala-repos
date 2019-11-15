@@ -78,7 +78,7 @@ sealed trait IngestStore {
 
 sealed trait ParseDirective {
   def toMap
-    : Map[String, String] // escape hatch for interacting with other systems
+      : Map[String, String] // escape hatch for interacting with other systems
 }
 
 class IngestServiceHandler(
@@ -156,7 +156,7 @@ class IngestServiceHandler(
       durability: Durability,
       errorHandling: ErrorHandling,
       storeMode: WriteMode)
-    : EitherT[Future, NonEmptyList[String], IngestResult] =
+      : EitherT[Future, NonEmptyList[String], IngestResult] =
     right(chooseProcessing(apiKey, path, authorities, request)) flatMap {
       case Some(processing) =>
         EitherT {

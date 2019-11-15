@@ -452,7 +452,7 @@ sealed abstract class DisjunctionInstances0 extends DisjunctionInstances1 {
     Show.show(_.show)
 
   implicit def DisjunctionSemigroup[A: Semigroup, B: Semigroup]
-    : Semigroup[A \/ B] =
+      : Semigroup[A \/ B] =
     new Semigroup[A \/ B] {
       def append(a1: A \/ B, a2: => A \/ B) =
         a1 +++ a2
@@ -467,9 +467,13 @@ sealed abstract class DisjunctionInstances1 extends DisjunctionInstances2 {
     with Plus[L \/ ?]
     with Optional[L \/ ?]
     with MonadError[L \/ ?, L] =
-    new Traverse[L \/ ?] with Monad[L \/ ?] with BindRec[L \/ ?]
-    with Cozip[L \/ ?] with Plus[L \/ ?] with Optional[L \/ ?]
-    with MonadError[L \/ ?, L] {
+    new Traverse[L \/ ?]
+      with Monad[L \/ ?]
+      with BindRec[L \/ ?]
+      with Cozip[L \/ ?]
+      with Plus[L \/ ?]
+      with Optional[L \/ ?]
+      with MonadError[L \/ ?, L] {
       override def map[A, B](fa: L \/ A)(f: A => B) =
         fa map f
 

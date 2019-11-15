@@ -32,7 +32,7 @@ import scalaz._
 import scalaz.std.option._
 import scalaz.syntax.monad._
 
-class InMemoryAPIKeyManager[M[+ _]](clock: Clock)(implicit val M: Monad[M])
+class InMemoryAPIKeyManager[M[+_]](clock: Clock)(implicit val M: Monad[M])
     extends APIKeyManager[M] {
   import Permission._
 

@@ -97,9 +97,9 @@ class ProducerCompressionTest(compression: String)
 
       // make sure the returned messages are correct
       val now = System.currentTimeMillis()
-      val responses = for (message <- messages)
-        yield
-          producer.send(
+      val responses =
+        for (message <- messages)
+          yield producer.send(
             new ProducerRecord[Array[Byte], Array[Byte]](
               topic,
               null,

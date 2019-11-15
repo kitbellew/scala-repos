@@ -403,7 +403,7 @@ private[finagle] object Processor
   import Message._
 
   private[this] val ContextsToBufs
-    : ((ChannelBuffer, ChannelBuffer)) => ((Buf, Buf)) = {
+      : ((ChannelBuffer, ChannelBuffer)) => ((Buf, Buf)) = {
     case (k, v) =>
       (ChannelBufferBuf.Owned(k.duplicate), ChannelBufferBuf.Owned(v.duplicate))
   }

@@ -41,7 +41,7 @@ class StripNameTest extends FunSuite {
 
     def assertName(names: Set[String])(
         p: PartialFunction[Producer[Memory, Any], Producer[Memory, Any]])
-      : Unit = {
+        : Unit = {
       val nodes = strippedDeps.nodes.collect(p)
       assert(nodes.size == 1) // Only one node
       assert(nameMap(nodes(0)).toSet == names, s"checking ${names}")
@@ -101,7 +101,7 @@ class StripNameTest extends FunSuite {
 
     def assertName(names: List[String])(
         p: PartialFunction[Producer[Memory, Any], Producer[Memory, Any]])
-      : Unit = {
+        : Unit = {
       val nodes = strippedDeps.nodes.collect(p)
       assert(nodes.size == 1) // Only one node
       assert(nameMap(nodes(0)) == names, s"checking ${names}")
@@ -181,7 +181,7 @@ class StripNameTest extends FunSuite {
 
     def assertName(names: List[String])(
         p: PartialFunction[Producer[Memory, Any], Producer[Memory, Any]])
-      : Unit = {
+        : Unit = {
       val nodes = strippedDeps.nodes.collect(p)
       assert(nodes.size == 1) // Only one node
       val ordering = nameMap(nodes(0)).zipWithIndex.toMap

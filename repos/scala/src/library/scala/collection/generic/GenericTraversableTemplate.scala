@@ -211,7 +211,7 @@ trait GenericTraversableTemplate[+A, +CC[X] <: GenTraversable[X]]
     "2.9.0")
   def transpose[B](
       implicit asTraversable: A => /*<:<!!!*/ GenTraversableOnce[B])
-    : CC[CC[B] @uncheckedVariance] = {
+      : CC[CC[B] @uncheckedVariance] = {
     if (isEmpty) return genericBuilder[CC[B]].result()
 
     def fail =
