@@ -119,14 +119,13 @@ private[nio] object DataViewCharBuffer {
         initialPosition: Int,
         initialLimit: Int,
         readOnly: Boolean,
-        isBigEndian: Boolean): CharBuffer = {
+        isBigEndian: Boolean): CharBuffer =
       new DataViewCharBuffer(
         dataView,
         initialPosition,
         initialLimit,
         readOnly,
         isBigEndian)
-    }
   }
 
   @inline

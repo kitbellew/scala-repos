@@ -53,7 +53,7 @@ private[spark] class RBackend {
       .channel(classOf[NioServerSocketChannel])
 
     bootstrap.childHandler(new ChannelInitializer[SocketChannel]() {
-      def initChannel(ch: SocketChannel): Unit = {
+      def initChannel(ch: SocketChannel): Unit =
         ch.pipeline()
           .addLast("encoder", new ByteArrayEncoder())
           .addLast(
@@ -67,7 +67,6 @@ private[spark] class RBackend {
           )
           .addLast("decoder", new ByteArrayDecoder())
           .addLast("handler", handler)
-      }
     })
 
     channelFuture = bootstrap.bind(new InetSocketAddress("localhost", 0))
@@ -79,9 +78,8 @@ private[spark] class RBackend {
       .getPort()
   }
 
-  def run(): Unit = {
+  def run(): Unit =
     channelFuture.channel.closeFuture().syncUninterruptibly()
-  }
 
   def close(): Unit = {
     if (channelFuture != null) {

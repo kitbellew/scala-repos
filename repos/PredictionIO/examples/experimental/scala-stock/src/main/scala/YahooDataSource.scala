@@ -35,10 +35,9 @@ case class HistoricalData(
     val active: Array[Boolean])
     extends Serializable {
 
-  override def toString(): String = {
+  override def toString(): String =
     s"HistoricalData($ticker, ${timeIndex.head}, ${timeIndex.last}, " +
       s"${close.last})"
-  }
 
   def toDetailedString(): String = {
     val adjCloseStr = adjClose.mkString("[", ", ", "]")

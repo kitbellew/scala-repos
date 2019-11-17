@@ -34,15 +34,14 @@ class KindProjectorSimplifyTypeProjectionInspection
   override def buildVisitor(
       holder: ProblemsHolder,
       isOnTheFly: Boolean): PsiElementVisitor = {
-    def boundsDefined(param: ScTypeParam) = {
+    def boundsDefined(param: ScTypeParam) =
       param.lowerTypeElement.isDefined || param.upperTypeElement.isDefined
-    }
 
     /**
       * Kind projector currently supports only very basic type bounds
       * @see https://github.com/non/kind-projector/pull/6
       */
-    def canConvertBounds(param: ScTypeParam): Boolean = {
+    def canConvertBounds(param: ScTypeParam): Boolean =
       param.lowerTypeElement match {
         case Some(_: ScSimpleTypeElement) | None =>
           param.upperTypeElement match {
@@ -51,21 +50,19 @@ class KindProjectorSimplifyTypeProjectionInspection
           }
         case _ => false
       }
-    }
 
     def tryConvertToInlineSyntax(
         alias: ScTypeAliasDefinition): Option[String] = {
-      def hasNoBounds(p: ScTypeParam): Boolean = {
+      def hasNoBounds(p: ScTypeParam): Boolean =
         (p.lowerTypeElement, p.upperTypeElement) match {
           case (None, None) => true
           case _            => false
         }
-      }
 
       def occursInsideParameterized(
           tp: ScTypeParam,
           param: ScParameterizedType,
-          isInsideParam: Boolean): Boolean = {
+          isInsideParam: Boolean): Boolean =
         param.typeArgs.exists {
           case p: ScParameterizedType
               if isInsideParam && p.designator.presentableText == tp.name =>
@@ -76,7 +73,6 @@ class KindProjectorSimplifyTypeProjectionInspection
           case ta if isInsideParam && ta.presentableText == tp.name => true
           case _                                                    => false
         }
-      }
 
       alias.aliasedType match {
         case Success(paramType: ScParameterizedType, _) =>
@@ -116,8 +112,7 @@ class KindProjectorSimplifyTypeProjectionInspection
     holder.getFile match {
       case _: ScalaFile =>
         new ScalaElementVisitor {
-          override def visitTypeProjection(
-              projection: ScTypeProjection): Unit = {
+          override def visitTypeProjection(projection: ScTypeProjection): Unit =
             if (ScalaPsiUtil.kindProjectorPluginEnabled(projection)) {
               projection.typeElement match {
                 case parenType: ScParenthesisedTypeElement =>
@@ -136,7 +131,7 @@ class KindProjectorSimplifyTypeProjectionInspection
                                 case _ if aliasParam.nonEmpty =>
                                   if (alias.typeParameters.forall(
                                         canConvertBounds)) {
-                                    def simplified(): String = {
+                                    def simplified(): String =
                                       tryConvertToInlineSyntax(alias) match {
                                         case Some(inline) => inline
                                         case _ => //convert to function syntax
@@ -176,7 +171,6 @@ class KindProjectorSimplifyTypeProjectionInspection
                                           builder.append("]")
                                           builder.toString()
                                       }
-                                    }
                                     val fix =
                                       new KindProjectorSimplifyTypeProjectionQuickFix(
                                         projection,
@@ -197,7 +191,6 @@ class KindProjectorSimplifyTypeProjectionInspection
                 case _ =>
               }
             }
-          }
         }
       case _ => new PsiElementVisitor {}
     }

@@ -228,8 +228,7 @@ object MongoAccountManagerSpec extends Specification with RealMongoSpecSupport {
       })
       .copoint
 
-    def after = {
+    def after =
       defaultActorSystem.shutdown
-    }
   }
 }

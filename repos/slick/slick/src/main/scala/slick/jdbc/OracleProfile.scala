@@ -105,8 +105,7 @@ trait OracleProfile extends JdbcProfile {
       implicit ec: ExecutionContext): JdbcModelBuilder =
     new ModelBuilder(tables, ignoreInvalidDefaults)
 
-  override def defaultTables(
-      implicit ec: ExecutionContext): DBIO[Seq[MTable]] = {
+  override def defaultTables(implicit ec: ExecutionContext): DBIO[Seq[MTable]] =
     for {
       user <- SimpleJdbcAction(_.session.metaData.getUserName)
       tables <- SQLActionBuilder(
@@ -116,7 +115,6 @@ trait OracleProfile extends JdbcProfile {
         .getTables(None, None, None, Some(Seq("TABLE")))
         .map(_.filter(t => tables contains t.name.name)) // FIXME: this should check schema and maybe more
     } yield mtables
-  }
 
   override protected def computeQueryCompiler =
     (super.computeQueryCompiler
@@ -223,7 +221,7 @@ trait OracleProfile extends JdbcProfile {
         sb append " initially deferred"
     }
 
-    override protected def createIndex(idx: Index) = {
+    override protected def createIndex(idx: Index) =
       if (idx.unique) {
         /* Create a UNIQUE CONSTRAINT (with an automatically generated backing
          * index) because Oracle does not allow a FOREIGN KEY CONSTRAINT to
@@ -237,7 +235,6 @@ trait OracleProfile extends JdbcProfile {
         sb append ")"
         sb.toString
       } else super.createIndex(idx)
-    }
   }
 
   class ColumnDDLBuilder(column: FieldSymbol)

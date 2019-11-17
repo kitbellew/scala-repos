@@ -72,11 +72,10 @@ class QueryExecution(val sqlContext: SQLContext, val logical: LogicalPlan) {
     try f.toString
     catch { case e: Throwable => e.toString }
 
-  def simpleString: String = {
+  def simpleString: String =
     s"""== Physical Plan ==
        |${stringOrError(executedPlan)}
       """.stripMargin.trim
-  }
 
   override def toString: String = {
     def output =

@@ -168,7 +168,7 @@ trait TraitViewPager[This <: android.support.v4.view.ViewPager]
   @inline def onPageScrollStateChanged[U](f: Int => U): This = {
     basis.setOnPageChangeListener(
       new android.support.v4.view.ViewPager.OnPageChangeListener {
-        def onPageScrollStateChanged(p: Int): Unit = { f(p) }
+        def onPageScrollStateChanged(p: Int): Unit = f(p)
         def onPageScrolled(p1: Int, p2: Float, p3: Int): Unit = {}
         def onPageSelected(p: Int): Unit = {}
       })
@@ -178,7 +178,7 @@ trait TraitViewPager[This <: android.support.v4.view.ViewPager]
   @inline def onPageScrollStateChanged[U](f: => U): This = {
     basis.setOnPageChangeListener(
       new android.support.v4.view.ViewPager.OnPageChangeListener {
-        def onPageScrollStateChanged(p: Int): Unit = { f }
+        def onPageScrollStateChanged(p: Int): Unit = f
         def onPageScrolled(p1: Int, p2: Float, p3: Int): Unit = {}
         def onPageSelected(p: Int): Unit = {}
       })
@@ -189,9 +189,8 @@ trait TraitViewPager[This <: android.support.v4.view.ViewPager]
     basis.setOnPageChangeListener(
       new android.support.v4.view.ViewPager.OnPageChangeListener {
         def onPageScrollStateChanged(p: Int): Unit = {}
-        def onPageScrolled(p1: Int, p2: Float, p3: Int): Unit = {
+        def onPageScrolled(p1: Int, p2: Float, p3: Int): Unit =
           f(p1, p2, p3)
-        }
         def onPageSelected(p: Int): Unit = {}
       })
     basis
@@ -201,7 +200,7 @@ trait TraitViewPager[This <: android.support.v4.view.ViewPager]
     basis.setOnPageChangeListener(
       new android.support.v4.view.ViewPager.OnPageChangeListener {
         def onPageScrollStateChanged(p: Int): Unit = {}
-        def onPageScrolled(p1: Int, p2: Float, p3: Int): Unit = { f }
+        def onPageScrolled(p1: Int, p2: Float, p3: Int): Unit = f
         def onPageSelected(p: Int): Unit = {}
       })
     basis
@@ -212,7 +211,7 @@ trait TraitViewPager[This <: android.support.v4.view.ViewPager]
       new android.support.v4.view.ViewPager.OnPageChangeListener {
         def onPageScrollStateChanged(p: Int): Unit = {}
         def onPageScrolled(p1: Int, p2: Float, p3: Int): Unit = {}
-        def onPageSelected(p: Int): Unit = { f(p) }
+        def onPageSelected(p: Int): Unit = f(p)
       })
     basis
   }
@@ -222,7 +221,7 @@ trait TraitViewPager[This <: android.support.v4.view.ViewPager]
       new android.support.v4.view.ViewPager.OnPageChangeListener {
         def onPageScrollStateChanged(p: Int): Unit = {}
         def onPageScrolled(p1: Int, p2: Float, p3: Int): Unit = {}
-        def onPageSelected(p: Int): Unit = { f }
+        def onPageSelected(p: Int): Unit = f
       })
     basis
   }

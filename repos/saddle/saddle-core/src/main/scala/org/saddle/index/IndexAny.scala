@@ -79,9 +79,8 @@ class IndexAny[T: ST: ORD](keys: Vec[T]) extends Index[T] {
     JoinerImpl.join(this, other, OuterJoin)
   }
 
-  def slice(from: Int, until: Int, stride: Int): Index[T] = {
+  def slice(from: Int, until: Int, stride: Int): Index[T] =
     Index[T](keys.slice(from, until, stride))
-  }
 
   // find the first location whereby an insertion would maintain a sorted index
   def lsearch(t: T): Int = {
@@ -105,7 +104,7 @@ class IndexAny[T: ST: ORD](keys: Vec[T]) extends Index[T] {
 
   // adapted from java source
   private def binarySearch(a: Array[T], key: T): Int = {
-    @tailrec def bSearch(lo: Int = 0, hi: Int = a.length - 1): Int = {
+    @tailrec def bSearch(lo: Int = 0, hi: Int = a.length - 1): Int =
       if (lo > hi) -(lo + 1)
       else {
         val mid: Int = (lo + hi) >>> 1
@@ -114,7 +113,6 @@ class IndexAny[T: ST: ORD](keys: Vec[T]) extends Index[T] {
         else if (scalarTag.gt(midVal, key)) bSearch(lo, mid - 1)
         else mid
       }
-    }
     bSearch(0, a.length - 1)
   }
 
@@ -124,7 +122,7 @@ class IndexAny[T: ST: ORD](keys: Vec[T]) extends Index[T] {
   def toArray: Array[T] = keys.toArray
 
   /**Default equality does an iterative, element-wise equality check of all values. */
-  override def equals(o: Any): Boolean = {
+  override def equals(o: Any): Boolean =
     o match {
       case rv: IndexInt =>
         (this eq rv) || (this.length == rv.length) && {
@@ -138,5 +136,4 @@ class IndexAny[T: ST: ORD](keys: Vec[T]) extends Index[T] {
         }
       case _ => super.equals(o)
     }
-  }
 }

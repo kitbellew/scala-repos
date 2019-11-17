@@ -61,7 +61,7 @@ object Cors {
      * Simple Cross-Origin Request, Actual Request, and Redirects
      */
 
-    protected[this] def getOrigin(request: Request): Option[String] = {
+    protected[this] def getOrigin(request: Request): Option[String] =
       /*
        * If the Origin header is not present terminate this set of steps. The request is outside
        * the scope of this specification.
@@ -73,7 +73,6 @@ object Cors {
          */
         policy.allowsOrigin(origin)
       }
-    }
 
     /**
       * If the resource supports credentials add a single Access-Control-Allow-Origin

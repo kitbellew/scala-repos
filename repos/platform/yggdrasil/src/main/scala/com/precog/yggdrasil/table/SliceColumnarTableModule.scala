@@ -74,7 +74,7 @@ trait SliceColumnarTableModule[M[+_]]
       } yield {
         def slices(
             proj: Projection,
-            constraints: Option[Set[ColumnRef]]): StreamT[M, Slice] = {
+            constraints: Option[Set[ColumnRef]]): StreamT[M, Slice] =
           StreamT.unfoldM[M, Slice, Option[proj.Key]](None) { key =>
             proj.getBlockAfter(key, constraints).map { b =>
               b.map {
@@ -83,7 +83,6 @@ trait SliceColumnarTableModule[M[+_]]
               }
             }
           }
-        }
 
         val stream = projections.foldLeft(StreamT.empty[M, Slice]) {
           (acc, proj) =>

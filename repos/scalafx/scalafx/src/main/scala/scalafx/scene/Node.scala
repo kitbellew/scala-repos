@@ -93,9 +93,8 @@ abstract class Node protected (override val delegate: jfxs.Node)
     * @since JavaFX 8u40
     */
   def accessibleText: ObjectProperty[String] = delegate.accessibleTextProperty
-  def accessibleText_=(v: String): Unit = {
+  def accessibleText_=(v: String): Unit =
     ObjectProperty.fillProperty(accessibleText, v)
-  }
 
   /**
     * The accessible help text for this `Node`.
@@ -109,9 +108,8 @@ abstract class Node protected (override val delegate: jfxs.Node)
     * @since JavaFX 8u40
     */
   def accessibleHelp: ObjectProperty[String] = delegate.accessibleHelpProperty
-  def accessibleHelp_=(v: String): Unit = {
+  def accessibleHelp_=(v: String): Unit =
     ObjectProperty.fillProperty(accessibleHelp, v)
-  }
 
   /**
     * The accessible role for this `Node`.
@@ -124,9 +122,8 @@ abstract class Node protected (override val delegate: jfxs.Node)
     */
   def accessibleRole: ObjectProperty[jfxs.AccessibleRole] =
     delegate.accessibleRoleProperty
-  def accessibleRole_=(v: AccessibleRole): Unit = {
+  def accessibleRole_=(v: AccessibleRole): Unit =
     ObjectProperty.fillProperty(accessibleRole, v)
-  }
 
   /**
     * The role description of this `Node`.
@@ -144,9 +141,8 @@ abstract class Node protected (override val delegate: jfxs.Node)
     */
   def accessibleRoleDescription: ObjectProperty[String] =
     delegate.accessibleRoleDescriptionProperty
-  def accessibleRoleDescription_=(v: String): Unit = {
+  def accessibleRoleDescription_=(v: String): Unit =
     ObjectProperty.fillProperty(accessibleRoleDescription, v)
-  }
 
   /**
     * The BlendMode used to blend this individual node into the scene behind it.

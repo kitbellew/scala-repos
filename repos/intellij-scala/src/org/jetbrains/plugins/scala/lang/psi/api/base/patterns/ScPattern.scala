@@ -90,9 +90,8 @@ trait ScPattern extends ScalaPsiElement {
         case ScTypedPattern(te) =>
           te.accept(new ScalaRecursiveElementVisitor {
             override def visitTypeVariableTypeElement(
-                tvar: ScTypeVariableTypeElement): Unit = {
+                tvar: ScTypeVariableTypeElement): Unit =
               b += tvar
-            }
           })
         case _ =>
       }
@@ -471,7 +470,7 @@ trait ScPattern extends ScalaPsiElement {
     case _ => None
   }
 
-  def getAnalog: ScPattern = {
+  def getAnalog: ScPattern =
     getContext match {
       case gen: ScGenerator =>
         val f: ScForStatement = gen.getContext.getContext match {
@@ -486,20 +485,18 @@ trait ScPattern extends ScalaPsiElement {
         this
       case _ => this
     }
-  }
 
   var desugarizedPatternIndex = -1
   var analog: ScPattern = null
 }
 
 object ScPattern {
-  def isOneArgCaseClassMethod(fun: ScFunction): Boolean = {
+  def isOneArgCaseClassMethod(fun: ScFunction): Boolean =
     fun.syntheticCaseClass match {
       case Some(c: ScClass) =>
         c.constructor.exists(_.effectiveFirstParameterSection.length == 1)
       case _ => false
     }
-  }
 
   private def findMember(
       name: String,
@@ -540,9 +537,8 @@ object ScPattern {
     res.toSeq
   }
 
-  def extractProductParts(tp: ScType, place: PsiElement): Seq[ScType] = {
+  def extractProductParts(tp: ScType, place: PsiElement): Seq[ScType] =
     extractPossibleProductParts(tp, place, isOneArgCaseClass = false)
-  }
 
   def expectedNumberOfExtractorArguments(
       returnType: ScType,

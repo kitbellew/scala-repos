@@ -39,7 +39,7 @@ object TestOptions {
     )
   }
 
-  def testBundles(): PaxOption = {
+  def testBundles(): PaxOption =
     new DefaultCompositeOption(
       mavenBundle(
         "com.typesafe.akka",
@@ -47,7 +47,6 @@ object TestOptions {
       mavenBundle("org.scalatest", "scalatest_%s".format(scalaDepVersion)).versionAsInProject,
       junitBundles
     )
-  }
 
   def debugOptions(
       level: LogLevelOption.LogLevel = LogLevelOption.LogLevel.INFO,
@@ -63,17 +62,15 @@ object TestOptions {
 
   def karafOptionsWithTestBundles(
       useDeployFolder: Boolean = false,
-      extractInTargetFolder: Boolean = true): PaxOption = {
+      extractInTargetFolder: Boolean = true): PaxOption =
     new DefaultCompositeOption(
       karafOptions(useDeployFolder, extractInTargetFolder),
       testBundles())
-  }
 
-  def featureDiningHakkers(): PaxOption = {
+  def featureDiningHakkers(): PaxOption =
     akkaFeature("dining-hakker")
-  }
 
-  def akkaFeature(feature: String): PaxOption = {
+  def akkaFeature(feature: String): PaxOption =
     scanFeatures(
       maven
         .groupId("com.typesafe.akka.akka-sample-osgi-dining-hakkers")
@@ -83,5 +80,4 @@ object TestOptions {
         .version(System.getProperty("project.version")),
       feature
     )
-  }
 }

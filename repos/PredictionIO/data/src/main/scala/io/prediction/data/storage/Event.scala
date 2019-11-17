@@ -48,11 +48,10 @@ case class Event(
     val prId: Option[String] = None,
     val creationTime: DateTime = DateTime.now
 ) {
-  override def toString(): String = {
+  override def toString(): String =
     s"Event(id=$eventId,event=$event,eType=$entityType,eId=$entityId," +
       s"tType=$targetEntityType,tId=$targetEntityId,p=$properties,t=$eventTime," +
       s"tags=$tags,pKey=$prId,ct=$creationTime)"
-  }
 }
 
 /** :: DeveloperApi ::
@@ -167,12 +166,11 @@ object EventValidation {
     *
     * @param e Event to be validated
     */
-  def validateProperties(e: Event): Unit = {
+  def validateProperties(e: Event): Unit =
     e.properties.keySet.foreach { k =>
       require(
         !isReservedPrefix(k) || builtinProperties.contains(k),
         s"The property ${k} is not allowed. " +
           s"'pio_' is a reserved name prefix.")
     }
-  }
 }

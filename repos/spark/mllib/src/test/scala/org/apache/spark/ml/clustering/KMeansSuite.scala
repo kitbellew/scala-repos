@@ -111,9 +111,8 @@ class KMeansSuite
   }
 
   test("read/write") {
-    def checkModelData(model: KMeansModel, model2: KMeansModel): Unit = {
+    def checkModelData(model: KMeansModel, model2: KMeansModel): Unit =
       assert(model.clusterCenters === model2.clusterCenters)
-    }
     val kmeans = new KMeans()
     testEstimatorAndModelReadWrite(
       kmeans,

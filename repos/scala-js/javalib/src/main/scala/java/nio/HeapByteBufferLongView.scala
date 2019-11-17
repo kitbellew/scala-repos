@@ -87,7 +87,7 @@ private[nio] object HeapByteBufferLongView {
         initialPosition: Int,
         initialLimit: Int,
         readOnly: Boolean,
-        isBigEndian: Boolean): LongBuffer = {
+        isBigEndian: Boolean): LongBuffer =
       new HeapByteBufferLongView(
         capacity,
         byteArray,
@@ -96,7 +96,6 @@ private[nio] object HeapByteBufferLongView {
         initialLimit,
         readOnly,
         isBigEndian)
-    }
   }
 
   @inline

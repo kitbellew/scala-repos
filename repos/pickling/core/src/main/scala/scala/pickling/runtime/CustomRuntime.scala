@@ -105,9 +105,8 @@ class Tuple2RTKnownTagUnpickler[L, R](lhs: Unpickler[L], rhs: Unpickler[R])
       reader1.hintElidedType(unpickler.tag)
     unpickler.unpickleEntry(reader1).asInstanceOf[T]
   }
-  override def unpickle(tag: String, reader: PReader): Any = {
+  override def unpickle(tag: String, reader: PReader): Any =
     (unpickleField("_1", reader, lhs), unpickleField("_2", reader, rhs))
-  }
   override def tag: FastTypeTag[(L, R)] =
     FastTypeTag
       .apply(currentMirror, s"scala.Tuple2[${lhs.tag.key},${rhs.tag.key}}]")

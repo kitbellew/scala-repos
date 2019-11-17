@@ -39,7 +39,7 @@ object MacroInferUtil {
       def withCheck(
           functionName: String,
           classFqn: String,
-          typeEval: () => Option[ScType]): Checker = {
+          typeEval: () => Option[ScType]): Checker =
         withCheck(() => {
           if (f.name != functionName) None
           else {
@@ -51,7 +51,6 @@ object MacroInferUtil {
             }
           }
         })
-      }
 
       def check(): Option[ScType] = {
         for {
@@ -62,7 +61,7 @@ object MacroInferUtil {
       }
     }
 
-    def calcProduct(): Option[ScType] = {
+    def calcProduct(): Option[ScType] =
       expectedType match {
         case Some(tp) =>
           val manager = ScalaPsiManager.instance(place.getProject)
@@ -128,7 +127,6 @@ object MacroInferUtil {
           }
         case None => None
       }
-    }
 
     new Checker()
       .withCheck("product", "shapeless.Generic", calcProduct)
@@ -136,7 +134,7 @@ object MacroInferUtil {
       .check()
   }
 
-  def isMacro(n: PsiNamedElement): Option[ScFunction] = {
+  def isMacro(n: PsiNamedElement): Option[ScFunction] =
     n match {
       case f: ScMacroDefinition => Some(f)
       //todo: fix decompiler to avoid this check:
@@ -147,5 +145,4 @@ object MacroInferUtil {
         Some(f)
       case _ => None
     }
-  }
 }

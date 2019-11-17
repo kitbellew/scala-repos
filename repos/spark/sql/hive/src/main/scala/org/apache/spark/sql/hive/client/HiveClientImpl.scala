@@ -169,9 +169,8 @@ private[hive] class HiveClientImpl(
   /** Returns the configuration for the current session. */
   def conf: HiveConf = SessionState.get().getConf
 
-  override def getConf(key: String, defaultValue: String): String = {
+  override def getConf(key: String, defaultValue: String): String =
     conf.get(key, defaultValue)
-  }
 
   // We use hive's conf for compatibility.
   private val retryLimit =
@@ -222,7 +221,7 @@ private[hive] class HiveClientImpl(
     false
   }
 
-  def client: Hive = {
+  def client: Hive =
     if (clientLoader.cachedHive != null) {
       clientLoader.cachedHive.asInstanceOf[Hive]
     } else {
@@ -230,7 +229,6 @@ private[hive] class HiveClientImpl(
       clientLoader.cachedHive = c
       c
     }
-  }
 
   /**
     * Runs `f` with ThreadLocal session state and classloaders configured for this version of hive.
@@ -639,9 +637,8 @@ private[hive] class HiveClientImpl(
     runSqlHive(s"ADD JAR $path")
   }
 
-  def newSession(): HiveClientImpl = {
+  def newSession(): HiveClientImpl =
     clientLoader.createClient().asInstanceOf[HiveClientImpl]
-  }
 
   def reset(): Unit = withHiveState {
     client.getAllTables("default").asScala.foreach { t =>
@@ -675,7 +672,7 @@ private[hive] class HiveClientImpl(
       .asInstanceOf[Class[
         _ <: org.apache.hadoop.hive.ql.io.HiveOutputFormat[_, _]]]
 
-  private def toHiveFunction(f: CatalogFunction, db: String): HiveFunction = {
+  private def toHiveFunction(f: CatalogFunction, db: String): HiveFunction =
     new HiveFunction(
       f.name.funcName,
       db,
@@ -685,24 +682,21 @@ private[hive] class HiveClientImpl(
       (System.currentTimeMillis / 1000).toInt,
       FunctionType.JAVA,
       List.empty[ResourceUri].asJava)
-  }
 
   private def fromHiveFunction(hf: HiveFunction): CatalogFunction = {
     val name = FunctionIdentifier(hf.getFunctionName, Option(hf.getDbName))
     new CatalogFunction(name, hf.getClassName)
   }
 
-  private def toHiveColumn(c: CatalogColumn): FieldSchema = {
+  private def toHiveColumn(c: CatalogColumn): FieldSchema =
     new FieldSchema(c.name, c.dataType, c.comment.orNull)
-  }
 
-  private def fromHiveColumn(hc: FieldSchema): CatalogColumn = {
+  private def fromHiveColumn(hc: FieldSchema): CatalogColumn =
     new CatalogColumn(
       name = hc.getName,
       dataType = hc.getType,
       nullable = true,
       comment = Option(hc.getComment))
-  }
 
   private def toHiveTable(table: CatalogTable): HiveTable = {
     val hiveTable = new HiveTable(table.database, table.name.table)
@@ -752,11 +746,10 @@ private[hive] class HiveClientImpl(
 
   private def toHivePartition(
       p: CatalogTablePartition,
-      ht: HiveTable): HivePartition = {
+      ht: HiveTable): HivePartition =
     new HivePartition(ht, p.spec.asJava, p.storage.locationUri.map { l =>
       new Path(l)
     }.orNull)
-  }
 
   private def fromHivePartition(hp: HivePartition): CatalogTablePartition = {
     val apiPartition = hp.getTPartition

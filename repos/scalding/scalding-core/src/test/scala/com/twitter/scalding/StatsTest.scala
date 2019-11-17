@@ -30,7 +30,7 @@ class StatsTest extends WordSpec with Matchers {
   val goodInput = List(("a", 0), ("b", 1), ("c", 2))
   val badInput = List(("a", 0), ("b", 0), ("c", 0))
 
-  def runJobTest[T: TupleSetter](f: Args => Job, input: List[T]): Unit = {
+  def runJobTest[T: TupleSetter](f: Args => Job, input: List[T]): Unit =
     JobTest(f)
       .arg("input", "input")
       .arg("output", "output")
@@ -39,7 +39,6 @@ class StatsTest extends WordSpec with Matchers {
         outBuf shouldBe input
       }
       .run
-  }
 
   "StatsTestJob" should {
     "pass if verifyCounters() is true" in {

@@ -296,7 +296,7 @@ trait IntroduceExpressions {
     }
 
     object inExtendsBlock {
-      def unapply(e: PsiElement): Option[ScExtendsBlock] = {
+      def unapply(e: PsiElement): Option[ScExtendsBlock] =
         e match {
           case extBl: ScExtendsBlock =>
             Some(extBl)
@@ -308,7 +308,6 @@ trait IntroduceExpressions {
             }
           case _ => None
         }
-      }
     }
 
     def isOneLiner = {
@@ -547,8 +546,7 @@ trait IntroduceExpressions {
       varName: String,
       varType: ScType,
       replaceAllOccurrences: Boolean,
-      isVariable: Boolean): Computable[SmartPsiElementPointer[PsiElement]] = {
-
+      isVariable: Boolean): Computable[SmartPsiElementPointer[PsiElement]] =
     new Computable[SmartPsiElementPointer[PsiElement]]() {
       def compute() =
         runRefactoringInside(
@@ -563,7 +561,6 @@ trait IntroduceExpressions {
           replaceAllOccurrences,
           isVariable)
     }
-  }
 
   protected def getDialog(
       project: Project,

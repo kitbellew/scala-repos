@@ -25,9 +25,8 @@ object LeadershipModule {
   def apply(
       actorRefFactory: ActorRefFactory,
       zk: ZooKeeperClient,
-      leader: LeadershipAbdication): LeadershipModule = {
+      leader: LeadershipAbdication): LeadershipModule =
     new LeadershipModuleImpl(actorRefFactory, zk, leader)
-  }
 }
 
 /**

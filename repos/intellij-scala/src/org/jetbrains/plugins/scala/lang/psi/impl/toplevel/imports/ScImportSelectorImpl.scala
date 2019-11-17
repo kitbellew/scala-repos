@@ -89,7 +89,7 @@ class ScImportSelectorImpl private (
     }
   }
 
-  def isAliasedImport: Boolean = {
+  def isAliasedImport: Boolean =
     getStub match {
       case stub: ScImportSelectorStub => stub.isAliasedImport
       case _ =>
@@ -98,5 +98,4 @@ class ScImportSelectorImpl private (
           .selectors
           .nonEmpty && !getLastChild.isInstanceOf[ScStableCodeReferenceElement]
     }
-  }
 }

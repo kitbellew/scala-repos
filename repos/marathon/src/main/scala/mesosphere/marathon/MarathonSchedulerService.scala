@@ -157,9 +157,8 @@ class MarathonSchedulerService @Inject() (
       .mapTo[RunningDeployments]
       .map(_.plans)
 
-  def getApp(appId: PathId, version: Timestamp): Option[AppDefinition] = {
+  def getApp(appId: PathId, version: Timestamp): Option[AppDefinition] =
     Await.result(appRepository.app(appId, version), config.zkTimeoutDuration)
-  }
 
   def killTasks(appId: PathId, tasks: Iterable[Task]): Iterable[Task] = {
     schedulerActor ! KillTasks(appId, tasks.map(_.taskId))
@@ -453,19 +452,16 @@ class MarathonSchedulerService @Inject() (
       }
     }
 
-  private def startLeaderDurationMetric() = {
+  private def startLeaderDurationMetric() =
     metrics.gauge(
       "service.mesosphere.marathon.leaderDuration",
       new Gauge[Long] {
         val startedAt = System.currentTimeMillis()
 
-        override def getValue: Long = {
+        override def getValue: Long =
           System.currentTimeMillis() - startedAt
-        }
       }
     )
-  }
-  private def stopLeaderDurationMetric() = {
+  private def stopLeaderDurationMetric() =
     metrics.registry.remove("service.mesosphere.marathon.leaderDuration")
-  }
 }

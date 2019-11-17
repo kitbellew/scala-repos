@@ -153,7 +153,7 @@ class ClientServerSpec
       val receivedSlow = Promise[Long]()
       val receivedFast = Promise[Long]()
 
-      def handle(req: HttpRequest): Future[HttpResponse] = {
+      def handle(req: HttpRequest): Future[HttpResponse] =
         req.uri.path.toString match {
           case "/slow" ⇒
             receivedSlow.complete(Success(System.nanoTime()))
@@ -163,7 +163,6 @@ class ClientServerSpec
             receivedFast.complete(Success(System.nanoTime()))
             Future.successful(HttpResponse())
         }
-      }
 
       val binding =
         Http().bindAndHandleAsync(handle, hostname, port, settings = settings)

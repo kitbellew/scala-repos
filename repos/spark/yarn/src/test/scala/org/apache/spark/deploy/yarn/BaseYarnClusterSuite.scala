@@ -195,9 +195,8 @@ abstract class BaseYarnClusterSuite
     */
   protected def checkResult(
       finalState: SparkAppHandle.State,
-      result: File): Unit = {
+      result: File): Unit =
     checkResult(finalState, result, "success")
-  }
 
   protected def checkResult(
       finalState: SparkAppHandle.State,
@@ -208,9 +207,8 @@ abstract class BaseYarnClusterSuite
     resultString should be(expected)
   }
 
-  protected def mainClassName(klass: Class[_]): String = {
+  protected def mainClassName(klass: Class[_]): String =
     klass.getName().stripSuffix("$")
-  }
 
   protected def createConfFile(
       extraClassPath: Seq[String] = Nil,

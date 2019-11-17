@@ -40,17 +40,15 @@ case object AnyToTiny extends MatrixJoiner {
   override def apply(
       left: Pipe,
       joinFields: (Fields, Fields),
-      right: Pipe): Pipe = {
+      right: Pipe): Pipe =
     RichPipe(left).joinWithTiny(joinFields, right)
-  }
 }
 class BigToSmall(red: Int) extends MatrixJoiner {
   override def apply(
       left: Pipe,
       joinFields: (Fields, Fields),
-      right: Pipe): Pipe = {
+      right: Pipe): Pipe =
     RichPipe(left).joinWithSmaller(joinFields, right, reducers = red)
-  }
 }
 
 case object TinyToAny extends MatrixJoiner {
@@ -66,9 +64,8 @@ class SmallToBig(red: Int) extends MatrixJoiner {
   override def apply(
       left: Pipe,
       joinFields: (Fields, Fields),
-      right: Pipe): Pipe = {
+      right: Pipe): Pipe =
     RichPipe(left).joinWithLarger(joinFields, right, reducers = red)
-  }
 }
 
 abstract class MatrixCrosser extends java.io.Serializable {
@@ -76,15 +73,13 @@ abstract class MatrixCrosser extends java.io.Serializable {
 }
 
 case object AnyCrossTiny extends MatrixCrosser {
-  override def apply(left: Pipe, right: Pipe): Pipe = {
+  override def apply(left: Pipe, right: Pipe): Pipe =
     RichPipe(left).crossWithTiny(right)
-  }
 }
 
 case object AnyCrossSmall extends MatrixCrosser {
-  override def apply(left: Pipe, right: Pipe): Pipe = {
+  override def apply(left: Pipe, right: Pipe): Pipe =
     RichPipe(left).crossWithSmaller(right)
-  }
 }
 
 trait MatrixProduct[Left, Right, Result] extends java.io.Serializable {
@@ -100,7 +95,7 @@ object MatrixProduct extends java.io.Serializable {
   var maxTinyJoin = 100000L // Bigger than this, and we use joinWithSmaller
   var maxReducers = 200
 
-  def numOfReducers(hint: SizeHint) = {
+  def numOfReducers(hint: SizeHint) =
     hint.total
       .map { tot =>
         // + 1L is to make sure there is at least once reducer
@@ -108,7 +103,6 @@ object MatrixProduct extends java.io.Serializable {
           1L).toInt min MatrixProduct.maxReducers
       }
       .getOrElse(-1)
-  }
 
   def getJoiner(leftSize: SizeHint, rightSize: SizeHint): MatrixJoiner = {
     val newHint = leftSize * rightSize
@@ -209,14 +203,13 @@ object MatrixProduct extends java.io.Serializable {
       Matrix[Row, Col, ValT],
       Scalar[ValT],
       Matrix[Row, Col, ValT]] {
-      def apply(left: Matrix[Row, Col, ValT], right: Scalar[ValT]) = {
+      def apply(left: Matrix[Row, Col, ValT], right: Scalar[ValT]) =
         left
           .nonZerosWith(right)
           .mapValues({ leftRight =>
             val (left, right) = leftRight
             ring.times(left, right)
           })(ring)
-      }
     }
 
   implicit def scalarPipeLeftProduct[Row, Col, ValT](
@@ -228,14 +221,13 @@ object MatrixProduct extends java.io.Serializable {
       Scalar[ValT],
       Matrix[Row, Col, ValT],
       Matrix[Row, Col, ValT]] {
-      def apply(left: Scalar[ValT], right: Matrix[Row, Col, ValT]) = {
+      def apply(left: Scalar[ValT], right: Matrix[Row, Col, ValT]) =
         right
           .nonZerosWith(left)
           .mapValues({ matScal =>
             val (matVal, scalarVal) = matScal
             ring.times(scalarVal, matVal)
           })(ring)
-      }
     }
 
   implicit def scalarRowRightProduct[Col, ValT](
@@ -515,9 +507,8 @@ object MatrixProduct extends java.io.Serializable {
       RowVector[ColR, ValT]] {
       def apply(
           left: RowVector[Common, ValT],
-          right: Matrix[Common, ColR, ValT]) = {
+          right: Matrix[Common, ColR, ValT]) =
         (left.toMatrix(true) * right).getRow(true)
-      }
     }
 
   implicit def matrixColProduct[RowR, Common, ValT](
@@ -531,9 +522,8 @@ object MatrixProduct extends java.io.Serializable {
       ColVector[RowR, ValT]] {
       def apply(
           left: Matrix[RowR, Common, ValT],
-          right: ColVector[Common, ValT]) = {
+          right: ColVector[Common, ValT]) =
         (left * right.toMatrix(true)).getCol(true)
-      }
     }
 
   implicit def vectorOuterProduct[RowT, ColT, ValT](
@@ -684,11 +674,10 @@ object MatrixProduct extends java.io.Serializable {
       Matrix[RowT, ColT, ValT]] {
       def apply(
           left: Matrix[RowT, ColT, ValT],
-          right: DiagonalMatrix[ColT, ValT]) = {
+          right: DiagonalMatrix[ColT, ValT]) =
         // (A * B) = (B^T * A^T)^T
         // note diagonal^T = diagonal
         (right * (left.transpose)).transpose
-      }
     }
 
   implicit def diagDiagProduct[IdxT, ValT](
@@ -744,9 +733,8 @@ object MatrixProduct extends java.io.Serializable {
       ColVector[IdxT, ValT]] {
       def apply(
           left: DiagonalMatrix[IdxT, ValT],
-          right: ColVector[IdxT, ValT]) = {
+          right: ColVector[IdxT, ValT]) =
         (left * (right.diag)).toCol
-      }
     }
   implicit def rowDiagProduct[IdxT, ValT](
       implicit ring: Ring[ValT]): MatrixProduct[
@@ -759,8 +747,7 @@ object MatrixProduct extends java.io.Serializable {
       RowVector[IdxT, ValT]] {
       def apply(
           left: RowVector[IdxT, ValT],
-          right: DiagonalMatrix[IdxT, ValT]) = {
+          right: DiagonalMatrix[IdxT, ValT]) =
         ((left.diag) * right).toRow
-      }
     }
 }

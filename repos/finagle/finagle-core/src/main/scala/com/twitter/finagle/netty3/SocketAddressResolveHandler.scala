@@ -11,7 +11,7 @@ private[finagle] trait SocketAddressResolver
 
 private[finagle] object SocketAddressResolver {
   val random = new SocketAddressResolver {
-    def apply(hostName: String): Either[Throwable, InetAddress] = {
+    def apply(hostName: String): Either[Throwable, InetAddress] =
       try {
         // NOTE: Important InetAddress and DNS cache policy
         // InetAddress implementation caches DNS resolutions but doesn't respect DNS TTL responses.
@@ -30,7 +30,6 @@ private[finagle] object SocketAddressResolver {
         case t: Throwable =>
           Left(t)
       }
-    }
   }
 }
 

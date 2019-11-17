@@ -180,7 +180,7 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
 
   def getChildValueExpression(
       node: DebuggerTreeNode,
-      context: DebuggerContext): PsiExpression = {
+      context: DebuggerContext): PsiExpression =
     node.getDescriptor match {
       case watch: WatchItemDescriptor =>
         JavaPsiFacade
@@ -191,7 +191,6 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
         collectionItem.getDescriptorEvaluation(context)
       case _ => null
     }
-  }
 
   def isExpandable(
       value: Value,
@@ -254,7 +253,7 @@ object NonStrictCollectionsRenderer {
   private def invokeEmptyArgsMethod(
       obj: ObjectReference,
       method: Method,
-      context: EvaluationContext): SimpleMethodInvocationResult[_] = {
+      context: EvaluationContext): SimpleMethodInvocationResult[_] =
     try {
       context.getDebugProcess.invokeMethod(context, obj, method, EMPTY_ARGS) match {
         case intValue: IntegerValue => Success[Int](intValue.intValue())
@@ -269,7 +268,6 @@ object NonStrictCollectionsRenderer {
           _: ClassNotLoadedException) =>
         Fail[Throwable](e)
     }
-  }
 
 // jdi sucks :(
 //  private def invokeEmptyArgsMethodWithTimeout(obj: ObjectReference, method: Method, context: EvaluationContext) = {
@@ -294,7 +292,7 @@ object NonStrictCollectionsRenderer {
       extends ValueDescriptorImpl(project, value) {
     def calcValue(evaluationContext: EvaluationContextImpl) = value
 
-    def getDescriptorEvaluation(context: DebuggerContext): PsiExpression = {
+    def getDescriptorEvaluation(context: DebuggerContext): PsiExpression =
       try {
         JavaPsiFacade
           .getInstance(project)
@@ -305,7 +303,6 @@ object NonStrictCollectionsRenderer {
       } catch {
         case e: IncorrectOperationException => null
       }
-    }
 
     override def getName: String = name
   }

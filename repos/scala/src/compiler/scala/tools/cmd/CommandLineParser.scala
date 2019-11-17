@@ -70,10 +70,9 @@ object CommandLineParser {
 
   def tokenize(line: String): List[String] =
     tokenize(line, x => throw new ParseException(x))
-  def tokenize(line: String, errorFn: String => Unit): List[String] = {
+  def tokenize(line: String, errorFn: String => Unit): List[String] =
     commandLine(line) match {
       case Right((args, _)) => args
       case Left(msg)        => errorFn(msg); Nil
     }
-  }
 }

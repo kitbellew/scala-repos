@@ -153,7 +153,7 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
     }
   }
 
-  def getPrinterByConstructor(c: ClassSymbol) = {
+  def getPrinterByConstructor(c: ClassSymbol) =
     c.children.find {
       case m: MethodSymbol if m.name == CONSTRUCTOR_NAME => true
       case _                                             => false
@@ -167,7 +167,6 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
       case _ =>
         ""
     }
-  }
 
   def printPackageObject(level: Int, o: ObjectSymbol) {
     printModifiers(o)
@@ -342,7 +341,7 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
   def toString(t: Type)(implicit flags: TypeFlags): String =
     toString(t, "")(flags)
 
-  def toString(t: Type, sep: String)(implicit flags: TypeFlags): String = {
+  def toString(t: Type, sep: String)(implicit flags: TypeFlags): String =
     // print type itself
     t match {
       case ThisType(symbol) => sep + processName(symbol.path) + ".type"
@@ -417,7 +416,6 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
       }
       case _ => sep + t.toString
     }
-  }
 
   def getVariance(t: TypeSymbol) =
     if (t.isCovariant) "+" else if (t.isContravariant) "-" else ""

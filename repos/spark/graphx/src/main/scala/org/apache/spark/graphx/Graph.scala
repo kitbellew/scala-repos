@@ -188,9 +188,8 @@ abstract class Graph[VD: ClassTag, ED: ClassTag] protected ()
     * attributes.
     *
     */
-  def mapEdges[ED2: ClassTag](map: Edge[ED] => ED2): Graph[VD, ED2] = {
+  def mapEdges[ED2: ClassTag](map: Edge[ED] => ED2): Graph[VD, ED2] =
     mapEdges((pid, iter) => iter.map(map))
-  }
 
   /**
     * Transforms each edge attribute using the map function, passing it a whole partition at a
@@ -236,9 +235,8 @@ abstract class Graph[VD: ClassTag, ED: ClassTag] protected ()
     *
     */
   def mapTriplets[ED2: ClassTag](
-      map: EdgeTriplet[VD, ED] => ED2): Graph[VD, ED2] = {
+      map: EdgeTriplet[VD, ED] => ED2): Graph[VD, ED2] =
     mapTriplets((pid, iter) => iter.map(map), TripletFields.All)
-  }
 
   /**
     * Transforms each edge attribute using the map function, passing it the adjacent vertex
@@ -266,9 +264,8 @@ abstract class Graph[VD: ClassTag, ED: ClassTag] protected ()
     */
   def mapTriplets[ED2: ClassTag](
       map: EdgeTriplet[VD, ED] => ED2,
-      tripletFields: TripletFields): Graph[VD, ED2] = {
+      tripletFields: TripletFields): Graph[VD, ED2] =
     mapTriplets((pid, iter) => iter.map(map), tripletFields)
-  }
 
   /**
     * Transforms each edge attribute a partition at a time using the map function, passing it the
@@ -375,9 +372,8 @@ abstract class Graph[VD: ClassTag, ED: ClassTag] protected ()
   def aggregateMessages[A: ClassTag](
       sendMsg: EdgeContext[VD, ED, A] => Unit,
       mergeMsg: (A, A) => A,
-      tripletFields: TripletFields = TripletFields.All): VertexRDD[A] = {
+      tripletFields: TripletFields = TripletFields.All): VertexRDD[A] =
     aggregateMessagesWithActiveSet(sendMsg, mergeMsg, tripletFields, None)
-  }
 
   /**
     * Aggregates values from the neighboring edges and vertices of each vertex. The user-supplied
@@ -500,9 +496,8 @@ object Graph {
       defaultValue: VD,
       edgeStorageLevel: StorageLevel = StorageLevel.MEMORY_ONLY,
       vertexStorageLevel: StorageLevel = StorageLevel.MEMORY_ONLY)
-      : Graph[VD, ED] = {
+      : Graph[VD, ED] =
     GraphImpl(edges, defaultValue, edgeStorageLevel, vertexStorageLevel)
-  }
 
   /**
     * Construct a graph from a collection of vertices and
@@ -525,14 +520,13 @@ object Graph {
       defaultVertexAttr: VD = null.asInstanceOf[VD],
       edgeStorageLevel: StorageLevel = StorageLevel.MEMORY_ONLY,
       vertexStorageLevel: StorageLevel = StorageLevel.MEMORY_ONLY)
-      : Graph[VD, ED] = {
+      : Graph[VD, ED] =
     GraphImpl(
       vertices,
       edges,
       defaultVertexAttr,
       edgeStorageLevel,
       vertexStorageLevel)
-  }
 
   /**
     * Implicitly extracts the [[GraphOps]] member from a graph.

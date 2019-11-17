@@ -137,8 +137,7 @@ class BaseUniformHaltonGenerator(val dimension: Int)
 
     def get(i: Int): Int = storage(i)
 
-    def set(i: Int, x: Int) = {
+    def set(i: Int, x: Int) =
       storage(i) = x
-    }
   }
 }

@@ -51,14 +51,13 @@ object CalendarBatcher {
       var toCnt = cnt
       while (toCnt != 0L) {
         // the biggest part of this that fits in an Int
-        def next(v: Long): Long = {
+        def next(v: Long): Long =
           if (v < 0) {
             // max is towards zero
             Int.MinValue.toLong max v
           } else {
             Int.MaxValue.toLong min v
           }
-        }
         val thisCnt = next(toCnt)
         toCnt -= thisCnt
         start.add(javaIntValue, thisCnt.toInt)
@@ -72,7 +71,7 @@ object CalendarBatcher {
       def notAfter(units: Long): Boolean = !(toDate(units).after(d))
 
       @annotation.tailrec
-      def search(low: Long, upper: Long): Long = {
+      def search(low: Long, upper: Long): Long =
         if (low == (upper - 1)) low
         else {
           // mid must be > low because upper >= low + 2
@@ -80,21 +79,18 @@ object CalendarBatcher {
           if (notAfter(mid)) search(mid, upper)
           else search(low, mid)
         }
-      }
 
       val guess = d.getTime / defaultSize
       // Don't linearly search for near times, skip this many defaultSized milliseconds
       val skip = 10L
       @annotation.tailrec
-      def makeBefore(prev: Long = guess): Long = {
+      def makeBefore(prev: Long = guess): Long =
         if (notAfter(prev)) prev
         else makeBefore(prev - skip)
-      }
       @annotation.tailrec
-      def makeAfter(prev: Long = guess): Long = {
+      def makeAfter(prev: Long = guess): Long =
         if (!notAfter(prev)) prev
         else makeAfter(prev + skip)
-      }
       // Return the largest value that is not after the date (<=)
       search(makeBefore(), makeAfter())
     }

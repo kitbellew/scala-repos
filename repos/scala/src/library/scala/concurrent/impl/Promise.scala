@@ -326,7 +326,7 @@ private[concurrent] object Promise {
       */
     @tailrec
     private def tryCompleteAndGetListeners(
-        v: Try[T]): List[CallbackRunnable[T]] = {
+        v: Try[T]): List[CallbackRunnable[T]] =
       get() match {
         case raw: List[_] =>
           val cur = raw.asInstanceOf[List[CallbackRunnable[T]]]
@@ -335,7 +335,6 @@ private[concurrent] object Promise {
           compressedRoot(dp).tryCompleteAndGetListeners(v)
         case _ => null
       }
-    }
 
     final def onComplete[U](func: Try[T] => U)(
         implicit executor: ExecutionContext): Unit =
@@ -346,7 +345,7 @@ private[concurrent] object Promise {
       *  to the root promise when linking two promises together.
       */
     @tailrec
-    private def dispatchOrAddCallback(runnable: CallbackRunnable[T]): Unit = {
+    private def dispatchOrAddCallback(runnable: CallbackRunnable[T]): Unit =
       get() match {
         case r: Try[_] => runnable.executeWithValue(r.asInstanceOf[Try[T]])
         case dp: DefaultPromise[_] =>
@@ -355,7 +354,6 @@ private[concurrent] object Promise {
           if (compareAndSet(listeners, runnable :: listeners)) ()
           else dispatchOrAddCallback(runnable)
       }
-    }
 
     /** Link this promise to the root of another promise using `link()`. Should only be
       *  be called by transformWith.

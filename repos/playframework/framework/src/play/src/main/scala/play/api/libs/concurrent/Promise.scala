@@ -28,9 +28,8 @@ object Promise {
     "Use akka.pattern.after(duration, actorSystem.scheduler)(Future(message)) instead",
     since = "2.5.0")
   def timeout[A](message: => A, duration: scala.concurrent.duration.Duration)(
-      implicit ec: ExecutionContext): Future[A] = {
+      implicit ec: ExecutionContext): Future[A] =
     timeout(message, duration.toMillis)
-  }
 
   /**
     * Constructs a Future which will contain value "message" after the given duration elapses.

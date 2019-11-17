@@ -61,7 +61,7 @@ class ScEarlyDefinitionsImpl private (
     true
   }
 
-  def members: Seq[ScMember] = {
+  def members: Seq[ScMember] =
     getStub match {
       case stub: ScEarlyDefinitionsStub =>
         import scala.collection.JavaConverters._
@@ -71,5 +71,4 @@ class ScEarlyDefinitionsImpl private (
         } yield psi.asInstanceOf[ScMember]
       case _ => findChildrenByClassScala(classOf[ScMember])
     }
-  }
 }

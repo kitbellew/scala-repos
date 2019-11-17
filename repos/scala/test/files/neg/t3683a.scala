@@ -10,11 +10,10 @@ case class Z[T >: Bar <: Foo](
 
 object Main {
   // should warn for not including XX()
-  def f1(w: W[Bar]): Int = {
+  def f1(w: W[Bar]): Int =
     w match {
       // case XX() => 2
       case Y()  => 1
       case Z(z) => f1(z)
     }
-  }
 }

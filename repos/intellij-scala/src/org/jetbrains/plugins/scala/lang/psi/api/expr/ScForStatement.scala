@@ -30,8 +30,6 @@ trait ScForStatement extends ScExpression {
 }
 
 object ScForStatement {
-  def unapply(
-      forStmt: ScForStatement): Option[(ScEnumerators, ScExpression)] = {
+  def unapply(forStmt: ScForStatement): Option[(ScEnumerators, ScExpression)] =
     forStmt.enumerators.zip(forStmt.body).headOption
-  }
 }

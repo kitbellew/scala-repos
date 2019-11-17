@@ -33,36 +33,29 @@ private object EventAttribute {
   )
 
   object EventForAttribute {
-    def unapply(attributeName: String): Option[String] = {
+    def unapply(attributeName: String): Option[String] =
       eventsByAttributeName.get(attributeName)
-    }
   }
 }
 
 case class NodesAndEventJs(nodes: NodeSeq, js: JsCmd) {
-  def append(newNodesAndEventJs: NodesAndEventJs): NodesAndEventJs = {
+  def append(newNodesAndEventJs: NodesAndEventJs): NodesAndEventJs =
     this.copy(
       nodes = nodes ++ newNodesAndEventJs.nodes,
       js = js & newNodesAndEventJs.js
     )
-  }
-  def append(newNodeAndEventJs: NodeAndEventJs): NodesAndEventJs = {
+  def append(newNodeAndEventJs: NodeAndEventJs): NodesAndEventJs =
     append(newNodeAndEventJs.node, newNodeAndEventJs.js)
-  }
-  def append(newNode: Node): NodesAndEventJs = {
+  def append(newNode: Node): NodesAndEventJs =
     this.copy(nodes = nodes :+ newNode)
-  }
-  def append(newJs: JsCmd): NodesAndEventJs = {
+  def append(newJs: JsCmd): NodesAndEventJs =
     this.copy(js = js & newJs)
-  }
-  def append(newNode: Node, newJs: JsCmd): NodesAndEventJs = {
+  def append(newNode: Node, newJs: JsCmd): NodesAndEventJs =
     this.copy(nodes = nodes :+ newNode, js = js & newJs)
-  }
 }
 private[http] case class NodeAndEventJs(node: Node, js: JsCmd) {
-  def append(newJs: JsCmd): NodeAndEventJs = {
+  def append(newJs: JsCmd): NodeAndEventJs =
     this.copy(js = js & newJs)
-  }
 }
 
 /**
@@ -88,7 +81,7 @@ private[http] final object HtmlNormalizer {
       contextPath: String,
       shouldRewriteUrl: Boolean, // whether to apply URLRewrite.rewriteFunc
       eventAttributes: List[EventAttribute] = Nil
-  ): (Option[String], MetaData, List[EventAttribute]) = {
+  ): (Option[String], MetaData, List[EventAttribute]) =
     if (attributes == Null) {
       (None, Null, eventAttributes)
     } else {
@@ -167,13 +160,12 @@ private[http] final object HtmlNormalizer {
             remainingEventAttributes)
       }
     }
-  }
 
   // Given an element id and the `EventAttribute`s to apply to elements with
   // that id, return a JsCmd that binds all those event handlers to that id.
   private[this] def jsForEventAttributes(
       elementId: String,
-      eventAttributes: List[EventAttribute]): JsCmd = {
+      eventAttributes: List[EventAttribute]): JsCmd =
     eventAttributes
       .map {
         case EventAttribute(name, handlerJs) =>
@@ -185,7 +177,6 @@ private[http] final object HtmlNormalizer {
           ).cmd
       }
       .foldLeft(Noop)(_ & _)
-  }
 
   private[http] def normalizeElementAndAttributes(
       element: Elem,
@@ -245,7 +236,7 @@ private[http] final object HtmlNormalizer {
   private[http] def normalizeNode(
       node: Node,
       contextPath: String,
-      stripComments: Boolean): Option[NodeAndEventJs] = {
+      stripComments: Boolean): Option[NodeAndEventJs] =
     node match {
       case element: Elem =>
         val (attributeToFix, shouldRewriteUrl) = element.label match {
@@ -278,7 +269,6 @@ private[http] final object HtmlNormalizer {
       case otherNode =>
         Some(NodeAndEventJs(otherNode, Noop))
     }
-  }
 
   /**
     * Base for all the normalizeHtml* implementations; in addition to what it
@@ -296,7 +286,7 @@ private[http] final object HtmlNormalizer {
       nodes: NodeSeq,
       contextPath: String,
       stripComments: Boolean
-  ): NodesAndEventJs = {
+  ): NodesAndEventJs =
     nodes.foldLeft(NodesAndEventJs(Vector[Node](), Noop)) {
       (soFar, nodeToNormalize) =>
         normalizeNode(nodeToNormalize, contextPath, stripComments).map {
@@ -320,5 +310,4 @@ private[http] final object HtmlNormalizer {
           soFar
         }
     }
-  }
 }

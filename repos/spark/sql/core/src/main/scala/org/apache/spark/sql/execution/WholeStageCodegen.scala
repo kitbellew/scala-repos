@@ -220,9 +220,8 @@ trait CodegenSupport extends SparkPlan {
   protected def doConsume(
       ctx: CodegenContext,
       input: Seq[ExprCode],
-      row: String): String = {
+      row: String): String =
     throw new UnsupportedOperationException
-  }
 }
 
 /**
@@ -239,17 +238,14 @@ case class InputAdapter(child: SparkPlan)
   override def outputPartitioning: Partitioning = child.outputPartitioning
   override def outputOrdering: Seq[SortOrder] = child.outputOrdering
 
-  override def doExecute(): RDD[InternalRow] = {
+  override def doExecute(): RDD[InternalRow] =
     child.execute()
-  }
 
-  override def doExecuteBroadcast[T](): broadcast.Broadcast[T] = {
+  override def doExecuteBroadcast[T](): broadcast.Broadcast[T] =
     child.doExecuteBroadcast()
-  }
 
-  override def upstreams(): Seq[RDD[InternalRow]] = {
+  override def upstreams(): Seq[RDD[InternalRow]] =
     child.execute() :: Nil
-  }
 
   override def doProduce(ctx: CodegenContext): String = {
     val input = ctx.freshName("input")
@@ -383,13 +379,11 @@ case class WholeStageCodegen(child: SparkPlan)
     }
   }
 
-  override def upstreams(): Seq[RDD[InternalRow]] = {
+  override def upstreams(): Seq[RDD[InternalRow]] =
     throw new UnsupportedOperationException
-  }
 
-  override def doProduce(ctx: CodegenContext): String = {
+  override def doProduce(ctx: CodegenContext): String =
     throw new UnsupportedOperationException
-  }
 
   override def consumeChild(
       ctx: CodegenContext,
@@ -433,18 +427,16 @@ case class WholeStageCodegen(child: SparkPlan)
     }
   }
 
-  override def innerChildren: Seq[SparkPlan] = {
+  override def innerChildren: Seq[SparkPlan] =
     child :: Nil
-  }
 
   private def collectInputs(plan: SparkPlan): Seq[SparkPlan] = plan match {
     case InputAdapter(c) => c :: Nil
     case other           => other.children.flatMap(collectInputs)
   }
 
-  override def treeChildren: Seq[SparkPlan] = {
+  override def treeChildren: Seq[SparkPlan] =
     collectInputs(child)
-  }
 
   override def simpleString: String = "WholeStageCodegen"
 }
@@ -499,11 +491,10 @@ case class CollapseCodegenStages(conf: SQLConf) extends Rule[SparkPlan] {
         other.withNewChildren(other.children.map(insertWholeStageCodegen))
     }
 
-  def apply(plan: SparkPlan): SparkPlan = {
+  def apply(plan: SparkPlan): SparkPlan =
     if (conf.wholeStageEnabled) {
       insertWholeStageCodegen(plan)
     } else {
       plan
     }
-  }
 }

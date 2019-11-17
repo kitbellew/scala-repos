@@ -248,8 +248,7 @@ object KafkaTools extends Command {
         itr: Iterator[MessageAndOffset],
         range: MessageRange,
         format: Format,
-        i: Int = 0): Unit = {
-
+        i: Int = 0): Unit =
       if (itr.hasNext && !range.done(i)) {
         val next = itr.next
         if (range.contains(i)) {
@@ -259,7 +258,6 @@ object KafkaTools extends Command {
       } else {
         ()
       }
-    }
 
     val ms = new FileMessageSet(file, false)
 
@@ -585,7 +583,7 @@ object KafkaTools extends Command {
       }
     }
 
-    def parseOffset(s: String): Either[Unit, Option[Int]] = {
+    def parseOffset(s: String): Either[Unit, Option[Int]] =
       try {
         Right(if (s.trim.length == 0) {
           None
@@ -595,7 +593,6 @@ object KafkaTools extends Command {
       } catch {
         case ex => Left("Parse error for: " + s)
       }
-    }
   }
 
   def parseEventMessage(msg: MessageAndOffset) =
@@ -930,9 +927,8 @@ object IngestTools extends Command {
     }
   }
 
-  def isOlderThan(lagMinutes: Int, modified: DateTime): Boolean = {
+  def isOlderThan(lagMinutes: Int, modified: DateTime): Boolean =
     modified.plusMinutes(lagMinutes).isBefore(new DateTime(DateTimeZone.UTC))
-  }
 
   def getJsonAt(path: String, client: ZkClient): Option[JValue] = {
     val bytes = client.readData(path).asInstanceOf[Array[Byte]]
@@ -1335,19 +1331,17 @@ object APIKeyTools extends Command with AkkaDefaults with Logging {
     }
   }
 
-  def list(apiKeyManager: APIKeyManager[Future]) = {
+  def list(apiKeyManager: APIKeyManager[Future]) =
     for (apiKeys <- apiKeyManager.listAPIKeys) yield {
       apiKeys.foreach(printAPIKey)
     }
-  }
 
-  def showRoot(apiKeyManager: APIKeyManager[Future]) = {
+  def showRoot(apiKeyManager: APIKeyManager[Future]) =
     for (rootAPIKey <- apiKeyManager.rootAPIKey) yield {
       println(rootAPIKey)
     }
-  }
 
-  def printAPIKey(t: APIKeyRecord): Unit = {
+  def printAPIKey(t: APIKeyRecord): Unit =
     println(t)
 //    println("APIKey: %s Issuer: %s".format(t.uid, t.issuer.getOrElse("NA")))
 //    println("  Permissions (Path)")
@@ -1370,14 +1364,12 @@ object APIKeyTools extends Command with AkkaDefaults with Logging {
 //      children.foreach(printAPIKey)
 //    }
 //  }
-  }
 
   def create(
       accountId: String,
       apiKeyName: String,
-      apiKeyManager: APIKeyManager[Future]) = {
+      apiKeyManager: APIKeyManager[Future]) =
     apiKeyManager.newStandardAPIKeyRecord(accountId, Some(apiKeyName))
-  }
 
   def delete(t: String, apiKeyManager: APIKeyManager[Future]) =
     sys.error("todo")
@@ -1400,18 +1392,16 @@ object APIKeyTools extends Command with AkkaDefaults with Logging {
     var deleted: Option[String] = None
     var servers: String = "localhost"
 
-    def deletedCollection: String = {
+    def deletedCollection: String =
       deleted.getOrElse(collection + "_deleted")
-    }
 
     def mongoSettings: MongoAPIKeyManagerSettings = MongoAPIKeyManagerSettings(
       apiKeys = collection,
       deletedAPIKeys = deletedCollection
     )
 
-    def mongoConfig: Configuration = {
+    def mongoConfig: Configuration =
       Configuration.parse("servers = %s".format(mongoServers))
-    }
 
     def mongoServers: String = {
       val s = servers.trim
@@ -1449,15 +1439,11 @@ object CSVToJSONConverter {
   private val Timestamp =
     """^(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2}:\d{2}\.\d{3})\d{0,3}$""".r
 
-  def parse(
-      s: String,
-      ts: Boolean = false,
-      verbose: Boolean = false): JValue = {
+  def parse(s: String, ts: Boolean = false, verbose: Boolean = false): JValue =
     JParser.parseFromString(s) getOrElse {
       s match {
         case Timestamp(d, t) if (ts) => JString("%sT%sZ".format(d, t))
         case s                       => JString(s)
       }
     }
-  }
 }

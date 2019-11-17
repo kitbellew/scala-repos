@@ -108,7 +108,7 @@ object ShardServiceCombinators extends Logging {
   }
 
   private def getTimeout(
-      request: HttpRequest[_]): Validation[String, Option[Long]] = {
+      request: HttpRequest[_]): Validation[String, Option[Long]] =
     request.parameters
       .get('timeout)
       .filter(_ != null)
@@ -117,7 +117,6 @@ object ShardServiceCombinators extends Logging {
         case _         => Validation.failure("Timeout must be a non-negative integer.")
       }
       .sequence[({ type λ[α] = Validation[String, α] })#λ, Long]
-  }
 
   private def getSortOn(
       request: HttpRequest[_]): Validation[String, List[CPath]] = {
@@ -155,7 +154,7 @@ object ShardServiceCombinators extends Logging {
   }
 
   private def getSortOrder(
-      request: HttpRequest[_]): Validation[String, DesiredSortOrder] = {
+      request: HttpRequest[_]): Validation[String, DesiredSortOrder] =
     request.parameters.get('sortOrder) filter (_ != null) map (_.toLowerCase) map {
       case "asc" | "\"asc\"" | "ascending" | "\"ascending\"" =>
         success(TableModule.SortAscending)
@@ -163,7 +162,6 @@ object ShardServiceCombinators extends Logging {
         success(TableModule.SortDescending)
       case badOrder => failure("Unknown sort ordering: %s." format badOrder)
     } getOrElse success(TableModule.SortAscending)
-  }
 
   private def getOffsetAndLimit(
       request: HttpRequest[_]): ValidationNel[String, Option[(Long, Long)]] = {
@@ -244,7 +242,7 @@ trait ShardServiceCombinators
             QueryOptions) => Future[HttpResponse[B]]])(
       implicit executor: ExecutionContext): HttpService[
     ByteChunk,
-    ((APIKey, AccountDetails), Path) => Future[HttpResponse[B]]] = {
+    ((APIKey, AccountDetails), Path) => Future[HttpResponse[B]]] =
     new DelegatingService[
       ByteChunk,
       ((APIKey, AccountDetails), Path) => Future[HttpResponse[B]],
@@ -302,7 +300,6 @@ trait ShardServiceCombinators
           }
         }
     }
-  }
 
   def asyncQuery[B](
       next: HttpService[
@@ -315,7 +312,7 @@ trait ShardServiceCombinators
             QueryOptions) => Future[HttpResponse[B]]])(
       implicit executor: ExecutionContext): HttpService[
     ByteChunk,
-    ((APIKey, AccountDetails)) => Future[HttpResponse[B]]] = {
+    ((APIKey, AccountDetails)) => Future[HttpResponse[B]]] =
     new DelegatingService[
       ByteChunk,
       ((APIKey, AccountDetails)) => Future[HttpResponse[B]],
@@ -337,7 +334,6 @@ trait ShardServiceCombinators
 
       def metadata = delegate.metadata
     }
-  }
 
   def requireAccount[A, B](accountFinder: AccountFinder[Future])(
       service: HttpService[

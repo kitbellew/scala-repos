@@ -180,7 +180,7 @@ trait RandomForest[V, @sp(Double) F, @sp(Double) K] {
     // Grows a decision tree from a single region. The tree will keep growing
     // until we hit the minimum region size.
 
-    def growTree(members: Array[Int]): DecisionTree[V, F, K] = {
+    def growTree(members: Array[Int]): DecisionTree[V, F, K] =
       if (members.length < opts.minSplitSize) {
         Leaf(region(members).value)
       } else {
@@ -247,7 +247,6 @@ trait RandomForest[V, @sp(Double) F, @sp(Double) K] {
         val right = members drop (minIdx + 1)
         Split(minVar, boundary, growTree(left), growTree(right))
       }
-    }
 
     // Random forests are embarassingly parallel. Except for very small
     // datasets, there is no reason not to parallelize the algorithm.
@@ -281,9 +280,8 @@ trait RandomForest[V, @sp(Double) F, @sp(Double) K] {
     )
   }
 
-  def apply(data: Array[V], out: Array[K], options: RandomForestOptions) = {
+  def apply(data: Array[V], out: Array[K], options: RandomForestOptions) =
     fromForest(randomForest(data, out, fixOptions(data.length, options)))
-  }
 }
 
 /**
@@ -404,9 +402,8 @@ object RandomForest {
       implicit V: CoordinateSpace[V, F],
       order: Order[F],
       classTagV: ClassTag[V],
-      classTagF: ClassTag[F]): V => F = {
+      classTagF: ClassTag[F]): V => F =
     regression(data.toArray, out.toArray, options)
-  }
 
   def regression[V, @sp(Double) F](
       data: Iterable[(V, F)],
@@ -437,9 +434,8 @@ object RandomForest {
       implicit V: CoordinateSpace[V, F],
       order: Order[F],
       classTagV: ClassTag[V],
-      classTagK: ClassTag[K]): V => K = {
+      classTagK: ClassTag[K]): V => K =
     classification(data.toArray, out.toArray, options)
-  }
 
   def classification[V, @sp(Double) F, K](
       data: Iterable[(V, K)],

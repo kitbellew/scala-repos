@@ -45,10 +45,9 @@ package object errors {
     *  [[catalyst.errors.TreeNodeException TreeNodeException]], attaching the provided `tree`.
     */
   def attachTree[TreeType <: TreeNode[_], A](tree: TreeType, msg: String = "")(
-      f: => A): A = {
+      f: => A): A =
     try f
     catch {
       case e: Exception => throw new TreeNodeException(tree, msg, e)
     }
-  }
 }

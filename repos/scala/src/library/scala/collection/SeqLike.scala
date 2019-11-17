@@ -89,7 +89,7 @@ trait SeqLike[+A, +Repr]
     *  is `O(length min len)` instead of `O(length)`. The method should be overwritten
     *  if computing `length` is cheap.
     */
-  def lengthCompare(len: Int): Int = {
+  def lengthCompare(len: Int): Int =
     if (len < 0) 1
     else {
       var i = 0
@@ -101,7 +101,6 @@ trait SeqLike[+A, +Repr]
       }
       i - len
     }
-  }
 
   override /*IterableLike*/ def isEmpty: Boolean = lengthCompare(0) == 0
 

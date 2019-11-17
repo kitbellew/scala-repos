@@ -51,7 +51,7 @@ object Jetty9Test {
 
       jetty.addLifeCycleListener(
         new AbstractLifeCycle.AbstractLifeCycleListener {
-          override def lifeCycleStarted(event: LifeCycle): Unit = {
+          override def lifeCycleStarted(event: LifeCycle): Unit =
             try {
               runner.send(s"http://localhost:$jettyPort/test.txt")
               val msg = runner.receive()
@@ -62,7 +62,6 @@ object Jetty9Test {
               runner.close()
               jetty.stop()
             }
-          }
         })
 
       jetty.start()

@@ -39,11 +39,10 @@ import org.apache.spark.sql.QueryTest
 private[sql] abstract class ParquetCompatibilityTest
     extends QueryTest
     with ParquetTest {
-  protected def readParquetSchema(path: String): MessageType = {
+  protected def readParquetSchema(path: String): MessageType =
     readParquetSchema(path, { path =>
       !path.getName.startsWith("_")
     })
-  }
 
   protected def readParquetSchema(
       path: String,
@@ -64,11 +63,10 @@ private[sql] abstract class ParquetCompatibilityTest
     footers.asScala.head.getParquetMetadata.getFileMetaData.getSchema
   }
 
-  protected def logParquetSchema(path: String): Unit = {
+  protected def logParquetSchema(path: String): Unit =
     logInfo(s"""Schema of the Parquet file written by parquet-avro:
          |${readParquetSchema(path)}
        """.stripMargin)
-  }
 }
 
 private[sql] object ParquetCompatibilityTest {
@@ -103,17 +101,14 @@ private[sql] object ParquetCompatibilityTest {
 
     private var recordConsumer: RecordConsumer = _
 
-    override def init(configuration: Configuration): WriteContext = {
+    override def init(configuration: Configuration): WriteContext =
       new WriteContext(schema, metadata.asJava)
-    }
 
-    override def write(recordWriter: RecordConsumer => Unit): Unit = {
+    override def write(recordWriter: RecordConsumer => Unit): Unit =
       recordWriter.apply(recordConsumer)
-    }
 
-    override def prepareForWrite(recordConsumer: RecordConsumer): Unit = {
+    override def prepareForWrite(recordConsumer: RecordConsumer): Unit =
       this.recordConsumer = recordConsumer
-    }
   }
 
   /**
@@ -123,9 +118,8 @@ private[sql] object ParquetCompatibilityTest {
   def writeDirect(
       path: String,
       schema: String,
-      recordWriters: (RecordConsumer => Unit)*): Unit = {
+      recordWriters: (RecordConsumer => Unit)*): Unit =
     writeDirect(path, schema, Map.empty[String, String], recordWriters: _*)
-  }
 
   /**
     * Writes arbitrary messages conforming to a given `schema` to a Parquet file located by `path`

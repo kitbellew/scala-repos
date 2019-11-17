@@ -12,11 +12,9 @@ class HttpCallbackEventSubscriber @Inject() (
 
   eventBus.subscribe(actor, classOf[MarathonEvent])
 
-  def configuration(): Class[HttpEventConfiguration] = {
+  def configuration(): Class[HttpEventConfiguration] =
     classOf[HttpEventConfiguration]
-  }
 
-  def module(): Option[Class[HttpEventModule]] = {
+  def module(): Option[Class[HttpEventModule]] =
     Some(classOf[HttpEventModule])
-  }
 }

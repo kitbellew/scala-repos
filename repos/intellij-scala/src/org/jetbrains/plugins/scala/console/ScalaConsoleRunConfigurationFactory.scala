@@ -15,9 +15,8 @@ import org.jetbrains.plugins.scala.project._
   */
 class ScalaConsoleRunConfigurationFactory(val typez: ConfigurationType)
     extends ConfigurationFactory(typez) {
-  def createTemplateConfiguration(project: Project): RunConfiguration = {
+  def createTemplateConfiguration(project: Project): RunConfiguration =
     new ScalaConsoleRunConfiguration(project, this, "")
-  }
 
   override def createConfiguration(
       name: String,

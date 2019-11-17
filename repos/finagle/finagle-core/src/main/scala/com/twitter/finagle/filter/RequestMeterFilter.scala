@@ -21,7 +21,7 @@ import java.util.concurrent.RejectedExecutionException
   */
 class RequestMeterFilter[Req, Rep](meter: AsyncMeter)
     extends SimpleFilter[Req, Rep] {
-  def apply(request: Req, service: Service[Req, Rep]) = {
+  def apply(request: Req, service: Service[Req, Rep]) =
     meter.await(1).transform {
       case Throw(noPermit) =>
         noPermit match {
@@ -31,5 +31,4 @@ class RequestMeterFilter[Req, Rep](meter: AsyncMeter)
         }
       case _ => service(request)
     }
-  }
 }

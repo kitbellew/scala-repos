@@ -324,12 +324,11 @@ trait IntroduceTypeAlias {
         parent: PsiElement) = {
       def getAhchor(
           parent: PsiElement,
-          firstOccurrence: PsiElement): Some[PsiElement] = {
+          firstOccurrence: PsiElement): Some[PsiElement] =
         Some(
           parent.getChildren
             .find(_.getTextRange.contains(firstOccurrence.getTextRange))
             .getOrElse(parent.getLastChild))
-      }
 
       val mtext = typeElement.calcType.canonicalText
 
@@ -447,10 +446,8 @@ trait IntroduceTypeAlias {
       typeElement: ScTypeElement,
       occurrences_ : OccurrenceData,
       typeName: String,
-      scope: ScopeItem): Computable[(
-      SmartPsiElementPointer[PsiElement],
-      SmartPsiElementPointer[PsiElement])] = {
-
+      scope: ScopeItem): Computable[
+    (SmartPsiElementPointer[PsiElement], SmartPsiElementPointer[PsiElement])] =
     new Computable[(
         SmartPsiElementPointer[PsiElement],
         SmartPsiElementPointer[PsiElement])]() {
@@ -463,7 +460,6 @@ trait IntroduceTypeAlias {
           occurrences_,
           scope)
     }
-  }
 
   def afterScopeChoosing(
       project: Project,
@@ -472,9 +468,8 @@ trait IntroduceTypeAlias {
       scopes: Array[ScopeItem],
       refactoringName: String)(invokesNext: (ScopeItem) => Unit) {
 
-    def chooseScopeItem(item: ScopeItem): Unit = {
+    def chooseScopeItem(item: ScopeItem): Unit =
       invokesNext(item)
-    }
     showTypeAliasChooser(
       editor,
       scopes,
@@ -603,9 +598,8 @@ trait IntroduceTypeAlias {
         }
       })
       .addListener(new JBPopupAdapter {
-        override def beforeShown(event: LightweightWindowEvent): Unit = {
+        override def beforeShown(event: LightweightWindowEvent): Unit =
           selection.addHighlighter()
-        }
 
         override def onClosed(event: LightweightWindowEvent) {
           highlighter.dropHighlight()

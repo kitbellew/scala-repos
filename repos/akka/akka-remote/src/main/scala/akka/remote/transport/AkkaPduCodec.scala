@@ -200,7 +200,7 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
   override val constructHeartbeat: ByteString =
     constructControlMessagePdu(WireFormats.CommandType.HEARTBEAT, None)
 
-  override def decodePdu(raw: ByteString): AkkaPdu = {
+  override def decodePdu(raw: ByteString): AkkaPdu =
     try {
       val pdu = AkkaProtocolMessage.parseFrom(raw.toArray)
       if (pdu.hasPayload)
@@ -214,7 +214,6 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
       case e: InvalidProtocolBufferException ⇒
         throw new PduCodecException("Decoding PDU failed.", e)
     }
-  }
 
   override def decodeMessage(
       raw: ByteString,
@@ -259,8 +258,7 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
     (ackOption, messageOption)
   }
 
-  private def decodeControlPdu(controlPdu: AkkaControlMessage): AkkaPdu = {
-
+  private def decodeControlPdu(controlPdu: AkkaControlMessage): AkkaPdu =
     controlPdu.getCommandType match {
       case CommandType.ASSOCIATE if controlPdu.hasHandshakeInfo ⇒
         val handshakeInfo = controlPdu.getHandshakeInfo
@@ -282,7 +280,6 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
           s"Decoding of control PDU failed, invalid format, unexpected: [${x}]",
           null)
     }
-  }
 
   private def decodeAddress(encodedAddress: AddressData): Address =
     Address(
@@ -309,13 +306,12 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
 
   private def serializeActorRef(
       defaultAddress: Address,
-      ref: ActorRef): ActorRefData = {
+      ref: ActorRef): ActorRefData =
     ActorRefData.newBuilder
       .setPath(
         if (ref.path.address.host.isDefined) ref.path.toSerializationFormat
         else ref.path.toSerializationFormatWithAddress(defaultAddress))
       .build()
-  }
 
   private def serializeAddress(address: Address): AddressData = address match {
     case Address(protocol, system, Some(host), Some(port)) ⇒

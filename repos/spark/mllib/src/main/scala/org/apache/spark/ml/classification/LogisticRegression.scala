@@ -147,7 +147,7 @@ private[classification] trait LogisticRegressionParams
     * If [[threshold]] and [[thresholds]] are both set, ensures they are consistent.
     * @throws IllegalArgumentException if [[threshold]] and [[thresholds]] are not equivalent
     */
-  protected def checkThresholdConsistency(): Unit = {
+  protected def checkThresholdConsistency(): Unit =
     if (isSet(threshold) && isSet(thresholds)) {
       val ts = $(thresholds)
       require(
@@ -164,11 +164,9 @@ private[classification] trait LogisticRegressionParams
           s" inconsistent values for threshold (${$(threshold)}) and thresholds (equivalent to $t)"
       )
     }
-  }
 
-  override def validateParams(): Unit = {
+  override def validateParams(): Unit =
     checkThresholdConsistency()
-  }
 }
 
 /**
@@ -600,7 +598,7 @@ class LogisticRegressionModel private[spark] (
     * of the current model.
     */
   private[classification] def findSummaryModelAndProbabilityCol(
-      ): (LogisticRegressionModel, String) = {
+      ): (LogisticRegressionModel, String) =
     $(probabilityCol) match {
       case "" =>
         val probabilityColName =
@@ -610,7 +608,6 @@ class LogisticRegressionModel private[spark] (
           probabilityColName)
       case p => (this, p)
     }
-  }
 
   private[classification] def setSummary(
       summary: LogisticRegressionTrainingSummary): this.type = {
@@ -628,25 +625,22 @@ class LogisticRegressionModel private[spark] (
     */
   // TODO: decide on a good name before exposing to public API
   private[classification] def evaluate(
-      dataset: DataFrame): LogisticRegressionSummary = {
+      dataset: DataFrame): LogisticRegressionSummary =
     new BinaryLogisticRegressionSummary(
       this.transform(dataset),
       $(probabilityCol),
       $(labelCol),
       $(featuresCol))
-  }
 
   /**
     * Predict label for the given feature vector.
     * The behavior of this can be adjusted using [[thresholds]].
     */
-  override protected def predict(features: Vector): Double = {
+  override protected def predict(features: Vector): Double =
     // Note: We should use getThreshold instead of $(threshold) since getThreshold is overridden.
     if (score(features) > getThreshold) 1 else 0
-  }
 
-  override protected def raw2probabilityInPlace(
-      rawPrediction: Vector): Vector = {
+  override protected def raw2probabilityInPlace(rawPrediction: Vector): Vector =
     rawPrediction match {
       case dv: DenseVector =>
         var i = 0
@@ -661,7 +655,6 @@ class LogisticRegressionModel private[spark] (
           "Unexpected error in LogisticRegressionModel:" +
             " raw2probabilitiesInPlace encountered SparseVector")
     }
-  }
 
   override protected def predictRaw(features: Vector): Vector = {
     val m = margin(features)
@@ -691,10 +684,9 @@ class LogisticRegressionModel private[spark] (
     if (rawPrediction(1) > rawThreshold) 1 else 0
   }
 
-  override protected def probability2prediction(probability: Vector): Double = {
+  override protected def probability2prediction(probability: Vector): Double =
     // Note: We should use getThreshold instead of $(threshold) since getThreshold is overridden.
     if (probability(1) > getThreshold) 1 else 0
-  }
 
   /**
     * Returns a [[MLWriter]] instance for this ML instance.
@@ -1071,7 +1063,7 @@ private class LogisticAggregator(
     * @param instance The instance of data point to be added.
     * @return This LogisticAggregator object.
     */
-  def add(instance: Instance): this.type = {
+  def add(instance: Instance): this.type =
     instance match {
       case Instance(label, weight, features) =>
         require(
@@ -1128,7 +1120,6 @@ private class LogisticAggregator(
         weightSum += weight
         this
     }
-  }
 
   /**
     * Merge another LogisticAggregator, and update the loss and gradient

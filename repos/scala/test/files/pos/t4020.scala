@@ -11,7 +11,7 @@ object a2 extends A {
 }
 
 class B {
-  def mthd(foo: a2.Foo) = {
+  def mthd(foo: a2.Foo) =
     foo match {
       case a2.Foo2(i) => i
 
@@ -21,5 +21,4 @@ class B {
 
       // case a1.Foo1(i) => i
     }
-  }
 }

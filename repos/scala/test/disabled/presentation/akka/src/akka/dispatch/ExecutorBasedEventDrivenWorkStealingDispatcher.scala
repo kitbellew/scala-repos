@@ -192,9 +192,7 @@ class ExecutorBasedEventDrivenWorkStealingDispatcher(
     * Rewrites the message and adds that message to the recipients mailbox
     * returns true if the message is non-null
     */
-  protected def donate(
-      organ: MessageInvocation,
-      recipient: ActorRef): Boolean = {
+  protected def donate(organ: MessageInvocation, recipient: ActorRef): Boolean =
     if (organ ne null) {
       if (organ.senderFuture.isDefined)
         recipient.postMessageToMailboxAndCreateFutureResultWithTimeout[Any](
@@ -207,7 +205,6 @@ class ExecutorBasedEventDrivenWorkStealingDispatcher(
       else recipient.postMessageToMailbox(organ.message, None)
       true
     } else false
-  }
 
   /**
     * Returns an available recipient for the message, if any

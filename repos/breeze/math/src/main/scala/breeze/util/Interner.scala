@@ -46,13 +46,11 @@ class Interner[T] extends (T => T) with Serializable {
   def internAll(c: Array[T]) = c map apply
   def internAll(c: Set[T]) = c map apply
 
-  def internKeys[V](c: scala.collection.Map[T, V]) = {
+  def internKeys[V](c: scala.collection.Map[T, V]) =
     Map[T, V]() ++ c.map { case (k, v) => (intern(k), v) }
-  }
 
-  def internValues[K](c: scala.collection.Map[K, T]) = {
+  def internValues[K](c: scala.collection.Map[K, T]) =
     Map[K, T]() ++ c.map { case (k, v) => (k, intern(v)) }
-  }
 
   @transient private var inner = new WeakHashMap[T, WeakReference[T]];
 

@@ -72,14 +72,13 @@ trait DestructureTypes {
       },
       tree.productPrefix
     )
-    def wrapSymbolInfo(sym: Symbol): Node = {
+    def wrapSymbolInfo(sym: Symbol): Node =
       if ((sym eq NoSymbol) || openSymbols(sym)) wrapEmpty
       else {
         openSymbols += sym
         try product(symbolType(sym), wrapAtom(sym.defString))
         finally openSymbols -= sym
       }
-    }
 
     def list(nodes: List[Node]): Node = wrapSequence(nodes)
     def product(tp: Type, nodes: Node*): Node =

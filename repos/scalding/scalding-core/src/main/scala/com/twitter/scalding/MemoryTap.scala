@@ -30,9 +30,8 @@ class MemoryTap[In, Out](
     extends Tap[Properties, In, Out](scheme) {
 
   private var modifiedTime: Long = 1L
-  def updateModifiedTime: Unit = {
+  def updateModifiedTime: Unit =
     modifiedTime = System.currentTimeMillis
-  }
 
   override def createResource(conf: Properties) = {
     updateModifiedTime
@@ -47,11 +46,10 @@ class MemoryTap[In, Out](
     if (resourceExists(conf)) modifiedTime else 0L
   override lazy val getIdentifier: String = scala.math.random.toString
 
-  override def openForRead(flowProcess: FlowProcess[Properties], input: In) = {
+  override def openForRead(flowProcess: FlowProcess[Properties], input: In) =
     new TupleEntryChainIterator(
       scheme.getSourceFields,
       tupleBuffer.toIterator.asJava)
-  }
 
   override def openForWrite(
       flowProcess: FlowProcess[Properties],

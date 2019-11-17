@@ -67,7 +67,7 @@ object AsyncMeter {
     * `burstSize` within a given `burstDuration`.  Also, because of the
     * implementation, it consumes more than one slot from `maxWaiters`.
     */
-  def extraWideAwait(permits: Int, meter: AsyncMeter): Future[Unit] = {
+  def extraWideAwait(permits: Int, meter: AsyncMeter): Future[Unit] =
     if (permits > meter.burstSize) {
       val last = permits % meter.burstSize
       val num = permits / meter.burstSize
@@ -83,7 +83,6 @@ object AsyncMeter {
       }
       result
     } else meter.await(permits)
-  }
 }
 
 /**

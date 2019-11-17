@@ -52,14 +52,13 @@ class AliasingFrame[V <: Value](nLocals: Int, nStack: Int)
   /**
     * The set of aliased values for a given entry in the `values` array.
     */
-  def aliasesOf(entry: Int): AliasSet = {
+  def aliasesOf(entry: Int): AliasSet =
     if (aliases(entry) != null) aliases(entry)
     else {
       val init = new AliasSet(new AliasSet.SmallBitSet(entry, -1, -1, -1), 1)
       aliases(entry) = init
       init
     }
-  }
 
   /**
     * Define a new alias. For example, an assignment
@@ -79,12 +78,11 @@ class AliasingFrame[V <: Value](nLocals: Int, nStack: Int)
     * removes a from its former alias set.
     * As another example, stack values are removed from their alias sets when being consumed.
     */
-  private def removeAlias(assignee: Int): Unit = {
+  private def removeAlias(assignee: Int): Unit =
     if (aliases(assignee) != null) {
       aliases(assignee) -= assignee
       aliases(assignee) = null
     }
-  }
 
   /**
     * Define the alias set for a given value.
@@ -543,7 +541,7 @@ object AliasSet {
 
   def bsEmpty: Array[Long] = new Array[Long](1)
 
-  private def bsEnsureCapacity(set: Array[Long], index: Int): Array[Long] = {
+  private def bsEnsureCapacity(set: Array[Long], index: Int): Array[Long] =
     if (index < set.length) set
     else {
       var newLength = set.length
@@ -552,7 +550,6 @@ object AliasSet {
       Array.copy(set, 0, newSet, 0, set.length)
       newSet
     }
-  }
 
   def bsAdd(set: AliasSet, bit: Int): Unit = {
     val bits = set.set.asInstanceOf[Array[Long]]
@@ -647,7 +644,7 @@ object AliasSet {
     private def setThisAndOther(x: Int) =
       if (thisAndOther != null) thisAndOther(x) = true
 
-    private def checkABCD(x: Int, num: Int): Boolean = {
+    private def checkABCD(x: Int, num: Int): Boolean =
       // assert(x == a && num == 1 || x == b && num == 2 || ...)
       x != -1 && {
         val otherHasA =
@@ -663,10 +660,9 @@ object AliasSet {
         }
         !otherHasA
       }
-    }
 
     // main performance hot spot
-    private def checkXs = {
+    private def checkXs =
       (xs != null) && {
         val end = xs.length * 64
 
@@ -694,7 +690,6 @@ object AliasSet {
         iValid = i < end
         iValid
       }
-    }
 
     // this is the main hot spot of alias analysis. for nullness, 38% of the overall analysis time
     // is spent here. within hasNext, almost the entire time is spent in `checkXs`.
@@ -703,7 +698,7 @@ object AliasSet {
       iValid || abcdNext != -1 || checkABCD(a, 1) || checkABCD(b, 2) ||
         checkABCD(c, 3) || checkABCD(d, 4) || checkXs
 
-    def next(): Int = {
+    def next(): Int =
       if (hasNext) {
         if (abcdNext != -1) {
           val r = abcdNext; abcdNext = -1; r
@@ -711,7 +706,6 @@ object AliasSet {
           val r = i; i += 1; iValid = false; r
         }
       } else Iterator.empty.next()
-    }
   }
 
 //  The number of bits in a bit array. Useful for debugging.

@@ -58,14 +58,13 @@ class QuotasTest extends KafkaServerTestHarness {
     KafkaConfig.ConsumerQuotaBytesPerSecondDefaultProp,
     "2500")
 
-  override def generateConfigs() = {
+  override def generateConfigs() =
     FixedPortTestUtils
       .createBrokerConfigs(
         numServers,
         zkConnect,
         enableControlledShutdown = false)
       .map(KafkaConfig.fromProps(_, overridingProps))
-  }
 
   var producers = mutable.Buffer[KafkaProducer[Array[Byte], Array[Byte]]]()
   var consumers = mutable.Buffer[KafkaConsumer[Array[Byte], Array[Byte]]]()

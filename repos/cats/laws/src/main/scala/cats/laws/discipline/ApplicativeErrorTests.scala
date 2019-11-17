@@ -26,7 +26,7 @@ trait ApplicativeErrorTests[F[_], E] extends ApplicativeTests[F] {
       EqFXorEA: Eq[F[E Xor A]],
       EqXorTFEA: Eq[XorT[F, E, A]],
       EqFABC: Eq[F[(A, B, C)]],
-      iso: Isomorphisms[F]): RuleSet = {
+      iso: Isomorphisms[F]): RuleSet =
     new RuleSet {
       def name: String = "applicativeError"
       def bases: Seq[(String, RuleSet)] = Nil
@@ -52,7 +52,6 @@ trait ApplicativeErrorTests[F[_], E] extends ApplicativeTests[F] {
           laws.attemptConsistentWithAttemptT[A] _)
       )
     }
-  }
 }
 
 object ApplicativeErrorTests {

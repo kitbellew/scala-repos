@@ -42,7 +42,7 @@ class MergeTest(args: Args) extends Job(args) {
         acc: List[T],
         list1: List[T],
         list2: List[T],
-        k: Int): List[T] = {
+        k: Int): List[T] =
       (list1, list2, k) match {
         case (_, _, 0) => acc
         case (x1 :: t1, x2 :: t2, _) => {
@@ -56,7 +56,6 @@ class MergeTest(args: Args) extends Job(args) {
         case (Nil, x2 :: t2, _) => mergeSortR(x2 :: acc, Nil, t2, k - 1)
         case (Nil, Nil, _)      => acc
       }
-    }
     mergeSortR(Nil, v1, v2, k).reverse
   }
 }

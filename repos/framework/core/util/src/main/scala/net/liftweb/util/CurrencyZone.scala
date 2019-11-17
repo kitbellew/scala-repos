@@ -70,7 +70,7 @@ abstract class CurrencyZone {
   var locale: Locale
   def make(x: BigDecimal): Currency
 
-  def apply(x: String): Currency = {
+  def apply(x: String): Currency =
     try {
       make(BigDecimal(x)) // try normal number
     } catch {
@@ -91,7 +91,6 @@ abstract class CurrencyZone {
         }
       }
     }
-  }
 
   def apply(x: BigDecimal): Currency = make(x)
 

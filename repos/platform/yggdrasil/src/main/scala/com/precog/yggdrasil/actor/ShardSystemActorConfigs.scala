@@ -111,7 +111,7 @@ trait KafkaIngestActorProjectionSystem extends ShardSystemActorModule {
       routingActor: ActorRef,
       checkpoint: YggCheckpoint,
       checkpointCoordination: CheckpointCoordination,
-      permissionsFinder: PermissionsFinder[Future]) = {
+      permissionsFinder: PermissionsFinder[Future]) =
     yggConfig.ingestConfig map { conf =>
       val consumer =
         new SimpleConsumer(
@@ -148,7 +148,6 @@ trait KafkaIngestActorProjectionSystem extends ShardSystemActorModule {
         "ingest"
       )
     }
-  }
 
   override def checkpointCoordination =
     ZookeeperSystemCoordination(

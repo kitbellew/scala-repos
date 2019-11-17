@@ -56,13 +56,12 @@ object TimePathedSource {
   def readPathsFor(
       pattern: String,
       dateRange: DateRange,
-      tz: TimeZone): Iterable[String] = {
+      tz: TimeZone): Iterable[String] =
     TimePathedSource.stepSize(pattern, tz) match {
       case Some(duration) =>
         allPathsWithDuration(pattern, duration, dateRange, tz)
       case None => sys.error(s"No suitable step size for pattern: $pattern")
     }
-  }
 
   /**
     * Gives the write path based on daterange end.

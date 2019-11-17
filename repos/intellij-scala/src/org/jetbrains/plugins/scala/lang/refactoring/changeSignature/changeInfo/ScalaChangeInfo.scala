@@ -35,11 +35,10 @@ case class ScalaChangeInfo(
 
   val project = function.getProject
   private var myMethod: PsiMethod = function
-  private def psiType = {
+  private def psiType =
     if (newType != null)
       ScType.toPsi(newType, project, GlobalSearchScope.allScope(project))
     else null
-  }
 
   //used in introduce parameter refactoring
   var introducedParameterData: Option[ScalaIntroduceParameterData] = None
@@ -65,9 +64,8 @@ case class ScalaChangeInfo(
 
   override def getMethod: PsiMethod = myMethod
 
-  override def updateMethod(psiMethod: PsiMethod): Unit = {
+  override def updateMethod(psiMethod: PsiMethod): Unit =
     myMethod = psiMethod
-  }
 
   override val isNameChanged: Boolean = getOldName != newName
 

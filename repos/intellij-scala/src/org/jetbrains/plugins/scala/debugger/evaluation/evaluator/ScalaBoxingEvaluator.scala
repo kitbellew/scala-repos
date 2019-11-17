@@ -25,7 +25,7 @@ case class ScalaBoxingEvaluator(evaluator: Evaluator) extends Evaluator {
 }
 
 object ScalaBoxingEvaluator {
-  def box(x: AnyRef, context: EvaluationContextImpl): AnyRef = {
+  def box(x: AnyRef, context: EvaluationContextImpl): AnyRef =
     x match {
       case null => null
       case DebuggerUtil.scalaRuntimeRefTo(value: Value) =>
@@ -36,5 +36,4 @@ object ScalaBoxingEvaluator {
         throw EvaluationException(
           s"Cannot perform boxing conversion for $result")
     }
-  }
 }

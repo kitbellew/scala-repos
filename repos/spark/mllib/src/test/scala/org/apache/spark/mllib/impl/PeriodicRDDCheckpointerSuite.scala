@@ -88,22 +88,20 @@ private object PeriodicRDDCheckpointerSuite {
 
   case class RDDToCheck(rdd: RDD[Double], gIndex: Int)
 
-  def createRDD(sc: SparkContext): RDD[Double] = {
+  def createRDD(sc: SparkContext): RDD[Double] =
     sc.parallelize(Seq(0.0, 1.0, 2.0, 3.0))
-  }
 
-  def checkPersistence(rdds: Seq[RDDToCheck], iteration: Int): Unit = {
+  def checkPersistence(rdds: Seq[RDDToCheck], iteration: Int): Unit =
     rdds.foreach { g =>
       checkPersistence(g.rdd, g.gIndex, iteration)
     }
-  }
 
   /**
     * Check storage level of rdd.
     * @param gIndex  Index of rdd in order inserted into checkpointer (from 1).
     * @param iteration  Total number of rdds inserted into checkpointer.
     */
-  def checkPersistence(rdd: RDD[_], gIndex: Int, iteration: Int): Unit = {
+  def checkPersistence(rdd: RDD[_], gIndex: Int, iteration: Int): Unit =
     try {
       if (gIndex + 2 < iteration) {
         assert(rdd.getStorageLevel == StorageLevel.NONE)
@@ -117,16 +115,14 @@ private object PeriodicRDDCheckpointerSuite {
             s"\t gIndex = $gIndex\n" + s"\t iteration = $iteration\n" +
             s"\t rdd.getStorageLevel = ${rdd.getStorageLevel}\n")
     }
-  }
 
   def checkCheckpoint(
       rdds: Seq[RDDToCheck],
       iteration: Int,
-      checkpointInterval: Int): Unit = {
+      checkpointInterval: Int): Unit =
     rdds.reverse.foreach { g =>
       checkCheckpoint(g.rdd, g.gIndex, iteration, checkpointInterval)
     }
-  }
 
   def confirmCheckpointRemoved(rdd: RDD[_]): Unit = {
     // Note: We cannot check rdd.isCheckpointed since that value is never updated.
@@ -150,7 +146,7 @@ private object PeriodicRDDCheckpointerSuite {
       rdd: RDD[_],
       gIndex: Int,
       iteration: Int,
-      checkpointInterval: Int): Unit = {
+      checkpointInterval: Int): Unit =
     try {
       if (gIndex % checkpointInterval == 0) {
         // We allow 2 checkpoint intervals since we perform an action (checkpointing a second rdd)
@@ -181,5 +177,4 @@ private object PeriodicRDDCheckpointerSuite {
             s"\t rdd.getCheckpointFile = ${rdd.getCheckpointFile.mkString(", ")}\n" +
             s"  AssertionError message: ${e.getMessage}")
     }
-  }
 }

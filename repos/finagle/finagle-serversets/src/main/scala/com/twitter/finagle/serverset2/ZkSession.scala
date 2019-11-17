@@ -61,7 +61,7 @@ private[serverset2] class ZkSession(
   // us it is because it is not receiving updates.
   @volatile var watchUpdateGauges = List.empty[Gauge]
   private val lastGoodUpdate = new concurrent.TrieMap[String, Long]
-  private def noteGoodChildWatch(path: String): Unit = {
+  private def noteGoodChildWatch(path: String): Unit =
     lastGoodUpdate.put(path, Time.now.inLongSeconds) match {
       case None =>
         // if there was no previous value, ensure we have a gauge
@@ -73,7 +73,6 @@ private[serverset2] class ZkSession(
         }
       case _ => //gauge is already there
     }
-  }
 
   /**
     * Invoke a `Future[T]`-producing operation, retrying on

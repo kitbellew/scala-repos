@@ -40,12 +40,11 @@ trait RandomLibSpecs[M[+_]]
 
   val line = Line(1, 1, "")
 
-  def testEval(graph: DepGraph): Set[SEvent] = {
+  def testEval(graph: DepGraph): Set[SEvent] =
     consumeEval(graph, defaultEvaluationContext) match {
       case Success(results) => results
       case Failure(error)   => throw error
     }
-  }
 
   "return observed set given a single event with bottom identity" in {
     val uniform = dag.Morph1(UniformDistribution, Const(CLong(12))(line))(line)

@@ -116,11 +116,10 @@ class OneToOneDependency[T](rdd: RDD[T]) extends NarrowDependency[T](rdd) {
 class RangeDependency[T](rdd: RDD[T], inStart: Int, outStart: Int, length: Int)
     extends NarrowDependency[T](rdd) {
 
-  override def getParents(partitionId: Int): List[Int] = {
+  override def getParents(partitionId: Int): List[Int] =
     if (partitionId >= outStart && partitionId < outStart + length) {
       List(partitionId - outStart + inStart)
     } else {
       Nil
     }
-  }
 }

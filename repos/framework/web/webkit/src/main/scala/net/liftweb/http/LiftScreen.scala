@@ -388,8 +388,7 @@ trait AbstractScreen extends Factory with Loggable {
   protected def builder[T](
       name: => String,
       default: => T,
-      stuff: FilterOrValidate[T]*)(
-      implicit man: Manifest[T]): FieldBuilder[T] = {
+      stuff: FilterOrValidate[T]*)(implicit man: Manifest[T]): FieldBuilder[T] =
     new FieldBuilder[T](
       name,
       default,
@@ -403,7 +402,6 @@ trait AbstractScreen extends Factory with Loggable {
       },
       stuff
     )
-  }
 
   protected object FilterOrValidate {
     implicit def promoteFilter[T](f: T => T): FilterOrValidate[T] = AFilter(f)
@@ -1519,7 +1517,7 @@ trait ScreenWizardRendered extends Loggable {
 
   protected def allTemplate: NodeSeq
 
-  protected def allTemplateNodeSeq: NodeSeq = {
+  protected def allTemplateNodeSeq: NodeSeq =
     <div>
       <div class="screenInfo">
         Page <span class="screenNumber"></span> of <span class="totalScreens"></span>
@@ -1555,7 +1553,6 @@ trait ScreenWizardRendered extends Loggable {
       <div class="screenBottom"></div>
       <div class="wizardBottom"></div>
     </div>
-  }
 
   protected trait Snapshot {
     def restore(): Unit
@@ -1602,13 +1599,12 @@ trait ScreenWizardRendered extends Loggable {
   protected def calcAjax: Boolean =
     S.attr("ajax").flatMap(Helpers.asBoolean) openOr defaultToAjax_?
 
-  protected def redirectBack(): JsCmd = {
+  protected def redirectBack(): JsCmd =
     if (ajaxForms_?) {
       AjaxOnDone.get
     } else {
       S.seeOther(Referer.get)
     }
-  }
 
   /**
     * Are the forms Ajax or regular HTTP/HTML.
@@ -1788,10 +1784,9 @@ trait LiftScreen
       old
     }
 
-    override protected def testWasSet(name: String, bn: String): Boolean = {
+    override protected def testWasSet(name: String, bn: String): Boolean =
       ScreenVarHandler.get(name).isDefined ||
-      (ScreenVarHandler.get(bn) openOr false)
-    }
+        (ScreenVarHandler.get(bn) openOr false)
 
     /**
       * Different Vars require different mechanisms for synchronization. This method implements
@@ -1813,7 +1808,7 @@ trait LiftScreen
       ScreenVars.set(ScreenVars.get - name)
   }
 
-  protected def bindLocalAction(selector: String, func: () => JsCmd): CssSel = {
+  protected def bindLocalAction(selector: String, func: () => JsCmd): CssSel =
     mapLocalAction(func)(
       name =>
         selector #> (SHtml
@@ -1821,7 +1816,6 @@ trait LiftScreen
             ("&" + LocalActionRef.get + "=" + name))
           .cmd)
           .toJsCmd)
-  }
 
   protected def mapLocalAction[T](func: () => JsCmd)(f: String => T): T = {
     val name = randomString(20)

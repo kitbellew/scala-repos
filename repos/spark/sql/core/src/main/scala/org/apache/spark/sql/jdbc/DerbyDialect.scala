@@ -29,9 +29,8 @@ private object DerbyDialect extends JdbcDialect {
       sqlType: Int,
       typeName: String,
       size: Int,
-      md: MetadataBuilder): Option[DataType] = {
+      md: MetadataBuilder): Option[DataType] =
     if (sqlType == Types.REAL) Option(FloatType) else None
-  }
 
   override def getJDBCType(dt: DataType): Option[JdbcType] = dt match {
     case StringType  => Option(JdbcType("CLOB", java.sql.Types.CLOB))

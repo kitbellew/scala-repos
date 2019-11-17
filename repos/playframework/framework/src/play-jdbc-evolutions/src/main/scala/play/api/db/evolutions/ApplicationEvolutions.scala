@@ -93,7 +93,7 @@ class ApplicationEvolutions @Inject() (
   }
 
   private def withLock(db: Database, dbConfig: EvolutionsDatasourceConfig)(
-      block: => Unit): Unit = {
+      block: => Unit): Unit =
     if (dbConfig.useLocks) {
       val ds = db.dataSource
       val url = db.url
@@ -110,7 +110,6 @@ class ApplicationEvolutions @Inject() (
     } else {
       block
     }
-  }
 
   private def createLockTableIfNecessary(
       url: String,
@@ -183,11 +182,10 @@ class ApplicationEvolutions @Inject() (
 
   // SQL helpers
 
-  private def applySchema(sql: String, schema: String): String = {
+  private def applySchema(sql: String, schema: String): String =
     sql.replaceAll(
       "\\$\\{schema}",
       Option(schema).filter(_.trim.nonEmpty).map(_.trim + ".").getOrElse(""))
-  }
 }
 
 private object ApplicationEvolutions {
@@ -313,23 +311,21 @@ class DefaultEvolutionsConfigParser @Inject() (configuration: Configuration)
         config: PlayConfig,
         baseKey: => String,
         path: String,
-        deprecated: String): A = {
+        deprecated: String): A =
       if (rootConfig.underlying.hasPath(deprecated)) {
         rootConfig.reportDeprecation(s"$baseKey.$path", deprecated)
         rootConfig.get[A](deprecated)
       } else {
         config.get[A](path)
       }
-    }
 
     // Find all the defined datasources, both using the old format, and the new format
-    def loadDatasources(path: String) = {
+    def loadDatasources(path: String) =
       if (rootConfig.underlying.hasPath(path)) {
         rootConfig.get[PlayConfig](path).subKeys
       } else {
         Set.empty[String]
       }
-    }
     val datasources =
       config
         .get[PlayConfig]("db")
@@ -399,13 +395,10 @@ class DefaultEvolutionsConfigParser @Inject() (configuration: Configuration)
   /**
     * Convert configuration sections of key-boolean pairs to a set of enabled keys.
     */
-  def enabledKeys(
-      configuration: Configuration,
-      section: String): Set[String] = {
+  def enabledKeys(configuration: Configuration, section: String): Set[String] =
     configuration.getConfig(section).fold(Set.empty[String]) { conf =>
       conf.keys.filter(conf.getBoolean(_).getOrElse(false))
     }
-  }
 }
 
 /**

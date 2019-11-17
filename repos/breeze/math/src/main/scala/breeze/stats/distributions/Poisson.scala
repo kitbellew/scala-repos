@@ -35,7 +35,7 @@ case class Poisson(mean: Double)(implicit rand: RandBasis = Rand)
   override def toString() = "Poisson(" + mean + ")"
 
   // impl from winrand
-  def draw(): Int = {
+  def draw(): Int =
     if (mean == 0) 0
     else if (mean < 10.0) {
       // small
@@ -73,12 +73,10 @@ case class Poisson(mean: Double)(implicit rand: RandBasis = Rand)
         sys.error("wtf")
       }
     }
-  }
 
   def probabilityOf(k: Int) = math.exp(logProbabilityOf(k))
-  override def logProbabilityOf(k: Int) = {
+  override def logProbabilityOf(k: Int) =
     -mean + k * log(mean) - lgamma(k + 1.0)
-  }
 
   def cdf(k: Int) = 1 - gammp(k + 1.0, mean)
 

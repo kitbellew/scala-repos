@@ -80,12 +80,11 @@ object IntegrationDocSpec {
 
   class SmsServer(probe: ActorRef) {
     //#sms-server-send
-    def send(text: TextMessage): Unit = {
+    def send(text: TextMessage): Unit =
       // ...
       //#sms-server-send
       probe ! text.to
-      //#sms-server-send
-    }
+    //#sms-server-send
     //#sms-server-send
   }
 
@@ -311,9 +310,8 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
 
   "illustrate ordering and parallelism of mapAsync" in {
     val probe = TestProbe()
-    def println(s: String): Unit = {
+    def println(s: String): Unit =
       if (s.startsWith("after:")) probe.ref ! s
-    }
 
     //#sometimes-slow-mapAsync
     implicit val blockingExecutionContext =
@@ -344,9 +342,8 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
 
   "illustrate ordering and parallelism of mapAsyncUnordered" in {
     val probe = TestProbe()
-    def println(s: String): Unit = {
+    def println(s: String): Unit =
       if (s.startsWith("after:")) probe.ref ! s
-    }
 
     //#sometimes-slow-mapAsyncUnordered
     implicit val blockingExecutionContext =

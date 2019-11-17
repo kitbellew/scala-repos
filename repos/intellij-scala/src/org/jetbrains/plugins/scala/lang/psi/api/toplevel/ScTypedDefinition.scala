@@ -159,16 +159,14 @@ trait ScTypedDefinition extends ScNamedElement with TypingContextOwner {
       isStatic: Boolean,
       isInterface: Boolean,
       role: DefinitionRole,
-      cClass: Option[PsiClass] = None): PsiTypedDefinitionWrapper = {
+      cClass: Option[PsiClass] = None): PsiTypedDefinitionWrapper =
     new PsiTypedDefinitionWrapper(this, isStatic, isInterface, role, cClass)
-  }
 
   @Cached(synchronized = false, ModCount.getBlockModificationCount, this)
   def getStaticTypedDefinitionWrapper(
       role: DefinitionRole,
-      cClass: PsiClassWrapper): StaticPsiTypedDefinitionWrapper = {
+      cClass: PsiClassWrapper): StaticPsiTypedDefinitionWrapper =
     new StaticPsiTypedDefinitionWrapper(this, role, cClass)
-  }
 
   def nameContext: PsiElement = ScalaPsiUtil.nameContext(this)
   def isVar: Boolean = false

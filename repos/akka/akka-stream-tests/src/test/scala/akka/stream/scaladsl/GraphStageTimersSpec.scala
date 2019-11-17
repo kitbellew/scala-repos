@@ -59,9 +59,8 @@ class GraphStageTimersSpec extends AkkaSpec {
           override def onPull(): Unit = pull(in)
         })
 
-        override def preStart() = {
+        override def preStart() =
           sideChannel.asyncCallback = getAsyncCallback(onTestEvent)
-        }
 
         override protected def onTimer(timerKey: Any): Unit = {
           val tick = Tick(tickCount.next())

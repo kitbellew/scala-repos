@@ -74,13 +74,12 @@ sealed trait Metadata {
 object Metadata {
   implicit val MetadataDecomposer: Decomposer[Metadata] =
     new Decomposer[Metadata] {
-      override def decompose(metadata: Metadata): JValue = {
+      override def decompose(metadata: Metadata): JValue =
         JObject(
           List(
             JField(
               MetadataType.toName(metadata.metadataType),
               metadata.fold(_.jv, _.jv, _.jv, _.jv, _.jv))))
-      }
     }
 
   implicit val MetadataExtractor: Extractor[Metadata] =
@@ -103,10 +102,9 @@ object Metadata {
         }
     }
 
-  def toTypedMap(set: Set[Metadata]): Map[MetadataType, Metadata] = {
+  def toTypedMap(set: Set[Metadata]): Map[MetadataType, Metadata] =
     set.foldLeft(Map[MetadataType, Metadata]())((acc, el) =>
       acc + (el.metadataType -> el))
-  }
 
   implicit val MetadataSemigroup = new Semigroup[Map[MetadataType, Metadata]] {
     def append(

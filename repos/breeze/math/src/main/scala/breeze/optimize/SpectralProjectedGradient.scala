@@ -48,11 +48,8 @@ class SpectralProjectedGradient[T](val projection: T => T = { (t: T) =>
   import space._
   case class History(alphaBB: Double, fvals: IndexedSeq[Double])
 
-  override protected def initialHistory(
-      f: DiffFunction[T],
-      init: T): History = {
+  override protected def initialHistory(f: DiffFunction[T], init: T): History =
     History(0.1, IndexedSeq.empty)
-  }
 
   /**
     * From Mark Schmidt's Matlab code
@@ -89,10 +86,9 @@ class SpectralProjectedGradient[T](val projection: T => T = { (t: T) =>
 
   override protected def chooseDescentDirection(
       state: State,
-      f: DiffFunction[T]): T = {
+      f: DiffFunction[T]): T =
     if (curvilinear) state.x - state.grad * state.history.alphaBB
     else projection(state.x - state.grad * state.history.alphaBB) - state.x
-  }
 
   override protected def determineStepSize(
       state: State,

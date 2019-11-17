@@ -163,13 +163,11 @@ final class ArrayOps[@sp A](arr: Array[A]) {
 
   import spire.math.{Sorting, Selection, Searching}
 
-  def qsearch(a: A)(implicit ev: Order[A]): Int = {
+  def qsearch(a: A)(implicit ev: Order[A]): Int =
     Searching.search(arr, a)
-  }
 
-  def qsort(implicit ev: Order[A], ct: ClassTag[A]): Unit = {
+  def qsort(implicit ev: Order[A], ct: ClassTag[A]): Unit =
     Sorting.sort(arr)
-  }
 
   def qsortBy[@sp B](
       f: A => B)(implicit ev: Order[B], ct: ClassTag[A]): Unit = {
@@ -203,9 +201,8 @@ final class ArrayOps[@sp A](arr: Array[A]) {
     arr2
   }
 
-  def qselect(k: Int)(implicit ev: Order[A], ct: ClassTag[A]): Unit = {
+  def qselect(k: Int)(implicit ev: Order[A], ct: ClassTag[A]): Unit =
     Selection.select(arr, k)
-  }
 
   def qselected(k: Int)(implicit ev: Order[A], ct: ClassTag[A]): Array[A] = {
     val arr2 = arr.clone

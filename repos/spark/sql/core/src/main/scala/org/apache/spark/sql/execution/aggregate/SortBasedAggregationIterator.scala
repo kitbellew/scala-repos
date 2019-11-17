@@ -97,7 +97,7 @@ class SortBasedAggregationIterator(
   private[this] val safeProj: Projection = FromUnsafeProjection(
     valueAttributes.map(_.dataType))
 
-  protected def initialize(): Unit = {
+  protected def initialize(): Unit =
     if (inputIterator.hasNext) {
       initializeBuffer(sortBasedAggregationBuffer)
       val inputRow = inputIterator.next()
@@ -108,7 +108,6 @@ class SortBasedAggregationIterator(
       // This inputIter is empty.
       sortedInputHasNewGroup = false
     }
-  }
 
   initialize()
 
@@ -151,7 +150,7 @@ class SortBasedAggregationIterator(
 
   override final def hasNext: Boolean = sortedInputHasNewGroup
 
-  override final def next(): UnsafeRow = {
+  override final def next(): UnsafeRow =
     if (hasNext) {
       // Process the current group.
       processCurrentSortedGroup()
@@ -166,7 +165,6 @@ class SortBasedAggregationIterator(
       // no more result
       throw new NoSuchElementException
     }
-  }
 
   def outputForEmptyGroupingKeyWithoutInput(): UnsafeRow = {
     initializeBuffer(sortBasedAggregationBuffer)

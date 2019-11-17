@@ -36,7 +36,7 @@ object SbtIncrementalOptions {
     transitiveStep = 3,
     recompileAllFraction = 0.5)
 
-  def fromString(s: String): Option[SbtIncrementalOptions] = {
+  def fromString(s: String): Option[SbtIncrementalOptions] =
     Try {
       val Array(
         nameHashing,
@@ -50,5 +50,4 @@ object SbtIncrementalOptions {
         transitiveStep.toInt,
         recompileAllFraction.toDouble)
     }.toOption
-  }
 }

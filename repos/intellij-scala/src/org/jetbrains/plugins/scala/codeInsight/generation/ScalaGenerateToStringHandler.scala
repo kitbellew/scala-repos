@@ -28,7 +28,7 @@ class ScalaGenerateToStringHandler extends LanguageCodeInsightActionHandler {
   override def invoke(
       project: Project,
       editor: Editor,
-      psiFile: PsiFile): Unit = {
+      psiFile: PsiFile): Unit =
     if (CodeInsightUtilBase.prepareEditorForWrite(editor) &&
         FileDocumentManager.getInstance.requestWriting(
           editor.getDocument,
@@ -51,7 +51,6 @@ class ScalaGenerateToStringHandler extends LanguageCodeInsightActionHandler {
           }
         }
     }
-  }
 
   /**
     * Determines whether toString can be generated for the class.

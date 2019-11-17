@@ -109,7 +109,7 @@ class LightArrayRevolverScheduler(
         schedule(
           preparedEC,
           new AtomicLong(clock() + initialDelay.toNanos) with Runnable {
-            override def run(): Unit = {
+            override def run(): Unit =
               try {
                 runnable.run()
                 val driftNanos = clock() - getAndAdd(delay.toNanos)
@@ -124,27 +124,24 @@ class LightArrayRevolverScheduler(
                 case _: SchedulerException ⇒
                 // ignore failure to enqueue or terminated target actor
               }
-            }
           },
           roundUp(initialDelay)
         )
       )
 
-      @tailrec private def swap(c: Cancellable): Unit = {
+      @tailrec private def swap(c: Cancellable): Unit =
         get match {
           case null ⇒ if (c != null) c.cancel()
           case old ⇒ if (!compareAndSet(old, c)) swap(c)
         }
-      }
 
-      @tailrec final def cancel(): Boolean = {
+      @tailrec final def cancel(): Boolean =
         get match {
           case null ⇒ false
           case c ⇒
             if (c.cancel()) compareAndSet(c, null)
             else compareAndSet(c, null) || cancel()
         }
-      }
 
       override def isCancelled: Boolean = get == null
     } catch {
@@ -230,12 +227,11 @@ class LightArrayRevolverScheduler(
 
       private def clearAll(): immutable.Seq[TimerTask] = {
         @tailrec
-        def collect(q: TaskQueue, acc: Vector[TimerTask]): Vector[TimerTask] = {
+        def collect(q: TaskQueue, acc: Vector[TimerTask]): Vector[TimerTask] =
           q.poll() match {
             case null ⇒ acc
             case x ⇒ collect(q, acc :+ x)
           }
-        }
         ((0 until WheelSize) flatMap (i ⇒ collect(wheel(i), Vector.empty))) ++ collect(
           queue,
           Vector.empty)

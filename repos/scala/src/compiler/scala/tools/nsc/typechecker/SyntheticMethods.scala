@@ -49,23 +49,21 @@ trait SyntheticMethods extends ast.TreeDSL { self: Analyzer =>
   private lazy val caseValueSymbols =
     Any_toString :: valueSymbols ::: productSymbols
   private lazy val caseObjectSymbols = Object_equals :: caseSymbols
-  private def symbolsToSynthesize(clazz: Symbol): List[Symbol] = {
+  private def symbolsToSynthesize(clazz: Symbol): List[Symbol] =
     if (clazz.isCase) {
       if (clazz.isDerivedValueClass) caseValueSymbols
       else if (clazz.isModuleClass) caseSymbols
       else caseObjectSymbols
     } else if (clazz.isDerivedValueClass) valueSymbols
     else Nil
-  }
   private lazy val renamedCaseAccessors =
     perRunCaches.newMap[Symbol, mutable.Map[TermName, TermName]]()
 
   /** Does not force the info of `caseclazz` */
   final def caseAccessorName(caseclazz: Symbol, paramName: TermName) =
     (renamedCaseAccessors get caseclazz).fold(paramName)(_(paramName))
-  final def clearRenamedCaseAccessors(caseclazz: Symbol): Unit = {
+  final def clearRenamedCaseAccessors(caseclazz: Symbol): Unit =
     renamedCaseAccessors -= caseclazz
-  }
 
   /** Add the synthetic methods to case classes.
     */
@@ -128,7 +126,7 @@ trait SyntheticMethods extends ast.TreeDSL { self: Analyzer =>
         (typeInClazz(m0) matches typeInClazz(meth))
       }
     }
-    def productIteratorMethod = {
+    def productIteratorMethod =
       createMethod(nme.productIterator, iteratorOfType(AnyTpe))(
         _ =>
           gen.mkMethodCall(
@@ -136,7 +134,6 @@ trait SyntheticMethods extends ast.TreeDSL { self: Analyzer =>
             nme.typedProductIterator,
             List(AnyTpe),
             List(mkThis)))
-    }
 
     /* Common code for productElement and (currently disabled) productElementName */
     def perElementMethod(name: Name, returnType: Type)(
@@ -165,7 +162,7 @@ trait SyntheticMethods extends ast.TreeDSL { self: Analyzer =>
      * two different instantiations of the container, an x.Foo and and a y.Foo
      * are both .isInstanceOf[Foo], but the one does not match as the other.
      */
-    def thatTest(eqmeth: Symbol): Tree = {
+    def thatTest(eqmeth: Symbol): Tree =
       Match(
         Ident(eqmeth.firstParam),
         List(
@@ -176,7 +173,6 @@ trait SyntheticMethods extends ast.TreeDSL { self: Analyzer =>
           CaseDef(Ident(nme.WILDCARD), EmptyTree, FALSE)
         )
       )
-    }
 
     /* (that.asInstanceOf[this.C])
      * where that is the given methods first parameter.
@@ -266,7 +262,7 @@ trait SyntheticMethods extends ast.TreeDSL { self: Analyzer =>
     }
       ****/
     // methods for both classes and objects
-    def productMethods = {
+    def productMethods =
       List(
         Product_productPrefix ->
           (() => constantNullary(nme.productPrefix, clazz.name.decode)),
@@ -280,9 +276,8 @@ trait SyntheticMethods extends ast.TreeDSL { self: Analyzer =>
         // weight to case classes (i.e. inspects the bytecode.)
         // Product_productElementName  -> (() => productElementNameMethod(accessors)),
       )
-    }
 
-    def hashcodeImplementation(sym: Symbol): Tree = {
+    def hashcodeImplementation(sym: Symbol): Tree =
       sym.tpe.finalResultType.typeSymbol match {
         case UnitClass | NullClass => Literal(Constant(0))
         case BooleanClass =>
@@ -295,9 +290,8 @@ trait SyntheticMethods extends ast.TreeDSL { self: Analyzer =>
         case FloatClass  => callStaticsMethod("floatHash")(Ident(sym))
         case _           => callStaticsMethod("anyHash")(Ident(sym))
       }
-    }
 
-    def specializedHashcode = {
+    def specializedHashcode =
       createMethod(nme.hashCode_, Nil, IntTpe) { m =>
         val accumulator =
           m.newVariable(newTermName("acc"), m.pos, SYNTHETIC) setInfo IntTpe
@@ -317,12 +311,10 @@ trait SyntheticMethods extends ast.TreeDSL { self: Analyzer =>
 
         Block(valdef :: mixes, finish)
       }
-    }
-    def chooseHashcode = {
+    def chooseHashcode =
       if (accessors exists (x => isPrimitiveValueType(x.tpe.finalResultType)))
         specializedHashcode
       else forwardToRuntime(Object_hashCode)
-    }
 
     def valueClassMethods = List(
       Any_hashCode -> (() => hashCodeDerivedValueClassMethod),
@@ -372,7 +364,7 @@ trait SyntheticMethods extends ast.TreeDSL { self: Analyzer =>
        * so they can appear in universal traits without breaking value semantics.
        */
       def impls = {
-        def shouldGenerate(m: Symbol) = {
+        def shouldGenerate(m: Symbol) =
           !hasOverridingImplementation(m) || {
             clazz.isDerivedValueClass && (m == Any_hashCode || m == Any_equals) && {
               // Without a means to suppress this warning, I've thought better of it.
@@ -389,10 +381,9 @@ trait SyntheticMethods extends ast.TreeDSL { self: Analyzer =>
               true
             }
           }
-        }
         for ((m, impl) <- methods; if shouldGenerate(m)) yield impl()
       }
-      def extras = {
+      def extras =
         if (needsReadResolve) {
           // Aha, I finally decoded the original comment.
           // This method should be generated as private, but apparently if it is, then
@@ -402,7 +393,6 @@ trait SyntheticMethods extends ast.TreeDSL { self: Analyzer =>
             m setFlag PRIVATE; REF(clazz.sourceModule)
           }))
         } else Nil
-      }
 
       try impls ++ extras
       catch {

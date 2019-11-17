@@ -65,14 +65,13 @@ private[akka] object ReplicatorMessageSerializer {
     private def get(a: A, startPos: Int): B = {
       // start at the latest added value, most likely that we want that
       val end = startPos + elements.length
-      @tailrec def find(i: Int): B = {
+      @tailrec def find(i: Int): B =
         if (end - i == 0) null.asInstanceOf[B]
         else {
           val x = elements(i & mask)
           if ((x eq null) || (x._1 ne a)) find(i + 1)
           else x._2
         }
-      }
       lastUsed = System.nanoTime()
       find(startPos)
     }

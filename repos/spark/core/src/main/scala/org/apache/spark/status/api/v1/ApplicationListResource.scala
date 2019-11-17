@@ -61,7 +61,7 @@ private[v1] class ApplicationListResource(uiRoot: UIRoot) {
 
 private[spark] object ApplicationsListResource {
   def appHistoryInfoToPublicAppInfo(
-      app: ApplicationHistoryInfo): ApplicationInfo = {
+      app: ApplicationHistoryInfo): ApplicationInfo =
     new ApplicationInfo(
       id = app.id,
       name = app.name,
@@ -85,11 +85,10 @@ private[spark] object ApplicationsListResource {
         )
       }
     )
-  }
 
   def convertApplicationInfo(
       internal: InternalApplicationInfo,
-      completed: Boolean): ApplicationInfo = {
+      completed: Boolean): ApplicationInfo =
     // standalone application info always has just one attempt
     new ApplicationInfo(
       id = internal.id,
@@ -113,5 +112,4 @@ private[spark] object ApplicationsListResource {
           completed = completed
         ))
     )
-  }
 }

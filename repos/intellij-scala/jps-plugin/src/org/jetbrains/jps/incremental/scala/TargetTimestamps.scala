@@ -10,7 +10,7 @@ import org.jetbrains.jps.incremental.{CompileContext, ModuleBuildTarget}
 class TargetTimestamps(context: CompileContext) {
   private val paths = context.getProjectDescriptor.dataManager.getDataPaths
 
-  def get(target: ModuleBuildTarget): Option[Long] = {
+  def get(target: ModuleBuildTarget): Option[Long] =
     Some(timestampFile(target)).filter(_.exists).flatMap { file =>
       using(new DataInputStream(
         new BufferedInputStream(new FileInputStream(file)))) { in =>
@@ -21,7 +21,6 @@ class TargetTimestamps(context: CompileContext) {
         }
       }
     }
-  }
 
   def set(target: ModuleBuildTarget, timestamp: Long) {
     val file = timestampFile(target)

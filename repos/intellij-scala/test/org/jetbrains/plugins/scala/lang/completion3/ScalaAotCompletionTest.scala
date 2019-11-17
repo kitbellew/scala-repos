@@ -121,22 +121,18 @@ class ScalaAotCompletionTest extends ScalaCodeInsightTestBase {
 }
 
 object ScalaAotCompletionTest {
-  def findByText(
-      elements: Array[LookupElement],
-      text: String): LookupElement = {
+  def findByText(elements: Array[LookupElement], text: String): LookupElement =
     findByText0(elements, text).getOrElse {
       Assert.fail("No such element: " + text)
       null // unreachable
     }
-  }
 
   def findByText0(
       elements: Array[LookupElement],
-      text: String): Option[LookupElement] = {
+      text: String): Option[LookupElement] =
     elements.find { element =>
       val presentation = new LookupElementPresentation()
       element.renderElement(presentation)
       presentation.getItemText == text
     }
-  }
 }

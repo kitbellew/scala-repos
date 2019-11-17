@@ -73,7 +73,7 @@ object IngestProcessing {
   @tailrec final def select(
       from: List[IngestProcessingSelector],
       partialData: Array[Byte],
-      request: HttpRequest[_]): Option[IngestProcessing] = {
+      request: HttpRequest[_]): Option[IngestProcessing] =
     from match {
       case hd :: tl =>
         hd.select(partialData, request) match {
@@ -84,7 +84,6 @@ object IngestProcessing {
 
       case Nil => None
     }
-  }
 }
 
 trait IngestProcessing {
@@ -130,7 +129,7 @@ class DefaultIngestProcessingSelectors(
       extends IngestProcessingSelector {
     def select(
         partialData: Array[Byte],
-        request: HttpRequest[_]): Option[IngestProcessing] = {
+        request: HttpRequest[_]): Option[IngestProcessing] =
       request.headers
         .header[`Content-Type`]
         .toSeq
@@ -160,7 +159,6 @@ class DefaultIngestProcessingSelectors(
             tmpdir,
             ingestStore)
       }
-    }
   }
 
   class JSONIngestProcessingSelector(

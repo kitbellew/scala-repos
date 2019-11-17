@@ -517,7 +517,7 @@ object StandardMetrics {
       * @return if possible a tuple matching the HeapMemory constructor parameters
       */
     def unapply(nodeMetrics: NodeMetrics)
-        : Option[(Address, Long, Long, Long, Option[Long])] = {
+        : Option[(Address, Long, Long, Long, Option[Long])] =
       for {
         used ← nodeMetrics.metric(HeapMemoryUsed)
         committed ← nodeMetrics.metric(HeapMemoryCommitted)
@@ -527,7 +527,6 @@ object StandardMetrics {
         used.smoothValue.longValue,
         committed.smoothValue.longValue,
         nodeMetrics.metric(HeapMemoryMax).map(_.smoothValue.longValue))
-    }
   }
 
   /**
@@ -574,7 +573,7 @@ object StandardMetrics {
       * @return if possible a tuple matching the Cpu constructor parameters
       */
     def unapply(nodeMetrics: NodeMetrics)
-        : Option[(Address, Long, Option[Double], Option[Double], Int)] = {
+        : Option[(Address, Long, Option[Double], Option[Double], Int)] =
       for {
         processors ← nodeMetrics.metric(Processors)
       } yield (
@@ -583,7 +582,6 @@ object StandardMetrics {
         nodeMetrics.metric(SystemLoadAverage).map(_.smoothValue),
         nodeMetrics.metric(CpuCombined).map(_.smoothValue),
         processors.value.intValue)
-    }
   }
 
   /**
@@ -847,11 +845,10 @@ class SigarMetricsCollector(
         "Wrong version of Sigar, expected 'getPid' method")
   }
 
-  override def metrics: Set[Metric] = {
+  override def metrics: Set[Metric] =
     super.metrics.filterNot(_.name == SystemLoadAverage) union Set(
       systemLoadAverage,
       cpuCombined).flatten
-  }
 
   /**
     * (SIGAR / JMX) Returns the OS-specific average load on the CPUs in the system, for the past 1 minute.

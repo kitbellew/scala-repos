@@ -32,13 +32,11 @@ class TestExecutionContext(delegate: ExecutionContext)
     finally local.set(null)
   }
 
-  def execute(runnable: Runnable): Unit = {
+  def execute(runnable: Runnable): Unit =
     throw new RuntimeException("Cannot execute unprepared TestExecutionContext")
-  }
 
-  def reportFailure(t: Throwable): Unit = {
+  def reportFailure(t: Throwable): Unit =
     println(t)
-  }
 
   override def prepare(): ExecutionContext = {
     val isLocal = Option(local.get()).getOrElse(false: java.lang.Boolean)
@@ -53,9 +51,8 @@ class TestExecutionContext(delegate: ExecutionContext)
         preparedDelegate.execute(runnable)
       }
 
-      def reportFailure(t: Throwable): Unit = {
+      def reportFailure(t: Throwable): Unit =
         println(t)
-      }
     }
   }
 

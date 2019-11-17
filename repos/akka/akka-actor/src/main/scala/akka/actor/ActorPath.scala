@@ -449,10 +449,9 @@ final class ChildActorPath private[akka] (
     rec(this)
   }
 
-  private def appendUidFragment(sb: JStringBuilder): JStringBuilder = {
+  private def appendUidFragment(sb: JStringBuilder): JStringBuilder =
     if (uid == ActorCell.undefinedUid) sb
     else sb.append("#").append(uid)
-  }
 
   override def equals(other: Any): Boolean = {
     @tailrec

@@ -68,19 +68,17 @@ case class ProjectL1(s: Double) extends Proximal {
 
 case class ProjectBox(l: DenseVector[Double], u: DenseVector[Double])
     extends Proximal {
-  def prox(x: DenseVector[Double], rho: Double = 0.0) = {
+  def prox(x: DenseVector[Double], rho: Double = 0.0) =
     cforRange(0 until x.length) { i =>
       x.update(i, max(l(i), min(x(i), u(i))))
     }
-  }
 }
 
 case class ProjectPos() extends Proximal {
-  def prox(x: DenseVector[Double], rho: Double = 0.0) = {
+  def prox(x: DenseVector[Double], rho: Double = 0.0) =
     cforRange(0 until x.length) { i =>
       x.update(i, max(0, x(i)))
     }
-  }
 }
 
 case class ProjectSoc() extends Proximal {
@@ -143,17 +141,15 @@ case class ProximalL1(var lambda: Double = 1.0) extends Proximal {
     this
   }
 
-  def prox(x: DenseVector[Double], rho: Double) = {
+  def prox(x: DenseVector[Double], rho: Double) =
     cforRange(0 until x.length) { i =>
       x.update(i, max(0, x(i) - lambda / rho) - max(0, -x(i) - lambda / rho))
     }
-  }
 
-  override def valueAt(x: DenseVector[Double]) = {
+  override def valueAt(x: DenseVector[Double]) =
     lambda * x.foldLeft(0.0) { (agg, entry) =>
       agg + abs(entry)
     }
-  }
 }
 
 case class ProximalL2() extends Proximal {
@@ -168,20 +164,18 @@ case class ProximalL2() extends Proximal {
 
 // f = (1/2)||.||_2^2
 case class ProximalSumSquare() extends Proximal {
-  def prox(x: DenseVector[Double], rho: Double) = {
+  def prox(x: DenseVector[Double], rho: Double) =
     cforRange(0 until x.length) { i =>
       x.update(i, x(i) * (rho / (1 + rho)))
     }
-  }
 }
 
 // f = -sum(log(x))
 case class ProximalLogBarrier() extends Proximal {
-  def prox(x: DenseVector[Double], rho: Double) = {
+  def prox(x: DenseVector[Double], rho: Double) =
     cforRange(0 until x.length) { i =>
       x.update(i, 0.5 * (x(i) + sqrt(x(i) * x(i) + 4 / rho)))
     }
-  }
 }
 
 // f = huber = x^2 if |x|<=1, 2|x| - 1 otherwise
@@ -231,34 +225,30 @@ case class ProximalHuber() extends Proximal {
     }
   }
 
-  def subgradHuber(x: Double): Double = {
+  def subgradHuber(x: Double): Double =
     if (abs(x) <= 1) {
       2 * x
     } else {
       val projx = if (x > 0) x else -x
       2 * projx
     }
-  }
 
-  def prox(x: DenseVector[Double], rho: Double) = {
+  def prox(x: DenseVector[Double], rho: Double) =
     proxSeparable(x, rho, subgradHuber, NegativeInfinity, PositiveInfinity)
-  }
 }
 
 // f = c'*x
 case class ProximalLinear(c: DenseVector[Double]) extends Proximal {
-  def prox(x: DenseVector[Double], rho: Double) = {
+  def prox(x: DenseVector[Double], rho: Double) =
     cforRange(0 until x.length) { i =>
       x.update(i, x(i) - c(i) / rho)
     }
-  }
 }
 
 // f = c'*x + I(x >= 0)
 case class ProximalLp(c: DenseVector[Double]) extends Proximal {
-  def prox(x: DenseVector[Double], rho: Double) = {
+  def prox(x: DenseVector[Double], rho: Double) =
     cforRange(0 until x.length) { i =>
       x.update(i, max(0, x(i) - c(i) / rho))
     }
-  }
 }

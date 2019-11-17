@@ -462,7 +462,7 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
       dataColumns: Seq[Attribute],
       partitionColumnSchema: StructType,
       partitionValues: InternalRow,
-      dataRows: RDD[InternalRow]): RDD[InternalRow] = {
+      dataRows: RDD[InternalRow]): RDD[InternalRow] =
     // If output columns contain any partition column(s), we need to merge scanned data
     // columns and requested partition columns to form the final result.
     if (requiredColumns != dataColumns) {
@@ -532,7 +532,6 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
     } else {
       dataRows
     }
-  }
 
   // Get the bucket ID based on the bucketing values.
   // Restriction: Bucket pruning works iff the bucketing column has one and only one column.
@@ -606,7 +605,7 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
       relation: LogicalRelation,
       projects: Seq[NamedExpression],
       filterPredicates: Seq[Expression],
-      scanBuilder: (Seq[Attribute], Array[Filter]) => RDD[InternalRow]) = {
+      scanBuilder: (Seq[Attribute], Array[Filter]) => RDD[InternalRow]) =
     pruneFilterProjectRaw(
       relation,
       projects,
@@ -614,7 +613,6 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
       (requestedColumns, _, pushedFilters) => {
         scanBuilder(requestedColumns, pushedFilters.toArray)
       })
-  }
 
   // Based on Catalyst expressions. The `scanBuilder` function accepts three arguments:
   //
@@ -724,29 +722,27 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
   private[this] def toCatalystRDD(
       relation: LogicalRelation,
       output: Seq[Attribute],
-      rdd: RDD[Row]): RDD[InternalRow] = {
+      rdd: RDD[Row]): RDD[InternalRow] =
     if (relation.relation.needConversion) {
       execution.RDDConversions.rowToRowRdd(rdd, output.map(_.dataType))
     } else {
       rdd.asInstanceOf[RDD[InternalRow]]
     }
-  }
 
   /**
     * Convert RDD of Row into RDD of InternalRow with objects in catalyst types
     */
   private[this] def toCatalystRDD(
       relation: LogicalRelation,
-      rdd: RDD[Row]): RDD[InternalRow] = {
+      rdd: RDD[Row]): RDD[InternalRow] =
     toCatalystRDD(relation, relation.output, rdd)
-  }
 
   /**
     * Tries to translate a Catalyst [[Expression]] into data source [[Filter]].
     *
     * @return a `Some[Filter]` if the input [[Expression]] is convertible, otherwise a `None`.
     */
-  protected[sql] def translateFilter(predicate: Expression): Option[Filter] = {
+  protected[sql] def translateFilter(predicate: Expression): Option[Filter] =
     predicate match {
       case expressions.EqualTo(a: Attribute, Literal(v, t)) =>
         Some(sources.EqualTo(a.name, convertToScala(v, t)))
@@ -823,7 +819,6 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
 
       case _ => None
     }
-  }
 
   /**
     * Selects Catalyst predicate [[Expression]]s which are convertible into data source [[Filter]]s

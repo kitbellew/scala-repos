@@ -33,12 +33,11 @@ class PowerIterationClusteringSuite
   import org.apache.spark.mllib.clustering.PowerIterationClustering._
 
   /** Generates a circle of points. */
-  private def genCircle(r: Double, n: Int): Array[(Double, Double)] = {
+  private def genCircle(r: Double, n: Int): Array[(Double, Double)] =
     Array.tabulate(n) { i =>
       val theta = 2.0 * math.Pi * i / n
       (r * math.cos(theta), r * math.sin(theta))
     }
-  }
 
   /** Computes Gaussian similarity. */
   private def sim(x: (Double, Double), y: (Double, Double)): Double = {

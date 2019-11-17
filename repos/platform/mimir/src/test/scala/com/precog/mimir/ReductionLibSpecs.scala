@@ -42,12 +42,11 @@ trait ReductionLibSpecs[M[+_]]
   import instructions._
   import library._
 
-  def testEval(graph: DepGraph): Set[SEvent] = {
+  def testEval(graph: DepGraph): Set[SEvent] =
     consumeEval(graph, defaultEvaluationContext) match {
       case Success(results) => results
       case Failure(error)   => throw error
     }
-  }
 
   def determineResult(input: DepGraph, value: Double) = {
     val result = testEval(input)

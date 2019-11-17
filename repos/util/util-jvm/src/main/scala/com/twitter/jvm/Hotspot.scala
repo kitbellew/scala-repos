@@ -154,13 +154,12 @@ class Hotspot extends Jvm {
       // jdks 7 and 8 have HotspotRuntimeMBean in the ManagementFactoryHelper class
     }
 
-    def asSafepointBean(x: AnyRef) = {
+    def asSafepointBean(x: AnyRef) =
       x.asInstanceOf[{
         def getSafepointSyncTime: Long;
         def getTotalSafepointTime: Long;
         def getSafepointCount: Long
       }]
-    }
     try {
       asSafepointBean(runtimeBean)
     } catch {

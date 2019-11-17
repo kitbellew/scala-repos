@@ -39,7 +39,7 @@ object CumulativeSum {
     def cumulativeSum(
         implicit sg: Semigroup[V],
         ordU: Ordering[U],
-        ordK: Ordering[K]): SortedGrouped[K, (U, V)] = {
+        ordK: Ordering[K]): SortedGrouped[K, (U, V)] =
       pipe.group
         .sortBy { case (u, _) => u }
         .scanLeft(Nil: List[(U, V)]) {
@@ -51,7 +51,6 @@ object CumulativeSum {
             }
         }
         .flattenValues
-    }
 
     /**
       * An optimization of cumulativeSum for cases when a particular key has many

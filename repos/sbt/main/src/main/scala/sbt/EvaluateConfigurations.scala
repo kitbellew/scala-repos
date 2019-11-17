@@ -286,12 +286,11 @@ object EvaluateConfigurations {
       name: String,
       imports: Seq[(String, Int)],
       expression: String,
-      range: LineRange): LazyClassLoaded[Seq[Setting[_]]] = {
+      range: LineRange): LazyClassLoaded[Seq[Setting[_]]] =
     evaluateDslEntry(eval, name, imports, expression, range).result andThen {
       case internals.ProjectSettings(values) => values
       case _                                 => Nil
     }
-  }
   private[this] def isSpace = (c: Char) => Character isWhitespace c
   private[this] def fstS(f: String => Boolean): ((String, Int)) => Boolean = {
     case (s, i) => f(s)
@@ -311,7 +310,7 @@ object EvaluateConfigurations {
     */
   private[sbt] def splitExpressions(
       file: File,
-      lines: Seq[String]): (Seq[(String, Int)], Seq[(String, LineRange)]) = {
+      lines: Seq[String]): (Seq[(String, Int)], Seq[(String, LineRange)]) =
     if (useOldParser) splitExpressions(lines)
     else {
       val split = SbtParser(file, lines)
@@ -319,7 +318,6 @@ object EvaluateConfigurations {
       // scala compiler rather than re-parsing.
       (split.imports, split.settings)
     }
-  }
 
   @deprecated("This method is no longer part of the public API.", "0.13.7")
   def splitExpressions(

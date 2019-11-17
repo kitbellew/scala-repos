@@ -482,11 +482,10 @@ trait RepositorySettingsControllerBase extends ControllerBase {
     def convert(
         name: String,
         params: Map[String, String],
-        messages: Messages): Set[WebHook.Event] = {
+        messages: Messages): Set[WebHook.Event] =
       WebHook.Event.values.flatMap { t =>
         params.get(name + "." + t.name).map(_ => t)
       }.toSet
-    }
     def validate(
         name: String,
         params: Map[String, String],

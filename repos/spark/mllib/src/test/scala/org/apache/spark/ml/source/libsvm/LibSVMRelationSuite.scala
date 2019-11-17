@@ -45,13 +45,12 @@ class LibSVMRelationSuite extends SparkFunSuite with MLlibTestSparkContext {
     path = tempDir.toURI.toString
   }
 
-  override def afterAll(): Unit = {
+  override def afterAll(): Unit =
     try {
       Utils.deleteRecursively(tempDir)
     } finally {
       super.afterAll()
     }
-  }
 
   test("select as sparse vector") {
     val df = sqlContext.read.format("libsvm").load(path)

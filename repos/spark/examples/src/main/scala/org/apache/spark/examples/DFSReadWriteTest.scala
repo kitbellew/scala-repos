@@ -82,7 +82,7 @@ object DFSReadWriteTest {
     dfsDirPath = args(i)
   }
 
-  def runLocalWordCount(fileContents: List[String]): Int = {
+  def runLocalWordCount(fileContents: List[String]): Int =
     fileContents
       .flatMap(_.split(" "))
       .flatMap(_.split("\t"))
@@ -91,7 +91,6 @@ object DFSReadWriteTest {
       .mapValues(_.size)
       .values
       .sum
-  }
 
   def main(args: Array[String]): Unit = {
     parseArgs(args)

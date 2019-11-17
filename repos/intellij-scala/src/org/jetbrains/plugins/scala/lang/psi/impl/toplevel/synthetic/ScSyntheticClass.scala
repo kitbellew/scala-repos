@@ -97,7 +97,7 @@ class ScSyntheticClass(
     extends SyntheticNamedElement(manager, className)
     with PsiClass
     with PsiClassFake {
-  override def getPresentation: ItemPresentation = {
+  override def getPresentation: ItemPresentation =
     new ItemPresentation {
       val This = ScSyntheticClass.this
       def getLocationString: String = "(scala)"
@@ -108,7 +108,6 @@ class ScSyntheticClass(
 
       def getIcon(open: Boolean): Icon = This.getIcon(0)
     }
-  }
 
   override def toString = "Synthetic class"
 
@@ -217,9 +216,8 @@ class ScSyntheticFunction(
   override def toString = "Synthetic method"
 
   protected def findChildrenByClassScala[T >: Null <: ScalaPsiElement](
-      clazz: Class[T]): Array[T] = {
+      clazz: Class[T]): Array[T] =
     findChildrenByClass[T](clazz)
-  }
 
   protected def findChildByClassScala[T >: Null <: ScalaPsiElement](
       clazz: Class[T]): T = {

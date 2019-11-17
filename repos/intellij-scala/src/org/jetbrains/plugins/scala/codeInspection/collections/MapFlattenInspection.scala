@@ -15,7 +15,7 @@ object MapFlatten extends SimplificationType {
   override def hint: String =
     InspectionBundle.message("replace.map.flatten.with.flatMap")
 
-  override def getSimplification(expr: ScExpression): Option[Simplification] = {
+  override def getSimplification(expr: ScExpression): Option[Simplification] =
     expr match {
       case qual `.map` (f) `.flatten` () if implicitParameterExistsFor(expr) =>
         Some(
@@ -24,5 +24,4 @@ object MapFlatten extends SimplificationType {
             .highlightFrom(qual))
       case _ => None
     }
-  }
 }

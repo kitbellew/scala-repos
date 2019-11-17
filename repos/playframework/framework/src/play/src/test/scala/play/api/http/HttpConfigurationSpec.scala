@@ -19,7 +19,7 @@ object HttpConfigurationSpec extends Specification {
 
     import scala.collection.JavaConversions._
 
-    def properties = {
+    def properties =
       Map(
         "play.http.context" -> "/",
         "play.http.parser.maxMemoryBuffer" -> "10k",
@@ -36,7 +36,6 @@ object HttpConfigurationSpec extends Specification {
         "play.http.flash.secure" -> "true",
         "play.http.flash.httpOnly" -> "true"
       )
-    }
 
     val configuration = new Configuration(ConfigFactory.parseMap(properties))
 

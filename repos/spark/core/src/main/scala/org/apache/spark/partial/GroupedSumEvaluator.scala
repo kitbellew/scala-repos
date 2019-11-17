@@ -52,7 +52,7 @@ private[spark] class GroupedSumEvaluator[T](
     }
   }
 
-  override def currentResult(): Map[T, BoundedDouble] = {
+  override def currentResult(): Map[T, BoundedDouble] =
     if (outputsMerged == totalOutputs) {
       val result = new JHashMap[T, BoundedDouble](sums.size)
       val iter = sums.entrySet.iterator()
@@ -90,5 +90,4 @@ private[spark] class GroupedSumEvaluator[T](
       }
       result.asScala
     }
-  }
 }

@@ -19,10 +19,8 @@ object UnsafeMemory {
     unsafe.arrayBaseOffset(classOf[Array[Char]])
   private[pickling] val booleanArrayOffset: Long =
     unsafe.arrayBaseOffset(classOf[Array[Boolean]])
-  def putInt(arr: Array[Byte], i: Int, value: Int): Unit = {
+  def putInt(arr: Array[Byte], i: Int, value: Int): Unit =
     unsafe.putInt(arr, byteArrayOffset + i, value)
-  }
-  def getInt(arr: Array[Byte], i: Int): Int = {
+  def getInt(arr: Array[Byte], i: Int): Int =
     unsafe.getInt(arr, byteArrayOffset + i)
-  }
 }

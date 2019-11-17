@@ -11,11 +11,10 @@ class SexpPrettyPrinterSpec extends EnsimeSpec {
   private val barsym = SexpSymbol("bar")
   private val fookey = SexpSymbol(":foo")
   private val barkey = SexpSymbol(":bar")
-  private def assertPrinter(sexp: Sexp, expect: String): Unit = {
+  private def assertPrinter(sexp: Sexp, expect: String): Unit =
     //    println("GOT\n" + SexpPrettyPrinter(sexp))
     //    println("EXPECT\n" + expect)
     SexpPrettyPrinter(sexp) should ===(expect.replace("\r", ""))
-  }
 
   "CompactPrinter" should "handle nil or empty lists/data" in {
     assertPrinter(SexpNil, "nil")

@@ -78,7 +78,7 @@ private[spark] class FileShuffleBlockResolver(conf: SparkConf)
       mapId: Int,
       numReducers: Int,
       serializer: Serializer,
-      writeMetrics: ShuffleWriteMetrics): ShuffleWriterGroup = {
+      writeMetrics: ShuffleWriteMetrics): ShuffleWriterGroup =
     new ShuffleWriterGroup {
       private val shuffleState: ShuffleState = {
         // Note: we do _not_ want to just wrap this java ConcurrentHashMap into a Scala map and use
@@ -109,7 +109,6 @@ private[spark] class FileShuffleBlockResolver(conf: SparkConf)
         shuffleState.completedMapTasks.add(mapId)
       }
     }
-  }
 
   override def getBlockData(blockId: ShuffleBlockId): ManagedBuffer = {
     val file = blockManager.diskBlockManager.getFile(blockId)
@@ -126,7 +125,7 @@ private[spark] class FileShuffleBlockResolver(conf: SparkConf)
   }
 
   /** Remove all the blocks / files related to a particular shuffle. */
-  private def removeShuffleBlocks(shuffleId: ShuffleId): Boolean = {
+  private def removeShuffleBlocks(shuffleId: ShuffleId): Boolean =
     Option(shuffleStates.get(shuffleId)) match {
       case Some(state) =>
         for (mapId <- state.completedMapTasks.asScala;
@@ -144,7 +143,6 @@ private[spark] class FileShuffleBlockResolver(conf: SparkConf)
           "Could not find files for shuffle " + shuffleId + " for deleting")
         false
     }
-  }
 
   override def stop(): Unit = {}
 }

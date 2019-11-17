@@ -75,7 +75,7 @@ trait SamplableColumnarTableModule[M[+_]] extends SamplableTableModule[M] {
 
       def build(
           states: List[SampleState],
-          slices: StreamT[M, Slice]): M[List[Table]] = {
+          slices: StreamT[M, Slice]): M[List[Table]] =
         slices.uncons flatMap {
           case Some((origSlice, tail)) =>
             val nextStates =
@@ -131,7 +131,6 @@ trait SamplableColumnarTableModule[M[+_]] extends SamplableTableModule[M] {
               }
             }
         }
-      }
 
       val transforms = specs map { SliceTransform.composeSliceTransform }
       val states =
@@ -165,7 +164,7 @@ trait SamplableColumnarTableModule[M[+_]] extends SamplableTableModule[M] {
     def withSource(slice: Slice): RowInserter = RowInserter(size, slice, cols)
 
     // Creates array columns on demand.
-    private def getOrCreateCol(ref: ColumnRef): ArrayColumn[_] = {
+    private def getOrCreateCol(ref: ColumnRef): ArrayColumn[_] =
       cols.getOrElseUpdate(
         ref,
         ref.ctype match {
@@ -184,7 +183,6 @@ trait SamplableColumnarTableModule[M[+_]] extends SamplableTableModule[M] {
           case CUndefined   => sys.error("this shouldn't exist")
         }
       )
-    }
 
     private def colOpsFor: ((ColumnRef, Column)) => ColumnOps = {
       case (ref, col) =>

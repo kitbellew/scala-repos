@@ -108,7 +108,7 @@ class ScalaMoveDirectoryWithClassesHelper
       movedFiles: util.List[PsiFile],
       listener: RefactoringElementListener): Boolean = {
 
-    def moveClass(clazz: PsiClass): Unit = {
+    def moveClass(clazz: PsiClass): Unit =
       clazz match {
         case o: ScObject if o.isPackageObject =>
           val oldElems = o.namedElements
@@ -133,7 +133,6 @@ class ScalaMoveDirectoryWithClassesHelper
           oldToNewElementsMapping.put(clazz, newClass)
           listener.elementMoved(newClass)
       }
-    }
 
     file match {
       case sf: ScalaFile if !FileTypeUtils.isInServerPageFile(file) =>
@@ -145,39 +144,34 @@ class ScalaMoveDirectoryWithClassesHelper
 
   override def postProcessUsages(
       usages: Array[UsageInfo],
-      newDirMapper: Function[PsiDirectory, PsiDirectory]): Unit = {
+      newDirMapper: Function[PsiDirectory, PsiDirectory]): Unit =
     usages.foreach {
       case ImportStatementToRemoveUsage(impStmt) => impStmt.delete()
       case _                                     =>
     }
-  }
 
-  override def afterMove(newElement: PsiElement): Unit = {
+  override def afterMove(newElement: PsiElement): Unit =
     forClassesInFile(newElement.getContainingFile) { clazz =>
       ScalaMoveUtil.collectAssociations(clazz, withCompanion = false)
     }
-  }
 
-  override def beforeMove(psiFile: PsiFile): Unit = {
+  override def beforeMove(psiFile: PsiFile): Unit =
     forClassesInFile(psiFile) { clazz =>
       ScalaMoveUtil.collectAssociations(clazz, withCompanion = false)
     }
-  }
 
-  private def forClassesInFile(elem: PsiElement)(action: PsiClass => Unit) = {
+  private def forClassesInFile(elem: PsiElement)(action: PsiClass => Unit) =
     elem.getContainingFile match {
       case sf: ScalaFile => sf.typeDefinitions.foreach(action)
       case _             =>
     }
-  }
 
   private def isUnderRefactoring(
       packageDirectory: PsiDirectory,
-      directoriesToMove: Array[PsiDirectory]): Boolean = {
+      directoriesToMove: Array[PsiDirectory]): Boolean =
     directoriesToMove.exists(PsiTreeUtil.isAncestor(_, packageDirectory, true))
-  }
 
-  private def packageName(sf: ScalaFile) = {
+  private def packageName(sf: ScalaFile) =
     sf.typeDefinitions match {
       case Seq(obj: ScObject) if obj.isPackageObject =>
         if (obj.name == "`package`")
@@ -185,7 +179,6 @@ class ScalaMoveDirectoryWithClassesHelper
         else obj.qualifiedName
       case _ => sf.getPackageName
     }
-  }
 }
 
 private case class ImportStatementToRemoveUsage(stmt: ScImportStmt)

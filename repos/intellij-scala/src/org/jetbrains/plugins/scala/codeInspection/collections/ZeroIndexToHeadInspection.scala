@@ -14,7 +14,7 @@ class ZeroIndexToHeadInspection extends OperationOnCollectionInspection {
 object ZeroIndexToHead extends SimplificationType() {
   override def hint: String = InspectionBundle.message("replace.with.head")
 
-  override def getSimplification(expr: ScExpression): Option[Simplification] = {
+  override def getSimplification(expr: ScExpression): Option[Simplification] =
     expr match {
       case qual `.apply`(literal("0")) if isSeq(qual) && !isIndexedSeq(qual) =>
         Some(
@@ -23,5 +23,4 @@ object ZeroIndexToHead extends SimplificationType() {
             .highlightFrom(qual))
       case _ => None
     }
-  }
 }

@@ -63,9 +63,8 @@ private[akka] trait MetricsKitOps extends MetricKeyDSL {
     *
     * Backed by codahale `ExponentiallyDecayingReservoir`.
     */
-  def histogram(key: MetricKey): Histogram = {
+  def histogram(key: MetricKey): Histogram =
     registry.histogram((key / "histogram").toString)
-  }
 
   /** Yet another delegate to `System.gc()` */
   def gc() {

@@ -24,22 +24,18 @@ class ScalaCodeStyleSettingsProvider extends CodeStyleSettingsProvider {
 
   def createSettingsPage(
       settings: CodeStyleSettings,
-      originalSettings: CodeStyleSettings): Configurable = {
+      originalSettings: CodeStyleSettings): Configurable =
     new CodeStyleAbstractConfigurable(settings, originalSettings, "Scala") {
       protected def createPanel(
-          settings: CodeStyleSettings): CodeStyleAbstractPanel = {
+          settings: CodeStyleSettings): CodeStyleAbstractPanel =
         new ScalaTabbedCodeStylePanel(getCurrentSettings, settings)
-      }
 
-      def getHelpTopic: String = {
+      def getHelpTopic: String =
         null
-      }
     }
-  }
 
-  override def getPriority: DisplayPriority = {
+  override def getPriority: DisplayPriority =
     DisplayPriority.COMMON_SETTINGS
-  }
 
   override def getLanguage = ScalaFileType.SCALA_LANGUAGE
 

@@ -44,7 +44,7 @@ class FieldFromDelayedInitInspection
   }
 
   object FieldInDelayedInit {
-    def unapply(srr: ScalaResolveResult): Option[PsiClass] = {
+    def unapply(srr: ScalaResolveResult): Option[PsiClass] =
       ScalaPsiUtil.nameContext(srr.getElement) match {
         case LazyVal(_) => None
         case Both(
@@ -58,6 +58,5 @@ class FieldFromDelayedInitInspection
           else None
         case _ => None
       }
-    }
   }
 }

@@ -6,9 +6,8 @@ package lang.resolve2
   * @since 26.08.13
   */
 class PackageLocalTest extends ResolveTestBase {
-  override def folderPath: String = {
+  override def folderPath: String =
     super.folderPath + "element/packagelocalclash/"
-  }
 
   def testC() = doTest()
 }

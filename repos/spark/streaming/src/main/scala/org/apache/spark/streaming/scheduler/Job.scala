@@ -77,19 +77,16 @@ private[streaming] class Job(val time: Time, func: () => _) {
     _outputOpId = outputOpId
   }
 
-  def setCallSite(callSite: CallSite): Unit = {
+  def setCallSite(callSite: CallSite): Unit =
     _callSite = callSite
-  }
 
   def callSite: CallSite = _callSite
 
-  def setStartTime(startTime: Long): Unit = {
+  def setStartTime(startTime: Long): Unit =
     _startTime = Some(startTime)
-  }
 
-  def setEndTime(endTime: Long): Unit = {
+  def setEndTime(endTime: Long): Unit =
     _endTime = Some(endTime)
-  }
 
   def toOutputOperationInfo: OutputOperationInfo = {
     val failureReason =

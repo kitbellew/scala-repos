@@ -24,7 +24,7 @@ trait ScNamedElement
     extends ScalaPsiElement
     with PsiNameIdentifierOwner
     with NavigatablePsiElement {
-  def name: String = {
+  def name: String =
     this match {
       case st: StubBasedPsiElement[_] =>
         st.getStub match {
@@ -33,7 +33,6 @@ trait ScNamedElement
         }
       case _ => nameInner
     }
-  }
 
   def name_=(it: String) {
     setName(it)
@@ -91,7 +90,7 @@ trait ScNamedElement
       case x               => x.getIcon(flags)
     }
 
-  abstract override def getUseScope: SearchScope = {
+  abstract override def getUseScope: SearchScope =
     ScalaPsiUtil.intersectScopes(
       super.getUseScope,
       ScalaPsiUtil.nameContext(this) match {
@@ -111,5 +110,4 @@ trait ScNamedElement
         case _ => None
       }
     )
-  }
 }

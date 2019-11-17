@@ -88,9 +88,8 @@ trait SingleMarathonIntegrationTest
   protected def startZooKeeperProcess(
       port: Int = config.zkPort,
       path: String = "/tmp/foo/single",
-      wipeWorkDir: Boolean = true): Unit = {
+      wipeWorkDir: Boolean = true): Unit =
     ProcessKeeper.startZooKeeper(port, path, wipeWorkDir)
-  }
 
   override protected def beforeAll(configMap: ConfigMap): Unit = {
     log.info("Setting up local mesos/marathon infrastructure...")
@@ -176,11 +175,10 @@ trait SingleMarathonIntegrationTest
 
   def waitForHealthCheck(
       check: IntegrationHealthCheck,
-      maxWait: FiniteDuration = 30.seconds) = {
+      maxWait: FiniteDuration = 30.seconds) =
     WaitTestSupport.waitUntil("Health check to get queried", maxWait) {
       check.pinged
     }
-  }
 
   private def appProxyMainInvocationImpl: String = {
     val javaExecutable =
@@ -309,7 +307,7 @@ trait SingleMarathonIntegrationTest
   def taskProxyChecks(
       appId: PathId,
       versionId: String,
-      state: Boolean): Seq[IntegrationHealthCheck] = {
+      state: Boolean): Seq[IntegrationHealthCheck] =
     marathon
       .tasks(appId)
       .value
@@ -322,7 +320,6 @@ trait SingleMarathonIntegrationTest
         ExternalMarathonIntegrationTest.healthChecks += check
         check
       })
-  }
 
   def cleanUp(
       withSubscribers: Boolean = false,

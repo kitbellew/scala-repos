@@ -17,7 +17,7 @@ import org.jetbrains.plugins.scala.lang.scaladoc.psi.api.ScDocSyntaxElement
 class ScalaDocUnbalancedHeaderInspection extends LocalInspectionTool {
   override def buildVisitor(
       holder: ProblemsHolder,
-      isOnTheFly: Boolean): PsiElementVisitor = {
+      isOnTheFly: Boolean): PsiElementVisitor =
     new ScalaElementVisitor {
       import org.jetbrains.plugins.scala.lang.scaladoc.lexer.ScalaDocTokenType._
       override def visitWikiSyntax(s: ScDocSyntaxElement) {
@@ -65,7 +65,6 @@ class ScalaDocUnbalancedHeaderInspection extends LocalInspectionTool {
         }
       }
     }
-  }
 }
 
 class ScalaDocHeaderBalanceQuickFix(opening: PsiElement, closing: PsiElement)

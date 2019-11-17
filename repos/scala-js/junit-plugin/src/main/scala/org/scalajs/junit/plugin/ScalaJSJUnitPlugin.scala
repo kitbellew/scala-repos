@@ -176,11 +176,10 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
                   if xs.exists(x => isClassWithJUnitAnnotation(x.symbol)) =>
                 def isModule(cDef: ClassDef): Boolean =
                   cDef.mods.hasFlag(Flags.MODULE)
-                def isTestClass(cDef: ClassDef): Boolean = {
+                def isTestClass(cDef: ClassDef): Boolean =
                   !cDef.mods.hasFlag(Flags.MODULE) &&
-                  !cDef.mods.hasFlag(Flags.ABSTRACT) &&
-                  !cDef.mods.hasFlag(Flags.TRAIT)
-                }
+                    !cDef.mods.hasFlag(Flags.ABSTRACT) &&
+                    !cDef.mods.hasFlag(Flags.TRAIT)
                 // Get the class definition and do the transformation
                 xs.collectFirst {
                   case clDef: ClassDef if isTestClass(clDef) =>
@@ -271,11 +270,10 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
         bootClazz
       }
 
-      def jUnitAnnotatedMethods(sym: Symbol): List[MethodSymbol] = {
+      def jUnitAnnotatedMethods(sym: Symbol): List[MethodSymbol] =
         sym.selfType.members.collect {
           case m: MethodSymbol if hasJUnitMethodAnnotation(m) => m
         }.toList
-      }
 
       /** This method generates a method that invokes a test method in the module
         *  given its name. These methods have no parameters.
@@ -482,14 +480,13 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
 
       private def mkParamSymbols(
           method: MethodSymbol,
-          params: List[(String, Type)]): List[Symbol] = {
+          params: List[(String, Type)]): List[Symbol] =
         params.map {
           case (pName, tpe) =>
             val sym = method.newValueParameter(newTermName(pName))
             sym.setInfo(tpe)
             sym
         }
-      }
 
       private def mkMethod(
           methodSym: MethodSymbol,

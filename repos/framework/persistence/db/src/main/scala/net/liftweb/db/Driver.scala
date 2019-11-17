@@ -146,11 +146,10 @@ abstract class DriverType(val name: String) {
     * of Primary Key Columns (creating sequeneces or special indices, for example).
     * The List of commands will be executed in order.
     */
-  def primaryKeySetup(tableName: String, columnName: String): List[String] = {
+  def primaryKeySetup(tableName: String, columnName: String): List[String] =
     List(
       "ALTER TABLE " + tableName + " ADD CONSTRAINT " + tableName +
         "_PK PRIMARY KEY(" + columnName + ")")
-  }
 
   /** This defines the syntax for adding a column in an alter. This is
     *  used because some DBs (Oracle, for one) use slightly different syntax. */
@@ -476,7 +475,7 @@ object OracleDriver extends DriverType("Oracle") {
 
   override def primaryKeySetup(
       tableName: String,
-      columnName: String): List[String] = {
+      columnName: String): List[String] =
     /*
      * This trigger and sequence setup is taken from http://www.databaseanswers.org/sql_scripts/ora_sequence.htm
      */
@@ -489,7 +488,6 @@ object OracleDriver extends DriverType("Oracle") {
         "SELECT " + tableName + "_sequence.nextval INTO :new." + columnName +
         " FROM DUAL; " + "END;"
     )
-  }
 
   // Oracle supports returning generated keys only if we specify the names of the column(s) to return.
   override def performInsertWithGenKeys[T](

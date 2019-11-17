@@ -132,7 +132,7 @@ private[spark] class CoarseGrainedExecutorBackend(
       rpcEnv.shutdown()
   }
 
-  override def onDisconnected(remoteAddress: RpcAddress): Unit = {
+  override def onDisconnected(remoteAddress: RpcAddress): Unit =
     if (stopping.get()) {
       logInfo(s"Driver from $remoteAddress disconnected during shutdown")
     } else if (driver.exists(_.address == remoteAddress)) {
@@ -141,7 +141,6 @@ private[spark] class CoarseGrainedExecutorBackend(
     } else {
       logWarning(s"An unknown ($remoteAddress) driver disconnected.")
     }
-  }
 
   override def statusUpdate(taskId: Long, state: TaskState, data: ByteBuffer) {
     val msg = StatusUpdate(executorId, taskId, state, data)

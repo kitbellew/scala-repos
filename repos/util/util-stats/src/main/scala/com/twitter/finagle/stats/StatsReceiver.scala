@@ -144,7 +144,7 @@ trait StatsReceiver { self =>
     * will generate [[Counter counters]] named `/client/adds`
     * and `/client/backend/adds`.
     */
-  def scope(namespace: String): StatsReceiver = {
+  def scope(namespace: String): StatsReceiver =
     if (namespace == "") this
     else {
       new NameTranslatingStatsReceiver(this, namespace) {
@@ -152,7 +152,6 @@ trait StatsReceiver { self =>
           namespace +: name
       }
     }
-  }
 
   /**
     * Prepend `namespace` and `namespaces` to the names of the returned [[StatsReceiver]].
@@ -177,7 +176,7 @@ trait StatsReceiver { self =>
     * }}}
     * will generate a [[Counter counter]] named `/client/toto/adds`.
     */
-  def scopeSuffix(suffix: String): StatsReceiver = {
+  def scopeSuffix(suffix: String): StatsReceiver =
     if (suffix == "") this
     else {
       new StatsReceiver {
@@ -196,7 +195,6 @@ trait StatsReceiver { self =>
           self.scope(namespace).scope(suffix)
       }
     }
-  }
 }
 
 /**

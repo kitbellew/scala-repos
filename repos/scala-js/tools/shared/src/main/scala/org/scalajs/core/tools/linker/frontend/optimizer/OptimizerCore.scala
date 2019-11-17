@@ -105,7 +105,7 @@ private[optimizer] abstract class OptimizerCore(
 
   def optimize(
       thisType: Type,
-      originalDef: MethodDef): LinkedMember[MethodDef] = {
+      originalDef: MethodDef): LinkedMember[MethodDef] =
     try {
       val MethodDef(static, name, params, resultType, body) = originalDef
       val (newParams, newBody1) = try {
@@ -144,7 +144,6 @@ private[optimizer] abstract class OptimizerCore(
           exceptionMsg(myself, attemptedInlining.distinct.toList, e))
         throw e
     }
-  }
 
   /** Try and eliminate a StoreModule followed only by trivial statements. */
   private def tryElimStoreModule(body: Tree): Tree = {
@@ -194,7 +193,7 @@ private[optimizer] abstract class OptimizerCore(
 
   private def freshNameGeneric(
       nameUsed: String => Boolean,
-      base: String): String = {
+      base: String): String =
     if (!nameUsed(base) && !isReserved(base)) {
       base
     } else {
@@ -202,13 +201,12 @@ private[optimizer] abstract class OptimizerCore(
       while (nameUsed(base + "$" + i)) i += 1
       base + "$" + i
     }
-  }
 
   // Just a helper to make the callsites more understandable
   private def localIsMutable(name: String): Boolean = usedLocalNames(name)
 
   private def tryOrRollback(body: CancelFun => TailRec[Tree])(
-      fallbackFun: () => TailRec[Tree]): TailRec[Tree] = {
+      fallbackFun: () => TailRec[Tree]): TailRec[Tree] =
     if (disableOptimisticOptimizations) {
       fallbackFun()
     } else {
@@ -228,7 +226,6 @@ private[optimizer] abstract class OptimizerCore(
           fallbackFun)
       }
     }
-  }
 
   private def isSubclass(lhs: String, rhs: String): Boolean =
     getAncestorsOf(lhs).contains(rhs)
@@ -262,14 +259,13 @@ private[optimizer] abstract class OptimizerCore(
     transform(tree, isStat = false)
 
   /** Transforms an expression or a JSSpread. */
-  private def transformExprOrSpread(tree: Tree)(implicit scope: Scope): Tree = {
+  private def transformExprOrSpread(tree: Tree)(implicit scope: Scope): Tree =
     tree match {
       case JSSpread(items) =>
         JSSpread(transformExpr(items))(tree.pos)
       case _ =>
         transformExpr(tree)
     }
-  }
 
   /** Transforms a tree. */
   private def transform(tree: Tree, isStat: Boolean)(
@@ -710,7 +706,7 @@ private[optimizer] abstract class OptimizerCore(
     */
   private def pretransformExprs(trees: List[Tree])(
       cont: List[PreTransform] => TailRec[Tree])(
-      implicit scope: Scope): TailRec[Tree] = {
+      implicit scope: Scope): TailRec[Tree] =
     trees match {
       case first :: rest =>
         pretransformExpr(first) { tfirst =>
@@ -722,33 +718,30 @@ private[optimizer] abstract class OptimizerCore(
       case Nil =>
         cont(Nil)
     }
-  }
 
   /** Pretransforms two trees as a pair of [[PreTransform]]s.
     *  This is a convenience method to use pretransformExpr on two trees.
     */
   private def pretransformExprs(tree1: Tree, tree2: Tree)(
       cont: (PreTransform, PreTransform) => TailRec[Tree])(
-      implicit scope: Scope): TailRec[Tree] = {
+      implicit scope: Scope): TailRec[Tree] =
     pretransformExpr(tree1) { ttree1 =>
       pretransformExpr(tree2) { ttree2 =>
         cont(ttree1, ttree2)
       }
     }
-  }
 
   /** Pretransforms a tree and a list of trees as [[PreTransform]]s.
     *  This is a convenience method to use pretransformExpr.
     */
   private def pretransformExprs(first: Tree, rest: List[Tree])(
       cont: (PreTransform, List[PreTransform]) => TailRec[Tree])(
-      implicit scope: Scope): TailRec[Tree] = {
+      implicit scope: Scope): TailRec[Tree] =
     pretransformExpr(first) { tfirst =>
       pretransformExprs(rest) { trest =>
         cont(tfirst, trest)
       }
     }
-  }
 
   /** Pretransforms a tree to get a refined type while avoiding to force
     *  things we might be able to optimize by folding and aliasing.
@@ -1015,9 +1008,8 @@ private[optimizer] abstract class OptimizerCore(
       expectedType: Type,
       preTransQual: PreTransform,
       item: Ident,
-      isLhsOfAssign: Boolean)(cont: PreTransCont)(
-      implicit scope: Scope,
-      pos: Position): TailRec[Tree] = {
+      isLhsOfAssign: Boolean)(
+      cont: PreTransCont)(implicit scope: Scope, pos: Position): TailRec[Tree] =
     preTransQual match {
       case PreTransLocalDef(
           LocalDef(
@@ -1078,16 +1070,13 @@ private[optimizer] abstract class OptimizerCore(
                 RefinedType(expectedType)))
         }
     }
-  }
 
   private def pretransformNew(
       tree: Tree,
       cls: ClassType,
       ctor: Ident,
-      targs: List[PreTransform])(cont: PreTransCont)(
-      implicit scope: Scope,
-      pos: Position): TailRec[Tree] = {
-
+      targs: List[PreTransform])(
+      cont: PreTransCont)(implicit scope: Scope, pos: Position): TailRec[Tree] =
     tryNewInlineableClass(cls.className) match {
       case Some(initialValue) =>
         tryOrRollback { cancelFun =>
@@ -1110,7 +1099,6 @@ private[optimizer] abstract class OptimizerCore(
             New(cls, ctor, targs.map(finishTransformExpr)),
             RefinedType(cls, isExact = true, isNullable = false)))
     }
-  }
 
   /** Resolves any LocalDef in a [[PreTransform]]. */
   private def resolveLocalDef(preTrans: PreTransform): PreTransGenTree = {
@@ -1163,11 +1151,10 @@ private[optimizer] abstract class OptimizerCore(
   /** Combines pretransformExpr and resolveLocalDef in one convenience method. */
   private def pretransformNoLocalDef(tree: Tree)(
       cont: PreTransGenTree => TailRec[Tree])(
-      implicit scope: Scope): TailRec[Tree] = {
+      implicit scope: Scope): TailRec[Tree] =
     pretransformExpr(tree) { ttree =>
       cont(resolveLocalDef(ttree))
     }
-  }
 
   /** Finishes a pretransform, either a statement or an expression. */
   private def finishTransform(isStat: Boolean): PreTransCont = { preTrans =>
@@ -1773,7 +1760,7 @@ private[optimizer] abstract class OptimizerCore(
     def defaultApply(methodName: String, resultType: Type): TailRec[Tree] =
       contTree(Apply(newReceiver, Ident(methodName), newArgs)(resultType))
 
-    def cursoryArrayElemType(tpe: ArrayType): Type = {
+    def cursoryArrayElemType(tpe: ArrayType): Type =
       if (tpe.dimensions != 1) AnyType
       else
         (tpe.baseClassName match {
@@ -1783,7 +1770,6 @@ private[optimizer] abstract class OptimizerCore(
           case "D"                   => DoubleType
           case _                     => AnyType
         })
-    }
 
     def asRTLong(arg: Tree): Tree =
       AsInstanceOf(arg, ClassType(LongImpl.RuntimeLongClass))
@@ -1975,15 +1961,13 @@ private[optimizer] abstract class OptimizerCore(
     }
   }
 
-  private def boxChar(value: Tree)(cont: PreTransCont)(
-      implicit scope: Scope,
-      pos: Position): TailRec[Tree] = {
+  private def boxChar(value: Tree)(
+      cont: PreTransCont)(implicit scope: Scope, pos: Position): TailRec[Tree] =
     pretransformNew(
       value,
       ClassType(Definitions.BoxedCharacterClass),
       Ident("init___C"),
       List(PreTransTree(value)))(cont)
-  }
 
   private def unboxChar(tvalue: PreTransform)(cont: PreTransCont)(
       implicit scope: Scope,
@@ -2434,7 +2418,7 @@ private[optimizer] abstract class OptimizerCore(
     }
   }
 
-  private def isLiteralOrOptimizableLong(texpr: PreTransform): Boolean = {
+  private def isLiteralOrOptimizableLong(texpr: PreTransform): Boolean =
     texpr match {
       case PreTransTree(LongLiteral(_), _) =>
         true
@@ -2447,7 +2431,6 @@ private[optimizer] abstract class OptimizerCore(
       case _ =>
         false
     }
-  }
 
   private def finishTransformOptLongExpr(targ: PreTransform): Tree =
     targ match {
@@ -2601,7 +2584,7 @@ private[optimizer] abstract class OptimizerCore(
   /** Performs === for two literals.
     *  The result is always known statically.
     */
-  private def literal_===(lhs: Literal, rhs: Literal): Boolean = {
+  private def literal_===(lhs: Literal, rhs: Literal): Boolean =
     (lhs, rhs) match {
       case (IntLiteral(l), IntLiteral(r))         => l == r
       case (FloatLiteral(l), FloatLiteral(r))     => l == r
@@ -2614,7 +2597,6 @@ private[optimizer] abstract class OptimizerCore(
       case (Null(), Null())                       => true
       case _                                      => false
     }
-  }
 
   /** Translate literals to their Scala.js String representation. */
   private def foldToStringForString_+(tree: Tree)(
@@ -2634,7 +2616,7 @@ private[optimizer] abstract class OptimizerCore(
   }
 
   /* Following the ECMAScript 6 specification */
-  private def jsNumberToString(value: Double): Option[String] = {
+  private def jsNumberToString(value: Double): Option[String] =
     if (1.0.toString == "1") {
       // We are in a JS environment, so the host .toString() is the correct one.
       Some(value.toString)
@@ -2648,7 +2630,6 @@ private[optimizer] abstract class OptimizerCore(
         case _                     => None
       }
     }
-  }
 
   private def foldBinaryOp(op: BinaryOp.Code, lhs: Tree, rhs: Tree)(
       implicit pos: Position): Tree = {
@@ -3317,7 +3298,7 @@ private[optimizer] abstract class OptimizerCore(
   }
 
   private def foldUnbox(arg: PreTransform, charCode: Char)(
-      cont: PreTransCont): TailRec[Tree] = {
+      cont: PreTransCont): TailRec[Tree] =
     (charCode: @switch) match {
       case 'Z' if arg.tpe.base == BooleanType => cont(arg)
       case 'I' if arg.tpe.base == IntType     => cont(arg)
@@ -3330,12 +3311,11 @@ private[optimizer] abstract class OptimizerCore(
       case _ =>
         cont(PreTransTree(Unbox(finishTransformExpr(arg), charCode)(arg.pos)))
     }
-  }
 
   private def foldReferenceEquality(
       tlhs: PreTransform,
       trhs: PreTransform,
-      positive: Boolean = true)(implicit pos: Position): Tree = {
+      positive: Boolean = true)(implicit pos: Position): Tree =
     (tlhs, trhs) match {
       case (_, PreTransTree(Null(), _)) if !tlhs.tpe.isNullable =>
         Block(finishTransformStat(tlhs), BooleanLiteral(!positive))
@@ -3347,7 +3327,6 @@ private[optimizer] abstract class OptimizerCore(
           finishTransformExpr(tlhs),
           finishTransformExpr(trhs))
     }
-  }
 
   private def foldJSBracketSelect(qualifier: Tree, item: Tree)(
       implicit pos: Position): Tree = {
@@ -3360,13 +3339,12 @@ private[optimizer] abstract class OptimizerCore(
       case (
           JSBracketSelect(JSLinkingInfo(), StringLiteral("semantics")),
           StringLiteral(semanticsStr)) =>
-        def behavior2IntLiteral(behavior: CheckedBehavior) = {
+        def behavior2IntLiteral(behavior: CheckedBehavior) =
           IntLiteral(behavior match {
             case CheckedBehavior.Compliant => 0
             case CheckedBehavior.Fatal     => 1
             case CheckedBehavior.Unchecked => 2
           })
-        }
         semanticsStr match {
           case "asInstanceOfs" =>
             behavior2IntLiteral(semantics.asInstanceOfs)
@@ -3540,7 +3518,7 @@ private[optimizer] abstract class OptimizerCore(
       oldLabelName: String,
       refinedType: Type,
       returnCount: Int,
-      newBody: Tree): Option[Tree] = {
+      newBody: Tree): Option[Tree] =
     if (!oldLabelName.startsWith("matchEnd")) None
     else {
       newBody match {
@@ -3561,7 +3539,7 @@ private[optimizer] abstract class OptimizerCore(
             @tailrec
             def constructOptimized(
                 revAlts: List[(Tree, Tree)],
-                elsep: Tree): Option[Tree] = {
+                elsep: Tree): Option[Tree] =
               revAlts match {
                 case (cond, body) :: revAltsRest =>
                   body match {
@@ -3588,18 +3566,16 @@ private[optimizer] abstract class OptimizerCore(
                 case Nil =>
                   Some(elsep)
               }
-            }
             constructOptimized(revAlts, EmptyTree)
           } else None
         case _ =>
           None
       }
     }
-  }
 
   private def withBindings(bindings: List[Binding])(
       buildInner: (Scope, PreTransCont) => TailRec[Tree])(cont: PreTransCont)(
-      implicit scope: Scope): TailRec[Tree] = {
+      implicit scope: Scope): TailRec[Tree] =
     withNewLocalDefs(bindings) { (localDefs, cont1) =>
       val newMappings = for {
         (binding, localDef) <- bindings zip localDefs
@@ -3608,21 +3584,19 @@ private[optimizer] abstract class OptimizerCore(
       }
       buildInner(scope.withEnv(scope.env.withLocalDefs(newMappings)), cont1)
     }(cont)
-  }
 
   private def withBinding(binding: Binding)(
       buildInner: (Scope, PreTransCont) => TailRec[Tree])(cont: PreTransCont)(
-      implicit scope: Scope): TailRec[Tree] = {
+      implicit scope: Scope): TailRec[Tree] =
     withNewLocalDef(binding) { (localDef, cont1) =>
       buildInner(
         scope.withEnv(scope.env.withLocalDef(binding.name, localDef)),
         cont1)
     }(cont)
-  }
 
   private def withNewLocalDefs(bindings: List[Binding])(
       buildInner: (List[LocalDef], PreTransCont) => TailRec[Tree])(
-      cont: PreTransCont): TailRec[Tree] = {
+      cont: PreTransCont): TailRec[Tree] =
     bindings match {
       case first :: rest =>
         withNewLocalDef(first) { (firstLocalDef, cont1) =>
@@ -3634,7 +3608,6 @@ private[optimizer] abstract class OptimizerCore(
       case Nil =>
         buildInner(Nil, cont)
     }
-  }
 
   private def isImmutableType(tpe: Type): Boolean = tpe match {
     case RecordType(fields) =>
@@ -3656,7 +3629,7 @@ private[optimizer] abstract class OptimizerCore(
       val used = newSimpleState(false)
 
       def doBuildInner(localDef: LocalDef)(varDef: => VarDef)(
-          cont: PreTransCont): TailRec[Tree] = {
+          cont: PreTransCont): TailRec[Tree] =
         buildInner(
           localDef, { tinner =>
             if (used.value) {
@@ -3681,7 +3654,6 @@ private[optimizer] abstract class OptimizerCore(
             }
           }
         )
-      }
 
       resolveLocalDef(value) match {
         case PreTransRecordTree(valueTree, valueTpe, cancelFun) =>
@@ -3803,7 +3775,7 @@ private[optimizer] abstract class OptimizerCore(
   private def constrainedLub(
       lhs: RefinedType,
       rhs: RefinedType,
-      upperBound: Type): RefinedType = {
+      upperBound: Type): RefinedType =
     if (upperBound == NoType) RefinedType(upperBound)
     else if (lhs == rhs) lhs
     else if (lhs.isNothingType) rhs
@@ -3814,20 +3786,18 @@ private[optimizer] abstract class OptimizerCore(
         false,
         lhs.isNullable || rhs.isNullable)
     }
-  }
 
   /** Finds a type as precise as possible which is a supertype of lhs and rhs
     *  but still a subtype of upperBound.
     *  Requires that lhs and rhs be subtypes of upperBound, obviously.
     */
-  private def constrainedLub(lhs: Type, rhs: Type, upperBound: Type): Type = {
+  private def constrainedLub(lhs: Type, rhs: Type, upperBound: Type): Type =
     // TODO Improve this
     if (upperBound == NoType) upperBound
     else if (lhs == rhs) lhs
     else if (lhs == NothingType) rhs
     else if (rhs == NothingType) lhs
     else upperBound
-  }
 
   /** Trampolines a pretransform */
   private def trampoline(tailrec: => TailRec[Tree]): Tree = {
@@ -3956,17 +3926,16 @@ private[optimizer] object OptimizerCore {
         cancelFun()
     }
 
-    def contains(that: LocalDef): Boolean = {
+    def contains(that: LocalDef): Boolean =
       (this eq that) ||
-      (replacement match {
-        case TentativeClosureReplacement(_, _, _, captureLocalDefs, _, _) =>
-          captureLocalDefs.exists(_.contains(that))
-        case InlineClassInstanceReplacement(_, fieldLocalDefs, _) =>
-          fieldLocalDefs.valuesIterator.exists(_.contains(that))
-        case _ =>
-          false
-      })
-    }
+        (replacement match {
+          case TentativeClosureReplacement(_, _, _, captureLocalDefs, _, _) =>
+            captureLocalDefs.exists(_.contains(that))
+          case InlineClassInstanceReplacement(_, fieldLocalDefs, _) =>
+            fieldLocalDefs.valuesIterator.exists(_.contains(that))
+          case _ =>
+            false
+        })
   }
 
   private sealed abstract class LocalDefReplacement
@@ -4033,10 +4002,9 @@ private[optimizer] object OptimizerCore {
     def withinFunction(paramLocalDefs: List[(String, LocalDef)]): OptEnv =
       new OptEnv(localDefs ++ paramLocalDefs, Map.empty)
 
-    override def toString(): String = {
+    override def toString(): String =
       "localDefs:" + localDefs.mkString("\n  ", "\n  ", "\n") + "labelInfos:" +
         labelInfos.mkString("\n  ", "\n  ", "")
-    }
   }
 
   private object OptEnv {
@@ -4095,7 +4063,7 @@ private[optimizer] object OptimizerCore {
   }
 
   private object PreTransBlock {
-    def apply(stats: List[Tree], result: PreTransform): PreTransform = {
+    def apply(stats: List[Tree], result: PreTransform): PreTransform =
       if (stats.isEmpty) result
       else {
         result match {
@@ -4109,7 +4077,6 @@ private[optimizer] object OptimizerCore {
             PreTransTree(Block(stats :+ tree)(tree.pos), tpe)
         }
       }
-    }
 
     def unapply(preTrans: PreTransBlock): Some[(List[Tree], PreTransLocalDef)] =
       Some(preTrans.stats, preTrans.result)

@@ -99,7 +99,7 @@ final class PersistencePluginProxy(config: Config)
   private val startTarget: Boolean =
     config.getBoolean(s"start-target-${pluginType.qualifier}")
 
-  override def preStart(): Unit = {
+  override def preStart(): Unit =
     if (startTarget) {
       val target = pluginType match {
         case Journal ⇒
@@ -134,7 +134,6 @@ final class PersistencePluginProxy(config: Config)
       context.system.scheduler
         .scheduleOnce(initTimeout, self, InitTimeout)(context.dispatcher)
     }
-  }
 
   private val selfAddress: Address =
     context.system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress

@@ -90,7 +90,7 @@ private[akka] class FileSubscriber(
     super.postStop()
   }
 
-  private def closeAndComplete(result: IOResult): Unit = {
+  private def closeAndComplete(result: IOResult): Unit =
     try {
       // close the channel/file before completing the promise, allowing the
       // file to be deleted, which would not work (on some systems) if the
@@ -101,5 +101,4 @@ private[akka] class FileSubscriber(
       case ex: Exception ⇒
         completionPromise.trySuccess(IOResult(bytesWritten, Failure(ex)))
     }
-  }
 }

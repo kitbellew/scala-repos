@@ -6,8 +6,7 @@ object Test extends DirectTest {
 
   override def extraSettings = s"-usejavacp -d ${testOutput.path}"
 
-  override def show() = {
+  override def show() =
     //compile("-language", "--")  // no error
     compile(s"-language:noob")
-  }
 }

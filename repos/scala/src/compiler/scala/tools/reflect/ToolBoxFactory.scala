@@ -466,13 +466,12 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
       }
 
       // reporter doesn't accumulate errors, but the front-end does
-      def throwIfErrors() = {
+      def throwIfErrors() =
         if (frontEnd.hasErrors)
           throw ToolBoxError(
             "reflective compilation has failed:" + EOL + EOL +
               (frontEnd.infos map (_.msg) mkString EOL)
           )
-      }
     }
 
     trait CompilerApi {
@@ -562,7 +561,7 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
         pt: u.Type,
         silent: Boolean = true,
         withMacrosDisabled: Boolean = false,
-        pos: u.Position = u.NoPosition): u.Tree = {
+        pos: u.Position = u.NoPosition): u.Tree =
       inferImplicit(
         u.EmptyTree,
         pt,
@@ -570,7 +569,6 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
         silent = silent,
         withMacrosDisabled = withMacrosDisabled,
         pos = pos)
-    }
 
     def inferImplicitView(
         tree: u.Tree,

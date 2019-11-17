@@ -112,7 +112,7 @@ private[stat] object KolmogorovSmirnovTest extends Logging {
   private def oneSampleDifferences(
       partData: Iterator[Double],
       n: Double,
-      cdf: Double => Double): Iterator[(Double, Double)] = {
+      cdf: Double => Double): Iterator[(Double, Double)] =
     // zip data with index (within that partition)
     // calculate local (unadjusted) empirical CDF and subtract CDF
     partData.zipWithIndex.map {
@@ -123,7 +123,6 @@ private[stat] object KolmogorovSmirnovTest extends Logging {
         val cdfVal = cdf(v)
         (dl - cdfVal, dp - cdfVal)
     }
-  }
 
   /**
     * Search the unadjusted differences in a partition and return the

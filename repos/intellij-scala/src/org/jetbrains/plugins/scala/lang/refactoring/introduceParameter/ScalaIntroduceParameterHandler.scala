@@ -175,7 +175,7 @@ class ScalaIntroduceParameterHandler
   def selectedElements(
       file: PsiFile,
       project: Project,
-      editor: Editor): Option[(ExprWithTypes, Seq[PsiElement])] = {
+      editor: Editor): Option[(ExprWithTypes, Seq[PsiElement])] =
     try {
       val selModel: SelectionModel = editor.getSelectionModel
       if (!selModel.hasSelection) return None
@@ -218,7 +218,6 @@ class ScalaIntroduceParameterHandler
     } catch {
       case _: IntroduceException => None
     }
-  }
 
   def collectData(
       exprWithTypes: ExprWithTypes,
@@ -365,7 +364,7 @@ class ScalaIntroduceParameterHandler
 
   def createMethodDescriptor(
       method: ScMethodLike,
-      paramInfo: ScalaParameterInfo): ScalaMethodDescriptor = {
+      paramInfo: ScalaParameterInfo): ScalaMethodDescriptor =
     new ScalaMethodDescriptor(method) {
       override def parametersInner: Seq[Seq[ScalaParameterInfo]] = {
         val params = super.parametersInner
@@ -380,9 +379,8 @@ class ScalaIntroduceParameterHandler
         }
       }
     }
-  }
 
-  private def getTextForElement(method: ScMethodLike): String = {
+  private def getTextForElement(method: ScMethodLike): String =
     method match {
       case pc: ScPrimaryConstructor =>
         s"${pc.containingClass.name} (primary constructor)"
@@ -393,7 +391,6 @@ class ScalaIntroduceParameterHandler
         s"${f.name} (in ${c.name})"
       case f: ScFunctionDefinition => s"${f.name}"
     }
-  }
 
   private def toHighlight(e: PsiElement) = e match {
     case pc: ScPrimaryConstructor => pc.containingClass.extendsBlock
@@ -424,11 +421,10 @@ class ScalaIntroduceParameterHandler
     }
   }
 
-  private def isLibraryInterfaceMethod(method: PsiMethod): Boolean = {
+  private def isLibraryInterfaceMethod(method: PsiMethod): Boolean =
     (method.hasModifierPropertyScala(PsiModifier.ABSTRACT) ||
-    method.isInstanceOf[ScFunctionDefinition]) &&
-    !method.getManager.isInProject(method)
-  }
+      method.isInstanceOf[ScFunctionDefinition]) &&
+      !method.getManager.isInProject(method)
 
   private def haveReturnStmts(elems: Seq[PsiElement]): Boolean = {
     for {

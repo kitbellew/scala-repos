@@ -173,7 +173,7 @@ abstract class UnCurry
       *    }
       *  }
       */
-    private def nonLocalReturnTry(body: Tree, key: Symbol, meth: Symbol) = {
+    private def nonLocalReturnTry(body: Tree, key: Symbol, meth: Symbol) =
       localTyper typed {
         val restpe = meth.tpe_*.finalResultType
         val extpe = nonLocalReturnExceptionType(restpe)
@@ -200,7 +200,6 @@ abstract class UnCurry
 
         Block(List(keyDef), tryCatch)
       }
-    }
 
 // ------ Transforming anonymous functions and by-name-arguments ----------------
 
@@ -313,7 +312,7 @@ abstract class UnCurry
           ArrayValue(TypeTree(elemtp), ts) setType arrayType(elemtp)
 
         // when calling into scala varargs, make sure it's a sequence.
-        def arrayToSequence(tree: Tree, elemtp: Type) = {
+        def arrayToSequence(tree: Tree, elemtp: Type) =
           exitingUncurry {
             localTyper.typedPos(pos) {
               val pt = arrayType(elemtp)
@@ -324,7 +323,6 @@ abstract class UnCurry
               gen.mkWrapArray(adaptedTree, elemtp)
             }
           }
-        }
 
         // when calling into java varargs, make sure it's an array - see bug #1360
         def sequenceToArray(tree: Tree) = {
@@ -338,12 +336,11 @@ abstract class UnCurry
             else if (tp.bounds.hi ne tp) getClassTag(tp.bounds.hi)
             else localTyper.TyperErrorGen.MissingClassTagError(tree, tp)
           }
-          def traversableClassTag(tpe: Type): Tree = {
+          def traversableClassTag(tpe: Type): Tree =
             (tpe baseType TraversableClass).typeArgs match {
               case targ :: _ => getClassTag(targ)
               case _         => EmptyTree
             }
-          }
           exitingUncurry {
             localTyper.typedPos(pos) {
               gen.mkMethodCall(
@@ -416,7 +413,7 @@ abstract class UnCurry
       *  replace only the body/rhs with 0/false/()/null; otherwise replace
       *  the whole tree with it.
       */
-    private def replaceElidableTree(tree: Tree): Tree = {
+    private def replaceElidableTree(tree: Tree): Tree =
       tree match {
         case DefDef(_, _, _, _, _, rhs) =>
           val rhs1 =
@@ -426,7 +423,6 @@ abstract class UnCurry
         case _ =>
           gen.mkZero(tree.tpe) setType tree.tpe
       }
-    }
 
     private def isSelfSynchronized(ddef: DefDef) = ddef.rhs match {
       case Apply(fn @ TypeApply(Select(sel, _), _), _) =>

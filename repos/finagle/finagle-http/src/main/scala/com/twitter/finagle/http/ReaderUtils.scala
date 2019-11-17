@@ -39,7 +39,7 @@ private[http] object ReaderUtils {
       r: Reader,
       // TODO Find a better number for bufSize, e.g. 32KiB - Buf overhead
       bufSize: Int = Int.MaxValue
-  ): Future[Unit] = {
+  ): Future[Unit] =
     r.read(bufSize) flatMap {
       case None =>
         trans.write(HttpChunk.LAST_CHUNK)
@@ -49,5 +49,4 @@ private[http] object ReaderUtils {
           case _         => Future(r.discard())
         }
     }
-  }
 }

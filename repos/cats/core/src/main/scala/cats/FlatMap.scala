@@ -42,7 +42,6 @@ trait FlatMap[F[_]] extends Apply[F] {
   /**
     * `if` lifted into monad.
     */
-  def ifM[B](fa: F[Boolean])(ifTrue: => F[B], ifFalse: => F[B]): F[B] = {
+  def ifM[B](fa: F[Boolean])(ifTrue: => F[B], ifFalse: => F[B]): F[B] =
     flatMap(fa)(if (_) ifTrue else ifFalse)
-  }
 }

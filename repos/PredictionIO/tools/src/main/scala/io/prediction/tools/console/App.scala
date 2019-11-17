@@ -251,13 +251,12 @@ object App extends Logging {
     status
   }
 
-  def dataDelete(ca: ConsoleArgs): Int = {
+  def dataDelete(ca: ConsoleArgs): Int =
     if (ca.app.all) {
       dataDeleteAll(ca)
     } else {
       dataDeleteOne(ca)
     }
-  }
 
   def dataDeleteOne(ca: ConsoleArgs): Int = {
     val apps = storage.Storage.getMetaDataApps

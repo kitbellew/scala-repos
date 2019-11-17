@@ -39,7 +39,7 @@ object QuirrelCacheSpecs
 
   private def findNode[A](root: Expr)(
       pf: PartialFunction[Expr, A]): Option[A] = {
-    def loop(expr: Expr): Option[A] = {
+    def loop(expr: Expr): Option[A] =
       if (pf.isDefinedAt(expr)) {
         Some(pf(expr))
       } else {
@@ -54,7 +54,6 @@ object QuirrelCacheSpecs
           case Some(a) => a
         }
       }
-    }
 
     loop(root)
   }
@@ -121,12 +120,11 @@ object QuirrelCacheSpecs
       result2 must haveSize(1)
       result3 must haveSize(1)
 
-      def varLoc(name: String)(e: Expr) = {
+      def varLoc(name: String)(e: Expr) =
         findNode(e) {
           case Dispatch(loc, Identifier(_, `name`), _) =>
             (loc.lineNum, loc.colNum)
         }
-      }
 
       val root2 = result2.head
       varLoc("a")(root2) must_== Some((5, 1))

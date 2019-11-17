@@ -125,9 +125,8 @@ private object Helper {
     * Uncompresses an array to a string with gzip.
     */
   def uncompress(bytes: Array[Byte])(
-      implicit encoding: ContentEncoding): String = {
+      implicit encoding: ContentEncoding): String =
     convertStreamToString(encoding.decode(new ByteArrayInputStream(bytes)))
-  }
 
   /**
     * Returns a string with the content from the input stream.

@@ -507,13 +507,12 @@ object Logging {
     * Returns the LogLevel associated with the given event class.
     * Defaults to DebugLevel.
     */
-  def levelFor(eventClass: Class[_ <: LogEvent]): LogLevel = {
+  def levelFor(eventClass: Class[_ <: LogEvent]): LogLevel =
     if (classOf[Error].isAssignableFrom(eventClass)) ErrorLevel
     else if (classOf[Warning].isAssignableFrom(eventClass)) WarningLevel
     else if (classOf[Info].isAssignableFrom(eventClass)) InfoLevel
     else if (classOf[Debug].isAssignableFrom(eventClass)) DebugLevel
     else DebugLevel
-  }
 
   /**
     * Returns the event class associated with the given LogLevel
@@ -1030,25 +1029,22 @@ trait LoggingAdapter {
     * Log message at error level, including the exception that caused the error.
     * @see [[LoggingAdapter]]
     */
-  def error(cause: Throwable, message: String): Unit = {
+  def error(cause: Throwable, message: String): Unit =
     if (isErrorEnabled) notifyError(cause, message)
-  }
 
   /**
     * Message template with 1 replacement argument.
     * @see [[LoggingAdapter]]
     */
-  def error(cause: Throwable, template: String, arg1: Any): Unit = {
+  def error(cause: Throwable, template: String, arg1: Any): Unit =
     if (isErrorEnabled) notifyError(cause, format1(template, arg1))
-  }
 
   /**
     * Message template with 2 replacement arguments.
     * @see [[LoggingAdapter]]
     */
-  def error(cause: Throwable, template: String, arg1: Any, arg2: Any): Unit = {
+  def error(cause: Throwable, template: String, arg1: Any, arg2: Any): Unit =
     if (isErrorEnabled) notifyError(cause, format(template, arg1, arg2))
-  }
 
   /**
     * Message template with 3 replacement arguments.
@@ -1059,9 +1055,8 @@ trait LoggingAdapter {
       template: String,
       arg1: Any,
       arg2: Any,
-      arg3: Any): Unit = {
+      arg3: Any): Unit =
     if (isErrorEnabled) notifyError(cause, format(template, arg1, arg2, arg3))
-  }
 
   /**
     * Message template with 4 replacement arguments.
@@ -1073,42 +1068,37 @@ trait LoggingAdapter {
       arg1: Any,
       arg2: Any,
       arg3: Any,
-      arg4: Any): Unit = {
+      arg4: Any): Unit =
     if (isErrorEnabled)
       notifyError(cause, format(template, arg1, arg2, arg3, arg4))
-  }
 
   /**
     * Log message at error level, without providing the exception that caused the error.
     * @see [[LoggingAdapter]]
     */
-  def error(message: String): Unit = {
+  def error(message: String): Unit =
     if (isErrorEnabled) notifyError(message)
-  }
 
   /**
     * Message template with 1 replacement argument.
     * @see [[LoggingAdapter]]
     */
-  def error(template: String, arg1: Any): Unit = {
+  def error(template: String, arg1: Any): Unit =
     if (isErrorEnabled) notifyError(format1(template, arg1))
-  }
 
   /**
     * Message template with 2 replacement arguments.
     * @see [[LoggingAdapter]]
     */
-  def error(template: String, arg1: Any, arg2: Any): Unit = {
+  def error(template: String, arg1: Any, arg2: Any): Unit =
     if (isErrorEnabled) notifyError(format(template, arg1, arg2))
-  }
 
   /**
     * Message template with 3 replacement arguments.
     * @see [[LoggingAdapter]]
     */
-  def error(template: String, arg1: Any, arg2: Any, arg3: Any): Unit = {
+  def error(template: String, arg1: Any, arg2: Any, arg3: Any): Unit =
     if (isErrorEnabled) notifyError(format(template, arg1, arg2, arg3))
-  }
 
   /**
     * Message template with 4 replacement arguments.
@@ -1119,41 +1109,36 @@ trait LoggingAdapter {
       arg1: Any,
       arg2: Any,
       arg3: Any,
-      arg4: Any): Unit = {
+      arg4: Any): Unit =
     if (isErrorEnabled) notifyError(format(template, arg1, arg2, arg3, arg4))
-  }
 
   /**
     * Log message at warning level.
     * @see [[LoggingAdapter]]
     */
-  def warning(message: String): Unit = {
+  def warning(message: String): Unit =
     if (isWarningEnabled) notifyWarning(message)
-  }
 
   /**
     * Message template with 1 replacement argument.
     * @see [[LoggingAdapter]]
     */
-  def warning(template: String, arg1: Any): Unit = {
+  def warning(template: String, arg1: Any): Unit =
     if (isWarningEnabled) notifyWarning(format1(template, arg1))
-  }
 
   /**
     * Message template with 2 replacement arguments.
     * @see [[LoggingAdapter]]
     */
-  def warning(template: String, arg1: Any, arg2: Any): Unit = {
+  def warning(template: String, arg1: Any, arg2: Any): Unit =
     if (isWarningEnabled) notifyWarning(format(template, arg1, arg2))
-  }
 
   /**
     * Message template with 3 replacement arguments.
     * @see [[LoggingAdapter]]
     */
-  def warning(template: String, arg1: Any, arg2: Any, arg3: Any): Unit = {
+  def warning(template: String, arg1: Any, arg2: Any, arg3: Any): Unit =
     if (isWarningEnabled) notifyWarning(format(template, arg1, arg2, arg3))
-  }
 
   /**
     * Message template with 4 replacement arguments.
@@ -1164,10 +1149,9 @@ trait LoggingAdapter {
       arg1: Any,
       arg2: Any,
       arg3: Any,
-      arg4: Any): Unit = {
+      arg4: Any): Unit =
     if (isWarningEnabled)
       notifyWarning(format(template, arg1, arg2, arg3, arg4))
-  }
 
   /**
     * Log message at info level.
@@ -1179,38 +1163,29 @@ trait LoggingAdapter {
     * Message template with 1 replacement argument.
     * @see [[LoggingAdapter]]
     */
-  def info(template: String, arg1: Any): Unit = {
+  def info(template: String, arg1: Any): Unit =
     if (isInfoEnabled) notifyInfo(format1(template, arg1))
-  }
 
   /**
     * Message template with 2 replacement arguments.
     * @see [[LoggingAdapter]]
     */
-  def info(template: String, arg1: Any, arg2: Any): Unit = {
+  def info(template: String, arg1: Any, arg2: Any): Unit =
     if (isInfoEnabled) notifyInfo(format(template, arg1, arg2))
-  }
 
   /**
     * Message template with 3 replacement arguments.
     * @see [[LoggingAdapter]]
     */
-  def info(template: String, arg1: Any, arg2: Any, arg3: Any): Unit = {
+  def info(template: String, arg1: Any, arg2: Any, arg3: Any): Unit =
     if (isInfoEnabled) notifyInfo(format(template, arg1, arg2, arg3))
-  }
 
   /**
     * Message template with 4 replacement arguments.
     * @see [[LoggingAdapter]]
     */
-  def info(
-      template: String,
-      arg1: Any,
-      arg2: Any,
-      arg3: Any,
-      arg4: Any): Unit = {
+  def info(template: String, arg1: Any, arg2: Any, arg3: Any, arg4: Any): Unit =
     if (isInfoEnabled) notifyInfo(format(template, arg1, arg2, arg3, arg4))
-  }
 
   /**
     * Log message at debug level.
@@ -1222,25 +1197,22 @@ trait LoggingAdapter {
     * Message template with 1 replacement argument.
     * @see [[LoggingAdapter]]
     */
-  def debug(template: String, arg1: Any): Unit = {
+  def debug(template: String, arg1: Any): Unit =
     if (isDebugEnabled) notifyDebug(format1(template, arg1))
-  }
 
   /**
     * Message template with 2 replacement arguments.
     * @see [[LoggingAdapter]]
     */
-  def debug(template: String, arg1: Any, arg2: Any): Unit = {
+  def debug(template: String, arg1: Any, arg2: Any): Unit =
     if (isDebugEnabled) notifyDebug(format(template, arg1, arg2))
-  }
 
   /**
     * Message template with 3 replacement arguments.
     * @see [[LoggingAdapter]]
     */
-  def debug(template: String, arg1: Any, arg2: Any, arg3: Any): Unit = {
+  def debug(template: String, arg1: Any, arg2: Any, arg3: Any): Unit =
     if (isDebugEnabled) notifyDebug(format(template, arg1, arg2, arg3))
-  }
 
   /**
     * Message template with 4 replacement arguments.
@@ -1251,9 +1223,8 @@ trait LoggingAdapter {
       arg1: Any,
       arg2: Any,
       arg3: Any,
-      arg4: Any): Unit = {
+      arg4: Any): Unit =
     if (isDebugEnabled) notifyDebug(format(template, arg1, arg2, arg3, arg4))
-  }
 
   /**
     * Log message at the specified log level.
@@ -1265,9 +1236,8 @@ trait LoggingAdapter {
   /**
     * Message template with 1 replacement argument.
     */
-  def log(level: Logging.LogLevel, template: String, arg1: Any): Unit = {
+  def log(level: Logging.LogLevel, template: String, arg1: Any): Unit =
     if (isEnabled(level)) notifyLog(level, format1(template, arg1))
-  }
 
   /**
     * Message template with 2 replacement arguments.
@@ -1276,9 +1246,8 @@ trait LoggingAdapter {
       level: Logging.LogLevel,
       template: String,
       arg1: Any,
-      arg2: Any): Unit = {
+      arg2: Any): Unit =
     if (isEnabled(level)) notifyLog(level, format(template, arg1, arg2))
-  }
 
   /**
     * Message template with 3 replacement arguments.
@@ -1288,9 +1257,8 @@ trait LoggingAdapter {
       template: String,
       arg1: Any,
       arg2: Any,
-      arg3: Any): Unit = {
+      arg3: Any): Unit =
     if (isEnabled(level)) notifyLog(level, format(template, arg1, arg2, arg3))
-  }
 
   /**
     * Message template with 4 replacement arguments.
@@ -1301,10 +1269,9 @@ trait LoggingAdapter {
       arg1: Any,
       arg2: Any,
       arg3: Any,
-      arg4: Any): Unit = {
+      arg4: Any): Unit =
     if (isEnabled(level))
       notifyLog(level, format(template, arg1, arg2, arg3, arg4))
-  }
 
   /**
     * @return true if the specified log level is enabled

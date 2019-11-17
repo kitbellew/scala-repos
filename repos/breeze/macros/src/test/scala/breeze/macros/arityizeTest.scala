@@ -38,10 +38,9 @@ class arityizeTest extends FunSuite {
     @arityize(10)
     class CuKernel[@arityize.replicate T](fn: Any, blockDims: Array[Int]) {
       def apply(workSize1: Int = 1, workSize2: Int = 1, workSize3: Int = 1)(
-          @arityize.replicate t: T @arityize.relative(t)): Unit = {
+          @arityize.replicate t: T @arityize.relative(t)): Unit =
         Whatever.invoke(Array(workSize1, workSize2, workSize3), blockDims, fn)(
           (t: @arityize.replicate))
-      }
     }
 
     new CuKernel2[Int, String](1, Array()).apply()(1, "2")
@@ -51,20 +50,18 @@ class arityizeTest extends FunSuite {
     @arityize(2)
     class CuKernel[@arityize.replicate T](fn: Any, blockDims: Array[Int]) {
       def apply(workSize1: Int = 1)(
-          @arityize.replicate t: T @arityize.relative(t)): Unit = {
+          @arityize.replicate t: T @arityize.relative(t)): Unit =
         ???
-      }
     }
 
     @arityize(2)
     def getKernel[@arityize.replicate T](
         name: String,
         blockDims: Array[Int] = Array(32, 1, 1))
-        : (CuKernel[T @arityize.replicate] @arityize.relative(getKernel)) = {
+        : (CuKernel[T @arityize.replicate] @arityize.relative(getKernel)) =
       new (CuKernel[T @arityize.replicate] @arityize.relative(getKernel))(
         name,
         blockDims)
-    }
   }
 
   test("Breeze LiteralRow") {
@@ -77,11 +74,10 @@ class arityizeTest extends FunSuite {
       new LiteralRow[Tuple[V @arityize.repeat] @arityize.relative(tuple), V] {
         def foreach[X](
             tup: Tuple[V @arityize.repeat] @arityize.relative(tuple),
-            fn: ((Int, V) => X)) = {
+            fn: ((Int, V) => X)) =
           for ((v, i) <- tup.productIterator.zipWithIndex) {
             fn(i, v.asInstanceOf[V])
           }
-        }
 
         def length(tup: Tuple[V @arityize.repeat] @arityize.relative(tuple)) =
           __order__
@@ -97,8 +93,7 @@ class arityizeTest extends FunSuite {
     @arityize(22)
     implicit def tupleToDenseVector(
         tuple: Tuple[Any @arityize.repeat] @arityize.relative(
-          tupleToDenseVector)) = {
+          tupleToDenseVector)) =
       new (TupleToDenseVector @arityize.relative(tupleToDenseVector))(tuple)
-    }
   }
 }

@@ -46,7 +46,7 @@ object Artifact {
   private def readProperty(
       file: File,
       resource: String,
-      name: String): Option[String] = {
+      name: String): Option[String] =
     try {
       val url = new URL("jar:%s!/%s".format(file.toURI.toString, resource))
       Option(url.openStream).flatMap(it =>
@@ -54,7 +54,6 @@ object Artifact {
     } catch {
       case _: IOException => None
     }
-  }
 
   private def readProperty(input: InputStream, name: String): Option[String] = {
     val properties = new Properties()

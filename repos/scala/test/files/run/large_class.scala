@@ -18,9 +18,8 @@ object Test extends DirectTest {
              s(n + 60000) + ")") mkString ";"}
       |}""".stripMargin.trim
 
-  override def show(): Unit = {
+  override def show(): Unit =
     Console.withErr(System.out) {
       compile()
     }
-  }
 }

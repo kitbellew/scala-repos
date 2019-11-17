@@ -5,7 +5,7 @@ import scala.reflect.ClassTag
 
 private[pickling] object Classes {
 
-  private[pickling] def classTagFromString(typeString: String): ClassTag[_] = {
+  private[pickling] def classTagFromString(typeString: String): ClassTag[_] =
     if (typeString.startsWith("scala.Array")) {
       val elemTypeString = typeString.substring(12, typeString.length - 1)
       val elemClassTag = classTagFromString(elemTypeString)
@@ -17,9 +17,7 @@ private[pickling] object Classes {
       }
       ClassTag(clazz)
     }
-  }
 
-  private[pickling] def classFromString(typeString: String): Class[_] = {
+  private[pickling] def classFromString(typeString: String): Class[_] =
     classTagFromString(typeString).runtimeClass
-  }
 }

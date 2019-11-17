@@ -27,13 +27,12 @@ class InternalAccumulatorSuite extends SparkFunSuite with LocalSparkContext {
   import InternalAccumulator._
   import AccumulatorParam._
 
-  override def afterEach(): Unit = {
+  override def afterEach(): Unit =
     try {
       Accumulators.clear()
     } finally {
       super.afterEach()
     }
-  }
 
   test("get param") {
     assert(getParam(EXECUTOR_DESERIALIZE_TIME) === LongAccumulatorParam)
@@ -345,7 +344,7 @@ class InternalAccumulatorSuite extends SparkFunSuite with LocalSparkContext {
     * Return the accumulable info that matches the specified name.
     */
   private def findTestAccum(
-      accums: Iterable[AccumulableInfo]): AccumulableInfo = {
+      accums: Iterable[AccumulableInfo]): AccumulableInfo =
     accums
       .find { a =>
         a.name == Some(TEST_ACCUM)
@@ -353,7 +352,6 @@ class InternalAccumulatorSuite extends SparkFunSuite with LocalSparkContext {
       .getOrElse {
         fail(s"unable to find internal accumulator called $TEST_ACCUM")
       }
-  }
 
   /**
     * A special [[ContextCleaner]] that saves the IDs of the accumulators registered for cleanup.

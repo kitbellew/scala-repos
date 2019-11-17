@@ -163,7 +163,7 @@ sealed abstract class Dequeue[A] {
     }
   }
 
-  def map[B](f: A => B): Dequeue[B] = {
+  def map[B](f: A => B): Dequeue[B] =
     this match {
       case EmptyDequeue()      => EmptyDequeue()
       case SingletonDequeue(a) => SingletonDequeue(f(a))
@@ -172,7 +172,6 @@ sealed abstract class Dequeue[A] {
         FullDequeue(F.map(front)(f), fs, F.map(back)(f), bs)
       }
     }
-  }
 
   def size: Int = this match {
     case EmptyDequeue()            => 0

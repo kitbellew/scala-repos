@@ -111,16 +111,13 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
   private def methodBody(
       delegate: ClassMember,
       prototype: ScFunction): ScExpression = {
-    def typeParameterUsedIn(
-        parameter: ScTypeParam,
-        elements: Seq[PsiElement]) = {
+    def typeParameterUsedIn(parameter: ScTypeParam, elements: Seq[PsiElement]) =
       elements.exists(
         elem =>
           ReferencesSearch
             .search(parameter, new LocalSearchScope(elem))
             .findAll()
             .nonEmpty)
-    }
     val typeParamsForCall: String = {
       val typeParams = prototype.typeParameters
       val parametersAndRetType =
@@ -131,9 +128,8 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
     }
     val dText: String = delegateText(delegate)
     val methodName = prototype.name
-    def paramClauseApplicationText(paramClause: ScParameterClause) = {
+    def paramClauseApplicationText(paramClause: ScParameterClause) =
       paramClause.parameters.map(_.name).mkString("(", ", ", ")")
-    }
     val params = prototype.effectiveParameterClauses
       .map(paramClauseApplicationText)
       .mkString
@@ -255,13 +251,11 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
 
   private def targetElements(
       file: PsiFile,
-      editor: Editor): Array[ClassMember] = {
+      editor: Editor): Array[ClassMember] =
     parentClasses(file, editor).flatMap(targetsIn).toArray
-  }
 
-  private def hasTargetElements(file: PsiFile, editor: Editor): Boolean = {
+  private def hasTargetElements(file: PsiFile, editor: Editor): Boolean =
     parentClasses(file, editor).exists(hasTargetsIn)
-  }
 
   private def targetsIn(clazz: ScTemplateDefinition): Seq[ClassMember] = {
     //todo add ScObjectMember for targets

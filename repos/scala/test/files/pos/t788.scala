@@ -11,9 +11,8 @@ trait Test {
   trait NamedImpl extends NodeImpl {
     def self: Named;
   }
-  def asExpression(e: ExpressionImpl): Named = {
+  def asExpression(e: ExpressionImpl): Named =
     e match {
       case f: NamedImpl => f.self;
     }
-  }
 }

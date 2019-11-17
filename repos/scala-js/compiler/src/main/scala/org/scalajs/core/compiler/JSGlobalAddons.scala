@@ -47,11 +47,10 @@ trait JSGlobalAddons extends JSDefinitions with Compat210Component {
       val isNamed: Boolean
     }
 
-    private def assertValidForRegistration(sym: Symbol): Unit = {
+    private def assertValidForRegistration(sym: Symbol): Unit =
       assert(
         sym.isConstructor || sym.isClass,
         "Can only register constructors or classes for export")
-    }
 
     def clearRegisteredExports(): Unit =
       exportedSymbols.clear()
@@ -83,13 +82,12 @@ trait JSGlobalAddons extends JSDefinitions with Compat210Component {
       *  is a property
       */
     def jsExportInfo(name: Name): (String, Boolean) = {
-      def dropPrefix(prefix: String) = {
+      def dropPrefix(prefix: String) =
         if (name.startsWith(prefix)) {
           // We can't decode right away due to $ separators
           val enc = name.encoded.substring(prefix.length)
           Some(NameTransformer.decode(enc))
         } else None
-      }
 
       dropPrefix(methodExportPrefix).map((_, false)) orElse dropPrefix(
         propExportPrefix).map((_, true)) getOrElse sys.error(
@@ -98,21 +96,19 @@ trait JSGlobalAddons extends JSDefinitions with Compat210Component {
 
     def isJSProperty(sym: Symbol): Boolean = isJSGetter(sym) || isJSSetter(sym)
 
-    @inline private def enteringUncurryIfAtPhaseAfter[A](op: => A): A = {
+    @inline private def enteringUncurryIfAtPhaseAfter[A](op: => A): A =
       if (currentRun.uncurryPhase != NoPhase &&
           isAtPhaseAfter(currentRun.uncurryPhase)) {
         enteringPhase(currentRun.uncurryPhase)(op)
       } else {
         op
       }
-    }
 
     /** has this symbol to be translated into a JS getter (both directions)? */
-    def isJSGetter(sym: Symbol): Boolean = {
+    def isJSGetter(sym: Symbol): Boolean =
       sym.tpe.params.isEmpty && enteringUncurryIfAtPhaseAfter {
         sym.tpe.isInstanceOf[NullaryMethodType]
       }
-    }
 
     /** has this symbol to be translated into a JS setter (both directions)? */
     def isJSSetter(sym: Symbol): Boolean =
@@ -131,13 +127,12 @@ trait JSGlobalAddons extends JSDefinitions with Compat210Component {
       *  If it is not explicitly specified with an `@JSName` annotation, the
       *  JS name is inferred from the Scala name.
       */
-    def jsNameOf(sym: Symbol): String = {
+    def jsNameOf(sym: Symbol): String =
       sym.getAnnotation(JSNameAnnotation).flatMap(_.stringArg(0)) getOrElse {
         val base = sym.unexpandedName.decoded.stripSuffix("_=")
         if (!sym.isMethod) base.stripSuffix(" ")
         else base
       }
-    }
 
     /** Gets the fully qualified JS name of a static class of module Symbol.
       *

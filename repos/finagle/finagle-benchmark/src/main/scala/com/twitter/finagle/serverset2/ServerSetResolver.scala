@@ -89,7 +89,7 @@ class ServerSetResolver {
   /**
     * Resolve and monitor changes to a single serverset for the lifetime of the test.
     */
-  def monitorServersetChanges(resolver: Zk2Resolver, zkPath: String): Unit = {
+  def monitorServersetChanges(resolver: Zk2Resolver, zkPath: String): Unit =
     resolver.bind(s"localhost:$zkListenPort!$zkPath").changes.respond {
       case Addr.Bound(set, metadata) =>
         logger.info(s"Serverset $zkPath has ${set.size} entries")
@@ -97,7 +97,6 @@ class ServerSetResolver {
       case Addr.Failed(exc) => unexpectedError(s"$zkPath: Addr.Failure[$exc]")
       case Addr.Pending     => logger.info(s"$zkPath is pending...")
     }
-  }
 
   def unexpectedError(msg: String) =
     throw new IllegalStateException(s"Unexpected resolution failure. $msg")

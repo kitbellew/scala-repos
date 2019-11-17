@@ -80,7 +80,7 @@ private[spark] class DirectTaskResult[T](
     *
     * After the first time, `value()` is trivial and just returns the deserialized `valueObject`.
     */
-  def value(): T = {
+  def value(): T =
     if (valueObjectDeserialized) {
       valueObject
     } else {
@@ -91,5 +91,4 @@ private[spark] class DirectTaskResult[T](
       valueObjectDeserialized = true
       valueObject
     }
-  }
 }

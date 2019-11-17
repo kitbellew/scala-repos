@@ -254,9 +254,8 @@ class PartitioningSuite
     val arrPairs: RDD[(Array[Int], Int)] =
       sc.parallelize(Array(1, 2, 3, 4), 2).map(x => (Array(x), x))
 
-    def verify(testFun: => Unit): Unit = {
+    def verify(testFun: => Unit): Unit =
       intercept[SparkException](testFun).getMessage.contains("array")
-    }
 
     verify(arrs.distinct())
     // We can't catch all usages of arrays, since they might occur inside other collections:

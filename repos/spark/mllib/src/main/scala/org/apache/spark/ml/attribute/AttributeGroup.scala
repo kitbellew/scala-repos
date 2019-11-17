@@ -85,7 +85,7 @@ class AttributeGroup private (
   }
 
   /** Size of the attribute group. Returns -1 if the size is unknown. */
-  def size: Int = {
+  def size: Int =
     if (numAttributes.isDefined) {
       numAttributes.get
     } else if (attributes.isDefined) {
@@ -93,7 +93,6 @@ class AttributeGroup private (
     } else {
       -1
     }
-  }
 
   /** Test whether this attribute group contains a specific attribute. */
   def hasAttr(attrName: String): Boolean = nameToIndex.contains(attrName)
@@ -102,9 +101,8 @@ class AttributeGroup private (
   def indexOf(attrName: String): Int = nameToIndex(attrName)
 
   /** Gets an attribute by its name. */
-  def apply(attrName: String): Attribute = {
+  def apply(attrName: String): Attribute =
     attributes.get(indexOf(attrName))
-  }
 
   /** Gets an attribute by its name. */
   def getAttr(attrName: String): Attribute = this(attrName)
@@ -160,29 +158,27 @@ class AttributeGroup private (
   }
 
   /** Converts to ML metadata with some existing metadata. */
-  def toMetadata(existingMetadata: Metadata): Metadata = {
+  def toMetadata(existingMetadata: Metadata): Metadata =
     new MetadataBuilder()
       .withMetadata(existingMetadata)
       .putMetadata(AttributeKeys.ML_ATTR, toMetadataImpl)
       .build()
-  }
 
   /** Converts to ML metadata */
   def toMetadata(): Metadata = toMetadata(Metadata.empty)
 
   /** Converts to a StructField with some existing metadata. */
-  def toStructField(existingMetadata: Metadata): StructField = {
+  def toStructField(existingMetadata: Metadata): StructField =
     StructField(
       name,
       new VectorUDT,
       nullable = false,
       toMetadata(existingMetadata))
-  }
 
   /** Converts to a StructField. */
   def toStructField(): StructField = toStructField(Metadata.empty)
 
-  override def equals(other: Any): Boolean = {
+  override def equals(other: Any): Boolean =
     other match {
       case o: AttributeGroup =>
         (name == o.name) && (numAttributes == o.numAttributes) &&
@@ -190,7 +186,6 @@ class AttributeGroup private (
       case _ =>
         false
     }
-  }
 
   override def hashCode: Int = {
     var sum = 17

@@ -97,7 +97,7 @@ object MetricsFormat {
     *  The given reads function is used to read the transformed json into an object.
     */
   def objectRead[T](t: Reads[T]): Reads[Seq[T]] = new Reads[Seq[T]] {
-    override def reads(js: JsValue): JsResult[Seq[T]] = {
+    override def reads(js: JsValue): JsResult[Seq[T]] =
       JsSuccess(
         js.as[JsObject]
           .fields
@@ -108,7 +108,6 @@ object MetricsFormat {
                   value.as[JsObject].fields :+ ("name" -> JsString(name)))
               t.reads(obj).get
           })
-    }
   }
 
   // Json Reads objects for metric structure

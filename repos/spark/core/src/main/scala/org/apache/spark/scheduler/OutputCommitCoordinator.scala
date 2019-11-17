@@ -74,9 +74,8 @@ private[spark] class OutputCommitCoordinator(conf: SparkConf, isDriver: Boolean)
   /**
     * Returns whether the OutputCommitCoordinator's internal data structures are all empty.
     */
-  def isEmpty: Boolean = {
+  def isEmpty: Boolean =
     authorizedCommittersByStage.isEmpty
-  }
 
   /**
     * Called by tasks to ask whether they can commit their output to HDFS.

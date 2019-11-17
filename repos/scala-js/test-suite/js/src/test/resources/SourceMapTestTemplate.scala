@@ -33,9 +33,8 @@ case class TestException(lineNo: Int) extends Exception
   * (in a single line) up to the number of /n-star/s in the file.
   */
 object SourceMapTest {
-  @BeforeClass def beforeClass(): Unit = {
+  @BeforeClass def beforeClass(): Unit =
     assumeTrue("source-maps", sourceMaps)
-  }
 }
 
 class SourceMapTest {
@@ -81,15 +80,12 @@ class SourceMapTest {
     }
   }
 
-  def get(json: JsValue, index: Int) = {
-
+  def get(json: JsValue, index: Int) =
     /**/
     /**/
     json.asInstanceOf[JsArray].value(index).value
-  }
 
-  def get(json: JsValue, index: Int, fieldName: String) = {
-
+  def get(json: JsValue, index: Int, fieldName: String) =
     /**/
     /**/ /***/
     json
@@ -98,7 +94,6 @@ class SourceMapTest {
       .asInstanceOf[JsObject]
       .value(fieldName)
       .value
-  }
   def run() = {
 
     /**/
@@ -209,23 +204,19 @@ sealed trait JsBoolean extends JsValue {
 }
 
 case object JsFalse extends JsBoolean {
-  def value = {
-
+  def value =
     /**/
     false
-  }
 }
 
 case object JsTrue extends JsBoolean {
-  def value = {
-
+  def value =
     /**/
     true
-  }
 }
 
 case object JsNull extends JsValue {
-  def value = { null }
+  def value = null
 }
 
 trait Writer {
@@ -429,8 +420,7 @@ class Json extends Writer2 {
     var chLinePos: Int = 0
     var chCharPos: Int = 0
 
-    def chNext() = {
-
+    def chNext() =
       /**/
       if (pos < size) {
 
@@ -464,19 +454,18 @@ class Json extends Writer2 {
         pos = size + 1
         chKind = Eof
       }
-    } /**/
+
     /**/
     /**/
     /**/
-    def chError(msg: String): Nothing = {
+    /**/
+    def chError(msg: String): Nothing =
       throw new Json.Exception(msg, s, chLinePos, chCharPos)
-    }
 
     def chMark = pos - 1
 
-    def chSubstr(first: Int, delta: Int = 0) = {
+    def chSubstr(first: Int, delta: Int = 0) =
       s.substring(first, pos - 1 - delta)
-    }
 
     // *** LEXER ***
 
@@ -485,9 +474,8 @@ class Json extends Writer2 {
     var linePos = 1
     var charPos = 1
 
-    def getDigits() = {
+    def getDigits() =
       while (chKind == Digit) chNext()
-    }
 
     def handleDigit() {
       val first = chMark
@@ -638,9 +626,8 @@ class Json extends Writer2 {
     }
 
     /**/
-    def tokenError(msg: String): Nothing = {
+    def tokenError(msg: String): Nothing =
       throw new Json.Exception(msg, s, linePos, charPos)
-    }
 
     /**/
     // *** PARSER ***

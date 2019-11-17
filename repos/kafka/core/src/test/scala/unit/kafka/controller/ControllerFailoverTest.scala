@@ -199,11 +199,9 @@ class MockChannelManager(
     this.startRequestSendThread(0)
   }
 
-  def queueCapacity(brokerId: Int): Int = {
+  def queueCapacity(brokerId: Int): Int =
     this.brokerStateInfo(brokerId).messageQueue.remainingCapacity
-  }
 
-  def queueSize(brokerId: Int): Int = {
+  def queueSize(brokerId: Int): Int =
     this.brokerStateInfo(brokerId).messageQueue.size
-  }
 }

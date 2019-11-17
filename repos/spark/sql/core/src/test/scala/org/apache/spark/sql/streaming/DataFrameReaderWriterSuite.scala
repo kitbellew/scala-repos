@@ -203,7 +203,7 @@ class DataFrameReaderWriterSuite
   test("unique query names") {
 
     /** Start a query with a specific name */
-    def startQueryWithName(name: String = ""): ContinuousQuery = {
+    def startQueryWithName(name: String = ""): ContinuousQuery =
       sqlContext.read
         .format("org.apache.spark.sql.streaming.test")
         .stream("/test")
@@ -211,17 +211,15 @@ class DataFrameReaderWriterSuite
         .format("org.apache.spark.sql.streaming.test")
         .queryName(name)
         .startStream()
-    }
 
     /** Start a query without specifying a name */
-    def startQueryWithoutName(): ContinuousQuery = {
+    def startQueryWithoutName(): ContinuousQuery =
       sqlContext.read
         .format("org.apache.spark.sql.streaming.test")
         .stream("/test")
         .write
         .format("org.apache.spark.sql.streaming.test")
         .startStream()
-    }
 
     /** Get the names of active streams */
     def activeStreamNames: Set[String] = {

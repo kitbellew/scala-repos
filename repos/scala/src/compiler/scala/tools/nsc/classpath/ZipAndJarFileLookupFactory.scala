@@ -22,10 +22,9 @@ sealed trait ZipAndJarFileLookupFactory {
 
   private val cache = collection.mutable.Map.empty[AbstractFile, FlatClassPath]
 
-  def create(zipFile: AbstractFile, settings: Settings): FlatClassPath = {
+  def create(zipFile: AbstractFile, settings: Settings): FlatClassPath =
     if (settings.YdisableFlatCpCaching) createForZipFile(zipFile)
     else createUsingCache(zipFile, settings)
-  }
 
   protected def createForZipFile(zipFile: AbstractFile): FlatClassPath
 

@@ -119,15 +119,15 @@ class SparkHadoopUtil extends Logging {
     */
   def addCredentials(conf: JobConf) {}
 
-  def isYarnMode(): Boolean = { false }
+  def isYarnMode(): Boolean = false
 
-  def getCurrentUserCredentials(): Credentials = { null }
+  def getCurrentUserCredentials(): Credentials = null
 
   def addCurrentUserCredentials(creds: Credentials) {}
 
   def addSecretKeyToUserCredentials(key: String, secret: String) {}
 
-  def getSecretKeyFromUserCredentials(key: String): Array[Byte] = { null }
+  def getSecretKeyFromUserCredentials(key: String): Array[Byte] = null
 
   def loginUserFromKeytab(principalName: String, keytabFilename: String) {
     UserGroupInformation.loginUserFromKeytab(principalName, keytabFilename)
@@ -140,7 +140,7 @@ class SparkHadoopUtil extends Logging {
     * statistics are only available as of Hadoop 2.5 (see HADOOP-10688).
     * Returns None if the required method can't be found.
     */
-  private[spark] def getFSBytesReadOnThreadCallback(): Option[() => Long] = {
+  private[spark] def getFSBytesReadOnThreadCallback(): Option[() => Long] =
     try {
       val threadStats = getFileSystemThreadStatistics()
       val getBytesReadMethod = getFileSystemThreadStatisticsMethod(
@@ -157,7 +157,6 @@ class SparkHadoopUtil extends Logging {
         None
       }
     }
-  }
 
   /**
     * Returns a function that can be called to find Hadoop FileSystem bytes written. If
@@ -166,7 +165,7 @@ class SparkHadoopUtil extends Logging {
     * statistics are only available as of Hadoop 2.5 (see HADOOP-10688).
     * Returns None if the required method can't be found.
     */
-  private[spark] def getFSBytesWrittenOnThreadCallback(): Option[() => Long] = {
+  private[spark] def getFSBytesWrittenOnThreadCallback(): Option[() => Long] =
     try {
       val threadStats = getFileSystemThreadStatistics()
       val getBytesWrittenMethod = getFileSystemThreadStatisticsMethod(
@@ -183,12 +182,10 @@ class SparkHadoopUtil extends Logging {
         None
       }
     }
-  }
 
-  private def getFileSystemThreadStatistics(): Seq[AnyRef] = {
+  private def getFileSystemThreadStatistics(): Seq[AnyRef] =
     FileSystem.getAllStatistics.asScala
       .map(Utils.invoke(classOf[Statistics], _, "getThreadStatistics"))
-  }
 
   private def getFileSystemThreadStatisticsMethod(
       methodName: String): Method = {
@@ -202,9 +199,8 @@ class SparkHadoopUtil extends Logging {
     * given path points to a file, return a single-element collection containing [[FileStatus]] of
     * that file.
     */
-  def listLeafStatuses(fs: FileSystem, basePath: Path): Seq[FileStatus] = {
+  def listLeafStatuses(fs: FileSystem, basePath: Path): Seq[FileStatus] =
     listLeafStatuses(fs, fs.getFileStatus(basePath))
-  }
 
   /**
     * Get [[FileStatus]] objects for all leaf children (files) under the given base path. If the
@@ -223,9 +219,8 @@ class SparkHadoopUtil extends Logging {
     if (baseStatus.isDirectory) recurse(baseStatus) else Seq(baseStatus)
   }
 
-  def listLeafDirStatuses(fs: FileSystem, basePath: Path): Seq[FileStatus] = {
+  def listLeafDirStatuses(fs: FileSystem, basePath: Path): Seq[FileStatus] =
     listLeafDirStatuses(fs, fs.getFileStatus(basePath))
-  }
 
   def listLeafDirStatuses(
       fs: FileSystem,
@@ -253,13 +248,12 @@ class SparkHadoopUtil extends Logging {
       .getOrElse(Seq.empty[Path])
   }
 
-  def globPathIfNecessary(pattern: Path): Seq[Path] = {
+  def globPathIfNecessary(pattern: Path): Seq[Path] =
     if (pattern.toString.exists("{}[]*?\\".toSet.contains)) {
       globPath(pattern)
     } else {
       Seq(pattern)
     }
-  }
 
   /**
     * Lists all the files in a directory with the specified prefix, and does not end with the
@@ -270,7 +264,7 @@ class SparkHadoopUtil extends Logging {
       remoteFs: FileSystem,
       dir: Path,
       prefix: String,
-      exclusionSuffix: String): Array[FileStatus] = {
+      exclusionSuffix: String): Array[FileStatus] =
     try {
       val fileStatuses = remoteFs.listStatus(dir, new PathFilter {
         override def accept(path: Path): Boolean = {
@@ -281,9 +275,8 @@ class SparkHadoopUtil extends Logging {
       Arrays.sort(
         fileStatuses,
         new Comparator[FileStatus] {
-          override def compare(o1: FileStatus, o2: FileStatus): Int = {
+          override def compare(o1: FileStatus, o2: FileStatus): Int =
             Longs.compare(o1.getModificationTime, o2.getModificationTime)
-          }
         }
       )
       fileStatuses
@@ -294,7 +287,6 @@ class SparkHadoopUtil extends Logging {
           e)
         Array.empty
     }
-  }
 
   /**
     * How much time is remaining (in millis) from now to (fraction * renewal time for the token that
@@ -339,7 +331,7 @@ class SparkHadoopUtil extends Logging {
     */
   def substituteHadoopVariables(
       text: String,
-      hadoopConf: Configuration): String = {
+      hadoopConf: Configuration): String =
     text match {
       case HADOOP_CONF_PATTERN(matched) => {
         logDebug(text + " matched " + HADOOP_CONF_PATTERN)
@@ -362,7 +354,6 @@ class SparkHadoopUtil extends Logging {
         text
       }
     }
-  }
 
   /**
     * Start a thread to periodically update the current user's credentials with new delegation

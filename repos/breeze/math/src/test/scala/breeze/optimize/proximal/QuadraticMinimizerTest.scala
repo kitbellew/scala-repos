@@ -101,9 +101,8 @@ class QuadraticMinimizerTest extends OptimizeTestBase with Matchers {
 
     def optimizeWithLBFGS(init: DenseVector[Double]) = {
       val f = new DiffFunction[DenseVector[Double]] {
-        def calculate(x: DenseVector[Double]) = {
+        def calculate(x: DenseVector[Double]) =
           (norm((x - 3.0) :^ 2.0, 1), (x * 2.0) - 6.0)
-        }
       }
       lbfgs.minimize(f, init)
     }
@@ -130,9 +129,8 @@ class QuadraticMinimizerTest extends OptimizeTestBase with Matchers {
 
     def optimizeWithOWLQN(init: DenseVector[Double]) = {
       val f = new DiffFunction[DenseVector[Double]] {
-        def calculate(x: DenseVector[Double]) = {
+        def calculate(x: DenseVector[Double]) =
           (norm((x - 3.0) :^ 2.0, 1), (x * 2.0) - 6.0)
-        }
       }
       val result = owlqn.minimize(f, init)
       norm(result - 2.5, 2) < 1e-10

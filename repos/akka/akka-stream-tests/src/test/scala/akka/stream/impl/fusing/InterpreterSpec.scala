@@ -587,12 +587,11 @@ class InterpreterSpec extends AkkaSpec with GraphInterpreterSpecKit {
       ctx.push(elem)
     }
 
-    override def onPull(ctx: Context[T]): SyncDirective = {
+    override def onPull(ctx: Context[T]): SyncDirective =
       if (oneMore) {
         oneMore = false
         ctx.push(lastElem)
       } else ctx.pull()
-    }
   }
 
   private[akka] case class KeepGoing[T]() extends PushPullStage[T, T] {
@@ -603,11 +602,10 @@ class InterpreterSpec extends AkkaSpec with GraphInterpreterSpecKit {
       ctx.push(elem)
     }
 
-    override def onPull(ctx: Context[T]): SyncDirective = {
+    override def onPull(ctx: Context[T]): SyncDirective =
       if (ctx.isFinishing) {
         ctx.push(lastElem)
       } else ctx.pull()
-    }
 
     override def onUpstreamFinish(ctx: Context[T]): TerminationDirective =
       ctx.absorbTermination()

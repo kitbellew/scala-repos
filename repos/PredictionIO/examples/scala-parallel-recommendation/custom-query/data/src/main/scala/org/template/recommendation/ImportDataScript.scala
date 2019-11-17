@@ -62,7 +62,7 @@ object ImportDataScript extends App {
     * imports movies to pio server
     * @return the number if movies where imported
     */
-  def importMovies(implicit client: EventClient): Iterator[Unit] = {
+  def importMovies(implicit client: EventClient): Iterator[Unit] =
     readCSV("data/u.item").map { movie ⇒
       val movieObj = movie.lift
       val releaseYearOpt = movieObj(2)
@@ -74,7 +74,6 @@ object ImportDataScript extends App {
         releaseYear ← releaseYearOpt
       } yield client.setItem(id, javaMap(title, releaseYear))
     }
-  }
 
   private def javaMap(pair: (String, AnyRef)*) = Map(pair: _*).asJava
 

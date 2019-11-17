@@ -78,10 +78,9 @@ trait UnrestrictedStash extends Actor with StashSupport {
     *  Overridden callback. Prepends all messages in the stash to the mailbox,
     *  clears the stash, stops all children and invokes the postStop() callback.
     */
-  override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
+  override def preRestart(reason: Throwable, message: Option[Any]): Unit =
     try unstashAll()
     finally super.preRestart(reason, message)
-  }
 
   /**
     *  Overridden callback. Prepends all messages in the stash to the mailbox and clears the stash.
@@ -237,7 +236,7 @@ private[akka] trait StashSupport {
     *  @param filterPredicate only stashed messages selected by this predicate are
     *                         prepended to the mailbox.
     */
-  private[akka] def unstashAll(filterPredicate: Any ⇒ Boolean): Unit = {
+  private[akka] def unstashAll(filterPredicate: Any ⇒ Boolean): Unit =
     try {
       val i = theStash.reverseIterator.filter(envelope ⇒
         filterPredicate(envelope.message))
@@ -245,7 +244,6 @@ private[akka] trait StashSupport {
     } finally {
       theStash = Vector.empty[Envelope]
     }
-  }
 
   /**
     * INTERNAL API.

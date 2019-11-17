@@ -22,7 +22,7 @@ object Main {
   /**
     * @param args one argument: the class of the application supervisor actor
     */
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     if (args.length != 1) {
       println(
         "you need to provide exactly one argument: the class of the application supervisor actor")
@@ -41,7 +41,6 @@ object Main {
         case NonFatal(e) ⇒ system.terminate(); throw e
       }
     }
-  }
 
   class Terminator(app: ActorRef) extends Actor with ActorLogging {
     context watch app

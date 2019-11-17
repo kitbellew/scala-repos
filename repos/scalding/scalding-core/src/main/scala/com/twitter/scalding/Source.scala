@@ -238,10 +238,9 @@ trait Mappable[+T] extends Source with TypedSource[T] {
   final def mapTo[U](out: Fields)(mf: (T) => U)(
       implicit flowDef: FlowDef,
       mode: Mode,
-      setter: TupleSetter[U]): Pipe = {
+      setter: TupleSetter[U]): Pipe =
     RichPipe(read(flowDef, mode))
       .mapTo[T, U](sourceFields -> out)(mf)(converter, setter)
-  }
 
   /**
     * If you want to filter, you should use this and output a 0 or 1 length Iterable.
@@ -250,10 +249,9 @@ trait Mappable[+T] extends Source with TypedSource[T] {
   final def flatMapTo[U](out: Fields)(mf: (T) => TraversableOnce[U])(
       implicit flowDef: FlowDef,
       mode: Mode,
-      setter: TupleSetter[U]): Pipe = {
+      setter: TupleSetter[U]): Pipe =
     RichPipe(read(flowDef, mode))
       .flatMapTo[T, U](sourceFields -> out)(mf)(converter, setter)
-  }
 
   /**
     * Allows you to read a Tap on the submit node NOT FOR USE IN THE MAPPERS OR REDUCERS.
@@ -305,7 +303,7 @@ class NullTap[Config, Input, Output, SourceContext, SinkContext]
 
 trait BaseNullSource extends Source {
   override def createTap(readOrWrite: AccessMode)(
-      implicit mode: Mode): Tap[_, _, _] = {
+      implicit mode: Mode): Tap[_, _, _] =
     readOrWrite match {
       case Read => throw new Exception("not supported, reading from null")
       case Write =>
@@ -323,7 +321,6 @@ trait BaseNullSource extends Source {
             new NullTap[Properties, InputStream, OutputStream, Any, Any]
         }
     }
-  }
 }
 
 /**

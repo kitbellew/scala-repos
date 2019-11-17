@@ -52,13 +52,11 @@ private[parquet] class TestGroupWriteSupport(schema: MessageType)
     extends WriteSupport[Group] {
   var groupWriter: GroupWriter = null
 
-  override def prepareForWrite(recordConsumer: RecordConsumer): Unit = {
+  override def prepareForWrite(recordConsumer: RecordConsumer): Unit =
     groupWriter = new GroupWriter(recordConsumer, schema)
-  }
 
-  override def init(configuration: Configuration): WriteContext = {
+  override def init(configuration: Configuration): WriteContext =
     new WriteContext(schema, new java.util.HashMap[String, String]())
-  }
 
   override def write(record: Group) {
     groupWriter.write(record)
@@ -75,9 +73,8 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
     * Writes `data` to a Parquet file, reads it back and check file contents.
     */
   protected def checkParquetFile[T <: Product: ClassTag: TypeTag](
-      data: Seq[T]): Unit = {
+      data: Seq[T]): Unit =
     withParquetDataFrame(data)(r => checkAnswer(r, data.map(Row.fromTuple)))
-  }
 
   test("basic data types (without binary)") {
     val data = (1 to 4).map { i =>
@@ -144,14 +141,13 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
   }
 
   testStandardAndLegacyModes("fixed-length decimals") {
-    def makeDecimalRDD(decimal: DecimalType): DataFrame = {
+    def makeDecimalRDD(decimal: DecimalType): DataFrame =
       sqlContext
         .range(1000)
         // Parquet doesn't allow column names with spaces, have to add an alias here.
         // Minus 500 here so that negative decimals are also tested.
         .select((('id - 500) / 100.0) cast decimal as 'dec)
         .coalesce(1)
-    }
 
     val combinations =
       Seq((5, 2), (1, 0), (1, 1), (18, 10), (18, 17), (19, 0), (38, 37))
@@ -316,7 +312,7 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
 
     val data = (0 until 10).map(i => (i, i.toString))
 
-    def checkCompressionCodec(codec: CompressionCodecName): Unit = {
+    def checkCompressionCodec(codec: CompressionCodecName): Unit =
       withSQLConf(SQLConf.PARQUET_COMPRESSION.key -> codec.name()) {
         withParquetFile(data) { path =>
           assertResult(sqlContext.conf.parquetCompressionCodec.toUpperCase) {
@@ -324,7 +320,6 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
           }
         }
       }
-    }
 
     // Checks default compression codec
     checkCompressionCodec(
@@ -830,9 +825,8 @@ class JobCommitFailureParquetOutputCommitter(
     context: TaskAttemptContext)
     extends ParquetOutputCommitter(outputPath, context) {
 
-  override def commitJob(jobContext: JobContext): Unit = {
+  override def commitJob(jobContext: JobContext): Unit =
     sys.error("Intentional exception for testing purposes")
-  }
 }
 
 class TaskCommitFailureParquetOutputCommitter(
@@ -840,7 +834,6 @@ class TaskCommitFailureParquetOutputCommitter(
     context: TaskAttemptContext)
     extends ParquetOutputCommitter(outputPath, context) {
 
-  override def commitTask(context: TaskAttemptContext): Unit = {
+  override def commitTask(context: TaskAttemptContext): Unit =
     sys.error("Intentional exception for testing purposes")
-  }
 }

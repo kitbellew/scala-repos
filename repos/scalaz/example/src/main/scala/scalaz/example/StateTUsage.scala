@@ -37,14 +37,12 @@ object FibStateExample extends App {
   } yield b // if we yield n, getNFibs gives you (1,2,3,5,8...)
   // yield b instead to get (1,1,2,3...)
 
-  def getNFibs(k: Int): State[(Int, Int), List[Int]] = {
+  def getNFibs(k: Int): State[(Int, Int), List[Int]] =
     nextFib.replicateM(k)
-  }
 
-  def getNthFib(k: Int): State[(Int, Int), Int] = {
+  def getNthFib(k: Int): State[(Int, Int), Int] =
     if (k == 0) pure(0) // will be thrown away
     else getNthFib(k - 1) >> nextFib
-  }
 
   // run two examples through the magic of App
   println(getNthFib(5).eval(initialState))
@@ -147,8 +145,7 @@ object LaunchburyInterpreter extends App {
     * whnf means a lambda term (generally, it also refers to primitives and constructors,
     * which we've omitted).
     */
-  private def reduce(e: Expr): State[ReduceState, Expr] = {
-
+  private def reduce(e: Expr): State[ReduceState, Expr] =
     e match {
       case Lambda(x, e2) =>
         pure(e) // as defined above, a Lambda is already in whnf
@@ -172,7 +169,6 @@ object LaunchburyInterpreter extends App {
         bs.toList.traverseS(heapAdd) >> reduce(e2)
       }
     }
-  }
 
   def evaluate(e: Expr): Expr = reduce(e).eval(initialState)
   // run an example through the magic of App

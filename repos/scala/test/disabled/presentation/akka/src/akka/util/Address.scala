@@ -21,9 +21,8 @@ class Address(val hostname: String, val port: Int) {
     result
   }
 
-  override def equals(that: Any): Boolean = {
+  override def equals(that: Any): Boolean =
     that.isInstanceOf[Address] &&
-    that.asInstanceOf[Address].hostname == hostname &&
-    that.asInstanceOf[Address].port == port
-  }
+      that.asInstanceOf[Address].hostname == hostname &&
+      that.asInstanceOf[Address].port == port
 }

@@ -218,7 +218,7 @@ object StageActorRefSpec {
           probe ! getStageActor(behaviour).ref
         }
 
-        def behaviour(m: (ActorRef, Any)): Unit = {
+        def behaviour(m: (ActorRef, Any)): Unit =
           m match {
             case (sender, Add(n)) ⇒ sum += n
             case (sender, PullNow) ⇒ pull(in)
@@ -235,7 +235,6 @@ object StageActorRefSpec {
               sum += n
               sender ! sum
           }
-        }
 
         setHandler(
           in,

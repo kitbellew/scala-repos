@@ -28,7 +28,7 @@ class ForkJoinActorBenchmark {
   implicit var system: ActorSystem = _
 
   @Setup(Level.Trial)
-  def setup(): Unit = {
+  def setup(): Unit =
     system = ActorSystem(
       "ForkJoinActorBenchmark",
       ConfigFactory.parseString(s"""| akka {
@@ -47,7 +47,6 @@ class ForkJoinActorBenchmark {
         | }
       """.stripMargin)
     )
-  }
 
   @TearDown(Level.Trial)
   def shutdown(): Unit = {

@@ -86,22 +86,20 @@ trait PrecedenceHelper[T] {
 
   def isUpdateHistory: Boolean = false
 
-  protected def addChangedLevelToHistory(): Unit = {
+  protected def addChangedLevelToHistory(): Unit =
     if (isUpdateHistory && !fromHistory &&
         history.lastOption != Some(ChangedLevel)) history += ChangedLevel
-  }
 
   protected def getQualifiedName(result: ScalaResolveResult): T
 
   private lazy val suspiciousPackages: Set[String] = {
     def collectPackages(
         elem: PsiElement,
-        res: Set[String] = Set.empty): Set[String] = {
+        res: Set[String] = Set.empty): Set[String] =
       PsiTreeUtil.getContextOfType(elem, true, classOf[ScPackaging]) match {
         case null           => res
         case p: ScPackaging => collectPackages(p, res + p.fullPackageName)
       }
-    }
     Set("scala", "java.lang", "scala", "scala.Predef") ++ collectPackages(
       getPlace)
   }
@@ -134,9 +132,8 @@ trait PrecedenceHelper[T] {
   protected def setTopPrecedence(result: ScalaResolveResult, i: Int)
   protected def filterNot(
       p: ScalaResolveResult,
-      n: ScalaResolveResult): Boolean = {
+      n: ScalaResolveResult): Boolean =
     getPrecedence(p) < getTopPrecedence(n)
-  }
   protected def isCheckForEqualPrecedence = true
   protected def clearLevelQualifiedSet(result: ScalaResolveResult) {
     levelQualifiedNamesSet.clear()
@@ -200,14 +197,13 @@ trait PrecedenceHelper[T] {
     true
   }
 
-  protected def getPrecedence(result: ScalaResolveResult): Int = {
+  protected def getPrecedence(result: ScalaResolveResult): Int =
     specialPriority match {
       case Some(priority) => priority
       case None if result.prefixCompletion =>
         PrecedenceHelper.PrecedenceTypes.PREFIX_COMPLETION
       case None => result.getPrecedence(getPlace, placePackageName)
     }
-  }
 }
 
 object PrecedenceHelper {

@@ -128,7 +128,7 @@ object HealthCheck {
   }
 
   //scalastyle:off
-  private def validProtocol: Validator[HealthCheck] = {
+  private def validProtocol: Validator[HealthCheck] =
     new Validator[HealthCheck] {
       override def apply(hc: HealthCheck): Result = {
         def eitherPortIndexOrPort: Boolean =
@@ -152,6 +152,5 @@ object HealthCheck {
                 None)))
       }
     }
-  }
   //scalastyle:on
 }

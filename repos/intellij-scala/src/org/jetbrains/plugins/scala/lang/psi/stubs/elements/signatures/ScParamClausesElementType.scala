@@ -29,19 +29,16 @@ class ScParamClausesElementType
 
   def deserializeImpl(
       dataStream: StubInputStream,
-      parentStub: Any): ScParamClausesStub = {
+      parentStub: Any): ScParamClausesStub =
     new ScParamClausesStubImpl(
       parentStub.asInstanceOf[StubElement[PsiElement]],
       this)
-  }
 
   def createStubImpl[ParentPsi <: PsiElement](
       psi: ScParameters,
-      parentStub: StubElement[ParentPsi]) = {
+      parentStub: StubElement[ParentPsi]) =
     new ScParamClausesStubImpl(parentStub, this)
-  }
 
-  def createPsi(stub: ScParamClausesStub): ScParameters = {
+  def createPsi(stub: ScParamClausesStub): ScParameters =
     new ScParametersImpl(stub)
-  }
 }

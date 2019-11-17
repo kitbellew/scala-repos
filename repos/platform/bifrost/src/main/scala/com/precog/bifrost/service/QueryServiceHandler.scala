@@ -330,8 +330,7 @@ class SyncQueryServiceHandler(
     */
   private def silenceShardQueryExceptions(
       stream0: StreamT[Future, CharBuffer]): StreamT[Future, CharBuffer] = {
-    def loop(
-        stream: StreamT[Future, CharBuffer]): StreamT[Future, CharBuffer] = {
+    def loop(stream: StreamT[Future, CharBuffer]): StreamT[Future, CharBuffer] =
       StreamT(stream.uncons map {
         case Some((s, tail)) => StreamT.Yield(s, loop(tail))
         case None            => StreamT.Done
@@ -346,7 +345,6 @@ class SyncQueryServiceHandler(
           logger.error("Error executing bifrost query:\n" + msg.toString())
           StreamT.Done
       })
-    }
 
     loop(stream0)
   }

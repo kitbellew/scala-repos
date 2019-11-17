@@ -34,12 +34,11 @@ import org.apache.spark.ui.SparkUI
 class SQLListenerSuite extends SparkFunSuite with SharedSQLContext {
   import testImplicits._
 
-  private def createTestDataFrame: DataFrame = {
+  private def createTestDataFrame: DataFrame =
     Seq(
       (1, 1),
       (2, 2)
     ).toDF().filter("_1 > 1")
-  }
 
   private def createProperties(executionId: Long): Properties = {
     val properties = new Properties()
@@ -91,9 +90,8 @@ class SQLListenerSuite extends SparkFunSuite with SharedSQLContext {
   test("basic") {
     def checkAnswer(
         actual: Map[Long, String],
-        expected: Map[Long, Long]): Unit = {
+        expected: Map[Long, Long]): Unit =
       assert(actual === expected.mapValues(_.toString))
-    }
 
     val listener = new SQLListener(sqlContext.sparkContext.conf)
     val executionId = 0

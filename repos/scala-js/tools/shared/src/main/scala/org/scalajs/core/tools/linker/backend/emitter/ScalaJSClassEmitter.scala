@@ -43,7 +43,7 @@ private[scalajs] final class ScalaJSClassEmitter(
   private[emitter] lazy val linkedClassByName: Map[String, LinkedClass] =
     linkingUnit.classDefs.map(c => c.encodedName -> c).toMap
 
-  private[emitter] def isInterface(className: String): Boolean = {
+  private[emitter] def isInterface(className: String): Boolean =
     /* TODO In theory, there is a flaw in the incremental behavior about this.
      *
      * This method is used to desugar ApplyStatically nodes. Depending on
@@ -67,7 +67,6 @@ private[scalajs] final class ScalaJSClassEmitter(
      * live with the theoretical flaw.
      */
     linkedClassByName(className).kind == ClassKind.Interface
-  }
 
   private[emitter] def semantics: Semantics = linkingUnit.semantics
 
@@ -193,13 +192,12 @@ private[scalajs] final class ScalaJSClassEmitter(
     val className = tree.name.name
     val isJSClass = tree.kind.isJSClass
 
-    def makeInheritableCtorDef(ctorToMimic: js.Tree) = {
+    def makeInheritableCtorDef(ctorToMimic: js.Tree) =
       js.Block(
         js.DocComment("@constructor"),
         envFieldDef("h", className, js.Function(Nil, js.Skip())),
         js.Assign(envField("h", className).prototype, ctorToMimic.prototype)
       )
-    }
 
     val ctorFun =
       if (!isJSClass) {
@@ -372,14 +370,13 @@ private[scalajs] final class ScalaJSClassEmitter(
   }
 
   /** Generates a property. */
-  def genProperty(className: String, property: PropertyDef): js.Tree = {
+  def genProperty(className: String, property: PropertyDef): js.Tree =
     outputMode match {
       case OutputMode.ECMAScript51Global | OutputMode.ECMAScript51Isolated =>
         genPropertyES5(className, property)
       case OutputMode.ECMAScript6 =>
         genPropertyES6(className, property)
     }
-  }
 
   private def genPropertyES5(
       className: String,
@@ -492,21 +489,19 @@ private[scalajs] final class ScalaJSClassEmitter(
 
   /** Generate `classVar.prototype.name = value` */
   def genAddToPrototype(className: String, name: PropertyName, value: js.Tree)(
-      implicit pos: Position): js.Tree = {
+      implicit pos: Position): js.Tree =
     genAddToPrototype(className, genPropertyName(name), value)
-  }
 
   def genPropertyName(name: PropertyName): js.PropertyName = name match {
     case ident: Ident         => transformIdent(ident)
     case StringLiteral(value) => js.StringLiteral(value)(name.pos)
   }
 
-  private[tools] def needInstanceTests(tree: LinkedClass): Boolean = {
+  private[tools] def needInstanceTests(tree: LinkedClass): Boolean =
     tree.hasInstanceTests || {
       tree.hasRuntimeTypeInfo &&
       ClassesWhoseDataReferToTheirInstanceTests.contains(tree.encodedName)
     }
-  }
 
   def genInstanceTests(tree: LinkedClass): js.Tree = {
     import Definitions._

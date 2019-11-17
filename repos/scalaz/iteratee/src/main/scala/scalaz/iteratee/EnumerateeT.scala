@@ -7,11 +7,10 @@ import Ordering._
 trait EnumerateeT[O, I, F[_]] { self =>
   def apply[A]: StepT[I, F, A] => IterateeT[O, F, StepT[I, F, A]]
 
-  def run(enum: EnumeratorT[O, F])(implicit M: Monad[F]): EnumeratorT[I, F] = {
+  def run(enum: EnumeratorT[O, F])(implicit M: Monad[F]): EnumeratorT[I, F] =
     new EnumeratorT[I, F] {
       def apply[A] = (s: StepT[I, F, A]) => iterateeT((self[A](s) &= enum).run)
     }
-  }
 }
 
 object EnumerateeT extends EnumerateeTFunctions
@@ -42,7 +41,7 @@ trait EnumerateeTFunctions {
       f: O => EnumeratorT[I, F]): EnumerateeT[O, I, F] =
     new EnumerateeT[O, I, F] {
       def apply[A] = {
-        def loop(step: StepT[I, F, A]): IterateeT[O, F, StepT[I, F, A]] = {
+        def loop(step: StepT[I, F, A]): IterateeT[O, F, StepT[I, F, A]] =
           step.fold(
             cont = contf =>
               cont[O, F, StepT[I, F, A]] {
@@ -56,7 +55,6 @@ trait EnumerateeTFunctions {
               },
             done = (a, _) => done(sdone(a, emptyInput), emptyInput)
           )
-        }
 
         loop
       }
@@ -159,11 +157,10 @@ trait EnumerateeTFunctions {
       FE: Monoid[F[E]],
       G: Monad[G]): EnumerateeT[E, F[E], G] =
     new EnumerateeT[E, F[E], G] {
-      def apply[A] = {
+      def apply[A] =
         (takeWhile[E, F](p)
           .up[G] flatMap (xs => drop[E, G](1).map(_ => xs))).sequenceI
           .apply[A]
-      }
     }
 
   def cross[E1, E2, F[_]: Monad](

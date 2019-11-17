@@ -296,8 +296,7 @@ class ResourceUtilTest
   private[this] def setResourceTest(
       consumedResource: Set[String],
       baseResource: Set[String],
-      expectedResult: Option[Set[String]]): Unit = {
-
+      expectedResult: Option[Set[String]]): Unit =
     test(
       s"consuming sets resource $consumedResource from $baseResource results in $expectedResult") {
       val r1 = set("cpus", consumedResource)
@@ -306,22 +305,19 @@ class ResourceUtilTest
       val result = ResourceUtil.consumeResource(r2, r1)
       assert(result == r3)
     }
-  }
 
-  private[this] def set(name: String, labels: Set[String]): Resource = {
+  private[this] def set(name: String, labels: Set[String]): Resource =
     Resource
       .newBuilder()
       .setName(name)
       .setType(Value.Type.SET)
       .setSet(Value.Set.newBuilder().addAllItem(labels.asJava))
       .build()
-  }
 
   private[this] def portsTest(
       consumedResource: Seq[Range.Inclusive],
       baseResource: Seq[Range.Inclusive],
-      expectedResult: Option[Seq[Range.Inclusive]]): Unit = {
-
+      expectedResult: Option[Seq[Range.Inclusive]]): Unit =
     test(
       s"consuming ports resource $consumedResource from $baseResource results in $expectedResult") {
       val r1 = ports("cpus", consumedResource: _*)
@@ -330,7 +326,6 @@ class ResourceUtilTest
       val result = ResourceUtil.consumeResource(r2, r1)
       assert(result == r3)
     }
-  }
 
   private[this] def ports(name: String, ranges: Range.Inclusive*): Resource = {
     def toRange(range: Range.Inclusive): Value.Range =
@@ -352,7 +347,7 @@ class ResourceUtilTest
   private[this] def scalarTest(
       consumedResource: Double,
       baseResource: Double,
-      expectedResult: Option[Double]): Unit = {
+      expectedResult: Option[Double]): Unit =
     test(
       s"consuming scalar resource $consumedResource from $baseResource results in $expectedResult") {
       val r1 = MTH.scalarResource("cpus", consumedResource)
@@ -361,5 +356,4 @@ class ResourceUtilTest
       val result = ResourceUtil.consumeResource(r2, r1)
       assert(result == r3)
     }
-  }
 }

@@ -20,7 +20,7 @@ trait AlternativeTests[F[_]] extends ApplicativeTests[F] with MonoidKTests[F] {
       EqFB: Eq[F[B]],
       EqFC: Eq[F[C]],
       EqFABC: Eq[F[(A, B, C)]],
-      iso: Isomorphisms[F]): RuleSet = {
+      iso: Isomorphisms[F]): RuleSet =
     new RuleSet {
       val name: String = "alternative"
       val bases: Seq[(String, RuleSet)] = Nil
@@ -33,7 +33,6 @@ trait AlternativeTests[F[_]] extends ApplicativeTests[F] with MonoidKTests[F] {
         "right absorption" -> forAll(laws.alternativeRightAbsorption[A, B] _)
       )
     }
-  }
 }
 
 object AlternativeTests {

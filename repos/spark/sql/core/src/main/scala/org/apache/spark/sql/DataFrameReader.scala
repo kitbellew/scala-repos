@@ -151,9 +151,8 @@ class DataFrameReader private[sql] (sqlContext: SQLContext) extends Logging {
     *
     * @since 1.4.0
     */
-  def load(path: String): DataFrame = {
+  def load(path: String): DataFrame =
     option("path", path).load()
-  }
 
   /**
     * Loads input in as a [[DataFrame]], for data sources that support multiple paths.
@@ -162,7 +161,7 @@ class DataFrameReader private[sql] (sqlContext: SQLContext) extends Logging {
     * @since 1.6.0
     */
   @scala.annotation.varargs
-  def load(paths: String*): DataFrame = {
+  def load(paths: String*): DataFrame =
     if (paths.isEmpty) {
       sqlContext.emptyDataFrame
     } else {
@@ -176,7 +175,6 @@ class DataFrameReader private[sql] (sqlContext: SQLContext) extends Logging {
             options = extraOptions.toMap)
           .resolveRelation())
     }
-  }
 
   /**
     * Loads input data stream in as a [[DataFrame]], for data streams that don't require a path
@@ -200,9 +198,8 @@ class DataFrameReader private[sql] (sqlContext: SQLContext) extends Logging {
     *
     * @since 2.0.0
     */
-  def stream(path: String): DataFrame = {
+  def stream(path: String): DataFrame =
     option("path", path).stream()
-  }
 
   /**
     * Construct a [[DataFrame]] representing the database table accessible via JDBC URL
@@ -210,9 +207,8 @@ class DataFrameReader private[sql] (sqlContext: SQLContext) extends Logging {
     *
     * @since 1.4.0
     */
-  def jdbc(url: String, table: String, properties: Properties): DataFrame = {
+  def jdbc(url: String, table: String, properties: Properties): DataFrame =
     jdbc(url, table, JDBCRelation.columnPartition(null), properties)
-  }
 
   /**
     * Construct a [[DataFrame]] representing the database table accessible via JDBC URL
@@ -415,9 +411,8 @@ class DataFrameReader private[sql] (sqlContext: SQLContext) extends Logging {
     * @since 1.4.0
     */
   @scala.annotation.varargs
-  def parquet(paths: String*): DataFrame = {
+  def parquet(paths: String*): DataFrame =
     format("parquet").load(paths: _*)
-  }
 
   /**
     * Loads an ORC file and returns the result as a [[DataFrame]].
@@ -433,12 +428,11 @@ class DataFrameReader private[sql] (sqlContext: SQLContext) extends Logging {
     *
     * @since 1.4.0
     */
-  def table(tableName: String): DataFrame = {
+  def table(tableName: String): DataFrame =
     Dataset.newDataFrame(
       sqlContext,
       sqlContext.sessionState.catalog.lookupRelation(
         sqlContext.sessionState.sqlParser.parseTableIdentifier(tableName)))
-  }
 
   /**
     * Loads a text file and returns a [[Dataset]] of String. The underlying schema of the Dataset
@@ -457,11 +451,10 @@ class DataFrameReader private[sql] (sqlContext: SQLContext) extends Logging {
     * @since 2.0.0
     */
   @scala.annotation.varargs
-  def text(paths: String*): Dataset[String] = {
+  def text(paths: String*): Dataset[String] =
     format("text")
       .load(paths: _*)
       .as[String](sqlContext.implicits.newStringEncoder)
-  }
 
   ///////////////////////////////////////////////////////////////////////////////////////
   // Builder pattern config options

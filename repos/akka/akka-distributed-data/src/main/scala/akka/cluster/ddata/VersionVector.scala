@@ -271,9 +271,8 @@ sealed abstract class VersionVector
     *   4. Version 1 is CONCURRENT (<>) to Version 2 otherwise.
     * }}}
     */
-  def compareTo(that: VersionVector): Ordering = {
+  def compareTo(that: VersionVector): Ordering =
     compareOnlyTo(that, FullOrder)
-  }
 
   /**
     * Merges this VersionVector with another VersionVector. E.g. merges its versioned history.
@@ -320,7 +319,7 @@ final case class OneVersionVector private[akka] (
   private[akka] override def versionsIterator: Iterator[(UniqueAddress, Long)] =
     Iterator.single((node, version))
 
-  override def merge(that: VersionVector): VersionVector = {
+  override def merge(that: VersionVector): VersionVector =
     that match {
       case OneVersionVector(n2, v2) ⇒
         if (node == n2) if (version >= v2) this else OneVersionVector(n2, v2)
@@ -332,7 +331,6 @@ final case class OneVersionVector private[akka] (
           else vs2.updated(node, version)
         VersionVector(mergedVersions)
     }
-  }
 
   override def needPruningFrom(removedNode: UniqueAddress): Boolean =
     node == removedNode
@@ -379,7 +377,7 @@ final case class ManyVersionVector(versions: TreeMap[UniqueAddress, Long])
   private[akka] override def versionsIterator: Iterator[(UniqueAddress, Long)] =
     versions.iterator
 
-  override def merge(that: VersionVector): VersionVector = {
+  override def merge(that: VersionVector): VersionVector =
     that match {
       case ManyVersionVector(vs2) ⇒
         var mergedVersions = vs2
@@ -397,7 +395,6 @@ final case class ManyVersionVector(versions: TreeMap[UniqueAddress, Long])
           else versions.updated(n2, v2)
         VersionVector(mergedVersions)
     }
-  }
 
   override def needPruningFrom(removedNode: UniqueAddress): Boolean =
     versions.contains(removedNode)

@@ -31,7 +31,7 @@ object NumberConverter {
     * @param x is treated as unsigned
     * @param m is treated as signed
     */
-  private def unsignedLongDiv(x: Long, m: Int): Long = {
+  private def unsignedLongDiv(x: Long, m: Int): Long =
     if (x >= 0) {
       x / m
     } else {
@@ -42,7 +42,6 @@ object NumberConverter {
       x / m + 2 * (Long.MaxValue / m) + 2 / m +
         (x % m + 2 * (Long.MaxValue % m) + 2 % m) / m
     }
-  }
 
   /**
     * Decode v into value[].

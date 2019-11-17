@@ -22,7 +22,7 @@ object ScalaWebSockets extends PlaySpecification {
         webSocket: WebSocket,
         in: Source[Message, _],
         expectOut: Int)(
-        implicit mat: Materializer): Either[Result, List[Message]] = {
+        implicit mat: Materializer): Either[Result, List[Message]] =
       await(webSocket(FakeRequest())).right.map { flow =>
         // When running in the real world, if the flow cancels upstream, Play's WebSocket protocol implementation will
         // handle this and close the WebSocket, but here, that won't happen, so we redeem the future when we receive
@@ -43,7 +43,6 @@ object ScalaWebSockets extends PlaySpecification {
         await(
           Future.firstCompletedOf(Seq(promise.future, flowResult.map(_._1))))
       }
-    }
 
     "support actors" in {
 
@@ -68,9 +67,8 @@ object ScalaWebSockets extends PlaySpecification {
           def receive = PartialFunction.empty
 
           //#actor-post-stop
-          override def postStop() = {
+          override def postStop() =
             someResource.close()
-          }
           //#actor-post-stop
         }
 

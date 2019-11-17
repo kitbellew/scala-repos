@@ -32,7 +32,7 @@ abstract class LogicalPlan extends QueryPlan[LogicalPlan] with Logging {
   /**
     * Marks this plan as already analyzed.  This should only be called by CheckAnalysis.
     */
-  private[catalyst] def setAnalyzed(): Unit = { _analyzed = true }
+  private[catalyst] def setAnalyzed(): Unit = _analyzed = true
 
   /**
     * Returns true if this node and its children have already been gone through analysis and
@@ -50,7 +50,7 @@ abstract class LogicalPlan extends QueryPlan[LogicalPlan] with Logging {
     * @param rule the function use to transform this nodes children
     */
   def resolveOperators(
-      rule: PartialFunction[LogicalPlan, LogicalPlan]): LogicalPlan = {
+      rule: PartialFunction[LogicalPlan, LogicalPlan]): LogicalPlan =
     if (!analyzed) {
       val afterRuleOnChildren =
         transformChildren(rule, (t, r) => t.resolveOperators(r))
@@ -66,18 +66,16 @@ abstract class LogicalPlan extends QueryPlan[LogicalPlan] with Logging {
     } else {
       this
     }
-  }
 
   /**
     * Recursively transforms the expressions of a tree, skipping nodes that have already
     * been analyzed.
     */
   def resolveExpressions(
-      r: PartialFunction[Expression, Expression]): LogicalPlan = {
+      r: PartialFunction[Expression, Expression]): LogicalPlan =
     this resolveOperators {
       case p => p.transformExpressions(r)
     }
-  }
 
   /**
     * Computes [[Statistics]] for this plan. The default implementation assumes the output
@@ -127,7 +125,7 @@ abstract class LogicalPlan extends QueryPlan[LogicalPlan] with Logging {
     * should only be called on analyzed plans since it will throw [[AnalysisException]] for
     * unresolved [[Attribute]]s.
     */
-  def resolve(schema: StructType, resolver: Resolver): Seq[Attribute] = {
+  def resolve(schema: StructType, resolver: Resolver): Seq[Attribute] =
     schema.map { field =>
       resolveQuoted(field.name, resolver)
         .map {
@@ -140,7 +138,6 @@ abstract class LogicalPlan extends QueryPlan[LogicalPlan] with Logging {
             s"Unable to resolve ${field.name} given [${output.map(_.name).mkString(", ")}]")
         }
     }
-  }
 
   /**
     * Optionally resolves the given strings to a [[NamedExpression]] using the input from all child
@@ -167,11 +164,8 @@ abstract class LogicalPlan extends QueryPlan[LogicalPlan] with Logging {
     * don't split the name parts quoted by backticks, for example,
     * `ab.cd`.`efg` should be split into two parts "ab.cd" and "efg".
     */
-  def resolveQuoted(
-      name: String,
-      resolver: Resolver): Option[NamedExpression] = {
+  def resolveQuoted(name: String, resolver: Resolver): Option[NamedExpression] =
     resolve(UnresolvedAttribute.parseAttributeName(name), output, resolver)
-  }
 
   /**
     * Resolve the given `name` string against the given attribute, returning either 0 or 1 match.
@@ -203,13 +197,12 @@ abstract class LogicalPlan extends QueryPlan[LogicalPlan] with Logging {
   private def resolveAsColumn(
       nameParts: Seq[String],
       resolver: Resolver,
-      attribute: Attribute): Option[(Attribute, List[String])] = {
+      attribute: Attribute): Option[(Attribute, List[String])] =
     if (!attribute.isGenerated && resolver(attribute.name, nameParts.head)) {
       Option((attribute.withName(nameParts.head), nameParts.tail.toList))
     } else {
       None
     }
-  }
 
   /** Performs attribute resolution given a name and a sequence of possible attributes. */
   protected def resolve(
@@ -294,7 +287,7 @@ abstract class UnaryNode extends LogicalPlan {
     * expressions with the corresponding alias
     */
   protected def getAliasedConstraints(
-      projectList: Seq[NamedExpression]): Set[Expression] = {
+      projectList: Seq[NamedExpression]): Set[Expression] =
     projectList.flatMap {
       case a @ Alias(e, _) =>
         child.constraints
@@ -306,7 +299,6 @@ abstract class UnaryNode extends LogicalPlan {
       case _ =>
         Set.empty[Expression]
     }.toSet
-  }
 
   override protected def validConstraints: Set[Expression] = child.constraints
 

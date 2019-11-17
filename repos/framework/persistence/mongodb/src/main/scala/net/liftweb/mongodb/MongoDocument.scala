@@ -71,14 +71,13 @@ trait MongoDocumentMeta[BaseDocument]
    */
   def useDb[T](f: DB => T): T = MongoDB.use(connectionIdentifier)(f)
 
-  def create(dbo: DBObject): BaseDocument = {
+  def create(dbo: DBObject): BaseDocument =
     create(JObjectParser.serialize(dbo).asInstanceOf[JObject])
-  }
 
   /**
     * Find a single row by a qry, using a DBObject.
     */
-  def find(qry: DBObject): Option[BaseDocument] = {
+  def find(qry: DBObject): Option[BaseDocument] =
     MongoDB.useCollection(connectionIdentifier, collectionName)(coll =>
       coll.findOne(qry) match {
         case null => None
@@ -86,7 +85,6 @@ trait MongoDocumentMeta[BaseDocument]
           Some(create(dbo))
         }
       })
-  }
 
   /**
     * Find a single document by _id using a String.

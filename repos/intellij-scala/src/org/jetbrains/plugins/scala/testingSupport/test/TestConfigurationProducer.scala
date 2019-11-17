@@ -45,7 +45,7 @@ abstract class TestConfigurationProducer(configurationType: ConfigurationType)
   override def setupConfigurationFromContext(
       configuration: AbstractTestRunConfiguration,
       context: ConfigurationContext,
-      sourceElement: Ref[PsiElement]): Boolean = {
+      sourceElement: Ref[PsiElement]): Boolean =
     if (sourceElement.isNull) {
       false
     } else {
@@ -77,7 +77,6 @@ abstract class TestConfigurationProducer(configurationType: ConfigurationType)
           false
       }
     }
-  }
 
   override def isConfigurationFromContext(
       configuration: AbstractTestRunConfiguration,

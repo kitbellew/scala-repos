@@ -35,13 +35,12 @@ package play.api.libs.iteratee {
       * Executes code in the given ExecutionContext, flattening the resulting Future.
       */
     def executeFuture[A](body: => Future[A])(
-        implicit ec: ExecutionContext): Future[A] = {
+        implicit ec: ExecutionContext): Future[A] =
       Future {
         body
       }(ec /* Future.apply will prepare */ )
         .flatMap(identityFunc.asInstanceOf[Future[A] => Future[A]])(
           Execution.trampoline)
-    }
 
     /**
       * Executes code in the given ExecutionContext, flattening the resulting Iteratee.

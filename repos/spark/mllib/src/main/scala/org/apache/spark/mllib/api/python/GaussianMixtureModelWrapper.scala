@@ -40,9 +40,8 @@ private[python] class GaussianMixtureModelWrapper(model: GaussianMixtureModel) {
     SerDe.dumps(JavaConverters.seqAsJavaListConverter(modelGaussians).asJava)
   }
 
-  def predictSoft(point: Vector): Vector = {
+  def predictSoft(point: Vector): Vector =
     Vectors.dense(model.predictSoft(point))
-  }
 
   def save(sc: SparkContext, path: String): Unit = model.save(sc, path)
 }

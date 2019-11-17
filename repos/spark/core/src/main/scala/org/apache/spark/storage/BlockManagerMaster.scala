@@ -64,34 +64,28 @@ private[spark] class BlockManagerMaster(
   }
 
   /** Get locations of the blockId from the driver */
-  def getLocations(blockId: BlockId): Seq[BlockManagerId] = {
+  def getLocations(blockId: BlockId): Seq[BlockManagerId] =
     driverEndpoint.askWithRetry[Seq[BlockManagerId]](GetLocations(blockId))
-  }
 
   /** Get locations of multiple blockIds from the driver */
-  def getLocations(
-      blockIds: Array[BlockId]): IndexedSeq[Seq[BlockManagerId]] = {
+  def getLocations(blockIds: Array[BlockId]): IndexedSeq[Seq[BlockManagerId]] =
     driverEndpoint.askWithRetry[IndexedSeq[Seq[BlockManagerId]]](
       GetLocationsMultipleBlockIds(blockIds))
-  }
 
   /**
     * Check if block manager master has a block. Note that this can be used to check for only
     * those blocks that are reported to block manager master.
     */
-  def contains(blockId: BlockId): Boolean = {
+  def contains(blockId: BlockId): Boolean =
     !getLocations(blockId).isEmpty
-  }
 
   /** Get ids of other nodes in the cluster from the driver */
-  def getPeers(blockManagerId: BlockManagerId): Seq[BlockManagerId] = {
+  def getPeers(blockManagerId: BlockManagerId): Seq[BlockManagerId] =
     driverEndpoint.askWithRetry[Seq[BlockManagerId]](GetPeers(blockManagerId))
-  }
 
-  def getExecutorEndpointRef(executorId: String): Option[RpcEndpointRef] = {
+  def getExecutorEndpointRef(executorId: String): Option[RpcEndpointRef] =
     driverEndpoint.askWithRetry[Option[RpcEndpointRef]](
       GetExecutorEndpointRef(executorId))
-  }
 
   /**
     * Remove a block from the slaves that have it. This can only be used to remove
@@ -152,14 +146,12 @@ private[spark] class BlockManagerMaster(
     * amount of memory allocated for the block manager, while the second is the
     * amount of remaining memory.
     */
-  def getMemoryStatus: Map[BlockManagerId, (Long, Long)] = {
+  def getMemoryStatus: Map[BlockManagerId, (Long, Long)] =
     driverEndpoint
       .askWithRetry[Map[BlockManagerId, (Long, Long)]](GetMemoryStatus)
-  }
 
-  def getStorageStatus: Array[StorageStatus] = {
+  def getStorageStatus: Array[StorageStatus] =
     driverEndpoint.askWithRetry[Array[StorageStatus]](GetStorageStatus)
-  }
 
   /**
     * Return the block's status on all block managers, if any. NOTE: This is a
@@ -224,9 +216,8 @@ private[spark] class BlockManagerMaster(
     * Find out if the executor has cached blocks. This method does not consider broadcast blocks,
     * since they are not reported the master.
     */
-  def hasCachedBlocks(executorId: String): Boolean = {
+  def hasCachedBlocks(executorId: String): Boolean =
     driverEndpoint.askWithRetry[Boolean](HasCachedBlocks(executorId))
-  }
 
   /** Stop the driver endpoint, called only on the Spark driver node */
   def stop() {

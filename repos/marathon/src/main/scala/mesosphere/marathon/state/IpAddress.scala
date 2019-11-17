@@ -28,7 +28,7 @@ case class IpAddress(
 object IpAddress {
   def empty: IpAddress = IpAddress()
 
-  def fromProto(proto: Protos.IpAddress): IpAddress = {
+  def fromProto(proto: Protos.IpAddress): IpAddress =
     IpAddress(
       groups = proto.getGroupsList.asScala.toIndexedSeq,
       labels = proto.getLabelsList.asScala.map { p =>
@@ -39,5 +39,4 @@ object IpAddress {
           DiscoveryInfo.fromProto(proto.getDiscoveryInfo)
         else DiscoveryInfo.empty
     )
-  }
 }

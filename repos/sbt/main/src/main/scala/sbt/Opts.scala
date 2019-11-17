@@ -61,15 +61,13 @@ object DefaultOptions {
   def scaladoc(name: String, version: String): Seq[String] =
     doc.title(name) ++ doc.version(version)
 
-  def resolvers(snapshot: Boolean): Seq[Resolver] = {
+  def resolvers(snapshot: Boolean): Seq[Resolver] =
     if (snapshot) Seq(Classpaths.typesafeSnapshots, resolver.sonatypeSnapshots)
     else Nil
-  }
-  def pluginResolvers(plugin: Boolean, snapshot: Boolean): Seq[Resolver] = {
+  def pluginResolvers(plugin: Boolean, snapshot: Boolean): Seq[Resolver] =
     if (plugin && snapshot)
       Seq(Classpaths.typesafeSnapshots, Classpaths.sbtPluginSnapshots)
     else Nil
-  }
   def addResolvers: Setting[_] =
     Keys.resolvers <++= Keys.isSnapshot apply resolvers
   def addPluginResolvers: Setting[_] =

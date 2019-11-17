@@ -181,7 +181,7 @@ trait PullRequestService { self: IssuesService =>
       repositoryName: String,
       toBranch: String,
       fromBranch: String,
-      commitId: String)(implicit s: Session): Option[(PullRequest, Issue)] = {
+      commitId: String)(implicit s: Session): Option[(PullRequest, Issue)] =
     if (toBranch == fromBranch) {
       None
     } else {
@@ -202,7 +202,6 @@ trait PullRequestService { self: IssuesService =>
         }
         .firstOption
     }
-  }
 }
 
 object PullRequestService {

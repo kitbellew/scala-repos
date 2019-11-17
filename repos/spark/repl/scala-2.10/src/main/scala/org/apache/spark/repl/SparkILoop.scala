@@ -98,12 +98,11 @@ class SparkILoop(
       intp.reporter printMessage afterTyper(msg)
 
     /** Strip NullaryMethodType artifacts. */
-    private def replInfo(sym: Symbol) = {
+    private def replInfo(sym: Symbol) =
       sym.info match {
         case NullaryMethodType(restpe) if sym.isAccessor => restpe
         case info                                        => info
       }
-    }
     def echoTypeStructure(sym: Symbol) =
       printAfterTyper("" + deconstruct.show(replInfo(sym)))
 
@@ -124,13 +123,12 @@ class SparkILoop(
     *  -l label with case class parameter names
     *  -c complete - leave nothing out
     */
-  private def typeCommandInternal(expr: String, verbose: Boolean): Result = {
+  private def typeCommandInternal(expr: String, verbose: Boolean): Result =
     onIntp { intp =>
       val sym = intp.symbolOfLine(expr)
       if (sym.exists) intp.echoTypeSignature(sym, verbose)
       else ""
     }
-  }
 
   // NOTE: Must be public for visibility
   @DeveloperApi
@@ -228,14 +226,13 @@ class SparkILoop(
   }
 
   /** print a friendly help message */
-  private def helpCommand(line: String): Result = {
+  private def helpCommand(line: String): Result =
     if (line == "") helpSummary()
     else
       uniqueCommand(line) match {
         case Some(lc) => echo("\n" + lc.longHelp)
         case _        => ambiguousError(line)
       }
-  }
   private def helpSummary() = {
     val usageWidth = commands map (_.usageMsg.length) max
     val formatStr = "%-" + usageWidth + "s %s %s"
@@ -260,14 +257,13 @@ class SparkILoop(
   }
   private def matchingCommands(cmd: String) =
     commands filter (_.name startsWith cmd)
-  private def uniqueCommand(cmd: String): Option[LoopCommand] = {
+  private def uniqueCommand(cmd: String): Option[LoopCommand] =
     // this lets us add commands willy-nilly and only requires enough command to disambiguate
     matchingCommands(cmd) match {
       case List(x) => Some(x)
       // exact match OK even if otherwise appears ambiguous
       case xs => xs find (_.name == cmd)
     }
-  }
   private var fallbackMode = false
 
   private def toggleFallbackMode() {
@@ -588,24 +584,22 @@ class SparkILoop(
   catch { case _: Exception => null }
 
   // Still todo: modules.
-  private def typeCommand(line0: String): Result = {
+  private def typeCommand(line0: String): Result =
     line0.trim match {
       case "" => ":type [-v] <expression>"
       case s if s startsWith "-v " =>
         typeCommandInternal(s stripPrefix "-v " trim, true)
       case s => typeCommandInternal(s, false)
     }
-  }
 
-  private def warningsCommand(): Result = {
+  private def warningsCommand(): Result =
     if (intp.lastWarnings.isEmpty) "Can't find any cached warnings."
     else
       intp.lastWarnings foreach {
         case (pos, msg) => intp.reporter.warning(pos, msg)
       }
-  }
 
-  private def javapCommand(line: String): Result = {
+  private def javapCommand(line: String): Result =
     if (javap == null)
       ":javap unavailable, no tools.jar at %s.  Set JDK_HOME.".format(jdkHome)
     else if (javaVersion startsWith "1.7")
@@ -616,7 +610,6 @@ class SparkILoop(
         if (res.isError) return "Failed: " + res.value
         else res.show()
       }
-  }
 
   private def wrapCommand(line: String): Result = {
     def failMsg =
@@ -852,10 +845,9 @@ class SparkILoop(
     } else echo("The path '" + f + "' doesn't seem to exist.")
   }
 
-  private def powerCmd(): Result = {
+  private def powerCmd(): Result =
     if (isReplPower) "Already in power mode."
     else enablePowerMode(false)
-  }
 
   private[repl] def enablePowerMode(isDuringInit: Boolean) = {
     // replProps.power setValue true
@@ -884,7 +876,7 @@ class SparkILoop(
   /** Run one command submitted by the user.  Two values are returned:
     * (1) whether to keep running, (2) the line to record for replay,
     * if any. */
-  private[repl] def command(line: String): Result = {
+  private[repl] def command(line: String): Result =
     if (line startsWith ":") {
       val cmd = line.tail takeWhile (x => !x.isWhitespace)
       uniqueCommand(cmd) match {
@@ -895,11 +887,9 @@ class SparkILoop(
     } else if (intp.global == null)
       Result(false, None) // Notice failure to create compiler
     else Result(true, interpretStartingWith(line))
-  }
 
-  private def readWhile(cond: String => Boolean) = {
+  private def readWhile(cond: String => Boolean) =
     Iterator continually in.readLine("") takeWhile (x => x != null && cond(x))
-  }
 
   private def pasteCommand(): Result = {
     echo("// Entering paste mode (ctrl-D to finish)\n")
@@ -998,7 +988,7 @@ class SparkILoop(
     *  unless settings or properties are such that it should start
     *  with SimpleReader.
     */
-  private def chooseReader(settings: Settings): InteractiveReader = {
+  private def chooseReader(settings: Settings): InteractiveReader =
     if (settings.Xnojline.value || Properties.isEmacsShell) SimpleReader()
     else
       try new SparkJLineReader(
@@ -1012,7 +1002,6 @@ class SparkILoop(
               "\nFalling back to SimpleReader.")
           SimpleReader()
       }
-  }
 
   private val u: scala.reflect.runtime.universe.type =
     scala.reflect.runtime.universe
@@ -1192,14 +1181,13 @@ object SparkILoop extends Logging {
     stringFromStream { ostream =>
       Console.withOut(ostream) {
         val output = new JPrintWriter(new OutputStreamWriter(ostream), true) {
-          override def write(str: String) = {
+          override def write(str: String) =
             // completely skip continuation lines
             if (str forall (ch => ch.isWhitespace || ch == '|')) ()
             // print a newline on empty scala prompts
             else if ((str contains '\n') && (str.trim == "scala> "))
               super.write("\n")
             else super.write(str)
-          }
         }
         val input = new BufferedReader(new StringReader(code)) {
           override def readLine(): String = {

@@ -74,8 +74,7 @@ private[remote] object Remoting {
 
   def localAddressForRemote(
       transportMapping: Map[String, Set[(AkkaProtocolTransport, Address)]],
-      remote: Address): Address = {
-
+      remote: Address): Address =
     transportMapping.get(remote.protocol) match {
       case Some(transports) ⇒
         val responsibleTransports = transports.filter {
@@ -108,7 +107,6 @@ private[remote] object Remoting {
             .mkString(", ")}]",
           null)
     }
-  }
 
   final case class RegisterTransportActor(props: Props, name: String)
       extends NoSerializationVerificationNeeded
@@ -165,7 +163,7 @@ private[remote] class Remoting(
     eventPublisher.notifyListeners(
       RemotingErrorEvent(new RemoteTransportException(msg, cause)))
 
-  override def shutdown(): Future[Done] = {
+  override def shutdown(): Future[Done] =
     endpointManager match {
       case Some(manager) ⇒
         implicit val timeout = ShutdownTimeout
@@ -194,10 +192,9 @@ private[remote] class Remoting(
         log.warning("Remoting is not running. Ignoring shutdown attempt.")
         Future successful Done
     }
-  }
 
   // Start assumes that it cannot be followed by another start() without having a shutdown() first
-  override def start(): Unit = {
+  override def start(): Unit =
     endpointManager match {
       case None ⇒
         log.info("Starting remoting")
@@ -249,7 +246,6 @@ private[remote] class Remoting(
       case Some(_) ⇒
         log.warning("Remoting was already started. Ignoring start attempt.")
     }
-  }
 
   override def send(
       message: Any,
@@ -292,7 +288,7 @@ private[remote] class Remoting(
   protected def useUntrustedMode: Boolean =
     provider.remoteSettings.UntrustedMode
 
-  private[akka] def boundAddresses: Map[String, Set[Address]] = {
+  private[akka] def boundAddresses: Map[String, Set[Address]] =
     transportMapping.map {
       case (scheme, transports) ⇒
         scheme -> transports.flatMap {
@@ -300,7 +296,6 @@ private[remote] class Remoting(
           case (t, _) ⇒ Option(t.boundAddress)
         }
     }
-  }
 }
 
 /**
@@ -394,13 +389,12 @@ private[remote] object EndpointManager {
           endpoint
       }
 
-    def registerWritableEndpointUid(remoteAddress: Address, uid: Int): Unit = {
+    def registerWritableEndpointUid(remoteAddress: Address, uid: Int): Unit =
       addressToWritable.get(remoteAddress) match {
         case Some(Pass(ep, _, refuseUid)) ⇒
           addressToWritable += remoteAddress -> Pass(ep, Some(uid), refuseUid)
         case other ⇒ // the GotUid might have lost the race with some failure
       }
-    }
 
     def registerReadOnlyEndpoint(
         address: Address,
@@ -490,13 +484,12 @@ private[remote] object EndpointManager {
     def allEndpoints: collection.Iterable[ActorRef] =
       writableToAddress.keys ++ readonlyToAddress.keys
 
-    def prune(): Unit = {
+    def prune(): Unit =
       addressToWritable = addressToWritable.filter {
         case (_, Gated(timeOfRelease)) ⇒ timeOfRelease.hasTimeLeft
         case (_, Quarantined(_, timeOfRelease)) ⇒ timeOfRelease.hasTimeLeft
         case _ ⇒ true
       }
-    }
   }
 }
 
@@ -718,10 +711,9 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
         case _ ⇒ // nothing to stop
       }
 
-      def matchesQuarantine(handle: AkkaProtocolHandle): Boolean = {
+      def matchesQuarantine(handle: AkkaProtocolHandle): Boolean =
         handle.remoteAddress == address &&
-        uidToQuarantineOption.forall(_ == handle.handshakeInfo.uid)
-      }
+          uidToQuarantineOption.forall(_ == handle.handshakeInfo.uid)
 
       // Stop all matching pending read handoffs
       pendingReadHandoffs = pendingReadHandoffs.filter {
@@ -808,11 +800,10 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
       // Shutdown all endpoints and signal to sender() when ready (and whether all endpoints were shut down gracefully)
 
       def shutdownAll[T](resources: TraversableOnce[T])(
-          shutdown: T ⇒ Future[Boolean]): Future[Boolean] = {
+          shutdown: T ⇒ Future[Boolean]): Future[Boolean] =
         (Future sequence resources.map(shutdown)) map { _.forall(identity) } recover {
           case NonFatal(_) ⇒ false
         }
-      }
 
       (for {
         // The construction of the future for shutdownStatus has to happen after the flushStatus future has been finished
@@ -988,7 +979,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
     })
   }
 
-  private def acceptPendingReader(takingOverFrom: ActorRef): Unit = {
+  private def acceptPendingReader(takingOverFrom: ActorRef): Unit =
     if (pendingReadHandoffs.contains(takingOverFrom)) {
       val handle = pendingReadHandoffs(takingOverFrom)
       pendingReadHandoffs -= takingOverFrom
@@ -1010,16 +1001,14 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
         endpoint,
         handle.handshakeInfo.uid)
     }
-  }
 
   private def removePendingReader(
       takingOverFrom: ActorRef,
-      withHandle: AkkaProtocolHandle): Unit = {
+      withHandle: AkkaProtocolHandle): Unit =
     if (pendingReadHandoffs
           .get(takingOverFrom)
           .exists(handle ⇒ handle == withHandle))
       pendingReadHandoffs -= takingOverFrom
-  }
 
   private def createEndpoint(
       remoteAddress: Address,

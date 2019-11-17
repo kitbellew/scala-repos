@@ -306,17 +306,14 @@ class InputOutputMetricsSuite
         (cartVector.length * secondSize))
   }
 
-  private def runAndReturnBytesRead(job: => Unit): Long = {
+  private def runAndReturnBytesRead(job: => Unit): Long =
     runAndReturnMetrics(job, _.taskMetrics.inputMetrics.map(_.bytesRead))
-  }
 
-  private def runAndReturnRecordsRead(job: => Unit): Long = {
+  private def runAndReturnRecordsRead(job: => Unit): Long =
     runAndReturnMetrics(job, _.taskMetrics.inputMetrics.map(_.recordsRead))
-  }
 
-  private def runAndReturnRecordsWritten(job: => Unit): Long = {
+  private def runAndReturnRecordsWritten(job: => Unit): Long =
     runAndReturnMetrics(job, _.taskMetrics.outputMetrics.map(_.recordsWritten))
-  }
 
   private def runAndReturnMetrics(
       job: => Unit,
@@ -432,7 +429,7 @@ class OldCombineTextInputFormat
   override def getRecordReader(
       split: OldInputSplit,
       conf: JobConf,
-      reporter: Reporter): OldRecordReader[LongWritable, Text] = {
+      reporter: Reporter): OldRecordReader[LongWritable, Text] =
     new OldCombineFileRecordReader[LongWritable, Text](
       conf,
       split.asInstanceOf[OldCombineFileSplit],
@@ -440,7 +437,6 @@ class OldCombineTextInputFormat
       classOf[OldCombineTextRecordReaderWrapper]
         .asInstanceOf[Class[OldRecordReader[LongWritable, Text]]]
     )
-  }
 }
 
 class OldCombineTextRecordReaderWrapper(
@@ -476,12 +472,11 @@ class NewCombineTextInputFormat
     extends NewCombineFileInputFormat[LongWritable, Text] {
   def createRecordReader(
       split: NewInputSplit,
-      context: TaskAttemptContext): NewRecordReader[LongWritable, Text] = {
+      context: TaskAttemptContext): NewRecordReader[LongWritable, Text] =
     new NewCombineFileRecordReader[LongWritable, Text](
       split.asInstanceOf[NewCombineFileSplit],
       context,
       classOf[NewCombineTextRecordReaderWrapper])
-  }
 }
 
 class NewCombineTextRecordReaderWrapper(
@@ -501,9 +496,8 @@ class NewCombineTextRecordReaderWrapper(
 
   override def initialize(
       split: NewInputSplit,
-      context: TaskAttemptContext): Unit = {
+      context: TaskAttemptContext): Unit =
     delegate.initialize(fileSplit, context)
-  }
 
   override def nextKeyValue(): Boolean = delegate.nextKeyValue()
   override def getCurrentKey(): LongWritable = delegate.getCurrentKey

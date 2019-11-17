@@ -19,13 +19,12 @@ import NodeIdentifierParser._
 private[common] class NodeIdentifierParser(version: ForwardedHeaderVersion)
     extends RegexParsers {
 
-  def parseNode(s: String): Either[String, (IpAddress, Option[Port])] = {
+  def parseNode(s: String): Either[String, (IpAddress, Option[Port])] =
     parse(node, s) match {
       case Success(matched, _) => Right(matched)
       case Failure(msg, _)     => Left("failure: " + msg)
       case Error(msg, _)       => Left("error: " + msg)
     }
-  }
 
   private lazy val node =
     phrase(nodename ~ opt(":" ~> nodeport)) ^^ {

@@ -53,7 +53,7 @@ abstract class SocketServer(fixPort: Int = 0) extends CompileOutputCommon {
     }
     new Socket(serverSocket.accept())
   })
-  private def setTimeoutOnSocket(mins: Int) = {
+  private def setTimeoutOnSocket(mins: Int) =
     try {
       serverSocket setSoTimeout (mins * 60 * 1000)
       info("Set socket timeout to " + mins + " minutes.")
@@ -63,9 +63,8 @@ abstract class SocketServer(fixPort: Int = 0) extends CompileOutputCommon {
         warn("Failed to set socket timeout: " + ex)
         false
     }
-  }
 
-  def doSession(clientSocket: Socket) = {
+  def doSession(clientSocket: Socket) =
     clientSocket.applyReaderAndWriter { (in, out) =>
       this.in = in
       this.out = out
@@ -74,7 +73,6 @@ abstract class SocketServer(fixPort: Int = 0) extends CompileOutputCommon {
       try scala.Console.withOut(bufout)(session())
       finally bufout.close()
     }
-  }
 
   def run() {
     info("Starting SocketServer run() loop.")

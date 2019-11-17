@@ -34,13 +34,12 @@ import Helpers._
 
 object MapperSpecsModel {
   // These rules are common to all Mapper specs
-  def snakify(connid: ConnectionIdentifier, name: String): String = {
+  def snakify(connid: ConnectionIdentifier, name: String): String =
     if (connid.jndiName == "snake") {
       StringHelpers.snakify(name)
     } else {
       name.toLowerCase
     }
-  }
 
   MapperRules.columnName = snakify
   MapperRules.tableName = snakify
@@ -439,7 +438,6 @@ object Dog2 extends Dog2 with LongKeyedMetaMapper[Dog2] {
   }
 
   // Get new instance of fixed point-in-time reference date
-  def getRefDate: _root_.java.util.Date = {
+  def getRefDate: _root_.java.util.Date =
     new _root_.java.util.Date(1257089309453L)
-  }
 }

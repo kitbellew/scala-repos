@@ -39,9 +39,8 @@ class ScTypeParamElementType[Func <: ScTypeParam]
 
   def indexStub(stub: ScTypeParamStub, sink: IndexSink) {}
 
-  def createPsi(stub: ScTypeParamStub): ScTypeParam = {
+  def createPsi(stub: ScTypeParamStub): ScTypeParam =
     new ScTypeParamImpl(stub)
-  }
 
   def createStubImpl[ParentPsi <: PsiElement](
       psi: ScTypeParam,

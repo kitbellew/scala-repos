@@ -31,19 +31,17 @@ private[scalajs] object CoreJSLibs {
   private val gitHubBaseURI = new URI(
     "https://raw.githubusercontent.com/scala-js/scala-js/")
 
-  def lib(semantics: Semantics, outputMode: OutputMode): VirtualJSFile = {
+  def lib(semantics: Semantics, outputMode: OutputMode): VirtualJSFile =
     synchronized {
       cachedLibByConfig.getOrElseUpdate(
         (semantics, outputMode),
         makeLib(semantics, outputMode))
     }
-  }
 
   private def makeLib(
       semantics: Semantics,
-      outputMode: OutputMode): VirtualJSFile = {
+      outputMode: OutputMode): VirtualJSFile =
     new ScalaJSEnvVirtualJSFile(makeContent(semantics, outputMode))
-  }
 
   private def makeContent(
       semantics: Semantics,
@@ -150,10 +148,9 @@ private[scalajs] object CoreJSLibs {
     override def version: Option[String] = Some("")
     override def exists: Boolean = true
 
-    override def toURI: URI = {
+    override def toURI: URI =
       if (!ScalaJSVersions.currentIsSnapshot)
         gitHubBaseURI.resolve(s"v${ScalaJSVersions.current}/tools/$path")
       else super.toURI
-    }
   }
 }

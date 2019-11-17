@@ -56,17 +56,14 @@ case class MemoryStream[A: Encoder](id: Int, sqlContext: SQLContext)
 
   def schema: StructType = encoder.schema
 
-  def toDS()(implicit sqlContext: SQLContext): Dataset[A] = {
+  def toDS()(implicit sqlContext: SQLContext): Dataset[A] =
     Dataset(sqlContext, logicalPlan)
-  }
 
-  def toDF()(implicit sqlContext: SQLContext): DataFrame = {
+  def toDF()(implicit sqlContext: SQLContext): DataFrame =
     Dataset.newDataFrame(sqlContext, logicalPlan)
-  }
 
-  def addData(data: A*): Offset = {
+  def addData(data: A*): Offset =
     addData(data.toTraversable)
-  }
 
   def addData(data: TraversableOnce[A]): Offset = {
     import sqlContext.implicits._

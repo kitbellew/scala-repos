@@ -1122,9 +1122,8 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
         schema("name").copy(metadata = metadata),
         schema("age")))
     val personWithMeta = sqlContext.createDataFrame(person.rdd, schemaWithMeta)
-    def validateMetadata(rdd: DataFrame): Unit = {
+    def validateMetadata(rdd: DataFrame): Unit =
       assert(rdd.schema("name").metadata.getString(docKey) == docValue)
-    }
     personWithMeta.registerTempTable("personWithMeta")
     validateMetadata(personWithMeta.select($"name"))
     validateMetadata(personWithMeta.select($"name"))

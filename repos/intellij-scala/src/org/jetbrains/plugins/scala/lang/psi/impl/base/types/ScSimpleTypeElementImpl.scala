@@ -62,7 +62,7 @@ class ScSimpleTypeElementImpl(node: ASTNode)
 
   def singleton = getNode.findChildByType(ScalaTokenTypes.kTYPE) != null
 
-  def findConstructor: Option[ScConstructor] = {
+  def findConstructor: Option[ScConstructor] =
     getContext match {
       case constr: ScConstructor => Some(constr)
       case param: ScParameterizedTypeElement =>
@@ -72,7 +72,6 @@ class ScSimpleTypeElementImpl(node: ASTNode)
         }
       case _ => None
     }
-  }
 
   protected def innerType(ctx: TypingContext): TypeResult[ScType] =
     innerNonValueType(ctx, inferValueType = true)
@@ -100,10 +99,7 @@ class ScSimpleTypeElementImpl(node: ASTNode)
     ProgressManager.checkCanceled()
     val lift: (ScType) => Success[ScType] = Success(_, Some(this))
 
-    def parametrise(
-        tp: ScType,
-        clazz: PsiClass,
-        subst: ScSubstitutor): ScType = {
+    def parametrise(tp: ScType, clazz: PsiClass, subst: ScSubstitutor): ScType =
       if (clazz.getTypeParameters.isEmpty) {
         tp
       } else {
@@ -112,12 +108,10 @@ class ScSimpleTypeElementImpl(node: ASTNode)
           case ptp             => new ScTypeParameterType(ptp, subst)
         })
       }
-    }
 
     def getConstructorParams(
         constr: PsiMethod,
-        subst: ScSubstitutor): (Seq[Seq[Parameter]], Boolean) = {
-
+        subst: ScSubstitutor): (Seq[Seq[Parameter]], Boolean) =
       constr match {
         case fun: ScFunction =>
           (fun.effectiveParameterClauses.map(_.effectiveParameters.map { p =>
@@ -165,13 +159,12 @@ class ScSimpleTypeElementImpl(node: ASTNode)
               p.index)
           }), false)
       }
-    }
 
     def updateImplicits(
         tp: ScType,
         withExpected: Boolean,
         params: Seq[Seq[Parameter]],
-        lastImplicit: Boolean): ScType = {
+        lastImplicit: Boolean): ScType =
       if (lastImplicit) {
         //Let's add implicit parameters
         val newTp = tp match {
@@ -195,7 +188,6 @@ class ScSimpleTypeElementImpl(node: ASTNode)
         implicitParameters = res._2
         res._1
       } else tp
-    }
 
     def typeForConstructor(
         ref: ScStableCodeReferenceElement,
@@ -433,7 +425,7 @@ class ScSimpleTypeElementImpl(node: ASTNode)
 
         def updateImplicitsWithoutLocalTypeInference(
             r: TypeResult[ScType],
-            ss: ScSubstitutor): TypeResult[ScType] = {
+            ss: ScSubstitutor): TypeResult[ScType] =
           if (withUnnecessaryImplicitsUpdate) {
             r.map { tp =>
               ref.bind() match {
@@ -453,7 +445,6 @@ class ScSimpleTypeElementImpl(node: ASTNode)
               }
             }
           } else r
-        }
 
         ref.resolveNoConstructor match {
           case Array(ScalaResolveResult(tp: PsiTypeParameter, _)) =>
@@ -544,7 +535,7 @@ object ScSimpleTypeElementImpl {
 
   def calculateReferenceType(
       path: ScPathElement,
-      shapesOnly: Boolean): TypeResult[ScType] = {
+      shapesOnly: Boolean): TypeResult[ScType] =
     path match {
       case ref: ScStableCodeReferenceElement =>
         calculateReferenceType(ref, shapesOnly)
@@ -561,7 +552,6 @@ object ScSimpleTypeElementImpl {
         )
         Success(ScThisType(template), Some(path))
     }
-  }
 
   def calculateReferenceType(
       ref: ScStableCodeReferenceElement,

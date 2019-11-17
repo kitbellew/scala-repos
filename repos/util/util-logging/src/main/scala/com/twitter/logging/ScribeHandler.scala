@@ -173,7 +173,7 @@ class ScribeHandler(
 
   private var serverType: ServerType = Unknown
 
-  private def isArchaicServer() = { serverType == Archaic }
+  private def isArchaicServer() = serverType == Archaic
 
   // Could be rewritten using a simple Condition (await/notify) or producer/consumer
   // with timed batching
@@ -395,7 +395,7 @@ class ScribeHandler(
     if (Time.now.since(_lastTransmission) >= bufferTime) flush()
   }
 
-  override def toString = {
+  override def toString =
     ("<%s level=%s hostname=%s port=%d scribe_buffer=%s " +
       "scribe_backoff=%s scribe_max_packet_size=%d formatter=%s>").format(
       getClass.getName,
@@ -406,7 +406,6 @@ class ScribeHandler(
       connectBackoff,
       maxMessagesPerTransaction,
       formatter.toString)
-  }
 
   private[this] val SCRIBE_PREFIX: Array[Byte] = Array[Byte](
     // version 1, call, "Log", reqid=0
@@ -552,7 +551,7 @@ class ScribeHandler(
 
     def incrCloses(): Unit = totalCloses.incr()
 
-    def log(): Unit = {
+    def log(): Unit =
       synchronized {
         val period = Time.now.since(_lastLogStats)
         if (period > ScribeHandler.DefaultStatsReportPeriod) {
@@ -572,6 +571,5 @@ class ScribeHandler(
           _lastLogStats = Time.now
         }
       }
-    }
   }
 }

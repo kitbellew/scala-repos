@@ -80,12 +80,10 @@ package scalaguide.xml.scalaxmlrequests {
       }
     }
 
-    def testAction[T](action: Action[T], req: Request[T]) = {
-
+    def testAction[T](action: Action[T], req: Request[T]) =
       running(GuiceApplicationBuilder().build()) {
         val result = action(req)
         status(result) must_== OK
       }
-    }
   }
 }

@@ -115,9 +115,8 @@ private[tree] class GiniAggregator(numClasses: Int)
     * @param allStats  Flat stats array, with stats for this (node, feature, bin) contiguous.
     * @param offset    Start index of stats for this (node, feature, bin).
     */
-  def getCalculator(allStats: Array[Double], offset: Int): GiniCalculator = {
+  def getCalculator(allStats: Array[Double], offset: Int): GiniCalculator =
     new GiniCalculator(allStats.view(offset, offset + statsSize).toArray)
-  }
 }
 
 /**

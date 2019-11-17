@@ -246,7 +246,7 @@ private[akka] final case class HeartbeatHistory private (
   def stdDeviation: Double = math.sqrt(variance)
 
   @tailrec
-  final def :+(interval: Long): HeartbeatHistory = {
+  final def :+(interval: Long): HeartbeatHistory =
     if (intervals.size < maxSampleSize)
       HeartbeatHistory(
         maxSampleSize,
@@ -254,7 +254,6 @@ private[akka] final case class HeartbeatHistory private (
         intervalSum = intervalSum + interval,
         squaredIntervalSum = squaredIntervalSum + pow2(interval))
     else dropOldest :+ interval // recur
-  }
 
   private def dropOldest: HeartbeatHistory =
     HeartbeatHistory(

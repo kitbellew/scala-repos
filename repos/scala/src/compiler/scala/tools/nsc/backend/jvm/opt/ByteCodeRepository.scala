@@ -54,7 +54,7 @@ class ByteCodeRepository[BT <: BTypes](
   private object lruCounter
       extends AtomicLong(0L)
       with collection.generic.Clearable {
-    def clear(): Unit = { this.set(0L) }
+    def clear(): Unit = this.set(0L)
   }
   recordPerRunCache(lruCounter)
 
@@ -62,7 +62,7 @@ class ByteCodeRepository[BT <: BTypes](
     * Prevent the code repository from growing too large. Profiling reveals that the average size
     * of a ClassNode is about 30 kb. I observed having 17k+ classes in the cache, i.e., 500 mb.
     */
-  private def limitCacheSize(): Unit = {
+  private def limitCacheSize(): Unit =
     if (parsedClasses.size > maxCacheSize) {
       // OK if multiple threads get here
       val minimalLRU = parsedClasses.valuesIterator
@@ -79,21 +79,19 @@ class ByteCodeRepository[BT <: BTypes](
         case _                    => false
       }
     }
-  }
 
-  def add(classNode: ClassNode, source: Source) = {
+  def add(classNode: ClassNode, source: Source) =
     if (source == CompilationUnit) compilingClasses(classNode.name) = classNode
     else
       parsedClasses(classNode.name) = Right(
         (classNode, lruCounter.incrementAndGet()))
-  }
 
   /**
     * The class node and source for an internal name. If the class node is not yet available, it is
     * parsed from the classfile on the compile classpath.
     */
-  def classNodeAndSource(internalName: InternalName)
-      : Either[ClassNotFound, (ClassNode, Source)] = {
+  def classNodeAndSource(
+      internalName: InternalName): Either[ClassNotFound, (ClassNode, Source)] =
     classNode(internalName) map
       (n => {
         val source =
@@ -101,14 +99,12 @@ class ByteCodeRepository[BT <: BTypes](
           else Classfile
         (n, source)
       })
-  }
 
   /**
     * The class node for an internal name. If the class node is not yet available, it is parsed from
     * the classfile on the compile classpath.
     */
-  def classNode(
-      internalName: InternalName): Either[ClassNotFound, ClassNode] = {
+  def classNode(internalName: InternalName): Either[ClassNotFound, ClassNode] =
     compilingClasses.get(internalName).map(Right(_)) getOrElse {
       val r = parsedClasses.get(internalName) match {
         case Some(l @ Left(_)) => l
@@ -125,7 +121,6 @@ class ByteCodeRepository[BT <: BTypes](
       }
       r.map(_._1)
     }
-  }
 
   /**
     * The field node for a field matching `name` and `descriptor`, accessed in class `classInternalName`.
@@ -139,7 +134,7 @@ class ByteCodeRepository[BT <: BTypes](
       name: String,
       descriptor: String): Either[FieldNotFound, (FieldNode, InternalName)] = {
     def fieldNodeImpl(parent: InternalName)
-        : Either[FieldNotFound, (FieldNode, InternalName)] = {
+        : Either[FieldNotFound, (FieldNode, InternalName)] =
       classNode(parent) match {
         case Left(e) =>
           Left(FieldNotFound(name, descriptor, classInternalName, Some(e)))
@@ -153,7 +148,6 @@ class ByteCodeRepository[BT <: BTypes](
               else fieldNode(c.superName, name, descriptor)
           }
       }
-    }
     fieldNodeImpl(classInternalName)
   }
 
@@ -176,7 +170,7 @@ class ByteCodeRepository[BT <: BTypes](
       : Either[MethodNotFound, (MethodNode, InternalName)] = {
     // on failure, returns a list of class names that could not be found on the classpath
     def methodNodeImpl(ownerInternalName: InternalName)
-        : Either[List[ClassNotFound], (MethodNode, InternalName)] = {
+        : Either[List[ClassNotFound], (MethodNode, InternalName)] =
       classNode(ownerInternalName) match {
         case Left(e) => Left(List(e))
         case Right(c) =>
@@ -189,7 +183,6 @@ class ByteCodeRepository[BT <: BTypes](
                 Nil)
           }
       }
-    }
 
     // find the MethodNode in one of the parent classes
     def findInParents(

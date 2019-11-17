@@ -65,21 +65,18 @@ private[ui] class RDDOperationCluster(
   private val _childClusters = new ListBuffer[RDDOperationCluster]
 
   def name: String = _name
-  def setName(n: String): Unit = { _name = n }
+  def setName(n: String): Unit = _name = n
 
   def childNodes: Seq[RDDOperationNode] = _childNodes.iterator.toSeq
   def childClusters: Seq[RDDOperationCluster] = _childClusters.iterator.toSeq
-  def attachChildNode(childNode: RDDOperationNode): Unit = {
+  def attachChildNode(childNode: RDDOperationNode): Unit =
     _childNodes += childNode
-  }
-  def attachChildCluster(childCluster: RDDOperationCluster): Unit = {
+  def attachChildCluster(childCluster: RDDOperationCluster): Unit =
     _childClusters += childCluster
-  }
 
   /** Return all the nodes which are cached. */
-  def getCachedNodes: Seq[RDDOperationNode] = {
+  def getCachedNodes: Seq[RDDOperationNode] =
     _childNodes.filter(_.cached) ++ _childClusters.flatMap(_.getCachedNodes)
-  }
 }
 
 private[ui] object RDDOperationGraph extends Logging {

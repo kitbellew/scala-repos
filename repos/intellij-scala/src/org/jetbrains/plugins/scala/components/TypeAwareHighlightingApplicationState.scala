@@ -35,9 +35,8 @@ class TypeAwareHighlightingApplicationState
 
   def initComponent() {}
 
-  def disposeComponent(): Unit = {
+  def disposeComponent(): Unit =
     CacheStatistics.printStats()
-  }
 }
 
 object TypeAwareHighlightingApplicationState {

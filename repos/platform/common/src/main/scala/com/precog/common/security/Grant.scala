@@ -64,21 +64,18 @@ case class Grant(
     case (Some(expiry), Some(ref)) => expiry.isBefore(ref)
   }
 
-  def implies(perm: Permission, at: Option[DateTime]): Boolean = {
+  def implies(perm: Permission, at: Option[DateTime]): Boolean =
     !isExpired(at) && permissions.exists(_.implies(perm))
-  }
 
-  def implies(perms: Set[Permission], at: Option[DateTime]): Boolean = {
+  def implies(perms: Set[Permission], at: Option[DateTime]): Boolean =
     !isExpired(at) && perms.forall { perm =>
       permissions.exists(_.implies(perm))
     }
-  }
 
-  def implies(other: Grant): Boolean = {
+  def implies(other: Grant): Boolean =
     !isExpired(other.expirationDate) && other.permissions.forall { perm =>
       permissions.exists(_.implies(perm))
     }
-  }
 }
 
 object Grant extends Logging {
@@ -98,7 +95,7 @@ object Grant extends Logging {
     "V0 serialization schemas should be removed when legacy data is no longer needed",
     "2.1.5")
   val extractorV0: Extractor[Grant] = new Extractor[Grant] {
-    override def validated(obj: JValue) = {
+    override def validated(obj: JValue) =
       (obj.validated[GrantId]("gid") |@| obj
         .validated[Option[APIKey]]("cid")
         .map(_.getOrElse("(undefined)")) |@| obj.validated[Option[GrantId]](
@@ -116,7 +113,6 @@ object Grant extends Logging {
             new Instant(0L),
             expiration)
       }
-    }
   }
 
   implicit val decomposer: Decomposer[Grant] = decomposerV1
@@ -145,7 +141,7 @@ object Grant extends Logging {
   def coveringGrants(
       grants: Set[Grant],
       perms: Set[Permission],
-      at: Option[DateTime] = None): Set[Grant] = {
+      at: Option[DateTime] = None): Set[Grant] =
     if (!implies(grants, perms, at)) Set.empty[Grant]
     else {
       def tsort(grants: List[Grant]): List[Grant] =
@@ -176,5 +172,4 @@ object Grant extends Logging {
         .toList
       minimize(tsort(distinct), perms.toList)
     }
-  }
 }

@@ -24,19 +24,17 @@ class ScMethodCallImpl(node: ASTNode)
   def argumentExpressions: Seq[ScExpression] =
     if (args != null) args.exprs else Nil
 
-  override def getEffectiveInvokedExpr: ScExpression = {
+  override def getEffectiveInvokedExpr: ScExpression =
     findChildByClassScala(classOf[ScExpression]) match {
       case x: ScParenthesisedExpr => x.expr.getOrElse(x)
       case x                      => x
     }
-  }
 
-  override def argumentExpressionsIncludeUpdateCall: Seq[ScExpression] = {
+  override def argumentExpressionsIncludeUpdateCall: Seq[ScExpression] =
     updateExpression() match {
       case Some(expr) => argumentExpressions ++ Seq(expr)
       case _          => argumentExpressions
     }
-  }
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {

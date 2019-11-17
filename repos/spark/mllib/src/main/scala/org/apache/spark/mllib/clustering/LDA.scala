@@ -346,9 +346,8 @@ class LDA private (
     * Java-friendly version of [[run()]]
     */
   @Since("1.3.0")
-  def run(documents: JavaPairRDD[java.lang.Long, Vector]): LDAModel = {
+  def run(documents: JavaPairRDD[java.lang.Long, Vector]): LDAModel =
     run(documents.rdd.asInstanceOf[RDD[(Long, Vector)]])
-  }
 }
 
 private[clustering] object LDA {

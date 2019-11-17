@@ -98,7 +98,7 @@ object IOUtils extends Logging {
   /** Recursively deletes empty directories, stopping at the first
     * non-empty dir.
     */
-  def recursiveDeleteEmptyDirs(startDir: File, upTo: File): IO[PrecogUnit] = {
+  def recursiveDeleteEmptyDirs(startDir: File, upTo: File): IO[PrecogUnit] =
     if (startDir == upTo) {
       IO {
         logger.debug("Stopping recursive clean at root: " + upTo); PrecogUnit
@@ -122,7 +122,6 @@ object IOUtils extends Logging {
         logger.warn("Asked to clean a non-directory: " + startDir); PrecogUnit
       }
     }
-  }
 
   def createTmpDir(prefix: String): IO[File] = IO {
     val tmpDir = Files.createTempDir()

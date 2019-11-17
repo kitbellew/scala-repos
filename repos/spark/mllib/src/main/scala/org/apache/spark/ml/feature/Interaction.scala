@@ -128,7 +128,7 @@ class Interaction @Since("1.6.0") (override val uid: String)
     */
   private def getFeatureEncoders(
       features: Seq[StructField]): Array[FeatureEncoder] = {
-    def getNumFeatures(attr: Attribute): Int = {
+    def getNumFeatures(attr: Attribute): Int =
       attr match {
         case nominal: NominalAttribute =>
           math.max(
@@ -139,7 +139,6 @@ class Interaction @Since("1.6.0") (override val uid: String)
         case _ =>
           1 // numeric feature
       }
-    }
     features.map { f =>
       val numFeatures = f.dataType match {
         case _: NumericType | BooleanType =>

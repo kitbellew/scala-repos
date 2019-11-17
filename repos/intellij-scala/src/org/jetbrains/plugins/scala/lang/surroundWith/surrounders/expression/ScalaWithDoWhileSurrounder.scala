@@ -17,9 +17,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr._
  */
 
 class ScalaWithDoWhileSurrounder extends ScalaExpressionSurrounder {
-  override def getTemplateAsString(elements: Array[PsiElement]): String = {
+  override def getTemplateAsString(elements: Array[PsiElement]): String =
     return "do {" + super.getTemplateAsString(elements) + "} while (true)"
-  }
 
   override def getTemplateDescription = "do / while"
 

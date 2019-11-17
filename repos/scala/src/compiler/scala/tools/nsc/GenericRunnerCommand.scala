@@ -31,7 +31,7 @@ class GenericRunnerCommand(
   private lazy val (_ok, targetAndArguments) =
     settings.processArguments(args, processAll = false)
   override def ok = _ok
-  private def guessHowToRun(target: String): GenericRunnerCommand.HowToRun = {
+  private def guessHowToRun(target: String): GenericRunnerCommand.HowToRun =
     if (!ok) Error
     else if (io.Jar.isJarOrZip(target)) AsJar
     else if (ScalaClassLoader.classExists(settings.classpathURLs, target))
@@ -44,7 +44,6 @@ class GenericRunnerCommand(
         Error
       }
     }
-  }
 
   /** String with either the jar file, class name, or script file name. */
   def thingToRun = targetAndArguments.headOption getOrElse ""

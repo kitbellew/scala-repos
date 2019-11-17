@@ -67,12 +67,11 @@ class LAFuture[T](val scheduler: LAScheduler) {
     * Complete the Future... with a Box... useful from Helpers.tryo
     * @param value
     */
-  def complete(value: Box[T]): Unit = {
+  def complete(value: Box[T]): Unit =
     value match {
       case Full(v)     => satisfy(v)
       case x: EmptyBox => fail(x)
     }
-  }
 
   /**
     * Get the future value
@@ -288,9 +287,8 @@ object LAFuture {
     * @tparam T the type that
     * @return
     */
-  def build[T](f: => T, scheduler: LAScheduler = LAScheduler): LAFuture[T] = {
+  def build[T](f: => T, scheduler: LAScheduler = LAScheduler): LAFuture[T] =
     this.apply(() => f, scheduler)
-  }
 
   private val threadInfo = new ThreadLocal[List[LAFuture[_] => Unit]]
 

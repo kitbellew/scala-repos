@@ -1307,9 +1307,8 @@ object GeneralizedLinearRegressionSuite {
       link: String): Seq[LabeledPoint] = {
 
     val rnd = new Random(seed)
-    def rndElement(i: Int) = {
+    def rndElement(i: Int) =
       (rnd.nextDouble() - 0.5) * math.sqrt(12.0 * xVariance(i)) + xMean(i)
-    }
     val (generator, mean) = family match {
       case "gaussian" => (new StandardNormalGenerator, 0.0)
       case "poisson"  => (new PoissonGenerator(1.0), 1.0)

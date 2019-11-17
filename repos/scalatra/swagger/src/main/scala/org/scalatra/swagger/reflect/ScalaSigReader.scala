@@ -48,12 +48,11 @@ private[reflect] object ScalaSigReader {
   }
 
   def readField(name: String, clazz: Class[_], typeArgIndex: Int): Class[_] = {
-    def read(current: Class[_]): MethodSymbol = {
+    def read(current: Class[_]): MethodSymbol =
       if (current == null) fail("Can't find field " + name + " from " + clazz)
       else
         findField(findClass(current), name)
           .getOrElse(read(current.getSuperclass))
-    }
     findArgTypeForField(read(clazz), typeArgIndex)
   }
 
@@ -64,7 +63,7 @@ private[reflect] object ScalaSigReader {
       fail("Can't find " + clazz + " from parsed ScalaSig"))
   }
 
-  def findClass(sig: ScalaSig, clazz: Class[_]): Option[ClassSymbol] = {
+  def findClass(sig: ScalaSig, clazz: Class[_]): Option[ClassSymbol] =
     sig.symbols
       .collect { case c: ClassSymbol if !c.isModule => c }
       .find(_.name == clazz.getSimpleName)
@@ -79,7 +78,6 @@ private[reflect] object ScalaSigReader {
             }.head
           }
       }
-  }
 
   def findConstructor(
       c: ClassSymbol,
@@ -95,7 +93,7 @@ private[reflect] object ScalaSigReader {
     (c.children collect { case m: MethodSymbol if m.name == name => m }).headOption
 
   def findArgType(s: MethodSymbol, argIdx: Int, typeArgIndex: Int): Class[_] = {
-    def findPrimitive(t: Type): Symbol = {
+    def findPrimitive(t: Type): Symbol =
       t match {
         case TypeRefType(ThisType(_), symbol, _) if isPrimitive(symbol) =>
           symbol
@@ -112,7 +110,6 @@ private[reflect] object ScalaSigReader {
           }
         case x => fail("Unexpected type info " + x)
       }
-    }
     toClass(
       findPrimitive(s.children(argIdx).asInstanceOf[SymbolInfoSymbol].infoType))
   }

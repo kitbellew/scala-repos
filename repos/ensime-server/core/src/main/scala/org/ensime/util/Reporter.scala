@@ -24,8 +24,8 @@ class PresentationReporter(handler: ReportHandler)
 
   val log = LoggerFactory.getLogger(classOf[PresentationReporter])
   private var enabled = true
-  def enable(): Unit = { enabled = true }
-  def disable(): Unit = { enabled = false }
+  def enable(): Unit = enabled = true
+  def disable(): Unit = enabled = false
 
   override def reset(): Unit = {
     super.reset()
@@ -74,10 +74,9 @@ class PresentationReporter(handler: ReportHandler)
     }
   }
 
-  def formatMessage(msg: String): String = {
+  def formatMessage(msg: String): String =
     augmentString(msg).map {
       case '\n' | '\r' => ' '
       case c           => c
     }
-  }
 }

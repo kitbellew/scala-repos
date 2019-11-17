@@ -24,9 +24,8 @@ class WrapInOptionQuickFix(
 
   def getFamilyName: String = ScalaBundle.message("wrap.in.option.name")
 
-  def isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean = {
+  def isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean =
     WrapInOptionQuickFix.isAvailable(expr, expectedType, exprType)
-  }
 
   def invoke(project: Project, editor: Editor, file: PsiFile) {
     if (expr.isValid) {

@@ -222,14 +222,13 @@ class MethodResolveProcessor(
     true
   }
 
-  override def candidatesS: Set[ScalaResolveResult] = {
+  override def candidatesS: Set[ScalaResolveResult] =
     if (isDynamic) {
       collectCandidates(super.candidatesS.map(_.copy(isDynamic = true)))
         .filter(_.isApplicable())
     } else {
       collectCandidates(super.candidatesS)
     }
-  }
 
   private def collectCandidates(
       input: Set[ScalaResolveResult]): Set[ScalaResolveResult] = {
@@ -300,7 +299,7 @@ object MethodResolveProcessor {
         })
 
     def addExpectedTypeProblems(
-        eOption: Option[ScType] = expectedOption()): Unit = {
+        eOption: Option[ScType] = expectedOption()): Unit =
       for (expected <- eOption) {
         val retType: ScType = element match {
           case f: ScFunction
@@ -323,10 +322,9 @@ object MethodResolveProcessor {
           problems += ExpectedTypeMismatch
         }
       }
-    }
 
     def checkFunction(fun: PsiNamedElement): ConformanceExtResult = {
-      def default(): ConformanceExtResult = {
+      def default(): ConformanceExtResult =
         fun match {
           case fun: ScFunction
               if fun.paramClauses.clauses.isEmpty ||
@@ -348,7 +346,6 @@ object MethodResolveProcessor {
             problems += MissedParametersClause(null)
             ConformanceExtResult(problems)
         }
-      }
 
       def processFunctionType(
           retType: ScType,
@@ -746,7 +743,7 @@ object MethodResolveProcessor {
       }
     }
 
-    def mapper(applicationImplicits: Boolean): Set[ScalaResolveResult] = {
+    def mapper(applicationImplicits: Boolean): Set[ScalaResolveResult] =
       if (argumentClauses.nonEmpty) {
         input.flatMap(expand).map { r =>
           {
@@ -774,7 +771,6 @@ object MethodResolveProcessor {
             defaultParameterUsed = pr.defaultParameterUsed,
             resultUndef = Some(pr.undefSubst))
         })
-    }
     var mapped = mapper(applicationImplicits = false)
     var filtered =
       mapped.filter(_.isApplicableInternal(withExpectedType = true))

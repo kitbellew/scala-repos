@@ -181,9 +181,8 @@ object Place {
     )
   }
 
-  def save(place: Place) = {
+  def save(place: Place) =
     list = list ::: List(place)
-  }
 }
 //#model
 

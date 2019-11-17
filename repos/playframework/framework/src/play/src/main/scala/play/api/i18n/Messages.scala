@@ -123,18 +123,16 @@ object Lang {
     * }}}
     */
   @deprecated("Inject Langs into your component", "2.5.0")
-  def availables(implicit app: Application): Seq[Lang] = {
+  def availables(implicit app: Application): Seq[Lang] =
     langsCache(app).availables
-  }
 
   /**
     * Guess the preferred lang in the langs set passed as argument.
     * The first Lang that matches an available Lang wins, otherwise returns the first Lang available in this application.
     */
   @deprecated("Inject Langs into your component", "2.5.0")
-  def preferred(langs: Seq[Lang])(implicit app: Application): Lang = {
+  def preferred(langs: Seq[Lang])(implicit app: Application): Lang =
     langsCache(app).preferred(langs)
-  }
 }
 
 /**
@@ -233,9 +231,8 @@ object Messages {
     * @param args the message arguments
     * @return the formatted message or a default rendering if the key wasn’t defined
     */
-  def apply(key: String, args: Any*)(implicit messages: Messages): String = {
+  def apply(key: String, args: Any*)(implicit messages: Messages): String =
     messages(key, args: _*)
-  }
 
   /**
     * Translates the first defined message.
@@ -247,30 +244,27 @@ object Messages {
     * @return the formatted message or a default rendering if the key wasn’t defined
     */
   def apply(keys: Seq[String], args: Any*)(
-      implicit messages: Messages): String = {
+      implicit messages: Messages): String =
     messages(keys, args: _*)
-  }
 
   /**
     * Check if a message key is defined.
     * @param key the message key
     * @return a boolean
     */
-  def isDefinedAt(key: String)(implicit messages: Messages): Boolean = {
+  def isDefinedAt(key: String)(implicit messages: Messages): Boolean =
     messages.isDefinedAt(key)
-  }
 
   /**
     * Parse all messages of a given input.
     */
   def parse(messageSource: MessageSource, messageSourceName: String)
-      : Either[PlayException.ExceptionSource, Map[String, String]] = {
+      : Either[PlayException.ExceptionSource, Map[String, String]] =
     new Messages.MessagesParser(messageSource, "").parse.right.map { messages =>
       messages.map { message =>
         message.key -> message.pattern
       }.toMap
     }
-  }
 
   /**
     * A source for messages
@@ -353,7 +347,7 @@ object Messages {
           }
       }
 
-    def parse: Either[PlayException.ExceptionSource, Seq[Message]] = {
+    def parse: Either[PlayException.ExceptionSource, Seq[Message]] =
       parser(new CharSequenceReader(messageSource.read + "\n")) match {
         case Success(messages, _) => Right(messages)
         case NoSuccess(message, in) =>
@@ -366,7 +360,6 @@ object Messages {
             }
           )
       }
-    }
   }
 }
 
@@ -557,18 +550,16 @@ class DefaultMessagesApi @Inject() (
         domain = Session.domain,
         secure = langCookieSecure))
 
-  def apply(key: String, args: Any*)(implicit lang: Lang): String = {
+  def apply(key: String, args: Any*)(implicit lang: Lang): String =
     translate(key, args).getOrElse(noMatch(key, args))
-  }
 
-  def apply(keys: Seq[String], args: Any*)(implicit lang: Lang): String = {
+  def apply(keys: Seq[String], args: Any*)(implicit lang: Lang): String =
     keys
       .foldLeft[Option[String]](None) {
         case (None, key) => translate(key, args)
         case (acc, _)    => acc
       }
       .getOrElse(noMatch(keys.last, args))
-  }
 
   protected def noMatch(key: String, args: Seq[Any])(implicit lang: Lang) = key
 
@@ -614,7 +605,7 @@ class DefaultMessagesApi @Inject() (
       .foldLeft(Map.empty[String, String]) { _ ++ _ }
   }
 
-  protected def loadAllMessages: Map[String, Map[String, String]] = {
+  protected def loadAllMessages: Map[String, Map[String, String]] =
     langs.availables
       .map(_.code)
       .map { lang =>
@@ -623,7 +614,6 @@ class DefaultMessagesApi @Inject() (
       .toMap
       .+("default" -> loadMessages("messages"))
       .+("default.play" -> loadMessages("messages.default"))
-  }
 
   lazy val langCookieName = config.getDeprecated[String](
     "play.i18n.langCookieName",
@@ -636,12 +626,11 @@ class DefaultMessagesApi @Inject() (
 }
 
 class I18nModule extends Module {
-  def bindings(environment: Environment, configuration: Configuration) = {
+  def bindings(environment: Environment, configuration: Configuration) =
     Seq(
       bind[Langs].to[DefaultLangs],
       bind[MessagesApi].to[DefaultMessagesApi]
     )
-  }
 }
 
 /**

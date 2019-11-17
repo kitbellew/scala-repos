@@ -72,9 +72,8 @@ trait Counter2Like[
 
   private[linalg] def innerGetOrElseUpdate[M](
       k: K1,
-      m: scala.collection.mutable.Map[K1, M]): M = {
+      m: scala.collection.mutable.Map[K1, M]): M =
     m.getOrElseUpdate(k, m.default(k))
-  }
 
   override def keysIterator =
     for ((k1, m) <- data.iterator; k2 <- m.keysIterator) yield (k1, k2)
@@ -93,11 +92,10 @@ trait Counter2Like[
 
   def repr = this.asInstanceOf[This]
 
-  override def toString: String = {
+  override def toString: String =
     data.iterator
       .map { case (k1, c) => k1 + " -> " + c.toString }
       .mkString("Counter2(", ",\n", ")")
-  }
 
   override def equals(p1: Any): Boolean = p1 match {
     case x: Counter2[_, _, _] =>
@@ -139,9 +137,8 @@ object Counter2 extends LowPriorityCounter2 with Counter2Ops {
   }
 
   /** Returns a new empty counter. */
-  def apply[K1, K2, V: Zero](): Counter2[K1, K2, V] = {
+  def apply[K1, K2, V: Zero](): Counter2[K1, K2, V] =
     new Impl(new CounterHashMap)
-  }
 
   @SerialVersionUID(1L)
   private class CounterHashMap[K1, K2, V: Zero]
@@ -174,7 +171,7 @@ object Counter2 extends LowPriorityCounter2 with Counter2Ops {
   }
 
   implicit def CanMapValuesCounter[K1, K2, V, RV: Semiring: Zero]
-      : CanMapValues[Counter2[K1, K2, V], V, RV, Counter2[K1, K2, RV]] = {
+      : CanMapValues[Counter2[K1, K2, V], V, RV, Counter2[K1, K2, RV]] =
     new CanMapValues[Counter2[K1, K2, V], V, RV, Counter2[K1, K2, RV]] {
       override def apply(from: Counter2[K1, K2, V], fn: (V => RV)) = {
         val rv = Counter2[K1, K2, RV]()
@@ -184,10 +181,9 @@ object Counter2 extends LowPriorityCounter2 with Counter2Ops {
         rv
       }
     }
-  }
 
   implicit def CanMapActiveValuesCounter[K1, K2, V, RV: Semiring: Zero]
-      : CanMapActiveValues[Counter2[K1, K2, V], V, RV, Counter2[K1, K2, RV]] = {
+      : CanMapActiveValues[Counter2[K1, K2, V], V, RV, Counter2[K1, K2, RV]] =
     new CanMapActiveValues[Counter2[K1, K2, V], V, RV, Counter2[K1, K2, RV]] {
       override def apply(from: Counter2[K1, K2, V], fn: (V => RV)) = {
         val rv = Counter2[K1, K2, RV]()
@@ -197,37 +193,33 @@ object Counter2 extends LowPriorityCounter2 with Counter2Ops {
         rv
       }
     }
-  }
 
   implicit def canIterateValues[K1, K2, V]
       : CanTraverseValues[Counter2[K1, K2, V], V] =
     new CanTraverseValues[Counter2[K1, K2, V], V] {
       def isTraversableAgain(from: Counter2[K1, K2, V]): Boolean = true
 
-      def traverse(from: Counter2[K1, K2, V], fn: ValuesVisitor[V]): Unit = {
+      def traverse(from: Counter2[K1, K2, V], fn: ValuesVisitor[V]): Unit =
         for (v <- from.valuesIterator) {
           fn.visit(v)
         }
-      }
     }
 
   implicit def canTraverseKeyValuePairs[K1, K2, V]
-      : CanTraverseKeyValuePairs[Counter2[K1, K2, V], (K1, K2), V] = {
+      : CanTraverseKeyValuePairs[Counter2[K1, K2, V], (K1, K2), V] =
     new CanTraverseKeyValuePairs[Counter2[K1, K2, V], (K1, K2), V] {
 
       /** Traverses all values from the given collection. */
       override def traverse(
           from: Counter2[K1, K2, V],
-          fn: KeyValuePairsVisitor[(K1, K2), V]): Unit = {
+          fn: KeyValuePairsVisitor[(K1, K2), V]): Unit =
         for ((k, v) <- from.activeIterator) {
           fn.visit(k, v)
         }
-      }
 
       override def isTraversableAgain(from: Counter2[K1, K2, V]): Boolean =
         true
     }
-  }
 
   // slicing
 
@@ -286,7 +278,7 @@ object Counter2 extends LowPriorityCounter2 with Counter2Ops {
     Axis._0.type,
     Counter[K1, V],
     Counter[K1, R],
-    Counter2[K1, K2, R]] = {
+    Counter2[K1, K2, R]] =
     new CanCollapseAxis[
       Counter2[K1, K2, V],
       Axis._0.type,
@@ -302,7 +294,6 @@ object Counter2 extends LowPriorityCounter2 with Counter2Ops {
         result
       }
     }
-  }
 
   implicit def handholdCanMapRows[K1, K2, V]: CanCollapseAxis.HandHold[
     Counter2[K1, K2, V],

@@ -54,27 +54,24 @@ class ReachabilityPerfSpec extends WordSpec with Matchers {
       r1: Reachability,
       r2: Reachability,
       thunk: (Reachability, Reachability) ⇒ Unit,
-      times: Int): Unit = {
+      times: Int): Unit =
     for (i ← 1 to times) {
       thunk(
         Reachability(r1.records, r1.versions),
         Reachability(r2.records, r2.versions))
     }
-  }
 
   private def checkThunkFor(
       r1: Reachability,
       thunk: Reachability ⇒ Unit,
-      times: Int): Unit = {
+      times: Int): Unit =
     for (i ← 1 to times) {
       thunk(Reachability(r1.records, r1.versions))
     }
-  }
 
   private def merge(
-      expectedRecords: Int)(r1: Reachability, r2: Reachability): Unit = {
+      expectedRecords: Int)(r1: Reachability, r2: Reachability): Unit =
     r1.merge(allowed, r2).records.size should ===(expectedRecords)
-  }
 
   private def checkStatus(r1: Reachability): Unit = {
     val record = r1.records.head
@@ -96,11 +93,10 @@ class ReachabilityPerfSpec extends WordSpec with Matchers {
     r1.allUnreachable.isEmpty should ===(false)
   }
 
-  private def recordsFrom(r1: Reachability): Unit = {
+  private def recordsFrom(r1: Reachability): Unit =
     r1.allObservers.foreach { o ⇒
       r1.recordsFrom(o) should not be be(null)
     }
-  }
 
   s"Reachability of size $nodesSize" must {
 

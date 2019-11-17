@@ -471,20 +471,18 @@ trait WSRequest {
     */
   @deprecated("2.5.0", """Use WS.withMethod("GET").stream()""")
   def get[A](consumer: WSResponseHeaders => Iteratee[Array[Byte], A])(
-      implicit ec: ExecutionContext): Future[Iteratee[Array[Byte], A]] = {
+      implicit ec: ExecutionContext): Future[Iteratee[Array[Byte], A]] =
     getStream().flatMap {
       case (response, enumerator) =>
         enumerator(consumer(response))
     }
-  }
 
   /**
     * performs a get
     */
   @deprecated("2.5.0", """Use WS.withMethod("GET").stream()""")
-  def getStream(): Future[(WSResponseHeaders, Enumerator[Array[Byte]])] = {
+  def getStream(): Future[(WSResponseHeaders, Enumerator[Array[Byte]])] =
     withMethod("GET").streamWithEnumerator()
-  }
 
   /**
     * Perform a PATCH on the request asynchronously.
@@ -503,9 +501,8 @@ trait WSRequest {
     * Perform a PATCH on the request asynchronously.
     */
   def patch(body: Source[MultipartFormData.Part[Source[ByteString, _]], _])
-      : Future[WSResponse] = {
+      : Future[WSResponse] =
     withMethod("PATCH").withMultipartBody(body).execute()
-  }
 
   /**
     * performs a POST with supplied body
@@ -515,12 +512,11 @@ trait WSRequest {
   def patchAndRetrieveStream[A, T](body: T)(
       consumer: WSResponseHeaders => Iteratee[Array[Byte], A])(
       implicit wrt: Writeable[T],
-      ec: ExecutionContext): Future[Iteratee[Array[Byte], A]] = {
+      ec: ExecutionContext): Future[Iteratee[Array[Byte], A]] =
     withMethod("PATCH").withBody(body).streamWithEnumerator().flatMap {
       case (response, enumerator) =>
         enumerator(consumer(response))
     }
-  }
 
   /**
     * Perform a POST on the request asynchronously.
@@ -539,9 +535,8 @@ trait WSRequest {
     * Perform a POST on the request asynchronously.
     */
   def post(body: Source[MultipartFormData.Part[Source[ByteString, _]], _])
-      : Future[WSResponse] = {
+      : Future[WSResponse] =
     withMethod("POST").withMultipartBody(body).execute()
-  }
 
   /**
     * performs a POST with supplied body
@@ -551,12 +546,11 @@ trait WSRequest {
   def postAndRetrieveStream[A, T](body: T)(
       consumer: WSResponseHeaders => Iteratee[Array[Byte], A])(
       implicit wrt: Writeable[T],
-      ec: ExecutionContext): Future[Iteratee[Array[Byte], A]] = {
+      ec: ExecutionContext): Future[Iteratee[Array[Byte], A]] =
     withMethod("POST").withBody(body).streamWithEnumerator().flatMap {
       case (response, enumerator) =>
         enumerator(consumer(response))
     }
-  }
 
   /**
     * Perform a PUT on the request asynchronously.
@@ -575,9 +569,8 @@ trait WSRequest {
     * Perform a PUT on the request asynchronously.
     */
   def put(body: Source[MultipartFormData.Part[Source[ByteString, _]], _])
-      : Future[WSResponse] = {
+      : Future[WSResponse] =
     withMethod("PUT").withMultipartBody(body).execute()
-  }
 
   /**
     * performs a PUT with supplied body
@@ -587,12 +580,11 @@ trait WSRequest {
   def putAndRetrieveStream[A, T](body: T)(
       consumer: WSResponseHeaders => Iteratee[Array[Byte], A])(
       implicit wrt: Writeable[T],
-      ec: ExecutionContext): Future[Iteratee[Array[Byte], A]] = {
+      ec: ExecutionContext): Future[Iteratee[Array[Byte], A]] =
     withMethod("PUT").withBody(body).streamWithEnumerator().flatMap {
       case (response, enumerator) =>
         enumerator(consumer(response))
     }
-  }
 
   /**
     * Perform a DELETE on the request asynchronously.

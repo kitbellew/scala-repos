@@ -256,13 +256,12 @@ object Attributes {
     * Compute a name by concatenating all Name attributes that the given module
     * has, returning the given default value if none are found.
     */
-  def extractName(mod: Module, default: String): String = {
+  def extractName(mod: Module, default: String): String =
     mod match {
       case CopiedModule(_, attr, copyOf) ⇒
         (attr and copyOf.attributes).nameOrDefault(default)
       case _ ⇒ mod.attributes.nameOrDefault(default)
     }
-  }
 }
 
 /**

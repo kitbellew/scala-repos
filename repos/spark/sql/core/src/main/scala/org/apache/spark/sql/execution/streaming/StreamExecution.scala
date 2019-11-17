@@ -75,18 +75,17 @@ class StreamExecution(
   /** The thread that runs the micro-batches of this stream. */
   private[sql] val microBatchThread = new Thread(
     s"stream execution thread for $name") {
-    override def run(): Unit = { runBatches() }
+    override def run(): Unit = runBatches()
   }
 
   /** Whether the query is currently active or not */
   override def isActive: Boolean = state == ACTIVE
 
   /** Returns current status of all the sources. */
-  override def sourceStatuses: Array[SourceStatus] = {
+  override def sourceStatuses: Array[SourceStatus] =
     sources
       .map(s => new SourceStatus(s.toString, streamProgress.get(s)))
       .toArray
-  }
 
   /** Returns current status of the sink. */
   override def sinkStatus: SinkStatus =
@@ -114,7 +113,7 @@ class StreamExecution(
     * so that listeners are guaranteed to get former event before the latter. Furthermore, this
     * method also ensures that [[QueryStarted]] event is posted before the `start()` method returns.
     */
-  private def runBatches(): Unit = {
+  private def runBatches(): Unit =
     try {
       // Mark ACTIVE and then post the event. QueryStarted event is synchronously sent to listeners,
       // so must mark this as ACTIVE first.
@@ -148,13 +147,12 @@ class StreamExecution(
       postEvent(new QueryTerminated(this))
       terminationLatch.countDown()
     }
-  }
 
   /**
     * Populate the start offsets to start the execution at the current offsets stored in the sink
     * (i.e. avoid reprocessing data that we have already processed).
     */
-  private def populateStartOffsets(): Unit = {
+  private def populateStartOffsets(): Unit =
     sink.currentOffset match {
       case Some(c: CompositeOffset) =>
         val storedProgress = c.offsets
@@ -173,7 +171,6 @@ class StreamExecution(
         throw new IllegalArgumentException(
           "Expected composite offset from sink")
     }
-  }
 
   /**
     * Checks to see if any new data is present in any of the sources. When new data is available,
@@ -308,9 +305,8 @@ class StreamExecution(
     }
   }
 
-  override def toString: String = {
+  override def toString: String =
     s"Continuous Query - $name [state = $state]"
-  }
 
   def toDebugString: String = {
     val deathCauseStr =

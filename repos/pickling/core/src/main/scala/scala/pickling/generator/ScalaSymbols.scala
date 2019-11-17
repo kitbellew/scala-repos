@@ -35,7 +35,7 @@ private[pickling] class IrScalaSymbols[
   def isClosed(sym: tools.u.TypeSymbol): Boolean =
     whyNotClosed(sym).isEmpty
 
-  def whyNotClosed(sym: tools.u.TypeSymbol): Seq[String] = {
+  def whyNotClosed(sym: tools.u.TypeSymbol): Seq[String] =
     if (sym.isEffectivelyFinal) Nil
     else if (isCaseClass(sym.asInstanceOf[u.TypeSymbol])) Nil
     else if (sym.isClass) {
@@ -50,7 +50,6 @@ private[pickling] class IrScalaSymbols[
     } else {
       List(s"'${sym.fullName}' is not a class or trait")
     }
-  }
 
   def newClass(tpe: Type): IrClass =
     if (tpe.typeSymbol.isClass) {
@@ -80,7 +79,7 @@ private[pickling] class IrScalaSymbols[
       //classSymbol.isAbstract
       classSymbol.isAbstractClass
     }
-    override def primaryConstructor: Option[IrConstructor] = {
+    override def primaryConstructor: Option[IrConstructor] =
       tpe.declaration(nme.CONSTRUCTOR) match {
         // NOTE: primary ctor is always the first in the list
         case overloaded: TermSymbol =>
@@ -90,7 +89,6 @@ private[pickling] class IrScalaSymbols[
           Some(new ScalaIrConstructor(primaryCtor, this))
         case NoSymbol => None
       }
-    }
 
     // TODO - Should we iterate down ALL of the hierarchy here for members, or make the algorithms do it later...
     private val allMethods = {
@@ -126,11 +124,10 @@ private[pickling] class IrScalaSymbols[
       //        or not, so we may ignore them.
       //        It's actually a really bad scenario because you can't distinguish between something which
       //        is actually annotated as a val and something which is just a constructor argument.
-      def isConstructorArg(x: TermSymbol): Boolean = {
+      def isConstructorArg(x: TermSymbol): Boolean =
         // Note available in scala 2.10
         // x.owner.isConstructor
         x.owner.name == nme.CONSTRUCTOR
-      }
       tpe.members
         .filter(_.isTerm)
         .map(_.asTerm)
@@ -138,7 +135,7 @@ private[pickling] class IrScalaSymbols[
         .map(x => new ScalaIrField(x, this))
         .toList
     }
-    override def companion: Option[IrClass] = {
+    override def companion: Option[IrClass] =
       if (tpe.typeSymbol.isType) {
         val tmp = tpe.typeSymbol.asType.companionSymbol
         if (tmp.isType) {
@@ -147,7 +144,6 @@ private[pickling] class IrScalaSymbols[
           else None
         } else None
       } else None
-    }
 
     override def isScala = !tpe.typeSymbol.isJava
     override def isScalaModule: Boolean = classSymbol.isModuleClass
@@ -185,7 +181,7 @@ private[pickling] class IrScalaSymbols[
     override def toString = s"$tpe"
 
     /** Returs all the parent classes (traits, interfaces, etc,) for this type. */
-    override def parentClasses: Seq[IrClass] = {
+    override def parentClasses: Seq[IrClass] =
       // TODO - We may need, additionally,  run some existentialAbstractoin fun on these signatures so the
       //        symbol/types are fully realized from what we had.
       // We always drop the first class, becasue it is ourself.
@@ -193,7 +189,6 @@ private[pickling] class IrScalaSymbols[
         //new ScalaIrClass(fillParameters(x), quantified, rawType)
         new ScalaIrClass(tpe.baseType(x), quantified, rawType)
       }
-    }
 
     /** Fill is the concrete types for a given symbol using the concrete types this class knows about. */
     final def fillParameters(baseSym: Symbol): Type = {
@@ -279,12 +274,11 @@ private[pickling] class IrScalaSymbols[
       mthd.paramss.map(_.map(_.name.toString)) // TODO - Is this safe?
 
     override def parameterTypes[U <: Universe with Singleton](
-        u: U): List[List[u.Type]] = {
+        u: U): List[List[u.Type]] =
       mthd.paramss.map(
         _.map(x =>
           fillParameters(x).asSeenFrom(owner.tpe, owner.tpe.typeSymbol))
           .map(_.asInstanceOf[u.Type]))
-    }
 
     override def isMarkedTransient: Boolean = {
       // TODO - is this correct?
@@ -299,13 +293,12 @@ private[pickling] class IrScalaSymbols[
     }
 
     // TODO - We need to get the actual jvm name here.
-    override def methodName: String = {
+    override def methodName: String =
       mthd.name.toString match {
         // TODO - Why do we need this random fix, is this a bug?
         case x if x endsWith " " => x.dropRight(1).toString
         case x                   => x
       }
-    }
     override def javaReflectionName: String = {
       val isPrivateThis = {
         // Note: Scala 2.10 does not support this
@@ -362,12 +355,11 @@ private[pickling] class IrScalaSymbols[
       mthd.returnType
         .asSeenFrom(owner.tpe, owner.tpe.typeSymbol)
         .asInstanceOf[u.Type]
-    override def setter: Option[IrMethod] = {
+    override def setter: Option[IrMethod] =
       mthd.setter match {
         case NoSymbol => None
         case x        => Some(new ScalaIrMethod(x.asMethod, owner))
       }
-    }
   }
 
   private class ScalaIrConstructor(mthd: MethodSymbol, owner: ScalaIrClass)

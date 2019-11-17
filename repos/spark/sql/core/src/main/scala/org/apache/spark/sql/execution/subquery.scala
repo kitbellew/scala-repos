@@ -41,9 +41,8 @@ case class ScalarSubquery(@transient executedPlan: SparkPlan, exprId: ExprId)
     extends SubqueryExpression {
 
   override def query: LogicalPlan = throw new UnsupportedOperationException
-  override def withNewPlan(plan: LogicalPlan): SubqueryExpression = {
+  override def withNewPlan(plan: LogicalPlan): SubqueryExpression =
     throw new UnsupportedOperationException
-  }
   override def plan: SparkPlan = Subquery(simpleString, executedPlan)
 
   override def dataType: DataType = executedPlan.schema.fields.head.dataType
@@ -53,22 +52,20 @@ case class ScalarSubquery(@transient executedPlan: SparkPlan, exprId: ExprId)
   // the first column in first row from `query`.
   private var result: Any = null
 
-  def updateResult(v: Any): Unit = {
+  def updateResult(v: Any): Unit =
     result = v
-  }
 
   override def eval(input: InternalRow): Any = result
 
-  override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
+  override def genCode(ctx: CodegenContext, ev: ExprCode): String =
     Literal.create(result, dataType).genCode(ctx, ev)
-  }
 }
 
 /**
   * Convert the subquery from logical plan into executed plan.
   */
 case class PlanSubqueries(sessionState: SessionState) extends Rule[SparkPlan] {
-  def apply(plan: SparkPlan): SparkPlan = {
+  def apply(plan: SparkPlan): SparkPlan =
     plan.transformAllExpressions {
       case subquery: expressions.ScalarSubquery =>
         val sparkPlan =
@@ -76,5 +73,4 @@ case class PlanSubqueries(sessionState: SessionState) extends Rule[SparkPlan] {
         val executedPlan = sessionState.prepareForExecution.execute(sparkPlan)
         ScalarSubquery(executedPlan, subquery.exprId)
     }
-  }
 }

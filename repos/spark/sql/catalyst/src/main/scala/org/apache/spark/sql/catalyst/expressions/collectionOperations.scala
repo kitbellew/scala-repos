@@ -42,9 +42,8 @@ case class Size(child: Expression)
     case _: MapType   => value.asInstanceOf[MapData].numElements()
   }
 
-  override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
+  override def genCode(ctx: CodegenContext, ev: ExprCode): String =
     nullSafeCodeGen(ctx, ev, c => s"${ev.value} = ($c).numElements();")
-  }
 }
 
 /**
@@ -86,7 +85,7 @@ case class SortArray(base: Expression, ascendingOrder: Expression)
     }
 
     new Comparator[Any]() {
-      override def compare(o1: Any, o2: Any): Int = {
+      override def compare(o1: Any, o2: Any): Int =
         if (o1 == null && o2 == null) {
           0
         } else if (o1 == null) {
@@ -96,7 +95,6 @@ case class SortArray(base: Expression, ascendingOrder: Expression)
         } else {
           ordering.compare(o1, o2)
         }
-      }
     }
   }
 
@@ -112,7 +110,7 @@ case class SortArray(base: Expression, ascendingOrder: Expression)
     }
 
     new Comparator[Any]() {
-      override def compare(o1: Any, o2: Any): Int = {
+      override def compare(o1: Any, o2: Any): Int =
         if (o1 == null && o2 == null) {
           0
         } else if (o1 == null) {
@@ -122,7 +120,6 @@ case class SortArray(base: Expression, ascendingOrder: Expression)
         } else {
           -ordering.compare(o1, o2)
         }
-      }
     }
   }
 
@@ -157,7 +154,7 @@ case class ArrayContains(left: Expression, right: Expression)
       }
   }
 
-  override def checkInputDataTypes(): TypeCheckResult = {
+  override def checkInputDataTypes(): TypeCheckResult =
     if (right.dataType == NullType) {
       TypeCheckResult.TypeCheckFailure(
         "Null typed values cannot be used as arguments")
@@ -169,12 +166,10 @@ case class ArrayContains(left: Expression, right: Expression)
     } else {
       TypeCheckResult.TypeCheckSuccess
     }
-  }
 
-  override def nullable: Boolean = {
+  override def nullable: Boolean =
     left.nullable || right.nullable ||
-    left.dataType.asInstanceOf[ArrayType].containsNull
-  }
+      left.dataType.asInstanceOf[ArrayType].containsNull
 
   override def nullSafeEval(arr: Any, value: Any): Any = {
     var hasNull = false
@@ -195,7 +190,7 @@ case class ArrayContains(left: Expression, right: Expression)
     }
   }
 
-  override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
+  override def genCode(ctx: CodegenContext, ev: ExprCode): String =
     nullSafeCodeGen(
       ctx,
       ev,
@@ -215,7 +210,6 @@ case class ArrayContains(left: Expression, right: Expression)
      """
       }
     )
-  }
 
   override def prettyName: String = "array_contains"
 }

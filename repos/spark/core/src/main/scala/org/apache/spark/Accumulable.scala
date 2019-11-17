@@ -123,7 +123,7 @@ class Accumulable[R, T] private (
     * [[Accumulators]] again. This method exists so that the caller can avoid passing the
     * same mutable instance around.
     */
-  private[spark] def copy(): Accumulable[R, T] = {
+  private[spark] def copy(): Accumulable[R, T] =
     new Accumulable[R, T](
       id,
       initialValue,
@@ -131,7 +131,6 @@ class Accumulable[R, T] private (
       name,
       internal,
       countFailedValues)
-  }
 
   /**
     * Add more data to this accumulator / accumulable
@@ -164,14 +163,13 @@ class Accumulable[R, T] private (
   /**
     * Access the accumulator's current value; only allowed on driver.
     */
-  def value: R = {
+  def value: R =
     if (!deserialized) {
       value_
     } else {
       throw new UnsupportedOperationException(
         "Can't read accumulator value in task")
     }
-  }
 
   /**
     * Get the current value of this accumulator from within a task.
@@ -199,23 +197,21 @@ class Accumulable[R, T] private (
   /**
     * Set the accumulator's value. For internal use only.
     */
-  def setValue(newValue: R): Unit = { value_ = newValue }
+  def setValue(newValue: R): Unit = value_ = newValue
 
   /**
     * Set the accumulator's value. For internal use only.
     */
-  private[spark] def setValueAny(newValue: Any): Unit = {
+  private[spark] def setValueAny(newValue: Any): Unit =
     setValue(newValue.asInstanceOf[R])
-  }
 
   /**
     * Create an [[AccumulableInfo]] representation of this [[Accumulable]] with the provided values.
     */
   private[spark] def toInfo(
       update: Option[Any],
-      value: Option[Any]): AccumulableInfo = {
+      value: Option[Any]): AccumulableInfo =
     new AccumulableInfo(id, name, update, value, internal, countFailedValues)
-  }
 
   // Called by Java when deserializing an object
   private def readObject(in: ObjectInputStream): Unit =

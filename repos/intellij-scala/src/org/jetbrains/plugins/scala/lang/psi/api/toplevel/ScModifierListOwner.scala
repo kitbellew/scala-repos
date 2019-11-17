@@ -39,9 +39,8 @@ trait ScModifierListOwner extends ScalaPsiElement with PsiModifierListOwner {
     findChildByClassScala(classOf[ScModifierList])
   }
 
-  def hasModifierProperty(name: String): Boolean = {
+  def hasModifierProperty(name: String): Boolean =
     hasModifierPropertyInner(name)
-  }
 
   def hasModifierPropertyScala(name: String): Boolean = {
     if (name == PsiModifier.PUBLIC) {

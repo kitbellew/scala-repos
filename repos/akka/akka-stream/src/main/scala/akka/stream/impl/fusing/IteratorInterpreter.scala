@@ -29,7 +29,7 @@ private[akka] object IteratorInterpreter {
     setHandler(
       out,
       new OutHandler {
-        override def onPull(): Unit = {
+        override def onPull(): Unit =
           if (!hasNext) complete(out)
           else {
             val elem = input.next()
@@ -39,7 +39,6 @@ private[akka] object IteratorInterpreter {
               complete(out)
             } else push(out, elem)
           }
-        }
 
         override def onDownstreamFinish(): Unit = ()
       }
@@ -67,9 +66,8 @@ private[akka] object IteratorInterpreter {
           needsPull = false
         }
 
-        override def onUpstreamFinish(): Unit = {
+        override def onUpstreamFinish(): Unit =
           done = true
-        }
 
         override def onUpstreamFailure(cause: Throwable): Unit = {
           done = true
@@ -78,19 +76,18 @@ private[akka] object IteratorInterpreter {
       }
     )
 
-    private def pullIfNeeded(): Unit = {
+    private def pullIfNeeded(): Unit =
       if (needsPull) {
         pull(in)
         interpreter.execute(Int.MaxValue)
       }
-    }
 
     override def hasNext: Boolean = {
       if (!done) pullIfNeeded()
       !(done && needsPull) || (lastFailure ne null)
     }
 
-    override def next(): T = {
+    override def next(): T =
       if (lastFailure ne null) {
         val e = lastFailure
         lastFailure = null
@@ -100,7 +97,6 @@ private[akka] object IteratorInterpreter {
         needsPull = true
         nextElem
       }
-    }
 
     // don't let toString consume the iterator
     override def toString: String = "IteratorDownstream"

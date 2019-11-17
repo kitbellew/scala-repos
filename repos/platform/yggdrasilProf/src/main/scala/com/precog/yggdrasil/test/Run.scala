@@ -30,7 +30,7 @@ object Run
     val idSource = new FreshAtomicIdSource
   }
 
-  def main(argv: Array[String]) = {
+  def main(argv: Array[String]) =
     testCtrPartialJoinOr(
       Stream(
         (-954410459, Some(0)),
@@ -123,6 +123,5 @@ object Run
         -2147483648, -1, 1563916971, -2147483648, 0, 1, 607908889, -2009071663,
         -1382431435, 778550183, 2147483647, -2147483648, 0, -1)
     )
-  }
 }
 // vim: set ts=4 sw=4 et:

@@ -373,7 +373,6 @@ object DefaultBalancerFactory extends LoadBalancerFactory {
       endpoints: Activity[Set[ServiceFactory[Req, Rep]]],
       statsReceiver: StatsReceiver,
       emptyException: NoBrokersAvailableException
-  ): ServiceFactory[Req, Rep] = {
+  ): ServiceFactory[Req, Rep] =
     underlying.newBalancer(endpoints, statsReceiver, emptyException)
-  }
 }

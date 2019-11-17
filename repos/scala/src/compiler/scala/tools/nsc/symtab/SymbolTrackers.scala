@@ -47,11 +47,10 @@ trait SymbolTrackers {
     def dropSymbol(sym: Symbol) =
       sym.ownerChain exists (_ hasFlag Flags.SPECIALIZED)
 
-    def symbolSnapshot(unit: CompilationUnit): Map[Symbol, Set[Tree]] = {
+    def symbolSnapshot(unit: CompilationUnit): Map[Symbol, Set[Tree]] =
       if (unit.body == null) Map()
       else
         unit.body filter containsSymbol groupBy (_.symbol) mapValues (_.toSet) toMap
-    }
     def apply(unit: CompilationUnit) = new SymbolTracker(
       () => symbolSnapshot(unit) filterNot { case (k, _) => dropSymbol(k) }
     )
@@ -139,7 +138,7 @@ trait SymbolTrackers {
          } else sym + changedOwnerString + flagSummaryString)
 
       def flatten = children.foldLeft(Set(root))(_ ++ _.flatten)
-      def indentString(indent: String): String = {
+      def indentString(indent: String): String =
         if (root == NoSymbol)
           children map (c => c.indentString(indent)) mkString "\n"
         else {
@@ -149,7 +148,6 @@ trait SymbolTrackers {
                children map (c => c.indentString(indent + "    ")) mkString
                  ("\n", "\n", ""))
         }
-      }
     }
 
     def snapshot(): Unit = {

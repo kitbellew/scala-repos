@@ -109,7 +109,7 @@ class AdminClient(
     response.cluster().nodes().asScala.toList
   }
 
-  def listAllGroups(): Map[Node, List[GroupOverview]] = {
+  def listAllGroups(): Map[Node, List[GroupOverview]] =
     findAllBrokers.map {
       case broker =>
         broker -> {
@@ -122,22 +122,18 @@ class AdminClient(
           }
         }
     }.toMap
-  }
 
-  def listAllConsumerGroups(): Map[Node, List[GroupOverview]] = {
+  def listAllConsumerGroups(): Map[Node, List[GroupOverview]] =
     listAllGroups().mapValues { groups =>
       groups.filter(_.protocolType == ConsumerProtocol.PROTOCOL_TYPE)
     }
-  }
 
-  def listAllGroupsFlattened(): List[GroupOverview] = {
+  def listAllGroupsFlattened(): List[GroupOverview] =
     listAllGroups.values.flatten.toList
-  }
 
-  def listAllConsumerGroupsFlattened(): List[GroupOverview] = {
+  def listAllConsumerGroupsFlattened(): List[GroupOverview] =
     listAllGroupsFlattened.filter(
       _.protocolType == ConsumerProtocol.PROTOCOL_TYPE)
-  }
 
   def describeGroup(groupId: String): GroupSummary = {
     val coordinator = findCoordinator(groupId)

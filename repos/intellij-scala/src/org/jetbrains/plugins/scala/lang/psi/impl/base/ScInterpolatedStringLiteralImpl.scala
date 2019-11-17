@@ -30,7 +30,7 @@ class ScInterpolatedStringLiteralImpl(node: ASTNode)
       case _     => null
     }
 
-  protected override def innerType(ctx: TypingContext): TypeResult[ScType] = {
+  protected override def innerType(ctx: TypingContext): TypeResult[ScType] =
     getStringContextExpression match {
       case Some(expr) => expr.getNonValueType(ctx)
       case _ =>
@@ -38,14 +38,12 @@ class ScInterpolatedStringLiteralImpl(node: ASTNode)
           s"Cannot find method ${getFirstChild.getText} of StringContext",
           Some(this))
     }
-  }
 
-  def reference: Option[ScReferenceExpression] = {
+  def reference: Option[ScReferenceExpression] =
     getFirstChild match {
       case ref: ScReferenceExpression => Some(ref)
       case _                          => None
     }
-  }
 
   override def isMultiLineString: Boolean = getText.endsWith("\"\"\"")
 

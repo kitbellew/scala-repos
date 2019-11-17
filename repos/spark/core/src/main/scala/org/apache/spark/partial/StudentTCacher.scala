@@ -33,7 +33,7 @@ private[spark] class StudentTCacher(confidence: Double) {
     .inverseCumulativeProbability(1 - (1 - confidence) / 2)
   val cache = Array.fill[Double](NORMAL_APPROX_SAMPLE_SIZE)(-1.0)
 
-  def get(sampleSize: Long): Double = {
+  def get(sampleSize: Long): Double =
     if (sampleSize >= NORMAL_APPROX_SAMPLE_SIZE) {
       normalApprox
     } else {
@@ -45,5 +45,4 @@ private[spark] class StudentTCacher(confidence: Double) {
       }
       cache(size)
     }
-  }
 }

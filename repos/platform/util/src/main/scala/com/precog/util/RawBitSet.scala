@@ -74,7 +74,7 @@ object RawBitSet {
 
     @inline
     @tailrec
-    def loopBits(bits: Int, shift: Int, value: Int, intsIndex: Int): Int = {
+    def loopBits(bits: Int, shift: Int, value: Int, intsIndex: Int): Int =
       if (((bits >> shift) & 1) == 1) {
         ints(intsIndex) = value
         if (shift < 31) loopBits(bits, shift + 1, value + 1, intsIndex + 1)
@@ -83,7 +83,6 @@ object RawBitSet {
         if (shift < 31) loopBits(bits, shift + 1, value + 1, intsIndex)
         else intsIndex
       }
-    }
 
     loopInts(0, 0)
     ints
@@ -93,7 +92,7 @@ object RawBitSet {
 
     @inline
     @tailrec
-    def rec0(n: Int, hi: Int, lo: Int, bs: List[Int]): List[Int] = {
+    def rec0(n: Int, hi: Int, lo: Int, bs: List[Int]): List[Int] =
       if (lo >= 0) {
         if ((n & (1 << lo)) != 0) {
           rec0(n, hi, lo - 1, (hi | lo) :: bs)
@@ -103,17 +102,15 @@ object RawBitSet {
       } else {
         bs
       }
-    }
 
     @inline
     @tailrec
-    def rec(i: Int, bs: List[Int]): List[Int] = {
+    def rec(i: Int, bs: List[Int]): List[Int] =
       if (i >= 0) {
         rec(i - 1, rec0(bits(i), i << 5, 31, bs))
       } else {
         bs
       }
-    }
 
     rec(bits.length - 1, Nil)
   }

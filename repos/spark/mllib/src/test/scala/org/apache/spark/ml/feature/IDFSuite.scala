@@ -36,7 +36,7 @@ class IDFSuite
     with MLlibTestSparkContext
     with DefaultReadWriteTest {
 
-  def scaleDataWithIDF(dataSet: Array[Vector], model: Vector): Array[Vector] = {
+  def scaleDataWithIDF(dataSet: Array[Vector], model: Vector): Array[Vector] =
     dataSet.map {
       case data: DenseVector =>
         val res = data.toArray.zip(model.toArray).map { case (x, y) => x * y }
@@ -48,7 +48,6 @@ class IDFSuite
         }
         Vectors.sparse(data.size, res)
     }
-  }
 
   test("params") {
     ParamsSuite.checkParams(new IDF)

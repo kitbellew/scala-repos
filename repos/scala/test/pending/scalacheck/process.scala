@@ -100,7 +100,7 @@ class ProcessSpecification extends Properties("Process I/O") {
 
   private def checkBinary(codes: Array[Byte])(
       reduceProcesses: (ProcessBuilder, ProcessBuilder) => ProcessBuilder)(
-      reduceExit: (Boolean, Boolean) => Boolean) = {
+      reduceExit: (Boolean, Boolean) => Boolean) =
     (codes.length > 1) ==> {
       val unsignedCodes = codes.map(unsigned)
       val exitCode = unsignedCodes
@@ -110,31 +110,27 @@ class ProcessSpecification extends Properties("Process I/O") {
         unsignedCodes.map(toBoolean).reduceLeft(reduceExit)
       toBoolean(exitCode) == expectedExitCode
     }
-  }
   private def toBoolean(exitCode: Int) = exitCode == 0
   private def checkExit(code: Byte) = {
     val exitCode = unsigned(code)
     (process("processtest.exit " + exitCode) !) == exitCode
   }
-  private def checkFileOut(data: Array[Byte]) = {
+  private def checkFileOut(data: Array[Byte]) =
     withData(data) { (temporaryFile, temporaryFile2) =>
       val catCommand =
         process("processtest.cat " + temporaryFile.getAbsolutePath)
       catCommand #> temporaryFile2
     }
-  }
-  private def checkFileIn(data: Array[Byte]) = {
+  private def checkFileIn(data: Array[Byte]) =
     withData(data) { (temporaryFile, temporaryFile2) =>
       val catCommand = process("processtest.cat")
       temporaryFile #> catCommand #> temporaryFile2
     }
-  }
-  private def checkPipe(data: Array[Byte]) = {
+  private def checkPipe(data: Array[Byte]) =
     withData(data) { (temporaryFile, temporaryFile2) =>
       val catCommand = process("processtest.cat")
       temporaryFile #> catCommand #| catCommand #> temporaryFile2
     }
-  }
   private def temp() = SFile(File.createTempFile("processtest", ""))
   private def withData(data: Array[Byte])(f: (File, File) => ProcessBuilder) = {
     val temporaryFile1 = temp()

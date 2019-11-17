@@ -50,9 +50,8 @@ private[spark] abstract class ConfigEntry[T](
   // use readFrom().
   def defaultValue: Option[T] = None
 
-  override def toString: String = {
+  override def toString: String =
     s"ConfigEntry(key=$key, defaultValue=$defaultValueString, doc=$doc, public=$isPublic)"
-  }
 }
 
 private class ConfigEntryWithDefault[T](
@@ -68,9 +67,8 @@ private class ConfigEntryWithDefault[T](
 
   override def defaultValueString: String = stringConverter(_defaultValue)
 
-  override def readFrom(conf: SparkConf): T = {
+  override def readFrom(conf: SparkConf): T =
     conf.getOption(key).map(valueConverter).getOrElse(_defaultValue)
-  }
 }
 
 /**
@@ -112,7 +110,6 @@ private class FallbackConfigEntry[T](
 
   override def defaultValueString: String = s"<value of ${fallback.key}>"
 
-  override def readFrom(conf: SparkConf): T = {
+  override def readFrom(conf: SparkConf): T =
     conf.getOption(key).map(valueConverter).getOrElse(fallback.readFrom(conf))
-  }
 }

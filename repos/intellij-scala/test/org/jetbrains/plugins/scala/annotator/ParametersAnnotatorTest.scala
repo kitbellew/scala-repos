@@ -53,13 +53,12 @@ class ParametersAnnotatorTest extends SimpleTestCase {
     }
   }
 
-  def testRepeatedWithDefault(): Unit = {
+  def testRepeatedWithDefault(): Unit =
     assertMatches(messages("def f(i: Int, js: Int* = 1) {}")) {
       case Error(
             "(i: Int, js: Int* = 1)",
             "Parameter section with *-parameter cannot have default arguments") :: Nil =>
     }
-  }
 
   def testByName(): Unit = {
     assertMatches(messages("def f(a: A)(implicit b: => B) {}")) {
@@ -76,7 +75,7 @@ class ParametersAnnotatorTest extends SimpleTestCase {
     }
   }
 
-  def testMissingTypeAnnotation(): Unit = {
+  def testMissingTypeAnnotation(): Unit =
     assertMatches(
       messages("def test(p1: String, p2 = \"default\") = p1 concat p2")) {
       //SCL-3799
@@ -84,7 +83,6 @@ class ParametersAnnotatorTest extends SimpleTestCase {
             "p2 = \"default\"",
             "Missing type annotation for parameter: p2") :: Nil =>
     }
-  }
 
   def messages(@Language(value = "Scala", prefix = Header) code: String)
       : List[Message] = {

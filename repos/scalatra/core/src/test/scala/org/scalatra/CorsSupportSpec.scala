@@ -28,20 +28,18 @@ class CorsSupportSpec extends ScalatraSpec {
     "The CORS support should" ^ "augment a valid simple request" ! context.validSimpleRequest ^ "not touch a regular request" ! context.dontTouchRegularRequest ^ "respond to a valid preflight request" ! context.validPreflightRequest ^ "respond to a valid preflight request with headers" ! context.validPreflightRequestWithHeaders ^ end
 
   object context {
-    def validSimpleRequest = {
+    def validSimpleRequest =
       get(
         "/",
         headers = Map(CorsSupport.OriginHeader -> "http://www.example.com")) {
         response.getHeader(CorsSupport.AccessControlAllowOriginHeader) must_== "http://www.example.com"
       }
-    }
-    def dontTouchRegularRequest = {
+    def dontTouchRegularRequest =
       get("/") {
         response.getHeader(CorsSupport.AccessControlAllowOriginHeader) must beNull
       }
-    }
 
-    def validPreflightRequest = {
+    def validPreflightRequest =
       options(
         "/",
         headers = Map(
@@ -51,7 +49,6 @@ class CorsSupportSpec extends ScalatraSpec {
       ) {
         response.getHeader(CorsSupport.AccessControlAllowOriginHeader) must_== "http://www.example.com"
       }
-    }
 
     def validPreflightRequestWithHeaders = {
       val hdrs = Map(
@@ -95,12 +92,11 @@ class DisabledCorsSupportSpec extends ScalatraSpec {
     "The CORS support should" ^ "be disabled with configuration" ! context.simpleRequestToDisabledCors ^ end
 
   object context {
-    def simpleRequestToDisabledCors = {
+    def simpleRequestToDisabledCors =
       get(
         "/disabled/",
         headers = Map(CorsSupport.OriginHeader -> "http://www.example.com")) {
         response.getHeader(CorsSupport.AccessControlAllowOriginHeader) must_== null
       }
-    }
   }
 }

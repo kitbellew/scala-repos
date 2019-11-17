@@ -34,13 +34,12 @@ class ALSLocalModel( // MODIFIED
 
   @transient lazy val itemIntStringMap = itemStringIntMap.inverse
 
-  override def toString = {
+  override def toString =
     s" productFeatures: [${productFeatures.size}]" + // MODIFIED
       s"(${productFeatures.take(2).toList}...)" +
       s" itemStringIntMap: [${itemStringIntMap.size}]" +
       s"(${itemStringIntMap.take(2).toString}...)]" +
       s" items: [${items.size}]" + s"(${items.take(2).toString}...)]"
-  }
 }
 
 /**
@@ -244,20 +243,19 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       queryList: Set[Int],
       whiteList: Option[Set[Int]],
       blackList: Option[Set[Int]]
-  ): Boolean = {
+  ): Boolean =
     whiteList.map(_.contains(i)).getOrElse(true) &&
-    blackList.map(!_.contains(i)).getOrElse(true) &&
-    // discard items in query as well
-    (!queryList.contains(i)) && // filter categories
-    categories
-      .map { cat =>
-        items(i).categories
-          .map { itemCat =>
-            // keep this item if has ovelap categories with the query
-            !(itemCat.toSet.intersect(cat).isEmpty)
-          }
-          .getOrElse(false) // discard this item if it has no categories
-      }
-      .getOrElse(true)
-  }
+      blackList.map(!_.contains(i)).getOrElse(true) &&
+      // discard items in query as well
+      (!queryList.contains(i)) && // filter categories
+      categories
+        .map { cat =>
+          items(i).categories
+            .map { itemCat =>
+              // keep this item if has ovelap categories with the query
+              !(itemCat.toSet.intersect(cat).isEmpty)
+            }
+            .getOrElse(false) // discard this item if it has no categories
+        }
+        .getOrElse(true)
 }

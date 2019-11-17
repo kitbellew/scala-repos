@@ -121,9 +121,8 @@ object ScalaJSPluginInternal {
          global["Object"] === Object) ? global : this)"""
   }
 
-  def logIRCacheStats(logger: Logger): Unit = {
+  def logIRCacheStats(logger: Logger): Unit =
     logger.debug("Global IR cache stats: " + globalIRCache.stats.logLine)
-  }
 
   /** Patches the IncOptions so that .sjsir files are pruned as needed.
     *
@@ -138,7 +137,7 @@ object ScalaJSPluginInternal {
       new ClassfileManager {
         private[this] val inherited = inheritedNewClassfileManager()
 
-        def delete(classes: Iterable[File]): Unit = {
+        def delete(classes: Iterable[File]): Unit =
           inherited.delete(classes flatMap { classFile =>
             val scalaJSFiles =
               if (classFile.getPath endsWith ".class") {
@@ -149,7 +148,6 @@ object ScalaJSPluginInternal {
               } else Nil
             classFile :: scalaJSFiles
           })
-        }
 
         def generated(classes: Iterable[File]): Unit =
           inherited.generated(classes)
@@ -161,7 +159,7 @@ object ScalaJSPluginInternal {
   private def packageJSDependenciesSetting(
       taskKey: TaskKey[File],
       cacheName: String,
-      getLib: ResolvedJSDependency => VirtualJSFile): Setting[Task[File]] = {
+      getLib: ResolvedJSDependency => VirtualJSFile): Setting[Task[File]] =
     taskKey <<= Def.taskDyn {
       if ((skip in taskKey).value) Def.task((artifactPath in taskKey).value)
       else
@@ -190,7 +188,6 @@ object ScalaJSPluginInternal {
           output
         }
     }
-  }
 
   /** Settings for the production key (e.g. fastOptJS) of a given stage */
   private def scalaJSStageSettings(
@@ -314,9 +311,8 @@ object ScalaJSPluginInternal {
       }
     }
 
-    def sjsirFileOnClasspathParser(relPaths: Seq[String]): Parser[String] = {
+    def sjsirFileOnClasspathParser(relPaths: Seq[String]): Parser[String] =
       OptSpace ~> StringBasic.examples(ScalajspUtils.relPathsExamples(relPaths))
-    }
 
     def scalajspParser(state: State, relPaths: Seq[String]) =
       optionsParser ~ sjsirFileOnClasspathParser(relPaths)
@@ -686,10 +682,9 @@ object ScalaJSPluginInternal {
     s"$jsGlobalExpr$parts().main();\n"
   }
 
-  private def memLauncher(mainCl: String) = {
+  private def memLauncher(mainCl: String) =
     new MemVirtualJSFile("Generated launcher file")
       .withContent(launcherContent(mainCl))
-  }
 
   def discoverJSApps(analysis: inc.Analysis): Seq[String] = {
     import xsbt.api.{Discovered, Discovery}

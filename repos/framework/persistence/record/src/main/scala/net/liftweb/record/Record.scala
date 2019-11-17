@@ -44,31 +44,27 @@ trait Record[MyType <: Record[MyType]] extends FieldContainer { self: MyType =>
   /**
     * Is it safe to make changes to the record (or should we check access control?)
     */
-  final def safe_? : Boolean = {
+  final def safe_? : Boolean =
     Safe.safe_?(System.identityHashCode(this))
-  }
 
-  def runSafe[T](f: => T): T = {
+  def runSafe[T](f: => T): T =
     Safe.runSafe(System.identityHashCode(this))(f)
-  }
 
   /**
     * Returns the HTML representation of this Record
     */
-  def toXHtml: NodeSeq = {
+  def toXHtml: NodeSeq =
     meta.toXHtml(this)
-  }
 
   /**
     * Validates this Record by calling validators for each field
     *
     * @return a List of FieldError. If this list is empty you can assume that record was validated successfully
     */
-  def validate: List[FieldError] = {
+  def validate: List[FieldError] =
     runSafe {
       meta.validate(this)
     }
-  }
 
   /**
     * Returns the JSON representation of this record
@@ -116,11 +112,10 @@ trait Record[MyType <: Record[MyType]] extends FieldContainer { self: MyType =>
     *
     * @return the form
     */
-  def toForm(button: Box[String])(f: MyType => Unit): NodeSeq = {
+  def toForm(button: Box[String])(f: MyType => Unit): NodeSeq =
     meta.toForm(this) ++ (SHtml.hidden(() => f(this))) ++
       ((button.map(b => (<input type="submit" value={b}/>)) openOr scala.xml
         .Text("")))
-  }
 
   /**
     * Present the model as a form and execute the function on submission of the form
@@ -141,7 +136,7 @@ trait Record[MyType <: Record[MyType]] extends FieldContainer { self: MyType =>
   def fieldByName(fieldName: String): Box[Field[_, MyType]] =
     meta.fieldByName(fieldName, this)
 
-  override def equals(other: Any): Boolean = {
+  override def equals(other: Any): Boolean =
     other match {
       case that: Record[MyType] =>
         that.fields.corresponds(this.fields) { (a, b) =>
@@ -149,7 +144,6 @@ trait Record[MyType <: Record[MyType]] extends FieldContainer { self: MyType =>
         }
       case _ => false
     }
-  }
 
   override def toString = {
     val fieldList = this.fields.map(

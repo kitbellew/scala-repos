@@ -185,7 +185,7 @@ object ShardCoordinator {
 
     override def rebalance(
         currentShardAllocations: Map[ActorRef, immutable.IndexedSeq[ShardId]],
-        rebalanceInProgress: Set[ShardId]): Future[Set[ShardId]] = {
+        rebalanceInProgress: Set[ShardId]): Future[Set[ShardId]] =
       if (rebalanceInProgress.size < maxSimultaneousRebalance) {
         val (regionWithLeastShards, leastShards) =
           currentShardAllocations.minBy { case (_, v) ⇒ v.size }
@@ -198,7 +198,6 @@ object ShardCoordinator {
           Future.successful(Set(mostShards.head))
         else emptyRebalanceResult
       } else emptyRebalanceResult
-    }
   }
 
   /**
@@ -344,10 +343,9 @@ object ShardCoordinator {
         rememberEntities: Boolean = false)
         extends ClusterShardingSerializable {
 
-      def withRememberEntities(enabled: Boolean): State = {
+      def withRememberEntities(enabled: Boolean): State =
         if (enabled) copy(rememberEntities = enabled)
         else copy(unallocatedShards = Set.empty, rememberEntities = enabled)
-      }
 
       def updated(event: DomainEvent): State = event match {
         case ShardRegionRegistered(region) ⇒
@@ -817,10 +815,9 @@ abstract class ShardCoordinator(
     unAckedHostShards = unAckedHostShards.updated(shard, cancel)
   }
 
-  def allocateShardHomes(): Unit = {
+  def allocateShardHomes(): Unit =
     if (settings.rememberEntities)
       state.unallocatedShards.foreach { self ! GetShardHome(_) }
-  }
 
   def continueGetShardHome(
       shard: ShardId,

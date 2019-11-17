@@ -79,7 +79,7 @@ abstract class ClusterShardingGetStateSpec
 
   def initialParticipants = roles.size
 
-  def startShard(): ActorRef = {
+  def startShard(): ActorRef =
     ClusterSharding(system).start(
       typeName = shardTypeName,
       entityProps = Props(new ShardedActor),
@@ -87,15 +87,13 @@ abstract class ClusterShardingGetStateSpec
       extractEntityId = extractEntityId,
       extractShardId = extractShardId
     )
-  }
 
-  def startProxy(): ActorRef = {
+  def startProxy(): ActorRef =
     ClusterSharding(system).startProxy(
       typeName = shardTypeName,
       role = Some("shard"),
       extractEntityId = extractEntityId,
       extractShardId = extractShardId)
-  }
 
   def join(from: RoleName): Unit = {
     runOn(from) {

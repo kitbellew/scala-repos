@@ -35,11 +35,10 @@ final class OptionalThrowable(private val exception: Throwable)
     * @throws java.lang.IllegalStateException if this
     *     <code>OptionalThrowable</code> is not defined.
     */
-  def get(): Throwable = {
+  def get(): Throwable =
     if (exception == null)
       throw new IllegalStateException("This OptionalThrowable is not defined")
     else exception
-  }
 
   override def equals(that: Any): Boolean = that match {
     case that: OptionalThrowable =>
@@ -50,8 +49,7 @@ final class OptionalThrowable(private val exception: Throwable)
   override def hashCode(): Int =
     if (exception == null) 0 else exception.hashCode()
 
-  override def toString(): String = {
+  override def toString(): String =
     if (exception == null) "OptionalThrowable()"
     else s"OptionalThrowable($exception)"
-  }
 }

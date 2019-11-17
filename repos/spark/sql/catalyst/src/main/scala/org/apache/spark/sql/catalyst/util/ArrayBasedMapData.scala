@@ -40,13 +40,11 @@ class ArrayBasedMapData(val keyArray: ArrayData, val valueArray: ArrayData)
     ArrayBasedMapData.toScalaMap(this) == ArrayBasedMapData.toScalaMap(other)
   }
 
-  override def hashCode: Int = {
+  override def hashCode: Int =
     ArrayBasedMapData.toScalaMap(this).hashCode()
-  }
 
-  override def toString: String = {
+  override def toString: String =
     s"keys: $keyArray, values: $valueArray"
-  }
 }
 
 object ArrayBasedMapData {
@@ -55,11 +53,10 @@ object ArrayBasedMapData {
     ArrayBasedMapData(array.map(_._1), array.map(_._2))
   }
 
-  def apply(keys: Array[Any], values: Array[Any]): ArrayBasedMapData = {
+  def apply(keys: Array[Any], values: Array[Any]): ArrayBasedMapData =
     new ArrayBasedMapData(
       new GenericArrayData(keys),
       new GenericArrayData(values))
-  }
 
   def toScalaMap(map: ArrayBasedMapData): Map[Any, Any] = {
     val keys = map.keyArray.asInstanceOf[GenericArrayData].array
@@ -67,13 +64,11 @@ object ArrayBasedMapData {
     keys.zip(values).toMap
   }
 
-  def toScalaMap(keys: Array[Any], values: Array[Any]): Map[Any, Any] = {
+  def toScalaMap(keys: Array[Any], values: Array[Any]): Map[Any, Any] =
     keys.zip(values).toMap
-  }
 
-  def toScalaMap(keys: Seq[Any], values: Seq[Any]): Map[Any, Any] = {
+  def toScalaMap(keys: Seq[Any], values: Seq[Any]): Map[Any, Any] =
     keys.zip(values).toMap
-  }
 
   def toJavaMap(
       keys: Array[Any],

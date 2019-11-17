@@ -92,7 +92,7 @@ private class SelectorMap(binds: List[CssBind])
   // The KidsSubNode always has to go last or else we
   // get into an issue where we're trying to apply the whole
   // transform to the whole shooting match
-  private def sortBinds(lst: List[CssBind]): List[CssBind] = {
+  private def sortBinds(lst: List[CssBind]): List[CssBind] =
     lst.sortWith {
       case (SubNode(me: EmptyBox), SubNode(_))               => true
       case (SubNode(_), SubNode(them: EmptyBox))             => false
@@ -105,7 +105,6 @@ private class SelectorMap(binds: List[CssBind])
       case (SubNode(_), SubNode(Full(AppendKidsSubNode())))  => true
       case _                                                 => true
     }
-  }
 
   private val (
     idMap,
@@ -737,7 +736,7 @@ trait CssBindImplicits {
       * @tparam T the type of it
       * @return the function that will transform an incoming DOM based on the transform rules
       */
-    def #>[T](replacement: => T)(implicit converter: CanBind[T]): CssSel = {
+    def #>[T](replacement: => T)(implicit converter: CanBind[T]): CssSel =
       cssSelector.collect {
         case EnclosedSelector(a, b) =>
           new CssBindPromoter(stringSelector, Full(a)) #> nsFunc({ ns =>
@@ -749,7 +748,6 @@ trait CssBindImplicits {
           def calculate(in: NodeSeq): Seq[NodeSeq] = converter(replacement)(in)
         }
       }
-    }
 
     /**
       * Transform a DOM (NodeSeq) based on rules
@@ -759,9 +757,8 @@ trait CssBindImplicits {
       * @tparam T the type of it
       * @return the function that will transform an incoming DOM based on the transform rules
       */
-    def replaceWith[T](it: => T)(implicit computer: CanBind[T]): CssSel = {
+    def replaceWith[T](it: => T)(implicit computer: CanBind[T]): CssSel =
       this.#>(it)(computer)
-    }
   }
   implicit class StringToCssBindPromoter(stringSelector: String)
       extends CssBindPromoter(

@@ -83,7 +83,7 @@ trait HTTPProvider {
   /**
     * Executes Lift's Boot and makes necessary initializations
     */
-  protected def bootLift(loader: Box[String]): Unit = {
+  protected def bootLift(loader: Box[String]): Unit =
     try {
       val b: Bootable =
         loader.map(b => Class.forName(b).newInstance.asInstanceOf[Bootable]) openOr DefaultBootstrap
@@ -118,7 +118,6 @@ trait HTTPProvider {
       actualServlet = new LiftServlet(context)
       actualServlet.init
     }
-  }
 
   private def preBoot() {
     // do this stateless
@@ -155,7 +154,7 @@ trait HTTPProvider {
   /**
     * Tests if a request should be handled by Lift or passed to the container to be executed by other potential filters or servlets.
     */
-  protected def isLiftRequest_?(session: Req): Boolean = {
+  protected def isLiftRequest_?(session: Req): Boolean =
     NamedPF.applyBox(session, LiftRules.liftRequest.toList) match {
       case Full(b) => b
       case _ =>
@@ -165,5 +164,4 @@ trait HTTPProvider {
             case x :: xs => liftHandled(x)
           }) || context.resource(session.uri) == null
     }
-  }
 }

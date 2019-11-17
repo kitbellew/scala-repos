@@ -53,20 +53,18 @@ private[spark] class ChunkedByteBuffer(var chunks: Array[ByteBuffer]) {
   /**
     * Write this buffer to a channel.
     */
-  def writeFully(channel: WritableByteChannel): Unit = {
+  def writeFully(channel: WritableByteChannel): Unit =
     for (bytes <- getChunks()) {
       while (bytes.remaining > 0) {
         channel.write(bytes)
       }
     }
-  }
 
   /**
     * Wrap this buffer to view it as a Netty ByteBuf.
     */
-  def toNetty: ByteBuf = {
+  def toNetty: ByteBuf =
     Unpooled.wrappedBuffer(getChunks(): _*)
-  }
 
   /**
     * Copy this buffer into a new byte array.
@@ -89,13 +87,12 @@ private[spark] class ChunkedByteBuffer(var chunks: Array[ByteBuffer]) {
     *
     * @throws UnsupportedOperationException if this buffer's size exceeds the max ByteBuffer size.
     */
-  def toByteBuffer: ByteBuffer = {
+  def toByteBuffer: ByteBuffer =
     if (chunks.length == 1) {
       chunks.head.duplicate()
     } else {
       ByteBuffer.wrap(toArray)
     }
-  }
 
   /**
     * Creates an input stream to read data from this ChunkedByteBuffer.
@@ -103,16 +100,14 @@ private[spark] class ChunkedByteBuffer(var chunks: Array[ByteBuffer]) {
     * @param dispose if true, [[dispose()]] will be called at the end of the stream
     *                in order to close any memory-mapped files which back this buffer.
     */
-  def toInputStream(dispose: Boolean = false): InputStream = {
+  def toInputStream(dispose: Boolean = false): InputStream =
     new ChunkedByteBufferInputStream(this, dispose)
-  }
 
   /**
     * Get duplicates of the ByteBuffers backing this ChunkedByteBuffer.
     */
-  def getChunks(): Array[ByteBuffer] = {
+  def getChunks(): Array[ByteBuffer] =
     chunks.map(_.duplicate())
-  }
 
   /**
     * Make a copy of this ChunkedByteBuffer, copying all of the backing data into new buffers.
@@ -135,9 +130,8 @@ private[spark] class ChunkedByteBuffer(var chunks: Array[ByteBuffer]) {
     * waiting for the GC to find it because that could lead to huge numbers of open files. There's
     * unfortunately no standard API to do this.
     */
-  def dispose(): Unit = {
+  def dispose(): Unit =
     chunks.foreach(StorageUtils.dispose)
-  }
 }
 
 /**
@@ -186,7 +180,7 @@ private class ChunkedByteBufferInputStream(
     }
   }
 
-  override def skip(bytes: Long): Long = {
+  override def skip(bytes: Long): Long =
     if (currentChunk != null) {
       val amountToSkip = math.min(bytes, currentChunk.remaining).toInt
       currentChunk.position(currentChunk.position + amountToSkip)
@@ -201,7 +195,6 @@ private class ChunkedByteBufferInputStream(
     } else {
       0L
     }
-  }
 
   override def close(): Unit = {
     if (chunkedByteBuffer != null && dispose) {

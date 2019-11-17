@@ -91,9 +91,8 @@ case class SiteMap(
     * Find all the menu items for a given group.
     * This method returns menu tree
     */
-  def menuForGroup(group: String): CompleteMenu = {
+  def menuForGroup(group: String): CompleteMenu =
     CompleteMenu(kids.flatMap(_.makeMenuItem(Nil, group)))
-  }
 
   lazy val menus: List[Menu] = locs.valuesIterator.map(_.menu).toList
 

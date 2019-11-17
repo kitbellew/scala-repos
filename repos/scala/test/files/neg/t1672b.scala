@@ -1,6 +1,6 @@
 object Test {
   @annotation.tailrec
-  def bar: Nothing = {
+  def bar: Nothing =
     try {
       throw new RuntimeException
     } catch {
@@ -8,10 +8,9 @@ object Test {
     } finally {
       bar
     }
-  }
 
   @annotation.tailrec
-  def baz: Nothing = {
+  def baz: Nothing =
     try {
       throw new RuntimeException
     } catch {
@@ -19,29 +18,26 @@ object Test {
     } finally {
       ???
     }
-  }
 
   @annotation.tailrec
-  def boz: Nothing = {
+  def boz: Nothing =
     try {
       throw new RuntimeException
     } catch {
       case _: Throwable => boz; ???
     }
-  }
 
   @annotation.tailrec
-  def bez: Nothing = {
+  def bez: Nothing =
     try {
       bez
     } finally {
       ???
     }
-  }
 
   // the `liftedTree` local method will prevent a tail call here.
   @annotation.tailrec
-  def bar(i: Int): Int = {
+  def bar(i: Int): Int =
     if (i == 0) 0
     else
       1 +
@@ -50,5 +46,4 @@ object Test {
         } catch {
           case _: Throwable => bar(i - 1)
         })
-  }
 }

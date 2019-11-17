@@ -52,9 +52,8 @@ class Tool extends Configured with HTool {
   // This both updates the jobConf with hadoop arguments
   // and returns all the non-hadoop arguments. Should be called once if
   // you want to process hadoop arguments (like -libjars).
-  protected def nonHadoopArgsFrom(args: Array[String]): Array[String] = {
+  protected def nonHadoopArgsFrom(args: Array[String]): Array[String] =
     (new GenericOptionsParser(getConf, args)).getRemainingArgs
-  }
 
   def parseModeArgs(args: Array[String]): (Mode, Args) = {
     val a = Args(nonHadoopArgsFrom(args))

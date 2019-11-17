@@ -119,7 +119,7 @@ class ZkAsyncSemaphore(
     * - Reject all current waiters if our session expires.
     * - Check waiters if the client has reconnected and our session is still valid.
     */
-  private[this] def createSemaphoreNode(): Future[ZNode] = {
+  private[this] def createSemaphoreNode(): Future[ZNode] =
     safeCreate(path) map { semaphoreNode =>
       zk() map { client =>
         // client is always connected here.
@@ -136,7 +136,6 @@ class ZkAsyncSemaphore(
       }
       semaphoreNode
     }
-  }
 
   /**
     * Create intermediate zookeeper nodes as required so that the specified path exists.
@@ -164,7 +163,7 @@ class ZkAsyncSemaphore(
     * @return A Future sequence of ZNodes that exist for this semaphore (each a request for a Permit)
     *         The sequence includes both nodes that have entered the semaphore as well as waiters.
     */
-  private[this] def permitNodes(): Future[Seq[ZNode]] = {
+  private[this] def permitNodes(): Future[Seq[ZNode]] =
     futureSemaphoreNode flatMap { semaphoreNode =>
       semaphoreNode.getChildren() map { zop =>
         zop.children filter { child =>
@@ -172,7 +171,6 @@ class ZkAsyncSemaphore(
         } sortBy (child => sequenceNumberOf(child.path))
       }
     }
-  }
 
   /**
     * Continuously monitor the semaphore node for changes. If there are permit promises in the waitq,
@@ -257,7 +255,7 @@ class ZkAsyncSemaphore(
     * @return A Future Int representing the number of Permits that may be provided by this semaphore.
     * @throws LackOfConsensusException When there is no consensus.
     */
-  private[this] def getConsensusNumPermits(permits: Seq[ZNode]): Future[Int] = {
+  private[this] def getConsensusNumPermits(permits: Seq[ZNode]): Future[Int] =
     Future.collect(permits map numPermitsOf) map { purportedNumPermits =>
       val groupedByNumPermits =
         purportedNumPermits filter { i =>
@@ -285,7 +283,6 @@ class ZkAsyncSemaphore(
             .format(numPermits, numPermitsInMax))
       }
     }
-  }
 
   private[this] def sequenceNumberOf(path: String): Int = {
     if (!path.startsWith(permitNodePathPrefix))
@@ -293,7 +290,7 @@ class ZkAsyncSemaphore(
     path.substring(permitNodePathPrefix.length).toInt
   }
 
-  private[this] def numPermitsOf(node: ZNode): Future[Int] = {
+  private[this] def numPermitsOf(node: ZNode): Future[Int] =
     node.getData() map { data =>
       try {
         new String(data.bytes, Charset.forName("UTF8")).toInt
@@ -301,7 +298,6 @@ class ZkAsyncSemaphore(
         case err: NumberFormatException => -1
       }
     }
-  }
 }
 
 object ZkAsyncSemaphore {

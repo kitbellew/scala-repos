@@ -22,17 +22,14 @@ object InfoSerializers {
     */
   final val IRMagicNumber = 0xCAFE4A53
 
-  def serialize(stream: OutputStream, classInfo: ClassInfo): Unit = {
+  def serialize(stream: OutputStream, classInfo: ClassInfo): Unit =
     new Serializer().serialize(stream, classInfo)
-  }
 
-  def deserialize(stream: InputStream): ClassInfo = {
+  def deserialize(stream: InputStream): ClassInfo =
     deserializeWithVersion(stream)._2
-  }
 
-  def deserializeWithVersion(stream: InputStream): (String, ClassInfo) = {
+  def deserializeWithVersion(stream: InputStream): (String, ClassInfo) =
     new Deserializer(stream).deserialize()
-  }
 
   private final class Serializer {
     def serialize(stream: OutputStream, classInfo: ClassInfo): Unit = {

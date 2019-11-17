@@ -35,8 +35,7 @@ class FlowModule(leadershipModule: LeadershipModule) {
       conf: ReviveOffersConfig,
       marathonEventStream: EventStream,
       offersWanted: Observable[Boolean],
-      driverHolder: MarathonSchedulerDriverHolder): Option[OfferReviver] = {
-
+      driverHolder: MarathonSchedulerDriverHolder): Option[OfferReviver] =
     if (conf.reviveOffersForNewApps()) {
       lazy val reviveOffersActor = ReviveOffersActor.props(
         clock,
@@ -56,7 +55,6 @@ class FlowModule(leadershipModule: LeadershipModule) {
         s"Calling reviveOffers is disabled. Use --revive_offers_for_new_apps to enable.")
       None
     }
-  }
 
   /**
     * Refills the launch tokens of the OfferMatcherManager periodically. See [[LaunchTokenConfig]] for configuration.

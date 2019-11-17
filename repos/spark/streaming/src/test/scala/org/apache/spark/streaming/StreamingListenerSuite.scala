@@ -294,11 +294,10 @@ class StreamingListenerSuite extends TestSuiteBase with Matchers {
   }
 
   /** Check if a sequence of numbers is in increasing order */
-  def isInIncreasingOrder(data: Iterable[Long]): Boolean = {
+  def isInIncreasingOrder(data: Iterable[Long]): Boolean =
     !data.sliding(2).exists { itr =>
       itr.size == 2 && itr.head > itr.tail.head
     }
-  }
 }
 
 /** Listener that collects information on processed batches */
@@ -354,16 +353,14 @@ class OutputOperationInfoCollector extends StreamingListener {
   val completedOutputOperationIds = new ConcurrentLinkedQueue[Int]()
 
   override def onOutputOperationStarted(
-      outputOperationStarted: StreamingListenerOutputOperationStarted): Unit = {
+      outputOperationStarted: StreamingListenerOutputOperationStarted): Unit =
     startedOutputOperationIds.add(outputOperationStarted.outputOperationInfo.id)
-  }
 
   override def onOutputOperationCompleted(
       outputOperationCompleted: StreamingListenerOutputOperationCompleted)
-      : Unit = {
+      : Unit =
     completedOutputOperationIds.add(
       outputOperationCompleted.outputOperationInfo.id)
-  }
 }
 
 class StreamingListenerSuiteReceiver
@@ -392,13 +389,12 @@ class FailureReasonsCollector extends StreamingListener {
 
   override def onOutputOperationCompleted(
       outputOperationCompleted: StreamingListenerOutputOperationCompleted)
-      : Unit = {
+      : Unit =
     outputOperationCompleted.outputOperationInfo.failureReason.foreach { f =>
       failureReasons.synchronized {
         failureReasons(outputOperationCompleted.outputOperationInfo.id) = f
       }
     }
-  }
 }
 
 /**

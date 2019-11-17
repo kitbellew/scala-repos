@@ -43,7 +43,7 @@ final case class FutureInvocation[T](
     function: () => T,
     cleanup: () => Unit)
     extends Runnable {
-  def run = {
+  def run =
     future complete
       (try {
         Right(function())
@@ -54,7 +54,6 @@ final case class FutureInvocation[T](
       } finally {
         cleanup()
       })
-  }
 }
 
 object MessageDispatcher {
@@ -149,7 +148,7 @@ trait MessageDispatcher {
     }
   }
 
-  private[akka] def unregister(actorRef: ActorRef) = {
+  private[akka] def unregister(actorRef: ActorRef) =
     if (uuids remove actorRef.uuid) {
       actorRef.mailbox = null
       if (uuids.isEmpty && futures.get == 0) {
@@ -166,7 +165,6 @@ trait MessageDispatcher {
         }
       }
     }
-  }
 
   /**
     * Traverses the list of actors (uuids) currently being attached to this dispatcher and stops those actors

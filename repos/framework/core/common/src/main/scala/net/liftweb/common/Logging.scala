@@ -120,20 +120,18 @@ object MDC {
   /**
     * Put a (key,value) pair into the Mapped Diagnostic Context
     */
-  def put(kvs: (String, Any)*) = {
+  def put(kvs: (String, Any)*) =
     kvs foreach { v =>
       SLF4JMDC.put(v._1, v._2.toString)
     }
-  }
 
   /**
     * Clear key from the Mapped Diagnostic Context
     */
-  def remove(keys: String*) = {
+  def remove(keys: String*) =
     keys foreach { k =>
       SLF4JMDC.remove(k)
     }
-  }
 
   /**
     * Clear all entries from the Mapped Diagnostic Context
@@ -180,7 +178,7 @@ trait Logger {
     * `Failure`, trace the message concatenated with the `Failure`'s message. If
     * the `Failure` contains an `Exception`, trace that as well.
     */
-  def trace(msg: => AnyRef, box: Box[_]): Unit = {
+  def trace(msg: => AnyRef, box: Box[_]): Unit =
     if (logger.isTraceEnabled) {
       box match {
         case Failure(fmsg, Full(e), _) =>
@@ -189,7 +187,6 @@ trait Logger {
         case _                   =>
       }
     }
-  }
 
   def trace(msg: => AnyRef) =
     if (logger.isTraceEnabled) logger.trace(String.valueOf(msg))
@@ -206,7 +203,7 @@ trait Logger {
     * `Failure`, debug the message concatenated with the `Failure`'s message.  If
     * the `Failure` contains an `Exception`, debug that as well.
     */
-  def debug(msg: => AnyRef, box: Box[_]): Unit = {
+  def debug(msg: => AnyRef, box: Box[_]): Unit =
     if (logger.isDebugEnabled) {
       box match {
         case Failure(fmsg, Full(e), _) =>
@@ -215,7 +212,6 @@ trait Logger {
         case _                   =>
       }
     }
-  }
 
   def debug(msg: => AnyRef) =
     if (logger.isDebugEnabled) logger.debug(String.valueOf(msg))
@@ -232,7 +228,7 @@ trait Logger {
     * info the message concatenated with the `Failure`'s message.  If the
     * `Failure` contains an `Exception`, info that as well.
     */
-  def info(msg: => AnyRef, box: Box[_]): Unit = {
+  def info(msg: => AnyRef, box: Box[_]): Unit =
     if (logger.isInfoEnabled) {
       box match {
         case Failure(fmsg, Full(e), _) =>
@@ -241,7 +237,6 @@ trait Logger {
         case _                   =>
       }
     }
-  }
   def info(msg: => AnyRef) =
     if (logger.isInfoEnabled) logger.info(String.valueOf(msg))
   def info(msg: => AnyRef, t: => Throwable) =
@@ -257,7 +252,7 @@ trait Logger {
     * warn the message concatenated with the `Failure`'s message.  If the
     * `Failure` contains an `Exception`, warn that as well.
     */
-  def warn(msg: => AnyRef, box: Box[_]): Unit = {
+  def warn(msg: => AnyRef, box: Box[_]): Unit =
     if (logger.isWarnEnabled) {
       box match {
         case Failure(fmsg, Full(e), _) =>
@@ -266,7 +261,6 @@ trait Logger {
         case _                   =>
       }
     }
-  }
   def warn(msg: => AnyRef) =
     if (logger.isWarnEnabled) logger.warn(String.valueOf(msg))
   def warn(msg: => AnyRef, t: Throwable) =
@@ -282,7 +276,7 @@ trait Logger {
     * error the message concatenated with the `Failure`'s message.  If the
     * `Failure` contains an `Exception`, error that as well.
     */
-  def error(msg: => AnyRef, box: Box[_]): Unit = {
+  def error(msg: => AnyRef, box: Box[_]): Unit =
     if (logger.isErrorEnabled) {
       box match {
         case Failure(fmsg, Full(e), _) =>
@@ -291,7 +285,6 @@ trait Logger {
         case _                   =>
       }
     }
-  }
 
   def error(msg: => AnyRef) =
     if (logger.isErrorEnabled) logger.error(String.valueOf(msg))
@@ -359,12 +352,11 @@ object Log4j {
     * Configure with the contents of the file at the specified `url` (either
     * `.xml` or `.properties`).
     */
-  def withFile(url: java.net.URL)() = {
+  def withFile(url: java.net.URL)() =
     if (url.getPath.endsWith(".xml")) {
       val domConf = new DOMConfigurator
       domConf.doConfigure(url, LogManager.getLoggerRepository())
     } else PropertyConfigurator.configure(url)
-  }
 
   /**
     * Configure with the specified configuration. `config` must contain a valid

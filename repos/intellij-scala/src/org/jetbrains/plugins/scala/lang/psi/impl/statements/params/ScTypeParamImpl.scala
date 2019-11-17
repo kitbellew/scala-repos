@@ -140,11 +140,10 @@ class ScTypeParamImpl private (
     } else super.upperTypeElement
   }
 
-  override def getIcon(flags: Int) = {
+  override def getIcon(flags: Int) =
     Icons.TYPE_ALIAS
-  }
 
-  override def getSuperTypes: Array[PsiClassType] = {
+  override def getSuperTypes: Array[PsiClassType] =
     // For Java
     upperBound match {
       case Success(t, _) =>
@@ -164,5 +163,4 @@ class ScTypeParamImpl private (
         }
       case Failure(_, _) => Array()
     }
-  }
 }

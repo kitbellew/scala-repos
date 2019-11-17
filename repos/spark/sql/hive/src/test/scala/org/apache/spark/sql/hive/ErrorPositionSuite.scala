@@ -41,14 +41,13 @@ class ErrorPositionSuite
     Seq((1, 1, 1)).toDF("a", "a", "b").registerTempTable("dupAttributes")
   }
 
-  override protected def afterEach(): Unit = {
+  override protected def afterEach(): Unit =
     try {
       sqlContext.dropTempTable("src")
       sqlContext.dropTempTable("dupAttributes")
     } finally {
       super.afterEach()
     }
-  }
 
   positionTest(
     "ambiguous attribute reference 1",

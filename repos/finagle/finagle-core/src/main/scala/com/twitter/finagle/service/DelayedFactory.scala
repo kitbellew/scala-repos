@@ -50,7 +50,7 @@ class DelayedFactory[Req, Rep](
       fac(conn)
     }
 
-  override def close(deadline: Time): Future[Unit] = {
+  override def close(deadline: Time): Future[Unit] =
     if (underlyingF.isDefined)
       wrapped flatMap { svc =>
         svc.close(deadline)
@@ -61,7 +61,6 @@ class DelayedFactory[Req, Rep](
       for (p <- q.asScala) p.raise(exc)
       Future.Done
     }
-  }
 
   override def status: Status =
     if (underlyingF.isDefined) Await.result(underlyingF).status

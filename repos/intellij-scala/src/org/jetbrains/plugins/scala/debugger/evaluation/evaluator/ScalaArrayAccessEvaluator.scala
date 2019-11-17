@@ -54,7 +54,7 @@ class ScalaArrayAccessEvaluator(
         def setValue(value: Value) {
           myEvaluatedArrayReference.setValue(myEvaluatedIndex, value)
         }
-        def getExpectedType: Type = {
+        def getExpectedType: Type =
           try {
             val tp: ArrayType =
               myEvaluatedArrayReference.referenceType.asInstanceOf[ArrayType]
@@ -63,13 +63,11 @@ class ScalaArrayAccessEvaluator(
             case e: ClassNotLoadedException =>
               throw EvaluationException(e)
           }
-        }
-        def getInspectItem(project: Project): NodeDescriptorImpl = {
+        def getInspectItem(project: Project): NodeDescriptorImpl =
           new ArrayElementDescriptorImpl(
             project,
             myEvaluatedArrayReference,
             myEvaluatedIndex)
-        }
       }
     }
     modifier

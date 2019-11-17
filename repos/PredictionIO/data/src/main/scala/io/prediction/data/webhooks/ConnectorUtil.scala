@@ -33,11 +33,9 @@ private[prediction] object ConnectorUtil {
   // Event object so that the Event object formation is consistent
   // by enforcing JSON format
 
-  def toEvent(connector: JsonConnector, data: JObject): Event = {
+  def toEvent(connector: JsonConnector, data: JObject): Event =
     read[Event](write(connector.toEventJson(data)))
-  }
 
-  def toEvent(connector: FormConnector, data: Map[String, String]): Event = {
+  def toEvent(connector: FormConnector, data: Map[String, String]): Event =
     read[Event](write(connector.toEventJson(data)))
-  }
 }

@@ -898,9 +898,8 @@ trait ScalaReflection {
     * or nested classes in package objects, it uses the dollar sign ($) to create
     * synthetic classes, emulating behaviour in Java bytecode.
     */
-  def getClassNameFromType(tpe: `Type`): String = {
+  def getClassNameFromType(tpe: `Type`): String =
     tpe.erasure.typeSymbol.asClass.fullName
-  }
 
   /**
     * Returns classes of input parameters of scala function object.

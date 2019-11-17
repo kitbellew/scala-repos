@@ -84,7 +84,7 @@ class BucketedReadSuite
       bucketSpec: BucketSpec,
       bucketValues: Seq[Integer],
       filterCondition: Column,
-      originalDataFrame: DataFrame): Unit = {
+      originalDataFrame: DataFrame): Unit =
     // This test verifies parts of the plan. Disable whole stage codegen.
     withSQLConf(SQLConf.WHOLESTAGE_CODEGEN_ENABLED.key -> "false") {
       val bucketedDataFrame =
@@ -125,7 +125,6 @@ class BucketedReadSuite
         bucketedDataFrame.filter(filterCondition).orderBy("i", "j", "k"),
         originalDataFrame.filter(filterCondition).orderBy("i", "j", "k"))
     }
-  }
 
   test("read partitioning bucketed tables with bucket pruning filters") {
     withTable("bucketed_table") {
@@ -257,11 +256,11 @@ class BucketedReadSuite
       bucketSpecRight: Option[BucketSpec],
       joinColumns: Seq[String],
       shuffleLeft: Boolean,
-      shuffleRight: Boolean): Unit = {
+      shuffleRight: Boolean): Unit =
     withTable("bucketed_table1", "bucketed_table2") {
       def withBucket(
           writer: DataFrameWriter,
-          bucketSpec: Option[BucketSpec]): DataFrameWriter = {
+          bucketSpec: Option[BucketSpec]): DataFrameWriter =
         bucketSpec
           .map { spec =>
             writer.bucketBy(
@@ -270,7 +269,6 @@ class BucketedReadSuite
               spec.bucketColumnNames.tail: _*)
           }
           .getOrElse(writer)
-      }
 
       withBucket(df1.write.format("parquet"), bucketSpecLeft)
         .saveAsTable("bucketed_table1")
@@ -309,14 +307,12 @@ class BucketedReadSuite
         )
       }
     }
-  }
 
   private def joinCondition(
       left: DataFrame,
       right: DataFrame,
-      joinCols: Seq[String]): Column = {
+      joinCols: Seq[String]): Column =
     joinCols.map(col => left(col) === right(col)).reduce(_ && _)
-  }
 
   test("avoid shuffle when join 2 bucketed tables") {
     val bucketSpec = Some(BucketSpec(8, Seq("i", "j"), Nil))

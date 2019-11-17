@@ -66,12 +66,11 @@ final class DataFrameStatFunctions private[sql] (df: DataFrame) {
   def approxQuantile(
       col: String,
       probabilities: Array[Double],
-      relativeError: Double): Array[Double] = {
+      relativeError: Double): Array[Double] =
     StatFunctions
       .multipleApproxQuantiles(df, Seq(col), probabilities, relativeError)
       .head
       .toArray
-  }
 
   /**
     * Python-friendly version of [[approxQuantile()]]
@@ -79,9 +78,8 @@ final class DataFrameStatFunctions private[sql] (df: DataFrame) {
   private[spark] def approxQuantile(
       col: String,
       probabilities: List[Double],
-      relativeError: Double): java.util.List[Double] = {
+      relativeError: Double): java.util.List[Double] =
     approxQuantile(col, probabilities.toArray, relativeError).toList.asJava
-  }
 
   /**
     * Calculate the sample covariance of two numerical columns of a DataFrame.
@@ -98,9 +96,8 @@ final class DataFrameStatFunctions private[sql] (df: DataFrame) {
     *
     * @since 1.4.0
     */
-  def cov(col1: String, col2: String): Double = {
+  def cov(col1: String, col2: String): Double =
     StatFunctions.calculateCov(df, Seq(col1, col2))
-  }
 
   /**
     * Calculates the correlation of two columns of a DataFrame. Currently only supports the Pearson
@@ -144,9 +141,8 @@ final class DataFrameStatFunctions private[sql] (df: DataFrame) {
     *
     * @since 1.4.0
     */
-  def corr(col1: String, col2: String): Double = {
+  def corr(col1: String, col2: String): Double =
     corr(col1, col2, "pearson")
-  }
 
   /**
     * Computes a pair-wise frequency table of the given columns. Also known as a contingency table.
@@ -180,9 +176,8 @@ final class DataFrameStatFunctions private[sql] (df: DataFrame) {
     *
     * @since 1.4.0
     */
-  def crosstab(col1: String, col2: String): DataFrame = {
+  def crosstab(col1: String, col2: String): DataFrame =
     StatFunctions.crossTabulate(df, col1, col2)
-  }
 
   /**
     * Finding frequent items for columns, possibly with false positives. Using the
@@ -226,9 +221,8 @@ final class DataFrameStatFunctions private[sql] (df: DataFrame) {
     *
     * @since 1.4.0
     */
-  def freqItems(cols: Array[String], support: Double): DataFrame = {
+  def freqItems(cols: Array[String], support: Double): DataFrame =
     FrequentItems.singlePassFreqItems(df, cols, support)
-  }
 
   /**
     * Finding frequent items for columns, possibly with false positives. Using the
@@ -244,9 +238,8 @@ final class DataFrameStatFunctions private[sql] (df: DataFrame) {
     *
     * @since 1.4.0
     */
-  def freqItems(cols: Array[String]): DataFrame = {
+  def freqItems(cols: Array[String]): DataFrame =
     FrequentItems.singlePassFreqItems(df, cols, 0.01)
-  }
 
   /**
     * (Scala-specific) Finding frequent items for columns, possibly with false positives. Using the
@@ -287,9 +280,8 @@ final class DataFrameStatFunctions private[sql] (df: DataFrame) {
     *
     * @since 1.4.0
     */
-  def freqItems(cols: Seq[String], support: Double): DataFrame = {
+  def freqItems(cols: Seq[String], support: Double): DataFrame =
     FrequentItems.singlePassFreqItems(df, cols, support)
-  }
 
   /**
     * (Scala-specific) Finding frequent items for columns, possibly with false positives. Using the
@@ -305,9 +297,8 @@ final class DataFrameStatFunctions private[sql] (df: DataFrame) {
     *
     * @since 1.4.0
     */
-  def freqItems(cols: Seq[String]): DataFrame = {
+  def freqItems(cols: Seq[String]): DataFrame =
     FrequentItems.singlePassFreqItems(df, cols, 0.01)
-  }
 
   /**
     * Returns a stratified sample without replacement based on the fraction given on each stratum.
@@ -364,9 +355,8 @@ final class DataFrameStatFunctions private[sql] (df: DataFrame) {
   def sampleBy[T](
       col: String,
       fractions: ju.Map[T, jl.Double],
-      seed: Long): DataFrame = {
+      seed: Long): DataFrame =
     sampleBy(col, fractions.asScala.toMap.asInstanceOf[Map[T, Double]], seed)
-  }
 
   /**
     * Builds a Count-min Sketch over a specified column.
@@ -382,9 +372,8 @@ final class DataFrameStatFunctions private[sql] (df: DataFrame) {
       colName: String,
       depth: Int,
       width: Int,
-      seed: Int): CountMinSketch = {
+      seed: Int): CountMinSketch =
     countMinSketch(Column(colName), depth, width, seed)
-  }
 
   /**
     * Builds a Count-min Sketch over a specified column.
@@ -400,9 +389,8 @@ final class DataFrameStatFunctions private[sql] (df: DataFrame) {
       colName: String,
       eps: Double,
       confidence: Double,
-      seed: Int): CountMinSketch = {
+      seed: Int): CountMinSketch =
     countMinSketch(Column(colName), eps, confidence, seed)
-  }
 
   /**
     * Builds a Count-min Sketch over a specified column.
@@ -418,9 +406,8 @@ final class DataFrameStatFunctions private[sql] (df: DataFrame) {
       col: Column,
       depth: Int,
       width: Int,
-      seed: Int): CountMinSketch = {
+      seed: Int): CountMinSketch =
     countMinSketch(col, CountMinSketch.create(depth, width, seed))
-  }
 
   /**
     * Builds a Count-min Sketch over a specified column.
@@ -436,9 +423,8 @@ final class DataFrameStatFunctions private[sql] (df: DataFrame) {
       col: Column,
       eps: Double,
       confidence: Double,
-      seed: Int): CountMinSketch = {
+      seed: Int): CountMinSketch =
     countMinSketch(col, CountMinSketch.create(eps, confidence, seed))
-  }
 
   private def countMinSketch(
       col: Column,
@@ -486,9 +472,8 @@ final class DataFrameStatFunctions private[sql] (df: DataFrame) {
   def bloomFilter(
       colName: String,
       expectedNumItems: Long,
-      fpp: Double): BloomFilter = {
+      fpp: Double): BloomFilter =
     buildBloomFilter(Column(colName), BloomFilter.create(expectedNumItems, fpp))
-  }
 
   /**
     * Builds a Bloom filter over a specified column.
@@ -501,9 +486,8 @@ final class DataFrameStatFunctions private[sql] (df: DataFrame) {
   def bloomFilter(
       col: Column,
       expectedNumItems: Long,
-      fpp: Double): BloomFilter = {
+      fpp: Double): BloomFilter =
     buildBloomFilter(col, BloomFilter.create(expectedNumItems, fpp))
-  }
 
   /**
     * Builds a Bloom filter over a specified column.
@@ -516,11 +500,10 @@ final class DataFrameStatFunctions private[sql] (df: DataFrame) {
   def bloomFilter(
       colName: String,
       expectedNumItems: Long,
-      numBits: Long): BloomFilter = {
+      numBits: Long): BloomFilter =
     buildBloomFilter(
       Column(colName),
       BloomFilter.create(expectedNumItems, numBits))
-  }
 
   /**
     * Builds a Bloom filter over a specified column.
@@ -533,9 +516,8 @@ final class DataFrameStatFunctions private[sql] (df: DataFrame) {
   def bloomFilter(
       col: Column,
       expectedNumItems: Long,
-      numBits: Long): BloomFilter = {
+      numBits: Long): BloomFilter =
     buildBloomFilter(col, BloomFilter.create(expectedNumItems, numBits))
-  }
 
   private def buildBloomFilter(col: Column, zero: BloomFilter): BloomFilter = {
     val singleCol = df.select(col)

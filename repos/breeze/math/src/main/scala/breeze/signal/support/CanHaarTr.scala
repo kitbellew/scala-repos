@@ -32,7 +32,7 @@ object CanHaarTr {
 
   /**Copy or pad a given vector.
     */
-  private def padOrCopy(v: DenseVector[Double]) = {
+  private def padOrCopy(v: DenseVector[Double]) =
     if ((v.length & -v.length) == v.length) {
       v.copy
     } else {
@@ -41,7 +41,6 @@ object CanHaarTr {
       r.slice(0, v.length) := v
       r
     }
-  }
 
   /** Transform a matrix into a squared power of 2 matrix.
     */

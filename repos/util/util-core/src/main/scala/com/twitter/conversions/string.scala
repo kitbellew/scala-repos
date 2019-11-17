@@ -75,7 +75,7 @@ object string {
       *
       * @return a quoted string, suitable for ASCII display
       */
-    def quoteC(): String = {
+    def quoteC(): String =
       regexSub(QUOTE_RE) { m =>
         m.matched.charAt(0) match {
           case '\r' => "\\r"
@@ -91,7 +91,6 @@ object string {
             }
         }
       }
-    }
 
     // we intentionally don't unquote "\$" here, so it can be used to escape interpolation later.
     private val UNQUOTE_RE =
@@ -106,7 +105,7 @@ object string {
       *
       * @return an unquoted unicode string
       */
-    def unquoteC() = {
+    def unquoteC() =
       regexSub(UNQUOTE_RE) { m =>
         val ch = m.group(1).charAt(0) match {
           // holy crap! this is terrible:
@@ -129,7 +128,6 @@ object string {
         }
         ch.toString
       }
-    }
 
     /**
       * Turn a string of hex digits into a byte array. This does the exact

@@ -388,7 +388,7 @@ abstract class PositionedResultIterator[+T](
 
   def rs = pr.rs
 
-  protected def fetchNext(): T = {
+  protected def fetchNext(): T =
     if ((readRows < maxRows || maxRows <= 0) && pr.nextRow) {
       val res = extractValue(pr)
       readRows += 1
@@ -397,7 +397,6 @@ abstract class PositionedResultIterator[+T](
       if (autoClose) close()
       finished()
     }
-  }
 
   final def close() {
     if (!closed) {

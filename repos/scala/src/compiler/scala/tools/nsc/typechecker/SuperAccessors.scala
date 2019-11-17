@@ -118,12 +118,11 @@ abstract class SuperAccessors
         Select(gen.mkAttributedThis(clazz), superAcc) setType sel.tpe)
     }
 
-    private def transformArgs(params: List[Symbol], args: List[Tree]) = {
+    private def transformArgs(params: List[Symbol], args: List[Tree]) =
       treeInfo.mapMethodParamsAndArgs(params, args) { (param, arg) =>
         if (isByNameParamType(param.tpe)) withInvalidOwner(transform(arg))
         else transform(arg)
       }
-    }
 
     /** Check that a class and its companion object to not both define
       *  a class or module with same name
@@ -408,7 +407,7 @@ abstract class SuperAccessors
           mayNeedProtectedAccessor(sel, args, goToSuper = true)
 
         case Assign(lhs @ Select(qual, name), rhs) =>
-          def transformAssign = {
+          def transformAssign =
             if (lhs.symbol.isVariable && lhs.symbol.isJavaDefined &&
                 needsProtectedAccessor(lhs.symbol, tree.pos)) {
               debuglog("Adding protected setter for " + tree)
@@ -416,7 +415,6 @@ abstract class SuperAccessors
               debuglog("Replaced " + tree + " with " + setter)
               transform(localTyper.typed(Apply(setter, List(qual, rhs))))
             } else super.transform(tree)
-          }
           transformAssign
 
         case Apply(fn, args) =>
@@ -655,7 +653,7 @@ abstract class SuperAccessors
       */
     private def hostForAccessorOf(
         sym: Symbol,
-        referencingClass: Symbol): Symbol = {
+        referencingClass: Symbol): Symbol =
       if (referencingClass.isSubClass(sym.owner.enclClass) ||
           referencingClass.thisSym.isSubClass(sym.owner.enclClass) ||
           referencingClass.enclosingPackageClass == sym.owner.enclosingPackageClass) {
@@ -664,7 +662,6 @@ abstract class SuperAccessors
       } else if (referencingClass.owner.enclClass != NoSymbol)
         hostForAccessorOf(sym, referencingClass.owner.enclClass)
       else referencingClass
-    }
 
     /** For a path-dependent type, return the this type. */
     private def thisTypeOfPath(path: Type): Symbol = path match {

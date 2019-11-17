@@ -63,7 +63,7 @@ package object time {
     * @param s    String representing the date
     * @param euro Whether to use the european format, eg 2/5/2012 => 2nd of May, 2012
     */
-  def parsedate(s: String, euro: Boolean = false): Option[DateTime] = {
+  def parsedate(s: String, euro: Boolean = false): Option[DateTime] =
     s match {
       case dfmt1(y, m, d) =>
         Some(new DateTime(y.toInt, m.toInt, d.toInt, 0, 0, 0, 0))
@@ -75,7 +75,6 @@ package object time {
         Some(new DateTime(y.toInt, m.toInt, d.toInt, 0, 0, 0, 0))
       case _ => None
     }
-  }
 
   /**
     * Class providing time accessor methods for Vec and Index containing DateTimes

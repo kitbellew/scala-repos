@@ -94,7 +94,7 @@ object CommitState {
     * pending if there are no statuses or a context is pending
     * success if the latest status for all contexts is success
     */
-  def combine(statuses: Set[CommitState]): CommitState = {
+  def combine(statuses: Set[CommitState]): CommitState =
     if (statuses.isEmpty) {
       PENDING
     } else if (statuses.contains(CommitState.ERROR) ||
@@ -105,7 +105,6 @@ object CommitState {
     } else {
       SUCCESS
     }
-  }
 
   implicit val getResult: GetResult[CommitState] = GetResult(
     r => CommitState(r.<<))

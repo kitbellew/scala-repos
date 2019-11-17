@@ -72,14 +72,13 @@ class OptionOrder[A: Order]
     case _                  => false
   }
 
-  def compare(x: Option[A], y: Option[A]): Int = {
+  def compare(x: Option[A], y: Option[A]): Int =
     (x, y) match {
       case (None, None)         => 0
       case (None, Some(_))      => -1
       case (Some(_), None)      => 1
       case (Some(x0), Some(y0)) => Order[A].compare(x0, y0)
     }
-  }
 }
 
 trait OptionInstances0 {

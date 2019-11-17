@@ -41,7 +41,7 @@ trait ParametersAnnotator {
 
   def annotateParameter(
       parameter: ScParameter,
-      holder: AnnotationHolder): Unit = {
+      holder: AnnotationHolder): Unit =
     parameter.owner match {
       case null =>
         holder.createErrorAnnotation(
@@ -70,7 +70,6 @@ trait ParametersAnnotator {
           case _ =>
         }
     }
-  }
 
   private def annotateCallByNameParameter(
       parameter: ScParameter,

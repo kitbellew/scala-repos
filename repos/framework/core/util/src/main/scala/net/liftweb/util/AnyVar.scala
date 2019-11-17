@@ -245,9 +245,8 @@ trait AnyVarTrait[T, MyType <: AnyVarTrait[T, MyType]]
     is
   }
 
-  def remove(): Unit = {
+  def remove(): Unit =
     _clearFunc(name)
-  }
 
   //def cleanupFunc: Box[() => Unit] = Empty
 

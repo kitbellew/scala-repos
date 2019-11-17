@@ -44,7 +44,7 @@ abstract class TemplateSource extends SchemedSource with HfsTapProvider {
     * @returns A cascading TemplateTap.
     */
   override def createTap(readOrWrite: AccessMode)(
-      implicit mode: Mode): Tap[_, _, _] = {
+      implicit mode: Mode): Tap[_, _, _] =
     readOrWrite match {
       case Read =>
         throw new InvalidSourceException("Cannot use TemplateSource for input")
@@ -67,14 +67,13 @@ abstract class TemplateSource extends SchemedSource with HfsTapProvider {
         }
       }
     }
-  }
 
   /**
     * Validates the taps, makes sure there are no nulls as the path or template.
     *
     * @param mode The mode of the job.
     */
-  override def validateTaps(mode: Mode): Unit = {
+  override def validateTaps(mode: Mode): Unit =
     if (basePath == null) {
       throw new InvalidSourceException(
         "basePath cannot be null for TemplateTap")
@@ -82,7 +81,6 @@ abstract class TemplateSource extends SchemedSource with HfsTapProvider {
       throw new InvalidSourceException(
         "template cannot be null for TemplateTap")
     }
-  }
 }
 
 /**

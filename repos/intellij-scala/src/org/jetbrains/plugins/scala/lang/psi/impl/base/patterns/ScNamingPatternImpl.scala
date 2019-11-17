@@ -60,7 +60,7 @@ class ScNamingPatternImpl(node: ASTNode)
       processor: PsiScopeProcessor,
       state: ResolveState,
       lastParent: PsiElement,
-      place: PsiElement) = {
+      place: PsiElement) =
     if (isStable) {
       ScalaPsiUtil.processImportLastParent(
         processor,
@@ -69,7 +69,6 @@ class ScNamingPatternImpl(node: ASTNode)
         lastParent,
         getType(TypingContext.empty))
     } else true
-  }
 
   override def getOriginalElement: PsiElement =
     super[ScNamingPattern].getOriginalElement

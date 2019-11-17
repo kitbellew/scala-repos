@@ -108,7 +108,7 @@ private[akka] object RemoteConnection {
       role: Role,
       sockaddr: InetSocketAddress,
       poolSize: Int,
-      handler: ChannelUpstreamHandler): Channel = {
+      handler: ChannelUpstreamHandler): Channel =
     role match {
       case Client ⇒
         val socketfactory = new NioClientSocketChannelFactory(
@@ -130,7 +130,6 @@ private[akka] object RemoteConnection {
         bootstrap.setOption("child.tcpNoDelay", true)
         bootstrap.bind(sockaddr)
     }
-  }
 
   def getAddrString(channel: Channel) = channel.getRemoteAddress match {
     case i: InetSocketAddress ⇒ i.toString

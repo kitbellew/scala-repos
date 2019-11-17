@@ -239,14 +239,13 @@ object Tree extends TreeInstances {
     * You can use Node for tree construction or pattern matching.
     */
   object Node {
-    def apply[A](root: => A, forest: => Stream[Tree[A]]): Tree[A] = {
+    def apply[A](root: => A, forest: => Stream[Tree[A]]): Tree[A] =
       new Tree[A] {
         lazy val rootLabel = root
         lazy val subForest = forest
 
         override def toString = "<tree>"
       }
-    }
 
     def unapply[A](t: Tree[A]): Option[(A, Stream[Tree[A]])] =
       Some((t.rootLabel, t.subForest))
@@ -258,18 +257,16 @@ object Tree extends TreeInstances {
     *  You can use Leaf for tree construction or pattern matching.
     */
   object Leaf {
-    def apply[A](root: => A): Tree[A] = {
+    def apply[A](root: => A): Tree[A] =
       Node(root, Stream.empty)
-    }
 
-    def unapply[A](t: Tree[A]): Option[A] = {
+    def unapply[A](t: Tree[A]): Option[A] =
       t match {
         case Node(root, Stream.Empty) =>
           Some(root)
         case _ =>
           None
       }
-    }
   }
 
   def unfoldForest[A, B](s: Stream[A])(

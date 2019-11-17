@@ -36,15 +36,13 @@ trait CanTraverseValues[From, A] {
     traverse(
       from,
       new ValuesVisitor[A] {
-        override def visit(a: A): Unit = {
+        override def visit(a: A): Unit =
           bb = fn(bb, a)
-        }
 
-        override def zeros(numZero: Int, zeroValue: A): Unit = {
+        override def zeros(numZero: Int, zeroValue: A): Unit =
           for (i <- 0 until numZero) {
             bb = fn(bb, zeroValue)
           }
-        }
       }
     )
 
@@ -86,9 +84,8 @@ object CanTraverseValues {
       extends CanTraverseValues[Array[A], A] {
 
     /** Traverses all values from the given collection. */
-    def traverse(from: Array[A], fn: ValuesVisitor[A]): Unit = {
+    def traverse(from: Array[A], fn: ValuesVisitor[A]): Unit =
       fn.visitArray(from)
-    }
 
     def isTraversableAgain(from: Array[A]): Boolean = true
   }
@@ -108,36 +105,32 @@ object CanTraverseValues {
 
   implicit object OpArrayCC extends OpArray[Complex]
   implicit def canTraverseTraversable[V, X <: TraversableOnce[V]]
-      : CanTraverseValues[X, V] = {
+      : CanTraverseValues[X, V] =
     new CanTraverseValues[X, V] {
 
       /** Traverses all values from the given collection. */
       override def traverse(
           from: X,
-          fn: CanTraverseValues.ValuesVisitor[V]): Unit = {
+          fn: CanTraverseValues.ValuesVisitor[V]): Unit =
         for (v <- from) {
           fn.visit(v)
         }
-      }
 
       def isTraversableAgain(from: X): Boolean = from.isTraversableAgain
     }
-  }
 }
 
 trait LowPrioCanTraverseValues {
   this: CanTraverseValues.type =>
-  implicit def canTraverseSelf[V, V2]: CanTraverseValues[V, V] = {
+  implicit def canTraverseSelf[V, V2]: CanTraverseValues[V, V] =
     new CanTraverseValues[V, V] {
 
       /** Traverses all values from the given collection. */
       override def traverse(
           from: V,
-          fn: CanTraverseValues.ValuesVisitor[V]): Unit = {
+          fn: CanTraverseValues.ValuesVisitor[V]): Unit =
         fn.visit(from)
-      }
 
       def isTraversableAgain(from: V): Boolean = true
     }
-  }
 }

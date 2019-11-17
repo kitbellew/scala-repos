@@ -49,7 +49,7 @@ class ScalaMacroEvaluator(project: Project)
     DefaultRule
   )
 
-  def isMacro(n: PsiNamedElement): Option[ScFunction] = {
+  def isMacro(n: PsiNamedElement): Option[ScFunction] =
     n match {
       case f: ScMacroDefinition => Some(f)
       //todo: fix decompiler to avoid this check:
@@ -60,17 +60,15 @@ class ScalaMacroEvaluator(project: Project)
         Some(f)
       case _ => None
     }
-  }
 
   override def checkMacro(
       macros: ScFunction,
-      context: MacroContext): Option[ScType] = {
+      context: MacroContext): Option[ScType] =
     typingRules
       .filter(_.isApplicable(macros))
       .head
       .typeable
       .checkMacro(macros, context)
-  }
 }
 
 object ScalaMacroEvaluator {
@@ -85,9 +83,8 @@ trait MacroRule {
 
 case class MatchRule(name: String, clazz: String, typeable: ScalaMacroTypeable)
     extends MacroRule {
-  def isApplicable(fun: ScFunction) = {
+  def isApplicable(fun: ScFunction) =
     fun.name == name && fun.containingClass.qualifiedName == clazz
-  }
 }
 
 object DefaultRule extends MacroRule {

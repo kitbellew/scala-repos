@@ -134,9 +134,8 @@ private[kafka] class ZookeeperConsumerConnector(
   newGauge(
     "yammer-metrics-count",
     new Gauge[Int] {
-      def value = {
+      def value =
         com.yammer.metrics.Metrics.defaultRegistry().allMetrics().size()
-      }
     }
   )
 
@@ -347,7 +346,7 @@ private[kafka] class ZookeeperConsumerConnector(
     info("end registering consumer " + consumerIdString + " in ZK")
   }
 
-  private def sendShutdownToAllQueues() = {
+  private def sendShutdownToAllQueues() =
     for (queue <- topicThreadIdAndQueues.values
            .toSet[BlockingQueue[FetchedDataChunk]]) {
       debug("Clearing up queue")
@@ -355,7 +354,6 @@ private[kafka] class ZookeeperConsumerConnector(
       queue.put(ZookeeperConsumerConnector.shutdownCommand)
       debug("Cleared queue and sent shutdown command")
     }
-  }
 
   def autoCommit() {
     trace("auto committing")
@@ -514,7 +512,7 @@ private[kafka] class ZookeeperConsumerConnector(
     }
   }
 
-  private def fetchOffsets(partitions: Seq[TopicAndPartition]) = {
+  private def fetchOffsets(partitions: Seq[TopicAndPartition]) =
     if (partitions.isEmpty) Some(OffsetFetchResponse(Map.empty))
     else if (config.offsetsStorage == "zookeeper") {
       val offsets = partitions.map(fetchOffsetFromZooKeeper)
@@ -593,7 +591,6 @@ private[kafka] class ZookeeperConsumerConnector(
 
       offsetFetchResponseOpt
     }
-  }
 
   class ZKSessionExpireListener(
       val dirs: ZKGroupDirs,
@@ -632,9 +629,8 @@ private[kafka] class ZookeeperConsumerConnector(
       // The child change watchers will be set inside rebalance when we read the children list.
     }
 
-    override def handleSessionEstablishmentError(error: Throwable): Unit = {
+    override def handleSessionEstablishmentError(error: Throwable): Unit =
       fatal("Could not establish session with zookeeper", error)
-    }
   }
 
   class ZKTopicPartitionChangeListener(

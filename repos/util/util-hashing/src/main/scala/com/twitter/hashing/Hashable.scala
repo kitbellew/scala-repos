@@ -137,10 +137,9 @@ object Hashable extends LowPriorityHashable {
     case _: CloneNotSupportedException =>
       false
   }
-  private[this] def newMd5MessageDigest(): MessageDigest = {
+  private[this] def newMd5MessageDigest(): MessageDigest =
     if (Md5SupportsClone) MessageDigestMd5.clone().asInstanceOf[MessageDigest]
     else MessageDigest.getInstance("MD5")
-  }
 
   /**
     * Ketama's default hash algorithm: the first 4 bytes of the MD5 as a little-endian int.

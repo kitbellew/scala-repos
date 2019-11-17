@@ -66,12 +66,11 @@ class KeyValueGroupedDataset[K, V] private[sql] (
   private def logicalPlan = queryExecution.analyzed
   private def sqlContext = queryExecution.sqlContext
 
-  private def groupedData = {
+  private def groupedData =
     new RelationalGroupedDataset(
       Dataset.newDataFrame(sqlContext, logicalPlan),
       groupingAttributes,
       RelationalGroupedDataset.GroupByType)
-  }
 
   /**
     * Returns a new [[KeyValueGroupedDataset]] where the type of the key has been mapped to the
@@ -93,9 +92,8 @@ class KeyValueGroupedDataset[K, V] private[sql] (
     *
     * @since 1.6.0
     */
-  def keys: Dataset[K] = {
+  def keys: Dataset[K] =
     Dataset[K](sqlContext, Distinct(Project(groupingAttributes, logicalPlan)))
-  }
 
   /**
     * Applies the given function to each group of data.  For each unique group, the function will
@@ -116,11 +114,10 @@ class KeyValueGroupedDataset[K, V] private[sql] (
     * @since 1.6.0
     */
   def flatMapGroups[U: Encoder](
-      f: (K, Iterator[V]) => TraversableOnce[U]): Dataset[U] = {
+      f: (K, Iterator[V]) => TraversableOnce[U]): Dataset[U] =
     Dataset[U](
       sqlContext,
       MapGroups(f, groupingAttributes, dataAttributes, logicalPlan))
-  }
 
   /**
     * Applies the given function to each group of data.  For each unique group, the function will
@@ -142,9 +139,8 @@ class KeyValueGroupedDataset[K, V] private[sql] (
     */
   def flatMapGroups[U](
       f: FlatMapGroupsFunction[K, V, U],
-      encoder: Encoder[U]): Dataset[U] = {
+      encoder: Encoder[U]): Dataset[U] =
     flatMapGroups((key, data) => f.call(key, data.asJava).asScala)(encoder)
-  }
 
   /**
     * Applies the given function to each group of data.  For each unique group, the function will
@@ -187,9 +183,8 @@ class KeyValueGroupedDataset[K, V] private[sql] (
     */
   def mapGroups[U](
       f: MapGroupsFunction[K, V, U],
-      encoder: Encoder[U]): Dataset[U] = {
+      encoder: Encoder[U]): Dataset[U] =
     mapGroups((key, data) => f.call(key, data.asJava))(encoder)
-  }
 
   /**
     * Reduces the elements of each group of data using the specified binary function.
@@ -211,9 +206,8 @@ class KeyValueGroupedDataset[K, V] private[sql] (
     *
     * @since 1.6.0
     */
-  def reduce(f: ReduceFunction[V]): Dataset[(K, V)] = {
+  def reduce(f: ReduceFunction[V]): Dataset[(K, V)] =
     reduce(f.call _)
-  }
 
   // This is here to prevent us from adding overloads that would be ambiguous.
   @scala.annotation.varargs
@@ -342,8 +336,7 @@ class KeyValueGroupedDataset[K, V] private[sql] (
   def cogroup[U, R](
       other: KeyValueGroupedDataset[K, U],
       f: CoGroupFunction[K, V, U, R],
-      encoder: Encoder[R]): Dataset[R] = {
+      encoder: Encoder[R]): Dataset[R] =
     cogroup(other)((key, left, right) =>
       f.call(key, left.asJava, right.asJava).asScala)(encoder)
-  }
 }

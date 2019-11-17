@@ -37,7 +37,7 @@ private final class Analyzer(
     _classInfos
   def errors: Seq[Error] = _errors
 
-  private def lookupClass(encodedName: String): ClassInfo = {
+  private def lookupClass(encodedName: String): ClassInfo =
     _classInfos.get(encodedName) match {
       case Some(info) => info
       case None =>
@@ -47,7 +47,6 @@ private final class Analyzer(
         c.linkClasses()
         c
     }
-  }
 
   def computeReachability(allData: Seq[Infos.ClassInfo]): Unit = {
     require(_classInfos.isEmpty, "Cannot run the same Analyzer multiple times")
@@ -80,7 +79,7 @@ private final class Analyzer(
     }
   }
 
-  private def linkClasses(): Unit = {
+  private def linkClasses(): Unit =
     if (!_classInfos.contains(ir.Definitions.ObjectClass)) {
       _errors += MissingJavaLangObjectClass(fromAnalyzer)
     } else {
@@ -91,7 +90,6 @@ private final class Analyzer(
           _errors += CycleInInheritanceChain(chain, fromAnalyzer)
       }
     }
-  }
 
   private def reachSymbolRequirement(
       requirement: SymbolRequirement,
@@ -103,12 +101,11 @@ private final class Analyzer(
     }
 
     def withMethod(className: String, methodName: String)(
-        body: ClassInfo => Unit) = {
+        body: ClassInfo => Unit) =
       withClass(className) { clazz =>
         val doReach = !optional || clazz.tryLookupMethod(methodName).isDefined
         if (doReach) body(clazz)
       }
-    }
 
     import SymbolRequirement.Nodes._
 
@@ -165,12 +162,11 @@ private final class Analyzer(
         getSuperclassMethodInfo.calledFrom.headOption.getOrElse(fromAnalyzer)
       for (classInfo <- _classInfos.values.filter(_.isDataAccessed).toList) {
         @tailrec
-        def loop(classInfo: ClassInfo): Unit = {
+        def loop(classInfo: ClassInfo): Unit =
           if (classInfo != null) {
             classInfo.accessData()
             loop(classInfo.superClass)
           }
-        }
         loop(classInfo)
       }
     }
@@ -265,7 +261,7 @@ private final class Analyzer(
       (mutable.Map(methodInfos: _*), mutable.Map(staticMethodInfos: _*))
     }
 
-    def lookupConstructor(ctorName: String): MethodInfo = {
+    def lookupConstructor(ctorName: String): MethodInfo =
       /* As of 0.6.6, constructors are not inherited, and so must be found
        * directly in this class. However, to be able to read sjsir files from
        * before 0.6.6, we tolerate finding it in a superclass, in which case
@@ -294,13 +290,11 @@ private final class Analyzer(
           }
         }
       }
-    }
 
-    def lookupMethod(methodName: String): MethodInfo = {
+    def lookupMethod(methodName: String): MethodInfo =
       tryLookupMethod(methodName).getOrElse {
         createNonExistentMethod(methodName)
       }
-    }
 
     private def createNonExistentMethod(methodName: String): MethodInfo = {
       val syntheticData = createMissingMethodInfo(methodName)
@@ -316,7 +310,7 @@ private final class Analyzer(
         s"Cannot call lookupMethod($methodName) on non Scala class $this")
 
       @tailrec
-      def tryLookupInherited(ancestorInfo: ClassInfo): Option[MethodInfo] = {
+      def tryLookupInherited(ancestorInfo: ClassInfo): Option[MethodInfo] =
         if (ancestorInfo ne null) {
           ancestorInfo.methodInfos.get(methodName) match {
             case Some(m) if !m.isAbstract => Some(m)
@@ -325,7 +319,6 @@ private final class Analyzer(
         } else {
           None
         }
-      }
       val existing =
         if (isScalaClass) tryLookupInherited(this)
         else methodInfos.get(methodName).filter(!_.isAbstract)
@@ -413,7 +406,7 @@ private final class Analyzer(
       m
     }
 
-    def tryLookupReflProxyMethod(proxyName: String): Option[MethodInfo] = {
+    def tryLookupReflProxyMethod(proxyName: String): Option[MethodInfo] =
       if (!allowAddingSyntheticMethods) {
         tryLookupMethod(proxyName)
       } else {
@@ -428,7 +421,7 @@ private final class Analyzer(
          */
 
         @tailrec
-        def loop(ancestorInfo: ClassInfo): Option[MethodInfo] = {
+        def loop(ancestorInfo: ClassInfo): Option[MethodInfo] =
           if (ancestorInfo ne null) {
             ancestorInfo.methodInfos.get(proxyName) match {
               case Some(m) =>
@@ -448,11 +441,9 @@ private final class Analyzer(
           } else {
             None
           }
-        }
 
         loop(this)
       }
-    }
 
     private def findProxyMatch(proxyName: String): Option[MethodInfo] = {
       val candidates = methodInfos.valuesIterator.filter { m =>
@@ -500,7 +491,7 @@ private final class Analyzer(
         right: ir.Types.ReferenceType): Boolean = {
       import ir.Types._
 
-      def classIsMoreSpecific(leftCls: String, rightCls: String): Boolean = {
+      def classIsMoreSpecific(leftCls: String, rightCls: String): Boolean =
         leftCls != rightCls && {
           val leftInfo = _classInfos.get(leftCls)
           val rightInfo = _classInfos.get(rightCls)
@@ -509,7 +500,6 @@ private final class Analyzer(
               l.ancestors.contains(r)
           }
         }
-      }
 
       (left, right) match {
         case (ClassType(leftCls), ClassType(rightCls)) =>
@@ -550,7 +540,7 @@ private final class Analyzer(
       m
     }
 
-    def lookupStaticMethod(methodName: String): MethodInfo = {
+    def lookupStaticMethod(methodName: String): MethodInfo =
       tryLookupStaticMethod(methodName).getOrElse {
         val syntheticData =
           createMissingMethodInfo(methodName, isStatic = true)
@@ -559,7 +549,6 @@ private final class Analyzer(
         staticMethodInfos += methodName -> m
         m
       }
-    }
 
     def tryLookupStaticMethod(methodName: String): Option[MethodInfo] =
       staticMethodInfos.get(methodName)
@@ -584,7 +573,7 @@ private final class Analyzer(
       }
     }
 
-    def accessModule()(implicit from: From): Unit = {
+    def accessModule()(implicit from: From): Unit =
       if (!isStaticModule) {
         _errors += NotAModule(this, from)
       } else if (!isModuleAccessed) {
@@ -592,7 +581,6 @@ private final class Analyzer(
         instantiated()
         if (isScalaClass) callMethod("init___", statically = true)
       }
-    }
 
     def instantiated()(implicit from: From): Unit = {
       instantiatedFrom ::= from
@@ -626,29 +614,26 @@ private final class Analyzer(
       }
     }
 
-    def useInstanceTests()(implicit from: From): Unit = {
+    def useInstanceTests()(implicit from: From): Unit =
       if (!areInstanceTestsUsed) {
         checkExistent()
         areInstanceTestsUsed = true
       }
-    }
 
-    def accessData()(implicit from: From): Unit = {
+    def accessData()(implicit from: From): Unit =
       if (!isDataAccessed) {
         checkExistent()
         isDataAccessed = true
       }
-    }
 
-    def checkExistent()(implicit from: From): Unit = {
+    def checkExistent()(implicit from: From): Unit =
       if (nonExistent) {
         _errors += MissingClass(this, from)
         _allAvailable = false
       }
-    }
 
     def callMethod(methodName: String, statically: Boolean = false)(
-        implicit from: From): Unit = {
+        implicit from: From): Unit =
       if (isConstructorName(methodName)) {
         // constructors must always be called statically
         assert(
@@ -667,20 +652,17 @@ private final class Analyzer(
           else descendentClass.delayedCalls += ((methodName, from))
         }
       }
-    }
 
     private def delayedCallMethod(methodName: String)(
-        implicit from: From): Unit = {
+        implicit from: From): Unit =
       if (isReflProxyName(methodName)) {
         tryLookupReflProxyMethod(methodName).foreach(_.reach(this))
       } else {
         lookupMethod(methodName).reach(this)
       }
-    }
 
-    def callStaticMethod(methodName: String)(implicit from: From): Unit = {
+    def callStaticMethod(methodName: String)(implicit from: From): Unit =
       lookupStaticMethod(methodName).reachStatic()
-    }
   }
 
   private class MethodInfo(val owner: ClassInfo, data: Infos.MethodInfo)
@@ -748,12 +730,11 @@ private final class Analyzer(
       }
     }
 
-    private def checkExistent()(implicit from: From) = {
+    private def checkExistent()(implicit from: From) =
       if (nonExistent) {
         _errors += MissingMethod(this, from)
         _allAvailable = false
       }
-    }
 
     private[this] def doReach(): Unit = {
       implicit val from = FromMethod(this)
@@ -821,7 +802,7 @@ private final class Analyzer(
     }
   }
 
-  private def createMissingClassInfo(encodedName: String): Infos.ClassInfo = {
+  private def createMissingClassInfo(encodedName: String): Infos.ClassInfo =
     // We create a module class to avoid cascading errors
     Infos.ClassInfo(
       encodedName = encodedName,
@@ -831,17 +812,15 @@ private final class Analyzer(
       interfaces = Nil,
       methods = List(createMissingMethodInfo("init___"))
     )
-  }
 
   private def createMissingMethodInfo(
       encodedName: String,
       isStatic: Boolean = false,
-      isAbstract: Boolean = false): Infos.MethodInfo = {
+      isAbstract: Boolean = false): Infos.MethodInfo =
     Infos.MethodInfo(
       encodedName = encodedName,
       isStatic = isStatic,
       isAbstract = isAbstract)
-  }
 }
 
 object Analyzer {

@@ -164,11 +164,10 @@ private[spark] class YarnClientSchedulerBackend(
       }
     }
 
-    def stopMonitor(): Unit = {
+    def stopMonitor(): Unit =
       if (allowInterrupt) {
         this.interrupt()
       }
-    }
   }
 
   /**

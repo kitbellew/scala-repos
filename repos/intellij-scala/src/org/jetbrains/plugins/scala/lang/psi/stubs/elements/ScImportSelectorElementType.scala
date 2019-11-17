@@ -65,7 +65,6 @@ class ScImportSelectorElementType[Func <: ScImportSelector]
 
   def indexStub(stub: ScImportSelectorStub, sink: IndexSink): Unit = {}
 
-  def createPsi(stub: ScImportSelectorStub): ScImportSelector = {
+  def createPsi(stub: ScImportSelectorStub): ScImportSelector =
     new ScImportSelectorImpl(stub)
-  }
 }

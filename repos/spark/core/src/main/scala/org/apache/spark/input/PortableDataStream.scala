@@ -94,7 +94,7 @@ private[spark] abstract class StreamBasedRecordReader[T](
 
   override def getCurrentValue: T = value
 
-  override def nextKeyValue: Boolean = {
+  override def nextKeyValue: Boolean =
     if (!processed) {
       val fileIn = new PortableDataStream(split, context, index)
       value = parseStream(fileIn)
@@ -104,7 +104,6 @@ private[spark] abstract class StreamBasedRecordReader[T](
     } else {
       false
     }
-  }
 
   /**
     * Parse the stream (and close it afterwards) and return the value as in type T
@@ -134,12 +133,11 @@ private[spark] class StreamInputFormat
   override def createRecordReader(
       split: InputSplit,
       taContext: TaskAttemptContext)
-      : CombineFileRecordReader[String, PortableDataStream] = {
+      : CombineFileRecordReader[String, PortableDataStream] =
     new CombineFileRecordReader[String, PortableDataStream](
       split.asInstanceOf[CombineFileSplit],
       taContext,
       classOf[StreamRecordReader])
-  }
 }
 
 /**

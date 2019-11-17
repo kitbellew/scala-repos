@@ -72,14 +72,13 @@ class NextIteratorSuite extends SparkFunSuite with Matchers {
   class StubIterator(ints: Buffer[Int]) extends NextIterator[Int] {
     var closeCalled = 0
 
-    override def getNext(): Int = {
+    override def getNext(): Int =
       if (ints.size == 0) {
         finished = true
         0
       } else {
         ints.remove(0)
       }
-    }
 
     override def close() {
       closeCalled += 1

@@ -35,21 +35,20 @@ abstract class PlanTest extends SparkFunSuite with PredicateHelper {
     * Since attribute references are given globally unique ids during analysis,
     * we must normalize them to check if two different queries are identical.
     */
-  protected def normalizeExprIds(plan: LogicalPlan) = {
+  protected def normalizeExprIds(plan: LogicalPlan) =
     plan transformAllExpressions {
       case a: AttributeReference =>
         AttributeReference(a.name, a.dataType, a.nullable)(exprId = ExprId(0))
       case a: Alias =>
         Alias(a.child, a.name)(exprId = ExprId(0))
     }
-  }
 
   /**
     * Normalizes the filter conditions that appear in the plan. For instance,
     * ((expr 1 && expr 2) && expr 3), (expr 1 && expr 2 && expr 3), (expr 3 && (expr 1 && expr 2)
     * etc., will all now be equivalent.
     */
-  private def normalizeFilters(plan: LogicalPlan) = {
+  private def normalizeFilters(plan: LogicalPlan) =
     plan transform {
       case filter @ Filter(condition: Expression, child: LogicalPlan) =>
         Filter(
@@ -58,7 +57,6 @@ abstract class PlanTest extends SparkFunSuite with PredicateHelper {
             .reduce(And),
           child)
     }
-  }
 
   /** Fails the test if the two plans do not match */
   protected def comparePlans(plan1: LogicalPlan, plan2: LogicalPlan) {
@@ -74,7 +72,6 @@ abstract class PlanTest extends SparkFunSuite with PredicateHelper {
   }
 
   /** Fails the test if the two expressions do not match */
-  protected def compareExpressions(e1: Expression, e2: Expression): Unit = {
+  protected def compareExpressions(e1: Expression, e2: Expression): Unit =
     comparePlans(Filter(e1, OneRowRelation), Filter(e2, OneRowRelation))
-  }
 }

@@ -11,12 +11,11 @@ trait GenUtils { self: Reifier =>
   def reifyProduct(x: Product): Tree =
     reifyProduct(x.productPrefix, x.productIterator.toList)
 
-  def reifyProduct(prefix: String, elements: List[Any]): Tree = {
+  def reifyProduct(prefix: String, elements: List[Any]): Tree =
     // reflection would be more robust, but, hey, this is a hot path
     if (prefix.startsWith("Tuple"))
       scalaFactoryCall(prefix, (elements map reify).toList: _*)
     else mirrorCall(TermName(prefix), (elements map reify): _*)
-  }
 
   // helper functions
 

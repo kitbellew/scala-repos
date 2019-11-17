@@ -305,12 +305,11 @@ class AckedDeliverySpec extends AkkaSpec {
         }
       }
 
-      def receiverStep(p: Double = 1.0) = {
+      def receiverStep(p: Double = 1.0) =
         if (happened(p)) {
           sndBuf = sndBuf.acknowledge(lastAck)
           dbgLog(s"$sndBuf <-- $lastAck -- $rcvBuf")
         } else dbgLog(s"$sndBuf X-- $lastAck -- $rcvBuf")
-      }
 
       // Dropping phase
       info(

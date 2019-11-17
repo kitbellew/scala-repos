@@ -38,11 +38,10 @@ object ConcurrentTest extends SpecLite {
   def assertCountDown(
       latch: CountDownLatch,
       hint: String,
-      timeout: Long = 1000): Prop = {
+      timeout: Long = 1000): Prop =
     if (latch.await(timeout, TimeUnit.MILLISECONDS)) ()
     else
       sys.error("Failed to count down within " + timeout + " millis: " + hint)
-  }
 
   def fork(f: => Unit) {
     new Thread {

@@ -28,7 +28,7 @@ package object graph {
     */
   def depthFirstOf[T](t: T)(nf: NeighborFn[T]): List[T] = {
     @annotation.tailrec
-    def loop(stack: List[T], deps: List[T], acc: Set[T]): List[T] = {
+    def loop(stack: List[T], deps: List[T], acc: Set[T]): List[T] =
       stack match {
         case Nil => deps
         case h :: tail =>
@@ -38,7 +38,6 @@ package object graph {
           val newDeps = if (acc(h)) deps else h :: deps
           loop(newStack, newDeps, acc + h)
       }
-    }
     val start = nf(t).toList
     loop(start, start.distinct, start.toSet).reverse
   }

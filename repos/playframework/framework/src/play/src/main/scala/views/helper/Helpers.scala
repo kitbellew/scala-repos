@@ -16,7 +16,7 @@ package views.html.helper {
       args: Map[Symbol, Any],
       messages: play.api.i18n.Messages) {
 
-    def infos: Seq[String] = {
+    def infos: Seq[String] =
       args.get('_help).map(m => Seq(m.toString)).getOrElse {
         (if (args.get('_showConstraints) match {
                case Some(false) => false
@@ -27,9 +27,8 @@ package views.html.helper {
              .map(f => messages(f._1, f._2.map(a => translateMsgArg(a)): _*))
          } else Nil)
       }
-    }
 
-    def errors: Seq[String] = {
+    def errors: Seq[String] =
       (args.get('_error) match {
         case Some(Some(play.api.data.FormError(_, message, args))) =>
           Some(Seq(messages(message, args.map(a => translateMsgArg(a)): _*)))
@@ -43,21 +42,17 @@ package views.html.helper {
              messages(e.message, e.args.map(a => translateMsgArg(a)): _*))
          } else Nil)
       }
-    }
 
-    def hasErrors: Boolean = {
+    def hasErrors: Boolean =
       !errors.isEmpty
-    }
 
-    def label: Any = {
+    def label: Any =
       args.get('_label).getOrElse(messages(field.label))
-    }
 
     def hasName: Boolean = args.get('_name).isDefined
 
-    def name: Any = {
+    def name: Any =
       args.get('_name).getOrElse(messages(field.label))
-    }
 
     private def translateMsgArg(msgArg: Any) = msgArg match {
       case key: String       => messages(key)

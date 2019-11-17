@@ -89,13 +89,12 @@ class ScalaGenerationInfo(classMember: ClassMember) extends GenerationInfoBase {
 
   override def findInsertionAnchor(
       aClass: PsiClass,
-      leaf: PsiElement): PsiElement = {
+      leaf: PsiElement): PsiElement =
     aClass match {
       case td: ScTemplateDefinition =>
         ScalaOIUtil.getAnchor(leaf.getTextRange.getStartOffset, td).orNull
       case _ => super.findInsertionAnchor(aClass, leaf)
     }
-  }
 
   override def positionCaret(
       editor: Editor,
@@ -172,10 +171,9 @@ object ScalaGenerationInfo {
           .extractClass(st, Option(td.getProject))
           .getOrElse(return "super.")
 
-        def nonStrictInheritor(base: PsiClass, inheritor: PsiClass): Boolean = {
+        def nonStrictInheritor(base: PsiClass, inheritor: PsiClass): Boolean =
           if (base == null || inheritor == null) false
           else base == inheritor || inheritor.isInheritorDeep(base, null)
-        }
 
         if (nonStrictInheritor(method.containingClass, psiClass))
           td.selfTypeElement.get.name + "."

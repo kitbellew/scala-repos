@@ -89,7 +89,7 @@ object Analysis {
     def nonExistent: Boolean
     def syntheticKind: MethodSyntheticKind
 
-    def displayName: String = {
+    def displayName: String =
       if (isExported) {
         encodedName
       } else {
@@ -107,7 +107,6 @@ object Analysis {
         simpleName + "(" + paramTypes.map(typeDisplayName).mkString(",") +
           ")" + resultType.fold("")(typeDisplayName)
       }
-    }
 
     def fullDisplayName: String =
       owner.displayName + "." + displayName
@@ -238,17 +237,16 @@ object Analysis {
         verb: String = "called"): Unit = {
       val involvedClasses = new mutable.ListBuffer[ClassInfo]
 
-      def onlyOnce(level: Level, info: AnyRef): Boolean = {
+      def onlyOnce(level: Level, info: AnyRef): Boolean =
         if (seenInfos.add(info)) {
           true
         } else {
           log(level, "  (already seen, not repeating call stack)")
           false
         }
-      }
 
       @tailrec
-      def loopTrace(optFrom: Option[From], verb: String = "called"): Unit = {
+      def loopTrace(optFrom: Option[From], verb: String = "called"): Unit =
         optFrom match {
           case None =>
             log(
@@ -268,7 +266,6 @@ object Analysis {
                 log(level, "exported to JavaScript with @JSExport")
             }
         }
-      }
 
       indented {
         loopTrace(optFrom, verb = verb)

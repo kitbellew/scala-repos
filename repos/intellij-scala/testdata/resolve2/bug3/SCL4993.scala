@@ -3,7 +3,6 @@ object IdeaBug1 {
     def sf = m map identity
   }
 
-  def main(args: Array[String]) = {
+  def main(args: Array[String]) =
     Map(3 -> 4).toMap. /* resolved: true */ sf
-  }
 }

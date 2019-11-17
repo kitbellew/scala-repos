@@ -52,17 +52,16 @@ class ScDocCommentImpl(text: CharSequence)
       processor: PsiScopeProcessor,
       state: ResolveState,
       lastParent: PsiElement,
-      place: PsiElement): Boolean = {
+      place: PsiElement): Boolean =
     super.processDeclarations(processor, state, lastParent, place) &&
-    !Option(getOwner).exists {
-      case owner: ScClass =>
-        owner.members.exists {
-          case named: PsiNamedElement => !processor.execute(named, state)
-          case _                      => false
-        }
-      case _ => false
-    }
-  }
+      !Option(getOwner).exists {
+        case owner: ScClass =>
+          owner.members.exists {
+            case named: PsiNamedElement => !processor.execute(named, state)
+            case _                      => false
+          }
+        case _ => false
+      }
 
   def getTokenType: IElementType = ScalaDocElementTypes.SCALA_DOC_COMMENT
 

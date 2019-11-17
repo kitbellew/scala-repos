@@ -64,9 +64,8 @@ private[spark] class JobWaiter[T](
     }
   }
 
-  override def jobFailed(exception: Exception): Unit = {
+  override def jobFailed(exception: Exception): Unit =
     if (!jobPromise.tryFailure(exception)) {
       logWarning("Ignore failure", exception)
     }
-  }
 }

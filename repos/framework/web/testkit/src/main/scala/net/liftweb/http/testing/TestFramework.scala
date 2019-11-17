@@ -655,12 +655,11 @@ object TestHelpers {
 
   private def snurpHeaders(
       in: JavaMap[String, CRK]): Map[String, List[String]] = {
-    def morePulling(e: JavaMap.Entry[String, CRK]): (String, List[String]) = {
+    def morePulling(e: JavaMap.Entry[String, CRK]): (String, List[String]) =
       e.getValue match {
         case null => (e.getKey, Nil)
         case a    => (e.getKey, a.iterator.toList)
       }
-    }
 
     Map(
       in.entrySet.iterator.toList

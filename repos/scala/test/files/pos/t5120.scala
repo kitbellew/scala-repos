@@ -11,7 +11,7 @@ class Test {
 
   def transform[T](x: T) = x
 
-  def test(compiledSettings: Seq[Compiled[_]]) = {
+  def test(compiledSettings: Seq[Compiled[_]]) =
     compiledSettings flatMap { cs =>
       // cd: Compiled[_] in both versions
       (cs.settings map { s =>
@@ -23,7 +23,6 @@ class Test {
         t
       }): Seq[ScopedKey[_]]
     }
-  }
 
   def foo[T](x: ScopedKey[T], v: ScopedKey[T]) {}
 }

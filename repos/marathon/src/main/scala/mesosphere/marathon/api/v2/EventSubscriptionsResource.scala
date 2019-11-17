@@ -55,11 +55,10 @@ class EventSubscriptionsResource @Inject() (val config: MarathonConf)
     ok(jsonString(eventToJson(result(future))))
   }
 
-  private def validateSubscriptionService(): Unit = {
+  private def validateSubscriptionService(): Unit =
     if (service eq null)
       throw new BadRequestException(
         "http event callback system is not running on this Marathon instance. " +
           "Please re-start this instance with \"--event_subscriber http_callback\"."
       )
-  }
 }

@@ -118,13 +118,12 @@ object JsonAST {
       * get back a `JArray` of the result of executing `\` on each object in the array. In the event
       * nothing is found, you'll get a `JNothing`.
       */
-    def \(nameToFind: String): JValue = {
+    def \(nameToFind: String): JValue =
       findDirectByName(List(this), nameToFind) match {
         case Nil      => JNothing
         case x :: Nil => x
         case x        => JArray(x)
       }
-    }
 
     private def findDirectByName(xs: List[JValue], name: String): List[JValue] =
       xs.flatMap {
@@ -360,7 +359,7 @@ object JsonAST {
       *          and the next field as its second.
       */
     def foldField[A](z: A)(f: (A, JField) => A): A = {
-      def rec(acc: A, v: JValue) = {
+      def rec(acc: A, v: JValue) =
         v match {
           case JObject(l) =>
             l.foldLeft(acc) {
@@ -370,7 +369,6 @@ object JsonAST {
           case JArray(l) => l.foldLeft(acc)((a, e) => e.foldField(a)(f))
           case _         => acc
         }
-      }
       rec(z, this)
     }
 
@@ -505,7 +503,7 @@ object JsonAST {
       * }}}
       */
     def replace(l: List[String], replacement: JValue): JValue = {
-      def rep(l: List[String], in: JValue): JValue = {
+      def rep(l: List[String], in: JValue): JValue =
         l match {
           case x :: xs =>
             in match {
@@ -522,7 +520,6 @@ object JsonAST {
 
           case Nil => in
         }
-      }
 
       rep(l, this)
     }
@@ -567,7 +564,7 @@ object JsonAST {
       * }}}
       */
     def find(p: JValue => Boolean): Option[JValue] = {
-      def find(json: JValue): Option[JValue] = {
+      def find(json: JValue): Option[JValue] =
         json match {
           case _ if p(json) => Some(json)
           case JObject(fs) =>
@@ -575,7 +572,6 @@ object JsonAST {
           case JArray(l) => l.flatMap(find _).headOption
           case _         => None
         }
-      }
 
       find(this)
     }
@@ -814,12 +810,11 @@ object JsonAST {
 
   case class JObject(obj: List[JField]) extends JValue {
     type Values = Map[String, Any]
-    def values = {
+    def values =
       obj.map {
         case JField(name, value) =>
           (name, value.values): (String, Any)
       }.toMap
-    }
 
     override def equals(that: Any): Boolean = that match {
       case o: JObject => obj.toSet == o.obj.toSet
@@ -938,31 +933,27 @@ object JsonAST {
   /**
     * Render `value` using `[[RenderSettings.pretty]]`.
     */
-  def prettyRender(value: JValue): String = {
+  def prettyRender(value: JValue): String =
     render(value, RenderSettings.pretty)
-  }
 
   /**
     * Render `value` to the given `appendable` using `[[RenderSettings.pretty]]`.
     */
-  def prettyRender(value: JValue, appendable: Appendable): String = {
+  def prettyRender(value: JValue, appendable: Appendable): String =
     render(value, RenderSettings.pretty, appendable)
-  }
 
   /** Renders JSON directly to string in compact format.
     * This is an optimized version of compact(render(value))
     * when the intermediate Document is not needed.
     */
-  def compactRender(value: JValue): String = {
+  def compactRender(value: JValue): String =
     render(value, RenderSettings.compact)
-  }
 
   /**
     * Render `value` to the given `appendable` using `[[RenderSettings.compact]]`.
     */
-  def compactRender(value: JValue, appendable: Appendable): String = {
+  def compactRender(value: JValue, appendable: Appendable): String =
     render(value, RenderSettings.compact, appendable)
-  }
 
   /**
     * Render `value` to the given `appendable` (a `StringBuilder`, by default)
@@ -972,9 +963,8 @@ object JsonAST {
   def render(
       value: JValue,
       settings: RenderSettings,
-      appendable: Appendable = new StringBuilder()): String = {
+      appendable: Appendable = new StringBuilder()): String =
     bufRender(value, appendable, settings).toString()
-  }
 
   case class RenderIntermediaryDocument(value: JValue)
   def render(value: JValue) = RenderIntermediaryDocument(value)

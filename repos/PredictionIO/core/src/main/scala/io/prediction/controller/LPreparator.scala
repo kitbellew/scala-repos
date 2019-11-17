@@ -32,9 +32,8 @@ import scala.reflect._
 abstract class LPreparator[TD, PD: ClassTag]
     extends BasePreparator[RDD[TD], RDD[PD]] {
 
-  def prepareBase(sc: SparkContext, rddTd: RDD[TD]): RDD[PD] = {
+  def prepareBase(sc: SparkContext, rddTd: RDD[TD]): RDD[PD] =
     rddTd.map(prepare)
-  }
 
   /** Implement this method to produce prepared data that is ready for model
     * training.

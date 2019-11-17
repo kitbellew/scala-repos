@@ -60,7 +60,7 @@ import scalaz.syntax.std.option._
 trait AuthenticationCombinators extends HttpRequestHandlerCombinators {
   def auth[A](accountManager: AccountManager[Future])(
       service: HttpService[A, Account => Future[HttpResponse[JValue]]])(
-      implicit ctx: ExecutionContext) = {
+      implicit ctx: ExecutionContext) =
     new AuthenticationService[A, HttpResponse[JValue]](accountManager, service)(
       {
         case NotProvided =>
@@ -70,7 +70,6 @@ trait AuthenticationCombinators extends HttpRequestHandlerCombinators {
         case AuthMismatch(message) =>
           HttpResponse(Unauthorized, content = Some(message.serialize))
       })
-  }
 
   sealed trait AuthenticationFailure
   case object NotProvided extends AuthenticationFailure

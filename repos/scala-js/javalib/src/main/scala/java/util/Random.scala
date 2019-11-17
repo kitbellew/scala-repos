@@ -72,17 +72,16 @@ class Random(seed_in: Long) extends AnyRef with java.io.Serializable {
     result32 >>> (32 - bits)
   }
 
-  def nextDouble(): Double = {
+  def nextDouble(): Double =
     // ((next(26).toLong << 27) + next(27)) / (1L << 53).toDouble
     ((next(26).toDouble * (1L << 27).toDouble) + next(27).toDouble) /
       (1L << 53).toDouble
-  }
 
   def nextBoolean(): Boolean = next(1) != 0
 
   def nextInt(): Int = next(32)
 
-  def nextInt(n: Int): Int = {
+  def nextInt(n: Int): Int =
     if (n <= 0) {
       throw new IllegalArgumentException("n must be positive")
     } else if ((n & -n) == n) {
@@ -110,14 +109,12 @@ class Random(seed_in: Long) extends AnyRef with java.io.Serializable {
 
       loop()
     }
-  }
 
   def nextLong(): Long = (next(32).toLong << 32) + next(32)
 
-  def nextFloat(): Float = {
+  def nextFloat(): Float =
     // next(24).toFloat / (1 << 24).toFloat
     (next(24).toDouble / (1 << 24).toDouble).toFloat
-  }
 
   def nextBytes(bytes: Array[Byte]): Unit = {
     var i = 0
@@ -133,7 +130,7 @@ class Random(seed_in: Long) extends AnyRef with java.io.Serializable {
     }
   }
 
-  def nextGaussian(): Double = {
+  def nextGaussian(): Double =
     // See http://www.protonfish.com/jslib/boxmuller.shtml
 
     /* The Box-Muller algorithm produces two random numbers at once. We save
@@ -167,7 +164,6 @@ class Random(seed_in: Long) extends AnyRef with java.io.Serializable {
       // And return x*c
       x * c
     }
-  }
 }
 
 object Random {

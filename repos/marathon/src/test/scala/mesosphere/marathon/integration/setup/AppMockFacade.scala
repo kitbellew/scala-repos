@@ -32,11 +32,10 @@ class AppMockFacade(https: Boolean = false, waitTime: Duration = 30.seconds)(
 
   def scheme: String = if (https) "https" else "http"
 
-  def custom(uri: String)(host: String, port: Int): RestResult[String] = {
+  def custom(uri: String)(host: String, port: Int): RestResult[String] =
     retry() {
       RestResult
         .await(pipeline(Get(s"$scheme://$host:$port$uri")), waitTime)
         .map(_.entity.asString)
     }
-  }
 }

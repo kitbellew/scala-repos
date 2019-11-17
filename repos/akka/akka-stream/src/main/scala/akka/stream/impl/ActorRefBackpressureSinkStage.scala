@@ -38,7 +38,7 @@ private[akka] class ActorRefBackpressureSinkStage[In](
       var acknowledgementReceived = false
       var completeReceived = false
 
-      private def receive(evt: (ActorRef, Any)): Unit = {
+      private def receive(evt: (ActorRef, Any)): Unit =
         evt._2 match {
           case `ackMessage` ⇒ {
             if (buffer.isEmpty) acknowledgementReceived = true
@@ -52,7 +52,6 @@ private[akka] class ActorRefBackpressureSinkStage[In](
           case Terminated(`ref`) ⇒ completeStage()
           case _ ⇒ //ignore all other messages
         }
-      }
 
       override def preStart() = {
         setKeepGoing(true)
@@ -82,10 +81,9 @@ private[akka] class ActorRefBackpressureSinkStage[In](
             }
             if (buffer.size() < maxBuffer) pull(in)
           }
-          override def onUpstreamFinish(): Unit = {
+          override def onUpstreamFinish(): Unit =
             if (buffer.isEmpty) finish()
             else completeReceived = true
-          }
           override def onUpstreamFailure(ex: Throwable): Unit = {
             ref ! onFailureMessage(ex)
             failStage(ex)

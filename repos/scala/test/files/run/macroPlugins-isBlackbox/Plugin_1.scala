@@ -14,8 +14,7 @@ class Plugin(val global: Global) extends NscPlugin {
   addMacroPlugin(MacroPlugin)
 
   object MacroPlugin extends MacroPlugin {
-    override def pluginsIsBlackbox(macroDef: Symbol): Option[Boolean] = {
+    override def pluginsIsBlackbox(macroDef: Symbol): Option[Boolean] =
       Some(false)
-    }
   }
 }

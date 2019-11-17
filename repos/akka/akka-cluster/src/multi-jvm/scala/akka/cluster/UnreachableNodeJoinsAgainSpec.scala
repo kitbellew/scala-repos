@@ -57,9 +57,8 @@ abstract class UnreachableNodeJoinsAgainSpec
 
   def allBut(
       role: RoleName,
-      roles: immutable.Seq[RoleName] = roles): immutable.Seq[RoleName] = {
+      roles: immutable.Seq[RoleName] = roles): immutable.Seq[RoleName] =
     roles.filterNot(_ == role)
-  }
 
   lazy val master = second
   lazy val victim = fourth

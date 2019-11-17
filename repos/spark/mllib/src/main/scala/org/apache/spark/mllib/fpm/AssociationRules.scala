@@ -143,22 +143,19 @@ object AssociationRules {
       *
       */
     @Since("1.5.0")
-    def javaAntecedent: java.util.List[Item] = {
+    def javaAntecedent: java.util.List[Item] =
       antecedent.toList.asJava
-    }
 
     /**
       * Returns consequent in a Java List.
       *
       */
     @Since("1.5.0")
-    def javaConsequent: java.util.List[Item] = {
+    def javaConsequent: java.util.List[Item] =
       consequent.toList.asJava
-    }
 
-    override def toString: String = {
+    override def toString: String =
       s"${antecedent.mkString("{", ",", "}")} => " +
         s"${consequent.mkString("{", ",", "}")}: ${confidence}"
-    }
   }
 }

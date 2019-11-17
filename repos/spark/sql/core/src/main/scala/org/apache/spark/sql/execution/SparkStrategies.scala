@@ -131,13 +131,12 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
     * Matches a plan whose output should be small enough to be used in broadcast join.
     */
   object CanBroadcast {
-    def unapply(plan: LogicalPlan): Option[LogicalPlan] = {
+    def unapply(plan: LogicalPlan): Option[LogicalPlan] =
       if (plan.statistics.sizeInBytes <= conf.autoBroadcastJoinThreshold) {
         Some(plan)
       } else {
         None
       }
-    }
   }
 
   /**
@@ -160,9 +159,8 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
     /**
       * Matches a plan whose single partition should be small enough to build a hash table.
       */
-    def canBuildHashMap(plan: LogicalPlan): Boolean = {
+    def canBuildHashMap(plan: LogicalPlan): Boolean =
       plan.statistics.sizeInBytes < conf.autoBroadcastJoinThreshold * conf.numShufflePartitions
-    }
 
     /**
       * Returns whether plan a is much smaller (3X) than plan b.
@@ -171,9 +169,8 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
       * that is much smaller than other one. Since we does not have the statistic for number of rows,
       * use the size of bytes here as estimation.
       */
-    private def muchSmaller(a: LogicalPlan, b: LogicalPlan): Boolean = {
+    private def muchSmaller(a: LogicalPlan, b: LogicalPlan): Boolean =
       a.statistics.sizeInBytes * 3 <= b.statistics.sizeInBytes
-    }
 
     /**
       * Returns whether we should use shuffle hash join or not.
@@ -184,10 +181,9 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
       */
     private def shouldShuffleHashJoin(
         left: LogicalPlan,
-        right: LogicalPlan): Boolean = {
+        right: LogicalPlan): Boolean =
       canBuildHashMap(left) && muchSmaller(left, right) ||
-      canBuildHashMap(right) && muchSmaller(right, left)
-    }
+        canBuildHashMap(right) && muchSmaller(right, left)
 
     def apply(plan: LogicalPlan): Seq[SparkPlan] = plan match {
 

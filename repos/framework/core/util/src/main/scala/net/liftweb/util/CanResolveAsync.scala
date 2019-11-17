@@ -47,21 +47,17 @@ trait CanResolveAsync[ResolvableType, ResolvedType] {
 trait LowPriorityCanResolveAsyncImplicits { self: CanResolveAsync.type =>
 
   // Low priority implicit for resolving Scala Futures.
-  implicit def resolveFuture[T](implicit executionContext: ExecutionContext) = {
+  implicit def resolveFuture[T](implicit executionContext: ExecutionContext) =
     new CanResolveAsync[Future[T], T] {
-      def resolveAsync(future: Future[T], onResolved: (T) => Unit) = {
+      def resolveAsync(future: Future[T], onResolved: (T) => Unit) =
         future.foreach(onResolved)
-      }
     }
-  }
 
   // Low priority implicit for resolving Lift LAFutures.
-  implicit def resolveLaFuture[T] = {
+  implicit def resolveLaFuture[T] =
     new CanResolveAsync[LAFuture[T], T] {
-      def resolveAsync(future: LAFuture[T], onResolved: (T) => Unit) = {
+      def resolveAsync(future: LAFuture[T], onResolved: (T) => Unit) =
         future.onSuccess(onResolved)
-      }
     }
-  }
 }
 object CanResolveAsync extends LowPriorityCanResolveAsyncImplicits

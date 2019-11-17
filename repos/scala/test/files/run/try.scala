@@ -47,7 +47,7 @@ object Test extends AnyRef with App {
 
   var instance: AnyRef = null;
 
-  def try4 = {
+  def try4 =
     if (instance == null) {
       instance = try {
         "" //new String();
@@ -62,7 +62,6 @@ object Test extends AnyRef with App {
           }
       }
     }
-  }
 
   def try5 =
     try {

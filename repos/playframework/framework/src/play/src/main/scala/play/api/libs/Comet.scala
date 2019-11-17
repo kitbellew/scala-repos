@@ -66,14 +66,13 @@ object Comet {
     * @param callbackName the javascript callback method.
     * @return a flow of ByteString elements.
     */
-  def string(callbackName: String): Flow[String, ByteString, NotUsed] = {
+  def string(callbackName: String): Flow[String, ByteString, NotUsed] =
     Flow[String]
       .map(
         str =>
           ByteString.fromString(
             "'" + StringEscapeUtils.escapeEcmaScript(str) + "'"))
       .via(flow(callbackName))
-  }
 
   /**
     * Produces a flow of ByteString using `Json.fromJson(_).get` from a Flow of JsValue.  Calls
@@ -82,13 +81,12 @@ object Comet {
     * @param callbackName the javascript callback method.
     * @return a flow of ByteString elements.
     */
-  def json(callbackName: String): Flow[JsValue, ByteString, NotUsed] = {
+  def json(callbackName: String): Flow[JsValue, ByteString, NotUsed] =
     Flow[JsValue]
       .map { msg =>
         ByteString.fromString(Json.asciiStringify(msg))
       }
       .via(flow(callbackName))
-  }
 
   /**
     * Creates a flow of ByteString.  Useful when you have objects that are not JSON or String where

@@ -122,11 +122,10 @@ abstract class NumericRange[T](
      else if (n >= length) newEmptyRange(end)
      else copy(locationAfterN(n), end, step))
 
-  def apply(idx: Int): T = {
+  def apply(idx: Int): T =
     if (idx < 0 || idx >= length)
       throw new IndexOutOfBoundsException(idx.toString)
     else locationAfterN(idx)
-  }
 
   import NumericRange.defaultOrdering
 

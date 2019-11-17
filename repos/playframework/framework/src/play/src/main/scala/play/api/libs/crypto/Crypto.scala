@@ -253,9 +253,8 @@ class HMACSHA1CookieSigner @Inject() (config: CryptoConfig)
     * @param message The message to sign.
     * @return A hexadecimal encoded signature.
     */
-  def sign(message: String): String = {
+  def sign(message: String): String =
     sign(message, config.secret.getBytes("utf-8"))
-  }
 }
 
 @Singleton
@@ -299,14 +298,13 @@ class DefaultCSRFTokenSigner @Inject() (signer: CookieSigner, clock: Clock)
     * @param token The signed token to extract.
     * @return The verified raw token, or None if the token isn't valid.
     */
-  def extractSignedToken(token: String): Option[String] = {
+  def extractSignedToken(token: String): Option[String] =
     token.split("-", 3) match {
       case Array(signature, nonce, raw)
           if constantTimeEquals(signature, signer.sign(nonce + "-" + raw)) =>
         Some(raw)
       case _ => None
     }
-  }
 
   /**
     * Generate a cryptographically secure token
@@ -325,12 +323,11 @@ class DefaultCSRFTokenSigner @Inject() (signer: CookieSigner, clock: Clock)
   /**
     * Compare two signed tokens
     */
-  def compareSignedTokens(tokenA: String, tokenB: String): Boolean = {
+  def compareSignedTokens(tokenA: String, tokenB: String): Boolean =
     (for {
       rawA <- extractSignedToken(tokenA)
       rawB <- extractSignedToken(tokenB)
     } yield CSRFTokenSigner.constantTimeEquals(rawA, rawB)).getOrElse(false)
-  }
 
   /**
     * Constant time equals method.
@@ -350,7 +347,7 @@ object CSRFTokenSigner {
     * Given a length that both Strings are equal to, this method will always run in constant time.  This prevents
     * timing attacks.
     */
-  def constantTimeEquals(a: String, b: String): Boolean = {
+  def constantTimeEquals(a: String, b: String): Boolean =
     if (a.length != b.length) {
       false
     } else {
@@ -360,7 +357,6 @@ object CSRFTokenSigner {
       }
       equal == 0
     }
-  }
 }
 
 @Singleton
@@ -374,9 +370,8 @@ class AESCrypterProvider @Inject() (config: CryptoConfig)
   */
 class AESCTRCrypter @Inject() (config: CryptoConfig) extends AESCrypter {
 
-  def encryptAES(value: String): String = {
+  def encryptAES(value: String): String =
     encryptAES(value, config.secret)
-  }
 
   @deprecated("This method will be removed in future versions ", "2.5.0")
   def encryptAES(value: String, privateKey: String): String = {
@@ -408,17 +403,14 @@ class AESCTRCrypter @Inject() (config: CryptoConfig) extends AESCrypter {
   /**
     * Gets a Cipher with a configured provider, and a configurable AES transformation method.
     */
-  private def getCipherWithConfiguredProvider(
-      transformation: String): Cipher = {
+  private def getCipherWithConfiguredProvider(transformation: String): Cipher =
     config.provider.fold(Cipher.getInstance(transformation)) { p =>
       Cipher.getInstance(transformation, p)
     }
-  }
 
   @deprecated("This method will be removed in future versions ", "2.5.0")
-  def decryptAES(value: String): String = {
+  def decryptAES(value: String): String =
     decryptAES(value, config.secret)
-  }
 
   @deprecated("This method will be removed in future versions ", "2.5.0")
   def decryptAES(value: String, privateKey: String): String = {

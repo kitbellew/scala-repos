@@ -64,21 +64,19 @@ case class Edge[@specialized(Char, Int, Boolean, Byte, Long, Float, Double) ED](
 
 object Edge {
   private[graphx] def lexicographicOrdering[ED] = new Ordering[Edge[ED]] {
-    override def compare(a: Edge[ED], b: Edge[ED]): Int = {
+    override def compare(a: Edge[ED], b: Edge[ED]): Int =
       if (a.srcId == b.srcId) {
         if (a.dstId == b.dstId) 0
         else if (a.dstId < b.dstId) -1
         else 1
       } else if (a.srcId < b.srcId) -1
       else 1
-    }
   }
 
   private[graphx] def edgeArraySortDataFormat[ED] =
     new SortDataFormat[Edge[ED], Array[Edge[ED]]] {
-      override def getKey(data: Array[Edge[ED]], pos: Int): Edge[ED] = {
+      override def getKey(data: Array[Edge[ED]], pos: Int): Edge[ED] =
         data(pos)
-      }
 
       override def swap(data: Array[Edge[ED]], pos0: Int, pos1: Int): Unit = {
         val tmp = data(pos0)
@@ -103,8 +101,7 @@ object Edge {
         System.arraycopy(src, srcPos, dst, dstPos, length)
       }
 
-      override def allocate(length: Int): Array[Edge[ED]] = {
+      override def allocate(length: Int): Array[Edge[ED]] =
         new Array[Edge[ED]](length)
-      }
     }
 }

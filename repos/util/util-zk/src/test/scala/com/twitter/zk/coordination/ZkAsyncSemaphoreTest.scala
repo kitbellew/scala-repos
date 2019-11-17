@@ -41,11 +41,10 @@ class ZkAsyncSemaphoreTest
           Await.result(Future { f(zk) } ensure { zk.release })
         }
 
-        def acquire(sem: ZkAsyncSemaphore) = {
+        def acquire(sem: ZkAsyncSemaphore) =
           sem.acquire() onSuccess { permit =>
             permits add permit
           }
-        }
 
         "provide a shared 2-permit semaphore and" should {
           withClient { zk =>

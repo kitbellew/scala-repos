@@ -106,14 +106,13 @@ private[akka] trait StreamSubscriptionTimeoutSupport {
     }
   }
 
-  private def warn(target: Publisher[_], timeout: FiniteDuration): Unit = {
+  private def warn(target: Publisher[_], timeout: FiniteDuration): Unit =
     log.warning(
       "Timed out {} detected (after {} ms)! You should investigate if you either cancel or consume all {} instances",
       target,
       timeout.toMillis,
       target.getClass.getCanonicalName
     )
-  }
 
   /**
     * Called by the actor when a subscription has timed out. Expects the actual `Publisher` or `Processor` target.

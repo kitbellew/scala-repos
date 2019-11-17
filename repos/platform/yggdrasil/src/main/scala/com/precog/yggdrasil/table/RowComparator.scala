@@ -35,7 +35,7 @@ trait RowComparator { self =>
   }
 
   @tailrec
-  final def nextLeftIndex(lmin: Int, lmax: Int, ridx: Int): Int = {
+  final def nextLeftIndex(lmin: Int, lmax: Int, ridx: Int): Int =
     compare(lmax, ridx) match {
       case LT => lmax + 1
       case GT =>
@@ -67,5 +67,4 @@ trait RowComparator { self =>
           }
         }
     }
-  }
 }

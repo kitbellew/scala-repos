@@ -426,12 +426,11 @@ object SparkBuild extends PomBuild {
   enable(Seq(sparkShell := sparkShell in "assembly"))(spark)
 
   // TODO: move this to its upstream project.
-  override def projectDefinitions(baseDirectory: File): Seq[Project] = {
+  override def projectDefinitions(baseDirectory: File): Seq[Project] =
     super.projectDefinitions(baseDirectory).map { x =>
       if (projectsMap.exists(_._1 == x.id)) x.settings(projectsMap(x.id): _*)
       else x.settings(Seq[Setting[_]](): _*)
     } ++ Seq[Project](OldDeps.project)
-  }
 }
 
 object Unsafe {
@@ -706,7 +705,7 @@ object PySparkAssembly {
   private def addFilesToZipStream(
       parent: String,
       source: File,
-      output: ZipOutputStream): Unit = {
+      output: ZipOutputStream): Unit =
     if (source.isDirectory()) {
       output.putNextEntry(new ZipEntry(parent + source.getName()))
       for (file <- source.listFiles()) {
@@ -729,7 +728,6 @@ object PySparkAssembly {
       output.closeEntry()
       in.close()
     }
-  }
 }
 
 object Unidoc {
@@ -739,12 +737,11 @@ object Unidoc {
   import UnidocKeys._
 
   // for easier specification of JavaDoc package groups
-  private def packageList(names: String*): String = {
+  private def packageList(names: String*): String =
     names.map(s => "org.apache.spark." + s).mkString(":")
-  }
 
   private def ignoreUndocumentedPackages(
-      packages: Seq[Seq[File]]): Seq[Seq[File]] = {
+      packages: Seq[Seq[File]]): Seq[Seq[File]] =
     packages
       .map(_.filterNot(_.getName.contains("$")))
       .map(_.filterNot(_.getCanonicalPath.contains("org/apache/spark/deploy")))
@@ -765,7 +762,6 @@ object Unidoc {
         _.getCanonicalPath.contains("org/apache/spark/sql/execution")))
       .map(_.filterNot(
         _.getCanonicalPath.contains("org/apache/spark/sql/hive/test")))
-  }
 
   val unidocSourceBase =
     settingKey[String]("Base URL of source links in Scaladoc.")

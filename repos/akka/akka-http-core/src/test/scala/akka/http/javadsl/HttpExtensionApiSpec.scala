@@ -656,10 +656,9 @@ class HttpExtensionApiSpec
       http.bindAndHandleSync(
         new Function[HttpRequest, HttpResponse] {
 
-          override def apply(request: HttpRequest): HttpResponse = {
+          override def apply(request: HttpRequest): HttpResponse =
             WebSocket
               .handleWebSocketRequestWith(request, Flow.create[Message]())
-          }
         },
         toHost(host, port),
         materializer
@@ -671,7 +670,6 @@ class HttpExtensionApiSpec
   private def waitFor[T](completionStage: CompletionStage[T]): T =
     completionStage.toCompletableFuture.get(1, TimeUnit.SECONDS)
 
-  override protected def afterAll(): Unit = {
+  override protected def afterAll(): Unit =
     system.terminate()
-  }
 }

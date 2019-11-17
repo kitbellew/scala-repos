@@ -344,22 +344,20 @@ trait WikiControllerBase extends ControllerBase {
     override def validate(
         name: String,
         value: String,
-        messages: Messages): Option[String] = {
+        messages: Messages): Option[String] =
       targetWikiPage.map { _ =>
         "Someone has created the wiki since you started. Please reload this page and re-apply your changes."
       }
-    }
   }
 
   private def conflictForEdit: Constraint = new Constraint() {
     override def validate(
         name: String,
         value: String,
-        messages: Messages): Option[String] = {
+        messages: Messages): Option[String] =
       targetWikiPage.filter(_.id != params("id")).map { _ =>
         "Someone has edited the wiki since you started. Please reload this page and re-apply your changes."
       }
-    }
   }
 
   private def targetWikiPage =

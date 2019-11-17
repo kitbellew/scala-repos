@@ -32,7 +32,7 @@ trait IsolatedAnalyzerFixture
     with IsolatedTestKitFixture {
 
   override def withAnalyzer(
-      testCode: (EnsimeConfig, TestActorRef[Analyzer]) => Any): Any = {
+      testCode: (EnsimeConfig, TestActorRef[Analyzer]) => Any): Any =
     withVFS { implicit vfs =>
       withTestKit { testkit =>
         import testkit._
@@ -42,7 +42,6 @@ trait IsolatedAnalyzerFixture
         }
       }
     }
-  }
 }
 
 trait SharedAnalyzerFixture

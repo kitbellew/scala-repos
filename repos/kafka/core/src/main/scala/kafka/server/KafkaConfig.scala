@@ -1763,9 +1763,7 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
     millis
   }
 
-  private def getMap(
-      propName: String,
-      propValue: String): Map[String, String] = {
+  private def getMap(propName: String, propValue: String): Map[String, String] =
     try {
       CoreUtils.parseCsvMap(propValue)
     } catch {
@@ -1774,7 +1772,6 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
           "Error parsing configuration property '%s': %s"
             .format(propName, e.getMessage))
     }
-  }
 
   private def validateUniquePortAndProtocol(listeners: String) {
 
@@ -1802,20 +1799,19 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
 
   // If the user did not define listeners but did define host or port, let's use them in backward compatible way
   // If none of those are defined, we default to PLAINTEXT://:9092
-  private def getListeners(): immutable.Map[SecurityProtocol, EndPoint] = {
+  private def getListeners(): immutable.Map[SecurityProtocol, EndPoint] =
     if (getString(KafkaConfig.ListenersProp) != null) {
       validateUniquePortAndProtocol(getString(KafkaConfig.ListenersProp))
       CoreUtils.listenerListToEndPoints(getString(KafkaConfig.ListenersProp))
     } else {
       CoreUtils.listenerListToEndPoints("PLAINTEXT://" + hostName + ":" + port)
     }
-  }
 
   // If the user defined advertised listeners, we use those
   // If he didn't but did define advertised host or port, we'll use those and fill in the missing value from regular host / port or defaults
   // If none of these are defined, we'll use the listeners
   private def getAdvertisedListeners(
-      ): immutable.Map[SecurityProtocol, EndPoint] = {
+      ): immutable.Map[SecurityProtocol, EndPoint] =
     if (getString(KafkaConfig.AdvertisedListenersProp) != null) {
       validateUniquePortAndProtocol(
         getString(KafkaConfig.AdvertisedListenersProp))
@@ -1828,7 +1824,6 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
     } else {
       getListeners()
     }
-  }
 
   validateValues()
 

@@ -92,12 +92,11 @@ abstract class GuiceBuilder[Self] protected (
 
   private def withBinderOption(
       opt: BinderOption,
-      enabled: Boolean = false): Self = {
+      enabled: Boolean = false): Self =
     copyBuilder(
       binderOptions =
         if (enabled) binderOptions + opt
         else binderOptions - opt)
-  }
 
   /**
     * Disable circular proxies on the Guice Binder. Without this option, Guice will try to proxy interfaces/traits to
@@ -199,7 +198,7 @@ abstract class GuiceBuilder[Self] protected (
   /**
     * Create a Play Injector backed by Guice using this configured builder.
     */
-  def injector(): PlayInjector = {
+  def injector(): PlayInjector =
     try {
       val stage = environment.mode match {
         case Mode.Prod    => Stage.PRODUCTION
@@ -221,7 +220,6 @@ abstract class GuiceBuilder[Self] protected (
           }
         }
     }
-  }
 
   /**
     * Internal copy method with defaults.
@@ -322,9 +320,8 @@ object GuiceableModule extends GuiceableModuleConversions {
 
   def loadModules(
       environment: Environment,
-      configuration: Configuration): Seq[GuiceableModule] = {
+      configuration: Configuration): Seq[GuiceableModule] =
     Modules.locate(environment, configuration) map guiceable
-  }
 
   /**
     * Attempt to convert a module of unknown type to a GuiceableModule.
@@ -420,7 +417,7 @@ trait GuiceableModuleConversions {
     */
   def guice(
       bindings: Seq[PlayBinding[_]],
-      binderOptions: Set[BinderOption]): GuiceModule = {
+      binderOptions: Set[BinderOption]): GuiceModule =
     new com.google.inject.AbstractModule {
       def configure(): Unit = {
         binderOptions.foreach(_(binder))
@@ -449,7 +446,6 @@ trait GuiceableModuleConversions {
         }
       }
     }
-  }
 }
 
 sealed abstract class BinderOption(configureBinder: Binder => Unit)
@@ -475,13 +471,12 @@ object BinderOption {
 object GuiceKey {
   import com.google.inject.Key
 
-  def apply[T](key: BindingKey[T]): Key[T] = {
+  def apply[T](key: BindingKey[T]): Key[T] =
     key.qualifier match {
       case Some(QualifierInstance(instance)) => Key.get(key.clazz, instance)
       case Some(QualifierClass(clazz))       => Key.get(key.clazz, clazz)
       case None                              => Key.get(key.clazz)
     }
-  }
 }
 
 /**

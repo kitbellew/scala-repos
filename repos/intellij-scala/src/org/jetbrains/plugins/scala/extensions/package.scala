@@ -59,13 +59,11 @@ package object extensions {
   implicit class PsiMethodExt(val repr: PsiMethod) extends AnyVal {
     import org.jetbrains.plugins.scala.extensions.PsiMethodExt._
 
-    def isAccessor: Boolean = {
+    def isAccessor: Boolean =
       hasNoParams && hasQueryLikeName && !hasVoidReturnType
-    }
 
-    def isMutator: Boolean = {
+    def isMutator: Boolean =
       hasVoidReturnType || hasMutatorLikeName
-    }
 
     def hasQueryLikeName = {
       def startsWith(name: String, prefix: String) =
@@ -170,10 +168,9 @@ package object extensions {
   implicit class ObjectExt[T](val v: T) extends AnyVal {
     def toOption: Option[T] = Option(v)
 
-    def asOptionOf[E: ClassTag]: Option[E] = {
+    def asOptionOf[E: ClassTag]: Option[E] =
       if (classTag[E].runtimeClass.isInstance(v)) Some(v.asInstanceOf[E])
       else None
-    }
 
     def getOrElse[H >: T](default: H): H = if (v == null) default else v
 
@@ -197,12 +194,11 @@ package object extensions {
 
   implicit class PsiElementExt(override val repr: PsiElement)
       extends PsiElementExtTrait {
-    def startOffsetInParent: Int = {
+    def startOffsetInParent: Int =
       repr match {
         case s: ScalaPsiElement => s.startOffsetInParent
         case _                  => repr.getStartOffsetInParent
       }
-    }
   }
 
   implicit class PsiMemberExt(val member: PsiMember) extends AnyVal {
@@ -210,13 +206,12 @@ package object extensions {
     /**
       * Second match branch is for Java only.
       */
-    def containingClass: PsiClass = {
+    def containingClass: PsiClass =
       member match {
         case member: ScMember    => member.containingClass
         case b: ScBindingPattern => b.containingClass
         case _                   => member.getContainingClass
       }
-    }
   }
 
   implicit class PsiClassExt(val clazz: PsiClass) extends AnyVal {
@@ -224,19 +219,17 @@ package object extensions {
     /**
       * Second match branch is for Java only.
       */
-    def qualifiedName: String = {
+    def qualifiedName: String =
       clazz match {
         case t: ScTemplateDefinition => t.qualifiedName
         case _                       => clazz.getQualifiedName
       }
-    }
 
-    def constructors: Array[PsiMethod] = {
+    def constructors: Array[PsiMethod] =
       clazz match {
         case c: ScClass => c.constructors
         case _          => clazz.getConstructors
       }
-    }
 
     def isEffectivelyFinal: Boolean = clazz match {
       case scClass: ScClass => scClass.hasFinalModifier
@@ -319,7 +312,7 @@ package object extensions {
       }
     }
 
-    def namedElements: Seq[PsiNamedElement] = {
+    def namedElements: Seq[PsiNamedElement] =
       clazz match {
         case td: ScTemplateDefinition =>
           td.members.flatMap {
@@ -329,7 +322,6 @@ package object extensions {
           }
         case _ => clazz.getFields ++ clazz.getMethods
       }
-    }
   }
 
   implicit class PsiNamedElementExt(val named: PsiNamedElement) extends AnyVal {
@@ -337,12 +329,11 @@ package object extensions {
     /**
       * Second match branch is for Java only.
       */
-    def name: String = {
+    def name: String =
       named match {
         case nd: ScNamedElement => nd.name
         case nd                 => nd.getName
       }
-    }
   }
 
   implicit class PsiModifierListOwnerExt(val member: PsiModifierListOwner)
@@ -351,33 +342,30 @@ package object extensions {
     /**
       * Second match branch is for Java only.
       */
-    def hasAbstractModifier: Boolean = {
+    def hasAbstractModifier: Boolean =
       member match {
         case member: ScModifierListOwner => member.hasAbstractModifier
         case _                           => member.hasModifierProperty(PsiModifier.ABSTRACT)
       }
-    }
 
     /**
       * Second match branch is for Java only.
       */
-    def hasFinalModifier: Boolean = {
+    def hasFinalModifier: Boolean =
       member match {
         case member: ScModifierListOwner => member.hasFinalModifier
         case _                           => member.hasModifierProperty(PsiModifier.FINAL)
       }
-    }
 
     /**
       * Second match branch is for Java only.
       */
-    def hasModifierPropertyScala(name: String): Boolean = {
+    def hasModifierPropertyScala(name: String): Boolean =
       member match {
         case member: ScModifierListOwner =>
           member.hasModifierPropertyScala(name)
         case _ => member.hasModifierProperty(name)
       }
-    }
   }
 
   implicit class PipedObject[T](val value: T) extends AnyVal {
@@ -422,8 +410,7 @@ package object extensions {
     override def call(): T = action
   }
 
-  def startCommand(project: Project, commandName: String)(
-      body: => Unit): Unit = {
+  def startCommand(project: Project, commandName: String)(body: => Unit): Unit =
     CommandProcessor.getInstance.executeCommand(project, new Runnable {
       def run() {
         inWriteAction {
@@ -431,13 +418,11 @@ package object extensions {
         }
       }
     }, commandName, null)
-  }
 
-  def inWriteAction[T](body: => T): T = {
+  def inWriteAction[T](body: => T): T =
     ApplicationManager.getApplication.runWriteAction(new Computable[T] {
       def compute: T = body
     })
-  }
 
   def inWriteCommandAction[T](
       project: Project,
@@ -452,23 +437,20 @@ package object extensions {
     }.execute.getResultObject
   }
 
-  def inReadAction[T](body: => T): T = {
+  def inReadAction[T](body: => T): T =
     ApplicationManager.getApplication.runReadAction(new Computable[T] {
       def compute: T = body
     })
-  }
 
-  def executeOnPooledThread[T](body: => T): Future[T] = {
+  def executeOnPooledThread[T](body: => T): Future[T] =
     ApplicationManager.getApplication.executeOnPooledThread(toCallable(body))
-  }
 
   def withProgressSynchronously[T](title: String)(
-      body: ((String => Unit) => T)): T = {
+      body: ((String => Unit) => T)): T =
     withProgressSynchronouslyTry[T](title)(body) match {
       case Success(result)    => result
       case Failure(exception) => throw exception
     }
-  }
 
   def withProgressSynchronouslyTry[T](title: String)(
       body: ((String => Unit) => T)): Try[T] = {
@@ -491,15 +473,14 @@ package object extensions {
     }
   }
 
-  def postponeFormattingWithin[T](project: Project)(body: => T): T = {
+  def postponeFormattingWithin[T](project: Project)(body: => T): T =
     PostprocessReformattingAspect
       .getInstance(project)
       .postponeFormattingInside(new Computable[T] {
         def compute(): T = body
       })
-  }
 
-  def withDisabledPostprocessFormatting[T](project: Project)(body: => T): T = {
+  def withDisabledPostprocessFormatting[T](project: Project)(body: => T): T =
     PostprocessReformattingAspect
       .getInstance(project)
       .disablePostprocessFormattingInside {
@@ -507,7 +488,6 @@ package object extensions {
           override def compute(): T = body
         }
       }
-  }
 
   def invokeLater[T](body: => T) {
     ApplicationManager.getApplication.invokeLater(new Runnable {
@@ -554,7 +534,7 @@ package object extensions {
   }
 
   implicit class PsiParameterExt(val param: PsiParameter) extends AnyVal {
-    def paramType: ScType = {
+    def paramType: ScType =
       param match {
         case f: FakePsiParameter => f.parameter.paramType
         case param: ScParameter  => param.getType(TypingContext.empty).getOrAny
@@ -565,9 +545,8 @@ package object extensions {
             param.getResolveScope,
             paramTopLevel = true)
       }
-    }
 
-    def exactParamType(treatJavaObjectAsAny: Boolean = true): ScType = {
+    def exactParamType(treatJavaObjectAsAny: Boolean = true): ScType =
       param match {
         case f: FakePsiParameter => f.parameter.paramType
         case param: ScParameter  => param.getType(TypingContext.empty).getOrAny
@@ -583,9 +562,8 @@ package object extensions {
             paramTopLevel = true,
             treatJavaObjectAsAny = treatJavaObjectAsAny)
       }
-    }
 
-    def index: Int = {
+    def index: Int =
       param match {
         case f: FakePsiParameter => f.parameter.index
         case p: ScParameter      => p.index
@@ -595,24 +573,21 @@ package object extensions {
             case _                       => -1
           }
       }
-    }
   }
 
-  def using[A <: Closeable, B](resource: A)(block: A => B): B = {
+  def using[A <: Closeable, B](resource: A)(block: A => B): B =
     try {
       block(resource)
     } finally {
       if (resource != null) resource.close()
     }
-  }
 
-  def using[B](source: Source)(block: Source => B): B = {
+  def using[B](source: Source)(block: Source => B): B =
     try {
       block(source)
     } finally {
       source.close()
     }
-  }
 
   val ChildOf = Parent
 }

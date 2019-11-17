@@ -9,12 +9,8 @@ import java.util.logging.Logger
 private[tracing] object RecordTimeFormat extends TimeFormat("MMdd HH:mm:ss.SSS")
 
 object Record {
-  def apply(
-      traceId: TraceId,
-      timestamp: Time,
-      annotation: Annotation): Record = {
+  def apply(traceId: TraceId, timestamp: Time, annotation: Annotation): Record =
     Record(traceId, timestamp, annotation, None)
-  }
 }
 
 /**
@@ -120,16 +116,14 @@ object BroadcastTracer {
   }
 
   private class N(tracers: Seq[Tracer]) extends Tracer {
-    def record(record: Record): Unit = {
+    def record(record: Record): Unit =
       tracers foreach { _.record(record) }
-    }
 
-    def sampleTrace(traceId: TraceId): Option[Boolean] = {
+    def sampleTrace(traceId: TraceId): Option[Boolean] =
       if (tracers exists { _.sampleTrace(traceId) == Some(true) }) Some(true)
       else if (tracers forall { _.sampleTrace(traceId) == Some(false) })
         Some(false)
       else None
-    }
   }
 }
 
@@ -173,9 +167,8 @@ class BufferingTracer extends Tracer with Iterable[Record] {
 object ConsoleTracer extends Tracer {
   val factory: Tracer.Factory = () => this
 
-  def record(record: Record): Unit = {
+  def record(record: Record): Unit =
     println(record)
-  }
 
   def sampleTrace(traceId: TraceId): Option[Boolean] = None
 }

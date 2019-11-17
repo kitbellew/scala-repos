@@ -289,9 +289,8 @@ object CssBindHelpersSpec extends Specification with XmlMatchers {
 
     "not duplicate classes" in {
 
-      def anchor(quesType: String, value: String) = {
+      def anchor(quesType: String, value: String) =
         <a href="foo" class="selected">(value)</a>
-      }
       var page = 1
       var elements = List("1", "2", "3", "4")
 
@@ -595,13 +594,12 @@ object CssBindHelpersSpec extends Specification with XmlMatchers {
 
       def messageListId = "Hello"
 
-      def collapseUnless[A](isEmptyCond: Boolean)(f: => A): Box[A] = {
+      def collapseUnless[A](isEmptyCond: Boolean)(f: => A): Box[A] =
         if (!isEmptyCond) {
           Empty
         } else {
           Full(f)
         }
-      }
 
       ".noMail" #> collapseUnless(cachedMessageList.map(_.isEmpty).openOr(true)) {
         "tbody [id]" #> messageListId & "*" #> PassThru
@@ -611,17 +609,14 @@ object CssBindHelpersSpec extends Specification with XmlMatchers {
     }
 
     "other Andreas test" in {
-      def renderBlogEntrySummary = {
+      def renderBlogEntrySummary =
         ".blogEntry" #>
           ((ns: NodeSeq) => {
             ("*" #> "Horse").apply(ns)
           })
-      }
 
-      def render = {
-
+      def render =
         "*" #> ((ns: NodeSeq) => renderBlogEntrySummary.apply(ns) ++ <a>hi</a>)
-      }
 
       render
 

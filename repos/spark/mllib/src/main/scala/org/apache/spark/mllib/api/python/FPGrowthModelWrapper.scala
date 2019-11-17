@@ -26,7 +26,6 @@ import org.apache.spark.rdd.RDD
 private[python] class FPGrowthModelWrapper(model: FPGrowthModel[Any])
     extends FPGrowthModel(model.freqItemsets) {
 
-  def getFreqItemsets: RDD[Array[Any]] = {
+  def getFreqItemsets: RDD[Array[Any]] =
     SerDe.fromTuple2RDD(model.freqItemsets.map(x => (x.javaItems, x.freq)))
-  }
 }

@@ -159,12 +159,11 @@ trait IterableViewLike[
   override def take(n: Int): This = newTaken(n)
 
   override def zip[A1 >: A, B, That](that: GenIterable[B])(
-      implicit bf: CanBuildFrom[This, (A1, B), That]): That = {
+      implicit bf: CanBuildFrom[This, (A1, B), That]): That =
     newZipped(that).asInstanceOf[That]
 // was:    val b = bf(repr)
 //    if (b.isInstanceOf[NoBuilder[_]]) newZipped(that).asInstanceOf[That]
 //    else super.zip[A1, B, That](that)(bf)
-  }
 
   override def zipWithIndex[A1 >: A, That](
       implicit bf: CanBuildFrom[This, (A1, Int), That]): That =

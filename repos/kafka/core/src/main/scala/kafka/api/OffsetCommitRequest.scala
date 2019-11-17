@@ -199,7 +199,6 @@ case class OffsetCommitRequest(
     offsetCommitRequest.toString()
   }
 
-  override def toString = {
+  override def toString =
     describe(details = true)
-  }
 }

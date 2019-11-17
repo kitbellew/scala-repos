@@ -141,12 +141,11 @@ class ScalatraAtmosphereHandler(scalatraApp: ScalatraBase)(
     client
   }
 
-  private[this] def clientForRoute(route: MatchedRoute): AtmosphereClient = {
+  private[this] def clientForRoute(route: MatchedRoute): AtmosphereClient =
     liftAction(route.action) getOrElse {
       throw new ScalatraException(
         "An atmosphere route should return an atmosphere client")
     }
-  }
 
   private[this] def requestUri(resource: AtmosphereResource) = {
     val u = resource.getRequest.getRequestURI.blankOption getOrElse "/"

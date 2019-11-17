@@ -110,10 +110,9 @@ private[nio] final class ByteArrayBits(
       b4: Byte,
       b5: Byte,
       b6: Byte,
-      b7: Byte): Long = {
+      b7: Byte): Long =
     (makeIntBE(b0, b1, b2, b3).toLong << 32) |
       (makeIntBE(b4, b5, b6, b7).toLong & 0XFFFFFFFFL)
-  }
 
   @inline
   private def makeFloat(bs: (Byte, Byte, Byte, Byte)): Float =

@@ -237,7 +237,7 @@ class SameSignatureCallParametersProvider extends ScalaCompletionContributor {
   private def checkSignatures(
       signatures: Seq[Seq[(String, ScType)]],
       methodLike: ScMethodLike,
-      result: CompletionResultSet): Unit = {
+      result: CompletionResultSet): Unit =
     for (signature <- signatures if signature.forall(_._1 != null)) {
       val names = new ArrayBuffer[String]()
       val res = signature
@@ -280,5 +280,4 @@ class SameSignatureCallParametersProvider extends ScalaCompletionContributor {
         result.addElement(element)
       }
     }
-  }
 }

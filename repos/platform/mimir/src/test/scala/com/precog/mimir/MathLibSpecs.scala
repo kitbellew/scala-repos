@@ -44,20 +44,18 @@ trait MathLibSpecs[M[+_]]
   val line = Line(1, 1, "")
   val homn4 = "/hom/numbers4"
 
-  def inputOp2(op: Op2, loadFrom: String, const: RValue) = {
+  def inputOp2(op: Op2, loadFrom: String, const: RValue) =
     Join(
       BuiltInFunction2Op(op),
       Cross(None),
       dag.AbsoluteLoad(Const(CString(loadFrom))(line))(line),
       Const(const)(line))(line)
-  }
 
-  def testEval(graph: DepGraph): Set[SEvent] = {
+  def testEval(graph: DepGraph): Set[SEvent] =
     consumeEval(graph, defaultEvaluationContext) match {
       case Success(results) => results
       case Failure(error)   => throw error
     }
-  }
 
   "for sets with numeric values inside arrays and objects" should {
     "compute cos only of the numeric value" in {

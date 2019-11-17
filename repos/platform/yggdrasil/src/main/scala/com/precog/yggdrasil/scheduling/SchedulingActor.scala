@@ -135,13 +135,12 @@ trait SchedulingActorModule extends SecureVFSModule[Future, Slice] {
       }
     }
 
-    override def postStop = {
+    override def postStop =
       scheduledAwake foreach { sa =>
         if (!sa.isCancelled) {
           sa.cancel()
         }
       }
-    }
 
     def scheduleNextTask(): Unit = {
       // Just make sure we don't multi-schedule
@@ -161,13 +160,12 @@ trait SchedulingActorModule extends SecureVFSModule[Future, Slice] {
       }
     }
 
-    def nextRun(threshold: Date, task: ScheduledTask) = {
+    def nextRun(threshold: Date, task: ScheduledTask) =
       task.repeat.flatMap { sched =>
         Option(sched.getNextValidTimeAfter(threshold))
       } map { nextTime =>
         (new DateTime(nextTime), task)
       }
-    }
 
     def rescheduleTasks(tasks: Seq[ScheduledTask]): Unit = {
       val (toRemove, toReschedule) = tasks.partition { task =>
@@ -204,12 +202,11 @@ trait SchedulingActorModule extends SecureVFSModule[Future, Slice] {
       } else {
         def consumeStream(
             totalSize: Long,
-            stream: StreamT[Future, Slice]): Future[Long] = {
+            stream: StreamT[Future, Slice]): Future[Long] =
           stream.uncons flatMap {
             case Some((x, xs)) => consumeStream(totalSize + x.size, xs)
             case None          => M.point(totalSize)
           }
-        }
 
         val ourself = self
         val startedAt = new DateTime

@@ -344,7 +344,7 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
     substituteAndLog[Javap]("javap", NoJavap)(newJavap())
 
   // Still todo: modules.
-  private def typeCommand(line0: String): Result = {
+  private def typeCommand(line0: String): Result =
     line0.trim match {
       case "" => ":type [-v] <expression>"
       case s =>
@@ -352,9 +352,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
           s stripPrefix "-v " trim,
           verbose = s startsWith "-v ")
     }
-  }
 
-  private def kindCommand(expr: String): Result = {
+  private def kindCommand(expr: String): Result =
     expr.trim match {
       case "" => ":kind [-v] <expression>"
       case s =>
@@ -362,15 +361,13 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
           s stripPrefix "-v " trim,
           verbose = s startsWith "-v ")
     }
-  }
 
-  private def warningsCommand(): Result = {
+  private def warningsCommand(): Result =
     if (intp.lastWarnings.isEmpty) "Can't find any cached warnings."
     else
       intp.lastWarnings foreach {
         case (pos, msg) => intp.reporter.warning(pos, msg)
       }
-  }
 
   private def changeSettings(line: String): Result = {
     def showSettings() =
@@ -385,7 +382,7 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
     ok && rest.isEmpty
   }
 
-  private def javapCommand(line: String): Result = {
+  private def javapCommand(line: String): Result =
     if (javap == null)
       s":javap unavailable, no tools.jar at $jdkHome.  Set JDK_HOME."
     else if (line == "") Javap.helpText
@@ -394,7 +391,6 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
         if (res.isError) return s"Failed: ${res.value}"
         else res.show()
       }
-  }
 
   private def pathToPhaseWrapper =
     intp.originalPath("$r") + ".phased.atCurrent"
@@ -529,7 +525,7 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
   }
 
   /** Announces as it replays. */
-  def replay(): Unit = {
+  def replay(): Unit =
     if (replayCommandStack.isEmpty) echo("Nothing to replay.")
     else
       for (cmd <- replayCommands) {
@@ -537,7 +533,6 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
         command(cmd)
         echo("")
       }
-  }
 
   /** `reset` the interpreter in an attempt to start fresh.
     *  Supplying settings creates a new compiler.
@@ -771,10 +766,9 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
     }
   }
 
-  def powerCmd(): Result = {
+  def powerCmd(): Result =
     if (isReplPower) "Already in power mode."
     else enablePowerMode(isDuringInit = false)
-  }
   def enablePowerMode(isDuringInit: Boolean) = {
     replProps.power setValue true
     unleashAndSetPhase()
@@ -798,12 +792,11 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
   /** Run one command submitted by the user.  Two values are returned:
     *  (1) whether to keep running, (2) the line to record for replay, if any.
     */
-  def command(line: String): Result = {
+  def command(line: String): Result =
     if (line startsWith ":") colonCommand(line.tail)
     else if (intp.global == null)
       Result(keepRunning = false, None) // Notice failure to create compiler
     else Result(keepRunning = true, interpretStartingWith(line))
-  }
 
   private val commandish = """(\S+)(?:\s+)?(.*)""".r
 
@@ -814,9 +807,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
     case _                                   => echo("?")
   }
 
-  private def readWhile(cond: String => Boolean) = {
+  private def readWhile(cond: String => Boolean) =
     Iterator continually in.readLine("") takeWhile (x => x != null && cond(x))
-  }
 
   /* :paste -raw file
    * or
@@ -980,7 +972,7 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
     *  The constructor of the InteractiveReader must take a Completion strategy,
     *  supplied as a `() => Completion`; the Completion object provides a concrete Completer.
     */
-  def chooseReader(settings: Settings): InteractiveReader = {
+  def chooseReader(settings: Settings): InteractiveReader =
     if (settings.Xnojline || Properties.isEmacsShell) SimpleReader()
     else {
       type Completer = () => Completion
@@ -1028,7 +1020,6 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       }
       reader
     }
-  }
 
   private def loopPostInit() {
     // Bind intp somewhere out of the regular namespace where

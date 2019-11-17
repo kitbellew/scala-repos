@@ -530,9 +530,8 @@ class Column(protected[sql] val expr: Expression) extends Logging {
     * @group java_expr_ops
     * @since 1.4.0
     */
-  def between(lowerBound: Any, upperBound: Any): Column = {
+  def between(lowerBound: Any, upperBound: Any): Column =
     (this >= lowerBound) && (this <= upperBound)
-  }
 
   /**
     * True if the current expression is NaN.
@@ -1035,15 +1034,14 @@ class Column(protected[sql] val expr: Expression) extends Logging {
     * @group df_ops
     * @since 1.3.0
     */
-  def explain(extended: Boolean): Unit = {
+  def explain(extended: Boolean): Unit =
     // scalastyle:off println
     if (extended) {
       println(expr)
     } else {
       println(expr.sql)
     }
-    // scalastyle:on println
-  }
+  // scalastyle:on println
 
   /**
     * Compute bitwise OR of this expression with another expression.

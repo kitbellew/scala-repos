@@ -84,7 +84,7 @@ class ScIfStmtImpl(node: ASTNode)
     if (rightParenthesis == null) None else Some(rightParenthesis)
   }
 
-  protected override def innerType(ctx: TypingContext) = {
+  protected override def innerType(ctx: TypingContext) =
     (thenBranch, elseBranch) match {
       case (Some(t), Some(e)) =>
         for (tt <- t.getType(TypingContext.empty);
@@ -96,5 +96,4 @@ class ScIfStmtImpl(node: ASTNode)
           .map(tt => Bounds.weakLub(tt, types.Unit))
       case _ => Failure(ScalaBundle.message("nothing.to.type"), Some(this))
     }
-  }
 }

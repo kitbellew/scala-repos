@@ -52,13 +52,12 @@ class BinaryPickleBuilder(format: BinaryPickleFormat, out: BinaryOutput)
   private var output: BinaryOutput = out
   private var isIgnoringFields = false
 
-  @inline private[this] def mkOutput(knownSize: Int): Unit = {
+  @inline private[this] def mkOutput(knownSize: Int): Unit =
     if (output == null)
       output =
         if (knownSize != -1) new FixedByteArrayOutput(knownSize)
         else new ByteArrayOutput
     else output.ensureCapacity(knownSize)
-  }
 
   private def ignoringSharedRefs(action: => PBuilder): PBuilder =
     if (isIgnoringFields) this
@@ -142,11 +141,10 @@ class BinaryPickleBuilder(format: BinaryPickleFormat, out: BinaryOutput)
       this
     }
 
-  @inline def endEntry(): Unit = {
+  @inline def endEntry(): Unit =
     /* do nothing */
     // We always reset this:
     isIgnoringFields = false
-  }
 
   @inline def beginCollection(length: Int): PBuilder = ignoringSharedRefs {
     output.putInt(length)
@@ -161,9 +159,8 @@ class BinaryPickleBuilder(format: BinaryPickleFormat, out: BinaryOutput)
 
   @inline def endCollection(): Unit = {}
 
-  @inline def result() = {
+  @inline def result() =
     BinaryPickle(output.result)
-  }
 }
 
 abstract class AbstractBinaryReader() {

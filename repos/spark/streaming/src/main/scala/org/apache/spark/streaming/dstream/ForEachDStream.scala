@@ -43,7 +43,7 @@ private[streaming] class ForEachDStream[T: ClassTag](
 
   override def compute(validTime: Time): Option[RDD[Unit]] = None
 
-  override def generateJob(time: Time): Option[Job] = {
+  override def generateJob(time: Time): Option[Job] =
     parent.getOrCompute(time) match {
       case Some(rdd) =>
         val jobFunc = () =>
@@ -53,5 +53,4 @@ private[streaming] class ForEachDStream[T: ClassTag](
         Some(new Job(time, jobFunc))
       case None => None
     }
-  }
 }

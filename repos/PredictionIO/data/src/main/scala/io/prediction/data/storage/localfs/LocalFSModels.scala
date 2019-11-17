@@ -29,7 +29,7 @@ class LocalFSModels(f: File, config: StorageClientConfig, prefix: String)
     extends Models
     with Logging {
 
-  def insert(i: Model): Unit = {
+  def insert(i: Model): Unit =
     try {
       val fos = new FileOutputStream(new File(f, s"${prefix}${i.id}"))
       fos.write(i.models)
@@ -37,9 +37,8 @@ class LocalFSModels(f: File, config: StorageClientConfig, prefix: String)
     } catch {
       case e: FileNotFoundException => error(e.getMessage)
     }
-  }
 
-  def get(id: String): Option[Model] = {
+  def get(id: String): Option[Model] =
     try {
       Some(
         Model(
@@ -53,7 +52,6 @@ class LocalFSModels(f: File, config: StorageClientConfig, prefix: String)
         error(e.getMessage)
         None
     }
-  }
 
   def delete(id: String): Unit = {
     val m = new File(f, s"${prefix}${id}")

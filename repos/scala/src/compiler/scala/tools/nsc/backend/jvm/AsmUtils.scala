@@ -85,9 +85,8 @@ object AsmUtils {
     println(textify(node))
   }
 
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     textifyClassStably(classBytes(args.head))
-  }
 
   /**
     * Returns a human-readable representation of the cnode ClassNode.

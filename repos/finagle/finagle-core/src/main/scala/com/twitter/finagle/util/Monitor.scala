@@ -15,7 +15,7 @@ private[util] class DefaultMonitor(log: Logger) extends Monitor {
   private[this] def logThrowable(t: Throwable, level: Level): Unit =
     log.log(level, t, "Exception propagated to DefaultMonitor")
 
-  def handle(exc: Throwable): Boolean = {
+  def handle(exc: Throwable): Boolean =
     exc match {
       case f: HasLogLevel if f.logLevel.value < MinLogLevel =>
         logThrowable(exc, f.logLevel)
@@ -31,7 +31,6 @@ private[util] class DefaultMonitor(log: Logger) extends Monitor {
       case _ =>
         RootMonitor.handle(exc)
     }
-  }
 
   override def toString: String = "DefaultMonitor"
 }

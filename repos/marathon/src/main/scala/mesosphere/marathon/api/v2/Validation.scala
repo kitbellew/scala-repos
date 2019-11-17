@@ -19,15 +19,14 @@ object Validation {
     }
 
   implicit def optional[T](
-      implicit validator: Validator[T]): Validator[Option[T]] = {
+      implicit validator: Validator[T]): Validator[Option[T]] =
     new Validator[Option[T]] {
       override def apply(option: Option[T]): Result =
         option.map(validator).getOrElse(Success)
     }
-  }
 
   implicit def every[T](
-      implicit validator: Validator[T]): Validator[Iterable[T]] = {
+      implicit validator: Validator[T]): Validator[Iterable[T]] =
     new Validator[Iterable[T]] {
       override def apply(seq: Iterable[T]): Result = {
 
@@ -48,7 +47,6 @@ object Validation {
                 violations.toSet)))
       }
     }
-  }
 
   implicit lazy val failureWrites: Writes[Failure] = Writes { f =>
     Json.obj(
@@ -75,9 +73,8 @@ object Validation {
     def concatPath(
         parent: String,
         child: Option[String],
-        slash: Boolean): String = {
+        slash: Boolean): String =
       child.map(c => parent + { if (slash) "/" else "" } + c).getOrElse(parent)
-    }
 
     violation match {
       case r: RuleViolation =>
@@ -117,9 +114,9 @@ object Validation {
     }
   }
 
-  def urlCanBeResolvedValidator: Validator[String] = {
+  def urlCanBeResolvedValidator: Validator[String] =
     new Validator[String] {
-      def apply(url: String) = {
+      def apply(url: String) =
         Try {
           new URL(url).openConnection() match {
             case http: HttpURLConnection =>
@@ -135,13 +132,11 @@ object Validation {
         }.getOrElse(
           Failure(Set(RuleViolation(url, "URL could not be resolved.", None)))
         )
-      }
     }
-  }
 
-  def fetchUriIsValid: Validator[FetchUri] = {
+  def fetchUriIsValid: Validator[FetchUri] =
     new Validator[FetchUri] {
-      def apply(uri: FetchUri) = {
+      def apply(uri: FetchUri) =
         try {
           new URI(uri.uri)
           Success
@@ -150,58 +145,51 @@ object Validation {
             Failure(
               Set(RuleViolation(uri.uri, "URI has invalid syntax.", None)))
         }
-      }
     }
-  }
 
   def elementsAreUnique[A](
-      errorMessage: String = "Elements must be unique."): Validator[Seq[A]] = {
+      errorMessage: String = "Elements must be unique."): Validator[Seq[A]] =
     new Validator[Seq[A]] {
       def apply(seq: Seq[A]) = areUnique(seq, errorMessage)
     }
-  }
 
   def elementsAreUniqueBy[A, B](
       fn: A => B,
       errorMessage: String = "Elements must be unique.",
       filter: B => Boolean = { _: B =>
         true
-      }): Validator[Seq[A]] = {
+      }): Validator[Seq[A]] =
     new Validator[Seq[A]] {
       def apply(seq: Seq[A]) =
         areUnique(seq.map(fn).filter(filter), errorMessage)
     }
-  }
 
   def elementsAreUniqueByOptional[A, B](
       fn: A => GenTraversableOnce[B],
       errorMessage: String = "Elements must be unique.",
       filter: B => Boolean = { _: B =>
         true
-      }): Validator[Seq[A]] = {
+      }): Validator[Seq[A]] =
     new Validator[Seq[A]] {
       def apply(seq: Seq[A]) =
         areUnique(seq.flatMap(fn).filter(filter), errorMessage)
     }
-  }
 
   def elementsAreUniqueWithFilter[A](
       fn: A => Boolean,
-      errorMessage: String = "Elements must be unique."): Validator[Seq[A]] = {
+      errorMessage: String = "Elements must be unique."): Validator[Seq[A]] =
     new Validator[Seq[A]] {
       def apply(seq: Seq[A]) = areUnique(seq.filter(fn), errorMessage)
     }
-  }
 
-  private[this] def areUnique[A](seq: Seq[A], errorMessage: String): Result = {
+  private[this] def areUnique[A](seq: Seq[A], errorMessage: String): Result =
     if (seq.size == seq.distinct.size) Success
     else Failure(Set(RuleViolation(seq, errorMessage, None)))
-  }
 
   def theOnlyDefinedOptionIn[A <: Product: ClassTag, B](
       product: A): Validator[Option[B]] =
     new Validator[Option[B]] {
-      def apply(option: Option[B]) = {
+      def apply(option: Option[B]) =
         option match {
           case Some(prop) =>
             val n = product.productIterator.count {
@@ -219,7 +207,6 @@ object Validation {
                     None)))
           case None => Success
         }
-      }
     }
 
   def oneOf[T <: AnyRef](options: Set[T]): Validator[T] = {
@@ -248,8 +235,7 @@ object Validation {
   def isTrue[T](constraint: String)(test: T => Boolean): Validator[T] =
     new Validator[T] {
       import ViolationBuilder._
-      override def apply(value: T): Result = {
+      override def apply(value: T): Result =
         if (test(value)) Success else RuleViolation(value, constraint, None)
-      }
     }
 }

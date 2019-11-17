@@ -19,14 +19,13 @@ import org.jetbrains.plugins.scala.lang.psi.types.{
   * Pavel Fatin
   */
 object StringConcatenationParser extends StringParser {
-  def parse(element: PsiElement): Option[Seq[StringPart]] = {
+  def parse(element: PsiElement): Option[Seq[StringPart]] =
     Some(element) collect {
       case exp @ ScInfixExpr(left, op, right)
           if op.getText == "+" && isString(exp) =>
         val prefix = parse(left).getOrElse(parseOperand(left))
         prefix ++: parseOperand(right)
     }
-  }
 
   private def parseOperand(exp: ScExpression): Seq[StringPart] = {
     exp match {

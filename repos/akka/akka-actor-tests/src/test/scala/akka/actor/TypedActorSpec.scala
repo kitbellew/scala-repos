@@ -212,11 +212,10 @@ object TypedActorSpec {
     override def postRestart(reason: Throwable): Unit =
       ensureContextAvailable(for (i ← 1 to 7) latch.countDown())
 
-    override def onReceive(msg: Any, sender: ActorRef): Unit = {
+    override def onReceive(msg: Any, sender: ActorRef): Unit =
       ensureContextAvailable(msg match {
         case "pigdog" ⇒ sender ! "dogpig"
       })
-    }
   }
 
   trait F { def f(pow: Boolean): Int }

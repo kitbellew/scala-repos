@@ -70,7 +70,7 @@ trait MVCHelper extends LiftRules.DispatchPF {
   /**
     * Is the Rest helper defined for a given request
     */
-  def isDefinedAt(in: Req) = {
+  def isDefinedAt(in: Req) =
     S.session match {
       case Full(_) => dispatch.find(_.isDefinedAt(in.path.partPath)).isDefined
 
@@ -80,7 +80,6 @@ trait MVCHelper extends LiftRules.DispatchPF {
           dispatch.find(_.isDefinedAt(in.path.partPath)).isDefined
         }
     }
-  }
 
   /**
     * Apply the Rest helper
@@ -162,7 +161,7 @@ trait MVCHelper extends LiftRules.DispatchPF {
         } yield resp
       }
 
-    implicit def nsToResponse(nodes: Seq[Node]): MVCResponse = {
+    implicit def nsToResponse(nodes: Seq[Node]): MVCResponse =
       new MVCResponse {
         val toResponse: Box[LiftResponse] = for {
           session <- S.session
@@ -170,7 +169,6 @@ trait MVCHelper extends LiftRules.DispatchPF {
           resp <- session.processTemplate(Full(nodes), req, req.path, 200)
         } yield resp
       }
-    }
 
     implicit def respToResponse(resp: LiftResponse): MVCResponse =
       new MVCResponse {

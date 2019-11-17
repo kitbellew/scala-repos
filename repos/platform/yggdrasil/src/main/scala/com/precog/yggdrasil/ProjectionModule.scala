@@ -64,7 +64,7 @@ trait ProjectionLike[M[+_], Block] {
       implicit M: Monad[M]): M[Option[BlockProjectionData[Key, Block]]]
 
   def getBlockStream(columns: Option[Set[ColumnRef]])(
-      implicit M: Monad[M]): StreamT[M, Block] = {
+      implicit M: Monad[M]): StreamT[M, Block] =
     StreamT.unfoldM[M, Block, Option[Key]](None) { key =>
       getBlockAfter(key, columns) map {
         _ map {
@@ -72,5 +72,4 @@ trait ProjectionLike[M[+_], Block] {
         }
       }
     }
-  }
 }

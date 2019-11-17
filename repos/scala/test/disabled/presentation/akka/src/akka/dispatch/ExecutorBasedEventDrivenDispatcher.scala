@@ -181,7 +181,7 @@ class ExecutorBasedEventDrivenDispatcher(
   }
 
   private[akka] def registerForExecution(
-      mbox: MessageQueue with ExecutableMailbox): Unit = {
+      mbox: MessageQueue with ExecutableMailbox): Unit =
     if (mbox.dispatcherLock.tryLock()) {
       if (active.isOn && !mbox.suspended.locked) {
         //If the dispatcher is active and the actor not suspended
@@ -198,7 +198,6 @@ class ExecutorBasedEventDrivenDispatcher(
           .unlock() //If the dispatcher isn't active or if the actor is suspended, unlock the dispatcher lock
       }
     }
-  }
 
   private[akka] def reRegisterForExecution(
       mbox: MessageQueue with ExecutableMailbox): Unit =

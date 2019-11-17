@@ -26,7 +26,7 @@ object HttpFilters {
 
   def bindingsFromConfiguration(
       environment: Environment,
-      configuration: Configuration) = {
+      configuration: Configuration) =
     Reflect.bindingsFromConfiguration[
       HttpFilters,
       play.http.HttpFilters,
@@ -37,7 +37,6 @@ object HttpFilters {
       PlayConfig(configuration),
       "play.http.filters",
       "Filters")
-  }
 
   def apply(filters: EssentialFilter*): HttpFilters = {
     val f = filters

@@ -31,7 +31,7 @@ class InvocationTemplate(nameCondition: String => Boolean) {
   }
 
   def unapplySeq(
-      expr: ScExpression): Option[(ScExpression, Seq[ScExpression])] = {
+      expr: ScExpression): Option[(ScExpression, Seq[ScExpression])] =
     stripped(expr) match {
       case (mc: ScMethodCall) childOf (parentCall: ScMethodCall)
           if !parentCall.isApplyOrUpdateCall =>
@@ -61,5 +61,4 @@ class InvocationTemplate(nameCondition: String => Boolean) {
         Some(qualOpt.orNull, firstArgs ++ secondArgs)
       case _ => None
     }
-  }
 }

@@ -137,7 +137,7 @@ trait EvaluatorModule[M[+_]]
     // Have to be idempotent on subgraphs
     def stagedRewriteDAG(
         optimize: Boolean,
-        ctx: EvaluationContext): DepGraph => DepGraph = {
+        ctx: EvaluationContext): DepGraph => DepGraph =
       // rewrites are written in `andThen` order
       // we reverse above because our semigroup uses `compose`
       composeOptimizations(
@@ -147,11 +147,10 @@ trait EvaluatorModule[M[+_]]
           optimizeJoins(_, ctx),
           rewriteConditionals(_)
         ))
-    }
 
     def fullRewriteDAG(
         optimize: Boolean,
-        ctx: EvaluationContext): DepGraph => DepGraph = {
+        ctx: EvaluationContext): DepGraph => DepGraph =
       stagedRewriteDAG(optimize, ctx) andThen (orderCrosses _) andThen composeOptimizations(
         optimize,
         List[DepGraph => DepGraph](
@@ -163,7 +162,6 @@ trait EvaluatorModule[M[+_]]
           memoize
         )
       )
-    }
 
     /**
       * The entry point to the evaluator.  The main implementation of the evaluator
@@ -367,13 +365,12 @@ trait EvaluatorModule[M[+_]]
           (pt.trans, pt.graph)
 
         def set0(pt: PendingTable, tg: (TransSpec1, DepGraph))
-            : StateT[N, EvaluatorState, PendingTable] = {
+            : StateT[N, EvaluatorState, PendingTable] =
           for {
             _ <- monadState.modify { state =>
               state.copy(assume = state.assume + (tg._2 -> (pt.table, pt.sort)))
             }
           } yield pt.copy(trans = tg._1, graph = tg._2)
-        }
 
         def init0(tg: (TransSpec1, DepGraph))
             : StateT[N, EvaluatorState, PendingTable] =
@@ -476,7 +473,7 @@ trait EvaluatorModule[M[+_]]
             case ValueSort(id) => ValueJoin(id)
           }
 
-          def identityJoinSpec(ids: Vector[Int]): TransSpec1 = {
+          def identityJoinSpec(ids: Vector[Int]): TransSpec1 =
             if (ids.isEmpty) {
               trans.ConstLiteral(CEmptyArray, SourceKey.Single) // join with undefined, probably
             } else {
@@ -487,7 +484,6 @@ trait EvaluatorModule[M[+_]]
                     CPathIndex(i))): TransSpec1
               components reduceLeft { trans.InnerArrayConcat(_, _) }
             }
-          }
 
           val joinKey = joinSortToJoinKey(joinSort)
           val (leftKeySpec, rightKeySpec) = joinKey match {
@@ -571,7 +567,7 @@ trait EvaluatorModule[M[+_]]
 
         type TSM[+T] = StateT[N, EvaluatorState, T]
         def evalTransSpecable(
-            to: DepGraph): StateT[N, EvaluatorState, PendingTable] = {
+            to: DepGraph): StateT[N, EvaluatorState, PendingTable] =
           mkTransSpecWithState[TSM, PendingTable](
             to,
             None,
@@ -579,7 +575,6 @@ trait EvaluatorModule[M[+_]]
             get0,
             set0,
             init0)
-        }
 
         def evalNotTransSpecable(
             graph: DepGraph): StateT[N, EvaluatorState, PendingTable] =
@@ -1200,7 +1195,7 @@ trait EvaluatorModule[M[+_]]
 
         def stage(
             toEval: List[StagingPoint],
-            graph: DepGraph): EvaluatorStateT[DepGraph] = {
+            graph: DepGraph): EvaluatorStateT[DepGraph] =
           for {
             state <- monadState gets identity
             optPoint = toEval find { g =>
@@ -1220,7 +1215,6 @@ trait EvaluatorModule[M[+_]]
 
             back <- optBack getOrElse (monadState point graph)
           } yield back
-        }
 
         // find the topologically-sorted forcing points (excluding the endpoint)
         // at the current split level
@@ -1281,13 +1275,12 @@ trait EvaluatorModule[M[+_]]
     private[this] def replaceNode(
         graph: DepGraph,
         from: DepGraph,
-        to: DepGraph) = {
+        to: DepGraph) =
       graph mapDown { recurse =>
         {
           case `from` => to
         }
       }
-    }
 
     /**
       * Returns all forcing points in the graph, ordered topologically.

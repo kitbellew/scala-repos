@@ -145,9 +145,8 @@ class RelationalGroupedDataset protected[sql] (
     *
     * @since 1.3.0
     */
-  def agg(aggExpr: (String, String), aggExprs: (String, String)*): DataFrame = {
+  def agg(aggExpr: (String, String), aggExprs: (String, String)*): DataFrame =
     agg((aggExpr +: aggExprs).toMap)
-  }
 
   /**
     * (Scala-specific) Compute aggregates by specifying a map from column name to
@@ -164,12 +163,11 @@ class RelationalGroupedDataset protected[sql] (
     *
     * @since 1.3.0
     */
-  def agg(exprs: Map[String, String]): DataFrame = {
+  def agg(exprs: Map[String, String]): DataFrame =
     toDF(exprs.map {
       case (colName, expr) =>
         strToExpr(expr)(df(colName).expr)
     }.toSeq)
-  }
 
   /**
     * (Java-specific) Compute aggregates by specifying a map from column name to
@@ -184,9 +182,8 @@ class RelationalGroupedDataset protected[sql] (
     *
     * @since 1.3.0
     */
-  def agg(exprs: java.util.Map[String, String]): DataFrame = {
+  def agg(exprs: java.util.Map[String, String]): DataFrame =
     agg(exprs.asScala.toMap)
-  }
 
   /**
     * Compute aggregates by specifying a series of aggregate columns. Note that this function by
@@ -220,9 +217,8 @@ class RelationalGroupedDataset protected[sql] (
     * @since 1.3.0
     */
   @scala.annotation.varargs
-  def agg(expr: Column, exprs: Column*): DataFrame = {
+  def agg(expr: Column, exprs: Column*): DataFrame =
     toDF((expr +: exprs).map(_.expr))
-  }
 
   /**
     * Count the number of rows for each group.
@@ -241,9 +237,8 @@ class RelationalGroupedDataset protected[sql] (
     * @since 1.3.0
     */
   @scala.annotation.varargs
-  def mean(colNames: String*): DataFrame = {
+  def mean(colNames: String*): DataFrame =
     aggregateNumericColumns(colNames: _*)(Average)
-  }
 
   /**
     * Compute the max value for each numeric columns for each group.
@@ -253,9 +248,8 @@ class RelationalGroupedDataset protected[sql] (
     * @since 1.3.0
     */
   @scala.annotation.varargs
-  def max(colNames: String*): DataFrame = {
+  def max(colNames: String*): DataFrame =
     aggregateNumericColumns(colNames: _*)(Max)
-  }
 
   /**
     * Compute the mean value for each numeric columns for each group.
@@ -265,9 +259,8 @@ class RelationalGroupedDataset protected[sql] (
     * @since 1.3.0
     */
   @scala.annotation.varargs
-  def avg(colNames: String*): DataFrame = {
+  def avg(colNames: String*): DataFrame =
     aggregateNumericColumns(colNames: _*)(Average)
-  }
 
   /**
     * Compute the min value for each numeric column for each group.
@@ -277,9 +270,8 @@ class RelationalGroupedDataset protected[sql] (
     * @since 1.3.0
     */
   @scala.annotation.varargs
-  def min(colNames: String*): DataFrame = {
+  def min(colNames: String*): DataFrame =
     aggregateNumericColumns(colNames: _*)(Min)
-  }
 
   /**
     * Compute the sum for each numeric columns for each group.
@@ -289,9 +281,8 @@ class RelationalGroupedDataset protected[sql] (
     * @since 1.3.0
     */
   @scala.annotation.varargs
-  def sum(colNames: String*): DataFrame = {
+  def sum(colNames: String*): DataFrame =
     aggregateNumericColumns(colNames: _*)(Sum)
-  }
 
   /**
     * Pivots a column of the current [[DataFrame]] and perform the specified aggregation.
@@ -353,7 +344,7 @@ class RelationalGroupedDataset protected[sql] (
     * @param values List of values that will be translated to columns in the output DataFrame.
     * @since 1.6.0
     */
-  def pivot(pivotColumn: String, values: Seq[Any]): RelationalGroupedDataset = {
+  def pivot(pivotColumn: String, values: Seq[Any]): RelationalGroupedDataset =
     groupType match {
       case RelationalGroupedDataset.GroupByType =>
         new RelationalGroupedDataset(
@@ -368,7 +359,6 @@ class RelationalGroupedDataset protected[sql] (
         throw new UnsupportedOperationException(
           "pivot is only supported after a groupBy")
     }
-  }
 
   /**
     * Pivots a column of the current [[DataFrame]] and perform the specified aggregation.
@@ -390,9 +380,8 @@ class RelationalGroupedDataset protected[sql] (
     */
   def pivot(
       pivotColumn: String,
-      values: java.util.List[Any]): RelationalGroupedDataset = {
+      values: java.util.List[Any]): RelationalGroupedDataset =
     pivot(pivotColumn, values.asScala)
-  }
 }
 
 /**
@@ -403,9 +392,8 @@ private[sql] object RelationalGroupedDataset {
   def apply(
       df: DataFrame,
       groupingExprs: Seq[Expression],
-      groupType: GroupType): RelationalGroupedDataset = {
+      groupType: GroupType): RelationalGroupedDataset =
     new RelationalGroupedDataset(df, groupingExprs, groupType: GroupType)
-  }
 
   /**
     * The Grouping Type

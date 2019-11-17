@@ -56,7 +56,7 @@ class TsvWithHeader(p: String, f: Fields = Fields.UNKNOWN)(implicit mode: Mode)
     }
 
   // TODO: move this method to make it a util function.
-  def readFromFile(filename: String)(implicit mode: Mode) = {
+  def readFromFile(filename: String)(implicit mode: Mode) =
     mode match {
       case Hdfs(_, conf) => {
         try {
@@ -80,7 +80,6 @@ class TsvWithHeader(p: String, f: Fields = Fields.UNKNOWN)(implicit mode: Mode)
         }
       }
     }
-  }
 
   // TODO: move this method to make it a util function.
   def writeToFile(filename: String, text: String)(implicit mode: Mode) {

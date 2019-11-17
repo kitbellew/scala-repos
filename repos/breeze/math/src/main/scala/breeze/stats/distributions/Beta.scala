@@ -67,16 +67,15 @@ class Beta(a: Double, b: Double)(implicit rand: RandBasis = Rand)
     }
   }
 
-  override def probability(x: Double, y: Double): Double = {
+  override def probability(x: Double, y: Double): Double =
     new BetaDistribution(a, b).probability(x, y)
-  }
 
   lazy val logNormalizer = lgamma(a) + lgamma(b) - lgamma(a + b)
 
   private val aGamma = new Gamma(a, 1)(rand)
   private val bGamma = new Gamma(b, 1)(rand)
 
-  override def draw(): Double = {
+  override def draw(): Double =
     // from tjhunter, a corrected version of numpy's rk_beta sampling in mtrand/distributions.c
     if (a <= .5 && b <= .5) {
       while (true) {
@@ -121,7 +120,6 @@ class Beta(a: Double, b: Double)(implicit rand: RandBasis = Rand)
       val bd = bGamma.draw()
       ad / (ad + bd)
     }
-  }
 
   def mean = a / (a + b)
   def variance = (a * b) / ((a + b) * (a + b) * (a + b + 1))
@@ -131,9 +129,8 @@ class Beta(a: Double, b: Double)(implicit rand: RandBasis = Rand)
       a + b)
 
   // Probability that x < a <= Y
-  override def cdf(x: Double): Double = {
+  override def cdf(x: Double): Double =
     new BetaDistribution(a, b).cumulativeProbability(x)
-  }
 }
 
 object Beta

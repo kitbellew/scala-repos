@@ -277,7 +277,7 @@ sealed abstract class Free[S[_], A] {
     ev(this).go(_())
 
   /** Interleave this computation with another, combining the results with the given function. */
-  final def zipWith[B, C](tb: Free[S, B])(f: (A, B) => C): Free[S, C] = {
+  final def zipWith[B, C](tb: Free[S, B])(f: (A, B) => C): Free[S, C] =
     (step, tb.step) match {
       case (Return(a), Return(b))      => Return(f(a, b))
       case (a @ Suspend(_), Return(b)) => a.flatMap(x => Return(f(x, b)))
@@ -292,7 +292,6 @@ sealed abstract class Free[S[_], A] {
       case (a, b @ Gosub()) =>
         a.flatMap(x => b.a.flatMap(y => b.f(y).map(f(x, _))))
     }
-  }
 
   /** Runs a `Source` all the way to the end, tail-recursively, collecting the produced values. */
   def collect[B](implicit ev: Free[S, A] =:= Source[B, A]): (Vector[B], A) = {

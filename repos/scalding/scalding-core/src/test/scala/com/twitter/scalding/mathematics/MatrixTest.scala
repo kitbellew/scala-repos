@@ -447,16 +447,14 @@ class MatrixTest extends WordSpec with Matchers {
   import Dsl._
 
   def toSparseMat[Row, Col, V](
-      iter: Iterable[(Row, Col, V)]): Map[(Row, Col), V] = {
+      iter: Iterable[(Row, Col, V)]): Map[(Row, Col), V] =
     iter.map { it =>
       ((it._1, it._2), it._3)
     }.toMap
-  }
-  def oneDtoSparseMat[Idx, V](iter: Iterable[(Idx, V)]): Map[(Idx, Idx), V] = {
+  def oneDtoSparseMat[Idx, V](iter: Iterable[(Idx, V)]): Map[(Idx, Idx), V] =
     iter.map { it =>
       ((it._1, it._1), it._2)
     }.toMap
-  }
 
   "A MatrixProd job" should {
     TUtil.printStack {

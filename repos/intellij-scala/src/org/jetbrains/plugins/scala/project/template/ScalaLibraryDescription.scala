@@ -26,9 +26,8 @@ object ScalaLibraryDescription extends ScalaLibraryDescription {
 
   override def dialog(
       parentComponent: JComponent,
-      provider: () => util.List[SdkChoice]) = {
+      provider: () => util.List[SdkChoice]) =
     new SdkSelectionDialog(parentComponent, provider)
-  }
 
   override def sdks(contextDirectory: VirtualFile) =
     super.sdks(contextDirectory) ++ systemSdks
@@ -131,7 +130,7 @@ trait ScalaLibraryDescription extends CustomLibraryDescription {
 
   protected def mavenSdks = sdksIn(mavenScalaRoot)
 
-  private def sdksIn(root: File): Seq[SdkDescriptor] = {
+  private def sdksIn(root: File): Seq[SdkDescriptor] =
     discoverComponents(root)
       .groupBy(_.version)
       .mapValues(sdkDescriptor.from)
@@ -139,7 +138,6 @@ trait ScalaLibraryDescription extends CustomLibraryDescription {
       .collect {
         case (Some(version), Right(sdk)) => sdk
       }
-  }
 }
 
 case class SdkChoice(sdk: SdkDescriptor, source: String)

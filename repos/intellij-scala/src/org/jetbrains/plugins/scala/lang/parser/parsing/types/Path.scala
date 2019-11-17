@@ -19,7 +19,7 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.builder.ScalaPsiBuilder
  */
 
 object Path extends ParserNode with ScalaTokenTypes {
-  def parse(builder: ScalaPsiBuilder, element: IElementType): Boolean = {
+  def parse(builder: ScalaPsiBuilder, element: IElementType): Boolean =
     if (lookAhead(builder, tIDENTIFIER, tDOT, kTHIS)) {
       val thisMarker = builder.mark
       val refMarker = builder.mark
@@ -48,5 +48,4 @@ object Path extends ParserNode with ScalaTokenTypes {
     } else {
       StableId parse (builder, element)
     }
-  }
 }

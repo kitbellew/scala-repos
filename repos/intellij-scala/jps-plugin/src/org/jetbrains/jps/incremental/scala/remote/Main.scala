@@ -96,9 +96,8 @@ object Main {
     }
   }
 
-  private def cancelShutdown() = {
+  private def cancelShutdown() =
     if (shutdownTimer != null) shutdownTimer.cancel()
-  }
 
   private def resetShutdownTimer(context: NGContext) {
     val delay = Option(System.getProperty("shutdown.delay")).map(_.toInt)

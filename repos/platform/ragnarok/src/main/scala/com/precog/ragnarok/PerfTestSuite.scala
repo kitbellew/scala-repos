@@ -128,7 +128,7 @@ trait PerfTestSuite extends Logging {
               (t, stats map (_ * (1 / 1000000.0))) // Convert to ms.
           }
 
-        def withPrinter[A](f: PrintStream => A): A = {
+        def withPrinter[A](f: PrintStream => A): A =
           config.output map { file =>
             val out = new PrintStream(file)
             val result = f(out)
@@ -137,7 +137,6 @@ trait PerfTestSuite extends Logging {
           } getOrElse {
             f(System.out)
           }
-        }
 
         config.baseline match {
           case Some(file) =>
@@ -200,8 +199,7 @@ trait PerfTestSuite extends Logging {
         loc: TreeLoc[PerfTest],
         path: List[String],
         matches: List[Tree[PerfTest]],
-        retreat: Boolean = false): List[Tree[PerfTest]] = {
-
+        retreat: Boolean = false): List[Tree[PerfTest]] =
       if (retreat) {
 
         val p = loc.tree match {
@@ -241,7 +239,6 @@ trait PerfTestSuite extends Logging {
           }
         }
       }
-    }
 
     test.subForest.headOption flatMap { root =>
       find(root.loc, Nil, Nil) match {

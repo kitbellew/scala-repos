@@ -46,10 +46,9 @@ private[thriftserver] class ThriftServerTab(sparkContext: SparkContext)
 }
 
 private[thriftserver] object ThriftServerTab {
-  def getSparkUI(sparkContext: SparkContext): SparkUI = {
+  def getSparkUI(sparkContext: SparkContext): SparkUI =
     sparkContext.ui.getOrElse {
       throw new SparkException(
         "Parent SparkUI to attach this tab to not found!")
     }
-  }
 }

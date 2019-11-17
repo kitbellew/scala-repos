@@ -82,7 +82,7 @@ package object financial {
       numPeriods: Int,
       presentValue: Double,
       futureValue: Double = 0.0,
-      when: PaymentTime = End): Double = {
+      when: PaymentTime = End): Double =
     if (rate == 0) {
       -1 * (futureValue + presentValue) / numPeriods
     } else {
@@ -91,7 +91,6 @@ package object financial {
           (math.pow(1.0 + rate, numPeriods) - 1.0)
       -1 * (futureValue + presentValue * math.pow(1.0 + rate, numPeriods)) / denominator
     }
-  }
 
   def principalInterest(
       rate: Double,

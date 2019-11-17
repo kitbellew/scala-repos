@@ -3,7 +3,7 @@ import scalaz._
 
 class SCL6417 {
 
-  def testValidation(): Unit = {
+  def testValidation(): Unit =
     (validateOptionalX(Some(0)) |@| validateOptionalY(Some(1))).tupled match {
       case Success((x, y)) =>
         /*start*/
@@ -11,7 +11,6 @@ class SCL6417 {
         println(s"Success $x, $y")
       case Failure(errors) => println(errors.toString)
     }
-  }
 
   def validateOptionalX(x: Option[Int]): ValidationNel[String, Int] = x match {
     case Some(p) =>

@@ -32,9 +32,8 @@ object DottyLibraryDescription extends ScalaLibraryDescription {
 
   override def dialog(
       parentComponent: JComponent,
-      provider: () => util.List[SdkChoice]) = {
+      provider: () => util.List[SdkChoice]) =
     new DottySdkSelectionDialog(parentComponent, provider)
-  }
 
   override def getDefaultLevel: LibraryLevel = LibraryLevel.GLOBAL
 

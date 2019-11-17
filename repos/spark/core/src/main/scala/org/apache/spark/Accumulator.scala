@@ -157,9 +157,8 @@ private[spark] object Accumulators extends Logging {
   * @tparam T type of value to accumulate
   */
 trait AccumulatorParam[T] extends AccumulableParam[T, T] {
-  def addAccumulator(t1: T, t2: T): T = {
+  def addAccumulator(t1: T, t2: T): T =
     addInPlace(t1, t2)
-  }
 }
 
 object AccumulatorParam {

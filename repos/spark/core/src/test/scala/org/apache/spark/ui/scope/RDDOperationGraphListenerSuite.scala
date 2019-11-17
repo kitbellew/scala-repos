@@ -248,7 +248,6 @@ class RDDOperationGraphListenerSuite extends SparkFunSuite {
   }
 
   /** Finish the job specified by the given ID. */
-  private def endJob(jobId: Int, listener: RDDOperationGraphListener): Unit = {
+  private def endJob(jobId: Int, listener: RDDOperationGraphListener): Unit =
     listener.onJobEnd(new SparkListenerJobEnd(jobId, 0, JobSucceeded))
-  }
 }

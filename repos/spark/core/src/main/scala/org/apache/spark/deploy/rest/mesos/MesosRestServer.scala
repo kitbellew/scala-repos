@@ -64,11 +64,10 @@ private[mesos] class MesosSubmitRequestServlet(
   private val nextDriverNumber = new AtomicLong(0)
   private def createDateFormat =
     new SimpleDateFormat("yyyyMMddHHmmss") // For application IDs
-  private def newDriverId(submitDate: Date): String = {
+  private def newDriverId(submitDate: Date): String =
     "driver-%s-%04d".format(
       createDateFormat.format(submitDate),
       nextDriverNumber.incrementAndGet())
-  }
 
   /**
     * Build a driver description from the fields specified in the submit request.
@@ -143,7 +142,7 @@ private[mesos] class MesosSubmitRequestServlet(
   protected override def handleSubmit(
       requestMessageJson: String,
       requestMessage: SubmitRestProtocolMessage,
-      responseServlet: HttpServletResponse): SubmitRestProtocolResponse = {
+      responseServlet: HttpServletResponse): SubmitRestProtocolResponse =
     requestMessage match {
       case submitRequest: CreateSubmissionRequest =>
         val driverDescription = buildDriverDescription(submitRequest)
@@ -161,7 +160,6 @@ private[mesos] class MesosSubmitRequestServlet(
         handleError(
           s"Received message of unexpected type ${unexpected.messageType}.")
     }
-  }
 }
 
 private[mesos] class MesosKillRequestServlet(

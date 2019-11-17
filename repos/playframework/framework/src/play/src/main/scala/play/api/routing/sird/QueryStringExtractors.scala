@@ -34,7 +34,7 @@ trait QueryStringParameterExtractor[T] {
 }
 
 object QueryStringParameterExtractor {
-  private def parse(query: String): QueryString = {
+  private def parse(query: String): QueryString =
     Option(query)
       .map(
         _.split("&").toSeq
@@ -48,7 +48,6 @@ object QueryStringParameterExtractor {
           .mapValues(_.map(_._2))
           .toMap)
       .getOrElse(Map.empty)
-  }
 
   def required(name: String) = new RequiredQueryStringParameter(name)
   def optional(name: String) = new OptionalQueryStringParameter(name)

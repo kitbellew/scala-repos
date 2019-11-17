@@ -178,20 +178,19 @@ private[akka] class InputStreamAdapter(
   }
 
   @scala.throws(classOf[IOException])
-  override def close(): Unit = {
+  override def close(): Unit =
     executeIfNotClosed(() ⇒ {
       // at this point Subscriber may be already terminated
       if (isStageAlive) sendToStage(Close)
       isActive = false
     })
-  }
 
   @tailrec
   private[this] def getData(
       arr: Array[Byte],
       begin: Int,
       length: Int,
-      gotBytes: Int): Int = {
+      gotBytes: Int): Int =
     grabDataChunk() match {
       case Some(data) ⇒
         val size = data.size
@@ -207,9 +206,8 @@ private[akka] class InputStreamAdapter(
         }
       case None ⇒ gotBytes
     }
-  }
 
-  private[this] def waitIfNotInitialized(): Unit = {
+  private[this] def waitIfNotInitialized(): Unit =
     if (!isInitialized) {
       sharedBuffer.poll(readTimeout.toMillis, TimeUnit.MILLISECONDS) match {
         case Initialized ⇒ isInitialized = true
@@ -217,9 +215,8 @@ private[akka] class InputStreamAdapter(
           require(false, "First message must be Initialized notification")
       }
     }
-  }
 
-  private[this] def grabDataChunk(): Option[ByteString] = {
+  private[this] def grabDataChunk(): Option[ByteString] =
     detachedChunk match {
       case None ⇒
         sharedBuffer.poll() match {
@@ -233,5 +230,4 @@ private[akka] class InputStreamAdapter(
         }
       case Some(_) ⇒ detachedChunk
     }
-  }
 }

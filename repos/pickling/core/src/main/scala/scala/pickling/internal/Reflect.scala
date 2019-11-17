@@ -19,7 +19,7 @@ object Reflect {
     * @throws scala.pickling.PicklingException this is thrown if the field is not found.
     */
   def getField(top: Class[_], name: String): Field = {
-    def getFieldHelper(cls: Class[_]): Field = {
+    def getFieldHelper(cls: Class[_]): Field =
       try cls.getDeclaredField(name)
       catch {
         case nsf: NoSuchFieldException =>
@@ -30,12 +30,11 @@ object Reflect {
             throw new PicklingException(
               s"Could not find field [$name] in [$cls]")
       }
-    }
     getFieldHelper(top)
   }
 
   def getMethod(top: Class[_], name: String, args: Array[Class[_]]): Method = {
-    def getMethodHelper(cls: Class[_]): Method = {
+    def getMethodHelper(cls: Class[_]): Method =
       try cls.getDeclaredMethod(name, args: _*)
       catch {
         case nsf: NoSuchMethodException =>
@@ -46,7 +45,6 @@ object Reflect {
             throw new PicklingException(
               s"Could not find method [$name(${args.mkString(", ")})] in [$cls]")
       }
-    }
     getMethodHelper(top)
   }
 }

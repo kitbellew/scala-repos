@@ -74,12 +74,11 @@ object SnapshotFailureRobustnessSpec {
   }
 
   class FailingLocalSnapshotStore extends LocalSnapshotStore {
-    override def save(metadata: SnapshotMetadata, snapshot: Any): Unit = {
+    override def save(metadata: SnapshotMetadata, snapshot: Any): Unit =
       if (metadata.sequenceNr == 2) {
         val bytes = "b0rk".getBytes("UTF-8")
         withOutputStream(metadata)(_.write(bytes))
       } else super.save(metadata, snapshot)
-    }
   }
 
   class DeleteFailingLocalSnapshotStore extends LocalSnapshotStore {

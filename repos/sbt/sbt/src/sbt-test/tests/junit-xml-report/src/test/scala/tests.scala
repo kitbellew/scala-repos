@@ -3,9 +3,8 @@ import org.junit.Test
 package a.pkg {
   class OneSecondTest {
     @Test
-    def oneSecond(): Unit = {
+    def oneSecond(): Unit =
       Thread.sleep(1000)
-    }
   }
 }
 
@@ -36,13 +35,12 @@ package console.test.pkg {
     }
 
     @Test
-    def multiThreadedHello(): Unit = {
+    def multiThreadedHello(): Unit =
       for (i <- 1 to 5) {
         new Thread("t-" + i) {
           override def run(): Unit =
             println("Hello from thread " + i)
         }.start()
       }
-    }
   }
 }

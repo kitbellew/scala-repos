@@ -218,9 +218,8 @@ class RecordMetaDataFactory extends FieldMetaDataFactory {
     * Checks if the given class is a subclass of Record. A special handling is only
     * needed for such subtypes. For other classes, use the standard squeryl methods.
     */
-  private def isRecord(clasz: Class[_]) = {
+  private def isRecord(clasz: Class[_]) =
     classOf[Record[_]].isAssignableFrom(clasz)
-  }
 
   /**
     * For records, the constructor must not be used directly when
@@ -254,7 +253,6 @@ class RecordMetaDataFactory extends FieldMetaDataFactory {
     * By overriding this function, the reference to the record is excluded from
     * the reference finding algorithm in Squeryl.
     */
-  override def hideFromYieldInspection(o: AnyRef, f: Field): Boolean = {
+  override def hideFromYieldInspection(o: AnyRef, f: Field): Boolean =
     o.isInstanceOf[OwnedField[_]] && isRecord(f.getType)
-  }
 }

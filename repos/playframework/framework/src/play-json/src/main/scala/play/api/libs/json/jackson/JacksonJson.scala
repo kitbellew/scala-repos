@@ -88,9 +88,8 @@ private[jackson] sealed trait DeserializerContext {
 
 private[jackson] case class ReadingList(content: ListBuffer[JsValue])
     extends DeserializerContext {
-  override def addValue(value: JsValue): DeserializerContext = {
+  override def addValue(value: JsValue): DeserializerContext =
     ReadingList(content += value)
-  }
 }
 
 // Context for reading an Object

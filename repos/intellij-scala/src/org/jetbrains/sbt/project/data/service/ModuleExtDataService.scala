@@ -53,7 +53,7 @@ object ModuleExtDataService {
     override def importData(): Unit =
       dataToImport.foreach(doImport)
 
-    private def doImport(dataNode: DataNode[ModuleExtData]): Unit = {
+    private def doImport(dataNode: DataNode[ModuleExtData]): Unit =
       for {
         module <- getIdeModuleByNode(dataNode)
         data = dataNode.getData
@@ -65,7 +65,6 @@ object ModuleExtDataService {
         configureLanguageLevel(module, data.javacOptions)
         configureJavacOptions(module, data.javacOptions)
       }
-    }
 
     private def configureScalaSdk(
         module: Module,
@@ -120,7 +119,7 @@ object ModuleExtDataService {
 
     private def configureJavacOptions(
         module: Module,
-        javacOptions: Seq[String]): Unit = {
+        javacOptions: Seq[String]): Unit =
       for {
         targetPos <- Option(javacOptions.indexOf("-target")).filterNot(_ == -1)
         targetValue <- javacOptions.lift(targetPos + 1)
@@ -129,7 +128,6 @@ object ModuleExtDataService {
         executeProjectChangeAction(
           compilerSettings.setBytecodeTargetLevel(module, targetValue))
       }
-    }
 
     private def showWarning(message: String): Unit = {
       val notification = new NotificationData(

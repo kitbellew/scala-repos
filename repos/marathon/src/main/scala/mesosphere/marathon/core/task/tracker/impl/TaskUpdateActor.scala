@@ -22,9 +22,8 @@ object TaskUpdateActor {
   def props(
       clock: Clock,
       metrics: ActorMetrics,
-      processor: TaskOpProcessor): Props = {
+      processor: TaskOpProcessor): Props =
     Props(new TaskUpdateActor(clock, metrics, processor))
-  }
 
   /** Request that the [[TaskUpdateActor]] should process the given op. */
   private[impl] case class ProcessTaskOp(op: TaskOpProcessor.Operation)
@@ -131,7 +130,7 @@ private[impl] class TaskUpdateActor(
       throw new IllegalStateException("received failure", cause)
   }
 
-  private[this] def processNextOpIfExists(taskId: Task.Id): Unit = {
+  private[this] def processNextOpIfExists(taskId: Task.Id): Unit =
     operationsByTaskId(taskId).headOption foreach { op =>
       val queuedCount = metrics.numberOfQueuedOps.decrement()
       val activeCount = metrics.numberOfActiveOps.increment()
@@ -158,5 +157,4 @@ private[impl] class TaskUpdateActor(
       import akka.pattern.pipe
       future.pipeTo(self)
     }
-  }
 }

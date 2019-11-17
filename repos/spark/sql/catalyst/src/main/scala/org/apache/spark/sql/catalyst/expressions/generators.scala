@@ -109,7 +109,7 @@ case class Explode(child: Expression)
 
   override def children: Seq[Expression] = child :: Nil
 
-  override def checkInputDataTypes(): TypeCheckResult = {
+  override def checkInputDataTypes(): TypeCheckResult =
     if (child.dataType.isInstanceOf[ArrayType] ||
         child.dataType.isInstanceOf[MapType]) {
       TypeCheckResult.TypeCheckSuccess
@@ -117,7 +117,6 @@ case class Explode(child: Expression)
       TypeCheckResult.TypeCheckFailure(
         s"input to function explode should be array or map type, not ${child.dataType}")
     }
-  }
 
   // hive-compatible default alias for explode function ("col" for array, "key", "value" for map)
   override def elementTypes: Seq[(DataType, Boolean, String)] =
@@ -127,7 +126,7 @@ case class Explode(child: Expression)
         (kt, false, "key") :: (vt, valueContainsNull, "value") :: Nil
     }
 
-  override def eval(input: InternalRow): TraversableOnce[InternalRow] = {
+  override def eval(input: InternalRow): TraversableOnce[InternalRow] =
     child.dataType match {
       case ArrayType(et, _) =>
         val inputArray = child.eval(input).asInstanceOf[ArrayData]
@@ -154,5 +153,4 @@ case class Explode(child: Expression)
           rows
         }
     }
-  }
 }

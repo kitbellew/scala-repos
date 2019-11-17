@@ -117,7 +117,7 @@ trait Reshape { self: Reifier =>
       super.transformModifiers(mods1)
     }
 
-    private def toPreTyperModifiers(mods: Modifiers, sym: Symbol) = {
+    private def toPreTyperModifiers(mods: Modifiers, sym: Symbol) =
       if (!sym.annotations.isEmpty) {
         val postTyper = sym.annotations filter (_.original != EmptyTree)
         if (reifyDebug && !postTyper.isEmpty)
@@ -129,7 +129,6 @@ trait Reshape { self: Reifier =>
       } else {
         mods
       }
-    }
 
     /** Restore pre-typer representation of a type.
       *
@@ -165,7 +164,7 @@ trait Reshape { self: Reifier =>
       *  The only usage of `reifyType` now is for servicing typetags, however, I have some ideas how to get rid of that as well.
       */
     private def isDiscarded(tt: TypeTree) = tt.original == null
-    private def toPreTyperTypeTree(tt: TypeTree): Tree = {
+    private def toPreTyperTypeTree(tt: TypeTree): Tree =
       if (!isDiscarded(tt)) {
         // here we rely on the fact that the originals that reach this point
         // have all necessary symbols attached to them (i.e. that they can be recompiled in any lexical context)
@@ -187,7 +186,6 @@ trait Reshape { self: Reifier =>
         if (reifyDebug) println("verdict: discarded")
         TypeTree()
       }
-    }
 
     private def toPreTyperCompoundTypeTree(ctt: CompoundTypeTree): Tree = {
       val CompoundTypeTree(tmpl @ Template(parents, self, stats)) = ctt
@@ -304,7 +302,7 @@ trait Reshape { self: Reifier =>
           if (valdef != null)
             accessors(valdef) = accessors.getOrElse(valdef, Nil) :+ defdef
 
-          def detectBeanAccessors(prefix: String): Unit = {
+          def detectBeanAccessors(prefix: String): Unit =
             if (defdef.name.startsWith(prefix)) {
               val name = defdef.name.toString.substring(prefix.length)
               def uncapitalize(s: String) =
@@ -323,7 +321,6 @@ trait Reshape { self: Reifier =>
               if (valdef != null)
                 accessors(valdef) = accessors.getOrElse(valdef, Nil) :+ defdef
             }
-          }
           detectBeanAccessors("get")
           detectBeanAccessors("set")
           detectBeanAccessors("is")

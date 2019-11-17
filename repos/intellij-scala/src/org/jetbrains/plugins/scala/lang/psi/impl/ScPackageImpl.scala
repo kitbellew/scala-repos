@@ -41,9 +41,8 @@ class ScPackageImpl private (val pack: PsiPackage)
       processor: PsiScopeProcessor,
       state: ResolveState,
       lastParent: PsiElement,
-      place: PsiElement): Boolean = {
+      place: PsiElement): Boolean =
     super.processDeclarations(processor, state, lastParent, place)
-  }
 
   override def processDeclarations(
       processor: PsiScopeProcessor,
@@ -157,36 +156,31 @@ class ScPackageImpl private (val pack: PsiPackage)
     }
   }
 
-  override def getSubPackages: Array[PsiPackage] = {
+  override def getSubPackages: Array[PsiPackage] =
     super.getSubPackages.map(ScPackageImpl(_))
-  }
 
-  override def getSubPackages(scope: GlobalSearchScope): Array[PsiPackage] = {
+  override def getSubPackages(scope: GlobalSearchScope): Array[PsiPackage] =
     super.getSubPackages(scope).map(ScPackageImpl(_))
-  }
 
   override def isValid: Boolean = true
 }
 
 object ScPackageImpl {
-  def apply(pack: PsiPackage): ScPackageImpl = {
+  def apply(pack: PsiPackage): ScPackageImpl =
     pack match {
       case null                => null
       case impl: ScPackageImpl => impl
       case _                   => new ScPackageImpl(pack)
     }
-  }
 
-  def findPackage(project: Project, pName: String) = {
+  def findPackage(project: Project, pName: String) =
     ScPackageImpl(
       ScalaPsiManager.instance(project).getCachedPackage(pName).orNull)
-  }
 
   class DoNotProcessPackageObjectException extends ControlThrowable
 
-  def isPackageObjectProcessing: Boolean = {
+  def isPackageObjectProcessing: Boolean =
     processing.get() > 0
-  }
 
   def startPackageObjectProcessing() {
     processing.set(processing.get() + 1)
@@ -203,10 +197,9 @@ object ScPackageImpl {
   private def implicitlyImportedObject(
       manager: PsiManager,
       scope: GlobalSearchScope,
-      fqn: String): Option[PsiClass] = {
+      fqn: String): Option[PsiClass] =
     ScalaPsiManager
       .instance(manager.getProject)
       .getCachedClasses(scope, fqn)
       .headOption
-  }
 }

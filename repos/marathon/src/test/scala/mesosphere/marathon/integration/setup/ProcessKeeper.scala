@@ -32,7 +32,7 @@ object ProcessKeeper {
 
   private[this] val ENV_MESOS_WORK_DIR: String = "MESOS_WORK_DIR"
 
-  def startHttpService(port: Int, assetPath: String) = {
+  def startHttpService(port: Int, assetPath: String) =
     startService {
       log.info(s"Start Http Service on port $port")
       val conf = new ScallopConf(
@@ -45,7 +45,6 @@ object ProcessKeeper {
         new HttpServiceTestModule)
       injector.getInstance(classOf[HttpService])
     }
-  }
 
   def startZooKeeper(port: Int, workDir: String, wipeWorkDir: Boolean = true) {
     val args =
@@ -248,15 +247,13 @@ object ProcessKeeper {
     process
   }
 
-  def onStopServices(block: => Unit): Unit = {
+  def onStopServices(block: => Unit): Unit =
     services ::= new AbstractIdleService {
-      override def shutDown(): Unit = {
+      override def shutDown(): Unit =
         block
-      }
 
       override def startUp(): Unit = {}
     }
-  }
 
   val PIDRE = """^\s*(\d+)\s+(\S*)$""".r
 
@@ -278,7 +275,7 @@ object ProcessKeeper {
     import mesosphere.util.ThreadPoolContext.ioContext
     log.info(s"Stop Process $name")
     val process = processes(name)
-    def killProcess: Int = {
+    def killProcess: Int =
       // Unfortunately, there seem to be race conditions in Process.exitValue.
       // Thus this ugly workaround.
       Await.result(Future {
@@ -287,7 +284,6 @@ object ProcessKeeper {
           process.exitValue()
         }
       }, 5.seconds)
-    }
     //retry on fail
     Try(killProcess) recover { case _ => killProcess } match {
       case Success(value) => processes -= name

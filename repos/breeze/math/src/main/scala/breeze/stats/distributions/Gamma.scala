@@ -80,7 +80,7 @@ case class Gamma(shape: Double, scale: Double)(implicit rand: RandBasis = Rand)
       rec + math.log(scale)
     } else math.log(draw)
 
-  def draw() = {
+  def draw() =
     if (shape == 1.0) {
       scale * -math.log(rand.uniform.draw())
     } else if (shape < 1.0) {
@@ -148,25 +148,21 @@ case class Gamma(shape: Double, scale: Double)(implicit rand: RandBasis = Rand)
       }
       r
     }
-  }
 
   def mean = shape * scale
   def variance = mean * scale
   def mode = { require(shape >= 1); mean - scale }
   def entropy = logNormalizer - (shape - 1) * digamma(shape) + shape
 
-  override def probability(x: Double, y: Double): Double = {
+  override def probability(x: Double, y: Double): Double =
     new GammaDistribution(shape, scale).probability(x, y)
-  }
 
-  override def inverseCdf(p: Double): Double = {
+  override def inverseCdf(p: Double): Double =
 //    gammp(this.shape, p / this.scale);
     new GammaDistribution(shape, scale).inverseCumulativeProbability(p)
-  }
 
-  override def cdf(x: Double): Double = {
+  override def cdf(x: Double): Double =
     new GammaDistribution(shape, scale).cumulativeProbability(x)
-  }
 }
 
 object Gamma
@@ -204,10 +200,9 @@ object Gamma
   /*
    * s = log( x_hat) - log_x_hat
    */
-  def approx_k(s: Double): Double = {
+  def approx_k(s: Double): Double =
     // correct within 1.5%
     (3 - s + math.sqrt(math.pow((s - 3), 2) + 24 * s)) / (12 * s)
-  }
 
   def Nwt_Rph_iter_for_k(k: Double, s: Double): Double = {
     /*

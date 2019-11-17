@@ -92,18 +92,16 @@ private[spark] class DTStatsAggregator(
     */
   def getImpurityCalculator(
       featureOffset: Int,
-      binIndex: Int): ImpurityCalculator = {
+      binIndex: Int): ImpurityCalculator =
     impurityAggregator.getCalculator(
       allStats,
       featureOffset + binIndex * statsSize)
-  }
 
   /**
     * Get an [[ImpurityCalculator]] for the parent node.
     */
-  def getParentImpurityCalculator(): ImpurityCalculator = {
+  def getParentImpurityCalculator(): ImpurityCalculator =
     impurityAggregator.getCalculator(parentStats, 0)
-  }
 
   /**
     * Update the stats for a given (feature, bin) for ordered features, using the given label.
@@ -120,9 +118,8 @@ private[spark] class DTStatsAggregator(
   /**
     * Update the parent node stats using the given label.
     */
-  def updateParent(label: Double, instanceWeight: Double): Unit = {
+  def updateParent(label: Double, instanceWeight: Double): Unit =
     impurityAggregator.update(parentStats, 0, label, instanceWeight)
-  }
 
   /**
     * Faster version of [[update]].
@@ -134,13 +131,12 @@ private[spark] class DTStatsAggregator(
       featureOffset: Int,
       binIndex: Int,
       label: Double,
-      instanceWeight: Double): Unit = {
+      instanceWeight: Double): Unit =
     impurityAggregator.update(
       allStats,
       featureOffset + binIndex * statsSize,
       label,
       instanceWeight)
-  }
 
   /**
     * Pre-compute feature offset for use with [[featureUpdate]].
@@ -158,12 +154,11 @@ private[spark] class DTStatsAggregator(
   def mergeForFeature(
       featureOffset: Int,
       binIndex: Int,
-      otherBinIndex: Int): Unit = {
+      otherBinIndex: Int): Unit =
     impurityAggregator.merge(
       allStats,
       featureOffset + binIndex * statsSize,
       featureOffset + otherBinIndex * statsSize)
-  }
 
   /**
     * Merge this aggregator with another, and returns this aggregator.

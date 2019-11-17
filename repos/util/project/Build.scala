@@ -27,7 +27,7 @@ object Util extends Build {
     }
   }
 
-  def scalacOptionsVersion(sv: String): Seq[String] = {
+  def scalacOptionsVersion(sv: String): Seq[String] =
     Seq(
       // Note: Add -deprecation when deprecated methods are removed
       "-unchecked",
@@ -40,7 +40,6 @@ object Util extends Build {
         case Some((2, x)) if x >= 11 => Seq("-Xlint:-missing-interpolator")
         case _                       => Seq("-Xlint")
       })
-  }
 
   val sharedSettings = Seq(
     version := libVersion,

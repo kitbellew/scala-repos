@@ -61,7 +61,7 @@ object Execution {
     /** Marks an empty queue (see docs for `local`). */
     private object Empty
 
-    def execute(runnable: Runnable): Unit = {
+    def execute(runnable: Runnable): Unit =
       local.get match {
         case null =>
           // Trampoline is inactive in this thread so start it up!
@@ -94,13 +94,12 @@ object Execution {
           throw new IllegalStateException(
             s"Unsupported trampoline ThreadLocal value: $illegal")
       }
-    }
 
     /**
       * Run all tasks that have been scheduled in the ThreadLocal.
       */
     @tailrec
-    private def executeScheduled(): Unit = {
+    private def executeScheduled(): Unit =
       local.get match {
         case Empty =>
           // Nothing to run
@@ -126,7 +125,6 @@ object Execution {
           throw new IllegalStateException(
             s"Unsupported trampoline ThreadLocal value: $illegal")
       }
-    }
 
     def reportFailure(t: Throwable): Unit = t.printStackTrace()
   }

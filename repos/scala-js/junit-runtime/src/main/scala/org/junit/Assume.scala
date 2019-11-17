@@ -25,15 +25,13 @@ object Assume {
   def assumeNotNull(objects: AnyRef*): Unit =
     objects.foreach(assumeThat(_, notNullValue()))
 
-  def assumeThat[T](actual: T, matcher: Matcher[T]): Unit = {
+  def assumeThat[T](actual: T, matcher: Matcher[T]): Unit =
     if (!matcher.matches(actual.asInstanceOf[AnyRef]))
       throw new AssumptionViolatedException(actual, matcher)
-  }
 
-  def assumeThat[T](message: String, actual: T, matcher: Matcher[T]): Unit = {
+  def assumeThat[T](message: String, actual: T, matcher: Matcher[T]): Unit =
     if (!matcher.matches(actual.asInstanceOf[AnyRef]))
       throw new AssumptionViolatedException(message, actual, matcher)
-  }
 
   def assumeNoException(e: Throwable): Unit =
     assumeThat(e, nullValue())

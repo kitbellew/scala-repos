@@ -18,11 +18,10 @@ class DeflateSpec extends CoderSpec {
   protected def newEncodedOutputStream(underlying: OutputStream): OutputStream =
     new DeflaterOutputStream(underlying)
 
-  override def extraTests(): Unit = {
+  override def extraTests(): Unit =
     "throw early if header is corrupt" in {
       (the[RuntimeException] thrownBy {
         ourDecode(ByteString(0, 1, 2, 3, 4))
       }).getCause should be(a[DataFormatException])
     }
-  }
 }

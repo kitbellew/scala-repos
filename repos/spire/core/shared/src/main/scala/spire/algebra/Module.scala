@@ -19,11 +19,10 @@ object Module {
       implicit V: Module[V, R]): Module[V, R] = V
 
   implicit def IdentityModule[@sp(Int, Long, Float, Double) V](
-      implicit ring: Ring[V]): IdentityModule[V] = {
+      implicit ring: Ring[V]): IdentityModule[V] =
     new IdentityModule[V] {
       val scalar = ring
     }
-  }
 }
 
 private[algebra] trait IdentityModule[@sp(Int, Long, Float, Double) V]

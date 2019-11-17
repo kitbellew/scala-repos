@@ -245,25 +245,22 @@ class HeartbeatReceiverSuite
     }
   }
 
-  private def addExecutorAndVerify(executorId: String): Unit = {
+  private def addExecutorAndVerify(executorId: String): Unit =
     assert(heartbeatReceiver.addExecutor(executorId).map { f =>
       Await.result(f, 10.seconds)
     } === Some(true))
-  }
 
-  private def removeExecutorAndVerify(executorId: String): Unit = {
+  private def removeExecutorAndVerify(executorId: String): Unit =
     assert(heartbeatReceiver.removeExecutor(executorId).map { f =>
       Await.result(f, 10.seconds)
     } === Some(true))
-  }
 
-  private def getTrackedExecutors: Map[String, Long] = {
+  private def getTrackedExecutors: Map[String, Long] =
     // We may receive undesired SparkListenerExecutorAdded from LocalBackend, so exclude it from
     // the map. See SPARK-10800.
     heartbeatReceiver
       .invokePrivate(_executorLastSeen())
       .filterKeys(_ != SparkContext.DRIVER_IDENTIFIER)
-  }
 }
 
 // TODO: use these classes to add end-to-end tests for dynamic allocation!
@@ -283,18 +280,15 @@ private class FakeSchedulerBackend(
     clusterManagerEndpoint: RpcEndpointRef)
     extends CoarseGrainedSchedulerBackend(scheduler, rpcEnv) {
 
-  protected override def doRequestTotalExecutors(
-      requestedTotal: Int): Boolean = {
+  protected override def doRequestTotalExecutors(requestedTotal: Int): Boolean =
     clusterManagerEndpoint.askWithRetry[Boolean](
       RequestExecutors(
         requestedTotal,
         localityAwareTasks,
         hostToLocalTaskCount))
-  }
 
-  protected override def doKillExecutors(executorIds: Seq[String]): Boolean = {
+  protected override def doKillExecutors(executorIds: Seq[String]): Boolean =
     clusterManagerEndpoint.askWithRetry[Boolean](KillExecutors(executorIds))
-  }
 }
 
 /**

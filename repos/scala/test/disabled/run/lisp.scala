@@ -279,7 +279,7 @@ object LispCaseClasses extends Lisp {
 
   def string2lisp(s: String): Data = {
     val it = new LispTokenizer(s);
-    def parseExpr(token: String): Data = {
+    def parseExpr(token: String): Data =
       if (token == "(") parseList
       else if (token == ")") sys.error("unbalanced parentheses")
       else if ('0' <= token.charAt(0) && token.charAt(0) <= '9')
@@ -288,7 +288,6 @@ object LispCaseClasses extends Lisp {
                token.charAt(token.length() - 1) == '\"')
         STR(token.substring(1, token.length() - 1))
       else SYM(token)
-    }
     def parseList: Data = {
       val token = it.next;
       if (token == ")") NIL() else CONS(parseExpr(token), parseList)
@@ -483,7 +482,7 @@ object LispAny extends Lisp {
 
   def string2lisp(s: String): Data = {
     val it = new LispTokenizer(s);
-    def parseExpr(token: String): Data = {
+    def parseExpr(token: String): Data =
       if (token == "(") parseList
       else if (token == ")") sys.error("unbalanced parentheses")
       //else if (Character.isDigit(token.charAt(0)))
@@ -492,7 +491,6 @@ object LispAny extends Lisp {
                token.charAt(token.length() - 1) == '\"')
         token.substring(1, token.length() - 1)
       else Symbol(token)
-    }
     def parseList: List[Data] = {
       val token = it.next;
       if (token == ")") Nil else parseExpr(token) :: parseList

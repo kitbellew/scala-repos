@@ -72,14 +72,13 @@ class ScalaDocumentationProvider extends CodeDocumentationProvider {
   def getDocumentationElementForLookupItem(
       psiManager: PsiManager,
       obj: Object,
-      element: PsiElement): PsiElement = {
+      element: PsiElement): PsiElement =
     obj match {
       case (_, element: PsiElement, _) => element
       case el: ScalaLookupItem         => el.element
       case element: PsiElement         => element
       case _                           => null
     }
-  }
 
   def getUrlFor(
       element: PsiElement,
@@ -117,9 +116,8 @@ class ScalaDocumentationProvider extends CodeDocumentationProvider {
   def getDocumentationElementForLink(
       psiManager: PsiManager,
       link: String,
-      context: PsiElement): PsiElement = {
+      context: PsiElement): PsiElement =
     JavaDocUtil.findReferenceTarget(psiManager, link, context)
-  }
 
   def generateDoc(element: PsiElement, originalElement: PsiElement): String = {
     val containingFile = element.getContainingFile
@@ -311,13 +309,12 @@ class ScalaDocumentationProvider extends CodeDocumentationProvider {
 
   def parseContext(startPoint: PsiElement): Pair[PsiElement, PsiComment] = {
     @tailrec
-    def findDocCommentOwner(elem: PsiElement): Option[ScDocCommentOwner] = {
+    def findDocCommentOwner(elem: PsiElement): Option[ScDocCommentOwner] =
       elem match {
         case null                 => None
         case d: ScDocCommentOwner => Some(d)
         case _                    => findDocCommentOwner(elem.getParent)
       }
-    }
     findDocCommentOwner(startPoint)
       .map(
         d =>
@@ -487,11 +484,10 @@ object ScalaDocumentationProvider {
   private def parseParameters(
       elem: ScParameterOwner,
       typeToString: ScType => String,
-      spaces: Int): String = {
+      spaces: Int): String =
     elem.allClauses
       .map(parseParameterClause(_, typeToString, spaces))
       .mkString("\n")
-  }
 
   private def parseParameterClause(
       elem: ScParameterClause,
@@ -838,13 +834,12 @@ object ScalaDocumentationProvider {
   private def parseDocComment(
       elem: PsiDocCommentOwner,
       withDescription: Boolean = false): String = {
-    def getParams(fun: ScParameterOwner): String = {
+    def getParams(fun: ScParameterOwner): String =
       fun.parameters
         .map((param: ScParameter) => "int     " + escapeHtml(param.name))
         .mkString("(", ",\n", ")")
-    }
 
-    def getTypeParams(fun: ScTypeParametersOwner): String = {
+    def getTypeParams(fun: ScTypeParametersOwner): String =
       if (fun.typeParameters.nonEmpty) {
         fun.typeParameters
           .map(param => escapeHtml(param.name))
@@ -852,7 +847,6 @@ object ScalaDocumentationProvider {
       } else {
         ""
       }
-    }
 
     Option(elem.getDocComment) match {
       case Some(y: ScDocComment) =>
@@ -1137,7 +1131,7 @@ object ScalaDocumentationProvider {
   }
 
   @tailrec
-  private def getDocedElement(originalElement: PsiElement): PsiElement = {
+  private def getDocedElement(originalElement: PsiElement): PsiElement =
     originalElement match {
       case null                       => null
       case wrapper: ScFunctionWrapper => wrapper.function
@@ -1146,7 +1140,6 @@ object ScalaDocumentationProvider {
         originalElement
       case _ => getDocedElement(originalElement.getParent)
     }
-  }
 
   private def getMemberHeader(member: ScMember): String = {
     if (!member.getParent.isInstanceOf[ScTemplateBody]) return ""

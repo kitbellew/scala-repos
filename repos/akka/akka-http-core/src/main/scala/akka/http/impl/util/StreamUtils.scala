@@ -29,7 +29,7 @@ private[http] object StreamUtils {
     */
   def byteStringTransformer(
       f: ByteString ⇒ ByteString,
-      finish: () ⇒ ByteString): Stage[ByteString, ByteString] = {
+      finish: () ⇒ ByteString): Stage[ByteString, ByteString] =
     new PushPullStage[ByteString, ByteString] {
       override def onPush(
           element: ByteString,
@@ -50,7 +50,6 @@ private[http] object StreamUtils {
           ctx: Context[ByteString]): TerminationDirective =
         ctx.absorbTermination()
     }
-  }
 
   def failedPublisher[T](ex: Throwable): Publisher[T] =
     impl.ErrorPublisher(ex, "failed").asInstanceOf[Publisher[T]]

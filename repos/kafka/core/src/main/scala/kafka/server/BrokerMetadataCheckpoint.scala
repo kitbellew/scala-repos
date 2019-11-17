@@ -31,7 +31,7 @@ class BrokerMetadataCheckpoint(val file: File) extends Logging {
   new File(file + ".tmp")
     .delete() // try to delete any existing temp files for cleanliness
 
-  def write(brokerMetadata: BrokerMetadata) = {
+  def write(brokerMetadata: BrokerMetadata) =
     lock synchronized {
       try {
         val brokerMetaProps = new Properties()
@@ -52,9 +52,8 @@ class BrokerMetadataCheckpoint(val file: File) extends Logging {
           throw ie
       }
     }
-  }
 
-  def read(): Option[BrokerMetadata] = {
+  def read(): Option[BrokerMetadata] =
     lock synchronized {
       try {
         val brokerMetaProps =
@@ -84,5 +83,4 @@ class BrokerMetadataCheckpoint(val file: File) extends Logging {
           throw e1
       }
     }
-  }
 }

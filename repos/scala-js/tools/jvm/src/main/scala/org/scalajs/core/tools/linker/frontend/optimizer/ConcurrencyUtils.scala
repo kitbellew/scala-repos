@@ -62,11 +62,10 @@ private[optimizer] object ConcurrencyUtils {
   }
 
   implicit class TrieMapOps[K, V](val map: TrieMap[K, V]) extends AnyVal {
-    @inline final def getOrPut(k: K, default: => V): V = {
+    @inline final def getOrPut(k: K, default: => V): V =
       map.get(k).getOrElse {
         val v = default
         map.putIfAbsent(k, v).getOrElse(v)
       }
-    }
   }
 }

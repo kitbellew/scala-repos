@@ -56,12 +56,11 @@ class JavaDStream[T](val dstream: DStream[T])(
     dstream.persist(storageLevel)
 
   /** Generate an RDD for the given duration */
-  def compute(validTime: Time): JavaRDD[T] = {
+  def compute(validTime: Time): JavaRDD[T] =
     dstream.compute(validTime) match {
       case Some(rdd) => new JavaRDD(rdd)
       case None      => null
     }
-  }
 
   /**
     * Return a new DStream in which each RDD contains all the elements in seen in a

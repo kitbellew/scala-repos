@@ -104,7 +104,7 @@ object ReplicationUtils extends Logging {
   private def parseLeaderAndIsr(
       leaderAndIsrStr: String,
       path: String,
-      stat: Stat): Option[LeaderIsrAndControllerEpoch] = {
+      stat: Stat): Option[LeaderIsrAndControllerEpoch] =
     Json.parseFull(leaderAndIsrStr).flatMap { m =>
       val leaderIsrAndEpochInfo = m.asInstanceOf[Map[String, Any]]
       val leader = leaderIsrAndEpochInfo.get("leader").get.asInstanceOf[Int]
@@ -122,7 +122,6 @@ object ReplicationUtils extends Logging {
           LeaderAndIsr(leader, epoch, isr, zkPathVersion),
           controllerEpoch))
     }
-  }
 
   private def generateIsrChangeJson(
       isrChanges: Set[TopicAndPartition]): String = {

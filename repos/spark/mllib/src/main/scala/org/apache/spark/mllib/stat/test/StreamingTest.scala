@@ -36,9 +36,8 @@ import org.apache.spark.util.StatCounter
 case class BinarySample @Since("1.6.0") (
     @Since("1.6.0") isExperiment: Boolean,
     @Since("1.6.0") value: Double) {
-  override def toString: String = {
+  override def toString: String =
     s"($isExperiment, $value)"
-  }
 }
 
 /**
@@ -126,13 +125,12 @@ class StreamingTest @Since("1.6.0") () extends Logging with Serializable {
     */
   @Since("1.6.0")
   def registerStream(
-      data: JavaDStream[BinarySample]): JavaDStream[StreamingTestResult] = {
+      data: JavaDStream[BinarySample]): JavaDStream[StreamingTestResult] =
     JavaDStream.fromDStream(registerStream(data.dstream))
-  }
 
   /** Drop all batches inside the peace period. */
   private[stat] def dropPeacePeriod(
-      data: DStream[BinarySample]): DStream[BinarySample] = {
+      data: DStream[BinarySample]): DStream[BinarySample] =
     data.transform { (rdd, time) =>
       if (time.milliseconds > data.slideDuration.milliseconds * peacePeriod) {
         rdd
@@ -140,7 +138,6 @@ class StreamingTest @Since("1.6.0") () extends Logging with Serializable {
         data.context.sparkContext.parallelize(Seq())
       }
     }
-  }
 
   /** Compute summary statistics over each key and the specified test window size. */
   private[stat] def summarizeByKeyAndWindow(
@@ -171,10 +168,9 @@ class StreamingTest @Since("1.6.0") () extends Logging with Serializable {
     */
   private[stat] def pairSummaries(
       summarizedData: DStream[(Boolean, StatCounter)])
-      : DStream[(StatCounter, StatCounter)] = {
+      : DStream[(StatCounter, StatCounter)] =
     summarizedData
       .map[(Int, StatCounter)](x => (0, x._2))
       .groupByKey() // should be length two (control/experiment group)
       .map(x => (x._2.head, x._2.last))
-  }
 }

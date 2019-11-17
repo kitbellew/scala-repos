@@ -58,18 +58,16 @@ object RichPipe extends java.io.Serializable {
 
   // A pipe can have more than one description when merged together, so we store them delimited with 255.toChar.
   // Cannot use 1.toChar as we get an error if it is not a printable character.
-  private def encodePipeDescriptions(descriptions: Seq[String]): String = {
+  private def encodePipeDescriptions(descriptions: Seq[String]): String =
     descriptions
       .map(_.replace(255.toChar, ' '))
       .filter(_.nonEmpty)
       .mkString(255.toChar.toString)
-  }
 
-  private def decodePipeDescriptions(encoding: String): Seq[String] = {
+  private def decodePipeDescriptions(encoding: String): Seq[String] =
     encoding.split(255.toChar).toSeq
-  }
 
-  def getPipeDescriptions(p: Pipe): Seq[String] = {
+  def getPipeDescriptions(p: Pipe): Seq[String] =
     if (p.getStepConfigDef.isEmpty) Nil
     else {
       // We use empty getter so we can get latest config value of Config.PipeDescriptions in the step ConfigDef.
@@ -83,7 +81,6 @@ object RichPipe extends java.io.Serializable {
         .map(decodePipeDescriptions)
         .getOrElse(Nil)
     }
-  }
 
   def setPipeDescriptions(p: Pipe, descriptions: Seq[String]): Pipe = {
     p.getStepConfigDef()
@@ -240,7 +237,7 @@ class RichPipe(val pipe: Pipe)
   /**
     * Merge or Concatenate several pipes together with this one:
     */
-  def ++(that: Pipe): Pipe = {
+  def ++(that: Pipe): Pipe =
     if (this.pipe == that) {
       // Cascading fails on self merge:
       // solution by Jack Guo
@@ -248,7 +245,6 @@ class RichPipe(val pipe: Pipe)
     } else {
       new Merge(assignName(this.pipe), assignName(that))
     }
-  }
 
   /**
     * Group all tuples down to one reducer.
@@ -304,14 +300,13 @@ class RichPipe(val pipe: Pipe)
   // by relying on cascading to use java's hashCode, which hash ints
   // to themselves
   protected def groupRandomlyAux(n: Int, optSeed: Option[Long])(
-      gs: GroupBuilder => GroupBuilder): Pipe = {
+      gs: GroupBuilder => GroupBuilder): Pipe =
     using(statefulRandom(optSeed))
       .map(() -> '__shard__) { (r: Random, _: Unit) =>
         r.nextInt(n)
       }
       .groupBy('__shard__) { gs(_).reducers(n) }
       .discard('__shard__)
-  }
 
   private def statefulRandom(optSeed: Option[Long]): Random with Stateful = {
     val random = new Random with Stateful
@@ -346,7 +341,7 @@ class RichPipe(val pipe: Pipe)
     groupAndShuffleRandomlyAux(reducers, Some(seed))(gs)
 
   private def groupAndShuffleRandomlyAux(reducers: Int, optSeed: Option[Long])(
-      gs: GroupBuilder => GroupBuilder): Pipe = {
+      gs: GroupBuilder => GroupBuilder): Pipe =
     using(statefulRandom(optSeed))
       .map(() -> ('__shuffle__)) { (r: Random, _: Unit) =>
         r.nextDouble()
@@ -355,7 +350,6 @@ class RichPipe(val pipe: Pipe)
         gs(g.sortBy('__shuffle__))
       }
       .discard('__shuffle__)
-  }
 
   /**
     * Adds a field with a constant value.
@@ -420,11 +414,10 @@ class RichPipe(val pipe: Pipe)
     * Text files can have corrupted data. If you use this function and a
     * cascading trap you can filter out corrupted data from your pipe.
     */
-  def verifyTypes[A](f: Fields)(implicit conv: TupleConverter[A]): Pipe = {
+  def verifyTypes[A](f: Fields)(implicit conv: TupleConverter[A]): Pipe =
     pipe.filter(f) { (a: A) =>
       true
     }
-  }
 
   /**
     * Given a function, partitions the pipe into several groups based on the
@@ -576,16 +569,14 @@ class RichPipe(val pipe: Pipe)
   /**
     * Convenience method for integrating with existing cascading Functions
     */
-  def each(fs: (Fields, Fields))(fn: Fields => Function[_]) = {
+  def each(fs: (Fields, Fields))(fn: Fields => Function[_]) =
     new Each(pipe, fs._1, fn(fs._2), defaultMode(fs._1, fs._2))
-  }
 
   /**
     * Same as above, but only keep the results field.
     */
-  def eachTo(fs: (Fields, Fields))(fn: Fields => Function[_]) = {
+  def eachTo(fs: (Fields, Fields))(fn: Fields => Function[_]) =
     new Each(pipe, fs._1, fn(fs._2), Fields.RESULTS)
-  }
 
   /**
     * This is an analog of the SQL/Excel unpivot function which converts columns of data

@@ -177,7 +177,7 @@ trait BaselineComparisons {
 
     def values(
         path: List[JString],
-        test: Tree[(PerfTest, Option[Statistics])]): List[JValue] = {
+        test: Tree[(PerfTest, Option[Statistics])]): List[JValue] =
       test match {
         case Tree.Node((RunQuery(query), Some(stats)), _) =>
           JObject(JField("path", JArray(path)) :: JField(
@@ -192,7 +192,6 @@ trait BaselineComparisons {
         case Tree.Node(_, kids) =>
           kids.toList.flatMap(values(path, _))
       }
-    }
 
     JArray(values(Nil, result))
   }

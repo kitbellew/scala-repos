@@ -51,7 +51,7 @@ class EnsembleToggleButton extends EnsembleExample {
     )
   }
 
-  def getContent = {
+  def getContent =
     new VBox {
       vgrow = Priority.Always
       hgrow = Priority.Always
@@ -81,5 +81,4 @@ class EnsembleToggleButton extends EnsembleExample {
         toggleLabel
       )
     }
-  }
 }

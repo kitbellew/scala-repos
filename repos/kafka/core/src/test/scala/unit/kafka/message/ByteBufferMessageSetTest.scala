@@ -573,7 +573,7 @@ class ByteBufferMessageSetTest extends BaseMessageSetTestCases {
   private def getMessages(
       magicValue: Byte = Message.CurrentMagicValue,
       timestamp: Long = Message.NoTimestamp,
-      codec: CompressionCodec = NoCompressionCodec): ByteBufferMessageSet = {
+      codec: CompressionCodec = NoCompressionCodec): ByteBufferMessageSet =
     if (magicValue == Message.MagicValue_V0) {
       new ByteBufferMessageSet(
         codec,
@@ -607,5 +607,4 @@ class ByteBufferMessageSetTest extends BaseMessageSetTestCases {
           magicValue = Message.MagicValue_V1)
       )
     }
-  }
 }

@@ -439,13 +439,12 @@ object GameRepo {
   def lastGameBetween(
       u1: String,
       u2: String,
-      since: DateTime): Fu[Option[Game]] = {
+      since: DateTime): Fu[Option[Game]] =
     $find.one(
       Json.obj(
         F.playerUids -> Json.obj("$all" -> List(u1, u2)),
         F.createdAt -> Json.obj("$gt" -> $date(since))
       ))
-  }
 
   def getUserIds(id: ID): Fu[List[String]] =
     gameTube.coll

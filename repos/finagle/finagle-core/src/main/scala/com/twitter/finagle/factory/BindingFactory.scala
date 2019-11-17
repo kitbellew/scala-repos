@@ -78,7 +78,7 @@ private class DynNameFactory[Req, Rep](
       case Activity.Pending =>
     }
 
-  def apply(conn: ClientConnection): Future[Service[Req, Rep]] = {
+  def apply(conn: ClientConnection): Future[Service[Req, Rep]] =
     state match {
       case Named(name) =>
         Trace.record("namer.success")
@@ -96,7 +96,6 @@ private class DynNameFactory[Req, Rep](
       case Pending(_) =>
         applySync(conn)
     }
-  }
 
   private[this] def applySync(
       conn: ClientConnection): Future[Service[Req, Rep]] = synchronized {

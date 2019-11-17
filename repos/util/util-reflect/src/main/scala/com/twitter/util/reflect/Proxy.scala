@@ -11,13 +11,11 @@ class NonexistentTargetException
     extends Exception("MethodCall was invoked without a valid target.")
 
 object Proxy {
-  def apply[I <: AnyRef: Manifest](f: MethodCall[I] => AnyRef) = {
+  def apply[I <: AnyRef: Manifest](f: MethodCall[I] => AnyRef) =
     new ProxyFactory[I](f).apply()
-  }
 
-  def apply[I <: AnyRef: Manifest](target: I, f: MethodCall[I] => AnyRef) = {
+  def apply[I <: AnyRef: Manifest](target: I, f: MethodCall[I] => AnyRef) =
     new ProxyFactory[I](f).apply(target)
-  }
 }
 
 object ProxyFactory {
@@ -25,14 +23,13 @@ object ProxyFactory {
       extends MethodInterceptor[AnyRef](None, m => null)
 
   private[reflect] object IgnoredMethodFilter extends CallbackFilter {
-    def accept(m: Method) = {
+    def accept(m: Method) =
       m.getName match {
         case "hashCode" => 1
         case "equals"   => 1
         case "toString" => 1
         case _          => 0
       }
-    }
   }
 }
 
@@ -49,19 +46,17 @@ class AbstractProxyFactory[I <: AnyRef: Manifest] {
     e.create.asInstanceOf[Factory]
   }
 
-  protected final def newWithCallback(f: MethodCall[I] => AnyRef) = {
+  protected final def newWithCallback(f: MethodCall[I] => AnyRef) =
     proto
       .newInstance(Array(new MethodInterceptor(None, f), NoOp.INSTANCE))
       .asInstanceOf[I]
-  }
 
   protected final def newWithCallback[T <: I](
       target: T,
-      f: MethodCall[I] => AnyRef) = {
+      f: MethodCall[I] => AnyRef) =
     proto
       .newInstance(Array(new MethodInterceptor(Some(target), f), NoOp.INSTANCE))
       .asInstanceOf[I]
-  }
 }
 
 class ProxyFactory[I <: AnyRef: Manifest](f: MethodCall[I] => AnyRef)
@@ -81,9 +76,8 @@ private[reflect] class MethodInterceptor[I <: AnyRef](
       p: AnyRef,
       m: Method,
       args: Array[AnyRef],
-      methodProxy: MethodProxy) = {
+      methodProxy: MethodProxy) =
     callback(new MethodCall(targetRef, m, args, methodProxy))
-  }
 }
 
 final class MethodCall[T <: AnyRef] private[reflect] (

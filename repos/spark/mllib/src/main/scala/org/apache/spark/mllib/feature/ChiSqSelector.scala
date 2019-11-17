@@ -67,9 +67,8 @@ class ChiSqSelectorModel @Since("1.3.0") (
     * @return transformed vector.
     */
   @Since("1.3.0")
-  override def transform(vector: Vector): Vector = {
+  override def transform(vector: Vector): Vector =
     compress(vector, selectedFeatures)
-  }
 
   /**
     * Returns a vector with features filtered.
@@ -78,7 +77,7 @@ class ChiSqSelectorModel @Since("1.3.0") (
     * @param features vector
     * @param filterIndices indices of features to filter, must be ordered asc
     */
-  private def compress(features: Vector, filterIndices: Array[Int]): Vector = {
+  private def compress(features: Vector, filterIndices: Array[Int]): Vector =
     features match {
       case SparseVector(size, indices, values) =>
         val newSize = filterIndices.length
@@ -113,21 +112,18 @@ class ChiSqSelectorModel @Since("1.3.0") (
         throw new UnsupportedOperationException(
           s"Only sparse and dense vectors are supported but got ${other.getClass}.")
     }
-  }
 
   @Since("1.6.0")
-  override def save(sc: SparkContext, path: String): Unit = {
+  override def save(sc: SparkContext, path: String): Unit =
     ChiSqSelectorModel.SaveLoadV1_0.save(sc, this, path)
-  }
 
   override protected def formatVersion: String = "1.0"
 }
 
 object ChiSqSelectorModel extends Loader[ChiSqSelectorModel] {
   @Since("1.6.0")
-  override def load(sc: SparkContext, path: String): ChiSqSelectorModel = {
+  override def load(sc: SparkContext, path: String): ChiSqSelectorModel =
     ChiSqSelectorModel.SaveLoadV1_0.load(sc, path)
-  }
 
   private[feature] object SaveLoadV1_0 {
 

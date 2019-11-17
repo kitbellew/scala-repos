@@ -210,7 +210,7 @@ private[concurrent] object ExecutionContextImpl {
   def fromExecutorService(
       es: ExecutorService,
       reporter: Throwable => Unit = ExecutionContext.defaultReporter)
-      : ExecutionContextImpl with ExecutionContextExecutorService = {
+      : ExecutionContextImpl with ExecutionContextExecutorService =
     new ExecutionContextImpl(
       Option(es).getOrElse(createDefaultExecutorService(reporter)),
       reporter) with ExecutionContextExecutorService {
@@ -244,5 +244,4 @@ private[concurrent] object ExecutionContextImpl {
           timeUnit: TimeUnit) =
         asExecutorService.invokeAny(callables, l, timeUnit)
     }
-  }
 }

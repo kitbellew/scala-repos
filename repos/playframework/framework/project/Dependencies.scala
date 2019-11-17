@@ -153,12 +153,11 @@ object Dependencies {
   private def sbtPluginDep(
       sbtVersion: String,
       scalaVersion: String,
-      moduleId: ModuleID) = {
+      moduleId: ModuleID) =
     moduleId.extra(
       "sbtVersion" -> CrossVersion.binarySbtVersion(sbtVersion),
       "scalaVersion" -> CrossVersion.binaryScalaVersion(scalaVersion)
     )
-  }
 
   def runSupportDependencies(sbtVersion: String, scalaVersion: String) =
     Seq(

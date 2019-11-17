@@ -114,14 +114,13 @@ class RuntimePickler(
         fldValue: Any,
         b: PBuilder,
         fldPickler: Pickler[Any],
-        fldTag: FastTypeTag[_]): Unit = {
+        fldTag: FastTypeTag[_]): Unit =
       // TODO - Dynamic elides are no longer supported, but here is where they could be.  They were never generated
       //        for non-runtime picklers, and therefore were of little use.
       //        The issue with dynamic elides is that the unpickler needs to support them, and it's not
       //        somethign you could know at runtime.
       // if (fldValue == null || fldValue.getClass == staticClass) doSomeKindofDynamicElide, perhaps
       pickleInto(fldClass, fldValue, b, fldPickler, fldTag)
-    }
   }
 
   final class EffectivelyFinalLogic(fir: irs.FieldIR) extends Logic(fir, true) {
@@ -144,9 +143,8 @@ class RuntimePickler(
         fldValue: Any,
         b: PBuilder,
         fldPickler: Pickler[Any],
-        fldTag: FastTypeTag[_]): Unit = {
+        fldTag: FastTypeTag[_]): Unit =
       pickleInto(fldClass, fldValue, b, fldPickler, fldTag)
-    }
   }
 
   sealed class PrivateJavaFieldLogic(fir: irs.FieldIR, field: Field)
@@ -186,9 +184,8 @@ class RuntimePickler(
         fldValue: Any,
         b: PBuilder,
         fldPickler: Pickler[Any],
-        fldTag: FastTypeTag[_]): Unit = {
+        fldTag: FastTypeTag[_]): Unit =
       pickleInto(fldClass, fldValue, b, fldPickler, fldTag)
-    }
   }
 
   final class PrivateEffectivelyFinalJavaFieldLogic(
@@ -229,7 +226,7 @@ class RuntimePickler(
     else pickler.pickle(fieldValue, builder)
   }
 
-  def mkPickler: Pickler[_] = {
+  def mkPickler: Pickler[_] =
     new Pickler[Any] {
       val fields: List[Logic] = cir.fields.flatMap { fir =>
         if (fir.accessor.nonEmpty)
@@ -270,5 +267,4 @@ class RuntimePickler(
         } finally scala.pickling.internal.GRL.unlock()
       }
     }
-  }
 }

@@ -128,14 +128,13 @@ class SparkEnv(
 
   private[spark] def createPythonWorker(
       pythonExec: String,
-      envVars: Map[String, String]): java.net.Socket = {
+      envVars: Map[String, String]): java.net.Socket =
     synchronized {
       val key = (pythonExec, envVars)
       pythonWorkers
         .getOrElseUpdate(key, new PythonWorkerFactory(pythonExec, envVars))
         .create()
     }
-  }
 
   private[spark] def destroyPythonWorker(
       pythonExec: String,
@@ -171,17 +170,15 @@ object SparkEnv extends Logging {
   /**
     * Returns the SparkEnv.
     */
-  def get: SparkEnv = {
+  def get: SparkEnv =
     env
-  }
 
   /**
     * Returns the ThreadLocal SparkEnv.
     */
   @deprecated("Use SparkEnv.get instead", "1.2.0")
-  def getThreadLocal: SparkEnv = {
+  def getThreadLocal: SparkEnv =
     env
-  }
 
   /**
     * Create a SparkEnv for the driver.
@@ -308,9 +305,8 @@ object SparkEnv extends Logging {
     // if the property is not set, possibly initializing it with our conf
     def instantiateClassFromConf[T](
         propertyName: String,
-        defaultClassName: String): T = {
+        defaultClassName: String): T =
       instantiateClass[T](conf.get(propertyName, defaultClassName))
-    }
 
     val serializer = instantiateClassFromConf[Serializer](
       "spark.serializer",
@@ -323,14 +319,13 @@ object SparkEnv extends Logging {
 
     def registerOrLookupEndpoint(
         name: String,
-        endpointCreator: => RpcEndpoint): RpcEndpointRef = {
+        endpointCreator: => RpcEndpoint): RpcEndpointRef =
       if (isDriver) {
         logInfo("Registering " + name)
         rpcEnv.setupEndpoint(name, endpointCreator)
       } else {
         RpcUtils.makeDriverRef(name, conf, rpcEnv)
       }
-    }
 
     val mapOutputTracker =
       if (isDriver) {

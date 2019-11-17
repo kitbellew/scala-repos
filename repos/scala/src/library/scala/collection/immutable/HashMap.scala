@@ -284,9 +284,8 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
     protected override def merge0[B1 >: B](
         that: HashMap[A, B1],
         level: Int,
-        merger: Merger[A, B1]): HashMap[A, B1] = {
+        merger: Merger[A, B1]): HashMap[A, B1] =
       that.updated0(key, hash, level, value, kv, merger.invert)
-    }
   }
 
   private[collection] class HashMapCollision1[A, +B](

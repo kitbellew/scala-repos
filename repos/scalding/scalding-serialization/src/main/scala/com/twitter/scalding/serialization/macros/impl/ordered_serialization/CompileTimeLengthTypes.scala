@@ -63,7 +63,7 @@ object CompileTimeLengthTypes {
   }
 
   object NoLengthCalculationAvailable {
-    def apply(c: Context): NoLengthCalculationAvailable[c.type] = {
+    def apply(c: Context): NoLengthCalculationAvailable[c.type] =
       new NoLengthCalculationAvailable[c.type] {
         override val ctx: c.type = c
         override def t = {
@@ -71,7 +71,6 @@ object CompileTimeLengthTypes {
           q"""_root_.scala.sys.error("no length available")"""
         }
       }
-    }
   }
 
   trait NoLengthCalculationAvailable[C <: Context]

@@ -26,7 +26,6 @@ import org.apache.spark.rdd.RDD
 private[python] class PrefixSpanModelWrapper(model: PrefixSpanModel[Any])
     extends PrefixSpanModel(model.freqSequences) {
 
-  def getFreqSequences: RDD[Array[Any]] = {
+  def getFreqSequences: RDD[Array[Any]] =
     SerDe.fromTuple2RDD(model.freqSequences.map(x => (x.javaSequence, x.freq)))
-  }
 }

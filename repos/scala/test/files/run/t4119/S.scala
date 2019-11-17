@@ -7,7 +7,6 @@ class S extends foo.bar.J { sss =>
 }
 
 object Test {
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     new S
-  }
 }

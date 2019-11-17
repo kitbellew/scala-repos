@@ -79,9 +79,8 @@ class LEventsSpec extends Specification with TestEvents {
   def jdbcDO =
     Storage.getDataObject[LEvents](StorageTestUtils.jdbcSourceName, dbName)
 
-  def initDefault(eventClient: LEvents) = {
+  def initDefault(eventClient: LEvents) =
     eventClient.init(appId)
-  }
 
   def insertAndGetEvents(eventClient: LEvents) = {
 
@@ -199,9 +198,8 @@ class LEventsSpec extends Specification with TestEvents {
 
   val channelId = 12
 
-  def initChannel(eventClient: LEvents) = {
+  def initChannel(eventClient: LEvents) =
     eventClient.init(appId, Some(channelId))
-  }
 
   def insertChannel(eventClient: LEvents) = {
 
@@ -245,11 +243,9 @@ class LEventsSpec extends Specification with TestEvents {
     results must containTheSameElementsAs(expected)
   }
 
-  def removeDefault(eventClient: LEvents) = {
+  def removeDefault(eventClient: LEvents) =
     eventClient.remove(appId)
-  }
 
-  def removeChannel(eventClient: LEvents) = {
+  def removeChannel(eventClient: LEvents) =
     eventClient.remove(appId, Some(channelId))
-  }
 }

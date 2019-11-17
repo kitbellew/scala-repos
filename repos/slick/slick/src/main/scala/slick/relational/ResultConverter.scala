@@ -98,11 +98,10 @@ final case class CompoundResultConverter[
   private[this] val cha = childConverters.to[Array]
   private[this] val len = cha.length
 
-  def read(pr: Reader) = {
+  def read(pr: Reader) =
     if (len == 0)
       throw new SlickException("Cannot read from empty CompoundResultConverter")
     else cha(0).read(pr)
-  }
   def update(value: T, pr: Updater) = {
     var i = 0
     while (i < len) {

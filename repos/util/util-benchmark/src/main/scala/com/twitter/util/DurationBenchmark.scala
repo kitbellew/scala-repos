@@ -14,9 +14,8 @@ class DurationBenchmark extends StdBenchAnnotations {
 
   @OperationsPerInvocation(7)
   @Benchmark
-  def durationEquals: Boolean = {
+  def durationEquals: Boolean =
     d1 == Duration.Top & d1 == Duration.Bottom & d1 == Duration.Undefined & d1 == d2 & Duration.Top == Duration.Top & Duration.Top == Duration.Bottom & Duration.Top == Duration.Undefined
-  }
 
   @Benchmark
   def durationMultiplyLong: Duration = d3 * 123456L

@@ -26,9 +26,8 @@ object PerformanceSpec {
     private var startTime: Long = 0L
     private var stopTime: Long = 0L
 
-    def startMeasure(): Unit = {
+    def startMeasure(): Unit =
       startTime = System.nanoTime
-    }
 
     def stopMeasure(): Double = {
       stopTime = System.nanoTime

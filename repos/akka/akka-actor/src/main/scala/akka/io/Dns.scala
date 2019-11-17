@@ -53,14 +53,12 @@ object Dns extends ExtensionId[DnsExt] with ExtensionIdProvider {
     }
   }
 
-  def cached(name: String)(system: ActorSystem): Option[Resolved] = {
+  def cached(name: String)(system: ActorSystem): Option[Resolved] =
     Dns(system).cache.cached(name)
-  }
 
   def resolve(
-      name: String)(system: ActorSystem, sender: ActorRef): Option[Resolved] = {
+      name: String)(system: ActorSystem, sender: ActorRef): Option[Resolved] =
     Dns(system).cache.resolve(name)(system, sender)
-  }
 
   override def lookup() = Dns
 

@@ -74,15 +74,13 @@ case class BroadcastExchange(mode: BroadcastMode, child: SparkPlan)
     }(BroadcastExchange.executionContext)
   }
 
-  override protected def doPrepare(): Unit = {
+  override protected def doPrepare(): Unit =
     // Materialize the future.
     relationFuture
-  }
 
-  override protected def doExecute(): RDD[InternalRow] = {
+  override protected def doExecute(): RDD[InternalRow] =
     throw new UnsupportedOperationException(
       "BroadcastExchange does not support the execute() code path.")
-  }
 
   override protected[sql] def doExecuteBroadcast[T]()
       : broadcast.Broadcast[T] = {

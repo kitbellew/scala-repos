@@ -70,13 +70,12 @@ case class MapPartitions(
     with ObjectOperator {
   override def output: Seq[Attribute] = serializer.map(_.toAttribute)
 
-  override protected def doExecute(): RDD[InternalRow] = {
+  override protected def doExecute(): RDD[InternalRow] =
     child.execute().mapPartitionsInternal { iter =>
       val getObject = generateToObject(deserializer, child.output)
       val outputObject = generateToRow(serializer)
       func(iter.map(getObject)).map(outputObject)
     }
-  }
 }
 
 /**
@@ -95,7 +94,7 @@ case class AppendColumns(
 
   private def newColumnSchema = serializer.map(_.toAttribute).toStructType
 
-  override protected def doExecute(): RDD[InternalRow] = {
+  override protected def doExecute(): RDD[InternalRow] =
     child.execute().mapPartitionsInternal { iter =>
       val getObject = generateToObject(deserializer, child.output)
       val combiner =
@@ -111,7 +110,6 @@ case class AppendColumns(
           newColumns.asInstanceOf[UnsafeRow]): InternalRow
       }
     }
-  }
 }
 
 /**
@@ -138,7 +136,7 @@ case class MapGroups(
   override def requiredChildOrdering: Seq[Seq[SortOrder]] =
     Seq(groupingAttributes.map(SortOrder(_, Ascending)))
 
-  override protected def doExecute(): RDD[InternalRow] = {
+  override protected def doExecute(): RDD[InternalRow] =
     child.execute().mapPartitionsInternal { iter =>
       val grouped = GroupedIterator(iter, groupingAttributes, child.output)
 
@@ -152,7 +150,6 @@ case class MapGroups(
           result.map(outputObject)
       }
     }
-  }
 }
 
 /**
@@ -184,7 +181,7 @@ case class CoGroup(
     leftGroup.map(SortOrder(_, Ascending)) :: rightGroup.map(
       SortOrder(_, Ascending)) :: Nil
 
-  override protected def doExecute(): RDD[InternalRow] = {
+  override protected def doExecute(): RDD[InternalRow] =
     left.execute().zipPartitions(right.execute()) { (leftData, rightData) =>
       val leftGrouped = GroupedIterator(leftData, leftGroup, left.output)
       val rightGrouped = GroupedIterator(rightData, rightGroup, right.output)
@@ -203,5 +200,4 @@ case class CoGroup(
           result.map(outputObject)
       }
     }
-  }
 }

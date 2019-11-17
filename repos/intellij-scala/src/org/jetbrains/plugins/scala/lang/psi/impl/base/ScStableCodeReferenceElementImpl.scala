@@ -75,15 +75,14 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
       }
   }
 
-  def getResolveResultVariants: Array[ScalaResolveResult] = {
+  def getResolveResultVariants: Array[ScalaResolveResult] =
     doResolve(this, new CompletionProcessor(getKinds(incomplete = true), this))
       .flatMap {
         case res: ScalaResolveResult => Seq(res)
         case r                       => Seq.empty
       }
-  }
 
-  def getConstructor = {
+  def getConstructor =
     getContext match {
       case s: ScSimpleTypeElement =>
         s.getContext match {
@@ -97,7 +96,6 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
         }
       case _ => None
     }
-  }
 
   def isConstructorReference = getConstructor.nonEmpty
 

@@ -135,7 +135,7 @@ class TypeParameter(
     )
   }
 
-  def update(fun: ScType => ScType): TypeParameter = {
+  def update(fun: ScType => ScType): TypeParameter =
     new TypeParameter(name, typeParams.map(_.update(fun)), {
       val res = fun(lowerType())
       () => res
@@ -143,7 +143,6 @@ class TypeParameter(
       val res = fun(upperType())
       () => res
     }, ptp)
-  }
 
   def canEqual(other: Any): Boolean = other.isInstanceOf[TypeParameter]
 
@@ -167,23 +166,20 @@ object TypeParameter {
       typeParams: Seq[TypeParameter],
       lowerType: () => ScType,
       upperType: () => ScType,
-      ptp: PsiTypeParameter): TypeParameter = {
+      ptp: PsiTypeParameter): TypeParameter =
     new TypeParameter(name, typeParams, lowerType, upperType, ptp)
-  }
 
   def unapply(t: TypeParameter): Option[(
       String,
       Seq[TypeParameter],
       () => ScType,
       () => ScType,
-      PsiTypeParameter)] = {
+      PsiTypeParameter)] =
     Some(t.name, t.typeParams, t.lowerType, t.upperType, t.ptp)
-  }
 
-  def fromArray(ptps: Array[PsiTypeParameter]): Array[TypeParameter] = {
+  def fromArray(ptps: Array[PsiTypeParameter]): Array[TypeParameter] =
     if (ptps.length == 0) EMPTY_ARRAY
     else ptps.map(new TypeParameter(_))
-  }
 
   val EMPTY_ARRAY: Array[TypeParameter] = Array.empty
 }
@@ -200,7 +196,7 @@ case class ScMethodType(
 
   override def typeDepth: Int = returnType.typeDepth
 
-  def inferValueType: ValueType = {
+  def inferValueType: ValueType =
     ScFunctionType(
       returnType.inferValueType,
       params.map(p => {
@@ -218,7 +214,6 @@ case class ScMethodType(
         }
       })
     )(project, scope)
-  }
 
   override def removeAbstracts =
     new ScMethodType(
@@ -252,7 +247,7 @@ case class ScMethodType(
   override def recursiveVarianceUpdateModifiable[T](
       data: T,
       update: (ScType, Int, T) => (Boolean, ScType, T),
-      variance: Int = 1): ScType = {
+      variance: Int = 1): ScType =
     update(this, variance, data) match {
       case (true, res, _) => res
       case (_, _, newData) =>
@@ -265,7 +260,6 @@ case class ScMethodType(
           isImplicit
         )(project, scope)
     }
-  }
 
   override def equivInner(
       r: ScType,
@@ -442,11 +436,10 @@ case class ScTypePolymorphicType(
       None
     )
 
-  def inferValueType: ValueType = {
+  def inferValueType: ValueType =
     polymorphicTypeSubstitutor(inferValueType = true)
       .subst(internalType.inferValueType)
       .asInstanceOf[ValueType]
-  }
 
   override def removeAbstracts =
     ScTypePolymorphicType(
@@ -500,7 +493,7 @@ case class ScTypePolymorphicType(
   override def recursiveVarianceUpdateModifiable[T](
       data: T,
       update: (ScType, Int, T) => (Boolean, ScType, T),
-      variance: Int = 1): ScType = {
+      variance: Int = 1): ScType =
     update(this, variance, data) match {
       case (true, res, _) => res
       case (_, _, newData) =>
@@ -525,7 +518,6 @@ case class ScTypePolymorphicType(
           })
         )
     }
-  }
 
   override def equivInner(
       r: ScType,
@@ -587,14 +579,12 @@ case class ScTypePolymorphicType(
     }
   }
 
-  def visitType(visitor: ScalaTypeVisitor): Unit = {
+  def visitType(visitor: ScalaTypeVisitor): Unit =
     visitor.visitTypePolymorphicType(this)
-  }
 
-  override def typeDepth: Int = {
+  override def typeDepth: Int =
     if (typeParameters.nonEmpty)
       internalType.typeDepth.max(
         ScType.typeParamsDepth(typeParameters.toArray) + 1)
     else internalType.typeDepth
-  }
 }

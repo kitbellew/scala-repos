@@ -21,9 +21,8 @@ class ImportAdditionalIdentifiersIntention
 
   override def getText = "Import additional identifiers from qualifier"
 
-  def isAvailable(project: Project, editor: Editor, element: PsiElement) = {
+  def isAvailable(project: Project, editor: Editor, element: PsiElement) =
     check(project, editor, element).isDefined
-  }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
     if (!element.isValid) return
@@ -39,7 +38,7 @@ class ImportAdditionalIdentifiersIntention
   private def check(
       project: Project,
       editor: Editor,
-      element: PsiElement): Option[() => Unit] = {
+      element: PsiElement): Option[() => Unit] =
     element match {
       case ws: PsiWhiteSpace
           if element.getPrevSibling != null &&
@@ -75,5 +74,4 @@ class ImportAdditionalIdentifiersIntention
         }
       case _ => None
     }
-  }
 }

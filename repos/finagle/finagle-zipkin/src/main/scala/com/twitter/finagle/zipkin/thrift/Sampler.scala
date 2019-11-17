@@ -64,7 +64,7 @@ class Sampler {
     * @param traceId check if this trace id passes the sampler
     * @param sampleRate don't use the sampler's sample rate, instead use this one directly
     */
-  def sampleTrace(traceId: TraceId, sampleRate: Float): Option[Boolean] = {
+  def sampleTrace(traceId: TraceId, sampleRate: Float): Option[Boolean] =
     traceId.sampled match {
       case None =>
         if (math.abs(traceId.traceId.toLong ^ Sampler.salt) % 10000 < sampleRate * 10000)
@@ -73,7 +73,6 @@ class Sampler {
       case sample @ Some(_) =>
         sample
     }
-  }
 
   /**
     * Decides if we should record this record or not.
@@ -81,10 +80,9 @@ class Sampler {
     * If this trace is marked as None (no decision has been made), consult the sampleTrace impl
     * @return true if we should keep it, false for throw away
     */
-  def sampleRecord(record: Record): Boolean = {
+  def sampleRecord(record: Record): Boolean =
     sampleTrace(record.traceId) match {
       case Some(sampled) => sampled
       case None          => false
     }
-  }
 }

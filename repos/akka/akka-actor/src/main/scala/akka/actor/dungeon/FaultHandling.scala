@@ -112,7 +112,7 @@ private[akka] trait FaultHandling {
     * @param causedByFailure signifies if it was our own failure which
     *        prompted this action.
     */
-  protected def faultResume(causedByFailure: Throwable): Unit = {
+  protected def faultResume(causedByFailure: Throwable): Unit =
     if (actor == null) {
       system.eventStream.publish(
         Error(
@@ -136,7 +136,6 @@ private[akka] trait FaultHandling {
         clearFailed()
       resumeChildren(causedByFailure, perp)
     }
-  }
 
   /**
     * Do create the actor in response to a failure.
@@ -205,7 +204,7 @@ private[akka] trait FaultHandling {
 
   final def handleInvokeFailure(
       childrenNotToSuspend: immutable.Iterable[ActorRef],
-      t: Throwable): Unit = {
+      t: Throwable): Unit =
     // prevent any further messages to be processed until the actor has been restarted
     if (!isFailed)
       try {
@@ -239,7 +238,6 @@ private[akka] trait FaultHandling {
         try children foreach stop
         finally finishTerminate()
       }
-  }
 
   private def finishTerminate() {
     val a = actor

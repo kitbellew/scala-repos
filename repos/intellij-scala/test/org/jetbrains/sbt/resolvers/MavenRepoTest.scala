@@ -22,7 +22,7 @@ class MavenRepoTest extends IndexingTestCase with UsefulTestCaseHelper {
       Set("0.0.1", "0.0.2"))
   }
 
-  def testNonExistentIndexUpdate() = {
+  def testNonExistentIndexUpdate() =
     if (SystemInfo.isWindows)
       assertException[InvalidRepository](
         Some(
@@ -46,7 +46,6 @@ class MavenRepoTest extends IndexingTestCase with UsefulTestCaseHelper {
             "Test repo",
             "file:/non-existent-dir"))
       }
-  }
 
   def testNonIndexedRepoUpdate() = {
     val repoUrl = "http://dl.bintray.com/scalaz/releases/"

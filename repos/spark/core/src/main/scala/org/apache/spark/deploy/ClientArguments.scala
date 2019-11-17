@@ -127,7 +127,7 @@ private[deploy] object ClientArguments {
   val DEFAULT_MEMORY = Utils.DEFAULT_DRIVER_MEM_MB // MB
   val DEFAULT_SUPERVISE = false
 
-  def isValidJarUrl(s: String): Boolean = {
+  def isValidJarUrl(s: String): Boolean =
     try {
       val uri = new URI(s)
       uri.getScheme != null && uri.getPath != null &&
@@ -135,5 +135,4 @@ private[deploy] object ClientArguments {
     } catch {
       case _: URISyntaxException => false
     }
-  }
 }

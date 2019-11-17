@@ -25,7 +25,7 @@ class ScalaDocUnclosedTagWithoutParserInspection extends LocalInspectionTool {
 
   override def buildVisitor(
       holder: ProblemsHolder,
-      isOnTheFly: Boolean): PsiElementVisitor = {
+      isOnTheFly: Boolean): PsiElementVisitor =
     new ScalaElementVisitor {
       override def visitWikiSyntax(s: ScDocSyntaxElement) {
         val firstElementType = s.getFirstChild.getNode.getElementType
@@ -46,7 +46,6 @@ class ScalaDocUnclosedTagWithoutParserInspection extends LocalInspectionTool {
         }
       }
     }
-  }
 }
 
 class ScalaDocEscapeTagQuickFix(s: ScDocSyntaxElement)

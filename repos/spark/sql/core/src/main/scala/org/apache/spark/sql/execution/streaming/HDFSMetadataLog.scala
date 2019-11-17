@@ -76,11 +76,10 @@ class HDFSMetadataLog[T: ClassTag](sqlContext: SQLContext, path: String)
   private val serializer =
     new JavaSerializer(sqlContext.sparkContext.conf).newInstance()
 
-  private def batchFile(batchId: Long): Path = {
+  private def batchFile(batchId: Long): Path =
     new Path(metadataPath, batchId.toString)
-  }
 
-  override def add(batchId: Long, metadata: T): Boolean = {
+  override def add(batchId: Long, metadata: T): Boolean =
     get(batchId).map(_ => false).getOrElse {
       // Only write metadata when the batch has not yet been written.
       val buffer = serializer.serialize(metadata)
@@ -95,7 +94,6 @@ class HDFSMetadataLog[T: ClassTag](sqlContext: SQLContext, path: String)
           throw new InterruptedException("Creating file is interrupted")
       }
     }
-  }
 
   /**
     * Write a batch to a temp file then rename it to the batch file.
@@ -155,12 +153,11 @@ class HDFSMetadataLog[T: ClassTag](sqlContext: SQLContext, path: String)
     }
   }
 
-  private def isFileAlreadyExistsException(e: IOException): Boolean = {
+  private def isFileAlreadyExistsException(e: IOException): Boolean =
     e.isInstanceOf[FileAlreadyExistsException] ||
-    // Old Hadoop versions don't throw FileAlreadyExistsException. Although it's fixed in
-    // HADOOP-9361, we still need to support old Hadoop versions.
-    (e.getMessage != null && e.getMessage.startsWith("File already exists: "))
-  }
+      // Old Hadoop versions don't throw FileAlreadyExistsException. Although it's fixed in
+      // HADOOP-9361, we still need to support old Hadoop versions.
+      (e.getMessage != null && e.getMessage.startsWith("File already exists: "))
 
   override def get(batchId: Long): Option[T] = {
     val batchMetadataFile = batchFile(batchId)

@@ -24,10 +24,9 @@ class FileTransport(repository: RemoteRepository) extends AbstractTransporter {
     new URLResource(toURL(task))
   private def toFile(task: TransportTask): java.io.File =
     new java.io.File(toURL(task).toURI)
-  override def implPeek(peek: PeekTask): Unit = {
+  override def implPeek(peek: PeekTask): Unit =
     if (!toFile(peek).exists())
       throw new NotFoundException(s"Could not find ${peek.getLocation}")
-  }
   override def implClose(): Unit = ()
   override def implGet(out: GetTask): Unit = {
     val from = toFile(out)

@@ -53,9 +53,8 @@ class ImportStableMemberIntention extends PsiElementBaseIntentionAction {
 
   override def getFamilyName: String = ImportStableMemberIntention.familyName
 
-  private def checkReference(ref: ScReferenceElement): Boolean = {
+  private def checkReference(ref: ScReferenceElement): Boolean =
     !isInImport(ref) && resolvesToStablePath(ref) && hasQualifier(ref)
-  }
 }
 
 object ImportStableMemberIntention {

@@ -31,9 +31,8 @@ object ScalaSigParser {
     classFile.attribute("ScalaSig").map(_.byteCode)
   }
 
-  def parse(clazz: Class[_]): Option[ScalaSig] = {
+  def parse(clazz: Class[_]): Option[ScalaSig] =
     getScalaSig(clazz).map(ScalaSigAttributeParsers.parse)
-  }
 }
 
 object ScalaSigAttributeParsers extends ByteCodeReader {

@@ -59,10 +59,9 @@ case class Dtab(dentries0: IndexedSeq[Dentry]) extends IndexedSeq[Dentry] {
   /**
     * Construct a new Dtab with the given dtab appended.
     */
-  def ++(dtab: Dtab): Dtab = {
+  def ++(dtab: Dtab): Dtab =
     if (dtab.isEmpty) this
     else Dtab(dentries0 ++ dtab.dentries0)
-  }
 
   /**
     * Java API for '++'

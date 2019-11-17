@@ -12,11 +12,9 @@ class SbtAutoImportComponent(project: Project)
     extends AbstractProjectComponent(project) {
   private val listener = new SbtAutoImportListener(project)
 
-  override def projectOpened(): Unit = {
+  override def projectOpened(): Unit =
     VirtualFileManager.getInstance().addVirtualFileListener(listener, project)
-  }
 
-  override def projectClosed(): Unit = {
+  override def projectClosed(): Unit =
     VirtualFileManager.getInstance().removeVirtualFileListener(listener)
-  }
 }

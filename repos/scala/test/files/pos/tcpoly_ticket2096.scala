@@ -10,11 +10,10 @@ trait MBraceSeq[C[X] <: MBrace[C, X] with Seq[X], A] extends MBrace[C, A]
 // one of the simplest witnesses of monad i can find
 case class MSequitor[A](a_ : A*) extends Seq[A] with MBrace[MSequitor, A] {
   override def nest(a: A) = new MSequitor[A](a)
-  override def flatten[T <: MSequitor[MSequitor[A]]](bsq: T): MSequitor[A] = {
+  override def flatten[T <: MSequitor[MSequitor[A]]](bsq: T): MSequitor[A] =
     (new MSequitor[A]() /: bsq)({ (acc: MSequitor[A], e: MSequitor[A]) =>
       (acc ++ e).asInstanceOf[MSequitor[A]]
     })
-  }
   override def length = a_.length
   override def iterator = a_.iterator
   override def apply(n: Int) = a_.apply(n)

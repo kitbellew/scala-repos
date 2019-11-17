@@ -133,9 +133,8 @@ object Sorter {
       res
     }
 
-    def sorted(arr: Array[DateTime]) = {
+    def sorted(arr: Array[DateTime]) =
       array.take(arr, argSorted(arr), ScalarTagTime.missing)
-    }
   }
 
   object doubleSorter extends Sorter[Double] {

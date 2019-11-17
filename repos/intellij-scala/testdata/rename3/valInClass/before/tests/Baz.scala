@@ -3,12 +3,11 @@ package tests
 class Baz {
   val bar /*caret*/ = 0
 
-  def foo() = {
+  def foo() =
     ba /*caret*/ r match {
       case `bar/*caret*/` =>
       case _              =>
     }
-  }
 }
 
 object BazInst extends Baz {

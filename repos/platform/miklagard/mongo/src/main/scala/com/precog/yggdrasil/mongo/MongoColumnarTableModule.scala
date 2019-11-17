@@ -145,7 +145,7 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
               .format(t.getClass, t.getMessage)); None
       }
 
-    def load(table: Table, apiKey: APIKey, tpe: JType): Future[Table] = {
+    def load(table: Table, apiKey: APIKey, tpe: JType): Future[Table] =
       for {
         paths <- pathsM(table)
       } yield {
@@ -240,7 +240,6 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
           UnknownSize
         )
       }
-    }
 
     def makeSlice(
         cursorGen: () => DBCursor,

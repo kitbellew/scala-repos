@@ -47,12 +47,11 @@ object SparkStreamingExample {
     ssc.start()
     Thread.sleep(5000)
 
-    def test(f: => Boolean, failureMsg: String) = {
+    def test(f: => Boolean, failureMsg: String) =
       if (!f) {
         println(failureMsg)
         System.exit(-1)
       }
-    }
 
     val rddCounts = seen.map(rdd => rdd.count()).filter(_ > 0)
     test(rddCounts.length == 3, "Did not collect three RDD's from stream")

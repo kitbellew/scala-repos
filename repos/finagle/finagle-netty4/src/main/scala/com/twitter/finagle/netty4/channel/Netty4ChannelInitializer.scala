@@ -58,9 +58,7 @@ private[netty4] class Netty4ChannelInitializer(
 
   val exceptionHandler = new ChannelExceptionHandler(stats, logger)
 
-  def initChannelTls(
-      config: Netty4ListenerTLSConfig,
-      ch: SocketChannel): Unit = {
+  def initChannelTls(config: Netty4ListenerTLSConfig, ch: SocketChannel): Unit =
     for (Netty4ListenerTLSConfig(newEngine) <- tlsConfig) {
       val engine = newEngine()
       engine.self.setUseClientMode(false)
@@ -74,7 +72,6 @@ private[netty4] class Netty4ChannelInitializer(
         new TlsShutdownHandler(engine)
       )
     }
-  }
 
   def initChannel(ch: SocketChannel): Unit = {
     val pipeline = ch.pipeline

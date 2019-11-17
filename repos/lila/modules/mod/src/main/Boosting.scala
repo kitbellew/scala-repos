@@ -50,7 +50,7 @@ final class BoostingApi(
   def boostingId(winner: User, loser: User): String =
     winner.id + "/" + loser.id
 
-  def check(game: Game, whiteUser: User, blackUser: User): Funit = {
+  def check(game: Game, whiteUser: User, blackUser: User): Funit =
     if (game.rated && game.accountable && game.playedTurns <= 10 &&
         !game.isTournament && game.winnerColor.isDefined &&
         variants.contains(game.variant) && !game.isCorrespondence &&
@@ -81,7 +81,6 @@ final class BoostingApi(
     } else {
       funit
     }
-  }
 }
 
 object BoostingApi {

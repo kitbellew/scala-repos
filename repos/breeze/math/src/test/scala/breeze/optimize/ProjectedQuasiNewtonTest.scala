@@ -36,9 +36,8 @@ class ProjectedQuasiNewtonTest
     val optimizer = new ProjectedQuasiNewton(tolerance = 1.0e-9)
     forAll { init: DenseVector[Double] =>
       val f = new DiffFunction[DenseVector[Double]] {
-        def calculate(x: DenseVector[Double]) = {
+        def calculate(x: DenseVector[Double]) =
           (sum((x - 3.0) :^ 2.0), (x * 2.0) - 6.0)
-        }
       }
 
       val result = optimizer.minimize(f, init)
@@ -56,9 +55,8 @@ class ProjectedQuasiNewtonTest
     forAll { init: DenseVector[Double] =>
       init := clip(init, Double.NegativeInfinity, 2.0)
       val f = new DiffFunction[DenseVector[Double]] {
-        def calculate(x: DenseVector[Double]) = {
+        def calculate(x: DenseVector[Double]) =
           (sum((x - 3.0) :^ 4.0), (x - 3.0) :^ 3.0 :* 4.0)
-        }
       }
 
       val result = optimizer.minimize(f, init)
@@ -73,9 +71,8 @@ class ProjectedQuasiNewtonTest
 
     forAll { init: DenseVector[Double] =>
       val f = new DiffFunction[DenseVector[Double]] {
-        def calculate(x: DenseVector[Double]) = {
+        def calculate(x: DenseVector[Double]) =
           (norm((x - 3.0) :^ 2.0, 1), (x * 2.0) - 6.0)
-        }
       }
 
       val targetValue = 3 / (1.0 / 2 + 1)
@@ -94,11 +91,10 @@ class ProjectedQuasiNewtonTest
       whenever(min(a) >= -3.0 && max(a) <= 3.0) {
         val init = DenseVector.rand(a.size)
         val f = new DiffFunction[DenseVector[Double]] {
-          def calculate(x: DenseVector[Double]) = {
+          def calculate(x: DenseVector[Double]) =
             (
               sum(exp((x :^ 2.0) :- (a :* x))),
               (x * 2.0 :- a) :* exp(x :^ 2.0 :- a :* x))
-          }
         }
 
         val result = optimizer.minimize(f, init)

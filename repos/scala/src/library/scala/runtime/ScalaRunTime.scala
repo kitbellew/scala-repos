@@ -49,11 +49,10 @@ object ScalaRunTime {
 
   /** Return the class object representing an array with element class `clazz`.
     */
-  def arrayClass(clazz: jClass[_]): jClass[_] = {
+  def arrayClass(clazz: jClass[_]): jClass[_] =
     // newInstance throws an exception if the erasure is Void.TYPE. see SI-5680
     if (clazz == java.lang.Void.TYPE) classOf[Array[Unit]]
     else java.lang.reflect.Array.newInstance(clazz, 0).getClass
-  }
 
   /** Return the class object representing elements in arrays described by a given schematic.
     */
@@ -73,7 +72,7 @@ object ScalaRunTime {
     classTag[T].runtimeClass.asInstanceOf[jClass[T]]
 
   /** Retrieve generic array element */
-  def array_apply(xs: AnyRef, idx: Int): Any = {
+  def array_apply(xs: AnyRef, idx: Int): Any =
     xs match {
       case x: Array[AnyRef]  => x(idx).asInstanceOf[Any]
       case x: Array[Int]     => x(idx).asInstanceOf[Any]
@@ -87,10 +86,9 @@ object ScalaRunTime {
       case x: Array[Unit]    => x(idx).asInstanceOf[Any]
       case null              => throw new NullPointerException
     }
-  }
 
   /** update generic array element */
-  def array_update(xs: AnyRef, idx: Int, value: Any): Unit = {
+  def array_update(xs: AnyRef, idx: Int, value: Any): Unit =
     xs match {
       case x: Array[AnyRef]  => x(idx) = value.asInstanceOf[AnyRef]
       case x: Array[Int]     => x(idx) = value.asInstanceOf[Int]
@@ -104,7 +102,6 @@ object ScalaRunTime {
       case x: Array[Unit]    => x(idx) = value.asInstanceOf[Unit]
       case null              => throw new NullPointerException
     }
-  }
 
   /** Get generic array length */
   def array_length(xs: AnyRef): Int = xs match {
@@ -172,7 +169,7 @@ object ScalaRunTime {
     scala.util.hashing.MurmurHash3.productHash(x)
 
   /** A helper for case classes. */
-  def typedProductIterator[T](x: Product): Iterator[T] = {
+  def typedProductIterator[T](x: Product): Iterator[T] =
     new AbstractIterator[T] {
       private var c: Int = 0
       private val cmax = x.productArity
@@ -183,7 +180,6 @@ object ScalaRunTime {
         result.asInstanceOf[T]
       }
     }
-  }
 
   /** Fast path equality method for inlining; used when -optimise is set.
     */
@@ -323,14 +319,13 @@ object ScalaRunTime {
     }
 
     // Special casing Unit arrays, the value class which uses a reference array type.
-    def arrayToString(x: AnyRef) = {
+    def arrayToString(x: AnyRef) =
       if (x.getClass.getComponentType == classOf[BoxedUnit])
         0 until (array_length(x) min maxElements) map (_ => "()") mkString
           ("Array(", ", ", ")")
       else
         WrappedArray make x take maxElements map inner mkString
           ("Array(", ", ", ")")
-    }
 
     // The recursively applied attempt to prettify Array printing.
     // Note that iterator is used if possible and foreach is used as a

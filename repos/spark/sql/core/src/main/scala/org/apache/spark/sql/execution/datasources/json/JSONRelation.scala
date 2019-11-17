@@ -46,7 +46,7 @@ class DefaultSource extends FileFormat with DataSourceRegister {
   override def inferSchema(
       sqlContext: SQLContext,
       options: Map[String, String],
-      files: Seq[FileStatus]): Option[StructType] = {
+      files: Seq[FileStatus]): Option[StructType] =
     if (files.isEmpty) {
       None
     } else {
@@ -64,7 +64,6 @@ class DefaultSource extends FileFormat with DataSourceRegister {
 
       Some(jsonSchema)
     }
-  }
 
   override def prepareWrite(
       sqlContext: SQLContext,
@@ -82,9 +81,8 @@ class DefaultSource extends FileFormat with DataSourceRegister {
           path: String,
           bucketId: Option[Int],
           dataSchema: StructType,
-          context: TaskAttemptContext): OutputWriter = {
+          context: TaskAttemptContext): OutputWriter =
         new JsonOutputWriter(path, bucketId, dataSchema, context)
-      }
     }
   }
 
@@ -136,7 +134,7 @@ class DefaultSource extends FileFormat with DataSourceRegister {
   }
 
   /** Constraints to be imposed on schema to be stored. */
-  private def checkConstraints(schema: StructType): Unit = {
+  private def checkConstraints(schema: StructType): Unit =
     if (schema.fieldNames.length != schema.fieldNames.distinct.length) {
       val duplicateColumns = schema.fieldNames
         .groupBy(identity)
@@ -148,7 +146,6 @@ class DefaultSource extends FileFormat with DataSourceRegister {
         s"Duplicate column(s) : $duplicateColumns found, " +
           s"cannot save to JSON format")
     }
-  }
 
   override def toString: String = "JSON"
   override def equals(other: Any): Boolean = other.isInstanceOf[DefaultSource]

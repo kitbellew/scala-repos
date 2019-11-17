@@ -58,7 +58,7 @@ trait StructuredTypeStrings extends DestructureTypes {
     if (try1.length < threshold) try1
     else block(level, grouping)(name, nodes)
   }
-  private def shortClass(x: Any) = {
+  private def shortClass(x: Any) =
     if (settings.debug) {
       val name = (x.getClass.getName split '.').last
       val str =
@@ -67,7 +67,6 @@ trait StructuredTypeStrings extends DestructureTypes {
 
       " // " + str
     } else ""
-  }
 
   sealed abstract class TypeNode {
     def grouping: Grouping
@@ -193,12 +192,11 @@ trait TypeStrings {
     xs.nonEmpty && xs.forall(_.isDigit)
   }
 
-  def scalaName(s: String): String = {
+  def scalaName(s: String): String =
     if (s endsWith MODULE_SUFFIX_STRING) s.init + ".type"
     else if (s == "void") "scala.Unit"
     else if (primitives(s)) "scala." + s.capitalize
     else primitiveMap.getOrElse(s, NameTransformer.decode(s))
-  }
   // Trying to put humpty dumpty back together again.
   def scalaName(clazz: JClass): String = {
     val name = clazz.getName
@@ -225,9 +223,8 @@ trait TypeStrings {
     if (xs.isEmpty) "_"
     else scalaName(xs.head)
   }
-  private def tparamString(clazz: JClass): String = {
+  private def tparamString(clazz: JClass): String =
     brackets(clazz.getTypeParameters map tvarString: _*)
-  }
 
   private def tparamString[T: ru.TypeTag]: String = {
     import ru._ // get TypeRefTag in scope so that pattern match works (TypeRef is an abstract type)

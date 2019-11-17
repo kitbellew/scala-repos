@@ -71,7 +71,7 @@ class ProducerPool(val config: ProducerConfig) extends Logging {
     }
   }
 
-  def getProducer(brokerId: Int): SyncProducer = {
+  def getProducer(brokerId: Int): SyncProducer =
     lock.synchronized {
       val producer = syncProducers.get(brokerId)
       producer match {
@@ -81,16 +81,14 @@ class ProducerPool(val config: ProducerConfig) extends Logging {
             "Sync producer for broker id %d does not exist".format(brokerId))
       }
     }
-  }
 
   /**
     * Closes all the producers in the pool
     */
-  def close() = {
+  def close() =
     lock.synchronized {
       info("Closing all sync producers")
       val iter = syncProducers.values.iterator
       while (iter.hasNext) iter.next.close
     }
-  }
 }

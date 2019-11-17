@@ -226,7 +226,7 @@ trait NIHDBQueryExecutorComponent {
           logRoot: File): IngestFailureLog =
         FilesystemIngestFailureLog(logRoot, checkpoint)
 
-      def asyncExecutorFor(apiKey: APIKey) = {
+      def asyncExecutorFor(apiKey: APIKey) =
         for {
           executionContext0 <- threadPooling.getAccountExecutionContext(apiKey)
         } yield {
@@ -234,9 +234,8 @@ trait NIHDBQueryExecutorComponent {
             val executionContext: ExecutionContext = executionContext0
           }
         }
-      }
 
-      def syncExecutorFor(apiKey: APIKey) = {
+      def syncExecutorFor(apiKey: APIKey) =
         for {
           executionContext0 <- threadPooling.getAccountExecutionContext(apiKey)
         } yield {
@@ -244,7 +243,6 @@ trait NIHDBQueryExecutorComponent {
             val executionContext: ExecutionContext = executionContext0
           }
         }
-      }
 
       override def executor(implicit shardQueryMonad: JobQueryTFMonad)
           : QueryExecutor[JobQueryTF, StreamT[JobQueryTF, Slice]] = {

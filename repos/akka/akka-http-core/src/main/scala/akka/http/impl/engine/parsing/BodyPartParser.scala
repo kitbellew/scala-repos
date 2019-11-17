@@ -96,7 +96,7 @@ private[http] final class BodyPartParser(
       else ctx.finish()
     } else ctx.finish()
 
-  override def onPull(ctx: Context[Output]): SyncDirective = {
+  override def onPull(ctx: Context[Output]): SyncDirective =
     if (output.nonEmpty) ctx.push(dequeue())
     else if (ctx.isFinishing) {
       if (terminated) ctx.finish()
@@ -104,7 +104,6 @@ private[http] final class BodyPartParser(
         ctx.pushAndFinish(
           ParseError(ErrorInfo("Unexpected end of multipart entity")))
     } else ctx.pull()
-  }
 
   override def onUpstreamFinish(ctx: Context[Output]): TerminationDirective =
     ctx.absorbTermination()

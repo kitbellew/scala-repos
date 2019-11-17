@@ -69,9 +69,8 @@ class ZkNodeChangeNotificationListener(
     processAllNotifications()
   }
 
-  def close() = {
+  def close() =
     isClosed.set(true)
-  }
 
   /**
     * Process all changes

@@ -40,9 +40,8 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
 
   class DynamicClassLoader(urls: Array[URL], parent: ClassLoader)
       extends java.net.URLClassLoader(urls, parent) {
-    def addUrl(url: URL) = {
+    def addUrl(url: URL) =
       super.addURL(url)
-    }
   }
 
   type AttributedManifest = (JarManifest, Seq[InjectorDescriptor])
@@ -80,32 +79,28 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
 
     override def beforeLibraryRemoved(library: Library): Unit = ()
 
-    override def afterLibraryRemoved(newLibrary: Library): Unit = {
+    override def afterLibraryRemoved(newLibrary: Library): Unit =
       if (!skippedLibs.contains(newLibrary.getName)) init()
-    }
 
-    override def afterLibraryAdded(newLibrary: Library): Unit = {
+    override def afterLibraryAdded(newLibrary: Library): Unit =
       if (!skippedLibs.contains(newLibrary.getName)) init()
-    }
   }
 
-  override def projectClosed(): Unit = {
+  override def projectClosed(): Unit =
     saveJarCache(jarCache, myInjectorCacheIndex)
-  }
 
   override def projectOpened(): Unit = {
     jarCache = verifyLibraryCache(loadJarCache(myInjectorCacheIndex))
     init()
   }
 
-  def init() = {
+  def init() =
     DumbService.getInstance(project).smartInvokeLater {
       toRunnable {
         loadCachedInjectors()
         rescanAllJars()
       }
     }
-  }
 
   override def initComponent(): Unit = {
     myInjectorCacheDir.mkdirs()
@@ -115,12 +110,11 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
       .addListener(myLibraryTableListener)
   }
 
-  override def disposeComponent(): Unit = {
+  override def disposeComponent(): Unit =
     LibraryTablesRegistrar
       .getInstance()
       .getLibraryTable(project)
       .removeListener(myLibraryTableListener)
-  }
 
   override def getComponentName: String = "ScalaLibraryInjectorLoader"
 
@@ -137,16 +131,14 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
   @inline def inWriteAction[T](f: => T) =
     ApplicationManager.getApplication.runWriteAction(toRunnable(f))
 
-  def getInjectorClasses[T](interface: Class[T]): Seq[Class[T]] = {
+  def getInjectorClasses[T](interface: Class[T]): Seq[Class[T]] =
     loadedInjectors
       .getOrElse(interface, Seq.empty)
       .map(myClassLoader.loadClass(_).asInstanceOf[Class[T]])
       .toSeq
-  }
 
-  def getInjectorInstances[T](interface: Class[T]): Seq[T] = {
+  def getInjectorInstances[T](interface: Class[T]): Seq[T] =
     getInjectorClasses(interface).map(_.newInstance())
-  }
 
   private def loadJarCache(f: File): InjectorPersistentCache = {
     var stream: ObjectInputStream = null
@@ -184,18 +176,17 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
   }
 
   private def verifyLibraryCache(
-      cache: InjectorPersistentCache): InjectorPersistentCache = {
+      cache: InjectorPersistentCache): InjectorPersistentCache =
     if (ScalaPluginVersionVerifier.getPluginVersion.exists(
           _ != cache.pluginVersion))
       InjectorPersistentCache(
         ScalaPluginVersionVerifier.getPluginVersion.get,
         new util.HashMap())
     else cache
-  }
 
   private def verifyManifest(manifest: JarManifest): Option[JarManifest] = {
     def verifyInjector(
-        injector: InjectorDescriptor): Option[InjectorDescriptor] = {
+        injector: InjectorDescriptor): Option[InjectorDescriptor] =
       if (injector.sources.isEmpty) {
         LOG.warn(s"Injector $injector has no sources, skipping")
         None
@@ -223,10 +214,9 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
           }
         }
       }
-    }
 
     def verifyDescriptor(
-        descriptor: PluginDescriptor): Option[PluginDescriptor] = {
+        descriptor: PluginDescriptor): Option[PluginDescriptor] =
       if (descriptor.since > descriptor.until ||
           descriptor.since == descriptor.until) {
         LOG.warn(s"Plugin descriptor since >= until in $descriptor")
@@ -243,7 +233,6 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
           None
         }
       }
-    }
 
     if (!new File(manifest.jarPath).exists)
       LOG.warn(
@@ -369,11 +358,10 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
   }
 
   private def findMatchingInjectors(
-      libraryManifest: JarManifest): Seq[InjectorDescriptor] = {
+      libraryManifest: JarManifest): Seq[InjectorDescriptor] =
     findMatchingPluginDescriptor(libraryManifest)
       .map(_.injectors)
       .getOrElse(Seq.empty)
-  }
 
   // don't forget to remove temp directory after compilation
   private def extractInjectorSources(
@@ -413,10 +401,9 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
     }
   }
 
-  private def askUser(candidates: ManifestToDescriptors) = {
+  private def askUser(candidates: ManifestToDescriptors) =
     ackProvider.askGlobalInjectorEnable(
       acceptCallback = compile(showReviewDialogAndFilter(candidates)))
-  }
 
   private def showReviewDialogAndFilter(
       candidates: ManifestToDescriptors): ManifestToDescriptors = {
@@ -581,7 +568,7 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
     }
   }
 
-  private def runWithHelperModule[T](f: Module => T) = {
+  private def runWithHelperModule[T](f: Module => T) =
     inWriteAction {
       val module = createIdeaModule()
       try {
@@ -590,7 +577,6 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
         removeIdeaModule()
       }
     }
-  }
 }
 
 object LibraryInjectorLoader {

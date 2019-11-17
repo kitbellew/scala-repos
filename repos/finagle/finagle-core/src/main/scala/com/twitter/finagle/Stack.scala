@@ -603,13 +603,12 @@ trait CanStackFrom[-From, To] {
 object CanStackFrom {
   implicit def fromFun[T]: CanStackFrom[T => T, T] =
     new CanStackFrom[T => T, T] {
-      def toStackable(r: Stack.Role, fn: T => T): Stackable[T] = {
+      def toStackable(r: Stack.Role, fn: T => T): Stackable[T] =
         new Stack.Module0[T] {
           val role = r
           val description = r.name
           def make(next: T) = fn(next)
         }
-      }
     }
 }
 

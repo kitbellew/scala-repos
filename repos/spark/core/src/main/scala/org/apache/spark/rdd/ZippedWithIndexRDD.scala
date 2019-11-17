@@ -59,10 +59,9 @@ private[spark] class ZippedWithIndexRDD[T: ClassTag](prev: RDD[T])
     }
   }
 
-  override def getPartitions: Array[Partition] = {
+  override def getPartitions: Array[Partition] =
     firstParent[T].partitions
       .map(x => new ZippedWithIndexRDDPartition(x, startIndices(x.index)))
-  }
 
   override def getPreferredLocations(split: Partition): Seq[String] =
     firstParent[T].preferredLocations(

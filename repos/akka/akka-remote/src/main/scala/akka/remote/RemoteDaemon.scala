@@ -88,7 +88,7 @@ private[akka] class RemoteSystemDaemon(
 
   @tailrec private def removeChildParentNeedsUnwatch(
       parent: ActorRef,
-      child: ActorRef): Boolean = {
+      child: ActorRef): Boolean =
     parent2children.get(parent) match {
       case null ⇒ false // no-op
       case children ⇒
@@ -103,7 +103,6 @@ private[akka] class RemoteSystemDaemon(
           else false
         }
     }
-  }
 
   /**
     * Find the longest matching path which we know about and return that ref

@@ -78,12 +78,11 @@ object RandomDataGenerator {
   def randomSchema(
       rand: Random,
       numFields: Int,
-      acceptedTypes: Seq[DataType]): StructType = {
+      acceptedTypes: Seq[DataType]): StructType =
     StructType(Seq.tabulate(numFields) { i =>
       val dt = acceptedTypes(rand.nextInt(acceptedTypes.size))
       StructField("col_" + i, dt, nullable = rand.nextBoolean())
     })
-  }
 
   /**
     * Returns a random nested schema. This will randomly generate structs and arrays drawn from

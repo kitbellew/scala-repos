@@ -40,20 +40,18 @@ case class ScalaMethodEvaluator(
   private val jdiMethodsCache =
     mutable.HashMap[ReferenceType, Option[Method]]()
 
-  private def initCache(process: DebugProcess): Unit = {
+  private def initCache(process: DebugProcess): Unit =
     if (process != null) {
       prevProcess = process
       jdiMethodsCache.clear()
     }
-  }
 
   private def getOrUpdateMethod(
       referenceType: ReferenceType,
-      findMethod: ReferenceType => Method): Option[Method] = {
+      findMethod: ReferenceType => Method): Option[Method] =
     jdiMethodsCache.getOrElseUpdate(
       referenceType,
       Option(findMethod(referenceType)))
-  }
 
   def evaluate(context: EvaluationContextImpl): AnyRef = {
     val debugProcess: DebugProcessImpl = context.getDebugProcess

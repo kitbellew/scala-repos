@@ -266,14 +266,13 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
           .matcher(specName.substring(nonSpecName.length))
           .matches
 
-      def sameOrSpecializedType(specTp: Type, nonSpecTp: Type) = {
+      def sameOrSpecializedType(specTp: Type, nonSpecTp: Type) =
         specTp == nonSpecTp || {
           val specDesc = specTp.getDescriptor
           val nonSpecDesc = nonSpecTp.getDescriptor
           specDesc.length == 1 && primitives.contains(specDesc) &&
           nonSpecDesc == ObjectRef.descriptor
         }
-      }
 
       def specializedDescMatches(
           specMethodDesc: String,
@@ -566,12 +565,11 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
   private def insertLoadOps(
       before: AbstractInsnNode,
       methodNode: MethodNode,
-      localsList: LocalsList) = {
+      localsList: LocalsList) =
     for (l <- localsList.locals) {
       val op = new VarInsnNode(l.loadOpcode, l.local)
       methodNode.instructions.insertBefore(before, op)
     }
-  }
 
   /**
     * A list of local variables. Each local stores information about its type, see class [[Local]].

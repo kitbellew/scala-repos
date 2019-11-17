@@ -83,7 +83,6 @@ est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscin
   implicit val system = ActorSystem(getClass.getSimpleName)
   implicit val materializer = ActorMaterializer()
 
-  override def afterAll() = {
+  override def afterAll() =
     Await.result(system.terminate(), 10.seconds)
-  }
 }

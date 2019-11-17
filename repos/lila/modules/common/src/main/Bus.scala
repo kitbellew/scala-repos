@@ -17,10 +17,9 @@ final class Bus(system: ActorSystem) extends Extension with EventBus {
     * Attempts to register the subscriber to the specified Classifier
     * @return true if successful and false if not (because it was already subscribed to that Classifier, or otherwise)
     */
-  def subscribe(subscriber: Subscriber, to: Classifier): Boolean = {
+  def subscribe(subscriber: Subscriber, to: Classifier): Boolean =
     // log(s"subscribe $to $subscriber")
     bus.subscribe(subscriber, to)
-  }
 
   def subscribe(subscriber: Subscriber, to: Classifier*): Boolean = {
     to foreach { subscribe(subscriber, _) }
@@ -31,10 +30,9 @@ final class Bus(system: ActorSystem) extends Extension with EventBus {
     * Attempts to deregister the subscriber from the specified Classifier
     * @return true if successful and false if not (because it wasn't subscribed to that Classifier, or otherwise)
     */
-  def unsubscribe(subscriber: Subscriber, from: Classifier): Boolean = {
+  def unsubscribe(subscriber: Subscriber, from: Classifier): Boolean =
     // log(s"[UN]subscribe $from $subscriber")
     bus.unsubscribe(subscriber, from)
-  }
 
   /**
     * Attempts to deregister the subscriber from all Classifiers it may be subscribed to
@@ -65,9 +63,8 @@ final class Bus(system: ActorSystem) extends Extension with EventBus {
 
     def classify(event: Event): Symbol = event.channel
 
-    def publish(event: Event, subscriber: ActorRef) = {
+    def publish(event: Event, subscriber: ActorRef) =
       subscriber ! event.payload
-    }
   }
 }
 

@@ -37,23 +37,18 @@ final class RetryingComJSEnv(val baseEnv: ComJSEnv, val maxRetries: Int)
 
   def name: String = s"Retrying ${baseEnv.name}"
 
-  def jsRunner(
-      libs: Seq[ResolvedJSDependency],
-      code: VirtualJSFile): JSRunner = {
+  def jsRunner(libs: Seq[ResolvedJSDependency], code: VirtualJSFile): JSRunner =
     baseEnv.jsRunner(libs, code)
-  }
 
   def asyncRunner(
       libs: Seq[ResolvedJSDependency],
-      code: VirtualJSFile): AsyncJSRunner = {
+      code: VirtualJSFile): AsyncJSRunner =
     baseEnv.asyncRunner(libs, code)
-  }
 
   def comRunner(
       libs: Seq[ResolvedJSDependency],
-      code: VirtualJSFile): ComJSRunner = {
+      code: VirtualJSFile): ComJSRunner =
     new RetryingComJSRunner(libs, code)
-  }
 
   /** Hack to work around abstract override in ComJSRunner */
   private trait DummyJSRunner {
@@ -103,7 +98,7 @@ final class RetryingComJSEnv(val baseEnv: ComJSEnv, val maxRetries: Int)
 
     def receive(timeout: Duration): String = {
       @tailrec
-      def recLoop(): String = {
+      def recLoop(): String =
         // Need to use Try for tailrec
         Try {
           val result = curRunner.receive(timeout)
@@ -117,7 +112,6 @@ final class RetryingComJSEnv(val baseEnv: ComJSEnv, val maxRetries: Int)
             recLoop()
           case Success(v) => v
         }
-      }
 
       recLoop()
     }

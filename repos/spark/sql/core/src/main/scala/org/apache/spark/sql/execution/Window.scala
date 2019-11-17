@@ -93,7 +93,7 @@ case class Window(
   override def output: Seq[Attribute] =
     child.output ++ windowExpression.map(_.toAttribute)
 
-  override def requiredChildDistribution: Seq[Distribution] = {
+  override def requiredChildDistribution: Seq[Distribution] =
     if (partitionSpec.isEmpty) {
       // Only show warning when the number of bytes is larger than 100 MB?
       logWarning(
@@ -101,7 +101,6 @@ case class Window(
           "partition, this can cause serious performance degradation.")
       AllTuples :: Nil
     } else ClusteredDistribution(partitionSpec) :: Nil
-  }
 
   override def requiredChildOrdering: Seq[Seq[SortOrder]] =
     Seq(partitionSpec.map(SortOrder(_, Ascending)) ++ orderSpec)
@@ -120,7 +119,7 @@ case class Window(
     */
   private[this] def createBoundOrdering(
       frameType: FrameType,
-      offset: Int): BoundOrdering = {
+      offset: Int): BoundOrdering =
     frameType match {
       case RangeFrame =>
         val (exprs, current, bound) =
@@ -162,7 +161,6 @@ case class Window(
         RangeBoundOrdering(ordering, current, bound)
       case RowFrame => RowBoundOrdering(offset)
     }
-  }
 
   /**
     * Collection containing an entry for each window frame to process. Each entry contains a frames'
@@ -530,14 +528,12 @@ private[execution] class ArrayRowBuffer(buffer: ArrayBuffer[UnsafeRow])
   }
 
   /** Skip the next `n` rows. */
-  def skip(n: Int): Unit = {
+  def skip(n: Int): Unit =
     cursor += n
-  }
 
   /** Return a new RowBuffer that has the same rows. */
-  def copy(): RowBuffer = {
+  def copy(): RowBuffer =
     new ArrayRowBuffer(buffer)
-  }
 }
 
 /**
@@ -556,7 +552,7 @@ private[execution] class ExternalRowBuffer(
   def size(): Int = iter.getNumRecords()
 
   /** Return next row in the buffer, null if no more left. */
-  def next(): InternalRow = {
+  def next(): InternalRow =
     if (iter.hasNext) {
       iter.loadNext()
       currentRow.pointTo(
@@ -567,7 +563,6 @@ private[execution] class ExternalRowBuffer(
     } else {
       null
     }
-  }
 
   /** Skip the next `n` rows. */
   def skip(n: Int): Unit = {
@@ -579,9 +574,8 @@ private[execution] class ExternalRowBuffer(
   }
 
   /** Return a new RowBuffer that has the same rows. */
-  def copy(): RowBuffer = {
+  def copy(): RowBuffer =
     new ExternalRowBuffer(sorter, numFields)
-  }
 }
 
 /**
@@ -796,11 +790,10 @@ private[execution] final class UnboundedWindowFunctionFrame(
   }
 
   /** Write the frame columns for the current row to the given target row. */
-  override def write(index: Int, current: InternalRow): Unit = {
+  override def write(index: Int, current: InternalRow): Unit =
     // Unfortunately we cannot assume that evaluation is deterministic. So we need to re-evaluate
     // for each row.
     processor.evaluate(target)
-  }
 }
 
 /**

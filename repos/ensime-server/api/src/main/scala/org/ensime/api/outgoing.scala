@@ -391,9 +391,8 @@ object DebugThreadId {
     * @param s A Long encoded as a string
     * @return A ThreadId
     */
-  def apply(s: String): DebugThreadId = {
+  def apply(s: String): DebugThreadId =
     new DebugThreadId(s.toLong)
-  }
 }
 
 case class DebugObjectId(id: Long)
@@ -405,9 +404,8 @@ object DebugObjectId {
     * @param s A Long encoded as a string
     * @return A DebugObjectId
     */
-  def apply(s: String): DebugObjectId = {
+  def apply(s: String): DebugObjectId =
     new DebugObjectId(s.toLong)
-  }
 }
 
 sealed trait DebugLocation extends RpcResponse

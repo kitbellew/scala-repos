@@ -71,7 +71,7 @@ private[stat] object Correlations {
   }
 
   // Match input correlation name with a known name via simple string matching.
-  def getCorrelationFromName(method: String): Correlation = {
+  def getCorrelationFromName(method: String): Correlation =
     try {
       CorrelationNames.nameToObjectMap(method)
     } catch {
@@ -80,7 +80,6 @@ private[stat] object Correlations {
           "Unrecognized method name. Supported correlations: " +
             CorrelationNames.nameToObjectMap.keys.mkString(", "))
     }
-  }
 }
 
 /**

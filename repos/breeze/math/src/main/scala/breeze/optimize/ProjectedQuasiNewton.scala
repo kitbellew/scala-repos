@@ -78,7 +78,7 @@ class CompactHessian(
     newB
   }
 
-  def *(v: DenseVector[Double]): DenseVector[Double] = {
+  def *(v: DenseVector[Double]): DenseVector[Double] =
     if (Y.size == 0) {
       v
     } else {
@@ -86,7 +86,6 @@ class CompactHessian(
       val u = (N * (M \ nTv)).toDenseVector
       v * sigma - u
     }
-  }
   lazy val N = DenseMatrix.horzcat(
     collectionOfVectorsToMatrix(S).t * sigma,
     collectionOfVectorsToMatrix(Y).t)
@@ -145,9 +144,8 @@ class ProjectedQuasiNewton(
 
   protected def initialHistory(
       f: DiffFunction[DenseVector[Double]],
-      init: DenseVector[Double]): History = {
+      init: DenseVector[Double]): History =
     new CompactHessian(m)
-  }
 
   override protected def adjust(
       newX: DenseVector[Double],
@@ -221,9 +219,8 @@ class ProjectedQuasiNewton(
   protected def takeStep(
       state: State,
       dir: DenseVector[Double],
-      stepSize: Double): DenseVector[Double] = {
+      stepSize: Double): DenseVector[Double] =
     projection(state.x + dir * stepSize)
-  }
 
   protected def updateHistory(
       newX: DenseVector[Double],

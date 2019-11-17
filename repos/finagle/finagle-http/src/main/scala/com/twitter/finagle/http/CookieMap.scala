@@ -129,9 +129,8 @@ class CookieMap(message: Message)
     *
     * @param cookie the ''Cookie'' to add
     */
-  def +=(cookie: Cookie): CookieMap = {
+  def +=(cookie: Cookie): CookieMap =
     this += ((cookie.name, cookie))
-  }
 
   /**
     * Deletes all cookies with the given ''name'' from this map.

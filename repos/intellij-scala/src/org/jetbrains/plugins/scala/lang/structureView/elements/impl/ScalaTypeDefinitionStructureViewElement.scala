@@ -20,9 +20,8 @@ import _root_.scala.collection.mutable._
 class ScalaTypeDefinitionStructureViewElement(val element: ScTypeDefinition)
     extends ScalaStructureViewElement(element, false) {
 
-  def getPresentation: ItemPresentation = {
+  def getPresentation: ItemPresentation =
     new ScalaTypeDefinitionItemPresentation(element)
-  }
 
   def getChildren: Array[TreeElement] = {
     val children = new ArrayBuffer[TreeElement]

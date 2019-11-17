@@ -22,11 +22,10 @@ case class ResourceLabels(labels: Map[String, String]) {
 object ResourceLabels {
   def empty: ResourceLabels = new ResourceLabels(Map.empty)
 
-  def apply(resource: MesosProtos.Resource): ResourceLabels = {
+  def apply(resource: MesosProtos.Resource): ResourceLabels =
     if (resource.hasReservation && resource.getReservation.hasLabels)
       ResourceLabels(resource.getReservation.getLabels)
     else ResourceLabels.empty
-  }
   def apply(resource: MesosProtos.Labels): ResourceLabels = {
     import scala.collection.JavaConverters._
     ResourceLabels(

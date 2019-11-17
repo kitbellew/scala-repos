@@ -55,9 +55,8 @@ private[reflect] trait SymbolLoaders { self: SymbolTable =>
     (clazz, module)
   }
 
-  protected def setAllInfos(clazz: Symbol, module: Symbol, info: Type) = {
+  protected def setAllInfos(clazz: Symbol, module: Symbol, info: Type) =
     List(clazz, module, module.moduleClass) foreach (_ setInfo info)
-  }
 
   protected def initClassAndModule(
       clazz: Symbol,
@@ -105,7 +104,7 @@ private[reflect] trait SymbolLoaders { self: SymbolTable =>
 
     // materializing multiple copies of the same symbol in PackageScope is a very popular bug
     // this override does its best to guard against it
-    override def enter[T <: Symbol](sym: T): T = {
+    override def enter[T <: Symbol](sym: T): T =
       // workaround for SI-7728
       if (isCompilerUniverse) super.enter(sym)
       else {
@@ -117,7 +116,6 @@ private[reflect] trait SymbolLoaders { self: SymbolTable =>
           s"pkgClass = $pkgClass, sym = $sym, existing = $existing")
         super.enter(sym)
       }
-    }
 
     override def enterIfNew[T <: Symbol](sym: T): T = {
       val existing = super.lookupEntry(sym.name)

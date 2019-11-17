@@ -58,13 +58,11 @@ private[deploy] class DriverRunner(
   private var finalExitCode: Option[Int] = None
 
   // Decoupled for testing
-  def setClock(_clock: Clock): Unit = {
+  def setClock(_clock: Clock): Unit =
     clock = _clock
-  }
 
-  def setSleeper(_sleeper: Sleeper): Unit = {
+  def setSleeper(_sleeper: Sleeper): Unit =
     sleeper = _sleeper
-  }
 
   private var clock: Clock = new SystemClock()
   private var sleeper = new Sleeper {
@@ -73,7 +71,7 @@ private[deploy] class DriverRunner(
   }
 
   /** Starts a thread to run and manage the driver. */
-  private[worker] def start() = {
+  private[worker] def start() =
     new Thread("DriverRunner for " + driverId) {
       override def run() {
         try {
@@ -116,7 +114,6 @@ private[deploy] class DriverRunner(
         worker.send(DriverStateChanged(driverId, state, finalException))
       }
     }.start()
-  }
 
   /** Terminate this driver (or prevent it from ever starting if not yet started) */
   private[worker] def kill() {

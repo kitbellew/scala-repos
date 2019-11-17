@@ -122,9 +122,8 @@ trait FlatHashTable[A] extends FlatHashTable.HashUtils[A] {
   @deprecatedOverriding(
     "Internal implementation does not admit sensible overriding of this method.",
     "2.11.0")
-  protected def containsElem(elem: A): Boolean = {
+  protected def containsElem(elem: A): Boolean =
     null != findElemImpl(elem)
-  }
 
   private def findElemImpl(elem: A): AnyRef = {
     val searchEntry = elemToEntry(elem)
@@ -140,9 +139,8 @@ trait FlatHashTable[A] extends FlatHashTable.HashUtils[A] {
   /** Add elem if not yet in table.
     *  @return Returns `true` if a new elem was added, `false` otherwise.
     */
-  protected def addElem(elem: A): Boolean = {
+  protected def addElem(elem: A): Boolean =
     addEntry(elemToEntry(elem))
-  }
 
   /**
     * Add an entry (an elem converted to an entry via elemToEntry) if not yet in

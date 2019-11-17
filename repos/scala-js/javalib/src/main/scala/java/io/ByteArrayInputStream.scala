@@ -12,14 +12,13 @@ class ByteArrayInputStream(
 
   def this(buf: Array[Byte]) = this(buf, 0, buf.length)
 
-  override def read(): Int = {
+  override def read(): Int =
     if (pos >= count) -1
     else {
       val res = buf(pos) & 0xFF // convert to unsigned int
       pos += 1
       res
     }
-  }
 
   override def read(b: Array[Byte], off: Int, reqLen: Int): Int = {
     if (off < 0 || reqLen < 0 || reqLen > b.length - off)

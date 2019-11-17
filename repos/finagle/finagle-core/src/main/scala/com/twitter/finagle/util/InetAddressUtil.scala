@@ -25,7 +25,7 @@ object InetAddressUtil {
     * Faster InetAddress.getByName that uses NetUtil to parse the address instead
     * of regular expressions.
     */
-  def getByName(host: String): InetAddress = {
+  def getByName(host: String): InetAddress =
     UtilNetUtil.ipToOptionInt(host) match {
       case Some(i) =>
         val bytes = Array[Byte](
@@ -37,5 +37,4 @@ object InetAddressUtil {
       case None =>
         InetAddress.getByName(host)
     }
-  }
 }

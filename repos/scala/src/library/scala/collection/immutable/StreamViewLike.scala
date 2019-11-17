@@ -9,9 +9,8 @@ trait StreamViewLike[
     extends SeqView[A, Coll]
     with SeqViewLike[A, Coll, This] { self =>
 
-  override def force[B >: A, That](implicit bf: CanBuildFrom[Coll, B, That]) = {
+  override def force[B >: A, That](implicit bf: CanBuildFrom[Coll, B, That]) =
     self.iterator.toStream.asInstanceOf[That]
-  }
 
   trait Transformed[+B] extends StreamView[B, Coll] with super.Transformed[B] {
     override def toString = viewToString
@@ -82,19 +81,17 @@ trait StreamViewLike[
   protected override def newZippedAll[A1 >: A, B](
       that: scala.collection.GenIterable[B],
       _thisElem: A1,
-      _thatElem: B): Transformed[(A1, B)] = {
+      _thatElem: B): Transformed[(A1, B)] =
     new {
       val other = that; val thisElem = _thisElem; val thatElem = _thatElem
     } with AbstractTransformed[(A1, B)] with ZippedAll[A1, B]
-  }
   protected override def newReversed: Transformed[A] = new Reversed {}
   protected override def newPatched[B >: A](
       _from: Int,
       _patch: scala.collection.GenSeq[B],
-      _replaced: Int): Transformed[B] = {
+      _replaced: Int): Transformed[B] =
     new { val from = _from; val patch = _patch; val replaced = _replaced }
     with AbstractTransformed[B] with Patched[B]
-  }
 
   override def stringPrefix = "StreamView"
 }

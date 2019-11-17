@@ -9,13 +9,12 @@ import com.intellij.debugger.engine.evaluation.expression.{Evaluator, Modifier}
 class ScalaCachingEvaluator(evaluator: Evaluator) extends Evaluator {
   private var result: Option[AnyRef] = None
 
-  override def evaluate(context: EvaluationContextImpl): AnyRef = {
+  override def evaluate(context: EvaluationContextImpl): AnyRef =
     result.getOrElse {
       val res = evaluator.evaluate(context)
       result = Some(res)
       res
     }
-  }
 
   override def getModifier: Modifier = null
 }

@@ -101,7 +101,7 @@ private[spark] class HeartbeatReceiver(sc: SparkContext, clock: Clock)
   private val killExecutorThread =
     ThreadUtils.newDaemonSingleThreadExecutor("kill-executor-thread")
 
-  override def onStart(): Unit = {
+  override def onStart(): Unit =
     timeoutCheckingTask = eventLoopThread.scheduleAtFixedRate(
       new Runnable {
         override def run(): Unit = Utils.tryLogNonFatalError {
@@ -112,7 +112,6 @@ private[spark] class HeartbeatReceiver(sc: SparkContext, clock: Clock)
       checkTimeoutIntervalMs,
       TimeUnit.MILLISECONDS
     )
-  }
 
   override def receiveAndReply(
       context: RpcCallContext): PartialFunction[Any, Unit] = {
@@ -171,17 +170,15 @@ private[spark] class HeartbeatReceiver(sc: SparkContext, clock: Clock)
     * @return if HeartbeatReceiver is stopped, return None. Otherwise, return a Some(Future) that
     *         indicate if this operation is successful.
     */
-  def addExecutor(executorId: String): Option[Future[Boolean]] = {
+  def addExecutor(executorId: String): Option[Future[Boolean]] =
     Option(self).map(_.ask[Boolean](ExecutorRegistered(executorId)))
-  }
 
   /**
     * If the heartbeat receiver is not stopped, notify it of executor registrations.
     */
   override def onExecutorAdded(
-      executorAdded: SparkListenerExecutorAdded): Unit = {
+      executorAdded: SparkListenerExecutorAdded): Unit =
     addExecutor(executorAdded.executorId)
-  }
 
   /**
     * Send ExecutorRemoved to the event loop to remove a executor. Only for test.
@@ -189,9 +186,8 @@ private[spark] class HeartbeatReceiver(sc: SparkContext, clock: Clock)
     * @return if HeartbeatReceiver is stopped, return None. Otherwise, return a Some(Future) that
     *         indicate if this operation is successful.
     */
-  def removeExecutor(executorId: String): Option[Future[Boolean]] = {
+  def removeExecutor(executorId: String): Option[Future[Boolean]] =
     Option(self).map(_.ask[Boolean](ExecutorRemoved(executorId)))
-  }
 
   /**
     * If the heartbeat receiver is not stopped, notify it of executor removals so it doesn't
@@ -204,9 +200,8 @@ private[spark] class HeartbeatReceiver(sc: SparkContext, clock: Clock)
     * and expire it with loud error messages.
     */
   override def onExecutorRemoved(
-      executorRemoved: SparkListenerExecutorRemoved): Unit = {
+      executorRemoved: SparkListenerExecutorRemoved): Unit =
     removeExecutor(executorRemoved.executorId)
-  }
 
   private def expireDeadHosts(): Unit = {
     logTrace(

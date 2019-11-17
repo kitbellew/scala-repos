@@ -65,7 +65,7 @@ trait IsolatedRichPresentationCompilerFixture
 
   override def withRichPresentationCompiler(
       testCode: (TestKitFix, EnsimeConfig, RichPresentationCompiler) => Any
-  ): Any = {
+  ): Any =
     withVFS { implicit vfs =>
       withTestKit { testkit =>
         import testkit._
@@ -80,7 +80,6 @@ trait IsolatedRichPresentationCompilerFixture
         }
       }
     }
-  }
 }
 
 trait SharedRichPresentationCompilerFixture

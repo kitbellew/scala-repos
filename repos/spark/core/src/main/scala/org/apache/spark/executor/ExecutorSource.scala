@@ -38,14 +38,13 @@ private[spark] class ExecutorSource(
       scheme: String,
       name: String,
       f: FileSystem.Statistics => T,
-      defaultValue: T) = {
+      defaultValue: T) =
     metricRegistry.register(
       MetricRegistry.name("filesystem", scheme, name),
       new Gauge[T] {
         override def getValue: T =
           fileStats(scheme).map(f).getOrElse(defaultValue)
       })
-  }
 
   override val metricRegistry = new MetricRegistry()
 

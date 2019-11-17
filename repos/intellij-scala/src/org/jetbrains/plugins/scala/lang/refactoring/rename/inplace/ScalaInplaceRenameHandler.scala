@@ -53,13 +53,12 @@ trait ScalaInplaceRenameHandler {
       element: PsiElement,
       project: Project,
       nameSuggestionContext: PsiElement,
-      editor: Editor): Unit = {
+      editor: Editor): Unit =
     PsiElementRenameHandler.rename(
       element,
       project,
       nameSuggestionContext,
       editor)
-  }
 
   def afterElementSubstitution(
       elementToRename: PsiElement,
@@ -79,7 +78,7 @@ trait ScalaInplaceRenameHandler {
         .setResizable(false)
         .setRequestFocus(true)
         .setItemChoosenCallback(new Runnable {
-          def run(): Unit = {
+          def run(): Unit =
             list.getSelectedValue match {
               case s: String if s == positive =>
                 val file = subst.getContainingFile.getVirtualFile
@@ -92,7 +91,6 @@ trait ScalaInplaceRenameHandler {
                 }
               case s: String if s == cancel =>
             }
-          }
         })
         .createPopup
         .showInBestPositionFor(editor)

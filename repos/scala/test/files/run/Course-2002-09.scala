@@ -109,12 +109,11 @@ class Quantity() {
   }
   def setValue(v: Double): Unit = setValue(v, NoConstraint);
 
-  def forgetValue(retractor: Constraint): Unit = {
+  def forgetValue(retractor: Constraint): Unit =
     if (retractor == informant) {
       value = None;
       for (c <- constraints; if !(c == informant)) c.dropValue;
     }
-  }
   def forgetValue: Unit = forgetValue(NoConstraint);
 
   def connect(c: Constraint) = {
@@ -149,9 +148,8 @@ class Quantity() {
     root;
   }
 
-  def ===(that: Quantity): Constraint = {
+  def ===(that: Quantity): Constraint =
     new Eq(this, that);
-  }
 
   override def toString(): String = value match {
     case None    => "  ?"
@@ -251,12 +249,11 @@ object M2 {
   val b = new Quantity();
   val c = a * b;
 
-  def set(q: Quantity, o: Option[Int]): String = {
+  def set(q: Quantity, o: Option[Int]): String =
     o match {
       case None    => "?"
       case Some(v) => q.setValue(v); v.toString()
     };
-  }
 
   def show(x: Option[Int], y: Option[Int], z: Option[Int]) = {
     Console.print(

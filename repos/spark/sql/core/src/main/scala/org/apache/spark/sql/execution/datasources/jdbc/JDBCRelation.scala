@@ -102,13 +102,12 @@ private[sql] case class JDBCRelation(
     JDBCRDD.resolveTable(url, table, properties)
 
   // Check if JDBCRDD.compileFilter can accept input filters
-  override def unhandledFilters(filters: Array[Filter]): Array[Filter] = {
+  override def unhandledFilters(filters: Array[Filter]): Array[Filter] =
     filters.filter(JDBCRDD.compileFilter(_).isEmpty)
-  }
 
   override def buildScan(
       requiredColumns: Array[String],
-      filters: Array[Filter]): RDD[Row] = {
+      filters: Array[Filter]): RDD[Row] =
     // Rely on a type erasure hack to pass RDD[InternalRow] back as RDD[Row]
     JDBCRDD
       .scanTable(
@@ -121,16 +120,13 @@ private[sql] case class JDBCRelation(
         filters,
         parts)
       .asInstanceOf[RDD[Row]]
-  }
 
-  override def insert(data: DataFrame, overwrite: Boolean): Unit = {
+  override def insert(data: DataFrame, overwrite: Boolean): Unit =
     data.write
       .mode(if (overwrite) SaveMode.Overwrite else SaveMode.Append)
       .jdbc(url, table, properties)
-  }
 
-  override def toString: String = {
+  override def toString: String =
     // credentials should not be included in the plan output, table information is sufficient.
     s"JDBCRelation(${table})"
-  }
 }

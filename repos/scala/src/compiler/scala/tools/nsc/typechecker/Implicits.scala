@@ -432,10 +432,9 @@ trait Implicits { self: Analyzer =>
       extends Typer(context0)
       with ImplicitsContextErrors {
     val searchId = implicitSearchId()
-    private def typingLog(what: String, msg: => String) = {
+    private def typingLog(what: String, msg: => String) =
       if (printingOk(tree))
         typingStack.printTyping(f"[search #$searchId] $what $msg")
-    }
 
     import infer._
     if (Statistics.canEnable) Statistics.incCounter(implicitSearchCount)
@@ -567,7 +566,7 @@ trait Implicits { self: Analyzer =>
     private def typedImplicit(
         info: ImplicitInfo,
         ptChecked: Boolean,
-        isLocalToCallsite: Boolean): SearchResult = {
+        isLocalToCallsite: Boolean): SearchResult =
       // SI-7167 let implicit macros decide what amounts for a divergent implicit search
       // imagine a macro writer which wants to synthesize a complex implicit Complex[T] by making recursive calls to Complex[U] for its parts
       // e.g. we have `class Foo(val bar: Bar)` and `class Bar(val x: Int)`
@@ -603,7 +602,6 @@ trait Implicits { self: Analyzer =>
             context.openImplicits = context.openImplicits.tail
           }
       }
-    }
 
     /** Does type `tp` match expected type `pt`
       *  This is the case if either `pt` is a unary function type with a

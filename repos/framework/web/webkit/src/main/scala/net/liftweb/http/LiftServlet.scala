@@ -52,7 +52,7 @@ class LiftServlet extends Loggable {
 
   def getContext: HTTPContext = servletContext
 
-  def destroy = {
+  def destroy =
     try {
       LiftRules.ending = true
 
@@ -84,21 +84,18 @@ class LiftServlet extends Loggable {
     } catch {
       case e: Exception => logger.error("Destruction failure", e)
     }
-  }
 
-  def init = {
+  def init =
     LiftRules.ending = false
-  }
 
   def getLiftSession(request: Req): LiftSession =
     LiftRules.getLiftSession(request)
 
-  private def wrapState[T](req: Req, session: Box[LiftSession])(f: => T): T = {
+  private def wrapState[T](req: Req, session: Box[LiftSession])(f: => T): T =
     session match {
       case Full(ses) => S.init(Box !! req, ses)(f)
       case _         => CurrentReq.doWith(req)(f)
     }
-  }
 
   private def handleGenericContinuation(
       reqOrg: Req,
@@ -142,7 +139,7 @@ class LiftServlet extends Loggable {
   /**
     * Processes the HTTP requests
     */
-  def service(req: Req, resp: HTTPResponse): Boolean = {
+  def service(req: Req, resp: HTTPResponse): Boolean =
     try {
       def doIt: Boolean = {
         if (LiftRules.lockedSecurityRules.logInDevMode && Props.devMode &&
@@ -185,7 +182,6 @@ class LiftServlet extends Loggable {
           e);
         throw e
     }
-  }
 
   private def flatten(in: List[Any]): List[Any] = in match {
     case Nil                      => Nil
@@ -242,7 +238,7 @@ class LiftServlet extends Loggable {
 
     def notFoundOrIgnore(
         req: Req,
-        session: Box[LiftSession]): Box[LiftResponse] = {
+        session: Box[LiftSession]): Box[LiftResponse] =
       if (LiftRules.passNotFoundToChain) {
         net.liftweb.common.Failure("Not found")
       } else {
@@ -252,12 +248,10 @@ class LiftServlet extends Loggable {
             .getOrElse(req.createNotFound)
         )
       }
-    }
 
-    def process(req: Req) = {
+    def process(req: Req) =
       if (LiftRules.ending) notFoundOrIgnore(req, Empty)
       else Empty
-    }
   }
 
   object CheckAuth extends ProcessingStep {
@@ -323,12 +317,11 @@ class LiftServlet extends Loggable {
       !sessionExists_?(sessionIdCalc.id)
     }
 
-    def sessionExists_?(idb: Box[String]): Boolean = {
+    def sessionExists_?(idb: Box[String]): Boolean =
       idb.flatMap { id =>
         registerRecentlyChecked(id)
         SessionMaster.getSession(id, Empty)
       }.isDefined
-    }
 
     def cometOrAjax_?(req: Req): (Boolean, Boolean) = {
       lazy val ajaxPath = LiftRules.liftContextRelativePath :: "ajax" :: Nil
@@ -337,7 +330,7 @@ class LiftServlet extends Loggable {
       val wp = req.path.wholePath
       val pathLen = wp.length
 
-      def isComet: Boolean = {
+      def isComet: Boolean =
         if (pathLen < 3) {
           false
         } else {
@@ -345,8 +338,7 @@ class LiftServlet extends Loggable {
 
           kindaComet && req.acceptsJavaScript_?
         }
-      }
-      def isAjax: Boolean = {
+      def isAjax: Boolean =
         if (pathLen < 3) {
           false
         } else {
@@ -354,7 +346,6 @@ class LiftServlet extends Loggable {
 
           kindaAjax && req.acceptsJavaScript_?
         }
-      }
       (isComet, isAjax)
     }
   }
@@ -398,7 +389,7 @@ class LiftServlet extends Loggable {
       def doSession(
           r2: Req,
           s2: LiftSession,
-          continue: Box[() => Nothing]): () => Box[LiftResponse] = {
+          continue: Box[() => Nothing]): () => Box[LiftResponse] =
         try {
           S.init(Box !! r2, s2) {
             dispatchStatefulRequest(
@@ -413,7 +404,6 @@ class LiftServlet extends Loggable {
             r2.destroyServletSession()
             doSession(r2, getLiftSession(r2), Full(cre.continue))
         }
-      }
 
       val lzy: () => Box[LiftResponse] = doSession(req, liftSession, Empty)
 
@@ -446,13 +436,12 @@ class LiftServlet extends Loggable {
       LiftRules.onBeginServicing.toList.foreach(_(req))
     }
 
-    def stepThroughPipeline(steps: Seq[ProcessingStep]): Box[LiftResponse] = {
+    def stepThroughPipeline(steps: Seq[ProcessingStep]): Box[LiftResponse] =
       //Seems broken but last step always hits
       steps.head.process(req) match {
         case Empty => stepThroughPipeline(steps.tail)
         case a @ _ => a
       }
-    }
 
     /* Go through the pipeline and send response if full **/
     val resp: Box[LiftResponse] = try {
@@ -651,7 +640,7 @@ class LiftServlet extends Loggable {
     */
   private def runAjax(
       liftSession: LiftSession,
-      requestState: Req): Box[LiftResponse] = {
+      requestState: Req): Box[LiftResponse] =
     try {
       requestState.param("__lift__GC") match {
         case Full(_) =>
@@ -714,7 +703,6 @@ class LiftServlet extends Loggable {
       case foc: LiftFlowOfControlException => throw foc
       case e: Exception                    => S.runExceptionHandlers(requestState, e)
     }
-  }
 
   // Retry requests will stop trying to wait for the original request to
   // complete 500ms after the client's timeout. This is because, while

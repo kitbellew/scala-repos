@@ -195,9 +195,8 @@ case class DefaultOptimalSizeExploringResizer(
 
   private val actionInternalNanos = actionInterval.toNanos
 
-  def isTimeForResize(messageCounter: Long): Boolean = {
+  def isTimeForResize(messageCounter: Long): Boolean =
     System.nanoTime() > record.checkTime + actionInternalNanos
-  }
 
   def reportMessageCount(
       currentRoutees: immutable.IndexedSeq[Routee],

@@ -100,7 +100,7 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
 
       def reflectiveMethodCache(
           method: String,
-          paramTypes: List[Type]): Symbol = {
+          paramTypes: List[Type]): Symbol =
         /* Implementation of the cache is as follows for method "def xyz(a: A, b: B)"
              (SoftReference so that it does not interfere with classloader garbage collection,
              see ticket #2365 for details):
@@ -171,7 +171,6 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
             }
           )
         })
-      }
 
       /* ### HANDLING METHODS NORMALLY COMPILED TO OPERATORS ### */
 
@@ -310,14 +309,13 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
           /* A possible primitive method call, represented by methods in BoxesRunTime. */
           def genValueCall(operator: Symbol) =
             fixResult(REF(operator) APPLY args)
-          def genValueCallWithTest = {
+          def genValueCallWithTest =
             getPrimitiveReplacementForStructuralCall(methSym.name) match {
               case Some((operator, test)) =>
                 IF(test(qual1())) THEN genValueCall(operator) ELSE genDefaultCall
               case _ =>
                 genDefaultCall
             }
-          }
 
           /* A native Array call. */
           def genArrayCall = fixResult(

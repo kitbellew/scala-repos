@@ -47,9 +47,8 @@ sealed trait RValue { self =>
 
   def \(fieldName: String): RValue
 
-  def unsafeInsert(path: CPath, value: RValue): RValue = {
+  def unsafeInsert(path: CPath, value: RValue): RValue =
     RValue.unsafeInsert(self, path, value)
-  }
 
   def flattenWithPath: Vector[(CPath, CValue)] = {
     def flatten0(path: CPath)(value: RValue): Vector[(CPath, CValue)] =
@@ -92,7 +91,7 @@ object RValue {
       rootTarget: RValue,
       rootPath: CPath,
       rootValue: RValue): RValue = {
-    def rec(target: RValue, path: CPath, value: RValue): RValue = {
+    def rec(target: RValue, path: CPath, value: RValue): RValue =
       if ((target == CNull || target == CUndefined) && path == CPath.Identity)
         value
       else {
@@ -163,7 +162,6 @@ object RValue {
                 " in " + rootTarget)
         }
       }
-    }
 
     rec(rootTarget, rootPath, rootValue)
   }
@@ -343,7 +341,7 @@ object CType {
   def canCompare(t1: CType, t2: CType): Boolean =
     (t1 == t2) || (t1.isNumeric && t2.isNumeric)
 
-  def unify(t1: CType, t2: CType): Option[CType] = {
+  def unify(t1: CType, t2: CType): Option[CType] =
     (t1, t2) match {
       case (CLong, CLong)     => Some(CLong)
       case (CLong, CDouble)   => Some(CNum)
@@ -368,7 +366,6 @@ object CType {
 
       case _ => None
     }
-  }
 
   // TODO Should return Option[CValue]... is this even used?
   // Yes; it is used only in RoutingTable.scala

@@ -196,17 +196,15 @@ case class ExceptionFailure(
 private[spark] class ThrowableSerializationWrapper(var exception: Throwable)
     extends Serializable
     with Logging {
-  private def writeObject(out: ObjectOutputStream): Unit = {
+  private def writeObject(out: ObjectOutputStream): Unit =
     out.writeObject(exception)
-  }
-  private def readObject(in: ObjectInputStream): Unit = {
+  private def readObject(in: ObjectInputStream): Unit =
     try {
       exception = in.readObject().asInstanceOf[Throwable]
     } catch {
       case e: Exception =>
         log.warn("Task exception could not be deserialized", e)
     }
-  }
 }
 
 /**

@@ -39,9 +39,8 @@ private[spark] case class ApplicationHistoryInfo(
     * Has this application completed?
     * @return true if the most recent attempt has completed
     */
-  def completed: Boolean = {
+  def completed: Boolean =
     attempts.nonEmpty && attempts.head.completed
-  }
 }
 
 /**

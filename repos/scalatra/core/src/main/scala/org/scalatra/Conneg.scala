@@ -41,9 +41,8 @@ object Conneg {
           .replaceAllLiterally("\"", "\\\"")
       else value
 
-    private def mustEscape(c: Char): Boolean = {
+    private def mustEscape(c: Char): Boolean =
       c < '\u0020' || c > '\u007E' || Separators.contains(c)
-    }
 
     // - Parameters ----------------------------------------------------------------------------------------------------
     // -----------------------------------------------------------------------------------------------------------------
@@ -76,21 +75,19 @@ object Conneg {
     def connegs: Parser[List[Option[Conneg[T]]]] = repsep(conneg, ",")
 
     /** Parser for the content-negotiation `q` parameter. */
-    def qValue: Parser[Float] = {
+    def qValue: Parser[Float] =
       opt(
         paramSep ~> ("q" ~ valueSep) ~> """[0-1](\.[0-9]{1,3})?""".r ^^
           (_.toFloat)) ^^ {
         case Some(q) => q
         case _       => 1.0f
       }
-    }
 
-    def values(raw: String): List[Conneg[T]] = {
+    def values(raw: String): List[Conneg[T]] =
       parseAll(connegs, raw) match {
         case Success(a, _) => a.collect { case Some(v) => v }
         case _             => List()
       }
-    }
   }
 
   // - Value retrieval -------------------------------------------------------------------------------------------------

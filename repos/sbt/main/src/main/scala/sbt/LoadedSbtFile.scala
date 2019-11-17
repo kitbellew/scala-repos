@@ -51,7 +51,7 @@ private[sbt] final class DefinedSbtValues(
       e.loader(cl)
     }
 
-  def imports: Seq[String] = {
+  def imports: Seq[String] =
     // TODO - Sanity check duplicates and such, so users get a nice warning rather
     // than explosion.
     for {
@@ -59,7 +59,6 @@ private[sbt] final class DefinedSbtValues(
       m = file.enclosingModule
       v <- file.valNames
     } yield s"import ${m}.${v}"
-  }
   def generated: Seq[File] =
     sbtFiles flatMap (_.generated)
 

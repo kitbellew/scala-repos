@@ -139,9 +139,8 @@ private[streaming] class JobScheduler(val ssc: StreamingContext)
     }
   }
 
-  def getPendingTimes(): Seq[Time] = {
+  def getPendingTimes(): Seq[Time] =
     jobSets.asScala.keys.toSeq
-  }
 
   def reportError(msg: String, e: Throwable) {
     eventLoop.post(ErrorReported(msg, e))

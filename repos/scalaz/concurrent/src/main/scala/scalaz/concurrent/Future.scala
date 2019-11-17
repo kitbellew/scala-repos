@@ -344,7 +344,7 @@ object Future {
 
       def chooseAny[A](
           h: Future[A],
-          t: Seq[Future[A]]): Future[(A, Seq[Future[A]])] = {
+          t: Seq[Future[A]]): Future[(A, Seq[Future[A]])] =
         Async { cb =>
           // The details of this implementation are a bit tricky, but the general
           // idea is to run all futures in parallel, returning whichever result
@@ -398,7 +398,6 @@ object Future {
               }
           }
         }
-      }
 
       private val finishedCallback: Any => Trampoline[Unit] = _ =>
         sys.error("impossible, since there can only be one runner of chooseAny")

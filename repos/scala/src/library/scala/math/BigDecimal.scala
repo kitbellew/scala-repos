@@ -438,7 +438,7 @@ final class BigDecimal(val bigDecimal: BigDec, val mc: MathContext)
   // Sane hash code computation (which is surprisingly hard).
   // Note--not lazy val because we can't afford the extra space.
   private final var computedHashCode: Int = BigDecimal.hashCodeNotComputed
-  private final def computeHashCode(): Unit = {
+  private final def computeHashCode(): Unit =
     computedHashCode =
       if (isWhole && (precision - scale) < BigDecimal.maximumHashScale)
         toBigInt.hashCode
@@ -449,7 +449,6 @@ final class BigDecimal(val bigDecimal: BigDec, val mc: MathContext)
           temp.scaleByPowerOfTen(temp.scale).toBigInteger.hashCode,
           temp.scale)
       }
-  }
 
   /** Returns the hash code for this BigDecimal.
     *  Note that this does not merely use the underlying java object's
@@ -553,11 +552,10 @@ final class BigDecimal(val bigDecimal: BigDec, val mc: MathContext)
     !f.isInfinity && equals(exact(f.toDouble))
   }
 
-  private def noArithmeticException(body: => Unit): Boolean = {
+  private def noArithmeticException(body: => Unit): Boolean =
     try {
       body; true
     } catch { case _: ArithmeticException => false }
-  }
 
   def isWhole() = scale <= 0 || bigDecimal.stripTrailingZeros.scale <= 0
 

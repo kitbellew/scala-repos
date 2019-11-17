@@ -6,7 +6,6 @@ trait B extends A {
 }
 
 object Test extends B {
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     println(actualType)
-  }
 }

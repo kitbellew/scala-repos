@@ -40,12 +40,11 @@ class InMemoryAccountManager[M[+_]](resetExpiration: Int = 1)(
   val accounts = new mutable.HashMap[AccountId, Account]
   val resetTokens = new mutable.HashMap[ResetTokenId, ResetToken]
 
-  def updateAccount(account: Account): M[Boolean] = {
+  def updateAccount(account: Account): M[Boolean] =
     findAccountById(account.accountId).map {
       case Some(acct) => accounts.put(account.accountId, account); true
       case _          => false
     }
-  }
 
   def createAccount(
       email: String,
@@ -53,7 +52,7 @@ class InMemoryAccountManager[M[+_]](resetExpiration: Int = 1)(
       creationDate: DateTime,
       plan: AccountPlan,
       parentId: Option[AccountId],
-      profile: Option[JValue])(f: AccountId => M[APIKey]): M[Account] = {
+      profile: Option[JValue])(f: AccountId => M[APIKey]): M[Account] =
     TestAccounts.createAccount(
       email,
       password,
@@ -64,7 +63,6 @@ class InMemoryAccountManager[M[+_]](resetExpiration: Int = 1)(
       accounts.put(account.accountId, account)
       account
     }
-  }
 
   def setAccount(
       accountId: AccountId,
@@ -72,7 +70,7 @@ class InMemoryAccountManager[M[+_]](resetExpiration: Int = 1)(
       password: String,
       creationDate: DateTime,
       plan: AccountPlan,
-      parentId: Option[AccountId]) = {
+      parentId: Option[AccountId]) =
     createAccount(email, password, creationDate, plan, parentId, None) { _ =>
       M.point(java.util.UUID.randomUUID().toString.toLowerCase)
     } map { account =>
@@ -81,11 +79,9 @@ class InMemoryAccountManager[M[+_]](resetExpiration: Int = 1)(
         accounts += (accountId -> account.copy(accountId = accountId))
       }
     }
-  }
 
-  def findAccountByAPIKey(apiKey: APIKey): M[Option[AccountId]] = {
+  def findAccountByAPIKey(apiKey: APIKey): M[Option[AccountId]] =
     accounts.values.find(_.apiKey == apiKey).map(_.accountId).point[M]
-  }
 
   def findAccountById(accountId: AccountId): M[Option[Account]] =
     accounts.get(accountId).point[M]
@@ -95,9 +91,8 @@ class InMemoryAccountManager[M[+_]](resetExpiration: Int = 1)(
 
   def findResetToken(
       accountId: AccountId,
-      tokenId: ResetTokenId): M[Option[ResetToken]] = {
+      tokenId: ResetTokenId): M[Option[ResetToken]] =
     M.point(resetTokens.get(tokenId))
-  }
 
   def generateResetToken(
       account: Account,

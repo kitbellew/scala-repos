@@ -80,11 +80,10 @@ object Acl {
     acls.toSet
   }
 
-  def toJsonCompatibleMap(acls: Set[Acl]): Map[String, Any] = {
+  def toJsonCompatibleMap(acls: Set[Acl]): Map[String, Any] =
     Map(
       Acl.VersionKey -> Acl.CurrentVersion,
       Acl.AclsKey -> acls.map(acl => acl.toMap).toList)
-  }
 }
 
 /**
@@ -107,19 +106,17 @@ case class Acl(
     * TODO: Ideally we would have a symmetric toJson method but our current json library can not jsonify/dejsonify complex objects.
     * @return Map representation of the Acl.
     */
-  def toMap(): Map[String, Any] = {
+  def toMap(): Map[String, Any] =
     Map(
       Acl.PrincipalKey -> principal.toString,
       Acl.PermissionTypeKey -> permissionType.name,
       Acl.OperationKey -> operation.name,
       Acl.HostsKey -> host)
-  }
 
-  override def toString: String = {
+  override def toString: String =
     "%s has %s permission for operations: %s from hosts: %s".format(
       principal,
       permissionType.name,
       operation,
       host)
-  }
 }

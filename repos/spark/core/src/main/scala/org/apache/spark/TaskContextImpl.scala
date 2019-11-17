@@ -112,9 +112,8 @@ private[spark] class TaskContextImpl(
   }
 
   /** Marks the task for interruption, i.e. cancellation. */
-  private[spark] def markInterrupted(): Unit = {
+  private[spark] def markInterrupted(): Unit =
     interrupted = true
-  }
 
   override def isCompleted(): Boolean = completed
 
@@ -125,8 +124,6 @@ private[spark] class TaskContextImpl(
   override def getMetricsSources(sourceName: String): Seq[Source] =
     metricsSystem.getSourcesByName(sourceName)
 
-  private[spark] override def registerAccumulator(
-      a: Accumulable[_, _]): Unit = {
+  private[spark] override def registerAccumulator(a: Accumulable[_, _]): Unit =
     taskMetrics.registerAccumulator(a)
-  }
 }

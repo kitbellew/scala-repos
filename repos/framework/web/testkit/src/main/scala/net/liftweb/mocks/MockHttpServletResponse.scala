@@ -64,9 +64,8 @@ class MockHttpServletResponse(
     statusString = s
   }
 
-  def setStatus(i: Int): Unit = {
+  def setStatus(i: Int): Unit =
     statusCode = i
-  }
   def getStatus = statusCode
 
   def addIntHeader(s: String, i: Int) {
@@ -82,15 +81,12 @@ class MockHttpServletResponse(
     headers += (s1 -> List(s2))
   }
 
-  def getHeader(name: String): String = {
+  def getHeader(name: String): String =
     headers.get(name).flatMap(_.headOption).getOrElse("")
-  }
-  def getHeaders(name: String): Collection[String] = {
+  def getHeaders(name: String): Collection[String] =
     headers.get(name).getOrElse(Nil).asJava
-  }
-  def getHeaderNames(): Collection[String] = {
+  def getHeaderNames(): Collection[String] =
     headers.keySet.toSeq.asJava
-  }
 
   def addDateHeader(s: String, l: Long) {
     addHeader(s, (new Date(l)).toString)
@@ -115,21 +111,17 @@ class MockHttpServletResponse(
   }
 
   def encodeRedirectURL(url: String): String = encodeRedirectUrl(url)
-  def encodeRedirectUrl(url: String): String = {
+  def encodeRedirectUrl(url: String): String =
     // do something fancy encoding on uri, return that.
     url
-  }
   def encodeURL(url: String): String = encodeUrl(url)
-  def encodeUrl(url: String): String = {
+  def encodeUrl(url: String): String =
     // use the same encoder as encodeRedirectUrl
     url
-  }
-  def containsHeader(header: String): Boolean = {
+  def containsHeader(header: String): Boolean =
     headers.contains(header)
-  }
-  def addCookie(cookie: Cookie) = {
+  def addCookie(cookie: Cookie) =
     cookies = cookie :: cookies
-  }
   def getLocale: Locale = locale
   def setLocale(l: Locale) = locale = l
   def reset {

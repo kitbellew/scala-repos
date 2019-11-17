@@ -294,12 +294,11 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
   def gcounterFromBinary(bytes: Array[Byte]): GCounter =
     gcounterFromProto(rd.GCounter.parseFrom(bytes))
 
-  def gcounterFromProto(gcounter: rd.GCounter): GCounter = {
+  def gcounterFromProto(gcounter: rd.GCounter): GCounter =
     new GCounter(
       state = gcounter.getEntriesList.asScala.map(entry ⇒
         uniqueAddressFromProto(entry.getNode) -> BigInt(
           entry.getValue.toByteArray))(breakOut))
-  }
 
   def pncounterToProto(pncounter: PNCounter): rd.PNCounter =
     rd.PNCounter
@@ -311,11 +310,10 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
   def pncounterFromBinary(bytes: Array[Byte]): PNCounter =
     pncounterFromProto(rd.PNCounter.parseFrom(bytes))
 
-  def pncounterFromProto(pncounter: rd.PNCounter): PNCounter = {
+  def pncounterFromProto(pncounter: rd.PNCounter): PNCounter =
     new PNCounter(
       increments = gcounterFromProto(pncounter.getIncrements),
       decrements = gcounterFromProto(pncounter.getDecrements))
-  }
 
   def versionVectorToProto(versionVector: VersionVector): rd.VersionVector = {
     val b = rd.VersionVector.newBuilder()
@@ -481,7 +479,7 @@ object OtherMessageComparator extends Comparator[dm.OtherMessage] {
     if (aSize == bSize) {
       val aIter = aByteString.iterator
       val bIter = bByteString.iterator
-      @tailrec def findDiff(): Int = {
+      @tailrec def findDiff(): Int =
         if (aIter.hasNext) {
           val aByte = aIter.nextByte()
           val bByte = bIter.nextByte()
@@ -489,7 +487,6 @@ object OtherMessageComparator extends Comparator[dm.OtherMessage] {
           else if (aByte > bByte) 1
           else findDiff()
         } else 0
-      }
       findDiff()
     } else if (aSize < bSize) -1
     else 1

@@ -108,9 +108,8 @@ sealed trait Matrix extends Serializable {
 
   /** Convenience method for `Matrix`-`DenseVector` multiplication. For binary compatibility. */
   @Since("1.2.0")
-  def multiply(y: DenseVector): DenseVector = {
+  def multiply(y: DenseVector): DenseVector =
     multiply(y.asInstanceOf[Vector])
-  }
 
   /** Convenience method for `Matrix`-`Vector` multiplication. */
   @Since("1.4.0")
@@ -164,7 +163,7 @@ sealed trait Matrix extends Serializable {
 @DeveloperApi
 private[spark] class MatrixUDT extends UserDefinedType[Matrix] {
 
-  override def sqlType: StructType = {
+  override def sqlType: StructType =
     // type: 0 = sparse, 1 = dense
     // the dense matrix is built by numRows, numCols, values and isTransposed, all of which are
     // set as not nullable, except values since in the future, support for binary matrices might
@@ -190,7 +189,6 @@ private[spark] class MatrixUDT extends UserDefinedType[Matrix] {
           nullable = true),
         StructField("isTransposed", BooleanType, nullable = false)
       ))
-  }
 
   override def serialize(obj: Matrix): InternalRow = {
     val row = new GenericMutableRow(7)
@@ -218,7 +216,7 @@ private[spark] class MatrixUDT extends UserDefinedType[Matrix] {
     row
   }
 
-  override def deserialize(datum: Any): Matrix = {
+  override def deserialize(datum: Any): Matrix =
     datum match {
       case row: InternalRow =>
         require(
@@ -244,16 +242,14 @@ private[spark] class MatrixUDT extends UserDefinedType[Matrix] {
             new DenseMatrix(numRows, numCols, values, isTransposed)
         }
     }
-  }
 
   override def userClass: Class[Matrix] = classOf[Matrix]
 
-  override def equals(o: Any): Boolean = {
+  override def equals(o: Any): Boolean =
     o match {
       case v: MatrixUDT => true
       case _            => false
     }
-  }
 
   // see [SPARK-8647], this achieves the needed constant hash code without constant no.
   override def hashCode(): Int = classOf[MatrixUDT].getName.hashCode()
@@ -321,19 +317,17 @@ class DenseMatrix @Since("1.3.0") (
     case _         => false
   }
 
-  override def hashCode: Int = {
+  override def hashCode: Int =
     com.google.common.base.Objects
       .hashCode(numRows: Integer, numCols: Integer, toArray)
-  }
 
-  private[mllib] def toBreeze: BM[Double] = {
+  private[mllib] def toBreeze: BM[Double] =
     if (!isTransposed) {
       new BDM[Double](numRows, numCols, values)
     } else {
       val breezeMatrix = new BDM[Double](numCols, numRows, values)
       breezeMatrix.t
     }
-  }
 
   private[mllib] def apply(i: Int): Double = values(i)
 
@@ -346,9 +340,8 @@ class DenseMatrix @Since("1.3.0") (
     if (!isTransposed) i + numRows * j else j + numCols * i
   }
 
-  private[mllib] def update(i: Int, j: Int, v: Double): Unit = {
+  private[mllib] def update(i: Int, j: Int, v: Double): Unit =
     values(index(i, j)) = v
-  }
 
   @Since("1.4.0")
   override def copy: DenseMatrix =
@@ -372,7 +365,7 @@ class DenseMatrix @Since("1.3.0") (
     new DenseMatrix(numCols, numRows, values, !isTransposed)
 
   private[spark] override def foreachActive(
-      f: (Int, Int, Double) => Unit): Unit = {
+      f: (Int, Int, Double) => Unit): Unit =
     if (!isTransposed) {
       // outer loop over columns
       var j = 0
@@ -398,7 +391,6 @@ class DenseMatrix @Since("1.3.0") (
         i += 1
       }
     }
-  }
 
   @Since("1.5.0")
   override def numNonzeros: Int = values.count(_ != 0)
@@ -440,7 +432,7 @@ class DenseMatrix @Since("1.3.0") (
   }
 
   @Since("2.0.0")
-  override def colIter: Iterator[Vector] = {
+  override def colIter: Iterator[Vector] =
     if (isTransposed) {
       Iterator.tabulate(numCols) { j =>
         val col = new Array[Double](numRows)
@@ -452,7 +444,6 @@ class DenseMatrix @Since("1.3.0") (
         new DenseVector(values.slice(j * numRows, (j + 1) * numRows))
       }
     }
-  }
 }
 
 /**
@@ -645,7 +636,7 @@ class SparseMatrix @Since("1.3.0") (
     case _         => false
   }
 
-  private[mllib] def toBreeze: BM[Double] = {
+  private[mllib] def toBreeze: BM[Double] =
     if (!isTransposed) {
       new BSM[Double](values, numRows, numCols, colPtrs, rowIndices)
     } else {
@@ -653,7 +644,6 @@ class SparseMatrix @Since("1.3.0") (
         new BSM[Double](values, numCols, numRows, colPtrs, rowIndices)
       breezeMatrix.t
     }
-  }
 
   @Since("1.3.0")
   override def apply(i: Int, j: Int): Double = {
@@ -683,9 +673,8 @@ class SparseMatrix @Since("1.3.0") (
   }
 
   @Since("1.4.0")
-  override def copy: SparseMatrix = {
+  override def copy: SparseMatrix =
     new SparseMatrix(numRows, numCols, colPtrs, rowIndices, values.clone())
-  }
 
   private[spark] def map(f: Double => Double) =
     new SparseMatrix(
@@ -717,7 +706,7 @@ class SparseMatrix @Since("1.3.0") (
       !isTransposed)
 
   private[spark] override def foreachActive(
-      f: (Int, Int, Double) => Unit): Unit = {
+      f: (Int, Int, Double) => Unit): Unit =
     if (!isTransposed) {
       var j = 0
       while (j < numCols) {
@@ -742,16 +731,14 @@ class SparseMatrix @Since("1.3.0") (
         i += 1
       }
     }
-  }
 
   /**
     * Generate a `DenseMatrix` from the given `SparseMatrix`. The new matrix will have isTransposed
     * set to false.
     */
   @Since("1.3.0")
-  def toDense: DenseMatrix = {
+  def toDense: DenseMatrix =
     new DenseMatrix(numRows, numCols, toArray)
-  }
 
   @Since("1.5.0")
   override def numNonzeros: Int = values.count(_ != 0)
@@ -760,7 +747,7 @@ class SparseMatrix @Since("1.3.0") (
   override def numActives: Int = values.length
 
   @Since("2.0.0")
-  override def colIter: Iterator[Vector] = {
+  override def colIter: Iterator[Vector] =
     if (isTransposed) {
       val indicesArray = Array.fill(numCols)(MArrayBuilder.make[Int])
       val valuesArray = Array.fill(numCols)(MArrayBuilder.make[Double])
@@ -790,7 +777,6 @@ class SparseMatrix @Since("1.3.0") (
         new SparseVector(numRows, ii, vv)
       }
     }
-  }
 }
 
 /**
@@ -870,14 +856,13 @@ object SparseMatrix {
     * @return `SparseMatrix` with size `n` x `n` and values of ones on the diagonal
     */
   @Since("1.3.0")
-  def speye(n: Int): SparseMatrix = {
+  def speye(n: Int): SparseMatrix =
     new SparseMatrix(
       n,
       n,
       (0 to n).toArray,
       (0 until n).toArray,
       Array.fill(n)(1.0))
-  }
 
   /**
     * Generates the skeleton of a random `SparseMatrix` with a given random number generator.
@@ -1029,9 +1014,8 @@ object Matrices {
     * @param values matrix entries in column major
     */
   @Since("1.0.0")
-  def dense(numRows: Int, numCols: Int, values: Array[Double]): Matrix = {
+  def dense(numRows: Int, numCols: Int, values: Array[Double]): Matrix =
     new DenseMatrix(numRows, numCols, values)
-  }
 
   /**
     * Creates a column-major sparse matrix in Compressed Sparse Column (CSC) format.
@@ -1048,16 +1032,15 @@ object Matrices {
       numCols: Int,
       colPtrs: Array[Int],
       rowIndices: Array[Int],
-      values: Array[Double]): Matrix = {
+      values: Array[Double]): Matrix =
     new SparseMatrix(numRows, numCols, colPtrs, rowIndices, values)
-  }
 
   /**
     * Creates a Matrix instance from a breeze matrix.
     * @param breeze a breeze matrix
     * @return a Matrix instance
     */
-  private[mllib] def fromBreeze(breeze: BM[Double]): Matrix = {
+  private[mllib] def fromBreeze(breeze: BM[Double]): Matrix =
     breeze match {
       case dm: BDM[Double] =>
         new DenseMatrix(dm.rows, dm.cols, dm.data, dm.isTranspose)
@@ -1068,7 +1051,6 @@ object Matrices {
         throw new UnsupportedOperationException(
           s"Do not support conversion from type ${breeze.getClass.getName}.")
     }
-  }
 
   /**
     * Generate a `Matrix` consisting of zeros.

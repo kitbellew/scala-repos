@@ -490,13 +490,12 @@ class MutableSettings(val errorFn: String => Unit)
     // Ensure that the default value is actually valid
     assert(isInputValid(default))
 
-    def parseArgument(x: String): Option[Int] = {
+    def parseArgument(x: String): Option[Int] =
       parser(x) orElse {
         try {
           Some(x.toInt)
         } catch { case _: NumberFormatException => None }
       }
-    }
 
     def errorMsg() =
       errorFn("invalid setting for -" + name + " " + getValidText)
@@ -943,10 +942,9 @@ class MutableSettings(val errorFn: String => Unit)
     withHelpSyntax(name + ":<" + helpArg + ">")
   }
 
-  private def mkPhasesHelp(descr: String, default: String) = {
+  private def mkPhasesHelp(descr: String, default: String) =
     descr + " <phases>" +
       (if (default == "") "" else " (default: " + default + ")")
-  }
 
   /** A setting represented by a list of strings which should be prefixes of
     *  phase names. This is not checked here, however.  Alternatively the string

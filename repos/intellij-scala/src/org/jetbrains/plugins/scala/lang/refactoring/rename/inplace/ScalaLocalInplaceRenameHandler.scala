@@ -33,7 +33,7 @@ class ScalaLocalInplaceRenameHandler
 
   override def createRenamer(
       elementToRename: PsiElement,
-      editor: Editor): VariableInplaceRenamer = {
+      editor: Editor): VariableInplaceRenamer =
     elementToRename match {
       case named: PsiNamedElement =>
         new ScalaLocalInplaceRenamer(named, editor)
@@ -41,7 +41,6 @@ class ScalaLocalInplaceRenameHandler
         throw new IllegalArgumentException(
           s"Cannot rename element: \n${elementToRename.getText}")
     }
-  }
 
   override def invoke(
       project: Project,
@@ -55,9 +54,8 @@ class ScalaLocalInplaceRenameHandler
   override def doRename(
       elementToRename: PsiElement,
       editor: Editor,
-      dataContext: DataContext): InplaceRefactoring = {
+      dataContext: DataContext): InplaceRefactoring =
     afterElementSubstitution(elementToRename, editor, dataContext) {
       super.doRename(_, editor, dataContext)
     }
-  }
 }

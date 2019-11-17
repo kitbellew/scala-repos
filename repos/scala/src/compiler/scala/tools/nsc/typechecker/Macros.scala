@@ -307,7 +307,7 @@ trait Macros extends MacroRuntimes with Traces with Helpers { self: Analyzer =>
 
   def computeMacroDefTypeFromMacroImplRef(
       macroDdef: DefDef,
-      macroImplRef: Tree): Type = {
+      macroImplRef: Tree): Type =
     macroImplRef match {
       case MacroImplReference(_, _, _, macroImpl, targs) =>
         // Step I. Transform c.Expr[T] to T and everything else to Any
@@ -358,7 +358,6 @@ trait Macros extends MacroRuntimes with Traces with Helpers { self: Analyzer =>
       case _ =>
         ErrorType
     }
-  }
 
   /** Verifies that the body of a macro def typechecks to a reference to a static public non-overloaded method or a top-level macro bundle,
     *  and that that method is signature-wise compatible with the given macro definition.
@@ -418,7 +417,7 @@ trait Macros extends MacroRuntimes with Traces with Helpers { self: Analyzer =>
   def macroContext(
       typer: Typer,
       prefixTree: Tree,
-      expandeeTree: Tree): MacroContext = {
+      expandeeTree: Tree): MacroContext =
     new {
       val universe: self.global.type = self.global
       val callsiteTyper: universe.analyzer.Typer =
@@ -435,7 +434,6 @@ trait Macros extends MacroRuntimes with Traces with Helpers { self: Analyzer =>
           expandee.pos,
           enclosingMacros.length - 1 /* exclude myself */ )
     }
-  }
 
   /** Calculate the arguments to pass to a macro implementation when expanding the provided tree.
     */
@@ -637,10 +635,9 @@ trait Macros extends MacroRuntimes with Traces with Helpers { self: Analyzer =>
       typer.infer.setError(expandee); expandee
     }
 
-    def apply(desugared: Tree): Tree = {
+    def apply(desugared: Tree): Tree =
       if (isMacroExpansionSuppressed(desugared)) onSuppressed(expandee)
       else expand(desugared)
-    }
 
     protected def expand(desugared: Tree): Tree = {
       def showDetailed(tree: Tree) =
@@ -733,7 +730,7 @@ trait Macros extends MacroRuntimes with Traces with Helpers { self: Analyzer =>
       // so that adapt called indirectly by typer.typed knows that it needs to apply the existential fixup
       linkExpandeeAndExpanded(expandee, expanded0)
 
-      def typecheck(label: String, tree: Tree, pt: Type): Tree = {
+      def typecheck(label: String, tree: Tree, pt: Type): Tree =
         if (tree.isErrorTyped) tree
         else {
           if (macroDebugVerbose) println(s"$label (against pt = $pt): $tree")
@@ -745,7 +742,6 @@ trait Macros extends MacroRuntimes with Traces with Helpers { self: Analyzer =>
             println(s"$label has failed: ${typer.context.reporter.errors}")
           result
         }
-      }
 
       if (isBlackbox(expandee)) {
         val expanded1 = atPos(enclosingMacroPosition.makeTransparent)(
@@ -959,7 +955,7 @@ trait Macros extends MacroRuntimes with Traces with Helpers { self: Analyzer =>
         expandee)
     macroLogLite(s"falling back to: $fallbackSym")
 
-    def mkFallbackTree(tree: Tree): Tree = {
+    def mkFallbackTree(tree: Tree): Tree =
       tree match {
         case Select(qual, name) =>
           Select(qual, name) setPos tree.pos setSymbol fallbackSym
@@ -967,7 +963,6 @@ trait Macros extends MacroRuntimes with Traces with Helpers { self: Analyzer =>
         case TypeApply(fn, args) =>
           TypeApply(mkFallbackTree(fn), args) setPos tree.pos
       }
-    }
     Fallback(mkFallbackTree(expandee))
   }
 

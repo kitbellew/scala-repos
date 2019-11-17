@@ -28,7 +28,7 @@ class HDFSModels(fs: FileSystem, config: StorageClientConfig, prefix: String)
     extends Models
     with Logging {
 
-  def insert(i: Model): Unit = {
+  def insert(i: Model): Unit =
     try {
       val fsdos = fs.create(new Path(s"$prefix${i.id}"))
       fsdos.write(i.models)
@@ -36,9 +36,8 @@ class HDFSModels(fs: FileSystem, config: StorageClientConfig, prefix: String)
     } catch {
       case e: IOException => error(e.getMessage)
     }
-  }
 
-  def get(id: String): Option[Model] = {
+  def get(id: String): Option[Model] =
     try {
       val p = new Path(s"$prefix$id")
       Some(Model(id = id, models = ByteStreams.toByteArray(fs.open(p))))
@@ -47,7 +46,6 @@ class HDFSModels(fs: FileSystem, config: StorageClientConfig, prefix: String)
         error(e.getMessage)
         None
     }
-  }
 
   def delete(id: String): Unit = {
     val p = new Path(s"$prefix$id")

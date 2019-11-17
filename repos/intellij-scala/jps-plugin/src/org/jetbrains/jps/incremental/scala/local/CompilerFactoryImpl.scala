@@ -65,7 +65,7 @@ class CompilerFactoryImpl(sbtData: SbtData) extends CompilerFactory {
   def getScalac(
       sbtData: SbtData,
       compilerJars: Option[CompilerJars],
-      client: Client): Option[AnalyzingCompiler] = {
+      client: Client): Option[AnalyzingCompiler] =
     getScalaInstance(compilerJars).map { scala =>
       val compiledIntefaceJar =
         getOrCompileInterfaceJar(
@@ -81,7 +81,6 @@ class CompilerFactoryImpl(sbtData: SbtData) extends CompilerFactory {
         compiledIntefaceJar,
         ClasspathOptions.javac(compiler = false))
     }
-  }
 
   private def getScalaInstance(
       compilerJars: Option[CompilerJars]): Option[ScalaInstance] =
@@ -91,7 +90,7 @@ class CompilerFactoryImpl(sbtData: SbtData) extends CompilerFactory {
 object CompilerFactoryImpl {
   private val scalaInstanceCache = new Cache[CompilerJars, ScalaInstance](3)
 
-  private def createScalaInstance(jars: CompilerJars): ScalaInstance = {
+  private def createScalaInstance(jars: CompilerJars): ScalaInstance =
     scalaInstanceCache.getOrUpdate(jars) {
 
       val classLoader = {
@@ -110,7 +109,6 @@ object CompilerFactoryImpl {
         jars.extra,
         version)
     }
-  }
 
   private def getOrCompileInterfaceJar(
       home: File,

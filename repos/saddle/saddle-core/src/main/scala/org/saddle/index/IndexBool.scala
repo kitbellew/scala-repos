@@ -80,9 +80,8 @@ class IndexBool(keys: Vec[Boolean]) extends Index[Boolean] {
     JoinerImpl.join(this, other, OuterJoin)
   }
 
-  def slice(from: Int, until: Int, stride: Int): Index[Boolean] = {
+  def slice(from: Int, until: Int, stride: Int): Index[Boolean] =
     new IndexBool(keys.slice(from, until, stride))
-  }
 
   // find the first location whereby an insertion would maintain a sorted index
   def lsearch(t: Boolean): Int = {
@@ -103,7 +102,7 @@ class IndexBool(keys: Vec[Boolean]) extends Index[Boolean] {
   def toArray: Array[Boolean] = keys.toArray
 
   /**Default equality does an iterative, element-wise equality check of all values. */
-  override def equals(o: Any): Boolean = {
+  override def equals(o: Any): Boolean =
     o match {
       case rv: IndexBool =>
         (this eq rv) || (this.length == rv.length) && {
@@ -117,5 +116,4 @@ class IndexBool(keys: Vec[Boolean]) extends Index[Boolean] {
         }
       case _ => super.equals(o)
     }
-  }
 }

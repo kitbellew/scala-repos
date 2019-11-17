@@ -88,12 +88,11 @@ private[spark] class MetricsConfig(conf: SparkConf) extends Logging {
     subProperties
   }
 
-  def getInstance(inst: String): Properties = {
+  def getInstance(inst: String): Properties =
     propertyCategories.get(inst) match {
       case Some(s) => s
       case None    => propertyCategories.getOrElse(DEFAULT_PREFIX, new Properties)
     }
-  }
 
   /**
     * Loads configuration from a config file. If no config file is provided, try to get file

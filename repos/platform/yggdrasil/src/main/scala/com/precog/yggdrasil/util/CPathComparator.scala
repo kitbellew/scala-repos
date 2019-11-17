@@ -70,12 +70,11 @@ object CPathComparator {
   def apply[
       @spec(Boolean, Long, Double, AnyRef) A,
       @spec(Boolean, Long, Double, AnyRef) B](lCol: Int => A, rCol: Int => B)(
-      implicit order: HetOrder[A, B]) = {
+      implicit order: HetOrder[A, B]) =
     new CPathComparator {
       def compare(r1: Int, r2: Int, i: Array[Int]) =
         MaybeOrdering.fromInt(order.compare(lCol(r1), rCol(r2)))
     }
-  }
 
   def apply(
       lPath: CPath,
@@ -125,7 +124,7 @@ object CPathComparator {
       lPath: CPath,
       lCol: HomogeneousArrayColumn[_],
       rPath: CPath,
-      rCol: HomogeneousArrayColumn[_]): CPathComparator = {
+      rCol: HomogeneousArrayColumn[_]): CPathComparator =
     (lCol.leafTpe, rCol.leafTpe) match {
       case (CLong, CLong) =>
         new ArrayCPathComparator[Long, Long](lPath, lCol, rPath, rCol)
@@ -179,13 +178,12 @@ object CPathComparator {
           }
         }
     }
-  }
 
   def apply(
       lPath: CPath,
       lCol: HomogeneousArrayColumn[_],
       rPath: CPath,
-      rCol: Column): CPathComparator = {
+      rCol: Column): CPathComparator =
     (lCol.leafTpe, rCol) match {
       case (CLong, rCol: LongColumn) =>
         new HalfArrayCPathComparator[Long, Long](lPath, lCol, rCol(_))
@@ -220,14 +218,12 @@ object CPathComparator {
         new CPathComparator with ArrayCPathComparatorSupport {
           val mask = makeMask(lPath)
           val selector = new ArraySelector()(tpe1.manifest)
-          def compare(r1: Int, r2: Int, indices: Array[Int]): MaybeOrdering = {
+          def compare(r1: Int, r2: Int, indices: Array[Int]): MaybeOrdering =
             if (selector.canPluck(lCol(r1), indices, mask)) {
               ordering
             } else Lt
-          }
         }
     }
-  }
 }
 
 private[yggdrasil] trait ArrayCPathComparatorSupport {

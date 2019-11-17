@@ -36,9 +36,8 @@ class TestNullableColumnAccessor[JvmType](
 object TestNullableColumnAccessor {
   def apply[JvmType](
       buffer: ByteBuffer,
-      columnType: ColumnType[JvmType]): TestNullableColumnAccessor[JvmType] = {
+      columnType: ColumnType[JvmType]): TestNullableColumnAccessor[JvmType] =
     new TestNullableColumnAccessor(buffer, columnType)
-  }
 }
 
 class NullableColumnAccessorSuite extends SparkFunSuite {

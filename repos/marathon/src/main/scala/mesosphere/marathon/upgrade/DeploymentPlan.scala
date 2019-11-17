@@ -94,10 +94,9 @@ final case class DeploymentPlan(
     // FIXME: check for group change conflicts?
     affectedApplicationIds.intersect(other.affectedApplicationIds).nonEmpty
 
-  def createdOrUpdatedApps: Seq[AppDefinition] = {
+  def createdOrUpdatedApps: Seq[AppDefinition] =
     target.transitiveApps.toIndexedSeq
       .filter(app => affectedApplicationIds(app.id))
-  }
 
   override def toString: String = {
     def appString(app: AppDefinition): String = {

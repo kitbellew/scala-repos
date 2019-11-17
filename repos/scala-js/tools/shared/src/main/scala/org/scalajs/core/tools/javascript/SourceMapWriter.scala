@@ -100,7 +100,7 @@ class SourceMapWriter(
 
   writeHeader()
 
-  private def sourceToIndex(source: SourceFile): Int = {
+  private def sourceToIndex(source: SourceFile): Int =
     if (_srcToIndex.contains(source)) {
       _srcToIndex(source)
     } else {
@@ -109,7 +109,6 @@ class SourceMapWriter(
       sources += sourceToURI(source)
       index
     }
-  }
 
   /** Relatively hacky way to get a Web-friendly URI to the source file */
   private def sourceToURI(source: SourceFile): String = {
@@ -119,7 +118,7 @@ class SourceMapWriter(
     Utils.fixFileURI(relURI).toASCIIString
   }
 
-  private def nameToIndex(name: String): Int = {
+  private def nameToIndex(name: String): Int =
     if (_nameToIndex.contains(name)) {
       _nameToIndex(name)
     } else {
@@ -128,7 +127,6 @@ class SourceMapWriter(
       names += name
       index
     }
-  }
 
   private def writeHeader(): Unit = {
     out.write("{\n\"version\": 3,\n\"file\": ")

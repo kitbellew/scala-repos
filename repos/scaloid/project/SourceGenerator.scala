@@ -76,13 +76,12 @@ object SourceGenerator {
       .setPreference(PreserveDanglingCloseParenthesis, true)
   }
 
-  private def formatCode(code: String, scalaVersion: String): String = {
+  private def formatCode(code: String, scalaVersion: String): String =
     ScalaFormatter.format(
       code,
       scalariformPreferences,
       scalaVersion = pureScalaVersion(scalaVersion)
     )
-  }
 
   private def pureScalaVersion(scalaVersion: String): String =
     scalaVersion.split("-").head

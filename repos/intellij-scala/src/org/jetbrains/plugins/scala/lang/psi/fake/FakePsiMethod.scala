@@ -61,9 +61,8 @@ class FakePsiMethod(
 
   def isDeprecated: Boolean = false
 
-  def hasModifierProperty(name: String): Boolean = {
+  def hasModifierProperty(name: String): Boolean =
     hasModifier(name)
-  }
 
   def isExtensionMethod: Boolean = false
 
@@ -82,14 +81,13 @@ class FakePsiMethod(
   def findDeepestSuperMethod: PsiMethod = null
 
   def getSignature(
-      substitutor: PsiSubstitutor): MethodSignatureBackedByPsiMethod = {
+      substitutor: PsiSubstitutor): MethodSignatureBackedByPsiMethod =
     MethodSignatureBackedByPsiMethod.create(this, substitutor) /*
     new MethodSignatureBase(PsiSubstitutor.EMPTY, getParameterList.getParameters.map(_.getType), PsiTypeParameter.EMPTY_ARRAY) {
       def isRaw: Boolean = false
 
       def getName: String = name
     }*/
-  }
 
   def findSuperMethodSignaturesIncludingStatic(
       checkAccess: Boolean): List[MethodSignatureBackedByPsiMethod] = null

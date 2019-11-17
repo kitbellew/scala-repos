@@ -21,9 +21,8 @@ private[http] class Utf8Encoder extends PushStage[String, ByteString] {
   def onPush(input: String, ctx: Context[ByteString]): SyncDirective = {
     val builder = new ByteStringBuilder
 
-    def b(v: Int): Unit = {
+    def b(v: Int): Unit =
       builder += v.toByte
-    }
 
     def step(char: Int): Unit =
       if (!inSurrogatePair)

@@ -27,13 +27,12 @@ class AtomicReferenceArray[E <: AnyRef](length: Int) extends Serializable {
     ret
   }
 
-  final def compareAndSet(i: Int, expect: E, update: E): Boolean = {
+  final def compareAndSet(i: Int, expect: E, update: E): Boolean =
     if (get(i) ne expect) false
     else {
       set(i, update)
       true
     }
-  }
 
   final def weakCompareAndSet(i: Int, expect: E, update: E): Boolean =
     compareAndSet(i, expect, update)

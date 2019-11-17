@@ -106,13 +106,12 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
       sym.isAnonOrRefinementClass || (sym.name.toString contains "$mc")
     def isKeep(sym: Symbol) = sym.hasTransOwner(packageClass)
     def isFinished() = droppedEnough()
-    def slurp() = {
+    def slurp() =
       if (packageClass.isPackageClass) apply(packageClass)
       else {
         repldbg("Not a package class! " + packageClass)
         Set()
       }
-    }
   }
 
   private def customBanner = replProps.powerBanner.option flatMap {
@@ -329,13 +328,12 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
         case x                       => x.toChar
       }).mkString
 
-    def strings(s: Seq[Byte]): List[String] = {
+    def strings(s: Seq[Byte]): List[String] =
       if (s.length == 0) Nil
       else
         s dropWhile (_.toChar.isControl) span (x => !x.toChar.isControl) match {
           case (next, rest) => next.map(_.toChar).mkString :: strings(rest)
         }
-    }
   }
 
   lazy val rutil: ReplUtilities = new ReplUtilities {}

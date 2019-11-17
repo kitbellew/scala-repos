@@ -8,8 +8,7 @@ object ByteOrder {
   val BIG_ENDIAN: ByteOrder = new ByteOrder("BIG_ENDIAN")
   val LITTLE_ENDIAN: ByteOrder = new ByteOrder("LITTLE_ENDIAN")
 
-  def nativeOrder(): ByteOrder = {
+  def nativeOrder(): ByteOrder =
     if (scala.scalajs.runtime.Bits.areTypedArraysBigEndian) BIG_ENDIAN
     else LITTLE_ENDIAN
-  }
 }

@@ -53,13 +53,12 @@ private[mdns] object MDNS {
 
   def mkName(ps: Any*) = ps.mkString("/")
 
-  def parse(addr: String) = {
+  def parse(addr: String) =
     addr.split("\\.").toList.reverse match {
       case domain :: prot :: app :: name =>
         (name.reverse.mkString("."), app + "." + prot, domain)
       case _ => throw new MDNSAddressException(addr)
     }
-  }
 }
 
 class MDNSAnnouncer extends Announcer {

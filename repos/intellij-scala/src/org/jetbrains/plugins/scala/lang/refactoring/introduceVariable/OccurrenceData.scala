@@ -13,7 +13,7 @@ object OccurrenceData {
   def apply(
       typeElement: ScTypeElement,
       usualOccurrence: Array[ScTypeElement],
-      isReplaceAllUsual: Boolean): OccurrenceData = {
+      isReplaceAllUsual: Boolean): OccurrenceData =
     new OccurrenceData(
       typeElement,
       usualOccurrence,
@@ -22,14 +22,13 @@ object OccurrenceData {
       false,
       Array[ScTypeElement](),
       false)
-  }
 
   def apply(
       typeElement: ScTypeElement,
       isReplaceAllUsual: Boolean,
       isReplaceOccurrenceIncompanionObject: Boolean,
       isReplaceOccurrenceInInheritors: Boolean,
-      scopeItem: ScopeItem): OccurrenceData = {
+      scopeItem: ScopeItem): OccurrenceData =
     scopeItem match {
       case simpleScope: SimpleScopeItem =>
         new OccurrenceData(
@@ -52,7 +51,6 @@ object OccurrenceData {
           isReplaceOccurrenceInInheritors
         )
     }
-  }
 }
 
 class OccurrenceData(
@@ -63,13 +61,12 @@ class OccurrenceData(
     isReplaceInCompanion: Boolean,
     extendedClassOccurrence: Array[ScTypeElement],
     isReplaceInExtendedClasses: Boolean) {
-  def getUsualOccurrences = {
+  def getUsualOccurrences =
     if (isReplaceAllUsual) {
       usualOccurrence
     } else {
       Array(typeElement)
     }
-  }
 
   def getCompanionObjOccurrences =
     getOccurrences(companiomObjOccurrence, isReplaceInCompanion)
@@ -84,11 +81,10 @@ class OccurrenceData(
 
   private def getOccurrences(
       occ: Array[ScTypeElement],
-      needAll: Boolean): Array[ScTypeElement] = {
+      needAll: Boolean): Array[ScTypeElement] =
     if (needAll) {
       occ
     } else {
       Array[ScTypeElement]()
     }
-  }
 }

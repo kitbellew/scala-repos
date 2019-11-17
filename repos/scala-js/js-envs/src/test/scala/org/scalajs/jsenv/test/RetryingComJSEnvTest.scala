@@ -19,9 +19,8 @@ class RetryingComJSEnvTest extends JSEnvTest with ComTests {
   private final val maxFails = 5
 
   // Don't log anything here
-  override protected def start(runner: AsyncJSRunner): Future[Unit] = {
+  override protected def start(runner: AsyncJSRunner): Future[Unit] =
     runner.start(NullLogger, ConsoleJSConsole)
-  }
 
   protected def newJSEnv: RetryingComJSEnv =
     new RetryingComJSEnv(new FailingEnv(new RhinoJSEnv), maxFails)
@@ -34,21 +33,18 @@ class RetryingComJSEnvTest extends JSEnvTest with ComTests {
 
     def jsRunner(
         libs: Seq[ResolvedJSDependency],
-        code: VirtualJSFile): JSRunner = {
+        code: VirtualJSFile): JSRunner =
       baseEnv.jsRunner(libs, code)
-    }
 
     def asyncRunner(
         libs: Seq[ResolvedJSDependency],
-        code: VirtualJSFile): AsyncJSRunner = {
+        code: VirtualJSFile): AsyncJSRunner =
       baseEnv.asyncRunner(libs, code)
-    }
 
     def comRunner(
         libs: Seq[ResolvedJSDependency],
-        code: VirtualJSFile): ComJSRunner = {
+        code: VirtualJSFile): ComJSRunner =
       new FailingComJSRunner(baseEnv.comRunner(libs, code))
-    }
 
     /** Hack to work around abstract override in ComJSRunner */
     private trait DummyJSRunner {
@@ -91,9 +87,8 @@ class RetryingComJSEnvTest extends JSEnvTest with ComTests {
 
       private def shouldFail = !failedReceive && fails < maxFails
 
-      private def maybeFail() = {
+      private def maybeFail() =
         if (shouldFail) fail()
-      }
 
       private def fail() = {
         fails += 1

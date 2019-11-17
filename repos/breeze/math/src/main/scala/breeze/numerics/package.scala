@@ -579,11 +579,10 @@ package object numerics {
     @expand
     @expand.valify
     implicit def isOddImpl[@expand.args(Int, Double, Float, Long) T]
-        : Impl[T, Boolean] = {
+        : Impl[T, Boolean] =
       new Impl[T, Boolean] {
-        def apply(v: T) = { v % 2 == 1 }
+        def apply(v: T) = v % 2 == 1
       }
-    }
   }
 
   /** Whether a number is even. For Double and Float, isEven also implies that the number is an integer,
@@ -593,11 +592,10 @@ package object numerics {
     @expand
     @expand.valify
     implicit def isEvenImpl[@expand.args(Int, Double, Float, Long) T]
-        : Impl[T, Boolean] = {
+        : Impl[T, Boolean] =
       new Impl[T, Boolean] {
-        def apply(v: T) = { v % 2 == 0 }
+        def apply(v: T) = v % 2 == 0
       }
-    }
   }
 
   val inf, Inf = Double.PositiveInfinity
@@ -607,28 +605,23 @@ package object numerics {
     @expand
     @expand.valify
     implicit def isNonfiniteImpl[@expand.args(Double, Float) T]
-        : Impl[T, Boolean] = {
+        : Impl[T, Boolean] =
       new Impl[T, Boolean] {
-        override def apply(v: T): Boolean = {
+        override def apply(v: T): Boolean =
           // TODO: only in Java 8
 //          !java.lang.Double.isFinite(v)
           !isFinite(v)
-        }
       }
-    }
   }
 
   object isFinite extends UFunc with MappingUFunc {
     @expand
     @expand.valify
-    implicit def isFiniteImpl[@expand.args(Double, Float) T]
-        : Impl[T, Boolean] = {
+    implicit def isFiniteImpl[@expand.args(Double, Float) T]: Impl[T, Boolean] =
       new Impl[T, Boolean] {
-        override def apply(v: T): Boolean = {
+        override def apply(v: T): Boolean =
           m.abs(v) <= Double.MaxValue
-        }
       }
-    }
   }
 
   /**
@@ -659,7 +652,7 @@ package object numerics {
       */
     implicit object lgammaImplDoubleDouble
         extends Impl2[Double, Double, Double] {
-      def apply(a: Double, x: Double): Double = {
+      def apply(a: Double, x: Double): Double =
         if (x < 0.0 || a <= 0.0) throw new IllegalArgumentException()
         else if (x == 0) 0.0
         else if (x < a + 1.0) {
@@ -703,7 +696,6 @@ package object numerics {
           if (n == 100) throw new ArithmeticException("Convergence failed")
           else breeze.linalg.logDiff(gln, -x + a * m.log(x) + m.log(h))
         }
-      }
     }
   }
 
@@ -737,9 +729,8 @@ package object numerics {
     */
   object lbeta extends UFunc {
     implicit object impl2Double extends Impl2[Double, Double, Double] {
-      def apply(v: Double, v2: Double): Double = {
+      def apply(v: Double, v2: Double): Double =
         lgamma(v) + lgamma(v2) - lgamma(v + v2)
-      }
     }
 
     implicit def reduceDouble[T](
@@ -804,7 +795,7 @@ package object numerics {
       def apply(v: Int): Double = erfiImplDouble(v.toDouble)
     }
     implicit object erfiImplDouble extends Impl[Double, Double] {
-      def apply(x: Double): Double = {
+      def apply(x: Double): Double =
         if (x < 0) -apply(-x)
         else {
           // taylor expansion
@@ -824,7 +815,6 @@ package object numerics {
           y = y * 2 / m.sqrt(Pi)
           y
         }
-      }
     }
   }
 
@@ -917,11 +907,10 @@ package object numerics {
   /**
     * closeTo for Doubles.
     */
-  def closeTo(a: Double, b: Double, relDiff: Double = 1e-4) = {
+  def closeTo(a: Double, b: Double, relDiff: Double = 1e-4) =
     a == b ||
-    (scala.math.abs(a - b) < scala.math
-      .max(scala.math.max(scala.math.abs(a), scala.math.abs(b)), 1) * relDiff)
-  }
+      (scala.math.abs(a - b) < scala.math
+        .max(scala.math.max(scala.math.abs(a), scala.math.abs(b)), 1) * relDiff)
 
   /**
     * The indicator function. 1.0 iff b, else 0.0

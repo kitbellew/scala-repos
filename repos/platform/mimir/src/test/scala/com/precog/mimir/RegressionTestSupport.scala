@@ -115,7 +115,7 @@ trait RegressionTestSupport[M[+_]] {
     (mad, median)
   }
 
-  def combineResults(num: Int, thetas: List[List[Double]]) = {
+  def combineResults(num: Int, thetas: List[List[Double]]) =
     thetas.foldLeft(mutable.Seq.fill(num)(List.empty[Double])) {
       case (acc, li) =>
         var i = 0
@@ -125,7 +125,6 @@ trait RegressionTestSupport[M[+_]] {
         }
         acc
     }
-  }
 
   def isOk(actual: Double, computed: List[Double]): Boolean = {
     val (mad, median) = madMedian(computed)

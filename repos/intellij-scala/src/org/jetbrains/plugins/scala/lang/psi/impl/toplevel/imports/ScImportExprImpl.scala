@@ -57,7 +57,7 @@ class ScImportExprImpl private (
     }
   }
 
-  def wildcardElement: Option[PsiElement] = {
+  def wildcardElement: Option[PsiElement] =
     if (findChildByType[PsiElement](ScalaTokenTypes.tUNDER) != null) {
       Some(findChildByType[PsiElement](ScalaTokenTypes.tUNDER))
     } else {
@@ -67,14 +67,12 @@ class ScImportExprImpl private (
         case None => None
       }
     }
-  }
 
-  def qualifier: ScStableCodeReferenceElement = {
+  def qualifier: ScStableCodeReferenceElement =
     if (reference.isEmpty) throw new IncorrectOperationException()
     else if (!singleWildcard && selectorSet.isEmpty)
       reference.flatMap(_.qualifier).orNull
     else reference.get
-  }
 
   def deleteExpr() {
     val parent = getParent.asInstanceOf[ScImportStmt]

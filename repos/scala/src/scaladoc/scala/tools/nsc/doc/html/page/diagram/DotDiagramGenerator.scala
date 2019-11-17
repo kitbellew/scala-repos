@@ -309,11 +309,10 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
   /**
     * Returns the CSS class for an edge connecting node1 and node2.
     */
-  private def cssClass(node1: Node, node2: Node): String = {
+  private def cssClass(node1: Node, node2: Node): String =
     if (node1.isImplicitNode && node2.isThisNode) "implicit-incoming"
     else if (node1.isThisNode && node2.isImplicitNode) "implicit-outgoing"
     else "inheritance"
-  }
 
   /**
     * Returns the CSS class for a node.

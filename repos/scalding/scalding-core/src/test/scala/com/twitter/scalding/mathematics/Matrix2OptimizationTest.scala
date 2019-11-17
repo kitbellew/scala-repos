@@ -315,21 +315,19 @@ object Matrix2Props extends Properties("Matrix2") {
       target: Int,
       prevCol: Long,
       result: List[MatrixLiteral[Any, Any, Double]])
-      : List[MatrixLiteral[Any, Any, Double]] = {
+      : List[MatrixLiteral[Any, Any, Double]] =
     if (current == target) result
     else {
       val (randomMatrix, cols) = genLeaf((prevCol, 0))
       productChainGen(current + 1, target, cols, result ++ List(randomMatrix))
     }
-  }
 
-  def randomProduct(p: Int): Matrix2[Any, Any, Double] = {
+  def randomProduct(p: Int): Matrix2[Any, Any, Double] =
     if (p == 1) genLeaf((0, 0))._1
     else {
       val full = productChainGen(0, p, 0, Nil).toIndexedSeq
       generateRandomPlan(0, full.size - 1, full)
     }
-  }
 
   def genNode(depth: Int): Gen[Matrix2[Any, Any, Double]] =
     for {
@@ -360,7 +358,7 @@ object Matrix2Props extends Properties("Matrix2") {
       i: Int,
       j: Int,
       p: IndexedSeq[MatrixLiteral[Any, Any, Double]])
-      : Matrix2[Any, Any, Double] = {
+      : Matrix2[Any, Any, Double] =
     if (i == j) p(i)
     else {
       val genK = Gen.choose(i, j - 1)
@@ -369,7 +367,6 @@ object Matrix2Props extends Properties("Matrix2") {
       val Y = generateRandomPlan(k + 1, j, p)
       Product(X, Y, ring)
     }
-  }
 
   /**
     * Function that recursively estimates a cost of a given MatrixFormula / plan.
@@ -388,7 +385,7 @@ object Matrix2Props extends Properties("Matrix2") {
       */
     def toProducts(mf: Matrix2[Any, Any, Double]): (
         Option[Product[Any, Any, Any, Double]],
-        List[Product[Any, Any, Any, Double]]) = {
+        List[Product[Any, Any, Any, Double]]) =
       mf match {
         case element @ MatrixLiteral(_, _) => (None, Nil)
         case Sum(left, right, _) => {
@@ -441,7 +438,6 @@ object Matrix2Props extends Properties("Matrix2") {
           }
         }
       }
-    }
 
     /**
       * To create a companion tree which has respective ranges of each product
@@ -455,7 +451,7 @@ object Matrix2Props extends Properties("Matrix2") {
 
     def labelTree(
         p: Matrix2[Any, Any, Double],
-        start: Int): Option[LabeledTree] = {
+        start: Int): Option[LabeledTree] =
       p match {
         case Product(
             left @ MatrixLiteral(_, _),
@@ -496,7 +492,6 @@ object Matrix2Props extends Properties("Matrix2") {
         }
         case _ => None
       }
-    }
 
     /**
       * This function evaluates a product chain in the same way
@@ -506,7 +501,7 @@ object Matrix2Props extends Properties("Matrix2") {
     def evaluateProduct(
         p: Matrix2[Any, Any, Double],
         labels: LabeledTree): Option[
-      (BigInt, Matrix2[Any, Any, Double], Matrix2[Any, Any, Double])] = {
+      (BigInt, Matrix2[Any, Any, Double], Matrix2[Any, Any, Double])] =
       p match {
         case Product(
             left @ MatrixLiteral(_, _),
@@ -561,7 +556,6 @@ object Matrix2Props extends Properties("Matrix2") {
         }
         case _ => None
       }
-    }
 
     val (last, productList) = toProducts(mf)
     val products = if (last.isDefined) last.get :: productList else productList

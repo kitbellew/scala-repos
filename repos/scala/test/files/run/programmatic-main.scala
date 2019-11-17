@@ -12,11 +12,10 @@ object Test {
     "-cp",
     basedir + "/scala-compiler.jar")
 
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     Console.withErr(Console.out) {
       Main process
         (baseargs ++ "-Xpluginsdir /does/not/exist/foo/quux -Xshow-phases"
           .split(' '))
     }
-  }
 }

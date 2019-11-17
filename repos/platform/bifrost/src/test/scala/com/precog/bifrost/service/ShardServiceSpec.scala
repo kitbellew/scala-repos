@@ -291,12 +291,11 @@ trait TestShardService
 }
 
 class ShardServiceSpec extends TestShardService {
-  def syncClient(query: String, apiKey: Option[String] = Some(testAPIKey)) = {
+  def syncClient(query: String, apiKey: Option[String] = Some(testAPIKey)) =
     apiKey
       .map { queryService.query("apiKey", _) }
       .getOrElse(queryService)
       .query("q", query)
-  }
 
   def query(
       query: String,
@@ -310,7 +309,7 @@ class ShardServiceSpec extends TestShardService {
   def asyncQuery(
       query: String,
       apiKey: Option[String] = Some(testAPIKey),
-      path: String = ""): Future[HttpResponse[QueryResult]] = {
+      path: String = ""): Future[HttpResponse[QueryResult]] =
     apiKey
       .map { asyncService.query("apiKey", _) }
       .getOrElse(asyncService)
@@ -319,31 +318,27 @@ class ShardServiceSpec extends TestShardService {
       .post[QueryResult]("") {
         Right(StreamT.empty[Future, CharBuffer])
       }
-  }
 
   def asyncQueryResults(jobId: JobId, apiKey: Option[String] = Some(testAPIKey))
-      : Future[HttpResponse[QueryResult]] = {
+      : Future[HttpResponse[QueryResult]] =
     apiKey
       .map { asyncService.query("apiKey", _) }
       .getOrElse(asyncService)
       .get(jobId)
-  }
 
   val simpleQuery = "1 + 1"
   val relativeQuery = "//foo"
   val accessibleAbsoluteQuery = "//test/foo"
   val inaccessibleAbsoluteQuery = "//inaccessible/foo"
 
-  def extractResult(data: StreamT[Future, CharBuffer]): Future[JValue] = {
+  def extractResult(data: StreamT[Future, CharBuffer]): Future[JValue] =
     data.foldLeft("") { _ + _.toString } map (JParser.parseUnsafe(_))
-  }
 
-  def extractJobId(jv: JValue): JobId = {
+  def extractJobId(jv: JValue): JobId =
     jv \ "jobId" match {
       case JString(jobId) => jobId
       case _              => sys.error("This is not JSON! GIVE ME JSON!")
     }
-  }
 
   def waitForJobCompletion(jobId: JobId): Future[
     Either[String, (Option[MimeType], StreamT[Future, Array[Byte]])]] = {
@@ -465,33 +460,30 @@ class ShardServiceSpec extends TestShardService {
 
   def meta(
       apiKey: Option[String] = Some(testAPIKey),
-      path: String = "/test"): Future[HttpResponse[QueryResult]] = {
+      path: String = "/test"): Future[HttpResponse[QueryResult]] =
     apiKey
       .map { metaService.query("apiKey", _) }
       .getOrElse(metadataService)
       .get(path)
-  }
 
   def browse(
       apiKey: Option[String] = Some(testAPIKey),
-      path: String = "/test"): Future[HttpResponse[QueryResult]] = {
+      path: String = "/test"): Future[HttpResponse[QueryResult]] =
     apiKey
       .map { metaService.query("apiKey", _) }
       .getOrElse(metaService)
       .get(path)
-  }
 
   def structure(
       apiKey: Option[String] = Some(testAPIKey),
       path: String = "/test",
-      cpath: CPath = CPath.Identity): Future[HttpResponse[QueryResult]] = {
+      cpath: CPath = CPath.Identity): Future[HttpResponse[QueryResult]] =
     apiKey
       .map { metaService.query("apiKey", _) }
       .getOrElse(metaService)
       .query("type", "structure")
       .query("property", cpath.toString)
       .get(path)
-  }
 
   "Shard browse service" should {
     "handle browse for API key accessible path" in {
@@ -591,9 +583,8 @@ trait TestPlatform extends ManagedPlatform { self =>
   val accessControl: AccessControl[Future]
   val ownerMap: Map[Path, Set[AccountId]]
 
-  private def toSlice[M[+_]: Monad](a: JValue): StreamT[M, Slice] = {
+  private def toSlice[M[+_]: Monad](a: JValue): StreamT[M, Slice] =
     Slice.fromJValues(Stream(a)) :: StreamT.empty[M, Slice]
-  }
 
   type YggConfig = ManagedQueryModuleConfig
   object yggConfig extends YggConfig {
@@ -602,25 +593,23 @@ trait TestPlatform extends ManagedPlatform { self =>
   }
 
   def asyncExecutorFor(
-      apiKey: APIKey): EitherT[Future, String, QueryExecutor[Future, JobId]] = {
+      apiKey: APIKey): EitherT[Future, String, QueryExecutor[Future, JobId]] =
     EitherT.right(Future(new AsyncQueryExecutor {
       val executionContext = self.executionContext
     }))
-  }
 
   def syncExecutorFor(apiKey: APIKey): EitherT[
     Future,
     String,
-    QueryExecutor[Future, (Option[JobId], StreamT[Future, Slice])]] = {
+    QueryExecutor[Future, (Option[JobId], StreamT[Future, Slice])]] =
     EitherT.right(Future(new SyncQueryExecutor {
       val executionContext = self.executionContext
     }))
-  }
 
   protected def executor(implicit shardQueryMonad: JobQueryTFMonad)
-      : QueryExecutor[JobQueryTF, StreamT[JobQueryTF, Slice]] = {
+      : QueryExecutor[JobQueryTF, StreamT[JobQueryTF, Slice]] =
     new QueryExecutor[JobQueryTF, StreamT[JobQueryTF, Slice]] {
-      def execute(query: String, ctx: EvaluationContext, opts: QueryOptions) = {
+      def execute(query: String, ctx: EvaluationContext, opts: QueryOptions) =
         if (query == "bad query") {
           val mu =
             shardQueryMonad.jobId traverse { jobId =>
@@ -644,9 +633,7 @@ trait TestPlatform extends ManagedPlatform { self =>
               \/.right(toSlice(JObject("value" -> JNum(2)))))
           }
         }
-      }
     }
-  }
 
   def status() = Future(Success(JArray(List(JString("status")))))
 

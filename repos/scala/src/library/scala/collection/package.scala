@@ -119,11 +119,10 @@ package collection {
       output
     }
 
-    def arrayString[T](array: Array[T], from: Int, until: Int): String = {
+    def arrayString[T](array: Array[T], from: Int, until: Int): String =
       array.slice(from, until) map {
         case null => "n/a"
         case x    => "" + x
       } mkString " | "
-    }
   }
 }

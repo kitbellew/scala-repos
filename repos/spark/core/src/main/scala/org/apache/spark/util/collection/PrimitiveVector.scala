@@ -79,9 +79,8 @@ private[spark] class PrimitiveVector[@specialized(Long, Int, Double) V: ClassTag
   }
 
   /** Return a trimmed version of the underlying array. */
-  def toArray: Array[V] = {
+  def toArray: Array[V] =
     copyArrayWithLength(size)
-  }
 
   private def copyArrayWithLength(length: Int): Array[V] = {
     val copy = new Array[V](length)

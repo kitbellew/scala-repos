@@ -36,12 +36,11 @@ object Producer {
     *  It differs from dependencies in that it will also return the predecessor of an AlsoProducer
     */
   def parentsOf[P <: Platform[P]](
-      in: Producer[P, Any]): List[Producer[P, Any]] = {
+      in: Producer[P, Any]): List[Producer[P, Any]] =
     in match {
       case AlsoProducer(l, r) => List(l, r)
       case _                  => dependenciesOf(in)
     }
-  }
 
   /** Returns the first Summer of the provided list of Producers */
   def retrieveSummer[P <: Platform[P]](

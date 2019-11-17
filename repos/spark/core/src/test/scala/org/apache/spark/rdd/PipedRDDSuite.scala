@@ -57,9 +57,8 @@ class PipedRDDSuite extends SparkFunSuite with SharedSparkContext {
         .mapPartitionsWithIndex((index, iterator) => {
           new Iterator[Int] {
             def hasNext = true
-            def next() = {
+            def next() =
               throw new SparkException("Exception to simulate bad scenario")
-            }
           }
         })
 
@@ -181,9 +180,8 @@ class PipedRDDSuite extends SparkFunSuite with SharedSparkContext {
     testExportInputFile("mapreduce_map_input_file")
   }
 
-  def testCommandAvailable(command: String): Boolean = {
+  def testCommandAvailable(command: String): Boolean =
     Try(Process(command) !!).isSuccess
-  }
 
   def testExportInputFile(varName: String) {
     if (testCommandAvailable("printenv")) {
@@ -199,11 +197,10 @@ class PipedRDDSuite extends SparkFunSuite with SharedSparkContext {
 
         override val getDependencies = List[Dependency[_]]()
 
-        override def compute(theSplit: Partition, context: TaskContext) = {
+        override def compute(theSplit: Partition, context: TaskContext) =
           new InterruptibleIterator[(LongWritable, Text)](
             context,
             Iterator((new LongWritable(1), new Text("b"))))
-        }
       }
       val hadoopPart1 = generateFakeHadoopPartition()
       val pipedRdd = new PipedRDD(nums, "printenv " + varName)

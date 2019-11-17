@@ -45,7 +45,7 @@ private[sql] class CatalystQl(val conf: ParserConf = SimpleParserConf())
     * method will take care of possible errors during the parsing process.
     */
   protected def safeParse[T](sql: String, ast: ASTNode)(
-      toResult: ASTNode => T): T = {
+      toResult: ASTNode => T): T =
     try {
       toResult(ast)
     } catch {
@@ -65,7 +65,6 @@ private[sql] class CatalystQl(val conf: ParserConf = SimpleParserConf())
              |${e.getStackTrace.head}
           """.stripMargin)
     }
-  }
 
   /** Creates LogicalPlan for a given SQL string. */
   def parsePlan(sql: String): LogicalPlan =
@@ -389,7 +388,7 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
 
   val allJoinTokens = "(TOK_.*JOIN)".r
   val laterViewToken = "TOK_LATERAL_VIEW(.*)".r
-  protected def nodeToRelation(node: ASTNode): LogicalPlan = {
+  protected def nodeToRelation(node: ASTNode): LogicalPlan =
     node match {
       case Token("TOK_SUBQUERY", query :: Token(alias, Nil) :: Nil) =>
         SubqueryAlias(cleanIdentifier(alias), nodeToPlan(query))
@@ -478,7 +477,6 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
       case _ =>
         noParseRule("Relation", node)
     }
-  }
 
   protected def getJoinInfo(
       joinToken: String,

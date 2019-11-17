@@ -375,9 +375,8 @@ class SubSource[+Out, +Mat](
     * See also [[Flow.take]], [[Flow.takeWithin]], [[Flow.takeWhile]]
     */
   def limitWeighted(n: Long)(
-      costFn: function.Function[Out, Long]): javadsl.SubSource[Out, Mat] = {
+      costFn: function.Function[Out, Long]): javadsl.SubSource[Out, Mat] =
     new SubSource(delegate.limitWeighted(n)(costFn.apply))
-  }
 
   def sliding(
       n: Int,

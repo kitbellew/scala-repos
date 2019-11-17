@@ -15,7 +15,7 @@ class WebJarServlet extends HttpServlet {
       req: HttpServletRequest,
       resp: HttpServletResponse): Unit = {
 
-    def sendResource(resourceURI: String, mime: String): Unit = {
+    def sendResource(resourceURI: String, mime: String): Unit =
       //scalastyle:off magic.number
       IO.withResource(resourceURI) { stream =>
         resp.setContentType(mime)
@@ -25,7 +25,6 @@ class WebJarServlet extends HttpServlet {
       } getOrElse {
         resp.sendError(404)
       }
-    }
 
     def sendResourceNormalized(resourceURI: String, mime: String): Unit = {
       val normalized = new URI(resourceURI).normalize().getPath
@@ -73,14 +72,13 @@ class WebJarServlet extends HttpServlet {
     else sendResourceNormalized(resourceURI, mime)
   }
 
-  private[this] def mimeType(mediaType: String): String = {
+  private[this] def mimeType(mediaType: String): String =
     mediaType.toLowerCase match {
       case "eot" => "application/vnd.ms-fontobject"
       case "svg" => "image/svg+xml"
       case "ttf" => "application/font-ttf"
       case _     => "application/octet-stream"
     }
-  }
 
   private[this] def sendRedirect(
       response: HttpServletResponse,

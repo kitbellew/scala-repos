@@ -71,14 +71,13 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
       protected def localSubstitution: Substitution
 
       private[TreeMakers] def incorporateOuterSubstitution(
-          outerSubst: Substitution): Unit = {
+          outerSubst: Substitution): Unit =
         if (currSub ne null) {
           debug.patmat(
             "BUG: incorporateOuterSubstitution called more than once for " +
               ((this, currSub, outerSubst)))
           Thread.dumpStack()
         } else currSub = outerSubst >> substitution
-      }
       private[this] var currSub: Substitution = null
 
       /** The substitution that specifies the trees that compute the values of the subpattern binders.
@@ -614,7 +613,7 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
         altss = altss map (alts => propagateSubstitution(alts, substitution))
       }
 
-      def chainBefore(next: Tree)(codegenAlt: Casegen): Tree = {
+      def chainBefore(next: Tree)(codegenAlt: Casegen): Tree =
         atPos(pos) {
           // one alternative may still generate multiple trees (e.g., an extractor call + equality test)
           // (for now,) alternatives may not bind variables (except wildcards), so we don't care about the final substitution built internally by makeTreeMakers
@@ -631,7 +630,6 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
               Some(x => mkFALSE))
           codegenAlt.ifThenElseZero(findAltMatcher, substitution(next))
         }
-      }
     }
 
     case class GuardTreeMaker(guardTree: Tree)

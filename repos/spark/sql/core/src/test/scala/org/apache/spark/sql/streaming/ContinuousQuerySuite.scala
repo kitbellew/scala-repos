@@ -123,10 +123,9 @@ class ContinuousQuerySuite extends StreamTest with SharedSQLContext {
           expectedReturnValue),
         "Error testing awaitTermination behavior"
       ) {
-    override def toString(): String = {
+    override def toString(): String =
       s"TestAwaitTermination($expectedBehavior, timeoutMs = $timeoutMs, " +
         s"expectedReturnValue = $expectedReturnValue)"
-    }
   }
 
   object TestAwaitTermination {
@@ -146,7 +145,7 @@ class ContinuousQuerySuite extends StreamTest with SharedSQLContext {
         expectedReturnValue: Boolean
     )(q: StreamExecution): Boolean = {
 
-      def awaitTermFunc(): Unit = {
+      def awaitTermFunc(): Unit =
         if (timeoutMs <= 0) {
           q.awaitTermination()
         } else {
@@ -155,7 +154,6 @@ class ContinuousQuerySuite extends StreamTest with SharedSQLContext {
             returnedValue === expectedReturnValue,
             "Returned value does not match expected")
         }
-      }
       AwaitTerminationTester.test(expectedBehavior, awaitTermFunc)
       true // If the control reached here, then everything worked as expected
     }

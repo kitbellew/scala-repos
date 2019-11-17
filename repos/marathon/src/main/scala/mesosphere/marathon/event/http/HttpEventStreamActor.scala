@@ -61,7 +61,7 @@ class HttpEventStreamActor(
     * Helper method to create behaviours.
     * The behaviours only differ in how they deal with new connections.
     */
-  private[this] def behaviour(newConnectionBehaviour: Receive): Receive = {
+  private[this] def behaviour(newConnectionBehaviour: Receive): Receive =
     Seq(
       handleLeadership,
       cleanupHandlerActors,
@@ -71,7 +71,6 @@ class HttpEventStreamActor(
       // Prevent fatal warning about deriving type Any as type parameter
       _.orElse[Any, Unit](_)
     }
-  }
 
   // behaviour components
 
@@ -111,7 +110,7 @@ class HttpEventStreamActor(
     case Terminated(actor)                       => unexpectedTerminationOfHandlerActor(actor)
   }
 
-  private[this] def removeHandler(handle: HttpEventStreamHandle): Unit = {
+  private[this] def removeHandler(handle: HttpEventStreamHandle): Unit =
     streamHandleActors.get(handle).foreach { actor =>
       context.unwatch(actor)
       context.stop(actor)
@@ -121,17 +120,14 @@ class HttpEventStreamActor(
         s"Removed EventStream Handle as event listener: $handle. " +
           s"Current nr of listeners: ${streamHandleActors.size}")
     }
-  }
 
-  private[this] def unexpectedTerminationOfHandlerActor(
-      actor: ActorRef): Unit = {
+  private[this] def unexpectedTerminationOfHandlerActor(actor: ActorRef): Unit =
     streamHandleActors.find(_._2 == actor).foreach {
       case (handle, ref) =>
         log.error(s"Actor terminated unexpectedly: $handle")
         streamHandleActors -= handle
         metrics.numberOfStreams.setValue(streamHandleActors.size)
     }
-  }
 
   private[this] def warnAboutUnknownMessages: Receive = {
     case message: Any => log.warn(s"Received unexpected message $message")

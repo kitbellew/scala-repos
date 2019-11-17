@@ -91,7 +91,7 @@ class PlannerSuite extends SharedSQLContext {
 
   test(
     "sizeInBytes estimation of limit operator for broadcast hash join optimization") {
-    def checkPlan(fieldTypes: Seq[DataType]): Unit = {
+    def checkPlan(fieldTypes: Seq[DataType]): Unit =
       withTempTable("testLimit") {
         val fields =
           fieldTypes.zipWithIndex.map {
@@ -120,7 +120,6 @@ class PlannerSuite extends SharedSQLContext {
         assert(broadcastHashJoins.size === 1, "Should use broadcast hash join")
         assert(sortMergeJoins.isEmpty, "Should not use sort merge join")
       }
-    }
 
     val simpleTypes =
       NullType :: BooleanType :: ByteType :: ShortType :: IntegerType :: LongType :: FloatType :: DoubleType :: DecimalType(

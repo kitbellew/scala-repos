@@ -67,7 +67,7 @@ object PrinterHelper {
     }
   }
 
-  def assertTreeCode(tree: Tree, typecheck: Boolean = false)(code: String) = {
+  def assertTreeCode(tree: Tree, typecheck: Boolean = false)(code: String) =
     if (typecheck) {
       assertEquals(
         "using quasiquote or given tree (typechecked)" + LF,
@@ -79,15 +79,13 @@ object PrinterHelper {
         code.trim,
         normalizeEOL(showCode(tree)))
     }
-  }
 
   def assertPrintedCode(
       source: String,
       checkTypedTree: Boolean = true,
-      wrapCode: Boolean = false) = {
+      wrapCode: Boolean = false) =
     if (checkTypedTree) assertResultCode(source)(source, source, wrapCode)
     else assertResultCode(source)(parsedCode = source, wrap = wrapCode)
-  }
 
   implicit class StrContextStripMarginOps(val stringContext: StringContext)
       extends util.StripMarginInterpolator

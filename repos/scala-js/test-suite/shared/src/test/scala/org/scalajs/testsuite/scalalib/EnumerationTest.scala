@@ -44,7 +44,7 @@ class EnumerationTest {
     assertEquals("$div", HelpLevel./.toString)
   }
 
-  @Test def should_give_a_pseudo_toString_to_unnamed_values(): Unit = {
+  @Test def should_give_a_pseudo_toString_to_unnamed_values(): Unit =
     if (!executingInJVM) {
       object Test extends Enumeration {
         private val nullStr: String = null
@@ -55,7 +55,6 @@ class EnumerationTest {
         Test.A.toString
           .startsWith("<Unknown name for enum field #0 of class "))
     }
-  }
 
   @Test
   def should_give_a_graceful_error_message_upon_name_based_query_when_unnamed_fields_are_present(
@@ -75,15 +74,13 @@ class EnumerationTest {
     }
   }
 
-  @Test def should_respond_to_toString(): Unit = {
+  @Test def should_respond_to_toString(): Unit =
     assertEquals("FooBarEnum", FooBarEnum.toString)
-  }
 
-  @Test def should_respond_to_values(): Unit = {
+  @Test def should_respond_to_values(): Unit =
     assertEquals(
       "FooBarEnum.ValueSet(A, B, C, D, E, F)",
       FooBarEnum.values.toString)
-  }
 
   @Test def should_allow_setting_nextName(): Unit = {
     object Test extends Enumeration {

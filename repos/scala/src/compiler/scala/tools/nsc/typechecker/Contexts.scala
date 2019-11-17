@@ -72,7 +72,7 @@ trait Contexts { self: Analyzer =>
   private lazy val allImportInfos =
     mutable.Map[CompilationUnit, List[ImportInfo]]() withDefaultValue Nil
 
-  def warnUnusedImports(unit: CompilationUnit) = {
+  def warnUnusedImports(unit: CompilationUnit) =
     for (imps <- allImportInfos.remove(unit)) {
       for (imp <- imps.reverse.distinct) {
         val used = allUsedSelectors(imp)
@@ -86,7 +86,6 @@ trait Contexts { self: Analyzer =>
       }
       allUsedSelectors --= imps
     }
-  }
 
   var lastAccessCheckDetails: String = ""
 
@@ -335,7 +334,7 @@ trait Contexts { self: Analyzer =>
 
     /** Undetermined type parameters. See `Infer#{inferExprInstance, adjustTypeArgs}`. Not inherited to child contexts */
     def undetparams: List[Symbol] = _undetparams
-    def undetparams_=(ps: List[Symbol]) = { _undetparams = ps }
+    def undetparams_=(ps: List[Symbol]) = _undetparams = ps
 
     /** Return and clear the undetermined type parameters */
     def extractUndetparams(): List[Symbol] = {
@@ -349,14 +348,13 @@ trait Contexts { self: Analyzer =>
       *  @param reportAmbiguous Should ambiguous errors be reported during evaluation of `body`?
       */
     def savingUndeterminedTypeParams[A](
-        reportAmbiguous: Boolean = ambiguousErrors)(body: => A): A = {
+        reportAmbiguous: Boolean = ambiguousErrors)(body: => A): A =
       withMode() {
         setAmbiguousErrors(reportAmbiguous)
         val saved = extractUndetparams()
         try body
         finally undetparams = saved
       }
-    }
 
     //
     // Error reporting policies and buffer.
@@ -765,7 +763,7 @@ trait Contexts { self: Analyzer =>
       }
 
       /* Are we inside definition of `ab`? */
-      def accessWithin(ab: Symbol) = {
+      def accessWithin(ab: Symbol) =
         // #3663: we must disregard package nesting if sym isJavaDefined
         if (sym.isJavaDefined) {
           // is `o` or one of its transitive owners equal to `ab`?
@@ -776,7 +774,6 @@ trait Contexts { self: Analyzer =>
                 abEnclosesStopAtPkg(o.owner))
           abEnclosesStopAtPkg(owner)
         } else (owner hasTransOwner ab)
-      }
 
       def isSubThisType(pre: Type, clazz: Symbol): Boolean = pre match {
         case ThisType(pclazz) => pclazz isNonBottomSubClass clazz
@@ -1113,11 +1110,10 @@ trait Contexts { self: Analyzer =>
     /** Must `sym` defined in package object of package `pkg`, if
       *  it selected from a prefix with `pkg` as its type symbol?
       */
-    def isInPackageObject(sym: Symbol, pkg: Symbol): Boolean = {
+    def isInPackageObject(sym: Symbol, pkg: Symbol): Boolean =
       if (sym.isOverloaded)
         sym.alternatives.exists(alt => isInPackageObject(alt, pkg))
       else pkg.isPackage && sym.owner != pkg && requiresQualifier(sym)
-    }
 
     def isNameInScope(name: Name) = lookupSymbol(name, _ => true).isSuccess
 
@@ -1278,7 +1274,7 @@ trait Contexts { self: Analyzer =>
           // import check from being misled by symbol lookups which are not
           // actually used.
           val other = lookupImport(imp2, requireExplicit = !sameDepth)
-          def imp1wins() = { imports = imp1 :: imports.tail.tail }
+          def imp1wins() = imports = imp1 :: imports.tail.tail
           def imp2wins() = { impSym = other; imports = imports.tail }
 
           if (!other.exists) // imp1 wins; drop imp2 and continue.
@@ -1449,15 +1445,14 @@ trait Contexts { self: Analyzer =>
         case _                               => false
       }
 
-    def propagateImplicitTypeErrorsTo(target: ContextReporter) = {
+    def propagateImplicitTypeErrorsTo(target: ContextReporter) =
       errors foreach {
         case err @ (_: DivergentImplicitTypeError |
             _: AmbiguousImplicitTypeError) =>
           target.errorBuffer += err
         case _ =>
       }
-      // debuglog("propagateImplicitTypeErrorsTo: " + errors)
-    }
+    // debuglog("propagateImplicitTypeErrorsTo: " + errors)
 
     protected def addDiagString(msg: String)(
         implicit context: Context): String = {
@@ -1498,7 +1493,7 @@ trait Contexts { self: Analyzer =>
     // null references to buffers instead of clearing them,
     // as the buffers may be shared between different reporters
     final def clearAll(): Unit = { _errorBuffer = null; _warningBuffer = null }
-    final def clearAllErrors(): Unit = { _errorBuffer = null }
+    final def clearAllErrors(): Unit = _errorBuffer = null
   }
 
   private[typechecker] class ImmediateReporter(
@@ -1612,11 +1607,10 @@ trait Contexts { self: Analyzer =>
       if (definitions isImportable result) result
       else NoSymbol
     }
-    private def selectorString(s: ImportSelector): String = {
+    private def selectorString(s: ImportSelector): String =
       if (s.name == nme.WILDCARD && s.rename == null) "_"
       else if (s.name == s.rename) "" + s.name
       else s.name + " => " + s.rename
-    }
 
     def allImportedSymbols: Iterable[Symbol] =
       importableMembers(qual.tpe) flatMap (transformImport(tree.selectors, _))

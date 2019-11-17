@@ -120,7 +120,7 @@ object CachesUtil {
               e,
               false /* todo: true? */,
               new Computable[CachedValueProvider.Result[Result]] {
-                def compute(): CachedValueProvider.Result[Result] = {
+                def compute(): CachedValueProvider.Result[Result] =
                   try {
                     provider.compute()
                   } catch {
@@ -139,7 +139,6 @@ object CachesUtil {
                         throw ProbablyRecursionException(ee, data, k, set + fun)
                       }
                   }
-                }
               }
             ) match {
               case null =>
@@ -219,11 +218,10 @@ object CachesUtil {
       computed = manager.createCachedValue(
         new CachedValueProvider[ConcurrentMap[Data, Result]] {
           def compute(
-              ): CachedValueProvider.Result[ConcurrentMap[Data, Result]] = {
+              ): CachedValueProvider.Result[ConcurrentMap[Data, Result]] =
             new CachedValueProvider.Result(
               ContainerUtil.newConcurrentMap[Data, Result](),
               dependencyItem)
-          }
         },
         false
       )
@@ -252,7 +250,7 @@ object CachesUtil {
             (e, data),
             false,
             new Computable[Result] {
-              def compute(): Result = {
+              def compute(): Result =
                 try {
                   builder(e, data)
                 } catch {
@@ -275,7 +273,6 @@ object CachesUtil {
                         set + fun)
                     }
                 }
-              }
             }
           ) match {
             case null    => defaultValue
@@ -291,7 +288,7 @@ object CachesUtil {
   }
 
   def getDependentItem(element: PsiElement)(
-      dep_item: Object = enclosingModificationOwner(element)): Object = {
+      dep_item: Object = enclosingModificationOwner(element)): Object =
     element.getContainingFile match {
       case file: ScalaFile if file.isCompiled =>
         if (!ProjectRootManager
@@ -311,11 +308,10 @@ object CachesUtil {
         ProjectRootManager.getInstance(element.getProject)
       case _ => dep_item
     }
-  }
 
   def enclosingModificationOwner(elem: PsiElement): ModificationTracker = {
     @tailrec
-    def calc(element: PsiElement): ModificationTracker = {
+    def calc(element: PsiElement): ModificationTracker =
       Option(
         PsiTreeUtil.getContextOfType(
           element,
@@ -329,7 +325,6 @@ object CachesUtil {
         case _ =>
           ScalaPsiManager.instance(element.getProject).modificationTracker
       }
-    }
 
     calc(elem)
   }
@@ -337,7 +332,7 @@ object CachesUtil {
   @tailrec
   def updateModificationCount(
       elem: PsiElement,
-      incModCountOnTopLevel: Boolean = false): Unit = {
+      incModCountOnTopLevel: Boolean = false): Unit =
     Option(
       PsiTreeUtil.getContextOfType(
         elem,
@@ -355,7 +350,6 @@ object CachesUtil {
         ScalaPsiManager.instance(elem.getProject).incModificationCount()
       case _ =>
     }
-  }
 
   case class ProbablyRecursionException[Dom <: PsiElement, Data, T](
       elem: Dom,
@@ -368,7 +362,7 @@ object CachesUtil {
     new mutable.Queue[(ScModifiableTypedDeclaration, Project)]()
   private[this] val associatedQueueLock = new ReentrantLock(true)
   private def doQueueWithLock[T](
-      ac: mutable.Queue[(ScModifiableTypedDeclaration, Project)] => T): T = {
+      ac: mutable.Queue[(ScModifiableTypedDeclaration, Project)] => T): T =
     try {
       associatedQueueLock.lock()
       ac(funsRetTpToCheck)
@@ -376,7 +370,6 @@ object CachesUtil {
       if (associatedQueueLock.isHeldByCurrentThread)
         associatedQueueLock.unlock()
     }
-  }
 
   @volatile
   private[this] var needToCheckFuns: Boolean = false

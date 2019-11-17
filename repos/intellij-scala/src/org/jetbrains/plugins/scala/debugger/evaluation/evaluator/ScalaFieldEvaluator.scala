@@ -90,7 +90,7 @@ case class ScalaFieldEvaluator(
 
   private def evaluateField(
       obj: AnyRef,
-      context: EvaluationContextImpl): AnyRef = {
+      context: EvaluationContextImpl): AnyRef =
     obj match {
       case refType: ReferenceType =>
         var field: Field = findField(refType, context)
@@ -139,7 +139,6 @@ case class ScalaFieldEvaluator(
           DebuggerBundle
             .message("evaluation.error.evaluating.field", fieldName))
     }
-  }
 
   def getModifier: Modifier = {
     var modifier: Modifier = null
@@ -147,13 +146,11 @@ case class ScalaFieldEvaluator(
         (myEvaluatedQualifier.isInstanceOf[ClassType] ||
         myEvaluatedQualifier.isInstanceOf[ObjectReference])) {
       modifier = new Modifier {
-        def canInspect: Boolean = {
+        def canInspect: Boolean =
           myEvaluatedQualifier.isInstanceOf[ObjectReference]
-        }
 
-        def canSetValue: Boolean = {
+        def canSetValue: Boolean =
           true
-        }
 
         def setValue(value: Value) {
           if (myEvaluatedQualifier.isInstanceOf[ReferenceType]) {
@@ -167,17 +164,15 @@ case class ScalaFieldEvaluator(
           }
         }
 
-        def getExpectedType: Type = {
+        def getExpectedType: Type =
           myEvaluatedField.`type`
-        }
 
-        def getInspectItem(project: Project): NodeDescriptorImpl = {
+        def getInspectItem(project: Project): NodeDescriptorImpl =
           myEvaluatedQualifier match {
             case reference: ObjectReference =>
               new FieldDescriptorImpl(project, reference, myEvaluatedField)
             case _ => null
           }
-        }
       }
     }
     modifier

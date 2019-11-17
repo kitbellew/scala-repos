@@ -155,7 +155,7 @@ object RuntimeStats extends java.io.Serializable {
     (new ConcurrentHashMap[String, WeakReference[FlowProcess[_]]]).asScala
   }
 
-  def getFlowProcessForUniqueId(uniqueId: UniqueID): FlowProcess[_] = {
+  def getFlowProcessForUniqueId(uniqueId: UniqueID): FlowProcess[_] =
     (for {
       weakFlowProcess <- flowMappingStore.get(uniqueId.get)
       flowProcess <- weakFlowProcess.get
@@ -166,7 +166,6 @@ object RuntimeStats extends java.io.Serializable {
         "Error in job deployment, the FlowProcess for unique id %s isn't available"
           .format(uniqueId))
     }
-  }
 
   private[this] var prevFP: FlowProcess[_] = null
   def addFlowProcess(fp: FlowProcess[_]) {
@@ -212,7 +211,7 @@ class StatsFlowListener(f: Map[StatKey, Long] => Try[Unit])
 
   private var success = true
 
-  override def onCompleted(flow: Flow[_]): Unit = {
+  override def onCompleted(flow: Flow[_]): Unit =
     if (success) {
       val stats = flow.getFlowStats
       val keys = stats.getCounterGroups.asScala
@@ -221,7 +220,6 @@ class StatsFlowListener(f: Map[StatKey, Long] => Try[Unit])
         keys.map(k => (k, stats.getCounterValue(k.group, k.counter))).toMap
       f(values).get
     }
-  }
 
   override def onThrowable(flow: Flow[_], throwable: Throwable): Boolean = {
     success = false

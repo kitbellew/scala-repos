@@ -42,10 +42,8 @@ trait Server extends ServerWithStop {
       : Either[Future[Result], (RequestHeader, Handler, Application)] = {
 
     // Common code for handling an exception and returning an error result
-    def logExceptionAndGetResult(
-        e: Throwable): Left[Future[Result], Nothing] = {
+    def logExceptionAndGetResult(e: Throwable): Left[Future[Result], Nothing] =
       Left(DefaultHttpErrorHandler.onServerError(request, e))
-    }
 
     try {
       applicationProvider.handleWebCommand(request) match {

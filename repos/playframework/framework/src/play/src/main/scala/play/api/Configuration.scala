@@ -38,8 +38,7 @@ object Configuration {
       classLoader: ClassLoader,
       properties: Properties,
       directSettings: Map[String, AnyRef],
-      allowMissingApplicationConf: Boolean): Configuration = {
-
+      allowMissingApplicationConf: Boolean): Configuration =
     try {
       // Get configuration from the system properties.
       // Iterating through the system properties is prone to ConcurrentModificationExceptions (especially in our tests)
@@ -111,20 +110,18 @@ object Configuration {
       case e: ConfigException =>
         throw configError(e.origin, e.getMessage, Some(e))
     }
-  }
 
   /**
     * Load a new Configuration from the Environment.
     */
   def load(
       environment: Environment,
-      devSettings: Map[String, AnyRef]): Configuration = {
+      devSettings: Map[String, AnyRef]): Configuration =
     load(
       environment.classLoader,
       System.getProperties,
       devSettings,
       allowMissingApplicationConf = environment.mode == Mode.Test)
-  }
 
   /**
     * Load a new Configuration from the Environment.
@@ -200,9 +197,8 @@ case class Configuration(underlying: Config) {
   /**
     * Merge 2 configurations.
     */
-  def ++(other: Configuration): Configuration = {
+  def ++(other: Configuration): Configuration =
     Configuration(other.underlying.withFallback(underlying))
-  }
 
   /**
     * Reads a value from the underlying implementation.
@@ -210,13 +206,12 @@ case class Configuration(underlying: Config) {
     *
     * Does not check neither for incorrect type nor null value, but catches and wraps the error.
     */
-  private def readValue[T](path: String, v: => T): Option[T] = {
+  private def readValue[T](path: String, v: => T): Option[T] =
     try {
       if (underlying.hasPathOrNull(path)) Some(v) else None
     } catch {
       case NonFatal(e) => throw reportError(path, e.getMessage, Some(e))
     }
-  }
 
   /**
     * Retrieves a configuration value as a `String`.
@@ -875,13 +870,12 @@ case class Configuration(underlying: Config) {
   def reportError(
       path: String,
       message: String,
-      e: Option[Throwable] = None): PlayException = {
+      e: Option[Throwable] = None): PlayException =
     Configuration.configError(
       if (underlying.hasPath(path)) underlying.getValue(path).origin
       else underlying.root.origin,
       message,
       e)
-  }
 
   /**
     * Creates a configuration error for this configuration.
@@ -896,11 +890,8 @@ case class Configuration(underlying: Config) {
     * @param e the related exception
     * @return a configuration exception
     */
-  def globalError(
-      message: String,
-      e: Option[Throwable] = None): PlayException = {
+  def globalError(message: String, e: Option[Throwable] = None): PlayException =
     Configuration.configError(underlying.root.origin, message, e)
-  }
 
   /**
     * Loads a String configuration item, looking at the deprecated key first, and outputting a warning if it's defined,
@@ -908,12 +899,11 @@ case class Configuration(underlying: Config) {
     */
   private[play] def getDeprecatedString(
       key: String,
-      deprecatedKey: String): String = {
+      deprecatedKey: String): String =
     getString(deprecatedKey).fold(underlying.getString(key)) { value =>
       Logger.warn(s"$deprecatedKey is deprecated, use $key instead")
       value
     }
-  }
 
   /**
     * Loads a String configuration item, looking at the deprecated key first, and outputting a warning if it's defined,
@@ -921,7 +911,7 @@ case class Configuration(underlying: Config) {
     */
   private[play] def getDeprecatedStringOpt(
       key: String,
-      deprecatedKey: String): Option[String] = {
+      deprecatedKey: String): Option[String] =
     getString(deprecatedKey)
       .map { value =>
         Logger.warn(s"$deprecatedKey is deprecated, use $key instead")
@@ -929,7 +919,6 @@ case class Configuration(underlying: Config) {
       }
       .orElse(getString(key))
       .filter(_.nonEmpty)
-  }
 
   /**
     * Loads a Boolean configuration item, looking at the deprecated key first, and outputting a warning if it's defined,
@@ -937,12 +926,11 @@ case class Configuration(underlying: Config) {
     */
   private[play] def getDeprecatedBoolean(
       key: String,
-      deprecatedKey: String): Boolean = {
+      deprecatedKey: String): Boolean =
     getBoolean(deprecatedKey).fold(underlying.getBoolean(key)) { value =>
       Logger.warn(s"$deprecatedKey is deprecated, use $key instead")
       value
     }
-  }
 
   /**
     * Loads a Duration configuration item, looking at the deprecated key first, and outputting a warning if it's defined,
@@ -950,7 +938,7 @@ case class Configuration(underlying: Config) {
     */
   private[play] def getDeprecatedDuration(
       key: String,
-      deprecatedKey: String): FiniteDuration = {
+      deprecatedKey: String): FiniteDuration =
     new FiniteDuration(
       getNanoseconds(deprecatedKey).fold(
         underlying.getDuration(key, TimeUnit.NANOSECONDS)) { value =>
@@ -959,7 +947,6 @@ case class Configuration(underlying: Config) {
       },
       TimeUnit.NANOSECONDS
     )
-  }
 
   /**
     * Loads an optional Duration configuration item, looking at the deprecated key first, and outputting a warning if
@@ -967,7 +954,7 @@ case class Configuration(underlying: Config) {
     */
   private[play] def getDeprecatedDurationOpt(
       key: String,
-      deprecatedKey: String): Option[FiniteDuration] = {
+      deprecatedKey: String): Option[FiniteDuration] =
     getNanoseconds(deprecatedKey)
       .map { value =>
         Logger.warn(s"$deprecatedKey is deprecated, use $key instead")
@@ -977,7 +964,6 @@ case class Configuration(underlying: Config) {
       .map { value =>
         new FiniteDuration(value, TimeUnit.NANOSECONDS)
       }
-  }
 }
 
 /**
@@ -1010,9 +996,8 @@ private[play] class PlayConfig(val underlying: Config) {
   /**
     * Get the config at the given path.
     */
-  def get[A](path: String)(implicit loader: ConfigLoader[A]): A = {
+  def get[A](path: String)(implicit loader: ConfigLoader[A]): A =
     loader.load(underlying, path)
-  }
 
   /**
     * Get a prototyped sequence of objects.
@@ -1057,7 +1042,7 @@ private[play] class PlayConfig(val underlying: Config) {
     */
   def getDeprecated[A: ConfigLoader](
       path: String,
-      deprecatedPaths: String*): A = {
+      deprecatedPaths: String*): A =
     deprecatedPaths
       .collectFirst {
         case deprecated if underlying.hasPath(deprecated) =>
@@ -1067,7 +1052,6 @@ private[play] class PlayConfig(val underlying: Config) {
       .getOrElse {
         get[A](path)
       }
-  }
 
   /**
     * Get a deprecated configuration.
@@ -1107,13 +1091,12 @@ private[play] class PlayConfig(val underlying: Config) {
   def reportError(
       path: String,
       message: String,
-      e: Option[Throwable] = None): PlayException = {
+      e: Option[Throwable] = None): PlayException =
     Configuration.configError(
       if (underlying.hasPath(path)) underlying.getValue(path).origin
       else underlying.root.origin,
       message,
       e)
-  }
 
   /**
     * Get the immediate subkeys of this configuration.
@@ -1141,9 +1124,8 @@ private[play] object PlayConfig {
 private[play] trait ConfigLoader[A] { self =>
   def load(config: Config, path: String): A
   def map[B](f: A => B): ConfigLoader[B] = new ConfigLoader[B] {
-    def load(config: Config, path: String): B = {
+    def load(config: Config, path: String): B =
       f(self.load(config, path))
-    }
   }
 }
 
@@ -1209,13 +1191,12 @@ private[play] object ConfigLoader {
   implicit def optionLoader[A](
       implicit valueLoader: ConfigLoader[A]): ConfigLoader[Option[A]] =
     new ConfigLoader[Option[A]] {
-      def load(config: Config, path: String): Option[A] = {
+      def load(config: Config, path: String): Option[A] =
         if (config.getIsNull(path)) None
         else {
           val value = valueLoader.load(config, path)
           Some(value)
         }
-      }
     }
 
   implicit def mapLoader[A](

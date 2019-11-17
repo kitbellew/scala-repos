@@ -112,24 +112,21 @@ object MetricEvaluator {
   def apply[EI, Q, P, A, R](
       metric: Metric[EI, Q, P, A, R],
       otherMetrics: Seq[Metric[EI, Q, P, A, _]],
-      outputPath: String): MetricEvaluator[EI, Q, P, A, R] = {
+      outputPath: String): MetricEvaluator[EI, Q, P, A, R] =
     new MetricEvaluator[EI, Q, P, A, R](metric, otherMetrics, Some(outputPath))
-  }
 
   def apply[EI, Q, P, A, R](
       metric: Metric[EI, Q, P, A, R],
       otherMetrics: Seq[Metric[EI, Q, P, A, _]])
-      : MetricEvaluator[EI, Q, P, A, R] = {
+      : MetricEvaluator[EI, Q, P, A, R] =
     new MetricEvaluator[EI, Q, P, A, R](metric, otherMetrics, None)
-  }
 
   def apply[EI, Q, P, A, R](
-      metric: Metric[EI, Q, P, A, R]): MetricEvaluator[EI, Q, P, A, R] = {
+      metric: Metric[EI, Q, P, A, R]): MetricEvaluator[EI, Q, P, A, R] =
     new MetricEvaluator[EI, Q, P, A, R](
       metric,
       Seq[Metric[EI, Q, P, A, _]](),
       None)
-  }
 
   case class NameParams(name: String, params: Params) {
     def this(np: (String, Params)) = this(np._1, np._2)

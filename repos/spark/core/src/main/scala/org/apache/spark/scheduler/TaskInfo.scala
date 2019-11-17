@@ -79,7 +79,7 @@ class TaskInfo(
 
   def running: Boolean = !finished
 
-  def status: String = {
+  def status: String =
     if (running) {
       if (gettingResult) {
         "GET RESULT"
@@ -93,18 +93,16 @@ class TaskInfo(
     } else {
       "UNKNOWN"
     }
-  }
 
   def id: String = s"$index.$attemptNumber"
 
-  def duration: Long = {
+  def duration: Long =
     if (!finished) {
       throw new UnsupportedOperationException(
         "duration() called on unfinished task")
     } else {
       finishTime - launchTime
     }
-  }
 
   private[spark] def timeRunning(currentTime: Long): Long =
     currentTime - launchTime

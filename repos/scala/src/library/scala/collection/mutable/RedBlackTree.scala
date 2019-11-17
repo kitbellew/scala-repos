@@ -153,7 +153,7 @@ private[collection] object RedBlackTree {
     }
 
   private[this] def minNodeAfter[A, B](node: Node[A, B], key: A)(
-      implicit ord: Ordering[A]): Node[A, B] = {
+      implicit ord: Ordering[A]): Node[A, B] =
     if (node eq null) null
     else {
       var y: Node[A, B] = null
@@ -166,7 +166,6 @@ private[collection] object RedBlackTree {
       }
       if (cmp <= 0) y else successor(y)
     }
-  }
 
   /**
     * Returns the last (highest) map entry with a key smaller than `key`. Returns `None` if there is no such node.
@@ -186,7 +185,7 @@ private[collection] object RedBlackTree {
     }
 
   private[this] def maxNodeBefore[A, B](node: Node[A, B], key: A)(
-      implicit ord: Ordering[A]): Node[A, B] = {
+      implicit ord: Ordering[A]): Node[A, B] =
     if (node eq null) null
     else {
       var y: Node[A, B] = null
@@ -199,7 +198,6 @@ private[collection] object RedBlackTree {
       }
       if (cmp > 0) y else predecessor(y)
     }
-  }
 
   // ---- insertion ----
 
@@ -384,7 +382,7 @@ private[collection] object RedBlackTree {
     * Returns the node that follows `node` in an in-order tree traversal. If `node` has the maximum key (and is,
     * therefore, the last node), this method returns `null`.
     */
-  private[this] def successor[A, B](node: Node[A, B]): Node[A, B] = {
+  private[this] def successor[A, B](node: Node[A, B]): Node[A, B] =
     if (node.right ne null) minNodeNonNull(node.right)
     else {
       var x = node
@@ -395,13 +393,12 @@ private[collection] object RedBlackTree {
       }
       y
     }
-  }
 
   /**
     * Returns the node that precedes `node` in an in-order tree traversal. If `node` has the minimum key (and is,
     * therefore, the first node), this method returns `null`.
     */
-  private[this] def predecessor[A, B](node: Node[A, B]): Node[A, B] = {
+  private[this] def predecessor[A, B](node: Node[A, B]): Node[A, B] =
     if (node.left ne null) maxNodeNonNull(node.left)
     else {
       var x = node
@@ -412,7 +409,6 @@ private[collection] object RedBlackTree {
       }
       y
     }
-  }
 
   private[this] def rotateLeft[A, B](tree: Tree[A, B], x: Node[A, B]): Unit =
     if (x ne null) {
@@ -604,14 +600,13 @@ private[collection] object RedBlackTree {
     */
   private[this] def hasProperParentRefs[A, B](tree: Tree[A, B]): Boolean = {
 
-    def hasProperParentRefs(node: Node[A, B]): Boolean = {
+    def hasProperParentRefs(node: Node[A, B]): Boolean =
       if (node eq null) true
       else {
         if ((node.left ne null) && (node.left.parent ne node) ||
             (node.right ne null) && (node.right.parent ne node)) false
         else hasProperParentRefs(node.left) && hasProperParentRefs(node.right)
       }
-    }
 
     if (tree.root eq null) true
     else (tree.root.parent eq null) && hasProperParentRefs(tree.root)
@@ -621,7 +616,7 @@ private[collection] object RedBlackTree {
     * Returns true if this node follows the properties of a binary search tree.
     */
   private[this] def isValidBST[A, B](node: Node[A, B])(
-      implicit ord: Ordering[A]): Boolean = {
+      implicit ord: Ordering[A]): Boolean =
     if (node eq null) true
     else {
       if ((node.left ne null) && (ord.compare(node.key, node.left.key) <= 0) ||
@@ -629,7 +624,6 @@ private[collection] object RedBlackTree {
         false
       else isValidBST(node.left) && isValidBST(node.right)
     }
-  }
 
   /**
     * Returns true if the tree has all the red-black tree properties: if the root node is black, if all children of red
@@ -637,13 +631,12 @@ private[collection] object RedBlackTree {
     */
   private[this] def isValidRedBlackTree[A, B](tree: Tree[A, B]): Boolean = {
 
-    def noRedAfterRed(node: Node[A, B]): Boolean = {
+    def noRedAfterRed(node: Node[A, B]): Boolean =
       if (node eq null) true
       else if (node.red && (isRed(node.left) || isRed(node.right))) false
       else noRedAfterRed(node.left) && noRedAfterRed(node.right)
-    }
 
-    def blackHeight(node: Node[A, B]): Int = {
+    def blackHeight(node: Node[A, B]): Int =
       if (node eq null) 1
       else {
         val lh = blackHeight(node.left)
@@ -653,7 +646,6 @@ private[collection] object RedBlackTree {
         else if (isRed(node)) lh
         else lh + 1
       }
-    }
 
     isBlack(tree.root) && noRedAfterRed(tree.root) &&
     blackHeight(tree.root) >= 0

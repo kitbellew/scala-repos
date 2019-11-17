@@ -105,10 +105,9 @@ class SecurityDirectivesExamplesSpec extends RoutingSpec {
   }
   "authenticateBasicPFAsync-0" in {
     case class User(id: String)
-    def fetchUser(id: String): Future[User] = {
+    def fetchUser(id: String): Future[User] =
       // some fancy logic to obtain a User
       Future.successful(User(id))
-    }
 
     val myUserPassAuthenticator: AsyncAuthenticatorPF[User] = {
       case p @ Credentials.Provided(id) if p.verify("p4ssw0rd") =>

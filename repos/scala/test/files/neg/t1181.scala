@@ -6,7 +6,7 @@ class CompilerTest(val valueList: List[Symbol]) {
   def buildMap(
       map: Map[Symbol, Symbol],
       keyList: List[Symbol],
-      valueList: List[Symbol]): Map[Symbol, Symbol] = {
+      valueList: List[Symbol]): Map[Symbol, Symbol] =
     (keyList, valueList) match {
       case (Nil, Nil) =>
         map
@@ -16,5 +16,4 @@ class CompilerTest(val valueList: List[Symbol]) {
             keyList.tail,
             valueList.tail)
     }
-  }
 }

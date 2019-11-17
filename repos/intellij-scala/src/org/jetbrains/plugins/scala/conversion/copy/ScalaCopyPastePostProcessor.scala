@@ -52,7 +52,7 @@ class ScalaCopyPastePostProcessor
         .getInstance()
         .runProcess(
           new Runnable {
-            override def run(): Unit = {
+            override def run(): Unit =
               breakable {
                 for ((startOffset, endOffset) <- startOffsets.zip(endOffsets);
                      element <- getElementsStrictlyInRange(
@@ -76,12 +76,10 @@ class ScalaCopyPastePostProcessor
                     Association(dependency.kind, range, dependency.path)
                 }
               }
-            }
           },
           new AbstractProgressIndicatorBase {
-            override def isCanceled: scala.Boolean = {
+            override def isCanceled: scala.Boolean =
               System.currentTimeMillis > timeBound || super.isCanceled
-            }
           }
         )
     } catch {
@@ -104,7 +102,7 @@ class ScalaCopyPastePostProcessor
     new Associations(associations.reverse)
   }
 
-  protected def extractTransferableData0(content: Transferable) = {
+  protected def extractTransferableData0(content: Transferable) =
     content
       .isDataFlavorSupported(Associations.Flavor)
       .ifTrue(
@@ -112,7 +110,6 @@ class ScalaCopyPastePostProcessor
           .getTransferData(Associations.Flavor)
           .asInstanceOf[Associations])
       .orNull
-  }
 
   protected def processTransferableData0(
       project: Project,

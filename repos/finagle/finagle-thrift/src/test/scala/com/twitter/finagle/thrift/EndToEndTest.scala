@@ -72,12 +72,11 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
 
   def servers(pf: TProtocolFactory): Seq[(String, Closable, Int)] = {
     val iface = new BServiceImpl {
-      override def show_me_your_dtab(): Future[String] = {
+      override def show_me_your_dtab(): Future[String] =
         ClientId.current.map(_.name) match {
           case Some(name) => Future.value(name)
           case _          => Future.exception(missingClientIdEx)
         }
-      }
     }
 
     val builder = ServerBuilder()
@@ -602,12 +601,11 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
     "clientId is not sent and prep stats are not recorded when TTwitter upgrading is disabled") {
     val pf = Protocols.binaryFactory()
     val iface = new BServiceImpl {
-      override def someway(): Future[Void] = {
+      override def someway(): Future[Void] =
         ClientId.current.map(_.name) match {
           case Some(name) => Future.exception(presentClientIdEx)
           case _          => Future.Void
         }
-      }
     }
     val server = Thrift.server
       .withProtocolFactory(pf)

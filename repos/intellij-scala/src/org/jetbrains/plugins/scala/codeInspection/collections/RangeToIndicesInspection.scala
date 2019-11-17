@@ -27,13 +27,12 @@ object RangeToIndices extends SimplificationType {
 
   def toIndicesSimplification(
       expr: ScExpression,
-      qual: ScExpression): Some[Simplification] = {
+      qual: ScExpression): Some[Simplification] =
     Some(
       replace(expr)
         .withText(invocationText(qual, "indices"))
         .withHint(s"Replace with ${qual.getText}.indices")
         .highlightAll)
-  }
 }
 
 object UntilToIndices extends SimplificationType {

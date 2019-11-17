@@ -108,9 +108,8 @@ trait CommonStreamsTests {
       assertEquals(0, stream.skip(30))
     }
 
-    @Test def should_return_true_from_markSupported(): Unit = {
+    @Test def should_return_true_from_markSupported(): Unit =
       assertTrue(newStream.markSupported)
-    }
 
     @Test def should_provide_no_op_close(): Unit = {
       val stream = newStream

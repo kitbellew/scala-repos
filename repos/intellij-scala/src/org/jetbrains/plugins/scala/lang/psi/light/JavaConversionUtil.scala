@@ -148,8 +148,7 @@ object JavaConversionUtil {
     }
   }
 
-  def convertArgs(args: Seq[ScExpression]): String = {
+  def convertArgs(args: Seq[ScExpression]): String =
     if (args.isEmpty) ""
     else args.map(convertExpression).mkString("(", ", ", ")")
-  }
 }

@@ -234,10 +234,9 @@ abstract class ScalaLightCodeInsightFixtureTestAdapter
 
     val actions = new ListBuffer[IntentionAction]
     val caretIndex = text.indexOf(CARET_MARKER)
-    def checkCaret(startOffset: Int, endOffset: Int): Boolean = {
+    def checkCaret(startOffset: Int, endOffset: Int): Boolean =
       if (caretIndex < 0) true
       else startOffset <= caretIndex && endOffset >= caretIndex
-    }
     myFixture
       .doHighlighting()
       .foreach(

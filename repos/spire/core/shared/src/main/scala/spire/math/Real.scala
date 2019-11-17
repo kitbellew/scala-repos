@@ -477,7 +477,7 @@ object Real extends RealInstances {
   def accumulate(
       total: SafeLong,
       xs: Stream[SafeLong],
-      cs: Stream[Rational]): SafeLong = {
+      cs: Stream[Rational]): SafeLong =
     (xs, cs) match {
       case (_, Stream.Empty) => total
       case (Stream.Empty, _) => sys.error("nooooo")
@@ -485,12 +485,11 @@ object Real extends RealInstances {
         val t = roundUp(c * Rational(x))
         if (t == 0) total else accumulate(total + t, xs, cs)
     }
-  }
 
   private[spire] def powerSeries(
       ps: Stream[Rational],
       terms: Int => Int,
-      x: Real): Real = {
+      x: Real): Real =
     Real({ p =>
       val t = terms(p)
       val l2t = 2 * sizeInBase(SafeLong(t) + 1, 2) + 6
@@ -503,7 +502,6 @@ object Real extends RealInstances {
       val denom = SafeLong.two.pow(l2t)
       roundUp(Rational(num, denom))
     })
-  }
 
   private[spire] def accSeq(
       f: (Rational, SafeLong) => Rational): Stream[Rational] = {
@@ -520,9 +518,8 @@ object Real extends RealInstances {
     y * logDrx(y)
   }
 
-  def logDrx(x: Real): Real = {
+  def logDrx(x: Real): Real =
     powerSeries(Stream.from(1).map(n => Rational(1, n)), _ + 1, x)
-  }
 
   def sinDr(x: Real): Real =
     x * powerSeries(

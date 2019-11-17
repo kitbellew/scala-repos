@@ -69,7 +69,7 @@ class ESEvaluationInstances(
       .get
   }
 
-  def insert(i: EvaluationInstance): String = {
+  def insert(i: EvaluationInstance): String =
     try {
       val response = client.prepareIndex(index, estype).setSource(write(i)).get
       response.getId
@@ -78,9 +78,8 @@ class ESEvaluationInstances(
         error(e.getMessage)
         ""
     }
-  }
 
-  def get(id: String): Option[EvaluationInstance] = {
+  def get(id: String): Option[EvaluationInstance] =
     try {
       val response = client.prepareGet(index, estype, id).get
       if (response.isExists) {
@@ -93,9 +92,8 @@ class ESEvaluationInstances(
         error(e.getMessage)
         None
     }
-  }
 
-  def getAll(): Seq[EvaluationInstance] = {
+  def getAll(): Seq[EvaluationInstance] =
     try {
       val builder = client.prepareSearch(index).setTypes(estype)
       ESUtils.getAll[EvaluationInstance](client, builder)
@@ -104,9 +102,8 @@ class ESEvaluationInstances(
         error(e.getMessage)
         Seq()
     }
-  }
 
-  def getCompleted(): Seq[EvaluationInstance] = {
+  def getCompleted(): Seq[EvaluationInstance] =
     try {
       val builder = client
         .prepareSearch(index)
@@ -119,21 +116,18 @@ class ESEvaluationInstances(
         error(e.getMessage)
         Seq()
     }
-  }
 
-  def update(i: EvaluationInstance): Unit = {
+  def update(i: EvaluationInstance): Unit =
     try {
       client.prepareUpdate(index, estype, i.id).setDoc(write(i)).get
     } catch {
       case e: ElasticsearchException => error(e.getMessage)
     }
-  }
 
-  def delete(id: String): Unit = {
+  def delete(id: String): Unit =
     try {
       client.prepareDelete(index, estype, id).get
     } catch {
       case e: ElasticsearchException => error(e.getMessage)
     }
-  }
 }

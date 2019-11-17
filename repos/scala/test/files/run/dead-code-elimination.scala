@@ -25,8 +25,7 @@ final class A {
 }
 
 object Test {
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     // force the loading of B
     (new A).f
-  }
 }

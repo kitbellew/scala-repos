@@ -135,10 +135,9 @@ trait Checkable { self: Analyzer =>
   }
 
   private def scrutConformsToPatternType(scrut: Type, pattTp: Type): Boolean = {
-    def typeVarToWildcard(tp: Type) = {
+    def typeVarToWildcard(tp: Type) =
       // The need for typeSymbolDirect is demonstrated in neg/t8597b.scala
       if (tp.typeSymbolDirect.isPatternTypeVariable) WildcardType else tp
-    }
     val pattTpWild = pattTp.map(typeVarToWildcard)
     scrut <:< pattTpWild
   }
@@ -146,13 +145,12 @@ trait Checkable { self: Analyzer =>
   private class CheckabilityChecker(val X: Type, val P: Type) {
     def Xsym = X.typeSymbol
     def Psym = P.typeSymbol
-    def PErased = {
+    def PErased =
       P match {
         case erasure.GenericArray(n, core) =>
           existentialAbstraction(core.typeSymbol :: Nil, P)
         case _ => existentialAbstraction(Psym.typeParams, Psym.tpe_*)
       }
-    }
     def XR = if (Xsym == AnyClass) PErased else propagateKnownTypes(X, Psym)
 
     // sadly the spec says (new java.lang.Boolean(true)).isInstanceOf[scala.Boolean]

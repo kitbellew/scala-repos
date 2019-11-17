@@ -76,58 +76,51 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
     *
     * @return seq of application problems
     */
-  def applicationProblems: Seq[ApplicabilityProblem] = {
+  def applicationProblems: Seq[ApplicabilityProblem] =
     getUpdatableUserData(MethodInvocation.APPLICABILITY_PROBLEMS_VAR_KEY)(
       Seq.empty)
-  }
 
   /**
     * @return map of expressions and parameters
     */
-  def matchedParameters: Seq[(ScExpression, Parameter)] = {
+  def matchedParameters: Seq[(ScExpression, Parameter)] =
     matchedParametersInner
       .map(a => a.swap)
       .filter(a => a._1 != null) //todo: catch when expression is null
-  }
 
   /**
     * @return map of expressions and parameters
     */
-  def matchedParametersMap: Map[Parameter, Seq[ScExpression]] = {
+  def matchedParametersMap: Map[Parameter, Seq[ScExpression]] =
     matchedParametersInner.groupBy(_._1).map(t => t.copy(_2 = t._2.map(_._2)))
-  }
 
-  private def matchedParametersInner: Seq[(Parameter, ScExpression)] = {
+  private def matchedParametersInner: Seq[(Parameter, ScExpression)] =
     getUpdatableUserData(MethodInvocation.MATCHED_PARAMETERS_VAR_KEY)(Seq.empty)
-  }
 
   /**
     * In case if invoked expression converted implicitly to invoke apply or update method
     *
     * @return imports used for implicit conversion
     */
-  def getImportsUsed: collection.Set[ImportUsed] = {
+  def getImportsUsed: collection.Set[ImportUsed] =
     getUpdatableUserData(MethodInvocation.IMPORTS_USED_KEY)(
       collection.Set.empty[ImportUsed])
-  }
 
   /**
     * In case if invoked expression converted implicitly to invoke apply or update method
     *
     * @return actual conversion element
     */
-  def getImplicitFunction: Option[PsiNamedElement] = {
+  def getImplicitFunction: Option[PsiNamedElement] =
     getUpdatableUserData(MethodInvocation.IMPLICIT_FUNCTION_KEY)(None)
-  }
 
   /**
     * true if this call is syntactic sugar for apply or update method.
     */
   def isApplyOrUpdateCall: Boolean = applyOrUpdateElement.isDefined
 
-  def applyOrUpdateElement: Option[ScalaResolveResult] = {
+  def applyOrUpdateElement: Option[ScalaResolveResult] =
     getUpdatableUserData(MethodInvocation.APPLY_OR_UPDATE_KEY)(None)
-  }
 
   /**
     * It's arguments for method and infix call.
@@ -143,7 +136,7 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
     */
   def updateAccordingToExpectedType(
       nonValueType: TypeResult[ScType],
-      check: Boolean = false): TypeResult[ScType] = {
+      check: Boolean = false): TypeResult[ScType] =
     InferUtil.updateAccordingToExpectedType(
       nonValueType,
       fromImplicitParameters = false,
@@ -151,21 +144,19 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
       expectedType = expectedType(),
       expr = this,
       check = check)
-  }
 
   /**
     * @return Is this method invocation in 'update' syntax sugar position.
     */
   def isUpdateCall: Boolean = false
 
-  protected override def innerType(ctx: TypingContext): TypeResult[ScType] = {
+  protected override def innerType(ctx: TypingContext): TypeResult[ScType] =
     try {
       tryToGetInnerType(ctx, useExpectedType = true)
     } catch {
       case _: SafeCheckException =>
         tryToGetInnerType(ctx, useExpectedType = false)
     }
-  }
 
   private def tryToGetInnerType(
       ctx: TypingContext,
@@ -190,7 +181,7 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
     def checkConformance(
         retType: ScType,
         psiExprs: Seq[Expression],
-        parameters: Seq[Parameter]) = {
+        parameters: Seq[Parameter]) =
       tuplizyCase(psiExprs) { t =>
         val result =
           Compatibility.checkConformanceExt(
@@ -201,13 +192,12 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
             isShapesResolve = false)
         (retType, result.problems, result.matchedArgs, result.matchedTypes)
       }
-    }
 
     def checkConformanceWithInference(
         retType: ScType,
         psiExprs: Seq[Expression],
         typeParams: Seq[TypeParameter],
-        parameters: Seq[Parameter]) = {
+        parameters: Seq[Parameter]) =
       tuplizyCase(psiExprs) { t =>
         InferUtil.localTypeInferenceWithApplicabilityExt(
           retType,
@@ -216,7 +206,6 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
           typeParams,
           safeCheck = withExpectedType)
       }
-    }
 
     def tuplizyCase(exprs: Seq[Expression])(
         fun: (Seq[Expression]) => (
@@ -369,7 +358,7 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
       } else default
     }
 
-    def isApplyDynamicNamed: Boolean = {
+    def isApplyDynamicNamed: Boolean =
       getEffectiveInvokedExpr match {
         case ref: ScReferenceExpression =>
           ref
@@ -379,7 +368,6 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
                 result.name == ResolvableReferenceExpression.APPLY_DYNAMIC_NAMED)
         case _ => false
       }
-    }
 
     var res: ScType =
       checkApplication(invokedType, args(isNamedDynamic = isApplyDynamicNamed))

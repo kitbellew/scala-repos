@@ -102,7 +102,7 @@ sealed class AnnotatingTracingFilter[Req, Rep](
   private[this] val finagleVersionKey = s"$prefix/finagle.version"
   private[this] val dtabLocalKey = s"$prefix/dtab.local"
 
-  def apply(request: Req, service: Service[Req, Rep]) = {
+  def apply(request: Req, service: Service[Req, Rep]) =
     if (Trace.isActivelyTracing) {
       if (traceMetaData) {
         Trace.recordServiceName(label)
@@ -125,7 +125,6 @@ sealed class AnnotatingTracingFilter[Req, Rep](
     } else {
       service(request)
     }
-  }
 }
 
 object AnnotatingTracingFilter {

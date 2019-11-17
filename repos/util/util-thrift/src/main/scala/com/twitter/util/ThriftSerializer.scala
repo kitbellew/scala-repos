@@ -15,9 +15,8 @@ trait ThriftSerializer extends StringEncoder {
     baos.toByteArray
   }
 
-  def toBytes(obj: TBase[_, _]): Array[Byte] = {
+  def toBytes(obj: TBase[_, _]): Array[Byte] =
     toBytes(obj, 32) // default initial size of ByteArrayOutputStream
-  }
 
   def fromInputStream(obj: TBase[_, _], stream: InputStream): Unit =
     obj.read(protocolFactory.getProtocol(new TIOStreamTransport(stream)))

@@ -85,9 +85,8 @@ private[prediction] case class UnsetProp(fields: Map[String, Long])
 }
 
 private[prediction] case class DeleteEntity(t: Long) extends Serializable {
-  def ++(that: DeleteEntity): DeleteEntity = {
+  def ++(that: DeleteEntity): DeleteEntity =
     if (this.t > that.t) this else that
-  }
 }
 
 private[prediction] case class EventOp(
@@ -96,15 +95,14 @@ private[prediction] case class EventOp(
     val deleteEntity: Option[DeleteEntity] = None
 ) extends Serializable {
 
-  def ++(that: EventOp): EventOp = {
+  def ++(that: EventOp): EventOp =
     EventOp(
       setProp = (setProp ++ that.setProp).reduceOption(_ ++ _),
       unsetProp = (unsetProp ++ that.unsetProp).reduceOption(_ ++ _),
       deleteEntity = (deleteEntity ++ that.deleteEntity).reduceOption(_ ++ _)
     )
-  }
 
-  def toDataMap(): Option[DataMap] = {
+  def toDataMap(): Option[DataMap] =
     setProp.flatMap { set =>
       val unsetKeys: Set[String] = unsetProp
         .map(unset =>
@@ -132,7 +130,6 @@ private[prediction] case class EventOp(
       // see https://issues.scala-lang.org/browse/SI-7005
       combinedFields.map(f => DataMap(f.mapValues(_.d).map(identity)))
     }
-  }
 }
 
 private[prediction] object EventOp {
@@ -190,8 +187,7 @@ class PBatchView(
       entityType: String,
       startTimeOpt: Option[DateTime] = None,
       untilTimeOpt: Option[DateTime] = None
-  ): RDD[(String, DataMap)] = {
-
+  ): RDD[(String, DataMap)] =
     _events
       .filter(e =>
         ((e.entityType == entityType) &&
@@ -206,5 +202,4 @@ class PBatchView(
       .mapValues(_.toDataMap)
       .filter { case (k, v) => v.isDefined }
       .map { case (k, v) => (k, v.get) }
-  }
 }

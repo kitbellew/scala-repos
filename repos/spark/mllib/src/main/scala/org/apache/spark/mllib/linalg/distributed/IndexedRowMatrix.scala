@@ -77,24 +77,21 @@ class IndexedRowMatrix @Since("1.0.0") (
     *         columns of this matrix.
     */
   @Since("1.6.0")
-  def columnSimilarities(): CoordinateMatrix = {
+  def columnSimilarities(): CoordinateMatrix =
     toRowMatrix().columnSimilarities()
-  }
 
   /**
     * Drops row indices and converts this matrix to a
     * [[org.apache.spark.mllib.linalg.distributed.RowMatrix]].
     */
   @Since("1.0.0")
-  def toRowMatrix(): RowMatrix = {
+  def toRowMatrix(): RowMatrix =
     new RowMatrix(rows.map(_.vector), 0L, nCols)
-  }
 
   /** Converts to BlockMatrix. Creates blocks of [[SparseMatrix]] with size 1024 x 1024. */
   @Since("1.3.0")
-  def toBlockMatrix(): BlockMatrix = {
+  def toBlockMatrix(): BlockMatrix =
     toBlockMatrix(1024, 1024)
-  }
 
   /**
     * Converts to BlockMatrix. Creates blocks of [[SparseMatrix]].
@@ -105,10 +102,9 @@ class IndexedRowMatrix @Since("1.0.0") (
     * @return a [[BlockMatrix]]
     */
   @Since("1.3.0")
-  def toBlockMatrix(rowsPerBlock: Int, colsPerBlock: Int): BlockMatrix = {
+  def toBlockMatrix(rowsPerBlock: Int, colsPerBlock: Int): BlockMatrix =
     // TODO: This implementation may be optimized
     toCoordinateMatrix().toBlockMatrix(rowsPerBlock, colsPerBlock)
-  }
 
   /**
     * Converts this matrix to a
@@ -196,9 +192,8 @@ class IndexedRowMatrix @Since("1.0.0") (
     * Computes the Gramian matrix `A^T A`.
     */
   @Since("1.0.0")
-  def computeGramianMatrix(): Matrix = {
+  def computeGramianMatrix(): Matrix =
     toRowMatrix().computeGramianMatrix()
-  }
 
   private[mllib] override def toBreeze(): BDM[Double] = {
     val m = numRows().toInt

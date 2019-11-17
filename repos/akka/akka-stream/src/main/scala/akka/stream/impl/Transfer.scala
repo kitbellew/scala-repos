@@ -15,9 +15,8 @@ private[akka] class SubReceive(initial: Actor.Receive) extends Actor.Receive {
   override def isDefinedAt(msg: Any): Boolean = currentReceive.isDefinedAt(msg)
   override def apply(msg: Any): Unit = currentReceive.apply(msg)
 
-  def become(newBehavior: Actor.Receive): Unit = {
+  def become(newBehavior: Actor.Receive): Unit =
     currentReceive = newBehavior
-  }
 }
 
 /**

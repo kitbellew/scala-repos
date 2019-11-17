@@ -110,7 +110,7 @@ class LogManager(
   /**
     * Lock all the given directories
     */
-  private def lockLogDirs(dirs: Seq[File]): Seq[FileLock] = {
+  private def lockLogDirs(dirs: Seq[File]): Seq[FileLock] =
     dirs.map { dir =>
       val lock = new FileLock(new File(dir, LockFile))
       if (!lock.tryLock())
@@ -120,7 +120,6 @@ class LogManager(
             ". A Kafka instance in another process or thread is using this directory.")
       lock
     }
-  }
 
   /**
     * Recover and load all logs in the given data directories
@@ -388,9 +387,7 @@ class LogManager(
     * Create a log for the given topic and the given partition
     * If the log already exists, just return a copy of the existing log
     */
-  def createLog(
-      topicAndPartition: TopicAndPartition,
-      config: LogConfig): Log = {
+  def createLog(topicAndPartition: TopicAndPartition, config: LogConfig): Log =
     logCreationOrDeletionLock synchronized {
       var log = logs.get(topicAndPartition)
 
@@ -415,7 +412,6 @@ class LogManager(
             }))
       log
     }
-  }
 
   /**
     *  Delete a log.
@@ -445,7 +441,7 @@ class LogManager(
     * by calculating the number of partitions in each directory and then choosing the
     * data directory with the fewest partitions.
     */
-  private def nextLogDir(): File = {
+  private def nextLogDir(): File =
     if (logDirs.size == 1) {
       logDirs(0)
     } else {
@@ -458,7 +454,6 @@ class LogManager(
       val leastLoaded = dirCounts.sortBy(_._2).head
       new File(leastLoaded._1)
     }
-  }
 
   /**
     * Runs through the log removing segments older than a certain age
@@ -477,14 +472,13 @@ class LogManager(
     if (log.config.retentionSize < 0 || log.size < log.config.retentionSize)
       return 0
     var diff = log.size - log.config.retentionSize
-    def shouldDelete(segment: LogSegment) = {
+    def shouldDelete(segment: LogSegment) =
       if (diff - segment.size >= 0) {
         diff -= segment.size
         true
       } else {
         false
       }
-    }
     log.deleteOldSegments(shouldDelete)
   }
 
@@ -517,11 +511,10 @@ class LogManager(
   /**
     * Map of log dir to logs by topic and partitions in that dir
     */
-  private def logsByDir = {
+  private def logsByDir =
     this.logsByTopicPartition.groupBy {
       case (_, log) => log.dir.getParent
     }
-  }
 
   /**
     * Flush any log which has exceeded its flush interval and has unwritten messages.

@@ -489,7 +489,7 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
     * as well as “new-stye” `@throws[Exception]("cause")` annotations.
     */
   object ThrownException {
-    def unapply(ann: AnnotationInfo): Option[Type] = {
+    def unapply(ann: AnnotationInfo): Option[Type] =
       ann match {
         case AnnotationInfo(tpe, _, _) if tpe.typeSymbol != ThrowsClass =>
           None
@@ -502,6 +502,5 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
         case AnnotationInfo(TypeRef(_, _, Nil), _, _) =>
           Some(ThrowableTpe)
       }
-    }
   }
 }

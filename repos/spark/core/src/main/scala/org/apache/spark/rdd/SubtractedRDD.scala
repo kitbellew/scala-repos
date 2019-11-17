@@ -55,7 +55,7 @@ private[spark] class SubtractedRDD[K: ClassTag, V: ClassTag, W: ClassTag](
 
   override def getDependencies: Seq[Dependency[_]] = {
     def rddDependency[T1: ClassTag, T2: ClassTag](
-        rdd: RDD[_ <: Product2[T1, T2]]): Dependency[_] = {
+        rdd: RDD[_ <: Product2[T1, T2]]): Dependency[_] =
       if (rdd.partitioner == Some(part)) {
         logDebug("Adding one-to-one dependency with " + rdd)
         new OneToOneDependency(rdd)
@@ -63,7 +63,6 @@ private[spark] class SubtractedRDD[K: ClassTag, V: ClassTag, W: ClassTag](
         logDebug("Adding shuffle dependency with " + rdd)
         new ShuffleDependency[T1, T2, Any](rdd, part)
       }
-    }
     Seq(rddDependency[K, V](rdd1), rddDependency[K, W](rdd2))
   }
 
@@ -102,7 +101,7 @@ private[spark] class SubtractedRDD[K: ClassTag, V: ClassTag, W: ClassTag](
         seq
       }
     }
-    def integrate(depNum: Int, op: Product2[K, V] => Unit): Unit = {
+    def integrate(depNum: Int, op: Product2[K, V] => Unit): Unit =
       dependencies(depNum) match {
         case oneToOneDependency: OneToOneDependency[_] =>
           val dependencyPartition = partition.narrowDeps(depNum).get.split
@@ -121,7 +120,6 @@ private[spark] class SubtractedRDD[K: ClassTag, V: ClassTag, W: ClassTag](
             .read()
           iter.foreach(op)
       }
-    }
 
     // the first dep is rdd1; add all values to the map
     integrate(0, t => getSeq(t._1) += t._2)

@@ -185,10 +185,8 @@ object Backoff {
   /**
     * Convert a [[Stream]] of [[Duration Durations]] into a Java-friendly representation.
     */
-  def toJava(
-      backoffs: Stream[Duration]): juc.Callable[ju.Iterator[Duration]] = {
+  def toJava(backoffs: Stream[Duration]): juc.Callable[ju.Iterator[Duration]] =
     new ju.concurrent.Callable[ju.Iterator[Duration]] {
       def call(): ju.Iterator[Duration] = backoffs.toIterator.asJava
     }
-  }
 }

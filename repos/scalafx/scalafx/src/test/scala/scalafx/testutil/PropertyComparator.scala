@@ -30,9 +30,8 @@ import java.lang.reflect.Method
 
 trait PropertyComparator extends AbstractComparator {
 
-  private def getScalaFXProperties(scalafxClass: Class[_]) = {
+  private def getScalaFXProperties(scalafxClass: Class[_]) =
     scalafxClass.getMethods.map(m => m.getName).toSet
-  }
 
   protected def getDesirableMethodName(javaMethod: Method): String =
     javaMethod.getName

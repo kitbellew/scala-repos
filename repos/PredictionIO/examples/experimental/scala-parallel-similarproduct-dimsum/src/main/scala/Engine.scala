@@ -21,11 +21,10 @@ case class ItemScore(
 ) extends Serializable
 
 object SimilarProductEngine extends IEngineFactory {
-  def apply() = {
+  def apply() =
     new Engine(
       classOf[DataSource],
       classOf[Preparator],
       Map("dimsum" -> classOf[DIMSUMAlgorithm]),
       classOf[Serving])
-  }
 }

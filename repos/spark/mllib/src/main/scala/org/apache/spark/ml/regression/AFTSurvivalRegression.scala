@@ -100,9 +100,8 @@ private[regression] trait AFTSurvivalRegressionParams
   def getQuantilesCol: String = $(quantilesCol)
 
   /** Checks whether the input has quantiles column name. */
-  protected[regression] def hasQuantilesCol: Boolean = {
+  protected[regression] def hasQuantilesCol: Boolean =
     isDefined(quantilesCol) && $(quantilesCol) != ""
-  }
 
   /**
     * Validates and transforms the input schema with the provided param map.
@@ -200,12 +199,11 @@ class AFTSurvivalRegression @Since("1.6.0") (
     * Extract [[featuresCol]], [[labelCol]] and [[censorCol]] from input dataset,
     * and put it in an RDD with strong types.
     */
-  protected[ml] def extractAFTPoints(dataset: DataFrame): RDD[AFTPoint] = {
+  protected[ml] def extractAFTPoints(dataset: DataFrame): RDD[AFTPoint] =
     dataset.select($(featuresCol), $(labelCol), $(censorCol)).rdd.map {
       case Row(features: Vector, label: Double, censor: Double) =>
         AFTPoint(features, label, censor)
     }
-  }
 
   @Since("1.6.0")
   override def fit(dataset: DataFrame): AFTSurvivalRegressionModel = {
@@ -257,9 +255,8 @@ class AFTSurvivalRegression @Since("1.6.0") (
   }
 
   @Since("1.6.0")
-  override def transformSchema(schema: StructType): StructType = {
+  override def transformSchema(schema: StructType): StructType =
     validateAndTransformSchema(schema, fitting = true)
-  }
 
   @Since("1.6.0")
   override def copy(extra: ParamMap): AFTSurvivalRegression =
@@ -319,9 +316,8 @@ class AFTSurvivalRegressionModel private[ml] (
   }
 
   @Since("1.6.0")
-  def predict(features: Vector): Double = {
+  def predict(features: Vector): Double =
     math.exp(BLAS.dot(coefficients, features) + intercept)
-  }
 
   @Since("1.6.0")
   override def transform(dataset: DataFrame): DataFrame = {
@@ -342,16 +338,14 @@ class AFTSurvivalRegressionModel private[ml] (
   }
 
   @Since("1.6.0")
-  override def transformSchema(schema: StructType): StructType = {
+  override def transformSchema(schema: StructType): StructType =
     validateAndTransformSchema(schema, fitting = false)
-  }
 
   @Since("1.6.0")
-  override def copy(extra: ParamMap): AFTSurvivalRegressionModel = {
+  override def copy(extra: ParamMap): AFTSurvivalRegressionModel =
     copyValues(
       new AFTSurvivalRegressionModel(uid, coefficients, intercept, scale),
       extra).setParent(parent)
-  }
 
   @Since("1.6.0")
   override def write: MLWriter =

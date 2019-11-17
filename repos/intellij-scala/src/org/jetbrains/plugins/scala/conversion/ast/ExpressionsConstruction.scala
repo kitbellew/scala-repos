@@ -81,11 +81,10 @@ object NewExpression {
   def apply(
       mtype: IntermediateNode,
       arrayInitalizer: Seq[IntermediateNode],
-      withArrayInitalizer: Boolean = true): NewExpression = {
+      withArrayInitalizer: Boolean = true): NewExpression =
     if (withArrayInitalizer)
       NewExpression(mtype, arrayInitalizer, Seq[IntermediateNode]())
     else NewExpression(mtype, Seq[IntermediateNode](), arrayInitalizer)
-  }
 }
 
 case class NewExpression(

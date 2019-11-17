@@ -263,18 +263,16 @@ private[sql] class MutableAggregationBufferImpl(
   // Because get method call specialized getter based on the schema, we cannot use the
   // default implementation of the isNullAt (which is get(i) == null).
   // We have to override it to call isNullAt of the underlyingBuffer.
-  override def isNullAt(i: Int): Boolean = {
+  override def isNullAt(i: Int): Boolean =
     underlyingBuffer.isNullAt(offsets(i))
-  }
 
-  override def copy(): MutableAggregationBufferImpl = {
+  override def copy(): MutableAggregationBufferImpl =
     new MutableAggregationBufferImpl(
       schema,
       toCatalystConverters,
       toScalaConverters,
       bufferOffset,
       underlyingBuffer)
-  }
 }
 
 /**
@@ -317,18 +315,16 @@ private[sql] class InputAggregationBuffer private[sql] (
   // Because get method call specialized getter based on the schema, we cannot use the
   // default implementation of the isNullAt (which is get(i) == null).
   // We have to override it to call isNullAt of the underlyingInputBuffer.
-  override def isNullAt(i: Int): Boolean = {
+  override def isNullAt(i: Int): Boolean =
     underlyingInputBuffer.isNullAt(offsets(i))
-  }
 
-  override def copy(): InputAggregationBuffer = {
+  override def copy(): InputAggregationBuffer =
     new InputAggregationBuffer(
       schema,
       toCatalystConverters,
       toScalaConverters,
       bufferOffset,
       underlyingInputBuffer)
-  }
 }
 
 /**
@@ -466,9 +462,8 @@ private[sql] case class ScalaUDAF(
     outputToCatalystConverter(udaf.evaluate(evalAggregateBuffer))
   }
 
-  override def toString: String = {
+  override def toString: String =
     s"""${udaf.getClass.getSimpleName}(${children.mkString(",")})"""
-  }
 
   override def nodeName: String = udaf.getClass.getSimpleName
 }

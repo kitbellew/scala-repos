@@ -202,9 +202,8 @@ object EvaluatePython {
 
     private val cls = classOf[StructType]
 
-    def register(): Unit = {
+    def register(): Unit =
       Pickler.registerCustomPickler(cls, this)
-    }
 
     def pickle(obj: Object, out: OutputStream, pickler: Pickler): Unit = {
       out.write(Opcodes.GLOBAL)
@@ -231,7 +230,7 @@ object EvaluatePython {
       Pickler.registerCustomPickler(cls, this)
     }
 
-    def pickle(obj: Object, out: OutputStream, pickler: Pickler): Unit = {
+    def pickle(obj: Object, out: OutputStream, pickler: Pickler): Unit =
       if (obj == this) {
         out.write(Opcodes.GLOBAL)
         out.write(
@@ -255,7 +254,6 @@ object EvaluatePython {
         out.write(Opcodes.TUPLE)
         out.write(Opcodes.REDUCE)
       }
-    }
   }
 
   private[this] var registered = false
@@ -264,7 +262,7 @@ object EvaluatePython {
     * This should be called before trying to serialize any above classes un cluster mode,
     * this should be put in the closure
     */
-  def registerPicklers(): Unit = {
+  def registerPicklers(): Unit =
     synchronized {
       if (!registered) {
         SerDeUtil.initialize()
@@ -273,16 +271,14 @@ object EvaluatePython {
         registered = true
       }
     }
-  }
 
   /**
     * Convert an RDD of Java objects to an RDD of serialized Python objects, that is usable by
     * PySpark.
     */
-  def javaToPython(rdd: RDD[Any]): RDD[Array[Byte]] = {
+  def javaToPython(rdd: RDD[Any]): RDD[Array[Byte]] =
     rdd.mapPartitions { iter =>
       registerPicklers() // let it called in executor
       new SerDeUtil.AutoBatchedPickler(iter)
     }
-  }
 }

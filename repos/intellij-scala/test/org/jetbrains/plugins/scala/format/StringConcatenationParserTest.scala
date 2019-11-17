@@ -15,7 +15,6 @@ class StringConcatenationParserTest extends SimpleTestCase {
 
   // TODO
 
-  private def parse(code: String): Seq[StringPart] = {
+  private def parse(code: String): Seq[StringPart] =
     StringConcatenationParser.parse(parseText(code)).get
-  }
 }

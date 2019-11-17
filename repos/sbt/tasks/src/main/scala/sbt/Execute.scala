@@ -322,7 +322,7 @@ private[sbt] final class Execute[A[_] <: AnyRef](
     assert(viewCache contains node, "Not in view cache: " + node)
     dependencyCheck(node)
   }
-  def dependencyCheck(node: A[_]): Unit = {
+  def dependencyCheck(node: A[_]): Unit =
     dependencies(node) foreach { dep =>
       def onOpt[T](o: Option[T])(f: T => Boolean) = o match {
         case None => false; case Some(x) => f(x)
@@ -331,7 +331,6 @@ private[sbt] final class Execute[A[_] <: AnyRef](
       def checkReverse = onOpt(reverse.get(dep)) { _.exists(_ == node) }
       assert(done(dep) ^ (checkForward && checkReverse))
     }
-  }
   def pendingInv(node: A[_]): Unit = {
     assert(atState(node, Pending))
     assert((dependencies(node) ++ runBefore(node)) exists notDone)

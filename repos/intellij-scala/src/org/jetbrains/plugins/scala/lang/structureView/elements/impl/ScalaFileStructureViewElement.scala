@@ -30,9 +30,8 @@ class ScalaFileStructureViewElement(
     file: ScalaFile,
     private val console: ScalaLanguageConsole = null)
     extends ScalaStructureViewElement(file, false) {
-  def getPresentation: ItemPresentation = {
+  def getPresentation: ItemPresentation =
     new ScalaFileItemPresentation(findRightFile())
-  }
 
   def getChildren: Array[TreeElement] = {
     val children = new ArrayBuffer[ScalaStructureViewElement]
@@ -77,7 +76,7 @@ class ScalaFileStructureViewElement(
     children.toArray
   }
 
-  private def findRightFile(): ScalaFile = {
+  private def findRightFile(): ScalaFile =
     if (console != null) {
       val buffer = new mutable.StringBuilder
       buffer.append(console.getHistory)
@@ -89,5 +88,4 @@ class ScalaFileStructureViewElement(
     } else {
       file
     }
-  }
 }

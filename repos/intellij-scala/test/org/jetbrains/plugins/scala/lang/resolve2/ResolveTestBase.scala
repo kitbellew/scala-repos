@@ -52,9 +52,8 @@ abstract class ResolveTestBase extends ScalaResolveTestCase {
     configureReferences()
   }
 
-  override def folderPath: String = {
+  override def folderPath: String =
     super.folderPath() + "resolve2/"
-  }
 
   def configureReferences(): PsiReference = {
     options = List()
@@ -93,14 +92,13 @@ abstract class ResolveTestBase extends ScalaResolveTestCase {
     }
   }
 
-  def parseParameters(s: String): Parameters = {
+  def parseParameters(s: String): Parameters =
     if (s.isEmpty) Map()
     else
       Map(s.split("""\s*,\s*""").map(_.trim).map { it: String =>
         val parts = it.split("""\s*:\s*""")
         (parts(0), parts(1))
       }: _*)
-  }
 
   def doTest() {
     doTest(getTestName(false) + ".scala")
@@ -226,11 +224,10 @@ abstract class ResolveTestBase extends ScalaResolveTestCase {
     }
   }
 
-  def lineOf(element: PsiElement) = {
+  def lineOf(element: PsiElement) =
     element.getContainingFile.getText
       .substring(0, element.getTextOffset)
       .count(_ == '\n') + 1
-  }
 
   def format(text: String, message: String, line: Int) = {
     val lines = text.lines.zipWithIndex

@@ -8,13 +8,12 @@ class Buffer {
   val Put = new Async
   //case class Put(x: Int)
 
-  def joinPat(x: Any): Unit = {
+  def joinPat(x: Any): Unit =
     x match {
       case Put =>
       case Put(y) =>
         println("returning " + y)
     }
-  }
 }
 
 object unapplyJoins extends App {

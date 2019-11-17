@@ -26,12 +26,10 @@ import org.apache.hadoop.mapred.JobConf
 import scala.util.Try
 
 object JobTest {
-  def apply(jobName: String) = {
+  def apply(jobName: String) =
     new JobTest((args: Args) => Job(jobName, args))
-  }
-  def apply(cons: (Args) => Job) = {
+  def apply(cons: (Args) => Job) =
     new JobTest(cons)
-  }
   def apply[T <: Job: Manifest] = {
     val cons = { (args: Args) =>
       manifest[T].runtimeClass
@@ -44,9 +42,8 @@ object JobTest {
 }
 
 object CascadeTest {
-  def apply(jobName: String) = {
+  def apply(jobName: String) =
     new CascadeTest((args: Args) => Job(jobName, args))
-  }
 }
 
 /**
@@ -193,7 +190,7 @@ class JobTest(cons: (Args) => Job) {
   }
 
   // This SITS is unfortunately needed to get around Specs
-  def finish: Unit = { () }
+  def finish: Unit = ()
 
   def validate(v: Boolean) = {
     validateJob = v

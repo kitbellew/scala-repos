@@ -81,7 +81,7 @@ trait SwaggerBaseBase extends Initializable with ScalatraBase {
     json merge v
   }
 
-  protected def renderIndex(docs: List[ApiType]): JValue = {
+  protected def renderIndex(docs: List[ApiType]): JValue =
     ("apiVersion" -> swagger.apiVersion) ~
       ("swaggerVersion" -> swagger.swaggerVersion) ~
       ("apis" ->
@@ -98,7 +98,6 @@ trait SwaggerBaseBase extends Initializable with ScalatraBase {
         (acc, auth) =>
           acc merge JObject(List(auth.`type` -> Extraction.decompose(auth)))
       }) ~ ("info" -> Option(swagger.apiInfo).map(Extraction.decompose(_)))
-  }
 
   error {
     case t: Throwable =>

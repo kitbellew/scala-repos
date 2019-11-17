@@ -78,41 +78,37 @@ object DialogsDemo extends JFXApp {
     padding = Insets(7)
   }
 
-  def informationDialog(): Unit = {
+  def informationDialog(): Unit =
     new Alert(AlertType.Information) {
       initOwner(stage)
       title = "Information Dialog."
       headerText = "Look, an Information Dialog"
       contentText = "I have a great message for you!"
     }.showAndWait()
-  }
 
-  def withoutHeader(): Unit = {
+  def withoutHeader(): Unit =
     new Alert(AlertType.Information) {
       initOwner(stage)
       title = "Information Dialog"
       headerText = None
       contentText = "I have a great message for you!"
     }.showAndWait()
-  }
 
-  def warningDialog(): Unit = {
+  def warningDialog(): Unit =
     new Alert(AlertType.Warning) {
       initOwner(stage)
       title = "Warning Dialog"
       headerText = "Look, an Warning Dialog."
       contentText = "Careful with the next step!"
     }.showAndWait()
-  }
 
-  def errorDialog(): Unit = {
+  def errorDialog(): Unit =
     new Alert(AlertType.Error) {
       initOwner(stage)
       title = "Error Dialog"
       headerText = "Look, an Error Dialog."
       contentText = "Ooops, there was an error!"
     }.showAndWait()
-  }
 
   def exceptionDialog(): Unit = {
 

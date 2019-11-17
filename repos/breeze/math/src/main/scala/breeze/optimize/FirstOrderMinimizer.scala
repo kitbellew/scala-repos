@@ -76,12 +76,8 @@ abstract class FirstOrderMinimizer[T, DF <: StochasticDiffFunction[T]](
       convergenceCheck.initialInfo)
   }
 
-  protected def calculateObjective(
-      f: DF,
-      x: T,
-      history: History): (Double, T) = {
+  protected def calculateObjective(f: DF, x: T, history: History): (Double, T) =
     f.calculate(x)
-  }
 
   def infiniteIterations(f: DF, state: State): Iterator[State] = {
     var failedOnce = false
@@ -140,13 +136,11 @@ abstract class FirstOrderMinimizer[T, DF <: StochasticDiffFunction[T]](
     }
   }
 
-  def minimize(f: DF, init: T): T = {
+  def minimize(f: DF, init: T): T =
     minimizeAndReturnState(f, init).x
-  }
 
-  def minimizeAndReturnState(f: DF, init: T): State = {
+  def minimizeAndReturnState(f: DF, init: T): State =
     iterations(f, init).last
-  }
 }
 
 sealed class FirstOrderException(msg: String = "") extends RuntimeException(msg)
@@ -197,9 +191,8 @@ object FirstOrderMinimizer {
     def ||(otherCheck: ConvergenceCheck[T]): ConvergenceCheck[T] =
       orElse(otherCheck)
 
-    def orElse(other: ConvergenceCheck[T]): ConvergenceCheck[T] = {
+    def orElse(other: ConvergenceCheck[T]): ConvergenceCheck[T] =
       SequenceConvergenceCheck(asChecks ++ other.asChecks)
-    }
 
     protected def asChecks: IndexedSeq[ConvergenceCheck[T]] = IndexedSeq(this)
   }
@@ -249,15 +242,13 @@ object FirstOrderMinimizer {
 
     override def apply(
         state: State[T, _, _],
-        info: IndexedSeq[ConvergenceCheck[T]#Info])
-        : Option[ConvergenceReason] = {
+        info: IndexedSeq[ConvergenceCheck[T]#Info]): Option[ConvergenceReason] =
       (checks zip info).iterator
         .flatMap {
           case (c, i) => c(state, i.asInstanceOf[c.Info])
         }
         .toStream
         .headOption
-    }
   }
 
   trait ConvergenceReason {
@@ -293,9 +284,8 @@ object FirstOrderMinimizer {
   def functionValuesConverged[T](
       tolerance: Double = 1e-9,
       relative: Boolean = true,
-      historyLength: Int = 10): ConvergenceCheck[T] = {
+      historyLength: Int = 10): ConvergenceCheck[T] =
     new FunctionValuesConverged[T](tolerance, relative, historyLength)
-  }
 
   case class FunctionValuesConverged[T](
       tolerance: Double,
@@ -309,20 +299,18 @@ object FirstOrderMinimizer {
         newGrad: T,
         newVal: Double,
         oldState: State[T, _, _],
-        oldInfo: Info): Info = {
+        oldInfo: Info): Info =
       (oldInfo :+ newVal).takeRight(historyLength)
-    }
 
     override def apply(
         state: State[T, _, _],
-        info: IndexedSeq[Double]): Option[ConvergenceReason] = {
+        info: IndexedSeq[Double]): Option[ConvergenceReason] =
       if (info.length >= 2 && (state.adjustedValue - info.max).abs <= tolerance *
             (if (relative) state.initialAdjVal else 1.0)) {
         Some(FunctionValuesConverged)
       } else {
         None
       }
-    }
 
     override def initialInfo: Info = IndexedSeq(Double.PositiveInfinity)
   }
@@ -380,7 +368,7 @@ object FirstOrderMinimizer {
         newGrad: T,
         newVal: Double,
         oldState: State[T, _, _],
-        oldInfo: Info): Info = {
+        oldInfo: Info): Info =
       if (oldState.iter % evalFrequency == 0) {
         val newValue = f(newX)
         if (newValue <= oldInfo.bestValue * (1 - improvementRequirement)) {
@@ -395,17 +383,15 @@ object FirstOrderMinimizer {
       } else {
         oldInfo
       }
-    }
 
     override def apply(
         state: State[T, _, _],
-        info: Info): Option[ConvergenceReason] = {
+        info: Info): Option[ConvergenceReason] =
       if (info.numFailures >= numFailures) {
         Some(MonitorFunctionNotImproving)
       } else {
         None
       }
-    }
 
     override def initialInfo: Info = Info(Double.PositiveInfinity, 0)
   }
@@ -455,17 +441,15 @@ object FirstOrderMinimizer {
       "Use breeze.optimize.minimize(f, init, params) instead.",
       "0.10")
     def minimize[T](f: BatchDiffFunction[T], init: T)(
-        implicit space: MutableFiniteCoordinateField[T, _, Double]): T = {
+        implicit space: MutableFiniteCoordinateField[T, _, Double]): T =
       this.iterations(f, init).last.x
-    }
 
     @deprecated(
       "Use breeze.optimize.minimize(f, init, params) instead.",
       "0.10")
     def minimize[T](f: DiffFunction[T], init: T)(
-        implicit space: MutableEnumeratedCoordinateField[T, _, Double]): T = {
+        implicit space: MutableEnumeratedCoordinateField[T, _, Double]): T =
       this.iterations(f, init).last.x
-    }
 
     @deprecated(
       "Use breeze.optimize.iterations(f, init, params) instead.",
@@ -511,7 +495,7 @@ object FirstOrderMinimizer {
       "0.10")
     def iterations[T, K](f: DiffFunction[T], init: T)(
         implicit space: MutableEnumeratedCoordinateField[T, K, Double])
-        : Iterator[LBFGS[T]#State] = {
+        : Iterator[LBFGS[T]#State] =
       if (useL1)
         new OWLQN[K, T](maxIterations, 5, regularization, tolerance)(space)
           .iterations(f, init)
@@ -520,6 +504,5 @@ object FirstOrderMinimizer {
           .iterations(
             DiffFunction.withL2Regularization(f, regularization),
             init)
-    }
   }
 }

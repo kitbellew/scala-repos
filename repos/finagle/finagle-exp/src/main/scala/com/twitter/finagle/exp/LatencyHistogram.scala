@@ -89,11 +89,10 @@ private[finagle] class LatencyHistogram(
     * as the constructor arguments. This value is ignored if
     * its `<= 0` and will be capped at [[clipDuration]].
     */
-  def add(d: Long): Unit = {
+  def add(d: Long): Unit =
     if (d >= 0) {
       val ms: Long = math.min(d, clipDuration)
       tab((ms / width).toInt).incr()
       n.incr()
     }
-  }
 }

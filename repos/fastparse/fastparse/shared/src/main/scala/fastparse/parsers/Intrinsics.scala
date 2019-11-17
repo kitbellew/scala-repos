@@ -70,8 +70,7 @@ object Intrinsics {
         success(cfg.success, (), index + length + 1, Set.empty, false)
       else fail(cfg.failure, index)
     }
-    override def toString = {
+    override def toString =
       s"StringIn(${strings.map(literalize(_)).mkString(", ")})"
-    }
   }
 }

@@ -142,14 +142,13 @@ final class DecisionTreeClassifier @Since("1.4.0") (
   /** (private[ml]) Create a Strategy instance to use with the old API. */
   private[ml] def getOldStrategy(
       categoricalFeatures: Map[Int, Int],
-      numClasses: Int): OldStrategy = {
+      numClasses: Int): OldStrategy =
     super.getOldStrategy(
       categoricalFeatures,
       numClasses,
       OldAlgo.Classification,
       getOldImpurity,
       subsamplingRate = 1.0)
-  }
 
   @Since("1.4.1")
   override def copy(extra: ParamMap): DecisionTreeClassifier =
@@ -202,16 +201,13 @@ final class DecisionTreeClassificationModel private[ml] (
   private[ml] def this(rootNode: Node, numFeatures: Int, numClasses: Int) =
     this(Identifiable.randomUID("dtc"), rootNode, numFeatures, numClasses)
 
-  override protected def predict(features: Vector): Double = {
+  override protected def predict(features: Vector): Double =
     rootNode.predictImpl(features).prediction
-  }
 
-  override protected def predictRaw(features: Vector): Vector = {
+  override protected def predictRaw(features: Vector): Vector =
     Vectors.dense(rootNode.predictImpl(features).impurityStats.stats.clone())
-  }
 
-  override protected def raw2probabilityInPlace(
-      rawPrediction: Vector): Vector = {
+  override protected def raw2probabilityInPlace(rawPrediction: Vector): Vector =
     rawPrediction match {
       case dv: DenseVector =>
         ProbabilisticClassificationModel.normalizeToProbabilitiesInPlace(dv)
@@ -221,10 +217,9 @@ final class DecisionTreeClassificationModel private[ml] (
           "Unexpected error in DecisionTreeClassificationModel:" +
             " raw2probabilityInPlace encountered SparseVector")
     }
-  }
 
   @Since("1.4.0")
-  override def copy(extra: ParamMap): DecisionTreeClassificationModel = {
+  override def copy(extra: ParamMap): DecisionTreeClassificationModel =
     copyValues(
       new DecisionTreeClassificationModel(
         uid,
@@ -232,12 +227,10 @@ final class DecisionTreeClassificationModel private[ml] (
         numFeatures,
         numClasses),
       extra).setParent(parent)
-  }
 
   @Since("1.4.0")
-  override def toString: String = {
+  override def toString: String =
     s"DecisionTreeClassificationModel (uid=$uid) of depth $depth with $numNodes nodes"
-  }
 
   /**
     * Estimate of the importance of each feature.
@@ -260,9 +253,8 @@ final class DecisionTreeClassificationModel private[ml] (
     RandomForest.featureImportances(this, numFeatures)
 
   /** (private[ml]) Convert to a model in the old API */
-  private[ml] def toOld: OldDecisionTreeModel = {
+  private[ml] def toOld: OldDecisionTreeModel =
     new OldDecisionTreeModel(rootNode.toOld(1), OldAlgo.Classification)
-  }
 
   @Since("2.0.0")
   override def write: MLWriter =

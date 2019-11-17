@@ -64,7 +64,7 @@ private[http] object FrameHandler {
       def createMessagePart(data: ByteString, last: Boolean): MessageDataPart
 
       def handleRegularFrameStart(start: FrameStart)(
-          implicit ctx: Ctx): SyncDirective = {
+          implicit ctx: Ctx): SyncDirective =
         if ((expectFirstHeader &&
             start.header.opcode == expectedOpcode) // first opcode must be the expected
             || start.header.opcode == Opcode.Continuation) {
@@ -74,7 +74,6 @@ private[http] object FrameHandler {
           if (start.header.fin) finSeen = true
           publish(start)
         } else protocolError()
-      }
       override def handleFrameData(data: FrameData)(
           implicit ctx: Ctx): SyncDirective = publish(data)
 

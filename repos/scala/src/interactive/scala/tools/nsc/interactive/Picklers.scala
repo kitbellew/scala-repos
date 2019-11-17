@@ -152,11 +152,10 @@ trait Picklers { self: Global =>
     }
   }
 
-  implicit def workEvent: Pickler[WorkEvent] = {
+  implicit def workEvent: Pickler[WorkEvent] =
     (pkl[Int] ~ pkl[Long]).wrapped { case id ~ ms => WorkEvent(id, ms) } { w =>
       w.atNode ~ w.atMillis
     }
-  }
 
   implicit def interruptReq: Pickler[InterruptReq] = {
     val emptyIR: InterruptReq = new InterruptReq {

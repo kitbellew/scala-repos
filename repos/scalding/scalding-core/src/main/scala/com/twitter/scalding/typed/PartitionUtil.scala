@@ -31,7 +31,7 @@ object PartitionUtil {
   /** A tuple converter that splits a cascading tuple into a pair of types.*/
   def converter[P, T, U >: (P, T)](
       valueConverter: TupleConverter[T],
-      partitionConverter: TupleConverter[P]) = {
+      partitionConverter: TupleConverter[P]) =
     TupleConverter.asSuperConverter[(P, T), U](new TupleConverter[(P, T)] {
       val arity = valueConverter.arity + partitionConverter.arity
 
@@ -51,7 +51,6 @@ object PartitionUtil {
         (partitionConverter(partitionTE), valueConverter(valueTE))
       }
     })
-  }
 
   /** A tuple setter for a pair of types which are flattened into a cascading tuple.*/
   def setter[P, T, U <: (P, T)](

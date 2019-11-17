@@ -84,9 +84,8 @@ class FPGrowthModel[Item: ClassTag] @Since("1.3.0") (
     *              If the directory already exists, this method throws an exception.
     */
   @Since("2.0.0")
-  override def save(sc: SparkContext, path: String): Unit = {
+  override def save(sc: SparkContext, path: String): Unit =
     FPGrowthModel.SaveLoadV1_0.save(this, path)
-  }
 
   override protected val formatVersion: String = "1.0"
 }
@@ -95,9 +94,8 @@ class FPGrowthModel[Item: ClassTag] @Since("1.3.0") (
 object FPGrowthModel extends Loader[FPGrowthModel[_]] {
 
   @Since("2.0.0")
-  override def load(sc: SparkContext, path: String): FPGrowthModel[_] = {
+  override def load(sc: SparkContext, path: String): FPGrowthModel[_] =
     FPGrowthModel.SaveLoadV1_0.load(sc, path)
-  }
 
   private[fpm] object SaveLoadV1_0 {
 
@@ -250,7 +248,7 @@ class FPGrowth private (
   private def genFreqItems[Item: ClassTag](
       data: RDD[Array[Item]],
       minCount: Long,
-      partitioner: Partitioner): Array[Item] = {
+      partitioner: Partitioner): Array[Item] =
     data
       .flatMap { t =>
         val uniq = t.toSet
@@ -266,7 +264,6 @@ class FPGrowth private (
       .collect()
       .sortBy(-_._2)
       .map(_._1)
-  }
 
   /**
     * Generate frequent itemsets by building FP-Trees, the extraction is done on each partition.
@@ -349,8 +346,7 @@ object FPGrowth {
       *
       */
     @Since("1.3.0")
-    def javaItems: java.util.List[Item] = {
+    def javaItems: java.util.List[Item] =
       items.toList.asJava
-    }
   }
 }

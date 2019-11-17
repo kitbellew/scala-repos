@@ -45,21 +45,19 @@ class SquerylRecordSpec extends Specification with AroundExample {
 
   lazy val session = new LiftSession("", Helpers.randomString(20), Empty)
   // One of these is for specs2 2.x, the other for specs2 1.x
-  protected def around[T <% Result](t: => T) = {
+  protected def around[T <% Result](t: => T) =
     S.initIfUninitted(session) {
       DBHelper.initSquerylRecordWithInMemoryDB()
       DBHelper.createSchema()
       t
     }
-  }
 
-  protected def around[T: AsResult](t: => T) = {
+  protected def around[T: AsResult](t: => T) =
     S.initIfUninitted(session) {
       DBHelper.initSquerylRecordWithInMemoryDB()
       DBHelper.createSchema()
       AsResult(t)
     }
-  }
 
   "SquerylRecord" should {
     "load record by ID" in {

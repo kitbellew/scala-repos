@@ -351,7 +351,7 @@ final class ConstArray[+T] private[util] (a: Array[Any], val length: Int)
 
   def lastOption: Option[T] = if (isEmpty) None else Some(last)
 
-  def slice(from: Int, until: Int): ConstArray[T] = {
+  def slice(from: Int, until: Int): ConstArray[T] =
     if (from == 0) {
       if (until == length) this
       else new ConstArray(a, until)
@@ -360,7 +360,6 @@ final class ConstArray[+T] private[util] (a: Array[Any], val length: Int)
         Arrays
           .copyOfRange[AnyRef](a.asInstanceOf[Array[AnyRef]], from, until)
           .asInstanceOf[Array[Any]])
-  }
 
   def tail = slice(1, length)
 
@@ -377,14 +376,13 @@ final class ConstArray[+T] private[util] (a: Array[Any], val length: Int)
 
   private[this] var _hashCode: Int = 0
 
-  override def hashCode = {
+  override def hashCode =
     if (_hashCode != 0) _hashCode
     else {
       val h = MurmurHash3.productHash(this)
       _hashCode = h
       h
     }
-  }
 
   override def equals(o: Any): Boolean = o match {
     case o: ConstArray[_] =>

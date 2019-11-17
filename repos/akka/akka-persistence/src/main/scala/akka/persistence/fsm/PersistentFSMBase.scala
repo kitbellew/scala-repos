@@ -387,7 +387,7 @@ trait PersistentFSMBase[S, D, E]
   private def register(
       name: S,
       function: StateFunction,
-      timeout: Timeout): Unit = {
+      timeout: Timeout): Unit =
     if (stateFunctions contains name) {
       stateFunctions(name) = stateFunctions(name) orElse function
       stateTimeouts(name) = timeout orElse stateTimeouts(name)
@@ -395,7 +395,6 @@ trait PersistentFSMBase[S, D, E]
       stateFunctions(name) = function
       stateTimeouts(name) = timeout
     }
-  }
 
   /*
    * unhandled event handler
@@ -489,7 +488,7 @@ trait PersistentFSMBase[S, D, E]
     applyState(nextState)
   }
 
-  private[akka] def applyState(nextState: State): Unit = {
+  private[akka] def applyState(nextState: State): Unit =
     nextState.stopReason match {
       case None ⇒ makeTransition(nextState)
       case _ ⇒
@@ -499,9 +498,8 @@ trait PersistentFSMBase[S, D, E]
         terminate(nextState)
         context.stop(self)
     }
-  }
 
-  private[akka] def makeTransition(nextState: State): Unit = {
+  private[akka] def makeTransition(nextState: State): Unit =
     if (!stateFunctions.contains(nextState.stateName)) {
       terminate(
         stay withStopReason Failure(
@@ -536,7 +534,6 @@ trait PersistentFSMBase[S, D, E]
         }
       }
     }
-  }
 
   /**
     * Call `onTermination` hook; if you want to retain this behavior when
@@ -555,7 +552,7 @@ trait PersistentFSMBase[S, D, E]
     super.postStop()
   }
 
-  private def terminate(nextState: State): Unit = {
+  private def terminate(nextState: State): Unit =
     if (currentState.stopReason.isEmpty) {
       val reason = nextState.stopReason.get
       logTermination(reason)
@@ -567,7 +564,6 @@ trait PersistentFSMBase[S, D, E]
         StopEvent(reason, currentState.stateName, currentState.stateData)
       if (terminateEvent.isDefinedAt(stopEvent)) terminateEvent(stopEvent)
     }
-  }
 
   /**
     * By default [[PersistentFSM.Failure]] is logged at error level and other reason

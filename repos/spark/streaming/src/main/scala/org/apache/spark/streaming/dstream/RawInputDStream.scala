@@ -44,9 +44,8 @@ private[streaming] class RawInputDStream[T: ClassTag](
 ) extends ReceiverInputDStream[T](_ssc)
     with Logging {
 
-  def getReceiver(): Receiver[T] = {
+  def getReceiver(): Receiver[T] =
     new RawNetworkReceiver(host, port, storageLevel).asInstanceOf[Receiver[T]]
-  }
 }
 
 private[streaming] class RawNetworkReceiver(

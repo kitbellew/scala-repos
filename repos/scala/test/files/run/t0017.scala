@@ -1,8 +1,7 @@
 object Test extends App {
 
-  def transpose[A](arr: Array[Array[A]]) = {
+  def transpose[A](arr: Array[Array[A]]) =
     for (i <- Array.range(0, arr(0).length)) yield for (row <- arr) yield row(i)
-  }
 
   var my_arr = Array(Array(1, 2), Array(3, 4))
 

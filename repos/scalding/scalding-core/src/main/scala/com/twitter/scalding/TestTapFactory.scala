@@ -77,7 +77,7 @@ class TestTapFactory(src: Source, sinkMode: SinkMode) extends Serializable {
     Scheme[JobConf, RecordReader[_, _], OutputCollector[_, _], _, _]] =
     None
 
-  def createTap(readOrWrite: AccessMode)(implicit mode: Mode): Tap[_, _, _] = {
+  def createTap(readOrWrite: AccessMode)(implicit mode: Mode): Tap[_, _, _] =
     mode match {
       case Test(buffers) => {
         /*
@@ -129,5 +129,4 @@ class TestTapFactory(src: Source, sinkMode: SinkMode) extends Serializable {
           "TestTapFactory doesn't support mode: " + mode.toString)
       }
     }
-  }
 }

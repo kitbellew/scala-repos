@@ -36,7 +36,7 @@ object Embed extends DispatchSnippet {
   // Extract a lift:bind-at Elem with a name attribute, yielding the
   // Elem and the value of the name attribute.
   private object BindAtWithName {
-    def unapply(in: Elem): Option[(Elem, String)] = {
+    def unapply(in: Elem): Option[(Elem, String)] =
       if (in.prefix == "lift" && in.label == "bind-at") {
         in.attribute("name").map { nameNode =>
           (in, nameNode.text)
@@ -44,7 +44,6 @@ object Embed extends DispatchSnippet {
       } else {
         None
       }
-    }
   }
 
   private lazy val logger = Logger(this.getClass)

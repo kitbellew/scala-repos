@@ -23,11 +23,10 @@ class ScalaScopeWeigher extends CompletionWeigher {
     if (idx == -1) None else Some(-idx)
   }
 
-  def checkByContext(first: PsiElement, second: PsiElement): Option[Int] = {
+  def checkByContext(first: PsiElement, second: PsiElement): Option[Int] =
     if (PsiTreeUtil.isContextAncestor(second, first, true))
       computeLevelsBetween(first.contexts, second)
     else None
-  }
 
   override def weigh(
       element: LookupElement,

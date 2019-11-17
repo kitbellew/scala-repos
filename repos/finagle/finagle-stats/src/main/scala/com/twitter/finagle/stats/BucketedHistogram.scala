@@ -178,7 +178,7 @@ private[stats] class BucketedHistogram(limits: Array[Int])
     *         The returned value will be within
     *         [[BucketedHistogram.DefaultErrorPercent]] of the actual value.
     */
-  def maximum: Long = {
+  def maximum: Long =
     if (num == 0) {
       0L
     } else if (counts(countsLength - 1) > 0) {
@@ -191,7 +191,6 @@ private[stats] class BucketedHistogram(limits: Array[Int])
       if (i == 0) 0
       else limitMidpoint(i)
     }
-  }
 
   /**
     * The minimum value seen by calls to [[add]].
@@ -200,7 +199,7 @@ private[stats] class BucketedHistogram(limits: Array[Int])
     *         The returned value will be within
     *         [[BucketedHistogram.DefaultErrorPercent]] of the actual value.
     */
-  def minimum: Long = {
+  def minimum: Long =
     if (num == 0) {
       0L
     } else {
@@ -210,16 +209,14 @@ private[stats] class BucketedHistogram(limits: Array[Int])
       }
       limitMidpoint(i)
     }
-  }
 
   /** Get the midpoint of bucket `i` */
-  private[this] def limitMidpoint(i: Int): Long = {
+  private[this] def limitMidpoint(i: Int): Long =
     i match {
       case 0                       => 0
       case _ if i >= limits.length => Int.MaxValue
       case _                       => (limits(i - 1).toLong + limits(i)) / 2
     }
-  }
 
   override def getQuantile(quantile: Double): Long =
     percentile(quantile)

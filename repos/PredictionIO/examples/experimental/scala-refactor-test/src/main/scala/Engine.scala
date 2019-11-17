@@ -13,14 +13,13 @@ case class PredictedResult(p: Int) extends Serializable
 case class ActualResult() extends Serializable
 
 object VanillaEngine extends IEngineFactory {
-  def apply() = {
+  def apply() =
     new Engine(
       classOf[DataSource],
       //classOf[Preparator],
       PIdentityPreparator(classOf[DataSource]),
       Map("algo" -> classOf[Algorithm]),
       classOf[Serving])
-  }
 }
 
 object Runner {

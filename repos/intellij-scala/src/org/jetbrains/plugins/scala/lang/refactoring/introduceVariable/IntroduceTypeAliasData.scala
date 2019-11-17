@@ -16,11 +16,10 @@ class IntroduceTypeAliasData {
   var typeAliasInfo: (PsiFile, TextRange) = null
   var isCallModalDialogInProgress: Boolean = false
 
-  def setTypeAlias(inTypeAlias: ScTypeAlias) = {
+  def setTypeAlias(inTypeAlias: ScTypeAlias) =
     if (inTypeAlias != null) {
       typeAliasInfo = (inTypeAlias.getContainingFile, inTypeAlias.getTextRange)
     }
-  }
 
   def clearData(): Unit = {
     currentScope = null
@@ -30,24 +29,20 @@ class IntroduceTypeAliasData {
     isCallModalDialogInProgress = false
   }
 
-  def isData: Boolean = {
+  def isData: Boolean =
     currentScope != null || initialTypeElement != null ||
-    possibleScopes != null || typeAliasInfo != null
-  }
+      possibleScopes != null || typeAliasInfo != null
 
-  def addScopeElement(item: ScopeItem): Unit = {
+  def addScopeElement(item: ScopeItem): Unit =
     currentScope = item
-  }
 
-  def setInintialInfo(textRange: TextRange): Unit = {
+  def setInintialInfo(textRange: TextRange): Unit =
     if (initialTypeElement == null) {
       initialTypeElement = textRange
     }
-  }
 
-  def setPossibleScopes(inPossibleScopes: Array[ScopeItem]): Unit = {
+  def setPossibleScopes(inPossibleScopes: Array[ScopeItem]): Unit =
     possibleScopes = inPossibleScopes
-  }
 
   def getNamedElement: ScTypeAlias = {
     val element = PsiTreeUtil.findElementOfClassAtOffset(

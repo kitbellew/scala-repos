@@ -122,7 +122,7 @@ private[finagle] class InetResolver(
    * Resolve hostnames asynchronously and concurrently.
    */
   private[this] val dnsCond = new AsyncSemaphore(100)
-  protected def resolveHost(host: String): Future[Seq[InetAddress]] = {
+  protected def resolveHost(host: String): Future[Seq[InetAddress]] =
     dnsCond.acquire().flatMap { permit =>
       FuturePool
         .unboundedPool(InetAddress.getAllByName(host).toSeq)
@@ -132,7 +132,6 @@ private[finagle] class InetResolver(
         }
         .ensure { permit.release() }
     }
-  }
 
   /**
     * Resolve all hostnames and merge into a final Addr.
@@ -180,7 +179,7 @@ private[finagle] class InetResolver(
       }
   }
 
-  def bindHostPortsToAddr(hosts: Seq[HostPortMetadata]): Var[Addr] = {
+  def bindHostPortsToAddr(hosts: Seq[HostPortMetadata]): Var[Addr] =
     Var.async(Addr.Pending: Addr) { u =>
       toAddr(hosts) onSuccess { u() = _ }
       pollIntervalOpt match {
@@ -201,7 +200,6 @@ private[finagle] class InetResolver(
           Closable.nop
       }
     }
-  }
 
   /**
     * Binds to the specified hostnames, and refreshes the DNS information periodically.

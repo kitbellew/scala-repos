@@ -10,9 +10,8 @@ object Test {
 // the following comes from ticket #230
 trait Foo {
   def name: String
-  def unapply(x: String): Option[Unit] = {
+  def unapply(x: String): Option[Unit] =
     if (x == name) Some(()) else None
-  }
 }
 object Bar extends Foo { def name = "bar" }
 object Baz extends Foo { def name = "baz" }

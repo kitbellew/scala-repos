@@ -129,14 +129,12 @@ class FormatterTest {
       expectFormatterThrows(classOf[Exception], "%#s", "hello")
   }
 
-  @Test def `should_fail_s_conversions_without_width`(): Unit = {
+  @Test def `should_fail_s_conversions_without_width`(): Unit =
     // Issue #2246
     expectFormatterThrows(classOf[MissingFormatWidthException], "%-s", "abc")
-  }
 
-  @Test def `should_provide_c_conversion`(): Unit = {
+  @Test def `should_provide_c_conversion`(): Unit =
     assertF("!    ", "%-5c", new Character('!'))
-  }
 
   @Test def `should_provide_d_conversion`(): Unit = {
     assertF("5", "%d", new Integer(5))
@@ -234,21 +232,17 @@ class FormatterTest {
     assertF(" NaN", "%04f", new JDouble(Double.NaN))
   }
 
-  @Test def `should_support_%%`(): Unit = {
+  @Test def `should_support_%%`(): Unit =
     assertF("1%2", "%d%%%d", new JInteger(1), new JInteger(2))
-  }
 
-  @Test def `should_support_%n`(): Unit = {
+  @Test def `should_support_%n`(): Unit =
     assertF("1\n2", "%d%n%d", new JInteger(1), new JInteger(2))
-  }
 
-  @Test def `should_survive_null`(): Unit = {
+  @Test def `should_survive_null`(): Unit =
     assertF("null", "%s", null)
-  }
 
-  @Test def `should_allow_f_string_interpolation_to_survive_null`(): Unit = {
+  @Test def `should_allow_f_string_interpolation_to_survive_null`(): Unit =
     assertEquals("null", f"${null}%s")
-  }
 
   @Test def should_allow_positional_arguments(): Unit = {
     assertF("2 1", "%2$d %1$d", new JInteger(1), new JInteger(2))

@@ -108,7 +108,7 @@ class JDBCEngineManifests(
   }
 
   /** Convert JDBC results to [[EngineManifest]] */
-  def resultToEngineManifest(rs: WrappedResultSet): EngineManifest = {
+  def resultToEngineManifest(rs: WrappedResultSet): EngineManifest =
     EngineManifest(
       id = rs.string("id"),
       version = rs.string("version"),
@@ -117,5 +117,4 @@ class JDBCEngineManifests(
       files = rs.string("files").split(","),
       engineFactory = rs.string("engineFactory")
     )
-  }
 }

@@ -35,11 +35,10 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
     new mutable.HashMap[TypeSymbol, String]()
 
   private def addTypeParameter(t: TypeSymbol) {
-    def checkName(name: String): Boolean = {
+    def checkName(name: String): Boolean =
       currentTypeParameters.forall {
         case (symbol: TypeSymbol, symbolName: String) => name != symbolName
       }
-    }
     if (checkName(t.name)) {
       currentTypeParameters += ((t, t.name))
     } else {
@@ -261,7 +260,7 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
     baos.toString
   }
 
-  def getPrinterByConstructor(c: ClassSymbol): String = {
+  def getPrinterByConstructor(c: ClassSymbol): String =
     c.children.find {
       case m: MethodSymbol if m.name == CONSTRUCTOR_NAME => true
       case _                                             => false
@@ -276,7 +275,6 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
         else res
       case _ => ""
     }
-  }
 
   def printPrimaryConstructor(m: MethodSymbol, c: ClassSymbol) {
     printModifiers(m)
@@ -593,7 +591,7 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
             case _ =>
               def checkContainsSelf(
                   self: Option[Type],
-                  parent: Symbol): Boolean = {
+                  parent: Symbol): Boolean =
                 self match {
                   case Some(tp) =>
                     tp match {
@@ -632,7 +630,6 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
                     }
                   case None => false
                 }
-              }
               val prefixStr = (prefix, symbol, toString(prefix)) match {
                 case (NoPrefixType, _, _) => ""
                 case (ThisType(objectSymbol), _, _)

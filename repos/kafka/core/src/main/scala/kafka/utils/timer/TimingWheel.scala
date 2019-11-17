@@ -116,7 +116,7 @@ private[timer] class TimingWheel(
   // Therefore, it needs to be volatile due to the issue of Double-Checked Locking pattern with JVM
   @volatile private[this] var overflowWheel: TimingWheel = null
 
-  private[this] def addOverflowWheel(): Unit = {
+  private[this] def addOverflowWheel(): Unit =
     synchronized {
       if (overflowWheel == null) {
         overflowWheel = new TimingWheel(
@@ -128,7 +128,6 @@ private[timer] class TimingWheel(
         )
       }
     }
-  }
 
   def add(timerTaskEntry: TimerTaskEntry): Boolean = {
     val expiration = timerTaskEntry.timerTask.expirationMs
@@ -163,12 +162,11 @@ private[timer] class TimingWheel(
   }
 
   // Try to advance the clock
-  def advanceClock(timeMs: Long): Unit = {
+  def advanceClock(timeMs: Long): Unit =
     if (timeMs >= currentTime + tickMs) {
       currentTime = timeMs - (timeMs % tickMs)
 
       // Try to advance the clock of the overflow wheel if present
       if (overflowWheel != null) overflowWheel.advanceClock(currentTime)
     }
-  }
 }

@@ -326,14 +326,13 @@ class KafkaConfigTest {
     assert(ApiVersion.latestVersion >= conf3.interBrokerProtocolVersion)
   }
 
-  private def isValidKafkaConfig(props: Properties): Boolean = {
+  private def isValidKafkaConfig(props: Properties): Boolean =
     try {
       KafkaConfig.fromProps(props)
       true
     } catch {
       case e: IllegalArgumentException => false
     }
-  }
 
   @Test
   def testUncleanLeaderElectionDefault() {

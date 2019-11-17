@@ -92,13 +92,12 @@ private[reconcile] class OffersWantedForReconciliationActor(
     subscribedToOffers(until, nextCheck)
   }
 
-  protected def scheduleNextCheck: Cancellable = {
+  protected def scheduleNextCheck: Cancellable =
     context.system.scheduler.scheduleOnce(
       interestDuration,
       self,
       OffersWantedForReconciliationActor.RecheckInterest
     )(context.dispatcher)
-  }
 
   private[this] def subscribedToOffers(
       until: Timestamp,

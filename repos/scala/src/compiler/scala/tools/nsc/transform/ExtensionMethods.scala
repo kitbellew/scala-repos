@@ -210,7 +210,7 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
       // good: [B#16151 >: A#16149, A#16149 <: AnyRef#2189]($this#16150: Foo#6965[A#16149])(x#16153: B#16151)List#2457[B#16151]
     }
 
-    override def transform(tree: Tree): Tree = {
+    override def transform(tree: Tree): Tree =
       tree match {
         case Template(_, _, _) =>
           if (currentOwner.isDerivedValueClass) {
@@ -305,7 +305,6 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
         case _ =>
           super.transform(tree)
       }
-    }
 
     override def transformStats(
         stats: List[Tree],

@@ -56,13 +56,12 @@ abstract class PositionManagerTestBase extends ScalaDebuggerTestCase {
 
       def checkSourcePosition(
           initialPosition: SourcePosition,
-          location: Location) = {
+          location: Location) =
         extensions.inReadAction {
           val newPosition = posManager.getSourcePosition(location)
           Assert.assertEquals(initialPosition.getFile, newPosition.getFile)
           Assert.assertEquals(initialPosition.getLine, newPosition.getLine)
         }
-      }
 
       for ((position, locationSet) <- sourcePositions.zip(expectedLocations)) {
         val foundLocations: Set[Loc] = managed {

@@ -31,12 +31,11 @@ class ScalaRunConfigurationRefactoringListenerProvider
     }
   }
 
-  override def getListener(element: PsiElement): RefactoringElementListener = {
+  override def getListener(element: PsiElement): RefactoringElementListener =
     element match {
       case td: ScTemplateDefinition =>
         val wrapper = wrap(td)
         decorate(super.getListener(wrapper))
       case _ => null
     }
-  }
 }

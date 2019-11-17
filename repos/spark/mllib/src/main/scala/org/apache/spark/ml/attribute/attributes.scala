@@ -84,21 +84,19 @@ sealed abstract class Attribute extends Serializable {
     * save space, because numeric type is the default attribute type. For nominal and binary
     * attributes, the type info is included.
     */
-  private[attribute] def toMetadataImpl(): Metadata = {
+  private[attribute] def toMetadataImpl(): Metadata =
     if (attrType == AttributeType.Numeric) {
       toMetadataImpl(withType = false)
     } else {
       toMetadataImpl(withType = true)
     }
-  }
 
   /** Converts to ML metadata with some existing metadata. */
-  def toMetadata(existingMetadata: Metadata): Metadata = {
+  def toMetadata(existingMetadata: Metadata): Metadata =
     new MetadataBuilder()
       .withMetadata(existingMetadata)
       .putMetadata(AttributeKeys.ML_ATTR, toMetadataImpl())
       .build()
-  }
 
   /** Converts to ML metadata */
   def toMetadata(): Metadata = toMetadata(Metadata.empty)
@@ -178,7 +176,7 @@ object Attribute extends AttributeFactory {
   }
 
   /** Gets the attribute factory given the attribute type name. */
-  private def getFactory(attrType: String): AttributeFactory = {
+  private def getFactory(attrType: String): AttributeFactory =
     if (attrType == AttributeType.Numeric.name) {
       NumericAttribute
     } else if (attrType == AttributeType.Nominal.name) {
@@ -188,7 +186,6 @@ object Attribute extends AttributeFactory {
     } else {
       throw new IllegalArgumentException(s"Cannot recognize type $attrType.")
     }
-  }
 }
 
 /**
@@ -283,11 +280,10 @@ class NumericAttribute private[ml] (
       min: Option[Double] = min,
       max: Option[Double] = max,
       std: Option[Double] = std,
-      sparsity: Option[Double] = sparsity): NumericAttribute = {
+      sparsity: Option[Double] = sparsity): NumericAttribute =
     new NumericAttribute(name, index, min, max, std, sparsity)
-  }
 
-  override def equals(other: Any): Boolean = {
+  override def equals(other: Any): Boolean =
     other match {
       case o: NumericAttribute =>
         (name == o.name) && (index == o.index) && (min == o.min) &&
@@ -295,7 +291,6 @@ class NumericAttribute private[ml] (
       case _ =>
         false
     }
-  }
 
   override def hashCode: Int = {
     var sum = 17
@@ -377,9 +372,8 @@ class NominalAttribute private[ml] (
   }
 
   /** Index of a specific value. */
-  def indexOf(value: String): Int = {
+  def indexOf(value: String): Int =
     valueToIndex(value)
-  }
 
   /** Tests whether this attribute contains a specific value. */
   def hasValue(value: String): Boolean = valueToIndex.contains(value)
@@ -396,25 +390,21 @@ class NominalAttribute private[ml] (
   override def withoutIndex: NominalAttribute = copy(index = None)
 
   /** Copy with new values and empty `numValues`. */
-  def withValues(values: Array[String]): NominalAttribute = {
+  def withValues(values: Array[String]): NominalAttribute =
     copy(numValues = None, values = Some(values))
-  }
 
   /** Copy with new values and empty `numValues`. */
   @varargs
-  def withValues(first: String, others: String*): NominalAttribute = {
+  def withValues(first: String, others: String*): NominalAttribute =
     copy(numValues = None, values = Some((first +: others).toArray))
-  }
 
   /** Copy without the values. */
-  def withoutValues: NominalAttribute = {
+  def withoutValues: NominalAttribute =
     copy(values = None)
-  }
 
   /** Copy with a new `numValues` and empty `values`. */
-  def withNumValues(numValues: Int): NominalAttribute = {
+  def withNumValues(numValues: Int): NominalAttribute =
     copy(numValues = Some(numValues), values = None)
-  }
 
   /** Copy without the `numValues`. */
   def withoutNumValues: NominalAttribute = copy(numValues = None)
@@ -423,7 +413,7 @@ class NominalAttribute private[ml] (
     * Get the number of values, either from `numValues` or from `values`.
     * Return None if unknown.
     */
-  def getNumValues: Option[Int] = {
+  def getNumValues: Option[Int] =
     if (numValues.nonEmpty) {
       numValues
     } else if (values.nonEmpty) {
@@ -431,7 +421,6 @@ class NominalAttribute private[ml] (
     } else {
       None
     }
-  }
 
   /** Creates a copy of this attribute with optional changes. */
   private def copy(
@@ -439,9 +428,8 @@ class NominalAttribute private[ml] (
       index: Option[Int] = index,
       isOrdinal: Option[Boolean] = isOrdinal,
       numValues: Option[Int] = numValues,
-      values: Option[Array[String]] = values): NominalAttribute = {
+      values: Option[Array[String]] = values): NominalAttribute =
     new NominalAttribute(name, index, isOrdinal, numValues, values)
-  }
 
   override private[attribute] def toMetadataImpl(
       withType: Boolean): Metadata = {
@@ -456,7 +444,7 @@ class NominalAttribute private[ml] (
     bldr.build()
   }
 
-  override def equals(other: Any): Boolean = {
+  override def equals(other: Any): Boolean =
     other match {
       case o: NominalAttribute =>
         (name == o.name) && (index == o.index) && (isOrdinal == o.isOrdinal) &&
@@ -465,7 +453,6 @@ class NominalAttribute private[ml] (
       case _ =>
         false
     }
-  }
 
   override def hashCode: Int = {
     var sum = 17
@@ -559,9 +546,8 @@ class BinaryAttribute private[ml] (
   private def copy(
       name: Option[String] = name,
       index: Option[Int] = index,
-      values: Option[Array[String]] = values): BinaryAttribute = {
+      values: Option[Array[String]] = values): BinaryAttribute =
     new BinaryAttribute(name, index, values)
-  }
 
   override private[attribute] def toMetadataImpl(
       withType: Boolean): Metadata = {
@@ -574,7 +560,7 @@ class BinaryAttribute private[ml] (
     bldr.build()
   }
 
-  override def equals(other: Any): Boolean = {
+  override def equals(other: Any): Boolean =
     other match {
       case o: BinaryAttribute =>
         (name == o.name) && (index == o.index) &&
@@ -582,7 +568,6 @@ class BinaryAttribute private[ml] (
       case _ =>
         false
     }
-  }
 
   override def hashCode: Int = {
     var sum = 17
@@ -637,10 +622,8 @@ object UnresolvedAttribute extends Attribute {
 
   override def name: Option[String] = None
 
-  override private[attribute] def toMetadataImpl(
-      withType: Boolean): Metadata = {
+  override private[attribute] def toMetadataImpl(withType: Boolean): Metadata =
     Metadata.empty
-  }
 
   override def withoutName: Attribute = this
 

@@ -229,26 +229,22 @@ private[spark] class TaskSetManager(
     * Return the pending tasks list for a given executor ID, or an empty list if
     * there is no map entry for that host
     */
-  private def getPendingTasksForExecutor(
-      executorId: String): ArrayBuffer[Int] = {
+  private def getPendingTasksForExecutor(executorId: String): ArrayBuffer[Int] =
     pendingTasksForExecutor.getOrElse(executorId, ArrayBuffer())
-  }
 
   /**
     * Return the pending tasks list for a given host, or an empty list if
     * there is no map entry for that host
     */
-  private def getPendingTasksForHost(host: String): ArrayBuffer[Int] = {
+  private def getPendingTasksForHost(host: String): ArrayBuffer[Int] =
     pendingTasksForHost.getOrElse(host, ArrayBuffer())
-  }
 
   /**
     * Return the pending rack-local task list for a given rack, or an empty list if
     * there is no map entry for that rack
     */
-  private def getPendingTasksForRack(rack: String): ArrayBuffer[Int] = {
+  private def getPendingTasksForRack(rack: String): ArrayBuffer[Int] =
     pendingTasksForRack.getOrElse(rack, ArrayBuffer())
-  }
 
   /**
     * Dequeue a pending task from the given list and return its index.
@@ -275,9 +271,8 @@ private[spark] class TaskSetManager(
   }
 
   /** Check whether a task is currently running an attempt on a given host */
-  private def hasAttemptOnHost(taskIndex: Int, host: String): Boolean = {
+  private def hasAttemptOnHost(taskIndex: Int, host: String): Boolean =
     taskAttempts(taskIndex).exists(_.host == host)
-  }
 
   /**
     * Is this re-execution of a failed task on an executor it already failed in before
@@ -830,9 +825,8 @@ private[spark] class TaskSetManager(
     }
   }
 
-  override def getSchedulableByName(name: String): Schedulable = {
+  override def getSchedulableByName(name: String): Schedulable =
     null
-  }
 
   override def addSchedulable(schedulable: Schedulable) {}
 

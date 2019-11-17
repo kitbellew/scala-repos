@@ -106,10 +106,9 @@ class SweetCookies(
 
   def get(key: String): Option[String] = cookies.get(key)
 
-  def apply(key: String): String = {
+  def apply(key: String): String =
     cookies.get(key) getOrElse
       (throw new Exception("No cookie could be found for the specified key"))
-  }
 
   def update(name: String, value: String)(
       implicit cookieOptions: CookieOptions = CookieOptions()): Cookie = {
@@ -118,9 +117,8 @@ class SweetCookies(
   }
 
   def set(name: String, value: String)(
-      implicit cookieOptions: CookieOptions = CookieOptions()): Cookie = {
+      implicit cookieOptions: CookieOptions = CookieOptions()): Cookie =
     this.update(name, value)(cookieOptions)
-  }
 
   def delete(name: String)(
       implicit cookieOptions: CookieOptions = CookieOptions()): Unit = {
@@ -129,14 +127,12 @@ class SweetCookies(
   }
 
   def +=(keyValuePair: (String, String))(
-      implicit cookieOptions: CookieOptions = CookieOptions()): Cookie = {
+      implicit cookieOptions: CookieOptions = CookieOptions()): Cookie =
     this.update(keyValuePair._1, keyValuePair._2)(cookieOptions)
-  }
 
   def -=(key: String)(
-      implicit cookieOptions: CookieOptions = CookieOptions()): Unit = {
+      implicit cookieOptions: CookieOptions = CookieOptions()): Unit =
     delete(key)(cookieOptions)
-  }
 
   private def addCookie(
       name: String,
@@ -159,13 +155,11 @@ trait CookieContext { self: ScalatraContext =>
 
   import org.scalatra.CookieSupport._
 
-  implicit def cookieOptions: CookieOptions = {
+  implicit def cookieOptions: CookieOptions =
     servletContext.get(CookieOptionsKey).orNull.asInstanceOf[CookieOptions]
-  }
 
-  def cookies(implicit request: HttpServletRequest): SweetCookies = {
+  def cookies(implicit request: HttpServletRequest): SweetCookies =
     request.get(SweetCookiesKey).orNull.asInstanceOf[SweetCookies]
-  }
 }
 @deprecated(
   "You can remove this mixin, it's included in core by default",

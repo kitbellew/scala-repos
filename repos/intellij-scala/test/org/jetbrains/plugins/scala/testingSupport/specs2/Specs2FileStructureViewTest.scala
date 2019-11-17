@@ -13,7 +13,7 @@ abstract class Specs2FileStructureViewTest extends Specs2TestCase {
     runFileStructureViewTest("SpecsFileStrctureViewTest", status, tests: _*)
   }
 
-  protected def prepareFile(): Unit = {
+  protected def prepareFile(): Unit =
     addFileToProject(
       "SpecsFileStrctureViewTest.scala",
       """|import org.specs2.mutable.Specification
@@ -49,7 +49,6 @@ abstract class Specs2FileStructureViewTest extends Specs2TestCase {
         |}
       """.stripMargin
     )
-  }
 
   def testShouldView(): Unit =
     prepareAndRunTestInner(normalStatusId, "\"parent\"")

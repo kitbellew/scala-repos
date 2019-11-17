@@ -39,7 +39,7 @@ trait PEvents extends Serializable {
       startTime: Option[DateTime],
       untilTime: Option[DateTime],
       entityType: Option[String],
-      entityId: Option[String])(sc: SparkContext): RDD[Event] = {
+      entityId: Option[String])(sc: SparkContext): RDD[Event] =
     find(
       appId = appId,
       startTime = startTime,
@@ -48,7 +48,6 @@ trait PEvents extends Serializable {
       entityId = entityId,
       eventNames = None
     )(sc)
-  }
 
   /** :: DeveloperApi ::
     * Read from database and return the events. The deprecation here is intended

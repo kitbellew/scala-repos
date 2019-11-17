@@ -395,12 +395,11 @@ object Enumerator {
       def apply[A](
           loop: (Iteratee[E, A], S) => Future[Iteratee[E, A]],
           s: S,
-          k: Input[E] => Iteratee[E, A]): Future[Iteratee[E, A]] = {
+          k: Input[E] => Iteratee[E, A]): Future[Iteratee[E, A]] =
         executeFuture(f(s))(pec).flatMap {
           case Some((newS, e)) => loop(k(Input.El(e)), newS)
           case None            => Future.successful(Cont(k))
         }(dec)
-      }
     })
 
   /**
@@ -634,9 +633,8 @@ object Enumerator {
     * @param chunkSize The size of chunks to read from the file.
     */
   def fromFile(file: java.io.File, chunkSize: Int = 1024 * 8)(
-      implicit ec: ExecutionContext): Enumerator[Array[Byte]] = {
+      implicit ec: ExecutionContext): Enumerator[Array[Byte]] =
     fromStream(new java.io.FileInputStream(file), chunkSize)(ec)
-  }
 
   /**
     * Create an enumerator from the given input stream.
@@ -647,9 +645,8 @@ object Enumerator {
     * @param chunkSize The size of chunks to read from the file.
     */
   def fromPath(path: java.nio.file.Path, chunkSize: Int = 1024 * 8)(
-      implicit ec: ExecutionContext): Enumerator[Array[Byte]] = {
+      implicit ec: ExecutionContext): Enumerator[Array[Byte]] =
     fromStream(Files.newInputStream(path), chunkSize)(ec)
-  }
 
   /**
     * Create an Enumerator of bytes with an OutputStream.
@@ -662,7 +659,7 @@ object Enumerator {
     * $paramEcSingle
     */
   def outputStream(a: java.io.OutputStream => Unit)(
-      implicit ec: ExecutionContext): Enumerator[Array[Byte]] = {
+      implicit ec: ExecutionContext): Enumerator[Array[Byte]] =
     Concurrent.unicast[Array[Byte]] { channel =>
       val outputStream = new java.io.OutputStream() {
         override def close() {
@@ -681,7 +678,6 @@ object Enumerator {
       }
       a(outputStream)
     }(ec)
-  }
 
   /**
     * An enumerator that produces EOF and nothing else.

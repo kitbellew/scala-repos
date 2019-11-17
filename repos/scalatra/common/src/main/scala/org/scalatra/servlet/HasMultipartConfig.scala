@@ -12,7 +12,7 @@ trait HasMultipartConfig extends Initializable {
 
   import org.scalatra.servlet.HasMultipartConfig._
 
-  private[this] def multipartConfigFromContext: Option[MultipartConfig] = {
+  private[this] def multipartConfigFromContext: Option[MultipartConfig] =
     // hack to support the tests without changes
     providedConfig orElse {
       try {
@@ -23,7 +23,6 @@ trait HasMultipartConfig extends Initializable {
         case _: NullPointerException => Some(DefaultMultipartConfig)
       }
     }
-  }
 
   def multipartConfig: MultipartConfig =
     try {

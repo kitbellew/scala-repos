@@ -45,7 +45,7 @@ class ScalaReferenceContributor extends PsiReferenceContributor {
 class InterpolatedStringReferenceProvider extends PsiReferenceProvider {
   override def getReferencesByElement(
       element: PsiElement,
-      context: ProcessingContext): Array[PsiReference] = {
+      context: ProcessingContext): Array[PsiReference] =
     element match {
       case s: ScInterpolatedStringLiteral => Array.empty
       case l: ScLiteral
@@ -92,7 +92,6 @@ class InterpolatedStringReferenceProvider extends PsiReferenceProvider {
           }
       case _ => Array.empty
     }
-  }
 }
 
 // todo: Copy of the corresponding class from IDEA, changed to use ScLiteral rather than PsiLiteralExpr
@@ -156,7 +155,7 @@ class FilePathReferenceProvider extends PsiReferenceProvider {
       element: PsiElement,
       text: String,
       offset: Int,
-      soft: Boolean): Array[PsiReference] = {
+      soft: Boolean): Array[PsiReference] =
     new FileReferenceSet(
       text,
       element,
@@ -184,41 +183,34 @@ class FilePathReferenceProvider extends PsiReferenceProvider {
       override def createFileReference(
           range: TextRange,
           index: Int,
-          text: String): FileReference = {
+          text: String): FileReference =
         FilePathReferenceProvider.this.createFileReference(
           this,
           range,
           index,
           text)
-      }
 
       protected override def getReferenceCompletionFilter
-          : Condition[PsiFileSystemItem] = {
+          : Condition[PsiFileSystemItem] =
         new Condition[PsiFileSystemItem] {
-          def value(element: PsiFileSystemItem): Boolean = {
+          def value(element: PsiFileSystemItem): Boolean =
             isPsiElementAccepted(element)
-          }
         }
-      }
     }.getAllReferences.map(identity)
-  }
 
-  override def acceptsTarget(@NotNull target: PsiElement): Boolean = {
+  override def acceptsTarget(@NotNull target: PsiElement): Boolean =
     target.isInstanceOf[PsiFileSystemItem]
-  }
 
-  protected def isPsiElementAccepted(element: PsiElement): Boolean = {
+  protected def isPsiElementAccepted(element: PsiElement): Boolean =
     !(element.isInstanceOf[PsiJavaFile] &&
       element.isInstanceOf[PsiCompiledElement])
-  }
 
   protected def createFileReference(
       referenceSet: FileReferenceSet,
       range: TextRange,
       index: Int,
-      text: String): FileReference = {
+      text: String): FileReference =
     new FileReference(referenceSet, range, index, text)
-  }
 
   def getReferencesByElement(
       element: PsiElement,

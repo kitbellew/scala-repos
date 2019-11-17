@@ -71,10 +71,9 @@ private class BufChannelBufferFactory(defaultOrder: ByteOrder)
       order: ByteOrder,
       array: Array[Byte],
       offset: Int,
-      length: Int): ChannelBuffer = {
+      length: Int): ChannelBuffer =
     ChannelBuffers.unmodifiableBuffer(
       ChannelBuffers.wrappedBuffer(order, array, offset, length))
-  }
 
   /**
     * Returns a read-only ChannelBuffer whose content is equal to the sub-region
@@ -183,17 +182,14 @@ private class BufChannelBuffer(val buf: Buf, endianness: ByteOrder)
     throw new ReadOnlyBufferException()
   }
 
-  def setBytes(index: Int, in: InputStream, length: Int): Int = {
+  def setBytes(index: Int, in: InputStream, length: Int): Int =
     throw new ReadOnlyBufferException()
-  }
 
-  def setBytes(index: Int, in: ScatteringByteChannel, length: Int): Int = {
+  def setBytes(index: Int, in: ScatteringByteChannel, length: Int): Int =
     throw new ReadOnlyBufferException()
-  }
 
-  def getBytes(index: Int, out: GatheringByteChannel, length: Int): Int = {
+  def getBytes(index: Int, out: GatheringByteChannel, length: Int): Int =
     throw new UnsupportedOperationException()
-  }
 
   def getBytes(index: Int, out: OutputStream, length: Int) {
     val s = buf.slice(index, index + length)

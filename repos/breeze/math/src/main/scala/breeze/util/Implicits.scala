@@ -44,9 +44,8 @@ object Implicits extends DoubleImplicits with IteratorImplicits {
 
 trait DoubleImplicits {
   class RichDouble(x: Double) {
-    def closeTo(y: Double, tol: Double = 1e-5) = {
+    def closeTo(y: Double, tol: Double = 1e-5) =
       (math.abs(x - y) / (math.abs(x) + math.abs(y) + 1e-10) < tol);
-    }
     def isDangerous = x.isNaN || x.isInfinite
   }
 
@@ -62,9 +61,8 @@ trait IteratorImplicits {
         n
       }
 
-      def hasNext = {
+      def hasNext =
         iter.hasNext;
-      }
     }
 
     def takeUpToWhere(f: T => Boolean): Iterator[T] = new Iterator[T] {
@@ -76,9 +74,8 @@ trait IteratorImplicits {
         n
       }
 
-      def hasNext = {
+      def hasNext =
         !done && iter.hasNext;
-      }
     }
 
     def last = {

@@ -19,7 +19,7 @@ object Mimes {
     * set. Since the supported encodings is stored as a static Set we
     * synchronize access.
     */
-  private def registerEncodingsIfNotSet(): Unit = {
+  private def registerEncodingsIfNotSet(): Unit =
     synchronized {
       if (EncodingGuesser.getSupportedEncodings.isEmpty) {
         val enc = Set(
@@ -31,7 +31,6 @@ object Mimes {
         EncodingGuesser.setSupportedEncodings(enc)
       }
     }
-  }
   registerEncodingsIfNotSet
 }
 
@@ -54,34 +53,29 @@ trait Mimes {
       "eu.medsea.mimeutil.detector.ExtensionMimeDetector")
   }
 
-  def bytesMime(
-      content: Array[Byte],
-      fallback: String = DefaultMime): String = {
+  def bytesMime(content: Array[Byte], fallback: String = DefaultMime): String =
     detectMime(fallback) {
       MimeUtil2
         .getMostSpecificMimeType(
           mimeUtil.getMimeTypes(content, new MimeType(fallback)))
         .toString
     }
-  }
-  def fileMime(file: File, fallback: String = DefaultMime): String = {
+  def fileMime(file: File, fallback: String = DefaultMime): String =
     detectMime(fallback) {
       MimeUtil2
         .getMostSpecificMimeType(
           mimeUtil.getMimeTypes(file, new MimeType(fallback)))
         .toString
     }
-  }
   def inputStreamMime(
       input: InputStream,
-      fallback: String = DefaultMime): String = {
+      fallback: String = DefaultMime): String =
     detectMime(fallback) {
       MimeUtil2
         .getMostSpecificMimeType(
           mimeUtil.getMimeTypes(input, new MimeType(fallback)))
         .toString
     }
-  }
 
   /**
     * Detects the mime type of a given file path.
@@ -89,14 +83,13 @@ trait Mimes {
     * @param path The path for which to detect the mime type
     * @param fallback A fallback value in case no mime type can be found
     */
-  def mimeType(path: String, fallback: String = DefaultMime): String = {
+  def mimeType(path: String, fallback: String = DefaultMime): String =
     detectMime(fallback) {
       MimeUtil2
         .getMostSpecificMimeType(
           mimeUtil.getMimeTypes(path, new MimeType(fallback)))
         .toString
     }
-  }
 
   /**
     * Detects the mime type of a given url.
@@ -104,7 +97,7 @@ trait Mimes {
     * @param url The url for which to detect the mime type
     * @param fallback A fallback value in case no mime type can be found
     */
-  def urlMime(url: String, fallback: String = DefaultMime): String = {
+  def urlMime(url: String, fallback: String = DefaultMime): String =
     detectMime(fallback) {
       MimeUtil2
         .getMostSpecificMimeType(
@@ -112,7 +105,6 @@ trait Mimes {
         )
         .toString
     }
-  }
 
   private def detectMime(fallback: String = DefaultMime)(
       mimeDetect: => String): String = {
@@ -126,12 +118,11 @@ trait Mimes {
   def isTextMime(mime: String): Boolean =
     MimeUtil2.isTextMimeType(new MimeType(mime))
 
-  private def quiet(fn: => Unit): Unit = {
+  private def quiet(fn: => Unit): Unit =
     allCatch.withApply(
       internalLogger
         .warn("An error occurred while registering a mime type detector.", _)
     )(fn)
-  }
 
   def apply(input: InputStream) = inputStreamMime(input)
   def apply(file: File) = fileMime(file)

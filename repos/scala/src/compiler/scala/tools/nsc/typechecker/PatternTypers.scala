@@ -408,7 +408,7 @@ trait PatternTypers { self: Analyzer =>
 
     // if there's a ClassTag that allows us to turn the unchecked type test for `pt` into a checked type test
     // return the corresponding extractor (an instance of ClassTag[`pt`])
-    def extractorForUncheckedType(pos: Position, pt: Type): Tree = {
+    def extractorForUncheckedType(pos: Position, pt: Type): Tree =
       if (isPastTyper || (pt eq NoType)) EmptyTree
       else {
         pt match {
@@ -432,6 +432,5 @@ trait PatternTypers { self: Analyzer =>
               devWarning(s"Cannot create runtime type test for $pt1"); EmptyTree
           }
       }
-    }
   }
 }

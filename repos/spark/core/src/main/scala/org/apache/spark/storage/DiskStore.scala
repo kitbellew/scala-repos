@@ -37,9 +37,8 @@ private[spark] class DiskStore(conf: SparkConf, diskManager: DiskBlockManager)
   private val minMemoryMapBytes =
     conf.getSizeAsBytes("spark.storage.memoryMapThreshold", "2m")
 
-  def getSize(blockId: BlockId): Long = {
+  def getSize(blockId: BlockId): Long =
     diskManager.getFile(blockId.name).length
-  }
 
   /**
     * Invokes the provided callback function to write the specific block.
@@ -76,7 +75,7 @@ private[spark] class DiskStore(conf: SparkConf, diskManager: DiskBlockManager)
         finishTime - startTime))
   }
 
-  def putBytes(blockId: BlockId, bytes: ChunkedByteBuffer): Unit = {
+  def putBytes(blockId: BlockId, bytes: ChunkedByteBuffer): Unit =
     put(blockId) { fileOutputStream =>
       val channel = fileOutputStream.getChannel
       Utils.tryWithSafeFinally {
@@ -85,7 +84,6 @@ private[spark] class DiskStore(conf: SparkConf, diskManager: DiskBlockManager)
         channel.close()
       }
     }
-  }
 
   def getBytes(blockId: BlockId): ChunkedByteBuffer = {
     val file = diskManager.getFile(blockId.name)

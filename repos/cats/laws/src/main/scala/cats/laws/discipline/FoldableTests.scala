@@ -12,7 +12,7 @@ trait FoldableTests[F[_]] extends Laws {
   def foldable[A: Arbitrary, B: Arbitrary](
       implicit ArbFA: Arbitrary[F[A]],
       B: Monoid[B],
-      EqB: Eq[B]): RuleSet = {
+      EqB: Eq[B]): RuleSet =
     new DefaultRuleSet(
       name = "foldable",
       parent = None,
@@ -28,7 +28,6 @@ trait FoldableTests[F[_]] extends Laws {
       "exists is lazy" -> forAll(laws.existsLazy[A] _),
       "forall is lazy" -> forAll(laws.forallLazy[A] _)
     )
-  }
 }
 
 object FoldableTests {

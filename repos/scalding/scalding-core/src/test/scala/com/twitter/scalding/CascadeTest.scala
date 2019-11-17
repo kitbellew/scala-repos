@@ -40,13 +40,11 @@ class CascadeTestJob(args: Args) extends CascadeJob(args) {
 
   val jobs = List(new Job1(args), new Job2(args))
 
-  override def preProcessCascade(cascade: Cascade) = {
+  override def preProcessCascade(cascade: Cascade) =
     cascade.setFlowSkipStrategy(new FlowSkipIfSinkNotStale())
-  }
 
-  override def postProcessCascade(cascade: Cascade) = {
+  override def postProcessCascade(cascade: Cascade) =
     println(cascade.getCascadeStats())
-  }
 }
 
 class TwoPhaseCascadeTest extends WordSpec with Matchers with FieldConversions {

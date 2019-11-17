@@ -59,7 +59,7 @@ abstract class ScSyntheticPackage(name: String, manager: PsiManager)
       processor: PsiScopeProcessor,
       state: ResolveState,
       lastParent: PsiElement,
-      place: PsiElement): Boolean = {
+      place: PsiElement): Boolean =
     processor match {
       case bp: BaseProcessor =>
         if (bp.kinds.contains(PACKAGE)) {
@@ -79,7 +79,6 @@ abstract class ScSyntheticPackage(name: String, manager: PsiManager)
         true
       case _ => true
     }
-  }
 }
 
 object ScSyntheticPackage {
@@ -152,17 +151,15 @@ object ScSyntheticPackage {
 
           def findClassByShortName(
               name: String,
-              scope: GlobalSearchScope): Array[PsiClass] = {
+              scope: GlobalSearchScope): Array[PsiClass] =
             getClasses.filter(_.name == name)
-          }
 
-          def containsClassNamed(name: String): Boolean = {
+          def containsClassNamed(name: String): Boolean =
             getClasses.exists(_.name == name)
-          }
 
           def getQualifiedName = fqn
 
-          def getClasses = {
+          def getClasses =
             Array(
               pkgs.flatMap(p =>
                 if (p.fqn.length == fqn.length)
@@ -173,7 +170,6 @@ object ScSyntheticPackage {
                     case td => Seq(td)
                   }
                 else Seq.empty): _*)
-          }
 
           def getClasses(scope: GlobalSearchScope) =
             getClasses.filter { clazz =>

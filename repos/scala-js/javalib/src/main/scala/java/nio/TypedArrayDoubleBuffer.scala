@@ -110,21 +110,19 @@ private[nio] object TypedArrayDoubleBuffer {
         typedArray: Float64Array,
         initialPosition: Int,
         initialLimit: Int,
-        readOnly: Boolean): TypedArrayDoubleBuffer = {
+        readOnly: Boolean): TypedArrayDoubleBuffer =
       new TypedArrayDoubleBuffer(
         typedArray,
         initialPosition,
         initialLimit,
         readOnly)
-    }
 
     @inline
     def newTypedArray(
         buffer: ArrayBuffer,
         byteOffset: Int,
-        length: Int): Float64Array = {
+        length: Int): Float64Array =
       new Float64Array(buffer, byteOffset, length)
-    }
   }
 
   @inline

@@ -67,21 +67,19 @@ class LBFGSB(
   //initialize only is called once, so it can be used to init some arguments
   override protected def initialHistory(
       f: DiffFunction[DenseVector[Double]],
-      init: DenseVector[Double]): History = {
+      init: DenseVector[Double]): History =
     initialize(f, init)
-  }
 
   override protected def updateHistory(
       newX: DenseVector[Double],
       newGrad: DenseVector[Double],
       newVal: Double,
       f: DiffFunction[DenseVector[Double]],
-      oldState: State): History = {
+      oldState: State): History =
     updateSkYkHessianApproxMat(
       oldState.history,
       newX - oldState.x,
       newGrad :- oldState.grad)
-  }
 
   override protected def chooseDescentDirection(
       state: State,
@@ -119,9 +117,8 @@ class LBFGSB(
   override protected def takeStep(
       state: State,
       dir: DenseVector[Double],
-      stepSize: Double) = {
+      stepSize: Double) =
     state.x + (dir :* stepSize)
-  }
 
   private def initialize(
       f: DiffFunction[DenseVector[Double]],
@@ -366,11 +363,10 @@ object LBFGSB {
       lowerBounds: DenseVector[Double],
       upperBounds: DenseVector[Double],
       tolerance: Double,
-      maxIter: Int) = {
+      maxIter: Int) =
     bfgsbConvergenceTest(lowerBounds, upperBounds) ||
-    FirstOrderMinimizer.functionValuesConverged(tolerance) ||
-    FirstOrderMinimizer.maxIterationsReached(maxIter)
-  }
+      FirstOrderMinimizer.functionValuesConverged(tolerance) ||
+      FirstOrderMinimizer.maxIterationsReached(maxIter)
 
   protected val PROJ_GRADIENT_EPS = 1e-5
   protected def bfgsbConvergenceTest(

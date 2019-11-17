@@ -70,13 +70,12 @@ trait ObjectOperator extends LogicalPlan {
 object MapPartitions {
   def apply[T: Encoder, U: Encoder](
       func: Iterator[T] => Iterator[U],
-      child: LogicalPlan): MapPartitions = {
+      child: LogicalPlan): MapPartitions =
     MapPartitions(
       func.asInstanceOf[Iterator[Any] => Iterator[Any]],
       encoderFor[T].fromRowExpression,
       encoderFor[U].namedExpressions,
       child)
-  }
 }
 
 /**
@@ -100,13 +99,12 @@ case class MapPartitions(
 object AppendColumns {
   def apply[T: Encoder, U: Encoder](
       func: T => U,
-      child: LogicalPlan): AppendColumns = {
+      child: LogicalPlan): AppendColumns =
     new AppendColumns(
       func.asInstanceOf[Any => Any],
       encoderFor[T].fromRowExpression,
       encoderFor[U].namedExpressions,
       child)
-  }
 }
 
 /**
@@ -138,7 +136,7 @@ object MapGroups {
       func: (K, Iterator[T]) => TraversableOnce[U],
       groupingAttributes: Seq[Attribute],
       dataAttributes: Seq[Attribute],
-      child: LogicalPlan): MapGroups = {
+      child: LogicalPlan): MapGroups =
     new MapGroups(
       func.asInstanceOf[(Any, Iterator[Any]) => TraversableOnce[Any]],
       encoderFor[K].fromRowExpression,
@@ -148,7 +146,6 @@ object MapGroups {
       dataAttributes,
       child
     )
-  }
 }
 
 /**

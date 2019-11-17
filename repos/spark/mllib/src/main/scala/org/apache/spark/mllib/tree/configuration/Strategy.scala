@@ -87,16 +87,14 @@ class Strategy @Since("1.3.0") (
   /**
     */
   @Since("1.2.0")
-  def isMulticlassClassification: Boolean = {
+  def isMulticlassClassification: Boolean =
     algo == Classification && numClasses > 2
-  }
 
   /**
     */
   @Since("1.2.0")
-  def isMulticlassWithCategoricalFeatures: Boolean = {
+  def isMulticlassWithCategoricalFeatures: Boolean =
     isMulticlassClassification && (categoricalFeaturesInfo.size > 0)
-  }
 
   /**
     * Java-friendly constructor for [[org.apache.spark.mllib.tree.configuration.Strategy]]
@@ -140,12 +138,11 @@ class Strategy @Since("1.3.0") (
   def setCategoricalFeaturesInfo(
       categoricalFeaturesInfo: java.util.Map[
         java.lang.Integer,
-        java.lang.Integer]): Unit = {
+        java.lang.Integer]): Unit =
     this.categoricalFeaturesInfo = categoricalFeaturesInfo
       .asInstanceOf[java.util.Map[Int, Int]]
       .asScala
       .toMap
-  }
 
   /**
     * Check validity of parameters.
@@ -197,7 +194,7 @@ class Strategy @Since("1.3.0") (
     * Returns a shallow copy of this instance.
     */
   @Since("1.2.0")
-  def copy: Strategy = {
+  def copy: Strategy =
     new Strategy(
       algo,
       impurity,
@@ -213,7 +210,6 @@ class Strategy @Since("1.3.0") (
       useNodeIdCache,
       checkpointInterval
     )
-  }
 }
 
 @Since("1.2.0")
@@ -224,9 +220,8 @@ object Strategy {
     * @param algo  "Classification" or "Regression"
     */
   @Since("1.2.0")
-  def defaultStrategy(algo: String): Strategy = {
+  def defaultStrategy(algo: String): Strategy =
     defaultStrategy(Algo.fromString(algo))
-  }
 
   /**
     * Construct a default set of parameters for [[org.apache.spark.mllib.tree.DecisionTree]]

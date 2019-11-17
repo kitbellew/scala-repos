@@ -125,9 +125,8 @@ object PartitionStrategy {
     override def getPartition(
         src: VertexId,
         dst: VertexId,
-        numParts: PartitionID): PartitionID = {
+        numParts: PartitionID): PartitionID =
       math.abs((src, dst).hashCode()) % numParts
-    }
   }
 
   /**
@@ -139,13 +138,12 @@ object PartitionStrategy {
     override def getPartition(
         src: VertexId,
         dst: VertexId,
-        numParts: PartitionID): PartitionID = {
+        numParts: PartitionID): PartitionID =
       if (src < dst) {
         math.abs((src, dst).hashCode()) % numParts
       } else {
         math.abs((dst, src).hashCode()) % numParts
       }
-    }
   }
 
   /** Returns the PartitionStrategy with the specified name. */

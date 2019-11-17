@@ -1129,11 +1129,10 @@ class ScalaAnnotator
 
           override def createErrorAnnotation(
               range: TextRange,
-              message: String): Annotation = {
+              message: String): Annotation =
             holder.createErrorAnnotation(
               elementsMap.getOrElse(range.getStartOffset - shift, prefix),
               message)
-          }
         }
 
         annotateReference(
@@ -1515,7 +1514,7 @@ class ScalaAnnotator
     }
   }
 
-  def modifierIsThis(toCheck: PsiElement): Boolean = {
+  def modifierIsThis(toCheck: PsiElement): Boolean =
     toCheck match {
       case modifierOwner: ScModifierListOwner =>
         Option(modifierOwner.getModifierList)
@@ -1523,14 +1522,12 @@ class ScalaAnnotator
           .exists(_.isThis)
       case _ => false
     }
-  }
 
-  def compoundType(toCheck: PsiElement): Boolean = {
+  def compoundType(toCheck: PsiElement): Boolean =
     toCheck.getParent.getParent match {
       case _: ScCompoundTypeElement => true
       case _                        => false
     }
-  }
 
   //fix for SCL-807
   private def checkVariance(
@@ -1545,7 +1542,7 @@ class ScalaAnnotator
     def highlightVarianceError(
         varianceOfElement: Int,
         varianceOfPosition: Int,
-        name: String) = {
+        name: String) =
       if (varianceOfPosition != varianceOfElement &&
           varianceOfElement != ScTypeParam.Invariant) {
         val pos =
@@ -1569,7 +1566,6 @@ class ScalaAnnotator
             pos))
         annotation.setHighlightType(ProblemHighlightType.GENERIC_ERROR)
       }
-    }
 
     def functionToSendIn(tp: ScType, i: Int) = {
       tp match {

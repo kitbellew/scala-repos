@@ -123,9 +123,8 @@ class ParHashMap[K, V] private[collection] (
       new ParHashMapIterator(idxFrom, idxUntil, totalSz, es)
   }
 
-  protected def createNewEntry[V1](key: K, value: V1): Entry = {
+  protected def createNewEntry[V1](key: K, value: V1): Entry =
     new Entry(key, value.asInstanceOf[V])
-  }
 
   private def writeObject(out: java.io.ObjectOutputStream) {
     serializeTo(out, { entry =>

@@ -50,10 +50,9 @@ object ParquetReadBenchmark {
     finally Utils.deleteRecursively(path)
   }
 
-  def withTempTable(tableNames: String*)(f: => Unit): Unit = {
+  def withTempTable(tableNames: String*)(f: => Unit): Unit =
     try f
     finally tableNames.foreach(sqlContext.dropTempTable)
-  }
 
   def withSQLConf(pairs: (String, String)*)(f: => Unit): Unit = {
     val (keys, values) = pairs.unzip
@@ -164,7 +163,7 @@ object ParquetReadBenchmark {
     }
   }
 
-  def intStringScanBenchmark(values: Int): Unit = {
+  def intStringScanBenchmark(values: Int): Unit =
     withTempPath { dir =>
       withTempTable("t1", "tempTable") {
         sqlContext.range(values).registerTempTable("t1")
@@ -204,9 +203,8 @@ object ParquetReadBenchmark {
         benchmark.run()
       }
     }
-  }
 
-  def stringDictionaryScanBenchmark(values: Int): Unit = {
+  def stringDictionaryScanBenchmark(values: Int): Unit =
     withTempPath { dir =>
       withTempTable("t1", "tempTable") {
         sqlContext.range(values).registerTempTable("t1")
@@ -240,9 +238,8 @@ object ParquetReadBenchmark {
         benchmark.run()
       }
     }
-  }
 
-  def partitionTableScanBenchmark(values: Int): Unit = {
+  def partitionTableScanBenchmark(values: Int): Unit =
     withTempPath { dir =>
       withTempTable("t1", "tempTable") {
         sqlContext.range(values).registerTempTable("t1")
@@ -280,11 +277,8 @@ object ParquetReadBenchmark {
         benchmark.run()
       }
     }
-  }
 
-  def stringWithNullsScanBenchmark(
-      values: Int,
-      fractionOfNulls: Double): Unit = {
+  def stringWithNullsScanBenchmark(values: Int, fractionOfNulls: Double): Unit =
     withTempPath { dir =>
       withTempTable("t1", "tempTable") {
         sqlContext.range(values).registerTempTable("t1")
@@ -377,7 +371,6 @@ object ParquetReadBenchmark {
         benchmark.run()
       }
     }
-  }
 
   def main(args: Array[String]): Unit = {
     intScanBenchmark(1024 * 1024 * 15)

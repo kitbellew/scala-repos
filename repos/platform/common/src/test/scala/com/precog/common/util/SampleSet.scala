@@ -166,7 +166,7 @@ object AdSamples {
     "manufacturing",
     "research")
 
-  def gaussianIndex(size: Int): Gen[Int] = {
+  def gaussianIndex(size: Int): Gen[Int] =
     Gen(p => {
       def sample: Double = {
         val testIndex = (p.rng.nextGaussian * (size / 5)) + (size / 2)
@@ -176,9 +176,8 @@ object AdSamples {
 
       Some(sample.toInt)
     })
-  }
 
-  def exponentialIndex(size: Int): Gen[Int] = {
+  def exponentialIndex(size: Int): Gen[Int] =
     Gen(p => {
       import scala.math._
       Some(
@@ -186,7 +185,6 @@ object AdSamples {
           .min(size - 1)
           .max(0))
     })
-  }
 
   def defaultSample = adCampaignSample
 
@@ -411,14 +409,13 @@ object DistributedSampleSet {
     def pull[T](
         sampleSet: SampleSet[T],
         sampleData: Vector[T],
-        counter: Int): (SampleSet[T], Vector[T]) = {
+        counter: Int): (SampleSet[T], Vector[T]) =
       if (counter < sampleSize) {
         val (event, nextSet) = sampleSet.next
         pull(nextSet, sampleData :+ event, counter + 1)
       } else {
         (sampleSet, sampleData)
       }
-    }
 
     val (sampleSet, data) =
       pull(DistributedSampleSet(queriableSamples, sampler), Vector(), 0)

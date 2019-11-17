@@ -4,7 +4,6 @@ class Node[@specialized T](val interval: Interval[T]) {
 }
 
 object Test {
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     new Node(new Interval(5)).x1
-  }
 }

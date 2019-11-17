@@ -48,7 +48,7 @@ class TypeInferenceBugs5Test extends TypeInferenceTestBase {
 
   def testImplicitTest(): Unit = doTest()
 
-  def testImplicitVsNone(): Unit = { doTest() }
+  def testImplicitVsNone(): Unit = doTest()
 
   def testInfixApply(): Unit = doTest()
 
@@ -696,7 +696,7 @@ class TypeInferenceBugs5Test extends TypeInferenceTestBase {
 
   def testSCL8191(): Unit = doTest()
 
-  def testSCL8232(): Unit = { doTest() }
+  def testSCL8232(): Unit = doTest()
 
   def testSCL8240(): Unit = doTest()
 

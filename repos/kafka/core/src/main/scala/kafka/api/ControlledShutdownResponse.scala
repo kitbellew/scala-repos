@@ -65,5 +65,5 @@ case class ControlledShutdownResponse(
     }
   }
 
-  override def describe(details: Boolean): String = { toString }
+  override def describe(details: Boolean): String = toString
 }

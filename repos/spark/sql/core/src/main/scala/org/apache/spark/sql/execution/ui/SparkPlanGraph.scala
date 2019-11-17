@@ -84,7 +84,7 @@ private[sql] object SparkPlanGraph {
       edges: mutable.ArrayBuffer[SparkPlanGraphEdge],
       parent: SparkPlanGraphNode,
       subgraph: SparkPlanGraphCluster,
-      exchanges: mutable.HashMap[SparkPlanInfo, SparkPlanGraphNode]): Unit = {
+      exchanges: mutable.HashMap[SparkPlanInfo, SparkPlanGraphNode]): Unit =
     planInfo.nodeName match {
       case "WholeStageCodegen" =>
         val cluster = new SparkPlanGraphCluster(
@@ -159,7 +159,6 @@ private[sql] object SparkPlanGraph {
             subgraph,
             exchanges))
     }
-  }
 }
 
 /**
@@ -208,14 +207,13 @@ private[ui] class SparkPlanGraphCluster(
     val nodes: mutable.ArrayBuffer[SparkPlanGraphNode])
     extends SparkPlanGraphNode(id, name, desc, Map.empty, Nil) {
 
-  override def makeDotNode(metricsValue: Map[Long, String]): String = {
+  override def makeDotNode(metricsValue: Map[Long, String]): String =
     s"""
        |  subgraph cluster${id} {
        |    label="${StringEscapeUtils.escapeJava(name)}";
        |    ${nodes.map(_.makeDotNode(metricsValue)).mkString("    \n")}
        |  }
      """.stripMargin
-  }
 }
 
 /**

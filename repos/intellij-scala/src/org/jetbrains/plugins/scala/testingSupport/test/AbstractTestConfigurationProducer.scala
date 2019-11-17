@@ -42,11 +42,10 @@ trait AbstractTestConfigurationProducer {
   def findExistingByElement(
       location: Location[_ <: PsiElement],
       existingConfigurations: Array[RunnerAndConfigurationSettings],
-      context: ConfigurationContext): RunnerAndConfigurationSettings = {
+      context: ConfigurationContext): RunnerAndConfigurationSettings =
     existingConfigurations
       .find(c => isConfigurationByLocation(c.getConfiguration, location))
       .orNull
-  }
 
   def createConfigurationByLocation(location: Location[_ <: PsiElement])
       : Option[(PsiElement, RunnerAndConfigurationSettings)]

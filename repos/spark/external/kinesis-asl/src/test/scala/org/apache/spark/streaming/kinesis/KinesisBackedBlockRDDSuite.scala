@@ -89,7 +89,7 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
     blockManager = sc.env.blockManager
   }
 
-  override def afterAll(): Unit = {
+  override def afterAll(): Unit =
     try {
       if (testUtils != null) {
         testUtils.deleteStream()
@@ -97,7 +97,6 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
     } finally {
       super.afterAll()
     }
-  }
 
   testIfEnabled("Basic reading from Kinesis") {
     // Verify all data using multiple ranges in a single RDD partition
@@ -348,11 +347,10 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
   }
 
   /** Generate fake block ids */
-  private def fakeBlockIds(num: Int): Array[BlockId] = {
+  private def fakeBlockIds(num: Int): Array[BlockId] =
     Array.tabulate(num) { i =>
       new StreamBlockId(0, i)
     }
-  }
 }
 
 class WithAggregationKinesisBackedBlockRDDSuite

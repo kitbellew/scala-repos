@@ -259,13 +259,11 @@ class StreamingContext private[streaming] (
     }
   }
 
-  private[streaming] def isCheckpointingEnabled: Boolean = {
+  private[streaming] def isCheckpointingEnabled: Boolean =
     checkpointDir != null
-  }
 
-  private[streaming] def initialCheckpoint: Checkpoint = {
+  private[streaming] def initialCheckpoint: Checkpoint =
     if (isCheckpointPresent) _cp else null
-  }
 
   private[streaming] def getNewInputStreamId() =
     nextInputStreamId.getAndIncrement()
@@ -285,13 +283,12 @@ class StreamingContext private[streaming] (
     *
     * Note: Return statements are NOT allowed in the given body.
     */
-  private[streaming] def withNamedScope[U](name: String)(body: => U): U = {
+  private[streaming] def withNamedScope[U](name: String)(body: => U): U =
     RDDOperationScope.withScope(
       sc,
       name,
       allowNesting = false,
       ignoreParent = false)(body)
-  }
 
   /**
     * Create an input stream with any arbitrary user implemented receiver.
@@ -299,11 +296,10 @@ class StreamingContext private[streaming] (
     * @param receiver Custom implementation of Receiver
     */
   def receiverStream[T: ClassTag](
-      receiver: Receiver[T]): ReceiverInputDStream[T] = {
+      receiver: Receiver[T]): ReceiverInputDStream[T] =
     withNamedScope("receiver stream") {
       new PluggableInputDStream[T](this, receiver)
     }
-  }
 
   /**
     * Create a input stream from TCP source hostname:port. Data is received using
@@ -341,9 +337,8 @@ class StreamingContext private[streaming] (
       port: Int,
       converter: (InputStream) => Iterator[T],
       storageLevel: StorageLevel
-  ): ReceiverInputDStream[T] = {
+  ): ReceiverInputDStream[T] =
     new SocketInputDStream[T](this, hostname, port, converter, storageLevel)
-  }
 
   /**
     * Create a input stream from network source hostname:port, where data is received
@@ -378,9 +373,8 @@ class StreamingContext private[streaming] (
       K: ClassTag,
       V: ClassTag,
       F <: NewInputFormat[K, V]: ClassTag
-  ](directory: String): InputDStream[(K, V)] = {
+  ](directory: String): InputDStream[(K, V)] =
     new FileInputDStream[K, V, F](this, directory)
-  }
 
   /**
     * Create a input stream that monitors a Hadoop-compatible filesystem
@@ -401,9 +395,8 @@ class StreamingContext private[streaming] (
   ](
       directory: String,
       filter: Path => Boolean,
-      newFilesOnly: Boolean): InputDStream[(K, V)] = {
+      newFilesOnly: Boolean): InputDStream[(K, V)] =
     new FileInputDStream[K, V, F](this, directory, filter, newFilesOnly)
-  }
 
   /**
     * Create a input stream that monitors a Hadoop-compatible filesystem
@@ -426,14 +419,13 @@ class StreamingContext private[streaming] (
       directory: String,
       filter: Path => Boolean,
       newFilesOnly: Boolean,
-      conf: Configuration): InputDStream[(K, V)] = {
+      conf: Configuration): InputDStream[(K, V)] =
     new FileInputDStream[K, V, F](
       this,
       directory,
       filter,
       newFilesOnly,
       Option(conf))
-  }
 
   /**
     * Create a input stream that monitors a Hadoop-compatible filesystem
@@ -502,9 +494,8 @@ class StreamingContext private[streaming] (
   def queueStream[T: ClassTag](
       queue: Queue[RDD[T]],
       oneAtATime: Boolean = true
-  ): InputDStream[T] = {
+  ): InputDStream[T] =
     queueStream(queue, oneAtATime, sc.makeRDD(Seq[T](), 1))
-  }
 
   /**
     * Create an input stream from a queue of RDDs. In each batch,
@@ -523,9 +514,8 @@ class StreamingContext private[streaming] (
       queue: Queue[RDD[T]],
       oneAtATime: Boolean,
       defaultRDD: RDD[T]
-  ): InputDStream[T] = {
+  ): InputDStream[T] =
     new QueueInputDStream(this, queue, oneAtATime, defaultRDD)
-  }
 
   /**
     * Create a unified DStream from multiple DStreams of the same type and same slide duration.
@@ -668,9 +658,8 @@ class StreamingContext private[streaming] (
     * @return `true` if it's stopped; or throw the reported error during the execution; or `false`
     *         if the waiting time elapsed before returning from the method.
     */
-  def awaitTerminationOrTimeout(timeout: Long): Boolean = {
+  def awaitTerminationOrTimeout(timeout: Long): Boolean =
     waiter.waitForStopOrError(timeout)
-  }
 
   /**
     * Stop the execution of the streams immediately (does not wait for all received data
@@ -777,7 +766,7 @@ object StreamingContext extends Logging {
 
   private val activeContext = new AtomicReference[StreamingContext](null)
 
-  private def assertNoOtherContextIsActive(): Unit = {
+  private def assertNoOtherContextIsActive(): Unit =
     ACTIVATION_LOCK.synchronized {
       if (activeContext.get() != null) {
         throw new IllegalStateException(
@@ -786,13 +775,11 @@ object StreamingContext extends Logging {
             activeContext.get.getStartSite().longForm)
       }
     }
-  }
 
-  private def setActiveContext(ssc: StreamingContext): Unit = {
+  private def setActiveContext(ssc: StreamingContext): Unit =
     ACTIVATION_LOCK.synchronized {
       activeContext.set(ssc)
     }
-  }
 
   /**
     * :: Experimental ::
@@ -800,11 +787,10 @@ object StreamingContext extends Logging {
     * Get the currently active context, if there is one. Active means started but not stopped.
     */
   @Experimental
-  def getActive(): Option[StreamingContext] = {
+  def getActive(): Option[StreamingContext] =
     ACTIVATION_LOCK.synchronized {
       Option(activeContext.get())
     }
-  }
 
   /**
     * :: Experimental ::
@@ -815,11 +801,10 @@ object StreamingContext extends Logging {
     */
   @Experimental
   def getActiveOrCreate(
-      creatingFunc: () => StreamingContext): StreamingContext = {
+      creatingFunc: () => StreamingContext): StreamingContext =
     ACTIVATION_LOCK.synchronized {
       getActive().getOrElse { creatingFunc() }
     }
-  }
 
   /**
     * :: Experimental ::
@@ -843,13 +828,12 @@ object StreamingContext extends Logging {
       creatingFunc: () => StreamingContext,
       hadoopConf: Configuration = SparkHadoopUtil.get.conf,
       createOnError: Boolean = false
-  ): StreamingContext = {
+  ): StreamingContext =
     ACTIVATION_LOCK.synchronized {
       getActive().getOrElse {
         getOrCreate(checkpointPath, creatingFunc, hadoopConf, createOnError)
       }
     }
-  }
 
   /**
     * Either recreate a StreamingContext from checkpoint data or create a new StreamingContext.
@@ -887,10 +871,8 @@ object StreamingContext extends Logging {
     */
   def jarOfClass(cls: Class[_]): Option[String] = SparkContext.jarOfClass(cls)
 
-  private[streaming] def createNewSparkContext(
-      conf: SparkConf): SparkContext = {
+  private[streaming] def createNewSparkContext(conf: SparkConf): SparkContext =
     new SparkContext(conf)
-  }
 
   private[streaming] def createNewSparkContext(
       master: String,

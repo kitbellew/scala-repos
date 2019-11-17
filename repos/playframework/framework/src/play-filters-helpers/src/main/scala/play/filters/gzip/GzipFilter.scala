@@ -54,18 +54,17 @@ class GzipFilter @Inject() (config: GzipFilterConfig)(
     this(GzipFilterConfig(bufferSize, chunkedThreshold, shouldGzip))
 
   def apply(next: EssentialAction) = new EssentialAction {
-    def apply(request: RequestHeader) = {
+    def apply(request: RequestHeader) =
       if (mayCompress(request)) {
         next(request).mapFuture(result => handleResult(request, result))
       } else {
         next(request)
       }
-    }
   }
 
   private def handleResult(
       request: RequestHeader,
-      result: Result): Future[Result] = {
+      result: Result): Future[Result] =
     if (shouldCompress(result) && config.shouldGzip(request, result)) {
       val header =
         result.header.copy(headers = setupHeader(result.header.headers))
@@ -129,7 +128,6 @@ class GzipFilter @Inject() (config: GzipFilterConfig)(
     } else {
       Future.successful(result)
     }
-  }
 
   private def compressStrictEntity(
       data: ByteString,
@@ -184,12 +182,11 @@ class GzipFilter @Inject() (config: GzipFilterConfig)(
   private def isNotAlreadyCompressed(header: ResponseHeader) =
     header.headers.get(CONTENT_ENCODING).isEmpty
 
-  private def setupHeader(header: Map[String, String]): Map[String, String] = {
+  private def setupHeader(header: Map[String, String]): Map[String, String] =
     header + (CONTENT_ENCODING -> "gzip") + addToVaryHeader(
       header,
       VARY,
       ACCEPT_ENCODING)
-  }
 
   /**
     * There may be an existing Vary value, which we must add to (comma separated)
@@ -197,7 +194,7 @@ class GzipFilter @Inject() (config: GzipFilterConfig)(
   private def addToVaryHeader(
       existingHeaders: Map[String, String],
       headerName: String,
-      headerValue: String): (String, String) = {
+      headerValue: String): (String, String) =
     existingHeaders.get(headerName) match {
       case None => (headerName, headerValue)
       case Some(existing)
@@ -207,7 +204,6 @@ class GzipFilter @Inject() (config: GzipFilterConfig)(
         (headerName, existing)
       case Some(existing) => (headerName, s"$existing,$headerValue")
     }
-  }
 }
 
 /**

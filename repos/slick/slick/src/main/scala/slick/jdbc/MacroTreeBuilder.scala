@@ -165,7 +165,7 @@ private[jdbc] class MacroTreeBuilder[C <: Context](val c: C)(
     * the query to be used and a list of SetParameter[]
     */
   private lazy val interpolationResultParams: (List[Tree], Tree) = {
-    def decode(s: String): (String, Boolean) = {
+    def decode(s: String): (String, Boolean) =
       if (s.endsWith("##")) {
         val (str, bool) = decode(s.substring(0, s.length - 2))
         (str + "#", bool)
@@ -174,7 +174,6 @@ private[jdbc] class MacroTreeBuilder[C <: Context](val c: C)(
       } else {
         (s, false)
       }
-    }
 
     /** Fuse adjacent string literals */
     def fuse(l: List[Tree]): List[Tree] = l match {

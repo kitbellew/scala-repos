@@ -39,7 +39,6 @@ object JavaReceiverInputDStream {
     */
   implicit def fromReceiverInputDStream[T: ClassTag](
       receiverInputDStream: ReceiverInputDStream[T])
-      : JavaReceiverInputDStream[T] = {
+      : JavaReceiverInputDStream[T] =
     new JavaReceiverInputDStream[T](receiverInputDStream)
-  }
 }

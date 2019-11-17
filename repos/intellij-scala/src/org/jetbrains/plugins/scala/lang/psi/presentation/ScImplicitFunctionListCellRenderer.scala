@@ -112,7 +112,7 @@ class ScImplicitFunctionListCellRenderer(actual: PsiNamedElement)
     comp
   }
 
-  override def getElementText(element: PsiNamedElement) = {
+  override def getElementText(element: PsiNamedElement) =
     element match {
       case method: ScFunction =>
         method.name +
@@ -123,7 +123,6 @@ class ScImplicitFunctionListCellRenderer(actual: PsiNamedElement)
           b.getType(TypingContext.empty).getOrAny)
       case _ => element.name
     }
-  }
 
   def getIconFlags: Int = 0
 

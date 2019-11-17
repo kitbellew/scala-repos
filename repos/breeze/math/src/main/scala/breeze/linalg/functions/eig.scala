@@ -104,20 +104,18 @@ object eigSym extends UFunc {
   type DenseEigSym = EigSym[DenseVector[Double], DenseMatrix[Double]]
   implicit object EigSym_DM_Impl
       extends Impl[DenseMatrix[Double], DenseEigSym] {
-    def apply(X: DenseMatrix[Double]): DenseEigSym = {
+    def apply(X: DenseMatrix[Double]): DenseEigSym =
       doEigSym(X, true) match {
         case (ev, Some(rev)) => EigSym(ev, rev)
         case _               => throw new RuntimeException("Shouldn't be here!")
       }
-    }
   }
 
   object justEigenvalues extends UFunc {
     implicit object EigSym_DM_Impl
         extends Impl[DenseMatrix[Double], DenseVector[Double]] {
-      def apply(X: DenseMatrix[Double]): DenseVector[Double] = {
+      def apply(X: DenseMatrix[Double]): DenseVector[Double] =
         doEigSym(X, false)._1
-      }
     }
   }
 

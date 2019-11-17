@@ -60,8 +60,7 @@ private[reconcile] class OfferMatcherReconciler(
 
   private[this] def processResourcesByTaskId(
       offer: Offer,
-      resourcesByTaskId: Map[Id, Iterable[Resource]])
-      : Future[MatchedTaskOps] = {
+      resourcesByTaskId: Map[Id, Iterable[Resource]]): Future[MatchedTaskOps] =
     // do not query taskTracker in the common case
     if (resourcesByTaskId.isEmpty)
       Future.successful(MatchedTaskOps.noMatch(offer.getId))
@@ -96,7 +95,6 @@ private[reconcile] class OfferMatcherReconciler(
         tasksByApp,
         rootGroup)
     }
-  }
 
   private[this] def source(offerId: OfferID) = new TaskOpSource {
     override def taskOpAccepted(taskOp: TaskOp): Unit =

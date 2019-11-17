@@ -110,21 +110,19 @@ private[nio] object TypedArrayIntBuffer {
         typedArray: Int32Array,
         initialPosition: Int,
         initialLimit: Int,
-        readOnly: Boolean): TypedArrayIntBuffer = {
+        readOnly: Boolean): TypedArrayIntBuffer =
       new TypedArrayIntBuffer(
         typedArray,
         initialPosition,
         initialLimit,
         readOnly)
-    }
 
     @inline
     def newTypedArray(
         buffer: ArrayBuffer,
         byteOffset: Int,
-        length: Int): Int32Array = {
+        length: Int): Int32Array =
       new Int32Array(buffer, byteOffset, length)
-    }
   }
 
   @inline

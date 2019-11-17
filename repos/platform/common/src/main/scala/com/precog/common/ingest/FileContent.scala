@@ -51,14 +51,12 @@ object ContentEncoding {
 
   val extractorV1: Extractor[ContentEncoding] =
     new Extractor[ContentEncoding] {
-      override def validated(
-          obj: JValue): Validation[Error, ContentEncoding] = {
+      override def validated(obj: JValue): Validation[Error, ContentEncoding] =
         obj.validated[String]("encoding").flatMap {
           case "uncompressed" => Success(RawUTF8Encoding)
           case "base64"       => Success(Base64Encoding)
           case invalid        => Failure(Invalid("Unknown encoding " + invalid))
         }
-      }
     }
 
   implicit val decomposer = decomposerV1.versioned(Some("1.0".v))
@@ -111,7 +109,7 @@ object FileContent {
   }
 
   val ExtractorV0: Extractor[FileContent] = new Extractor[FileContent] {
-    def validated(jv: JValue) = {
+    def validated(jv: JValue) =
       jv match {
         case JObject(fields) =>
           (fields
@@ -134,7 +132,6 @@ object FileContent {
               "File contents " + jv.renderCompact +
                 " was not properly encoded as a JSON object."))
       }
-    }
   }
 
   implicit val decomposer = DecomposerV0

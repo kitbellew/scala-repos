@@ -52,31 +52,28 @@ trait Predicate extends Expression {
 
 trait PredicateHelper {
   protected def splitConjunctivePredicates(
-      condition: Expression): Seq[Expression] = {
+      condition: Expression): Seq[Expression] =
     condition match {
       case And(cond1, cond2) =>
         splitConjunctivePredicates(cond1) ++ splitConjunctivePredicates(cond2)
       case other => other :: Nil
     }
-  }
 
   protected def splitDisjunctivePredicates(
-      condition: Expression): Seq[Expression] = {
+      condition: Expression): Seq[Expression] =
     condition match {
       case Or(cond1, cond2) =>
         splitDisjunctivePredicates(cond1) ++ splitDisjunctivePredicates(cond2)
       case other => other :: Nil
     }
-  }
 
   // Substitute any known alias from a map.
   protected def replaceAlias(
       condition: Expression,
-      aliases: AttributeMap[Expression]): Expression = {
+      aliases: AttributeMap[Expression]): Expression =
     condition.transform {
       case a: Attribute => aliases.getOrElse(a, a)
     }
-  }
 
   /**
     * Returns true if `expr` can be evaluated using only the output of `plan`.  This method
@@ -104,9 +101,8 @@ case class Not(child: Expression)
   protected override def nullSafeEval(input: Any): Any =
     !input.asInstanceOf[Boolean]
 
-  override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
+  override def genCode(ctx: CodegenContext, ev: ExprCode): String =
     defineCodeGen(ctx, ev, c => s"!($c)")
-  }
 
   override def sql: String = s"(NOT ${child.sql})"
 }
@@ -123,13 +119,12 @@ case class In(value: Expression, list: Seq[Expression])
   override def inputTypes: Seq[AbstractDataType] =
     value.dataType +: list.map(_.dataType)
 
-  override def checkInputDataTypes(): TypeCheckResult = {
+  override def checkInputDataTypes(): TypeCheckResult =
     if (list.exists(l => l.dataType != value.dataType)) {
       TypeCheckResult.TypeCheckFailure("Arguments must be same type")
     } else {
       TypeCheckResult.TypeCheckSuccess
     }
-  }
 
   override def children: Seq[Expression] = value +: list
 
@@ -209,7 +204,7 @@ case class InSet(child: Expression, hset: Set[Any])
 
   override def nullable: Boolean = child.nullable || hasNull
 
-  protected override def nullSafeEval(value: Any): Any = {
+  protected override def nullSafeEval(value: Any): Any =
     if (hset.contains(value)) {
       true
     } else if (hasNull) {
@@ -217,7 +212,6 @@ case class InSet(child: Expression, hset: Set[Any])
     } else {
       false
     }
-  }
 
   def getHSet(): Set[Any] = hset
 
@@ -362,7 +356,7 @@ case class Or(left: Expression, right: Expression)
 
 abstract class BinaryComparison extends BinaryOperator with Predicate {
 
-  override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
+  override def genCode(ctx: CodegenContext, ev: ExprCode): String =
     if (ctx.isPrimitiveType(left.dataType) &&
         left.dataType != BooleanType // java boolean doesn't support > or < operator
         && left.dataType != FloatType && left.dataType != DoubleType) {
@@ -374,7 +368,6 @@ abstract class BinaryComparison extends BinaryOperator with Predicate {
         ev,
         (c1, c2) => s"${ctx.genComp(left.dataType, c1, c2)} $symbol 0")
     }
-  }
 }
 
 private[sql] object BinaryComparison {
@@ -399,7 +392,7 @@ case class EqualTo(left: Expression, right: Expression)
 
   override def symbol: String = "="
 
-  protected override def nullSafeEval(input1: Any, input2: Any): Any = {
+  protected override def nullSafeEval(input1: Any, input2: Any): Any =
     if (left.dataType == FloatType) {
       Utils.nanSafeCompareFloats(
         input1.asInstanceOf[Float],
@@ -415,11 +408,9 @@ case class EqualTo(left: Expression, right: Expression)
         input1.asInstanceOf[Array[Byte]],
         input2.asInstanceOf[Array[Byte]])
     }
-  }
 
-  override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
+  override def genCode(ctx: CodegenContext, ev: ExprCode): String =
     defineCodeGen(ctx, ev, (c1, c2) => ctx.genEqual(left.dataType, c1, c2))
-  }
 }
 
 case class EqualNullSafe(left: Expression, right: Expression)

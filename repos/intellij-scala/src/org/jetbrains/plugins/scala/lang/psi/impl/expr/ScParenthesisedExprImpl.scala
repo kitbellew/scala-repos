@@ -23,14 +23,13 @@ class ScParenthesisedExprImpl(node: ASTNode)
     with ScParenthesisedExpr {
   override def toString: String = "ExpressionInParenthesis"
 
-  protected override def innerType(ctx: TypingContext) = {
+  protected override def innerType(ctx: TypingContext) =
     expr match {
       case Some(x: ScExpression) =>
         val res = x.getNonValueType(ctx)
         res
       case _ => Failure("No expression in parentheseses", Some(this))
     }
-  }
 
   override def accept(visitor: ScalaElementVisitor) {
     visitor.visitExprInParent(this)

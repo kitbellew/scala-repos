@@ -63,7 +63,7 @@ class ErrorSpec extends AbstractSpec with ScalaCheck {
     }
   }
 
-  private def containsLineNumber(buildSbt: String) = {
+  private def containsLineNumber(buildSbt: String) =
     try {
       split(buildSbt)
       throw new IllegalStateException(
@@ -79,5 +79,4 @@ class ErrorSpec extends AbstractSpec with ScalaCheck {
             false
         }
     }
-  }
 }

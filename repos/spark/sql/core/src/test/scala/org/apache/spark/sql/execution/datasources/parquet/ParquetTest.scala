@@ -52,7 +52,7 @@ private[sql] trait ParquetTest extends SQLTestUtils {
     * Reads the parquet file at `path`
     */
   protected def readParquetFile(path: String, testVectorized: Boolean = true)(
-      f: DataFrame => Unit) = {
+      f: DataFrame => Unit) =
     (true :: false :: Nil).foreach { vectorized =>
       if (!vectorized || testVectorized) {
         withSQLConf(
@@ -61,19 +61,17 @@ private[sql] trait ParquetTest extends SQLTestUtils {
         }
       }
     }
-  }
 
   /**
     * Writes `data` to a Parquet file, which is then passed to `f` and will be deleted after `f`
     * returns.
     */
   protected def withParquetFile[T <: Product: ClassTag: TypeTag](data: Seq[T])(
-      f: String => Unit): Unit = {
+      f: String => Unit): Unit =
     withTempPath { file =>
       sqlContext.createDataFrame(data).write.parquet(file.getCanonicalPath)
       f(file.getCanonicalPath)
     }
-  }
 
   /**
     * Writes `data` to a Parquet file and reads it back as a [[DataFrame]],
@@ -81,10 +79,9 @@ private[sql] trait ParquetTest extends SQLTestUtils {
     */
   protected def withParquetDataFrame[T <: Product: ClassTag: TypeTag](
       data: Seq[T],
-      testVectorized: Boolean = true)(f: DataFrame => Unit): Unit = {
+      testVectorized: Boolean = true)(f: DataFrame => Unit): Unit =
     withParquetFile(data)(path =>
       readParquetFile(path.toString, testVectorized)(f))
-  }
 
   /**
     * Writes `data` to a Parquet file, reads it back as a [[DataFrame]] and registers it as a
@@ -94,28 +91,25 @@ private[sql] trait ParquetTest extends SQLTestUtils {
   protected def withParquetTable[T <: Product: ClassTag: TypeTag](
       data: Seq[T],
       tableName: String,
-      testVectorized: Boolean = true)(f: => Unit): Unit = {
+      testVectorized: Boolean = true)(f: => Unit): Unit =
     withParquetDataFrame(data, testVectorized) { df =>
       sqlContext.registerDataFrameAsTable(df, tableName)
       withTempTable(tableName)(f)
     }
-  }
 
   protected def makeParquetFile[T <: Product: ClassTag: TypeTag](
       data: Seq[T],
-      path: File): Unit = {
+      path: File): Unit =
     sqlContext
       .createDataFrame(data)
       .write
       .mode(SaveMode.Overwrite)
       .parquet(path.getCanonicalPath)
-  }
 
   protected def makeParquetFile[T <: Product: ClassTag: TypeTag](
       df: DataFrame,
-      path: File): Unit = {
+      path: File): Unit =
     df.write.mode(SaveMode.Overwrite).parquet(path.getCanonicalPath)
-  }
 
   protected def makePartitionDir(
       basePath: File,
@@ -182,12 +176,11 @@ private[sql] trait ParquetTest extends SQLTestUtils {
 
   protected def readFooter(
       path: Path,
-      configuration: Configuration): ParquetMetadata = {
+      configuration: Configuration): ParquetMetadata =
     ParquetFileReader.readFooter(
       configuration,
       new Path(path, ParquetFileWriter.PARQUET_METADATA_FILE),
       ParquetMetadataConverter.NO_FILTER)
-  }
 
   protected def testStandardAndLegacyModes(testName: String)(
       f: => Unit): Unit = {

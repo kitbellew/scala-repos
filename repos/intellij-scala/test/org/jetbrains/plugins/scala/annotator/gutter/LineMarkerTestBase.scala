@@ -45,9 +45,8 @@ abstract class LineMarkerTestBase extends LightCodeInsightFixtureTestCase {
     assertEquals(expected.mkString(", "), actual.mkString(", "))
   }
 
-  def getSeparatorsFrom(text: String) = {
+  def getSeparatorsFrom(text: String) =
     for { (line, i) <- text.split("\n").zipWithIndex if line.contains(marker) } yield i + 1
-  }
 
   def getSeparatorsFrom(editor: Editor, project: Project) = {
     val separators = for {

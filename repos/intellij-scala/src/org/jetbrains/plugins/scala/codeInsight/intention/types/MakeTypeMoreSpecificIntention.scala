@@ -35,16 +35,15 @@ class MakeTypeMoreSpecificIntention extends PsiElementBaseIntentionAction {
   override def invoke(
       project: Project,
       editor: Editor,
-      element: PsiElement): Unit = {
+      element: PsiElement): Unit =
     ToggleTypeAnnotation.complete(
       new MakeTypeMoreSpecificStrategy(Option(editor)),
       element)
-  }
 
   override def isAvailable(
       project: Project,
       editor: Editor,
-      element: PsiElement): Boolean = {
+      element: PsiElement): Boolean =
     if (element == null ||
         !IntentionAvailabilityChecker.checkIntention(this, element)) false
     else {
@@ -54,8 +53,7 @@ class MakeTypeMoreSpecificIntention extends PsiElementBaseIntentionAction {
         isAvailable = true
       }
       val desc = new StrategyAdapter {
-        override def removeFromVariable(
-            variable: ScVariableDefinition): Unit = {
+        override def removeFromVariable(variable: ScVariableDefinition): Unit =
           for {
             declared <- variable.declaredType
             expr <- variable.expr
@@ -63,9 +61,8 @@ class MakeTypeMoreSpecificIntention extends PsiElementBaseIntentionAction {
               .computeBaseTypes(declared, tp)
               .nonEmpty
           } text(ScalaBundle.message("make.type.more.specific"))
-        }
 
-        override def removeFromValue(value: ScPatternDefinition): Unit = {
+        override def removeFromValue(value: ScPatternDefinition): Unit =
           for {
             declared <- value.declaredType
             expr <- value.expr
@@ -73,10 +70,8 @@ class MakeTypeMoreSpecificIntention extends PsiElementBaseIntentionAction {
               .computeBaseTypes(declared, tp)
               .nonEmpty
           } text(ScalaBundle.message("make.type.more.specific"))
-        }
 
-        override def removeFromFunction(
-            function: ScFunctionDefinition): Unit = {
+        override def removeFromFunction(function: ScFunctionDefinition): Unit =
           for {
             declared <- function.returnType
             expr <- function.body
@@ -84,13 +79,11 @@ class MakeTypeMoreSpecificIntention extends PsiElementBaseIntentionAction {
               .computeBaseTypes(declared, tp)
               .nonEmpty
           } text(ScalaBundle.message("make.type.more.specific.fun"))
-        }
       }
 
       ToggleTypeAnnotation.complete(desc, element)
       isAvailable
     }
-  }
 
   override def getFamilyName: String =
     ScalaBundle.message("make.type.more.specific")
@@ -118,7 +111,7 @@ class MakeTypeMoreSpecificStrategy(editor: Option[Editor]) extends Strategy {
     }
   }
 
-  override def removeFromFunction(function: ScFunctionDefinition): Unit = {
+  override def removeFromFunction(function: ScFunctionDefinition): Unit =
     for {
       edit <- editor
       te <- function.returnTypeElement
@@ -126,9 +119,8 @@ class MakeTypeMoreSpecificStrategy(editor: Option[Editor]) extends Strategy {
       tp <- body.getType()
       declared <- te.getType()
     } doTemplate(te, declared, tp, function.getParent, edit)
-  }
 
-  override def removeFromValue(value: ScPatternDefinition): Unit = {
+  override def removeFromValue(value: ScPatternDefinition): Unit =
     for {
       edit <- editor
       te <- value.typeElement
@@ -136,9 +128,8 @@ class MakeTypeMoreSpecificStrategy(editor: Option[Editor]) extends Strategy {
       tp <- body.getType()
       declared <- te.getType()
     } doTemplate(te, declared, tp, value.getParent, edit)
-  }
 
-  override def removeFromVariable(variable: ScVariableDefinition): Unit = {
+  override def removeFromVariable(variable: ScVariableDefinition): Unit =
     for {
       edit <- editor
       te <- variable.typeElement
@@ -146,7 +137,6 @@ class MakeTypeMoreSpecificStrategy(editor: Option[Editor]) extends Strategy {
       tp <- body.getType()
       declared <- te.getType()
     } doTemplate(te, declared, tp, variable.getParent, edit)
-  }
 
   override def addToPattern(pattern: ScBindingPattern): Unit = ()
 

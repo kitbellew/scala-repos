@@ -232,12 +232,11 @@ abstract class PathResolverBase[
 
   import PathResolver.{AsLines, Defaults, ppcp}
 
-  private def cmdLineOrElse(name: String, alt: String) = {
+  private def cmdLineOrElse(name: String, alt: String) =
     (commandLineFor(name) match {
       case Some("") => None
       case x        => x
     }) getOrElse alt
-  }
 
   private def commandLineFor(s: String): Option[String] = condOpt(s) {
     case "javabootclasspath" => settings.javabootclasspath.value

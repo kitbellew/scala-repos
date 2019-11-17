@@ -221,10 +221,9 @@ trait PersistentView
     super.aroundPreStart()
   }
 
-  override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
+  override def preRestart(reason: Throwable, message: Option[Any]): Unit =
     try internalStash.unstashAll()
     finally super.preRestart(reason, message)
-  }
 
   override def postStop(): Unit = {
     schedule.foreach(_.cancel())
@@ -237,18 +236,16 @@ trait PersistentView
     * The `PersistentView` will not stop or throw exception due to this.
     * It will try again on next update.
     */
-  protected def onReplayError(cause: Throwable): Unit = {
+  protected def onReplayError(cause: Throwable): Unit =
     log.error(
       cause,
       "Persistence view failure when replaying events for persistenceId [{}]. " +
         "Last known sequence number [{}]",
       persistenceId,
       lastSequenceNr)
-  }
 
-  private def changeState(state: State): Unit = {
+  private def changeState(state: State): Unit =
     currentState = state
-  }
 
   // TODO There are some duplication of the recovery state management here and in Eventsourced.scala,
   //      but the enhanced PersistentView will not be based on recovery infrastructure, and

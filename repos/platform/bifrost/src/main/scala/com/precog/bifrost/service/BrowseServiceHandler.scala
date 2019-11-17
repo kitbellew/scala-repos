@@ -59,13 +59,10 @@ class BrowseSupport[M[+_]: Bind](vfs: VFSMetadata[M]) {
       }
     } map { JNum(_) }
 
-  def children(
-      apiKey: APIKey,
-      path: Path): EitherT[M, ResourceError, JArray] = {
+  def children(apiKey: APIKey, path: Path): EitherT[M, ResourceError, JArray] =
     vfs.findDirectChildren(apiKey, path) map { paths =>
       JArray(paths.map(p => JString(p.toString.substring(1))).toSeq: _*)
     }
-  }
 
   def browse(apiKey: APIKey, path: Path): EitherT[M, ResourceError, JArray] = {
     import PathMetadata._
@@ -98,14 +95,13 @@ class BrowseSupport[M[+_]: Bind](vfs: VFSMetadata[M]) {
       * This turns a set of types/counts into something usable by strucutre. It
       * will serialize the longs to JNums and unify CNumericTypes under "Number".
       */
-    def normalizeTypes(xs: Map[CType, Long]): Map[String, JValue] = {
+    def normalizeTypes(xs: Map[CType, Long]): Map[String, JValue] =
       xs.foldLeft(Map.empty[String, Long]) {
         case (acc, ((CLong | CDouble | CNum), count)) =>
           acc + ("Number" -> (acc.getOrElse("Number", 0L) + count))
         case (acc, (ctype, count)) =>
           acc + (CType.nameOf(ctype) -> count)
       } mapValues (_.serialize)
-    }
 
     EitherT {
       vfs

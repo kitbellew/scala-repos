@@ -13,7 +13,7 @@ import scala.tools.testing.ClearAfterClass
 
 object BytecodeTest extends ClearAfterClass.Clearable {
   var compiler = newCompiler()
-  def clear(): Unit = { compiler = null }
+  def clear(): Unit = compiler = null
 }
 
 @RunWith(classOf[JUnit4])

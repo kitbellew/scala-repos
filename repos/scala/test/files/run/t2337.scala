@@ -1,6 +1,6 @@
 object Test {
 
-  def compare(first: Any, second: Any): Any = {
+  def compare(first: Any, second: Any): Any =
     (first, second) match {
       case (k: Int, o: Int) => k compare o
       //why the next case matches (Float, Int) but does not match (Int, Float) ???
@@ -8,7 +8,6 @@ object Test {
       case _                      => "BOGON"
       // throw new Exception("Unsupported compare " + first + "; " + second)
     }
-  }
 
   def main(args: Array[String]): Unit = {
     println("Both Int", -1, compare(0, 1))

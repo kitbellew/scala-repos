@@ -45,10 +45,9 @@ trait ReplConfig {
   private[nsc] def substituteAndLog[T](alt: => T)(body: => T): T =
     substituteAndLog("" + alt, alt)(body)
   private[nsc] def substituteAndLog[T](label: String, alt: => T)(
-      body: => T): T = {
+      body: => T): T =
     try body
     catch logAndDiscard(label, alt)
-  }
   private[nsc] def squashAndLog(label: String)(body: => Unit): Unit =
     substituteAndLog(label, ())(body)
 

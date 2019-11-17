@@ -7,7 +7,7 @@ object SelectMainClass {
   // Some(SimpleReader.readLine _)
   def apply(
       promptIfMultipleChoices: Option[String => Option[String]],
-      mainClasses: Seq[String]): Option[String] = {
+      mainClasses: Seq[String]): Option[String] =
     mainClasses.toList match {
       case Nil         => None
       case head :: Nil => Some(head)
@@ -21,7 +21,6 @@ object SelectMainClass {
           toInt(line, multiple.length) map multiple.apply
         }
     }
-  }
   private def trim(s: Option[String]) = s.getOrElse("")
   private def toInt(s: String, size: Int) =
     try {

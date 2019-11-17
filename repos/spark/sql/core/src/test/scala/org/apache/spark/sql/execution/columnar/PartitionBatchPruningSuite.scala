@@ -45,7 +45,7 @@ class PartitionBatchPruningSuite
     sqlContext.setConf("spark.sql.inMemoryTableScanStatistics.enable", "true")
   }
 
-  override protected def afterAll(): Unit = {
+  override protected def afterAll(): Unit =
     try {
       sqlContext.setConf(SQLConf.COLUMN_BATCH_SIZE, originalColumnBatchSize)
       sqlContext.setConf(
@@ -54,7 +54,6 @@ class PartitionBatchPruningSuite
     } finally {
       super.afterAll()
     }
-  }
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -70,13 +69,12 @@ class PartitionBatchPruningSuite
     sqlContext.cacheTable("pruningData")
   }
 
-  override protected def afterEach(): Unit = {
+  override protected def afterEach(): Unit =
     try {
       sqlContext.uncacheTable("pruningData")
     } finally {
       super.afterEach()
     }
-  }
 
   // Comparisons
   checkBatchPruning("SELECT key FROM pruningData WHERE key = 1", 1, 1)(Seq(1))
@@ -149,8 +147,7 @@ class PartitionBatchPruningSuite
   def checkBatchPruning(
       query: String,
       expectedReadPartitions: Int,
-      expectedReadBatches: Int)(expectedQueryResult: => Seq[Int]): Unit = {
-
+      expectedReadBatches: Int)(expectedQueryResult: => Seq[Int]): Unit =
     test(query) {
       val df = sql(query)
       val queryExecution = df.queryExecution
@@ -173,5 +170,4 @@ class PartitionBatchPruningSuite
         readPartitions === expectedReadPartitions,
         s"Wrong number of read partitions: $queryExecution")
     }
-  }
 }

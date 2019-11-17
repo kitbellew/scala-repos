@@ -52,7 +52,7 @@ private[spark] class ExecutorDelegationTokenUpdater(
       Utils.logUncaughtExceptions(updateCredentialsIfRequired())
   }
 
-  def updateCredentialsIfRequired(): Unit = {
+  def updateCredentialsIfRequired(): Unit =
     try {
       val credentialsFilePath = new Path(credentialsFile)
       val remoteFs = FileSystem.get(freshHadoopConf)
@@ -119,7 +119,6 @@ private[spark] class ExecutorDelegationTokenUpdater(
           1,
           TimeUnit.HOURS)
     }
-  }
 
   private def getCredentialsFromHDFSFile(
       remoteFs: FileSystem,
@@ -134,7 +133,6 @@ private[spark] class ExecutorDelegationTokenUpdater(
     }
   }
 
-  def stop(): Unit = {
+  def stop(): Unit =
     delegationTokenRenewer.shutdown()
-  }
 }

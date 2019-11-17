@@ -340,7 +340,7 @@ class DefaultEventHandler[K, V](
       brokerId: Int,
       messagesPerTopic: collection.mutable.Map[
         TopicAndPartition,
-        ByteBufferMessageSet]) = {
+        ByteBufferMessageSet]) =
     if (brokerId < 0) {
       warn(
         "Failed to send data since partitions %s don't have a leader".format(
@@ -431,13 +431,11 @@ class DefaultEventHandler[K, V](
     } else {
       List.empty
     }
-  }
 
   private def groupMessagesToSet(
       messagesPerTopicAndPartition: collection.mutable.Map[
         TopicAndPartition,
-        Seq[KeyedMessage[K, Message]]]) = {
-
+        Seq[KeyedMessage[K, Message]]]) =
     /** enforce the compressed.topics config here.
       * If the compression codec is anything other than NoCompressionCodec,
       * Enable compression only for specified topics if any
@@ -495,7 +493,6 @@ class DefaultEventHandler[K, V](
     } catch {
       case t: Throwable => error("Failed to group messages", t); None
     }
-  }
 
   def close() {
     if (producerPool != null) producerPool.close

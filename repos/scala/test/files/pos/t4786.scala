@@ -1,8 +1,7 @@
 trait Matrix[@specialized A, Repr[C] <: Matrix[C, Repr]] {
   // crash goes away if @specialize is removed
-  def duplicate(mb: MatrixBuilder[A, Repr]): Repr[A] = {
+  def duplicate(mb: MatrixBuilder[A, Repr]): Repr[A] =
     mb.zeros
-  }
 }
 trait DenseMatrix[@specialized A] extends Matrix[A, DenseMatrix]
 trait DenseMatrixFlt extends DenseMatrix[Float]

@@ -38,7 +38,7 @@ object CanFirwin {
   /** Use via implicit delegate syntax firwin(xxxx)
     *
     */
-  implicit def firwinDouble: CanFirwin[Double] = {
+  implicit def firwinDouble: CanFirwin[Double] =
     new CanFirwin[Double] {
       def apply(
           taps: Int,
@@ -56,10 +56,9 @@ object CanFirwin {
             ", scale=" + scale
         )
     }
-  }
 
   @expand
-  implicit def firwinT[@expand.args(Int, Long, Float) T]: CanFirwin[T] = {
+  implicit def firwinT[@expand.args(Int, Long, Float) T]: CanFirwin[T] =
     new CanFirwin[T] {
       def apply(
           taps: Int,
@@ -78,7 +77,6 @@ object CanFirwin {
           ", scale=" + scale
       )
     }
-  }
 
   def firwinDoubleImpl(
       taps: Int,

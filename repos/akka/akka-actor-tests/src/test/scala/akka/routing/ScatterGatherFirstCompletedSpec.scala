@@ -35,9 +35,8 @@ object ScatterGatherFirstCompletedSpec {
           }
         }
 
-        override def postStop = {
+        override def postStop =
           shudownLatch foreach (_.countDown())
-        }
       }),
       "Actor:" + id
     )

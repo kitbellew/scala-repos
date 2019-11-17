@@ -11,12 +11,11 @@ trait CacheSupport { self: ScalatraBase =>
   implicit val keyStrategy: KeyStrategy = DefaultKeyStrategy
   implicit val headerStrategy: HeaderStrategy = DefaultHeaderStrategy
 
-  def cache[A](key: String, ttl: Option[Duration])(value: => A): A = {
+  def cache[A](key: String, ttl: Option[Duration])(value: => A): A =
     cacheBackend.get[A](key) match {
       case Some(v) => v
       case None    => cacheBackend.put(key, value, ttl)
     }
-  }
 
   def cached[A](ttl: Option[Duration])(result: => A)(
       implicit keyStrategy: KeyStrategy,

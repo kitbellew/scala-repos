@@ -99,31 +99,29 @@ class ExecutionListenerManager private[sql] () extends Logging {
   private[sql] def onSuccess(
       funcName: String,
       qe: QueryExecution,
-      duration: Long): Unit = {
+      duration: Long): Unit =
     readLock {
       withErrorHandling { listener =>
         listener.onSuccess(funcName, qe, duration)
       }
     }
-  }
 
   private[sql] def onFailure(
       funcName: String,
       qe: QueryExecution,
-      exception: Exception): Unit = {
+      exception: Exception): Unit =
     readLock {
       withErrorHandling { listener =>
         listener.onFailure(funcName, qe, exception)
       }
     }
-  }
 
   private[this] val listeners = ListBuffer.empty[QueryExecutionListener]
 
   /** A lock to prevent updating the list of listeners while we are traversing through them. */
   private[this] val lock = new ReentrantReadWriteLock()
 
-  private def withErrorHandling(f: QueryExecutionListener => Unit): Unit = {
+  private def withErrorHandling(f: QueryExecutionListener => Unit): Unit =
     for (listener <- listeners) {
       try {
         f(listener)
@@ -132,7 +130,6 @@ class ExecutionListenerManager private[sql] () extends Logging {
           logWarning("Error executing query execution listener", e)
       }
     }
-  }
 
   /** Acquires a read lock on the cache for the duration of `f`. */
   private def readLock[A](f: => A): A = {

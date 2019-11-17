@@ -73,12 +73,11 @@ class ConvertibleToMethodValueInspection
           InspectionBundle.message("convertible.to.method.value.eta.hint"))
   }
 
-  private def allArgsUnderscores(args: Seq[ScExpression]): Boolean = {
+  private def allArgsUnderscores(args: Seq[ScExpression]): Boolean =
     args.nonEmpty && args.forall(
       arg =>
         arg.isInstanceOf[ScUnderscoreSection] &&
           ScUnderScoreSectionUtil.isUnderscore(arg))
-  }
 
   private def onlyStableValuesUsed(qual: ScExpression): Boolean = {
     def isStable(named: PsiNamedElement) =

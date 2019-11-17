@@ -199,16 +199,14 @@ abstract class AbstractTestRunConfiguration(
     else null
   }
 
-  def getPackage(path: String): PsiPackage = {
+  def getPackage(path: String): PsiPackage =
     ScPackageImpl.findPackage(project, path)
-  }
 
   def getScope(withDependencies: Boolean): GlobalSearchScope = {
-    def mScope(module: Module) = {
+    def mScope(module: Module) =
       if (withDependencies)
         GlobalSearchScope.moduleWithDependenciesAndLibrariesScope(module)
       else GlobalSearchScope.moduleScope(module)
-    }
     def unionScope(moduleGuard: Module => Boolean): GlobalSearchScope = {
       var scope: GlobalSearchScope =
         if (getModule != null) mScope(getModule)
@@ -250,21 +248,19 @@ abstract class AbstractTestRunConfiguration(
 
   def getEnvVariables = envs
 
-  def setEnvVariables(variables: java.util.Map[String, String]) = {
+  def setEnvVariables(variables: java.util.Map[String, String]) =
     envs = variables
-  }
 
-  def getModule: Module = {
+  def getModule: Module =
     getConfigurationModule.getModule
-  }
 
   def getValidModules: java.util.List[Module] = getProject.modulesWithScala
 
-  override def getModules: Array[Module] = {
+  override def getModules: Array[Module] =
     ApplicationManager.getApplication.runReadAction(
       new Computable[Array[Module]] {
         @SuppressWarnings(Array("ConstantConditions"))
-        def compute: Array[Module] = {
+        def compute: Array[Module] =
           searchTest match {
             case SearchForTest.ACCROSS_MODULE_DEPENDENCIES
                 if getModule != null =>
@@ -284,9 +280,7 @@ abstract class AbstractTestRunConfiguration(
               ModuleManager.getInstance(getProject).getModules
             case _ => Array.empty
           }
-        }
       })
-  }
 
   private def getSuiteClass = {
     val suiteClasses = suitePaths
@@ -619,9 +613,8 @@ abstract class AbstractTestRunConfiguration(
         rerunFailedTestsAction.init(consoleView.getProperties)
         rerunFailedTestsAction.setModelProvider(
           new Getter[TestFrameworkRunningModel] {
-            def get: TestFrameworkRunningModel = {
+            def get: TestFrameworkRunningModel =
               consoleView.asInstanceOf[SMTRunnerConsoleView].getResultsViewer
-            }
           })
         res.setRestartActions(rerunFailedTestsAction)
         res

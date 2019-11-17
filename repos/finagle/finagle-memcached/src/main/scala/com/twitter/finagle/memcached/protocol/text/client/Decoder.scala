@@ -52,7 +52,7 @@ class Decoder extends AbstractDecoder with StateMachine {
   def decode(
       ctx: ChannelHandlerContext,
       channel: Channel,
-      buffer: ChannelBuffer): Decoding = {
+      buffer: ChannelBuffer): Decoding =
     state match {
       case AwaitingResponse =>
         decodeLine(buffer, needsData)(awaitingResponseContinue)
@@ -85,35 +85,29 @@ class Decoder extends AbstractDecoder with StateMachine {
           } else NeedMoreData
         }
     }
-  }
 
   final protected[memcached] def awaitData(
       tokens: Seq[ChannelBuffer],
-      bytesNeeded: Int): Unit = {
+      bytesNeeded: Int): Unit =
     state match {
       case AwaitingResponse =>
         awaitData(Nil, tokens, bytesNeeded)
       case AwaitingResponseOrEnd(valuesSoFar) =>
         awaitData(valuesSoFar, tokens, bytesNeeded)
     }
-  }
 
   private[this] def awaitData(
       valuesSoFar: Seq[TokensWithData],
       tokens: Seq[ChannelBuffer],
       bytesNeeded: Int
-  ): Unit = {
+  ): Unit =
     state = AwaitingData(valuesSoFar, tokens, bytesNeeded)
-  }
 
-  private[this] def awaitResponseOrEnd(
-      valuesSoFar: Seq[TokensWithData]): Unit = {
+  private[this] def awaitResponseOrEnd(valuesSoFar: Seq[TokensWithData]): Unit =
     state = AwaitingResponseOrEnd(valuesSoFar)
-  }
 
-  private[this] def awaitStatsOrEnd(valuesSoFar: Seq[Tokens]): Unit = {
+  private[this] def awaitStatsOrEnd(valuesSoFar: Seq[Tokens]): Unit =
     state = AwaitingStatsOrEnd(valuesSoFar)
-  }
 
   private[this] def isEnd(tokens: Seq[ChannelBuffer]) =
     tokens.length == 1 && tokens.head == END

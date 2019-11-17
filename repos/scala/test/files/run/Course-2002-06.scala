@@ -123,11 +123,10 @@ class PostScript(filename: String, _width: Double, _height: Double)
     scaleAndCenter(new Frame(origin, edgeX, edgeY), width / height)
   }
 
-  def plotLine(x1: Double, y1: Double, x2: Double, y2: Double): Unit = {
+  def plotLine(x1: Double, y1: Double, x2: Double, y2: Double): Unit =
     Console.println(
       round(x1) + " " + round(y1) + " m " + round(x2) + " " +
         round(y2) + " l");
-  }
 
   /** Print the PS header.*/
   Console.println("%!PS-Adobe-3.0 EPSF-3.0\n%%Title: ProgrammationIV");
@@ -215,13 +214,12 @@ object M0 {
     }
   }
 
-  def rightSplit(painter: Painter, n: Int): Painter = {
+  def rightSplit(painter: Painter, n: Int): Painter =
     if (n == 0) painter
     else {
       val smaller = rightSplit(painter, n - 1);
       beside(painter, below(smaller, smaller))
     }
-  }
 
   // A small test painter.
   def house(canvas: Graphics)(frame: Frame): Unit = {

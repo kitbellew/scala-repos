@@ -67,12 +67,11 @@ private[play] final class SerializableResult(constructorResult: Result)
       val sizeOfBody: Int = in.readInt()
       val buffer = new Array[Byte](sizeOfBody)
       @tailrec
-      def readBytes(offset: Int, length: Int): Unit = {
+      def readBytes(offset: Int, length: Int): Unit =
         if (length > 0) {
           val readLength = in.read(buffer, offset, length)
           readBytes(offset + readLength, length - readLength)
         }
-      }
       readBytes(0, sizeOfBody)
       HttpEntity.Strict(ByteString(buffer), contentType)
     }

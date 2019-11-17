@@ -130,13 +130,12 @@ private[spark] class CoarseMesosSchedulerBackend(
   }
 
   // This method is factored out for testability
-  protected def getShuffleClient(): MesosExternalShuffleClient = {
+  protected def getShuffleClient(): MesosExternalShuffleClient =
     new MesosExternalShuffleClient(
       SparkTransportConf.fromSparkConf(conf, "shuffle"),
       securityManager,
       securityManager.isAuthenticationEnabled(),
       securityManager.isSaslEncryptionEnabled())
-  }
 
   var nextMesosTaskId = 0
 
@@ -244,7 +243,7 @@ private[spark] class CoarseMesosSchedulerBackend(
     command.build()
   }
 
-  protected def driverURL: String = {
+  protected def driverURL: String =
     if (conf.contains("spark.testing")) {
       "driverURL"
     } else {
@@ -253,7 +252,6 @@ private[spark] class CoarseMesosSchedulerBackend(
         conf.get("spark.driver.port").toInt,
         CoarseGrainedSchedulerBackend.ENDPOINT_NAME).toString
     }
-  }
 
   override def offerRescinded(d: SchedulerDriver, o: OfferID) {}
 
@@ -267,9 +265,8 @@ private[spark] class CoarseMesosSchedulerBackend(
     markRegistered()
   }
 
-  override def sufficientResourcesRegistered(): Boolean = {
+  override def sufficientResourcesRegistered(): Boolean =
     totalCoresAcquired >= maxCores * minRegisteredRatio
-  }
 
   override def disconnected(d: SchedulerDriver) {}
 
@@ -303,7 +300,7 @@ private[spark] class CoarseMesosSchedulerBackend(
 
   private def declineUnmatchedOffers(
       d: SchedulerDriver,
-      offers: Buffer[Offer]): Unit = {
+      offers: Buffer[Offer]): Unit =
     for (offer <- offers) {
       val id = offer.getId.getValue
       val offerAttributes = toAttributeMap(offer.getAttributesList)
@@ -320,7 +317,6 @@ private[spark] class CoarseMesosSchedulerBackend(
 
       d.declineOffer(offer.getId, filters)
     }
-  }
 
   /**
     * Launches executors on accepted offers, and declines unused offers. Executors are launched
@@ -456,11 +452,10 @@ private[spark] class CoarseMesosSchedulerBackend(
     slaves.get(slaveId).map(_.taskFailures).getOrElse(0) < MAX_SLAVE_FAILURES
   }
 
-  private def executorCores(offerCPUs: Int): Int = {
+  private def executorCores(offerCPUs: Int): Int =
     sc.conf.getInt(
       "spark.executor.cores",
       math.min(offerCPUs, maxCores - totalCoresAcquired))
-  }
 
   override def statusUpdate(d: SchedulerDriver, status: TaskStatus) {
     val taskId = status.getTaskId.getValue
@@ -582,24 +577,21 @@ private[spark] class CoarseMesosSchedulerBackend(
       d: SchedulerDriver,
       slaveId: String,
       taskId: String,
-      reason: String): Unit = {
+      reason: String): Unit =
     stateLock.synchronized {
       removeExecutor(taskId, SlaveLost(reason))
       slaves(slaveId).taskIDs.remove(taskId)
     }
-  }
 
-  override def slaveLost(d: SchedulerDriver, slaveId: SlaveID): Unit = {
+  override def slaveLost(d: SchedulerDriver, slaveId: SlaveID): Unit =
     logInfo(s"Mesos slave lost: ${slaveId.getValue}")
-  }
 
   override def executorLost(
       d: SchedulerDriver,
       e: ExecutorID,
       s: SlaveID,
-      status: Int): Unit = {
+      status: Int): Unit =
     logInfo("Mesos executor lost: %s".format(e.getValue))
-  }
 
   override def applicationId(): String =
     Option(appId).getOrElse {
@@ -615,7 +607,7 @@ private[spark] class CoarseMesosSchedulerBackend(
     true
   }
 
-  override def doKillExecutors(executorIds: Seq[String]): Boolean = {
+  override def doKillExecutors(executorIds: Seq[String]): Boolean =
     if (mesosDriver == null) {
       logWarning("Asked to kill executors before the Mesos driver was started.")
       false
@@ -629,11 +621,9 @@ private[spark] class CoarseMesosSchedulerBackend(
       // See [[o.a.s.scheduler.cluster.CoarseGrainedSchedulerBackend.killExecutors]]
       true
     }
-  }
 
-  private def numExecutors(): Int = {
+  private def numExecutors(): Int =
     slaves.values.map(_.taskIDs.size).sum
-  }
 }
 
 private class Slave(val hostname: String) {

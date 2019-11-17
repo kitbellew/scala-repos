@@ -106,7 +106,7 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
 
   val propOrder =
     "category" :: "name" :: "id" :: "tags" :: "status" :: "photoUrls" :: Nil
-  def checkModelOrder = {
+  def checkModelOrder =
     get("/api-docs/pet") {
       val bd = JsonParser.parseOpt(body)
       bd must beSome[JValue] and {
@@ -127,7 +127,6 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
         props must_== propOrder
       }
     }
-  }
 
   def verifyApis(j: JValue) = {
     val JArray(apis) = j
@@ -179,7 +178,7 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
     "updatePet" :: "addPet" :: "deletePet" :: "findPetsByTags" :: "findPetsByStatus" :: "getPetById" :: Nil
   val storeOperations = "placeOrder" :: "deleteOrder" :: "getOrderById" :: Nil
   //  val operations = "allPets" :: Nil
-  def listPetOperations = {
+  def listPetOperations =
     get("/api-docs/pet") {
       val bo = JsonParser.parseOpt(body)
       bo must beSome[JValue] and verifyCommon(
@@ -189,9 +188,8 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
         .map(verifyOperation(bo.get, petOperationsJValue, _))
         .reduce(_ and _) and verifyPetModel(bo.get)
     }
-  }
 
-  def listStoreOperations = {
+  def listStoreOperations =
     get("/api-docs/store") {
       val bo = JsonParser.parseOpt(body)
       bo must beSome[JValue] and verifyCommon(
@@ -201,23 +199,21 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
         .map(verifyOperation(bo.get, storeOperationsJValue, _))
         .reduce(_ and _) and verifyStoreModel(bo.get)
     }
-  }
 
-  def listUserOperations = {
+  def listUserOperations =
     pending
-    //    get("/api-docs/pet") {
-    //      val bo = JsonParser.parseOpt(body)
-    //      bo must beSome[JValue] and
-    //        verifyCommon(bo.get) and
-    //        operations.map(verifyOperation(bo.get, _)).reduce(_ and _) and
-    //        verifyPetModel(bo.get)
-    //    }
-  }
+  //    get("/api-docs/pet") {
+  //      val bo = JsonParser.parseOpt(body)
+  //      bo must beSome[JValue] and
+  //        verifyCommon(bo.get) and
+  //        operations.map(verifyOperation(bo.get, _)).reduce(_ and _) and
+  //        verifyPetModel(bo.get)
+  //    }
 
   def verifyCommon(
       actual: JValue,
       expected: JValue,
-      operationPaths: List[String]): MatchResult[Any] = {
+      operationPaths: List[String]): MatchResult[Any] =
     (actual \ "apiVersion" must_== expected \ "apiVersion") and
       (actual \ "swaggerVersion" must_== expected \ "swaggerVersion") and
       (actual \ "basePath" must_== expected \ "basePath") and
@@ -229,7 +225,6 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
       (ja must haveSize(operationPaths.size)) and
         (ja must containTheSameElementsAs(operationPaths))
     }
-  }
 
   def verifyOperation(actual: JValue, expected: JValue, name: String) = {
     val op = findOperation(actual, name)
@@ -295,7 +290,7 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
       actual: JValue,
       expected: JValue,
       fields: String*): MatchResult[Any] = {
-    def verifyField(act: JValue, exp: JValue, fn: String): MatchResult[Any] = {
+    def verifyField(act: JValue, exp: JValue, fn: String): MatchResult[Any] =
       fn match {
         case "responseMessages" =>
           val af = act \ fn match {
@@ -351,7 +346,6 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
               JsonMethods.compact(JsonMethods.render(exp \ fn)) +
               " for field " + fn)
       }
-    }
 
     fields map (verifyField(actual, expected, _)) reduce (_ and _)
   }
@@ -673,8 +667,7 @@ class PetData {
     pets.filter(pet => (tags & pet.tags.map(_.name).toSet).nonEmpty)
   }
 
-  def addPet(pet: Pet) = {
+  def addPet(pet: Pet) =
     // remove any pets with same id
     pets = List(pet) ++ pets.filter(p => p.id == pet.id)
-  }
 }

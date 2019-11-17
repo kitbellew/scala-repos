@@ -86,10 +86,8 @@ object TaskCancellationStrategy {
   /** Cancel handler which registers for SIGINT and cancels tasks when it is received. */
   object Signal extends TaskCancellationStrategy {
     type State = Signals.Registration
-    def onTaskEngineStart(
-        canceller: RunningTaskEngine): Signals.Registration = {
+    def onTaskEngineStart(canceller: RunningTaskEngine): Signals.Registration =
       Signals.register(() => canceller.cancelAndShutdown())
-    }
     def onTaskEngineFinish(registration: Signals.Registration): Unit =
       registration.remove()
     override def toString: String = "Signal"
@@ -417,13 +415,12 @@ object EvaluateTask {
       taskKey: ScopedKey[Task[T]],
       state: State,
       ref: ProjectRef,
-      config: EvaluateTaskConfig): Option[(State, Result[T])] = {
+      config: EvaluateTaskConfig): Option[(State, Result[T])] =
     withStreams(structure, state) { str =>
       for ((task, toNode) <- getTask(structure, taskKey, state, str, ref))
         yield runTask(task, state, str, structure.index.triggers, config)(
           toNode)
     }
-  }
   def logIncResult(result: Result[_], state: State, streams: Streams) =
     result match {
       case Inc(i) => logIncomplete(i, state, streams); case _ => ()

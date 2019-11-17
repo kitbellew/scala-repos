@@ -59,7 +59,7 @@ private[hive] class SparkSQLDriver(
     }
   }
 
-  override def run(command: String): CommandProcessorResponse = {
+  override def run(command: String): CommandProcessorResponse =
     // TODO unify the error code
     try {
       context.sparkContext.setJobDescription(command)
@@ -83,7 +83,6 @@ private[hive] class SparkSQLDriver(
           null,
           cause)
     }
-  }
 
   override def close(): Int = {
     hiveResponse = null
@@ -91,7 +90,7 @@ private[hive] class SparkSQLDriver(
     0
   }
 
-  override def getResults(res: JList[_]): Boolean = {
+  override def getResults(res: JList[_]): Boolean =
     if (hiveResponse == null) {
       false
     } else {
@@ -99,7 +98,6 @@ private[hive] class SparkSQLDriver(
       hiveResponse = null
       true
     }
-  }
 
   override def getSchema: Schema = tableSchema
 

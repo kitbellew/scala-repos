@@ -33,12 +33,11 @@ import org.jetbrains.plugins.scala.lang.resolve.ScalaResolveResult
 class ScConstructorPatternImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScConstructorPattern {
-  override def accept(visitor: PsiElementVisitor): Unit = {
+  override def accept(visitor: PsiElementVisitor): Unit =
     visitor match {
       case visitor: ScalaElementVisitor => super.accept(visitor)
       case _                            => super.accept(visitor)
     }
-  }
 
   override def toString: String = "ConstructorPattern"
 
@@ -84,7 +83,7 @@ class ScConstructorPatternImpl(node: ASTNode)
     }
   }
 
-  override def getType(ctx: TypingContext): TypeResult[ScType] = {
+  override def getType(ctx: TypingContext): TypeResult[ScType] =
     ref.bind() match {
       case Some(r) =>
         r.element match {
@@ -184,5 +183,4 @@ class ScConstructorPatternImpl(node: ASTNode)
         }
       case _ => Failure("Cannot resolve symbol", Some(this))
     }
-  }
 }

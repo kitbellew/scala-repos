@@ -15,7 +15,7 @@ class LocationOfLineTest_212
     extends LocationsOfLineTestBase
     with ScalaVersion_2_12 {
 
-  override def testLambdas(): Unit = {
+  override def testLambdas(): Unit =
     checkLocationsOfLine(
       Set(
         Loc("Lambdas$", "main", 4),
@@ -26,9 +26,8 @@ class LocationOfLineTest_212
         Loc("Lambdas$", "Lambdas$$$anonfun$3", 5)),
       Set(Loc("Lambdas$", "Lambdas$$$anonfun$4", 6))
     )
-  }
 
-  override def testMultilevel(): Unit = {
+  override def testMultilevel(): Unit =
     checkLocationsOfLine(
       Set(Loc("Multilevel$This$1", "<init>", 18)), //location for constructor is customized
       Set(Loc("Multilevel$This$1", "<init>", 4)),
@@ -43,7 +42,6 @@ class LocationOfLineTest_212
           9)),
       Set(Loc("Multilevel$", "main", 18))
     )
-  }
 }
 
 abstract class LocationsOfLineTestBase extends PositionManagerTestBase {
@@ -66,7 +64,7 @@ abstract class LocationsOfLineTestBase extends PositionManagerTestBase {
         |}$offsetMarker
         |""".stripMargin.trim
   )
-  def testSimple(): Unit = {
+  def testSimple(): Unit =
     checkLocationsOfLine(
       Set(Loc("Simple$", "<init>", 2), Loc("Simple$", "z", 2)),
       Set(Loc("Simple$", "main", 4)),
@@ -77,7 +75,6 @@ abstract class LocationsOfLineTestBase extends PositionManagerTestBase {
       noLocations,
       noLocations
     )
-  }
 
   setupFile(
     "SimpleClass.scala",
@@ -99,13 +96,12 @@ abstract class LocationsOfLineTestBase extends PositionManagerTestBase {
        |
        |""".stripMargin.trim
   )
-  def testSimpleClass(): Unit = {
+  def testSimpleClass(): Unit =
     checkLocationsOfLine(
       Set(Loc("Bar", "<init>", 14)), //location for constructor is customized
       Set(Loc("Bar", "<init>", 9), Loc("Bar", "s", 9)),
       Set(Loc("Bar", "foo", 12))
     )
-  }
 
   setupFile(
     "Lambdas.scala",
@@ -121,7 +117,7 @@ abstract class LocationsOfLineTestBase extends PositionManagerTestBase {
         |}
         |""".stripMargin.trim
   )
-  def testLambdas(): Unit = {
+  def testLambdas(): Unit =
     checkLocationsOfLine(
       Set(
         Loc("Lambdas$", "main", 4),
@@ -132,7 +128,6 @@ abstract class LocationsOfLineTestBase extends PositionManagerTestBase {
         Loc("Lambdas$$anonfun$main$3", "apply", 5)),
       Set(Loc("Lambdas$$anonfun$main$4", "apply", 6))
     )
-  }
 
   setupFile(
     "LocalFunction.scala",
@@ -154,13 +149,12 @@ abstract class LocationsOfLineTestBase extends PositionManagerTestBase {
         |}
         |""".stripMargin.trim
   )
-  def testLocalFunction(): Unit = {
+  def testLocalFunction(): Unit =
     checkLocationsOfLine(
       Set(Loc("LocalFunction$", "bar$1", 6)),
       Set(Loc("LocalFunction$", "foo$1", 9)),
       Set(Loc("LocalFunction$", "main", 13))
     )
-  }
 
   setupFile(
     "Multilevel.scala",
@@ -186,7 +180,7 @@ abstract class LocationsOfLineTestBase extends PositionManagerTestBase {
         |  }
         |}""".stripMargin.trim
   )
-  def testMultilevel(): Unit = {
+  def testMultilevel(): Unit =
     checkLocationsOfLine(
       Set(Loc("Multilevel$This$1", "<init>", 18)), //location for constructor is customized
       Set(Loc("Multilevel$This$1", "<init>", 4)),
@@ -197,5 +191,4 @@ abstract class LocationsOfLineTestBase extends PositionManagerTestBase {
       Set(Loc("Multilevel$This$1$$anon$1$$anonfun$1", "apply", 9)),
       Set(Loc("Multilevel$", "main", 18))
     )
-  }
 }

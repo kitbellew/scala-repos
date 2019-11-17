@@ -97,12 +97,10 @@ object TestServer {
 private[play] class TestServerProcess extends ServerProcess {
 
   private var hooks = Seq.empty[() => Unit]
-  override def addShutdownHook(hook: => Unit) = {
+  override def addShutdownHook(hook: => Unit) =
     hooks = hooks :+ (() => hook)
-  }
-  def shutdown(): Unit = {
+  def shutdown(): Unit =
     for (h <- hooks) h.apply()
-  }
 
   override def classLoader = getClass.getClassLoader
   override def args = Seq()
@@ -112,9 +110,8 @@ private[play] class TestServerProcess extends ServerProcess {
   override def exit(
       message: String,
       cause: Option[Throwable] = None,
-      returnCode: Int = -1): Nothing = {
+      returnCode: Int = -1): Nothing =
     throw new TestServerExitException(message, cause, returnCode)
-  }
 }
 
 private[play] case class TestServerExitException(

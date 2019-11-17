@@ -218,9 +218,8 @@ private[spark] class ExecutorAllocationManager(
   /**
     * Use a different clock for this allocation manager. This is mainly used for testing.
     */
-  def setClock(newClock: Clock): Unit = {
+  def setClock(newClock: Clock): Unit =
     clock = newClock
-  }
 
   /**
     * Register for scheduler callbacks to decide when to add and remove executors, and start
@@ -230,7 +229,7 @@ private[spark] class ExecutorAllocationManager(
     listenerBus.addListener(listener)
 
     val scheduleTask = new Runnable() {
-      override def run(): Unit = {
+      override def run(): Unit =
         try {
           schedule()
         } catch {
@@ -241,7 +240,6 @@ private[spark] class ExecutorAllocationManager(
               s"Uncaught exception in thread ${Thread.currentThread().getName}",
               t)
         }
-      }
     }
     executor.scheduleAtFixedRate(
       scheduleTask,
@@ -723,9 +721,8 @@ private[spark] class ExecutorAllocationManager(
     }
 
     override def onExecutorRemoved(
-        executorRemoved: SparkListenerExecutorRemoved): Unit = {
+        executorRemoved: SparkListenerExecutorRemoved): Unit =
       allocationManager.onExecutorRemoved(executorRemoved.executorId)
-    }
 
     /**
       * An estimate of the total number of pending tasks remaining for currently running stages. Does
@@ -733,12 +730,11 @@ private[spark] class ExecutorAllocationManager(
       *
       * Note: This is not thread-safe without the caller owning the `allocationManager` lock.
       */
-    def totalPendingTasks(): Int = {
+    def totalPendingTasks(): Int =
       stageIdToNumTasks.map {
         case (stageId, numTasks) =>
           numTasks - stageIdToTaskIndices.get(stageId).map(_.size).getOrElse(0)
       }.sum
-    }
 
     /**
       * The number of tasks currently running across all stages.
@@ -750,9 +746,8 @@ private[spark] class ExecutorAllocationManager(
       *
       * Note: This is not thread-safe without the caller owning the `allocationManager` lock.
       */
-    def isExecutorIdle(executorId: String): Boolean = {
+    def isExecutorIdle(executorId: String): Boolean =
       !executorIdToTaskIds.contains(executorId)
-    }
 
     /**
       * Update the Executor placement hints (the number of tasks with locality preferences,
@@ -794,7 +789,7 @@ private[spark] class ExecutorAllocationManager(
     private def registerGauge[T](
         name: String,
         value: => T,
-        defaultValue: T): Unit = {
+        defaultValue: T): Unit =
       metricRegistry.register(
         MetricRegistry.name("executors", name),
         new Gauge[T] {
@@ -802,7 +797,6 @@ private[spark] class ExecutorAllocationManager(
             Option(value).getOrElse(defaultValue)
           }
         })
-    }
 
     registerGauge("numberExecutorsToAdd", numExecutorsToAdd, 0)
     registerGauge(

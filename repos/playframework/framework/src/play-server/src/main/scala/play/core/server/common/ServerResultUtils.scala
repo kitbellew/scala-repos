@@ -17,7 +17,7 @@ object ServerResultUtils {
     */
   def determineConnectionHeader(
       request: RequestHeader,
-      result: Result): ConnectionHeader = {
+      result: Result): ConnectionHeader =
     if (request.version == HttpProtocol.HTTP_1_1) {
       if (result.header.headers
             .get(CONNECTION)
@@ -47,7 +47,6 @@ object ServerResultUtils {
         SendKeepAlive
       }
     }
-  }
 
   /**
     * Validate the result.
@@ -55,7 +54,7 @@ object ServerResultUtils {
     * Returns the validated result, which may be an error result if validation failed.
     */
   def validateResult(request: RequestHeader, result: Result)(
-      implicit mat: Materializer): Result = {
+      implicit mat: Materializer): Result =
     if (request.version == HttpProtocol.HTTP_1_0 &&
         result.body.isInstanceOf[HttpEntity.Chunked]) {
       cancelEntity(result.body)
@@ -72,7 +71,6 @@ object ServerResultUtils {
     } else {
       result
     }
-  }
 
   private def mayHaveEntity(status: Int) =
     status != Status.NO_CONTENT && status != Status.NOT_MODIFIED
@@ -84,13 +82,12 @@ object ServerResultUtils {
     * the case, for example, the response from an Akka HTTP client may have an associated Source that must be consumed
     * (or cancelled) before the associated connection can be returned to the connection pool.
     */
-  def cancelEntity(entity: HttpEntity)(implicit mat: Materializer) = {
+  def cancelEntity(entity: HttpEntity)(implicit mat: Materializer) =
     entity match {
       case HttpEntity.Chunked(chunks, _)   => chunks.runWith(Sink.cancelled)
       case HttpEntity.Streamed(data, _, _) => data.runWith(Sink.cancelled)
       case _                               =>
     }
-  }
 
   /**
     * The connection header logic to use for the result.
@@ -180,7 +177,7 @@ object ServerResultUtils {
     * be folded together, which Play's API unfortunately  does.)
     */
   def splitSetCookieHeaders(
-      headers: Map[String, String]): Iterable[(String, String)] = {
+      headers: Map[String, String]): Iterable[(String, String)] =
     if (headers.contains(SET_COOKIE)) {
       // Rewrite the headers with Set-Cookie split into separate headers
       headers.to[Seq].flatMap {
@@ -196,5 +193,4 @@ object ServerResultUtils {
       // No Set-Cookie header so we can just use the headers as they are
       headers
     }
-  }
 }

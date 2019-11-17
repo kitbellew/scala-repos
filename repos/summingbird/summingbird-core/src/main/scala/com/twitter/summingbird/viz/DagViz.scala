@@ -63,7 +63,7 @@ case class DagViz[P <: Platform[P]](dag: Dag[P]) {
 
   def getSubGraphStr(
       nameLookupTable: NameLookupTable,
-      node: Node[P]): (List[String], List[String], NameLookupTable) = {
+      node: Node[P]): (List[String], List[String], NameLookupTable) =
     node.members.foldLeft((List[String](), List[String](), nameLookupTable)) {
       case ((definitions, mappings, nameLookupTable), nextNode) =>
         val dependants = dependantState.dependantsOf(nextNode).getOrElse(Set())
@@ -84,7 +84,6 @@ case class DagViz[P <: Platform[P]](dag: Dag[P]) {
           }
         (nodeName :: definitions, newMappings ++ mappings, innerNameLookupTable)
     }
-  }
   def genClusters(): String = {
     val (clusters, producerMappings, producerNames, nodeToShortLookupTable) =
       dag.nodes.foldLeft(

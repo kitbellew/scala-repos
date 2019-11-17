@@ -30,9 +30,8 @@ trait FileBackedHistory extends JLineHistory with PersistentHistory {
     finally isPersistent = saved
   }
 
-  def addLineToFile(item: CharSequence): Unit = {
+  def addLineToFile(item: CharSequence): Unit =
     if (isPersistent) append(item + "\n")
-  }
 
   /** Overwrites the history file with the current memory. */
   protected def sync(): Unit = {
@@ -41,9 +40,8 @@ trait FileBackedHistory extends JLineHistory with PersistentHistory {
   }
 
   /** Append one or more lines to the history file. */
-  protected def append(lines: String*): Unit = {
+  protected def append(lines: String*): Unit =
     historyFile.appendAll(lines: _*)
-  }
 
   def load(): Unit = {
     if (!historyFile.canRead) historyFile.createFile()

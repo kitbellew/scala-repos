@@ -73,9 +73,8 @@ private[sql] class TypeCollection(private val types: Seq[AbstractDataType])
   override private[sql] def acceptsType(other: DataType): Boolean =
     types.exists(_.acceptsType(other))
 
-  override private[sql] def simpleString: String = {
+  override private[sql] def simpleString: String =
     types.map(_.simpleString).mkString("(", " or ", ")")
-  }
 }
 
 private[sql] object TypeCollection {

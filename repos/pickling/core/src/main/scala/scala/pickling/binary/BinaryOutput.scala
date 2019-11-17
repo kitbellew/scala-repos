@@ -26,10 +26,9 @@ abstract class BinaryOutput {
   // Derived operations //
   ////////////////////////
 
-  def putBoolean(value: Boolean): Unit = {
+  def putBoolean(value: Boolean): Unit =
     if (value) putByte(1)
     else putByte(0)
-  }
 
   def putString(value: String) {
     val bytes = value.getBytes("UTF-8")

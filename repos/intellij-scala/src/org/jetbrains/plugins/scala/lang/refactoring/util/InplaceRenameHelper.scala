@@ -77,13 +77,12 @@ class InplaceRenameHelper(parent: PsiElement) {
   def addGroup(
       primary: ScNamedElement,
       dependents: Seq[PsiElement],
-      suggestedNames: Seq[String]): Unit = {
+      suggestedNames: Seq[String]): Unit =
     addGroup(
       primary.nameId,
       primary.name,
       dependents.map((_, null)),
       suggestedNames)
-  }
 
   def startRenaming() {
     CodeInsightUtilCore.forcePsiPostprocessAndRestoreElement(parent)

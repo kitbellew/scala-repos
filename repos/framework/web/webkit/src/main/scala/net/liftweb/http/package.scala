@@ -38,7 +38,7 @@ package object http {
         ResolvableType,
         ResolvedType],
       innerTransform: CanBind[ResolvedType]
-  ) = {
+  ) =
     new CanBind[ResolvableType] {
       def apply(resolvable: => ResolvableType)(ns: NodeSeq): Seq[NodeSeq] = {
         val placeholderId = Helpers.nextFuncName
@@ -67,5 +67,4 @@ package object http {
         }
       }
     }
-  }
 }

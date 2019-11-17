@@ -53,14 +53,13 @@ object FlowStateMap {
   /**
     * Function to update a state.
     */
-  def mutate[T](fd: FlowDef)(fn: FlowState => (FlowState, T)): T = {
+  def mutate[T](fd: FlowDef)(fn: FlowState => (FlowState, T)): T =
     flowMap.synchronized {
       val oldState = Option(flowMap.get(fd)).getOrElse(FlowState())
       val (newState, t) = fn(oldState)
       flowMap.put(fd, newState)
       t
     }
-  }
   def get(fd: FlowDef): Option[FlowState] =
     flowMap.synchronized { Option(flowMap.get(fd)) }
 

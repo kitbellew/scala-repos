@@ -164,10 +164,9 @@ private[pickling] case class AllocateInstance(tpe: IrClass)
 /** Unpickle a singleton type. */
 private[pickling] case class UnpickleSingleton(tpe: IrClass)
     extends UnpicklerAst {
-  def requiresReflection: Boolean = {
+  def requiresReflection: Boolean =
     // TODO - check to see if the tpe is private....
     false
-  }
   override def toString = s"get singleton $tpe"
 }
 

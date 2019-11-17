@@ -272,12 +272,11 @@ class ExchangeCoordinatorSuite extends SparkFunSuite with BeforeAndAfterAll {
 
   val numInputPartitions: Int = 10
 
-  def checkAnswer(actual: => DataFrame, expectedAnswer: Seq[Row]): Unit = {
+  def checkAnswer(actual: => DataFrame, expectedAnswer: Seq[Row]): Unit =
     QueryTest.checkAnswer(actual, expectedAnswer) match {
       case Some(errorMessage) => fail(errorMessage)
       case None               =>
     }
-  }
 
   def withSQLContext(
       f: SQLContext => Unit,

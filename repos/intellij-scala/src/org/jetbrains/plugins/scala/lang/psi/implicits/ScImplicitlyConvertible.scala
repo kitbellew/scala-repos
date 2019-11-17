@@ -119,14 +119,13 @@ class ScImplicitlyConvertible(
   def implicitMapFirstPart(
       exp: Option[ScType] = None,
       fromUnder: Boolean = false,
-      exprType: Option[ScType] = None): Seq[ImplicitResolveResult] = {
+      exprType: Option[ScType] = None): Seq[ImplicitResolveResult] =
     buildImplicitMap(
       exp,
       fromUnder,
       isFromCompanion = false,
       Seq.empty,
       exprType)
-  }
 
   @CachedMappedWithRecursionGuard(
     place,
@@ -136,9 +135,8 @@ class ScImplicitlyConvertible(
       exp: Option[ScType] = None,
       fromUnder: Boolean = false,
       args: Seq[ScType] = Seq.empty,
-      exprType: Option[ScType] = None): Seq[ImplicitResolveResult] = {
+      exprType: Option[ScType] = None): Seq[ImplicitResolveResult] =
     buildImplicitMap(exp, fromUnder, isFromCompanion = true, args, exprType)
-  }
 
   private def buildImplicitMap(
       exp: Option[ScType],
@@ -688,12 +686,11 @@ class ScImplicitlyConvertible(
     }
   }
 
-  private def isConformsMethod(f: ScFunction): Boolean = {
+  private def isConformsMethod(f: ScFunction): Boolean =
     (f.name == "conforms" || f.name == "$conforms") &&
-    Option(f.containingClass)
-      .flatMap(cls => Option(cls.qualifiedName))
-      .contains("scala.Predef")
-  }
+      Option(f.containingClass)
+        .flatMap(cls => Option(cls.qualifiedName))
+        .contains("scala.Predef")
 }
 
 object ScImplicitlyConvertible {
@@ -796,13 +793,12 @@ object ScImplicitlyConvertible {
       implicitDependentSubst: ScSubstitutor,
       isFromCompanion: Boolean,
       unresolvedTypeParameters: Seq[TypeParameter]) {
-    def getClazz: Option[PsiClass] = {
+    def getClazz: Option[PsiClass] =
       element.getParent match {
         case tb: ScTemplateBody =>
           Some(PsiTreeUtil.getParentOfType(tb, classOf[PsiClass]))
         case _ => None
       }
-    }
 
     def getTypeWithDependentSubstitutor: ScType =
       implicitDependentSubst.subst(tp)

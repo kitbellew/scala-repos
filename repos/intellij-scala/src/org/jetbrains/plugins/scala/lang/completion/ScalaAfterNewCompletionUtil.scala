@@ -236,7 +236,7 @@ object ScalaAfterNewCompletionUtil {
           ScSubstitutor) => LookupElementRenderer[LookupElement],
       insertHandler: InsertHandler[LookupElement],
       renamesMap: mutable.HashMap[String, (String, PsiNamedElement)])
-      : ScalaLookupItem = {
+      : ScalaLookupItem =
     ScType.extractClassType(tp, Some(place.getProject)) match {
       case Some((clazz: PsiClass, subst: ScSubstitutor)) =>
         //filter base types (it's important for scala 2.9)
@@ -264,7 +264,6 @@ object ScalaAfterNewCompletionUtil {
           renamesMap)
       case _ => null
     }
-  }
 
   def collectInheritorsForType(
       typez: ScType,

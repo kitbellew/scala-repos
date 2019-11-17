@@ -85,12 +85,11 @@ class ActorSelectionSpec
   def identify(path: ActorPath): Option[ActorRef] =
     identify(system.actorSelection(path))
 
-  def askNode(node: ActorRef, query: Query): Option[ActorRef] = {
+  def askNode(node: ActorRef, query: Query): Option[ActorRef] =
     Await.result(node ? query, timeout.duration) match {
       case ref: ActorRef ⇒ Some(ref)
       case selection: ActorSelection ⇒ identify(selection)
     }
-  }
 
   "An ActorSystem" must {
 

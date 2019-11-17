@@ -84,7 +84,7 @@ object DebuggerTestUtil {
               f.getName.contains(suffix) && isJDK(new File(f, postfix)))
             .map(new File(_, s"$postfix/jre").getAbsolutePath))
     }
-    def currentJava() = {
+    def currentJava() =
       sys.props.get("java.version") match {
         case Some(v) if v.startsWith(s"1.$versionMajor") =>
           sys.props.get("java.home") match {
@@ -94,7 +94,6 @@ object DebuggerTestUtil {
           }
         case _ => None
       }
-    }
     val versionStrings = Seq(s"1.$versionMajor", s"-$versionMajor")
     val priorityPaths = Seq(
       currentJava(),

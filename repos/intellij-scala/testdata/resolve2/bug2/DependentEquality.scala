@@ -23,8 +23,7 @@ object Test {
 
   trait Typers { self: Analyzer =>
     import global._
-    private def argMode(fun: Tree) = {
+    private def argMode(fun: Tree) =
       treeInfo. /* line: 5 */ goo(fun)
-    }
   }
 }

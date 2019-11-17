@@ -89,9 +89,8 @@ object Client {
   /**
     * Construct a client from a single Service.
     */
-  def apply(raw: Service[Command, Response]): Client = {
+  def apply(raw: Service[Command, Response]): Client =
     new ConnectedClient(raw)
-  }
 }
 
 case class GetResult private[memcached] (
@@ -123,7 +122,7 @@ object GetResult {
   /**
     * Equivalent to results.reduceLeft { _ ++ _ }, but written to be more efficient.
     */
-  private[memcached] def merged(results: Seq[GetResult]): GetResult = {
+  private[memcached] def merged(results: Seq[GetResult]): GetResult =
     results match {
       case Nil         => Empty
       case Seq(single) => single
@@ -141,7 +140,6 @@ object GetResult {
 
         GetResult(hits.result(), misses.result(), failures.result())
     }
-  }
 
   private[memcached] def merged(results: Seq[GetsResult]): GetsResult = {
     val unwrapped = results.map { _.getResult }
@@ -282,7 +280,7 @@ trait BaseClient[T] {
     * Get a set of keys from the server.
     * @return a Map[String, T] of all of the keys that the server had.
     */
-  def get(keys: Iterable[String]): Future[Map[String, T]] = {
+  def get(keys: Iterable[String]): Future[Map[String, T]] =
     getResult(keys) flatMap { result =>
       if (result.failures.nonEmpty) {
         Future.exception(result.failures.values.head)
@@ -290,7 +288,6 @@ trait BaseClient[T] {
         Future.value(result.values.mapValues { bufferToType(_) })
       }
     }
-  }
 
   /**
     * Get a set of keys from the server, together with a "cas unique"
@@ -300,7 +297,7 @@ trait BaseClient[T] {
     * @return a Map[String, (T, Buf)] of all the
     * keys the server had, together with their "cas unique" token
     */
-  def gets(keys: Iterable[String]): Future[Map[String, (T, Buf)]] = {
+  def gets(keys: Iterable[String]): Future[Map[String, (T, Buf)]] =
     getsResult(keys) flatMap { result =>
       if (result.failures.nonEmpty) {
         Future.exception(result.failures.values.head)
@@ -310,7 +307,6 @@ trait BaseClient[T] {
         })
       }
     }
-  }
 
   /**
     * Get a set of keys from the server. Returns a Future[GetResult] that
@@ -524,7 +520,7 @@ protected class ConnectedClient(
     }
   }
 
-  def getResult(keys: Iterable[String]): Future[GetResult] = {
+  def getResult(keys: Iterable[String]): Future[GetResult] =
     try {
       if (keys == null)
         throw new IllegalArgumentException("Invalid keys: keys cannot be null")
@@ -533,8 +529,7 @@ protected class ConnectedClient(
       case t: IllegalArgumentException =>
         Future.exception(new ClientError(t.getMessage))
     }
-  }
-  def getsResult(keys: Iterable[String]): Future[GetsResult] = {
+  def getsResult(keys: Iterable[String]): Future[GetsResult] =
     try {
       if (keys == null)
         throw new IllegalArgumentException("Invalid keys: keys cannot be null")
@@ -543,9 +538,8 @@ protected class ConnectedClient(
       case t: IllegalArgumentException =>
         Future.exception(new ClientError(t.getMessage))
     }
-  }
 
-  def set(key: String, flags: Int, expiry: Time, value: Buf): Future[Unit] = {
+  def set(key: String, flags: Int, expiry: Time, value: Buf): Future[Unit] =
     try {
       service(Set(key, flags, expiry, value)).map {
         case Stored() => ()
@@ -556,14 +550,13 @@ protected class ConnectedClient(
       case t: IllegalArgumentException =>
         Future.exception(new ClientError(t.getMessage))
     }
-  }
 
   def checkAndSet(
       key: String,
       flags: Int,
       expiry: Time,
       value: Buf,
-      casUnique: Buf): Future[CasResult] = {
+      casUnique: Buf): Future[CasResult] =
     try {
       service(Cas(key, flags, expiry, value, casUnique)).flatMap {
         case Stored()   => FutureStored
@@ -576,13 +569,8 @@ protected class ConnectedClient(
       case t: IllegalArgumentException =>
         Future.exception(new ClientError(t.getMessage))
     }
-  }
 
-  def add(
-      key: String,
-      flags: Int,
-      expiry: Time,
-      value: Buf): Future[JBoolean] = {
+  def add(key: String, flags: Int, expiry: Time, value: Buf): Future[JBoolean] =
     try {
       service(Add(key, flags, expiry, value)).flatMap {
         case Stored()    => JavaTrue
@@ -594,13 +582,12 @@ protected class ConnectedClient(
       case t: IllegalArgumentException =>
         Future.exception(new ClientError(t.getMessage))
     }
-  }
 
   def append(
       key: String,
       flags: Int,
       expiry: Time,
-      value: Buf): Future[JBoolean] = {
+      value: Buf): Future[JBoolean] =
     try {
       service(Append(key, flags, expiry, value)).flatMap {
         case Stored()    => JavaTrue
@@ -612,13 +599,12 @@ protected class ConnectedClient(
       case t: IllegalArgumentException =>
         Future.exception(new ClientError(t.getMessage))
     }
-  }
 
   def prepend(
       key: String,
       flags: Int,
       expiry: Time,
-      value: Buf): Future[JBoolean] = {
+      value: Buf): Future[JBoolean] =
     try {
       service(Prepend(key, flags, expiry, value)).flatMap {
         case Stored()    => JavaTrue
@@ -630,13 +616,12 @@ protected class ConnectedClient(
       case t: IllegalArgumentException =>
         Future.exception(new ClientError(t.getMessage))
     }
-  }
 
   def replace(
       key: String,
       flags: Int,
       expiry: Time,
-      value: Buf): Future[JBoolean] = {
+      value: Buf): Future[JBoolean] =
     try {
       service(Replace(key, flags, expiry, value)).flatMap {
         case Stored()    => JavaTrue
@@ -648,9 +633,8 @@ protected class ConnectedClient(
       case t: IllegalArgumentException =>
         Future.exception(new ClientError(t.getMessage))
     }
-  }
 
-  def delete(key: String): Future[JBoolean] = {
+  def delete(key: String): Future[JBoolean] =
     try {
       service(Delete(key)).flatMap {
         case Deleted()  => JavaTrue
@@ -662,9 +646,8 @@ protected class ConnectedClient(
       case t: IllegalArgumentException =>
         Future.exception(new ClientError(t.getMessage))
     }
-  }
 
-  def incr(key: String, delta: Long): Future[Option[JLong]] = {
+  def incr(key: String, delta: Long): Future[Option[JLong]] =
     try {
       service(Incr(key, delta)).flatMap {
         case Number(value) => Future.value(Some(value))
@@ -676,9 +659,8 @@ protected class ConnectedClient(
       case t: IllegalArgumentException =>
         Future.exception(new ClientError(t.getMessage))
     }
-  }
 
-  def decr(key: String, delta: Long): Future[Option[JLong]] = {
+  def decr(key: String, delta: Long): Future[Option[JLong]] =
     try {
       service(Decr(key, delta)).flatMap {
         case Number(value) => Future.value(Some(value))
@@ -690,7 +672,6 @@ protected class ConnectedClient(
       case t: IllegalArgumentException =>
         Future.exception(new ClientError(t.getMessage))
     }
-  }
 
   def stats(args: Option[String]): Future[Seq[String]] = {
     val statArgs: Seq[Buf] = args match {
@@ -716,9 +697,8 @@ protected class ConnectedClient(
     }
   }
 
-  def release(): Unit = {
+  def release(): Unit =
     service.close()
-  }
 }
 
 /**
@@ -729,13 +709,12 @@ trait PartitionedClient extends Client {
   protected[memcached] def clientOf(key: String): Client
 
   private[this] def withKeysGroupedByClient[A](keys: Iterable[String])(
-      f: (Client, Iterable[String]) => Future[A]): Future[Seq[A]] = {
+      f: (Client, Iterable[String]) => Future[A]): Future[Seq[A]] =
     Future.collect(
       keys.groupBy(clientOf).map(Function.tupled(f)).toSeq
     )
-  }
 
-  def getResult(keys: Iterable[String]) = {
+  def getResult(keys: Iterable[String]) =
     if (keys.nonEmpty) {
       withKeysGroupedByClient(keys) {
         _.getResult(_)
@@ -743,9 +722,8 @@ trait PartitionedClient extends Client {
     } else {
       Future.value(GetResult.Empty)
     }
-  }
 
-  def getsResult(keys: Iterable[String]) = {
+  def getsResult(keys: Iterable[String]) =
     if (keys.nonEmpty) {
       withKeysGroupedByClient(keys) {
         _.getsResult(_)
@@ -753,7 +731,6 @@ trait PartitionedClient extends Client {
     } else {
       Future.value(GetsResult(GetResult.Empty))
     }
-  }
 
   def set(key: String, flags: Int, expiry: Time, value: Buf) =
     clientOf(key).set(key, flags, expiry, value)
@@ -1223,31 +1200,28 @@ case class KetamaClientBuilder private[memcached] (
     } else dest(Resolver.eval(name))
 
   @deprecated("Use `KetamaClientBuilder.dest(name: Name)` instead", "7.0.0")
-  def group(group: Group[CacheNode]): KetamaClientBuilder = {
+  def group(group: Group[CacheNode]): KetamaClientBuilder =
     if (LocalMemcached.enabled) {
       withLocalMemcached
     } else {
       copy(_group = group)
     }
-  }
 
   @deprecated("Use `KetamaClientBuilder.dest(name: Name)` instead", "7.0.0")
-  def cluster(cluster: Cluster[InetSocketAddress]): KetamaClientBuilder = {
+  def cluster(cluster: Cluster[InetSocketAddress]): KetamaClientBuilder =
     group(CacheNodeGroup(Group.fromCluster(cluster).map {
       _.asInstanceOf[SocketAddress]
     }))
-  }
 
   @deprecated("Use `KetamaClientBuilder.dest(name: Name)` instead", "7.0.0")
-  def cachePoolCluster(cluster: Cluster[CacheNode]): KetamaClientBuilder = {
+  def cachePoolCluster(cluster: Cluster[CacheNode]): KetamaClientBuilder =
     if (LocalMemcached.enabled) {
       withLocalMemcached
     } else {
       copy(_group = Group.fromCluster(cluster))
     }
-  }
 
-  def nodes(nodes: Seq[(String, Int, Int)]): KetamaClientBuilder = {
+  def nodes(nodes: Seq[(String, Int, Int)]): KetamaClientBuilder =
     if (LocalMemcached.enabled) {
       withLocalMemcached
     } else {
@@ -1255,7 +1229,6 @@ case class KetamaClientBuilder private[memcached] (
         case (host, port, weight) => new CacheNode(host, port, weight)
       }: _*))
     }
-  }
 
   def nodes(hostPortWeights: String): KetamaClientBuilder =
     group(CacheNodeGroup(hostPortWeights))

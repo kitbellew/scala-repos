@@ -60,7 +60,7 @@ trait ScModificationTrackerOwner
   }
 
   def isValidModificationTrackerOwner(
-      checkForChangedReturn: Boolean = false): Boolean = {
+      checkForChangedReturn: Boolean = false): Boolean =
     getContext match {
       case f: ScFunction =>
         f.returnTypeElement match {
@@ -87,20 +87,17 @@ trait ScModificationTrackerOwner
       case _: ScDoStmt       => true
       case _                 => false
     }
-  }
 
   //elem is always the child of this element because this function is called when going up the tree starting with elem
   //if this is a valid modification tracker owner, no need to change modification count
-  override def shouldChangeModificationCount(elem: PsiElement) = {
+  override def shouldChangeModificationCount(elem: PsiElement) =
     !isValidModificationTrackerOwner()
-  }
 
-  def createMirror(text: String): PsiElement = {
+  def createMirror(text: String): PsiElement =
     ScalaPsiElementFactory.createExpressionWithContextFromText(
       text,
       getContext,
       this)
-  }
 
   @Cached(synchronized = true, ModCount.getBlockModificationCount, this)
   def getMirrorPositionForCompletion(

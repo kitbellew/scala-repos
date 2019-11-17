@@ -912,19 +912,17 @@ class TcpConnectionSpec extends AkkaSpec("""
     var registerCallReceiver = TestProbe()
     var interestCallReceiver = TestProbe()
 
-    def ignoreWindowsWorkaroundForTicket15766(): Unit = {
+    def ignoreWindowsWorkaroundForTicket15766(): Unit =
       // Due to the Windows workaround of #15766 we need to set an OP_CONNECT to reliably detect connection resets
       if (Helpers.isWindows) interestCallReceiver.expectMsg(OP_CONNECT)
-    }
 
-    def run(body: ⇒ Unit): Unit = {
+    def run(body: ⇒ Unit): Unit =
       try {
         setServerSocketOptions()
         localServerChannel.socket.bind(serverAddress)
         localServerChannel.configureBlocking(false)
         body
       } finally localServerChannel.close()
-    }
 
     def register(channel: SelectableChannel, initialOps: Int)(
         implicit channelActor: ActorRef): Unit =
@@ -1008,13 +1006,12 @@ class TcpConnectionSpec extends AkkaSpec("""
     lazy val serverSelectionKey = registerChannel(serverSideChannel, "server")
     lazy val defaultbuffer = ByteBuffer.allocate(TestSize)
 
-    def windowsWorkaroundToDetectAbort(): Unit = {
+    def windowsWorkaroundToDetectAbort(): Unit =
       // Due to a Windows quirk we need to set an OP_CONNECT to reliably detect connection resets, see #1576
       if (Helpers.isWindows) {
         serverSelectionKey.interestOps(OP_CONNECT)
         nioSelector.select(10)
       }
-    }
 
     override def ignoreWindowsWorkaroundForTicket15766(): Unit = {
       super.ignoreWindowsWorkaroundForTicket15766()

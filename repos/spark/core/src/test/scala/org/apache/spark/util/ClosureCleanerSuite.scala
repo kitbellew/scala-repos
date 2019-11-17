@@ -74,7 +74,7 @@ class ClosureCleanerSuite extends SparkFunSuite {
 
     // We use return statements as an indication that a closure is actually being cleaned
     // We expect closure cleaner to find the return statements in the user provided closures
-    def expectCorrectException(body: => Unit): Unit = {
+    def expectCorrectException(body: => Unit): Unit =
       try {
         body
       } catch {
@@ -83,7 +83,6 @@ class ClosureCleanerSuite extends SparkFunSuite {
           fail(s"Expected ReturnStatementInClosureException, but got $e.\n" +
             "This means the closure provided by user is not actually cleaned.")
       }
-    }
 
     withSpark(new SparkContext("local", "test")) { sc =>
       val rdd = sc.parallelize(1 to 10)
@@ -188,12 +187,11 @@ class ClosureCleanerSuite extends SparkFunSuite {
 // A non-serializable class we create in closures to make sure that we aren't
 // keeping references to unneeded variables from our outer closures.
 class NonSerializable(val id: Int = -1) {
-  override def equals(other: Any): Boolean = {
+  override def equals(other: Any): Boolean =
     other match {
       case o: NonSerializable => id == o.id
       case _                  => false
     }
-  }
 }
 
 object TestObject {
@@ -249,7 +247,7 @@ class TestClassWithoutFieldAccess {
 }
 
 object TestObjectWithBogusReturns {
-  def run(): Int = {
+  def run(): Int =
     withSpark(new SparkContext("local", "test")) { sc =>
       val nums = sc.parallelize(Array(1, 2, 3, 4))
       // this return is invalid since it will transfer control outside the closure
@@ -258,11 +256,10 @@ object TestObjectWithBogusReturns {
       }
       1
     }
-  }
 }
 
 object TestObjectWithNestedReturns {
-  def run(): Int = {
+  def run(): Int =
     withSpark(new SparkContext("local", "test")) { sc =>
       val nums = sc.parallelize(Array(1, 2, 3, 4))
       nums.map { x =>
@@ -272,7 +269,6 @@ object TestObjectWithNestedReturns {
       }
       1
     }
-  }
 }
 
 object TestObjectWithNesting {
@@ -319,106 +315,88 @@ class TestClassWithNesting(val y: Int) extends Serializable {
   * ClosureCleaner did not actually clean our closure, in which case we should fail the test.
   */
 private object TestUserClosuresActuallyCleaned {
-  def testMap(rdd: RDD[Int]): Unit = {
+  def testMap(rdd: RDD[Int]): Unit =
     rdd
       .map { _ =>
         return; 0
       }
       .count()
-  }
-  def testFlatMap(rdd: RDD[Int]): Unit = {
+  def testFlatMap(rdd: RDD[Int]): Unit =
     rdd
       .flatMap { _ =>
         return; Seq()
       }
       .count()
-  }
-  def testFilter(rdd: RDD[Int]): Unit = {
+  def testFilter(rdd: RDD[Int]): Unit =
     rdd
       .filter { _ =>
         return; true
       }
       .count()
-  }
-  def testSortBy(rdd: RDD[Int]): Unit = {
+  def testSortBy(rdd: RDD[Int]): Unit =
     rdd
       .sortBy { _ =>
         return; 1
       }
       .count()
-  }
-  def testKeyBy(rdd: RDD[Int]): Unit = {
+  def testKeyBy(rdd: RDD[Int]): Unit =
     rdd
       .keyBy { _ =>
         return; 1
       }
       .count()
-  }
-  def testGroupBy(rdd: RDD[Int]): Unit = {
+  def testGroupBy(rdd: RDD[Int]): Unit =
     rdd
       .groupBy { _ =>
         return; 1
       }
       .count()
-  }
-  def testMapPartitions(rdd: RDD[Int]): Unit = {
+  def testMapPartitions(rdd: RDD[Int]): Unit =
     rdd
       .mapPartitions { it =>
         return; it
       }
       .count()
-  }
-  def testMapPartitionsWithIndex(rdd: RDD[Int]): Unit = {
+  def testMapPartitionsWithIndex(rdd: RDD[Int]): Unit =
     rdd
       .mapPartitionsWithIndex { (_, it) =>
         return; it
       }
       .count()
-  }
-  def testZipPartitions2(rdd: RDD[Int]): Unit = {
+  def testZipPartitions2(rdd: RDD[Int]): Unit =
     rdd.zipPartitions(rdd) { case (it1, it2) => return; it1 }.count()
-  }
-  def testZipPartitions3(rdd: RDD[Int]): Unit = {
+  def testZipPartitions3(rdd: RDD[Int]): Unit =
     rdd.zipPartitions(rdd, rdd) { case (it1, it2, it3) => return; it1 }.count()
-  }
-  def testZipPartitions4(rdd: RDD[Int]): Unit = {
+  def testZipPartitions4(rdd: RDD[Int]): Unit =
     rdd
       .zipPartitions(rdd, rdd, rdd) {
         case (it1, it2, it3, it4) => return; it1
       }
       .count()
-  }
-  def testForeach(rdd: RDD[Int]): Unit = {
+  def testForeach(rdd: RDD[Int]): Unit =
     rdd.foreach { _ =>
       return
     }
-  }
-  def testForeachPartition(rdd: RDD[Int]): Unit = {
+  def testForeachPartition(rdd: RDD[Int]): Unit =
     rdd.foreachPartition { _ =>
       return
     }
-  }
-  def testReduce(rdd: RDD[Int]): Unit = {
+  def testReduce(rdd: RDD[Int]): Unit =
     rdd.reduce { case (_, _) => return; 1 }
-  }
-  def testTreeReduce(rdd: RDD[Int]): Unit = {
+  def testTreeReduce(rdd: RDD[Int]): Unit =
     rdd.treeReduce { case (_, _) => return; 1 }
-  }
-  def testFold(rdd: RDD[Int]): Unit = {
+  def testFold(rdd: RDD[Int]): Unit =
     rdd.fold(0) { case (_, _) => return; 1 }
-  }
-  def testAggregate(rdd: RDD[Int]): Unit = {
+  def testAggregate(rdd: RDD[Int]): Unit =
     rdd
       .aggregate(0)({ case (_, _) => return; 1 }, { case (_, _) => return; 1 })
-  }
-  def testTreeAggregate(rdd: RDD[Int]): Unit = {
+  def testTreeAggregate(rdd: RDD[Int]): Unit =
     rdd.treeAggregate(0)({ case (_, _) => return; 1 }, {
       case (_, _)                      => return; 1
     })
-  }
 
   // Test pair RDD functions
-  def testCombineByKey(rdd: RDD[(Int, Int)]): Unit = {
+  def testCombineByKey(rdd: RDD[(Int, Int)]): Unit =
     rdd
       .combineByKey({ _ =>
         return; 1
@@ -426,45 +404,36 @@ private object TestUserClosuresActuallyCleaned {
         case (_, _)                => return; 1
       }: (Int, Int) => Int)
       .count()
-  }
-  def testAggregateByKey(rdd: RDD[(Int, Int)]): Unit = {
+  def testAggregateByKey(rdd: RDD[(Int, Int)]): Unit =
     rdd
       .aggregateByKey(0)({ case (_, _) => return; 1 }, {
         case (_, _)                    => return; 1
       })
       .count()
-  }
-  def testFoldByKey(rdd: RDD[(Int, Int)]): Unit = {
+  def testFoldByKey(rdd: RDD[(Int, Int)]): Unit =
     rdd.foldByKey(0) { case (_, _) => return; 1 }
-  }
-  def testReduceByKey(rdd: RDD[(Int, Int)]): Unit = {
+  def testReduceByKey(rdd: RDD[(Int, Int)]): Unit =
     rdd.reduceByKey { case (_, _) => return; 1 }
-  }
-  def testReduceByKeyLocally(rdd: RDD[(Int, Int)]): Unit = {
+  def testReduceByKeyLocally(rdd: RDD[(Int, Int)]): Unit =
     rdd.reduceByKeyLocally { case (_, _) => return; 1 }
-  }
-  def testMapValues(rdd: RDD[(Int, Int)]): Unit = {
+  def testMapValues(rdd: RDD[(Int, Int)]): Unit =
     rdd.mapValues { _ =>
       return; 1
     }
-  }
-  def testFlatMapValues(rdd: RDD[(Int, Int)]): Unit = {
+  def testFlatMapValues(rdd: RDD[(Int, Int)]): Unit =
     rdd.flatMapValues { _ =>
       return; Seq()
     }
-  }
 
   // Test async RDD actions
-  def testForeachAsync(rdd: RDD[Int]): Unit = {
+  def testForeachAsync(rdd: RDD[Int]): Unit =
     rdd.foreachAsync { _ =>
       return
     }
-  }
-  def testForeachPartitionAsync(rdd: RDD[Int]): Unit = {
+  def testForeachPartitionAsync(rdd: RDD[Int]): Unit =
     rdd.foreachPartitionAsync { _ =>
       return
     }
-  }
 
   // Test SparkContext runJob
   def testRunJob1(sc: SparkContext): Unit = {

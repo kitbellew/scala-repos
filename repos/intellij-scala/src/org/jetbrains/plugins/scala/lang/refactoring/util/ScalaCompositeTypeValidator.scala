@@ -20,7 +20,7 @@ object ScalaCompositeTypeValidator {
       selectedElement: PsiElement,
       noOccurrences: Boolean,
       enclosingContainerAll: PsiElement,
-      enclosingOne: PsiElement): ScalaCompositeTypeValidator = {
+      enclosingOne: PsiElement): ScalaCompositeTypeValidator =
     new ScalaCompositeTypeValidator(
       conflictsReporter,
       myProject,
@@ -29,7 +29,6 @@ object ScalaCompositeTypeValidator {
       enclosingContainerAll,
       enclosingOne,
       validators)
-  }
 }
 
 class ScalaCompositeTypeValidator(

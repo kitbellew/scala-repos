@@ -34,7 +34,7 @@ import org.apache.spark.sql.catalyst.plans.logical.Generate
 class HiveQlSuite extends SparkFunSuite with BeforeAndAfterAll {
   val parser = new HiveQl(SimpleParserConf())
 
-  private def extractTableDesc(sql: String): (CatalogTable, Boolean) = {
+  private def extractTableDesc(sql: String): (CatalogTable, Boolean) =
     parser
       .parsePlan(sql)
       .collect {
@@ -42,7 +42,6 @@ class HiveQlSuite extends SparkFunSuite with BeforeAndAfterAll {
           (desc, allowExisting)
       }
       .head
-  }
 
   test("Test CTAS #1") {
     val s1 =

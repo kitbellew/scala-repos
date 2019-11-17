@@ -91,7 +91,7 @@ private[spark] class SortShuffleManager(conf: SparkConf)
   override def registerShuffle[K, V, C](
       shuffleId: Int,
       numMaps: Int,
-      dependency: ShuffleDependency[K, V, C]): ShuffleHandle = {
+      dependency: ShuffleDependency[K, V, C]): ShuffleHandle =
     if (SortShuffleWriter.shouldBypassMergeSort(SparkEnv.get.conf, dependency)) {
       // If there are fewer than spark.shuffle.sort.bypassMergeThreshold partitions and we don't
       // need map-side aggregation, then write numPartitions files directly and just concatenate
@@ -112,7 +112,6 @@ private[spark] class SortShuffleManager(conf: SparkConf)
       // Otherwise, buffer map outputs in a deserialized form:
       new BaseShuffleHandle(shuffleId, numMaps, dependency)
     }
-  }
 
   /**
     * Get a reader for a range of reduce partitions (startPartition to endPartition-1, inclusive).
@@ -122,13 +121,12 @@ private[spark] class SortShuffleManager(conf: SparkConf)
       handle: ShuffleHandle,
       startPartition: Int,
       endPartition: Int,
-      context: TaskContext): ShuffleReader[K, C] = {
+      context: TaskContext): ShuffleReader[K, C] =
     new BlockStoreShuffleReader(
       handle.asInstanceOf[BaseShuffleHandle[K, _, C]],
       startPartition,
       endPartition,
       context)
-  }
 
   /** Get a writer for a given partition. Called on executors by map tasks. */
   override def getWriter[K, V](
@@ -177,9 +175,8 @@ private[spark] class SortShuffleManager(conf: SparkConf)
   }
 
   /** Shut down this ShuffleManager. */
-  override def stop(): Unit = {
+  override def stop(): Unit =
     shuffleBlockResolver.stop()
-  }
 }
 
 private[spark] object SortShuffleManager extends Logging {

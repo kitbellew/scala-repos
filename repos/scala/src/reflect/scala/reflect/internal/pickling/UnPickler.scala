@@ -264,10 +264,9 @@ abstract class UnPickler {
           } getOrElse "")
         }
 
-        def localDummy = {
+        def localDummy =
           if (nme.isLocalDummyName(name)) owner.newLocalDummy(NoPosition)
           else NoSymbol
-        }
 
         // (1) Try name.
         localDummy orElse fromName(name) orElse {
@@ -328,13 +327,12 @@ abstract class UnPickler {
           *     Since it is not a member, it should not be entered in the owner's scope.
           * (2) Similarly, we ignore local dummy symbols, as seen in SI-8868
           */
-        def shouldEnterInOwnerScope = {
+        def shouldEnterInOwnerScope =
           sym.owner.isClass && sym != classRoot && sym != moduleRoot &&
-          !sym.isModuleClass && !sym.isRefinementClass &&
-          !sym.isTypeParameter && !sym.isExistentiallyBound &&
-          sym.rawname != tpnme.LOCAL_CHILD && // (1)
-          !nme.isLocalDummyName(sym.rawname) // (2)
-        }
+            !sym.isModuleClass && !sym.isRefinementClass &&
+            !sym.isTypeParameter && !sym.isExistentiallyBound &&
+            sym.rawname != tpnme.LOCAL_CHILD && // (1)
+            !nme.isLocalDummyName(sym.rawname) // (2)
 
         markFlagsCompleted(sym)(mask = AllFlags)
         sym.privateWithin = privateWithin
@@ -745,9 +743,8 @@ abstract class UnPickler {
       *  Similar in intent to what SymbolLoader does (but here we don't have access to
       *  error reporting, so we rely on the typechecker to report the error).
       */
-    def toTypeError(e: MissingRequirementError) = {
+    def toTypeError(e: MissingRequirementError) =
       new TypeError(e.msg)
-    }
 
     /** A lazy type which when completed returns type at index `i`. */
     private class LazyTypeRef(i: Int)

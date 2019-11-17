@@ -70,9 +70,8 @@ package object plot {
         override def generateToolTip(
             dataset: org.jfree.data.xy.XYDataset,
             series: Int,
-            item: Int): String = {
+            item: Int): String =
           dataset.asInstanceOf[XYDataset[_]].getTip(series, item)
-        }
       }
       renderer.setSeriesToolTipGenerator(0, tooltipGenerator)
 
@@ -80,9 +79,8 @@ package object plot {
         override def generateLabel(
             dataset: org.jfree.data.xy.XYDataset,
             series: Int,
-            item: Int): String = {
+            item: Int): String =
           dataset.asInstanceOf[XYDataset[_]].getLabel(series, item)
-        }
       }
       renderer.setSeriesItemLabelGenerator(0, labelGenerator)
       renderer.setSeriesItemLabelsVisible(0, labels != null)
@@ -179,9 +177,8 @@ package object plot {
         override def generateToolTip(
             dataset: org.jfree.data.xy.XYDataset,
             series: Int,
-            item: Int): String = {
+            item: Int): String =
           dataset.asInstanceOf[XYZDataset[_]].getTip(0, item)
-        }
       }
       renderer.setSeriesToolTipGenerator(0, tooltipGenerator)
 
@@ -190,9 +187,8 @@ package object plot {
           override def generateLabel(
               dataset: org.jfree.data.xy.XYDataset,
               series: Int,
-              item: Int): String = {
+              item: Int): String =
             dataset.asInstanceOf[XYZDataset[_]].getLabel(0, item)
-          }
         }
       renderer.setSeriesItemLabelGenerator(0, labelGenerator)
       renderer.setSeriesItemLabelsVisible(0, labels != null)
@@ -321,9 +317,8 @@ package object plot {
             override def generateToolTip(
                 dataset: org.jfree.data.xy.XYDataset,
                 series: Int,
-                item: Int): String = {
+                item: Int): String =
               dataset.asInstanceOf[XYZDataset[_]].getTip(series, item)
-            }
           }
         renderer.setSeriesToolTipGenerator(0, tooltipGenerator)
 
@@ -332,9 +327,8 @@ package object plot {
             override def generateLabel(
                 dataset: org.jfree.data.xy.XYDataset,
                 series: Int,
-                item: Int): String = {
+                item: Int): String =
               dataset.asInstanceOf[XYZDataset[_]].getLabel(series, item)
-            }
           }
         renderer.setSeriesItemLabelGenerator(0, labelGenerator)
         renderer.setSeriesItemLabelsVisible(0, labels != null)

@@ -232,7 +232,7 @@ private[spark] class CoarseGrainedSchedulerBackend(
       launchTasks(scheduler.resourceOffers(workOffers))
     }
 
-    override def onDisconnected(remoteAddress: RpcAddress): Unit = {
+    override def onDisconnected(remoteAddress: RpcAddress): Unit =
       addressToExecutorId
         .get(remoteAddress)
         .foreach(
@@ -242,7 +242,6 @@ private[spark] class CoarseGrainedSchedulerBackend(
               "containers exceeding thresholds, or network issues. Check driver logs for WARN " +
               "messages.")
           ))
-    }
 
     // Make fake resource offers on just one executor
     private def makeOffers(executorId: String) {
@@ -300,7 +299,7 @@ private[spark] class CoarseGrainedSchedulerBackend(
     }
 
     // Remove a disconnected slave from the cluster
-    def removeExecutor(executorId: String, reason: ExecutorLossReason): Unit = {
+    def removeExecutor(executorId: String, reason: ExecutorLossReason): Unit =
       executorDataMap.get(executorId) match {
         case Some(executorInfo) =>
           // This must be synchronized because variables mutated
@@ -324,7 +323,6 @@ private[spark] class CoarseGrainedSchedulerBackend(
         case None =>
           logInfo(s"Asked to remove non-existent executor $executorId")
       }
-    }
 
     /**
       * Stop making resource offers for the given executor. The executor is marked as lost with
@@ -373,14 +371,12 @@ private[spark] class CoarseGrainedSchedulerBackend(
   }
 
   protected def createDriverEndpointRef(
-      properties: ArrayBuffer[(String, String)]): RpcEndpointRef = {
+      properties: ArrayBuffer[(String, String)]): RpcEndpointRef =
     rpcEnv.setupEndpoint(ENDPOINT_NAME, createDriverEndpoint(properties))
-  }
 
   protected def createDriverEndpoint(
-      properties: Seq[(String, String)]): DriverEndpoint = {
+      properties: Seq[(String, String)]): DriverEndpoint =
     new DriverEndpoint(rpcEnv, properties)
-  }
 
   def stopExecutors() {
     try {
@@ -443,9 +439,8 @@ private[spark] class CoarseGrainedSchedulerBackend(
     driverEndpoint.send(KillTask(taskId, executorId, interruptThread))
   }
 
-  override def defaultParallelism(): Int = {
+  override def defaultParallelism(): Int =
     conf.getInt("spark.default.parallelism", math.max(totalCoreCount.get(), 2))
-  }
 
   // Called by subclasses when notified of a lost worker
   def removeExecutor(executorId: String, reason: ExecutorLossReason) {

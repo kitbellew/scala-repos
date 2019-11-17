@@ -186,11 +186,10 @@ final case class TreeLoc[A](
     }
     def uf[A](
         a: TreeLoc[A],
-        f: TreeLoc[A] => Option[TreeLoc[A]]): Stream[Tree[TreeLoc[A]]] = {
+        f: TreeLoc[A] => Option[TreeLoc[A]]): Stream[Tree[TreeLoc[A]]] =
       std.stream.unfold(f(a)) { (o: Option[TreeLoc[A]]) =>
         for (c <- o) yield (Tree.unfoldTree(c)(dwn[A](_: TreeLoc[A])), f(c))
       }
-    }
 
     val p = std.stream.unfold(parent) { (o: Option[TreeLoc[A]]) =>
       for (z <- o) yield ((uf(z, lft), z, uf(z, rgt)), z.parent)
@@ -435,7 +434,7 @@ sealed abstract class TreeLocInstances {
               ForestT.foldMap(fa._3)(f))
 
           override def traverse1Impl[G[_], A, B](fa: Parent[A])(f: A => G[B])(
-              implicit G: Apply[G]): G[Parent[B]] = {
+              implicit G: Apply[G]): G[Parent[B]] =
             (fa._1, fa._3) match {
               case (x #:: xs, y #:: ys) =>
                 G.apply3(
@@ -458,7 +457,6 @@ sealed abstract class TreeLocInstances {
               case (Empty, Empty) =>
                 G.map(f(fa._2))(c => (Empty, c, Empty))
             }
-          }
 
           override def foldMapRight1[A, B](fa: Parent[A])(z: A => B)(
               f: (A, => B) => B): B =
@@ -517,10 +515,9 @@ private trait TreeLocEqual[A] extends Equal[TreeLoc[A]] {
   implicit def E: Equal[A]
   import std.stream._, std.tuple._
 
-  override final def equal(a: TreeLoc[A], b: TreeLoc[A]) = {
+  override final def equal(a: TreeLoc[A], b: TreeLoc[A]) =
     Equal[Tree[A]].equal(a.tree, b.tree) &&
-    Equal[TreeForest[A]].equal(a.lefts, b.lefts) &&
-    Equal[TreeForest[A]].equal(a.rights, b.rights) &&
-    Equal[Parents[A]].equal(a.parents, b.parents)
-  }
+      Equal[TreeForest[A]].equal(a.lefts, b.lefts) &&
+      Equal[TreeForest[A]].equal(a.rights, b.rights) &&
+      Equal[Parents[A]].equal(a.parents, b.parents)
 }

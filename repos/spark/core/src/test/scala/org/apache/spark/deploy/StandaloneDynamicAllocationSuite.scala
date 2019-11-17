@@ -79,7 +79,7 @@ class StandaloneDynamicAllocationSuite
     }
   }
 
-  override def afterAll(): Unit = {
+  override def afterAll(): Unit =
     try {
       masterRpcEnv.shutdown()
       workerRpcEnvs.foreach(_.shutdown())
@@ -92,7 +92,6 @@ class StandaloneDynamicAllocationSuite
     } finally {
       super.afterAll()
     }
-  }
 
   test("dynamic allocation default behavior") {
     sc = new SparkContext(appConf)
@@ -482,12 +481,11 @@ class StandaloneDynamicAllocationSuite
   // ===============================
 
   /** Return a SparkConf for applications that want to talk to our Master. */
-  private def appConf: SparkConf = {
+  private def appConf: SparkConf =
     new SparkConf()
       .setMaster(masterRpcEnv.address.toSparkURL)
       .setAppName("test")
       .set("spark.executor.memory", "256m")
-  }
 
   /** Make a master to which our application will send executor requests. */
   private def makeMaster(): Master = {
@@ -498,7 +496,7 @@ class StandaloneDynamicAllocationSuite
   }
 
   /** Make a few workers that talk to our master. */
-  private def makeWorkers(cores: Int, memory: Int): Seq[Worker] = {
+  private def makeWorkers(cores: Int, memory: Int): Seq[Worker] =
     (0 until numWorkers).map { i =>
       val rpcEnv = workerRpcEnvs(i)
       val worker = new Worker(
@@ -514,22 +512,18 @@ class StandaloneDynamicAllocationSuite
       rpcEnv.setupEndpoint(Worker.ENDPOINT_NAME, worker)
       worker
     }
-  }
 
   /** Get the Master state */
-  private def getMasterState: MasterStateResponse = {
+  private def getMasterState: MasterStateResponse =
     master.self.askWithRetry[MasterStateResponse](RequestMasterState)
-  }
 
   /** Get the applications that are active from Master */
-  private def getApplications(): Seq[ApplicationInfo] = {
+  private def getApplications(): Seq[ApplicationInfo] =
     getMasterState.activeApps
-  }
 
   /** Kill all executors belonging to this application. */
-  private def killAllExecutors(sc: SparkContext): Boolean = {
+  private def killAllExecutors(sc: SparkContext): Boolean =
     killNExecutors(sc, Int.MaxValue)
-  }
 
   /** Kill N executors belonging to this application. */
   private def killNExecutors(sc: SparkContext, n: Int): Boolean = {

@@ -24,19 +24,18 @@ class SyntaxTest extends SpireTests with Checkers with BaseSyntaxTest {
 
   case class NonZero[A](val x: A)
 
-  implicit def ArbNonZero[A: Ring: Eq: Arbitrary]: Arbitrary[NonZero[A]] = {
+  implicit def ArbNonZero[A: Ring: Eq: Arbitrary]: Arbitrary[NonZero[A]] =
     Arbitrary(
       arbitrary[A]
         .map { a =>
           if (a === Ring[A].zero) Ring[A].one else a
         }
         .map(NonZero[A](_)))
-  }
 
   case class Positive[A](val x: A)
 
   implicit def ArbPositive[A: Ring: Eq: Signed: Arbitrary]
-      : Arbitrary[Positive[A]] = {
+      : Arbitrary[Positive[A]] =
     Arbitrary(
       arbitrary[A]
         .map { a =>
@@ -44,7 +43,6 @@ class SyntaxTest extends SpireTests with Checkers with BaseSyntaxTest {
         }
         .filter(_.sign == Sign.Positive)
         .map(Positive(_)))
-  }
 
   implicit def ArbVector[A: Arbitrary]: Arbitrary[Vector[A]] =
     Arbitrary(for {

@@ -533,7 +533,7 @@ object AkkaBuild extends Build {
         ((_, _, _, _, _, _, _, c) => c),
       test in Test ~= { x =>
         {
-          def executeMvnCommands(failureMessage: String, commands: String*) = {
+          def executeMvnCommands(failureMessage: String, commands: String*) =
             if ({
               List(
                 "sh",
@@ -543,7 +543,6 @@ object AkkaBuild extends Build {
                   " ",
                   "")) !
             } != 0) throw new Exception(failureMessage)
-          }
           executeMvnCommands(
             "Osgi sample Dining hakkers test failed",
             "clean",

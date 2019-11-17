@@ -107,12 +107,11 @@ object SBTProjectBuilder {
       filters: List[(String, String)] = Nil) {
 
     /** Apply all filters in turn. */
-    def filter(string: String, filters: List[(String, String)]): String = {
+    def filter(string: String, filters: List[(String, String)]): String =
       filters match {
         case Nil       => string
         case f :: tail => filter(string.replaceAll(f._1, f._2), tail)
       }
-    }
 
     try {
       val uri = this.getClass.getResource(fileName).toURI

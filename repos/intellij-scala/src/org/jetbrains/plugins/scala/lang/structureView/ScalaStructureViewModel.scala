@@ -45,19 +45,17 @@ class ScalaStructureViewModel(
       element.isInstanceOf[TestStructureViewElement] ||
       element.isInstanceOf[ScalaValueStructureViewElement])
 
-  def isAlwaysShowsPlus(element: StructureViewTreeElement): Boolean = {
+  def isAlwaysShowsPlus(element: StructureViewTreeElement): Boolean =
     element match {
       case _: ScalaTypeDefinitionStructureViewElement => true
       case _: ScalaFileStructureViewElement           => true
       case _: ScalaPackagingStructureViewElement      => true
       case _                                          => false
     }
-  }
 
   @NotNull
-  def getRoot: StructureViewTreeElement = {
+  def getRoot: StructureViewTreeElement =
     new ScalaFileStructureViewElement(myRootElement, console)
-  }
 
   @NotNull
   override def getSorters: Array[Sorter] = {

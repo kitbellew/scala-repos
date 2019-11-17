@@ -186,7 +186,7 @@ object KinesisUtils {
       regionName: String,
       initialPositionInStream: InitialPositionInStream,
       checkpointInterval: Duration,
-      storageLevel: StorageLevel): ReceiverInputDStream[Array[Byte]] = {
+      storageLevel: StorageLevel): ReceiverInputDStream[Array[Byte]] =
     // Setting scope to override receiver stream's scope of "receiver stream"
     ssc.withNamedScope("kinesis stream") {
       new KinesisInputDStream[Array[Byte]](
@@ -202,7 +202,6 @@ object KinesisUtils {
         None
       )
     }
-  }
 
   /**
     * Create an input stream that pulls messages from a Kinesis stream.
@@ -243,7 +242,7 @@ object KinesisUtils {
       checkpointInterval: Duration,
       storageLevel: StorageLevel,
       awsAccessKeyId: String,
-      awsSecretKey: String): ReceiverInputDStream[Array[Byte]] = {
+      awsSecretKey: String): ReceiverInputDStream[Array[Byte]] =
     ssc.withNamedScope("kinesis stream") {
       new KinesisInputDStream[Array[Byte]](
         ssc,
@@ -258,7 +257,6 @@ object KinesisUtils {
         Some(SerializableAWSCredentials(awsAccessKeyId, awsSecretKey))
       )
     }
-  }
 
   /**
     * Create an input stream that pulls messages from a Kinesis stream.
@@ -415,7 +413,7 @@ object KinesisUtils {
       initialPositionInStream: InitialPositionInStream,
       checkpointInterval: Duration,
       storageLevel: StorageLevel
-  ): JavaReceiverInputDStream[Array[Byte]] = {
+  ): JavaReceiverInputDStream[Array[Byte]] =
     createStream[Array[Byte]](
       jssc.ssc,
       kinesisAppName,
@@ -426,7 +424,6 @@ object KinesisUtils {
       checkpointInterval,
       storageLevel,
       defaultMessageHandler(_))
-  }
 
   /**
     * Create an input stream that pulls messages from a Kinesis stream.
@@ -467,7 +464,7 @@ object KinesisUtils {
       checkpointInterval: Duration,
       storageLevel: StorageLevel,
       awsAccessKeyId: String,
-      awsSecretKey: String): JavaReceiverInputDStream[Array[Byte]] = {
+      awsSecretKey: String): JavaReceiverInputDStream[Array[Byte]] =
     createStream[Array[Byte]](
       jssc.ssc,
       kinesisAppName,
@@ -481,18 +478,15 @@ object KinesisUtils {
       awsAccessKeyId,
       awsSecretKey
     )
-  }
 
-  private def getRegionByEndpoint(endpointUrl: String): String = {
+  private def getRegionByEndpoint(endpointUrl: String): String =
     RegionUtils.getRegionByEndpoint(endpointUrl).getName()
-  }
 
-  private def validateRegion(regionName: String): String = {
+  private def validateRegion(regionName: String): String =
     Option(RegionUtils.getRegion(regionName)).map { _.getName }.getOrElse {
       throw new IllegalArgumentException(
         s"Region name '$regionName' is not valid")
     }
-  }
 
   private[kinesis] def defaultMessageHandler(record: Record): Array[Byte] = {
     if (record == null) return null
@@ -510,7 +504,7 @@ object KinesisUtils {
 private class KinesisUtilsPythonHelper {
 
   def getInitialPositionInStream(
-      initialPositionInStream: Int): InitialPositionInStream = {
+      initialPositionInStream: Int): InitialPositionInStream =
     initialPositionInStream match {
       case 0 => InitialPositionInStream.LATEST
       case 1 => InitialPositionInStream.TRIM_HORIZON
@@ -519,7 +513,6 @@ private class KinesisUtilsPythonHelper {
           "Illegal InitialPositionInStream. Please use " +
             "InitialPositionInStream.LATEST or InitialPositionInStream.TRIM_HORIZON")
     }
-  }
 
   def createStream(
       jssc: JavaStreamingContext,

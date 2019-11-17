@@ -23,12 +23,11 @@ class ValidateNaiveTimeoutFilter extends FunSuite {
     reader.mark(n)
     new Iterator[String] {
       def hasNext = true
-      def next(): String = {
+      def next(): String =
         Option(reader.readLine()) getOrElse {
           reader.reset()
           reader.readLine()
         }
-      }
     } filter (_.nonEmpty) map (opt => (1000 * opt.toDouble).toLong) take (n)
   }
 

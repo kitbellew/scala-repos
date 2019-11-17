@@ -21,7 +21,7 @@ class ReferenceExpressionResolver(shapesOnly: Boolean)
       expectedType: () => Option[ScType],
       isUnderscore: Boolean)
 
-  private def argumentsOf(ref: PsiElement): Seq[Expression] = {
+  private def argumentsOf(ref: PsiElement): Seq[Expression] =
     ref.getContext match {
       case infixExpr: ScInfixExpr =>
         //TODO should rOp really be parsed as Tuple (not as argument list)?
@@ -31,11 +31,10 @@ class ReferenceExpressionResolver(shapesOnly: Boolean)
         }
       case methodCall: ScMethodCall => methodCall.argumentExpressions
     }
-  }
 
   private def getContextInfo(
       ref: ResolvableReferenceExpression,
-      e: ScExpression): ContextInfo = {
+      e: ScExpression): ContextInfo =
     e.getContext match {
       case generic: ScGenericCall => getContextInfo(ref, generic)
       case call: ScMethodCall if !call.isUpdateCall =>
@@ -76,12 +75,11 @@ class ReferenceExpressionResolver(shapesOnly: Boolean)
         getContextInfo(ref, pref)
       case _ => ContextInfo(None, () => e.expectedType(), isUnderscore = false)
     }
-  }
 
   private def kinds(
       ref: ResolvableReferenceExpression,
       e: ScExpression,
-      incomplete: Boolean): scala.collection.Set[ResolveTargets.Value] = {
+      incomplete: Boolean): scala.collection.Set[ResolveTargets.Value] =
     e.getContext match {
       case gen: ScGenericCall                             => kinds(ref, gen, incomplete)
       case parents: ScParenthesisedExpr                   => kinds(ref, parents, incomplete)
@@ -91,15 +89,13 @@ class ReferenceExpressionResolver(shapesOnly: Boolean)
       case pref: ScPrefixExpr if ref == pref.operation    => StdKinds.methodRef
       case _                                              => ref.getKinds(incomplete)
     }
-  }
 
-  private def getTypeArgs(e: ScExpression): Seq[ScTypeElement] = {
+  private def getTypeArgs(e: ScExpression): Seq[ScTypeElement] =
     e.getContext match {
       case generic: ScGenericCall       => generic.arguments
       case parents: ScParenthesisedExpr => getTypeArgs(parents)
       case _                            => Seq.empty
     }
-  }
 
   def resolve(
       reference: ResolvableReferenceExpression,
@@ -138,7 +134,7 @@ class ReferenceExpressionResolver(shapesOnly: Boolean)
           shapesOnly,
           enableTupling = true
         ) {
-          override def candidatesS: Set[ScalaResolveResult] = {
+          override def candidatesS: Set[ScalaResolveResult] =
             if (!smartProcessor) super.candidatesS
             else {
               val iterator = reference.shapeResolve
@@ -149,7 +145,6 @@ class ReferenceExpressionResolver(shapesOnly: Boolean)
               }
               super.candidatesS
             }
-          }
         }
 
       var result: Array[ResolveResult] = Array.empty

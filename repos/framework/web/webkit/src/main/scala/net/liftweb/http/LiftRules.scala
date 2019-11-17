@@ -225,12 +225,11 @@ object LiftRules extends LiftRulesMocker {
     val NoCometType = Value(12, "Comet Type not specified")
   }
 
-  def defaultFuncNameGenerator(runMode: Props.RunModes.Value): () => String = {
+  def defaultFuncNameGenerator(runMode: Props.RunModes.Value): () => String =
     runMode match {
       case Props.RunModes.Test => S.generateTestFuncName _
       case _                   => S.generateFuncName _
     }
-  }
 }
 
 /**
@@ -698,7 +697,7 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
 
   private[http] def notFoundOrIgnore(
       requestState: Req,
-      session: Box[LiftSession]): Box[LiftResponse] = {
+      session: Box[LiftSession]): Box[LiftResponse] =
     if (passNotFoundToChain) Empty
     else
       session match {
@@ -706,7 +705,6 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
           Full(session.checkRedirect(requestState.createNotFound))
         case _ => Full(requestState.createNotFound)
       }
-  }
 
   /**
     * Allows user adding additional Lift tags (the tags must be prefixed by lift namespace such as <lift:xxxx/>).
@@ -944,9 +942,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * Set the Ajax end JavaScript function.  The
     * Java-callable alternative to assigning the var ajaxStart
     */
-  def setAjaxStart(f: Func0[JsCmd]): Unit = {
+  def setAjaxStart(f: Func0[JsCmd]): Unit =
     ajaxStart = Full(f: () => JsCmd)
-  }
 
   /**
     * The function that calculates if the response should be rendered in
@@ -981,9 +978,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * Set the Ajax end JavaScript function.  The
     * Java-callable alternative to assigning the var ajaxEnd
     */
-  def setAjaxEnd(f: Func0[JsCmd]): Unit = {
+  def setAjaxEnd(f: Func0[JsCmd]): Unit =
     ajaxEnd = Full(f: () => JsCmd)
-  }
 
   /**
     * An XML header is inserted at the very beginning of returned XHTML pages.
@@ -1193,7 +1189,7 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     def apply(a: A) = f(a)
   }
 
-  private def resolveSitemap(): Box[SiteMap] = {
+  private def resolveSitemap(): Box[SiteMap] =
     this.synchronized {
       runAsSafe {
         sitemapFunc.flatMap { smf =>
@@ -1213,7 +1209,6 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
         }
       }
     }
-  }
 
   /**
     * Return the sitemap if set in Boot.  If the current runMode is development
@@ -1336,7 +1331,7 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     */
   val allAround = RulesSeq[LoanWrapper]
 
-  private[http] def dispatchTable(req: HTTPRequest): List[DispatchPF] = {
+  private[http] def dispatchTable(req: HTTPRequest): List[DispatchPF] =
     req match {
       case null => dispatch.toList
       case _ =>
@@ -1348,7 +1343,6 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
           case _ => dispatch.toList
         }
     }
-  }
 
   /**
     * Contains the URI path under which all built-in Lift-handled requests are
@@ -1791,21 +1785,18 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     val liftReq: LiftRules.LiftRequestPF = new LiftRules.LiftRequestPF {
       def functionName = "Default CSS Fixer"
 
-      def isDefinedAt(r: Req): Boolean = {
+      def isDefinedAt(r: Req): Boolean =
         r.path.partPath == path
-      }
 
-      def apply(r: Req): Boolean = {
+      def apply(r: Req): Boolean =
         r.path.partPath == path
-      }
     }
 
     val cssFixer: LiftRules.DispatchPF = new LiftRules.DispatchPF {
       def functionName = "default css fixer"
 
-      def isDefinedAt(r: Req): Boolean = {
+      def isDefinedAt(r: Req): Boolean =
         r.path.partPath == path
-      }
 
       def apply(r: Req): () => Box[LiftResponse] = {
         val cssPath = path.mkString("/", "/", ".css")
@@ -2236,14 +2227,13 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     /**
       * Precompute the current rule set
       */
-    private def doCur[A](f: => A): A = {
+    private def doCur[A](f: => A): A =
       cur.doWith((pre.value, app.value) match {
         case (null, null) | (null, Nil) | (Nil, null) | (Nil, Nil) => rules
         case (null, xs)                                            => rules ::: xs
         case (xs, null)                                            => xs ::: rules
         case (p, a)                                                => p ::: rules ::: a
       })(f)
-    }
 
     def toList: List[T] = cur.value match {
       case null => rules
@@ -2336,9 +2326,8 @@ trait CometVersionPair {
   def version: Long
 }
 object CometVersionPair {
-  def unapply(pair: CometVersionPair): Option[(String, Long)] = {
+  def unapply(pair: CometVersionPair): Option[(String, Long)] =
     Some((pair.guid, pair.version))
-  }
 }
 
 case class CVP(guid: String, version: Long) extends CometVersionPair
@@ -2366,7 +2355,7 @@ abstract class GenericValidator extends XHtmlValidator with Loggable {
 
   private lazy val schema = tryo(sf.newSchema(new URL(ngurl)))
 
-  def apply(in: Node): List[XHTMLValidationError] = {
+  def apply(in: Node): List[XHTMLValidationError] =
     (for {
       sc <- schema
       v <- tryo(sc.newValidator)
@@ -2389,7 +2378,6 @@ abstract class GenericValidator extends XHtmlValidator with Loggable {
         Nil
       case _ => Nil
     }
-  }
 }
 
 object TransitionalXHTML1_0Validator extends GenericValidator {

@@ -21,10 +21,9 @@ import java.lang.reflect.{InvocationHandler, Method, Proxy}
 import scala.collection.{Map, Set, mutable}
 
 object SignalHandlerFactory {
-  def apply() = {
+  def apply() =
     // only one actual implementation for now
     SunSignalHandler.instantiate
-  }
 }
 
 trait SignalHandler {
@@ -32,14 +31,13 @@ trait SignalHandler {
 }
 
 object SunSignalHandler {
-  def instantiate() = {
+  def instantiate() =
     try {
       Class.forName("sun.misc.Signal")
       Some(new SunSignalHandler())
     } catch {
       case ex: ClassNotFoundException => None
     }
-  }
 }
 
 class SunSignalHandler extends SignalHandler {

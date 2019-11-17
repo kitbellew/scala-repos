@@ -738,8 +738,7 @@ private[akka] class BarrierCoordinator
     }
   }
 
-  def getDeadline(timeout: Option[FiniteDuration]): Deadline = {
+  def getDeadline(timeout: Option[FiniteDuration]): Deadline =
     Deadline.now + timeout.getOrElse(
       TestConductor().Settings.BarrierTimeout.duration)
-  }
 }

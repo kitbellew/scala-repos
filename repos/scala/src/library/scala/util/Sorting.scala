@@ -55,7 +55,7 @@ object Sorting {
     */
   def quickSort[K: Ordering](a: Array[K]): Unit = {
     // Must have iN >= i0 or math will fail.  Also, i0 >= 0.
-    def inner(a: Array[K], i0: Int, iN: Int, ord: Ordering[K]): Unit = {
+    def inner(a: Array[K], i0: Int, iN: Int, ord: Ordering[K]): Unit =
       if (iN - i0 < qsortThreshold) insertionSort(a, i0, iN, ord)
       else {
         val iK = (i0 + iN) >>> 1 // Unsigned div by 2
@@ -137,7 +137,6 @@ object Sorting {
           inner(a, i0, iA, ord) // Should be tail recursion
         }
       }
-    }
     inner(a, 0, a.length, implicitly[Ordering[K]])
   }
 
@@ -187,7 +186,7 @@ object Sorting {
       i0: Int,
       iN: Int,
       ord: Ordering[T],
-      scratch: Array[T] = null): Unit = {
+      scratch: Array[T] = null): Unit =
     if (iN - i0 < mergeThreshold) insertionSort(a, i0, iN, ord)
     else {
       val iK =
@@ -197,7 +196,6 @@ object Sorting {
       mergeSort(a, iK, iN, ord, sc)
       mergeSorted(a, i0, iK, iN, ord, sc)
     }
-  }
 
   // Must have 0 <= i0 < iK < iN
   private def mergeSorted[@specialized T](
@@ -206,7 +204,7 @@ object Sorting {
       iK: Int,
       iN: Int,
       ord: Ordering[T],
-      scratch: Array[T]): Unit = {
+      scratch: Array[T]): Unit =
     // Check to make sure we're not already in order
     if (ord.compare(a(iK - 1), a(iK)) > 0) {
       var i = i0
@@ -230,7 +228,6 @@ object Sorting {
       while (j < jN) { a(k) = scratch(j); j += 1; k += 1 }
       // Don't need to finish a(i) because it's already in place, k = i
     }
-  }
 
   // Why would you even do this?
   private def booleanSort(a: Array[Boolean]): Unit = {

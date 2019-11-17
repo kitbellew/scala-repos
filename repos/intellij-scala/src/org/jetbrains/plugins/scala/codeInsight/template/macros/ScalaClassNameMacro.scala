@@ -15,7 +15,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.ScObject
 class ScalaClassNameMacro extends Macro {
   override def calculateResult(
       params: Array[Expression],
-      context: ExpressionContext): Result = {
+      context: ExpressionContext): Result =
     Option(
       PsiTreeUtil
         .getParentOfType(context.getPsiElementAtStartOffset, classOf[PsiClass]))
@@ -25,7 +25,6 @@ class ScalaClassNameMacro extends Macro {
       }
       .map(new TextResult(_))
       .orNull
-  }
 
   override def getName: String = MacroUtil.scalaIdPrefix + "className"
 

@@ -86,7 +86,7 @@ class Random private (rng64: () => Long) {
     * This is based on Apache Commons Math's nextGaussian, which in turn is based
     * on the Polar Method of Box, Muller, & Marsiglia as described in Knuth 3.4.1C
     */
-  @tailrec final def nextGaussian: Double = {
+  @tailrec final def nextGaussian: Double =
     if (next == next) {
       val tmp = next
       next = Double.NaN
@@ -105,7 +105,6 @@ class Random private (rng64: () => Long) {
         u2 * bm
       }
     }
-  }
 }
 
 object Random {

@@ -178,7 +178,7 @@ object LiftSession {
    * Given a Snippet name, try to determine the fully-qualified Class
    * so that we can instantiate it via reflection.
    */
-  def findSnippetClass(name: String): Box[Class[AnyRef]] = {
+  def findSnippetClass(name: String): Box[Class[AnyRef]] =
     if (name == null) {
       Empty
     } else {
@@ -211,7 +211,6 @@ object LiftSession {
       // add a legacyNullTest openOr Empty.
       snippetClassMap.get(name)
     }
-  }
 }
 
 object PageName extends RequestVar[String]("")
@@ -427,10 +426,9 @@ class LiftSession(
   private var ajaxRequests =
     scala.collection.mutable.Map[String, List[AjaxRequestInfo]]()
 
-  private[http] def withAjaxRequests[T](fn: (
-      scala.collection.mutable.Map[String, List[AjaxRequestInfo]]) => T) = {
+  private[http] def withAjaxRequests[T](
+      fn: (scala.collection.mutable.Map[String, List[AjaxRequestInfo]]) => T) =
     ajaxRequests.synchronized { fn(ajaxRequests) }
-  }
 
   /**
     * The synchronization lock for the postPageFunctions
@@ -627,7 +625,7 @@ class LiftSession(
   def updateFunctionMap(
       funcs: Map[String, S.AFuncHolder],
       uniqueId: String,
-      when: Long): Unit = {
+      when: Long): Unit =
     funcs.foreach {
       case (name, func) =>
         nmessageCallback.put(
@@ -635,15 +633,13 @@ class LiftSession(
           if (func.owner == Full(uniqueId)) func
           else func.duplicate(uniqueId))
     }
-  }
 
   /**
     * Removes the function with the given `name`. Note that this will
     * '''not''' trigger `[[onFunctionOwnersRemoved]]` listeners.
     */
-  def removeFunction(name: String) = {
+  def removeFunction(name: String) =
     nmessageCallback.remove(name)
-  }
 
   /**
     * Given a test that takes an [[S.AFuncHolder]] and produces a
@@ -755,13 +751,12 @@ class LiftSession(
   /**
     * Puts the correct thread locking around access to postPageFunctions
     */
-  private def accessPostPageFuncs[T](f: => T): T = {
+  private def accessPostPageFuncs[T](f: => T): T =
     postPageLock.synchronized {
       f
     }
-  }
 
-  def cleanupUnseenFuncs(): Unit = {
+  def cleanupUnseenFuncs(): Unit =
     if (LiftRules.enableLiftGC && stateful_?) {
       val now = millis
 
@@ -792,7 +787,6 @@ class LiftSession(
         (now - funcHolder.lastSeen) > LiftRules.unusedFunctionsLifeTime
       }
     }
-  }
 
   /**
     * Clear the PostPage JavaScript functions for the current page.
@@ -848,7 +842,7 @@ class LiftSession(
   def postPageJavaScript(rv: String): List[JsCmd] = {
     val accumulatedJavaScript = new ListBuffer[JsCmd]
 
-    def latestPostPageFunctions = {
+    def latestPostPageFunctions =
       accessPostPageFuncs {
         val ret = postPageFunctions.get(rv)
         ret.foreach { r =>
@@ -856,7 +850,6 @@ class LiftSession(
         }
         ret
       }
-    }
 
     def run(count: Int, funcs: List[() => JsCmd]) {
       funcs.reverse.foreach(f => accumulatedJavaScript += f())
@@ -882,12 +875,11 @@ class LiftSession(
     * This is used by the CometActor to get the post-page JavaScript functions
     * for the comet actor and for the page the the comet actor is associated with
     */
-  def postPageJavaScript(pageIds: Seq[String]): List[JsCmd] = {
+  def postPageJavaScript(pageIds: Seq[String]): List[JsCmd] =
     for {
       rv <- pageIds.toList.distinct
       js <- postPageJavaScript(rv)
     } yield js
-  }
 
   /**
     * Get the JavaScript to execute as part of the current page
@@ -991,7 +983,7 @@ class LiftSession(
       template: Box[NodeSeq],
       request: Req,
       path: ParsePath,
-      code: Int): Box[LiftResponse] = {
+      code: Int): Box[LiftResponse] =
     overrideResponseCode.doWith(Empty) {
       (template or findVisibleTemplate(path, request)).map { xhtml =>
         fullPageLoad.doWith(true) {
@@ -1031,7 +1023,6 @@ class LiftSession(
         }
       }
     }
-  }
 
   private object overrideResponseCode
       extends TransientRequestVar[Box[Int]](Empty)
@@ -1040,12 +1031,11 @@ class LiftSession(
     * If the sitemap entry for this Req is marked stateless,
     * run the rest of the request as stateless
     */
-  private def checkStatelessInSiteMap[T](req: Req)(f: => T): T = {
+  private def checkStatelessInSiteMap[T](req: Req)(f: => T): T =
     req.location match {
       case Full(loc) if loc.stateless_? => this.doAsStateless(f)
       case _                            => f
     }
-  }
 
   /**
     * Destroy the current session, then create a new session and
@@ -1055,9 +1045,8 @@ class LiftSession(
     * useful for changing sessions on login.  Issue #727.
     */
   def destroySessionAndContinueInNewSession(
-      continuation: () => Nothing): Nothing = {
+      continuation: () => Nothing): Nothing =
     throw new ContinueResponseException(continuation)
-  }
 
   private[http] def processRequest(
       request: Req,
@@ -1185,9 +1174,8 @@ class LiftSession(
     * @param name -- the name of the variable
     * @param value -- the value of the variable
     */
-  private[liftweb] def set[T](name: String, value: T): Unit = {
+  private[liftweb] def set[T](name: String, value: T): Unit =
     nmyVariables.put(name, value)
-  }
 
   /**
     * Gets the named variable if it exists
@@ -1204,11 +1192,10 @@ class LiftSession(
     *
     * @param name the variable to unset
     */
-  private[liftweb] def unset(name: String): Unit = {
+  private[liftweb] def unset(name: String): Unit =
     nmyVariables.remove(name)
-  }
 
-  private[http] def attachRedirectFunc(uri: String, f: Box[() => Unit]) = {
+  private[http] def attachRedirectFunc(uri: String, f: Box[() => Unit]) =
     f map { fnc =>
       val func: String = {
         val funcName = Helpers.nextFuncName
@@ -1219,7 +1206,6 @@ class LiftSession(
       }
       Helpers.appendFuncToURL(uri, func + "=_")
     } openOr uri
-  }
 
   private[http] def checkRedirect(resp: LiftResponse): LiftResponse =
     resp match {
@@ -1408,7 +1394,7 @@ class LiftSession(
     }
   }
 
-  private def instantiateOrRedirect[T](c: Class[T]): Box[T] = {
+  private def instantiateOrRedirect[T](c: Class[T]): Box[T] =
     try {
       LiftSession.constructFrom(
         this,
@@ -1418,12 +1404,11 @@ class LiftSession(
     } catch {
       case e: IllegalAccessException => Empty
     }
-  }
 
   private def findAttributeSnippet(
       attrValue: String,
       rest: MetaData,
-      params: AnyRef*): MetaData = {
+      params: AnyRef*): MetaData =
     S.doSnippet(attrValue) {
       val (cls, method) = splitColonPair(attrValue)
 
@@ -1442,7 +1427,6 @@ class LiftSession(
         }
       } openOr rest
     }
-  }
 
   private object DotSplit {
     def unapply(in: String): Option[List[String]] = {
@@ -1452,7 +1436,7 @@ class LiftSession(
     }
   }
 
-  private def colonToDot(in: String): String = {
+  private def colonToDot(in: String): String =
     if (in.indexOf('/') >= 0) {
       val len = in.length()
       val ret = new java.lang.StringBuilder(len)
@@ -1466,14 +1450,13 @@ class LiftSession(
       }
       ret.toString
     } else in
-  }
 
   /**
     * Split a string separated by a point or by a column in 2 parts. Uses default values if only one is found or if no parts are found
     * @param in string to split
     * @return a pair containing the first and second parts
     */
-  private def splitColonPair(in: String): (String, String) = {
+  private def splitColonPair(in: String): (String, String) =
     (in match {
       case null          => List("")
       case DotSplit(lst) => lst
@@ -1483,7 +1466,6 @@ class LiftSession(
       case f :: Nil    => (colonToDot(f), "render")
       case _           => ("yikes dude, there's no method name defined", "render")
     }
-  }
 
   /**
     * Finds a template named name and then runs it throught the Lift processing engine
@@ -1503,7 +1485,7 @@ class LiftSession(
     } yield res
   }
 
-  private def processAttributes(in: MetaData, allow: Boolean): MetaData = {
+  private def processAttributes(in: MetaData, allow: Boolean): MetaData =
     if (!allow) in
     else {
       in match {
@@ -1522,7 +1504,6 @@ class LiftSession(
         case notMine => notMine.copy(processAttributes(in.next, allow))
       }
     }
-  }
 
   /**
     * See if there's a object singleton with the right name
@@ -1566,7 +1547,7 @@ class LiftSession(
       snippetName: Box[String],
       why: LiftRules.SnippetFailures.Value,
       addlMsg: NodeSeq,
-      whole: NodeSeq): NodeSeq = {
+      whole: NodeSeq): NodeSeq =
     (for {
       nodeSeq <- S.currentSnippetNodeSeq if S.ignoreFailedSnippets
     } yield {
@@ -1600,7 +1581,6 @@ class LiftSession(
         </pre>
       </div>) openOr NodeSeq.Empty
     }
-  }
 
   private final def findNSAttr(
       attrs: MetaData,
@@ -1686,7 +1666,7 @@ class LiftSession(
   }
 
   def executeInScope[T](req: Box[Req], renderVersion: String)(f: => T): T = {
-    def doExec(): T = {
+    def doExec(): T =
       RenderVersion.doWith(renderVersion) {
         try {
           f
@@ -1697,7 +1677,6 @@ class LiftSession(
           }
         }
       }
-    }
 
     req match {
       case r @ Full(_) => S.init(r, this)(doExec())
@@ -1860,10 +1839,9 @@ class LiftSession(
                       case _ => false
                     }
 
-                    def isFuncNodeSeq(meth: Method): Boolean = {
+                    def isFuncNodeSeq(meth: Method): Boolean =
                       (classOf[Function1[_, _]] isAssignableFrom meth.getReturnType) &&
-                      testGeneric(meth.getGenericReturnType)
-                    }
+                        testGeneric(meth.getGenericReturnType)
 
                     def nodeSeqFunc: Box[NodeSeq] =
                       for {
@@ -2034,9 +2012,8 @@ class LiftSession(
     * In general, you should heavily consider using `[[normalizeHtmlAndEvents]]`
     * or its friendliest sibling, `[[normalizeHtmlAndAppendEvents]]`.
     */
-  def normalizeHtml(in: NodeSeq): NodeSeq = {
+  def normalizeHtml(in: NodeSeq): NodeSeq =
     Req.normalizeHtml(contextPath, in)
-  }
 
   /**
     * Applies various HTML corrections to the passed HTML, including adding the
@@ -2047,13 +2024,12 @@ class LiftSession(
     * `[[normalizeHtmlAndAppendEventHandlers]]` and not worry about the extra
     * `JsCmd`, as Lift will automatically append it to the response.
     */
-  def normalizeHtmlAndEventHandlers(nodes: NodeSeq): NodesAndEventJs = {
+  def normalizeHtmlAndEventHandlers(nodes: NodeSeq): NodesAndEventJs =
     HtmlNormalizer.normalizeHtmlAndEventHandlers(
       nodes,
       S.contextPath,
       LiftRules.stripComments.vend
     )
-  }
 
   /**
     * Runs `[[normalizeHtmlAndEventHandlers]]` to adjust URLs to context paths
@@ -2112,7 +2088,7 @@ class LiftSession(
 
   // if the "lift:parallel" attribute is part of the snippet, create an
   // actor and send the message off to that actor
-  private def processOrDefer(isLazy: Boolean)(f: => NodeSeq): NodeSeq = {
+  private def processOrDefer(isLazy: Boolean)(f: => NodeSeq): NodeSeq =
     /*
     val isLazy = LiftRules.allowParallelSnippets() &&
             node.attributes.find {
@@ -2169,14 +2145,13 @@ class LiftSession(
 
       theNode
     } else f
-  }
 
   private object _lastFoundSnippet extends ThreadGlobal[String]
 
   private object DataAttrNode {
     val dataAttributeProcessors = LiftRules.dataAttributeProcessor.toList
 
-    def unapply(in: Node): Option[DataAttributeProcessorAnswer] = {
+    def unapply(in: Node): Option[DataAttributeProcessorAnswer] =
       in match {
         case element: Elem if dataAttributeProcessors.nonEmpty =>
           element.attributes.toStream.flatMap {
@@ -2199,19 +2174,17 @@ class LiftSession(
 
         case _ => None
       }
-    }
   }
 
   private object TagProcessingNode {
     val rules = LiftRules.tagProcessor.toList
 
-    def unapply(in: Node): Option[DataAttributeProcessorAnswer] = {
+    def unapply(in: Node): Option[DataAttributeProcessorAnswer] =
       in match {
         case e: Elem if !rules.isEmpty =>
           NamedPF.applyBox((e.label, e, LiftSession.this), rules)
         case _ => None
       }
-    }
   }
 
   /**
@@ -2231,7 +2204,7 @@ class LiftSession(
     *         and when the function is called, the parameter is JSON serialized and sent to
     *         the server
     */
-  def clientActorFor(in: LiftActor): JsExp = {
+  def clientActorFor(in: LiftActor): JsExp =
     testStatefulFeature {
       AnonFunc(
         "x",
@@ -2242,7 +2215,6 @@ class LiftSession(
           })
           .cmd)
     }
-  }
 
   /**
     * Pass in a LiftActor and get a JavaScript expression (function(x) {...}) that
@@ -2268,9 +2240,7 @@ class LiftSession(
     *         and when the function is called, the parameter is JSON serialized and sent to
     *         the server
     */
-  def clientActorFor(
-      in: LiftActor,
-      xlate: JsonAST.JValue => Box[Any]): JsExp = {
+  def clientActorFor(in: LiftActor, xlate: JsonAST.JValue => Box[Any]): JsExp =
     testStatefulFeature {
       AnonFunc(
         "x",
@@ -2292,7 +2262,6 @@ class LiftSession(
           .cmd
       )
     }
-  }
 
   /**
     * Create a Actor that will take messages on the server and then send them to the client. So, from the
@@ -2320,7 +2289,7 @@ class LiftSession(
       toCall: String,
       setupFunc: Box[LiftActor => Unit] = Empty,
       shutdownFunc: Box[LiftActor => Unit] = Empty,
-      dataFilter: Any => Any = a => a): LiftActor = {
+      dataFilter: Any => Any = a => a): LiftActor =
     testStatefulFeature {
       val ca = new CometActor {
 
@@ -2366,7 +2335,7 @@ class LiftSession(
         override def lowPriority: PartialFunction[Any, Unit] =
           new PartialFunction[Any, Unit] {
             def isDefinedAt(x: Any) = true
-            def apply(x: Any): Unit = {
+            def apply(x: Any): Unit =
               dataFilter(x) match {
                 case jsCmd: JsCmd =>
                   partialUpdate(JsCmds.JsSchedule(JsCmds.JsTry(jsCmd, false)))
@@ -2393,7 +2362,6 @@ class LiftSession(
                 case _ =>
                 // this will never happen because the message is boxed
               }
-            }
           }
       }
 
@@ -2414,7 +2382,6 @@ class LiftSession(
 
       ca
     }
-  }
 
   /**
     * Processes the surround tag and other lift tags
@@ -2422,7 +2389,7 @@ class LiftSession(
     * @param page the name of the page currently being processed
     * @param in the DOM to process
     */
-  def processSurroundAndInclude(page: String, in: NodeSeq): NodeSeq = {
+  def processSurroundAndInclude(page: String, in: NodeSeq): NodeSeq =
     try {
       in.flatMap {
         case Group(nodes) =>
@@ -2488,7 +2455,6 @@ class LiftSession(
     } finally {
       _lastFoundSnippet.set(null)
     }
-  }
 
   /**
     * A nicely named proxy for processSurroundAndInclude.  This method processes
@@ -2504,12 +2470,11 @@ class LiftSession(
     * Run the code, but if the session is not stateful, then
     * throw a StateInStatelessException
     */
-  def testStatefulFeature[T](f: => T): T = {
+  def testStatefulFeature[T](f: => T): T =
     if (this.stateful_?) f
     else
       throw new StateInStatelessException(
         "Accessing stateful feature outside of a stateful session")
-  }
 
   /**
     * Finds all Comet actors by type
@@ -2529,13 +2494,12 @@ class LiftSession(
   /**
     * Find the comet actor by type and name
     */
-  def findComet(theType: String, name: Box[String]): Box[LiftCometActor] = {
+  def findComet(theType: String, name: Box[String]): Box[LiftCometActor] =
     asyncSync.synchronized {
       testStatefulFeature {
         Box !! nasyncComponents.get(CometId(theType, name))
       }
     }
-  }
 
   /**
     * This method will send a message to a CometActor, whether or not
@@ -2576,16 +2540,15 @@ class LiftSession(
   /**
     * Adds a new Comet actor to this session
     */
-  private[http] def addCometActor(act: LiftCometActor): Unit = {
+  private[http] def addCometActor(act: LiftCometActor): Unit =
     testStatefulFeature {
       nasyncById.put(act.uniqueId, act)
     }
-  }
 
   /**
     * Remove a Comet actor
     */
-  private[http] def removeCometActor(act: LiftCometActor): Unit = {
+  private[http] def removeCometActor(act: LiftCometActor): Unit =
     testStatefulFeature {
       nasyncById.remove(act.uniqueId)
       act.theType.foreach(t => nasyncComponents.remove(CometId(t, act.name)))
@@ -2605,7 +2568,6 @@ class LiftSession(
 
       removeFunctionsIf(_.owner == id)
     }
-  }
 
   /**
     * Find or build a comet actor of the given type `T` with the given
@@ -2692,7 +2654,7 @@ class LiftSession(
     */
   def buildAndStoreComet[T <: LiftCometActor](
       newCometFn: (CometCreationInfo) => Box[T])(
-      creationInfo: CometCreationInfo): Box[T] = {
+      creationInfo: CometCreationInfo): Box[T] =
     newCometFn(creationInfo).map { comet =>
       val initialRequest =
         S.request.filter(_ => comet.sendInitialReq_?).map(_.snapshot)
@@ -2708,7 +2670,6 @@ class LiftSession(
 
       comet
     }
-  }
 
   // Given a comet creation info, build a comet based on the comet type, first
   // attempting to use LiftRules.cometCreationFactory and then building it by
@@ -2716,7 +2677,7 @@ class LiftSession(
   //
   // Runs some base setup tasks before returning the comet.
   private def buildCometByCreationInfo(
-      creationInfo: CometCreationInfo): Box[LiftCometActor] = {
+      creationInfo: CometCreationInfo): Box[LiftCometActor] =
     LiftRules.cometCreationFactory.vend.apply(creationInfo) or {
       val cometType = findType[LiftCometActor](
         creationInfo.cometType,
@@ -2727,7 +2688,6 @@ class LiftSession(
         buildCometByClass(cometClass)(creationInfo)
       } ?~ s"Failed to find specified comet class ${creationInfo.cometType}."
     }
-  }
 
   // Given a comet Class and CometCreationInfo, instantiate the given
   // comet and run setup tasks. Return a descriptive Failure if it's all
@@ -2910,12 +2870,11 @@ class LiftSession(
 
       val map = Map(info.map(i => i.name -> i): _*)
 
-      def fixIt(in: Any): JValue = {
+      def fixIt(in: Any): JValue =
         in match {
           case jv: JValue => jv
           case a          => Extraction.decompose(a)
         }
-      }
 
       def localFunc(in: JValue): JsCmd = {
         LAScheduler.execute(() => {
@@ -2995,21 +2954,19 @@ class LiftSession(
                         * Send some JavaScript to execute on the client side
                         * @param value
                         */
-                      def send(value: JsCmd): Unit = {
+                      def send(value: JsCmd): Unit =
                         if (!done_?) {
                           ca ! value
                         }
-                      }
 
                       /**
                         * Send some javascript to execute on the client side
                         * @param value
                         */
-                      def send(value: JsExp): Unit = {
+                      def send(value: JsExp): Unit =
                         if (!done_?) {
                           ca ! value
                         }
-                      }
 
                       def send(value: JValue) {
                         if (!done_?) {

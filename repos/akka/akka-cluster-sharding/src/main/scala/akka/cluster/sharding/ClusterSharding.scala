@@ -291,8 +291,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
       settings: ClusterShardingSettings,
       messageExtractor: ShardRegion.MessageExtractor,
       allocationStrategy: ShardAllocationStrategy,
-      handOffStopMessage: Any): ActorRef = {
-
+      handOffStopMessage: Any): ActorRef =
     start(
       typeName,
       entityProps,
@@ -305,7 +304,6 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
       allocationStrategy = allocationStrategy,
       handOffStopMessage = handOffStopMessage
     )
-  }
 
   /**
     * Java/Scala API: Register a named entity type by defining the [[akka.actor.Props]] of the entity actor
@@ -398,8 +396,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
   def startProxy(
       typeName: String,
       role: Optional[String],
-      messageExtractor: ShardRegion.MessageExtractor): ActorRef = {
-
+      messageExtractor: ShardRegion.MessageExtractor): ActorRef =
     startProxy(
       typeName,
       Option(role.orElse(null)),
@@ -409,7 +406,6 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
       },
       extractShardId = msg ⇒ messageExtractor.shardId(msg)
     )
-  }
 
   /**
     * Retrieve the actor reference of the [[ShardRegion]] actor responsible for the named entity type.

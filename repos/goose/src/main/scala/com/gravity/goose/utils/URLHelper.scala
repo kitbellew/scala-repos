@@ -96,10 +96,9 @@ object URLHelper extends Logging {
     }
   }
 
-  def tryToHttpGet(url: String): Option[HttpGet] = {
+  def tryToHttpGet(url: String): Option[HttpGet] =
     tryToURI(url) match {
       case Some(uri) => Some(new HttpGet(uri))
       case None      => None
     }
-  }
 }

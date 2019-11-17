@@ -64,9 +64,8 @@ class ScalaFunctionParameterInfoHandler
       PsiElement,
       Any,
       ScExpression] {
-  def getArgListStopSearchClasses: java.util.Set[_ <: Class[_]] = {
+  def getArgListStopSearchClasses: java.util.Set[_ <: Class[_]] =
     java.util.Collections.singleton(classOf[PsiMethod])
-  }
 
   def getParameterCloseChars: String = "{},);\n"
 
@@ -74,7 +73,7 @@ class ScalaFunctionParameterInfoHandler
 
   def getActualParameterDelimiterType: IElementType = ScalaTokenTypes.tCOMMA
 
-  def getActualParameters(elem: PsiElement): Array[ScExpression] = {
+  def getActualParameters(elem: PsiElement): Array[ScExpression] =
     elem match {
       case argExprList: ScArgumentExprList =>
         argExprList.exprs.toArray
@@ -84,7 +83,6 @@ class ScalaFunctionParameterInfoHandler
       case e: ScExpression        => Array(e)
       case _                      => Array.empty
     }
-  }
 
   def getArgumentListClass: Class[PsiElement] = classOf[PsiElement]
 
@@ -100,24 +98,21 @@ class ScalaFunctionParameterInfoHandler
   }
 
   def findElementForParameterInfo(
-      context: CreateParameterInfoContext): PsiElement = {
+      context: CreateParameterInfoContext): PsiElement =
     findCall(context)
-  }
 
   def findElementForUpdatingParameterInfo(
-      context: UpdateParameterInfoContext): PsiElement = {
+      context: UpdateParameterInfoContext): PsiElement =
     findCall(context)
-  }
 
   def getParametersForDocumentation(
       p: Any,
-      context: ParameterInfoContext): Array[Object] = {
+      context: ParameterInfoContext): Array[Object] =
     p match {
       case x: ScFunction =>
         x.parameters.toArray
       case _ => ArrayUtil.EMPTY_OBJECT_ARRAY
     }
-  }
 
   def showParameterInfo(
       element: PsiElement,
@@ -162,12 +157,11 @@ class ScalaFunctionParameterInfoHandler
         var isGrey = false
         //todo: var isGreen = true
         var namedMode = false
-        def paramText(param: ScParameter, subst: ScSubstitutor) = {
+        def paramText(param: ScParameter, subst: ScSubstitutor) =
           ScalaDocumentationProvider.parseParameter(
             param,
             (t: ScType) => ScType.presentableText(subst.subst(t)),
             escape = false)
-        }
         def applyToParameters(
             parameters: Seq[(Parameter, String)],
             subst: ScSubstitutor,
@@ -482,11 +476,10 @@ class ScalaFunctionParameterInfoHandler
     private trait InfixInvocation extends Invocation {
       override def invocationCount: Int = 1
 
-      override def callReference: Option[ScReferenceExpression] = {
+      override def callReference: Option[ScReferenceExpression] =
         element.getParent match {
           case i: ScInfixExpr => Some(i.operation)
         }
-      }
     }
     private class InfixExpressionInvocation(expr: ScExpression)
         extends InfixInvocation {
@@ -501,12 +494,11 @@ class ScalaFunctionParameterInfoHandler
 
     def getInvocation(elem: PsiElement): Option[Invocation] = {
       def create[T <: PsiElement](elem: T)(
-          f: T => Invocation): Option[Invocation] = {
+          f: T => Invocation): Option[Invocation] =
         elem.getParent match {
           case i: ScInfixExpr if i.getArgExpr == elem => Some(f(elem))
           case _                                      => None
         }
-      }
 
       elem match {
         case args: ScArgumentExprList => Some(new CallInvocation(args))

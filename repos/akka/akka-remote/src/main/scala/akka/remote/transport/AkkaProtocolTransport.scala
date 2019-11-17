@@ -608,23 +608,21 @@ private[transport] class ProtocolStateActor(
       stay() using ListenerReady(listener, wrappedHandle)
   }
 
-  private def initHeartbeatTimer(): Unit = {
+  private def initHeartbeatTimer(): Unit =
     setTimer(
       "heartbeat-timer",
       HeartbeatTimer,
       settings.TransportHeartBeatInterval,
       repeat = true)
-  }
 
-  private def initHandshakeTimer(): Unit = {
+  private def initHandshakeTimer(): Unit =
     setTimer(
       handshakeTimerKey,
       HandshakeTimer,
       settings.HandshakeTimeout,
       repeat = false)
-  }
 
-  private def handleTimers(wrappedHandle: AssociationHandle): State = {
+  private def handleTimers(wrappedHandle: AssociationHandle): State =
     if (failureDetector.isAvailable) {
       sendHeartbeat(wrappedHandle)
       stay()
@@ -634,7 +632,6 @@ private[transport] class ProtocolStateActor(
       stop(FSM.Failure(TimeoutReason(s"No response from remote. " +
         s"Transport failure detector triggered. (internal state was $stateName)")))
     }
-  }
 
   private def safeClassName(obj: AnyRef): String = obj match {
     case null ⇒ "null"

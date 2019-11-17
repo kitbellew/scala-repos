@@ -21,7 +21,7 @@ class ArbTest extends FunSuite {
     val params = this.params
     val samples =
       Array.fill(100)(spire.laws.arb.rational.arbitrary(params)).flatten
-    def classify(x: Rational): String = {
+    def classify(x: Rational): String =
       if (x.isZero) "zero"
       else if (x.isOne) "one"
       else if (x.isValidLong) "long"
@@ -37,7 +37,6 @@ class ArbTest extends FunSuite {
           else "big/big"
         }
       }
-    }
     val kinds = samples.map(classify).toSet
     val expected = Set(
       "zero",
@@ -58,12 +57,11 @@ class ArbTest extends FunSuite {
     val params = this.params
     val samples =
       Array.fill(100)(spire.laws.arb.safeLong.arbitrary(params)).flatten
-    def classify(x: SafeLong): String = {
+    def classify(x: SafeLong): String =
       if (x.isZero) "zero"
       else if (x.isOne) "one"
       else if (x.isValidLong) "long"
       else "big"
-    }
     val kinds = samples.map(classify).distinct.sorted
     assert(kinds.length == 4)
   }

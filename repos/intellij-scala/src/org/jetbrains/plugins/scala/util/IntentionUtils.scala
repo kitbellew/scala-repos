@@ -177,7 +177,7 @@ object IntentionUtils {
     }
   }
 
-  def negate(expression: ScExpression): String = {
+  def negate(expression: ScExpression): String =
     expression match {
       case e: ScPrefixExpr =>
         if (e.operation.getText == "!") {
@@ -204,7 +204,6 @@ object IntentionUtils {
             expression.isInstanceOf[ScInfixExpr]) "!(" + exprText + ")"
         else "!" + expression.getText
     }
-  }
 
   def replaceWithExplicit(
       expr: ScExpression,

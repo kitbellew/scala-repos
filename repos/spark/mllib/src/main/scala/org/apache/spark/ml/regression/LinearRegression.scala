@@ -498,7 +498,7 @@ class LinearRegressionModel private[ml] (
     * of the current model.
     */
   private[regression] def findSummaryModelAndPredictionCol(
-      ): (LinearRegressionModel, String) = {
+      ): (LinearRegressionModel, String) =
     $(predictionCol) match {
       case "" =>
         val predictionColName =
@@ -508,11 +508,9 @@ class LinearRegressionModel private[ml] (
           predictionColName)
       case p => (this, p)
     }
-  }
 
-  override protected def predict(features: Vector): Double = {
+  override protected def predict(features: Vector): Double =
     dot(features, coefficients) + intercept
-  }
 
   @Since("1.4.0")
   override def copy(extra: ParamMap): LinearRegressionModel = {
@@ -942,7 +940,7 @@ private class LeastSquaresAggregator(
     * @param instance The instance of data point to be added.
     * @return This LeastSquaresAggregator object.
     */
-  def add(instance: Instance): this.type = {
+  def add(instance: Instance): this.type =
     instance match {
       case Instance(label, weight, features) =>
         require(
@@ -972,7 +970,6 @@ private class LeastSquaresAggregator(
         weightSum += weight
         this
     }
-  }
 
   /**
     * Merge another LeastSquaresAggregator, and update the loss and gradient

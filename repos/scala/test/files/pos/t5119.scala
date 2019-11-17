@@ -4,7 +4,7 @@ object Test {
   class IMap0[K[_], V[_]](backing: Map[K[_], V[_]]) {
     def mapSeparate[VL[_], VR[_]](f: V[_] => ({
       type l[T] = Either[VL[T], VR[T]]
-    })#l[_]) = {
+    })#l[_]) =
       backing.view.map {
         case (k, v) =>
           f(v) match {
@@ -12,6 +12,5 @@ object Test {
             case Right(r) => Right((k, r))
           }
       }
-    }
   }
 }

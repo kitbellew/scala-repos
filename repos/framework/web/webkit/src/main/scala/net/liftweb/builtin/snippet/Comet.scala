@@ -35,9 +35,8 @@ object Comet extends DispatchSnippet with LazyLoggable {
   private def buildContainer(
       cometHtml: NodeSeq,
       cometActor: LiftCometActor,
-      containerId: String): NodeSeq = {
+      containerId: String): NodeSeq =
     cometActor.parentTag.copy(child = cometHtml) % ("id" -> containerId)
-  }
 
   /**
     * Given a comet actor and the HTML contents for that actor, renders it
@@ -90,12 +89,11 @@ object Comet extends DispatchSnippet with LazyLoggable {
     *
     * @param kids The NodeSeq that is enclosed by the comet tags
     */
-  def render(cometHtml: NodeSeq): NodeSeq = {
+  def render(cometHtml: NodeSeq): NodeSeq =
     Props.inGAE match {
       case true => Text("Comet Disabled in Google App Engine")
       case _    => buildComet(cometHtml)
     }
-  }
 
   private def buildComet(cometHtml: NodeSeq): NodeSeq = {
     val theType: Box[String] = S.attr.~("type").map(_.text)

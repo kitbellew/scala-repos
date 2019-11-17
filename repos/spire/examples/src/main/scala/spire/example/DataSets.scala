@@ -205,7 +205,7 @@ object Variable {
         categories += s
         this
       }
-      def clear(): Unit = { categories = Set.empty }
+      def clear(): Unit = categories = Set.empty
       def result() = {
         val orderedCategories = categories.toList
 
@@ -265,7 +265,7 @@ object CrossValidation {
     implicit val field = dataset.space.scalar
 
     @tailrec
-    def loop(left: List[(V, K)], right0: List[(V, K)], n: Int, sum: F): F = {
+    def loop(left: List[(V, K)], right0: List[(V, K)], n: Int, sum: F): F =
       if (n <= 0) {
         sum / k
       } else {
@@ -279,7 +279,6 @@ object CrossValidation {
           }
         loop(left ++ removed, right, n - 1, sum + score(results))
       }
-    }
 
     loop(Nil, shuffle(dataset.data), k, dataset.space.scalar.zero)
   }
@@ -294,12 +293,11 @@ object CrossValidation {
       train: CoordinateSpace[V, F] => List[(V, K)] => (V => K)): F = {
     implicit val field = dataset.space.scalar
 
-    def accuracy(results: List[Result[V, K]]): F = {
+    def accuracy(results: List[Result[V, K]]): F =
       results.foldLeft(field.zero) {
         case (acc, Result(_, output, predicted)) =>
           acc + (if (predicted == output) field.one else field.zero)
       } / results.size
-    }
 
     crossValidate(dataset, k)(train)(accuracy)
   }

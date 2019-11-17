@@ -74,22 +74,18 @@ class VertexRDDImpl[VD] private[graphx] (
 
   override def getStorageLevel: StorageLevel = partitionsRDD.getStorageLevel
 
-  override def checkpoint(): Unit = {
+  override def checkpoint(): Unit =
     partitionsRDD.checkpoint()
-  }
 
-  override def isCheckpointed: Boolean = {
+  override def isCheckpointed: Boolean =
     firstParent[ShippableVertexPartition[VD]].isCheckpointed
-  }
 
-  override def getCheckpointFile: Option[String] = {
+  override def getCheckpointFile: Option[String] =
     partitionsRDD.getCheckpointFile
-  }
 
   /** The number of vertices in the RDD. */
-  override def count(): Long = {
+  override def count(): Long =
     partitionsRDD.map(_.size.toLong).reduce(_ + _)
-  }
 
   override private[graphx] def mapVertexPartitions[VD2: ClassTag](
       f: ShippableVertexPartition[VD] => ShippableVertexPartition[VD2])
@@ -106,11 +102,10 @@ class VertexRDDImpl[VD] private[graphx] (
       f: (VertexId, VD) => VD2): VertexRDD[VD2] =
     this.mapVertexPartitions(_.map(f))
 
-  override def minus(other: RDD[(VertexId, VD)]): VertexRDD[VD] = {
+  override def minus(other: RDD[(VertexId, VD)]): VertexRDD[VD] =
     minus(this.aggregateUsingIndex(other, (a: VD, b: VD) => a))
-  }
 
-  override def minus(other: VertexRDD[VD]): VertexRDD[VD] = {
+  override def minus(other: VertexRDD[VD]): VertexRDD[VD] =
     other match {
       case other: VertexRDD[_] if this.partitioner == other.partitioner =>
         this.withPartitionsRDD[VD](
@@ -130,11 +125,9 @@ class VertexRDDImpl[VD] private[graphx] (
           }
         )
     }
-  }
 
-  override def diff(other: RDD[(VertexId, VD)]): VertexRDD[VD] = {
+  override def diff(other: RDD[(VertexId, VD)]): VertexRDD[VD] =
     diff(this.aggregateUsingIndex(other, (a: VD, b: VD) => a))
-  }
 
   override def diff(other: VertexRDD[VD]): VertexRDD[VD] = {
     val otherPartition = other match {
@@ -169,7 +162,7 @@ class VertexRDDImpl[VD] private[graphx] (
 
   override def leftJoin[VD2: ClassTag, VD3: ClassTag](
       other: RDD[(VertexId, VD2)])(
-      f: (VertexId, VD, Option[VD2]) => VD3): VertexRDD[VD3] = {
+      f: (VertexId, VD, Option[VD2]) => VD3): VertexRDD[VD3] =
     // Test if the other vertex is a VertexRDD to choose the optimal join strategy.
     // If the other set is a VertexRDD then we use the much more efficient leftZipJoin
     other match {
@@ -184,7 +177,6 @@ class VertexRDDImpl[VD] private[graphx] (
           }
         )
     }
-  }
 
   override def innerZipJoin[U: ClassTag, VD2: ClassTag](other: VertexRDD[U])(
       f: (VertexId, VD, U) => VD2): VertexRDD[VD2] = {
@@ -200,7 +192,7 @@ class VertexRDDImpl[VD] private[graphx] (
   }
 
   override def innerJoin[U: ClassTag, VD2: ClassTag](other: RDD[(VertexId, U)])(
-      f: (VertexId, VD, U) => VD2): VertexRDD[VD2] = {
+      f: (VertexId, VD, U) => VD2): VertexRDD[VD2] =
     // Test if the other vertex is a VertexRDD to choose the optimal join strategy.
     // If the other set is a VertexRDD then we use the much more efficient innerZipJoin
     other match {
@@ -215,7 +207,6 @@ class VertexRDDImpl[VD] private[graphx] (
           }
         )
     }
-  }
 
   override def aggregateUsingIndex[VD2: ClassTag](
       messages: RDD[(VertexId, VD2)],
@@ -246,24 +237,20 @@ class VertexRDDImpl[VD] private[graphx] (
   }
 
   override private[graphx] def withPartitionsRDD[VD2: ClassTag](
-      partitionsRDD: RDD[ShippableVertexPartition[VD2]]): VertexRDD[VD2] = {
+      partitionsRDD: RDD[ShippableVertexPartition[VD2]]): VertexRDD[VD2] =
     new VertexRDDImpl(partitionsRDD, this.targetStorageLevel)
-  }
 
   override private[graphx] def withTargetStorageLevel(
-      targetStorageLevel: StorageLevel): VertexRDD[VD] = {
+      targetStorageLevel: StorageLevel): VertexRDD[VD] =
     new VertexRDDImpl(this.partitionsRDD, targetStorageLevel)
-  }
 
   override private[graphx] def shipVertexAttributes(
       shipSrc: Boolean,
-      shipDst: Boolean): RDD[(PartitionID, VertexAttributeBlock[VD])] = {
+      shipDst: Boolean): RDD[(PartitionID, VertexAttributeBlock[VD])] =
     partitionsRDD.mapPartitions(
       _.flatMap(_.shipVertexAttributes(shipSrc, shipDst)))
-  }
 
   override private[graphx] def shipVertexIds(
-      ): RDD[(PartitionID, Array[VertexId])] = {
+      ): RDD[(PartitionID, Array[VertexId])] =
     partitionsRDD.mapPartitions(_.flatMap(_.shipVertexIds()))
-  }
 }

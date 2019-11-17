@@ -81,36 +81,31 @@ package scalaguide.http.scalaresults {
       }
     }
 
-    def testContentType(results: Result, contentType: String) = {
+    def testContentType(results: Result, contentType: String) =
       results.body.contentType must beSome.which {
         _ must contain(contentType)
       }
-    }
 
-    def testHeader(results: Result, key: String, value: String) = {
+    def testHeader(results: Result, key: String, value: String) =
       results.header.headers.get(key).get must contain(value)
-    }
 
     def testAction[A](
         action: Action[A],
         expectedResponse: Int = OK,
-        request: Request[A] = FakeRequest()) = {
+        request: Request[A] = FakeRequest()) =
       assertAction(action, expectedResponse, request) { result =>
         success
       }
-    }
 
     def assertAction[A, T: AsResult](
         action: Action[A],
         expectedResponse: Int = OK,
-        request: Request[A] = FakeRequest())(
-        assertions: Future[Result] => T) = {
+        request: Request[A] = FakeRequest())(assertions: Future[Result] => T) =
       running() { app =>
         val result = action(request)
         status(result) must_== expectedResponse
         assertions(result)
       }
-    }
   }
 
   package scalaguide.http.scalaresults.full {
@@ -127,9 +122,8 @@ package scalaguide.http.scalaresults {
 
     object CodeShow {
       //#Source-Code-HTML
-      def HTML(implicit codec: Codec) = {
+      def HTML(implicit codec: Codec) =
         "text/html; charset=" + codec.charset
-      }
       //#Source-Code-HTML
     }
   }

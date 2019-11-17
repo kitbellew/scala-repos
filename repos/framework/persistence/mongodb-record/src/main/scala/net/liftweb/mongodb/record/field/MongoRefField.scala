@@ -80,9 +80,8 @@ trait MongoRefField[RefType <: MongoRecord[RefType], MyType]
   /** Label for the selection item representing Empty, show when this field is optional. Defaults to the empty string. */
   def emptyOptionLabel: String = ""
 
-  def buildDisplayList: List[(Box[MyType], String)] = {
+  def buildDisplayList: List[(Box[MyType], String)] =
     if (optional_?) (Empty, emptyOptionLabel) :: options else options
-  }
 
   private def elem =
     SHtml.selectObj[Box[MyType]](

@@ -34,7 +34,7 @@ import org.apache.spark.sql.types._
 
 object TypedAggregateExpression {
   def apply[A, B: Encoder, C: Encoder](
-      aggregator: Aggregator[A, B, C]): TypedAggregateExpression = {
+      aggregator: Aggregator[A, B, C]): TypedAggregateExpression =
     new TypedAggregateExpression(
       aggregator.asInstanceOf[Aggregator[Any, Any, Any]],
       None,
@@ -44,7 +44,6 @@ object TypedAggregateExpression {
       0,
       0
     )
-  }
 }
 
 /**
@@ -153,9 +152,8 @@ case class TypedAggregateExpression(
     }
   }
 
-  override def toString: String = {
+  override def toString: String =
     s"""${aggregator.getClass.getSimpleName}(${children.mkString(",")})"""
-  }
 
   override def nodeName: String = aggregator.getClass.getSimpleName
 }

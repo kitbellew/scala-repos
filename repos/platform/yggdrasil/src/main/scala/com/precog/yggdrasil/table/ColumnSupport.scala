@@ -199,7 +199,7 @@ class RemapIndicesColumn[T <: Column](delegate: T, indices: ArrayIntList) {
 class SparsenColumn[T <: Column](delegate: T, idx: Array[Int], toSize: Int) {
   this: T =>
   @inline
-  @tailrec private def fill(a: Array[Int], i: Int): Array[Int] = {
+  @tailrec private def fill(a: Array[Int], i: Int): Array[Int] =
     if (i < toSize && i < idx.length) {
       if (a(idx(i)) == -1) {
         // We can only update indices that aren't already mapped
@@ -207,7 +207,6 @@ class SparsenColumn[T <: Column](delegate: T, idx: Array[Int], toSize: Int) {
       }
       fill(a, i + 1)
     } else a
-  }
 
   val remap: Array[Int] = fill(Array.fill[Int](toSize)(-1), 0)
 

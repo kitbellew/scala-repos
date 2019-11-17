@@ -35,7 +35,7 @@ class JobQueryLoggerSpec extends Specification {
   import JobManager._
   import JobState._
 
-  def withReport[A](f: JobQueryLogger[Need, Unit] => A): A = {
+  def withReport[A](f: JobQueryLogger[Need, Unit] => A): A =
     f(new JobQueryLogger[Need, Unit] with TimingQueryLogger[Need, Unit] {
       val M = Need.need
       val clock = Clock.System
@@ -53,10 +53,9 @@ class JobQueryLoggerSpec extends Specification {
         def decompose(u: Unit): JValue = JNull
       }
     })
-  }
 
   def testChannel(channel: String)(
-      f: (QueryLogger[Need, Unit], String) => Need[Unit]) = {
+      f: (QueryLogger[Need, Unit], String) => Need[Unit]) =
     withReport { report =>
       val messages = (for {
         _ <- f(report, "Hi there!")
@@ -70,7 +69,6 @@ class JobQueryLoggerSpec extends Specification {
           msg
       } must_== List("Hi there!", "Goodbye now.")
     }
-  }
 
   "Job error report" should {
     "report info messages to the correct channel" in testChannel(channels.Info) {

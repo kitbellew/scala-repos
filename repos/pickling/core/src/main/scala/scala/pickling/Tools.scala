@@ -30,7 +30,7 @@ object Tools {
       } else None
   }
 
-  def subclassCache(key: AnyRef, valueThunk: => AnyRef): AnyRef = {
+  def subclassCache(key: AnyRef, valueThunk: => AnyRef): AnyRef =
     subclassCaches get key match {
       case SomeRef(value) =>
         value
@@ -39,7 +39,6 @@ object Tools {
         subclassCaches(key) = new WeakReference(value)
         value
     }
-  }
 }
 
 class Tools[C <: Context](val c: C) {
@@ -73,9 +72,8 @@ class Tools[C <: Context](val c: C) {
   /** Find direct subclasses, preferring the directSubclasses annotation
     * over knownDirectSubclasses.
     */
-  def directSubclasses(sym: ClassSymbol): Seq[Symbol] = {
+  def directSubclasses(sym: ClassSymbol): Seq[Symbol] =
     directSubclassesAnnotation(sym).getOrElse(sym.knownDirectSubclasses.toList)
-  }
 
   /** Treat as a sealed type because it either is sealed, or specifies
     * directSubclasses annotation.
@@ -87,13 +85,12 @@ class Tools[C <: Context](val c: C) {
     sym == AnyClass || sym == AnyRefClass || sym == AnyValClass ||
       sym == ObjectClass
 
-  def isRelevantSubclass(baseSym: Symbol, subSym: Symbol) = {
+  def isRelevantSubclass(baseSym: Symbol, subSym: Symbol) =
     !blackList(baseSym) && !blackList(subSym) && subSym.isClass && {
       val subClass = subSym.asClass
       subClass.baseClasses.contains(baseSym) && !subClass.isAbstractClass &&
       !subClass.isTrait
     }
-  }
 
   def compileTimeDispatchees(
       tpe: Type,
@@ -140,7 +137,7 @@ class Tools[C <: Context](val c: C) {
 
     def sealedHierarchyScan(): List[Symbol] = {
       var hierarchyIsSealed = true
-      def loop(sym: ClassSymbol): List[ClassSymbol] = {
+      def loop(sym: ClassSymbol): List[ClassSymbol] =
         sym +: {
           val initialize = sym.typeSignature
           if (sym.isFinal || sym.isModuleClass) {
@@ -162,7 +159,6 @@ class Tools[C <: Context](val c: C) {
             Nil
           }
         }
-      }
       if (baseSym.isClass) {
         val sealedHierarchy = loop(baseSym.asClass)
         if (hierarchyIsSealed) sealedHierarchy
@@ -176,36 +172,33 @@ class Tools[C <: Context](val c: C) {
         .subclassCache(
           mirror, {
             val cache = MutableMap[Symbol, MutableList[Symbol]]()
-            def updateCache(bc: Symbol, c: Symbol) = {
+            def updateCache(bc: Symbol, c: Symbol) =
               if (bc != c &&
                   isRelevantSubclass(bc, c)) // TODO: what else do we want to ignore?
                 cache.getOrElseUpdate(bc, MutableList()) += c
-            }
             def loop(pkg: Symbol): Unit = {
               // NOTE: only looking for top-level classes!
               val pkgMembers = pkg.typeSignature.members
               pkgMembers foreach
                 (m => {
-                  def analyze(m: Symbol): Unit = {
+                  def analyze(m: Symbol): Unit =
                     if (m.name.decoded.contains("$")) () // SI-7251
                     else if (m.isClass)
                       m.asClass.baseClasses foreach
                         (bc => updateCache(bc, m))
                     else if (m.isModule) analyze(m.asModule.moduleClass)
                     else ()
-                  }
                   analyze(m)
                 })
-              def recurIntoPackage(pkg: Symbol) = {
+              def recurIntoPackage(pkg: Symbol) =
                 pkg.name.toString != "_root_" &&
-                pkg.name.toString != "quicktime" &&
-                // TODO: pesky thing on my classpath, crashes ClassfileParser
-                pkg.name.toString != "j3d" &&
-                // TODO: another ClassfileParser crash
-                pkg.name.toString != "jansi" &&
-                // TODO: and another one (jline.jar)
-                pkg.name.toString != "jsoup" // TODO: SI-3809
-              }
+                  pkg.name.toString != "quicktime" &&
+                  // TODO: pesky thing on my classpath, crashes ClassfileParser
+                  pkg.name.toString != "j3d" &&
+                  // TODO: another ClassfileParser crash
+                  pkg.name.toString != "jansi" &&
+                  // TODO: and another one (jline.jar)
+                  pkg.name.toString != "jsoup" // TODO: SI-3809
               val subpackages =
                 pkgMembers filter (m => m.isPackage && recurIntoPackage(m))
               subpackages foreach loop
@@ -262,7 +255,7 @@ trait RichTypes {
   import compat._
 
   implicit class RichType(tpe: scala.reflect.api.Universe#Type) {
-    def key: String = {
+    def key: String =
       tpe.normalize match {
         case ExistentialType(tparams, TypeRef(pre, sym, targs))
             if targs.nonEmpty &&
@@ -275,7 +268,6 @@ trait RichTypes {
         case _ =>
           tpe.toString
       }
-    }
 
     def isEffectivelyPrimitive: Boolean = tpe match {
       case TypeRef(_, sym: ClassSymbol, _) if sym.isPrimitive => true
@@ -306,7 +298,7 @@ abstract class ShareAnalyzer[U <: Universe](val u: U) extends RichTypes {
 
   // TODO: cache this, because it's not cheap and it's going to be called a lot of times for the same types
   def canCauseLoops(tpe: Type): Boolean = {
-    def loop(todo: List[Type], visited: Set[Type]): Boolean = {
+    def loop(todo: List[Type], visited: Set[Type]): Boolean =
       todo match {
         case currTpe :: rest =>
           val currSym = currTpe.typeSymbol.asType
@@ -329,26 +321,22 @@ abstract class ShareAnalyzer[U <: Universe](val u: U) extends RichTypes {
           }
         case _ => false
       }
-    }
     loop(List(tpe), Set())
   }
 
-  def shouldBotherAboutSharing(tpe: Type): Boolean = {
+  def shouldBotherAboutSharing(tpe: Type): Boolean =
     if (shareNothing) false
     else if (shareEverything)
       !tpe.isEffectivelyPrimitive || (tpe.typeSymbol.asType == StringClass)
     else canCauseLoops(tpe)
-  }
 
-  def shouldBotherAboutLooping(tpe: Type): Boolean = {
+  def shouldBotherAboutLooping(tpe: Type): Boolean =
     if (shareNothing) false
     else canCauseLoops(tpe)
-  }
 
-  def shouldBotherAboutCleaning(tpe: Type): Boolean = {
+  def shouldBotherAboutCleaning(tpe: Type): Boolean =
     if (shareNothing) false
     else true // TODO: need to be more precise here
-  }
 }
 
 abstract class Macro extends RichTypes { self =>

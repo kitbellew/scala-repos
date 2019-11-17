@@ -54,7 +54,7 @@ trait MatchWarnings { self: PatternMatching =>
       // Using an iterator so we can recognize the last case
       val it = cases.iterator
 
-      def addendum(pat: Tree) = {
+      def addendum(pat: Tree) =
         matchingSymbolInScope(pat) match {
           case NoSymbol => ""
           case sym =>
@@ -63,7 +63,6 @@ trait MatchWarnings { self: PatternMatching =>
               else sym + " in"
             s"\nIf you intended to match against $desc ${sym.owner}, you must use backticks, like: case `${sym.nameString}` =>"
         }
-      }
 
       while (it.hasNext) {
         val cdef = it.next()

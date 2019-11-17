@@ -36,7 +36,7 @@ object ScTypeUtil {
       lower: TypeResult[ScType],
       upper: TypeResult[ScType])
 
-  def removeTypeDesignator(tp: ScType): Option[ScType] = {
+  def removeTypeDesignator(tp: ScType): Option[ScType] =
     tp match {
       case ScDesignatorType(v: ScBindingPattern) =>
         v.getType(TypingContext.empty).toOption.flatMap(removeTypeDesignator)
@@ -65,5 +65,4 @@ object ScTypeUtil {
         }
       case _ => Some(tp)
     }
-  }
 }

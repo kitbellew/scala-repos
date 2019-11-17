@@ -34,15 +34,13 @@ class BinaryClassificationMetricsSuite
 
   private def assertSequencesMatch(
       left: Seq[Double],
-      right: Seq[Double]): Unit = {
+      right: Seq[Double]): Unit =
     assert(left.zip(right).forall(areWithinEpsilon))
-  }
 
   private def assertTupleSequencesMatch(
       left: Seq[(Double, Double)],
-      right: Seq[(Double, Double)]): Unit = {
+      right: Seq[(Double, Double)]): Unit =
     assert(left.zip(right).forall(pairsWithinEpsilon))
-  }
 
   private def validateMetrics(
       metrics: BinaryClassificationMetrics,

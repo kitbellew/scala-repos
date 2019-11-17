@@ -64,7 +64,7 @@ abstract class ScTypeDefinitionImpl protected (
     with PsiClassFake {
   override def hasTypeParameters: Boolean = typeParameters.nonEmpty
 
-  override def add(element: PsiElement): PsiElement = {
+  override def add(element: PsiElement): PsiElement =
     element match {
       case member: PsiMember
           if member.getLanguage.isKindOf(JavaLanguage.INSTANCE) =>
@@ -83,9 +83,8 @@ abstract class ScTypeDefinitionImpl protected (
       case mem: ScMember => addMember(mem, None)
       case _             => super.add(element)
     }
-  }
 
-  override def getSuperTypes: Array[PsiClassType] = {
+  override def getSuperTypes: Array[PsiClassType] =
     superTypes.flatMap {
       case tp =>
         val psiType = ScType.toPsi(tp, getProject, getResolveScope)
@@ -94,7 +93,6 @@ abstract class ScTypeDefinitionImpl protected (
           case _               => Seq.empty
         }
     }.toArray
-  }
 
   override def isAnnotationType: Boolean = {
     val annotation = ScalaPsiManager
@@ -238,12 +236,11 @@ abstract class ScTypeDefinitionImpl protected (
 
   override def getTextOffset: Int = nameId.getTextRange.getStartOffset
 
-  override def getContainingClass: PsiClass = {
+  override def getContainingClass: PsiClass =
     super[ScTypeDefinition].getContainingClass match {
       case o: ScObject     => o.fakeCompanionClassOrCompanionClass
       case containingClass => containingClass
     }
-  }
 
   override final def getQualifiedName: String = {
     val stub = getStub
@@ -286,7 +283,7 @@ abstract class ScTypeDefinitionImpl protected (
 
   def getTruncedQualifiedName: String = qualifiedName(".", trunced = true)
 
-  def getQualifiedNameForDebugger: String = {
+  def getQualifiedNameForDebugger: String =
     containingClass match {
       case td: ScTypeDefinition =>
         td.getQualifiedNameForDebugger + "$" + transformName(
@@ -297,9 +294,8 @@ abstract class ScTypeDefinitionImpl protected (
           qualifiedName("", encodeName = true) + ".package"
         else qualifiedName("$", encodeName = true)
     }
-  }
 
-  protected def transformName(encodeName: Boolean, name: String): String = {
+  protected def transformName(encodeName: Boolean, name: String): String =
     if (!encodeName) name
     else {
       val deticked =
@@ -308,7 +304,6 @@ abstract class ScTypeDefinitionImpl protected (
         else name
       NameTransformer.encode(deticked)
     }
-  }
 
   protected def qualifiedName(
       classSeparator: String,
@@ -372,15 +367,13 @@ abstract class ScTypeDefinitionImpl protected (
 
   override def findMethodBySignature(
       patternMethod: PsiMethod,
-      checkBases: Boolean): PsiMethod = {
+      checkBases: Boolean): PsiMethod =
     super[ScTypeDefinition].findMethodBySignature(patternMethod, checkBases)
-  }
 
   override def findMethodsBySignature(
       patternMethod: PsiMethod,
-      checkBases: Boolean): Array[PsiMethod] = {
+      checkBases: Boolean): Array[PsiMethod] =
     super[ScTypeDefinition].findMethodsBySignature(patternMethod, checkBases)
-  }
 
   import _root_.java.util.{Collection => JCollection, List => JList}
 
@@ -388,30 +381,24 @@ abstract class ScTypeDefinitionImpl protected (
 
   override def findMethodsAndTheirSubstitutorsByName(
       name: String,
-      checkBases: Boolean): JList[IPair[PsiMethod, PsiSubstitutor]] = {
+      checkBases: Boolean): JList[IPair[PsiMethod, PsiSubstitutor]] =
     super[ScTypeDefinition]
       .findMethodsAndTheirSubstitutorsByName(name, checkBases)
-  }
 
   override def getAllMethodsAndTheirSubstitutors
-      : JList[IPair[PsiMethod, PsiSubstitutor]] = {
+      : JList[IPair[PsiMethod, PsiSubstitutor]] =
     super[ScTypeDefinition].getAllMethodsAndTheirSubstitutors
-  }
 
-  override def getVisibleSignatures
-      : JCollection[HierarchicalMethodSignature] = {
+  override def getVisibleSignatures: JCollection[HierarchicalMethodSignature] =
     super[ScTypeDefinition].getVisibleSignatures
-  }
 
   override def findMethodsByName(
       name: String,
-      checkBases: Boolean): Array[PsiMethod] = {
+      checkBases: Boolean): Array[PsiMethod] =
     super[ScTypeDefinition].findMethodsByName(name, checkBases)
-  }
 
-  override def findFieldByName(name: String, checkBases: Boolean): PsiField = {
+  override def findFieldByName(name: String, checkBases: Boolean): PsiField =
     super[ScTypeDefinition].findFieldByName(name, checkBases)
-  }
 
   override def checkDelete() {}
 
@@ -443,14 +430,13 @@ abstract class ScTypeDefinitionImpl protected (
   override def isInheritor(baseClass: PsiClass, deep: Boolean): Boolean =
     super[ScTypeDefinition].isInheritor(baseClass, deep)
 
-  def signaturesByName(name: String): Seq[PhysicalSignature] = {
+  def signaturesByName(name: String): Seq[PhysicalSignature] =
     (for ((s: PhysicalSignature, _) <- TypeDefinitionMembers
             .getSignatures(this)
             .forName(name)
             ._1) yield s) ++ syntheticMethodsNoOverride
       .filter(_.name == name)
       .map(new PhysicalSignature(_, ScSubstitutor.empty))
-  }
 
   override def getNameIdentifier: PsiIdentifier = {
     Predef.assert(
@@ -527,21 +513,17 @@ abstract class ScTypeDefinitionImpl protected (
     }
   }
 
-  override def getAllInnerClasses: Array[PsiClass] = {
+  override def getAllInnerClasses: Array[PsiClass] =
     PsiClassImplUtil.getAllInnerClasses(this)
-  }
 
   override def findInnerClassByName(
       name: String,
-      checkBases: Boolean): PsiClass = {
+      checkBases: Boolean): PsiClass =
     super[ScTypeDefinition].findInnerClassByName(name, checkBases)
-  }
 
-  override def getAllFields: Array[PsiField] = {
+  override def getAllFields: Array[PsiField] =
     super[ScTypeDefinition].getAllFields
-  }
 
-  override def getOriginalElement: PsiElement = {
+  override def getOriginalElement: PsiElement =
     ScalaPsiImplementationHelper.getOriginalClass(this)
-  }
 }

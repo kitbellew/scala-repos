@@ -3,12 +3,11 @@ package tests
 trait Baz {
   val NameAfterRename = 0
 
-  def foo() = {
+  def foo() =
     NameAfterRename match {
       case NameAfterRename =>
       case _               =>
     }
-  }
 }
 
 class BazClass extends Baz {

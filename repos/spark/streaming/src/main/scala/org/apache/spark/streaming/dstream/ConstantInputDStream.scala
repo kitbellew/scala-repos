@@ -36,7 +36,6 @@ class ConstantInputDStream[T: ClassTag](_ssc: StreamingContext, rdd: RDD[T])
 
   override def stop() {}
 
-  override def compute(validTime: Time): Option[RDD[T]] = {
+  override def compute(validTime: Time): Option[RDD[T]] =
     Some(rdd)
-  }
 }

@@ -229,9 +229,8 @@ final class ActorRegistry private[actor] () extends ListenerManagement {
   /**
     * Get the typed actor proxy for a given typed actor ref.
     */
-  private def typedActorFor(actorRef: ActorRef): Option[AnyRef] = {
+  private def typedActorFor(actorRef: ActorRef): Option[AnyRef] =
     TypedActorModule.typedActorObjectInstance.get.proxyFor(actorRef)
-  }
 
   /**
     *  Registers an actor in the ActorRegistry.

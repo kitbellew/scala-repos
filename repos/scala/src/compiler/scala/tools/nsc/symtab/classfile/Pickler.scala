@@ -34,13 +34,12 @@ abstract class Pickler extends SubComponent {
   class PicklePhase(prev: Phase) extends StdPhase(prev) {
     def apply(unit: CompilationUnit) {
       def pickle(tree: Tree) {
-        def add(sym: Symbol, pickle: Pickle) = {
+        def add(sym: Symbol, pickle: Pickle) =
           if (currentRun.compiles(sym) && !currentRun.symData.contains(sym)) {
             debuglog("pickling " + sym)
             pickle putSymbol sym
             currentRun.symData(sym) = pickle
           }
-        }
 
         tree match {
           case PackageDef(_, stats) =>
@@ -153,7 +152,7 @@ abstract class Pickler extends SubComponent {
       *  the applied type CC[A] will hold a different CC symbol
       *  than the type-constructor type-parameter CC.
       */
-    private def deskolemize(sym: Symbol): Symbol = {
+    private def deskolemize(sym: Symbol): Symbol =
       if (sym.isTypeSkolem) {
         val sym1 = sym.deSkolemize
         log({
@@ -167,7 +166,6 @@ abstract class Pickler extends SubComponent {
         })
         sym1
       } else sym
-    }
 
     /** Store symbol in index. If symbol is local, also store everything it references.
       */
@@ -413,7 +411,7 @@ abstract class Pickler extends SubComponent {
         writeNat(vparamss.length)
         super.traverseParamss(vparamss)
       }
-      override def traverse(tree: Tree): Unit = {
+      override def traverse(tree: Tree): Unit =
         if (refs) writeRef(tree)
         else {
           writeRef(tree.tpe)
@@ -421,7 +419,6 @@ abstract class Pickler extends SubComponent {
 
           asRefs(super.traverse(tree))
         }
-      }
     }
 
     /** Write an entry */

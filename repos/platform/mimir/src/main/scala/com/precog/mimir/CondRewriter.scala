@@ -24,7 +24,7 @@ trait CondRewriter extends DAG {
   import instructions._
   import dag._
 
-  def rewriteConditionals(node: DepGraph): DepGraph = {
+  def rewriteConditionals(node: DepGraph): DepGraph =
     node mapDown { recurse =>
       {
         case peer @ IUI(
@@ -40,5 +40,4 @@ trait CondRewriter extends DAG {
             rightJoin)(peer.loc)
       }
     }
-  }
 }

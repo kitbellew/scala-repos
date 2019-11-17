@@ -46,7 +46,7 @@ private[sbt] object KeyMacro {
     val methodName = c.macroApplication.symbol.name
     def processName(n: Name): String =
       n.decoded.trim // trim is not strictly correct, but macros don't expose the API necessary
-    def enclosingVal(trees: List[c.Tree]): String = {
+    def enclosingVal(trees: List[c.Tree]): String =
       trees match {
         case vd @ ValDef(_, name, _, _) :: ts => processName(name)
         case (_: ApplyTree | _: Select | _: TypeApply) :: xs =>
@@ -59,7 +59,6 @@ private[sbt] object KeyMacro {
           c.error(c.enclosingPosition, invalidEnclosingTree(methodName.decoded))
           "<error>"
       }
-    }
     enclosingVal(enclosingTrees(c).toList)
   }
   def enclosingTrees(c: Context): Seq[c.Tree] =

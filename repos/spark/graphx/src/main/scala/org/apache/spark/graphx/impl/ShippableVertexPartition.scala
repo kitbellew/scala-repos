@@ -116,9 +116,8 @@ private[graphx] class ShippableVertexPartition[VD: ClassTag](
 
   /** Return a new ShippableVertexPartition with the specified routing table. */
   def withRoutingTable(
-      _routingTable: RoutingTablePartition): ShippableVertexPartition[VD] = {
+      _routingTable: RoutingTablePartition): ShippableVertexPartition[VD] =
     new ShippableVertexPartition(index, values, mask, _routingTable)
-  }
 
   /**
     * Generate a `VertexAttributeBlock` for each edge partition keyed on the edge partition ID. The
@@ -127,7 +126,7 @@ private[graphx] class ShippableVertexPartition[VD: ClassTag](
     */
   def shipVertexAttributes(
       shipSrc: Boolean,
-      shipDst: Boolean): Iterator[(PartitionID, VertexAttributeBlock[VD])] = {
+      shipDst: Boolean): Iterator[(PartitionID, VertexAttributeBlock[VD])] =
     Iterator.tabulate(routingTable.numEdgePartitions) { pid =>
       val initialSize =
         if (shipSrc && shipDst) routingTable.partitionSize(pid) else 64
@@ -143,14 +142,13 @@ private[graphx] class ShippableVertexPartition[VD: ClassTag](
       }
       (pid, new VertexAttributeBlock(vids.trim().array, attrs.trim().array))
     }
-  }
 
   /**
     * Generate a `VertexId` array for each edge partition keyed on the edge partition ID. The array
     * contains the visible vertex ids from the current partition that are referenced in the edge
     * partition.
     */
-  def shipVertexIds(): Iterator[(PartitionID, Array[VertexId])] = {
+  def shipVertexIds(): Iterator[(PartitionID, Array[VertexId])] =
     Iterator.tabulate(routingTable.numEdgePartitions) { pid =>
       val vids = new PrimitiveVector[VertexId](routingTable.partitionSize(pid))
       var i = 0
@@ -162,35 +160,31 @@ private[graphx] class ShippableVertexPartition[VD: ClassTag](
       }
       (pid, vids.trim().array)
     }
-  }
 }
 
 private[graphx] class ShippableVertexPartitionOps[VD: ClassTag](
     self: ShippableVertexPartition[VD])
     extends VertexPartitionBaseOps[VD, ShippableVertexPartition](self) {
 
-  def withIndex(index: VertexIdToIndexMap): ShippableVertexPartition[VD] = {
+  def withIndex(index: VertexIdToIndexMap): ShippableVertexPartition[VD] =
     new ShippableVertexPartition(
       index,
       self.values,
       self.mask,
       self.routingTable)
-  }
 
   def withValues[VD2: ClassTag](
-      values: Array[VD2]): ShippableVertexPartition[VD2] = {
+      values: Array[VD2]): ShippableVertexPartition[VD2] =
     new ShippableVertexPartition(
       self.index,
       values,
       self.mask,
       self.routingTable)
-  }
 
-  def withMask(mask: BitSet): ShippableVertexPartition[VD] = {
+  def withMask(mask: BitSet): ShippableVertexPartition[VD] =
     new ShippableVertexPartition(
       self.index,
       self.values,
       mask,
       self.routingTable)
-  }
 }

@@ -45,9 +45,8 @@ class FilterTest extends FunSuite {
     // set up
     val e = new RuntimeException("yargs")
     val exceptionThrowingService = new Service[Int, Int] {
-      def apply(request: Int) = {
+      def apply(request: Int) =
         throw e
-      }
     }
 
     assert(
@@ -65,9 +64,8 @@ class FilterTest extends FunSuite {
     // set up
     val e = new RuntimeException("yargs")
     val exceptionThrowingService = new Service[Int, Int] {
-      def apply(request: Int) = {
+      def apply(request: Int) =
         throw e
-      }
     }
 
     assert(

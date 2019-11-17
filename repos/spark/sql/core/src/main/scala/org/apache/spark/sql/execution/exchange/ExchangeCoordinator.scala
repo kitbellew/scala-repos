@@ -282,7 +282,6 @@ private[sql] class ExchangeCoordinator(
     postShuffleRDDs.get(exchange)
   }
 
-  override def toString: String = {
+  override def toString: String =
     s"coordinator[target post-shuffle partition size: $advisoryTargetPostShuffleInputSize]"
-  }
 }

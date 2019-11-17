@@ -617,9 +617,8 @@ class AsyncProducerTest {
       partition: Int,
       brokerId: Int,
       brokerHost: String,
-      brokerPort: Int): TopicMetadata = {
+      brokerPort: Int): TopicMetadata =
     getTopicMetadata(topic, List(partition), brokerId, brokerHost, brokerPort)
-  }
 
   private def getTopicMetadata(
       topic: String,
@@ -633,15 +632,14 @@ class AsyncProducerTest {
       partition.map(new PartitionMetadata(_, Some(broker1), List(broker1))))
   }
 
-  def messagesToSet(messages: Seq[String]): ByteBufferMessageSet = {
+  def messagesToSet(messages: Seq[String]): ByteBufferMessageSet =
     new ByteBufferMessageSet(
       NoCompressionCodec,
       messages.map(m => new Message(m.getBytes, 0L, Message.MagicValue_V1)): _*)
-  }
 
   def messagesToSet(
       key: Array[Byte],
-      messages: Seq[Array[Byte]]): ByteBufferMessageSet = {
+      messages: Seq[Array[Byte]]): ByteBufferMessageSet =
     new ByteBufferMessageSet(
       NoCompressionCodec,
       messages.map(
@@ -651,5 +649,4 @@ class AsyncProducerTest {
             bytes = m,
             timestamp = 0L,
             magicValue = Message.MagicValue_V1)): _*)
-  }
 }

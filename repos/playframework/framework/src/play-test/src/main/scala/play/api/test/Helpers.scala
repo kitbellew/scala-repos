@@ -50,7 +50,7 @@ trait PlayRunners extends HttpVerbs {
   /**
     * Executes a block of code in a running application.
     */
-  def running[T](app: Application)(block: => T): T = {
+  def running[T](app: Application)(block: => T): T =
     PlayRunners.mutex.synchronized {
       try {
         Play.start(app)
@@ -59,7 +59,6 @@ trait PlayRunners extends HttpVerbs {
         Play.stop(app)
       }
     }
-  }
 
   def running[T](builder: GuiceApplicationBuilder => GuiceApplicationBuilder)(
       block: Application => T): T = {
@@ -70,7 +69,7 @@ trait PlayRunners extends HttpVerbs {
   /**
     * Executes a block of code in a running server.
     */
-  def running[T](testServer: TestServer)(block: => T): T = {
+  def running[T](testServer: TestServer)(block: => T): T =
     PlayRunners.mutex.synchronized {
       try {
         testServer.start()
@@ -79,16 +78,14 @@ trait PlayRunners extends HttpVerbs {
         testServer.stop()
       }
     }
-  }
 
   /**
     * Executes a block of code in a running server, with a test browser.
     */
   def running[T, WEBDRIVER <: WebDriver](
       testServer: TestServer,
-      webDriver: Class[WEBDRIVER])(block: TestBrowser => T): T = {
+      webDriver: Class[WEBDRIVER])(block: TestBrowser => T): T =
     running(testServer, WebDriverFactory(webDriver))(block)
-  }
 
   /**
     * Executes a block of code in a running server, with a test browser.
@@ -253,9 +250,8 @@ trait RouteInvokers extends EssentialActionCaller { self: Writeables =>
   def jRoute[T](
       app: Application,
       r: RequestHeader,
-      body: RequestBody): Option[Future[Result]] = {
+      body: RequestBody): Option[Future[Result]] =
     route(app, r, body.asBytes())
-  }
 
   /**
     * Use the HttpRequestHandler to determine the Action to call for this request and execute it.
@@ -336,24 +332,22 @@ trait ResultExtractors { self: HeaderNames with Status =>
     * Extracts the Content-Type of this Result value.
     */
   def contentType(of: Future[Result])(
-      implicit timeout: Timeout): Option[String] = {
+      implicit timeout: Timeout): Option[String] =
     Await
       .result(of, timeout.duration)
       .body
       .contentType
       .map(_.split(";").take(1).mkString.trim)
-  }
 
   /**
     * Extracts the Charset of this Result value.
     */
-  def charset(of: Future[Result])(implicit timeout: Timeout): Option[String] = {
+  def charset(of: Future[Result])(implicit timeout: Timeout): Option[String] =
     Await.result(of, timeout.duration).body.contentType match {
       case Some(s) if s.contains("charset=") =>
         Some(s.split("; *charset=").drop(1).mkString.trim)
       case _ => None
     }
-  }
 
   /**
     * Extracts the content as String.

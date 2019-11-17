@@ -85,13 +85,12 @@ class Finagle6APITest extends FunSuite with BeforeAndAfter {
     }
   }
 
-  override def withFixture(test: NoArgTest): Outcome = {
+  override def withFixture(test: NoArgTest): Outcome =
     if (!testServers.isEmpty) test()
     else {
       info("Cannot start memcached. Skipping test...")
       cancel()
     }
-  }
 
   if (!Option(System.getProperty("SKIP_FLAKY")).isDefined) {
     test("with unmanaged regular zk serverset") {

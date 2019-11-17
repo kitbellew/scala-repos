@@ -75,7 +75,7 @@ class MatrixPipeExtensions(pipe: Pipe) {
     new Matrix[RowT, ColT, ValT]('row, 'col, 'val, matPipe)
   }
 
-  private def groupPipeIntoMap[ColT, ValT](pipe: Pipe): Pipe = {
+  private def groupPipeIntoMap[ColT, ValT](pipe: Pipe): Pipe =
     pipe
       .groupBy('group, 'row) {
         _.mapReduceMap[(ColT, ValT), Map[ColT, ValT], Map[ColT, ValT]](
@@ -88,7 +88,6 @@ class MatrixPipeExtensions(pipe: Pipe) {
         }
       }
       .rename('group, 'col)
-  }
   def toBlockMatrix[GroupT, RowT, ColT, ValT](fields: Fields)(
       implicit conv: TupleConverter[(GroupT, RowT, ColT, ValT)],
       setter: TupleSetter[(GroupT, RowT, ColT, ValT)]) = {
@@ -245,11 +244,10 @@ object Matrix {
     new MatrixMappableExtensions(mt)(fd, mode)
 
   def filterOutZeros[ValT](fSym: Symbol, group: Monoid[ValT])(
-      fpipe: Pipe): Pipe = {
+      fpipe: Pipe): Pipe =
     fpipe.filter(fSym) { tup: Tuple1[ValT] =>
       group.isNonZero(tup._1)
     }
-  }
 
   def meanCenter[T](vct: Iterable[(T, Double)]): Iterable[(T, Double)] = {
     val valList = vct.map { _._2 }
@@ -317,13 +315,12 @@ class Matrix[RowT, ColT, ValT](
   def hasHint = sizeHint != NoClue
 
   override def hashCode = inPipe.hashCode
-  override def equals(that: Any): Boolean = {
+  override def equals(that: Any): Boolean =
     (that != null) && (that.isInstanceOf[Matrix[_, _, _]]) && {
       val thatM = that.asInstanceOf[Matrix[RowT, ColT, ValT]]
       (this.rowSym == thatM.rowSym) && (this.colSym == thatM.colSym) &&
       (this.valSym == thatM.valSym) && (this.pipe == thatM.pipe)
     }
-  }
 
   // Value operations
   def mapValues[ValU](fn: (ValT) => ValU)(
@@ -371,14 +368,13 @@ class Matrix[RowT, ColT, ValT](
   // Binarize values, all x != 0 become 1
   def binarizeAs[NewValT](
       implicit mon: Monoid[ValT],
-      ring: Ring[NewValT]): Matrix[RowT, ColT, NewValT] = {
+      ring: Ring[NewValT]): Matrix[RowT, ColT, NewValT] =
     mapValues(x =>
       if (mon.isNonZero(x)) {
         ring.one
       } else {
         ring.zero
       })(ring)
-  }
 
   // Row Operations
 
@@ -413,9 +409,8 @@ class Matrix[RowT, ColT, ValT](
   }
 
   // Sums all the rows per column
-  def sumRowVectors(implicit mon: Monoid[ValT]): RowVector[ColT, ValT] = {
+  def sumRowVectors(implicit mon: Monoid[ValT]): RowVector[ColT, ValT] =
     this.reduceRowVectors((x, y) => mon.plus(x, y))
-  }
 
   // Maps rows using a per-row mapping function
   // Use this for non-decomposable vector processing functions
@@ -443,7 +438,7 @@ class Matrix[RowT, ColT, ValT](
   }
 
   def topRowElems(k: Int)(
-      implicit ord: Ordering[ValT]): Matrix[RowT, ColT, ValT] = {
+      implicit ord: Ordering[ValT]): Matrix[RowT, ColT, ValT] =
     if (k < 1000) {
       topRowWithTiny(k)
     } else {
@@ -459,7 +454,6 @@ class Matrix[RowT, ColT, ValT](
         newPipe,
         FiniteHint(-1L, k))
     }
-  }
 
   protected def topRowWithTiny(k: Int)(
       implicit ord: Ordering[ValT]): Matrix[RowT, ColT, ValT] = {
@@ -571,83 +565,69 @@ class Matrix[RowT, ColT, ValT](
 
   // Column operations - see Row operations above
 
-  def getCol(index: ColT): ColVector[RowT, ValT] = {
+  def getCol(index: ColT): ColVector[RowT, ValT] =
     this.transpose.getRow(index).transpose
-  }
 
   def reduceColVectors(fn: (ValT, ValT) => ValT)(
-      implicit mon: Monoid[ValT]): ColVector[RowT, ValT] = {
+      implicit mon: Monoid[ValT]): ColVector[RowT, ValT] =
     this.transpose.reduceRowVectors(fn)(mon).transpose
-  }
 
-  def sumColVectors(implicit mon: Monoid[ValT]): ColVector[RowT, ValT] = {
+  def sumColVectors(implicit mon: Monoid[ValT]): ColVector[RowT, ValT] =
     this.transpose.sumRowVectors(mon).transpose
-  }
 
   def mapCols(fn: Iterable[(RowT, ValT)] => Iterable[(RowT, ValT)])(
-      implicit mon: Monoid[ValT]): Matrix[RowT, ColT, ValT] = {
+      implicit mon: Monoid[ValT]): Matrix[RowT, ColT, ValT] =
     this.transpose.mapRows(fn)(mon).transpose
-  }
 
   def topColElems(k: Int)(
-      implicit ord: Ordering[ValT]): Matrix[RowT, ColT, ValT] = {
+      implicit ord: Ordering[ValT]): Matrix[RowT, ColT, ValT] =
     this.transpose.topRowElems(k)(ord).transpose
-  }
 
-  def colL0Normalize(implicit ev: =:=[ValT, Double]) = {
+  def colL0Normalize(implicit ev: =:=[ValT, Double]) =
     this.transpose.rowL0Normalize.transpose
-  }
 
-  def colL1Normalize(implicit ev: =:=[ValT, Double]) = {
+  def colL1Normalize(implicit ev: =:=[ValT, Double]) =
     this.transpose.rowL1Normalize.transpose
-  }
 
-  def colL2Normalize(implicit ev: =:=[ValT, Double]) = {
+  def colL2Normalize(implicit ev: =:=[ValT, Double]) =
     this.transpose.rowL2Normalize.transpose
-  }
 
-  def colMeanCentering(implicit ev: =:=[ValT, Double]) = {
+  def colMeanCentering(implicit ev: =:=[ValT, Double]) =
     this.transpose.rowMeanCentering.transpose
-  }
 
-  def colSizeAveStdev(implicit ev: =:=[ValT, Double]) = {
+  def colSizeAveStdev(implicit ev: =:=[ValT, Double]) =
     this.transpose.rowSizeAveStdev
-  }
 
   def *[That, Res](that: That)(
-      implicit prod: MatrixProduct[Matrix[RowT, ColT, ValT], That, Res])
-      : Res = {
+      implicit prod: MatrixProduct[Matrix[RowT, ColT, ValT], That, Res]): Res =
     prod(this, that)
-  }
 
   def /(that: LiteralScalar[ValT])(implicit field: Field[ValT]) = {
     field.assertNotZero(that.value)
     mapValues(elem => field.div(elem, that.value))(field)
   }
 
-  def /(that: Scalar[ValT])(implicit field: Field[ValT]) = {
+  def /(that: Scalar[ValT])(implicit field: Field[ValT]) =
     nonZerosWith(that).mapValues({ leftRight: (ValT, ValT) =>
       val (left, right) = leftRight
       field.div(left, right)
     })(field)
-  }
 
   // Between Matrix value reduction - Generalizes matrix addition with an arbitrary value aggregation function
   // It assumes that the function fn(0,0) = 0
   // This function assumes only one value in each matrix for a given row and column index. (no stacking of operations yet)
   // TODO: Optimize this later and be lazy on groups and joins.
   def elemWiseOp(that: Matrix[RowT, ColT, ValT])(fn: (ValT, ValT) => ValT)(
-      implicit mon: Monoid[ValT]): Matrix[RowT, ColT, ValT] = {
+      implicit mon: Monoid[ValT]): Matrix[RowT, ColT, ValT] =
     // If the following is not true, it's not clear this is meaningful
     // assert(mon.isZero(fn(mon.zero,mon.zero)), "f is illdefined")
     zip(that).mapValues({ pair =>
       fn(pair._1, pair._2)
     })(mon)
-  }
 
   // Matrix summation
   def +(that: Matrix[RowT, ColT, ValT])(
-      implicit mon: Monoid[ValT]): Matrix[RowT, ColT, ValT] = {
+      implicit mon: Monoid[ValT]): Matrix[RowT, ColT, ValT] =
     if (equals(that)) {
       // No need to do any groupBy operation
       mapValues { v =>
@@ -656,20 +636,17 @@ class Matrix[RowT, ColT, ValT](
     } else {
       elemWiseOp(that)((x, y) => mon.plus(x, y))(mon)
     }
-  }
 
   // Matrix difference
   def -(that: Matrix[RowT, ColT, ValT])(
-      implicit grp: Group[ValT]): Matrix[RowT, ColT, ValT] = {
+      implicit grp: Group[ValT]): Matrix[RowT, ColT, ValT] =
     elemWiseOp(that)((x, y) => grp.minus(x, y))(grp)
-  }
 
   // Matrix elementwise product / Hadamard product
   // see http://en.wikipedia.org/wiki/Hadamard_product_(matrices)
   def hProd(mat: Matrix[RowT, ColT, ValT])(
-      implicit ring: Ring[ValT]): Matrix[RowT, ColT, ValT] = {
+      implicit ring: Ring[ValT]): Matrix[RowT, ColT, ValT] =
     elemWiseOp(mat)((x, y) => ring.times(x, y))(ring)
-  }
 
   /**
     * Considering the matrix as a graph, propagate the column:
@@ -690,23 +667,20 @@ class Matrix[RowT, ColT, ValT](
 
   // Compute the sum of the main diagonal.  Only makes sense cases where the row and col type are
   // equal
-  def trace(implicit mon: Monoid[ValT], ev: =:=[RowT, ColT]): Scalar[ValT] = {
+  def trace(implicit mon: Monoid[ValT], ev: =:=[RowT, ColT]): Scalar[ValT] =
     diagonal.trace(mon)
-  }
 
   // Compute the sum of all the elements in the matrix
-  def sum(implicit mon: Monoid[ValT]): Scalar[ValT] = {
+  def sum(implicit mon: Monoid[ValT]): Scalar[ValT] =
     sumRowVectors.sum
-  }
 
-  def transpose: Matrix[ColT, RowT, ValT] = {
+  def transpose: Matrix[ColT, RowT, ValT] =
     new Matrix[ColT, RowT, ValT](
       colSym,
       rowSym,
       valSym,
       inPipe,
       sizeHint.transpose)
-  }
 
   // This should only be called by def diagonal, which verifies that RowT == ColT
   protected lazy val mainDiagonal: DiagonalMatrix[RowT, ValT] = {
@@ -731,7 +705,7 @@ class Matrix[RowT, ColT, ValT](
    */
   private def cleanUpZipJoin[ValU](
       otherVSym: Fields,
-      pairMonoid: Monoid[(ValT, ValU)])(joinedPipe: Pipe): Pipe = {
+      pairMonoid: Monoid[(ValT, ValU)])(joinedPipe: Pipe): Pipe =
     joinedPipe
     //Make sure the zeros are set correctly:
       .map(valSym -> valSym) { (x: ValT) =>
@@ -745,7 +719,6 @@ class Matrix[RowT, ColT, ValT](
         Tuple1(tup)
       }
       .project(rowColValSymbols)
-  }
 
   /*
    * This ensures both side rows and columns have correct indexes (fills in nulls from the other side
@@ -802,9 +775,8 @@ class Matrix[RowT, ColT, ValT](
   }
 
   // Override the size hint
-  def withSizeHint(sh: SizeHint): Matrix[RowT, ColT, ValT] = {
+  def withSizeHint(sh: SizeHint): Matrix[RowT, ColT, ValT] =
     new Matrix[RowT, ColT, ValT](rowSym, colSym, valSym, pipe, sh)
-  }
 
   // Zip the given row with all the rows of the matrix
   def zip[ValU](that: ColVector[RowT, ValU])(
@@ -894,11 +866,10 @@ class Matrix[RowT, ColT, ValT](
   }
 
   def toBlockMatrix[G](
-      grouping: (RowT) => (G, RowT)): BlockMatrix[G, RowT, ColT, ValT] = {
+      grouping: (RowT) => (G, RowT)): BlockMatrix[G, RowT, ColT, ValT] =
     inPipe
       .map('row -> ('group, 'row))(grouping)
       .toBlockMatrix(('group, 'row, 'col, 'val))
-  }
 
   /**
     * removes any elements in this matrix that also appear in the argument matrix
@@ -1033,9 +1004,8 @@ class Matrix[RowT, ColT, ValT](
 
 class LiteralScalar[ValT](val value: ValT) extends java.io.Serializable {
   def *[That, Res](that: That)(
-      implicit prod: MatrixProduct[LiteralScalar[ValT], That, Res]): Res = {
+      implicit prod: MatrixProduct[LiteralScalar[ValT], That, Res]): Res =
     prod(this, that)
-  }
 }
 
 class Scalar[ValT](val valSym: Symbol, inPipe: Pipe)
@@ -1044,9 +1014,8 @@ class Scalar[ValT](val valSym: Symbol, inPipe: Pipe)
   def pipe = inPipe
   def fields = valSym
   def *[That, Res](that: That)(
-      implicit prod: MatrixProduct[Scalar[ValT], That, Res]): Res = {
+      implicit prod: MatrixProduct[Scalar[ValT], That, Res]): Res =
     prod(this, that)
-  }
 
   /**
     * Write the Scalar, optionally renaming val fields to the given fields
@@ -1070,7 +1039,7 @@ class DiagonalMatrix[IdxT, ValT](
 
   def *[That, Res](that: That)(
       implicit prod: MatrixProduct[DiagonalMatrix[IdxT, ValT], That, Res])
-      : Res = { prod(this, that) }
+      : Res = prod(this, that)
 
   def pipe = inPipe
   def fields = (idxSym, valSym)
@@ -1082,12 +1051,10 @@ class DiagonalMatrix[IdxT, ValT](
     }
     new Scalar[ValT](valSym, scalarPipe)
   }
-  def toCol: ColVector[IdxT, ValT] = {
+  def toCol: ColVector[IdxT, ValT] =
     new ColVector[IdxT, ValT](idxSym, valSym, inPipe, sizeHint.setRows(1L))
-  }
-  def toRow: RowVector[IdxT, ValT] = {
+  def toRow: RowVector[IdxT, ValT] =
     new RowVector[IdxT, ValT](idxSym, valSym, inPipe, sizeHint.setCols(1L))
-  }
   // Inverse of this matrix *IGNORING ZEROS*
   def inverse(implicit field: Field[ValT]): DiagonalMatrix[IdxT, ValT] = {
     val diagPipe = inPipe.flatMap(valSym -> valSym) { element: ValT =>
@@ -1131,9 +1098,8 @@ class RowVector[ColT, ValT](
   def fields = (colS, valS)
 
   def *[That, Res](that: That)(
-      implicit prod: MatrixProduct[RowVector[ColT, ValT], That, Res]): Res = {
+      implicit prod: MatrixProduct[RowVector[ColT, ValT], That, Res]): Res =
     prod(this, that)
-  }
 
   def +(that: RowVector[ColT, ValT])(implicit mon: Monoid[ValT]) =
     (this.toMatrix(true) + that.toMatrix(true)).getRow(true)
@@ -1145,9 +1111,8 @@ class RowVector[ColT, ValT](
       implicit ring: Ring[ValT]): RowVector[ColT, ValT] =
     (this.transpose hProd that.transpose).transpose
 
-  def transpose: ColVector[ColT, ValT] = {
+  def transpose: ColVector[ColT, ValT] =
     new ColVector[ColT, ValT](colS, valS, inPipe, sizeH.transpose)
-  }
 
   def diag: DiagonalMatrix[ColT, ValT] = {
     val newHint = SizeHint.asDiagonal(sizeH.setRowsToCols)
@@ -1185,9 +1150,8 @@ class RowVector[ColT, ValT](
     * Do a right-propogation of a row, transpose of Matrix.propagate
     */
   def propagate[MatColT](mat: Matrix[ColT, MatColT, Boolean])(
-      implicit monT: Monoid[ValT]): RowVector[MatColT, ValT] = {
+      implicit monT: Monoid[ValT]): RowVector[MatColT, ValT] =
     mat.transpose.propagate(this.transpose).transpose
-  }
 
   def L0Normalize(implicit ev: =:=[ValT, Double]): RowVector[ColT, ValT] = {
     val normedMatrix = this.toMatrix(0).rowL0Normalize
@@ -1214,7 +1178,7 @@ class RowVector[ColT, ValT](
     new Scalar[ValT](valS, scalarPipe)
   }
 
-  def topElems(k: Int)(implicit ord: Ordering[ValT]): RowVector[ColT, ValT] = {
+  def topElems(k: Int)(implicit ord: Ordering[ValT]): RowVector[ColT, ValT] =
     // TODO this should be tunable:
     if (k < 1000) {
       topWithTiny(k)
@@ -1234,7 +1198,6 @@ class RowVector[ColT, ValT](
         newPipe,
         sizeH.setCols(k).setRows(1L))
     }
-  }
 
   protected def topWithTiny(k: Int)(
       implicit ord: Ordering[ValT]): RowVector[ColT, ValT] = {
@@ -1266,9 +1229,8 @@ class RowVector[ColT, ValT](
   }
 
   // Override the size hint
-  def withColsHint(cols: Long): RowVector[ColT, ValT] = {
+  def withColsHint(cols: Long): RowVector[ColT, ValT] =
     new RowVector[ColT, ValT](colS, valS, pipe, sizeH.setRows(1L).setCols(cols))
-  }
 
   /**
     * Write optionally renaming val fields to the given fields
@@ -1294,9 +1256,8 @@ class ColVector[RowT, ValT](
   def fields = (rowS, valS)
 
   def *[That, Res](that: That)(
-      implicit prod: MatrixProduct[ColVector[RowT, ValT], That, Res]): Res = {
+      implicit prod: MatrixProduct[ColVector[RowT, ValT], That, Res]): Res =
     prod(this, that)
-  }
 
   def +(that: ColVector[RowT, ValT])(implicit mon: Monoid[ValT]) =
     (this.toMatrix(true) + that.toMatrix(true)).getCol(true)
@@ -1308,9 +1269,8 @@ class ColVector[RowT, ValT](
       implicit ring: Ring[ValT]): ColVector[RowT, ValT] =
     (this.toMatrix(true) hProd that.toMatrix(true)).getCol(true)
 
-  def transpose: RowVector[RowT, ValT] = {
+  def transpose: RowVector[RowT, ValT] =
     new RowVector[RowT, ValT](rowS, valS, inPipe, sizeH.transpose)
-  }
 
   def diag: DiagonalMatrix[RowT, ValT] = {
     val newHint = SizeHint.asDiagonal(sizeH.setColsToRows)
@@ -1361,7 +1321,7 @@ class ColVector[RowT, ValT](
       normedMatrix.pipe.project(normedMatrix.rowSym, normedMatrix.valSym))
   }
 
-  def topElems(k: Int)(implicit ord: Ordering[ValT]): ColVector[RowT, ValT] = {
+  def topElems(k: Int)(implicit ord: Ordering[ValT]): ColVector[RowT, ValT] =
     if (k < 1000) {
       topWithTiny(k)
     } else {
@@ -1376,7 +1336,6 @@ class ColVector[RowT, ValT](
         newPipe,
         sizeH.setCols(1L).setRows(k))
     }
-  }
 
   protected def topWithTiny(k: Int)(
       implicit ord: Ordering[ValT]): ColVector[RowT, ValT] = {
@@ -1408,9 +1367,8 @@ class ColVector[RowT, ValT](
   }
 
   // Override the size hint
-  def withRowsHint(rows: Long): ColVector[RowT, ValT] = {
+  def withRowsHint(rows: Long): ColVector[RowT, ValT] =
     new ColVector[RowT, ValT](rowS, valS, pipe, sizeH.setRows(rows).setCols(1L))
-  }
 
   /**
     * Write optionally renaming val fields to the given fields
@@ -1436,15 +1394,12 @@ class BlockMatrix[RowT, GroupT, ColT, ValT](
         Matrix[RowT, GroupT, Map[ColT, ValT]],
         Matrix[GroupT, RowT2, Map[ColT, ValT]],
         Matrix[RowT, RowT2, Map[ColT, ValT]]],
-      mon: Monoid[ValT]): Matrix[RowT, RowT2, ValT] = {
+      mon: Monoid[ValT]): Matrix[RowT, RowT2, ValT] =
     prod(mat, that.mat).mapValues(_.values.foldLeft(mon.zero)(mon.plus))
-  }
 
-  def transpose: BlockMatrix[GroupT, RowT, ColT, ValT] = {
+  def transpose: BlockMatrix[GroupT, RowT, ColT, ValT] =
     new BlockMatrix(mat.transpose)
-  }
 
-  def withSizeHint(hint: SizeHint) = {
+  def withSizeHint(hint: SizeHint) =
     new BlockMatrix(mat.withSizeHint(hint))
-  }
 }

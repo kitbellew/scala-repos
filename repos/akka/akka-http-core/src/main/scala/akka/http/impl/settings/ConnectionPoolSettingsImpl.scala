@@ -36,7 +36,7 @@ private[akka] final case class ConnectionPoolSettingsImpl(
 object ConnectionPoolSettingsImpl
     extends SettingsCompanion[ConnectionPoolSettingsImpl](
       "akka.http.host-connection-pool") {
-  def fromSubConfig(root: Config, c: Config) = {
+  def fromSubConfig(root: Config, c: Config) =
     ConnectionPoolSettingsImpl(
       c getInt "max-connections",
       c getInt "max-retries",
@@ -45,5 +45,4 @@ object ConnectionPoolSettingsImpl
       c getPotentiallyInfiniteDuration "idle-timeout",
       ClientConnectionSettingsImpl.fromSubConfig(root, c.getConfig("client"))
     )
-  }
 }

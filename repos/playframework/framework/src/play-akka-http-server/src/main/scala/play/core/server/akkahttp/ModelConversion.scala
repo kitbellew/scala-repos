@@ -39,12 +39,11 @@ private[akkahttp] class ModelConversion(
       remoteAddress: InetSocketAddress,
       secureProtocol: Boolean,
       request: HttpRequest)(implicit fm: Materializer)
-      : (RequestHeader, Option[Source[ByteString, Any]]) = {
+      : (RequestHeader, Option[Source[ByteString, Any]]) =
     (
       convertRequestHeader(requestId, remoteAddress, secureProtocol, request),
       convertRequestBody(request)
     )
-  }
 
   /**
     * Convert an Akka `HttpRequest` to a `RequestHeader`.
@@ -116,7 +115,7 @@ private[akkahttp] class ModelConversion(
     * Convert an Akka `HttpRequest` to an `Enumerator` of the request body.
     */
   private def convertRequestBody(request: HttpRequest)(
-      implicit fm: Materializer): Option[Source[ByteString, Any]] = {
+      implicit fm: Materializer): Option[Source[ByteString, Any]] =
     request.entity match {
       case HttpEntity.Strict(_, data) if data.isEmpty =>
         None
@@ -131,7 +130,6 @@ private[akkahttp] class ModelConversion(
         // FIXME: do something with trailing headers?
         Some(chunks.takeWhile(!_.isLastChunk).map(_.data()))
     }
-  }
 
   /**
     * Convert a Play `Result` object into an Akka `HttpResponse` object.
@@ -197,7 +195,7 @@ private[akkahttp] class ModelConversion(
   }
 
   private def convertHeaders(
-      headers: Iterable[(String, String)]): immutable.Seq[HttpHeader] = {
+      headers: Iterable[(String, String)]): immutable.Seq[HttpHeader] =
     headers
       .map {
         case (name, value) =>
@@ -210,7 +208,6 @@ private[akkahttp] class ModelConversion(
           }
       }
       .to[immutable.Seq]
-  }
 
   /**
     * A representation of Akka HTTP headers separate from an `HTTPMessage`.

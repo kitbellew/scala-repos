@@ -8,7 +8,7 @@ object Ansi {
     if (colorSequence == null) s
     else colorSequence + s + NORMAL
 
-  def filterAnsi(s: String): String = {
+  def filterAnsi(s: String): String =
     if (s == null) {
       null
     } else {
@@ -27,7 +27,6 @@ object Ansi {
       }
       r
     }
-  }
 
   final val INFO = "\u001B[34m" // BLUE
   final val ERRCOUNT = "\u001B[31m" // RED

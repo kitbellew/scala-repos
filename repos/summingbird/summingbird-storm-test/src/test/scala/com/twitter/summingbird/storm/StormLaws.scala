@@ -94,9 +94,8 @@ object StormLaws {
     outputList.toList
   }
 
-  def append(x: Int): Unit = {
+  def append(x: Int): Unit =
     StormLaws.outputList += x
-  }
 
   def runWithOutSummer(original: List[Int])(
       mkJob: (Producer[Storm, Int], Storm#Sink[Int]) => TailProducer[Storm, Int])

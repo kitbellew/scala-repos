@@ -16,7 +16,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.TypingContext
   */
 class ScalaGeneratePropertyHandler extends LanguageCodeInsightActionHandler {
   override def isValidFor(editor: Editor, file: PsiFile): Boolean = {
-    def isOnVar: Boolean = {
+    def isOnVar: Boolean =
       GenerationUtil.elementOfTypeAtCaret(
         editor,
         file,
@@ -24,7 +24,6 @@ class ScalaGeneratePropertyHandler extends LanguageCodeInsightActionHandler {
         case Some(v) if v.isSimple && v.containingClass != null => true
         case _                                                  => false
       }
-    }
     file != null && ScalaFileType.SCALA_FILE_TYPE == file.getFileType &&
     isOnVar
   }

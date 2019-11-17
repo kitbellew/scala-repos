@@ -227,9 +227,8 @@ class HeapBalancer[Req, Rep](
     Closable.all(synchronized(heap).map(_.factory): _*).close(deadline)
   }
 
-  def close(deadline: Time) = {
+  def close(deadline: Time) =
     Closable.sequence(observation, nodesClosable).close(deadline)
-  }
 
   /**
     * HeapBalancer status is the best of its constituent nodes, excluding

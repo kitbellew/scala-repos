@@ -75,29 +75,26 @@ class InMemoryCatalog extends ExternalCatalog {
     catalog(db).tables(table).partitions.contains(spec)
   }
 
-  private def requireFunctionExists(db: String, funcName: String): Unit = {
+  private def requireFunctionExists(db: String, funcName: String): Unit =
     if (!existsFunction(db, funcName)) {
       throw new AnalysisException(
         s"Function '$funcName' does not exist in database '$db'")
     }
-  }
 
-  private def requireTableExists(db: String, table: String): Unit = {
+  private def requireTableExists(db: String, table: String): Unit =
     if (!existsTable(db, table)) {
       throw new AnalysisException(
         s"Table '$table' does not exist in database '$db'")
     }
-  }
 
   private def requirePartitionExists(
       db: String,
       table: String,
-      spec: TablePartitionSpec): Unit = {
+      spec: TablePartitionSpec): Unit =
     if (!existsPartition(db, table, spec)) {
       throw new AnalysisException(
         s"Partition does not exist in database '$db' table '$table': '$spec'")
     }
-  }
 
   // --------------------------------------------------------------------------
   // Databases

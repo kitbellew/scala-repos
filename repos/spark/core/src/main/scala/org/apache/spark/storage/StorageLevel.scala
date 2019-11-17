@@ -78,9 +78,8 @@ class StorageLevel private (
       "Off-heap storage level does not support multiple replication")
   }
 
-  override def clone(): StorageLevel = {
+  override def clone(): StorageLevel =
     new StorageLevel(useDisk, useMemory, useOffHeap, deserialized, replication)
-  }
 
   override def equals(other: Any): Boolean = other match {
     case s: StorageLevel =>
@@ -129,9 +128,8 @@ class StorageLevel private (
   @throws(classOf[IOException])
   private def readResolve(): Object = StorageLevel.getCachedStorageLevel(this)
 
-  override def toString: String = {
+  override def toString: String =
     s"StorageLevel($useDisk, $useMemory, $useOffHeap, $deserialized, $replication)"
-  }
 
   override def hashCode(): Int = toInt * 41 + replication
 
@@ -197,7 +195,7 @@ object StorageLevel {
       useMemory: Boolean,
       useOffHeap: Boolean,
       deserialized: Boolean,
-      replication: Int): StorageLevel = {
+      replication: Int): StorageLevel =
     getCachedStorageLevel(
       new StorageLevel(
         useDisk,
@@ -205,7 +203,6 @@ object StorageLevel {
         useOffHeap,
         deserialized,
         replication))
-  }
 
   /**
     * :: DeveloperApi ::
@@ -216,19 +213,17 @@ object StorageLevel {
       useDisk: Boolean,
       useMemory: Boolean,
       deserialized: Boolean,
-      replication: Int = 1): StorageLevel = {
+      replication: Int = 1): StorageLevel =
     getCachedStorageLevel(
       new StorageLevel(useDisk, useMemory, false, deserialized, replication))
-  }
 
   /**
     * :: DeveloperApi ::
     * Create a new StorageLevel object from its integer representation.
     */
   @DeveloperApi
-  def apply(flags: Int, replication: Int): StorageLevel = {
+  def apply(flags: Int, replication: Int): StorageLevel =
     getCachedStorageLevel(new StorageLevel(flags, replication))
-  }
 
   /**
     * :: DeveloperApi ::

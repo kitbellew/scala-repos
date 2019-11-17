@@ -16,7 +16,7 @@ trait VectorBuilderOps {
       @expand.args(OpMulScalar, OpDiv) Op,
       @expand.args(Double, Long, Float, Int) T](
       implicit @expand.sequence[Op]((_ * _), (_ / _)) op: Q)
-      : Op.InPlaceImpl2[VectorBuilder[T], T] = {
+      : Op.InPlaceImpl2[VectorBuilder[T], T] =
     new Op.InPlaceImpl2[VectorBuilder[T], T] {
       def apply(a: VectorBuilder[T], b: T) {
         var i = 0
@@ -26,10 +26,9 @@ trait VectorBuilderOps {
         }
       }
     }
-  }
 
   implicit def canMulInto_V_S[T: Semiring: ClassTag]
-      : OpMulScalar.InPlaceImpl2[VectorBuilder[T], T] = {
+      : OpMulScalar.InPlaceImpl2[VectorBuilder[T], T] =
     new OpMulScalar.InPlaceImpl2[VectorBuilder[T], T] {
       val sr = implicitly[Semiring[T]]
       def apply(a: VectorBuilder[T], b: T) {
@@ -40,10 +39,9 @@ trait VectorBuilderOps {
         }
       }
     }
-  }
 
   implicit def canDivInto_V_S[T: Field: ClassTag]
-      : OpDiv.InPlaceImpl2[VectorBuilder[T], T] = {
+      : OpDiv.InPlaceImpl2[VectorBuilder[T], T] =
     new OpDiv.InPlaceImpl2[VectorBuilder[T], T] {
       val f = implicitly[Field[T]]
       def apply(a: VectorBuilder[T], b: T) {
@@ -54,7 +52,6 @@ trait VectorBuilderOps {
         }
       }
     }
-  }
 
   @expand
   @expand.valify
@@ -62,7 +59,7 @@ trait VectorBuilderOps {
       @expand.args(OpAdd, OpSub) Op,
       @expand.args(Double, Long, Float, Int) T](
       implicit @expand.sequence[Op]((x => x), (-_)) op: Q)
-      : Op.InPlaceImpl2[VectorBuilder[T], VectorBuilder[T]] = {
+      : Op.InPlaceImpl2[VectorBuilder[T], VectorBuilder[T]] =
     new Op.InPlaceImpl2[VectorBuilder[T], VectorBuilder[T]] {
       def apply(a: VectorBuilder[T], b: VectorBuilder[T]) {
         require(
@@ -78,12 +75,11 @@ trait VectorBuilderOps {
         }
       }
     }
-  }
 
   @expand
   implicit def canOpInto_V_V[@expand.args(OpAdd, OpSub) Op, T: Ring: ClassTag](
       implicit @expand.sequence[Op]((x => x), { r.negate(_) }) op: Q)
-      : Op.InPlaceImpl2[VectorBuilder[T], VectorBuilder[T]] = {
+      : Op.InPlaceImpl2[VectorBuilder[T], VectorBuilder[T]] =
     new Op.InPlaceImpl2[VectorBuilder[T], VectorBuilder[T]] {
       val r = implicitly[Ring[T]]
       def apply(a: VectorBuilder[T], b: VectorBuilder[T]) {
@@ -100,12 +96,11 @@ trait VectorBuilderOps {
         }
       }
     }
-  }
 
   @expand
   implicit def canOpInto_V_S[@expand.args(OpAdd, OpSub) Op, T: Ring: ClassTag](
       implicit @expand.sequence[Op]((x => x), { r.negate(_) }) op: Q)
-      : Op.InPlaceImpl2[VectorBuilder[T], T] = {
+      : Op.InPlaceImpl2[VectorBuilder[T], T] =
     new Op.InPlaceImpl2[VectorBuilder[T], T] {
       val r = implicitly[Ring[T]]
       def apply(a: VectorBuilder[T], b: T) {
@@ -117,12 +112,11 @@ trait VectorBuilderOps {
         }
       }
     }
-  }
 
   @expand
   @expand.valify
   implicit def canSet[@expand.args(Double, Long, Float, Int) T]
-      : OpSet.InPlaceImpl2[VectorBuilder[T], VectorBuilder[T]] = {
+      : OpSet.InPlaceImpl2[VectorBuilder[T], VectorBuilder[T]] =
     new OpSet.InPlaceImpl2[VectorBuilder[T], VectorBuilder[T]] {
       def apply(a: VectorBuilder[T], b: VectorBuilder[T]) {
         if (a eq b) return
@@ -135,10 +129,9 @@ trait VectorBuilderOps {
         }
       }
     }
-  }
 
   implicit def canSet[T]
-      : OpSet.InPlaceImpl2[VectorBuilder[T], VectorBuilder[T]] = {
+      : OpSet.InPlaceImpl2[VectorBuilder[T], VectorBuilder[T]] =
     new OpSet.InPlaceImpl2[VectorBuilder[T], VectorBuilder[T]] {
       def apply(a: VectorBuilder[T], b: VectorBuilder[T]) {
         if (a eq b) return
@@ -151,23 +144,21 @@ trait VectorBuilderOps {
         }
       }
     }
-  }
 
   implicit def opFromCopyAndUpdate[Op, V, Other](
       implicit op: InPlaceImpl2[Op, VectorBuilder[V], Other],
       semi: Semiring[V],
       dev: Zero[V],
       classTag: ClassTag[V])
-      : UImpl2[Op, VectorBuilder[V], Other, VectorBuilder[V]] = {
+      : UImpl2[Op, VectorBuilder[V], Other, VectorBuilder[V]] =
     BinaryOp.fromCopyAndUpdate[VectorBuilder[V], Other, Op](
       op,
       canCopyBuilder[V])
-  }
 
   @expand
   @expand.valify
   implicit def canAxpy[@expand.args(Double, Long, Float, Int) T]
-      : scaleAdd.InPlaceImpl3[VectorBuilder[T], T, VectorBuilder[T]] = {
+      : scaleAdd.InPlaceImpl3[VectorBuilder[T], T, VectorBuilder[T]] =
     new scaleAdd.InPlaceImpl3[VectorBuilder[T], T, VectorBuilder[T]] {
       def apply(a: VectorBuilder[T], s: T, b: VectorBuilder[T]) {
         require(
@@ -187,10 +178,9 @@ trait VectorBuilderOps {
         }
       }
     }
-  }
 
   implicit def canAxpy[T: Semiring: ClassTag]
-      : scaleAdd.InPlaceImpl3[VectorBuilder[T], T, VectorBuilder[T]] = {
+      : scaleAdd.InPlaceImpl3[VectorBuilder[T], T, VectorBuilder[T]] =
     new scaleAdd.InPlaceImpl3[VectorBuilder[T], T, VectorBuilder[T]] {
       val sr = implicitly[Semiring[T]]
       def apply(a: VectorBuilder[T], s: T, b: VectorBuilder[T]) {
@@ -212,9 +202,8 @@ trait VectorBuilderOps {
         }
       }
     }
-  }
 
-  implicit def space[T: Field: ClassTag]: MutableModule[VectorBuilder[T], T] = {
+  implicit def space[T: Field: ClassTag]: MutableModule[VectorBuilder[T], T] =
     MutableModule.make[VectorBuilder[T], T]({
       (a: VectorBuilder[T], b: VectorBuilder[T], tolerance: Double) =>
         val aHV = a.toHashVector
@@ -224,13 +213,12 @@ trait VectorBuilderOps {
         val diff: Double = norm(a.toHashVector - b.toHashVector)
         diff < tolerance
     })
-  }
 
   // operations involving vectors:
 
   implicit def canAddInto_V_VB[V, Vec](
       implicit ev: Vec <:< Vector[V],
-      semi: Semiring[V]): OpAdd.InPlaceImpl2[Vec, VectorBuilder[V]] = {
+      semi: Semiring[V]): OpAdd.InPlaceImpl2[Vec, VectorBuilder[V]] =
     new OpAdd.InPlaceImpl2[Vec, VectorBuilder[V]] {
       def apply(a: Vec, b: VectorBuilder[V]) {
         require(b.length < 0 || a.length == b.length, "Dimension mismatch!")
@@ -242,11 +230,10 @@ trait VectorBuilderOps {
         }
       }
     }
-  }
 
   implicit def canSubInto_V_VB[V, Vec](
       implicit ev: Vec <:< Vector[V],
-      semi: Ring[V]): OpSub.InPlaceImpl2[Vec, VectorBuilder[V]] = {
+      semi: Ring[V]): OpSub.InPlaceImpl2[Vec, VectorBuilder[V]] =
     new OpSub.InPlaceImpl2[Vec, VectorBuilder[V]] {
       def apply(a: Vec, b: VectorBuilder[V]) {
         require(b.length < 0 || a.length == b.length, "Dimension mismatch!")
@@ -258,10 +245,9 @@ trait VectorBuilderOps {
         }
       }
     }
-  }
 
   implicit def canAddInto_VV_V[V, Vec](implicit ev: Vec <:< Vector[V])
-      : OpAdd.InPlaceImpl2[VectorBuilder[V], Vec] = {
+      : OpAdd.InPlaceImpl2[VectorBuilder[V], Vec] =
     new OpAdd.InPlaceImpl2[VectorBuilder[V], Vec] {
       def apply(a: VectorBuilder[V], b: Vec) {
         require(a.length < 0 || a.length == b.length, "Dimension mismatch!")
@@ -283,11 +269,10 @@ trait VectorBuilderOps {
         }
       }
     }
-  }
 
   implicit def canSubInto_VV_V[V, Vec](
       implicit ev: Vec <:< Vector[V],
-      ring: Ring[V]): OpSub.InPlaceImpl2[VectorBuilder[V], Vec] = {
+      ring: Ring[V]): OpSub.InPlaceImpl2[VectorBuilder[V], Vec] =
     new OpSub.InPlaceImpl2[VectorBuilder[V], Vec] {
       def apply(a: VectorBuilder[V], b: Vec) {
         require(a.length < 0 || a.length == b.length, "Dimension mismatch!")
@@ -309,11 +294,10 @@ trait VectorBuilderOps {
         }
       }
     }
-  }
 
   implicit def canDot_V_VB[Vec, V](
       implicit ev: Vec <:< Vector[V],
-      semi: Semiring[V]): OpMulInner.Impl2[Vec, VectorBuilder[V], V] = {
+      semi: Semiring[V]): OpMulInner.Impl2[Vec, VectorBuilder[V], V] =
     new OpMulInner.Impl2[Vec, VectorBuilder[V], V] {
       def apply(a: Vec, b: VectorBuilder[V]) = {
         require(b.length < 0 || a.length == b.length, "Dimension mismatch!")
@@ -327,11 +311,10 @@ trait VectorBuilderOps {
         result
       }
     }
-  }
 
   implicit def canAxpy_V_VB_Semi[V, Vec](
       implicit ev: Vec <:< Vector[V],
-      semi: Semiring[V]): scaleAdd.InPlaceImpl3[Vec, V, VectorBuilder[V]] = {
+      semi: Semiring[V]): scaleAdd.InPlaceImpl3[Vec, V, VectorBuilder[V]] =
     new scaleAdd.InPlaceImpl3[Vec, V, VectorBuilder[V]] {
       def apply(a: Vec, s: V, b: VectorBuilder[V]) {
         require(b.length < 0 || a.length == b.length, "Dimension mismatch!")
@@ -343,11 +326,10 @@ trait VectorBuilderOps {
         }
       }
     }
-  }
 
   implicit def canDot_VB_V[Vec, V](
       implicit ev: Vec <:< Vector[V],
-      semi: Semiring[V]): OpMulInner.Impl2[VectorBuilder[V], Vec, V] = {
+      semi: Semiring[V]): OpMulInner.Impl2[VectorBuilder[V], Vec, V] =
     new OpMulInner.Impl2[VectorBuilder[V], Vec, V] {
       def apply(b: VectorBuilder[V], a: Vec) = {
         require(b.length < 0 || a.length == b.length, "Dimension mismatch!")
@@ -361,12 +343,11 @@ trait VectorBuilderOps {
         result
       }
     }
-  }
 
   @expand
   @expand.valify
   implicit def canMulDMVB[@expand.args(Double, Int, Float, Long) T]
-      : OpMulMatrix.Impl2[DenseMatrix[T], VectorBuilder[T], DenseVector[T]] = {
+      : OpMulMatrix.Impl2[DenseMatrix[T], VectorBuilder[T], DenseVector[T]] =
     new OpMulMatrix.Impl2[DenseMatrix[T], VectorBuilder[T], DenseVector[T]] {
       def apply(a: DenseMatrix[T], b: VectorBuilder[T]): DenseVector[T] = {
         val result = DenseVector.zeros[T](a.rows)
@@ -376,10 +357,9 @@ trait VectorBuilderOps {
         result
       }
     }
-  }
 
   implicit def canMulDMVB_Semi[T: ClassTag](implicit semi: Semiring[T])
-      : OpMulMatrix.Impl2[DenseMatrix[T], VectorBuilder[T], DenseVector[T]] = {
+      : OpMulMatrix.Impl2[DenseMatrix[T], VectorBuilder[T], DenseVector[T]] =
     new OpMulMatrix.Impl2[DenseMatrix[T], VectorBuilder[T], DenseVector[T]] {
       def apply(a: DenseMatrix[T], b: VectorBuilder[T]): DenseVector[T] = {
         val result = DenseVector.zeros[T](a.rows)
@@ -389,5 +369,4 @@ trait VectorBuilderOps {
         result
       }
     }
-  }
 }

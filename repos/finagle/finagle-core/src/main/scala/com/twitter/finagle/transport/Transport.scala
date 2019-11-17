@@ -225,12 +225,11 @@ object Transport {
     * @param f A mapping from `A` to `Future[Option[Buf]]`.
     */
   private[finagle] def copyToWriter[A](trans: Transport[_, A], w: Writer)(
-      f: A => Future[Option[Buf]]): Future[Unit] = {
+      f: A => Future[Option[Buf]]): Future[Unit] =
     trans.read().flatMap(f).flatMap {
       case None      => Future.Done
       case Some(buf) => w.write(buf) before copyToWriter(trans, w)(f)
     }
-  }
 
   /**
     * Collates a transport, using the collation function `chunkOfA`,

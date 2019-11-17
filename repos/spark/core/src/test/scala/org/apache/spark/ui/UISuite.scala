@@ -216,11 +216,9 @@ class UISuite extends SparkFunSuite {
     }
   }
 
-  def stopServer(info: ServerInfo): Unit = {
+  def stopServer(info: ServerInfo): Unit =
     if (info != null && info.server != null) info.server.stop
-  }
 
-  def closeSocket(socket: ServerSocket): Unit = {
+  def closeSocket(socket: ServerSocket): Unit =
     if (socket != null) socket.close
-  }
 }

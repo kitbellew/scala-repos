@@ -221,7 +221,7 @@ object VectorIndexer extends DefaultParamsReadable[VectorIndexer] {
       * @return  Feature value index.  Keys are categorical feature indices (column indices).
       *          Values are mappings from original features values to 0-based category indices.
       */
-    def getCategoryMaps: Map[Int, Map[Double, Int]] = {
+    def getCategoryMaps: Map[Int, Map[Double, Int]] =
       // Filter out features which are declared continuous.
       featureValueSets.zipWithIndex
         .filter(_._1.size <= maxCategories)
@@ -239,7 +239,6 @@ object VectorIndexer extends DefaultParamsReadable[VectorIndexer] {
             (featureIndex, categoryMap)
         }
         .toMap
-    }
 
     private def addDenseVector(dv: DenseVector): Unit = {
       var i = 0
@@ -302,12 +301,11 @@ class VectorIndexerModel private[ml] (
   import VectorIndexerModel._
 
   /** Java-friendly version of [[categoryMaps]] */
-  def javaCategoryMaps: JMap[JInt, JMap[JDouble, JInt]] = {
+  def javaCategoryMaps: JMap[JInt, JMap[JDouble, JInt]] =
     categoryMaps
       .mapValues(_.asJava)
       .asJava
       .asInstanceOf[JMap[JInt, JMap[JDouble, JInt]]]
-  }
 
   /**
     * Pre-computed feature attributes, with some missing info.

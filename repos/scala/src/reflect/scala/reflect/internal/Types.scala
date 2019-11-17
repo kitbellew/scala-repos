@@ -264,10 +264,9 @@ trait Types
 
     // the only thingies that we want to splice are: 1) type parameters, 2) abstract type members
     // the thingies that we don't want to splice are: 1) concrete types (obviously), 2) existential skolems
-    def isSpliceable = {
+    def isSpliceable =
       this.isInstanceOf[TypeRef] && typeSymbol.isAbstractType &&
-      !typeSymbol.isExistential
-    }
+        !typeSymbol.isExistential
 
     def companion = {
       val sym = typeSymbolDirect
@@ -620,12 +619,11 @@ trait Types
       membersBasedOnFlags(BridgeAndPrivateFlags & ~admit, 0)
 
     /** A list of all implicit symbols of this type  (defined or inherited) */
-    def implicitMembers: Scope = {
+    def implicitMembers: Scope =
       typeSymbolDirect match {
         case sym: ModuleClassSymbol => sym.implicitMembers
         case _                      => membersBasedOnFlags(BridgeFlags, IMPLICIT)
       }
-    }
 
     /** A list of all deferred symbols of this type  (defined or inherited) */
     def deferredMembers: Scope = membersBasedOnFlags(BridgeFlags, DEFERRED)
@@ -822,7 +820,7 @@ trait Types
       new ContainsCollector(sym).collect(this)
 
     /** Is this type a subtype of that type? */
-    def <:<(that: Type): Boolean = {
+    def <:<(that: Type): Boolean =
       if (Statistics.canEnable) stat_<:<(that)
       else {
         (this eq that) ||
@@ -830,7 +828,6 @@ trait Types
            explain("<:", isSubType(_: Type, _: Type), this, that)
          else isSubType(this, that))
       }
-    }
 
     /** Is this type a subtype of that type in a pattern context?
       *  Dummy type arguments on the right hand side are replaced with
@@ -1343,9 +1340,8 @@ trait Types
       extends SingleType(pre, sym)
 
   object SingleType extends SingleTypeExtractor {
-    def apply(pre: Type, sym: Symbol): Type = {
+    def apply(pre: Type, sym: Symbol): Type =
       unique(new UniqueSingleType(pre, sym))
-    }
   }
 
   protected def defineUnderlyingOfSingleType(tpe: SingleType) = {
@@ -1385,10 +1381,9 @@ trait Types
       extends SuperType(thistp, supertp)
 
   object SuperType extends SuperTypeExtractor {
-    def apply(thistp: Type, supertp: Type): Type = {
+    def apply(thistp: Type, supertp: Type): Type =
       if (phase.erasedTypes) supertp
       else unique(new UniqueSuperType(thistp, supertp))
-    }
   }
 
   /** A class for the bounds of abstract types and type parameters
@@ -1412,19 +1407,17 @@ trait Types
     /** Bounds notation used in Scala syntax.
       * For example +This <: scala.collection.generic.Sorted[K,This].
       */
-    private[internal] def scalaNotation(typeString: Type => String): String = {
+    private[internal] def scalaNotation(typeString: Type => String): String =
       (if (emptyLowerBound) "" else " >: " + typeString(lo)) +
         (if (emptyUpperBound) "" else " <: " + typeString(hi))
-    }
 
     /** Bounds notation used in http://adriaanm.github.com/files/higher.pdf.
       * For example *(scala.collection.generic.Sorted[K,This]).
       */
-    private[internal] def starNotation(typeString: Type => String): String = {
+    private[internal] def starNotation(typeString: Type => String): String =
       if (emptyLowerBound && emptyUpperBound) ""
       else if (emptyLowerBound) "(" + typeString(hi) + ")"
       else "(%s, %s)" format (typeString(lo), typeString(hi))
-    }
     override def kind = "TypeBoundsType"
   }
 
@@ -1434,9 +1427,8 @@ trait Types
     def empty: TypeBounds = apply(NothingTpe, AnyTpe)
     def upper(hi: Type): TypeBounds = apply(NothingTpe, hi)
     def lower(lo: Type): TypeBounds = apply(lo, AnyTpe)
-    def apply(lo: Type, hi: Type): TypeBounds = {
+    def apply(lo: Type, hi: Type): TypeBounds =
       unique(new UniqueTypeBounds(lo, hi)).asInstanceOf[TypeBounds]
-    }
   }
 
   object CompoundType {
@@ -1758,7 +1750,7 @@ trait Types
       } else super.normalize
     }
 
-    final override def etaExpand: Type = {
+    final override def etaExpand: Type =
       // MO to AM: This is probably not correct
       // If they are several higher-kinded parents with different bounds we need
       // to take the intersection of their bounds
@@ -1769,7 +1761,6 @@ trait Types
           case TypeRef(pre, sym, List()) => TypeRef(pre, sym, dummyArgs)
           case p                         => p
         }, decls, typeSymbol))
-    }
 
     override def kind = "RefinedType"
   }
@@ -2374,7 +2365,7 @@ trait Types
       if (isHigherKinded) etaExpand else super.normalize
 
     // TODO: test case that is compiled in a specific order and in different runs
-    final override def normalize: Type = {
+    final override def normalize: Type =
       // arises when argument-dependent types are approximated (see def depoly in implicits)
       if (pre eq WildcardType) WildcardType
       else if (phase.erasedTypes) normalizeImpl
@@ -2382,7 +2373,6 @@ trait Types
         if (normalized eq null) normalized = normalizeImpl
         normalized
       }
-    }
 
     override def isGround =
       (sym.isPackageClass || pre.isGround &&
@@ -2929,11 +2919,10 @@ trait Types
       val qset = quantified.toSet
       underlying match {
         case TypeRef(pre, sym, args) =>
-          def isQuantified(tpe: Type): Boolean = {
+          def isQuantified(tpe: Type): Boolean =
             (tpe exists (t => qset contains t.typeSymbol)) ||
-            tpe.typeSymbol.isRefinementClass &&
-            (tpe.parents exists isQuantified)
-          }
+              tpe.typeSymbol.isRefinementClass &&
+                (tpe.parents exists isQuantified)
           val (wildcardArgs, otherArgs) =
             args partition (arg => qset contains arg.typeSymbol)
           wildcardArgs.distinct == wildcardArgs && !(otherArgs exists
@@ -3406,7 +3395,7 @@ trait Types
        *  type parameter we're trying to infer (the result will be sanity-checked later).
        */
       def unifyFull(tpe: Type): Boolean = {
-        def unifySpecific(tp: Type) = {
+        def unifySpecific(tp: Type) =
           sameLength(typeArgs, tp.typeArgs) && {
             val lhs = if (isLowerBound) tp.typeArgs else typeArgs
             val rhs = if (isLowerBound) typeArgs else tp.typeArgs
@@ -3416,7 +3405,6 @@ trait Types
               addBound(tp.typeConstructor); true
             }
           }
-        }
         // The type with which we can successfully unify can be hidden
         // behind singleton types and type aliases.
         tpe.dealiasWidenChain exists unifySpecific
@@ -3488,11 +3476,10 @@ trait Types
       * TODO: make these constraints count (incorporate them into implicit search in `applyImplicitArgs`)
       * (`T` corresponds to @param sym)
       */
-    def registerTypeSelection(sym: Symbol, tp: Type): Boolean = {
+    def registerTypeSelection(sym: Symbol, tp: Type): Boolean =
       registerBound(
         HasTypeMember(sym.name.toTypeName, tp),
         isLowerBound = false)
-    }
 
     private def isSkolemAboveLevel(tp: Type) = tp.typeSymbol match {
       case ts: TypeSkolem => ts.level > level
@@ -3738,7 +3725,7 @@ trait Types
 // Creators ---------------------------------------------------------------
 
   /** Rebind symbol `sym` to an overriding member in type `pre`. */
-  private def rebind(pre: Type, sym: Symbol): Symbol = {
+  private def rebind(pre: Type, sym: Symbol): Symbol =
     if (!sym.isOverridableMember || sym.owner == pre.typeSymbol) sym
     else
       pre.nonPrivateMember(sym.name).suchThat { sym =>
@@ -3750,7 +3737,6 @@ trait Types
         sym.isType ||
         (!isModuleWithAccessor && sym.isStable && !sym.hasVolatileType)
       } orElse sym
-  }
 
   /** Convert a `super` prefix to a this-type if `sym` is abstract or final. */
   private def removeSuper(tp: Type, sym: Symbol): Type = tp match {
@@ -3762,7 +3748,7 @@ trait Types
   }
 
   /** The canonical creator for single-types */
-  def singleType(pre: Type, sym: Symbol): Type = {
+  def singleType(pre: Type, sym: Symbol): Type =
     if (phase.erasedTypes) sym.tpe.resultType
     else if (sym.isRootPackage) ThisType(sym.moduleClass)
     else {
@@ -3771,14 +3757,13 @@ trait Types
       if (pre1 ne pre) sym1 = rebind(pre1, sym1)
       SingleType(pre1, sym1)
     }
-  }
 
   /** the canonical creator for a refined type with a given scope */
   def refinedType(
       parents: List[Type],
       owner: Symbol,
       decls: Scope,
-      pos: Position): Type = {
+      pos: Position): Type =
     if (phase.erasedTypes) if (parents.isEmpty) ObjectTpe else parents.head
     else {
       val clazz = owner.newRefinementClass(pos)
@@ -3786,7 +3771,6 @@ trait Types
       clazz.setInfo(result)
       result
     }
-  }
 
   /** The canonical creator for a refined type with an initially empty scope.
     */
@@ -4088,24 +4072,21 @@ trait Types
       case _                                   => NoType
     }
   }
-  def elementExtractOption(container: Symbol, tp: Type): Option[Type] = {
+  def elementExtractOption(container: Symbol, tp: Type): Option[Type] =
     elementExtract(container, tp) match {
       case NoType => None
       case tp     => Some(tp)
     }
-  }
-  def elementTest(container: Symbol, tp: Type)(f: Type => Boolean): Boolean = {
+  def elementTest(container: Symbol, tp: Type)(f: Type => Boolean): Boolean =
     elementExtract(container, tp) match {
       case NoType => false
       case tp     => f(tp)
     }
-  }
-  def elementTransform(container: Symbol, tp: Type)(f: Type => Type): Type = {
+  def elementTransform(container: Symbol, tp: Type)(f: Type => Type): Type =
     elementExtract(container, tp) match {
       case NoType => NoType
       case tp     => f(tp)
     }
-  }
 
   def transparentShallowTransform(container: Symbol, tp: Type)(
       f: Type => Type): Type = {
@@ -4302,7 +4283,7 @@ trait Types
     check(tp1, tp2) && check(tp2, tp1)
   }
 
-  def normalizePlus(tp: Type): Type = {
+  def normalizePlus(tp: Type): Type =
     if (isRawType(tp)) rawToExistential(tp)
     else
       tp.normalize match {
@@ -4312,7 +4293,6 @@ trait Types
           normalizePlus(st.underlying)
         case _ => tp.normalize
       }
-  }
 
   /*
   todo: change to:
@@ -4986,11 +4966,10 @@ trait Types
      else (ps :+ SerializableTpe).toList)
 
   /** Adds the @uncheckedBound annotation if the given `tp` has type arguments */
-  final def uncheckedBounds(tp: Type): Type = {
+  final def uncheckedBounds(tp: Type): Type =
     if (tp.typeArgs.isEmpty || UncheckedBoundsClass == NoSymbol)
       tp // second condition for backwards compatibility with older scala-reflect.jar
     else tp.withAnnotation(AnnotationInfo marker UncheckedBoundsClass.tpe)
-  }
 
   /** Members of the given class, other than those inherited
     *  from Any or AnyRef.

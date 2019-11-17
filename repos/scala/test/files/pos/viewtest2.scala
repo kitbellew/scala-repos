@@ -42,7 +42,7 @@ object O {
         case y1: List[a1] => compareLists(x, y1.asInstanceOf[List[a]])
         case _            => -(y compareTo x)
       }
-      private def compareLists(xs: List[a], ys: List[a]): Int = {
+      private def compareLists(xs: List[a], ys: List[a]): Int =
         if (xs.isEmpty && ys.isEmpty) 0
         else if (xs.isEmpty) -1
         else if (ys.isEmpty) 1
@@ -51,7 +51,6 @@ object O {
           if (s != 0) s
           else compareLists(xs.tail, ys.tail)
         }
-      }
     }
 }
 

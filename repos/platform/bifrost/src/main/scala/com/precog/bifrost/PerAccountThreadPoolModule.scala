@@ -45,7 +45,7 @@ class PerAccountThreadPooling(accountFinder: AccountFinder[Future]) {
   private def threadFactoryFor(accountId: AccountId) =
     (new ThreadFactoryBuilder().setNameFormat(accountId + "%04d")).build
 
-  private def asyncContextFor(accountId: AccountId): ExecutionContext = {
+  private def asyncContextFor(accountId: AccountId): ExecutionContext =
     if (executorCache.contains(accountId)) {
       executorCache.get(accountId)
     } else {
@@ -64,15 +64,13 @@ class PerAccountThreadPooling(accountFinder: AccountFinder[Future]) {
         case ec0  => executor.shutdown(); ec0
       }
     }
-  }
 
   def getAccountExecutionContext(
-      apiKey: APIKey): EitherT[Future, String, ExecutionContext] = {
+      apiKey: APIKey): EitherT[Future, String, ExecutionContext] =
     EitherT.eitherT(accountFinder.findAccountByAPIKey(apiKey) map {
       case None =>
         \/.left("Could not locate accountId for apiKey " + apiKey)
       case Some(accountId) =>
         \/.right(asyncContextFor(accountId)) // FIXME: Which account should we use if there's more than one?
     })
-  }
 }

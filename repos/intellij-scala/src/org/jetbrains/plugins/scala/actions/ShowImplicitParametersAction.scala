@@ -81,9 +81,8 @@ class ShowImplicitParametersAction
       expr: PsiElement): Option[Seq[ScalaResolveResult]] = {
     def checkTypeElement(element: ScTypeElement)
         : Option[Option[scala.Seq[ScalaResolveResult]]] = {
-      def checkSimpleType(s: ScSimpleTypeElement) = {
+      def checkSimpleType(s: ScSimpleTypeElement) =
         s.findImplicitParameters
-      }
       element match {
         case s: ScSimpleTypeElement =>
           return Some(checkSimpleType(s))
@@ -350,7 +349,7 @@ class ImplicitParametersTreeStructure(
     override def getChildrenImpl: util.Collection[AbstractTreeNode[_]] = {
       val list = new util.ArrayList[AbstractTreeNode[_]]()
       if (value.name == InferUtil.notFoundParameterName) {
-        def addErrorLeaf(errorText: String): Boolean = {
+        def addErrorLeaf(errorText: String): Boolean =
           list.add(new AbstractTreeNode[String](project, errorText) {
             override def getChildren: util.Collection[AbstractTreeNode[_]] =
               new util.ArrayList[AbstractTreeNode[_]]()
@@ -361,7 +360,6 @@ class ImplicitParametersTreeStructure(
                 CodeInsightColors.WRONG_REFERENCES_ATTRIBUTES)
             }
           })
-        }
         value.implicitSearchState match {
           case Some(state) =>
             val collector = new ImplicitCollector(state)
@@ -434,12 +432,11 @@ class ImplicitParametersTreeStructure(
       }
     }
 
-    override def equals(obj: Any): Boolean = {
+    override def equals(obj: Any): Boolean =
       obj match {
         case ref: AnyRef => this eq ref
         case _           => false
       }
-    }
   }
 
   private class RootNode extends AbstractTreeNode[Any](project, ()) {
@@ -458,7 +455,7 @@ class ImplicitParametersTreeStructure(
 
   override def getParentElement(p1: Any): AnyRef = null
 
-  override def getChildElements(p1: Any): Array[AnyRef] = {
+  override def getChildElements(p1: Any): Array[AnyRef] =
     p1 match {
       case n: ImplicitParametersNode =>
         val childrenImpl = n.getChildrenImpl
@@ -466,13 +463,11 @@ class ImplicitParametersTreeStructure(
       case _: RootNode => results.map(new ImplicitParametersNode(_)).toArray
       case _           => Array.empty
     }
-  }
 
   override def createDescriptor(
       obj: Any,
-      parent: NodeDescriptor[_]): NodeDescriptor[_] = {
+      parent: NodeDescriptor[_]): NodeDescriptor[_] =
     obj.asInstanceOf[NodeDescriptor[_]]
-  }
 
   override def hasSomethingToCommit: Boolean = false
 

@@ -317,10 +317,9 @@ class FetcherLagStats(metricId: ClientIdAndBroker) {
   val stats =
     new Pool[ClientIdTopicPartition, FetcherLagMetrics](Some(valueFactory))
 
-  def getFetcherLagStats(topic: String, partitionId: Int): FetcherLagMetrics = {
+  def getFetcherLagStats(topic: String, partitionId: Int): FetcherLagMetrics =
     stats.getAndMaybePut(
       new ClientIdTopicPartition(metricId.clientId, topic, partitionId))
-  }
 }
 
 class FetcherStats(metricId: ClientIdAndBroker) extends KafkaMetricsGroup {
@@ -349,7 +348,7 @@ case class PartitionFetchState(offset: Long, delay: DelayedItem) {
 
   def this(offset: Long) = this(offset, new DelayedItem(0))
 
-  def isActive: Boolean = { delay.getDelay(TimeUnit.MILLISECONDS) == 0 }
+  def isActive: Boolean = delay.getDelay(TimeUnit.MILLISECONDS) == 0
 
   override def toString = "%d-%b".format(offset, isActive)
 }

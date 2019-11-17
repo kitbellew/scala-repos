@@ -65,7 +65,7 @@ class ScAnnotationImpl private (
   }
 
   def findDeclaredAttributeValue(
-      attributeName: String): PsiAnnotationMemberValue = {
+      attributeName: String): PsiAnnotationMemberValue =
     constructor.args match {
       case Some(args) =>
         args.exprs
@@ -89,7 +89,6 @@ class ScAnnotationImpl private (
           ._2
       case None => null
     }
-  }
 
   def findAttributeValue(attributeName: String): PsiAnnotationMemberValue = {
     val value = findDeclaredAttributeValue(attributeName)

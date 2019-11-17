@@ -22,7 +22,7 @@ private[twitter] class StreamServerDispatcher[Req: RequestType](
 
   private[this] val RT = implicitly[RequestType[Req]]
 
-  private[this] def writeChunks(rep: StreamResponse): Future[Unit] = {
+  private[this] def writeChunks(rep: StreamResponse): Future[Unit] =
     (rep.messages or rep.error).sync() flatMap {
       case Left(buf) =>
         val bytes = BufChannelBuffer(buf)
@@ -30,7 +30,6 @@ private[twitter] class StreamServerDispatcher[Req: RequestType](
       case Right(exc) =>
         trans.write(HttpChunk.LAST_CHUNK)
     }
-  }
 
   protected def dispatch(req: Any, eos: Promise[Unit]) = req match {
     case httpReq: HttpRequest =>

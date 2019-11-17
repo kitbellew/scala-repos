@@ -43,7 +43,7 @@ object ~ {
     *   Path("example.json") match {
     *     case Root / "example" ~ "json" => ...
     */
-  def unapply(path: Path): Option[(Path, String)] = {
+  def unapply(path: Path): Option[(Path, String)] =
     path match {
       case Root => None
       case parent / last =>
@@ -51,20 +51,18 @@ object ~ {
           case (base, ext) => (parent / base, ext)
         }
     }
-  }
 
   /**
     * File extension matcher for String:
     *   "example.json" match {
     *      case => "example" ~ "json" => ...
     */
-  def unapply(fileName: String): Option[(String, String)] = {
+  def unapply(fileName: String): Option[(String, String)] =
     fileName.lastIndexOf('.') match {
       case -1 => Some((fileName, ""))
       case index =>
         Some((fileName.substring(0, index), fileName.substring(index + 1)))
     }
-  }
 }
 
 /** HttpMethod extractor */
@@ -114,17 +112,16 @@ case object Root extends Path {
   *     case "1" /: "2" /: _ =>  ...
   */
 object /: {
-  def unapply(path: Path): Option[(String, Path)] = {
+  def unapply(path: Path): Option[(String, Path)] =
     path.toList match {
       case Nil          => None
       case head :: tail => Some((head, Path(tail)))
     }
-  }
 }
 
 // Base class for Integer and Long extractors.
 protected class Numeric[A <: AnyVal](cast: String => A) {
-  def unapply(str: String): Option[A] = {
+  def unapply(str: String): Option[A] =
     if (!str.isEmpty && (str.head == '-' || Character.isDigit(str.head)) &&
         str.drop(1).forall(Character.isDigit))
       try {
@@ -134,7 +131,6 @@ protected class Numeric[A <: AnyVal](cast: String => A) {
           None
       }
     else None
-  }
 }
 
 /**

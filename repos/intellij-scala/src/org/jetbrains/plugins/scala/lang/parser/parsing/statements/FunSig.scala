@@ -18,7 +18,7 @@ import org.jetbrains.plugins.scala.lang.parser.util.ParserUtils
   */
 //TODO: rewrite this
 object FunSig {
-  def parse(builder: ScalaPsiBuilder): Boolean = {
+  def parse(builder: ScalaPsiBuilder): Boolean =
     if (ScalaTokenTypes.tIDENTIFIER.equals(builder.getTokenType)) {
       ParserUtils.eatElement(builder, ScalaTokenTypes.tIDENTIFIER)
       FunTypeParamClause parse builder
@@ -28,5 +28,4 @@ object FunSig {
       builder error "identifier expected"
       false
     }
-  }
 }

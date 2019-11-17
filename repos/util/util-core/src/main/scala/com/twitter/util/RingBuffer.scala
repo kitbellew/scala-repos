@@ -21,10 +21,9 @@ class RingBuffer[A: ClassTag](val maxSize: Int) extends Seq[A] {
   /**
     * Gets the element from the specified index in constant time.
     */
-  def apply(i: Int): A = {
+  def apply(i: Int): A =
     if (i >= count_) throw new IndexOutOfBoundsException(i.toString)
     else array((read + i) % maxSize)
-  }
 
   /**
     * Overwrites an element with a new value
@@ -58,7 +57,7 @@ class RingBuffer[A: ClassTag](val maxSize: Int) extends Seq[A] {
   /**
     * Removes the next element from the buffer
     */
-  def next: A = {
+  def next: A =
     if (read == write) throw new NoSuchElementException
     else {
       val res = array(read)
@@ -66,7 +65,6 @@ class RingBuffer[A: ClassTag](val maxSize: Int) extends Seq[A] {
       count_ -= 1
       res
     }
-  }
 
   override def iterator = new Iterator[A] {
     var idx = 0

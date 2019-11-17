@@ -64,10 +64,9 @@ import scala.util.Try
 class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
   override def isAvailable(
       sourcePosition: SourcePosition,
-      evaluationContext: EvaluationContext): Boolean = {
+      evaluationContext: EvaluationContext): Boolean =
     ScalaDebuggerSettings.getInstance().SHOW_VARIABLES_FROM_OUTER_SCOPES &&
-    sourcePosition.getFile.getLanguage == ScalaLanguage.Instance
-  }
+      sourcePosition.getFile.getLanguage == ScalaLanguage.Instance
 
   override def collectVariables(
       sourcePosition: SourcePosition,
@@ -124,15 +123,14 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
     TextWithImportsImpl.fromXExpression(xExpr)
   }
 
-  private def canEvaluate(srr: ScalaResolveResult, place: PsiElement) = {
+  private def canEvaluate(srr: ScalaResolveResult, place: PsiElement) =
     srr.getElement match {
       case _: ScWildcardPattern                 => false
       case tp: ScTypedPattern if tp.name == "_" => false
       case cp: ScClassParameter if !cp.isEffectiveVal =>
-        def notInThisClass(elem: PsiElement) = {
+        def notInThisClass(elem: PsiElement) =
           elem != null &&
-          !PsiTreeUtil.isAncestor(cp.containingClass, elem, true)
-        }
+            !PsiTreeUtil.isAncestor(cp.containingClass, elem, true)
         val funDef =
           PsiTreeUtil.getParentOfType(place, classOf[ScFunctionDefinition])
         val lazyVal = PsiTreeUtil.getParentOfType(
@@ -152,12 +150,11 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
         false //don't add lazy vals as they can be computed too early
       case _ => true
     }
-  }
 
   private def canEvaluateLong(
       srr: ScalaResolveResult,
       place: PsiElement,
-      evaluationContext: EvaluationContext) = {
+      evaluationContext: EvaluationContext) =
     srr.getElement match {
       case named if generatorNotFromBody(named, place) =>
         tryEvaluate(named.name, place, evaluationContext).isSuccess
@@ -165,16 +162,14 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
         tryEvaluate(named.name, place, evaluationContext).isSuccess
       case _ => true
     }
-  }
 
-  private def isInCatchBlock(cc: ScCaseClause): Boolean = {
+  private def isInCatchBlock(cc: ScCaseClause): Boolean =
     cc.parents.take(3).exists(_.isInstanceOf[ScCatchBlock])
-  }
 
   private def tryEvaluate(
       name: String,
       place: PsiElement,
-      evaluationContext: EvaluationContext): Try[AnyRef] = {
+      evaluationContext: EvaluationContext): Try[AnyRef] =
     Try {
       val evaluator = inReadAction {
         val twi = toTextWithImports(name)
@@ -194,11 +189,10 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
       }
       evaluator.evaluate(evaluationContext)
     }
-  }
 
   private def notUsedInCurrentClass(
       named: PsiNamedElement,
-      place: PsiElement): Boolean = {
+      place: PsiElement): Boolean =
     inReadAction {
       val contextClass =
         ScalaEvaluatorBuilderUtil.getContextClass(place, strict = false)
@@ -207,17 +201,14 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
 
       val placesToSearch = ArrayBuffer[PsiElement]()
       contextClass.accept(new ScalaRecursiveElementVisitor() {
-        override def visitFunctionDefinition(
-            fun: ScFunctionDefinition): Unit = {
+        override def visitFunctionDefinition(fun: ScFunctionDefinition): Unit =
           placesToSearch += fun
-        }
 
-        override def visitPatternDefinition(pat: ScPatternDefinition): Unit = {
+        override def visitPatternDefinition(pat: ScPatternDefinition): Unit =
           pat match {
             case LazyVal(_) => placesToSearch += pat
             case _          =>
           }
-        }
       })
       if (placesToSearch.isEmpty) true
       else {
@@ -243,11 +234,10 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
         !used
       }
     }
-  }
 
   private def generatorNotFromBody(
       named: PsiNamedElement,
-      place: PsiElement): Boolean = {
+      place: PsiElement): Boolean =
     inReadAction {
       val forStmt = ScalaPsiUtil.nameContext(named) match {
         case nc @ (_: ScEnumerator | _: ScGenerator) =>
@@ -257,7 +247,6 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
       forStmt.flatMap(_.enumerators).exists(_.isAncestorOf(named)) &&
       forStmt.flatMap(_.body).exists(!_.isAncestorOf(place))
     }
-  }
 }
 
 private class CollectingProcessor(element: PsiElement)

@@ -38,11 +38,10 @@ trait TempDirectory extends BeforeAndAfterAll { self: Suite =>
     _tempDir = Utils.createTempDir(namePrefix = this.getClass.getName)
   }
 
-  override def afterAll(): Unit = {
+  override def afterAll(): Unit =
     try {
       Utils.deleteRecursively(_tempDir)
     } finally {
       super.afterAll()
     }
-  }
 }

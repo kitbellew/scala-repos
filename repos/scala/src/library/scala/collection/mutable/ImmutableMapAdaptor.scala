@@ -59,15 +59,14 @@ class ImmutableMapAdaptor[A, B](protected var imap: immutable.Map[A, B])
 
   override def toList: List[(A, B)] = imap.toList
 
-  override def update(key: A, value: B): Unit = {
+  override def update(key: A, value: B): Unit =
     imap = imap.updated(key, value)
-  }
 
   def -=(key: A): this.type = { imap = imap - key; this }
 
   def +=(kv: (A, B)): this.type = { imap = imap + kv; this }
 
-  override def clear(): Unit = { imap = imap.empty }
+  override def clear(): Unit = imap = imap.empty
 
   override def transform(f: (A, B) => B): this.type = {
     imap = imap.transform(f); this

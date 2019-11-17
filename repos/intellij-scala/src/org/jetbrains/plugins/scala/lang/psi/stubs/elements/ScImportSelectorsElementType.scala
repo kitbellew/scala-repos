@@ -24,15 +24,13 @@ class ScImportSelectorsElementType[Func <: ScImportSelectors]
       "import selectors") {
   def serialize(
       stub: ScImportSelectorsStub,
-      dataStream: StubOutputStream): Unit = {
+      dataStream: StubOutputStream): Unit =
     dataStream.writeBoolean(stub.hasWildcard)
-  }
 
   def createStubImpl[ParentPsi <: PsiElement](
       psi: ScImportSelectors,
-      parentStub: StubElement[ParentPsi]): ScImportSelectorsStub = {
+      parentStub: StubElement[ParentPsi]): ScImportSelectorsStub =
     new ScImportSelectorsStubImpl(parentStub, this, psi.hasWildcard)
-  }
 
   def deserializeImpl(
       dataStream: StubInputStream,
@@ -46,7 +44,6 @@ class ScImportSelectorsElementType[Func <: ScImportSelectors]
 
   def indexStub(stub: ScImportSelectorsStub, sink: IndexSink): Unit = {}
 
-  def createPsi(stub: ScImportSelectorsStub): ScImportSelectors = {
+  def createPsi(stub: ScImportSelectorsStub): ScImportSelectors =
     new ScImportSelectorsImpl(stub)
-  }
 }

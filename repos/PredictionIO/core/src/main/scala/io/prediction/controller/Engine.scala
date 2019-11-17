@@ -139,13 +139,12 @@ class Engine[TD, EI, PD, Q, P, A](
       algorithmClassMap: Map[String, Class[_ <: BaseAlgorithm[PD, _, Q, P]]] =
         algorithmClassMap,
       servingClassMap: Map[String, Class[_ <: BaseServing[Q, P]]] =
-        servingClassMap): Engine[TD, EI, PD, Q, P, A] = {
+        servingClassMap): Engine[TD, EI, PD, Q, P, A] =
     new Engine(
       dataSourceClassMap,
       preparatorClassMap,
       algorithmClassMap,
       servingClassMap)
-  }
 
   /** Training this engine would return a list of models.
     *

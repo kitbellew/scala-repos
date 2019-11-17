@@ -17,7 +17,7 @@
 package kafka.message
 
 object CompressionCodec {
-  def getCompressionCodec(codec: Int): CompressionCodec = {
+  def getCompressionCodec(codec: Int): CompressionCodec =
     codec match {
       case NoCompressionCodec.codec     => NoCompressionCodec
       case GZIPCompressionCodec.codec   => GZIPCompressionCodec
@@ -27,8 +27,7 @@ object CompressionCodec {
         throw new kafka.common.UnknownCodecException(
           "%d is an unknown compression codec".format(codec))
     }
-  }
-  def getCompressionCodec(name: String): CompressionCodec = {
+  def getCompressionCodec(name: String): CompressionCodec =
     name.toLowerCase match {
       case NoCompressionCodec.name     => NoCompressionCodec
       case GZIPCompressionCodec.name   => GZIPCompressionCodec
@@ -38,7 +37,6 @@ object CompressionCodec {
         throw new kafka.common.UnknownCodecException(
           "%s is an unknown compression codec".format(name))
     }
-  }
 }
 
 object BrokerCompressionCodec {
@@ -55,20 +53,18 @@ object BrokerCompressionCodec {
   def isValid(compressionType: String): Boolean =
     brokerCompressionOptions.contains(compressionType.toLowerCase())
 
-  def getCompressionCodec(compressionType: String): CompressionCodec = {
+  def getCompressionCodec(compressionType: String): CompressionCodec =
     compressionType.toLowerCase match {
       case UncompressedCodec.name => NoCompressionCodec
       case _                      => CompressionCodec.getCompressionCodec(compressionType)
     }
-  }
 
   def getTargetCompressionCodec(
       compressionType: String,
-      producerCompression: CompressionCodec): CompressionCodec = {
+      producerCompression: CompressionCodec): CompressionCodec =
     if (ProducerCompressionCodec.name.equals(compressionType))
       producerCompression
     else getCompressionCodec(compressionType)
-  }
 }
 
 sealed trait CompressionCodec { def codec: Int; def name: String }

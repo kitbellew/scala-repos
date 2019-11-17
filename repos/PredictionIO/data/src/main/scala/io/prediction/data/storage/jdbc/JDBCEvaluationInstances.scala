@@ -149,7 +149,7 @@ class JDBCEvaluationInstances(
   }
 
   /** Convert JDBC results to [[EvaluationInstance]] */
-  def resultToEvaluationInstance(rs: WrappedResultSet): EvaluationInstance = {
+  def resultToEvaluationInstance(rs: WrappedResultSet): EvaluationInstance =
     EvaluationInstance(
       id = rs.string("id"),
       status = rs.string("status"),
@@ -164,5 +164,4 @@ class JDBCEvaluationInstances(
       evaluatorResultsHTML = rs.string("evaluatorResultsHTML"),
       evaluatorResultsJSON = rs.string("evaluatorResultsJSON")
     )
-  }
 }

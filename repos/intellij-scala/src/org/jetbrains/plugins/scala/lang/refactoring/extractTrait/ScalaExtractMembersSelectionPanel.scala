@@ -25,12 +25,11 @@ class ScalaExtractMembersSelectionPanel(
 
   override def createMemberSelectionTable(
       memberInfos: util.List[ScalaExtractMemberInfo],
-      abstractColumnHeader: String) = {
+      abstractColumnHeader: String) =
     new ScalaExtractMemberSelectionTable(
       memberInfos,
       ExtractTraitInfoModel,
       abstractColumnHeader)
-  }
 }
 
 class ScalaExtractMemberSelectionTable(

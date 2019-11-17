@@ -50,9 +50,8 @@ private[streaming] case class BatchCleanupEvent(times: Seq[Time])
 /** Class representing the blocks of all the streams allocated to a batch */
 private[streaming] case class AllocatedBlocks(
     streamIdToAllocatedBlocks: Map[Int, Seq[ReceivedBlockInfo]]) {
-  def getBlocksOfStream(streamId: Int): Seq[ReceivedBlockInfo] = {
+  def getBlocksOfStream(streamId: Int): Seq[ReceivedBlockInfo] =
     streamIdToAllocatedBlocks.getOrElse(streamId, Seq.empty)
-  }
 }
 
 /**
@@ -89,7 +88,7 @@ private[streaming] class ReceivedBlockTracker(
   }
 
   /** Add received block. This event will get written to the write ahead log (if enabled). */
-  def addBlock(receivedBlockInfo: ReceivedBlockInfo): Boolean = {
+  def addBlock(receivedBlockInfo: ReceivedBlockInfo): Boolean =
     try {
       val writeResult = writeToLog(BlockAdditionEvent(receivedBlockInfo))
       if (writeResult) {
@@ -110,7 +109,6 @@ private[streaming] class ReceivedBlockTracker(
         logError(s"Error adding block $receivedBlockInfo", e)
         false
     }
-  }
 
   /**
     * Allocate all unallocated blocks to the given batch.
@@ -154,7 +152,7 @@ private[streaming] class ReceivedBlockTracker(
   /** Get the blocks allocated to the given batch and stream. */
   def getBlocksOfBatchAndStream(
       batchTime: Time,
-      streamId: Int): Seq[ReceivedBlockInfo] = {
+      streamId: Int): Seq[ReceivedBlockInfo] =
     synchronized {
       timeToAllocatedBlocks
         .get(batchTime)
@@ -163,7 +161,6 @@ private[streaming] class ReceivedBlockTracker(
         }
         .getOrElse(Seq.empty)
     }
-  }
 
   /** Check if any blocks are left to be allocated to batches. */
   def hasUnallocatedReceivedBlocks: Boolean = synchronized {
@@ -257,7 +254,7 @@ private[streaming] class ReceivedBlockTracker(
   }
 
   /** Write an update to the tracker to the write ahead log */
-  private def writeToLog(record: ReceivedBlockTrackerLogEvent): Boolean = {
+  private def writeToLog(record: ReceivedBlockTrackerLogEvent): Boolean =
     if (isWriteAheadLogEnabled) {
       logTrace(s"Writing record: $record")
       try {
@@ -275,23 +272,20 @@ private[streaming] class ReceivedBlockTracker(
     } else {
       true
     }
-  }
 
   /** Get the queue of received blocks belonging to a particular stream */
-  private def getReceivedBlockQueue(streamId: Int): ReceivedBlockQueue = {
+  private def getReceivedBlockQueue(streamId: Int): ReceivedBlockQueue =
     streamIdToUnallocatedBlockQueues.getOrElseUpdate(
       streamId,
       new ReceivedBlockQueue)
-  }
 
   /** Optionally create the write ahead log manager only if the feature is enabled */
-  private def createWriteAheadLog(): Option[WriteAheadLog] = {
+  private def createWriteAheadLog(): Option[WriteAheadLog] =
     checkpointDirOption.map { checkpointDir =>
       val logDir =
         ReceivedBlockTracker.checkpointDirToLogDir(checkpointDirOption.get)
       WriteAheadLogUtils.createLogForDriver(conf, logDir, hadoopConf)
     }
-  }
 
   /** Check if the write ahead log is enabled. This is only used for testing purposes. */
   private[streaming] def isWriteAheadLogEnabled: Boolean =
@@ -299,7 +293,6 @@ private[streaming] class ReceivedBlockTracker(
 }
 
 private[streaming] object ReceivedBlockTracker {
-  def checkpointDirToLogDir(checkpointDir: String): String = {
+  def checkpointDirToLogDir(checkpointDir: String): String =
     new Path(checkpointDir, "receivedBlockMetadata").toString
-  }
 }

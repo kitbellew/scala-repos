@@ -28,17 +28,15 @@ import scala.collection.JavaConversions._
   * the
   */
 class VarsJBridge {
-  def vendSessionVar[T](default: T, e: Exception): SessionVar[T] = {
+  def vendSessionVar[T](default: T, e: Exception): SessionVar[T] =
     vendSessionVar(new Callable[T] {
       def call() = default
     }, e)
-  }
 
-  def vendSessionVar[T](default: Callable[T], e: Exception): SessionVar[T] = {
+  def vendSessionVar[T](default: Callable[T], e: Exception): SessionVar[T] =
     new SessionVar(default.call()) {
       override val __nameSalt = e.getStackTrace.apply(1).toString
     }
-  }
 }
 
 /**
@@ -149,10 +147,9 @@ abstract class SessionVar[T](dflt: => T)
     old
   }
 
-  override protected def testWasSet(name: String, bn: String): Boolean = {
+  override protected def testWasSet(name: String, bn: String): Boolean =
     S.session.flatMap(_.get(name)).isDefined ||
-    (S.session.flatMap(_.get(bn)) openOr false)
-  }
+      (S.session.flatMap(_.get(bn)) openOr false)
 
   protected override def registerCleanupFunc(in: LiftSession => Unit): Unit =
     S.session.foreach(_.addSessionCleanup(in))
@@ -215,18 +212,16 @@ abstract class ContainerVar[T](dflt: => T)(
     }
   }
 
-  private def localSet(session: LiftSession, name: String, value: Any): Unit = {
+  private def localSet(session: LiftSession, name: String, value: Any): Unit =
     for {
       httpSession <- session.httpSession
     } httpSession.setAttribute(name, value)
-  }
 
-  private def localGet(session: LiftSession, name: String): Box[Any] = {
+  private def localGet(session: LiftSession, name: String): Box[Any] =
     for {
       httpSession <- session.httpSession
       attr <- Box !! httpSession.attribute(name)
     } yield attr
-  }
 
   override protected def setFunc(name: String, value: T): Unit =
     S.session match {
@@ -276,14 +271,13 @@ abstract class ContainerVar[T](dflt: => T)(
     old
   }
 
-  override protected def testWasSet(name: String, bn: String): Boolean = {
+  override protected def testWasSet(name: String, bn: String): Boolean =
     S.session.flatMap(s => localGet(s, name)).isDefined ||
-    (S.session.flatMap(s =>
-      localGet(s, bn) match {
-        case Full(b: Boolean) => Full(b)
-        case _                => Empty
-      }) openOr false)
-  }
+      (S.session.flatMap(s =>
+        localGet(s, bn) match {
+          case Full(b: Boolean) => Full(b)
+          case _                => Empty
+        }) openOr false)
 
   protected override def registerCleanupFunc(in: LiftSession => Unit): Unit =
     S.session.foreach(_.addSessionCleanup(in))
@@ -432,14 +426,13 @@ abstract class RequestVar[T](dflt: => T)
     * Return a function that, when applied, will set the value of the RequestVar to its
     * current value
     */
-  def snapshot(): () => Unit = {
+  def snapshot(): () => Unit =
     if (set_?) {
       val v = this.get
       () => this.set(v)
     } else { () =>
       this.remove()
     }
-  }
 
   override protected def findFunc(name: String): Box[T] =
     RequestVarHandler.get(name)
@@ -464,10 +457,9 @@ abstract class RequestVar[T](dflt: => T)
 
   // no sync necessary for RequestVars... always on the same thread
 
-  override protected def testWasSet(name: String, bn: String): Boolean = {
+  override protected def testWasSet(name: String, bn: String): Boolean =
     RequestVarHandler.get(name).isDefined ||
-    (RequestVarHandler.get(bn) openOr false)
-  }
+      (RequestVarHandler.get(bn) openOr false)
 
   /**
     * Generate a function that will take a snapshot of the current RequestVars
@@ -477,9 +469,8 @@ abstract class RequestVar[T](dflt: => T)
     RequestVarHandler.generateSnapshotRestorer()
 
   override protected def registerCleanupFunc(
-      in: Box[LiftSession] => Unit): Unit = {
+      in: Box[LiftSession] => Unit): Unit =
     RequestVarHandler.addCleanupFunc(in)
-  }
 
   /**
     * This defines whether or not Lift will log when a RequestVar is set but then not read within
@@ -522,10 +513,9 @@ abstract class TransientRequestVar[T](dflt: => T)
     old
   }
 
-  protected override def testWasSet(name: String, bn: String): Boolean = {
+  protected override def testWasSet(name: String, bn: String): Boolean =
     TransientRequestVarHandler.get(name).isDefined ||
-    (TransientRequestVarHandler.get(bn) openOr false)
-  }
+      (TransientRequestVarHandler.get(bn) openOr false)
 
   /**
     * Different Vars require different mechanisms for synchronization.  This method implements
@@ -640,7 +630,7 @@ private[http] trait CoreRequestVarHandler {
   private[http] def addCleanupFunc(f: Box[LiftSession] => Unit): Unit =
     for (cu <- Box.legacyNullTest(cleanup.value)) cu += f
 
-  def apply[T](session: Box[LiftSession], f: => T): T = {
+  def apply[T](session: Box[LiftSession], f: => T): T =
     if ("in" == isIn.value) {
       val tv = vals.value
 
@@ -684,7 +674,6 @@ private[http] trait CoreRequestVarHandler {
         )
       )
     }
-  }
 }
 
 object AnyVar {

@@ -85,7 +85,7 @@ object DebuggerUtil {
       buffer += JVMNameUtil.getJVMRawText(text)
     }
 
-    def toName: JVMName = {
+    def toName: JVMName =
       new JVMName {
         def getName(process: DebugProcessImpl): String = {
           if (myName == null) {
@@ -112,7 +112,6 @@ object DebuggerUtil {
         private var myName: String = null
         private var myDisplayName: String = null
       }
-    }
 
     private var buffer = new ArrayBuffer[JVMName]
   }
@@ -241,7 +240,7 @@ object DebuggerUtil {
     JVMNameUtil.getJVMRawText(paramTypes + resultType)
   }
 
-  def constructorSignature(named: PsiNamedElement): JVMName = {
+  def constructorSignature(named: PsiNamedElement): JVMName =
     named match {
       case fun: ScFunction => DebuggerUtil.getFunctionJVMSignature(fun)
       case constr: ScPrimaryConstructor =>
@@ -260,7 +259,6 @@ object DebuggerUtil {
       case clazz: PsiClass => JVMNameUtil.getJVMRawText("()V")
       case _               => JVMNameUtil.getJVMRawText("()V")
     }
-  }
 
   def lambdaJVMSignature(lambda: PsiElement): Option[String] = {
     val (argumentTypes, returnType) = lambda match {
@@ -364,7 +362,7 @@ object DebuggerUtil {
   }
 
   class JVMClassAt(sourcePosition: SourcePosition) extends JVMName {
-    def getName(process: DebugProcessImpl): String = {
+    def getName(process: DebugProcessImpl): String =
       jvmClassAtPosition(sourcePosition, process) match {
         case Some(refType) => refType.name
         case _ =>
@@ -372,22 +370,19 @@ object DebuggerUtil {
             DebuggerBundle
               .message("error.class.not.loaded", getDisplayName(process)))
       }
-    }
 
-    def getDisplayName(debugProcess: DebugProcessImpl): String = {
+    def getDisplayName(debugProcess: DebugProcessImpl): String =
       ApplicationManager.getApplication.runReadAction(new Computable[String] {
-        def compute: String = {
+        def compute: String =
           JVMNameUtil
             .getSourcePositionClassDisplayName(debugProcess, sourcePosition)
-        }
       })
-    }
   }
 
   class JVMConstructorSignature(clazz: PsiClass) extends JVMName {
     val position = SourcePosition.createFromElement(clazz)
 
-    override def getName(process: DebugProcessImpl): String = {
+    override def getName(process: DebugProcessImpl): String =
       jvmClassAtPosition(position, process) match {
         case Some(refType) => refType.methodsByName("<init>").get(0).signature()
         case None =>
@@ -396,18 +391,16 @@ object DebuggerUtil {
               "error.class.not.loaded",
               inReadAction(clazz.qualifiedName)))
       }
-    }
 
     override def getDisplayName(debugProcess: DebugProcessImpl): String =
       getName(debugProcess)
   }
 
-  def isScala(refType: ReferenceType, default: Boolean = true): Boolean = {
+  def isScala(refType: ReferenceType, default: Boolean = true): Boolean =
     ScalaPositionManager
       .cachedSourceName(refType)
       .map(_.endsWith(".scala"))
       .getOrElse(default)
-  }
 
   def jvmClassAtPosition(
       sourcePosition: SourcePosition,
@@ -431,9 +424,7 @@ object DebuggerUtil {
     }
   }
 
-  def getClassJVMName(
-      clazz: PsiClass,
-      withPostfix: Boolean = false): JVMName = {
+  def getClassJVMName(clazz: PsiClass, withPostfix: Boolean = false): JVMName =
     clazz match {
       case t: ScNewTemplateDefinition =>
         new JVMClassAt(SourcePosition.createFromElement(t))
@@ -447,11 +438,10 @@ object DebuggerUtil {
         }
       case _ => JVMNameUtil.getJVMQualifiedName(clazz)
     }
-  }
 
   def classnamePostfix(
       t: ScTemplateDefinition,
-      withPostfix: Boolean = false): String = {
+      withPostfix: Boolean = false): String =
     t match {
       case t: ScTrait if withPostfix                       => "$class"
       case o: ScObject if withPostfix || o.isPackageObject => "$"
@@ -459,7 +449,6 @@ object DebuggerUtil {
         "$" //methods from a value class always delegate to the companion object
       case _ => ""
     }
-  }
 
   def getSourcePositions(
       elem: PsiElement,
@@ -480,17 +469,14 @@ object DebuggerUtil {
     lines.toSet
   }
 
-  def unwrapScalaRuntimeObjectRef(evaluated: AnyRef): AnyRef = {
+  def unwrapScalaRuntimeObjectRef(evaluated: AnyRef): AnyRef =
     unwrapRuntimeRef(evaluated, _ == "scala.runtime.ObjectRef")
-  }
 
-  def unwrapScalaRuntimeRef(value: AnyRef) = {
+  def unwrapScalaRuntimeRef(value: AnyRef) =
     unwrapRuntimeRef(value, isScalaRuntimeRef)
-  }
 
-  def isScalaRuntimeRef(typeFqn: String) = {
+  def isScalaRuntimeRef(typeFqn: String) =
     typeFqn.startsWith("scala.runtime.") && typeFqn.endsWith("Ref")
-  }
 
   object scalaRuntimeRefTo {
     def unapply(objRef: ObjectReference) = {
@@ -610,7 +596,7 @@ object DebuggerUtil {
       (e.isInstanceOf[ScObject], e.getTextRange.getStartOffset))
   }
 
-  def isLocalV(resolve: PsiElement): Boolean = {
+  def isLocalV(resolve: PsiElement): Boolean =
     resolve match {
       case _: PsiLocalVariable => true
       case _: ScClassParameter => false
@@ -628,7 +614,6 @@ object DebuggerUtil {
           ScalaPsiUtil.getContextOfType(o, true, classOf[PsiClass]) != null
       case _ => false
     }
-  }
 
   def generatesAnonClass(newTd: ScNewTemplateDefinition) = {
     val extBl = newTd.extendsBlock
@@ -637,7 +622,7 @@ object DebuggerUtil {
   }
 
   @tailrec
-  def isLocalClass(td: PsiClass): Boolean = {
+  def isLocalClass(td: PsiClass): Boolean =
     td.getParent match {
       case tb: ScTemplateBody =>
         val parent = PsiTreeUtil.getParentOfType(td, classOf[PsiClass], true)
@@ -647,9 +632,8 @@ object DebuggerUtil {
       case _: ScPackaging | _: ScalaFile => false
       case _                             => true
     }
-  }
 
-  def getContainingMethod(elem: PsiElement): Option[PsiElement] = {
+  def getContainingMethod(elem: PsiElement): Option[PsiElement] =
     (Iterator(elem) ++ elem.parentsInFile).collectFirst {
       case c if ScalaPositionManager.isLambda(c)     => c
       case m: PsiMethod                              => m
@@ -658,7 +642,6 @@ object DebuggerUtil {
       case ChildOf(f: ScalaFile) if f.isScriptFile() => f
       case c: ScClass                                => c
     }
-  }
 
   def inTheMethod(pos: SourcePosition, method: PsiElement): Boolean = {
     val elem: PsiElement = pos.getElementAt
@@ -666,7 +649,7 @@ object DebuggerUtil {
     getContainingMethod(elem).contains(method)
   }
 
-  def getSignificantElement(elem: PsiElement): PsiElement = {
+  def getSignificantElement(elem: PsiElement): PsiElement =
     elem match {
       case _: ScAnnotationsHolder | _: ScCommentOwner =>
         val firstSignificant = elem.children.find {
@@ -681,5 +664,4 @@ object DebuggerUtil {
         firstSignificant.getOrElse(elem)
       case _ => elem
     }
-  }
 }

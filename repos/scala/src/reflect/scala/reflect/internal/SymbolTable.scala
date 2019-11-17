@@ -133,9 +133,8 @@ abstract class SymbolTable
   }
 
   @inline final def findSymbol(xs: TraversableOnce[Symbol])(
-      p: Symbol => Boolean): Symbol = {
+      p: Symbol => Boolean): Symbol =
     xs find p getOrElse NoSymbol
-  }
 
   // For too long have we suffered in order to sort NAMES.
   // I'm pretty sure there's a reasonable default for that.
@@ -228,10 +227,9 @@ abstract class SymbolTable
   final def phaseId(period: Period): Phase#Id = period & 0xFF
 
   /** The current period. */
-  final def currentPeriod: Period = {
+  final def currentPeriod: Period =
     //assert(per == (currentRunId << 8) + phase.id)
     per
-  }
 
   /** The phase associated with given period. */
   final def phaseOf(period: Period): Phase = phaseWithId(phaseId(period))
@@ -262,10 +260,9 @@ abstract class SymbolTable
     enteringPhase(phase)(body)
   }
 
-  def slowButSafeEnteringPhase[T](ph: Phase)(op: => T): T = {
+  def slowButSafeEnteringPhase[T](ph: Phase)(op: => T): T =
     if (isCompilerUniverse) enteringPhase(ph)(op)
     else op
-  }
 
   @inline final def exitingPhase[T](ph: Phase)(op: => T): T =
     enteringPhase(ph.next)(op)
@@ -379,9 +376,8 @@ abstract class SymbolTable
       * Removes a cache from the per-run caches. This is useful for testing: it allows running the
       * compiler and then inspect the state of a cache.
       */
-    def unrecordCache[T <: Clearable](cache: T): Unit = {
+    def unrecordCache[T <: Clearable](cache: T): Unit =
       caches = caches.filterNot(_.get eq cache)
-    }
 
     def clearAll() = {
       debuglog("Clearing " + caches.size + " caches.")

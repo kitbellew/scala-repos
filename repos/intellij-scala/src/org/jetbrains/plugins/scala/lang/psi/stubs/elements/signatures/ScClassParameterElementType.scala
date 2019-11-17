@@ -17,9 +17,8 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.index.ScalaIndexKeys
 class ScClassParameterElementType
     extends ScParamElementType[ScClassParameter]("class parameter") {
 
-  def createPsi(stub: ScParameterStub): ScClassParameter = {
+  def createPsi(stub: ScParameterStub): ScClassParameter =
     new ScClassParameterImpl(stub)
-  }
 
   override def indexStub(stub: ScParameterStub, sink: IndexSink) {
     super.indexStub(stub, sink)

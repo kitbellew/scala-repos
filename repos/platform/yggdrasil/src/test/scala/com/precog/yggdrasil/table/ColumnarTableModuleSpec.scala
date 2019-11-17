@@ -152,7 +152,7 @@ trait ColumnarTableModuleSpec[M[+_]]
 
     def minimizeItem(t: (String, JValue)) = minimize(t._2).map((t._1, _))
 
-    def minimize(value: JValue): Option[JValue] = {
+    def minimize(value: JValue): Option[JValue] =
       value match {
         case JObject(fields) => Some(JObject(fields.flatMap(minimizeItem)))
 
@@ -166,7 +166,6 @@ trait ColumnarTableModuleSpec[M[+_]]
 
         case v => Some(v)
       }
-    }
 
     val table = fromJson(seq.toStream)
 

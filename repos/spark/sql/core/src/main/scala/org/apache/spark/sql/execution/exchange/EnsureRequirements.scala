@@ -49,7 +49,7 @@ case class EnsureRequirements(conf: SQLConf) extends Rule[SparkPlan] {
     */
   private def createPartitioning(
       requiredDistribution: Distribution,
-      numPartitions: Int): Partitioning = {
+      numPartitions: Int): Partitioning =
     requiredDistribution match {
       case AllTuples => SinglePartition
       case ClusteredDistribution(clustering) =>
@@ -58,7 +58,6 @@ case class EnsureRequirements(conf: SQLConf) extends Rule[SparkPlan] {
         RangePartitioning(ordering, numPartitions)
       case dist => sys.error(s"Do not know how to satisfy distribution $dist")
     }
-  }
 
   /**
     * Adds [[ExchangeCoordinator]] to [[ShuffleExchange]]s if adaptive query execution is enabled

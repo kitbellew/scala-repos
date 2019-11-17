@@ -46,19 +46,17 @@ class LinearRegressionModel @Since("1.1.0") (
   override protected def predictPoint(
       dataMatrix: Vector,
       weightMatrix: Vector,
-      intercept: Double): Double = {
+      intercept: Double): Double =
     weightMatrix.toBreeze.dot(dataMatrix.toBreeze) + intercept
-  }
 
   @Since("1.3.0")
-  override def save(sc: SparkContext, path: String): Unit = {
+  override def save(sc: SparkContext, path: String): Unit =
     GLMRegressionModel.SaveLoadV1_0.save(
       sc,
       path,
       this.getClass.getName,
       weights,
       intercept)
-  }
 
   override protected def formatVersion: String = "1.0"
 }
@@ -126,9 +124,8 @@ class LinearRegressionWithSGD private[mllib] (
 
   override protected[mllib] def createModel(
       weights: Vector,
-      intercept: Double) = {
+      intercept: Double) =
     new LinearRegressionModel(weights, intercept)
-  }
 }
 
 /**
@@ -159,10 +156,9 @@ object LinearRegressionWithSGD {
       numIterations: Int,
       stepSize: Double,
       miniBatchFraction: Double,
-      initialWeights: Vector): LinearRegressionModel = {
+      initialWeights: Vector): LinearRegressionModel =
     new LinearRegressionWithSGD(stepSize, numIterations, 0.0, miniBatchFraction)
       .run(input, initialWeights)
-  }
 
   /**
     * Train a LinearRegression model given an RDD of (label, features) pairs. We run a fixed number
@@ -181,10 +177,9 @@ object LinearRegressionWithSGD {
       input: RDD[LabeledPoint],
       numIterations: Int,
       stepSize: Double,
-      miniBatchFraction: Double): LinearRegressionModel = {
+      miniBatchFraction: Double): LinearRegressionModel =
     new LinearRegressionWithSGD(stepSize, numIterations, 0.0, miniBatchFraction)
       .run(input)
-  }
 
   /**
     * Train a LinearRegression model given an RDD of (label, features) pairs. We run a fixed number
@@ -202,9 +197,8 @@ object LinearRegressionWithSGD {
   def train(
       input: RDD[LabeledPoint],
       numIterations: Int,
-      stepSize: Double): LinearRegressionModel = {
+      stepSize: Double): LinearRegressionModel =
     train(input, numIterations, stepSize, 1.0)
-  }
 
   /**
     * Train a LinearRegression model given an RDD of (label, features) pairs. We run a fixed number
@@ -220,7 +214,6 @@ object LinearRegressionWithSGD {
   @Since("0.8.0")
   def train(
       input: RDD[LabeledPoint],
-      numIterations: Int): LinearRegressionModel = {
+      numIterations: Int): LinearRegressionModel =
     train(input, numIterations, 1.0, 1.0)
-  }
 }

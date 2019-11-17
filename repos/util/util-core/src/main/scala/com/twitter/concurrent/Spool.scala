@@ -74,7 +74,7 @@ sealed trait Spool[+A] {
     * {{Option}}, terminating the stream (EOF) with
     * {{None}}.
     */
-  def foreachElem[B](f: Option[A] => B): Future[Unit] = {
+  def foreachElem[B](f: Option[A] => B): Future[Unit] =
     if (!isEmpty) {
       Future { f(Some(head)) } flatMap { _ =>
         tail transform {
@@ -86,7 +86,6 @@ sealed trait Spool[+A] {
     } else {
       Future { f(None) }
     }
-  }
 
   def foldLeft[B](z: B)(f: (B, A) => B): Future[B] =
     if (isEmpty) {
@@ -160,14 +159,13 @@ sealed trait Spool[+A] {
     * spool. The returned future is satisfied when the head of the resulting
     * spool is available.
     */
-  def mapFuture[B](f: A => Future[B]): Future[Spool[B]] = {
+  def mapFuture[B](f: A => Future[B]): Future[Spool[B]] =
     if (isEmpty) Future.value(empty[B])
     else {
       f(head) map { h =>
         new LazyCons(h, tail flatMap (_ mapFuture f))
       }
     }
-  }
 
   def filter(f: A => Boolean): Future[Spool[A]] = collect {
     case x if f(x) => x
@@ -188,7 +186,7 @@ sealed trait Spool[+A] {
   /**
     * Take the first n elements of the Spool as another Spool (adapted from Stream.take)
     */
-  def take(n: Int): Spool[A] = {
+  def take(n: Int): Spool[A] =
     if (n <= 0 || isEmpty) {
       empty[A]
     } else if (n == 1) {
@@ -196,7 +194,6 @@ sealed trait Spool[+A] {
     } else {
       new LazyCons(head, tail map (_ take (n - 1)))
     }
-  }
 
   /**
     * Concatenates two spools.
@@ -350,10 +347,9 @@ object Spool {
   implicit def syntax[A](s: => Future[Spool[A]]): Syntax[A] = new Syntax[A](s)
 
   object *:: {
-    def unapply[A](s: Spool[A]): Option[(A, Future[Spool[A]])] = {
+    def unapply[A](s: Spool[A]): Option[(A, Future[Spool[A]])] =
       if (s.isEmpty) None
       else Some((s.head, s.tail))
-    }
   }
 
   class Syntax1[A](tail: Spool[A]) {
@@ -368,10 +364,9 @@ object Spool {
   implicit def syntax1[A](s: Spool[A]): Syntax1[A] = new Syntax1[A](s)
 
   object **:: {
-    def unapply[A](s: Spool[A]): Option[(A, Spool[A])] = {
+    def unapply[A](s: Spool[A]): Option[(A, Spool[A])] =
       if (s.isEmpty) None
       else Some((s.head, Await.result(s.tail)))
-    }
   }
 
   /**

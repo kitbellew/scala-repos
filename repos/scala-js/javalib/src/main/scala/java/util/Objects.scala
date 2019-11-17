@@ -10,7 +10,7 @@ object Objects {
     else a.equals(b)
 
   @inline
-  def deepEquals(a: AnyRef, b: AnyRef): Boolean = {
+  def deepEquals(a: AnyRef, b: AnyRef): Boolean =
     if (a eq b) true
     else if (a == null || b == null) false
     else {
@@ -28,7 +28,6 @@ object Objects {
         case _                                        => a === b
       }
     }
-  }
 
   @inline
   def hashCode(o: AnyRef): Int =

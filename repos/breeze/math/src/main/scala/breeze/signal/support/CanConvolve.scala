@@ -186,7 +186,7 @@ object CanConvolve extends SerializableLogging {
   @expand
   @expand.valify
   implicit def dvTKernel1DConvolve[@expand.args(Int, Long, Float, Double) T]
-      : CanConvolve[DenseVector[T], FIRKernel1D[T], DenseVector[T]] = {
+      : CanConvolve[DenseVector[T], FIRKernel1D[T], DenseVector[T]] =
     new CanConvolve[DenseVector[T], FIRKernel1D[T], DenseVector[T]] {
       def apply(
           data: DenseVector[T],
@@ -201,7 +201,6 @@ object CanConvolve extends SerializableLogging {
           correlate(data, kernel.kernel, range, overhang, padding, method)
         else convolve(data, kernel.kernel, range, overhang, padding, method)
     }
-  }
 
   trait CanCorrelateNoOverhang[Input, KernelType, Output] {
     def apply(data: Input, kernel: KernelType, range: Range): Output

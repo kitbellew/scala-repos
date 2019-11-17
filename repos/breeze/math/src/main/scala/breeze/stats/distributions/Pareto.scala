@@ -11,28 +11,25 @@ case class Pareto(scale: Double, shape: Double)(implicit rand: RandBasis = Rand)
     extends ContinuousDistr[Double]
     with Moments[Double, Double]
     with HasCdf {
-  def mean: Double = {
+  def mean: Double =
     if (shape <= 1) {
       Double.PositiveInfinity
     } else {
       scale * shape / (shape - 1)
     }
-  }
 
   def mode: Double = scale
 
-  def variance: Double = {
+  def variance: Double =
     if (shape <= 1)
       throw new IllegalArgumentException("undefined variance for shape < 1")
     else if (shape <= 2) Double.PositiveInfinity
     else {
       pow(scale / (shape - 1.0), 2.0) * shape / (shape - 2.0)
     }
-  }
 
-  def entropy: Double = {
+  def entropy: Double =
     log(scale / shape) + 1.0 / shape + 1.0
-  }
 
   lazy val logNormalizer: Double = -math.log(shape) - shape * math.log(scale)
 
@@ -44,13 +41,11 @@ case class Pareto(scale: Double, shape: Double)(implicit rand: RandBasis = Rand)
     exp(e.draw()) * scale
   }
 
-  def unnormalizedLogPdf(x: Double): Double = {
+  def unnormalizedLogPdf(x: Double): Double =
     -(shape + 1) * log(x)
-  }
 
-  def probability(x: Double, y: Double): Double = {
+  def probability(x: Double, y: Double): Double =
     cdf(y) - cdf(x)
-  }
 
   def cdf(x: Double) = x match {
     case x if x < scale          => 0.0

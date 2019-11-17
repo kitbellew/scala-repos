@@ -67,7 +67,7 @@ private[spark] object UIUtils extends Logging {
   }
 
   /** Generate a verbose human-readable string representing a duration such as "5 second 35 ms" */
-  def formatDurationVerbose(ms: Long): String = {
+  def formatDurationVerbose(ms: Long): String =
     try {
       val second = 1000L
       val minute = 60 * second
@@ -76,7 +76,7 @@ private[spark] object UIUtils extends Logging {
       val week = 7 * day
       val year = 365 * day
 
-      def toString(num: Long, unit: String): String = {
+      def toString(num: Long, unit: String): String =
         if (num == 0) {
           ""
         } else if (num == 1) {
@@ -84,7 +84,6 @@ private[spark] object UIUtils extends Logging {
         } else {
           s"$num ${unit}s"
         }
-      }
 
       val millisecondsString =
         if (ms >= second && ms % second == 0) "" else s"${ms % second} ms"
@@ -117,7 +116,6 @@ private[spark] object UIUtils extends Logging {
         // if there is some error, return blank string
         return ""
     }
-  }
 
   /** Generate a human-readable string representing a number (e.g. 100 K) */
   def formatNumber(records: Double): String = {
@@ -147,19 +145,17 @@ private[spark] object UIUtils extends Logging {
   }
 
   // Yarn has to go through a proxy so the base uri is provided and has to be on all links
-  def uiRoot: String = {
+  def uiRoot: String =
     // SPARK-11484 - Use the proxyBase set by the AM, if not found then use env.
     sys.props
       .get("spark.ui.proxyBase")
       .orElse(sys.env.get("APPLICATION_WEB_PROXY_BASE"))
       .getOrElse("")
-  }
 
-  def prependBaseUri(basePath: String = "", resource: String = ""): String = {
+  def prependBaseUri(basePath: String = "", resource: String = ""): String =
     uiRoot + basePath + resource
-  }
 
-  def commonHeaderNodes: Seq[Node] = {
+  def commonHeaderNodes: Seq[Node] =
     <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" href={prependBaseUri("/static/bootstrap.min.css")} type="text/css"/>
     <link rel="stylesheet" href={prependBaseUri("/static/vis.min.css")} type="text/css"/>
@@ -173,17 +169,15 @@ private[spark] object UIUtils extends Logging {
     <script src={prependBaseUri("/static/table.js")}></script>
     <script src={prependBaseUri("/static/additional-metrics.js")}></script>
     <script src={prependBaseUri("/static/timeline-view.js")}></script>
-  }
 
-  def vizHeaderNodes: Seq[Node] = {
+  def vizHeaderNodes: Seq[Node] =
     <link rel="stylesheet" href={prependBaseUri("/static/spark-dag-viz.css")} type="text/css" />
     <script src={prependBaseUri("/static/d3.min.js")}></script>
     <script src={prependBaseUri("/static/dagre-d3.min.js")}></script>
     <script src={prependBaseUri("/static/graphlib-dot.min.js")}></script>
     <script src={prependBaseUri("/static/spark-dag-viz.js")}></script>
-  }
 
-  def dataTablesHeaderNodes: Seq[Node] = {
+  def dataTablesHeaderNodes: Seq[Node] =
     <link rel="stylesheet"
           href={prependBaseUri("/static/jquery.dataTables.1.10.4.min.css")} type="text/css"/>
     <link rel="stylesheet"
@@ -197,7 +191,6 @@ private[spark] object UIUtils extends Logging {
     <script src={prependBaseUri("/static/dataTables.bootstrap.min.js")}></script>
     <script src={prependBaseUri("/static/jsonFormatter.min.js")}></script>
     <script src={prependBaseUri("/static/jquery.mustache.js")}></script>
-  }
 
   /** Returns a spark page with correctly formatted headers */
   def headerSparkPage(
@@ -261,7 +254,7 @@ private[spark] object UIUtils extends Logging {
   def basicSparkPage(
       content: => Seq[Node],
       title: String,
-      useDataTables: Boolean = false): Seq[Node] = {
+      useDataTables: Boolean = false): Seq[Node] =
     <html>
       <head>
         {commonHeaderNodes}
@@ -288,7 +281,6 @@ private[spark] object UIUtils extends Logging {
         </div>
       </body>
     </html>
-  }
 
   /** Returns an HTML table constructed by generating a row for each object in a sequence. */
   def listingTable[T](
@@ -313,16 +305,15 @@ private[spark] object UIUtils extends Logging {
     val colWidth = 100.toDouble / headers.size
     val colWidthAttr = if (fixedWidth) colWidth + "%" else ""
 
-    def getClass(index: Int): String = {
+    def getClass(index: Int): String =
       if (index < headerClasses.size) {
         headerClasses(index)
       } else {
         ""
       }
-    }
 
     val newlinesInHeader = headers.exists(_.contains("\n"))
-    def getHeaderContent(header: String): Seq[Node] = {
+    def getHeaderContent(header: String): Seq[Node] =
       if (newlinesInHeader) {
         <ul class="unstyled">
           {header.split("\n").map { case t => <li> {t} </li> }}
@@ -330,7 +321,6 @@ private[spark] object UIUtils extends Logging {
       } else {
         Text(header)
       }
-    }
 
     val headerRow: Seq[Node] = {
       headers.view.zipWithIndex.map { x =>
@@ -372,16 +362,12 @@ private[spark] object UIUtils extends Logging {
   /** Return a "DAG visualization" DOM element that expands into a visualization for a stage. */
   def showDagVizForStage(
       stageId: Int,
-      graph: Option[RDDOperationGraph]): Seq[Node] = {
+      graph: Option[RDDOperationGraph]): Seq[Node] =
     showDagViz(graph.toSeq, forJob = false)
-  }
 
   /** Return a "DAG visualization" DOM element that expands into a visualization for a job. */
-  def showDagVizForJob(
-      jobId: Int,
-      graphs: Seq[RDDOperationGraph]): Seq[Node] = {
+  def showDagVizForJob(jobId: Int, graphs: Seq[RDDOperationGraph]): Seq[Node] =
     showDagViz(graphs, forJob = true)
-  }
 
   /**
     * Return a "DAG visualization" DOM element that expands into a visualization on the UI.
@@ -392,7 +378,7 @@ private[spark] object UIUtils extends Logging {
     */
   private def showDagViz(
       graphs: Seq[RDDOperationGraph],
-      forJob: Boolean): Seq[Node] = {
+      forJob: Boolean): Seq[Node] =
     <div>
       <span id={if (forJob) "job-dag-viz" else "stage-dag-viz"}
             class="expand-dag-viz" onclick={s"toggleDagViz($forJob);"}>
@@ -433,13 +419,11 @@ private[spark] object UIUtils extends Logging {
     }
       </div>
     </div>
-  }
 
-  def tooltip(text: String, position: String): Seq[Node] = {
+  def tooltip(text: String, position: String): Seq[Node] =
     <sup>
       (<a data-toggle="tooltip" data-placement={position} title={text}>?</a>)
     </sup>
-  }
 
   /**
     * Returns HTML rendering of a job or stage description. It will try to parse the string as HTML
@@ -490,7 +474,7 @@ private[spark] object UIUtils extends Logging {
 
       // Prepend the relative links with basePathUri
       val rule = new RewriteRule() {
-        override def transform(n: Node): Seq[Node] = {
+        override def transform(n: Node): Seq[Node] =
           n match {
             case e: Elem if e \ "@href" nonEmpty =>
               val relativePath = e.attribute("href").get.toString
@@ -499,7 +483,6 @@ private[spark] object UIUtils extends Logging {
               e % Attribute(null, "href", fullUri, Null)
             case _ => n
           }
-        }
       }
       new RuleTransformer(rule).transform(xml)
     } catch {

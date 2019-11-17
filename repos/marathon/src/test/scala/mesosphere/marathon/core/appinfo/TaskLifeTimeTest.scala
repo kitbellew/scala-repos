@@ -19,16 +19,14 @@ class TaskLifeTimeTest
     s"task$taskIdCounter"
   }
 
-  private[this] def stagedTask(): Task = {
+  private[this] def stagedTask(): Task =
     MarathonTestHelper.stagedTask(newTaskId())
-  }
 
-  private[this] def runningTaskWithLifeTime(lifeTimeSeconds: Double): Task = {
+  private[this] def runningTaskWithLifeTime(lifeTimeSeconds: Double): Task =
     MarathonTestHelper.runningTask(
       newTaskId(),
       startedAt = (now.toDateTime.getMillis -
         lifeTimeSeconds * 1000.0).round)
-  }
 
   test("life time for no tasks") {
     Given("no tasks")

@@ -197,9 +197,8 @@ private[ml] trait DefaultParamsReadable[T] extends MLReadable[T] {
   */
 private[ml] class DefaultParamsWriter(instance: Params) extends MLWriter {
 
-  override protected def saveImpl(path: String): Unit = {
+  override protected def saveImpl(path: String): Unit =
     DefaultParamsWriter.saveMetadata(instance, path, sc)
-  }
 }
 
 private[ml] object DefaultParamsWriter {

@@ -32,21 +32,18 @@ import org.apache.spark.unsafe.types.UTF8String
   */
 class CastSuite extends SparkFunSuite with ExpressionEvalHelper {
 
-  private def cast(v: Any, targetType: DataType): Cast = {
+  private def cast(v: Any, targetType: DataType): Cast =
     v match {
       case lit: Expression => Cast(lit, targetType)
       case _               => Cast(Literal(v), targetType)
     }
-  }
 
   // expected cannot be null
-  private def checkCast(v: Any, expected: Any): Unit = {
+  private def checkCast(v: Any, expected: Any): Unit =
     checkEvaluation(cast(v, Literal(expected).dataType), expected)
-  }
 
-  private def checkNullCast(from: DataType, to: DataType): Unit = {
+  private def checkNullCast(from: DataType, to: DataType): Unit =
     checkEvaluation(Cast(Literal.create(null, from), to), null)
-  }
 
   test("null cast") {
     import DataTypeTestUtils._

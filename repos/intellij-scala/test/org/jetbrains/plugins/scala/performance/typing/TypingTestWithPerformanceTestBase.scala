@@ -28,9 +28,8 @@ abstract class TypingTestWithPerformanceTestBase extends ScalaFixtureTestCase {
         "TypingTest" + getTestName(false),
         timeoutInMillis,
         new ThrowableRunnable[Nothing] {
-          override def run(): Unit = {
+          override def run(): Unit =
             stringsToType.foreach(myFixture.`type`)
-          }
         })
       .ioBound()
       .assertTiming()
@@ -38,12 +37,11 @@ abstract class TypingTestWithPerformanceTestBase extends ScalaFixtureTestCase {
 
   protected def folderPath: String = TestUtils.getTestDataPath + "/typing/"
 
-  protected def separateText(fileText: String): (String, Option[String]) = {
+  protected def separateText(fileText: String): (String, Option[String]) =
     fileText.indexOf("-----") match {
       case -1 => (fileText, None)
       case other =>
         val (before, after) = fileText.splitAt(other)
         (before, Some(after.dropWhile(c => c == '-' || c == '\n')))
     }
-  }
 }

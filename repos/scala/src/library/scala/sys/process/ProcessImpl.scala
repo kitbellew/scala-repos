@@ -19,7 +19,7 @@ private[process] trait ProcessImpl { self: Process.type =>
   private[process] object Spawn {
     def apply(f: => Unit): Thread = apply(f, daemon = false)
     def apply(f: => Unit, daemon: Boolean): Thread = {
-      val thread = new Thread() { override def run() = { f } }
+      val thread = new Thread() { override def run() = f }
       thread.setDaemon(daemon)
       thread.start()
       thread
@@ -110,10 +110,9 @@ private[process] trait ProcessImpl { self: Process.type =>
     protected[this] def runAndExitValue(): Option[Int]
 
     protected[this] def runInterruptible[T](action: => T)(
-        destroyImpl: => Unit): Option[T] = {
+        destroyImpl: => Unit): Option[T] =
       try Some(action)
       catch onInterrupt { destroyImpl; None }
-    }
   }
 
   private[process] class PipedProcesses(
@@ -173,13 +172,12 @@ private[process] trait ProcessImpl { self: Process.type =>
       extends Thread {
     def run(): Unit
 
-    private[process] def runloop(src: InputStream, dst: OutputStream): Unit = {
+    private[process] def runloop(src: InputStream, dst: OutputStream): Unit =
       try BasicIO.transferFully(src, dst)
       catch ioFailure(ioHandler)
       finally BasicIO close {
         if (isSink) dst else src
       }
-    }
     private def ioHandler(e: IOException) {
       println("I/O error " + e.getMessage + " for process: " + labelFn())
       e.printStackTrace()
@@ -190,7 +188,7 @@ private[process] trait ProcessImpl { self: Process.type =>
       extends PipeThread(false, () => label) {
     protected[this] val pipe = new PipedOutputStream
     protected[this] val source = new LinkedBlockingQueue[Option[InputStream]]
-    override def run(): Unit = {
+    override def run(): Unit =
       try {
         source.take match {
           case Some(in) => runloop(in, pipe)
@@ -198,7 +196,6 @@ private[process] trait ProcessImpl { self: Process.type =>
         }
       } catch onInterrupt(())
       finally BasicIO close pipe
-    }
     def connectIn(in: InputStream): Unit = source add Some(in)
     def connectOut(sink: PipeSink): Unit = sink connectIn pipe
     def release(): Unit = {
@@ -211,7 +208,7 @@ private[process] trait ProcessImpl { self: Process.type =>
       extends PipeThread(true, () => label) {
     protected[this] val pipe = new PipedInputStream
     protected[this] val sink = new LinkedBlockingQueue[Option[OutputStream]]
-    override def run(): Unit = {
+    override def run(): Unit =
       try {
         sink.take match {
           case Some(out) => runloop(pipe, out)
@@ -219,7 +216,6 @@ private[process] trait ProcessImpl { self: Process.type =>
         }
       } catch onInterrupt(())
       finally BasicIO close pipe
-    }
     def connectOut(out: OutputStream): Unit = sink add Some(out)
     def connectIn(pipeOut: PipedOutputStream): Unit = pipe connect pipeOut
     def release(): Unit = {
@@ -257,12 +253,11 @@ private[process] trait ProcessImpl { self: Process.type =>
 
       p.exitValue()
     }
-    override def destroy() = {
+    override def destroy() =
       try {
         outputThreads foreach (_.interrupt()) // on destroy, don't bother consuming any more output
         p.destroy()
       } finally inputThread.interrupt()
-    }
   }
   private[process] final class ThreadProcess(
       thread: Thread,

@@ -63,30 +63,26 @@ object DateTimeUtils {
 
   // Reuse the Calendar object in each thread as it is expensive to create in each method call.
   private val threadLocalGmtCalendar = new ThreadLocal[Calendar] {
-    override protected def initialValue: Calendar = {
+    override protected def initialValue: Calendar =
       Calendar.getInstance(TimeZoneGMT)
-    }
   }
 
   // Java TimeZone has no mention of thread safety. Use thread local instance to be safe.
   private val threadLocalLocalTimeZone = new ThreadLocal[TimeZone] {
-    override protected def initialValue: TimeZone = {
+    override protected def initialValue: TimeZone =
       Calendar.getInstance.getTimeZone
-    }
   }
 
   // `SimpleDateFormat` is not thread-safe.
   private val threadLocalTimestampFormat = new ThreadLocal[DateFormat] {
-    override def initialValue(): SimpleDateFormat = {
+    override def initialValue(): SimpleDateFormat =
       new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-    }
   }
 
   // `SimpleDateFormat` is not thread-safe.
   private val threadLocalDateFormat = new ThreadLocal[DateFormat] {
-    override def initialValue(): SimpleDateFormat = {
+    override def initialValue(): SimpleDateFormat =
       new SimpleDateFormat("yyyy-MM-dd")
-    }
   }
 
   // we should use the exact day as Int, for example, (year, month, day) -> day
@@ -144,16 +140,14 @@ object DateTimeUtils {
   /**
     * Returns the number of days since epoch from from java.sql.Date.
     */
-  def fromJavaDate(date: Date): SQLDate = {
+  def fromJavaDate(date: Date): SQLDate =
     millisToDays(date.getTime)
-  }
 
   /**
     * Returns a java.sql.Date from number of days since epoch.
     */
-  def toJavaDate(daysSinceEpoch: SQLDate): Date = {
+  def toJavaDate(daysSinceEpoch: SQLDate): Date =
     new Date(daysToMillis(daysSinceEpoch))
-  }
 
   /**
     * Returns a java.sql.Timestamp from number of micros since epoch.
@@ -176,13 +170,12 @@ object DateTimeUtils {
   /**
     * Returns the number of micros since epoch from java.sql.Timestamp.
     */
-  def fromJavaTimestamp(t: Timestamp): SQLTimestamp = {
+  def fromJavaTimestamp(t: Timestamp): SQLTimestamp =
     if (t != null) {
       t.getTime() * 1000L + (t.getNanos().toLong / 1000) % 1000L
     } else {
       0L
     }
-  }
 
   /**
     * Returns the number of microseconds since epoch from Julian day
@@ -439,49 +432,42 @@ object DateTimeUtils {
   /**
     * Returns the microseconds since year zero (-17999) from microseconds since epoch.
     */
-  private def absoluteMicroSecond(microsec: SQLTimestamp): SQLTimestamp = {
+  private def absoluteMicroSecond(microsec: SQLTimestamp): SQLTimestamp =
     microsec + toYearZero * MICROS_PER_DAY
-  }
 
-  private def localTimestamp(microsec: SQLTimestamp): SQLTimestamp = {
+  private def localTimestamp(microsec: SQLTimestamp): SQLTimestamp =
     absoluteMicroSecond(microsec) +
       defaultTimeZone.getOffset(microsec / 1000) * 1000L
-  }
 
   /**
     * Returns the hour value of a given timestamp value. The timestamp is expressed in microseconds.
     */
-  def getHours(microsec: SQLTimestamp): Int = {
+  def getHours(microsec: SQLTimestamp): Int =
     ((localTimestamp(microsec) / MICROS_PER_SECOND / 3600) % 24).toInt
-  }
 
   /**
     * Returns the minute value of a given timestamp value. The timestamp is expressed in
     * microseconds.
     */
-  def getMinutes(microsec: SQLTimestamp): Int = {
+  def getMinutes(microsec: SQLTimestamp): Int =
     ((localTimestamp(microsec) / MICROS_PER_SECOND / 60) % 60).toInt
-  }
 
   /**
     * Returns the second value of a given timestamp value. The timestamp is expressed in
     * microseconds.
     */
-  def getSeconds(microsec: SQLTimestamp): Int = {
+  def getSeconds(microsec: SQLTimestamp): Int =
     ((localTimestamp(microsec) / MICROS_PER_SECOND) % 60).toInt
-  }
 
-  private[this] def isLeapYear(year: Int): Boolean = {
+  private[this] def isLeapYear(year: Int): Boolean =
     (year % 4) == 0 && ((year % 100) != 0 || (year % 400) == 0)
-  }
 
   /**
     * Return the number of days since the start of 400 year period.
     * The second year of a 400 year period (year 1) starts on day 365.
     */
-  private[this] def yearBoundary(year: Int): Int = {
+  private[this] def yearBoundary(year: Int): Int =
     year * 365 + ((year / 4) - (year / 100) + (year / 400))
-  }
 
   /**
     * Calculates the number of years for the given number of days. This depends
@@ -517,17 +503,15 @@ object DateTimeUtils {
     * Returns the 'day in year' value for the given date. The date is expressed in days
     * since 1.1.1970.
     */
-  def getDayInYear(date: SQLDate): Int = {
+  def getDayInYear(date: SQLDate): Int =
     getYearAndDayInYear(date)._2
-  }
 
   /**
     * Returns the year value for the given date. The date is expressed in days
     * since 1.1.1970.
     */
-  def getYear(date: SQLDate): Int = {
+  def getYear(date: SQLDate): Int =
     getYearAndDayInYear(date)._1
-  }
 
   /**
     * Returns the quarter for the given date. The date is expressed in days
@@ -810,9 +794,8 @@ object DateTimeUtils {
     * Returns the first date which is later than startDate and is of the given dayOfWeek.
     * dayOfWeek is an integer ranges in [0, 6], and 0 is Thu, 1 is Fri, etc,.
     */
-  def getNextDateForDayOfWeek(startDate: SQLDate, dayOfWeek: Int): SQLDate = {
+  def getNextDateForDayOfWeek(startDate: SQLDate, dayOfWeek: Int): SQLDate =
     startDate + 1 + ((dayOfWeek - 1 - startDate) % 7 + 7) % 7
-  }
 
   /**
     * Returns last day of the month for the given date. The date is expressed in days
@@ -831,7 +814,7 @@ object DateTimeUtils {
     * Returns the trunc date from original date and trunc level.
     * Trunc level should be generated using `parseTruncLevel()`, should only be 1 or 2.
     */
-  def truncDate(d: SQLDate, level: Int): SQLDate = {
+  def truncDate(d: SQLDate, level: Int): SQLDate =
     if (level == TRUNC_TO_YEAR) {
       d - DateTimeUtils.getDayInYear(d) + 1
     } else if (level == TRUNC_TO_MONTH) {
@@ -840,13 +823,12 @@ object DateTimeUtils {
       // caller make sure that this should never be reached
       sys.error(s"Invalid trunc level: $level")
     }
-  }
 
   /**
     * Returns the truncate level, could be TRUNC_YEAR, TRUNC_MONTH, or TRUNC_INVALID,
     * TRUNC_INVALID means unsupported truncate level.
     */
-  def parseTruncLevel(format: UTF8String): Int = {
+  def parseTruncLevel(format: UTF8String): Int =
     if (format == null) {
       TRUNC_INVALID
     } else {
@@ -856,7 +838,6 @@ object DateTimeUtils {
         case _                      => TRUNC_INVALID
       }
     }
-  }
 
   /**
     * Returns a timestamp of given timezone from utc timestamp, with the same string

@@ -144,9 +144,8 @@ private[worker] class WorkerArguments(args: Array[String], conf: SparkConf) {
     System.exit(exitCode)
   }
 
-  def inferDefaultCores(): Int = {
+  def inferDefaultCores(): Int =
     Runtime.getRuntime.availableProcessors()
-  }
 
   def inferDefaultMemory(): Int = {
     val ibmVendor = System.getProperty("java.vendor").contains("IBM")
@@ -179,11 +178,10 @@ private[worker] class WorkerArguments(args: Array[String], conf: SparkConf) {
     math.max(totalMb - 1024, Utils.DEFAULT_DRIVER_MEM_MB)
   }
 
-  def checkWorkerMemory(): Unit = {
+  def checkWorkerMemory(): Unit =
     if (memory <= 0) {
       val message =
         "Memory is below 1MB, or missing a M/G at the end of the memory specification?"
       throw new IllegalStateException(message)
     }
-  }
 }

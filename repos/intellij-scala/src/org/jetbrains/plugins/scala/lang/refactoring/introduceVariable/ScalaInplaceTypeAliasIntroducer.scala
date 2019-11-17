@@ -83,19 +83,17 @@ class ScalaInplaceTypeAliasIntroducer(
       initialName,
       oldName) {
 
-  override def setAdvertisementText(text: String) = {
+  override def setAdvertisementText(text: String) =
     myAdvertisementText = "Press ctrl + alt + v" +
       " to show dialog with more options"
-  }
 
   override def startsOnTheSameElement(
       handler: RefactoringActionHandler,
       element: PsiElement): Boolean = {
-    def checkEquals(typeAliasDefinition: ScTypeAliasDefinition) = {
+    def checkEquals(typeAliasDefinition: ScTypeAliasDefinition) =
       editor
         .getUserData(IntroduceTypeAlias.REVERT_TYPE_ALIAS_INFO)
         .getNamedElement == element
-    }
 
     element match {
       case typeAliasDefinition: ScTypeAliasDefinition =>
@@ -109,7 +107,7 @@ class ScalaInplaceTypeAliasIntroducer(
     //do nothing. we don't need to revert state
   }
 
-  protected override def moveOffsetAfter(success: Boolean): Unit = {
+  protected override def moveOffsetAfter(success: Boolean): Unit =
     if (success) {
       // don't know about element to refactor place
     } else if (myInsertedName != null &&
@@ -133,5 +131,4 @@ class ScalaInplaceTypeAliasIntroducer(
         myEditor.getScrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
       }
     }
-  }
 }

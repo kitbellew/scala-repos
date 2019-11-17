@@ -15,18 +15,13 @@ import play.http.{HttpErrorHandler => JHttpErrorHandler}
 class JavaHttpErrorHandlerAdapter @Inject() (underlying: JHttpErrorHandler)
     extends HttpErrorHandler {
 
-  def onClientError(
-      request: RequestHeader,
-      statusCode: Int,
-      message: String) = {
+  def onClientError(request: RequestHeader, statusCode: Int, message: String) =
     JavaHelpers.invokeWithContext(
       request,
       req => underlying.onClientError(req, statusCode, message))
-  }
 
-  def onServerError(request: RequestHeader, exception: Throwable) = {
+  def onServerError(request: RequestHeader, exception: Throwable) =
     JavaHelpers.invokeWithContext(
       request,
       req => underlying.onServerError(req, exception))
-  }
 }

@@ -10,7 +10,7 @@ import slick.util.{ConstArray, Ellipsis, ??}
 class CreateAggregates extends Phase {
   val name = "createAggregates"
 
-  def apply(state: CompilerState) = {
+  def apply(state: CompilerState) =
     if (state.get(Phase.assignUniqueSymbols).map(_.aggregate).getOrElse(true))
       state.map(
         _.replace(
@@ -83,7 +83,6 @@ class CreateAggregates extends Phase {
           bottomUp = true
         ))
     else state
-  }
 
   /** Recursively inline mapping Bind calls under an Aggregate */
   def inlineMap(a: Aggregate): Aggregate = a.from match {

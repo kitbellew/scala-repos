@@ -14,13 +14,12 @@ trait ErrorConversion {
       throw getException(message)
     }
   }
-  def safe[T](fn: => T): T = {
+  def safe[T](fn: => T): T =
     try {
       fn
     } catch {
       case e: Throwable => throw getException(e.getMessage)
     }
-  }
 }
 
 object BytesToString {
@@ -61,14 +60,12 @@ object StringToBytes {
     }
 }
 object StringToChannelBuffer {
-  def apply(string: String, charset: Charset = Charsets.Utf8) = {
+  def apply(string: String, charset: Charset = Charsets.Utf8) =
     ChannelBuffers.wrappedBuffer(string.getBytes(charset))
-  }
 }
 object CBToString {
-  def apply(arg: ChannelBuffer, charset: Charset = Charsets.Utf8) = {
+  def apply(arg: ChannelBuffer, charset: Charset = Charsets.Utf8) =
     arg.toString(charset)
-  }
   def fromList(args: Seq[ChannelBuffer], charset: Charset = Charsets.Utf8) =
     args.map { arg =>
       CBToString(arg, charset)
@@ -90,41 +87,37 @@ object CBToString {
 }
 object NumberFormat {
   import com.twitter.finagle.redis.naggati.ProtocolError
-  def toDouble(arg: String): Double = {
+  def toDouble(arg: String): Double =
     try {
       arg.toDouble
     } catch {
       case e: Throwable =>
         throw new ProtocolError("Unable to convert %s to Double".format(arg))
     }
-  }
-  def toFloat(arg: String): Float = {
+  def toFloat(arg: String): Float =
     try {
       arg.toFloat
     } catch {
       case e: Throwable =>
         throw new ProtocolError("Unable to convert %s to Float".format(arg))
     }
-  }
-  def toInt(arg: String): Int = {
+  def toInt(arg: String): Int =
     try {
       arg.toInt
     } catch {
       case e: Throwable =>
         throw new ProtocolError("Unable to convert %s to Int".format(arg))
     }
-  }
-  def toLong(arg: String): Long = {
+  def toLong(arg: String): Long =
     try {
       arg.toLong
     } catch {
       case e: Throwable =>
         throw new ProtocolError("Unable to convert %s to Long".format(arg))
     }
-  }
 }
 object ReplyFormat {
-  def toString(items: List[Reply]): List[String] = {
+  def toString(items: List[Reply]): List[String] =
     items flatMap {
       case BulkReply(message)   => List(BytesToString(message.array))
       case EmptyBulkReply()     => EmptyBulkReplyString
@@ -135,9 +128,8 @@ object ReplyFormat {
       case EmptyMBulkReply()    => EmptyMBulkReplyString
       case _                    => Nil
     }
-  }
 
-  def toChannelBuffers(items: List[Reply]): List[ChannelBuffer] = {
+  def toChannelBuffers(items: List[Reply]): List[ChannelBuffer] =
     items flatMap {
       case BulkReply(message) => List(message)
       case EmptyBulkReply()   => EmptyBulkReplyChannelBuffer
@@ -149,7 +141,6 @@ object ReplyFormat {
       case EmptyMBulkReply()    => EmptyBulkReplyChannelBuffer
       case _                    => Nil
     }
-  }
 
   private val EmptyBulkReplyString = List(RedisCodec.NIL_VALUE.toString)
   private val EmptyMBulkReplyString = List(

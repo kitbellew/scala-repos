@@ -136,9 +136,8 @@ class PlatformTest
     "Expected items should match : Internal Serializer / (Long, TestTypes)" in {
       case object Container {
         def ord[T](implicit oSer: OrderedSerialization[T])
-            : OrderedSerialization[(Long, T)] = {
+            : OrderedSerialization[(Long, T)] =
           implicitly[OrderedSerialization[(Long, T)]]
-        }
       }
 
       val ordSer = Container.ord[TestTypes]

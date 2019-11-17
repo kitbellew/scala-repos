@@ -29,20 +29,17 @@ class IsotonicRegressionSuite
     with MLlibTestSparkContext
     with Matchers {
 
-  private def round(d: Double) = {
+  private def round(d: Double) =
     math.round(d * 100).toDouble / 100
-  }
 
   private def generateIsotonicInput(
-      labels: Seq[Double]): Seq[(Double, Double, Double)] = {
+      labels: Seq[Double]): Seq[(Double, Double, Double)] =
     Seq.tabulate(labels.size)(i => (labels(i), i.toDouble, 1d))
-  }
 
   private def generateIsotonicInput(
       labels: Seq[Double],
-      weights: Seq[Double]): Seq[(Double, Double, Double)] = {
+      weights: Seq[Double]): Seq[(Double, Double, Double)] =
     Seq.tabulate(labels.size)(i => (labels(i), i.toDouble, weights(i)))
-  }
 
   private def runIsotonicRegression(
       labels: Seq[Double],
@@ -55,9 +52,8 @@ class IsotonicRegressionSuite
 
   private def runIsotonicRegression(
       labels: Seq[Double],
-      isotonic: Boolean): IsotonicRegressionModel = {
+      isotonic: Boolean): IsotonicRegressionModel =
     runIsotonicRegression(labels, Array.fill(labels.size)(1d), isotonic)
-  }
 
   test("increasing isotonic regression") {
     /*

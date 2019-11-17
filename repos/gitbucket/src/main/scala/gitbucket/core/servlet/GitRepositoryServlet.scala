@@ -67,7 +67,7 @@ class GitBucketRepositoryResolver(parent: FileResolver[HttpServletRequest])
     new File(Directory.GitBucketHome),
     true)
 
-  override def open(req: HttpServletRequest, name: String): Repository = {
+  override def open(req: HttpServletRequest, name: String): Repository =
     // Rewrite repository path if routing is marched
     PluginRegistry()
       .getRepositoryRouting("/" + name)
@@ -79,7 +79,6 @@ class GitBucketRepositoryResolver(parent: FileResolver[HttpServletRequest])
       .getOrElse {
         parent.open(req, name)
       }
-  }
 }
 
 class GitBucketReceivePackFactory
@@ -146,7 +145,7 @@ class CommitLogHook(
 
   def onPreReceive(
       receivePack: ReceivePack,
-      commands: java.util.Collection[ReceiveCommand]): Unit = {
+      commands: java.util.Collection[ReceiveCommand]): Unit =
     try {
       commands.asScala.foreach { command =>
         // call pre-commit hook
@@ -169,7 +168,6 @@ class CommitLogHook(
         throw ex
       }
     }
-  }
 
   def onPostReceive(
       receivePack: ReceivePack,

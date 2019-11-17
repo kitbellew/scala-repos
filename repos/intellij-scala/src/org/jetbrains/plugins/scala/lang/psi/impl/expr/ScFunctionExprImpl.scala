@@ -22,12 +22,11 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.TypingContext
 class ScFunctionExprImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScFunctionExpr {
-  override def accept(visitor: PsiElementVisitor): Unit = {
+  override def accept(visitor: PsiElementVisitor): Unit =
     visitor match {
       case visitor: ScalaElementVisitor => super.accept(visitor)
       case _                            => super.accept(visitor)
     }
-  }
 
   override def toString: String = "FunctionExpression"
 
@@ -41,7 +40,7 @@ class ScFunctionExprImpl(node: ASTNode)
       processor: PsiScopeProcessor,
       state: ResolveState,
       lastParent: PsiElement,
-      place: PsiElement): Boolean = {
+      place: PsiElement): Boolean =
     result match {
       case Some(x)
           if x == lastParent ||
@@ -54,7 +53,6 @@ class ScFunctionExprImpl(node: ASTNode)
         true
       case _ => true
     }
-  }
 
   protected override def innerType(ctx: TypingContext) = {
     val paramTypes = (parameters: Seq[ScParameter]).map(_.getType(ctx))

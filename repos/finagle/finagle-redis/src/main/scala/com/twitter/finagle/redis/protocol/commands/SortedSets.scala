@@ -416,22 +416,20 @@ sealed trait StrictZMembersCommand extends ZMembersCommand {
   members.foreach { member =>
     RequireClientProtocol(member != null, "Empty member found")
   }
-  def membersByteArray: Seq[Array[Byte]] = {
+  def membersByteArray: Seq[Array[Byte]] =
     members.map { member =>
       Seq(
         StringToBytes(member.score.toString),
         member.member.array
       )
     }.flatten
-  }
-  def membersChannelBuffers: Seq[ChannelBuffer] = {
+  def membersChannelBuffers: Seq[ChannelBuffer] =
     members.map { member =>
       Seq(
         StringToChannelBuffer(member.score.toString),
         member.member
       )
     }.flatten
-  }
 }
 
 object ZMembers {
@@ -502,9 +500,8 @@ abstract class ZStore extends KeysCommand {
 trait ZStoreCompanion {
   def apply(dest: String, keys: Seq[String]) =
     get(dest, keys.length, keys, None, None)
-  def apply(dest: String, keys: Seq[String], weights: Weights) = {
+  def apply(dest: String, keys: Seq[String], weights: Weights) =
     get(dest, keys.length, keys, Some(weights), None)
-  }
   def apply(dest: String, keys: Seq[String], agg: Aggregate) =
     get(dest, keys.length, keys, None, Some(agg))
   def apply(dest: String, keys: Seq[String], weights: Weights, agg: Aggregate) =
@@ -669,14 +666,13 @@ trait ZScoredRangeCompanion { self =>
       key: ChannelBuffer,
       min: ZInterval,
       max: ZInterval,
-      withScores: CommandArgument) = {
+      withScores: CommandArgument) =
     withScores match {
       case WithScores =>
         get(key, min, max, Some(withScores), None)
       case _ =>
         throw ClientError("Only WITHSCORES is supported")
     }
-  }
 
   def apply(key: ChannelBuffer, min: ZInterval, max: ZInterval, limit: Limit) =
     get(key, min, max, None, Some(limit))
@@ -686,14 +682,13 @@ trait ZScoredRangeCompanion { self =>
       min: ZInterval,
       max: ZInterval,
       withScores: CommandArgument,
-      limit: Limit) = {
+      limit: Limit) =
     withScores match {
       case WithScores =>
         get(key, min, max, Some(withScores), Some(limit))
       case _ =>
         throw ClientError("Only WITHSCORES supported")
     }
-  }
 
   protected def parseArgs(
       key: ChannelBuffer,
@@ -722,14 +717,13 @@ trait ZScoredRangeCompanion { self =>
     }
   }
   type ScoreOrLimit = Either[CommandArgument, Limit]
-  protected def doParse(args: Seq[String]): (ScoreOrLimit, Seq[String]) = {
+  protected def doParse(args: Seq[String]): (ScoreOrLimit, Seq[String]) =
     args.head match {
       case WithScores(s) =>
         (Left(WithScores), if (args.length > 1) args.drop(1) else Nil)
       case _ =>
         (Right(Limit(args.take(3))), if (args.length > 3) args.drop(3) else Nil)
     }
-  }
   protected def findScore(arg0: ScoreOrLimit, arg1: ScoreOrLimit) =
     convertScore(arg0) match {
       case None =>

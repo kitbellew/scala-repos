@@ -35,7 +35,7 @@ class ServerMediator(project: Project) extends ProjectComponent {
     override def buildStarted(
         project: Project,
         sessionId: UUID,
-        isAutomake: Boolean): Unit = {
+        isAutomake: Boolean): Unit =
       if (settings.COMPILE_SERVER_ENABLED && isScalaProject) {
         invokeAndWait {
           CompileServerManager.instance(project).configureWidget()
@@ -51,7 +51,6 @@ class ServerMediator(project: Project) extends ProjectComponent {
           }
         }
       }
-    }
 
     override def buildFinished(
         project: Project,
@@ -62,12 +61,11 @@ class ServerMediator(project: Project) extends ProjectComponent {
   connection.subscribe(BuildManagerListener.TOPIC, serverLauncher)
 
   private val checkSettingsTask = new CompileTask {
-    def execute(context: CompileContext): Boolean = {
+    def execute(context: CompileContext): Boolean =
       if (isScalaProject) {
         if (!checkCompilationSettings()) false
         else true
       } else true
-    }
   }
 
   CompilerManager.getInstance(project).addBeforeTask(checkSettingsTask)

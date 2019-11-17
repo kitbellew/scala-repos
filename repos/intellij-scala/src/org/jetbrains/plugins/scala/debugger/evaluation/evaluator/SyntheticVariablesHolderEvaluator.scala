@@ -30,11 +30,10 @@ class SyntheticVariablesHolderEvaluator(parentEvaluator: CodeFragmentEvaluator)
     mySyntheticLocals.put(localName, NonInitializedValue)
   }
 
-  override def setValue(localName: String, value: Value): Unit = {
+  override def setValue(localName: String, value: Value): Unit =
     if (mySyntheticLocals.contains(localName))
       mySyntheticLocals.put(localName, value)
     else parentEvaluator.setValue(localName, value)
-  }
 }
 
 private object NonInitializedValue extends Value {

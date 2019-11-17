@@ -45,7 +45,7 @@ private object StackClientTest {
 
     protected def newDispatcher(
         transport: Transport[In, Out]
-    ): Service[String, String] = {
+    ): Service[String, String] =
       Contexts.local.get(localKey) match {
         case Some(s) =>
           Service.constant(Future.exception(
@@ -53,7 +53,6 @@ private object StackClientTest {
         case None =>
           new SerialClientDispatcher(transport)
       }
-    }
   }
 }
 

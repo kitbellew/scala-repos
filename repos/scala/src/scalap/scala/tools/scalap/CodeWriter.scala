@@ -50,7 +50,7 @@ class CodeWriter(writer: Writer) {
     this
   }
 
-  def newline: CodeWriter = {
+  def newline: CodeWriter =
     if (step == null) newspace
     else if (!line) {
       try {
@@ -63,7 +63,6 @@ class CodeWriter(writer: Writer) {
       space = false
       this
     } else this
-  }
 
   def newspace: CodeWriter = {
     space = !align

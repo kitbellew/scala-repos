@@ -36,7 +36,7 @@ private[ui] class StoragePage(parent: StorageTab) extends WebUIPage("") {
     UIUtils.headerSparkPage("Storage", content, parent)
   }
 
-  private[storage] def rddTable(rdds: Seq[RDDInfo]): Seq[Node] = {
+  private[storage] def rddTable(rdds: Seq[RDDInfo]): Seq[Node] =
     if (rdds.isEmpty) {
       // Don't show the rdd table if there is no RDD persisted.
       Nil
@@ -52,7 +52,6 @@ private[ui] class StoragePage(parent: StorageTab) extends WebUIPage("") {
       }
       </div>
     }
-  }
 
   /** Header fields for the RDD table */
   private val rddHeader = Seq(
@@ -64,7 +63,7 @@ private[ui] class StoragePage(parent: StorageTab) extends WebUIPage("") {
     "Size on Disk")
 
   /** Render an HTML row representing an RDD */
-  private def rddRow(rdd: RDDInfo): Seq[Node] = {
+  private def rddRow(rdd: RDDInfo): Seq[Node] =
     // scalastyle:off
     <tr>
       <td>
@@ -87,11 +86,10 @@ private[ui] class StoragePage(parent: StorageTab) extends WebUIPage("") {
       Utils.bytesToString(rdd.diskSize)
     }</td>
     </tr>
-    // scalastyle:on
-  }
+  // scalastyle:on
 
   private[storage] def receiverBlockTables(
-      statuses: Seq[ExecutorStreamBlockStatus]): Seq[Node] = {
+      statuses: Seq[ExecutorStreamBlockStatus]): Seq[Node] =
     if (statuses.map(_.numStreamBlocks).sum == 0) {
       // Don't show the tables if there is no stream block
       Nil
@@ -108,10 +106,9 @@ private[ui] class StoragePage(parent: StorageTab) extends WebUIPage("") {
         {streamBlockTable(blocks)}
       </div>
     }
-  }
 
   private def executorMetricsTable(
-      statuses: Seq[ExecutorStreamBlockStatus]): Seq[Node] = {
+      statuses: Seq[ExecutorStreamBlockStatus]): Seq[Node] =
     <div>
       <h5>Aggregated Block Metrics by Executor</h5>
       {
@@ -122,7 +119,6 @@ private[ui] class StoragePage(parent: StorageTab) extends WebUIPage("") {
         id = Some("storage-by-executor-stream-blocks"))
     }
     </div>
-  }
 
   private val executorMetricsTableHeader = Seq(
     "Executor ID",
@@ -132,7 +128,7 @@ private[ui] class StoragePage(parent: StorageTab) extends WebUIPage("") {
     "Stream Blocks")
 
   private def executorMetricsTableRow(
-      status: ExecutorStreamBlockStatus): Seq[Node] = {
+      status: ExecutorStreamBlockStatus): Seq[Node] =
     <tr>
       <td>
         {status.executorId}
@@ -150,10 +146,9 @@ private[ui] class StoragePage(parent: StorageTab) extends WebUIPage("") {
         {status.numStreamBlocks.toString}
       </td>
     </tr>
-  }
 
   private def streamBlockTable(
-      blocks: Seq[(BlockId, Seq[BlockUIData])]): Seq[Node] = {
+      blocks: Seq[(BlockId, Seq[BlockUIData])]): Seq[Node] =
     if (blocks.isEmpty) {
       Nil
     } else {
@@ -169,7 +164,6 @@ private[ui] class StoragePage(parent: StorageTab) extends WebUIPage("") {
       }
       </div>
     }
-  }
 
   private val streamBlockTableHeader =
     Seq("Block ID", "Replication Level", "Location", "Storage Level", "Size")
@@ -220,7 +214,7 @@ private[ui] class StoragePage(parent: StorageTab) extends WebUIPage("") {
   }
 
   private[storage] def streamBlockStorageLevelDescriptionAndSize(
-      block: BlockUIData): (String, Long) = {
+      block: BlockUIData): (String, Long) =
     if (block.storageLevel.useDisk) {
       ("Disk", block.diskSize)
     } else if (block.storageLevel.useMemory &&
@@ -233,5 +227,4 @@ private[ui] class StoragePage(parent: StorageTab) extends WebUIPage("") {
       throw new IllegalStateException(
         s"Invalid Storage Level: ${block.storageLevel}")
     }
-  }
 }

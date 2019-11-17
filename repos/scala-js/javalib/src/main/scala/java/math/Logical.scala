@@ -40,7 +40,7 @@ import scala.annotation.tailrec
 private[math] object Logical {
 
   /** @see BigInteger#not() */
-  def not(bi: BigInteger): BigInteger = {
+  def not(bi: BigInteger): BigInteger =
     // scalastyle:off return
     if (bi.sign == 0) {
       BigInteger.MINUS_ONE
@@ -81,11 +81,10 @@ private[math] object Logical {
       }
       new BigInteger(-bi.sign, i, resDigits)
     }
-    // scalastyle:on return
-  }
+  // scalastyle:on return
 
   /** @see BigInteger#and(BigInteger) */
-  def and(bi: BigInteger, that: BigInteger): BigInteger = {
+  def and(bi: BigInteger, that: BigInteger): BigInteger =
     if (that.sign == 0 || bi.sign == 0) BigInteger.ZERO
     else if (that == BigInteger.MINUS_ONE) bi
     else if (bi == BigInteger.MINUS_ONE) that
@@ -94,7 +93,6 @@ private[math] object Logical {
     else if (that.sign > 0) andDiffSigns(that, bi)
     else if (bi.numberLength > that.numberLength) andNegative(bi, that)
     else andNegative(that, bi)
-  }
 
   /** @return sign = 1, magnitude = val.magnitude & that.magnitude */
   def andPositive(bi: BigInteger, that: BigInteger): BigInteger = {
@@ -180,7 +178,7 @@ private[math] object Logical {
 
         @inline
         @tailrec
-        def loop(bi1: BigInteger, bi2: BigInteger): Unit = {
+        def loop(bi1: BigInteger, bi2: BigInteger): Unit =
           if (i < bi1.numberLength) {
             digit = ~(bi2.digits(i) | bi1.digits(i))
             if (digit == 0) {
@@ -188,7 +186,6 @@ private[math] object Logical {
               loop(bi1, bi2)
             }
           }
-        }
         loop(shorter, longer)
 
         if (digit == 0) {
@@ -222,7 +219,7 @@ private[math] object Logical {
   }
 
   /** @see BigInteger#andNot(BigInteger) */
-  def andNot(bi: BigInteger, that: BigInteger): BigInteger = {
+  def andNot(bi: BigInteger, that: BigInteger): BigInteger =
     if (that.sign == 0) bi
     else if (bi.sign == 0) BigInteger.ZERO
     else if (bi == BigInteger.MINUS_ONE) that.not()
@@ -231,7 +228,6 @@ private[math] object Logical {
     else if (bi.sign > 0) andNotPositiveNegative(bi, that)
     else if (that.sign > 0) andNotNegativePositive(bi, that)
     else andNotNegative(bi, that)
-  }
 
   /** @return sign = 1, magnitude = val.magnitude & ~that.magnitude */
   def andNotPositive(bi: BigInteger, that: BigInteger): BigInteger = {
@@ -325,7 +321,7 @@ private[math] object Logical {
 
           @inline
           @tailrec
-          def loop(): Unit = {
+          def loop(): Unit =
             if (i < limit) {
               digit = ~(negative.digits(i) | positive.digits(i))
               if (digit == 0) {
@@ -333,7 +329,6 @@ private[math] object Logical {
                 loop()
               }
             }
-          }
           loop()
 
           if (digit == 0) {
@@ -432,7 +427,7 @@ private[math] object Logical {
   }
 
   /** @see BigInteger#or(BigInteger) */
-  def or(bi: BigInteger, that: BigInteger): BigInteger = {
+  def or(bi: BigInteger, that: BigInteger): BigInteger =
     if (that == BigInteger.MINUS_ONE || bi == BigInteger.MINUS_ONE) {
       BigInteger.MINUS_ONE
     } else if (that.sign == 0) {
@@ -453,7 +448,6 @@ private[math] object Logical {
     } else {
       orNegative(bi, that)
     }
-  }
 
   /** @return sign = 1, magnitude = longer.magnitude | shorter.magnitude */
   def orPositive(longer: BigInteger, shorter: BigInteger): BigInteger = {
@@ -575,7 +569,7 @@ private[math] object Logical {
   }
 
   /** @see BigInteger#xor(BigInteger) */
-  def xor(bi: BigInteger, that: BigInteger): BigInteger = {
+  def xor(bi: BigInteger, that: BigInteger): BigInteger =
     if (that.sign == 0) {
       bi
     } else if (bi.sign == 0) {
@@ -598,7 +592,6 @@ private[math] object Logical {
     } else {
       xorNegative(bi, that)
     }
-  }
 
   /** @return sign = 0, magnitude = longer.magnitude | shorter.magnitude */
   def xorPositive(longer: BigInteger, shorter: BigInteger): BigInteger = {
@@ -744,7 +737,7 @@ private[math] object Logical {
         }
         if (digit == 0) {
           // shorter has only the remaining virtual sign bits
-          def loop(bi: BigInteger): Unit = {
+          def loop(bi: BigInteger): Unit =
             if (i < bi.numberLength) {
               digit = ~bi.digits(i)
               if (digit == 0) {
@@ -752,7 +745,6 @@ private[math] object Logical {
                 loop(bi)
               }
             }
-          }
           loop(positive)
           loop(negative)
           if (digit == 0) {

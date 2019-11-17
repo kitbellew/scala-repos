@@ -43,11 +43,10 @@ case class IterableSource[+T](
     extends Source
     with Mappable[T] {
 
-  def fields = {
+  def fields =
     if (inFields.isNone && set.arity > 0) {
       Dsl.intFields(0 until set.arity)
     } else inFields
-  }
 
   override def converter[U >: T] = TupleConverter.asSuperConverter[T, U](conv)
 

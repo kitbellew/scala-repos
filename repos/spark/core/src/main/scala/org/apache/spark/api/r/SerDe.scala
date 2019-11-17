@@ -33,9 +33,8 @@ private[spark] object SerDe {
 
   var sqlSerDe: (ReadObject, WriteObject) = _
 
-  def registerSqlSerDe(sqlSerDe: (ReadObject, WriteObject)): Unit = {
+  def registerSqlSerDe(sqlSerDe: (ReadObject, WriteObject)): Unit =
     this.sqlSerDe = sqlSerDe
-  }
 
   // Type mapping from R to Java
   //
@@ -52,16 +51,15 @@ private[spark] object SerDe {
   // environment -> Map[String, T], where T is a native type
   // jobj -> Object, where jobj is an object created in the backend
 
-  def readObjectType(dis: DataInputStream): Char = {
+  def readObjectType(dis: DataInputStream): Char =
     dis.readByte().toChar
-  }
 
   def readObject(dis: DataInputStream): Object = {
     val dataType = readObjectType(dis)
     readTypedObject(dis, dataType)
   }
 
-  def readTypedObject(dis: DataInputStream, dataType: Char): Object = {
+  def readTypedObject(dis: DataInputStream, dataType: Char): Object =
     dataType match {
       case 'n' => null
       case 'i' => new java.lang.Integer(readInt(dis))
@@ -87,7 +85,6 @@ private[spark] object SerDe {
           }
         }
     }
-  }
 
   def readBytes(in: DataInputStream): Array[Byte] = {
     val len = readInt(in)
@@ -96,13 +93,11 @@ private[spark] object SerDe {
     out
   }
 
-  def readInt(in: DataInputStream): Int = {
+  def readInt(in: DataInputStream): Int =
     in.readInt()
-  }
 
-  def readDouble(in: DataInputStream): Double = {
+  def readDouble(in: DataInputStream): Double =
     in.readDouble()
-  }
 
   def readStringBytes(in: DataInputStream, len: Int): String = {
     val bytes = new Array[Byte](len)
@@ -122,9 +117,8 @@ private[spark] object SerDe {
     if (intVal == 0) false else true
   }
 
-  def readDate(in: DataInputStream): Date = {
+  def readDate(in: DataInputStream): Date =
     Date.valueOf(readString(in))
-  }
 
   def readTime(in: DataInputStream): Timestamp = {
     val seconds = in.readDouble()
@@ -231,7 +225,7 @@ private[spark] object SerDe {
   // Array[T] -> list()
   // Object -> jobj
 
-  def writeType(dos: DataOutputStream, typeStr: String): Unit = {
+  def writeType(dos: DataOutputStream, typeStr: String): Unit =
     typeStr match {
       case "void"      => dos.writeByte('n')
       case "character" => dos.writeByte('c')
@@ -249,7 +243,6 @@ private[spark] object SerDe {
       case "jobj" => dos.writeByte('j')
       case _      => throw new IllegalArgumentException(s"Invalid type $typeStr")
     }
-  }
 
   private def writeKeyValue(
       dos: DataOutputStream,
@@ -394,31 +387,26 @@ private[spark] object SerDe {
     }
   }
 
-  def writeInt(out: DataOutputStream, value: Int): Unit = {
+  def writeInt(out: DataOutputStream, value: Int): Unit =
     out.writeInt(value)
-  }
 
-  def writeDouble(out: DataOutputStream, value: Double): Unit = {
+  def writeDouble(out: DataOutputStream, value: Double): Unit =
     out.writeDouble(value)
-  }
 
   def writeBoolean(out: DataOutputStream, value: Boolean): Unit = {
     val intValue = if (value) 1 else 0
     out.writeInt(intValue)
   }
 
-  def writeDate(out: DataOutputStream, value: Date): Unit = {
+  def writeDate(out: DataOutputStream, value: Date): Unit =
     writeString(out, value.toString)
-  }
 
-  def writeTime(out: DataOutputStream, value: Time): Unit = {
+  def writeTime(out: DataOutputStream, value: Time): Unit =
     out.writeDouble(value.getTime.toDouble / 1000.0)
-  }
 
-  def writeTime(out: DataOutputStream, value: Timestamp): Unit = {
+  def writeTime(out: DataOutputStream, value: Timestamp): Unit =
     out.writeDouble(
       (value.getTime / 1000).toDouble + value.getNanos.toDouble / 1e9)
-  }
 
   def writeString(out: DataOutputStream, value: String): Unit = {
     val utf8 = value.getBytes(StandardCharsets.UTF_8)

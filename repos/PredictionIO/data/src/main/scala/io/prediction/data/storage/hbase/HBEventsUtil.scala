@@ -50,7 +50,7 @@ object HBEventsUtil {
   def tableName(
       namespace: String,
       appId: Int,
-      channelId: Option[Int] = None): String = {
+      channelId: Option[Int] = None): String =
     channelId
       .map { ch =>
         s"${namespace}:events_${appId}_${ch}"
@@ -58,7 +58,6 @@ object HBEventsUtil {
       .getOrElse {
         s"${namespace}:events_${appId}"
       }
-  }
 
   // column names for "e" column family
   val colNames: Map[String, Array[Byte]] = Map(
@@ -92,9 +91,8 @@ object HBEventsUtil {
 
     lazy val toBytes: Array[Byte] = b
 
-    override def toString: String = {
+    override def toString: String =
       Base64.encodeBase64URLSafeString(toBytes)
-    }
   }
 
   object RowKey {
@@ -113,7 +111,7 @@ object HBEventsUtil {
     }
 
     // get RowKey from string representation
-    def apply(s: String): RowKey = {
+    def apply(s: String): RowKey =
       try {
         apply(Base64.decodeBase64(s))
       } catch {
@@ -122,7 +120,6 @@ object HBEventsUtil {
             s"Failed to convert String ${s} to RowKey because ${e}",
             e)
       }
-    }
 
     def apply(b: Array[Byte]): RowKey = {
       if (b.size != 32) {
@@ -170,13 +167,11 @@ object HBEventsUtil {
     // use eventTime as HBase's cell timestamp
     val put = new Put(rowKey.toBytes, event.eventTime.getMillis)
 
-    def addStringToE(col: Array[Byte], v: String): Put = {
+    def addStringToE(col: Array[Byte], v: String): Put =
       put.add(eBytes, col, Bytes.toBytes(v))
-    }
 
-    def addLongToE(col: Array[Byte], v: Long): Put = {
+    def addLongToE(col: Array[Byte], v: Long): Put =
       put.add(eBytes, col, Bytes.toBytes(v))
-    }
 
     addStringToE(colNames("event"), event.event)
     addStringToE(colNames("entityType"), event.entityType)
@@ -252,9 +247,8 @@ object HBEventsUtil {
       }
     }
 
-    def getTimestamp(col: String): Long = {
+    def getTimestamp(col: String): Long =
       result.getColumnLatestCell(eBytes, colNames(col)).getTimestamp()
-    }
 
     val event = getStringCol("event")
     val entityType = getStringCol("entityType")

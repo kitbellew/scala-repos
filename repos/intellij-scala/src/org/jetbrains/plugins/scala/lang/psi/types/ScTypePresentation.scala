@@ -58,7 +58,7 @@ trait ScTypePresentation {
     )
 
   def urlText(t: ScType) = {
-    def nameFun(e: PsiNamedElement, withPoint: Boolean): String = {
+    def nameFun(e: PsiNamedElement, withPoint: Boolean): String =
       e match {
         case obj: ScObject
             if withPoint && obj.qualifiedName == "scala.Predef" =>
@@ -70,17 +70,15 @@ trait ScTypePresentation {
         case pack: PsiPackage if withPoint => ""
         case _                             => StringEscapeUtils.escapeHtml(e.name) + "."
       }
-    }
     typeText(t, nameFun(_, withPoint = false), nameFun(_, withPoint = true))
   }
 
   def canonicalText(t: ScType) = {
-    def removeKeywords(s: String): String = {
+    def removeKeywords(s: String): String =
       s.split('.')
         .map(s => if (ScalaNamesUtil.isKeyword(s)) "`" + s + "`" else s)
         .mkString(".")
-    }
-    def nameFun(e: PsiNamedElement, withPoint: Boolean): String = {
+    def nameFun(e: PsiNamedElement, withPoint: Boolean): String =
       removeKeywords(e match {
         case c: PsiClass =>
           val qname = c.qualifiedName
@@ -98,7 +96,6 @@ trait ScTypePresentation {
             case _ => e.name
           }
       }) + (if (withPoint) "." else "")
-    }
     typeText(t, nameFun(_, withPoint = false), nameFun(_, withPoint = true))
   }
 
@@ -112,11 +109,10 @@ trait ScTypePresentation {
         start: String,
         sep: String,
         end: String,
-        checkWildcard: Boolean = false): String = {
+        checkWildcard: Boolean = false): String =
       ts.map(
           innerTypeText(_, needDotType = true, checkWildcard = checkWildcard))
         .mkString(start, sep, end)
-    }
 
     def typeTail(need: Boolean) = if (need) ".type" else ""
 
@@ -165,22 +161,20 @@ trait ScTypePresentation {
       val ScProjectionType(p, _, _) = projType
       val e = projType.actualElement
       val refName = e.name
-      def checkIfStable(e: PsiElement): Boolean = {
+      def checkIfStable(e: PsiElement): Boolean =
         e match {
           case _: ScObject | _: ScBindingPattern | _: ScParameter |
               _: ScFieldId =>
             true
           case _ => false
         }
-      }
       val typeTailForProjection = typeTail(checkIfStable(e) && needDotType)
-      def isInnerStaticJavaClassForParent(clazz: PsiClass): Boolean = {
+      def isInnerStaticJavaClassForParent(clazz: PsiClass): Boolean =
         clazz.getLanguage != ScalaFileType.SCALA_LANGUAGE &&
-        e.isInstanceOf[PsiModifierListOwner] && e
+          e.isInstanceOf[PsiModifierListOwner] && e
           .asInstanceOf[PsiModifierListOwner]
           .getModifierList
           .hasModifierProperty("static")
-      }
       p match {
         case ScDesignatorType(pack: PsiPackage) =>
           nameWithPointFun(pack) + refName
@@ -308,7 +302,7 @@ trait ScTypePresentation {
     def existentialTypeText(
         existType: ScExistentialType,
         checkWildcard: Boolean,
-        stable: Boolean): String = {
+        stable: Boolean): String =
       existType match {
         case ScExistentialType(q, wilds)
             if checkWildcard && wilds.length == 1 =>
@@ -359,12 +353,11 @@ trait ScTypePresentation {
             "; ",
             "}")
       }
-    }
 
     def innerTypeText(
         t: ScType,
         needDotType: Boolean = true,
-        checkWildcard: Boolean = false): String = {
+        checkWildcard: Boolean = false): String =
       t match {
         case ScAbstractType(tpt, lower, upper) =>
           ScTypePresentation.ABSTRACT_TYPE_PREFIX + tpt.name.capitalize
@@ -428,7 +421,6 @@ trait ScTypePresentation {
             needDotType)
         case _ => "" //todo
       }
-    }
 
     innerTypeText(t)
   }

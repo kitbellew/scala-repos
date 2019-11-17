@@ -99,9 +99,8 @@ sealed abstract class LazyTuple2Instances0 {
         LazyTuple.lazyTuple2(f(fab._1), g(fab._2))
       def bitraverseImpl[G[_]: Applicative, A, B, C, D](fab: LazyTuple2[A, B])(
           f: A => G[C],
-          g: B => G[D]): G[LazyTuple2[C, D]] = {
+          g: B => G[D]): G[LazyTuple2[C, D]] =
         Applicative[G].apply2(f(fab._1), g(fab._2))(LazyTuple.lazyTuple2(_, _))
-      }
     }
 
   implicit def lazyTuple2Semigroup[A1, A2](

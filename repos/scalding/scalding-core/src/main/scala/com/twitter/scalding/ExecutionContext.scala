@@ -45,10 +45,9 @@ trait ExecutionContext {
 
   import ExecutionContext._
 
-  private def getIdentifierOpt(descriptions: Seq[String]): Option[String] = {
+  private def getIdentifierOpt(descriptions: Seq[String]): Option[String] =
     if (descriptions.nonEmpty) Some(descriptions.distinct.mkString(", "))
     else None
-  }
 
   private def updateStepConfigWithDescriptions(
       step: BaseFlowStep[JobConf]): Unit = {
@@ -171,13 +170,11 @@ trait ExecutionContext {
 object ExecutionContext {
   private val LOG: Logger = LoggerFactory.getLogger(ExecutionContext.getClass)
 
-  private[scalding] def getDesc[T](
-      baseFlowStep: BaseFlowStep[T]): Seq[String] = {
+  private[scalding] def getDesc[T](baseFlowStep: BaseFlowStep[T]): Seq[String] =
     baseFlowStep.getGraph.vertexSet.asScala.toSeq.flatMap(_ match {
       case pipe: Pipe => RichPipe.getPipeDescriptions(pipe)
       case _          => List() // no descriptions
     })
-  }
   /*
    * implicit val ec = ExecutionContext.newContext(config)
    * can be used inside of a Job to get an ExecutionContext if you want

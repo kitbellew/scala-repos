@@ -64,7 +64,7 @@ class ScalaUnreachableCodeInspection
     if (instructions.isEmpty) return Seq.empty
 
     @tailrec
-    def getParentStmt(element: PsiElement): Option[PsiElement] = {
+    def getParentStmt(element: PsiElement): Option[PsiElement] =
       element.getParent match {
         case _: ScBlock              => Some(element)
         case _: ScFunctionDefinition => Some(element)
@@ -73,7 +73,6 @@ class ScalaUnreachableCodeInspection
         case null   => None
         case parent => getParentStmt(parent)
       }
-    }
 
     val elements = instructions.toSeq
       .sortBy(_.num)

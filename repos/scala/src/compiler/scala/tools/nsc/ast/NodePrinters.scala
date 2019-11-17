@@ -61,14 +61,13 @@ abstract class NodePrinters {
       else "tree.tpe=" + tpe
     }
 
-    def showAttributes(tree: Tree): String = {
+    def showAttributes(tree: Tree): String =
       if (infolevel == InfoLevel.Quiet) ""
       else {
         try {
           List(showSymbol(tree), showType(tree)) filterNot (_ == "") mkString ", " trim
         } catch { case ex: Throwable => "sym= <error> " + ex.getMessage }
       }
-    }
   }
 
   trait PrintAST {
@@ -84,7 +83,7 @@ abstract class NodePrinters {
     def showTypeTree(tt: TypeTree): String
     def showAttributes(tree: Tree): String // symbol and type
 
-    def showRefTreeName(tree: Tree): String = {
+    def showRefTreeName(tree: Tree): String =
       tree match {
         case SelectFromTypeTree(qual, name) =>
           showRefTreeName(qual) + "#" + showName(name)
@@ -92,7 +91,6 @@ abstract class NodePrinters {
         case id @ Ident(name)   => showNameAndPos(id)
         case _                  => "" + tree
       }
-    }
     def showRefTree(tree: RefTree): String = {
       def prefix0 = showRefTreeName(tree.qualifier)
       def prefix =

@@ -46,18 +46,15 @@ case class ChiSquared(k: Double)(implicit rand: RandBasis = Rand)
 
   override def toString: String = ScalaRunTime._toString(this)
 
-  override def probability(x: Double, y: Double): Double = {
+  override def probability(x: Double, y: Double): Double =
     innerGamma.probability(x, y)
-  }
 
-  override def inverseCdf(p: Double): Double = {
+  override def inverseCdf(p: Double): Double =
     innerGamma.inverseCdf(p)
-  }
 
   // Probability that x < a <= Y
-  override def cdf(x: Double): Double = {
+  override def cdf(x: Double): Double =
     innerGamma.cdf(x)
-  }
 }
 
 object ChiSquared
@@ -82,9 +79,8 @@ object ChiSquared
     }
   }
 
-  def mle(ss: ChiSquared.SufficientStatistic): ChiSquared.Parameter = {
+  def mle(ss: ChiSquared.SufficientStatistic): ChiSquared.Parameter =
     ss.mean
-  }
 
   def distribution(p: ChiSquared.Parameter): ChiSquared = ChiSquared(p)
 }

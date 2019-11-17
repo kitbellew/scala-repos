@@ -103,7 +103,7 @@ class SecurityServiceHandlers(
   }
 
   object CreateAPIKeyHandler extends CreateHandler {
-    protected def create(authAPIKey: APIKey, requestBody: JValue): Future[R] = {
+    protected def create(authAPIKey: APIKey, requestBody: JValue): Future[R] =
       requestBody.validated[v1.NewAPIKeyRequest] match {
         case Success(request) =>
           if (request.grants.exists(_.isExpired(some(clock.now())))) {
@@ -137,7 +137,6 @@ class SecurityServiceHandlers(
             "Invalid new API key request body.",
             Some(e.message))
       }
-    }
 
     protected val missingContentMessage = "Missing new API key request body."
 
@@ -209,7 +208,7 @@ class SecurityServiceHandlers(
   object CreateAPIKeyGrantHandler
       extends CustomHttpService[Future[JValue], Future[R]]
       with Logging {
-    private def create(apiKey: APIKey, requestBody: JValue): Future[R] = {
+    private def create(apiKey: APIKey, requestBody: JValue): Future[R] =
       requestBody.validated[GrantId]("grantId") match {
         case Success(grantId) =>
           apiKeyManager.addGrants(apiKey, Set(grantId)) map { g =>
@@ -227,7 +226,6 @@ class SecurityServiceHandlers(
             "Invalid add grant request body.",
             Some("Invalid add grant request body: " + e))
       }
-    }
 
     val service = (request: HttpRequest[Future[JValue]]) =>
       Success {
@@ -289,7 +287,7 @@ class SecurityServiceHandlers(
   }
 
   object CreateGrantHandler extends CreateHandler {
-    protected def create(authAPIKey: APIKey, requestBody: JValue): Future[R] = {
+    protected def create(authAPIKey: APIKey, requestBody: JValue): Future[R] =
       requestBody.validated[v1.NewGrantRequest] match {
         case Success(request) =>
           apiKeyManager.deriveGrant(
@@ -313,7 +311,6 @@ class SecurityServiceHandlers(
             "Invalid new grant request body.",
             Some(e.message))
       }
-    }
 
     protected val missingContentMessage = "Missing grant request body."
 
@@ -364,7 +361,7 @@ class SecurityServiceHandlers(
     def create(
         issuerKey: APIKey,
         parentId: GrantId,
-        requestBody: JValue): Future[R] = {
+        requestBody: JValue): Future[R] =
       requestBody.validated[v1.NewGrantRequest] match {
         case Success(r) =>
           apiKeyManager.deriveSingleParentGrant(
@@ -386,7 +383,6 @@ class SecurityServiceHandlers(
             "Invalid new child grant request body.",
             Some(e.message))
       }
-    }
 
     val service = (request: HttpRequest[Future[JValue]]) =>
       Success { (authAPIKey: APIKey) =>

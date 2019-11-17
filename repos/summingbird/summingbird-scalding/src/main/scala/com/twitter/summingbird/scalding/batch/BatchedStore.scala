@@ -352,7 +352,7 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
     * - the data from this input covering all the time SINCE the last snapshot
     */
   final def readAfterLastBatch[T](input: PipeFactory[T]): PlannerOutput[
-    (BatchID, FlowProducer[TypedPipe[(K, V)]], FlowToPipe[T])] = {
+    (BatchID, FlowProducer[TypedPipe[(K, V)]], FlowToPipe[T])] =
     // StateWithError lacks filter, so it can't unpack tuples (scala limitation)
     // so unfortunately, this code has a lot of manual tuple unpacking for that reason
     for {
@@ -400,7 +400,6 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
       // Record the timespan we actually read.
       _ <- putState((readDeltaTimestamps, mode))
     } yield (lastBatch, lastSnapshot, readFlow)
-  }
 
   /**
     * This combines the current inputs along with the last checkpoint on disk to get a log

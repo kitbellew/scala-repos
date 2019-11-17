@@ -14,31 +14,28 @@ object Test extends App {
     end - start
   }
 
-  def benchJava(values: java.util.Collection[Int]) = {
+  def benchJava(values: java.util.Collection[Int]) =
     bench("Java Set") {
       val set = new java.util.HashSet[Int]
 
       set.addAll(values)
     }
-  }
 
-  def benchScala(values: Iterable[Int]) = {
+  def benchScala(values: Iterable[Int]) =
     bench("Scala Set") {
       val set = new scala.collection.mutable.HashSet[Int]
 
       set ++= values
     }
-  }
 
-  def benchScalaSorted(values: Iterable[Int]) = {
+  def benchScalaSorted(values: Iterable[Int]) =
     bench("Scala Set sorted") {
       val set = new scala.collection.mutable.HashSet[Int]
 
       set ++= values.toArray.sorted
     }
-  }
 
-  def benchScalaPar(values: Iterable[Int]) = {
+  def benchScalaPar(values: Iterable[Int]) =
     bench("Scala ParSet") {
       val set =
         new scala.collection.parallel.mutable.ParHashSet[Int] map { x =>
@@ -47,7 +44,6 @@ object Test extends App {
 
       set ++= values
     }
-  }
 
   val values = 0 until 50000
   val set = scala.collection.mutable.HashSet.empty[Int]

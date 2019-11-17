@@ -350,13 +350,12 @@ class WorkListSpec extends FunSuiteLike {
     workList addAll l2
 
     @tailrec
-    def checkEntries(id: Int, entry: WorkList.Entry[TestEntry]): Int = {
+    def checkEntries(id: Int, entry: WorkList.Entry[TestEntry]): Int =
       if (entry == null) id
       else {
         assert(entry.ref.get.id === id)
         checkEntries(id + 1, entry.next)
       }
-    }
 
     assert(checkEntries(0, workList.head.next) === 10)
   }

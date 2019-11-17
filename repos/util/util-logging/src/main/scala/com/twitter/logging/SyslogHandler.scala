@@ -49,7 +49,7 @@ object SyslogHandler {
   /**
     * Convert the java/scala log level into its closest syslog-ng severity.
     */
-  private[logging] def severityForLogLevel(level: Int): Int = {
+  private[logging] def severityForLogLevel(level: Int): Int =
     if (level >= Level.FATAL.value) {
       SEVERITY_ALERT
     } else if (level >= Level.CRITICAL.value) {
@@ -63,7 +63,6 @@ object SyslogHandler {
     } else {
       SEVERITY_DEBUG
     }
-  }
 
   val ISO_DATE_FORMAT = TwitterDateFormat("yyyy-MM-dd'T'HH:mm:ss")
   val OLD_SYSLOG_DATE_FORMAT = TwitterDateFormat("MMM dd HH:mm:ss")

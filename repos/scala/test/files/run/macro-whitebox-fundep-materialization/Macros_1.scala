@@ -27,7 +27,7 @@ object Iso {
       else AppliedTypeTree(core, fields map (f => TypeTree(f.info)))
     }
 
-    def mkFrom() = {
+    def mkFrom() =
       if (fields.length == 0) Literal(Constant(Unit))
       else
         Apply(
@@ -38,7 +38,6 @@ object Iso {
                   Select(
                     Ident(newTermName("f")),
                     newTermName(f.name.toString.trim))))
-    }
 
     val evidenceClass = ClassDef(
       Modifiers(FINAL),

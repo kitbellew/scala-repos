@@ -24,7 +24,7 @@ import scala.collection.mutable
   */
 class ScalaApplicationUsagesCollector
     extends AbstractApplicationUsagesCollector {
-  override def getProjectUsages(project: Project): util.Set[UsageDescriptor] = {
+  override def getProjectUsages(project: Project): util.Set[UsageDescriptor] =
     extensions.inReadAction {
       val set: mutable.HashSet[UsageDescriptor] =
         new mutable.HashSet[UsageDescriptor]
@@ -115,7 +115,6 @@ class ScalaApplicationUsagesCollector
       import scala.collection.JavaConversions._
       set
     }
-  }
 
   override def getGroupId: GroupDescriptor = GroupDescriptor.create("Scala")
 }

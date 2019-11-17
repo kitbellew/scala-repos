@@ -128,9 +128,8 @@ class FileStreamSource(
     }
   }
 
-  private def fetchAllFiles(): Seq[String] = {
+  private def fetchAllFiles(): Seq[String] =
     fs.listStatus(new Path(path))
       .filterNot(_.getPath.getName.startsWith("_"))
       .map(_.getPath.toUri.toString)
-  }
 }

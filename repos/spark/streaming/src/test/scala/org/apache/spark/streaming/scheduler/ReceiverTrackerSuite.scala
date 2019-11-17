@@ -71,9 +71,8 @@ class ReceiverTrackerSuite extends TestSuiteBase {
       @volatile var startTimes = 0
       ssc.addStreamingListener(new StreamingListener {
         override def onReceiverStarted(
-            receiverStarted: StreamingListenerReceiverStarted): Unit = {
+            receiverStarted: StreamingListenerReceiverStarted): Unit =
           startTimes += 1
-        }
       })
       val input = ssc.receiverStream(new StoppableReceiver)
       val output = new TestOutputStream(input)
@@ -97,9 +96,8 @@ class ReceiverTrackerSuite extends TestSuiteBase {
       ssc =>
         @volatile var receiverTaskLocality: TaskLocality = null
         ssc.sparkContext.addSparkListener(new SparkListener {
-          override def onTaskStart(taskStart: SparkListenerTaskStart): Unit = {
+          override def onTaskStart(taskStart: SparkListenerTaskStart): Unit =
             receiverTaskLocality = taskStart.taskInfo.taskLocality
-          }
         })
         val input = ssc.receiverStream(new TestReceiver)
         val output = new TestOutputStream(input)
@@ -124,9 +122,8 @@ private[streaming] class RateTestInputDStream(_ssc: StreamingContext)
 
   override val rateController: Option[RateController] = {
     Some(new RateController(id, new ConstantEstimator(100)) {
-      override def publish(rate: Long): Unit = {
+      override def publish(rate: Long): Unit =
         publishedRates += 1
-      }
     })
   }
 }
@@ -155,19 +152,16 @@ private[streaming] class RateTestReceiver(
     RateTestReceiver.registerReceiver(this)
   }
 
-  override def onStop(): Unit = {
+  override def onStop(): Unit =
     RateTestReceiver.deregisterReceiver()
-  }
 
   override def preferredLocation: Option[String] = host
 
-  def getDefaultBlockGeneratorRateLimit(): Long = {
+  def getDefaultBlockGeneratorRateLimit(): Long =
     supervisor.getCurrentRateLimit
-  }
 
-  def getCustomBlockGeneratorRateLimit(): Long = {
+  def getCustomBlockGeneratorRateLimit(): Long =
     customBlockGenerator.getCurrentLimit
-  }
 }
 
 /**
@@ -177,13 +171,11 @@ private[streaming] class RateTestReceiver(
 private[streaming] object RateTestReceiver {
   @volatile private var activeReceiver: RateTestReceiver = null
 
-  def registerReceiver(receiver: RateTestReceiver): Unit = {
+  def registerReceiver(receiver: RateTestReceiver): Unit =
     activeReceiver = receiver
-  }
 
-  def deregisterReceiver(): Unit = {
+  def deregisterReceiver(): Unit =
     activeReceiver = null
-  }
 
   def getActive(): Option[RateTestReceiver] = Option(activeReceiver)
 }

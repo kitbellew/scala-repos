@@ -24,9 +24,8 @@ abstract class ScalaCodeInsightTestBase
       .enableStatistics(getTestRootDisposable)
   }
 
-  protected def getActiveLookup: LookupImpl = {
+  protected def getActiveLookup: LookupImpl =
     LookupManager.getActiveLookup(getEditorAdapter).asInstanceOf[LookupImpl]
-  }
 
   protected def complete(
       time: Int = 1,

@@ -772,7 +772,7 @@ class LinearAlgebraTest
       (0.0, 1.5, 0.0, 0.0, 5.0),
       (1.5, 0.0, 2.0, 0.0, 5.0))
 
-    def checkCols(m1: DenseMatrix[Double], m2: DenseMatrix[Double]) = {
+    def checkCols(m1: DenseMatrix[Double], m2: DenseMatrix[Double]) =
       for (i <- 0 until m1.cols) {
         val v1 = if (m1(::, i).valueAt(0) > 0) m1(::, i) else -m1(::, i)
         val v2 = if (m2(::, i).valueAt(0) > 0) m2(::, i) else -m2(::, i)
@@ -780,7 +780,6 @@ class LinearAlgebraTest
         assert(abs(norm(v1) - 1.0) < 1e-5)
         assert(abs(norm(v2) - 1.0) < 1e-5)
       }
-    }
 
     val SVD(u1, s1, vt1) = svd(m1)
     val SVD(u2, s2, vt2) = svd(m2, 2)

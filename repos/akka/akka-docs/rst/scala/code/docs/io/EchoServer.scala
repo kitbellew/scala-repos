@@ -55,9 +55,8 @@ class EchoManager(handlerClass: Class[_]) extends Actor with ActorLogging {
   override val supervisorStrategy = SupervisorStrategy.stoppingStrategy
 
   // bind to the listen port; the port will automatically be closed once this actor dies
-  override def preStart(): Unit = {
+  override def preStart(): Unit =
     IO(Tcp) ! Bind(self, new InetSocketAddress("localhost", 0))
-  }
 
   // do not restart
   override def postRestart(thr: Throwable): Unit = context stop self
@@ -166,9 +165,8 @@ class EchoHandler(connection: ActorRef, remote: InetSocketAddress)
   }
   //#closing
 
-  override def postStop(): Unit = {
+  override def postStop(): Unit =
     log.info(s"transferred $transferred bytes from/to [$remote]")
-  }
 
   //#storage-omitted
   private var storageOffset = 0
@@ -217,15 +215,13 @@ class EchoHandler(connection: ActorRef, remote: InetSocketAddress)
   }
   //#helpers
 
-  private def writeFirst(): Unit = {
+  private def writeFirst(): Unit =
     connection ! Write(storage(0), Ack(storageOffset))
-  }
 
-  private def writeAll(): Unit = {
+  private def writeAll(): Unit =
     for ((data, i) <- storage.zipWithIndex) {
       connection ! Write(data, Ack(storageOffset + i))
     }
-  }
 
   //#storage-omitted
 }
@@ -258,9 +254,8 @@ class SimpleEchoHandler(connection: ActorRef, remote: InetSocketAddress)
   }
 
   //#storage-omitted
-  override def postStop(): Unit = {
+  override def postStop(): Unit =
     log.info(s"transferred $transferred bytes from/to [$remote]")
-  }
 
   var storage = Vector.empty[ByteString]
   var stored = 0L

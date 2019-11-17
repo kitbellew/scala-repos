@@ -32,11 +32,10 @@ object SwaggerSerializers {
     jv.getAs[String].flatMap(_.blankOption)
 
   private[swagger] def dontAddOnEmpty(key: String, value: List[String])(
-      json: JValue) = {
+      json: JValue) =
     if (value.nonEmpty)
       json merge JObject(List(key -> JArray(value map (JString(_)))))
     else json
-  }
 
   lazy val Iso8601Date = ISODateTimeFormat.dateTime.withZone(DateTimeZone.UTC)
 

@@ -43,9 +43,8 @@ private[sql] case class SparkPartitionID()
 
   override val prettyName = "SPARK_PARTITION_ID"
 
-  override protected def initInternal(): Unit = {
+  override protected def initInternal(): Unit =
     partitionId = TaskContext.getPartitionId()
-  }
 
   override protected def evalInternal(input: InternalRow): Int = partitionId
 

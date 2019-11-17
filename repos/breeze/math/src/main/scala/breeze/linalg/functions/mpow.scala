@@ -25,8 +25,7 @@ object mpow extends UFunc {
 
   implicit object implDM_Double_Int
       extends Impl2[DenseMatrix[Double], Int, DenseMatrix[Double]] {
-    def apply(m: DenseMatrix[Double], exp: Int): DenseMatrix[Double] = {
+    def apply(m: DenseMatrix[Double], exp: Int): DenseMatrix[Double] =
       implDM_Double_Double(m, exp.toDouble)
-    }
   }
 }

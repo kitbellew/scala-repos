@@ -17,9 +17,8 @@ import org.jetbrains.plugins.scala.lang.psi.impl.expr._
  * Surrounds expression with while: while { <Cursor> } { Expression }
  */
 class ScalaWithWhileSurrounder extends ScalaExpressionSurrounder {
-  override def getTemplateAsString(elements: Array[PsiElement]): String = {
+  override def getTemplateAsString(elements: Array[PsiElement]): String =
     "while (true) {" + super.getTemplateAsString(elements) + "}"
-  }
 
   override def getTemplateDescription = "while"
 

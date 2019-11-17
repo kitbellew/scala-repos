@@ -416,9 +416,8 @@ class KryoSerializer(conf: SparkConf)
     kryo
   }
 
-  override def newInstance(): SerializerInstance = {
+  override def newInstance(): SerializerInstance =
     new KryoSerializerInstance(this)
-  }
 
   private[spark] override lazy val supportsRelocationOfSerializedObjects
       : Boolean = {
@@ -470,7 +469,7 @@ private[spark] class KryoDeserializationStream(
   private[this] var input: KryoInput = new KryoInput(inStream)
   private[this] var kryo: Kryo = serInstance.borrowKryo()
 
-  override def readObject[T: ClassTag](): T = {
+  override def readObject[T: ClassTag](): T =
     try {
       kryo.readClassAndObject(input).asInstanceOf[T]
     } catch {
@@ -479,7 +478,6 @@ private[spark] class KryoDeserializationStream(
           if e.getMessage.toLowerCase.contains("buffer underflow") =>
         throw new EOFException
     }
-  }
 
   override def close() {
     if (input != null) {
@@ -510,7 +508,7 @@ private[spark] class KryoSerializerInstance(ks: KryoSerializer)
     * Borrows a [[Kryo]] instance. If possible, this tries to re-use a cached Kryo instance;
     * otherwise, it allocates a new instance.
     */
-  private[serializer] def borrowKryo(): Kryo = {
+  private[serializer] def borrowKryo(): Kryo =
     if (cachedKryo != null) {
       val kryo = cachedKryo
       // As a defensive measure, call reset() to clear any Kryo state that might have been modified
@@ -521,18 +519,16 @@ private[spark] class KryoSerializerInstance(ks: KryoSerializer)
     } else {
       ks.newKryo()
     }
-  }
 
   /**
     * Release a borrowed [[Kryo]] instance. If this serializer instance already has a cached Kryo
     * instance, then the given Kryo instance is discarded; otherwise, the Kryo is stored for later
     * re-use.
     */
-  private[serializer] def releaseKryo(kryo: Kryo): Unit = {
+  private[serializer] def releaseKryo(kryo: Kryo): Unit =
     if (cachedKryo == null) {
       cachedKryo = kryo
     }
-  }
 
   // Make these lazy vals to avoid creating a buffer unless we use them.
   private lazy val output = ks.newKryoOutput()
@@ -585,13 +581,11 @@ private[spark] class KryoSerializerInstance(ks: KryoSerializer)
     }
   }
 
-  override def serializeStream(s: OutputStream): SerializationStream = {
+  override def serializeStream(s: OutputStream): SerializationStream =
     new KryoSerializationStream(this, s)
-  }
 
-  override def deserializeStream(s: InputStream): DeserializationStream = {
+  override def deserializeStream(s: InputStream): DeserializationStream =
     new KryoDeserializationStream(this, s)
-  }
 
   /**
     * Returns true if auto-reset is on. The only reason this would be false is if the user-supplied
@@ -638,9 +632,8 @@ private[serializer] object KryoSerializer {
       override def write(
           kryo: Kryo,
           output: KryoOutput,
-          bitmap: RoaringBitmap): Unit = {
+          bitmap: RoaringBitmap): Unit =
         bitmap.serialize(new KryoOutputObjectOutputBridge(kryo, output))
-      }
       override def read(
           kryo: Kryo,
           input: KryoInput,
@@ -731,7 +724,7 @@ private class JavaIterableWrapperSerializer
   override def write(
       kryo: Kryo,
       out: KryoOutput,
-      obj: java.lang.Iterable[_]): Unit = {
+      obj: java.lang.Iterable[_]): Unit =
     // If the object is the wrapper, simply serialize the underlying Scala Iterable object.
     // Otherwise, serialize the object itself.
     if (obj.getClass == wrapperClass && underlyingMethodOpt.isDefined) {
@@ -739,17 +732,15 @@ private class JavaIterableWrapperSerializer
     } else {
       kryo.writeClassAndObject(out, obj)
     }
-  }
 
   override def read(
       kryo: Kryo,
       in: KryoInput,
-      clz: Class[java.lang.Iterable[_]]): java.lang.Iterable[_] = {
+      clz: Class[java.lang.Iterable[_]]): java.lang.Iterable[_] =
     kryo.readClassAndObject(in) match {
       case scalaIterable: Iterable[_]          => scalaIterable.asJava
       case javaIterable: java.lang.Iterable[_] => javaIterable
     }
-  }
 }
 
 private object JavaIterableWrapperSerializer extends Logging {

@@ -6,7 +6,7 @@ object RangeExtender {
 
 class RangeExtender(val re: Range) extends AnyVal {
 
-  def getRangeWithoutNegativeIndexes(totalLength: Int): Range = {
+  def getRangeWithoutNegativeIndexes(totalLength: Int): Range =
     if (re.isInclusive) {
       val (actualStart: Int, actualEnd: Int) = (
         if (re.start < 0) totalLength + re.start else re.start, //actualStart will be given as argument to inclusive range "to"
@@ -19,5 +19,4 @@ class RangeExtender(val re: Range) extends AnyVal {
     } else {
       re
     }
-  }
 }

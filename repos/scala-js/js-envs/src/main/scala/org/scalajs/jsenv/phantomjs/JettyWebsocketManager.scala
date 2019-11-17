@@ -38,9 +38,8 @@ private[phantomjs] final class JettyWebsocketManager(
   })
 
   server.addLifeCycleListener(new AbstractLifeCycle.AbstractLifeCycleListener {
-    override def lifeCycleStarted(event: LifeCycle): Unit = {
+    override def lifeCycleStarted(event: LifeCycle): Unit =
       if (event.isRunning()) wsListener.onRunning()
-    }
   })
 
   private class ComWebSocketListener extends WebSocket.OnTextMessage {

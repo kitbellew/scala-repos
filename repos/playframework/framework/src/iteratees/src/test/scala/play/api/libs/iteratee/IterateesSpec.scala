@@ -12,32 +12,28 @@ object IterateesSpec
     with IterateeSpecification
     with ExecutionSpecification {
 
-  def checkFoldResult[A, E](i: Iteratee[A, E], expected: Step[A, E]) = {
+  def checkFoldResult[A, E](i: Iteratee[A, E], expected: Step[A, E]) =
     mustExecute(1) { foldEC =>
       await(i.fold(s => Future.successful(s))(foldEC)) must equalTo(expected)
     }
-  }
 
-  def checkFoldTryResult[A, E](i: Iteratee[A, E], expected: Try[Step[A, E]]) = {
+  def checkFoldTryResult[A, E](i: Iteratee[A, E], expected: Try[Step[A, E]]) =
     mustExecute(0) { foldEC =>
       Try(await(i.fold(s => Future.successful(s))(foldEC))) must equalTo(
         expected)
     }
-  }
 
-  def checkUnflattenResult[A, E](i: Iteratee[A, E], expected: Step[A, E]) = {
+  def checkUnflattenResult[A, E](i: Iteratee[A, E], expected: Step[A, E]) =
     await(i.unflatten) must equalTo(expected)
-  }
 
-  def checkImmediateFoldFailure[A, E](i: Iteratee[A, E]) = {
+  def checkImmediateFoldFailure[A, E](i: Iteratee[A, E]) =
     mustExecute(1) { foldEC =>
       val e = new Exception("exception")
       val result = ready(i.fold(_ => throw e)(foldEC))
       result.value must equalTo(Some(Failure(e)))
     }
-  }
 
-  def checkFutureFoldFailure[A, E](i: Iteratee[A, E]) = {
+  def checkFutureFoldFailure[A, E](i: Iteratee[A, E]) =
     mustExecute(1, 1) { (foldEC, folderEC) =>
       val e = new Exception("exception")
       val preparedFolderEC = folderEC.prepare()
@@ -45,11 +41,9 @@ object IterateesSpec
         ready(i.fold(_ => Future(throw e)(preparedFolderEC))(foldEC))
       result.value must equalTo(Some(Failure(e)))
     }
-  }
 
-  def mustTranslate3To(x: Int)(f: Iteratee[Int, Int] => Iteratee[Int, Int]) = {
+  def mustTranslate3To(x: Int)(f: Iteratee[Int, Int] => Iteratee[Int, Int]) =
     await(f(Done(3)).unflatten) must equalTo(Step.Done(x, Input.Empty))
-  }
 
   "Flattened iteratees" should {
 
@@ -245,9 +239,8 @@ object IterateesSpec
       // Find how much recursion is needed to overflow the stack
       // on the current Java runtime.
       def overflows(n: Int): Boolean = {
-        def recurseTimes(n: Int): Unit = {
+        def recurseTimes(n: Int): Unit =
           if (n == 0) () else identity(recurseTimes(n - 1))
-        }
         try {
           recurseTimes(n)
           false // Didn't overflow

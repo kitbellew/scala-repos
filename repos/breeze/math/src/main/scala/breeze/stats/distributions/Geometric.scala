@@ -15,7 +15,7 @@ case class Geometric(p: Double)(implicit rand: RandBasis = Rand)
   require(p >= 0)
   require(p <= 1)
 
-  def draw() = {
+  def draw() =
     // from "Random Number Generation and Monte CArlo Methods"
     if (p < 1.0 / 3.0)
       math.ceil(math.log(rand.uniform.get) / math.log(1 - p)).toInt
@@ -25,7 +25,6 @@ case class Geometric(p: Double)(implicit rand: RandBasis = Rand)
       do i += 1 while (rand.uniform.draw() > p)
       i
     }
-  }
 
   def probabilityOf(x: Int) = math.pow((1 - p), x) * p
 
@@ -75,9 +74,8 @@ object Geometric
 
   def posterior(
       prior: conjugateFamily.Parameter,
-      evidence: TraversableOnce[Int]) = {
+      evidence: TraversableOnce[Int]) =
     evidence.foldLeft(prior) { (acc, x) =>
       (acc._1 + 1, acc._2 + x)
     }
-  }
 }

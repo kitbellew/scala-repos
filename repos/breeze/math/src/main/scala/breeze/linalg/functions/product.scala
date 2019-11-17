@@ -15,13 +15,11 @@ object product extends UFunc {
     def apply(v: T): S = {
       class ProductVisitor extends ValuesVisitor[S] {
         var product: S = 1
-        def visit(a: S): Unit = {
+        def visit(a: S): Unit =
           product *= a
-        }
 
-        def zeros(numZero: Int, zeroValue: S): Unit = {
+        def zeros(numZero: Int, zeroValue: S): Unit =
           if (numZero > 0) product = 0
-        }
       }
       val visit = new ProductVisitor
       iter.traverse(v, visit)
@@ -35,13 +33,11 @@ object product extends UFunc {
     def apply(v: T): S = {
       class ProductVisitor extends ValuesVisitor[S] {
         var product: S = semiring.one
-        def visit(a: S): Unit = {
+        def visit(a: S): Unit =
           product = semiring.*(product, a)
-        }
 
-        def zeros(numZero: Int, zeroValue: S): Unit = {
+        def zeros(numZero: Int, zeroValue: S): Unit =
           if (numZero > 0) product = semiring.zero
-        }
       }
       val visit = new ProductVisitor
       iter.traverse(v, visit)

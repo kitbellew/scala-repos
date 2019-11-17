@@ -11,9 +11,8 @@ final class JUnitSlaveRunner(
     runSettings: RunSettings)
     extends JUnitBaseRunner(args, remoteArgs, testClassLoader, runSettings) {
 
-  def tasks(taskDefs: Array[TaskDef]): Array[Task] = {
+  def tasks(taskDefs: Array[TaskDef]): Array[Task] =
     taskDefs.map(newTask)
-  }
 
   def done(): String = {
     send(
@@ -29,7 +28,6 @@ final class JUnitSlaveRunner(
     ""
   }
 
-  def receiveMessage(msg: String): Option[String] = {
+  def receiveMessage(msg: String): Option[String] =
     None // <- ignored
-  }
 }

@@ -279,7 +279,7 @@ object FastEvalEngineWorkflow {
   def get[TD, EI, PD, Q, P, A](
       workflow: FastEvalEngineWorkflow[TD, EI, PD, Q, P, A],
       engineParamsList: Seq[EngineParams])
-      : Seq[(EngineParams, Seq[(EI, RDD[(Q, P, A)])])] = {
+      : Seq[(EngineParams, Seq[(EI, RDD[(Q, P, A)])])] =
     engineParamsList.map { engineParams =>
       {
         (
@@ -287,7 +287,6 @@ object FastEvalEngineWorkflow {
           getServingResult(workflow, new ServingPrefix(engineParams)))
       }
     }
-  }
 }
 
 /** :: Experimental ::

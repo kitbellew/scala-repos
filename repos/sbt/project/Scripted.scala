@@ -47,9 +47,8 @@ object Scripted {
       if (page.page == page.total) dropped
       else dropped.take(pageSize)
     }
-    def nameP(group: String) = {
+    def nameP(group: String) =
       token("*".id | id.examples(pairMap(group)))
-    }
     val PagedIds: Parser[Seq[String]] = for {
       group <- groupP
       page <- pageP

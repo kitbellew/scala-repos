@@ -103,7 +103,7 @@ class ScalaCompilingEvaluator(
   }
 
   private def callEvaluator(
-      evaluationContext: EvaluationContext): ExpressionEvaluator = {
+      evaluationContext: EvaluationContext): ExpressionEvaluator =
     DebuggerInvocationUtil.commitAndRunReadAction(
       project,
       new EvaluatingComputable[ExpressionEvaluator] {
@@ -119,7 +119,6 @@ class ScalaCompilingEvaluator(
         }
       }
     )
-  }
 
   private def defineClasses(
       classes: Seq[OutputFileObject],
@@ -130,12 +129,11 @@ class ScalaCompilingEvaluator(
       throw EvaluationException("Could not compile generated class")
     val proxy: VirtualMachineProxyImpl =
       process.getVirtualMachineProxy.asInstanceOf[VirtualMachineProxyImpl]
-    def alreadyDefined(clsName: String) = {
+    def alreadyDefined(clsName: String) =
       proxy
         .classesByName(clsName)
         .asScala
         .exists(refType => refType.isPrepared)
-    }
 
     val classLoaderType = classLoader.referenceType.asInstanceOf[ClassType]
     val defineMethod: Method = classLoaderType.concreteMethodByName(
@@ -242,9 +240,8 @@ object ScalaCompilingEvaluator {
 }
 
 class OutputFileObject(file: File, val origName: String) {
-  private def getUri(name: String): URI = {
+  private def getUri(name: String): URI =
     URI.create("memo:///" + name.replace('.', '/') + ".class")
-  }
 
   def getName: String = getUri(origName).getPath
   def toByteArray: Array[Byte] = FileUtil.loadFileBytes(file)

@@ -232,9 +232,8 @@ case class RawBuffer(
   /**
     * Buffer size.
     */
-  def size: Long = {
+  def size: Long =
     if (inMemory != null) inMemory.size else backedByTemporaryFile.file.length
-  }
 
   /**
     * Returns the buffer content as a bytes array.
@@ -247,7 +246,7 @@ case class RawBuffer(
     *                  buffer is already in memory then None will still be returned.
     * @return None if the content is greater than maxLength, otherwise, the data as bytes.
     */
-  def asBytes(maxLength: Long = memoryThreshold): Option[ByteString] = {
+  def asBytes(maxLength: Long = memoryThreshold): Option[ByteString] =
     if (size <= maxLength) {
       Some(if (inMemory != null) {
         inMemory
@@ -257,7 +256,6 @@ case class RawBuffer(
     } else {
       None
     }
-  }
 
   /**
     * Returns the buffer content as File.
@@ -270,10 +268,9 @@ case class RawBuffer(
     backedByTemporaryFile.file
   }
 
-  override def toString = {
+  override def toString =
     "RawBuffer(inMemory=" + Option(inMemory).map(_.size).orNull +
       ", backedByTemporaryFile=" + backedByTemporaryFile + ")"
-  }
 }
 
 /**
@@ -329,13 +326,12 @@ trait BodyParsers {
       *
       * @param maxLength Max length allowed or returns EntityTooLarge HTTP response.
       */
-    def tolerantText(maxLength: Long): BodyParser[String] = {
+    def tolerantText(maxLength: Long): BodyParser[String] =
       tolerantBodyParser("text", maxLength, "Error decoding text body") {
         (request, bytes) =>
           // Encoding notes: RFC-2616 section 3.7.1 mandates ISO-8859-1 as the default charset if none is specified.
           bytes.decodeString(request.charset.getOrElse("ISO-8859-1"))
       }
-    }
 
     /**
       * Parse the body as text without checking the Content-Type.
@@ -722,7 +718,7 @@ trait BodyParsers {
     def multipartFormData[A](
         filePartHandler: Multipart.FilePartHandler[A],
         maxLength: Long = DefaultMaxDiskLength)
-        : BodyParser[MultipartFormData[A]] = {
+        : BodyParser[MultipartFormData[A]] =
       BodyParser("multipartFormData") { request =>
         val app = Play.privateMaybeApplication.get // throw exception
         implicit val mat = app.materializer
@@ -731,7 +727,6 @@ trait BodyParsers {
           .apply(request)
         enforceMaxLength(request, maxLength, bodyAccumulator)
       }
-    }
 
     // -- Parsing utilities
 
@@ -788,7 +783,7 @@ trait BodyParsers {
     def when[A](
         predicate: RequestHeader => Boolean,
         parser: BodyParser[A],
-        badResult: RequestHeader => Future[Result]): BodyParser[A] = {
+        badResult: RequestHeader => Future[Result]): BodyParser[A] =
       BodyParser("conditional, wrapping=" + parser.toString) { request =>
         if (predicate(request)) {
           parser(request)
@@ -797,7 +792,6 @@ trait BodyParsers {
           Accumulator.done(badResult(request).map(Left.apply))
         }
       }
-    }
 
     private def createBadResult(
         msg: String,
@@ -904,9 +898,8 @@ object BodyParsers extends BodyParsers {
 
       val logic = new GraphStageLogic(shape) {
         setHandler(out, new OutHandler {
-          override def onPull(): Unit = {
+          override def onPull(): Unit =
             pull(in)
-          }
           override def onDownstreamFinish(): Unit = {
             status.success(MaxSizeNotExceeded)
             completeStage()

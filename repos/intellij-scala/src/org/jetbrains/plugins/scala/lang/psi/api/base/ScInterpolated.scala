@@ -63,7 +63,7 @@ trait ScInterpolated extends ScalaPsiElement {
           this))
   }
 
-  def getInjections: Array[ScExpression] = {
+  def getInjections: Array[ScExpression] =
     getNode.getChildren(null).flatMap {
       _.getPsi match {
         case a: ScBlockExpr                       => Array[ScExpression](a)
@@ -73,7 +73,6 @@ trait ScInterpolated extends ScalaPsiElement {
         case _                                    => Array[ScExpression]()
       }
     }
-  }
 
   def getStringParts(l: ScInterpolated): Seq[String] = {
     val childNodes = l.children.map(_.getNode)

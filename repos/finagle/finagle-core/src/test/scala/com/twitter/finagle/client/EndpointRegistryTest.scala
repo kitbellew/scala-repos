@@ -29,9 +29,8 @@ class EndpointRegistryTest extends FunSuite {
       registry: EndpointRegistry,
       name: String,
       dtab: Dtab,
-      path: String): Option[Addr] = {
+      path: String): Option[Addr] =
     registry.endpoints(name).get(dtab).flatMap(_.get(path))
-  }
 
   test(
     "adding endpoints for a path for a dtab for a new client adds it to the registry") {

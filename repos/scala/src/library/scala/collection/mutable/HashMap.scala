@@ -133,9 +133,8 @@ class HashMap[A, B] private[collection] (
       if (!isSizeMapDefined) sizeMapInitAndRebuild()
     } else sizeMapDisable()
 
-  protected def createNewEntry[B1](key: A, value: B1): Entry = {
+  protected def createNewEntry[B1](key: A, value: B1): Entry =
     new Entry(key, value.asInstanceOf[B])
-  }
 
   private def writeObject(out: java.io.ObjectOutputStream) {
     serializeTo(out, { entry =>

@@ -20,11 +20,10 @@ case class similarUserScore(
 ) extends Serializable
 
 object RecommendedUserEngine extends IEngineFactory {
-  def apply() = {
+  def apply() =
     new Engine(
       classOf[DataSource],
       classOf[Preparator],
       Map("als" -> classOf[ALSAlgorithm]),
       classOf[Serving])
-  }
 }

@@ -7,9 +7,7 @@ object ParallelTest {
   val nbConcurrentTests = new AtomicInteger(0)
   val maxConcurrentTests = new AtomicInteger(0)
 
-  private def updateMaxConcurrentTests(
-      currentMax: Int,
-      newMax: Int): Boolean = {
+  private def updateMaxConcurrentTests(currentMax: Int, newMax: Int): Boolean =
     if (maxConcurrentTests.compareAndSet(currentMax, newMax)) {
       val f = new File("max-concurrent-tests_" + newMax)
       f.createNewFile
@@ -17,7 +15,6 @@ object ParallelTest {
     } else {
       false
     }
-  }
 
   @tailrec
   def execute(f: => Unit): Unit = {

@@ -47,7 +47,7 @@ private[launchqueue] object AppTaskLauncherActor {
       taskTracker: TaskTracker,
       rateLimiterActor: ActorRef)(
       app: AppDefinition,
-      initialCount: Int): Props = {
+      initialCount: Int): Props =
     Props(
       new AppTaskLauncherActor(
         config,
@@ -59,7 +59,6 @@ private[launchqueue] object AppTaskLauncherActor {
         rateLimiterActor,
         app,
         initialCount))
-  }
   // scalastyle:on parameter.number
 
   sealed trait Requests
@@ -192,13 +191,12 @@ private class AppTaskLauncherActor(
     case AppTaskLauncherActor.Stop => waitingForInFlight()
   }
 
-  private[this] def waitingForInFlight(): Unit = {
+  private[this] def waitingForInFlight(): Unit =
     if (inFlightTaskOperations.isEmpty) {
       context.stop(self)
     } else {
       context.become(receiveWaitingForInFlight)
     }
-  }
 
   /**
     * Receive rate limiter updates.
@@ -269,7 +267,7 @@ private class AppTaskLauncherActor(
 
   private[this] def receiveTaskStatusUpdate: Receive = {
     case TaskStatusUpdate(_, taskId, status) =>
-      def handleTask(oldTask: Task) = {
+      def handleTask(oldTask: Task) =
         oldTask.update(TaskStateOp.MesosUpdate(status, clock.now())) match {
           case TaskStateChange.Update(updatedTask) =>
             log.debug("updating status of {}", taskId)
@@ -288,7 +286,6 @@ private class AppTaskLauncherActor(
               taskId,
               cause.getMessage)
         }
-      }
 
       tasksMap.get(taskId) match {
         case Some(oldTask) => handleTask(oldTask)
@@ -364,7 +361,7 @@ private class AppTaskLauncherActor(
     context.become(waitForInitialDelay)
   }
 
-  private[this] def replyWithQueuedTaskCount(): Unit = {
+  private[this] def replyWithQueuedTaskCount(): Unit =
     sender() ! QueuedTaskInfo(
       app,
       tasksLeftToLaunch = tasksToLaunch,
@@ -374,7 +371,6 @@ private class AppTaskLauncherActor(
         inFlightTaskOperations.size,
       backOffUntil.getOrElse(clock.now())
     )
-  }
 
   private[this] def receiveProcessOffers: Receive = {
     case ActorOfferMatcher.MatchOffer(deadline, offer)
@@ -509,13 +505,12 @@ private class AppTaskLauncherActor(
       }
     }
 
-    def unregister(): Unit = {
+    def unregister(): Unit =
       if (registeredAsMatcher) {
         log.info("Deregister as matcher.")
         offerMatcherManager.removeSubscription(myselfAsOfferMatcher)(
           context.dispatcher)
         registeredAsMatcher = false
       }
-    }
   }
 }

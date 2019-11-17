@@ -41,9 +41,8 @@ class ScalaTypeParameterInfoHandler
       ScTypeArgs,
       Any,
       ScTypeElement] {
-  def getArgListStopSearchClasses: java.util.Set[_ <: Class[_]] = {
+  def getArgListStopSearchClasses: java.util.Set[_ <: Class[_]] =
     java.util.Collections.singleton(classOf[PsiMethod]) //todo: ?
-  }
 
   def getActualParameterDelimiterType: IElementType = ScalaTokenTypes.tCOMMA
 
@@ -62,9 +61,8 @@ class ScalaTypeParameterInfoHandler
   }
 
   def findElementForParameterInfo(
-      context: CreateParameterInfoContext): ScTypeArgs = {
+      context: CreateParameterInfoContext): ScTypeArgs =
     findCall(context)
-  }
 
   def getParameterCloseChars: String = "{},];\n"
 
@@ -74,9 +72,8 @@ class ScalaTypeParameterInfoHandler
     ArrayUtil.EMPTY_OBJECT_ARRAY
 
   def findElementForUpdatingParameterInfo(
-      context: UpdateParameterInfoContext): ScTypeArgs = {
+      context: UpdateParameterInfoContext): ScTypeArgs =
     findCall(context)
-  }
 
   def couldShowInLookup: Boolean = true
 
@@ -166,7 +163,7 @@ class ScalaTypeParameterInfoHandler
       params: scala.Seq[ScTypeParam],
       buffer: scala.StringBuilder,
       index: Int,
-      substitutor: ScSubstitutor): StringBuilder = {
+      substitutor: ScSubstitutor): StringBuilder =
     if (params.isEmpty)
       buffer.append(CodeInsightBundle.message("parameter.info.no.parameters"))
     else {
@@ -206,13 +203,11 @@ class ScalaTypeParameterInfoHandler
           })
           .mkString(", "))
     }
-  }
 
   def showParameterInfo(
       element: ScTypeArgs,
-      context: CreateParameterInfoContext): Unit = {
+      context: CreateParameterInfoContext): Unit =
     context.showHint(element, element.getTextRange.getStartOffset, this)
-  }
 
   def getParametersForLookup(
       item: LookupElement,

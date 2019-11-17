@@ -53,9 +53,8 @@ object LinearDataGenerator {
       weights: Array[Double],
       nPoints: Int,
       seed: Int,
-      eps: Double): java.util.List[LabeledPoint] = {
+      eps: Double): java.util.List[LabeledPoint] =
     generateLinearInput(intercept, weights, nPoints, seed, eps).asJava
-  }
 
   /**
     * For compatibility, the generated data without specifying the mean and variance
@@ -76,7 +75,7 @@ object LinearDataGenerator {
       weights: Array[Double],
       nPoints: Int,
       seed: Int,
-      eps: Double = 0.1): Seq[LabeledPoint] = {
+      eps: Double = 0.1): Seq[LabeledPoint] =
     generateLinearInput(
       intercept,
       weights,
@@ -85,7 +84,6 @@ object LinearDataGenerator {
       nPoints,
       seed,
       eps)
-  }
 
   /**
     * @param intercept Data intercept
@@ -107,7 +105,7 @@ object LinearDataGenerator {
       xVariance: Array[Double],
       nPoints: Int,
       seed: Int,
-      eps: Double): Seq[LabeledPoint] = {
+      eps: Double): Seq[LabeledPoint] =
     generateLinearInput(
       intercept,
       weights,
@@ -117,7 +115,6 @@ object LinearDataGenerator {
       seed,
       eps,
       0.0)
-  }
 
   /**
     * @param intercept Data intercept
@@ -146,9 +143,8 @@ object LinearDataGenerator {
     require(0.0 <= sparsity && sparsity <= 1.0)
 
     val rnd = new Random(seed)
-    def rndElement(i: Int) = {
+    def rndElement(i: Int) =
       (rnd.nextDouble() - 0.5) * math.sqrt(12.0 * xVariance(i)) + xMean(i)
-    }
 
     if (sparsity == 0.0) {
       (0 until nPoints).map { _ =>

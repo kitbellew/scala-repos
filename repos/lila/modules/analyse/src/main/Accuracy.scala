@@ -36,7 +36,7 @@ object Accuracy {
       }
       .reverse
 
-  def prevColorInfos(pov: Pov, analysis: Analysis): List[Info] = {
+  def prevColorInfos(pov: Pov, analysis: Analysis): List[Info] =
     (pov.color == pov.game.startColor)
       .fold(
         Info.start(pov.game.startedAtTurn) :: analysis.infos,
@@ -46,7 +46,6 @@ object Accuracy {
       .collect {
         case (e, i) if (i % 2) == 0 => e
       }
-  }
 
   def mean(pov: Pov, analysis: Analysis): Option[Int] = {
     val diffs = diffsList(pov, analysis)

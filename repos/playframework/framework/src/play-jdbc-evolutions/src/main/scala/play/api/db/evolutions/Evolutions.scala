@@ -55,10 +55,9 @@ trait Script {
     *
     * Any ";;" found in the sql are escaped to ";".
     */
-  def statements: Seq[String] = {
+  def statements: Seq[String] =
     // Regex matches on semicolons that neither precede nor follow other semicolons
     sql.split("(?<!;);(?!;)").map(_.trim.replace(";;", ";")).filter(_ != "")
-  }
 }
 
 /**
@@ -152,15 +151,13 @@ object Evolutions {
     )
   }
 
-  private def writeFileIfChanged(path: File, content: String): Unit = {
+  private def writeFileIfChanged(path: File, content: String): Unit =
     if (content != PlayIO.readFileAsString(path)) {
       writeFile(path, content)
     }
-  }
 
-  private def writeFile(destination: File, content: String): Unit = {
+  private def writeFile(destination: File, content: String): Unit =
     Files.write(destination.toPath, content.getBytes(utf8))
-  }
 
   private lazy val utf8 = Charset.forName("UTF8")
 

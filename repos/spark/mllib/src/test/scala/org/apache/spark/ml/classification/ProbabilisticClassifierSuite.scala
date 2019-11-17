@@ -31,18 +31,14 @@ final class TestProbabilisticClassificationModel(
   override def copy(extra: org.apache.spark.ml.param.ParamMap): this.type =
     defaultCopy(extra)
 
-  override protected def predictRaw(input: Vector): Vector = {
+  override protected def predictRaw(input: Vector): Vector =
     input
-  }
 
-  override protected def raw2probabilityInPlace(
-      rawPrediction: Vector): Vector = {
+  override protected def raw2probabilityInPlace(rawPrediction: Vector): Vector =
     rawPrediction
-  }
 
-  def friendlyPredict(input: Vector): Double = {
+  def friendlyPredict(input: Vector): Double =
     predict(input)
-  }
 }
 
 class ProbabilisticClassifierSuite extends SparkFunSuite {

@@ -18,9 +18,8 @@ class ScalaFunctionStructureViewElement(
     val isInherited: Boolean)
     extends ScalaStructureViewElement(func, isInherited) {
 
-  def getPresentation: ItemPresentation = {
+  def getPresentation: ItemPresentation =
     new ScalaFunctionItemPresentation(func, isInherited)
-  }
 
   def getChildren: Array[TreeElement] = Array()
 }

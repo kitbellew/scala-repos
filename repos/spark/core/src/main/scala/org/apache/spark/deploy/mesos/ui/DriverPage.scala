@@ -96,7 +96,7 @@ private[ui] class DriverPage(parent: MesosClusterUI)
   }
 
   private def launchedRow(
-      submissionState: Option[MesosClusterSubmissionState]): Seq[Node] = {
+      submissionState: Option[MesosClusterSubmissionState]): Seq[Node] =
     submissionState
       .map { state =>
         <tr>
@@ -121,19 +121,17 @@ private[ui] class DriverPage(parent: MesosClusterUI)
       </tr>
       }
       .getOrElse(Seq[Node]())
-  }
 
   private def propertiesRow(
-      properties: collection.Map[String, String]): Seq[Node] = {
+      properties: collection.Map[String, String]): Seq[Node] =
     properties.map {
       case (k, v) =>
         <tr>
         <td>{k}</td><td>{v}</td>
       </tr>
     }.toSeq
-  }
 
-  private def commandRow(command: Command): Seq[Node] = {
+  private def commandRow(command: Command): Seq[Node] =
     <tr>
       <td>Main class</td><td>{command.mainClass}</td>
     </tr>
@@ -151,9 +149,8 @@ private[ui] class DriverPage(parent: MesosClusterUI)
       command.libraryPathEntries.mkString((" "))
     }</td>
     </tr>
-  }
 
-  private def driverRow(driver: MesosDriverDescription): Seq[Node] = {
+  private def driverRow(driver: MesosDriverDescription): Seq[Node] =
     <tr>
       <td>Name</td><td>{driver.name}</td>
     </tr>
@@ -172,10 +169,8 @@ private[ui] class DriverPage(parent: MesosClusterUI)
     <tr>
       <td>Supervise</td><td>{driver.supervise}</td>
     </tr>
-  }
 
-  private def retryRow(
-      retryState: Option[MesosClusterRetryState]): Seq[Node] = {
+  private def retryRow(retryState: Option[MesosClusterRetryState]): Seq[Node] =
     retryState
       .map { state =>
         <tr>
@@ -191,5 +186,4 @@ private[ui] class DriverPage(parent: MesosClusterUI)
       </tr>
       }
       .getOrElse(Seq[Node]())
-  }
 }

@@ -166,8 +166,7 @@ object ImageUtils extends Logging {
       httpClient: HttpClient,
       linkhash: String,
       imageSrc: String,
-      config: Configuration): Option[LocallyStoredImage] = {
-
+      config: Configuration): Option[LocallyStoredImage] =
     try {
       // check for a cache hit already on disk
       readExistingFileInfo(linkhash, imageSrc, config) match {
@@ -198,7 +197,6 @@ object ImageUtils extends Logging {
         None
       }
     }
-  }
 
   /**
     * returns what filename we think this file should be, lots of time you get sneaky gifs that pretend to be jpg's
@@ -291,8 +289,7 @@ object ImageUtils extends Logging {
   def fetchEntity(
       httpClient: HttpClient,
       imageSrc: String,
-      config: Configuration): Option[HttpEntity] = {
-
+      config: Configuration): Option[HttpEntity] =
     URLHelper.tryToHttpGet(imageSrc) match {
       case Some(httpget) => {
         val localContext: HttpContext = new BasicHttpContext
@@ -322,5 +319,4 @@ object ImageUtils extends Logging {
         None
       }
     }
-  }
 }

@@ -113,9 +113,8 @@ class ScalaChangeSignatureDialog(
     new ScalaComboBoxVisibilityPanel(getVisibility)
 
   override def createParametersInfoModel(
-      method: ScalaMethodDescriptor): ScalaParameterTableModel = {
+      method: ScalaMethodDescriptor): ScalaParameterTableModel =
     new ScalaParameterTableModel(method.fun, method.fun, method)
-  }
 
   override protected def createParametersPanel(
       hasTabsInDialog: Boolean): JPanel = {
@@ -125,7 +124,7 @@ class ScalaChangeSignatureDialog(
   }
 
   protected def createParametersTable(
-      ): TableView[ScalaParameterTableModelItem] = {
+      ): TableView[ScalaParameterTableModelItem] =
     new TableView[ScalaParameterTableModelItem](myParametersTableModel) {
       override def removeEditor() {
         clearEditorListeners()
@@ -185,7 +184,6 @@ class ScalaChangeSignatureDialog(
         super.editingCanceled(e)
       }
     }
-  }
 
   override def createReturnTypeCodeFragment(): PsiCodeFragment = {
     val text = method.returnTypeText
@@ -213,7 +211,7 @@ class ScalaChangeSignatureDialog(
   }
 
   override def calculateSignature(): String = {
-    def nameAndType(item: ScalaParameterTableModelItem) = {
+    def nameAndType(item: ScalaParameterTableModelItem) =
       if (item.parameter.name == "") ""
       else
         ScalaExtractMethodUtils.typedName(
@@ -221,7 +219,6 @@ class ScalaChangeSignatureDialog(
           item.typeText,
           project,
           byName = false)
-    }
 
     def itemText(item: ScalaParameterTableModelItem) =
       item.keywordsAndAnnotations + nameAndType(item)
@@ -327,19 +324,17 @@ class ScalaChangeSignatureDialog(
 
   def signatureUpdater = mySignatureUpdater
 
-  def getTypesMaxLength: Int = {
+  def getTypesMaxLength: Int =
     parameterItems.map(_.typeText.length) match {
       case Seq() => 0
       case seq   => seq.max
     }
-  }
 
-  def getNamesMaxLength: Int = {
+  def getNamesMaxLength: Int =
     parameterItems.map(_.parameter.getName.length) match {
       case Seq() => 0
       case seq   => seq.max
     }
-  }
 
   def parametersTable = Option(myParametersList).map(_.getTable).orNull
 
@@ -350,7 +345,7 @@ class ScalaChangeSignatureDialog(
   protected def returnTypeText: String =
     Option(myReturnTypeCodeFragment).fold("")(_.getText)
 
-  protected def returnType: ScType = {
+  protected def returnType: ScType =
     if (myReturnTypeCodeFragment == null) StdType.ANY
     else {
       val fragment = myReturnTypeCodeFragment
@@ -359,7 +354,6 @@ class ScalaChangeSignatureDialog(
         fragment.getContext,
         fragment)
     }
-  }
 
   protected def splittedItems: Seq[Seq[ScalaParameterTableModelItem]] = {
     def inner(items: Seq[ScalaParameterTableModelItem])
@@ -376,9 +370,8 @@ class ScalaChangeSignatureDialog(
     inner(parameterItems)
   }
 
-  protected def parameterItems: Seq[ScalaParameterTableModelItem] = {
+  protected def parameterItems: Seq[ScalaParameterTableModelItem] =
     myParametersTableModel.getItems.asScala
-  }
 
   protected def createAddClauseButton() = {
     val addClauseButton =
@@ -525,7 +518,7 @@ class ScalaChangeSignatureDialog(
     if (table.isEditing) Some(table.getEditingColumn) else None
 
   class ScalaParametersListTable extends ParametersListTable {
-    protected def getRowRenderer(row: Int): JBTableRowRenderer = {
+    protected def getRowRenderer(row: Int): JBTableRowRenderer =
       new JBTableRowRenderer() {
         def getRowRendererComponent(
             table: JTable,
@@ -571,7 +564,6 @@ class ScalaChangeSignatureDialog(
           comp
         }
       }
-    }
 
     protected def nameText(item: ScalaParameterTableModelItem) = {
       val maxLength = parameterItems.map(_.parameter.getName.length) match {

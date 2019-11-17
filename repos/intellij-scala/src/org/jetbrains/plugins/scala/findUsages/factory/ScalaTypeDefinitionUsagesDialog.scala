@@ -35,9 +35,8 @@ class ScalaTypeDefinitionUsagesDialog(
   private var myCbImplementingTypeDefinitions: StateRestoringCheckBox = _
   private var myCbCompanionModule: StateRestoringCheckBox = _
 
-  override def getPreferredFocusedControl: JComponent = {
+  override def getPreferredFocusedControl: JComponent =
     myCbUsages
-  }
 
   import com.intellij.find.findUsages.AbstractFindUsagesDialog.{
     isSelected,

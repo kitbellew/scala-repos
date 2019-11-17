@@ -94,8 +94,7 @@ object PJavaEventStore {
       startTime: Option[DateTime],
       untilTime: Option[DateTime],
       required: Option[java.util.List[String]],
-      sc: SparkContext): JavaRDD[(String, PropertyMap)] = {
-
+      sc: SparkContext): JavaRDD[(String, PropertyMap)] =
     PEventStore.aggregateProperties(
       appName,
       entityType,
@@ -103,5 +102,4 @@ object PJavaEventStore {
       startTime,
       untilTime
     )(sc)
-  }
 }

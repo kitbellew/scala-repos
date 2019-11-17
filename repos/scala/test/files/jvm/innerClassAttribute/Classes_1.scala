@@ -12,9 +12,8 @@ object A3 {
 }
 
 class A4 {
-  def f(l: List[String]): List[String] = {
+  def f(l: List[String]): List[String] =
     l map (_ + "1"): @noinline // inlining adds a reference to the nested class scala/collection/generic/GenTraversableFactory$GenericCanBuildFrom
-  }
 }
 
 class A5 {

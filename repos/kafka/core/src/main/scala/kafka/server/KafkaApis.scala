@@ -803,7 +803,7 @@ class KafkaApis(
       logManager: LogManager,
       topicPartition: TopicPartition,
       timestamp: Long,
-      maxNumOffsets: Int): Seq[Long] = {
+      maxNumOffsets: Int): Seq[Long] =
     logManager.getLog(
       TopicAndPartition(topicPartition.topic, topicPartition.partition)) match {
       case Some(log) =>
@@ -813,7 +813,6 @@ class KafkaApis(
             timestamp == ListOffsetRequest.EARLIEST_TIMESTAMP) Seq(0L)
         else Nil
     }
-  }
 
   private def fetchOffsetsBefore(
       log: Log,
@@ -864,7 +863,7 @@ class KafkaApis(
       numPartitions: Int,
       replicationFactor: Int,
       properties: Properties = new Properties())
-      : MetadataResponse.TopicMetadata = {
+      : MetadataResponse.TopicMetadata =
     try {
       AdminUtils.createTopic(
         zkUtils,
@@ -893,7 +892,6 @@ class KafkaApis(
           topic,
           java.util.Collections.emptyList())
     }
-  }
 
   private def createGroupMetadataTopic(): MetadataResponse.TopicMetadata = {
     val aliveBrokers = metadataCache.getAliveBrokers
@@ -1455,9 +1453,8 @@ class KafkaApis(
     info("Shutdown complete.")
   }
 
-  def authorizeClusterAction(request: RequestChannel.Request): Unit = {
+  def authorizeClusterAction(request: RequestChannel.Request): Unit =
     if (!authorize(request.session, ClusterAction, Resource.ClusterResource))
       throw new ClusterAuthorizationException(
         s"Request $request is not authorized.")
-  }
 }

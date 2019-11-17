@@ -305,10 +305,9 @@ class LogManagerTest {
   }
 
   private def createLogManager(
-      logDirs: Array[File] = Array(this.logDir)): LogManager = {
+      logDirs: Array[File] = Array(this.logDir)): LogManager =
     TestUtils.createLogManager(
       defaultConfig = logConfig,
       logDirs = logDirs,
       time = this.time)
-  }
 }

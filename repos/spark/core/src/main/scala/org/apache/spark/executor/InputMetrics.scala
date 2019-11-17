@@ -121,7 +121,6 @@ object InputMetrics {
   @deprecated(
     "matching on InputMetrics will not be supported in the future",
     "2.0.0")
-  def unapply(input: InputMetrics): Option[DataReadMethod.Value] = {
+  def unapply(input: InputMetrics): Option[DataReadMethod.Value] =
     Some(input.readMethod)
-  }
 }

@@ -15,7 +15,7 @@ trait CollectionsOnSynchronizedSetTest extends CollectionsOnSetsTest {
 
   def originalFactory: SetFactory
 
-  def factory: SetFactory = {
+  def factory: SetFactory =
     new SetFactory {
       override def implementationName: String =
         s"synchronizedSet(${originalFactory.implementationName})"
@@ -26,7 +26,6 @@ trait CollectionsOnSynchronizedSetTest extends CollectionsOnSetsTest {
       def allowsNullElement: Boolean =
         originalFactory.allowsNullElement
     }
-  }
 }
 
 trait CollectionsOnSynchronizedSortedSetTest
@@ -34,7 +33,7 @@ trait CollectionsOnSynchronizedSortedSetTest
 
   def originalFactory: SortedSetFactory
 
-  def factory: SortedSetFactory = {
+  def factory: SortedSetFactory =
     new SortedSetFactory {
       override def implementationName: String =
         s"synchronizedSortedSet(${originalFactory.implementationName})"
@@ -45,7 +44,6 @@ trait CollectionsOnSynchronizedSortedSetTest
       def allowsNullElement: Boolean =
         originalFactory.allowsNullElement
     }
-  }
 }
 
 class CollectionsOnSynchronizedSetHashSetFactoryTest

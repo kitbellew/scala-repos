@@ -68,7 +68,7 @@ private class ClientEndpoint(
   private val lostMasters = new HashSet[RpcAddress]
   private var activeMasterEndpoint: RpcEndpointRef = null
 
-  override def onStart(): Unit = {
+  override def onStart(): Unit =
     driverArgs.cmd match {
       case "launch" =>
         // TODO: We could add an env variable here and intercept it in `sc.addJar` that would
@@ -118,13 +118,11 @@ private class ClientEndpoint(
         ayncSendToMasterAndForwardReply[KillDriverResponse](
           RequestKillDriver(driverId))
     }
-  }
 
   /**
     * Send the message to master and forward the reply to self asynchronously.
     */
-  private def ayncSendToMasterAndForwardReply[T: ClassTag](
-      message: Any): Unit = {
+  private def ayncSendToMasterAndForwardReply[T: ClassTag](message: Any): Unit =
     for (masterEndpoint <- masterEndpoints) {
       masterEndpoint
         .ask[T](message)
@@ -134,7 +132,6 @@ private class ClientEndpoint(
             logWarning(s"Error sending messages to master $masterEndpoint", e)
         }(forwardMessageExecutionContext)
     }
-  }
 
   /* Find out driver status then exit the JVM */
   def pollAndReportStatus(driverId: String) {
@@ -191,7 +188,7 @@ private class ClientEndpoint(
       }
   }
 
-  override def onDisconnected(remoteAddress: RpcAddress): Unit = {
+  override def onDisconnected(remoteAddress: RpcAddress): Unit =
     if (!lostMasters.contains(remoteAddress)) {
       logError(s"Error connecting to master $remoteAddress.")
       lostMasters += remoteAddress
@@ -203,11 +200,10 @@ private class ClientEndpoint(
         System.exit(-1)
       }
     }
-  }
 
   override def onNetworkError(
       cause: Throwable,
-      remoteAddress: RpcAddress): Unit = {
+      remoteAddress: RpcAddress): Unit =
     if (!lostMasters.contains(remoteAddress)) {
       logError(s"Error connecting to master ($remoteAddress).")
       logError(s"Cause was: $cause")
@@ -217,7 +213,6 @@ private class ClientEndpoint(
         System.exit(-1)
       }
     }
-  }
 
   override def onError(cause: Throwable): Unit = {
     logError(s"Error processing messages, exiting.")
@@ -225,9 +220,8 @@ private class ClientEndpoint(
     System.exit(-1)
   }
 
-  override def onStop(): Unit = {
+  override def onStop(): Unit =
     forwardMessageThread.shutdownNow()
-  }
 }
 
 /**

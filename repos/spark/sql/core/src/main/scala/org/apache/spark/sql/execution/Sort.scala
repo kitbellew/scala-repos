@@ -75,9 +75,8 @@ case class Sort(
     val prefixProjection =
       UnsafeProjection.create(Seq(SortPrefix(boundSortExpression)))
     val prefixComputer = new UnsafeExternalRowSorter.PrefixComputer {
-      override def computePrefix(row: InternalRow): Long = {
+      override def computePrefix(row: InternalRow): Long =
         prefixProjection.apply(row).getLong(0)
-      }
     }
 
     val pageSize = SparkEnv.get.memoryManager.pageSizeBytes
@@ -115,9 +114,8 @@ case class Sort(
     }
   }
 
-  override def upstreams(): Seq[RDD[InternalRow]] = {
+  override def upstreams(): Seq[RDD[InternalRow]] =
     child.asInstanceOf[CodegenSupport].upstreams()
-  }
 
   // Name of sorter variable used in codegen.
   private var sorterVariable: String = _
@@ -187,7 +185,7 @@ case class Sort(
   override def doConsume(
       ctx: CodegenContext,
       input: Seq[ExprCode],
-      row: String): String = {
+      row: String): String =
     if (row != null) {
       s"$sorterVariable.insertRow((UnsafeRow)$row);"
     } else {
@@ -205,5 +203,4 @@ case class Sort(
          | $sorterVariable.insertRow(${code.value});
        """.stripMargin.trim
     }
-  }
 }

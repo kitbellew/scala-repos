@@ -102,9 +102,8 @@ private[spark] abstract class RestSubmissionServer(
     (server, boundPort)
   }
 
-  def stop(): Unit = {
+  def stop(): Unit =
     _server.foreach(_.stop())
-  }
 }
 
 private[rest] object RestSubmissionServer {
@@ -168,13 +167,12 @@ private[rest] abstract class RestServlet extends HttpServlet with Logging {
     * For instance, we expect the path to take the form /[submission ID]/maybe/something/else.
     * The returned submission ID cannot be empty. If the path is unexpected, return None.
     */
-  protected def parseSubmissionId(path: String): Option[String] = {
+  protected def parseSubmissionId(path: String): Option[String] =
     if (path == null || path.isEmpty) {
       None
     } else {
       path.stripPrefix("/").split("/").headOption.filter(_.nonEmpty)
     }
-  }
 
   /**
     * Validate the response to ensure that it is correctly constructed.
@@ -184,7 +182,7 @@ private[rest] abstract class RestServlet extends HttpServlet with Logging {
     */
   private def validateResponse(
       responseMessage: SubmitRestProtocolResponse,
-      responseServlet: HttpServletResponse): SubmitRestProtocolResponse = {
+      responseServlet: HttpServletResponse): SubmitRestProtocolResponse =
     try {
       responseMessage.validate()
       responseMessage
@@ -193,7 +191,6 @@ private[rest] abstract class RestServlet extends HttpServlet with Logging {
         responseServlet.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR)
         handleError("Internal server error: " + formatException(e))
     }
-  }
 }
 
 /**

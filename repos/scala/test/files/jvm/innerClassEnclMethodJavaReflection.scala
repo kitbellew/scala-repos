@@ -13,10 +13,9 @@ object Test extends App {
     val allowedMissingPackages =
       Set("jline", "org.apache.tools.ant", "$anonfun")
 
-    def ok(t: Throwable) = {
+    def ok(t: Throwable) =
       allowedMissingPackages.exists(p =>
         t.getMessage.replace('/', '.').contains(p))
-    }
 
     def unapply(t: Throwable): Option[Throwable] = t match {
       case _: NoClassDefFoundError | _: ClassNotFoundException |

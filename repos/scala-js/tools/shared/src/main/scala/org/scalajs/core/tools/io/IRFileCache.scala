@@ -47,12 +47,11 @@ final class IRFileCache {
   def newCache: Cache = new Cache
 
   /** Approximate statistics about the cache usage */
-  def stats: IRFileCache.Stats = {
+  def stats: IRFileCache.Stats =
     new IRFileCache.Stats(
       statsReused.get,
       statsInvalidated.get,
       statsTreesRead.get)
-  }
 
   /** Reset statistics */
   def clearStats(): Unit = {
@@ -110,12 +109,11 @@ final class IRFileCache {
       *  The cache may be reused after calling [[free]] (but this is not any
       *  faster than calling [[newCache]], modulo the object allocation).
       */
-    def free(): Unit = {
+    def free(): Unit =
       if (localCache != null) {
         localCache.foreach(_.unreference())
         localCache = null
       }
-    }
 
     protected override def finalize(): Unit = {
       free()
@@ -248,9 +246,8 @@ final class IRFileCache {
     override val info: Infos.ClassInfo = _irFile.info
     override val relativePath: String = _irFile.relativePath
 
-    override def exists: Boolean = {
+    override def exists: Boolean =
       _tree != null || _irFile.exists
-    }
 
     override def tree: ClassDef = {
       if (_tree == null) {
@@ -281,24 +278,22 @@ final class IRFileCache {
     *  are not anymore.
     */
   @inline
-  private def clearOnThrow[T](body: => T): T = {
+  private def clearOnThrow[T](body: => T): T =
     try body
     catch {
       case t: Throwable =>
         globalCache.clear()
         throw t
     }
-  }
 }
 
 object IRFileCache {
   final class Stats(val reused: Int, val invalidated: Int, val treesRead: Int) {
 
     /** Descriptive line to display in logs */
-    def logLine: String = {
+    def logLine: String =
       s"reused: $reused -- " + s"invalidated: $invalidated -- " +
         s"trees read: $treesRead"
-    }
   }
 
   type VirtualRelativeIRFile = VirtualScalaJSIRFile with RelativeVirtualFile

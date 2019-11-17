@@ -38,9 +38,8 @@ final class DummyTask(
   def execute(
       eventHandler: EventHandler,
       loggers: Array[Logger],
-      continuation: Array[Task] => Unit): Unit = {
+      continuation: Array[Task] => Unit): Unit =
     continuation(execute(eventHandler, loggers))
-  }
 
   private class DummyEvent(taskDef: TaskDef, t: Option[Throwable])
       extends Event {

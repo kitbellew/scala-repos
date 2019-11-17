@@ -169,7 +169,7 @@ abstract class DeserializationStream {
     * reading each element will consume data from the input source.
     */
   def asIterator: Iterator[Any] = new NextIterator[Any] {
-    override protected def getNext() = {
+    override protected def getNext() =
       try {
         readObject[Any]()
       } catch {
@@ -177,7 +177,6 @@ abstract class DeserializationStream {
           finished = true
           null
       }
-    }
 
     override protected def close() {
       DeserializationStream.this.close()
@@ -189,7 +188,7 @@ abstract class DeserializationStream {
     * called once, as reading each element will consume data from the input source.
     */
   def asKeyValueIterator: Iterator[(Any, Any)] = new NextIterator[(Any, Any)] {
-    override protected def getNext() = {
+    override protected def getNext() =
       try {
         (readKey[Any](), readValue[Any]())
       } catch {
@@ -198,7 +197,6 @@ abstract class DeserializationStream {
           null
         }
       }
-    }
 
     override protected def close() {
       DeserializationStream.this.close()

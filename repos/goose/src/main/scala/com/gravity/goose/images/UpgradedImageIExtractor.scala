@@ -276,9 +276,8 @@ class UpgradedImageIExtractor(
     imageResults
   }
 
-  def getAllImages: ArrayList[Element] = {
+  def getAllImages: ArrayList[Element] =
     null
-  }
 
   /**
     * returns true if we think this is kind of a bannery dimension
@@ -413,9 +412,8 @@ class UpgradedImageIExtractor(
     if (goodImages == null || goodImages.isEmpty) None else Some(goodImages)
   }
 
-  def getNode(node: Element): Option[Element] = {
+  def getNode(node: Element): Option[Element] =
     if (node == null) None else Some(node)
-  }
 
   /**
     * checks to see if we were able to find open graph tags on this page
@@ -465,7 +463,7 @@ class UpgradedImageIExtractor(
     *
     * @return
     */
-  private def checkForOpenGraphTag: Option[Image] = {
+  private def checkForOpenGraphTag: Option[Image] =
     try {
       val meta: Elements = article.rawDoc.select("meta[property~=og:image]")
 
@@ -497,7 +495,6 @@ class UpgradedImageIExtractor(
         None
       }
     }
-  }
 
   /**
     * returns the bytes of the image file on disk
@@ -505,10 +502,9 @@ class UpgradedImageIExtractor(
   def getLocallyStoredImage(imageSrc: String): Option[LocallyStoredImage] =
     ImageUtils.storeImageToLocalFile(httpClient, linkhash, imageSrc, config)
 
-  def getCleanDomain = {
+  def getCleanDomain =
     // just grab the very end of the domain
     dotRegex.split(article.domain).takeRight(2).mkString(".")
-  }
 
   /**
     * in here we check for known image contains from sites we've checked out like yahoo, techcrunch, etc... that have

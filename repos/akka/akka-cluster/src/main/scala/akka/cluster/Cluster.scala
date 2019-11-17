@@ -300,12 +300,11 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
   def join(address: Address): Unit =
     clusterCore ! ClusterUserAction.JoinTo(fillLocal(address))
 
-  private def fillLocal(address: Address): Address = {
+  private def fillLocal(address: Address): Address =
     // local address might be used if grabbed from actorRef.path.address
     if (address.hasLocalScope && address.system == selfAddress.system)
       selfAddress
     else address
-  }
 
   /**
     * Join the specified seed nodes without defining them in config.
@@ -389,12 +388,11 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
     * If the cluster has already been shutdown the thunk will run on the caller thread immediately.
     * Typically used together `cluster.leave(cluster.selfAddress)` and then `system.terminate()`.
     */
-  def registerOnMemberRemoved(callback: Runnable): Unit = {
+  def registerOnMemberRemoved(callback: Runnable): Unit =
     if (_isTerminated.get()) callback.run()
     else
       clusterDaemons ! InternalClusterAction.AddOnMemberRemovedListener(
         callback)
-  }
 
   /**
     * Generate the remote actor path by replacing the Address in the RootActor Path for the given
@@ -421,7 +419,7 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
     * Should not called by the user. The user can issue a LEAVE command which will tell the node
     * to go through graceful handoff process `LEAVE -&gt; EXITING -&gt; REMOVED -&gt; SHUTDOWN`.
     */
-  private[cluster] def shutdown(): Unit = {
+  private[cluster] def shutdown(): Unit =
     if (_isTerminated.compareAndSet(false, true)) {
       logInfo("Shutting down...")
 
@@ -436,7 +434,6 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
 
       logInfo("Successfully shut down")
     }
-  }
 
   private def closeScheduler(): Unit = scheduler match {
     case x: Closeable ⇒ x.close()

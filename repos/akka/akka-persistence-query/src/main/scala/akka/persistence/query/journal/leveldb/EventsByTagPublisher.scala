@@ -27,7 +27,7 @@ private[akka] object EventsByTagPublisher {
       toOffset: Long,
       refreshInterval: Option[FiniteDuration],
       maxBufSize: Int,
-      writeJournalPluginId: String): Props = {
+      writeJournalPluginId: String): Props =
     refreshInterval match {
       case Some(interval) ⇒
         Props(
@@ -47,7 +47,6 @@ private[akka] object EventsByTagPublisher {
             maxBufSize,
             writeJournalPluginId))
     }
-  }
 
   /**
     * INTERNAL API

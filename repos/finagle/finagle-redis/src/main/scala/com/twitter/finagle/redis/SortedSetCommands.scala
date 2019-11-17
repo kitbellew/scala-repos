@@ -41,9 +41,8 @@ trait SortedSets { self: BaseClient =>
   def zAdd(
       key: ChannelBuffer,
       score: JDouble,
-      member: ChannelBuffer): Future[JLong] = {
+      member: ChannelBuffer): Future[JLong] =
     zAddMulti(key, Seq((score, member)))
-  }
 
   /**
     * Adds member, score pairs to sorted set
@@ -54,13 +53,12 @@ trait SortedSets { self: BaseClient =>
     */
   def zAddMulti(
       key: ChannelBuffer,
-      members: Seq[(JDouble, ChannelBuffer)]): Future[JLong] = {
+      members: Seq[(JDouble, ChannelBuffer)]): Future[JLong] =
     doRequest(ZAdd(key, members.map { m =>
       ZMember(m._1, m._2)
     })) {
       case IntegerReply(n) => Future.value(n)
     }
-  }
 
   /**
     * Returns sorted set cardinality of the sorted set at key

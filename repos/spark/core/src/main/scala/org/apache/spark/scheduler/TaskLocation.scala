@@ -62,9 +62,8 @@ private[spark] object TaskLocation {
   // Identify locations of executors with this prefix.
   val executorLocationTag = "executor_"
 
-  def apply(host: String, executorId: String): TaskLocation = {
+  def apply(host: String, executorId: String): TaskLocation =
     new ExecutorCacheTaskLocation(host, executorId)
-  }
 
   /**
     * Create a TaskLocation from a string returned by getPreferredLocations.

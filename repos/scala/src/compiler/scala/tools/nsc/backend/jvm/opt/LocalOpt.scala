@@ -196,12 +196,11 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
     * @param clazz The class whose methods are optimized
     * @return      `true` if unreachable code was eliminated in some method, `false` otherwise.
     */
-  def methodOptimizations(clazz: ClassNode): Boolean = {
+  def methodOptimizations(clazz: ClassNode): Boolean =
     !compilerSettings.YoptNone && clazz.methods.asScala.foldLeft(false) {
       case (changed, method) =>
         methodOptimizations(method, clazz.name) || changed
     }
-  }
 
   /**
     * Run method-level optimizations, see comment on class [[LocalOpt]].
@@ -457,7 +456,7 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
     */
   def nullnessOptimizations(
       method: MethodNode,
-      ownerClassName: InternalName): Boolean = {
+      ownerClassName: InternalName): Boolean =
     AsmAnalyzer.sizeOKForNullness(method) && {
       lazy val nullnessAnalyzer =
         new AsmAnalyzer(method, ownerClassName, new NullnessAnalyzer(btypes))
@@ -467,9 +466,8 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
       def frameAt(insn: AbstractInsnNode): Option[Frame[NullnessValue]] =
         Option(nullnessAnalyzer.frameAt(insn))
 
-      def nullness(insn: AbstractInsnNode, slot: Int): Option[NullnessValue] = {
+      def nullness(insn: AbstractInsnNode, slot: Int): Option[NullnessValue] =
         frameAt(insn).map(_.getValue(slot))
-      }
 
       def isNull(insn: AbstractInsnNode, slot: Int) =
         nullness(insn, slot).contains(NullValue)
@@ -555,7 +553,6 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
 
       toReplace.nonEmpty
     }
-  }
 
   /**
     * Removes unreachable basic blocks.
@@ -627,7 +624,7 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
     */
   def eliminateRedundantCasts(
       method: MethodNode,
-      owner: InternalName): Boolean = {
+      owner: InternalName): Boolean =
     AsmAnalyzer.sizeOKForBasicValue(method) && {
       def isSubType(aRefDesc: String, bClass: InternalName): Boolean =
         aRefDesc == bClass || bClass == ObjectRef.internalName || {
@@ -656,7 +653,6 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
       toRemove foreach method.instructions.remove
       toRemove.nonEmpty
     }
-  }
 }
 
 object LocalOptImpls {
@@ -679,14 +675,13 @@ object LocalOptImpls {
     /** True if there exists code between start and end. */
     def containsExecutableCode(
         start: AbstractInsnNode,
-        end: LabelNode): Boolean = {
+        end: LabelNode): Boolean =
       start != end &&
-      ((start.getOpcode: @switch) match {
-        // FrameNode, LabelNode and LineNumberNode have opcode == -1.
-        case -1 | GOTO => containsExecutableCode(start.getNext, end)
-        case _         => true
-      })
-    }
+        ((start.getOpcode: @switch) match {
+          // FrameNode, LabelNode and LineNumberNode have opcode == -1.
+          case -1 | GOTO => containsExecutableCode(start.getNext, end)
+          case _         => true
+        })
 
     var removedHandlers = Set.empty[TryCatchBlockNode]
     val handlersIter = method.tryCatchBlocks.iterator()
@@ -715,14 +710,13 @@ object LocalOptImpls {
     def variableIsUsed(
         start: AbstractInsnNode,
         end: LabelNode,
-        varIndex: Int): Boolean = {
+        varIndex: Int): Boolean =
       start != end &&
-      (start match {
-        case v: VarInsnNode if v.`var` == varIndex  => true
-        case i: IincInsnNode if i.`var` == varIndex => true
-        case _                                      => variableIsUsed(start.getNext, end, varIndex)
-      })
-    }
+        (start match {
+          case v: VarInsnNode if v.`var` == varIndex  => true
+          case i: IincInsnNode if i.`var` == varIndex => true
+          case _                                      => variableIsUsed(start.getNext, end, varIndex)
+        })
 
     val initialNumVars = method.localVariables.size
     val localsIter = method.localVariables.iterator()

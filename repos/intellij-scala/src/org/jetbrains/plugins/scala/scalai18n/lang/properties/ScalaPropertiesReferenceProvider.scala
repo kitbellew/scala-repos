@@ -14,9 +14,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.base.{
   * @since 7/17/12
   */
 class ScalaPropertiesReferenceProvider extends PsiReferenceProvider {
-  override def acceptsTarget(target: PsiElement): Boolean = {
+  override def acceptsTarget(target: PsiElement): Boolean =
     target.isInstanceOf[IProperty]
-  }
 
   def getReferencesByElement(
       element: PsiElement,

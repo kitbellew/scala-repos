@@ -180,19 +180,17 @@ object Checkpoint {
 
   // Returns a source for the checkpoint in the given format.
   private def getSource(format: String, filename: String)(
-      implicit mode: Mode): Source = {
+      implicit mode: Mode): Source =
     format match {
       case "sequencefile" => SequenceFile(filename)
       case "tsv"          => Tsv(filename)
       case _              => sys.error("Invalid value for --checkpoint.format: " + format)
     }
-  }
 
   // Returns true if the given checkpoint file exists and should be read.
   private def hasInput(checkpointName: String, filename: String)(
       implicit args: Args,
-      mode: Mode): Boolean = {
+      mode: Mode): Boolean =
     !CheckpointArg(checkpointName, "clobber").isTrue &&
-    mode.fileExists(filename)
-  }
+      mode.fileExists(filename)
 }

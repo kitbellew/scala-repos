@@ -19,12 +19,11 @@ private[serverset2] object ServiceDiscoverer {
     */
   def zipWithWeights(
       ents: Seq[Entry],
-      vecs: Set[Vector]): Seq[(Entry, Double)] = {
+      vecs: Set[Vector]): Seq[(Entry, Double)] =
     ents map { ent =>
       val w = vecs.foldLeft(1.0) { case (w, vec) => w * vec.weightOf(ent) }
       ent -> w
     }
-  }
 
   /**
     * ZooKeeper client health as observed by the ServiceDiscoverer.
@@ -34,7 +33,7 @@ private[serverset2] object ServiceDiscoverer {
     case object Healthy extends ClientHealth
     case object Unhealthy extends ClientHealth
 
-    def apply(sessionState: SessionState): ClientHealth = {
+    def apply(sessionState: SessionState): ClientHealth =
       sessionState match {
         case SessionState.Expired | SessionState.NoSyncConnected |
             SessionState.Unknown | SessionState.AuthFailed |
@@ -44,7 +43,6 @@ private[serverset2] object ServiceDiscoverer {
             SessionState.SyncConnected =>
           Healthy
       }
-    }
   }
 
   object EntryLookupFailureException
@@ -125,7 +123,7 @@ private[serverset2] class ServiceDiscoverer(
       cache: ZkNodeDataCache[Entity],
       readStat: Stat,
       glob: String
-  ): Activity[Seq[Entity]] = {
+  ): Activity[Seq[Entity]] =
     actZkSession.flatMap {
       case zkSession =>
         cache.setSession(zkSession)
@@ -135,7 +133,6 @@ private[serverset2] class ServiceDiscoverer(
           bulkResolveMemberData(path, paths.toSeq, cache, readStat)
         }
     }
-  }
 
   /**
     * Resolve all child paths of a watch. If all resolutions fail,

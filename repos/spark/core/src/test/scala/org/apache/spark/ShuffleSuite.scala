@@ -499,15 +499,13 @@ class InterleaveIterators[T, R](
 
 object ShuffleSuite {
 
-  def mergeCombineException(x: Int, y: Int): Int = {
+  def mergeCombineException(x: Int, y: Int): Int =
     throw new SparkException("Exception for map-side combine.")
-  }
 
   class NonJavaSerializableClass(val value: Int)
       extends Comparable[NonJavaSerializableClass] {
-    override def compareTo(o: NonJavaSerializableClass): Int = {
+    override def compareTo(o: NonJavaSerializableClass): Int =
       value - o.value
-    }
   }
 
   case class AggregatedShuffleMetrics(

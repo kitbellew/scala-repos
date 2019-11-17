@@ -11,9 +11,8 @@ class ScalaRunTimeTest {
   @Test
   def testIsTuple() {
     import ScalaRunTime.isTuple
-    def check(v: Any) = {
+    def check(v: Any) =
       assertTrue(v.toString, isTuple(v))
-    }
 
     val s = ""
     check(Tuple1(s))

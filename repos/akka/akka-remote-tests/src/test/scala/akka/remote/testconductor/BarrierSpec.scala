@@ -637,7 +637,6 @@ class BarrierSpec extends AkkaSpec(BarrierSpec.config) with ImplicitSender {
       clients: Set[Controller.NodeInfo],
       barrier: String,
       arrived: List[ActorRef],
-      previous: Data): Data = {
+      previous: Data): Data =
     Data(clients, barrier, arrived, previous.deadline)
-  }
 }

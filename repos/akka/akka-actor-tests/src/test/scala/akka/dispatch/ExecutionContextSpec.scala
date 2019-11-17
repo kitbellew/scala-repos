@@ -146,13 +146,12 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
       val ec = akka.dispatch.ExecutionContexts.sameThreadExecutionContext
       var x = 0
       ec.execute(new Runnable {
-        override def run = {
+        override def run =
           ec.execute(new Runnable {
             override def run = blocking {
               x = 1
             }
           })
-        }
       })
       x should be(1)
     }

@@ -29,7 +29,7 @@ class SbtIvyCacheIndexer(val cacheDir: File) {
       .flatMap(listArtifacts)
   }
 
-  private def extractArtifact(ivyFile: File): Option[ArtifactInfo] = {
+  private def extractArtifact(ivyFile: File): Option[ArtifactInfo] =
     try {
       val xml = XML.loadFile(ivyFile)
       val group = (xml \\ "ivy-module" \\ "info" \\ "@organisation").text
@@ -39,5 +39,4 @@ class SbtIvyCacheIndexer(val cacheDir: File) {
     } catch {
       case e: Throwable => None
     }
-  }
 }

@@ -87,7 +87,7 @@ abstract class ControllerBase
   /**
     * Returns the context object for the request.
     */
-  implicit def context: Context = {
+  implicit def context: Context =
     contextCache.get match {
       case null => {
         val context = Context(loadSystemSettings(), LoginAccount, request)
@@ -96,7 +96,6 @@ abstract class ControllerBase
       }
       case context => context
     }
-  }
 
   private def LoginAccount: Option[Account] =
     request
@@ -192,14 +191,13 @@ abstract class ControllerBase
   // jenkins send message as 'application/x-www-form-urlencoded' but scalatra already parsed as multi-part-request.
   def extractFromJsonBody[A](
       implicit request: HttpServletRequest,
-      mf: Manifest[A]): Option[A] = {
+      mf: Manifest[A]): Option[A] =
     (request.contentType.map(_.split(";").head.toLowerCase) match {
       case Some("application/x-www-form-urlencoded") =>
         multiParams.keys.headOption.map(parse(_))
       case Some("application/json") => Some(parsedBody)
       case _                        => Some(parse(request.body))
     }).filterNot(_ == JNothing).flatMap(j => Try(j.extract[A]).toOption)
-  }
 }
 
 /**

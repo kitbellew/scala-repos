@@ -19,10 +19,9 @@ final case class Position(
   def show: String = s"$line:$column"
 
   def isEmpty: Boolean = {
-    def isEmptySlowPath(): Boolean = {
+    def isEmptySlowPath(): Boolean =
       source.getScheme == null && source.getRawAuthority == null &&
-      source.getRawQuery == null && source.getRawFragment == null
-    }
+        source.getRawQuery == null && source.getRawFragment == null
     source.getRawPath == "" && isEmptySlowPath()
   }
 

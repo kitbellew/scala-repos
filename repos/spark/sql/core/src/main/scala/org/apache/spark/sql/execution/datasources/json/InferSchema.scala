@@ -193,7 +193,7 @@ private[sql] object InferSchema {
 
   private def withCorruptField(
       struct: StructType,
-      columnNameOfCorruptRecords: String): StructType = {
+      columnNameOfCorruptRecords: String): StructType =
     if (!struct.fieldNames.contains(columnNameOfCorruptRecords)) {
       // If this given struct does not have a column used for corrupt records,
       // add this field.
@@ -202,7 +202,6 @@ private[sql] object InferSchema {
       // Otherwise, just return this struct.
       struct
     }
-  }
 
   /**
     * Remove top-level ArrayType wrappers and merge the remaining schemas
@@ -238,7 +237,7 @@ private[sql] object InferSchema {
   /**
     * Returns the most general data type for two given data types.
     */
-  def compatibleType(t1: DataType, t2: DataType): DataType = {
+  def compatibleType(t1: DataType, t2: DataType): DataType =
     HiveTypeCoercion.findTightestCommonTypeOfTwo(t1, t2).getOrElse {
       // t1 or t2 is a StructType, ArrayType, or an unexpected type.
       (t1, t2) match {
@@ -279,5 +278,4 @@ private[sql] object InferSchema {
         case (_, _) => StringType
       }
     }
-  }
 }

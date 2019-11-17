@@ -76,9 +76,8 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
     true
   }
 
-  def bulkDelete_!!(qry: DBObject): Unit = {
+  def bulkDelete_!!(qry: DBObject): Unit =
     useColl(coll => coll.remove(qry))
-  }
 
   def bulkDelete_!!(k: String, o: Any): Unit =
     bulkDelete_!!(new BasicDBObject(k, o))
@@ -86,13 +85,12 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
   /**
     * Find a single row by a qry, using a DBObject.
     */
-  def find(qry: DBObject): Box[BaseRecord] = {
+  def find(qry: DBObject): Box[BaseRecord] =
     useColl(coll =>
       coll.findOne(qry) match {
         case null => Empty
         case dbo  => Full(fromDBObject(dbo))
       })
-  }
 
   /**
     * Find a single row by an ObjectId
@@ -156,11 +154,10 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
   def findAll(
       qry: DBObject,
       sort: Option[DBObject],
-      opts: FindOption*): List[BaseRecord] = {
+      opts: FindOption*): List[BaseRecord] =
     findAll(sort, opts: _*) { coll =>
       coll.find(qry)
     }
-  }
 
   /**
     * Find all rows and retrieve only keys fields.
@@ -169,11 +166,10 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
       qry: DBObject,
       keys: DBObject,
       sort: Option[DBObject],
-      opts: FindOption*): List[BaseRecord] = {
+      opts: FindOption*): List[BaseRecord] =
     findAll(sort, opts: _*) { coll =>
       coll.find(qry, keys)
     }
-  }
 
   protected def findAll(sort: Option[DBObject], opts: FindOption*)(
       f: (DBCollection) => DBCursor): List[BaseRecord] = {
@@ -223,9 +219,8 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
   /**
     * Find all documents using a JObject query
     */
-  def findAll(qry: JObject, opts: FindOption*): List[BaseRecord] = {
+  def findAll(qry: JObject, opts: FindOption*): List[BaseRecord] =
     findAll(JObjectParser.parse(qry), None, opts: _*)
-  }
 
   /**
     * Find all documents using a JObject query with sort
@@ -324,37 +319,32 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
       qry: JObject,
       newbr: BaseRecord,
       db: DB,
-      opts: UpdateOption*): Unit = {
+      opts: UpdateOption*): Unit =
     update(JObjectParser.parse(qry), newbr.asDBObject, db, opts: _*)
-  }
 
   /*
    * Update records with a JObject query
    */
-  def update(qry: JObject, newbr: BaseRecord, opts: UpdateOption*): Unit = {
+  def update(qry: JObject, newbr: BaseRecord, opts: UpdateOption*): Unit =
     useDb(db => update(qry, newbr, db, opts: _*))
-  }
 
   /**
     * Upsert records with a DBObject query
     */
-  def upsert(query: DBObject, update: DBObject): Unit = {
+  def upsert(query: DBObject, update: DBObject): Unit =
     useColl(coll => coll.update(query, update, true, false))
-  }
 
   /**
     * Update one record with a DBObject query
     */
-  def update(query: DBObject, update: DBObject): Unit = {
+  def update(query: DBObject, update: DBObject): Unit =
     useColl(coll => coll.update(query, update))
-  }
 
   /**
     * Update multiple records with a DBObject query
     */
-  def updateMulti(query: DBObject, update: DBObject): Unit = {
+  def updateMulti(query: DBObject, update: DBObject): Unit =
     useColl(coll => coll.updateMulti(query, update))
-  }
 
   /**
     * Update a record with a DBObject query

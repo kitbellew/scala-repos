@@ -57,7 +57,7 @@ object Scaladoc extends AutoPlugin {
 
   def scaladocVerifier(file: File): File = {
     @tailrec
-    def findHTMLFileWithDiagram(dirs: Seq[File]): Boolean = {
+    def findHTMLFileWithDiagram(dirs: Seq[File]): Boolean =
       if (dirs.isEmpty) false
       else {
         val curr = dirs.head
@@ -84,7 +84,6 @@ object Scaladoc extends AutoPlugin {
           }
         hasDiagram || findHTMLFileWithDiagram(rest)
       }
-    }
 
     // if we have generated scaladoc and none of the files have a diagram then fail
     if (file.exists() && !findHTMLFileWithDiagram(List(file)))

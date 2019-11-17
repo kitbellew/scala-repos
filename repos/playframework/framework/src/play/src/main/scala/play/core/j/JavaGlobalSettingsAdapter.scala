@@ -33,29 +33,24 @@ class JavaGlobalSettingsAdapter(val underlying: play.GlobalSettings)
       .getOrElse(super.onRouteRequest(request))
   }
 
-  override def onError(
-      request: RequestHeader,
-      ex: Throwable): Future[Result] = {
+  override def onError(request: RequestHeader, ex: Throwable): Future[Result] =
     JavaHelpers
       .invokeWithContextOpt(request, req => underlying.onError(req, ex))
       .getOrElse(super.onError(request, ex))
-  }
 
-  override def onHandlerNotFound(request: RequestHeader): Future[Result] = {
+  override def onHandlerNotFound(request: RequestHeader): Future[Result] =
     JavaHelpers
       .invokeWithContextOpt(request, req => underlying.onHandlerNotFound(req))
       .getOrElse(super.onHandlerNotFound(request))
-  }
 
   override def onBadRequest(
       request: RequestHeader,
-      error: String): Future[Result] = {
+      error: String): Future[Result] =
     JavaHelpers
       .invokeWithContextOpt(request, req => underlying.onBadRequest(req, error))
       .getOrElse(super.onBadRequest(request, error))
-  }
 
-  override def doFilter(a: EssentialAction): EssentialAction = {
+  override def doFilter(a: EssentialAction): EssentialAction =
     try {
       Filters(
         super.doFilter(a),
@@ -65,5 +60,4 @@ class JavaGlobalSettingsAdapter(val underlying: play.GlobalSettings)
         EssentialAction(req => Accumulator.done(onError(req, e)))
       }
     }
-  }
 }

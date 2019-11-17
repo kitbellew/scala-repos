@@ -89,7 +89,7 @@ object Searching {
 
     @tailrec
     private def binarySearch[B >: A](elem: B, from: Int, to: Int)(
-        implicit ord: Ordering[B]): SearchResult = {
+        implicit ord: Ordering[B]): SearchResult =
       if (to == from) InsertionPoint(from)
       else {
         val idx = from + (to - from - 1) / 2
@@ -99,7 +99,6 @@ object Searching {
           case _  => Found(idx)
         }
       }
-    }
 
     private def linearSearch[B >: A](c: SeqView[A, Repr], elem: B, offset: Int)(
         implicit ord: Ordering[B]): SearchResult = {

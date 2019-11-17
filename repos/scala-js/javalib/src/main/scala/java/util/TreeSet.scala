@@ -38,7 +38,7 @@ class TreeSet[E](_comparator: Comparator[_ >: E])
 
   protected val inner: mutable.TreeSet[Box[E]] = new mutable.TreeSet[Box[E]]()
 
-  def iterator(): Iterator[E] = {
+  def iterator(): Iterator[E] =
     new Iterator[E] {
       private val iter = inner.clone.iterator
 
@@ -51,18 +51,16 @@ class TreeSet[E](_comparator: Comparator[_ >: E])
         last.get
       }
 
-      def remove(): Unit = {
+      def remove(): Unit =
         if (last.isEmpty) {
           throw new IllegalStateException()
         } else {
           last.foreach(self.remove(_))
           last = None
         }
-      }
     }
-  }
 
-  def descendingIterator(): Iterator[E] = {
+  def descendingIterator(): Iterator[E] =
     new Iterator[E] {
       private val iter = inner.iterator.toList.reverse.iterator
 
@@ -76,16 +74,14 @@ class TreeSet[E](_comparator: Comparator[_ >: E])
         nxt
       }
 
-      def remove(): Unit = {
+      def remove(): Unit =
         if (last.isEmpty) {
           throw new IllegalStateException()
         } else {
           last.foreach(self.remove(_))
           last = None
         }
-      }
     }
-  }
 
   def descendingSet(): NavigableSet[E] = {
     val descSetFun = { () =>

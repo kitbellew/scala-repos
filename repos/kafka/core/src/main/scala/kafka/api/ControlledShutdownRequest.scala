@@ -56,15 +56,13 @@ case class ControlledShutdownRequest(
     buffer.putInt(brokerId)
   }
 
-  def sizeInBytes: Int = {
+  def sizeInBytes: Int =
     2 + /* version id */
     4 + /* correlation id */
     clientId.fold(0)(shortStringLength) + 4 /* broker id */
-  }
 
-  override def toString(): String = {
+  override def toString(): String =
     describe(true)
-  }
 
   override def handleError(
       e: Throwable,

@@ -34,13 +34,11 @@ case class BlockUpdatedInfo(
 
 private[spark] object BlockUpdatedInfo {
 
-  private[spark] def apply(
-      updateBlockInfo: UpdateBlockInfo): BlockUpdatedInfo = {
+  private[spark] def apply(updateBlockInfo: UpdateBlockInfo): BlockUpdatedInfo =
     BlockUpdatedInfo(
       updateBlockInfo.blockManagerId,
       updateBlockInfo.blockId,
       updateBlockInfo.storageLevel,
       updateBlockInfo.memSize,
       updateBlockInfo.diskSize)
-  }
 }

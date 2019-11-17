@@ -42,14 +42,13 @@ class ChangeSignatureFromScalaTest extends ChangeSignatureTestBase {
       newVisibility: String,
       newName: String,
       newReturnType: String,
-      newParams: => Seq[Seq[ParameterInfo]]): ChangeSignatureProcessorBase = {
+      newParams: => Seq[Seq[ParameterInfo]]): ChangeSignatureProcessorBase =
     scalaProcessor(
       newVisibility,
       newName,
       newReturnType,
       newParams,
       isAddDefaultValue)
-  }
 
   private def parameterInfo(
       name: String,
@@ -57,7 +56,7 @@ class ChangeSignatureFromScalaTest extends ChangeSignatureTestBase {
       tpe: ScType,
       defVal: String = "",
       isRep: Boolean = false,
-      isByName: Boolean = false) = {
+      isByName: Boolean = false) =
     new ScalaParameterInfo(
       name,
       oldIdx,
@@ -66,7 +65,6 @@ class ChangeSignatureFromScalaTest extends ChangeSignatureTestBase {
       isRep,
       isByName,
       defVal)
-  }
 
   def testSimpleMethod() = {
     isAddDefaultValue = false

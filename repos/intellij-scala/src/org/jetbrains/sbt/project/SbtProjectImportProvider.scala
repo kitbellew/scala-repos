@@ -25,7 +25,7 @@ class SbtProjectImportProvider(builder: SbtProjectImportBuilder)
 }
 
 object SbtProjectImportProvider {
-  def canImport(entry: VirtualFile): Boolean = {
+  def canImport(entry: VirtualFile): Boolean =
     if (entry.isDirectory) {
       entry.getName == Sbt.ProjectDirectory ||
       entry.containsDirectory(Sbt.ProjectDirectory) ||
@@ -33,13 +33,11 @@ object SbtProjectImportProvider {
     } else {
       entry.getName == Sbt.BuildFile
     }
-  }
 
-  def projectRootOf(entry: VirtualFile): VirtualFile = {
+  def projectRootOf(entry: VirtualFile): VirtualFile =
     if (entry.isDirectory) {
       if (entry.getName == Sbt.ProjectDirectory) entry.getParent else entry
     } else {
       entry.getParent
     }
-  }
 }

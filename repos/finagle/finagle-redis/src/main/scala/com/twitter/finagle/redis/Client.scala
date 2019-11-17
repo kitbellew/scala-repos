@@ -191,7 +191,7 @@ private[redis] class ConnectedTransactionalClient(
 ) extends Client(serviceFactory.toService)
     with TransactionalClient {
 
-  def transaction(cmds: Seq[Command]): Future[Seq[Reply]] = {
+  def transaction(cmds: Seq[Command]): Future[Seq[Reply]] =
     serviceFactory() flatMap { svc =>
       multi(svc) before {
         val cmdQueue =
@@ -208,7 +208,6 @@ private[redis] class ConnectedTransactionalClient(
         svc.close()
       }
     }
-  }
 
   private def multi(svc: Service[Command, Reply]): Future[Unit] =
     svc(Multi) flatMap {

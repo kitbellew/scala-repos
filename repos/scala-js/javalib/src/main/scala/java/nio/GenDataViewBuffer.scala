@@ -48,12 +48,11 @@ private[nio] object GenDataViewBuffer {
   private def newDataView(
       buffer: ArrayBuffer,
       byteOffset: Int,
-      byteLength: Int): DataView = {
+      byteLength: Int): DataView =
     if (byteLength == 0)
       lit(buffer = buffer, byteOffset = byteOffset, byteLength = byteLength)
         .asInstanceOf[DataView]
     else new DataView(buffer, byteOffset, byteLength)
-  }
 }
 
 private[nio] final class GenDataViewBuffer[B <: Buffer](val self: B)

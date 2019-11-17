@@ -607,7 +607,7 @@ class Scaladoc extends ScalaMatchingTask {
       nameToFile(originDir)(originFile)
     }
 
-    def decodeEscapes(s: String): String = {
+    def decodeEscapes(s: String): String =
       // In Ant script characters '<' and '>' must be encoded when
       // used in attribute values, e.g. for attributes "doctitle", "header", ..
       // in task Scaladoc you may write:
@@ -617,7 +617,6 @@ class Scaladoc extends ScalaMatchingTask {
         .replaceAll("&gt;", ">")
         .replaceAll("&amp;", "&")
         .replaceAll("&quot;", "\"")
-    }
 
     // Builds-up the compilation settings for Scalac with the existing Ant
     // parameters.

@@ -234,12 +234,11 @@ object M5 {
       o2 addAction orAction;
     }
 
-    def probe(name: String, wire: Wire): Unit = {
+    def probe(name: String, wire: Wire): Unit =
       wire addAction { () =>
         Console.println(
           name + " " + currentTime + " new-value = " + wire.getSignal);
       }
-    }
   }
 
   abstract class CircuitSimulation() extends BasicCircuitSimulation() {
@@ -469,12 +468,11 @@ class Wire() {
 
 abstract class BasicCircuitSimulator() extends Simulator() {
 
-  def probe(name: String, wire: Wire): Unit = {
+  def probe(name: String, wire: Wire): Unit =
     wire addAction { () =>
       Console.println(
         name + " " + currentTime + " new-value = " + wire.getSignal);
     }
-  }
 
   val InverterDelay: Int;
   val AndGateDelay: Int;
@@ -544,11 +542,10 @@ abstract class CircuitSimulator() extends BasicCircuitSimulator() {
     andGate(w0, ctrlN(0), out(0));
   }
 
-  def connect(in: Wire, out: Wire) = {
+  def connect(in: Wire, out: Wire) =
     in addAction { () =>
       out.setSignal(in.getSignal);
     }
-  }
 
   def demux(in: Wire, ctrl: List[Wire], out: List[Wire]): Unit = ctrl match {
     case List() => connect(in, out.head);

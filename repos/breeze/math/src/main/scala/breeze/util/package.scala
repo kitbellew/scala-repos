@@ -41,11 +41,11 @@ package object util {
     */
   def nonstupidObjectInputStream(
       stream: InputStream,
-      ignoreSerialVersionUID: Boolean = false): ObjectInputStream = {
+      ignoreSerialVersionUID: Boolean = false): ObjectInputStream =
     new ObjectInputStream(stream) with SerializableLogging {
       @throws[IOException]
       @throws[ClassNotFoundException]
-      override def resolveClass(desc: ObjectStreamClass): Class[_] = {
+      override def resolveClass(desc: ObjectStreamClass): Class[_] =
         try {
           val currentTccl: ClassLoader =
             Thread.currentThread.getContextClassLoader
@@ -54,7 +54,6 @@ package object util {
           case e: Exception =>
             super.resolveClass(desc)
         }
-      }
 
       // from http://stackoverflow.com/questions/1816559/make-java-runtime-ignore-serialversionuids
       override protected def readClassDescriptor(): ObjectStreamClass = {
@@ -94,7 +93,6 @@ package object util {
         resultClassDescriptor
       }
     }
-  }
 
   /**
     * Serializes an object using java serialization
@@ -155,16 +153,14 @@ package object util {
 
   // this should be a separate trait but Scala is freaking out
   class SeqExtras[T](s: Seq[T]) {
-    def argmax(implicit ordering: Ordering[T]) = {
+    def argmax(implicit ordering: Ordering[T]) =
       s.zipWithIndex
         .reduceLeft((a, b) => if (ordering.gt(a._1, b._1)) a else b)
         ._2
-    }
-    def argmin(implicit ordering: Ordering[T]) = {
+    def argmin(implicit ordering: Ordering[T]) =
       s.zipWithIndex
         .reduceLeft((a, b) => if (ordering.lt(a._1, b._1)) a else b)
         ._2
-    }
 
     def unfold[U, To](init: U)(f: (U, T) => U)(
         implicit cbf: CanBuildFrom[Seq[T], U, To]) = {
@@ -228,21 +224,17 @@ package object util {
       bs
     }
 
-    def |(other: BitSet) = {
+    def |(other: BitSet) =
       copy |= other
-    }
 
-    def &~(other: BitSet) = {
+    def &~(other: BitSet) =
       copy &~= other
-    }
 
-    def &(other: BitSet) = {
+    def &(other: BitSet) =
       copy &= other
-    }
 
-    def ^(other: BitSet) = {
+    def ^(other: BitSet) =
       copy ^= other
-    }
 
     def copy = bs.clone().asInstanceOf[java.util.BitSet]
 

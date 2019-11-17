@@ -60,11 +60,10 @@ object Authorities {
 
   implicit val AuthoritiesDecomposer: Decomposer[Authorities] =
     new Decomposer[Authorities] {
-      override def decompose(authorities: Authorities): JValue = {
+      override def decompose(authorities: Authorities): JValue =
         JObject(JField(
           "uids",
           JArray(authorities.accountIds.map(JString(_)).toList)) :: Nil)
-      }
     }
 
   implicit val AuthoritiesExtractor: Extractor[Authorities] =
@@ -74,8 +73,7 @@ object Authorities {
     }
 
   implicit object AuthoritiesSemigroup extends Semigroup[Authorities] {
-    def append(a: Authorities, b: => Authorities): Authorities = {
+    def append(a: Authorities, b: => Authorities): Authorities =
       Authorities(a.accountIds ++ b.accountIds)
-    }
   }
 }

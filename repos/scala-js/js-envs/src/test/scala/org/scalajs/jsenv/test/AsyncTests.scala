@@ -23,9 +23,8 @@ trait AsyncTests extends BasicJSEnvTests {
     newJSEnv.asyncRunner(codeVF)
   }
 
-  protected def start(runner: AsyncJSRunner): Future[Unit] = {
+  protected def start(runner: AsyncJSRunner): Future[Unit] =
     runner.start(new ScalaConsoleLogger(Level.Warn), ConsoleJSConsole)
-  }
 
   @Test
   def futureTest: Unit = {

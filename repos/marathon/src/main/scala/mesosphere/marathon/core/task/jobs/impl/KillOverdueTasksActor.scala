@@ -17,11 +17,10 @@ private[jobs] object KillOverdueTasksActor {
       config: MarathonConf,
       taskTracker: TaskTracker,
       driverHolder: MarathonSchedulerDriverHolder,
-      clock: Clock): Props = {
+      clock: Clock): Props =
     Props(
       new KillOverdueTasksActor(
         new Support(config, taskTracker, driverHolder, clock)))
-  }
 
   /**
     * Contains the core logic for the KillOverdueTasksActor.
@@ -51,7 +50,7 @@ private[jobs] object KillOverdueTasksActor {
       val stagedExpire = now - config.taskLaunchTimeout().millis
       val unconfirmedExpire = now - config.taskLaunchConfirmTimeout().millis
 
-      def launchedAndExpired(task: Task): Boolean = {
+      def launchedAndExpired(task: Task): Boolean =
         task.launched.fold(false) { launched =>
           launched.status.mesosStatus.map(_.getState) match {
             case None | Some(TaskState.TASK_STARTING)
@@ -72,7 +71,6 @@ private[jobs] object KillOverdueTasksActor {
               false
           }
         }
-      }
 
       taskTracker.tasksByAppSync.allTasks.filter(launchedAndExpired)
     }
@@ -96,9 +94,8 @@ private class KillOverdueTasksActor(support: KillOverdueTasksActor.Support)
     )
   }
 
-  override def postStop(): Unit = {
+  override def postStop(): Unit =
     checkTicker.cancel()
-  }
 
   override def receive: Receive = {
     case KillOverdueTasksActor.Check(maybeAck) =>

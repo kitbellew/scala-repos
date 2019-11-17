@@ -56,13 +56,12 @@ class CORSFilter(
   override protected val logger = Logger(classOf[CORSFilter])
 
   override def apply(f: RequestHeader => Future[Result])(
-      request: RequestHeader): Future[Result] = {
+      request: RequestHeader): Future[Result] =
     if (pathPrefixes.exists(request.path.startsWith)) {
       filterRequest(f, request)
     } else {
       f(request)
     }
-  }
 }
 
 object CORSFilter {

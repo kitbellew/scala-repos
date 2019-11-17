@@ -8,9 +8,8 @@ object Test extends DirectTest {
 
   override def code = "class Foo { val f = (param: Int) => param } "
 
-  override def show(): Unit = {
+  override def show(): Unit =
     Console.withErr(System.out) {
       compile()
     }
-  }
 }

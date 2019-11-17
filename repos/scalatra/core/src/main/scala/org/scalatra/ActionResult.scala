@@ -7,12 +7,11 @@ case class ActionResult(
 
 private object ActionResultHelpers {
 
-  def responseStatus(status: Int, reason: String): ResponseStatus = {
+  def responseStatus(status: Int, reason: String): ResponseStatus =
     reason match {
       case "" | null => ResponseStatus(status)
       case _         => new ResponseStatus(status, reason)
     }
-  }
 }
 
 import org.scalatra.ActionResultHelpers._

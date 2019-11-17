@@ -204,12 +204,11 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
     "should not merge if the time interval on disk(from diskPipeFactory) is smaller than one batch") = {
     //To test this property, it requires the length of the batcher is at least 2 millis, since we want
     //to create data that fits a batch partially
-    def atLeast2MsBatcher(batcher: Batcher): Boolean = {
+    def atLeast2MsBatcher(batcher: Batcher): Boolean =
       batcher match {
         case b: MillisecondBatcher => b.durationMillis >= 2
         case _                     => true
       }
-    }
     forAll {
       (
           interval: Intersection[InclusiveLower, ExclusiveUpper, Timestamp],

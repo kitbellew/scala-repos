@@ -160,14 +160,13 @@ sealed trait Schedule extends Loggable {
       }
 
       val fast = new java.util.concurrent.Callable[Unit] {
-        def call(): Unit = {
+        def call(): Unit =
           try {
             Schedule.this.restart
             pool.execute(r)
           } catch {
             case e: Exception => logger.error(e)
           }
-        }
       }
 
       try {

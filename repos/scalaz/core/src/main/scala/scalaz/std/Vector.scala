@@ -44,12 +44,11 @@ trait VectorInstances extends VectorInstances0 {
     def unzip[A, B](a: Vector[(A, B)]) = a.unzip
 
     def traverseImpl[F[_], A, B](v: Vector[A])(f: A => F[B])(
-        implicit F: Applicative[F]) = {
+        implicit F: Applicative[F]) =
       DList.fromIList(IList.fromFoldable(v)).foldr(F.point(empty[B])) {
         (a, fbs) =>
           F.apply2(f(a), fbs)(_ +: _)
       }
-    }
 
     override def traverseS[S, A, B](v: Vector[A])(
         f: A => State[S, B]): State[S, Vector[B]] =
@@ -244,13 +243,12 @@ trait VectorFunctions {
         if (p(s, h)) span1(t, h, l :+ h) else (l, xs)
       }
     @tailrec
-    def go(xs: Vector[A], acc: Vector[Vector[A]]): Vector[Vector[A]] = {
+    def go(xs: Vector[A], acc: Vector[Vector[A]]): Vector[Vector[A]] =
       if (xs.isEmpty) acc
       else {
         val (x, y) = span1(xs.tail, xs.head, empty)
         go(y, acc :+ (xs.head +: x))
       }
-    }
     go(as, empty)
   }
 

@@ -33,12 +33,11 @@ class StatsActor extends Actor {
   implicit val system = context.system
   val log = Logging(system, this)
 
-  def getCurrent: DateTime = {
+  def getCurrent: DateTime =
     DateTime.now
       .withMinuteOfHour(0)
       .withSecondOfMinute(0)
       .withMillisOfSecond(0)
-  }
 
   var longLiveStats = new Stats(DateTime.now)
   var hourlyStats = new Stats(getCurrent)

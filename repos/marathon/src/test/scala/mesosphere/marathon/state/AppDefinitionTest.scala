@@ -237,11 +237,10 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
     assert(result2 == app2)
   }
 
-  def getScalarResourceValue(proto: ServiceDefinition, name: String) = {
+  def getScalarResourceValue(proto: ServiceDefinition, name: String) =
     proto.getResourcesList.asScala
       .find(_.getName == name)
       .get
       .getScalar
       .getValue
-  }
 }

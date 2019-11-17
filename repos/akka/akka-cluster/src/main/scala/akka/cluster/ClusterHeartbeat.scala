@@ -97,9 +97,8 @@ private[cluster] final class ClusterHeartbeatSender
     self,
     HeartbeatTick)
 
-  override def preStart(): Unit = {
+  override def preStart(): Unit =
     cluster.subscribe(self, classOf[MemberEvent], classOf[ReachabilityEvent])
-  }
 
   override def postStop(): Unit = {
     state.activeReceivers.foreach(a ⇒ failureDetector.remove(a.address))
@@ -160,7 +159,7 @@ private[cluster] final class ClusterHeartbeatSender
   def reachableMember(m: Member): Unit =
     state = state.reachableMember(m.uniqueAddress)
 
-  def heartbeat(): Unit = {
+  def heartbeat(): Unit =
     state.activeReceivers foreach { to ⇒
       if (cluster.failureDetector.isMonitoring(to.address)) {
         if (verboseHeartbeat)
@@ -183,7 +182,6 @@ private[cluster] final class ClusterHeartbeatSender
       }
       heartbeatReceiver(to.address) ! selfHeartbeat
     }
-  }
 
   def heartbeatRsp(from: UniqueAddress): Unit = {
     if (verboseHeartbeat)

@@ -171,7 +171,7 @@ object ScalaPsiUtil {
 
   def isBooleanBeanProperty(
       s: ScAnnotationsHolder,
-      noResolve: Boolean = false): Boolean = {
+      noResolve: Boolean = false): Boolean =
     if (noResolve) {
       s.annotations.exists {
         case annot =>
@@ -187,11 +187,10 @@ object ScalaPsiUtil {
       s.hasAnnotation("scala.reflect.BooleanBeanProperty").isDefined ||
       s.hasAnnotation("scala.beans.BooleanBeanProperty").isDefined
     }
-  }
 
   def isBeanProperty(
       s: ScAnnotationsHolder,
-      noResolve: Boolean = false): Boolean = {
+      noResolve: Boolean = false): Boolean =
     if (noResolve) {
       s.annotations.exists {
         case annot =>
@@ -207,17 +206,15 @@ object ScalaPsiUtil {
       s.hasAnnotation("scala.reflect.BeanProperty").isDefined ||
       s.hasAnnotation("scala.beans.BeanProperty").isDefined
     }
-  }
 
   @tailrec
-  def withEtaExpansion(expr: ScExpression): Boolean = {
+  def withEtaExpansion(expr: ScExpression): Boolean =
     expr.getContext match {
       case call: ScMethodCall     => false
       case g: ScGenericCall       => withEtaExpansion(g)
       case p: ScParenthesisedExpr => withEtaExpansion(p)
       case _                      => true
     }
-  }
 
   def convertMemberName(s: String): String = {
     if (s == null || s.isEmpty) return s
@@ -235,7 +232,7 @@ object ScalaPsiUtil {
     manager.cachedDeepIsInheritor(clazz, base)
   }
 
-  def lastChildElementOrStub(element: PsiElement): PsiElement = {
+  def lastChildElementOrStub(element: PsiElement): PsiElement =
     element match {
       case st: ScalaStubBasedElementImpl[_] if st.getStub != null =>
         val stub = st.getStub
@@ -244,7 +241,6 @@ object ScalaPsiUtil {
         else children.get(children.size() - 1).getPsi
       case _ => element.getLastChild
     }
-  }
 
   @tailrec
   def fileContext(psi: PsiElement): PsiFile = {
@@ -264,7 +260,7 @@ object ScalaPsiUtil {
       s: Seq[Expression],
       scope: GlobalSearchScope,
       manager: PsiManager,
-      place: PsiElement): Option[Seq[Expression]] = {
+      place: PsiElement): Option[Seq[Expression]] =
     s match {
       case Seq() =>
         // object A { def foo(a: Any) = ()}; A foo () ==>> A.foo(()), or A.foo() ==>> A.foo( () )
@@ -292,7 +288,6 @@ object ScalaPsiUtil {
                 ScParameterizedType(ScDesignatorType(tupleClass), exprTypes),
                 place)))
     }
-  }
 
   def getNextSiblingOfType[T <: PsiElement](
       sibling: PsiElement,
@@ -336,8 +331,7 @@ object ScalaPsiUtil {
     */
   def inferMethodTypesArgs(
       fun: PsiMethod,
-      classSubst: ScSubstitutor): ScSubstitutor = {
-
+      classSubst: ScSubstitutor): ScSubstitutor =
     fun match {
       case fun: ScFunction =>
         fun.typeParameters.foldLeft(ScSubstitutor.empty) { (subst, tp) =>
@@ -356,7 +350,6 @@ object ScalaPsiUtil {
               1))
         }
     }
-  }
 
   def findImplicitConversion(
       e: ScExpression,
@@ -389,7 +382,7 @@ object ScalaPsiUtil {
 
     def specialExtractParameterType(
         rr: ScalaResolveResult): (Option[ScType], Seq[TypeParameter]) = {
-      def inner(tp: ScType) = {
+      def inner(tp: ScType) =
         tp match {
           case f @ ScFunctionType(_, _) => Some(f)
           case _ =>
@@ -404,7 +397,6 @@ object ScalaPsiUtil {
               case _ => None
             }
         }
-      }
       val typeParams = rr.unresolvedTypeParameters match {
         case Some(tParams) if tParams.nonEmpty => tParams
         case _                                 => Seq.empty
@@ -558,14 +550,13 @@ object ScalaPsiUtil {
   }
 
   @tailrec
-  def findCall(place: PsiElement): Option[ScMethodCall] = {
+  def findCall(place: PsiElement): Option[ScMethodCall] =
     place.getContext match {
       case call: ScMethodCall     => Some(call)
       case p: ScParenthesisedExpr => findCall(p)
       case g: ScGenericCall       => findCall(g)
       case _                      => None
     }
-  }
 
   def approveDynamic(
       tp: ScType,
@@ -729,10 +720,9 @@ object ScalaPsiUtil {
           isDynamic = withDynamic)
       PartialFunction.condOpt(candidates) {
         case Array(r @ ScalaResolveResult(fun: PsiMethod, s: ScSubstitutor)) =>
-          def update(tp: ScType): ScType = {
+          def update(tp: ScType): ScType =
             if (r.isDynamic) ResolvableReferenceExpression.getDynamicReturn(tp)
             else tp
-          }
           val res = fun match {
             case fun: ScFun =>
               (
@@ -782,7 +772,7 @@ object ScalaPsiUtil {
     * However we can't use information from not inferred generic. So if such method use bounds on
     * not inferred generics, such bounds should be removed.
     */
-  def removeBadBounds(tp: ScType): ScType = {
+  def removeBadBounds(tp: ScType): ScType =
     tp match {
       case tp @ ScTypePolymorphicType(internal, typeParameters) =>
         def hasBadLinks(
@@ -806,7 +796,7 @@ object ScalaPsiUtil {
           res
         }
 
-        def clearBadLinks(tps: Seq[TypeParameter]): Seq[TypeParameter] = {
+        def clearBadLinks(tps: Seq[TypeParameter]): Seq[TypeParameter] =
           tps.map {
             case t @ TypeParameter(
                   name,
@@ -821,12 +811,10 @@ object ScalaPsiUtil {
                 () => hasBadLinks(upperType(), ptp).getOrElse(Any),
                 ptp)
           }
-        }
 
         ScTypePolymorphicType(internal, clearBadLinks(typeParameters))
       case _ => tp
     }
-  }
 
   @tailrec
   def isAnonymousExpression(expr: ScExpression): (Int, ScExpression) = {
@@ -968,7 +956,7 @@ object ScalaPsiUtil {
 
     collectParts(tp)
     val res: mutable.HashMap[String, Seq[ScType]] = new mutable.HashMap
-    def addResult(fqn: String, tp: ScType): Unit = {
+    def addResult(fqn: String, tp: ScType): Unit =
       res.get(fqn) match {
         case Some(s) =>
           if (s.forall(!_.equiv(tp))) {
@@ -977,7 +965,6 @@ object ScalaPsiUtil {
           }
         case None => res += ((fqn, Seq(tp)))
       }
-    }
     while (parts.nonEmpty) {
       val part = parts.dequeue()
       //here we want to convert projection types to right projections
@@ -1076,7 +1063,7 @@ object ScalaPsiUtil {
     cachedResult
   }
 
-  def mapToLazyTypesSeq(elems: Seq[PsiParameter]): Seq[() => ScType] = {
+  def mapToLazyTypesSeq(elems: Seq[PsiParameter]): Seq[() => ScType] =
     elems.map(param =>
       () =>
         param match {
@@ -1091,7 +1078,6 @@ object ScalaPsiUtil {
               }
             p.exactParamType(treatJavaObjectAsAny)
         })
-  }
 
   /**
     *  This method doesn't collect things like
@@ -1145,7 +1131,7 @@ object ScalaPsiUtil {
     res
   }
 
-  def getPsiElementId(elem: PsiElement): PsiElement = {
+  def getPsiElementId(elem: PsiElement): PsiElement =
     try {
       elem match {
         case typeParam: ScTypeParam => typeParam.getPsiElementId
@@ -1160,13 +1146,11 @@ object ScalaPsiUtil {
     } catch {
       case _: PsiInvalidElementAccessException => null
     }
-  }
 
-  def getSettings(project: Project): ScalaCodeStyleSettings = {
+  def getSettings(project: Project): ScalaCodeStyleSettings =
     CodeStyleSettingsManager
       .getSettings(project)
       .getCustomSettings(classOf[ScalaCodeStyleSettings])
-  }
 
   def getElementsRange(start: PsiElement, end: PsiElement): Seq[PsiElement] = {
     if (start == null || end == null) return Nil
@@ -1210,17 +1194,16 @@ object ScalaPsiUtil {
     @tailrec
     def inner(
         parent: PsiElement,
-        k: List[PsiElement] => List[PsiElement]): List[PsiElement] = {
+        k: List[PsiElement] => List[PsiElement]): List[PsiElement] =
       if (parent != topLevel && parent != null)
         inner(parent.getParent, { l =>
           parent :: k(l)
         })
       else k(Nil)
-    }
     inner(elem, (l: List[PsiElement]) => l)
   }
 
-  def getFirstStubOrPsiElement(elem: PsiElement): PsiElement = {
+  def getFirstStubOrPsiElement(elem: PsiElement): PsiElement =
     elem match {
       case st: ScalaStubBasedElementImpl[_] if st.getStub != null =>
         val stub = st.getStub
@@ -1234,7 +1217,6 @@ object ScalaPsiUtil {
         else null
       case _ => elem.getFirstChild
     }
-  }
 
   def getPrevStubOrPsiElement(elem: PsiElement): PsiElement = {
     def workWithStub(stub: StubElement[_ <: PsiElement]): PsiElement = {
@@ -1272,7 +1254,7 @@ object ScalaPsiUtil {
     case _ => false
   }
 
-  def getNextStubOrPsiElement(elem: PsiElement): PsiElement = {
+  def getNextStubOrPsiElement(elem: PsiElement): PsiElement =
     elem match {
       case st: ScalaStubBasedElementImpl[_] if st.getStub != null =>
         val stub = st.getStub
@@ -1290,7 +1272,6 @@ object ScalaPsiUtil {
         }
       case _ => elem.getNextSibling
     }
-  }
 
   def getPlaceTd(
       placer: PsiElement,
@@ -1413,9 +1394,8 @@ object ScalaPsiUtil {
 
   def superTypeMembers(
       element: PsiNamedElement,
-      withSelfType: Boolean = false): Seq[PsiNamedElement] = {
+      withSelfType: Boolean = false): Seq[PsiNamedElement] =
     superTypeMembersAndSubstitutors(element, withSelfType).map(_.info)
-  }
 
   def superTypeMembersAndSubstitutors(
       element: PsiNamedElement,
@@ -1448,7 +1428,7 @@ object ScalaPsiUtil {
 
   def nameContext(x: PsiNamedElement): PsiElement = {
     var parent = x.getParent
-    def isAppropriatePsiElement(x: PsiElement): Boolean = {
+    def isAppropriatePsiElement(x: PsiElement): Boolean =
       x match {
         case _: ScValue | _: ScVariable | _: ScTypeAlias | _: ScParameter |
             _: PsiMethod | _: PsiField | _: ScCaseClause | _: PsiClass |
@@ -1456,7 +1436,6 @@ object ScalaPsiUtil {
           true
         case _ => false
       }
-    }
     if (isAppropriatePsiElement(x)) return x
     while (parent != null &&
            !isAppropriatePsiElement(parent)) parent = parent.getParent
@@ -1480,7 +1459,7 @@ object ScalaPsiUtil {
 
   def getMethodPresentableText(
       method: PsiMethod,
-      subst: ScSubstitutor = ScSubstitutor.empty): String = {
+      subst: ScSubstitutor = ScSubstitutor.empty): String =
     method match {
       case method: ScFunction =>
         ScalaElementPresentation.getMethodPresentableText(
@@ -1496,7 +1475,6 @@ object ScalaPsiUtil {
           PARAM_OPTIONS | PsiFormatUtilBase.SHOW_PARAMETERS,
           PARAM_OPTIONS)
     }
-  }
 
   def getModifiersPresentableText(modifiers: ScModifierList): String = {
     if (modifiers == null) return ""
@@ -1515,12 +1493,11 @@ object ScalaPsiUtil {
     buffer.toString()
   }
 
-  def isLineTerminator(element: PsiElement): Boolean = {
+  def isLineTerminator(element: PsiElement): Boolean =
     element match {
       case _: PsiWhiteSpace if element.getText.indexOf('\n') != -1 => true
       case _                                                       => false
     }
-  }
 
   def allMethods(clazz: PsiClass): Iterable[PhysicalSignature] =
     TypeDefinitionMembers
@@ -1531,21 +1508,17 @@ object ScalaPsiUtil {
       })
       .map { case (_, n) => n.info.asInstanceOf[PhysicalSignature] }
 
-  def getMethodsForName(
-      clazz: PsiClass,
-      name: String): Seq[PhysicalSignature] = {
+  def getMethodsForName(clazz: PsiClass, name: String): Seq[PhysicalSignature] =
     for ((n: PhysicalSignature, _) <- TypeDefinitionMembers
            .getSignatures(clazz)
            .forName(name)
            ._1 if clazz.isInstanceOf[ScObject] ||
            !n.method.hasModifierProperty("static")) yield n
-  }
 
-  def getApplyMethods(clazz: PsiClass): Seq[PhysicalSignature] = {
+  def getApplyMethods(clazz: PsiClass): Seq[PhysicalSignature] =
     getMethodsForName(clazz, "apply")
-  }
 
-  def getUnapplyMethods(clazz: PsiClass): Seq[PhysicalSignature] = {
+  def getUnapplyMethods(clazz: PsiClass): Seq[PhysicalSignature] =
     getMethodsForName(clazz, "unapply") ++ getMethodsForName(
       clazz,
       "unapplySeq") ++
@@ -1556,20 +1529,17 @@ object ScalaPsiUtil {
             .map(new PhysicalSignature(_, ScSubstitutor.empty))
         case _ => Seq.empty[PhysicalSignature]
       })
-  }
 
-  def getUpdateMethods(clazz: PsiClass): Seq[PhysicalSignature] = {
+  def getUpdateMethods(clazz: PsiClass): Seq[PhysicalSignature] =
     getMethodsForName(clazz, "update")
-  }
 
   /**
     *  For one classOf use PsiTreeUtil.getParenteOfType instead
     */
   def getParentOfType(
       element: PsiElement,
-      classes: Class[_ <: PsiElement]*): PsiElement = {
+      classes: Class[_ <: PsiElement]*): PsiElement =
     getParentOfType(element, false, classes: _*)
-  }
 
   /**
     * For one classOf use PsiTreeUtil.getParenteOfType instead
@@ -1592,11 +1562,10 @@ object ScalaPsiUtil {
   def getParentWithProperty(
       element: PsiElement,
       strict: Boolean,
-      property: PsiElement => Boolean): Option[PsiElement] = {
+      property: PsiElement => Boolean): Option[PsiElement] =
     if (element == null) None
     else if (!strict && property(element)) Some(element)
     else getParentWithProperty(element.getParent, strict = false, property)
-  }
 
   def contextOfType[T <: PsiElement](
       element: PsiElement,
@@ -1629,7 +1598,7 @@ object ScalaPsiUtil {
     el
   }
 
-  def getCompanionModule(clazz: PsiClass): Option[ScTypeDefinition] = {
+  def getCompanionModule(clazz: PsiClass): Option[ScTypeDefinition] =
     getBaseCompanionModule(clazz) match {
       case Some(td) => Some(td)
       case _ =>
@@ -1638,7 +1607,6 @@ object ScalaPsiUtil {
           case _                   => None
         }
     }
-  }
 
   //Performance critical method
   def getBaseCompanionModule(clazz: PsiClass): Option[ScTypeDefinition] = {
@@ -1693,13 +1661,12 @@ object ScalaPsiUtil {
       Option(obj.fakeCompanionClassOrCompanionClass)
   }
 
-  def withCompanionSearchScope(clazz: PsiClass): SearchScope = {
+  def withCompanionSearchScope(clazz: PsiClass): SearchScope =
     getBaseCompanionModule(clazz) match {
       case Some(companion) =>
         new LocalSearchScope(clazz).union(new LocalSearchScope(companion))
       case None => new LocalSearchScope(clazz)
     }
-  }
 
   def hasStablePath(o: PsiNamedElement): Boolean = {
     @tailrec
@@ -1748,20 +1715,18 @@ object ScalaPsiUtil {
       def getSubstitutionMap: java.util.Map[PsiTypeParameter, PsiType] =
         new java.util.HashMap[PsiTypeParameter, PsiType]()
 
-      def substitute(`type`: PsiType): PsiType = {
+      def substitute(`type`: PsiType): PsiType =
         ScType.toPsi(
           substitutor.subst(ScType.create(`type`, project, scope)),
           project,
           scope)
-      }
 
-      def substitute(typeParameter: PsiTypeParameter): PsiType = {
+      def substitute(typeParameter: PsiTypeParameter): PsiType =
         ScType.toPsi(
           substitutor.subst(
             new ScTypeParameterType(typeParameter, substitutor)),
           project,
           scope)
-      }
 
       def putAll(another: PsiSubstitutor): PsiSubstitutor =
         PsiSubstitutor.EMPTY
@@ -1776,7 +1741,7 @@ object ScalaPsiUtil {
   }
 
   @tailrec
-  def newLinesEnabled(element: PsiElement): Boolean = {
+  def newLinesEnabled(element: PsiElement): Boolean =
     if (element == null) true
     else {
       element.getParent match {
@@ -1800,7 +1765,6 @@ object ScalaPsiUtil {
         case other => newLinesEnabled(other.getParent)
       }
     }
-  }
   /*
    ******** any subexpression of these does not need parentheses **********
    * ScTuple, ScBlock, ScXmlExpr
@@ -1891,7 +1855,7 @@ object ScalaPsiUtil {
       }
     }
 
-    def parsedDifferently(from: ScExpression, expr: ScExpression): Boolean = {
+    def parsedDifferently(from: ScExpression, expr: ScExpression): Boolean =
       if (newLinesEnabled(from)) {
         expr.getParent match {
           case ScParenthesisedExpr(_) =>
@@ -1905,7 +1869,6 @@ object ScalaPsiUtil {
           case _ => false
         }
       } else false
-    }
 
     if (parsedDifferently(from, expr)) true
     else {
@@ -1963,7 +1926,7 @@ object ScalaPsiUtil {
   def stringValueOf(e: PsiLiteral): Option[String] =
     e.getValue.toOption.flatMap(_.asOptionOf[String])
 
-  def readAttribute(annotation: PsiAnnotation, name: String): Option[String] = {
+  def readAttribute(annotation: PsiAnnotation, name: String): Option[String] =
     annotation.findAttributeValue(name) match {
       case literal: PsiLiteral => stringValueOf(literal)
       case element: ScReferenceElement =>
@@ -1976,7 +1939,6 @@ object ScalaPsiUtil {
           .flatMap(stringValueOf)
       case _ => None
     }
-  }
 
   /**
     * Finds the n-th parameter from the primiary constructor of `cls`
@@ -2000,11 +1962,10 @@ object ScalaPsiUtil {
     */
   @tailrec
   def parameterOf(exp: ScExpression): Option[Parameter] = {
-    def fromMatchedParams(matched: Seq[(ScExpression, Parameter)]) = {
+    def fromMatchedParams(matched: Seq[(ScExpression, Parameter)]) =
       matched.collectFirst {
         case (e, p) if e == exp => p
       }
-    }
     exp match {
       case ScAssignStmt(ResolvesTo(p: ScParameter), Some(expr)) =>
         Some(new Parameter(p))
@@ -2095,14 +2056,12 @@ object ScalaPsiUtil {
     case _                           => true
   }
 
-  def isByNameArgument(expr: ScExpression) = {
+  def isByNameArgument(expr: ScExpression) =
     isCanonicalArg(expr) && ScalaPsiUtil.parameterOf(expr).exists(_.isByName)
-  }
 
-  def isArgumentOfFunctionType(expr: ScExpression) = {
+  def isArgumentOfFunctionType(expr: ScExpression) =
     isCanonicalArg(expr) &&
-    parameterOf(expr).exists(p => ScFunctionType.isFunctionType(p.paramType))
-  }
+      parameterOf(expr).exists(p => ScFunctionType.isFunctionType(p.paramType))
 
   object MethodValue {
     def unapply(expr: ScExpression): Option[PsiMethod] = {
@@ -2144,7 +2103,7 @@ object ScalaPsiUtil {
     @tailrec
     private def referencedMethod(
         expr: ScExpression,
-        canBeParameterless: Boolean): Option[PsiMethod] = {
+        canBeParameterless: Boolean): Option[PsiMethod] =
       expr match {
         case ref @ ResolvesTo(f: ScFunctionDefinition)
             if f.isParameterless && !canBeParameterless =>
@@ -2158,19 +2117,17 @@ object ScalaPsiUtil {
           referencedMethod(m.deepestInvokedExpr, canBeParameterless = false)
         case _ => None
       }
-    }
     private def isSimpleUnderscore(expr: ScExpression) = expr match {
       case _: ScUnderscoreSection => expr.getText == "_"
       case typed: ScTypedStmt =>
         Option(typed.expr).map(_.getText).contains("_")
       case _ => false
     }
-    private def numberOfArgumentClauses(mc: ScMethodCall): Int = {
+    private def numberOfArgumentClauses(mc: ScMethodCall): Int =
       mc.getEffectiveInvokedExpr match {
         case m: ScMethodCall => 1 + numberOfArgumentClauses(m)
         case _               => 1
       }
-    }
   }
 
   /** Creates a synthetic parameter clause based on view and context bounds */
@@ -2382,12 +2339,11 @@ object ScalaPsiUtil {
     }
   }
 
-  def intersectScopes(scope: SearchScope, scopeOption: Option[SearchScope]) = {
+  def intersectScopes(scope: SearchScope, scopeOption: Option[SearchScope]) =
     scopeOption match {
       case Some(s) => s.intersectWith(scope)
       case None    => scope
     }
-  }
 
   private def addBefore[T <: PsiElement](
       element: T,
@@ -2423,16 +2379,14 @@ object ScalaPsiUtil {
   def addStatementBefore(
       stmt: ScBlockStatement,
       parent: PsiElement,
-      anchorOpt: Option[PsiElement]): ScBlockStatement = {
+      anchorOpt: Option[PsiElement]): ScBlockStatement =
     addBefore[ScBlockStatement](stmt, parent, anchorOpt)
-  }
 
   def addTypeAliasBefore(
       typeAlias: ScTypeAlias,
       parent: PsiElement,
-      anchorOpt: Option[PsiElement]): ScTypeAlias = {
+      anchorOpt: Option[PsiElement]): ScTypeAlias =
     addBefore[ScTypeAlias](typeAlias, parent, anchorOpt)
-  }
 
   def changeVisibility(
       member: ScModifierListOwner,
@@ -2523,7 +2477,7 @@ object ScalaPsiUtil {
       expected: ScType,
       scalaScope: GlobalSearchScope): Option[ScType] = {
 
-    def constructorValidForSAM(constructors: Array[PsiMethod]): Boolean = {
+    def constructorValidForSAM(constructors: Array[PsiMethod]): Boolean =
       //primary constructor (if any) must be public, no-args, not overloaded
       constructors.length match {
         case 0 => true
@@ -2532,7 +2486,6 @@ object ScalaPsiUtil {
             constructors.head.getParameterList.getParameters.isEmpty
         case _ => false
       }
-    }
 
     ScType.extractClassType(expected) match {
       case Some((cl, sub)) =>
@@ -2572,9 +2525,8 @@ object ScalaPsiUtil {
               }
             } else None
           case _ => //it's a Java abstract class or interface
-            def overridesConcreteMethod(method: PsiMethod): Boolean = {
+            def overridesConcreteMethod(method: PsiMethod): Boolean =
               method.findSuperMethods().exists(!_.hasAbstractModifier)
-            }
 
             val abst: Array[PsiMethod] = cl.getMethods.filter {
               case method if method.hasAbstractModifier => true
@@ -2636,14 +2588,14 @@ object ScalaPsiUtil {
       tp: ScType,
       expected: ScType,
       proj: Project,
-      scope: GlobalSearchScope): Option[ScType] = {
+      scope: GlobalSearchScope): Option[ScType] =
     expected match {
       case ScExistentialType(
           ScParameterizedType(expectedDesignator, _),
           wildcards) =>
         tp match {
           case ScFunctionType(retTp, params) =>
-            def convertParameter(tpArg: ScType, variance: Int): ScType = {
+            def convertParameter(tpArg: ScType, variance: Int): ScType =
               tpArg match {
                 case p @ ScParameterizedType(des, tpArgs) =>
                   ScParameterizedType(
@@ -2666,7 +2618,6 @@ object ScalaPsiUtil {
                     case _ => tpArg
                   }
               }
-            }
             //parameter clauses are contravariant positions, return types are covariant positions
             val newParams =
               params.map(convertParameter(_, ScTypeParam.Contravariant))
@@ -2676,9 +2627,8 @@ object ScalaPsiUtil {
         }
       case _ => None
     }
-  }
 
-  def isImplicit(namedElement: PsiNamedElement) = {
+  def isImplicit(namedElement: PsiNamedElement) =
     namedElement match {
       case s: ScModifierListOwner => s.hasModifierProperty("implicit")
       case named: ScNamedElement =>
@@ -2688,5 +2638,4 @@ object ScalaPsiUtil {
         }
       case _ => false
     }
-  }
 }

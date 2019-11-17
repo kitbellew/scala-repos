@@ -9,7 +9,6 @@ object Test {
       tick(i - 1)
     } else tick(i - 1)
 
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     tick(1000000)
-  }
 }

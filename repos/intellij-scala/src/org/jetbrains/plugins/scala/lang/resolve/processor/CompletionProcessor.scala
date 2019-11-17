@@ -70,13 +70,12 @@ class CompletionProcessor(
 
   override protected def filterNot(
       p: ScalaResolveResult,
-      n: ScalaResolveResult): Boolean = {
+      n: ScalaResolveResult): Boolean =
     getQualifiedName(p) == getQualifiedName(n) && super.filterNot(p, n)
-  }
 
   def getSignature(
       element: PsiNamedElement,
-      substitutor: => ScSubstitutor): Option[Signature] = {
+      substitutor: => ScSubstitutor): Option[Signature] =
     element match {
       case method: PsiMethod =>
         Some(new PhysicalSignature(method, substitutor))
@@ -85,7 +84,6 @@ class CompletionProcessor(
       case _ =>
         Some(new Signature(element.name, Seq.empty, 0, substitutor, element))
     }
-  }
 
   def execute(_element: PsiElement, state: ResolveState): Boolean = {
     if (!_element.isInstanceOf[PsiElement]) return false

@@ -44,13 +44,12 @@ object LocalSparkContext {
   }
 
   /** Runs `f` by passing in `sc` and ensures that `sc` is stopped. */
-  def withSpark[T](sc: SparkContext)(f: SparkContext => T) = {
+  def withSpark[T](sc: SparkContext)(f: SparkContext => T) =
     try {
       f(sc)
     } finally {
       stop(sc)
     }
-  }
 }
 
 /** Shares a local `SparkContext` between all tests in a suite and closes it at the end */

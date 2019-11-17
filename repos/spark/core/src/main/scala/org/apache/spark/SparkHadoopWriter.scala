@@ -157,9 +157,8 @@ private[spark] class SparkHadoopWriter(jobConf: JobConf)
 
   protected def newTaskAttemptContext(
       conf: JobConf,
-      attemptId: TaskAttemptID): TaskAttemptContext = {
+      attemptId: TaskAttemptID): TaskAttemptContext =
     new TaskAttemptContextImpl(conf, attemptId)
-  }
 
   private def setIDs(jobid: Int, splitid: Int, attemptid: Int) {
     jobID = jobid

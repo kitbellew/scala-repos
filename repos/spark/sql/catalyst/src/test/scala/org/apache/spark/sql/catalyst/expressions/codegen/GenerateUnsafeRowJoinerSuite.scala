@@ -69,11 +69,10 @@ class GenerateUnsafeRowJoinerSuite extends SparkFunSuite {
   private def testConcat(
       numFields1: Int,
       numFields2: Int,
-      candidateTypes: Seq[DataType]): Unit = {
+      candidateTypes: Seq[DataType]): Unit =
     for (i <- 0 until 10) {
       testConcatOnce(numFields1, numFields2, candidateTypes)
     }
-  }
 
   private def testConcatOnce(
       numFields1: Int,

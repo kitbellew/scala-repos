@@ -43,9 +43,8 @@ abstract class FileWatcherSpec
     * file has been modified, or deleted and re-added, if it happens
     * sub-second (without looking at the contents).
     */
-  def waitForLinus(): Unit = {
+  def waitForLinus(): Unit =
     Thread.sleep(1000)
-  }
 
   "FileWatcher" should "detect added files" taggedAs (Retryable) in withVFS {
     implicit vfs =>
@@ -354,15 +353,13 @@ abstract class FileWatcherSpec
 
   def listeners(implicit vfs: EnsimeVFS, tk: TestKit) = List(
     new FileChangeListener {
-      def fileAdded(f: FileObject): Unit = { tk.testActor ! Added(f) }
-      def fileRemoved(f: FileObject): Unit = { tk.testActor ! Removed(f) }
-      def fileChanged(f: FileObject): Unit = { tk.testActor ! Changed(f) }
-      override def baseReCreated(f: FileObject): Unit = {
+      def fileAdded(f: FileObject): Unit = tk.testActor ! Added(f)
+      def fileRemoved(f: FileObject): Unit = tk.testActor ! Removed(f)
+      def fileChanged(f: FileObject): Unit = tk.testActor ! Changed(f)
+      override def baseReCreated(f: FileObject): Unit =
         tk.testActor ! BaseAdded(f)
-      }
-      override def baseRemoved(f: FileObject): Unit = {
+      override def baseRemoved(f: FileObject): Unit =
         tk.testActor ! BaseRemoved(f)
-      }
     }
   )
 }

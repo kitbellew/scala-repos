@@ -61,9 +61,8 @@ class ScroogeMacrosUnitTests
 
     "Should RT correctly" in {
       class Container[T](implicit oSer: OrderedSerialization[T]) {
-        def ord: OrderedSerialization[(Long, T)] = {
+        def ord: OrderedSerialization[(Long, T)] =
           implicitly[OrderedSerialization[(Long, T)]]
-        }
       }
 
       val ordSer = (new Container[TestLists]).ord

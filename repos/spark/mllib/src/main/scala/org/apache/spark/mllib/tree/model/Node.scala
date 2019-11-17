@@ -53,10 +53,9 @@ class Node @Since("1.2.0") (
     extends Serializable
     with Logging {
 
-  override def toString: String = {
+  override def toString: String =
     s"id = $id, isLeaf = $isLeaf, predict = $predict, impurity = $impurity, " +
       s"split = $split, stats = $stats"
-  }
 
   /**
     * build the left node and right nodes if not leaf
@@ -86,7 +85,7 @@ class Node @Since("1.2.0") (
     * @return predicted value
     */
   @Since("1.1.0")
-  def predict(features: Vector): Double = {
+  def predict(features: Vector): Double =
     if (isLeaf) {
       predict.predict
     } else {
@@ -104,7 +103,6 @@ class Node @Since("1.2.0") (
         }
       }
     }
-  }
 
   /**
     * Returns a deep copy of the subtree rooted at this node.
@@ -161,7 +159,7 @@ class Node @Since("1.2.0") (
     */
   private[tree] def subtreeToString(indentFactor: Int = 0): String = {
 
-    def splitToString(split: Split, left: Boolean): String = {
+    def splitToString(split: Split, left: Boolean): String =
       split.featureType match {
         case Continuous =>
           if (left) {
@@ -176,7 +174,6 @@ class Node @Since("1.2.0") (
             s"(feature ${split.feature} not in ${split.categories.mkString("{", ",", "}")})"
           }
       }
-    }
     val prefix: String = " " * indentFactor
     if (isLeaf) {
       prefix + s"Predict: ${predict.predict}\n"
@@ -189,13 +186,12 @@ class Node @Since("1.2.0") (
   }
 
   /** Returns an iterator that traverses (DFS, left to right) the subtree of this node. */
-  private[tree] def subtreeIterator: Iterator[Node] = {
+  private[tree] def subtreeIterator: Iterator[Node] =
     Iterator.single(this) ++ leftNode
       .map(_.subtreeIterator)
       .getOrElse(Iterator.empty) ++ rightNode
       .map(_.subtreeIterator)
       .getOrElse(Iterator.empty)
-  }
 }
 
 private[spark] object Node {
@@ -229,9 +225,8 @@ private[spark] object Node {
       nodeIndex: Int,
       predict: Predict,
       impurity: Double,
-      isLeaf: Boolean): Node = {
+      isLeaf: Boolean): Node =
     new Node(nodeIndex, predict, impurity, isLeaf, None, None, None, None)
-  }
 
   /**
     * Return the index of the left child of this node.

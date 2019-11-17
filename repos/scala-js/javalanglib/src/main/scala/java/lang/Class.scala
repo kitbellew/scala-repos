@@ -21,10 +21,9 @@ private trait ScalaJSClassData[A] extends js.Object {
 
 final class Class[A] private (data: ScalaJSClassData[A]) extends Object {
 
-  override def toString(): String = {
+  override def toString(): String =
     (if (isInterface()) "interface " else if (isPrimitive()) "" else "class ") +
       getName()
-  }
 
   def isInstance(obj: Object): scala.Boolean =
     data.isInstance(obj)

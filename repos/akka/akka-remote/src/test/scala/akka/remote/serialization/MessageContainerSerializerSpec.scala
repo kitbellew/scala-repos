@@ -37,8 +37,7 @@ class MessageContainerSerializerSpec extends AkkaSpec {
         ))
     }
 
-    def verifySerialization(msg: AnyRef): Unit = {
+    def verifySerialization(msg: AnyRef): Unit =
       ser.deserialize(ser.serialize(msg).get, msg.getClass).get should ===(msg)
-    }
   }
 }

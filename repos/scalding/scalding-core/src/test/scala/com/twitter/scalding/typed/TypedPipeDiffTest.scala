@@ -144,9 +144,8 @@ object TypedPipeDiffLaws {
   def checkArrayDiff[T](
       left: List[Array[T]],
       right: List[Array[T]],
-      diff: List[(Seq[T], (Long, Long))]): Boolean = {
+      diff: List[(Seq[T], (Long, Long))]): Boolean =
     checkDiff(left.map(_.toSeq), right.map(_.toSeq), diff)
-  }
 
   def diffLaw[T: Ordering: Arbitrary]: Prop = Prop.forAll {
     (left: List[T], right: List[T]) =>

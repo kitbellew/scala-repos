@@ -185,11 +185,10 @@ object Compiler {
     new AnalyzingCompiler(instance, provider, cpOptions)
   }
 
-  def compile(in: Inputs, log: Logger): CompileResult = {
+  def compile(in: Inputs, log: Logger): CompileResult =
     sbt.inc.IncrementalCompilerUtil.defaultIncrementalCompiler.compile(in, log)
-    // import in.inputs.config._
-    // compile(in, log, new LoggerReporter(maxErrors, log, sourcePositionMapper))
-  }
+  // import in.inputs.config._
+  // compile(in, log, new LoggerReporter(maxErrors, log, sourcePositionMapper))
   // def compile(in: Inputs, log: Logger, reporter: xsbti.Reporter): CompileResult =
   //   {
   //     import in.inputs.compilers._

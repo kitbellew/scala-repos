@@ -38,13 +38,12 @@ import org.jetbrains.plugins.scala.lang.refactoring.namesSuggester.NameSuggester
   */
 object CreateFromUsageUtil {
 
-  def uniqueNames(names: Seq[String]) = {
+  def uniqueNames(names: Seq[String]) =
     names
       .foldLeft(List[String]()) { (r, h) =>
         (h #:: Stream.from(1).map(h + _)).find(!r.contains(_)).get :: r
       }
       .reverse
-  }
 
   def nameByType(tp: ScType) =
     NameSuggester.suggestNamesByType(tp).headOption.getOrElse("value")
@@ -75,7 +74,7 @@ object CreateFromUsageUtil {
       .mkString("(", ", ", ")")
   }
 
-  def parametersText(ref: ScReferenceElement) = {
+  def parametersText(ref: ScReferenceElement) =
     ref.getParent match {
       case p: ScPattern =>
         paramsText(patternArgs(p))
@@ -93,19 +92,17 @@ object CreateFromUsageUtil {
           }
         fromConstrArguments.map(argList => paramsText(argList.exprs)).mkString
     }
-  }
 
-  def patternArgs(pattern: ScPattern): Seq[ScPattern] = {
+  def patternArgs(pattern: ScPattern): Seq[ScPattern] =
     pattern match {
       case cp: ScConstructorPattern => cp.args.patterns
       case inf: ScInfixPattern      => inf.leftPattern +: inf.rightPattern.toSeq
       case _                        => Seq.empty
     }
-  }
 
   def addParametersToTemplate(
       elem: PsiElement,
-      builder: TemplateBuilder): Unit = {
+      builder: TemplateBuilder): Unit =
     elem.depthFirst.filterByType(classOf[ScParameter]).foreach { parameter =>
       val id = parameter.getNameIdentifier
       builder.replaceElement(id, id.getText)
@@ -114,15 +111,13 @@ object CreateFromUsageUtil {
         builder.replaceElement(it, it.getText)
       }
     }
-  }
 
   def addTypeParametersToTemplate(
       elem: PsiElement,
-      builder: TemplateBuilder): Unit = {
+      builder: TemplateBuilder): Unit =
     elem.depthFirst.filterByType(classOf[ScTypeParam]).foreach { tp =>
       builder.replaceElement(tp.nameId, tp.name)
     }
-  }
 
   def addQmarksToTemplate(elem: PsiElement, builder: TemplateBuilder): Unit = {
     val Q_MARKS = "???"
@@ -136,7 +131,7 @@ object CreateFromUsageUtil {
 
   def addUnapplyResultTypesToTemplate(
       fun: ScFunction,
-      builder: TemplateBuilder): Unit = {
+      builder: TemplateBuilder): Unit =
     fun.returnTypeElement match {
       case Some(
           ScParameterizedTypeElement(_, Seq(tuple: ScTupleTypeElement))) =>
@@ -146,7 +141,6 @@ object CreateFromUsageUtil {
         args.foreach(te => builder.replaceElement(te, te.getText))
       case _ =>
     }
-  }
 
   def positionCursor(element: PsiElement): Editor = {
     val offset = element.getTextRange.getEndOffset

@@ -302,14 +302,13 @@ private[akka] class RemoteActorRefProvider(
        */
 
       @scala.annotation.tailrec
-      def lookupRemotes(p: Iterable[String]): Option[Deploy] = {
+      def lookupRemotes(p: Iterable[String]): Option[Deploy] =
         p.headOption match {
           case None ⇒ None
           case Some("remote") ⇒ lookupRemotes(p.drop(3))
           case Some("user") ⇒ deployer.lookup(p.drop(1))
           case Some(_) ⇒ None
         }
-      }
 
       val elems = path.elements
       val lookup =
@@ -389,7 +388,7 @@ private[akka] class RemoteActorRefProvider(
     }
 
   @deprecated("use actorSelection instead of actorFor", "2.2")
-  override private[akka] def actorFor(path: ActorPath): InternalActorRef = {
+  override private[akka] def actorFor(path: ActorPath): InternalActorRef =
     if (hasAddress(path.address)) actorFor(rootGuardian, path.elements)
     else
       try {
@@ -405,7 +404,6 @@ private[akka] class RemoteActorRefProvider(
           log.error(e, "Error while looking up address [{}]", path.address)
           new EmptyLocalActorRef(this, path, eventStream)
       }
-  }
 
   @deprecated("use actorSelection instead of actorFor", "2.2")
   override private[akka] def actorFor(
@@ -456,7 +454,7 @@ private[akka] class RemoteActorRefProvider(
     */
   private[akka] def resolveActorRefWithLocalAddress(
       path: String,
-      localAddress: Address): InternalActorRef = {
+      localAddress: Address): InternalActorRef =
     path match {
       case ActorPathExtractor(address, elems) ⇒
         if (hasAddress(address)) local.resolveActorRef(rootGuardian, elems)
@@ -472,7 +470,6 @@ private[akka] class RemoteActorRefProvider(
         log.debug("resolve of unknown path [{}] failed", path)
         deadLetters
     }
-  }
 
   def resolveActorRef(path: String): ActorRef = path match {
     case ActorPathExtractor(address, elems) ⇒
@@ -501,7 +498,7 @@ private[akka] class RemoteActorRefProvider(
       deadLetters
   }
 
-  def resolveActorRef(path: ActorPath): ActorRef = {
+  def resolveActorRef(path: ActorPath): ActorRef =
     if (hasAddress(path.address))
       local.resolveActorRef(rootGuardian, path.elements)
     else
@@ -518,7 +515,6 @@ private[akka] class RemoteActorRefProvider(
           log.error(e, "Error while resolving address [{}]", path.address)
           new EmptyLocalActorRef(this, path, eventStream)
       }
-  }
 
   /**
     * Using (checking out) actor on a specific node.
@@ -544,7 +540,7 @@ private[akka] class RemoteActorRefProvider(
       supervisor)
   }
 
-  def getExternalAddressFor(addr: Address): Option[Address] = {
+  def getExternalAddressFor(addr: Address): Option[Address] =
     addr match {
       case _ if hasAddress(addr) ⇒ Some(local.rootPath.address)
       case Address(_, _, Some(_), Some(_)) ⇒
@@ -554,7 +550,6 @@ private[akka] class RemoteActorRefProvider(
         }
       case _ ⇒ None
     }
-  }
 
   def getDefaultAddress: Address = transport.defaultAddress
 

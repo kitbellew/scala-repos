@@ -43,9 +43,8 @@ class CachingFactory(
   def getScalac(
       sbtData: SbtData,
       compilerJars: Option[CompilerJars],
-      client: Client): Option[AnalyzingCompiler] = {
+      client: Client): Option[AnalyzingCompiler] =
     scalacCache.getOrUpdate((sbtData, compilerJars)) {
       delegate.getScalac(sbtData, compilerJars, client)
     }
-  }
 }

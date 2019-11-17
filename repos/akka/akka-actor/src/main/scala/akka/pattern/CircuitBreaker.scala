@@ -259,10 +259,9 @@ class CircuitBreaker(
     * @param fromState State being transitioning from
     * @param toState State being transitioning from
     */
-  private def transition(fromState: State, toState: State): Unit = {
+  private def transition(fromState: State, toState: State): Unit =
     if (swapState(fromState, toState)) toState.enter()
-    // else some other thread already swapped state
-  }
+  // else some other thread already swapped state
 
   /**
     * Trips breaker to an open state.  This is valid from Closed or Half-Open states.

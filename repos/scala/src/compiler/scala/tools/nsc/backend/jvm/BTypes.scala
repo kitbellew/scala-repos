@@ -164,7 +164,7 @@ abstract class BTypes {
     * Parse the classfile for `internalName` and construct the [[ClassBType]]. If the classfile cannot
     * be found in the `byteCodeRepository`, the `info` of the resulting ClassBType is undefined.
     */
-  def classBTypeFromParsedClassfile(internalName: InternalName): ClassBType = {
+  def classBTypeFromParsedClassfile(internalName: InternalName): ClassBType =
     classBTypeFromInternalName.getOrElse(
       internalName, {
         val res = ClassBType(internalName)
@@ -175,16 +175,14 @@ abstract class BTypes {
         }
       }
     )
-  }
 
   /**
     * Construct the [[ClassBType]] for a parsed classfile.
     */
-  def classBTypeFromClassNode(classNode: ClassNode): ClassBType = {
+  def classBTypeFromClassNode(classNode: ClassNode): ClassBType =
     classBTypeFromInternalName.getOrElse(classNode.name, {
       setClassInfoFromClassNode(classNode, ClassBType(classNode.name))
     })
-  }
 
   private def setClassInfoFromClassNode(
       classNode: ClassNode,
@@ -215,16 +213,15 @@ abstract class BTypes {
       * to have an EnclosingMethod attribute declaring the outer class. So we keep those local and
       * anonymous classes whose outerClass is classNode.name.
       */
-    def nestedInCurrentClass(innerClassNode: InnerClassNode): Boolean = {
+    def nestedInCurrentClass(innerClassNode: InnerClassNode): Boolean =
       (innerClassNode.outerName != null &&
-      innerClassNode.outerName == classNode.name) ||
-      (innerClassNode.outerName == null && {
-        val classNodeForInnerClass = byteCodeRepository
-          .classNode(innerClassNode.name)
-          .get // TODO: don't get here, but set the info to Left at the end
-        classNodeForInnerClass.outerClass == classNode.name
-      })
-    }
+        innerClassNode.outerName == classNode.name) ||
+        (innerClassNode.outerName == null && {
+          val classNodeForInnerClass = byteCodeRepository
+            .classNode(innerClassNode.name)
+            .get // TODO: don't get here, but set the info to Left at the end
+          classNodeForInnerClass.outerClass == classNode.name
+        })
 
     val nestedClasses: List[ClassBType] =
       classNode.innerClasses.asScala.collect({
@@ -273,14 +270,13 @@ abstract class BTypes {
     * metadata available in the classfile (ACC_FINAL flags, etc).
     */
   def inlineInfoFromClassfile(classNode: ClassNode): InlineInfo = {
-    def fromClassfileAttribute: Option[InlineInfo] = {
+    def fromClassfileAttribute: Option[InlineInfo] =
       if (classNode.attrs == null) None
       else
         classNode.attrs.asScala
           .collect({ case a: InlineInfoAttribute => a })
           .headOption
           .map(_.inlineInfo)
-    }
 
     def fromClassfileWithoutAttribute = {
       val warning = {
@@ -506,11 +502,10 @@ abstract class BTypes {
       * @return The opcode adapted to this java type. For example, if this type is `float` and
       *         `opcode` is `IRETURN`, this method returns `FRETURN`.
       */
-    final def typedOpcode(opcode: Int): Int = {
+    final def typedOpcode(opcode: Int): Int =
       if (opcode == Opcodes.IALOAD || opcode == Opcodes.IASTORE)
         opcode + loadStoreOpcodeOffset
       else opcode + typedOpcodeOffset
-    }
 
     /**
       * The asm.Type corresponding to this BType.
@@ -996,7 +991,7 @@ abstract class BTypes {
       info.map(_.nestedInfo.isDefined)
 
     def enclosingNestedClassesChain
-        : Either[NoClassBTypeInfo, List[ClassBType]] = {
+        : Either[NoClassBTypeInfo, List[ClassBType]] =
       isNestedClass.flatMap(isNested => {
         // if isNested is true, we know that info.get is defined, and nestedInfo.get is also defined.
         if (isNested)
@@ -1004,7 +999,6 @@ abstract class BTypes {
             .map(this :: _)
         else Right(Nil)
       })
-    }
 
     def innerClassAttributeEntry
         : Either[NoClassBTypeInfo, Option[InnerClassEntry]] =

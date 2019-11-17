@@ -17,7 +17,7 @@ private[stream] class DelayedReleaseService[Req](
     extends ServiceProxy[Req, StreamResponse](self) {
   @volatile private[this] var done: Future[Unit] = Future.Done
 
-  override def apply(req: Req) = {
+  override def apply(req: Req) =
     if (!done.isDefined)
       Future.exception(new TooManyConcurrentRequestsException)
     else {
@@ -37,7 +37,6 @@ private[stream] class DelayedReleaseService[Req](
         p.setDone()
       }
     }
-  }
 
   override def close(deadline: Time) =
     done ensure { self.close(deadline) }

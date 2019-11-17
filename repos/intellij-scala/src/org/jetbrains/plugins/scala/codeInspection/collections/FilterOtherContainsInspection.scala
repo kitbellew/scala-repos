@@ -17,7 +17,7 @@ class FilterOtherContainsInspection extends OperationOnCollectionInspection {
 }
 
 object `.contains _` {
-  def unapply(expr: ScExpression): Option[ScExpression] = {
+  def unapply(expr: ScExpression): Option[ScExpression] =
     stripped(expr) match {
       case ScFunctionExpr(Seq(x), Some(result)) =>
         stripped(result) match {
@@ -35,11 +35,10 @@ object `.contains _` {
       case qual `.contains` () => Some(qual)
       case _                   => None
     }
-  }
 }
 
 object `!.contains _` {
-  def unapply(expr: ScExpression): Option[ScExpression] = {
+  def unapply(expr: ScExpression): Option[ScExpression] =
     stripped(expr) match {
       case ScFunctionExpr(Seq(x), Some(result)) =>
         stripped(result) match {
@@ -50,7 +49,6 @@ object `!.contains _` {
         }
       case _ => None
     }
-  }
 }
 
 object FilterContainsToIntersect extends SimplificationType {

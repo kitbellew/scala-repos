@@ -55,7 +55,7 @@ private[netty4] class ChannelTransport[In, Out](ch: Channel)
     closed.updateIfEmpty(Return(exc))
   }
 
-  def write(msg: In): Future[Unit] = {
+  def write(msg: In): Future[Unit] =
     // We support Netty's channel-level backpressure thereby respecting
     // slow receivers on the other side.
     if (!ch.isWritable) {
@@ -78,7 +78,6 @@ private[netty4] class ChannelTransport[In, Out](ch: Channel)
       }
       p
     }
-  }
 
   def read(): Future[Out] = {
     ch.read()
@@ -124,21 +123,16 @@ private[netty4] class ChannelTransport[In, Out](ch: Channel)
     .addLast(
       "finagleChannelTransport",
       new SimpleChannelInboundHandler[Out]() {
-        override def channelRead0(
-            ctx: ChannelHandlerContext,
-            msg: Out): Unit = {
+        override def channelRead0(ctx: ChannelHandlerContext, msg: Out): Unit =
           queue.offer(msg)
-        }
 
-        override def channelInactive(ctx: ChannelHandlerContext): Unit = {
+        override def channelInactive(ctx: ChannelHandlerContext): Unit =
           fail(new ChannelClosedException(remoteAddress))
-        }
 
         override def exceptionCaught(
             ctx: ChannelHandlerContext,
-            e: Throwable): Unit = {
+            e: Throwable): Unit =
           fail(ChannelException(e, remoteAddress))
-        }
       }
     )
 }

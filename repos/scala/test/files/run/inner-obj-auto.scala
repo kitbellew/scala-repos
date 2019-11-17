@@ -11,9 +11,8 @@ class Class2_1 {
     object Obj { ObjCounter += 1 }
     Obj // one
 
-    def singleThreadedAccess(x: Any) = {
+    def singleThreadedAccess(x: Any) =
       x == Obj
-    }
 
     def runTest {
       try {
@@ -39,9 +38,8 @@ object Object3_1 {
     object Obj { ObjCounter += 1 }
     Obj // one
 
-    def singleThreadedAccess(x: Any) = {
+    def singleThreadedAccess(x: Any) =
       x == Obj
-    }
 
     def runTest {
       try {
@@ -67,9 +65,8 @@ trait Trait4_1 {
     object Obj { ObjCounter += 1 }
     Obj // one
 
-    def singleThreadedAccess(x: Any) = {
+    def singleThreadedAccess(x: Any) =
       x == Obj
-    }
 
     def runTest {
       try {
@@ -95,9 +92,8 @@ class Class6_1 {
     object Obj { ObjCounter += 1 }
     Obj // one
 
-    def singleThreadedAccess(x: Any) = {
+    def singleThreadedAccess(x: Any) =
       x == Obj
-    }
 
     def runTest {
       try {
@@ -123,9 +119,8 @@ object Object7_1 {
     object Obj { ObjCounter += 1 }
     Obj // one
 
-    def singleThreadedAccess(x: Any) = {
+    def singleThreadedAccess(x: Any) =
       x == Obj
-    }
 
     def runTest {
       try {
@@ -151,9 +146,8 @@ trait Trait8_1 {
     object Obj { ObjCounter += 1 }
     Obj // one
 
-    def singleThreadedAccess(x: Any) = {
+    def singleThreadedAccess(x: Any) =
       x == Obj
-    }
 
     def runTest {
       try {
@@ -179,9 +173,8 @@ class Class10_1 {
     object Obj { ObjCounter += 1 }
     Obj // one
 
-    def singleThreadedAccess(x: Any) = {
+    def singleThreadedAccess(x: Any) =
       x == Obj
-    }
 
     def runTest {
       try {
@@ -207,9 +200,8 @@ object Object11_1 {
     object Obj { ObjCounter += 1 }
     Obj // one
 
-    def singleThreadedAccess(x: Any) = {
+    def singleThreadedAccess(x: Any) =
       x == Obj
-    }
 
     def runTest {
       try {
@@ -235,9 +227,8 @@ trait Trait12_1 {
     object Obj { ObjCounter += 1 }
     Obj // one
 
-    def singleThreadedAccess(x: Any) = {
+    def singleThreadedAccess(x: Any) =
       x == Obj
-    }
 
     def runTest {
       try {
@@ -263,9 +254,8 @@ class Class14_1 {
     object Obj { ObjCounter += 1 }
     Obj // one
 
-    def singleThreadedAccess(x: Any) = {
+    def singleThreadedAccess(x: Any) =
       x == Obj
-    }
 
     def runTest {
       try {
@@ -291,9 +281,8 @@ object Object15_1 {
     object Obj { ObjCounter += 1 }
     Obj // one
 
-    def singleThreadedAccess(x: Any) = {
+    def singleThreadedAccess(x: Any) =
       x == Obj
-    }
 
     def runTest {
       try {
@@ -319,9 +308,8 @@ trait Trait16_1 {
     object Obj { ObjCounter += 1 }
     Obj // one
 
-    def singleThreadedAccess(x: Any) = {
+    def singleThreadedAccess(x: Any) =
       x == Obj
-    }
 
     def runTest {
       try {
@@ -347,9 +335,8 @@ class Class18_1 {
     object Obj { ObjCounter += 1 }
     Obj // one
 
-    def singleThreadedAccess(x: Any) = {
+    def singleThreadedAccess(x: Any) =
       x == Obj
-    }
 
     def runTest {
       try {
@@ -375,9 +362,8 @@ object Object19_1 {
     object Obj { ObjCounter += 1 }
     Obj // one
 
-    def singleThreadedAccess(x: Any) = {
+    def singleThreadedAccess(x: Any) =
       x == Obj
-    }
 
     def runTest {
       try {
@@ -403,9 +389,8 @@ trait Trait20_1 {
     object Obj { ObjCounter += 1 }
     Obj // one
 
-    def singleThreadedAccess(x: Any) = {
+    def singleThreadedAccess(x: Any) =
       x == Obj
-    }
 
     def runTest {
       try {
@@ -431,9 +416,8 @@ class Class22_1 {
     object Obj { ObjCounter += 1 }
     Obj // one
 
-    def singleThreadedAccess(x: Any) = {
+    def singleThreadedAccess(x: Any) =
       x == Obj
-    }
 
     def runTest {
       try {
@@ -459,9 +443,8 @@ object Object23_1 {
     object Obj { ObjCounter += 1 }
     Obj // one
 
-    def singleThreadedAccess(x: Any) = {
+    def singleThreadedAccess(x: Any) =
       x == Obj
-    }
 
     def runTest {
       try {
@@ -487,9 +470,8 @@ trait Trait24_1 {
     object Obj { ObjCounter += 1 }
     Obj // one
 
-    def singleThreadedAccess(x: Any) = {
+    def singleThreadedAccess(x: Any) =
       x == Obj
-    }
 
     def runTest {
       try {
@@ -517,9 +499,8 @@ class Class26_1 {
       object Obj { ObjCounter += 1 }
       Obj // one
 
-      def singleThreadedAccess(x: Any) = {
+      def singleThreadedAccess(x: Any) =
         x == Obj
-      }
 
       def runTest {
         try {
@@ -548,9 +529,8 @@ object Object27_1 {
       object Obj { ObjCounter += 1 }
       Obj // one
 
-      def singleThreadedAccess(x: Any) = {
+      def singleThreadedAccess(x: Any) =
         x == Obj
-      }
 
       def runTest {
         try {
@@ -579,9 +559,8 @@ trait Trait28_1 {
       object Obj { ObjCounter += 1 }
       Obj // one
 
-      def singleThreadedAccess(x: Any) = {
+      def singleThreadedAccess(x: Any) =
         x == Obj
-      }
 
       def runTest {
         try {
@@ -610,9 +589,8 @@ class Class30_1 {
       object Obj { ObjCounter += 1 }
       Obj // one
 
-      def singleThreadedAccess(x: Any) = {
+      def singleThreadedAccess(x: Any) =
         x == Obj
-      }
 
       def runTest {
         try {
@@ -641,9 +619,8 @@ object Object31_1 {
       object Obj { ObjCounter += 1 }
       Obj // one
 
-      def singleThreadedAccess(x: Any) = {
+      def singleThreadedAccess(x: Any) =
         x == Obj
-      }
 
       def runTest {
         try {
@@ -672,9 +649,8 @@ trait Trait32_1 {
       object Obj { ObjCounter += 1 }
       Obj // one
 
-      def singleThreadedAccess(x: Any) = {
+      def singleThreadedAccess(x: Any) =
         x == Obj
-      }
 
       def runTest {
         try {
@@ -701,9 +677,8 @@ class Class34_1 {
     object Obj { ObjCounter += 1 }
     Obj // one
 
-    def singleThreadedAccess(x: Any) = {
+    def singleThreadedAccess(x: Any) =
       x == Obj
-    }
 
     def runTest {
       try {
@@ -729,9 +704,8 @@ object Object35_1 {
     object Obj { ObjCounter += 1 }
     Obj // one
 
-    def singleThreadedAccess(x: Any) = {
+    def singleThreadedAccess(x: Any) =
       x == Obj
-    }
 
     def runTest {
       try {
@@ -757,9 +731,8 @@ trait Trait36_1 {
     object Obj { ObjCounter += 1 }
     Obj // one
 
-    def singleThreadedAccess(x: Any) = {
+    def singleThreadedAccess(x: Any) =
       x == Obj
-    }
 
     def runTest {
       try {
@@ -785,9 +758,8 @@ class Class38_1 {
     object Obj { ObjCounter += 1 }
     Obj // one
 
-    def singleThreadedAccess(x: Any) = {
+    def singleThreadedAccess(x: Any) =
       x == Obj
-    }
 
     def runTest {
       try {
@@ -813,9 +785,8 @@ object Object39_1 {
     object Obj { ObjCounter += 1 }
     Obj // one
 
-    def singleThreadedAccess(x: Any) = {
+    def singleThreadedAccess(x: Any) =
       x == Obj
-    }
 
     def runTest {
       try {
@@ -841,9 +812,8 @@ trait Trait40_1 {
     object Obj { ObjCounter += 1 }
     Obj // one
 
-    def singleThreadedAccess(x: Any) = {
+    def singleThreadedAccess(x: Any) =
       x == Obj
-    }
 
     def runTest {
       try {
@@ -869,9 +839,8 @@ class Class42_1 {
     private object Obj { ObjCounter += 1 }
     Obj // one
 
-    def singleThreadedAccess(x: Any) = {
+    def singleThreadedAccess(x: Any) =
       x == Obj
-    }
 
     def runTest {
       try {
@@ -897,9 +866,8 @@ object Object43_1 {
     private object Obj { ObjCounter += 1 }
     Obj // one
 
-    def singleThreadedAccess(x: Any) = {
+    def singleThreadedAccess(x: Any) =
       x == Obj
-    }
 
     def runTest {
       try {
@@ -925,9 +893,8 @@ trait Trait44_1 {
     private object Obj { ObjCounter += 1 }
     Obj // one
 
-    def singleThreadedAccess(x: Any) = {
+    def singleThreadedAccess(x: Any) =
       x == Obj
-    }
 
     def runTest {
       try {
@@ -953,9 +920,8 @@ class Class46_1 {
     private object Obj { ObjCounter += 1 }
     Obj // one
 
-    def singleThreadedAccess(x: Any) = {
+    def singleThreadedAccess(x: Any) =
       x == Obj
-    }
 
     def runTest {
       try {
@@ -981,9 +947,8 @@ object Object47_1 {
     private object Obj { ObjCounter += 1 }
     Obj // one
 
-    def singleThreadedAccess(x: Any) = {
+    def singleThreadedAccess(x: Any) =
       x == Obj
-    }
 
     def runTest {
       try {
@@ -1009,9 +974,8 @@ trait Trait48_1 {
     private object Obj { ObjCounter += 1 }
     Obj // one
 
-    def singleThreadedAccess(x: Any) = {
+    def singleThreadedAccess(x: Any) =
       x == Obj
-    }
 
     def runTest {
       try {
@@ -1037,9 +1001,8 @@ class Class50_1 {
     private object Obj { ObjCounter += 1 }
     Obj // one
 
-    def singleThreadedAccess(x: Any) = {
+    def singleThreadedAccess(x: Any) =
       x == Obj
-    }
 
     def runTest {
       try {
@@ -1065,9 +1028,8 @@ object Object51_1 {
     private object Obj { ObjCounter += 1 }
     Obj // one
 
-    def singleThreadedAccess(x: Any) = {
+    def singleThreadedAccess(x: Any) =
       x == Obj
-    }
 
     def runTest {
       try {
@@ -1093,9 +1055,8 @@ trait Trait52_1 {
     private object Obj { ObjCounter += 1 }
     Obj // one
 
-    def singleThreadedAccess(x: Any) = {
+    def singleThreadedAccess(x: Any) =
       x == Obj
-    }
 
     def runTest {
       try {

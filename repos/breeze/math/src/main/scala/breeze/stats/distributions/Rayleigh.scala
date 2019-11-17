@@ -25,21 +25,18 @@ case class Rayleigh(scale: Double)(implicit rand: RandBasis = Rand)
   /**
     * Gets one sample from the distribution. Equivalent to sample()
     */
-  def draw(): Double = {
+  def draw(): Double =
     // from numpy
     math.sqrt(2 * new Exponential(1).draw() * scale * scale)
-  }
 
-  def unnormalizedLogPdf(x: Double): Double = {
+  def unnormalizedLogPdf(x: Double): Double =
     log(x) - x * x / (2 * scale * scale)
-  }
 
   def cdf(x: Double): Double = {
     val xs = x / scale
     -expm1(-(xs * xs) / 2)
   }
 
-  override def probability(x: Double, y: Double): Double = {
+  override def probability(x: Double, y: Double): Double =
     cdf(y) - cdf(x)
-  }
 }

@@ -5,9 +5,8 @@ trait A extends DelayedInit {
     body
     postConstructionCode
   }
-  def postConstructionCode: Unit = {
+  def postConstructionCode: Unit =
     print("\n A+")
-  }
 }
 trait B extends A {
   print(" -B")

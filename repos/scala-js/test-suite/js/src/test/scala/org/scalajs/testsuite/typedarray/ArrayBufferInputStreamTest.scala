@@ -24,9 +24,8 @@ import org.scalajs.testsuite.utils.AssertThrows._
 /** Tests for our implementation of java.io._ stream classes */
 trait ArrayBufferInputStreamTest {
 
-  def byteArray(a: TraversableOnce[Int]): Array[Byte] = {
+  def byteArray(a: TraversableOnce[Int]): Array[Byte] =
     a.toArray.map(_.toByte)
-  }
 
   def mkStream(seq: Seq[Int]): InputStream
 
@@ -122,9 +121,8 @@ trait ArrayBufferInputStreamTest {
     assertEquals(0L, stream.skip(30))
   }
 
-  @Test def markSupported(): Unit = {
+  @Test def markSupported(): Unit =
     assertTrue(newStream.markSupported)
-  }
 
   @Test def close(): Unit = {
     val stream = newStream

@@ -18,11 +18,10 @@ private[base] class BaseShutdownHooks extends ShutdownHooks {
   private[this] val log = LoggerFactory.getLogger(getClass)
   private[this] var shutdownHooks = List.empty[() => Unit]
 
-  override def onShutdown(block: => Unit): Unit = {
+  override def onShutdown(block: => Unit): Unit =
     shutdownHooks +:= { () =>
       block
     }
-  }
 
   override def shutdown(): Unit = {
     shutdownHooks.foreach { hook =>
@@ -40,8 +39,7 @@ private[base] class BaseShutdownHooks extends ShutdownHooks {
   */
 private class DefaultShutdownHooks extends BaseShutdownHooks {
   Runtime.getRuntime.addShutdownHook(new Thread() {
-    override def run(): Unit = {
+    override def run(): Unit =
       shutdown()
-    }
   })
 }

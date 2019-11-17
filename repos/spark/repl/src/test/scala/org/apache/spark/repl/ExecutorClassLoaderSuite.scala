@@ -185,7 +185,7 @@ class ExecutorClassLoaderSuite
         thread.interrupt()
       }
     }
-    def tryAndFailToLoadABunchOfClasses(): Unit = {
+    def tryAndFailToLoadABunchOfClasses(): Unit =
       // The number of trials here should be much larger than Jetty's thread / connection limit
       // in order to expose thread or connection leaks
       for (i <- 1 to 1000) {
@@ -198,7 +198,6 @@ class ExecutorClassLoaderSuite
           classLoader.loadClass(s"ReplFakeClassDoesNotExist$i").newInstance()
         }
       }
-    }
     failAfter(10 seconds)(tryAndFailToLoadABunchOfClasses())(interruptor)
   }
 

@@ -213,9 +213,8 @@ abstract class AbstractFile extends Iterable[AbstractFile] {
   /** Return an abstract file that does not check that `path` denotes
     *  an existing file.
     */
-  def lookupPathUnchecked(path: String, directory: Boolean): AbstractFile = {
+  def lookupPathUnchecked(path: String, directory: Boolean): AbstractFile =
     lookup((f, p, dir) => f.lookupNameUnchecked(p, dir), path, directory)
-  }
 
   private def lookup(
       getFile: (AbstractFile, String, Boolean) => AbstractFile,

@@ -62,7 +62,7 @@ private[netty] class NettyRpcEnv(
     new NettyRpcHandler(dispatcher, this, streamManager))
 
   private def createClientBootstraps(
-      ): java.util.List[TransportClientBootstrap] = {
+      ): java.util.List[TransportClientBootstrap] =
     if (securityManager.isAuthenticationEnabled()) {
       java.util.Arrays.asList(
         new SaslClientBootstrap(
@@ -73,7 +73,6 @@ private[netty] class NettyRpcEnv(
     } else {
       java.util.Collections.emptyList[TransportClientBootstrap]
     }
-  }
 
   private val clientFactory =
     transportContext.createClientFactory(createClientBootstraps())
@@ -140,9 +139,8 @@ private[netty] class NettyRpcEnv(
 
   override def setupEndpoint(
       name: String,
-      endpoint: RpcEndpoint): RpcEndpointRef = {
+      endpoint: RpcEndpoint): RpcEndpointRef =
     dispatcher.registerRpcEndpoint(name, endpoint)
-  }
 
   def asyncSetupEndpointRefByURI(uri: String): Future[RpcEndpointRef] = {
     val addr = RpcEndpointAddress(uri)
@@ -169,7 +167,7 @@ private[netty] class NettyRpcEnv(
 
   private def postToOutbox(
       receiver: NettyRpcEndpointRef,
-      message: OutboxMessage): Unit = {
+      message: OutboxMessage): Unit =
     if (receiver.client != null) {
       message.sendWith(receiver.client)
     } else {
@@ -198,7 +196,6 @@ private[netty] class NettyRpcEnv(
         targetOutbox.send(message)
       }
     }
-  }
 
   private[netty] def send(message: RequestMessage): Unit = {
     val remoteAddr = message.receiver.address
@@ -215,9 +212,8 @@ private[netty] class NettyRpcEnv(
     }
   }
 
-  private[netty] def createClient(address: RpcAddress): TransportClient = {
+  private[netty] def createClient(address: RpcAddress): TransportClient =
     clientFactory.createClient(address.host, address.port)
-  }
 
   private[netty] def ask[T: ClassTag](
       message: RequestMessage,
@@ -225,11 +221,10 @@ private[netty] class NettyRpcEnv(
     val promise = Promise[Any]()
     val remoteAddr = message.receiver.address
 
-    def onFailure(e: Throwable): Unit = {
+    def onFailure(e: Throwable): Unit =
       if (!promise.tryFailure(e)) {
         logWarning(s"Ignored failure: $e")
       }
-    }
 
     def onSuccess(reply: Any): Unit = reply match {
       case RpcFailure(e) => onFailure(e)
@@ -261,11 +256,10 @@ private[netty] class NettyRpcEnv(
 
       val timeoutCancelable = timeoutScheduler.schedule(
         new Runnable {
-          override def run(): Unit = {
+          override def run(): Unit =
             onFailure(
               new TimeoutException(
                 s"Cannot receive any reply in ${timeout.duration}"))
-          }
         },
         timeout.duration.toNanos,
         TimeUnit.NANOSECONDS
@@ -282,31 +276,26 @@ private[netty] class NettyRpcEnv(
       .recover(timeout.addMessageIfTimeout)(ThreadUtils.sameThread)
   }
 
-  private[netty] def serialize(content: Any): ByteBuffer = {
+  private[netty] def serialize(content: Any): ByteBuffer =
     javaSerializerInstance.serialize(content)
-  }
 
   private[netty] def deserialize[T: ClassTag](
       client: TransportClient,
-      bytes: ByteBuffer): T = {
+      bytes: ByteBuffer): T =
     NettyRpcEnv.currentClient.withValue(client) {
       deserialize { () =>
         javaSerializerInstance.deserialize[T](bytes)
       }
     }
-  }
 
-  override def endpointRef(endpoint: RpcEndpoint): RpcEndpointRef = {
+  override def endpointRef(endpoint: RpcEndpoint): RpcEndpointRef =
     dispatcher.getRpcEndpointRef(endpoint)
-  }
 
-  override def shutdown(): Unit = {
+  override def shutdown(): Unit =
     cleanup()
-  }
 
-  override def awaitTermination(): Unit = {
+  override def awaitTermination(): Unit =
     dispatcher.awaitTermination()
-  }
 
   private def cleanup(): Unit = {
     if (!stopped.compareAndSet(false, true)) {
@@ -339,11 +328,10 @@ private[netty] class NettyRpcEnv(
     }
   }
 
-  override def deserialize[T](deserializationAction: () => T): T = {
+  override def deserialize[T](deserializationAction: () => T): T =
     NettyRpcEnv.currentEnv.withValue(this) {
       deserializationAction()
     }
-  }
 
   override def fileServer: RpcEnvFileServer = streamManager
 
@@ -410,7 +398,7 @@ private[netty] class NettyRpcEnv(
       source.close()
     }
 
-    override def read(dst: ByteBuffer): Int = {
+    override def read(dst: ByteBuffer): Int =
       Try(source.read(dst)) match {
         case Success(bytesRead) => bytesRead
         case Failure(readErr) =>
@@ -420,7 +408,6 @@ private[netty] class NettyRpcEnv(
             throw readErr
           }
       }
-    }
 
     override def close(): Unit = source.close()
 
@@ -433,15 +420,13 @@ private[netty] class NettyRpcEnv(
       client: TransportClient)
       extends StreamCallback {
 
-    override def onData(streamId: String, buf: ByteBuffer): Unit = {
+    override def onData(streamId: String, buf: ByteBuffer): Unit =
       while (buf.remaining() > 0) {
         sink.write(buf)
       }
-    }
 
-    override def onComplete(streamId: String): Unit = {
+    override def onComplete(streamId: String): Unit =
       sink.close()
-    }
 
     override def onFailure(streamId: String, cause: Throwable): Unit = {
       logDebug(s"Error downloading stream $streamId.", cause)
@@ -553,17 +538,13 @@ private[netty] class NettyRpcEndpointRef(
     client = NettyRpcEnv.currentClient.value
   }
 
-  private def writeObject(out: ObjectOutputStream): Unit = {
+  private def writeObject(out: ObjectOutputStream): Unit =
     out.defaultWriteObject()
-  }
 
   override def name: String = _name
 
-  override def ask[T: ClassTag](
-      message: Any,
-      timeout: RpcTimeout): Future[T] = {
+  override def ask[T: ClassTag](message: Any, timeout: RpcTimeout): Future[T] =
     nettyEnv.ask(RequestMessage(nettyEnv.address, this, message), timeout)
-  }
 
   override def send(message: Any): Unit = {
     require(message != null, "Message is null")

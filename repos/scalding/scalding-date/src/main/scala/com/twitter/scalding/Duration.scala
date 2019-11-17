@@ -67,12 +67,11 @@ case class Weeks(cnt: Int)(implicit tz: TimeZone)
   // The library we are using can't handle week truncation...
   override def floorOf(that: RichDate) = {
     val step = Days(1)
-    @tailrec def recentMonday(rd: RichDate): RichDate = {
+    @tailrec def recentMonday(rd: RichDate): RichDate =
       rd.toCalendar(tz).get(Calendar.DAY_OF_WEEK) match {
         case Calendar.MONDAY => rd
         case _               => recentMonday(step.subtractFrom(rd))
       }
-    }
     //Set it to the earliest point in the day:
     step.floorOf(recentMonday(that))
   }
@@ -86,16 +85,14 @@ case class Years(cnt: Int)(implicit tz: TimeZone)
 
 abstract class AbstractDurationList[T <: Duration](parts: List[T])
     extends Duration(-1, -1, null) {
-  override def addTo(that: RichDate) = {
+  override def addTo(that: RichDate) =
     parts.foldLeft(that) { (curdate, next) =>
       next.addTo(curdate)
     }
-  }
-  override def subtractFrom(that: RichDate) = {
+  override def subtractFrom(that: RichDate) =
     parts.foldLeft(that) { (curdate, next) =>
       next.subtractFrom(curdate)
     }
-  }
   //This does not make sense for a DurationList interval, pass through
   override def floorOf(that: RichDate) = that
 }

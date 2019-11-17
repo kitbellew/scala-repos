@@ -203,11 +203,9 @@ package object rearranger {
     OBJECT -> commonModifiers
   )
 
-  def getModifierByName(modifierName: String) = {
+  def getModifierByName(modifierName: String) =
     scalaModifiersByName.get(modifierName)
-  }
 
-  def getTokenById(modifierId: String) = {
+  def getTokenById(modifierId: String) =
     scalaTokensById.get(modifierId)
-  }
 }

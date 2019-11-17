@@ -57,19 +57,16 @@ object ProdServerStartSpec extends Specification {
     for ((k, v) <- propertyMap) { properties.put(k, v) }
 
     private var hooks = Seq.empty[() => Unit]
-    def addShutdownHook(hook: => Unit) = {
+    def addShutdownHook(hook: => Unit) =
       hooks = hooks :+ (() => hook)
-    }
-    def shutdown(): Unit = {
+    def shutdown(): Unit =
       for (h <- hooks) h.apply()
-    }
 
     def exit(
         message: String,
         cause: Option[Throwable] = None,
-        returnCode: Int = -1): Nothing = {
+        returnCode: Int = -1): Nothing =
       throw new ExitException(message, cause, returnCode)
-    }
   }
 
   // A family of fake servers for us to test

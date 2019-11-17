@@ -94,19 +94,16 @@ object KuhnMunkres extends BipartiteMatching {
       }
     }
 
-    def findStarInRow(row: Int) = {
+    def findStarInRow(row: Int) =
       marked(row).indexWhere(1 == _)
-    }
 
-    def findStarInCol(col: Int) = {
+    def findStarInCol(col: Int) =
       Iterator.range(0, n).indexWhere(i => marked(i)(col) == 1)
-    }
 
-    def findPrimeInRow(row: Int) = {
+    def findPrimeInRow(row: Int) =
       marked(row).indexWhere(2 == _)
-    }
 
-    def convertPath(path: Array[Array[Int]], count: Int) = {
+    def convertPath(path: Array[Array[Int]], count: Int) =
       for (i <- 0 to count) {
         if (marked(path(i)(0))(path(i)(1)) == 1)
           marked(path(i)(0))(path(i)(1)) = 0
@@ -114,7 +111,6 @@ object KuhnMunkres extends BipartiteMatching {
           marked(path(i)(0))(path(i)(1)) = 1
         }
       }
-    }
 
     def step1() = {
       for {

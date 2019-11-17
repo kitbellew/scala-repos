@@ -106,7 +106,6 @@ private[hive] case class CreateTableAsSelect(
     Seq.empty[Row]
   }
 
-  override def argString: String = {
+  override def argString: String =
     s"[Database:${tableDesc.database}}, TableName: ${tableDesc.name.table}, InsertIntoHiveTable]"
-  }
 }

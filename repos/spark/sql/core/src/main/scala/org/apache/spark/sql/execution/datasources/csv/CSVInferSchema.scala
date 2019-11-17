@@ -74,12 +74,11 @@ private[csv] object CSVInferSchema {
 
   def mergeRowTypes(
       first: Array[DataType],
-      second: Array[DataType]): Array[DataType] = {
+      second: Array[DataType]): Array[DataType] =
     first.zipAll(second, NullType, NullType).map {
       case (a, b) =>
         findTightestCommonType(a, b).getOrElse(NullType)
     }
-  }
 
   /**
     * Infer type of string field. Given known type Double, and a string "1", there is no
@@ -88,7 +87,7 @@ private[csv] object CSVInferSchema {
   def inferField(
       typeSoFar: DataType,
       field: String,
-      nullValue: String = ""): DataType = {
+      nullValue: String = ""): DataType =
     if (field == null || field.isEmpty || field == nullValue) {
       typeSoFar
     } else {
@@ -105,7 +104,6 @@ private[csv] object CSVInferSchema {
             s"Unexpected data type $other")
       }
     }
-  }
 
   private def tryParseInteger(field: String): DataType =
     if ((allCatch opt field.toInt).isDefined) {
@@ -121,36 +119,32 @@ private[csv] object CSVInferSchema {
       tryParseDouble(field)
     }
 
-  private def tryParseDouble(field: String): DataType = {
+  private def tryParseDouble(field: String): DataType =
     if ((allCatch opt field.toDouble).isDefined) {
       DoubleType
     } else {
       tryParseTimestamp(field)
     }
-  }
 
-  def tryParseTimestamp(field: String): DataType = {
+  def tryParseTimestamp(field: String): DataType =
     if ((allCatch opt DateTimeUtils.stringToTime(field)).isDefined) {
       TimestampType
     } else {
       tryParseBoolean(field)
     }
-  }
 
-  def tryParseBoolean(field: String): DataType = {
+  def tryParseBoolean(field: String): DataType =
     if ((allCatch opt field.toBoolean).isDefined) {
       BooleanType
     } else {
       stringType()
     }
-  }
 
   // Defining a function to return the StringType constant is necessary in order to work around
   // a Scala compiler issue which leads to runtime incompatibilities with certain Spark versions;
   // see issue #128 for more details.
-  private def stringType(): DataType = {
+  private def stringType(): DataType =
     StringType
-  }
 
   private val numericPrecedence: IndexedSeq[DataType] =
     HiveTypeCoercion.numericPrecedence
@@ -191,8 +185,7 @@ private[csv] object CSVTypeCast {
       datum: String,
       castType: DataType,
       nullable: Boolean = true,
-      nullValue: String = ""): Any = {
-
+      nullValue: String = ""): Any =
     if (datum == nullValue && nullable && (!castType
           .isInstanceOf[StringType])) {
       null
@@ -231,7 +224,6 @@ private[csv] object CSVTypeCast {
           throw new RuntimeException(s"Unsupported type: ${castType.typeName}")
       }
     }
-  }
 
   /**
     * Helper method that converts string representation of a character to actual character.
@@ -239,7 +231,7 @@ private[csv] object CSVTypeCast {
     * character.
     */
   @throws[IllegalArgumentException]
-  def toChar(str: String): Char = {
+  def toChar(str: String): Char =
     if (str.charAt(0) == '\\') {
       str.charAt(1) match {
         case 't' => '\t'
@@ -260,5 +252,4 @@ private[csv] object CSVTypeCast {
       throw new IllegalArgumentException(
         s"Delimiter cannot be more than one character: $str")
     }
-  }
 }

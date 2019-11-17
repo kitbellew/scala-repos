@@ -36,7 +36,7 @@ object Templates {
   private def checkForLiftView(
       part: List[String],
       last: String,
-      what: LiftRules.ViewDispatchPF): Box[NodeSeq] = {
+      what: LiftRules.ViewDispatchPF): Box[NodeSeq] =
     if (what.isDefinedAt(part)) {
       what(part) match {
         case Right(lv) =>
@@ -44,7 +44,6 @@ object Templates {
         case _ => Empty
       }
     } else Empty
-  }
 
   private def checkForFunc(
       whole: List[String],
@@ -73,9 +72,8 @@ object Templates {
   private[http] def findTopLevelTemplate(
       places: List[String],
       locale: Locale,
-      needAutoSurround: Boolean) = {
+      needAutoSurround: Boolean) =
     findRawTemplate0(places, locale, needAutoSurround).map(checkForContentId)
-  }
 
   /**
     * Given a list of paths (e.g. List("foo", "index")),
@@ -161,9 +159,8 @@ object Templates {
     *
     * @return the template if it can be found
     */
-  def findRawTemplate(places: List[String], locale: Locale): Box[NodeSeq] = {
+  def findRawTemplate(places: List[String], locale: Locale): Box[NodeSeq] =
     findRawTemplate0(places, locale, false)
-  }
 
   private def findRawTemplate0(
       places: List[String],

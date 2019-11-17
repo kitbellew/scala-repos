@@ -32,12 +32,11 @@ class ImmutableLRUTest extends FunSuite with GeneratorDrivenPropertyChecks {
   // given a list of entries, build an LRU containing them
   private def buildLRU[V](
       lru: ImmutableLRU[String, V],
-      entries: List[(String, V)]): ImmutableLRU[String, V] = {
+      entries: List[(String, V)]): ImmutableLRU[String, V] =
     entries match {
       case Nil          => lru
       case head :: tail => buildLRU((lru + head)._2, tail)
     }
-  }
 
   test("ImmutableLRU eviction") {
     forAll(LRUEntriesGenerator[Int]) { entries =>

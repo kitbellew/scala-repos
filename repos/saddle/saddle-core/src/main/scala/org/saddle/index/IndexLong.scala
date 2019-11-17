@@ -79,9 +79,8 @@ class IndexLong(keys: Vec[Long]) extends Index[Long] {
     JoinerImpl.join(this, other, OuterJoin)
   }
 
-  def slice(from: Int, until: Int, stride: Int): Index[Long] = {
+  def slice(from: Int, until: Int, stride: Int): Index[Long] =
     new IndexLong(keys.slice(from, until, stride))
-  }
 
   // find the first location whereby an insertion would maintain a sorted index
   def lsearch(t: Long): Int = {
@@ -110,7 +109,7 @@ class IndexLong(keys: Vec[Long]) extends Index[Long] {
   def toArray: Array[Long] = keys.toArray
 
   /**Default equality does an iterative, element-wise equality check of all values. */
-  override def equals(o: Any): Boolean = {
+  override def equals(o: Any): Boolean =
     o match {
       case rv: IndexInt =>
         (this eq rv) || (this.length == rv.length) && {
@@ -124,5 +123,4 @@ class IndexLong(keys: Vec[Long]) extends Index[Long] {
         }
       case _ => super.equals(o)
     }
-  }
 }

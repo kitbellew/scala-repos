@@ -36,9 +36,8 @@ object PicklingSpec {
 
   lazy val randomDates =
     for (n <- Gen.choose(Integer.MIN_VALUE + 1, Integer.MAX_VALUE)) yield {
-      def randBetween(start: Int, end: Int): Int = {
+      def randBetween(start: Int, end: Int): Int =
         start + scala.util.Random.nextInt(end - start)
-      }
 
       val gc = new GregorianCalendar()
       gc.set(Calendar.YEAR, randBetween(1900, 3000))

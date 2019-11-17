@@ -38,9 +38,8 @@ object Loop {
   }
 
   final def forall[@spec A](as: Array[A])(f: A => Boolean): Boolean = {
-    @tailrec def loop(i: Int): Boolean = {
+    @tailrec def loop(i: Int): Boolean =
       if (i == as.length) true else if (f(as(i))) loop(i + 1) else false
-    }
 
     loop(0)
   }

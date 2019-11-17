@@ -45,7 +45,7 @@ class ScalaMemberInplaceRenameHandler
   protected override def createMemberRenamer(
       substituted: PsiElement,
       elementToRename: PsiNameIdentifierOwner,
-      editor: Editor): MemberInplaceRenamer = {
+      editor: Editor): MemberInplaceRenamer =
     substituted match {
       case clazz: PsiClass if elementToRename.isInstanceOf[PsiClassWrapper] =>
         new ScalaMemberInplaceRenamer(elementToRename, clazz, editor)
@@ -58,14 +58,12 @@ class ScalaMemberInplaceRenameHandler
         throw new IllegalArgumentException(
           "Substituted element for renaming has no name")
     }
-  }
 
   override def doRename(
       elementToRename: PsiElement,
       editor: Editor,
-      dataContext: DataContext): InplaceRefactoring = {
+      dataContext: DataContext): InplaceRefactoring =
     afterElementSubstitution(elementToRename, editor, dataContext) {
       super.doRename(_, editor, dataContext)
     }
-  }
 }

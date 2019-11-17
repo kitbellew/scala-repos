@@ -165,9 +165,8 @@ class FSMHakker(name: String, left: ActorRef, right: ActorRef)
   // Initialize the hakker
   initialize()
 
-  private def startThinking(duration: FiniteDuration): State = {
+  private def startThinking(duration: FiniteDuration): State =
     goto(Thinking) using TakenChopsticks(None, None) forMax duration
-  }
 }
 
 /*

@@ -137,13 +137,12 @@ class FsHistoryProviderSuite
           end: Long,
           lastMod: Long,
           user: String,
-          completed: Boolean): ApplicationHistoryInfo = {
+          completed: Boolean): ApplicationHistoryInfo =
         ApplicationHistoryInfo(
           id,
           name,
           List(
             ApplicationAttemptInfo(None, start, end, lastMod, user, completed)))
-      }
 
       list(0) should be(
         makeAppInfo(
@@ -549,14 +548,12 @@ class FsHistoryProviderSuite
     }
   }
 
-  private def createEmptyFile(file: File) = {
+  private def createEmptyFile(file: File) =
     new FileOutputStream(file).close()
-  }
 
-  private def createTestConf(): SparkConf = {
+  private def createTestConf(): SparkConf =
     new SparkConf()
       .set("spark.history.fs.logDirectory", testDir.getAbsolutePath())
-  }
 
   private class SafeModeTestProvider(conf: SparkConf, clock: Clock)
       extends FsHistoryProvider(conf, clock) {

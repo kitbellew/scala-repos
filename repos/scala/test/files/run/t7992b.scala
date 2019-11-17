@@ -3,12 +3,11 @@ class C {
 }
 
 class E extends C {
-  override def foo: Int = {
+  override def foo: Int =
     (None: Option[Int]).getOrElse {
       class C
       E.super.foo
     }
-  }
 }
 
 object Test {

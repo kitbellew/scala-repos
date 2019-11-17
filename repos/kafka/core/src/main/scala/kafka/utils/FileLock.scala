@@ -42,7 +42,7 @@ class FileLock(val file: File) extends Logging {
   /**
     * Try to lock the file and return true if the locking succeeds
     */
-  def tryLock(): Boolean = {
+  def tryLock(): Boolean =
     this synchronized {
       trace("Acquiring lock on " + file.getAbsolutePath)
       try {
@@ -55,7 +55,6 @@ class FileLock(val file: File) extends Logging {
         case e: OverlappingFileLockException => false
       }
     }
-  }
 
   /**
     * Unlock the lock if it is held
@@ -70,10 +69,9 @@ class FileLock(val file: File) extends Logging {
   /**
     * Destroy this lock, closing the associated FileChannel
     */
-  def destroy() = {
+  def destroy() =
     this synchronized {
       unlock()
       channel.close()
     }
-  }
 }

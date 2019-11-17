@@ -91,7 +91,7 @@ object Utils {
 
       // Print next non ASCII printable character
       if (i != end) {
-        def escapeJSEncoded(c: Int): Unit = {
+        def escapeJSEncoded(c: Int): Unit =
           if (6 < c && c < 14) {
             val i = 2 * (c - 7)
             out.append(EscapeJSChars, i, i + 2)
@@ -102,7 +102,6 @@ object Utils {
           } else {
             out.append(f"\\u$c%04x")
           }
-        }
         escapeJSEncoded(c)
         i += 1
       }

@@ -458,14 +458,13 @@ trait Names extends api.Names {
     }
 
     /** Replace \$op_name by corresponding operator symbol. */
-    def decode: String = {
+    def decode: String =
       if (this containsChar '$') {
         val str = toString
         val res = NameTransformer.decode(str)
         if (res == str) str
         else res
       } else toString
-    }
 
     /** TODO - find some efficiency. */
     def append(ch: Char) = newName(toString + ch)

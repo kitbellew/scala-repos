@@ -48,20 +48,18 @@ class DataMap(
     *
     * @param name The property name
     */
-  def require(name: String): Unit = {
+  def require(name: String): Unit =
     if (!fields.contains(name)) {
       throw new DataMapException(s"The field $name is required.")
     }
-  }
 
   /** Check if this DataMap contains a specific property.
     *
     * @param name The property name
     * @return Return true if the property exists, else false.
     */
-  def contains(name: String): Boolean = {
+  def contains(name: String): Boolean =
     fields.contains(name)
-  }
 
   /** Get the value of a mandatory property. Exception is thrown if the property
     * does not exist.
@@ -86,10 +84,9 @@ class DataMap(
     * @param name The property name
     * @return Return the property value of type Option[T]
     */
-  def getOpt[T: Manifest](name: String): Option[T] = {
+  def getOpt[T: Manifest](name: String): Option[T] =
     // either the field doesn't exist or its value is null
     fields.get(name).flatMap(_.extract[Option[T]])
-  }
 
   /** Get the value of an optional property. Return default value if the
     * property does not exist.
@@ -99,9 +96,8 @@ class DataMap(
     * @param default The default property value of type T
     * @return Return the property value of type T
     */
-  def getOrElse[T: Manifest](name: String, default: T): T = {
+  def getOrElse[T: Manifest](name: String, default: T): T =
     getOpt[T](name).getOrElse(default)
-  }
 
   /** Java-friendly method for getting the value of a property. Return null if the
     * property does not exist.
@@ -130,7 +126,7 @@ class DataMap(
     * @param name The property name
     * @return Return the list of property values
     */
-  def getStringList(name: String): java.util.List[String] = {
+  def getStringList(name: String): java.util.List[String] =
     fields.get(name) match {
       case None        => null
       case Some(JNull) => null
@@ -138,7 +134,6 @@ class DataMap(
         JavaConversions.seqAsJavaList(
           x.extract[List[String]](formats, manifest[List[String]]))
     }
-  }
 
   /** Return a new DataMap with elements containing elements from the left hand
     * side operand followed by elements from the right hand side operand.
@@ -185,9 +180,8 @@ class DataMap(
     *
     * @return the object of type T.
     */
-  def extract[T: Manifest]: T = {
+  def extract[T: Manifest]: T =
     toJObject().extract[T]
-  }
 
   override def toString: String = s"DataMap($fields)"
 
@@ -223,13 +217,12 @@ object DataMap {
     * @param jObj JObject
     * @return a new DataMap initialized by a JObject
     */
-  def apply(jObj: JObject): DataMap = {
+  def apply(jObj: JObject): DataMap =
     if (jObj == null) {
       apply()
     } else {
       new DataMap(jObj.obj.toMap)
     }
-  }
 
   /** Create an DataMap from a JSON String
     * @param js JSON String. eg """{ "a": 1, "b": "foo" }"""

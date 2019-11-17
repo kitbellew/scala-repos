@@ -35,13 +35,11 @@ case class Laplace(location: Double, scale: Double)(
     }
   }
 
-  def unnormalizedLogPdf(x: Double): Double = {
+  def unnormalizedLogPdf(x: Double): Double =
     -math.abs(x - location) / scale
-  }
 
-  def probability(x: Double, y: Double): Double = {
+  def probability(x: Double, y: Double): Double =
     cdf(y) - cdf(x)
-  }
 
   def cdf(x: Double) = x match {
     case Double.NegativeInfinity => 0.0

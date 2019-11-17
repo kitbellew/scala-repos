@@ -39,7 +39,7 @@ object ComparingDiffCollectionKinds extends SimplificationType {
     }
 
   private object collectionOfKind {
-    def unapply(expr: ScExpression): Option[String] = {
+    def unapply(expr: ScExpression): Option[String] =
       expr match {
         case _ if isSeq(expr)      => Some("Seq")
         case _ if isSet(expr)      => Some("Set")
@@ -48,17 +48,15 @@ object ComparingDiffCollectionKinds extends SimplificationType {
         case _ if isArray(expr)    => Some("Array")
         case _                     => None
       }
-    }
   }
 
   private object `(!)==` {
-    def unapply(expr: ScExpression): Option[(ScExpression, ScExpression)] = {
+    def unapply(expr: ScExpression): Option[(ScExpression, ScExpression)] =
       expr match {
         case left `==` right => Some(left, right)
         case left `!=` right => Some(left, right)
         case _               => None
       }
-    }
   }
 
   private def partConvertedExprText(

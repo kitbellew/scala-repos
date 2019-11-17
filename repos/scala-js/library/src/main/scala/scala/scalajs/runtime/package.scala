@@ -31,7 +31,7 @@ package object runtime {
   }
 
   @inline final def genTraversableOnce2jsArray[A](
-      col: GenTraversableOnce[A]): js.Array[A] = {
+      col: GenTraversableOnce[A]): js.Array[A] =
     col match {
       case col: js.ArrayOps[A]     => col.result()
       case col: js.WrappedArray[A] => col.array
@@ -40,7 +40,6 @@ package object runtime {
         col.foreach(x => result.push(x))
         result
     }
-  }
 
   final def jsTupleArray2jsObject(
       tuples: js.Array[(String, js.Any)]): js.Object with js.Dynamic = {
@@ -85,7 +84,7 @@ package object runtime {
     *
     *  This is the implementation of [[js.Object.properties]].
     */
-  def propertiesOf(obj: js.Any): js.Array[String] = {
+  def propertiesOf(obj: js.Any): js.Array[String] =
     // See http://stackoverflow.com/questions/26445248/
     if (obj == null || js.isUndefined(obj)) {
       js.Array()
@@ -94,7 +93,7 @@ package object runtime {
       val alreadySeen = js.Dictionary.empty[Boolean]
 
       @tailrec
-      def loop(obj: js.Object): Unit = {
+      def loop(obj: js.Object): Unit =
         if (obj != null) {
           // Add own enumerable properties that have not been seen yet
           val enumProps = js.Object.keys(obj)
@@ -120,12 +119,10 @@ package object runtime {
           // Continue with the next object in the prototype chain
           loop(js.Object.getPrototypeOf(obj))
         }
-      }
       loop(js.Object(obj))
 
       result
     }
-  }
 
   /** Information about the environment Scala.js runs in
     *

@@ -52,11 +52,10 @@ trait AskParse extends AskCommand {
 
   private def askParse(
       src: SourceFile,
-      keepLoaded: Boolean = true): Response[Tree] = {
+      keepLoaded: Boolean = true): Response[Tree] =
     ask {
       compiler.askParsedEntered(src, keepLoaded, _)
     }
-  }
 }
 
 /** Ask the presentation compiler to reload a sequence of `sources` */
@@ -125,9 +124,8 @@ trait AskLoadedTyped extends AskCommand {
   import compiler.Tree
 
   protected def askLoadedTyped(source: SourceFile, keepLoaded: Boolean = false)(
-      implicit reporter: Reporter): Response[Tree] = {
+      implicit reporter: Reporter): Response[Tree] =
     ask {
       compiler.askLoadedTyped(source, keepLoaded, _)
     }
-  }
 }

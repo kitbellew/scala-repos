@@ -83,8 +83,7 @@ private[prediction] object Webhooks {
       channelId: Option[Int],
       web: String,
       log: LoggingAdapter
-  )(implicit ec: ExecutionContext)
-      : Future[(StatusCode, Map[String, String])] = {
+  )(implicit ec: ExecutionContext): Future[(StatusCode, Map[String, String])] =
     Future {
       WebhooksConnectors.json
         .get(web)
@@ -96,7 +95,6 @@ private[prediction] object Webhooks {
           (StatusCodes.NotFound, Map("message" -> message))
         }
     }
-  }
 
   def postForm(
       appId: Int,
@@ -141,8 +139,7 @@ private[prediction] object Webhooks {
       channelId: Option[Int],
       web: String,
       log: LoggingAdapter
-  )(implicit ec: ExecutionContext)
-      : Future[(StatusCode, Map[String, String])] = {
+  )(implicit ec: ExecutionContext): Future[(StatusCode, Map[String, String])] =
     Future {
       WebhooksConnectors.form
         .get(web)
@@ -154,5 +151,4 @@ private[prediction] object Webhooks {
           (StatusCodes.NotFound, Map("message" -> message))
         }
     }
-  }
 }

@@ -297,10 +297,9 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
 
   private def shouldWarnAboutJavaSerializer(
       serializedClass: Class[_],
-      serializer: Serializer) = {
+      serializer: Serializer) =
     isJavaSerializationWarningEnabled &&
-    serializer.isInstanceOf[JavaSerializer] &&
-    !serializedClass.getName.startsWith("akka.") &&
-    !serializedClass.getName.startsWith("java.lang.")
-  }
+      serializer.isInstanceOf[JavaSerializer] &&
+      !serializedClass.getName.startsWith("akka.") &&
+      !serializedClass.getName.startsWith("java.lang.")
 }

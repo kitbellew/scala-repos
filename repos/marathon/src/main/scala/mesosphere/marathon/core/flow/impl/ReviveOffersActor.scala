@@ -21,7 +21,7 @@ private[flow] object ReviveOffersActor {
       conf: ReviveOffersConfig,
       marathonEventStream: EventStream,
       offersWanted: Observable[Boolean],
-      driverHolder: MarathonSchedulerDriverHolder): Props = {
+      driverHolder: MarathonSchedulerDriverHolder): Props =
     Props(
       new ReviveOffersActor(
         clock,
@@ -29,7 +29,6 @@ private[flow] object ReviveOffersActor {
         marathonEventStream,
         offersWanted,
         driverHolder))
-  }
 
   private[impl] case object TimedCheck
   private[impl] case class OffersWanted(wanted: Boolean)

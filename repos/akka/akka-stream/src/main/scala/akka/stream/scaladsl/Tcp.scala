@@ -140,13 +140,12 @@ final class Tcp(system: ExtendedActorSystem) extends akka.actor.Extension {
       options: immutable.Traversable[SocketOption] = Nil,
       halfClose: Boolean = false,
       idleTimeout: Duration = Duration.Inf)(
-      implicit m: Materializer): Future[ServerBinding] = {
+      implicit m: Materializer): Future[ServerBinding] =
     bind(interface, port, backlog, options, halfClose, idleTimeout)
       .to(Sink.foreach { conn: IncomingConnection ⇒
         conn.flow.join(handler).run()
       })
       .run()
-  }
 
   /**
     * Creates an [[Tcp.OutgoingConnection]] instance representing a prospective TCP client connection to the given endpoint.

@@ -7,8 +7,7 @@ object Test extends JavapTest {
   """.stripMargin
 
   // no format
-  override def yah(res: Seq[String]) = {
+  override def yah(res: Seq[String]) =
     // note: avoid the word "information"
     res forall (!_.contains("StringOps.format"))
-  }
 }

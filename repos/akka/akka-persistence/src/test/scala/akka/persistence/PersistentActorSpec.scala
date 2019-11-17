@@ -180,10 +180,9 @@ object PersistentActorSpec {
         this.events = events
     }
 
-    private def handleCmd(cmd: Cmd): Unit = {
+    private def handleCmd(cmd: Cmd): Unit =
       persistAll(Seq(Evt(s"${cmd.data}-41"), Evt(s"${cmd.data}-42")))(
         updateState)
-    }
 
     def receiveCommand: Receive = commonBehavior orElse {
       case c: Cmd ⇒ handleCmd(c)

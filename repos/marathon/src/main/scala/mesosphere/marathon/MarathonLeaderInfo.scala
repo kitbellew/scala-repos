@@ -58,9 +58,8 @@ class MarathonLeaderInfo @Inject() (
   }
 
   /** Unsubscribe to any leadership change events to this actor ref. */
-  override def unsubscribe(self: ActorRef): Unit = {
+  override def unsubscribe(self: ActorRef): Unit =
     eventStream.unsubscribe(self, classOf[LocalLeadershipEvent])
-  }
 }
 
 class MarathonLeaderInfoMetrics @Inject() (metrics: Metrics) {

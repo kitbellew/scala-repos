@@ -150,13 +150,12 @@ private[spark] class ClientDistributedCacheManager() extends Logging {
   def getVisibility(
       conf: Configuration,
       uri: URI,
-      statCache: Map[URI, FileStatus]): LocalResourceVisibility = {
+      statCache: Map[URI, FileStatus]): LocalResourceVisibility =
     if (isPublic(conf, uri, statCache)) {
       LocalResourceVisibility.PUBLIC
     } else {
       LocalResourceVisibility.PRIVATE
     }
-  }
 
   /**
     * Returns a boolean to denote whether a cache file is visible to all (public)

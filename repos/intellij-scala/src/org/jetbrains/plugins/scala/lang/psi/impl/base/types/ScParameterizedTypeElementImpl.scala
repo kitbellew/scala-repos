@@ -38,12 +38,11 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
 
   def typeElement = findChildByClass(classOf[ScTypeElement])
 
-  def findConstructor = {
+  def findConstructor =
     getContext match {
       case constr: ScConstructor => Some(constr)
       case _                     => None
     }
-  }
 
   private var desugarizedTypeModCount: Long = 0L
   private var desugarizedType: Option[ScTypeElement] = null
@@ -55,7 +54,7 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
 
     def kindProjectorFunctionSyntax(
         elem: ScTypeElement): Option[ScTypeElement] = {
-      def convertParameterized(param: ScParameterizedTypeElement): String = {
+      def convertParameterized(param: ScParameterizedTypeElement): String =
         param.typeElement.getText match {
           case v @ ("+" | "-") => //λ[(-[A], +[B]) => Function2[A, Int, B]]
             param.typeArgList.typeArgs match {
@@ -64,7 +63,6 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
             }
           case _ => param.getText //it's a higher kind type
         }
-      }
 
       def convertSimpleType(simple: ScSimpleTypeElement) =
         simple.getText.replaceAll("`", "")
@@ -165,15 +163,14 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
     }
 
     val kindProjectorEnabled = ScalaPsiUtil.kindProjectorPluginEnabled(this)
-    def isKindProjectorFunctionSyntax(element: PsiElement): Boolean = {
+    def isKindProjectorFunctionSyntax(element: PsiElement): Boolean =
       typeElement.getText match {
         case "Lambda" | "λ" if kindProjectorEnabled => true
         case _                                      => false
       }
-    }
 
     @tailrec
-    def isKindProjectorInlineSyntax(element: PsiElement): Boolean = {
+    def isKindProjectorInlineSyntax(element: PsiElement): Boolean =
       element match {
         case simple: ScSimpleTypeElement
             if kindProjectorEnabled &&
@@ -183,7 +180,6 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
           isKindProjectorInlineSyntax(parametrized.typeElement)
         case _ => false
       }
-    }
 
     typeArgList.typeArgs.find {
       case e: ScFunctionalTypeElement if isKindProjectorFunctionSyntax(e) =>

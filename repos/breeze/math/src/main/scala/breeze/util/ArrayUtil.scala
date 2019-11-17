@@ -60,7 +60,7 @@ object ArrayUtil {
     }
   }
 
-  def copyOf[V](a: Array[V], length: Int): Array[V] = {
+  def copyOf[V](a: Array[V], length: Int): Array[V] =
     a match {
       case x: Array[Double]  => Arrays.copyOf(x, length).asInstanceOf[Array[V]]
       case x: Array[Int]     => Arrays.copyOf(x, length).asInstanceOf[Array[V]]
@@ -76,9 +76,8 @@ object ArrayUtil {
           .asInstanceOf[Array[V]]
       case _ => throw new RuntimeException("shouldn't be here!")
     }
-  }
 
-  def copyOfRange[V, VU >: V](a: Array[V], from: Int, to: Int): Array[V] = {
+  def copyOfRange[V, VU >: V](a: Array[V], from: Int, to: Int): Array[V] =
     a match {
       case x: Array[Double] =>
         Arrays.copyOfRange(x, from, to).asInstanceOf[Array[V]]
@@ -102,9 +101,8 @@ object ArrayUtil {
           .asInstanceOf[Array[V]]
       case _ => throw new RuntimeException("shouldn't be here!")
     }
-  }
 
-  def newArrayLike[V](a: Array[V], length: Int): Array[V] = {
+  def newArrayLike[V](a: Array[V], length: Int): Array[V] =
     a match {
       case x: Array[Double] => new Array[Double](length).asInstanceOf[Array[V]]
       case x: Array[Int]    => new Array[Int](length).asInstanceOf[Array[V]]
@@ -121,7 +119,6 @@ object ArrayUtil {
         new Array[V](length)
       case _ => throw new RuntimeException("shouldn't be here!")
     }
-  }
 
   /**
     * For reasons that I cannot explain java.util.Arrays.equals(Array(0.0), Array(-0.0)) == false
@@ -378,7 +375,7 @@ object ArrayUtil {
       data: Array[V],
       offset: Int,
       stride: Int,
-      length: Int): Int = {
+      length: Int): Int =
     (data: Any) match {
       case x: Array[Double] =>
         zeroSkippingHashCodeImpl_Double(x, offset, stride, length)
@@ -398,7 +395,6 @@ object ArrayUtil {
         zeroSkippingHashCodeImpl_Boolean(x, offset, stride, length)
       case _ => zeroSkippingHashCodeImplSlow(data, offset, stride, length)
     }
-  }
 
   @expand
   private def zeroSkippingHashCodeImpl[@expand.args(

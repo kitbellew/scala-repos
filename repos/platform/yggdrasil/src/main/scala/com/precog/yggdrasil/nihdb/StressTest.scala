@@ -99,12 +99,11 @@ class StressTest {
 
     def close(proj: NIHDB) = fromFuture(proj.close(actorSystem))
 
-    def finish() = {
+    def finish() =
       (for {
         _ <- IO { close(nihdb) }
         _ <- IOUtils.recursiveDelete(workDir)
       } yield ()).unsafePerformIO
-    }
 
     def runNihAsync(i: Int, f: File, bufSize: Int, _eventid: Long): Long = {
       var t: Long = 0L

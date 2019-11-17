@@ -25,7 +25,7 @@ object IntervalSeqArbitrary {
   private def randomProfileXor(
       min: Int,
       max: Int,
-      count: Int): Gen[IntervalSeq[Int]] = {
+      count: Int): Gen[IntervalSeq[Int]] =
     for {
       initial <- Gen.oneOf(true, false)
       edges <- Gen.resize(
@@ -34,7 +34,6 @@ object IntervalSeqArbitrary {
       support = edges.sorted.distinct
       kind <- Gen.containerOfN[Array, Int](support.length, Gen.oneOf(0, 1, 2))
     } yield makeProfileXor(initial, support, kind)
-  }
 
   private def randomProfileGen(size: Int) = Gen.frequency[IntervalSeq[Int]](
     1 -> IntervalSeq.empty[Int],

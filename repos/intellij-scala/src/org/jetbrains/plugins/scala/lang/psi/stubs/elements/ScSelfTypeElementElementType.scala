@@ -31,13 +31,12 @@ class ScSelfTypeElementElementType[Func <: ScSelfTypeElement]
     names.foreach(dataStream.writeName(_))
   }
 
-  def createPsi(stub: ScSelfTypeElementStub): ScSelfTypeElement = {
+  def createPsi(stub: ScSelfTypeElementStub): ScSelfTypeElement =
     new ScSelfTypeElementImpl(stub)
-  }
 
   def createStubImpl[ParentPsi <: PsiElement](
       psi: ScSelfTypeElement,
-      parentStub: StubElement[ParentPsi]): ScSelfTypeElementStub = {
+      parentStub: StubElement[ParentPsi]): ScSelfTypeElementStub =
     new ScSelfTypeElementStubImpl(
       parentStub,
       this,
@@ -47,7 +46,6 @@ class ScSelfTypeElementElementType[Func <: ScSelfTypeElement]
         case Some(x) => x.getText
       },
       psi.getClassNames)
-  }
 
   def deserializeImpl(
       dataStream: StubInputStream,

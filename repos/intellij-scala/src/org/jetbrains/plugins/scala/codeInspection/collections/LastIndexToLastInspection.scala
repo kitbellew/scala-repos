@@ -15,7 +15,7 @@ class LastIndexToLastInspection extends OperationOnCollectionInspection {
 object LastIndexToLast extends SimplificationType {
   override def hint: String = InspectionBundle.message("replace.with.last")
 
-  override def getSimplification(expr: ScExpression): Option[Simplification] = {
+  override def getSimplification(expr: ScExpression): Option[Simplification] =
     expr match {
       case qual `.apply` (qual2 `.sizeOrLength` () `-` literal("1"))
           if qual != null && qual2 != null &&
@@ -24,5 +24,4 @@ object LastIndexToLast extends SimplificationType {
         Some(replace(expr).withText(invocationText(qual, "last")))
       case _ => None
     }
-  }
 }

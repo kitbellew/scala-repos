@@ -152,10 +152,9 @@ class DelayedOperationTest {
       }
     }
 
-    override def tryComplete() = {
+    override def tryComplete() =
       if (completable) forceComplete()
       else false
-    }
 
     override def onExpiration() {}
 

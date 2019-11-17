@@ -143,9 +143,8 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
     }
   }
 
-  def partitionsInState(state: PartitionState): Set[TopicAndPartition] = {
+  def partitionsInState(state: PartitionState): Set[TopicAndPartition] =
     partitionState.filter(p => p._2 == state).keySet
-  }
 
   /**
     * This API is invoked by the partition change zookeeper listener
@@ -529,15 +528,13 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
         controllerContext.partitionLeadershipInfo.map(l => (l._1, l._2))))
   }
 
-  private def registerTopicChangeListener() = {
+  private def registerTopicChangeListener() =
     zkUtils.zkClient
       .subscribeChildChanges(BrokerTopicsPath, topicChangeListener)
-  }
 
-  private def deregisterTopicChangeListener() = {
+  private def deregisterTopicChangeListener() =
     zkUtils.zkClient
       .unsubscribeChildChanges(BrokerTopicsPath, topicChangeListener)
-  }
 
   def registerPartitionChangeListener(topic: String) = {
     partitionModificationsListeners.put(
@@ -555,15 +552,13 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
     partitionModificationsListeners.remove(topic)
   }
 
-  private def registerDeleteTopicListener() = {
+  private def registerDeleteTopicListener() =
     zkUtils.zkClient
       .subscribeChildChanges(DeleteTopicsPath, deleteTopicsListener)
-  }
 
-  private def deregisterDeleteTopicListener() = {
+  private def deregisterDeleteTopicListener() =
     zkUtils.zkClient
       .unsubscribeChildChanges(DeleteTopicsPath, deleteTopicsListener)
-  }
 
   private def getLeaderIsrAndEpochOrThrowException(
       topic: String,

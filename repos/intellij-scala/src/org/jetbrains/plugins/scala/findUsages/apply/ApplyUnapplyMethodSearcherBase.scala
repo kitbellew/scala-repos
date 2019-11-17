@@ -34,7 +34,7 @@ abstract class ApplyUnapplyMethodSearcherBase
     element match {
       case fun: ScFunctionDefinition if names.contains(fun.name) =>
         val processor = new Processor[PsiReference] {
-          def process(ref: PsiReference): Boolean = {
+          def process(ref: PsiReference): Boolean =
             inReadAction {
               checkAndTransform(ref).flatMap(_.bind()) match {
                 case Some(ScalaResolveResult(`fun`, _)) =>
@@ -42,7 +42,6 @@ abstract class ApplyUnapplyMethodSearcherBase
                 case _ => true
               }
             }
-          }
         }
         inReadAction(fun.containingClass) match {
           case obj: ScObject =>

@@ -18,10 +18,9 @@ object Test extends BytecodeTest {
     cmpInstructions(instrSeqs(0), instrSeqs(1))
   }
 
-  def cmpInstructions(isa: List[Instruction], isb: List[Instruction]) = {
+  def cmpInstructions(isa: List[Instruction], isb: List[Instruction]) =
     if (isa == isb) println("bytecode identical")
     else diffInstructions(isa, isb)
-  }
 
   def isInvoke(node: Instruction): Boolean = {
     val opcode = node.opcode

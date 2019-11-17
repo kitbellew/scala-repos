@@ -116,9 +116,7 @@ object Reflect {
       default: ClassTag[Default])
       : Option[Either[Class[_ <: ScalaTrait], Class[_ <: JavaInterface]]] = {
 
-    def loadClass(
-        className: String,
-        notFoundFatal: Boolean): Option[Class[_]] = {
+    def loadClass(className: String, notFoundFatal: Boolean): Option[Class[_]] =
       try {
         Some(environment.classLoader.loadClass(className))
       } catch {
@@ -131,7 +129,6 @@ object Reflect {
             s"$key [$className] was not loaded.",
             e)
       }
-    }
 
     val maybeClass = config.get[Option[String]](key) match {
       // If provided, don't bind anything
@@ -161,7 +158,7 @@ object Reflect {
     }
   }
 
-  def createInstance[T: ClassTag](fqcn: String, classLoader: ClassLoader): T = {
+  def createInstance[T: ClassTag](fqcn: String, classLoader: ClassLoader): T =
     try {
       createInstance(getClass(fqcn, classLoader))
     } catch {
@@ -174,7 +171,6 @@ object Reflect {
           s"$name [$fqcn] cannot be instantiated.",
           e)
     }
-  }
 
   def getClass[T: ClassTag](
       fqcn: String,
@@ -200,13 +196,12 @@ object Reflect {
   }
 
   class SubClassOf[T](val runtimeClass: Class[T]) {
-    def unapply(clazz: Class[_]): Option[Class[_ <: T]] = {
+    def unapply(clazz: Class[_]): Option[Class[_ <: T]] =
       if (runtimeClass.isAssignableFrom(clazz)) {
         Some(clazz.asInstanceOf[Class[_ <: T]])
       } else {
         None
       }
-    }
   }
 
   object SubClassOf {

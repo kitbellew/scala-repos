@@ -52,26 +52,23 @@ private[spark] class RDDOperationScope(
     val parent: Option[RDDOperationScope] = None,
     val id: String = RDDOperationScope.nextScopeId().toString) {
 
-  def toJson: String = {
+  def toJson: String =
     RDDOperationScope.jsonMapper.writeValueAsString(this)
-  }
 
   /**
     * Return a list of scopes that this scope is a part of, including this scope itself.
     * The result is ordered from the outermost scope (eldest ancestor) to this scope.
     */
   @JsonIgnore
-  def getAllScopes: Seq[RDDOperationScope] = {
+  def getAllScopes: Seq[RDDOperationScope] =
     parent.map(_.getAllScopes).getOrElse(Seq.empty) ++ Seq(this)
-  }
 
-  override def equals(other: Any): Boolean = {
+  override def equals(other: Any): Boolean =
     other match {
       case s: RDDOperationScope =>
         id == s.id && name == s.name && parent == s.parent
       case _ => false
     }
-  }
 
   override def hashCode(): Int = Objects.hashCode(id, name, parent)
 
@@ -87,9 +84,8 @@ private[spark] object RDDOperationScope extends Logging {
     new ObjectMapper().registerModule(DefaultScalaModule)
   private val scopeCounter = new AtomicInteger(0)
 
-  def fromJson(s: String): RDDOperationScope = {
+  def fromJson(s: String): RDDOperationScope =
     jsonMapper.readValue(s, classOf[RDDOperationScope])
-  }
 
   /** Return a globally unique operation scope ID. */
   def nextScopeId(): Int = scopeCounter.getAndIncrement

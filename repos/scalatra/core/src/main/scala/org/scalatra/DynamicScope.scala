@@ -60,13 +60,12 @@ trait DynamicScope extends RequestResponseScope {
 
   protected[scalatra] def withRequestResponse[A](
       request: HttpServletRequest,
-      response: HttpServletResponse)(f: => A) = {
+      response: HttpServletResponse)(f: => A) =
     withRequest(request) {
       withResponse(response) {
         f
       }
     }
-  }
 
   /**
     * Executes the block with the given request bound to the `request`

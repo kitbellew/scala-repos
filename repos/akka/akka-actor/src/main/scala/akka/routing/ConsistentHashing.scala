@@ -467,10 +467,9 @@ private[akka] final case class ConsistentRoutee(
     case other ⇒ other.toString
   }
 
-  private def toStringWithfullAddress(path: ActorPath): String = {
+  private def toStringWithfullAddress(path: ActorPath): String =
     path.address match {
       case Address(_, _, None, None) ⇒ path.toStringWithAddress(selfAddress)
       case a ⇒ path.toString
     }
-  }
 }

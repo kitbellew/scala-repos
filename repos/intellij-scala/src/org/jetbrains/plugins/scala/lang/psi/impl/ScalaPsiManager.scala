@@ -69,11 +69,10 @@ class ScalaPsiManager(project: Project) extends ProjectComponent { self =>
 
   def getParameterlessSignatures(
       tp: ScCompoundType,
-      compoundTypeThisType: Option[ScType]): PMap = {
+      compoundTypeThisType: Option[ScType]): PMap =
     if (ScalaProjectSettings.getInstance(project).isDontCacheCompoundTypes)
       ParameterlessNodes.build(tp, compoundTypeThisType)
     else getParameterlessSignaturesCached(tp, compoundTypeThisType)
-  }
 
   @CachedWithoutModificationCount(
     synchronized = false,
@@ -82,17 +81,13 @@ class ScalaPsiManager(project: Project) extends ProjectComponent { self =>
     clearCacheOnLowMemory)
   private def getParameterlessSignaturesCached(
       tp: ScCompoundType,
-      compoundTypeThisType: Option[ScType]): PMap = {
+      compoundTypeThisType: Option[ScType]): PMap =
     ParameterlessNodes.build(tp, compoundTypeThisType)
-  }
 
-  def getTypes(
-      tp: ScCompoundType,
-      compoundTypeThisType: Option[ScType]): TMap = {
+  def getTypes(tp: ScCompoundType, compoundTypeThisType: Option[ScType]): TMap =
     if (ScalaProjectSettings.getInstance(project).isDontCacheCompoundTypes)
       TypeNodes.build(tp, compoundTypeThisType)
     else getTypesCached(tp, compoundTypeThisType)
-  }
 
   @CachedWithoutModificationCount(
     synchronized = false,
@@ -101,9 +96,8 @@ class ScalaPsiManager(project: Project) extends ProjectComponent { self =>
     clearCacheOnLowMemory)
   private def getTypesCached(
       tp: ScCompoundType,
-      compoundTypeThisType: Option[ScType]): TMap = {
+      compoundTypeThisType: Option[ScType]): TMap =
     TypeNodes.build(tp, compoundTypeThisType)
-  }
 
   def getSignatures(
       tp: ScCompoundType,
@@ -120,9 +114,8 @@ class ScalaPsiManager(project: Project) extends ProjectComponent { self =>
     clearCacheOnLowMemory)
   private def getSignaturesCached(
       tp: ScCompoundType,
-      compoundTypeThisType: Option[ScType]): SMap = {
+      compoundTypeThisType: Option[ScType]): SMap =
     SignatureNodes.build(tp, compoundTypeThisType)
-  }
 
   @CachedWithoutModificationCount(
     synchronized = false,
@@ -133,10 +126,9 @@ class ScalaPsiManager(project: Project) extends ProjectComponent { self =>
 
   def getPackageImplicitObjects(
       fqn: String,
-      scope: GlobalSearchScope): Seq[ScObject] = {
+      scope: GlobalSearchScope): Seq[ScObject] =
     if (DumbService.getInstance(project).isDumb) Seq.empty
     else getPackageImplicitObjectsCached(fqn, scope)
-  }
 
   @CachedWithoutModificationCount(
     synchronized = false,
@@ -144,19 +136,17 @@ class ScalaPsiManager(project: Project) extends ProjectComponent { self =>
     clearCacheOnOutOfBlockChange)
   private def getPackageImplicitObjectsCached(
       fqn: String,
-      scope: GlobalSearchScope): Seq[ScObject] = {
+      scope: GlobalSearchScope): Seq[ScObject] =
     ScalaShortNamesCacheManager
       .getInstance(project)
       .getImplicitObjectsByPackage(fqn, scope)
-  }
 
   @CachedWithoutModificationCount(
     synchronized = false,
     ValueWrapper.SofterReference,
     clearCacheOnOutOfBlockChange)
-  def getCachedPackage(fqn: String): Option[PsiPackage] = {
+  def getCachedPackage(fqn: String): Option[PsiPackage] =
     Option(JavaPsiFacade.getInstance(project).findPackage(fqn))
-  }
 
   @CachedWithoutModificationCount(
     synchronized = false,
@@ -229,12 +219,9 @@ class ScalaPsiManager(project: Project) extends ProjectComponent { self =>
     else classes(0)
   }
 
-  def getClasses(
-      pack: PsiPackage,
-      scope: GlobalSearchScope): Array[PsiClass] = {
+  def getClasses(pack: PsiPackage, scope: GlobalSearchScope): Array[PsiClass] =
     if (pack.getQualifiedName == "scala") getClassesCached(pack, scope)
     else getClassesImpl(pack, scope)
-  }
 
   @CachedWithoutModificationCount(
     synchronized = false,
@@ -454,7 +441,7 @@ class ScalaPsiManager(project: Project) extends ProjectComponent { self =>
     synchronized = false,
     ValueWrapper.SofterReference,
     clearCacheOnChange)
-  def psiTypeParameterUpperType(tp: PsiTypeParameter): ScType = {
+  def psiTypeParameterUpperType(tp: PsiTypeParameter): ScType =
     tp.getSuperTypes match {
       case array: Array[PsiClassType] if array.length == 1 =>
         ScType.create(array(0), project)
@@ -464,7 +451,6 @@ class ScalaPsiManager(project: Project) extends ProjectComponent { self =>
           Map.empty,
           Map.empty)
     }
-  }
 
   def typeVariable(tp: PsiTypeParameter): ScTypeParameterType = {
     import org.jetbrains.plugins.scala.Misc.fun2suspension
@@ -496,39 +482,32 @@ class ScalaPsiManager(project: Project) extends ProjectComponent { self =>
     .addPsiTreeChangeListener(CacheInvalidator, project)
 
   object CacheInvalidator extends PsiTreeChangeAdapter {
-    override def childRemoved(event: PsiTreeChangeEvent): Unit = {
+    override def childRemoved(event: PsiTreeChangeEvent): Unit =
       CachesUtil.updateModificationCount(event.getParent)
-    }
 
-    override def childReplaced(event: PsiTreeChangeEvent): Unit = {
+    override def childReplaced(event: PsiTreeChangeEvent): Unit =
       CachesUtil.updateModificationCount(event.getParent)
-    }
 
-    override def childAdded(event: PsiTreeChangeEvent): Unit = {
+    override def childAdded(event: PsiTreeChangeEvent): Unit =
       CachesUtil.updateModificationCount(event.getParent)
-    }
 
-    override def childrenChanged(event: PsiTreeChangeEvent): Unit = {
+    override def childrenChanged(event: PsiTreeChangeEvent): Unit =
       CachesUtil.updateModificationCount(event.getParent)
-    }
 
-    override def childMoved(event: PsiTreeChangeEvent): Unit = {
+    override def childMoved(event: PsiTreeChangeEvent): Unit =
       CachesUtil.updateModificationCount(event.getParent)
-    }
 
-    override def propertyChanged(event: PsiTreeChangeEvent): Unit = {
+    override def propertyChanged(event: PsiTreeChangeEvent): Unit =
       CachesUtil.updateModificationCount(event.getElement)
-    }
   }
 
   private[this] val myRawModificationCount = new AtomicLong(0)
 
-  def getModificationCount: Long = {
+  def getModificationCount: Long =
     myRawModificationCount.get() + PsiManager
       .getInstance(project)
       .getModificationTracker
       .getOutOfCodeBlockModificationCount
-  }
 
   def incModificationCount(): Long = myRawModificationCount.incrementAndGet()
 

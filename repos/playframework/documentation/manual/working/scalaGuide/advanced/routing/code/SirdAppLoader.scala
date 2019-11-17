@@ -13,9 +13,8 @@ import play.api.inject.bind
 
 //#load
 class SirdAppLoader extends ApplicationLoader {
-  def load(context: Context) = {
+  def load(context: Context) =
     new SirdComponents(context).application
-  }
 }
 
 class SirdComponents(context: Context)

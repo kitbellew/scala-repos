@@ -34,14 +34,13 @@ abstract class ShutdownableThread(
     awaitShutdown()
   }
 
-  def initiateShutdown(): Boolean = {
+  def initiateShutdown(): Boolean =
     if (isRunning.compareAndSet(true, false)) {
       info("Shutting down")
       isRunning.set(false)
       if (isInterruptible) interrupt()
       true
     } else false
-  }
 
   /**
     * After calling initiateShutdown(), use this API to wait until the shutdown is complete

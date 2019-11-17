@@ -67,7 +67,7 @@ package object common
 
   lazy val uiThread = Looper.getMainLooper.getThread
 
-  def runOnUiThread(f: => Unit): Unit = {
+  def runOnUiThread(f: => Unit): Unit =
     if (uiThread == Thread.currentThread) {
       f
     } else {
@@ -77,9 +77,8 @@ package object common
         }
       })
     }
-  }
 
-  def evalOnUiThread[T](f: => T): Future[T] = {
+  def evalOnUiThread[T](f: => T): Future[T] =
     if (uiThread == Thread.currentThread) {
       Future.fromTry(Try(f))
     } else {
@@ -91,7 +90,6 @@ package object common
       })
       p.future
     }
-  }
 
   private[scaloid] trait NoGetterForThisProperty
 }

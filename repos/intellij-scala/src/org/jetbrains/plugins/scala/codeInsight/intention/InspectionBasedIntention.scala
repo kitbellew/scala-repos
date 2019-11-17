@@ -22,7 +22,7 @@ class InspectionBasedIntention(
   override def invoke(
       project: Project,
       editor: Editor,
-      element: PsiElement): Unit = {
+      element: PsiElement): Unit =
     findProblemFrom(element).foreach { descriptor =>
       val fixes = descriptor.getFixes
 
@@ -31,7 +31,6 @@ class InspectionBasedIntention(
         fix.applyFix(project, descriptor)
       }
     }
-  }
 
   override def isAvailable(
       project: Project,

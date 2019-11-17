@@ -49,13 +49,12 @@ abstract class SnapshotStoreSpec(config: Config)
   def snapshotStore: ActorRef =
     extension.snapshotStoreFor(null)
 
-  def writeSnapshots(): Seq[SnapshotMetadata] = {
+  def writeSnapshots(): Seq[SnapshotMetadata] =
     1 to 5 map { i ⇒
       val metadata = SnapshotMetadata(pid, i + 10)
       snapshotStore.tell(SaveSnapshot(metadata, s"s-${i}"), senderProbe.ref)
       senderProbe.expectMsgPF() { case SaveSnapshotSuccess(md) ⇒ md }
     }
-  }
 
   "A snapshot store" must {
     "not load a snapshot given an invalid persistenceId" in {

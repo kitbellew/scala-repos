@@ -54,7 +54,7 @@ class SingleSelectionModelSpec[T]
     new jfxsc.SingleSelectionModel[T] {
       def clearSingleSelection() {}
       def clearSingleSelection(index: Int) {}
-      def getItemCount = { 0 }
-      def getModelItem(index: Int) = { null.asInstanceOf[T] }
+      def getItemCount = 0
+      def getModelItem(index: Int) = null.asInstanceOf[T]
     }
 }

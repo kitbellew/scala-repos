@@ -56,8 +56,7 @@ object AbsoluteDuration extends java.io.Serializable {
   private def fromMillisecs(
       diffInMs: Long,
       units: List[TimeCons],
-      acc: List[AbsoluteDuration]): AbsoluteDuration = {
-
+      acc: List[AbsoluteDuration]): AbsoluteDuration =
     if (diffInMs == 0L) {
       //We are done:
       acc match {
@@ -103,7 +102,6 @@ object AbsoluteDuration extends java.io.Serializable {
         }
       }
     }
-  }
 }
 
 sealed trait AbsoluteDuration extends Duration with Ordered[AbsoluteDuration] {
@@ -138,12 +136,11 @@ sealed trait AbsoluteDuration extends Duration with Ordered[AbsoluteDuration] {
     (divs, rem)
   }
 
-  override def equals(eq: Any): Boolean = {
+  override def equals(eq: Any): Boolean =
     eq match {
       case eqo: AbsoluteDuration => (eqo.toMillisecs) == this.toMillisecs
       case _                     => false
     }
-  }
   override def hashCode: Int = toMillisecs.hashCode
 }
 

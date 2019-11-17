@@ -330,10 +330,9 @@ object SparkSQLConfTest extends Logging {
     // using $HIVE_METASTORE_JARS or change spark.sql.hive.metastore.version to 0.13.1.
     val conf = new SparkConf() {
       override def getAll: Array[(String, String)] = {
-        def isMetastoreSetting(conf: String): Boolean = {
+        def isMetastoreSetting(conf: String): Boolean =
           conf == "spark.sql.hive.metastore.version" ||
-          conf == "spark.sql.hive.metastore.jars"
-        }
+            conf == "spark.sql.hive.metastore.jars"
         // If there is any metastore settings, remove them.
         val filteredSettings =
           super.getAll.filterNot(e => isMetastoreSetting(e._1))

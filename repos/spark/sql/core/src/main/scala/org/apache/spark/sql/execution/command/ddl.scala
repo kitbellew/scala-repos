@@ -33,9 +33,8 @@ import org.apache.spark.sql.types._
   */
 abstract class NativeDDLCommand(val sql: String) extends RunnableCommand {
 
-  override def run(sqlContext: SQLContext): Seq[Row] = {
+  override def run(sqlContext: SQLContext): Seq[Row] =
     sqlContext.runNativeSql(sql)
-  }
 
   override val output: Seq[Attribute] = {
     Seq(AttributeReference("result", StringType, nullable = false)())

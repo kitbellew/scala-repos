@@ -87,7 +87,6 @@ abstract class SimplificationType {
 
   def getSimplifications(expr: ScExpression): Seq[Simplification] = Seq.empty
 
-  def replace(expr: ScExpression): SimplificationBuilder = {
+  def replace(expr: ScExpression): SimplificationBuilder =
     new SimplificationBuilder(expr).withHint(hint)
-  }
 }

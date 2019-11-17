@@ -82,9 +82,8 @@ trait TBddDsl extends FieldConversions with TypedPipeOperationsConversions {
   case class TestCaseWhen[OutputType: Manifest](
       sources: List[TypedTestSource[_]],
       operation: TypedPipeOperation[OutputType]) {
-    def Then(assertion: Buffer[OutputType] => Unit): Unit = {
+    def Then(assertion: Buffer[OutputType] => Unit): Unit =
       CompleteTestCase(sources, operation, assertion).run()
-    }
   }
 
   case class CompleteTestCase[OutputType: Manifest](

@@ -7,7 +7,6 @@ object Test {
     l
   }
 
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     println(f)
-  }
 }

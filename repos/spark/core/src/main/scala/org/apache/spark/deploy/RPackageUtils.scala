@@ -69,7 +69,7 @@ private[deploy] object RPackageUtils extends Logging {
       msg: String,
       printStream: PrintStream,
       level: Level = Level.FINE,
-      e: Throwable = null): Unit = {
+      e: Throwable = null): Unit =
     if (printStream != null) {
       // scalastyle:off println
       printStream.println(msg)
@@ -85,7 +85,6 @@ private[deploy] object RPackageUtils extends Logging {
         case _             => logDebug(msg)
       }
     }
-  }
 
   /**
     * Checks the manifest of the Jar whether there is any R source code bundled with it.
@@ -180,7 +179,7 @@ private[deploy] object RPackageUtils extends Logging {
   private[deploy] def checkAndBuildRPackage(
       jars: String,
       printStream: PrintStream = null,
-      verbose: Boolean = false): Unit = {
+      verbose: Boolean = false): Unit =
     jars.split(",").foreach { jarPath =>
       val file = new File(Utils.resolveURI(jarPath))
       if (file.exists()) {
@@ -223,28 +222,25 @@ private[deploy] object RPackageUtils extends Logging {
           Level.WARNING)
       }
     }
-  }
 
   private def listFilesRecursively(
       dir: File,
-      excludePatterns: Seq[String]): Set[File] = {
+      excludePatterns: Seq[String]): Set[File] =
     if (!dir.exists()) {
       Set.empty[File]
     } else {
       if (dir.isDirectory) {
         val subDir = dir.listFiles(new FilenameFilter {
-          override def accept(dir: File, name: String): Boolean = {
+          override def accept(dir: File, name: String): Boolean =
             !excludePatterns
               .map(name.contains)
               .reduce(_ || _) // exclude files with given pattern
-          }
         })
         subDir.flatMap(listFilesRecursively(_, excludePatterns)).toSet
       } else {
         Set(dir)
       }
     }
-  }
 
   /** Zips all the R libraries built for distribution to the cluster. */
   private[deploy] def zipRLibraries(dir: File, name: String): File = {

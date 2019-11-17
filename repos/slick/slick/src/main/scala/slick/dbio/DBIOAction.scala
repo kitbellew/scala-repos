@@ -212,8 +212,8 @@ object DBIOAction {
       implicit cbf: CanBuildFrom[M[DBIOAction[R, NoStream, E]], R, M[R]])
       : DBIOAction[M[R], NoStream, E] = {
     implicit val ec = DBIO.sameThreadExecutionContext
-    def sequenceGroupAsM(g: Vector[DBIOAction[R, NoStream, E]])
-        : DBIOAction[M[R], NoStream, E] = {
+    def sequenceGroupAsM(
+        g: Vector[DBIOAction[R, NoStream, E]]): DBIOAction[M[R], NoStream, E] =
       if (g.head.isInstanceOf[SynchronousDatabaseAction[_, _, _, _]]) {
         // fuse synchronous group
         new SynchronousDatabaseAction.Fused[M[R], NoStream, BasicBackend, E] {
@@ -230,9 +230,8 @@ object DBIOAction {
           override def nonFusedEquivalentAction = SequenceAction[R, M[R], E](g)
         }
       } else SequenceAction[R, M[R], E](g)
-    }
     def sequenceGroupAsSeq(g: Vector[DBIOAction[R, NoStream, E]])
-        : DBIOAction[Seq[R], NoStream, E] = {
+        : DBIOAction[Seq[R], NoStream, E] =
       if (g.length == 1) {
         if (g.head.isInstanceOf[SynchronousDatabaseAction[_, _, _, _]]) {
           // fuse synchronous group
@@ -264,7 +263,6 @@ object DBIOAction {
           }
         } else SequenceAction[R, Seq[R], E](g)
       }
-    }
     val grouped = groupBySynchronicity[R, E](
       in.asInstanceOf[TraversableOnce[DBIOAction[R, NoStream, E]]])
     grouped.length match {
@@ -288,27 +286,24 @@ object DBIOAction {
       actions: DBIOAction[_, NoStream, E]*): DBIOAction[Unit, NoStream, E] = {
     def sequenceGroup(
         g: Vector[DBIOAction[Any, NoStream, E]],
-        forceUnit: Boolean): DBIOAction[Any, NoStream, E] = {
+        forceUnit: Boolean): DBIOAction[Any, NoStream, E] =
       if (g.length == 1 && !forceUnit) g.head
       else if (g.head.isInstanceOf[SynchronousDatabaseAction[_, _, _, _]])
         sequenceSync(g)
       else if (forceUnit)
         AndThenAction[Any, NoStream, E](g :+ DBIO.successful(()))
       else AndThenAction[Any, NoStream, E](g)
-    }
     def sequenceSync(g: Vector[DBIOAction[Any, NoStream, E]])
-        : DBIOAction[Unit, NoStream, E] = {
+        : DBIOAction[Unit, NoStream, E] =
       new SynchronousDatabaseAction.Fused[Unit, NoStream, BasicBackend, E] {
-        def run(context: BasicBackend#Context) = {
+        def run(context: BasicBackend#Context) =
           g.foreach(
             _.asInstanceOf[
               SynchronousDatabaseAction[Any, NoStream, BasicBackend, E]]
               .run(context))
-        }
         override def nonFusedEquivalentAction =
           AndThenAction[Unit, NoStream, E](g)
       }
-    }
     if (actions.isEmpty) DBIO.successful(())
     else {
       val grouped =
@@ -656,12 +651,11 @@ trait SynchronousDatabaseAction[
   private[this] def superAsTry: DBIOAction[Try[R], NoStream, E] = super.asTry
   override def asTry: DBIOAction[Try[R], NoStream, E] =
     new SynchronousDatabaseAction.Fused[Try[R], NoStream, B, E] {
-      def run(context: B#Context): Try[R] = {
+      def run(context: B#Context): Try[R] =
         try Success(self.run(context))
         catch {
           case NonFatal(ex) => Failure(ex)
         }
-      }
       override def nonFusedEquivalentAction = superAsTry
     }
 }
@@ -710,7 +704,7 @@ object SynchronousDatabaseAction {
     * evaluation function (where applicable). This cannot be verified at fusion time, so a wrongly
     * fused action can fail with a `ClassCastException` during evaluation. */
   private[slick] def fuseUnsafe[R, S <: NoStream, E <: Effect](
-      a: DBIOAction[R, S, E]): DBIOAction[R, S, E] = {
+      a: DBIOAction[R, S, E]): DBIOAction[R, S, E] =
     a match {
       case FlatMapAction(base: SynchronousDatabaseAction[_, _, _, _], f, ec)
           if ec eq DBIO.sameThreadExecutionContext =>
@@ -763,5 +757,4 @@ object SynchronousDatabaseAction {
 
       case a => a
     }
-  }
 }

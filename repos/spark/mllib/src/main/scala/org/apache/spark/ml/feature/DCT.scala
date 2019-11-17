@@ -66,11 +66,10 @@ class DCT(override val uid: String)
     Vectors.dense(result)
   }
 
-  override protected def validateInputType(inputType: DataType): Unit = {
+  override protected def validateInputType(inputType: DataType): Unit =
     require(
       inputType.isInstanceOf[VectorUDT],
       s"Input type must be VectorUDT but got $inputType.")
-  }
 
   override protected def outputDataType: DataType = new VectorUDT
 }

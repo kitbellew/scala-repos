@@ -19,10 +19,9 @@ private[launchqueue] class LaunchQueueDelegate(
     rateLimiterRef: ActorRef)
     extends LaunchQueue {
 
-  override def list: Seq[QueuedTaskInfo] = {
+  override def list: Seq[QueuedTaskInfo] =
     askQueueActor("list")(LaunchQueueDelegate.List)
       .asInstanceOf[Seq[QueuedTaskInfo]]
-  }
 
   override def get(appId: PathId): Option[QueuedTaskInfo] =
     askQueueActor("get")(LaunchQueueDelegate.Count(appId))

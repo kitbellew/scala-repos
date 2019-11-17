@@ -24,8 +24,7 @@ class ClientSessionTest extends FunSuite with MockitoSugar {
   def testSessionStatus[Req, Rep](
       name: String,
       sessionFac: (Transport[Req, Rep]) => () => Status
-  ): Unit = {
-
+  ): Unit =
     test(s"$name: session status reflects underlying transport") {
       val clientToServer = new AsyncQueue[Req]
       val serverToClient = new AsyncQueue[Rep]
@@ -39,7 +38,6 @@ class ClientSessionTest extends FunSuite with MockitoSugar {
       Await.ready(transport.close(), 5.seconds)
       assert(sessionStatus() == Status.Closed)
     }
-  }
 
   testSessionStatus[mux.transport.Message, mux.transport.Message](
     "mux-transport", {

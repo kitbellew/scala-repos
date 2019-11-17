@@ -100,7 +100,7 @@ object WebSocketBoilerplate {
       //mat: Materializer,
       oc: ClassTag[Outgoing],
       printer: JsonPrinter = PrettyPrinter
-  ): Flow[Message, Message, Unit] = {
+  ): Flow[Message, Message, Unit] =
     Flow[Message]
       .collect {
         case TextMessage.Strict(msg) =>
@@ -113,5 +113,4 @@ object WebSocketBoilerplate {
         case e: Outgoing =>
           TextMessage.Strict(e.toJson.toString(printer)): Message
       }
-  }
 }

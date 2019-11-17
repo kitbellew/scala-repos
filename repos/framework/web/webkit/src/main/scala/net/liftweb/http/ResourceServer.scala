@@ -134,13 +134,12 @@ object ResourceServer {
     * @see HTTPContext # mimeType ( String )
     * @see URLConnection # getFileNameMap ( )
     */
-  def detectContentType(path: String): String = {
+  def detectContentType(path: String): String =
     // Configure response with content type of resource
     (LiftRules.context.mimeType(path) or
       (Box !! URLConnection
         .getFileNameMap()
         .getContentTypeFor(path))) openOr "application/octet-stream"
-  }
 
   private def isAllowed(path: List[String]) =
     allowedPaths.isDefinedAt(path) && allowedPaths(path)

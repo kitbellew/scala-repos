@@ -112,11 +112,10 @@ private[nio] final class GenHeapBufferView[B <: Buffer](val self: B)
 
   @inline
   def byteArrayBits(
-      implicit newHeapBufferView: NewThisHeapBufferView): ByteArrayBits = {
+      implicit newHeapBufferView: NewThisHeapBufferView): ByteArrayBits =
     ByteArrayBits(
       _byteArray,
       _byteArrayOffset,
       isBigEndian,
       newHeapBufferView.bytesPerElem)
-  }
 }

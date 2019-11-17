@@ -67,7 +67,7 @@ class ScForStatementImpl(node: ASTNode)
   protected def bodyToText(expr: ScExpression) = expr.getText
 
   @tailrec
-  private def nextEnumerator(gen: PsiElement): PsiElement = {
+  private def nextEnumerator(gen: PsiElement): PsiElement =
     gen.getNextSibling match {
       case guard: ScGuard     => guard
       case enum: ScEnumerator => enum
@@ -75,7 +75,6 @@ class ScForStatementImpl(node: ASTNode)
       case null               => null
       case elem               => nextEnumerator(elem)
     }
-  }
 
   def getDesugarizedExprText(forDisplay: Boolean): Option[String] = {
     val exprText: StringBuilder = new StringBuilder
@@ -375,12 +374,11 @@ class ScForStatementImpl(node: ASTNode)
     }
   }
 
-  override protected def innerType(ctx: TypingContext): TypeResult[ScType] = {
+  override protected def innerType(ctx: TypingContext): TypeResult[ScType] =
     getDesugarizedExpr match {
       case Some(newExpr) => newExpr.getNonValueType(ctx)
       case None          => Failure("Cannot create expression", Some(this))
     }
-  }
 
   def getLeftParenthesis =
     Option(findChildByType[PsiElement](ScalaTokenTypes.tLPARENTHESIS))

@@ -152,19 +152,17 @@ private[http] object HttpServerBluePrint {
         var entitySource: SubSourceOutlet[RequestOutput] = _
 
         // optimization: to avoid allocations the "idle" case in and out handlers are put directly on the GraphStageLogic itself
-        override def onPull(): Unit = {
+        override def onPull(): Unit =
           pull(in)
-        }
 
         // optimization: this callback is used to handle entity substream cancellation to avoid allocating a dedicated handler
-        override def onDownstreamFinish(): Unit = {
+        override def onDownstreamFinish(): Unit =
           if (entitySource ne null) {
             // application layer has cancelled or only partially consumed response entity:
             // connection will be closed
             entitySource.complete()
             completeStage()
           }
-        }
 
         override def onPush(): Unit = grab(in) match {
           case RequestStart(method, uri, protocol, hdrs, entityCreator, _, _) ⇒
@@ -195,7 +193,7 @@ private[http] object HttpServerBluePrint {
 
         setIdleHandlers()
 
-        def setIdleHandlers(): Unit = {
+        def setIdleHandlers(): Unit =
           if (completionDeferred) {
             completeStage()
           } else {
@@ -206,7 +204,6 @@ private[http] object HttpServerBluePrint {
               pull(in)
             }
           }
-        }
 
         def createEntity(creator: EntityCreator[RequestOutput, RequestEntity])
             : RequestEntity =
@@ -228,7 +225,7 @@ private[http] object HttpServerBluePrint {
 
           // optimization: handlers are combined to reduce allocations
           val chunkedRequestHandler = new InHandler with OutHandler {
-            def onPush(): Unit = {
+            def onPush(): Unit =
               grab(in) match {
                 case MessageEnd ⇒
                   entitySource.complete()
@@ -237,7 +234,6 @@ private[http] object HttpServerBluePrint {
 
                 case x ⇒ entitySource.push(x)
               }
-            }
             override def onUpstreamFinish(): Unit = {
               entitySource.complete()
               completeStage()
@@ -246,17 +242,15 @@ private[http] object HttpServerBluePrint {
               entitySource.fail(ex)
               failStage(ex)
             }
-            override def onPull(): Unit = {
+            override def onPull(): Unit =
               // remember this until we are done with the chunked entity
               // so can pull downstream then
               downstreamPullWaiting = true
-            }
-            override def onDownstreamFinish(): Unit = {
+            override def onDownstreamFinish(): Unit =
               // downstream signalled not wanting any more requests
               // we should keep processing the entity stream and then
               // when it completes complete the stage
               completionDeferred = true
-            }
           }
 
           setHandler(in, chunkedRequestHandler)

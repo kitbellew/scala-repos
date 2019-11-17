@@ -76,7 +76,7 @@ object JsonUtil {
     parseManyFromStream[Future](bc.fold(_ :: StreamT.empty, identity))
 
   def parseManyFromStream[M[+_]: Monad](
-      stream: StreamT[M, Array[Byte]]): StreamT[M, AsyncParse] = {
+      stream: StreamT[M, Array[Byte]]): StreamT[M, AsyncParse] =
     // create a new stream, using the current stream and parser
     StreamT.unfoldM((stream, AsyncParser.stream())) {
       case (stream, parser) =>
@@ -92,5 +92,4 @@ object JsonUtil {
             Some((r, (StreamT.empty, parser2)))
         }
     }
-  }
 }

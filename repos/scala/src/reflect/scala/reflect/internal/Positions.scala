@@ -39,7 +39,7 @@ trait Positions extends api.Positions { self: SymbolTable =>
   def wrappingPos(
       default: Position,
       trees: List[Tree],
-      focus: Boolean): Position = {
+      focus: Boolean): Position =
     if (useOffsetPositions) default
     else {
       val ranged = trees filter (_.pos.isRange)
@@ -51,7 +51,6 @@ trait Positions extends api.Positions { self: SymbolTable =>
           default.point,
           (ranged map (_.pos.end)).max)
     }
-  }
 
   /** A position that wraps the non-empty set of trees.
     *  The point of the wrapping position is the point of the first trees' position.
@@ -117,8 +116,7 @@ trait Positions extends api.Positions { self: SymbolTable =>
       throw new ValidateException(msg)
     }
 
-    def validate(tree: Tree, encltree: Tree): Unit = {
-
+    def validate(tree: Tree, encltree: Tree): Unit =
       if (!tree.isEmpty && tree.canHaveAttrs) {
         if (settings.Yposdebug && (settings.verbose || settings.Yrangepos))
           inform("[%10s] %s".format("validate", treeStatus(tree, encltree)))
@@ -167,7 +165,6 @@ trait Positions extends api.Positions { self: SymbolTable =>
         }
         for (ct <- tree.children flatMap solidDescendants) validate(ct, tree)
       }
-    }
 
     if (!isPastTyper) validate(tree, tree)
   }
@@ -340,7 +337,7 @@ trait Positions extends api.Positions { self: SymbolTable =>
   /** Position a tree.
     *  This means: Set position of a node and position all its unpositioned children.
     */
-  def atPos[T <: Tree](pos: Position)(tree: T): T = {
+  def atPos[T <: Tree](pos: Position)(tree: T): T =
     if (useOffsetPositions || !pos.isOpaqueRange) {
       posAssigner.pos = pos
       posAssigner.traverse(tree)
@@ -356,5 +353,4 @@ trait Positions extends api.Positions { self: SymbolTable =>
       }
       tree
     }
-  }
 }

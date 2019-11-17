@@ -58,9 +58,8 @@ class LinkedHashMap[K, V] private (
 
   protected def removeEldestEntry(eldest: Map.Entry[K, V]): Boolean = false
 
-  override def clone(): AnyRef = {
+  override def clone(): AnyRef =
     new LinkedHashMap(inner.clone(), accessOrder)
-  }
 }
 
 object LinkedHashMap {

@@ -21,7 +21,7 @@ trait PresentationCompilation { self: IMain =>
     * The caller is responsible for calling [[PresentationCompileResult#cleanup]] to dispose of the compiler instance.
     */
   private[scala] def presentationCompile(
-      line: String): Either[IR.Result, PresentationCompileResult] = {
+      line: String): Either[IR.Result, PresentationCompileResult] =
     if (global == null) Left(IR.Error)
     else {
       // special case for:
@@ -53,7 +53,6 @@ trait PresentationCompilation { self: IMain =>
         request.ObjectSourceCode.preambleLength + line1.length - line.length)
       Right(result)
     }
-  }
 
   /** Create an instance of the presentation compiler with a classpath comprising the REPL's configured classpath
     * and the classes output by previously compiled REPL lines.
@@ -94,9 +93,8 @@ trait PresentationCompilation { self: IMain =>
 
     /** The length of synthetic code the precedes the user written code */
     def preambleLength: Int
-    def cleanup(): Unit = {
+    def cleanup(): Unit =
       compiler.askShutdown()
-    }
     import compiler.CompletionResult
 
     def completionsAt(cursor: Int): CompletionResult = {

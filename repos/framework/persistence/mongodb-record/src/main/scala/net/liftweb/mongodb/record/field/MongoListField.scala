@@ -65,7 +65,7 @@ class MongoListField[OwnerType <: BsonRecord[OwnerType], ListType: Manifest](
 
   implicit def formats = owner.meta.formats
 
-  def setFromAny(in: Any): Box[MyType] = {
+  def setFromAny(in: Any): Box[MyType] =
     in match {
       case dbo: DBObject => setFromDBObject(dbo)
       case list @ c :: xs if mf.runtimeClass.isInstance(c) =>
@@ -81,7 +81,6 @@ class MongoListField[OwnerType <: BsonRecord[OwnerType], ListType: Manifest](
       case f: Failure          => setBox(f)
       case o                   => setFromString(o.toString)
     }
-  }
 
   def setFromJValue(jvalue: JValue): Box[MyType] = jvalue match {
     case JNothing | JNull if optional_? => setBox(Empty)

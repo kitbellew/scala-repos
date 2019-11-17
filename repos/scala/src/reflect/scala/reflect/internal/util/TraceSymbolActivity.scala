@@ -63,13 +63,12 @@ trait TraceSymbolActivity {
   private def showIdAndRemove(id: Int) {
     allSymbols remove id foreach showSym
   }
-  private def symbolStr(id: Int): String = {
+  private def symbolStr(id: Int): String =
     if (id == 1) "NoSymbol"
     else {
       val sym = allSymbols(id)
       sym.accurateKindString + " " + sym.name.decode
     }
-  }
   private def ownerStr(id: Int): String = {
     val sym = allSymbols(id)
     sym.name.decode + "#" + sym.id
@@ -90,9 +89,8 @@ trait TraceSymbolActivity {
     println("\n")
   }
   private def showFreq[T, U](
-      xs: Traversable[T])(groupFn: T => U, showFn: U => String) = {
+      xs: Traversable[T])(groupFn: T => U, showFn: U => String) =
     showMapFreq(xs.toList groupBy groupFn)(showFn)
-  }
 
   def showAllSymbols() {
     if (!enabled) return

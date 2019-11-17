@@ -25,7 +25,7 @@ final class CancelableDownload(
 
   val tempItem = provider.item(path + UUID.randomUUID().toString)
   var canceled = false
-  def cancel(): Unit = { canceled = true }
+  def cancel(): Unit = canceled = true
 
   lazy val get: Future[CancelableDownload] = Future {
     log.info(s"Download started from $url to path $path")

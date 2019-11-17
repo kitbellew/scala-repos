@@ -230,14 +230,13 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
     sc.setLocalProperty("test", originalTestValue)
     var throwable: Option[Throwable] = None
     val thread = new Thread {
-      override def run(): Unit = {
+      override def run(): Unit =
         try {
           threadTestValue = sc.getLocalProperty("test")
         } catch {
           case t: Throwable =>
             throwable = Some(t)
         }
-      }
     }
     sc.setLocalProperty("test", "this-should-not-be-inherited")
     thread.start()

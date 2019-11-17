@@ -66,7 +66,7 @@ private[mllib] class GridPartitioner(
     *            the inner index used in multiplication. k is ignored in computing partitions.
     * @return The index of the partition, which the coordinate belongs to.
     */
-  override def getPartition(key: Any): Int = {
+  override def getPartition(key: Any): Int =
     key match {
       case i: Int => i
       case (i: Int, j: Int) =>
@@ -76,7 +76,6 @@ private[mllib] class GridPartitioner(
       case _ =>
         throw new IllegalArgumentException(s"Unrecognized key: $key.")
     }
-  }
 
   /** Partitions sub-matrices as blocks with neighboring sub-matrices. */
   private def getPartitionId(i: Int, j: Int): Int = {
@@ -85,7 +84,7 @@ private[mllib] class GridPartitioner(
     i / rowsPerPart + j / colsPerPart * rowPartitions
   }
 
-  override def equals(obj: Any): Boolean = {
+  override def equals(obj: Any): Boolean =
     obj match {
       case r: GridPartitioner =>
         (this.rows == r.rows) && (this.cols == r.cols) &&
@@ -94,15 +93,13 @@ private[mllib] class GridPartitioner(
       case _ =>
         false
     }
-  }
 
-  override def hashCode: Int = {
+  override def hashCode: Int =
     com.google.common.base.Objects.hashCode(
       rows: java.lang.Integer,
       cols: java.lang.Integer,
       rowsPerPart: java.lang.Integer,
       colsPerPart: java.lang.Integer)
-  }
 }
 
 private[mllib] object GridPartitioner {
@@ -112,9 +109,8 @@ private[mllib] object GridPartitioner {
       rows: Int,
       cols: Int,
       rowsPerPart: Int,
-      colsPerPart: Int): GridPartitioner = {
+      colsPerPart: Int): GridPartitioner =
     new GridPartitioner(rows, cols, rowsPerPart, colsPerPart)
-  }
 
   /** Creates a new [[GridPartitioner]] instance with the input suggested number of partitions. */
   def apply(

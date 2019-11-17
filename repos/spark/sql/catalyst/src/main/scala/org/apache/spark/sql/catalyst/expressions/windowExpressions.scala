@@ -60,7 +60,7 @@ case class WindowSpecDefinition(
           "during analysis. Please file a bug report.")
     case frame: SpecifiedWindowFrame =>
       frame.validate.orElse {
-        def checkValueBasedBoundaryForRangeFrame(): Option[String] = {
+        def checkValueBasedBoundaryForRangeFrame(): Option[String] =
           if (orderSpec.length > 1) {
             // It is not allowed to have a value-based PRECEDING and FOLLOWING
             // as the boundary of a Range Window Frame.
@@ -73,7 +73,6 @@ case class WindowSpecDefinition(
           } else {
             None
           }
-        }
 
         (frame.frameType, frame.frameStart, frame.frameEnd) match {
           case (RangeFrame, vp: ValuePreceding, _) =>
@@ -288,7 +287,7 @@ object SpecifiedWindowFrame {
     */
   def defaultWindowFrame(
       hasOrderSpecification: Boolean,
-      acceptWindowFrame: Boolean): SpecifiedWindowFrame = {
+      acceptWindowFrame: Boolean): SpecifiedWindowFrame =
     if (hasOrderSpecification && acceptWindowFrame) {
       // If order spec is defined and the window function supports user specified window frames,
       // the default frame is RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW.
@@ -298,7 +297,6 @@ object SpecifiedWindowFrame {
       // ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING.
       SpecifiedWindowFrame(RowFrame, UnboundedPreceding, UnboundedFollowing)
     }
-  }
 }
 
 case class UnresolvedWindowExpression(

@@ -34,12 +34,11 @@ class ScalaVariableOfTypeMacro extends Macro {
 
   override def calculateLookupItems(
       exprs: Array[Expression],
-      context: ExpressionContext): Array[LookupElement] = {
+      context: ExpressionContext): Array[LookupElement] =
     calculateLookupItems(
       exprs.map(_.calculateResult(context).toString),
       context,
       showOne = false)
-  }
   def calculateLookupItems(
       exprs: Array[String],
       context: ExpressionContext,
@@ -160,7 +159,7 @@ class ScalaVariableOfTypeMacro extends Macro {
       context: ExpressionContext,
       variant: ScalaResolveResult,
       scType: ScType,
-      project: Project): Option[Result] = {
+      project: Project): Option[Result] =
     exprs.apply(0).calculateResult(context).toString match {
       case "" =>
         Some(new TextResult(variant.getElement.name))
@@ -184,7 +183,6 @@ class ScalaVariableOfTypeMacro extends Macro {
             }) == expr.calculateResult(context).toString)
           .map(_ => new TextResult(variant.getElement.name))
     }
-  }
 
   def addLookupItems(
       exprs: Array[String],

@@ -42,21 +42,18 @@ private[master] class ZooKeeperPersistenceEngine(
 
   SparkCuratorUtil.mkdir(zk, WORKING_DIR)
 
-  override def persist(name: String, obj: Object): Unit = {
+  override def persist(name: String, obj: Object): Unit =
     serializeIntoFile(WORKING_DIR + "/" + name, obj)
-  }
 
-  override def unpersist(name: String): Unit = {
+  override def unpersist(name: String): Unit =
     zk.delete().forPath(WORKING_DIR + "/" + name)
-  }
 
-  override def read[T: ClassTag](prefix: String): Seq[T] = {
+  override def read[T: ClassTag](prefix: String): Seq[T] =
     zk.getChildren
       .forPath(WORKING_DIR)
       .asScala
       .filter(_.startsWith(prefix))
       .flatMap(deserializeFromFile[T])
-  }
 
   override def close() {
     zk.close()

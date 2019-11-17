@@ -244,11 +244,10 @@ object ProductOrderedBuf {
           Any]]
     )
 
-    def validType(curType: Type): Boolean = {
+    def validType(curType: Type): Boolean =
       validTypes.find { t =>
         curType <:< t
       }.isDefined
-    }
 
     // The `_.get` is safe since it's always preceded by a matching
     // `_.isDefined` check in `validType`

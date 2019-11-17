@@ -102,8 +102,7 @@ abstract class ReceiverInputDStream[T: ClassTag](_ssc: StreamingContext)
 
   private[streaming] def createBlockRDD(
       time: Time,
-      blockInfos: Seq[ReceivedBlockInfo]): RDD[T] = {
-
+      blockInfos: Seq[ReceivedBlockInfo]): RDD[T] =
     if (blockInfos.nonEmpty) {
       val blockIds = blockInfos.map { _.blockId.asInstanceOf[BlockId] }.toArray
 
@@ -158,7 +157,6 @@ abstract class ReceiverInputDStream[T: ClassTag](_ssc: StreamingContext)
         new BlockRDD[T](ssc.sc, Array.empty)
       }
     }
-  }
 
   /**
     * A RateController that sends the new rate to receivers, via the receiver tracker.

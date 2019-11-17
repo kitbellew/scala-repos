@@ -36,7 +36,7 @@ object LEventAggregator {
     * @return A map of entity type to [[PropertyMap]]
     */
   @DeveloperApi
-  def aggregateProperties(events: Iterator[Event]): Map[String, PropertyMap] = {
+  def aggregateProperties(events: Iterator[Event]): Map[String, PropertyMap] =
     events.toList
       .groupBy(_.entityId)
       .mapValues(_.sortBy(_.eventTime.getMillis)
@@ -56,7 +56,6 @@ object LEventAggregator {
           lastUpdated = v.lastUpdated.get
         )
       }
-  }
 
   /** :: DeveloperApi ::
     * Aggregate all properties given an iterator of [[Event]]s with the latest

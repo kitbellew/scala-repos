@@ -41,8 +41,7 @@ object test2 {
 // #2180
 class Mxml {
 
-  private def processChildren(children: Seq[Any]): List[Mxml] = {
-
+  private def processChildren(children: Seq[Any]): List[Mxml] =
     children.toList.flatMap(e => {
 
       e match {
@@ -51,7 +50,6 @@ class Mxml {
         case a                                  => List(a)
       }
     })
-  }
 }
 
 // SI-5316

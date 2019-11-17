@@ -25,7 +25,7 @@ object PersistentActorFailureSpec {
   class FailingInmemJournal extends InmemJournal {
 
     override def asyncWriteMessages(messages: immutable.Seq[AtomicWrite])
-        : Future[immutable.Seq[Try[Unit]]] = {
+        : Future[immutable.Seq[Try[Unit]]] =
       if (isWrong(messages))
         throw new SimulatedException("Simulated Store failure")
       else {
@@ -33,7 +33,6 @@ object PersistentActorFailureSpec {
         if (ser.exists(_.isFailure)) Future.successful(ser)
         else super.asyncWriteMessages(messages)
       }
-    }
 
     override def asyncReplayMessages(
         persistenceId: String,

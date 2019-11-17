@@ -102,14 +102,13 @@ class AppTasksResourceTest
 
     val response = appsTaskResource.indexJson("/my/app", auth.request)
     response.getStatus shouldEqual 200
-    def toEnrichedTask(task: Task): EnrichedTask = {
+    def toEnrichedTask(task: Task): EnrichedTask =
       EnrichedTask(
         appId = appId,
         task = task,
         healthCheckResults = Seq(),
         servicePorts = Seq()
       )
-    }
     JsonTestHelper
       .assertThatJsonString(response.getEntity.asInstanceOf[String])
       .correspondsToJsonOf(

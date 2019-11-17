@@ -42,7 +42,7 @@ object HttpRequest {
     }
   }
 
-  def readHeader(requestLine: RequestLine, headers: List[HeaderLine]): Stage = {
+  def readHeader(requestLine: RequestLine, headers: List[HeaderLine]): Stage =
     readLine(true, "UTF-8") { line =>
       if (line == "") {
         // end of headers
@@ -73,5 +73,4 @@ object HttpRequest {
         readHeader(requestLine, newHeaderLine :: headers)
       }
     }
-  }
 }

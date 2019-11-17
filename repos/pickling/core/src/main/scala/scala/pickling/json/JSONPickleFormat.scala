@@ -29,7 +29,7 @@ package json {
     def createBuilder() = new JSONPickleBuilder(this, new StringOutput)
     def createBuilder(out: Output[String]): PBuilder =
       new JSONPickleBuilder(this, out)
-    def createReader(pickle: JSONPickle) = {
+    def createReader(pickle: JSONPickle) =
       // TODO - Raw strings, null, etc. should be valid JSON.
       if (pickle.value == "null") new JSONPickleReader(null, this)
       else
@@ -39,7 +39,6 @@ package json {
             throw new PicklingException(
               "failed to parse \"" + pickle.value + "\" as JSON")
         }
-    }
   }
 
   class JSONPickleBuilder(format: JSONPickleFormat, buf: Output[String])
@@ -347,7 +346,7 @@ package json {
       lastReadTag
     }
     def atPrimitive: Boolean = primitives.contains(lastReadTag)
-    def readPrimitive(): Any = {
+    def readPrimitive(): Any =
       datum match {
         case JSONArray(list)
             if lastReadTag != FastTypeTag.ArrayByte.key &&
@@ -367,9 +366,8 @@ package json {
         case _ =>
           primitives(lastReadTag)()
       }
-    }
     def atObject: Boolean = datum.isInstanceOf[JSONObject]
-    def readField(name: String): JSONPickleReader = {
+    def readField(name: String): JSONPickleReader =
       datum match {
         case JSONObject(fields) =>
           mkNestedReader(fields
@@ -377,14 +375,12 @@ package json {
             .getOrElse(throw PicklingException(
               s"No field '$name' when unpickling, tag $lastReadTag, fields were $fields")))
       }
-    }
     def endEntry(): Unit = {}
     def beginCollection(): PReader = readField("elems")
-    def readLength(): Int = {
+    def readLength(): Int =
       datum match {
         case JSONArray(list) => list.length
       }
-    }
     private var i = 0
     def readElement(): PReader = {
       val reader = {

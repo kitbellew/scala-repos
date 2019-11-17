@@ -49,24 +49,20 @@ case class DataView(
   val tickers = rawData.tickers
   val mktTicker = rawData.mktTicker
 
-  def priceFrame(windowSize: Int = 1): Frame[DateTime, String, Double] = {
+  def priceFrame(windowSize: Int = 1): Frame[DateTime, String, Double] =
     // Check windowSize <= maxWindowSize
     rawData._priceFrame.rowSlice(idx - windowSize + 1, idx + 1)
-  }
 
-  def retFrame(windowSize: Int = 1): Frame[DateTime, String, Double] = {
+  def retFrame(windowSize: Int = 1): Frame[DateTime, String, Double] =
     // Check windowSize <= maxWindowSize
     rawData._retFrame.rowSlice(idx - windowSize + 1, idx + 1)
-  }
 
-  def activeFrame(windowSize: Int = 1): Frame[DateTime, String, Boolean] = {
+  def activeFrame(windowSize: Int = 1): Frame[DateTime, String, Boolean] =
     // Check windowSize <= maxWindowSize
     rawData._activeFrame.rowSlice(idx - windowSize + 1, idx + 1)
-  }
 
-  override def toString(): String = {
+  override def toString(): String =
     priceFrame().toString
-  }
 }
 
 // Training data visible to the user is [untilIdx - windowSize, untilIdx).

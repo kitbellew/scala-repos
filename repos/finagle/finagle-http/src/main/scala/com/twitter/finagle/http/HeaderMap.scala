@@ -74,16 +74,14 @@ class MapHeaderMap(underlying: mutable.Map[String, Seq[String]])
   }
 
   // For Map/MapLike
-  def get(key: String): Option[String] = {
+  def get(key: String): Option[String] =
     underlying.find { case (k, v) => k.equalsIgnoreCase(key) }.flatMap {
       _._2.headOption
     }
-  }
 
   // For Map/MapLike
-  def iterator: Iterator[(String, String)] = {
+  def iterator: Iterator[(String, String)] =
     for ((k, vs) <- underlying.iterator; v <- vs) yield (k, v)
-  }
 
   // For Map/MapLike
   def +=(kv: (String, String)): MapHeaderMap.this.type = {

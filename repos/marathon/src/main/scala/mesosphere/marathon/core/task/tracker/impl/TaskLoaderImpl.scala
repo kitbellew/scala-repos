@@ -15,7 +15,7 @@ private[tracker] class TaskLoaderImpl(repo: TaskRepository) extends TaskLoader {
 
   private[this] val log = LoggerFactory.getLogger(getClass.getName)
 
-  override def loadTasks(): Future[TaskTracker.TasksByApp] = {
+  override def loadTasks(): Future[TaskTracker.TasksByApp] =
     for {
       names <- repo.allIds()
       _ = log.info(s"About to load ${names.size} tasks")
@@ -29,5 +29,4 @@ private[tracker] class TaskLoaderImpl(repo: TaskRepository) extends TaskLoader {
       }.toMap
       TaskTracker.TasksByApp.of(map)
     }
-  }
 }

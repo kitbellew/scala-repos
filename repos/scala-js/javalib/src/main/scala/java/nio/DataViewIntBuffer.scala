@@ -108,14 +108,13 @@ private[nio] object DataViewIntBuffer {
         initialPosition: Int,
         initialLimit: Int,
         readOnly: Boolean,
-        isBigEndian: Boolean): IntBuffer = {
+        isBigEndian: Boolean): IntBuffer =
       new DataViewIntBuffer(
         dataView,
         initialPosition,
         initialLimit,
         readOnly,
         isBigEndian)
-    }
   }
 
   @inline

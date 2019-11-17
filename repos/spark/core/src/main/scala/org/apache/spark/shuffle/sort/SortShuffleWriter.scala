@@ -97,7 +97,7 @@ private[spark] class SortShuffleWriter[K, V, C](
   }
 
   /** Close this writer, passing along whether the map completed */
-  override def stop(success: Boolean): Option[MapStatus] = {
+  override def stop(success: Boolean): Option[MapStatus] =
     try {
       if (stopping) {
         return None
@@ -119,13 +119,12 @@ private[spark] class SortShuffleWriter[K, V, C](
         sorter = null
       }
     }
-  }
 }
 
 private[spark] object SortShuffleWriter {
   def shouldBypassMergeSort(
       conf: SparkConf,
-      dep: ShuffleDependency[_, _, _]): Boolean = {
+      dep: ShuffleDependency[_, _, _]): Boolean =
     // We cannot bypass sorting if we need to do map-side aggregation.
     if (dep.mapSideCombine) {
       require(
@@ -137,5 +136,4 @@ private[spark] object SortShuffleWriter {
         conf.getInt("spark.shuffle.sort.bypassMergeThreshold", 200)
       dep.partitioner.numPartitions <= bypassMergeThreshold
     }
-  }
 }

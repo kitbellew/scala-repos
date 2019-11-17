@@ -23,9 +23,8 @@ import org.apache.spark.storage.StorageLevel
 
 class VertexRDDSuite extends SparkFunSuite with LocalSparkContext {
 
-  private def vertices(sc: SparkContext, n: Int) = {
+  private def vertices(sc: SparkContext, n: Int) =
     VertexRDD(sc.parallelize((0 to n).map(x => (x.toLong, x)), 5))
-  }
 
   test("filter") {
     withSpark { sc =>

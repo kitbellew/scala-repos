@@ -31,13 +31,12 @@ object Test {
   val chars = List('\n', '\r', 'a')
 
   type Cs = List[Char]
-  def all_strings(n: Int): List[Cs] = {
+  def all_strings(n: Int): List[Cs] =
     if (n == 0) List(Nil)
     else {
       val sufs = all_strings(n - 1)
       chars.flatMap((c) => sufs.map(c :: _))
     }
-  }
   def test(n: Int) {
     for (l <- all_strings(n)) {
       val tmp = store_tempfile((f) => l.foreach(f.write(_)))

@@ -56,13 +56,12 @@ object MimeTypes {
     * @param mimeType mimeType to check
     * @return true if mimeType is text
     */
-  def isText(mimeType: String): Boolean = {
+  def isText(mimeType: String): Boolean =
     mimeType.trim match {
       case text if text.startsWith("text/")      => true
       case text if additionalText.contains(text) => true
       case _                                     => false
     }
-  }
 
   lazy val defaultTypes =
     """

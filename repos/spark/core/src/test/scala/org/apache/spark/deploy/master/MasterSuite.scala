@@ -450,10 +450,9 @@ class MasterSuite
       master: Master,
       appInfo: ApplicationInfo,
       workerInfos: Array[WorkerInfo],
-      spreadOut: Boolean): Array[Int] = {
+      spreadOut: Boolean): Array[Int] =
     master.invokePrivate(
       _scheduleExecutorsOnWorkers(appInfo, workerInfos, spreadOut))
-  }
 
   test(
     "SPARK-13604: Master should ask Worker kill unknown executors and drivers") {

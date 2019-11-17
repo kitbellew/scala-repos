@@ -224,7 +224,7 @@ object Offer {
     */
   private[concurrent] def choose[T](
       random: Option[Random],
-      evs: Seq[Offer[T]]): Offer[T] = {
+      evs: Seq[Offer[T]]): Offer[T] =
     if (evs.isEmpty) Offer.never
     else
       new Offer[T] {
@@ -287,7 +287,6 @@ object Offer {
           }
         }
       }
-  }
 
   /**
     * `Offer.choose()` and synchronize it.
@@ -303,7 +302,7 @@ object Offer {
     new Offer[Unit] {
       private[this] val deadline = timeout.fromNow
 
-      def prepare() = {
+      def prepare() =
         if (deadline <= Time.now) FutureTxUnit
         else {
           val p = new Promise[Tx[Unit]]
@@ -311,7 +310,6 @@ object Offer {
           p.setInterruptHandler { case _cause => task.cancel() }
           p
         }
-      }
     }
 
   object LostSynchronization extends Exception {

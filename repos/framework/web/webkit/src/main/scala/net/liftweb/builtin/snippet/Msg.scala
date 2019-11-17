@@ -70,7 +70,7 @@ object Msg extends DispatchSnippet {
     * This method performs extraction of the CSS class attributes
     * as well as rendering of any messages for the given id.
     */
-  def render(styles: NodeSeq): NodeSeq = {
+  def render(styles: NodeSeq): NodeSeq =
     attr("id") match {
       case Full(id) => {
         // Extract the currently set CSS
@@ -85,7 +85,6 @@ object Msg extends DispatchSnippet {
       }
       case _ => NodeSeq.Empty
     }
-  }
 
   /**
     * This method renders the &lt;span/> for a given id's notices,

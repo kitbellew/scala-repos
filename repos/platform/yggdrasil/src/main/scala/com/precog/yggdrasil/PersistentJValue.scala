@@ -38,13 +38,12 @@ object PersistentJValue {
       bytes
     }
 
-    def unapply(bytes: Array[Byte]): Option[Array[Byte]] = {
+    def unapply(bytes: Array[Byte]): Option[Array[Byte]] =
       if (bytes.length > 0 && bytes(bytes.length - 1) == Flag) {
         Some(Arrays.copyOf(bytes, bytes.length - 1))
       } else {
         None
       }
-    }
   }
 
   object Update extends Message(1: Byte)

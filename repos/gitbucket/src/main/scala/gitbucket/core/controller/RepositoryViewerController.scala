@@ -791,7 +791,7 @@ trait RepositoryViewerControllerBase extends ControllerBase {
   private def fileList(
       repository: RepositoryService.RepositoryInfo,
       revstr: String = "",
-      path: String = ".") = {
+      path: String = ".") =
     if (repository.commitCount == 0) {
       html.guide(
         repository,
@@ -858,7 +858,6 @@ trait RepositoryViewerControllerBase extends ControllerBase {
           } getOrElse NotFound
       }
     }
-  }
 
   private def commitFile(
       repository: RepositoryService.RepositoryInfo,
@@ -1035,7 +1034,6 @@ trait RepositoryViewerControllerBase extends ControllerBase {
 
   override protected def renderUncaughtException(e: Throwable)(
       implicit request: HttpServletRequest,
-      response: HttpServletResponse): Unit = {
+      response: HttpServletResponse): Unit =
     e.printStackTrace()
-  }
 }

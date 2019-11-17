@@ -90,9 +90,8 @@ object BiMap {
     * @param keys RDD of String
     * @return a String to Long BiMap
     */
-  def stringLong(keys: RDD[String]): BiMap[String, Long] = {
+  def stringLong(keys: RDD[String]): BiMap[String, Long] =
     stringLong(keys.distinct.collect)
-  }
 
   /** Create a BiMap[String, Int] from a set of String. The Int index starts
     * from 0.
@@ -120,9 +119,8 @@ object BiMap {
     * @param keys RDD of String
     * @return a String to Int BiMap
     */
-  def stringInt(keys: RDD[String]): BiMap[String, Int] = {
+  def stringInt(keys: RDD[String]): BiMap[String, Int] =
     stringInt(keys.distinct.collect)
-  }
 
   private[this] def stringDoubleImpl(
       keys: Seq[String]): BiMap[String, Double] = {
@@ -135,11 +133,10 @@ object BiMap {
     * @param keys a set of String
     * @return a String to Double BiMap
     */
-  def stringDouble(keys: Set[String]): BiMap[String, Double] = {
+  def stringDouble(keys: Set[String]): BiMap[String, Double] =
     // val hm = HashMap(keys.toSeq.zipWithIndex.map(_.toDouble) : _*)
     // new BiMap(hm)
     stringDoubleImpl(keys.toSeq)
-  }
 
   /** Create a BiMap[String, Double] from an array of String.
     * NOTE: the the array cannot have duplicated element.
@@ -147,18 +144,16 @@ object BiMap {
     * @param keys a set of String
     * @return a String to Double BiMap
     */
-  def stringDouble(keys: Array[String]): BiMap[String, Double] = {
+  def stringDouble(keys: Array[String]): BiMap[String, Double] =
     // val hm = HashMap(keys.zipWithIndex.mapValues(_.toDouble) : _*)
     // new BiMap(hm)
     stringDoubleImpl(keys.toSeq)
-  }
 
   /** Create a BiMap[String, Double] from RDD[String]. The Double index starts
     * from 0.
     * @param keys RDD of String
     * @return a String to Double BiMap
     */
-  def stringDouble(keys: RDD[String]): BiMap[String, Double] = {
+  def stringDouble(keys: RDD[String]): BiMap[String, Double] =
     stringDoubleImpl(keys.distinct.collect)
-  }
 }

@@ -51,13 +51,12 @@ sealed trait Node[P <: Platform[P]] {
 
   def reverse: Node[P]
 
-  def toStringWithPrefix(prefix: String): String = {
+  def toStringWithPrefix(prefix: String): String =
     prefix + getNameFallback + "\n" + members.foldLeft("") {
       case (str, producer) =>
         str + prefix + "\t" + producer.getClass.getName
           .replaceFirst("com.twitter.summingbird.", "") + "\n"
     }
-  }
 
   override def toString = toStringWithPrefix("\t")
 }
@@ -109,7 +108,7 @@ case class Dag[P <: Platform[P]](
 
   lazy val producerDependants = Dependants(tail)
 
-  def connect(src: Node[P], dest: Node[P]): Dag[P] = {
+  def connect(src: Node[P], dest: Node[P]): Dag[P] =
     if (src == dest) {
       this
     } else {
@@ -134,7 +133,6 @@ case class Dag[P <: Platform[P]](
         dependenciesOfM = newDependenciesOfM,
         dependantsOfM = newDependantsOfM)
     }
-  }
 
   def locateOpt(p: Producer[P, _]): Option[Node[P]] = producerToNode.get(p)
   def locate(p: Producer[P, _]): Node[P] = locateOpt(p).getOrElse {
@@ -159,12 +157,11 @@ case class Dag[P <: Platform[P]](
   def transitiveDependenciesOf(p: Producer[P, _]) =
     Producer.transitiveDependenciesOf(p)
 
-  def toStringWithPrefix(prefix: String): String = {
+  def toStringWithPrefix(prefix: String): String =
     prefix + "Dag\n" + nodes.foldLeft("") {
       case (str, node) =>
         str + node.toStringWithPrefix(prefix + "\t") + "\n"
     }
-  }
 
   override def toString = toStringWithPrefix("\t")
 }
@@ -194,14 +191,13 @@ object Dag {
       "Valid registries should have at least one source node")
 
     def buildProducerToNodeLookUp(
-        stormNodeSet: List[Node[P]]): Map[Producer[P, _], Node[P]] = {
+        stormNodeSet: List[Node[P]]): Map[Producer[P, _], Node[P]] =
       stormNodeSet.foldLeft(Map[Producer[P, _], Node[P]]()) {
         (curRegistry, stormNode) =>
           stormNode.members.foldLeft(curRegistry) { (innerRegistry, producer) =>
             (innerRegistry + (producer -> stormNode))
           }
       }
-    }
     val producerToNode = buildProducerToNodeLookUp(registry)
     val dag = registry.foldLeft(
       Dag(
@@ -224,7 +220,7 @@ object Dag {
     def tryGetName(
         name: String,
         seen: Set[String],
-        indxOpt: Option[Int] = None): String = {
+        indxOpt: Option[Int] = None): String =
       indxOpt match {
         case None =>
           if (seen.contains(name)) tryGetName(name, seen, Some(2)) else name
@@ -233,13 +229,12 @@ object Dag {
             tryGetName(name, seen, Some(indx + 1))
           else name + "." + indx
       }
-    }
 
     def genNames(
         dep: Node[P],
         dag: Dag[P],
         outerNodeToName: Map[Node[P], String],
-        usedNames: Set[String]): (Map[Node[P], String], Set[String]) = {
+        usedNames: Set[String]): (Map[Node[P], String], Set[String]) =
       dag.dependenciesOf(dep).foldLeft((outerNodeToName, usedNames)) {
         case ((nodeToName, taken), n) =>
           val name =
@@ -252,13 +247,11 @@ object Dag {
           }
           genNames(n, dag, nodeToName + (n -> useName), taken + useName)
       }
-    }
 
-    def allTails(dag: Dag[P]): List[Node[P]] = {
+    def allTails(dag: Dag[P]): List[Node[P]] =
       dag.nodes.filter { m =>
         dag.dependantsOf(m).size == 0
       }
-    }
 
     //start with the true tail
     val (nodeToName, _) = (dag.tailN :: allTails(dag))

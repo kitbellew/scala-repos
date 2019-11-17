@@ -92,10 +92,9 @@ case class LogReadResult(
     case Some(e) => Errors.forException(e).code
   }
 
-  override def toString = {
+  override def toString =
     "Fetch Data: [%s], HW: [%d], readSize: [%d], isReadFromLogEnd: [%b], error: [%s]"
       .format(info, hw, readSize, isReadFromLogEnd, error)
-  }
 }
 
 object LogReadResult {
@@ -110,9 +109,8 @@ case class BecomeLeaderOrFollowerResult(
     responseMap: collection.Map[TopicPartition, Short],
     errorCode: Short) {
 
-  override def toString = {
+  override def toString =
     "update results: [%s], global error: [%d]".format(responseMap, errorCode)
-  }
 }
 
 object ReplicaManager {
@@ -170,9 +168,8 @@ class ReplicaManager(
   val leaderCount = newGauge(
     "LeaderCount",
     new Gauge[Int] {
-      def value = {
+      def value =
         getLeaderPartitions().size
-      }
     }
   )
   val partitionCount = newGauge(
@@ -190,18 +187,16 @@ class ReplicaManager(
   val isrExpandRate = newMeter("IsrExpandsPerSec", "expands", TimeUnit.SECONDS)
   val isrShrinkRate = newMeter("IsrShrinksPerSec", "shrinks", TimeUnit.SECONDS)
 
-  def underReplicatedPartitionCount(): Int = {
+  def underReplicatedPartitionCount(): Int =
     getLeaderPartitions().count(_.isUnderReplicated)
-  }
 
-  def startHighWaterMarksCheckPointThread() = {
+  def startHighWaterMarksCheckPointThread() =
     if (highWatermarkCheckPointThreadStarted.compareAndSet(false, true))
       scheduler.schedule(
         "highwatermark-checkpoint",
         checkpointHighWatermarks,
         period = config.replicaHighWatermarkCheckpointIntervalMs,
         unit = TimeUnit.MILLISECONDS)
-  }
 
   def recordIsrChange(topicAndPartition: TopicAndPartition) {
     isrChangeSet synchronized {
@@ -310,7 +305,7 @@ class ReplicaManager(
   }
 
   def stopReplicas(stopReplicaRequest: StopReplicaRequest)
-      : (mutable.Map[TopicPartition, Short], Short) = {
+      : (mutable.Map[TopicPartition, Short], Short) =
     replicaStateChangeLock synchronized {
       val responseMap = new collection.mutable.HashMap[TopicPartition, Short]
       if (stopReplicaRequest.controllerEpoch() < controllerEpoch) {
@@ -337,7 +332,6 @@ class ReplicaManager(
         (responseMap, Errors.NONE.code)
       }
     }
-  }
 
   def getOrCreatePartition(topic: String, partitionId: Int): Partition = {
     var partition = allPartitions.get((topic, partitionId))
@@ -472,14 +466,12 @@ class ReplicaManager(
   private def delayedRequestRequired(
       requiredAcks: Short,
       messagesPerPartition: Map[TopicPartition, MessageSet],
-      localProduceResults: Map[TopicPartition, LogAppendResult]): Boolean = {
+      localProduceResults: Map[TopicPartition, LogAppendResult]): Boolean =
     requiredAcks == -1 && messagesPerPartition.size > 0 &&
-    localProduceResults.values.count(_.error.isDefined) < messagesPerPartition.size
-  }
+      localProduceResults.values.count(_.error.isDefined) < messagesPerPartition.size
 
-  private def isValidRequiredAcks(requiredAcks: Short): Boolean = {
+  private def isValidRequiredAcks(requiredAcks: Short): Boolean =
     requiredAcks == -1 || requiredAcks == 1 || requiredAcks == 0
-  }
 
   /**
     * Append the messages to the local replica logs
@@ -1287,9 +1279,8 @@ class ReplicaManager(
     }
   }
 
-  private def getLeaderPartitions(): List[Partition] = {
+  private def getLeaderPartitions(): List[Partition] =
     allPartitions.values.filter(_.leaderReplicaIfLocal().isDefined).toList
-  }
 
   // Flushes the highwatermark value for all partitions to the highwatermark file
   def checkpointHighWatermarks() {

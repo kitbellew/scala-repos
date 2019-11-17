@@ -29,7 +29,7 @@ class SeqModule[A, SA <: SeqLike[A, SA]](
       }
 
     @tailrec
-    def add2(xi: Iterator[A], yi: Iterator[A], b: Builder[A, SA]): SA = {
+    def add2(xi: Iterator[A], yi: Iterator[A], b: Builder[A, SA]): SA =
       if (!xi.hasNext) {
         add1(yi, b)
       } else if (!yi.hasNext) {
@@ -38,7 +38,6 @@ class SeqModule[A, SA <: SeqLike[A, SA]](
         b += scalar.plus(xi.next(), yi.next())
         add2(xi, yi, b)
       }
-    }
 
     add2(x.toIterator, y.toIterator, cbf(x))
   }
@@ -63,7 +62,7 @@ class SeqModule[A, SA <: SeqLike[A, SA]](
       }
 
     @tailrec
-    def sub2(xi: Iterator[A], yi: Iterator[A], b: Builder[A, SA]): SA = {
+    def sub2(xi: Iterator[A], yi: Iterator[A], b: Builder[A, SA]): SA =
       if (!xi.hasNext) {
         subr(yi, b)
       } else if (!yi.hasNext) {
@@ -72,7 +71,6 @@ class SeqModule[A, SA <: SeqLike[A, SA]](
         b += scalar.minus(xi.next(), yi.next())
         sub2(xi, yi, b)
       }
-    }
 
     sub2(x.toIterator, y.toIterator, cbf(x))
   }
@@ -96,13 +94,12 @@ class SeqInnerProductSpace[A: Field, SA <: SeqLike[A, SA]](
     with Serializable {
   def dot(x: SA, y: SA): A = {
     @tailrec
-    def loop(xi: Iterator[A], yi: Iterator[A], acc: A): A = {
+    def loop(xi: Iterator[A], yi: Iterator[A], acc: A): A =
       if (xi.hasNext && yi.hasNext) {
         loop(xi, yi, scalar.plus(acc, scalar.times(xi.next(), yi.next())))
       } else {
         acc
       }
-    }
 
     loop(x.toIterator, y.toIterator, scalar.zero)
   }
@@ -147,13 +144,12 @@ class SeqLpNormedVectorSpace[A: Field: NRoot: Signed, SA <: SeqLike[A, SA]](
 
   def norm(v: SA): A = {
     @tailrec
-    def loop(xi: Iterator[A], acc: A): A = {
+    def loop(xi: Iterator[A], acc: A): A =
       if (xi.hasNext) {
         loop(xi, scalar.plus(acc, Signed[A].abs(scalar.pow(xi.next(), p))))
       } else {
         NRoot[A].nroot(acc, p)
       }
-    }
 
     loop(v.toIterator, scalar.zero)
   }
@@ -171,14 +167,13 @@ class SeqMaxNormedVectorSpace[A: Field: Order: Signed, SA <: SeqLike[A, SA]](
     with Serializable {
   def norm(v: SA): A = {
     @tailrec
-    def loop(xi: Iterator[A], acc: A): A = {
+    def loop(xi: Iterator[A], acc: A): A =
       if (xi.hasNext) {
         val x = Signed[A].abs(xi.next())
         loop(xi, if (Order[A].gt(x, acc)) x else acc)
       } else {
         acc
       }
-    }
 
     loop(v.toIterator, scalar.zero)
   }
@@ -188,7 +183,7 @@ private object SeqSupport {
   @tailrec
   final def forall[A](x: Iterator[A], y: Iterator[A])(
       f: (A, A) => Boolean,
-      g: A => Boolean): Boolean = {
+      g: A => Boolean): Boolean =
     if (x.hasNext && y.hasNext) {
       f(x.next(), y.next()) && forall(x, y)(f, g)
     } else if (x.hasNext) {
@@ -198,15 +193,13 @@ private object SeqSupport {
     } else {
       true
     }
-  }
 
   private val falsef: Any => Boolean = _ => false
 
   @inline final def forall[A, SA <: SeqLike[A, SA]](x: SA, y: SA)(
       f: (A, A) => Boolean,
-      g: A => Boolean = falsef): Boolean = {
+      g: A => Boolean = falsef): Boolean =
     forall(x.toIterator, y.toIterator)(f, g)
-  }
 }
 
 import SeqSupport._
@@ -225,7 +218,7 @@ class SeqOrder[A: Order, SA <: SeqLike[A, SA]]
 
   def compare(x: SA, y: SA): Int = {
     @tailrec
-    def loop(xi: Iterator[A], yi: Iterator[A]): Int = {
+    def loop(xi: Iterator[A], yi: Iterator[A]): Int =
       if (xi.hasNext && yi.hasNext) {
         val cmp = Order[A].compare(xi.next(), yi.next())
         if (cmp == 0) loop(xi, yi) else cmp
@@ -236,7 +229,6 @@ class SeqOrder[A: Order, SA <: SeqLike[A, SA]]
       } else {
         0
       }
-    }
 
     loop(x.toIterator, y.toIterator)
   }
@@ -261,7 +253,7 @@ class SeqVectorOrder[A: Order, SA <: SeqLike[A, SA]](
 
   def compare(x: SA, y: SA): Int = {
     @tailrec
-    def loop(xi: Iterator[A], yi: Iterator[A]): Int = {
+    def loop(xi: Iterator[A], yi: Iterator[A]): Int =
       if (xi.hasNext && yi.hasNext) {
         val cmp = Order[A].compare(xi.next(), yi.next())
         if (cmp == 0) loop(xi, yi) else cmp
@@ -272,7 +264,6 @@ class SeqVectorOrder[A: Order, SA <: SeqLike[A, SA]](
       } else {
         0
       }
-    }
 
     loop(x.toIterator, y.toIterator)
   }

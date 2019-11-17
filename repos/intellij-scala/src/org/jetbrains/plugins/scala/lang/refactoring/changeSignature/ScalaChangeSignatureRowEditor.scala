@@ -67,9 +67,8 @@ class ScalaChangeSignatureRowEditor(
   def addTypeEditor() {
     myTypeEditor.addDocumentListener(signatureUpdater)
     myTypeEditor.addDocumentListener(new DocumentAdapter {
-      override def documentChanged(e: DocumentEvent): Unit = {
+      override def documentChanged(e: DocumentEvent): Unit =
         item.typeText = myTypeEditor.getText
-      }
     })
     myTypeEditor.addDocumentListener(new this.RowEditorChangeListener(1))
     add(createLabeledPanel("Type:", myTypeEditor), BorderLayout.CENTER)
@@ -92,27 +91,24 @@ class ScalaChangeSignatureRowEditor(
     myDefaultValueEditor.addDocumentListener(
       new this.RowEditorChangeListener(2))
     myDefaultValueEditor.addDocumentListener(new DocumentAdapter {
-      override def documentChanged(e: DocumentEvent): Unit = {
+      override def documentChanged(e: DocumentEvent): Unit =
         item.parameter.defaultValue = myDefaultValueEditor.getText.trim
-      }
     })
     additionalPanel.add(
       createLabeledPanel("Default value:", myDefaultValueEditor),
       BorderLayout.WEST)
   }
 
-  def getValue: JBTableRow = {
+  def getValue: JBTableRow =
     new JBTableRow {
-      def getValueAt(column: Int): AnyRef = {
+      def getValueAt(column: Int): AnyRef =
         column match {
           case 0 => myNameEditor.getText.trim
           case 1 => myTypeEditor.getText.trim
           case 2 => myDefaultValueEditor.getText.trim
           case _ => null
         }
-      }
     }
-  }
 
   def getPreferredFocusedComponent: JComponent = {
     val me: MouseEvent = getMouseEvent

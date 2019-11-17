@@ -223,12 +223,10 @@ class BlockGeneratorSuite extends SparkFunSuite with BeforeAndAfter {
       @volatile var errorReported = false
       override def onPushBlock(
           blockId: StreamBlockId,
-          arrayBuffer: mutable.ArrayBuffer[_]): Unit = {
+          arrayBuffer: mutable.ArrayBuffer[_]): Unit =
         throw new SparkException("test")
-      }
-      override def onError(message: String, throwable: Throwable): Unit = {
+      override def onError(message: String, throwable: Throwable): Unit =
         errorReported = true
-      }
     }
     blockGenerator = new BlockGenerator(listener, 0, conf)
     blockGenerator.start()
@@ -246,9 +244,8 @@ class BlockGeneratorSuite extends SparkFunSuite with BeforeAndAfter {
     */
   private def stopBlockGenerator(blockGenerator: BlockGenerator): Thread = {
     val thread = new Thread() {
-      override def run(): Unit = {
+      override def run(): Unit =
         blockGenerator.stop()
-      }
     }
     thread.start()
     thread
@@ -270,9 +267,8 @@ class BlockGeneratorSuite extends SparkFunSuite with BeforeAndAfter {
       onPushBlockCalled = true
     }
     override def onError(message: String, throwable: Throwable): Unit = {}
-    override def onGenerateBlock(blockId: StreamBlockId): Unit = {
+    override def onGenerateBlock(blockId: StreamBlockId): Unit =
       onGenerateBlockCalled = true
-    }
     override def onAddData(data: Any, metadata: Any): Unit = {
       addedData.add(data)
       addedMetadata.add(metadata)

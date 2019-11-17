@@ -88,9 +88,8 @@ private[spark] class TorrentBroadcast[T: ClassTag](obj: T, id: Long)
   /** Total number of blocks this broadcast variable contains. */
   private val numBlocks: Int = writeBlocks(obj)
 
-  override protected def getValue() = {
+  override protected def getValue() =
     _value
-  }
 
   /**
     * Divide the object into multiple blocks and put those blocks in the block manager.

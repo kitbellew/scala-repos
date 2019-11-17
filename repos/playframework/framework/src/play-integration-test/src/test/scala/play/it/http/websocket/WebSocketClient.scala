@@ -82,7 +82,7 @@ object WebSocketClient {
     def toScala: Future[Channel] = {
       val promise = Promise[Channel]()
       chf.addListener(new ChannelFutureListener {
-        def operationComplete(future: ChannelFuture) = {
+        def operationComplete(future: ChannelFuture) =
           if (future.isSuccess) {
             promise.success(future.channel())
           } else if (future.isCancelled) {
@@ -90,7 +90,6 @@ object WebSocketClient {
           } else {
             promise.failure(future.cause())
           }
-        }
       })
       promise.future
     }
@@ -104,10 +103,9 @@ object WebSocketClient {
       .channel(classOf[NioSocketChannel])
       .option(ChannelOption.AUTO_READ, java.lang.Boolean.FALSE)
       .handler(new ChannelInitializer[SocketChannel] {
-        def initChannel(ch: SocketChannel) = {
+        def initChannel(ch: SocketChannel) =
           ch.pipeline()
             .addLast(new HttpClientCodec, new HttpObjectAggregator(8192))
-        }
       })
 
     /**
@@ -307,7 +305,7 @@ object WebSocketClient {
                   }
                   override def onUpstreamFailure(
                       cause: Throwable,
-                      ctx: Context[WebSocketFrame]) = {
+                      ctx: Context[WebSocketFrame]) =
                     if (serverInitiatedClose.get()) {
                       disconnected.trySuccess(())
                       ctx.finish()
@@ -315,7 +313,6 @@ object WebSocketClient {
                       disconnected.tryFailure(cause)
                       ctx.fail(cause)
                     }
-                  }
                 })
 
             /**
@@ -352,9 +349,8 @@ object WebSocketClient {
       ctx.fireExceptionCaught(e)
     }
 
-    override def channelInactive(ctx: ChannelHandlerContext) = {
+    override def channelInactive(ctx: ChannelHandlerContext) =
       disconnected.trySuccess(())
-    }
   }
 
   class WebSocketException(s: String, th: Throwable)

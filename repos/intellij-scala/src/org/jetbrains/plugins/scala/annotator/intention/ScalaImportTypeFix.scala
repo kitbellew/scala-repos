@@ -214,13 +214,11 @@ class ScalaImportTypeFix(
       val popup = new BaseListPopupStep[TypeToImport](
         QuickFixBundle.message("class.to.import.chooser.title"),
         classes: _*) {
-        override def getIconFor(aValue: TypeToImport): Icon = {
+        override def getIconFor(aValue: TypeToImport): Icon =
           aValue.getIcon
-        }
 
-        override def getTextFor(value: TypeToImport): String = {
+        override def getTextFor(value: TypeToImport): String =
           ObjectUtils.assertNotNull(value.qualifiedName)
-        }
 
         override def isAutoSelectionEnabled: Boolean = false
 
@@ -251,15 +249,13 @@ class ScalaImportTypeFix(
               super.onChosen(selectedValue, finalChoice)
             }
 
-            override def getTextFor(value: String): String = {
+            override def getTextFor(value: String): String =
               "Exclude '" + value + "' from auto-import"
-            }
           }
         }
 
-        override def hasSubstep(selectedValue: TypeToImport): Boolean = {
+        override def hasSubstep(selectedValue: TypeToImport): Boolean =
           true
-        }
       }
       JBPopupFactory.getInstance
         .createListPopup(popup)
@@ -298,14 +294,13 @@ object ScalaImportTypeFix {
   }
 
   object TypeToImport {
-    def unapply(elem: PsiElement): Option[TypeToImport] = {
+    def unapply(elem: PsiElement): Option[TypeToImport] =
       elem match {
         case clazz: PsiClass => Some(ClassTypeToImport(clazz))
         case ta: ScTypeAlias => Some(TypeAliasToImport(ta))
         case pack: ScPackage => Some(PrefixPackageToImport(pack))
         case _               => None
       }
-    }
   }
 
   case class ClassTypeToImport(clazz: PsiClass) extends TypeToImport {
@@ -338,7 +333,7 @@ object ScalaImportTypeFix {
     def element: PsiNamedElement = pack
   }
 
-  def getImportHolder(ref: PsiElement, project: Project): ScImportsHolder = {
+  def getImportHolder(ref: PsiElement, project: Project): ScImportsHolder =
     if (ScalaCodeStyleSettings
           .getInstance(project)
           .isAddImportMostCloseToReference)
@@ -355,7 +350,6 @@ object ScalaImportTypeFix {
         case packaging: ScPackaging => packaging
       }
     }
-  }
 
   @tailrec
   private def notInner(clazz: PsiClass, ref: PsiElement): Boolean = {

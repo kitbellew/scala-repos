@@ -99,11 +99,10 @@ object Test extends InteractiveTest {
     * the exception of the symbol for the package 'scala'. This is because that symbol will be
     * present in some of the nodes that the compiler generates.
     */
-  private def noSymbolsOrTypes(tree: compiler.Tree): Boolean = {
+  private def noSymbolsOrTypes(tree: compiler.Tree): Boolean =
     tree.forAll { t =>
       (t.symbol == null || t.symbol == compiler.NoSymbol ||
       t.symbol == compiler.definitions.ScalaPackage // ignore the symbol for the scala package for now
       ) && (t.tpe == null || t.tpe == compiler.NoType)
     }
-  }
 }

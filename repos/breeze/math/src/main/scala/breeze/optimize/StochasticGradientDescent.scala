@@ -57,16 +57,14 @@ abstract class StochasticGradientDescent[T](
     *
     * Default is eta / math.pow(state.iter + 1,2.0 / 3.0)
     */
-  def determineStepSize(state: State, f: StochasticDiffFunction[T], dir: T) = {
+  def determineStepSize(state: State, f: StochasticDiffFunction[T], dir: T) =
     defaultStepSize / math.pow(state.iter + 1, 2.0 / 3.0)
-  }
 }
 
 object StochasticGradientDescent {
   def apply[T](initialStepSize: Double = 4, maxIter: Int = 100)(
-      implicit vs: NormedModule[T, Double]): StochasticGradientDescent[T] = {
+      implicit vs: NormedModule[T, Double]): StochasticGradientDescent[T] =
     new SimpleSGD(initialStepSize, maxIter)
-  }
 
   class SimpleSGD[T](eta: Double = 4, maxIter: Int = 100)(
       implicit vs: NormedModule[T, Double])

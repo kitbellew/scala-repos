@@ -465,14 +465,13 @@ abstract class ScalaMethodEvaluationTestBase extends ScalaDebuggerTestCase {
       |  }
       |}""".stripMargin
   )
-  def testPrivateInTrait(): Unit = {
+  def testPrivateInTrait(): Unit =
     runDebugger() {
       waitForBreakpoint()
       evalEquals("priv(0)", "2")
       evalEquals("privThis(0)", "1")
       evalEquals("privConst", "42")
     }
-  }
 
   addFileWithBreakpoints(
     "LocalsInTrait.scala",
@@ -496,7 +495,7 @@ abstract class ScalaMethodEvaluationTestBase extends ScalaDebuggerTestCase {
       |}
     """.stripMargin
   )
-  def testLocalsInTrait(): Unit = {
+  def testLocalsInTrait(): Unit =
     runDebugger() {
       waitForBreakpoint()
       evalEquals("bar()", "1")
@@ -505,7 +504,6 @@ abstract class ScalaMethodEvaluationTestBase extends ScalaDebuggerTestCase {
       evalEquals("foo()", "1")
       evalEquals("foo + bar", "2")
     }
-  }
 
   // tests for local functions ----------------------------------------------
 
@@ -784,7 +782,7 @@ abstract class ScalaMethodEvaluationTestBase extends ScalaDebuggerTestCase {
     """.stripMargin.trim()
   )
 
-  def testFunctionsWithLocalParameters(): Unit = {
+  def testFunctionsWithLocalParameters(): Unit =
     runDebugger() {
       waitForBreakpoint()
       evalEquals("a", "aa")
@@ -798,7 +796,6 @@ abstract class ScalaMethodEvaluationTestBase extends ScalaDebuggerTestCase {
       evalEquals("inner(\"aa\")", "startaadefault2")
       evalEquals("outer()", "startaadefault2")
     }
-  }
 
   addFileWithBreakpoints(
     "WithFieldsFromOtherThread.scala",
@@ -832,7 +829,7 @@ abstract class ScalaMethodEvaluationTestBase extends ScalaDebuggerTestCase {
     """.stripMargin.trim
   )
 
-  def testWithFieldsFromOtherThread(): Unit = {
+  def testWithFieldsFromOtherThread(): Unit =
     runDebugger() {
       waitForBreakpoint()
       evalEquals("field", "field")
@@ -843,7 +840,6 @@ abstract class ScalaMethodEvaluationTestBase extends ScalaDebuggerTestCase {
       evalEquals("localFun2", "localFun2")
       evalEquals("localFun1()", "localFun1")
     }
-  }
 
   addFileWithBreakpoints(
     "InForStmt.scala",
@@ -872,7 +868,7 @@ abstract class ScalaMethodEvaluationTestBase extends ScalaDebuggerTestCase {
     """.stripMargin.trim
   )
 
-  def testInForStmt(): Unit = {
+  def testInForStmt(): Unit =
     runDebugger() {
       waitForBreakpoint()
       evalEquals("getX", "1")
@@ -888,5 +884,4 @@ abstract class ScalaMethodEvaluationTestBase extends ScalaDebuggerTestCase {
         evalEquals("new Inner().foo", "1")
       }
     }
-  }
 }

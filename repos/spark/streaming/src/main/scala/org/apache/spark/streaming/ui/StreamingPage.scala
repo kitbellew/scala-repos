@@ -168,7 +168,7 @@ private[ui] class StreamingPage(parent: StreamingTab)
   /**
     * Generate html that will load css/js files for StreamingPage
     */
-  private def generateLoadResources(): Seq[Node] = {
+  private def generateLoadResources(): Seq[Node] =
     // scalastyle:off
     <script src={SparkUIUtils.prependBaseUri("/static/d3.min.js")}></script>
       <link rel="stylesheet" href={
@@ -177,8 +177,7 @@ private[ui] class StreamingPage(parent: StreamingTab)
       <script src={
       SparkUIUtils.prependBaseUri("/static/streaming/streaming-page.js")
     }></script>
-    // scalastyle:on
-  }
+  // scalastyle:on
 
   /** Generate basic information of the streaming program */
   private def generateBasicInfo(): Seq[Node] = {
@@ -606,9 +605,8 @@ private[ui] object StreamingPage {
   /**
     * Returns a human-readable string representing a duration such as "5 second 35 ms"
     */
-  def formatDurationOption(msOption: Option[Long]): String = {
+  def formatDurationOption(msOption: Option[Long]): String =
     msOption.map(SparkUIUtils.formatDurationVerbose).getOrElse(emptyCell)
-  }
 }
 
 /**
@@ -637,13 +635,11 @@ private[ui] class JsCollector {
     */
   private val statements = ArrayBuffer[String]()
 
-  def addPreparedStatement(js: String): Unit = {
+  def addPreparedStatement(js: String): Unit =
     preparedStatements += js
-  }
 
-  def addStatement(js: String): Unit = {
+  def addStatement(js: String): Unit =
     statements += js
-  }
 
   /**
     * Generate a html snippet that will execute all scripts when the DOM has finished loading.

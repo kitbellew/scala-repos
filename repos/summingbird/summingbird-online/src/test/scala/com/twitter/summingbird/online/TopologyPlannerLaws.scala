@@ -226,7 +226,7 @@ object TopologyPlannerLaws extends Properties("Online Dag") {
   property(
     "The number of non-named nodes should remain constant running with StripNamedNode") =
     forAll { (tail: TailProducer[Memory, _]) =>
-      def countNonNamed(tail: Producer[Memory, _]): Int = {
+      def countNonNamed(tail: Producer[Memory, _]): Int =
         Producer
           .entireGraphOf(tail)
           .collect {
@@ -234,7 +234,6 @@ object TopologyPlannerLaws extends Properties("Online Dag") {
             case _                   => 1
           }
           .sum
-      }
       val (_, stripped) = StripNamedNode(tail)
       countNonNamed(tail) == countNonNamed(stripped)
     }

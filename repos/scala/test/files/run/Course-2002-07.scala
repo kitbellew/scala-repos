@@ -43,11 +43,10 @@ object M0 {
     def rightOp: Expr = sys.error("Var.rightOp");
   }
 
-  def eval(e: Expr): Int = {
+  def eval(e: Expr): Int =
     if (e.isNumber) e.numValue
     else if (e.isSum) eval(e.leftOp) + eval(e.rightOp)
     else sys.error("unknown expression")
-  }
 
   def test = {
     Console.println("        0 = " + eval(new Number(0)));
@@ -149,9 +148,8 @@ object M4 {
     case xs :: xss1 => xs ::: concat(xss1)
   }
 
-  def test_concat[a](xss: List[List[a]]) = {
+  def test_concat[a](xss: List[List[a]]) =
     Console.println(concat(xss).toString + " = concat(" + xss + ")"); // !!! .toString
-  }
 
   def test = {
     test_concat(List());
@@ -188,11 +186,10 @@ object M5 {
       case (x :: xs1, y :: ys1) => (x, y) :: zipFun(xs1, ys1)
     }
 
-  def test_zipFun[a, b](xs: List[a], ys: List[b]) = {
+  def test_zipFun[a, b](xs: List[a], ys: List[b]) =
     Console.println(
       zipFun(xs, ys).toString + " = zipFun(" + xs + "," + ys +
         ")"); // !!! .toString
-  }
 
   def test = {
     test_zipFun(List(), List());
@@ -223,11 +220,10 @@ object M6 {
       case (x :: xs1, y :: ys1) => (x, y) :: zipFun(xs1, ys1)
     }
 
-  def test_zipFun[a, b](xs: List[a], ys: List[b]) = {
+  def test_zipFun[a, b](xs: List[a], ys: List[b]) =
     Console.println(
       zipFun(xs, ys).toString + " = zipFun(" + xs + "," + ys +
         ")"); // !!! .toString
-  }
 
   def test = {
     test_zipFun(List(), List());
@@ -257,9 +253,8 @@ object M7 {
     case List()  => List()
   }
 
-  def test_heads[a](xss: List[List[a]]) = {
+  def test_heads[a](xss: List[List[a]]) =
     Console.println(heads(xss).toString + " = heads(" + xss + ")"); // !!! .toString
-  }
 
   def test = {
     test_heads(List());
@@ -301,9 +296,8 @@ object M8 {
     }
   }
 
-  def test_heads[a](xss: List[List[a]]) = {
+  def test_heads[a](xss: List[List[a]]) =
     Console.println(heads(xss).toString + " = heads(" + xss + ")"); // !!! .toString
-  }
 
   def test = {
     test_heads(List());

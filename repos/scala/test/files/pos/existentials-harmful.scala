@@ -16,9 +16,8 @@ object ExistentialsConsideredHarmful {
   }
 
   // 1.
-  def carry[A <: Animal](box: TransportBox[A]): Unit = {
+  def carry[A <: Animal](box: TransportBox[A]): Unit =
     println(box.animal.name + " got carried away")
-  }
 
   val aBox =
     if (math.random < 0.5) TransportBox(Dog, tools(Dog))

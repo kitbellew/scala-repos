@@ -1203,18 +1203,17 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
     * Register a user-defined function with 1 arguments.
     * @since 1.3.0
     */
-  def register(name: String, f: UDF1[_, _], returnType: DataType): Unit = {
+  def register(name: String, f: UDF1[_, _], returnType: DataType): Unit =
     functionRegistry.registerFunction(
       name,
       (e: Seq[Expression]) =>
         ScalaUDF(f.asInstanceOf[UDF1[Any, Any]].call(_: Any), returnType, e))
-  }
 
   /**
     * Register a user-defined function with 2 arguments.
     * @since 1.3.0
     */
-  def register(name: String, f: UDF2[_, _, _], returnType: DataType): Unit = {
+  def register(name: String, f: UDF2[_, _, _], returnType: DataType): Unit =
     functionRegistry.registerFunction(
       name,
       (e: Seq[Expression]) =>
@@ -1222,16 +1221,12 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
           f.asInstanceOf[UDF2[Any, Any, Any]].call(_: Any, _: Any),
           returnType,
           e))
-  }
 
   /**
     * Register a user-defined function with 3 arguments.
     * @since 1.3.0
     */
-  def register(
-      name: String,
-      f: UDF3[_, _, _, _],
-      returnType: DataType): Unit = {
+  def register(name: String, f: UDF3[_, _, _, _], returnType: DataType): Unit =
     functionRegistry.registerFunction(
       name,
       (e: Seq[Expression]) =>
@@ -1240,7 +1235,6 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
             .call(_: Any, _: Any, _: Any),
           returnType,
           e))
-  }
 
   /**
     * Register a user-defined function with 4 arguments.
@@ -1249,7 +1243,7 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
   def register(
       name: String,
       f: UDF4[_, _, _, _, _],
-      returnType: DataType): Unit = {
+      returnType: DataType): Unit =
     functionRegistry.registerFunction(
       name,
       (e: Seq[Expression]) =>
@@ -1258,7 +1252,6 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
             .call(_: Any, _: Any, _: Any, _: Any),
           returnType,
           e))
-  }
 
   /**
     * Register a user-defined function with 5 arguments.
@@ -1267,7 +1260,7 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
   def register(
       name: String,
       f: UDF5[_, _, _, _, _, _],
-      returnType: DataType): Unit = {
+      returnType: DataType): Unit =
     functionRegistry.registerFunction(
       name,
       (e: Seq[Expression]) =>
@@ -1276,7 +1269,6 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
             .call(_: Any, _: Any, _: Any, _: Any, _: Any),
           returnType,
           e))
-  }
 
   /**
     * Register a user-defined function with 6 arguments.
@@ -1285,7 +1277,7 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
   def register(
       name: String,
       f: UDF6[_, _, _, _, _, _, _],
-      returnType: DataType): Unit = {
+      returnType: DataType): Unit =
     functionRegistry.registerFunction(
       name,
       (e: Seq[Expression]) =>
@@ -1294,7 +1286,6 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
             .call(_: Any, _: Any, _: Any, _: Any, _: Any, _: Any),
           returnType,
           e))
-  }
 
   /**
     * Register a user-defined function with 7 arguments.
@@ -1303,7 +1294,7 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
   def register(
       name: String,
       f: UDF7[_, _, _, _, _, _, _, _],
-      returnType: DataType): Unit = {
+      returnType: DataType): Unit =
     functionRegistry.registerFunction(
       name,
       (e: Seq[Expression]) =>
@@ -1313,7 +1304,6 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
           returnType,
           e)
     )
-  }
 
   /**
     * Register a user-defined function with 8 arguments.
@@ -1322,7 +1312,7 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
   def register(
       name: String,
       f: UDF8[_, _, _, _, _, _, _, _, _],
-      returnType: DataType): Unit = {
+      returnType: DataType): Unit =
     functionRegistry.registerFunction(
       name,
       (e: Seq[Expression]) =>
@@ -1340,7 +1330,6 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
           returnType,
           e)
     )
-  }
 
   /**
     * Register a user-defined function with 9 arguments.
@@ -1349,7 +1338,7 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
   def register(
       name: String,
       f: UDF9[_, _, _, _, _, _, _, _, _, _],
-      returnType: DataType): Unit = {
+      returnType: DataType): Unit =
     functionRegistry.registerFunction(
       name,
       (e: Seq[Expression]) =>
@@ -1369,7 +1358,6 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
           returnType,
           e)
     )
-  }
 
   /**
     * Register a user-defined function with 10 arguments.
@@ -1378,7 +1366,7 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
   def register(
       name: String,
       f: UDF10[_, _, _, _, _, _, _, _, _, _, _],
-      returnType: DataType): Unit = {
+      returnType: DataType): Unit =
     functionRegistry.registerFunction(
       name,
       (e: Seq[Expression]) =>
@@ -1399,7 +1387,6 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
           returnType,
           e)
     )
-  }
 
   /**
     * Register a user-defined function with 11 arguments.
@@ -1408,7 +1395,7 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
   def register(
       name: String,
       f: UDF11[_, _, _, _, _, _, _, _, _, _, _, _],
-      returnType: DataType): Unit = {
+      returnType: DataType): Unit =
     functionRegistry.registerFunction(
       name,
       (e: Seq[Expression]) =>
@@ -1431,7 +1418,6 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
           e
         )
     )
-  }
 
   /**
     * Register a user-defined function with 12 arguments.
@@ -1440,7 +1426,7 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
   def register(
       name: String,
       f: UDF12[_, _, _, _, _, _, _, _, _, _, _, _, _],
-      returnType: DataType): Unit = {
+      returnType: DataType): Unit =
     functionRegistry.registerFunction(
       name,
       (e: Seq[Expression]) =>
@@ -1476,7 +1462,6 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
           e
         )
     )
-  }
 
   /**
     * Register a user-defined function with 13 arguments.
@@ -1485,7 +1470,7 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
   def register(
       name: String,
       f: UDF13[_, _, _, _, _, _, _, _, _, _, _, _, _, _],
-      returnType: DataType): Unit = {
+      returnType: DataType): Unit =
     functionRegistry.registerFunction(
       name,
       (e: Seq[Expression]) =>
@@ -1523,7 +1508,6 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
           e
         )
     )
-  }
 
   /**
     * Register a user-defined function with 14 arguments.
@@ -1532,7 +1516,7 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
   def register(
       name: String,
       f: UDF14[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-      returnType: DataType): Unit = {
+      returnType: DataType): Unit =
     functionRegistry.registerFunction(
       name,
       (e: Seq[Expression]) =>
@@ -1572,7 +1556,6 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
           e
         )
     )
-  }
 
   /**
     * Register a user-defined function with 15 arguments.
@@ -1581,7 +1564,7 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
   def register(
       name: String,
       f: UDF15[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-      returnType: DataType): Unit = {
+      returnType: DataType): Unit =
     functionRegistry.registerFunction(
       name,
       (e: Seq[Expression]) =>
@@ -1623,7 +1606,6 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
           e
         )
     )
-  }
 
   /**
     * Register a user-defined function with 16 arguments.
@@ -1632,7 +1614,7 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
   def register(
       name: String,
       f: UDF16[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-      returnType: DataType): Unit = {
+      returnType: DataType): Unit =
     functionRegistry.registerFunction(
       name,
       (e: Seq[Expression]) =>
@@ -1677,7 +1659,6 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
           e
         )
     )
-  }
 
   /**
     * Register a user-defined function with 17 arguments.
@@ -1686,7 +1667,7 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
   def register(
       name: String,
       f: UDF17[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-      returnType: DataType): Unit = {
+      returnType: DataType): Unit =
     functionRegistry.registerFunction(
       name,
       (e: Seq[Expression]) =>
@@ -1733,7 +1714,6 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
           e
         )
     )
-  }
 
   /**
     * Register a user-defined function with 18 arguments.
@@ -1742,7 +1722,7 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
   def register(
       name: String,
       f: UDF18[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-      returnType: DataType): Unit = {
+      returnType: DataType): Unit =
     functionRegistry.registerFunction(
       name,
       (e: Seq[Expression]) =>
@@ -1791,7 +1771,6 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
           e
         )
     )
-  }
 
   /**
     * Register a user-defined function with 19 arguments.
@@ -1800,7 +1779,7 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
   def register(
       name: String,
       f: UDF19[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-      returnType: DataType): Unit = {
+      returnType: DataType): Unit =
     functionRegistry.registerFunction(
       name,
       (e: Seq[Expression]) =>
@@ -1851,7 +1830,6 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
           e
         )
     )
-  }
 
   /**
     * Register a user-defined function with 20 arguments.
@@ -1860,7 +1838,7 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
   def register(
       name: String,
       f: UDF20[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-      returnType: DataType): Unit = {
+      returnType: DataType): Unit =
     functionRegistry.registerFunction(
       name,
       (e: Seq[Expression]) =>
@@ -1913,7 +1891,6 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
           e
         )
     )
-  }
 
   /**
     * Register a user-defined function with 21 arguments.
@@ -1944,7 +1921,7 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
         _,
         _,
         _],
-      returnType: DataType): Unit = {
+      returnType: DataType): Unit =
     functionRegistry.registerFunction(
       name,
       (e: Seq[Expression]) =>
@@ -1999,7 +1976,6 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
           e
         )
     )
-  }
 
   /**
     * Register a user-defined function with 22 arguments.
@@ -2031,7 +2007,7 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
         _,
         _,
         _],
-      returnType: DataType): Unit = {
+      returnType: DataType): Unit =
     functionRegistry.registerFunction(
       name,
       (e: Seq[Expression]) =>
@@ -2088,7 +2064,6 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
           e
         )
     )
-  }
 
   // scalastyle:on line.size.limit
 }

@@ -112,7 +112,7 @@ private[finagle] class PipelineFactory(
 
     override def writeRequested(
         ctx: ChannelHandlerContext,
-        e: MessageEvent): Unit = {
+        e: MessageEvent): Unit =
       Message.decode(e.getMessage.asInstanceOf[ChannelBuffer]) match {
         case Message.RdispatchOk(_, _, rep) =>
           super.writeRequested(
@@ -144,13 +144,12 @@ private[finagle] class PipelineFactory(
           throw newUnexpectedRequestException(
             s"unable to send ${unexpected.getClass.getName} to non-mux client")
       }
-    }
   }
 
   private class TFramedToMux extends SimpleChannelHandler {
     override def writeRequested(
         ctx: ChannelHandlerContext,
-        e: MessageEvent): Unit = {
+        e: MessageEvent): Unit =
       Message.decode(e.getMessage.asInstanceOf[ChannelBuffer]) match {
         case Message.RdispatchOk(_, _, rep) =>
           super.writeRequested(
@@ -182,7 +181,6 @@ private[finagle] class PipelineFactory(
           throw newUnexpectedRequestException(
             s"unable to send ${unexpected.getClass.getName} to non-mux client")
       }
-    }
 
     override def messageReceived(
         ctx: ChannelHandlerContext,
@@ -208,10 +206,9 @@ private[finagle] class PipelineFactory(
 
     override def messageReceived(
         ctx: ChannelHandlerContext,
-        e: MessageEvent): Unit = {
+        e: MessageEvent): Unit =
       if (n.incrementAndGet() > 1) q.offer(e)
       else super.messageReceived(ctx, e)
-    }
 
     override def writeRequested(
         ctx: ChannelHandlerContext,
@@ -245,14 +242,13 @@ private[finagle] class PipelineFactory(
       q != null
     }
 
-    def drain(): Iterable[T] = {
+    def drain(): Iterable[T] =
       synchronized {
         assert(q != null, "Can't drain queue more than once")
         val q1 = q
         q = null
         q1
       }
-    }
   }
 
   private class Upgrader extends SimpleChannelHandler {
@@ -261,7 +257,7 @@ private[finagle] class PipelineFactory(
     // Queue writes until we know what protocol we are speaking.
     private[this] val writeq = new DrainQueue[MessageEvent]
 
-    private[this] def isTTwitterUpNegotiation(req: ChannelBuffer): Boolean = {
+    private[this] def isTTwitterUpNegotiation(req: ChannelBuffer): Boolean =
       try {
         val buffer =
           new InputBuffer(ThriftMuxUtil.bufferToArray(req), protocolFactory)
@@ -271,13 +267,11 @@ private[finagle] class PipelineFactory(
       } catch {
         case NonFatal(_) => false
       }
-    }
 
     override def writeRequested(
         ctx: ChannelHandlerContext,
-        e: MessageEvent): Unit = {
+        e: MessageEvent): Unit =
       if (!writeq.offer(e)) super.writeRequested(ctx, e)
-    }
 
     override def messageReceived(
         ctx: ChannelHandlerContext,

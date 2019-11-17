@@ -1,7 +1,6 @@
 object Test {
-  def f[T](recurse: T => List[T]): List[T] = {
+  def f[T](recurse: T => List[T]): List[T] =
     Nil
-  }
 
   abstract class M { self =>
     type Settings

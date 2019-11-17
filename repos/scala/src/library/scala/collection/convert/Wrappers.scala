@@ -130,13 +130,12 @@ private[collection] trait Wrappers {
       extends ju.AbstractSet[A]
       with Serializable { self =>
     // Note various overrides to avoid performance gotchas.
-    override def contains(o: Object): Boolean = {
+    override def contains(o: Object): Boolean =
       try {
         underlying.contains(o.asInstanceOf[A])
       } catch {
         case cce: ClassCastException => false
       }
-    }
     override def isEmpty = underlying.isEmpty
     def size = underlying.size
     def iterator = new ju.Iterator[A] {

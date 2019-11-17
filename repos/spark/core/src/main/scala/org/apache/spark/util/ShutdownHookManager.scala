@@ -139,9 +139,8 @@ private[spark] object ShutdownHookManager extends Logging {
     * @param hook The code to run during shutdown.
     * @return A handle that can be used to unregister the shutdown hook.
     */
-  def addShutdownHook(hook: () => Unit): AnyRef = {
+  def addShutdownHook(hook: () => Unit): AnyRef =
     addShutdownHook(DEFAULT_SHUTDOWN_PRIORITY)(hook)
-  }
 
   /**
     * Adds a shutdown hook with the given priority. Hooks with lower priority values run
@@ -150,9 +149,8 @@ private[spark] object ShutdownHookManager extends Logging {
     * @param hook The code to run during shutdown.
     * @return A handle that can be used to unregister the shutdown hook.
     */
-  def addShutdownHook(priority: Int)(hook: () => Unit): AnyRef = {
+  def addShutdownHook(priority: Int)(hook: () => Unit): AnyRef =
     shutdownHooks.add(priority, hook)
-  }
 
   /**
     * Remove a previously installed shutdown hook.
@@ -160,9 +158,8 @@ private[spark] object ShutdownHookManager extends Logging {
     * @param ref A handle returned by `addShutdownHook`.
     * @return Whether the hook was removed.
     */
-  def removeShutdownHook(ref: AnyRef): Boolean = {
+  def removeShutdownHook(ref: AnyRef): Boolean =
     shutdownHooks.remove(ref)
-  }
 }
 
 private[util] class SparkShutdownHookManager {
@@ -192,7 +189,7 @@ private[util] class SparkShutdownHookManager {
     }
   }
 
-  def add(priority: Int, hook: () => Unit): AnyRef = {
+  def add(priority: Int, hook: () => Unit): AnyRef =
     hooks.synchronized {
       if (shuttingDown) {
         throw new IllegalStateException(
@@ -202,19 +199,16 @@ private[util] class SparkShutdownHookManager {
       hooks.add(hookRef)
       hookRef
     }
-  }
 
-  def remove(ref: AnyRef): Boolean = {
+  def remove(ref: AnyRef): Boolean =
     hooks.synchronized { hooks.remove(ref) }
-  }
 }
 
 private class SparkShutdownHook(private val priority: Int, hook: () => Unit)
     extends Comparable[SparkShutdownHook] {
 
-  override def compareTo(other: SparkShutdownHook): Int = {
+  override def compareTo(other: SparkShutdownHook): Int =
     other.priority - priority
-  }
 
   def run(): Unit = hook()
 }

@@ -67,7 +67,6 @@ abstract class SQLBuilderTest extends QueryTest with TestHiveSingleton {
       Dataset.newDataFrame(sqlContext, plan))
   }
 
-  protected def checkSQL(df: DataFrame, expectedSQL: String): Unit = {
+  protected def checkSQL(df: DataFrame, expectedSQL: String): Unit =
     checkSQL(df.queryExecution.analyzed, expectedSQL)
-  }
 }

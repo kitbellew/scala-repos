@@ -169,9 +169,8 @@ trait CorsSupport extends Handler with Initializable { self: ScalatraBase ⇒
       request.getHeader(AccessControlRequestHeadersHeader))
   }
 
-  private[this] def corsConfig: CORSConfig = {
+  private[this] def corsConfig: CORSConfig =
     servletContext.get(CorsConfigKey).orNull.asInstanceOf[CORSConfig]
-  }
 
   private[this] def originMatches: Boolean =
     // 6.2.2
@@ -206,9 +205,9 @@ trait CorsSupport extends Handler with Initializable { self: ScalatraBase ⇒
     result
   }
 
-  private[this] def isCORSRequest: Boolean = {
+  private[this] def isCORSRequest: Boolean =
     request.headers.get(OriginHeader).flatMap(_.blankOption).isDefined
-  } // 6.x.1
+  // 6.x.1
 
   private[this] def isSimpleHeader(header: String): Boolean = {
     val ho = header.blankOption
@@ -272,7 +271,7 @@ trait CorsSupport extends Handler with Initializable { self: ScalatraBase ⇒
 
   abstract override def handle(
       req: HttpServletRequest,
-      res: HttpServletResponse): Unit = {
+      res: HttpServletResponse): Unit =
     if (corsConfig.enabled) {
       withRequestResponse(req, res) {
         request.requestMethod match {
@@ -293,5 +292,4 @@ trait CorsSupport extends Handler with Initializable { self: ScalatraBase ⇒
     } else {
       super.handle(req, res)
     }
-  }
 }

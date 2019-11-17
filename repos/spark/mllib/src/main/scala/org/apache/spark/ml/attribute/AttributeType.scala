@@ -58,7 +58,7 @@ object AttributeType {
     * Gets the [[AttributeType]] object from its name.
     * @param name attribute type name: "numeric", "nominal", or "binary"
     */
-  def fromName(name: String): AttributeType = {
+  def fromName(name: String): AttributeType =
     if (name == Numeric.name) {
       Numeric
     } else if (name == Nominal.name) {
@@ -70,5 +70,4 @@ object AttributeType {
     } else {
       throw new IllegalArgumentException(s"Cannot recognize type $name.")
     }
-  }
 }

@@ -20,33 +20,29 @@ object Sorting {
       x: Array[Int],
       off: Int,
       len: Int,
-      order: Array[Int]): Array[Int] = {
+      order: Array[Int]): Array[Int] =
     indexSort_Int(x, off, len, order)
-  }
 
   def indexSort(
       x: Array[Int],
       off: Int,
       len: Int,
-      order: Array[Long]): Array[Int] = {
+      order: Array[Long]): Array[Int] =
     indexSort_Long(x, off, len, order)
-  }
 
   def indexSort(
       x: Array[Int],
       off: Int,
       len: Int,
-      order: Array[Float]): Array[Int] = {
+      order: Array[Float]): Array[Int] =
     indexSort_Float(x, off, len, order)
-  }
 
   def indexSort(
       x: Array[Int],
       off: Int,
       len: Int,
-      order: Array[Double]): Array[Int] = {
+      order: Array[Double]): Array[Int] =
     indexSort_Double(x, off, len, order)
-  }
 
   @expand
   def indexSort[@expand.args(Int, Long, Float, Double) T](
@@ -70,7 +66,7 @@ object Sorting {
         b += 1
       }
     }
-    def med3(a: Int, b: Int, c: Int) = {
+    def med3(a: Int, b: Int, c: Int) =
       if (order(x(a)) < order(x(b))) {
         if (order(x(b)) < order(x(c))) b
         else if (order(x(a)) < order(x(c))) c
@@ -80,7 +76,6 @@ object Sorting {
         else if (order(x(a)) > order(x(c))) c
         else a
       }
-    }
     def sort2(off: Int, len: Int) {
       // Insertion sort on smallest arrays
       if (len < 7) {

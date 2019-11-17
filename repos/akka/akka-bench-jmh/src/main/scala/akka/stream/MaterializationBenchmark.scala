@@ -97,9 +97,8 @@ class MaterializationBenchmark {
   }
 
   @TearDown
-  def shutdown(): Unit = {
+  def shutdown(): Unit =
     Await.result(system.terminate(), 5.seconds)
-  }
 
   @Benchmark
   def flow_with_map(): Unit = flowWithMap.run()

@@ -14,7 +14,7 @@ class MapToBooleanContainsInspection extends OperationOnCollectionInspection {
 object MapContainsFalse extends SimplificationType {
   override def hint: String =
     InspectionBundle.message("replace.map.contains.false.with.not.forall")
-  override def getSimplification(expr: ScExpression): Option[Simplification] = {
+  override def getSimplification(expr: ScExpression): Option[Simplification] =
     expr match {
       case qual `.map` (pred @ returnsBoolean()) `.contains`(literal(
             "false")) =>
@@ -23,7 +23,6 @@ object MapContainsFalse extends SimplificationType {
         Some(replace(expr).withText(notForallText).highlightFrom(qual))
       case _ => None
     }
-  }
 }
 
 object MapContainsTrue extends SimplificationType {

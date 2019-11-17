@@ -175,11 +175,10 @@ class EndToEndTest
     val n = new AtomicInteger(0)
 
     val service = new Service[Request, Response] {
-      def apply(req: Request): Future[Response] = {
+      def apply(req: Request): Future[Response] =
         if (n.getAndIncrement() == 0)
           Future.exception(Failure.rejected("better luck next time"))
         else Future.value(Response.empty)
-      }
     }
 
     val a, b = Mux.serve("localhost:*", service)
@@ -297,9 +296,8 @@ EOF
       class FakeLessor extends Lessor {
         var list: List[Lessee] = Nil
 
-        def register(lessee: Lessee): Unit = {
+        def register(lessee: Lessee): Unit =
           list ::= lessee
-        }
 
         def unregister(lessee: Lessee): Unit = ()
 

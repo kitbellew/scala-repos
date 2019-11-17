@@ -70,9 +70,8 @@ object Kafka extends Logging {
       Runtime
         .getRuntime()
         .addShutdownHook(new Thread() {
-          override def run() = {
+          override def run() =
             kafkaServerStartable.shutdown
-          }
         })
 
       kafkaServerStartable.startup

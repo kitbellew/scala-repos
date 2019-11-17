@@ -24,14 +24,13 @@ object ConnectionContext {
       enabledCipherSuites: Option[immutable.Seq[String]] = None,
       enabledProtocols: Option[immutable.Seq[String]] = None,
       clientAuth: Option[TLSClientAuth] = None,
-      sslParameters: Option[SSLParameters] = None) = {
+      sslParameters: Option[SSLParameters] = None) =
     new HttpsConnectionContext(
       sslContext,
       enabledCipherSuites,
       enabledProtocols,
       clientAuth,
       sslParameters)
-  }
   //#https-context-creation
 
   def noEncryption() = HttpConnectionContext

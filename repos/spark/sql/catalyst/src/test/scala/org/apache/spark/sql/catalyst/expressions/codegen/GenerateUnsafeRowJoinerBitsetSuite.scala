@@ -100,11 +100,10 @@ class GenerateUnsafeRowJoinerBitsetSuite extends SparkFunSuite {
     row
   }
 
-  private def testBitsets(numFields1: Int, numFields2: Int): Unit = {
+  private def testBitsets(numFields1: Int, numFields2: Int): Unit =
     for (i <- 0 until 5) {
       testBitsetsOnce(numFields1, numFields2)
     }
-  }
 
   private def testBitsetsOnce(numFields1: Int, numFields2: Int): Unit = {
     info(s"num fields: $numFields1 and $numFields2")

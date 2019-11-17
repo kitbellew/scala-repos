@@ -352,7 +352,7 @@ object Load {
   def buildConfigurations(
       loaded: sbt.LoadedBuild,
       rootProject: URI => String,
-      injectSettings: InjectSettings): Seq[Setting[_]] = {
+      injectSettings: InjectSettings): Seq[Setting[_]] =
     ((loadedBuild in GlobalScope :== loaded) +: transformProjectOnly(
       loaded.root,
       rootProject,
@@ -388,7 +388,6 @@ object Load {
               (buildBase +: build.buildSettings))
         buildSettings ++ projectSettings
     }
-  }
   @deprecated(
     "Does not account for AutoPlugins and will be made private.",
     "0.13.2")
@@ -1393,11 +1392,10 @@ object Load {
       current: Map[URI, String]): Map[URI, String] = {
     val units = structure.units
     val getRoot = getRootProject(units)
-    def project(uri: URI) = {
+    def project(uri: URI) =
       current get uri filter { p =>
         structure allProjects uri map (_.id) contains p
       } getOrElse getRoot(uri)
-    }
     units.keys.map(uri => (uri, project(uri))).toMap
   }
 

@@ -79,12 +79,10 @@ abstract class BaseEngine[EI, Q, P, A] extends Serializable {
   def batchEval(
       sc: SparkContext,
       engineParamsList: Seq[EngineParams],
-      params: WorkflowParams)
-      : Seq[(EngineParams, Seq[(EI, RDD[(Q, P, A)])])] = {
+      params: WorkflowParams): Seq[(EngineParams, Seq[(EI, RDD[(Q, P, A)])])] =
     engineParamsList.map { engineParams =>
       (engineParams, eval(sc, engineParams, params))
     }
-  }
 
   /** :: DeveloperApi ::
     * Implement this method to convert a JValue (read from an engine variant

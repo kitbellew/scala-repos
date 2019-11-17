@@ -1672,7 +1672,7 @@ object Conformance {
       if (result != null) return
 
       val tptsMap = new mutable.HashMap[String, ScTypeParameterType]()
-      def updateType(t: ScType): ScType = {
+      def updateType(t: ScType): ScType =
         t.recursiveUpdate {
           case t: ScTypeVariable =>
             e.wildcards.find(_.name == t.name) match {
@@ -1718,7 +1718,6 @@ object Conformance {
             (true, ex) //todo: this seems just fast solution
           case tp: ScType => (false, tp)
         }
-      }
       val q = updateType(e.quantified)
       val subst = tptsMap.foldLeft(ScSubstitutor.empty) {
         case (subst: ScSubstitutor, (_, tpt)) =>
@@ -2337,13 +2336,12 @@ object Conformance {
   private def parentWithArgNumber(
       leftClass: PsiClass,
       substitutor: ScSubstitutor,
-      argsNumber: Int): (Boolean, ScType) = {
+      argsNumber: Int): (Boolean, ScType) =
     smartIsInheritor(
       leftClass,
       substitutor,
       c => c.getTypeParameters.length == argsNumber,
       new collection.immutable.HashSet[PsiClass]())
-  }
 
   private def smartIsInheritor(
       leftClass: PsiClass,

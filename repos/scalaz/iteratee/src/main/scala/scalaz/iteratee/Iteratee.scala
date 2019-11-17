@@ -42,18 +42,16 @@ trait IterateeFunctions {
     */
   def collect[A, F[_]](
       implicit mon: Monoid[F[A]],
-      pt: Applicative[F]): Iteratee[A, F[A]] = {
+      pt: Applicative[F]): Iteratee[A, F[A]] =
     fold[A, Id, F[A]](mon.zero)((acc, e) => mon.append(acc, pt.point(e)))
-  }
 
   /**
     * Iteratee that collects all inputs in reverse with the given reducer.
     *
     * This iteratee is useful for F[_] with efficient cons, i.e. List.
     */
-  def reversed[A, F[_]](implicit r: Reducer[A, F[A]]): Iteratee[A, F[A]] = {
+  def reversed[A, F[_]](implicit r: Reducer[A, F[A]]): Iteratee[A, F[A]] =
     fold[A, Id, F[A]](r.monoid.zero)((acc, e) => r.cons(e, acc))
-  }
 
   /**
     * Iteratee that collects the first n inputs.
@@ -100,10 +98,9 @@ trait IterateeFunctions {
     */
   def groupBy[A, F[_]](pred: (A, A) => Boolean)(
       implicit mon: Monoid[F[A]],
-      pr: Applicative[F]): Iteratee[A, F[A]] = {
+      pr: Applicative[F]): Iteratee[A, F[A]] =
     Iteratee.peek[A, Id] flatMap {
       case None    => done(Monoid[F[A]].zero, Input.Empty[A])
       case Some(h) => takeWhile(pred(_, h))
     }
-  }
 }

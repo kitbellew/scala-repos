@@ -170,9 +170,8 @@ package scalaguide.akka {
     import actors.ConfiguredActor
 
     class MyModule extends AbstractModule with AkkaGuiceSupport {
-      def configure = {
+      def configure =
         bindActor[ConfiguredActor]("configured-actor")
-      }
     }
 //#binding
   }

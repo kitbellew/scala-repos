@@ -26,24 +26,22 @@ class ScalaMethodCallArgUnwrapper
   override def isApplicableTo(e: PsiElement) =
     forMethodCallArg(e)((_, _) => true)(false)
 
-  override def doUnwrap(element: PsiElement, context: ScalaUnwrapContext) = {
+  override def doUnwrap(element: PsiElement, context: ScalaUnwrapContext) =
     forMethodCallArg(element) { (expr, call) =>
       context.extractBlockOrSingleStatement(expr, call)
       context.delete(call)
     } {}
-  }
 
   override def collectAffectedElements(
       e: PsiElement,
-      toExtract: util.List[PsiElement]) = {
+      toExtract: util.List[PsiElement]) =
     forMethodCallArg[PsiElement](e) { (expr, call) =>
       super.collectAffectedElements(e, toExtract)
       call
     }(e)
-  }
 
   private def forMethodCallArg[T](e: PsiElement)(
-      ifArg: (ScExpression, ScMethodCall) => T)(ifNot: => T) = {
+      ifArg: (ScExpression, ScMethodCall) => T)(ifNot: => T) =
     e match {
       case (expr: ScExpression) childOf ((_: ScArgumentExprList) childOf (call: ScMethodCall)) =>
         @tailrec
@@ -54,5 +52,4 @@ class ScalaMethodCallArgUnwrapper
         ifArg(expr, maxCall(call))
       case _ => ifNot
     }
-  }
 }

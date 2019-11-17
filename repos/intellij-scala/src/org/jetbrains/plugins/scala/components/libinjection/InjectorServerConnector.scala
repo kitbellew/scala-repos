@@ -32,9 +32,8 @@ class InjectorServerConnector(
         text: String,
         source: Option[File],
         line: Option[Long],
-        column: Option[Long]): Unit = {
+        column: Option[Long]): Unit =
       if (kind == Kind.ERROR) errors += text
-    }
     override def deleted(module: File): Unit = {}
     override def progress(text: String, done: Option[Float]): Unit = {}
     override def isCanceled: Boolean = false

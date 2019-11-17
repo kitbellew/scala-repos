@@ -37,7 +37,7 @@ import scalafx.scene.layout.{Priority, VBox}
   */
 object PageDisplayer {
 
-  def choosePage(value: String = "dashBoard"): Node = {
+  def choosePage(value: String = "dashBoard"): Node =
     value match {
       case "dashBoard" => displayPage(new DashboardPage())
       case _ =>
@@ -49,13 +49,11 @@ object PageDisplayer {
               .buildTab(value.split(">")(1).trim(), value.split(">")(0).trim()))
         }
     }
-  }
 
-  private def displayPage(nodeToAdd: DisplayablePage): Node = {
+  private def displayPage(nodeToAdd: DisplayablePage): Node =
     new VBox {
       vgrow = Priority.Always
       hgrow = Priority.Always
       children = nodeToAdd.getPage
     }
-  }
 }

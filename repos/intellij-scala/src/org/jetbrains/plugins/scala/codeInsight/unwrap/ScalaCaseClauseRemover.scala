@@ -33,14 +33,13 @@ class ScalaCaseClauseRemover extends ScalaUnwrapper {
     }(e)
 
   private def forCaseClause[T](e: PsiElement)(ifClause: (ScCaseClause) => T)(
-      ifNot: => T): T = {
+      ifNot: => T): T =
     e match {
       case (cl: ScCaseClause) childOf (cls: ScCaseClauses)
           if cls.caseClauses.size > 1 =>
         ifClause(cl)
       case _ => ifNot
     }
-  }
 
   override def getDescription(e: PsiElement): String =
     ScalaBundle.message("remove.case.clause")

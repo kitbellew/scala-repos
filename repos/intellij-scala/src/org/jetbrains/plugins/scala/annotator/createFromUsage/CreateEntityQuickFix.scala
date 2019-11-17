@@ -73,7 +73,7 @@ abstract class CreateEntityQuickFix(
   }
 
   def invokeInner(project: Project, editor: Editor, file: PsiFile) {
-    def tryToFindBlock(expr: ScExpression): Option[ScExtendsBlock] = {
+    def tryToFindBlock(expr: ScExpression): Option[ScExtendsBlock] =
       blockFor(expr) match {
         case Success(bl) => Some(bl)
         case Failure(e) =>
@@ -85,7 +85,6 @@ abstract class CreateEntityQuickFix(
             null)
           None
       }
-    }
 
     if (!ref.isValid) return
     val entityType = typeFor(ref)
@@ -240,13 +239,12 @@ object CreateEntityQuickFix {
       case _                  => ref.expectedType().map(_.canonicalText)
     }
 
-  private def parametersFor(ref: ScReferenceExpression): Option[String] = {
+  private def parametersFor(ref: ScReferenceExpression): Option[String] =
     ref.parent.collect {
       case MethodRepr(_, _, Some(`ref`), args) => paramsText(args)
       case (_: ScGenericCall) childOf(MethodRepr(_, _, Some(`ref`), args)) =>
         paramsText(args)
     }
-  }
 
   private def genericParametersFor(ref: ScReferenceExpression): Option[String] =
     ref.parent.collect {
@@ -272,7 +270,7 @@ object CreateEntityQuickFix {
   }
 
   private def unambiguousSuper(
-      supRef: ScSuperReference): Option[ScTypeDefinition] = {
+      supRef: ScSuperReference): Option[ScTypeDefinition] =
     supRef.staticSuper match {
       case Some(ScType.ExtractClass(clazz: ScTypeDefinition)) => Some(clazz)
       case None =>
@@ -285,5 +283,4 @@ object CreateEntityQuickFix {
           case _ => None
         }
     }
-  }
 }

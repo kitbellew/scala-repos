@@ -126,7 +126,7 @@ private abstract class BaseRRDD[T: ClassTag, U: ClassTag](
     val stream = new BufferedOutputStream(output, bufferSize)
 
     new Thread("writer for R") {
-      override def run(): Unit = {
+      override def run(): Unit =
         try {
           SparkEnv.set(env)
           TaskContext.setTaskContext(taskContext)
@@ -162,7 +162,7 @@ private abstract class BaseRRDD[T: ClassTag, U: ClassTag](
 
           val printOut = new PrintStream(stream)
 
-          def writeElem(elem: Any): Unit = {
+          def writeElem(elem: Any): Unit =
             if (deserializer == SerializationFormats.BYTE) {
               val elemArr = elem.asInstanceOf[Array[Byte]]
               dataOut.writeInt(elemArr.length)
@@ -175,7 +175,6 @@ private abstract class BaseRRDD[T: ClassTag, U: ClassTag](
               printOut.println(elem)
               // scalastyle:on println
             }
-          }
 
           for (elem <- iter) {
             elem match {
@@ -194,13 +193,12 @@ private abstract class BaseRRDD[T: ClassTag, U: ClassTag](
         } finally {
           Try(output.close())
         }
-      }
     }.start()
   }
 
   protected def readData(length: Int): U
 
-  protected def read(): U = {
+  protected def read(): U =
     try {
       val length = dataStream.readInt()
 
@@ -232,7 +230,6 @@ private abstract class BaseRRDD[T: ClassTag, U: ClassTag](
       case eof: EOFException =>
         throw new SparkException("R worker exited unexpectedly (cranshed)", eof)
     }
-  }
 }
 
 /**
@@ -255,7 +252,7 @@ private class PairwiseRRDD[T: ClassTag](
       packageNames,
       broadcastVars.map(x => x.asInstanceOf[Broadcast[Object]])) {
 
-  override protected def readData(length: Int): (Int, Array[Byte]) = {
+  override protected def readData(length: Int): (Int, Array[Byte]) =
     length match {
       case length if length == 2 =>
         val hashedKey = dataStream.readInt()
@@ -265,7 +262,6 @@ private class PairwiseRRDD[T: ClassTag](
         (hashedKey, contentPairs)
       case _ => null
     }
-  }
 
   lazy val asJavaPairRDD: JavaPairRDD[Int, Array[Byte]] =
     JavaPairRDD.fromRDD(this)
@@ -290,7 +286,7 @@ private class RRDD[T: ClassTag](
       packageNames,
       broadcastVars.map(x => x.asInstanceOf[Broadcast[Object]])) {
 
-  override protected def readData(length: Int): Array[Byte] = {
+  override protected def readData(length: Int): Array[Byte] =
     length match {
       case length if length > 0 =>
         val obj = new Array[Byte](length)
@@ -298,7 +294,6 @@ private class RRDD[T: ClassTag](
         obj
       case _ => null
     }
-  }
 
   lazy val asJavaRDD: JavaRDD[Array[Byte]] = JavaRDD.fromRDD(this)
 }
@@ -321,13 +316,12 @@ private class StringRRDD[T: ClassTag](
       packageNames,
       broadcastVars.map(x => x.asInstanceOf[Broadcast[Object]])) {
 
-  override protected def readData(length: Int): String = {
+  override protected def readData(length: Int): String =
     length match {
       case length if length > 0 =>
         SerDe.readStringBytes(dataStream, length)
       case _ => null
     }
-  }
 
   lazy val asJavaRDD: JavaRDD[String] = JavaRDD.fromRDD(this)
 }
@@ -493,7 +487,6 @@ private[r] object RRDD {
     */
   def createRDDFromArray(
       jsc: JavaSparkContext,
-      arr: Array[Array[Byte]]): JavaRDD[Array[Byte]] = {
+      arr: Array[Array[Byte]]): JavaRDD[Array[Byte]] =
     JavaRDD.fromRDD(jsc.sc.parallelize(arr, arr.length))
-  }
 }

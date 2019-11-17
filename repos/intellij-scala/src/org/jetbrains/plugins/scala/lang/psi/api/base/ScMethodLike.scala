@@ -38,7 +38,7 @@ trait ScMethodLike extends ScMember with PsiMethod {
     * @return generated type parameters only for constructors
     */
   @CachedInsidePsiElement(this, ModCount.getBlockModificationCount)
-  def getConstructorTypeParameters: Option[ScTypeParamClause] = {
+  def getConstructorTypeParameters: Option[ScTypeParamClause] =
     this match {
       case method: PsiMethod if method.isConstructor =>
         val clazz = method.containingClass
@@ -56,17 +56,15 @@ trait ScMethodLike extends ScMember with PsiMethod {
         }
       case _ => None
     }
-  }
 
   /** If this is a primary or auxilliary constructor, return the containing classes type parameter clause */
-  def getClassTypeParameters: Option[ScTypeParamClause] = {
+  def getClassTypeParameters: Option[ScTypeParamClause] =
     if (isConstructor) {
       containingClass match {
         case c: ScTypeDefinition => c.typeParametersClause
         case _                   => None
       }
     } else None
-  }
 
   def effectiveParameterClauses: Seq[ScParameterClause]
 

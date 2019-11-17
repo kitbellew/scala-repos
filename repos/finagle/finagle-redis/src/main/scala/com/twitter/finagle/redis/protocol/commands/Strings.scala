@@ -30,7 +30,7 @@ case class BitCount(
   RequireClientProtocol(
     start.isEmpty && end.isEmpty || start.isDefined && end.isDefined,
     "Both start and end must be specified")
-  def toChannelBuffer = {
+  def toChannelBuffer =
     RedisCodec.toUnifiedFormat(
       Seq(CommandBytes.BITCOUNT, key) ++
         (start match {
@@ -41,10 +41,9 @@ case class BitCount(
           case Some(i) => Seq(StringToChannelBuffer(i.toString))
           case None    => Seq.empty
         }))
-  }
 }
 object BitCount {
-  def apply(args: Seq[Array[Byte]]) = {
+  def apply(args: Seq[Array[Byte]]) =
     if (args != null && args.size == 1) {
       new BitCount(ChannelBuffers.wrappedBuffer(args(0)))
     } else {
@@ -60,7 +59,6 @@ object BitCount {
         Some(start),
         Some(end))
     }
-  }
 }
 
 case class BitOp(
@@ -109,9 +107,8 @@ case class Decr(override val key: ChannelBuffer) extends DecrBy(key, 1) {
     RedisCodec.toUnifiedFormat(Seq(CommandBytes.DECR, key))
 }
 object Decr {
-  def apply(args: Seq[Array[Byte]]) = {
+  def apply(args: Seq[Array[Byte]]) =
     new Decr(ChannelBuffers.wrappedBuffer(trimList(args, 1, "DECR")(0)))
-  }
 }
 class DecrBy(val key: ChannelBuffer, val amount: Long)
     extends StrictKeyCommand {
@@ -134,9 +131,8 @@ object DecrBy {
     }
     new DecrBy(ChannelBuffers.wrappedBuffer(args(0)), amount)
   }
-  def apply(key: ChannelBuffer, amount: Long) = {
+  def apply(key: ChannelBuffer, amount: Long) =
     new DecrBy(key, amount)
-  }
 }
 
 case class Get(key: ChannelBuffer) extends StrictKeyCommand {
@@ -144,9 +140,8 @@ case class Get(key: ChannelBuffer) extends StrictKeyCommand {
   def toChannelBuffer = RedisCodec.toUnifiedFormat(Seq(CommandBytes.GET, key))
 }
 object Get {
-  def apply(args: Seq[Array[Byte]]) = {
+  def apply(args: Seq[Array[Byte]]) =
     new Get(ChannelBuffers.wrappedBuffer(trimList(args, 1, "GET")(0)))
-  }
 }
 
 case class GetBit(key: ChannelBuffer, offset: Int) extends StrictKeyCommand {
@@ -211,9 +206,8 @@ case class Incr(override val key: ChannelBuffer) extends IncrBy(key, 1) {
     RedisCodec.toUnifiedFormat(Seq(CommandBytes.INCR, key))
 }
 object Incr {
-  def apply(args: Seq[Array[Byte]]) = {
+  def apply(args: Seq[Array[Byte]]) =
     new Incr(ChannelBuffers.wrappedBuffer(trimList(args, 1, "INCR")(0)))
-  }
 }
 
 class IncrBy(val key: ChannelBuffer, val amount: Long)
@@ -288,14 +282,13 @@ case class PSetEx(key: ChannelBuffer, millis: Long, value: ChannelBuffer)
     with StrictValueCommand {
   val command = Commands.PSETEX
   RequireClientProtocol(millis > 0, "Milliseconds must be greater than 0")
-  def toChannelBuffer = {
+  def toChannelBuffer =
     RedisCodec.toUnifiedFormat(
       Seq(
         CommandBytes.PSETEX,
         key,
         StringToChannelBuffer(millis.toString),
         value))
-  }
 }
 object PSetEx {
   def apply(args: Seq[Array[Byte]]) = {
@@ -356,7 +349,7 @@ object Set {
       ChannelBuffers.wrappedBuffer(args(0)),
       ChannelBuffers.wrappedBuffer(args(1)))
 
-    def run(args: Seq[Array[Byte]], set: Set): Set = {
+    def run(args: Seq[Array[Byte]], set: Set): Set =
       args.headOption match {
         case None => set
         case Some(bytes) => {
@@ -390,7 +383,6 @@ object Set {
           }
         }
       }
-    }
 
     run(args.drop(2), set)
   }

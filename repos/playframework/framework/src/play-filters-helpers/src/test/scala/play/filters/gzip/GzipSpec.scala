@@ -109,9 +109,8 @@ object GzipSpec extends Specification {
     def test(
         value: String,
         gunzip: Enumeratee[Array[Byte], Array[Byte]] = Gzip.gunzip(),
-        chunkSize: Option[Int] = None) = {
+        chunkSize: Option[Int] = None) =
       testInput(gzip(value), value, gunzip, chunkSize)
-    }
 
     def testInput(
         input: Array[Byte],

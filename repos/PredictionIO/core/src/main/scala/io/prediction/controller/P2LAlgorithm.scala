@@ -65,11 +65,10 @@ abstract class P2LAlgorithm[PD, M: ClassTag, Q: ClassTag, P]
     *           predicted results with corresponding queries.
     * @return Batch of predicted results
     */
-  def batchPredict(m: M, qs: RDD[(Long, Q)]): RDD[(Long, P)] = {
+  def batchPredict(m: M, qs: RDD[(Long, Q)]): RDD[(Long, P)] =
     qs.mapValues { q =>
       predict(m, q)
     }
-  }
 
   def predictBase(bm: Any, q: Q): P = predict(bm.asInstanceOf[M], q)
 

@@ -75,17 +75,15 @@ private[spark] class HiveCatalog(client: HiveClient)
     }
   }
 
-  private def requireDbMatches(db: String, table: CatalogTable): Unit = {
+  private def requireDbMatches(db: String, table: CatalogTable): Unit =
     if (table.name.database != Some(db)) {
       throw new AnalysisException(
         s"Provided database $db does not much the one specified in the " +
           s"table definition (${table.name.database.getOrElse("n/a")})")
     }
-  }
 
-  private def requireTableExists(db: String, table: String): Unit = {
+  private def requireTableExists(db: String, table: String): Unit =
     withClient { getTable(db, table) }
-  }
 
   // --------------------------------------------------------------------------
   // Databases

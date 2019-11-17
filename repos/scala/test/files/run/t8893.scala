@@ -3,7 +3,7 @@ import annotation.tailrec
 object Test {
   def a(): Option[String] = Some("a")
 
-  def test1: Any = {
+  def test1: Any =
     a() match {
       case Some(b1) =>
         a() match {
@@ -15,9 +15,8 @@ object Test {
         }
       case None => None
     }
-  }
 
-  def test2: Any = {
+  def test2: Any =
     a() match {
       case Some(b1) =>
         a() match {
@@ -31,7 +30,6 @@ object Test {
         test1 // not a tail call
         test1
     }
-  }
 
   def main(args: Array[String]) {
     test1

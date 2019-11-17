@@ -81,7 +81,7 @@ class MacroExpandAction extends AnAction {
   }
 
   def expandMacroUnderCursor(expansion: ResolvedMacroExpansion)(
-      implicit e: AnActionEvent) = {
+      implicit e: AnActionEvent) =
     inWriteCommandAction(e.getProject) {
       try {
         applyExpansion(expansion)
@@ -92,15 +92,13 @@ class MacroExpandAction extends AnAction {
       }
       e.getProject
     }
-  }
 
   def expandAllMacroInCurrentFile(expansions: Seq[ResolvedMacroExpansion])(
-      implicit e: AnActionEvent) = {
+      implicit e: AnActionEvent) =
     inWriteCommandAction(e.getProject) {
       applyExpansions(expansions.toList)
       e.getProject
     }
-  }
 
   def findCandidatesInFile(file: ScalaFile): Seq[ScalaPsiElement] = {
     val buffer = scala.collection.mutable.ListBuffer[ScalaPsiElement]()
@@ -156,7 +154,7 @@ class MacroExpandAction extends AnAction {
 
   def applyExpansions(
       expansions: Seq[ResolvedMacroExpansion],
-      triedResolving: Boolean = false)(implicit e: AnActionEvent): Unit = {
+      triedResolving: Boolean = false)(implicit e: AnActionEvent): Unit =
     expansions match {
       case x :: xs =>
         try {
@@ -174,10 +172,9 @@ class MacroExpandAction extends AnAction {
         }
       case Nil =>
     }
-  }
 
   def expandAnnotation(place: ScAnnotation, expansion: MacroExpansion)(
-      implicit e: AnActionEvent) = {
+      implicit e: AnActionEvent) =
     // we can only macro-annotate scala code
     place.getParent.getParent match {
       case holder: ScAnnotationsHolder =>
@@ -213,7 +210,6 @@ class MacroExpandAction extends AnAction {
       case other =>
         LOG.warn(s"Unexpected annotated element: $other at ${other.getText}")
     }
-  }
 
   def expandMacroCall(call: ScMethodCall, expansion: MacroExpansion)(
       implicit e: AnActionEvent) = {
@@ -232,16 +228,14 @@ class MacroExpandAction extends AnAction {
   }
 
   def tryResolveExpansionPlace(expansion: MacroExpansion)(
-      implicit e: AnActionEvent): ResolvedMacroExpansion = {
+      implicit e: AnActionEvent): ResolvedMacroExpansion =
     ResolvedMacroExpansion(
       expansion,
       getRealOwner(expansion).map(new IdentitySmartPointer[PsiElement](_)))
-  }
 
   def tryResolveExpansionPlaces(expansions: Seq[MacroExpansion])(
-      implicit e: AnActionEvent): Seq[ResolvedMacroExpansion] = {
+      implicit e: AnActionEvent): Seq[ResolvedMacroExpansion] =
     expansions.map(tryResolveExpansionPlace)
-  }
 
   def getRealOwner(expansion: MacroExpansion)(
       implicit e: AnActionEvent): Option[PsiElement] = {
@@ -279,14 +273,13 @@ class MacroExpandAction extends AnAction {
   }
 
   def isMacroAnnotation(expansion: MacroExpansion)(
-      implicit e: AnActionEvent): Boolean = {
+      implicit e: AnActionEvent): Boolean =
     getRealOwner(expansion) match {
       case Some(_: ScAnnotation) => true
       case Some(_: ScMethodCall) => false
       case Some(other)           => false
       case None                  => false
     }
-  }
 
   def ensugarExpansion(text: String): String = {
 

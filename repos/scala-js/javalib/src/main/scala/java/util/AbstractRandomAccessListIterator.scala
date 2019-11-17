@@ -59,7 +59,6 @@ abstract private[util] class AbstractRandomAccessListIterator[E](
 
   protected def add(index: Int, e: E): Unit
 
-  private def checkThatHasLast(): Unit = {
+  private def checkThatHasLast(): Unit =
     if (last == -1) throw new IllegalStateException
-  }
 }

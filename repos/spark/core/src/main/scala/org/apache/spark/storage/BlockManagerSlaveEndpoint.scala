@@ -97,7 +97,6 @@ private[storage] class BlockManagerSlaveEndpoint(
     }
   }
 
-  override def onStop(): Unit = {
+  override def onStop(): Unit =
     asyncThreadPool.shutdownNow()
-  }
 }

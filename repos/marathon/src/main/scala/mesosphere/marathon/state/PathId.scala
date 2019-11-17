@@ -45,14 +45,11 @@ case class PathId(path: List[String], absolute: Boolean = true)
   def /(id: String): PathId = append(id)
 
   def restOf(parent: PathId): PathId = {
-    def in(
-        currentPath: List[String],
-        parentPath: List[String]): List[String] = {
+    def in(currentPath: List[String], parentPath: List[String]): List[String] =
       if (currentPath.isEmpty) Nil
       else if (parentPath.isEmpty || currentPath.head != parentPath.head)
         currentPath
       else in(currentPath.tail, parentPath.tail)
-    }
     PathId(in(path, parent.path), absolute)
   }
 
@@ -122,11 +119,10 @@ object PathId {
     "^(([a-z0-9]|[a-z0-9][a-z0-9\\-]*[a-z0-9])\\.)*([a-z0-9]|[a-z0-9][a-z0-9\\-]*[a-z0-9])|(\\.|\\.\\.)$".r
 
   private val validPathChars = new Validator[PathId] {
-    override def apply(pathId: PathId): Result = {
+    override def apply(pathId: PathId): Result =
       validate(pathId.path)(
         validator = pathId.path.each should matchRegexFully(
           ID_PATH_SEGMENT_PATTERN.pattern))
-    }
   }
 
   /**
@@ -147,14 +143,13 @@ object PathId {
       path is validPathChars
   }
 
-  private def childOf(parent: PathId): Validator[PathId] = {
+  private def childOf(parent: PathId): Validator[PathId] =
     isTrue[PathId](
       s"Identifier is not child of $parent. Hint: use relative paths.") {
       child =>
         parent == PathId.empty || !parent.absolute ||
         (parent.absolute && child.canonicalPath(parent).parent == parent)
     }
-  }
 
   /**
     * Needed for AppDefinitionValidatorTest.testSchemaLessStrictForId.

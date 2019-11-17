@@ -222,7 +222,7 @@ private[spark] object BLAS extends Serializable with Logging {
   /**
     * x = a * x
     */
-  def scal(a: Double, x: Vector): Unit = {
+  def scal(a: Double, x: Vector): Unit =
     x match {
       case sx: SparseVector =>
         f2jBLAS.dscal(sx.values.length, a, sx.values, 1)
@@ -232,7 +232,6 @@ private[spark] object BLAS extends Serializable with Logging {
         throw new IllegalArgumentException(
           s"scal doesn't support vector type ${x.getClass}.")
     }
-  }
 
   // For level-3 routines, we use the native BLAS.
   private def nativeBLAS: NetlibBLAS = {
@@ -247,9 +246,8 @@ private[spark] object BLAS extends Serializable with Logging {
     *
     * @param U the upper triangular part of the matrix in a [[DenseVector]](column major)
     */
-  def spr(alpha: Double, v: Vector, U: DenseVector): Unit = {
+  def spr(alpha: Double, v: Vector, U: DenseVector): Unit =
     spr(alpha, v, U.values)
-  }
 
   /**
     * Adds alpha * x * x.t to a matrix in-place. This is the same as BLAS's ?SPR.

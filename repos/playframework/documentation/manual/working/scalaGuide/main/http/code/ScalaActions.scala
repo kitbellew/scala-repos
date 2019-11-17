@@ -158,23 +158,20 @@ package scalaguide.http.scalaactions {
     def testAction[A](
         action: Action[A],
         expectedResponse: Int = OK,
-        request: Request[A] = FakeRequest()) = {
+        request: Request[A] = FakeRequest()) =
       assertAction(action, expectedResponse, request) { result =>
         success
       }
-    }
 
     def assertAction[A, T: AsResult](
         action: Action[A],
         expectedResponse: Int = OK,
-        request: Request[A] = FakeRequest())(
-        assertions: Future[Result] => T) = {
+        request: Request[A] = FakeRequest())(assertions: Future[Result] => T) =
       running() { _ =>
         val result = action(request)
         status(result) must_== expectedResponse
         assertions(result)
       }
-    }
   }
 
 // Faking a form view

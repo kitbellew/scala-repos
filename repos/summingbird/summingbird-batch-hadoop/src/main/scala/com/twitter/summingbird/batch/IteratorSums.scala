@@ -31,11 +31,10 @@ private[summingbird] object IteratorSums extends java.io.Serializable {
   def optimizedPairSemigroup[T1: Semigroup, T2: Semigroup](
       blockSize: Int): Semigroup[(T1, T2)] =
     new Semigroup[(T1, T2)] {
-      def plus(a: (T1, T2), b: (T1, T2)) = {
+      def plus(a: (T1, T2), b: (T1, T2)) =
         (Semigroup.plus(a._1, b._1), Semigroup.plus(a._2, b._2))
-      }
       override def sumOption(
-          items: TraversableOnce[(T1, T2)]): Option[(T1, T2)] = {
+          items: TraversableOnce[(T1, T2)]): Option[(T1, T2)] =
         if (items.isEmpty) None
         else {
           val op = new BufferOp[(T1, T2)](blockSize) {
@@ -48,7 +47,6 @@ private[summingbird] object IteratorSums extends java.io.Serializable {
           items.foreach(op.put(_))
           op.flush
         }
-      }
     }
 
   abstract class BufferOp[V](sz: Int) extends java.io.Serializable {

@@ -67,7 +67,7 @@ class RawReader private[niflheim] (val id: Long, val log: File, rs: Seq[JValue])
 
   def length: Int = count
 
-  def handleNonempty = {
+  def handleNonempty =
     if (!rows.isEmpty) {
       rowLock.synchronized {
         if (!rows.isEmpty) {
@@ -77,7 +77,6 @@ class RawReader private[niflheim] (val id: Long, val log: File, rs: Seq[JValue])
         segments
       }
     }
-  }
 
   def snapshot(pathConstraint: Option[Set[CPath]]): Block = {
     handleNonempty

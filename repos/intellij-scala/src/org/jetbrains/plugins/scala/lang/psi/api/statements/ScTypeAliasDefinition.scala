@@ -46,7 +46,7 @@ trait ScTypeAliasDefinition extends ScTypeAlias {
     findChildByClassScala(classOf[ScTypeElement])
   }
 
-  def aliasedType(ctx: TypingContext): TypeResult[ScType] = {
+  def aliasedType(ctx: TypingContext): TypeResult[ScType] =
     if (ctx.visited.contains(this)) {
       new Failure(
         ScalaBundle.message("circular.dependency.detected", name),
@@ -54,7 +54,6 @@ trait ScTypeAliasDefinition extends ScTypeAlias {
     } else {
       aliasedTypeElement.getType(ctx(this))
     }
-  }
 
   @CachedInsidePsiElement(this, ModCount.getBlockModificationCount)
   def aliasedType: TypeResult[ScType] = aliasedType(TypingContext.empty)
@@ -70,7 +69,7 @@ trait ScTypeAliasDefinition extends ScTypeAlias {
     isDefinedInObject && isAliasFor(cls)
   }
 
-  def isAliasFor(cls: PsiClass): Boolean = {
+  def isAliasFor(cls: PsiClass): Boolean =
     if (cls.getTypeParameters.length != typeParameters.length) false
     else if (cls.hasTypeParameters) {
       val typeParamsAreAppliedInOrderToCorrectClass =
@@ -113,5 +112,4 @@ trait ScTypeAliasDefinition extends ScTypeAlias {
       typeParameters.isEmpty &&
       Equivalence.equiv(aliasedType.getOrElse(return false), clsType)
     }
-  }
 }

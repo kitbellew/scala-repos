@@ -8,17 +8,15 @@ object Test extends BytecodeTest {
   // Helpful for debugging the test:
   // println(new java.io.File(classpath.asURLs.head.toURI).list().sorted.mkString("\n"))
 
-  def assertSame(a: Any, b: Any) = {
+  def assertSame(a: Any, b: Any) =
     assert(a == b, s"\na: $a\nb: $b")
-  }
 
   val publicStatic = Flags.ACC_PUBLIC | Flags.ACC_STATIC
   val publicAbstractInterface =
     Flags.ACC_PUBLIC | Flags.ACC_ABSTRACT | Flags.ACC_INTERFACE
 
-  def innerClassNodes(className: String): List[InnerClassNode] = {
+  def innerClassNodes(className: String): List[InnerClassNode] =
     loadClassNode(className).innerClasses.asScala.toList.sortBy(_.name)
-  }
 
   def ownInnerClassNode(n: String) =
     innerClassNodes(n).filter(_.name == n).head
@@ -82,15 +80,13 @@ object Test extends BytecodeTest {
     assertSame(encl.descriptor, descriptor)
   }
 
-  def assertNoEnclosingMethod(className: String) = {
+  def assertNoEnclosingMethod(className: String) =
     assertSame(enclosingMethod(className).outerClass, null)
-  }
 
-  def printInnerClassNodes(className: String) = {
+  def printInnerClassNodes(className: String) =
     for (n <- innerClassNodes(className)) {
       println(s"${n.name} / ${n.outerName} / ${n.innerName} / ${n.access}")
     }
-  }
 
   def printEnclosingMethod(className: String) = {
     val e = enclosingMethod(className)
@@ -129,9 +125,8 @@ object Test extends BytecodeTest {
     assertMember(b2, "A3", "B2$", flags = publicStatic)
   }
 
-  def testA4() = {
+  def testA4() =
     testInner("A4", methodHandlesLookup)
-  }
 
   def testA5() = {
     val List(b1) = innerClassNodes("A5")
@@ -238,13 +233,11 @@ object Test extends BytecodeTest {
     assertEnclosingMethod("A18$B$4", "A18", "g$1", "()V")
   }
 
-  def testA19() = {
+  def testA19() =
     testInner("A19", methodHandlesLookup)
-  }
 
-  def testA20() = {
+  def testA20() =
     testInner("A20", methodHandlesLookup)
-  }
 
   def testA21() = {
     val List(i1c, i2c, i3c, j1) = innerClassNodes("A21")

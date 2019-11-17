@@ -30,7 +30,7 @@ case class JarManifest(
     pluginDescriptors: Seq[PluginDescriptor],
     jarPath: String,
     modTimeStamp: Long)(val isBlackListed: Boolean) {
-  def serialize() = {
+  def serialize() =
     <intellij-compat>
       {
       for (PluginDescriptor(since, until, injtors) <- pluginDescriptors) {
@@ -52,7 +52,6 @@ case class JarManifest(
       }
     }
     </intellij-compat>
-  }
 }
 
 object JarManifest {

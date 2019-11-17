@@ -18,9 +18,8 @@ package object ssl {
   import scala.language.implicitConversions
 
   implicit def certificate2X509Certificate(
-      cert: java.security.cert.Certificate): X509Certificate = {
+      cert: java.security.cert.Certificate): X509Certificate =
     cert.asInstanceOf[X509Certificate]
-  }
 
   implicit def arrayCertsToListCerts(
       chain: Array[Certificate]): java.util.List[Certificate] = {
@@ -29,29 +28,25 @@ package object ssl {
   }
 
   implicit def certResult2PKIXResult(
-      result: CertPathValidatorResult): PKIXCertPathValidatorResult = {
+      result: CertPathValidatorResult): PKIXCertPathValidatorResult =
     result.asInstanceOf[PKIXCertPathValidatorResult]
-  }
 
-  def debugChain(chain: Array[X509Certificate]): Seq[String] = {
+  def debugChain(chain: Array[X509Certificate]): Seq[String] =
     chain.map { cert =>
       s"${cert.getSubjectDN.getName}"
     }
-  }
 
-  def foldVersion[T](run16: => T, runHigher: => T): T = {
+  def foldVersion[T](run16: => T, runHigher: => T): T =
     System.getProperty("java.specification.version") match {
       case "1.6" =>
         run16
       case higher =>
         runHigher
     }
-  }
 
   def isOpenJdk: Boolean = javaVmName contains "OpenJDK"
 
   // NOTE: Some SSL classes in OpenJDK 6 are in the same locations as JDK 7
-  def foldRuntime[T](older: => T, newer: => T): T = {
+  def foldRuntime[T](older: => T, newer: => T): T =
     if (isJavaAtLeast("1.7") || isOpenJdk) newer else older
-  }
 }

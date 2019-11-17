@@ -29,7 +29,6 @@ object Test {
 object Test2 {
   type JClass = java.lang.Class[_]
 
-  def tvarString(bounds: List[AnyRef]) = {
+  def tvarString(bounds: List[AnyRef]) =
     bounds collect { case x: JClass => x }
-  }
 }

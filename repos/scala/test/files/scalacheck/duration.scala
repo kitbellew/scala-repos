@@ -46,9 +46,8 @@ object Test extends Properties("Division of Duration by Long") {
     90 -> genClose
   )
 
-  def mul(a: Long, b: Long): Long = {
+  def mul(a: Long, b: Long): Long =
     (fromNanos(a) * b).toNanos
-  }
 
   property("without overflow") = forAll(genTwoSmall) {
     case (a, b) =>

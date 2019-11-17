@@ -352,10 +352,9 @@ class ExecutionTest extends WordSpec with Matchers {
           sys.error(
             "Ordered serialization should have been the MacroEqualityOrderedSerialization for this test")
       }
-      def executionLoop(idx: Int): Execution[Unit] = {
+      def executionLoop(idx: Int): Execution[Unit] =
         if (idx > 0) baseExecution(idx).flatMap(_ => executionLoop(idx - 1))
         else Execution.unit
-      }
 
       executionLoop(55).shouldSucceed()
       assert(
@@ -444,7 +443,7 @@ class ExecutionTest extends WordSpec with Matchers {
               Execution.from(Array.fill(4000000)(idx.toLong))
             })
 
-      def writeAll(numExecutions: Int): Execution[Unit] = {
+      def writeAll(numExecutions: Int): Execution[Unit] =
         if (numExecutions > 0) {
           memoryWastingExecutionGenerator(numExecutions).flatMap { _ =>
             writeAll(numExecutions - 1)
@@ -452,7 +451,6 @@ class ExecutionTest extends WordSpec with Matchers {
         } else {
           Execution.from(())
         }
-      }
 
       writeAll(400).shouldSucceed()
     }

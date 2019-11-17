@@ -12,7 +12,7 @@ import org.jetbrains.plugins.scala.lang.psi.impl.toplevel.synthetic.ScSyntheticF
   * @author Nikolay.Tropin
   */
 object IsInstanceOfCall {
-  def unapply(expression: ScExpression): Option[ScGenericCall] = {
+  def unapply(expression: ScExpression): Option[ScGenericCall] =
     expression match {
       case ScParenthesisedExpr(IsInstanceOfCall(call)) => Some(call)
       case call: ScGenericCall =>
@@ -26,5 +26,4 @@ object IsInstanceOfCall {
         }
       case _ => None
     }
-  }
 }

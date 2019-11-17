@@ -192,9 +192,8 @@ object WorksheetCompiler extends WorksheetPerFileConfig {
 
   def isMakeBeforeRun(file: PsiFile) = isEnabled(file, MAKE_BEFORE_RUN)
 
-  def setMakeBeforeRun(file: PsiFile, isMake: Boolean) = {
+  def setMakeBeforeRun(file: PsiFile, isMake: Boolean) =
     setEnabled(file, MAKE_BEFORE_RUN, isMake)
-  }
 
   def getModuleForCpName(file: PsiFile) =
     FileAttributeUtilCache.readAttribute(CP_MODULE_NAME, file)
@@ -202,11 +201,10 @@ object WorksheetCompiler extends WorksheetPerFileConfig {
   def setModuleForCpName(file: PsiFile, moduleName: String) =
     FileAttributeUtilCache.writeAttribute(CP_MODULE_NAME, file, moduleName)
 
-  def getRunType(project: Project): WorksheetMakeType = {
+  def getRunType(project: Project): WorksheetMakeType =
     if (ScalaCompileServerSettings.getInstance().COMPILE_SERVER_ENABLED) {
       if (ScalaProjectSettings.getInstance(project).isInProcessMode)
         InProcessServer
       else OutOfProcessServer
     } else NonServer
-  }
 }

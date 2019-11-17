@@ -212,14 +212,13 @@ class SparkIMain(
   private def echo(msg: String) { Console println msg }
   private def _initSources =
     List(new BatchSourceFile("<init>", "class $repl_$init { }"))
-  private def _initialize() = {
+  private def _initialize() =
     try {
       // todo. if this crashes, REPL will hang
       new _compiler.Run() compileSources _initSources
       _initializeComplete = true
       true
     } catch AbstractOrMissingHandler()
-  }
   private def tquoted(s: String) = "\"\"\"" + s + "\"\"\""
 
   // argument is a thunk to execute after init is done
@@ -241,12 +240,11 @@ class SparkIMain(
     * @note Must be executed before using SparkIMain!
     */
   @DeveloperApi
-  def initializeSynchronous(): Unit = {
+  def initializeSynchronous(): Unit =
     if (!isInitializeComplete) {
       _initialize()
       assert(global != null, global)
     }
-  }
   private def isInitializeComplete = _initializeComplete
 
   /** the public, go through the future compiler */
@@ -517,7 +515,7 @@ class SparkIMain(
       *  class name if the original attempt fails.  This method is used by
       *  getResourceAsStream as well as findClass.
       */
-    override protected def findAbstractFile(name: String): AbstractFile = {
+    override protected def findAbstractFile(name: String): AbstractFile =
       super.findAbstractFile(name) match {
         // deadlocks on startup if we try to translate names too early
         case null if isInitializeComplete =>
@@ -525,7 +523,6 @@ class SparkIMain(
         case file =>
           file
       }
-    }
   }
   private def makeClassLoader(): AbstractFileClassLoader =
     new TranslatingClassLoader(parentClassLoader match {
@@ -557,11 +554,10 @@ class SparkIMain(
     * @return Some real name if the simple name exists, else None
     */
   @DeveloperApi
-  def generatedName(simpleName: String): Option[String] = {
+  def generatedName(simpleName: String): Option[String] =
     if (simpleName endsWith nme.MODULE_SUFFIX_STRING)
       optFlatName(simpleName.init) map (_ + nme.MODULE_SUFFIX_STRING)
     else optFlatName(simpleName)
-  }
 
   // NOTE: Exposed to repl package since used by SparkILoop
   private[repl] def flatName(id: String) = optFlatName(id) getOrElse id
@@ -591,10 +587,9 @@ class SparkIMain(
     * @return The full path used to access the specified target (name)
     */
   @DeveloperApi
-  def pathToName(name: Name): String = {
+  def pathToName(name: Name): String =
     if (definedNameMap contains name) definedNameMap(name) fullPath name
     else name.toString
-  }
 
   /** Most recent tree handled which wasn't wholly synthetic. */
   private def mostRecentlyHandledTree: Option[Tree] = {
@@ -613,16 +608,15 @@ class SparkIMain(
   private def handleTypeRedefinition(
       name: TypeName,
       old: Request,
-      req: Request) = {
+      req: Request) =
     for (t1 <- old.simpleNameOfType(name); t2 <- req.simpleNameOfType(name)) {
       logDebug("Redefining type '%s'\n  %s -> %s".format(name, t1, t2))
     }
-  }
 
   private def handleTermRedefinition(
       name: TermName,
       old: Request,
-      req: Request) = {
+      req: Request) =
     for (t1 <- old.compilerTypeOf get name; t2 <- req.compilerTypeOf get name) {
       //    Printing the types here has a tendency to cause assertion errors, like
       //   assertion failed: fatal: <refinement> has owner value x, but a class owner is required
@@ -630,7 +624,6 @@ class SparkIMain(
       // but we don't want to unnecessarily risk hosing the compiler's internal state.)
       logDebug("Redefining term '%s'\n  %s -> %s".format(name, t1, t2))
     }
-  }
 
   private def recordRequest(req: Request) {
     if (req == null || referencedNameMap == null) return
@@ -672,7 +665,7 @@ class SparkIMain(
     if (!settings.nowarnings.value) printMessage(msg)
   }
 
-  private def isParseable(line: String): Boolean = {
+  private def isParseable(line: String): Boolean =
     beSilentDuring {
       try parse(line) match {
         case Some(xs) => xs.nonEmpty // parses as-is
@@ -683,7 +676,6 @@ class SparkIMain(
           false
       }
     }
-  }
 
   private def compileSourcesKeepingRun(sources: SourceFile*) = {
     val run = new Run()
@@ -1138,14 +1130,13 @@ class SparkIMain(
         "Failed to load '" + path + "': " + ex.getMessage,
         ex)
 
-    private def load(path: String): Class[_] = {
+    private def load(path: String): Class[_] =
       // scalastyle:off classforname
       try Class.forName(path, true, classLoader)
       catch {
         case ex: Throwable => evalError(path, unwrap(ex))
       }
-      // scalastyle:on classforname
-    }
+    // scalastyle:on classforname
 
     lazy val evalClass = load(evalPath)
     lazy val evalValue = callEither(resultName) match {
@@ -1258,10 +1249,9 @@ class SparkIMain(
       importsCode(referencedNames.toSet, definedClasses)
 
     /** Code to access a variable with the specified name */
-    def fullPath(vname: String) = {
+    def fullPath(vname: String) =
       // lineRep.readPath + accessPath + ".`%s`".format(vname)
       lineRep.readPath + ".INSTANCE" + accessPath + ".`%s`".format(vname)
-    }
 
     /** Same as fullpath, but after it has been flattened, so:
       *  $line5.$iw.$iw.$iw.Bippy      // fullPath
@@ -1284,7 +1274,7 @@ class SparkIMain(
     /** generate the source code for the object that computes this request */
     private object ObjectSourceCode extends CodeAssembler[MemberHandler] {
       def path = pathToTerm("$intp")
-      def envLines = {
+      def envLines =
         if (!isReplPower) Nil // power mode only for now
         // $intp is not bound; punt, but include the line.
         else if (path == "$intp")
@@ -1299,7 +1289,6 @@ class SparkIMain(
             "def $trees = if ($req eq null) Nil else $req.trees"
               .format(lineRep.readName, path, reqId)
           )
-      }
 
       val preamble = s"""
         |class ${lineRep.readName} extends Serializable {
@@ -1431,13 +1420,12 @@ class SparkIMain(
       mapFrom[Name, Name, Type](termNames)(x => applyToResultMember(x, _.tpe))
 
     /** load and run the code using reflection */
-    def loadAndRun: (String, Boolean) = {
+    def loadAndRun: (String, Boolean) =
       try {
         ("" + (lineRep call sessionNames.print), true)
       } catch {
         case ex: Throwable => (lineRep.bindError(ex), false)
       }
-    }
 
     override def toString =
       "Request(line=%s, %s trees)".format(line, trees.size)
@@ -1566,14 +1554,13 @@ class SparkIMain(
     *         provided term name if it exists, else None
     */
   @DeveloperApi
-  def runtimeClassAndTypeOfTerm(id: String): Option[(JClass, Type)] = {
+  def runtimeClassAndTypeOfTerm(id: String): Option[(JClass, Type)] =
     classOfTerm(id) flatMap { clazz =>
       new RichClass(clazz).supers find
         (c => !(new RichClass(c).isScalaAnonymous)) map { nonAnon =>
         (nonAnon, runtimeTypeOfTerm(id))
       }
     }
-  }
 
   /**
     * Retrieves the runtime type representing the id (variable name,
@@ -1585,7 +1572,7 @@ class SparkIMain(
     * @return The runtime Type information about the term name (id) provided
     */
   @DeveloperApi
-  def runtimeTypeOfTerm(id: String): Type = {
+  def runtimeTypeOfTerm(id: String): Type =
     typeOfTerm(id) andAlso { tpe =>
       val clazz = classOfTerm(id) getOrElse { return NoType }
       val staticSym = tpe.typeSymbol
@@ -1595,7 +1582,6 @@ class SparkIMain(
           (runtimeSym isSubClass staticSym)) runtimeSym.info
       else NoType
     }
-  }
 
   private def cleanMemberDecl(owner: Symbol, member: Name): Type = afterTyper {
     normalizeNonPublic {
@@ -1790,13 +1776,12 @@ class SparkIMain(
   }
 
   // NOTE: Exposed to repl package since used by SparkILoop
-  private[repl] def symbolDefString(sym: Symbol) = {
+  private[repl] def symbolDefString(sym: Symbol) =
     TypeStrings.quieter(
       afterTyper(sym.defString),
       sym.owner.name + ".this.",
       sym.owner.fullName + "."
     )
-  }
 
   private def showCodeIfDebugging(code: String) {
 
@@ -1860,12 +1845,11 @@ object SparkIMain {
   trait TruncatingWriter {
     def maxStringLength: Int
     def isTruncating: Boolean
-    def truncate(str: String): String = {
+    def truncate(str: String): String =
       if (isTruncating &&
           (maxStringLength != 0 && str.length > maxStringLength))
         (str take maxStringLength - 3) + "..."
       else str
-    }
   }
   abstract class StrippingTruncatingWriter(out: JPrintWriter)
       extends JPrintWriter(out)

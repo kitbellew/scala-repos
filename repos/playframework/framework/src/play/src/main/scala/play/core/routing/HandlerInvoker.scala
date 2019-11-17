@@ -109,7 +109,7 @@ object HandlerInvokerFactory {
         }
     }
 
-  private def loadJavaControllerClass(handlerDef: HandlerDef): Class[_] = {
+  private def loadJavaControllerClass(handlerDef: HandlerDef): Class[_] =
     try {
       handlerDef.classLoader.loadClass(handlerDef.controller)
     } catch {
@@ -126,7 +126,6 @@ object HandlerInvokerFactory {
           }
         } else throw e
     }
-  }
 
   /**
     * Create a `HandlerInvokerFactory` for a Java action. Caches the

@@ -44,9 +44,8 @@ case class CurrentDate() extends LeafExpression with CodegenFallback {
 
   override def dataType: DataType = DateType
 
-  override def eval(input: InternalRow): Any = {
+  override def eval(input: InternalRow): Any =
     DateTimeUtils.millisToDays(System.currentTimeMillis())
-  }
 
   override def prettyName: String = "current_date"
 }
@@ -63,9 +62,8 @@ case class CurrentTimestamp() extends LeafExpression with CodegenFallback {
 
   override def dataType: DataType = TimestampType
 
-  override def eval(input: InternalRow): Any = {
+  override def eval(input: InternalRow): Any =
     System.currentTimeMillis() * 1000L
-  }
 
   override def prettyName: String = "current_timestamp"
 }
@@ -84,15 +82,13 @@ case class DateAdd(startDate: Expression, days: Expression)
 
   override def dataType: DataType = DateType
 
-  override def nullSafeEval(start: Any, d: Any): Any = {
+  override def nullSafeEval(start: Any, d: Any): Any =
     start.asInstanceOf[Int] + d.asInstanceOf[Int]
-  }
 
-  override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
+  override def genCode(ctx: CodegenContext, ev: ExprCode): String =
     nullSafeCodeGen(ctx, ev, (sd, d) => {
       s"""${ev.value} = $sd + $d;"""
     })
-  }
 
   override def prettyName: String = "date_add"
 }
@@ -110,15 +106,13 @@ case class DateSub(startDate: Expression, days: Expression)
 
   override def dataType: DataType = DateType
 
-  override def nullSafeEval(start: Any, d: Any): Any = {
+  override def nullSafeEval(start: Any, d: Any): Any =
     start.asInstanceOf[Int] - d.asInstanceOf[Int]
-  }
 
-  override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
+  override def genCode(ctx: CodegenContext, ev: ExprCode): String =
     nullSafeCodeGen(ctx, ev, (sd, d) => {
       s"""${ev.value} = $sd - $d;"""
     })
-  }
 
   override def prettyName: String = "date_sub"
 }
@@ -131,9 +125,8 @@ case class Hour(child: Expression)
 
   override def dataType: DataType = IntegerType
 
-  override protected def nullSafeEval(timestamp: Any): Any = {
+  override protected def nullSafeEval(timestamp: Any): Any =
     DateTimeUtils.getHours(timestamp.asInstanceOf[Long])
-  }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val dtu = DateTimeUtils.getClass.getName.stripSuffix("$")
@@ -149,9 +142,8 @@ case class Minute(child: Expression)
 
   override def dataType: DataType = IntegerType
 
-  override protected def nullSafeEval(timestamp: Any): Any = {
+  override protected def nullSafeEval(timestamp: Any): Any =
     DateTimeUtils.getMinutes(timestamp.asInstanceOf[Long])
-  }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val dtu = DateTimeUtils.getClass.getName.stripSuffix("$")
@@ -167,9 +159,8 @@ case class Second(child: Expression)
 
   override def dataType: DataType = IntegerType
 
-  override protected def nullSafeEval(timestamp: Any): Any = {
+  override protected def nullSafeEval(timestamp: Any): Any =
     DateTimeUtils.getSeconds(timestamp.asInstanceOf[Long])
-  }
 
   override protected def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val dtu = DateTimeUtils.getClass.getName.stripSuffix("$")
@@ -185,9 +176,8 @@ case class DayOfYear(child: Expression)
 
   override def dataType: DataType = IntegerType
 
-  override protected def nullSafeEval(date: Any): Any = {
+  override protected def nullSafeEval(date: Any): Any =
     DateTimeUtils.getDayInYear(date.asInstanceOf[Int])
-  }
 
   override protected def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val dtu = DateTimeUtils.getClass.getName.stripSuffix("$")
@@ -203,9 +193,8 @@ case class Year(child: Expression)
 
   override def dataType: DataType = IntegerType
 
-  override protected def nullSafeEval(date: Any): Any = {
+  override protected def nullSafeEval(date: Any): Any =
     DateTimeUtils.getYear(date.asInstanceOf[Int])
-  }
 
   override protected def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val dtu = DateTimeUtils.getClass.getName.stripSuffix("$")
@@ -221,9 +210,8 @@ case class Quarter(child: Expression)
 
   override def dataType: DataType = IntegerType
 
-  override protected def nullSafeEval(date: Any): Any = {
+  override protected def nullSafeEval(date: Any): Any =
     DateTimeUtils.getQuarter(date.asInstanceOf[Int])
-  }
 
   override protected def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val dtu = DateTimeUtils.getClass.getName.stripSuffix("$")
@@ -239,9 +227,8 @@ case class Month(child: Expression)
 
   override def dataType: DataType = IntegerType
 
-  override protected def nullSafeEval(date: Any): Any = {
+  override protected def nullSafeEval(date: Any): Any =
     DateTimeUtils.getMonth(date.asInstanceOf[Int])
-  }
 
   override protected def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val dtu = DateTimeUtils.getClass.getName.stripSuffix("$")
@@ -257,9 +244,8 @@ case class DayOfMonth(child: Expression)
 
   override def dataType: DataType = IntegerType
 
-  override protected def nullSafeEval(date: Any): Any = {
+  override protected def nullSafeEval(date: Any): Any =
     DateTimeUtils.getDayOfMonth(date.asInstanceOf[Int])
-  }
 
   override protected def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val dtu = DateTimeUtils.getClass.getName.stripSuffix("$")
@@ -287,7 +273,7 @@ case class WeekOfYear(child: Expression)
     c.get(Calendar.WEEK_OF_YEAR)
   }
 
-  override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
+  override def genCode(ctx: CodegenContext, ev: ExprCode): String =
     nullSafeCodeGen(
       ctx,
       ev,
@@ -309,7 +295,6 @@ case class WeekOfYear(child: Expression)
       """
       }
     )
-  }
 }
 
 case class DateFormatClass(left: Expression, right: Expression)
@@ -425,7 +410,7 @@ abstract class UnixTime extends BinaryExpression with ExpectsInputTypes {
     }
   }
 
-  override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
+  override def genCode(ctx: CodegenContext, ev: ExprCode): String =
     left.dataType match {
       case StringType if right.foldable =>
         val sdf = classOf[SimpleDateFormat].getName
@@ -491,7 +476,6 @@ abstract class UnixTime extends BinaryExpression with ExpectsInputTypes {
           }
         """
     }
-  }
 
   override def prettyName: String = "unix_time"
 }
@@ -606,9 +590,8 @@ case class LastDay(startDate: Expression)
 
   override def dataType: DataType = DateType
 
-  override def nullSafeEval(date: Any): Any = {
+  override def nullSafeEval(date: Any): Any =
     DateTimeUtils.getLastDayOfMonth(date.asInstanceOf[Int])
-  }
 
   override protected def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val dtu = DateTimeUtils.getClass.getName.stripSuffix("$")
@@ -648,7 +631,7 @@ case class NextDay(startDate: Expression, dayOfWeek: Expression)
     }
   }
 
-  override protected def genCode(ctx: CodegenContext, ev: ExprCode): String = {
+  override protected def genCode(ctx: CodegenContext, ev: ExprCode): String =
     nullSafeCodeGen(
       ctx,
       ev,
@@ -682,7 +665,6 @@ case class NextDay(startDate: Expression, dayOfWeek: Expression)
         }
       }
     )
-  }
 
   override def prettyName: String = "next_day"
 }
@@ -731,11 +713,10 @@ case class FromUTCTimestamp(left: Expression, right: Expression)
   override def dataType: DataType = TimestampType
   override def prettyName: String = "from_utc_timestamp"
 
-  override def nullSafeEval(time: Any, timezone: Any): Any = {
+  override def nullSafeEval(time: Any, timezone: Any): Any =
     DateTimeUtils.fromUTCTime(
       time.asInstanceOf[Long],
       timezone.asInstanceOf[UTF8String].toString)
-  }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val dtu = DateTimeUtils.getClass.getName.stripSuffix("$")
@@ -818,11 +799,10 @@ case class AddMonths(startDate: Expression, numMonths: Expression)
 
   override def dataType: DataType = DateType
 
-  override def nullSafeEval(start: Any, months: Any): Any = {
+  override def nullSafeEval(start: Any, months: Any): Any =
     DateTimeUtils.dateAddMonths(
       start.asInstanceOf[Int],
       months.asInstanceOf[Int])
-  }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val dtu = DateTimeUtils.getClass.getName.stripSuffix("$")
@@ -849,9 +829,8 @@ case class MonthsBetween(date1: Expression, date2: Expression)
 
   override def dataType: DataType = DoubleType
 
-  override def nullSafeEval(t1: Any, t2: Any): Any = {
+  override def nullSafeEval(t1: Any, t2: Any): Any =
     DateTimeUtils.monthsBetween(t1.asInstanceOf[Long], t2.asInstanceOf[Long])
-  }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val dtu = DateTimeUtils.getClass.getName.stripSuffix("$")
@@ -875,11 +854,10 @@ case class ToUTCTimestamp(left: Expression, right: Expression)
   override def dataType: DataType = TimestampType
   override def prettyName: String = "to_utc_timestamp"
 
-  override def nullSafeEval(time: Any, timezone: Any): Any = {
+  override def nullSafeEval(time: Any, timezone: Any): Any =
     DateTimeUtils.toUTCTime(
       time.asInstanceOf[Long],
       timezone.asInstanceOf[UTF8String].toString)
-  }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val dtu = DateTimeUtils.getClass.getName.stripSuffix("$")
@@ -931,9 +909,8 @@ case class ToDate(child: Expression)
 
   override def eval(input: InternalRow): Any = child.eval(input)
 
-  override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
+  override def genCode(ctx: CodegenContext, ev: ExprCode): String =
     defineCodeGen(ctx, ev, d => d)
-  }
 
   override def prettyName: String = "to_date"
 }
@@ -1027,11 +1004,9 @@ case class DateDiff(endDate: Expression, startDate: Expression)
   override def inputTypes: Seq[AbstractDataType] = Seq(DateType, DateType)
   override def dataType: DataType = IntegerType
 
-  override def nullSafeEval(end: Any, start: Any): Any = {
+  override def nullSafeEval(end: Any, start: Any): Any =
     end.asInstanceOf[Int] - start.asInstanceOf[Int]
-  }
 
-  override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
+  override def genCode(ctx: CodegenContext, ev: ExprCode): String =
     defineCodeGen(ctx, ev, (end, start) => s"$end - $start")
-  }
 }

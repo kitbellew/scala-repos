@@ -91,7 +91,7 @@ class ScalaFindUsagesHandler(
   }
 
   override def getFindUsagesOptions(
-      dataContext: DataContext): FindUsagesOptions = {
+      dataContext: DataContext): FindUsagesOptions =
     element match {
       case t: ScTypeDefinition => factory.typeDefinitionOptions
       case ScalaPsiUtil.inNameContext(m: ScMember) if !m.isLocal =>
@@ -101,9 +101,8 @@ class ScalaFindUsagesHandler(
         factory.localOptions
       case _ => super.getFindUsagesOptions(dataContext)
     }
-  }
 
-  override def getSecondaryElements: Array[PsiElement] = {
+  override def getSecondaryElements: Array[PsiElement] =
     element match {
       case t: ScObject =>
         t.fakeCompanionClass match {
@@ -139,12 +138,11 @@ class ScalaFindUsagesHandler(
         }
       case _ => Array.empty
     }
-  }
 
   override def getFindUsagesDialog(
       isSingleFile: Boolean,
       toShowInNewTab: Boolean,
-      mustOpenInNewTab: Boolean): AbstractFindUsagesDialog = {
+      mustOpenInNewTab: Boolean): AbstractFindUsagesDialog =
     element match {
       case t: ScTypeDefinition =>
         new ScalaTypeDefinitionUsagesDialog(
@@ -161,17 +159,15 @@ class ScalaFindUsagesHandler(
           toShowInNewTab,
           mustOpenInNewTab)
     }
-  }
 
   override def processUsagesInText(
       element: PsiElement,
       processor: Processor[UsageInfo],
       searchScope: GlobalSearchScope): Boolean = {
     val nonScalaTextProcessor = new Processor[UsageInfo] {
-      override def process(t: UsageInfo): Boolean = {
+      override def process(t: UsageInfo): Boolean =
         if (t.getFile.getFileType == ScalaFileType.SCALA_FILE_TYPE) true
         else processor.process(t)
-      }
     }
     super.processUsagesInText(element, nonScalaTextProcessor, searchScope)
   }

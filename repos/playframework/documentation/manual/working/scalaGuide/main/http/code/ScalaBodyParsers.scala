@@ -172,23 +172,21 @@ package scalaguide.http.scalabodyparsers {
     def testAction[A: Writeable](
         action: EssentialAction,
         request: => FakeRequest[A],
-        expectedResponse: Int = OK) = {
+        expectedResponse: Int = OK) =
       assertAction(action, request, expectedResponse) { result =>
         success
       }
-    }
 
     def assertAction[A: Writeable, T: AsResult](
         action: EssentialAction,
         request: => FakeRequest[A],
-        expectedResponse: Int = OK)(assertions: Future[Result] => T) = {
+        expectedResponse: Int = OK)(assertions: Future[Result] => T) =
       running() { app =>
         implicit val mat = ActorMaterializer()(app.actorSystem)
         val result = call(action, request)
         status(result) must_== expectedResponse
         assertions(result)
       }
-    }
   }
 
   package scalaguide.http.scalabodyparsers.full {

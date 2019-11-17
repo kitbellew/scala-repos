@@ -37,15 +37,13 @@ object SymbolRequirement {
 
     def instantiateClass(
         className: String,
-        constructor: String): SymbolRequirement = {
+        constructor: String): SymbolRequirement =
       InstantiateClass(origin, className, constructor)
-    }
 
     def instantiateClass(
         className: String,
-        constructors: Traversable[String]): SymbolRequirement = {
+        constructors: Traversable[String]): SymbolRequirement =
       multipleInternal(constructors.toList.map(instantiateClass(className, _)))
-    }
 
     def instanceTests(className: String): SymbolRequirement =
       InstanceTests(origin, className)
@@ -58,9 +56,8 @@ object SymbolRequirement {
 
     def callMethods(
         className: String,
-        methodNames: Traversable[String]): SymbolRequirement = {
+        methodNames: Traversable[String]): SymbolRequirement =
       multipleInternal(methodNames.toList.map(callMethod(className, _)))
-    }
 
     def callMethodStatically(
         className: String,
@@ -72,13 +69,12 @@ object SymbolRequirement {
         methodName: String): SymbolRequirement =
       CallStaticMethod(origin, className, methodName)
 
-    def optional(requirement: SymbolRequirement): SymbolRequirement = {
+    def optional(requirement: SymbolRequirement): SymbolRequirement =
       requirement match {
         case NoRequirement      => NoRequirement
         case optional: Optional => optional
         case _                  => requirement
       }
-    }
 
     def multiple(requirements: SymbolRequirement*): SymbolRequirement =
       multipleInternal(requirements.toList)

@@ -17,12 +17,11 @@ object Test {
   }
 
   val bar = 3
-  def testSuccess2(x: Any) = {
+  def testSuccess2(x: Any) =
     x match {
       case Some(`bar`) =>
       case _           =>
     }
-  }
 
   def testFail1(x: Any) = {
     var syncID = 0
@@ -33,10 +32,9 @@ object Test {
   }
 
   var foo = 0
-  def testFail2(x: Any) = {
+  def testFail2(x: Any) =
     x match {
       case Some(`foo`) =>
       case _           =>
     }
-  }
 }

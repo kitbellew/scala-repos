@@ -36,7 +36,7 @@ class ScalaFindUsagesHandlerFactory(project: Project)
 
   val localOptions = new ScalaLocalFindUsagesOptions(project)
 
-  override def canFindUsages(element: PsiElement): Boolean = {
+  override def canFindUsages(element: PsiElement): Boolean =
     element match {
       case _: FakePsiMethod                   => true
       case _: ScTypedDefinition               => true
@@ -49,7 +49,6 @@ class ScalaFindUsagesHandlerFactory(project: Project)
       case _: StaticPsiTypedDefinitionWrapper => true
       case _                                  => false
     }
-  }
 
   override def createFindUsagesHandler(
       element: PsiElement,
@@ -97,7 +96,7 @@ class ScalaFindUsagesHandlerFactory(project: Project)
     new ScalaFindUsagesHandler(replacedElement, this)
   }
 
-  private def needToAsk(named: PsiNamedElement): Boolean = {
+  private def needToAsk(named: PsiNamedElement): Boolean =
     named match {
       case fun: ScFunction
           if fun.containingClass.qualifiedName.startsWith("scala.Function") &&
@@ -105,13 +104,11 @@ class ScalaFindUsagesHandlerFactory(project: Project)
         false
       case _ => true
     }
-  }
 }
 
 object ScalaFindUsagesHandlerFactory {
-  def getInstance(project: Project): ScalaFindUsagesHandlerFactory = {
+  def getInstance(project: Project): ScalaFindUsagesHandlerFactory =
     ContainerUtil.findInstance(
       Extensions.getExtensions(FindUsagesHandlerFactory.EP_NAME, project),
       classOf[ScalaFindUsagesHandlerFactory])
-  }
 }

@@ -92,7 +92,7 @@ object PreferredReplicaLeaderElectionCommand extends Logging {
   }
 
   def parsePreferredReplicaElectionData(
-      jsonString: String): immutable.Set[TopicAndPartition] = {
+      jsonString: String): immutable.Set[TopicAndPartition] =
     Json.parseFull(jsonString) match {
       case Some(m) =>
         m.asInstanceOf[Map[String, Any]].get("partitions") match {
@@ -119,7 +119,6 @@ object PreferredReplicaLeaderElectionCommand extends Logging {
         throw new AdminOperationException(
           "Preferred replica election data is empty")
     }
-  }
 
   def writePreferredReplicaElectionData(
       zkUtils: ZkUtils,
@@ -151,7 +150,7 @@ class PreferredReplicaLeaderElectionCommand(
     zkUtils: ZkUtils,
     partitions: scala.collection.Set[TopicAndPartition])
     extends Logging {
-  def moveLeaderToPreferredReplica() = {
+  def moveLeaderToPreferredReplica() =
     try {
       val validPartitions =
         partitions.filter(p => validatePartition(zkUtils, p.topic, p.partition))
@@ -162,7 +161,6 @@ class PreferredReplicaLeaderElectionCommand(
       case e: Throwable =>
         throw new AdminCommandFailedException("Admin command failed", e)
     }
-  }
 
   def validatePartition(
       zkUtils: ZkUtils,

@@ -73,9 +73,8 @@ class DefaultRefUnpicklingRegistry(maxRefs: Int = 655536)
       i += 1
     }
   }
-  override def regsiterUnpicklee(oid: Int, value: Any): Unit = {
+  override def regsiterUnpicklee(oid: Int, value: Any): Unit =
     refs(oid) = value
-  }
   override def lookupUnpicklee(oid: Int): Any = {
     if (oid >= idx)
       throw PicklingException(

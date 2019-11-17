@@ -25,12 +25,11 @@ object Test2 {
 
 object Test3 {
   val X, O = true
-  def classify(neighbourhood: (Boolean, Boolean, Boolean)): String = {
+  def classify(neighbourhood: (Boolean, Boolean, Boolean)): String =
     neighbourhood match {
       case (X, X, X) => "middle"
       case (X, X, O) => "right"
       case (O, X, X) => "left"
       case _         => throw new IllegalArgumentException("Invalid")
     }
-  }
 }

@@ -156,10 +156,9 @@ class DeploymentActorTest
 
     when(scheduler.startApp(driver, app3))
       .thenAnswer(new Answer[Future[Unit]] {
-        def answer(invocation: InvocationOnMock): Future[Unit] = {
+        def answer(invocation: InvocationOnMock): Future[Unit] =
           // system.eventStream.publish(MesosStatusUpdateEvent("", "task3_1", "TASK_RUNNING", "", app3.id, "", "", Nil, app3.version.toString))
           Future.successful(())
-        }
       })
 
     when(scheduler.scale(driver, app3)).thenAnswer(new Answer[Future[Unit]] {

@@ -19,15 +19,14 @@ object TestEvaluator {
         engineParams: EngineParams,
         instanceId: String = "",
         params: WorkflowParams = WorkflowParams()
-    ): Seq[Any] = {
+    ): Seq[Any] =
       Seq[Any]()
-    }
 
     def eval(
         sc: SparkContext,
         engineParams: EngineParams,
         params: WorkflowParams)
-        : Seq[(EvalInfo, RDD[(Query, Prediction, Actual)])] = {
+        : Seq[(EvalInfo, RDD[(Query, Prediction, Actual)])] =
       (0 until en).map { ex =>
         {
           val qpas = (0 until qn).map { qx =>
@@ -39,7 +38,6 @@ object TestEvaluator {
           (EvalInfo(id = id, ex = ex), sc.parallelize(qpas))
         }
       }
-    }
   }
 
   /*

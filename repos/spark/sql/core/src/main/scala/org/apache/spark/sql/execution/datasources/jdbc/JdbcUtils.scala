@@ -117,7 +117,7 @@ object JdbcUtils extends Logging {
     * @param dt The datatype (e.g. [[org.apache.spark.sql.types.StringType]])
     * @return The default JdbcType for this DataType
     */
-  def getCommonJDBCType(dt: DataType): Option[JdbcType] = {
+  def getCommonJDBCType(dt: DataType): Option[JdbcType] =
     dt match {
       case IntegerType => Option(JdbcType("INTEGER", java.sql.Types.INTEGER))
       case LongType    => Option(JdbcType("BIGINT", java.sql.Types.BIGINT))
@@ -139,15 +139,13 @@ object JdbcUtils extends Logging {
             java.sql.Types.DECIMAL))
       case _ => None
     }
-  }
 
-  private def getJdbcType(dt: DataType, dialect: JdbcDialect): JdbcType = {
+  private def getJdbcType(dt: DataType, dialect: JdbcDialect): JdbcType =
     dialect
       .getJDBCType(dt)
       .orElse(getCommonJDBCType(dt))
       .getOrElse(throw new IllegalArgumentException(
         s"Can't get JDBC type for ${dt.simpleString}"))
-  }
 
   /**
     * Saves a partition of a DataFrame to the JDBC database.  This is done in

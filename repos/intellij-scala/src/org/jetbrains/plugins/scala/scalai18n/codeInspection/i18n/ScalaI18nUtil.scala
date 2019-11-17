@@ -76,9 +76,8 @@ object ScalaI18nUtil {
     }
   }
 
-  def isFoldingsOn: Boolean = {
+  def isFoldingsOn: Boolean =
     ScalaCodeFoldingSettings.getInstance.isCollapseI18nMessages
-  }
 
   def isI18nProperty(
       @NotNull project: Project,
@@ -108,14 +107,13 @@ object ScalaI18nUtil {
       @NotNull project: Project,
       @NotNull expression: ScLiteral,
       @NotNull annotationAttributeValues: mutable.HashMap[String, AnyRef])
-      : Boolean = {
+      : Boolean =
     isPassedToAnnotatedParam(
       project,
       expression,
       AnnotationUtil.PROPERTY_KEY,
       annotationAttributeValues,
       null)
-  }
 
   def isPassedToAnnotatedParam(
       @NotNull project: Project,
@@ -282,7 +280,7 @@ object ScalaI18nUtil {
   def isPropertyRef(
       expression: ScLiteral,
       key: String,
-      resourceBundleName: String): Boolean = {
+      resourceBundleName: String): Boolean =
     if (resourceBundleName == null) {
       !PropertiesImplUtil
         .findPropertiesByKey(expression.getProject, key)
@@ -298,7 +296,6 @@ object ScalaI18nUtil {
       }
       containedInPropertiesFile
     }
-  }
 
   @NotNull
   def propertiesFilesByBundleName(
@@ -367,9 +364,8 @@ object ScalaI18nUtil {
     null
   }
 
-  def formatI18nProperty(literal: ScLiteral, property: IProperty): String = {
+  def formatI18nProperty(literal: ScLiteral, property: IProperty): String =
     if (property == null) literal.getText else "\"" + property.getValue + "\""
-  }
 
   private def isValid(property: Property, literal: ScLiteral): Boolean = {
     if (literal == null || property == null || !property.isValid) return false

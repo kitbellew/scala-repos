@@ -110,7 +110,6 @@ object OutputMetrics {
   @deprecated(
     "matching on OutputMetrics will not be supported in the future",
     "2.0.0")
-  def unapply(output: OutputMetrics): Option[DataWriteMethod.Value] = {
+  def unapply(output: OutputMetrics): Option[DataWriteMethod.Value] =
     Some(output.writeMethod)
-  }
 }

@@ -18,9 +18,8 @@ import _root_.scala.collection.mutable._
   */
 class ScalaPackagingStructureViewElement(private val element: ScPackaging)
     extends ScalaStructureViewElement(element, false) {
-  def getPresentation: ItemPresentation = {
+  def getPresentation: ItemPresentation =
     new ScalaPackagingItemPresentation(element);
-  }
 
   def getChildren: Array[TreeElement] = {
     val children = new ArrayBuffer[ScalaStructureViewElement]

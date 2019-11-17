@@ -216,9 +216,8 @@ private[spark] class TaskSchedulerImpl(
   // Label as private[scheduler] to allow tests to swap in different task set managers if necessary
   private[scheduler] def createTaskSetManager(
       taskSet: TaskSet,
-      maxTaskFailures: Int): TaskSetManager = {
+      maxTaskFailures: Int): TaskSetManager =
     new TaskSetManager(this, taskSet, maxTaskFailures)
-  }
 
   override def cancelTasks(stageId: Int, interruptThread: Boolean): Unit =
     synchronized {
@@ -639,14 +638,13 @@ private[spark] class TaskSchedulerImpl(
 
   private[scheduler] def taskSetManagerForAttempt(
       stageId: Int,
-      stageAttemptId: Int): Option[TaskSetManager] = {
+      stageAttemptId: Int): Option[TaskSetManager] =
     for {
       attempts <- taskSetsByStageIdAndAttempt.get(stageId)
       manager <- attempts.get(stageAttemptId)
     } yield {
       manager
     }
-  }
 }
 
 private[spark] object TaskSchedulerImpl {

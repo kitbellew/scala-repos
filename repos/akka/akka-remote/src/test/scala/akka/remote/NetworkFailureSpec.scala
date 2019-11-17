@@ -18,7 +18,7 @@ trait NetworkFailureSpec extends DefaultTimeout { self: AkkaSpec ⇒
   val DelayMillis = "350ms"
   val PortRange = "1024-65535"
 
-  def replyWithTcpResetFor(duration: Duration, dead: AtomicBoolean) = {
+  def replyWithTcpResetFor(duration: Duration, dead: AtomicBoolean) =
     Future {
       try {
         enableTcpReset()
@@ -31,9 +31,8 @@ trait NetworkFailureSpec extends DefaultTimeout { self: AkkaSpec ⇒
           e.printStackTrace
       }
     }
-  }
 
-  def throttleNetworkFor(duration: Duration, dead: AtomicBoolean) = {
+  def throttleNetworkFor(duration: Duration, dead: AtomicBoolean) =
     Future {
       try {
         enableNetworkThrottling()
@@ -48,9 +47,8 @@ trait NetworkFailureSpec extends DefaultTimeout { self: AkkaSpec ⇒
           e.printStackTrace
       }
     }
-  }
 
-  def dropNetworkFor(duration: Duration, dead: AtomicBoolean) = {
+  def dropNetworkFor(duration: Duration, dead: AtomicBoolean) =
     Future {
       try {
         enableNetworkDrop()
@@ -63,7 +61,6 @@ trait NetworkFailureSpec extends DefaultTimeout { self: AkkaSpec ⇒
           e.printStackTrace
       }
     }
-  }
 
   def sleepFor(duration: Duration) = {
     println("===>>> Sleeping for [" + duration + "]")

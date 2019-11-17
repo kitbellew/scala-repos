@@ -36,9 +36,8 @@ private[hive] object ReflectionUtils {
     field.set(obj, fieldValue)
   }
 
-  def getSuperField[T](obj: AnyRef, fieldName: String): T = {
+  def getSuperField[T](obj: AnyRef, fieldName: String): T =
     getAncestorField[T](obj, 1, fieldName)
-  }
 
   def getAncestorField[T](clazz: Object, level: Int, fieldName: String): T = {
     val ancestor = Iterator
@@ -53,9 +52,8 @@ private[hive] object ReflectionUtils {
   def invokeStatic(
       clazz: Class[_],
       methodName: String,
-      args: (Class[_], AnyRef)*): AnyRef = {
+      args: (Class[_], AnyRef)*): AnyRef =
     invoke(clazz, null, methodName, args: _*)
-  }
 
   def invoke(
       clazz: Class[_],

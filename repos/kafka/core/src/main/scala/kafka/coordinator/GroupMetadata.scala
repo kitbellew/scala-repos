@@ -202,16 +202,14 @@ private[coordinator] class GroupMetadata(
     votes.maxBy(_._2)._1
   }
 
-  private def candidateProtocols = {
+  private def candidateProtocols =
     // get the set of protocols that are commonly supported by all members
     allMemberMetadata
       .map(_.protocols)
       .reduceLeft((commonProtocols, protocols) => commonProtocols & protocols)
-  }
 
-  def supportsProtocols(memberProtocols: Set[String]) = {
+  def supportsProtocols(memberProtocols: Set[String]) =
     isEmpty || (memberProtocols & candidateProtocols).nonEmpty
-  }
 
   def initNextGeneration() = {
     assert(notYetRejoinedMembers == List.empty[MemberMetadata])
@@ -230,7 +228,7 @@ private[coordinator] class GroupMetadata(
     }.toMap
   }
 
-  def summary: GroupSummary = {
+  def summary: GroupSummary =
     if (is(Stable)) {
       val members = this.members.values.map { member =>
         member.summary(protocol)
@@ -246,11 +244,9 @@ private[coordinator] class GroupMetadata(
         GroupCoordinator.NoProtocol,
         members)
     }
-  }
 
-  def overview: GroupOverview = {
+  def overview: GroupOverview =
     GroupOverview(groupId, protocolType)
-  }
 
   private def assertValidTransition(targetState: GroupState) {
     if (!GroupMetadata.validPreviousStates(targetState).contains(state))
@@ -263,11 +259,10 @@ private[coordinator] class GroupMetadata(
             state))
   }
 
-  override def toString = {
+  override def toString =
     "[%s,%s,%s,%s]".format(
       groupId,
       protocolType,
       currentState.toString,
       members)
-  }
 }

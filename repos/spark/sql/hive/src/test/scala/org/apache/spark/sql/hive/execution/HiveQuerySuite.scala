@@ -119,11 +119,10 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
 
   test(
     "SPARK-10484 Optimize the Cartesian (Cross) Join with broadcast based JOIN") {
-    def assertBroadcastNestedLoopJoin(sqlText: String): Unit = {
+    def assertBroadcastNestedLoopJoin(sqlText: String): Unit =
       assert(sql(sqlText).queryExecution.sparkPlan.collect {
         case _: BroadcastNestedLoopJoin => 1
       }.nonEmpty)
-    }
 
     assertBroadcastNestedLoopJoin(spark_10484_1)
     assertBroadcastNestedLoopJoin(spark_10484_2)

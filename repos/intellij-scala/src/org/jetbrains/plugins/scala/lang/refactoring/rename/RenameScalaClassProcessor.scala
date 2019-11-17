@@ -29,19 +29,17 @@ import scala.annotation.tailrec
 class RenameScalaClassProcessor
     extends RenameJavaClassProcessor
     with ScalaRenameProcessor {
-  override def canProcessElement(element: PsiElement): Boolean = {
+  override def canProcessElement(element: PsiElement): Boolean =
     element.isInstanceOf[ScTypeDefinition] ||
-    element.isInstanceOf[PsiClassWrapper] || element.isInstanceOf[ScTypeParam]
-  }
+      element.isInstanceOf[PsiClassWrapper] || element.isInstanceOf[ScTypeParam]
 
   override def substituteElementToRename(
       element: PsiElement,
-      editor: Editor): PsiElement = {
+      editor: Editor): PsiElement =
     element match {
       case wrapper: PsiClassWrapper => wrapper.definition
       case _                        => element
     }
-  }
 
   override def findReferences(element: PsiElement) =
     ScalaRenameUtil.replaceImportClassReferences(
@@ -62,13 +60,12 @@ class RenameScalaClassProcessor
           case _ =>
         }
         @tailrec
-        def isTop(element: PsiElement): Boolean = {
+        def isTop(element: PsiElement): Boolean =
           element match {
             case null                     => true
             case td: ScTemplateDefinition => false
             case _                        => isTop(element.getContext)
           }
-        }
         val file = td.getContainingFile
         if (file != null && isTop(element.getContext) &&
             file.name == td.name + ".scala") {
@@ -115,7 +112,7 @@ class RenameScalaClassProcessor
   }
 
   override def getElementToSearchInStringsAndComments(
-      element: PsiElement): PsiElement = {
+      element: PsiElement): PsiElement =
     element match {
       case o: ScObject => o.fakeCompanionClassOrCompanionClass
       case wrapper: PsiClassWrapper =>
@@ -125,7 +122,6 @@ class RenameScalaClassProcessor
         }
       case _ => element
     }
-  }
 
   override def createRenameDialog(
       project: Project,

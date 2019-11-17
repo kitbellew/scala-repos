@@ -72,22 +72,20 @@ trait ManagedExecution
     * Returns an `Execution` whose execution returns a `JobId` rather
     * than a `StreamT[Future, Slice]`.
     */
-  def asynchronous: AsyncExecution[Future] = {
+  def asynchronous: AsyncExecution[Future] =
     new AsyncExecution[Future] {
       def executorFor(apiKey: APIKey) = self.asyncExecutorFor(apiKey)
     }
-  }
 
   /**
     * Returns a `Execution` whose execution returns both the
     * streaming results and its `JobId`. Note that the reults will not be saved
     * to job.
     */
-  def synchronous: SyncExecution[Future] = {
+  def synchronous: SyncExecution[Future] =
     new SyncExecution[Future] {
       def executorFor(apiKey: APIKey) = self.syncExecutorFor(apiKey)
     }
-  }
 
   def errorReport[A](
       implicit shardQueryMonad: JobQueryTFMonad,
@@ -136,9 +134,8 @@ trait ManagedExecution
         def execute(
             query: String,
             context: EvaluationContext,
-            opts: QueryOptions) = {
+            opts: QueryOptions) =
           queryExec.execute(query, context, opts) map { _._2 }
-        }
       }
     }
   }
@@ -193,11 +190,10 @@ trait ManagedExecution
         outputType: MimeType)(implicit M: JobQueryTFMonad): EitherT[
       Future,
       EvaluationError,
-      (Option[JobId], StreamT[Future, Slice])] = {
+      (Option[JobId], StreamT[Future, Slice])] =
       result map { stream =>
         M.jobId -> completeJob(stream)
       }
-    }
   }
 
   trait AsyncQueryExecutor extends ManagedQueryExecutor[JobId] {
@@ -223,8 +219,8 @@ trait ManagedExecution
 
     def complete(
         resultE: EitherT[Future, EvaluationError, StreamT[JobQueryTF, Slice]],
-        outputType: MimeType)(implicit M: JobQueryTFMonad)
-        : EitherT[Future, EvaluationError, JobId] = {
+        outputType: MimeType)(
+        implicit M: JobQueryTFMonad): EitherT[Future, EvaluationError, JobId] =
       M.jobId map { jobId =>
         resultE map { result =>
           val derefed = result.map(_.deref(TransSpecModule.paths.Value))
@@ -252,6 +248,5 @@ trait ManagedExecution
           Future(InvalidStateError(
             "Jobs service is down; cannot execute asynchronous queries.")))
       }
-    }
   }
 }

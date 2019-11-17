@@ -92,8 +92,7 @@ trait Chunker {
     }
   }
 
-  def read(
-      channel: ReadableByteChannel): Validation[IOException, ByteBuffer] = {
+  def read(channel: ReadableByteChannel): Validation[IOException, ByteBuffer] =
     try {
       val chunk = allocate(ChunkSize)
       while (chunk.remaining() > 0) {
@@ -117,5 +116,4 @@ trait Chunker {
       case ioe: IOException =>
         Failure(ioe)
     }
-  }
 }

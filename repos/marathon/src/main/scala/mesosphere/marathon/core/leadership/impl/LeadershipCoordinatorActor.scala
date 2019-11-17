@@ -14,9 +14,8 @@ import mesosphere.marathon.core.leadership.PreparationMessages
 import mesosphere.marathon.core.leadership.impl.WhenLeaderActor.{Stopped, Stop}
 
 private[leadership] object LeadershipCoordinatorActor {
-  def props(whenLeaderActors: Set[ActorRef]): Props = {
+  def props(whenLeaderActors: Set[ActorRef]): Props =
     Props(new LeadershipCoordinatorActor(whenLeaderActors))
-  }
 }
 
 private class LeadershipCoordinatorActor(var whenLeaderActors: Set[ActorRef])
@@ -52,7 +51,7 @@ private class LeadershipCoordinatorActor(var whenLeaderActors: Set[ActorRef])
 
   private[impl] def preparingForStart(
       ackStartRefs: Set[ActorRef],
-      whenLeaderActorsWithoutAck: Set[ActorRef]): Receive = {
+      whenLeaderActorsWithoutAck: Set[ActorRef]): Receive =
     if (whenLeaderActorsWithoutAck.isEmpty) {
       ackStartRefs.foreach { ackStartRef =>
         ackStartRef ! PreparationMessages.Prepared(self)
@@ -90,7 +89,6 @@ private class LeadershipCoordinatorActor(var whenLeaderActors: Set[ActorRef])
           context.become(suspended)
       }
     }
-  }
 
   private[impl] def active: Receive = LoggingReceive.withLabel("active") {
     log.info(

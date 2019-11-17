@@ -43,13 +43,12 @@ private[tree] case class NodeIndexUpdater(split: Split, nodeIndex: Int) {
     * @param splits Split information to convert the bin indices to approximate feature values.
     * @return Child node index to update to.
     */
-  def updateNodeIndex(binnedFeature: Int, splits: Array[Split]): Int = {
+  def updateNodeIndex(binnedFeature: Int, splits: Array[Split]): Int =
     if (split.shouldGoLeft(binnedFeature, splits)) {
       LearningNode.leftChildIndex(nodeIndex)
     } else {
       LearningNode.rightChildIndex(nodeIndex)
     }
-  }
 }
 
 /**
@@ -194,9 +193,8 @@ private[spark] object NodeIdCache {
       data: RDD[BaggedPoint[TreePoint]],
       numTrees: Int,
       checkpointInterval: Int,
-      initVal: Int = 1): NodeIdCache = {
+      initVal: Int = 1): NodeIdCache =
     new NodeIdCache(
       data.map(_ => Array.fill[Int](numTrees)(initVal)),
       checkpointInterval)
-  }
 }

@@ -39,7 +39,7 @@ object CSVRelation extends Logging {
       file: RDD[String],
       header: Seq[String],
       firstLine: String,
-      params: CSVOptions): RDD[Array[String]] = {
+      params: CSVOptions): RDD[Array[String]] =
     // If header is set, make sure firstLine is materialized before sending to executors.
     file.mapPartitionsWithIndex({
       case (split, iter) =>
@@ -50,7 +50,6 @@ object CSVRelation extends Logging {
           params,
           headers = header)
     }, true)
-  }
 
   def parseCsv(
       tokenizedRDD: RDD[Array[String]],
@@ -195,7 +194,6 @@ private[sql] class CsvOutputWriter(
     recordWriter.write(NullWritable.get(), text)
   }
 
-  override def close(): Unit = {
+  override def close(): Unit =
     recordWriter.close(context)
-  }
 }

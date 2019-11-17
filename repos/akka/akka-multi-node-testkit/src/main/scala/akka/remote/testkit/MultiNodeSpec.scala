@@ -366,11 +366,10 @@ abstract class MultiNodeSpec(
     * Execute the given block of code only on the given nodes (names according
     * to the `roleMap`).
     */
-  def runOn(nodes: RoleName*)(thunk: ⇒ Unit): Unit = {
+  def runOn(nodes: RoleName*)(thunk: ⇒ Unit): Unit =
     if (isNode(nodes: _*)) {
       thunk
     }
-  }
 
   /**
     * Verify that the running node matches one of the given nodes

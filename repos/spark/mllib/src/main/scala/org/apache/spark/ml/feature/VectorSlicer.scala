@@ -176,18 +176,16 @@ final class VectorSlicer(override val uid: String)
 object VectorSlicer extends DefaultParamsReadable[VectorSlicer] {
 
   /** Return true if given feature indices are valid */
-  private[feature] def validIndices(indices: Array[Int]): Boolean = {
+  private[feature] def validIndices(indices: Array[Int]): Boolean =
     if (indices.isEmpty) {
       true
     } else {
       indices.length == indices.distinct.length && indices.forall(_ >= 0)
     }
-  }
 
   /** Return true if given feature names are valid */
-  private[feature] def validNames(names: Array[String]): Boolean = {
+  private[feature] def validNames(names: Array[String]): Boolean =
     names.forall(_.nonEmpty) && names.length == names.distinct.length
-  }
 
   @Since("1.6.0")
   override def load(path: String): VectorSlicer = super.load(path)

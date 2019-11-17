@@ -131,7 +131,6 @@ trait CoreDsl
   /**
     * @see error
     */
-  def trap(code: Int)(block: => Any): Unit = {
+  def trap(code: Int)(block: => Any): Unit =
     trap(Range(code, code + 1))(block)
-  }
 }

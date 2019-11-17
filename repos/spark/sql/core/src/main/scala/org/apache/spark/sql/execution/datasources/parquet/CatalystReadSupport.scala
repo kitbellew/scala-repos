@@ -123,9 +123,7 @@ private[parquet] object CatalystReadSupport {
       .named(CatalystSchemaConverter.SPARK_PARQUET_SCHEMA_NAME)
   }
 
-  private def clipParquetType(
-      parquetType: Type,
-      catalystType: DataType): Type = {
+  private def clipParquetType(parquetType: Type, catalystType: DataType): Type =
     catalystType match {
       case t: ArrayType if !isPrimitiveCatalystType(t.elementType) =>
         // Only clips array types with nested type as element type.
@@ -145,19 +143,17 @@ private[parquet] object CatalystReadSupport {
         // to be mapped to desired user-space types.  So UDTs shouldn't participate schema merging.
         parquetType
     }
-  }
 
   /**
     * Whether a Catalyst [[DataType]] is primitive.  Primitive [[DataType]] is not equivalent to
     * [[AtomicType]].  For example, [[CalendarIntervalType]] is primitive, but it's not an
     * [[AtomicType]].
     */
-  private def isPrimitiveCatalystType(dataType: DataType): Boolean = {
+  private def isPrimitiveCatalystType(dataType: DataType): Boolean =
     dataType match {
       case _: ArrayType | _: MapType | _: StructType => false
       case _                                         => true
     }
-  }
 
   /**
     * Clips a Parquet [[GroupType]] which corresponds to a Catalyst [[ArrayType]].  The element type
@@ -297,7 +293,7 @@ private[parquet] object CatalystReadSupport {
   }
 
   def expandUDT(schema: StructType): StructType = {
-    def expand(dataType: DataType): DataType = {
+    def expand(dataType: DataType): DataType =
       dataType match {
         case t: ArrayType =>
           t.copy(elementType = expand(t.elementType))
@@ -316,7 +312,6 @@ private[parquet] object CatalystReadSupport {
         case t =>
           t
       }
-    }
 
     expand(schema).asInstanceOf[StructType]
   }

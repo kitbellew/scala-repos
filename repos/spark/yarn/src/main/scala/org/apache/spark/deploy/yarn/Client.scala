@@ -96,23 +96,21 @@ private[spark] class Client(
   private var keytab: String = null
 
   private val launcherBackend = new LauncherBackend() {
-    override def onStopRequest(): Unit = {
+    override def onStopRequest(): Unit =
       if (isClusterMode && appId != null) {
         yarnClient.killApplication(appId)
       } else {
         setState(SparkAppHandle.State.KILLED)
         stop()
       }
-    }
   }
   private val fireAndForget =
     isClusterMode && !sparkConf.get(WAIT_FOR_APP_COMPLETION)
 
   private var appId: ApplicationId = null
 
-  def reportLauncherState(state: SparkAppHandle.State): Unit = {
+  def reportLauncherState(state: SparkAppHandle.State): Unit =
     launcherBackend.setState(state)
-  }
 
   def stop(): Unit = {
     launcherBackend.close()
@@ -1222,7 +1220,7 @@ private[spark] class Client(
     }
   }
 
-  private def findPySparkArchives(): Seq[String] = {
+  private def findPySparkArchives(): Seq[String] =
     sys.env.get("PYSPARK_ARCHIVES_PATH").map(_.split(",").toSeq).getOrElse {
       val pyLibPath =
         Seq(sys.env("SPARK_HOME"), "python", "lib").mkString(File.separator)
@@ -1236,7 +1234,6 @@ private[spark] class Client(
         "py4j-0.9.2-src.zip not found; cannot run pyspark application in YARN mode.")
       Seq(pyArchivesFile.getAbsolutePath(), py4jFile.getAbsolutePath())
     }
-  }
 }
 
 object Client extends Logging {
@@ -1296,9 +1293,8 @@ object Client extends Logging {
   /**
     * Return the path to the given application's staging directory.
     */
-  private def getAppStagingDir(appId: ApplicationId): String = {
+  private def getAppStagingDir(appId: ApplicationId): String =
     buildPath(SPARK_STAGING, appId.toString())
-  }
 
   /**
     * Populate the classpath entry in the given environment map with any application
@@ -1462,19 +1458,17 @@ object Client extends Logging {
     (mainUri ++ secondaryUris).toArray
   }
 
-  private def getMainJarUri(mainJar: Option[String]): Option[URI] = {
+  private def getMainJarUri(mainJar: Option[String]): Option[URI] =
     mainJar
       .flatMap { path =>
         val uri = Utils.resolveURI(path)
         if (uri.getScheme == LOCAL_SCHEME) Some(uri) else None
       }
       .orElse(Some(new URI(APP_JAR_NAME)))
-  }
 
   private def getSecondaryJarUris(
-      secondaryJars: Option[Seq[String]]): Seq[URI] = {
+      secondaryJars: Option[Seq[String]]): Seq[URI] =
     secondaryJars.getOrElse(Nil).map(new URI(_))
-  }
 
   /**
     * Adds the given path to the classpath, handling "local:" URIs correctly.
@@ -1495,7 +1489,7 @@ object Client extends Logging {
       hadoopConf: Configuration,
       uri: URI,
       fileName: String,
-      env: HashMap[String, String]): Unit = {
+      env: HashMap[String, String]): Unit =
     if (uri != null && uri.getScheme == LOCAL_SCHEME) {
       addClasspathEntry(getClusterPath(conf, uri.getPath), env)
     } else if (fileName != null) {
@@ -1513,7 +1507,6 @@ object Client extends Logging {
           linkName),
         env)
     }
-  }
 
   /**
     * Add the given path to the classpath entry of the given environment map.
@@ -1606,23 +1599,20 @@ object Client extends Logging {
     * Whether to consider jars provided by the user to have precedence over the Spark jars when
     * loading user classes.
     */
-  def isUserClassPathFirst(conf: SparkConf, isDriver: Boolean): Boolean = {
+  def isUserClassPathFirst(conf: SparkConf, isDriver: Boolean): Boolean =
     if (isDriver) {
       conf.get(DRIVER_USER_CLASS_PATH_FIRST)
     } else {
       conf.get(EXECUTOR_USER_CLASS_PATH_FIRST)
     }
-  }
 
   /**
     * Joins all the path components using Path.SEPARATOR.
     */
-  def buildPath(components: String*): String = {
+  def buildPath(components: String*): String =
     components.mkString(Path.SEPARATOR)
-  }
 
   /** Returns whether the URI is a "local:" URI. */
-  def isLocalUri(uri: String): Boolean = {
+  def isLocalUri(uri: String): Boolean =
     uri.startsWith(s"$LOCAL_SCHEME:")
-  }
 }

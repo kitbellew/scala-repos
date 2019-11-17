@@ -225,7 +225,7 @@ class CacheNodeGroupTest extends FunSuite with BeforeAndAfterEach {
       expect: Int,
       timeout: Duration = 15.seconds): Boolean = {
     val elapsed = Stopwatch.start()
-    def loop(): Boolean = {
+    def loop(): Boolean =
       if (current != expect && pool.members.size == expect)
         true // expect pool size changes
       else if (current == expect && pool.members.size != expect)
@@ -239,7 +239,6 @@ class CacheNodeGroupTest extends FunSuite with BeforeAndAfterEach {
         Thread.sleep(100)
         loop()
       }
-    }
     loop()
   }
 
@@ -252,7 +251,7 @@ class CacheNodeGroupTest extends FunSuite with BeforeAndAfterEach {
   }
 
   // create temporary zk clients for additional cache servers since we will need to
-  private def addShards(shardIds: List[Int]): Unit = {
+  private def addShards(shardIds: List[Int]): Unit =
     shardIds.foreach { shardId =>
       TestMemcachedServer.start() match {
         case Some(server) =>
@@ -267,5 +266,4 @@ class CacheNodeGroupTest extends FunSuite with BeforeAndAfterEach {
         case None => fail("Cannot start memcached. Skipping...")
       }
     }
-  }
 }

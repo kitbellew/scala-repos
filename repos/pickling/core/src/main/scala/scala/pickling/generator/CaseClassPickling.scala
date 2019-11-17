@@ -15,7 +15,7 @@ class CaseClassPickling(
   case class CaseClassInfo(constructor: IrConstructor, fields: Seq[FieldInfo])
 
   // TODO - This helper method should be available elsewhere.
-  def allVars(cls: IrClass): Seq[IrMethod] = {
+  def allVars(cls: IrClass): Seq[IrMethod] =
     (cls.methods.filter(_.isParamAccessor) ++ IrSymbol
       .allDeclaredMethodIncludingSubclasses(cls)
       .filter(x => x.isVar || x.isVal))
@@ -23,10 +23,9 @@ class CaseClassPickling(
       .map(_._2.head)
       .toList
       .filterNot(_.isMarkedTransient)
-  }
   private def checkConstructorImpl(
       tpe: IrClass,
-      logger: AlgorithmLogger): AlgorithmResult = {
+      logger: AlgorithmLogger): AlgorithmResult =
     if (tpe.isCaseClass) {
       tpe.primaryConstructor match {
         case Some(c) if c.isPublic =>
@@ -104,11 +103,8 @@ class CaseClassPickling(
           AlgorithmFailure("case-class constructor is not public")
       }
     } else AlgorithmFailure("class is not a case class")
-  }
 
-  def checkFactoryImpl(
-      tpe: IrClass,
-      logger: AlgorithmLogger): AlgorithmResult = {
+  def checkFactoryImpl(tpe: IrClass, logger: AlgorithmLogger): AlgorithmResult =
     // THis should be accurate, because all case calsses have companions
     (for {
       companion <- tpe.companion
@@ -149,7 +145,6 @@ class CaseClassPickling(
       case None =>
         AlgorithmFailure("Could not find a valid case-class factory method.")
     }
-  }
 
   /**
     * Attempts to construct pickling logic fora  given type.
@@ -158,7 +153,7 @@ class CaseClassPickling(
     */
   override def generate(
       tpe: IrClass,
-      logger: AlgorithmLogger): AlgorithmResult = {
+      logger: AlgorithmLogger): AlgorithmResult =
     // Scala modules are pickled differently, so we have to explicitly ignore `case object`
     if (tpe.isCaseClass && !tpe.isScalaModule) {
       val behavior =
@@ -218,5 +213,4 @@ class CaseClassPickling(
     } else
       AlgorithmFailure(
         s"Cannot use case-class algorithm on non-case class $tpe")
-  }
 }

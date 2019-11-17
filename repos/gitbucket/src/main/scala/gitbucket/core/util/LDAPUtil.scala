@@ -22,9 +22,8 @@ object LDAPUtil {
   /**
     * Returns true if mail address ends with "@ldap-devnull"
     */
-  def isDummyMailAddress(account: Account): Boolean = {
+  def isDummyMailAddress(account: Account): Boolean =
     account.mailAddress.endsWith(LDAP_DUMMY_MAL)
-  }
 
   /**
     * Creates dummy address (userName@ldap-devnull) for LDAP login.
@@ -33,9 +32,8 @@ object LDAPUtil {
     * GitBucket does not send any mails to this dummy address. And these users must input their mail address
     * at the first step after LDAP authentication.
     */
-  def createDummyMailAddress(userName: String): String = {
+  def createDummyMailAddress(userName: String): String =
     userName + LDAP_DUMMY_MAL
-  }
 
   /**
     * Try authentication by LDAP using given configuration.
@@ -44,7 +42,7 @@ object LDAPUtil {
   def authenticate(
       ldapSettings: Ldap,
       userName: String,
-      password: String): Either[String, LDAPUserInfo] = {
+      password: String): Either[String, LDAPUserInfo] =
     bind(
       host = ldapSettings.host,
       port = ldapSettings.port.getOrElse(SystemSettingsService.DefaultLdapPort),
@@ -66,13 +64,12 @@ object LDAPUtil {
         case None => Left("User does not exist.")
       }
     }
-  }
 
   private def userAuthentication(
       ldapSettings: Ldap,
       userDN: String,
       userName: String,
-      password: String): Either[String, LDAPUserInfo] = {
+      password: String): Either[String, LDAPUserInfo] =
     bind(
       host = ldapSettings.host,
       port = ldapSettings.port.getOrElse(SystemSettingsService.DefaultLdapPort),
@@ -126,14 +123,12 @@ object LDAPUtil {
         }
       }
     }
-  }
 
-  private def getUserNameFromMailAddress(userName: String): String = {
+  private def getUserNameFromMailAddress(userName: String): String =
     (userName.indexOf('@') match {
       case i if i >= 0 => userName.substring(0, i)
       case i           => userName
     }).replaceAll("[^a-zA-Z0-9\\-_.]", "").replaceAll("^[_\\-]", "")
-  }
 
   private def bind[A](
       host: String,
@@ -203,7 +198,7 @@ object LDAPUtil {
     @tailrec
     def getEntries(
         results: LDAPSearchResults,
-        entries: List[Option[LDAPEntry]] = Nil): List[LDAPEntry] = {
+        entries: List[Option[LDAPEntry]] = Nil): List[LDAPEntry] =
       if (results.hasMore) {
         getEntries(
           results,
@@ -218,7 +213,6 @@ object LDAPUtil {
       } else {
         entries.flatten
       }
-    }
 
     val filterCond = additionalFilterCondition.getOrElse("") match {
       case "" => userNameAttribute + "=" + userName

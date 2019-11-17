@@ -76,10 +76,9 @@ object ParseDriver extends Logging {
 
       // Find the non null token tree in the result.
       @tailrec
-      def nonNullToken(tree: CommonTree): CommonTree = {
+      def nonNullToken(tree: CommonTree): CommonTree =
         if (tree.token != null || tree.getChildCount == 0) tree
         else nonNullToken(tree.getChild(0).asInstanceOf[CommonTree])
-      }
       val tree = nonNullToken(result)
 
       // Make sure all boundaries are set.
@@ -143,11 +142,10 @@ private[parser] class ParseErrorReporter {
   def report(
       br: BaseRecognizer,
       re: RecognitionException,
-      tokenNames: Array[String]): Unit = {
+      tokenNames: Array[String]): Unit =
     errors += ParseError(br, re, tokenNames)
-  }
 
-  def checkForErrors(): Unit = {
+  def checkForErrors(): Unit =
     if (errors.nonEmpty) {
       val first = errors.head
       val e = first.re
@@ -157,11 +155,9 @@ private[parser] class ParseErrorReporter {
         first.buildMessage().toString,
         errors.tail)
     }
-  }
 
-  def throwError(e: RecognitionException): Nothing = {
+  def throwError(e: RecognitionException): Nothing =
     throwError(e.line, e.charPositionInLine, e.toString, errors)
-  }
 
   private def throwError(
       line: Int,
@@ -184,9 +180,8 @@ private[parser] case class ParseError(
     br: BaseRecognizer,
     re: RecognitionException,
     tokenNames: Array[String]) {
-  def buildMessage(s: StringBuilder = new StringBuilder): StringBuilder = {
+  def buildMessage(s: StringBuilder = new StringBuilder): StringBuilder =
     s.append(br.getErrorHeader(re))
       .append(" ")
       .append(br.getErrorMessage(re, tokenNames))
-  }
 }

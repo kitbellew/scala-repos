@@ -22,9 +22,8 @@ import scala.collection.convert.decorateAsScala._
 object NullnessAnalyzerTest extends ClearAfterClass.Clearable {
   var noOptCompiler = newCompiler(extraArgs = "-Yopt:l:none")
 
-  def clear(): Unit = {
+  def clear(): Unit =
     noOptCompiler = null
-  }
 }
 
 @RunWith(classOf[JUnit4])
@@ -46,14 +45,13 @@ class NullnessAnalyzerTest extends ClearAfterClass {
       method: MethodNode,
       query: String,
       index: Int,
-      nullness: NullnessValue): Unit = {
+      nullness: NullnessValue): Unit =
     for (i <- findInstr(method, query)) {
       val r = analyzer.frameAt(i).getValue(index)
       assertTrue(
         s"Expected: $nullness, found: $r. At instr ${textify(i)}",
         nullness == r)
     }
-  }
 
   // debug / helper for writing tests
   def showAllNullnessFrames(

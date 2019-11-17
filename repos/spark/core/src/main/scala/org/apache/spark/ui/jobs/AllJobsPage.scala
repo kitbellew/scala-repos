@@ -67,7 +67,7 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
     (name, description)
   }
 
-  private def makeJobEvent(jobUIDatas: Seq[JobUIData]): Seq[String] = {
+  private def makeJobEvent(jobUIDatas: Seq[JobUIData]): Seq[String] =
     jobUIDatas
       .filter { jobUIData =>
         jobUIData.status != JobExecutionStatus.UNKNOWN &&
@@ -117,7 +117,6 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
          """.stripMargin
         jobEventJsonAsStr
       }
-  }
 
   private def makeExecutorEvent(
       executorUIDatas: HashMap[String, ExecutorUIData]): Seq[String] = {

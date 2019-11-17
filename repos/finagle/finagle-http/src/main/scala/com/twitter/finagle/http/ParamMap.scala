@@ -119,9 +119,8 @@ class MapParamMap(
   def getAll(name: String): Iterable[String] =
     underlying.getOrElse(name, Nil)
 
-  def iterator: Iterator[(String, String)] = {
+  def iterator: Iterator[(String, String)] =
     for ((k, vs) <- underlying.iterator; v <- vs) yield (k, v)
-  }
 
   override def keySet: Set[String] =
     underlying.keySet
@@ -141,11 +140,10 @@ object MapParamMap {
 
   private[http] def tuplesToMultiMap(
       tuples: Seq[Tuple2[String, String]]
-  ): Map[String, Seq[String]] = {
+  ): Map[String, Seq[String]] =
     tuples.groupBy { case (k, v) => k }.mapValues {
       case values => values.map { _._2 }
     }
-  }
 }
 
 /** Empty ParamMap */
@@ -182,7 +180,7 @@ class RequestParamMap(val request: Request) extends ParamMap {
 
   // Convert IllegalArgumentException to ParamMapException so it can be handled
   // appropriately (e.g., 400 Bad Request).
-  private[this] def parseParams(s: String): JMap[String, JList[String]] = {
+  private[this] def parseParams(s: String): JMap[String, JList[String]] =
     try {
       new QueryStringDecoder(s).getParameters
     } catch {
@@ -190,7 +188,6 @@ class RequestParamMap(val request: Request) extends ParamMap {
         _isValid = false
         ParamMap.EmptyJMap
     }
-  }
 
   override def getAll(name: String): Iterable[String] =
     jgetAll(postParams, name) ++ jgetAll(getParams, name)

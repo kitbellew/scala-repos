@@ -31,11 +31,10 @@ private[ui] class ExecutorTable(
     parent: StagesTab) {
   private val listener = parent.progressListener
 
-  def toNodeSeq: Seq[Node] = {
+  def toNodeSeq: Seq[Node] =
     listener.synchronized {
       executorTable()
     }
-  }
 
   /** Special table which merges two header cells. */
   private def executorTable[T](): Seq[Node] = {

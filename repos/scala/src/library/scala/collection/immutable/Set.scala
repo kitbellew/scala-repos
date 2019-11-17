@@ -97,19 +97,15 @@ object Set extends ImmutableSetFactory[Set] {
       else this
     def iterator: Iterator[A] =
       Iterator(elem1)
-    override def foreach[U](f: A => U): Unit = {
+    override def foreach[U](f: A => U): Unit =
       f(elem1)
-    }
-    override def exists(@deprecatedName('f) p: A => Boolean): Boolean = {
+    override def exists(@deprecatedName('f) p: A => Boolean): Boolean =
       p(elem1)
-    }
-    override def forall(@deprecatedName('f) p: A => Boolean): Boolean = {
+    override def forall(@deprecatedName('f) p: A => Boolean): Boolean =
       p(elem1)
-    }
-    override def find(@deprecatedName('f) p: A => Boolean): Option[A] = {
+    override def find(@deprecatedName('f) p: A => Boolean): Option[A] =
       if (p(elem1)) Some(elem1)
       else None
-    }
     override def head: A = elem1
     override def tail: Set[A] = Set.empty
     // Why is Set1 non-final?  Need to fix that!
@@ -140,17 +136,14 @@ object Set extends ImmutableSetFactory[Set] {
     override def foreach[U](f: A => U): Unit = {
       f(elem1); f(elem2)
     }
-    override def exists(@deprecatedName('f) p: A => Boolean): Boolean = {
+    override def exists(@deprecatedName('f) p: A => Boolean): Boolean =
       p(elem1) || p(elem2)
-    }
-    override def forall(@deprecatedName('f) p: A => Boolean): Boolean = {
+    override def forall(@deprecatedName('f) p: A => Boolean): Boolean =
       p(elem1) && p(elem2)
-    }
-    override def find(@deprecatedName('f) p: A => Boolean): Option[A] = {
+    override def find(@deprecatedName('f) p: A => Boolean): Option[A] =
       if (p(elem1)) Some(elem1)
       else if (p(elem2)) Some(elem2)
       else None
-    }
     override def head: A = elem1
     override def tail: Set[A] = new Set1(elem2)
     // Why is Set2 non-final?  Need to fix that!
@@ -182,18 +175,15 @@ object Set extends ImmutableSetFactory[Set] {
     override def foreach[U](f: A => U): Unit = {
       f(elem1); f(elem2); f(elem3)
     }
-    override def exists(@deprecatedName('f) p: A => Boolean): Boolean = {
+    override def exists(@deprecatedName('f) p: A => Boolean): Boolean =
       p(elem1) || p(elem2) || p(elem3)
-    }
-    override def forall(@deprecatedName('f) p: A => Boolean): Boolean = {
+    override def forall(@deprecatedName('f) p: A => Boolean): Boolean =
       p(elem1) && p(elem2) && p(elem3)
-    }
-    override def find(@deprecatedName('f) p: A => Boolean): Option[A] = {
+    override def find(@deprecatedName('f) p: A => Boolean): Option[A] =
       if (p(elem1)) Some(elem1)
       else if (p(elem2)) Some(elem2)
       else if (p(elem3)) Some(elem3)
       else None
-    }
     override def head: A = elem1
     override def tail: Set[A] = new Set2(elem2, elem3)
     // Why is Set3 non-final?  Need to fix that!
@@ -226,19 +216,16 @@ object Set extends ImmutableSetFactory[Set] {
     override def foreach[U](f: A => U): Unit = {
       f(elem1); f(elem2); f(elem3); f(elem4)
     }
-    override def exists(@deprecatedName('f) p: A => Boolean): Boolean = {
+    override def exists(@deprecatedName('f) p: A => Boolean): Boolean =
       p(elem1) || p(elem2) || p(elem3) || p(elem4)
-    }
-    override def forall(@deprecatedName('f) p: A => Boolean): Boolean = {
+    override def forall(@deprecatedName('f) p: A => Boolean): Boolean =
       p(elem1) && p(elem2) && p(elem3) && p(elem4)
-    }
-    override def find(@deprecatedName('f) p: A => Boolean): Option[A] = {
+    override def find(@deprecatedName('f) p: A => Boolean): Option[A] =
       if (p(elem1)) Some(elem1)
       else if (p(elem2)) Some(elem2)
       else if (p(elem3)) Some(elem3)
       else if (p(elem4)) Some(elem4)
       else None
-    }
     override def head: A = elem1
     override def tail: Set[A] = new Set3(elem2, elem3, elem4)
     // Why is Set4 non-final?  Need to fix that!

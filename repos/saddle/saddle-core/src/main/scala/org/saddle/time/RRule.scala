@@ -75,7 +75,7 @@ case class RRule private (
     joins: List[(RRule, Option[DateTime])] = List.empty,
     excepts: List[(RRule, Option[DateTime])] = List.empty) {
 
-  private def dt2dtv(dt: DateTime): com.google.ical.values.DateTimeValueImpl = {
+  private def dt2dtv(dt: DateTime): com.google.ical.values.DateTimeValueImpl =
     new com.google.ical.values.DateTimeValueImpl(
       dt.getYear,
       dt.getMonthOfYear,
@@ -83,7 +83,6 @@ case class RRule private (
       dt.getHourOfDay,
       dt.getMinuteOfHour,
       dt.getSecondOfMinute)
-  }
 
   protected[time] def toICal: com.google.ical.values.RRule = {
     val rrule = new com.google.ical.values.RRule()
@@ -230,7 +229,7 @@ case class RRule private (
   def counting(i: Int) = {
     val outer = this
     new {
-      def from(dt: DateTime): DateTime = {
+      def from(dt: DateTime): DateTime =
         if (i == 0)
           throw new IllegalArgumentException(
             "argument to occurrence must not equal 0")
@@ -257,7 +256,6 @@ case class RRule private (
           val idx = Index.make(outer, lbound, ubound)
           idx.raw(idx.rsearch(dt) - iabs)
         }
-      }
     }
   }
 

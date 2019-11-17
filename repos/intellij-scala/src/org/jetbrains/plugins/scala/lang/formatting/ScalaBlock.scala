@@ -200,11 +200,10 @@ class ScalaBlock(
     owner.isInstanceOf[ScFunction])
   }
 
-  def getSpacing(child1: Block, child2: Block) = {
+  def getSpacing(child1: Block, child2: Block) =
     ScalaSpacingProcessor.getSpacing(
       child1.asInstanceOf[ScalaBlock],
       child2.asInstanceOf[ScalaBlock])
-  }
 
   def getSubBlocks: util.List[Block] = {
     import scala.collection.JavaConversions._
@@ -216,10 +215,9 @@ class ScalaBlock(
     mySubBlocks
   }
 
-  def isLeaf(node: ASTNode): Boolean = {
+  def isLeaf(node: ASTNode): Boolean =
     if (myLastNode == null) node.getFirstChildNode == null
     else false
-  }
 
   def isIncomplete(node: ASTNode): Boolean = {
     if (node.getPsi.isInstanceOf[PsiErrorElement]) return true

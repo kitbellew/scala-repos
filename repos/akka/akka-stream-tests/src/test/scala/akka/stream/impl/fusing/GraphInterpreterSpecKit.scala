@@ -310,13 +310,12 @@ trait GraphInterpreterSpecKit extends AkkaSpec {
     // Must be lazy because I turned this stage "inside-out" therefore changing initialization order
     // to make tests a bit more readable
     lazy val stage: GraphStageLogic = new GraphStageLogic(stageshape) {
-      private def mayFail(task: ⇒ Unit): Unit = {
+      private def mayFail(task: ⇒ Unit): Unit =
         if (!_failOnNextEvent) task
         else {
           _failOnNextEvent = false
           throw testException
         }
-      }
 
       setHandler(
         stagein,
@@ -446,10 +445,9 @@ trait GraphInterpreterSpecKit extends AkkaSpec {
       setHandler(
         out,
         new OutHandler {
-          override def onPull(): Unit = {
+          override def onPull(): Unit =
             if (lastEvent.contains(RequestOne)) lastEvent += RequestAnother
             else lastEvent += RequestOne
-          }
 
           override def onDownstreamFinish(): Unit = lastEvent += Cancel
         }
@@ -486,9 +484,8 @@ trait GraphInterpreterSpecKit extends AkkaSpec {
         new InHandler {
 
           // Modified onPush that does not grab() automatically the element. This accesses some internals.
-          override def onPush(): Unit = {
+          override def onPush(): Unit =
             lastEvent += OnNext(grab(in))
-          }
 
           override def onUpstreamFinish() = lastEvent += OnComplete
           override def onUpstreamFailure(ex: Throwable) =

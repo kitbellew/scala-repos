@@ -99,13 +99,12 @@ final class IncOptimizer(
 
     def ancestors: List[String] = _ancestors
 
-    def ancestors_=(v: List[String]): Unit = {
+    def ancestors_=(v: List[String]): Unit =
       if (v != _ancestors) {
         _ancestors = v
         ancestorsAskers.foreach(_.tag())
         ancestorsAskers.clear()
       }
-    }
 
     def registerAskAncestors(asker: MethodImpl): Unit =
       ancestorsAskers += asker

@@ -36,7 +36,7 @@ object TaskKillActor {
       taskTracker: TaskTracker,
       eventBus: EventStream,
       tasksToKill: Iterable[Task.Id],
-      promise: Promise[Unit]): Props = {
+      promise: Promise[Unit]): Props =
     Props(
       new TaskKillActor(
         driver,
@@ -45,5 +45,4 @@ object TaskKillActor {
         eventBus,
         tasksToKill,
         promise))
-  }
 }

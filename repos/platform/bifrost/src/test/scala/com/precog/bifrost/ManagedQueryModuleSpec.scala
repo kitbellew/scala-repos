@@ -154,14 +154,13 @@ class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
   }
 
   // Cancels the job after `ticks` ticks.
-  def cancel(jobId: JobId, ticks: Int): Future[Boolean] = {
+  def cancel(jobId: JobId, ticks: Int): Future[Boolean] =
     schedule(ticks) {
       jobManager
         .cancel(jobId, "Yarrrr", yggConfig.clock.now())
         .map { _.fold(_ => false, _ => true) }
         .copoint
     }
-  }
 
   step {
     actorSystem.scheduler.schedule(
@@ -297,7 +296,7 @@ trait TestManagedQueryModule
   def executorFor(apiKey: APIKey): EitherT[
     TestFuture,
     String,
-    QueryExecutor[TestFuture, StreamT[TestFuture, CharBuffer]]] = {
+    QueryExecutor[TestFuture, StreamT[TestFuture, CharBuffer]]] =
     EitherT.right {
       Applicative[TestFuture] point {
         new QueryExecutor[TestFuture, StreamT[TestFuture, CharBuffer]] {
@@ -341,7 +340,6 @@ trait TestManagedQueryModule
         }
       }
     }
-  }
 
   def startup = Applicative[TestFuture].point { true }
   def shutdown = Applicative[TestFuture].point { true }

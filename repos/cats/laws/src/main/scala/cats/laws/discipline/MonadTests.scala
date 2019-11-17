@@ -20,7 +20,7 @@ trait MonadTests[F[_]] extends ApplicativeTests[F] with FlatMapTests[F] {
       EqFB: Eq[F[B]],
       EqFC: Eq[F[C]],
       EqFABC: Eq[F[(A, B, C)]],
-      iso: Isomorphisms[F]): RuleSet = {
+      iso: Isomorphisms[F]): RuleSet =
     new RuleSet {
       def name: String = "monad"
       def bases: Seq[(String, RuleSet)] = Nil
@@ -31,7 +31,6 @@ trait MonadTests[F[_]] extends ApplicativeTests[F] with FlatMapTests[F] {
         "map flatMap coherence" -> forAll(laws.mapFlatMapCoherence[A, B] _)
       )
     }
-  }
 }
 
 object MonadTests {

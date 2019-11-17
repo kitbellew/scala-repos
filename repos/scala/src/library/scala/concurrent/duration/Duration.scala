@@ -126,14 +126,13 @@ object Duration {
     *
     * @throws IllegalArgumentException if the length was finite but the resulting duration cannot be expressed as a [[FiniteDuration]]
     */
-  def fromNanos(nanos: Double): Duration = {
+  def fromNanos(nanos: Double): Duration =
     if (nanos.isInfinite) if (nanos > 0) Inf else MinusInf
     else if (nanos.isNaN) Undefined
     else if (nanos > Long.MaxValue || nanos < Long.MinValue)
       throw new IllegalArgumentException(
         "trying to construct too large duration with " + nanos + "ns")
     else fromNanos((nanos + 0.5).toLong)
-  }
 
   private[this] final val µs_per_ns = 1000L
   private[this] final val ms_per_ns = µs_per_ns * 1000
@@ -149,7 +148,7 @@ object Duration {
     *
     * @throws IllegalArgumentException for `Long.MinValue` since that would lead to inconsistent behavior afterwards (cannot be negated)
     */
-  def fromNanos(nanos: Long): FiniteDuration = {
+  def fromNanos(nanos: Long): FiniteDuration =
     if (nanos % d_per_ns == 0) Duration(nanos / d_per_ns, DAYS)
     else if (nanos % h_per_ns == 0) Duration(nanos / h_per_ns, HOURS)
     else if (nanos % min_per_ns == 0) Duration(nanos / min_per_ns, MINUTES)
@@ -157,7 +156,6 @@ object Duration {
     else if (nanos % ms_per_ns == 0) Duration(nanos / ms_per_ns, MILLISECONDS)
     else if (nanos % µs_per_ns == 0) Duration(nanos / µs_per_ns, MICROSECONDS)
     else Duration(nanos, NANOSECONDS)
-  }
 
   /**
     * Preconstructed value of `0.days`.

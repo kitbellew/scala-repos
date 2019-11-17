@@ -113,7 +113,7 @@ object CacheIvy {
       })
   implicit def moduleReportFormat(
       implicit cf: Format[Seq[Caller]],
-      ff: Format[File]): Format[ModuleReport] = {
+      ff: Format[File]): Format[ModuleReport] =
     wrap[
       ModuleReport,
       (
@@ -161,10 +161,9 @@ object CacheIvy {
           }, r, a, e, ed, er, p, h, ea, d, b, cs, ls, ks)
       }
     )
-  }
   implicit def artifactFormat(
       implicit sf: Format[String],
-      uf: Format[Option[URL]]): Format[Artifact] = {
+      uf: Format[Option[URL]]): Format[Artifact] =
     wrap[
       Artifact,
       (
@@ -187,7 +186,6 @@ object CacheIvy {
         case (n, t, x, c, cs, u, e) => Artifact(n, t, x, c, cs, u, e)
       }
     )
-  }
   implicit def organizationArtifactReportFormat(
       implicit sf: Format[String],
       bf: Format[Boolean],

@@ -200,14 +200,13 @@ private[netty] class Inbox(
     * Called when we are dropping a message. Test cases override this to test message dropping.
     * Exposed for testing.
     */
-  protected def onDrop(message: InboxMessage): Unit = {
+  protected def onDrop(message: InboxMessage): Unit =
     logWarning(s"Drop $message because $endpointRef is stopped")
-  }
 
   /**
     * Calls action closure, and calls the endpoint's onError function in the case of exceptions.
     */
-  private def safelyCall(endpoint: RpcEndpoint)(action: => Unit): Unit = {
+  private def safelyCall(endpoint: RpcEndpoint)(action: => Unit): Unit =
     try action
     catch {
       case NonFatal(e) =>
@@ -216,5 +215,4 @@ private[netty] class Inbox(
           case NonFatal(ee) => logError(s"Ignoring error", ee)
         }
     }
-  }
 }

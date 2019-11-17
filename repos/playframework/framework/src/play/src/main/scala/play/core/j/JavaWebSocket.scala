@@ -66,12 +66,10 @@ object JavaWebSocket extends JavaHelpers {
                 .actorRef[A](256, OverflowStrategy.dropNew)
                 .mapMaterializedValue { actor =>
                   val socketOut = new JWebSocket.Out[A] {
-                    def write(frame: A) = {
+                    def write(frame: A) =
                       actor ! frame
-                    }
-                    def close() = {
+                    def close() =
                       actor ! Status.Success(())
-                    }
                   }
 
                   jws.onReady(socketIn, socketOut)

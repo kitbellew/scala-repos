@@ -33,14 +33,12 @@ private[prediction] class FakeEngine
       sc: SparkContext,
       engineParams: EngineParams,
       engineInstanceId: String,
-      params: WorkflowParams): Seq[Any] = {
+      params: WorkflowParams): Seq[Any] =
     throw new StopAfterReadInterruption()
-  }
 
   def eval(sc: SparkContext, engineParams: EngineParams, params: WorkflowParams)
-      : Seq[(EmptyParams, RDD[(EmptyParams, EmptyParams, EmptyParams)])] = {
+      : Seq[(EmptyParams, RDD[(EmptyParams, EmptyParams, EmptyParams)])] =
     return Seq[(EmptyParams, RDD[(EmptyParams, EmptyParams, EmptyParams)])]()
-  }
 }
 
 @Experimental

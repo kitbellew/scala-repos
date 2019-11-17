@@ -37,9 +37,8 @@ class SizeTrackerSuite extends SparkFunSuite {
 
   test("vector variable size insertions") {
     val rand = new Random(123456789)
-    def randString(minLen: Int, maxLen: Int): String = {
+    def randString(minLen: Int, maxLen: Int): String =
       "a" * (rand.nextInt(maxLen - minLen) + minLen)
-    }
     testVector[String](10000, i => randString(0, 10))
     testVector[String](10000, i => randString(0, 100))
     testVector[String](10000, i => randString(90, 100))
@@ -53,9 +52,8 @@ class SizeTrackerSuite extends SparkFunSuite {
 
   test("map variable size insertions") {
     val rand = new Random(123456789)
-    def randString(minLen: Int, maxLen: Int): String = {
+    def randString(minLen: Int, maxLen: Int): String =
       "a" * (rand.nextInt(maxLen - minLen) + minLen)
-    }
     testMap[Int, String](10000, i => (i, randString(0, 10)))
     testMap[Int, String](10000, i => (i, randString(0, 100)))
     testMap[Int, String](10000, i => (i, randString(90, 100)))
@@ -63,9 +61,8 @@ class SizeTrackerSuite extends SparkFunSuite {
 
   test("map updates") {
     val rand = new Random(123456789)
-    def randString(minLen: Int, maxLen: Int): String = {
+    def randString(minLen: Int, maxLen: Int): String =
       "a" * (rand.nextInt(maxLen - minLen) + minLen)
-    }
     testMap[String, Int](10000, i => (randString(0, 10000), i))
   }
 
@@ -225,9 +222,8 @@ private object SizeTrackerSuite {
     System.currentTimeMillis() - start
   }
 
-  def averageTime(v: Seq[Long]): Long = {
+  def averageTime(v: Seq[Long]): Long =
     v.sum / v.size
-  }
 
   private class LargeDummyClass {
     val arr = new Array[Int](100)

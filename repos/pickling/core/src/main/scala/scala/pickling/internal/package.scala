@@ -15,18 +15,16 @@ package object internal {
   import ru._
   import compat._
 
-  private[this] def initDefaultRuntime = {
+  private[this] def initDefaultRuntime =
     // TODO - Figure out some way to configure the default runtime at startup.
     if (true) new DefaultRuntime()
     else new NoReflectionRuntime()
-  }
   private[this] var currentRuntimeVar =
     new AtomicReference[spi.PicklingRuntime](initDefaultRuntime)
   def currentRuntime: spi.PicklingRuntime = currentRuntimeVar.get
   // Here we inject a new runtime for usage.
-  def replaceRuntime(r: spi.PicklingRuntime): Unit = {
+  def replaceRuntime(r: spi.PicklingRuntime): Unit =
     currentRuntimeVar.lazySet(r)
-  }
 
   /* Global reflection lock.
    * It is used to avoid data races that typically lead to runtime exceptions
@@ -63,7 +61,7 @@ package object internal {
 
   private val typeFromStringCache =
     scala.collection.concurrent.TrieMap[String, Type]()
-  private[pickling] def typeFromString(mirror: Mirror, stpe: String): Type = {
+  private[pickling] def typeFromString(mirror: Mirror, stpe: String): Type =
     // TODO: find out why typeFromString is called repeatedly for scala.Predef.String (at least in the evactor1 bench)
     if (typeFromStringCache.contains(stpe)) typeFromStringCache(stpe)
     else {
@@ -94,12 +92,11 @@ package object internal {
       typeFromStringCache(stpe) = result
       result
     }
-  }
 
   // FIXME: duplication wrt Tools, but I don't really fancy abstracting away this path-dependent madness
   private[pickling] implicit class RichTypeFIXME(tpe: Type) {
     import definitions._
-    def key: String = {
+    def key: String =
       tpe.normalize match {
         case ExistentialType(tparams, TypeRef(pre, sym, targs))
             if targs.nonEmpty &&
@@ -112,7 +109,6 @@ package object internal {
         case _ =>
           tpe.toString
       }
-    }
     def isEffectivelyPrimitive: Boolean = tpe match {
       case TypeRef(_, sym: ClassSymbol, _) if sym.isPrimitive => true
       case TypeRef(_, sym, eltpe :: Nil)

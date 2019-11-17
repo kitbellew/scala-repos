@@ -11,10 +11,9 @@ class FileVirtualFile(val file: File) extends VirtualFile {
 
   override def name: String = file.getName
 
-  override def version: Option[String] = {
+  override def version: Option[String] =
     if (!file.isFile) None
     else Some(file.lastModified.toString)
-  }
 
   override def exists: Boolean = file.exists
 
@@ -76,10 +75,9 @@ object FileVirtualTextFile extends (File => FileVirtualTextFile) {
 trait WritableFileVirtualTextFile
     extends FileVirtualTextFile
     with WritableVirtualTextFile {
-  override def contentWriter: Writer = {
+  override def contentWriter: Writer =
     new BufferedWriter(
       new OutputStreamWriter(new FileOutputStream(file), "UTF-8"))
-  }
 }
 
 object WritableFileVirtualTextFile {
@@ -132,10 +130,9 @@ class FileVirtualJSFile(f: File)
 
   val sourceMapFile: File = withExtension(file, ".js", ".js.map")
 
-  override def sourceMap: Option[String] = {
+  override def sourceMap: Option[String] =
     if (sourceMapFile.exists) Some(readFileToString(sourceMapFile))
     else None
-  }
 }
 
 object FileVirtualJSFile extends (File => FileVirtualJSFile) {
@@ -144,11 +141,10 @@ object FileVirtualJSFile extends (File => FileVirtualJSFile) {
 
   def relative(
       f: File,
-      relPath: String): FileVirtualJSFile with RelativeVirtualFile = {
+      relPath: String): FileVirtualJSFile with RelativeVirtualFile =
     new FileVirtualJSFile(f) with RelativeVirtualFile {
       def relativePath: String = relPath
     }
-  }
 }
 
 trait WritableFileVirtualJSFile
@@ -156,10 +152,9 @@ trait WritableFileVirtualJSFile
     with WritableFileVirtualTextFile
     with WritableVirtualJSFile {
 
-  override def sourceMapWriter: Writer = {
+  override def sourceMapWriter: Writer =
     new BufferedWriter(
       new OutputStreamWriter(new FileOutputStream(sourceMapFile), "UTF-8"))
-  }
 }
 
 object WritableFileVirtualJSFile {
@@ -179,11 +174,10 @@ object FileVirtualScalaJSIRFile extends (File => FileVirtualScalaJSIRFile) {
 
   def relative(
       f: File,
-      relPath: String): FileVirtualScalaJSIRFile with RelativeVirtualFile = {
+      relPath: String): FileVirtualScalaJSIRFile with RelativeVirtualFile =
     new FileVirtualScalaJSIRFile(f) with RelativeVirtualFile {
       def relativePath: String = relPath
     }
-  }
 
   def isScalaJSIRFile(file: File): Boolean =
     hasExtension(file, ".sjsir")

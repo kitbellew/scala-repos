@@ -41,12 +41,11 @@ final class ParIncOptimizer(
     def put[K, V](map: ParMap[K, V], k: K, v: V): Unit = map.put(k, v)
     def remove[K, V](map: ParMap[K, V], k: K): Option[V] = map.remove(k)
 
-    def retain[K, V](map: ParMap[K, V])(p: (K, V) => Boolean): Unit = {
+    def retain[K, V](map: ParMap[K, V])(p: (K, V) => Boolean): Unit =
       map.foreach {
         case (k, v) =>
           if (!p(k, v)) map.remove(k)
       }
-    }
 
     // Operations on AccMap
     def acc[K, V](map: AccMap[K, V], k: K, v: V): Unit =
@@ -122,13 +121,12 @@ final class ParIncOptimizer(
     def ancestors: List[String] = _ancestors
 
     /** UPDATE PASS ONLY. Not concurrency safe. */
-    def ancestors_=(v: List[String]): Unit = {
+    def ancestors_=(v: List[String]): Unit =
       if (v != _ancestors) {
         _ancestors = v
         ancestorsAskers.keysIterator.foreach(_.tag())
         ancestorsAskers.clear()
       }
-    }
 
     /** PROCESS PASS ONLY. Concurrency safe except with [[ancestors_=]]. */
     def registerAskAncestors(asker: MethodImpl): Unit =
@@ -196,9 +194,8 @@ final class ParIncOptimizer(
     protected def registeredTo(intf: Unregisterable): Unit =
       _registeredTo += intf
 
-    protected def unregisterFromEverywhere(): Unit = {
+    protected def unregisterFromEverywhere(): Unit =
       _registeredTo.removeAll().foreach(_.unregisterDependee(this))
-    }
 
     protected def protectTag(): Boolean = !tagged.getAndSet(true)
     protected def resetTag(): Unit = tagged.set(false)

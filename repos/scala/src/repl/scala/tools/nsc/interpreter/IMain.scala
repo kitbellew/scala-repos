@@ -147,7 +147,7 @@ class IMain(
   private def echo(msg: String) { Console println msg }
   private def _initSources =
     List(new BatchSourceFile("<init>", "class $repl_$init { }"))
-  private def _initialize() = {
+  private def _initialize() =
     try {
       // if this crashes, REPL will hang its head in shame
       val run = new _compiler.Run()
@@ -156,7 +156,6 @@ class IMain(
       _initializeComplete = true
       true
     } catch AbstractOrMissingHandler()
-  }
   private val logScope = scala.sys.props contains "scala.repl.scope"
   private def scopelog(msg: String) = if (logScope) Console.err.println(msg)
 
@@ -170,12 +169,11 @@ class IMain(
       }
     }
   }
-  def initializeSynchronous(): Unit = {
+  def initializeSynchronous(): Unit =
     if (!isInitializeComplete) {
       _initialize()
       assert(global != null, global)
     }
-  }
   def isInitializeComplete = _initializeComplete
 
   lazy val global: Global = {
@@ -362,7 +360,7 @@ class IMain(
     *  see if the corresponding symbol has a class file that is a REPL artifact
     *  residing at a different resource path. Translate X.class to $line3/$read$$iw$$iw$X.class.
     */
-  def translateSimpleResource(path: String): Option[String] = {
+  def translateSimpleResource(path: String): Option[String] =
     if (!(path contains '/') && (path endsWith ".class")) {
       val name = path stripSuffix ".class"
       val sym =
@@ -372,7 +370,6 @@ class IMain(
     } else {
       None
     }
-  }
   def translateEnclosingClass(n: String) =
     symbolOfTerm(n).enclClass.toOption map flatPath
 
@@ -622,7 +619,7 @@ class IMain(
 
   private def compile(
       line: String,
-      synthetic: Boolean): Either[IR.Result, Request] = {
+      synthetic: Boolean): Either[IR.Result, Request] =
     if (global == null) Left(IR.Error)
     else
       requestFromLine(line, synthetic) match {
@@ -632,7 +629,6 @@ class IMain(
           // fail if false (implying e.g. a type error)
           if (req == null || !req.compile) Left(IR.Error) else Right(req)
       }
-  }
 
   var code = ""
   var bound = false
@@ -861,12 +857,11 @@ class IMain(
         "Failed to load '" + path + "': " + ex.getMessage,
         ex)
 
-    private def load(path: String): Class[_] = {
+    private def load(path: String): Class[_] =
       try Class.forName(path, true, classLoader)
       catch {
         case ex: Throwable => evalError(path, unwrap(ex))
       }
-    }
 
     lazy val evalClass = load(evalPath)
 
@@ -1001,7 +996,7 @@ class IMain(
     /** generate the source code for the object that computes this request */
     abstract class Wrapper extends IMain.CodeAssembler[MemberHandler] {
       def path = originalPath("$intp")
-      def envLines = {
+      def envLines =
         if (!isReplPower) Nil // power mode only for now
         else {
           val escapedLine = Constant(originalLine).escapedStringValue
@@ -1009,7 +1004,6 @@ class IMain(
             s"""def $$line = $escapedLine """,
             """def $trees = _root_.scala.Nil""")
         }
-      }
       def preamble = s"""
         |$headerPreamble
         |${preambleHeader format lineRep.readName}
@@ -1150,13 +1144,12 @@ class IMain(
       mapFrom[Name, Name, Type](termNames)(x => applyToResultMember(x, _.tpe))
 
     /** load and run the code using reflection */
-    def loadAndRun: (String, Boolean) = {
+    def loadAndRun: (String, Boolean) =
       try {
         ("" + (lineRep call sessionNames.print), true)
       } catch {
         case ex: Throwable => (lineRep.bindError(ex), false)
       }
-    }
 
     override def toString =
       "Request(line=%s, %s trees)".format(line, trees.size)
@@ -1269,15 +1262,14 @@ class IMain(
     tryTwice(replScope lookup TermName(id))
   def symbolOfName(id: Name): Symbol = replScope lookup id
 
-  def runtimeClassAndTypeOfTerm(id: String): Option[(JClass, Type)] = {
+  def runtimeClassAndTypeOfTerm(id: String): Option[(JClass, Type)] =
     classOfTerm(id) flatMap { clazz =>
       clazz.supers find (!_.isScalaAnonymous) map { nonAnon =>
         (nonAnon, runtimeTypeOfTerm(id))
       }
     }
-  }
 
-  def runtimeTypeOfTerm(id: String): Type = {
+  def runtimeTypeOfTerm(id: String): Type =
     typeOfTerm(id) andAlso { tpe =>
       val clazz = classOfTerm(id) getOrElse { return NoType }
       val staticSym = tpe.typeSymbol
@@ -1287,9 +1279,8 @@ class IMain(
           (runtimeSym isSubClass staticSym)) runtimeSym.info
       else NoType
     }
-  }
 
-  def cleanTypeAfterTyper(sym: => Symbol): Type = {
+  def cleanTypeAfterTyper(sym: => Symbol): Type =
     exitingTyper(
       dealiasNonPublic(
         dropNullaryMethod(
@@ -1297,7 +1288,6 @@ class IMain(
         )
       )
     )
-  }
   def cleanMemberDecl(owner: Symbol, member: Name): Type =
     cleanTypeAfterTyper(owner.info nonPrivateDecl member)
 
@@ -1379,13 +1369,12 @@ class IMain(
 
   def withoutTruncating[A](body: => A): A = reporter withoutTruncating body
 
-  def symbolDefString(sym: Symbol) = {
+  def symbolDefString(sym: Symbol) =
     TypeStrings.quieter(
       exitingTyper(sym.defString),
       sym.owner.name + ".this.",
       sym.owner.fullName + "."
     )
-  }
 
   def showCodeIfDebugging(code: String) {
 
@@ -1493,12 +1482,11 @@ object IMain {
   trait TruncatingWriter {
     def maxStringLength: Int
     def isTruncating: Boolean
-    def truncate(str: String): String = {
+    def truncate(str: String): String =
       if (isTruncating &&
           (maxStringLength != 0 && str.length > maxStringLength))
         (str take maxStringLength - 3) + "..."
       else str
-    }
   }
   abstract class StrippingTruncatingWriter(out: JPrintWriter)
       extends JPrintWriter(out)

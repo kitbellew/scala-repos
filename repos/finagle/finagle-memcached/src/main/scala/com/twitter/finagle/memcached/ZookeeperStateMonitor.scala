@@ -55,7 +55,7 @@ trait ZookeeperStateMonitor {
   // zk watcher for connection, data, children event
   private[this] val zkWatcher: Watcher = new Watcher() {
     // NOTE: Ensure that the processing of events is not a blocking operation.
-    override def process(event: WatchedEvent) = {
+    override def process(event: WatchedEvent) =
       event.getState match {
         // actively trying to re-establish the zk connection (hence re-register the zk path
         // data watcher) whenever an zookeeper connection expired or disconnected. We could also
@@ -78,7 +78,6 @@ trait ZookeeperStateMonitor {
           }
         case _ =>
       }
-    }
   }
 
   /**
@@ -94,7 +93,7 @@ trait ZookeeperStateMonitor {
     def scheduleReadCachePoolConfig(
         op: () => Unit,
         backoff: Stream[Duration] = DefaultZkConnectionRetryBackoff
-    ): Unit = {
+    ): Unit =
       DefaultFuturePool {
         op()
       } onFailure { ex =>
@@ -109,7 +108,6 @@ trait ZookeeperStateMonitor {
         zkWorkSucceededCounter.incr()
         loopZookeeperWork
       }
-    }
 
     // get one work item off the broker and schedule it into the future pool
     zookeeperWorkQueue.recv.sync() onSuccess {

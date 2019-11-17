@@ -7,8 +7,7 @@ object Test {
   }
 
   class X[@specialized(Int) B] {
-    def x(b: B) = {
+    def x(b: B) =
       new SA[B]().o((x: Any) => x)
-    }
   }
 }

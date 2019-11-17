@@ -20,9 +20,8 @@ package object optimize {
       fn: Objective,
       init: Vector,
       options: OptimizationOption*)(
-      implicit optimization: OptimizationPackage[Objective, Vector]) = {
+      implicit optimization: OptimizationPackage[Objective, Vector]) =
     optimization.minimize(fn, init, options: _*)
-  }
 
   /**
     * Returns a sequence of states representing the iterates of a solver, given an [[breeze.optimize.IterableOptimizationPackage]] that knows how to minimize
@@ -43,7 +42,6 @@ package object optimize {
       implicit optimization: IterableOptimizationPackage[
         Objective,
         Vector,
-        State]) = {
+        State]) =
     optimization.iterations(fn, init, options: _*)
-  }
 }

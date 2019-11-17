@@ -27,7 +27,7 @@ private object ConfigHelpers {
       s: String,
       converter: String => T,
       key: String,
-      configType: String): T = {
+      configType: String): T =
     try {
       converter(s)
     } catch {
@@ -35,9 +35,8 @@ private object ConfigHelpers {
         throw new IllegalArgumentException(
           s"$key should be $configType, but was $s")
     }
-  }
 
-  def toBoolean(s: String, key: String): Boolean = {
+  def toBoolean(s: String, key: String): Boolean =
     try {
       s.toBoolean
     } catch {
@@ -45,15 +44,12 @@ private object ConfigHelpers {
         throw new IllegalArgumentException(
           s"$key should be boolean, but was $s")
     }
-  }
 
-  def stringToSeq[T](str: String, converter: String => T): Seq[T] = {
+  def stringToSeq[T](str: String, converter: String => T): Seq[T] =
     str.split(",").map(_.trim()).filter(_.nonEmpty).map(converter)
-  }
 
-  def seqToString[T](v: Seq[T], stringConverter: T => String): String = {
+  def seqToString[T](v: Seq[T], stringConverter: T => String): String =
     v.map(stringConverter).mkString(",")
-  }
 
   def timeFromString(str: String, unit: TimeUnit): Long =
     JavaUtils.timeStringAs(str, unit)
@@ -93,11 +89,10 @@ private[spark] class TypedConfigBuilder[T](
     this(parent, converter, Option(_).map(_.toString).orNull)
   }
 
-  def transform(fn: T => T): TypedConfigBuilder[T] = {
+  def transform(fn: T => T): TypedConfigBuilder[T] =
     new TypedConfigBuilder(parent, s => fn(converter(s)), stringConverter)
-  }
 
-  def checkValues(validValues: Set[T]): TypedConfigBuilder[T] = {
+  def checkValues(validValues: Set[T]): TypedConfigBuilder[T] =
     transform { v =>
       if (!validValues.contains(v)) {
         throw new IllegalArgumentException(
@@ -106,24 +101,21 @@ private[spark] class TypedConfigBuilder[T](
       }
       v
     }
-  }
 
-  def toSequence: TypedConfigBuilder[Seq[T]] = {
+  def toSequence: TypedConfigBuilder[Seq[T]] =
     new TypedConfigBuilder(
       parent,
       stringToSeq(_, converter),
       seqToString(_, stringConverter))
-  }
 
   /** Creates a [[ConfigEntry]] that does not require a default value. */
-  def optional: OptionalConfigEntry[T] = {
+  def optional: OptionalConfigEntry[T] =
     new OptionalConfigEntry[T](
       parent.key,
       converter,
       stringConverter,
       parent._doc,
       parent._public)
-  }
 
   /** Creates a [[ConfigEntry]] that has a default value. */
   def withDefault(default: T): ConfigEntry[T] = {
@@ -175,35 +167,27 @@ private[spark] case class ConfigBuilder(key: String) {
     this
   }
 
-  def intConf: TypedConfigBuilder[Int] = {
+  def intConf: TypedConfigBuilder[Int] =
     new TypedConfigBuilder(this, toNumber(_, _.toInt, key, "int"))
-  }
 
-  def longConf: TypedConfigBuilder[Long] = {
+  def longConf: TypedConfigBuilder[Long] =
     new TypedConfigBuilder(this, toNumber(_, _.toLong, key, "long"))
-  }
 
-  def doubleConf: TypedConfigBuilder[Double] = {
+  def doubleConf: TypedConfigBuilder[Double] =
     new TypedConfigBuilder(this, toNumber(_, _.toDouble, key, "double"))
-  }
 
-  def booleanConf: TypedConfigBuilder[Boolean] = {
+  def booleanConf: TypedConfigBuilder[Boolean] =
     new TypedConfigBuilder(this, toBoolean(_, key))
-  }
 
-  def stringConf: TypedConfigBuilder[String] = {
+  def stringConf: TypedConfigBuilder[String] =
     new TypedConfigBuilder(this, v => v)
-  }
 
-  def timeConf(unit: TimeUnit): TypedConfigBuilder[Long] = {
+  def timeConf(unit: TimeUnit): TypedConfigBuilder[Long] =
     new TypedConfigBuilder(this, timeFromString(_, unit), timeToString(_, unit))
-  }
 
-  def bytesConf(unit: ByteUnit): TypedConfigBuilder[Long] = {
+  def bytesConf(unit: ByteUnit): TypedConfigBuilder[Long] =
     new TypedConfigBuilder(this, byteFromString(_, unit), byteToString(_, unit))
-  }
 
-  def fallbackConf[T](fallback: ConfigEntry[T]): ConfigEntry[T] = {
+  def fallbackConf[T](fallback: ConfigEntry[T]): ConfigEntry[T] =
     new FallbackConfigEntry(key, _doc, _public, fallback)
-  }
 }

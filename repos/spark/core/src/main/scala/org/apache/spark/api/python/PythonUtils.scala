@@ -42,39 +42,33 @@ private[spark] object PythonUtils {
   }
 
   /** Merge PYTHONPATHS with the appropriate separator. Ignores blank strings. */
-  def mergePythonPaths(paths: String*): String = {
+  def mergePythonPaths(paths: String*): String =
     paths.filter(_ != "").mkString(File.pathSeparator)
-  }
 
-  def generateRDDWithNull(sc: JavaSparkContext): JavaRDD[String] = {
+  def generateRDDWithNull(sc: JavaSparkContext): JavaRDD[String] =
     sc.parallelize(List("a", null, "b"))
-  }
 
   /**
     * Convert list of T into seq of T (for calling API with varargs)
     */
-  def toSeq[T](vs: JList[T]): Seq[T] = {
+  def toSeq[T](vs: JList[T]): Seq[T] =
     vs.asScala
-  }
 
   /**
     * Convert list of T into a (Scala) List of T
     */
-  def toList[T](vs: JList[T]): List[T] = {
+  def toList[T](vs: JList[T]): List[T] =
     vs.asScala.toList
-  }
 
   /**
     * Convert list of T into array of T (for calling API with array)
     */
-  def toArray[T](vs: JList[T]): Array[T] = {
+  def toArray[T](vs: JList[T]): Array[T] =
     vs.toArray().asInstanceOf[Array[T]]
-  }
 
   /**
     * Convert java map of K, V into Map of K, V (for calling API with varargs)
     */
-  def toScalaMap[K, V](jm: java.util.Map[K, V]): Map[K, V] = {
+  def toScalaMap[K, V](jm: java.util.Map[K, V]): Map[K, V] =
     jm.asScala.toMap
-  }
 }

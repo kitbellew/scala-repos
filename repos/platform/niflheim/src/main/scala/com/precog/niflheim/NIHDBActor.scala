@@ -85,7 +85,7 @@ object NIHDB {
       cookThreshold: Int,
       timeout: Timeout,
       txLogScheduler: ScheduledExecutorService)(
-      implicit actorSystem: ActorSystem): IO[Validation[Error, NIHDB]] = {
+      implicit actorSystem: ActorSystem): IO[Validation[Error, NIHDB]] =
     NIHDBActor.create(
       chef,
       authorities,
@@ -97,7 +97,6 @@ object NIHDB {
         new NIHDBImpl(actor, timeout, authorities)
       }
     }
-  }
 
   final def open(
       chef: ActorRef,
@@ -105,7 +104,7 @@ object NIHDB {
       cookThreshold: Int,
       timeout: Timeout,
       txLogScheduler: ScheduledExecutorService)(
-      implicit actorSystem: ActorSystem) = {
+      implicit actorSystem: ActorSystem) =
     NIHDBActor.open(chef, baseDir, cookThreshold, timeout, txLogScheduler) map {
       _ map {
         _ map {
@@ -114,7 +113,6 @@ object NIHDB {
         }
       }
     }
-  }
 
   final def hasProjection(dir: File) = NIHDBActor.hasProjection(dir)
 }
@@ -430,9 +428,8 @@ private[niflheim] class NIHDBActor private (
     IO { workLock.release }
   }
 
-  override def postStop() = {
+  override def postStop() =
     close.unsafePerformIO
-  }
 
   def getSnapshot(): NIHDBSnapshot = NIHDBSnapshot(state.currentBlocks)
 
@@ -446,13 +443,10 @@ private[niflheim] class NIHDBActor private (
     }.toSeq: _*)
   }
 
-  def updatedThresholds(
-      current: Map[Int, Int],
-      ids: Seq[Long]): Map[Int, Int] = {
+  def updatedThresholds(current: Map[Int, Int], ids: Seq[Long]): Map[Int, Int] =
     (current.toSeq ++ ids.map { i =>
       val EventId(p, s) = EventId.fromLong(i); (p -> s)
     }).groupBy(_._1).map { case (p, ids) => (p -> ids.map(_._2).max) }
-  }
 
   override def receive = {
     case GetSnapshot =>
@@ -580,7 +574,6 @@ private[niflheim] object ProjectionState {
     }
   }
 
-  def toFile(state: ProjectionState, output: File): IO[Boolean] = {
+  def toFile(state: ProjectionState, output: File): IO[Boolean] =
     IOUtils.safeWriteToFile(state.serialize.renderCompact, output)
-  }
 }

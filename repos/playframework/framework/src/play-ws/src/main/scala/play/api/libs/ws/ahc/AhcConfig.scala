@@ -50,9 +50,8 @@ case class AhcWSClientConfig(
   */
 object AhcWSClientConfigFactory {
 
-  def forClientConfig(config: WSClientConfig) = {
+  def forClientConfig(config: WSClientConfig) =
     AhcWSClientConfig(wsClientConfig = config)
-  }
 }
 
 /**
@@ -157,9 +156,8 @@ class AhcConfigBuilder(ahcConfig: AhcWSClientConfig = AhcWSClientConfig()) {
     *
     * @return the resulting builder
     */
-  def build(): AsyncHttpClientConfig = {
+  def build(): AsyncHttpClientConfig =
     configure().build()
-  }
 
   /**
     * Modify the underlying `DefaultAsyncHttpClientConfig.Builder` using the provided function, after defaults are set.
@@ -169,13 +167,12 @@ class AhcConfigBuilder(ahcConfig: AhcWSClientConfig = AhcWSClientConfig()) {
     */
   def modifyUnderlying(
       modify: DefaultAsyncHttpClientConfig.Builder => DefaultAsyncHttpClientConfig.Builder)
-      : AhcConfigBuilder = {
+      : AhcConfigBuilder =
     new AhcConfigBuilder(ahcConfig) {
       override val addCustomSettings =
         modify compose AhcConfigBuilder.this.addCustomSettings
       override val builder = AhcConfigBuilder.this.builder
     }
-  }
 
   /**
     * Configures the global settings.
@@ -183,10 +180,9 @@ class AhcConfigBuilder(ahcConfig: AhcWSClientConfig = AhcWSClientConfig()) {
   def configureWS(ahcConfig: AhcWSClientConfig): Unit = {
     val config = ahcConfig.wsClientConfig
 
-    def toMillis(duration: Duration): Int = {
+    def toMillis(duration: Duration): Int =
       if (duration.isFinite()) duration.toMillis.toInt
       else -1
-    }
 
     builder
       .setConnectTimeout(toMillis(config.connectionTimeout))
@@ -310,13 +306,11 @@ class AhcConfigBuilder(ahcConfig: AhcWSClientConfig = AhcWSClientConfig()) {
     builder.setSslEngineFactory(new JsseSslEngineFactory(sslContext))
   }
 
-  def buildKeyManagerFactory(ssl: SSLConfig): KeyManagerFactoryWrapper = {
+  def buildKeyManagerFactory(ssl: SSLConfig): KeyManagerFactoryWrapper =
     new DefaultKeyManagerFactoryWrapper(ssl.keyManagerConfig.algorithm)
-  }
 
-  def buildTrustManagerFactory(ssl: SSLConfig): TrustManagerFactoryWrapper = {
+  def buildTrustManagerFactory(ssl: SSLConfig): TrustManagerFactoryWrapper =
     new DefaultTrustManagerFactoryWrapper(ssl.trustManagerConfig.algorithm)
-  }
 
   def validateDefaultTrustManager(sslConfig: SSLConfig) {
     // If we are using a default SSL context, we can't filter out certificates with weak algorithms

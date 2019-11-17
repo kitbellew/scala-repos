@@ -22,7 +22,7 @@ object Resource {
   val ClusterResource = new Resource(Cluster, Resource.ClusterResourceName)
   val WildCardResource = "*"
 
-  def fromString(str: String): Resource = {
+  def fromString(str: String): Resource =
     str.split(Separator, 2) match {
       case Array(resourceType, name, _*) =>
         new Resource(ResourceType.fromString(resourceType), name)
@@ -31,7 +31,6 @@ object Resource {
           "expected a string in format ResourceType:ResourceName but got " +
             str)
     }
-  }
 }
 
 /**
@@ -42,7 +41,6 @@ object Resource {
   */
 case class Resource(val resourceType: ResourceType, val name: String) {
 
-  override def toString: String = {
+  override def toString: String =
     resourceType.name + Resource.Separator + name
-  }
 }

@@ -51,8 +51,7 @@ object NeedsToBeAbstract extends AnnotatorPart[ScTemplateDefinition] {
     }
   }
 
-  def message(kind: String, name: String, member: (String, String)) = {
+  def message(kind: String, name: String, member: (String, String)) =
     "%s '%s' must either be declared abstract or implement abstract member '%s' in '%s'"
       .format(kind, name, member._1, member._2)
-  }
 }

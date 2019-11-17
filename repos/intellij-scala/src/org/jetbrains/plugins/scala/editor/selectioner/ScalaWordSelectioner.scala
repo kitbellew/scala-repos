@@ -104,7 +104,7 @@ class ScalaWordSelectioner extends ExtendWordSelectionHandlerBase {
     }
     result
   }
-  def canSelect(e: PsiElement): Boolean = {
+  def canSelect(e: PsiElement): Boolean =
     e match {
       case _: ScParameterClause | _: ScArguments => true
       case _: ScExtendsBlock                     => true
@@ -112,5 +112,4 @@ class ScalaWordSelectioner extends ExtendWordSelectionHandlerBase {
       case _: ScMethodCall                       => true
       case _                                     => false
     }
-  }
 }

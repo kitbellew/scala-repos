@@ -61,7 +61,7 @@ object Unidoc {
     }
   }
 
-  def unidocTask: Initialize[Task[File]] = {
+  def unidocTask: Initialize[Task[File]] =
     (
       compilers,
       cacheDirectory,
@@ -84,5 +84,4 @@ object Unidoc {
           target
         }
     }
-  }
 }

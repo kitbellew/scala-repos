@@ -120,7 +120,7 @@ trait StreamInstances {
   implicit val streamZipApplicative: Applicative[λ[α => Stream[α] @@ Zip]] =
     new Applicative[λ[α => Stream[α] @@ Zip]] {
       def point[A](a: => A) = Zip(Stream.continually(a))
-      def ap[A, B](fa: => (Stream[A] @@ Zip))(f: => (Stream[A => B] @@ Zip)) = {
+      def ap[A, B](fa: => (Stream[A] @@ Zip))(f: => (Stream[A => B] @@ Zip)) =
         Zip(
           if (Tag.unwrap(f).isEmpty || Tag.unwrap(fa).isEmpty)
             Stream.empty[B]
@@ -129,7 +129,6 @@ trait StreamInstances {
               (Tag.unwrap(f).head)(Tag.unwrap(fa).head),
               Tag.unwrap(
                 ap(Zip(Tag.unwrap(fa).tail))(Zip(Tag.unwrap(f).tail)))))
-      }
     }
 
   implicit def streamMonoid[A] = new Monoid[Stream[A]] {

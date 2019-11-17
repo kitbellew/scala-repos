@@ -172,14 +172,13 @@ trait ScBlock
                 comps.map(existize(_, visitedWithT)),
                 signatureMap.map {
                   case (s: Signature, tp) =>
-                    def updateTypeParam(tp: TypeParameter): TypeParameter = {
+                    def updateTypeParam(tp: TypeParameter): TypeParameter =
                       new TypeParameter(
                         tp.name,
                         tp.typeParams.map(updateTypeParam),
                         () => existize(tp.lowerType(), visitedWithT),
                         () => existize(tp.upperType(), visitedWithT),
                         tp.ptp)
-                    }
 
                     val pTypes: List[Seq[() => ScType]] = s.substitutedTypes
                       .map(_.map(f => () => existize(f(), visitedWithT)))

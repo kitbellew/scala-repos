@@ -19,7 +19,7 @@ object IntervalTrieArbitrary {
   private def randomProfileXor(
       min: Long,
       max: Long,
-      count: Int): Gen[IntervalTrie[Long]] = {
+      count: Int): Gen[IntervalTrie[Long]] =
     for {
       initial <- Gen.oneOf(true, false)
       edges <- Gen.resize(
@@ -28,7 +28,6 @@ object IntervalTrieArbitrary {
       support = edges.sorted.distinct
       kind <- Gen.containerOfN[Array, Int](support.length, Gen.oneOf(0, 1, 2))
     } yield makeProfileXor(initial, support, kind)
-  }
 
   private def randomProfileGen(size: Int) = Gen.frequency[IntervalTrie[Long]](
     1 -> IntervalTrie.empty[Long],

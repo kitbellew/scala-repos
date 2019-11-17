@@ -55,7 +55,7 @@ trait VFSColumnarTableModule
     def load(
         table: Table,
         apiKey: APIKey,
-        tpe: JType): EitherT[Future, ResourceError, Table] = {
+        tpe: JType): EitherT[Future, ResourceError, Table] =
       for {
         _ <- EitherT.right(table.toJson map { json =>
           logger.trace("Starting load from " + json.toList.map(_.renderCompact))
@@ -91,6 +91,5 @@ trait VFSColumnarTableModule
 
         Table(stream, ExactSize(length))
       }
-    }
   }
 }

@@ -55,11 +55,10 @@ object RemoteWatcherSpec {
       context.system.eventStream
         .publish(TestRemoteWatcher.AddressTerm(address))
 
-    override def quarantine(address: Address, uid: Option[Int]): Unit = {
+    override def quarantine(address: Address, uid: Option[Int]): Unit =
       // don't quarantine in remoting, but publish a testable message
       context.system.eventStream
         .publish(TestRemoteWatcher.Quarantined(address, uid))
-    }
   }
 }
 

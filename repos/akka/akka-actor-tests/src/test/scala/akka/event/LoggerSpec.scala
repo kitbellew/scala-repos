@@ -110,7 +110,7 @@ object LoggerSpec {
   }
 
   class SlowLogger extends Logging.DefaultLogger {
-    override def aroundReceive(r: Receive, msg: Any): Unit = {
+    override def aroundReceive(r: Receive, msg: Any): Unit =
       msg match {
         case event: LogEvent ⇒
           if (event.message.toString.startsWith("msg1"))
@@ -118,7 +118,6 @@ object LoggerSpec {
           super.aroundReceive(r, msg)
         case _ ⇒ super.aroundReceive(r, msg)
       }
-    }
   }
 
   class ActorWithMDC extends Actor with DiagnosticActorLogging {

@@ -55,12 +55,11 @@ class ZookeeperLeaderElector(
     }
   }
 
-  private def getControllerID(): Int = {
+  private def getControllerID(): Int =
     controllerContext.zkUtils.readDataMaybeNull(electionPath)._1 match {
       case Some(controller) => KafkaController.parseControllerId(controller)
       case None             => -1
     }
-  }
 
   def elect: Boolean = {
     val timestamp = SystemTime.milliseconds.toString
@@ -113,9 +112,8 @@ class ZookeeperLeaderElector(
     amILeader
   }
 
-  def close = {
+  def close =
     leaderId = -1
-  }
 
   def amILeader: Boolean = leaderId == brokerId
 

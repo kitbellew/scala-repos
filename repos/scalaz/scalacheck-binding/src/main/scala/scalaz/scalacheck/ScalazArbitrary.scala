@@ -125,7 +125,7 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
   implicit val OrderingArbitrary: Arbitrary[Ordering] = Arbitrary(
     oneOf(LT, EQ, GT))
 
-  private[this] def withSize[A](size: Int)(f: Int => Gen[A]): Gen[Stream[A]] = {
+  private[this] def withSize[A](size: Int)(f: Int => Gen[A]): Gen[Stream[A]] =
     Applicative[Gen]
       .sequence(
         Stream.fill(size)(Gen.choose(1, size))
@@ -149,7 +149,6 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
 
         Applicative[Gen].sequence(ns.map(f))
       }
-  }
 
   private[scalaz] def treeGenSized[A: NotNothing](size: Int)(
       implicit A: Arbitrary[A]): Gen[Tree[A]] =
@@ -431,9 +430,8 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
     Applicative[Arbitrary].apply4(arb[A], arb[B], arb[C], arb[D])(
       LazyTuple4(_, _, _, _))
 
-  implicit def heapArbitrary[A](implicit O: Order[A], A: Arbitrary[List[A]]) = {
+  implicit def heapArbitrary[A](implicit O: Order[A], A: Arbitrary[List[A]]) =
     Functor[Arbitrary].map(A)(as => Heap.fromData(as))
-  }
 
   // backwards compatibility
   def storeTArb[F[+_], A, B](

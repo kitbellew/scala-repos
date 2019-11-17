@@ -268,9 +268,8 @@ object ClusterSingletonManager {
       var changes = Vector.empty[AnyRef]
 
       // subscribe to MemberEvent, re-subscribe when restart
-      override def preStart(): Unit = {
+      override def preStart(): Unit =
         cluster.subscribe(self, classOf[MemberEvent])
-      }
       override def postStop(): Unit = cluster.unsubscribe(self)
 
       def matchingRole(member: Member): Boolean = role match {
@@ -300,20 +299,18 @@ object ClusterSingletonManager {
         changes :+= initial
       }
 
-      def add(m: Member): Unit = {
+      def add(m: Member): Unit =
         if (matchingRole(m))
           trackChange { () ⇒
             membersByAge -= m // replace
             membersByAge += m
           }
-      }
 
-      def remove(m: Member): Unit = {
+      def remove(m: Member): Unit =
         if (matchingRole(m))
           trackChange { () ⇒
             membersByAge -= m
           }
-      }
 
       def sendFirstChange(): Unit = {
         val event = changes.head
@@ -461,11 +458,10 @@ class ClusterSingletonManager(
   def addRemoved(address: Address): Unit =
     removed += address -> (Deadline.now + 15.minutes)
 
-  def cleanupOverdueNotMemberAnyMore(): Unit = {
+  def cleanupOverdueNotMemberAnyMore(): Unit =
     removed = removed filter {
       case (address, deadline) ⇒ deadline.hasTimeLeft
     }
-  }
 
   def logInfo(message: String): Unit =
     if (LogInfo) log.info(message)
@@ -636,7 +632,7 @@ class ClusterSingletonManager(
           s"Becoming singleton oldest was stuck because previous oldest [${previousOldestOption}] is unresponsive")
   }
 
-  def scheduleDelayedMemberRemoved(m: Member): Unit = {
+  def scheduleDelayedMemberRemoved(m: Member): Unit =
     if (removalMargin > Duration.Zero) {
       log.debug("Schedule DelayedMemberRemoved for [{}]", m.address)
       context.system.scheduler.scheduleOnce(
@@ -644,7 +640,6 @@ class ClusterSingletonManager(
         self,
         DelayedMemberRemoved(m))(context.dispatcher)
     } else self ! DelayedMemberRemoved(m)
-  }
 
   def gotoOldest(): State = {
     val singleton =
@@ -743,7 +738,7 @@ class ClusterSingletonManager(
   def gotoHandingOver(
       singleton: ActorRef,
       singletonTerminated: Boolean,
-      handOverTo: Option[ActorRef]): State = {
+      handOverTo: Option[ActorRef]): State =
     if (singletonTerminated) {
       handOverDone(handOverTo)
     } else {
@@ -751,7 +746,6 @@ class ClusterSingletonManager(
       singleton ! terminationMessage
       goto(HandingOver) using HandingOverData(singleton, handOverTo)
     }
-  }
 
   when(HandingOver) {
     case (Event(Terminated(ref), HandingOverData(singleton, handOverTo)))

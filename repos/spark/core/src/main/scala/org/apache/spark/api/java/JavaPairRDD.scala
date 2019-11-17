@@ -282,7 +282,7 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
       createCombiner: JFunction[V, C],
       mergeValue: JFunction2[C, V, C],
       mergeCombiners: JFunction2[C, C, C],
-      partitioner: Partitioner): JavaPairRDD[K, C] = {
+      partitioner: Partitioner): JavaPairRDD[K, C] =
     combineByKey(
       createCombiner,
       mergeValue,
@@ -290,7 +290,6 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
       partitioner,
       true,
       null)
-  }
 
   /**
     * Simplified version of combineByKey that hash-partitions the output RDD and uses map-side
@@ -597,9 +596,8 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
     * to a "combiner" in MapReduce. Output will be hash-partitioned with the existing partitioner/
     * parallelism level.
     */
-  def reduceByKey(func: JFunction2[V, V, V]): JavaPairRDD[K, V] = {
+  def reduceByKey(func: JFunction2[V, V, V]): JavaPairRDD[K, V] =
     fromRDD(reduceByKey(defaultPartitioner(rdd), func))
-  }
 
   /**
     * Group the values for each key in the RDD into a single sequence. Hash-partitions the
@@ -1071,10 +1069,9 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
     */
   def countApproxDistinctByKey(
       relativeSD: Double,
-      partitioner: Partitioner): JavaPairRDD[K, jl.Long] = {
+      partitioner: Partitioner): JavaPairRDD[K, jl.Long] =
     fromRDD(rdd.countApproxDistinctByKey(relativeSD, partitioner))
       .asInstanceOf[JavaPairRDD[K, jl.Long]]
-  }
 
   /**
     * Return approximate number of distinct values for each key in this RDD.
@@ -1089,10 +1086,9 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
     */
   def countApproxDistinctByKey(
       relativeSD: Double,
-      numPartitions: Int): JavaPairRDD[K, jl.Long] = {
+      numPartitions: Int): JavaPairRDD[K, jl.Long] =
     fromRDD(rdd.countApproxDistinctByKey(relativeSD, numPartitions))
       .asInstanceOf[JavaPairRDD[K, jl.Long]]
-  }
 
   /**
     * Return approximate number of distinct values for each key in this RDD.
@@ -1104,10 +1100,9 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
     * @param relativeSD Relative accuracy. Smaller values create counters that require more space.
     *                   It must be greater than 0.000017.
     */
-  def countApproxDistinctByKey(relativeSD: Double): JavaPairRDD[K, jl.Long] = {
+  def countApproxDistinctByKey(relativeSD: Double): JavaPairRDD[K, jl.Long] =
     fromRDD(rdd.countApproxDistinctByKey(relativeSD))
       .asInstanceOf[JavaPairRDD[K, jl.Long]]
-  }
 
   /** Assign a name to this RDD */
   def setName(name: String): JavaPairRDD[K, V] = {
@@ -1118,33 +1113,28 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
 
 object JavaPairRDD {
   private[spark] def groupByResultToJava[K: ClassTag, T](
-      rdd: RDD[(K, Iterable[T])]): RDD[(K, JIterable[T])] = {
+      rdd: RDD[(K, Iterable[T])]): RDD[(K, JIterable[T])] =
     rddToPairRDDFunctions(rdd).mapValues(_.asJava)
-  }
 
   private[spark] def cogroupResultToJava[K: ClassTag, V, W](
       rdd: RDD[(K, (Iterable[V], Iterable[W]))])
-      : RDD[(K, (JIterable[V], JIterable[W]))] = {
+      : RDD[(K, (JIterable[V], JIterable[W]))] =
     rddToPairRDDFunctions(rdd).mapValues(x => (x._1.asJava, x._2.asJava))
-  }
 
   private[spark] def cogroupResult2ToJava[K: ClassTag, V, W1, W2](
       rdd: RDD[(K, (Iterable[V], Iterable[W1], Iterable[W2]))])
-      : RDD[(K, (JIterable[V], JIterable[W1], JIterable[W2]))] = {
+      : RDD[(K, (JIterable[V], JIterable[W1], JIterable[W2]))] =
     rddToPairRDDFunctions(rdd).mapValues(x =>
       (x._1.asJava, x._2.asJava, x._3.asJava))
-  }
 
-  private[spark] def cogroupResult3ToJava[K: ClassTag, V, W1, W2, W3](rdd: RDD[
-    (K, (Iterable[V], Iterable[W1], Iterable[W2], Iterable[W3]))]): RDD[
-    (K, (JIterable[V], JIterable[W1], JIterable[W2], JIterable[W3]))] = {
+  private[spark] def cogroupResult3ToJava[K: ClassTag, V, W1, W2, W3](
+      rdd: RDD[(K, (Iterable[V], Iterable[W1], Iterable[W2], Iterable[W3]))])
+      : RDD[(K, (JIterable[V], JIterable[W1], JIterable[W2], JIterable[W3]))] =
     rddToPairRDDFunctions(rdd).mapValues(x =>
       (x._1.asJava, x._2.asJava, x._3.asJava, x._4.asJava))
-  }
 
-  def fromRDD[K: ClassTag, V: ClassTag](rdd: RDD[(K, V)]): JavaPairRDD[K, V] = {
+  def fromRDD[K: ClassTag, V: ClassTag](rdd: RDD[(K, V)]): JavaPairRDD[K, V] =
     new JavaPairRDD[K, V](rdd)
-  }
 
   implicit def toRDD[K, V](rdd: JavaPairRDD[K, V]): RDD[(K, V)] = rdd.rdd
 

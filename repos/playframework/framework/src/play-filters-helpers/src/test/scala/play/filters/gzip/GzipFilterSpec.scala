@@ -168,10 +168,9 @@ object GzipFilterSpec extends PlaySpecification with DataTables {
     result
   }
 
-  def checkGzipped(result: Future[Result]) = {
+  def checkGzipped(result: Future[Result]) =
     header(CONTENT_ENCODING, result) aka "Content encoding header" must beSome(
       "gzip")
-  }
 
   def checkGzippedBody(result: Future[Result], body: String)(
       implicit mat: Materializer) = {

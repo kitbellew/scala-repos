@@ -29,7 +29,7 @@ object StackTrace {
     *  The state is stored as a magic field of the throwable, and will be used
     *  by `extract()` to create an Array[StackTraceElement].
     */
-  @inline def captureState(throwable: Throwable): Unit = {
+  @inline def captureState(throwable: Throwable): Unit =
     if (js.isUndefined(js.constructorOf[js.Error].captureStackTrace)) {
       captureState(throwable, createException())
     } else {
@@ -44,17 +44,15 @@ object StackTrace {
         .captureStackTrace(throwable.asInstanceOf[js.Any])
       captureState(throwable, throwable)
     }
-  }
 
   /** Creates a JS Error with the current stack trace state. */
-  @inline private def createException(): Any = {
+  @inline private def createException(): Any =
     try {
       // Intentionally throw a JavaScript error
       new js.Object().asInstanceOf[js.Dynamic].undef()
     } catch {
       case js.JavaScriptException(e) => e
     }
-  }
 
   /** Captures browser-specific state recording the stack trace of a JS error.
     *  The state is stored as a magic field of the throwable, and will be used
@@ -229,7 +227,7 @@ object StackTrace {
         decompressedClasses(encoded)
       } else {
         @tailrec
-        def loop(i: Int): String = {
+        def loop(i: Int): String =
           if (i < compressedPrefixes.length) {
             val prefix = compressedPrefixes(i)
             if (encoded.startsWith(prefix))
@@ -240,7 +238,6 @@ object StackTrace {
             if (encoded.startsWith("L")) encoded.substring(1)
             else encoded // just in case
           }
-        }
         loop(0)
       }
     base.replace("_", ".").replace("$und", "_")
@@ -293,7 +290,7 @@ object StackTrace {
 
   // end of decodeClassName ----------------------------------------------------
 
-  private def decodeMethodName(encodedName: String): String = {
+  private def decodeMethodName(encodedName: String): String =
     if (encodedName startsWith "init___") {
       "<init>"
     } else {
@@ -301,7 +298,6 @@ object StackTrace {
       if (methodNameLen < 0) encodedName
       else encodedName.substring(0, methodNameLen)
     }
-  }
 
   private implicit class StringRE(val s: String) extends AnyVal {
     def re: js.RegExp = new js.RegExp(s)
@@ -385,7 +381,7 @@ object StackTrace {
     }
   }
 
-  private def extractRhino(e: js.Dynamic): js.Array[String] = {
+  private def extractRhino(e: js.Dynamic): js.Array[String] =
     (e.stack
       .asInstanceOf[js.UndefOr[String]])
       .getOrElse("")
@@ -393,9 +389,8 @@ object StackTrace {
       .jsReplace("""^(.+?)(?: \((.+)\))?$""".re("gm"), "$2@$1")
       .jsReplace("""\r\n?""".re("gm"), "\n") // Rhino has platform-dependent EOL's
       .jsSplit("\n")
-  }
 
-  private def extractChrome(e: js.Dynamic): js.Array[String] = {
+  private def extractChrome(e: js.Dynamic): js.Array[String] =
     (e.stack.asInstanceOf[String] + "\n")
       .jsReplace("""^[\s\S]+?\s+at\s+""".re, " at ") // remove message
       .jsReplace("""^\s+(at eval )?at\s+""".re("gm"), "") // remove 'at' and indentation
@@ -407,20 +402,18 @@ object StackTrace {
       .jsSplit("\n")
       .jsSlice(0, -1)
 
-    /* Note: there was a $ next to the \n here in the original code, but it
+  /* Note: there was a $ next to the \n here in the original code, but it
    * chokes with method names with $'s, which are generated often by Scala.js.
    */
-  }
 
-  private def extractFirefox(e: js.Dynamic): js.Array[String] = {
+  private def extractFirefox(e: js.Dynamic): js.Array[String] =
     (e.stack
       .asInstanceOf[String])
       .jsReplace("""(?:\n@:0)?\s+$""".re("m"), "")
       .jsReplace("""^(?:\((\S*)\))?@""".re("gm"), "{anonymous}($1)@")
       .jsSplit("\n")
-  }
 
-  private def extractIE(e: js.Dynamic): js.Array[String] = {
+  private def extractIE(e: js.Dynamic): js.Array[String] =
     (e.stack
       .asInstanceOf[String])
       .jsReplace("""^\s*at\s+(.*)$""".re("gm"), "$1")
@@ -430,16 +423,14 @@ object StackTrace {
         "$1@$2")
       .jsSplit("\n")
       .jsSlice(1)
-  }
 
-  private def extractSafari(e: js.Dynamic): js.Array[String] = {
+  private def extractSafari(e: js.Dynamic): js.Array[String] =
     (e.stack
       .asInstanceOf[String])
       .jsReplace("""\[native code\]\n""".re("m"), "")
       .jsReplace("""^(?=\w+Error\:).*$\n""".re("m"), "")
       .jsReplace("""^@""".re("gm"), "{anonymous}()@")
       .jsSplit("\n")
-  }
 
   private def extractOpera9(e: js.Dynamic): js.Array[String] = {
     // "  Line 43 of linked script file://localhost/G:/js/stacktrace.js\n"
@@ -534,9 +525,8 @@ object StackTrace {
     result
   }
 
-  private def extractOther(e: js.Dynamic): js.Array[String] = {
+  private def extractOther(e: js.Dynamic): js.Array[String] =
     js.Array()
-  }
 
   /* End copy-paste-translate from stacktrace.js
    * ---------------------------------------------------------------------------
@@ -562,7 +552,7 @@ object StackTrace {
         methodName: String,
         fileName: String,
         lineNumber: Int,
-        columnNumber: js.UndefOr[Int] = js.undefined): JSStackTraceElem = {
+        columnNumber: js.UndefOr[Int] = js.undefined): JSStackTraceElem =
       js.Dynamic
         .literal(
           declaringClass = declaringClass,
@@ -572,7 +562,6 @@ object StackTrace {
           columnNumber = columnNumber
         )
         .asInstanceOf[JSStackTraceElem]
-    }
   }
 
   /**

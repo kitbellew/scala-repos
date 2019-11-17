@@ -97,7 +97,7 @@ private[nio] object HeapDoubleBuffer {
         arrayOffset: Int,
         initialPosition: Int,
         initialLimit: Int,
-        readOnly: Boolean): DoubleBuffer = {
+        readOnly: Boolean): DoubleBuffer =
       new HeapDoubleBuffer(
         capacity,
         array,
@@ -105,7 +105,6 @@ private[nio] object HeapDoubleBuffer {
         initialPosition,
         initialLimit,
         readOnly)
-    }
   }
 
   @noinline
@@ -115,7 +114,7 @@ private[nio] object HeapDoubleBuffer {
       capacity: Int,
       initialPosition: Int,
       initialLength: Int,
-      isReadOnly: Boolean): DoubleBuffer = {
+      isReadOnly: Boolean): DoubleBuffer =
     GenHeapBuffer.generic_wrap(
       array,
       arrayOffset,
@@ -123,5 +122,4 @@ private[nio] object HeapDoubleBuffer {
       initialPosition,
       initialLength,
       isReadOnly)
-  }
 }

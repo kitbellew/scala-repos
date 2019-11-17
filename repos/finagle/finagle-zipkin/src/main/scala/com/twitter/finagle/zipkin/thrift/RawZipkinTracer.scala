@@ -157,9 +157,8 @@ private[thrift] class RawZipkinTracer(
         super.reset()
       }
 
-      override def write(bytes: Array[Byte], off: Int, len: Int): Unit = {
+      override def write(bytes: Array[Byte], off: Int, len: Int): Unit =
         outStream.write(bytes, off, len)
-      }
 
       def toBase64Line(): String = {
         outStream.close()
@@ -209,7 +208,7 @@ private[thrift] class RawZipkinTracer(
   /**
     * Log the span data via Scribe.
     */
-  def logSpans(spans: Seq[Span]): Future[Unit] = {
+  def logSpans(spans: Seq[Span]): Future[Unit] =
     client
       .log(createLogEntries(spans))
       .respond {
@@ -218,7 +217,6 @@ private[thrift] class RawZipkinTracer(
         case Throw(e)                    => errorReceiver.counter(e.getClass.getName).incr()
       }
       .unit
-  }
 
   /**
     * Mutate the Span with whatever new info we have.
@@ -381,9 +379,8 @@ private[thrift] class RawZipkinTracer(
   * Makes sure we don't trace the Scribe logging.
   */
 private class TracelessFilter[Req, Rep] extends SimpleFilter[Req, Rep] {
-  def apply(request: Req, service: Service[Req, Rep]) = {
+  def apply(request: Req, service: Service[Req, Rep]) =
     Trace.letClear {
       service(request)
     }
-  }
 }

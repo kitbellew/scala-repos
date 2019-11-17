@@ -306,9 +306,8 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
   /**
     * Split a comma separated String, filter out any empty items, and return a Set of strings
     */
-  private def stringToSet(list: String): Set[String] = {
+  private def stringToSet(list: String): Set[String] =
     list.split(',').map(_.trim).filter(!_.isEmpty).toSet
-  }
 
   /**
     * Admin acls should be set before the view or modify acls.  If you modify the admin
@@ -326,13 +325,12 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
   /**
     * Checking the existence of "*" is necessary as YARN can't recognize the "*" in "defaultuser,*"
     */
-  def getViewAcls: String = {
+  def getViewAcls: String =
     if (viewAcls.contains("*")) {
       "*"
     } else {
       viewAcls.mkString(",")
     }
-  }
 
   /**
     * Admin acls should be set before the view or modify acls.  If you modify the admin
@@ -346,13 +344,12 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
   /**
     * Checking the existence of "*" is necessary as YARN can't recognize the "*" in "defaultuser,*"
     */
-  def getModifyAcls: String = {
+  def getModifyAcls: String =
     if (modifyAcls.contains("*")) {
       "*"
     } else {
       modifyAcls.mkString(",")
     }
-  }
 
   /**
     * Admin acls should be set before the view or modify acls.  If you modify the admin
@@ -377,7 +374,7 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
     * For non-Yarn deployments, If the config variable is not set
     * we throw an exception.
     */
-  private def generateSecretKey(): String = {
+  private def generateSecretKey(): String =
     if (!isAuthenticationEnabled) {
       null
     } else if (SparkHadoopUtil.get.isYarnMode) {
@@ -414,7 +411,6 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
               SecurityManager.SPARK_AUTH_SECRET_CONF + " config")
       }
     }
-  }
 
   /**
     * Check to see if Acls for the UI are enabled
@@ -466,9 +462,8 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
     * Checks whether SASL encryption should be enabled.
     * @return Whether to enable SASL encryption when connecting to services that support it.
     */
-  def isSaslEncryptionEnabled(): Boolean = {
+  def isSaslEncryptionEnabled(): Boolean =
     sparkConf.getBoolean("spark.authenticate.enableSaslEncryption", false)
-  }
 
   /**
     * Gets the user used for authenticating HTTP connections.

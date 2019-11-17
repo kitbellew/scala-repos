@@ -147,7 +147,7 @@ class TimestampValue(
       * SimpleDateFormat wrongly does.)
       */
     object Nanos {
-      def unapply(str: String): Option[Int] = {
+      def unapply(str: String): Option[Int] =
         str match {
           case ""                              => Some(0)
           case s: String if !s.startsWith(".") => None
@@ -155,7 +155,6 @@ class TimestampValue(
           case s: String                       => Some(s.stripPrefix(".").padTo(9, '0').toInt)
           case _                               => None
         }
-      }
     }
 
     // Parse fractional part

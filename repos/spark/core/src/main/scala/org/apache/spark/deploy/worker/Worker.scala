@@ -224,10 +224,10 @@ private[deploy] class Worker(
     cancelLastRegistrationRetry()
   }
 
-  private def tryRegisterAllMasters(): Array[JFuture[_]] = {
+  private def tryRegisterAllMasters(): Array[JFuture[_]] =
     masterRpcAddresses.map { masterAddress =>
       registerMasterThreadPool.submit(new Runnable {
-        override def run(): Unit = {
+        override def run(): Unit =
           try {
             logInfo("Connecting to master " + masterAddress + "...")
             val masterEndpoint =
@@ -238,17 +238,15 @@ private[deploy] class Worker(
             case NonFatal(e) =>
               logWarning(s"Failed to connect to master $masterAddress", e)
           }
-        }
       })
     }
-  }
 
   /**
     * Re-register with the master because a network failure or a master failure has occurred.
     * If the re-registration attempt threshold is exceeded, the worker exits with error.
     * Note that for thread-safety this should only be called from the rpcEndpoint.
     */
-  private def reregisterWithMaster(): Unit = {
+  private def reregisterWithMaster(): Unit =
     Utils.tryOrExit {
       connectionAttemptCount += 1
       if (registered) {
@@ -288,7 +286,7 @@ private[deploy] class Worker(
             val masterAddress = masterRef.address
             registerMasterFutures =
               Array(registerMasterThreadPool.submit(new Runnable {
-                override def run(): Unit = {
+                override def run(): Unit =
                   try {
                     logInfo("Connecting to master " + masterAddress + "...")
                     val masterEndpoint = rpcEnv
@@ -301,7 +299,6 @@ private[deploy] class Worker(
                         s"Failed to connect to master $masterAddress",
                         e)
                   }
-                }
               }))
           case None =>
             if (registerMasterFutures != null) {
@@ -331,7 +328,6 @@ private[deploy] class Worker(
         System.exit(1)
       }
     }
-  }
 
   /**
     * Cancel last registeration retry, or do nothing if no retry
@@ -371,7 +367,7 @@ private[deploy] class Worker(
     }
   }
 
-  private def registerWithMaster(masterEndpoint: RpcEndpointRef): Unit = {
+  private def registerWithMaster(masterEndpoint: RpcEndpointRef): Unit =
     masterEndpoint
       .ask[RegisterWorkerResponse](
         RegisterWorker(
@@ -392,7 +388,6 @@ private[deploy] class Worker(
           logError(s"Cannot register with master: ${masterEndpoint.address}", e)
           System.exit(1)
       }(ThreadUtils.sameThread)
-  }
 
   private def handleRegisterResponse(msg: RegisterWorkerResponse): Unit =
     synchronized {
@@ -658,12 +653,11 @@ private[deploy] class Worker(
         ))
   }
 
-  override def onDisconnected(remoteAddress: RpcAddress): Unit = {
+  override def onDisconnected(remoteAddress: RpcAddress): Unit =
     if (master.exists(_.address == remoteAddress)) {
       logInfo(s"$remoteAddress Disassociated !")
       masterDisconnected()
     }
-  }
 
   private def masterDisconnected() {
     logError("Connection to master failed! Waiting for master to reconnect...")
@@ -690,18 +684,16 @@ private[deploy] class Worker(
     * Send a message to the current master. If we have not yet registered successfully with any
     * master, the message will be dropped.
     */
-  private def sendToMaster(message: Any): Unit = {
+  private def sendToMaster(message: Any): Unit =
     master match {
       case Some(masterRef) => masterRef.send(message)
       case None =>
         logWarning(
           s"Dropping $message because the connection to master has not yet been established")
     }
-  }
 
-  private def generateWorkerId(): String = {
+  private def generateWorkerId(): String =
     "worker-%s-%s-%d".format(createDateFormat.format(new Date), host, port)
-  }
 
   override def onStop() {
     cleanupThreadExecutor.shutdownNow()
@@ -716,7 +708,7 @@ private[deploy] class Worker(
     metricsSystem.stop()
   }
 
-  private def trimFinishedExecutorsIfNecessary(): Unit = {
+  private def trimFinishedExecutorsIfNecessary(): Unit =
     // do not need to protect with locks since both WorkerPage and Restful server get data through
     // thread-safe RpcEndPoint
     if (finishedExecutors.size > retainedExecutors) {
@@ -726,9 +718,8 @@ private[deploy] class Worker(
           case (executorId, _) => finishedExecutors.remove(executorId)
         }
     }
-  }
 
-  private def trimFinishedDriversIfNecessary(): Unit = {
+  private def trimFinishedDriversIfNecessary(): Unit =
     // do not need to protect with locks since both WorkerPage and Restful server get data through
     // thread-safe RpcEndPoint
     if (finishedDrivers.size > retainedDrivers) {
@@ -736,7 +727,6 @@ private[deploy] class Worker(
         case (driverId, _) => finishedDrivers.remove(driverId)
       }
     }
-  }
 
   private[worker] def handleDriverStateChanged(
       driverStateChanged: DriverStateChanged): Unit = {

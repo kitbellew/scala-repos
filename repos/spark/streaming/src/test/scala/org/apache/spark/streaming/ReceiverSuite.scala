@@ -215,11 +215,10 @@ class ReceiverSuite extends TestSuiteBase with Timeouts with Serializable {
     val allLogFiles2 = new mutable.HashSet[String]()
     logInfo("Temp checkpoint directory = " + tempDirectory)
 
-    def getBothCurrentLogFiles(): (Seq[String], Seq[String]) = {
+    def getBothCurrentLogFiles(): (Seq[String], Seq[String]) =
       (getCurrentLogFiles(logDirectory1), getCurrentLogFiles(logDirectory2))
-    }
 
-    def getCurrentLogFiles(logDirectory: File): Seq[String] = {
+    def getCurrentLogFiles(logDirectory: File): Seq[String] =
       try {
         if (logDirectory.exists()) {
           logDirectory1
@@ -233,7 +232,6 @@ class ReceiverSuite extends TestSuiteBase with Timeouts with Serializable {
         case e: Exception =>
           Seq.empty
       }
-    }
 
     def printLogFiles(message: String, files: Seq[String]) {
       logInfo(s"$message (${files.size} files):\n" + files.mkString("\n"))
@@ -300,10 +298,9 @@ class ReceiverSuite extends TestSuiteBase with Timeouts with Serializable {
     val errors = new ArrayBuffer[Throwable]
 
     /** Check if all data structures are clean */
-    def isAllEmpty: Boolean = {
+    def isAllEmpty: Boolean =
       singles.isEmpty && byteBuffers.isEmpty && iterators.isEmpty &&
-      arrayBuffers.isEmpty && errors.isEmpty
-    }
+        arrayBuffers.isEmpty && errors.isEmpty
 
     def pushSingle(data: Any) {
       singles += data
@@ -337,9 +334,8 @@ class ReceiverSuite extends TestSuiteBase with Timeouts with Serializable {
     override protected def onReceiverStart(): Boolean = true
 
     override def createBlockGenerator(
-        blockGeneratorListener: BlockGeneratorListener): BlockGenerator = {
+        blockGeneratorListener: BlockGeneratorListener): BlockGenerator =
       null
-    }
   }
 
   /**

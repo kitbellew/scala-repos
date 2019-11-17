@@ -541,9 +541,8 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
     * See also [[Flow.take]], [[Flow.takeWithin]], [[Flow.takeWhile]]
     */
   def limitWeighted(n: Long)(
-      costFn: function.Function[Out, Long]): javadsl.Flow[In, Out, Mat] = {
+      costFn: function.Function[Out, Long]): javadsl.Flow[In, Out, Mat] =
     new Flow(delegate.limitWeighted(n)(costFn.apply))
-  }
 
   /**
     * Apply a sliding window over the stream and return the windows as groups of elements, with the last group
@@ -1958,9 +1957,8 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
     * @return A [[RunnableGraph]] that materializes to a Processor when run() is called on it.
     */
   def toProcessor: RunnableGraph[
-    Processor[In @uncheckedVariance, Out @uncheckedVariance]] = {
+    Processor[In @uncheckedVariance, Out @uncheckedVariance]] =
     RunnableGraph.fromGraph(delegate.toProcessor)
-  }
 }
 
 object RunnableGraph {

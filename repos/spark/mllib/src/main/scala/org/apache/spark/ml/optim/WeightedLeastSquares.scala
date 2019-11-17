@@ -34,9 +34,8 @@ private[ml] class WeightedLeastSquaresModel(
     val diagInvAtWA: DenseVector)
     extends Serializable {
 
-  def predict(features: Vector): Double = {
+  def predict(features: Vector): Double =
     BLAS.dot(coefficients, features) + intercept
-  }
 }
 
 /**
@@ -237,7 +236,7 @@ private[ml] object WeightedLeastSquares {
     /**
       * Merges another [[Aggregator]].
       */
-    def merge(other: Aggregator): this.type = {
+    def merge(other: Aggregator): this.type =
       if (!other.initialized) {
         this
       } else {
@@ -257,7 +256,6 @@ private[ml] object WeightedLeastSquares {
         BLAS.axpy(1.0, other.aaSum, aaSum)
         this
       }
-    }
 
     /**
       * Validates that we have seen observations.

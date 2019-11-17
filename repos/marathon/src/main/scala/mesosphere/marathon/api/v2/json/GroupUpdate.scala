@@ -74,18 +74,16 @@ case class GroupUpdate(
 }
 
 object GroupUpdate {
-  def apply(id: PathId, apps: Set[AppDefinition]): GroupUpdate = {
+  def apply(id: PathId, apps: Set[AppDefinition]): GroupUpdate =
     GroupUpdate(Some(id), if (apps.isEmpty) None else Some(apps))
-  }
   def apply(
       id: PathId,
       apps: Set[AppDefinition],
-      groups: Set[GroupUpdate]): GroupUpdate = {
+      groups: Set[GroupUpdate]): GroupUpdate =
     GroupUpdate(
       Some(id),
       if (apps.isEmpty) None else Some(apps),
       if (groups.isEmpty) None else Some(groups))
-  }
   def empty(id: PathId): GroupUpdate = GroupUpdate(Some(id))
 
   implicit val GroupUpdateValidator: Validator[GroupUpdate] =

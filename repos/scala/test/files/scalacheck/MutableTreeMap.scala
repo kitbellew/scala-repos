@@ -235,11 +235,10 @@ package scala.collection.mutable {
     def entriesInView[This <: TraversableOnce[(K, V)], That](
         entries: This,
         from: Option[K],
-        until: Option[K])(implicit bf: CanBuildFrom[This, (K, V), That]) = {
+        until: Option[K])(implicit bf: CanBuildFrom[This, (K, V), That]) =
       (bf.apply(entries) ++= entries.filter {
         case (k, _) => in(k, from, until)
       }).result()
-    }
 
     property("get, contains") = forAll {
       (allEntries: Map[K, V], from: Option[K], until: Option[K]) =>

@@ -168,9 +168,8 @@ object ScalaDSL {
       }
       behavior.applyOrElse(Sig(ctx, msg), fallback)
     }
-    override def message(ctx: ActorContext[T], msg: T): Behavior[T] = {
+    override def message(ctx: ActorContext[T], msg: T): Behavior[T] =
       behavior.applyOrElse(Msg(ctx, msg), unhandledFunction)
-    }
     override def toString = s"Full(${LineNumbers(behavior)})"
   }
 

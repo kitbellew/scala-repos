@@ -83,16 +83,15 @@ class TypeAnnotationInspection extends AbstractInspection {
       )
   }
 
-  private def isSimple(exp: ScExpression): Boolean = {
+  private def isSimple(exp: ScExpression): Boolean =
     exp match {
       case _: ScLiteral => true
       case _            => false
     }
-  }
 
   private def requirementForProperty(
       property: ScMember,
-      settings: ScalaCodeStyleSettings): Int = {
+      settings: ScalaCodeStyleSettings): Int =
     if (property.isLocal) {
       settings.LOCAL_PROPERTY_TYPE_ANNOTATION
     } else {
@@ -101,11 +100,10 @@ class TypeAnnotationInspection extends AbstractInspection {
         settings.PROTECTED_PROPERTY_TYPE_ANNOTATION
       else settings.PUBLIC_PROPERTY_TYPE_ANNOTATION
     }
-  }
 
   private def requirementForMethod(
       method: ScFunctionDefinition,
-      settings: ScalaCodeStyleSettings): Int = {
+      settings: ScalaCodeStyleSettings): Int =
     if (method.isLocal) {
       settings.LOCAL_METHOD_TYPE_ANNOTATION
     } else {
@@ -113,7 +111,6 @@ class TypeAnnotationInspection extends AbstractInspection {
       else if (method.isProtected) settings.PROTECTED_METHOD_TYPE_ANNOTATION
       else settings.PUBLIC_METHOD_TYPE_ANNOTATION
     }
-  }
 
   private def kindOf(member: ScMember) =
     if (member.isLocal) "Local"

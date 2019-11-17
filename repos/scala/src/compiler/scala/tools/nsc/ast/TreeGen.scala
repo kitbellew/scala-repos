@@ -104,14 +104,13 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
         Ident(clazz),
         1 to numParams map (_ => Bind(tpnme.WILDCARD, EmptyTree)) toList)
   }
-  def mkBindForCase(patVar: Symbol, clazz: Symbol, targs: List[Type]): Tree = {
+  def mkBindForCase(patVar: Symbol, clazz: Symbol, targs: List[Type]): Tree =
     Bind(
       patVar,
       Typed(
         Ident(nme.WILDCARD),
         if (targs.isEmpty) mkAppliedTypeForCase(clazz)
         else AppliedTypeTree(Ident(clazz), targs map TypeTree)))
-  }
 
   def wildcardStar(tree: Tree) =
     atPos(tree.pos) { Typed(tree, Ident(tpnme.WILDCARD_STAR)) }
@@ -133,14 +132,13 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
     *  Don't let a reference type parameter be inferred, in case it's a singleton:
     *  apply the element type directly.
     */
-  def mkWrapArray(tree: Tree, elemtp: Type) = {
+  def mkWrapArray(tree: Tree, elemtp: Type) =
     mkMethodCall(
       PredefModule,
       wrapArrayMethodName(elemtp),
       if (isPrimitiveValueType(elemtp)) Nil else List(elemtp),
       List(tree)
     )
-  }
 
   /** Cast `tree` to type `pt` by creating
     *  one of the calls of the form

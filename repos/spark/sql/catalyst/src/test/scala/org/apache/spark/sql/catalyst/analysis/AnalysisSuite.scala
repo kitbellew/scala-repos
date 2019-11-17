@@ -313,12 +313,11 @@ class AnalysisSuite extends AnalysisTest {
     val short = testRelation2.output(4)
     val nullResult = Literal.create(null, StringType)
 
-    def checkUDF(udf: Expression, transformed: Expression): Unit = {
+    def checkUDF(udf: Expression, transformed: Expression): Unit =
       checkAnalysis(
         Project(Alias(udf, "")() :: Nil, testRelation2),
         Project(Alias(transformed, "")() :: Nil, testRelation2)
       )
-    }
 
     // non-primitive parameters do not need special null handling
     val udf1 = ScalaUDF((s: String) => "x", StringType, string :: Nil)

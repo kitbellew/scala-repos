@@ -25,7 +25,7 @@ class SbtNotificationListener
     }
   }
 
-  override def onSuccess(id: ExternalSystemTaskId): Unit = {
+  override def onSuccess(id: ExternalSystemTaskId): Unit =
     for {
       project <- Option(id.findProject())
       settings <- Option(SbtLocalSettings.getInstance(project))
@@ -33,7 +33,6 @@ class SbtNotificationListener
     } {
       settings.lastUpdateTimestamp = System.currentTimeMillis()
     }
-  }
 
   private def processOutput(text: String) {
     text match {

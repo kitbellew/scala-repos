@@ -43,9 +43,8 @@ case class InputFileName() extends LeafExpression with Nondeterministic {
 
   override protected def initInternal(): Unit = {}
 
-  override protected def evalInternal(input: InternalRow): UTF8String = {
+  override protected def evalInternal(input: InternalRow): UTF8String =
     SqlNewHadoopRDDState.getInputFileName()
-  }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     ev.isNull = "false"

@@ -387,7 +387,7 @@ final class ActorMaterializerSettings private (
       fuzzingMode: Boolean = this.fuzzingMode,
       autoFusing: Boolean = this.autoFusing,
       maxFixedBufferSize: Int = this.maxFixedBufferSize,
-      syncProcessingLimit: Int = this.syncProcessingLimit) = {
+      syncProcessingLimit: Int = this.syncProcessingLimit) =
     new ActorMaterializerSettings(
       initialInputBufferSize,
       maxInputBufferSize,
@@ -401,7 +401,6 @@ final class ActorMaterializerSettings private (
       maxFixedBufferSize,
       syncProcessingLimit
     )
-  }
 
   /**
     * Each asynchronous piece of a materialized stream topology is executed by one Actor
@@ -412,22 +411,20 @@ final class ActorMaterializerSettings private (
     */
   def withInputBuffer(
       initialSize: Int,
-      maxSize: Int): ActorMaterializerSettings = {
+      maxSize: Int): ActorMaterializerSettings =
     if (initialSize == this.initialInputBufferSize &&
         maxSize == this.maxInputBufferSize) this
     else
       copy(initialInputBufferSize = initialSize, maxInputBufferSize = maxSize)
-  }
 
   /**
     * This setting configures the default dispatcher to be used by streams materialized
     * with the [[ActorMaterializer]]. This can be overridden for individual parts of the
     * stream topology by using [[akka.stream.Attributes#dispatcher]].
     */
-  def withDispatcher(dispatcher: String): ActorMaterializerSettings = {
+  def withDispatcher(dispatcher: String): ActorMaterializerSettings =
     if (this.dispatcher == dispatcher) this
     else copy(dispatcher = dispatcher)
-  }
 
   /**
     * Scala API: Decides how exceptions from application code are to be handled, unless
@@ -435,10 +432,9 @@ final class ActorMaterializerSettings private (
     * [[akka.stream.Attributes#supervisionStrategy]].
     */
   def withSupervisionStrategy(
-      decider: Supervision.Decider): ActorMaterializerSettings = {
+      decider: Supervision.Decider): ActorMaterializerSettings =
     if (decider eq this.supervisionDecider) this
     else copy(supervisionDecider = decider)
-  }
 
   /**
     * Java API: Decides how exceptions from application code are to be handled, unless

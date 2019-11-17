@@ -20,12 +20,11 @@ trait ScStableCodeReferenceElement
     case _                => None
   }
 
-  def qualName: String = {
+  def qualName: String =
     qualifier match {
       case Some(x) => x.qualName + "." + refName
       case _       => refName
     }
-  }
 
   def isConstructorReference: Boolean
   def getConstructor: Option[ScConstructor]

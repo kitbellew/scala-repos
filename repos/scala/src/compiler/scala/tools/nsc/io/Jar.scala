@@ -69,9 +69,8 @@ class Jar(file: File) extends Iterable[JarEntry] {
     try f(in)
     finally in.close()
   }
-  def jarWriter(mainAttrs: (Attributes.Name, String)*) = {
+  def jarWriter(mainAttrs: (Attributes.Name, String)*) =
     new JarWriter(file, Jar.WManifest(mainAttrs: _*).underlying)
-  }
 
   override def foreach[U](f: JarEntry => U): Unit = withJarInput { in =>
     Iterator continually in.getNextJarEntry() takeWhile (_ != null) foreach f

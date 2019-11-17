@@ -17,23 +17,21 @@ case class TaskCounts(
     tasksRunning: Int,
     tasksHealthy: Int,
     tasksUnhealthy: Int) {
-  def +(counts: TaskCounts): TaskCounts = {
+  def +(counts: TaskCounts): TaskCounts =
     copy(
       tasksRunning = tasksRunning + counts.tasksRunning,
       tasksStaged = tasksStaged + counts.tasksStaged,
       tasksHealthy = tasksHealthy + counts.tasksHealthy,
       tasksUnhealthy = tasksUnhealthy + counts.tasksUnhealthy
     )
-  }
 
-  def -(counts: TaskCounts): TaskCounts = {
+  def -(counts: TaskCounts): TaskCounts =
     copy(
       tasksRunning = tasksRunning - counts.tasksRunning,
       tasksStaged = tasksStaged - counts.tasksStaged,
       tasksHealthy = tasksHealthy - counts.tasksHealthy,
       tasksUnhealthy = tasksUnhealthy - counts.tasksUnhealthy
     )
-  }
 }
 
 object TaskCounts {
@@ -46,17 +44,15 @@ object TaskCounts {
 
   def apply(
       appTasks: Iterable[Task],
-      healthStatuses: Map[Task.Id, Seq[Health]]): TaskCounts = {
+      healthStatuses: Map[Task.Id, Seq[Health]]): TaskCounts =
     TaskCounts(
       TaskForStatistics.forTasks(Timestamp(0), appTasks, healthStatuses))
-  }
 
-  def apply(appTasks: Iterable[TaskForStatistics]): TaskCounts = {
+  def apply(appTasks: Iterable[TaskForStatistics]): TaskCounts =
     TaskCounts(
       tasksStaged = appTasks.count(_.staging),
       tasksRunning = appTasks.count(_.running),
       tasksHealthy = appTasks.count(_.healthy),
       tasksUnhealthy = appTasks.count(_.unhealthy)
     )
-  }
 }

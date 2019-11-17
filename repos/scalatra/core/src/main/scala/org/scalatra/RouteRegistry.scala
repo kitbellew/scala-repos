@@ -121,13 +121,12 @@ class RouteRegistry {
 
   @tailrec private def modifyRoutes(
       method: HttpMethod,
-      f: (Seq[Route] => Seq[Route])): Unit = {
+      f: (Seq[Route] => Seq[Route])): Unit =
     if (_methodRoutes.putIfAbsent(method, f(Vector.empty)).isDefined) {
       val oldRoutes = _methodRoutes(method)
       if (!_methodRoutes.replace(method, oldRoutes, f(oldRoutes)))
         modifyRoutes(method, f)
     }
-  }
 
   /**
     * List of entry points, made of all route matchers

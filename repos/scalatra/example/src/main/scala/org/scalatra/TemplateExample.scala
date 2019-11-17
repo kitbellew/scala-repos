@@ -13,7 +13,7 @@ object Template {
       head: Seq[Node] = Nil,
       scripts: Seq[String] = Seq.empty,
       defaultScripts: Seq[String] =
-        Seq("/assets/js/jquery.min.js", "/assets/js/bootstrap.min.js")) = {
+        Seq("/assets/js/jquery.min.js", "/assets/js/bootstrap.min.js")) =
     <html lang="en">
       <head>
         <title>{title}</title>
@@ -77,7 +77,6 @@ object Template {
     }
       </body>
     </html>
-  }
 }
 
 class TemplateExample

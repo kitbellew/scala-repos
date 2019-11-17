@@ -190,28 +190,23 @@ class UnionTypeTest {
    * not test them.
    */
 
-  @Test def neither_left_nor_right(): Unit = {
+  @Test def neither_left_nor_right(): Unit =
     typeError("3: Boolean | String")
-  }
 
-  @Test def none_of_three_types(): Unit = {
+  @Test def none_of_three_types(): Unit =
     typeError("3: Boolean | String | List[Int]")
-  }
 
   @Test def wrong_type_parameter_on_left_or_right(): Unit = {
     typeError("List(1, 2): List[String] | String")
     typeError("List(1, 2): String | List[String]")
   }
 
-  @Test def left_of_OR_type_is_not_a_subtype_of_rhs(): Unit = {
+  @Test def left_of_OR_type_is_not_a_subtype_of_rhs(): Unit =
     typeError("(1: Int | List[String]): String | List[String]")
-  }
 
-  @Test def right_of_OR_type_is_not_a_subtype_of_rhs(): Unit = {
+  @Test def right_of_OR_type_is_not_a_subtype_of_rhs(): Unit =
     typeError("(1: Int | List[String]): String | Int")
-  }
 
-  @Test def merge_with_an_incorrect_subtype(): Unit = {
+  @Test def merge_with_an_incorrect_subtype(): Unit =
     typeError("(List(1, 2): List[Int] | Set[Int]).merge: Seq[Int]")
-  }
 }

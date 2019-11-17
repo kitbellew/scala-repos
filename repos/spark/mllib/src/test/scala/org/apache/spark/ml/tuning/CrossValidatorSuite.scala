@@ -347,9 +347,8 @@ object CrossValidatorSuite extends SparkFunSuite {
       extends Estimator[MyModel]
       with HasInputCol {
 
-    override def fit(dataset: DataFrame): MyModel = {
+    override def fit(dataset: DataFrame): MyModel =
       throw new UnsupportedOperationException
-    }
 
     override def transformSchema(schema: StructType): StructType = {
       require($(inputCol).nonEmpty)
@@ -361,9 +360,8 @@ object CrossValidatorSuite extends SparkFunSuite {
 
   class MyEvaluator extends Evaluator {
 
-    override def evaluate(dataset: DataFrame): Double = {
+    override def evaluate(dataset: DataFrame): Double =
       throw new UnsupportedOperationException
-    }
 
     override def isLargerBetter: Boolean = true
 

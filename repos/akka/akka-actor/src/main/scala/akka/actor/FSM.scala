@@ -153,9 +153,8 @@ object FSM {
         stateData: D = stateData,
         timeout: Option[FiniteDuration] = timeout,
         stopReason: Option[Reason] = stopReason,
-        replies: List[Any] = replies): State[S, D] = {
+        replies: List[Any] = replies): State[S, D] =
       new SilentState(stateName, stateData, timeout, stopReason, replies)
-    }
   }
 
   /**
@@ -181,9 +180,8 @@ object FSM {
         stateData: D = stateData,
         timeout: Option[FiniteDuration] = timeout,
         stopReason: Option[Reason] = stopReason,
-        replies: List[Any] = replies): State[S, D] = {
+        replies: List[Any] = replies): State[S, D] =
       new State(stateName, stateData, timeout, stopReason, replies)
-    }
 
     /**
       * Modify state transition descriptor to include a state timeout for the
@@ -206,32 +204,28 @@ object FSM {
       *
       * @return this state transition descriptor
       */
-    def replying(replyValue: Any): State[S, D] = {
+    def replying(replyValue: Any): State[S, D] =
       copy(replies = replyValue :: replies)
-    }
 
     /**
       * Modify state transition descriptor with new state data. The data will be
       * set when transitioning to the new state.
       */
-    def using(@deprecatedName('nextStateDate) nextStateData: D): State[S, D] = {
+    def using(@deprecatedName('nextStateDate) nextStateData: D): State[S, D] =
       copy(stateData = nextStateData)
-    }
 
     /**
       * INTERNAL API.
       */
-    private[akka] def withStopReason(reason: Reason): State[S, D] = {
+    private[akka] def withStopReason(reason: Reason): State[S, D] =
       copy(stopReason = Some(reason))
-    }
 
     /**
       * INTERNAL API.
       */
-    private[akka] def withNotification(notifies: Boolean): State[S, D] = {
+    private[akka] def withNotification(notifies: Boolean): State[S, D] =
       if (notifies) State(stateName, stateData, timeout, stopReason, replies)
       else new SilentState(stateName, stateData, timeout, stopReason, replies)
-    }
   }
 
   /**
@@ -618,7 +612,7 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
   private def register(
       name: S,
       function: StateFunction,
-      timeout: Timeout): Unit = {
+      timeout: Timeout): Unit =
     if (stateFunctions contains name) {
       stateFunctions(name) = stateFunctions(name) orElse function
       stateTimeouts(name) = timeout orElse stateTimeouts(name)
@@ -626,7 +620,6 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
       stateFunctions(name) = function
       stateTimeouts(name) = timeout
     }
-  }
 
   /*
    * unhandled event handler
@@ -715,7 +708,7 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
     applyState(nextState)
   }
 
-  private[akka] def applyState(nextState: State): Unit = {
+  private[akka] def applyState(nextState: State): Unit =
     nextState.stopReason match {
       case None ⇒ makeTransition(nextState)
       case _ ⇒
@@ -725,9 +718,8 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
         terminate(nextState)
         context.stop(self)
     }
-  }
 
-  private[akka] def makeTransition(nextState: State): Unit = {
+  private[akka] def makeTransition(nextState: State): Unit =
     if (!stateFunctions.contains(nextState.stateName)) {
       terminate(
         stay withStopReason Failure(
@@ -761,7 +753,6 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
           if (timeout.isDefined) timeoutFuture = scheduleTimeout(timeout.get)
       }
     }
-  }
 
   /**
     * Call `onTermination` hook; if you want to retain this behavior when
@@ -780,7 +771,7 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
     super.postStop()
   }
 
-  private def terminate(nextState: State): Unit = {
+  private def terminate(nextState: State): Unit =
     if (currentState.stopReason.isEmpty) {
       val reason = nextState.stopReason.get
       logTermination(reason)
@@ -793,7 +784,6 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
         StopEvent(reason, currentState.stateName, currentState.stateData)
       if (terminateEvent.isDefinedAt(stopEvent)) terminateEvent(stopEvent)
     }
-  }
 
   /**
     * By default [[FSM.Failure]] is logged at error level and other reason

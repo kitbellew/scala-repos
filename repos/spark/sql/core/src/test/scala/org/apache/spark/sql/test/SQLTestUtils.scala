@@ -68,9 +68,8 @@ private[sql] trait SQLTestUtils
 
     // This must live here to preserve binary compatibility with Spark < 1.5.
     implicit class StringToColumn(val sc: StringContext) {
-      def $(args: Any*): ColumnName = {
+      def $(args: Any*): ColumnName =
         new ColumnName(sc.s(args: _*))
-      }
     }
   }
 
@@ -78,9 +77,8 @@ private[sql] trait SQLTestUtils
     * Materialize the test data immediately after the [[SQLContext]] is set up.
     * This is necessary if the data is accessed by name but not through direct reference.
     */
-  protected def setupTestData(): Unit = {
+  protected def setupTestData(): Unit =
     loadTestDataBeforeTests = true
-  }
 
   protected override def beforeAll(): Unit = {
     super.beforeAll()
@@ -92,9 +90,8 @@ private[sql] trait SQLTestUtils
   /**
     * The Hadoop configuration used by the active [[SQLContext]].
     */
-  protected def hadoopConfiguration: Configuration = {
+  protected def hadoopConfiguration: Configuration =
     sparkContext.hadoopConfiguration
-  }
 
   /**
     * Sets all SQL configurations specified in `pairs`, calls `f`, and then restore all SQL
@@ -144,7 +141,7 @@ private[sql] trait SQLTestUtils
   /**
     * Drops temporary table `tableName` after calling `f`.
     */
-  protected def withTempTable(tableNames: String*)(f: => Unit): Unit = {
+  protected def withTempTable(tableNames: String*)(f: => Unit): Unit =
     try f
     finally {
       // If the test failed part way, we don't want to mask the failure by failing to remove
@@ -154,31 +151,28 @@ private[sql] trait SQLTestUtils
         case _: NoSuchTableException =>
       }
     }
-  }
 
   /**
     * Drops table `tableName` after calling `f`.
     */
-  protected def withTable(tableNames: String*)(f: => Unit): Unit = {
+  protected def withTable(tableNames: String*)(f: => Unit): Unit =
     try f
     finally {
       tableNames.foreach { name =>
         sqlContext.sql(s"DROP TABLE IF EXISTS $name")
       }
     }
-  }
 
   /**
     * Drops view `viewName` after calling `f`.
     */
-  protected def withView(viewNames: String*)(f: => Unit): Unit = {
+  protected def withView(viewNames: String*)(f: => Unit): Unit =
     try f
     finally {
       viewNames.foreach { name =>
         sqlContext.sql(s"DROP VIEW IF EXISTS $name")
       }
     }
-  }
 
   /**
     * Creates a temporary database and switches current database to it before executing `f`.  This
@@ -228,10 +222,8 @@ private[sql] trait SQLTestUtils
     * Turn a logical plan into a [[DataFrame]]. This should be removed once we have an easier
     * way to construct [[DataFrame]] directly out of local data without relying on implicits.
     */
-  protected implicit def logicalPlanToSparkQuery(
-      plan: LogicalPlan): DataFrame = {
+  protected implicit def logicalPlanToSparkQuery(plan: LogicalPlan): DataFrame =
     Dataset.newDataFrame(sqlContext, plan)
-  }
 
   /**
     * Disable stdout and stderr when running the test. To not output the logs to the console,
@@ -239,13 +231,12 @@ private[sql] trait SQLTestUtils
     * System.out or System.err. Otherwise, ConsoleAppender will still output to the console even if
     * we change System.out and System.err.
     */
-  protected def testQuietly(name: String)(f: => Unit): Unit = {
+  protected def testQuietly(name: String)(f: => Unit): Unit =
     test(name) {
       quietly {
         f
       }
     }
-  }
 }
 
 private[sql] object SQLTestUtils {

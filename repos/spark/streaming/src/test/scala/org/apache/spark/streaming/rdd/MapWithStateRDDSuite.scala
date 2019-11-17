@@ -46,7 +46,7 @@ class MapWithStateRDDSuite
     sc.setCheckpointDir(checkpointDir.toString)
   }
 
-  override def afterAll(): Unit = {
+  override def afterAll(): Unit =
     try {
       if (sc != null) {
         sc.stop()
@@ -55,7 +55,6 @@ class MapWithStateRDDSuite
     } finally {
       super.afterAll()
     }
-  }
 
   override def sparkContext: SparkContext = sc
 
@@ -424,23 +423,21 @@ class MapWithStateRDDSuite
       * - the data RDD and the parent MapWithStateRDD.
       */
     def rddCollectFunc(rdd: RDD[MapWithStateRDDRecord[Int, Int, Int]])
-        : Set[(List[(Int, Int, Long)], List[Int])] = {
+        : Set[(List[(Int, Int, Long)], List[Int])] =
       rdd
         .map { record =>
           (record.stateMap.getAll().toList, record.mappedData.toList)
         }
         .collect
         .toSet
-    }
 
     /** Generate MapWithStateRDD with data RDD having a long lineage */
     def makeStateRDDWithLongLineageDataRDD(
-        longLineageRDD: RDD[Int]): MapWithStateRDD[Int, Int, Int, Int] = {
+        longLineageRDD: RDD[Int]): MapWithStateRDD[Int, Int, Int, Int] =
       MapWithStateRDD.createFromPairRDD(
         longLineageRDD.map { _ -> 1 },
         partitioner,
         Time(0))
-    }
 
     testRDD(
       makeStateRDDWithLongLineageDataRDD,

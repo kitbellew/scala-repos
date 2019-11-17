@@ -39,9 +39,8 @@ private[internal] trait TypeConstraints { self: SymbolTable =>
       *  be called from within an undo or undoUnless block,
       *  which is already synchronized.
       */
-    private[reflect] def record(tv: TypeVar) = {
+    private[reflect] def record(tv: TypeVar) =
       log ::= UndoPair(tv, tv.constr.cloneInternal)
-    }
 
     def clear() {
       if (settings.debug)

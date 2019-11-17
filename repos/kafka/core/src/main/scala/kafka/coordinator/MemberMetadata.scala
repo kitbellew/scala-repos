@@ -69,13 +69,12 @@ private[coordinator] class MemberMetadata(
   /**
     * Get metadata corresponding to the provided protocol.
     */
-  def metadata(protocol: String): Array[Byte] = {
+  def metadata(protocol: String): Array[Byte] =
     supportedProtocols.find(_._1 == protocol) match {
       case Some((_, metadata)) => metadata
       case None =>
         throw new IllegalArgumentException("Member does not support protocol")
     }
-  }
 
   /**
     * Check if the provided protocol metadata matches the currently stored metadata.
@@ -91,29 +90,27 @@ private[coordinator] class MemberMetadata(
     return true
   }
 
-  def summary(protocol: String): MemberSummary = {
+  def summary(protocol: String): MemberSummary =
     MemberSummary(
       memberId,
       clientId,
       clientHost,
       metadata(protocol),
       assignment)
-  }
 
-  def summaryNoMetadata(): MemberSummary = {
+  def summaryNoMetadata(): MemberSummary =
     MemberSummary(
       memberId,
       clientId,
       clientHost,
       Array.empty[Byte],
       Array.empty[Byte])
-  }
 
   /**
     * Vote for one of the potential group protocols. This takes into account the protocol preference as
     * indicated by the order of supported protocols and returns the first one also contained in the set
     */
-  def vote(candidates: Set[String]): String = {
+  def vote(candidates: Set[String]): String =
     supportedProtocols.find({
       case (protocol, _) => candidates.contains(protocol)
     }) match {
@@ -122,9 +119,7 @@ private[coordinator] class MemberMetadata(
         throw new IllegalArgumentException(
           "Member does not support any of the candidate protocols")
     }
-  }
 
-  override def toString = {
+  override def toString =
     "[%s,%s,%s,%d]".format(memberId, clientId, clientHost, sessionTimeoutMs)
-  }
 }

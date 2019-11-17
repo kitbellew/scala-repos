@@ -17,9 +17,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr._
  */
 
 class ScalaWithForYieldSurrounder extends ScalaExpressionSurrounder {
-  override def getTemplateAsString(elements: Array[PsiElement]): String = {
+  override def getTemplateAsString(elements: Array[PsiElement]): String =
     "for (a <- as) yield {" + super.getTemplateAsString(elements) + "}"
-  }
 
   override def getTemplateDescription = "for / yield"
 

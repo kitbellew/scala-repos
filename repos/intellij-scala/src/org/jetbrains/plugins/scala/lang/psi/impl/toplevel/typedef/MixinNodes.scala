@@ -141,13 +141,11 @@ abstract class MixinNodes {
       }
     }
 
-    def allFirstSeq(): Seq[AllNodes] = {
+    def allFirstSeq(): Seq[AllNodes] =
       forAll()._1.toSeq.map(_._2)
-    }
 
-    def allSecondSeq(): Seq[AllNodes] = {
+    def allSecondSeq(): Seq[AllNodes] =
       forAll()._1.toSeq.map(_._2)
-    }
 
     private def toNodesSeq(seq: List[(T, Node)]): NodesSeq = {
       val map = new mutable.HashMap[Int, List[(T, Node)]]
@@ -216,35 +214,30 @@ abstract class MixinNodes {
   }
 
   class AllNodes(publics: NodesMap, privates: NodesSeq) {
-    def get(s: T): Option[Node] = {
+    def get(s: T): Option[Node] =
       publics.get(s) match {
         case res: Some[Node] => res
         case _               => privates.get(s)
       }
-    }
 
     def foreach(p: ((T, Node)) => Unit) {
       publics.foreach(p)
       privates.map.values.flatten.foreach(p)
     }
 
-    def map[R](p: ((T, Node)) => R): Seq[R] = {
+    def map[R](p: ((T, Node)) => R): Seq[R] =
       publics.map(p).toSeq ++ privates.map.values.flatten.map(p)
-    }
 
-    def filter(p: ((T, Node)) => Boolean): Seq[(T, Node)] = {
+    def filter(p: ((T, Node)) => Boolean): Seq[(T, Node)] =
       publics.filter(p).toSeq ++ privates.map.values.flatten.filter(p)
-    }
 
-    def withFilter(p: ((T, Node)) => Boolean) = {
+    def withFilter(p: ((T, Node)) => Boolean) =
       (publics.toSeq ++ privates.map.values.flatten).withFilter(p)
-    }
 
-    def flatMap[R](p: ((T, Node)) => Traversable[R]): Seq[R] = {
+    def flatMap[R](p: ((T, Node)) => Traversable[R]): Seq[R] =
       publics.flatMap(p).toSeq ++ privates.map.values.flatten.flatMap(p)
-    }
 
-    def iterator: Iterator[(T, Node)] = {
+    def iterator: Iterator[(T, Node)] =
       new Iterator[(T, Node)] {
         private val iter1 = publics.iterator
         private val iter2 = privates.map.values.flatten.iterator
@@ -253,14 +246,12 @@ abstract class MixinNodes {
         def next(): (T, Node) =
           if (iter1.hasNext) iter1.next() else iter2.next()
       }
-    }
 
-    def fastPhysicalSignatureGet(key: T): Option[Node] = {
+    def fastPhysicalSignatureGet(key: T): Option[Node] =
       publics.fastPhysicalSignatureGet(key) match {
         case res: Some[Node] => res
         case _               => privates.get(key)
       }
-    }
 
     def isEmpty: Boolean =
       publics.isEmpty && privates.map.values.forall(_.isEmpty)
@@ -314,7 +305,7 @@ abstract class MixinNodes {
       None
     }
 
-    def fastPhysicalSignatureGet(key: T): Option[Node] = {
+    def fastPhysicalSignatureGet(key: T): Option[Node] =
       key match {
         case p: PhysicalSignature =>
           val h = index(elemHashCode(key))
@@ -338,7 +329,6 @@ abstract class MixinNodes {
           fastGet(key)
         case _ => fastGet(key)
       }
-    }
   }
 
   def build(clazz: PsiClass): Map = build(ScType.designator(clazz))
@@ -623,13 +613,12 @@ object MixinNodes {
     val buffer = new ListBuffer[ScType]
     val set: mutable.HashSet[String] =
       new mutable.HashSet //to add here qualified names of classes
-    def classString(clazz: PsiClass): String = {
+    def classString(clazz: PsiClass): String =
       clazz match {
         case obj: ScObject => "Object: " + obj.qualifiedName
         case tra: ScTrait  => "Trait: " + tra.qualifiedName
         case _             => "Class: " + clazz.qualifiedName
       }
-    }
     def add(tp: ScType) {
       ScType.extractClass(tp, project) match {
         case Some(clazz)
@@ -666,7 +655,7 @@ object MixinNodes {
     while (iterator.hasNext) {
       var tp = iterator.next()
       @tailrec
-      def updateTp(tp: ScType): ScType = {
+      def updateTp(tp: ScType): ScType =
         tp.isAliasType match {
           case Some(AliasType(_, _, Success(upper, _))) => updateTp(upper)
           case _ =>
@@ -676,7 +665,6 @@ object MixinNodes {
               case _                        => tp
             }
         }
-      }
       tp = updateTp(tp)
       ScType.extractClassType(tp) match {
         case Some((clazz, subst)) =>

@@ -57,7 +57,7 @@ abstract class CreateTypeDefinitionQuickFix(
   override protected def invokeInner(
       project: Project,
       editor: Editor,
-      file: PsiFile) = {
+      file: PsiFile) =
     inWriteAction {
       ref.qualifier match {
         case Some(InstanceOfClass(typeDef: ScTypeDefinition)) =>
@@ -76,7 +76,6 @@ abstract class CreateTypeDefinitionQuickFix(
         case _ =>
       }
     }
-  }
 
   private def createClassInPackage(psiPackage: PsiPackage): Unit = {
     val directory = psiPackage.getDirectories.filter(_.isWritable) match {
@@ -104,7 +103,7 @@ abstract class CreateTypeDefinitionQuickFix(
 
   private def createClassIn(
       parent: PsiElement,
-      anchorAfter: Option[PsiElement]): Unit = {
+      anchorAfter: Option[PsiElement]): Unit =
     try {
       if (!FileModificationService.getInstance.preparePsiElementForWrite(
             parent)) return
@@ -124,7 +123,6 @@ abstract class CreateTypeDefinitionQuickFix(
       case e: IncorrectOperationException =>
         LOG.error(e)
     }
-  }
 
   private def createClassWithLevelChoosing(
       editor: Editor,
@@ -168,7 +166,7 @@ abstract class CreateTypeDefinitionQuickFix(
     }
   }
 
-  private def createClassAtLevel(sibling: PsiElement): Unit = {
+  private def createClassAtLevel(sibling: PsiElement): Unit =
     sibling match {
       case file: PsiFile => createClassInDirectory(file.getContainingDirectory)
       case td: ScTypeDefinition if td.isTopLevel =>
@@ -178,7 +176,6 @@ abstract class CreateTypeDefinitionQuickFix(
           PsiTreeUtil.getParentOfType(tb, classOf[ScTemplateDefinition]))
       case _ =>
     }
-  }
 
   private def createClassInDirectory(directory: PsiDirectory) = {
     val clazz = ScalaDirectoryService.createClassFromTemplate(
@@ -249,7 +246,7 @@ abstract class CreateTypeDefinitionQuickFix(
       case _ =>
     }
 
-  private def addClassParams(clazz: ScTypeDefinition): Unit = {
+  private def addClassParams(clazz: ScTypeDefinition): Unit =
     clazz match {
       case cl: ScClass =>
         val constr = cl.constructor.get
@@ -261,7 +258,6 @@ abstract class CreateTypeDefinitionQuickFix(
         constr.parameterList.replace(parameters)
       case _ =>
     }
-  }
 }
 
 class CreateObjectQuickFix(ref: ScReferenceElement)
@@ -270,9 +266,8 @@ class CreateObjectQuickFix(ref: ScReferenceElement)
 class CreateTraitQuickFix(ref: ScReferenceElement)
     extends CreateTypeDefinitionQuickFix(ref, "trait", Trait) {
 
-  override def isAvailable(project: Project, editor: Editor, file: PsiFile) = {
+  override def isAvailable(project: Project, editor: Editor, file: PsiFile) =
     super.isAvailable(project, editor, file) && parametersText(ref).isEmpty
-  }
 }
 
 class CreateClassQuickFix(ref: ScReferenceElement)

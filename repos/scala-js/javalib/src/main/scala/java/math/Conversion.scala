@@ -242,7 +242,7 @@ private[math] object Conversion {
   }
 
   /* can process only 32-bit numbers */
-  def toDecimalScaledString(value: Long, scale: Int): String = {
+  def toDecimalScaledString(value: Long, scale: Int): String =
     if (value == 0) {
       scale match {
         case 0 => "0"
@@ -308,7 +308,6 @@ private[math] object Conversion {
       if (negNumber) '-' + result
       else result
     }
-  }
 
   def divideLongByBillion(a: Long): Long = {
     val (quot, rem) =
@@ -327,7 +326,7 @@ private[math] object Conversion {
     (rem << 32) | (quot & 0XFFFFFFFFL)
   }
 
-  def bigInteger2Double(bi: BigInteger): Double = {
+  def bigInteger2Double(bi: BigInteger): Double =
     if (bi.numberLength < 2 || ((bi.numberLength == 2) && (bi.digits(1) > 0))) {
       bi.longValue()
     } else if (bi.numberLength > 32) {
@@ -358,5 +357,4 @@ private[math] object Conversion {
         java.lang.Double.longBitsToDouble(result)
       }
     }
-  }
 }

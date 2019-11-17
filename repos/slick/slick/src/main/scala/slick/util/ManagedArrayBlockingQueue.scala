@@ -244,7 +244,7 @@ abstract class ManagedArrayBlockingQueue[E >: Null <: AnyRef](
 
     def hasNext: Boolean = remaining > 0
 
-    def next: E = {
+    def next: E =
       locked {
         if (remaining <= 0) throw new NoSuchElementException
         lastRet = nextIndex
@@ -259,7 +259,6 @@ abstract class ManagedArrayBlockingQueue[E >: Null <: AnyRef](
         }) ()
         x
       }
-    }
 
     def remove: Unit = throw new UnsupportedOperationException
   }

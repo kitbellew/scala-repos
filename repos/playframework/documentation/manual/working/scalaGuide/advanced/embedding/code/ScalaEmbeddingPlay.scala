@@ -88,9 +88,8 @@ object ScalaEmbeddingPlay extends Specification with WsTestClient {
 
           override protected def onNotFound(
               request: RequestHeader,
-              message: String) = {
+              message: String) =
             Future.successful(Results.NotFound("Nothing was found!"))
-          }
         }
       }
       val server = components.server
@@ -104,11 +103,10 @@ object ScalaEmbeddingPlay extends Specification with WsTestClient {
     }
   }
 
-  def testRequest(port: Int) = {
+  def testRequest(port: Int) =
     withClient { client =>
       Await
         .result(client.url("/hello/world").get(), Duration.Inf)
         .body must_== "Hello world"
     }(new play.api.http.Port(port))
-  }
 }

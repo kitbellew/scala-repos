@@ -76,13 +76,12 @@ object StringUtil {
     * @param lineSeparator "LF" or "CRLF"
     * @return the converted content
     */
-  def appendNewLine(content: String, lineSeparator: String): String = {
+  def appendNewLine(content: String, lineSeparator: String): String =
     if (lineSeparator == "CRLF") {
       if (content.endsWith("\r\n")) content else content + "\r\n"
     } else {
       if (content.endsWith("\n")) content else content + "\n"
     }
-  }
 
   /**
     * Extract issue id like ```#issueId``` from the given message.

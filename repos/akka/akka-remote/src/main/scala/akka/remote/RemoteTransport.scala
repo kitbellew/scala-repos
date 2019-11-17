@@ -83,9 +83,8 @@ private[akka] abstract class RemoteTransport(
     * @param cmd Command message to send to the transports.
     * @return A Future that indicates when the message was successfully handled or dropped.
     */
-  def managementCommand(cmd: Any): Future[Boolean] = {
+  def managementCommand(cmd: Any): Future[Boolean] =
     Future.successful(false)
-  }
 
   /**
     * A Logger that can be used to log issues that may occur

@@ -9,7 +9,7 @@ import org.scalajs.core.tools.io._
 import org.junit.Test
 
 abstract class CustomInitFilesTest extends JSEnvTest {
-  def makeCustomInitFiles(): Seq[VirtualJSFile] = {
+  def makeCustomInitFiles(): Seq[VirtualJSFile] =
     Seq(
       new MemVirtualJSFile("custominit.js")
         .withContent("""
@@ -17,15 +17,13 @@ abstract class CustomInitFilesTest extends JSEnvTest {
         console.log("custom: " + s);
       }
     """))
-  }
 
   @Test
-  def customInitFilesTest: Unit = {
+  def customInitFilesTest: Unit =
     """
     customPrint("hello");
     """ hasOutput """|custom: hello
        |""".stripMargin
-  }
 }
 
 class NodeJSWithCustomInitFilesTest extends CustomInitFilesTest {

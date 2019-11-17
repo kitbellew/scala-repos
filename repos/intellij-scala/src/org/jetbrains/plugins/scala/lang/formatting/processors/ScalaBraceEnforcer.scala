@@ -189,9 +189,8 @@ class ScalaBraceEnforcer(settings: CodeStyleSettings)
     }
   }
 
-  protected def checkElementContainsRange(element: PsiElement): Boolean = {
+  protected def checkElementContainsRange(element: PsiElement): Boolean =
     myPostProcessor.isElementPartlyInRange(element)
-  }
 
   protected def updateResultRange(oldTextLength: Int, newTextLength: Int) {
     myPostProcessor.updateResultRange(oldTextLength, newTextLength)

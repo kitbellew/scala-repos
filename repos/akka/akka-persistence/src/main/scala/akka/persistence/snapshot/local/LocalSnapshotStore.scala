@@ -94,9 +94,8 @@ private[persistence] class LocalSnapshotStore
     case _: DeleteSnapshotsFailure ⇒ // ignore
   }
 
-  private def snapshotFiles(metadata: SnapshotMetadata): immutable.Seq[File] = {
+  private def snapshotFiles(metadata: SnapshotMetadata): immutable.Seq[File] =
     snapshotDir.listFiles(new SnapshotSeqNrFilenameFilter(metadata)).toVector
-  }
 
   @scala.annotation.tailrec
   private def load(
@@ -195,26 +194,21 @@ private[persistence] class LocalSnapshotStore
 
   private final class SnapshotFilenameFilter(persistenceId: String)
       extends FilenameFilter {
-    def accept(dir: File, name: String): Boolean = {
+    def accept(dir: File, name: String): Boolean =
       name match {
         case FilenamePattern(pid, snr, tms) ⇒
           pid.equals(URLEncoder.encode(persistenceId))
         case _ ⇒ false
       }
-    }
   }
 
   private final class SnapshotSeqNrFilenameFilter(md: SnapshotMetadata)
       extends FilenameFilter {
-    private final def matches(
-        pid: String,
-        snr: String,
-        tms: String): Boolean = {
+    private final def matches(pid: String, snr: String, tms: String): Boolean =
       pid.equals(URLEncoder.encode(md.persistenceId)) &&
-      Try(
-        snr.toLong == md.sequenceNr &&
-          (md.timestamp == 0L || tms.toLong == md.timestamp)).getOrElse(false)
-    }
+        Try(
+          snr.toLong == md.sequenceNr &&
+            (md.timestamp == 0L || tms.toLong == md.timestamp)).getOrElse(false)
 
     def accept(dir: File, name: String): Boolean =
       name match {

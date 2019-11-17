@@ -15,7 +15,7 @@ class JUnitAssertionsTest {
 
   private def testIfAsserts(
       assertion: => Unit,
-      shouldPass: Boolean = true): Unit = {
+      shouldPass: Boolean = true): Unit =
     Try(assertion) match {
       case Success(_) =>
         if (!shouldPass) fail("Assertion should have failed.")
@@ -28,7 +28,6 @@ class JUnitAssertionsTest {
 
       case Failure(ex) => throw ex // Unexpected exception, let bubble up.
     }
-  }
 
   @Test
   def testAssertTrueFalse(): Unit = {

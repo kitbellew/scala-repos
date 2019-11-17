@@ -209,7 +209,6 @@ class ClientQuotaManagerTest {
     }
   }
 
-  def newMetrics: Metrics = {
+  def newMetrics: Metrics =
     new Metrics(new MetricConfig(), Collections.emptyList(), time)
-  }
 }

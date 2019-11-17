@@ -174,10 +174,9 @@ trait ClassHelpers { self: ControlHelpers =>
   /**
     * @return true if the method is public and has no parameters
     */
-  def callableMethod_?(meth: Method) = {
+  def callableMethod_?(meth: Method) =
     meth != null && meth.getParameterTypes.length == 0 &&
-    isPublic(meth.getModifiers)
-  }
+      isPublic(meth.getModifiers)
 
   /**
     * Is the clz an instance of (assignable from) any of the classes in the list
@@ -199,14 +198,13 @@ trait ClassHelpers { self: ControlHelpers =>
     *
     * @return true if the method exists on the class and is callable
     */
-  def classHasControllerMethod(clz: Class[_], name: String): Boolean = {
+  def classHasControllerMethod(clz: Class[_], name: String): Boolean =
     tryo {
       clz match {
         case null => false
         case _    => callableMethod_?(clz.getDeclaredMethod(name))
       }
     } openOr false
-  }
 
   /**
     * Invoke a controller method (parameterless, public) on a class
@@ -216,7 +214,7 @@ trait ClassHelpers { self: ControlHelpers =>
     *
     * @return the result of the method invocation or throws the root exception causing an error
     */
-  def invokeControllerMethod(clz: Class[_], meth: String) = {
+  def invokeControllerMethod(clz: Class[_], meth: String) =
     try {
       clz.getMethod(meth).invoke(clz.newInstance)
     } catch {
@@ -228,7 +226,6 @@ trait ClassHelpers { self: ControlHelpers =>
         findRoot(c)
       }
     }
-  }
 
   /**
     * Invoke the given method for the given class, with no params.
@@ -259,7 +256,7 @@ trait ClassHelpers { self: ControlHelpers =>
       clz: Class[C],
       inst: AnyRef,
       meth: String,
-      params: Array[AnyRef]): Box[Any] = {
+      params: Array[AnyRef]): Box[Any] =
     _invokeMethod(clz, inst, meth, params, Empty) or _invokeMethod(
       clz,
       inst,
@@ -271,7 +268,6 @@ trait ClassHelpers { self: ControlHelpers =>
       StringHelpers.camelifyMethod(meth),
       params,
       Empty)
-  }
 
   /**
     * Invoke the given method for the given class, with some parameters and their types
@@ -291,7 +287,7 @@ trait ClassHelpers { self: ControlHelpers =>
       inst: AnyRef,
       meth: String,
       params: Array[AnyRef],
-      ptypes: Array[Class[_]]): Box[Any] = {
+      ptypes: Array[Class[_]]): Box[Any] =
     _invokeMethod(clz, inst, meth, params, Full(ptypes)) or _invokeMethod(
       clz,
       inst,
@@ -303,7 +299,6 @@ trait ClassHelpers { self: ControlHelpers =>
       StringHelpers.camelifyMethod(meth),
       params,
       Full(ptypes))
-  }
 
   /**
     * Invoke the given method for the given class, with the given params.

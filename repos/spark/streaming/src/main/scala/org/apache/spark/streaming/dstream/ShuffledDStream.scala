@@ -36,7 +36,7 @@ private[streaming] class ShuffledDStream[K: ClassTag, V: ClassTag, C: ClassTag](
 
   override def slideDuration: Duration = parent.slideDuration
 
-  override def compute(validTime: Time): Option[RDD[(K, C)]] = {
+  override def compute(validTime: Time): Option[RDD[(K, C)]] =
     parent.getOrCompute(validTime) match {
       case Some(rdd) =>
         Some(
@@ -48,5 +48,4 @@ private[streaming] class ShuffledDStream[K: ClassTag, V: ClassTag, C: ClassTag](
             mapSideCombine))
       case None => None
     }
-  }
 }

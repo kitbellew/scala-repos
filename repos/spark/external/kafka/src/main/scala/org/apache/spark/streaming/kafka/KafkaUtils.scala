@@ -124,13 +124,12 @@ object KafkaUtils {
       zkQuorum: String,
       groupId: String,
       topics: JMap[String, JInt]
-  ): JavaPairReceiverInputDStream[String, String] = {
+  ): JavaPairReceiverInputDStream[String, String] =
     createStream(
       jssc.ssc,
       zkQuorum,
       groupId,
       Map(topics.asScala.mapValues(_.intValue()).toSeq: _*))
-  }
 
   /**
     * Create an input stream that pulls messages from Kafka Brokers.
@@ -148,14 +147,13 @@ object KafkaUtils {
       groupId: String,
       topics: JMap[String, JInt],
       storageLevel: StorageLevel
-  ): JavaPairReceiverInputDStream[String, String] = {
+  ): JavaPairReceiverInputDStream[String, String] =
     createStream(
       jssc.ssc,
       zkQuorum,
       groupId,
       Map(topics.asScala.mapValues(_.intValue()).toSeq: _*),
       storageLevel)
-  }
 
   /**
     * Create an input stream that pulls messages from Kafka Brokers.
@@ -686,7 +684,7 @@ private[kafka] class KafkaUtilsPythonHelper {
       kafkaParams: JMap[String, String],
       topics: JMap[String, JInt],
       storageLevel: StorageLevel)
-      : JavaPairReceiverInputDStream[Array[Byte], Array[Byte]] = {
+      : JavaPairReceiverInputDStream[Array[Byte], Array[Byte]] =
     KafkaUtils
       .createStream[Array[Byte], Array[Byte], DefaultDecoder, DefaultDecoder](
         jssc,
@@ -697,7 +695,6 @@ private[kafka] class KafkaUtilsPythonHelper {
         kafkaParams,
         topics,
         storageLevel)
-  }
 
   def createRDDWithoutMessageHandler(
       jsc: JavaSparkContext,
@@ -735,7 +732,7 @@ private[kafka] class KafkaUtilsPythonHelper {
       offsetRanges: JList[OffsetRange],
       leaders: JMap[TopicAndPartition, Broker],
       messageHandler: MessageAndMetadata[Array[Byte], Array[Byte]] => V)
-      : RDD[V] = {
+      : RDD[V] =
     KafkaUtils
       .createRDD[Array[Byte], Array[Byte], DefaultDecoder, DefaultDecoder, V](
         jsc.sc,
@@ -744,7 +741,6 @@ private[kafka] class KafkaUtilsPythonHelper {
         leaders.asScala.toMap,
         messageHandler
       )
-  }
 
   def createDirectStreamWithoutMessageHandler(
       jssc: JavaStreamingContext,
@@ -863,9 +859,8 @@ private object KafkaUtilsPythonHelper {
 
   initialize()
 
-  def picklerIterator(iter: Iterator[Any]): Iterator[Array[Byte]] = {
+  def picklerIterator(iter: Iterator[Any]): Iterator[Array[Byte]] =
     new SerDeUtil.AutoBatchedPickler(iter)
-  }
 
   case class PythonMessageAndMetadata(
       topic: String,

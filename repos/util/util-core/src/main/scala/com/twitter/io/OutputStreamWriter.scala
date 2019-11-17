@@ -20,7 +20,7 @@ private[io] class OutputStreamWriter(out: OutputStream, bufsize: Int)
   private[this] val bytes = new Array[Byte](bufsize)
 
   @tailrec
-  private[this] def drain(buf: Buf): Unit = {
+  private[this] def drain(buf: Buf): Unit =
     if (buf.isEmpty) out.flush()
     else {
       // The source length is min(buf.length, bytes.length).
@@ -32,7 +32,6 @@ private[io] class OutputStreamWriter(out: OutputStream, bufsize: Int)
       // Recurse on the remainder.
       drain(buf.slice(bytes.length, Int.MaxValue))
     }
-  }
 
   private[this] def doWrite: Buf => Future[Unit] =
     buf => FuturePool.interruptibleUnboundedPool { drain(buf) }

@@ -141,13 +141,12 @@ object Schemifier extends Loggable {
       def tableCheck(
           t: BaseMetaMapper,
           desc: String,
-          f: => Collector): Collector = {
+          f: => Collector): Collector =
         actualTableNames.get(t._dbTableNameLC).map(x => f).getOrElse {
           logger.warn("Skipping %s on table '%s' since it doesn't exist"
             .format(desc, t.dbTableName))
           EmptyCollector
         }
-      }
 
       val toRun =
         tables.foldLeft(EmptyCollector)(
@@ -342,9 +341,8 @@ object Schemifier extends Loggable {
 
   private def createColumns(
       table: BaseMetaMapper,
-      connection: SuperConnection): Seq[String] = {
+      connection: SuperConnection): Seq[String] =
     table.mappedFields.flatMap(_.fieldCreatorString(connection.driverType))
-  }
 
   private def ensureColumns(
       performWrite: Boolean,
@@ -427,7 +425,7 @@ object Schemifier extends Loggable {
         actualTableNames(table._dbTableNameLC),
         false,
         false)) { rs =>
-      def quad(rs: ResultSet): List[(String, String, Int)] = {
+      def quad(rs: ResultSet): List[(String, String, Int)] =
         if (!rs.next) Nil
         else {
           if (rs.getString(3).equalsIgnoreCase(table._dbTableNameLC)) {
@@ -440,7 +438,6 @@ object Schemifier extends Loggable {
             } else quad(rs)
           } else Nil
         }
-      }
       quad(rs)
     }
     // val q = quad(rs)

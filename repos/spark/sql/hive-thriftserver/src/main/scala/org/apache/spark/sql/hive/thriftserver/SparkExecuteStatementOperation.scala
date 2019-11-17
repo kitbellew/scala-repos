@@ -163,7 +163,7 @@ private[hive] class SparkExecuteStatementOperation(
 
         override def run(): Unit = {
           val doAsAction = new PrivilegedExceptionAction[Unit]() {
-            override def run(): Unit = {
+            override def run(): Unit =
               try {
                 execute()
               } catch {
@@ -171,7 +171,6 @@ private[hive] class SparkExecuteStatementOperation(
                   setOperationException(e)
                   log.error("Error running hive query: ", e)
               }
-            }
           }
 
           try {

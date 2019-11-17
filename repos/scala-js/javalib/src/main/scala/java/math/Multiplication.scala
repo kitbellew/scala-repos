@@ -107,10 +107,9 @@ private[math] object Multiplication {
     *  @param exp a positive {@code long} exponent
     *  @return {@code val * 10<sup>exp</sup>}
     */
-  def multiplyByTenPow(bi: BigInteger, exp: Long): BigInteger = {
+  def multiplyByTenPow(bi: BigInteger, exp: Long): BigInteger =
     if (exp < TenPows.length) multiplyByPosInt(bi, TenPows(exp.toInt))
     else bi.multiply(powerOf10(exp))
-  }
 
   /** Performs a<sup>2</sup>.
     *
@@ -209,7 +208,7 @@ private[math] object Multiplication {
       aLen: Int,
       bDigits: Array[Int],
       bLen: Int,
-      resDigits: Array[Int]): Unit = {
+      resDigits: Array[Int]): Unit =
     if (!(aLen == 0 || bLen == 0)) {
       if (aLen == 1)
         resDigits(bLen) = multiplyByInt(resDigits, bDigits, bLen, aDigits(0))
@@ -217,7 +216,6 @@ private[math] object Multiplication {
         resDigits(aLen) = multiplyByInt(resDigits, aDigits, aLen, bDigits(0))
       else multPAP(aDigits, bDigits, resDigits, aLen, bLen)
     }
-  }
 
   def multiply(x: BigInteger, y: BigInteger): BigInteger = karatsuba(x, y)
 
@@ -337,7 +335,7 @@ private[math] object Multiplication {
   def pow(base: BigInteger, exponent: Int): BigInteger = {
     @inline
     @tailrec
-    def loop(exp: Int, res: BigInteger, acc: BigInteger): BigInteger = {
+    def loop(exp: Int, res: BigInteger, acc: BigInteger): BigInteger =
       if (exp > 1) {
         val res2 =
           if ((exp & 1) != 0) res.multiply(acc)
@@ -355,7 +353,6 @@ private[math] object Multiplication {
       } else {
         res.multiply(acc)
       }
-    }
 
     loop(exponent, BigInteger.ONE, base)
   }
@@ -367,7 +364,7 @@ private[math] object Multiplication {
     *  @param exp the exponent of power of ten, it must be positive.
     *  @return a {@code BigInteger} with value {@code 10<sup>exp</sup>}.
     */
-  def powerOf10(exp: Long): BigInteger = {
+  def powerOf10(exp: Long): BigInteger =
     // "SMALL POWERS"
     if (exp < BigTenPows.length) {
       BigTenPows(exp.toInt)
@@ -395,7 +392,6 @@ private[math] object Multiplication {
       }
       res.shiftLeft(intExp)
     }
-  }
 
   /** Multiplies a number by a power of five.
     *
@@ -404,11 +400,10 @@ private[math] object Multiplication {
     *  @param exp a positive {@code int} exponent
     *  @return {@code val * 5<sup>exp</sup>}
     */
-  def multiplyByFivePow(bi: BigInteger, exp: Int): BigInteger = {
+  def multiplyByFivePow(bi: BigInteger, exp: Int): BigInteger =
     if (exp < FivePows.length) multiplyByPosInt(bi, FivePows(exp))
     else if (exp < BigFivePows.length) bi.multiply(BigFivePows(exp))
     else bi.multiply(BigFivePows(1).pow(exp))
-  }
 
   private def initialiseArrays(): Unit = {
     var fivePow = 1L
@@ -443,7 +438,7 @@ private[math] object Multiplication {
       b: Array[Int],
       t: Array[Int],
       aLen: Int,
-      bLen: Int): Unit = {
+      bLen: Int): Unit =
     if (a == b && aLen == bLen) {
       square(a, aLen, t)
     } else {
@@ -458,7 +453,6 @@ private[math] object Multiplication {
         t(i + bLen) = carry
       }
     }
-  }
 
   private def newArrayOfPows(len: Int, pow: Int) =
     new Array[Int](len - 1).scanLeft[Int, Array[Int]](1)((z, _) => z * pow)

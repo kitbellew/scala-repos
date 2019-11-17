@@ -113,7 +113,7 @@ private[sql] class ExecutionPage(parent: SQLTab)
         Some(5000))
     }
 
-  private def planVisualizationResources: Seq[Node] = {
+  private def planVisualizationResources: Seq[Node] =
     // scalastyle:off
     <link rel="stylesheet" href={
       UIUtils.prependBaseUri("/static/sql/spark-sql-viz.css")
@@ -122,8 +122,7 @@ private[sql] class ExecutionPage(parent: SQLTab)
     <script src={UIUtils.prependBaseUri("/static/dagre-d3.min.js")}></script>
     <script src={UIUtils.prependBaseUri("/static/graphlib-dot.min.js")}></script>
     <script src={UIUtils.prependBaseUri("/static/sql/spark-sql-viz.js")}></script>
-    // scalastyle:on
-  }
+  // scalastyle:on
 
   private def planVisualization(
       metrics: Map[Long, String],
@@ -151,7 +150,7 @@ private[sql] class ExecutionPage(parent: SQLTab)
     "%s/jobs/job?id=%s".format(UIUtils.prependBaseUri(parent.basePath), jobId)
 
   private def physicalPlanDescription(
-      physicalPlanDescription: String): Seq[Node] = {
+      physicalPlanDescription: String): Seq[Node] =
     <div>
       <span style="cursor: pointer;" onclick="clickPhysicalPlanDetails();">
         <span id="physical-plan-details-arrow" class="arrow-closed"></span>
@@ -168,5 +167,4 @@ private[sql] class ExecutionPage(parent: SQLTab)
       }}
     </script>
     <br/>
-  }
 }

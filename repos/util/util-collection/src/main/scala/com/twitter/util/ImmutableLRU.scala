@@ -10,13 +10,12 @@ object ImmutableLRU {
   /**
     * Build an immutable LRU key/value store that cannot grow larger than `maxSize`
     */
-  def apply[K, V](maxSize: Int): ImmutableLRU[K, V] = {
+  def apply[K, V](maxSize: Int): ImmutableLRU[K, V] =
     new ImmutableLRU(
       maxSize,
       0,
       Map.empty[K, (Long, V)],
       SortedMap.empty[Long, K])
-  }
 }
 
 /**
@@ -105,5 +104,5 @@ class ImmutableLRU[K, V] private (
       }
       .getOrElse((None, this))
 
-  override def toString = { "ImmutableLRU(" + map.toList.mkString(",") + ")" }
+  override def toString = "ImmutableLRU(" + map.toList.mkString(",") + ")"
 }

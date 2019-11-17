@@ -43,7 +43,7 @@ import scalafx.scene.shape.Rectangle
   */
 class EnsembleStackPane extends EnsembleExample {
 
-  def getContent = {
+  def getContent =
     new StackPane {
       padding = Insets(20)
       children = List(
@@ -64,5 +64,4 @@ class EnsembleStackPane extends EnsembleExample {
         }
       )
     }
-  }
 }

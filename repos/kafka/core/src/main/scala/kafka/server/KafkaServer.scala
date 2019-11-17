@@ -198,9 +198,8 @@ class KafkaServer(
   newGauge(
     "yammer-metrics-count",
     new Gauge[Int] {
-      def value = {
+      def value =
         com.yammer.metrics.Metrics.defaultRegistry().allMetrics().size()
-      }
     }
   )
 
@@ -812,7 +811,7 @@ class KafkaServer(
     }
   }
 
-  private def generateBrokerId: Int = {
+  private def generateBrokerId: Int =
     try {
       zkUtils.getBrokerSequenceId(config.maxReservedBrokerId)
     } catch {
@@ -820,5 +819,4 @@ class KafkaServer(
         error("Failed to generate broker.id due to ", e)
         throw new GenerateBrokerIdException("Failed to generate broker.id", e)
     }
-  }
 }

@@ -15,7 +15,6 @@ trait ScTypedPattern extends ScBindingPattern {
 }
 
 object ScTypedPattern {
-  def unapply(pattern: ScTypedPattern): Option[ScTypeElement] = {
+  def unapply(pattern: ScTypedPattern): Option[ScTypeElement] =
     pattern.typePattern.map(_.typeElement)
-  }
 }

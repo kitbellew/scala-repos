@@ -491,7 +491,7 @@ trait NamesDefaults { self: Analyzer =>
       previousArgss: List[List[Tree]],
       params: List[Symbol],
       pos: scala.reflect.internal.util.Position,
-      context: Context): (List[Tree], List[Symbol]) = {
+      context: Context): (List[Tree], List[Symbol]) =
     if (givenArgs.length < params.length) {
       val (missing, positional) =
         missingParams(givenArgs, params, nameOfNamedArg)
@@ -523,7 +523,6 @@ trait NamesDefaults { self: Analyzer =>
         (givenArgs ::: defaultArgs, Nil)
       } else (givenArgs, missing filterNot (_.hasDefault))
     } else (givenArgs, Nil)
-  }
 
   /**
     * For a parameter with default argument, find the method symbol of

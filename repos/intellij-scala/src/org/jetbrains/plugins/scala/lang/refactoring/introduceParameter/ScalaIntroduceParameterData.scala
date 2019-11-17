@@ -59,7 +59,6 @@ case class ScalaIntroduceParameterData(
 }
 
 object isIntroduceParameter {
-  def unapply(scInfo: ScalaChangeInfo): Option[ScalaIntroduceParameterData] = {
+  def unapply(scInfo: ScalaChangeInfo): Option[ScalaIntroduceParameterData] =
     scInfo.introducedParameterData
-  }
 }

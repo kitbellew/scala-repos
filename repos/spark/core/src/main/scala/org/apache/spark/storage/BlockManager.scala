@@ -275,7 +275,7 @@ private[spark] class BlockManager(
   /**
     * Re-register with the master sometime soon.
     */
-  private def asyncReregister(): Unit = {
+  private def asyncReregister(): Unit =
     asyncReregisterLock.synchronized {
       if (asyncReregisterTask == null) {
         asyncReregisterTask = Future[Unit] {
@@ -288,7 +288,6 @@ private[spark] class BlockManager(
         }(futureExecutionContext)
       }
     }
-  }
 
   /**
     * For testing. Wait for any pending asynchronous re-registration; otherwise, do nothing.
@@ -304,7 +303,7 @@ private[spark] class BlockManager(
     * Interface to get local block data. Throws an exception if the block cannot be found or
     * cannot be read successfully.
     */
-  override def getBlockData(blockId: BlockId): ManagedBuffer = {
+  override def getBlockData(blockId: BlockId): ManagedBuffer =
     if (blockId.isShuffle) {
       shuffleManager.shuffleBlockResolver.getBlockData(
         blockId.asInstanceOf[ShuffleBlockId])
@@ -315,7 +314,6 @@ private[spark] class BlockManager(
         case None => throw new BlockNotFoundException(blockId.toString)
       }
     }
-  }
 
   /**
     * Put the block locally, using the given storage level.
@@ -323,15 +321,14 @@ private[spark] class BlockManager(
   override def putBlockData(
       blockId: BlockId,
       data: ManagedBuffer,
-      level: StorageLevel): Boolean = {
+      level: StorageLevel): Boolean =
     putBytes(blockId, new ChunkedByteBuffer(data.nioByteBuffer()), level)
-  }
 
   /**
     * Get the BlockStatus for the block identified by the given ID, if it exists.
     * NOTE: This is mainly for testing, and it doesn't fetch information from external block store.
     */
-  def getStatus(blockId: BlockId): Option[BlockStatus] = {
+  def getStatus(blockId: BlockId): Option[BlockStatus] =
     blockInfoManager.get(blockId).map { info =>
       val memSize =
         if (memoryStore.contains(blockId)) memoryStore.getSize(blockId) else 0L
@@ -339,21 +336,19 @@ private[spark] class BlockManager(
         if (diskStore.contains(blockId)) diskStore.getSize(blockId) else 0L
       BlockStatus(info.level, memSize = memSize, diskSize = diskSize)
     }
-  }
 
   /**
     * Get the ids of existing blocks that match the given filter. Note that this will
     * query the blocks stored in the disk block manager (that the block manager
     * may not know of).
     */
-  def getMatchingBlockIds(filter: BlockId => Boolean): Seq[BlockId] = {
+  def getMatchingBlockIds(filter: BlockId => Boolean): Seq[BlockId] =
     // The `toArray` is necessary here in order to force the list to be materialized so that we
     // don't try to serialize a lazy iterator when responding to client requests.
     (blockInfoManager.entries.map(_._1) ++ diskBlockManager.getAllBlocks())
       .filter(filter)
       .toArray
       .toSeq
-  }
 
   /**
     * Tell the master about the current storage status of a block. This will send a block update
@@ -388,7 +383,7 @@ private[spark] class BlockManager(
       blockId: BlockId,
       info: BlockInfo,
       status: BlockStatus,
-      droppedMemorySize: Long = 0L): Boolean = {
+      droppedMemorySize: Long = 0L): Boolean =
     if (info.tellMaster) {
       val storageLevel = status.storageLevel
       val inMemSize = Math.max(status.memSize, droppedMemorySize)
@@ -402,7 +397,6 @@ private[spark] class BlockManager(
     } else {
       true
     }
-  }
 
   /**
     * Return the updated storage status of the block with the given ID. More specifically, if
@@ -411,7 +405,7 @@ private[spark] class BlockManager(
     */
   private def getCurrentBlockStatus(
       blockId: BlockId,
-      info: BlockInfo): BlockStatus = {
+      info: BlockInfo): BlockStatus =
     info.synchronized {
       info.level match {
         case null =>
@@ -428,7 +422,6 @@ private[spark] class BlockManager(
           BlockStatus(storageLevel, memSize, diskSize)
       }
     }
-  }
 
   /**
     * Get locations of an array of blocks.
@@ -564,14 +557,13 @@ private[spark] class BlockManager(
     *
     * This does not acquire a lock on this block in this JVM.
     */
-  def getRemoteValues(blockId: BlockId): Option[BlockResult] = {
+  def getRemoteValues(blockId: BlockId): Option[BlockResult] =
     getRemoteBytes(blockId).map { data =>
       new BlockResult(
         dataDeserialize(blockId, data),
         DataReadMethod.Network,
         data.size)
     }
-  }
 
   /**
     * Return a list of locations for the given block, prioritizing the local machine since
@@ -672,32 +664,28 @@ private[spark] class BlockManager(
   /**
     * Downgrades an exclusive write lock to a shared read lock.
     */
-  def downgradeLock(blockId: BlockId): Unit = {
+  def downgradeLock(blockId: BlockId): Unit =
     blockInfoManager.downgradeLock(blockId)
-  }
 
   /**
     * Release a lock on the given block.
     */
-  def releaseLock(blockId: BlockId): Unit = {
+  def releaseLock(blockId: BlockId): Unit =
     blockInfoManager.unlock(blockId)
-  }
 
   /**
     * Registers a task with the BlockManager in order to initialize per-task bookkeeping structures.
     */
-  def registerTask(taskAttemptId: Long): Unit = {
+  def registerTask(taskAttemptId: Long): Unit =
     blockInfoManager.registerTask(taskAttemptId)
-  }
 
   /**
     * Release all locks for the given task.
     *
     * @return the blocks whose locks were released.
     */
-  def releaseAllLocksForTask(taskAttemptId: Long): Seq[BlockId] = {
+  def releaseAllLocksForTask(taskAttemptId: Long): Seq[BlockId] =
     blockInfoManager.releaseAllLocksForTask(taskAttemptId)
-  }
 
   /**
     * Retrieve the given block if it exists, otherwise call the provided `makeIterator` method
@@ -709,7 +697,7 @@ private[spark] class BlockManager(
   def getOrElseUpdate(
       blockId: BlockId,
       level: StorageLevel,
-      makeIterator: () => Iterator[Any]): Either[BlockResult, Iterator[Any]] = {
+      makeIterator: () => Iterator[Any]): Either[BlockResult, Iterator[Any]] =
     // Initially we hold no locks on this block.
     doPutIterator(blockId, makeIterator, level, keepReadLock = true) match {
       case None =>
@@ -733,7 +721,6 @@ private[spark] class BlockManager(
         // that they can decide what to do with the values (e.g. process them without caching).
         Right(iter)
     }
-  }
 
   /**
     * @return true if the block was stored or false if an error occurred.
@@ -809,7 +796,7 @@ private[spark] class BlockManager(
       bytes: ChunkedByteBuffer,
       level: StorageLevel,
       tellMaster: Boolean = true,
-      keepReadLock: Boolean = false): Boolean = {
+      keepReadLock: Boolean = false): Boolean =
     doPut(blockId, level, tellMaster = tellMaster, keepReadLock = keepReadLock) {
       putBlockInfo =>
         val startTimeMs = System.currentTimeMillis
@@ -880,7 +867,6 @@ private[spark] class BlockManager(
           Some(bytes)
         }
     }.isEmpty
-  }
 
   /**
     * Helper method used to abstract common code from [[doPutBytes()]] and [[doPutIterator()]].
@@ -959,7 +945,7 @@ private[spark] class BlockManager(
       iterator: () => Iterator[Any],
       level: StorageLevel,
       tellMaster: Boolean = true,
-      keepReadLock: Boolean = false): Option[PartiallyUnrolledIterator] = {
+      keepReadLock: Boolean = false): Option[PartiallyUnrolledIterator] =
     doPut(blockId, level, tellMaster = tellMaster, keepReadLock = keepReadLock) {
       putBlockInfo =>
         val startTimeMs = System.currentTimeMillis
@@ -1026,7 +1012,6 @@ private[spark] class BlockManager(
           blockWasSuccessfullyStored == iteratorFromFailedMemoryStorePut.isEmpty)
         iteratorFromFailedMemoryStorePut
     }
-  }
 
   /**
     * Attempts to cache spilled bytes read from disk into the MemoryStore in order to speed up
@@ -1112,7 +1097,7 @@ private[spark] class BlockManager(
   /**
     * Get peer block managers in the system.
     */
-  private def getPeers(forceFetch: Boolean): Seq[BlockManagerId] = {
+  private def getPeers(forceFetch: Boolean): Seq[BlockManagerId] =
     peerFetchLock.synchronized {
       val cachedPeersTtl =
         conf.getInt("spark.storage.cachedPeersTtl", 60 * 1000) // milliseconds
@@ -1127,7 +1112,6 @@ private[spark] class BlockManager(
       }
       cachedPeers
     }
-  }
 
   /**
     * Replicate block to another node. Not that this is a blocking call that returns after
@@ -1239,9 +1223,8 @@ private[spark] class BlockManager(
   /**
     * Read a block consisting of a single object.
     */
-  def getSingle(blockId: BlockId): Option[Any] = {
+  def getSingle(blockId: BlockId): Option[Any] =
     get(blockId).map(_.data.next())
-  }
 
   /**
     * Write a block consisting of a single object.
@@ -1253,9 +1236,8 @@ private[spark] class BlockManager(
       blockId: BlockId,
       value: Any,
       level: StorageLevel,
-      tellMaster: Boolean = true): Boolean = {
+      tellMaster: Boolean = true): Boolean =
     putIterator(blockId, Iterator(value), level, tellMaster)
-  }
 
   /**
     * Drop a block from memory, possibly putting it on disk if applicable. Called when the memory
@@ -1369,7 +1351,7 @@ private[spark] class BlockManager(
     }
   }
 
-  private def shouldCompress(blockId: BlockId): Boolean = {
+  private def shouldCompress(blockId: BlockId): Boolean =
     blockId match {
       case _: ShuffleBlockId     => compressShuffle
       case _: BroadcastBlockId   => compressBroadcast
@@ -1378,23 +1360,20 @@ private[spark] class BlockManager(
       case _: TempShuffleBlockId => compressShuffle
       case _                     => false
     }
-  }
 
   /**
     * Wrap an output stream for compression if block compression is enabled for its block type
     */
-  def wrapForCompression(blockId: BlockId, s: OutputStream): OutputStream = {
+  def wrapForCompression(blockId: BlockId, s: OutputStream): OutputStream =
     if (shouldCompress(blockId)) compressionCodec.compressedOutputStream(s)
     else s
-  }
 
   /**
     * Wrap an input stream for compression if block compression is enabled for its block type
     */
-  def wrapForCompression(blockId: BlockId, s: InputStream): InputStream = {
+  def wrapForCompression(blockId: BlockId, s: InputStream): InputStream =
     if (shouldCompress(blockId)) compressionCodec.compressedInputStream(s)
     else s
-  }
 
   /** Serializes into a stream. */
   def dataSerializeStream(
@@ -1435,9 +1414,8 @@ private[spark] class BlockManager(
     */
   def dataDeserialize(
       blockId: BlockId,
-      bytes: ChunkedByteBuffer): Iterator[Any] = {
+      bytes: ChunkedByteBuffer): Iterator[Any] =
     dataDeserializeStream(blockId, bytes.toInputStream(dispose = true))
-  }
 
   /**
     * Deserializes a InputStream into an iterator of values and disposes of it when the end of

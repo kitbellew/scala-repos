@@ -17,11 +17,10 @@ object BasicAuthExample {
 
     protected def validate(userName: String, password: String)(
         implicit request: HttpServletRequest,
-        response: HttpServletResponse): Option[MyUser] = {
+        response: HttpServletResponse): Option[MyUser] =
       if (userName == "scalatra" && password == "scalatra")
         Some(MyUser("scalatra"))
       else None
-    }
 
     protected def getUserId(user: MyUser)(
         implicit request: HttpServletRequest,
@@ -41,15 +40,13 @@ object BasicAuthExample {
     protected val scentryConfig =
       (new ScentryConfig {}).asInstanceOf[ScentryConfiguration]
 
-    override protected def configureScentry = {
+    override protected def configureScentry =
       scentry.unauthenticated {
         scentry.strategies("Basic").unauthenticated()
       }
-    }
 
-    override protected def registerAuthStrategies = {
+    override protected def registerAuthStrategies =
       scentry.register("Basic", new OurBasicAuthStrategy(_, realm))
-    }
   }
 }
 

@@ -18,14 +18,13 @@ object TextBodyParserSpec extends PlaySpecification {
         contentType: Option[String],
         encoding: String,
         bodyParser: BodyParser[String] = BodyParsers.parse.tolerantText)(
-        implicit mat: Materializer) = {
+        implicit mat: Materializer) =
       await(
         bodyParser(
           FakeRequest().withHeaders(
             contentType.map(CONTENT_TYPE -> _).toSeq: _*))
           .run(Source.single(ByteString(text, encoding)))
       )
-    }
 
     "parse text bodies" in new WithApplication() {
       parse("bar", Some("text/plain"), "utf-8") must beRight("bar")

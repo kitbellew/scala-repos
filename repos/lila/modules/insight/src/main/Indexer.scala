@@ -62,10 +62,7 @@ private final class Indexer(storage: Storage, sequencer: ActorRef) {
       .sort(Query.sortChronological)
       .one[Game]
 
-  private def computeFrom(
-      user: User,
-      from: DateTime,
-      fromNumber: Int): Funit = {
+  private def computeFrom(user: User, from: DateTime, fromNumber: Int): Funit =
     storage nbByPerf user.id flatMap { nbs =>
       var nbByPerf = nbs
       def toEntry(game: Game): Fu[Option[Entry]] = game.perfType ?? { pt =>
@@ -100,5 +97,4 @@ private final class Indexer(storage: Storage, sequencer: ActorRef) {
             storage bulkInsert entries inject nextNumber
         }
     } void
-  }
 }

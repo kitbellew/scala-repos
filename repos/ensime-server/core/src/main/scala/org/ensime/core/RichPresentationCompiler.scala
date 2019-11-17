@@ -151,9 +151,8 @@ trait RichCompilerControl
   def askPackageByPath(path: String): Option[PackageInfo] =
     askOption(PackageInfo.fromPath(path))
 
-  def askReloadFile(f: SourceFile): Unit = {
+  def askReloadFile(f: SourceFile): Unit =
     askReloadFiles(List(f))
-  }
 
   def askReloadFiles(files: Iterable[SourceFile]): Either[Unit, Throwable] = {
     val x = new Response[Unit]()
@@ -316,9 +315,8 @@ class RichPresentationCompiler(
     symsByFile(sym.sourceFile) += sym
   }
 
-  def unloadAllFiles(): Unit = {
+  def unloadAllFiles(): Unit =
     allSources.foreach(removeUnitOf)
-  }
 
   /**
     * Remove symbols defined by files that no longer exist.
@@ -350,7 +348,7 @@ class RichPresentationCompiler(
         sym: Symbol,
         pre: Type,
         inherited: Boolean,
-        viaView: Symbol): Unit = {
+        viaView: Symbol): Unit =
       try {
         val m = new TypeMember(
           sym,
@@ -364,7 +362,6 @@ class RichPresentationCompiler(
         case e: Throwable =>
           logger.error("Error: Omitting member " + sym + ": " + e)
       }
-    }
     for (sym <- tpe.decls) {
       addTypeMember(sym, tpe, inherited = false, NoSymbol)
     }
@@ -374,9 +371,7 @@ class RichPresentationCompiler(
     members.values
   }
 
-  protected def getMembersForTypeAt(
-      tpe: Type,
-      p: Position): Iterable[Member] = {
+  protected def getMembersForTypeAt(tpe: Type, p: Position): Iterable[Member] =
     if (isNoParamArrowType(tpe)) {
       typePublicMembers(typeOrArrowTypeResult(tpe))
     } else {
@@ -397,7 +392,6 @@ class RichPresentationCompiler(
       }
       bySym.values
     }
-  }
 
   protected def inspectType(tpe: Type): TypeInspectInfo = {
     val parents = tpe.parents
@@ -409,7 +403,7 @@ class RichPresentationCompiler(
     )
   }
 
-  protected def inspectTypeAt(p: Position): Option[TypeInspectInfo] = {
+  protected def inspectTypeAt(p: Position): Option[TypeInspectInfo] =
     typeAt(p)
       .map(tpe => {
         val members = getMembersForTypeAt(tpe, p)
@@ -424,7 +418,6 @@ class RichPresentationCompiler(
         logger.error("ERROR: Failed to get any type information :(  ")
         None
       }
-  }
 
   private def typeOfTree(t: Tree): Option[Type] = {
     val tree = t match {
@@ -443,12 +436,11 @@ class RichPresentationCompiler(
     Option(tree.tpe)
   }
 
-  protected def typeAt(p: Position): Option[Type] = {
+  protected def typeAt(p: Position): Option[Type] =
     wrapTypedTreeAt(p) match {
       case Import(_, _) => symbolAt(p).map(_.tpe)
       case tree         => typeOfTree(tree)
     }
-  }
 
   protected def typeByName(name: String): Option[Type] =
     symbolByName(name).flatMap {
@@ -464,7 +456,7 @@ class RichPresentationCompiler(
       fqn: String,
       memberName: Option[String],
       signatureString: Option[String]
-  ): Option[Symbol] = {
+  ): Option[Symbol] =
     symbolByName(fqn).flatMap { owner =>
       memberName
         .flatMap { rawName =>
@@ -482,7 +474,6 @@ class RichPresentationCompiler(
         }
         .orElse(Some(owner))
     }
-  }
 
   protected def filterMembersByPrefix(
       members: List[Member],
@@ -558,12 +549,10 @@ class RichPresentationCompiler(
     }
   }
 
-  protected def linkPos(sym: Symbol, source: SourceFile): Position = {
+  protected def linkPos(sym: Symbol, source: SourceFile): Position =
     wrapLinkPos(sym, source)
-  }
 
-  protected def usesOfSymbolAtPoint(
-      point: Position): Iterable[RangePosition] = {
+  protected def usesOfSymbolAtPoint(point: Position): Iterable[RangePosition] =
     symbolAt(point) match {
       case Some(s) =>
         class CompilerGlobalIndexes extends GlobalIndexes {
@@ -590,7 +579,6 @@ class RichPresentationCompiler(
         gi.result
       case None => List.empty
     }
-  }
 
   private var notifyWhenReady = false
 
@@ -602,9 +590,8 @@ class RichPresentationCompiler(
     super.isOutOfDate
   }
 
-  protected def setNotifyWhenReady(): Unit = {
+  protected def setNotifyWhenReady(): Unit =
     notifyWhenReady = true
-  }
 
   protected def reloadAndTypeFiles(sources: Iterable[SourceFile]) = {
     wrapReloadSources(sources.toList)
@@ -613,9 +600,8 @@ class RichPresentationCompiler(
     }
   }
 
-  override def askShutdown(): Unit = {
+  override def askShutdown(): Unit =
     super.askShutdown()
-  }
 
   /*
    * The following functions wrap up operations that interact with

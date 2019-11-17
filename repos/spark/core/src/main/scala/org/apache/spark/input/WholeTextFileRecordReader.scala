@@ -73,7 +73,7 @@ private[spark] class WholeTextFileRecordReader(
 
   override def getCurrentValue: Text = value
 
-  override def nextKeyValue(): Boolean = {
+  override def nextKeyValue(): Boolean =
     if (!processed) {
       val conf = new Configuration
       val factory = new CompressionCodecFactory(conf)
@@ -93,7 +93,6 @@ private[spark] class WholeTextFileRecordReader(
     } else {
       false
     }
-  }
 }
 
 /**

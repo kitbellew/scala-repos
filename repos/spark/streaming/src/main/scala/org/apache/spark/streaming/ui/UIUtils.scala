@@ -134,7 +134,7 @@ private[streaming] object UIUtils {
     }
   }
 
-  def createOutputOperationFailureForUI(failure: String): String = {
+  def createOutputOperationFailureForUI(failure: String): String =
     if (failure.startsWith("org.apache.spark.Spark")) {
       // SparkException or SparkDriverExecutionException
       "Failed due to Spark job error\n" + failure
@@ -146,7 +146,6 @@ private[streaming] object UIUtils {
       val firstLine = failure.substring(0, nextLineIndex)
       s"Failed due to error: $firstLine\n$failure"
     }
-  }
 
   def failureReasonCell(
       failureReason: String,

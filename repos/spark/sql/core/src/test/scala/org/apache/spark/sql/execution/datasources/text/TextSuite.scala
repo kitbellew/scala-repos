@@ -142,13 +142,12 @@ class TextSuite extends QueryTest with SharedSQLContext {
     }
   }
 
-  private def testFile: String = {
+  private def testFile: String =
     Thread
       .currentThread()
       .getContextClassLoader
       .getResource("text-suite.txt")
       .toString
-  }
 
   /** Verifies data and schema. */
   private def verifyFrame(df: DataFrame): Unit = {

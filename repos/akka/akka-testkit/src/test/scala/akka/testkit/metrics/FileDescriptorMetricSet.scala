@@ -17,7 +17,7 @@ private[akka] class FileDescriptorMetricSet(
     os: OperatingSystemMXBean = ManagementFactory.getOperatingSystemMXBean)
     extends MetricSet {
 
-  override def getMetrics: util.Map[String, Metric] = {
+  override def getMetrics: util.Map[String, Metric] =
     Map[String, Metric](
       name("file-descriptors", "open") -> new Gauge[Long] {
         override def getValue: Long = invoke("getOpenFileDescriptorCount")
@@ -27,7 +27,6 @@ private[akka] class FileDescriptorMetricSet(
       },
       name("file-descriptors", "ratio") -> new FileDescriptorRatioGauge(os)
     ).asJava
-  }
 
   private def invoke(name: String): Long = {
     val method = os.getClass.getDeclaredMethod(name)

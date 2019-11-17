@@ -252,7 +252,7 @@ class PolynomialCheck
     }
   }
 
-  def gcdTest(x: Polynomial[Rational], y: Polynomial[Rational]): Unit = {
+  def gcdTest(x: Polynomial[Rational], y: Polynomial[Rational]): Unit =
     if (!x.isZero || !y.isZero) {
       val gcd = spire.math.gcd[Polynomial[Rational]](x, y)
       if (!gcd.isZero) {
@@ -260,7 +260,6 @@ class PolynomialCheck
         (y % gcd) shouldBe 0
       }
     }
-  }
 
   property("test gcd regression") {
     val x = poly"(3/37x^9 - 85x^7 - 71/4x^6 + 27/25x)"

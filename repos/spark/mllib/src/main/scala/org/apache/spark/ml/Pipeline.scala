@@ -222,7 +222,7 @@ object Pipeline extends MLReadable[Pipeline] {
     import org.json4s.JsonDSL._
 
     /** Check that all stages are Writable */
-    def validateStages(stages: Array[PipelineStage]): Unit = {
+    def validateStages(stages: Array[PipelineStage]): Unit =
       stages.foreach {
         case stage: MLWritable => // good
         case other =>
@@ -231,7 +231,6 @@ object Pipeline extends MLReadable[Pipeline] {
               s" because it contains a stage which does not implement Writable. Non-Writable stage:" +
               s" ${other.uid} of type ${other.getClass}")
       }
-    }
 
     /**
       * Save metadata and stages for a [[Pipeline]] or [[PipelineModel]]
@@ -327,15 +326,13 @@ class PipelineModel private[ml] (
   }
 
   @Since("1.2.0")
-  override def transformSchema(schema: StructType): StructType = {
+  override def transformSchema(schema: StructType): StructType =
     stages.foldLeft(schema)((cur, transformer) =>
       transformer.transformSchema(cur))
-  }
 
   @Since("1.4.0")
-  override def copy(extra: ParamMap): PipelineModel = {
+  override def copy(extra: ParamMap): PipelineModel =
     new PipelineModel(uid, stages.map(_.copy(extra))).setParent(parent)
-  }
 
   @Since("1.6.0")
   override def write: MLWriter = new PipelineModel.PipelineModelWriter(this)

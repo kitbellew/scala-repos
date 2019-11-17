@@ -82,12 +82,10 @@ class ShuffleWriteMetrics private (
   private[spark] def incBytesWritten(v: Long): Unit = _bytesWritten.add(v)
   private[spark] def incRecordsWritten(v: Long): Unit = _recordsWritten.add(v)
   private[spark] def incWriteTime(v: Long): Unit = _writeTime.add(v)
-  private[spark] def decBytesWritten(v: Long): Unit = {
+  private[spark] def decBytesWritten(v: Long): Unit =
     _bytesWritten.setValue(bytesWritten - v)
-  }
-  private[spark] def decRecordsWritten(v: Long): Unit = {
+  private[spark] def decRecordsWritten(v: Long): Unit =
     _recordsWritten.setValue(recordsWritten - v)
-  }
 
   // Legacy methods for backward compatibility.
   // TODO: remove these once we make this class private.

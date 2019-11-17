@@ -91,11 +91,10 @@ final class ByteBufferPool(
     * strictly required, but if `direct` is `true`, then you most certainly
     * should.
     */
-  def release(buffer: ByteBuffer): Unit = {
+  def release(buffer: ByteBuffer): Unit =
     if (!(fixedBufferQueue offer buffer)) {
       flexBufferQueue offer (new SoftReference(buffer))
     }
-  }
 
   def toStream: Stream[ByteBuffer] = Stream.continually(acquire)
 

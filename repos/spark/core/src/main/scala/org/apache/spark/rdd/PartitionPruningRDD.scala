@@ -45,13 +45,12 @@ private[spark] class PruneDependency[T](
         new PartitionPruningRDDPartition(idx, split): Partition
     }
 
-  override def getParents(partitionId: Int): List[Int] = {
+  override def getParents(partitionId: Int): List[Int] =
     List(
       partitions(partitionId)
         .asInstanceOf[PartitionPruningRDDPartition]
         .parentSplit
         .index)
-  }
 }
 
 /**
@@ -69,11 +68,10 @@ class PartitionPruningRDD[T: ClassTag](
       prev.context,
       List(new PruneDependency(prev, partitionFilterFunc))) {
 
-  override def compute(split: Partition, context: TaskContext): Iterator[T] = {
+  override def compute(split: Partition, context: TaskContext): Iterator[T] =
     firstParent[T].iterator(
       split.asInstanceOf[PartitionPruningRDDPartition].parentSplit,
       context)
-  }
 
   override protected def getPartitions: Array[Partition] =
     dependencies.head.asInstanceOf[PruneDependency[T]].partitions
@@ -88,7 +86,6 @@ object PartitionPruningRDD {
     */
   def create[T](
       rdd: RDD[T],
-      partitionFilterFunc: Int => Boolean): PartitionPruningRDD[T] = {
+      partitionFilterFunc: Int => Boolean): PartitionPruningRDD[T] =
     new PartitionPruningRDD[T](rdd, partitionFilterFunc)(rdd.elementClassTag)
-  }
 }

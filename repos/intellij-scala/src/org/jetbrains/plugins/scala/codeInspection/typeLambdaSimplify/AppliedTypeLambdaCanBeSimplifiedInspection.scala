@@ -71,7 +71,7 @@ class AppliedTypeLambdaCanBeSimplifiedInspection extends LocalInspectionTool {
 
     def inspectTypeProjection(
         typeProjection: ScTypeProjection,
-        paramType: ScParameterizedTypeElement) = {
+        paramType: ScParameterizedTypeElement) =
       typeProjection.typeElement match {
         case parenType: ScParenthesisedTypeElement =>
           parenType.typeElement match {
@@ -117,7 +117,6 @@ class AppliedTypeLambdaCanBeSimplifiedInspection extends LocalInspectionTool {
           }
         case _ =>
       }
-    }
 
     new ScalaElementVisitor {
       override def visitElement(elem: ScalaPsiElement): Unit = elem match {

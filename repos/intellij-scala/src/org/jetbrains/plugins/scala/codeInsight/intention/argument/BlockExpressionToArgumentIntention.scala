@@ -20,7 +20,7 @@ class BlockExpressionToArgumentIntention extends PsiElementBaseIntentionAction {
 
   override def getText: String = getFamilyName
 
-  def isAvailable(project: Project, editor: Editor, element: PsiElement) = {
+  def isAvailable(project: Project, editor: Editor, element: PsiElement) =
     element match {
       case Both(
           Parent(block: ScBlockExpr),
@@ -29,7 +29,6 @@ class BlockExpressionToArgumentIntention extends PsiElementBaseIntentionAction {
         IntentionAvailabilityChecker.checkIntention(this, element)
       case _ => false
     }
-  }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
     val block = element.getParent.asInstanceOf[ScBlockExpr]

@@ -147,12 +147,11 @@ private[upgrade] object DeploymentPlanReverter {
     val sortedGroupChanges = groupChanges.sortWith {
       case (change1, change2) =>
         // both groups are supposed to have the same path id (if there are any)
-        def pathId(change: (Option[Group], Option[Group])): PathId = {
+        def pathId(change: (Option[Group], Option[Group])): PathId =
           Seq(change._1, change._2).flatten
             .map(_.id)
             .headOption
             .getOrElse(PathId.empty)
-        }
 
         pathId(change1) > pathId(change2)
     }
@@ -188,8 +187,7 @@ private[upgrade] object DeploymentPlanReverter {
   private[this] def revertAppChanges(
       version: Timestamp,
       changes: Seq[(Option[AppDefinition], Option[AppDefinition])])(
-      g: Group): Group = {
-
+      g: Group): Group =
     changes.foldLeft(g) {
       case (result, appUpdate) =>
         appUpdate match {
@@ -207,5 +205,4 @@ private[upgrade] object DeploymentPlanReverter {
             result
         }
     }
-  }
 }

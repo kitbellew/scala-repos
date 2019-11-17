@@ -29,14 +29,13 @@ sealed abstract class IterateeT[E, F[_], A] {
   /**
     * Run this iteratee
     */
-  def run(implicit F: Monad[F]): F[A] = {
+  def run(implicit F: Monad[F]): F[A] =
     F.bind((this &= enumEofT[E, F]).value)(
       (s: StepT[E, F, A]) =>
         s.fold(
           cont = _ => sys.error("diverging iteratee"),
           done = (a, _) => F.point(a)
         ))
-  }
 
   def flatMap[B](f: A => IterateeT[E, F, B])(
       implicit F: Monad[F]): IterateeT[E, F, B] = {
@@ -56,9 +55,8 @@ sealed abstract class IterateeT[E, F[_], A] {
     through(this)
   }
 
-  def map[B](f: A => B)(implicit F: Monad[F]): IterateeT[E, F, B] = {
+  def map[B](f: A => B)(implicit F: Monad[F]): IterateeT[E, F, B] =
     flatMap(a => StepT.sdone[E, F, B](f(a), emptyInput).pointI)
-  }
 
   def contramap[EE](f: EE => E)(implicit F: Monad[F]): IterateeT[EE, F, A] = {
     def step(s: StepT[E, F, A]): IterateeT[EE, F, A] =
@@ -76,14 +74,12 @@ sealed abstract class IterateeT[E, F[_], A] {
     * F and G will have the same monad.
     */
   def advance[EE, AA, G[_]](f: StepT[E, F, A] => IterateeT[EE, G, AA])(
-      implicit MO: G |>=| F): IterateeT[EE, G, AA] = {
+      implicit MO: G |>=| F): IterateeT[EE, G, AA] =
     iterateeT(MO.MG.bind(MO.promote(value))(s => f(s).value))
-  }
 
   def advanceT[EE, AA, G[_]](f: StepT[E, F, A] => G[StepT[EE, F, AA]])(
-      implicit MO: G |>=| F): G[StepT[EE, F, AA]] = {
+      implicit MO: G |>=| F): G[StepT[EE, F, AA]] =
     MO.MG.bind(MO.promote(value))(s => f(s))
-  }
 
   /**
     * Combine this Iteratee with an Enumerator-like function.
@@ -118,13 +114,10 @@ sealed abstract class IterateeT[E, F[_], A] {
     loop(this)
   }
 
-  def up[G[_]](
-      implicit G: Applicative[G],
-      F: Comonad[F]): IterateeT[E, G, A] = {
+  def up[G[_]](implicit G: Applicative[G], F: Comonad[F]): IterateeT[E, G, A] =
     mapI(new (F ~> G) {
       def apply[A](a: F[A]) = G.point(F.copoint(a))
     })
-  }
 
   def joinI[I, B](
       implicit outer: IterateeT[E, F, A] =:= IterateeT[E, F, StepT[I, F, B]],
@@ -305,12 +298,11 @@ trait IterateeTFunctions {
 
   def headDoneOr[E, F[_]: Monad, B](
       b: => B,
-      f: E => IterateeT[E, F, B]): IterateeT[E, F, B] = {
+      f: E => IterateeT[E, F, B]): IterateeT[E, F, B] =
     head[E, F] flatMap {
       case None    => done(b, eofInput)
       case Some(a) => f(a)
     }
-  }
 
   /**An iteratee that returns the first element of the input **/
   def peek[E, F[_]: Applicative]: IterateeT[E, F, Option[E]] = {
@@ -324,12 +316,11 @@ trait IterateeTFunctions {
 
   def peekDoneOr[E, F[_]: Monad, B](
       b: => B,
-      f: E => IterateeT[E, F, B]): IterateeT[E, F, B] = {
+      f: E => IterateeT[E, F, B]): IterateeT[E, F, B] =
     peek[E, F] flatMap {
       case None    => done(b, eofInput)
       case Some(a) => f(a)
     }
-  }
 
   /**An iteratee that skips the first n elements of the input **/
   def drop[E, F[_]: Applicative](n: Int): IterateeT[E, F, Unit] = {

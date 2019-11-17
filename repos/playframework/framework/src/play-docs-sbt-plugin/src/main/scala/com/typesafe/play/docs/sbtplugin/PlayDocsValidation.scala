@@ -343,9 +343,8 @@ object PlayDocsValidation {
     val file = translationCodeSamplesReportFile.value
     val version = docsVersion.value
 
-    def sameCodeSample(cs1: CodeSample)(cs2: CodeSample) = {
+    def sameCodeSample(cs1: CodeSample)(cs2: CodeSample) =
       cs1.source == cs2.source && cs1.segment == cs2.segment
-    }
 
     def hasCodeSample(samples: Seq[CodeSample])(sample: CodeSample) =
       samples.exists(sameCodeSample(sample))
@@ -431,7 +430,7 @@ object PlayDocsValidation {
 
     var failed = false
 
-    def doAssertion(desc: String, errors: Seq[_])(onFail: => Unit): Unit = {
+    def doAssertion(desc: String, errors: Seq[_])(onFail: => Unit): Unit =
       if (errors.isEmpty) {
         log.info("[" + Colors.green("pass") + "] " + desc)
       } else {
@@ -441,16 +440,14 @@ object PlayDocsValidation {
           "[" + Colors.red("fail") + "] " + desc + " (" + errors.size +
             " errors)")
       }
-    }
 
-    def fileExists(path: String): Boolean = {
+    def fileExists(path: String): Boolean =
       combinedRepo.loadFile(path)(_ => ()).nonEmpty
-    }
 
     def assertLinksNotMissing(
         desc: String,
         links: Seq[LinkRef],
-        errorMessage: String): Unit = {
+        errorMessage: String): Unit =
       doAssertion(desc, links) {
         links.foreach { link =>
           logErrorAtLocation(
@@ -460,7 +457,6 @@ object PlayDocsValidation {
             errorMessage + " " + link.link)
         }
       }
-    }
 
     val duplicates = report.markdownFiles
       .filterNot(_.getName.startsWith("_"))
@@ -483,7 +479,7 @@ object PlayDocsValidation {
       "Could not find link"
     )
 
-    def relativeLinkOk(link: LinkRef) = {
+    def relativeLinkOk(link: LinkRef) =
       link match {
         case badScalaApi
             if badScalaApi.link.startsWith("api/scala/index.html#") =>
@@ -501,7 +497,6 @@ object PlayDocsValidation {
           fileExists(resource.link.stripPrefix("resources/"))
         case bad => false
       }
-    }
 
     assertLinksNotMissing("Relative link test", report.relativeLinks.collect {
       case link if !relativeLinkOk(link) => link
@@ -523,7 +518,7 @@ object PlayDocsValidation {
         LinkRef(sample.source, sample.file, sample.sourcePosition)),
       "Could not find source file")
 
-    def segmentExists(sample: CodeSampleRef) = {
+    def segmentExists(sample: CodeSampleRef) =
       if (sample.segment.nonEmpty) {
         // Find the code segment
         val sourceCode = combinedRepo
@@ -537,7 +532,6 @@ object PlayDocsValidation {
       } else {
         true
       }
-    }
 
     assertLinksNotMissing(
       "Missing source segments test",

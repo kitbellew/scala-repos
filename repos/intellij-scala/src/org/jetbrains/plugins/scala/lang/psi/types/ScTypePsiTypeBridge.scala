@@ -265,12 +265,11 @@ trait ScTypePsiTypeBridge {
     def isValueType(cl: ScClass): Boolean =
       cl.superTypes.contains(AnyVal) && cl.parameters.length == 1
 
-    def outerClassHasTypeParameters(proj: ScProjectionType): Boolean = {
+    def outerClassHasTypeParameters(proj: ScProjectionType): Boolean =
       ScType.extractClass(proj.projected) match {
         case Some(outer) => outer.hasTypeParameters
         case _           => false
       }
-    }
 
     def createType(
         c: PsiClass,
@@ -284,12 +283,11 @@ trait ScTypePsiTypeBridge {
       else psiType
     }
 
-    def createTypeByFqn(fqn: String): PsiType = {
+    def createTypeByFqn(fqn: String): PsiType =
       JavaPsiFacade
         .getInstance(project)
         .getElementFactory
         .createTypeByFQClassName(fqn, scope)
-    }
 
     val t = ScType.removeAliasDefinitions(_t)
     if (t.isInstanceOf[NonValueType])

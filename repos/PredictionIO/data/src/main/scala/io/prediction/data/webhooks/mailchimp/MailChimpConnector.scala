@@ -55,9 +55,8 @@ private[prediction] object MailChimpConnector extends FormConnector {
     .forPattern("yyyy-MM-dd HH:mm:ss")
     .withZone(EventValidation.defaultTimeZone)
 
-  def parseMailChimpDateTime(s: String): DateTime = {
+  def parseMailChimpDateTime(s: String): DateTime =
     mailChimpDateTimeFormat.parseDateTime(s)
-  }
 
   def subscribeToEventJson(data: Map[String, String]): JObject = {
 

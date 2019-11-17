@@ -184,9 +184,8 @@ class AnnotatorBasedErrorInspection extends LocalInspectionTool {
               FakeAnnotation
             }
 
-            def getCurrentAnnotationSession: AnnotationSession = {
+            def getCurrentAnnotationSession: AnnotationSession =
               new AnnotationSession(element.getContainingFile)
-            }
 
             def createWeakWarningAnnotation(
                 p1: TextRange,

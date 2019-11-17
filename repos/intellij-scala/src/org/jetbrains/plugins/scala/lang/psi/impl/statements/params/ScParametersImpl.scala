@@ -33,11 +33,10 @@ class ScParametersImpl private (
 
   override def toString: String = "Parameters"
 
-  def clauses: Seq[ScParameterClause] = {
+  def clauses: Seq[ScParameterClause] =
     getStubOrPsiChildren(
       ScalaElementTypes.PARAM_CLAUSE,
       JavaArrayFactoryUtil.ScParameterClauseFactory).toSeq
-  }
 
   override def processDeclarations(
       processor: PsiScopeProcessor,
@@ -73,7 +72,7 @@ class ScParametersImpl private (
     }
   }
 
-  override def add(element: PsiElement): PsiElement = {
+  override def add(element: PsiElement): PsiElement =
     element match {
       case param: ScParameter =>
         clauses.lastOption match {
@@ -88,5 +87,4 @@ class ScParametersImpl private (
         }
       case _ => super.add(element)
     }
-  }
 }

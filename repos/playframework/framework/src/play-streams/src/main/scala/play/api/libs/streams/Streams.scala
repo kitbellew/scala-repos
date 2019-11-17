@@ -96,9 +96,8 @@ object Streams {
     * This Iteratee will never enter the error state, unless the subscriber
     * deviates from the reactive streams spec.
     */
-  def subscriberToIteratee[T](subscriber: Subscriber[T]): Iteratee[T, Unit] = {
+  def subscriberToIteratee[T](subscriber: Subscriber[T]): Iteratee[T, Unit] =
     new SubscriberIteratee[T](subscriber)
-  }
 
   /**
     * Adapt an Iteratee to a Publisher, publishing its Done value. If
@@ -109,14 +108,13 @@ object Streams {
     * Iteratee.run, this method will not feed an EOF input to the
     * Iteratee.
     */
-  def iterateeDoneToPublisher[T, U](iter: Iteratee[T, U]): Publisher[U] = {
+  def iterateeDoneToPublisher[T, U](iter: Iteratee[T, U]): Publisher[U] =
     iterateeFoldToPublisher[T, U, U](iter, {
       case Step.Done(x, _) => Future.successful(x)
       case notDone: Step[T, U] =>
         Future.failed(
           new Exception(s"Can only get value from Done iteratee: $notDone"))
     })(Execution.trampoline)
-  }
 
   /**
     * Fold an Iteratee and publish its result. This method is used
@@ -234,10 +232,10 @@ object Streams {
     * iteratees fold method has been invoked.
     */
   def accumulatorToIteratee[T, U](accumulator: Accumulator[T, U])(
-      implicit mat: Materializer): Iteratee[T, U] = {
+      implicit mat: Materializer): Iteratee[T, U] =
     new Iteratee[T, U] {
       def fold[B](folder: (Step[T, U]) => Future[B])(
-          implicit ec: ExecutionContext) = {
+          implicit ec: ExecutionContext) =
         Source.asSubscriber
           .toMat(accumulator.toSink) { (subscriber, result) =>
             import play.api.libs.iteratee.Execution.Implicits.trampoline
@@ -245,7 +243,5 @@ object Streams {
           }
           .run()
           .fold(folder)
-      }
     }
-  }
 }

@@ -238,7 +238,7 @@ class TaskBuilder(
     discoveryInfoBuilder.build
   }
 
-  protected def computeContainerInfo(ports: Seq[Int]): Option[ContainerInfo] = {
+  protected def computeContainerInfo(ports: Seq[Int]): Option[ContainerInfo] =
     if (app.container.isEmpty && app.ipAddress.isEmpty) None
     else {
       val builder = ContainerInfo.newBuilder
@@ -303,7 +303,6 @@ class TaskBuilder(
       }
       Some(builder.build)
     }
-  }
 }
 
 object TaskBuilder {
@@ -369,7 +368,7 @@ object TaskBuilder {
 
   def portsEnv(
       definedPorts: Seq[Int],
-      assignedPorts: Seq[Int]): Map[String, String] = {
+      assignedPorts: Seq[Int]): Map[String, String] =
     if (assignedPorts.isEmpty) {
       Map.empty
     } else {
@@ -391,21 +390,19 @@ object TaskBuilder {
       env += ("PORTS" -> assignedPorts.mkString(","))
       env.result()
     }
-  }
 
   def addPrefix(
       envVarsPrefix: Option[String],
-      env: Map[String, String]): Map[String, String] = {
+      env: Map[String, String]): Map[String, String] =
     envVarsPrefix match {
       case Some(prefix) =>
         env.map { case (key: String, value: String) => (prefix + key, value) }
       case None => env
     }
-  }
 
   def taskContextEnv(
       app: AppDefinition,
-      taskId: Option[Task.Id]): Map[String, String] = {
+      taskId: Option[Task.Id]): Map[String, String] =
     if (taskId.isEmpty) {
       // This branch is taken during serialization. Do not add environment variables in this case.
       Map.empty
@@ -423,7 +420,6 @@ object TaskBuilder {
         case (key, Some(value)) => key -> value
       }.toMap ++ labelsToEnvVars(app.labels)
     }
-  }
 
   def labelsToEnvVars(labels: Map[String, String]): Map[String, String] = {
     def escape(name: String): String =

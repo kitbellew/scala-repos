@@ -48,25 +48,22 @@ class WordStats {
     */
   var stopWords: List[String] = new ArrayList[String]
 
-  def getStopWords: List[String] = {
+  def getStopWords: List[String] =
     stopWords
-  }
 
   def setStopWords(words: List[String]) {
     stopWords = words
   }
 
-  def getStopWordCount: Int = {
+  def getStopWordCount: Int =
     stopWordCount
-  }
 
   def setStopWordCount(wordcount: Int) {
     stopWordCount = wordcount
   }
 
-  def getWordCount: Int = {
+  def getWordCount: Int =
     wordCount
-  }
 
   def setWordCount(cnt: Int) {
     wordCount = cnt

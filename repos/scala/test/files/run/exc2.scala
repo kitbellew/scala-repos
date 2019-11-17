@@ -1,5 +1,5 @@
 object Test extends App {
-  def foo() = {
+  def foo() =
     while (true) {
       try {
         Console.println("foo")
@@ -8,5 +8,4 @@ object Test extends App {
           Console.println("bar")
       }
     }
-  }
 }

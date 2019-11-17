@@ -71,16 +71,15 @@ object Double {
       "[\\x00-\\x20]*" + // optional whitespace
       "$")
 
-  def parseDouble(s: String): scala.Double = {
+  def parseDouble(s: String): scala.Double =
     if (doubleStrPat.test(s))
       js.Dynamic.global.parseFloat(s).asInstanceOf[scala.Double]
     else throw new NumberFormatException(s"""For input string: "$s"""")
-  }
 
   @inline def toString(d: scala.Double): String =
     "" + d
 
-  def compare(a: scala.Double, b: scala.Double): scala.Int = {
+  def compare(a: scala.Double, b: scala.Double): scala.Int =
     // NaN must equal itself, and be greater than anything else
     if (isNaN(a)) {
       if (isNaN(b)) 0
@@ -103,7 +102,6 @@ object Double {
         else 1
       }
     }
-  }
 
   @inline def isNaN(v: scala.Double): scala.Boolean =
     v != v

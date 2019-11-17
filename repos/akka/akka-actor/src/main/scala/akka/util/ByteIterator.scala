@@ -38,12 +38,11 @@ object ByteIterator {
 
     @inline final def head: Byte = array(from)
 
-    final def next(): Byte = {
+    final def next(): Byte =
       if (!hasNext) Iterator.empty.next
       else {
         val i = from; from = from + 1; array(i)
       }
-    }
 
     def clear(): Unit = {
       this.array = ByteArrayIterator.emptyArray; from = 0; until = from
@@ -123,12 +122,11 @@ object ByteIterator {
       result
     }
 
-    def getBytes(xs: Array[Byte], offset: Int, n: Int): this.type = {
+    def getBytes(xs: Array[Byte], offset: Int, n: Int): this.type =
       if (n <= this.len) {
         Array.copy(this.array, this.from, xs, offset, n)
         this.drop(n)
       } else Iterator.empty.next
-    }
 
     private def wrappedByteBuffer: ByteBuffer =
       ByteBuffer.wrap(array, from, len).asReadOnlyBuffer
@@ -215,22 +213,19 @@ object ByteIterator {
     // * (!iterator.head.isEmpty || iterators.tail.isEmpty) == true
     private def normalize(): this.type = {
       @tailrec
-      def norm(
-          xs: LinearSeq[ByteArrayIterator]): LinearSeq[ByteArrayIterator] = {
+      def norm(xs: LinearSeq[ByteArrayIterator]): LinearSeq[ByteArrayIterator] =
         if (xs.isEmpty) MultiByteArrayIterator.clearedList
         else if (xs.head.isEmpty) norm(xs.tail)
         else xs
-      }
       iterators = norm(iterators)
       this
     }
     normalize()
 
     @inline private def current: ByteArrayIterator = iterators.head
-    @inline private def dropCurrent(): Unit = { iterators = iterators.tail }
-    @inline def clear(): Unit = {
+    @inline private def dropCurrent(): Unit = iterators = iterators.tail
+    @inline def clear(): Unit =
       iterators = MultiByteArrayIterator.empty.iterators
-    }
 
     @inline final def hasNext: Boolean = current.hasNext
 
@@ -349,7 +344,7 @@ object ByteIterator {
       clear()
     }
 
-    final override def toByteString: ByteString = {
+    final override def toByteString: ByteString =
       if (iterators.tail.isEmpty) iterators.head.toByteString
       else {
         val result = iterators.foldLeft(ByteString.empty) {
@@ -358,7 +353,6 @@ object ByteIterator {
         clear()
         result
       }
-    }
 
     @tailrec protected final def getToArray[A](
         xs: Array[A],
@@ -489,10 +483,9 @@ abstract class ByteIterator extends BufferedIterator[Byte] {
     throw new UnsupportedOperationException(
       "Method drop is not implemented in ByteIterator")
 
-  override def slice(from: Int, until: Int): this.type = {
+  override def slice(from: Int, until: Int): this.type =
     if (from > 0) drop(from).take(until - from)
     else take(until)
-  }
 
   // *must* be overridden by derived classes. This construction is necessary
   // to specialize the return type, as the method is already implemented in
@@ -559,18 +552,17 @@ abstract class ByteIterator extends BufferedIterator[Byte] {
   /**
     * Get a single Short from this iterator.
     */
-  def getShort(implicit byteOrder: ByteOrder): Short = {
+  def getShort(implicit byteOrder: ByteOrder): Short =
     if (byteOrder == ByteOrder.BIG_ENDIAN)
       ((next() & 0xff) << 8 | (next() & 0xff) << 0).toShort
     else if (byteOrder == ByteOrder.LITTLE_ENDIAN)
       ((next() & 0xff) << 0 | (next() & 0xff) << 8).toShort
     else throw new IllegalArgumentException("Unknown byte order " + byteOrder)
-  }
 
   /**
     * Get a single Int from this iterator.
     */
-  def getInt(implicit byteOrder: ByteOrder): Int = {
+  def getInt(implicit byteOrder: ByteOrder): Int =
     if (byteOrder == ByteOrder.BIG_ENDIAN)
       ((next() & 0xff) << 24 | (next() & 0xff) << 16 | (next() & 0xff) << 8 |
         (next() & 0xff) << 0)
@@ -578,12 +570,11 @@ abstract class ByteIterator extends BufferedIterator[Byte] {
       ((next() & 0xff) << 0 | (next() & 0xff) << 8 | (next() & 0xff) << 16 |
         (next() & 0xff) << 24)
     else throw new IllegalArgumentException("Unknown byte order " + byteOrder)
-  }
 
   /**
     * Get a single Long from this iterator.
     */
-  def getLong(implicit byteOrder: ByteOrder): Long = {
+  def getLong(implicit byteOrder: ByteOrder): Long =
     if (byteOrder == ByteOrder.BIG_ENDIAN)
       ((next().toLong & 0xff) << 56 | (next().toLong & 0xff) << 48 |
         (next().toLong & 0xff) << 40 | (next().toLong & 0xff) << 32 |
@@ -595,13 +586,12 @@ abstract class ByteIterator extends BufferedIterator[Byte] {
         (next().toLong & 0xff) << 32 | (next().toLong & 0xff) << 40 |
         (next().toLong & 0xff) << 48 | (next().toLong & 0xff) << 56)
     else throw new IllegalArgumentException("Unknown byte order " + byteOrder)
-  }
 
   /**
     * Get a Long from this iterator where only the least significant `n`
     * bytes were encoded.
     */
-  def getLongPart(n: Int)(implicit byteOrder: ByteOrder): Long = {
+  def getLongPart(n: Int)(implicit byteOrder: ByteOrder): Long =
     if (byteOrder == ByteOrder.BIG_ENDIAN) {
       var x = 0L
       (1 to n) foreach (_ ⇒ x = (x << 8) | (next() & 0xff))
@@ -612,7 +602,6 @@ abstract class ByteIterator extends BufferedIterator[Byte] {
       x
     } else
       throw new IllegalArgumentException("Unknown byte order " + byteOrder)
-  }
 
   def getFloat(implicit byteOrder: ByteOrder): Float =
     java.lang.Float.intBitsToFloat(getInt(byteOrder))

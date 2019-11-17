@@ -29,7 +29,7 @@ object NegativeCompilation {
     }
   }
 
-  def intercept[T <: Throwable: ClassTag](body: => Any): T = {
+  def intercept[T <: Throwable: ClassTag](body: => Any): T =
     try {
       body
       throw new Exception(s"Exception of type ${classTag[T]} was not thrown")
@@ -38,7 +38,6 @@ object NegativeCompilation {
         if (classTag[T].runtimeClass != t.getClass) throw t
         else t.asInstanceOf[T]
     }
-  }
 
   def eval(code: String, compileOptions: String = ""): Any = {
     // println(s"eval compile options: $compileOptions")

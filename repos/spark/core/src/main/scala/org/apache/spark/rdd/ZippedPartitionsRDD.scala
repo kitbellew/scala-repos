@@ -74,9 +74,8 @@ private[spark] abstract class ZippedPartitionsBaseRDD[V: ClassTag](
     }
   }
 
-  override def getPreferredLocations(s: Partition): Seq[String] = {
+  override def getPreferredLocations(s: Partition): Seq[String] =
     s.asInstanceOf[ZippedPartitionsPartition].preferredLocations
-  }
 
   override def clearDependencies() {
     super.clearDependencies()

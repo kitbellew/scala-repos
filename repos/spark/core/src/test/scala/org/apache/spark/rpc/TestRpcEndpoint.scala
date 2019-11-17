@@ -49,9 +49,8 @@ class TestRpcEndpoint extends ThreadSafeRpcEndpoint with TripleEquals {
     case message: Any => receiveAndReplyMessages += message
   }
 
-  override def onConnected(remoteAddress: RpcAddress): Unit = {
+  override def onConnected(remoteAddress: RpcAddress): Unit =
     onConnectedMessages += remoteAddress
-  }
 
   /**
     * Invoked when some network error happens in the connection between the current node and
@@ -59,72 +58,56 @@ class TestRpcEndpoint extends ThreadSafeRpcEndpoint with TripleEquals {
     */
   override def onNetworkError(
       cause: Throwable,
-      remoteAddress: RpcAddress): Unit = {
+      remoteAddress: RpcAddress): Unit =
     onNetworkErrorMessages += cause -> remoteAddress
-  }
 
-  override def onDisconnected(remoteAddress: RpcAddress): Unit = {
+  override def onDisconnected(remoteAddress: RpcAddress): Unit =
     onDisconnectedMessages += remoteAddress
-  }
 
   def numReceiveMessages: Int = receiveMessages.size
 
-  override def onStart(): Unit = {
+  override def onStart(): Unit =
     started = true
-  }
 
-  override def onStop(): Unit = {
+  override def onStop(): Unit =
     stopped = true
-  }
 
-  def verifyStarted(): Unit = {
+  def verifyStarted(): Unit =
     assert(started, "RpcEndpoint is not started")
-  }
 
-  def verifyStopped(): Unit = {
+  def verifyStopped(): Unit =
     assert(stopped, "RpcEndpoint is not stopped")
-  }
 
-  def verifyReceiveMessages(expected: Seq[Any]): Unit = {
+  def verifyReceiveMessages(expected: Seq[Any]): Unit =
     assert(receiveMessages === expected)
-  }
 
-  def verifySingleReceiveMessage(message: Any): Unit = {
+  def verifySingleReceiveMessage(message: Any): Unit =
     verifyReceiveMessages(List(message))
-  }
 
-  def verifyReceiveAndReplyMessages(expected: Seq[Any]): Unit = {
+  def verifyReceiveAndReplyMessages(expected: Seq[Any]): Unit =
     assert(receiveAndReplyMessages === expected)
-  }
 
-  def verifySingleReceiveAndReplyMessage(message: Any): Unit = {
+  def verifySingleReceiveAndReplyMessage(message: Any): Unit =
     verifyReceiveAndReplyMessages(List(message))
-  }
 
-  def verifySingleOnConnectedMessage(remoteAddress: RpcAddress): Unit = {
+  def verifySingleOnConnectedMessage(remoteAddress: RpcAddress): Unit =
     verifyOnConnectedMessages(List(remoteAddress))
-  }
 
-  def verifyOnConnectedMessages(expected: Seq[RpcAddress]): Unit = {
+  def verifyOnConnectedMessages(expected: Seq[RpcAddress]): Unit =
     assert(onConnectedMessages === expected)
-  }
 
-  def verifySingleOnDisconnectedMessage(remoteAddress: RpcAddress): Unit = {
+  def verifySingleOnDisconnectedMessage(remoteAddress: RpcAddress): Unit =
     verifyOnDisconnectedMessages(List(remoteAddress))
-  }
 
-  def verifyOnDisconnectedMessages(expected: Seq[RpcAddress]): Unit = {
+  def verifyOnDisconnectedMessages(expected: Seq[RpcAddress]): Unit =
     assert(onDisconnectedMessages === expected)
-  }
 
   def verifySingleOnNetworkErrorMessage(
       cause: Throwable,
-      remoteAddress: RpcAddress): Unit = {
+      remoteAddress: RpcAddress): Unit =
     verifyOnNetworkErrorMessages(List(cause -> remoteAddress))
-  }
 
   def verifyOnNetworkErrorMessages(
-      expected: Seq[(Throwable, RpcAddress)]): Unit = {
+      expected: Seq[(Throwable, RpcAddress)]): Unit =
     assert(onNetworkErrorMessages === expected)
-  }
 }

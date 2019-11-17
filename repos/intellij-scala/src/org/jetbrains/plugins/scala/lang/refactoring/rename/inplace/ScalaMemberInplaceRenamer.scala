@@ -61,11 +61,10 @@ class ScalaMemberInplaceRenamer(
     this(elementToRename, substituted, editor)
   }
 
-  protected override def getCommandName: String = {
+  protected override def getCommandName: String =
     if (myInitialName != null)
       RefactoringBundle.message("renaming.command.name", myInitialName)
     else "Rename"
-  }
 
   override def collectRefs(
       referencesSearchScope: SearchScope): util.Collection[PsiReference] =
@@ -73,11 +72,10 @@ class ScalaMemberInplaceRenamer(
       super.collectRefs(referencesSearchScope)
     }
 
-  override def restoreCaretOffset(offset: Int): Int = {
+  override def restoreCaretOffset(offset: Int): Int =
     offset
       .max(myCaretRangeMarker.getStartOffset)
       .min(myCaretRangeMarker.getEndOffset)
-  }
 
   override def acceptReference(reference: PsiReference): Boolean = true
 
@@ -151,14 +149,13 @@ class ScalaMemberInplaceRenamer(
     )
   }
 
-  override def getVariable: PsiNamedElement = {
+  override def getVariable: PsiNamedElement =
     Option(super.getVariable).getOrElse {
       if (myElementToRename != null && myElementToRename.isValid &&
           oldName == ScalaNamesUtil.scalaName(myElementToRename))
         myElementToRename
       else null
     }
-  }
 
   private val substitutorOffset = substituted.getTextRange.getStartOffset
 
@@ -224,7 +221,7 @@ class ScalaMemberInplaceRenamer(
 
   override def startsOnTheSameElement(
       handler: RefactoringActionHandler,
-      element: PsiElement): Boolean = {
+      element: PsiElement): Boolean =
     handler match {
       case _: ScalaMemberInplaceRenameHandler =>
         val caretOffset = editor.getCaretModel.getOffset
@@ -233,7 +230,6 @@ class ScalaMemberInplaceRenamer(
         myCaretRangeMarker.getEndOffset >= caretOffset
       case _ => false
     }
-  }
 }
 object ScalaMemberInplaceRenamer {
   val REVERT_INFO: Key[ScalaRefactoringUtil.RevertInfo] = new Key("RevertInfo")

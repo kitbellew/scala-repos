@@ -112,9 +112,8 @@ private[spark] abstract class Task[T](
 
   private var taskMemoryManager: TaskMemoryManager = _
 
-  def setTaskMemoryManager(taskMemoryManager: TaskMemoryManager): Unit = {
+  def setTaskMemoryManager(taskMemoryManager: TaskMemoryManager): Unit =
     this.taskMemoryManager = taskMemoryManager
-  }
 
   def runTask(context: TaskContext): T
 
@@ -154,7 +153,7 @@ private[spark] abstract class Task[T](
     * filter out the accumulators whose values should not be included on failures.
     */
   def collectAccumulatorUpdates(
-      taskFailed: Boolean = false): Seq[AccumulableInfo] = {
+      taskFailed: Boolean = false): Seq[AccumulableInfo] =
     if (context != null) {
       context.taskMetrics.accumulatorUpdates().filter { a =>
         !taskFailed || a.countFailedValues
@@ -162,7 +161,6 @@ private[spark] abstract class Task[T](
     } else {
       Seq.empty[AccumulableInfo]
     }
-  }
 
   /**
     * Kills a task by setting the interrupted flag to true. This relies on the upper level Spark

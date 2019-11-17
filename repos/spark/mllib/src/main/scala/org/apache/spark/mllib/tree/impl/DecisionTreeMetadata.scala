@@ -227,9 +227,8 @@ private[spark] object DecisionTreeMetadata extends Logging {
     */
   def buildMetadata(
       input: RDD[LabeledPoint],
-      strategy: Strategy): DecisionTreeMetadata = {
+      strategy: Strategy): DecisionTreeMetadata =
     buildMetadata(input, strategy, numTrees = 1, featureSubsetStrategy = "all")
-  }
 
   /**
     * Given the arity of a categorical feature (arity = number of categories),

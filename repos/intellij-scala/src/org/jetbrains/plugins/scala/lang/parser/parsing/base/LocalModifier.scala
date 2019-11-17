@@ -20,7 +20,7 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.builder.ScalaPsiBuilder
  */
 
 object LocalModifier {
-  def parse(builder: ScalaPsiBuilder): Boolean = {
+  def parse(builder: ScalaPsiBuilder): Boolean =
     builder.getTokenType match {
       case ScalaTokenTypes.kABSTRACT | ScalaTokenTypes.kFINAL |
           ScalaTokenTypes.kSEALED | ScalaTokenTypes.kIMPLICIT |
@@ -29,5 +29,4 @@ object LocalModifier {
         return true
       case _ => return false
     }
-  }
 }

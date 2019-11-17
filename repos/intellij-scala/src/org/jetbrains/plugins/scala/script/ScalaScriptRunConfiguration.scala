@@ -202,14 +202,13 @@ class ScalaScriptRunConfiguration(
       element: PsiElement): RefactoringElementListener = element match {
     case file: ScalaFile =>
       new RefactoringElementAdapter {
-        def elementRenamedOrMoved(newElement: PsiElement) = {
+        def elementRenamedOrMoved(newElement: PsiElement) =
           newElement match {
             case f: ScalaFile =>
               val newPath = f.getVirtualFile.getPath
               setScriptPath(newPath)
             case _ =>
           }
-        }
 
         //todo this method does not called when undo of moving action executed
         def undoElementMovedOrRenamed(

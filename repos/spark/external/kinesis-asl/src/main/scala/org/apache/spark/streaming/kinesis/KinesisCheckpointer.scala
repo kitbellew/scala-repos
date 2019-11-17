@@ -54,9 +54,8 @@ private[kinesis] class KinesisCheckpointer(
   /** Update the checkpointer instance to the most recent one for the given shardId. */
   def setCheckpointer(
       shardId: String,
-      checkpointer: IRecordProcessorCheckpointer): Unit = {
+      checkpointer: IRecordProcessorCheckpointer): Unit =
     checkpointers.put(shardId, checkpointer)
-  }
 
   /**
     * Stop tracking the specified shardId.
@@ -67,17 +66,16 @@ private[kinesis] class KinesisCheckpointer(
     */
   def removeCheckpointer(
       shardId: String,
-      checkpointer: IRecordProcessorCheckpointer): Unit = {
+      checkpointer: IRecordProcessorCheckpointer): Unit =
     synchronized {
       checkpointers.remove(shardId)
       checkpoint(shardId, checkpointer)
     }
-  }
 
   /** Perform the checkpoint. */
   private def checkpoint(
       shardId: String,
-      checkpointer: IRecordProcessorCheckpointer): Unit = {
+      checkpointer: IRecordProcessorCheckpointer): Unit =
     try {
       if (checkpointer != null) {
         receiver.getLatestSeqNumToCheckpoint(shardId).foreach { latestSeqNum =>
@@ -102,7 +100,6 @@ private[kinesis] class KinesisCheckpointer(
       case NonFatal(e) =>
         logWarning(s"Failed to checkpoint shardId $shardId to DynamoDB.", e)
     }
-  }
 
   /** Checkpoint the latest saved sequence numbers for all active shardId's. */
   private def checkpointAll(): Unit = synchronized {

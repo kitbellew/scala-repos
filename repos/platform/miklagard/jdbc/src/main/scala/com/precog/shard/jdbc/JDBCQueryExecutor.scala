@@ -78,12 +78,11 @@ object JDBCQueryExecutor {
       jobManager: JobManager[Future],
       jobActorSystem: ActorSystem)(
       implicit ec: ExecutionContext,
-      M: Monad[Future]): ManagedPlatform = {
+      M: Monad[Future]): ManagedPlatform =
     new JDBCQueryExecutor(
       new JDBCQueryExecutorConfig(config),
       jobManager,
       jobActorSystem)
-  }
 }
 
 class JDBCQueryExecutor(
@@ -159,7 +158,7 @@ class JDBCQueryExecutor(
 
     def browse(
         userUID: String,
-        path: Path): Future[Validation[String, JArray]] = {
+        path: Path): Future[Validation[String, JArray]] =
       Future {
         path.elements.toList match {
           case Nil =>
@@ -215,7 +214,6 @@ class JDBCQueryExecutor(
       }.onFailure {
         case t => logger.error("Failure during size", t)
       }
-    }
 
     def structure(
         userUID: String,

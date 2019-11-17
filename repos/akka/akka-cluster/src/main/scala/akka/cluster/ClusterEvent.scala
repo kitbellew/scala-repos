@@ -379,13 +379,12 @@ object ClusterEvent {
   private[cluster] def diffRolesLeader(
       oldGossip: Gossip,
       newGossip: Gossip,
-      selfUniqueAddress: UniqueAddress): Set[RoleLeaderChanged] = {
+      selfUniqueAddress: UniqueAddress): Set[RoleLeaderChanged] =
     for {
       role ← (oldGossip.allRoles union newGossip.allRoles)
       newLeader = newGossip.roleLeader(role, selfUniqueAddress)
       if newLeader != oldGossip.roleLeader(role, selfUniqueAddress)
     } yield RoleLeaderChanged(role, newLeader.map(_.address))
-  }
 
   /**
     * INTERNAL API
@@ -480,9 +479,8 @@ private[cluster] final class ClusterDomainEventPublisher
       to: Set[Class[_]]): Unit = {
     initMode match {
       case InitialStateAsEvents ⇒
-        def pub(event: AnyRef): Unit = {
+        def pub(event: AnyRef): Unit =
           if (to.exists(_.isAssignableFrom(event.getClass))) subscriber ! event
-        }
         publishDiff(Gossip.empty, latestGossip, pub)
       case InitialStateAsSnapshot ⇒
         sendCurrentClusterState(subscriber)
@@ -523,7 +521,6 @@ private[cluster] final class ClusterDomainEventPublisher
 
   def publish(event: AnyRef): Unit = eventStream publish event
 
-  def clearState(): Unit = {
+  def clearState(): Unit =
     latestGossip = Gossip.empty
-  }
 }

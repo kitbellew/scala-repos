@@ -94,7 +94,6 @@ final class ScalaCallerMethodsTreeStructure(
     methodToDescriptorMap.values.toArray
   }
 
-  override def isAlwaysShowPlus: Boolean = {
+  override def isAlwaysShowPlus: Boolean =
     true
-  }
 }

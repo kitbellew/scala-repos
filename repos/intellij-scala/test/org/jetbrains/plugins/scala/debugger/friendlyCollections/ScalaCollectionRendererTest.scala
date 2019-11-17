@@ -98,7 +98,7 @@ class ScalaCollectionRendererTest
   private def localVar(
       frameTree: DebuggerTree,
       evaluationContext: EvaluationContextImpl,
-      name: String) = {
+      name: String) =
     try {
       val frameProxy = evaluationContext.getFrameProxy
       val local = frameTree.getNodeFactory
@@ -108,7 +108,6 @@ class ScalaCollectionRendererTest
     } catch {
       case e: EvaluateException => null
     }
-  }
 
   protected def testScalaCollectionRenderer(
       collectionName: String,

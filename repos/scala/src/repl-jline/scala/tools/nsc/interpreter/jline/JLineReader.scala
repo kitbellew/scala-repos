@@ -156,7 +156,7 @@ private class JLineConsoleReader
       override def complete(
           consoleReader: ConsoleReader,
           list: JList[CharSequence],
-          i: Int): Boolean = {
+          i: Int): Boolean =
         try {
           handler.complete(consoleReader, list, i)
         } finally if (getCursorBuffer.cursor != getCursorBuffer.length()) {
@@ -164,7 +164,6 @@ private class JLineConsoleReader
           getCursorBuffer.write(' ')
           backspace()
         }
-      }
     })
     setAutoprintThreshold(400) // max completion candidates without warning
   }

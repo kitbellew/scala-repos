@@ -139,9 +139,8 @@ private object PartitionAssignorTest extends Logging {
           "pattern" -> "static",
           "timestamp" -> 1234.toString))
 
-    override def toString = {
+    override def toString =
       "Stream counts: " + streamCounts
-    }
   }
 
   private case class WildcardSubscriptionInfo(
@@ -156,12 +155,11 @@ private object PartitionAssignorTest extends Logging {
           "subscription" -> Map(regex -> streamCount),
           "pattern" -> (if (isWhitelist) "white_list" else "black_list")))
 
-    override def toString = {
+    override def toString =
       "\"%s\":%d (%s)".format(
         regex,
         streamCount,
         if (isWhitelist) "whitelist" else "blacklist")
-    }
   }
 
   private case class Scenario(
@@ -169,11 +167,10 @@ private object PartitionAssignorTest extends Logging {
       topicPartitionCounts: Map[String, Int],
       /* consumerId -> SubscriptionInfo */
       subscriptions: Map[String, SubscriptionInfo]) {
-    override def toString = {
+    override def toString =
       "\n" + "Group                  : %s\n".format(group) +
         "Topic partition counts : %s\n".format(topicPartitionCounts) +
         "Consumer assignment : %s\n".format(subscriptions)
-    }
   }
 
   private def setupZkClientMock(scenario: Scenario) = {

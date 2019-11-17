@@ -28,7 +28,7 @@ private[loadbalancer] trait P2CSuite {
 
   class Clock extends (() => Long) {
     var time: Long = 0L
-    def advance(tick: Long): Unit = { time += tick }
+    def advance(tick: Long): Unit = time += tick
     def apply(): Long = time
   }
 

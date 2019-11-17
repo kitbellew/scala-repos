@@ -113,7 +113,7 @@ trait TestCodeGenerator {
         }
       override def parentType =
         Some("com.typesafe.slick.testkit.util.TestCodeRunner.TestCase")
-      override def code = {
+      override def code =
         s"""
            |lazy val tdb = $fullTdbName
            |def test = {
@@ -122,7 +122,6 @@ trait TestCodeGenerator {
            |  $testCode
            |}
          """.stripMargin + super.code
-      }
     }
   }
 }

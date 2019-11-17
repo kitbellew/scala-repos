@@ -34,8 +34,7 @@ object Depth {
   //
   // We only really need one of these, but we allow representation of Depth(-1) and Depth(-2)
   // to mimic the historical choice of 2.10.4.
-  @inline final def apply(depth: Int): Depth = {
+  @inline final def apply(depth: Int): Depth =
     if (depth < AnyDepthValue) AnyDepth
     else new Depth(depth)
-  }
 }

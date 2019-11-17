@@ -10,9 +10,8 @@ class MetricsServletSupportSpec extends ScalatraFlatSpec {
     new ServletContextListener with MetricsBootstrap {
       def contextDestroyed(sce: ServletContextEvent): Unit = {}
 
-      def contextInitialized(sce: ServletContextEvent): Unit = {
+      def contextInitialized(sce: ServletContextEvent): Unit =
         sce.getServletContext.mountMetricsAdminServlet("/admin")
-      }
     })
 
   "The MetricsSupportExtensions" should "Mount the admin servlet" in {

@@ -58,9 +58,8 @@ class LocalConcurrencySpec(_system: ActorSystem)
       ))
   }
 
-  override def afterAll(): Unit = {
+  override def afterAll(): Unit =
     shutdown(system)
-  }
 
   val replicator = DistributedData(system).replicator
 

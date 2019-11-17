@@ -17,9 +17,8 @@ import org.scalajs.testsuite.utils.Platform.executingInJVM
 
 class CharsetTest {
 
-  @Test def defaultCharset(): Unit = {
+  @Test def defaultCharset(): Unit =
     assertSame("UTF-8", Charset.defaultCharset().name())
-  }
 
   @Test def forName(): Unit = {
     assertEquals("ISO-8859-1", Charset.forName("ISO-8859-1").name())

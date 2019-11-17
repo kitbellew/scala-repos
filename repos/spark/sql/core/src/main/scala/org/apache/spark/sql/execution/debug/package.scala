@@ -48,9 +48,8 @@ package object debug {
     * Augments [[SQLContext]] with debug methods.
     */
   implicit class DebugSQLContext(sqlContext: SQLContext) {
-    def debug(): Unit = {
+    def debug(): Unit =
       sqlContext.setConf(SQLConf.DATAFRAME_EAGER_ANALYSIS, false)
-    }
   }
 
   /**
@@ -120,7 +119,7 @@ package object debug {
       }
     }
 
-    protected override def doExecute(): RDD[InternalRow] = {
+    protected override def doExecute(): RDD[InternalRow] =
       child.execute().mapPartitions { iter =>
         new Iterator[InternalRow] {
           def hasNext: Boolean = iter.hasNext
@@ -140,21 +139,17 @@ package object debug {
           }
         }
       }
-    }
 
-    override def upstreams(): Seq[RDD[InternalRow]] = {
+    override def upstreams(): Seq[RDD[InternalRow]] =
       child.asInstanceOf[CodegenSupport].upstreams()
-    }
 
-    override def doProduce(ctx: CodegenContext): String = {
+    override def doProduce(ctx: CodegenContext): String =
       child.asInstanceOf[CodegenSupport].produce(ctx, this)
-    }
 
     override def doConsume(
         ctx: CodegenContext,
         input: Seq[ExprCode],
-        row: String): String = {
+        row: String): String =
       consume(ctx, input)
-    }
   }
 }

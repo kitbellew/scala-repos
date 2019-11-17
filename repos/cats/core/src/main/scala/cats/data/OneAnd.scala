@@ -186,14 +186,12 @@ trait OneAndLowPriority2 extends OneAndLowPriority1 {
         G.ap2[B, F[B], OneAnd[F, B]](G.pure(OneAnd(_, _)))(head, tail)
       }
 
-      def foldLeft[A, B](fa: OneAnd[F, A], b: B)(f: (B, A) => B): B = {
+      def foldLeft[A, B](fa: OneAnd[F, A], b: B)(f: (B, A) => B): B =
         fa.foldLeft(b)(f)
-      }
 
       def foldRight[A, B](fa: OneAnd[F, A], lb: Eval[B])(
-          f: (A, Eval[B]) => Eval[B]): Eval[B] = {
+          f: (A, Eval[B]) => Eval[B]): Eval[B] =
         fa.foldRight(lb)(f)
-      }
     }
 }
 

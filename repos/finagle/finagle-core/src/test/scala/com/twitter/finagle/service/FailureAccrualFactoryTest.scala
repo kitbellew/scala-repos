@@ -515,12 +515,11 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
 
       def recordSuccess() = ()
       def revived() = ()
-      def markDeadOnFailure(): Option[Duration] = {
+      def markDeadOnFailure(): Option[Duration] =
         if (markDead) {
           markDead = false
           Some(1.second)
         } else None
-      }
     }
 
     val h = new Helper(policy)
@@ -649,12 +648,11 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
           timer,
           NullStatsReceiver,
           label) {
-      override def isSuccess(reqRep: ReqRep): Boolean = {
+      override def isSuccess(reqRep: ReqRep): Boolean =
         reqRep.response match {
           case Throw(_)  => false
           case Return(x) => x != 321
         }
-      }
     }
 
     val underlyingService = mock[Service[Int, Int]]

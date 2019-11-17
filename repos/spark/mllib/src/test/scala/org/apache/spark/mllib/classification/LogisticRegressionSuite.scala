@@ -41,9 +41,8 @@ object LogisticRegressionSuite {
       offset: Double,
       scale: Double,
       nPoints: Int,
-      seed: Int): java.util.List[LabeledPoint] = {
+      seed: Int): java.util.List[LabeledPoint] =
     generateLogisticInput(offset, scale, nPoints, seed).asJava
-  }
 
   // Generate input of the form Y = logistic(offset + scale*X)
   def generateLogisticInput(

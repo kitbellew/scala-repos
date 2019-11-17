@@ -591,9 +591,8 @@ trait BlockContexts extends TestBase {
   import ExecutionContext.Implicits._
   import scala.concurrent.{Await, Awaitable, BlockContext}
 
-  private def getBlockContext(body: => BlockContext): BlockContext = {
+  private def getBlockContext(body: => BlockContext): BlockContext =
     Await.result(Future { body }, Duration(500, "ms"))
-  }
 
   // test outside of an ExecutionContext
   def testDefaultOutsideFuture(): Unit = {

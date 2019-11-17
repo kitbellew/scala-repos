@@ -21,7 +21,7 @@ import scala.tools.testing.ClearAfterClass
 
 object InlinerIllegalAccessTest extends ClearAfterClass.Clearable {
   var compiler = newCompiler(extraArgs = "-Yopt:l:none")
-  def clear(): Unit = { compiler = null }
+  def clear(): Unit = compiler = null
 }
 
 @RunWith(classOf[JUnit4])
@@ -61,7 +61,7 @@ class InlinerIllegalAccessTest extends ClearAfterClass {
 
     val methods = cClass.methods.asScala.filter(_.name(0) == 'f').toList
 
-    def check(classNode: ClassNode, test: Option[AbstractInsnNode] => Unit) = {
+    def check(classNode: ClassNode, test: Option[AbstractInsnNode] => Unit) =
       for (m <- methods)
         test(
           inliner
@@ -70,7 +70,6 @@ class InlinerIllegalAccessTest extends ClearAfterClass {
               classBTypeFromParsedClassfile(cClass.name),
               classBTypeFromParsedClassfile(classNode.name))
             .map(_._1))
-    }
 
     check(cClass, assertEmpty)
     check(dClass, assertEmpty)
@@ -145,12 +144,11 @@ class InlinerIllegalAccessTest extends ClearAfterClass {
     val List(a, b, c, d, e, f, g, h) =
       cCl.methods.asScala.toList.filter(m => names(m.name))
 
-    def checkAccess(a: MethodNode, expected: Int): Unit = {
+    def checkAccess(a: MethodNode, expected: Int): Unit =
       assert(
         (a.access &
           (ACC_STATIC | ACC_PUBLIC | ACC_PROTECTED | ACC_PRIVATE)) == expected,
         s"${a.name}, ${a.access}")
-    }
 
     checkAccess(a, ACC_PUBLIC)
     b.access &= ~ACC_PUBLIC; checkAccess(b, 0) // make it default access
@@ -174,7 +172,7 @@ class InlinerIllegalAccessTest extends ClearAfterClass {
         method: MethodNode,
         decl: ClassNode,
         dest: ClassNode,
-        test: Option[AbstractInsnNode] => Unit): Unit = {
+        test: Option[AbstractInsnNode] => Unit): Unit =
       test(
         inliner
           .findIllegalAccess(
@@ -182,7 +180,6 @@ class InlinerIllegalAccessTest extends ClearAfterClass {
             classBTypeFromParsedClassfile(decl.name),
             classBTypeFromParsedClassfile(dest.name))
           .map(_._1))
-    }
 
     val cOrDOwner = (_: Option[AbstractInsnNode] @unchecked) match {
       case Some(mi: MethodInsnNode) if Set("a/C", "a/D")(mi.owner) => ()

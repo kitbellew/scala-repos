@@ -10,7 +10,7 @@ import org.jetbrains.plugins.scala.testingSupport.scalatest.ScalaTestTestCase
 trait PropSpecFileStructureViewTest extends ScalaTestTestCase {
   private val className = "PropSpecViewTest"
 
-  def addPropSpecViewTest(): Unit = {
+  def addPropSpecViewTest(): Unit =
     addFileToProject(
       className + ".scala",
       """
@@ -27,7 +27,6 @@ trait PropSpecFileStructureViewTest extends ScalaTestTestCase {
         |}
       """.stripMargin
     )
-  }
 
   def testPropSpecNormal(): Unit = {
     addPropSpecViewTest()

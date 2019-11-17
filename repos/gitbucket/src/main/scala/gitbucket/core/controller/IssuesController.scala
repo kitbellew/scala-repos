@@ -520,7 +520,7 @@ trait IssuesControllerBase extends ControllerBase {
     }
   }
 
-  private def searchIssues(repository: RepositoryService.RepositoryInfo) = {
+  private def searchIssues(repository: RepositoryService.RepositoryInfo) =
     defining(repository.owner, repository.name) {
       case (owner, repoName) =>
         val page = IssueSearchCondition.page(request)
@@ -572,5 +572,4 @@ trait IssuesControllerBase extends ControllerBase {
           hasWritePermission(owner, repoName, context.loginAccount)
         )
     }
-  }
 }

@@ -111,9 +111,8 @@ class InterpolatedStringFormatterTest extends SimpleTestCase {
     assertEquals("", format(UnboundExpression(exp("foo"))))
   }
 
-  private def format(parts: StringPart*): String = {
+  private def format(parts: StringPart*): String =
     InterpolatedStringFormatter.formatContent(parts)
-  }
 
   private def exp(s: String): ScExpression = {
     val manager = PsiManager.getInstance(fixture.getProject)

@@ -231,19 +231,17 @@ object SwaggerSupportSyntax {
     def isRequired: Boolean =
       paramType == ParamType.Path || _required.forall(identity)
 
-    def multiValued: this.type = {
+    def multiValued: this.type =
       dataType match {
         case dt: ValueDataType =>
           dataType(ContainerDataType("List", Some(dt), uniqueItems = false))
         case _ => this
       }
-    }
-    def singleValued: this.type = {
+    def singleValued: this.type =
       dataType match {
         case ContainerDataType(_, Some(dataType), _) => this.dataType(dataType)
         case _                                       => this
       }
-    }
 
     //    def allowsMultiple: Boolean = !SwaggerSupportSyntax.SingleValued.contains(paramType) && _allowMultiple
 
@@ -669,7 +667,7 @@ trait SwaggerSupport
   /**
     * Builds the documentation for all the endpoints discovered in an API.
     */
-  def endpoints(basePath: String): List[Endpoint] = {
+  def endpoints(basePath: String): List[Endpoint] =
     (swaggerEndpointEntries(extractOperation) groupBy (_.key)).toList map {
       case (name, entries) ⇒
         val desc = _description lift name getOrElse ""
@@ -677,7 +675,6 @@ trait SwaggerSupport
         val nm = if (name startsWith "/") name.substring(1) else name
         new Endpoint(pth + nm, desc.blankOption, entries.toList map (_.value))
     } sortBy (_.path)
-  }
 
   /**
     * Returns a list of operations based on the given route. The default implementation returns a list with only 1

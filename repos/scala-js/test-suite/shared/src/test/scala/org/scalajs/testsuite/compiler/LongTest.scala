@@ -110,9 +110,8 @@ class LongTest {
     assertEquals("20hello", x + "hello")
   }
 
-  @Test def `string_should_convert_to_Long`(): Unit = {
+  @Test def `string_should_convert_to_Long`(): Unit =
     assertEquals(45678901234567890L, "45678901234567890".toLong)
-  }
 
   @Test def `should_correctly_implement_is/asInstanceOf_Longs`(): Unit = {
     val dyn: Any = 5L

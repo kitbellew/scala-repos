@@ -65,9 +65,8 @@ private[spark] class TimeBasedRollingPolicy(
   private val formatter = new SimpleDateFormat(rollingFileSuffixPattern)
 
   /** Should rollover if current time has exceeded next rollover time */
-  def shouldRollover(bytesToBeWritten: Long): Boolean = {
+  def shouldRollover(bytesToBeWritten: Long): Boolean =
     System.currentTimeMillis > nextRolloverTime
-  }
 
   /** Rollover has occurred, so find the next time to rollover */
   def rolledOver() {
@@ -87,9 +86,8 @@ private[spark] class TimeBasedRollingPolicy(
     targetTime
   }
 
-  def generateRolledOverFileSuffix(): String = {
+  def generateRolledOverFileSuffix(): String =
     formatter.format(Calendar.getInstance.getTime)
-  }
 }
 
 private[spark] object TimeBasedRollingPolicy {
@@ -134,9 +132,8 @@ private[spark] class SizeBasedRollingPolicy(
   }
 
   /** Get the desired name of the rollover file */
-  def generateRolledOverFileSuffix(): String = {
+  def generateRolledOverFileSuffix(): String =
     formatter.format(Calendar.getInstance.getTime)
-  }
 }
 
 private[spark] object SizeBasedRollingPolicy {

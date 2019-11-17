@@ -249,17 +249,15 @@ object IntervalTrie {
     def unapply(l: Leaf) = if (l.at && !l.sign) Some(l.key) else None
   }
 
-  private def fromTo[T: Element](a: Leaf, b: Leaf): IntervalTrie[T] = {
+  private def fromTo[T: Element](a: Leaf, b: Leaf): IntervalTrie[T] =
     IntervalTrie[T](false, concat(a, b))
-  }
 
   def apply(text: String): IntervalTrie[Long] = {
     val la = spire.std.long.LongAlgebra
-    def rationalToLong(r: Rational): Long = {
+    def rationalToLong(r: Rational): Long =
       if (r > Long.MaxValue || r < Long.MinValue)
         throw new NumberFormatException("Integer number too large")
       else r.toLong
-    }
     def intervalToIntervalSet(i: Interval[Long]): IntervalTrie[Long] = apply(i)
     val intervals =
       text.split(';').map(Interval.apply).map(_.mapBounds(rationalToLong)(la))
@@ -513,9 +511,8 @@ object IntervalTrie {
       override def iterator: Iterator[T] = new EdgeIterator[T](lhs.tree)
     }
 
-    override def toString = {
+    override def toString =
       if (isEmpty) Interval.empty[T].toString
       else intervals.map(_.toString).mkString(";")
-    }
   }
 }

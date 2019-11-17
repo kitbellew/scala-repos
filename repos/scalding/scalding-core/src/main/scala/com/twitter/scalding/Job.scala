@@ -54,13 +54,12 @@ object Job {
     * context classloader so that classes in the submitted jar and any
     * jars included via -libjar can be found.
     */
-  def apply(jobName: String, args: Args): Job = {
+  def apply(jobName: String, args: Args): Job =
     Class
       .forName(jobName, true, Thread.currentThread().getContextClassLoader)
       .getConstructor(classOf[Args])
       .newInstance(args)
       .asInstanceOf[Job]
-  }
 }
 
 /**
@@ -518,7 +517,7 @@ abstract class ExecutionJob[+T](args: Args) extends Job(args) {
  * failing command is printed to stdout.
  */
 class ScriptJob(cmds: Iterable[String]) extends Job(Args("")) {
-  override def run = {
+  override def run =
     try {
       cmds.dropWhile { cmd: String =>
         {
@@ -538,7 +537,6 @@ class ScriptJob(cmds: Iterable[String]) extends Job(Args("")) {
         false
       }
     }
-  }
 }
 
 /**
@@ -556,13 +554,12 @@ trait CounterVerification extends Job {
     */
   def verifyCountersInTest: Boolean = true
 
-  override def listeners: List[FlowListener] = {
+  override def listeners: List[FlowListener] =
     if (this.mode.isInstanceOf[TestMode] && !this.verifyCountersInTest) {
       super.listeners
     } else {
       super.listeners :+ new StatsFlowListener(this.verifyCounters)
     }
-  }
 }
 
 private[scalding] case class FlowStepStrategies[A]()

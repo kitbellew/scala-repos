@@ -15,7 +15,7 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.builder.ScalaPsiBuilder
  */
 
 object PrefixExpr {
-  def parse(builder: ScalaPsiBuilder): Boolean = {
+  def parse(builder: ScalaPsiBuilder): Boolean =
     builder.getTokenText match {
       case "-" | "+" | "~" | "!" =>
         val prefixMarker = builder.mark
@@ -29,5 +29,4 @@ object PrefixExpr {
         }
       case _ => SimpleExpr.parse(builder)
     }
-  }
 }

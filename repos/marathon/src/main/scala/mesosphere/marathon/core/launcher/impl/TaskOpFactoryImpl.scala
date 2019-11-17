@@ -148,8 +148,7 @@ class TaskOpFactoryImpl @Inject() (config: MarathonConf, clock: Clock)
       task: Task,
       resourceMatch: Option[ResourceMatcher.ResourceMatch],
       volumeMatch: Option[PersistentVolumeMatcher.VolumeMatch])
-      : Option[TaskOp] = {
-
+      : Option[TaskOp] =
     // create a TaskBuilder that used the id of the existing task as id for the created TaskInfo
     new TaskBuilder(app, (_) => task.taskId, config)
       .build(offer, resourceMatch, volumeMatch) map {
@@ -171,7 +170,6 @@ class TaskOpFactoryImpl @Inject() (config: MarathonConf, clock: Clock)
               s"Expected TaskStateChange.Update but got $unexpected")
         }
     }
-  }
 
   private[this] def reserveAndCreateVolumes(
       frameworkId: FrameworkId,

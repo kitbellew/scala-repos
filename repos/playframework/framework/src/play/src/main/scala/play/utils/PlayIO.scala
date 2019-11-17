@@ -22,7 +22,7 @@ private[play] object PlayIO {
     *
     * Closes the stream.
     */
-  private def readStream(stream: InputStream): Array[Byte] = {
+  private def readStream(stream: InputStream): Array[Byte] =
     try {
       val buffer = new Array[Byte](8192)
       var len = stream.read(buffer)
@@ -33,44 +33,39 @@ private[play] object PlayIO {
       }
       out.toByteArray
     } finally closeQuietly(stream)
-  }
 
   /**
     * Read the file into a byte array.
     */
-  def readFile(file: File): Array[Byte] = {
+  def readFile(file: File): Array[Byte] =
     readStream(new FileInputStream(file))
-  }
 
   /**
     * Read the given stream into a String.
     *
     * Closes the stream.
     */
-  def readStreamAsString(stream: InputStream)(implicit codec: Codec): String = {
+  def readStreamAsString(stream: InputStream)(implicit codec: Codec): String =
     new String(readStream(stream), codec.name)
-  }
 
   /**
     * Read the URL as a String.
     */
-  def readUrlAsString(url: URL)(implicit codec: Codec): String = {
+  def readUrlAsString(url: URL)(implicit codec: Codec): String =
     readStreamAsString(url.openStream())
-  }
 
   /**
     * Read the file as a String.
     */
-  def readFileAsString(file: File)(implicit codec: Codec): String = {
+  def readFileAsString(file: File)(implicit codec: Codec): String =
     readStreamAsString(new FileInputStream(file))
-  }
 
   /**
     * Close the given closeable quietly.
     *
     * Logs any IOExceptions encountered.
     */
-  def closeQuietly(closeable: Closeable) = {
+  def closeQuietly(closeable: Closeable) =
     try {
       if (closeable != null) {
         closeable.close()
@@ -78,5 +73,4 @@ private[play] object PlayIO {
     } catch {
       case e: IOException => logger.warn("Error closing stream", e)
     }
-  }
 }

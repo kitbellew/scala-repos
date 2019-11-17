@@ -73,7 +73,7 @@ abstract class AbstractDecoder extends FrameDecoder {
   protected def decodeData(
       bytesNeeded: Int,
       buffer: ChannelBuffer
-  )(continue: ChannelBuffer => Decoding): Decoding = {
+  )(continue: ChannelBuffer => Decoding): Decoding =
     if (buffer.readableBytes < (bytesNeeded + DelimiterLength)) null
     else {
       if (!FindCRLF.find(buffer, bytesNeeded + buffer.readerIndex))
@@ -86,7 +86,6 @@ abstract class AbstractDecoder extends FrameDecoder {
       // Shared rather than wrapped to avoid caching data outside the reader/writer mark.
       continue(ChannelBuffers.copiedBuffer(data))
     }
-  }
 
   protected[memcached] def start(): Unit
   protected[memcached] def awaitData(

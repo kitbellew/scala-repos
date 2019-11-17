@@ -50,9 +50,8 @@ class BloomFilter[@specialized(Int, Long) T](
     }
   }
 
-  def apply(o: T): Boolean = {
+  def apply(o: T): Boolean =
     activeBuckets(o).forall(i => bits.get(i))
-  }
 
   def contains(o: T) = apply(o)
 

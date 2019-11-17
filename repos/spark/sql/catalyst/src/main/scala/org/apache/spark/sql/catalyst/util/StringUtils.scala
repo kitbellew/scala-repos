@@ -25,7 +25,7 @@ object StringUtils {
 
   // replace the _ with .{1} exactly match 1 time of any character
   // replace the % with .*, match 0 or more times with any character
-  def escapeLikeRegex(v: String): String = {
+  def escapeLikeRegex(v: String): String =
     if (!v.isEmpty) {
       "(?s)" + (' ' +: v.init)
         .zip(v)
@@ -48,7 +48,6 @@ object StringUtils {
     } else {
       v
     }
-  }
 
   private[this] val trueStrings =
     Set("t", "true", "y", "yes", "1").map(UTF8String.fromString)

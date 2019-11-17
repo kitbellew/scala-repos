@@ -171,7 +171,7 @@ class JobCancellationSuite
     @volatile var exception: Exception = null
     val jobA = new Thread() {
       // The job group should be inherited by this thread
-      override def run(): Unit = {
+      override def run(): Unit =
         exception = intercept[SparkException] {
           sc.parallelize(1 to 10000, 2)
             .map { i =>
@@ -179,7 +179,6 @@ class JobCancellationSuite
             }
             .count()
         }
-      }
     }
     jobA.start()
 

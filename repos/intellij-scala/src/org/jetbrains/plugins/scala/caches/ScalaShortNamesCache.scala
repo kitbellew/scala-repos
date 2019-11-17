@@ -109,10 +109,9 @@ class ScalaShortNamesCache(project: Project) extends PsiShortNamesCache {
   def processMethodsWithName(
       name: String,
       scope: GlobalSearchScope,
-      processor: Processor[PsiMethod]): Boolean = {
+      processor: Processor[PsiMethod]): Boolean =
     //todo:
     true
-  }
 
   def getAllClassNames: Array[String] = {
     val keys =
@@ -128,34 +127,27 @@ class ScalaShortNamesCache(project: Project) extends PsiShortNamesCache {
 
   def getMethodsByName(
       name: String,
-      scope: GlobalSearchScope): Array[PsiMethod] = {
+      scope: GlobalSearchScope): Array[PsiMethod] =
     PsiMethod.EMPTY_ARRAY //todo:
-  }
 
   def getMethodsByNameIfNotMoreThan(
       name: String,
       scope: GlobalSearchScope,
-      maxCount: Int): Array[PsiMethod] = {
+      maxCount: Int): Array[PsiMethod] =
     getMethodsByName(name, scope) //todo:
-  }
 
-  def getAllMethodNames: Array[String] = {
+  def getAllMethodNames: Array[String] =
     ArrayUtil.EMPTY_STRING_ARRAY //todo:
-  }
 
   def getAllMethodNames(set: HashSet[String]) {
     //todo:
   }
 
-  def getFieldsByName(
-      name: String,
-      scope: GlobalSearchScope): Array[PsiField] = {
+  def getFieldsByName(name: String, scope: GlobalSearchScope): Array[PsiField] =
     PsiField.EMPTY_ARRAY //todo:
-  }
 
-  def getAllFieldNames: Array[String] = {
+  def getAllFieldNames: Array[String] =
     ArrayUtil.EMPTY_STRING_ARRAY //todo:
-  }
 
   def getAllFieldNames(set: HashSet[String]) {
     //todo:
@@ -164,9 +156,8 @@ class ScalaShortNamesCache(project: Project) extends PsiShortNamesCache {
   def getFieldsByNameIfNotMoreThan(
       name: String,
       scope: GlobalSearchScope,
-      maxCount: Int): Array[PsiField] = {
+      maxCount: Int): Array[PsiField] =
     Array.empty //todo:
-  }
 
   private var LOG: Logger = Logger.getInstance(
     "#org.jetbrains.plugins.scala.caches.ScalaShortNamesCache")

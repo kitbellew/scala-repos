@@ -691,7 +691,7 @@ object Console extends Logging {
     }
   }
 
-  def help(commands: Seq[String] = Seq()): String = {
+  def help(commands: Seq[String] = Seq()): String =
     if (commands.isEmpty) {
       mainHelp
     } else {
@@ -700,7 +700,6 @@ object Console extends Logging {
           .mkString("-")
       helpText.getOrElse(stripped, s"Help is unavailable for ${stripped}.")
     }
-  }
 
   val mainHelp = txt.main().toString
 
@@ -743,9 +742,8 @@ object Console extends Logging {
     0
   }
 
-  def unregister(ca: ConsoleArgs): Unit = {
+  def unregister(ca: ConsoleArgs): Unit =
     RegisterEngine.unregisterEngine(ca.common.manifestJson)
-  }
 
   def train(ca: ConsoleArgs): Int = {
     Template.verifyTemplateMinVersion(new File("template.json"))
@@ -925,11 +923,10 @@ object Console extends Logging {
     }
   }
 
-  private def outputSbtError(line: String): Unit = {
+  private def outputSbtError(line: String): Unit =
     """\[.*error.*\]""".r findFirstIn line foreach { _ =>
       error(line)
     }
-  }
 
   def run(ca: ConsoleArgs): Int = {
     compile(ca)
@@ -1048,7 +1045,7 @@ object Console extends Logging {
     0
   }
 
-  def upgrade(ca: ConsoleArgs): Unit = {
+  def upgrade(ca: ConsoleArgs): Unit =
     (ca.upgrade.from, ca.upgrade.to) match {
       case ("0.8.2", "0.8.3") => {
         Upgrade_0_8_3.runMain(ca.upgrade.oldAppId, ca.upgrade.newAppId)
@@ -1058,7 +1055,6 @@ object Console extends Logging {
           s"Upgrade from version ${ca.upgrade.from} to ${ca.upgrade.to}" +
             s" is not supported.")
     }
-  }
 
   def coreAssembly(pioHome: String): File = {
     val core = s"pio-assembly-${BuildInfo.version}.jar"
@@ -1186,17 +1182,15 @@ object Console extends Logging {
       f.getName.toLowerCase.endsWith("-sources.jar")
     }
 
-  def recursiveListFiles(f: File): Array[File] = {
+  def recursiveListFiles(f: File): Array[File] =
     Option(f.listFiles) map { these =>
       these ++ these.filter(_.isDirectory).flatMap(recursiveListFiles)
     } getOrElse Array[File]()
-  }
 
-  def getSparkHome(sparkHome: Option[String]): String = {
+  def getSparkHome(sparkHome: Option[String]): String =
     sparkHome getOrElse {
       sys.env.getOrElse("SPARK_HOME", ".")
     }
-  }
 
   def versionNoPatch(fullVersion: String): String = {
     val v = """^(\d+\.\d+)""".r
@@ -1208,7 +1202,7 @@ object Console extends Logging {
 
   def scalaVersionNoPatch: String = versionNoPatch(BuildInfo.scalaVersion)
 
-  def detectSbt(ca: ConsoleArgs): String = {
+  def detectSbt(ca: ConsoleArgs): String =
     ca.build.sbt map {
       _.getCanonicalPath
     } getOrElse {
@@ -1216,7 +1210,6 @@ object Console extends Logging {
         Seq(ca.common.pioHome.get, "sbt", "sbt").mkString(File.separator))
       if (f.exists) f.getCanonicalPath else "sbt"
     }
-  }
 
   def stripMarginAndNewlines(string: String): String =
     string.stripMargin.replaceAll("\n", " ")

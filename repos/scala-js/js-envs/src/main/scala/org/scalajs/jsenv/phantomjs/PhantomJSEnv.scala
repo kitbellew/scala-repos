@@ -43,21 +43,18 @@ class PhantomJSEnv(
 
   override def jsRunner(
       libs: Seq[ResolvedJSDependency],
-      code: VirtualJSFile): JSRunner = {
+      code: VirtualJSFile): JSRunner =
     new PhantomRunner(libs, code)
-  }
 
   override def asyncRunner(
       libs: Seq[ResolvedJSDependency],
-      code: VirtualJSFile): AsyncJSRunner = {
+      code: VirtualJSFile): AsyncJSRunner =
     new AsyncPhantomRunner(libs, code)
-  }
 
   override def comRunner(
       libs: Seq[ResolvedJSDependency],
-      code: VirtualJSFile): ComJSRunner = {
+      code: VirtualJSFile): ComJSRunner =
     new ComPhantomRunner(libs, code)
-  }
 
   protected class PhantomRunner(
       libs: Seq[ResolvedJSDependency],
@@ -333,7 +330,7 @@ class PhantomJSEnv(
       additionalArgs :+ createTmpLauncherFile().getAbsolutePath
 
     /** In phantom.js, we include JS using HTML */
-    override protected def writeJSFile(file: VirtualJSFile, writer: Writer) = {
+    override protected def writeJSFile(file: VirtualJSFile, writer: Writer) =
       file match {
         case file: FileVirtualJSFile =>
           val fname = htmlEscape(fixFileURI(file.file.toURI).toASCIIString)
@@ -346,7 +343,6 @@ class PhantomJSEnv(
           writer.write(file.content)
           writer.write("</script>\n")
       }
-    }
 
     /**
       * PhantomJS doesn't support Function.prototype.bind. We polyfill it.

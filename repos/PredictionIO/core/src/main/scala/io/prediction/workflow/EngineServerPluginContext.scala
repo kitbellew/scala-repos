@@ -72,7 +72,7 @@ object EngineServerPluginContext extends Logging {
     new EngineServerPluginContext(plugins, pluginParams, log)
   }
 
-  private def stringFromFile(filePath: String): String = {
+  private def stringFromFile(filePath: String): String =
     try {
       val uri = new URI(filePath)
       val fs = FileSystem.get(uri, new Configuration())
@@ -82,5 +82,4 @@ object EngineServerPluginContext extends Logging {
         error(s"Error reading from file: ${e.getMessage}. Aborting.")
         sys.exit(1)
     }
-  }
 }

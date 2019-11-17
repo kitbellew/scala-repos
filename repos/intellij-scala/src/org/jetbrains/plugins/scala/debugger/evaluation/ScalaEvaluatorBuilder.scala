@@ -48,13 +48,12 @@ object ScalaEvaluatorBuilder extends EvaluatorBuilder {
       }
     }
 
-    def buildSimpleEvaluator = {
+    def buildSimpleEvaluator =
       cached.getOrElse {
         val newEvaluator =
           new ScalaEvaluatorBuilder(scalaFragment, position).getEvaluator
         cache.add(position, scalaFragment, newEvaluator)
       }
-    }
 
     def buildCompilingEvaluator: ScalaCompilingEvaluator = {
       val compilingEvaluator =
@@ -93,7 +92,7 @@ private[evaluation] class ScalaEvaluatorBuilder(
   def getEvaluator: Evaluator =
     new UnwrapRefEvaluator(fragmentEvaluator(codeFragment))
 
-  protected def evaluatorFor(element: PsiElement): Evaluator = {
+  protected def evaluatorFor(element: PsiElement): Evaluator =
     element match {
       case implicitlyConvertedTo(expr) => evaluatorFor(expr)
       case needsCompilation(message) =>
@@ -132,7 +131,6 @@ private[evaluation] class ScalaEvaluatorBuilder(
         throw EvaluationException(
           s"This type of element is not supported: ${e.getText}")
     }
-  }
 
   def fragmentEvaluator(fragment: ScalaCodeFragment): Evaluator = {
     val childrenEvaluators =

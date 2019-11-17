@@ -42,9 +42,8 @@ class NoSuchPartitionException(
     spec: TablePartitionSpec)
     extends NoSuchItemException {
 
-  override def getMessage: String = {
+  override def getMessage: String =
     s"Partition not found in table $table database $db:\n" + spec.mkString("\n")
-  }
 }
 
 class NoSuchFunctionException(db: String, func: String)

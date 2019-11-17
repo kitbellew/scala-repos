@@ -52,11 +52,10 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
 
     def genJSClassDispatchers(
         classSym: Symbol,
-        dispatchMethodsNames: List[String]): List[js.Tree] = {
+        dispatchMethodsNames: List[String]): List[js.Tree] =
       dispatchMethodsNames
         .map(genJSClassDispatcher(classSym, _))
         .filter(_ != js.EmptyTree)
-    }
 
     def genConstructorExports(
         classSym: Symbol): List[js.ConstructorExportDef] = {
@@ -102,7 +101,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
       }
     }
 
-    def genJSClassExports(classSym: Symbol): List[js.JSClassExportDef] = {
+    def genJSClassExports(classSym: Symbol): List[js.JSClassExportDef] =
       for {
         exp <- jsInterop.registeredExportsOf(classSym)
       } yield {
@@ -110,9 +109,8 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
         assert(!exp.isNamed, "Class cannot be exported named")
         js.JSClassExportDef(exp.jsName)
       }
-    }
 
-    def genModuleAccessorExports(classSym: Symbol): List[js.ModuleExportDef] = {
+    def genModuleAccessorExports(classSym: Symbol): List[js.ModuleExportDef] =
       for {
         exp <- jsInterop.registeredExportsOf(classSym)
       } yield {
@@ -120,7 +118,6 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
         assert(!exp.isNamed, "Module cannot be exported named")
         js.ModuleExportDef(exp.jsName)
       }
-    }
 
     /** Generate the exporter proxy for a named export */
     def genNamedExporterDef(dd: DefDef): js.MethodDef = {
@@ -247,12 +244,11 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
         jsName: String,
         isProp: Boolean,
         alts: List[Symbol],
-        isDispatcher: Boolean): js.Tree = {
+        isDispatcher: Boolean): js.Tree =
       withNewLocalNameScope {
         if (isProp) genExportProperty(alts, jsName)
         else genExportMethod(alts.map(ExportedSymbol), jsName)
       }
-    }
 
     def genJSConstructorExport(alts: List[Symbol]): js.MethodDef =
       genExportMethod(alts.map(ExportedSymbol), "constructor")
@@ -385,10 +381,9 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
         argcList = argcs.toList.sortBy(-_)
       } yield (argcList.map(argc => js.IntLiteral(argc - minArgc)), caseBody)
 
-      def defaultCase = {
+      def defaultCase =
         if (!hasVarArg) genThrowTypeError()
         else genExportSameArgc(minArgc, needsRestParam, varArgMeths, 0)
-      }
 
       val body = {
         if (cases.isEmpty) defaultCase
@@ -523,7 +518,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
       }
     }
 
-    private def computeExportArgType(alt: Symbol, paramIndex: Int): Type = {
+    private def computeExportArgType(alt: Symbol, paramIndex: Int): Type =
       // See the comment in genPrimitiveJSArgs for a rationale about this
       enteringPhase(currentRun.uncurryPhase) {
 
@@ -571,7 +566,6 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
           }
         }
       }
-    }
 
     /**
       * Generate a call to the method [[sym]] while using the formalArguments
@@ -581,14 +575,13 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
     private def genApplyForSym(
         minArgc: Int,
         hasRestParam: Boolean,
-        sym: Symbol): js.Tree = {
+        sym: Symbol): js.Tree =
       if (isScalaJSDefinedJSClass(currentClassSym) &&
           sym.owner != currentClassSym.get) {
         genApplyForSymJSSuperCall(minArgc, hasRestParam, sym)
       } else {
         genApplyForSymNonJSSuperCall(minArgc, sym)
       }
-    }
 
     private def genApplyForSymJSSuperCall(
         minArgc: Int,
@@ -819,12 +812,11 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
 
   // scalastyle:off equals.hash.code
   private final case class InstanceOfTypeTest(tpe: Type) extends RTTypeTest {
-    override def equals(that: Any): Boolean = {
+    override def equals(that: Any): Boolean =
       that match {
         case InstanceOfTypeTest(thatTpe) => tpe =:= thatTpe
         case _                           => false
       }
-    }
   }
   // scalastyle:on equals.hash.code
 
@@ -832,13 +824,12 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
 
   private object RTTypeTest {
     implicit object Ordering extends PartialOrdering[RTTypeTest] {
-      override def tryCompare(lhs: RTTypeTest, rhs: RTTypeTest): Option[Int] = {
+      override def tryCompare(lhs: RTTypeTest, rhs: RTTypeTest): Option[Int] =
         if (lteq(lhs, rhs)) if (lteq(rhs, lhs)) Some(0) else Some(-1)
         else if (lteq(rhs, lhs)) Some(1)
         else None
-      }
 
-      override def lteq(lhs: RTTypeTest, rhs: RTTypeTest): Boolean = {
+      override def lteq(lhs: RTTypeTest, rhs: RTTypeTest): Boolean =
         (lhs, rhs) match {
           // NoTypeTest is always last
           case (_, NoTypeTest) => true
@@ -853,11 +844,9 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
           case (_: HijackedTypeTest, _: InstanceOfTypeTest) => true
           case (_: InstanceOfTypeTest, _: HijackedTypeTest) => false
         }
-      }
 
-      override def equiv(lhs: RTTypeTest, rhs: RTTypeTest): Boolean = {
+      override def equiv(lhs: RTTypeTest, rhs: RTTypeTest): Boolean =
         lhs == rhs
-      }
     }
   }
 
@@ -866,7 +855,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
       implicit ord: PartialOrdering[B]): List[A] = {
 
     @scala.annotation.tailrec
-    def loop(coll: List[A], acc: List[A]): List[A] = {
+    def loop(coll: List[A], acc: List[A]): List[A] =
       if (coll.isEmpty) acc
       else if (coll.tail.isEmpty) coll.head :: acc
       else {
@@ -875,12 +864,11 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
         assert(!rhs.isEmpty, s"cycle while ordering $coll")
         loop(lhs ::: rhs.tail, rhs.head :: acc)
       }
-    }
 
     loop(coll, Nil)
   }
 
-  private def typeTestForTpe(tpe: Type): RTTypeTest = {
+  private def typeTestForTpe(tpe: Type): RTTypeTest =
     tpe match {
       case tpe: ErasedValueType =>
         InstanceOfTypeTest(tpe.valueClazz.typeConstructor)
@@ -912,7 +900,6 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
           case ARRAY(_) => InstanceOfTypeTest(tpe)
         }
     }
-  }
 
   // Group-by that does not rely on hashCode(), only equals() - O(n²)
   private def groupByWithoutHashCode[A, B](coll: List[A])(
@@ -933,9 +920,8 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
   }
 
   private def genThrowTypeError(msg: String = "No matching overload")(
-      implicit pos: Position): js.Tree = {
+      implicit pos: Position): js.Tree =
     js.Throw(js.StringLiteral(msg))
-  }
 
   private def genFormalArgs(minArgc: Int, needsRestParam: Boolean)(
       implicit pos: Position): List[js.ParamDef] = {
@@ -944,28 +930,25 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
     else fixedParams
   }
 
-  private def genFormalArg(index: Int)(implicit pos: Position): js.ParamDef = {
+  private def genFormalArg(index: Int)(implicit pos: Position): js.ParamDef =
     js.ParamDef(
       js.Ident("arg$" + index),
       jstpe.AnyType,
       mutable = false,
       rest = false)
-  }
 
-  private def genRestFormalArg()(implicit pos: Position): js.ParamDef = {
+  private def genRestFormalArg()(implicit pos: Position): js.ParamDef =
     js.ParamDef(
       js.Ident("arg$rest"),
       jstpe.AnyType,
       mutable = false,
       rest = true)
-  }
 
   private def genFormalArgRef(index: Int, minArgc: Int)(
-      implicit pos: Position): js.Tree = {
+      implicit pos: Position): js.Tree =
     if (index <= minArgc) js.VarRef(js.Ident("arg$" + index))(jstpe.AnyType)
     else
       js.JSBracketSelect(genRestArgRef(), js.IntLiteral(index - 1 - minArgc))
-  }
 
   private def genVarargRef(fixedParamCount: Int, minArgc: Int)(
       implicit pos: Position): js.Tree = {

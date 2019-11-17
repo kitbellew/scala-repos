@@ -41,12 +41,11 @@ class AbstractTestRerunFailedTestsAction(
     new MyRunProfileAdapter(configuration) {
       def getModules: Array[Module] = configuration.getModules
 
-      def getTestName(failed: AbstractTestProxy): String = {
+      def getTestName(failed: AbstractTestProxy): String =
         failed.getLocation(getProject, GlobalSearchScope.allScope(getProject)) match {
           case PsiLocationWithName(_, _, testName) => testName
           case _                                   => failed.getName
         }
-      }
 
       def getState(
           executor: Executor,

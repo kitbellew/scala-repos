@@ -83,10 +83,9 @@ class WorksheetAutoRunner(project: Project, woof: WolfTheProblemSolver)
   private class MyDocumentAdapter(document: Document) extends DocumentAdapter {
     val documentManager = PsiDocumentManager getInstance project
 
-    @inline private def isDisabledOn(file: PsiFile) = {
+    @inline private def isDisabledOn(file: PsiFile) =
       WorksheetAutoRunner.isSetDisabled(file) || !settings.isInteractiveMode &&
-      !WorksheetAutoRunner.isSetEnabled(file)
-    }
+        !WorksheetAutoRunner.isSetEnabled(file)
 
     override def documentChanged(e: DocumentEvent) {
       if (project.isDisposed) return

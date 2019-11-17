@@ -46,9 +46,8 @@ private[sql] class SQLHistoryListenerFactory
 
   override def createListeners(
       conf: SparkConf,
-      sparkUI: SparkUI): Seq[SparkListener] = {
+      sparkUI: SparkUI): Seq[SparkListener] =
     List(new SQLHistoryListener(conf, sparkUI))
-  }
 }
 
 private[sql] class SQLListener(conf: SparkConf)
@@ -89,7 +88,7 @@ private[sql] class SQLListener(conf: SparkConf)
   }
 
   private def trimExecutionsIfNecessary(
-      executions: mutable.ListBuffer[SQLExecutionUIData]): Unit = {
+      executions: mutable.ListBuffer[SQLExecutionUIData]): Unit =
     if (executions.size > retainedExecutions) {
       val toRemove = math.max(retainedExecutions / 10, 1)
       executions.take(toRemove).foreach { execution =>
@@ -105,7 +104,6 @@ private[sql] class SQLListener(conf: SparkConf)
       }
       executions.trimStart(toRemove)
     }
-  }
 
   override def onJobStart(jobStart: SparkListenerJobStart): Unit = {
     val executionIdString =
@@ -198,8 +196,7 @@ private[sql] class SQLListener(conf: SparkConf)
       stageId: Int,
       stageAttemptID: Int,
       accumulatorUpdates: Seq[AccumulableInfo],
-      finishTask: Boolean): Unit = {
-
+      finishTask: Boolean): Unit =
     _stageIdToStageMetrics.get(stageId) match {
       case Some(stageMetrics) =>
         if (stageAttemptID < stageMetrics.stageAttemptId) {
@@ -236,7 +233,6 @@ private[sql] class SQLListener(conf: SparkConf)
       case None =>
       // This execution and its stage have been dropped
     }
-  }
 
   override def onOtherEvent(event: SparkListenerEvent): Unit = event match {
     case SparkListenerSQLExecutionStart(
@@ -280,7 +276,7 @@ private[sql] class SQLListener(conf: SparkConf)
     case _ => // Ignore
   }
 
-  private def markExecutionFinished(executionId: Long): Unit = {
+  private def markExecutionFinished(executionId: Long): Unit =
     activeExecutions.remove(executionId).foreach { executionUIData =>
       if (executionUIData.isFailed) {
         failedExecutions += executionUIData
@@ -290,7 +286,6 @@ private[sql] class SQLListener(conf: SparkConf)
         trimExecutionsIfNecessary(completedExecutions)
       }
     }
-  }
 
   def getRunningExecutions: Seq[SQLExecutionUIData] = synchronized {
     activeExecutions.values.toSeq
@@ -343,7 +338,7 @@ private[sql] class SQLListener(conf: SparkConf)
   private def mergeAccumulatorUpdates(
       accumulatorUpdates: Seq[(Long, Any)],
       paramFunc: Long => SQLMetricParam[SQLMetricValue[Any], Any])
-      : Map[Long, String] = {
+      : Map[Long, String] =
     accumulatorUpdates.groupBy(_._1).map {
       case (accumulatorId, values) =>
         val param = paramFunc(accumulatorId)
@@ -352,7 +347,6 @@ private[sql] class SQLListener(conf: SparkConf)
           param.stringValue(
             values.map(_._2.asInstanceOf[SQLMetricValue[Any]].value)))
     }
-  }
 }
 
 /**

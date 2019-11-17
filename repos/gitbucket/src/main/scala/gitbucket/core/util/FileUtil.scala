@@ -16,7 +16,7 @@ object FileUtil {
       }
     }
 
-  def getContentType(name: String, bytes: Array[Byte]): String = {
+  def getContentType(name: String, bytes: Array[Byte]): String =
     defining(getMimeType(name)) { mimeType =>
       if (mimeType == "application/octet-stream" && isText(bytes)) {
         "text/plain"
@@ -24,7 +24,6 @@ object FileUtil {
         mimeType
       }
     }
-  }
 
   def isImage(name: String): Boolean = getMimeType(name).startsWith("image/")
 

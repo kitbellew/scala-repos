@@ -50,9 +50,8 @@ trait PMMLExportable {
     */
   @Experimental
   @Since("1.4.0")
-  def toPMML(localPath: String): Unit = {
+  def toPMML(localPath: String): Unit =
     toPMML(new StreamResult(new File(localPath)))
-  }
 
   /**
     * :: Experimental ::
@@ -71,9 +70,8 @@ trait PMMLExportable {
     */
   @Experimental
   @Since("1.4.0")
-  def toPMML(outputStream: OutputStream): Unit = {
+  def toPMML(outputStream: OutputStream): Unit =
     toPMML(new StreamResult(outputStream))
-  }
 
   /**
     * :: Experimental ::

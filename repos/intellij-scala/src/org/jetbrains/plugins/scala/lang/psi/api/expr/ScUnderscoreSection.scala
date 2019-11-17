@@ -17,12 +17,11 @@ import scala.collection.mutable.ListBuffer
   * Date: 06.03.2008
   */
 trait ScUnderscoreSection extends ScExpression {
-  def bindingExpr: Option[ScExpression] = {
+  def bindingExpr: Option[ScExpression] =
     findChildByClassScala(classOf[ScExpression]) match {
       case null                     => None
       case expression: ScExpression => Some(expression)
     }
-  }
 
   def overExpr: Option[ScExpression] = {
     if (bindingExpr != None) return Some(this)
@@ -30,7 +29,7 @@ trait ScUnderscoreSection extends ScExpression {
     @tailrec
     def go(
         expr: PsiElement,
-        calcArguments: Boolean = true): Option[ScExpression] = {
+        calcArguments: Boolean = true): Option[ScExpression] =
       expr.getContext match {
         case args: ScArgumentExprList =>
           if (!calcArguments) return Some(expr.asInstanceOf[ScExpression])
@@ -73,15 +72,13 @@ trait ScUnderscoreSection extends ScExpression {
             case _                      => None
           }
       }
-    }
 
     @tailrec
-    def removeParentheses(p: ScExpression): ScExpression = {
+    def removeParentheses(p: ScExpression): ScExpression =
       p.getContext match {
         case p: ScParenthesisedExpr => removeParentheses(p)
         case _                      => p
       }
-    }
 
     getContext match {
       case t: ScTypedStmt => go(removeParentheses(t))
@@ -92,7 +89,7 @@ trait ScUnderscoreSection extends ScExpression {
 
 object ScUnderScoreSectionUtil {
   @tailrec
-  def isUnderscore(expr: PsiElement): Boolean = {
+  def isUnderscore(expr: PsiElement): Boolean =
     expr match {
       case u: ScUnderscoreSection => true
       case t: ScTypedStmt         => t.expr.isInstanceOf[ScUnderscoreSection]
@@ -103,13 +100,12 @@ object ScUnderScoreSectionUtil {
         }
       case _ => false
     }
-  }
 
   def isUnderscoreFunction(expr: PsiElement) = underscores(expr).length > 0
 
   def underscores(expr: PsiElement): Seq[ScUnderscoreSection] = {
     if (expr.getText.indexOf('_') == -1) return Seq.empty
-    def inner(innerExpr: PsiElement): Seq[ScUnderscoreSection] = {
+    def inner(innerExpr: PsiElement): Seq[ScUnderscoreSection] =
       innerExpr match {
         case under: ScUnderscoreSection =>
           under.bindingExpr match {
@@ -137,7 +133,6 @@ object ScUnderScoreSectionUtil {
           }
           res.toSeq
       }
-    }
     inner(expr)
   }
 }

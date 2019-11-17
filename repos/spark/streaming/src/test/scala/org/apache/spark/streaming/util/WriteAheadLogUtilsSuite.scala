@@ -145,9 +145,9 @@ object WriteAheadLogUtilsSuite {
   class MockWriteAheadLog0() extends WriteAheadLog {
     override def write(
         record: ByteBuffer,
-        time: Long): WriteAheadLogRecordHandle = { null }
-    override def read(handle: WriteAheadLogRecordHandle): ByteBuffer = { null }
-    override def readAll(): util.Iterator[ByteBuffer] = { null }
+        time: Long): WriteAheadLogRecordHandle = null
+    override def read(handle: WriteAheadLogRecordHandle): ByteBuffer = null
+    override def readAll(): util.Iterator[ByteBuffer] = null
     override def clean(threshTime: Long, waitForCompletion: Boolean): Unit = {}
     override def close(): Unit = {}
   }

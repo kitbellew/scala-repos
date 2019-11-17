@@ -89,7 +89,7 @@ Self[X] <: VertexPartitionBase[X]: VertexPartitionBaseOpsConstructor](
   }
 
   /** Hides the VertexId's that are the same between `this` and `other`. */
-  def minus(other: Self[VD]): Self[VD] = {
+  def minus(other: Self[VD]): Self[VD] =
     if (self.index != other.index) {
       logWarning(
         "Minus operations on two VertexPartitions with different indexes is slow.")
@@ -97,18 +97,16 @@ Self[X] <: VertexPartitionBase[X]: VertexPartitionBaseOpsConstructor](
     } else {
       self.withMask(self.mask.andNot(other.mask))
     }
-  }
 
   /** Hides the VertexId's that are the same between `this` and `other`. */
-  def minus(other: Iterator[(VertexId, VD)]): Self[VD] = {
+  def minus(other: Iterator[(VertexId, VD)]): Self[VD] =
     minus(createUsingIndex(other))
-  }
 
   /**
     * Hides vertices that are the same between this and other. For vertices that are different, keeps
     * the values from `other`. The indices of `this` and `other` must be the same.
     */
-  def diff(other: Self[VD]): Self[VD] = {
+  def diff(other: Self[VD]): Self[VD] =
     if (self.index != other.index) {
       logWarning("Diffing two VertexPartitions with different indexes is slow.")
       diff(createUsingIndex(other.iterator))
@@ -123,11 +121,10 @@ Self[X] <: VertexPartitionBase[X]: VertexPartitionBaseOpsConstructor](
       }
       this.withValues(other.values).withMask(newMask)
     }
-  }
 
   /** Left outer join another VertexPartition. */
   def leftJoin[VD2: ClassTag, VD3: ClassTag](other: Self[VD2])(
-      f: (VertexId, VD, Option[VD2]) => VD3): Self[VD3] = {
+      f: (VertexId, VD, Option[VD2]) => VD3): Self[VD3] =
     if (self.index != other.index) {
       logWarning("Joining two VertexPartitions with different indexes is slow.")
       leftJoin(createUsingIndex(other.iterator))(f)
@@ -143,17 +140,15 @@ Self[X] <: VertexPartitionBase[X]: VertexPartitionBaseOpsConstructor](
       }
       this.withValues(newValues)
     }
-  }
 
   /** Left outer join another iterator of messages. */
   def leftJoin[VD2: ClassTag, VD3: ClassTag](other: Iterator[(VertexId, VD2)])(
-      f: (VertexId, VD, Option[VD2]) => VD3): Self[VD3] = {
+      f: (VertexId, VD, Option[VD2]) => VD3): Self[VD3] =
     leftJoin(createUsingIndex(other))(f)
-  }
 
   /** Inner join another VertexPartition. */
   def innerJoin[U: ClassTag, VD2: ClassTag](other: Self[U])(
-      f: (VertexId, VD, U) => VD2): Self[VD2] = {
+      f: (VertexId, VD, U) => VD2): Self[VD2] =
     if (self.index != other.index) {
       logWarning("Joining two VertexPartitions with different indexes is slow.")
       innerJoin(createUsingIndex(other.iterator))(f)
@@ -168,16 +163,14 @@ Self[X] <: VertexPartitionBase[X]: VertexPartitionBaseOpsConstructor](
       }
       this.withValues(newValues).withMask(newMask)
     }
-  }
 
   /**
     * Inner join an iterator of messages.
     */
   def innerJoin[U: ClassTag, VD2: ClassTag](
       iter: Iterator[Product2[VertexId, U]])(
-      f: (VertexId, VD, U) => VD2): Self[VD2] = {
+      f: (VertexId, VD, U) => VD2): Self[VD2] =
     innerJoin(createUsingIndex(iter))(f)
-  }
 
   /**
     * Similar effect as aggregateUsingIndex((a, b) => a)
@@ -258,7 +251,6 @@ Self[X] <: VertexPartitionBase[X]: VertexPartitionBaseOpsConstructor](
     * `VertexPartitionBaseOps`. This relies on the context bound on `Self`.
     */
   private implicit def toOps[VD2: ClassTag](
-      partition: Self[VD2]): VertexPartitionBaseOps[VD2, Self] = {
+      partition: Self[VD2]): VertexPartitionBaseOps[VD2, Self] =
     implicitly[VertexPartitionBaseOpsConstructor[Self]].toOps(partition)
-  }
 }

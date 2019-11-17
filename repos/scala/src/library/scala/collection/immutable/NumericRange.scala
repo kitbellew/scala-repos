@@ -109,11 +109,10 @@ abstract class NumericRange[T](
      else if (n >= length) newEmptyRange(end)
      else copy(locationAfterN(n), end, step))
 
-  def apply(idx: Int): T = {
+  def apply(idx: Int): T =
     if (idx < 0 || idx >= length)
       throw new IndexOutOfBoundsException(idx.toString)
     else locationAfterN(idx)
-  }
 
   import NumericRange.defaultOrdering
 
@@ -182,7 +181,7 @@ abstract class NumericRange[T](
       case _: ClassCastException => false
     }
 
-  final override def sum[B >: T](implicit num: Numeric[B]): B = {
+  final override def sum[B >: T](implicit num: Numeric[B]): B =
     if (isEmpty) num.zero
     else if (numRangeElements == 1) head
     else {
@@ -247,7 +246,6 @@ abstract class NumericRange[T](
         }
       }
     }
-  }
 
   override lazy val hashCode = super.hashCode()
   override def equals(other: Any) = other match {

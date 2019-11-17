@@ -179,25 +179,23 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
       resource: Resource,
       principal: KafkaPrincipal,
       host: String,
-      acls: Set[Acl]): Boolean = {
+      acls: Set[Acl]): Boolean =
     if (acls.isEmpty) {
       authorizerLogger.debug(
         s"No acl found for resource $resource, authorized = $shouldAllowEveryoneIfNoAclIsFound")
       shouldAllowEveryoneIfNoAclIsFound
     } else false
-  }
 
   def isSuperUser(
       operation: Operation,
       resource: Resource,
       principal: KafkaPrincipal,
-      host: String): Boolean = {
+      host: String): Boolean =
     if (superUsers.exists(_ == principal)) {
       authorizerLogger.debug(
         s"principal = $principal is a super user, allowing operation without checking acls.")
       true
     } else false
-  }
 
   private def aclMatch(
       session: Session,
@@ -206,7 +204,7 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
       principal: KafkaPrincipal,
       host: String,
       permissionType: PermissionType,
-      acls: Set[Acl]): Boolean = {
+      acls: Set[Acl]): Boolean =
     acls
       .find(
         acl =>
@@ -221,7 +219,6 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
         true
       }
       .getOrElse(false)
-  }
 
   override def addAcls(acls: Set[Acl], resource: Resource) {
     if (acls != null && acls.nonEmpty) {
@@ -235,30 +232,27 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
 
   override def removeAcls(
       aclsTobeRemoved: Set[Acl],
-      resource: Resource): Boolean = {
+      resource: Resource): Boolean =
     inWriteLock(lock) {
       updateResourceAcls(resource) { currentAcls =>
         currentAcls -- aclsTobeRemoved
       }
     }
-  }
 
-  override def removeAcls(resource: Resource): Boolean = {
+  override def removeAcls(resource: Resource): Boolean =
     inWriteLock(lock) {
       val result = zkUtils.deletePath(toResourcePath(resource))
       updateCache(resource, VersionedAcls(Set(), 0))
       updateAclChangedFlag(resource)
       result
     }
-  }
 
-  override def getAcls(resource: Resource): Set[Acl] = {
+  override def getAcls(resource: Resource): Set[Acl] =
     inReadLock(lock) {
       aclCache.get(resource).map(_.acls).getOrElse(Set.empty[Acl])
     }
-  }
 
-  override def getAcls(principal: KafkaPrincipal): Map[Resource, Set[Acl]] = {
+  override def getAcls(principal: KafkaPrincipal): Map[Resource, Set[Acl]] =
     inReadLock(lock) {
       aclCache
         .mapValues { versionedAcls =>
@@ -270,13 +264,11 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
         }
         .toMap
     }
-  }
 
-  override def getAcls(): Map[Resource, Set[Acl]] = {
+  override def getAcls(): Map[Resource, Set[Acl]] =
     inReadLock(lock) {
       aclCache.mapValues(_.acls).toMap
     }
-  }
 
   def close() {
     if (aclChangeListener != null) aclChangeListener.close()
@@ -300,10 +292,9 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
     }
   }
 
-  def toResourcePath(resource: Resource): String = {
+  def toResourcePath(resource: Resource): String =
     SimpleAclAuthorizer.AclZkPath + "/" + resource.resourceType + "/" +
       resource.name
-  }
 
   private def logAuditMessage(
       principal: KafkaPrincipal,
@@ -385,7 +376,7 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
   private def updatePath(
       path: String,
       data: String,
-      expectedVersion: Int): (Boolean, Int) = {
+      expectedVersion: Int): (Boolean, Int) =
     try {
       zkUtils.conditionalUpdatePersistentPathIfExists(
         path,
@@ -403,14 +394,12 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
             (false, 0)
         }
     }
-  }
 
-  private def getAclsFromCache(resource: Resource): VersionedAcls = {
+  private def getAclsFromCache(resource: Resource): VersionedAcls =
     aclCache.getOrElse(
       resource,
       throw new IllegalArgumentException(
         s"ACLs do not exist in the cache for resource $resource"))
-  }
 
   private def getAclsFromZk(resource: Resource): VersionedAcls = {
     val (aclJson, stat) = zkUtils.readDataMaybeNull(toResourcePath(resource))
@@ -432,9 +421,8 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
       resource.toString)
   }
 
-  private def backoffTime = {
+  private def backoffTime =
     retryBackoffMs + Random.nextInt(retryBackoffJitterMs)
-  }
 
   object AclChangedNotificationHandler extends NotificationHandler {
     override def processNotification(notificationMessage: String) {

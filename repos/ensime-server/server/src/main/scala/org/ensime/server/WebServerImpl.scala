@@ -33,7 +33,6 @@ class WebServerImpl(
 
   def restHandler(in: RpcRequest): Future[EnsimeServerMessage] = handleRpc(in)
 
-  def websocketHandler(target: ActorRef): ActorRef = {
+  def websocketHandler(target: ActorRef): ActorRef =
     system.actorOf(ConnectionHandler(project, broadcaster, target))
-  }
 }

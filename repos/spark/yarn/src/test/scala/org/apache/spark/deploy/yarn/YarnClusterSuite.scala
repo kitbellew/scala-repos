@@ -230,9 +230,8 @@ private[spark] class SaveExecutorInfo extends SparkListener {
   }
 
   override def onApplicationStart(
-      appStart: SparkListenerApplicationStart): Unit = {
+      appStart: SparkListenerApplicationStart): Unit =
     driverLogs = appStart.driverLogs
-  }
 }
 
 private object YarnClusterDriver extends Logging with Matchers {

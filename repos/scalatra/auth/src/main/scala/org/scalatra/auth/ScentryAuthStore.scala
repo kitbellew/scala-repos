@@ -45,12 +45,11 @@ object ScentryAuthStore {
 
     def get(
         implicit request: HttpServletRequest,
-        response: HttpServletResponse): String = {
+        response: HttpServletResponse): String =
       app.session
         .get(Scentry.scentryAuthKey)
         .map(_.asInstanceOf[String])
         .orNull
-    }
     def set(value: String)(
         implicit request: HttpServletRequest,
         response: HttpServletResponse) {

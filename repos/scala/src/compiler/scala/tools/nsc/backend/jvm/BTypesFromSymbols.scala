@@ -52,9 +52,8 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
 
   val backendReporting: BackendReporting = new BackendReportingImpl(global)
 
-  final def initializeCoreBTypes(): Unit = {
+  final def initializeCoreBTypes(): Unit =
     coreBTypes.setBTypes(new CoreBTypes[this.type](this))
-  }
 
   def recordPerRunCache[T <: collection.generic.Clearable](cache: T): T =
     perRunCaches.recordCache(cache)
@@ -82,13 +81,11 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
     * True if the current compilation unit is of a primitive class (scala.Boolean et al).
     * Used only in assertions.
     */
-  def isCompilingPrimitive = {
+  def isCompilingPrimitive =
     primitiveCompilationUnits(currentUnit.source.file.name)
-  }
 
-  def isCompilingArray = {
+  def isCompilingArray =
     currentUnit.source.file.name == "Array.scala"
-  }
 
   // end helpers
 
@@ -722,7 +719,7 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
     * True for module classes of modules that are top-level or owned only by objects. Module classes
     * for such objects will get a MODULE$ flag and a corresponding static initializer.
     */
-  final def isStaticModuleClass(sym: Symbol): Boolean = {
+  final def isStaticModuleClass(sym: Symbol): Boolean =
     /* (1) Phase travel to to pickler is required to exclude implementation classes; they have the
      * lateMODULEs after mixin, so isModuleClass would be true.
      * (2) isStaticModuleClass is a source-level property. See comment on isOriginallyStaticOwner.
@@ -731,7 +728,6 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
       // (1)
       sym.isModuleClass && isOriginallyStaticOwner(sym.originalOwner) // (2)
     }
-  }
 
   // legacy, to be removed when the @remote annotation gets removed
   final def isRemote(s: Symbol) = s hasAnnotation definitions.RemoteAttr
@@ -821,11 +817,10 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
     )
   }
 
-  def javaFieldFlags(sym: Symbol) = {
+  def javaFieldFlags(sym: Symbol) =
     javaFlags(sym) | GenBCode.mkFlags(
       if (sym hasAnnotation TransientAttr) asm.Opcodes.ACC_TRANSIENT else 0,
       if (sym hasAnnotation VolatileAttr) asm.Opcodes.ACC_VOLATILE else 0,
       if (sym.isMutable) 0 else asm.Opcodes.ACC_FINAL
     )
-  }
 }

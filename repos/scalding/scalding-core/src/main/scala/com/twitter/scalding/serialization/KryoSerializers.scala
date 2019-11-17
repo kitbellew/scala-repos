@@ -55,9 +55,8 @@ class DateRangeSerializer extends KSerializer[DateRange] {
     out.writeLong(range.end.timestamp, true);
   }
 
-  def read(kser: Kryo, in: Input, cls: Class[DateRange]): DateRange = {
+  def read(kser: Kryo, in: Input, cls: Class[DateRange]): DateRange =
     DateRange(RichDate(in.readLong(true)), RichDate(in.readLong(true)));
-  }
 }
 
 class ArgsSerializer extends KSerializer[Args] {

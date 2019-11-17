@@ -76,13 +76,12 @@ class ComplexTypeSuite extends SparkFunSuite with ExpressionEvalHelper {
     val struct = Literal.create(create_row(1), typeS)
     val nullStruct = Literal.create(null, typeS)
 
-    def getStructField(expr: Expression, fieldName: String): GetStructField = {
+    def getStructField(expr: Expression, fieldName: String): GetStructField =
       expr.dataType match {
         case StructType(fields) =>
           val index = fields.indexWhere(_.name == fieldName)
           GetStructField(expr, index)
       }
-    }
 
     checkEvaluation(getStructField(struct, "a"), 1)
     checkEvaluation(getStructField(nullStruct, "a"), null)
@@ -112,7 +111,7 @@ class ComplexTypeSuite extends SparkFunSuite with ExpressionEvalHelper {
 
     def getArrayStructFields(
         expr: Expression,
-        fieldName: String): GetArrayStructFields = {
+        fieldName: String): GetArrayStructFields =
       expr.dataType match {
         case ArrayType(StructType(fields), containsNull) =>
           val field = fields.find(_.name == fieldName).get
@@ -123,7 +122,6 @@ class ComplexTypeSuite extends SparkFunSuite with ExpressionEvalHelper {
             fields.length,
             containsNull)
       }
-    }
 
     checkEvaluation(getArrayStructFields(arrayStruct, "a"), Seq(1))
     checkEvaluation(getArrayStructFields(nullArrayStruct, "a"), null)
@@ -182,9 +180,8 @@ class ComplexTypeSuite extends SparkFunSuite with ExpressionEvalHelper {
   }
 
   test("test dsl for complex type") {
-    def quickResolve(u: UnresolvedExtractValue): Expression = {
+    def quickResolve(u: UnresolvedExtractValue): Expression =
       ExtractValue(u.child, u.extraction, _ == _)
-    }
 
     checkEvaluation(
       quickResolve('c.map(MapType(StringType, StringType)).at(0).getItem("a")),

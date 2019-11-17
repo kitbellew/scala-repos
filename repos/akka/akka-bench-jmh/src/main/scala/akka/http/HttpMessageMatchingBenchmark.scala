@@ -20,16 +20,14 @@ class HttpMessageMatchingBenchmark {
   val res = HttpResponse()
 
   @Benchmark
-  def res_matching: HttpResponse = {
+  def res_matching: HttpResponse =
     res match {
       case r @ HttpResponse(status, headers, entity, protocol) => r
     }
-  }
 
   @Benchmark
-  def req_matching: HttpRequest = {
+  def req_matching: HttpRequest =
     req match {
       case r @ HttpRequest(method, uri, headers, entity, protocol) => r
     }
-  }
 }

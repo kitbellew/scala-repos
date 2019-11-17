@@ -145,9 +145,8 @@ trait Transport {
     * @param cmd Command message to the transport
     * @return Future that succeeds when the command was handled or dropped
     */
-  def managementCommand(cmd: Any): Future[Boolean] = {
+  def managementCommand(cmd: Any): Future[Boolean] =
     Future.successful(false)
-  }
 }
 
 object AssociationHandle {

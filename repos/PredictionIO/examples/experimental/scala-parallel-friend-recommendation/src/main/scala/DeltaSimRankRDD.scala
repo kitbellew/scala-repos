@@ -59,9 +59,8 @@ object DeltaSimRankRDD {
     sc.parallelize(pairs)
   }
 
-  def matrixToIndices(x: Int, y: Int, numCols: Int) = {
+  def matrixToIndices(x: Int, y: Int, numCols: Int) =
     x + y * numCols
-  }
 
   def joinDelta(
       prevIter: RDD[(Long, Double)],
@@ -86,9 +85,8 @@ object DeltaSimRankRDD {
   }
 
   def getOutdegreeMap(
-      g: Graph[Int, Int]): scala.collection.Map[VertexId, Long] = {
+      g: Graph[Int, Int]): scala.collection.Map[VertexId, Long] =
     g.edges.map(edge => (edge.srcId, 1L)).reduceByKey(_ + _).collectAsMap()
-  }
 
   def compute(
       g: Graph[Int, Int],

@@ -163,13 +163,12 @@ trait TableLibModule[M[+_]] extends TableModule[M] with TransSpecModule {
     trait Op2Array extends Op2 {
       def spec[A <: SourceType](ctx: MorphContext)(
           left: TransSpec[A],
-          right: TransSpec[A]): TransSpec[A] = {
+          right: TransSpec[A]): TransSpec[A] =
         trans.MapWith(
           trans.InnerArrayConcat(
             trans.WrapArray(trans.Map1(left, prepare)),
             trans.WrapArray(trans.Map1(right, prepare))),
           mapper)
-      }
 
       def prepare: F1
 
@@ -226,7 +225,7 @@ trait ColumnarTableLibModule[M[+_]]
 
       def monoid = r.monoid
       def reducer(ctx: MorphContext) = new CReducer[Result] {
-        def reduce(schema: CSchema, range: Range): Result = {
+        def reduce(schema: CSchema, range: Range): Result =
           jtypef match {
             case Some(f) =>
               val cols0 = new CSchema {
@@ -237,7 +236,6 @@ trait ColumnarTableLibModule[M[+_]]
             case None =>
               r.reducer(ctx).reduce(schema, range)
           }
-        }
       }
 
       def extract(res: Result): Table =
@@ -250,14 +248,14 @@ trait ColumnarTableLibModule[M[+_]]
         reductions: List[(Reduction, Option[JType => JType])]): Reduction = {
       def rec(
           reductions: List[(Reduction, Option[JType => JType])],
-          acc: Reduction): Reduction = {
+          acc: Reduction): Reduction =
         reductions match {
           case (x, jtypef) :: xs => {
             val impl = new Reduction(Vector(), "") {
               type Result = (x.Result, acc.Result)
 
               def reducer(ctx: MorphContext) = new CReducer[Result] {
-                def reduce(schema: CSchema, range: Range): Result = {
+                def reduce(schema: CSchema, range: Range): Result =
                   jtypef match {
                     case Some(f) =>
                       val cols0 = new CSchema {
@@ -272,16 +270,14 @@ trait ColumnarTableLibModule[M[+_]]
                         x.reducer(ctx).reduce(schema, range),
                         acc.reducer(ctx).reduce(schema, range))
                   }
-                }
               }
 
               implicit val monoid: Monoid[Result] = new Monoid[Result] {
                 def zero = (x.monoid.zero, acc.monoid.zero)
-                def append(r1: Result, r2: => Result): Result = {
+                def append(r1: Result, r2: => Result): Result =
                   (
                     x.monoid.append(r1._1, r2._1),
                     acc.monoid.append(r1._2, r2._2))
-                }
               }
 
               def extract(r: Result): Table = {
@@ -310,7 +306,6 @@ trait ColumnarTableLibModule[M[+_]]
 
           case Nil => acc
         }
-      }
 
       val (impl1, jtype1) = reductions.head
       rec(reductions.tail, new WrapArrayTableReduction(impl1, jtype1))

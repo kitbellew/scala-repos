@@ -37,9 +37,8 @@ case class UnscaledValue(child: Expression) extends UnaryExpression {
   protected override def nullSafeEval(input: Any): Any =
     input.asInstanceOf[Decimal].toUnscaledLong
 
-  override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
+  override def genCode(ctx: CodegenContext, ev: ExprCode): String =
     defineCodeGen(ctx, ev, c => s"$c.toUnscaledLong()")
-  }
 }
 
 /**
@@ -57,14 +56,13 @@ case class MakeDecimal(child: Expression, precision: Int, scale: Int)
   protected override def nullSafeEval(input: Any): Any =
     Decimal(input.asInstanceOf[Long], precision, scale)
 
-  override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
+  override def genCode(ctx: CodegenContext, ev: ExprCode): String =
     nullSafeCodeGen(ctx, ev, eval => {
       s"""
         ${ev.value} = (new Decimal()).setOrNull($eval, $precision, $scale);
         ${ev.isNull} = ${ev.value} == null;
       """
     })
-  }
 }
 
 /**
@@ -99,7 +97,7 @@ case class CheckOverflow(child: Expression, dataType: DecimalType)
     }
   }
 
-  override protected def genCode(ctx: CodegenContext, ev: ExprCode): String = {
+  override protected def genCode(ctx: CodegenContext, ev: ExprCode): String =
     nullSafeCodeGen(
       ctx,
       ev,
@@ -115,7 +113,6 @@ case class CheckOverflow(child: Expression, dataType: DecimalType)
        """.stripMargin
       }
     )
-  }
 
   override def toString: String = s"CheckOverflow($child, $dataType)"
 

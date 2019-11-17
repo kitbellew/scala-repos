@@ -220,12 +220,11 @@ final case class EitherT[F[_], A, B](run: F[A \/ B]) {
     EitherT(F.map(run)(_ validationed k))
 
   /** Return the value from whichever side of the disjunction is defined, given a commonly assignable type. */
-  def merge[AA >: A](implicit F: Functor[F], ev: B <~< AA): F[AA] = {
+  def merge[AA >: A](implicit F: Functor[F], ev: B <~< AA): F[AA] =
     F.map(run) {
       case -\/(a) => a
       case \/-(b) => ev(b)
     }
-  }
 }
 
 object EitherT extends EitherTInstances {

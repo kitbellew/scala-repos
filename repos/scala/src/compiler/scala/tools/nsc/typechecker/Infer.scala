@@ -146,7 +146,7 @@ trait Infer extends Checkable { self: Analyzer =>
       tparams: List[Symbol],
       variances: List[Variance],
       upper: Boolean,
-      depth: Depth): List[Type] = {
+      depth: Depth): List[Type] =
     if (tvars.isEmpty) Nil
     else {
       printTyping(
@@ -160,7 +160,6 @@ trait Infer extends Checkable { self: Analyzer =>
       solve(tvars, tparams, variances, upper, depth)
       tvars map instantiate
     }
-  }
 
   def skipImplicit(tp: Type) = tp match {
     case mt: MethodType if mt.isImplicit => mt.resultType
@@ -225,10 +224,9 @@ trait Infer extends Checkable { self: Analyzer =>
 
     def getContext = context
 
-    def explainTypes(tp1: Type, tp2: Type) = {
+    def explainTypes(tp1: Type, tp2: Type) =
       if (context.reportErrors)
         withDisambiguation(List(), tp1, tp2)(global.explainTypes(tp1, tp2))
-    }
 
     // When filtering sym down to the accessible alternatives leaves us empty handed.
     private def checkAccessibleError(
@@ -866,13 +864,10 @@ trait Infer extends Checkable { self: Analyzer =>
       *  a list containing the type of the tuple.  Otherwise, the original
       *  argument list.
       */
-    def tupleIfNecessary(
-        formals: List[Type],
-        argtpes: List[Type]): List[Type] = {
+    def tupleIfNecessary(formals: List[Type], argtpes: List[Type]): List[Type] =
       if (eligibleForTupleConversion(formals, argtpes.size))
         typeAfterTupleConversion(argtpes) :: Nil
       else argtpes
-    }
 
     private def isApplicableToMethod(
         undetparams: List[Symbol],
@@ -1070,7 +1065,7 @@ trait Infer extends Checkable { self: Analyzer =>
         ftpe1: Type,
         ftpe2: Type,
         sym1: Symbol,
-        sym2: Symbol): Boolean = {
+        sym2: Symbol): Boolean =
       // ftpe1 / ftpe2 are OverloadedTypes (possibly with one single alternative) if they
       // denote the type of an "apply" member method (see "followApply")
       ftpe1.isError || {
@@ -1086,7 +1081,6 @@ trait Infer extends Checkable { self: Analyzer =>
             (if (isInProperSubClassOrObject(sym2, sym1)) 1 else 0)
         specificCount + subClassCount > 0
       }
-    }
 
     private def covariantReturnOverride(ftpe1: Type, ftpe2: Type): Boolean =
       ftpe1 match {
@@ -1130,12 +1124,11 @@ trait Infer extends Checkable { self: Analyzer =>
         tparams: List[Symbol],
         targs: List[Type],
         pre: Type,
-        owner: Symbol): List[String] = {
+        owner: Symbol): List[String] =
       checkKindBounds0(tparams, targs, pre, owner, explainErrors = true) map {
         case (targ, tparam, kindErrors) =>
           kindErrors.errorMessage(targ, tparam)
       }
-    }
 
     /** Substitute free type variables `undetparams` of polymorphic argument
       *  expression `tree`, given two prototypes `strictPt`, and `lenientPt`.
@@ -1452,7 +1445,7 @@ trait Infer extends Checkable { self: Analyzer =>
     /** Type intersection of simple type tp1 with general type tp2.
       *  The result eliminates some redundancies.
       */
-    def intersect(tp1: Type, tp2: Type): Type = {
+    def intersect(tp1: Type, tp2: Type): Type =
       if (tp1 <:< tp2) tp1
       else if (tp2 <:< tp1) tp2
       else {
@@ -1464,7 +1457,6 @@ trait Infer extends Checkable { self: Analyzer =>
         }
         intersectionType(List(tp1, reduced2))
       }
-    }
 
     def inferTypedPattern(
         tree0: Tree,

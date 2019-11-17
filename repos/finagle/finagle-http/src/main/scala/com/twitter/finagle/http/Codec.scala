@@ -331,12 +331,11 @@ object HttpTracing {
   /**
     * Remove any parameters from url.
     */
-  private[http] def stripParameters(uri: String): String = {
+  private[http] def stripParameters(uri: String): String =
     uri.indexOf('?') match {
       case -1 => uri
       case n  => uri.substring(0, n)
     }
-  }
 }
 
 private object TraceInfo {
@@ -402,17 +401,16 @@ private object TraceInfo {
     traceRpc(request)
   }
 
-  def traceRpc(request: Request): Unit = {
+  def traceRpc(request: Request): Unit =
     if (Trace.isActivelyTracing) {
       Trace.recordRpc(request.getMethod.getName)
       Trace.recordBinary("http.uri", stripParameters(request.getUri))
     }
-  }
 
   /**
     * Safely extract the flags from the header, if they exist. Otherwise return empty flag.
     */
-  def getFlags(request: Request): Flags = {
+  def getFlags(request: Request): Flags =
     try {
       Flags(
         Option(request.headers.get(Header.Flags))
@@ -421,7 +419,6 @@ private object TraceInfo {
     } catch {
       case _: Throwable => Flags()
     }
-  }
 }
 
 private[finagle] class HttpServerTraceInitializer[Req <: Request, Rep]

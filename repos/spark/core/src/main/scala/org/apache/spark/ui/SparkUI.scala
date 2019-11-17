@@ -94,9 +94,8 @@ private[spark] class SparkUI private (
 
   def getAppName: String = appName
 
-  def setAppId(id: String): Unit = {
+  def setAppId(id: String): Unit =
     appId = id
-  }
 
   /** Stop the server behind this web interface. Only valid after bind(). */
   override def stop() {
@@ -111,11 +110,10 @@ private[spark] class SparkUI private (
 
   private[spark] def appUIAddress = s"http://$appUIHostPort"
 
-  def getSparkUI(appId: String): Option[SparkUI] = {
+  def getSparkUI(appId: String): Option[SparkUI] =
     if (appId == this.appId) Some(this) else None
-  }
 
-  def getApplicationInfoList: Iterator[ApplicationInfo] = {
+  def getApplicationInfoList: Iterator[ApplicationInfo] =
     Iterator(
       new ApplicationInfo(
         id = appId,
@@ -135,7 +133,6 @@ private[spark] class SparkUI private (
             completed = false
           ))
       ))
-  }
 }
 
 private[spark] abstract class SparkUITab(parent: SparkUI, prefix: String)
@@ -151,9 +148,8 @@ private[spark] object SparkUI {
   val DEFAULT_RETAINED_STAGES = 1000
   val DEFAULT_RETAINED_JOBS = 1000
 
-  def getUIPort(conf: SparkConf): Int = {
+  def getUIPort(conf: SparkConf): Int =
     conf.getInt("spark.ui.port", SparkUI.DEFAULT_PORT)
-  }
 
   def createLiveUI(
       sc: SparkContext,
@@ -162,7 +158,7 @@ private[spark] object SparkUI {
       jobProgressListener: JobProgressListener,
       securityManager: SecurityManager,
       appName: String,
-      startTime: Long): SparkUI = {
+      startTime: Long): SparkUI =
     create(
       Some(sc),
       conf,
@@ -171,7 +167,6 @@ private[spark] object SparkUI {
       appName,
       jobProgressListener = Some(jobProgressListener),
       startTime = startTime)
-  }
 
   def createHistoryUI(
       conf: SparkConf,

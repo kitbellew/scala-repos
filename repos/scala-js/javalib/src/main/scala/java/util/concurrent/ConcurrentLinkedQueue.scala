@@ -20,7 +20,7 @@ class ConcurrentLinkedQueue[E]()
 
   private var _size: Double = 0
 
-  override def add(e: E): Boolean = {
+  override def add(e: E): Boolean =
     if (e == null) {
       throw new NullPointerException()
     } else {
@@ -35,12 +35,11 @@ class ConcurrentLinkedQueue[E]()
 
       true
     }
-  }
 
   override def offer(e: E): Boolean =
     add(e)
 
-  override def poll(): E = {
+  override def poll(): E =
     if (isEmpty()) null.asInstanceOf[E]
     else {
       val oldHead = head
@@ -51,7 +50,6 @@ class ConcurrentLinkedQueue[E]()
       _size -= 1
       oldHead.value
     }
-  }
 
   override def peek(): E =
     if (isEmpty()) null.asInstanceOf[E]
@@ -69,7 +67,7 @@ class ConcurrentLinkedQueue[E]()
     current
   }
 
-  private def removeNode(node: Node[E]): Unit = {
+  private def removeNode(node: Node[E]): Unit =
     if (node eq head) {
       poll()
     } else if (head ne null) {
@@ -90,9 +88,8 @@ class ConcurrentLinkedQueue[E]()
         if (current eq last) last = prev
       }
     }
-  }
 
-  override def iterator(): Iterator[E] = {
+  override def iterator(): Iterator[E] =
     new Iterator[E] {
 
       private var nextNode: Node[Node[E]] = {
@@ -135,7 +132,6 @@ class ConcurrentLinkedQueue[E]()
         lastNode = null
       }
     }
-  }
 }
 
 object ConcurrentLinkedQueue {

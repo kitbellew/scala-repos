@@ -71,7 +71,7 @@ class RetryFilter[Req, Rep](
     statsReceiver.scope("retries").counter("budget_exhausted")
 
   @inline
-  private[this] def schedule(d: Duration)(f: => Future[Rep]) = {
+  private[this] def schedule(d: Duration)(f: => Future[Rep]) =
     if (d > 0.seconds) {
       val promise = new Promise[Rep]
       timer.schedule(Time.now + d) {
@@ -79,7 +79,6 @@ class RetryFilter[Req, Rep](
       }
       promise
     } else f
-  }
 
   private[this] def dispatch(
       req: Req,

@@ -16,7 +16,7 @@ trait ComonadTests[F[_]] extends CoflatMapTests[F] {
       EqFFA: Eq[F[F[A]]],
       EqFFFA: Eq[F[F[F[A]]]],
       EqFB: Eq[F[B]],
-      EqFC: Eq[F[C]]): RuleSet = {
+      EqFC: Eq[F[C]]): RuleSet =
     new DefaultRuleSet(
       name = "comonad",
       parent = Some(coflatMap[A, B, C]),
@@ -29,7 +29,6 @@ trait ComonadTests[F[_]] extends CoflatMapTests[F] {
       "comonad left identity" -> forAll(laws.comonadLeftIdentity[A] _),
       "comonad right identity" -> forAll(laws.comonadRightIdentity[A, B] _)
     )
-  }
 }
 
 object ComonadTests {

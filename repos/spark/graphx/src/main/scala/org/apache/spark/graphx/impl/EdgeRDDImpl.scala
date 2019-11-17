@@ -74,22 +74,18 @@ class EdgeRDDImpl[ED: ClassTag, VD: ClassTag] private[graphx] (
 
   override def getStorageLevel: StorageLevel = partitionsRDD.getStorageLevel
 
-  override def checkpoint(): Unit = {
+  override def checkpoint(): Unit =
     partitionsRDD.checkpoint()
-  }
 
-  override def isCheckpointed: Boolean = {
+  override def isCheckpointed: Boolean =
     firstParent[(PartitionID, EdgePartition[ED, VD])].isCheckpointed
-  }
 
-  override def getCheckpointFile: Option[String] = {
+  override def getCheckpointFile: Option[String] =
     partitionsRDD.getCheckpointFile
-  }
 
   /** The number of edges in the RDD. */
-  override def count(): Long = {
+  override def count(): Long =
     partitionsRDD.map(_._2.size.toLong).reduce(_ + _)
-  }
 
   override def mapValues[ED2: ClassTag](
       f: Edge[ED] => ED2): EdgeRDDImpl[ED2, VD] =
@@ -100,9 +96,8 @@ class EdgeRDDImpl[ED: ClassTag, VD: ClassTag] private[graphx] (
 
   def filter(
       epred: EdgeTriplet[VD, ED] => Boolean,
-      vpred: (VertexId, VD) => Boolean): EdgeRDDImpl[ED, VD] = {
+      vpred: (VertexId, VD) => Boolean): EdgeRDDImpl[ED, VD] =
     mapEdgePartitions((pid, part) => part.filter(epred, vpred))
-  }
 
   override def innerJoin[ED2: ClassTag, ED3: ClassTag](other: EdgeRDD[ED2])(
       f: (VertexId, VertexId, ED, ED2) => ED3): EdgeRDDImpl[ED3, VD] = {
@@ -120,7 +115,7 @@ class EdgeRDDImpl[ED: ClassTag, VD: ClassTag] private[graphx] (
 
   def mapEdgePartitions[ED2: ClassTag, VD2: ClassTag](
       f: (PartitionID, EdgePartition[ED, VD]) => EdgePartition[ED2, VD2])
-      : EdgeRDDImpl[ED2, VD2] = {
+      : EdgeRDDImpl[ED2, VD2] =
     this.withPartitionsRDD[ED2, VD2](partitionsRDD.mapPartitions({ iter =>
       if (iter.hasNext) {
         val (pid, ep) = iter.next()
@@ -129,16 +124,13 @@ class EdgeRDDImpl[ED: ClassTag, VD: ClassTag] private[graphx] (
         Iterator.empty
       }
     }, preservesPartitioning = true))
-  }
 
   private[graphx] def withPartitionsRDD[ED2: ClassTag, VD2: ClassTag](
       partitionsRDD: RDD[(PartitionID, EdgePartition[ED2, VD2])])
-      : EdgeRDDImpl[ED2, VD2] = {
+      : EdgeRDDImpl[ED2, VD2] =
     new EdgeRDDImpl(partitionsRDD, this.targetStorageLevel)
-  }
 
   override private[graphx] def withTargetStorageLevel(
-      targetStorageLevel: StorageLevel): EdgeRDDImpl[ED, VD] = {
+      targetStorageLevel: StorageLevel): EdgeRDDImpl[ED, VD] =
     new EdgeRDDImpl(this.partitionsRDD, targetStorageLevel)
-  }
 }

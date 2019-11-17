@@ -242,7 +242,7 @@ private[spark] object StratifiedSamplingUtils extends Logging {
       rdd: RDD[(K, V)],
       fractions: Map[K, Double],
       exact: Boolean,
-      seed: Long): (Int, Iterator[(K, V)]) => Iterator[(K, V)] = {
+      seed: Long): (Int, Iterator[(K, V)]) => Iterator[(K, V)] =
     // TODO implement the streaming version of sampling w/ replacement that doesn't require counts
     if (exact) {
       val counts = Some(rdd.countByKey())
@@ -284,7 +284,6 @@ private[spark] object StratifiedSamplingUtils extends Logging {
         }
       }
     }
-  }
 
   /** A random data generator that generates both uniform values and Poisson values. */
   private class RandomDataGenerator {
@@ -309,9 +308,8 @@ private[spark] object StratifiedSamplingUtils extends Logging {
       poisson.sample()
     }
 
-    def nextUniform(): Double = {
+    def nextUniform(): Double =
       uniform.nextDouble()
-    }
   }
 }
 
@@ -334,11 +332,10 @@ private[random] class AcceptanceResult(
 
   def areBoundsEmpty: Boolean = acceptBound.isNaN || waitListBound.isNaN
 
-  def merge(other: Option[AcceptanceResult]): Unit = {
+  def merge(other: Option[AcceptanceResult]): Unit =
     if (other.isDefined) {
       waitList ++= other.get.waitList
       numAccepted += other.get.numAccepted
       numItems += other.get.numItems
     }
-  }
 }

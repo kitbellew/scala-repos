@@ -8,18 +8,16 @@ import org.jetbrains.plugins.scala.lang.typeInference.testInjectors.SCL9446Injec
 
 class NeedsToBeAbstractBugsTest extends AnnotatorTestBase(NeedsToBeAbstract) {
 
-  def testSCL2981(): Unit = {
+  def testSCL2981(): Unit =
     assertMatches(messages(
       "trait A { type T; def t(p: T)}; class B extends A { type T = Int; def t(p: T) = ()}")) {
       case Nil =>
     }
-  }
 
-  def testSCL3515(): Unit = {
+  def testSCL3515(): Unit =
     assertMatches(messages("trait A { type T}; class B extends A")) {
       case Nil =>
     }
-  }
 
   def testSCL3514(): Unit = {
     val code = """

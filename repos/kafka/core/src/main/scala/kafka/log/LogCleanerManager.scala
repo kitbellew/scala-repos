@@ -84,7 +84,7 @@ private[log] class LogCleanerManager(
     * every time off the full set of logs to allow logs to be dynamically added to the pool of logs
     * the log manager maintains.
     */
-  def grabFilthiestLog(): Option[LogToClean] = {
+  def grabFilthiestLog(): Option[LogToClean] =
     inLock(lock) {
       val lastClean = allCleanerCheckpoints()
       val dirtyLogs = logs
@@ -133,7 +133,6 @@ private[log] class LogCleanerManager(
         Some(filthiest)
       }
     }
-  }
 
   /**
     *  Abort the cleaning of a particular partition, if it's in progress. This call blocks until the cleaning of
@@ -210,14 +209,13 @@ private[log] class LogCleanerManager(
     */
   private def isCleaningInState(
       topicAndPartition: TopicAndPartition,
-      expectedState: LogCleaningState): Boolean = {
+      expectedState: LogCleaningState): Boolean =
     inProgress.get(topicAndPartition) match {
       case None => false
       case Some(state) =>
         if (state == expectedState) true
         else false
     }
-  }
 
   /**
     *  Check if the cleaning for a partition is aborted. If so, throw an exception.

@@ -26,9 +26,8 @@ class AppStartActor(
 
   val nrToStart: Int = scaleTo
 
-  def initializeStart(): Unit = {
+  def initializeStart(): Unit =
     scheduler.startApp(driver, app.copy(instances = scaleTo))
-  }
 
   override def postStop(): Unit = {
     eventBus.unsubscribe(self)

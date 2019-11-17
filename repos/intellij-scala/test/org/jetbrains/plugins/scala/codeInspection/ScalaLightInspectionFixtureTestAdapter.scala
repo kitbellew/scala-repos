@@ -18,17 +18,14 @@ abstract class ScalaLightInspectionFixtureTestAdapter
   protected def normalize(str: String): String =
     str.stripMargin.replace("\r", "").trim
 
-  protected def check(text: String): Unit = {
+  protected def check(text: String): Unit =
     checkTextHasError(normalize(text), normalize(annotation), classOfInspection)
-  }
 
-  protected def testFix(text: String, result: String, hint: String): Unit = {
+  protected def testFix(text: String, result: String, hint: String): Unit =
     testQuickFix(normalize(text), normalize(result), hint, classOfInspection)
-  }
 
-  override protected def checkTextHasNoErrors(text: String): Unit = {
+  override protected def checkTextHasNoErrors(text: String): Unit =
     checkTextHasNoErrors(normalize(text), annotation, classOfInspection)
-  }
 
   protected def checkTextHasError(text: String) {
     checkTextHasError(normalize(text), annotation, classOfInspection)

@@ -51,36 +51,29 @@ class SessionCatalog(externalCatalog: ExternalCatalog) {
 
   def createDatabase(
       dbDefinition: CatalogDatabase,
-      ignoreIfExists: Boolean): Unit = {
+      ignoreIfExists: Boolean): Unit =
     externalCatalog.createDatabase(dbDefinition, ignoreIfExists)
-  }
 
   def dropDatabase(
       db: String,
       ignoreIfNotExists: Boolean,
-      cascade: Boolean): Unit = {
+      cascade: Boolean): Unit =
     externalCatalog.dropDatabase(db, ignoreIfNotExists, cascade)
-  }
 
-  def alterDatabase(dbDefinition: CatalogDatabase): Unit = {
+  def alterDatabase(dbDefinition: CatalogDatabase): Unit =
     externalCatalog.alterDatabase(dbDefinition)
-  }
 
-  def getDatabase(db: String): CatalogDatabase = {
+  def getDatabase(db: String): CatalogDatabase =
     externalCatalog.getDatabase(db)
-  }
 
-  def databaseExists(db: String): Boolean = {
+  def databaseExists(db: String): Boolean =
     externalCatalog.databaseExists(db)
-  }
 
-  def listDatabases(): Seq[String] = {
+  def listDatabases(): Seq[String] =
     externalCatalog.listDatabases()
-  }
 
-  def listDatabases(pattern: String): Seq[String] = {
+  def listDatabases(pattern: String): Seq[String] =
     externalCatalog.listDatabases(pattern)
-  }
 
   def getCurrentDatabase: String = currentDb
 
@@ -262,9 +255,8 @@ class SessionCatalog(externalCatalog: ExternalCatalog) {
     * Return a temporary table exactly as it was stored.
     * For testing only.
     */
-  private[catalog] def getTempTable(name: String): Option[LogicalPlan] = {
+  private[catalog] def getTempTable(name: String): Option[LogicalPlan] =
     Option(tempTables.get(name))
-  }
 
   // ----------------------------------------------------------------------------
   // Partitions
@@ -509,8 +501,6 @@ class SessionCatalog(externalCatalog: ExternalCatalog) {
   /**
     * Return a temporary function. For testing only.
     */
-  private[catalog] def getTempFunction(
-      name: String): Option[CatalogFunction] = {
+  private[catalog] def getTempFunction(name: String): Option[CatalogFunction] =
     Option(tempFunctions.get(name))
-  }
 }

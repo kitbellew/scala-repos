@@ -102,13 +102,12 @@ class ZKStore(
       .recover(exceptionTransform(s"Can not delete entity $key"))
   }
 
-  override def allIds(): Future[Seq[ID]] = {
+  override def allIds(): Future[Seq[ID]] =
     root
       .getChildren()
       .asScala
       .map(_.children.map(_.name))
       .recover(exceptionTransform("Can not list all identifiers"))
-  }
 
   private[this] def exceptionTransform[T](
       errorMessage: String): PartialFunction[Throwable, T] = {
@@ -116,14 +115,13 @@ class ZKStore(
       throw new StoreCommandFailedException(errorMessage, ex)
   }
 
-  private[this] def zkEntity(entity: PersistentEntity): ZKEntity = {
+  private[this] def zkEntity(entity: PersistentEntity): ZKEntity =
     entity match {
       case zk: ZKEntity => zk
       case _ =>
         throw new IllegalArgumentException(
           s"Can not handle this kind of entity: ${entity.getClass}")
     }
-  }
 
   private[this] def createPath(path: ZNode): Future[ZNode] = {
     def nodeExists(node: ZNode): Future[Boolean] =
@@ -141,12 +139,11 @@ class ZKStore(
         .recover { case ex: NodeExistsException => node }
         .recover(exceptionTransform("Can not create"))
 
-    def createPath(node: ZNode): Future[ZNode] = {
+    def createPath(node: ZNode): Future[ZNode] =
       nodeExists(node).flatMap {
         case true  => Future.successful(node)
         case false => createPath(node.parent).flatMap(_ => createNode(node))
       }
-    }
     createPath(path)
   }
 
@@ -181,7 +178,7 @@ case class ZKData(
 }
 object ZKData {
   import IO.{gzipUncompress => uncompress}
-  def apply(bytes: Array[Byte]): ZKData = {
+  def apply(bytes: Array[Byte]): ZKData =
     try {
       val proto = Protos.ZKStoreEntry.parseFrom(bytes)
       val content =
@@ -197,7 +194,6 @@ object ZKData {
           s"Can not deserialize Protobuf from ${bytes.length}",
           ex)
     }
-  }
 }
 
 object ZKStore {

@@ -191,9 +191,8 @@ object SerializationTestUtils {
       TopicAndPartition(topic1, 3) -> partitionStateInfo3
     )
 
-  def createTestProducerRequest: ProducerRequest = {
+  def createTestProducerRequest: ProducerRequest =
     new ProducerRequest(1, "client 1", 0, 1000, topicDataProducerRequest)
-  }
 
   def createTestProducerResponse: ProducerResponse =
     ProducerResponse(
@@ -208,13 +207,11 @@ object SerializationTestUtils {
       100
     )
 
-  def createTestFetchRequest: FetchRequest = {
+  def createTestFetchRequest: FetchRequest =
     new FetchRequest(requestInfo = requestInfos)
-  }
 
-  def createTestFetchResponse: FetchResponse = {
+  def createTestFetchResponse: FetchResponse =
     FetchResponse(1, topicDataFetchResponse)
-  }
 
   def createTestOffsetRequest = new OffsetRequest(
     collection.immutable.Map(
@@ -222,16 +219,15 @@ object SerializationTestUtils {
     replicaId = 0
   )
 
-  def createTestOffsetResponse: OffsetResponse = {
+  def createTestOffsetResponse: OffsetResponse =
     new OffsetResponse(
       0,
       collection.immutable.Map(
         TopicAndPartition(topic1, 1) -> PartitionOffsetsResponse(
           Errors.NONE.code,
           Seq(1000L, 2000L, 3000L, 4000L))))
-  }
 
-  def createTestOffsetCommitRequestV2: OffsetCommitRequest = {
+  def createTestOffsetCommitRequestV2: OffsetCommitRequest =
     new OffsetCommitRequest(
       groupId = "group 1",
       retentionMs = SystemTime.milliseconds,
@@ -242,9 +238,8 @@ object SerializationTestUtils {
           OffsetMetadata.NoMetadata)
       )
     )
-  }
 
-  def createTestOffsetCommitRequestV1: OffsetCommitRequest = {
+  def createTestOffsetCommitRequestV1: OffsetCommitRequest =
     new OffsetCommitRequest(
       versionId = 1,
       groupId = "group 1",
@@ -259,9 +254,8 @@ object SerializationTestUtils {
           SystemTime.milliseconds)
       )
     )
-  }
 
-  def createTestOffsetCommitRequestV0: OffsetCommitRequest = {
+  def createTestOffsetCommitRequestV0: OffsetCommitRequest =
     new OffsetCommitRequest(
       versionId = 0,
       groupId = "group 1",
@@ -272,25 +266,22 @@ object SerializationTestUtils {
           OffsetMetadata.NoMetadata)
       )
     )
-  }
 
-  def createTestOffsetCommitResponse: OffsetCommitResponse = {
+  def createTestOffsetCommitResponse: OffsetCommitResponse =
     new OffsetCommitResponse(
       collection.immutable.Map(
         TopicAndPartition(topic1, 0) -> Errors.NONE.code,
         TopicAndPartition(topic1, 1) -> Errors.NONE.code))
-  }
 
-  def createTestOffsetFetchRequest: OffsetFetchRequest = {
+  def createTestOffsetFetchRequest: OffsetFetchRequest =
     new OffsetFetchRequest(
       "group 1",
       Seq(
         TopicAndPartition(topic1, 0),
         TopicAndPartition(topic1, 1)
       ))
-  }
 
-  def createTestOffsetFetchResponse: OffsetFetchResponse = {
+  def createTestOffsetFetchResponse: OffsetFetchResponse =
     new OffsetFetchResponse(
       collection.immutable.Map(
         TopicAndPartition(topic1, 0) -> OffsetMetadataAndError(
@@ -302,18 +293,15 @@ object SerializationTestUtils {
           OffsetMetadata.NoMetadata,
           Errors.UNKNOWN_TOPIC_OR_PARTITION.code)
       ))
-  }
 
-  def createConsumerMetadataRequest: GroupCoordinatorRequest = {
+  def createConsumerMetadataRequest: GroupCoordinatorRequest =
     GroupCoordinatorRequest("group 1", clientId = "client 1")
-  }
 
-  def createConsumerMetadataResponse: GroupCoordinatorResponse = {
+  def createConsumerMetadataResponse: GroupCoordinatorResponse =
     GroupCoordinatorResponse(
       Some(brokers.head.getBrokerEndPoint(SecurityProtocol.PLAINTEXT)),
       Errors.NONE.code,
       0)
-  }
 }
 
 class RequestResponseSerializationTest extends JUnitSuite {

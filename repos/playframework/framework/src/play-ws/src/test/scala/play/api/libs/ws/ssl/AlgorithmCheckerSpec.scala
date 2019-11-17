@@ -21,11 +21,10 @@ object AlgorithmCheckerSpec extends Specification {
 
   "AlgorithmChecker" should {
 
-    def checker(sigs: Seq[String], keys: Seq[String]) = {
+    def checker(sigs: Seq[String], keys: Seq[String]) =
       new AlgorithmChecker(
         sigs.map(s => parseAll(expression, s).get).toSet,
         keys.map(s => parseAll(expression, s).get).toSet)
-    }
 
     "pass a good key algorithm (RSA > 1024)" in {
       val certificate: Certificate =
@@ -69,14 +68,12 @@ object AlgorithmCheckerSpec extends Specification {
       val checker = new AlgorithmChecker(Set.empty, Set.empty) {
         override def infoOnSunset(
             x509Cert: X509Certificate,
-            expirationDate: DateTime): Unit = {
+            expirationDate: DateTime): Unit =
           infoCalled = true
-        }
         override def warnOnSunset(
             x509Cert: X509Certificate,
-            expirationDate: DateTime): Unit = {
+            expirationDate: DateTime): Unit =
           warningCalled = true
-        }
       }
 
       checker.check(certificate, emptySet())
@@ -95,9 +92,8 @@ object AlgorithmCheckerSpec extends Specification {
       val checker = new AlgorithmChecker(Set.empty, Set.empty) {
         override def infoOnSunset(
             x509Cert: X509Certificate,
-            expirationDate: DateTime): Unit = {
+            expirationDate: DateTime): Unit =
           infoCalled = true
-        }
       }
 
       checker.check(certificate, emptySet())
@@ -115,9 +111,8 @@ object AlgorithmCheckerSpec extends Specification {
       val checker = new AlgorithmChecker(Set.empty, Set.empty) {
         override def warnOnSunset(
             x509Cert: X509Certificate,
-            expirationDate: DateTime): Unit = {
+            expirationDate: DateTime): Unit =
           warningCalled = true
-        }
       }
 
       checker.check(certificate, emptySet())

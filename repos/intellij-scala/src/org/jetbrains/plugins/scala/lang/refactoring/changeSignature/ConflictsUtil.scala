@@ -31,7 +31,7 @@ private[changeSignature] object ConflictsUtil {
   def addJavaOverriderConflicts(
       info: OverriderUsageInfo,
       change: ChangeInfo,
-      map: ConflictsMap): Unit = {
+      map: ConflictsMap): Unit =
     change match {
       case sc: ScalaChangeInfo
           if sc.newParameters.exists(p =>
@@ -41,13 +41,11 @@ private[changeSignature] object ConflictsUtil {
         map.putValue(info.getElement, message)
       case _ =>
     }
-  }
 
   def addBindingPatternConflicts(
       bp: ScBindingPattern,
       change: ChangeInfo,
-      result: ConflictsMap): Unit = {
-
+      result: ConflictsMap): Unit =
     if (change.getNewParameters.nonEmpty) {
       val (member: ScMember, kind, isSimple) = bp match {
         case ScalaPsiUtil.inNameContext(pd: ScPatternDefinition) =>
@@ -66,12 +64,11 @@ private[changeSignature] object ConflictsUtil {
         result.putValue(bp, message)
       }
     }
-  }
 
   def addClassParameterConflicts(
       cp: ScClassParameter,
       change: ChangeInfo,
-      result: ConflictsMap): Unit = {
+      result: ConflictsMap): Unit =
     if (change.getNewParameters.nonEmpty) {
       val className = cp.containingClass.qualifiedName
       val message =
@@ -79,12 +76,11 @@ private[changeSignature] object ConflictsUtil {
           "Converting it to a function definition is not supported."
       result.putValue(cp, message)
     }
-  }
 
   def addUnapplyUsagesConflicts(
       p: PatternUsageInfo,
       change: ChangeInfo,
-      result: ConflictsMap): Unit = {
+      result: ConflictsMap): Unit =
     change match {
       case jc: JavaChangeInfo
           if jc.isParameterSetOrOrderChanged || jc.isParameterTypesChanged =>
@@ -97,5 +93,4 @@ private[changeSignature] object ConflictsUtil {
         }
       case _ =>
     }
-  }
 }

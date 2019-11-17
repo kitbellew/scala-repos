@@ -34,9 +34,8 @@ class BuiltinModule extends Module {
       env: Environment,
       configuration: Configuration): Seq[Binding[_]] = {
     def dynamicBindings(
-        factories: ((Environment, Configuration) => Seq[Binding[_]])*) = {
+        factories: ((Environment, Configuration) => Seq[Binding[_]])*) =
       factories.flatMap(_(env, configuration))
-    }
 
     Seq(
       bind[Environment] to env,

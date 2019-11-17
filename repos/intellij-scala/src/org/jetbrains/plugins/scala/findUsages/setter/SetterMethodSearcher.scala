@@ -59,7 +59,7 @@ class SetterMethodSearcher
       implicit consumer: Processor[PsiReference],
       scope: SearchScope) = {
     val processor = new TextOccurenceProcessor {
-      def execute(elem: PsiElement, offsetInElement: Int): Boolean = {
+      def execute(elem: PsiElement, offsetInElement: Int): Boolean =
         inReadAction {
           elem match {
             case Parent(Parent(assign: ScAssignStmt)) =>
@@ -75,7 +75,6 @@ class SetterMethodSearcher
           }
           true
         }
-      }
     }
     val helper: PsiSearchHelper = PsiSearchHelper.SERVICE.getInstance(project)
     helper.processElementsWithWord(

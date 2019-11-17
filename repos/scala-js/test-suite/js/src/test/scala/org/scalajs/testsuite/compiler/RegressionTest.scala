@@ -32,11 +32,10 @@ class RegressionTest {
   @Test def Abort_with_some_pattern_match_guards_issue_22(): Unit = {
     object PatternMatchGuards {
       def go(f: Int => Int): Int = f(1)
-      def main(): Unit = {
+      def main(): Unit =
         go {
           case x if false => x
         }
-      }
     }
     // Nothing to check
   }
@@ -59,9 +58,8 @@ class RegressionTest {
 
   @Test
   def should_emit_static_calls_when_forwarding_to_another_constructor_issue_66(
-      ): Unit = {
+      ): Unit =
     new Bug66B("", "")
-  }
 
   @Test
   def should_not_swallow_Unit_expressions_when_converting_to_js_Any_issue_83(
@@ -179,11 +177,10 @@ class RegressionTest {
 
   @Test
   def should_support_class_literals_for_existential_value_types_issue_218(
-      ): Unit = {
+      ): Unit =
     assertEquals(
       "org.scalajs.testsuite.compiler.RegressionTest$Bug218Foo",
       scala.reflect.classTag[Bug218Foo[_]].toString)
-  }
 
   @Test def should_support_Buffer_issue_268(): Unit = {
     val a = scala.collection.mutable.Buffer.empty[Int]
@@ -263,19 +260,17 @@ class RegressionTest {
   def Param_defs_in_tailrec_methods_should_be_considered_mutable_issue_825(
       ): Unit = {
     @tailrec
-    def foo(x: Int, y: Int): Unit = {
+    def foo(x: Int, y: Int): Unit =
       if (x < y) foo(y, x)
       else {
         assertEquals(4, x)
         assertEquals(2, y)
       }
-    }
     foo(2, 4)
   }
 
-  @Test def null_synchronized_should_throw_issue_874(): Unit = {
+  @Test def null_synchronized_should_throw_issue_874(): Unit =
     assertThrows(classOf[NullPointerException], null.synchronized(5))
-  }
 
   @Test def x_synchronized_should_preserve_side_effects_of_x(): Unit = {
     var c = 0

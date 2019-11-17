@@ -137,9 +137,8 @@ case class BitwiseNot(child: Expression)
       ((evalE: Long) => ~evalE).asInstanceOf[(Any) => Any]
   }
 
-  override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
+  override def genCode(ctx: CodegenContext, ev: ExprCode): String =
     defineCodeGen(ctx, ev, c => s"(${ctx.javaType(dataType)}) ~($c)")
-  }
 
   protected override def nullSafeEval(input: Any): Any = not(input)
 

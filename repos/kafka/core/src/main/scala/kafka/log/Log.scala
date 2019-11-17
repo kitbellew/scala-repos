@@ -103,10 +103,9 @@ class Log(
   /* last time it was flushed */
   private val lastflushedTime = new AtomicLong(time.milliseconds)
 
-  def initFileSize(): Int = {
+  def initFileSize(): Int =
     if (config.preallocate) config.segmentSize
     else 0
-  }
 
   /* the actual segments of the log */
   private val segments: ConcurrentNavigableMap[java.lang.Long, LogSegment] =
@@ -646,7 +645,7 @@ class Log(
     * Given a message offset, find its corresponding offset metadata in the log.
     * If the message offset is out of range, return unknown offset metadata
     */
-  def convertToOffsetMetadata(offset: Long): LogOffsetMetadata = {
+  def convertToOffsetMetadata(offset: Long): LogOffsetMetadata =
     try {
       val fetchDataInfo = read(offset, 1)
       fetchDataInfo.fetchOffsetMetadata
@@ -654,7 +653,6 @@ class Log(
       case e: OffsetOutOfRangeException =>
         LogOffsetMetadata.UnknownOffsetMetadata
     }
-  }
 
   /**
     * Delete any log segments matching the given predicate function,

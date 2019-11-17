@@ -24,7 +24,7 @@ trait IndexedSeqOptimized[+A, +Repr] extends Any with IndexedSeqLike[A, Repr] {
   self =>
 
   override /*IterableLike*/
-  def isEmpty: Boolean = { length == 0 }
+  def isEmpty: Boolean = length == 0
 
   override /*IterableLike*/
   def foreach[U](f: A => U): Unit = {

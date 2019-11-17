@@ -22,7 +22,7 @@ object FailureAccrualFactory {
       responseClassifier: ResponseClassifier
   )(
       timer: Timer
-  ): ServiceFactoryWrapper = {
+  ): ServiceFactoryWrapper =
     new ServiceFactoryWrapper {
       def andThen[Req, Rep](factory: ServiceFactory[Req, Rep]) =
         new FailureAccrualFactory(
@@ -35,7 +35,6 @@ object FailureAccrualFactory {
           endpoint,
           responseClassifier)
     }
-  }
 
   private[this] val rng = new Random
 
@@ -182,7 +181,7 @@ object FailureAccrualFactory {
 
       def make(
           params: Params,
-          next: ServiceFactory[Req, Rep]): ServiceFactory[Req, Rep] = {
+          next: ServiceFactory[Req, Rep]): ServiceFactory[Req, Rep] =
         params[FailureAccrualFactory.Param] match {
           case Param.Configured(p) =>
             val timer = params[param.Timer].timer
@@ -201,7 +200,6 @@ object FailureAccrualFactory {
           case Param.Disabled =>
             next
         }
-      }
     }
 
   // The FailureAccrualFactory transitions between Alive, Dead, ProbeOpen,
@@ -384,7 +382,7 @@ class FailureAccrualFactory[Req, Rep] private[finagle] (
     cancelReviveTimerTask()
   }
 
-  def apply(conn: ClientConnection) = {
+  def apply(conn: ClientConnection) =
     underlying(conn)
       .map { service =>
         // N.B. the reason we can't simply filter the service factory is so that
@@ -422,7 +420,6 @@ class FailureAccrualFactory[Req, Rep] private[finagle] (
         }
       }
       .onFailure(onServiceAcquisitionFailure)
-  }
 
   override def status: Status = state match {
     case Alive | ProbeOpen  => underlying.status

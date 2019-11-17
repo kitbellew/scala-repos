@@ -27,7 +27,7 @@ object CanIHaarTr {
       : CanIHaarTr[DenseVector[Double], DenseVector[Double]] = {
     new CanIHaarTr[DenseVector[Double], DenseVector[Double]] {
       def apply(v: DenseVector[Double]) = {
-        def _ifht(v: DenseVector[Double]): DenseVector[Double] = {
+        def _ifht(v: DenseVector[Double]): DenseVector[Double] =
           if (v.length > 1) {
             // we will inverse the upper left first
             val hs = v.length / 2
@@ -41,7 +41,6 @@ object CanIHaarTr {
           } else {
             v
           }
-        }
         _ifht(v.copy)
       }
     }

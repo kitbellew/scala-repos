@@ -32,9 +32,8 @@ object CanCreateZerosLike {
 
   class OpArray[@specialized V: ClassTag: Semiring]
       extends CanCreateZerosLike[Array[V], Array[V]] {
-    override def apply(from: Array[V]) = {
+    override def apply(from: Array[V]) =
       Array.fill(from.length)(implicitly[Semiring[V]].zero)
-    }
   }
 
   class OpMapValues[From, A, To](

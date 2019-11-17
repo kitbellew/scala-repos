@@ -40,18 +40,16 @@ class ClasspathDependenciesSuite extends SparkFunSuite {
     classloader.loadClass(classname)
   }
 
-  private def assertLoads(classes: String*): Unit = {
+  private def assertLoads(classes: String*): Unit =
     classes.foreach(assertLoads)
-  }
 
   private def findResource(classname: String): URL = {
     val resource = resourceName(classname)
     classloader.getResource(resource)
   }
 
-  private def resourceName(classname: String): String = {
+  private def resourceName(classname: String): String =
     classname.replace(".", "/") + ".class"
-  }
 
   private def assertClassNotFound(classname: String): Unit = {
     Option(findResource(classname)).foreach { resourceURL =>
@@ -63,9 +61,8 @@ class ClasspathDependenciesSuite extends SparkFunSuite {
     }
   }
 
-  private def assertClassNotFound(classes: String*): Unit = {
+  private def assertClassNotFound(classes: String*): Unit =
     classes.foreach(assertClassNotFound)
-  }
 
   private val KRYO = "com.esotericsoftware.kryo.Kryo"
 

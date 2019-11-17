@@ -133,9 +133,8 @@ class FormattedStringFormatterTest extends SimpleTestCase {
     assertEquals(call("", ""), format(UnboundExpression(exp("foo"))))
   }
 
-  private def format(parts: StringPart*): String = {
+  private def format(parts: StringPart*): String =
     FormattedStringFormatter.format(parts)
-  }
 
   def call(formatter: String, arguments: String) =
     '"' + formatter + '"' + ".format(%s)".format(arguments)

@@ -22,7 +22,7 @@ object ControlFlowUtil {
     @tailrec
     def inner(
         next: Iterable[Instruction],
-        currentSet: mutable.HashSet[Instruction]): Unit = {
+        currentSet: mutable.HashSet[Instruction]): Unit =
       if (next.isEmpty) {
         buffer += currentSet
         mainSeq --= currentSet
@@ -34,7 +34,6 @@ object ControlFlowUtil {
         }
         inner(currentSucc, currentSet)
       }
-    }
 
     while (mainSeq.nonEmpty) {
       mainSeq.headOption match {

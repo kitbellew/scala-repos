@@ -94,11 +94,10 @@ object Framing {
     *                             included in this limit.
     */
   def simpleFramingProtocol(maximumMessageLength: Int)
-      : BidiFlow[ByteString, ByteString, ByteString, ByteString, NotUsed] = {
+      : BidiFlow[ByteString, ByteString, ByteString, ByteString, NotUsed] =
     BidiFlow.fromFlowsMat(
       simpleFramingProtocolEncoder(maximumMessageLength),
       simpleFramingProtocolDecoder(maximumMessageLength))(Keep.left)
-  }
 
   /**
     * Protocol decoder that is used by [[Framing#simpleFramingProtocol]]
@@ -184,14 +183,13 @@ object Framing {
       if (buffer.nonEmpty) ctx.absorbTermination()
       else ctx.finish()
 
-    private def tryPull(ctx: Context[ByteString]): SyncDirective = {
+    private def tryPull(ctx: Context[ByteString]): SyncDirective =
       if (ctx.isFinishing) {
         if (allowTruncation) ctx.pushAndFinish(buffer)
         else
           ctx.fail(new FramingException(
             "Stream finished but there was a truncated final frame in the buffer"))
       } else ctx.pull()
-    }
 
     @tailrec
     private def doParse(ctx: Context[ByteString]): SyncDirective = {

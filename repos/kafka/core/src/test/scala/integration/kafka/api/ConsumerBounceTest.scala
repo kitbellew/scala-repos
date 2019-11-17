@@ -62,14 +62,13 @@ class ConsumerBounceTest extends IntegrationTestHarness with Logging {
   this.consumerConfig
     .setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
 
-  override def generateConfigs() = {
+  override def generateConfigs() =
     FixedPortTestUtils
       .createBrokerConfigs(
         serverCount,
         zkConnect,
         enableControlledShutdown = false)
       .map(KafkaConfig.fromProps(_, serverConfig))
-  }
 
   @Before
   override def setUp() {

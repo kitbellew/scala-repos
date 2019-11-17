@@ -150,17 +150,16 @@ object Permission {
 
     def implies(
         permission: WrittenByPermission,
-        candidate: WrittenByPermission): Boolean = {
+        candidate: WrittenByPermission): Boolean =
       permission.path.isEqualOrParentOf(candidate.path) &&
-      (permission.writtenBy match {
-        case WrittenByAny => true
-        case WrittenByAccount(accountId) =>
-          candidate.writtenBy match {
-            case WrittenByAny          => false
-            case WrittenByAccount(cid) => cid == accountId
-          }
-      })
-    }
+        (permission.writtenBy match {
+          case WrittenByAny => true
+          case WrittenByAccount(accountId) =>
+            candidate.writtenBy match {
+              case WrittenByAny          => false
+              case WrittenByAccount(cid) => cid == accountId
+            }
+        })
   }
 
   def accessType(p: Permission) = p match {
@@ -179,20 +178,19 @@ object Permission {
   }
 
   val decomposerV1Base: Decomposer[Permission] = new Decomposer[Permission] {
-    override def decompose(p: Permission): JValue = {
+    override def decompose(p: Permission): JValue =
       JObject(
         "accessType" -> accessType(p).serialize,
         "path" -> p.path.serialize,
         "ownerAccountIds" -> ownerAccountIds(p).serialize
       )
-    }
   }
 
   val extractorV1Base: Extractor[Permission] = new Extractor[Permission] {
     private def writtenByPermission(
         obj: JValue,
         pathV: Validation[Error, Path])(
-        f: (Path, WrittenBy) => Permission): Validation[Error, Permission] = {
+        f: (Path, WrittenBy) => Permission): Validation[Error, Permission] =
       (obj \? "ownerAccountIds") map { ids =>
         Apply[({ type l[a] = Validation[Error, a] })#l].zip
           .zip(pathV, ids.validated[Set[AccountId]]) flatMap {
@@ -207,7 +205,6 @@ object Permission {
       } getOrElse {
         pathV map { f(_: Path, WrittenByAny) }
       }
-    }
 
     override def validated(obj: JValue) = {
       val pathV = obj.validated[Path]("path")
@@ -237,7 +234,7 @@ object Permission {
     private def writtenByPermission(
         obj: JValue,
         pathV: Validation[Error, Path])(
-        f: (Path, WrittenBy) => Permission): Validation[Error, Permission] = {
+        f: (Path, WrittenBy) => Permission): Validation[Error, Permission] =
       obj.validated[Option[String]]("ownerAccountId") flatMap { opt =>
         opt map { id =>
           pathV map { f(_: Path, WrittenByAccount(id)) }
@@ -245,7 +242,6 @@ object Permission {
           pathV map { f(_: Path, WrittenByAny) }
         }
       }
-    }
 
     override def validated(obj: JValue) = {
       val pathV = obj.validated[Path]("path")

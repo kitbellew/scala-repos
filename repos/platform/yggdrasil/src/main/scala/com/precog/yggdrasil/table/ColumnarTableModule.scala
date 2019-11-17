@@ -102,7 +102,7 @@ object ColumnarTableModule extends Logging {
       delimiter: String,
       suffix: String)(implicit M: Monad[M]): StreamT[M, CharBuffer] = {
     import scalaz.\/._
-    def wrap(stream: StreamT[M, CharBuffer]) = {
+    def wrap(stream: StreamT[M, CharBuffer]) =
       if (prefix == "" && suffix == "") stream
       else if (suffix == "") CharBuffer.wrap(prefix) :: stream
       else if (prefix == "")
@@ -110,11 +110,10 @@ object ColumnarTableModule extends Logging {
       else
         CharBuffer.wrap(prefix) ::
           (stream ++ (CharBuffer.wrap(suffix) :: StreamT.empty[M, CharBuffer]))
-    }
 
     def foldFlatMap(
         slices: StreamT[M, Slice],
-        rendered: Boolean): StreamT[M, CharBuffer] = {
+        rendered: Boolean): StreamT[M, CharBuffer] =
       StreamT[M, CharBuffer](slices.step map {
         case StreamT.Yield(slice, tail) =>
           val (stream, rendered2) = slice.renderJson[M](delimiter)
@@ -130,7 +129,6 @@ object ColumnarTableModule extends Logging {
         case StreamT.Done =>
           StreamT.Done
       })
-    }
 
     wrap(foldFlatMap(slices, false))
   }
@@ -617,7 +615,7 @@ trait ColumnarTableModule[M[+_]]
         def unionOfIntersections(
             indicesGroupedBySource: Seq[Seq[(TableIndex, KeySchema)]])
             : Set[Key] = {
-          def allSourceDNF[T](l: Seq[Seq[T]]): Seq[Seq[T]] = {
+          def allSourceDNF[T](l: Seq[Seq[T]]): Seq[Seq[T]] =
             l match {
               case Seq(hd) => hd.map(Seq(_))
               case Seq(hd, tl @ _*) => {
@@ -628,7 +626,6 @@ trait ColumnarTableModule[M[+_]]
               }
               case empty => empty
             }
-          }
 
           def normalizedKeys(
               index: TableIndex,
@@ -735,19 +732,17 @@ trait ColumnarTableModule[M[+_]]
       * Reduce the specified table to obtain the in-memory set of strings representing the vfs paths
       * to be loaded.
       */
-    protected def pathsM(table: Table) = {
+    protected def pathsM(table: Table) =
       table reduce {
         new CReducer[Set[Path]] {
-          def reduce(schema: CSchema, range: Range): Set[Path] = {
+          def reduce(schema: CSchema, range: Range): Set[Path] =
             schema.columns(JTextT) flatMap {
               case s: StrColumn =>
                 range.filter(s.isDefinedAt).map(i => Path(s(i)))
               case _ => Set()
             }
-          }
         }
       }
-    }
 
     def fromRValues(
         values: Stream[RValue],
@@ -825,12 +820,11 @@ trait ColumnarTableModule[M[+_]]
       * Folds over the table to produce a single value (stored in a singleton table).
       */
     def reduce[A](reducer: Reducer[A])(implicit monoid: Monoid[A]): M[A] = {
-      def rec(stream: StreamT[M, A], acc: A): M[A] = {
+      def rec(stream: StreamT[M, A], acc: A): M[A] =
         stream.uncons flatMap {
           case Some((head, tail)) => rec(tail, head |+| acc)
           case None               => M.point(acc)
         }
-      }
 
       rec(
         slices map { s =>
@@ -863,11 +857,10 @@ trait ColumnarTableModule[M[+_]]
       * If the key transform is not identity, the resulting table will have
       * unknown sort order.
       */
-    def transform(spec: TransSpec1): Table = {
+    def transform(spec: TransSpec1): Table =
       Table(
         Table.transformStream(composeSliceTransform(spec), slices),
         this.size)
-    }
 
     def force: M[Table] = {
       def loop(
@@ -920,7 +913,7 @@ trait ColumnarTableModule[M[+_]]
     def zip(t2: Table): M[Table] = {
       def rec(
           slices1: StreamT[M, Slice],
-          slices2: StreamT[M, Slice]): StreamT[M, Slice] = {
+          slices2: StreamT[M, Slice]): StreamT[M, Slice] =
         StreamT(slices1.uncons flatMap {
           case Some((head1, tail1)) =>
             slices2.uncons map {
@@ -933,7 +926,6 @@ trait ColumnarTableModule[M[+_]]
           case None =>
             M point StreamT.Done
         })
-      }
 
       val resultSize = EstimateSize(0, size.maxSize min t2.size.maxSize)
       M point Table(rec(slices, t2.slices), resultSize)
@@ -976,7 +968,7 @@ trait ColumnarTableModule[M[+_]]
       }
 
       def step(sliceSize: Int, acc: List[Slice], stream: StreamT[M, Slice])
-          : M[StreamT.Step[Slice, StreamT[M, Slice]]] = {
+          : M[StreamT.Step[Slice, StreamT[M, Slice]]] =
         stream.uncons flatMap {
           case Some((head, tail)) =>
             if (head.size == 0) {
@@ -1006,7 +998,6 @@ trait ColumnarTableModule[M[+_]]
               M.point(StreamT.Done)
             }
         }
-      }
 
       Table(StreamT(step(0, Nil, slices)), size)
     }
@@ -1079,11 +1070,10 @@ trait ColumnarTableModule[M[+_]]
           }
         }
 
-        override def toString = {
+        override def toString =
           "left: " + lbuf.toArray.mkString("[", ",", "]") + "\n" + "right: " +
             rbuf.toArray.mkString("[", ",", "]") + "\n" + "both: " +
             (leqbuf.toArray zip reqbuf.toArray).mkString("[", ",", "]")
-        }
       }
 
       final case class SliceId(id: Int) {
@@ -1729,7 +1719,7 @@ trait ColumnarTableModule[M[+_]]
 
         def crossLeftSingle(lhead: Slice, right: StreamT[M, Slice])(
             a0: A): StreamT[M, Slice] = {
-          def step(state: CrossState): M[Option[(Slice, CrossState)]] = {
+          def step(state: CrossState): M[Option[(Slice, CrossState)]] =
             if (state.position < lhead.size) {
               state.tail.uncons flatMap {
                 case Some((rhead, rtail0)) =>
@@ -1751,13 +1741,12 @@ trait ColumnarTableModule[M[+_]]
             } else {
               M.point(None)
             }
-          }
 
           StreamT.unfoldM(CrossState(a0, 0, right))(step _)
         }
 
         def crossRightSingle(left: StreamT[M, Slice], rhead: Slice)(
-            a0: A): StreamT[M, Slice] = {
+            a0: A): StreamT[M, Slice] =
           StreamT(left.uncons flatMap {
             case Some((lhead, ltail0)) =>
               crossBothSingle(lhead, rhead)(a0) map {
@@ -1768,14 +1757,12 @@ trait ColumnarTableModule[M[+_]]
             case None =>
               M.point(StreamT.Done)
           })
-        }
 
         def crossBoth(
             ltail: StreamT[M, Slice],
-            rtail: StreamT[M, Slice]): StreamT[M, Slice] = {
+            rtail: StreamT[M, Slice]): StreamT[M, Slice] =
           // This doesn't carry the Transform's state around, so, I think it is broken.
           ltail.flatMap(crossLeftSingle(_, rtail)(transform.initial))
-        }
 
         // We canonicalize the tables so that no slices are too small.
         val left = this.canonicalize(
@@ -1991,7 +1978,7 @@ trait ColumnarTableModule[M[+_]]
         def subTable0(
             slices: StreamT[M, Slice],
             subSlices: StreamT[M, Slice],
-            size: Int): M[Table] = {
+            size: Int): M[Table] =
           slices.uncons flatMap {
             case Some((head, tail)) =>
               val headComparator = comparatorGen(head)
@@ -2012,7 +1999,6 @@ trait ColumnarTableModule[M[+_]]
             case None =>
               M.point(Table(subSlices, ExactSize(size)))
           }
-        }
 
         subTable0(slices, StreamT.empty[M, Slice], 0)
       }
@@ -2182,7 +2168,7 @@ trait ColumnarTableModule[M[+_]]
           val mask = RawBitSet.create(cols.length)
 
           @tailrec
-          def build0(row: Int, masks: List[Array[Int]]): List[Array[Int]] = {
+          def build0(row: Int, masks: List[Array[Int]]): List[Array[Int]] =
             if (row < sliceSize) {
               RawBitSet.clear(mask)
 
@@ -2198,7 +2184,6 @@ trait ColumnarTableModule[M[+_]]
                   copyOf(mask, mask.length) :: masks
                 else masks)
             } else masks
-          }
 
           build0(0, Nil)
         }
@@ -2235,7 +2220,7 @@ trait ColumnarTableModule[M[+_]]
     def renderCsv(): StreamT[M, CharBuffer] =
       ColumnarTableModule.renderCsv(slices)
 
-    def slicePrinter(prelude: String)(f: Slice => String): Table = {
+    def slicePrinter(prelude: String)(f: Slice => String): Table =
       Table(
         StreamT(
           StreamT
@@ -2247,7 +2232,6 @@ trait ColumnarTableModule[M[+_]]
             })
             .point[M]),
         size)
-    }
 
     def logged(
         logger: Logger,
@@ -2277,23 +2261,20 @@ trait ColumnarTableModule[M[+_]]
     def printer(prelude: String = "", flag: String = ""): Table =
       slicePrinter(prelude)(s => s.toJsonString(flag))
 
-    def toStrings: M[Iterable[String]] = {
+    def toStrings: M[Iterable[String]] =
       toEvents { (slice, row) =>
         slice.toString(row)
       }
-    }
 
-    def toJson: M[Iterable[JValue]] = {
+    def toJson: M[Iterable[JValue]] =
       toEvents { (slice, row) =>
         slice.toJson(row)
       }
-    }
 
-    private def toEvents[A](f: (Slice, RowId) => Option[A]): M[Iterable[A]] = {
+    private def toEvents[A](f: (Slice, RowId) => Option[A]): M[Iterable[A]] =
       for (stream <- self.compact(Leaf(Source)).slices.toStream) yield {
         for (slice <- stream; i <- 0 until slice.size; a <- f(slice, i)) yield a
       }
-    }
 
     def metrics = TableMetrics(readStarts.get, blockReads.get)
   }

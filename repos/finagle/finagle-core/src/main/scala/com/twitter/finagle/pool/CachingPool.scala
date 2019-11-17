@@ -44,13 +44,12 @@ private[finagle] class CachingPool[Req, Rep](
   }
 
   @tailrec
-  private[this] def get(): Option[Service[Req, Rep]] = {
+  private[this] def get(): Option[Service[Req, Rep]] =
     cache.get() match {
       case s @ Some(service) if service.status != Status.Closed => s
       case Some(service) /* unavailable */                      => service.close(); get()
       case None                                                 => None
     }
-  }
 
   def apply(conn: ClientConnection): Future[Service[Req, Rep]] = synchronized {
     if (!isOpen) Future.exception(new ServiceClosedException)

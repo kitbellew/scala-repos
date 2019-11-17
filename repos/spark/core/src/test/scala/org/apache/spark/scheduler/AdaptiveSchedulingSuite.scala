@@ -22,9 +22,8 @@ import org.apache.spark._
 object AdaptiveSchedulingSuiteState {
   var tasksRun = 0
 
-  def clear(): Unit = {
+  def clear(): Unit =
     tasksRun = 0
-  }
 }
 
 class AdaptiveSchedulingSuite extends SparkFunSuite with LocalSparkContext {

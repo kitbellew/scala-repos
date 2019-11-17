@@ -635,13 +635,12 @@ class ColumnarBatchSuite extends SparkFunSuite {
     }
   }
 
-  private def doubleEquals(d1: Double, d2: Double): Boolean = {
+  private def doubleEquals(d1: Double, d2: Double): Boolean =
     if (d1.isNaN && d2.isNaN) {
       true
     } else {
       d1 == d2
     }
-  }
 
   private def compareStruct(
       fields: Seq[StructField],

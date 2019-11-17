@@ -262,14 +262,13 @@ object MLUtils {
     */
   @Since("1.0.0")
   @deprecated("Should use MLUtils.loadLabeledPoints instead.", "1.0.1")
-  def loadLabeledData(sc: SparkContext, dir: String): RDD[LabeledPoint] = {
+  def loadLabeledData(sc: SparkContext, dir: String): RDD[LabeledPoint] =
     sc.textFile(dir).map { line =>
       val parts = line.split(',')
       val label = parts(0).toDouble
       val features = Vectors.dense(parts(1).trim().split(' ').map(_.toDouble))
       LabeledPoint(label, features)
     }
-  }
 
   /**
     * Save labeled data to a file. The data format used here is
@@ -299,9 +298,8 @@ object MLUtils {
   def kFold[T: ClassTag](
       rdd: RDD[T],
       numFolds: Int,
-      seed: Int): Array[(RDD[T], RDD[T])] = {
+      seed: Int): Array[(RDD[T], RDD[T])] =
     kFold(rdd, numFolds, seed.toLong)
-  }
 
   /**
     * Version of [[kFold()]] taking a Long seed.
@@ -328,7 +326,7 @@ object MLUtils {
     * Returns a new vector with `1.0` (bias) appended to the input vector.
     */
   @Since("1.0.0")
-  def appendBias(vector: Vector): Vector = {
+  def appendBias(vector: Vector): Vector =
     vector match {
       case dv: DenseVector =>
         val inputValues = dv.values
@@ -353,7 +351,6 @@ object MLUtils {
         throw new IllegalArgumentException(
           s"Do not support vector type ${vector.getClass}")
     }
-  }
 
   /**
     * Returns the squared Euclidean distance between two vectors. The following formula will be used
@@ -423,11 +420,10 @@ object MLUtils {
     * @param x a floating-point value as input.
     * @return the result of `math.log(1 + math.exp(x))`.
     */
-  private[spark] def log1pExp(x: Double): Double = {
+  private[spark] def log1pExp(x: Double): Double =
     if (x > 0) {
       x + math.log1p(math.exp(-x))
     } else {
       math.log1p(math.exp(x))
     }
-  }
 }

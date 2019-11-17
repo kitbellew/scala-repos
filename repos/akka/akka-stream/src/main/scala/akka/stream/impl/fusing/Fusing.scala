@@ -600,14 +600,10 @@ private[stream] object Fusing {
       */
     val newOuts: ju.Map[OutPort, List[OutPort]] = new ju.HashMap
 
-    private def addMapping[T](
-        orig: T,
-        mapd: T,
-        map: ju.Map[T, List[T]]): Unit = {
+    private def addMapping[T](orig: T, mapd: T, map: ju.Map[T, List[T]]): Unit =
       if (map.containsKey(orig)) {
         map.put(orig, mapd :: map.get(orig))
       } else map.put(orig, mapd :: Nil)
-    }
 
     private def removeMapping[T](orig: T, map: ju.Map[T, List[T]]): T =
       map.remove(orig) match {

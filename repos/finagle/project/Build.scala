@@ -52,7 +52,7 @@ object Finagle extends Build {
       ExclusionRule(organization = "org.scala-tools.testing"),
       ExclusionRule(organization = "org.mockito"))
 
-  def scalacOptionsVersion(sv: String): Seq[String] = {
+  def scalacOptionsVersion(sv: String): Seq[String] =
     Seq(
       // Note: Add -deprecation when deprecated methods are removed
       "-unchecked",
@@ -70,7 +70,6 @@ object Finagle extends Build {
           )
         case _ => Seq("-Xlint")
       })
-  }
 
   val sharedSettings = Seq(
     version := libVersion,
@@ -639,7 +638,6 @@ object Finagle extends Build {
   lazy val DocTest = config("doctest") extend Test
 
   // A dummy partitioning scheme for tests
-  def partitionTests(tests: Seq[TestDefinition]) = {
+  def partitionTests(tests: Seq[TestDefinition]) =
     Seq(new Group("inProcess", tests, InProcess))
-  }
 }

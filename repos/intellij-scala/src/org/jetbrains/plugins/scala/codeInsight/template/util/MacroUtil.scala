@@ -71,7 +71,7 @@ object MacroUtil {
 
   def getTypeLookupItem(
       scType: ScType,
-      project: Project): Option[ScalaLookupItem] = {
+      project: Project): Option[ScalaLookupItem] =
     ScType
       .extractClass(scType, Some(project))
       .filter(_.isInstanceOf[ScTypeDefinition])
@@ -85,7 +85,6 @@ object MacroUtil {
           lookupItem.shouldImport = true
           lookupItem
       }
-  }
 
   def getPrimaryConbstructorParams(context: ExpressionContext) =
     Option(

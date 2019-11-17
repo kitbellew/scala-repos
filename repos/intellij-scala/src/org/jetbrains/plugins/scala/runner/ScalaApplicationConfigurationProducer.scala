@@ -206,7 +206,7 @@ object ScalaApplicationConfigurationProducer {
     var element = _element
     var method: PsiMethod = getContainingMethod(element)
     while (method != null) {
-      def isMainMethod(method: PsiMethod): Option[PsiMethod] = {
+      def isMainMethod(method: PsiMethod): Option[PsiMethod] =
         method match {
           case f: ScFunction =>
             f.containingClass match {
@@ -221,7 +221,6 @@ object ScalaApplicationConfigurationProducer {
             }
           case _ => None
         }
-      }
       isMainMethod(method) match {
         case Some(mainMethod) => return mainMethod
         case _ =>

@@ -163,14 +163,13 @@ class CoreBTypes[BTFS <: BTypesFromSymbols[_ <: Global]](val bTypes: BTFS) {
   }
 
   private def srBoxesRuntimeMethods(
-      getName: (String, String) => String): Map[BType, MethodNameAndType] = {
+      getName: (String, String) => String): Map[BType, MethodNameAndType] =
     ScalaValueClassesNoUnit.map(primitive => {
       val bType = primitiveTypeToBType(primitive)
       val name = newTermName(
         getName(primitive.name.toString, boxedClass(primitive).name.toString))
       (bType, methodNameAndType(BoxesRunTimeClass, name))
     })(collection.breakOut)
-  }
 
   // Z -> MethodNameAndType(boxToBoolean,(Z)Ljava/lang/Boolean;)
   lazy val srBoxesRuntimeBoxToMethods: Map[BType, MethodNameAndType] =
@@ -213,7 +212,7 @@ class CoreBTypes[BTFS <: BTypesFromSymbols[_ <: Global]](val bTypes: BTFS) {
   }
 
   private def predefBoxingMethods(
-      getName: (String, String) => String): Map[String, MethodBType] = {
+      getName: (String, String) => String): Map[String, MethodBType] =
     ScalaValueClassesNoUnit.map(primitive => {
       val boxed = boxedClass(primitive)
       val name = getName(primitive.name.toString, boxed.name.toString)
@@ -221,7 +220,6 @@ class CoreBTypes[BTFS <: BTypesFromSymbols[_ <: Global]](val bTypes: BTFS) {
         name,
         methodNameAndType(PredefModule.moduleClass, newTermName(name)).methodType)
     })(collection.breakOut)
-  }
 
   // boolean2Boolean -> (Z)Ljava/lang/Boolean;
   lazy val predefAutoBoxMethods: Map[String, MethodBType] =
@@ -234,14 +232,13 @@ class CoreBTypes[BTFS <: BTypesFromSymbols[_ <: Global]](val bTypes: BTFS) {
       (primitive, boxed) => boxed + "2" + primitive.toLowerCase)
 
   private def staticRefMethods(
-      name: Name): Map[InternalName, MethodNameAndType] = {
+      name: Name): Map[InternalName, MethodNameAndType] =
     allRefClasses.map(
       refClass =>
         (
           classBTypeFromSymbol(refClass).internalName,
           methodNameAndType(refClass, name, static = true)))(
       collection.breakOut)
-  }
 
   // scala/runtime/BooleanRef -> MethodNameAndType(create,(Z)Lscala/runtime/BooleanRef;)
   lazy val srRefCreateMethods: Map[InternalName, MethodNameAndType] =
@@ -265,13 +262,12 @@ class CoreBTypes[BTFS <: BTypesFromSymbols[_ <: Global]](val bTypes: BTFS) {
   }
 
   private def nonOverloadedConstructors(
-      classes: Iterable[Symbol]): Map[InternalName, MethodNameAndType] = {
+      classes: Iterable[Symbol]): Map[InternalName, MethodNameAndType] =
     classes.map(
       cls =>
         (
           classBTypeFromSymbol(cls).internalName,
           methodNameAndType(cls, nme.CONSTRUCTOR)))(collection.breakOut)
-  }
 
   // scala/runtime/BooleanRef -> MethodNameAndType(<init>,(Z)V)
   lazy val srRefConstructors: Map[InternalName, MethodNameAndType] =
@@ -450,9 +446,8 @@ final class CoreBTypesProxy[BTFS <: BTypesFromSymbols[_ <: Global]](
   import global._
 
   private[this] var _coreBTypes: CoreBTypes[bTypes.type] = _
-  def setBTypes(coreBTypes: CoreBTypes[BTFS]): Unit = {
+  def setBTypes(coreBTypes: CoreBTypes[BTFS]): Unit =
     _coreBTypes = coreBTypes.asInstanceOf[CoreBTypes[bTypes.type]]
-  }
 
   def primitiveTypeToBType: Map[Symbol, PrimitiveBType] =
     _coreBTypes.primitiveTypeToBType

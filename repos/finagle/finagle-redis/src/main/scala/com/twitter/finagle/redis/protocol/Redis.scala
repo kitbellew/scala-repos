@@ -54,11 +54,10 @@ class Redis extends CodecFactory[Command, Reply] {
 
         override def prepareConnFactory(
             underlying: ServiceFactory[Command, Reply],
-            params: Stack.Params) = {
+            params: Stack.Params) =
           new RedisTracingFilter()
             .andThen(new RedisLoggingFilter(params[param.Stats].statsReceiver))
             .andThen(underlying)
-        }
       }
     }
 
@@ -66,7 +65,7 @@ class Redis extends CodecFactory[Command, Reply] {
 }
 
 private class RedisTracingFilter extends SimpleFilter[Command, Reply] {
-  override def apply(command: Command, service: Service[Command, Reply]) = {
+  override def apply(command: Command, service: Service[Command, Reply]) =
     if (Trace.isActivelyTracing) {
       Trace.recordServiceName("redis")
       Trace.recordRpc(command.command)
@@ -76,7 +75,6 @@ private class RedisTracingFilter extends SimpleFilter[Command, Reply] {
         response
       }
     } else service(command)
-  }
 }
 
 private class RedisLoggingFilter(stats: StatsReceiver)
@@ -85,7 +83,7 @@ private class RedisLoggingFilter(stats: StatsReceiver)
   private[this] val error = stats.scope("error")
   private[this] val succ = stats.scope("success")
 
-  override def apply(command: Command, service: Service[Command, Reply]) = {
+  override def apply(command: Command, service: Service[Command, Reply]) =
     service(command).map { response =>
       response match {
         case StatusReply(_) | IntegerReply(_) | BulkReply(_) |
@@ -97,5 +95,4 @@ private class RedisLoggingFilter(stats: StatsReceiver)
       }
       response
     }
-  }
 }

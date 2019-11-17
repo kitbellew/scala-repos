@@ -30,11 +30,10 @@ class ScalaOptimizeImportsFix extends IntentionAction with HighPriorityAction {
 
   def startInWriteAction: Boolean = true
 
-  def isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean = {
+  def isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean =
     file.getManager.isInProject(file) &&
-    (file.isInstanceOf[ScalaFile] ||
-    ScalaLanguageDerivative.hasDerivativeOnFile(file))
-  }
+      (file.isInstanceOf[ScalaFile] ||
+        ScalaLanguageDerivative.hasDerivativeOnFile(file))
 
   def invoke(project: Project, editor: Editor, file: PsiFile) {
     if (!FileModificationService.getInstance.prepareFileForWrite(file)) return
@@ -55,9 +54,8 @@ class ScalaEnableOptimizeImportsOnTheFlyFix extends IntentionAction {
 
   def startInWriteAction: Boolean = true
 
-  def isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean = {
+  def isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean =
     !ScalaApplicationSettings.getInstance().OPTIMIZE_IMPORTS_ON_THE_FLY
-  }
 
   def invoke(project: Project, editor: Editor, file: PsiFile) {
     ScalaApplicationSettings.getInstance().OPTIMIZE_IMPORTS_ON_THE_FLY = true
@@ -86,10 +84,11 @@ class MarkImportAsAlwaysUsed(importText: String)
 
   def startInWriteAction: Boolean = true
 
-  def isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean = {
+  def isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean =
     importText.contains(".") &&
-    !ScalaCodeStyleSettings.getInstance(project).isAlwaysUsedImport(importText)
-  }
+      !ScalaCodeStyleSettings
+        .getInstance(project)
+        .isAlwaysUsedImport(importText)
 
   def invoke(project: Project, editor: Editor, file: PsiFile) {
     val settings = ScalaCodeStyleSettings.getInstance(project)

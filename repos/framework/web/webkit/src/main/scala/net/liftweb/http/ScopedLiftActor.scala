@@ -64,11 +64,10 @@ trait ScopedLiftActor extends LiftActor with LazyLoggable {
     */
   protected def composeFunction: PartialFunction[Any, Unit] = composeFunction_i
 
-  private def composeFunction_i: PartialFunction[Any, Unit] = {
+  private def composeFunction_i: PartialFunction[Any, Unit] =
     // if we're no longer running don't pass messages to the other handlers
     // just pass them to our handlers
     highPriority orElse mediumPriority orElse lowPriority
-  }
 
   /**
     * Handle messages sent to this Actor before the

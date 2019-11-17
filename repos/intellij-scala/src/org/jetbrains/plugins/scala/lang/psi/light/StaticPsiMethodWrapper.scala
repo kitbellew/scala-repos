@@ -19,28 +19,25 @@ class StaticPsiMethodWrapper private (
     with LightScalaMethod {
   setNavigationElement(method)
 
-  override def hasModifierProperty(name: String): Boolean = {
+  override def hasModifierProperty(name: String): Boolean =
     name match {
       case "static" => true
       case _        => super.hasModifierProperty(name)
     }
-  }
 
   override def getModifierList: PsiModifierList =
     new LightModifierList(getManager, ScalaFileType.SCALA_LANGUAGE) {
-      override def hasModifierProperty(name: String): Boolean = {
+      override def hasModifierProperty(name: String): Boolean =
         name match {
           case "static" => true
           case _        => super.hasModifierProperty(name)
         }
-      }
 
-      override def hasExplicitModifier(name: String): Boolean = {
+      override def hasExplicitModifier(name: String): Boolean =
         name match {
           case "static" => true
           case _        => super.hasModifierProperty(name)
         }
-      }
     }
 
   override def isWritable: Boolean = getContainingFile.isWritable

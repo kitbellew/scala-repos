@@ -77,12 +77,11 @@ object AnnotatorHighlighter {
     } else el.getParent
   }
 
-  private def getParentByStub(x: PsiElement): PsiElement = {
+  private def getParentByStub(x: PsiElement): PsiElement =
     x match {
       case el: ScalaStubBasedElementImpl[_] => getParentStub(el)
       case _                                => x.getContext
     }
-  }
 
   def highlightReferenceElement(
       refElement: ScReferenceElement,
@@ -108,7 +107,7 @@ object AnnotatorHighlighter {
 
       UsageTrigger.trigger("scala.collection.pack.highlighting")
 
-      def conformsByNames(tp: ScType, qn: List[String]): Boolean = {
+      def conformsByNames(tp: ScType, qn: List[String]): Boolean =
         qn.exists(textName => {
           val cachedClass = ScalaPsiManager
             .instance(refElement.getProject)
@@ -119,7 +118,6 @@ object AnnotatorHighlighter {
           if (cachedClass == null) false
           else tp.conforms(ScType.designator(cachedClass))
         })
-      }
 
       def simpleAnnotate(
           annotationText: String,
@@ -176,18 +174,17 @@ object AnnotatorHighlighter {
       annotateCollectionByType(ScType.designator(resolvedClazz))
     }
 
-    def isHighlightableScalaTestKeyword(fun: ScMember): Boolean = {
+    def isHighlightableScalaTestKeyword(fun: ScMember): Boolean =
       fun.getContainingClass != null &&
-      ScalaTestHighlighterUtil.isHighlightableScalaTestKeyword(
-        fun.getContainingClass.getQualifiedName,
-        fun match {
-          case p: ScPatternDefinition =>
-            p.bindings.headOption.map(_.getName).orNull
-          case _ => fun.getName
-        },
-        fun.getProject
-      )
-    }
+        ScalaTestHighlighterUtil.isHighlightableScalaTestKeyword(
+          fun.getContainingClass.getQualifiedName,
+          fun match {
+            case p: ScPatternDefinition =>
+              p.bindings.headOption.map(_.getName).orNull
+            case _ => fun.getName
+          },
+          fun.getProject
+        )
 
     val c = ScalaPsiUtil.getParentOfType(refElement, classOf[ScConstructor])
 
@@ -438,7 +435,7 @@ object AnnotatorHighlighter {
     annotation.setTextAttributes(DefaultHighlighter.TYPE_ALIAS)
   }
 
-  private def visitClass(clazz: ScClass, holder: AnnotationHolder): Unit = {
+  private def visitClass(clazz: ScClass, holder: AnnotationHolder): Unit =
     if (clazz.getModifierList.has(ScalaTokenTypes.kABSTRACT)) {
       val annotation = holder.createInfoAnnotation(clazz.nameId, null)
       annotation.setTextAttributes(DefaultHighlighter.ABSTRACT_CLASS)
@@ -446,7 +443,6 @@ object AnnotatorHighlighter {
       val annotation = holder.createInfoAnnotation(clazz.nameId, null)
       annotation.setTextAttributes(DefaultHighlighter.CLASS)
     }
-  }
 
   private def visitParameter(
       param: ScParameter,
@@ -461,40 +457,35 @@ object AnnotatorHighlighter {
   private def visitPattern(
       pattern: ScPattern,
       holder: AnnotationHolder,
-      attribute: TextAttributesKey): Unit = {
+      attribute: TextAttributesKey): Unit =
     for (binding <- pattern.bindings if !binding.isWildcard) {
       val annotation = holder.createInfoAnnotation(binding.nameId, null)
       annotation.setTextAttributes(attribute)
     }
-  }
 
   private def visitCaseClause(
       clause: ScCaseClause,
-      holder: AnnotationHolder): Unit = {
+      holder: AnnotationHolder): Unit =
     clause.pattern match {
       case Some(x) => visitPattern(x, holder, DefaultHighlighter.PATTERN)
       case None    =>
     }
-  }
 
   private def visitGenerator(
       generator: ScGenerator,
-      holder: AnnotationHolder): Unit = {
+      holder: AnnotationHolder): Unit =
     visitPattern(generator.pattern, holder, DefaultHighlighter.GENERATOR)
-  }
 
   private def visitEnumerator(
       enumerator: ScEnumerator,
-      holder: AnnotationHolder): Unit = {
+      holder: AnnotationHolder): Unit =
     visitPattern(enumerator.pattern, holder, DefaultHighlighter.GENERATOR)
-  }
 
   private def referenceIsToCompanionObjectOfClass(
-      r: ScReferenceElement): Boolean = {
+      r: ScReferenceElement): Boolean =
     Option(r.getContext) exists {
       case _: ScMethodCall | _: ScReferenceExpression =>
         true // These references to 'Foo' should be 'object' references: case class Foo(a: Int); Foo(1); Foo.apply(1).
       case _ => false
     }
-  }
 }

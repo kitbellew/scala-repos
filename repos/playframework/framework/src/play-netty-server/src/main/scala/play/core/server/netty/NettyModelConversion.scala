@@ -47,22 +47,19 @@ private[server] class NettyModelConversion(
       requestId: Long,
       remoteAddress: InetSocketAddress,
       sslHandler: Option[SslHandler],
-      request: HttpRequest): Try[RequestHeader] = {
-
+      request: HttpRequest): Try[RequestHeader] =
     if (request.getDecoderResult.isFailure) {
       Failure(request.getDecoderResult.cause())
     } else {
       tryToCreateRequest(request, requestId, remoteAddress, sslHandler)
     }
-  }
 
   /** Try to create the request. May fail if the path is invalid */
   private def tryToCreateRequest(
       request: HttpRequest,
       requestId: Long,
       remoteAddress: InetSocketAddress,
-      sslHandler: Option[SslHandler]): Try[RequestHeader] = {
-
+      sslHandler: Option[SslHandler]): Try[RequestHeader] =
     Try {
       val uri = new QueryStringDecoder(request.getUri)
       val parameters: Map[String, Seq[String]] = {
@@ -82,7 +79,6 @@ private[server] class NettyModelConversion(
         remoteAddress,
         sslHandler)
     }
-  }
 
   /** Create the request header */
   private def createRequestHeader(
@@ -91,8 +87,7 @@ private[server] class NettyModelConversion(
       parsedPath: String,
       parameters: Map[String, Seq[String]],
       _remoteAddress: InetSocketAddress,
-      sslHandler: Option[SslHandler]): RequestHeader = {
-
+      sslHandler: Option[SslHandler]): RequestHeader =
     new RequestHeader {
       override val id = requestId
       override val tags = Map.empty[String, String]
@@ -113,15 +108,13 @@ private[server] class NettyModelConversion(
       override lazy val clientCertificateChain =
         clientCertificatesFromSslEngine(sslHandler.map(_.engine()))
     }
-  }
 
   /** Create an unparsed request header. Used when even Netty couldn't parse the request. */
   def createUnparsedRequestHeader(
       requestId: Long,
       request: HttpRequest,
       _remoteAddress: InetSocketAddress,
-      sslHandler: Option[SslHandler]) = {
-
+      sslHandler: Option[SslHandler]) =
     new RequestHeader {
       override def id = requestId
       override def tags = Map.empty[String, String]
@@ -161,11 +154,10 @@ private[server] class NettyModelConversion(
       override lazy val clientCertificateChain =
         clientCertificatesFromSslEngine(sslHandler.map(_.engine()))
     }
-  }
 
   /** Create the source for the request body */
   def convertRequestBody(request: HttpRequest)(
-      implicit mat: Materializer): Option[Source[ByteString, Any]] = {
+      implicit mat: Materializer): Option[Source[ByteString, Any]] =
     request match {
       case full: FullHttpRequest =>
         val content = httpContentToByteString(full)
@@ -179,7 +171,6 @@ private[server] class NettyModelConversion(
           Source.fromPublisher(
             SynchronousMappedStreams.map(streamed, httpContentToByteString)))
     }
-  }
 
   /** Convert an HttpContent object to a ByteString */
   private def httpContentToByteString(content: HttpContent): ByteString = {
@@ -343,20 +334,18 @@ private[server] class NettyModelConversion(
     status != Status.NO_CONTENT && status != Status.NOT_MODIFIED
 
   /** Convert a ByteString to a Netty ByteBuf. */
-  private def byteStringToByteBuf(bytes: ByteString): ByteBuf = {
+  private def byteStringToByteBuf(bytes: ByteString): ByteBuf =
     if (bytes.isEmpty) {
       Unpooled.EMPTY_BUFFER
     } else {
       Unpooled.wrappedBuffer(bytes.asByteBuffer)
     }
-  }
 
-  private def byteStringToHttpContent(bytes: ByteString): HttpContent = {
+  private def byteStringToHttpContent(bytes: ByteString): HttpContent =
     new DefaultHttpContent(byteStringToByteBuf(bytes))
-  }
 
   private def clientCertificatesFromSslEngine(
-      sslEngine: Option[SSLEngine]): Option[Seq[X509Certificate]] = {
+      sslEngine: Option[SSLEngine]): Option[Seq[X509Certificate]] =
     try {
       sslEngine.map { engine =>
         engine.getSession.getPeerCertificates.toSeq.collect {
@@ -366,7 +355,6 @@ private[server] class NettyModelConversion(
     } catch {
       case e: SSLPeerUnverifiedException => None
     }
-  }
 
   // cache the date header of the last response so we only need to compute it every second
   private var cachedDateHeader: (Long, String) = (Long.MinValue, null)

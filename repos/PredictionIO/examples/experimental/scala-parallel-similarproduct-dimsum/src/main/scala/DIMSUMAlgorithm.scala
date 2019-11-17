@@ -42,13 +42,12 @@ class DIMSUMModel(
     true
   }
 
-  override def toString = {
+  override def toString =
     s"similarities: [${similarities.count()}]" +
       s"(${similarities.take(2).toList}...)" +
       s" itemStringIntMap: [${itemStringIntMap.size}]" +
       s"(${itemStringIntMap.take(2).toString}...)]" +
       s" items: [${items.size}]" + s"(${items.take(2).toString}...)]"
-  }
 }
 
 object DIMSUMModel
@@ -56,7 +55,7 @@ object DIMSUMModel
   def apply(
       id: String,
       params: DIMSUMAlgorithmParams,
-      sc: Option[SparkContext]) = {
+      sc: Option[SparkContext]) =
     new DIMSUMModel(
       similarities = sc.get.objectFile(s"/tmp/${id}/similarities"),
       itemStringIntMap = sc.get
@@ -64,7 +63,6 @@ object DIMSUMModel
         .first,
       items = sc.get.objectFile[Map[Int, Item]](s"/tmp/${id}/items").first
     )
-  }
 }
 
 class DIMSUMAlgorithm(val ap: DIMSUMAlgorithmParams)

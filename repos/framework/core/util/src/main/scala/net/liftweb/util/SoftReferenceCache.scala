@@ -65,9 +65,8 @@ object SoftReferenceCache {
   /**
     * ShutDown the monitoring
     */
-  def shutDown = {
+  def shutDown =
     terminated = true;
-  }
 
   private def processQueue {
     while (!terminated) {
@@ -92,10 +91,8 @@ case object Done
 class SoftReferenceCache[K, V](cacheSize: Int) {
 
   val cache = new LinkedHashMap[K, SoftValue[K, V]]() {
-    override def removeEldestEntry(
-        eldest: Entry[K, SoftValue[K, V]]): Boolean = {
+    override def removeEldestEntry(eldest: Entry[K, SoftValue[K, V]]): Boolean =
       return size() > cacheSize;
-    }
   }
 
   val rwl = new ReentrantReadWriteLock();
@@ -165,14 +162,13 @@ class SoftReferenceCache[K, V](cacheSize: Int) {
     *
     * @return the value removed
     */
-  def remove(key: Any): Box[V] = {
+  def remove(key: Any): Box[V] =
     lock(writeLock) {
       for {
         value <- Box.!!(cache.remove(key).asInstanceOf[SoftValue[K, V]])
         realValue <- Box.!!(value.get)
       } yield realValue
     }
-  }
 
   def keys = cache.keySet
 }

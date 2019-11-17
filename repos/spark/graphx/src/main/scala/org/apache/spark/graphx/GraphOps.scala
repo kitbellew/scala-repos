@@ -66,7 +66,7 @@ class GraphOps[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED])
     *
     * @param edgeDirection the direction along which to collect neighboring vertex attributes
     */
-  private def degreesRDD(edgeDirection: EdgeDirection): VertexRDD[Int] = {
+  private def degreesRDD(edgeDirection: EdgeDirection): VertexRDD[Int] =
     if (edgeDirection == EdgeDirection.In) {
       graph.aggregateMessages(_.sendToDst(1), _ + _, TripletFields.None)
     } else if (edgeDirection == EdgeDirection.Out) {
@@ -78,7 +78,6 @@ class GraphOps[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED])
         _ + _,
         TripletFields.None)
     }
-  }
 
   /**
     * Collect the neighbor vertex ids for each vertex.
@@ -171,7 +170,7 @@ class GraphOps[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED])
     *
     * @return the local edges for each vertex
     */
-  def collectEdges(edgeDirection: EdgeDirection): VertexRDD[Array[Edge[ED]]] = {
+  def collectEdges(edgeDirection: EdgeDirection): VertexRDD[Array[Edge[ED]]] =
     edgeDirection match {
       case EdgeDirection.Either =>
         graph.aggregateMessages[Array[Edge[ED]]](
@@ -197,16 +196,14 @@ class GraphOps[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED])
           "collectEdges does not support EdgeDirection.Both. Use" +
             "EdgeDirection.Either instead.")
     }
-  }
 
   /**
     * Remove self edges.
     *
     * @return a graph with all self edges removed
     */
-  def removeSelfEdges(): Graph[VD, ED] = {
+  def removeSelfEdges(): Graph[VD, ED] =
     graph.subgraph(epred = e => e.srcId != e.dstId)
-  }
 
   /**
     * Join the vertices with an RDD and then apply a function from the
@@ -278,9 +275,8 @@ class GraphOps[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED])
       epred: (EdgeTriplet[VD2, ED2]) => Boolean = (x: EdgeTriplet[VD2, ED2]) =>
         true,
       vpred: (VertexId, VD2) => Boolean = (v: VertexId, d: VD2) => true)
-      : Graph[VD, ED] = {
+      : Graph[VD, ED] =
     graph.mask(preprocess(graph).subgraph(epred, vpred))
-  }
 
   /**
     * Picks a random vertex from the graph and returns its ID.
@@ -384,12 +380,11 @@ class GraphOps[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED])
       activeDirection: EdgeDirection = EdgeDirection.Either)(
       vprog: (VertexId, VD, A) => VD,
       sendMsg: EdgeTriplet[VD, ED] => Iterator[(VertexId, A)],
-      mergeMsg: (A, A) => A): Graph[VD, ED] = {
+      mergeMsg: (A, A) => A): Graph[VD, ED] =
     Pregel(graph, initialMsg, maxIterations, activeDirection)(
       vprog,
       sendMsg,
       mergeMsg)
-  }
 
   /**
     * Run a dynamic version of PageRank returning a graph with vertex attributes containing the
@@ -397,9 +392,8 @@ class GraphOps[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED])
     *
     * @see [[org.apache.spark.graphx.lib.PageRank$#runUntilConvergence]]
     */
-  def pageRank(tol: Double, resetProb: Double = 0.15): Graph[Double, Double] = {
+  def pageRank(tol: Double, resetProb: Double = 0.15): Graph[Double, Double] =
     PageRank.runUntilConvergence(graph, tol, resetProb)
-  }
 
   /**
     * Run personalized PageRank for a given vertex, such that all random walks
@@ -410,9 +404,8 @@ class GraphOps[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED])
   def personalizedPageRank(
       src: VertexId,
       tol: Double,
-      resetProb: Double = 0.15): Graph[Double, Double] = {
+      resetProb: Double = 0.15): Graph[Double, Double] =
     PageRank.runUntilConvergenceWithOptions(graph, tol, resetProb, Some(src))
-  }
 
   /**
     * Run Personalized PageRank for a fixed number of iterations with
@@ -425,9 +418,8 @@ class GraphOps[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED])
   def staticPersonalizedPageRank(
       src: VertexId,
       numIter: Int,
-      resetProb: Double = 0.15): Graph[Double, Double] = {
+      resetProb: Double = 0.15): Graph[Double, Double] =
     PageRank.runWithOptions(graph, numIter, resetProb, Some(src))
-  }
 
   /**
     * Run PageRank for a fixed number of iterations returning a graph with vertex attributes
@@ -437,9 +429,8 @@ class GraphOps[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED])
     */
   def staticPageRank(
       numIter: Int,
-      resetProb: Double = 0.15): Graph[Double, Double] = {
+      resetProb: Double = 0.15): Graph[Double, Double] =
     PageRank.run(graph, numIter, resetProb)
-  }
 
   /**
     * Compute the connected component membership of each vertex and return a graph with the vertex
@@ -447,9 +438,8 @@ class GraphOps[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED])
     *
     * @see [[org.apache.spark.graphx.lib.ConnectedComponents$#run]]
     */
-  def connectedComponents(): Graph[VertexId, ED] = {
+  def connectedComponents(): Graph[VertexId, ED] =
     ConnectedComponents.run(graph)
-  }
 
   /**
     * Compute the connected component membership of each vertex and return a graph with the vertex
@@ -457,18 +447,16 @@ class GraphOps[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED])
     *
     * @see [[org.apache.spark.graphx.lib.ConnectedComponents$#run]]
     */
-  def connectedComponents(maxIterations: Int): Graph[VertexId, ED] = {
+  def connectedComponents(maxIterations: Int): Graph[VertexId, ED] =
     ConnectedComponents.run(graph, maxIterations)
-  }
 
   /**
     * Compute the number of triangles passing through each vertex.
     *
     * @see [[org.apache.spark.graphx.lib.TriangleCount$#run]]
     */
-  def triangleCount(): Graph[Int, ED] = {
+  def triangleCount(): Graph[Int, ED] =
     TriangleCount.run(graph)
-  }
 
   /**
     * Compute the strongly connected component (SCC) of each vertex and return a graph with the
@@ -476,7 +464,6 @@ class GraphOps[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED])
     *
     * @see [[org.apache.spark.graphx.lib.StronglyConnectedComponents$#run]]
     */
-  def stronglyConnectedComponents(numIter: Int): Graph[VertexId, ED] = {
+  def stronglyConnectedComponents(numIter: Int): Graph[VertexId, ED] =
     StronglyConnectedComponents.run(graph, numIter)
-  }
 } // end of GraphOps

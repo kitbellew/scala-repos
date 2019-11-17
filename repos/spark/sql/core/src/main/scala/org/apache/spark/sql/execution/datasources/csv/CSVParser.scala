@@ -172,7 +172,7 @@ private class StringIteratorReader(val iter: Iterator[String])
     * fetch next string from iter, if done with current one
     * pretend there is a new line at the end of every string we get from from iter
     */
-  private def refill(): Unit = {
+  private def refill(): Unit =
     if (length == next) {
       if (iter.hasNext) {
         str = iter.next()
@@ -182,7 +182,6 @@ private class StringIteratorReader(val iter: Iterator[String])
         str = null
       }
     }
-  }
 
   /**
     * read the next character, if at end of string pretend there is a new line
@@ -241,9 +240,8 @@ private class StringIteratorReader(val iter: Iterator[String])
     n
   }
 
-  override def skip(ns: Long): Long = {
+  override def skip(ns: Long): Long =
     throw new IllegalArgumentException("Skip not implemented")
-  }
 
   override def ready: Boolean = {
     refill()
@@ -252,13 +250,11 @@ private class StringIteratorReader(val iter: Iterator[String])
 
   override def markSupported: Boolean = false
 
-  override def mark(readAheadLimit: Int): Unit = {
+  override def mark(readAheadLimit: Int): Unit =
     throw new IllegalArgumentException("Mark not implemented")
-  }
 
-  override def reset(): Unit = {
+  override def reset(): Unit =
     throw new IllegalArgumentException("Mark and hence reset not implemented")
-  }
 
   override def close(): Unit = {}
 }

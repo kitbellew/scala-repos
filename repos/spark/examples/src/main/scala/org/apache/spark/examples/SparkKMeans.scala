@@ -30,9 +30,8 @@ import org.apache.spark.{SparkConf, SparkContext}
   */
 object SparkKMeans {
 
-  def parseVector(line: String): Vector[Double] = {
+  def parseVector(line: String): Vector[Double] =
     DenseVector(line.split(' ').map(_.toDouble))
-  }
 
   def closestPoint(p: Vector[Double], centers: Array[Vector[Double]]): Int = {
     var bestIndex = 0

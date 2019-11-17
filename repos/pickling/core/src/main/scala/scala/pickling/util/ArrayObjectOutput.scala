@@ -87,23 +87,23 @@ case class GenObjectOutput(
     )
 
   // Members declared in java.io.DataOutput
-  def writeBoolean(x: Boolean): Unit = { booleanArrBuf += x }
-  def writeByte(x: Int): Unit = { byteArrBuf += x }
+  def writeBoolean(x: Boolean): Unit = booleanArrBuf += x
+  def writeByte(x: Int): Unit = byteArrBuf += x
   def writeBytes(x: String): Unit = ???
-  def writeChar(x: Int): Unit = { charArrBuf += x }
+  def writeChar(x: Int): Unit = charArrBuf += x
   def writeChars(x: String): Unit = ???
-  def writeDouble(x: Double): Unit = { doubleArrBuf += x }
-  def writeFloat(x: Float): Unit = { floatArrBuf += x }
-  def writeInt(x: Int): Unit = { intArrBuf += x }
-  def writeLong(x: Long): Unit = { longArrBuf += x }
-  def writeShort(x: Int): Unit = { shortArrBuf += x }
-  def writeUTF(x: String): Unit = { stringArrBuf += x }
+  def writeDouble(x: Double): Unit = doubleArrBuf += x
+  def writeFloat(x: Float): Unit = floatArrBuf += x
+  def writeInt(x: Int): Unit = intArrBuf += x
+  def writeLong(x: Long): Unit = longArrBuf += x
+  def writeShort(x: Int): Unit = shortArrBuf += x
+  def writeUTF(x: String): Unit = stringArrBuf += x
 
   // Members declared in java.io.ObjectOutput
   def close(): Unit = {}
   def flush(): Unit = ???
   def write(x1: Array[Byte], x2: Int, x3: Int): Unit = ???
-  def write(x: Array[Byte]): Unit = { arrByteArrBuf += x }
+  def write(x: Array[Byte]): Unit = arrByteArrBuf += x
   def write(x: Int): Unit = ???
-  def writeObject(x: Any): Unit = { anyRefArrBuf += x }
+  def writeObject(x: Any): Unit = anyRefArrBuf += x
 }

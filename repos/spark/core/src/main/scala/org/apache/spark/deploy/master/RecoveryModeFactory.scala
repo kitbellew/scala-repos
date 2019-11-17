@@ -64,10 +64,8 @@ private[master] class FileSystemRecoveryModeFactory(
     new FileSystemPersistenceEngine(RECOVERY_DIR, serializer)
   }
 
-  def createLeaderElectionAgent(
-      master: LeaderElectable): LeaderElectionAgent = {
+  def createLeaderElectionAgent(master: LeaderElectable): LeaderElectionAgent =
     new MonarchyLeaderAgent(master)
-  }
 }
 
 private[master] class ZooKeeperRecoveryModeFactory(
@@ -75,12 +73,9 @@ private[master] class ZooKeeperRecoveryModeFactory(
     serializer: Serializer)
     extends StandaloneRecoveryModeFactory(conf, serializer) {
 
-  def createPersistenceEngine(): PersistenceEngine = {
+  def createPersistenceEngine(): PersistenceEngine =
     new ZooKeeperPersistenceEngine(conf, serializer)
-  }
 
-  def createLeaderElectionAgent(
-      master: LeaderElectable): LeaderElectionAgent = {
+  def createLeaderElectionAgent(master: LeaderElectable): LeaderElectionAgent =
     new ZooKeeperLeaderElectionAgent(master, conf)
-  }
 }

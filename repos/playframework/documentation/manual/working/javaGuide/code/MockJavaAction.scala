@@ -30,11 +30,10 @@ package javaguide.testhelpers {
     private lazy val action = new JavaAction(components) {
       val annotations = new JavaActionAnnotations(controller, method)
 
-      def parser = {
+      def parser =
         play.HandlerInvokerFactoryAccessor.javaBodyParserToScala(
           components.getBodyParser(annotations.parser)
         )
-      }
 
       def invocation = self.invocation
     }
@@ -46,12 +45,11 @@ package javaguide.testhelpers {
     private val controller = this.getClass
     private val method = MockJavaActionJavaMocker.findActionMethod(this)
 
-    def invocation = {
+    def invocation =
       method.invoke(this) match {
         case r: Result             => CompletableFuture.completedFuture(r)
         case f: CompletionStage[_] => f.asInstanceOf[CompletionStage[Result]]
       }
-    }
   }
 
   object MockJavaActionHelper {
@@ -61,7 +59,7 @@ package javaguide.testhelpers {
     def call(
         action: Action[Http.RequestBody],
         requestBuilder: play.mvc.Http.RequestBuilder)(
-        implicit mat: Materializer): Result = {
+        implicit mat: Materializer): Result =
       Helpers
         .await(requestBuilder.body() match {
           case null =>
@@ -73,22 +71,19 @@ package javaguide.testhelpers {
               other.asBytes())
         })
         .asJava
-    }
 
     def callWithStringBody(
         action: Action[Http.RequestBody],
         requestBuilder: play.mvc.Http.RequestBuilder,
-        body: String)(implicit mat: Materializer): Result = {
+        body: String)(implicit mat: Materializer): Result =
       Helpers
         .await(
           Helpers.call(action, requestBuilder.build()._underlyingRequest, body))
         .asJava
-    }
 
-    def setContext(request: play.mvc.Http.RequestBuilder): Unit = {
+    def setContext(request: play.mvc.Http.RequestBuilder): Unit =
       Http.Context.current
         .set(JavaHelpers.createJavaContext(request.build()._underlyingRequest))
-    }
 
     def removeContext: Unit = Http.Context.current.remove()
   }

@@ -32,7 +32,7 @@ abstract class AkkaIdentityProcessorVerification[T](
 
   def processorFromSubscriberAndPublisher(
       sub: Subscriber[T],
-      pub: Publisher[T]): Processor[T, T] = {
+      pub: Publisher[T]): Processor[T, T] =
     new Processor[T, T] {
       override def onSubscribe(s: Subscription): Unit = sub.onSubscribe(s)
       override def onError(t: Throwable): Unit = sub.onError(t)
@@ -40,7 +40,6 @@ abstract class AkkaIdentityProcessorVerification[T](
       override def onNext(t: T): Unit = sub.onNext(t)
       override def subscribe(s: Subscriber[_ >: T]): Unit = pub.subscribe(s)
     }
-  }
 
   /** By default Akka Publishers do not support Fanout! */
   override def maxSupportedSubscribers: Long = 1L

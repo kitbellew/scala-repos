@@ -54,7 +54,7 @@ trait FSLibModule[M[+_]] extends ColumnarTableLibModule[M] {
           apiKey: APIKey,
           pathString: String,
           pathRoot: Path): M[Stream[Path]] = {
-        def walk(m: Matcher, prefixes: Stream[Path]): M[Stream[Path]] = {
+        def walk(m: Matcher, prefixes: Stream[Path]): M[Stream[Path]] =
           if (m.find) {
             m.group(1).trim match {
               case "*" =>
@@ -74,7 +74,6 @@ trait FSLibModule[M[+_]] extends ColumnarTableLibModule[M] {
           } else {
             M.point(prefixes)
           }
-        }
 
         walk(pattern.matcher(pathString), Stream(pathRoot))
       }

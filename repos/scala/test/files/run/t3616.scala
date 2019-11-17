@@ -6,7 +6,6 @@ object Fruit extends Enumeration {
   val A, B, C = Value
 }
 object Test {
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     println(Fruit.values)
-  }
 }

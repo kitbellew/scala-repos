@@ -38,7 +38,7 @@ object ScalaMoveUtil {
     new ScalaCopyPastePostProcessor
   private val ASSOCIATIONS_KEY: Key[Associations] = Key.create("ASSOCIATIONS")
 
-  def canBeCompanions(class1: PsiClass, class2: PsiClass): Boolean = {
+  def canBeCompanions(class1: PsiClass, class2: PsiClass): Boolean =
     (class1, class2) match {
       case (td1: ScTypeDefinition, td2: ScTypeDefinition)
           if td1.name == td2.name =>
@@ -49,7 +49,6 @@ object ScalaMoveUtil {
         classes.count(_.isInstanceOf[ScObject]) == 1 && noFakeCompanions
       case _ => false
     }
-  }
 
   def classCanBeAdded(file: PsiFile, aClass: PsiClass): Boolean = {
     val allClasses =
@@ -65,7 +64,7 @@ object ScalaMoveUtil {
       @NotNull moveDestination: PsiDirectory,
       withCompanion: Boolean): PsiClass = {
     var fileWasDeleted: Boolean = false
-    def deleteClass(aClass: PsiClass) = {
+    def deleteClass(aClass: PsiClass) =
       aClass.getContainingFile match {
         case file: ScalaFile =>
           file.typeDefinitions match {
@@ -76,7 +75,6 @@ object ScalaMoveUtil {
             case _ => aClass.delete()
           }
       }
-    }
     def moveClassInner(
         aClass: PsiClass,
         moveDestination: PsiDirectory): PsiClass = {

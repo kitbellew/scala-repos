@@ -85,14 +85,13 @@ final class CircuitBreakerAwareFuture(val future: Future[Any]) extends AnyVal {
     failForOpenCircuitWith(OpenCircuitException)
 
   def failForOpenCircuitWith(throwing: ⇒ Throwable)(
-      implicit executionContext: ExecutionContext): Future[Any] = {
+      implicit executionContext: ExecutionContext): Future[Any] =
     future.flatMap {
       _ match {
         case CircuitOpenFailure(_) ⇒ Future.failed(throwing)
         case result ⇒ Future.successful(result)
       }
     }
-  }
 }
 
 final class AskeableWithCircuitBreakerActor(val actorRef: ActorRef)

@@ -163,9 +163,8 @@ object ReadHandle {
 }
 
 object Client {
-  def apply(raw: ServiceFactory[Command, Response]): Client = {
+  def apply(raw: ServiceFactory[Command, Response]): Client =
     new ConnectedClient(raw)
-  }
 
   def apply(hosts: String): Client = {
     val service = ClientBuilder()
@@ -186,14 +185,12 @@ object Client {
   // Due to type erasure this cannot be apply(raw: ServiceFactory[ThriftClientRequest, Array[Byte]])
   def makeThrift(
       raw: ServiceFactory[ThriftClientRequest, Array[Byte]],
-      txnAbortTimeout: Duration): Client = {
+      txnAbortTimeout: Duration): Client =
     new ThriftConnectedClient(new FinagledClientFactory(raw), txnAbortTimeout)
-  }
 
   def makeThrift(
-      raw: ServiceFactory[ThriftClientRequest, Array[Byte]]): Client = {
+      raw: ServiceFactory[ThriftClientRequest, Array[Byte]]): Client =
     makeThrift(raw, Duration.Top)
-  }
 
   private val nullTimer = new NullTimer
 }
@@ -565,11 +562,10 @@ protected[kestrel] class ThriftConnectedClient(
     underlying: FinagledClientFactory,
     txnAbortTimeout: Duration)
     extends ClientBase[FinagledClosableClient, Seq[Item], Long](underlying) {
-  private def safeLongToInt(l: Long): Int = {
+  private def safeLongToInt(l: Long): Int =
     if (l > Int.MaxValue) Int.MaxValue
     else if (l < Int.MinValue) Int.MinValue
     else l.toInt
-  }
 
   private def withClient[T](f: (FinagledClient) => Future[T]) =
     underlying() flatMap { client =>

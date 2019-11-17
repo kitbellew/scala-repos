@@ -6,15 +6,13 @@ object DisplayHelpers {
   type ColumnFormat = ((String, Int) => String)
 
   /** Left align field. */
-  def left(str: String, length: Int) = {
+  def left(str: String, length: Int) =
     if (str.length > length) str.substring(length - 3) + "..."
     else str + (" " * (length - str.length))
-  }
 
-  def right(str: String, length: Int) = {
+  def right(str: String, length: Int) =
     if (str.length > length) "..." + str.substring(length - 3)
     else (" " * (length - str.length)) + str
-  }
 
   def printTable(
       columnFormats: Seq[ColumnFormat],
@@ -36,12 +34,11 @@ object DisplayHelpers {
     }
   }
 
-  def withUnderline(header: IndexedSeq[String]): Seq[IndexedSeq[String]] = {
+  def withUnderline(header: IndexedSeq[String]): Seq[IndexedSeq[String]] =
     IndexedSeq(
       header,
       header.map { str =>
         "-" * str.length
       }
     )
-  }
 }

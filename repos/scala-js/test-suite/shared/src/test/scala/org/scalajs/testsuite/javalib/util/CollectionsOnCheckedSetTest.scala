@@ -15,42 +15,38 @@ trait CollectionsOnCheckedSetTest extends CollectionsOnSetsTest {
 
   def originalFactory: SetFactory
 
-  def factory: SetFactory = {
+  def factory: SetFactory =
     new SetFactory {
       override def implementationName: String =
         s"checkedSet(${originalFactory.implementationName})"
 
-      override def empty[E](implicit ct: ClassTag[E]): ju.Set[E] = {
+      override def empty[E](implicit ct: ClassTag[E]): ju.Set[E] =
         ju.Collections.checkedSet(
           originalFactory.empty[E],
           ct.runtimeClass.asInstanceOf[Class[E]])
-      }
 
       def allowsNullElement: Boolean =
         originalFactory.allowsNullElement
     }
-  }
 }
 
 trait CollectionsOnCheckedSortedSetTest extends CollectionsOnSortedSetsTest {
 
   def originalFactory: SortedSetFactory
 
-  def factory: SortedSetFactory = {
+  def factory: SortedSetFactory =
     new SortedSetFactory {
       override def implementationName: String =
         s"checkedSortedSet(${originalFactory.implementationName})"
 
-      override def empty[E](implicit ct: ClassTag[E]): ju.SortedSet[E] = {
+      override def empty[E](implicit ct: ClassTag[E]): ju.SortedSet[E] =
         ju.Collections.checkedSortedSet(
           originalFactory.empty[E],
           ct.runtimeClass.asInstanceOf[Class[E]])
-      }
 
       def allowsNullElement: Boolean =
         originalFactory.allowsNullElement
     }
-  }
 }
 
 class CollectionsOnCheckedSetHashSetFactoryTest

@@ -24,7 +24,7 @@ class ScNameValuePairImpl(node: ASTNode)
 
   def getLiteral: Option[ScLiteral] = findChild(classOf[ScLiteral])
 
-  def getLiteralValue: String = {
+  def getLiteralValue: String =
     getLiteral match {
       case Some(literal) =>
         val value = literal.getValue
@@ -32,5 +32,4 @@ class ScNameValuePairImpl(node: ASTNode)
         else null
       case _ => null
     }
-  }
 }

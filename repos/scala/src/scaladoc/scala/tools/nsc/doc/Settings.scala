@@ -364,10 +364,9 @@ class Settings(error: String => Unit, val printMsg: String => Unit = println(_))
       * Set of classes to exclude from index and diagrams
       * TODO: Should be configurable
       */
-    def isExcluded(qname: String) = {
+    def isExcluded(qname: String) =
       excludedClassnamePatterns.exists(_.findFirstMatchIn(qname).isDefined) &&
-      !notExcludedClasses(qname)
-    }
+        !notExcludedClasses(qname)
 
     /** Common conversion targets that affect any class in Scala */
     val commonConversionTargets = Set(

@@ -57,31 +57,28 @@ object PromiseMock {
     }
 
     // static
-    private def resolve[A](value: A | js.Thenable[A]): MockPromise[A] = {
+    private def resolve[A](value: A | js.Thenable[A]): MockPromise[A] =
       new MockPromise[A]({
         (
             resolve: js.Function1[A | js.Thenable[A], _],
             reject: js.Function1[Any, _]) =>
           resolve(value)
       })
-    }
 
     // static
-    private def reject(reason: Any): MockPromise[Nothing] = {
+    private def reject(reason: Any): MockPromise[Nothing] =
       new MockPromise[Nothing]({
         (
             resolve: js.Function1[Nothing | js.Thenable[Nothing], _],
             reject: js.Function1[Any, _]) =>
           reject(reason)
       })
-    }
 
     def enqueue(f: js.Function0[Any]): Unit =
       queue.push(f)
 
-    def processQueue(): Unit = {
+    def processQueue(): Unit =
       while (queue.nonEmpty) queue.shift()()
-    }
 
     private sealed abstract class State[+A]
 
@@ -97,14 +94,13 @@ object PromiseMock {
     private def isCallable(x: Any): Boolean =
       js.typeOf(x.asInstanceOf[js.Any]) == "function"
 
-    private def throwAny(e: Any): Nothing = {
+    private def throwAny(e: Any): Nothing =
       throw (e match {
         case th: Throwable => th
         case _             => js.JavaScriptException(e)
       })
-    }
 
-    private def tryCatchAny[A](tryBody: => A)(catchBody: Any => A): A = {
+    private def tryCatchAny[A](tryBody: => A)(catchBody: Any => A): A =
       try {
         tryBody
       } catch {
@@ -114,7 +110,6 @@ object PromiseMock {
             case _                         => th
           })
       }
-    }
   }
 
   @ScalaJSDefined
@@ -140,13 +135,12 @@ object PromiseMock {
         executor: js.Function2[
           js.Function1[A | Thenable[A], _],
           js.Function1[scala.Any, _],
-          _]) = {
+          _]) =
       tryCatchAny[Unit] {
         executor(resolve _, reject _)
       } { e =>
         reject(e)
       }
-    }
 
     private[this] def fulfill(value: A): Unit = {
       assert(state == Pending)
@@ -167,7 +161,7 @@ object PromiseMock {
     }
 
     // 25.4.1.3.2 Promise Resolve Functions
-    private[this] def resolve(resolution: A | Thenable[A]): Unit = {
+    private[this] def resolve(resolution: A | Thenable[A]): Unit =
       if (state == Pending) {
         if ((resolution: AnyRef) eq (this: AnyRef)) {
           reject(new js.TypeError("Self resolution"))
@@ -188,42 +182,37 @@ object PromiseMock {
           }
         }
       }
-    }
 
     // 25.4.2.2 PromiseResolveThenableJob
     private[this] def promiseResolveThenableJob(
         thenable: Thenable[A],
-        thenAction: js.Function): Unit = {
+        thenAction: js.Function): Unit =
       thenAction.call(thenable, resolve _, reject _)
-    }
 
     // 25.4.1.3.1 Promise Reject Functions
-    private[this] def reject(reason: Any): Unit = {
+    private[this] def reject(reason: Any): Unit =
       if (state == Pending) {
         state = Rejected(reason)
         clearAndTriggerReactions(rejectReactions, reason)
       }
-    }
 
     // 25.4.5.3 Promise.prototype.then
     def `then`[B](
         onFulfilled: js.Function1[A, B | Thenable[B]],
         onRejected: js.UndefOr[js.Function1[scala.Any, B | Thenable[B]]])
-        : MockPromise[B] = {
-
+        : MockPromise[B] =
       new MockPromise[B]({
         (
             innerResolve: js.Function1[B | Thenable[B], _],
             innerReject: js.Function1[scala.Any, _]) =>
-          def doFulfilled(value: A): Unit = {
+          def doFulfilled(value: A): Unit =
             tryCatchAny[Unit] {
               innerResolve(onFulfilled(value))
             } { e =>
               innerReject(e)
             }
-          }
 
-          def doRejected(reason: Any): Unit = {
+          def doRejected(reason: Any): Unit =
             tryCatchAny[Unit] {
               onRejected.fold[Unit] {
                 innerReject(reason)
@@ -233,7 +222,6 @@ object PromiseMock {
             } { e =>
               innerReject(e)
             }
-          }
 
           state match {
             case Pending =>
@@ -247,20 +235,17 @@ object PromiseMock {
               enqueue(() => doRejected(reason))
           }
       })
-    }
 
     def `then`[B >: A](
         onFulfilled: Unit,
         onRejected: js.UndefOr[js.Function1[scala.Any, B | Thenable[B]]])
-        : MockPromise[B] = {
+        : MockPromise[B] =
       `then`((x: A) => (x: B | Thenable[B]), onRejected)
-    }
 
     // 25.4.5.1 Promise.prototype.catch
     def `catch`[B >: A](
         onRejected: js.UndefOr[js.Function1[scala.Any, B | Thenable[B]]])
-        : MockPromise[B] = {
+        : MockPromise[B] =
       `then`((), onRejected)
-    }
   }
 }

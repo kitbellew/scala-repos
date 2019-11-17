@@ -92,14 +92,13 @@ object Long {
   }
 
   @inline // because radix is almost certainly constant at call site
-  def toString(i: scala.Long, radix: Int): String = {
+  def toString(i: scala.Long, radix: Int): String =
     if (radix == 10 || radix < Character.MIN_RADIX ||
         radix > Character.MAX_RADIX) toString(i)
     else toStringImpl(i, radix)
-  }
 
   @inline // because radix is almost certainly constant at call site
-  def toUnsignedString(i: scala.Long, radix: Int): String = {
+  def toUnsignedString(i: scala.Long, radix: Int): String =
     (radix: @switch) match {
       case 2  => toBinaryString(i)
       case 8  => toOctalString(i)
@@ -110,7 +109,6 @@ object Long {
           else radix
         toUnsignedStringImpl(i, radix1)
     }
-  }
 
   // Intrinsic
   @inline def toString(i: scala.Long): String =
@@ -135,7 +133,7 @@ object Long {
   }
 
   // Must be called only with valid radix
-  private def toUnsignedStringImpl(i: scala.Long, radix: Int): String = {
+  private def toUnsignedStringImpl(i: scala.Long, radix: Int): String =
     if ((i >>> 32).toInt == 0) {
       // It's an unsigned int32
       import js.JSNumberOps._
@@ -143,7 +141,6 @@ object Long {
     } else {
       toUnsignedStringInternalLarge(i, radix)
     }
-  }
 
   // Must be called only with valid radix
   private def toUnsignedStringInternalLarge(
@@ -308,11 +305,10 @@ object Long {
     value.toInt ^ (value >>> 32).toInt
 
   // Intrinsic
-  @inline def compare(x: scala.Long, y: scala.Long): scala.Int = {
+  @inline def compare(x: scala.Long, y: scala.Long): scala.Int =
     if (x == y) 0
     else if (x < y) -1
     else 1
-  }
 
   // TODO Intrinsic?
   @inline def compareUnsigned(x: scala.Long, y: scala.Long): scala.Int =

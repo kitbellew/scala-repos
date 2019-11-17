@@ -48,9 +48,8 @@ class SimpleDnsManager(val ext: DnsExt)
       for (c ← cacheCleanup) c.cleanup()
   }
 
-  override def postStop(): Unit = {
+  override def postStop(): Unit =
     for (t ← cleanupTimer) t.cancel()
-  }
 }
 
 object SimpleDnsManager {

@@ -342,7 +342,7 @@ trait MapLike[A, +B, +This <: MapLike[A, B, This] with Map[A, B]]
     res
   }
 
-  override def toSeq: Seq[(A, B)] = {
+  override def toSeq: Seq[(A, B)] =
     if (isEmpty) Vector.empty[(A, B)]
     else {
       // Default appropriate for immutable collections; mutable collections override this
@@ -350,7 +350,6 @@ trait MapLike[A, +B, +This <: MapLike[A, B, This] with Map[A, B]]
       foreach(vb += _)
       vb.result
     }
-  }
 
   override def toBuffer[C >: (A, B)]: mutable.Buffer[C] = {
     val result = new mutable.ArrayBuffer[C](size)

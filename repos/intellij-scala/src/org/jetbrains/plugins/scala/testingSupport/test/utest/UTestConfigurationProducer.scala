@@ -124,7 +124,7 @@ with AbstractTestConfigurationProducer {
     * @param testSuite
     * @return
     */
-  private def getTestSuiteName(testSuite: ScMethodCall): Option[String] = {
+  private def getTestSuiteName(testSuite: ScMethodCall): Option[String] =
     testSuite.getParent match {
       case patternDef: ScPatternDefinition =>
         Some(patternDef.bindings.head.getName)
@@ -148,11 +148,10 @@ with AbstractTestConfigurationProducer {
         }
       case _ => None
     }
-  }
 
   private def buildTestPath(
       testExpr: ScExpression,
-      testScopeName: String): Option[String] = {
+      testScopeName: String): Option[String] =
     testExpr match {
       case (_: ScInfixExpr) | (_: ScMethodCall) =>
         testExpr.getParent match {
@@ -176,7 +175,6 @@ with AbstractTestConfigurationProducer {
         }
       case _ => None
     }
-  }
 
   private def getTestName(literal: ScLiteral) = literal.getValue match {
     case symbol: Symbol => symbol.name

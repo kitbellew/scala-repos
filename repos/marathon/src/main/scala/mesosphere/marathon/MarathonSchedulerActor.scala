@@ -75,9 +75,8 @@ class MarathonSchedulerActor private (
     leaderInfo.subscribe(self)
   }
 
-  override def postStop(): Unit = {
+  override def postStop(): Unit =
     leaderInfo.unsubscribe(self)
-  }
 
   def receive: Receive = suspended
 
@@ -309,12 +308,10 @@ class MarathonSchedulerActor private (
           .mapTo[RunningDeployments]
           .foreach {
             case RunningDeployments(plans) =>
-              def intersectsWithNewPlan(
-                  existingPlan: DeploymentPlan): Boolean = {
+              def intersectsWithNewPlan(existingPlan: DeploymentPlan): Boolean =
                 existingPlan.affectedApplicationIds
                   .intersect(plan.affectedApplicationIds)
                   .nonEmpty
-              }
               val relatedDeploymentIds: Seq[String] = plans.collect {
                 case DeploymentStepInfo(p, _, _) if intersectsWithNewPlan(p) =>
                   p.id
@@ -326,11 +323,10 @@ class MarathonSchedulerActor private (
     }
   }
 
-  def deploy(driver: SchedulerDriver, plan: DeploymentPlan): Unit = {
+  def deploy(driver: SchedulerDriver, plan: DeploymentPlan): Unit =
     deploymentRepository.store(plan).foreach { _ =>
       deploymentManager ! PerformDeployment(driver, plan)
     }
-  }
 
   def deploymentSuccess(plan: DeploymentPlan): Unit = {
     log.info(s"Deployment of ${plan.target.id} successful")
@@ -360,7 +356,7 @@ object MarathonSchedulerActor {
       marathonSchedulerDriverHolder: MarathonSchedulerDriverHolder,
       leaderInfo: LeaderInfo,
       eventBus: EventStream,
-      cancellationTimeout: FiniteDuration = 1.minute): Props = {
+      cancellationTimeout: FiniteDuration = 1.minute): Props =
     Props(
       new MarathonSchedulerActor(
         createSchedulerActions,
@@ -376,7 +372,6 @@ object MarathonSchedulerActor {
         eventBus,
         cancellationTimeout
       ))
-  }
 
   case class RecoverDeployments(deployments: Seq[DeploymentPlan])
 
@@ -476,7 +471,7 @@ class SchedulerActions(
     }
   }
 
-  def scaleApps(): Future[Unit] = {
+  def scaleApps(): Future[Unit] =
     appRepository
       .allPathIds()
       .map(_.toSet)
@@ -486,7 +481,6 @@ class SchedulerActions(
         case Failure(t) => log.warn("Failed to get task names", t)
       }
       .map(_ => ())
-  }
 
   /**
     * Make sure all apps are running the configured amount of tasks.
@@ -496,7 +490,7 @@ class SchedulerActions(
     *
     * @param driver scheduler driver
     */
-  def reconcileTasks(driver: SchedulerDriver): Future[Status] = {
+  def reconcileTasks(driver: SchedulerDriver): Future[Status] =
     appRepository.allPathIds().map(_.toSet).flatMap { appIds =>
       taskTracker.tasksByApp().map { tasksByApp =>
         val knownTaskStatuses = appIds.flatMap { appId =>
@@ -523,16 +517,14 @@ class SchedulerActions(
         driver.reconcileTasks(java.util.Arrays.asList())
       }
     }
-  }
 
-  def reconcileHealthChecks(): Unit = {
+  def reconcileHealthChecks(): Unit =
     for {
       apps <- groupRepository
         .rootGroup()
         .map(_.map(_.transitiveApps).getOrElse(Set.empty))
       app <- apps
     } healthCheckManager.reconcileWith(app.id)
-  }
 
   /**
     * Ensures current application parameters (resource requirements, URLs,
@@ -588,12 +580,11 @@ class SchedulerActions(
     }
   }
 
-  def scale(driver: SchedulerDriver, appId: PathId): Future[Unit] = {
+  def scale(driver: SchedulerDriver, appId: PathId): Future[Unit] =
     currentAppVersion(appId).map {
       case Some(app) => scale(driver, app)
       case _         => log.warn(s"App $appId does not exist. Not scaling.")
     }
-  }
 
   def currentAppVersion(appId: PathId): Future[Option[AppDefinition]] =
     appRepository.currentVersion(appId)

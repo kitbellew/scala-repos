@@ -49,20 +49,18 @@ trait DocComments { self: Global =>
     *  an infinite loop has broken out between superComment and cookedDocComment
     *  since r23926.
     */
-  private def allInheritedOverriddenSymbols(sym: Symbol): List[Symbol] = {
+  private def allInheritedOverriddenSymbols(sym: Symbol): List[Symbol] =
     if (!sym.owner.isClass) Nil
     else
       sym.owner.ancestors map (sym overriddenSymbol _) filter (_ != NoSymbol)
-  }
 
   def fillDocComment(sym: Symbol, comment: DocComment) {
     docComments(sym) = comment
     comment.defineVariables(sym)
   }
 
-  def replaceInheritDocToInheritdoc(docStr: String): String = {
+  def replaceInheritDocToInheritdoc(docStr: String): String =
     docStr.replaceAll("""\{@inheritDoc\p{Zs}*\}""", "@inheritdoc")
-  }
 
   /** The raw doc comment of symbol `sym`, minus usecase and define sections, augmented by
     *  missing sections of an inherited doc comment.

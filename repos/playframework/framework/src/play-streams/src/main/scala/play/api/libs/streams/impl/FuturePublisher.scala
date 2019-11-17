@@ -19,9 +19,8 @@ private[streams] trait FutureSubscriptionFactory[T]
 
   override def createSubscription[U >: T](
       subr: Subscriber[U],
-      onSubscriptionEnded: SubscriptionHandle[U] => Unit) = {
+      onSubscriptionEnded: SubscriptionHandle[U] => Unit) =
     new FutureSubscription[T, U](fut, subr, onSubscriptionEnded)
-  }
 }
 
 /**
@@ -73,7 +72,7 @@ private[streams] class FutureSubscription[T, U >: T](
 
   // SubscriptionHandle methods
 
-  override def start(): Unit = {
+  override def start(): Unit =
     fut.value match {
       case Some(Failure(t)) =>
         subscriber.onError(t)
@@ -81,7 +80,6 @@ private[streams] class FutureSubscription[T, U >: T](
       case _ =>
         subscriber.onSubscribe(this)
     }
-  }
 
   override def isActive: Boolean = state match {
     case AwaitingRequest | Requested => true

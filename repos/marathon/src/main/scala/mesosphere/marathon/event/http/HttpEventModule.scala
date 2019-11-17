@@ -62,7 +62,7 @@ class HttpEventModule(httpEventConfiguration: HttpEventConfiguration)
       system: ActorSystem,
       @Named(HttpEventModule.SubscribersKeeperActor) subscribersKeeper: ActorRef,
       metrics: HttpEventActor.HttpEventActorMetrics,
-      clock: Clock): ActorRef = {
+      clock: Clock): ActorRef =
     system.actorOf(
       Props(
         new HttpEventActor(
@@ -70,7 +70,6 @@ class HttpEventModule(httpEventConfiguration: HttpEventConfiguration)
           subscribersKeeper,
           metrics,
           clock)))
-  }
 
   @Provides
   @Named(HttpEventModule.SubscribersKeeperActor)

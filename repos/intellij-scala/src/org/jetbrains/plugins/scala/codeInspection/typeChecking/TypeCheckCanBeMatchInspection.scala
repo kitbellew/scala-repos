@@ -123,7 +123,7 @@ object TypeCheckToMatchUtil {
   def buildMatchStmt(
       ifStmt: ScIfStmt,
       isInstOfUnderFix: ScGenericCall,
-      onlyFirst: Boolean): (Option[ScMatchStmt], RenameData) = {
+      onlyFirst: Boolean): (Option[ScMatchStmt], RenameData) =
     baseExpr(isInstOfUnderFix) match {
       case Some(expr: ScExpression) =>
         val matchedExprText = expr.getText
@@ -137,7 +137,6 @@ object TypeCheckToMatchUtil {
         (Some(matchStmt), renameData)
       case _ => (None, null)
     }
-  }
 
   private def buildCaseClauseText(
       ifStmt: ScIfStmt,
@@ -148,7 +147,7 @@ object TypeCheckToMatchUtil {
     var definition: Option[ScPatternDefinition] = None
 
     //method for finding and saving named type cast
-    def checkAndStoreNameAndDef(asInstOfCall: ScGenericCall): Boolean = {
+    def checkAndStoreNameAndDef(asInstOfCall: ScGenericCall): Boolean =
       ScalaPsiUtil.getContextOfType(
         asInstOfCall,
         strict = true,
@@ -170,11 +169,9 @@ object TypeCheckToMatchUtil {
           } else false
         case null => false
       }
-    }
 
-    def typeNeedParentheses(typeElem: ScTypeElement): Boolean = {
+    def typeNeedParentheses(typeElem: ScTypeElement): Boolean =
       PsiTreeUtil.getChildOfType(typeElem, classOf[ScExistentialClause]) != null
-    }
 
     for {
       args <- isInstOf.typeArgs
@@ -254,9 +251,8 @@ object TypeCheckToMatchUtil {
 
   private def buildDefaultCaseClauseText(
       body: Option[ScExpression],
-      project: Project): Option[String] = {
+      project: Project): Option[String] =
     Some(buildCaseClauseText("_ ", None, body, project))
-  }
 
   private def buildCaseClauseText(
       patternText: String,
@@ -341,7 +337,7 @@ object TypeCheckToMatchUtil {
   @tailrec
   def findIsInstanceOfCalls(
       condition: ScExpression,
-      onlyFirst: Boolean): List[ScGenericCall] = {
+      onlyFirst: Boolean): List[ScGenericCall] =
     if (onlyFirst) {
       condition match {
         case IsInstanceOfCall(call) => List(call)
@@ -356,12 +352,11 @@ object TypeCheckToMatchUtil {
         case IsInstanceOfCall(call) => call
       }
     }
-  }
 
   def findAsInstOfCalls(
       body: Option[ScExpression],
       isInstOfCall: ScGenericCall): Seq[ScGenericCall] = {
-    def isAsInstOfCall(genCall: ScGenericCall) = {
+    def isAsInstOfCall(genCall: ScGenericCall) =
       genCall.referencedExpr match {
         case ref: ScReferenceExpression if ref.refName == "asInstanceOf" =>
           ref.resolve() match {
@@ -370,7 +365,6 @@ object TypeCheckToMatchUtil {
           }
         case _ => false
       }
-    }
 
     def equalTypes(
         firstCall: ScGenericCall,
@@ -492,7 +486,7 @@ object TypeCheckToMatchUtil {
     PsiEquivalenceUtil.areElementsEquivalent(elem1, elem2, comparator, false)
   }
 
-  def separateConditions(expr: ScExpression): List[ScExpression] = {
+  def separateConditions(expr: ScExpression): List[ScExpression] =
     expr match {
       case parenth: ScParenthesisedExpr =>
         parenth.expr match {
@@ -507,5 +501,4 @@ object TypeCheckToMatchUtil {
         separateConditions(infixExpr.lOp) ::: separateConditions(infixExpr.rOp) ::: Nil
       case _ => expr :: Nil
     }
-  }
 }

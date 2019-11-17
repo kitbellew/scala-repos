@@ -88,10 +88,9 @@ class DebugModule(conf: DebugConf) extends AbstractModule {
   }
 
   object MarathonMatcher extends AbstractMatcher[Class[_]] {
-    override def matches(t: Class[_]): Boolean = {
+    override def matches(t: Class[_]): Boolean =
       // Don't instrument the Metrics class, in order to avoid an infinite recursion
       t.getPackage.getName.startsWith("mesosphere") && t != classOf[Metrics]
-    }
   }
 
   override def configure(): Unit = {

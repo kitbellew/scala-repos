@@ -64,7 +64,7 @@ class Parquet346TBaseRecordConverter[T <: TBase[_, _]](
 
       // this thrift reader is the same as what's in ScroogeRecordConverter's constructor
       new ThriftReader[T] {
-        override def readOneRecord(protocol: TProtocol): T = {
+        override def readOneRecord(protocol: TProtocol): T =
           try {
             val thriftObject: T = thriftClass.newInstance
             thriftObject.read(protocol)
@@ -79,7 +79,6 @@ class Parquet346TBaseRecordConverter[T <: TBase[_, _]](
                 "Thrift class or constructor not public " + thriftClass,
                 e)
           }
-        }
       },
       thriftClass.getSimpleName,
       requestedParquetSchema,
@@ -94,17 +93,15 @@ class Parquet346TBaseRecordConverter[T <: TBase[_, _]](
   */
 object Parquet346StructTypeRepairer extends StateVisitor[ThriftType, Unit] {
 
-  def repair(fromMetadata: StructType): StructType = {
+  def repair(fromMetadata: StructType): StructType =
     visit(fromMetadata, ())
-  }
 
-  def copyRecurse(field: ThriftField): ThriftField = {
+  def copyRecurse(field: ThriftField): ThriftField =
     new ThriftField(
       field.getName,
       field.getFieldId,
       field.getRequirement,
       field.getType.accept(this, ()))
-  }
 
   override def visit(structType: StructType, state: Unit): StructType = {
     val repairedChildren =

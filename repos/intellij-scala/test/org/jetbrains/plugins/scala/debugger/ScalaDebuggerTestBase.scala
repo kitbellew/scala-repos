@@ -90,7 +90,7 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
     file
   }
 
-  protected def getImlFile: File = {
+  protected def getImlFile: File =
     if (testDataBasePath.exists())
       testDataBasePath
         .listFiles()
@@ -99,7 +99,6 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
         }
         .orNull
     else null
-  }
 
   override def runInDispatchThread(): Boolean = false
 
@@ -116,9 +115,8 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
   }
 
   override protected def addFileToProject(fileName: String, fileText: String) {
-    def virtualFileExists(file: File) = {
+    def virtualFileExists(file: File) =
       Try(getVirtualFile(file).exists()).getOrElse(false)
-    }
 
     val file = getFileInSrc(fileName)
     if (needMake || !fileWithTextExists(file, fileText)) {
@@ -130,9 +128,8 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
     }
   }
 
-  protected def addSourceFile(relPathInSrc: String, fileText: String) = {
+  protected def addSourceFile(relPathInSrc: String, fileText: String) =
     sourceFiles += relPathInSrc -> fileText
-  }
 
   def checkOrAddAllSourceFiles() = {
     if (sourceFiles.exists {
@@ -240,10 +237,9 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
     result
   }
 
-  private def testDataProjectIsValid(): Boolean = {
+  private def testDataProjectIsValid(): Boolean =
     sameSourceFiles() && loadChecksums() && checksums.keys.forall(checkFile) &&
-    getImlFile != null
-  }
+      getImlFile != null
 
   private def sameSourceFiles(): Boolean = {
     def numberOfFiles(dir: File): Int = dir match {
@@ -257,13 +253,12 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
     }
   }
 
-  private def fileWithTextExists(file: File, fileText: String): Boolean = {
+  private def fileWithTextExists(file: File, fileText: String): Boolean =
     if (!file.exists()) false
     else {
       val oldText = scala.io.Source.fromFile(file, "UTF-8").mkString
       oldText.replace("\r", "") == fileText.replace("\r", "")
     }
-  }
 
   private def checkFile(relPath: String): Boolean = {
     val file = new File(testDataBasePath, relPath)

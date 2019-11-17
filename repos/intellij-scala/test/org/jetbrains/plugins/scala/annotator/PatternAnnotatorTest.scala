@@ -46,9 +46,8 @@ class PatternAnnotatorTest
     mock.annotations
   }
 
-  private def emptyMessages(text: String): Unit = {
+  private def emptyMessages(text: String): Unit =
     assertEquals(Nil, collectAnnotatorMessages(text))
-  }
 
   private def collectWarnings(text: String): List[Message] =
     collectAnnotatorMessages(text).filter {
@@ -59,7 +58,7 @@ class PatternAnnotatorTest
   private def checkWarning(
       text: String,
       element: String,
-      expectedMsg: String): Unit = {
+      expectedMsg: String): Unit =
     collectWarnings(text) match {
       case Warning(`element`, `expectedMsg`) :: Nil =>
       case actual =>
@@ -67,7 +66,6 @@ class PatternAnnotatorTest
           s"expected: ${Warning(element, expectedMsg)}\n actual: $actual",
           false)
     }
-  }
 
   private def collectErrors(text: String): List[Message] =
     collectAnnotatorMessages(text).filter {
@@ -78,21 +76,17 @@ class PatternAnnotatorTest
   private def checkError(
       text: String,
       element: String,
-      expectedMsg: String): Unit = {
+      expectedMsg: String): Unit =
     checkErrors(text, List(Error(element, expectedMsg)))
-  }
 
-  private def checkErrors(text: String, errors: List[Error]): Unit = {
+  private def checkErrors(text: String, errors: List[Error]): Unit =
     Assert.assertEquals(errors, collectErrors(text))
-  }
 
-  private def assertNoErrors(text: String): Unit = {
+  private def assertNoErrors(text: String): Unit =
     Assert.assertEquals(List[Error](), collectErrors(text))
-  }
 
-  private def assertNoWarnings(text: String): Unit = {
+  private def assertNoWarnings(text: String): Unit =
     Assert.assertTrue(collectWarnings(text).isEmpty)
-  }
 
   def testSomeConstructor(): Unit = {
     val code: String = "val Some(x) = None"
@@ -121,13 +115,11 @@ class PatternAnnotatorTest
     assertNoWarnings(code)
   }
 
-  def testSeqToListNoMessages(): Unit = {
+  def testSeqToListNoMessages(): Unit =
     emptyMessages("val Seq(a) = List(1)")
-  }
 
-  def testVectorToSeqEmptyMessages(): Unit = {
+  def testVectorToSeqEmptyMessages(): Unit =
     emptyMessages("val Vector(a) = Seq(1)")
-  }
 
   def testConstructorPatternFruitless(): Unit = {
     val code: String = "val List(seq: Seq[Int]) = List(List(\"\"))"
@@ -158,9 +150,8 @@ class PatternAnnotatorTest
     assertNoWarnings(code)
   }
 
-  def testNullLiteralNoError(): Unit = {
+  def testNullLiteralNoError(): Unit =
     emptyMessages("val null :: xs = \"1\" :: Nil")
-  }
 
   def testTuple2ToTuple3Constructor(): Unit = {
     val code: String = "val (x, y) = (1, 2, 3)"
@@ -184,9 +175,8 @@ class PatternAnnotatorTest
     assertNoWarnings(code)
   }
 
-  def testTuplePatternAnyRef(): Unit = {
+  def testTuplePatternAnyRef(): Unit =
     emptyMessages("def a: AnyRef = null; val (x, y) = a")
-  }
 
   def testIncompatibleSomeConstructor(): Unit = {
     val code: String = "val Some(x: Int) = \"\""
@@ -220,7 +210,7 @@ class PatternAnnotatorTest
     assertNoWarnings(code)
   }
 
-  def testNonFinalClass() = {
+  def testNonFinalClass() =
     //the reason this compiles without errors is that equals in A can be overriden.
     //for more see http://stackoverflow.com/questions/33354987/stable-identifier-conformance-check/
     emptyMessages("""
@@ -236,7 +226,6 @@ class PatternAnnotatorTest
         |  case class Bar(s: String)
         |}
       """.stripMargin)
-  }
 
   def testErrorFinalClass(): Unit = {
     val code = """

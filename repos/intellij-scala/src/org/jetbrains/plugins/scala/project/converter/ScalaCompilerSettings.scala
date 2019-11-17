@@ -23,7 +23,7 @@ case class ScalaCompilerSettings(
 
   def isDefault: Boolean = this == Default
 
-  def toXml: Seq[Node] = {
+  def toXml: Seq[Node] =
     when(compileOrder != DefaultComipileOrder)(
       <option name="compilerOrder" value={compileOrder}/>) ++ when(!warnings)(
       <option name="warnings" value={warnings.toString}/>) ++ when(
@@ -44,7 +44,6 @@ case class ScalaCompilerSettings(
     }</parameters>) ++ when(compilerPlugins.nonEmpty)(<plugins>{
       compilerPlugins.map(option => <plugin path={option}/>)
     }</plugins>)
-  }
 
   private def when[T](b: Boolean)(value: => T): Seq[T] =
     if (b) Seq(value) else Seq.empty

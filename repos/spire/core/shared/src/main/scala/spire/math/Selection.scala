@@ -27,9 +27,8 @@ trait SelectLike extends Any with Select {
     * This is an in-place algorithm and is not stable and it WILL mess up the
     * order of equal elements.
     */
-  final def select[@sp A: Order: ClassTag](data: Array[A], k: Int): Unit = {
+  final def select[@sp A: Order: ClassTag](data: Array[A], k: Int): Unit =
     select(data, 0, data.length, 1, k)
-  }
 
   // Copy of InsertSort.sort, but with a stride.
   final def sort[@sp A](data: Array[A], left: Int, right: Int, stride: Int)(

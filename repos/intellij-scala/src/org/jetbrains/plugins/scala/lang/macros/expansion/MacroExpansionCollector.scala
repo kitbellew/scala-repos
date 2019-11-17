@@ -19,22 +19,19 @@ class MacroExpansionCollector(private val project: Project)
         aborted: Boolean,
         errors: Int,
         warnings: Int,
-        compileContext: CompileContext) = {
+        compileContext: CompileContext) =
       println(compileContext)
-    }
   }
 
-  override def projectOpened() = {
+  override def projectOpened() =
     CompilerManager
       .getInstance(project)
       .addCompilationStatusListener(compilationStatusListener)
-  }
 
-  override def projectClosed() = {
+  override def projectClosed() =
     CompilerManager
       .getInstance(project)
       .removeCompilationStatusListener(compilationStatusListener)
-  }
 
   override def initComponent(): Unit = ()
 

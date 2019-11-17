@@ -54,8 +54,7 @@ final class SlaveRunner(
     super.deserializeTask(task, deserializer)
   }
 
-  private def ensureSeenHello(): Unit = {
+  private def ensureSeenHello(): Unit =
     if (!seenHello)
       throw new IllegalStateException("Have not seen the master yet")
-  }
 }

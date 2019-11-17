@@ -23,9 +23,8 @@ case class Select(index: Int) extends Command {
 }
 
 object Select {
-  def apply(index: Seq[Array[Byte]]) = {
+  def apply(index: Seq[Array[Byte]]) =
     new Select(NumberFormat.toInt(BytesToString(index.head)))
-  }
 }
 
 case class Auth(code: ChannelBuffer) extends Command {
@@ -35,9 +34,8 @@ case class Auth(code: ChannelBuffer) extends Command {
 }
 
 object Auth {
-  def apply(code: Seq[Array[Byte]]) = {
+  def apply(code: Seq[Array[Byte]]) =
     new Auth(ChannelBuffers.wrappedBuffer(code.head))
-  }
 }
 
 case class Info(section: ChannelBuffer) extends Command {
@@ -50,12 +48,11 @@ case class Info(section: ChannelBuffer) extends Command {
 }
 
 object Info {
-  def apply(section: Seq[Array[Byte]]) = {
+  def apply(section: Seq[Array[Byte]]) =
     new Info(
       section.headOption
         .map { ChannelBuffers.wrappedBuffer }
         .getOrElse(ChannelBuffers.EMPTY_BUFFER))
-  }
 }
 
 case object Quit extends Command {
@@ -129,10 +126,9 @@ case class SlaveOf(host: ChannelBuffer, port: ChannelBuffer) extends Command {
 }
 
 object SlaveOf {
-  def apply(args: Seq[Array[Byte]]) = {
+  def apply(args: Seq[Array[Byte]]) =
     new SlaveOf(
       ChannelBuffers.wrappedBuffer(args(0)),
       ChannelBuffers.wrappedBuffer(args(1)))
-  }
   val noOne = apply(Seq(StringToBytes("NO"), StringToBytes("ONE")))
 }

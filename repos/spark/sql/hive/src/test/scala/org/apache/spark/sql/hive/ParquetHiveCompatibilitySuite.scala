@@ -46,9 +46,7 @@ class ParquetHiveCompatibilitySuite
        """.stripMargin)
   }
 
-  private def testParquetHiveCompatibility(
-      row: Row,
-      hiveTypes: String*): Unit = {
+  private def testParquetHiveCompatibility(row: Row, hiveTypes: String*): Unit =
     withTable("parquet_compat") {
       withTempPath { dir =>
         val path = dir.getCanonicalPath
@@ -95,7 +93,6 @@ class ParquetHiveCompatibilitySuite
         }
       }
     }
-  }
 
   test("simple primitives") {
     testParquetHiveCompatibility(

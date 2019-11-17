@@ -49,14 +49,12 @@ trait Enumeratee[From, To] { parent =>
   /**
     * Compose this Enumeratee with another Enumeratee
     */
-  def compose[To2](other: Enumeratee[To, To2]): Enumeratee[From, To2] = {
+  def compose[To2](other: Enumeratee[To, To2]): Enumeratee[From, To2] =
     new Enumeratee[From, To2] {
       def applyOn[A](
-          iteratee: Iteratee[To2, A]): Iteratee[From, Iteratee[To2, A]] = {
+          iteratee: Iteratee[To2, A]): Iteratee[From, Iteratee[To2, A]] =
         parent.applyOn(other.applyOn(iteratee)).joinI
-      }
     }
-  }
 
   /**
     * Compose this Enumeratee with another Enumeratee
@@ -71,14 +69,12 @@ trait Enumeratee[From, To] { parent =>
   def composeConcat[X](other: Enumeratee[To, To])(
       implicit p: To => scala.collection.TraversableLike[X, To],
       bf: scala.collection.generic.CanBuildFrom[To, X, To])
-      : Enumeratee[From, To] = {
+      : Enumeratee[From, To] =
     new Enumeratee[From, To] {
       def applyOn[A](
-          iteratee: Iteratee[To, A]): Iteratee[From, Iteratee[To, A]] = {
+          iteratee: Iteratee[To, A]): Iteratee[From, Iteratee[To, A]] =
         parent.applyOn(other.applyOn(iteratee).joinConcatI)
-      }
     }
-  }
 
   /**
     * Alias for `composeConcat`
@@ -168,21 +164,19 @@ object Enumeratee {
       Iteratee.flatten(eventuallyIter)
     }
 
-    def step(it1: Iteratee[E, A], it2: Iteratee[E, B])(in: Input[E]) = {
+    def step(it1: Iteratee[E, A], it2: Iteratee[E, B])(in: Input[E]) =
       Iteratee.flatten(
         for (it1_ <- it1.feed(in);
              it2_ <- it2.feed(in)) yield getNext(it1_, it2_))
-    }
 
     def getInside[T](it: Iteratee[E, T]): Future[
-      (Option[Either[(String, Input[E]), (T, Input[E])]], Iteratee[E, T])] = {
+      (Option[Either[(String, Input[E]), (T, Input[E])]], Iteratee[E, T])] =
       it.pureFold {
           case Step.Done(a, e)    => Some(Right((a, e)))
           case Step.Cont(k)       => None
           case Step.Error(msg, e) => Some(Left((msg, e)))
         }(dec)
         .map(r => (r, it))(dec)
-    }
 
     def checkDone(
         x: Option[Either[(String, Input[E]), (A, Input[E])]],

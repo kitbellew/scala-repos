@@ -68,13 +68,12 @@ class RandomForestModel @Since("1.2.0") (
     *              If the directory already exists, this method throws an exception.
     */
   @Since("1.3.0")
-  override def save(sc: SparkContext, path: String): Unit = {
+  override def save(sc: SparkContext, path: String): Unit =
     TreeEnsembleModel.SaveLoadV1_0.save(
       sc,
       path,
       this,
       RandomForestModel.SaveLoadV1_0.thisClassName)
-  }
 
   override protected def formatVersion: String =
     RandomForestModel.formatVersion
@@ -143,13 +142,12 @@ class GradientBoostedTreesModel @Since("1.2.0") (
     *              If the directory already exists, this method throws an exception.
     */
   @Since("1.3.0")
-  override def save(sc: SparkContext, path: String): Unit = {
+  override def save(sc: SparkContext, path: String): Unit =
     TreeEnsembleModel.SaveLoadV1_0.save(
       sc,
       path,
       this,
       GradientBoostedTreesModel.SaveLoadV1_0.thisClassName)
-  }
 
   /**
     * Method to compute error or loss for every iteration of gradient boosting.
@@ -230,13 +228,12 @@ object GradientBoostedTreesModel extends Loader[GradientBoostedTreesModel] {
       data: RDD[LabeledPoint],
       initTreeWeight: Double,
       initTree: DecisionTreeModel,
-      loss: Loss): RDD[(Double, Double)] = {
+      loss: Loss): RDD[(Double, Double)] =
     data.map { lp =>
       val pred = initTreeWeight * initTree.predict(lp.features)
       val error = loss.computeError(pred, lp.label)
       (pred, error)
     }
-  }
 
   /**
     * :: DeveloperApi ::
@@ -360,7 +357,7 @@ private[tree] sealed class TreeEnsembleModel(
     * @param features array representing a single data point
     * @return predicted category from the trained model
     */
-  def predict(features: Vector): Double = {
+  def predict(features: Vector): Double =
     (algo, combiningStrategy) match {
       case (Regression, Sum) =>
         predictBySumming(features)
@@ -377,7 +374,6 @@ private[tree] sealed class TreeEnsembleModel(
           "TreeEnsembleModel given unsupported (algo, combiningStrategy) combination: " +
             s"($algo, $combiningStrategy).")
     }
-  }
 
   /**
     * Predict values for the given data set.
@@ -391,14 +387,13 @@ private[tree] sealed class TreeEnsembleModel(
   /**
     * Java-friendly version of [[org.apache.spark.mllib.tree.model.TreeEnsembleModel#predict]].
     */
-  def predict(features: JavaRDD[Vector]): JavaRDD[java.lang.Double] = {
+  def predict(features: JavaRDD[Vector]): JavaRDD[java.lang.Double] =
     predict(features.rdd).toJavaRDD().asInstanceOf[JavaRDD[java.lang.Double]]
-  }
 
   /**
     * Print a summary of the model.
     */
-  override def toString: String = {
+  override def toString: String =
     algo match {
       case Classification =>
         s"TreeEnsembleModel classifier with $numTrees trees\n"
@@ -408,7 +403,6 @@ private[tree] sealed class TreeEnsembleModel(
         throw new IllegalArgumentException(
           s"TreeEnsembleModel given unknown algo parameter: $algo.")
     }
-  }
 
   /**
     * Print the full model to a string.

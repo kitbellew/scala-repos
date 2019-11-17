@@ -36,13 +36,12 @@ object TypeAdjuster extends ApplicationAdapter {
   private val markedElements =
     ArrayBuffer[SmartPsiElementPointer[PsiElement]]()
 
-  override def writeActionFinished(action: scala.Any): Unit = {
+  override def writeActionFinished(action: scala.Any): Unit =
     if (markedElements.nonEmpty) {
       val project = markedElements.head.getProject
       PsiDocumentManager.getInstance(project).commitAllDocuments()
       adjustMarkedElements()
     }
-  }
 
   def adjustFor(
       elements: Seq[PsiElement],
@@ -57,12 +56,11 @@ object TypeAdjuster extends ApplicationAdapter {
     replaceAndAddImports(rInfos, addImports)
   }
 
-  def markToAdjust(element: PsiElement) = {
+  def markToAdjust(element: PsiElement) =
     if (element != null && element.isValid) {
       val manager = SmartPointerManager.getInstance(element.getProject)
       markedElements += manager.createSmartPsiElementPointer(element)
     }
-  }
 
   private def adjustMarkedElements() = {
     val elements =
@@ -74,13 +72,11 @@ object TypeAdjuster extends ApplicationAdapter {
 
   private def newRef(
       text: String,
-      position: PsiElement): Option[ScReferenceElement] = {
+      position: PsiElement): Option[ScReferenceElement] =
     findRef(newTypeElem(text, position))
-  }
 
-  private def newRef(sInfo: SimpleInfo): Option[ScReferenceElement] = {
+  private def newRef(sInfo: SimpleInfo): Option[ScReferenceElement] =
     findRef(newTypeElem(sInfo.replacement, sInfo.origTypeElem))
-  }
 
   private def newTypeElem(name: String, position: PsiElement) =
     ScalaPsiElementFactory.createTypeElementFromText(
@@ -175,7 +171,7 @@ object TypeAdjuster extends ApplicationAdapter {
       }
   }
 
-  private def replaceTypeElem(rInfo: ReplacementInfo): ScTypeElement = {
+  private def replaceTypeElem(rInfo: ReplacementInfo): ScTypeElement =
     rInfo match {
       case simple: SimpleInfo =>
         val typeElement = simple.origTypeElem
@@ -190,7 +186,6 @@ object TypeAdjuster extends ApplicationAdapter {
         cmp.childInfos.foreach(replaceTypeElem)
         cmp.origTypeElem.replace(tempElem).asInstanceOf[ScTypeElement]
     }
-  }
 
   private def findRef(elem: PsiElement): Option[ScReferenceElement] =
     elem match {
@@ -203,7 +198,7 @@ object TypeAdjuster extends ApplicationAdapter {
       info: ReplacementInfo,
       useTypeAliases: Boolean = true): ReplacementInfo = {
     object hasStableReplacement {
-      def unapply(rInfo: SimpleInfo): Option[ReplacementInfo] = {
+      def unapply(rInfo: SimpleInfo): Option[ReplacementInfo] =
         rInfo.resolve.flatMap { resolved =>
           val position =
             findRef(rInfo.origTypeElem).getOrElse(info.origTypeElem)
@@ -229,7 +224,6 @@ object TypeAdjuster extends ApplicationAdapter {
             case _ => None
           }
         }
-      }
     }
 
     info match {
@@ -302,7 +296,7 @@ object TypeAdjuster extends ApplicationAdapter {
   private def availableTypeAliasFor(
       clazz: PsiClass,
       position: PsiElement,
-      useTypeAliases: Boolean): Option[ScTypeAliasDefinition] = {
+      useTypeAliases: Boolean): Option[ScTypeAliasDefinition] =
     if (!useTypeAliases) None
     else {
       class FindTypeAliasProcessor extends BaseProcessor(ValueSet(CLASS)) {
@@ -310,7 +304,7 @@ object TypeAdjuster extends ApplicationAdapter {
 
         override def execute(
             element: PsiElement,
-            state: ResolveState): Boolean = {
+            state: ResolveState): Boolean =
           element match {
             case ta: ScTypeAliasDefinition
                 if ta.isAliasFor(clazz) &&
@@ -319,22 +313,19 @@ object TypeAdjuster extends ApplicationAdapter {
               false
             case _ => true
           }
-        }
       }
       val processor = new FindTypeAliasProcessor
       PsiTreeUtil.treeWalkUp(processor, position, null, ResolveState.initial())
       processor.collected
     }
-  }
 
   private def collectAdjustableTypeElements(
-      element: PsiElement): Vector[ScTypeElement] = {
+      element: PsiElement): Vector[ScTypeElement] =
     element.depthFirst.collect {
       case s: ScSimpleTypeElement        => s
       case p: ScTypeProjection           => p
       case p: ScParameterizedTypeElement => p
     }.toVector
-  }
 
   private trait ReplacementInfo {
     def origTypeElem: ScTypeElement

@@ -130,7 +130,7 @@ class BlockManagerSuite
     SizeEstimator invokePrivate initialize()
   }
 
-  override def afterEach(): Unit = {
+  override def afterEach(): Unit =
     try {
       conf = null
       if (store != null) {
@@ -152,7 +152,6 @@ class BlockManagerSuite
     } finally {
       super.afterEach()
     }
-  }
 
   test("StorageLevel object caching") {
     val level1 = StorageLevel(false, false, false, 3)
@@ -1309,9 +1308,8 @@ class BlockManagerSuite
     assert(memoryStore.currentUnrollMemory === 0)
     assert(memoryStore.currentUnrollMemoryForThisTask === 0)
 
-    def reserveUnrollMemoryForThisTask(memory: Long): Boolean = {
+    def reserveUnrollMemoryForThisTask(memory: Long): Boolean =
       memoryStore.reserveUnrollMemoryForThisTask(TestBlockId(""), memory)
-    }
 
     // Reserve
     assert(reserveUnrollMemoryForThisTask(100))
@@ -1631,17 +1629,16 @@ class BlockManagerSuite
         port: Int,
         execId: String,
         blockIds: Array[String],
-        listener: BlockFetchingListener): Unit = {
+        listener: BlockFetchingListener): Unit =
       listener.onBlockFetchSuccess(
         "mockBlockId",
         new NioManagedBuffer(ByteBuffer.allocate(1)))
-    }
 
     override def close(): Unit = {}
 
-    override def hostName: String = { "MockBlockTransferServiceHost" }
+    override def hostName: String = "MockBlockTransferServiceHost"
 
-    override def port: Int = { 63332 }
+    override def port: Int = 63332
 
     override def uploadBlock(
         hostname: String,
@@ -1675,7 +1672,7 @@ private object BlockManagerSuite {
 
     def dropFromMemoryIfExists(
         blockId: BlockId,
-        data: () => Either[Array[Any], ChunkedByteBuffer]): Unit = {
+        data: () => Either[Array[Any], ChunkedByteBuffer]): Unit =
       store.blockInfoManager.lockForWriting(blockId).foreach { info =>
         val newEffectiveStorageLevel = store.dropFromMemory(blockId, data)
         if (newEffectiveStorageLevel.isValid) {
@@ -1688,7 +1685,6 @@ private object BlockManagerSuite {
           store.blockInfoManager.removeBlock(blockId)
         }
       }
-    }
 
     private def wrapGet[T](f: BlockId => Option[T]): BlockId => Option[T] =
       (blockId: BlockId) => {
@@ -1699,9 +1695,8 @@ private object BlockManagerSuite {
         result
       }
 
-    def hasLocalBlock(blockId: BlockId): Boolean = {
+    def hasLocalBlock(blockId: BlockId): Boolean =
       getLocalAndReleaseLock(blockId).isDefined
-    }
 
     val getLocalAndReleaseLock: (BlockId) => Option[BlockResult] = wrapGet(
       store.getLocalValues)

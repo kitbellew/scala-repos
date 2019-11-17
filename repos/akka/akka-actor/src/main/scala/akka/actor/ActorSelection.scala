@@ -189,7 +189,7 @@ object ActorSelection {
 
       val iter = sel.elements.iterator
 
-      @tailrec def rec(ref: InternalActorRef): Unit = {
+      @tailrec def rec(ref: InternalActorRef): Unit =
         ref match {
           case refWithCell: ActorRefWithCell ⇒
             def emptyRef =
@@ -245,7 +245,6 @@ object ActorSelection {
             // foreign ref, continue by sending ActorSelectionMessage to it with remaining elements
             ref.tell(sel.copy(elements = iter.toVector), sender)
         }
-      }
 
       rec(anchor)
     }

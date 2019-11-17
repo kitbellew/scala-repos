@@ -55,7 +55,7 @@ class StageInfo(
     completionTime = Some(System.currentTimeMillis)
   }
 
-  private[spark] def getStatusString: String = {
+  private[spark] def getStatusString: String =
     if (completionTime.isDefined) {
       if (failureReason.isDefined) {
         "failed"
@@ -65,7 +65,6 @@ class StageInfo(
     } else {
       "running"
     }
-  }
 }
 
 private[spark] object StageInfo {

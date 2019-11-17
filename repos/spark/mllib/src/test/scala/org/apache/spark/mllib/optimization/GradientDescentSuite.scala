@@ -38,9 +38,8 @@ object GradientDescentSuite {
       offset: Double,
       scale: Double,
       nPoints: Int,
-      seed: Int): java.util.List[LabeledPoint] = {
+      seed: Int): java.util.List[LabeledPoint] =
     generateGDInput(offset, scale, nPoints, seed).asJava
-  }
 
   // Generate input of the form Y = logistic(offset + scale * X)
   def generateGDInput(

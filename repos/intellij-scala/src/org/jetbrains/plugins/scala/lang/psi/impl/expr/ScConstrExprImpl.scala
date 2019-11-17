@@ -15,12 +15,11 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr.ScConstrExpr
 class ScConstrExprImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScConstrExpr {
-  override def createMirror(text: String): PsiElement = {
+  override def createMirror(text: String): PsiElement =
     ScalaPsiElementFactory.createConstructorBodyWithContextFromText(
       text,
       getContext,
       this)
-  }
 
   override def toString: String = "ConstructorExpression"
 }

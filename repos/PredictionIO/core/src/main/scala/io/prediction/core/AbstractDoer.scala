@@ -40,8 +40,7 @@ object Doer extends Logging {
     * @return An instance of the controller class
     */
   @DeveloperApi
-  def apply[C <: AbstractDoer](cls: Class[_ <: C], params: Params): C = {
-
+  def apply[C <: AbstractDoer](cls: Class[_ <: C], params: Params): C =
     // Subclasses only allows two kind of constructors.
     // 1. Constructor with P <: Params.
     // 2. Emtpy constructor.
@@ -62,5 +61,4 @@ object Doer extends Logging {
             sys.exit(1)
         }
     }
-  }
 }

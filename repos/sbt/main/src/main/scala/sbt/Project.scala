@@ -261,7 +261,7 @@ sealed trait Project extends ProjectDefinition[ProjectReference] {
     setPlugins(
       Plugins.and(plugins, Plugins.And(ps.map(p => Plugins.Exclude(p)).toList)))
 
-  private[this] def setPlugins(ns: Plugins): Project = {
+  private[this] def setPlugins(ns: Plugins): Project =
     // TODO: for 0.14.0, use copy when it has the additional `plugins` parameter
     unresolved(
       id,
@@ -274,10 +274,9 @@ sealed trait Project extends ProjectDefinition[ProjectReference] {
       auto,
       ns,
       autoPlugins)
-  }
 
   /** Definitively set the [[AutoPlugin]]s for this project. */
-  private[sbt] def setAutoPlugins(autos: Seq[AutoPlugin]): Project = {
+  private[sbt] def setAutoPlugins(autos: Seq[AutoPlugin]): Project =
     // TODO: for 0.14.0, use copy when it has the additional `autoPlugins` parameter
     unresolved(
       id,
@@ -290,7 +289,6 @@ sealed trait Project extends ProjectDefinition[ProjectReference] {
       auto,
       plugins,
       autos)
-  }
 }
 sealed trait ResolvedProject extends ProjectDefinition[ProjectRef] {
 

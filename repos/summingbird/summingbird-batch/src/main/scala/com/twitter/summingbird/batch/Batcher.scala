@@ -137,8 +137,7 @@ trait Batcher extends Serializable {
     */
   private def dateToBatch(interval: Interval[Timestamp])(
       onIncLow: (Timestamp) => BatchID)(
-      onExcUp: (Timestamp) => BatchID): Interval[BatchID] = {
-
+      onExcUp: (Timestamp) => BatchID): Interval[BatchID] =
     interval match {
       case Empty()                 => Empty()
       case Universe()              => Universe()
@@ -161,7 +160,6 @@ trait Batcher extends Serializable {
         val lowerBatch = onIncLow(lowdate)
         Interval.leftClosedRightOpen(lowerBatch, upperBatch)
     }
-  }
 
   /**
     * Returns true if the supplied timestamp sits at the floor of the

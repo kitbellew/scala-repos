@@ -21,17 +21,15 @@ object pidigits {
     }
   }
 
-  def compose(a: Array[BigInt], b: Array[BigInt]): Array[BigInt] = {
+  def compose(a: Array[BigInt], b: Array[BigInt]): Array[BigInt] =
     return Array(
       a(0) * b(0),
       a(0) * b(1) + a(1) * b(3),
       a(2) * b(0) + a(3) * b(2),
       a(2) * b(1) + a(3) * b(3))
-  }
 
-  def extract(a: Array[BigInt], j: Int): BigInt = {
+  def extract(a: Array[BigInt], j: Int): BigInt =
     return (a(0) * j + a(1)) / (a(2) * j + a(3))
-  }
 
   def pi_digits(c: Int): String = {
     val r: StringBuffer = new StringBuffer(); var i: Int = 0

@@ -125,7 +125,7 @@ object BinaryFormat {
       if (l == 0) 0 else l + decay
     }
 
-    private def writeClockLimit(limit: Int) = {
+    private def writeClockLimit(limit: Int) =
       // The database expects a byte for a limit, and this is limit / 60.
       // For 0.5+0, this does not give a round number, so there needs to be
       // an alternative way to describe 0.5.
@@ -134,11 +134,9 @@ object BinaryFormat {
       // from 181-255, where 181 represents 0.5, 182 represents 0.75 and
       // 185 represents 1.5.
       if (limit % 60 == 0) limit / 60 else (limit - 15) / 15 + 181
-    }
 
-    private def readClockLimit(b: Int) = {
+    private def readClockLimit(b: Int) =
       if (b < 181) b * 60 else (b - 181) * 15 + 15
-    }
   }
 
   object castleLastMoveTime {
@@ -165,7 +163,7 @@ object BinaryFormat {
       ByteArray(ints.map(_.toByte))
     }
 
-    def read(ba: ByteArray): CastleLastMoveTime = {
+    def read(ba: ByteArray): CastleLastMoveTime =
       ba.value map toInt match {
         case Array(b1, b2, b3, b4, b5) => doRead(b1, b2, b3, b4, b5, None)
         case Array(b1, b2, b3, b4, b5, b6) =>
@@ -173,7 +171,6 @@ object BinaryFormat {
         case x =>
           sys error s"BinaryFormat.clmt.read invalid bytes: ${ba.showBytes}"
       }
-    }
 
     private def posAt(x: Int, y: Int) = Pos.posAt(x + 1, y + 1)
 

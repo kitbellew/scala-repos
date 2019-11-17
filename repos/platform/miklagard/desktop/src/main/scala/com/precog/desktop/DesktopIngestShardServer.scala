@@ -77,9 +77,8 @@ object DesktopIngestShardServer
             val precogMenu = new JMenu("Precog for Desktop")
             val quitItem = new JMenuItem("Quit", KeyEvent.VK_Q)
             quitItem.addActionListener(new ActionListener {
-              def actionPerformed(ev: ActionEvent) = {
+              def actionPerformed(ev: ActionEvent) =
                 System.exit(0)
-              }
             })
 
             precogMenu.add(quitItem)
@@ -87,9 +86,8 @@ object DesktopIngestShardServer
             val labcoatMenu = new JMenu("Labcoat")
             val launchItem = new JMenuItem("Launch", KeyEvent.VK_L)
             launchItem.addActionListener(new ActionListener {
-              def actionPerformed(ev: ActionEvent) = {
+              def actionPerformed(ev: ActionEvent) =
                 LaunchLabcoat.launchBrowser(config)
-              }
             })
 
             labcoatMenu.add(launchItem)
@@ -102,9 +100,8 @@ object DesktopIngestShardServer
             appFrame.setJMenuBar(menubar)
 
             appFrame.addWindowListener(new WindowAdapter {
-              override def windowClosed(ev: WindowEvent) = {
+              override def windowClosed(ev: WindowEvent) =
                 System.exit(0)
-              }
             })
 
             notifyArea.setEditable(false)
@@ -248,9 +245,8 @@ object DesktopIngestShardServer
     val central = new KafkaServerStartable(new KafkaConfig(centralProps))
 
     (new Thread {
-      override def run() = {
+      override def run() =
         central.startup
-      }
     }).start()
 
     central
@@ -268,9 +264,8 @@ object DesktopIngestShardServer
     val server = new EmbeddedZK
 
     (new Thread {
-      override def run() = {
+      override def run() =
         server.runFromConfig(serverConfig)
-      }
     }).start()
 
     server

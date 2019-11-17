@@ -47,13 +47,12 @@ class SortShuffleSuite extends ShuffleSuite with BeforeAndAfterAll {
     conf.set("spark.local.dir", tempDir.getAbsolutePath)
   }
 
-  override def afterEach(): Unit = {
+  override def afterEach(): Unit =
     try {
       Utils.deleteRecursively(tempDir)
     } finally {
       super.afterEach()
     }
-  }
 
   test(
     "SortShuffleManager properly cleans up files for shuffles that use the serialized path") {

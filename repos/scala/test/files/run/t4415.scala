@@ -16,7 +16,7 @@ object Test {
     convert(new SubclassProperty)
   }
 
-  def convert(prop: TopProperty): MyProp[_] = {
+  def convert(prop: TopProperty): MyProp[_] =
     prop match {
 
       ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -27,7 +27,6 @@ object Test {
       case SubclassMatch(p) => p
       case StandardMatch(p) => p
     }
-  }
 }
 
 class TopProperty
@@ -43,44 +42,36 @@ case class MyPropImpl[T]() extends MyProp[T]
 
 object SubclassMatch {
 
-  def unapply(prop: SubclassProperty): Option[MyProp[String]] = {
+  def unapply(prop: SubclassProperty): Option[MyProp[String]] =
     Some(new MyPropImpl)
-  }
 
-  def apply(prop: MyProp[String]): SubclassProperty = {
+  def apply(prop: MyProp[String]): SubclassProperty =
     new SubclassProperty()
-  }
 }
 
 object StandardMatch {
 
-  def unapply(prop: StandardProperty): Option[MyProp[String]] = {
+  def unapply(prop: StandardProperty): Option[MyProp[String]] =
     Some(new MyPropImpl)
-  }
 
-  def apply(prop: MyProp[String]): StandardProperty = {
+  def apply(prop: MyProp[String]): StandardProperty =
     new StandardProperty()
-  }
 }
 
 object SubclassSecondMatch {
 
-  def unapply(prop: SubclassSecondProperty): Option[MyProp[BigInt]] = {
+  def unapply(prop: SubclassSecondProperty): Option[MyProp[BigInt]] =
     Some(new MyPropImpl)
-  }
 
-  def apply(prop: MyProp[String]): SubclassSecondProperty = {
+  def apply(prop: MyProp[String]): SubclassSecondProperty =
     new SubclassSecondProperty()
-  }
 }
 
 object SecondMatch {
 
-  def unapply(prop: SecondProperty): Option[MyProp[BigInt]] = {
+  def unapply(prop: SecondProperty): Option[MyProp[BigInt]] =
     Some(new MyPropImpl)
-  }
 
-  def apply(prop: MyProp[String]): SecondProperty = {
+  def apply(prop: MyProp[String]): SecondProperty =
     new SecondProperty()
-  }
 }

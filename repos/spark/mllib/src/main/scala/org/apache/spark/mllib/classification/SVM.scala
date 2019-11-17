@@ -83,7 +83,7 @@ class SVMModel @Since("1.1.0") (
   }
 
   @Since("1.3.0")
-  override def save(sc: SparkContext, path: String): Unit = {
+  override def save(sc: SparkContext, path: String): Unit =
     GLMClassificationModel.SaveLoadV1_0.save(
       sc,
       path,
@@ -93,13 +93,11 @@ class SVMModel @Since("1.1.0") (
       weights,
       intercept,
       threshold)
-  }
 
   override protected def formatVersion: String = "1.0"
 
-  override def toString: String = {
+  override def toString: String =
     s"${super.toString}, numClasses = 2, threshold = ${threshold.getOrElse("None")}"
-  }
 }
 
 @Since("1.3.0")
@@ -170,9 +168,8 @@ class SVMWithSGD private (
   @Since("0.8.0")
   def this() = this(1.0, 100, 0.01, 1.0)
 
-  override protected def createModel(weights: Vector, intercept: Double) = {
+  override protected def createModel(weights: Vector, intercept: Double) =
     new SVMModel(weights, intercept)
-  }
 }
 
 /**
@@ -204,10 +201,9 @@ object SVMWithSGD {
       stepSize: Double,
       regParam: Double,
       miniBatchFraction: Double,
-      initialWeights: Vector): SVMModel = {
+      initialWeights: Vector): SVMModel =
     new SVMWithSGD(stepSize, numIterations, regParam, miniBatchFraction)
       .run(input, initialWeights)
-  }
 
   /**
     * Train a SVM model given an RDD of (label, features) pairs. We run a fixed number
@@ -227,10 +223,9 @@ object SVMWithSGD {
       numIterations: Int,
       stepSize: Double,
       regParam: Double,
-      miniBatchFraction: Double): SVMModel = {
+      miniBatchFraction: Double): SVMModel =
     new SVMWithSGD(stepSize, numIterations, regParam, miniBatchFraction)
       .run(input)
-  }
 
   /**
     * Train a SVM model given an RDD of (label, features) pairs. We run a fixed number
@@ -249,9 +244,8 @@ object SVMWithSGD {
       input: RDD[LabeledPoint],
       numIterations: Int,
       stepSize: Double,
-      regParam: Double): SVMModel = {
+      regParam: Double): SVMModel =
     train(input, numIterations, stepSize, regParam, 1.0)
-  }
 
   /**
     * Train a SVM model given an RDD of (label, features) pairs. We run a fixed number
@@ -264,7 +258,6 @@ object SVMWithSGD {
     * @return a SVMModel which has the weights and offset from training.
     */
   @Since("0.8.0")
-  def train(input: RDD[LabeledPoint], numIterations: Int): SVMModel = {
+  def train(input: RDD[LabeledPoint], numIterations: Int): SVMModel =
     train(input, numIterations, 1.0, 0.01, 1.0)
-  }
 }

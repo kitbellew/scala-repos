@@ -74,18 +74,17 @@ case class JavaArrayType(arg: ScType) extends ValueType {
   override def recursiveVarianceUpdateModifiable[T](
       data: T,
       update: (ScType, Int, T) => (Boolean, ScType, T),
-      variance: Int = 1): ScType = {
+      variance: Int = 1): ScType =
     update(this, variance, data) match {
       case (true, res, _) => res
       case (_, _, newData) =>
         JavaArrayType(arg.recursiveVarianceUpdateModifiable(newData, update, 0))
     }
-  }
 
   override def equivInner(
       r: ScType,
       uSubst: ScUndefinedSubstitutor,
-      falseUndef: Boolean): (Boolean, ScUndefinedSubstitutor) = {
+      falseUndef: Boolean): (Boolean, ScUndefinedSubstitutor) =
     r match {
       case JavaArrayType(arg2) =>
         Equivalence.equivInner(arg, arg2, uSubst, falseUndef)
@@ -97,7 +96,6 @@ case class JavaArrayType(arg: ScType) extends ValueType {
         }
       case _ => (false, uSubst)
     }
-  }
 
   def visitType(visitor: ScalaTypeVisitor) {
     visitor.visitJavaArrayType(this)
@@ -110,7 +108,7 @@ class ScParameterizedType private (
     val designator: ScType,
     val typeArgs: Seq[ScType])
     extends ValueType {
-  override protected def isAliasTypeInner: Option[AliasType] = {
+  override protected def isAliasTypeInner: Option[AliasType] =
     this match {
       case ScParameterizedType(ScDesignatorType(ta: ScTypeAlias), args) =>
         val genericSubst = ScalaPsiUtil.typesCallSubstitutor(
@@ -135,7 +133,6 @@ class ScParameterizedType private (
           AliasType(ta, ta.lowerBound.map(s.subst), ta.upperBound.map(s.subst)))
       case _ => None
     }
-  }
 
   private var hash: Int = -1
 
@@ -221,7 +218,7 @@ class ScParameterizedType private (
   override def recursiveVarianceUpdateModifiable[T](
       data: T,
       update: (ScType, Int, T) => (Boolean, ScType, T),
-      variance: Int = 1): ScType = {
+      variance: Int = 1): ScType =
     update(this, variance, data) match {
       case (true, res, _) => res
       case (_, _, newData) =>
@@ -248,7 +245,6 @@ class ScParameterizedType private (
           }
         )
     }
-  }
 
   override def equivInner(
       r: ScType,
@@ -320,13 +316,12 @@ class ScParameterizedType private (
   /**
     * @return Some((designator, paramType, returnType)), or None
     */
-  def getPartialFunctionType: Option[(ScType, ScType, ScType)] = {
+  def getPartialFunctionType: Option[(ScType, ScType, ScType)] =
     getStandardType("scala.PartialFunction") match {
       case Some((typeDef, Seq(param, ret))) =>
         Some((ScDesignatorType(typeDef), param, ret))
       case None => None
     }
-  }
 
   /**
     * @param  prefix of the qualified name of the type
@@ -402,9 +397,8 @@ object ScParameterizedType {
     }
   }
 
-  def unapply(p: ScParameterizedType): Option[(ScType, Seq[ScType])] = {
+  def unapply(p: ScParameterizedType): Option[(ScType, Seq[ScType])] =
     Some(p.designator, p.typeArgs)
-  }
 }
 
 case class ScTypeParameterType(
@@ -475,19 +469,17 @@ case class ScTypeParameterType(
 
   def getId: PsiElement = ScalaPsiUtil.getPsiElementId(param)
 
-  def isCovariant = {
+  def isCovariant =
     param match {
       case tp: ScTypeParam => tp.isCovariant
       case _               => false
     }
-  }
 
-  def isContravariant = {
+  def isContravariant =
     param match {
       case tp: ScTypeParam => tp.isContravariant
       case _               => false
     }
-  }
 
   override def equivInner(
       r: ScType,
@@ -508,14 +500,13 @@ case class ScTypeParameterType(
 }
 
 object ScTypeParameterType {
-  def toTypeParameterType(tp: TypeParameter): ScTypeParameterType = {
+  def toTypeParameterType(tp: TypeParameter): ScTypeParameterType =
     new ScTypeParameterType(
       tp.name,
       tp.typeParams.map(toTypeParameterType).toList,
       new Suspension[ScType](tp.lowerType()),
       new Suspension[ScType](tp.upperType()),
       tp.ptp)
-  }
 }
 
 private[types] object CyclicHelper {
@@ -543,10 +534,9 @@ case class ScTypeVariable(name: String) extends ValueType {
   override def equivInner(
       r: ScType,
       uSubst: ScUndefinedSubstitutor,
-      falseUndef: Boolean): (Boolean, ScUndefinedSubstitutor) = {
+      falseUndef: Boolean): (Boolean, ScUndefinedSubstitutor) =
     r match {
       case ScTypeVariable(`name`) => (true, uSubst)
       case _                      => (false, uSubst)
     }
-  }
 }

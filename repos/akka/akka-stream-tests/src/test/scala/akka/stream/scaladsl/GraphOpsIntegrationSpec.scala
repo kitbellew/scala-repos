@@ -41,14 +41,13 @@ object GraphOpsIntegrationSpec {
     }
 
     def apply[In, Out](
-        pipeline: Flow[In, Out, _]): Graph[ShufflePorts[In, Out], NotUsed] = {
+        pipeline: Flow[In, Out, _]): Graph[ShufflePorts[In, Out], NotUsed] =
       GraphDSL.create() { implicit b ⇒
         val merge = b.add(Merge[In](2))
         val balance = b.add(Balance[Out](2))
         merge.out ~> pipeline ~> balance.in
         ShufflePorts(merge.in(0), merge.in(1), balance.out(0), balance.out(1))
       }
-    }
   }
 }
 

@@ -7,7 +7,6 @@ object Test {
     a foreach println
   }
 
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     method(Array(1, 2).asInstanceOf[TaggedArray[Int]], 1)
-  }
 }

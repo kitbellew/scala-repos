@@ -424,8 +424,7 @@ object Concurrent {
       def applyOn[A](it: Iteratee[E, A]): Iteratee[E, Iteratee[E, A]] = {
 
         def step(inner: Iteratee[E, A])(
-            in: Input[E]): Iteratee[E, Iteratee[E, A]] = {
-
+            in: Input[E]): Iteratee[E, Iteratee[E, A]] =
           in match {
             case Input.EOF =>
               Done(inner, Input.Empty)
@@ -462,7 +461,6 @@ object Concurrent {
                 }(dec))
               } else Cont(step(inner))
           }
-        }
 
         Cont(step(it))
       }
@@ -854,7 +852,7 @@ object Concurrent {
 
         def closed() = isClosed
 
-        def patchIn(e: Enumerator[E]): Boolean = {
+        def patchIn(e: Enumerator[E]): Boolean =
           !(closed() || {
             val newRef = atomic { implicit txn =>
               val enRef = ref()
@@ -866,7 +864,6 @@ object Concurrent {
             e |>> refIteratee(newRef) //TODO maybe do something if the enumerator is done, maybe not
             false
           })
-        }
       }))(pec).flatMap(_ => result.future)(dec)
     }
   }

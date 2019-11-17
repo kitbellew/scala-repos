@@ -143,7 +143,7 @@ abstract class ClusterShardingFailureSpec(
     enterBarrier(from.name + "-joined")
   }
 
-  def startSharding(): Unit = {
+  def startSharding(): Unit =
     ClusterSharding(system).start(
       typeName = "Entity",
       entityProps = Props[Entity],
@@ -151,7 +151,6 @@ abstract class ClusterShardingFailureSpec(
       extractEntityId = extractEntityId,
       extractShardId = extractShardId
     )
-  }
 
   lazy val region = ClusterSharding(system).shardRegion("Entity")
 

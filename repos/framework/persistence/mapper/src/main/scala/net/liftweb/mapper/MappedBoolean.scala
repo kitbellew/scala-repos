@@ -117,7 +117,7 @@ abstract class MappedBoolean[T <: Mapper[T]](val fieldOwner: T)
 
   def asJsExp: JsExp = if (get) JE.JsTrue else JE.JsFalse
 
-  override def setFromAny(in: Any): Boolean = {
+  override def setFromAny(in: Any): Boolean =
     in match {
       case b: Boolean                      => this.set(b)
       case JsonAST.JBool(v)                => this.set(v)
@@ -131,14 +131,13 @@ abstract class MappedBoolean[T <: Mapper[T]](val fieldOwner: T)
       case s: String                       => this.set(toBoolean(s))
       case o                               => this.set(toBoolean(o))
     }
-  }
 
   protected def i_obscure_!(in: Boolean) = false
 
   def buildSetActualValue(
       accessor: Method,
       inst: AnyRef,
-      columnName: String): (T, AnyRef) => Unit = {
+      columnName: String): (T, AnyRef) => Unit =
     inst match {
       case null => { (inst: T, v: AnyRef) =>
         {
@@ -153,7 +152,6 @@ abstract class MappedBoolean[T <: Mapper[T]](val fieldOwner: T)
         }
       }
     }
-  }
 
   private def allSet(in: Box[Boolean]) {
     this.data = in

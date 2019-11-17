@@ -73,7 +73,7 @@ private[r] object SparkRWrappers {
     pipeline.fit(df)
   }
 
-  def getModelCoefficients(model: PipelineModel): Array[Double] = {
+  def getModelCoefficients(model: PipelineModel): Array[Double] =
     model.stages.last match {
       case m: LinearRegressionModel => {
         val coefficientStandardErrorsR =
@@ -99,9 +99,8 @@ private[r] object SparkRWrappers {
       case m: KMeansModel =>
         m.clusterCenters.flatMap(_.toArray)
     }
-  }
 
-  def getModelDevianceResiduals(model: PipelineModel): Array[Double] = {
+  def getModelDevianceResiduals(model: PipelineModel): Array[Double] =
     model.stages.last match {
       case m: LinearRegressionModel =>
         m.summary.devianceResiduals
@@ -109,18 +108,16 @@ private[r] object SparkRWrappers {
         throw new UnsupportedOperationException(
           "No deviance residuals available for LogisticRegressionModel")
     }
-  }
 
-  def getKMeansModelSize(model: PipelineModel): Array[Int] = {
+  def getKMeansModelSize(model: PipelineModel): Array[Int] =
     model.stages.last match {
       case m: KMeansModel => Array(m.getK) ++ m.summary.size
       case other =>
         throw new UnsupportedOperationException(
           s"KMeansModel required but ${other.getClass.getSimpleName} found.")
     }
-  }
 
-  def getKMeansCluster(model: PipelineModel, method: String): DataFrame = {
+  def getKMeansCluster(model: PipelineModel, method: String): DataFrame =
     model.stages.last match {
       case m: KMeansModel =>
         if (method == "centers") {
@@ -136,9 +133,8 @@ private[r] object SparkRWrappers {
         throw new UnsupportedOperationException(
           s"KMeansModel required but ${other.getClass.getSimpleName} found.")
     }
-  }
 
-  def getModelFeatures(model: PipelineModel): Array[String] = {
+  def getModelFeatures(model: PipelineModel): Array[String] =
     model.stages.last match {
       case m: LinearRegressionModel =>
         val attrs = AttributeGroup.fromStructField(
@@ -161,9 +157,8 @@ private[r] object SparkRWrappers {
           m.summary.predictions.schema(m.summary.featuresCol))
         attrs.attributes.get.map(_.name.get)
     }
-  }
 
-  def getModelName(model: PipelineModel): String = {
+  def getModelName(model: PipelineModel): String =
     model.stages.last match {
       case m: LinearRegressionModel =>
         "LinearRegressionModel"
@@ -172,5 +167,4 @@ private[r] object SparkRWrappers {
       case m: KMeansModel =>
         "KMeansModel"
     }
-  }
 }

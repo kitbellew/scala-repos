@@ -41,7 +41,7 @@ class SemanticHighlighting(val global: RichPresentationCompiler)
         addAt(pos.startOrCursor, pos.endOrCursor, designation)
       }
 
-      def qualifySymbol(sym: Symbol): Boolean = {
+      def qualifySymbol(sym: Symbol): Boolean =
         if (sym == NoSymbol) {
           false
         } else if (sym.isCaseApplyOrUnapply) {
@@ -103,7 +103,6 @@ class SemanticHighlighting(val global: RichPresentationCompiler)
             false
           }
         }
-      }
 
       if (!treeP.isTransparent && p.overlaps(treeP)) {
         try {

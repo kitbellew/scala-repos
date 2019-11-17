@@ -15,5 +15,5 @@ class Test {
   implicit def toFoo1(s: Elem) = new Foo1()
   implicit def toFoo2(s: Elem) = new Foo2()
 
-  def is: Unit = { (elem) }
+  def is: Unit = (elem)
 }

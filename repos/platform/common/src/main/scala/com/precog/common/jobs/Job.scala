@@ -98,7 +98,7 @@ object Status {
   implicit val extractorV1: Extractor[Status] =
     extractorV[Status](schemaV1, Some("1.0".v))
 
-  def fromMessage(message: Message): Option[Status] = {
+  def fromMessage(message: Message): Option[Status] =
     (message.channel == channels.Status) option {
       ((message.value \ "message").validated[String] |@|
         (message.value \ "progress").validated[BigDecimal] |@|
@@ -114,9 +114,8 @@ object Status {
     } flatMap {
       _.toOption
     }
-  }
 
-  def toMessage(status: Status): Message = {
+  def toMessage(status: Status): Message =
     Message(
       status.job,
       status.id,
@@ -128,5 +127,4 @@ object Status {
           (status.info map (jfield("info", _) :: Nil) getOrElse Nil)
       )
     )
-  }
 }

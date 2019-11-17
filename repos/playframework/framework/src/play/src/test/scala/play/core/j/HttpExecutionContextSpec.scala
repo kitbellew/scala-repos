@@ -33,10 +33,9 @@ object HttpExecutionContextSpec
 
       val hecFromThread = new LinkedBlockingQueue[ExecutionContext]()
       hec.execute(new Runnable {
-        def run() = {
+        def run() =
           hecFromThread.offer(
             HttpExecutionContext.fromThread(ExecutionContext.global))
-        }
       })
 
       val actualClassLoader = new LinkedBlockingQueue[ClassLoader]()

@@ -21,7 +21,7 @@ object Sampling {
     num
   }
 
-  def sortBySrc(a: Array[Edge[Int]]): Array[Edge[Int]] = {
+  def sortBySrc(a: Array[Edge[Int]]): Array[Edge[Int]] =
     if (a.length < 2) {
       a
     } else {
@@ -41,7 +41,6 @@ object Sampling {
       })
       sortedAccumulator
     }
-  }
 
   // Samples vertices by forest fire random process and induces edges.
   // Fraction denotes fraction of total graph vertices to sample and geoParam

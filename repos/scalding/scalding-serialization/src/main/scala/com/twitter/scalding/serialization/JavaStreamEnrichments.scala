@@ -226,9 +226,8 @@ object JavaStreamEnrichments {
     def writeBoolean(b: Boolean): Unit =
       if (b) s.write(1: Byte) else s.write(0: Byte)
 
-    def writeBytes(b: Array[Byte], off: Int, len: Int): Unit = {
+    def writeBytes(b: Array[Byte], off: Int, len: Int): Unit =
       s.write(b, off, len)
-    }
 
     def writeByte(b: Byte): Unit = s.write(b)
 

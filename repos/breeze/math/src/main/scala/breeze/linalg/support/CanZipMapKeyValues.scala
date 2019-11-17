@@ -91,9 +91,8 @@ object CanZipMapKeyValues {
     override def mapActive(
         from: Array[V],
         from2: Array[V],
-        fn: (Int, V, V) => RV): Array[RV] = {
+        fn: (Int, V, V) => RV): Array[RV] =
       map(from, from2, fn)
-    }
   }
 
   // <editor-fold defaultstate="collapsed" desc=" implicit CanZipMapValues[V, RV] implementations ">

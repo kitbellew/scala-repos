@@ -209,7 +209,7 @@ object DumpLogSegments {
       keyDecoder: Decoder[K],
       valueDecoder: Decoder[V])
       extends MessageParser[K, V] {
-    override def parse(message: Message): (Option[K], Option[V]) = {
+    override def parse(message: Message): (Option[K], Option[V]) =
       if (message.isNull) {
         (None, None)
       } else {
@@ -223,14 +223,12 @@ object DumpLogSegments {
 
         (key, payload)
       }
-    }
   }
 
   private class OffsetsMessageParser extends MessageParser[String, String] {
-    private def hex(bytes: Array[Byte]): String = {
+    private def hex(bytes: Array[Byte]): String =
       if (bytes.isEmpty) ""
       else String.format("%X", BigInt(1, bytes))
-    }
 
     private def parseOffsets(offsetKey: OffsetKey, payload: ByteBuffer) = {
       val group = offsetKey.key.group
@@ -277,7 +275,7 @@ object DumpLogSegments {
       (Some(keyString), Some(valueString))
     }
 
-    override def parse(message: Message): (Option[String], Option[String]) = {
+    override def parse(message: Message): (Option[String], Option[String]) =
       if (message.isNull) (None, None)
       else if (!message.hasKey) {
         throw new KafkaException(
@@ -292,7 +290,6 @@ object DumpLogSegments {
               "Failed to decode message using offset topic decoder (message had an invalid key)")
         }
       }
-    }
   }
 
   /* print out the contents of the log */
@@ -356,7 +353,7 @@ object DumpLogSegments {
 
   private def getIterator(
       messageAndOffset: MessageAndOffset,
-      isDeepIteration: Boolean) = {
+      isDeepIteration: Boolean) =
     if (isDeepIteration) {
       val message = messageAndOffset.message
       message.compressionCodec match {
@@ -366,18 +363,15 @@ object DumpLogSegments {
           ByteBufferMessageSet.deepIterator(messageAndOffset)
       }
     } else getSingleMessageIterator(messageAndOffset)
-  }
 
-  private def getSingleMessageIterator(messageAndOffset: MessageAndOffset) = {
+  private def getSingleMessageIterator(messageAndOffset: MessageAndOffset) =
     new IteratorTemplate[MessageAndOffset] {
       var messageIterated = false
 
-      override def makeNext(): MessageAndOffset = {
+      override def makeNext(): MessageAndOffset =
         if (!messageIterated) {
           messageIterated = true
           messageAndOffset
         } else allDone()
-      }
     }
-  }
 }

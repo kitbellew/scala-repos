@@ -29,7 +29,7 @@ private[ui] class PoolPage(parent: StagesTab) extends WebUIPage("pool") {
   private val sc = parent.sc
   private val listener = parent.progressListener
 
-  def render(request: HttpServletRequest): Seq[Node] = {
+  def render(request: HttpServletRequest): Seq[Node] =
     listener.synchronized {
       val poolName = Option(request.getParameter("poolname"))
         .map { poolname =>
@@ -69,5 +69,4 @@ private[ui] class PoolPage(parent: StagesTab) extends WebUIPage("pool") {
         content,
         parent)
     }
-  }
 }

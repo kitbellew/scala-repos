@@ -21,7 +21,7 @@ object PlayReload {
   def compile(
       reloadCompile: () => Result[sbt.inc.Analysis],
       classpath: () => Result[Classpath],
-      streams: () => Option[Streams]): CompileResult = {
+      streams: () => Option[Streams]): CompileResult =
     reloadCompile().toEither.left
       .map(compileFailure(streams()))
       .right
@@ -35,9 +35,8 @@ object PlayReload {
           .fold(identity, identity)
       }
       .fold(identity, identity)
-  }
 
-  def sourceMap(analysis: sbt.inc.Analysis): SourceMap = {
+  def sourceMap(analysis: sbt.inc.Analysis): SourceMap =
     analysis.apis.internal.foldLeft(Map.empty[String, Source]) {
       case (sourceMap, (file, source)) =>
         sourceMap ++ {
@@ -46,20 +45,17 @@ object PlayReload {
           }
         }
     }
-  }
 
-  def originalSource(file: File): Option[File] = {
+  def originalSource(file: File): Option[File] =
     play.twirl.compiler.MaybeGeneratedSource.unapply(file).map(_.file)
-  }
 
   def compileFailure(streams: Option[Streams])(
-      incomplete: Incomplete): CompileResult = {
+      incomplete: Incomplete): CompileResult =
     CompileFailure(taskFailureHandler(incomplete, streams))
-  }
 
   def taskFailureHandler(
       incomplete: Incomplete,
-      streams: Option[Streams]): PlayException = {
+      streams: Option[Streams]): PlayException =
     Incomplete
       .allExceptions(incomplete)
       .headOption
@@ -78,7 +74,6 @@ object PlayReload {
         UnexpectedException(
           Some("The compilation task failed without any exception!"))
       }
-  }
 
   def getScopedKey(incomplete: Incomplete): Option[ScopedKey[_]] =
     incomplete.node flatMap {
@@ -88,7 +83,7 @@ object PlayReload {
 
   def getProblems(
       incomplete: Incomplete,
-      streams: Option[Streams]): Seq[xsbti.Problem] = {
+      streams: Option[Streams]): Seq[xsbti.Problem] =
     allProblems(incomplete) ++ {
       Incomplete.linearize(incomplete).flatMap(getScopedKey).flatMap {
         scopedKey =>
@@ -150,20 +145,16 @@ object PlayReload {
             }
       }
     }
-  }
 
-  def allProblems(inc: Incomplete): Seq[xsbti.Problem] = {
+  def allProblems(inc: Incomplete): Seq[xsbti.Problem] =
     allProblems(inc :: Nil)
-  }
 
-  def allProblems(incs: Seq[Incomplete]): Seq[xsbti.Problem] = {
+  def allProblems(incs: Seq[Incomplete]): Seq[xsbti.Problem] =
     problems(Incomplete.allExceptions(incs).toSeq)
-  }
 
-  def problems(es: Seq[Throwable]): Seq[xsbti.Problem] = {
+  def problems(es: Seq[Throwable]): Seq[xsbti.Problem] =
     es flatMap {
       case cf: xsbti.CompileFailed => cf.problems
       case _                       => Nil
     }
-  }
 }

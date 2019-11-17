@@ -29,9 +29,8 @@ import org.apache.spark.util.Utils
   * Inherits some default implementation for Java from `Ordering[Row]`
   */
 class BaseOrdering extends Ordering[InternalRow] {
-  def compare(a: InternalRow, b: InternalRow): Int = {
+  def compare(a: InternalRow, b: InternalRow): Int =
     throw new UnsupportedOperationException
-  }
 }
 
 /**
@@ -52,14 +51,13 @@ object GenerateOrdering
   /**
     * Creates a code gen ordering for sorting this schema, in ascending order.
     */
-  def create(schema: StructType): BaseOrdering = {
+  def create(schema: StructType): BaseOrdering =
     create(schema.zipWithIndex.map {
       case (field, ordinal) =>
         SortOrder(
           BoundReference(ordinal, field.dataType, nullable = true),
           Ascending)
     })
-  }
 
   /**
     * Generates the code for comparing a struct type according to its natural ordering
@@ -170,9 +168,8 @@ class LazilyGeneratedOrdering(val ordering: Seq[SortOrder])
   @transient
   private[this] var generatedOrdering = GenerateOrdering.generate(ordering)
 
-  def compare(a: InternalRow, b: InternalRow): Int = {
+  def compare(a: InternalRow, b: InternalRow): Int =
     generatedOrdering.compare(a, b)
-  }
 
   private def readObject(in: ObjectInputStream): Unit =
     Utils.tryOrIOException {
@@ -186,12 +183,11 @@ object LazilyGeneratedOrdering {
   /**
     * Creates a [[LazilyGeneratedOrdering]] for the given schema, in natural ascending order.
     */
-  def forSchema(schema: StructType): LazilyGeneratedOrdering = {
+  def forSchema(schema: StructType): LazilyGeneratedOrdering =
     new LazilyGeneratedOrdering(schema.zipWithIndex.map {
       case (field, ordinal) =>
         SortOrder(
           BoundReference(ordinal, field.dataType, nullable = true),
           Ascending)
     })
-  }
 }

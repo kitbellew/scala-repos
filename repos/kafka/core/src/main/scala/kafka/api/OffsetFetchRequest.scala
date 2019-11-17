@@ -128,7 +128,6 @@ case class OffsetFetchRequest(
     offsetFetchRequest.toString()
   }
 
-  override def toString: String = {
+  override def toString: String =
     describe(details = true)
-  }
 }

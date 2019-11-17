@@ -114,10 +114,9 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
 
     val rebalanceListener = new ConsumerRebalanceListener {
       override def onPartitionsAssigned(
-          partitions: util.Collection[TopicPartition]) = {
+          partitions: util.Collection[TopicPartition]) =
         // keep partitions paused in this test so that we can verify the commits based on specific seeks
         consumer0.pause(partitions)
-      }
 
       override def onPartitionsRevoked(
           partitions: util.Collection[TopicPartition]) = {}
@@ -327,9 +326,8 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
     }
   }
 
-  protected def sendRecords(numRecords: Int): Unit = {
+  protected def sendRecords(numRecords: Int): Unit =
     sendRecords(numRecords, tp)
-  }
 
   protected def sendRecords(numRecords: Int, tp: TopicPartition) {
     (0 until numRecords).foreach { i =>
@@ -433,21 +431,18 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
 
     val rebalanceListener = new ConsumerRebalanceListener {
       override def onPartitionsAssigned(
-          partitions: util.Collection[TopicPartition]) = {
+          partitions: util.Collection[TopicPartition]) =
         partitionAssignment =
           collection.immutable.Set(consumer.assignment().asScala.toArray: _*)
-      }
 
       override def onPartitionsRevoked(
-          partitions: util.Collection[TopicPartition]) = {
+          partitions: util.Collection[TopicPartition]) =
         partitionAssignment = Set.empty[TopicPartition]
-      }
     }
     consumer.subscribe(topicsToSubscribe.asJava, rebalanceListener)
 
-    def consumerAssignment(): Set[TopicPartition] = {
+    def consumerAssignment(): Set[TopicPartition] =
       partitionAssignment
-    }
 
     /**
       * Subscribe consumer to a new set of topics.
@@ -468,9 +463,8 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
       subscriptionChanged = true
     }
 
-    def isSubscribeRequestProcessed(): Boolean = {
+    def isSubscribeRequestProcessed(): Boolean =
       !subscriptionChanged
-    }
 
     override def doWork(): Unit = {
       if (subscriptionChanged) {

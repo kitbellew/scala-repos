@@ -47,26 +47,24 @@ trait PasswordTypedField extends TypedField[String] {
       .flatMap(p => tryo(BCrypt.checkpw(toTest, p)))
       .openOr(false)
 
-  override def set_!(in: Box[String]): Box[String] = {
+  override def set_!(in: Box[String]): Box[String] =
     // can't be hashed here, because this get's called when setting value from database (Squeryl)
     in
-  }
 
   def setPlain(in: String): String = setBoxPlain(Full(in)) openOr defaultValue
 
-  def setBoxPlain(in: Box[String]): Box[String] = {
+  def setBoxPlain(in: Box[String]): Box[String] =
     if (!validatePassword(in)) {
       val hashed = in.map(s => PasswordField.hashpw(s) openOr s)
       setBox(hashed)
     } else setBox(defaultValueBox)
-  }
 
   /**
     * If passed value is an Array[String] or a List[String] containing 2 items with equal value, it it hashes this value and sets it as new password.
     * If passed value is a String or a Full[String] that starts with "$2a$", it assumes that it's a hashed version, thus sets it as it is, without hashing.
     * In any other case, it fails the validation with "Passwords do not match" error
     */
-  def setFromAny(in: Any): Box[String] = {
+  def setFromAny(in: Any): Box[String] =
     in match {
       case (a: Array[String]) if (a.length == 2 && a(0) == a(1)) =>
         setBoxPlain(Full(a(0)))
@@ -80,7 +78,6 @@ trait PasswordTypedField extends TypedField[String] {
         Failure(invalidMsg)
       }
     }
-  }
 
   def setFromString(s: String): Box[String] = s match {
     case null | "" if optional_? => setBoxPlain(Empty)
@@ -88,11 +85,10 @@ trait PasswordTypedField extends TypedField[String] {
     case _                       => setBoxPlain(Full(s))
   }
 
-  override def validate: List[FieldError] = {
+  override def validate: List[FieldError] =
     if (!invalidPw && valueBox != defaultValueBox) Nil
     else if (invalidPw) List(FieldError(this, Text(invalidMsg)))
     else List(FieldError(this, Text(notOptionalErrorMessage)))
-  }
 
   override def notOptionalErrorMessage = S.?("password.must.be.set")
 

@@ -26,11 +26,10 @@ import org.apache.spark.util.Utils
 
 class GraphSuite extends SparkFunSuite with LocalSparkContext {
 
-  def starGraph(sc: SparkContext, n: Int): Graph[String, Int] = {
+  def starGraph(sc: SparkContext, n: Int): Graph[String, Int] =
     Graph.fromEdgeTuples(
       sc.parallelize((1 to n).map(x => (0: VertexId, x: VertexId)), 3),
       "v")
-  }
 
   test("Graph.fromEdgeTuples") {
     withSpark { sc =>
@@ -94,16 +93,14 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
 
   test("partitionBy") {
     withSpark { sc =>
-      def mkGraph(edges: List[(Long, Long)]): Graph[Int, Int] = {
+      def mkGraph(edges: List[(Long, Long)]): Graph[Int, Int] =
         Graph.fromEdgeTuples(sc.parallelize(edges, 2), 0)
-      }
-      def nonemptyParts(graph: Graph[Int, Int]): RDD[List[Edge[Int]]] = {
+      def nonemptyParts(graph: Graph[Int, Int]): RDD[List[Edge[Int]]] =
         graph.edges.partitionsRDD
           .mapPartitions { iter =>
             Iterator(iter.next()._2.iterator.toList)
           }
           .filter(_.nonEmpty)
-      }
       val identicalEdges = List((0L, 1L), (0L, 1L))
       val canonicalEdges = List((0L, 1L), (1L, 0L))
       val sameSrcEdges = List((0L, 1L), (0L, 2L))

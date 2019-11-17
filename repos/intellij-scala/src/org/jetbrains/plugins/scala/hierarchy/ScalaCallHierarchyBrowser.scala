@@ -69,30 +69,27 @@ final class ScalaCallHierarchyBrowser(project: Project, method: PsiMethod)
   }
 
   protected def getElementFromDescriptor(
-      descriptor: HierarchyNodeDescriptor): PsiElement = {
+      descriptor: HierarchyNodeDescriptor): PsiElement =
     descriptor match {
       case nodeDescriptor: CallHierarchyNodeDescriptor =>
         nodeDescriptor.getEnclosingElement
       case _ => null
     }
-  }
 
   protected override def getOpenFileElementFromDescriptor(
-      descriptor: HierarchyNodeDescriptor): PsiElement = {
+      descriptor: HierarchyNodeDescriptor): PsiElement =
     descriptor match {
       case nodeDescriptor: CallHierarchyNodeDescriptor =>
         nodeDescriptor.getTargetElement
       case _ => null
     }
-  }
 
-  protected def isApplicableElement(element: PsiElement): Boolean = {
+  protected def isApplicableElement(element: PsiElement): Boolean =
     element.isInstanceOf[PsiMethod]
-  }
 
   protected def createHierarchyTreeStructure(
       typeName: String,
-      psiElement: PsiElement): HierarchyTreeStructure = {
+      psiElement: PsiElement): HierarchyTreeStructure =
     if (CALLER_TYPE.equals(typeName))
       new ScalaCallerMethodsTreeStructure(
         myProject,
@@ -104,9 +101,7 @@ final class ScalaCallHierarchyBrowser(project: Project, method: PsiMethod)
         psiElement.asInstanceOf[PsiMethod],
         getCurrentScopeType)
     else null
-  }
 
-  protected def getComparator: Comparator[NodeDescriptor[_]] = {
+  protected def getComparator: Comparator[NodeDescriptor[_]] =
     JavaHierarchyUtil.getComparator(myProject)
-  }
 }

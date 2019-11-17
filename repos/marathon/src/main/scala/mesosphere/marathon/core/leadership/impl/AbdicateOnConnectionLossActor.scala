@@ -8,9 +8,8 @@ import org.apache.zookeeper.{ZooKeeper, WatchedEvent, Watcher}
 import AbdicateOnConnectionLossActor._
 
 private[leadership] object AbdicateOnConnectionLossActor {
-  def props(zk: ZooKeeperClient, leader: LeadershipAbdication): Props = {
+  def props(zk: ZooKeeperClient, leader: LeadershipAbdication): Props =
     Props(new AbdicateOnConnectionLossActor(zk, leader))
-  }
 
   private val connectionDropped = Set(
     Watcher.Event.KeeperState.Disconnected,

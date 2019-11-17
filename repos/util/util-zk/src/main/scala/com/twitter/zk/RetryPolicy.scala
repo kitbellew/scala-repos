@@ -26,12 +26,11 @@ object RetryPolicy {
   /** Retries an operation a fixed number of times without back-off. */
   case class Basic(retries: Int) extends RetryPolicy {
     def apply[T](op: => Future[T]): Future[T] = {
-      def retry(tries: Int): Future[T] = {
+      def retry(tries: Int): Future[T] =
         op rescue {
           case KeeperConnectionException(_) if (tries > 0) =>
             retry(tries - 1)
         }
-      }
       retry(retries)
     }
   }
@@ -52,7 +51,7 @@ object RetryPolicy {
     require(factor >= 1)
 
     def apply[T](op: => Future[T]): Future[T] = {
-      def retry(delay: Duration): Future[T] = {
+      def retry(delay: Duration): Future[T] =
         op rescue {
           case KeeperConnectionException(_) =>
             timer
@@ -62,7 +61,6 @@ object RetryPolicy {
               }
               .flatten
         }
-      }
       retry(base)
     }
   }

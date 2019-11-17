@@ -196,7 +196,7 @@ final class Board {
     }
   }
 
-  private def find(p: PieceCell, b: BoardCell): Unit = {
+  private def find(p: PieceCell, b: BoardCell): Unit =
     if (p != null && !p.marked && b != null) {
       cellsPieceWillFill(cellCount) = b
       cellCount = cellCount + 1
@@ -208,7 +208,6 @@ final class Board {
         i = i + 1
       }
     }
-  }
 
   private def boardCells() = {
     val a = for (i <- Array.range(0, Board.size)) yield new BoardCell(i)
@@ -491,7 +490,7 @@ final class BoardCell(_number: Int) extends Cell {
   def isEmpty() = piece == null
   def empty() = piece = null
 
-  def contiguousEmptyCells(): Int = {
+  def contiguousEmptyCells(): Int =
     if (!marked && isEmpty) {
       mark
       var count = 1
@@ -507,7 +506,6 @@ final class BoardCell(_number: Int) extends Cell {
     } else {
       0
     }
-  }
 }
 
 // PieceCell.scala

@@ -62,13 +62,11 @@ class VectorClockPerfSpec extends WordSpec with Matchers {
     }
   }
 
-  def compareTo(order: Ordering)(vc1: VectorClock, vc2: VectorClock): Unit = {
+  def compareTo(order: Ordering)(vc1: VectorClock, vc2: VectorClock): Unit =
     vc1 compareTo vc2 should ===(order)
-  }
 
-  def !==(vc1: VectorClock, vc2: VectorClock): Unit = {
+  def !==(vc1: VectorClock, vc2: VectorClock): Unit =
     vc1 == vc2 should ===(false)
-  }
 
   s"VectorClock comparisons of size $clockSize" must {
 

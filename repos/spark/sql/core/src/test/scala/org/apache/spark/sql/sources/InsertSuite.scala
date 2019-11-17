@@ -42,7 +42,7 @@ class InsertSuite extends DataSourceTest with SharedSQLContext {
       """.stripMargin)
   }
 
-  override def afterAll(): Unit = {
+  override def afterAll(): Unit =
     try {
       caseInsensitiveContext.dropTempTable("jsonTable")
       caseInsensitiveContext.dropTempTable("jt")
@@ -50,7 +50,6 @@ class InsertSuite extends DataSourceTest with SharedSQLContext {
     } finally {
       super.afterAll()
     }
-  }
 
   test("Simple INSERT OVERWRITE a JSONRelation") {
     sql(s"""

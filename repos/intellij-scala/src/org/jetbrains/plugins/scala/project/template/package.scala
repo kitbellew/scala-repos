@@ -14,13 +14,12 @@ import scala.reflect.ClassTag
   * @author Pavel Fatin
   */
 package object template {
-  def using[A <: Closeable, B](resource: A)(block: A => B): B = {
+  def using[A <: Closeable, B](resource: A)(block: A => B): B =
     try {
       block(resource)
     } finally {
       resource.close()
     }
-  }
 
   def usingTempFile[T](prefix: String, suffix: Option[String] = None)(
       block: File => T): T = {

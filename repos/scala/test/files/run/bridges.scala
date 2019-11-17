@@ -6124,7 +6124,7 @@ class S_TZIfwFooX_fwBarY_f[T] extends MixZIfwFooX_fwBarY_f[C] { ;; f; }
 
 object Test {
   var errors: Int = 0;
-  def test(name: String, test: => Any, count: Int, value: String) = {
+  def test(name: String, test: => Any, count: Int, value: String) =
     try {
       Help.init;
       test;
@@ -6141,7 +6141,6 @@ object Test {
         errors = errors + 1;
       }
     }
-  }
 
   def main(args: Array[String]): Unit = {
 

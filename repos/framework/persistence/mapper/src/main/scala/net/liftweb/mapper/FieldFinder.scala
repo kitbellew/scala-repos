@@ -72,7 +72,7 @@ class FieldFinder[T: ClassTag](
 
         // does the method return an actual instance of an actual class that's
         // associated with this Mapper class
-        def validActualType(meth: Method): Boolean = {
+        def validActualType(meth: Method): Boolean =
           try {
             // invoke the method
             meth.invoke(onMagic) match {
@@ -99,7 +99,6 @@ class FieldFinder[T: ClassTag](
                   .format(meth.getName, e))
               false
           }
-        }
 
         // find all the declared methods
         val meths = c.getDeclaredMethods.toList

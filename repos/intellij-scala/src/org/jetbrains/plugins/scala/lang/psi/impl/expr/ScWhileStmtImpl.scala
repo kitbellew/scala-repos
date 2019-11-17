@@ -21,12 +21,11 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.{
 class ScWhileStmtImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScWhileStmt {
-  override def accept(visitor: PsiElementVisitor): Unit = {
+  override def accept(visitor: PsiElementVisitor): Unit =
     visitor match {
       case visitor: ScalaElementVisitor => super.accept(visitor)
       case _                            => super.accept(visitor)
     }
-  }
 
   override def toString: String = "WhileStatement"
 

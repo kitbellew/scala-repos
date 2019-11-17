@@ -52,7 +52,7 @@ class SmallestMailboxRoutingLogic extends RoutingLogic {
       proposedTarget: Routee = NoRoutee,
       currentScore: Long = Long.MaxValue,
       at: Int = 0,
-      deep: Boolean = false): Routee = {
+      deep: Boolean = false): Routee =
     if (targets.isEmpty) NoRoutee
     else if (at >= targets.size) {
       if (deep) {
@@ -80,7 +80,6 @@ class SmallestMailboxRoutingLogic extends RoutingLogic {
         selectNext(targets, proposedTarget, currentScore, at + 1, deep)
       else selectNext(targets, target, newScore, at + 1, deep)
     }
-  }
 
   protected def isTerminated(a: Routee): Boolean = a match {
     case ActorRefRoutee(ref) ⇒ ref.isTerminated

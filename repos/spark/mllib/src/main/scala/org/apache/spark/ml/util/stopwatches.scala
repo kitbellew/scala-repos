@@ -90,9 +90,8 @@ private[spark] class LocalStopwatch(override val name: String)
 
   override def elapsed(): Long = elapsedTime
 
-  override protected def add(duration: Long): Unit = {
+  override protected def add(duration: Long): Unit =
     elapsedTime += duration
-  }
 }
 
 /**
@@ -109,9 +108,8 @@ private[spark] class DistributedStopwatch(
 
   override def elapsed(): Long = elapsedTime.value
 
-  override protected def add(duration: Long): Unit = {
+  override protected def add(duration: Long): Unit =
     elapsedTime += duration
-  }
 }
 
 /**
@@ -153,10 +151,9 @@ private[spark] class MultiStopwatch(@transient private val sc: SparkContext)
     */
   def apply(name: String): Stopwatch = stopwatches(name)
 
-  override def toString: String = {
+  override def toString: String =
     stopwatches.values.toArray
       .sortBy(_.name)
       .map(c => s"  $c")
       .mkString("{\n", ",\n", "\n}")
-  }
 }

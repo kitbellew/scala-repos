@@ -239,12 +239,11 @@ trait Trees extends api.Trees { self: SymbolTable =>
       new ForeachPartialTreeTraverser(pf).traverse(this)
     }
 
-    def changeOwner(pairs: (Symbol, Symbol)*): Tree = {
+    def changeOwner(pairs: (Symbol, Symbol)*): Tree =
       pairs.foldLeft(this) {
         case (t, (oldOwner, newOwner)) =>
           new ChangeOwnerTraverser(oldOwner, newOwner) apply t
       }
-    }
 
     def shallowDuplicate: Tree = new ShallowDuplicator(this) transform this
     def shortClass: String = (getClass.getName split "[.$]").last
@@ -1167,13 +1166,12 @@ trait Trees extends api.Trees { self: SymbolTable =>
     type AccessBoundaryType = Name
     type AnnotationType = Tree
 
-    def hasAnnotationNamed(name: TypeName) = {
+    def hasAnnotationNamed(name: TypeName) =
       annotations exists {
         case Apply(Select(New(Ident(`name`)), _), _)     => true
         case Apply(Select(New(Select(_, `name`)), _), _) => true
         case _                                           => false
       }
-    }
 
     def hasAccessBoundary = privateWithin != tpnme.EMPTY
     def hasAllFlags(mask: Long): Boolean = (flags & mask) == mask
@@ -1225,14 +1223,13 @@ trait Trees extends api.Trees { self: SymbolTable =>
     *  @param body      trees that constitute the body of the template
     *  @return          the template
     */
-  def Template(sym: Symbol, body: List[Tree]): Template = {
+  def Template(sym: Symbol, body: List[Tree]): Template =
     atPos(sym.pos) {
       Template(
         sym.info.parents map TypeTree,
         if (sym.thisSym == sym) noSelfType else ValDef(sym),
         body)
     }
-  }
 
   trait CannotHaveAttrs extends Tree {
     super.setPos(NoPosition)
@@ -1370,7 +1367,7 @@ trait Trees extends api.Trees { self: SymbolTable =>
 
   /** Block factory that flattens directly nested blocks.
     */
-  def Block(stats: Tree*): Block = {
+  def Block(stats: Tree*): Block =
     if (stats.isEmpty) Block(Nil, Literal(Constant(())))
     else
       stats match {
@@ -1378,7 +1375,6 @@ trait Trees extends api.Trees { self: SymbolTable =>
         case Seq(stat)            => Block(stats.toList, Literal(Constant(())))
         case Seq(_, rest @ _*)    => Block(stats.init.toList, stats.last)
       }
-  }
 
   /** Delegate for a TypeTree symbol. This operation is unsafe because
     *  it may trigger type checking when forcing the type symbol of the
@@ -1710,12 +1706,11 @@ trait Trees extends api.Trees { self: SymbolTable =>
 
   class ChangeOwnerTraverser(val oldowner: Symbol, val newowner: Symbol)
       extends Traverser {
-    final def change(sym: Symbol) = {
+    final def change(sym: Symbol) =
       if (sym != NoSymbol && sym.owner == oldowner) {
         sym.owner = newowner
         if (sym.isModule) sym.moduleClass.owner = newowner
       }
-    }
     override def traverse(tree: Tree) {
       tree match {
         case _: Return =>
@@ -1750,12 +1745,11 @@ trait Trees extends api.Trees { self: SymbolTable =>
   /** A transformer that replaces tree `from` with tree `to` in a given tree */
   class TreeReplacer(from: Tree, to: Tree, positionAware: Boolean)
       extends Transformer {
-    override def transform(t: Tree): Tree = {
+    override def transform(t: Tree): Tree =
       if (t == from) to
       else if (!positionAware || (t.pos includes from.pos) ||
                t.pos.isTransparent) super.transform(t)
       else t
-    }
   }
 
   // Create a readable string describing a substitution.
@@ -1763,12 +1757,11 @@ trait Trees extends api.Trees { self: SymbolTable =>
       fromStr: String,
       toStr: String,
       from: List[Any],
-      to: List[Any]): String = {
+      to: List[Any]): String =
     "subst[%s, %s](%s)".format(
       fromStr,
       toStr,
       (from, to).zipped map (_ + " -> " + _) mkString ", ")
-  }
 
   // NOTE: calls shallowDuplicate on trees in `to` to avoid problems when symbols in `from`
   // occur multiple times in the `tree` passed to `transform`,
@@ -1953,13 +1946,12 @@ trait Trees extends api.Trees { self: SymbolTable =>
       * constructor, or early definition is active */
     private val selfOrSuperCalls = mutable.Stack[Symbol]()
 
-    abstract override def transform(tree: Tree) = {
+    abstract override def transform(tree: Tree) =
       if ((treeInfo isSelfOrSuperConstrCall tree) || (treeInfo isEarlyDef tree)) {
         selfOrSuperCalls push currentOwner.owner
         try super.transform(tree)
         finally selfOrSuperCalls.pop()
       } else super.transform(tree)
-    }
   }
 
   def duplicateAndKeepPositions(tree: Tree) =

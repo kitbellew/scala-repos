@@ -51,10 +51,9 @@ object CodeGenTools {
     cls
   }
 
-  private def resetOutput(compiler: Global): Unit = {
+  private def resetOutput(compiler: Global): Unit =
     compiler.settings.outputDirs
       .setSingleOutput(new VirtualDirectory("(memory)", None))
-  }
 
   def newCompiler(
       defaultArgs: String = "-usejavacp",
@@ -188,29 +187,25 @@ object CodeGenTools {
       codes: List[String],
       extraArgs: String = "",
       allowMessage: StoreReporter#Info => Boolean = _ => false,
-      afterEach: AbstractFile => Unit = _ => ()) = {
+      afterEach: AbstractFile => Unit = _ => ()) =
     readAsmClasses(compileSeparately(codes, extraArgs, allowMessage, afterEach))
-  }
 
-  def readAsmClasses(classfiles: List[(String, Array[Byte])]) = {
+  def readAsmClasses(classfiles: List[(String, Array[Byte])]) =
     classfiles.map(p => AsmUtils.readClass(p._2)).sortBy(_.name)
-  }
 
   def compileClasses(compiler: Global)(
       code: String,
       javaCode: List[(String, String)] = Nil,
       allowMessage: StoreReporter#Info => Boolean = _ => false)
-      : List[ClassNode] = {
+      : List[ClassNode] =
     readAsmClasses(compile(compiler)(code, javaCode, allowMessage))
-  }
 
   def compileMethods(compiler: Global)(
       code: String,
       allowMessage: StoreReporter#Info => Boolean = _ => false)
-      : List[MethodNode] = {
+      : List[MethodNode] =
     compileClasses(compiler)(s"class C { $code }", allowMessage = allowMessage).head.methods.asScala.toList
       .filterNot(_.name == "<init>")
-  }
 
   def singleMethodInstructions(compiler: Global)(
       code: String,
@@ -231,9 +226,8 @@ object CodeGenTools {
     assertSameCode(method.instructions.dropNonOp, expected)
   def assertSameCode(
       actual: List[Instruction],
-      expected: List[Instruction]): Unit = {
+      expected: List[Instruction]): Unit =
     assert(actual === expected, s"\nExpected: $expected\nActual  : $actual")
-  }
 
   def assertSameSummary(method: Method, expected: List[Any]): Unit =
     assertSameSummary(method.instructions, expected)
@@ -253,30 +247,27 @@ object CodeGenTools {
   }
 
   def assertNoInvoke(m: Method): Unit = assertNoInvoke(m.instructions)
-  def assertNoInvoke(ins: List[Instruction]): Unit = {
+  def assertNoInvoke(ins: List[Instruction]): Unit =
     assert(!ins.exists(_.isInstanceOf[Invoke]), ins.stringLines)
-  }
 
   def assertInvoke(m: Method, receiver: String, method: String): Unit =
     assertInvoke(m.instructions, receiver, method)
   def assertInvoke(
       l: List[Instruction],
       receiver: String,
-      method: String): Unit = {
+      method: String): Unit =
     assert(l.exists {
       case Invoke(_, `receiver`, `method`, _, _) => true
       case _                                     => false
     }, l.stringLines)
-  }
 
   def assertDoesNotInvoke(m: Method, method: String): Unit =
     assertDoesNotInvoke(m.instructions, method)
-  def assertDoesNotInvoke(l: List[Instruction], method: String): Unit = {
+  def assertDoesNotInvoke(l: List[Instruction], method: String): Unit =
     assert(!l.exists {
       case i: Invoke => i.name == method
       case _         => false
     }, l.stringLines)
-  }
 
   def assertInvokedMethods(m: Method, expected: List[String]): Unit =
     assertInvokedMethods(m.instructions, expected)

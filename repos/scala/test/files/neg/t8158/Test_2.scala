@@ -5,10 +5,9 @@ object X {
 }
 
 class BugTest {
-  def bug(): Unit = {
+  def bug(): Unit =
     "any" match {
       case X() =>
       case _   => ???
     }
-  }
 }

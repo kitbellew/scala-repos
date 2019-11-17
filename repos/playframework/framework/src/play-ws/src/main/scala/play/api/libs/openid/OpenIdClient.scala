@@ -185,7 +185,7 @@ class WsOpenIdClient @Inject() (ws: WSClient, discovery: Discovery)
   }
 
   private def verifiedId(
-      queryString: Map[String, Seq[String]]): Future[UserInfo] = {
+      queryString: Map[String, Seq[String]]): Future[UserInfo] =
     (
       queryString.get("openid.mode").flatMap(_.headOption),
       queryString.get("openid.claimed_id").flatMap(_.headOption)) match {
@@ -198,7 +198,6 @@ class WsOpenIdClient @Inject() (ws: WSClient, discovery: Discovery)
       case (Some("cancel"), _) => Future.failed(Errors.AUTH_CANCEL)
       case _                   => Future.failed(Errors.BAD_RESPONSE)
     }
-  }
 
   /**
     * Perform direct verification (see 11.4.2. Verifying Directly with the OpenID Provider)
@@ -220,7 +219,7 @@ class WsOpenIdClient @Inject() (ws: WSClient, discovery: Discovery)
 
   private def axParameters(
       axRequired: Seq[(String, String)],
-      axOptional: Seq[(String, String)]): Seq[(String, String)] = {
+      axOptional: Seq[(String, String)]): Seq[(String, String)] =
     if (axRequired.isEmpty && axOptional.isEmpty) Nil
     else {
       val axRequiredParams =
@@ -239,7 +238,6 @@ class WsOpenIdClient @Inject() (ws: WSClient, discovery: Discovery)
         "openid.ns.ax" -> "http://openid.net/srv/ax/1.0",
         "openid.ax.mode" -> "fetch_request") ++ axRequiredParams ++ axOptionalParams ++ definitions
     }
-  }
 }
 
 trait Discovery {
@@ -387,12 +385,11 @@ private[openid] object Discovery {
   * The OpenID module
   */
 class OpenIDModule extends Module {
-  def bindings(environment: Environment, configuration: Configuration) = {
+  def bindings(environment: Environment, configuration: Configuration) =
     Seq(
       bind[OpenIdClient].to[WsOpenIdClient],
       bind[Discovery].to[WsDiscovery]
     )
-  }
 }
 
 /**

@@ -50,9 +50,8 @@ class TestResultListener(private val testConfigurationName: String)
     //TODO: implement me
   }
 
-  override def processTerminated(event: ProcessEvent): Unit = {
+  override def processTerminated(event: ProcessEvent): Unit =
     terminated = true
-  }
 
   override def startNotified(event: ProcessEvent): Unit = {
     //TODO: implement me

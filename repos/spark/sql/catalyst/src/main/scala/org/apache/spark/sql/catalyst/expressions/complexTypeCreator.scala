@@ -36,17 +36,15 @@ case class CreateArray(children: Seq[Expression]) extends Expression {
       children.map(_.dataType),
       "function array")
 
-  override def dataType: DataType = {
+  override def dataType: DataType =
     ArrayType(
       children.headOption.map(_.dataType).getOrElse(NullType),
       containsNull = children.exists(_.nullable))
-  }
 
   override def nullable: Boolean = false
 
-  override def eval(input: InternalRow): Any = {
+  override def eval(input: InternalRow): Any =
     new GenericArrayData(children.map(_.eval(input)).toArray)
-  }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val arrayClass = classOf[GenericArrayData].getName
@@ -99,9 +97,8 @@ case class CreateStruct(children: Seq[Expression]) extends Expression {
 
   override def nullable: Boolean = false
 
-  override def eval(input: InternalRow): Any = {
+  override def eval(input: InternalRow): Any =
     InternalRow(children.map(_.eval(input)): _*)
-  }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val rowClass = classOf[GenericInternalRow].getName
@@ -167,7 +164,7 @@ case class CreateNamedStruct(children: Seq[Expression]) extends Expression {
 
   override def nullable: Boolean = false
 
-  override def checkInputDataTypes(): TypeCheckResult = {
+  override def checkInputDataTypes(): TypeCheckResult =
     if (children.size % 2 != 0) {
       TypeCheckResult.TypeCheckFailure(
         s"$prettyName expects an even number of arguments.")
@@ -184,11 +181,9 @@ case class CreateNamedStruct(children: Seq[Expression]) extends Expression {
         TypeCheckResult.TypeCheckFailure("Field name should not be null")
       }
     }
-  }
 
-  override def eval(input: InternalRow): Any = {
+  override def eval(input: InternalRow): Any =
     InternalRow(valExprs.map(_.eval(input)): _*)
-  }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val rowClass = classOf[GenericInternalRow].getName
@@ -245,9 +240,8 @@ case class CreateStructUnsafe(children: Seq[Expression]) extends Expression {
 
   override def nullable: Boolean = false
 
-  override def eval(input: InternalRow): Any = {
+  override def eval(input: InternalRow): Any =
     InternalRow(children.map(_.eval(input)): _*)
-  }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val eval = GenerateUnsafeProjection.createCode(ctx, children)
@@ -289,9 +283,8 @@ case class CreateNamedStructUnsafe(children: Seq[Expression])
 
   override def nullable: Boolean = false
 
-  override def eval(input: InternalRow): Any = {
+  override def eval(input: InternalRow): Any =
     InternalRow(valExprs.map(_.eval(input)): _*)
-  }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val eval = GenerateUnsafeProjection.createCode(ctx, valExprs)

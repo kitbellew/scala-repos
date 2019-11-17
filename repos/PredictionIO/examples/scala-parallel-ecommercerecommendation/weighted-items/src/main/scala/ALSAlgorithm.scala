@@ -37,7 +37,7 @@ class ALSModel(
 
   @transient lazy val itemIntStringMap = itemStringIntMap.inverse
 
-  override def toString = {
+  override def toString =
     s" rank: ${rank}" + s" userFeatures: [${userFeatures.size}]" +
       s"(${userFeatures.take(2).toList}...)" +
       s" productFeatures: [${productFeatures.size}]" +
@@ -46,7 +46,6 @@ class ALSModel(
       s"(${userStringIntMap.take(2).toString}...)]" +
       s" itemStringIntMap: [${itemStringIntMap.size}]" +
       s"(${itemStringIntMap.take(2).toString}...)]"
-  }
 }
 
 // Item weights are defined according to this structure so that groups of items can be easily changed together
@@ -459,17 +458,16 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       categories: Option[Set[String]],
       whiteList: Option[Set[Int]],
       blackList: Set[Int]
-  ): Boolean = {
+  ): Boolean =
     // can add other custom filtering here
     whiteList.map(_.contains(i)).getOrElse(true) && !blackList.contains(i) &&
-    // filter categories
-    categories
-      .map { cat =>
-        item.categories.exists { itemCat =>
-          // keep this item if its categories overlap with the query categories
-          itemCat.toSet.intersect(cat).nonEmpty
-        } // discard this item if it has no categories
-      }
-      .getOrElse(true)
-  }
+      // filter categories
+      categories
+        .map { cat =>
+          item.categories.exists { itemCat =>
+            // keep this item if its categories overlap with the query categories
+            itemCat.toSet.intersect(cat).nonEmpty
+          } // discard this item if it has no categories
+        }
+        .getOrElse(true)
 }

@@ -29,9 +29,8 @@ class Performance(
 
   def profile[T](
       test: => T,
-      profileParams: BenchmarkParameters = profileDefaults) = {
+      profileParams: BenchmarkParameters = profileDefaults) =
     benchmarkOnly(test, profileParams)
-  }
 
   def benchmark[T](
       test: => T,
@@ -50,7 +49,7 @@ class Performance(
     @tailrec
     def benchmark[A](
         test: => A,
-        result: BenchmarkResults[A]): BenchmarkResults[A] = {
+        result: BenchmarkResults[A]): BenchmarkResults[A] =
       if (result.testRuns < parameters.testRuns) {
         val (t, r) = time(result.repCount, test)
         parameters.restBetweenTests foreach { Thread.sleep }
@@ -58,7 +57,6 @@ class Performance(
       } else {
         result
       }
-    }
 
     def attemptGC() = {
       import System.gc
@@ -99,14 +97,13 @@ class Performance(
   }
 
   def time[T](repeat: Int, f: => T): (Long, T) = {
-    def rep(r: Int = 0): T = {
+    def rep(r: Int = 0): T =
       if (r < repeat - 1) {
         f
         rep(r + 1)
       } else {
         f
       }
-    }
     val start = System.nanoTime()
     val r = rep()
     val t = System.nanoTime() - start
@@ -183,9 +180,8 @@ Measurement overhead:        %10.02f%%
         baseline * 100.0 / mean
       ))
   }
-  def ptile(p: Double): Int = {
+  def ptile(p: Double): Int =
     (p * (testRuns - 1)).toInt
-  }
   def meanRepTime(): Double = {
     val denom = timings.length * repCount * 1000000000.0
     timings.foldLeft(0.0) {

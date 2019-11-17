@@ -116,9 +116,8 @@ private[spark] class RollingFileAppender(
     try {
       val rolledoverFiles = activeFile.getParentFile
         .listFiles(new FileFilter {
-          def accept(f: File): Boolean = {
+          def accept(f: File): Boolean =
             f.getName.startsWith(activeFile.getName) && f != activeFile
-          }
         })
         .sorted
       val filesToBeDeleted = rolledoverFiles.take(

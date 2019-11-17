@@ -174,9 +174,7 @@ object CssSelectorParser extends PackratParsers with ImplicitConversions {
   private implicit def str2chars(s: String): List[Char] =
     new scala.collection.immutable.WrappedString(s).toList
 
-  private def fixAll(
-      all: List[CssSelector],
-      sn: Option[SubNode]): CssSelector = {
+  private def fixAll(all: List[CssSelector], sn: Option[SubNode]): CssSelector =
     (all, sn) match {
       // case (Nil, Some())
       case (r :: Nil, None)     => r
@@ -186,7 +184,6 @@ object CssSelectorParser extends PackratParsers with ImplicitConversions {
         (lst.dropRight(1) ::: lst.takeRight(1).map(_.withSubnode(sn)))
           .reduceRight((b, a) => EnclosedSelector(b, a))
     }
-  }
 
   private val atEnd = Parser { in =>
     if (in.atEnd) Success(CharSequenceReader.EofCh, in) else Failure("", in)

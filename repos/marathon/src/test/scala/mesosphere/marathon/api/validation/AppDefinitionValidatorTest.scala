@@ -450,9 +450,7 @@ class AppDefinitionValidatorTest
       PersistentVolume(path, PersistentVolumeInfo(123), mesos.Volume.Mode.RW)
     val zero = UpgradeStrategy(0, 0)
 
-    def residentApp(
-        id: String,
-        volumes: Seq[PersistentVolume]): AppDefinition = {
+    def residentApp(id: String, volumes: Seq[PersistentVolume]): AppDefinition =
       AppDefinition(
         id = PathId(id),
         cmd = Some("test"),
@@ -462,7 +460,6 @@ class AppDefinitionValidatorTest
             123,
             Protos.ResidencyDefinition.TaskLostBehavior.RELAUNCH_AFTER_TIMEOUT))
       )
-    }
     val vol1 = persistentVolume("foo")
     val vol2 = persistentVolume("bla")
     val vol3 = persistentVolume("test")

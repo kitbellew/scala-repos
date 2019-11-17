@@ -321,9 +321,8 @@ class TableView[S](
       .setValue(new jfxu.Callback[
         jfxsc.TableView.ResizeFeatures[_],
         java.lang.Boolean] {
-        def call(v: jfxsc.TableView.ResizeFeatures[_]): java.lang.Boolean = {
+        def call(v: jfxsc.TableView.ResizeFeatures[_]): java.lang.Boolean =
           p(v)
-        }
       })
   }
   def columnResizePolicy_=(
@@ -390,9 +389,8 @@ class TableView[S](
   def rowFactory_=(factory: TableView[S] => TableRow[S]) {
     delegate.rowFactoryProperty.setValue(
       new jfxu.Callback[jfxsc.TableView[S], jfxsc.TableRow[S]] {
-        def call(v: jfxsc.TableView[S]): jfxsc.TableRow[S] = {
+        def call(v: jfxsc.TableView[S]): jfxsc.TableRow[S] =
           factory(v)
-        }
       })
   }
 

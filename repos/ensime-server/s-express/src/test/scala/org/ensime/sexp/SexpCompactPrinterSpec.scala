@@ -9,9 +9,8 @@ class SexpCompactPrinterSpec extends EnsimeSpec {
   private val foo = SexpString("foo")
   private val foosym = SexpSymbol("foo")
   private val barsym = SexpSymbol("bar")
-  private def assertPrinter(sexp: Sexp, expect: String): Unit = {
+  private def assertPrinter(sexp: Sexp, expect: String): Unit =
     SexpCompactPrinter(sexp) should ===(expect)
-  }
 
   "CompactPrinter" should "handle nil or empty lists/data" in {
     assertPrinter(SexpNil, "nil")

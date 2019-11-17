@@ -32,12 +32,11 @@ import org.jetbrains.plugins.scala.macroAnnotations.{ModCount, Cached}
 trait ScTemplateParents extends ScalaPsiElement {
   def typeElements: Seq[ScTypeElement]
   @Cached(false, ModCount.getBlockModificationCount, this)
-  def syntheticTypeElements: Seq[ScTypeElement] = {
+  def syntheticTypeElements: Seq[ScTypeElement] =
     getContext.getContext match {
       case td: ScTypeDefinition => SyntheticMembersInjector.injectSupers(td)
       case _                    => Seq.empty
     }
-  }
   def allTypeElements: Seq[ScTypeElement] =
     typeElements ++ syntheticTypeElements
   def typeElementsWithoutConstructor: Seq[ScTypeElement] =
@@ -50,11 +49,11 @@ trait ScTemplateParents extends ScalaPsiElement {
 object ScTemplateParents {
   def extractSupers(
       typeElements: Seq[ScTypeElement],
-      project: Project): Seq[PsiClass] = {
+      project: Project): Seq[PsiClass] =
     typeElements
       .map {
         case element: ScTypeElement =>
-          def tail(): PsiClass = {
+          def tail(): PsiClass =
             element
               .getType(TypingContext.empty)
               .map {
@@ -65,7 +64,6 @@ object ScTemplateParents {
                   }
               }
               .getOrElse(null)
-          }
 
           def refTail(ref: ScStableCodeReferenceElement): PsiClass = {
             val resolve = ref.resolveNoConstructor
@@ -104,5 +102,4 @@ object ScTemplateParents {
           }
       }
       .filter(_ != null)
-  }
 }

@@ -43,8 +43,7 @@ case class ServiceLocation(
 }
 
 object ServiceLocation {
-  def fromConfig(
-      conf: Configuration): ValidationNel[String, ServiceLocation] = {
+  def fromConfig(conf: Configuration): ValidationNel[String, ServiceLocation] =
     (conf
       .get[String]("protocol")
       .toSuccess(nels("Configuration property protocol is required")) |@| conf
@@ -55,5 +54,4 @@ object ServiceLocation {
       (protocol, host, port) =>
         ServiceLocation(protocol, host, port, conf.get[String]("pathPrefix"))
     }
-  }
 }

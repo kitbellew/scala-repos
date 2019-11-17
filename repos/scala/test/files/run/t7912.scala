@@ -4,7 +4,7 @@ object Test {
   def foo: Int = (A: Any) match {
     case 0 => 0
   }
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     try {
       foo
       sys.error("no exception")
@@ -13,5 +13,4 @@ object Test {
         assert(me.getMessage == "an instance of class A$", me.getMessage)
       case ex: Throwable => sys.error("not a match error: " + ex.getClass)
     }
-  }
 }

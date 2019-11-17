@@ -229,7 +229,7 @@ class ZookeeperSystemCoordinationSpec extends Specification {
       client
     }
 
-    private def zookeeperAvailable(): Boolean = {
+    private def zookeeperAvailable(): Boolean =
       try {
         val client = factory()
         var result = client != null
@@ -238,11 +238,9 @@ class ZookeeperSystemCoordinationSpec extends Specification {
       } catch {
         case ex => false
       }
-    }
 
-    private def validatedFactory(): Option[ClientFactory] = {
+    private def validatedFactory(): Option[ClientFactory] =
       if (zookeeperAvailable()) Some(factory) else None
-    }
 
     private val offline = new Skipped("SKIP - ZOOKEEPER NOT AVAILABLE")
 
@@ -253,7 +251,7 @@ class ZookeeperSystemCoordinationSpec extends Specification {
       client.close
     }
 
-    def around[T <% Result](t: => T): Result = {
+    def around[T <% Result](t: => T): Result =
       validatedFactory()
         .map { _ =>
           try {
@@ -263,7 +261,6 @@ class ZookeeperSystemCoordinationSpec extends Specification {
           }
         }
         .getOrElse(offline)
-    }
 
     def outside: ClientFactory = factory
   }

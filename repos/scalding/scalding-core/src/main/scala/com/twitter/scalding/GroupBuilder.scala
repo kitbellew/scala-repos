@@ -122,26 +122,23 @@ class GroupBuilder(val groupFields: Fields)
     this
   }
 
-  protected def overrideReducers(p: Pipe): Pipe = {
+  protected def overrideReducers(p: Pipe): Pipe =
     numReducers
       .map { r =>
         RichPipe.setReducers(p, r)
       }
       .getOrElse(p)
-  }
 
-  protected def overrideDescription(p: Pipe): Pipe = {
+  protected def overrideDescription(p: Pipe): Pipe =
     RichPipe.setPipeDescriptions(p, descriptions)
-  }
 
   /**
     * == Warning ==
     * This may significantly reduce performance of your job.
     * It kills the ability to do map-side aggregation.
     */
-  def buffer(args: Fields)(b: Buffer[_]): GroupBuilder = {
+  def buffer(args: Fields)(b: Buffer[_]): GroupBuilder =
     every(pipe => new Every(pipe, args, b))
-  }
 
   /**
     * Prefer aggregateBy operations!
@@ -446,7 +443,7 @@ class ScanLeftIterator[T, U](it: Iterator[T], init: U, fn: (U, T) => U)
     extends Iterator[U]
     with java.io.Serializable {
   protected var prev: Option[U] = None
-  def hasNext: Boolean = { prev.isEmpty || it.hasNext }
+  def hasNext: Boolean = prev.isEmpty || it.hasNext
   // Don't use pattern matching in a performance-critical section
   @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.OptionPartial"))
   def next = {

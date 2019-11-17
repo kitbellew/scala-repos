@@ -75,9 +75,8 @@ private[sql] case class ExecutedCommand(cmd: RunnableCommand)
   override def executeTake(limit: Int): Array[InternalRow] =
     sideEffectResult.take(limit).toArray
 
-  protected override def doExecute(): RDD[InternalRow] = {
+  protected override def doExecute(): RDD[InternalRow] =
     sqlContext.sparkContext.parallelize(sideEffectResult, 1)
-  }
 
   override def argString: String = cmd.toString
 }
@@ -422,17 +421,14 @@ case class DescribeFunction(functionName: String, isExtended: Boolean)
     schema.toAttributes
   }
 
-  private def replaceFunctionName(
-      usage: String,
-      functionName: String): String = {
+  private def replaceFunctionName(usage: String, functionName: String): String =
     if (usage == null) {
       "To be added."
     } else {
       usage.replaceAll("_FUNC_", functionName)
     }
-  }
 
-  override def run(sqlContext: SQLContext): Seq[Row] = {
+  override def run(sqlContext: SQLContext): Seq[Row] =
     sqlContext.sessionState.functionRegistry
       .lookupFunction(functionName) match {
       case Some(info) =>
@@ -450,7 +446,6 @@ case class DescribeFunction(functionName: String, isExtended: Boolean)
 
       case None => Seq(Row(s"Function: $functionName not found."))
     }
-  }
 }
 
 case class SetDatabaseCommand(databaseName: String) extends RunnableCommand {

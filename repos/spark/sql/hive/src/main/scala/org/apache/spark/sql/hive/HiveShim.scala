@@ -114,9 +114,7 @@ private[hive] object HiveShim {
     w
   }
 
-  def toCatalystDecimal(
-      hdoi: HiveDecimalObjectInspector,
-      data: Any): Decimal = {
+  def toCatalystDecimal(hdoi: HiveDecimalObjectInspector, data: Any): Decimal =
     if (hdoi.preferWritable()) {
       Decimal(
         hdoi
@@ -131,7 +129,6 @@ private[hive] object HiveShim {
         hdoi.precision(),
         hdoi.scale())
     }
-  }
 
   /**
     * This class provides the UDF creation and also the UDF instance serialization and
@@ -150,7 +147,7 @@ private[hive] object HiveShim {
     // for Serialization
     def this() = this(null)
 
-    override def hashCode(): Int = {
+    override def hashCode(): Int =
       if (functionClassName == HIVE_GENERIC_UDF_MACRO_CLS) {
         Objects.hashCode(
           functionClassName,
@@ -158,7 +155,6 @@ private[hive] object HiveShim {
       } else {
         functionClassName.hashCode()
       }
-    }
 
     override def equals(other: Any): Boolean = other match {
       case a: HiveFunctionWrapper if functionClassName == a.functionClassName =>
@@ -193,20 +189,18 @@ private[hive] object HiveShim {
 
     def deserializePlan[UDFType](
         is: java.io.InputStream,
-        clazz: Class[_]): UDFType = {
+        clazz: Class[_]): UDFType =
       deserializeObjectByKryo(
         Utilities.runtimeSerializationKryo.get(),
         is,
         clazz)
         .asInstanceOf[UDFType]
-    }
 
-    def serializePlan(function: AnyRef, out: java.io.OutputStream): Unit = {
+    def serializePlan(function: AnyRef, out: java.io.OutputStream): Unit =
       serializeObjectByKryo(
         Utilities.runtimeSerializationKryo.get(),
         function,
         out)
-    }
 
     def writeExternal(out: java.io.ObjectOutput) {
       // output the function name
@@ -245,7 +239,7 @@ private[hive] object HiveShim {
       }
     }
 
-    def createFunction[UDFType <: AnyRef](): UDFType = {
+    def createFunction[UDFType <: AnyRef](): UDFType =
       if (instance != null) {
         instance.asInstanceOf[UDFType]
       } else {
@@ -260,7 +254,6 @@ private[hive] object HiveShim {
         }
         func
       }
-    }
   }
 
   /*

@@ -33,9 +33,8 @@ class Polya[T, @specialized(Int) I](params: T)(
     extends DiscreteDistr[I] {
   import space._
   private val innerDirichlet = new Dirichlet(params)
-  def draw() = {
+  def draw() =
     Multinomial(innerDirichlet.draw).get
-  }
 
   lazy val logNormalizer = -lbeta(params)
 

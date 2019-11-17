@@ -36,18 +36,16 @@ class Cached @Inject() (cache: CacheApi) {
     *
     * @param key Compute a key from the request header
     */
-  def apply(key: RequestHeader => String): CachedBuilder = {
+  def apply(key: RequestHeader => String): CachedBuilder =
     apply(key, duration = 0)
-  }
 
   /**
     * Cache an action.
     *
     * @param key Cache key
     */
-  def apply(key: String): CachedBuilder = {
+  def apply(key: String): CachedBuilder =
     apply(_ => key, duration = 0)
-  }
 
   /**
     * Cache an action.
@@ -55,11 +53,10 @@ class Cached @Inject() (cache: CacheApi) {
     * @param key Cache key
     * @param duration Cache duration (in seconds)
     */
-  def apply(key: RequestHeader => String, duration: Int): CachedBuilder = {
+  def apply(key: RequestHeader => String, duration: Int): CachedBuilder =
     new CachedBuilder(cache, key, {
       case (_: ResponseHeader) => Duration(duration, SECONDS)
     })
-  }
 
   /**
     * A cached instance caching nothing
@@ -120,9 +117,8 @@ object Cached {
     * @param key Compute a key from the request header
     */
   @deprecated("Inject Cached into your component", "2.5.0")
-  def apply(key: RequestHeader => String): UnboundCachedBuilder = {
+  def apply(key: RequestHeader => String): UnboundCachedBuilder =
     apply(key, duration = 0)
-  }
 
   /**
     * Cache an action.
@@ -130,9 +126,8 @@ object Cached {
     * @param key Cache key
     */
   @deprecated("Inject Cached into your component", "2.5.0")
-  def apply(key: String): UnboundCachedBuilder = {
+  def apply(key: String): UnboundCachedBuilder =
     apply(_ => key, duration = 0)
-  }
 
   /**
     * Cache an action.
@@ -141,13 +136,10 @@ object Cached {
     * @param duration Cache duration (in seconds)
     */
   @deprecated("Inject Cached into your component", "2.5.0")
-  def apply(
-      key: RequestHeader => String,
-      duration: Int): UnboundCachedBuilder = {
+  def apply(key: RequestHeader => String, duration: Int): UnboundCachedBuilder =
     new UnboundCachedBuilder(key, {
       case (_: ResponseHeader) => Duration(duration, SECONDS)
     })
-  }
 
   /**
     * A cached instance caching nothing
@@ -261,7 +253,7 @@ final class CachedBuilder(
   private def handleResult(
       result: Result,
       etagKey: String,
-      resultKey: String): Result = {
+      resultKey: String): Result =
     cachingWithEternity
       .andThen { duration =>
         // Format expiration date according to http standard
@@ -285,7 +277,6 @@ final class CachedBuilder(
         resultWithHeaders
       }
       .applyOrElse(result.header, (_: ResponseHeader) => result)
-  }
 
   /**
     * Whether this cache should cache the specified response if the status code match
@@ -376,9 +367,8 @@ class UnboundCachedBuilder(
     * Compose the cache with an action
     */
   def build(action: EssentialAction)(
-      implicit app: Application): EssentialAction = {
+      implicit app: Application): EssentialAction =
     new CachedBuilder(Cache.cacheApi, key, caching).build(action)
-  }
 
   /**
     * Whether this cache should cache the specified response if the status code match

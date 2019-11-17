@@ -17,10 +17,9 @@ trait ScNameValuePair
     extends ScalaPsiElement
     with ScNamedElement
     with PsiNameValuePair {
-  override def getName: String = {
+  override def getName: String =
     if (nameId == null) ""
     else super.getName
-  }
 
   def nameId: PsiElement = {
     val node = getNode.findChildByType(ScalaTokenTypes.tIDENTIFIER)

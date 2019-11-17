@@ -795,9 +795,8 @@ abstract class HadoopFsRelationTest
 class AlwaysFailOutputCommitter(outputPath: Path, context: TaskAttemptContext)
     extends FileOutputCommitter(outputPath, context) {
 
-  override def commitJob(context: JobContext): Unit = {
+  override def commitJob(context: JobContext): Unit =
     sys.error("Intentional job commitment failure for testing purpose.")
-  }
 }
 
 // This class is used to test SPARK-8578. We should not use any custom output committer when
@@ -807,7 +806,6 @@ class AlwaysFailParquetOutputCommitter(
     context: TaskAttemptContext)
     extends ParquetOutputCommitter(outputPath, context) {
 
-  override def commitJob(context: JobContext): Unit = {
+  override def commitJob(context: JobContext): Unit =
     sys.error("Intentional job commitment failure for testing purpose.")
-  }
 }

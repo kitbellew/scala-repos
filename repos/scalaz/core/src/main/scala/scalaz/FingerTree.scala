@@ -135,9 +135,8 @@ case class Two[V, A](v: V, a1: A, a2: A)(implicit r: Reducer[A, V])
 
   def rtail = one(a1)
 
-  def toTree = {
+  def toTree =
     deep(v, one(a1), empty[V, Node[V, A]], one(a2))
-  }
 
   def map[B, V2](f: A => B)(implicit r: Reducer[B, V2]) = two(f(a1), f(a2))
 
@@ -184,9 +183,8 @@ case class Three[V, A](v: V, a1: A, a2: A, a3: A)(implicit r: Reducer[A, V])
 
   def rtail = two(a1, a2)
 
-  def toTree = {
+  def toTree =
     deep(v, two(a1, a2), empty[V, Node[V, A]], one(a3))
-  }
 
   def map[B, V2](f: A => B)(implicit r: Reducer[B, V2]) =
     three(f(a1), f(a2), f(a3))
@@ -241,9 +239,8 @@ case class Four[V, A](v: V, a1: A, a2: A, a3: A, a4: A)(
 
   def rtail = three(a1, a2, a3)
 
-  def toTree = {
+  def toTree =
     deep(v, two(a1, a2), empty[V, Node[V, A]], two(a3, a4))
-  }
 
   def map[B, V2](f: A => B)(implicit r: Reducer[B, V2]) =
     four(f(a1), f(a2), f(a3), f(a4))
@@ -388,11 +385,10 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
           s.append(pr.foldMap(f), m.foldMap(x => x.foldMap(f))),
           sf.foldMap(f)))
 
-  def foldRight[B](z: => B)(f: (A, => B) => B): B = {
+  def foldRight[B](z: => B)(f: (A, => B) => B): B =
     foldMap((a: A) => (Endo.endo(f(a, _: B)))) apply z
-  }
 
-  def foldLeft[B](b: B)(f: (B, A) => B): B = {
+  def foldLeft[B](b: B)(f: (B, A) => B): B =
     fold(
       v => b,
       (v, a) => f(b, a),
@@ -402,7 +398,6 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
           m.foldLeft[B](fingerFoldable[V].foldLeft(pr, b)(f))((x, y) =>
             nodeFoldable[V].foldLeft(y, x)(f)))(f)
     )
-  }
 
   /**
     * Fold over the structure of the tree. The given functions correspond to the three possible variations of the finger tree.

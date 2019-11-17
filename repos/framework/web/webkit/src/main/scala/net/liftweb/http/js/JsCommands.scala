@@ -104,15 +104,13 @@ trait JsObj extends JsExp {
 
   override def toString(): String = toJsCmd
 
-  override def equals(other: Any): Boolean = {
+  override def equals(other: Any): Boolean =
     other match {
       case jsObj: JsObj => {
         import scala.annotation.tailrec
 
         @tailrec
-        def test(
-            me: Map[String, JsExp],
-            them: List[(String, JsExp)]): Boolean = {
+        def test(me: Map[String, JsExp], them: List[(String, JsExp)]): Boolean =
           them match {
             case Nil             => me.isEmpty
             case _ if me.isEmpty => false
@@ -123,14 +121,12 @@ trait JsObj extends JsExp {
                 case _                   => test(me - k, xs)
               }
           }
-        }
 
         test(Map(props: _*), jsObj.props)
       }
 
       case x => super.equals(x)
     }
-  }
 
   def +*(other: JsObj) = {
     val np = props ::: other.props
@@ -195,12 +191,11 @@ object JsExp {
 trait JsExp extends HtmlFixer with ToJsCmd {
   def toJsCmd: String
 
-  override def equals(other: Any): Boolean = {
+  override def equals(other: Any): Boolean =
     other match {
       case jx: JsExp => this.toJsCmd == jx.toJsCmd
       case _         => super.equals(other)
     }
-  }
 
   override def toString = "JsExp(" + toJsCmd + ")"
 
@@ -317,7 +312,7 @@ object JE {
   }
 
   object LjSwappable {
-    def apply(visible: JsExp, hidden: JsExp): JxBase = {
+    def apply(visible: JsExp, hidden: JsExp): JxBase =
       new JxNodeBase {
         def child = Nil
 
@@ -326,9 +321,8 @@ object JE {
             name + ".appendChild(lift$.swappable(" + visible.toJsCmd + ", " +
               hidden.toJsCmd + "))").cmd
       }
-    }
 
-    def apply(visible: NodeSeq, hidden: NodeSeq): JxBase = {
+    def apply(visible: NodeSeq, hidden: NodeSeq): JxBase =
       new JxNodeBase {
         def child = Nil
 
@@ -345,7 +339,6 @@ object JE {
               hidden.toList) & JE.JsRaw("return df").cmd).toJsCmd +
               "()))").cmd
       }
-    }
   }
 
   object LjBuildIndex {

@@ -145,7 +145,7 @@ object ParserUtils extends ParserUtilsBase {
 
   def elementCanStartStatement(
       element: IElementType,
-      builder: ScalaPsiBuilder): Boolean = {
+      builder: ScalaPsiBuilder): Boolean =
     element match {
       case ScalaTokenTypes.kCATCH        => false
       case ScalaTokenTypes.kELSE         => false
@@ -177,5 +177,4 @@ object ParserUtils extends ParserUtilsBase {
         }
       case _ => true
     }
-  }
 }

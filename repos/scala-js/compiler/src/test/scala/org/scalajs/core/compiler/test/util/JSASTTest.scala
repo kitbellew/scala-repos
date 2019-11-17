@@ -76,13 +76,11 @@ abstract class JSASTTest extends DirectTest {
 
   implicit def string2ast(str: String): JSAST = stringAST(str)
 
-  override def newScalaJSPlugin(global: Global): ScalaJSPlugin = {
+  override def newScalaJSPlugin(global: Global): ScalaJSPlugin =
     new ScalaJSPlugin(global) {
-      override def generatedJSAST(cld: List[js.Tree]): Unit = {
+      override def generatedJSAST(cld: List[js.Tree]): Unit =
         lastAST = new JSAST(cld)
-      }
     }
-  }
 
   def stringAST(code: String): JSAST = stringAST(defaultGlobal)(code)
   def stringAST(global: Global)(code: String): JSAST = {

@@ -16,7 +16,7 @@ object quickSelect extends UFunc {
 
   implicit def implFromQSInPlace[T](
       implicit op: quickSelect.InPlaceImpl2[Array[T], Int])
-      : Impl2[Array[T], Int, T] = {
+      : Impl2[Array[T], Int, T] =
     new Impl2[Array[T], Int, T] {
       def apply(a: Array[T], position: Int): T = {
         val quickselected: Array[T] = a.clone()
@@ -24,12 +24,10 @@ object quickSelect extends UFunc {
         quickselected(position)
       }
     }
-  }
 
   @expand
   implicit def inPlaceImpl2[@expand.args(Int, Long, Double, Float) T]
-      : InPlaceImpl2[Array[T], Int] = {
-
+      : InPlaceImpl2[Array[T], Int] =
     new InPlaceImpl2[Array[T], Int] {
 
       def apply(x: Array[T], position: Int): Unit = {
@@ -79,11 +77,10 @@ object quickSelect extends UFunc {
         implQuickSelectSort(x, position)
       }
     }
-  }
 
   implicit def implFromQSInPlaceColl[Coll, T](
       implicit view: Coll <:< Seq[T],
-      ordering: Ordering[T]): Impl2[Coll, Int, T] = {
+      ordering: Ordering[T]): Impl2[Coll, Int, T] =
     new Impl2[Coll, Int, T] {
       def apply(a: Coll, position: Int): T = {
         val copy = view(a).to[ArrayBuffer]
@@ -91,11 +88,10 @@ object quickSelect extends UFunc {
         copy(position)
       }
     }
-  }
 
   implicit def implFromOrdering[T, Coll](
       implicit view: Coll <:< mutable.IndexedSeq[T],
-      ordering: Ordering[T]): InPlaceImpl2[Coll, Int] = {
+      ordering: Ordering[T]): InPlaceImpl2[Coll, Int] =
     new InPlaceImpl2[Coll, Int] {
 
       def apply(rawx: Coll, position: Int): Unit = {
@@ -152,7 +148,6 @@ object quickSelect extends UFunc {
         implQuickSelectSort(coll, position)
       }
     }
-  }
 }
 
 /**quickSelectImpl does not clone the input array before doing a quickSelect-sort but instead

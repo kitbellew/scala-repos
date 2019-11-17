@@ -81,7 +81,7 @@ sealed class Metadata private[types] (private[types] val map: Map[String, Any])
 
   override def toString: String = json
 
-  override def equals(obj: Any): Boolean = {
+  override def equals(obj: Any): Boolean =
     obj match {
       case that: Metadata =>
         if (map.keySet == that.map.keySet) {
@@ -99,13 +99,11 @@ sealed class Metadata private[types] (private[types] val map: Map[String, Any])
       case other =>
         false
     }
-  }
 
   override def hashCode: Int = Metadata.hash(this)
 
-  private def get[T](key: String): T = {
+  private def get[T](key: String): T =
     map(key).asInstanceOf[T]
-  }
 
   private[sql] def jsonValue: JValue = Metadata.toJsonValue(this)
 }
@@ -116,9 +114,8 @@ object Metadata {
   def empty: Metadata = new Metadata(Map.empty)
 
   /** Creates a Metadata instance from JSON. */
-  def fromJson(json: String): Metadata = {
+  def fromJson(json: String): Metadata =
     fromJObject(parse(json).asInstanceOf[JObject])
-  }
 
   /** Creates a Metadata instance from JSON AST. */
   private[sql] def fromJObject(jObj: JObject): Metadata = {
@@ -174,7 +171,7 @@ object Metadata {
   }
 
   /** Converts to JSON AST. */
-  private def toJsonValue(obj: Any): JValue = {
+  private def toJsonValue(obj: Any): JValue =
     obj match {
       case map: Map[_, _] =>
         val fields = map.toList.map {
@@ -197,10 +194,9 @@ object Metadata {
       case other =>
         throw new RuntimeException(s"Do not support type ${other.getClass}.")
     }
-  }
 
   /** Computes the hash code for the types we support. */
-  private def hash(obj: Any): Int = {
+  private def hash(obj: Any): Int =
     obj match {
       case map: Map[_, _] =>
         map.mapValues(hash).##
@@ -220,7 +216,6 @@ object Metadata {
       case other =>
         throw new RuntimeException(s"Do not support type ${other.getClass}.")
     }
-  }
 }
 
 /**
@@ -281,9 +276,8 @@ class MetadataBuilder {
     put(key, value)
 
   /** Builds the [[Metadata]] instance. */
-  def build(): Metadata = {
+  def build(): Metadata =
     new Metadata(map.toMap)
-  }
 
   private def put(key: String, value: Any): this.type = {
     map.put(key, value)

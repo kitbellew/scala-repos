@@ -149,7 +149,7 @@ class ScImportStmtImpl private (
             exprQual,
             shapesOnly = false)
 
-        def checkResolve(resolve: ResolveResult): Boolean = {
+        def checkResolve(resolve: ResolveResult): Boolean =
           resolve match {
             case ScalaResolveResult(elem, _) =>
               PsiTreeUtil.getContextOfType(
@@ -161,8 +161,7 @@ class ScImportStmtImpl private (
               }
             case _ => false
           }
-        }
-        def calculateRefType(checkPo: => Boolean) = {
+        def calculateRefType(checkPo: => Boolean) =
           exprQual.bind() match {
             case Some(ScalaResolveResult(p: PsiPackage, _)) =>
               poOpt() match {
@@ -174,7 +173,6 @@ class ScImportStmtImpl private (
               }
             case _ => exprQualRefType()
           }
-        }
 
         val resolveIterator = resolve.iterator
         while (resolveIterator.hasNext) {
@@ -183,12 +181,11 @@ class ScImportStmtImpl private (
             case s: ScalaResolveResult =>
               @tailrec
               def getFirstReference(ref: ScStableCodeReferenceElement)
-                  : ScStableCodeReferenceElement = {
+                  : ScStableCodeReferenceElement =
                 ref.qualifier match {
                   case Some(qual) => getFirstReference(qual)
                   case _          => ref
                 }
-              }
               (
                 s.getElement,
                 getFirstReference(exprQual)
@@ -224,10 +221,9 @@ class ScImportStmtImpl private (
                   prefixImport.substring(prefixImport.lastIndexOf('.') + 1)
               }
               val wildcard = names.contains("_")
-              def isOK(name: String): Boolean = {
+              def isOK(name: String): Boolean =
                 if (wildcard) !excludeNames.contains(name)
                 else names.contains(name)
-              }
               val newImportsUsed =
                 Set(importsUsed.toSeq: _*) + ImportExprUsed(importExpr)
               val newState = state
@@ -237,13 +233,12 @@ class ScImportStmtImpl private (
                 new BaseProcessor(StdKinds.stableImportSelector) {
                   def execute(
                       element: PsiElement,
-                      state: ResolveState): Boolean = {
+                      state: ResolveState): Boolean =
                     element match {
                       case elem: PsiNamedElement if isOK(elem.name) =>
                         processor.execute(element, state)
                       case _ => true
                     }
-                  }
                 },
                 newState,
                 this,
@@ -358,7 +353,7 @@ class ScImportStmtImpl private (
 
                         var newState = state.put(ScSubstitutor.key, subst)
 
-                        def isElementInPo: Boolean = {
+                        def isElementInPo: Boolean =
                           PsiTreeUtil.getContextOfType(
                             element,
                             true,
@@ -366,7 +361,6 @@ class ScImportStmtImpl private (
                             case obj: ScObject if obj.isPackageObject => true
                             case _                                    => false
                           }
-                        }
                         calculateRefType(isElementInPo).foreach { tp =>
                           newState =
                             newState.put(BaseProcessor.FROM_TYPE_KEY, tp)

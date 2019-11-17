@@ -112,12 +112,11 @@ object DbProviders {
   object MySqlProvider extends Provider with DbSetup {
     def name = "MySql"
     def vendor = new Vendor("com.mysql.jdbc.Driver") {
-      def mkConn = {
+      def mkConn =
         DriverManager.getConnection(
           "jdbc:mysql://localhost:3306/lift_test?autoReconnect=true",
           "dpp",
           "")
-      }
     }
     def propName: String = "mysql_local"
   }

@@ -17,7 +17,7 @@ object FilterSize extends SimplificationType {
 
   def hint = InspectionBundle.message("filter.size.hint")
 
-  override def getSimplification(expr: ScExpression): Option[Simplification] = {
+  override def getSimplification(expr: ScExpression): Option[Simplification] =
     expr match {
       case qual `.filter` (cond) `.sizeOrLength` () =>
         Some(
@@ -26,5 +26,4 @@ object FilterSize extends SimplificationType {
             .highlightFrom(qual))
       case _ => None
     }
-  }
 }

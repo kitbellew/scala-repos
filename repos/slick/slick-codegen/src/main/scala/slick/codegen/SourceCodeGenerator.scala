@@ -115,7 +115,7 @@ object SourceCodeGenerator {
     } finally dc.db.close
   }
 
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     args.toList match {
       case uri :: Nil =>
         run(new URI(uri), None)
@@ -169,5 +169,4 @@ object SourceCodeGenerator {
         System.exit(1)
       }
     }
-  }
 }

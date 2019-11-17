@@ -56,15 +56,13 @@ private[spark] class FixedLengthBinaryRecordReader
     }
   }
 
-  override def getCurrentKey: LongWritable = {
+  override def getCurrentKey: LongWritable =
     recordKey
-  }
 
-  override def getCurrentValue: BytesWritable = {
+  override def getCurrentValue: BytesWritable =
     recordValue
-  }
 
-  override def getProgress: Float = {
+  override def getProgress: Float =
     splitStart match {
       case x if x == splitEnd => 0.0.toFloat
       case _ =>
@@ -76,7 +74,6 @@ private[spark] class FixedLengthBinaryRecordReader
           )
           .toFloat
     }
-  }
 
   override def initialize(inputSplit: InputSplit, context: TaskAttemptContext) {
     // the file input

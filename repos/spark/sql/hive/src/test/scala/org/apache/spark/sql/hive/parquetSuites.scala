@@ -453,7 +453,7 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
 
   test("Caching converted data source Parquet Relations") {
     val _catalog = sessionState.catalog
-    def checkCached(tableIdentifier: _catalog.QualifiedTableName): Unit = {
+    def checkCached(tableIdentifier: _catalog.QualifiedTableName): Unit =
       // Converted test_parquet should be cached.
       sessionState.catalog.cachedDataSourceTables
         .getIfPresent(tableIdentifier) match {
@@ -468,7 +468,6 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
             "The cached test_parquet should be a Parquet Relation. " +
               s"However, $other is returned form the cache.")
       }
-    }
 
     dropTables("test_insert_parquet", "test_parquet_partitioned_cache_test")
 
@@ -851,11 +850,10 @@ abstract class ParquetPartitioningTest
     *
     * @param tableNames tables to drop
     */
-  def dropTables(tableNames: String*): Unit = {
+  def dropTables(tableNames: String*): Unit =
     tableNames.foreach { name =>
       sql(s"DROP TABLE IF EXISTS $name")
     }
-  }
 
   Seq(
     "partitioned_parquet",

@@ -164,7 +164,7 @@ class ScalaLineBreakpointType
   }
 
   override def getHighlightRange(
-      breakpoint: XLineBreakpoint[JavaLineBreakpointProperties]): TextRange = {
+      breakpoint: XLineBreakpoint[JavaLineBreakpointProperties]): TextRange =
     BreakpointManager.getJavaBreakpoint(breakpoint) match {
       case lineBp: LineBreakpoint[_] if lambdaOrdinal(lineBp) != null =>
         val dumbService = DumbService.getInstance(lineBp.getProject)
@@ -190,7 +190,6 @@ class ScalaLineBreakpointType
         } else Option(getContainingMethod(lineBp)).map(_.getTextRange).orNull
       case _ => null
     }
-  }
 
   private def lambdaOrdinal(breakpoint: LineBreakpoint[_]): Integer = {
     val xBreakpoint = breakpoint.getXBreakpoint
@@ -212,16 +211,15 @@ class ScalaLineBreakpointType
 
     private val isLambda = lambdaOrdinal != null && lambdaOrdinal >= 0
 
-    override def getIcon: Icon = {
+    override def getIcon: Icon =
       if (isLambda) AllIcons.Nodes.Function
       else
         element match {
           case e @ (_: PsiMethod | _: PsiClass | _: PsiFile) => e.getIcon(0)
           case _                                             => AllIcons.Debugger.Db_set_breakpoint
         }
-    }
 
-    override def getText: String = {
+    override def getText: String =
       if (isLambda) super.getText
       else {
         element match {
@@ -237,6 +235,5 @@ class ScalaLineBreakpointType
           case _            => "line in containing block"
         }
       }
-    }
   }
 }

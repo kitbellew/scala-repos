@@ -211,19 +211,17 @@ object TreeOrderedBuf {
       }
     }
 
-    def readLength(inputStream: TermName) = {
+    def readLength(inputStream: TermName) =
       t.length(q"e") match {
         case const: ConstantLengthCalculation[_] => q"${const.toInt}"
         case _                                   => q"$inputStream.readPosVarInt"
       }
-    }
 
-    def discardLength(inputStream: TermName) = {
+    def discardLength(inputStream: TermName) =
       t.length(q"e") match {
         case const: ConstantLengthCalculation[_] => q"()"
         case _                                   => q"$inputStream.readPosVarInt"
       }
-    }
 
     val lazyVariables = t.lazyOuterVariables.map {
       case (n, t) =>

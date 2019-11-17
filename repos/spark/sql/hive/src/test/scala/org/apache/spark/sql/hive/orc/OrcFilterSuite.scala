@@ -85,9 +85,8 @@ class OrcFilterSuite extends QueryTest with OrcTest {
 
   private def checkFilterPredicate(predicate: Predicate, stringExpr: String)(
       implicit df: DataFrame): Unit = {
-    def checkLogicalOperator(filter: SearchArgument) = {
+    def checkLogicalOperator(filter: SearchArgument) =
       assert(filter.toString == stringExpr)
-    }
     checkFilterPredicate(df, predicate, checkLogicalOperator)
   }
 

@@ -178,13 +178,11 @@ class NonlinearMinimizer(
       }
       .takeUpToWhere { _.converged }
 
-  def minimize(primal: DiffFunction[BDV], init: BDV): BDV = {
+  def minimize(primal: DiffFunction[BDV], init: BDV): BDV =
     minimizeAndReturnState(primal, init).z
-  }
 
-  def minimizeAndReturnState(primal: DiffFunction[BDV], init: BDV): State = {
+  def minimizeAndReturnState(primal: DiffFunction[BDV], init: BDV): State =
     iterations(primal, init).last
-  }
 }
 
 object NonlinearMinimizer {
@@ -258,7 +256,7 @@ object NonlinearMinimizer {
       ndim: Int,
       constraint: Constraint,
       lambda: Double,
-      usePQN: Boolean = false): FirstOrderMinimizer[BDV, DiffFunction[BDV]] = {
+      usePQN: Boolean = false): FirstOrderMinimizer[BDV, DiffFunction[BDV]] =
     constraint match {
       case IDENTITY => project(ProjectIdentity())
       case POSITIVE => project(ProjectPos())
@@ -277,7 +275,6 @@ object NonlinearMinimizer {
         throw new IllegalArgumentException(
           "NonlinearMinimizer does not support the Projection Operator")
     }
-  }
 
   def main(args: Array[String]) {
     if (args.length < 3) {

@@ -192,9 +192,8 @@ abstract class Request extends Message with HttpRequestProxy {
   def getResponse(): Response = response
 
   /** Encode an HTTP message to String */
-  def encodeString(): String = {
+  def encodeString(): String =
     new String(encodeBytes(), "UTF-8")
-  }
 
   /** Encode an HTTP message to Array[Byte] */
   def encodeBytes(): Array[Byte] = {
@@ -220,9 +219,8 @@ object Request {
   val Schema: RecordSchema = new RecordSchema
 
   /** Decode a Request from a String */
-  def decodeString(s: String): Request = {
+  def decodeString(s: String): Request =
     decodeBytes(s.getBytes(Charsets.Utf8))
-  }
 
   /** Decode a Request from Array[Byte] */
   def decodeBytes(b: Array[Byte]): Request = {

@@ -265,7 +265,7 @@ class FileMessageSet private[kafka] (
     * If we encounter a message larger than this we throw an InvalidMessageException.
     * @return The iterator.
     */
-  def iterator(maxMessageSize: Int): Iterator[MessageAndOffset] = {
+  def iterator(maxMessageSize: Int): Iterator[MessageAndOffset] =
     new IteratorTemplate[MessageAndOffset] {
       var location = start
       val sizeOffsetBuffer = ByteBuffer.allocate(12)
@@ -298,7 +298,6 @@ class FileMessageSet private[kafka] (
         new MessageAndOffset(new Message(buffer), offset)
       }
     }
-  }
 
   /**
     * The number of bytes taken up by this file set
@@ -316,9 +315,8 @@ class FileMessageSet private[kafka] (
   /**
     * Commit all written data to the physical disk
     */
-  def flush() = {
+  def flush() =
     channel.force(true)
-  }
 
   /**
     * Close this message set
@@ -400,7 +398,7 @@ object FileMessageSet {
       mutable: Boolean,
       fileAlreadyExists: Boolean = false,
       initFileSize: Int = 0,
-      preallocate: Boolean = false): FileChannel = {
+      preallocate: Boolean = false): FileChannel =
     if (mutable) {
       if (fileAlreadyExists) new RandomAccessFile(file, "rw").getChannel()
       else {
@@ -411,7 +409,6 @@ object FileMessageSet {
         } else new RandomAccessFile(file, "rw").getChannel()
       }
     } else new FileInputStream(file).getChannel()
-  }
 }
 
 object LogFlushStats extends KafkaMetricsGroup {

@@ -7,9 +7,8 @@ case class TypeClass(
     extendsList: Seq[TypeClass] = Seq(),
     createSyntax: Boolean = true) {
   require(pack.head == "scalaz")
-  def syntaxPack = {
+  def syntaxPack =
     Seq("scalaz", "syntax") ++ pack.drop(1)
-  }
 
   def packageString0 = pack.map("package " + _).mkString("\n")
   def packageString = pack.mkString(".")
@@ -244,9 +243,8 @@ object GenTypeClass {
 
     def updateSource(oldSource: String): String = {
       val delimiter = "////"
-      def parse(text: String): Seq[String] = {
+      def parse(text: String): Seq[String] =
         text.split(delimiter)
-      }
       val oldChunks: Seq[String] = parse(oldSource)
       val newChunks: Seq[String] = parse(source)
       if (oldChunks.length != newChunks.length)

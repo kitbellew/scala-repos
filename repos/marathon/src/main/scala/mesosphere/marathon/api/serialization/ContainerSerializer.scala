@@ -175,13 +175,12 @@ object PortMappingSerializer {
     )
 
   def toMesos(mapping: Container.Docker.PortMapping)
-      : mesos.Protos.ContainerInfo.DockerInfo.PortMapping = {
+      : mesos.Protos.ContainerInfo.DockerInfo.PortMapping =
     mesos.Protos.ContainerInfo.DockerInfo.PortMapping.newBuilder
       .setContainerPort(mapping.containerPort)
       .setHostPort(mapping.hostPort)
       .setProtocol(mapping.protocol)
       .build
-  }
 }
 
 object ParameterSerializer {

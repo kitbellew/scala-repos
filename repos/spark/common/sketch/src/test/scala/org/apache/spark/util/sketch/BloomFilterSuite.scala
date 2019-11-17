@@ -43,7 +43,7 @@ class BloomFilterSuite extends FunSuite {
   }
 
   def testAccuracy[T: ClassTag](typeName: String, numItems: Int)(
-      itemGen: Random => T): Unit = {
+      itemGen: Random => T): Unit =
     test(s"accuracy - $typeName") {
       // use a fixed seed to make the test predictable.
       val r = new Random(37)
@@ -72,10 +72,9 @@ class BloomFilterSuite extends FunSuite {
 
       checkSerDe(filter)
     }
-  }
 
   def testMergeInPlace[T: ClassTag](typeName: String, numItems: Int)(
-      itemGen: Random => T): Unit = {
+      itemGen: Random => T): Unit =
     test(s"mergeInPlace - $typeName") {
       // use a fixed seed to make the test predictable.
       val r = new Random(37)
@@ -100,7 +99,6 @@ class BloomFilterSuite extends FunSuite {
 
       checkSerDe(filter1)
     }
-  }
 
   def testItemType[T: ClassTag](typeName: String, numItems: Int)(
       itemGen: Random => T): Unit = {

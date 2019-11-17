@@ -61,10 +61,9 @@ class ParquetPartitionDiscoverySuite
   val defaultPartitionName = "__HIVE_DEFAULT_PARTITION__"
 
   test("column type inference") {
-    def check(raw: String, literal: Literal): Unit = {
+    def check(raw: String, literal: Literal): Unit =
       assert(
         inferPartitionColumnValue(raw, defaultPartitionName, true) === literal)
-    }
 
     check("10", Literal.create(10, IntegerType))
     check("1000000000000000", Literal.create(1000000000000000L, LongType))

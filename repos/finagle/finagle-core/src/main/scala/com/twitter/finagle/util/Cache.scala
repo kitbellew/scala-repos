@@ -47,7 +47,7 @@ private[finagle] class Cache[A](
     val deadline = Time.now - ttl
 
     @tailrec
-    def constructExpiredList(acc: List[A]): List[A] = {
+    def constructExpiredList(acc: List[A]): List[A] =
       Option(deque.peekLast) match {
         case Some((ts, item)) if ts <= deadline =>
           // should ditch *oldest* items, so take from deque's last
@@ -59,7 +59,6 @@ private[finagle] class Cache[A](
           //   young)
           acc
       }
-    }
     constructExpiredList(Nil)
   }
 

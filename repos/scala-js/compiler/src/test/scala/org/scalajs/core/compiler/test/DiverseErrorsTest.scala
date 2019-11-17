@@ -12,8 +12,7 @@ class DiverseErrorsTest extends DirectTest with TestHelpers {
     """
 
   @Test
-  def noIsInstanceOnJSRaw: Unit = {
-
+  def noIsInstanceOnJSRaw: Unit =
     """
     @js.native
     trait JSRaw extends js.Object
@@ -27,7 +26,6 @@ class DiverseErrorsTest extends DirectTest with TestHelpers {
       |      def x = a.isInstanceOf[JSRaw]
       |                            ^
     """
-  }
 
   @Test
   def jsConstructorOfErrors: Unit = {

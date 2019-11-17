@@ -40,28 +40,24 @@ object ScalaOptionParser {
         token(concat(name ~ ":")) ~ rep1sep(
           token(StringBasic.examples(choices: _*)),
           token(",")).map(_.mkString))
-    def PathSetting(name: String): Parser[String] = {
+    def PathSetting(name: String): Parser[String] =
       concat(
         concat(token(name) ~ Space.string) ~ rep1sep(
           JarOrDirectoryParser.filter(!_.contains(":"), x => x),
           token(java.io.File.pathSeparator)).map(_.mkString))
-    }
-    def FileSetting(name: String): Parser[String] = {
+    def FileSetting(name: String): Parser[String] =
       concat(
         concat(token(name) ~ Space.string) ~ rep1sep(
           JarOrDirectoryParser.filter(!_.contains(":"), x => x),
           token(java.io.File.pathSeparator)).map(_.mkString))
-    }
     val Phase = token(NotSpace.examples(phases: _*))
-    def PhaseSettingParser(name: String): Parser[String] = {
+    def PhaseSettingParser(name: String): Parser[String] =
       MultiChoiceSetting(name, phases)
-    }
-    def ScalaVersionSetting(name: String): Parser[String] = {
+    def ScalaVersionSetting(name: String): Parser[String] =
       concat(
         concat(token(name ~ Space.string)) ~ token(
           StringBasic,
           TokenCompletions.displayOnly("<scala version>")))
-    }
     val Property: Parser[String] = {
       val PropName = concat(
         token(

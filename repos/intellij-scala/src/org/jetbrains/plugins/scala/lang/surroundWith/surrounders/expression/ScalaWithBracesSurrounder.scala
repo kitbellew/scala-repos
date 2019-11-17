@@ -17,9 +17,8 @@ import com.intellij.psi.PsiElement
 
 class ScalaWithBracesSurrounder extends ScalaExpressionSurrounder {
 
-  override def getTemplateAsString(elements: Array[PsiElement]): String = {
+  override def getTemplateAsString(elements: Array[PsiElement]): String =
     return "{" + super.getTemplateAsString(elements) + "}"
-  }
 
   override def getTemplateDescription = "{  }"
 

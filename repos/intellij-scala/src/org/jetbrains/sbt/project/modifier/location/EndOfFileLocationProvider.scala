@@ -13,10 +13,9 @@ object EndOfFileLocationProvider extends BuildFileModificationLocationProvider {
       module: com.intellij.openapi.module.Module,
       elementType: BuildFileElementType,
       elementCondition: Option[PsiElement => Boolean])
-      : Option[(PsiElement, Int)] = {
+      : Option[(PsiElement, Int)] =
     elementCondition match {
       case Some(_) => None
       case None    => Some(file, file.getChildren.length)
     }
-  }
 }

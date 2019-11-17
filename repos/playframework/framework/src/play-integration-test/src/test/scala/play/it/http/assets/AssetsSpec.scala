@@ -30,14 +30,13 @@ trait AssetsSpec
     val defaultCacheControl = Some("public, max-age=3600")
     val aggressiveCacheControl = Some("public, max-age=31536000")
 
-    def withServer[T](block: WSClient => T): T = {
+    def withServer[T](block: WSClient => T): T =
       Server.withRouter(ServerConfig(mode = Mode.Prod, port = Some(0))) {
         case req => Assets.versioned("/testassets", req.path)
       } { implicit port =>
         implicit val materializer = Play.current.materializer
         withClient(block)
       }
-    }
 
     val etagPattern = """([wW]/)?"([^"]|\\")*""""
 

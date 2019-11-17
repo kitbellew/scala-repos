@@ -62,7 +62,7 @@ case class ScalarSubquery(
 
   override def dataType: DataType = query.schema.fields.head.dataType
 
-  override def checkInputDataTypes(): TypeCheckResult = {
+  override def checkInputDataTypes(): TypeCheckResult =
     if (query.schema.length != 1) {
       TypeCheckResult.TypeCheckFailure(
         "Scalar subquery must return only one column, but got " +
@@ -70,7 +70,6 @@ case class ScalarSubquery(
     } else {
       TypeCheckResult.TypeCheckSuccess
     }
-  }
 
   override def foldable: Boolean = false
   override def nullable: Boolean = true

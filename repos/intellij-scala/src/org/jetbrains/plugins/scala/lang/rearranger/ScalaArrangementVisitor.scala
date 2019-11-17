@@ -229,7 +229,7 @@ class ScalaArrangementVisitor(
       range: TextRange,
       tokenType: ArrangementSettingsToken,
       name: String,
-      canArrange: Boolean) = {
+      canArrange: Boolean) =
     if (!withinBounds(range)) {
       null
     } else {
@@ -259,7 +259,6 @@ class ScalaArrangementVisitor(
       //      psiElementsToEntries = psiElementsToEntries + (element -> newEntry)
       newEntry
     }
-  }
 
   private def parseModifiers(
       modifiers: ScModifierList,
@@ -453,7 +452,7 @@ class ScalaArrangementVisitor(
 
   private def genUnseparableRanges(
       body: ScTemplateBody,
-      entry: ScalaArrangementEntry) = {
+      entry: ScalaArrangementEntry) =
     body.getChildren.foldLeft(None)((startOffset, child) => {
       val newOffset =
         if (startOffset.isDefined) startOffset.get
@@ -477,7 +476,6 @@ class ScalaArrangementVisitor(
         None
       } else startOffset
     })
-  }
 }
 
 object ScalaArrangementVisitor {

@@ -29,9 +29,8 @@ class TaskStartActor(
       .map(_.finalTaskCount)
       .getOrElse(taskTracker.countLaunchedAppTasksSync(app.id))
 
-  override def initializeStart(): Unit = {
+  override def initializeStart(): Unit =
     if (nrToStart > 0) taskQueue.add(app, nrToStart)
-  }
 
   override def postStop(): Unit = {
     eventBus.unsubscribe(self)

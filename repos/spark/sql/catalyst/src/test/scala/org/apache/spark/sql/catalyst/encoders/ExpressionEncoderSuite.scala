@@ -64,16 +64,14 @@ case class SpecificCollection(l: List[Int])
 
 /** For testing Kryo serialization based encoder. */
 class KryoSerializable(val value: Int) {
-  override def equals(other: Any): Boolean = {
+  override def equals(other: Any): Boolean =
     this.value == other.asInstanceOf[KryoSerializable].value
-  }
 }
 
 /** For testing Java serialization based encoder. */
 class JavaSerializable(val value: Int) extends Serializable {
-  override def equals(other: Any): Boolean = {
+  override def equals(other: Any): Boolean =
     this.value == other.asInstanceOf[JavaSerializable].value
-  }
 }
 
 class ExpressionEncoderSuite extends PlanTest with AnalysisTest {
@@ -153,9 +151,8 @@ class ExpressionEncoderSuite extends PlanTest with AnalysisTest {
     encoderFor(Encoders.javaSerialization[JavaSerializable]))
 
   // test product encoders
-  private def productTest[T <: Product: ExpressionEncoder](input: T): Unit = {
+  private def productTest[T <: Product: ExpressionEncoder](input: T): Unit =
     encodeDecodeTest(input, input.getClass.getSimpleName)
-  }
 
   case class InnerClass(i: Int)
   productTest(InnerClass(1))
@@ -257,11 +254,10 @@ class ExpressionEncoderSuite extends PlanTest with AnalysisTest {
   productTest(("UDT", new ExamplePoint(0.1, 0.2)))
 
   test("nullable of encoder schema") {
-    def checkNullable[T: ExpressionEncoder](nullable: Boolean*): Unit = {
+    def checkNullable[T: ExpressionEncoder](nullable: Boolean*): Unit =
       assert(
         implicitly[ExpressionEncoder[T]].schema
           .map(_.nullable) === nullable.toSeq)
-    }
 
     // test for flat encoders
     checkNullable[Int](false)
@@ -296,7 +292,7 @@ class ExpressionEncoderSuite extends PlanTest with AnalysisTest {
 
   private def encodeDecodeTest[T: ExpressionEncoder](
       input: T,
-      testName: String): Unit = {
+      testName: String): Unit =
     test(s"encode/decode for $testName: $input") {
       val encoder = implicitly[ExpressionEncoder[T]]
       val row = encoder.toRow(input)
@@ -384,5 +380,4 @@ class ExpressionEncoderSuite extends PlanTest with AnalysisTest {
          """.stripMargin)
       }
     }
-  }
 }

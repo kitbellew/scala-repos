@@ -27,18 +27,14 @@ class CacheStatistics private (id: String, name: String) {
 
   //we could ask time of entrance to measure time locality
   //also, we could find out whether multiple threads are calculating this cache at the same time
-  def aboutToEnterCachedArea(): Unit = {
+  def aboutToEnterCachedArea(): Unit =
     cachedAreaEntrances += 1
-  }
 
-  def recalculatingCache(): Unit = {
+  def recalculatingCache(): Unit =
     cachesRecalculated += 1
-  }
 
-  def reportTimeToCalculate(time: Long): Unit = {
-
+  def reportTimeToCalculate(time: Long): Unit =
     calculationTimes.add(time)
-  }
 
   def hits: Long = cachedAreaEntrances - cachesRecalculated
 
@@ -71,9 +67,9 @@ class CacheStatistics private (id: String, name: String) {
   }
 
   //this method may take a while time to run
-  def spaceTakenByCache: Long = {
+  def spaceTakenByCache: Long =
     -1 //turned off counting space taken by cache, it causes errors to happen and doesn't work overall
-    /*try {
+  /*try {
       objectsToKeepTrackOfNormalReferences.map(memoryMeter.measureDeep).sum
     } catch {
       case e@(_: AssertionError | _: IllegalStateException) =>
@@ -81,7 +77,6 @@ class CacheStatistics private (id: String, name: String) {
         print("Not counting size of cache")
         -1
     }*/
-  }
 
   override def toString: String = {
     import scala.collection.JavaConversions._

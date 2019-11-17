@@ -61,15 +61,13 @@ trait ResolvableStableCodeReferenceElement
       extends StableCodeReferenceElementResolver(this, true, true, false)
   private object ImportResolverNoMethods
       extends StableCodeReferenceElementResolver(this, false, false, false) {
-    override protected def getKindsFor(ref: ScStableCodeReferenceElement) = {
+    override protected def getKindsFor(ref: ScStableCodeReferenceElement) =
       ref.getKinds(incomplete = false) -- StdKinds.methodRef
-    }
   }
   private object ImportResolverNoTypes
       extends StableCodeReferenceElementResolver(this, false, false, false) {
-    override protected def getKindsFor(ref: ScStableCodeReferenceElement) = {
+    override protected def getKindsFor(ref: ScStableCodeReferenceElement) =
       ref.getKinds(incomplete = false) -- StdKinds.stableClass
-    }
   }
 
   @volatile
@@ -105,14 +103,13 @@ trait ResolvableStableCodeReferenceElement
     resolveWithCompiled(incomplete, ImportResolverNoTypes, doResolve)
   }
 
-  def multiResolve(incomplete: Boolean): Array[ResolveResult] = {
+  def multiResolve(incomplete: Boolean): Array[ResolveResult] =
     resolveWithCompiled(incomplete, Resolver, multiResolveCached)
-  }
 
   private def resolveWithCompiled(
       incomplete: Boolean,
       resolver: StableCodeReferenceElementResolver,
-      elsebr: Boolean => Array[ResolveResult]) = {
+      elsebr: Boolean => Array[ResolveResult]) =
     ScalaPsiUtil.fileContext(this) match {
       case s: ScalaFile if s.isCompiled =>
         val count =
@@ -127,7 +124,6 @@ trait ResolvableStableCodeReferenceElement
       case _ =>
         elsebr(incomplete)
     }
-  }
 
   @CachedMappedWithRecursionGuard(
     this,
@@ -341,7 +337,7 @@ trait ResolvableStableCodeReferenceElement
     }
   }
 
-  private def _qualifier() = {
+  private def _qualifier() =
     getContext match {
       case p: ScInterpolationPattern => Some(p)
       case sel: ScImportSelector =>
@@ -350,9 +346,8 @@ trait ResolvableStableCodeReferenceElement
           .reference
       case _ => pathQualifier
     }
-  }
 
-  private def candidatesFilter(result: ScalaResolveResult) = {
+  private def candidatesFilter(result: ScalaResolveResult) =
     result.element match {
       case c: PsiClass if c.name == c.qualifiedName =>
         c.getContainingFile match {
@@ -364,7 +359,6 @@ trait ResolvableStableCodeReferenceElement
         }
       case _ => true
     }
-  }
 
   @CachedWithRecursionGuard[ResolvableStableCodeReferenceElement](
     this,

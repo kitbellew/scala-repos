@@ -153,7 +153,7 @@ trait DiagramFactory extends DiagramDirectiveParser {
               d
           }
 
-        def listSuperClasses(member: MemberTemplateImpl) = {
+        def listSuperClasses(member: MemberTemplateImpl) =
           // TODO: Everyone should be able to use the @{inherit,content}Diagram annotation to add nodes to diagrams.
           (pack.sym, member.sym) match {
             case (ScalaPackage, NullClass) =>
@@ -167,7 +167,6 @@ trait DiagramFactory extends DiagramDirectiveParser {
                 nodesAll.contains(_)
               }
           }
-        }
 
         // for each node, add its subclasses
         for (node <- nodesAll if !classExcluded(node)) {

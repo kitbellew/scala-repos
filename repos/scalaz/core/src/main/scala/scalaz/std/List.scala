@@ -66,7 +66,7 @@ trait ListInstances extends ListInstances0 {
       (a, b) => loop(a, b, Nil)
     }
     def traverseImpl[F[_], A, B](l: List[A])(f: A => F[B])(
-        implicit F: Applicative[F]) = {
+        implicit F: Applicative[F]) =
       // implementation with `foldRight` leads to SOE in:
       //
       //  def wc(c: Char) = State[Boolean, Int]{(inWord) =>
@@ -78,14 +78,12 @@ trait ListInstances extends ListInstances0 {
       // foldRight(l, F.point(List[B]())) {
       //   (a, fbs) => F.apply2(f(a), fbs)(_ :: _)
       // }
-
       DList.fromList(l).foldr(F.point(List[B]())) { (a, fbs) =>
         F.apply2(f(a), fbs)(_ :: _)
       }
-    }
 
     override def traverseS[S, A, B](l: List[A])(
-        f: A => State[S, B]): State[S, List[B]] = {
+        f: A => State[S, B]): State[S, List[B]] =
       State((s: S) => {
         val buf = new collection.mutable.ListBuffer[B]
         var cur = s
@@ -94,7 +92,6 @@ trait ListInstances extends ListInstances0 {
         }
         (cur, buf.toList)
       })
-    }
 
     override def foldLeft[A, B](fa: List[A], z: B)(f: (B, A) => B): B =
       fa.foldLeft(z)(f)

@@ -52,19 +52,17 @@ class BisectingKMeansModel private[clustering] (
     * Predicts the index of the cluster that the input point belongs to.
     */
   @Since("1.6.0")
-  def predict(point: Vector): Int = {
+  def predict(point: Vector): Int =
     root.predict(point)
-  }
 
   /**
     * Predicts the indices of the clusters that the input points belong to.
     */
   @Since("1.6.0")
-  def predict(points: RDD[Vector]): RDD[Int] = {
+  def predict(points: RDD[Vector]): RDD[Int] =
     points.map { p =>
       root.predict(p)
     }
-  }
 
   /**
     * Java-friendly version of [[predict()]].
@@ -77,18 +75,16 @@ class BisectingKMeansModel private[clustering] (
     * Computes the squared distance between the input point and the cluster center it belongs to.
     */
   @Since("1.6.0")
-  def computeCost(point: Vector): Double = {
+  def computeCost(point: Vector): Double =
     root.computeCost(point)
-  }
 
   /**
     * Computes the sum of squared distances between the input points and their corresponding cluster
     * centers.
     */
   @Since("1.6.0")
-  def computeCost(data: RDD[Vector]): Double = {
+  def computeCost(data: RDD[Vector]): Double =
     data.map(root.computeCost).sum()
-  }
 
   /**
     * Java-friendly version of [[computeCost()]].

@@ -100,16 +100,15 @@ class ScalaGlobalMembersCompletionContributor
     }
   )
 
-  private def isStatic(member: PsiNamedElement): Boolean = {
+  private def isStatic(member: PsiNamedElement): Boolean =
     ScalaPsiUtil.nameContext(member) match {
       case memb: PsiMember =>
         isStatic(member, memb.containingClass)
     }
-  }
 
   private def isStatic(
       member: PsiNamedElement,
-      containingClass: PsiClass): Boolean = {
+      containingClass: PsiClass): Boolean =
     ScalaPsiUtil.nameContext(member) match {
       case memb: PsiMember =>
         if (containingClass == null) return false
@@ -128,7 +127,6 @@ class ScalaGlobalMembersCompletionContributor
           case _                   => memb.hasModifierProperty("static")
         }
     }
-  }
 
   private def completeImplicits(
       ref: ScReferenceExpression,
@@ -145,7 +143,7 @@ class ScalaGlobalMembersCompletionContributor
       elemsSet += elem
     }
 
-    def elemsSetContains(elem: PsiNamedElement): Boolean = {
+    def elemsSetContains(elem: PsiNamedElement): Boolean =
       if (elem.getContainingFile == originalFile) {
         //complex logic to detect static methods in same file, which we shouldn't import
         val name = elem.name
@@ -170,7 +168,6 @@ class ScalaGlobalMembersCompletionContributor
         }
         false
       } else elemsSet.contains(elem)
-    }
 
     val collection = StubIndex.getElements(
       ScalaIndexKeys.IMPLICITS_KEY,
@@ -266,7 +263,7 @@ class ScalaGlobalMembersCompletionContributor
       elemsSet += elem
     }
 
-    def elemsSetContains(elem: PsiNamedElement): Boolean = {
+    def elemsSetContains(elem: PsiNamedElement): Boolean =
       if (elem.getContainingFile == originalFile) {
         //complex logic to detect static methods in same file, which we shouldn't import
         val name = elem.name
@@ -291,7 +288,6 @@ class ScalaGlobalMembersCompletionContributor
         }
         false
       } else elemsSet.contains(elem)
-    }
 
     ref
       .getVariants(implicits = false, filterNotNamedVariants = false)
@@ -305,11 +301,10 @@ class ScalaGlobalMembersCompletionContributor
     val methodNamesIterator =
       namesCache.getAllMethodNames.iterator ++ namesCache.getAllJavaMethodNames.iterator
 
-    def isAccessible(member: PsiMember, containingClass: PsiClass): Boolean = {
+    def isAccessible(member: PsiMember, containingClass: PsiClass): Boolean =
       invocationCount >= 3 ||
-      (ResolveUtils.isAccessible(member, ref, forCompletion = true) &&
-      ResolveUtils.isAccessible(containingClass, ref, forCompletion = true))
-    }
+        (ResolveUtils.isAccessible(member, ref, forCompletion = true) &&
+          ResolveUtils.isAccessible(containingClass, ref, forCompletion = true))
 
     while (methodNamesIterator.hasNext) {
       val methodName = methodNamesIterator.next()
@@ -442,7 +437,7 @@ class ScalaGlobalMembersCompletionContributor
       member: PsiNamedElement,
       clazz: PsiClass,
       shouldImport: Boolean,
-      overloaded: Boolean = false): LookupElement = {
+      overloaded: Boolean = false): LookupElement =
     LookupElementManager
       .getLookupElement(
         new ScalaResolveResult(member),
@@ -453,5 +448,4 @@ class ScalaGlobalMembersCompletionContributor
         containingClass = Some(clazz)
       )
       .head
-  }
 }

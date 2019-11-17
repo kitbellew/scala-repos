@@ -518,10 +518,9 @@ class ReceivedBlockHandlerSuite
     (blockId, blockStoreResult)
   }
 
-  private def getWriteAheadLogFiles(): Seq[String] = {
+  private def getWriteAheadLogFiles(): Seq[String] =
     getLogFilesInDirectory(
       checkpointDirToLogDir(tempDirectory.toString, streamId))
-  }
 
   private def generateBlockId(): StreamBlockId =
     StreamBlockId(streamId, scala.util.Random.nextLong)

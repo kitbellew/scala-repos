@@ -215,7 +215,7 @@ trait TypeHints {
 }
 
 private[json] object ClassDelta {
-  def delta(class1: Class[_], class2: Class[_]): Int = {
+  def delta(class1: Class[_], class2: Class[_]): Int =
     if (class1 == class2) 0
     else if (class1.getInterfaces.contains(class2)) 0
     else if (class2.getInterfaces.contains(class1)) 0
@@ -226,7 +226,6 @@ private[json] object ClassDelta {
     } else
       sys.error(
         "Don't call delta unless one class is assignable from the other")
-  }
 }
 
 /** Do not use any type hints.
@@ -250,9 +249,8 @@ case class ShortTypeHints(hints: List[Class[_]]) extends TypeHints {
   */
 case class FullTypeHints(hints: List[Class[_]]) extends TypeHints {
   def hintFor(clazz: Class[_]) = clazz.getName
-  def classFor(hint: String): Option[Class[_]] = {
+  def classFor(hint: String): Option[Class[_]] =
     Some(Thread.currentThread.getContextClassLoader.loadClass(hint))
-  }
 }
 
 /** Default date format is UTC time.

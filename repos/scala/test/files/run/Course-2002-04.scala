@@ -4,7 +4,7 @@
 
 object M0 {
 
-  def quicksort[a](less: (a, a) => Boolean)(xs: List[a]): List[a] = {
+  def quicksort[a](less: (a, a) => Boolean)(xs: List[a]): List[a] =
     if (xs.isEmpty) xs
     else {
       val pivot: a = xs.head;
@@ -14,7 +14,6 @@ object M0 {
         quicksort(less)(xs.tail.filter(elem => !less(elem, pivot)));
       smaller ::: List(pivot) ::: greaterOrEqual
     }
-  }
 
   def test = {
     val isort: List[Int] => List[Int] = quicksort[Int]((x, y) => x < y);
@@ -125,10 +124,9 @@ object M1 {
 
 object M2 {
 
-  def horner(x: Double, coefs: List[Double]): Double = {
+  def horner(x: Double, coefs: List[Double]): Double =
     if (coefs.isEmpty) 0
     else horner(x, coefs.tail) * x + coefs.head
-  }
 
   def test = {
     val poly = List(9.0, 5.0, 7.0, 5.0);
@@ -145,21 +143,16 @@ object M2 {
 
 object M3 {
 
-  def dotproduct(v: List[Double], w: List[Double]): Double = {
+  def dotproduct(v: List[Double], w: List[Double]): Double =
     if (v.isEmpty) 0
     else (v.head * w.head) + dotproduct(v.tail, w.tail)
-  }
 
-  def matrixTimesVector(
-      m: List[List[Double]],
-      v: List[Double]): List[Double] = {
+  def matrixTimesVector(m: List[List[Double]], v: List[Double]): List[Double] =
     m.map(row => dotproduct(row, v))
-  }
 
-  def transpose(m: List[List[Double]]): List[List[Double]] = {
+  def transpose(m: List[List[Double]]): List[List[Double]] =
     if (m.isEmpty || m.head.isEmpty) List()
     else m.map(row => row.head) :: transpose(m.map(row => row.tail))
-  }
 
   def matrixTimesMatrix(
       m1: List[List[Double]],

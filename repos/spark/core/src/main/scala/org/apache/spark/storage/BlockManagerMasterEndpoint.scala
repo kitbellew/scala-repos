@@ -235,14 +235,13 @@ private[spark] class BlockManagerMasterEndpoint(
     * Return true if the driver knows about the given block manager. Otherwise, return false,
     * indicating that the block manager should re-register.
     */
-  private def heartbeatReceived(blockManagerId: BlockManagerId): Boolean = {
+  private def heartbeatReceived(blockManagerId: BlockManagerId): Boolean =
     if (!blockManagerInfo.contains(blockManagerId)) {
       blockManagerId.isDriver && !isLocal
     } else {
       blockManagerInfo(blockManagerId).updateLastSeenMs()
       true
     }
-  }
 
   // Remove a block from the slaves that have it. This can only be used to remove
   // blocks that the master knows about.
@@ -262,19 +261,17 @@ private[spark] class BlockManagerMasterEndpoint(
   }
 
   // Return a map from the block manager id to max memory and remaining memory.
-  private def memoryStatus: Map[BlockManagerId, (Long, Long)] = {
+  private def memoryStatus: Map[BlockManagerId, (Long, Long)] =
     blockManagerInfo.map {
       case (blockManagerId, info) =>
         (blockManagerId, (info.maxMem, info.remainingMem))
     }.toMap
-  }
 
-  private def storageStatus: Array[StorageStatus] = {
+  private def storageStatus: Array[StorageStatus] =
     blockManagerInfo.map {
       case (blockManagerId, info) =>
         new StorageStatus(blockManagerId, info.maxMem, info.blocks.asScala)
     }.toArray
-  }
 
   /**
     * Return the block's status for all block managers, if any. NOTE: This is a
@@ -410,15 +407,13 @@ private[spark] class BlockManagerMasterEndpoint(
     true
   }
 
-  private def getLocations(blockId: BlockId): Seq[BlockManagerId] = {
+  private def getLocations(blockId: BlockId): Seq[BlockManagerId] =
     if (blockLocations.containsKey(blockId)) blockLocations.get(blockId).toSeq
     else Seq.empty
-  }
 
   private def getLocationsMultipleBlockIds(
-      blockIds: Array[BlockId]): IndexedSeq[Seq[BlockManagerId]] = {
+      blockIds: Array[BlockId]): IndexedSeq[Seq[BlockManagerId]] =
     blockIds.map(blockId => getLocations(blockId))
-  }
 
   /** Get the list of the peers of the given block manager */
   private def getPeers(blockManagerId: BlockManagerId): Seq[BlockManagerId] = {
@@ -439,16 +434,14 @@ private[spark] class BlockManagerMasterEndpoint(
     * Returns an [[RpcEndpointRef]] of the [[BlockManagerSlaveEndpoint]] for sending RPC messages.
     */
   private def getExecutorEndpointRef(
-      executorId: String): Option[RpcEndpointRef] = {
+      executorId: String): Option[RpcEndpointRef] =
     for (blockManagerId <- blockManagerIdByExecutor.get(executorId);
          info <- blockManagerInfo.get(blockManagerId)) yield {
       info.slaveEndpoint
     }
-  }
 
-  override def onStop(): Unit = {
+  override def onStop(): Unit =
     askThreadPool.shutdownNow()
-  }
 }
 
 @DeveloperApi

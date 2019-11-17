@@ -251,9 +251,8 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] { self: BaseRecord =>
   }
 
   /** Encode a record instance into a JValue */
-  def asJValue(rec: BaseRecord): JValue = {
+  def asJValue(rec: BaseRecord): JValue =
     JObject(fields(rec).map(f => JField(f.name, f.asJValue)))
-  }
 
   /** Create a record by decoding a JValue which must be a JObject */
   def fromJValue(jvalue: JValue): Box[BaseRecord] = {
@@ -307,14 +306,13 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] { self: BaseRecord =>
     * @param inst - the record to be rendered
     * @return the XHTML content as a NodeSeq
     */
-  def toForm(inst: BaseRecord): NodeSeq = {
+  def toForm(inst: BaseRecord): NodeSeq =
     formTemplate match {
       case Full(template) => toForm(inst, template)
       case _ =>
         fieldList.flatMap(
           _.field(inst).toForm.openOr(NodeSeq.Empty) ++ Text("\n"))
     }
-  }
 
   /**
     * Returns the XHTML representation of inst Record. You must provide the Node template
@@ -324,7 +322,7 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] { self: BaseRecord =>
     * @param template - The markup template forthe form. See also the formTemplate variable
     * @return the XHTML content as a NodeSeq
     */
-  def toForm(inst: BaseRecord, template: NodeSeq): NodeSeq = {
+  def toForm(inst: BaseRecord, template: NodeSeq): NodeSeq =
     template match {
       case e @ <lift:field_label>{_*}</lift:field_label> =>
         e.attribute("name") match {
@@ -369,7 +367,6 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] { self: BaseRecord =>
             case x => x
           })
     }
-  }
 
   /**
     * Get a field by the field name
@@ -380,9 +377,8 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] { self: BaseRecord =>
     */
   def fieldByName(
       fieldName: String,
-      inst: BaseRecord): Box[Field[_, BaseRecord]] = {
+      inst: BaseRecord): Box[Field[_, BaseRecord]] =
     Box(fieldMap.get(fieldName).map(_.field(inst)))
-  }
 
   /**
     * Prepend a DispatchPF function to LiftRules.dispatch. If the partial function is defined for a give Req
@@ -392,9 +388,8 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] { self: BaseRecord =>
     * @param func - a PartialFunction for associating a request with a user-provided function and the proper Record
     */
   def prependDispatch(
-      func: PartialFunction[Req, BaseRecord => Box[LiftResponse]]) = {
+      func: PartialFunction[Req, BaseRecord => Box[LiftResponse]]) =
     LiftRules.dispatch.prepend(makeFunc(func))
-  }
 
   /**
     * Append a DispatchPF function to LiftRules.dispatch. If the partial function is defined for a give Req
@@ -404,9 +399,8 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] { self: BaseRecord =>
     * @param func - a PartialFunction for associating a request with a user-provided function and the proper Record
     */
   def appendDispatch(
-      func: PartialFunction[Req, BaseRecord => Box[LiftResponse]]) = {
+      func: PartialFunction[Req, BaseRecord => Box[LiftResponse]]) =
     LiftRules.dispatch.append(makeFunc(func))
-  }
 
   private def makeFunc(
       func: PartialFunction[Req, BaseRecord => Box[LiftResponse]]) =

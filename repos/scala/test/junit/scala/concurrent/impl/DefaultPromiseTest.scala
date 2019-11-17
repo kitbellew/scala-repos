@@ -298,14 +298,13 @@ class DefaultPromiseTest {
       def flatMapEvents(
           count: Int,
           p1: PromiseId,
-          acc: List[FlatMapEvent]): List[FlatMapEvent] = {
+          acc: List[FlatMapEvent]): List[FlatMapEvent] =
         if (count == 0) {
           Complete(p1) :: acc
         } else {
           val p2 = t.newPromise()
           flatMapEvents(count - 1, p2, Link(p2, p1) :: acc)
         }
-      }
 
       val events = flatMapEvents(flatMapCount, t.newPromise(), Nil)
       assertEquals(flatMapCount + 1, t.chains.size) // All promises are unlinked

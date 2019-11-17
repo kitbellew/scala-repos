@@ -82,11 +82,10 @@ private[nio] final class TypedArrayByteBuffer private (
     _dataView.setUint16(validateIndex(index, 2), value, !isBigEndian); this
   }
 
-  def asCharBuffer(): CharBuffer = {
+  def asCharBuffer(): CharBuffer =
     if (hasNativeOrder && (_arrayBufferOffset + position) % 2 == 0)
       TypedArrayCharBuffer.fromTypedArrayByteBuffer(this)
     else DataViewCharBuffer.fromTypedArrayByteBuffer(this)
-  }
 
   @noinline def getShort(): Short =
     _dataView.getInt16(getPosAndAdvanceRead(2), !isBigEndian)
@@ -101,11 +100,10 @@ private[nio] final class TypedArrayByteBuffer private (
     _dataView.setInt16(validateIndex(index, 2), value, !isBigEndian); this
   }
 
-  def asShortBuffer(): ShortBuffer = {
+  def asShortBuffer(): ShortBuffer =
     if (hasNativeOrder && (_arrayBufferOffset + position) % 2 == 0)
       TypedArrayShortBuffer.fromTypedArrayByteBuffer(this)
     else DataViewShortBuffer.fromTypedArrayByteBuffer(this)
-  }
 
   @noinline def getInt(): Int =
     _dataView.getInt32(getPosAndAdvanceRead(4), !isBigEndian)
@@ -120,11 +118,10 @@ private[nio] final class TypedArrayByteBuffer private (
     _dataView.setInt32(validateIndex(index, 4), value, !isBigEndian); this
   }
 
-  def asIntBuffer(): IntBuffer = {
+  def asIntBuffer(): IntBuffer =
     if (hasNativeOrder && (_arrayBufferOffset + position) % 4 == 0)
       TypedArrayIntBuffer.fromTypedArrayByteBuffer(this)
     else DataViewIntBuffer.fromTypedArrayByteBuffer(this)
-  }
 
   @noinline def getLong(): Long =
     _dataView.getInt64(getPosAndAdvanceRead(8), !isBigEndian)
@@ -155,11 +152,10 @@ private[nio] final class TypedArrayByteBuffer private (
     _dataView.setFloat32(validateIndex(index, 4), value, !isBigEndian); this
   }
 
-  def asFloatBuffer(): FloatBuffer = {
+  def asFloatBuffer(): FloatBuffer =
     if (hasNativeOrder && (_arrayBufferOffset + position) % 4 == 0)
       TypedArrayFloatBuffer.fromTypedArrayByteBuffer(this)
     else DataViewFloatBuffer.fromTypedArrayByteBuffer(this)
-  }
 
   @noinline def getDouble(): Double =
     _dataView.getFloat64(getPosAndAdvanceRead(8), !isBigEndian)
@@ -174,11 +170,10 @@ private[nio] final class TypedArrayByteBuffer private (
     _dataView.setFloat64(validateIndex(index, 8), value, !isBigEndian); this
   }
 
-  def asDoubleBuffer(): DoubleBuffer = {
+  def asDoubleBuffer(): DoubleBuffer =
     if (hasNativeOrder && (_arrayBufferOffset + position) % 8 == 0)
       TypedArrayDoubleBuffer.fromTypedArrayByteBuffer(this)
     else DataViewDoubleBuffer.fromTypedArrayByteBuffer(this)
-  }
 
   // Internal API
 
@@ -224,21 +219,19 @@ private[nio] object TypedArrayByteBuffer {
         typedArray: Int8Array,
         initialPosition: Int,
         initialLimit: Int,
-        readOnly: Boolean): TypedArrayByteBuffer = {
+        readOnly: Boolean): TypedArrayByteBuffer =
       new TypedArrayByteBuffer(
         typedArray,
         initialPosition,
         initialLimit,
         readOnly)
-    }
 
     @inline
     def newTypedArray(
         buffer: ArrayBuffer,
         byteOffset: Int,
-        length: Int): Int8Array = {
+        length: Int): Int8Array =
       new Int8Array(buffer, byteOffset, length)
-    }
   }
 
   def allocate(capacity: Int): ByteBuffer = {

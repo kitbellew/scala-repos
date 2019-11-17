@@ -171,9 +171,8 @@ class Dialog[R](override val delegate: jfxsc.Dialog[R] = new jfxsc.Dialog[R]())
 
   def dialogPane: ObjectProperty[jfxsc.DialogPane] =
     delegate.dialogPaneProperty
-  def dialogPane_=(value: DialogPane): Unit = {
+  def dialogPane_=(value: DialogPane): Unit =
     ObjectProperty.fillProperty[jfxsc.DialogPane](this.dialogPane, value)
-  }
 
   /**
     * A property representing the content text for the dialog pane. The content text
@@ -184,9 +183,8 @@ class Dialog[R](override val delegate: jfxsc.Dialog[R] = new jfxsc.Dialog[R]())
     * @see $URL0#contentTextProperty  $ORIGINALDOC
     */
   def contentText: StringProperty = delegate.contentTextProperty
-  def contentText_=(value: String): Unit = {
+  def contentText_=(value: String): Unit =
     contentText() = value
-  }
 
   /**
     * A property representing the header text for the dialog pane. The header text
@@ -197,12 +195,10 @@ class Dialog[R](override val delegate: jfxsc.Dialog[R] = new jfxsc.Dialog[R]())
     * @see $URL0#headerTextProperty  $ORIGINALDOC
     */
   def headerText: StringProperty = delegate.headerTextProperty
-  def headerText_=(value: String): Unit = {
+  def headerText_=(value: String): Unit =
     headerText() = value
-  }
-  def headerText_=(value: Option[String]): Unit = {
+  def headerText_=(value: Option[String]): Unit =
     headerText() = value.orNull
-  }
 
   /**
     * The dialog graphic, presented either in the header, if one is showing, or
@@ -211,9 +207,8 @@ class Dialog[R](override val delegate: jfxsc.Dialog[R] = new jfxsc.Dialog[R]())
     * @see $URL0#headerTextProperty  $ORIGINALDOC
     */
   def graphic: ObjectProperty[jfxs.Node] = delegate.graphicProperty
-  def graphic_=(value: Node): Unit = {
+  def graphic_=(value: Node): Unit =
     ObjectProperty.fillProperty[jfxs.Node](this.graphic, value)
-  }
 
   /**
     * A property representing what has been returned from the dialog. A result
@@ -224,13 +219,12 @@ class Dialog[R](override val delegate: jfxsc.Dialog[R] = new jfxsc.Dialog[R]())
     * @see $URL0#resultProperty  $ORIGINALDOC
     */
   def result: ObjectProperty[R] = delegate.resultProperty
-  def result_=(value: R): Unit = {
+  def result_=(value: R): Unit =
     if (value == null) {
       delegate.setResult(null.asInstanceOf[R])
     } else {
       result() = value
     }
-  }
 
   /**
     * API to convert the [[scalafx.scene.control.ButtonType]] that the user clicked on into a
@@ -246,11 +240,10 @@ class Dialog[R](override val delegate: jfxsc.Dialog[R] = new jfxsc.Dialog[R]())
   def resultConverter: ObjectProperty[ButtonType => R] =
     ObjectProperty(
       (bt: ButtonType) => delegate.resultConverterProperty.getValue.call(bt))
-  def resultConverter_=(f: ButtonType => R): Unit = {
+  def resultConverter_=(f: ButtonType => R): Unit =
     delegate.setResultConverter(new jfxu.Callback[jfxsc.ButtonType, R] {
       override def call(param: jfxsc.ButtonType): R = f(param)
     })
-  }
 
   /**
     * Represents whether the dialog is currently showing.
@@ -294,9 +287,8 @@ class Dialog[R](override val delegate: jfxsc.Dialog[R] = new jfxsc.Dialog[R]())
     * will move the [[scalafx.scene.control.Dialog]] horizontally.
     */
   def x: ReadOnlyDoubleProperty = delegate.xProperty()
-  def x_=(v: Double): Unit = {
+  def x_=(v: Double): Unit =
     delegate.setX(v)
-  }
 
   /**
     * The vertical location of this [[scalafx.scene.control.Dialog]]. Changing this attribute

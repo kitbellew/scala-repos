@@ -137,7 +137,7 @@ final class KafkaRelayAgent(
       batch: Long,
       delay: Long,
       waitCount: Long,
-      retries: Int = 5): Unit = {
+      retries: Int = 5): Unit =
     if (runnable) {
       if (batch % 100 == 0)
         logger.debug(
@@ -191,12 +191,11 @@ final class KafkaRelayAgent(
           .format(offset, batch))
       stopPromise.success(PrecogUnit)
     }
-  }
 
   private def delayStrategy(
       messageBytes: Int,
       currentDelay: Long,
-      waitCount: Long): Long = {
+      waitCount: Long): Long =
     if (messageBytes == 0) {
       val boundedWaitCount =
         if (waitCount > waitCountFactor) waitCountFactor else waitCount
@@ -204,7 +203,6 @@ final class KafkaRelayAgent(
     } else {
       (maxDelay * (1.0 - messageBytes.toDouble / bufferSize)).toLong
     }
-  }
 
   private case class Authorized(
       event: Event,

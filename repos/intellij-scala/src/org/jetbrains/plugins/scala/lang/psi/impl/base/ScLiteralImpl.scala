@@ -193,9 +193,8 @@ class ScLiteralImpl(node: ASTNode)
   override def isChar: Boolean =
     getFirstChild.getNode.getElementType == ScalaTokenTypes.tCHAR
 
-  override def getReferences: Array[PsiReference] = {
+  override def getReferences: Array[PsiReference] =
     PsiReferenceService.getService.getContributedReferences(this)
-  }
 
   def contentRange: TextRange = {
     val range = getTextRange

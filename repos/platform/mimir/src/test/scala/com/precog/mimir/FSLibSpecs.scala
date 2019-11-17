@@ -73,11 +73,10 @@ trait FSLibSpecs[M[+_]]
 
   val vfs = new StubVFSMetadata[M](projectionMetadata)
 
-  def pathTable(path: String) = {
+  def pathTable(path: String) =
     Table
       .constString(Set(path))
       .transform(WrapObject(Leaf(Source), TransSpecModule.paths.Value.name))
-  }
 
   val testAPIKey = "testAPIKey"
   def testAccount =
@@ -104,13 +103,12 @@ trait FSLibSpecs[M[+_]]
     }
   )
 
-  def runExpansion(table: Table): List[JValue] = {
+  def runExpansion(table: Table): List[JValue] =
     expandGlob(table, defaultMorphContext)
       .map(_.transform(SourceValue.Single))
       .flatMap(_.toJson)
       .copoint
       .toList
-  }
 
   "path globbing" should {
     "not alter un-globbed paths" in {

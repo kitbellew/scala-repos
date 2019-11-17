@@ -403,11 +403,10 @@ class CachedTableSuite
   /**
     * Verifies that the plan for `df` contains `expected` number of Exchange operators.
     */
-  private def verifyNumExchanges(df: DataFrame, expected: Int): Unit = {
+  private def verifyNumExchanges(df: DataFrame, expected: Int): Unit =
     assert(df.queryExecution.executedPlan.collect {
       case e: ShuffleExchange => e
     }.size == expected)
-  }
 
   test(
     "A cached table preserves the partitioning and ordering of its cached SparkPlan") {

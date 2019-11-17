@@ -79,11 +79,10 @@ case class AddOneTsv(p: String)
   override def converter[U >: (Int, String, String)] =
     TupleConverter.asSuperConverter[(Int, String, String), U](
       implicitly[TupleConverter[(Int, String, String)]])
-  override def transformForRead(p: Pipe) = {
+  override def transformForRead(p: Pipe) =
     p.mapTo((0, 1) -> ('one, 'two, 'three)) { t: (Int, String) =>
       t :+ "1"
     }
-  }
 }
 
 case class RemoveOneTsv(p: String)
@@ -96,11 +95,10 @@ case class RemoveOneTsv(p: String)
   override def converter[U >: (Int, String, String)] =
     TupleConverter.asSuperConverter[(Int, String, String), U](
       implicitly[TupleConverter[(Int, String, String)]])
-  override def transformForWrite(p: Pipe) = {
+  override def transformForWrite(p: Pipe) =
     p.mapTo(('one, 'two, 'three) -> (0, 1)) { t: (Int, String, String) =>
       (t._1, t._2)
     }
-  }
 }
 
 class AddRemoveOneJob(args: Args) extends Job(args) {

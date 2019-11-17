@@ -206,9 +206,8 @@ private[state] class LegacyTaskStore(store: PersistentStore) {
   val PREFIX = "task:"
   val ID_DELIMITER = ":"
 
-  private[this] def getKey(appId: PathId, taskId: String): String = {
+  private[this] def getKey(appId: PathId, taskId: String): String =
     PREFIX + appId.safePath + ID_DELIMITER + taskId
-  }
 
   private[this] def serialize(
       task: MarathonTask,

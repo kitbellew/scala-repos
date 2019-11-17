@@ -32,12 +32,10 @@ private[tracker] class TaskCreationHandlerAndUpdaterDelegate(
   private[impl] implicit val timeout: Timeout =
     conf.internalTaskUpdateRequestTimeout().milliseconds
 
-  override def created(task: Task): Future[Task] = {
+  override def created(task: Task): Future[Task] =
     taskUpdate(task.taskId, TaskOpProcessor.Action.Update(task)).map(_ => task)
-  }
-  override def terminated(taskId: Task.Id): Future[_] = {
+  override def terminated(taskId: Task.Id): Future[_] =
     taskUpdate(taskId, TaskOpProcessor.Action.Expunge)
-  }
   override def statusUpdate(appId: PathId, status: TaskStatus): Future[_] = {
     val taskId = Task.Id(status.getTaskId.getValue)
     taskUpdate(taskId, TaskOpProcessor.Action.UpdateStatus(status))

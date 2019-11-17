@@ -10,10 +10,9 @@ import org.jetbrains.plugins.scala.lang.psi.types.ScType
   * @since 22.09.2015.
   */
 class ScalaTypeResult(val myType: ScType) extends Result {
-  override def equalsToText(text: String, context: PsiElement): Boolean = {
+  override def equalsToText(text: String, context: PsiElement): Boolean =
     //TODO maybe add a more meaningful implementation
     text == toString
-  }
 
   override def toString = myType.canonicalText
 

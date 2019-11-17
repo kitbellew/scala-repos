@@ -23,7 +23,7 @@ case class Route(
     * None is returned.  If there are no route matchers, some empty map is
     * returned.
     */
-  def apply(requestPath: String): Option[MatchedRoute] = {
+  def apply(requestPath: String): Option[MatchedRoute] =
     routeMatchers.foldLeft(Option(MultiMap())) {
       (acc: Option[MultiParams], routeMatcher: RouteMatcher) =>
         for {
@@ -33,7 +33,6 @@ case class Route(
     } map { routeParams =>
       MatchedRoute(action, routeParams)
     }
-  }
 
   /**
     * The reversible matcher of a route is the first reversible matcher, if

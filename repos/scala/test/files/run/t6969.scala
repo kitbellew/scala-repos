@@ -2,14 +2,13 @@ import scala.language.{reflectiveCalls}
 
 object Test {
   private type Clearable = { def clear(): Unit }
-  private def choke() = {
+  private def choke() =
     try new Array[Object](
       (Runtime.getRuntime().maxMemory min Int.MaxValue).toInt)
     catch {
       case _: OutOfMemoryError => // what do you mean, out of memory?
       case t: Throwable        => println(t)
     }
-  }
   private def f(x: Clearable) = x.clear()
   class Choker(id: Int) extends Thread {
     private def g(iteration: Int) = {

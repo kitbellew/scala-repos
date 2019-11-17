@@ -91,9 +91,8 @@ final class IDF(override val uid: String)
     copyValues(new IDFModel(uid, idf).setParent(this))
   }
 
-  override def transformSchema(schema: StructType): StructType = {
+  override def transformSchema(schema: StructType): StructType =
     validateAndTransformSchema(schema)
-  }
 
   override def copy(extra: ParamMap): IDF = defaultCopy(extra)
 }
@@ -133,9 +132,8 @@ class IDFModel private[ml] (
     dataset.withColumn($(outputCol), idf(col($(inputCol))))
   }
 
-  override def transformSchema(schema: StructType): StructType = {
+  override def transformSchema(schema: StructType): StructType =
     validateAndTransformSchema(schema)
-  }
 
   override def copy(extra: ParamMap): IDFModel = {
     val copied = new IDFModel(uid, idfModel)

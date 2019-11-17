@@ -36,7 +36,7 @@ object ScalaNamesUtil {
     lexer.getTokenType == null
   }
 
-  def isOpCharacter(c: Char): Boolean = {
+  def isOpCharacter(c: Char): Boolean =
     c match {
       case '~' | '!' | '@' | '#' | '%' | '^' | '*' | '+' | '-' | '<' | '>' |
           '?' | ':' | '=' | '&' | '|' | '/' | '\\' =>
@@ -45,13 +45,11 @@ object ScalaNamesUtil {
         Character.getType(ch) == Character.MATH_SYMBOL.toInt ||
           Character.getType(ch) == Character.OTHER_SYMBOL.toInt
     }
-  }
 
-  def isIdentifier(text: String): Boolean = {
+  def isIdentifier(text: String): Boolean =
     checkGeneric(
       text,
       lexer => lexer.getTokenType == ScalaTokenTypes.tIDENTIFIER)
-  }
 
   def isKeyword(text: String): Boolean = keywordNames.contains(text)
 
@@ -63,7 +61,7 @@ object ScalaNamesUtil {
     case psiNamed: PsiNamedElement => psiNamed.getName
   }
 
-  def qualifiedName(named: PsiNamedElement): Option[String] = {
+  def qualifiedName(named: PsiNamedElement): Option[String] =
     ScalaPsiUtil.nameContext(named) match {
       case pack: PsiPackage => Some(pack.getQualifiedName)
       case clazz: PsiClass  => Some(clazz.qualifiedName)
@@ -78,7 +76,6 @@ object ScalaNamesUtil {
         } else None
       case _ => None
     }
-  }
 
   object isBackticked {
     def unapply(named: ScNamedElement): Option[String] = {
@@ -88,11 +85,10 @@ object ScalaNamesUtil {
   }
 
   object isBacktickedName {
-    def unapply(name: String): Option[String] = {
+    def unapply(name: String): Option[String] =
       if (name.startsWith("`") && name.endsWith("`"))
         Some(name.substring(1, name.length - 1))
       else None
-    }
   }
 
   def toJavaName(name: String) = {
@@ -103,8 +99,7 @@ object ScalaNamesUtil {
     NameTransformer.encode(toEncode)
   }
 
-  def changeKeyword(s: String): String = {
+  def changeKeyword(s: String): String =
     if (ScalaNamesUtil.isKeyword(s)) "`" + s + "`"
     else s
-  }
 }

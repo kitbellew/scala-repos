@@ -1040,7 +1040,7 @@ private object ExecutorAllocationManagerSuite extends PrivateMethodTester {
       stageId: Int,
       numTasks: Int,
       taskLocalityPreferences: Seq[Seq[TaskLocation]] = Seq.empty
-  ): StageInfo = {
+  ): StageInfo =
     new StageInfo(
       stageId,
       0,
@@ -1050,12 +1050,11 @@ private object ExecutorAllocationManagerSuite extends PrivateMethodTester {
       Seq.empty,
       "no details",
       taskLocalityPreferences)
-  }
 
   private def createTaskInfo(
       taskId: Int,
       taskIndex: Int,
-      executorId: String): TaskInfo = {
+      executorId: String): TaskInfo =
     new TaskInfo(
       taskId,
       taskIndex,
@@ -1065,7 +1064,6 @@ private object ExecutorAllocationManagerSuite extends PrivateMethodTester {
       "",
       TaskLocality.ANY,
       speculative = false)
-  }
 
   /* ------------------------------------------------------- *
    | Helper methods for accessing private methods and fields |
@@ -1099,40 +1097,32 @@ private object ExecutorAllocationManagerSuite extends PrivateMethodTester {
   private val _hostToLocalTaskCount =
     PrivateMethod[Map[String, Int]]('hostToLocalTaskCount)
 
-  private def numExecutorsToAdd(manager: ExecutorAllocationManager): Int = {
+  private def numExecutorsToAdd(manager: ExecutorAllocationManager): Int =
     manager invokePrivate _numExecutorsToAdd()
-  }
 
-  private def numExecutorsTarget(manager: ExecutorAllocationManager): Int = {
+  private def numExecutorsTarget(manager: ExecutorAllocationManager): Int =
     manager invokePrivate _numExecutorsTarget()
-  }
 
   private def executorsPendingToRemove(
-      manager: ExecutorAllocationManager): collection.Set[String] = {
+      manager: ExecutorAllocationManager): collection.Set[String] =
     manager invokePrivate _executorsPendingToRemove()
-  }
 
   private def executorIds(
-      manager: ExecutorAllocationManager): collection.Set[String] = {
+      manager: ExecutorAllocationManager): collection.Set[String] =
     manager invokePrivate _executorIds()
-  }
 
-  private def addTime(manager: ExecutorAllocationManager): Long = {
+  private def addTime(manager: ExecutorAllocationManager): Long =
     manager invokePrivate _addTime()
-  }
 
   private def removeTimes(
-      manager: ExecutorAllocationManager): collection.Map[String, Long] = {
+      manager: ExecutorAllocationManager): collection.Map[String, Long] =
     manager invokePrivate _removeTimes()
-  }
 
-  private def schedule(manager: ExecutorAllocationManager): Unit = {
+  private def schedule(manager: ExecutorAllocationManager): Unit =
     manager invokePrivate _schedule()
-  }
 
-  private def maxNumExecutorsNeeded(manager: ExecutorAllocationManager): Int = {
+  private def maxNumExecutorsNeeded(manager: ExecutorAllocationManager): Int =
     manager invokePrivate _maxNumExecutorsNeeded()
-  }
 
   private def addExecutors(manager: ExecutorAllocationManager): Int = {
     val maxNumExecutorsNeeded = manager invokePrivate _maxNumExecutorsNeeded()
@@ -1140,56 +1130,44 @@ private object ExecutorAllocationManagerSuite extends PrivateMethodTester {
   }
 
   private def adjustRequestedExecutors(
-      manager: ExecutorAllocationManager): Int = {
+      manager: ExecutorAllocationManager): Int =
     manager invokePrivate _updateAndSyncNumExecutorsTarget(0L)
-  }
 
   private def removeExecutor(
       manager: ExecutorAllocationManager,
-      id: String): Boolean = {
+      id: String): Boolean =
     manager invokePrivate _removeExecutor(id)
-  }
 
   private def onExecutorAdded(
       manager: ExecutorAllocationManager,
-      id: String): Unit = {
+      id: String): Unit =
     manager invokePrivate _onExecutorAdded(id)
-  }
 
   private def onExecutorRemoved(
       manager: ExecutorAllocationManager,
-      id: String): Unit = {
+      id: String): Unit =
     manager invokePrivate _onExecutorRemoved(id)
-  }
 
-  private def onSchedulerBacklogged(
-      manager: ExecutorAllocationManager): Unit = {
+  private def onSchedulerBacklogged(manager: ExecutorAllocationManager): Unit =
     manager invokePrivate _onSchedulerBacklogged()
-  }
 
-  private def onSchedulerQueueEmpty(
-      manager: ExecutorAllocationManager): Unit = {
+  private def onSchedulerQueueEmpty(manager: ExecutorAllocationManager): Unit =
     manager invokePrivate _onSchedulerQueueEmpty()
-  }
 
   private def onExecutorIdle(
       manager: ExecutorAllocationManager,
-      id: String): Unit = {
+      id: String): Unit =
     manager invokePrivate _onExecutorIdle(id)
-  }
 
   private def onExecutorBusy(
       manager: ExecutorAllocationManager,
-      id: String): Unit = {
+      id: String): Unit =
     manager invokePrivate _onExecutorBusy(id)
-  }
 
-  private def localityAwareTasks(manager: ExecutorAllocationManager): Int = {
+  private def localityAwareTasks(manager: ExecutorAllocationManager): Int =
     manager invokePrivate _localityAwareTasks()
-  }
 
   private def hostToLocalTaskCount(
-      manager: ExecutorAllocationManager): Map[String, Int] = {
+      manager: ExecutorAllocationManager): Map[String, Int] =
     manager invokePrivate _hostToLocalTaskCount()
-  }
 }

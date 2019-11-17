@@ -73,9 +73,8 @@ class CforTest extends SpireProperties {
     def run(
         test: => (Int => Boolean),
         incr: => (Int => Int),
-        body: => (Int => Unit)): Unit = {
+        body: => (Int => Unit)): Unit =
       cfor(0)(test, incr)(body)
-    }
     run({ v += 1; _ < 3 }, { v += 10; _ + 1 }, {
       v += 100
       x => {

@@ -75,7 +75,7 @@ object ColumnDefinitionProviderImpl {
         fieldName: FieldName,
         defaultValOpt: Option[c.Expr[String]],
         annotationInfo: List[(Type, Option[Int])],
-        nullable: Boolean): scala.util.Try[List[ColumnFormat[c.type]]] = {
+        nullable: Boolean): scala.util.Try[List[ColumnFormat[c.type]]] =
       oTpe match {
         // String handling
         case tpe if tpe =:= typeOf[String] =>
@@ -157,7 +157,6 @@ object ColumnDefinitionProviderImpl {
           Failure(new Exception(
             s"Case class ${T.tpe} has field ${fieldName}: ${oTpe.toString}, which is not supported for talking to JDBC"))
       }
-    }
 
     def expandMethod(
         outerAccessorTree: List[MethodSymbol],

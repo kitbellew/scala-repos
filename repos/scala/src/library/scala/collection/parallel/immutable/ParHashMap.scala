@@ -119,9 +119,8 @@ class ParHashMap[K, +V] private[immutable] (
       val r = triter.next()
       r
     }
-    def hasNext: Boolean = {
+    def hasNext: Boolean =
       i < sz
-    }
     def remaining = sz - i
     override def toString = "HashTrieIterator(" + sz + ")"
   }
@@ -157,9 +156,8 @@ object ParHashMap extends ParMapFactory[ParHashMap] {
     HashMapCombiner[K, V]
 
   implicit def canBuildFrom[K, V]
-      : CanCombineFrom[Coll, (K, V), ParHashMap[K, V]] = {
+      : CanCombineFrom[Coll, (K, V), ParHashMap[K, V]] =
     new CanCombineFromMap[K, V]
-  }
 
   def fromTrie[K, V](t: HashMap[K, V]) = new ParHashMap(t)
 
@@ -239,10 +237,9 @@ private[parallel] abstract class HashMapCombiner[K, V]
     }
   }
 
-  override def toString = {
+  override def toString =
     "HashTrieCombiner(sz: " + size + ")"
-    //"HashTrieCombiner(buckets:\n\t" + buckets.filter(_ != null).mkString("\n\t") + ")\n"
-  }
+  //"HashTrieCombiner(buckets:\n\t" + buckets.filter(_ != null).mkString("\n\t") + ")\n"
 
   /* tasks */
 

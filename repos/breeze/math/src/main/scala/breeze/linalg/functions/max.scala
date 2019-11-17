@@ -50,12 +50,11 @@ object max
           max = scala.math.max(max, a)
         }
 
-        def zeros(numZero: Int, zeroValue: S): Unit = {
+        def zeros(numZero: Int, zeroValue: S): Unit =
           if (numZero != 0) {
             visitedOne = true
             max = scala.math.max(zeroValue, max)
           }
-        }
 
         override def visitArray(
             arr: Array[S],
@@ -98,11 +97,10 @@ object max
   implicit def maxVS[T, U, LHS, RHS, RV](
       implicit cmvH: ScalarOf[T, LHS],
       maxImpl: max.Impl2[LHS, RHS, LHS],
-      cmv: CanMapValues[T, LHS, LHS, U]): Impl2[T, RHS, U] = {
+      cmv: CanMapValues[T, LHS, LHS, U]): Impl2[T, RHS, U] =
     new Impl2[T, RHS, U] {
       override def apply(v: T, v2: RHS): U = cmv(v, maxImpl(_, v2))
     }
-  }
 
   /*
   @expand
@@ -178,12 +176,11 @@ object min extends UFunc {
           min = scala.math.min(min, a)
         }
 
-        def zeros(numZero: Int, zeroValue: S): Unit = {
+        def zeros(numZero: Int, zeroValue: S): Unit =
           if (numZero != 0) {
             visitedOne = true
             min = scala.math.min(zeroValue, min)
           }
-        }
 
         override def visitArray(
             arr: Array[S],
@@ -214,11 +211,10 @@ object min extends UFunc {
   implicit def minVS[T, U, LHS, RHS, RV](
       implicit cmvH: ScalarOf[T, LHS],
       maxImpl: min.Impl2[LHS, RHS, LHS],
-      cmv: mapValues.Impl2[T, LHS => LHS, U]): Impl2[T, RHS, U] = {
+      cmv: mapValues.Impl2[T, LHS => LHS, U]): Impl2[T, RHS, U] =
     new Impl2[T, RHS, U] {
       override def apply(v: T, v2: RHS): U = cmv(v, maxImpl(_, v2))
     }
-  }
 }
 
 /**
@@ -227,35 +223,30 @@ object min extends UFunc {
 object clip extends UFunc {
   implicit def clipOrdering[T, V](
       implicit ordering: Ordering[V],
-      cmv: CanMapValues[T, V, V, T]): Impl3[T, V, V, T] = {
+      cmv: CanMapValues[T, V, V, T]): Impl3[T, V, V, T] =
     new Impl3[T, V, V, T] {
       import ordering.mkOrderingOps
-      def apply(v: T, v2: V, v3: V): T = {
+      def apply(v: T, v2: V, v3: V): T =
         cmv(v, x => if (x < v2) v2 else if (x > v3) v3 else x)
-      }
     }
-  }
 
   implicit def clipInPlaceOrdering[T, V](
       implicit ordering: Ordering[V],
       cmv: CanTransformValues[T, V]): InPlaceImpl3[T, V, V] = {
     import ordering.mkOrderingOps
     new InPlaceImpl3[T, V, V] {
-      def apply(v: T, v2: V, v3: V): Unit = {
+      def apply(v: T, v2: V, v3: V): Unit =
         cmv.transform(v, x => if (x < v2) v2 else if (x > v3) v3 else x)
-      }
     }
   }
 
   @expand
   implicit def clipInPlace[Vec, @expand.args(Double, Float, Int, Long) T](
-      cmv: CanTransformValues[Vec, T]): InPlaceImpl3[Vec, T, T] = {
+      cmv: CanTransformValues[Vec, T]): InPlaceImpl3[Vec, T, T] =
     new InPlaceImpl3[Vec, T, T] {
-      def apply(v: Vec, v2: T, v3: T): Unit = {
+      def apply(v: Vec, v2: T, v3: T): Unit =
         cmv.transform(v, x => if (x < v2) v2 else if (x > v3) v3 else x)
-      }
     }
-  }
 }
 
 /** Peak-to-peak, ie the Range of values (maximum - minimum) along an axis.
@@ -282,13 +273,12 @@ object ptp extends UFunc {
           min = scala.math.min(min, a)
         }
 
-        def zeros(numZero: Int, zeroValue: S): Unit = {
+        def zeros(numZero: Int, zeroValue: S): Unit =
           if (numZero != 0) {
             visitedOne = true
             max = scala.math.max(zeroValue, max)
             min = scala.math.min(zeroValue, min)
           }
-        }
 
         override def visitArray(
             arr: Array[S],
@@ -342,13 +332,12 @@ object minMax extends UFunc {
           min = scala.math.min(min, a)
         }
 
-        def zeros(numZero: Int, zeroValue: S): Unit = {
+        def zeros(numZero: Int, zeroValue: S): Unit =
           if (numZero != 0) {
             visitedOne = true
             max = scala.math.max(zeroValue, max)
             min = scala.math.min(zeroValue, min)
           }
-        }
 
         override def visitArray(
             arr: Array[S],

@@ -26,7 +26,7 @@ class ConvertToTypedPatternIntention extends PsiElementBaseIntentionAction {
 
   override def getText = getFamilyName
 
-  def isAvailable(project: Project, editor: Editor, element: PsiElement) = {
+  def isAvailable(project: Project, editor: Editor, element: PsiElement) =
     element match {
       case e @ Parent(
             Both(
@@ -36,7 +36,6 @@ class ConvertToTypedPatternIntention extends PsiElementBaseIntentionAction {
 
       case _ => false
     }
-  }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
     val codeRef = element.getParent.asInstanceOf[ScStableCodeReferenceElement]

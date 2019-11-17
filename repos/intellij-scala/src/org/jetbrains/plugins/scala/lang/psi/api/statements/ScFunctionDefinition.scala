@@ -76,7 +76,7 @@ trait ScFunctionDefinition extends ScFunction with ScControlFlowOwner {
         case _                   => elem
       }
 
-    def expandIf(elem: PsiElement): Seq[PsiElement] = {
+    def expandIf(elem: PsiElement): Seq[PsiElement] =
       elem match {
         case i: ScIfStmt if i.elseBranch.isEmpty =>
           i.thenBranch match {
@@ -86,7 +86,6 @@ trait ScFunctionDefinition extends ScFunction with ScControlFlowOwner {
           }
         case _ => Seq(elem)
       }
-    }
     val expressions = resultExpressions.flatMap(expandIf)
     body match {
       case Some(body) =>
@@ -115,9 +114,8 @@ trait ScFunctionDefinition extends ScFunction with ScControlFlowOwner {
 
   @Cached(synchronized = false, ModCount.getBlockModificationCount, this)
   def getStaticTraitFunctionWrapper(
-      cClass: PsiClassWrapper): StaticTraitScFunctionWrapper = {
+      cClass: PsiClassWrapper): StaticTraitScFunctionWrapper =
     new StaticTraitScFunctionWrapper(this, cClass)
-  }
 }
 
 object ScFunctionDefinition {

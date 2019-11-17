@@ -23,12 +23,11 @@ object ApplicationBuild extends Build {
     def logAll(events: Seq[LogEvent]) = events.foreach(log)
     def trace(t: => Throwable) = ()
     def success(message: => String) = ()
-    def log(level: Level.Value, message: => String) = {
+    def log(level: Level.Value, message: => String) =
       if (level == Level.Error)
         synchronized {
           messages = message :: messages
         }
-    }
   }
 
   import complete.DefaultParsers._

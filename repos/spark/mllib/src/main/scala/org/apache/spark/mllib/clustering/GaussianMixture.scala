@@ -308,13 +308,12 @@ private[clustering] object GaussianMixture {
 
 // companion class to provide zero constructor for ExpectationSum
 private object ExpectationSum {
-  def zero(k: Int, d: Int): ExpectationSum = {
+  def zero(k: Int, d: Int): ExpectationSum =
     new ExpectationSum(
       0.0,
       Array.fill(k)(0.0),
       Array.fill(k)(BDV.zeros(d)),
       Array.fill(k)(BreezeMatrix.zeros(d, d)))
-  }
 
   // compute cluster contributions for each input point
   // (U, T) => U for aggregation

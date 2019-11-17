@@ -60,10 +60,9 @@ class JObjectField[OwnerType <: BsonRecord[OwnerType]](rec: OwnerType)
   }
 
   // assume string is json
-  def setFromString(in: String): Box[JObject] = {
+  def setFromString(in: String): Box[JObject] =
     // use lift-json to parse string into a JObject
     setBox(tryo(JsonParser.parse(in).asInstanceOf[JObject]))
-  }
 
   def toForm: Box[NodeSeq] = Empty
 

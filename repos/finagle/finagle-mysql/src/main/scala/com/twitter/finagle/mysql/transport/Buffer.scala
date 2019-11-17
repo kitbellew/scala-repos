@@ -299,7 +299,7 @@ trait BufferWriter extends Buffer {
     * Client/Server protocol. Refer to MySQL documentation for
     * more information.
     */
-  def writeLengthCodedBinary(length: Long): BufferWriter = {
+  def writeLengthCodedBinary(length: Long): BufferWriter =
     if (length < 251) {
       writeByte(length.toInt)
     } else if (length < 65536) {
@@ -312,7 +312,6 @@ trait BufferWriter extends Buffer {
       writeByte(254)
       writeLong(length)
     }
-  }
 
   /**
     * Writes a null terminated string onto the buffer where

@@ -29,21 +29,17 @@ class StubApplicationAttemptId(
     var attempt: Int)
     extends ApplicationAttemptId {
 
-  override def setApplicationId(appID: ApplicationId): Unit = {
+  override def setApplicationId(appID: ApplicationId): Unit =
     applicationId = appID
-  }
 
-  override def getAttemptId: Int = {
+  override def getAttemptId: Int =
     attempt
-  }
 
-  override def setAttemptId(attemptId: Int): Unit = {
+  override def setAttemptId(attemptId: Int): Unit =
     attempt = attemptId
-  }
 
-  override def getApplicationId: ApplicationId = {
+  override def getApplicationId: ApplicationId =
     applicationId
-  }
 
   override def build(): Unit = {}
 }

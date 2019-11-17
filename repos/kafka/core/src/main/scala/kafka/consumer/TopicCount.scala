@@ -143,7 +143,7 @@ private[kafka] class StaticTopicCount(
   def getConsumerThreadIdsPerTopic =
     TopicCount.makeConsumerThreadIdsPerTopic(consumerIdString, topicCountMap)
 
-  override def equals(obj: Any): Boolean = {
+  override def equals(obj: Any): Boolean =
     obj match {
       case null => false
       case n: StaticTopicCount =>
@@ -151,7 +151,6 @@ private[kafka] class StaticTopicCount(
           topicCountMap == n.topicCountMap
       case _ => false
     }
-  }
 
   def getTopicCountMap = topicCountMap
 
@@ -177,10 +176,9 @@ private[kafka] class WildcardTopicCount(
   def getTopicCountMap =
     Map(CoreUtils.JSONEscapeString(topicFilter.regex) -> numStreams)
 
-  def pattern: String = {
+  def pattern: String =
     topicFilter match {
       case wl: Whitelist => TopicCount.whiteListPattern
       case bl: Blacklist => TopicCount.blackListPattern
     }
-  }
 }

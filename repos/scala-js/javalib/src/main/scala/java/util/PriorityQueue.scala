@@ -53,13 +53,12 @@ class PriorityQueue[E] protected (
   private val inner: mutable.PriorityQueue[Box[E]] =
     new mutable.PriorityQueue[Box[E]]()
 
-  override def add(e: E): Boolean = {
+  override def add(e: E): Boolean =
     if (e == null) throw new NullPointerException()
     else {
       inner += Box(e)
       true
     }
-  }
 
   def offer(e: E): Boolean = add(e)
 
@@ -72,7 +71,7 @@ class PriorityQueue[E] protected (
 
     @tailrec
     def takeLeft(
-        part: mutable.PriorityQueue[Box[E]]): mutable.PriorityQueue[Box[E]] = {
+        part: mutable.PriorityQueue[Box[E]]): mutable.PriorityQueue[Box[E]] =
       if (inner.isEmpty) part
       else {
         val next = inner.dequeue
@@ -80,7 +79,6 @@ class PriorityQueue[E] protected (
         else if (BoxOrdering.compare(boxed, next) > 0) part += next
         else takeLeft(part += next)
       }
-    }
 
     val left = takeLeft(new mutable.PriorityQueue[Box[E]]())
     inner ++= left
@@ -91,7 +89,7 @@ class PriorityQueue[E] protected (
   override def contains(o: Any): Boolean =
     inner.exists(_ === Box(o))
 
-  def iterator(): Iterator[E] = {
+  def iterator(): Iterator[E] =
     new Iterator[E] {
       private val iter = inner.clone.iterator
 
@@ -104,16 +102,14 @@ class PriorityQueue[E] protected (
         last.get
       }
 
-      def remove(): Unit = {
+      def remove(): Unit =
         if (last.isEmpty) {
           throw new IllegalStateException()
         } else {
           last.foreach(self.remove(_))
           last = None
         }
-      }
     }
-  }
 
   def size(): Int = inner.size
 

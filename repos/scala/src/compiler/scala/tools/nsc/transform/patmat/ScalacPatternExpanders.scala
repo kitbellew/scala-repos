@@ -87,7 +87,7 @@ trait ScalacPatternExpanders {
         context: Context,
         whole: Type,
         result: Type,
-        isSeq: Boolean): Extractor = {
+        isSeq: Boolean): Extractor =
       if (result =:= BooleanTpe) newExtractor(whole, Nil, NoRepeated)
       else {
         val getResult = typeOfMemberNamedGet(result)
@@ -109,7 +109,6 @@ trait ScalacPatternExpanders {
           case tps => newExtractor(whole, tps, NoRepeated, getResult)
         }
       }
-    }
   }
   object alignPatterns extends ScalacPatternExpander {
     private def validateAligned(

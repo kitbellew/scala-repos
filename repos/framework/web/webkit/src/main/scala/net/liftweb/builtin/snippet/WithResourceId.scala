@@ -42,7 +42,7 @@ object WithResourceId extends DispatchSnippet {
 
   import Helpers._
 
-  def render(xhtml: NodeSeq): NodeSeq = {
+  def render(xhtml: NodeSeq): NodeSeq =
     xhtml flatMap
       (_ match {
         case e: Elem if e.label == "link" =>
@@ -69,7 +69,6 @@ object WithResourceId extends DispatchSnippet {
           } openOr e
         case e => e
       })
-  }
 
   private def attrStr(attrs: MetaData, attr: String): Box[String] =
     (attrs.get(attr) match {

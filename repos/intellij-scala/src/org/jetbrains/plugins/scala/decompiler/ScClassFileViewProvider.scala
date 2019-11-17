@@ -32,7 +32,7 @@ class ScClassFileViewProvider(
   override def createFile(
       project: Project,
       vFile: VirtualFile,
-      fileType: FileType): PsiFile = {
+      fileType: FileType): PsiFile =
     if (!isScalaFile) null
     else {
       val file = new ScalaFileImpl(this)
@@ -41,7 +41,6 @@ class ScClassFileViewProvider(
       adj.setVirtualFile(vFile)
       file
     }
-  }
 
   override def createCopy(copy: VirtualFile): SingleRootFileViewProvider =
     new ScClassFileViewProvider(getManager, copy, false, isScalaFile)

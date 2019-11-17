@@ -40,7 +40,7 @@ class BufferedSource(inputStream: InputStream, bufferSize: Int)(
     (Iterator continually (codec wrap charReader.read()) takeWhile (_ != -1) map
       (_.toChar))
 
-  private def decachedReader: BufferedReader = {
+  private def decachedReader: BufferedReader =
     // Don't want to lose a buffered char sitting in iter either. Yes,
     // this is ridiculous, but if I can't get rid of Source, and all the
     // Iterator bits are designed into Source, and people create Sources
@@ -57,7 +57,6 @@ class BufferedSource(inputStream: InputStream, bufferSize: Int)(
       pb unread iter.next().toInt
       new BufferedReader(pb, bufferSize)
     } else charReader
-  }
 
   class BufferedLineIterator
       extends AbstractIterator[String]

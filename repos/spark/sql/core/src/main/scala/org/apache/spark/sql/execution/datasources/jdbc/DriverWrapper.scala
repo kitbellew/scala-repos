@@ -38,16 +38,14 @@ class DriverWrapper(val wrapped: Driver) extends Driver {
 
   override def getPropertyInfo(
       url: String,
-      info: Properties): Array[DriverPropertyInfo] = {
+      info: Properties): Array[DriverPropertyInfo] =
     wrapped.getPropertyInfo(url, info)
-  }
 
   override def getMinorVersion: Int = wrapped.getMinorVersion
 
-  def getParentLogger: java.util.logging.Logger = {
+  def getParentLogger: java.util.logging.Logger =
     throw new SQLFeatureNotSupportedException(
       s"${this.getClass.getName}.getParentLogger is not yet implemented.")
-  }
 
   override def connect(url: String, info: Properties): Connection =
     wrapped.connect(url, info)

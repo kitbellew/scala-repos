@@ -230,9 +230,8 @@ private object FaultToleranceTest extends App with Logging {
       containerSparkHome)
   }
 
-  private def getMasterUrls(masters: Seq[TestMasterInfo]): String = {
+  private def getMasterUrls(masters: Seq[TestMasterInfo]): String =
     "spark://" + masters.map(master => master.ip + ":7077").mkString(",")
-  }
 
   private def getLeader: TestMasterInfo = {
     val leaders = masters.filter(_.state == RecoveryState.ALIVE)
@@ -289,10 +288,9 @@ private object FaultToleranceTest extends App with Logging {
     var numLiveApps = 0
     var liveWorkerIPs: Seq[String] = List()
 
-    def stateValid(): Boolean = {
+    def stateValid(): Boolean =
       (workers.map(_.ip) -- liveWorkerIPs).isEmpty && numAlive == 1 &&
-      numStandby == masters.size - 1 && numLiveApps >= 1
-    }
+        numStandby == masters.size - 1 && numLiveApps >= 1
 
     val f = Future {
       try {
@@ -481,9 +479,8 @@ private object Docker extends Logging {
     cmd
   }
 
-  def kill(dockerId: DockerId): Unit = {
+  def kill(dockerId: DockerId): Unit =
     "docker kill %s".format(dockerId.id).!
-  }
 
   def getLastProcessId: DockerId = {
     var id: String = null

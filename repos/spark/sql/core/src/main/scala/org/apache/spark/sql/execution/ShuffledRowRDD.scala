@@ -77,9 +77,8 @@ class CoalescedPartitioner(
 
   override def numPartitions: Int = partitionStartIndices.length
 
-  override def getPartition(key: Any): Int = {
+  override def getPartition(key: Any): Int =
     parentPartitionMapping(parent.getPartition(key))
-  }
 
   override def equals(other: Any): Boolean = other match {
     case c: CoalescedPartitioner =>

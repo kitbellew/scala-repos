@@ -21,12 +21,11 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.{
 class ScParenthesisedPatternImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScParenthesisedPattern {
-  override def accept(visitor: PsiElementVisitor): Unit = {
+  override def accept(visitor: PsiElementVisitor): Unit =
     visitor match {
       case visitor: ScalaElementVisitor => super.accept(visitor)
       case _                            => super.accept(visitor)
     }
-  }
 
   override def toString: String = "PatternInParenthesis"
 

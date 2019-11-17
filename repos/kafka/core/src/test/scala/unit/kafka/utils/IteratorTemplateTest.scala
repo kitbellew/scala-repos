@@ -25,7 +25,7 @@ class IteratorTemplateTest extends Assertions {
   val lst = (0 until 10)
   val iterator = new IteratorTemplate[Int]() {
     var i = 0
-    override def makeNext() = {
+    override def makeNext() =
       if (i >= lst.size) {
         allDone()
       } else {
@@ -33,7 +33,6 @@ class IteratorTemplateTest extends Assertions {
         i += 1
         item
       }
-    }
   }
 
   @Test

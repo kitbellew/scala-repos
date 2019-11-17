@@ -19,18 +19,16 @@ object SemanticsUtils {
   @inline
   def asInstanceOfCheck(
       shouldThrow: => Boolean,
-      exception: => Throwable): Unit = {
+      exception: => Throwable): Unit =
     genericCheck(asInstanceOfs, shouldThrow, exception)
-  }
 
   @inline
   private def genericCheck(
       complianceLevel: Int,
       shouldThrow: => Boolean,
-      exception: => Throwable): Unit = {
+      exception: => Throwable): Unit =
     if (complianceLevel != Unchecked && shouldThrow) {
       if (complianceLevel == Compliant) throw exception
       else throw new UndefinedBehaviorError(exception)
     }
-  }
 }

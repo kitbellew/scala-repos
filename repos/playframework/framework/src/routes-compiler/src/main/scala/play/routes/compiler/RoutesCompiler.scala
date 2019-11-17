@@ -47,11 +47,10 @@ object RoutesCompiler {
             .find(_.startsWith("// @SOURCE:"))
             .map(m => new File(m.trim.drop(11)))
 
-          def mapLine(generatedLine: Int): Option[Int] = {
+          def mapLine(generatedLine: Int): Option[Int] =
             lines.view.take(generatedLine).reverse.collectFirst {
               case LineMarker(line) => Integer.parseInt(line)
             }
-          }
         })
       } else {
         None

@@ -173,9 +173,8 @@ class VersionLog(
     allVersions.find(_.id == version)
   def isCompleted(version: UUID) = completedVersions.contains(version)
 
-  def close = {
+  def close =
     workLock.release
-  }
 
   def addVersion(entry: VersionEntry): IO[PrecogUnit] =
     allVersions.find(_ == entry) map { _ =>
@@ -189,7 +188,7 @@ class VersionLog(
       }
     }
 
-  def completeVersion(version: UUID): IO[PrecogUnit] = {
+  def completeVersion(version: UUID): IO[PrecogUnit] =
     if (allVersions.exists(_.id == version)) {
       !isCompleted(version) whenM {
         logger.debug("Completing version " + version)
@@ -204,9 +203,8 @@ class VersionLog(
         new IllegalStateException(
           "Cannot make nonexistent version %s current" format version))
     }
-  }
 
-  def setHead(newHead: UUID): IO[PrecogUnit] = {
+  def setHead(newHead: UUID): IO[PrecogUnit] =
     currentVersion.exists(_.id == newHead) unlessM {
       allVersions.find(_.id == newHead) traverse { entry =>
         logger.debug("Setting HEAD to " + newHead)
@@ -222,7 +220,6 @@ class VersionLog(
     } map { _ =>
       PrecogUnit
     }
-  }
 
   def clearHead = IOUtils.writeToFile(unsetSentinelJV, headFile).map { _ =>
     currentVersion = None

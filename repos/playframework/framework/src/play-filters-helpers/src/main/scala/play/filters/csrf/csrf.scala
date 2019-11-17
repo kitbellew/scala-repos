@@ -87,12 +87,11 @@ case class CSRFConfig(
 object CSRFConfig {
   private val SafeMethods = Set("GET", "HEAD", "OPTIONS")
 
-  private def defaultCreateIfNotFound(request: RequestHeader) = {
+  private def defaultCreateIfNotFound(request: RequestHeader) =
     // If the request isn't accepting HTML, then it won't be rendering a form, so there's no point in generating a
     // CSRF token for it.
     (request.method == "GET" || request.method == "HEAD") &&
-    (request.accepts("text/html") || request.accepts("application/xml+xhtml"))
-  }
+      (request.accepts("text/html") || request.accepts("application/xml+xhtml"))
 
   private[play] val HeaderNoCheck = "nocheck"
 
@@ -144,12 +143,11 @@ object CSRFConfig {
       .getOrElse(Map.empty)
 
     val shouldProtect: RequestHeader => Boolean = { rh =>
-      def foundHeaderValues(headersToCheck: Map[String, String]) = {
+      def foundHeaderValues(headersToCheck: Map[String, String]) =
         headersToCheck.exists {
           case (name, "*")   => rh.headers.get(name).isDefined
           case (name, value) => rh.headers.get(name).contains(value)
         }
-      }
 
       (protectHeaders.isEmpty || foundHeaderValues(protectHeaders)) &&
       !foundHeaderValues(bypassHeaders)
@@ -197,14 +195,13 @@ object CSRF {
   /**
     * Extract token from current request
     */
-  def getToken(implicit request: RequestHeader): Option[Token] = {
+  def getToken(implicit request: RequestHeader): Option[Token] =
     // Try to get the re-signed token first, then get the "new" token.
     for {
       name <- request.tags.get(Token.NameRequestTag)
       value <- request.tags.get(Token.ReSignedRequestTag) orElse request.tags
         .get(Token.RequestTag)
     } yield Token(name, value)
-  }
 
   /**
     * Extract token from current Java request
@@ -212,9 +209,8 @@ object CSRF {
     * @param request The request to extract the token from
     * @return The token, if found.
     */
-  def getToken(request: play.mvc.Http.RequestHeader): Optional[Token] = {
+  def getToken(request: play.mvc.Http.RequestHeader): Optional[Token] =
     Optional.ofNullable(getToken(request._underlyingHeader()).orNull)
-  }
 
   /**
     * A token provider, for generating and comparing tokens.
@@ -301,7 +297,7 @@ object CSRF {
   object ErrorHandler {
     def bindingsFromConfiguration(
         environment: Environment,
-        configuration: Configuration): Seq[Binding[_]] = {
+        configuration: Configuration): Seq[Binding[_]] =
       Reflect.bindingsFromConfiguration[
         ErrorHandler,
         CSRFErrorHandler,
@@ -312,7 +308,6 @@ object CSRF {
         PlayConfig(configuration),
         "play.filters.csrf.errorHandler",
         "CSRFErrorHandler")
-    }
   }
 }
 
@@ -320,13 +315,12 @@ object CSRF {
   * The CSRF module.
   */
 class CSRFModule extends Module {
-  def bindings(environment: Environment, configuration: Configuration) = {
+  def bindings(environment: Environment, configuration: Configuration) =
     Seq(
       bind[CSRFConfig].toProvider[CSRFConfigProvider],
       bind[CSRF.TokenProvider].toProvider[CSRF.TokenProviderProvider],
       bind[CSRFFilter].toSelf
     ) ++ ErrorHandler.bindingsFromConfiguration(environment, configuration)
-  }
 }
 
 /**

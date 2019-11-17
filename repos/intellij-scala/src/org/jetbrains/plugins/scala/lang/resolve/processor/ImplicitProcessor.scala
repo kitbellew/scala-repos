@@ -23,12 +23,11 @@ abstract class ImplicitProcessor(kinds: Set[Value], withoutPrecedence: Boolean)
       : util.HashMap[String, util.HashSet[ScalaResolveResult]] =
     new util.HashMap[String, util.HashSet[ScalaResolveResult]]()
 
-  protected def getQualifiedName(result: ScalaResolveResult): String = {
+  protected def getQualifiedName(result: ScalaResolveResult): String =
     result.isRenamed match {
       case Some(str) => str
       case None      => result.name
     }
-  }
 
   protected def getTopPrecedence(result: ScalaResolveResult): Int =
     Option(precedence.get(getQualifiedName(result))).getOrElse(0)
@@ -52,13 +51,11 @@ abstract class ImplicitProcessor(kinds: Set[Value], withoutPrecedence: Boolean)
     levelSet
   }
 
-  override protected def addResults(
-      results: Seq[ScalaResolveResult]): Boolean = {
+  override protected def addResults(results: Seq[ScalaResolveResult]): Boolean =
     if (withoutPrecedence) {
       candidatesSet ++= results
       true
     } else super.addResults(results)
-  }
 
   override def changedLevel: Boolean = {
     if (levelMap.isEmpty) return true
@@ -89,9 +86,8 @@ abstract class ImplicitProcessor(kinds: Set[Value], withoutPrecedence: Boolean)
 
   override protected def filterNot(
       p: ScalaResolveResult,
-      n: ScalaResolveResult): Boolean = {
+      n: ScalaResolveResult): Boolean =
     getQualifiedName(p) == getQualifiedName(n) && super.filterNot(p, n)
-  }
 
   override protected def isCheckForEqualPrecedence = false
 

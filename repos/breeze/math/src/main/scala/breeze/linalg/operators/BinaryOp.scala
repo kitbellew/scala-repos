@@ -26,7 +26,7 @@ object BinaryOp {
 
   def fromCopyAndUpdate[A, B, Op](
       implicit op: UFunc.InPlaceImpl2[Op, A, B],
-      copy: CanCopy[A]): UFunc.UImpl2[Op, A, B, A] = {
+      copy: CanCopy[A]): UFunc.UImpl2[Op, A, B, A] =
     new UFunc.UImpl2[Op, A, B, A] {
       def apply(a: A, b: B): A = {
         val c = copy(a)
@@ -34,7 +34,6 @@ object BinaryOp {
         c
       }
     }
-  }
 }
 
 /**
@@ -57,9 +56,8 @@ trait BinaryRegistry[A, B, Op, +R]
       b: B,
       m: Map[
         (Class[_], Class[_]),
-        UImpl2[Op, _ <: A, _ <: B, _ <: R @uncheckedVariance]]) = {
+        UImpl2[Op, _ <: A, _ <: B, _ <: R @uncheckedVariance]]) =
     throw new RuntimeException("Multiple bindings for method: " + m)
-  }
 
   private val l1cache: ThreadLocal[(
       (Class[_], Class[_]),

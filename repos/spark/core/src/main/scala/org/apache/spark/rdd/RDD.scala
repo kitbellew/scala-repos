@@ -191,7 +191,7 @@ abstract class RDD[T: ClassTag](
     * it is computed. This can only be used to assign a new storage level if the RDD does not
     * have a storage level set yet. Local checkpointing is an exception.
     */
-  def persist(newLevel: StorageLevel): this.type = {
+  def persist(newLevel: StorageLevel): this.type =
     if (isLocallyCheckpointed) {
       // This means the user previously called localCheckpoint(), which should have already
       // marked this RDD for persisting. Here we should override the old storage level with
@@ -202,7 +202,6 @@ abstract class RDD[T: ClassTag](
     } else {
       persist(newLevel, allowOverride = false)
     }
-  }
 
   /** Persist this RDD with the default storage level (`MEMORY_ONLY`). */
   def persist(): this.type = persist(StorageLevel.MEMORY_ONLY)
@@ -239,20 +238,19 @@ abstract class RDD[T: ClassTag](
     * Get the list of dependencies of this RDD, taking into account whether the
     * RDD is checkpointed or not.
     */
-  final def dependencies: Seq[Dependency[_]] = {
+  final def dependencies: Seq[Dependency[_]] =
     checkpointRDD.map(r => List(new OneToOneDependency(r))).getOrElse {
       if (dependencies_ == null) {
         dependencies_ = getDependencies
       }
       dependencies_
     }
-  }
 
   /**
     * Get the array of partitions of this RDD, taking into account whether the
     * RDD is checkpointed or not.
     */
-  final def partitions: Array[Partition] = {
+  final def partitions: Array[Partition] =
     checkpointRDD.map(_.partitions).getOrElse {
       if (partitions_ == null) {
         partitions_ = getPartitions
@@ -265,7 +263,6 @@ abstract class RDD[T: ClassTag](
       }
       partitions_
     }
-  }
 
   /**
     * Returns the number of partitions of this RDD.
@@ -277,24 +274,22 @@ abstract class RDD[T: ClassTag](
     * Get the preferred locations of a partition, taking into account whether the
     * RDD is checkpointed.
     */
-  final def preferredLocations(split: Partition): Seq[String] = {
+  final def preferredLocations(split: Partition): Seq[String] =
     checkpointRDD.map(_.getPreferredLocations(split)).getOrElse {
       getPreferredLocations(split)
     }
-  }
 
   /**
     * Internal method to this RDD; will read from cache if applicable, or otherwise compute it.
     * This should ''not'' be called by users directly, but is available for implementors of custom
     * subclasses of RDD.
     */
-  final def iterator(split: Partition, context: TaskContext): Iterator[T] = {
+  final def iterator(split: Partition, context: TaskContext): Iterator[T] =
     if (storageLevel != StorageLevel.NONE) {
       getOrCompute(split, context)
     } else {
       computeOrReadCheckpoint(split, context)
     }
-  }
 
   /**
     * Return the ancestors of the given RDD that are related to it only through a sequence of
@@ -326,13 +321,12 @@ abstract class RDD[T: ClassTag](
     */
   private[spark] def computeOrReadCheckpoint(
       split: Partition,
-      context: TaskContext): Iterator[T] = {
+      context: TaskContext): Iterator[T] =
     if (isCheckpointedAndMaterialized) {
       firstParent[T].iterator(split, context)
     } else {
       compute(split, context)
     }
-  }
 
   /**
     * Gets or computes an RDD partition. Used by RDD.iterator() when an RDD is cached.
@@ -547,13 +541,12 @@ abstract class RDD[T: ClassTag](
   private[spark] def randomSampleWithRange(
       lb: Double,
       ub: Double,
-      seed: Long): RDD[T] = {
+      seed: Long): RDD[T] =
     this.mapPartitionsWithIndex({ (index, partition) =>
       val sampler = new BernoulliCellSampler[T](lb, ub)
       sampler.setSeed(seed + index)
       sampler.sample(partition)
     }, preservesPartitioning = true)
-  }
 
   /**
     * Return a fixed-size sampled subset of this RDD in an array
@@ -984,9 +977,8 @@ abstract class RDD[T: ClassTag](
     * recomputing the input RDD should be cached first.
     */
   def toLocalIterator: Iterator[T] = withScope {
-    def collectPartition(p: Int): Array[T] = {
+    def collectPartition(p: Int): Array[T] =
       sc.runJob(this, (iter: Iterator[T]) => iter.toArray, Seq(p)).head
-    }
     (0 until partitions.length).iterator.flatMap(i => collectPartition(i))
   }
 
@@ -1681,24 +1673,22 @@ abstract class RDD[T: ClassTag](
     * Return whether this RDD is marked for local checkpointing.
     * Exposed for testing.
     */
-  private[rdd] def isLocallyCheckpointed: Boolean = {
+  private[rdd] def isLocallyCheckpointed: Boolean =
     checkpointData match {
       case Some(_: LocalRDDCheckpointData[T]) => true
       case _                                  => false
     }
-  }
 
   /**
     * Gets the name of the directory to which this RDD was checkpointed.
     * This is not defined if the RDD is checkpointed locally.
     */
-  def getCheckpointFile: Option[String] = {
+  def getCheckpointFile: Option[String] =
     checkpointData match {
       case Some(reliable: ReliableRDDCheckpointData[T]) =>
         reliable.getCheckpointDir
       case _ => None
     }
-  }
 
   // =======================================================================
   // Other internal methods and fields
@@ -1739,14 +1729,12 @@ abstract class RDD[T: ClassTag](
       .getOrElse(false)
 
   /** Returns the first parent RDD */
-  protected[spark] def firstParent[U: ClassTag]: RDD[U] = {
+  protected[spark] def firstParent[U: ClassTag]: RDD[U] =
     dependencies.head.rdd.asInstanceOf[RDD[U]]
-  }
 
   /** Returns the jth parent RDD: e.g. rdd.parent[T](0) is equivalent to rdd.firstParent[T] */
-  protected[spark] def parent[U: ClassTag](j: Int) = {
+  protected[spark] def parent[U: ClassTag](j: Int) =
     dependencies(j).rdd.asInstanceOf[RDD[U]]
-  }
 
   /** The [[org.apache.spark.SparkContext]] that this RDD was created on. */
   def context: SparkContext = sc
@@ -1764,9 +1752,8 @@ abstract class RDD[T: ClassTag](
     * Private API for changing an RDD's ClassTag.
     * Used for internal Java-Scala API compatibility.
     */
-  private[spark] def retag(implicit classTag: ClassTag[T]): RDD[T] = {
+  private[spark] def retag(implicit classTag: ClassTag[T]): RDD[T] =
     this.mapPartitions(identity, preservesPartitioning = true)(classTag)
-  }
 
   // Avoid handling doCheckpoint multiple times to prevent excessive recursion
   @transient private var doCheckpointCalled = false
@@ -1776,7 +1763,7 @@ abstract class RDD[T: ClassTag](
     * has completed (therefore the RDD has been materialized and potentially stored in memory).
     * doCheckpoint() is called recursively on the parent RDDs.
     */
-  private[spark] def doCheckpoint(): Unit = {
+  private[spark] def doCheckpoint(): Unit =
     RDDOperationScope.withScope(
       sc,
       "checkpoint",
@@ -1798,7 +1785,6 @@ abstract class RDD[T: ClassTag](
         }
       }
     }
-  }
 
   /**
     * Changes the dependencies of this RDD from its original parents to a new RDD (`newRDD`)
@@ -1905,13 +1891,12 @@ abstract class RDD[T: ClassTag](
         rdd: RDD[_],
         prefix: String = "",
         isShuffle: Boolean = true,
-        isLastChild: Boolean = false): Seq[String] = {
+        isLastChild: Boolean = false): Seq[String] =
       if (isShuffle) {
         shuffleDebugString(rdd, prefix, isLastChild)
       } else {
         debugSelf(rdd).map(prefix + _) ++ debugChildren(rdd, prefix)
       }
-    }
     firstDebugString(this).mkString("\n")
   }
 
@@ -1922,9 +1907,8 @@ abstract class RDD[T: ClassTag](
       id,
       getCreationSite)
 
-  def toJavaRDD(): JavaRDD[T] = {
+  def toJavaRDD(): JavaRDD[T] =
     new JavaRDD(this)(elementClassTag)
-  }
 }
 
 /**
@@ -1946,14 +1930,12 @@ object RDD {
   implicit def rddToPairRDDFunctions[K, V](rdd: RDD[(K, V)])(
       implicit kt: ClassTag[K],
       vt: ClassTag[V],
-      ord: Ordering[K] = null): PairRDDFunctions[K, V] = {
+      ord: Ordering[K] = null): PairRDDFunctions[K, V] =
     new PairRDDFunctions(rdd)
-  }
 
   implicit def rddToAsyncRDDActions[T: ClassTag](
-      rdd: RDD[T]): AsyncRDDActions[T] = {
+      rdd: RDD[T]): AsyncRDDActions[T] =
     new AsyncRDDActions(rdd)
-  }
 
   implicit def rddToSequenceFileRDDFunctions[K, V](rdd: RDD[(K, V)])(
       implicit kt: ClassTag[K],
@@ -1970,17 +1952,14 @@ object RDD {
   }
 
   implicit def rddToOrderedRDDFunctions[K: Ordering: ClassTag, V: ClassTag](
-      rdd: RDD[(K, V)]): OrderedRDDFunctions[K, V, (K, V)] = {
+      rdd: RDD[(K, V)]): OrderedRDDFunctions[K, V, (K, V)] =
     new OrderedRDDFunctions[K, V, (K, V)](rdd)
-  }
 
   implicit def doubleRDDToDoubleRDDFunctions(
-      rdd: RDD[Double]): DoubleRDDFunctions = {
+      rdd: RDD[Double]): DoubleRDDFunctions =
     new DoubleRDDFunctions(rdd)
-  }
 
   implicit def numericRDDToDoubleRDDFunctions[T](rdd: RDD[T])(
-      implicit num: Numeric[T]): DoubleRDDFunctions = {
+      implicit num: Numeric[T]): DoubleRDDFunctions =
     new DoubleRDDFunctions(rdd.map(x => num.toDouble(x)))
-  }
 }

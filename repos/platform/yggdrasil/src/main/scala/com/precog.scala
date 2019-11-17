@@ -69,14 +69,13 @@ package object yggdrasil {
       fullIdentityOrdering(ids1, ids2)
   }
 
-  def prefixIdentityOrder(prefixLength: Int): Order[Identities] = {
+  def prefixIdentityOrder(prefixLength: Int): Order[Identities] =
     new Order[Identities] {
       def order(ids1: Identities, ids2: Identities) =
         prefixIdentityOrdering(ids1, ids2, prefixLength)
     }
-  }
 
-  def indexedIdentitiesOrder(indices: Vector[Int]): Order[Identities] = {
+  def indexedIdentitiesOrder(indices: Vector[Int]): Order[Identities] =
     new Order[Identities] {
       def order(ids1: Identities, ids2: Identities): Ordering = {
         var result: Ordering = EQ
@@ -89,7 +88,6 @@ package object yggdrasil {
         result
       }
     }
-  }
 
   def tupledIdentitiesOrder[A](
       idOrder: Order[Identities] = IdentitiesOrder): Order[(Identities, A)] =
@@ -110,9 +108,8 @@ package object yggdrasil {
   def valueOrder[A](implicit ord: Order[A]): Order[(Identities, A)] =
     new Order[(Identities, A)] {
       type IA = (Identities, A)
-      def order(x: IA, y: IA): Ordering = {
+      def order(x: IA, y: IA): Ordering =
         ord.order(x._2, y._2)
-      }
     }
 }
 

@@ -56,8 +56,9 @@ object Compatibility {
       place,
       (Success(typez, None), Set.empty),
       ModCount.getBlockModificationCount)
-    private def eval(typez: ScType, expectedOption: Option[ScType])
-        : (TypeResult[ScType], Set[ImportUsed]) = {
+    private def eval(
+        typez: ScType,
+        expectedOption: Option[ScType]): (TypeResult[ScType], Set[ImportUsed]) =
       expectedOption match {
         case Some(expected) if typez.conforms(expected) =>
           (Success(typez, None), Set.empty)
@@ -118,13 +119,12 @@ object Compatibility {
           } else defaultResult
         case _ => (Success(typez, None), Set.empty)
       }
-    }
 
     def getTypeAfterImplicitConversion(
         checkImplicits: Boolean,
         isShape: Boolean,
         expectedOption: Option[ScType])
-        : (TypeResult[ScType], collection.Set[ImportUsed]) = {
+        : (TypeResult[ScType], collection.Set[ImportUsed]) =
       if (expr != null) {
         val expressionTypeResult = expr.getTypeAfterImplicitConversion(
           checkImplicits,
@@ -140,7 +140,6 @@ object Compatibility {
         if (isShape || !checkImplicits || place == null) default
         else eval(typez, expectedOption)
       }
-    }
   }
 
   object Expression {
@@ -151,12 +150,11 @@ object Compatibility {
     implicit def seq2ExpressionSeq(seq: Seq[ScExpression]): Seq[Expression] =
       seq.map(Expression(_))
     implicit def args2ExpressionArgs(
-        list: List[Seq[ScExpression]]): List[Seq[Expression]] = {
+        list: List[Seq[ScExpression]]): List[Seq[Expression]] =
       list.map(_.map(Expression(_)))
-    }
   }
 
-  def seqClassFor(expr: ScTypedStmt): PsiClass = {
+  def seqClassFor(expr: ScTypedStmt): PsiClass =
     seqClass match {
       case Some(clazz) =>
         if (ApplicationManager.getApplication.isUnitTestMode) clazz
@@ -169,7 +167,6 @@ object Compatibility {
             expr.getResolveScope,
             ScalaPsiManager.ClassCategory.TYPE)
     }
-  }
 
   def checkConformance(
       checkNames: Boolean,
@@ -256,7 +253,7 @@ object Compatibility {
     var matchedTypes: List[(Parameter, ScType)] = Nil
     var defaultParameterUsed = false
 
-    def doNoNamed(expr: Expression): List[ApplicabilityProblem] = {
+    def doNoNamed(expr: Expression): List[ApplicabilityProblem] =
       if (namedMode) {
         List(new PositionalAfterNamedArgument(expr.expr))
       } else {
@@ -285,7 +282,6 @@ object Compatibility {
           }
         }
       }
-    }
 
     while (k < parameters.length.min(exprs.length)) {
       exprs(k) match {
@@ -338,10 +334,9 @@ object Compatibility {
             p.deprecatedName.exists(ScalaPsiUtil.memberNamesEquals(_, name))
           }
           if (index == -1 || used(index)) {
-            def extractExpression(assign: ScAssignStmt): ScExpression = {
+            def extractExpression(assign: ScAssignStmt): ScExpression =
               if (ScUnderScoreSectionUtil.isUnderscoreFunction(assign)) assign
               else assign.getRExpression.getOrElse(assign)
-            }
             problems :::=
               doNoNamed(Expression(extractExpression(assign))).reverse
           } else {

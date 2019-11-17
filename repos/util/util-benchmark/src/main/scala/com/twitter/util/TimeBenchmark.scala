@@ -15,9 +15,8 @@ class TimeBenchmark extends StdBenchAnnotations {
 
   @OperationsPerInvocation(7)
   @Benchmark
-  def timeEquals: Boolean = {
+  def timeEquals: Boolean =
     t1 == Time.Top & t1 == Time.Bottom & t1 == Time.Undefined & t1 == t2 & Time.Top == Time.Top & Time.Top == Time.Bottom & Time.Top == Time.Undefined
-  }
 
   @Benchmark
   def timeHashCode: Int = t1.hashCode

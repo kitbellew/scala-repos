@@ -36,7 +36,7 @@ final class CreateCaseClausesIntention extends PsiElementBaseIntentionAction {
   def isAvailable(
       project: Project,
       editor: Editor,
-      element: PsiElement): Boolean = {
+      element: PsiElement): Boolean =
     findSurroundingMatch(element) match {
       case Some((_, scrutineeType)) =>
         setText(getFamilyName + scrutineeType)
@@ -44,7 +44,6 @@ final class CreateCaseClausesIntention extends PsiElementBaseIntentionAction {
       case None =>
         false
     }
-  }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
     findSurroundingMatch(element) match {
@@ -176,7 +175,7 @@ final class CreateCaseClausesIntention extends PsiElementBaseIntentionAction {
     * @return (matchStmt, matchExpression, matchExpressionClass)
     */
   private def findSurroundingMatch(element: PsiElement)
-      : Option[((Project, Editor, PsiElement) => Unit, String)] = {
+      : Option[((Project, Editor, PsiElement) => Unit, String)] =
     element.getParent match {
       case x: ScMatchStmt if x.caseClauses.isEmpty =>
         val classType: Option[(PsiClass, ScSubstitutor)] = x.expr
@@ -201,5 +200,4 @@ final class CreateCaseClausesIntention extends PsiElementBaseIntentionAction {
         }
       case _ => None
     }
-  }
 }

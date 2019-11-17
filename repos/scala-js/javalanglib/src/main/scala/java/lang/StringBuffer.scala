@@ -35,16 +35,14 @@ class StringBuffer(private var content: String)
   def append(f: scala.Float): StringBuffer = append(f.toString())
   def append(d: scala.Double): StringBuffer = append(d.toString())
 
-  def append(obj: AnyRef): StringBuffer = {
+  def append(obj: AnyRef): StringBuffer =
     if (obj == null) append(null: String)
     else append(obj.toString())
-  }
 
   def append(csq: CharSequence): StringBuffer = append(csq: AnyRef)
-  def append(csq: CharSequence, start: Int, end: Int): StringBuffer = {
+  def append(csq: CharSequence, start: Int, end: Int): StringBuffer =
     if (csq == null) append("null", start, end)
     else append(csq.subSequence(start, end).toString())
-  }
 
   def appendCodePoint(codePoint: Int): StringBuffer =
     append(Character.toChars(codePoint))

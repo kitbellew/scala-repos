@@ -24,9 +24,8 @@ class SimpleSSLContextBuilder(
     secureRandom: Option[SecureRandom])
     extends SSLContextBuilder {
 
-  def nullIfEmpty[T](array: Array[T]) = {
+  def nullIfEmpty[T](array: Array[T]) =
     if (array.isEmpty) null else array
-  }
 
   /**
     * Builds the appropriate SSL context manager.
@@ -105,13 +104,12 @@ class ConfigSSLContextBuilder(
 
   protected val logger = org.slf4j.LoggerFactory.getLogger(getClass)
 
-  def build: SSLContext = {
+  def build: SSLContext =
     buildSSLContext(
       info.protocol,
       keyManagers,
       trustManagers,
       info.secureRandom)
-  }
 
   lazy val revocationLists = certificateRevocationList(info)
 
@@ -192,7 +190,7 @@ class ConfigSSLContextBuilder(
       }
   }
 
-  def trustStoreBuilder(tsc: TrustStoreConfig): KeyStoreBuilder = {
+  def trustStoreBuilder(tsc: TrustStoreConfig): KeyStoreBuilder =
     tsc.filePath
       .map { f =>
         fileBuilder(tsc.storeType, f, None)
@@ -202,26 +200,22 @@ class ConfigSSLContextBuilder(
           throw new IllegalStateException("No truststore builder found!"))
         stringBuilder(data)
       }
-  }
 
   def fileBuilder(
       storeType: String,
       filePath: String,
-      password: Option[Array[Char]]): KeyStoreBuilder = {
+      password: Option[Array[Char]]): KeyStoreBuilder =
     new FileBasedKeyStoreBuilder(storeType, filePath, password)
-  }
 
-  def stringBuilder(data: String): KeyStoreBuilder = {
+  def stringBuilder(data: String): KeyStoreBuilder =
     new StringBasedKeyStoreBuilder(data)
-  }
 
   /**
     * Returns true if the keystore should throw an exception as a result of the JSSE bug 6879539, false otherwise.
     */
-  def warnOnPKCS12EmptyPasswordBug(ksc: KeyStoreConfig): Boolean = {
+  def warnOnPKCS12EmptyPasswordBug(ksc: KeyStoreConfig): Boolean =
     ksc.storeType.equalsIgnoreCase("pkcs12") &&
-    !ksc.password.exists(!_.isEmpty)
-  }
+      !ksc.password.exists(!_.isEmpty)
 
   /**
     * Builds a key manager from a keystore, using the KeyManagerFactory.
@@ -285,11 +279,10 @@ class ConfigSSLContextBuilder(
 
   // Should anyone have any interest in implementing this feature at all, they can implement this method and
   // submit a patch.
-  def certificateRevocationList(sslConfig: SSLConfig): Option[Seq[CRL]] = {
+  def certificateRevocationList(sslConfig: SSLConfig): Option[Seq[CRL]] =
     sslConfig.revocationLists.map { urls =>
       urls.map(generateCRLFromURL)
     }
-  }
 
   def generateCRL(inputStream: InputStream): CRL = {
     val cf = CertificateFactory.getInstance("X509")

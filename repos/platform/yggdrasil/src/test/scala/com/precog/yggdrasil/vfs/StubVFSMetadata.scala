@@ -82,7 +82,7 @@ class StubVFSMetadata[M[+_]](
       apiKey: APIKey,
       path: Path,
       property: CPath,
-      version: Version): EitherT[M, ResourceError, PathStructure] = {
+      version: Version): EitherT[M, ResourceError, PathStructure] =
     for {
       types <- getPathMeta(path) map {
         _ collect {
@@ -97,12 +97,10 @@ class StubVFSMetadata[M[+_]](
         }
       }
     } yield PathStructure(types, children.toSet)
-  }
 
   def size(
       apiKey: APIKey,
       path: Path,
-      version: Version): EitherT[M, ResourceError, Long] = {
+      version: Version): EitherT[M, ResourceError, Long] =
     getPathMeta(path) map (_.values.max)
-  }
 }

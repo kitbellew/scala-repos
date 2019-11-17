@@ -33,9 +33,8 @@ class ScAnnotationElementType[Func <: ScAnnotation]
     dataStream.writeName(stub.getTypeText)
   }
 
-  def createPsi(stub: ScAnnotationStub): ScAnnotation = {
+  def createPsi(stub: ScAnnotationStub): ScAnnotation =
     new ScAnnotationImpl(stub)
-  }
 
   def createStubImpl[ParentPsi <: PsiElement](
       psi: ScAnnotation,

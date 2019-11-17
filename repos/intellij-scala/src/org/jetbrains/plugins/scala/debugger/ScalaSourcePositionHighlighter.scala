@@ -10,12 +10,11 @@ import org.jetbrains.plugins.scala.debugger.evaluation.util.DebuggerUtil
   * @author Nikolay.Tropin
   */
 class ScalaSourcePositionHighlighter extends SourcePositionHighlighter {
-  override def getHighlightRange(sourcePosition: SourcePosition): TextRange = {
+  override def getHighlightRange(sourcePosition: SourcePosition): TextRange =
     if (sourcePosition.getFile.getLanguage.isKindOf(ScalaLanguage.Instance)) {
       Option(sourcePosition.getElementAt)
         .flatMap(DebuggerUtil.getContainingMethod)
         .map(_.getTextRange)
         .orNull
     } else null
-  }
 }

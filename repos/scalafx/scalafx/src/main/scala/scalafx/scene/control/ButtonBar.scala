@@ -119,9 +119,8 @@ object ButtonBar {
     * or not. By default all nodes that have not opted out (via
     * [[scalafx.scene.control.ButtonBar.setButtonUniformSize( N o d e, b o o l e a n]]) will return true here.
     */
-  def isButtonUniformSize(button: Node): Boolean = {
+  def isButtonUniformSize(button: Node): Boolean =
     jfxsc.ButtonBar.isButtonUniformSize(button)
-  }
 
   /**
     * Wraps a $JFX $URL0 $FC]].
@@ -304,12 +303,10 @@ class ButtonBar(override val delegate: jfxsc.ButtonBar = new jfxsc.ButtonBar())
   def this(buttonOrder: String) = this(new jfxsc.ButtonBar(buttonOrder))
 
   def buttons: ObservableBuffer[jfxs.Node] = delegate.getButtons
-  def buttons_=(c: Node) = {
+  def buttons_=(c: Node) =
     fillSFXCollectionWithOne(delegate.getButtons, c)
-  }
-  def buttons_=(c: Iterable[Node]) = {
+  def buttons_=(c: Iterable[Node]) =
     fillSFXCollection(delegate.getButtons, c)
-  }
 
   /**
     * The order for the typical buttons in a standard button bar. It is

@@ -35,7 +35,7 @@ trait PostalCodeTypedField extends StringTypedField {
 
   override def validations = validatePostalCode _ :: Nil
 
-  def validatePostalCode(in: ValueType): List[FieldError] = {
+  def validatePostalCode(in: ValueType): List[FieldError] =
     toBoxMyType(in) match {
       case Full(zip) if (optional_? && zip.isEmpty) => Nil
       case _ =>
@@ -59,14 +59,12 @@ trait PostalCodeTypedField extends StringTypedField {
           case _ => genericCheck(in)
         }
     }
-  }
-  private def genericCheck(zip: ValueType): List[FieldError] = {
+  private def genericCheck(zip: ValueType): List[FieldError] =
     toBoxMyType(zip) flatMap {
       case null              => Full(Text(S.?("invalid.postal.code")))
       case s if s.length < 3 => Full(Text(S.?("invalid.postal.code")))
       case _                 => Empty
     }
-  }
 }
 
 class PostalCodeField[OwnerType <: Record[OwnerType]](

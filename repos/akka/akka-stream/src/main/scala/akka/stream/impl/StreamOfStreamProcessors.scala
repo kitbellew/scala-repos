@@ -75,26 +75,23 @@ private[akka] object MultiStreamOutputProcessor {
       pump.pump()
     }
 
-    override def error(e: Throwable): Unit = {
+    override def error(e: Throwable): Unit =
       if (!downstreamCompleted) {
         closePublisher(Failed(e))
         downstreamCompleted = true
       }
-    }
 
-    override def cancel(): Unit = {
+    override def cancel(): Unit =
       if (!downstreamCompleted) {
         closePublisher(Cancelled)
         downstreamCompleted = true
       }
-    }
 
-    override def complete(): Unit = {
+    override def complete(): Unit =
       if (!downstreamCompleted) {
         closePublisher(Completed)
         downstreamCompleted = true
       }
-    }
 
     private def closePublisher(withState: CompletedState): Unit = {
       subscriptionTimeout.cancel()
@@ -177,31 +174,27 @@ private[akka] trait MultiStreamOutputProcessorLike
     pump()
   }
 
-  protected def cancelSubstreamOutput(substream: SubstreamKey): Unit = {
+  protected def cancelSubstreamOutput(substream: SubstreamKey): Unit =
     substreamOutputs.get(substream) match {
       case Some(sub) ⇒
         sub.cancel()
         substreamOutputs -= substream
       case _ ⇒ // ignore, already completed...
     }
-  }
 
-  protected def completeSubstreamOutput(substream: SubstreamKey): Unit = {
+  protected def completeSubstreamOutput(substream: SubstreamKey): Unit =
     substreamOutputs.get(substream) match {
       case Some(sub) ⇒
         sub.complete()
         substreamOutputs -= substream
       case _ ⇒ // ignore, already completed...
     }
-  }
 
-  protected def failOutputs(e: Throwable): Unit = {
+  protected def failOutputs(e: Throwable): Unit =
     substreamOutputs.values foreach (_.error(e))
-  }
 
-  protected def finishOutputs(): Unit = {
+  protected def finishOutputs(): Unit =
     substreamOutputs.values foreach (_.complete())
-  }
 
   val outputSubstreamManagement: Receive = {
     case SubstreamRequestMore(key, demand) ⇒

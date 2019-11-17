@@ -30,11 +30,10 @@ class LeaderProxyFilterModule extends ServletModule {
   @Provides
   @Singleton
   @Named(JavaUrlConnectionRequestForwarder.NAMED_LEADER_PROXY_SSL_CONTEXT)
-  def provideSSLContext(httpConf: HttpConf): SSLContext = {
+  def provideSSLContext(httpConf: HttpConf): SSLContext =
     SSLContextUtil.createSSLContext(
       httpConf.sslKeystorePath.get,
       httpConf.sslKeystorePassword.get)
-  }
 }
 
 class MarathonRestModule extends BaseRestModule {
@@ -82,7 +81,6 @@ class MarathonRestModule extends BaseRestModule {
   @Provides
   @Singleton
   def provideRequestsLimiter(
-      conf: MarathonConf): LimitConcurrentRequestsFilter = {
+      conf: MarathonConf): LimitConcurrentRequestsFilter =
     new LimitConcurrentRequestsFilter(conf.maxConcurrentHttpConnections.get)
-  }
 }

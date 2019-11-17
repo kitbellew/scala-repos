@@ -115,11 +115,10 @@ object ConfigurationSpec extends Specification {
     }
 
     "fail if application.conf is not found" in {
-      def load(mode: Mode.Mode) = {
+      def load(mode: Mode.Mode) =
         // system classloader should not have an application.conf
         Configuration.load(
           Environment(new File("."), ClassLoader.getSystemClassLoader, mode))
-      }
       "in dev mode" in {
         load(Mode.Dev) must throwA[PlayException]
       }

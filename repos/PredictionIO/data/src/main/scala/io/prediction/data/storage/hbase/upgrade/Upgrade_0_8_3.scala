@@ -34,7 +34,7 @@ import java.lang.Thread
 object CheckDistribution {
   def entityType(
       eventClient: LEvents,
-      appId: Int): Map[(String, Option[String]), Int] = {
+      appId: Int): Map[(String, Option[String]), Int] =
     eventClient
       .find(appId = appId)
       .foldLeft(Map[(String, Option[String]), Int]().withDefaultValue(0)) {
@@ -43,7 +43,6 @@ object CheckDistribution {
           m.updated(k, m(k) + 1)
         }
       }
-  }
 
   def runMain(appId: Int) {
     val eventClient = Storage.getLEvents().asInstanceOf[HBLEvents]
@@ -71,9 +70,8 @@ object Upgrade_0_8_3 {
     runMain(fromAppId, toAppId)
   }
 
-  def runMain(fromAppId: Int, toAppId: Int): Unit = {
+  def runMain(fromAppId: Int, toAppId: Int): Unit =
     upgrade(fromAppId, toAppId)
-  }
 
   val obsEntityTypes = Set("pio_user", "pio_item")
   val obsProperties = Set(
@@ -84,7 +82,7 @@ object Upgrade_0_8_3 {
     "pio_price",
     "pio_rating")
 
-  def hasPIOPrefix(eventClient: LEvents, appId: Int): Boolean = {
+  def hasPIOPrefix(eventClient: LEvents, appId: Int): Boolean =
     eventClient
       .find(appId = appId)
       .filter(
@@ -94,7 +92,6 @@ object Upgrade_0_8_3 {
             .getOrElse(false) ||
             (!e.properties.keySet.forall(!obsProperties.contains(_)))))
       .hasNext
-  }
 
   def isEmpty(eventClient: LEvents, appId: Int): Boolean =
     !eventClient.find(appId = appId).hasNext

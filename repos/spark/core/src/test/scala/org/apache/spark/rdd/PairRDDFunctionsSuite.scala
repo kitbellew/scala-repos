@@ -700,7 +700,7 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
         exact: Boolean,
         actual: Int,
         trials: Int,
-        p: Double): Unit = {
+        p: Double): Unit =
       if (exact) {
         assert(actual == math.ceil(p * trials).toInt)
       } else {
@@ -710,13 +710,12 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
           assert(q >= 0.001 && q <= 0.999)
         }
       }
-    }
 
     def assertPoissonSample(
         exact: Boolean,
         actual: Int,
         trials: Int,
-        p: Double): Unit = {
+        p: Double): Unit =
       if (exact) {
         assert(actual == math.ceil(p * trials).toInt)
       } else {
@@ -726,7 +725,6 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
           assert(q >= 0.001 && q <= 0.999)
         }
       }
-    }
 
     def testSampleExact(
         stratifiedData: RDD[(String, Int)],
@@ -873,9 +871,8 @@ class FakeOutputFormat() extends OutputFormat[Integer, Integer]() {
       ignored: FileSystem,
       job: JobConf,
       name: String,
-      progress: Progressable): RecordWriter[Integer, Integer] = {
+      progress: Progressable): RecordWriter[Integer, Integer] =
     new FakeWriter()
-  }
 
   override def checkOutputSpecs(ignored: FileSystem, job: JobConf): Unit = ()
 }
@@ -907,13 +904,11 @@ class NewFakeFormat() extends NewOutputFormat[Integer, Integer]() {
   def checkOutputSpecs(p1: NewJobContext): Unit = ()
 
   def getRecordWriter(
-      p1: NewTaskAttempContext): NewRecordWriter[Integer, Integer] = {
+      p1: NewTaskAttempContext): NewRecordWriter[Integer, Integer] =
     new NewFakeWriter()
-  }
 
-  def getOutputCommitter(p1: NewTaskAttempContext): NewOutputCommitter = {
+  def getOutputCommitter(p1: NewTaskAttempContext): NewOutputCommitter =
     new NewFakeCommitter()
-  }
 }
 
 object FakeWriterWithCallback {
@@ -928,9 +923,8 @@ object FakeWriterWithCallback {
 
 class FakeWriterWithCallback extends FakeWriter {
 
-  override def close(p1: Reporter): Unit = {
+  override def close(p1: Reporter): Unit =
     FakeWriterWithCallback.calledBy += "close"
-  }
 
   override def write(p1: Integer, p2: Integer): Unit = {
     FakeWriterWithCallback.calledBy += "write,"
@@ -946,15 +940,13 @@ class FakeFormatWithCallback() extends FakeOutputFormat {
       ignored: FileSystem,
       job: JobConf,
       name: String,
-      progress: Progressable): RecordWriter[Integer, Integer] = {
+      progress: Progressable): RecordWriter[Integer, Integer] =
     new FakeWriterWithCallback()
-  }
 }
 
 class NewFakeWriterWithCallback extends NewFakeWriter {
-  override def close(p1: NewTaskAttempContext): Unit = {
+  override def close(p1: NewTaskAttempContext): Unit =
     FakeWriterWithCallback.calledBy += "close"
-  }
 
   override def write(p1: Integer, p2: Integer): Unit = {
     FakeWriterWithCallback.calledBy += "write,"
@@ -967,9 +959,8 @@ class NewFakeWriterWithCallback extends NewFakeWriter {
 
 class NewFakeFormatWithCallback() extends NewFakeFormat {
   override def getRecordWriter(
-      p1: NewTaskAttempContext): NewRecordWriter[Integer, Integer] = {
+      p1: NewTaskAttempContext): NewRecordWriter[Integer, Integer] =
     new NewFakeWriterWithCallback()
-  }
 }
 
 class ConfigTestFormat() extends NewFakeFormat() with Configurable {

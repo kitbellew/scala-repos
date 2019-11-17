@@ -14,11 +14,10 @@ package scaladoc {
     class MyModule extends Module {
       def bindings(
           environment: Environment,
-          configuration: Configuration): Seq[Binding[_]] = {
+          configuration: Configuration): Seq[Binding[_]] =
         Seq(
           bind[MyComponent].to[MyComponentImpl]
         )
-      }
     }
 //#module-decl
 

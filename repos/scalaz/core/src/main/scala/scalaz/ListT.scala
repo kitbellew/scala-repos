@@ -4,7 +4,7 @@ package scalaz
   * ListT monad transformer.
   */
 final case class ListT[M[_], A](run: M[List[A]]) {
-  def uncons(implicit M: Applicative[M]): M[Option[(A, ListT[M, A])]] = {
+  def uncons(implicit M: Applicative[M]): M[Option[(A, ListT[M, A])]] =
     M.map(run) { list =>
       list match {
         case Nil => None
@@ -12,7 +12,6 @@ final case class ListT[M[_], A](run: M[List[A]]) {
           Some(listHead, new ListT(M.point(listTail)))
       }
     }
-  }
 
   def ::(a: A)(implicit M: Functor[M]): ListT[M, A] =
     new ListT(M.map(run)(list => a :: list))

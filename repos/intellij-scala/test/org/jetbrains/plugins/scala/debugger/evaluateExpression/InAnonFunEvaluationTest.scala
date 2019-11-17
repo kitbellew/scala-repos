@@ -19,7 +19,7 @@ class InAnonFunEvaluationTest_212
     extends InAnonFunEvaluationTestBase
     with ScalaVersion_2_12 {
   //todo SCL-9139
-  override def testPartialFunction(): Unit = {
+  override def testPartialFunction(): Unit =
     runDebugger() {
       waitForBreakpoint()
       evalEquals("a", "a")
@@ -29,7 +29,6 @@ class InAnonFunEvaluationTest_212
       evalEquals("notUsed", "notUsed")
       evalEquals("args", "[]")
     }
-  }
 }
 
 abstract class InAnonFunEvaluationTestBase extends ScalaDebuggerTestCase {

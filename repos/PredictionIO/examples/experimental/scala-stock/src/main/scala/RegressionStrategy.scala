@@ -54,11 +54,10 @@ class RegressionStrategy(params: RegressionStrategyParams)
 
   // Compute each indicator value for training the model
   private def calcIndicator(
-      logPrice: Series[DateTime, Double]): Seq[Series[DateTime, Double]] = {
+      logPrice: Series[DateTime, Double]): Seq[Series[DateTime, Double]] =
     params.indicators.map {
       case (name, indicator) => indicator.getTraining(logPrice)
     }
-  }
 
   // Get max period from series of indicators
   private def getMaxPeriod(): Int = {

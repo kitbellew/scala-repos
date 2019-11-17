@@ -55,11 +55,10 @@ object AtLeastOnceDeliveryCrashSpec {
         }
     }
 
-    def send() = {
+    def send() =
       deliver(testProbe.path) { id ⇒
         SendingMessage(id, false)
       }
-    }
   }
 }
 

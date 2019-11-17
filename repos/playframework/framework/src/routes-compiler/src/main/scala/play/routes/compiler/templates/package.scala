@@ -14,11 +14,10 @@ package object templates {
   /**
     * Mark lines with source map information.
     */
-  def markLines(routes: Rule*): String = {
+  def markLines(routes: Rule*): String =
     // since a compilation error is really not possible in a comment, there is no point in putting one line per
     // route, only the first one will ever be taken
     routes.headOption.fold("")("// @LINE:" + _.pos.line)
-  }
 
   /**
     * Generate a base identifier for the given route
@@ -45,7 +44,7 @@ package object templates {
   def routerIdentifier(include: Include, index: Int): String =
     include.router.replace(".", "_") + index
 
-  def concatSep[T](seq: Seq[T], sep: String)(f: T => ScalaContent): Any = {
+  def concatSep[T](seq: Seq[T], sep: String)(f: T => ScalaContent): Any =
     if (seq.isEmpty) {
       Nil
     } else {
@@ -53,7 +52,6 @@ package object templates {
         Seq(sep, f(t))
       })
     }
-  }
 
   /**
     * Generate a controller method call for the given route
@@ -98,16 +96,15 @@ package object templates {
     methodPart + paramPart
   }
 
-  def paramNameOnQueryString(paramName: String) = {
+  def paramNameOnQueryString(paramName: String) =
     if (paramName.matches("^`[^`]+`$"))
       paramName.substring(1, paramName.length - 1)
     else paramName
-  }
 
   /**
     * A route binding
     */
-  def routeBinding(route: Route): String = {
+  def routeBinding(route: Route): String =
     route.call.parameters
       .filterNot(_.isEmpty)
       .map { params =>
@@ -129,7 +126,6 @@ package object templates {
       }
       .map("(" + _ + ")")
       .getOrElse("")
-  }
 
   /**
     * Extract the local names out from the route, as tuple. See PR#4244
@@ -269,7 +265,7 @@ package object templates {
     */
   def reverseParameterConstraints(
       route: Route,
-      localNames: Map[String, String]) = {
+      localNames: Map[String, String]) =
     route.call.parameters
       .getOrElse(Nil)
       .filter { p =>
@@ -281,18 +277,16 @@ package object templates {
       case Nil      => ""
       case nonEmpty => "if " + nonEmpty.mkString(" && ")
     }
-  }
 
   /**
     * Calculate the local names that need to be matched
     */
   def reverseLocalNames(
       route: Route,
-      params: Seq[(Parameter, Int)]): Map[String, String] = {
+      params: Seq[(Parameter, Int)]): Map[String, String] =
     params.map {
       case (lp, i) => route.call.parameters.get(i).name -> lp.name
     }.toMap
-  }
 
   /**
     * Calculate the unique reverse constraints, and generate them using the given block
@@ -301,7 +295,7 @@ package object templates {
       routes: Seq[Route],
       params: Seq[(Parameter, Int)])(
       block: (Route, String, String, Map[String, String]) => ScalaContent)
-      : Seq[ScalaContent] = {
+      : Seq[ScalaContent] =
     ListMap(routes.reverse.map { route =>
       val localNames = reverseLocalNames(route, params)
       val parameters = reverseMatchParameters(params, false)
@@ -312,7 +306,6 @@ package object templates {
         parameterConstraints,
         localNames)
     }: _*).values.toSeq.reverse
-  }
 
   /**
     * Generate the reverse route context
@@ -424,7 +417,7 @@ package object templates {
     */
   def javascriptParameterConstraints(
       route: Route,
-      localNames: Map[String, String]): Option[String] = {
+      localNames: Map[String, String]): Option[String] =
     Option(
       route.call.parameters
         .getOrElse(Nil)
@@ -435,7 +428,6 @@ package object templates {
           localNames(p.name) + " == \"\"\" + implicitly[JavascriptLiteral[" +
             p.typeName + "]].to(" + p.fixed.get + ") + \"\"\""
         }).filterNot(_.isEmpty).map(_.mkString(" && "))
-  }
 
   /**
     * Collect all the routes that apply to a single action that are not dead.
@@ -447,7 +439,7 @@ package object templates {
     * This optimisation not only saves on code generated, but since the body of the JavaScript router is a series of
     * very long String concatenation, this is hard work on the typer, which can easily stack overflow.
     */
-  def javascriptCollectNonDeadRoutes(routes: Seq[Route]) = {
+  def javascriptCollectNonDeadRoutes(routes: Seq[Route]) =
     routes
       .map { route =>
         val localNames =
@@ -463,7 +455,6 @@ package object templates {
           (routes :+ ((route, localNames, constraints)), false)
       }
       ._1
-  }
 
   /**
     * Generate the Javascript call
@@ -574,9 +565,8 @@ package object templates {
     *   """/foo/""" + "$" + """id<[^/]+>"""
     * }}}
     */
-  def encodeStringConstant(constant: String) = {
+  def encodeStringConstant(constant: String) =
     constant.split('$').mkString(tq, s"""$tq + "$$" + $tq""", tq)
-  }
 
   private def encodeable(paramType: String): Boolean = paramType == "String"
 

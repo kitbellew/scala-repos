@@ -109,11 +109,10 @@ object BSON {
 
   private def readStream[T](
       array: BSONArray,
-      reader: BSONReader[BSONValue, T]): Stream[T] = {
+      reader: BSONReader[BSONValue, T]): Stream[T] =
     array.stream.filter(_.isSuccess).map { v =>
       reader.read(v.get)
     }
-  }
 
   implicit def bsonArrayToListHandler[T](
       implicit reader: BSONReader[_ <: BSONValue, T],

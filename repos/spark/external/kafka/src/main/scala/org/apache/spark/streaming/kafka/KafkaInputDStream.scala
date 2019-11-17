@@ -55,13 +55,12 @@ private[streaming] class KafkaInputDStream[
 ) extends ReceiverInputDStream[(K, V)](_ssc)
     with Logging {
 
-  def getReceiver(): Receiver[(K, V)] = {
+  def getReceiver(): Receiver[(K, V)] =
     if (!useReliableReceiver) {
       new KafkaReceiver[K, V, U, T](kafkaParams, topics, storageLevel)
     } else {
       new ReliableKafkaReceiver[K, V, U, T](kafkaParams, topics, storageLevel)
     }
-  }
 }
 
 private[streaming] class KafkaReceiver[

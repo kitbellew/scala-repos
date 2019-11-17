@@ -73,7 +73,7 @@ class ScalaScriptConfugurationProducer extends {
 
   private def isConfigurationByLocation(
       configuration: RunConfiguration,
-      location: Location[_ <: PsiElement]): Boolean = {
+      location: Location[_ <: PsiElement]): Boolean =
     configuration match {
       case conf: ScalaScriptRunConfiguration => {
         val file: PsiFile = location.getPsiElement.getContainingFile
@@ -82,5 +82,4 @@ class ScalaScriptConfugurationProducer extends {
       }
       case _ => false
     }
-  }
 }

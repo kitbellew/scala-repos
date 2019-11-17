@@ -124,37 +124,32 @@ object Serializers {
       implicitly[Unpickler[Option[Throwable]]]
 
     override def pickle(picklee: PlayException, builder: PBuilder): Unit = {
-      def writeIntField(key: String, value: Int): Unit = {
+      def writeIntField(key: String, value: Int): Unit =
         builder.putField(key, { b =>
           b.hintTag(intPickler.tag)
           intPickler.pickle(value, b)
         })
-      }
-      def writeIntOptField(key: String, value: Integer): Unit = {
+      def writeIntOptField(key: String, value: Integer): Unit =
         builder.putField(key, { b =>
           b.hintTag(intOptPickler.tag)
           intOptPickler
             .pickle(if (value == null) None else Some(value.intValue), b)
         })
-      }
-      def writeStringField(key: String, value: String): Unit = {
+      def writeStringField(key: String, value: String): Unit =
         builder.putField(key, { b =>
           b.hintTag(stringPickler.tag)
           stringPickler.pickle(value, b)
         })
-      }
-      def writeStringOptField(key: String, value: String): Unit = {
+      def writeStringOptField(key: String, value: String): Unit =
         builder.putField(key, { b =>
           b.hintTag(stringOptPickler.tag)
           stringOptPickler.pickle(Option(value), b)
         })
-      }
-      def writeThrowableField(key: String, value: Throwable): Unit = {
+      def writeThrowableField(key: String, value: Throwable): Unit =
         builder.putField(key, { b =>
           b.hintTag(throwablePicklerUnpickler.tag)
           throwablePicklerUnpickler.pickle(value, b)
         })
-      }
 
       builder.pushHints()
       builder.hintTag(tag)

@@ -30,7 +30,7 @@ object Test extends App {
     println(var1)
 
     var var2 = 0
-    def delay(var2: => Int) = { var2 }
+    def delay(var2: => Int) = var2
     println(delay(var2 = 40))
   }
   val f1: (Int, String) => Unit = test1(_, _); f1(6, "~")
@@ -249,7 +249,7 @@ object Test extends App {
   println(multinest)
 
   // #2290
-  def spawn(a: Int, b: => Unit) = { () }
+  def spawn(a: Int, b: => Unit) = ()
   def t {
     spawn(b = { val ttt = 1; ttt }, a = 0)
   }

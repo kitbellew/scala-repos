@@ -1,8 +1,7 @@
 class B {}
 class A { self: B =>
-  def m(): B = {
+  def m(): B =
     this
-  }
 }
 
 object Exec {

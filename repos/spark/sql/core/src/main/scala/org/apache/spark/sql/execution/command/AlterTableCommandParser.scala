@@ -40,7 +40,7 @@ object AlterTableCommandParser {
   /**
     * Parse the given node assuming it is an alter table command.
     */
-  def parse(node: ASTNode): LogicalPlan = {
+  def parse(node: ASTNode): LogicalPlan =
     node.children match {
       case (tabName @ Token("TOK_TABNAME", _)) :: otherNodes =>
         val tableIdent = extractTableIdent(tabName)
@@ -50,11 +50,9 @@ object AlterTableCommandParser {
       case _ =>
         parseFailed("Could not parse ALTER TABLE command", node)
     }
-  }
 
-  private def cleanAndUnquoteString(s: String): String = {
+  private def cleanAndUnquoteString(s: String): String =
     cleanIdentifier(unquoteString(s))
-  }
 
   /**
     * Extract partition spec from the given [[ASTNode]] as a map, assuming it exists.
@@ -69,7 +67,7 @@ object AlterTableCommandParser {
     *      :- country
     *      +- 'us'
     */
-  private def parsePartitionSpec(node: ASTNode): Map[String, String] = {
+  private def parsePartitionSpec(node: ASTNode): Map[String, String] =
     node match {
       case Token("TOK_PARTSPEC", partitions) =>
         partitions.map {
@@ -91,7 +89,6 @@ object AlterTableCommandParser {
       case _ =>
         parseFailed("Expected partition spec in ALTER TABLE command", node)
     }
-  }
 
   /**
     * Extract table properties from the given [[ASTNode]] as a map, assuming it exists.
@@ -107,7 +104,7 @@ object AlterTableCommandParser {
     *         :- 'comment'
     *         +- 'new_comment'
     */
-  private def extractTableProps(node: ASTNode): Map[String, String] = {
+  private def extractTableProps(node: ASTNode): Map[String, String] =
     node match {
       case Token("TOK_TABLEPROPERTIES", propsList) =>
         propsList.flatMap {
@@ -127,7 +124,6 @@ object AlterTableCommandParser {
       case _ =>
         parseFailed("Expected table properties in ALTER TABLE command", node)
     }
-  }
 
   /**
     * Parse an alter table command from a [[ASTNode]] into a [[LogicalPlan]].

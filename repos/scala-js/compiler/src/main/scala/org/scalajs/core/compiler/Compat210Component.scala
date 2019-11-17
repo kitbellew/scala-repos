@@ -35,13 +35,11 @@ trait Compat210Component {
 
   // enteringPhase/exitingPhase replace beforePhase/afterPhase
 
-  @inline final def enteringPhase[T](ph: Phase)(op: => T): T = {
+  @inline final def enteringPhase[T](ph: Phase)(op: => T): T =
     global.enteringPhase(ph)(op)
-  }
 
-  @inline final def exitingPhase[T](ph: Phase)(op: => T): T = {
+  @inline final def exitingPhase[T](ph: Phase)(op: => T): T =
     global.exitingPhase(ph)(op)
-  }
 
   implicit final class GlobalCompat(self: Compat210Component.this.global.type) {
 
@@ -143,9 +141,8 @@ trait Compat210Component {
         symbolPair
       }
 
-      private def skipIgnoredEntries(): Unit = {
+      private def skipIgnoredEntries(): Unit =
         while (cursor.hasNext && ignoreNextEntry) cursor.next()
-      }
 
       /** In 2.10 the overridingPairs.Cursor returns some false positives
         *  on overriding members. The known false positives are always trying to

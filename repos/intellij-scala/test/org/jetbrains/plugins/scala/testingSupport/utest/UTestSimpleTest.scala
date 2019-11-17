@@ -12,7 +12,7 @@ trait UTestSimpleTest extends UTestTestCase {
 
   protected def uTestFileName = uTestTestName + ".scala"
 
-  protected def addUTestTest(): Unit = {
+  protected def addUTestTest(): Unit =
     addFileToProject(
       uTestFileName,
       """
@@ -48,7 +48,6 @@ trait UTestSimpleTest extends UTestTestCase {
         |}
       """.stripMargin.trim()
     )
-  }
 
   protected val inner2_1Path =
     List("[root]", uTestTestName, "tests", "outer2", "inner2_1")

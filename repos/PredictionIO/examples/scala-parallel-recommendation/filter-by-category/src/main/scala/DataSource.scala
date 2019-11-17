@@ -94,8 +94,7 @@ class TrainingData(
     val items: RDD[Item],
     val ratings: RDD[Rating]
 ) extends Serializable {
-  override def toString = {
+  override def toString =
     s"items: [${items.count()}] (${items.take(2).toList}...)" +
       s" ratings: [${ratings.count()}] (${ratings.take(2).toList}...)"
-  }
 }

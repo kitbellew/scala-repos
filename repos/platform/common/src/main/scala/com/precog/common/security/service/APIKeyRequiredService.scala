@@ -42,15 +42,13 @@ import scalaz.syntax.std.option._
 trait APIKeyServiceCombinators extends HttpRequestHandlerCombinators {
   def apiKeyIsValid[A, B](error: String => Future[B])(
       service: HttpService[A, APIKey => Future[B]])
-      : HttpService[A, Validation[String, APIKey] => Future[B]] = {
+      : HttpService[A, Validation[String, APIKey] => Future[B]] =
     new APIKeyValidService(service, error)
-  }
 
   def apiKeyRequired[A, B](keyFinder: APIKey => Future[Option[APIKey]])(
       service: HttpService[A, Validation[String, APIKey] => Future[B]])
-      : HttpService[A, Future[B]] = {
+      : HttpService[A, Future[B]] =
     new APIKeyRequiredService[A, B](keyFinder, service)
-  }
 
   def invalidAPIKey[A](
       implicit convert: JValue => A,
@@ -65,19 +63,17 @@ trait APIKeyServiceCombinators extends HttpRequestHandlerCombinators {
   def jsonAPIKey[A, B](apiKeyFinder: APIKeyFinder[Future])(
       service: HttpService[A, APIKey => Future[HttpResponse[B]]])(
       implicit inj: JValue => B,
-      M: Monad[Future]): HttpService[A, Future[HttpResponse[B]]] = {
+      M: Monad[Future]): HttpService[A, Future[HttpResponse[B]]] =
     jsonAPIKey(k => apiKeyFinder.findAPIKey(k, None).map(_.map(_.apiKey)))(
       service)
-  }
 
   def jsonAPIKey[A, B](keyFinder: APIKey => Future[Option[APIKey]])(
       service: HttpService[A, APIKey => Future[HttpResponse[B]]])(
       implicit inj: JValue => B,
-      M: Monad[Future]): HttpService[A, Future[HttpResponse[B]]] = {
+      M: Monad[Future]): HttpService[A, Future[HttpResponse[B]]] =
     apiKeyRequired(keyFinder) {
       apiKeyIsValid(invalidAPIKey[B])(service)
     }
-  }
 }
 
 class APIKeyValidService[A, B](

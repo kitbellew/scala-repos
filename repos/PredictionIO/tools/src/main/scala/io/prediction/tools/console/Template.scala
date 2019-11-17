@@ -62,7 +62,7 @@ case class TemplateMetaData(pioVersionMin: Option[String] = None)
 object Template extends Logging {
   implicit val formats = Utils.json4sDefaultFormats
 
-  def templateMetaData(templateJson: File): TemplateMetaData = {
+  def templateMetaData(templateJson: File): TemplateMetaData =
     if (!templateJson.exists) {
       warn(
         s"$templateJson does not exist. Template metadata will not be available. " +
@@ -85,7 +85,6 @@ object Template extends Logging {
         case _          => TemplateMetaData()
       }
     }
-  }
 
   /** Creates a wrapper that provides the functionality of scalaj.http.Http()
     * with automatic proxy settings handling. The proxy settings will first
@@ -186,13 +185,12 @@ object Template extends Logging {
     }
   }
 
-  def meta(repo: String, name: String, org: String): Unit = {
+  def meta(repo: String, name: String, org: String): Unit =
     try {
       httpOptionalProxy(s"http://meta.prediction.io/templates/$repo/$org/$name").asString
     } catch {
       case e: Throwable => debug("Template metadata unavailable.")
     }
-  }
 
   def list(ca: ConsoleArgs): Int = {
     val templatesUrl = "http://templates.prediction.io/index.json"
@@ -220,11 +218,10 @@ object Template extends Logging {
     }
   }
 
-  def githubConnectErrorMessage(e: ConnectException): Unit = {
+  def githubConnectErrorMessage(e: ConnectException): Unit =
     error(
       s"Unable to connect to GitHub (Reason: ${e.getMessage}). " +
         "Please check your network configuration and proxy settings.")
-  }
 
   def get(ca: ConsoleArgs): Int = {
     val repos =

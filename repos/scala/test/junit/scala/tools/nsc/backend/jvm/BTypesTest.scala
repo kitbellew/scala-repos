@@ -18,7 +18,7 @@ object BTypesTest extends ClearAfterClass.Clearable {
     comp.exitingDelambdafy(comp.genBCode.bTypes.initializeCoreBTypes())
     comp
   }
-  def clear(): Unit = { compiler = null }
+  def clear(): Unit = compiler = null
 }
 
 @RunWith(classOf[JUnit4])

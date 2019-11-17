@@ -188,7 +188,7 @@ abstract class MessageDispatcher(
   }
 
   @tailrec
-  private final def ifSensibleToDoSoThenScheduleShutdown(): Unit = {
+  private final def ifSensibleToDoSoThenScheduleShutdown(): Unit =
     if (inhabitants <= 0)
       shutdownSchedule match {
         case UNSCHEDULED ⇒
@@ -200,9 +200,8 @@ abstract class MessageDispatcher(
           else ifSensibleToDoSoThenScheduleShutdown()
         case RESCHEDULED ⇒
       }
-  }
 
-  private def scheduleShutdownAction(): Unit = {
+  private def scheduleShutdownAction(): Unit =
     // IllegalStateException is thrown if scheduler has been shutdown
     try prerequisites.scheduler.scheduleOnce(shutdownTimeout, shutdownAction)(
       new ExecutionContext {
@@ -213,7 +212,6 @@ abstract class MessageDispatcher(
     catch {
       case _: IllegalStateException ⇒ shutdown()
     }
-  }
 
   private final val taskCleanup: () ⇒ Unit = () ⇒
     if (addInhabitants(-1) == 0) ifSensibleToDoSoThenScheduleShutdown()

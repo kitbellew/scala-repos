@@ -161,7 +161,7 @@ trait TimeLike[This <: TimeLike[This]] extends Ordered[This] { self: This =>
     * `TimeUnit.MILLISECONDS`) before resorting to the default
     * `TimeUnit.NANOSECONDS`.
     */
-  def inTimeUnit: (Long, TimeUnit) = {
+  def inTimeUnit: (Long, TimeUnit) =
     // allow for APIs that may treat TimeUnit differently if measured in very tiny units.
     if (inNanoseconds % Duration.NanosPerSecond == 0) {
       (inSeconds, TimeUnit.SECONDS)
@@ -170,7 +170,6 @@ trait TimeLike[This <: TimeLike[This]] extends Ordered[This] { self: This =>
     } else {
       (inNanoseconds, TimeUnit.NANOSECONDS)
     }
-  }
 
   /**
     * Adds `delta` to this `TimeLike`. Adding `Duration.Top` results
@@ -376,14 +375,13 @@ object Time extends TimeLikeOps[Time] {
     *
     * $now
     */
-  def now: Time = {
+  def now: Time =
     localGetTime() match {
       case None =>
         Time.fromMilliseconds(System.currentTimeMillis())
       case Some(f) =>
         f()
     }
-  }
 
   /**
     * The unix epoch. Times are measured relative to this.
@@ -460,9 +458,8 @@ object Time extends TimeLikeOps[Time] {
     *
     * $nowusage
     */
-  def withCurrentTimeFrozen[A](body: TimeControl => A): A = {
+  def withCurrentTimeFrozen[A](body: TimeControl => A): A =
     withTimeAt(Time.now)(body)
-  }
 
   /**
     * Puts the currently executing thread to sleep for the given duration,
@@ -472,14 +469,13 @@ object Time extends TimeLikeOps[Time] {
     *
     * $nowusage
     */
-  def sleep(duration: Duration): Unit = {
+  def sleep(duration: Duration): Unit =
     localGetTimer() match {
       case None =>
         Thread.sleep(duration.inMilliseconds)
       case Some(timer) =>
         Await.result(Future.sleep(duration)(timer))
     }
-  }
 
   /**
     * Returns the Time parsed from a string in RSS format. Eg: "Wed, 15 Jun 2005 19:00:00 GMT"
@@ -531,9 +527,8 @@ class TimeFormat(
     }
   }
 
-  def format(time: Time): String = {
+  def format(time: Time): String =
     format.synchronized(format.format(time.toDate))
-  }
 }
 
 /**
@@ -552,7 +547,7 @@ sealed class Time private[util] (protected val nanos: Long) extends {
     */
   override def toString: String = defaultFormat.format(this)
 
-  override def equals(other: Any): Boolean = {
+  override def equals(other: Any): Boolean =
     // in order to ensure that the sentinels are only equal
     // to themselves, we need to make sure we only compare nanos
     // when both instances are `Time`s and not a sentinel subclass.
@@ -561,7 +556,6 @@ sealed class Time private[util] (protected val nanos: Long) extends {
     } else {
       false
     }
-  }
 
   override def hashCode: Int =
     // inline java.lang.Long.hashCode to avoid the BoxesRunTime.boxToLong

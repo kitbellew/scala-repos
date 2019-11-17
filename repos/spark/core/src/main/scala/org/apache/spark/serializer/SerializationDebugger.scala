@@ -36,7 +36,7 @@ private[spark] object SerializationDebugger extends Logging {
     */
   def improveException(
       obj: Any,
-      e: NotSerializableException): NotSerializableException = {
+      e: NotSerializableException): NotSerializableException =
     if (enableDebugging && reflect != null) {
       try {
         new NotSerializableException(
@@ -51,7 +51,6 @@ private[spark] object SerializationDebugger extends Logging {
     } else {
       e
     }
-  }
 
   /**
     * Find the path leading to a not serializable object. This method is modeled after OpenJDK's
@@ -66,9 +65,8 @@ private[spark] object SerializationDebugger extends Logging {
     *
     * It does not yet handle writeObject override, but that shouldn't be too hard to do either.
     */
-  private[serializer] def find(obj: Any): List[String] = {
+  private[serializer] def find(obj: Any): List[String] =
     new SerializationDebugger().visit(obj, List.empty)
-  }
 
   private[serializer] var enableDebugging: Boolean = {
     !AccessController
@@ -87,7 +85,7 @@ private[spark] object SerializationDebugger extends Logging {
       * Visit the object and its fields and stop when we find an object that is not serializable.
       * Return the path as a list. If everything can be serialized, return an empty list.
       */
-    def visit(o: Any, stack: List[String]): List[String] = {
+    def visit(o: Any, stack: List[String]): List[String] =
       if (o == null) {
         List.empty
       } else if (visited.contains(o)) {
@@ -124,7 +122,6 @@ private[spark] object SerializationDebugger extends Logging {
             s"object not serializable (class: ${o.getClass.getName}, value: $o)" :: stack
         }
       }
-    }
 
     private def visitArray(o: Array[_], stack: List[String]): List[String] = {
       var i = 0
@@ -347,32 +344,26 @@ private[spark] object SerializationDebugger extends Logging {
   /** An implicit class that allows us to call private methods of ObjectStreamClass. */
   implicit class ObjectStreamClassMethods(val desc: ObjectStreamClass)
       extends AnyVal {
-    def getSlotDescs: Array[ObjectStreamClass] = {
+    def getSlotDescs: Array[ObjectStreamClass] =
       reflect.GetClassDataLayout.invoke(desc).asInstanceOf[Array[Object]].map {
         classDataSlot =>
           reflect.DescField.get(classDataSlot).asInstanceOf[ObjectStreamClass]
       }
-    }
 
-    def hasWriteObjectMethod: Boolean = {
+    def hasWriteObjectMethod: Boolean =
       reflect.HasWriteObjectMethod.invoke(desc).asInstanceOf[Boolean]
-    }
 
-    def hasWriteReplaceMethod: Boolean = {
+    def hasWriteReplaceMethod: Boolean =
       reflect.HasWriteReplaceMethod.invoke(desc).asInstanceOf[Boolean]
-    }
 
-    def invokeWriteReplace(obj: Object): Object = {
+    def invokeWriteReplace(obj: Object): Object =
       reflect.InvokeWriteReplace.invoke(desc, obj)
-    }
 
-    def getNumObjFields: Int = {
+    def getNumObjFields: Int =
       reflect.GetNumObjFields.invoke(desc).asInstanceOf[Int]
-    }
 
-    def getObjFieldValues(obj: Object, out: Array[Object]): Unit = {
+    def getObjFieldValues(obj: Object, out: Array[Object]): Unit =
       reflect.GetObjFieldValues.invoke(desc, obj, out)
-    }
   }
 
   /**

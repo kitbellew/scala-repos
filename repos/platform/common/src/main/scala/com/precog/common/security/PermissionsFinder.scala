@@ -70,7 +70,7 @@ class PermissionsFinder[M[+_]: Monad](
   private def filterWritePermissions(
       keyDetails: v1.APIKeyDetails,
       path: Path,
-      at: Option[Instant]): Set[WritePermission] = {
+      at: Option[Instant]): Set[WritePermission] =
     keyDetails.grants filter { g =>
       (at exists { g.isValidAt _ }) ||
       g.createdAt.isBefore(timestampRequiredAfter)
@@ -81,7 +81,6 @@ class PermissionsFinder[M[+_]: Monad](
           perm
       }
     }
-  }
 
   def inferWriteAuthorities(
       apiKey: APIKey,
@@ -129,7 +128,7 @@ class PermissionsFinder[M[+_]: Monad](
   def writePermissions(
       apiKey: APIKey,
       path: Path,
-      at: Instant): M[Set[WritePermission]] = {
+      at: Instant): M[Set[WritePermission]] =
     apiKeyFinder.findAPIKey(apiKey, None) map {
       case Some(details) =>
         logger.debug(
@@ -143,17 +142,15 @@ class PermissionsFinder[M[+_]: Monad](
             .format(apiKey, path.path, at.toString))
         Set()
     }
-  }
 
   def checkWriteAuthorities(
       authorities: Authorities,
       apiKey: APIKey,
       path: Path,
-      at: Instant): M[Boolean] = {
+      at: Instant): M[Boolean] =
     writePermissions(apiKey, path, at) map { canWriteAs(_, authorities) }
-  }
 
-  def findBrowsableChildren(apiKey: APIKey, path: Path): M[Set[Path]] = {
+  def findBrowsableChildren(apiKey: APIKey, path: Path): M[Set[Path]] =
     for {
       permissions <- apiKeyFinder.findAPIKey(apiKey, None) map { details =>
         details.toSet.flatMap(_.grants).flatMap(_.permissions)
@@ -170,5 +167,4 @@ class PermissionsFinder[M[+_]: Monad](
         case _ => None
       }
     }
-  }
 }

@@ -54,7 +54,7 @@ trait EvaluatorMethodsModule[M[+_]]
 
     def transRValue[A <: SourceType](
         rvalue: RValue,
-        target: TransSpec[A]): TransSpec[A] = {
+        target: TransSpec[A]): TransSpec[A] =
       rValueToCValue(rvalue) map { cvalue =>
         trans.ConstLiteral(cvalue, target)
       } getOrElse {
@@ -72,7 +72,6 @@ trait EvaluatorMethodsModule[M[+_]]
             sys.error("Can't handle RValue")
         }
       }
-    }
 
     def transFromBinOp[A <: SourceType](op: BinaryOperation, ctx: MorphContext)(
         left: TransSpec[A],
@@ -180,10 +179,9 @@ trait EvaluatorMethodsModule[M[+_]]
       InnerObjectConcat(wrappedIdentitySpec, wrappedValueSpec)
     }
 
-    def buildIdShuffleSpec(indexes: Vector[Int]): TransSpec1 = {
+    def buildIdShuffleSpec(indexes: Vector[Int]): TransSpec1 =
       indexes map { idx =>
         trans.WrapArray(DerefArrayStatic(Leaf(Source), CPathIndex(idx))): TransSpec1
       } reduceLeft { trans.InnerArrayConcat(_, _) }
-    }
   }
 }

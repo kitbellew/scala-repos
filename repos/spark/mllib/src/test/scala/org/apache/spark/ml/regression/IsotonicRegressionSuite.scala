@@ -29,7 +29,7 @@ class IsotonicRegressionSuite
     with MLlibTestSparkContext
     with DefaultReadWriteTest {
 
-  private def generateIsotonicInput(labels: Seq[Double]): DataFrame = {
+  private def generateIsotonicInput(labels: Seq[Double]): DataFrame =
     sqlContext
       .createDataFrame(
         labels.zipWithIndex.map {
@@ -37,11 +37,9 @@ class IsotonicRegressionSuite
         }
       )
       .toDF("label", "features", "weight")
-  }
 
-  private def generatePredictionInput(features: Seq[Double]): DataFrame = {
+  private def generatePredictionInput(features: Seq[Double]): DataFrame =
     sqlContext.createDataFrame(features.map(Tuple1.apply)).toDF("features")
-  }
 
   test("isotonic regression predictions") {
     val dataset = generateIsotonicInput(Seq(1, 2, 3, 1, 6, 17, 16, 17, 18))

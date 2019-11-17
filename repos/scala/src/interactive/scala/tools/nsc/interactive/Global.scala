@@ -212,7 +212,7 @@ with ContextTrees with RichCompilationUnits with Picklers {
     */
   protected var getParsedEnteredResponses = new ResponseMap
 
-  private def cleanResponses(rmap: ResponseMap): Unit = {
+  private def cleanResponses(rmap: ResponseMap): Unit =
     for ((source, rs) <- rmap.toList) {
       for (r <- rs) {
         if (getUnit(source).isEmpty) r raise new NoSuchUnitError(source.file)
@@ -220,7 +220,6 @@ with ContextTrees with RichCompilationUnits with Picklers {
       }
       if (rmap(source).isEmpty) rmap -= source
     }
-  }
 
   override lazy val analyzer = new {
     val global: Global.this.type = Global.this
@@ -305,10 +304,9 @@ with ContextTrees with RichCompilationUnits with Picklers {
 
   def isOutOfDate: Boolean = outOfDate
 
-  def demandNewCompilerRun() = {
+  def demandNewCompilerRun() =
     if (outOfDate) throw new FreshRunReq // cancel background compile
     else outOfDate = true // proceed normally and enable new background compile
-  }
 
   protected[interactive] var minRunId = 1
 
@@ -1087,11 +1085,10 @@ with ContextTrees with RichCompilationUnits with Picklers {
       }
     }
 
-    def addNonShadowed(other: Members[M]) = {
+    def addNonShadowed(other: Members[M]) =
       for ((name, ms) <- other)
         if (ms.nonEmpty && this(name).isEmpty)
           this(name) = ms
-    }
 
     def allMembers: List[M] = values.toList.flatten
   }
@@ -1300,11 +1297,10 @@ with ContextTrees with RichCompilationUnits with Picklers {
       override def positionDelta = 0
     }
     private val CamelRegex = "([A-Z][^A-Z]*)".r
-    private def camelComponents(s: String): List[String] = {
+    private def camelComponents(s: String): List[String] =
       CamelRegex.findAllIn("X" + s).toList match {
         case head :: tail => head.drop(1) :: tail; case Nil => Nil
       }
-    }
     def camelMatch(entered: Name): Name => Boolean = {
       val enteredS = entered.toString
       val enteredLowercaseSet = enteredS
@@ -1318,7 +1314,7 @@ with ContextTrees with RichCompilationUnits with Picklers {
         def lenientMatch(
             entered: String,
             candidate: List[String],
-            matchCount: Int): Boolean = {
+            matchCount: Int): Boolean =
           candidate match {
             case Nil => entered.isEmpty && matchCount > 0
             case head :: tail =>
@@ -1335,7 +1331,6 @@ with ContextTrees with RichCompilationUnits with Picklers {
                           matchCount +
                             (if (init.isEmpty) 0 else 1))))
           }
-        }
         val containsAllEnteredChars = {
           // Trying to rule out some candidates quickly before the more expensive `lenientMatch`
           val candidateLowercaseSet = candidate.toString.toLowerCase().toSet
@@ -1475,9 +1470,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
       */
     override def canRedefine(sym: Symbol) = true
 
-    def typeCheck(unit: CompilationUnit): Unit = {
+    def typeCheck(unit: CompilationUnit): Unit =
       applyPhase(typerPhase, unit)
-    }
 
     /** Apply a phase to a compilation unit
       *  @return true iff typechecked correctly

@@ -88,14 +88,13 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
     *
     * @since 1.3.1
     */
-  def drop(how: String, cols: Seq[String]): DataFrame = {
+  def drop(how: String, cols: Seq[String]): DataFrame =
     how.toLowerCase match {
       case "any" => drop(cols.size, cols)
       case "all" => drop(1, cols)
       case _ =>
         throw new IllegalArgumentException(s"how ($how) must be 'any' or 'all'")
     }
-  }
 
   /**
     * Returns a new [[DataFrame]] that drops rows containing
@@ -262,9 +261,8 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
     *
     * @since 1.3.1
     */
-  def replace[T](col: String, replacement: java.util.Map[T, T]): DataFrame = {
+  def replace[T](col: String, replacement: java.util.Map[T, T]): DataFrame =
     replace[T](col, replacement.asScala.toMap)
-  }
 
   /**
     * Replaces values matching keys in `replacement` map with the corresponding values.
@@ -288,9 +286,8 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
     */
   def replace[T](
       cols: Array[String],
-      replacement: java.util.Map[T, T]): DataFrame = {
+      replacement: java.util.Map[T, T]): DataFrame =
     replace(cols.toSeq, replacement.asScala.toMap)
-  }
 
   /**
     * (Scala-specific) Replaces values matching keys in `replacement` map.
@@ -315,13 +312,12 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
     *
     * @since 1.3.1
     */
-  def replace[T](col: String, replacement: Map[T, T]): DataFrame = {
+  def replace[T](col: String, replacement: Map[T, T]): DataFrame =
     if (col == "*") {
       replace0(df.columns, replacement)
     } else {
       replace0(Seq(col), replacement)
     }
-  }
 
   /**
     * (Scala-specific) Replaces values matching keys in `replacement` map.
@@ -425,7 +421,7 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
   /**
     * Returns a [[Column]] expression that replaces null value in `col` with `replacement`.
     */
-  private def fillCol[T](col: StructField, replacement: T): Column = {
+  private def fillCol[T](col: StructField, replacement: T): Column =
     col.dataType match {
       case DoubleType | FloatType =>
         coalesce(
@@ -436,7 +432,6 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
           df.col("`" + col.name + "`"),
           lit(replacement).cast(col.dataType)).as(col.name)
     }
-  }
 
   /**
     * Returns a [[Column]] expression that replaces value matching key in `replacementMap` with

@@ -209,7 +209,7 @@ abstract class WebSpec(boot: () => Any = () => {})
       this(description, new MockHttpServletRequest(url, contextPath), session)
     }
 
-    def in(expectations: => Result) = {
+    def in(expectations: => Result) =
       addFragments(
         fragmentFactory.example(description, {
           LiftRulesMocker.devTestLiftRulesInstance.doWith(liftRules) {
@@ -221,7 +221,6 @@ abstract class WebSpec(boot: () => Any = () => {})
           }
         }) ^ fragmentFactory.break
       )
-    }
   }
 
   /**
@@ -233,7 +232,7 @@ abstract class WebSpec(boot: () => Any = () => {})
     def this(description: String, url: String, contextPath: String) =
       this(description, new MockHttpServletRequest(url, contextPath))
 
-    def in(expectations: Req => Result) = {
+    def in(expectations: Req => Result) =
       addFragments(
         fragmentFactory.example(description, {
           LiftRulesMocker.devTestLiftRulesInstance.doWith(liftRules) {
@@ -243,7 +242,6 @@ abstract class WebSpec(boot: () => Any = () => {})
           }
         }) ^ fragmentFactory.break
       )
-    }
   }
 
   /**
@@ -262,7 +260,7 @@ abstract class WebSpec(boot: () => Any = () => {})
         contextPath: String) =
       this(description, new MockHttpServletRequest(url, contextPath), session)
 
-    def in(expectations: Box[NodeSeq] => Result) = {
+    def in(expectations: Box[NodeSeq] => Result) =
       addFragments(
         fragmentFactory.example(
           description, {
@@ -282,6 +280,5 @@ abstract class WebSpec(boot: () => Any = () => {})
           }
         ) ^ fragmentFactory.break
       )
-    }
   }
 }

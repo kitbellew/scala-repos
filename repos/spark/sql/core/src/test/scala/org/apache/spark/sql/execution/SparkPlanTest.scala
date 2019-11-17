@@ -45,13 +45,12 @@ private[sql] abstract class SparkPlanTest extends SparkFunSuite {
       input: DataFrame,
       planFunction: SparkPlan => SparkPlan,
       expectedAnswer: Seq[Row],
-      sortAnswers: Boolean = true): Unit = {
+      sortAnswers: Boolean = true): Unit =
     doCheckAnswer(
       input :: Nil,
       (plans: Seq[SparkPlan]) => planFunction(plans.head),
       expectedAnswer,
       sortAnswers)
-  }
 
   /**
     * Runs the plan and makes sure the answer matches the expected result.
@@ -68,13 +67,12 @@ private[sql] abstract class SparkPlanTest extends SparkFunSuite {
       right: DataFrame,
       planFunction: (SparkPlan, SparkPlan) => SparkPlan,
       expectedAnswer: Seq[Row],
-      sortAnswers: Boolean = true): Unit = {
+      sortAnswers: Boolean = true): Unit =
     doCheckAnswer(
       left :: right :: Nil,
       (plans: Seq[SparkPlan]) => planFunction(plans(0), plans(1)),
       expectedAnswer,
       sortAnswers)
-  }
 
   /**
     * Runs the plan and makes sure the answer matches the expected result.
@@ -89,7 +87,7 @@ private[sql] abstract class SparkPlanTest extends SparkFunSuite {
       input: Seq[DataFrame],
       planFunction: Seq[SparkPlan] => SparkPlan,
       expectedAnswer: Seq[Row],
-      sortAnswers: Boolean = true): Unit = {
+      sortAnswers: Boolean = true): Unit =
     SparkPlanTest.checkAnswer(
       input,
       planFunction,
@@ -99,7 +97,6 @@ private[sql] abstract class SparkPlanTest extends SparkFunSuite {
       case Some(errorMessage) => fail(errorMessage)
       case None               =>
     }
-  }
 
   /**
     * Runs the plan and makes sure the answer matches the result produced by a reference plan.
@@ -117,7 +114,7 @@ private[sql] abstract class SparkPlanTest extends SparkFunSuite {
       input: DataFrame,
       planFunction: SparkPlan => SparkPlan,
       expectedPlanFunction: SparkPlan => SparkPlan,
-      sortAnswers: Boolean = true): Unit = {
+      sortAnswers: Boolean = true): Unit =
     SparkPlanTest.checkAnswer(
       input,
       planFunction,
@@ -127,7 +124,6 @@ private[sql] abstract class SparkPlanTest extends SparkFunSuite {
       case Some(errorMessage) => fail(errorMessage)
       case None               =>
     }
-  }
 }
 
 /**

@@ -72,7 +72,7 @@ private case class ScalaSdkData(
     libraryTableElement.addContent(libraryElement)
   }
 
-  private def createLibraryElement(): Elem = {
+  private def createLibraryElement(): Elem =
     <library name={name} type="Scala">
       <properties>
         <option name="languageLevel" value={languageLevel} />
@@ -90,7 +90,6 @@ private case class ScalaSdkData(
         {standardLibrary.sources.map(url => <root url={url}/>)}
       </SOURCES>
     </library>
-  }
 }
 
 private object ScalaSdkData {

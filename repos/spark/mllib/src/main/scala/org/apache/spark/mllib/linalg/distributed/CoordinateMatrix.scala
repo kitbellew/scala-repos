@@ -72,12 +72,11 @@ class CoordinateMatrix @Since("1.0.0") (
 
   /** Transposes this CoordinateMatrix. */
   @Since("1.3.0")
-  def transpose(): CoordinateMatrix = {
+  def transpose(): CoordinateMatrix =
     new CoordinateMatrix(
       entries.map(x => MatrixEntry(x.j, x.i, x.value)),
       numCols(),
       numRows())
-  }
 
   /** Converts to IndexedRowMatrix. The number of columns must be within the integer range. */
   @Since("1.0.0")
@@ -104,15 +103,13 @@ class CoordinateMatrix @Since("1.0.0") (
     * The number of columns must be within the integer range.
     */
   @Since("1.0.0")
-  def toRowMatrix(): RowMatrix = {
+  def toRowMatrix(): RowMatrix =
     toIndexedRowMatrix().toRowMatrix()
-  }
 
   /** Converts to BlockMatrix. Creates blocks of [[SparseMatrix]] with size 1024 x 1024. */
   @Since("1.3.0")
-  def toBlockMatrix(): BlockMatrix = {
+  def toBlockMatrix(): BlockMatrix =
     toBlockMatrix(1024, 1024)
-  }
 
   /**
     * Converts to BlockMatrix. Creates blocks of [[SparseMatrix]].

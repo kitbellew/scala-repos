@@ -287,7 +287,7 @@ class AppendOnlyMap[K, V](initialCapacity: Int = 64)
       var i = 0
       var nullValueReady = haveNullValue
       def hasNext: Boolean = (i < newIndex || nullValueReady)
-      def next(): (K, V) = {
+      def next(): (K, V) =
         if (nullValueReady) {
           nullValueReady = false
           (null.asInstanceOf[K], nullValue)
@@ -297,7 +297,6 @@ class AppendOnlyMap[K, V](initialCapacity: Int = 64)
           i += 1
           item
         }
-      }
     }
   }
 

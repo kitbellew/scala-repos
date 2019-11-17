@@ -38,9 +38,8 @@ private[streaming] class SocketInputDStream[T: ClassTag](
     storageLevel: StorageLevel
 ) extends ReceiverInputDStream[T](_ssc) {
 
-  def getReceiver(): Receiver[T] = {
+  def getReceiver(): Receiver[T] =
     new SocketReceiver(host, port, bytesToObjects, storageLevel)
-  }
 }
 
 private[streaming] class SocketReceiver[T: ClassTag](

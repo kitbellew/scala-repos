@@ -58,7 +58,7 @@ abstract class StepOverTestBase extends ScalaDebuggerTestCase {
     }
   }
 
-  private def currentLineNumber: Int = {
+  private def currentLineNumber: Int =
     managed[Integer] {
       val location = suspendContext.getFrameProxy.location
       inReadAction {
@@ -67,5 +67,4 @@ abstract class StepOverTestBase extends ScalaDebuggerTestCase {
           .getLine
       }
     }
-  }
 }

@@ -128,15 +128,14 @@ class PriorityQueue[A](implicit val ord: Ordering[A])
     *  @param  xs    a traversable object.
     *  @return       a new priority queue containing elements of both `xs` and `this`.
     */
-  def ++(xs: GenTraversableOnce[A]): PriorityQueue[A] = {
+  def ++(xs: GenTraversableOnce[A]): PriorityQueue[A] =
     this.clone() ++= xs.seq
-  }
 
   /** Adds all elements to the queue.
     *
     *  @param  elems       the elements to add.
     */
-  def enqueue(elems: A*): Unit = { this ++= elems }
+  def enqueue(elems: A*): Unit = this ++= elems
 
   /** Returns the element with the highest priority in the queue,
     *  and removes this element from the queue.
@@ -173,7 +172,7 @@ class PriorityQueue[A](implicit val ord: Ordering[A])
   /** Removes all elements from the queue. After this operation is completed,
     *  the queue will be empty.
     */
-  def clear(): Unit = { resarr.p_size0 = 1 }
+  def clear(): Unit = resarr.p_size0 = 1
 
   /** Returns an iterator which yields all the elements.
     *

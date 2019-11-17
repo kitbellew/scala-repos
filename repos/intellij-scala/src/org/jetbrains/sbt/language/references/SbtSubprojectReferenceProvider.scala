@@ -40,7 +40,7 @@ class SbtSubprojectReferenceProvider extends PsiReferenceProvider {
 
   private def findBuildFile(
       subprojectPath: String,
-      project: Project): Option[PsiFile] = {
+      project: Project): Option[PsiFile] =
     FilenameIndex
       .getFilesByName(project, "build.sbt", GlobalSearchScope.allScope(project))
       .find { file =>
@@ -52,9 +52,8 @@ class SbtSubprojectReferenceProvider extends PsiReferenceProvider {
           .map(_.getVirtualFile.getPath)
           .fold(false)(FileUtil.comparePaths(_, absolutePath) == 0)
       }
-  }
 
-  private def extractSubprojectPath(element: PsiElement): Option[String] = {
+  private def extractSubprojectPath(element: PsiElement): Option[String] =
     Option(element.getParent).safeMap(_.getParent) match {
       case Some(ScPatternDefinition.expr(e)) =>
         e match {
@@ -66,7 +65,6 @@ class SbtSubprojectReferenceProvider extends PsiReferenceProvider {
         }
       case _ => None
     }
-  }
 
   private def extractSubprojectPathFromProjectCall(
       call: ScMethodCall,
@@ -110,7 +108,7 @@ class SbtSubprojectReferenceProvider extends PsiReferenceProvider {
       case _ => None
     }
 
-  private def extractPathFromFileCtor(ctor: ScConstructor): Option[String] = {
+  private def extractPathFromFileCtor(ctor: ScConstructor): Option[String] =
     ctor.args.map(_.exprs).flatMap {
       case Seq(ScLiteralImpl.string(path)) =>
         Some(path)
@@ -120,7 +118,6 @@ class SbtSubprojectReferenceProvider extends PsiReferenceProvider {
         extractPathFromFileParam(parentElt).map(_ + File.separator + child)
       case _ => None
     }
-  }
 
   private def extractPathFromConcatenation(
       concatExpr: ScInfixExpr): Option[String] =

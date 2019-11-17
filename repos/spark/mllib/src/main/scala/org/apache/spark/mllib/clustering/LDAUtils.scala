@@ -38,9 +38,8 @@ private[clustering] object LDAUtils {
     * uses [[breeze.numerics.digamma]] which is accurate but expensive.
     */
   private[clustering] def dirichletExpectation(
-      alpha: BDV[Double]): BDV[Double] = {
+      alpha: BDV[Double]): BDV[Double] =
     digamma(alpha) - digamma(sum(alpha))
-  }
 
   /**
     * Computes [[dirichletExpectation()]] row-wise, assuming each row of alpha are

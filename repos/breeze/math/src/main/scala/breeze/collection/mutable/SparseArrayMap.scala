@@ -25,7 +25,7 @@ class SparseArrayMap[@specialized T: ClassTag: Zero](
 
   override def keysIterator = array.index.iterator
 
-  override def update(i: Int, t: T) = { array.update(i, t) }
+  override def update(i: Int, t: T) = array.update(i, t)
 
   override def iterator = array.iterator
 

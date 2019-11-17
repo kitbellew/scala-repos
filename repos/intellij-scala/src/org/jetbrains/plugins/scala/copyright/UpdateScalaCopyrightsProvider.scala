@@ -22,7 +22,7 @@ class UpdateScalaCopyrightsProvider extends UpdateCopyrightsProvider {
       module: Module,
       file: VirtualFile,
       base: FileType,
-      options: CopyrightProfile): UpdateCopyright = {
+      options: CopyrightProfile): UpdateCopyright =
     new UpdateJavaFileCopyright(project, module, file, options) {
       override def accept: Boolean = getFile.isInstanceOf[ScalaFile]
 
@@ -41,5 +41,4 @@ class UpdateScalaCopyrightsProvider extends UpdateCopyrightsProvider {
         if (arr.length == 0) null else arr
       }
     }
-  }
 }

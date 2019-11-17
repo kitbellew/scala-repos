@@ -87,11 +87,10 @@ object IO {
     out.toByteArray
   }
 
-  def gzipUncompress(bytes: Array[Byte]): Array[Byte] = {
+  def gzipUncompress(bytes: Array[Byte]): Array[Byte] =
     using(new GZIPInputStream(new ByteArrayInputStream(bytes))) { in =>
       ByteStreams.toByteArray(in)
     }
-  }
 
   def transfer(
       in: InputStream,
@@ -121,20 +120,18 @@ object IO {
     new String(out.toByteArray, "UTF-8")
   }
 
-  def withResource[T](path: String)(fn: InputStream => T): Option[T] = {
+  def withResource[T](path: String)(fn: InputStream => T): Option[T] =
     Option(getClass.getResourceAsStream(path)).flatMap { stream =>
       Try(stream.available()) match {
         case Success(length) => Some(fn(stream))
         case Failure(ex)     => None
       }
     }
-  }
 
-  def using[A <: Closeable, B](closeable: A)(fn: (A) => B): B = {
+  def using[A <: Closeable, B](closeable: A)(fn: (A) => B): B =
     try {
       fn(closeable)
     } finally {
       Try(closeable.close())
     }
-  }
 }

@@ -142,11 +142,10 @@ private[spark] class HashShuffleWriter[K, V](
     MapStatus(blockManager.shuffleServerId, sizes)
   }
 
-  private def revertWrites(): Unit = {
+  private def revertWrites(): Unit =
     if (shuffle != null && shuffle.writers != null) {
       for (writer <- shuffle.writers) {
         writer.revertPartialWritesAndClose()
       }
     }
-  }
 }

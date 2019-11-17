@@ -111,7 +111,7 @@ class Crawler(config: Configuration) {
 
   def getHTML(
       crawlCandidate: CrawlCandidate,
-      parsingCandidate: ParsingCandidate): Option[String] = {
+      parsingCandidate: ParsingCandidate): Option[String] =
     if (crawlCandidate.rawHTML != null) {
       Some(crawlCandidate.rawHTML)
     } else {
@@ -123,23 +123,19 @@ class Crawler(config: Configuration) {
         case _ => None
       }
     }
-  }
 
   def getImageExtractor(article: Article): ImageExtractor = {
     val httpClient: HttpClient = config.getHtmlFetcher.getHttpClient
     new UpgradedImageIExtractor(httpClient, article, config)
   }
 
-  def getOutputFormatter: OutputFormatter = {
+  def getOutputFormatter: OutputFormatter =
     StandardOutputFormatter
-  }
 
-  def getDocCleaner: DocumentCleaner = {
+  def getDocCleaner: DocumentCleaner =
     new StandardDocumentCleaner
-  }
 
-  def getDocument(url: String, rawlHtml: String): Option[Document] = {
-
+  def getDocument(url: String, rawlHtml: String): Option[Document] =
     try {
       Some(Jsoup.parse(rawlHtml))
     } catch {
@@ -148,11 +144,9 @@ class Crawler(config: Configuration) {
         None
       }
     }
-  }
 
-  def getExtractor: ContentExtractor = {
+  def getExtractor: ContentExtractor =
     config.contentExtractor
-  }
 
   /**
     * cleans up any temp files we have laying around like temp images

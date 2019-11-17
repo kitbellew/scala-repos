@@ -45,12 +45,11 @@ trait TimePeriodSpecs[M[+_]]
 
   val line = Line(1, 1, "")
 
-  def testEval(graph: DepGraph): Set[SEvent] = {
+  def testEval(graph: DepGraph): Set[SEvent] =
     consumeEval(graph, defaultEvaluationContext) match {
       case Success(results) => results
       case Failure(error)   => throw error
     }
-  }
 
   "Period parsing" should {
     "parse period with all fields present" in {
@@ -92,21 +91,19 @@ trait TimePeriodSpecs[M[+_]]
     }
   }
 
-  def createObject(field: String, op1: Op1, value: String) = {
+  def createObject(field: String, op1: Op1, value: String) =
     Join(
       WrapObject,
       Cross(None),
       Const(CString(field))(line),
       Operate(BuiltInFunction1Op(op1), Const(CString(value))(line))(line))(line)
-  }
 
-  def joinObject(obj1: DepGraph, obj2: DepGraph, obj3: DepGraph) = {
+  def joinObject(obj1: DepGraph, obj2: DepGraph, obj3: DepGraph) =
     Join(
       JoinObject,
       Cross(None),
       Join(JoinObject, Cross(None), obj1, obj2)(line),
       obj3)(line)
-  }
 
   "Range computing" should {
     "compute correct range given single value" in {
@@ -174,21 +171,19 @@ trait TimePeriodSpecs[M[+_]]
       val objects =
         dag.AbsoluteLoad(Const(CString("/hom/timerange"))(line))(line)
 
-      def deref(field: String) = {
+      def deref(field: String) =
         dag.Join(
           DerefObject,
           Cross(None),
           objects,
           Const(CString(field))(line))(line)
-      }
 
-      def createObject2(field: String, op1: Op1) = {
+      def createObject2(field: String, op1: Op1) =
         Join(
           WrapObject,
           Cross(None),
           Const(CString(field))(line),
           Operate(BuiltInFunction1Op(op1), deref(field))(line))(line)
-      }
 
       val start = createObject2("start", ParseDateTimeFuzzy)
       val end = createObject2("end", ParseDateTimeFuzzy)

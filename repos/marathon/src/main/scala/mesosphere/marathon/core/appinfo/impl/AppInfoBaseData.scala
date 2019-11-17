@@ -146,12 +146,11 @@ class AppInfoBaseData(
     lazy val enrichedTasksFuture: Future[Seq[EnrichedTask]] = {
       def statusesToEnrichedTasks(
           tasksById: Map[Task.Id, Task],
-          statuses: Map[Task.Id, collection.Seq[Health]]): Seq[EnrichedTask] = {
+          statuses: Map[Task.Id, collection.Seq[Health]]): Seq[EnrichedTask] =
         for {
           (taskId, healthResults) <- statuses.to[Seq]
           task <- tasksById.get(taskId)
         } yield EnrichedTask(app.id, task, healthResults)
-      }
 
       log.debug(s"assembling rich tasks for app [${app.id}]")
 

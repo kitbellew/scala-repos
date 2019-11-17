@@ -86,11 +86,10 @@ class FooFilter(headerValue: String) extends EssentialFilter {
 
 /** Scala GlobalSettings object that uses a filter */
 object FooFilteringScalaGlobal extends play.api.GlobalSettings {
-  override def doFilter(next: EssentialAction): EssentialAction = {
+  override def doFilter(next: EssentialAction): EssentialAction =
     Filters(
       super.doFilter(next),
       new FooFilter("filter-constructor-called-by-scala-global"))
-  }
 }
 
 /** Java GlobalSettings class that uses a filter */
@@ -100,12 +99,11 @@ class FooFilteringJavaGlobal extends play.GlobalSettings {
 }
 
 class OnRequestJavaGlobal extends play.GlobalSettings {
-  override def onRequest(request: Http.Request, actionMethod: Method) = {
+  override def onRequest(request: Http.Request, actionMethod: Method) =
     new play.mvc.Action.Simple {
       def call(ctx: Context) =
         CompletableFuture.completedFuture(play.mvc.Results.ok("intercepted"))
     }
-  }
 }
 
 object JavaAction extends MockController {

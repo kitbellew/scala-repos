@@ -142,12 +142,11 @@ class Mediator(winSz: Int) {
   }
 
   // swaps items i & j if i < j; returns true if swapped
-  private def cas(i: Int, j: Int): Boolean = {
+  private def cas(i: Int, j: Int): Boolean =
     if (isless(i, j)) {
       swap(i, j)
       true
     } else false
-  }
 
   // maintains minheap property for all items below i in heap
   private def minSortDown(iIn: Int) {

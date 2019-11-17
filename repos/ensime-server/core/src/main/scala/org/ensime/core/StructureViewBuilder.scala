@@ -38,7 +38,7 @@ trait StructureViewBuilder { self: RichPresentationCompiler =>
     def pos(x: Symbol) =
       locateSymbolPos(x, PosNeededYes).getOrElse(EmptySourcePosition())
 
-    private def traverse(tree: Tree, parent: DefsBuilder): Unit = {
+    private def traverse(tree: Tree, parent: DefsBuilder): Unit =
       tree match {
         case x: DefTree if x.symbol.isSynthetic =>
         case x: ImplDef =>
@@ -66,7 +66,6 @@ trait StructureViewBuilder { self: RichPresentationCompiler =>
         case _ =>
           tree.children.foreach(traverse(_, parent))
       }
-    }
   }
 
   def structureView(fileInfo: SourceFile): List[StructureViewMember] = {

@@ -106,9 +106,8 @@ object LoggingMagnet {
 }
 
 case class LogEntry(obj: Any, level: LogLevel = DebugLevel) {
-  def logTo(log: LoggingAdapter): Unit = {
+  def logTo(log: LoggingAdapter): Unit =
     log.log(level, obj.toString)
-  }
 }
 
 object LogEntry {

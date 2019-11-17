@@ -43,16 +43,14 @@ final class ClearableLinker(newLinker: () => GenLinker, batchMode: Boolean)
   def linkUnit(
       irFiles: Seq[VirtualScalaJSIRFile],
       symbolRequirements: SymbolRequirement,
-      logger: Logger): LinkingUnit = {
+      logger: Logger): LinkingUnit =
     linkerOp(_.linkUnit(irFiles, symbolRequirements, logger))
-  }
 
   def link(
       irFiles: Seq[VirtualScalaJSIRFile],
       output: WritableVirtualJSFile,
-      logger: Logger): Unit = {
+      logger: Logger): Unit =
     linkerOp(_.link(irFiles, output, logger))
-  }
 
   def clear(): Unit =
     _linker = null
@@ -74,7 +72,7 @@ final class ClearableLinker(newLinker: () => GenLinker, batchMode: Boolean)
     }
   }
 
-  private def ensureLinker(): Unit = {
+  private def ensureLinker(): Unit =
     // Ensure we have a linker
     if (_linker == null) {
       val candidate = newLinker()
@@ -88,5 +86,4 @@ final class ClearableLinker(newLinker: () => GenLinker, batchMode: Boolean)
 
       _linker = candidate
     }
-  }
 }

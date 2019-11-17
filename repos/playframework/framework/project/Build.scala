@@ -93,7 +93,7 @@ object BuildSettings {
   /**
     * A project that is shared between the SBT runtime and the Play runtime
     */
-  def PlayNonCrossBuiltProject(name: String, dir: String): Project = {
+  def PlayNonCrossBuiltProject(name: String, dir: String): Project =
     Project(name, file("src/" + dir))
       .enablePlugins(PlaySbtLibrary)
       .settings(playRuntimeSettings: _*)
@@ -102,12 +102,11 @@ object BuildSettings {
         autoScalaLibrary := false,
         crossPaths := false
       )
-  }
 
   /**
     * A project that is only used when running in development.
     */
-  def PlayDevelopmentProject(name: String, dir: String): Project = {
+  def PlayDevelopmentProject(name: String, dir: String): Project =
     Project(name, file("src/" + dir))
       .enablePlugins(PlayLibrary)
       .settings(playCommonSettings: _*)
@@ -118,17 +117,15 @@ object BuildSettings {
             case other => other
           })
       )
-  }
 
   /**
     * A project that is in the Play runtime
     */
-  def PlayCrossBuiltProject(name: String, dir: String): Project = {
+  def PlayCrossBuiltProject(name: String, dir: String): Project =
     Project(name, file("src/" + dir))
       .enablePlugins(PlayLibrary)
       .settings(playRuntimeSettings: _*)
       .settings(omnidocSettings: _*)
-  }
 
   def omnidocSettings: Seq[Setting[_]] = Omnidoc.projectSettings ++ Seq(
     omnidocSnapshotBranch := snapshotBranch,
@@ -156,21 +153,19 @@ object BuildSettings {
   /**
     * A project that runs in the SBT runtime
     */
-  def PlaySbtProject(name: String, dir: String): Project = {
+  def PlaySbtProject(name: String, dir: String): Project =
     Project(name, file("src/" + dir))
       .enablePlugins(PlaySbtLibrary)
       .settings(playCommonSettings: _*)
-  }
 
   /**
     * A project that *is* an SBT plugin
     */
-  def PlaySbtPluginProject(name: String, dir: String): Project = {
+  def PlaySbtPluginProject(name: String, dir: String): Project =
     Project(name, file("src/" + dir))
       .enablePlugins(PlaySbtPlugin)
       .settings(playCommonSettings: _*)
       .settings(playScriptedSettings: _*)
-  }
 }
 
 object PlayBuild extends Build {

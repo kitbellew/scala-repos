@@ -129,12 +129,11 @@ trait StdNames { self: SymbolTable =>
       * Ensures that name mangling does not accidentally make a class respond `true` to any of
       * isAnonymousClass, isAnonymousFunction, isDelambdafyFunction, e.g. by introducing "$anon".
       */
-    def ensureNonAnon(name: String) = {
+    def ensureNonAnon(name: String) =
       name
         .replace(nme.ANON_CLASS_NAME.toString, NESTED_IN_ANON_CLASS)
         .replace(nme.ANON_FUN_NAME.toString, NESTED_IN_ANON_FUN)
         .replace(nme.DELAMBDAFY_LAMBDA_CLASS_NAME.toString, NESTED_IN_LAMBDA)
-    }
 
     // value types (and AnyRef) are all used as terms as well
     // as (at least) arguments to the @specialize annotation.

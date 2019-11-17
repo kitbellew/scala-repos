@@ -57,7 +57,7 @@ private[spark] class MesosClusterSubmissionState(
     var finishDate: Option[Date])
     extends Serializable {
 
-  def copy(): MesosClusterSubmissionState = {
+  def copy(): MesosClusterSubmissionState =
     new MesosClusterSubmissionState(
       driverDescription,
       taskId,
@@ -65,7 +65,6 @@ private[spark] class MesosClusterSubmissionState(
       mesosTaskStatus,
       startDate,
       finishDate)
-  }
 }
 
 /**
@@ -271,7 +270,7 @@ private[spark] class MesosClusterScheduler(
   /**
     * Gets the driver state to be displayed on the Web UI.
     */
-  def getDriverState(submissionId: String): Option[MesosDriverState] = {
+  def getDriverState(submissionId: String): Option[MesosDriverState] =
     stateLock.synchronized {
       queuedDrivers
         .find(_.submissionId.equals(submissionId))
@@ -288,7 +287,6 @@ private[spark] class MesosClusterScheduler(
           .find(_.submissionId.equals(submissionId))
           .map(d => new MesosDriverState("RETRYING", d)))
     }
-  }
 
   private def isQueueFull(): Boolean = launchedDrivers.size >= queuedCapacity
 
@@ -297,7 +295,7 @@ private[spark] class MesosClusterScheduler(
     * We still need to do task reconciliation to be up to date of the latest task states
     * as it might have changed while the scheduler is failing over.
     */
-  private def recoverState(): Unit = {
+  private def recoverState(): Unit =
     stateLock.synchronized {
       launchedDriversState.fetchAll[MesosClusterSubmissionState]().foreach {
         state =>
@@ -321,7 +319,6 @@ private[spark] class MesosClusterScheduler(
       // failover. For now we clear the history on each recovery.
       finishedDrivers.clear()
     }
-  }
 
   /**
     * Starts the cluster scheduler and wait until the scheduler is registered.
@@ -518,9 +515,8 @@ private[spark] class MesosClusterScheduler(
       val offerId: OfferID,
       val slaveId: SlaveID,
       var resources: JList[Resource]) {
-    override def toString(): String = {
+    override def toString(): String =
       s"Offer id: ${offerId}, resources: ${resources}"
-    }
   }
 
   /**
@@ -532,7 +528,7 @@ private[spark] class MesosClusterScheduler(
       candidates: Seq[MesosDriverDescription],
       afterLaunchCallback: (String) => Boolean,
       currentOffers: List[ResourceOffer],
-      tasks: mutable.HashMap[OfferID, ArrayBuffer[TaskInfo]]): Unit = {
+      tasks: mutable.HashMap[OfferID, ArrayBuffer[TaskInfo]]): Unit =
     for (submission <- candidates) {
       val driverCpu = submission.cores
       val driverMem = submission.mem
@@ -600,7 +596,6 @@ private[spark] class MesosClusterScheduler(
         afterLaunchCallback(submission.submissionId)
       }
     }
-  }
 
   override def resourceOffers(
       driver: SchedulerDriver,
@@ -650,7 +645,7 @@ private[spark] class MesosClusterScheduler(
     newBuffer
   }
 
-  def getSchedulerState(): MesosClusterSchedulerState = {
+  def getSchedulerState(): MesosClusterSchedulerState =
     stateLock.synchronized {
       new MesosClusterSchedulerState(
         frameworkId,
@@ -661,7 +656,6 @@ private[spark] class MesosClusterScheduler(
         copyBuffer(pendingRetryDrivers)
       )
     }
-  }
 
   override def offerRescinded(
       driver: SchedulerDriver,
@@ -669,9 +663,8 @@ private[spark] class MesosClusterScheduler(
   override def disconnected(driver: SchedulerDriver): Unit = {}
   override def reregistered(
       driver: SchedulerDriver,
-      masterInfo: MasterInfo): Unit = {
+      masterInfo: MasterInfo): Unit =
     logInfo(s"Framework re-registered with master ${masterInfo.getId}")
-  }
   override def slaveLost(driver: SchedulerDriver, slaveId: SlaveID): Unit = {}
   override def error(driver: SchedulerDriver, error: String): Unit = {
     logError("Error received: " + error)
@@ -683,10 +676,9 @@ private[spark] class MesosClusterScheduler(
     * Task state like TASK_ERROR are not relaunchable state since it wasn't able
     * to be validated by Mesos.
     */
-  private def shouldRelaunch(state: MesosTaskState): Boolean = {
+  private def shouldRelaunch(state: MesosTaskState): Boolean =
     state == MesosTaskState.TASK_FAILED ||
-    state == MesosTaskState.TASK_KILLED || state == MesosTaskState.TASK_LOST
-  }
+      state == MesosTaskState.TASK_KILLED || state == MesosTaskState.TASK_LOST
 
   override def statusUpdate(
       driver: SchedulerDriver,
@@ -762,14 +754,13 @@ private[spark] class MesosClusterScheduler(
     }
   }
 
-  private def removeFromLaunchedDrivers(id: String): Boolean = {
+  private def removeFromLaunchedDrivers(id: String): Boolean =
     if (launchedDrivers.remove(id).isDefined) {
       launchedDriversState.expunge(id)
       true
     } else {
       false
     }
-  }
 
   private def removeFromPendingRetryDrivers(id: String): Boolean = {
     val index = pendingRetryDrivers.indexWhere(_.submissionId.equals(id))

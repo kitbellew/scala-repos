@@ -166,18 +166,17 @@ trait DStreamCheckpointTester { self: SparkFunSuite =>
     * Get the first TestOutputStreamWithPartitions, does not check the provided generic type.
     */
   protected def getTestOutputStream[V: ClassTag](
-      streams: Array[DStream[_]]): TestOutputStreamWithPartitions[V] = {
+      streams: Array[DStream[_]]): TestOutputStreamWithPartitions[V] =
     streams.collect {
       case ds: TestOutputStreamWithPartitions[V @unchecked] => ds
     }.head
-  }
 
   protected def generateOutput[V: ClassTag](
       ssc: StreamingContext,
       targetBatchTime: Time,
       checkpointDir: String,
       stopSparkContext: Boolean
-  ): Seq[Seq[V]] = {
+  ): Seq[Seq[V]] =
     try {
       val batchDuration = ssc.graph.batchDuration
       val batchCounter = new BatchCounter(ssc)
@@ -209,7 +208,6 @@ trait DStreamCheckpointTester { self: SparkFunSuite =>
     } finally {
       ssc.stop(stopSparkContext = stopSparkContext)
     }
-  }
 
   private def assertOutput[V: ClassTag](
       output: Seq[Seq[V]],

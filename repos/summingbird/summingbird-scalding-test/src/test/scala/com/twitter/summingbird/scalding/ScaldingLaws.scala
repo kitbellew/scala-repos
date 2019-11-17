@@ -139,9 +139,8 @@ class ScaldingLaws extends WordSpec {
       }
 
       val pruner = new PrunedSpace[(Int, Int)] {
-        def prune(item: (Int, Int), writeTime: Timestamp) = {
+        def prune(item: (Int, Int), writeTime: Timestamp) =
           prunedList.contains(item._1)
-        }
       }
 
       val testStore =

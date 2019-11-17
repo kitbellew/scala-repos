@@ -40,7 +40,7 @@ object Scheduler {
       message: AnyRef,
       initialDelay: Long,
       delay: Long,
-      timeUnit: TimeUnit): ScheduledFuture[AnyRef] = {
+      timeUnit: TimeUnit): ScheduledFuture[AnyRef] =
     try {
       service
         .scheduleAtFixedRate(
@@ -57,7 +57,6 @@ object Scheduler {
         EventHandler.error(error, this, "%s @ %s".format(receiver, message))
         throw error
     }
-  }
 
   /**
     * Schedules to run specified function to the receiver after initialDelay and then repeated after delay,
@@ -78,7 +77,7 @@ object Scheduler {
       runnable: Runnable,
       initialDelay: Long,
       delay: Long,
-      timeUnit: TimeUnit): ScheduledFuture[AnyRef] = {
+      timeUnit: TimeUnit): ScheduledFuture[AnyRef] =
     try {
       service
         .scheduleAtFixedRate(runnable, initialDelay, delay, timeUnit)
@@ -89,7 +88,6 @@ object Scheduler {
         EventHandler.error(error, this, error.getMessage)
         throw error
     }
-  }
 
   /**
     * Schedules to send the specified message to the receiver after delay
@@ -98,7 +96,7 @@ object Scheduler {
       receiver: ActorRef,
       message: AnyRef,
       delay: Long,
-      timeUnit: TimeUnit): ScheduledFuture[AnyRef] = {
+      timeUnit: TimeUnit): ScheduledFuture[AnyRef] =
     try {
       service
         .schedule(
@@ -114,7 +112,6 @@ object Scheduler {
         EventHandler.error(e, this, receiver + " @ " + message)
         throw error
     }
-  }
 
   /**
     * Schedules a function to be run after delay,
@@ -133,7 +130,7 @@ object Scheduler {
   def scheduleOnce(
       runnable: Runnable,
       delay: Long,
-      timeUnit: TimeUnit): ScheduledFuture[AnyRef] = {
+      timeUnit: TimeUnit): ScheduledFuture[AnyRef] =
     try {
       service
         .schedule(runnable, delay, timeUnit)
@@ -144,7 +141,6 @@ object Scheduler {
         EventHandler.error(e, this, error.getMessage)
         throw error
     }
-  }
 
   def shutdown() {
     synchronized {

@@ -156,13 +156,12 @@ case class Intersect(left: LogicalPlan, right: LogicalPlan)
         case (l, r) => l.dataType == r.dataType
       } && duplicateResolved
 
-  override def maxRows: Option[Long] = {
+  override def maxRows: Option[Long] =
     if (children.exists(_.maxRows.isEmpty)) {
       None
     } else {
       Some(children.flatMap(_.maxRows).min)
     }
-  }
 
   override def statistics: Statistics = {
     val leftSize = left.statistics.sizeInBytes
@@ -186,26 +185,23 @@ case class Except(left: LogicalPlan, right: LogicalPlan)
         case (l, r) => l.dataType == r.dataType
       }
 
-  override def statistics: Statistics = {
+  override def statistics: Statistics =
     Statistics(sizeInBytes = left.statistics.sizeInBytes)
-  }
 }
 
 /** Factory for constructing new `Union` nodes. */
 object Union {
-  def apply(left: LogicalPlan, right: LogicalPlan): Union = {
+  def apply(left: LogicalPlan, right: LogicalPlan): Union =
     Union(left :: right :: Nil)
-  }
 }
 
 case class Union(children: Seq[LogicalPlan]) extends LogicalPlan {
-  override def maxRows: Option[Long] = {
+  override def maxRows: Option[Long] =
     if (children.exists(_.maxRows.isEmpty)) {
       None
     } else {
       Some(children.flatMap(_.maxRows).sum)
     }
-  }
 
   // updating nullability to make all the children consistent
   override def output: Seq[Attribute] =
@@ -252,7 +248,7 @@ case class Union(children: Seq[LogicalPlan]) extends LogicalPlan {
     })
   }
 
-  override protected def validConstraints: Set[Expression] = {
+  override protected def validConstraints: Set[Expression] =
     children
       .map(
         child =>
@@ -261,7 +257,6 @@ case class Union(children: Seq[LogicalPlan]) extends LogicalPlan {
             child.output,
             child.constraints))
       .reduce(_ intersect _)
-  }
 }
 
 case class Join(
@@ -272,7 +267,7 @@ case class Join(
     extends BinaryNode
     with PredicateHelper {
 
-  override def output: Seq[Attribute] = {
+  override def output: Seq[Attribute] =
     joinType match {
       case LeftSemi =>
         left.output
@@ -286,9 +281,8 @@ case class Join(
       case _ =>
         left.output ++ right.output
     }
-  }
 
-  override protected def validConstraints: Set[Expression] = {
+  override protected def validConstraints: Set[Expression] =
     joinType match {
       case Inner if condition.isDefined =>
         left.constraints
@@ -307,7 +301,6 @@ case class Join(
       case FullOuter =>
         Set.empty[Expression]
     }
-  }
 
   def duplicateResolved: Boolean =
     left.outputSet.intersect(right.outputSet).isEmpty
@@ -453,13 +446,12 @@ case class Aggregate(
   override def validConstraints: Set[Expression] =
     child.constraints.union(getAliasedConstraints(aggregateExpressions))
 
-  override def statistics: Statistics = {
+  override def statistics: Statistics =
     if (groupingExpressions.isEmpty) {
       Statistics(sizeInBytes = 1)
     } else {
       super.statistics
     }
-  }
 }
 
 case class Window(
@@ -612,28 +604,25 @@ case class Pivot(
 }
 
 object Limit {
-  def apply(limitExpr: Expression, child: LogicalPlan): UnaryNode = {
+  def apply(limitExpr: Expression, child: LogicalPlan): UnaryNode =
     GlobalLimit(limitExpr, LocalLimit(limitExpr, child))
-  }
 
-  def unapply(p: GlobalLimit): Option[(Expression, LogicalPlan)] = {
+  def unapply(p: GlobalLimit): Option[(Expression, LogicalPlan)] =
     p match {
       case GlobalLimit(le1, LocalLimit(le2, child)) if le1 == le2 =>
         Some((le1, child))
       case _ => None
     }
-  }
 }
 
 case class GlobalLimit(limitExpr: Expression, child: LogicalPlan)
     extends UnaryNode {
   override def output: Seq[Attribute] = child.output
-  override def maxRows: Option[Long] = {
+  override def maxRows: Option[Long] =
     limitExpr match {
       case IntegerLiteral(limit) => Some(limit)
       case _                     => None
     }
-  }
   override lazy val statistics: Statistics = {
     val limit = limitExpr.eval().asInstanceOf[Int]
     val sizeInBytes =
@@ -645,12 +634,11 @@ case class GlobalLimit(limitExpr: Expression, child: LogicalPlan)
 case class LocalLimit(limitExpr: Expression, child: LogicalPlan)
     extends UnaryNode {
   override def output: Seq[Attribute] = child.output
-  override def maxRows: Option[Long] = {
+  override def maxRows: Option[Long] =
     limitExpr match {
       case IntegerLiteral(limit) => Some(limit)
       case _                     => None
     }
-  }
   override lazy val statistics: Statistics = {
     val limit = limitExpr.eval().asInstanceOf[Int]
     val sizeInBytes =

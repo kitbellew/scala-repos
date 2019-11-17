@@ -52,7 +52,7 @@ class PageRank(args: Args) extends Job(args) {
   /**
     * Here is where we check for convergence and then run the next job if we're not converged
     */
-  override def next: Option[Job] = {
+  override def next: Option[Job] =
     args.optional("convergence").flatMap { convErr =>
       /*
        * It's easy for this to seem broken, so think about it twice:
@@ -77,7 +77,6 @@ class PageRank(args: Args) extends Job(args) {
         None
       }
     }
-  }
 
   /**
     * override this function to change how you generate a pipe of
@@ -90,14 +89,13 @@ class PageRank(args: Args) extends Job(args) {
     * NOTE: if you want to run until convergence, the initialize method must read the same
     * EXACT format as the output method writes.  This is your job!
     */
-  def initialize(nodeCol: Symbol, neighCol: Symbol, pageRank: Symbol) = {
+  def initialize(nodeCol: Symbol, neighCol: Symbol, pageRank: Symbol) =
     Tsv(args("input")).read
     //Just to name the columns:
       .mapTo((0, 1, 2) -> (nodeCol, neighCol, pageRank)) {
         input: (Long, String, Double) =>
           input
       }
-  }
 
   /**
     * The basic idea is to groupBy the dst key with BOTH the nodeset and the edge rows.
@@ -105,7 +103,7 @@ class PageRank(args: Args) extends Job(args) {
     * the incoming page-rank from the nodes that point to each destination.
     */
   @tailrec
-  final def doPageRank(steps: Int)(pagerank: RichPipe): RichPipe = {
+  final def doPageRank(steps: Int)(pagerank: RichPipe): RichPipe =
     if (steps <= 0) {
       pagerank
     } else {
@@ -165,13 +163,11 @@ class PageRank(args: Args) extends Job(args) {
       //Must call ourselves in the tail position:
       doPageRank(steps - 1)(nextPr)
     }
-  }
 
   //This outputs in the same format as the input, so you can run the job
   //iteratively, subclass to change the final behavior
-  def output(pipe: RichPipe) = {
+  def output(pipe: RichPipe) =
     pipe.project('src, 'dst, 'rank).write(Tsv(args("output")))
-  }
 
   //Optionally compute the average error:
   def computeError(pr: RichPipe): RichPipe = {

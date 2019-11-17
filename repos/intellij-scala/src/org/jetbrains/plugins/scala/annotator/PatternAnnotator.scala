@@ -48,14 +48,13 @@ trait PatternAnnotator {
 
 object PatternAnnotator {
 
-  def checkPattern(pattern: ScPattern, holder: AnnotationHolder) = {
+  def checkPattern(pattern: ScPattern, holder: AnnotationHolder) =
     for {
       pType <- PatternAnnotatorUtil.patternType(pattern)
       eType <- pattern.expectedType
     } {
       checkPatternType(pType, eType, pattern, holder)
     }
-  }
 
   /**
     * Logic in this method is mimicked from compiler sources:
@@ -85,7 +84,7 @@ object PatternAnnotator {
       }
 
     object StableIdResolvesToVar {
-      def unapply(stable: ScStableReferenceElementPattern): Boolean = {
+      def unapply(stable: ScStableReferenceElementPattern): Boolean =
         stable.getReferenceExpression.orNull match {
           case ResolvesTo(ScalaPsiUtil.inNameContext(nameCtx)) =>
             nameCtx match {
@@ -95,7 +94,6 @@ object PatternAnnotator {
             }
           case _ => false
         }
-      }
     }
 
     pattern match {
@@ -287,7 +285,7 @@ object PatternAnnotatorUtil {
 
   def patternType(pattern: ScPattern): Option[ScType] = {
     def constrPatternType(
-        patternRef: ScStableCodeReferenceElement): Option[ScType] = {
+        patternRef: ScStableCodeReferenceElement): Option[ScType] =
       patternRef.advancedResolve match {
         case Some(srr) =>
           srr.getElement match {
@@ -297,7 +295,6 @@ object PatternAnnotatorUtil {
           }
         case None => None
       }
-    }
 
     pattern match {
       case c: ScConstructorPattern =>

@@ -19,18 +19,16 @@ object Binding {
       cv: TypeConverter[I, A],
       tcf: TypeConverterFactory[_])(
       implicit mf: Manifest[I],
-      mt: Manifest[A]): Binding = {
+      mt: Manifest[A]): Binding =
     new DefaultBinding(FieldDescriptor[A](fieldName), tcf)(mf, mt, cv)
-  }
 
   def apply[I, A](
       prev: FieldDescriptor[A],
       cv: TypeConverter[I, A],
       tcf: TypeConverterFactory[_])(
       implicit mf: Manifest[I],
-      mt: Manifest[A]): Binding = {
+      mt: Manifest[A]): Binding =
     new DefaultBinding(prev, tcf)(mf, mt, cv)
-  }
 
   def apply[A](initial: String)(
       implicit ma: Manifest[A],
@@ -38,9 +36,8 @@ object Binding {
     apply(FieldDescriptor[A](initial))
   def apply[A](initial: FieldDescriptor[A])(
       implicit ma: Manifest[A],
-      tcFactory: TypeConverterFactory[A]): Binding = {
+      tcFactory: TypeConverterFactory[A]): Binding =
     new PartialBinding(initial)
-  }
 
   private class PartialBinding[A](val field: FieldDescriptor[A])(
       implicit val valueManifest: Manifest[A],
@@ -73,14 +70,13 @@ object Binding {
     type T = A
     type S = I
 
-    override def toString() = {
+    override def toString() =
       "Binding[%s, %s](name: %s, value: %s, original: %s)".format(
         sourceManifest.erasure.getSimpleName,
         valueManifest.erasure.getSimpleName,
         name,
         validation,
         original)
-    }
 
     def transform(transformer: (T) => T): Binding =
       new DefaultBinding(field.transform(transformer), typeConverterFactory)(

@@ -71,12 +71,11 @@ private[rest] class CreateSubmissionRequest extends SubmitRestProtocolRequest {
   private def assertProperty[T](
       key: String,
       valueType: String,
-      convert: (String => T)): Unit = {
+      convert: (String => T)): Unit =
     sparkProperties.get(key).foreach { value =>
       Try(convert(value)).getOrElse {
         throw new SubmitRestProtocolException(
           s"Property '$key' expected $valueType value: actual was '$value'.")
       }
     }
-  }
 }

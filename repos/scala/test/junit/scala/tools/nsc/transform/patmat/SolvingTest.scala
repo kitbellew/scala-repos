@@ -46,9 +46,8 @@ object TestSolver extends Logic with Solving {
 
       override def hashCode(): Int = x.hashCode()
 
-      override def toString: String = {
+      override def toString: String =
         s"Var($x)"
-      }
 
       def domainSyms = None
 
@@ -227,18 +226,16 @@ class SolvingTest {
   implicit val SolutionOrd: Ordering[TestSolver.TestSolver.Solution] =
     Ordering.by(_.model)
 
-  def formatSolution(solution: Solution): String = {
+  def formatSolution(solution: Solution): String =
     formatModel(solution.model)
-  }
 
-  def formatModel(model: Model): String = {
+  def formatModel(model: Model): String =
     (for {
       (SymName(name), value) <- model
     } yield {
       val v = if (value) "T" else "F"
       s"$name -> $v"
     }).mkString(", ")
-  }
 
   def sym(name: String) = Sym(Var(Tree(name)), NullConst)
 
@@ -892,7 +889,7 @@ class SolvingTest {
     }
   }
 
-  def pairWiseEncoding(ops: List[Sym]) = {
+  def pairWiseEncoding(ops: List[Sym]) =
     And(
       ops
         .combinations(2)
@@ -900,7 +897,6 @@ class SolvingTest {
           case a :: b :: Nil => Or(Not(a), Not(b))
         }
         .toSet[TestSolver.TestSolver.Prop])
-  }
 
   @Test
   def testAtMostOne() {

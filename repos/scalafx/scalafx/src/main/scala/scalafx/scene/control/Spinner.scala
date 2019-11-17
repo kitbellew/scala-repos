@@ -211,9 +211,8 @@ class Spinner[T](override val delegate: jfxsc.Spinner[T] = new jfxsc.Spinner[T])
     * will need to react accordingly and back out this change.
     */
   def editable: BooleanProperty = delegate.editableProperty()
-  def editable_=(value: Boolean): Unit = {
+  def editable_=(value: Boolean): Unit =
     editable() = value
-  }
 
   def editor: ReadOnlyObjectProperty[jfxsc.TextField] =
     delegate.editorProperty()

@@ -16,7 +16,7 @@ object message {
     class Incrementor(next: Pid) extends Actor {
       var sum = 0
 
-      override def run() = {
+      override def run() =
         while (true) {
           receive {
             case Message(value) =>
@@ -32,7 +32,6 @@ object message {
               }
           }
         }
-      }
 
       def pid() = { this.start; this.self }
     }

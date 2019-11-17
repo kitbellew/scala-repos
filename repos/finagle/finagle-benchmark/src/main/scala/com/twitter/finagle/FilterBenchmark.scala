@@ -35,9 +35,8 @@ class FilterBenchmark extends StdBenchAnnotations {
   }
 
   @Benchmark
-  def andThenFilter(): Future[Mutable] = {
+  def andThenFilter(): Future[Mutable] =
     svc(mutable)
-  }
 }
 
 object FilterBenchmark {

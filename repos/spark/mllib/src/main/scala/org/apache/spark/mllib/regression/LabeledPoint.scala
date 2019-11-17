@@ -35,9 +35,8 @@ import org.apache.spark.SparkException
 case class LabeledPoint @Since("1.0.0") (
     @Since("0.8.0") label: Double,
     @Since("1.0.0") features: Vector) {
-  override def toString: String = {
+  override def toString: String =
     s"($label,$features)"
-  }
 }
 
 /**
@@ -53,7 +52,7 @@ object LabeledPoint {
     *
     */
   @Since("1.1.0")
-  def parse(s: String): LabeledPoint = {
+  def parse(s: String): LabeledPoint =
     if (s.startsWith("(")) {
       NumericParser.parse(s) match {
         case Seq(label: Double, numeric: Any) =>
@@ -69,5 +68,4 @@ object LabeledPoint {
         parts(1).trim().split(' ').map(java.lang.Double.parseDouble))
       LabeledPoint(label, features)
     }
-  }
 }

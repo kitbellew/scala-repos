@@ -49,9 +49,8 @@ object Promise {
     def detach(): Boolean = underlying.detach(this)
 
     // This is only called after the parent has been successfully satisfied
-    def apply(result: Try[A]): Unit = {
+    def apply(result: Try[A]): Unit =
       update(result)
-    }
   }
 
   private class DetachableFuture[A] extends Promise[A] with Promise.Detachable {
@@ -110,7 +109,7 @@ object Promise {
       f: Try[A] => Future[B],
       val depth: Short)
       extends K[A] {
-    private[this] def k(r: Try[A]) = {
+    private[this] def k(r: Try[A]) =
       promise.become(
         try f(r)
         catch {
@@ -119,7 +118,6 @@ object Promise {
           case NonFatal(e) => Future.exception(e)
         }
       )
-    }
 
     def apply(result: Try[A]) {
       val current = Local.save()
@@ -401,7 +399,7 @@ class Promise[A]
           rest: List[K[A]],
           result: Try[A],
           maxDepth: Int
-      ): Unit = {
+      ): Unit =
         // empirically via JMH `FutureBenchmark.runqSize` the performance
         // is better once the the list gets larger. that cutoff point
         // was 14 in tests. however, it should be noted that this number
@@ -437,7 +435,6 @@ class Promise[A]
             depth += 1
           }
         }
-      }
     })
 
   /**
@@ -447,7 +444,7 @@ class Promise[A]
     * @param f the new interrupt handler
     */
   @tailrec
-  final def setInterruptHandler(f: PartialFunction[Throwable, Unit]): Unit = {
+  final def setInterruptHandler(f: PartialFunction[Throwable, Unit]): Unit =
     state match {
       case Linked(p) => p.setInterruptHandler(f)
 
@@ -466,7 +463,6 @@ class Promise[A]
 
       case Done(_) => // ignore
     }
-  }
 
   // Useful for debugging waitq.
   private[util] def waitqLength: Int = state match {
@@ -533,7 +529,7 @@ class Promise[A]
     case Done(_) =>
   }
 
-  @tailrec protected[Promise] final def detach(k: K[A]): Boolean = {
+  @tailrec protected[Promise] final def detach(k: K[A]): Boolean =
     state match {
       case Linked(p) =>
         p.detach(k)
@@ -562,7 +558,6 @@ class Promise[A]
 
       case Done(_) => false
     }
-  }
 
   // Awaitable
   @throws(classOf[TimeoutException])
@@ -689,13 +684,12 @@ class Promise[A]
     *
     * @throws ImmutableResult if the Promise is already populated
     */
-  def update(result: Try[A]): Unit = {
+  def update(result: Try[A]): Unit =
     updateIfEmpty(result) || {
       val current = Await.result(liftToTry)
       throw new ImmutableResult(
         s"Result set multiple times. Value='$current', New='$result'")
     }
-  }
 
   /**
     * Populate the Promise with the given Try. The Try can either be a
@@ -739,7 +733,7 @@ class Promise[A]
   }
 
   @tailrec
-  protected[util] final def continue(k: K[A]): Unit = {
+  protected[util] final def continue(k: K[A]): Unit =
     state match {
       case Done(v) =>
         Scheduler.submit(new Runnable {
@@ -760,7 +754,6 @@ class Promise[A]
       case Linked(p) =>
         p.continue(k)
     }
-  }
 
   /**
     * Should only be called when this Promise has already been fulfilled

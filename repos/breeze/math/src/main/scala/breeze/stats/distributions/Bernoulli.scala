@@ -34,9 +34,8 @@ class Bernoulli(p: Double, rand: RandBasis = Rand)
   require(p <= 1.0)
   def probabilityOf(b: Boolean) = if (b) p else (1 - p)
 
-  override def draw() = {
+  override def draw() =
     rand.uniform.get < p
-  }
 
   override def toString() = "Bernoulli(" + p + ")"
 
@@ -55,12 +54,11 @@ object Bernoulli
   def predictive(parameter: Beta.Parameter) =
     new Polya(Counter(true -> parameter._1, false -> parameter._2))
 
-  def posterior(prior: Beta.Parameter, evidence: TraversableOnce[Boolean]) = {
+  def posterior(prior: Beta.Parameter, evidence: TraversableOnce[Boolean]) =
     evidence.foldLeft(prior) { (acc, ev) =>
       if (ev) acc.copy(_1 = acc._1 + 1)
       else acc.copy(_2 = acc._2 + 1)
     }
-  }
 
   type Parameter = Double
   case class SufficientStatistic(numYes: Double, n: Double)

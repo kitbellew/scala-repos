@@ -84,11 +84,10 @@ private[sql] trait DataTypeParser extends StandardTokenParsers {
     }
   }
 
-  private def failMessage(dataTypeString: String): String = {
+  private def failMessage(dataTypeString: String): String =
     s"Unsupported dataType: $dataTypeString. If you have a struct and a field name of it has " +
       "any special characters, please use backticks (`) to quote that field name, e.g. `x+y`. " +
       "Please note that backtick itself is not supported in a field name."
-  }
 }
 
 private[sql] object DataTypeParser {

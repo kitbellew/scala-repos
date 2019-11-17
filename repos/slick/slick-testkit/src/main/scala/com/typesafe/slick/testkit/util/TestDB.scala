@@ -81,10 +81,9 @@ object TestDB {
   /** Delete files in the testDB directory */
   def deleteDBFiles(prefix: String) {
     assert(!prefix.isEmpty, "prefix must not be empty")
-    def deleteRec(f: File): Boolean = {
+    def deleteRec(f: File): Boolean =
       if (f.isDirectory()) f.listFiles.forall(deleteRec _) && f.delete()
       else f.delete()
-    }
     val dir = new File(TestkitConfig.testDir)
     if (!dir.isDirectory)
       throw new IOException("Directory " + TestkitConfig.testDir + " not found")

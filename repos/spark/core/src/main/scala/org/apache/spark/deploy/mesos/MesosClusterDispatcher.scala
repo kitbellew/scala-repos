@@ -85,9 +85,8 @@ private[mesos] class MesosClusterDispatcher(
     server.start()
   }
 
-  def awaitShutdown(): Unit = {
+  def awaitShutdown(): Unit =
     shutdownLatch.await()
-  }
 
   def stop(): Unit = {
     webUi.stop()

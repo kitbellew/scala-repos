@@ -29,9 +29,8 @@ abstract class StepOverCaseClausesTestBase extends StepOverTestBase {
       |}
     """.stripMargin.trim
   )
-  def testSimple(): Unit = {
+  def testSimple(): Unit =
     testStepThrough(Seq(2, 3, 4, 5, 6, 8, 1))
-  }
 
   addFileWithBreakpoints(
     "MultilineExpr.scala",
@@ -52,9 +51,8 @@ abstract class StepOverCaseClausesTestBase extends StepOverTestBase {
        |}
     """.stripMargin.trim
   )
-  def testMultilineExpr(): Unit = {
+  def testMultilineExpr(): Unit =
     testStepThrough(Seq(2, 3, 4, 6, 8, 9, 1))
-  }
 
   addFileWithBreakpoints(
     "SkipStoreResult.scala",
@@ -78,9 +76,8 @@ abstract class StepOverCaseClausesTestBase extends StepOverTestBase {
        |}
     """.stripMargin.trim
   )
-  def testSkipStoreResult(): Unit = {
+  def testSkipStoreResult(): Unit =
     testStepThrough(Seq(2, 3, 4, 5, 6, 11))
-  }
 
   addFileWithBreakpoints(
     "PartialFun.scala",
@@ -104,9 +101,8 @@ abstract class StepOverCaseClausesTestBase extends StepOverTestBase {
         |}
     """.stripMargin.trim
   )
-  def testPartialFun(): Unit = {
+  def testPartialFun(): Unit =
     testStepThrough(Seq(4, 5, 6, 3, 4, 7, 8, 9, 3, 4, 7, 3, 11))
-  }
 
   addFileWithBreakpoints(
     "ComplexPattern.scala",
@@ -144,9 +140,8 @@ abstract class StepOverCaseClausesTestBase extends StepOverTestBase {
        |
     """.stripMargin.trim
   )
-  def testComplexPattern(): Unit = {
+  def testComplexPattern(): Unit =
     testStepThrough(Seq(2, 3, 4, 7, 10, 11, 12, 14))
-  }
 
   addFileWithBreakpoints(
     "NestedMatch.scala",
@@ -174,9 +169,8 @@ abstract class StepOverCaseClausesTestBase extends StepOverTestBase {
        |}
     """.stripMargin.trim
   )
-  def testNestedMatch(): Unit = {
+  def testNestedMatch(): Unit =
     testStepThrough(Seq(2, 3, 4, 5, 8, 9, 10, 14))
-  }
 
   addFileWithBreakpoints(
     "CaseClausesReturn.scala",
@@ -200,7 +194,6 @@ abstract class StepOverCaseClausesTestBase extends StepOverTestBase {
       | """.stripMargin.trim
   )
 
-  def testCaseClausesReturn(): Unit = {
+  def testCaseClausesReturn(): Unit =
     testStepThrough(Seq(6, 7, 9, 11, 12, 2))
-  }
 }

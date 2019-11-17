@@ -30,12 +30,11 @@ object Origin {
   private final val HashSeed = -2085327609
 
   implicit object OriginJSONSerializer extends JSONSerializer[Origin] {
-    def serialize(x: Origin): JSON = {
+    def serialize(x: Origin): JSON =
       new JSONObjBuilder()
         .fld("moduleName", x.moduleName)
         .fld("configuration", x.configuration)
         .toJSON
-    }
   }
 
   implicit object OriginDeserializer extends JSONDeserializer[Origin] {

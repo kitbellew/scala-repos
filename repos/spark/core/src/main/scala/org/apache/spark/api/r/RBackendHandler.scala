@@ -98,9 +98,8 @@ private[r] class RBackendHandler(server: RBackend)
     ctx.write(reply)
   }
 
-  override def channelReadComplete(ctx: ChannelHandlerContext): Unit = {
+  override def channelReadComplete(ctx: ChannelHandlerContext): Unit =
     ctx.flush()
-  }
 
   override def exceptionCaught(
       ctx: ChannelHandlerContext,
@@ -190,11 +189,10 @@ private[r] class RBackendHandler(server: RBackend)
   }
 
   // Read a number of arguments from the data input stream
-  def readArgs(numArgs: Int, dis: DataInputStream): Array[java.lang.Object] = {
+  def readArgs(numArgs: Int, dis: DataInputStream): Array[java.lang.Object] =
     (0 until numArgs).map { _ =>
       readObject(dis)
     }.toArray
-  }
 
   // Find a matching method signature in an array of signatures of constructors
   // or methods of the same name according to the passed arguments. Arguments
@@ -283,13 +281,11 @@ private[r] object JVMObjectTracker {
   // Investigate using use atomic integer in the future.
   private[this] var objCounter: Int = 0
 
-  def getObject(id: String): Object = {
+  def getObject(id: String): Object =
     objMap(id)
-  }
 
-  def get(id: String): Option[Object] = {
+  def get(id: String): Option[Object] =
     objMap.get(id)
-  }
 
   def put(obj: Object): String = {
     val objId = objCounter.toString
@@ -298,7 +294,6 @@ private[r] object JVMObjectTracker {
     objId
   }
 
-  def remove(id: String): Option[Object] = {
+  def remove(id: String): Option[Object] =
     objMap.remove(id)
-  }
 }

@@ -34,10 +34,9 @@ class SortShuffleManagerSuite extends SparkFunSuite with Matchers {
   import SortShuffleManager.canUseSerializedShuffle
 
   private class RuntimeExceptionAnswer extends Answer[Object] {
-    override def answer(invocation: InvocationOnMock): Object = {
+    override def answer(invocation: InvocationOnMock): Object =
       throw new RuntimeException(
         "Called non-stubbed method, " + invocation.getMethod.getName)
-    }
   }
 
   private def shuffleDep(

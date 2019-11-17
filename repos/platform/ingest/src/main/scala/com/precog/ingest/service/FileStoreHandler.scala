@@ -87,7 +87,7 @@ class FileStoreHandler(
 
   private def validateFileName(
       fileName: Option[String],
-      storeMode: WriteMode): Validation[String, Path => Path] = {
+      storeMode: WriteMode): Validation[String, Path => Path] =
     (storeMode: @unchecked) match {
       case AccessMode.Create =>
         for {
@@ -112,7 +112,6 @@ class FileStoreHandler(
             resource
         }
     }
-  }
 
   val service: HttpRequest[ByteChunk] => Validation[
     NotServed,

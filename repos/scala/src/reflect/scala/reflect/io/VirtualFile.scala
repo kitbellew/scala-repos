@@ -51,14 +51,13 @@ class VirtualFile(val name: String, override val path: String)
 
   def input: InputStream = new ByteArrayInputStream(content)
 
-  override def output: OutputStream = {
+  override def output: OutputStream =
     new ByteArrayOutputStream() {
       override def close() {
         super.close()
         content = toByteArray()
       }
     }
-  }
 
   def container: AbstractFile = NoAbstractFile
 

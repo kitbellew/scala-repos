@@ -108,7 +108,7 @@ class ScSubstitutor(
     res
   }
 
-  def followUpdateThisType(tp: ScType): ScSubstitutor = {
+  def followUpdateThisType(tp: ScType): ScSubstitutor =
     tp match {
       case ScThisType(template) =>
         var zSubst =
@@ -128,14 +128,12 @@ class ScSubstitutor(
       case _ =>
         new ScSubstitutor(Map.empty, Map.empty, Some(tp)).followed(this)
     }
-  }
   def followed(s: ScSubstitutor): ScSubstitutor = followed(s, 0)
 
-  def isUpdateThisSubst: Option[ScType] = {
+  def isUpdateThisSubst: Option[ScType] =
     if (tvMap.size + aliasesMap.size == 0 && !myDependentMethodTypesFunDefined)
       updateThisType
     else None
-  }
 
   private def followed(s: ScSubstitutor, level: Int): ScSubstitutor = {
     if (level > ScSubstitutor.followLimit)
@@ -173,14 +171,13 @@ class ScSubstitutor(
           s)
     }
 
-  private def extractTpt(tpt: ScTypeParameterType, t: ScType): ScType = {
+  private def extractTpt(tpt: ScTypeParameterType, t: ScType): ScType =
     if (tpt.args.isEmpty) t
     else
       t match {
         case ScParameterizedType(designator, _) => designator
         case _                                  => t
       }
-  }
 
   protected def substInternal(t: ScType): ScType = {
     var result: ScType = t
@@ -200,7 +197,7 @@ class ScSubstitutor(
         )
       }
 
-      override def visitAbstractType(a: ScAbstractType): Unit = {
+      override def visitAbstractType(a: ScAbstractType): Unit =
         result = tvMap.get((a.tpt.name, a.tpt.getId)) match {
           case None => a
           case Some(v) =>
@@ -209,7 +206,6 @@ class ScSubstitutor(
               case _                                                    => extractTpt(a.tpt, v)
             }
         }
-      }
 
       override def visitMethodType(m: ScMethodType): Unit = {
         val ScMethodType(retType, params, isImplicit) = m
@@ -225,7 +221,7 @@ class ScSubstitutor(
         )(m.project, m.scope)
       }
 
-      override def visitUndefinedType(u: ScUndefinedType): Unit = {
+      override def visitUndefinedType(u: ScUndefinedType): Unit =
         result = tvMap.get((u.tpt.name, u.tpt.getId)) match {
           case None => u
           case Some(v) =>
@@ -234,23 +230,20 @@ class ScSubstitutor(
               case _                                                    => extractTpt(u.tpt, v)
             }
         }
-      }
 
-      override def visitTypeVariable(tv: ScTypeVariable): Unit = {
+      override def visitTypeVariable(tv: ScTypeVariable): Unit =
         result = tvMap.get((tv.name, null)) match {
           case None    => tv
           case Some(v) => v
         }
-      }
 
-      override def visitTypeParameterType(tpt: ScTypeParameterType): Unit = {
+      override def visitTypeParameterType(tpt: ScTypeParameterType): Unit =
         result = tvMap.get((tpt.name, tpt.getId)) match {
           case None    => tpt
           case Some(v) => extractTpt(tpt, v)
         }
-      }
 
-      override def visitDesignatorType(d: ScDesignatorType): Unit = {
+      override def visitDesignatorType(d: ScDesignatorType): Unit =
         if (getDependentMethodTypes.nonEmpty) {
           result = getDependentMethodTypes.find {
             case (parameter: Parameter, tp: ScType) =>
@@ -263,7 +256,6 @@ class ScSubstitutor(
             case _              => t
           }
         }
-      }
 
       override def visitThisType(th: ScThisType): Unit = {
         val clazz = th.clazz
@@ -282,7 +274,7 @@ class ScSubstitutor(
           case Some(oldTp) if !hasRecursiveThisType(oldTp) =>
             //todo: hack to avoid infinite recursion during type substitution
             var tp = oldTp
-            def update(typez: ScType): ScType = {
+            def update(typez: ScType): ScType =
               ScType.extractDesignated(typez, withoutAliases = true) match {
                 case Some((t: ScTypeDefinition, subst)) =>
                   if (t == clazz) tp
@@ -360,7 +352,6 @@ class ScSubstitutor(
                   }
                   null
               }
-            }
             while (tp != null) {
               val up = update(tp)
               if (up != null) {
@@ -469,9 +460,8 @@ class ScSubstitutor(
         }
       }
 
-      override def visitJavaArrayType(j: JavaArrayType): Unit = {
+      override def visitJavaArrayType(j: JavaArrayType): Unit =
         result = JavaArrayType(substInternal(j.arg))
-      }
 
       override def visitProjectionType(p: ScProjectionType): Unit = {
         val ScProjectionType(proj, element, s) = p
@@ -494,14 +484,13 @@ class ScSubstitutor(
         substCopy.myDependentMethodTypesFunDefined =
           myDependentMethodTypesFunDefined
         substCopy.myDependentMethodTypes = myDependentMethodTypes
-        def substTypeParam(tp: TypeParameter): TypeParameter = {
+        def substTypeParam(tp: TypeParameter): TypeParameter =
           new TypeParameter(
             tp.name,
             tp.typeParams.map(substTypeParam),
             () => substInternal(tp.lowerType()),
             () => substInternal(tp.upperType()),
             tp.ptp)
-        }
         val middleRes = ScCompoundType(
           comps.map(substInternal),
           signatureMap.map {
@@ -570,13 +559,12 @@ class ScUndefinedSubstitutor(
       upperAdditionalMap: Map[(String, PsiElement), HashSet[ScType]] =
         upperAdditionalMap,
       lowerAdditionalMap: Map[(String, PsiElement), HashSet[ScType]] =
-        lowerAdditionalMap): ScUndefinedSubstitutor = {
+        lowerAdditionalMap): ScUndefinedSubstitutor =
     new ScUndefinedSubstitutor(
       upperMap,
       lowerMap,
       upperAdditionalMap,
       lowerAdditionalMap)
-  }
 
   type Name = (String, PsiElement)
 

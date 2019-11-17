@@ -460,12 +460,11 @@ class HiveTypeCoercionSuite extends PlanTest {
 
   private def checkOutput(
       logical: LogicalPlan,
-      expectTypes: Seq[DataType]): Unit = {
+      expectTypes: Seq[DataType]): Unit =
     logical.output.zip(expectTypes).foreach {
       case (attr, dt) =>
         assert(attr.dataType === dt)
     }
-  }
 
   test("WidenSetOperationTypes for except and intersect") {
     val firstTable =
@@ -563,12 +562,11 @@ class HiveTypeCoercionSuite extends PlanTest {
   }
 
   test("Transform Decimal precision/scale for union except and intersect") {
-    def checkOutput(logical: LogicalPlan, expectTypes: Seq[DataType]): Unit = {
+    def checkOutput(logical: LogicalPlan, expectTypes: Seq[DataType]): Unit =
       logical.output.zip(expectTypes).foreach {
         case (attr, dt) =>
           assert(attr.dataType === dt)
       }
-    }
 
     val dp = HiveTypeCoercion.WidenSetOperationTypes
 

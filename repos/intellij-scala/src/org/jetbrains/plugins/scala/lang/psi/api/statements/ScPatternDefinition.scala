@@ -28,9 +28,8 @@ trait ScPatternDefinition extends ScValue {
 
 object ScPatternDefinition {
   object expr {
-    def unapply(definition: ScPatternDefinition): Option[ScExpression] = {
+    def unapply(definition: ScPatternDefinition): Option[ScExpression] =
       if (definition == null) None
       else definition.expr
-    }
   }
 }

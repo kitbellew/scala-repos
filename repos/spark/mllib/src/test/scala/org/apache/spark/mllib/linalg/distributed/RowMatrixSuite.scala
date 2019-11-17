@@ -198,13 +198,11 @@ class RowMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
     }
   }
 
-  def closeToZero(G: BDM[Double]): Boolean = {
+  def closeToZero(G: BDM[Double]): Boolean =
     G.valuesIterator.map(math.abs).sum < 1e-6
-  }
 
-  def closeToZero(v: BDV[Double]): Boolean = {
+  def closeToZero(v: BDV[Double]): Boolean =
     brzNorm(v, 1.0) < 1e-6
-  }
 
   def assertColumnEqualUpToSign(A: BDM[Double], B: BDM[Double], k: Int) {
     assert(A.rows === B.rows)

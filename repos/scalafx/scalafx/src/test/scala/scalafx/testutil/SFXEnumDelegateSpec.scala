@@ -77,14 +77,13 @@ abstract class SFXEnumDelegateSpec[
 
   private val javaEnumConstants = EnumSet.allOf(javaClass)
 
-  private def nameIsPresent(name: String) = {
+  private def nameIsPresent(name: String) =
     try {
       val scalaEnum = companion(name)
       true
     } catch {
       case e: IllegalArgumentException => false
     }
-  }
 
   private def assertScalaEnumWithOrdinal(s: S, index: Int) {
     assert(

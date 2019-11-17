@@ -130,19 +130,17 @@ trait ScType {
     ).unpackedType
   }
 
-  def removeUndefines(): ScType = {
+  def removeUndefines(): ScType =
     recursiveUpdate {
       case u: ScUndefinedType => (true, Any)
       case tp: ScType         => (false, tp)
     }
-  }
 
   def equivInner(
       r: ScType,
       uSubst: ScUndefinedSubstitutor,
-      falseUndef: Boolean): (Boolean, ScUndefinedSubstitutor) = {
+      falseUndef: Boolean): (Boolean, ScUndefinedSubstitutor) =
     (false, uSubst)
-  }
 
   class RecursiveUpdateException extends Exception {
     override def getMessage: String = "Type mismatch after update method"
@@ -167,12 +165,11 @@ trait ScType {
 
   def recursiveVarianceUpdate(
       update: (ScType, Int) => (Boolean, ScType),
-      variance: Int = 1): ScType = {
+      variance: Int = 1): ScType =
     recursiveVarianceUpdateModifiable[Unit]((), (tp, v, T) => {
       val (newTp, newV) = update(tp, v)
       (newTp, newV, ())
     }, variance)
-  }
 
   def recursiveVarianceUpdateModifiable[T](
       data: T,
@@ -212,7 +209,7 @@ trait ScType {
 }
 
 object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
-  def typeParamsDepth(typeParams: Array[TypeParameter]): Int = {
+  def typeParamsDepth(typeParams: Array[TypeParameter]): Int =
     typeParams.map {
       case typeParam =>
         val boundsDepth =
@@ -221,17 +218,13 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
           (typeParamsDepth(typeParam.typeParams.toArray) + 1).max(boundsDepth)
         } else boundsDepth
     }.max
-  }
 
-  def typeParametersOwnerDepth(
-      f: ScTypeParametersOwner,
-      typeDepth: Int): Int = {
+  def typeParametersOwnerDepth(f: ScTypeParametersOwner, typeDepth: Int): Int =
     if (f.typeParameters.nonEmpty) {
       (f.typeParameters.map(elemTypeDepth(_)).max + 1).max(typeDepth)
     } else typeDepth
-  }
 
-  def elemTypeDepth(elem: ScNamedElement): Int = {
+  def elemTypeDepth(elem: ScNamedElement): Int =
     elem match {
       case tp: ScTypeParam =>
         val boundsDepth = tp.lowerBound.getOrNothing.typeDepth
@@ -252,7 +245,6 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
         t.getType(TypingContext.empty).getOrAny.typeDepth
       case _ => 1
     }
-  }
 
   val baseTypesQualMap: Map[String, StdType] = HashMap(
     "scala.Unit" -> Unit,
@@ -270,19 +262,18 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
   @tailrec
   def extractClass(
       t: ScType,
-      project: Option[Project] = None): Option[PsiClass] = {
+      project: Option[Project] = None): Option[PsiClass] =
     t match {
       case p @ ScParameterizedType(t1, _) =>
         extractClass(t1, project) //performance improvement
       case _ => extractClassType(t, project).map(_._1)
     }
-  }
 
   def extractClassType(
       t: ScType,
       project: Option[Project] = None,
       visitedAlias: HashSet[ScTypeAlias] = HashSet.empty)
-      : Option[(PsiClass, ScSubstitutor)] = {
+      : Option[(PsiClass, ScSubstitutor)] =
     t match {
       case n: NonValueType =>
         extractClassType(n.inferValueType, project, visitedAlias)
@@ -321,7 +312,6 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
         Some((asClass.get, ScSubstitutor.empty))
       case _ => None
     }
-  }
 
   /**
     * Returns named element associated with type `t`.
@@ -509,14 +499,13 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
     * nested(foo.methodType(...), 1) => MethodType(retType = Boolean, params = Seq(String))
     */
   @tailrec
-  def nested(tpe: ScType, n: Int): Option[ScType] = {
+  def nested(tpe: ScType, n: Int): Option[ScType] =
     if (n == 0) Some(tpe)
     else
       tpe match {
         case mt: ScMethodType => nested(mt.returnType, n - 1)
         case _                => None
       }
-  }
 
   /**
     * Creates a type that designates `element`. Usually this will be a ScDesignatorType, except for the
@@ -524,7 +513,7 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
     *
     * @see http://youtrack.jetbrains.net/issue/SCL-2913
     */
-  def designator(element: PsiNamedElement): ScType = {
+  def designator(element: PsiNamedElement): ScType =
     element match {
       case td: ScClass =>
         StdType.QualNameToType
@@ -550,7 +539,6 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
           case _ => new ScDesignatorType(element)
         }
     }
-  }
 
   def ofNamedElement(
       named: PsiElement,

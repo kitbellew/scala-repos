@@ -46,9 +46,8 @@ class ALSSuite
     sc.setCheckpointDir(tempDir.getAbsolutePath)
   }
 
-  override def afterAll(): Unit = {
+  override def afterAll(): Unit =
     super.afterAll()
-  }
 
   test("LocalIndexEncoder") {
     val random = new Random
@@ -552,9 +551,8 @@ class ALSSuite
       noiseStd = 0.01)
     val (userFactors, itemFactors) =
       ALS.train(ratings, rank = 2, maxIter = 4, nonnegative = true, seed = 0)
-    def isNonnegative(factors: RDD[(Int, Array[Float])]): Boolean = {
+    def isNonnegative(factors: RDD[(Int, Array[Float])]): Boolean =
       factors.values.map { _.forall(_ >= 0.0) }.reduce(_ && _)
-    }
     assert(isNonnegative(userFactors))
     assert(isNonnegative(itemFactors))
     // TODO: Validate the solution.
@@ -654,7 +652,7 @@ class ALSSuite
         assert(model.get(param).get === model2.get(param).get)
     }
     assert(model.rank === model2.rank)
-    def getFactors(df: DataFrame): Set[(Int, Array[Float])] = {
+    def getFactors(df: DataFrame): Set[(Int, Array[Float])] =
       df.select("id", "features")
         .collect()
         .map {
@@ -662,7 +660,6 @@ class ALSSuite
             (r.getInt(0), r.getAs[Array[Float]](1))
         }
         .toSet
-    }
     assert(getFactors(model.userFactors) === getFactors(model2.userFactors))
     assert(getFactors(model.itemFactors) === getFactors(model2.itemFactors))
   }

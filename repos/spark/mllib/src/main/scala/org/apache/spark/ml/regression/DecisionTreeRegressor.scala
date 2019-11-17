@@ -128,14 +128,13 @@ final class DecisionTreeRegressor @Since("1.4.0") (
 
   /** (private[ml]) Create a Strategy instance to use with the old API. */
   private[ml] def getOldStrategy(
-      categoricalFeatures: Map[Int, Int]): OldStrategy = {
+      categoricalFeatures: Map[Int, Int]): OldStrategy =
     super.getOldStrategy(
       categoricalFeatures,
       numClasses = 0,
       OldAlgo.Regression,
       getOldImpurity,
       subsamplingRate = 1.0)
-  }
 
   @Since("1.4.0")
   override def copy(extra: ParamMap): DecisionTreeRegressor =
@@ -187,14 +186,12 @@ final class DecisionTreeRegressionModel private[ml] (
   private[ml] def this(rootNode: Node, numFeatures: Int) =
     this(Identifiable.randomUID("dtr"), rootNode, numFeatures)
 
-  override protected def predict(features: Vector): Double = {
+  override protected def predict(features: Vector): Double =
     rootNode.predictImpl(features).prediction
-  }
 
   /** We need to update this function if we ever add other impurity measures. */
-  protected def predictVariance(features: Vector): Double = {
+  protected def predictVariance(features: Vector): Double =
     rootNode.predictImpl(features).impurityStats.calculate()
-  }
 
   override def transform(dataset: DataFrame): DataFrame = {
     transformSchema(dataset.schema, logging = true)
@@ -222,16 +219,14 @@ final class DecisionTreeRegressionModel private[ml] (
   }
 
   @Since("1.4.0")
-  override def copy(extra: ParamMap): DecisionTreeRegressionModel = {
+  override def copy(extra: ParamMap): DecisionTreeRegressionModel =
     copyValues(
       new DecisionTreeRegressionModel(uid, rootNode, numFeatures),
       extra).setParent(parent)
-  }
 
   @Since("1.4.0")
-  override def toString: String = {
+  override def toString: String =
     s"DecisionTreeRegressionModel (uid=$uid) of depth $depth with $numNodes nodes"
-  }
 
   /**
     * Estimate of the importance of each feature.
@@ -254,9 +249,8 @@ final class DecisionTreeRegressionModel private[ml] (
     RandomForest.featureImportances(this, numFeatures)
 
   /** Convert to a model in the old API */
-  private[ml] def toOld: OldDecisionTreeModel = {
+  private[ml] def toOld: OldDecisionTreeModel =
     new OldDecisionTreeModel(rootNode.toOld(1), OldAlgo.Regression)
-  }
 
   @Since("2.0.0")
   override def write: MLWriter =

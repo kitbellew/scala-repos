@@ -93,13 +93,11 @@ object Account {
   }
 
   // FIXME: Remove when there are no SHA1 hashes in the accounts db
-  def saltAndHashSHA1(password: String, salt: String): String = {
+  def saltAndHashSHA1(password: String, salt: String): String =
     Hashing.sha1().hashString(password + salt, Charsets.UTF_8).toString
-  }
 
-  def saltAndHashSHA256(password: String, salt: String): String = {
+  def saltAndHashSHA256(password: String, salt: String): String =
     Hashing.sha256().hashString(password + salt, Charsets.UTF_8).toString
-  }
 
   // FIXME: Remove when there are no old-style SHA256 hashes in the accounts db
   def saltAndHashLegacy(password: String, salt: String): String = {
@@ -114,7 +112,7 @@ object Account {
 
   def newAccountPermissions(
       accountId: AccountId,
-      accountPath: Path): Set[Permission] = {
+      accountPath: Path): Set[Permission] =
     // Path is "/" so that an account may read data it wrote no matter what path it exists under.
     // See AccessControlSpec, NewGrantRequest
     Set[Permission](
@@ -122,7 +120,6 @@ object Account {
       DeletePermission(accountPath, WrittenByAny),
       ReadPermission(Path.Root, WrittenByAccount(accountId))
     )
-  }
 }
 
 case class WrappedAccountId(accountId: AccountId)

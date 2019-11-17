@@ -58,11 +58,10 @@ trait SecureFlagSpec
 
     val sslPort = 19943
 
-    def test(connection: HttpsURLConnection, expect: Boolean) = {
+    def test(connection: HttpsURLConnection, expect: Boolean) =
       Source
         .fromInputStream(connection.getContent.asInstanceOf[InputStream])
         .mkString must_== expect.toString
-    }
 
     "show that requests are secure in the absence of X_FORWARDED_PROTO" in withServer(
       secureFlagAction,

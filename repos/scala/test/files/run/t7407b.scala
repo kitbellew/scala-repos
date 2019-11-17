@@ -5,12 +5,11 @@ object Test {
     println(foo(false))
   }
 
-  def foo(b: Boolean): String = {
+  def foo(b: Boolean): String =
     try {
       if (b) return "Hello"
       else "abc"
     } finally {
       10 match { case x => () }
     }
-  }
 }

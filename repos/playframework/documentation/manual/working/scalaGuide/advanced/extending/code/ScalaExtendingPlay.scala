@@ -37,20 +37,18 @@ object ScalaExtendingPlay extends Specification {
   }
 
   class MyModule extends play.api.inject.Module {
-    def bindings(environment: Environment, configuration: Configuration) = {
+    def bindings(environment: Environment, configuration: Configuration) =
       Seq(bind[MyCode].toInstance(new MyCode))
-    }
   }
   // #module-definition
 
   // #builtin-module-definition
   class MyI18nModule extends play.api.inject.Module {
-    def bindings(environment: Environment, configuration: Configuration) = {
+    def bindings(environment: Environment, configuration: Configuration) =
       Seq(
         bind[Langs].to[DefaultLangs],
         bind[MessagesApi].to[MyMessagesApi]
       )
-    }
   }
   // #builtin-module-definition
 

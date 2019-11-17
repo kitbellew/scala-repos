@@ -122,14 +122,13 @@ private[ml] object GradientBoostedTrees extends Logging {
       data: RDD[LabeledPoint],
       initTreeWeight: Double,
       initTree: DecisionTreeRegressionModel,
-      loss: OldLoss): RDD[(Double, Double)] = {
+      loss: OldLoss): RDD[(Double, Double)] =
     data.map { lp =>
       val pred =
         initTreeWeight * initTree.rootNode.predictImpl(lp.features).prediction
       val error = loss.computeError(pred, lp.label)
       (pred, error)
     }
-  }
 
   /**
     * Update a zipped predictionError RDD

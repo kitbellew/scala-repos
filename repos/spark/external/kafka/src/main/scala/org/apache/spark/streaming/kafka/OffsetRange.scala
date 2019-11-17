@@ -65,13 +65,11 @@ final class OffsetRange private (
     case _ => false
   }
 
-  override def hashCode(): Int = {
+  override def hashCode(): Int =
     toTuple.hashCode()
-  }
 
-  override def toString(): String = {
+  override def toString(): String =
     s"OffsetRange(topic: '$topic', partition: $partition, range: [$fromOffset -> $untilOffset])"
-  }
 
   /** this is to avoid ClassNotFoundException during checkpoint restore */
   private[streaming] def toTuple: OffsetRangeTuple =

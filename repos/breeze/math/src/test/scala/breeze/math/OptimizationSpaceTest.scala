@@ -296,7 +296,7 @@ class DenseOptimizationSpaceTest_Double
 
   val N = 30
   override implicit def genTripleM: Arbitrary[
-    (DenseMatrix[Double], DenseMatrix[Double], DenseMatrix[Double])] = {
+    (DenseMatrix[Double], DenseMatrix[Double], DenseMatrix[Double])] =
     Arbitrary {
       for {
         x <- Arbitrary.arbitrary[Double].map { _ % 1e100 }
@@ -309,10 +309,9 @@ class DenseOptimizationSpaceTest_Double
           DenseMatrix.fill(N, N)(math.random * z))
       }
     }
-  }
 
   implicit def genTriple: Arbitrary[
-    (DenseVector[Double], DenseVector[Double], DenseVector[Double])] = {
+    (DenseVector[Double], DenseVector[Double], DenseVector[Double])] =
     Arbitrary {
       for {
         x <- Arbitrary.arbitrary[Double].map { _ % 1e100 }
@@ -325,7 +324,6 @@ class DenseOptimizationSpaceTest_Double
           DenseVector.fill(N)(math.random * z))
       }
     }
-  }
 
   def genScalar: Arbitrary[Double] =
     Arbitrary(Arbitrary.arbitrary[Double].map { _ % 1e10 })
@@ -366,7 +364,7 @@ class SparseOptimizationSpaceTest_Double
   def addToBuilder(bldr: CSCMatrix.Builder[Double], v: (Int, Int, Double)) =
     bldr.add(v._1, v._2, v._3)
   override implicit def genTripleM
-      : Arbitrary[(CSCMatrix[Double], CSCMatrix[Double], CSCMatrix[Double])] = {
+      : Arbitrary[(CSCMatrix[Double], CSCMatrix[Double], CSCMatrix[Double])] =
     Arbitrary {
       val xb = new CSCMatrix.Builder[Double](N, N)
       val yb = new CSCMatrix.Builder[Double](N, N)
@@ -386,11 +384,10 @@ class SparseOptimizationSpaceTest_Double
         zb.result()
       })
     }
-  }
 
   val indices = Seq.range[Int](0, N - 1)
   override implicit def genTriple: Arbitrary[
-    (SparseVector[Double], SparseVector[Double], SparseVector[Double])] = {
+    (SparseVector[Double], SparseVector[Double], SparseVector[Double])] =
     Arbitrary {
       for {
         xAS <- Gen.chooseNum[Int](0, N)
@@ -409,5 +406,4 @@ class SparseOptimizationSpaceTest_Double
           SparseVector(N)(zi.zip(zv.map(_ * math.random)): _*))
       }
     }
-  }
 }

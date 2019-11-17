@@ -86,7 +86,7 @@ class ContinuousQueryManager(sqlContext: SQLContext) {
     *
     * @since 2.0.0
     */
-  def awaitAnyTermination(): Unit = {
+  def awaitAnyTermination(): Unit =
     awaitTerminationLock.synchronized {
       while (lastTerminatedQuery == null) {
         awaitTerminationLock.wait(10)
@@ -96,7 +96,6 @@ class ContinuousQueryManager(sqlContext: SQLContext) {
         throw lastTerminatedQuery.exception.get
       }
     }
-  }
 
   /**
     * Wait until any of the queries on the associated SQLContext has terminated since the
@@ -142,11 +141,10 @@ class ContinuousQueryManager(sqlContext: SQLContext) {
     *
     * @since 2.0.0
     */
-  def resetTerminated(): Unit = {
+  def resetTerminated(): Unit =
     awaitTerminationLock.synchronized {
       lastTerminatedQuery = null
     }
-  }
 
   /**
     * Register a [[ContinuousQueryListener]] to receive up-calls for life cycle events of
@@ -154,30 +152,27 @@ class ContinuousQueryManager(sqlContext: SQLContext) {
     *
     * @since 2.0.0
     */
-  def addListener(listener: ContinuousQueryListener): Unit = {
+  def addListener(listener: ContinuousQueryListener): Unit =
     listenerBus.addListener(listener)
-  }
 
   /**
     * Deregister a [[ContinuousQueryListener]].
     *
     * @since 2.0.0
     */
-  def removeListener(listener: ContinuousQueryListener): Unit = {
+  def removeListener(listener: ContinuousQueryListener): Unit =
     listenerBus.removeListener(listener)
-  }
 
   /** Post a listener event */
   private[sql] def postListenerEvent(
-      event: ContinuousQueryListener.Event): Unit = {
+      event: ContinuousQueryListener.Event): Unit =
     listenerBus.post(event)
-  }
 
   /** Start a query */
   private[sql] def startQuery(
       name: String,
       df: DataFrame,
-      sink: Sink): ContinuousQuery = {
+      sink: Sink): ContinuousQuery =
     activeQueriesLock.synchronized {
       if (activeQueries.contains(name)) {
         throw new IllegalArgumentException(
@@ -188,7 +183,6 @@ class ContinuousQueryManager(sqlContext: SQLContext) {
       activeQueries.put(name, query)
       query
     }
-  }
 
   /** Notify (by the ContinuousQuery) that the query has been terminated */
   private[sql] def notifyQueryTermination(

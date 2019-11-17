@@ -176,13 +176,12 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     * Given an array of column keys, slice out the corresponding column(s)
     * @param keys Array of keys
     */
-  def col(keys: Array[CX]): Frame[RX, CX, T] = {
+  def col(keys: Array[CX]): Frame[RX, CX, T] =
     if (values.numCols == 0) Frame.empty[RX, CX, T]
     else {
       val locs = array.filter[Int](_ != -1)(colIx(keys))
       colAt(locs)
     }
-  }
 
   /**
     * Slice out a set of columns from the frame
@@ -281,13 +280,12 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     * Given an array of row keys, slice out the corresponding row(s)
     * @param keys Array of keys
     */
-  def row(keys: Array[RX]): Frame[RX, CX, T] = {
+  def row(keys: Array[RX]): Frame[RX, CX, T] =
     if (values.numRows == 0) Frame.empty[RX, CX, T]
     else {
       val locs = array.filter[Int](_ != -1)(rowIx(keys))
       rowAt(locs)
     }
-  }
 
   /**
     * Slice out a set of rows from the frame
@@ -345,12 +343,11 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     * @param until One past ending offset
     * @param stride Optional increment between offsets
     */
-  def rowSlice(from: Int, until: Int, stride: Int = 1): Frame[RX, CX, T] = {
+  def rowSlice(from: Int, until: Int, stride: Int = 1): Frame[RX, CX, T] =
     Frame(
       values.map(v => v.slice(from, until, stride)),
       rowIx.slice(from, until, stride),
       colIx)
-  }
 
   /**
     * Split Frame into two frames at row position r
@@ -783,18 +780,16 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     * triples.
     */
   def map[SX: ST: ORD, DX: ST: ORD, U: ST](
-      f: ((RX, CX, T)) => (SX, DX, U)): Frame[SX, DX, U] = {
+      f: ((RX, CX, T)) => (SX, DX, U)): Frame[SX, DX, U] =
     Series(toSeq.map(f).map { case (sx, dx, u) => ((sx, dx) -> u) }: _*).pivot
-  }
 
   /**
     * Map over each triple (r, c, v) in the Frame, flattening results, and returning a new frame from
     * the resulting triples.
     */
   def flatMap[SX: ST: ORD, DX: ST: ORD, U: ST](
-      f: ((RX, CX, T)) => Traversable[(SX, DX, U)]): Frame[SX, DX, U] = {
+      f: ((RX, CX, T)) => Traversable[(SX, DX, U)]): Frame[SX, DX, U] =
     Series(toSeq.flatMap(f).map { case (sx, dx, u) => ((sx, dx) -> u) }: _*).pivot
-  }
 
   /**
     * Map over the values of the Frame. Applies a function to each (non-na) value in the frame,
@@ -1295,9 +1290,8 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
       ord1: ORD[O1],
       ord2: ORD[O2],
       m1: ST[O1],
-      m2: ST[O2]): Frame[V, O1, T] = {
+      m2: ST[O2]): Frame[V, O1, T] =
     T.unstack.T
-  }
 
   /**
     * Unstack pivots the innermost row labels to the innermost col labels. That is, it splits

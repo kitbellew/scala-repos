@@ -60,8 +60,7 @@ private[streaming] class StateDStream[K: ClassTag, V: ClassTag, S: ClassTag](
     Some(stateRDD)
   }
 
-  override def compute(validTime: Time): Option[RDD[(K, S)]] = {
-
+  override def compute(validTime: Time): Option[RDD[(K, S)]] =
     // Try to get the previous state RDD
     getOrCompute(validTime - slideDuration) match {
 
@@ -127,5 +126,4 @@ private[streaming] class StateDStream[K: ClassTag, V: ClassTag, S: ClassTag](
         }
       }
     }
-  }
 }

@@ -25,7 +25,6 @@ object Test {
       case Foo(Bar(x1, x2)) => println(x1)
     }
   }
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     nameBased
-  }
 }

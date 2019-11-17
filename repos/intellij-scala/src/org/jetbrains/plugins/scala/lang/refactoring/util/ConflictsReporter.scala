@@ -48,7 +48,7 @@ class BalloonConflictsReporter(editor: Editor) extends ConflictsReporter {
     true //this means that we do nothing, only show balloon
   }
 
-  private def createWarningBalloon(message: String): Unit = {
+  private def createWarningBalloon(message: String): Unit =
     SwingUtilities invokeLater new Runnable {
       def run(): Unit = {
         val popupFactory = JBPopupFactory.getInstance
@@ -67,5 +67,4 @@ class BalloonConflictsReporter(editor: Editor) extends ConflictsReporter {
           Balloon.Position.above)
       }
     }
-  }
 }

@@ -261,7 +261,7 @@ class ZkSecurityMigrator(zkUtils: ZkUtils) extends Logging {
     }
   }
 
-  private def run(): Unit = {
+  private def run(): Unit =
     try {
       setAclIndividually("/")
       for (path <- zkUtils.securePersistentZkPaths) {
@@ -287,5 +287,4 @@ class ZkSecurityMigrator(zkUtils: ZkUtils) extends Logging {
     } finally {
       zkUtils.close
     }
-  }
 }

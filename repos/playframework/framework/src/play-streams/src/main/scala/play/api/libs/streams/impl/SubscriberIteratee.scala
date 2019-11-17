@@ -86,16 +86,15 @@ private[streams] class SubscriberIteratee[T](subscriber: Subscriber[T])
   private def awaitDemand[B](
       promise: Promise[B],
       folder: (Step[T, Unit]) => Future[B],
-      ec: ExecutionContext): AwaitingDemand = {
+      ec: ExecutionContext): AwaitingDemand =
     AwaitingDemand(
       () => demand(promise, folder, ec),
       () => cancelled(promise, folder, ec))
-  }
 
   private def demand[B](
       promise: Promise[B],
       folder: (Step[T, Unit]) => Future[B],
-      ec: ExecutionContext): Unit = {
+      ec: ExecutionContext): Unit =
     Future {
       promise.completeWith(folder(Step.Cont[T, Unit] {
         case Input.EOF =>
@@ -108,16 +107,14 @@ private[streams] class SubscriberIteratee[T](subscriber: Subscriber[T])
           self
       }))
     }(ec)
-  }
 
   private def cancelled[B](
       promise: Promise[B],
       folder: (Step[T, Unit]) => Future[B],
-      ec: ExecutionContext): Unit = {
+      ec: ExecutionContext): Unit =
     Future {
       promise.completeWith(folder(Step.Done((), Input.Empty)))
     }(ec)
-  }
 
   def cancel() = exclusive {
     case AwaitingDemand(_, cancelled) =>

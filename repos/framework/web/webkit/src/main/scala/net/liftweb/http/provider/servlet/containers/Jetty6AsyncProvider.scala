@@ -103,7 +103,7 @@ class Jetty6AsyncProvider(req: HTTPRequest)
       }
     }
 
-  def suspend(timeout: Long): RetryState.Value = {
+  def suspend(timeout: Long): RetryState.Value =
     try {
       val cont = getContinuation.invoke(contSupport, servletReq, LiftRules)
       logger.trace("About to suspend continuation")
@@ -116,7 +116,6 @@ class Jetty6AsyncProvider(req: HTTPRequest)
           if e.getCause.getClass.getName.endsWith("RetryRequest") =>
         throw e.getCause
     }
-  }
 
   def resume(what: (Req, LiftResponse)): Boolean = {
     val cont = getContinuation.invoke(contSupport, servletReq, LiftRules)

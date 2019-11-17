@@ -164,7 +164,7 @@ private[testutil] trait AbstractComparator extends Assertions {
 
     def classParameterToString(
         classParameter: Class[_],
-        isVarargs: Boolean = false) = {
+        isVarargs: Boolean = false) =
       (
         classParameter.isArray,
         classParameter.getName.matches("""^\[.$"""),
@@ -177,7 +177,6 @@ private[testutil] trait AbstractComparator extends Assertions {
           classParameter.getName.substring(2).init + "[]"
         case (false, _, _) => classParameter.getName
       }
-    }
 
     val strParameters = (m.getParameterTypes.size, m.isVarArgs) match {
       case (0, _)    => ""
@@ -229,7 +228,7 @@ private[testutil] trait AbstractComparator extends Assertions {
   private def compare(
       javaMethods: List[Method],
       scalaMethods: List[Method],
-      javaMethodsNotMirrored: List[Method] = Nil): List[Method] = {
+      javaMethodsNotMirrored: List[Method] = Nil): List[Method] =
     javaMethods match {
       case Nil => javaMethodsNotMirrored
       case javaMethod :: otherMethods => {
@@ -245,7 +244,6 @@ private[testutil] trait AbstractComparator extends Assertions {
         compare(otherMethods, scalaMethods, javaMethods)
       }
     }
-  }
 
   /**
     * Verify if all public methods from a Java class are mirrored in a Scala class. It means the same name,

@@ -245,7 +245,7 @@ private[ml] trait TreeClassifierParams extends Params {
   final def getImpurity: String = $(impurity).toLowerCase
 
   /** Convert new impurity to old impurity. */
-  private[ml] def getOldImpurity: OldImpurity = {
+  private[ml] def getOldImpurity: OldImpurity =
     getImpurity match {
       case "entropy" => OldEntropy
       case "gini"    => OldGini
@@ -254,7 +254,6 @@ private[ml] trait TreeClassifierParams extends Params {
         throw new RuntimeException(
           s"TreeClassifierParams was given unrecognized impurity: $impurity.")
     }
-  }
 }
 
 private[ml] object TreeClassifierParams {
@@ -297,7 +296,7 @@ private[ml] trait TreeRegressorParams extends Params {
   final def getImpurity: String = $(impurity).toLowerCase
 
   /** Convert new impurity to old impurity. */
-  private[ml] def getOldImpurity: OldImpurity = {
+  private[ml] def getOldImpurity: OldImpurity =
     getImpurity match {
       case "variance" => OldVariance
       case _          =>
@@ -305,7 +304,6 @@ private[ml] trait TreeRegressorParams extends Params {
         throw new RuntimeException(
           s"TreeRegressorParams was given unrecognized impurity: $impurity")
     }
-  }
 }
 
 private[ml] object TreeRegressorParams {
@@ -369,14 +367,13 @@ private[ml] trait TreeEnsembleParams extends DecisionTreeParams {
       categoricalFeatures: Map[Int, Int],
       numClasses: Int,
       oldAlgo: OldAlgo.Algo,
-      oldImpurity: OldImpurity): OldStrategy = {
+      oldImpurity: OldImpurity): OldStrategy =
     super.getOldStrategy(
       categoricalFeatures,
       numClasses,
       oldAlgo,
       oldImpurity,
       getSubsamplingRate)
-  }
 }
 
 /**
@@ -491,7 +488,7 @@ private[ml] trait GBTParams
     */
   def setStepSize(value: Double): this.type = set(stepSize, value)
 
-  override def validateParams(): Unit = {
+  override def validateParams(): Unit =
     require(
       ParamValidators.inRange(
         0,
@@ -501,7 +498,6 @@ private[ml] trait GBTParams
       "GBT parameter stepSize should be in interval (0, 1], " +
         s"but it given invalid value $getStepSize."
     )
-  }
 
   /** (private[ml]) Create a BoostingStrategy instance to use with the old API. */
   private[ml] def getOldBoostingStrategy(

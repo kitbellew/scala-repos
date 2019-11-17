@@ -1588,12 +1588,11 @@ trait TransformSpec[M[+_]]
     implicit val gen = sample(objectSchema(_, 3))
 
     def randomDeletionMask(
-        schema: CValueGenerators.JSchema): Option[JPathField] = {
+        schema: CValueGenerators.JSchema): Option[JPathField] =
       Random
         .shuffle(schema)
         .headOption
         .map({ case (JPath(x @ JPathField(_), _ @_*), _) => x })
-    }
 
     check { (sample: SampleData) =>
       val toDelete = sample.schema.flatMap({
@@ -2715,7 +2714,7 @@ trait TransformSpec[M[+_]]
   def expectedResult(
       data: Stream[JValue],
       included: Map[JPath, Set[CType]],
-      subsumes: Boolean): Stream[JValue] = {
+      subsumes: Boolean): Stream[JValue] =
     data map { jv =>
       val paths = jv.flattenWithPath.toMap.keys.toList
 
@@ -2748,7 +2747,6 @@ trait TransformSpec[M[+_]]
 
       JValue.unflatten(filtered)
     }
-  }
 }
 
 // vim: set ts=4 sw=4 et:

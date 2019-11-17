@@ -15,7 +15,7 @@ class ValidateRequestFilter[REQUEST <: Request]
 
   def apply(
       request: REQUEST,
-      service: Service[REQUEST, Response]): Future[Response] = {
+      service: Service[REQUEST, Response]): Future[Response] =
     if (request.uri != "/bad-http-request" && request.params.isValid) {
       service(request)
     } else {
@@ -24,7 +24,6 @@ class ValidateRequestFilter[REQUEST <: Request]
       response.clearContent()
       Future.value(response)
     }
-  }
 }
 
 object ValidateRequestFilter extends ValidateRequestFilter[Request]

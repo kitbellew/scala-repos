@@ -39,7 +39,7 @@ object Test extends ScaladocModelTest {
     // test2
 
     val test2 = base._package("test2")
-    def testDefinition(doc: DocTemplateEntity) = {
+    def testDefinition(doc: DocTemplateEntity) =
       for (day <- List("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")) {
         assert(
           doc._value(day).resultType.name == "Value",
@@ -55,7 +55,6 @@ object Test extends ScaladocModelTest {
             " == LinkToMember(" + doc.qualifiedName + ".Value)"
         )
       }
-    }
     testDefinition(test2._trait("WeekDayTrait"))
     testDefinition(test2._class("WeekDayClass"))
     testDefinition(test2._object("WeekDayObject"))

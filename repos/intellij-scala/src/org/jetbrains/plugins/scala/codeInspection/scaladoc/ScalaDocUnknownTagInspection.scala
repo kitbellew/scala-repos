@@ -19,7 +19,7 @@ class ScalaDocUnknownTagInspection extends LocalInspectionTool {
 
   override def buildVisitor(
       holder: ProblemsHolder,
-      isOnTheFly: Boolean): PsiElementVisitor = {
+      isOnTheFly: Boolean): PsiElementVisitor =
     new ScalaElementVisitor {
       override def visitTag(s: ScDocTag) {
         val tagNameElement = s.getFirstChild
@@ -50,7 +50,6 @@ class ScalaDocUnknownTagInspection extends LocalInspectionTool {
         }
       }
     }
-  }
 
   override def getDisplayName: String = "Unknown scaladoc tag"
 }

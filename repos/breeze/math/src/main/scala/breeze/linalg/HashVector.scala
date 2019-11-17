@@ -52,9 +52,8 @@ class HashVector[@spec(Double, Int, Float, Long) E](
   final def index = array.index
   final def isActive(i: Int) = array.isActive(i)
 
-  override def toString = {
+  override def toString =
     activeIterator.mkString("HashVector(", ", ", ")")
-  }
 
   def allVisitableIndicesActive: Boolean = false
 
@@ -86,9 +85,8 @@ object HashVector
     with HashVector_DenseVector_Ops
     with HashVector_SparseVector_Ops
     with SparseVector_HashVector_Ops {
-  def zeros[@spec(Double, Int, Float, Long) V: ClassTag: Zero](size: Int) = {
+  def zeros[@spec(Double, Int, Float, Long) V: ClassTag: Zero](size: Int) =
     new HashVector(new OpenAddressHashArray[V](size))
-  }
   def apply[@spec(Double, Int, Float, Long) V: Zero](values: Array[V]) = {
     implicit val man =
       ClassTag[V](values.getClass.getComponentType.asInstanceOf[Class[V]])
@@ -97,9 +95,8 @@ object HashVector
     new HashVector(oah)
   }
 
-  def apply[V: ClassTag: Zero](values: V*): HashVector[V] = {
+  def apply[V: ClassTag: Zero](values: V*): HashVector[V] =
     apply(values.toArray)
-  }
   def fill[@spec(Double, Int, Float, Long) V: ClassTag: Zero](size: Int)(
       v: => V): HashVector[V] = apply(Array.fill(size)(v))
   def tabulate[@spec(Double, Int, Float, Long) V: ClassTag: Zero](size: Int)(
@@ -118,33 +115,29 @@ object HashVector
   implicit def canCreateZeros[V: ClassTag: Zero]
       : CanCreateZeros[HashVector[V], Int] =
     new CanCreateZeros[HashVector[V], Int] {
-      def apply(d: Int): HashVector[V] = {
+      def apply(d: Int): HashVector[V] =
         zeros[V](d)
-      }
     }
 
   // implicits
   class CanCopyHashVector[@specialized(Int, Float, Double) V: ClassTag: Zero]
       extends CanCopy[HashVector[V]] {
-    def apply(v1: HashVector[V]) = {
+    def apply(v1: HashVector[V]) =
       v1.copy
-    }
   }
 
   implicit def canCopyHash[@specialized(Int, Float, Double) V: ClassTag: Zero]
       : CanCopyHashVector[V] = new CanCopyHashVector[V]
 
   implicit def canMapValues[V, V2: ClassTag: Zero]
-      : CanMapValues[HashVector[V], V, V2, HashVector[V2]] = {
+      : CanMapValues[HashVector[V], V, V2, HashVector[V2]] =
     new CanMapValues[HashVector[V], V, V2, HashVector[V2]] {
-      def apply(from: HashVector[V], fn: (V) => V2) = {
+      def apply(from: HashVector[V], fn: (V) => V2) =
         HashVector.tabulate(from.length)(i => fn(from(i)))
-      }
     }
-  }
 
   implicit def canMapActiveValues[V, V2: ClassTag: Zero]
-      : CanMapActiveValues[HashVector[V], V, V2, HashVector[V2]] = {
+      : CanMapActiveValues[HashVector[V], V, V2, HashVector[V2]] =
     new CanMapActiveValues[HashVector[V], V, V2, HashVector[V2]] {
       def apply(from: HashVector[V], fn: (V) => V2) = {
         val out = new OpenAddressHashArray[V2](from.length)
@@ -156,11 +149,10 @@ object HashVector
         new HashVector(out)
       }
     }
-  }
 
   implicit def scalarOf[T]: ScalarOf[HashVector[T], T] = ScalarOf.dummy
 
-  implicit def canIterateValues[V]: CanTraverseValues[HashVector[V], V] = {
+  implicit def canIterateValues[V]: CanTraverseValues[HashVector[V], V] =
     new CanTraverseValues[HashVector[V], V] {
 
       def isTraversableAgain(from: HashVector[V]): Boolean = true
@@ -174,10 +166,9 @@ object HashVector
         }
       }
     }
-  }
 
   implicit def canTraverseKeyValuePairs[V]
-      : CanTraverseKeyValuePairs[HashVector[V], Int, V] = {
+      : CanTraverseKeyValuePairs[HashVector[V], Int, V] =
     new CanTraverseKeyValuePairs[HashVector[V], Int, V] {
 
       def traverse(
@@ -198,16 +189,14 @@ object HashVector
 
       def traverse(from: HashVector[V], fn: ValuesVisitor[V]): Unit = {}
     }
-  }
 
   implicit def canMapPairs[V, V2: ClassTag: Zero]
-      : CanMapKeyValuePairs[HashVector[V], Int, V, V2, HashVector[V2]] = {
+      : CanMapKeyValuePairs[HashVector[V], Int, V, V2, HashVector[V2]] =
     new CanMapKeyValuePairs[HashVector[V], Int, V, V2, HashVector[V2]] {
 
       /**Maps all key-value pairs from the given collection. */
-      def map(from: HashVector[V], fn: (Int, V) => V2) = {
+      def map(from: HashVector[V], fn: (Int, V) => V2) =
         HashVector.tabulate(from.length)(i => fn(i, from(i)))
-      }
 
       /**Maps all active key-value pairs from the given collection. */
       def mapActive(from: HashVector[V], fn: (Int, V) => V2) = {
@@ -221,7 +210,6 @@ object HashVector
         new HashVector(out)
       }
     }
-  }
 
   implicit def canTabulate[E: ClassTag: Zero]
       : CanTabulate[Int, HashVector[E], E] =
@@ -265,10 +253,9 @@ object HashVector
   @expand
   implicit def dv_hv_op[
       @expand.args(Int, Double, Float, Long) T,
-      @expand.args(OpAdd, OpSub, OpMulScalar, OpDiv, OpSet, OpMod, OpPow) Op <: OpType] = {
+      @expand.args(OpAdd, OpSub, OpMulScalar, OpDiv, OpSet, OpMod, OpPow) Op <: OpType] =
     DenseVector.pureFromUpdate(
       implicitly[Op.InPlaceImpl2[DenseVector[T], HashVector[T]]])
-  }
 
   @noinline
   private def init() = {}

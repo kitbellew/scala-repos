@@ -76,7 +76,6 @@ object CSRFFilter {
       tokenProvider: TokenProvider =
         new ConfigTokenProvider(CSRFConfig.global, Crypto.crypto),
       errorHandler: ErrorHandler = DefaultErrorHandler)(
-      implicit mat: Materializer): CSRFFilter = {
+      implicit mat: Materializer): CSRFFilter =
     new CSRFFilter(config, tokenSigner, tokenProvider, errorHandler)
-  }
 }

@@ -27,9 +27,8 @@ trait ServerIntegrationSpecification extends PendingUntilFixed with AroundEach {
   /**
     * Retry up to 3 times.
     */
-  def around[R: AsResult](r: => R) = {
+  def around[R: AsResult](r: => R) =
     AsResult(EventuallyResults.eventually(1, 20.milliseconds)(r))
-  }
 
   implicit class UntilAkkaHttpFixed[T: AsResult](t: => T) {
 
@@ -50,10 +49,9 @@ trait ServerIntegrationSpecification extends PendingUntilFixed with AroundEach {
   def TestServer(
       port: Int,
       application: Application = play.api.PlayCoreTestApplication(),
-      sslPort: Option[Int] = None): play.api.test.TestServer = {
+      sslPort: Option[Int] = None): play.api.test.TestServer =
     play.api.test
       .TestServer(port, application, sslPort, Some(integrationServerProvider))
-  }
 
   /**
     * Override the standard WithServer class.

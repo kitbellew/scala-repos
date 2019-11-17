@@ -134,9 +134,8 @@ trait DescriptiveStats {
               s = s + (n - 1) * d / n * d
             }
 
-            def zeros(numZero: Int, zeroValue: S): Unit = {
+            def zeros(numZero: Int, zeroValue: S): Unit =
               for (i <- 0 until numZero) visit(zeroValue)
-            }
           }
           iter.traverse(v, visit)
           import visit._
@@ -181,7 +180,7 @@ trait DescriptiveStats {
     implicit def reduce[@expand.args(Int, Long, Double, Float) T]
         : Impl[DenseVector[T], T] =
       new Impl[DenseVector[T], T] {
-        def apply(v: DenseVector[T]): T = {
+        def apply(v: DenseVector[T]): T =
           if (isOdd(v.length)) {
             quickSelect(v.toArray, (v.length - 1) / 2)
           } else {
@@ -191,14 +190,13 @@ trait DescriptiveStats {
             (quickSelectImpl(tempArray, secondMedianPosition) +
               quickSelectImpl(tempArray, secondMedianPosition - 1)) / 2
           }
-        }
       }
 
     @expand
     implicit def reduceSeq[@expand.args(Int, Long, Double, Float) T]
         : Impl[Seq[T], T] =
       new Impl[Seq[T], T] {
-        def apply(v: Seq[T]): T = { median(DenseVector(v.toArray)) }
+        def apply(v: Seq[T]): T = median(DenseVector(v.toArray))
       }
 
     @expand
@@ -223,7 +221,7 @@ trait DescriptiveStats {
          * We roughly follow the two_pass_covariance algorithm from here: http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Covariance
          * However, we also use Bessel's correction, in order to agree with the rest of breeze.
          */
-        def apply(data: Seq[DenseVector[Double]]): DenseMatrix[Double] = {
+        def apply(data: Seq[DenseVector[Double]]): DenseMatrix[Double] =
           data.headOption
             .map(firstRow => {
               val result =
@@ -260,7 +258,6 @@ trait DescriptiveStats {
               result
             })
             .getOrElse(new DenseMatrix[Double](0, 0))
-        }
       }
   }
 
@@ -420,10 +417,9 @@ trait DescriptiveStats {
           require(min(x) >= 0)
           val result = new DenseVector[Int](max(x) + 1)
           class BincountVisitor extends ValuesVisitor[Int] {
-            def visit(a: Int): Unit = { result(a) = result(a) + 1 }
-            def zeros(numZero: Int, zeroValue: Int) = {
+            def visit(a: Int): Unit = result(a) = result(a) + 1
+            def zeros(numZero: Int, zeroValue: Int) =
               result(0) = result(0) + numZero
-            }
           }
           iter.traverse(x, new BincountVisitor)
           result
@@ -469,10 +465,9 @@ trait DescriptiveStats {
             val counter = Counter[Int, Int]()
 
             class BincountVisitor extends ValuesVisitor[Int] {
-              def visit(a: Int): Unit = { counter.update(a, counter(a) + 1) }
-              def zeros(numZero: Int, zeroValue: Int) = {
+              def visit(a: Int): Unit = counter.update(a, counter(a) + 1)
+              def zeros(numZero: Int, zeroValue: Int) =
                 counter.update(zeroValue, counter(zeroValue) + numZero)
-              }
             }
             iter.traverse(x, new BincountVisitor)
             val builder = new VectorBuilder[Int](max(x) + 1)
@@ -542,7 +537,6 @@ object DescriptiveStats {
     * by truncating the longer vector.
     * </p>
     */
-  def cov[T](it1: Iterable[T], it2: Iterable[T])(implicit n: Fractional[T]) = {
+  def cov[T](it1: Iterable[T], it2: Iterable[T])(implicit n: Fractional[T]) =
     meanAndCov(it1, it2)._3
-  }
 }

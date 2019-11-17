@@ -303,9 +303,8 @@ object EnumeratorsSpec
           extends ByteArrayInputStream(bytes) {
         @volatile var closed = false
 
-        override def close() = {
+        override def close() =
           closed = true
-        }
       }
 
       "when done normally" in {

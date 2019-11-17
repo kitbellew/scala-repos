@@ -173,10 +173,9 @@ object ArrayBuilder {
       size = 0
     }
 
-    def result() = {
+    def result() =
       if (capacity != 0 && capacity == size) elems
       else mkArray(size)
-    }
 
     override def equals(other: Any): Boolean = other match {
       case x: ofRef[_] => (size == x.size) && (elems == x.elems)
@@ -240,10 +239,9 @@ object ArrayBuilder {
       size = 0
     }
 
-    def result() = {
+    def result() =
       if (capacity != 0 && capacity == size) elems
       else mkArray(size)
-    }
 
     override def equals(other: Any): Boolean = other match {
       case x: ofByte => (size == x.size) && (elems == x.elems)
@@ -307,10 +305,9 @@ object ArrayBuilder {
       size = 0
     }
 
-    def result() = {
+    def result() =
       if (capacity != 0 && capacity == size) elems
       else mkArray(size)
-    }
 
     override def equals(other: Any): Boolean = other match {
       case x: ofShort => (size == x.size) && (elems == x.elems)
@@ -374,10 +371,9 @@ object ArrayBuilder {
       size = 0
     }
 
-    def result() = {
+    def result() =
       if (capacity != 0 && capacity == size) elems
       else mkArray(size)
-    }
 
     override def equals(other: Any): Boolean = other match {
       case x: ofChar => (size == x.size) && (elems == x.elems)
@@ -441,10 +437,9 @@ object ArrayBuilder {
       size = 0
     }
 
-    def result() = {
+    def result() =
       if (capacity != 0 && capacity == size) elems
       else mkArray(size)
-    }
 
     override def equals(other: Any): Boolean = other match {
       case x: ofInt => (size == x.size) && (elems == x.elems)
@@ -508,10 +503,9 @@ object ArrayBuilder {
       size = 0
     }
 
-    def result() = {
+    def result() =
       if (capacity != 0 && capacity == size) elems
       else mkArray(size)
-    }
 
     override def equals(other: Any): Boolean = other match {
       case x: ofLong => (size == x.size) && (elems == x.elems)
@@ -575,10 +569,9 @@ object ArrayBuilder {
       size = 0
     }
 
-    def result() = {
+    def result() =
       if (capacity != 0 && capacity == size) elems
       else mkArray(size)
-    }
 
     override def equals(other: Any): Boolean = other match {
       case x: ofFloat => (size == x.size) && (elems == x.elems)
@@ -642,10 +635,9 @@ object ArrayBuilder {
       size = 0
     }
 
-    def result() = {
+    def result() =
       if (capacity != 0 && capacity == size) elems
       else mkArray(size)
-    }
 
     override def equals(other: Any): Boolean = other match {
       case x: ofDouble => (size == x.size) && (elems == x.elems)
@@ -706,10 +698,9 @@ object ArrayBuilder {
       size = 0
     }
 
-    def result() = {
+    def result() =
       if (capacity != 0 && capacity == size) elems
       else mkArray(size)
-    }
 
     override def equals(other: Any): Boolean = other match {
       case x: ofBoolean => (size == x.size) && (elems == x.elems)
@@ -773,10 +764,9 @@ object ArrayBuilder {
       size = 0
     }
 
-    def result() = {
+    def result() =
       if (capacity != 0 && capacity == size) elems
       else mkArray(size)
-    }
 
     override def equals(other: Any): Boolean = other match {
       case x: ofUnit => (size == x.size) && (elems == x.elems)

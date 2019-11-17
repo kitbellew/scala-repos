@@ -14,7 +14,6 @@ object Test {
     }
   }
   object b extends B;
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     b.initialize;
-  }
 }

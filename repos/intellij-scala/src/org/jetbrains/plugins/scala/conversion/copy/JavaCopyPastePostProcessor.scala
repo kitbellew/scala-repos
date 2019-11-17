@@ -182,13 +182,12 @@ class JavaCopyPastePostProcessor
   }
 
   protected def extractTransferableData0(
-      content: Transferable): TextBlockTransferableData = {
+      content: Transferable): TextBlockTransferableData =
     if (content.isDataFlavorSupported(ConvertedCode.Flavor))
       content
         .getTransferData(ConvertedCode.Flavor)
         .asInstanceOf[TextBlockTransferableData]
     else null
-  }
 
   protected def processTransferableData0(
       project: Project,

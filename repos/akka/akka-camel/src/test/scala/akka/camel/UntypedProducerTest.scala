@@ -26,13 +26,11 @@ class UntypedProducerTest
     with GivenWhenThen {
   import UntypedProducerTest._
   val timeout = 1 second
-  override protected def beforeAll = {
+  override protected def beforeAll =
     camel.context.addRoutes(new TestRoute)
-  }
 
-  override protected def afterEach = {
+  override protected def afterEach =
     mockEndpoint.reset
-  }
 
   "An UntypedProducer producing a message to a sync Camel route" must {
 
@@ -100,12 +98,11 @@ object UntypedProducerTest {
     def configure {
       from("direct:forward-test-1").to("mock:mock")
       from("direct:producer-test-1").process(new Processor() {
-        def process(exchange: Exchange) = {
+        def process(exchange: Exchange) =
           exchange.getIn.getBody match {
             case "fail" ⇒ throw new Exception("failure")
             case body ⇒ exchange.getOut.setBody("received %s" format body)
           }
-        }
       })
     }
   }

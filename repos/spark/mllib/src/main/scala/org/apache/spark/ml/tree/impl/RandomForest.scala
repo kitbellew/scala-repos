@@ -438,7 +438,7 @@ private[ml] object RandomForest extends Logging {
         treeIndex: Int,
         nodeInfo: NodeIndexInfo,
         agg: Array[DTStatsAggregator],
-        baggedPoint: BaggedPoint[TreePoint]): Unit = {
+        baggedPoint: BaggedPoint[TreePoint]): Unit =
       if (nodeInfo != null) {
         val aggNodeIndex = nodeInfo.nodeIndexInGroup
         val featuresForNode = nodeInfo.featureSubset
@@ -460,7 +460,6 @@ private[ml] object RandomForest extends Logging {
         }
         agg(aggNodeIndex).updateParent(baggedPoint.datum.label, instanceWeight)
       }
-    }
 
     /**
       * Performs a sequential aggregation over a partition.
@@ -517,7 +516,7 @@ private[ml] object RandomForest extends Logging {
       */
     def getNodeToFeatures(
         treeToNodeToIndexInfo: Map[Int, Map[Int, NodeIndexInfo]])
-        : Option[Map[Int, Array[Int]]] = {
+        : Option[Map[Int, Array[Int]]] =
       if (!metadata.subsamplingFeatures) {
         None
       } else {
@@ -531,7 +530,6 @@ private[ml] object RandomForest extends Logging {
         }
         Some(mutableNodeToFeatures.toMap)
       }
-    }
 
     // array of nodes to train indexed by node index in group
     val nodes = new Array[LearningNode](numNodes)
@@ -1351,9 +1349,8 @@ private[ml] object RandomForest extends Logging {
     */
   private[ml] def featureImportances(
       tree: DecisionTreeModel,
-      numFeatures: Int): Vector = {
+      numFeatures: Int): Vector =
     featureImportances(Array(tree), numFeatures)
-  }
 
   /**
     * Recursive method for computing feature importances for one tree.
@@ -1363,7 +1360,7 @@ private[ml] object RandomForest extends Logging {
     */
   private[impl] def computeFeatureImportance(
       node: Node,
-      importances: OpenHashMap[Int, Double]): Unit = {
+      importances: OpenHashMap[Int, Double]): Unit =
     node match {
       case n: InternalNode =>
         val feature = n.split.featureIndex
@@ -1374,7 +1371,6 @@ private[ml] object RandomForest extends Logging {
       case n: LeafNode =>
       // do nothing
     }
-  }
 
   /**
     * Normalize the values of this map to sum to 1, in place.

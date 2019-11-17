@@ -57,24 +57,21 @@ object qr extends UFunc {
 
     implicit object impl_DM_Double
         extends Impl[DenseMatrix[Double], DenseMatrix[Double]] {
-      def apply(v: DenseMatrix[Double]): DenseMatrix[Double] = {
+      def apply(v: DenseMatrix[Double]): DenseMatrix[Double] =
         doQr(v, skipQ = true)(mode = CompleteQR)._2
-      }
     }
 
     implicit object impl_DM_Float
         extends Impl[DenseMatrix[Float], DenseMatrix[Float]] {
-      def apply(v: DenseMatrix[Float]): DenseMatrix[Float] = {
+      def apply(v: DenseMatrix[Float]): DenseMatrix[Float] =
         doQr_Float(v, skipQ = true)(mode = CompleteQR)._2
-      }
     }
 
     implicit def canJustQIfWeCanQR[T, M](
-        implicit qrImpl: qr.Impl[T, QR[M]]): Impl[T, M] = {
+        implicit qrImpl: qr.Impl[T, QR[M]]): Impl[T, M] =
       new Impl[T, M] {
         def apply(v: T): M = qrImpl(v).r
       }
-    }
   }
 
   /**
@@ -83,11 +80,10 @@ object qr extends UFunc {
   object justQ extends UFunc {
 
     implicit def canJustQIfWeCanQR[T, M](
-        implicit qrImpl: qr.Impl[T, QR[M]]): Impl[T, M] = {
+        implicit qrImpl: qr.Impl[T, QR[M]]): Impl[T, M] =
       new Impl[T, M] {
         def apply(v: T): M = qrImpl(v).q
       }
-    }
   }
 
   /**
@@ -118,24 +114,21 @@ object qr extends UFunc {
 
       implicit object impl_reduced_DM_Double
           extends Impl[DenseMatrix[Double], DenseMatrix[Double]] {
-        def apply(v: DenseMatrix[Double]): DenseMatrix[Double] = {
+        def apply(v: DenseMatrix[Double]): DenseMatrix[Double] =
           doQr(v, skipQ = true)(mode = ReducedQR)._2
-        }
       }
 
       implicit object impl_reduced_DM_Float
           extends Impl[DenseMatrix[Float], DenseMatrix[Float]] {
-        def apply(v: DenseMatrix[Float]): DenseMatrix[Float] = {
+        def apply(v: DenseMatrix[Float]): DenseMatrix[Float] =
           doQr_Float(v, skipQ = true)(mode = ReducedQR)._2
-        }
       }
 
       implicit def canJustQIfWeCanQR[T, M](
-          implicit qrImpl: qr.reduced.Impl[T, QR[M]]): Impl[T, M] = {
+          implicit qrImpl: qr.reduced.Impl[T, QR[M]]): Impl[T, M] =
         new Impl[T, M] {
           def apply(v: T): M = qrImpl(v).r
         }
-      }
     }
 
     /**
@@ -143,11 +136,10 @@ object qr extends UFunc {
       */
     object justQ extends UFunc {
       implicit def canJustQIfWeCanQR[T, M](
-          implicit qrImpl: qr.reduced.Impl[T, QR[M]]): Impl[T, M] = {
+          implicit qrImpl: qr.reduced.Impl[T, QR[M]]): Impl[T, M] =
         new Impl[T, M] {
           def apply(v: T): M = qrImpl(v).q
         }
-      }
     }
   }
 

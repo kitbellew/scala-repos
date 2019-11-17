@@ -40,9 +40,8 @@ class ScalaPatternParameterInfoHandler
       ScPatternArgumentList,
       Any,
       ScPattern] {
-  def getArgListStopSearchClasses: java.util.Set[_ <: Class[_]] = {
+  def getArgListStopSearchClasses: java.util.Set[_ <: Class[_]] =
     java.util.Collections.singleton(classOf[PsiMethod]) //todo: ?
-  }
 
   def getParameterCloseChars: String = "{},);\n"
 
@@ -66,14 +65,12 @@ class ScalaPatternParameterInfoHandler
   }
 
   def findElementForParameterInfo(
-      context: CreateParameterInfoContext): ScPatternArgumentList = {
+      context: CreateParameterInfoContext): ScPatternArgumentList =
     findCall(context)
-  }
 
   def findElementForUpdatingParameterInfo(
-      context: UpdateParameterInfoContext): ScPatternArgumentList = {
+      context: UpdateParameterInfoContext): ScPatternArgumentList =
     findCall(context)
-  }
 
   def getParametersForDocumentation(
       p: Any,
@@ -182,7 +179,7 @@ class ScalaPatternParameterInfoHandler
   private def paramTextFor(
       sign: PhysicalSignature,
       o: Int,
-      paramTypeText: String): String = {
+      paramTypeText: String): String =
     if (sign.method.name == "unapply") {
       sign.method match {
         case fun: ScFunction
@@ -227,13 +224,11 @@ class ScalaPatternParameterInfoHandler
           paramTypeText
       }
     } else paramTypeText
-  }
 
   def showParameterInfo(
       element: ScPatternArgumentList,
-      context: CreateParameterInfoContext): Unit = {
+      context: CreateParameterInfoContext): Unit =
     context.showHint(element, element.getTextRange.getStartOffset, this)
-  }
 
   def updateParameterInfo(
       o: ScPatternArgumentList,

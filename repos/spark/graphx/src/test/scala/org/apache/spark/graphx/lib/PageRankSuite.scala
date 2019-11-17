@@ -61,14 +61,13 @@ object GridPageRank {
 
 class PageRankSuite extends SparkFunSuite with LocalSparkContext {
 
-  def compareRanks(a: VertexRDD[Double], b: VertexRDD[Double]): Double = {
+  def compareRanks(a: VertexRDD[Double], b: VertexRDD[Double]): Double =
     a.leftJoin(b) {
         case (id, a, bOpt) =>
           (a - bOpt.getOrElse(0.0)) * (a - bOpt.getOrElse(0.0))
       }
       .map { case (id, error) => error }
       .sum()
-  }
 
   test("Star PageRank") {
     withSpark { sc =>

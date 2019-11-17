@@ -81,11 +81,10 @@ trait CollectionsOnCollectionsTest extends CollectionsTestBase {
   }
 
   @Test def min_with_comparator(): Unit = {
-    def test[T: ClassTag](toElem: Int => T, cmpFun: (T, T) => Int): Unit = {
+    def test[T: ClassTag](toElem: Int => T, cmpFun: (T, T) => Int): Unit =
       testMinMax2(factory, toElem, true, new Comparator[T] {
         override def compare(o1: T, o2: T): Int = cmpFun(o1, o2)
       })
-    }
 
     test[jl.Integer](_.toInt, (x: jl.Integer, y: jl.Integer) => x.compareTo(y))
     test[jl.Long](_.toLong, (x: jl.Long, y: jl.Long) => x.compareTo(y))
@@ -102,11 +101,10 @@ trait CollectionsOnCollectionsTest extends CollectionsTestBase {
   }
 
   @Test def max_with_comparator(): Unit = {
-    def test[T: ClassTag](toElem: Int => T, cmpFun: (T, T) => Int): Unit = {
+    def test[T: ClassTag](toElem: Int => T, cmpFun: (T, T) => Int): Unit =
       testMinMax2(factory, toElem, false, new Comparator[T] {
         override def compare(o1: T, o2: T): Int = cmpFun(o1, o2)
       })
-    }
 
     test[jl.Integer](_.toInt, (x: jl.Integer, y: jl.Integer) => x.compareTo(y))
     test[jl.Long](_.toLong, (x: jl.Long, y: jl.Long) => x.compareTo(y))
@@ -117,10 +115,9 @@ trait CollectionsOnCollectionsTest extends CollectionsTestBase {
     def test[E: ClassTag](toElem: Int => E): Unit = {
       val coll = factory.empty[E]
 
-      def expectAllFrequenciesToBe(n: Int): Unit = {
+      def expectAllFrequenciesToBe(n: Int): Unit =
         for (i <- range)
           assertEquals(n, ju.Collections.frequency(coll, toElem(i)))
-      }
 
       expectAllFrequenciesToBe(0)
       coll.addAll(range.map(toElem))

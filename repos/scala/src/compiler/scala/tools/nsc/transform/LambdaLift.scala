@@ -141,7 +141,7 @@ abstract class LambdaLift extends InfoTransform {
       *    }
       *  }
       */
-    private def markFree(sym: Symbol, enclosure: Symbol): Boolean = {
+    private def markFree(sym: Symbol, enclosure: Symbol): Boolean =
 //      println(s"mark free: ${sym.fullLocationString} marked free in $enclosure")
       (enclosure == sym.owner.logicallyEnclosingMember) || {
         debuglog(
@@ -162,7 +162,6 @@ abstract class LambdaLift extends InfoTransform {
           !enclosure.isClass
         }
       }
-    }
 
     private def markCalled(sym: Symbol, owner: Symbol) {
 //      println(s"mark called: $sym of ${sym.owner} is called by $owner")

@@ -89,7 +89,7 @@ private[ml] object Node {
   /**
     * Create a new Node from the old Node format, recursively creating child nodes as needed.
     */
-  def fromOld(oldNode: OldNode, categoricalFeatures: Map[Int, Int]): Node = {
+  def fromOld(oldNode: OldNode, categoricalFeatures: Map[Int, Int]): Node =
     if (oldNode.isLeaf) {
       // TODO: Once the implementation has been moved to this API, then include sufficient
       //       statistics here.
@@ -114,7 +114,6 @@ private[ml] object Node {
         impurityStats = null
       )
     }
-  }
 }
 
 /**
@@ -144,7 +143,7 @@ final class LeafNode private[ml] (
 
   override private[tree] def subtreeDepth: Int = 0
 
-  override private[ml] def toOld(id: Int): OldNode = {
+  override private[ml] def toOld(id: Int): OldNode =
     new OldNode(
       id,
       new OldPredict(prediction, prob = impurityStats.prob(prediction)),
@@ -154,7 +153,6 @@ final class LeafNode private[ml] (
       None,
       None,
       None)
-  }
 
   override private[ml] def maxSplitFeatureIndex(): Int = -1
 }
@@ -181,21 +179,18 @@ final class InternalNode private[ml] (
     override private[ml] val impurityStats: ImpurityCalculator)
     extends Node {
 
-  override def toString: String = {
+  override def toString: String =
     s"InternalNode(prediction = $prediction, impurity = $impurity, split = $split)"
-  }
 
-  override private[ml] def predictImpl(features: Vector): LeafNode = {
+  override private[ml] def predictImpl(features: Vector): LeafNode =
     if (split.shouldGoLeft(features)) {
       leftChild.predictImpl(features)
     } else {
       rightChild.predictImpl(features)
     }
-  }
 
-  override private[tree] def numDescendants: Int = {
+  override private[tree] def numDescendants: Int =
     2 + leftChild.numDescendants + rightChild.numDescendants
-  }
 
   override private[tree] def subtreeToString(indentFactor: Int = 0): String = {
     val prefix: String = " " * indentFactor
@@ -205,9 +200,8 @@ final class InternalNode private[ml] (
       rightChild.subtreeToString(indentFactor + 1)
   }
 
-  override private[tree] def subtreeDepth: Int = {
+  override private[tree] def subtreeDepth: Int =
     1 + math.max(leftChild.subtreeDepth, rightChild.subtreeDepth)
-  }
 
   override private[ml] def toOld(id: Int): OldNode = {
     assert(
@@ -233,13 +227,12 @@ final class InternalNode private[ml] (
     )
   }
 
-  override private[ml] def maxSplitFeatureIndex(): Int = {
+  override private[ml] def maxSplitFeatureIndex(): Int =
     math.max(
       split.featureIndex,
       math.max(
         leftChild.maxSplitFeatureIndex(),
         rightChild.maxSplitFeatureIndex()))
-  }
 }
 
 private object InternalNode {
@@ -299,7 +292,7 @@ private[tree] class LearningNode(
   /**
     * Convert this [[LearningNode]] to a regular [[Node]], and recurse on any children.
     */
-  def toNode: Node = {
+  def toNode: Node =
     if (leftChild.nonEmpty) {
       assert(
         rightChild.nonEmpty && split.nonEmpty && stats != null,
@@ -326,7 +319,6 @@ private[tree] class LearningNode(
           stats.impurityCalculator)
       }
     }
-  }
 
   /**
     * Get the node index corresponding to this data point.
@@ -343,7 +335,7 @@ private[tree] class LearningNode(
     */
   def predictImpl(
       binnedFeatures: Array[Int],
-      splits: Array[Array[Split]]): Int = {
+      splits: Array[Array[Split]]): Int =
     if (this.isLeaf || this.split.isEmpty) {
       this.id
     } else {
@@ -366,20 +358,17 @@ private[tree] class LearningNode(
         }
       }
     }
-  }
 }
 
 private[tree] object LearningNode {
 
   /** Create a node with some of its fields set. */
-  def apply(id: Int, isLeaf: Boolean, stats: ImpurityStats): LearningNode = {
+  def apply(id: Int, isLeaf: Boolean, stats: ImpurityStats): LearningNode =
     new LearningNode(id, None, None, None, false, stats)
-  }
 
   /** Create an empty node with the given node index.  Values must be set later on. */
-  def emptyNode(nodeIndex: Int): LearningNode = {
+  def emptyNode(nodeIndex: Int): LearningNode =
     new LearningNode(nodeIndex, None, None, None, false, null)
-  }
 
   // The below indexing methods were copied from spark.mllib.tree.model.Node
 

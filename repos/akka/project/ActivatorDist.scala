@@ -21,7 +21,7 @@ object ActivatorDist {
     activatorDist <<= activatorDistTask
   )
 
-  def activatorDistTask: Initialize[Task[File]] = {
+  def activatorDistTask: Initialize[Task[File]] =
     (
       thisProjectRef,
       baseDirectory,
@@ -63,5 +63,4 @@ object ActivatorDist {
           activatorDistDirectory
         }
     }
-  }
 }

@@ -83,7 +83,6 @@ object Levenshtein {
     * the rest) we can just normalize the absolute distance by this
     * maximum value, which is the maximum of s.length and t.length.
     */
-  def normalized(s: String, t: String): Double = {
+  def normalized(s: String, t: String): Double =
     distance(s, t).toDouble / max(s.length, t.length).toDouble
-  }
 }

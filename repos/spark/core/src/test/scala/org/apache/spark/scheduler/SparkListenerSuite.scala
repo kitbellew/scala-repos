@@ -487,9 +487,8 @@ class SparkListenerSuite
     * A simple listener that throws an exception on job end.
     */
   private class BadListener extends SparkListener {
-    override def onJobEnd(jobEnd: SparkListenerJobEnd): Unit = {
+    override def onJobEnd(jobEnd: SparkListenerJobEnd): Unit =
       throw new Exception
-    }
   }
 }
 
@@ -510,14 +509,13 @@ private class BasicJobCounter extends SparkListener {
 private class SparkContextStoppingListener(val sc: SparkContext)
     extends SparkListener {
   @volatile var sparkExSeen = false
-  override def onJobEnd(job: SparkListenerJobEnd): Unit = {
+  override def onJobEnd(job: SparkListenerJobEnd): Unit =
     try {
       sc.stop()
     } catch {
       case se: SparkException =>
         sparkExSeen = true
     }
-  }
 }
 
 private class ListenerThatAcceptsSparkConf(conf: SparkConf)

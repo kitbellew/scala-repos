@@ -434,7 +434,7 @@ private[finagle] object Processor
   private[this] def dispatch(
       treq: Message.Treq,
       service: Service[Request, Response]
-  ): Future[Message] = {
+  ): Future[Message] =
     Trace.letIdOption(treq.traceId) {
       service(Request(Path.empty, ChannelBufferBuf.Owned(treq.req))).transform {
         case Return(rep) =>
@@ -447,7 +447,6 @@ private[finagle] object Processor
           Future.value(Message.RreqError(treq.tag, exc.toString))
       }
     }
-  }
 
   def apply(
       req: Message,

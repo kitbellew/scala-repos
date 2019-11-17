@@ -69,13 +69,12 @@ case class OAuth(info: ServiceInfo, use10a: Boolean = true) {
     *
     * @param token request token
     */
-  def redirectUrl(token: String): String = {
+  def redirectUrl(token: String): String =
     _root_.oauth.signpost.OAuth.addQueryParameters(
       provider.getAuthorizationWebsiteUrl(),
       _root_.oauth.signpost.OAuth.OAUTH_TOKEN,
       token
     )
-  }
 }
 
 /**
@@ -118,9 +117,8 @@ class OAuthCalculator(consumerKey: ConsumerKey, requestToken: RequestToken)
 
   override def calculateAndAddSignature(
       request: Request,
-      requestBuilder: RequestBuilderBase[_]): Unit = {
+      requestBuilder: RequestBuilderBase[_]): Unit =
     calculator.calculateAndAddSignature(request, requestBuilder)
-  }
 }
 
 /**
@@ -137,7 +135,6 @@ class OAuthCalculator(consumerKey: ConsumerKey, requestToken: RequestToken)
 object OAuthCalculator {
   def apply(
       consumerKey: ConsumerKey,
-      token: RequestToken): WSSignatureCalculator = {
+      token: RequestToken): WSSignatureCalculator =
     new OAuthCalculator(consumerKey, token)
-  }
 }

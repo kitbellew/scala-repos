@@ -41,7 +41,7 @@ abstract class GitCommand() extends Command {
   protected def runTask(user: String)(implicit session: Session): Unit
 
   private def newTask(user: String): Runnable = new Runnable {
-    override def run(): Unit = {
+    override def run(): Unit =
       Database() withSession { implicit session =>
         try {
           runTask(user)
@@ -55,7 +55,6 @@ abstract class GitCommand() extends Command {
             callback.onExit(1)
         }
       }
-    }
   }
 
   override def start(env: Environment): Unit = {
@@ -66,21 +65,17 @@ abstract class GitCommand() extends Command {
 
   override def destroy(): Unit = {}
 
-  override def setExitCallback(callback: ExitCallback): Unit = {
+  override def setExitCallback(callback: ExitCallback): Unit =
     this.callback = callback
-  }
 
-  override def setErrorStream(err: OutputStream): Unit = {
+  override def setErrorStream(err: OutputStream): Unit =
     this.err = err
-  }
 
-  override def setOutputStream(out: OutputStream): Unit = {
+  override def setOutputStream(out: OutputStream): Unit =
     this.out = out
-  }
 
-  override def setInputStream(in: InputStream): Unit = {
+  override def setInputStream(in: InputStream): Unit =
     this.in = in
-  }
 }
 
 abstract class DefaultGitCommand(val owner: String, val repoName: String)
@@ -106,7 +101,7 @@ class DefaultGitUploadPack(owner: String, repoName: String)
     with AccountService {
 
   override protected def runTask(user: String)(
-      implicit session: Session): Unit = {
+      implicit session: Session): Unit =
     getRepository(owner, repoName.replaceFirst("\\.wiki\\Z", "")).foreach {
       repositoryInfo =>
         if (!repositoryInfo.repository.isPrivate ||
@@ -118,7 +113,6 @@ class DefaultGitUploadPack(owner: String, repoName: String)
           }
         }
     }
-  }
 }
 
 class DefaultGitReceivePack(owner: String, repoName: String, baseUrl: String)
@@ -127,7 +121,7 @@ class DefaultGitReceivePack(owner: String, repoName: String, baseUrl: String)
     with AccountService {
 
   override protected def runTask(user: String)(
-      implicit session: Session): Unit = {
+      implicit session: Session): Unit =
     getRepository(owner, repoName.replaceFirst("\\.wiki\\Z", "")).foreach {
       repositoryInfo =>
         if (isWritableUser(user, repositoryInfo)) {
@@ -143,7 +137,6 @@ class DefaultGitReceivePack(owner: String, repoName: String, baseUrl: String)
           }
         }
     }
-  }
 }
 
 class PluginGitUploadPack(repoName: String, routing: GitRepositoryRouting)
@@ -151,7 +144,7 @@ class PluginGitUploadPack(repoName: String, routing: GitRepositoryRouting)
     with SystemSettingsService {
 
   override protected def runTask(user: String)(
-      implicit session: Session): Unit = {
+      implicit session: Session): Unit =
     if (routing.filter.filter(
           "/" + repoName,
           Some(user),
@@ -165,7 +158,6 @@ class PluginGitUploadPack(repoName: String, routing: GitRepositoryRouting)
         upload.upload(in, out, err)
       }
     }
-  }
 }
 
 class PluginGitReceivePack(repoName: String, routing: GitRepositoryRouting)
@@ -173,7 +165,7 @@ class PluginGitReceivePack(repoName: String, routing: GitRepositoryRouting)
     with SystemSettingsService {
 
   override protected def runTask(user: String)(
-      implicit session: Session): Unit = {
+      implicit session: Session): Unit =
     if (routing.filter.filter(
           "/" + repoName,
           Some(user),
@@ -187,7 +179,6 @@ class PluginGitReceivePack(repoName: String, routing: GitRepositoryRouting)
         receive.receive(in, out, err)
       }
     }
-  }
 }
 
 class GitCommandFactory(baseUrl: String) extends CommandFactory {

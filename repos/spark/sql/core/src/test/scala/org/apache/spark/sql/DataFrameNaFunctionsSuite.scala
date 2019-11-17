@@ -24,7 +24,7 @@ import org.apache.spark.sql.test.SharedSQLContext
 class DataFrameNaFunctionsSuite extends QueryTest with SharedSQLContext {
   import testImplicits._
 
-  def createDF(): DataFrame = {
+  def createDF(): DataFrame =
     Seq[(String, java.lang.Integer, java.lang.Double)](
       ("Bob", 16, 176.5),
       ("Alice", null, 164.3),
@@ -33,7 +33,6 @@ class DataFrameNaFunctionsSuite extends QueryTest with SharedSQLContext {
       ("Amy", null, null),
       (null, null, null)
     ).toDF("name", "age", "height")
-  }
 
   test("drop") {
     val input = createDF()

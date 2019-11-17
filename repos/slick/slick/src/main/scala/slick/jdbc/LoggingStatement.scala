@@ -29,12 +29,11 @@ class LoggingStatement(st: Statement) extends Statement {
     res
   }
 
-  private[this] def formatNS(ns: Long): String = {
+  private[this] def formatNS(ns: Long): String =
     if (ns < 1000L) ns + "ns"
     else if (ns < 1000000L) (ns / 1000L) + "µs"
     else if (ns < 1000000000L) (ns / 1000000L) + "ms"
     else (ns / 1000000000L) + "s"
-  }
 
   def addBatch(sql: String) = {
     if (doStatement)

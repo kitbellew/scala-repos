@@ -45,15 +45,14 @@ private[spark] class TaskResultGetter(
 
   // Exposed for testing.
   protected val serializer = new ThreadLocal[SerializerInstance] {
-    override def initialValue(): SerializerInstance = {
+    override def initialValue(): SerializerInstance =
       sparkEnv.closureSerializer.newInstance()
-    }
   }
 
   def enqueueSuccessfulTask(
       taskSetManager: TaskSetManager,
       tid: Long,
-      serializedData: ByteBuffer): Unit = {
+      serializedData: ByteBuffer): Unit =
     getTaskResultExecutor.execute(new Runnable {
       override def run(): Unit = Utils.logUncaughtExceptions {
         try {
@@ -125,7 +124,6 @@ private[spark] class TaskResultGetter(
         }
       }
     })
-  }
 
   def enqueueFailedTask(
       taskSetManager: TaskSetManager,

@@ -30,12 +30,11 @@ class Statements(indent: Int) {
   val eval_input: P[Ast.expr] =
     P(testlist ~ NEWLINE.rep ~ ENDMARKER).map(tuplize)
 
-  def collapse_dotted_name(name: Seq[Ast.identifier]): Ast.expr = {
+  def collapse_dotted_name(name: Seq[Ast.identifier]): Ast.expr =
     name.tail
       .foldLeft[Ast.expr](Ast.expr.Name(name.head, Ast.expr_context.Load))(
         (x, y) => Ast.expr.Attribute(x, y, Ast.expr_context.Load)
       )
-  }
 
   val decorator: P[Ast.expr] =
     P("@" ~/ dotted_name ~ ("(" ~ arglist ~ ")").? ~~ Lexical.nonewlinewscomment.? ~~ NEWLINE)

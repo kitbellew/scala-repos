@@ -158,23 +158,21 @@ private[impl] object EdgeWithLocalIds {
     new Ordering[EdgeWithLocalIds[ED]] {
       override def compare(
           a: EdgeWithLocalIds[ED],
-          b: EdgeWithLocalIds[ED]): Int = {
+          b: EdgeWithLocalIds[ED]): Int =
         if (a.srcId == b.srcId) {
           if (a.dstId == b.dstId) 0
           else if (a.dstId < b.dstId) -1
           else 1
         } else if (a.srcId < b.srcId) -1
         else 1
-      }
     }
 
-  private[graphx] def edgeArraySortDataFormat[ED] = {
+  private[graphx] def edgeArraySortDataFormat[ED] =
     new SortDataFormat[EdgeWithLocalIds[ED], Array[EdgeWithLocalIds[ED]]] {
       override def getKey(
           data: Array[EdgeWithLocalIds[ED]],
-          pos: Int): EdgeWithLocalIds[ED] = {
+          pos: Int): EdgeWithLocalIds[ED] =
         data(pos)
-      }
 
       override def swap(
           data: Array[EdgeWithLocalIds[ED]],
@@ -202,9 +200,7 @@ private[impl] object EdgeWithLocalIds {
         System.arraycopy(src, srcPos, dst, dstPos, length)
       }
 
-      override def allocate(length: Int): Array[EdgeWithLocalIds[ED]] = {
+      override def allocate(length: Int): Array[EdgeWithLocalIds[ED]] =
         new Array[EdgeWithLocalIds[ED]](length)
-      }
     }
-  }
 }

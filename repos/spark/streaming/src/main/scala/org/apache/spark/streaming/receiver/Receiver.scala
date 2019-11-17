@@ -230,17 +230,15 @@ abstract class Receiver[T](val storageLevel: StorageLevel)
   }
 
   /** Check if the receiver has started or not. */
-  def isStarted(): Boolean = {
+  def isStarted(): Boolean =
     supervisor.isReceiverStarted()
-  }
 
   /**
     * Check if receiver has been marked for stopping. Use this to identify when
     * the receiving of data should be stopped.
     */
-  def isStopped(): Boolean = {
+  def isStopped(): Boolean =
     supervisor.isReceiverStopped()
-  }
 
   /**
     * Get the unique identifier the receiver input stream that this

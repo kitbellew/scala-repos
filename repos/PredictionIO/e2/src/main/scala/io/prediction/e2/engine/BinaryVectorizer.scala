@@ -28,10 +28,9 @@ class BinaryVectorizer(propertyMap: HashMap[(String, String), Int])
     propertyMap.toArray.sortBy(_._2).map(_._1)
   val numFeatures = propertyMap.size
 
-  override def toString: String = {
+  override def toString: String =
     s"BinaryVectorizer($numFeatures): " +
       properties.map(e => s"(${e._1}, ${e._2})").mkString(",")
-  }
 
   def toBinary(map: Array[(String, String)]): Vector = {
     val mapArr: Seq[(Int, Double)] = map.flatMap(
@@ -45,7 +44,7 @@ class BinaryVectorizer(propertyMap: HashMap[(String, String), Int])
 object BinaryVectorizer {
   def apply(
       input: RDD[HashMap[String, String]],
-      properties: HashSet[String]): BinaryVectorizer = {
+      properties: HashSet[String]): BinaryVectorizer =
     new BinaryVectorizer(
       HashMap(
         input
@@ -55,7 +54,6 @@ object BinaryVectorizer {
           .collect
           .zipWithIndex: _*
       ))
-  }
 
   def apply(input: Seq[(String, String)]): BinaryVectorizer = {
     val indexed: Seq[((String, String), Int)] = input.zipWithIndex

@@ -12,11 +12,10 @@ private[closure] class LoggerErrorManager(private val log: Logger)
     * DiagnosticType (PeepholeFoldConstants.FRACTIONAL_BITWISE_OPERAND) is
     * package private.
     */
-  override def report(level: CheckLevel, error: JSError): Unit = {
+  override def report(level: CheckLevel, error: JSError): Unit =
     if (error.getType.key == "JSC_FRACTIONAL_BITWISE_OPERAND")
       super.report(CheckLevel.OFF, error)
     else super.report(level, error)
-  }
 
   def println(level: CheckLevel, error: JSError): Unit = level match {
     case CheckLevel.WARNING => log.warn(s"Closure: ${error}")

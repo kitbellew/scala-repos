@@ -115,10 +115,9 @@ class ModelView[T <: Mapper[T]](var entity: T, val snippet: ModelSnippet[T]) {
     * existing entity is being edited or a new one is being
     * created.
     */
-  def newOrEdit = {
+  def newOrEdit =
     if (entity.saved_?) ".edit ^^" #> "ignored"
     else ".new ^^" #> "ignored"
-  }
 
   /**
     * This method checks whether the entity
@@ -174,7 +173,7 @@ class ModelView[T <: Mapper[T]](var entity: T, val snippet: ModelSnippet[T]) {
     * If the field has a Full toForm implementation then that is used;
     * otherwise its asHtml is called.
     */
-  def edit(name: String) = {
+  def edit(name: String) =
     entity
       .fieldByName(name)
       .map { (field: net.liftweb.mapper.MappedField[_, _]) =>
@@ -182,5 +181,4 @@ class ModelView[T <: Mapper[T]](var entity: T, val snippet: ModelSnippet[T]) {
       }
       .openOrThrowException(
         "If nobody has complained about this giving a NPE, I'll assume it is safe")
-  }
 }

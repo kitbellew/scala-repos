@@ -400,7 +400,7 @@ class IntervalCheck
   val tries = 100
 
   def testUnop(f: Interval[Rational] => Interval[Rational])(
-      g: Rational => Rational): Unit = {
+      g: Rational => Rational): Unit =
     forAll { (a: Interval[Rational]) =>
       val c: Interval[Rational] = f(a)
       sample(a, tries).foreach { x =>
@@ -409,11 +409,10 @@ class IntervalCheck
         ok shouldBe true
       }
     }
-  }
 
   def testBinop(
       f: (Interval[Rational], Interval[Rational]) => Interval[Rational])(
-      g: (Rational, Rational) => Rational): Unit = {
+      g: (Rational, Rational) => Rational): Unit =
     forAll { (a: Interval[Rational], b: Interval[Rational]) =>
       val c: Interval[Rational] = f(a, b)
       sample(a, tries).zip(sample(b, tries)).foreach {
@@ -428,7 +427,6 @@ class IntervalCheck
           ok shouldBe true
       }
     }
-  }
 
   property("sampled unop abs") { testUnop(_.abs)(_.abs) }
   property("sampled unop -") { testUnop(-_)(-_) }

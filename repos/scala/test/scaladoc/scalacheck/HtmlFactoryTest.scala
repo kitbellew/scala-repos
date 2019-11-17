@@ -8,7 +8,7 @@ import scala.xml.NodeSeq
 object XMLUtil {
   import scala.xml._
 
-  def stripGroup(seq: Node): Node = {
+  def stripGroup(seq: Node): Node =
     seq match {
       case group: Group => {
         <div class="group">{group.nodes.map(stripGroup _)}</div>
@@ -19,7 +19,6 @@ object XMLUtil {
       }
       case _ => seq
     }
-  }
 }
 
 object Test extends Properties("HtmlFactory") {

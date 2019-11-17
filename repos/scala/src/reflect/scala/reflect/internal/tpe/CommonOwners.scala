@@ -14,14 +14,13 @@ private[internal] trait CommonOwners { self: SymbolTable =>
     *  of thistype or prefixless typerefs/singletype occurrences in given list
     *  of types.
     */
-  protected[internal] def commonOwner(tps: List[Type]): Symbol = {
+  protected[internal] def commonOwner(tps: List[Type]): Symbol =
     if (tps.isEmpty) NoSymbol
     else {
       commonOwnerMap.clear()
       tps foreach (commonOwnerMap traverse _)
       if (commonOwnerMap.result ne null) commonOwnerMap.result else NoSymbol
     }
-  }
 
   protected def commonOwnerMap: CommonOwnerMap = commonOwnerMapObj
 

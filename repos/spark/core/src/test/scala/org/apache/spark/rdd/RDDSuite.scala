@@ -148,12 +148,11 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
   }
 
   test("partitioner aware union") {
-    def makeRDDWithPartitioner(seq: Seq[Int]): RDD[Int] = {
+    def makeRDDWithPartitioner(seq: Seq[Int]): RDD[Int] =
       sc.makeRDD(seq, 1)
         .map(x => (x, null))
         .partitionBy(new HashPartitioner(2))
         .mapPartitions(_.map(_._1), true)
-    }
 
     val nums1 = makeRDDWithPartitioner(1 to 4)
     val nums2 = makeRDDWithPartitioner(5 to 8)
@@ -242,9 +241,8 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
       override val getDependencies = List[Dependency[_]]()
       override def compute(
           split: Partition,
-          context: TaskContext): Iterator[Int] = {
+          context: TaskContext): Iterator[Int] =
         throw new Exception("injected failure")
-      }
     }.cache()
     val thrown = intercept[Exception] {
       rdd.collect()
@@ -1023,15 +1021,11 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
     "RDD.partitions() fails fast when partitions indicies are incorrect (SPARK-13021)") {
     class BadRDD[T: ClassTag](prev: RDD[T]) extends RDD[T](prev) {
 
-      override def compute(
-          part: Partition,
-          context: TaskContext): Iterator[T] = {
+      override def compute(part: Partition, context: TaskContext): Iterator[T] =
         prev.compute(part, context)
-      }
 
-      override protected def getPartitions: Array[Partition] = {
+      override protected def getPartitions: Array[Partition] =
         prev.partitions.reverse // breaks contract, which is that `rdd.partitions(i).index == i`
-      }
     }
     val rdd = new BadRDD(sc.parallelize(1 to 100, 100))
     val e = intercept[IllegalArgumentException] {

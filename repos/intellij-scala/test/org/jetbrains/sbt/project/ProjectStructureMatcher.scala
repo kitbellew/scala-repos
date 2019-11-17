@@ -223,10 +223,9 @@ trait ProjectStructureMatcher {
       actual: Seq[T])(implicit nameOf: HasName[T]): Unit =
     assertMatch(what, expected.map(_.name), actual.map(s => nameOf(s)))
 
-  private def assertEquals[T](what: String, expected: T, actual: T): Unit = {
+  private def assertEquals[T](what: String, expected: T, actual: T): Unit =
     if (expected != null && !expected.equals(actual))
       fail(s"$what mismatch\nExpected [ $expected ]\nActual   [ $actual ]")
-  }
 
   private def pairByName[T <: Named, U](expected: Seq[T], actual: Seq[U])(
       implicit nameOf: HasName[U]): Seq[(T, U)] =

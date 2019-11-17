@@ -166,13 +166,12 @@ private object BucketizerSuite extends SparkFunSuite {
 
   /** Check all values in splits, plus values between all splits. */
   def checkBinarySearch(splits: Array[Double]): Unit = {
-    def testFeature(feature: Double, expectedBucket: Double): Unit = {
+    def testFeature(feature: Double, expectedBucket: Double): Unit =
       assert(
         Bucketizer.binarySearchForBuckets(splits, feature) === expectedBucket,
         s"Expected feature value $feature to be in bucket $expectedBucket with splits:" +
           s" ${splits.mkString(", ")}"
       )
-    }
     var i = 0
     val n = splits.length - 1
     while (i < n) {

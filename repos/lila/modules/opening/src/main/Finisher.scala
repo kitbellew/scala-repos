@@ -13,7 +13,7 @@ private[opening] final class Finisher(api: OpeningApi, openingColl: Coll) {
   def apply(
       opening: Opening,
       user: User,
-      win: Boolean): Fu[(Attempt, Option[Boolean])] = {
+      win: Boolean): Fu[(Attempt, Option[Boolean])] =
     api.attempt.find(opening.id, user.id) flatMap {
       case Some(a) => fuccess(a -> win.some)
       case None =>
@@ -56,7 +56,6 @@ private[opening] final class Finisher(api: OpeningApi, openingColl: Coll) {
           ) zip UserRepo.setPerf(user.id, "opening", userPerf)
         }) recover lila.db.recoverDuplicateKey(_ => ()) inject (a -> none)
     }
-  }
 
   private val VOLATILITY = Glicko.default.volatility
   private val TAU = 0.75d

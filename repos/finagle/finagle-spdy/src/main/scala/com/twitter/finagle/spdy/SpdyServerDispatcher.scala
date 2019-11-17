@@ -10,7 +10,7 @@ class SpdyServerDispatcher(
     trans: Transport[HttpResponse, HttpRequest],
     service: Service[HttpRequest, HttpResponse])
     extends Closable {
-  private[this] def loop(): Unit = {
+  private[this] def loop(): Unit =
     trans.read() onFailure { exc =>
       service.close()
     } flatMap { req =>
@@ -27,7 +27,6 @@ class SpdyServerDispatcher(
     } onFailure { _ =>
       trans.close()
     }
-  }
 
   Local.letClear { loop() }
 

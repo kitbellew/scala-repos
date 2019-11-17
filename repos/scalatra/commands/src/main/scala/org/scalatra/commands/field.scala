@@ -127,7 +127,7 @@ class BasicFieldDescriptor[T](
       allowableValues: List[T] = allowableValues,
       displayName: Option[String] = displayName,
       position: Int = position,
-      requiredError: String = requiredError): FieldDescriptor[T] = {
+      requiredError: String = requiredError): FieldDescriptor[T] =
     new BasicFieldDescriptor(
       name,
       validator,
@@ -141,7 +141,6 @@ class BasicFieldDescriptor[T](
       displayName,
       position,
       requiredError)(valueManifest)
-  }
 
   def apply[S](original: Either[String, Option[S]])(
       implicit ms: Manifest[S],
@@ -345,10 +344,9 @@ class ValidatedBoundFieldDescriptor[S, T](
       original,
       value)
 
-  def validateWith(bindingValidators: BindingValidator[T]*)
-      : DataboundFieldDescriptor[S, T] = {
+  def validateWith(
+      bindingValidators: BindingValidator[T]*): DataboundFieldDescriptor[S, T] =
     copy(field = field.validateWith(bindingValidators: _*))
-  }
 
   def copy(
       value: FieldValidation[T] = value,

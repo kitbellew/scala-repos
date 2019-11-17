@@ -185,10 +185,9 @@ trait FileAndResourceDirectives {
     */
   def getFromBrowseableDirectories(directories: String*)(
       implicit renderer: DirectoryRenderer,
-      resolver: ContentTypeResolver): Route = {
+      resolver: ContentTypeResolver): Route =
     directories.map(getFromDirectory).reduceLeft(_ ~ _) ~ listDirectoryContents(
       directories: _*)
-  }
 
   /**
     * Same as "getFromDirectory" except that the file is not fetched from the file system but rather from a

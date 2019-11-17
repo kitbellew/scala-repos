@@ -19,7 +19,7 @@ abstract class ScalaTestTestCase
   override protected def runFileStructureViewTest(
       testClassName: String,
       status: Int,
-      tests: String*): Unit = {
+      tests: String*): Unit =
     super.runFileStructureViewTest(
       testClassName,
       status,
@@ -29,5 +29,4 @@ abstract class ScalaTestTestCase
          tests.map(_ + TestNodeProvider.pendingSuffix)
        } else tests): _*
     )
-  }
 }

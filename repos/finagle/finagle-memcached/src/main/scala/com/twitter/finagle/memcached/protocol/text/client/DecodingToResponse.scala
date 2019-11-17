@@ -42,7 +42,7 @@ class DecodingToResponse extends AbstractDecodingToResponse[Response] {
   import AbstractDecodingToResponse._
   import com.twitter.finagle.memcached.util.Bufs.RichBuf
 
-  protected def parseResponse(tokens: Seq[Buf]) = {
+  protected def parseResponse(tokens: Seq[Buf]) =
     tokens.headOption match {
       case None             => Response.NoOp
       case Some(NOT_FOUND)  => Response.NotFound
@@ -58,7 +58,6 @@ class DecodingToResponse extends AbstractDecodingToResponse[Response] {
         Error(new ServerError(parseErrorMessage(tokens)))
       case Some(ds) => Number(ds.toLong)
     }
-  }
 
   protected def parseStatLines(lines: Seq[Tokens]) = {
     val l = lines.map { line =>

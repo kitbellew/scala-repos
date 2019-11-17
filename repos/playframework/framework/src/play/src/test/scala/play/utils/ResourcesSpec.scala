@@ -175,13 +175,11 @@ object ResourcesSpec extends Specification {
     }
   }
 
-  private def createJarUrl(jarFile: File, file: File) = {
+  private def createJarUrl(jarFile: File, file: File) =
     s"${jarFile.toURI.toURL}!/${UriEncoding.encodePathSegment(file.getName, "utf-8")}"
-  }
 
-  private def createZipUrl(zipFile: File, file: File) = {
+  private def createZipUrl(zipFile: File, file: File) =
     s"zip:${zipFile.toURI.toURL}!/${UriEncoding.encodePathSegment(file.getName, "utf-8")}"
-  }
 
   private def createTempDir(
       prefix: String,

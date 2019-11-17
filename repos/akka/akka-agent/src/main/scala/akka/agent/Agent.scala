@@ -69,17 +69,16 @@ object Agent {
     /**
       * Internal helper method
       */
-    private final def withinTransaction(run: Runnable): Unit = {
+    private final def withinTransaction(run: Runnable): Unit =
       Txn.findCurrent match {
         case Some(txn) ⇒ Txn.afterCommit(_ ⇒ updater.execute(run))(txn)
         case _ ⇒ updater.execute(run)
       }
-    }
 
     /**
       * Internal helper method
       */
-    private final def doAlter(f: ⇒ T): Future[T] = {
+    private final def doAlter(f: ⇒ T): Future[T] =
       Txn.findCurrent match {
         case Some(txn) ⇒
           val result = Promise[T]()
@@ -87,7 +86,6 @@ object Agent {
           result.future
         case _ ⇒ Future(f)(updater)
       }
-    }
 
     def future(): Future[T] = Future(ref.single.get)(updater)
 

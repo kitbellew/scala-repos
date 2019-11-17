@@ -64,7 +64,7 @@ object Test {
   }
   def toLines(text: String) = lines(text) map stripFilename
 
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     for ((code, expected) <- tests) {
       val out = toLines(runScript(code))
       val exp = toLines(expected)
@@ -77,5 +77,4 @@ object Test {
           "Actual:\n" + out.mkString("\n")
       )
     }
-  }
 }

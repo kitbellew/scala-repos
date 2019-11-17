@@ -86,7 +86,7 @@ object CF1Array {
   def apply[A, M[+_]](name: String)(
       pf: PartialFunction[(Column, Range), (CType, Array[Array[A]], BitSet)])
       : CMapper[M] = new ArrayMapperS[M] {
-    def apply(columns0: Map[ColumnRef, Column], range: Range) = {
+    def apply(columns0: Map[ColumnRef, Column], range: Range) =
       columns0 collect {
         case (ColumnRef(CPath.Identity, _), col)
             if pf isDefinedAt (col, range) => {
@@ -94,7 +94,6 @@ object CF1Array {
           tpe -> (cols.asInstanceOf[Array[Array[_]]], defined)
         }
       }
-    }
   }
 }
 
@@ -102,20 +101,18 @@ trait CF2 extends CF { self =>
   def apply(c1: Column, c2: Column): Option[Column]
 
   @inline
-  def partialLeft(cv: CValue): CF1 = {
+  def partialLeft(cv: CValue): CF1 =
     new CF1 {
       def apply(c2: Column) = self.apply(Column.const(cv), c2)
       val identity = PartialLeftCFId(cv, self.identity)
     }
-  }
 
   @inline
-  def partialRight(cv: CValue): CF1 = {
+  def partialRight(cv: CValue): CF1 =
     new CF1 {
       def apply(c1: Column) = self.apply(c1, Column.const(cv))
       val identity = PartialRightCFId(self.identity, cv)
     }
-  }
 }
 
 object CF2 {
@@ -142,7 +139,7 @@ object CF2Array {
       pf: PartialFunction[
         (Column, Column, Range),
         (CType, Array[Array[A]], BitSet)]): CMapper[M] = new ArrayMapperS[M] {
-    def apply(columns0: Map[ColumnRef, Column], range: Range) = {
+    def apply(columns0: Map[ColumnRef, Column], range: Range) =
       for {
         (ColumnRef(CPath(CPathIndex(0)), _), col1) <- columns0
         (ColumnRef(CPath(CPathIndex(1)), _), col2) <- columns0
@@ -152,7 +149,6 @@ object CF2Array {
         val (tpe, cols, defined) = pf((col1, col2, range))
         tpe -> (cols.asInstanceOf[Array[Array[_]]], defined)
       }
-    }
   }
 }
 

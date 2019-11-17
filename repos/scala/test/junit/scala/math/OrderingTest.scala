@@ -37,9 +37,8 @@ class OrderingTest {
       assertEquals(O.mkOrderingOps(t1).min(t2), R.mkOrderingOps(t1).max(t2))
       assertEquals(O.mkOrderingOps(t1).max(t2), R.mkOrderingOps(t1).min(t2))
     }
-    def checkAll[T: Ordering](ts: T*): Unit = {
+    def checkAll[T: Ordering](ts: T*): Unit =
       for (t1 <- ts; t2 <- ts) check(t1, t2)
-    }
     checkAll[Unit](())
     checkAll[Boolean](true, false)
     checkAll[Byte](Byte.MinValue, -1.toByte, 0.toByte, 1.toByte, Byte.MaxValue)

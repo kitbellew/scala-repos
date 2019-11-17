@@ -1,9 +1,8 @@
 object Test extends App {
-  def foo() = {
+  def foo() =
     while (true) {
       try {} catch {
         case ex: Exception =>
       }
     }
-  }
 }

@@ -21,7 +21,7 @@ trait TwemcacheClient extends Client {
   def getv(key: String): Future[Option[(Buf, Buf)]] =
     getv(Seq(key)).map { _.values.headOption }
 
-  def getv(keys: Iterable[String]): Future[Map[String, (Buf, Buf)]] = {
+  def getv(keys: Iterable[String]): Future[Map[String, (Buf, Buf)]] =
     getvResult(keys) flatMap { result =>
       if (result.failures.nonEmpty) {
         Future.exception(result.failures.values.head)
@@ -29,7 +29,6 @@ trait TwemcacheClient extends Client {
         Future.value(result.valuesWithTokens)
       }
     }
-  }
 
   /**
     * Get the server returned value for a set of keys for getv operation, in the format
@@ -61,7 +60,7 @@ trait TwemcacheClient extends Client {
   */
 trait TwemcacheConnectedClient extends TwemcacheClient {
   self: ConnectedClient =>
-  def getvResult(keys: Iterable[String]): Future[GetsResult] = {
+  def getvResult(keys: Iterable[String]): Future[GetsResult] =
     try {
       if (keys == null)
         throw new IllegalArgumentException("Invalid keys: keys cannot be null")
@@ -71,14 +70,13 @@ trait TwemcacheConnectedClient extends TwemcacheClient {
       case t: IllegalArgumentException =>
         Future.exception(new ClientError(t.getMessage))
     }
-  }
 
   def upsert(
       key: String,
       flags: Int,
       expiry: Time,
       value: Buf,
-      version: Buf): Future[JBoolean] = {
+      version: Buf): Future[JBoolean] =
     try {
       service(Upsert(Buf.Utf8(key), flags, expiry, value, version)).map {
         case Stored() => true
@@ -90,7 +88,6 @@ trait TwemcacheConnectedClient extends TwemcacheClient {
       case t: IllegalArgumentException =>
         Future.exception(new ClientError(t.getMessage))
     }
-  }
 }
 
 object TwemcacheClient {
@@ -98,9 +95,8 @@ object TwemcacheClient {
   /**
     * Construct a twemcache client from a single Service, which supports both memcache and twemcache command
     */
-  def apply(raw: Service[Command, Response]): TwemcacheClient = {
+  def apply(raw: Service[Command, Response]): TwemcacheClient =
     new ConnectedClient(raw) with TwemcacheConnectedClient
-  }
 }
 
 /**
@@ -115,7 +111,7 @@ trait TwemcachePartitionedClient extends TwemcacheClient {
   protected[memcached] def twemcacheClientOf(key: String): TwemcacheClient =
     clientOf(key).asInstanceOf[TwemcacheClient]
 
-  def getvResult(keys: Iterable[String]) = {
+  def getvResult(keys: Iterable[String]) =
     if (keys.nonEmpty) {
       withKeysGroupedByClient(keys) {
         _.getvResult(_)
@@ -123,15 +119,13 @@ trait TwemcachePartitionedClient extends TwemcacheClient {
     } else {
       Future.value(GetsResult(GetResult()))
     }
-  }
 
   def upsert(key: String, flags: Int, expiry: Time, value: Buf, version: Buf) =
     twemcacheClientOf(key).upsert(key, flags, expiry, value, version)
 
   private[this] def withKeysGroupedByClient[A](keys: Iterable[String])(
-      f: (TwemcacheClient, Iterable[String]) => Future[A]): Future[Seq[A]] = {
+      f: (TwemcacheClient, Iterable[String]) => Future[A]): Future[Seq[A]] =
     Future.collect(
       keys.groupBy(twemcacheClientOf).map(Function.tupled(f)).toSeq
     )
-  }
 }

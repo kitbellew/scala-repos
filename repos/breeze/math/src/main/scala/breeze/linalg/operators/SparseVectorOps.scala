@@ -77,8 +77,7 @@ trait SparseVector_DenseVector_Ops {
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpMulScalar, OpDiv) Op <: OpType](
       implicit @expand.sequence[Op]({ _ * _ }, { _ / _ }) op: Op.Impl2[T, T, T])
-      : Op.Impl2[SparseVector[T], DenseVector[T], SparseVector[T]] = {
-
+      : Op.Impl2[SparseVector[T], DenseVector[T], SparseVector[T]] =
     new Op.Impl2[SparseVector[T], DenseVector[T], SparseVector[T]] {
 
       def apply(a: SparseVector[T], b: DenseVector[T]): SparseVector[T] = {
@@ -104,7 +103,6 @@ trait SparseVector_DenseVector_Ops {
       implicitly[BinaryRegistry[Vector[T], Vector[T], Op.type, Vector[T]]]
         .register(this)
     }
-  }
 
   @expand
   @expand.valify
@@ -265,8 +263,7 @@ trait DenseVector_SparseVector_Ops {
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpMulScalar, OpDiv) Op <: OpType](
       implicit @expand.sequence[Op]({ _ * _ }, { _ / _ }) op: Op.Impl2[T, T, T])
-      : Op.Impl2[DenseVector[T], SparseVector[T], SparseVector[T]] = {
-
+      : Op.Impl2[DenseVector[T], SparseVector[T], SparseVector[T]] =
     new Op.Impl2[DenseVector[T], SparseVector[T], SparseVector[T]] {
 
       def apply(a: DenseVector[T], b: SparseVector[T]): SparseVector[T] = {
@@ -285,7 +282,6 @@ trait DenseVector_SparseVector_Ops {
       implicitly[BinaryRegistry[Vector[T], Vector[T], Op.type, Vector[T]]]
         .register(this)
     }
-  }
 
   @expand
   @expand.valify
@@ -432,9 +428,8 @@ trait SparseVectorOps {
       zero: Zero[V],
       ct: ClassTag[V]): UFunc.UImpl2[Tag, LHS, Transpose[SparseVector[V]], R] =
     new UFunc.UImpl2[Tag, LHS, Transpose[SparseVector[V]], R] {
-      def apply(v: LHS, v2: Transpose[SparseVector[V]]): R = {
+      def apply(v: LHS, v2: Transpose[SparseVector[V]]): R =
         op(v, v2.inner.asCscRow)
-      }
     }
 
   @expand
@@ -509,7 +504,7 @@ trait SparseVectorOps {
     }
 
   implicit def implSubOp_SVT_SVT_eq_SVT[T: Ring: ClassTag]
-      : OpSub.Impl2[SparseVector[T], SparseVector[T], SparseVector[T]] = {
+      : OpSub.Impl2[SparseVector[T], SparseVector[T], SparseVector[T]] =
     new OpSub.Impl2[SparseVector[T], SparseVector[T], SparseVector[T]] {
       val r = implicitly[Ring[T]]
       def apply(a: SparseVector[T], b: SparseVector[T]): SparseVector[T] = {
@@ -571,10 +566,9 @@ trait SparseVectorOps {
         }
       }
     }
-  }
 
   implicit def implAddOp_SVT_SVT_eq_SVT[T: Semiring: ClassTag]
-      : OpAdd.Impl2[SparseVector[T], SparseVector[T], SparseVector[T]] = {
+      : OpAdd.Impl2[SparseVector[T], SparseVector[T], SparseVector[T]] =
     new OpAdd.Impl2[SparseVector[T], SparseVector[T], SparseVector[T]] {
       val r = implicitly[Semiring[T]]
       def apply(a: SparseVector[T], b: SparseVector[T]): SparseVector[T] = {
@@ -636,7 +630,6 @@ trait SparseVectorOps {
         }
       }
     }
-  }
 
   @expand
   @expand.valify
@@ -647,7 +640,7 @@ trait SparseVectorOps {
     Long) T](implicit @expand.sequence[T](0, 0.0, 0f, 0L) zero: T)
       : OpMulScalar.Impl2[SparseVector[T], SparseVector[T], SparseVector[T]] =
     new OpMulScalar.Impl2[SparseVector[T], SparseVector[T], SparseVector[T]] {
-      def apply(a: SparseVector[T], b: SparseVector[T]): SparseVector[T] = {
+      def apply(a: SparseVector[T], b: SparseVector[T]): SparseVector[T] =
         if (b.activeSize < a.activeSize) {
           apply(b, a)
         } else {
@@ -718,7 +711,6 @@ trait SparseVectorOps {
             new SparseVector[T](resultI, resultV, resultOff, a.length)
           }
         }
-      }
 
       implicitly[
         BinaryRegistry[Vector[T], Vector[T], OpMulScalar.type, Vector[T]]]
@@ -781,8 +773,7 @@ trait SparseVectorOps {
   }, { f./(_, _) }, {
     f.%(_, _)
   }, { f.pow(_, _) }) op: Op.Impl2[T, T, T])
-      : Op.Impl2[SparseVector[T], T, SparseVector[T]] = {
-
+      : Op.Impl2[SparseVector[T], T, SparseVector[T]] =
     new Op.Impl2[SparseVector[T], T, SparseVector[T]] {
       def apply(a: SparseVector[T], b: T): SparseVector[T] = {
         val result: VectorBuilder[T] = new VectorBuilder[T](a.length)
@@ -796,7 +787,6 @@ trait SparseVectorOps {
         result.toSparseVector(true, true)
       }
     }
-  }
 
   @expand
   implicit def implOps_SVT_Field_eq_SVT[
@@ -901,24 +891,22 @@ trait SparseVectorOps {
 
   protected def updateFromPure[T, Op <: OpType, Other](
       implicit op: UFunc.UImpl2[Op, SparseVector[T], Other, SparseVector[T]])
-      : UFunc.InPlaceImpl2[Op, SparseVector[T], Other] = {
+      : UFunc.InPlaceImpl2[Op, SparseVector[T], Other] =
     new UFunc.InPlaceImpl2[Op, SparseVector[T], Other] {
       def apply(a: SparseVector[T], b: Other) {
         val result = op(a, b)
         a.use(result.index, result.data, result.activeSize)
       }
     }
-  }
 
   implicit def implOpSet_SVT_SVT_InPlace[T]
-      : OpSet.InPlaceImpl2[SparseVector[T], SparseVector[T]] = {
+      : OpSet.InPlaceImpl2[SparseVector[T], SparseVector[T]] =
     new OpSet.InPlaceImpl2[SparseVector[T], SparseVector[T]] {
       def apply(a: SparseVector[T], b: SparseVector[T]) {
         val result = b.copy
         a.use(result.index, result.data, result.activeSize)
       }
     }
-  }
 
   implicit def implOpSet_SVT_T_InPlace[T: Semiring: ClassTag]
       : OpSet.InPlaceImpl2[SparseVector[T], T] = {
@@ -1077,7 +1065,7 @@ trait SparseVectorOps {
       : OpMulInner.Impl2[SparseVector[T], SparseVector[T], T] =
     new OpMulInner.Impl2[SparseVector[T], SparseVector[T], T] {
       val s = implicitly[Semiring[T]]
-      def apply(a: SparseVector[T], b: SparseVector[T]): T = {
+      def apply(a: SparseVector[T], b: SparseVector[T]): T =
         if (b.activeSize < a.activeSize) {
           apply(b, a)
         } else {
@@ -1132,7 +1120,6 @@ trait SparseVectorOps {
 
           result
         }
-      }
     }
 
   @expand
@@ -1457,13 +1444,11 @@ trait SparseVectorOps {
 
   implicit def implOpNeg_SVT_eq_SVT[@spec(Double, Int, Float, Long) V](
       implicit scale: OpMulScalar.Impl2[SparseVector[V], V, SparseVector[V]],
-      field: Ring[V]): OpNeg.Impl[SparseVector[V], SparseVector[V]] = {
+      field: Ring[V]): OpNeg.Impl[SparseVector[V], SparseVector[V]] =
     new OpNeg.Impl[SparseVector[V], SparseVector[V]] {
-      override def apply(a: SparseVector[V]): SparseVector[V] = {
+      override def apply(a: SparseVector[V]): SparseVector[V] =
         scale(a, field.negate(field.one))
-      }
     }
-  }
 }
 
 trait SparseVector_DenseMatrixOps {
@@ -1475,7 +1460,7 @@ trait SparseVector_DenseMatrixOps {
     Float,
     Long,
     Double) T]
-      : OpMulMatrix.Impl2[DenseMatrix[T], SparseVector[T], DenseVector[T]] = {
+      : OpMulMatrix.Impl2[DenseMatrix[T], SparseVector[T], DenseVector[T]] =
     new OpMulMatrix.Impl2[DenseMatrix[T], SparseVector[T], DenseVector[T]] {
       override def apply(
           v: DenseMatrix[T],
@@ -1495,5 +1480,4 @@ trait SparseVector_DenseMatrixOps {
         DenseVector[T]]]
         .register(this)
     }
-  }
 }

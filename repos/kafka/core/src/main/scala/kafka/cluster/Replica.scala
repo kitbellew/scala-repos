@@ -41,12 +41,11 @@ class Replica(
   val topic = partition.topic
   val partitionId = partition.partitionId
 
-  def isLocal: Boolean = {
+  def isLocal: Boolean =
     log match {
       case Some(l) => true
       case None    => false
     }
-  }
 
   private[this] val lastCaughtUpTimeMsUnderlying = new AtomicLong(
     time.milliseconds)
@@ -97,7 +96,7 @@ class Replica(
 
   def highWatermark = highWatermarkMetadata
 
-  def convertHWToLocalOffsetMetadata() = {
+  def convertHWToLocalOffsetMetadata() =
     if (isLocal) {
       highWatermarkMetadata =
         log.get.convertToOffsetMetadata(highWatermarkMetadata.messageOffset)
@@ -106,7 +105,6 @@ class Replica(
         "Should not construct complete high watermark on partition [%s,%d]'s non-local replica %d"
           .format(topic, partitionId, brokerId))
     }
-  }
 
   override def equals(that: Any): Boolean = {
     if (!(that.isInstanceOf[Replica])) return false
@@ -116,9 +114,8 @@ class Replica(
     false
   }
 
-  override def hashCode(): Int = {
+  override def hashCode(): Int =
     31 + topic.hashCode() + 17 * brokerId + partition.hashCode()
-  }
 
   override def toString(): String = {
     val replicaString = new StringBuilder

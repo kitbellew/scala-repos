@@ -123,7 +123,7 @@ private[ui] class RDDOperationGraphListener(conf: SparkConf)
   }
 
   /** Clean metadata for old stages if we have exceeded the number to retain. */
-  private def trimStagesIfNecessary(): Unit = {
+  private def trimStagesIfNecessary(): Unit =
     if (stageIds.size >= retainedStages) {
       val toRemove = math.max(retainedStages / 10, 1)
       stageIds.take(toRemove).foreach { id =>
@@ -131,10 +131,9 @@ private[ui] class RDDOperationGraphListener(conf: SparkConf)
       }
       stageIds.trimStart(toRemove)
     }
-  }
 
   /** Clean metadata for old jobs if we have exceeded the number to retain. */
-  private def trimJobsIfNecessary(): Unit = {
+  private def trimJobsIfNecessary(): Unit =
     if (jobIds.size >= retainedJobs) {
       val toRemove = math.max(retainedJobs / 10, 1)
       jobIds.take(toRemove).foreach { id =>
@@ -142,7 +141,6 @@ private[ui] class RDDOperationGraphListener(conf: SparkConf)
       }
       jobIds.trimStart(toRemove)
     }
-  }
 
   /** Clean metadata for the given stage, its job, and all other stages that belong to the job. */
   private[ui] def cleanStage(stageId: Int): Unit = {

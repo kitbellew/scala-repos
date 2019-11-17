@@ -17,12 +17,11 @@ trait ScImportExpr extends ScalaPsiElement {
 
   def selectorSet: Option[ScImportSelectors]
 
-  def selectors: Seq[ScImportSelector] = {
+  def selectors: Seq[ScImportSelector] =
     selectorSet match {
       case None    => Seq.empty
       case Some(s) => s.selectors
     }
-  }
 
   def singleWildcard: Boolean
 

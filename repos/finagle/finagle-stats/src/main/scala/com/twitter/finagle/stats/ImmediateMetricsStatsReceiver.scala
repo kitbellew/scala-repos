@@ -5,7 +5,7 @@ import com.twitter.common.stats.{Statistics, ApproximateHistogram}
 import com.twitter.util.events.Sink
 
 object ImmediateMetricsStatsReceiver {
-  def newHistogramInterface(name: String): HistogramInterface = {
+  def newHistogramInterface(name: String): HistogramInterface =
     new HistogramInterface {
       private[this] val hist = new ApproximateHistogram()
       private[this] val stats = new Statistics()
@@ -40,7 +40,6 @@ object ImmediateMetricsStatsReceiver {
         hist.add(n)
       }
     }
-  }
 }
 
 /**

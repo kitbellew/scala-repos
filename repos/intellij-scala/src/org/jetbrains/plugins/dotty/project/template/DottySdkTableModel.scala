@@ -14,12 +14,11 @@ class DottySdkTableModel
         override def getPreferredStringValue = "Maven"
       },
       new ColumnInfo[SdkChoice, String]("File") {
-        override def valueOf(item: SdkChoice) = {
+        override def valueOf(item: SdkChoice) =
           item.sdk match {
             case d: DottySdkDescriptor =>
               d.mainDottyJar.map(_.getName).getOrElse("Unknown")
           }
-        }
 
         override def getPreferredStringValue = null
       },

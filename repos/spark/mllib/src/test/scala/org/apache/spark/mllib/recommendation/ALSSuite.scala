@@ -62,13 +62,12 @@ object ALSSuite {
     val rand = new Random(42)
 
     // Create a random matrix with uniform values from -1 to 1
-    def randomMatrix(m: Int, n: Int) = {
+    def randomMatrix(m: Int, n: Int) =
       if (negativeFactors) {
         new BDM(m, n, Array.fill(m * n)(rand.nextDouble() * 2 - 1))
       } else {
         new BDM(m, n, Array.fill(m * n)(rand.nextDouble()))
       }
-    }
 
     val userMatrix = randomMatrix(users, features)
     val productMatrix = randomMatrix(features, products)

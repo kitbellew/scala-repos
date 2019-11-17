@@ -80,7 +80,7 @@ class ScDocTagValueImpl(node: ASTNode)
 
   def getValue: String = getText
 
-  def bindToElement(element: PsiElement): PsiElement = {
+  def bindToElement(element: PsiElement): PsiElement =
     element match {
       case _: ScParameter => this
       case _: ScTypeParam =>
@@ -89,14 +89,12 @@ class ScDocTagValueImpl(node: ASTNode)
       case _ =>
         throw new UnsupportedOperationException("Can't bind to this element")
     }
-  }
 
   override def getCanonicalText: String =
     if (getFirstChild == null) null else getFirstChild.getText
 
-  override def isReferenceTo(element: PsiElement) = {
+  override def isReferenceTo(element: PsiElement) =
     if (resolve() == null || resolve() != element) false else true
-  }
 
   override def handleElementRename(newElementName: String): PsiElement = {
     if (!ScalaNamesUtil.isIdentifier(newElementName)) return this

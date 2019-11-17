@@ -32,23 +32,21 @@ private[streaming] class StreamingSource(ssc: StreamingContext) extends Source {
   private def registerGauge[T](
       name: String,
       f: StreamingJobProgressListener => T,
-      defaultValue: T): Unit = {
+      defaultValue: T): Unit =
     registerGaugeWithOption[T](
       name,
       (l: StreamingJobProgressListener) => Option(f(streamingListener)),
       defaultValue)
-  }
 
   private def registerGaugeWithOption[T](
       name: String,
       f: StreamingJobProgressListener => Option[T],
-      defaultValue: T): Unit = {
+      defaultValue: T): Unit =
     metricRegistry.register(
       MetricRegistry.name("streaming", name),
       new Gauge[T] {
         override def getValue: T = f(streamingListener).getOrElse(defaultValue)
       })
-  }
 
   // Gauge for number of network receivers
   registerGauge("receivers", _.numReceivers, 0)

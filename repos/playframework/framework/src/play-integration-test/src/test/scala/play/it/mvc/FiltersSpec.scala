@@ -42,10 +42,9 @@ trait DefaultFiltersSpec extends FiltersSpec {
   def withServer[T](
       settings: Map[String, String] = Map.empty,
       errorHandler: Option[HttpErrorHandler] = None)(filters: EssentialFilter*)(
-      block: WSClient => T) = {
+      block: WSClient => T) =
     withFlexibleServer(settings, errorHandler, (_: Materializer) => filters)(
       block)
-  }
 
   // `withServer` method that allows filters to be constructed with a Materializer
   def withFlexibleServer[T](
@@ -121,10 +120,9 @@ trait GlobalFiltersSpec extends FiltersSpec {
       )
       .global(
         new WithFilters(filters: _*) {
-          override def onHandlerNotFound(request: RequestHeader) = {
+          override def onHandlerNotFound(request: RequestHeader) =
             errorHandler.fold(super.onHandlerNotFound(request))(
               _.onClientError(request, 404, ""))
-          }
         }
       )
       .build()
@@ -287,24 +285,22 @@ trait FiltersSpec extends Specification with ServerIntegrationSpecification {
       def apply(next: EssentialAction) = EssentialAction { request =>
         next(request.copy(headers = addCustomHeader(request.headers)))
       }
-      def addCustomHeader(originalHeaders: Headers): Headers = {
+      def addCustomHeader(originalHeaders: Headers): Headers =
         FakeHeaders(
           originalHeaders.headers :+
             (filterAddedHeaderKey -> filterAddedHeaderVal))
-      }
     }
 
     object CustomErrorHandler extends HttpErrorHandler {
       def onClientError(
           request: RequestHeader,
           statusCode: Int,
-          message: String) = {
+          message: String) =
         Future.successful(
           Results.NotFound(
             request.headers
               .get(filterAddedHeaderKey)
               .getOrElse("undefined header")))
-      }
       def onServerError(request: RequestHeader, exception: Throwable) =
         Future.successful(Results.InternalServerError)
     }
@@ -336,13 +332,12 @@ trait FiltersSpec extends Specification with ServerIntegrationSpecification {
     import play.mvc._
     import play.libs.streams.Accumulator
 
-    private def getResult(t: Throwable): Result = {
+    private def getResult(t: Throwable): Result =
       // Get the cause of the CompletionException
       Results.internalServerError(Option(t.getCause).getOrElse(t).getMessage)
-    }
 
     def apply(next: EssentialAction) = new EssentialAction {
-      override def apply(request: Http.RequestHeader) = {
+      override def apply(request: Http.RequestHeader) =
         try {
           next
             .apply(request)
@@ -352,7 +347,6 @@ trait FiltersSpec extends Specification with ServerIntegrationSpecification {
         } catch {
           case t: Throwable => Accumulator.done(getResult(t))
         }
-      }
     }
   }
 

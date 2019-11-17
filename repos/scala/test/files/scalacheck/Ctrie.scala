@@ -75,13 +75,12 @@ object Test extends Properties("concurrent.TrieMap") {
     (start until end)
   }
 
-  def hasGrown[K, V](last: Map[K, V], current: Map[K, V]) = {
+  def hasGrown[K, V](last: Map[K, V], current: Map[K, V]) =
     (last.size <= current.size) && {
       last forall {
         case (k, v) => current.get(k) == Some(v)
       }
     }
-  }
 
   object err {
     var buffer = new StringBuilder

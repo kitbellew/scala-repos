@@ -135,17 +135,16 @@ private[sql] abstract class BaseWriterContainer(
     outputCommitter.setupTask(taskAttemptContext)
   }
 
-  protected def getWorkPath: String = {
+  protected def getWorkPath: String =
     outputCommitter match {
       // FileOutputCommitter writes to a temporary location returned by `getWorkPath`.
       case f: MapReduceFileOutputCommitter => f.getWorkPath.toString
       case _                               => outputPath
     }
-  }
 
   protected def newOutputWriter(
       path: String,
-      bucketId: Option[Int] = None): OutputWriter = {
+      bucketId: Option[Int] = None): OutputWriter =
     try {
       outputWriterFactory.newInstance(
         path,
@@ -167,7 +166,6 @@ private[sql] abstract class BaseWriterContainer(
         }
         throw e
     }
-  }
 
   private def newOutputCommitter(
       context: TaskAttemptContext): OutputCommitter = {
@@ -250,13 +248,12 @@ private[sql] abstract class BaseWriterContainer(
     serializableConf.value.setInt("mapred.task.partition", 0)
   }
 
-  def commitTask(): Unit = {
+  def commitTask(): Unit =
     SparkHadoopMapRedUtil.commitTask(
       outputCommitter,
       taskAttemptContext,
       jobId.getId,
       taskId.getId)
-  }
 
   def abortTask(): Unit = {
     if (outputCommitter != null) {
@@ -313,7 +310,7 @@ private[sql] class DefaultWriterContainer(
         throw new SparkException("Task failed while writing rows.", cause)
     }
 
-    def commitTask(): Unit = {
+    def commitTask(): Unit =
       try {
         if (writer != null) {
           writer.close()
@@ -326,9 +323,8 @@ private[sql] class DefaultWriterContainer(
           // will cause `abortTask()` to be invoked.
           throw new RuntimeException("Failed to commit task", cause)
       }
-    }
 
-    def abortTask(): Unit = {
+    def abortTask(): Unit =
       try {
         if (writer != null) {
           writer.close()
@@ -336,7 +332,6 @@ private[sql] class DefaultWriterContainer(
       } finally {
         super.abortTask()
       }
-    }
   }
 }
 
@@ -374,7 +369,7 @@ private[sql] class DynamicPartitionWriterContainer(
   }
 
   // Expressions that given a partition key build a string like: col1=val/col2=val/...
-  private def partitionStringExpression: Seq[Expression] = {
+  private def partitionStringExpression: Seq[Expression] =
     partitionColumns.zipWithIndex.flatMap {
       case (c, i) =>
         val escaped = ScalaUDF(
@@ -386,7 +381,6 @@ private[sql] class DynamicPartitionWriterContainer(
         val partitionName = Literal(c.name + "=") :: str :: Nil
         if (i == 0) partitionName else Literal(Path.SEPARATOR) :: partitionName
     }
-  }
 
   private def getBucketIdFromKey(key: InternalRow): Option[Int] =
     bucketSpec.map { _ =>

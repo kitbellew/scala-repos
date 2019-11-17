@@ -10,12 +10,11 @@ import play.api.http.HttpConfiguration
 
 object FlashCookieSpec extends Specification {
 
-  def oldEncoder(data: Map[String, String]): String = {
+  def oldEncoder(data: Map[String, String]): String =
     URLEncoder.encode(
       data.map(d => d._1 + ":" + d._2).mkString("\u0000"),
       "UTF-8"
     )
-  }
 
   "Flash cookies" should {
     "bake in a header and value" in {

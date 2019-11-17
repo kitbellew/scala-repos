@@ -71,8 +71,7 @@ class SchedulerPatternSpec extends AkkaSpec {
   def testSchedule(
       actor: ActorRef,
       startDuration: FiniteDuration,
-      afterRestartDuration: FiniteDuration) = {
-
+      afterRestartDuration: FiniteDuration) =
     filterException[ArithmeticException] {
       within(startDuration) {
         expectMsg("tick")
@@ -86,7 +85,6 @@ class SchedulerPatternSpec extends AkkaSpec {
       }
       system.stop(actor)
     }
-  }
 
   "send periodic ticks from the constructor" taggedAs TimingTest in {
     testSchedule(

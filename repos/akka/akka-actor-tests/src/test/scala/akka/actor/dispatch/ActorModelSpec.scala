@@ -70,13 +70,12 @@ object ActorModelSpec {
     def interceptor =
       context.dispatcher.asInstanceOf[MessageDispatcherInterceptor]
 
-    def ack(): Unit = {
+    def ack(): Unit =
       if (!busy.switchOn(())) {
         throw new Exception("isolation violated")
       } else {
         interceptor.getStats(self).msgsProcessed.incrementAndGet()
       }
-    }
 
     override def postRestart(reason: Throwable) {
       interceptor.getStats(self).restarts.incrementAndGet()
@@ -304,12 +303,11 @@ abstract class ActorModelSpec(config: String)
   def newTestActor(dispatcher: String) =
     system.actorOf(Props[DispatcherActor].withDispatcher(dispatcher))
 
-  def awaitStarted(ref: ActorRef): Unit = {
+  def awaitStarted(ref: ActorRef): Unit =
     awaitCond(ref match {
       case r: RepointableRef ⇒ r.isStarted
       case _ ⇒ true
     }, 1 second, 10 millis)
-  }
 
   protected def interceptedDispatcher(): MessageDispatcherInterceptor
   protected def dispatcherType: String
@@ -673,12 +671,11 @@ class DispatcherModelSpec extends ActorModelSpec(DispatcherModelSpec.config) {
 
   val dispatcherCount = new AtomicInteger()
 
-  override def interceptedDispatcher(): MessageDispatcherInterceptor = {
+  override def interceptedDispatcher(): MessageDispatcherInterceptor =
     // use new id for each test, since the MessageDispatcherInterceptor holds state
     system.dispatchers
       .lookup("test-dispatcher-" + dispatcherCount.incrementAndGet())
       .asInstanceOf[MessageDispatcherInterceptor]
-  }
 
   override def dispatcherType = "Dispatcher"
 
@@ -770,12 +767,11 @@ class BalancingDispatcherModelSpec
 
   val dispatcherCount = new AtomicInteger()
 
-  override def interceptedDispatcher(): MessageDispatcherInterceptor = {
+  override def interceptedDispatcher(): MessageDispatcherInterceptor =
     // use new id for each test, since the MessageDispatcherInterceptor holds state
     system.dispatchers
       .lookup("test-balancing-dispatcher-" + dispatcherCount.incrementAndGet())
       .asInstanceOf[MessageDispatcherInterceptor]
-  }
 
   override def dispatcherType = "Balancing Dispatcher"
 

@@ -226,14 +226,13 @@ class Item(
     val func: Box[() => Any],
     val forkCnt: Int,
     forkFunc: Box[Int => Any]) {
-  def getFunc(cnt: Int) = {
+  def getFunc(cnt: Int) =
     (func, forkFunc) match {
       case (Full(f), _) => f
       case (_, Full(cf)) =>
         () => cf(cnt)
       case _ => () =>
     }
-  }
 }
 
 object Item {

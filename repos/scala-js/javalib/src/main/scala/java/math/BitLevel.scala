@@ -87,7 +87,7 @@ private[math] object BitLevel {
     *  @param bi
     *  @return
     */
-  def bitLength(bi: BigInteger): Int = {
+  def bitLength(bi: BigInteger): Int =
     if (bi.sign == 0) {
       0
     } else {
@@ -102,7 +102,6 @@ private[math] object BitLevel {
       bLength -= java.lang.Integer.numberOfLeadingZeros(highDigit)
       bLength
     }
-  }
 
   /** Performs a flipBit on the BigInteger.
     *

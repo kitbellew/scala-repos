@@ -8,8 +8,7 @@ class Test extends Bippy {
 
 object Test extends Test {
   def dingus = bippy
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     assert(bippy + f1 == 110)
-  }
   override def bippy = 55
 }

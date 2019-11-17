@@ -142,9 +142,8 @@ trait WebHookService {
         val reqPromise = Promise[HttpRequest]
         val f = Future {
           val itcp = new org.apache.http.HttpRequestInterceptor {
-            def process(res: HttpRequest, ctx: HttpContext): Unit = {
+            def process(res: HttpRequest, ctx: HttpContext): Unit =
               reqPromise.success(res)
-            }
           }
           try {
             val httpClient =
@@ -221,9 +220,7 @@ trait WebHookPullRequestService extends WebHookService {
       repository: RepositoryService.RepositoryInfo,
       issue: Issue,
       baseUrl: String,
-      sender: Account)(
-      implicit s: Session,
-      context: JsonFormat.Context): Unit = {
+      sender: Account)(implicit s: Session, context: JsonFormat.Context): Unit =
     callWebHookOf(repository.owner, repository.name, WebHook.Issues) {
       val users = getAccountsByUserNames(
         Set(repository.owner, issue.openedUserName),
@@ -242,7 +239,6 @@ trait WebHookPullRequestService extends WebHookService {
         )
       }
     }
-  }
 
   def callPullRequestWebHook(
       action: String,
@@ -411,9 +407,7 @@ trait WebHookIssueCommentService extends WebHookPullRequestService {
       repository: RepositoryService.RepositoryInfo,
       issue: Issue,
       issueCommentId: Int,
-      sender: Account)(
-      implicit s: Session,
-      context: JsonFormat.Context): Unit = {
+      sender: Account)(implicit s: Session, context: JsonFormat.Context): Unit =
     callWebHookOf(repository.owner, repository.name, WebHook.IssueComment) {
       for {
         issueComment <- getComment(
@@ -440,7 +434,6 @@ trait WebHookIssueCommentService extends WebHookPullRequestService {
           sender = sender)
       }
     }
-  }
 }
 
 object WebHookService {

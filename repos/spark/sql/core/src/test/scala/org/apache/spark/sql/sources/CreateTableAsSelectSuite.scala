@@ -40,13 +40,12 @@ class CreateTableAsSelectSuite
     caseInsensitiveContext.read.json(rdd).registerTempTable("jt")
   }
 
-  override def afterAll(): Unit = {
+  override def afterAll(): Unit =
     try {
       caseInsensitiveContext.dropTempTable("jt")
     } finally {
       super.afterAll()
     }
-  }
 
   after {
     Utils.deleteRecursively(path)

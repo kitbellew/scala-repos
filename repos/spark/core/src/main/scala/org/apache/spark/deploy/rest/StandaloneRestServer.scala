@@ -195,7 +195,7 @@ private[rest] class StandaloneSubmitRequestServlet(
   protected override def handleSubmit(
       requestMessageJson: String,
       requestMessage: SubmitRestProtocolMessage,
-      responseServlet: HttpServletResponse): SubmitRestProtocolResponse = {
+      responseServlet: HttpServletResponse): SubmitRestProtocolResponse =
     requestMessage match {
       case submitRequest: CreateSubmissionRequest =>
         val driverDescription = buildDriverDescription(submitRequest)
@@ -219,5 +219,4 @@ private[rest] class StandaloneSubmitRequestServlet(
         handleError(
           s"Received message of unexpected type ${unexpected.messageType}.")
     }
-  }
 }

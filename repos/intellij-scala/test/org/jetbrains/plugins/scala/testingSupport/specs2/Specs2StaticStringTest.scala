@@ -90,7 +90,7 @@ abstract class Specs2StaticStringTest extends Specs2TestCase {
   val methodsTestClassName = "SpecsMethodsTest"
   val methodsTestFileName = methodsTestClassName + ".scala"
 
-  def addMethodsTest() = {
+  def addMethodsTest() =
     addFileToProject(
       methodsTestFileName,
       """
@@ -129,7 +129,6 @@ abstract class Specs2StaticStringTest extends Specs2TestCase {
         |}
       """.stripMargin.trim
     )
-  }
 
   def testTrim() = {
     addMethodsTest()

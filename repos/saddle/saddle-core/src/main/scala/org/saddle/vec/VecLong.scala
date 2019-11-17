@@ -127,7 +127,7 @@ class VecLong(values: Array[Long]) extends Vec[Long] { self =>
     }
   }
 
-  private[saddle] def toArray: Array[Long] = {
+  private[saddle] def toArray: Array[Long] =
     // need to check if we're a view on an array
     if (!needsCopy) values
     else {
@@ -139,7 +139,6 @@ class VecLong(values: Array[Long]) extends Vec[Long] { self =>
       }
       buf
     }
-  }
 
   /** Default equality does an iterative, element-wise equality check of all values. */
   override def equals(o: Any): Boolean = o match {

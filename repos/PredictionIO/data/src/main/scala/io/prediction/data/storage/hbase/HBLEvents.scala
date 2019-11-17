@@ -98,7 +98,7 @@ class HBLEvents(
   }
 
   override def futureInsert(event: Event, appId: Int, channelId: Option[Int])(
-      implicit ec: ExecutionContext): Future[String] = {
+      implicit ec: ExecutionContext): Future[String] =
     Future {
       val table = getTable(appId, channelId)
       val (put, rowKey) = HBEventsUtil.eventToPut(event, appId)
@@ -107,10 +107,9 @@ class HBLEvents(
       table.close()
       rowKey.toString
     }
-  }
 
   override def futureGet(eventId: String, appId: Int, channelId: Option[Int])(
-      implicit ec: ExecutionContext): Future[Option[Event]] = {
+      implicit ec: ExecutionContext): Future[Option[Event]] =
     Future {
       val table = getTable(appId, channelId)
       val rowKey = RowKey(eventId)
@@ -126,13 +125,11 @@ class HBLEvents(
         None
       }
     }
-  }
 
   override def futureDelete(
       eventId: String,
       appId: Int,
-      channelId: Option[Int])(
-      implicit ec: ExecutionContext): Future[Boolean] = {
+      channelId: Option[Int])(implicit ec: ExecutionContext): Future[Boolean] =
     Future {
       val table = getTable(appId, channelId)
       val rowKey = RowKey(eventId)
@@ -141,7 +138,6 @@ class HBLEvents(
       table.close()
       exists
     }
-  }
 
   override def futureFind(
       appId: Int,
@@ -155,7 +151,7 @@ class HBLEvents(
       targetEntityId: Option[Option[String]] = None,
       limit: Option[Int] = None,
       reversed: Option[Boolean] = None)(
-      implicit ec: ExecutionContext): Future[Iterator[Event]] = {
+      implicit ec: ExecutionContext): Future[Iterator[Event]] =
     Future {
 
       require(
@@ -192,5 +188,4 @@ class HBLEvents(
 
       eventsIt
     }
-  }
 }

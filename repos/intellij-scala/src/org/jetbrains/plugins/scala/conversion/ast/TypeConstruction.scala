@@ -17,7 +17,7 @@ import scala.collection.mutable.ArrayBuffer
 case class TypeConstruction(inType: String)
     extends IntermediateNode
     with TypedElement {
-  def getDefaultTypeValue: String = {
+  def getDefaultTypeValue: String =
     inType match {
       case "Int" | "Byte" | "Short" | "Char" => "0"
       case "Double" | "Float"                => ".0"
@@ -26,7 +26,6 @@ case class TypeConstruction(inType: String)
       case "Unit"                            => "{}"
       case _                                 => "null"
     }
-  }
 
   override def getType: TypeConstruction = this.asInstanceOf[TypeConstruction]
 }
@@ -54,7 +53,7 @@ object TypeConstruction {
   def getParts(
       scType: ScType,
       buffer: ArrayBuffer[(IntermediateNode, Option[String])])
-      : IntermediateNode = {
+      : IntermediateNode =
     scType match {
       case p @ ScParameterizedType(des, args) =>
         val typeConstruction: IntermediateNode = TypeConstruction(
@@ -82,7 +81,6 @@ object TypeConstruction {
                 .flatMap(el => Option(el.getQualifiedName))))
         typeConstruction
     }
-  }
 }
 
 case class ParametrizedConstruction(

@@ -29,9 +29,8 @@ class PageView(
     val zipCode: Int,
     val userID: Int)
     extends Serializable {
-  override def toString(): String = {
+  override def toString(): String =
     "%s\t%s\t%s\t%s\n".format(url, status, zipCode, userID)
-  }
 }
 
 object PageView extends Serializable {

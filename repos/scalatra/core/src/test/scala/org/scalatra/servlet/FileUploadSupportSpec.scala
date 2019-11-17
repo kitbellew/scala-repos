@@ -167,9 +167,8 @@ class FileUploadSupportSpec extends MutableScalatraSpec {
     }
   }
 
-  def multipartHeaders = {
+  def multipartHeaders =
     Map("Content-Type" -> "multipart/form-data; boundary=XyXyXy")
-  }
 
   "POST with multipart/form-data" should {
     "route correctly to action" in {

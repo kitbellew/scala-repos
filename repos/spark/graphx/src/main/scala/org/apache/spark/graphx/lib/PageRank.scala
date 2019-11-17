@@ -79,9 +79,8 @@ object PageRank extends Logging {
   def run[VD: ClassTag, ED: ClassTag](
       graph: Graph[VD, ED],
       numIter: Int,
-      resetProb: Double = 0.15): Graph[Double, Double] = {
+      resetProb: Double = 0.15): Graph[Double, Double] =
     runWithOptions(graph, numIter, resetProb)
-  }
 
   /**
     * Run PageRank for a fixed number of iterations returning a graph
@@ -133,7 +132,7 @@ object PageRank extends Logging {
         if (!(id != src && personalized)) resetProb else 0.0
       }
 
-    def delta(u: VertexId, v: VertexId): Double = { if (u == v) 1.0 else 0.0 }
+    def delta(u: VertexId, v: VertexId): Double = if (u == v) 1.0 else 0.0
 
     var iteration = 0
     var prevRankGraph: Graph[Double, Double] = null
@@ -192,9 +191,8 @@ object PageRank extends Logging {
   def runUntilConvergence[VD: ClassTag, ED: ClassTag](
       graph: Graph[VD, ED],
       tol: Double,
-      resetProb: Double = 0.15): Graph[Double, Double] = {
+      resetProb: Double = 0.15): Graph[Double, Double] =
     runUntilConvergenceWithOptions(graph, tol, resetProb)
-  }
 
   /**
     * Run a dynamic version of PageRank returning a graph with vertex attributes containing the
@@ -266,13 +264,12 @@ object PageRank extends Logging {
       (newPR, newDelta)
     }
 
-    def sendMessage(edge: EdgeTriplet[(Double, Double), Double]) = {
+    def sendMessage(edge: EdgeTriplet[(Double, Double), Double]) =
       if (edge.srcAttr._2 > tol) {
         Iterator((edge.dstId, edge.srcAttr._2 * edge.attr))
       } else {
         Iterator.empty
       }
-    }
 
     def messageCombiner(a: Double, b: Double): Double = a + b
 

@@ -60,7 +60,7 @@ trait SSLConfiguration {
   }
 
   // provide implicit SSLEngine with some protocols
-  implicit def sslEngineProvider: ServerSSLEngineProvider = {
+  implicit def sslEngineProvider: ServerSSLEngineProvider =
     ServerSSLEngineProvider { engine =>
       engine.setEnabledCipherSuites(
         Array(
@@ -70,5 +70,4 @@ trait SSLConfiguration {
       engine.setEnabledProtocols(Array("TLSv1", "TLSv1.2", "TLSv1.1"))
       engine
     }
-  }
 }

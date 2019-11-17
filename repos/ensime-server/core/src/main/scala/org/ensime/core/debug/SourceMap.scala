@@ -18,7 +18,7 @@ class SourceMap(config: EnsimeConfig) {
 
   private val sourceMap = mutable.HashMap[String, mutable.HashSet[File]]()
 
-  def locToPos(loc: Location): Option[LineSourcePosition] = {
+  def locToPos(loc: Location): Option[LineSourcePosition] =
     try {
       (for (set <- sourceMap.get(loc.sourceName())) yield {
         if (set.size > 1) {
@@ -29,7 +29,6 @@ class SourceMap(config: EnsimeConfig) {
     } catch {
       case e: AbsentInformationException => None
     }
-  }
 
   def rebuildSourceMap(): Unit = {
     sourceMap.clear()

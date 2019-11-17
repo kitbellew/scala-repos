@@ -132,13 +132,12 @@ object expand {
   }
 
   private def mkName(
-      c: Context)(name: c.Name, typeMap: Map[c.Name, c.Type]): String = {
+      c: Context)(name: c.Name, typeMap: Map[c.Name, c.Type]): String =
     name.toString + "_" + typeMap
       .map {
         case (k, v) => v.toString.reverse.takeWhile(_ != '.').reverse
       }
       .mkString("_")
-  }
 
   // valExpansions is a [value identifier -> (
   def substitute(c: Context)(
@@ -234,12 +233,11 @@ object expand {
   }
 
   private def makeTypeMaps(c: Context)(
-      types: Map[c.Name, Seq[c.Type]]): Seq[Map[c.Name, c.Type]] = {
+      types: Map[c.Name, Seq[c.Type]]): Seq[Map[c.Name, c.Type]] =
     types.foldLeft(Seq(Map.empty[c.Name, c.Type])) { (acc, pair) =>
       val (nme, types) = pair
       for (t <- types; map <- acc) yield map + (nme -> t)
     }
-  }
 
   private def getExclusions(c: Context)(
       mods: c.Modifiers,

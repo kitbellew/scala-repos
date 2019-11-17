@@ -39,9 +39,8 @@ case class ParseError(failure: Parsed.Failure)
     )
 
 object ParseError {
-  def msg(code: String, expected: String, idx: Int) = {
+  def msg(code: String, expected: String, idx: Int) =
     "SyntaxError: " + msg0(code, expected, idx)
-  }
   def msg0(code: String, expected: String, idx: Int) = {
     val locationString = {
       val (first, last) = code.splitAt(idx)
@@ -157,9 +156,8 @@ object Parsed {
       (body :+ last).mkString(" / ") + " ..." + literalize(
         input.slice(index, index + 10))
     }
-    def filterFullStack(fullStack: Seq[Frame]) = {
+    def filterFullStack(fullStack: Seq[Frame]) =
       fullStack.collect { case f @ Frame(i, p) if p.shortTraced => f }
-    }
   }
 
   // TracedFailure
@@ -402,10 +400,8 @@ trait Parser[+T] extends ParserResults[T] with Precedence {
   def parse(
       input: String,
       index: Int = 0,
-      instrument: (Parser[_], Int, () => Parsed[_]) => Unit = null)
-      : Parsed[T] = {
+      instrument: (Parser[_], Int, () => Parsed[_]) => Unit = null): Parsed[T] =
     parseRec(new ParseCtx(input, 0, -1, this, index, instrument), index).toResult
-  }
 
   /**
     * Parses the given `input` starting from the given `index` and `logDepth`
@@ -435,10 +431,9 @@ trait ParserResults[+T] {
   def mergeTrace(
       traceIndex: Int,
       lhs: Set[Parser[_]],
-      rhs: Set[Parser[_]]): Set[Parser[_]] = {
+      rhs: Set[Parser[_]]): Set[Parser[_]] =
     if (traceIndex != -1) lhs | rhs
     else Set.empty
-  }
 
   /**
     * Prepares a failure object for a new failure

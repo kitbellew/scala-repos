@@ -64,7 +64,7 @@ class ALSModel(
     true
   }
 
-  override def toString = {
+  override def toString =
     s"userFeatures: [${userFeatures.count()}]" +
       s"(${userFeatures.take(2).toList}...)" +
       s" productFeatures: [${productFeatures.count()}]" +
@@ -73,14 +73,10 @@ class ALSModel(
       s"(${userStringIntMap.take(2)}...)" +
       s" itemStringIntMap: [${itemStringIntMap.size}]" +
       s"(${itemStringIntMap.take(2)}...)"
-  }
 }
 
 object ALSModel extends IPersistentModelLoader[ALSAlgorithmParams, ALSModel] {
-  def apply(
-      id: String,
-      params: ALSAlgorithmParams,
-      sc: Option[SparkContext]) = {
+  def apply(id: String, params: ALSAlgorithmParams, sc: Option[SparkContext]) =
     new ALSModel(
       rank = sc.get.objectFile[Int](s"/tmp/${id}/rank").first,
       userFeatures = sc.get.objectFile(s"/tmp/${id}/userFeatures"),
@@ -95,5 +91,4 @@ object ALSModel extends IPersistentModelLoader[ALSAlgorithmParams, ALSModel] {
         .objectFile[Map[String, Set[Int]]](s"/tmp/${id}/categoryItemsMap")
         .first
     )
-  }
 }

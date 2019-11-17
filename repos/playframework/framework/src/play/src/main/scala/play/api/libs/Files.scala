@@ -65,9 +65,8 @@ object Files {
         ))
     }
 
-    def create(prefix: String, suffix: String): File = {
+    def create(prefix: String, suffix: String): File =
       JFiles.createTempFile(playTempFolder, prefix, suffix).toFile
-    }
   }
 
   /**
@@ -76,9 +75,8 @@ object Files {
     * or JVM stops.
     */
   object SingletonTemporaryFileCreator extends TemporaryFileCreator {
-    def create(prefix: String, suffix: String): File = {
+    def create(prefix: String, suffix: String): File =
       JFiles.createTempFile(prefix, suffix).toFile
-    }
   }
 
   /**
@@ -90,9 +88,8 @@ object Files {
     /**
       * Clean this temporary file now.
       */
-    def clean(): Boolean = {
+    def clean(): Boolean =
       JFiles.deleteIfExists(file.toPath)
-    }
 
     /**
       * Move the file.
@@ -151,8 +148,7 @@ object Files {
       * @param suffix The suffix used for the temporary file name.
       * @return A temporary file instance.
       */
-    def apply(prefix: String = "", suffix: String = ""): TemporaryFile = {
+    def apply(prefix: String = "", suffix: String = ""): TemporaryFile =
       TemporaryFile(currentCreator.create(prefix, suffix))
-    }
   }
 }

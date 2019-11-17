@@ -59,7 +59,6 @@ private[finagle] object Identities {
     *
     * @return a Sequence of Identities presented as "/scheme/id"
     */
-  def get(): Seq[String] = {
+  def get(): Seq[String] =
     LoadService[Identity]().sortBy(_.priority).flatMap(filter)
-  }
 }

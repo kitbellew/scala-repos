@@ -73,10 +73,9 @@ private[streaming] object StateMap {
 
 /** Implementation of StateMap interface representing an empty map */
 private[streaming] class EmptyStateMap[K, S] extends StateMap[K, S] {
-  override def put(key: K, session: S, updateTime: Long): Unit = {
+  override def put(key: K, session: S, updateTime: Long): Unit =
     throw new NotImplementedError(
       "put() should not be called on an EmptyStateMap")
-  }
   override def get(key: K): Option[S] = None
   override def getByTime(threshUpdatedTime: Long): Iterator[(K, S, Long)] =
     Iterator.empty
@@ -196,16 +195,14 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
     * Shallow copy the map to create a new session store. Updates to the new map
     * should not mutate `this` map.
     */
-  override def copy(): StateMap[K, S] = {
+  override def copy(): StateMap[K, S] =
     new OpenHashMapBasedStateMap[K, S](
       this,
       deltaChainThreshold = deltaChainThreshold)
-  }
 
   /** Whether the delta chain length is long enough that it should be compacted */
-  def shouldCompact: Boolean = {
+  def shouldCompact: Boolean =
     deltaChainLength >= deltaChainThreshold
-  }
 
   /** Length of the delta chains of this map */
   def deltaChainLength: Int = parentStateMap match {
@@ -234,9 +231,8 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
       deltaMap.iterator.mkString(tabs, "\n" + tabs, "")
   }
 
-  override def toString(): String = {
+  override def toString(): String =
     s"[${System.identityHashCode(this)}, ${System.identityHashCode(parentStateMap)}]"
-  }
 
   /**
     * Serialize the map data. Besides serialization, this method actually compact the deltas
@@ -385,9 +381,8 @@ private[streaming] object OpenHashMapBasedStateMap {
       var updateTime: Long = -1,
       var deleted: Boolean = false) {
 
-    def markDeleted(): Unit = {
+    def markDeleted(): Unit =
       deleted = true
-    }
 
     def update(newData: S, newUpdateTime: Long): Unit = {
       data = newData

@@ -24,20 +24,18 @@ final case class XorT[F[_], A, B](value: F[A Xor B]) {
   def getOrElse[BB >: B](default: => BB)(implicit F: Functor[F]): F[BB] =
     F.map(value)(_.getOrElse(default))
 
-  def getOrElseF[BB >: B](default: => F[BB])(implicit F: Monad[F]): F[BB] = {
+  def getOrElseF[BB >: B](default: => F[BB])(implicit F: Monad[F]): F[BB] =
     F.flatMap(value) {
       case Xor.Left(_)  => default
       case Xor.Right(b) => F.pure(b)
     }
-  }
 
   def orElse[AA, BB >: B](default: => XorT[F, AA, BB])(
-      implicit F: Monad[F]): XorT[F, AA, BB] = {
+      implicit F: Monad[F]): XorT[F, AA, BB] =
     XorT(F.flatMap(value) {
       case Xor.Left(_)      => default.value
       case r @ Xor.Right(_) => F.pure(r)
     })
-  }
 
   def recover(pf: PartialFunction[A, B])(
       implicit F: Functor[F]): XorT[F, A, B] =
@@ -227,13 +225,12 @@ private[data] abstract class XorTInstances extends XorTInstances1 {
     functor.Contravariant[Show].contramap(sh)(_.value)
 
   implicit def xorTBifunctor[F[_]](
-      implicit F: Functor[F]): Bifunctor[XorT[F, ?, ?]] = {
+      implicit F: Functor[F]): Bifunctor[XorT[F, ?, ?]] =
     new Bifunctor[XorT[F, ?, ?]] {
       override def bimap[A, B, C, D](
           fab: XorT[F, A, B])(f: A => C, g: B => D): XorT[F, C, D] =
         fab.bimap(f, g)
     }
-  }
 
   implicit def xorTTraverse[F[_], L](
       implicit F: Traverse[F]): Traverse[XorT[F, L, ?]] =

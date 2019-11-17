@@ -49,14 +49,13 @@ class SaveLoadSuite
     df.registerTempTable("jsonTable")
   }
 
-  override def afterAll(): Unit = {
+  override def afterAll(): Unit =
     try {
       caseInsensitiveContext.conf
         .setConf(SQLConf.DEFAULT_DATA_SOURCE_NAME, originalDefaultSource)
     } finally {
       super.afterAll()
     }
-  }
 
   after {
     Utils.deleteRecursively(path)

@@ -17,9 +17,8 @@ class ScalaVariableStructureViewElement(
     private val element: PsiElement,
     val isInherited: Boolean)
     extends ScalaStructureViewElement(element, isInherited) {
-  def getPresentation: ItemPresentation = {
+  def getPresentation: ItemPresentation =
     new ScalaVariableItemPresentation(element, isInherited)
-  }
 
   def getChildren: Array[TreeElement] = Array.empty
 }

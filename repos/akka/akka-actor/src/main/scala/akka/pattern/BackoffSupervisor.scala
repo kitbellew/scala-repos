@@ -41,7 +41,7 @@ object BackoffSupervisor {
       childName: String,
       minBackoff: FiniteDuration,
       maxBackoff: FiniteDuration,
-      randomFactor: Double): Props = {
+      randomFactor: Double): Props =
     propsWithSupervisorStrategy(
       childProps,
       childName,
@@ -49,7 +49,6 @@ object BackoffSupervisor {
       maxBackoff,
       randomFactor,
       SupervisorStrategy.defaultStrategy)
-  }
 
   /**
     * Props for creating a [[BackoffSupervisor]] actor with a custom

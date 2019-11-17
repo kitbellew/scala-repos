@@ -40,9 +40,8 @@ class HiveDataFrameAnalyticsSuite
     hiveContext.registerDataFrameAsTable(testData, "mytable")
   }
 
-  override def afterAll(): Unit = {
+  override def afterAll(): Unit =
     hiveContext.dropTempTable("mytable")
-  }
 
   test("rollup") {
     checkAnswer(

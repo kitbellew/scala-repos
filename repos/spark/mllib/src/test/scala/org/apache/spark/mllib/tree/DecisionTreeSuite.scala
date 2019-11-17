@@ -1181,10 +1181,8 @@ object DecisionTreeSuite extends SparkFunSuite {
     arr
   }
 
-  def generateCategoricalDataPointsAsJavaList()
-      : java.util.List[LabeledPoint] = {
+  def generateCategoricalDataPointsAsJavaList(): java.util.List[LabeledPoint] =
     generateCategoricalDataPoints().toList.asJava
-  }
 
   def generateCategoricalDataPointsForMulticlass(): Array[LabeledPoint] = {
     val arr = new Array[LabeledPoint](3000)
@@ -1228,9 +1226,8 @@ object DecisionTreeSuite extends SparkFunSuite {
   }
 
   /** Create a leaf node with the given node ID */
-  private def createLeafNode(id: Int): Node = {
+  private def createLeafNode(id: Int): Node =
     Node(nodeIndex = id, new Predict(0.0, 1.0), impurity = 0.5, isLeaf = true)
-  }
 
   /**
     * Create an internal node with the given node ID and feature type.
@@ -1297,7 +1294,7 @@ object DecisionTreeSuite extends SparkFunSuite {
     */
   private[mllib] def checkEqual(
       a: DecisionTreeModel,
-      b: DecisionTreeModel): Unit = {
+      b: DecisionTreeModel): Unit =
     try {
       assert(a.algo === b.algo)
       checkEqual(a.topNode, b.topNode)
@@ -1309,7 +1306,6 @@ object DecisionTreeSuite extends SparkFunSuite {
             "\n" + "TREE B:\n" + b.toDebugString + "\n",
           ex)
     }
-  }
 
   /**
     * Return true iff the two nodes and their descendents are exactly the same.

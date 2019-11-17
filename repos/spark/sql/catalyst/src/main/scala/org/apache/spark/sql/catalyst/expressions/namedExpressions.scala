@@ -151,14 +151,13 @@ case class Alias(child: Expression, name: String)(
 
   override def dataType: DataType = child.dataType
   override def nullable: Boolean = child.nullable
-  override def metadata: Metadata = {
+  override def metadata: Metadata =
     explicitMetadata.getOrElse {
       child match {
         case named: NamedExpression => named.metadata
         case _                      => Metadata.empty
       }
     }
-  }
 
   def newInstance(): NamedExpression =
     Alias(child, name)(
@@ -166,7 +165,7 @@ case class Alias(child: Expression, name: String)(
       explicitMetadata = explicitMetadata,
       isGenerated = isGenerated)
 
-  override def toAttribute: Attribute = {
+  override def toAttribute: Attribute =
     if (resolved) {
       AttributeReference(name, child.dataType, child.nullable, metadata)(
         exprId,
@@ -175,13 +174,11 @@ case class Alias(child: Expression, name: String)(
     } else {
       UnresolvedAttribute(name)
     }
-  }
 
   override def toString: String = s"$child AS $name#${exprId.id}$typeSuffix"
 
-  override protected final def otherCopyArgs: Seq[AnyRef] = {
+  override protected final def otherCopyArgs: Seq[AnyRef] =
     exprId :: qualifiers :: explicitMetadata :: isGenerated :: Nil
-  }
 
   override def equals(other: Any): Boolean = other match {
     case a: Alias =>
@@ -240,9 +237,8 @@ case class AttributeReference(
     case _                      => false
   }
 
-  override def semanticHash(): Int = {
+  override def semanticHash(): Int =
     this.exprId.hashCode()
-  }
 
   override def hashCode: Int = {
     // See http://stackoverflow.com/questions/113511/hash-code-implementation
@@ -264,7 +260,7 @@ case class AttributeReference(
   /**
     * Returns a copy of this [[AttributeReference]] with changed nullability.
     */
-  override def withNullability(newNullability: Boolean): AttributeReference = {
+  override def withNullability(newNullability: Boolean): AttributeReference =
     if (nullable == newNullability) {
       this
     } else {
@@ -273,9 +269,8 @@ case class AttributeReference(
         qualifiers,
         isGenerated)
     }
-  }
 
-  override def withName(newName: String): AttributeReference = {
+  override def withName(newName: String): AttributeReference =
     if (name == newName) {
       this
     } else {
@@ -284,13 +279,11 @@ case class AttributeReference(
         qualifiers,
         isGenerated)
     }
-  }
 
   /**
     * Returns a copy of this [[AttributeReference]] with new qualifiers.
     */
-  override def withQualifiers(
-      newQualifiers: Seq[String]): AttributeReference = {
+  override def withQualifiers(newQualifiers: Seq[String]): AttributeReference =
     if (newQualifiers.toSet == qualifiers.toSet) {
       this
     } else {
@@ -299,9 +292,8 @@ case class AttributeReference(
         newQualifiers,
         isGenerated)
     }
-  }
 
-  def withExprId(newExprId: ExprId): AttributeReference = {
+  def withExprId(newExprId: ExprId): AttributeReference =
     if (exprId == newExprId) {
       this
     } else {
@@ -310,11 +302,9 @@ case class AttributeReference(
         qualifiers,
         isGenerated)
     }
-  }
 
-  override protected final def otherCopyArgs: Seq[AnyRef] = {
+  override protected final def otherCopyArgs: Seq[AnyRef] =
     exprId :: qualifiers :: isGenerated :: Nil
-  }
 
   override def toString: String = s"$name#${exprId.id}$typeSuffix"
 

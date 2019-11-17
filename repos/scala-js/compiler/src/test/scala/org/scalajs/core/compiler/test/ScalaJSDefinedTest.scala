@@ -55,7 +55,7 @@ class ScalaJSDefinedTest extends DirectTest with TestHelpers {
   }
 
   @Test
-  def noExtendNativeTrait: Unit = {
+  def noExtendNativeTrait: Unit =
     """
     @js.native
     trait NativeTrait extends js.Object
@@ -86,10 +86,9 @@ class ScalaJSDefinedTest extends DirectTest with TestHelpers {
       |      val x = new NativeTrait {}
       |                  ^
     """
-  }
 
   @Test
-  def noApplyMethod: Unit = {
+  def noApplyMethod: Unit =
     """
     @ScalaJSDefined
     class A extends js.Object {
@@ -100,10 +99,9 @@ class ScalaJSDefinedTest extends DirectTest with TestHelpers {
       |      def apply(arg: Int): Int = arg
       |          ^
     """
-  }
 
   @Test
-  def noBracketAccess: Unit = {
+  def noBracketAccess: Unit =
     """
     @ScalaJSDefined
     class A extends js.Object {
@@ -115,10 +113,9 @@ class ScalaJSDefinedTest extends DirectTest with TestHelpers {
       |      def foo(index: Int, arg: Int): Int = arg
       |          ^
     """
-  }
 
   @Test
-  def noBracketCall: Unit = {
+  def noBracketCall: Unit =
     """
     @ScalaJSDefined
     class A extends js.Object {
@@ -130,7 +127,6 @@ class ScalaJSDefinedTest extends DirectTest with TestHelpers {
       |      def foo(m: String, arg: Int): Int = arg
       |          ^
     """
-  }
 
   @Test
   def noOverloadedPrivate: Unit = {
@@ -562,7 +558,7 @@ class ScalaJSDefinedTest extends DirectTest with TestHelpers {
   }
 
   @Test
-  def noConcreteMemberInTrait: Unit = {
+  def noConcreteMemberInTrait: Unit =
     """
     @ScalaJSDefined
     trait A extends js.Object {
@@ -573,5 +569,4 @@ class ScalaJSDefinedTest extends DirectTest with TestHelpers {
       |      def foo(x: Int): Int = x + 1
       |          ^
     """
-  }
 }

@@ -172,9 +172,8 @@ final class CircuitBreakerProxy(
       stop
   }
 
-  def commonStateHandling: StateFunction = {
+  def commonStateHandling: StateFunction =
     callSucceededHandling orElse passthroughHandling orElse targetTerminationHandling
-  }
 
   when(Closed) {
     commonStateHandling orElse {

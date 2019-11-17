@@ -20,7 +20,6 @@ class UpdateTaskTrackerStepImpl @Inject() (taskUpdater: TaskUpdater)
   def processUpdate(
       timestamp: Timestamp,
       task: Task,
-      status: TaskStatus): Future[_] = {
+      status: TaskStatus): Future[_] =
     taskUpdater.statusUpdate(task.taskId.appId, status)
-  }
 }

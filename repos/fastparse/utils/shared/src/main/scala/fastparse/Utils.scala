@@ -113,13 +113,12 @@ object Utils {
     */
   final class CharBitSet(array: Array[Int], first: Int, last: Int)
       extends (Char => Boolean) {
-    def apply(c: Char) = {
+    def apply(c: Char) =
       if (c > last || c < first) false
       else {
         val offset = c - first
         (array(offset >> 5) & 1 << (offset & 31)) != 0
       }
-    }
   }
 
   /**
@@ -142,17 +141,16 @@ object Utils {
       }
     }
     val word: Boolean = strings.exists(_.isEmpty) || arr.isEmpty
-    def apply(c: Char): TrieNode = {
+    def apply(c: Char): TrieNode =
       if (c > max || c < min) null
       else arr(c - min)
-    }
 
     /**
       * Returns the length of the matching string, or -1 if not found
       */
     def query(input: String, index: Int): Int = {
       @tailrec
-      def rec(offset: Int, currentNode: TrieNode, currentRes: Int): Int = {
+      def rec(offset: Int, currentNode: TrieNode, currentRes: Int): Int =
         if (index + offset >= input.length) currentRes
         else {
           val char = input(index + offset)
@@ -166,7 +164,6 @@ object Utils {
               else currentRes
             )
         }
-      }
       rec(0, this, -1)
     }
   }

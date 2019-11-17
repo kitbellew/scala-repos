@@ -142,12 +142,10 @@ trait TypersTracking { self: Analyzer =>
       (if (noPrintTyping(tree)) body
        else runWith(tree) { pushFn; showPop(body) })
 
-    @inline final def printTyping(tree: Tree, s: => String) = {
+    @inline final def printTyping(tree: Tree, s: => String) =
       if (printTypings && !noPrintTyping(tree)) show(indented(s))
-    }
-    @inline final def printTyping(s: => String) = {
+    @inline final def printTyping(s: => String) =
       if (printTypings) show(indented(s))
-    }
   }
   def tpe_s(tp: Type, colorize: String => String): String = tp match {
     case OverloadedType(pre, alts) =>

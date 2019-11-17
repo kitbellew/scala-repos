@@ -85,10 +85,9 @@ object TlsSpec {
         setHandler(out, new OutHandler {
           override def onPull(): Unit = pull(in)
         })
-        override def onTimer(x: Any): Unit = {
+        override def onTimer(x: Any): Unit =
           failStage(
             new TimeoutException(s"timeout expired, last element was $last"))
-        }
       }
   }
 }

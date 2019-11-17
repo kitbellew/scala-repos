@@ -104,18 +104,16 @@ class ScalaIntroduceParameterDialog(
   }
 
   override def customizeParametersTable(
-      table: TableView[ScalaParameterTableModelItem]): Unit = {
+      table: TableView[ScalaParameterTableModelItem]): Unit =
     table.setSelection(util.Collections.emptyList())
-  }
 
-  override protected def createParametersListTable: ParametersListTable = {
+  override protected def createParametersListTable: ParametersListTable =
     new ScalaParametersListTable() {
       override def isRowEditable(row: Int): Boolean = false
 
       override protected def defaultText(
           item: ScalaParameterTableModelItem): String = ""
     }
-  }
 
   override def getPreferredFocusedComponent: JComponent = paramNameField
 
@@ -204,10 +202,9 @@ class ScalaIntroduceParameterDialog(
     defaultForIntroducedTextField.setOneLineMode(false)
     defaultForIntroducedTextField.setEnabled(true)
     defaultForIntroducedTextField.addDocumentListener(new DocumentAdapter {
-      override def documentChanged(e: DocumentEvent): Unit = {
+      override def documentChanged(e: DocumentEvent): Unit =
         introducedParamTableItem.foreach(
           _.parameter.defaultValue = defaultForIntroducedTextField.getText.trim)
-      }
     })
     IJSwingUtilities.adjustComponentsOnMac(label, defaultForIntroducedTextField)
     panel.add(defaultForIntroducedTextField, BorderLayout.CENTER)
@@ -223,9 +220,8 @@ class ScalaIntroduceParameterDialog(
     panel
   }
 
-  private def introducedParamTableItem: Option[ScalaParameterTableModelItem] = {
+  private def introducedParamTableItem: Option[ScalaParameterTableModelItem] =
     parameterItems.find(_.parameter.isIntroducedParameter)
-  }
 
   override protected def getDefaultValuesPanel: DefaultValuesUsagePanel =
     defaultValuesUsagePanel

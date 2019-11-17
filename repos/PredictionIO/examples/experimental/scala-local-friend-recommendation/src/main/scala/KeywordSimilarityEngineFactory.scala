@@ -3,7 +3,7 @@ package io.prediction.examples.friendrecommendation
 import io.prediction.controller._
 
 object KeywordSimilarityEngineFactory extends IEngineFactory {
-  override def apply() = {
+  override def apply() =
     new Engine(
       classOf[FriendRecommendationDataSource],
       classOf[LIdentityPreparator[FriendRecommendationTrainingData]],
@@ -12,5 +12,4 @@ object KeywordSimilarityEngineFactory extends IEngineFactory {
         FriendRecommendationQuery,
         FriendRecommendationPrediction]]
     )
-  }
 }

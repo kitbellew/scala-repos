@@ -586,11 +586,10 @@ class JavaHighlightingTest extends ScalaFixtureTestCase {
     Assert.assertTrue("actual: " + actual.toString, pattern.isDefinedAt(actual))
   }
 
-  def assertNoErrors(messages: List[Message]): Unit = {
+  def assertNoErrors(messages: List[Message]): Unit =
     assertMatches(messages) {
       case Nil =>
     }
-  }
 
   val CannotResolveMethod = ContainsPattern("Cannot resolve method")
   val CannotBeApplied = ContainsPattern("cannot be applied")

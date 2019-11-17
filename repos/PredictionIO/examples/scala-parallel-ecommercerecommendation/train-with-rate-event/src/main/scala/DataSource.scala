@@ -127,9 +127,8 @@ class TrainingData(
     val items: RDD[(String, Item)],
     val rateEvents: RDD[RateEvent] // MODIFIED
 ) extends Serializable {
-  override def toString = {
+  override def toString =
     s"users: [${users.count()} (${users.take(2).toList}...)]" +
       s"items: [${items.count()} (${items.take(2).toList}...)]" + // MODIFIED
       s"rateEvents: [${rateEvents.count()}] (${rateEvents.take(2).toList}...)"
-  }
 }

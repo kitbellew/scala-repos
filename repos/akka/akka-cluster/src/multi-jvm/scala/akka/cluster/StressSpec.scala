@@ -252,13 +252,12 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
       numberOfNodesJoinRemove <= totalNumberOfNodes,
       s"nr-of-nodes-join-remove should be <= ${totalNumberOfNodes}")
 
-    override def toString: String = {
+    override def toString: String =
       testConfig
         .withFallback(
           ConfigFactory.parseString(s"nrOfNodes=${totalNumberOfNodes}"))
         .root
         .render
-    }
   }
 
   implicit class FormattedDouble(val d: Double) extends AnyVal {
@@ -374,7 +373,7 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
       case Some(x) ⇒ x.form
     }
 
-    def formatPhi: String = {
+    def formatPhi: String =
       if (phiValuesObservedByNode.isEmpty) ""
       else {
         import akka.cluster.Member.addressOrdering
@@ -385,7 +384,6 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
 
         lines.mkString(formatPhiHeader + "\n", "\n", "")
       }
-    }
 
     def formatPhiHeader: String =
       "[Monitor]\t[Subject]\t[count]\t[count phi > 1.0]\t[max phi]"
@@ -619,13 +617,12 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
         context stop self
       }
 
-    def sendJobs(): Unit = {
+    def sendJobs(): Unit =
       0 until settings.workBatchSize foreach { _ ⇒
         send(createJob())
       }
-    }
 
-    def createJob(): Job = {
+    def createJob(): Job =
       if (tree)
         TreeJob(
           idCounter.next(),
@@ -634,13 +631,11 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
           settings.treeLevels,
           settings.treeWidth)
       else SimpleJob(idCounter.next(), payload)
-    }
 
-    def resend(): Unit = {
+    def resend(): Unit =
       outstanding.values foreach { jobState ⇒
         if (jobState.deadline.isOverdue) send(jobState.job)
       }
-    }
 
     def send(job: Job): Unit = {
       outstanding += job.id -> JobState(Deadline.now + retryTimeout, job)
@@ -823,7 +818,7 @@ abstract class StressSpec
   var step = 0
   var nbrUsedRoles = 0
 
-  override def beforeEach(): Unit = { step += 1 }
+  override def beforeEach(): Unit = step += 1
 
   override def expectedTestDuration = settings.expectedTestDuration
 
@@ -960,13 +955,12 @@ abstract class StressSpec
     enterBarrier("cluster-result-done-" + step)
   }
 
-  def joinOneByOne(numberOfNodes: Int): Unit = {
+  def joinOneByOne(numberOfNodes: Int): Unit =
     0 until numberOfNodes foreach { _ ⇒
       joinOne()
       nbrUsedRoles += 1
       step += 1
     }
-  }
 
   def convergenceWithin(base: FiniteDuration, nodes: Int): FiniteDuration =
     (base.toMillis * convergenceWithinFactor * nodes).millis
@@ -1016,13 +1010,12 @@ abstract class StressSpec
       enterBarrier("join-several-" + step)
     }
 
-  def removeOneByOne(numberOfNodes: Int, shutdown: Boolean): Unit = {
+  def removeOneByOne(numberOfNodes: Int, shutdown: Boolean): Unit =
     0 until numberOfNodes foreach { _ ⇒
       removeOne(shutdown)
       nbrUsedRoles -= 1
       step += 1
     }
-  }
 
   def removeOne(shutdown: Boolean): Unit =
     within(25.seconds + convergenceWithin(3.seconds, nbrUsedRoles - 1)) {
@@ -1134,7 +1127,7 @@ abstract class StressSpec
     def loop(
         counter: Int,
         previousAS: Option[ActorSystem],
-        allPreviousAddresses: Set[Address]): Option[ActorSystem] = {
+        allPreviousAddresses: Set[Address]): Option[ActorSystem] =
       if (counter > rounds) previousAS
       else {
         val t = title + " round " + counter
@@ -1180,7 +1173,6 @@ abstract class StressSpec
         step += 1
         loop(counter + 1, nextAS, nextAddresses)
       }
-    }
 
     loop(1, None, Set.empty) foreach { as ⇒
       TestKit.shutdownActorSystem(as)

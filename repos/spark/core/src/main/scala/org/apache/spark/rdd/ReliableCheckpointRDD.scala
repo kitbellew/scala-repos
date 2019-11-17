@@ -116,13 +116,11 @@ private[spark] object ReliableCheckpointRDD extends Logging {
   /**
     * Return the checkpoint file name for the given partition.
     */
-  private def checkpointFileName(partitionIndex: Int): String = {
+  private def checkpointFileName(partitionIndex: Int): String =
     "part-%05d".format(partitionIndex)
-  }
 
-  private def checkpointPartitionerFileName(): String = {
+  private def checkpointPartitionerFileName(): String =
     "_partitioner"
-  }
 
   /**
     * Write RDD to checkpoint files and return a ReliableCheckpointRDD representing the RDD.
@@ -239,7 +237,7 @@ private[spark] object ReliableCheckpointRDD extends Logging {
   private def writePartitionerToCheckpointDir(
       sc: SparkContext,
       partitioner: Partitioner,
-      checkpointDirPath: Path): Unit = {
+      checkpointDirPath: Path): Unit =
     try {
       val partitionerFilePath =
         new Path(checkpointDirPath, checkpointPartitionerFileName)
@@ -259,7 +257,6 @@ private[spark] object ReliableCheckpointRDD extends Logging {
         logWarning(
           s"Error writing partitioner $partitioner to $checkpointDirPath")
     }
-  }
 
   /**
     * Read a partitioner from the given RDD checkpoint directory, if it exists.
@@ -268,7 +265,7 @@ private[spark] object ReliableCheckpointRDD extends Logging {
     */
   private def readCheckpointedPartitionerFile(
       sc: SparkContext,
-      checkpointDirPath: String): Option[Partitioner] = {
+      checkpointDirPath: String): Option[Partitioner] =
     try {
       val bufferSize = sc.conf.getInt("spark.buffer.size", 65536)
       val partitionerFilePath =
@@ -297,7 +294,6 @@ private[spark] object ReliableCheckpointRDD extends Logging {
           e)
         None
     }
-  }
 
   /**
     * Read the content of the specified checkpoint file.

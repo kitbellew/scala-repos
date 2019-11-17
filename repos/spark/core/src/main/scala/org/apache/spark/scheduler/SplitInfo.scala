@@ -30,11 +30,10 @@ class SplitInfo(
     val path: String,
     val length: Long,
     val underlyingSplit: Any) {
-  override def toString(): String = {
+  override def toString(): String =
     "SplitInfo " + super.toString + " .. inputFormatClazz " +
       inputFormatClazz + ", hostLocation : " + hostLocation + ", path : " +
       path + ", length : " + length + ", underlyingSplit " + underlyingSplit
-  }
 
   override def hashCode(): Int = {
     var hashCode = inputFormatClazz.hashCode

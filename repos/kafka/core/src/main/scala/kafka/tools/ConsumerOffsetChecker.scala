@@ -37,9 +37,7 @@ object ConsumerOffsetChecker extends Logging {
   private val offsetMap: mutable.Map[TopicAndPartition, Long] = mutable.Map()
   private var topicPidMap: immutable.Map[String, Seq[Int]] = immutable.Map()
 
-  private def getConsumer(
-      zkUtils: ZkUtils,
-      bid: Int): Option[SimpleConsumer] = {
+  private def getConsumer(zkUtils: ZkUtils, bid: Int): Option[SimpleConsumer] =
     try {
       zkUtils.readDataMaybeNull(ZkUtils.BrokerIdsPath + "/" + bid)._1 match {
         case Some(brokerInfoString) =>
@@ -68,7 +66,6 @@ object ConsumerOffsetChecker extends Logging {
         println("Could not parse broker info due to " + t.getCause)
         None
     }
-  }
 
   private def processPartition(
       zkUtils: ZkUtils,

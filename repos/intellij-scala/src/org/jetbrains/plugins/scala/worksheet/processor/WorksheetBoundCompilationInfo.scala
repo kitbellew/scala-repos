@@ -13,7 +13,7 @@ import com.intellij.openapi.util.io.FileUtil
 object WorksheetBoundCompilationInfo {
   private val cache = new util.HashMap[String, (Int, File, File)]()
 
-  def updateOrCreate(filePath: String, fileName: String): (Int, File, File) = {
+  def updateOrCreate(filePath: String, fileName: String): (Int, File, File) =
     synchronized {
       val result = cache get filePath
       if (result != null) {
@@ -28,5 +28,4 @@ object WorksheetBoundCompilationInfo {
         (0, src, out)
       }
     }
-  }
 }

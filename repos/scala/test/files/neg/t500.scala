@@ -11,12 +11,11 @@ object Magic {
 }
 
 object Test {
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     try {
       val i: Int = Magic.magic("42");
       Console.println(i);
     } catch {
       case ex: Throwable => ex.printStackTrace()
     }
-  }
 }

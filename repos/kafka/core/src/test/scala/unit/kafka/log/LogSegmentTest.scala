@@ -44,12 +44,11 @@ class LogSegmentTest {
   }
 
   /* create a ByteBufferMessageSet for the given messages starting from the given offset */
-  def messages(offset: Long, messages: String*): ByteBufferMessageSet = {
+  def messages(offset: Long, messages: String*): ByteBufferMessageSet =
     new ByteBufferMessageSet(
       compressionCodec = NoCompressionCodec,
       offsetCounter = new LongRef(offset),
       messages = messages.map(s => new Message(s.getBytes)): _*)
-  }
 
   @After
   def teardown() {

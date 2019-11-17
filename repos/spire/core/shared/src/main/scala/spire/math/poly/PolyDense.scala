@@ -21,19 +21,17 @@ class PolyDense[@sp(Double) C] private[spire] (val coeffs: Array[C])(
 
   def toDense(implicit ring: Semiring[C], eq: Eq[C]): PolyDense[C] = lhs
 
-  def foreach[U](f: (Int, C) => U): Unit = {
+  def foreach[U](f: (Int, C) => U): Unit =
     cfor(0)(_ < coeffs.length, _ + 1) { e =>
       f(e, coeffs(e))
     }
-  }
 
   override def foreachNonZero[U](
-      f: (Int, C) => U)(implicit ring: Semiring[C], eq: Eq[C]): Unit = {
+      f: (Int, C) => U)(implicit ring: Semiring[C], eq: Eq[C]): Unit =
     cfor(0)(_ < coeffs.length, _ + 1) { e =>
       val c = coeffs(e)
       if (c =!= ring.zero) f(e, c)
     }
-  }
 
   def termsIterator: Iterator[Term[C]] =
     new TermIterator
@@ -174,10 +172,7 @@ class PolyDense[@sp(Double) C] private[spire] (val coeffs: Array[C])(
     }
 
     @tailrec
-    def eval(
-        q: Array[C],
-        u: Array[C],
-        n: Int): (Polynomial[C], Polynomial[C]) = {
+    def eval(q: Array[C], u: Array[C], n: Int): (Polynomial[C], Polynomial[C]) =
       if (u.isEmpty || n < 0) {
         (polyFromCoeffsLE(q), polyFromCoeffsBE(u))
       } else {
@@ -186,7 +181,6 @@ class PolyDense[@sp(Double) C] private[spire] (val coeffs: Array[C])(
         val uprime = zipSum(u, rhs.coeffsArray.reverse.map(_ * -q0))
         eval(Array(q0) ++ q, uprime, n - 1)
       }
-    }
 
     val cs = rhs.coeffsArray
     if (cs.length == 0) {

@@ -91,11 +91,10 @@ class JobGeneratorSuite extends TestSuiteBase {
       val receiverTracker = ssc.scheduler.receiverTracker
 
       // Get the blocks belonging to a batch
-      def getBlocksOfBatch(batchTime: Long): Seq[ReceivedBlockInfo] = {
+      def getBlocksOfBatch(batchTime: Long): Seq[ReceivedBlockInfo] =
         receiverTracker.getBlocksOfBatchAndStream(
           Time(batchTime),
           inputStream.id)
-      }
 
       // Wait for new blocks to be received
       def waitForNewReceivedBlocks() {

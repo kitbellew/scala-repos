@@ -110,7 +110,7 @@ object FailureDetector {
       config: Config,
       ping: () => Future[Unit],
       statsReceiver: StatsReceiver
-  ): FailureDetector = {
+  ): FailureDetector =
     config match {
       case NullConfig => NullFailureDetector
 
@@ -126,7 +126,6 @@ object FailureDetector {
       case GlobalFlagConfig =>
         parseConfigFromFlags(ping, statsReceiver = statsReceiver)
     }
-  }
 
   /**
     * Fallback behavior: parse the sessionFailureDetector global flag and
@@ -136,7 +135,7 @@ object FailureDetector {
       ping: () => Future[Unit],
       nanoTime: () => Long = System.nanoTime,
       statsReceiver: StatsReceiver = NullStatsReceiver
-  ): FailureDetector = {
+  ): FailureDetector =
     sessionFailureDetector() match {
       case list(
           "threshold",
@@ -191,5 +190,4 @@ object FailureDetector {
           s"unknown failure detector ${sessionFailureDetector()} specified")
         NullFailureDetector
     }
-  }
 }

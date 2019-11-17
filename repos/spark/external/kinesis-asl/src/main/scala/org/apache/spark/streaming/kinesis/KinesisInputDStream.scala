@@ -80,7 +80,7 @@ private[kinesis] class KinesisInputDStream[T: ClassTag](
     }
   }
 
-  override def getReceiver(): Receiver[T] = {
+  override def getReceiver(): Receiver[T] =
     new KinesisReceiver(
       streamName,
       endpointUrl,
@@ -91,5 +91,4 @@ private[kinesis] class KinesisInputDStream[T: ClassTag](
       storageLevel,
       messageHandler,
       awsCredentialsOption)
-  }
 }

@@ -15,10 +15,9 @@ object C {
     fabs.createNewFile
   }
 
-  def waitFor(f: File): Unit = {
+  def waitFor(f: File): Unit =
     if (!f.exists) {
       Thread.sleep(300)
       waitFor(f)
     }
-  }
 }

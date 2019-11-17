@@ -33,9 +33,8 @@ private[sql] object ParquetFilters {
       extends UserDefinedPredicate[T]
       with Serializable {
 
-    override def keep(value: T): Boolean = {
+    override def keep(value: T): Boolean =
       value != null && valueSet.contains(value)
-    }
 
     override def canDrop(statistics: Statistics[T]): Boolean = false
 

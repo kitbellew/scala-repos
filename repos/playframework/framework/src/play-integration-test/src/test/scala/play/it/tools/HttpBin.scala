@@ -355,7 +355,7 @@ object HttpBinApplication {
       }
   }
 
-  def app = {
+  def app =
     new BuiltInComponentsFromContext(
       ApplicationLoader.createContext(Environment.simple()))
       with AhcWSComponents {
@@ -384,5 +384,4 @@ object HttpBinApplication {
           .orElse(robots)
       )
     }.application
-  }
 }

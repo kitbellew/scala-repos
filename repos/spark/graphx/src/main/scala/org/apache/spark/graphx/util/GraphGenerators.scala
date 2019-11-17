@@ -222,7 +222,7 @@ object GraphGenerators extends Logging {
     * }}}
     */
   @tailrec
-  private def chooseCell(x: Int, y: Int, t: Int): (Int, Int) = {
+  private def chooseCell(x: Int, y: Int, t: Int): (Int, Int) =
     if (t <= 1) {
       (x, y)
     } else {
@@ -234,7 +234,6 @@ object GraphGenerators extends Logging {
         case 3 => chooseCell(x + newT, y + newT, newT)
       }
     }
-  }
 
   // TODO(crankshaw) turn result into an enum (or case class for pattern matching}
   private def pickQuadrant(a: Double, b: Double, c: Double, d: Double): Int = {

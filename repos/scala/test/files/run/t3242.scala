@@ -39,7 +39,7 @@ object Test {
     println(">> comparison done, num: " + num);
   }
 
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     try {
       //createBenchmarkA(23).testRun
 
@@ -48,5 +48,4 @@ object Test {
     } catch {
       case e: Exception => e.printStackTrace()
     }
-  }
 }

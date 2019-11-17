@@ -31,9 +31,8 @@ class CookStateLogSpecs extends Specification {
   trait LogState extends After {
     val workDir = IOUtils.createTmpDir("cookstatespecs").unsafePerformIO
 
-    def after = {
+    def after =
       IOUtils.recursiveDelete(workDir).unsafePerformIO
-    }
   }
 
   "CookStateLog" should {

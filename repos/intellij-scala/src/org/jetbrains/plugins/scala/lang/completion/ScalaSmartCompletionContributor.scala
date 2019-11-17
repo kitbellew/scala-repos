@@ -66,13 +66,12 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
       completeThis: Boolean,
       place: PsiElement,
       originalPlace: PsiElement) {
-    def isAccessible(el: ScalaLookupItem): Boolean = {
+    def isAccessible(el: ScalaLookupItem): Boolean =
       ScalaPsiUtil.nameContext(el.element) match {
         case memb: ScMember =>
           ResolveUtils.isAccessible(memb, place, forCompletion = true)
         case _ => true
       }
-    }
 
     if (typez.isEmpty || typez.forall(_ == types.Nothing)) return
 
@@ -1067,7 +1066,7 @@ private[completion] object ScalaSmartCompletionContributor {
   }
 
   def superParentPattern(
-      clazz: java.lang.Class[_ <: PsiElement]): ElementPattern[PsiElement] = {
+      clazz: java.lang.Class[_ <: PsiElement]): ElementPattern[PsiElement] =
     StandardPatterns.or(
       PlatformPatterns
         .psiElement(ScalaTokenTypes.tIDENTIFIER)
@@ -1079,7 +1078,6 @@ private[completion] object ScalaSmartCompletionContributor {
         .withSuperParent(2, classOf[ScReferenceExpression])
         .withSuperParent(3, clazz)
     )
-  }
 
   def superParentsPattern(
       classes: Class[_ <: PsiElement]*): ElementPattern[PsiElement] = {

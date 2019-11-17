@@ -44,7 +44,7 @@ private[report] final class ReportApi {
       (report.isAutomatic && report.isOther && user.troll) ||
       (report.isTrollOrInsult && user.troll)
 
-  def autoCheatPrintReport(userId: String): Funit = {
+  def autoCheatPrintReport(userId: String): Funit =
     UserRepo byId userId zip UserRepo.lichess flatMap {
       case (Some(user), Some(lichess)) =>
         create(
@@ -57,7 +57,6 @@ private[report] final class ReportApi {
           lichess)
       case _ => funit
     }
-  }
 
   def autoCheatReport(userId: String, text: String): Funit = {
     lila.mon.cheat.autoReport.count()
@@ -75,7 +74,7 @@ private[report] final class ReportApi {
     }
   }
 
-  def autoBotReport(userId: String, referer: Option[String]): Funit = {
+  def autoBotReport(userId: String, referer: Option[String]): Funit =
     UserRepo byId userId zip UserRepo.lichess flatMap {
       case (Some(user), Some(lichess)) =>
         create(
@@ -88,9 +87,8 @@ private[report] final class ReportApi {
           lichess)
       case _ => funit
     }
-  }
 
-  def autoBoostReport(userId: String, accompliceId: String): Funit = {
+  def autoBoostReport(userId: String, accompliceId: String): Funit =
     UserRepo.byId(userId) zip UserRepo.byId(accompliceId) zip UserRepo.lichess flatMap {
       case ((Some(user), Some(accomplice)), Some(lichess)) =>
         create(
@@ -103,7 +101,6 @@ private[report] final class ReportApi {
           lichess)
       case _ => funit
     }
-  }
 
   def clean(userId: String): Funit =
     $update(

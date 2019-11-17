@@ -85,9 +85,8 @@ object overloads {
 
 object Test {
 
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     overloads.test;
-  }
 }
 
 //############################################################################

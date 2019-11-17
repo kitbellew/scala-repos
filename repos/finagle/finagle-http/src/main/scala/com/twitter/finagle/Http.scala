@@ -123,7 +123,7 @@ object Http
         streaming: param.Streaming,
         stats: Stats,
         next: ServiceFactory[Request, Response]
-    ): ServiceFactory[Request, Response] = {
+    ): ServiceFactory[Request, Response] =
       if (!streaming.enabled)
         new PayloadSizeFilter[Request, Response](
           stats.statsReceiver,
@@ -131,7 +131,6 @@ object Http
           _.content.length)
           .andThen(next)
       else next
-    }
   }
 
   object Client {

@@ -30,9 +30,8 @@ abstract class AbstractInspection(id: String, name: String)
 object AbstractInspection {
   private val CapitalLetterPattern = "(?<!=.)\\p{Lu}".r
 
-  def formatId(aClass: Class[_]) = {
+  def formatId(aClass: Class[_]) =
     aClass.getSimpleName.stripSuffix("Inspection")
-  }
 
   def formatName(aClass: Class[_]) = {
     val id = formatId(aClass)

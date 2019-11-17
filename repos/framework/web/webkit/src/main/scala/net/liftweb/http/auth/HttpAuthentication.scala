@@ -59,7 +59,7 @@ object userRoles extends RequestVar[List[Role]](Nil)
 case class HttpBasicAuthentication(realmName: String)(
     func: PartialFunction[(String, String, Req), Boolean])
     extends HttpAuthentication {
-  def credentials(r: Req): Box[(String, String)] = {
+  def credentials(r: Req): Box[(String, String)] =
     header(r).flatMap(auth => {
       val decoded =
         new String(Base64.decodeBase64(auth.substring(6, auth.length).getBytes))
@@ -71,7 +71,6 @@ case class HttpBasicAuthentication(realmName: String)(
         case _                         => Empty
       }
     })
-  }
 
   override def realm = realmName
 

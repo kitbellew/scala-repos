@@ -119,7 +119,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
       enclosingClassName: String,
       params: List[ParamDef],
       body: Tree,
-      isStat: Boolean)(implicit pos: Position): js.Function = {
+      isStat: Boolean)(implicit pos: Position): js.Function =
     desugarToFunction(
       classEmitter,
       enclosingClassName,
@@ -127,7 +127,6 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
       params,
       body,
       isStat)
-  }
 
   /** Desugars parameters and body to a JS function.
     */
@@ -137,10 +136,9 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
       thisIdent: Option[js.Ident],
       params: List[ParamDef],
       body: Tree,
-      isStat: Boolean)(implicit pos: Position): js.Function = {
+      isStat: Boolean)(implicit pos: Position): js.Function =
     new JSDesugar(classEmitter, enclosingClassName, thisIdent)
       .desugarToFunction(params, body, isStat)
-  }
 
   /** Desugars a statement or an expression. */
   private[emitter] def desugarTree(
@@ -557,7 +555,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
     }
 
     private object RecordFieldVarRef {
-      def unapply(tree: Tree): Option[VarRef] = {
+      def unapply(tree: Tree): Option[VarRef] =
         tree match {
           case Select(RecordVarRef(VarRef(recIdent)), fieldIdent) =>
             implicit val pos = tree.pos
@@ -565,7 +563,6 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
           case _ =>
             None
         }
-      }
     }
 
     def transformBlockStats(trees: List[Tree])(
@@ -592,7 +589,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
     }
 
     private object RecordVarRef {
-      def unapply(tree: Tree): Option[VarRef] = {
+      def unapply(tree: Tree): Option[VarRef] =
         if (!tree.tpe.isInstanceOf[RecordType]) None
         else {
           tree match {
@@ -602,7 +599,6 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
               Some(VarRef(makeRecordFieldIdent(recIdent, fieldIdent))(tree.tpe))
           }
         }
-      }
     }
 
     /** Same as `unnest`, but allows (and preserves) [[JSSpread]]s at the
@@ -750,12 +746,11 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
           }
         }
 
-        def recs(args: List[Tree])(implicit env: Env): List[Tree] = {
+        def recs(args: List[Tree])(implicit env: Env): List[Tree] =
           // This is a right-to-left map
           args.foldRight[List[Tree]](Nil) { (arg, acc) =>
             rec(arg) :: acc
           }
-        }
 
         val newArgs = recs(args)
 
@@ -771,28 +766,25 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
 
     /** Same as above, for a single argument */
     def unnest(arg: Tree)(makeStat: (Tree, Env) => js.Tree)(
-        implicit env: Env): js.Tree = {
+        implicit env: Env): js.Tree =
       unnest(List(arg)) {
         case (List(newArg), env) => makeStat(newArg, env)
       }
-    }
 
     /** Same as above, for two arguments */
     def unnest(lhs: Tree, rhs: Tree)(makeStat: (Tree, Tree, Env) => js.Tree)(
-        implicit env: Env): js.Tree = {
+        implicit env: Env): js.Tree =
       unnest(List(lhs, rhs)) {
         case (List(newLhs, newRhs), env) => makeStat(newLhs, newRhs, env)
       }
-    }
 
     /** Same as above, for one head argument and a list of arguments */
     def unnest(arg0: Tree, args: List[Tree])(
         makeStat: (Tree, List[Tree], Env) => js.Tree)(
-        implicit env: Env): js.Tree = {
+        implicit env: Env): js.Tree =
       unnest(arg0 :: args) { (newArgs, env) =>
         makeStat(newArgs.head, newArgs.tail, env)
       }
-    }
 
     /** Common implementation for the functions below.
       *  A pure expression can be moved around or executed twice, because it
@@ -955,7 +947,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
 
     def doEmptyVarDef(ident: Ident, tpe: Type)(
         implicit pos: Position,
-        env: Env): js.Tree = {
+        env: Env): js.Tree =
       tpe match {
         case RecordType(fields) =>
           js.Block(for {
@@ -967,7 +959,6 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
         case _ =>
           genLet(ident, mutable = true, js.EmptyTree)
       }
-    }
 
     def doAssign(lhs: Tree, rhs: Tree)(implicit env: Env): js.Tree = {
       implicit val pos = rhs.pos
@@ -1008,7 +999,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
         *  its scope.
         *  This only matters in ECMAScript 6, because we emit Lets.
         */
-      def extractLet(inner: Tree => js.Tree): js.Tree = {
+      def extractLet(inner: Tree => js.Tree): js.Tree =
         outputMode match {
           case OutputMode.ECMAScript51Global |
               OutputMode.ECMAScript51Isolated =>
@@ -1023,7 +1014,6 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                 inner(lhs)
             }
         }
-      }
 
       if (rhs.tpe == NothingType && lhs != EmptyTree) {
         /* A touch of peephole dead code elimination.
@@ -1512,13 +1502,12 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
       var reversedParts: List[Tree] = Nil
       var reversedPartUnderConstruction: List[Tree] = Nil
 
-      def closeReversedPartUnderConstruction() = {
+      def closeReversedPartUnderConstruction() =
         if (!reversedPartUnderConstruction.isEmpty) {
           val part = reversedPartUnderConstruction.reverse
           reversedParts ::= JSArrayConstr(part)(part.head.pos)
           reversedPartUnderConstruction = Nil
         }
-      }
 
       for (arg <- args) {
         arg match {
@@ -1551,7 +1540,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
       *  result of `makeTree(temp)`.
       */
     private def withTempVar(expr: Tree)(makeTree: (Tree, Env) => js.Tree)(
-        implicit env: Env): js.Tree = {
+        implicit env: Env): js.Tree =
       expr match {
         case VarRef(ident) if !env.isLocalMutable(ident) =>
           makeTree(expr, env)
@@ -1564,7 +1553,6 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
             expr)
           js.Block(computeTemp, makeTree(VarRef(temp)(expr.tpe), newEnv))
       }
-    }
 
     // Desugar Scala operations to JavaScript operations -----------------------
 
@@ -2050,7 +2038,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
       "isInfinite__Z" -> "isInfinite"
     )
 
-    def genClassDataOf(cls: ReferenceType)(implicit pos: Position): js.Tree = {
+    def genClassDataOf(cls: ReferenceType)(implicit pos: Position): js.Tree =
       cls match {
         case ClassType(className) =>
           envField("d", className)
@@ -2059,7 +2047,6 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
             js.Apply(js.DotSelect(prev, js.Ident("getArrayOf")), Nil)
           }
       }
-    }
 
     private def getSuperClassOfJSClass(linkedClass: LinkedClass)(
         implicit pos: Position): LinkedClass = {
@@ -2068,9 +2055,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
       classEmitter.linkedClassByName(linkedClass.superClass.get.name)
     }
 
-    private def genFround(arg: js.Tree)(implicit pos: Position): js.Tree = {
+    private def genFround(arg: js.Tree)(implicit pos: Position): js.Tree =
       genCallHelper("fround", arg)
-    }
 
     private def genNewLong(ctor: String, args: js.Tree*)(
         implicit pos: Position): js.Tree = {
@@ -2113,14 +2099,13 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
       private def withRecordDefs(
           recIdent: Ident,
           fields: List[RecordType.Field],
-          recMutable: Boolean): Env = {
+          recMutable: Boolean): Env =
         fields.foldLeft(env) { (env, fld) =>
           val ident =
             makeRecordFieldIdent(recIdent, fld.name, fld.originalName)(
               recIdent.pos)
           env.withDef(ident, fld.tpe, recMutable || fld.mutable)
         }
-      }
     }
   }
 
@@ -2129,13 +2114,12 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
   final class Env private (vars: Map[String, Boolean]) {
     def isLocalMutable(ident: Ident): Boolean = vars(ident.name)
 
-    def withParams(params: List[ParamDef]): Env = {
+    def withParams(params: List[ParamDef]): Env =
       params.foldLeft(this) {
         case (env, ParamDef(name, tpe, mutable, _)) =>
           // ParamDefs may not contain record types
           env.withDef(name, mutable)
       }
-    }
 
     def withDef(ident: Ident, mutable: Boolean): Env =
       new Env(vars + (ident.name -> mutable))
@@ -2149,14 +2133,13 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
 
   private[emitter] def genLet(name: js.Ident, mutable: Boolean, rhs: js.Tree)(
       implicit outputMode: OutputMode,
-      pos: Position): js.LocalDef = {
+      pos: Position): js.LocalDef =
     outputMode match {
       case OutputMode.ECMAScript51Global | OutputMode.ECMAScript51Isolated =>
         js.VarDef(name, rhs)
       case OutputMode.ECMAScript6 =>
         js.Let(name, mutable, rhs)
     }
-  }
 
   private[emitter] def genIsInstanceOf(expr: js.Tree, cls: ReferenceType)(
       implicit outputMode: OutputMode,
@@ -2218,9 +2201,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
 
   private[emitter] def genCallHelper(helperName: String, args: js.Tree*)(
       implicit outputMode: OutputMode,
-      pos: Position): js.Tree = {
+      pos: Position): js.Tree =
     js.Apply(envField(helperName), args.toList)
-  }
 
   private[emitter] def encodeClassVar(className: String)(
       implicit outputMode: OutputMode,
@@ -2229,7 +2211,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
 
   private[emitter] def genRawJSClassConstructor(linkedClass: LinkedClass)(
       implicit outputMode: OutputMode,
-      pos: Position): js.Tree = {
+      pos: Position): js.Tree =
     if (linkedClass.kind == ClassKind.JSClass) {
       encodeClassVar(linkedClass.encodedName)
     } else {
@@ -2239,7 +2221,6 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
           genBracketSelect(prev, js.StringLiteral(part))
       }
     }
-  }
 
   private[emitter] def envField(
       field: String,
@@ -2275,11 +2256,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
   private[emitter] def envFieldDef(
       field: String,
       subField: String,
-      value: js.Tree)(
-      implicit outputMode: OutputMode,
-      pos: Position): js.Tree = {
+      value: js.Tree)(implicit outputMode: OutputMode, pos: Position): js.Tree =
     envFieldDef(field, subField, value, mutable = false)
-  }
 
   private[emitter] def envFieldDef(
       field: String,
@@ -2287,19 +2265,15 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
       value: js.Tree,
       mutable: Boolean)(
       implicit outputMode: OutputMode,
-      pos: Position): js.Tree = {
+      pos: Position): js.Tree =
     envFieldDef(field, subField, origName = None, value, mutable)
-  }
 
   private[emitter] def envFieldDef(
       field: String,
       subField: String,
       origName: Option[String],
-      value: js.Tree)(
-      implicit outputMode: OutputMode,
-      pos: Position): js.Tree = {
+      value: js.Tree)(implicit outputMode: OutputMode, pos: Position): js.Tree =
     envFieldDef(field, subField, origName, value, mutable = false)
-  }
 
   private[emitter] def envFieldDef(
       field: String,
@@ -2331,7 +2305,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
   }
 
   private[emitter] def genBracketSelect(qual: js.Tree, item: js.Tree)(
-      implicit pos: Position): js.Tree = {
+      implicit pos: Position): js.Tree =
     item match {
       case js.StringLiteral(name)
           if internalOptions.optimizeBracketSelects &&
@@ -2343,7 +2317,6 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
       case _ =>
         js.BracketSelect(qual, item)
     }
-  }
 
   private[emitter] def genIdentBracketSelect(qual: js.Tree, item: String)(
       implicit pos: Position): js.Tree = {

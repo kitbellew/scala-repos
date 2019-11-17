@@ -121,11 +121,10 @@ private[graphx] class RoutingTablePartition(
     routingTable.iterator.flatMap(_._1.iterator)
 
   /** Returns a new RoutingTablePartition reflecting a reversal of all edge directions. */
-  def reverse: RoutingTablePartition = {
+  def reverse: RoutingTablePartition =
     new RoutingTablePartition(routingTable.map {
       case (vids, srcVids, dstVids) => (vids, dstVids, srcVids)
     })
-  }
 
   /**
     * Runs `f` on each vertex id to be sent to the specified edge partition. Vertex ids can be

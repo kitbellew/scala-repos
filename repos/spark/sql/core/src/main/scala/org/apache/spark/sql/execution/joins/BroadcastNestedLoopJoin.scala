@@ -52,7 +52,7 @@ case class BroadcastNestedLoopJoin(
       UnspecifiedDistribution :: BroadcastDistribution(IdentityBroadcastMode) :: Nil
   }
 
-  private[this] def genResultProjection: InternalRow => InternalRow = {
+  private[this] def genResultProjection: InternalRow => InternalRow =
     if (joinType == LeftSemi) {
       UnsafeProjection.create(output, output)
     } else {
@@ -62,11 +62,10 @@ case class BroadcastNestedLoopJoin(
         output,
         (streamed.output ++ broadcast.output).map(_.withNullability(true)))
     }
-  }
 
   override def outputPartitioning: Partitioning = streamed.outputPartitioning
 
-  override def output: Seq[Attribute] = {
+  override def output: Seq[Attribute] =
     joinType match {
       case Inner =>
         left.output ++ right.output
@@ -83,7 +82,6 @@ case class BroadcastNestedLoopJoin(
         throw new IllegalArgumentException(
           s"BroadcastNestedLoopJoin should not take $x as the JoinType")
     }
-  }
 
   @transient private lazy val boundCondition = {
     if (condition.isDefined) {
@@ -97,7 +95,7 @@ case class BroadcastNestedLoopJoin(
     * The implementation for InnerJoin.
     */
   private def innerJoin(
-      relation: Broadcast[Array[InternalRow]]): RDD[InternalRow] = {
+      relation: Broadcast[Array[InternalRow]]): RDD[InternalRow] =
     streamed.execute().mapPartitionsInternal { streamedIter =>
       val buildRows = relation.value
       val joinedRow = new JoinedRow
@@ -111,7 +109,6 @@ case class BroadcastNestedLoopJoin(
         }
       }
     }
-  }
 
   /**
     * The implementation for these joins:
@@ -120,7 +117,7 @@ case class BroadcastNestedLoopJoin(
     *   RightOuter with BuildLeft
     */
   private def outerJoin(
-      relation: Broadcast[Array[InternalRow]]): RDD[InternalRow] = {
+      relation: Broadcast[Array[InternalRow]]): RDD[InternalRow] =
     streamed.execute().mapPartitionsInternal { streamedIter =>
       val buildRows = relation.value
       val joinedRow = new JoinedRow
@@ -165,9 +162,8 @@ case class BroadcastNestedLoopJoin(
           }
         }
 
-        override def hasNext(): Boolean = {
+        override def hasNext(): Boolean =
           resultRow != null || findNextMatch()
-        }
         override def next(): InternalRow = {
           val r = resultRow
           resultRow = null
@@ -175,7 +171,6 @@ case class BroadcastNestedLoopJoin(
         }
       }
     }
-  }
 
   /**
     * The implementation for these joins:

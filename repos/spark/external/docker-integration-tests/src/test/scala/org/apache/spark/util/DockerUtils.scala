@@ -28,12 +28,11 @@ private[spark] object DockerUtils {
   def getDockerIp(): String = {
 
     /** If docker-machine is setup on this box, attempts to find the ip from it. */
-    def findFromDockerMachine(): Option[String] = {
+    def findFromDockerMachine(): Option[String] =
       sys.env.get("DOCKER_MACHINE_NAME").flatMap { name =>
         Try(
           Seq("/bin/bash", "-c", s"docker-machine ip $name 2>/dev/null").!!.trim).toOption
       }
-    }
     sys.env
       .get("DOCKER_IP")
       .orElse(findFromDockerMachine())

@@ -76,9 +76,8 @@ object HtmlFetcher extends AbstractHtmlFetcher with Logging {
   private var httpClient: HttpClient = null
   initClient()
 
-  def getHttpClient: HttpClient = {
+  def getHttpClient: HttpClient =
     httpClient
-  }
 
   /**
     * Makes an http fetch to go retrieve the HTML from a url, store it to disk and pass it off
@@ -253,13 +252,11 @@ object HtmlFetcher extends AbstractHtmlFetcher with Logging {
     emptyCookieStore = new CookieStore {
       def addCookie(cookie: Cookie) {}
 
-      def getCookies: List[Cookie] = {
+      def getCookies: List[Cookie] =
         emptyList
-      }
 
-      def clearExpired(date: Date): Boolean = {
+      def clearExpired(date: Date): Boolean =
         false
-      }
 
       def clear() {}
 

@@ -28,7 +28,7 @@ import org.apache.spark.sql.types._
 
 class OrderingSuite extends SparkFunSuite with ExpressionEvalHelper {
 
-  def compareArrays(a: Seq[Any], b: Seq[Any], expected: Int): Unit = {
+  def compareArrays(a: Seq[Any], b: Seq[Any], expected: Int): Unit =
     test(s"compare two arrays: a = $a, b = $b") {
       val dataType = ArrayType(IntegerType)
       val rowType =
@@ -57,7 +57,6 @@ class OrderingSuite extends SparkFunSuite with ExpressionEvalHelper {
         }
       }
     }
-  }
 
   // Two arrays have the same size.
   compareArrays(Seq[Any](), Seq[Any](), 0)

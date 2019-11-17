@@ -134,11 +134,8 @@ object PythonRunner {
     * Format each python file path in the comma-delimited list of paths, so it can be
     * added to the PYTHONPATH correctly.
     */
-  def formatPaths(
-      paths: String,
-      testWindows: Boolean = false): Array[String] = {
+  def formatPaths(paths: String, testWindows: Boolean = false): Array[String] =
     Option(paths).getOrElse("").split(",").filter(_.nonEmpty).map { p =>
       formatPath(p, testWindows)
     }
-  }
 }

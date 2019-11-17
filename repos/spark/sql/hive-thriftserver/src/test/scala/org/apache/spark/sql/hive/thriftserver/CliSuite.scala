@@ -50,7 +50,7 @@ class CliSuite extends SparkFunSuite with BeforeAndAfterAll with Logging {
     scratchDirPath.delete()
   }
 
-  override def afterAll(): Unit = {
+  override def afterAll(): Unit =
     try {
       warehousePath.delete()
       metastorePath.delete()
@@ -58,7 +58,6 @@ class CliSuite extends SparkFunSuite with BeforeAndAfterAll with Logging {
     } finally {
       super.afterAll()
     }
-  }
 
   /**
     * Run a CLI operation and expect all the queries and expected answers to be returned.

@@ -53,7 +53,7 @@ class DistributedQueryingTest {
     (6, 3, "F"))
 
   @Test
-  def test1: Unit = {
+  def test1: Unit =
     try {
       try {
         val db = DistributedBackend.Database(
@@ -93,5 +93,4 @@ class DistributedQueryingTest {
         }
       } finally dc2.db.close
     } finally dc1.db.close
-  }
 }

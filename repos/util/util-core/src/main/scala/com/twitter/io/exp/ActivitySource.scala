@@ -56,12 +56,11 @@ object ActivitySource {
       primary: ActivitySource[T],
       failover: ActivitySource[U])
       extends ActivitySource[U] {
-    def get(name: String): Activity[U] = {
+    def get(name: String): Activity[U] =
       primary.get(name) transform {
         case Activity.Failed(_) => failover.get(name)
         case state              => Activity(Var.value(state))
       }
-    }
   }
 }
 

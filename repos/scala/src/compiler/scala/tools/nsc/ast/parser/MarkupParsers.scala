@@ -372,13 +372,12 @@ trait MarkupParsers { self: Parsers =>
     }
 
     /** Use a lookahead parser to run speculative body, and return the first char afterward. */
-    private def charComingAfter(body: => Unit): Char = {
+    private def charComingAfter(body: => Unit): Char =
       try {
         input = input.lookaheadReader
         body
         ch
       } finally input = parser.in
-    }
 
     /** xLiteral = element { element }
       *  @return Scala representation of this xml literal

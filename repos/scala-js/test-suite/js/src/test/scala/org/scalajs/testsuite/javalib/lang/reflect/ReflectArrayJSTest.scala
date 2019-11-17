@@ -33,9 +33,8 @@ class ReflectArrayJSTest {
       clazz: Class[_],
       length: Int,
       expectedClazz: Class[_],
-      sampleElem: Any): Unit = {
+      sampleElem: Any): Unit =
     testBase(clazz, length, expectedClazz, sampleElem)
-  }
 
   @inline
   def testNewInstance(

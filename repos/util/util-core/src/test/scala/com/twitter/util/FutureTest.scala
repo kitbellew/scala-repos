@@ -449,9 +449,8 @@ class FutureTest
 
           when(f(Seq(1, 2, 3))) thenAnswer {
             new Answer[Unit] {
-              def answer(invocation: InvocationOnMock) = {
+              def answer(invocation: InvocationOnMock) =
                 throw new Exception
-              }
             }
           }
 

@@ -56,9 +56,8 @@ object TestingUtils {
   private def AbsoluteErrorComparison(
       x: Double,
       y: Double,
-      eps: Double): Boolean = {
+      eps: Double): Boolean =
     math.abs(x - y) < eps
-  }
 
   case class CompareDoubleRightSide(
       fun: (Double, Double, Double) => Boolean,

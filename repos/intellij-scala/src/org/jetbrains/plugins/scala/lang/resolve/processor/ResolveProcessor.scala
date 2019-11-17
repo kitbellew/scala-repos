@@ -39,12 +39,11 @@ object ResolveProcessor {
   def getQualifiedName(
       result: ScalaResolveResult,
       place: PsiElement): String = {
-    def defaultForTypeAlias(t: ScTypeAlias): String = {
+    def defaultForTypeAlias(t: ScTypeAlias): String =
       if (t.getParent.isInstanceOf[ScTemplateBody] &&
           t.containingClass != null) {
         "TypeAlias:" + t.containingClass.qualifiedName + "#" + t.name
       } else null
-    }
 
     result.getActualElement match {
       case c: ScTypeParam => null
@@ -113,10 +112,8 @@ class ResolveProcessor(
 
   def checkPredefinedClassesAndPackages(): Boolean = precedence <= SCALA_PREDEF
 
-  override protected def getQualifiedName(
-      result: ScalaResolveResult): String = {
+  override protected def getQualifiedName(result: ScalaResolveResult): String =
     ResolveProcessor.getQualifiedName(result, getPlace)
-  }
 
   protected def getTopPrecedence(result: ScalaResolveResult): Int = precedence
 
@@ -222,12 +219,11 @@ class ResolveProcessor(
     nameMatches && kindMatches(named)
   }
 
-  override def getHint[T](hintKey: Key[T]): T = {
+  override def getHint[T](hintKey: Key[T]): T =
     hintKey match {
       case NameHint.KEY if name != "" => ScalaNameHint.asInstanceOf[T]
       case _                          => super.getHint(hintKey)
     }
-  }
 
   override def candidatesS: Set[ScalaResolveResult] = {
     var res = candidatesSet

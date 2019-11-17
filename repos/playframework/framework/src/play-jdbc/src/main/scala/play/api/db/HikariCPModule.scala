@@ -20,11 +20,10 @@ import com.zaxxer.hikari.{HikariDataSource, HikariConfig}
   * HikariCP runtime inject module.
   */
 class HikariCPModule extends Module {
-  def bindings(environment: Environment, configuration: Configuration) = {
+  def bindings(environment: Environment, configuration: Configuration) =
     Seq(
       bind[ConnectionPool].to[HikariCPConnectionPool]
     )
-  }
 }
 
 /**
@@ -119,10 +118,9 @@ class HikariCPConfig(dbConfig: DatabaseConfig, configuration: PlayConfig) {
       hikariConfig.addDataSourceProperty(key, dataSourceConfig.get[String](key))
     }
 
-    def toMillis(duration: Duration) = {
+    def toMillis(duration: Duration) =
       if (duration.isFinite()) duration.toMillis
       else 0L
-    }
 
     // Frequently used
     hikariConfig.setAutoCommit(config.get[Boolean]("autoCommit"))

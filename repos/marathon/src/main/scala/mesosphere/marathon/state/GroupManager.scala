@@ -42,16 +42,15 @@ class GroupManager @Singleton @Inject() (
   private[this] val log = LoggerFactory.getLogger(getClass.getName)
   private[this] val zkName = groupRepo.zkRootName
 
-  def rootGroup(): Future[Group] = {
+  def rootGroup(): Future[Group] =
     groupRepo.group(zkName).map(_.getOrElse(Group.empty))
-  }
 
   /**
     * Get all available versions for given group identifier.
     * @param id the identifier of the group.
     * @return the list of versions of this object.
     */
-  def versions(id: PathId): Future[Iterable[Timestamp]] = {
+  def versions(id: PathId): Future[Iterable[Timestamp]] =
     groupRepo.listVersions(zkName).flatMap { versions =>
       Future.sequence(versions.map(groupRepo.group(zkName, _))).map {
         _.collect {
@@ -59,16 +58,14 @@ class GroupManager @Singleton @Inject() (
         }
       }
     }
-  }
 
   /**
     * Get a specific group by its id.
     * @param id the id of the group.
     * @return the group if it is found, otherwise None
     */
-  def group(id: PathId): Future[Option[Group]] = {
+  def group(id: PathId): Future[Option[Group]] =
     rootGroup().map(_.findGroup(_.id == id))
-  }
 
   /**
     * Get a specific group with a specific version.
@@ -76,20 +73,18 @@ class GroupManager @Singleton @Inject() (
     * @param version the version of the group.
     * @return the group if it is found, otherwise None
     */
-  def group(id: PathId, version: Timestamp): Future[Option[Group]] = {
+  def group(id: PathId, version: Timestamp): Future[Option[Group]] =
     groupRepo.group(zkName, version).map {
       _.flatMap(_.findGroup(_.id == id))
     }
-  }
 
   /**
     * Get a specific app definition by its id.
     * @param id the id of the app.
     * @return the app uf ut is found, otherwise false
     */
-  def app(id: PathId): Future[Option[AppDefinition]] = {
+  def app(id: PathId): Future[Option[AppDefinition]] =
     rootGroup().map(_.app(id))
-  }
 
   /**
     * Update a group with given identifier.
@@ -147,7 +142,7 @@ class GroupManager @Singleton @Inject() (
 
       log.info(s"Upgrade group id:$gid version:$version with force:$force")
 
-      def storeUpdatedApps(plan: DeploymentPlan): Future[Unit] = {
+      def storeUpdatedApps(plan: DeploymentPlan): Future[Unit] =
         plan.affectedApplicationIds.foldLeft(Future.successful(())) {
           (savedFuture, currentId) =>
             plan.target.app(currentId) match {
@@ -162,7 +157,6 @@ class GroupManager @Singleton @Inject() (
                 appRepo.expunge(currentId).map(_ => ())
             }
         }
-      }
 
       val deployment = for {
         from <- rootGroup()
@@ -257,7 +251,7 @@ class GroupManager @Singleton @Inject() (
 
     def mergeServicePortsAndPortDefinitions(
         portDefinitions: Seq[PortDefinition],
-        servicePorts: Seq[Int]) = {
+        servicePorts: Seq[Int]) =
       portDefinitions
         .zipAll(
           servicePorts,
@@ -267,7 +261,6 @@ class GroupManager @Singleton @Inject() (
           case (portDefinition, servicePort) =>
             portDefinition.copy(port = servicePort)
         }
-    }
 
     def assignPorts(app: AppDefinition): AppDefinition = {
 

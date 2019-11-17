@@ -13,19 +13,17 @@ object Moo {
       }
 
     def map2[EE >: E, B, C](that: Either[EE, B])(
-        f: (A, B) => C): Either[EE, C] = {
+        f: (A, B) => C): Either[EE, C] =
       self flatMap { a =>
         that flatMap { b =>
           f(a, b).right
         }
       }
-    }
   }
 
   implicit class ListOps[E, A](self: List[A]) {
-    def traverse[B](f: A => Either[E, B]): Either[E, List[B]] = {
+    def traverse[B](f: A => Either[E, B]): Either[E, List[B]] =
       (self :\ List.empty[B].right[E])((x, evs) => (f(x) map2 evs)(_ :: _))
-    }
   }
 
   def id[A](v: A): A = v

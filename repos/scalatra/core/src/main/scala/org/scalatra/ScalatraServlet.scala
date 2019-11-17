@@ -59,9 +59,8 @@ trait ScalatraServlet extends HttpServlet with ServletBase with Initializable {
 
   override def service(
       request: HttpServletRequest,
-      response: HttpServletResponse): Unit = {
+      response: HttpServletResponse): Unit =
     handle(request, response)
-  }
 
   /**
     * Defines the request path to be matched by routers.  The default
@@ -105,11 +104,10 @@ trait ScalatraServlet extends HttpServlet with ServletBase with Initializable {
   protected def serveStaticResource(
       )(
       implicit request: HttpServletRequest,
-      response: HttpServletResponse): Option[Any] = {
+      response: HttpServletResponse): Option[Any] =
     servletContext.resource(request) map { _ =>
       servletContext.getNamedDispatcher("default").forward(request, response)
     }
-  }
 
   /**
     * Called by default notFound if no routes matched and no static resource
@@ -136,9 +134,8 @@ trait ScalatraServlet extends HttpServlet with ServletBase with Initializable {
     initialize(config) // see Initializable.initialize for why
   }
 
-  override def initialize(config: ServletConfig): Unit = {
+  override def initialize(config: ServletConfig): Unit =
     super.initialize(config)
-  }
 
   override def destroy(): Unit = {
     shutdown()

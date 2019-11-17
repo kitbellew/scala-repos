@@ -30,12 +30,11 @@ import org.apache.spark.sql.catalyst.util.StringKeyHashMap
 /** A catalog for looking up user defined functions, used by an [[Analyzer]]. */
 trait FunctionRegistry {
 
-  final def registerFunction(name: String, builder: FunctionBuilder): Unit = {
+  final def registerFunction(name: String, builder: FunctionBuilder): Unit =
     registerFunction(
       name,
       new ExpressionInfo(builder.getClass.getCanonicalName, name),
       builder)
-  }
 
   def registerFunction(
       name: String,
@@ -103,23 +102,19 @@ object EmptyFunctionRegistry extends FunctionRegistry {
   override def registerFunction(
       name: String,
       info: ExpressionInfo,
-      builder: FunctionBuilder): Unit = {
+      builder: FunctionBuilder): Unit =
     throw new UnsupportedOperationException
-  }
 
   override def lookupFunction(
       name: String,
-      children: Seq[Expression]): Expression = {
+      children: Seq[Expression]): Expression =
     throw new UnsupportedOperationException
-  }
 
-  override def listFunction(): Seq[String] = {
+  override def listFunction(): Seq[String] =
     throw new UnsupportedOperationException
-  }
 
-  override def lookupFunction(name: String): Option[ExpressionInfo] = {
+  override def lookupFunction(name: String): Option[ExpressionInfo] =
     throw new UnsupportedOperationException
-  }
 }
 
 object FunctionRegistry {

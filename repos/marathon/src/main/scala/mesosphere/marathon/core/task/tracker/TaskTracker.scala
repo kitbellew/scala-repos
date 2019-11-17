@@ -57,13 +57,11 @@ object TaskTracker {
 
     def hasAppTasks(appId: PathId): Boolean = appTasksMap.contains(appId)
 
-    def appTasks(appId: PathId): Iterable[Task] = {
+    def appTasks(appId: PathId): Iterable[Task] =
       appTasksMap.get(appId).map(_.tasks).getOrElse(Iterable.empty)
-    }
 
-    def marathonAppTasks(appId: PathId): Iterable[MarathonTask] = {
+    def marathonAppTasks(appId: PathId): Iterable[MarathonTask] =
       appTasksMap.get(appId).map(_.marathonTasks).getOrElse(Iterable.empty)
-    }
 
     def marathonTask(taskId: Task.Id): Option[MarathonTask] =
       for {
@@ -97,9 +95,8 @@ object TaskTracker {
     private val log = LoggerFactory.getLogger(getClass)
 
     def of(appTasks: collection.immutable.Map[PathId, TaskTracker.AppTasks])
-        : TasksByApp = {
+        : TasksByApp =
       new TasksByApp(appTasks.withDefault(appId => TaskTracker.AppTasks(appId)))
-    }
 
     def of(apps: TaskTracker.AppTasks*): TasksByApp =
       of(Map(apps.map(app => app.appId -> app): _*))
@@ -134,9 +131,8 @@ object TaskTracker {
     def tasks: Iterable[Task] = taskStateMap.values
     def marathonTasks: Iterable[MarathonTask] = taskMap.values
 
-    private[tracker] def withTask(task: Task): AppTasks = {
+    private[tracker] def withTask(task: Task): AppTasks =
       copy(taskStateMap = taskStateMap + (task.taskId -> task))
-    }
 
     private[tracker] def withoutTask(taskId: Task.Id): AppTasks =
       copy(taskStateMap = taskStateMap - taskId)

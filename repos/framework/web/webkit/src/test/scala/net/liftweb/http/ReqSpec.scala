@@ -116,7 +116,7 @@ object ReqSpec extends Specification with XmlMatchers with Mockito {
 
       def bodyBytes: Array[Byte]
 
-      def req(contentType: String) = {
+      def req(contentType: String) =
         new Req(
           Req.NilPath,
           "/",
@@ -129,7 +129,6 @@ object ReqSpec extends Specification with XmlMatchers with Mockito {
           () => paramCalcInfo,
           Map.empty
         )
-      }
     }
 
     class mockJsonReq(
@@ -140,9 +139,8 @@ object ReqSpec extends Specification with XmlMatchers with Mockito {
       val parsedJson =
         tryo(JsonParser.parse(jsonString)) openOr json.JsonAST.JNothing
 
-      def bodyBytes = {
+      def bodyBytes =
         testJson.getBytes("UTF-8")
-      }
     }
 
     class mockXmlReq(
@@ -152,9 +150,8 @@ object ReqSpec extends Specification with XmlMatchers with Mockito {
       val testXml = xmlString
       val parsedXml = tryo(XML.loadString(xmlString)) openOr "totally failed"
 
-      def bodyBytes = {
+      def bodyBytes =
         testXml.getBytes("UTF-8")
-      }
     }
 
     "when trying to JSON parse the request body" in {

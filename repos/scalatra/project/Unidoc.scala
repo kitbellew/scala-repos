@@ -61,7 +61,7 @@ object Unidoc extends Plugin {
     }
   }
 
-  def unidocTask: Def.Initialize[Task[File]] = {
+  def unidocTask: Def.Initialize[Task[File]] =
     (compilers, unidocSources, unidocDirectory, scalacOptions in doc, streams) map {
       (compilers, sources, target, options, s) =>
         {
@@ -69,5 +69,4 @@ object Unidoc extends Plugin {
           target
         }
     }
-  }
 }

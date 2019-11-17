@@ -56,22 +56,20 @@ trait ScAnnotationsHolder extends ScalaPsiElement with PsiAnnotationOwner {
   def hasAnnotation(clazz: PsiClass): Boolean =
     hasAnnotation(clazz.qualifiedName).isDefined
 
-  def hasAnnotation(qualifiedName: String): Option[ScAnnotation] = {
+  def hasAnnotation(qualifiedName: String): Option[ScAnnotation] =
     annotations.find(
       annot =>
         acceptType(
           annot.typeElement.getType(TypingContext.empty).getOrAny,
           qualifiedName))
-  }
 
-  def allMatchingAnnotations(qualifiedName: String): Seq[ScAnnotation] = {
+  def allMatchingAnnotations(qualifiedName: String): Seq[ScAnnotation] =
     annotations.filter { annot =>
       acceptType(annot.typeElement.getType().getOrAny, qualifiedName)
     }
-  }
 
   @tailrec
-  private def acceptType(tp: ScType, qualifiedName: String): Boolean = {
+  private def acceptType(tp: ScType, qualifiedName: String): Boolean =
     tp match {
       case ScDesignatorType(clazz: PsiClass) =>
         clazz.qualifiedName == qualifiedName
@@ -86,7 +84,6 @@ trait ScAnnotationsHolder extends ScalaPsiElement with PsiAnnotationOwner {
           case _ => false
         }
     }
-  }
 
   def addAnnotation(qualifiedName: String): PsiAnnotation = {
     val container = findChildByClassScala(classOf[ScAnnotations])
@@ -102,12 +99,11 @@ trait ScAnnotationsHolder extends ScalaPsiElement with PsiAnnotationOwner {
     added
   }
 
-  def findAnnotation(qualifiedName: String): PsiAnnotation = {
+  def findAnnotation(qualifiedName: String): PsiAnnotation =
     hasAnnotation(qualifiedName) match {
       case Some(x) => x
       case None    => null
     }
-  }
 
   def findAnnotationNoAliases(qualifiedName: String): PsiAnnotation = {
     val name = qualifiedName.split('.').last

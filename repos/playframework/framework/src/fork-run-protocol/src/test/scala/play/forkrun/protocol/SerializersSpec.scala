@@ -15,9 +15,8 @@ import sbt.serialization._
 
 object SerializersSpec extends Specification with PicklingTestUtils {
 
-  def file(path: String): java.io.File = {
+  def file(path: String): java.io.File =
     (new java.io.File(path)).getAbsoluteFile
-  }
 
   "serializers" should {
 

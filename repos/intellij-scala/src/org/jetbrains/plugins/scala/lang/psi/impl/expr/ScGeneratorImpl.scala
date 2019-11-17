@@ -17,12 +17,11 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr.{ScExpression, _}
 class ScGeneratorImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScGenerator {
-  override def accept(visitor: PsiElementVisitor): Unit = {
+  override def accept(visitor: PsiElementVisitor): Unit =
     visitor match {
       case visitor: ScalaElementVisitor => super.accept(visitor)
       case _                            => super.accept(visitor)
     }
-  }
 
   override def toString: String = "Generator"
 

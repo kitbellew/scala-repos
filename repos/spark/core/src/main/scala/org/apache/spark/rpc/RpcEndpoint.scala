@@ -82,10 +82,9 @@ private[spark] trait RpcEndpoint {
   /**
     * Invoked when any exception is thrown during handling messages.
     */
-  def onError(cause: Throwable): Unit = {
+  def onError(cause: Throwable): Unit =
     // By default, throw e and let RpcEnv handle it
     throw cause
-  }
 
   /**
     * Invoked when `remoteAddress` is connected to the current node.

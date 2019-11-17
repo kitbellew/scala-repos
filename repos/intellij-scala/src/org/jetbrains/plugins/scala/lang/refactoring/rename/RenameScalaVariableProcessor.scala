@@ -117,14 +117,13 @@ class RenameScalaVariableProcessor
 
   override def substituteElementToRename(
       element: PsiElement,
-      editor: Editor): PsiElement = {
+      editor: Editor): PsiElement =
     element match {
       case method: FakePsiMethod =>
         substituteElementToRename(method.navElement, editor)
       case named: ScNamedElement => RenameSuperMembersUtil.chooseSuper(named)
       case _                     => element
     }
-  }
 
   override def substituteElementToRename(
       element: PsiElement,

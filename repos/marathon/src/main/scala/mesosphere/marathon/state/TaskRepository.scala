@@ -19,13 +19,11 @@ class TaskRepository(
       case _               => None
     }
 
-  def tasksKeys(appId: PathId): Future[Iterable[String]] = {
+  def tasksKeys(appId: PathId): Future[Iterable[String]] =
     allIds().map(_.filter(name => name.startsWith(appId.safePath)))
-  }
 
-  def store(task: MarathonTask): Future[MarathonTask] = {
+  def store(task: MarathonTask): Future[MarathonTask] =
     this.store.store(task.getId, MarathonTaskState(task)).map(_.toProto)
-  }
 }
 
 object TaskRepository {

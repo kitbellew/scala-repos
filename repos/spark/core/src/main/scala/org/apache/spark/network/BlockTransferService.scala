@@ -100,9 +100,8 @@ private[spark] abstract class BlockTransferService
       new BlockFetchingListener {
         override def onBlockFetchFailure(
             blockId: String,
-            exception: Throwable): Unit = {
+            exception: Throwable): Unit =
           result.failure(exception)
-        }
         override def onBlockFetchSuccess(
             blockId: String,
             data: ManagedBuffer): Unit = {
@@ -129,9 +128,8 @@ private[spark] abstract class BlockTransferService
       execId: String,
       blockId: BlockId,
       blockData: ManagedBuffer,
-      level: StorageLevel): Unit = {
+      level: StorageLevel): Unit =
     Await.result(
       uploadBlock(hostname, port, execId, blockId, blockData, level),
       Duration.Inf)
-  }
 }

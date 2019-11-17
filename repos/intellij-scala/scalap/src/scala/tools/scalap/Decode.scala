@@ -102,7 +102,7 @@ object Decode {
 
   /** Returns a map of Alias -> Type for the given package.
     */
-  private[scala] def typeAliases(pkg: String) = {
+  private[scala] def typeAliases(pkg: String) =
     for {
       clazz <- appLoader.tryToLoadClass[AnyRef](pkg + ".package")
       ssig <- ScalaSigParser.parse(clazz)
@@ -110,5 +110,4 @@ object Decode {
       val typeAliases = ssig.symbols collect { case x: AliasSymbol => x }
       Map(typeAliases map (x => (x.name, getAliasSymbol(x.infoType).path)): _*)
     }
-  }
 }

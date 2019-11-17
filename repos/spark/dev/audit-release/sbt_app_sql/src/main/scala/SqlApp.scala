@@ -47,12 +47,11 @@ object SparkSqlExample {
     val teenagerNames = teenagers.map(t => "Name: " + t(0)).collect()
     teenagerNames.foreach(println)
 
-    def test(f: => Boolean, failureMsg: String) = {
+    def test(f: => Boolean, failureMsg: String) =
       if (!f) {
         println(failureMsg)
         System.exit(-1)
       }
-    }
 
     test(
       teenagerNames.size == 7,

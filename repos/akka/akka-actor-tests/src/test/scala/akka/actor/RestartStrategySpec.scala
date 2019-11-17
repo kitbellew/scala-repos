@@ -48,14 +48,12 @@ class RestartStrategySpec
           case Crash ⇒ throw new Exception("Crashing...")
         }
 
-        override def postRestart(reason: Throwable) = {
+        override def postRestart(reason: Throwable) =
           if (!restartLatch.isOpen) restartLatch.open()
           else secondRestartLatch.open()
-        }
 
-        override def postStop() = {
+        override def postStop() =
           stopLatch.open()
-        }
       })
       val slave =
         Await.result((boss ? slaveProps).mapTo[ActorRef], timeout.duration)
@@ -90,9 +88,8 @@ class RestartStrategySpec
           case Crash ⇒ throw new Exception("Crashing...")
         }
 
-        override def postRestart(reason: Throwable) = {
+        override def postRestart(reason: Throwable) =
           countDownLatch.countDown()
-        }
       })
       val slave =
         Await.result((boss ? slaveProps).mapTo[ActorRef], timeout.duration)
@@ -124,17 +121,15 @@ class RestartStrategySpec
             if (!pingLatch.isOpen) pingLatch.open else secondPingLatch.open
           case Crash ⇒ throw new Exception("Crashing...")
         }
-        override def postRestart(reason: Throwable) = {
+        override def postRestart(reason: Throwable) =
           if (!restartLatch.isOpen) restartLatch.open()
           else if (!secondRestartLatch.isOpen) secondRestartLatch.open()
           else thirdRestartLatch.open()
-        }
 
-        override def postStop() = {
+        override def postStop() =
           if (restartLatch.isOpen) {
             secondRestartLatch.open()
           }
-        }
       })
       val slave =
         Await.result((boss ? slaveProps).mapTo[ActorRef], timeout.duration)
@@ -179,14 +174,12 @@ class RestartStrategySpec
           case Ping ⇒ countDownLatch.countDown()
           case Crash ⇒ throw new Exception("Crashing...")
         }
-        override def postRestart(reason: Throwable) = {
+        override def postRestart(reason: Throwable) =
           if (!restartLatch.isOpen) restartLatch.open()
           else secondRestartLatch.open()
-        }
 
-        override def postStop() = {
+        override def postStop() =
           stopLatch.open()
-        }
       })
       val slave =
         Await.result((boss ? slaveProps).mapTo[ActorRef], timeout.duration)
@@ -235,13 +228,11 @@ class RestartStrategySpec
           case Crash ⇒ throw new Exception("Crashing...")
         }
 
-        override def postRestart(reason: Throwable) = {
+        override def postRestart(reason: Throwable) =
           restartLatch.open()
-        }
 
-        override def postStop() = {
+        override def postStop() =
           stopLatch.open()
-        }
       })
       val slave =
         Await.result((boss ? slaveProps).mapTo[ActorRef], timeout.duration)

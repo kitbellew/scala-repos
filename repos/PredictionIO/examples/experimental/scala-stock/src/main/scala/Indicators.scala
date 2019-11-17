@@ -94,9 +94,8 @@ class RSIIndicator(rsiPeriod: Int = 14) extends BaseIndicator {
   }
 
   // Computes the RSI for the most recent time frame, returns single double
-  def getOne(logPrice: Series[DateTime, Double]): Double = {
+  def getOne(logPrice: Series[DateTime, Double]): Double =
     getTraining(logPrice).last
-  }
 }
 
 /** Indicator that calcuate differences of closing prices
@@ -113,11 +112,9 @@ class ShiftsIndicator(period: Int) extends BaseIndicator {
   def getMinWindowSize(): Int = period + 1
 
   def getTraining(
-      logPrice: Series[DateTime, Double]): Series[DateTime, Double] = {
+      logPrice: Series[DateTime, Double]): Series[DateTime, Double] =
     getRet(logPrice)
-  }
 
-  def getOne(logPrice: Series[DateTime, Double]): Double = {
+  def getOne(logPrice: Series[DateTime, Double]): Double =
     getRet(logPrice).last
-  }
 }

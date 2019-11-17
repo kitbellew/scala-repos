@@ -19,9 +19,9 @@ object iFourierShift extends UFunc {
   @expand
   @expand.valify
   implicit def implIFourierShift[@expand.args(Int, Long, Float, Double, Complex) T]
-      : Impl[DenseVector[T], DenseVector[T]] = {
+      : Impl[DenseVector[T], DenseVector[T]] =
     new Impl[DenseVector[T], DenseVector[T]] {
-      def apply(dft: DenseVector[T]): DenseVector[T] = {
+      def apply(dft: DenseVector[T]): DenseVector[T] =
         if (isEven(dft.length))
           DenseVector.vertcat(
             dft(dft.length / 2 to -1),
@@ -30,7 +30,5 @@ object iFourierShift extends UFunc {
           DenseVector.vertcat(
             dft((dft.length - 1) / 2 to -1),
             dft(0 to (dft.length - 1) / 2 - 1))
-      }
     }
-  }
 }

@@ -44,10 +44,9 @@ object CommonHelperFunctions {
         pt: D,
         idx: Long,
         k: Int,
-        isTraining: Boolean): Option[D] = {
+        isTraining: Boolean): Option[D] =
       if ((idx % k == foldIdx) ^ isTraining) Some(pt)
       else None
-    }
 
     (0 until evalK).map { foldIdx =>
       val trainingPoints = indexedPoints.flatMap {

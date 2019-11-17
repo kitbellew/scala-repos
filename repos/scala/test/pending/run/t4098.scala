@@ -3,7 +3,6 @@ class A(a: Any) {
 }
 
 object Test {
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     new A("")
-  }
 }

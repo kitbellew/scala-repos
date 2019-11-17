@@ -15,7 +15,7 @@ class CachedMappedWithRecursionGuardTest
         this,
         "Failure",
         PsiModificationTracker.MODIFICATION_COUNT)
-      def recursiveFunction(d: Option[Int], depth: Int = 0): String = {
+      def recursiveFunction(d: Option[Int], depth: Int = 0): String =
         d match {
           case Some(l)        => l.toString
           case _ if depth > 2 => "Blargle"
@@ -23,7 +23,6 @@ class CachedMappedWithRecursionGuardTest
             val res = recursiveFunction(None, depth)
             res
         }
-      }
     }
 
     Assert.assertEquals("Blargle", Elem.recursiveFunction(None, depth = 3))

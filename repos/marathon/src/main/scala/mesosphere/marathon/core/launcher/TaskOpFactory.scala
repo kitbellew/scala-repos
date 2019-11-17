@@ -45,8 +45,7 @@ object TaskOpFactory {
         app: AppDefinition,
         offer: Mesos.Offer,
         tasks: Iterable[Task],
-        additionalLaunches: Int): Request = {
+        additionalLaunches: Int): Request =
       new Request(app, offer, Task.tasksById(tasks), additionalLaunches)
-    }
   }
 }

@@ -122,7 +122,7 @@ object BroadcastCounter {
   }
 
   private class N(counters: Seq[Counter]) extends Counter {
-    def incr(delta: Int): Unit = { counters.foreach(_.incr(delta)) }
+    def incr(delta: Int): Unit = counters.foreach(_.incr(delta))
   }
 }
 
@@ -170,6 +170,6 @@ object BroadcastStat {
   }
 
   private class N(stats: Seq[Stat]) extends Stat {
-    def add(value: Float): Unit = { stats.foreach(_.add(value)) }
+    def add(value: Float): Unit = stats.foreach(_.add(value))
   }
 }

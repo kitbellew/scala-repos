@@ -28,10 +28,9 @@ abstract class Serializer[T](clazz: Class[T])
   }
   def addFields(doc: Document, t: T): Unit
 
-  final def createQuery(e: T): Query = {
+  final def createQuery(e: T): Query =
     new BooleanQuery {
       add(TypeTerm, MUST)
       add(new TermQuery(new Term("ID", id(e))), MUST)
     }
-  }
 }

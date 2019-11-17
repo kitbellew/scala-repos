@@ -17,13 +17,11 @@ class ScalaPsiBuilderImpl(builder: PsiBuilder)
   private final val newlinesEnabled: mutable.Stack[Boolean] =
     new mutable.Stack[Boolean]
 
-  def newlineBeforeCurrentToken: Boolean = {
+  def newlineBeforeCurrentToken: Boolean =
     countNewlineBeforeCurrentToken() > 0
-  }
 
-  def twoNewlinesBeforeCurrentToken: Boolean = {
+  def twoNewlinesBeforeCurrentToken: Boolean =
     countNewlineBeforeCurrentToken() > 1
-  }
 
   /**
     * @return 0 if new line is disabled here, or there is no \n chars between tokens

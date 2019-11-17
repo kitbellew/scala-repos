@@ -102,7 +102,7 @@ object UserRepo {
       F.username,
       BSONDocument("_id" -> BSONDocument("$in" -> ids)).some) map lila.db.BSON.asStrings
 
-  def orderByGameCount(u1: String, u2: String): Fu[Option[(String, String)]] = {
+  def orderByGameCount(u1: String, u2: String): Fu[Option[(String, String)]] =
     coll
       .find(
         BSONDocument("_id" -> BSONDocument("$in" -> BSONArray(u1, u2))),
@@ -122,7 +122,6 @@ object UserRepo {
         case _            => none
       }
     }
-  }
 
   def firstGetsWhite(u1O: Option[String], u2O: Option[String]): Fu[Boolean] =
     (u1O |@| u2O).tupled.fold(fuccess(scala.util.Random.nextBoolean)) {

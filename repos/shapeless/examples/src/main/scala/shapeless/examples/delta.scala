@@ -111,9 +111,8 @@ object Delta extends Delta0 {
   ): Delta.Aux[H :: T, deltaH.Out :: deltaT.value.Out] = new Delta[H :: T] {
     type Out = deltaH.Out :: deltaT.value.Out
 
-    def apply(before: H :: T, after: H :: T): Out = {
+    def apply(before: H :: T, after: H :: T): Out =
       deltaH(before.head, after.head) :: deltaT.value(before.tail, after.tail)
-    }
   }
 }
 

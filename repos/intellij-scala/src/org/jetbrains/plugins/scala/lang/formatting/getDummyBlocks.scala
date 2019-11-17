@@ -863,7 +863,7 @@ object getDummyBlocks {
     val subBlocks = new util.ArrayList[Block]()
     val scalaSettings =
       block.getSettings.getCustomSettings(classOf[ScalaCodeStyleSettings])
-    def addSubBlock(node: ASTNode, lastNode: ASTNode): Unit = {
+    def addSubBlock(node: ASTNode, lastNode: ASTNode): Unit =
       subBlocks.add(
         new ScalaBlock(
           block,
@@ -878,7 +878,6 @@ object getDummyBlocks {
             block.suggestedWrap),
           block.getSettings
         ))
-    }
     def addTail(tail: List[ASTNode]): Unit = {
       for (child <- tail) {
         if (child.getElementType != ScalaTokenTypes.kYIELD) {
@@ -1282,9 +1281,8 @@ object getDummyBlocks {
     subBlocks
   }
 
-  private def isCorrectBlock(node: ASTNode) = {
+  private def isCorrectBlock(node: ASTNode) =
     node.getText.trim().length() > 0
-  }
 
   private def mustAlignment(node: ASTNode, s: CodeStyleSettings) = {
     val mySettings = s.getCommonSettings(ScalaFileType.SCALA_LANGUAGE)

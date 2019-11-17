@@ -15,7 +15,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.TypingContext
 class ScalaMethodReturnTypeMacro extends Macro {
   override def calculateResult(
       params: Array[Expression],
-      context: ExpressionContext): Result = {
+      context: ExpressionContext): Result =
     Option(
       PsiTreeUtil.getParentOfType(
         context.getPsiElementAtStartOffset,
@@ -26,7 +26,6 @@ class ScalaMethodReturnTypeMacro extends Macro {
       })
       .map(new ScalaTypeResult(_))
       .orNull
-  }
 
   override def getName: String = MacroUtil.scalaIdPrefix + "methodReturnType"
 

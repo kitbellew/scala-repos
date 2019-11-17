@@ -393,7 +393,7 @@ package object array {
       start: Double,
       stop: Double,
       num: Int = 50,
-      endpoint: Boolean = true): Array[Double] = {
+      endpoint: Boolean = true): Array[Double] =
     if (num <= 0) Array.empty[Double]
     else if (num == 1) Array(start)
     else {
@@ -410,7 +410,6 @@ package object array {
       result(n) = stop
       result
     }
-  }
 
   /**
     * Stable indirect sort resulting in permutation of numbers [0, n), whose application

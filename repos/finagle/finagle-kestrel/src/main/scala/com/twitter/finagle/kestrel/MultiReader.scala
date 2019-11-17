@@ -59,7 +59,7 @@ private[finagle] object MultiReaderHelper {
     val ackCounter = msgStatsReceiver.counter("ack")
     val abortCounter = msgStatsReceiver.counter("abort")
 
-    def trackMessage(msg: ReadMessage): ReadMessage = {
+    def trackMessage(msg: ReadMessage): ReadMessage =
       if (trackOutstandingRequests) {
         receivedCounter.incr()
         outstandingReads.incrementAndGet()
@@ -79,7 +79,6 @@ private[finagle] object MultiReaderHelper {
       } else {
         msg
       }
-    }
 
     def exposeNumReadHandles(handles: Set[ReadHandle]) {
       numReadHandles = handles.size
@@ -223,7 +222,7 @@ private[finagle] object MultiReaderHelper {
   * }}}
   */
 object MultiReaderMemcache {
-  def apply(dest: Name, queueName: String): MultiReaderBuilderMemcache = {
+  def apply(dest: Name, queueName: String): MultiReaderBuilderMemcache =
     dest match {
       case Name.Bound(va) => apply(va, queueName)
       case Name.Path(_) =>
@@ -231,7 +230,6 @@ object MultiReaderMemcache {
           "Failed to bind Name.Path in `MultiReaderMemcache.apply`"
         )
     }
-  }
 
   def apply(va: Var[Addr], queueName: String): MultiReaderBuilderMemcache = {
     val config = MultiReaderConfig[Command, Response](va, queueName)
@@ -295,7 +293,7 @@ object MultiReaderThrift {
   def apply(
       dest: Name,
       queueName: String,
-      clientId: Option[ClientId]): MultiReaderBuilderThrift = {
+      clientId: Option[ClientId]): MultiReaderBuilderThrift =
     dest match {
       case Name.Bound(va) => apply(va, queueName, clientId)
       case Name.Path(_) =>
@@ -303,7 +301,6 @@ object MultiReaderThrift {
           "Failed to bind Name.Path in `MultiReaderThrift.apply`"
         )
     }
-  }
 
   /**
     * Used to create a thrift based MultiReader with a ClientId when a custom
@@ -337,9 +334,8 @@ object MultiReaderThrift {
     * @param queueName the name of the queue to read from
     * @return A MultiReaderBuilderThrift
     */
-  def apply(va: Var[Addr], queueName: String): MultiReaderBuilderThrift = {
+  def apply(va: Var[Addr], queueName: String): MultiReaderBuilderThrift =
     this(va, queueName, None)
-  }
 
   /**
     * Helper for getting the right codec for the thrift protocol
@@ -469,7 +465,7 @@ final case class ClusterMultiReaderConfig private[kestrel] (
   /**
     * Convert to MultiReaderConfig[Command, Response] during deprecation
     */
-  def toMultiReaderConfig: MultiReaderConfig[Command, Response] = {
+  def toMultiReaderConfig: MultiReaderConfig[Command, Response] =
     MultiReaderConfig[Command, Response](
       this.va,
       this.queueName,
@@ -478,7 +474,6 @@ final case class ClusterMultiReaderConfig private[kestrel] (
       this.clientBuilder,
       this.timer,
       this.retryBackoffs)
-  }
 }
 
 /**
@@ -496,10 +491,8 @@ abstract class MultiReaderBuilder[Req, Rep, Builder] private[kestrel] (
   protected[kestrel] def copy(config: MultiReaderConfig[Req, Rep]): Builder
 
   protected[kestrel] def withConfig(
-      f: MultiReaderConfig[Req, Rep] => MultiReaderConfig[Req, Rep])
-      : Builder = {
+      f: MultiReaderConfig[Req, Rep] => MultiReaderConfig[Req, Rep]): Builder =
     copy(f(config))
-  }
 
   protected[kestrel] def defaultClientBuilder: ClientBuilderBase
 
@@ -663,9 +656,8 @@ class ClusterMultiReaderBuilder private[kestrel] (
 
   protected[kestrel] def withConfig(
       f: ClusterMultiReaderConfig => ClusterMultiReaderConfig)
-      : ClusterMultiReaderBuilder = {
+      : ClusterMultiReaderBuilder =
     copy(f(config))
-  }
 }
 
 /**

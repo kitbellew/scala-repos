@@ -182,7 +182,7 @@ private[controllers] class AssetInfo(
   val configuredCacheControl = config(
     _.getString("\"assets.cache." + name + "\""))
 
-  def cacheControl(aggressiveCaching: Boolean): String = {
+  def cacheControl(aggressiveCaching: Boolean): String =
     configuredCacheControl.getOrElse {
       if (isProd) {
         if (aggressiveCaching) aggressiveCacheControl else defaultCacheControl
@@ -190,10 +190,9 @@ private[controllers] class AssetInfo(
         "no-cache"
       }
     }
-  }
 
   val lastModified: Option[String] = {
-    def getLastModified[T <: URLConnection](f: (T) => Long): Option[String] = {
+    def getLastModified[T <: URLConnection](f: (T) => Long): Option[String] =
       Option(url.openConnection)
         .map {
           case urlConnection: T @unchecked =>
@@ -205,7 +204,6 @@ private[controllers] class AssetInfo(
         }
         .filterNot(_ == -1)
         .map(httpDateFormat.print)
-    }
 
     url.getProtocol match {
       case "file" =>
@@ -227,12 +225,11 @@ private[controllers] class AssetInfo(
 
   val parsedLastModified = lastModified flatMap parseModifiedDate
 
-  def url(gzipAvailable: Boolean): URL = {
+  def url(gzipAvailable: Boolean): URL =
     gzipUrl match {
       case Some(x) => if (gzipAvailable) x else url
       case None    => url
     }
-  }
 }
 
 /**
@@ -281,7 +278,7 @@ object Assets extends AssetsBuilder(LazyHttpErrorHandler) {
 
   val digestCache = TrieMap[String, Option[String]]()
 
-  private[controllers] def digest(path: String): Option[String] = {
+  private[controllers] def digest(path: String): Option[String] =
     digestCache.getOrElse(
       path, {
         val maybeDigestUrl: Option[URL] = resource(path + "." + digestAlgorithm)
@@ -291,7 +288,6 @@ object Assets extends AssetsBuilder(LazyHttpErrorHandler) {
         maybeDigest
       }
     )
-  }
 
   // Sames goes for the minified paths cache.
   val minifiedPathsCache = TrieMap[String, String]()
@@ -299,7 +295,7 @@ object Assets extends AssetsBuilder(LazyHttpErrorHandler) {
   lazy val checkForMinified =
     config(_.getBoolean("assets.checkForMinified")).getOrElse(true)
 
-  private[controllers] def minifiedPath(path: String): String = {
+  private[controllers] def minifiedPath(path: String): String =
     minifiedPathsCache.getOrElse(
       path, {
         def minifiedPathFor(delim: Char): Option[String] = {
@@ -318,12 +314,11 @@ object Assets extends AssetsBuilder(LazyHttpErrorHandler) {
         maybeMinifiedPath
       }
     )
-  }
 
   private[controllers] lazy val assetInfoCache =
     new SelfPopulatingMap[String, AssetInfo]()
 
-  private def assetInfoFromResource(name: String): Option[AssetInfo] = {
+  private def assetInfoFromResource(name: String): Option[AssetInfo] =
     blocking {
       for {
         url <- resource(name)
@@ -332,16 +327,14 @@ object Assets extends AssetsBuilder(LazyHttpErrorHandler) {
         new AssetInfo(name, url, gzipUrl, digest(name))
       }
     }
-  }
 
-  private def assetInfo(name: String): Future[Option[AssetInfo]] = {
+  private def assetInfo(name: String): Future[Option[AssetInfo]] =
     if (isDev) {
       Future.successful(assetInfoFromResource(name))
     } else {
       assetInfoCache.putIfAbsent(name)(assetInfoFromResource)(
         Implicits.trampoline)
     }
-  }
 
   private[controllers] def assetInfoForRequest(
       request: RequestHeader,
@@ -364,14 +357,13 @@ object Assets extends AssetsBuilder(LazyHttpErrorHandler) {
 
     implicit def string2Asset(name: String) = new Asset(name)
 
-    private def pathFromParams(rrc: ReverseRouteContext): String = {
+    private def pathFromParams(rrc: ReverseRouteContext): String =
       rrc.fixedParams
         .getOrElse(
           "path",
           throw new RuntimeException(
             "Asset path bindable must be used in combination with an action that accepts a path parameter"))
         .toString
-    }
 
     implicit def assetPathBindable(implicit rrc: ReverseRouteContext) =
       new PathBindable[Asset] {
@@ -408,7 +400,7 @@ class AssetsBuilder(errorHandler: HttpErrorHandler) extends Controller {
   private def maybeNotModified(
       request: RequestHeader,
       assetInfo: AssetInfo,
-      aggressiveCaching: Boolean): Option[Result] = {
+      aggressiveCaching: Boolean): Option[Result] =
     // First check etag. Important, if there is an If-None-Match header, we MUST not check the
     // If-Modified-Since header, regardless of whether If-None-Match matches or not. This is in
     // accordance with section 14.26 of RFC2616.
@@ -428,7 +420,6 @@ class AssetsBuilder(errorHandler: HttpErrorHandler) extends Controller {
           NotModified
         }
     }
-  }
 
   private def cacheableResult[A <: Result](
       assetInfo: AssetInfo,
@@ -438,9 +429,8 @@ class AssetsBuilder(errorHandler: HttpErrorHandler) extends Controller {
     def addHeaderIfValue(
         name: String,
         maybeValue: Option[String],
-        response: Result): Result = {
+        response: Result): Result =
       maybeValue.fold(response)(v => response.withHeaders(name -> v))
-    }
 
     val r1 = addHeaderIfValue(ETAG, assetInfo.etag, r)
     val r2 = addHeaderIfValue(LAST_MODIFIED, assetInfo.lastModified, r1)

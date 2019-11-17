@@ -34,9 +34,8 @@ object Multipart {
     */
   def transform(
       body: Source[MultipartFormData.Part[Source[ByteString, _]], _],
-      boundary: String): Source[ByteString, _] = {
+      boundary: String): Source[ByteString, _] =
     body.via(format(boundary, Charset.defaultCharset(), 4096))
-  }
 
   /**
     * Provides a Formatting Flow which could be used to format a MultipartFormData.Part source to a multipart/form data body
@@ -44,11 +43,10 @@ object Multipart {
   def format(boundary: String, nioCharset: Charset, chunkSize: Int): Flow[
     MultipartFormData.Part[Source[ByteString, _]],
     ByteString,
-    NotUsed] = {
+    NotUsed] =
     Flow[MultipartFormData.Part[Source[ByteString, _]]]
       .transform(() => streamed(boundary, nioCharset, chunkSize))
       .flatMapConcat(identity)
-  }
 
   /**
     * Creates a new random number of the given length and base64 encodes it (using a custom "safe" alphabet).
@@ -149,9 +147,8 @@ object Multipart {
         val f = new CustomCharsetByteStringFormatter(nioCharset, chunkSize)
 
         def bodyPartChunks(
-            data: Source[ByteString, Any]): Source[ByteString, Any] = {
+            data: Source[ByteString, Any]): Source[ByteString, Any] =
           (Source.single(f.get) ++ data).mapMaterializedValue((_) => ())
-        }
 
         def completePartFormatting(): Source[ByteString, Any] =
           bodyPart match {
@@ -228,11 +225,9 @@ object Multipart {
     f ~~ CrLf
   }
 
-  private def renderContentType(f: Formatter, contentType: String): Unit = {
+  private def renderContentType(f: Formatter, contentType: String): Unit =
     f ~~ "Content-Type: " ~~ contentType ~~ CrLf
-  }
 
-  private def renderBuffer(f: Formatter): Unit = {
+  private def renderBuffer(f: Formatter): Unit =
     f ~~ CrLf
-  }
 }

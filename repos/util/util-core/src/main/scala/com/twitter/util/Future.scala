@@ -221,7 +221,7 @@ object Future {
     * @see [[collectToTry]] if you want to be able to see the results of each
     *     `Future` regardless of if they succeed or fail.
     */
-  def join[A](fs: Seq[Future[A]]): Future[Unit] = {
+  def join[A](fs: Seq[Future[A]]): Future[Unit] =
     if (fs.isEmpty) Unit
     else {
       val count = new AtomicInteger(fs.size)
@@ -236,7 +236,6 @@ object Future {
       }
       p
     }
-  }
 
   /* The following joins are generated with this code:
   scala -e '
@@ -1028,7 +1027,7 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
     * @see [[join]] if you are not interested in the results of the individual
     *     `Futures`, only when they are complete.
     */
-  def collect[A](fs: Seq[Future[A]]): Future[Seq[A]] = {
+  def collect[A](fs: Seq[Future[A]]): Future[Seq[A]] =
     if (fs.isEmpty) {
       Future(Seq[A]())
     } else {
@@ -1055,7 +1054,6 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
       }
       p
     }
-  }
 
   /**
     * Collect the results from the given map `fs` of futures into a new future
@@ -1196,12 +1194,11 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
     * after each computation completes.
     */
   def whileDo[A](p: => Boolean)(f: => Future[A]): Future[Unit] = {
-    def loop(): Future[Unit] = {
+    def loop(): Future[Unit] =
       if (p)
         f flatMap { _ =>
           loop()
         } else Future.Unit
-    }
 
     loop()
   }
@@ -1226,11 +1223,10 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
     go()
   }
 
-  def parallel[A](n: Int)(f: => Future[A]): Seq[Future[A]] = {
+  def parallel[A](n: Int)(f: => Future[A]): Seq[Future[A]] =
     (0 until n) map { i =>
       f
     }
-  }
 
   /**
     * Creates a "batched" Future that, given a function
@@ -1274,14 +1270,13 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
       f: Seq[In] => Future[Seq[Out]]
   )(
       implicit timer: Timer
-  ): Batcher[In, Out] = {
+  ): Batcher[In, Out] =
     new Batcher[In, Out](
       new BatchExecutor[In, Out](
         sizeThreshold,
         timeThreshold,
         sizePercentile,
         f))
-  }
 }
 
 class FutureCancelledException
@@ -1930,13 +1925,12 @@ abstract class Future[+A] extends Awaitable[A] {
     *
     * Note that {{{Future.exception(e).willEqual(Future.exception(e)) == Future.value(true)}}}.
     */
-  def willEqual[B](that: Future[B]): Future[Boolean] = {
+  def willEqual[B](that: Future[B]): Future[Boolean] =
     this.transform { thisResult =>
       that.transform { thatResult =>
         Future.value(thisResult == thatResult)
       }
     }
-  }
 
   /**
     * Returns the result of the computation as a `Future[Try[A]]`.
@@ -2901,16 +2895,12 @@ class NoFuture extends Future[Nothing] {
 
   @throws(classOf[TimeoutException])
   @throws(classOf[InterruptedException])
-  def ready(timeout: Duration)(
-      implicit permit: Awaitable.CanAwait): this.type = {
+  def ready(timeout: Duration)(implicit permit: Awaitable.CanAwait): this.type =
     throw sleepThenTimeout(timeout)
-  }
 
   @throws(classOf[Exception])
-  def result(timeout: Duration)(
-      implicit permit: Awaitable.CanAwait): Nothing = {
+  def result(timeout: Duration)(implicit permit: Awaitable.CanAwait): Nothing =
     throw sleepThenTimeout(timeout)
-  }
 
   def poll: Option[Try[Nothing]] = None
 

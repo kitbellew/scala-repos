@@ -31,14 +31,13 @@ private[spark] abstract class SparkFunSuite
     with Logging {
 // scalastyle:on
 
-  protected override def afterAll(): Unit = {
+  protected override def afterAll(): Unit =
     try {
       // Avoid leaking map entries in tests that use accumulators without SparkContext
       Accumulators.clear()
     } finally {
       super.afterAll()
     }
-  }
 
   /**
     * Log the suite name and the test name before and after each test.

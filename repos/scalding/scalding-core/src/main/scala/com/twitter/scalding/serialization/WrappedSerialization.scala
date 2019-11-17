@@ -73,10 +73,9 @@ class WrappedSerialization[T] extends HSerialization[T] with Configurable {
 
 class BinarySerializer[T](buf: Serialization[T]) extends Serializer[T] {
   private var out: OutputStream = _
-  def open(os: OutputStream): Unit = {
+  def open(os: OutputStream): Unit =
     out = os
-  }
-  def close(): Unit = { out = null }
+  def close(): Unit = out = null
   def serialize(t: T): Unit = {
     if (out == null) throw new NullPointerException("OutputStream is null")
     buf.write(out, t).get
@@ -85,8 +84,8 @@ class BinarySerializer[T](buf: Serialization[T]) extends Serializer[T] {
 
 class BinaryDeserializer[T](buf: Serialization[T]) extends Deserializer[T] {
   private var is: InputStream = _
-  def open(i: InputStream): Unit = { is = i }
-  def close(): Unit = { is = null }
+  def open(i: InputStream): Unit = is = i
+  def close(): Unit = is = null
   def deserialize(t: T): T = {
     if (is == null) throw new NullPointerException("InputStream is null")
     buf.read(is).get
@@ -112,7 +111,7 @@ object WrappedSerialization {
 
   def rawSetBinary(
       bufs: Iterable[ClassSerialization[_]],
-      fn: (String, String) => Unit) = {
+      fn: (String, String) => Unit) =
     fn(
       confKey,
       bufs
@@ -120,7 +119,6 @@ object WrappedSerialization {
           case (cls, buf) => s"${cls.getName}:${serialize(buf)}"
         }
         .mkString(","))
-  }
   def setBinary(
       conf: Configuration,
       bufs: Iterable[ClassSerialization[_]]): Unit =

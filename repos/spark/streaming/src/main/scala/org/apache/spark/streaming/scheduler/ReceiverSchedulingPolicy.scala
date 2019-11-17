@@ -220,7 +220,7 @@ private[streaming] class ReceiverSchedulingPolicy {
     */
   private def convertReceiverTrackingInfoToExecutorWeights(
       receiverTrackingInfo: ReceiverTrackingInfo)
-      : Seq[(ExecutorCacheTaskLocation, Double)] = {
+      : Seq[(ExecutorCacheTaskLocation, Double)] =
     receiverTrackingInfo.state match {
       case ReceiverState.INACTIVE => Nil
       case ReceiverState.SCHEDULED =>
@@ -236,5 +236,4 @@ private[streaming] class ReceiverSchedulingPolicy {
       case ReceiverState.ACTIVE =>
         Seq(receiverTrackingInfo.runningExecutor.get -> 1.0)
     }
-  }
 }

@@ -49,7 +49,7 @@ class MarathonStore[S <: MarathonState[_, S]](
   }
 
   def modify(key: String, onSuccess: (S) => Unit = _ => ())(
-      f: Update): Future[S] = {
+      f: Update): Future[S] =
     lockManager.executeSequentially(key) {
       log.debug(s"Modify $prefix$key")
       val res = store.load(prefix + key).flatMap {
@@ -73,7 +73,6 @@ class MarathonStore[S <: MarathonState[_, S]](
         .recover(exceptionTransform(
           s"Could not modify ${ct.runtimeClass.getSimpleName} with key: $key"))
     }
-  }
 
   def expunge(key: String, onSuccess: () => Unit = () => ()): Future[Boolean] =
     lockManager.executeSequentially(key) {
@@ -88,7 +87,7 @@ class MarathonStore[S <: MarathonState[_, S]](
           s"Could not expunge ${ct.runtimeClass.getSimpleName} with key: $key"))
     }
 
-  def names(): Future[Seq[String]] = {
+  def names(): Future[Seq[String]] =
     store
       .allIds()
       .map {
@@ -99,7 +98,6 @@ class MarathonStore[S <: MarathonState[_, S]](
       }
       .recover(exceptionTransform(
         s"Could not list names for ${ct.runtimeClass.getSimpleName}"))
-  }
 
   private[this] def exceptionTransform[T](
       errorMessage: String): PartialFunction[Throwable, T] = {
@@ -107,9 +105,8 @@ class MarathonStore[S <: MarathonState[_, S]](
       throw new StoreCommandFailedException(errorMessage, ex)
   }
 
-  private def stateFromBytes(bytes: Array[Byte]): S = {
+  private def stateFromBytes(bytes: Array[Byte]): S =
     newState().mergeFromProto(bytes)
-  }
 
   override def toString: String = s"MarathonStore($prefix)"
 }

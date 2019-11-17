@@ -71,9 +71,8 @@ private[spark] class PipedRDD[T: ClassTag](
     * @param filterName of file or directory to leave out
     */
   class NotEqualsFileNameFilter(filterName: String) extends FilenameFilter {
-    def accept(dir: File, name: String): Boolean = {
+    def accept(dir: File, name: String): Boolean =
       !name.equals(filterName)
-    }
   }
 
   override def compute(
@@ -206,7 +205,7 @@ private[spark] class PipedRDD[T: ClassTag](
         result
       }
 
-      private def cleanup(): Unit = {
+      private def cleanup(): Unit =
         // cleanup task working directory if used
         if (workInTaskDirectory) {
           scala.util.control.Exception.ignoring(classOf[IOException]) {
@@ -214,7 +213,6 @@ private[spark] class PipedRDD[T: ClassTag](
           }
           logDebug(s"Removed task working directory $taskDirectory")
         }
-      }
 
       private def propagateChildException(): Unit = {
         val t = childThreadException.get()

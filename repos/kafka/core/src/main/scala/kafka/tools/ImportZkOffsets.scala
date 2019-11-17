@@ -100,7 +100,7 @@ object ImportZkOffsets extends Logging {
 
   private def updateZkOffsets(
       zkUtils: ZkUtils,
-      partitionOffsets: Map[String, String]): Unit = {
+      partitionOffsets: Map[String, String]): Unit =
     for ((partition, offset) <- partitionOffsets) {
       debug("updating [" + partition + "] with offset [" + offset + "]")
 
@@ -110,5 +110,4 @@ object ImportZkOffsets extends Logging {
         case e: Throwable => e.printStackTrace()
       }
     }
-  }
 }

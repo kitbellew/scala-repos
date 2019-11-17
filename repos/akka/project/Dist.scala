@@ -87,7 +87,7 @@ object Dist {
     }
   }
 
-  def distTask: Initialize[Task[File]] = {
+  def distTask: Initialize[Task[File]] =
     (baseDirectory, distSources, distUnzipped, version, distFile, streams) map {
       (projectBase, allSources, unzipped, version, zipFile, s) =>
         {
@@ -115,7 +115,6 @@ object Dist {
           zip(unzipped, zipFile)
         }
     }
-  }
 
   def copyDirectory(
       source: File,
@@ -145,11 +144,10 @@ object Dist {
       sources: Traversable[(File, File)],
       overwrite: Boolean,
       preserveLastModified: Boolean,
-      setExecutable: Boolean): Set[File] = {
+      setExecutable: Boolean): Set[File] =
     sources map {
       Function.tupled(copy(overwrite, preserveLastModified, setExecutable))
     } toSet
-  }
 
   def copy(
       overwrite: Boolean,

@@ -72,9 +72,8 @@ class InboxSuite extends SparkFunSuite {
 
     val numDroppedMessages = new AtomicInteger(0)
     val inbox = new Inbox(endpointRef, endpoint) {
-      override def onDrop(message: InboxMessage): Unit = {
+      override def onDrop(message: InboxMessage): Unit =
         numDroppedMessages.incrementAndGet()
-      }
     }
 
     val exitLatch = new CountDownLatch(10)

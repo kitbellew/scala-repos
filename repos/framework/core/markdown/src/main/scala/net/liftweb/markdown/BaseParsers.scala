@@ -306,11 +306,10 @@ trait BaseParsers extends RegexParsers {
     *  Expects the parser to succeed and consume all input.
     *  Throws an IllegalArgumentException if parsing failed.
     */
-  def apply[T](p: Parser[T], in: String): T = {
+  def apply[T](p: Parser[T], in: String): T =
     parseAll(p, in) match {
       case Success(t, _) => t
       case e: NoSuccess =>
         throw new IllegalArgumentException("Could not parse '" + in + "': " + e)
     }
-  }
 }

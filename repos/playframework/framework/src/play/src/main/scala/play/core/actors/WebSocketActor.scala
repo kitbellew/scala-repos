@@ -136,10 +136,9 @@ private[play] object WebSocketActor {
     * The extension for managing WebSockets
     */
   object WebSocketsExtension extends ExtensionId[WebSocketsExtension] {
-    def createExtension(system: ExtendedActorSystem) = {
+    def createExtension(system: ExtendedActorSystem) =
       new WebSocketsExtension(
         system.systemActorOf(WebSocketsActor.props, "websockets"))
-    }
   }
 
   class WebSocketsExtension(val actor: ActorRef) extends Extension

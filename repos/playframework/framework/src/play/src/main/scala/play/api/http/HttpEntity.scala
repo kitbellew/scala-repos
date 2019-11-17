@@ -44,9 +44,8 @@ sealed trait HttpEntity {
   /**
     * Consume the data from this entity.
     */
-  def consumeData(implicit mat: Materializer): Future[ByteString] = {
+  def consumeData(implicit mat: Materializer): Future[ByteString] =
     dataStream.runFold(ByteString.empty)(_ ++ _)
-  }
 
   /**
     * Convert this entity to its Java counterpart.

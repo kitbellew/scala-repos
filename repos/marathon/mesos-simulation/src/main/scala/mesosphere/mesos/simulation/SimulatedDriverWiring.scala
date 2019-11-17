@@ -14,7 +14,6 @@ private class SimulatedDriverWiring(scheduler: Scheduler) {
   * A factory for a simulated [[SchedulerDriver]].
   */
 object SimulatedDriverWiring {
-  def createDriver(scheduler: Scheduler): SchedulerDriver = {
+  def createDriver(scheduler: Scheduler): SchedulerDriver =
     new SimulatedDriverWiring(scheduler).driver
-  }
 }

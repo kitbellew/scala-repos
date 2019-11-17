@@ -219,36 +219,30 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
     super.tearDown()
   }
 
-  private def createMetadataRequest = {
+  private def createMetadataRequest =
     new requests.MetadataRequest(List(topic).asJava)
-  }
 
-  private def createProduceRequest = {
+  private def createProduceRequest =
     new requests.ProduceRequest(
       1,
       5000,
       collection.mutable.Map(tp -> ByteBuffer.wrap("test".getBytes)).asJava)
-  }
 
-  private def createFetchRequest = {
+  private def createFetchRequest =
     new requests.FetchRequest(
       5000,
       100,
       Map(tp -> new requests.FetchRequest.PartitionData(0, 100)).asJava)
-  }
 
-  private def createListOffsetsRequest = {
+  private def createListOffsetsRequest =
     new requests.ListOffsetRequest(
       Map(tp -> new ListOffsetRequest.PartitionData(0, 100)).asJava)
-  }
 
-  private def createOffsetFetchRequest = {
+  private def createOffsetFetchRequest =
     new requests.OffsetFetchRequest(group, List(tp).asJava)
-  }
 
-  private def createGroupCoordinatorRequest = {
+  private def createGroupCoordinatorRequest =
     new requests.GroupCoordinatorRequest(group)
-  }
 
   private def createUpdateMetadataRequest = {
     val partitionState = Map(
@@ -274,7 +268,7 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
       brokers)
   }
 
-  private def createJoinGroupRequest = {
+  private def createJoinGroupRequest =
     new JoinGroupRequest(
       group,
       30000,
@@ -284,30 +278,25 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
         new JoinGroupRequest.ProtocolMetadata(
           "consumer-range",
           ByteBuffer.wrap("test".getBytes()))).asJava)
-  }
 
-  private def createSyncGroupRequest = {
+  private def createSyncGroupRequest =
     new SyncGroupRequest(group, 1, "", Map[String, ByteBuffer]().asJava)
-  }
 
-  private def createOffsetCommitRequest = {
+  private def createOffsetCommitRequest =
     new requests.OffsetCommitRequest(
       group,
       1,
       "",
       1000,
       Map(tp -> new requests.OffsetCommitRequest.PartitionData(0, "metadata")).asJava)
-  }
 
-  private def createHeartbeatRequest = {
+  private def createHeartbeatRequest =
     new HeartbeatRequest(group, 1, "")
-  }
 
-  private def createLeaveGroupRequest = {
+  private def createLeaveGroupRequest =
     new LeaveGroupRequest(group, "")
-  }
 
-  private def createLeaderAndIsrRequest = {
+  private def createLeaderAndIsrRequest =
     new requests.LeaderAndIsrRequest(
       brokerId,
       Int.MaxValue,
@@ -321,19 +310,16 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
           Set(brokerId).asJava)).asJava,
       Set(new BrokerEndPoint(brokerId, "localhost", 0)).asJava
     )
-  }
 
-  private def createStopReplicaRequest = {
+  private def createStopReplicaRequest =
     new requests.StopReplicaRequest(
       brokerId,
       Int.MaxValue,
       true,
       Set(tp).asJava)
-  }
 
-  private def createControlledShutdownRequest = {
+  private def createControlledShutdownRequest =
     new requests.ControlledShutdownRequest(brokerId)
-  }
 
   @Test
   def testAuthorization() {
@@ -713,7 +699,7 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
     this.consumers.head.partitionsFor(topic);
   }
 
-  def removeAllAcls() = {
+  def removeAllAcls() =
     servers.head.apis.authorizer.get.getAcls().keys.foreach { resource =>
       servers.head.apis.authorizer.get.removeAcls(resource)
       TestUtils.waitAndVerifyAcls(
@@ -721,7 +707,6 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
         servers.head.apis.authorizer.get,
         resource)
     }
-  }
 
   def sendRequestAndVerifyResponseErrorCode(
       socket: Socket,

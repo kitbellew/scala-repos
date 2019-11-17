@@ -47,7 +47,7 @@ object Source {
     * If the downstream of this source cancels before the promise has been completed, then the promise will be completed
     * with an empty Optional.
     */
-  def maybe[T]: Source[T, CompletableFuture[Optional[T]]] = {
+  def maybe[T]: Source[T, CompletableFuture[Optional[T]]] =
     new Source(
       scaladsl.Source
         .maybe[T]
@@ -59,7 +59,6 @@ object Source {
 
           javaOptionPromise
         })
-  }
 
   /**
     * Helper to create [[Source]] from `Publisher`.
@@ -1091,9 +1090,8 @@ final class Source[+Out, +Mat](delegate: scaladsl.Source[Out, Mat])
     * See also [[Flow.take]], [[Flow.takeWithin]], [[Flow.takeWhile]]
     */
   def limitWeighted(n: Long)(
-      costFn: function.Function[Out, Long]): javadsl.Source[Out, Mat] = {
+      costFn: function.Function[Out, Long]): javadsl.Source[Out, Mat] =
     new Source(delegate.limitWeighted(n)(costFn.apply))
-  }
 
   /**
     * Apply a sliding window over the stream and return the windows as groups of elements, with the last group

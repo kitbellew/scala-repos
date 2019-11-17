@@ -17,7 +17,6 @@ class SchemaResource @Inject() (val config: MarathonConf) extends RestResource {
   @GET
   @Timed
   @Path("app")
-  def index(): InputStream = {
+  def index(): InputStream =
     getClass.getResourceAsStream("/public/api/v2/schema/AppDefinition.json")
-  }
 }

@@ -64,7 +64,7 @@ abstract class SubComponent {
     global.exitingPhase(ownPhase)(op)
 
   /** The phase corresponding to this subcomponent in the current compiler run */
-  def ownPhase: Phase = {
+  def ownPhase: Phase =
     ownPhaseCache.get match {
       case Some(phase) if ownPhaseRunId == global.currentRunId =>
         phase
@@ -74,7 +74,6 @@ abstract class SubComponent {
         ownPhaseRunId = global.currentRunId
         phase
     }
-  }
 
   /** The phase defined by this subcomponent. Can be called only after phase is installed by newPhase. */
   //  lazy val ownPhase: Phase = global.currentRun.phaseNamed(phaseName)

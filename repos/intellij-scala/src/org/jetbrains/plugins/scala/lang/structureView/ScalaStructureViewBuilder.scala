@@ -21,9 +21,8 @@ class ScalaStructureViewBuilder(
     extends TreeBasedStructureViewBuilder {
 
   @NotNull
-  override def createStructureViewModel(editor: Editor): StructureViewModel = {
+  override def createStructureViewModel(editor: Editor): StructureViewModel =
     new ScalaStructureViewModel(myPsiFile, console)
-  }
 
   override def isRootNodeShown: Boolean = false
 }

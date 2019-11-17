@@ -32,13 +32,12 @@ import org.scalacheck._
 import scala.collection.mutable
 
 abstract class cleanup(f: File) extends After {
-  def after = {
+  def after =
     try {
       f.delete()
     } catch {
       case _: Exception => ()
     }
-  }
 }
 
 object RawHandlerSpecs extends Specification with ScalaCheck {

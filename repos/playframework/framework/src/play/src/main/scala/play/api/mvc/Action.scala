@@ -138,9 +138,8 @@ trait Action[A] extends EssentialAction {
     */
   override def apply(): Action[A] = this
 
-  override def toString = {
+  override def toString =
     "Action(parser=" + parser + ")"
-  }
 }
 
 /**
@@ -264,9 +263,8 @@ trait BodyParser[+A]
 object BodyParser {
 
   def apply[T](f: RequestHeader => Accumulator[ByteString, Either[Result, T]])
-      : BodyParser[T] = {
+      : BodyParser[T] =
     apply("(no name)")(f)
-  }
 
   def apply[T](debugName: String)(
       f: RequestHeader => Accumulator[ByteString, Either[Result, T]])
@@ -287,9 +285,8 @@ object BodyParser {
     */
   @deprecated("Use apply instead", "2.5.0")
   def iteratee[T](f: RequestHeader => Iteratee[ByteString, Either[Result, T]])
-      : BodyParser[T] = {
+      : BodyParser[T] =
     iteratee("(no name)")(f)
-  }
 
   /**
     * Create a BodyParser

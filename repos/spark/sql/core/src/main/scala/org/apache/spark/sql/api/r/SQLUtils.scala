@@ -36,17 +36,14 @@ import org.apache.spark.sql.types._
 private[r] object SQLUtils {
   SerDe.registerSqlSerDe((readSqlObject, writeSqlObject))
 
-  def createSQLContext(jsc: JavaSparkContext): SQLContext = {
+  def createSQLContext(jsc: JavaSparkContext): SQLContext =
     SQLContext.getOrCreate(jsc.sc)
-  }
 
-  def getJavaSparkContext(sqlCtx: SQLContext): JavaSparkContext = {
+  def getJavaSparkContext(sqlCtx: SQLContext): JavaSparkContext =
     new JavaSparkContext(sqlCtx.sparkContext)
-  }
 
-  def createStructType(fields: Seq[StructField]): StructType = {
+  def createStructType(fields: Seq[StructField]): StructType =
     StructType(fields)
-  }
 
   // Support using regex in string interpolation
   private[this] implicit class RegexContext(sc: StringContext) {
@@ -54,7 +51,7 @@ private[r] object SQLUtils {
       new Regex(sc.parts.mkString, sc.parts.tail.map(_ => "x"): _*)
   }
 
-  def getSQLDataType(dataType: String): DataType = {
+  def getSQLDataType(dataType: String): DataType =
     dataType match {
       case "byte"      => org.apache.spark.sql.types.ByteType
       case "integer"   => org.apache.spark.sql.types.IntegerType
@@ -95,7 +92,6 @@ private[r] object SQLUtils {
         createStructType(structFields)
       case _ => throw new IllegalArgumentException(s"Invaid type $dataType")
     }
-  }
 
   def createStructField(
       name: String,
@@ -114,17 +110,15 @@ private[r] object SQLUtils {
     sqlContext.createDataFrame(rowRDD, schema)
   }
 
-  def dfToRowRDD(df: DataFrame): JavaRDD[Array[Byte]] = {
+  def dfToRowRDD(df: DataFrame): JavaRDD[Array[Byte]] =
     df.rdd.map(r => rowToRBytes(r))
-  }
 
-  private[this] def doConversion(data: Object, dataType: DataType): Object = {
+  private[this] def doConversion(data: Object, dataType: DataType): Object =
     data match {
       case d: java.lang.Double if dataType == FloatType =>
         new java.lang.Float(d)
       case _ => data
     }
-  }
 
   private[this] def bytesToRow(bytes: Array[Byte], schema: StructType): Row = {
     val bis = new ByteArrayInputStream(bytes)
@@ -159,31 +153,28 @@ private[r] object SQLUtils {
     colArray
   }
 
-  def saveMode(mode: String): SaveMode = {
+  def saveMode(mode: String): SaveMode =
     mode match {
       case "append"    => SaveMode.Append
       case "overwrite" => SaveMode.Overwrite
       case "error"     => SaveMode.ErrorIfExists
       case "ignore"    => SaveMode.Ignore
     }
-  }
 
   def loadDF(
       sqlContext: SQLContext,
       source: String,
-      options: java.util.Map[String, String]): DataFrame = {
+      options: java.util.Map[String, String]): DataFrame =
     sqlContext.read.format(source).options(options).load()
-  }
 
   def loadDF(
       sqlContext: SQLContext,
       source: String,
       schema: StructType,
-      options: java.util.Map[String, String]): DataFrame = {
+      options: java.util.Map[String, String]): DataFrame =
     sqlContext.read.format(source).schema(schema).options(options).load()
-  }
 
-  def readSqlObject(dis: DataInputStream, dataType: Char): Object = {
+  def readSqlObject(dis: DataInputStream, dataType: Char): Object =
     dataType match {
       case 's' =>
         // Read StructType for DataFrame
@@ -191,9 +182,8 @@ private[r] object SQLUtils {
         Row.fromSeq(fields)
       case _ => null
     }
-  }
 
-  def writeSqlObject(dos: DataOutputStream, obj: Object): Boolean = {
+  def writeSqlObject(dos: DataOutputStream, obj: Object): Boolean =
     obj match {
       // Handle struct type in DataFrame
       case v: GenericRowWithSchema =>
@@ -204,5 +194,4 @@ private[r] object SQLUtils {
       case _ =>
         false
     }
-  }
 }

@@ -86,14 +86,13 @@ trait BaseInMemoryJobManager[M[+_]]
       name: String,
       jobType: String,
       data: Option[JValue],
-      started: Option[DateTime]): M[Job] = {
+      started: Option[DateTime]): M[Job] =
     M.point {
       val state = started map (Started(_, NotStarted)) getOrElse NotStarted
       val job = Job(newJobId, auth, name, jobType, data, state)
       jobs(job.id) = JobData(job, Map.empty, None)
       job
     }
-  }
 
   def findJob(id: JobId): M[Option[Job]] = M.point { jobs get id map (_.job) }
 
@@ -151,7 +150,7 @@ trait BaseInMemoryJobManager[M[+_]]
     jobs get jobId map (_.channels.keys.toList) getOrElse Nil
   }
 
-  def addMessage(jobId: JobId, channel: String, value: JValue): M[Message] = {
+  def addMessage(jobId: JobId, channel: String, value: JValue): M[Message] =
     M.point {
       synchronized {
         val data = jobs(jobId)
@@ -162,22 +161,20 @@ trait BaseInMemoryJobManager[M[+_]]
         message
       }
     }
-  }
 
   def listMessages(
       jobId: JobId,
       channel: String,
-      since: Option[MessageId]): M[Seq[Message]] = {
+      since: Option[MessageId]): M[Seq[Message]] =
     M.point {
       val posts = jobs(jobId).channels.getOrElse(channel, Nil)
       since map { mId =>
         posts.takeWhile(_.id != mId).reverse
       } getOrElse posts.reverse
     }
-  }
 
   protected def transition(id: JobId)(
-      t: JobState => Either[String, JobState]): M[Either[String, Job]] = {
+      t: JobState => Either[String, JobState]): M[Either[String, Job]] =
     M.point {
       synchronized {
         jobs get id map {
@@ -194,5 +191,4 @@ trait BaseInMemoryJobManager[M[+_]]
         } getOrElse Left("Cannot find job with ID '%s'." format id)
       }
     }
-  }
 }

@@ -88,15 +88,13 @@ class HttpComponentsClientSpec
     }
   }
 
-  private def doVerbGetActual(method: String) = {
+  private def doVerbGetActual(method: String) =
     submit(method, "/") {
       header("Request-Method")
     }
-  }
 
-  private def doReqWithBody(method: String, reqBody: String) = {
+  private def doReqWithBody(method: String, reqBody: String) =
     submit(method, "/", body = reqBody) {
       body
     }
-  }
 }

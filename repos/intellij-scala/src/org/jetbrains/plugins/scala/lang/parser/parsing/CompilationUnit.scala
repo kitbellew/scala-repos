@@ -23,7 +23,7 @@ object CompilationUnit {
   def parse(builder: ScalaPsiBuilder): Int = {
     var parseState = ParserState.EMPTY_STATE
 
-    def parsePackagingBody(hasPackage: Boolean) = {
+    def parsePackagingBody(hasPackage: Boolean) =
       while (builder.getTokenType != null) {
         TopStatSeq.parse(builder, waitBrace = false, hasPackage = hasPackage) match {
           case ParserState.EMPTY_STATE =>
@@ -39,7 +39,6 @@ object CompilationUnit {
         }
         builder.advanceLexer()
       }
-    }
 
     //look for file package
     builder.getTokenType match {

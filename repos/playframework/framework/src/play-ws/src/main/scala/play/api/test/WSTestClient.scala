@@ -36,9 +36,8 @@ trait WsTestClient {
     */
   def wsUrl(url: String)(
       implicit port: Port,
-      client: WSClient = WS.client(play.api.Play.privateMaybeApplication.get)) = {
+      client: WSClient = WS.client(play.api.Play.privateMaybeApplication.get)) =
     WS.clientUrl("http://localhost:" + port + url)
-  }
 
   /**
     * Run the given block of code with a client.
@@ -72,13 +71,12 @@ trait WsTestClient {
       AhcWSClient(AhcWSClientConfig(maxRequestRetry = 0))(materializer)
     val wrappedClient = new WSClient {
       def underlying[T] = client.underlying.asInstanceOf[T]
-      def url(url: String) = {
+      def url(url: String) =
         if (url.startsWith("/") && port.value != -1) {
           client.url(s"http://localhost:$port$url")
         } else {
           client.url(url)
         }
-      }
       def close() = ()
     }
 

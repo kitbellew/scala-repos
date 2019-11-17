@@ -31,7 +31,7 @@ class RunSettings private (
   def decodeName(name: String): String =
     if (decodeScalaNames) RunSettings.decodeScalaName(name) else name
 
-  def buildColoredMessage(t: Throwable, c1: String): String = {
+  def buildColoredMessage(t: Throwable, c1: String): String =
     if (t == null) "null"
     else {
       if (!logExceptionClass || (!logAssert && t
@@ -55,7 +55,6 @@ class RunSettings private (
         b.toString()
       }
     }
-  }
 
   def buildInfoMessage(t: Throwable): String =
     buildColoredMessage(t, NNAME2)

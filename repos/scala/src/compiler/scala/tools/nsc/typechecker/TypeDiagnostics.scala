@@ -298,9 +298,8 @@ trait TypeDiagnostics { self: Analyzer =>
 
   // For found/required errors where AnyRef would have sufficed:
   // explain in greater detail.
-  def explainAnyVsAnyRef(found: Type, req: Type): String = {
+  def explainAnyVsAnyRef(found: Type, req: Type): String =
     if (AnyRefTpe <:< req) notAnyRefMessage(found) else ""
-  }
 
   // TODO - figure out how to avoid doing any work at all
   // when the message will never be seen.  I though context.reportErrors
@@ -375,7 +374,7 @@ trait TypeDiagnostics { self: Analyzer =>
       else if (sym isLess other.sym) -1
       else 1
 
-    override def toString = {
+    override def toString =
       """
       |tp = %s
       |tp.typeSymbol = %s
@@ -389,7 +388,6 @@ trait TypeDiagnostics { self: Analyzer =>
         tp.typeSymbolDirect,
         tp.typeSymbolDirect.owner
       )
-    }
   }
 
   /** This is tricky stuff - we need to traverse types deeply to
@@ -409,13 +407,12 @@ trait TypeDiagnostics { self: Analyzer =>
 
     val localsSet = locals.toSet
 
-    def record(t: Type, sym: Symbol) = {
+    def record(t: Type, sym: Symbol) =
       if (!localsSet(sym)) {
         val diag = TypeDiag(t, sym)
         strings("" + t) += diag
         names(sym.name) += diag
       }
-    }
     for (tpe <- types; t <- tpe) {
       t match {
         case ConstantType(_)    => record(t, t.underlying.typeSymbol)
@@ -429,9 +426,8 @@ trait TypeDiagnostics { self: Analyzer =>
   }
 
   /** The distinct pairs from an ordered list. */
-  private def pairs[T <: Ordered[T]](xs: Seq[T]): Seq[(T, T)] = {
+  private def pairs[T <: Ordered[T]](xs: Seq[T]): Seq[(T, T)] =
     for (el1 <- xs; el2 <- xs; if el1 < el2) yield ((el1, el2))
-  }
 
   /** Given any number of types, alters the name information in the symbols
     *  until they can be distinguished from one another: then executes the given
@@ -615,14 +611,13 @@ trait TypeDiagnostics { self: Analyzer =>
         tree.tpe != null && tree.tpe.typeSymbol == NothingClass && !isLabelDef
       }
 
-      @inline def updateExpr[A](fn: Tree)(f: => A) = {
+      @inline def updateExpr[A](fn: Tree)(f: => A) =
         if (fn.symbol != null && fn.symbol.isMethod &&
             !fn.symbol.isConstructor) {
           exprStack push fn.symbol
           try f
           finally exprStack.pop()
         } else f
-      }
       def apply(tree: Tree): Tree = {
         // Error suppression (in context.warning) would squash some of these warnings.
         // It is presumed if you are using a -Y option you would really like to hear

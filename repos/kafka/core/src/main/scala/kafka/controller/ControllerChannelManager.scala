@@ -61,18 +61,16 @@ class ControllerChannelManager(
 
   controllerContext.liveBrokers.foreach(addNewBroker(_))
 
-  def startup() = {
+  def startup() =
     brokerLock synchronized {
       brokerStateInfo.foreach(brokerState =>
         startRequestSendThread(brokerState._1))
     }
-  }
 
-  def shutdown() = {
+  def shutdown() =
     brokerLock synchronized {
       brokerStateInfo.values.foreach(removeExistingBroker)
     }
-  }
 
   def sendRequest(
       brokerId: Int,
@@ -715,11 +713,10 @@ object Callbacks {
       this
     }
 
-    def build: Callbacks = {
+    def build: Callbacks =
       new Callbacks(
         leaderAndIsrResponseCbk,
         updateMetadataResponseCbk,
         stopReplicaResponseCbk)
-    }
   }
 }

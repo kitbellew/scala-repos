@@ -272,9 +272,8 @@ private object BisectingKMeans extends Serializable {
   }
 
   /** Returns the parent index of the given node index, or 0 if the input is 1 (root). */
-  private def parentIndex(index: Long): Long = {
+  private def parentIndex(index: Long): Long =
     index / 2
-  }
 
   /**
     * Summarizes data by each cluster as Map.
@@ -284,7 +283,7 @@ private object BisectingKMeans extends Serializable {
     */
   private def summarize(
       d: Int,
-      assignments: RDD[(Long, VectorWithNorm)]): Map[Long, ClusterSummary] = {
+      assignments: RDD[(Long, VectorWithNorm)]): Map[Long, ClusterSummary] =
     assignments
       .aggregateByKey(new ClusterSummaryAggregator(d))(
         seqOp = (agg, v) => agg.add(v),
@@ -293,7 +292,6 @@ private object BisectingKMeans extends Serializable {
       .mapValues(_.summary)
       .collect()
       .toMap
-  }
 
   /**
     * Cluster summary aggregator.
@@ -365,7 +363,7 @@ private object BisectingKMeans extends Serializable {
       assignments: RDD[(Long, VectorWithNorm)],
       divisibleIndices: Set[Long],
       newClusterCenters: Map[Long, VectorWithNorm])
-      : RDD[(Long, VectorWithNorm)] = {
+      : RDD[(Long, VectorWithNorm)] =
     assignments.map {
       case (index, v) =>
         if (divisibleIndices.contains(index)) {
@@ -378,7 +376,6 @@ private object BisectingKMeans extends Serializable {
           (index, v)
         }
     }
-  }
 
   /**
     * Builds a clustering tree by re-indexing internal and leaf clusters.
@@ -477,13 +474,12 @@ private[clustering] class ClusteringTreeNode private[clustering] (
   }
 
   /** Returns the full prediction path from root to leaf. */
-  def predictPath(point: Vector): Array[ClusteringTreeNode] = {
+  def predictPath(point: Vector): Array[ClusteringTreeNode] =
     predictPath(new VectorWithNorm(point)).toArray
-  }
 
   /** Returns the full prediction path from root to leaf. */
   private def predictPath(
-      pointWithNorm: VectorWithNorm): List[ClusteringTreeNode] = {
+      pointWithNorm: VectorWithNorm): List[ClusteringTreeNode] =
     if (isLeaf) {
       this :: Nil
     } else {
@@ -492,7 +488,6 @@ private[clustering] class ClusteringTreeNode private[clustering] (
       }
       selected :: selected.predictPath(pointWithNorm)
     }
-  }
 
   /**
     * Computes the cost (squared distance to the predicted leaf cluster center) of the input point.
@@ -505,11 +500,10 @@ private[clustering] class ClusteringTreeNode private[clustering] (
   /**
     * Predicts the cluster index and the cost of the input point.
     */
-  private def predict(pointWithNorm: VectorWithNorm): (Int, Double) = {
+  private def predict(pointWithNorm: VectorWithNorm): (Int, Double) =
     predict(
       pointWithNorm,
       KMeans.fastSquaredDistance(centerWithNorm, pointWithNorm))
-  }
 
   /**
     * Predicts the cluster index and the cost of the input point.
@@ -520,7 +514,7 @@ private[clustering] class ClusteringTreeNode private[clustering] (
   @tailrec
   private def predict(
       pointWithNorm: VectorWithNorm,
-      cost: Double): (Int, Double) = {
+      cost: Double): (Int, Double) =
     if (isLeaf) {
       (index, cost)
     } else {
@@ -533,16 +527,14 @@ private[clustering] class ClusteringTreeNode private[clustering] (
         .minBy(_._2)
       selectedChild.predict(pointWithNorm, minCost)
     }
-  }
 
   /**
     * Returns all leaf nodes from this node.
     */
-  def leafNodes: Array[ClusteringTreeNode] = {
+  def leafNodes: Array[ClusteringTreeNode] =
     if (isLeaf) {
       Array(this)
     } else {
       children.flatMap(_.leafNodes)
     }
-  }
 }

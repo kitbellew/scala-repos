@@ -279,7 +279,7 @@ final class SortedSetCodecSuite extends RedisRequestTest {
       start: Int,
       stop: Int,
       scored: Option[CommandArgument]
-  ): PartialFunction[Command, Unit] = {
+  ): PartialFunction[Command, Unit] =
     cmd match {
       case "ZRANGE" => {
         case ZRange(k, start, stop, scored) => ()
@@ -288,7 +288,6 @@ final class SortedSetCodecSuite extends RedisRequestTest {
         case ZRevRange(k, start, stop, scored) => ()
       }
     }
-  }
 
   test("Correctly encode ZRANGE and ZREVRANGE without scores") {
     List("ZRANGE", "ZREVRANGE").foreach { cmd =>

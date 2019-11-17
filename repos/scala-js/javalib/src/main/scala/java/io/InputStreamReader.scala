@@ -205,9 +205,8 @@ class InputStreamReader(
   override def ready(): Boolean =
     outBuf.hasRemaining || in.available() > 0
 
-  private def ensureOpen(): Unit = {
+  private def ensureOpen(): Unit =
     if (closed) throw new IOException("Stream closed")
-  }
 }
 
 object InputStreamReader {

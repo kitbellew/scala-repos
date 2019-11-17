@@ -25,7 +25,7 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
     def shouldViolate(
         app: AppDefinition,
         path: String,
-        template: String): Unit = {
+        template: String): Unit =
       validate(app) match {
         case Success => fail()
         case f: Failure =>
@@ -35,12 +35,11 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
             v.path.contains(path) && v.message == template
           }, s"Violations:\n${violations.mkString}")
       }
-    }
 
     def shouldNotViolate(
         app: AppDefinition,
         path: String,
-        template: String): Unit = {
+        template: String): Unit =
       validate(app) match {
         case Success =>
         case f: Failure =>
@@ -49,7 +48,6 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
             v.path.contains(path) && v.message == template
           }, s"Violations:\n${violations.mkString}")
       }
-    }
 
     var app = AppDefinition(id = "a b".toRootPath)
     val idError =

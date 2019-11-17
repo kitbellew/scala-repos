@@ -234,12 +234,11 @@ object SbtRunner {
       sectionName: String): Map[String, String] = {
     val Property = "^\\s*(\\w+)\\s*:(.+)".r.unanchored
 
-    def findProperty(line: String): Option[(String, String)] = {
+    def findProperty(line: String): Option[(String, String)] =
       line match {
         case Property(name, value) => Some((name, value.trim))
         case _                     => None
       }
-    }
 
     val jar = new JarFile(launcherFile)
     try {
@@ -267,11 +266,10 @@ object SbtRunner {
     else None
   }
 
-  private def readPropertyFrom(file: File, name: String): Option[String] = {
+  private def readPropertyFrom(file: File, name: String): Option[String] =
     using(new BufferedInputStream(new FileInputStream(file))) { input =>
       val properties = new Properties()
       properties.load(input)
       Option(properties.getProperty(name))
     }
-  }
 }

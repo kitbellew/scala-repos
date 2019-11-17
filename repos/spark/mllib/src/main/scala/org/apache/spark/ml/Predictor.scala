@@ -119,20 +119,18 @@ abstract class Predictor[
     */
   private[ml] def featuresDataType: DataType = new VectorUDT
 
-  override def transformSchema(schema: StructType): StructType = {
+  override def transformSchema(schema: StructType): StructType =
     validateAndTransformSchema(schema, fitting = true, featuresDataType)
-  }
 
   /**
     * Extract [[labelCol]] and [[featuresCol]] from the given dataset,
     * and put it in an RDD with strong types.
     */
-  protected def extractLabeledPoints(dataset: DataFrame): RDD[LabeledPoint] = {
+  protected def extractLabeledPoints(dataset: DataFrame): RDD[LabeledPoint] =
     dataset.select($(labelCol), $(featuresCol)).rdd.map {
       case Row(label: Double, features: Vector) =>
         LabeledPoint(label, features)
     }
-  }
 }
 
 /**
@@ -172,9 +170,8 @@ abstract class PredictionModel[
     */
   protected def featuresDataType: DataType = new VectorUDT
 
-  override def transformSchema(schema: StructType): StructType = {
+  override def transformSchema(schema: StructType): StructType =
     validateAndTransformSchema(schema, fitting = false, featuresDataType)
-  }
 
   /**
     * Transforms dataset by reading from [[featuresCol]], calling [[predict()]], and storing

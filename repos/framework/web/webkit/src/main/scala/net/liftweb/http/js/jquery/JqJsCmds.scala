@@ -108,7 +108,7 @@ object JqWiringSupport {
     */
   def calculateDeltas[T](oldList: Box[Seq[T]], newList: Seq[T], id: String)(
       calcId: T => String,
-      calcNodeSeq: T => NodeSeq): JsCmd = {
+      calcNodeSeq: T => NodeSeq): JsCmd =
     Helpers.delta(oldList, newList) {
       case RemoveDelta(ci) =>
         new JsCmd {
@@ -136,7 +136,6 @@ object JqWiringSupport {
           }
         }
     }
-  }
 }
 
 /**

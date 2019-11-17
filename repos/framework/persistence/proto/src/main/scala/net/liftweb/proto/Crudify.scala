@@ -203,7 +203,7 @@ trait Crudify {
   /**
     * Customize the display of a row for displayRecord
     */
-  protected def doDisplayRecordRow(entry: TheCrudType): (NodeSeq) => NodeSeq = {
+  protected def doDisplayRecordRow(entry: TheCrudType): (NodeSeq) => NodeSeq =
     "^" #> {
       for {
         pointer <- fieldsForDisplay
@@ -213,14 +213,12 @@ trait Crudify {
         ".name *" #> field.displayHtml & ".value *" #> field.asHtml
       }
     }
-  }
 
   /**
     * Customize the display of records for view menu loc
     */
-  protected def displayRecord(entry: TheCrudType): (NodeSeq) => NodeSeq = {
+  protected def displayRecord(entry: TheCrudType): (NodeSeq) => NodeSeq =
     ".row" #> doDisplayRecordRow(entry)
-  }
 
   /**
     * The menu item for viewing an item (make this "Empty" to disable)
@@ -271,7 +269,7 @@ trait Crudify {
   /**
     * The menu item for editing an item (make this "Empty" to disable)
     */
-  def editMenuLoc: Box[Menu] = {
+  def editMenuLoc: Box[Menu] =
     Full(Menu(new Loc[TheCrudType] {
       // the name of the page
       def name = "Edit " + Prefix
@@ -308,7 +306,6 @@ trait Crudify {
           Full(Text(editPathString + "/" + obscurePrimaryKey(in)))
       }
     }))
-  }
 
   /**
     * Override to include new Params for the edit menu
@@ -334,7 +331,7 @@ trait Crudify {
     * The core template for editing.  Does not include any
     * page wrapping.
     */
-  protected def _editTemplate = {
+  protected def _editTemplate =
     <div data-lift="crud.edit?form=post">
       <table id={editId} class={editClass}>
         <tr class="field">
@@ -348,14 +345,13 @@ trait Crudify {
         </tr>
       </table>
     </div>
-  }
 
   def editButton = S.?("Save")
 
   /**
     * Override this method to change how fields are displayed for delete
     */
-  protected def doDeleteFields(item: TheCrudType): (NodeSeq) => NodeSeq = {
+  protected def doDeleteFields(item: TheCrudType): (NodeSeq) => NodeSeq =
     "^" #> {
       for {
         pointer <- fieldsForDisplay
@@ -365,7 +361,6 @@ trait Crudify {
         ".name *" #> field.displayHtml & ".value *" #> field.asHtml
       }
     }
-  }
 
   /**
     * Override this method to change the behavior of deleting an item
@@ -389,7 +384,7 @@ trait Crudify {
   /**
     * The menu item for deleting an item (make this "Empty" to disable)
     */
-  def deleteMenuLoc: Box[Menu] = {
+  def deleteMenuLoc: Box[Menu] =
     Full(Menu(new Loc[TheCrudType] {
       // the name of the page
       def name = "Delete " + Prefix
@@ -426,12 +421,10 @@ trait Crudify {
           Full(Text(deletePathString + "/" + obscurePrimaryKey(in)))
       }
     }))
-  }
 
-  private def hasParamFor(pp: ParsePath, toTest: List[String]): Boolean = {
+  private def hasParamFor(pp: ParsePath, toTest: List[String]): Boolean =
     pp.wholePath.startsWith(toTest) && pp.wholePath.length ==
       (toTest.length + 1) && findForParam(pp.wholePath.last).isDefined
-  }
 
   /**
     * Override to include new Params for the delete menu
@@ -453,7 +446,7 @@ trait Crudify {
     * The core template for deleting.  Does not include any
     * page wrapping.
     */
-  def _deleteTemplate = {
+  def _deleteTemplate =
     <div data-lift="crud.delete?form=post">
       <table id={deleteId} class={deleteClass}>
         <tr class="field">
@@ -467,7 +460,6 @@ trait Crudify {
         </tr>
       </table>
     </div>
-  }
 
   def deleteButton = S.?("Delete")
 
@@ -486,7 +478,7 @@ trait Crudify {
     * The core template for creating.  Does not include any
     * page wrapping.
     */
-  def _createTemplate = {
+  def _createTemplate =
     <div data-lift="crud.create?form=post">
       <table id={createId} class={createClass}>
         <tr class="field">
@@ -500,7 +492,6 @@ trait Crudify {
         </tr>
       </table>
     </div>
-  }
 
   def createButton = S.?("Create")
 
@@ -519,7 +510,7 @@ trait Crudify {
     * The core template for viewing.  Does not include any
     * page wrapping.
     */
-  def _viewTemplate = {
+  def _viewTemplate =
     <div data-lift="crud.view">
       <table id={viewId} class={viewClass}>
         <tr class="row">
@@ -528,7 +519,6 @@ trait Crudify {
         </tr>
       </table>
     </div>
-  }
 
   def showAllMenuName = S.?("List", displayName)
 
@@ -545,7 +535,7 @@ trait Crudify {
     * The core template for showing record.  Does not include any
     * page wrapping
     */
-  def _showAllTemplate = {
+  def _showAllTemplate =
     <div data-lift="crud.all">
       <table id={showAllId} class={showAllClass}>
         <thead>
@@ -576,7 +566,6 @@ trait Crudify {
         </tfoot>
       </table>
     </div>
-  }
 
   def nextWord = S.?("Next")
   def previousWord = S.?("Previous")
@@ -637,14 +626,13 @@ trait Crudify {
   /**
     * Override this method to customize how header items are treated
     */
-  protected def doCrudAllHeaderItems: (NodeSeq) => NodeSeq = {
+  protected def doCrudAllHeaderItems: (NodeSeq) => NodeSeq =
     "^ *" #> fieldsForList.map(_.displayHtml)
-  }
 
   /**
     * Override this method to customize how a crudAll line is generated
     */
-  protected def doCrudAllRowItem(c: TheCrudType): (NodeSeq) => NodeSeq = {
+  protected def doCrudAllRowItem(c: TheCrudType): (NodeSeq) => NodeSeq =
     "^" #> {
       for {
         pointer <- fieldsForList
@@ -653,26 +641,24 @@ trait Crudify {
         ".value *" #> field.asHtml
       }
     }
-  }
 
   /**
     * Override this method to determine how all the rows on a crud
     * page are displayed
     */
-  protected def doCrudAllRows(list: List[TheCrudType]): (NodeSeq) => NodeSeq = {
+  protected def doCrudAllRows(list: List[TheCrudType]): (NodeSeq) => NodeSeq =
     "^" #> list.take(rowsPerPage).map { rowItem =>
       ".row-item" #> doCrudAllRowItem(rowItem) & ".view [href]" #>
         (s"$viewPathString/${obscurePrimaryKey(rowItem)}") & ".edit [href]" #>
         (s"$editPathString/${obscurePrimaryKey(rowItem)}") & ".delete [href]" #>
         (s"$deletePathString/${obscurePrimaryKey(rowItem)}")
     }
-  }
 
   /**
     * Override this method to change how the previous link is
     * generated
     */
-  protected def crudAllPrev(first: Long): (NodeSeq) => NodeSeq = {
+  protected def crudAllPrev(first: Long): (NodeSeq) => NodeSeq =
     if (first < rowsPerPage) {
       ClearNodes
     } else {
@@ -682,14 +668,13 @@ trait Crudify {
           rowsPerPage.toLong))
       }></a>
     }
-  }
 
   /**
     * Override this method to change how the next link is generated
     */
   protected def crudAllNext(
       first: Long,
-      list: List[TheCrudType]): (NodeSeq) => NodeSeq = {
+      list: List[TheCrudType]): (NodeSeq) => NodeSeq =
     if (first < rowsPerPage) {
       ClearNodes
     } else {
@@ -698,7 +683,6 @@ trait Crudify {
           rowsPerPage.toLong)
       }></a>
     }
-  }
 
   /**
     * Override this method if you want to change the behavior
@@ -751,20 +735,19 @@ trait Crudify {
     * the method wraps the fieldName in a span with the class attribute set
     * to "required_field".
     */
-  def wrapNameInRequired(fieldName: NodeSeq, required: Boolean): NodeSeq = {
+  def wrapNameInRequired(fieldName: NodeSeq, required: Boolean): NodeSeq =
     if (required) {
       <span class="required_field">{fieldName}</span>
     } else {
       fieldName
     }
-  }
 
   def crudDoForm(item: TheCrudType, noticeMsg: String)(in: NodeSeq): NodeSeq = {
     val from = referer
     val snipName = S.currentSnippet
 
     def loop(html: NodeSeq): NodeSeq = {
-      def error(field: BaseField): NodeSeq = {
+      def error(field: BaseField): NodeSeq =
         field.uniqueFieldId match {
           case fid @ Full(id) =>
             S.getNotices
@@ -774,7 +757,6 @@ trait Crudify {
 
           case _ => NodeSeq.Empty
         }
-      }
 
       def doFields(html: NodeSeq): NodeSeq =
         for {

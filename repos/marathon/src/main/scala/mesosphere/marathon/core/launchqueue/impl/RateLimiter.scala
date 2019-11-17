@@ -19,23 +19,21 @@ private[launchqueue] class RateLimiter(clock: Clock) {
   /** The task launch delays per app and their last config change. */
   private[this] var taskLaunchDelays = Map[(PathId, Timestamp), Delay]()
 
-  def cleanUpOverdueDelays(): Unit = {
+  def cleanUpOverdueDelays(): Unit =
     taskLaunchDelays = taskLaunchDelays.filter {
       case (_, delay) => delay.deadline > clock.now()
     }
-  }
 
   def getDelay(app: AppDefinition): Timestamp =
     taskLaunchDelays
       .get(app.id -> app.versionInfo.lastConfigChangeVersion)
       .map(_.deadline) getOrElse clock.now()
 
-  def addDelay(app: AppDefinition): Timestamp = {
+  def addDelay(app: AppDefinition): Timestamp =
     setNewDelay(app, "Increasing delay") {
       case Some(delay) => Some(delay.increased(clock, app))
       case None        => Some(Delay(clock, app))
     }
-  }
 
   private[this] def setNewDelay(app: AppDefinition, message: String)(
       calcDelay: Option[Delay] => Option[Delay]): Timestamp = {
@@ -65,14 +63,13 @@ private[launchqueue] class RateLimiter(clock: Clock) {
     }
   }
 
-  def resetDelay(app: AppDefinition): Unit = {
+  def resetDelay(app: AppDefinition): Unit =
     if (taskLaunchDelays contains
           (app.id -> app.versionInfo.lastConfigChangeVersion)) {
       log.info(
         s"Task launch delay for [${app.id} - ${app.versionInfo.lastConfigChangeVersion}}] reset to zero")
       taskLaunchDelays -= (app.id -> app.versionInfo.lastConfigChangeVersion)
     }
-  }
 }
 
 private object RateLimiter {

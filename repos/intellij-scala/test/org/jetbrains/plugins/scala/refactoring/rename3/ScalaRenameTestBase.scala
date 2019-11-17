@@ -120,13 +120,11 @@ abstract class ScalaRenameTestBase
   }
 
   private def createEditors(
-      files: Array[VirtualFile]): Map[VirtualFile, Editor] = {
+      files: Array[VirtualFile]): Map[VirtualFile, Editor] =
     files.map(f => f -> createEditor(f)).toMap
-  }
 
-  private def createEditor(file: VirtualFile) = {
+  private def createEditor(file: VirtualFile) =
     LightPlatformCodeInsightTestCase.createEditor(file)
-  }
 
   protected override def tearDown() {
     super.tearDown()

@@ -39,7 +39,7 @@ object ByteBufferMessageSet {
       compressionCodec: CompressionCodec,
       wrapperMessageTimestamp: Option[Long],
       timestampType: TimestampType,
-      messages: Message*): ByteBuffer = {
+      messages: Message*): ByteBuffer =
     if (messages.isEmpty) MessageSet.Empty.buffer
     else if (compressionCodec == NoCompressionCodec) {
       val buffer = ByteBuffer.allocate(MessageSet.messageSetSize(messages))
@@ -90,7 +90,6 @@ object ByteBufferMessageSet {
       buffer.rewind()
       buffer
     }
-  }
 
   /** Deep iterator that decompresses the message sets and adjusts timestamp and offset if needed. */
   def deepIterator(
@@ -159,7 +158,7 @@ object ByteBufferMessageSet {
         new MessageAndOffset(newMessage, innerOffset)
       }
 
-      override def makeNext(): MessageAndOffset = {
+      override def makeNext(): MessageAndOffset =
         messageAndOffsets match {
           // Using inner offset and timestamps
           case Some(innerMessageAndOffsets) =>
@@ -181,7 +180,6 @@ object ByteBufferMessageSet {
                 throw new KafkaException(ioe)
             }
         }
-      }
     }
   }
 
@@ -373,7 +371,7 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
 
   /** When flag isShallow is set to be true, we do a shallow iteration: just traverse the first level of messages. **/
   private def internalIterator(
-      isShallow: Boolean = false): Iterator[MessageAndOffset] = {
+      isShallow: Boolean = false): Iterator[MessageAndOffset] =
     new IteratorTemplate[MessageAndOffset] {
       var topIter = buffer.slice()
       var innerIter: Iterator[MessageAndOffset] = null
@@ -414,16 +412,14 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
         }
       }
 
-      override def makeNext(): MessageAndOffset = {
+      override def makeNext(): MessageAndOffset =
         if (isShallow) {
           makeNextOuter
         } else {
           if (innerDone()) makeNextOuter
           else innerIter.next()
         }
-      }
     }
-  }
 
   /**
     * Update the offsets for this message set and do further validation on messages including:
@@ -700,13 +696,12 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
   /**
     * Two message sets are equal if their respective byte buffers are equal
     */
-  override def equals(other: Any): Boolean = {
+  override def equals(other: Any): Boolean =
     other match {
       case that: ByteBufferMessageSet =>
         buffer.equals(that.buffer)
       case _ => false
     }
-  }
 
   override def hashCode: Int = buffer.hashCode
 }

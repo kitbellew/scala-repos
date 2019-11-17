@@ -294,7 +294,7 @@ final case class Complex[@sp(Float, Double) T](real: T, imag: T)
     new Complex(t.log(abs), arg)
   }
 
-  def sqrt(implicit f: Field[T], n0: NRoot[T], o: IsReal[T]): Complex[T] = {
+  def sqrt(implicit f: Field[T], n0: NRoot[T], o: IsReal[T]): Complex[T] =
     if (isZero) {
       Complex.zero[T]
     } else {
@@ -308,7 +308,6 @@ final case class Complex[@sp(Float, Double) T](real: T, imag: T)
           if (n < 0) Complex(a, -b) else Complex(a, b)
       }
     }
-  }
 
   def floor(implicit o: IsReal[T]): Complex[T] =
     new Complex(real.floor, imag.floor)

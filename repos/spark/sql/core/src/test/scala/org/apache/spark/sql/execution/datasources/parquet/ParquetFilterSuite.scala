@@ -105,27 +105,25 @@ class ParquetFilterSuite
   private def checkFilterPredicate(
       predicate: Predicate,
       filterClass: Class[_ <: FilterPredicate],
-      expected: Seq[Row])(implicit df: DataFrame): Unit = {
+      expected: Seq[Row])(implicit df: DataFrame): Unit =
     checkFilterPredicate(
       df,
       predicate,
       filterClass,
       checkAnswer(_, _: Seq[Row]),
       expected)
-  }
 
   private def checkFilterPredicate[T](
       predicate: Predicate,
       filterClass: Class[_ <: FilterPredicate],
-      expected: T)(implicit df: DataFrame): Unit = {
+      expected: T)(implicit df: DataFrame): Unit =
     checkFilterPredicate(predicate, filterClass, Seq(Row(expected)))(df)
-  }
 
   private def checkBinaryFilterPredicate(
       predicate: Predicate,
       filterClass: Class[_ <: FilterPredicate],
       expected: Seq[Row])(implicit df: DataFrame): Unit = {
-    def checkBinaryAnswer(df: DataFrame, expected: Seq[Row]) = {
+    def checkBinaryAnswer(df: DataFrame, expected: Seq[Row]) =
       assertResult(expected.map(_.getAs[Array[Byte]](0).mkString(",")).sorted) {
         df.rdd
           .map(_.getAs[Array[Byte]](0).mkString(","))
@@ -133,7 +131,6 @@ class ParquetFilterSuite
           .toSeq
           .sorted
       }
-    }
 
     checkFilterPredicate(
       df,
@@ -146,9 +143,8 @@ class ParquetFilterSuite
   private def checkBinaryFilterPredicate(
       predicate: Predicate,
       filterClass: Class[_ <: FilterPredicate],
-      expected: Array[Byte])(implicit df: DataFrame): Unit = {
+      expected: Array[Byte])(implicit df: DataFrame): Unit =
     checkBinaryFilterPredicate(predicate, filterClass, Seq(Row(expected)))(df)
-  }
 
   test("filter pushdown - boolean") {
     withParquetDataFrame(

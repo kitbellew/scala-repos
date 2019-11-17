@@ -68,7 +68,7 @@ private[graphx] class EdgePartition[
   private def this() = this(null, null, null, null, null, null, null, null)
 
   /** Return a new `EdgePartition` with the specified edge data. */
-  def withData[ED2: ClassTag](data: Array[ED2]): EdgePartition[ED2, VD] = {
+  def withData[ED2: ClassTag](data: Array[ED2]): EdgePartition[ED2, VD] =
     new EdgePartition(
       localSrcIds,
       localDstIds,
@@ -78,7 +78,6 @@ private[graphx] class EdgePartition[
       local2global,
       vertexAttrs,
       activeSet)
-  }
 
   /** Return a new `EdgePartition` with the specified active set, provided as an iterator. */
   def withActiveSet(iter: Iterator[VertexId]): EdgePartition[ED, VD] = {
@@ -137,9 +136,8 @@ private[graphx] class EdgePartition[
   @inline private def attrs(pos: Int): ED = data(pos)
 
   /** Look up vid in activeSet, throwing an exception if it is None. */
-  def isActive(vid: VertexId): Boolean = {
+  def isActive(vid: VertexId): Boolean =
     activeSet.get.contains(vid)
-  }
 
   /** The number of active vertices, if any exist. */
   def numActives: Option[Int] = activeSet.map(_.size)

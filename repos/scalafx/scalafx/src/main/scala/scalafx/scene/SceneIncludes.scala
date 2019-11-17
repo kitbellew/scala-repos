@@ -216,11 +216,10 @@ trait LowerPriorityIncludes {
     * @throws java.lang.IllegalArgumentException if `v` has no known correspondence in ScalaFX.
     */
   implicit def jfxSceneAntialiasing2sfx(
-      v: jfxs.SceneAntialiasing): SceneAntialiasing = {
+      v: jfxs.SceneAntialiasing): SceneAntialiasing =
     // A value of null is treated as though antialiasing is disabled.
     if (v eq null) SceneAntialiasing.Disabled
     else new SceneAntialiasing(v)
-  }
 
   /**
     * Generates a $SCP from a $JFX $SCE.

@@ -25,7 +25,7 @@ class C {
     y
   }
 
-  def f5(x: Boolean) = {
+  def f5(x: Boolean) =
     // stack heights need to be the same. ??? looks to the jvm like returning a value of
     // type Nothing$, need to drop or throw it.
     println(
@@ -33,29 +33,25 @@ class C {
         ???; 10
       } else 20
     )
-  }
 
-  def f6(x: Boolean) = {
+  def f6(x: Boolean) =
     println(
       if (x) {
         throw new Error(""); 10
       } else 20
     )
-  }
 
-  def f7(x: Boolean) = {
+  def f7(x: Boolean) =
     println(
       if (x) throw new Error("")
       else 20
     )
-  }
 
-  def f8(x: Boolean) = {
+  def f8(x: Boolean) =
     println(
       if (x) throw new Error("")
       else 20
     )
-  }
 }
 
 object Test extends App {

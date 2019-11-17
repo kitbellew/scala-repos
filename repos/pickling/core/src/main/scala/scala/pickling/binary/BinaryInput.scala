@@ -24,9 +24,8 @@ abstract class BinaryInput {
   // Derived operations //
   ////////////////////////
 
-  def getBoolean(): Boolean = {
+  def getBoolean(): Boolean =
     getByte() != 0
-  }
 
   def getString(): String = {
     val array = getByteArray
@@ -86,7 +85,7 @@ abstract class BinaryInput {
     lookahead = Some(b)
   }
 
-  def getIntWithLookahead() = {
+  def getIntWithLookahead() =
     lookahead match {
       case Some(b) =>
         var i = b << 24
@@ -98,7 +97,6 @@ abstract class BinaryInput {
       case None =>
         getInt
     }
-  }
 
   def getStringWithLookahead(la: Byte): String = {
     val oldLa = lookahead
@@ -128,9 +126,8 @@ class ByteBufferInput(buffer: java.nio.ByteBuffer) extends BinaryInput {
 
   def getDouble() = buffer.getDouble
 
-  def getBytes(target: Array[Byte], len: Int): Unit = {
+  def getBytes(target: Array[Byte], len: Int): Unit =
     buffer.get(target, 0, len)
-  }
 }
 
 class ByteArrayInput(data: Array[Byte]) extends BinaryInput {
@@ -232,7 +229,6 @@ class StreamInput(stream: java.io.InputStream) extends BinaryInput {
   def getFloat() = ds.readFloat()
   def getDouble() = ds.readDouble()
 
-  def getBytes(target: Array[Byte], len: Int): Unit = {
+  def getBytes(target: Array[Byte], len: Int): Unit =
     ds.readFully(target, 0, len)
-  }
 }

@@ -43,11 +43,10 @@ class Beam[T](val maxSize: Int, xs: T*)(implicit o: Ordering[T])
     h
   }
 
-  private def cat(h: BinomialHeap[T], x: T) = {
+  private def cat(h: BinomialHeap[T], x: T) =
     if (h.size < maxSize) h + x
     else if (o.compare(h.min, x) < 0) h.delMin + x
     else h
-  }
 
   override protected def newBuilder = new Builder[T, Beam[T]] {
     var beam: Beam[T] = new Beam(maxSize)

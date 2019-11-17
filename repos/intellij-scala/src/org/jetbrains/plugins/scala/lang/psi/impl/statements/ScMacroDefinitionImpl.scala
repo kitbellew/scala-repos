@@ -99,11 +99,10 @@ class ScMacroDefinitionImpl private (
     visitor.visitMacroDefinition(this)
   }
 
-  override def getType(ctx: TypingContext): TypeResult[ScType] = {
+  override def getType(ctx: TypingContext): TypeResult[ScType] =
     super.getType(ctx)
-  }
 
-  def doGetType() = {
+  def doGetType() =
     name match {
       case "doMacro" =>
         ScalaPsiElementFactory
@@ -112,7 +111,6 @@ class ScMacroDefinitionImpl private (
           .get
       case _ => Any
     }
-  }
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
       case s: ScalaElementVisitor => s.visitMacroDefinition(this)

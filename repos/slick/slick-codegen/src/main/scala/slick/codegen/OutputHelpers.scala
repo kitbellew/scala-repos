@@ -73,7 +73,7 @@ trait OutputHelpers {
       profile: String,
       pkg: String,
       container: String,
-      parentType: Option[String]): String = {
+      parentType: Option[String]): String =
     s"""
 package ${pkg}
 // AUTO-GENERATED Slick data model
@@ -89,5 +89,4 @@ trait ${container}${parentType.map(t => s" extends $t").getOrElse("")} {
   ${indent(code)}
 }
       """.trim()
-  }
 }

@@ -96,7 +96,7 @@ private[akka] object Shard {
       settings: ClusterShardingSettings,
       extractEntityId: ShardRegion.ExtractEntityId,
       extractShardId: ShardRegion.ExtractShardId,
-      handOffStopMessage: Any): Props = {
+      handOffStopMessage: Any): Props =
     if (settings.rememberEntities)
       Props(
         new PersistentShard(
@@ -117,7 +117,6 @@ private[akka] object Shard {
           extractEntityId,
           extractShardId,
           handOffStopMessage)).withDeploy(Deploy.local)
-  }
 }
 
 /**
@@ -244,11 +243,10 @@ private[akka] class Shard(
       }
   }
 
-  def receiveTerminated(ref: ActorRef): Unit = {
+  def receiveTerminated(ref: ActorRef): Unit =
     if (handOffStopper.exists(_ == ref)) context stop self
     else if (idByRef.contains(ref) && handOffStopper.isEmpty)
       entityTerminated(ref)
-  }
 
   def entityTerminated(ref: ActorRef): Unit = {
     val id = idByRef(ref)
@@ -264,7 +262,7 @@ private[akka] class Shard(
     passivating = passivating - ref
   }
 
-  def passivate(entity: ActorRef, stopMessage: Any): Unit = {
+  def passivate(entity: ActorRef, stopMessage: Any): Unit =
     idByRef.get(entity) match {
       case Some(id) if !messageBuffers.contains(id) ⇒
         log.debug("Passivating started on entity {}", id)
@@ -275,7 +273,6 @@ private[akka] class Shard(
 
       case _ ⇒ //ignored
     }
-  }
 
   // EntityStopped handler
   def passivateCompleted(event: EntityStopped): Unit = {

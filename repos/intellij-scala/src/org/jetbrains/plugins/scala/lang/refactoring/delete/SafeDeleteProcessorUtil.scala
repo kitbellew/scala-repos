@@ -36,13 +36,11 @@ import scala.collection.JavaConversions._
   */
 object SafeDeleteProcessorUtil {
   def getUsageInsideDeletedFilter(
-      allElementsToDelete: Array[PsiElement]): Condition[PsiElement] = {
+      allElementsToDelete: Array[PsiElement]): Condition[PsiElement] =
     new Condition[PsiElement] {
-      def value(usage: PsiElement): Boolean = {
+      def value(usage: PsiElement): Boolean =
         !usage.isInstanceOf[PsiFile] && isInside(usage, allElementsToDelete)
-      }
     }
-  }
 
   private def referenceSearch(element: PsiElement) =
     ReferencesSearch.search(element, element.getUseScope)
@@ -114,9 +112,8 @@ object SafeDeleteProcessorUtil {
     })
   }
 
-  def containsOnlyPrivates(aClass: PsiClass): Boolean = {
+  def containsOnlyPrivates(aClass: PsiClass): Boolean =
     false // TODO
-  }
 
   def findTypeParameterExternalUsages(
       typeParameter: PsiTypeParameter,
@@ -593,9 +590,8 @@ object SafeDeleteProcessorUtil {
     })
   }
 
-  def isInside(place: PsiElement, ancestors: Array[PsiElement]): Boolean = {
+  def isInside(place: PsiElement, ancestors: Array[PsiElement]): Boolean =
     isInside(place, util.Arrays.asList(ancestors: _*))
-  }
 
   def isInside(
       place: PsiElement,

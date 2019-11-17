@@ -16,9 +16,8 @@ class LAFutureSpec extends Specification {
 
     "map to failing future if transforming function throws an Exception" in {
       val future = LAFuture(() => 1, futureSpecScheduler)
-      def tranformThrowingException(input: Int) = {
+      def tranformThrowingException(input: Int) =
         throw new Exception("fail")
-      }
 
       val transformedFuture = future.map(tranformThrowingException)
 
@@ -33,9 +32,8 @@ class LAFutureSpec extends Specification {
 
     "flatMap to failing future if transforming function throws an Exception" in {
       val future = LAFuture(() => 1, futureSpecScheduler)
-      def tranformThrowingException(input: Int): LAFuture[Int] = {
+      def tranformThrowingException(input: Int): LAFuture[Int] =
         throw new Exception("fail")
-      }
 
       val transformedFuture = future.flatMap(tranformThrowingException)
 

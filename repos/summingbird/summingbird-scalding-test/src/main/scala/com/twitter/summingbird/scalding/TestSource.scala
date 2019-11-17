@@ -27,9 +27,8 @@ import cascading.flow.FlowDef
 
 class LocalIterableSource[+T](src: Iterable[T], valid: Boolean)
     extends IterableSource[T](src) {
-  override def validateTaps(mode: Mode): Unit = {
+  override def validateTaps(mode: Mode): Unit =
     assert(valid, "Cannot create valid source with the provided DateRange")
-  }
 }
 object TestSource {
   // limit the source date range to the given range

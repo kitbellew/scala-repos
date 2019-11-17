@@ -33,10 +33,9 @@ object Test {
   }
 
   object Ex2 {
-    def unapply(x: Int): Option[Int] = {
+    def unapply(x: Int): Option[Int] =
       //cnt += 1
       if ((x % 5) == 0) Some(x) else None
-    }
   }
 
   def resetCnt() = { val r = cnt; cnt = 0; r }

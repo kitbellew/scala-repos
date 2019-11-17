@@ -57,7 +57,6 @@ class ScImportExprElementType[Func <: ScImportExpr]
 
   def indexStub(stub: ScImportExprStub, sink: IndexSink): Unit = {}
 
-  def createPsi(stub: ScImportExprStub): ScImportExpr = {
+  def createPsi(stub: ScImportExprStub): ScImportExpr =
     new ScImportExprImpl(stub)
-  }
 }

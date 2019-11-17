@@ -46,7 +46,7 @@ abstract class PartitionSource(val openWritesThreshold: Option[Int] = None)
     * @returns A cascading PartitionTap.
     */
   override def createTap(readOrWrite: AccessMode)(
-      implicit mode: Mode): Tap[_, _, _] = {
+      implicit mode: Mode): Tap[_, _, _] =
     readOrWrite match {
       case Read =>
         throw new InvalidSourceException(
@@ -74,26 +74,23 @@ abstract class PartitionSource(val openWritesThreshold: Option[Int] = None)
         }
       }
     }
-  }
 
   /**
     * Validates the taps, makes sure there are no nulls in the path.
     *
     * @param mode The mode of the job.
     */
-  override def validateTaps(mode: Mode): Unit = {
+  override def validateTaps(mode: Mode): Unit =
     if (basePath == null) {
       throw new InvalidSourceException(
         "basePath cannot be null for PartitionTap")
     }
-  }
 
-  private[this] def getHPartitionTap(hfsTap: Hfs): HPartitionTap = {
+  private[this] def getHPartitionTap(hfsTap: Hfs): HPartitionTap =
     openWritesThreshold match {
       case Some(threshold) => new HPartitionTap(hfsTap, partition, threshold)
       case None            => new HPartitionTap(hfsTap, partition)
     }
-  }
 }
 
 /**

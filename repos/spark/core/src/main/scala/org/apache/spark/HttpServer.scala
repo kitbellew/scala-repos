@@ -177,7 +177,7 @@ private[spark] class HttpServer(
   /**
     * Get the URI of this HTTP server (http://host:port or https://host:port)
     */
-  def uri: String = {
+  def uri: String =
     if (server == null) {
       throw new ServerStateException("Server is not started")
     } else {
@@ -185,5 +185,4 @@ private[spark] class HttpServer(
         if (securityManager.fileServerSSLOptions.enabled) "https" else "http"
       s"$scheme://${Utils.localHostNameForURI()}:$port"
     }
-  }
 }

@@ -19,9 +19,8 @@ class IntegerTest {
   val MaxValue: Int = Int.MaxValue
   val MinValue: Int = Int.MinValue
 
-  @Test def `reverseBytes`(): Unit = {
+  @Test def `reverseBytes`(): Unit =
     assertEquals(0xefbeadde, Integer.reverseBytes(0xdeadbeef))
-  }
 
   @Test def rotateLeft(): Unit = {
     assertEquals(0x689cd401, Integer.rotateLeft(0x689cd401, 0))

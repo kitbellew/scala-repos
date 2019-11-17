@@ -25,9 +25,8 @@ final case class Zipper[+A](lefts: Stream[A], focus: A, rights: Stream[A]) {
   /**
     * Update the focus in this zipper.
     */
-  def update[AA >: A](focus: AA) = {
+  def update[AA >: A](focus: AA) =
     this.copy(this.lefts, focus, this.rights)
-  }
 
   /**
     * Apply f to the focus and update with the result.
@@ -229,12 +228,11 @@ final case class Zipper[+A](lefts: Stream[A], focus: A, rights: Stream[A]) {
   def findBy[AA >: A](f: Zipper[AA] => Option[Zipper[AA]])(
       p: AA => Boolean): Option[Zipper[AA]] = {
     @tailrec
-    def go(zopt: Option[Zipper[AA]]): Option[Zipper[AA]] = {
+    def go(zopt: Option[Zipper[AA]]): Option[Zipper[AA]] =
       zopt match {
         case Some(z) => if (p(z.focus)) Some(z) else go(f(z))
         case None    => None
       }
-    }
     go(f(this))
   }
 
@@ -360,9 +358,8 @@ final case class Zipper[+A](lefts: Stream[A], focus: A, rights: Stream[A]) {
     zipper(ls, f.focus(focus), rs)
   }
 
-  override def toString: String = {
+  override def toString: String =
     "Zipper(<lefts>, " + focus + ", <rights>)"
-  }
 }
 
 object Zipper extends ZipperInstances {

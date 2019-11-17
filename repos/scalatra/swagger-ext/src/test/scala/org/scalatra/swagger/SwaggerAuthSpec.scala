@@ -37,14 +37,13 @@ object SwaggerAuthSpec {
       token.isDefined
     def authenticate()(
         implicit request: HttpServletRequest,
-        response: HttpServletResponse) = {
+        response: HttpServletResponse) =
       token match {
         case Some("token1")    => Option(Users(0))
         case Some("token2")    => Option(Users(1))
         case Some("the_token") => Option(Users(2))
         case _                 => None
       }
-    }
   }
 
   trait AuthenticatedBase
@@ -63,9 +62,8 @@ object SwaggerAuthSpec {
     override def configureScentry = {
       //      scentry.store = new CookieAuthStore(this)
     }
-    override def registerAuthStrategies = {
+    override def registerAuthStrategies =
       scentry.register(new HeaderOrQueryToken(this))
-    }
 
     error {
       case t: Throwable => t.printStackTrace()
@@ -140,9 +138,8 @@ object SwaggerAuthSpec {
 
     implicit protected def jsonFormats: Formats = DefaultFormats
 
-    private[this] def isAllowed(u: Option[User]) = {
+    private[this] def isAllowed(u: Option[User]) =
       u.map(_.login) == Some("tom")
-    }
 
     get("/", operation(apiOperation[Unit]("adminlist").allows(isAllowed))) {
       println("executing / ")

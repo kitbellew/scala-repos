@@ -61,16 +61,15 @@ object ScalaConsoleInfo {
   }
 
   private def get(project: Project)
-      : (ScalaLanguageConsole, ConsoleHistoryController, ProcessHandler) = {
+      : (ScalaLanguageConsole, ConsoleHistoryController, ProcessHandler) =
     synchronized {
       allConsoles.get(project) match {
         case null => NULL
         case list => list.headOption.getOrElse(NULL)
       }
     }
-  }
 
-  private def get(editor: Editor) = {
+  private def get(editor: Editor) =
     synchronized {
       allConsoles.get(editor.getProject) match {
         case null => NULL
@@ -87,9 +86,8 @@ object ScalaConsoleInfo {
           }
       }
     }
-  }
 
-  private def get(file: PsiFile) = {
+  private def get(file: PsiFile) =
     synchronized {
       allConsoles.get(file.getProject) match {
         case null => NULL
@@ -106,5 +104,4 @@ object ScalaConsoleInfo {
           }
       }
     }
-  }
 }

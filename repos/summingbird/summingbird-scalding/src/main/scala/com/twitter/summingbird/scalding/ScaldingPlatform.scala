@@ -65,9 +65,8 @@ import scala.util.control.NonFatal
 object Scalding {
   @transient private val logger = LoggerFactory.getLogger(classOf[Scalding])
 
-  def apply(jobName: String, options: Map[String, Options] = Map.empty) = {
+  def apply(jobName: String, options: Map[String, Options] = Map.empty) =
     new Scalding(jobName, options, identity, List())
-  }
 
   implicit val dateRangeInjection: Injection[DateRange, Interval[Timestamp]] =
     new AbstractInjection[DateRange, Interval[Timestamp]] {
@@ -356,9 +355,8 @@ object Scalding {
         p: Producer[Scalding, U],
         built: Map[Producer[Scalding, _], PipeFactory[_]] = built,
         forceFanOut: Boolean = forceFanOut)
-        : (PipeFactory[U], Map[Producer[Scalding, _], PipeFactory[_]]) = {
+        : (PipeFactory[U], Map[Producer[Scalding, _], PipeFactory[_]]) =
       buildFlow(options, p, fanOuts, dependants, built, forceFanOut)
-    }
 
     // This is used to join in the StateWithError monad that we use to plan
     implicit val modeSemigroup: Semigroup[Mode] = new Semigroup[Mode] {
@@ -659,9 +657,8 @@ object Scalding {
 
   def plan[T](
       options: Map[String, Options],
-      prod: TailProducer[Scalding, T]): PipeFactory[T] = {
+      prod: TailProducer[Scalding, T]): PipeFactory[T] =
     planProducer(options, prod)
-  }
 
   /**
     * Use this method to interop with existing scalding code

@@ -79,9 +79,8 @@ private[prediction] case class UnsetProp(fields: Map[String, Long])
 }
 
 private[prediction] case class DeleteEntity(t: Long) extends Serializable {
-  def ++(that: DeleteEntity): DeleteEntity = {
+  def ++(that: DeleteEntity): DeleteEntity =
     if (this.t > that.t) this else that
-  }
 }
 
 private[prediction] case class EventOp(
@@ -111,7 +110,7 @@ private[prediction] case class EventOp(
     )
   }
 
-  def toPropertyMap(): Option[PropertyMap] = {
+  def toPropertyMap(): Option[PropertyMap] =
     setProp.flatMap { set =>
       val unsetKeys: Set[String] = unsetProp
         .map(unset =>
@@ -151,7 +150,6 @@ private[prediction] case class EventOp(
         )
       }
     }
-  }
 }
 
 private[prediction] object EventOp {
@@ -195,7 +193,7 @@ private[prediction] object PEventAggregator {
 
   val eventNames = List("$set", "$unset", "$delete")
 
-  def aggregateProperties(eventsRDD: RDD[Event]): RDD[(String, PropertyMap)] = {
+  def aggregateProperties(eventsRDD: RDD[Event]): RDD[(String, PropertyMap)] =
     eventsRDD
       .map(e => (e.entityId, EventOp(e)))
       .aggregateByKey[EventOp](EventOp())(
@@ -207,5 +205,4 @@ private[prediction] object PEventAggregator {
       .mapValues(_.toPropertyMap)
       .filter { case (k, v) => v.isDefined }
       .map { case (k, v) => (k, v.get) }
-  }
 }

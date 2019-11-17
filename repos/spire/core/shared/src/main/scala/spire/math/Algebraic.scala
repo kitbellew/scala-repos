@@ -550,7 +550,7 @@ object Algebraic extends AlgebraicInstances {
     * @param i    the index (0-based) of the root
     * @return an algebraic whose value is the i-th root of the polynomial
     */
-  def root(poly: Polynomial[Rational], i: Int): Algebraic = {
+  def root(poly: Polynomial[Rational], i: Int): Algebraic =
     if (i < 0) {
       throw new ArithmeticException(s"invalid real root index: $i")
     } else {
@@ -569,7 +569,6 @@ object Algebraic extends AlgebraicInstances {
           throw new RuntimeException("invalid isolated root interval")
       }
     }
-  }
 
   /**
     * Returns all of the real roots of the given polynomial, in order from

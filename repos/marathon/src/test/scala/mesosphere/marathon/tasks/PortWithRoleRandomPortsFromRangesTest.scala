@@ -16,16 +16,12 @@ class PortWithRoleRandomPortsFromRangesTest extends MarathonSpec {
 
   private[this] val log = LoggerFactory.getLogger(getClass)
 
-  private[this] def portRange(
-      role: String,
-      begin: Long,
-      end: Long): PortRange = {
+  private[this] def portRange(role: String, begin: Long, end: Long): PortRange =
     PortRange(role, begin.toInt, end.toInt)
-  }
 
   private[this] def withRandomSeeds(
       input: Seq[PortRange],
-      expectedOutput: Iterable[PortWithRole]): Unit = {
+      expectedOutput: Iterable[PortWithRole]): Unit =
     for (seed <- 1 to 10) {
       withClue(s"seed = $seed") {
         val rand = new Random(new util.Random(seed.toLong))
@@ -37,7 +33,6 @@ class PortWithRoleRandomPortsFromRangesTest extends MarathonSpec {
             .to[Set])
       }
     }
-  }
 
   test("works for empty seq") {
     assert(

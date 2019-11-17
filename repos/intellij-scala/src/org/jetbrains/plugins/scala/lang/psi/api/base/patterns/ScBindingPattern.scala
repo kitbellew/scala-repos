@@ -36,12 +36,11 @@ trait ScBindingPattern
 
   def isWildcard: Boolean
 
-  protected def getEnclosingVariable: Option[ScVariable] = {
+  protected def getEnclosingVariable: Option[ScVariable] =
     ScalaPsiUtil.nameContext(this) match {
       case v: ScVariable => Some(v)
       case _             => None
     }
-  }
 
   override def isStable = getEnclosingVariable match {
     case None => true
@@ -60,12 +59,11 @@ trait ScBindingPattern
     case _                      => false
   }
 
-  def containingClass: ScTemplateDefinition = {
+  def containingClass: ScTemplateDefinition =
     ScalaPsiUtil.nameContext(this) match {
       case memb: ScMember => memb.containingClass
       case _              => null
     }
-  }
 
   def getOriginalElement: PsiElement = {
     val ccontainingClass = containingClass
@@ -92,52 +90,46 @@ trait ScBindingPattern
     this
   }
 
-  def getDocComment: PsiDocComment = {
+  def getDocComment: PsiDocComment =
     nameContext match {
       case d: PsiDocCommentOwner => d.getDocComment
       case _                     => null
     }
-  }
 
-  def isDeprecated: Boolean = {
+  def isDeprecated: Boolean =
     nameContext match {
       case d: PsiDocCommentOwner => d.isDeprecated
       case _                     => false
     }
-  }
 
   /**
     * It's for Java only
     */
-  def getContainingClass: PsiClass = {
+  def getContainingClass: PsiClass =
     nameContext match {
       case m: PsiMember => m.getContainingClass
       case _            => null
     }
-  }
 
-  def getModifierList: PsiModifierList = {
+  def getModifierList: PsiModifierList =
     nameContext match {
       case owner: PsiModifierListOwner => owner.getModifierList
       case _                           => null
     }
-  }
 
-  def hasModifierProperty(name: String): Boolean = {
+  def hasModifierProperty(name: String): Boolean =
     nameContext match {
       case owner: PsiModifierListOwner => owner.hasModifierProperty(name)
       case _                           => false
     }
-  }
 }
 
 object ScBindingPattern {
   @tailrec
-  def getCompoundCopy(rt: ScType, b: ScBindingPattern): ScBindingPattern = {
+  def getCompoundCopy(rt: ScType, b: ScBindingPattern): ScBindingPattern =
     b match {
       case light: ScLightBindingPattern => getCompoundCopy(rt, light.b)
       case definition: ScBindingPattern =>
         new ScLightBindingPattern(rt, definition)
     }
-  }
 }

@@ -265,7 +265,7 @@ trait TimeHelpers { self: ControlHelpers =>
       * @note Comparing to a Joda-Time `Period` is also done correctly, but is
       *       deprecated.
       */
-    override def equals(cmp: Any) = {
+    override def equals(cmp: Any) =
       cmp match {
         case lo: Long       => lo == this.millis
         case i: Int         => i == this.millis
@@ -274,7 +274,6 @@ trait TimeHelpers { self: ControlHelpers =>
         case period: Period => Right(period) == this.dt
         case _              => false
       }
-    }
 
     /**
       * Override the toString method to display a readable amount of time using
@@ -553,7 +552,7 @@ trait TimeHelpers { self: ControlHelpers =>
   def nowAsInternetDate: String = toInternetDate(millis)
 
   /** @return a Full(date) or a failure if the input couldn't be translated to date (or Empty if the input is null)*/
-  def toDate(in: Any): Box[Date] = {
+  def toDate(in: Any): Box[Date] =
     try {
       in match {
         case null                                  => Empty
@@ -573,7 +572,6 @@ trait TimeHelpers { self: ControlHelpers =>
         logger.debug("Error parsing date " + in, e);
         Failure("Bad date: " + in, Full(e), Empty)
     }
-  }
 
   implicit class PeriodExtension[P <% Period](period: P) {
     def later: DateTime = new DateTime(millis).plus(period)

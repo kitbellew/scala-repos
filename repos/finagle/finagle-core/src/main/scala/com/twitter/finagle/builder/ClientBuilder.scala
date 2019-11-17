@@ -361,7 +361,7 @@ class ClientBuilder[Req, Rep, HasCluster, HasCodec, HasHostConnectionLimit] priv
     */
   def dest(
       addr: String
-  ): ClientBuilder[Req, Rep, Yes, HasCodec, HasHostConnectionLimit] = {
+  ): ClientBuilder[Req, Rep, Yes, HasCodec, HasHostConnectionLimit] =
     Resolver.evalLabeled(addr) match {
       case (n, "") => dest(n)
       case (n, l) =>
@@ -372,7 +372,6 @@ class ClientBuilder[Req, Rep, HasCluster, HasCodec, HasHostConnectionLimit] priv
 
         cb.dest(n)
     }
-  }
 
   /**
     * The logical destination of requests dispatched through this
@@ -462,9 +461,8 @@ class ClientBuilder[Req, Rep, HasCluster, HasCodec, HasHostConnectionLimit] priv
     */
   def stack[Req1, Rep1](
       client: StackBasedClient[Req1, Rep1]
-  ): ClientBuilder[Req1, Rep1, HasCluster, Yes, Yes] = {
+  ): ClientBuilder[Req1, Rep1, HasCluster, Yes, Yes] =
     copy(client.withParams(client.params ++ params))
-  }
 
   @deprecated("Use tcpConnectTimeout instead", "5.0.1")
   def connectionTimeout(duration: Duration): This = tcpConnectTimeout(duration)
@@ -751,12 +749,11 @@ class ClientBuilder[Req, Rep, HasCluster, HasCodec, HasHostConnectionLimit] priv
     * Encrypt the connection with SSL.  Hostname verification will be
     * provided against the given hostname.
     */
-  def tls(hostname: String): This = {
+  def tls(hostname: String): This =
     configured((Transport.TLSClientEngine(Some({
       case inet: InetSocketAddress => Ssl.client(hostname, inet.getPort)
       case _                       => Ssl.client()
     })))).configured(Transporter.TLSHostname(Some(hostname)))
-  }
 
   /**
     * Encrypt the connection with SSL.  The Engine to use can be passed into the client.

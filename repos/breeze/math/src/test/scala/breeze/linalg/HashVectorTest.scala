@@ -240,7 +240,7 @@ class HashVectorOps_DoubleTest
 
   val N = 30
   implicit def genTriple: Arbitrary[
-    (HashVector[Double], HashVector[Double], HashVector[Double])] = {
+    (HashVector[Double], HashVector[Double], HashVector[Double])] =
     Arbitrary {
       for {
         x <- Arbitrary.arbitrary[Double].map { _ % 1e100 }
@@ -256,7 +256,6 @@ class HashVectorOps_DoubleTest
           HashVector(N)(zl.map(i => (i % N).abs -> math.random * z): _*))
       }
     }
-  }
 
   def genScalar: Arbitrary[Double] =
     Arbitrary(Arbitrary.arbitrary[Double].map { _ % 1e10 })
@@ -274,7 +273,7 @@ class HashVectorOps_FloatTest
   override val TOL: Double = 1e-2
   val N = 30
   implicit def genTriple
-      : Arbitrary[(HashVector[Float], HashVector[Float], HashVector[Float])] = {
+      : Arbitrary[(HashVector[Float], HashVector[Float], HashVector[Float])] =
     Arbitrary {
       for {
         x <- Arbitrary.arbitrary[Float].map { _ % 100 }
@@ -293,7 +292,6 @@ class HashVectorOps_FloatTest
             zl.map(i => (i % N).abs -> math.random.toFloat * z): _*))
       }
     }
-  }
 
   def genScalar: Arbitrary[Float] =
     Arbitrary(Arbitrary.arbitrary[Float].map { _ % 1000 })
@@ -310,7 +308,7 @@ class HashVectorOps_IntTest
 
   val N = 100
   implicit def genTriple
-      : Arbitrary[(HashVector[Int], HashVector[Int], HashVector[Int])] = {
+      : Arbitrary[(HashVector[Int], HashVector[Int], HashVector[Int])] =
     Arbitrary {
       for {
         x <- Arbitrary.arbitrary[Int].map { _ % 100 }
@@ -329,7 +327,6 @@ class HashVectorOps_IntTest
             zl.map(i => (i % N).abs -> (math.random * z).toInt): _*))
       }
     }
-  }
 
   def genScalar: Arbitrary[Int] =
     Arbitrary(Arbitrary.arbitrary[Int].map { _ % 1000 })
@@ -342,7 +339,7 @@ class HashVectorOps_ComplexTest
 
   val N = 30
   implicit def genTriple: Arbitrary[
-    (HashVector[Complex], HashVector[Complex], HashVector[Complex])] = {
+    (HashVector[Complex], HashVector[Complex], HashVector[Complex])] =
     Arbitrary {
       for {
         x <- Arbitrary.arbitrary[Complex]
@@ -358,7 +355,6 @@ class HashVectorOps_ComplexTest
           HashVector(N)(zl.map(i => (i % N).abs -> (math.random * z)): _*))
       }
     }
-  }
 
   implicit def genScalar: Arbitrary[Complex] = Arbitrary {
     for (r <- Arbitrary.arbitrary[Double]; i <- Arbitrary.arbitrary[Double])

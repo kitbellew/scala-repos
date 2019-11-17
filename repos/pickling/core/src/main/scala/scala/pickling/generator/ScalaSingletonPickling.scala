@@ -5,7 +5,7 @@ package generator
 private[pickling] object ScalaSingleton extends PicklingAlgorithm {
   override def generate(
       tpe: IrClass,
-      logger: AlgorithmLogger): AlgorithmResult = {
+      logger: AlgorithmLogger): AlgorithmResult =
     if (tpe.isScalaModule) {
       AlgorithmSucccess(
         PickleUnpickleImplementation(
@@ -13,5 +13,4 @@ private[pickling] object ScalaSingleton extends PicklingAlgorithm {
           UnpickleBehavior(Seq(UnpickleSingleton(tpe)))
         ))
     } else AlgorithmFailure(s"$tpe is not a singleton scala object")
-  }
 }

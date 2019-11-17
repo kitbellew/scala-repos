@@ -14,9 +14,8 @@ class ScInterpolatedPrefixReference(node: ASTNode)
     extends ScStableCodeReferenceElementImpl(node) {
   override def nameId: PsiElement = this
 
-  override def handleElementRename(newElementName: String): PsiElement = {
+  override def handleElementRename(newElementName: String): PsiElement =
     replace(
       ScalaPsiElementFactory
         .createInterpolatedStringPrefix(newElementName, getManager))
-  }
 }

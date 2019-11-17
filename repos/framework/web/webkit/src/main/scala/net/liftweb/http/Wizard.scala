@@ -39,13 +39,12 @@ object WizardRules extends Factory with FormVendor {
 
   private object currentWizards extends SessionVar[Set[String]](Set())
 
-  private[http] def registerWizardSession(): String = {
+  private[http] def registerWizardSession(): String =
     S.synchronizeForSession {
       val ret = Helpers.nextFuncName
       currentWizards.set(currentWizards.is + ret)
       ret
     }
-  }
 
   private[http] def isValidWizardSession(id: String): Boolean =
     S.synchronizeForSession {
@@ -154,11 +153,10 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
   }
 
   def noticeTypeToAttr(
-      screen: AbstractScreen): Box[NoticeType.Value => MetaData] = {
+      screen: AbstractScreen): Box[NoticeType.Value => MetaData] =
     screen.inject[NoticeType.Value => MetaData] or inject[
       NoticeType.Value => MetaData] or WizardRules
       .inject[NoticeType.Value => MetaData] or screen.noticeTypeToAttr(screen)
-  }
 
   /**
     * Override this method to do setup the first time the
@@ -399,7 +397,7 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
     */
   protected def finish(): Unit
 
-  def nextScreen(): JsCmd = {
+  def nextScreen(): JsCmd =
     (for {
       screen <- CurrentScreen.is
     } yield {
@@ -452,9 +450,8 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
         }
       }
     }) openOr AjaxOnDone.is
-  }
 
-  def prevScreen(): JsCmd = {
+  def prevScreen(): JsCmd =
     (for {
       snapshot <- PrevSnapshot.is
     } yield {
@@ -470,7 +467,6 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
 
       SetHtml(FormGUID, renderHtml())
     }) openOr AjaxOnDone.is
-  }
 
   protected def vendForm[T](
       implicit man: Manifest[T]): Box[(T, T => Any) => NodeSeq] = Empty
@@ -608,10 +604,9 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
       old
     }
 
-    override protected def testWasSet(name: String, bn: String): Boolean = {
+    override protected def testWasSet(name: String, bn: String): Boolean =
       WizardVarHandler.get(name).isDefined ||
-      (WizardVarHandler.get(bn) openOr false)
-    }
+        (WizardVarHandler.get(bn) openOr false)
 
     /**
       * Different Vars require different mechanisms for synchronization. This method implements

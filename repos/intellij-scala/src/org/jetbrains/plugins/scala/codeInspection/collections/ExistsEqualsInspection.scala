@@ -19,13 +19,12 @@ class ExistsEqualsInspection extends OperationOnCollectionInspection {
 }
 
 object ExistsEquals extends SimplificationType {
-  override def getSimplification(expr: ScExpression): Option[Simplification] = {
+  override def getSimplification(expr: ScExpression): Option[Simplification] =
     expr match {
       case qual `.exists`(`x == `(e)) if canBeReplacedWithContains(qual, e) =>
         Some(replace(expr).withText(invocationText(qual, "contains", e)))
       case _ => None
     }
-  }
 
   override def hint = InspectionBundle.message("exists.equals.hint")
 
@@ -45,14 +44,13 @@ object ExistsEquals extends SimplificationType {
 }
 
 object ForallNotEquals extends SimplificationType {
-  override def getSimplification(expr: ScExpression): Option[Simplification] = {
+  override def getSimplification(expr: ScExpression): Option[Simplification] =
     expr match {
       case qual `.forall`(`x != `(e))
           if ExistsEquals.canBeReplacedWithContains(qual, e) =>
         Some(replace(expr).withText("!" + invocationText(qual, "contains", e)))
       case _ => None
     }
-  }
 
   override def hint: String = InspectionBundle.message("forall.notEquals.hint")
 }

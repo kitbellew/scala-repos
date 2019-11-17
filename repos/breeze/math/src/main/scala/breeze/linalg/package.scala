@@ -43,7 +43,7 @@ package object linalg {
     * Computes y += x * a, possibly doing less work than actually doing that operation
     */
   def axpy[A, X, Y](a: A, x: X, y: Y)(
-      implicit axpy: scaleAdd.InPlaceImpl3[Y, A, X]): Unit = { axpy(y, a, x) }
+      implicit axpy: scaleAdd.InPlaceImpl3[Y, A, X]): Unit = axpy(y, a, x)
 
   /**
     * Generates a vector of linearly spaced values between a and b (inclusive).
@@ -96,16 +96,15 @@ package object linalg {
       separator: Char = ',',
       quote: Char = '\u0000',
       escape: Char = '\\',
-      skipLines: Int = 0): Unit = {
+      skipLines: Int = 0): Unit =
     CSVWriter.writeFile(
       file,
       IndexedSeq.tabulate(mat.rows, mat.cols)(mat(_, _).toString),
       separator,
       quote,
       escape)
-  }
 
-  def mmwrite[T: Numeric](file: File, mat: Matrix[T]): Unit = {
+  def mmwrite[T: Numeric](file: File, mat: Matrix[T]): Unit =
     if (mat.activeSize == mat.size) {
       val out = new PrintWriter(FileStreams.output(file))
       out.println("%%MatrixMarket matrix array real general")
@@ -126,7 +125,6 @@ package object linalg {
       }
       out.close()
     }
-  }
 
   // </editor-fold>
 
@@ -270,12 +268,11 @@ package object linalg {
   def princomp(
       x: DenseMatrix[Double],
       covmatOpt: Option[DenseMatrix[Double]] = None
-  ): PCA = {
+  ): PCA =
     covmatOpt match {
       case Some(covmat) => new PCA(x, covmat)
       case None         => new PCA(x, cov(x))
     }
-  }
 
   /**
     * A generic function (based on the R function of the same name) whose

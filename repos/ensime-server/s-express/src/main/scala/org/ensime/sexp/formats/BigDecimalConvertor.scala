@@ -58,9 +58,8 @@ object BigIntConvertor {
   def fromBitSet(bitSet: BitSet): BigInt =
     fromBitMask(bitSet.toBitMask)
 
-  def toBitSet(bigInt: BigInt): im.BitSet = {
+  def toBitSet(bigInt: BigInt): im.BitSet =
     im.BitSet.fromBitMaskNoCopy(toBitMask(bigInt))
-  }
 
   /** @param bitmask is the same format as used by `BitSet` */
   private def fromBitMask(bitmask: Array[Long]): BigInt = {

@@ -54,5 +54,5 @@ case class TopicMetadataResponse(
     topicsMetadata.foreach(_.writeTo(buffer))
   }
 
-  override def describe(details: Boolean): String = { toString }
+  override def describe(details: Boolean): String = toString
 }

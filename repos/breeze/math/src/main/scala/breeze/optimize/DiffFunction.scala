@@ -26,13 +26,12 @@ import breeze.util.Isomorphism
   * @author dlwh
   */
 trait DiffFunction[T] extends StochasticDiffFunction[T] { outer =>
-  def cached(implicit copy: CanCopy[T]) = {
+  def cached(implicit copy: CanCopy[T]) =
     if (this.isInstanceOf[CachedDiffFunction[_]]) {
       this
     } else {
       new CachedDiffFunction(this)
     }
-  }
 
   override def throughLens[U](implicit l: Isomorphism[T, U]): DiffFunction[U] =
     new DiffFunction[U] {
@@ -58,13 +57,11 @@ object DiffFunction {
       myValueAt(v, x)
     }
 
-    private def myValueAt(v: Double, x: T) = {
+    private def myValueAt(v: Double, x: T) =
       v + weight * (x dot x) / 2
-    }
 
-    private def myGrad(g: T, x: T): T = {
+    private def myGrad(g: T, x: T): T =
       g + (x * weight)
-    }
 
     override def calculate(x: T) = {
       val (v, grad) = d.calculate(x)
@@ -86,13 +83,11 @@ object DiffFunction {
         v + myValueAt(x)
       }
 
-      private def myValueAt(x: T) = {
+      private def myValueAt(x: T) =
         weight * (x dot x)
-      }
 
-      private def myGrad(g: T, x: T) = {
+      private def myGrad(g: T, x: T) =
         g + (x * weight)
-      }
 
       override def calculate(x: T, batch: IndexedSeq[Int]) = {
         val (v, grad) = d.calculate(x, batch)

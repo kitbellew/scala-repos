@@ -53,13 +53,12 @@ case class Md5(child: Expression)
   protected override def nullSafeEval(input: Any): Any =
     UTF8String.fromString(DigestUtils.md5Hex(input.asInstanceOf[Array[Byte]]))
 
-  override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
+  override def genCode(ctx: CodegenContext, ev: ExprCode): String =
     defineCodeGen(
       ctx,
       ev,
       c =>
         s"UTF8String.fromString(org.apache.commons.codec.digest.DigestUtils.md5Hex($c))")
-  }
 }
 
 /**
@@ -168,13 +167,12 @@ case class Sha1(child: Expression)
   protected override def nullSafeEval(input: Any): Any =
     UTF8String.fromString(DigestUtils.sha1Hex(input.asInstanceOf[Array[Byte]]))
 
-  override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
+  override def genCode(ctx: CodegenContext, ev: ExprCode): String =
     defineCodeGen(
       ctx,
       ev,
       c =>
         s"UTF8String.fromString(org.apache.commons.codec.digest.DigestUtils.sha1Hex($c))")
-  }
 }
 
 /**
@@ -260,14 +258,13 @@ case class Murmur3Hash(children: Seq[Expression], seed: Int)
 
   override def nullable: Boolean = false
 
-  override def checkInputDataTypes(): TypeCheckResult = {
+  override def checkInputDataTypes(): TypeCheckResult =
     if (children.isEmpty) {
       TypeCheckResult.TypeCheckFailure(
         "function hash requires at least one argument")
     } else {
       TypeCheckResult.TypeCheckSuccess
     }
-  }
 
   override def prettyName: String = "hash"
 
@@ -506,7 +503,7 @@ case class PrintToStderr(child: Expression) extends UnaryExpression {
 
   protected override def nullSafeEval(input: Any): Any = input
 
-  override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
+  override def genCode(ctx: CodegenContext, ev: ExprCode): String =
     nullSafeCodeGen(
       ctx,
       ev,
@@ -514,5 +511,4 @@ case class PrintToStderr(child: Expression) extends UnaryExpression {
          | System.err.println("Result of ${child.simpleString} is " + $c);
          | ${ev.value} = $c;
        """.stripMargin)
-  }
 }

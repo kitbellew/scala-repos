@@ -74,9 +74,8 @@ class LauncherBackendSuite extends SparkFunSuite with Matchers {
 
 object TestApp {
 
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     new SparkContext(new SparkConf()).parallelize(Seq(1)).foreach { i =>
       Thread.sleep(TimeUnit.SECONDS.toMillis(20))
     }
-  }
 }

@@ -39,13 +39,12 @@ abstract class JSEnvTest {
       assertEquals("Output should match", expectedOut, console.getLog)
     }
 
-    def fails(): Unit = {
+    def fails(): Unit =
       try {
         newJSEnv.jsRunner(code).run(NullLogger, NullJSConsole)
         assertTrue("Code snipped should fail", false)
       } catch {
         case e: Exception =>
       }
-    }
   }
 }

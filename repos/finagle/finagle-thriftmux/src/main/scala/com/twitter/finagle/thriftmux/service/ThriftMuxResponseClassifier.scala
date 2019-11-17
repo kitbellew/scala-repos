@@ -141,7 +141,7 @@ object ThriftMuxResponseClassifier {
     new ResponseClassifier {
       // we want the side-effect of deserialization if it has not
       // yet been done
-      private[this] def deserializeIfPossible(rep: Try[Any]): Unit = {
+      private[this] def deserializeIfPossible(rep: Try[Any]): Unit =
         rep match {
           case Return(rep: mux.Response) =>
             val deserCtx =
@@ -156,7 +156,6 @@ object ThriftMuxResponseClassifier {
             }
           case _ =>
         }
-      }
 
       def isDefinedAt(reqRep: ReqRep): Boolean = {
         deserializeIfPossible(reqRep.response)

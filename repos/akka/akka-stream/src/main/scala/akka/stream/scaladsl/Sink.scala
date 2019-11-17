@@ -301,7 +301,7 @@ object Sink {
     */
   def onComplete[T](callback: Try[Done] ⇒ Unit): Sink[T, NotUsed] = {
 
-    def newOnCompleteStage(): PushStage[T, NotUsed] = {
+    def newOnCompleteStage(): PushStage[T, NotUsed] =
       new PushStage[T, NotUsed] {
         override def onPush(elem: T, ctx: Context[NotUsed]): SyncDirective =
           ctx.pull()
@@ -319,7 +319,6 @@ object Sink {
           ctx.finish()
         }
       }
-    }
 
     Flow[T]
       .transform(newOnCompleteStage)

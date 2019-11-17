@@ -41,11 +41,11 @@ abstract class MappedLongIndex[T <: Mapper[T]](theOwner: T)
 
   override def defaultValue = -1L
 
-  override def dbIndexFieldIndicatesSaved_? = { i_is_! != defaultValue }
+  override def dbIndexFieldIndicatesSaved_? = i_is_! != defaultValue
 
   def makeKeyJDBCFriendly(in: Long) = new java.lang.Long(in)
 
-  def convertKey(in: String): Box[Long] = {
+  def convertKey(in: String): Box[Long] =
     if (in eq null) Empty
     else
       tryo(
@@ -53,24 +53,20 @@ abstract class MappedLongIndex[T <: Mapper[T]](theOwner: T)
           if (in.startsWith(name + "="))
             in.substring((name + "=").length)
           else in))
-  }
 
   override def dbDisplay_? = false
 
-  def convertKey(in: Long): Box[Long] = {
+  def convertKey(in: Long): Box[Long] =
     if (in < 0L) Empty
     else Full(in)
-  }
 
-  def convertKey(in: Int): Box[Long] = {
+  def convertKey(in: Int): Box[Long] =
     if (in < 0) Empty
     else Full(in)
-  }
 
-  def convertKey(in: AnyRef): Box[Long] = {
+  def convertKey(in: AnyRef): Box[Long] =
     if ((in eq null) || (in eq None)) Empty
     else tryo(convertKey(in.toString)).flatMap(s => s)
-  }
 
   override def fieldCreatorString(dbType: DriverType, colName: String): String =
     colName + " " + dbType.longIndexColumnType + notNullAppender()
@@ -180,7 +176,7 @@ abstract class MappedEnumList[T <: Mapper[T], ENUM <: Enumeration](
   def jdbcFriendly(field: String) = new java.lang.Long(toLong)
   override def jdbcFriendly = new java.lang.Long(toLong)
 
-  override def setFromAny(in: Any): Seq[ENUM#Value] = {
+  override def setFromAny(in: Any): Seq[ENUM#Value] =
     in match {
       case JsonAST.JInt(bi) => this.set(fromLong(bi.longValue))
       case n: Long          => this.set(fromLong(n))
@@ -194,7 +190,6 @@ abstract class MappedEnumList[T <: Mapper[T], ENUM <: Enumeration](
       case s: String        => this.set(fromLong(Helpers.toLong(s)))
       case o                => this.set(fromLong(Helpers.toLong(o)))
     }
-  }
 
   protected def i_obscure_!(in: Seq[ENUM#Value]) = Nil
 
@@ -369,7 +364,7 @@ abstract class MappedNullableLong[T <: Mapper[T]](val fieldOwner: T)
   def jdbcFriendly(field: String) = real_convertToJDBCFriendly(i_is_!)
   override def jdbcFriendly = real_convertToJDBCFriendly(i_is_!)
 
-  override def setFromAny(in: Any): Box[Long] = {
+  override def setFromAny(in: Any): Box[Long] =
     in match {
       case n: Long                          => this.set(Full(n))
       case n: Number                        => this.set(Full(n.longValue))
@@ -386,7 +381,6 @@ abstract class MappedNullableLong[T <: Mapper[T]](val fieldOwner: T)
       case s: String                        => this.set(Helpers.asLong(s))
       case o                                => this.set(Helpers.asLong(o))
     }
-  }
 
   protected def i_obscure_!(in: Box[Long]) = defaultValue
 
@@ -536,7 +530,7 @@ abstract class MappedLong[T <: Mapper[T]](val fieldOwner: T)
   def jdbcFriendly(field: String) = new java.lang.Long(i_is_!)
   override def jdbcFriendly = new java.lang.Long(i_is_!)
 
-  override def setFromAny(in: Any): Long = {
+  override def setFromAny(in: Any): Long =
     in match {
       case n: Long                  => this.set(n)
       case JsonAST.JInt(bigint)     => this.set(bigint.longValue)
@@ -552,7 +546,6 @@ abstract class MappedLong[T <: Mapper[T]](val fieldOwner: T)
       case s: String                => this.set(toLong(s))
       case o                        => this.set(toLong(o))
     }
-  }
 
   protected def i_obscure_!(in: Long) = defaultValue
 

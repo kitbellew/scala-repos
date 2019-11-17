@@ -27,7 +27,7 @@ abstract class NameBooleanParametersInspectionBase extends LocalInspectionTool {
 
   override def buildVisitor(
       holder: ProblemsHolder,
-      isOnTheFly: Boolean): PsiElementVisitor = {
+      isOnTheFly: Boolean): PsiElementVisitor =
     new ScalaElementVisitor {
       override def visitMethodCallExpression(mc: ScMethodCall) {
         if (mc == null || mc.args == null || mc.args.exprs.isEmpty) return
@@ -53,19 +53,17 @@ abstract class NameBooleanParametersInspectionBase extends LocalInspectionTool {
 
       def isArgForBooleanParam(
           expr: ScExpression,
-          argList: ScArgumentExprList): Boolean = {
+          argList: ScArgumentExprList): Boolean =
         argList.parameterOf(expr).exists(isBooleanParam)
-      }
 
-      def isBooleanParam(p: Parameter): Boolean = {
+      def isBooleanParam(p: Parameter): Boolean =
         if (p.isRepeated) false
         else {
           val typeElem = p.paramInCode.flatMap(_.typeElement)
           typeElem.exists(_.calcType.equiv(StdType.BOOLEAN))
         }
-      }
 
-      def isSingleParamMethodCall(mc: ScMethodCall): Boolean = {
+      def isSingleParamMethodCall(mc: ScMethodCall): Boolean =
         mc.getInvokedExpr match {
           case ref: ScReferenceExpression =>
             ref.bind().exists { srr =>
@@ -76,9 +74,7 @@ abstract class NameBooleanParametersInspectionBase extends LocalInspectionTool {
             }
           case _ => false
         }
-      }
     }
-  }
 
   def isIgnoreSingleParameter: Boolean
 

@@ -587,10 +587,9 @@ class LightArrayRevolverSchedulerSpec
     val tf = system.asInstanceOf[ActorSystemImpl].threadFactory
     val sched = new { @volatile var time = start }
     with LARS(config.withFallback(system.settings.config), log, tf) {
-      override protected def clock(): Long = {
+      override protected def clock(): Long =
         // println(s"clock=$time")
         time
-      }
 
       override protected def getShutdownTimeout: FiniteDuration =
         (10 seconds).dilated

@@ -34,9 +34,8 @@ object NamedCometPerTabSpec extends Specification {
     override def lowPriority = {
       case msg => JsCmds.Noop
     }
-    def render = {
+    def render =
       "nada" #> Text("nada")
-    }
   }
 
   "A NamedCometDispatcher" should {

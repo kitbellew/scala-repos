@@ -107,9 +107,8 @@ private class ScalaGenerateEqualsWizardBuilder(
     hashCodePanel.getTable.setMemberInfos(hashCodeFields)
   }
 
-  protected def extractFields: util.List[ScalaMemberInfo] = {
+  protected def extractFields: util.List[ScalaMemberInfo] =
     GenerationUtil.getAllFields(aClass).map(new ScalaMemberInfo(_))
-  }
 
   private def createFieldToMemberInfoMap(
       checkedByDefault: Boolean): HashMap[ScNamedElement, ScalaMemberInfo] = {

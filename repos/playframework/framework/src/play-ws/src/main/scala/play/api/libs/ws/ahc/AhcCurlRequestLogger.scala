@@ -19,7 +19,7 @@ import scala.concurrent.Future
 class AhcCurlRequestLogger(logger: org.slf4j.Logger)
     extends WSRequestFilter
     with CurlFormat {
-  def apply(executor: WSRequestExecutor): WSRequestExecutor = {
+  def apply(executor: WSRequestExecutor): WSRequestExecutor =
     new WSRequestExecutor {
       override def execute(request: WSRequest): Future[WSResponse] = {
         val ningRequest = request.asInstanceOf[AhcWSRequest]
@@ -27,7 +27,6 @@ class AhcCurlRequestLogger(logger: org.slf4j.Logger)
         executor.execute(request)
       }
     }
-  }
 }
 
 object AhcCurlRequestLogger {
@@ -39,9 +38,8 @@ object AhcCurlRequestLogger {
 
   def apply() = instance
 
-  def apply(logger: org.slf4j.Logger): AhcCurlRequestLogger = {
+  def apply(logger: org.slf4j.Logger): AhcCurlRequestLogger =
     new AhcCurlRequestLogger(logger)
-  }
 }
 
 trait CurlFormat {
@@ -90,7 +88,7 @@ trait CurlFormat {
     curlOptions
   }
 
-  protected def findCharset(request: AhcWSRequest): String = {
+  protected def findCharset(request: AhcWSRequest): String =
     request.contentType
       .map { ct =>
         Option(HttpUtils.parseCharset(ct))
@@ -100,7 +98,6 @@ trait CurlFormat {
           .name()
       }
       .getOrElse(HttpUtils.parseCharset("UTF-8").name())
-  }
 
   def quote(unsafe: String): String = unsafe.replace("'", "'\\''")
 }

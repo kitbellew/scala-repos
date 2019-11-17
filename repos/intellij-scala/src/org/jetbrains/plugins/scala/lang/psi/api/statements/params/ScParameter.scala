@@ -111,14 +111,13 @@ trait ScParameter
 
   def deprecatedName: Option[String]
 
-  def owner: PsiElement = {
+  def owner: PsiElement =
     ScalaPsiUtil.getContextOfType(
       this,
       true,
       classOf[ScFunctionExpr],
       classOf[ScFunction],
       classOf[ScPrimaryConstructor])
-  }
 
   def remove()
 
@@ -247,12 +246,11 @@ trait ScParameter
             if (containingMember == null) res
             else {
               def extractFromParameterOwner(
-                  owner: ScParameterOwner): Option[ScExpression] = {
+                  owner: ScParameterOwner): Option[ScExpression] =
                 owner.parameters.find(_.name == name) match {
                   case Some(param) => param.getDefaultExpression
                   case _           => res
                 }
-              }
               containingMember match {
                 case c: ScClass =>
                   c.getSourceMirrorClass match {
@@ -273,7 +271,7 @@ trait ScParameter
     }
   }
 
-  def getSuperParameter: Option[ScParameter] = {
+  def getSuperParameter: Option[ScParameter] =
     getParent match {
       case clause: ScParameterClause =>
         val i = clause.parameters.indexOf(this)
@@ -299,5 +297,4 @@ trait ScParameter
         }
       case _ => None
     }
-  }
 }

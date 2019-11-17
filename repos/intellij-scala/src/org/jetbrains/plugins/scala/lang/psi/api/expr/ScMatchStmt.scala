@@ -42,7 +42,6 @@ trait ScMatchStmt extends ScExpression {
 }
 
 object ScMatchStmt {
-  def unapply(ms: ScMatchStmt): Option[(ScExpression, ScCaseClauses)] = {
+  def unapply(ms: ScMatchStmt): Option[(ScExpression, ScCaseClauses)] =
     ms.expr.flatMap(Some(_, ms.getCaseClauses))
-  }
 }

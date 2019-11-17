@@ -130,7 +130,7 @@ class MongoScheduleStorage private[MongoScheduleStorage] (
       PrecogUnit
     }
 
-  def statusFor(id: UUID, limit: Option[Int]) = {
+  def statusFor(id: UUID, limit: Option[Int]) =
     database(selectOne().from(settings.tasks).where(".id" === id.toString)) flatMap {
       taskOpt =>
         database(
@@ -144,7 +144,6 @@ class MongoScheduleStorage private[MongoScheduleStorage] (
           }
         }
     }
-  }
 
   def listTasks = database(selectAll.from(settings.tasks)) map {
     _.toSeq map { _.deserialize[ScheduledTask] }

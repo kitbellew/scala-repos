@@ -24,7 +24,7 @@ object FingerprintSerializer {
         s"Unknown Fingerprint type: ${fp.getClass}")
   }
 
-  def deserialize(obj: js.Dynamic): Fingerprint = {
+  def deserialize(obj: js.Dynamic): Fingerprint =
     obj.fpType.asInstanceOf[String] match {
       case "AnnotatedFingerprint" =>
         new DeserializedAnnotatedFingerprint(
@@ -38,7 +38,6 @@ object FingerprintSerializer {
       case tpe =>
         throw new IllegalArgumentException(s"Unknown Fingerprint type: $tpe")
     }
-  }
 
   final class DeserializedAnnotatedFingerprint(
       val isModule: Boolean,

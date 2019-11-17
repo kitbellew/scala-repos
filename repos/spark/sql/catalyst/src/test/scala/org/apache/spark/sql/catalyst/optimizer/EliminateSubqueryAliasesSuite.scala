@@ -42,9 +42,8 @@ class EliminateSubqueryAliasesSuite extends PlanTest with PredicateHelper {
     comparePlans(actual, correctAnswer)
   }
 
-  private def afterOptimization(plan: LogicalPlan): LogicalPlan = {
+  private def afterOptimization(plan: LogicalPlan): LogicalPlan =
     Optimize.execute(analysis.SimpleAnalyzer.execute(plan))
-  }
 
   test("eliminate top level subquery") {
     val input = LocalRelation('a.int, 'b.int)

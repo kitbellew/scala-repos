@@ -69,9 +69,8 @@ private[spark] object CoarseGrainedClusterMessages {
         executorId: String,
         taskId: Long,
         state: TaskState,
-        data: ByteBuffer): StatusUpdate = {
+        data: ByteBuffer): StatusUpdate =
       StatusUpdate(executorId, taskId, state, new SerializableBuffer(data))
-    }
   }
 
   // Internal messages in driver

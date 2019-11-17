@@ -62,7 +62,7 @@ class ESAccessKeys(client: Client, config: StorageClientConfig, index: String)
     Some(key)
   }
 
-  def get(key: String): Option[AccessKey] = {
+  def get(key: String): Option[AccessKey] =
     try {
       val response = client.prepareGet(index, estype, key).get()
       Some(read[AccessKey](response.getSourceAsString))
@@ -72,9 +72,8 @@ class ESAccessKeys(client: Client, config: StorageClientConfig, index: String)
         None
       case e: NullPointerException => None
     }
-  }
 
-  def getAll(): Seq[AccessKey] = {
+  def getAll(): Seq[AccessKey] =
     try {
       val builder = client.prepareSearch(index).setTypes(estype)
       ESUtils.getAll[AccessKey](client, builder)
@@ -83,9 +82,8 @@ class ESAccessKeys(client: Client, config: StorageClientConfig, index: String)
         error(e.getMessage)
         Seq[AccessKey]()
     }
-  }
 
-  def getByAppid(appid: Int): Seq[AccessKey] = {
+  def getByAppid(appid: Int): Seq[AccessKey] =
     try {
       val builder = client
         .prepareSearch(index)
@@ -97,9 +95,8 @@ class ESAccessKeys(client: Client, config: StorageClientConfig, index: String)
         error(e.getMessage)
         Seq[AccessKey]()
     }
-  }
 
-  def update(accessKey: AccessKey): Unit = {
+  def update(accessKey: AccessKey): Unit =
     try {
       client
         .prepareIndex(index, estype, accessKey.key)
@@ -109,14 +106,12 @@ class ESAccessKeys(client: Client, config: StorageClientConfig, index: String)
       case e: ElasticsearchException =>
         error(e.getMessage)
     }
-  }
 
-  def delete(key: String): Unit = {
+  def delete(key: String): Unit =
     try {
       client.prepareDelete(index, estype, key).get
     } catch {
       case e: ElasticsearchException =>
         error(e.getMessage)
     }
-  }
 }

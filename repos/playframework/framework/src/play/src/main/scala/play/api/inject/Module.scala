@@ -143,7 +143,7 @@ object Modules {
       environment: Environment,
       configuration: Configuration,
       className: String,
-      loadModuleClass: () => Class[T]): T = {
+      loadModuleClass: () => Class[T]): T =
     try {
       val moduleClass = loadModuleClass()
 
@@ -181,5 +181,4 @@ object Modules {
           "Module [" + className + "] cannot be instantiated.",
           e)
     }
-  }
 }

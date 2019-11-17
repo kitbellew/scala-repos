@@ -66,27 +66,24 @@ case class ParallelSGDAlgorithm(val ap: AlgorithmParams)
       Vector,
       Double] {
 
-  def train(data: RDD[LabeledPoint]): RegressionModel = {
+  def train(data: RDD[LabeledPoint]): RegressionModel =
     LinearRegressionWithSGD.train(data, ap.numIterations, ap.stepSize)
-  }
 
-  def predict(model: RegressionModel, feature: Vector): Double = {
+  def predict(model: RegressionModel, feature: Vector): Double =
     model.predict(feature)
-  }
 
   @transient override lazy val querySerializer =
     Utils.json4sDefaultFormats + new VectorSerializer
 }
 
 object RegressionEngineFactory extends IEngineFactory {
-  def apply() = {
+  def apply() =
     new Engine(
       classOf[ParallelDataSource],
       classOf[IdentityPreparator[RDD[LabeledPoint]]],
       Map("SGD" -> classOf[ParallelSGDAlgorithm]),
       LAverageServing(classOf[ParallelSGDAlgorithm])
     )
-  }
 }
 
 object Run {

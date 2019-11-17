@@ -267,9 +267,8 @@ class CompletionTest {
   def checkExact(
       completer: PresentationCompilerCompleter,
       before: String,
-      after: String = "")(expected: String*): Unit = {
+      after: String = "")(expected: String*): Unit =
     assertEquals(
       expected.toSet,
       completer.complete(before, after).candidates.toSet)
-  }
 }

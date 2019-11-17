@@ -70,9 +70,8 @@ abstract class PAlgorithm[PD, M, Q, P] extends BaseAlgorithm[PD, M, Q, P] {
   def batchPredict(m: M, qs: RDD[(Long, Q)]): RDD[(Long, P)] =
     throw new NotImplementedError("batchPredict not implemented")
 
-  def predictBase(baseModel: Any, query: Q): P = {
+  def predictBase(baseModel: Any, query: Q): P =
     predict(baseModel.asInstanceOf[M], query)
-  }
 
   /** Implement this method to produce a prediction from a query and trained
     * model.

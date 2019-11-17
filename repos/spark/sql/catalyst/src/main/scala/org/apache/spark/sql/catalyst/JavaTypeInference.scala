@@ -60,16 +60,15 @@ object JavaTypeInference {
     * @param beanClass Java type
     * @return (SQL data type, nullable)
     */
-  def inferDataType(beanClass: Class[_]): (DataType, Boolean) = {
+  def inferDataType(beanClass: Class[_]): (DataType, Boolean) =
     inferDataType(TypeToken.of(beanClass))
-  }
 
   /**
     * Infers the corresponding SQL data type of a Java type.
     * @param typeToken Java type
     * @return (SQL data type, nullable)
     */
-  private def inferDataType(typeToken: TypeToken[_]): (DataType, Boolean) = {
+  private def inferDataType(typeToken: TypeToken[_]): (DataType, Boolean) =
     typeToken.getRawType match {
       case c: Class[_] if c.isAnnotationPresent(classOf[SQLUserDefinedType]) =>
         (c.getAnnotation(classOf[SQLUserDefinedType]).udt().newInstance(), true)
@@ -129,7 +128,6 @@ object JavaTypeInference {
         }
         (new StructType(fields), true)
     }
-  }
 
   private def getJavaBeanProperties(
       beanClass: Class[_]): Array[PropertyDescriptor] = {
@@ -179,9 +177,8 @@ object JavaTypeInference {
     * of the same name as the constructor arguments.  Nested classes will have their fields accessed
     * using UnresolvedExtractValue.
     */
-  def constructorFor(beanClass: Class[_]): Expression = {
+  def constructorFor(beanClass: Class[_]): Expression =
     constructorFor(TypeToken.of(beanClass), None)
-  }
 
   private def constructorFor(
       typeToken: TypeToken[_],

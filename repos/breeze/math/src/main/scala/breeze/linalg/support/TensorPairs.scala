@@ -23,11 +23,10 @@ class TensorPairs[K, V, +This](
 
   def filter(p: ((K, V)) => Boolean) = withFilter(p)
 
-  def withFilter(p: ((K, V)) => Boolean): TensorPairs[K, V, This] = {
+  def withFilter(p: ((K, V)) => Boolean): TensorPairs[K, V, This] =
     new TensorPairs[K, V, This](tensor, active, { a =>
       f(a) && p(a)
     })(ev)
-  }
 
   override def toString = iterator.mkString("TensorKeys(", ",", ")")
 

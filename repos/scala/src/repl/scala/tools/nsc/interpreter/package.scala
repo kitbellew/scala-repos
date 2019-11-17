@@ -173,13 +173,12 @@ package object interpreter extends ReplConfig with ReplStrings {
     }
 
     def echoKind(tpe: Type, kind: Kind, verbose: Boolean) {
-      def typeString(tpe: Type): String = {
+      def typeString(tpe: Type): String =
         tpe match {
           case TypeRef(_, sym, _) => typeString(sym.info)
           case RefinedType(_, _)  => tpe.toString
           case _                  => tpe.typeSymbol.fullName
         }
-      }
       printAfterTyper(typeString(tpe) + "'s kind is " + kind.scalaNotation)
       if (verbose) {
         echo(kind.starNotation)

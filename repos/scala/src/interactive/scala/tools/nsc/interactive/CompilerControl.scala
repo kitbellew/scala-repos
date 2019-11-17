@@ -117,9 +117,8 @@ trait CompilerControl { self: Global =>
   /** Removes source files and toplevel symbols, and issues a new typer run.
     *  Returns () to syncvar `response` on completion.
     */
-  def askFilesDeleted(sources: List[SourceFile], response: Response[Unit]) = {
+  def askFilesDeleted(sources: List[SourceFile], response: Response[Unit]) =
     postWorkItem(new FilesDeletedItem(sources, response))
-  }
 
   /** Sets sync var `response` to the smallest fully attributed tree that encloses position `pos`.
     *  Note: Unlike for most other ask... operations, the source file belonging to `pos` needs not be loaded.
@@ -232,12 +231,11 @@ trait CompilerControl { self: Global =>
     *  @param keepSrcLoaded If set to `true`, source file will be kept as a loaded unit afterwards.
     */
   def askStructure(
-      keepSrcLoaded: Boolean)(source: SourceFile, response: Response[Tree]) = {
+      keepSrcLoaded: Boolean)(source: SourceFile, response: Response[Tree]) =
     getUnit(source) match {
       case Some(_) => askLoadedTyped(source, keepSrcLoaded, response)
       case None    => askParsedEntered(source, keepSrcLoaded, response)
     }
-  }
 
   /** Set sync var `response` to the parse tree of `source` with all top-level symbols entered.
     *  @param source       The source file to be analyzed
@@ -265,9 +263,8 @@ trait CompilerControl { self: Global =>
     *  This method is thread-safe and as such can safely run outside of the presentation
     *  compiler thread.
     */
-  def parseTree(source: SourceFile): Tree = {
+  def parseTree(source: SourceFile): Tree =
     newUnitParser(new CompilationUnit(source)).parse()
-  }
 
   /** Asks for a computation to be done quickly on the presentation compiler thread */
   def ask[A](op: () => A): A =
@@ -487,10 +484,9 @@ trait CompilerControl { self: Global =>
       }
     }
 
-    override def doQuickly[A](op: () => A): A = {
+    override def doQuickly[A](op: () => A): A =
       throw new FailedInterrupt(
         new Exception("Posted a work item to a compiler that's shutting down"))
-    }
 
     override def askDoQuickly[A](op: () => A): InterruptReq { type R = A } = {
       val ir = new InterruptReq {

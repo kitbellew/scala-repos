@@ -38,7 +38,7 @@ sealed trait SValue {
   def isA(valueType: SType): Boolean
   def hasProperty(selector: JPath) = (this \ selector).isDefined
 
-  def \(selector: JPath): Option[SValue] = {
+  def \(selector: JPath): Option[SValue] =
     if (selector == JPath.Identity) {
       Some(this)
     } else {
@@ -58,7 +58,6 @@ sealed trait SValue {
         case _ => None
       }
     }
-  }
 
   def set(selector: JPath, value: SValue): Option[SValue] = this match {
     case SObject(obj) =>
@@ -172,7 +171,7 @@ trait SValueInstances {
         str: String => String => A,
         bool: Boolean => Boolean => A,
         num: BigDecimal => BigDecimal => A,
-        nul: => A) = {
+        nul: => A) =
       (sv1, sv2) match {
         case (SObject(o1), SObject(o2))   => obj(o1)(o2)
         case (SArray(a1), SArray(a2))     => arr(a1)(a2)
@@ -182,7 +181,6 @@ trait SValueInstances {
         case (SNull, SNull)               => nul
         case _                            => default
       }
-    }
   }
 
   def typeIndex(sv: SValue) = sv match {
@@ -301,14 +299,13 @@ object SValue extends SValueInstances {
     case _          => sys.error("Fix JValue")
   }
 
-  def apply(selector: JPath, cv: CValue): SValue = {
+  def apply(selector: JPath, cv: CValue): SValue =
     selector.nodes match {
       case JPathField(_) :: xs => SObject(Map()).set(selector, cv).get
       case JPathIndex(_) :: xs =>
         SArray(Vector.empty[SValue]).set(selector, cv).get
       case Nil => SValue.fromCValue(cv)
     }
-  }
 
   //TODO: Optimize
   def deref(selector: JPath): PartialFunction[SValue, SValue] = {

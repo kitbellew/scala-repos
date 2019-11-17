@@ -113,9 +113,8 @@ private object LabelConverter {
     * @param output label encoded with a vector
     * @return label
     */
-  def decodeLabel(output: Vector): Double = {
+  def decodeLabel(output: Vector): Double =
     output.argmax.toDouble
-  }
 }
 
 /**
@@ -230,23 +229,19 @@ class MultilayerPerceptronClassificationModel private[ml] (
   /**
     * Returns layers in a Java List.
     */
-  private[ml] def javaLayers: java.util.List[Int] = {
+  private[ml] def javaLayers: java.util.List[Int] =
     layers.toList.asJava
-  }
 
   /**
     * Predict label for the given features.
     * This internal method is used to implement [[transform()]] and output [[predictionCol]].
     */
-  override protected def predict(features: Vector): Double = {
+  override protected def predict(features: Vector): Double =
     LabelConverter.decodeLabel(mlpModel.predict(features))
-  }
 
   @Since("1.5.0")
-  override def copy(
-      extra: ParamMap): MultilayerPerceptronClassificationModel = {
+  override def copy(extra: ParamMap): MultilayerPerceptronClassificationModel =
     copyValues(
       new MultilayerPerceptronClassificationModel(uid, layers, weights),
       extra)
-  }
 }

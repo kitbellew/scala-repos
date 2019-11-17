@@ -10,7 +10,6 @@ import org.junit.runners.JUnit4
 @RunWith(classOf[JUnit4])
 class SampleTest {
   @Test
-  def testMath: Unit = {
+  def testMath: Unit =
     assertTrue("you didn't get the math right fellow", 2 + 2 == 4)
-  }
 }

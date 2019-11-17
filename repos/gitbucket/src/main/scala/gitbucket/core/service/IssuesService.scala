@@ -94,9 +94,7 @@ trait IssuesService { self: AccountService =>
       owner: String,
       repository: String,
       condition: IssueSearchCondition,
-      filterUser: Map[String, String])(
-      implicit s: Session): Map[String, Int] = {
-
+      filterUser: Map[String, String])(implicit s: Session): Map[String, Int] =
     searchIssueQuery(
       Seq(owner -> repository),
       condition.copy(labels = Set.empty),
@@ -119,10 +117,9 @@ trait IssuesService { self: AccountService =>
           labelName -> t.length
       }
       .toMap
-  }
 
   def getCommitStatues(issueList: Seq[(String, String, Int)])(
-      implicit s: Session): Map[(String, String, Int), CommitStatusInfo] = {
+      implicit s: Session): Map[(String, String, Int), CommitStatusInfo] =
     if (issueList.isEmpty) {
       Map.empty
     } else {
@@ -189,7 +186,6 @@ trait IssuesService { self: AccountService =>
             description)
       }.toMap
     }
-  }
 
   /**
     * Returns the search result against  issues.
@@ -277,7 +273,7 @@ trait IssuesService { self: AccountService =>
       offset: Int,
       limit: Int,
       repos: (String, String)*)(implicit s: Session)
-      : List[(Issue, Account, Int, PullRequest, Repository, Account)] = {
+      : List[(Issue, Account, Int, PullRequest, Repository, Account)] =
     // get issues and comment count and labels
     searchIssueQueryBase(condition, true, offset, limit, repos)
       .innerJoin(PullRequests)
@@ -303,7 +299,6 @@ trait IssuesService { self: AccountService =>
           (t1, t5, t2.commentCount, t3, t4, t6)
       }
       .list
-  }
 
   private def searchIssueQueryBase(
       condition: IssueSearchCondition,
@@ -589,7 +584,7 @@ trait IssuesService { self: AccountService =>
       message: String,
       userName: String,
       owner: String,
-      repository: String)(implicit s: Session) = {
+      repository: String)(implicit s: Session) =
     extractCloseId(message).foreach { issueId =>
       for (issue <- getIssue(owner, repository, issueId) if !issue.closed) {
         createComment(
@@ -602,14 +597,13 @@ trait IssuesService { self: AccountService =>
         updateClosed(owner, repository, issue.issueId, true)
       }
     }
-  }
 
   def createReferComment(
       owner: String,
       repository: String,
       fromIssue: Issue,
       message: String,
-      loginAccount: Account)(implicit s: Session) = {
+      loginAccount: Account)(implicit s: Session) =
     StringUtil.extractIssueId(message).foreach { issueId =>
       val content = fromIssue.issueId + ":" + fromIssue.title
       if (getIssue(owner, repository, issueId).isDefined) {
@@ -627,10 +621,9 @@ trait IssuesService { self: AccountService =>
         }
       }
     }
-  }
 
   def createIssueComment(owner: String, repository: String, commit: CommitInfo)(
-      implicit s: Session) = {
+      implicit s: Session) =
     StringUtil.extractIssueId(commit.fullMessage).foreach { issueId =>
       if (getIssue(owner, repository, issueId).isDefined) {
         getAccountByMailAddress(commit.committerEmailAddress).foreach {
@@ -645,7 +638,6 @@ trait IssuesService { self: AccountService =>
         }
       }
     }
-  }
 }
 
 object IssuesService {
@@ -665,11 +657,10 @@ object IssuesService {
       visibility: Option[String] = None,
       groups: Set[String] = Set.empty) {
 
-    def isEmpty: Boolean = {
+    def isEmpty: Boolean =
       labels.isEmpty && milestone.isEmpty && author.isEmpty &&
-      assigned.isEmpty && state == "open" && sort == "created" &&
-      direction == "desc" && visibility.isEmpty
-    }
+        assigned.isEmpty && state == "open" && sort == "created" &&
+        direction == "desc" && visibility.isEmpty
 
     def nonEmpty: Boolean = !isEmpty
 

@@ -127,8 +127,6 @@ object EdgeRDD {
     * @tparam VD the type of the vertex attributes that may be joined with the returned EdgeRDD
     */
   private[graphx] def fromEdgePartitions[ED: ClassTag, VD: ClassTag](
-      edgePartitions: RDD[(Int, EdgePartition[ED, VD])])
-      : EdgeRDDImpl[ED, VD] = {
+      edgePartitions: RDD[(Int, EdgePartition[ED, VD])]): EdgeRDDImpl[ED, VD] =
     new EdgeRDDImpl(edgePartitions)
-  }
 }

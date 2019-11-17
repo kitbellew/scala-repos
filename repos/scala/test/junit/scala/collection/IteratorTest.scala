@@ -79,13 +79,12 @@ class IteratorTest {
     // Create `size` Function0s, each of which evaluates to an Iterator
     // which produces 1. Then fold them over ++ to get a single iterator,
     // which should sum to "size".
-    def mk(size: Int): Iterator[Int] = {
+    def mk(size: Int): Iterator[Int] =
       //val closures = (1 to size).toList.map(x => (() => Iterator(1)))
       //closures.foldLeft(Iterator.empty: Iterator[Int])((res, f) => res ++ f())
       List
         .fill(size)(() => Iterator(1))
         .foldLeft(Iterator.empty: Iterator[Int])((res, f) => res ++ f())
-    }
     assertEquals(100, mk(100).sum)
     assertEquals(1000, mk(1000).sum)
     assertEquals(10000, mk(10000).sum)
@@ -120,9 +119,8 @@ class IteratorTest {
     assertFalse(r3 contains 5)
     assertTrue(r3.isEmpty)
   }
-  @Test def take(): Unit = {
+  @Test def take(): Unit =
     assertEquals(10, (Iterator from 0 take 10).size)
-  }
   @Test def foreach(): Unit = {
     val it1 = Iterator.from(0) take 20
     var n = 0
@@ -139,9 +137,8 @@ class IteratorTest {
     var xs4 = a.slice(0, 4).iterator
     assertEquals(14, xs0.size + xs1.size + xs2.size + xs3.size + xs4.size)
   }
-  @Test def toSeq(): Unit = {
+  @Test def toSeq(): Unit =
     assertEquals("1x2x3x4x5", List(1, 2, 3, 4, 5).iterator.mkString("x"))
-  }
   @Test def indexOf(): Unit = {
     assertEquals(3, List(1, 2, 3, 4, 5).iterator.indexOf(4))
     assertEquals(-1, List(1, 2, 3, 4, 5).iterator.indexOf(16))
@@ -170,14 +167,13 @@ class IteratorTest {
   }
   // iterator-iterate-lazy.scala
   // was java.lang.UnsupportedOperationException: tail of empty list
-  @Test def iterateIsSufficientlyLazy(): Unit = {
+  @Test def iterateIsSufficientlyLazy(): Unit =
     //Iterator.iterate((1 to 5).toList)(_.tail).takeWhile(_.nonEmpty).toList  // suffices
     Iterator
       .iterate((1 to 5).toList)(_.tail)
       .takeWhile(_.nonEmpty)
       .map(_.head)
       .toList
-  }
   // SI-3516
   @Test def toStreamIsSufficientlyLazy(): Unit = {
     val results = collection.mutable.ListBuffer.empty[Int]

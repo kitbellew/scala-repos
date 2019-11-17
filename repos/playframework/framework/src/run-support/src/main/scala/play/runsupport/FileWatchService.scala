@@ -38,9 +38,8 @@ trait FileWatchService {
     * @param onChange A callback that is executed whenever something changes.
     * @return A watcher
     */
-  def watch(filesToWatch: List[File], onChange: Callable[Void]): FileWatcher = {
+  def watch(filesToWatch: List[File], onChange: Callable[Void]): FileWatcher =
     watch(JavaConversions.asScalaBuffer(filesToWatch), () => { onChange.call })
-  }
 }
 
 /**
@@ -182,7 +181,7 @@ private object JNotifyFileWatchService {
       listenerClass: Class[_],
       addWatchMethod: Method,
       removeWatchMethod: Method) {
-    def addWatch(fileOrDirectory: String, listener: AnyRef): Int = {
+    def addWatch(fileOrDirectory: String, listener: AnyRef): Int =
       addWatchMethod
         .invoke(
           null,
@@ -192,8 +191,7 @@ private object JNotifyFileWatchService {
           listener
         )
         .asInstanceOf[Int]
-    }
-    def removeWatch(id: Int): Unit = {
+    def removeWatch(id: Int): Unit =
       try {
         removeWatchMethod.invoke(null, id.asInstanceOf[AnyRef])
       } catch {
@@ -203,8 +201,7 @@ private object JNotifyFileWatchService {
         // We match on Throwable because matching on an IOException didn't work.
         // http://sourceforge.net/p/jnotify/bugs/5/
       }
-    }
-    def newListener(onChange: () => Unit): AnyRef = {
+    def newListener(onChange: () => Unit): AnyRef =
       Proxy.newProxyInstance(
         classLoader,
         Seq(listenerClass).toArray,
@@ -214,19 +211,16 @@ private object JNotifyFileWatchService {
             null
           }
         })
-    }
 
     @throws[Throwable]("If we were not able to successfully load JNotify")
-    def ensureLoaded(): Unit = {
+    def ensureLoaded(): Unit =
       removeWatchMethod.invoke(null, 0.asInstanceOf[java.lang.Integer])
-    }
   }
 
   // Tri state - null means no attempt to load yet, None means failed load, Some means successful load
   @volatile var watchService: Option[Try[JNotifyFileWatchService]] = None
 
-  def apply(targetDirectory: File): Try[FileWatchService] = {
-
+  def apply(targetDirectory: File): Try[FileWatchService] =
     watchService match {
       case None =>
         val ws = scala.util.control.Exception.allCatch.withTry {
@@ -308,7 +302,6 @@ private object JNotifyFileWatchService {
         ws
       case Some(ws) => ws
     }
-  }
 }
 
 private[play] class JDK7FileWatchService(logger: LoggerProxy)
@@ -336,7 +329,7 @@ private[play] class JDK7FileWatchService(logger: LoggerProxy)
 
     val watcher = FileSystems.getDefault.newWatchService()
 
-    def watchDir(dir: File) = {
+    def watchDir(dir: File) =
       dir.toPath.register(
         watcher,
         Array[WatchEvent.Kind[_]](ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY),
@@ -344,7 +337,6 @@ private[play] class JDK7FileWatchService(logger: LoggerProxy)
         // For non polling event based watchers, it has no effect.
         com.sun.nio.file.SensitivityWatchEventModifier.HIGH
       )
-    }
 
     // Get all sub directories
     val allDirsToWatch = allSubDirectories(dirsToWatch)
@@ -352,7 +344,7 @@ private[play] class JDK7FileWatchService(logger: LoggerProxy)
 
     val thread = new Thread(
       new Runnable {
-        def run() = {
+        def run() =
           try {
             while (true) {
               val watchKey = watcher.take()
@@ -385,7 +377,6 @@ private[play] class JDK7FileWatchService(logger: LoggerProxy)
             // Just in case it wasn't closed.
             watcher.close()
           }
-        }
       },
       "sbt-play-watch-service"
     )
@@ -393,15 +384,13 @@ private[play] class JDK7FileWatchService(logger: LoggerProxy)
     thread.start()
 
     new FileWatcher {
-      def stop() = {
+      def stop() =
         watcher.close()
-      }
     }
   }
 
-  private def allSubDirectories(dirs: Seq[File]) = {
+  private def allSubDirectories(dirs: Seq[File]) =
     (dirs ** (DirectoryFilter -- HiddenFileFilter)).get.distinct
-  }
 }
 
 /**
@@ -410,9 +399,8 @@ private[play] class JDK7FileWatchService(logger: LoggerProxy)
 private[play] class OptionalFileWatchServiceDelegate(
     val watchService: Try[FileWatchService])
     extends FileWatchService {
-  def watch(filesToWatch: Seq[File], onChange: () => Unit) = {
+  def watch(filesToWatch: Seq[File], onChange: () => Unit) =
     watchService.map(ws => ws.watch(filesToWatch, onChange)).get
-  }
 }
 
 /**
@@ -428,9 +416,8 @@ private[runsupport] object GlobalStaticVar {
   import java.lang.management._
   import java.util.concurrent.atomic.AtomicReference
 
-  private def objectName(name: String) = {
+  private def objectName(name: String) =
     new ObjectName(":type=GlobalStaticVar,name=" + name)
-  }
 
   /**
     * Set a global static variable with the given name.
@@ -461,7 +448,7 @@ private[runsupport] object GlobalStaticVar {
   /**
     * Get a global static variable by the given name.
     */
-  def get[T](name: String)(implicit ct: ClassTag[T]): Option[T] = {
+  def get[T](name: String)(implicit ct: ClassTag[T]): Option[T] =
     try {
       val value = ManagementFactory.getPlatformMBeanServer.invoke(
         objectName(name),
@@ -479,16 +466,14 @@ private[runsupport] object GlobalStaticVar {
       case e: InstanceNotFoundException =>
         None
     }
-  }
 
   /**
     * Clear a global static variable with the given name.
     */
-  def remove(name: String): Unit = {
+  def remove(name: String): Unit =
     try {
       ManagementFactory.getPlatformMBeanServer.unregisterMBean(objectName(name))
     } catch {
       case e: InstanceNotFoundException =>
     }
-  }
 }

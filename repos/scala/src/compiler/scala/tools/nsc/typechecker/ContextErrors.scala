@@ -186,10 +186,9 @@ trait ContextErrors { self: Analyzer =>
       implicit val contextTyperErrorGen: Context = infer.getContext
 
       def UnstableTreeError(tree: Tree) = {
-        def addendum = {
+        def addendum =
           "\n Note that " + tree.symbol + " is not stable because its type, " +
             tree.tpe + ", is volatile."
-        }
         issueNormalTypeError(
           tree,
           "stable identifier required, but " + tree + " found." +
@@ -276,9 +275,8 @@ trait ContextErrors { self: Analyzer =>
           tree: Tree,
           name: Name,
           owner: Symbol,
-          startingIdentCx: Context) = {
+          startingIdentCx: Context) =
         NormalTypeError(tree, "not found: " + decodeWithKind(name, owner))
-      }
 
       // typedAppliedTypeTree
       def AppliedTypeNoParametersError(tree: Tree, errTpe: Type) = {
@@ -489,10 +487,9 @@ trait ContextErrors { self: Analyzer =>
       }
 
       //typedBind
-      def VariableInPatternAlternativeError(tree: Tree) = {
+      def VariableInPatternAlternativeError(tree: Tree) =
         issueNormalTypeError(tree, "illegal variable in pattern alternative")
-        //setError(tree)
-      }
+      //setError(tree)
 
       //typedCase
       def StarPositionInPatternError(tree: Tree) =
@@ -948,9 +945,8 @@ trait ContextErrors { self: Analyzer =>
         setError(tree)
       }
 
-      def MacroTooManyArgumentListsError(expandee: Tree, fun: Symbol) = {
+      def MacroTooManyArgumentListsError(expandee: Tree, fun: Symbol) =
         NormalTypeError(expandee, "too many argument lists for " + fun)
-      }
 
       case object MacroExpansionException
           extends Exception
@@ -1259,8 +1255,7 @@ trait ContextErrors { self: Analyzer =>
           firstCompeting: Symbol,
           argtpes: List[Type],
           pt: Type,
-          lastTry: Boolean) = {
-
+          lastTry: Boolean) =
         if (!(argtpes exists (_.isErroneous)) && !pt.isErroneous) {
           val msg0 =
             "argument types " + argtpes.mkString("(", ",", ")") +
@@ -1275,8 +1270,7 @@ trait ContextErrors { self: Analyzer =>
           setErrorOnLastTry(lastTry, tree)
         } else
           setError(tree) // do not even try further attempts because they should all fail
-        // even if this is not the last attempt (because of the SO's possibility on the horizon)
-      }
+      // even if this is not the last attempt (because of the SO's possibility on the horizon)
 
       def NoBestExprAlternativeError(tree: Tree, pt: Type, lastTry: Boolean) = {
         issueNormalTypeError(
@@ -1307,7 +1301,7 @@ trait ContextErrors { self: Analyzer =>
           prefix: String,
           targs: List[Type],
           tparams: List[Symbol],
-          kindErrors: List[String]) = {
+          kindErrors: List[String]) =
         issueNormalTypeError(
           tree,
           prefix +
@@ -1316,7 +1310,6 @@ trait ContextErrors { self: Analyzer =>
             tparams.mkString("(", ",", ")") + tparams.head.locationString +
             "." + kindErrors.toList.mkString("\n", ", ", "")
         )
-      }
 
       private[scala] def NotWithinBoundsErrorMessage(
           prefix: String,
@@ -1438,7 +1431,7 @@ trait ContextErrors { self: Analyzer =>
       import DuplicatesErrorKinds._
       import symtab.Flags
 
-      def TypeSigError(tree: Tree, ex: TypeError) = {
+      def TypeSigError(tree: Tree, ex: TypeError) =
         ex match {
           case CyclicReference(_, _) if tree.symbol.isTermMacro =>
             // say, we have a macro def `foo` and its macro impl `impl`
@@ -1462,7 +1455,6 @@ trait ContextErrors { self: Analyzer =>
           case _ =>
             contextNamerErrorGen.issue(TypeErrorWithUnderlyingTree(tree, ex))
         }
-      }
 
       def GetterDefinedTwiceError(getter: Symbol) =
         issueSymbolTypeError(getter, getter + " is defined twice")
@@ -1606,7 +1598,7 @@ trait ContextErrors { self: Analyzer =>
         pre1: String,
         pre2: String,
         trailer: String)(isView: Boolean, pt: Type, tree: Tree)(
-        implicit context0: Context) = {
+        implicit context0: Context) =
       if (!info1.tpe.isErroneous && !info2.tpe.isErroneous) {
         def coreMsg =
           sm"""| $pre1 ${info1.sym.fullLocationString} of type ${info1.tpe}
@@ -1661,7 +1653,6 @@ trait ContextErrors { self: Analyzer =>
             }
           ))
       }
-    }
 
     def DivergingImplicitExpansionError(tree: Tree, pt: Type, sym: Symbol)(
         implicit context0: Context) =
@@ -1684,7 +1675,7 @@ trait ContextErrors { self: Analyzer =>
     }
 
     def AmbiguousReferenceInNamesDefaultError(arg: Tree, name: Name)(
-        implicit context: Context) = {
+        implicit context: Context) =
       if (!arg.isErroneous) {
         // check if name clash wasn't reported already
         issueNormalTypeError(
@@ -1694,7 +1685,6 @@ trait ContextErrors { self: Analyzer =>
             "and a variable in scope.")
         setError(arg)
       } else arg
-    }
 
     def WarnAfterNonSilentRecursiveInference(param: Symbol, arg: Tree)(
         implicit context: Context) = {

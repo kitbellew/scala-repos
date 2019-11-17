@@ -15,7 +15,7 @@ import scala.reflect.ClassTag
 object CollectionsOnListTest extends CollectionsTestBase {
 
   // Test: sort[T<:Comparable[T]](List[T])
-  def sort_on_comparables(factory: ListFactory): Unit = {
+  def sort_on_comparables(factory: ListFactory): Unit =
     if (factory.sortableUsingCollections) {
       test_sort_on_comparables[CustomComparable](
         factory,
@@ -25,10 +25,9 @@ object CollectionsOnListTest extends CollectionsTestBase {
       test_sort_on_comparables[jl.Long](factory, _.toLong)
       test_sort_on_comparables[jl.Double](factory, _.toDouble)
     }
-  }
 
   // Test: sort[T](List[T], Comparator[T])
-  def sort_with_comparator(factory: ListFactory): Unit = {
+  def sort_with_comparator(factory: ListFactory): Unit =
     if (factory.sortableUsingCollections) {
       test_sort_with_comparator[CustomComparable](
         factory,
@@ -48,7 +47,6 @@ object CollectionsOnListTest extends CollectionsTestBase {
         _.toDouble,
         (x, y) => x.compareTo(y))
     }
-  }
 
   private def test_sort_on_comparables[
       T <: AnyRef with Comparable[T]: ClassTag](
@@ -213,14 +211,13 @@ trait CollectionsOnListTest extends CollectionsOnCollectionsTest {
       val list = factory.empty[T]
       list.addAll(range.map(toElem))
 
-      def testIfInOrder(reversed: Boolean): Unit = {
+      def testIfInOrder(reversed: Boolean): Unit =
         for (i <- range) {
           val expected =
             if (reversed) range.last - i
             else i
           assertEquals(toElem(expected), list(i))
         }
-      }
 
       ju.Collections.reverse(list)
       testIfInOrder(true)

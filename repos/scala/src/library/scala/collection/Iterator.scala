@@ -182,7 +182,7 @@ object Iterator {
     // Advance current to the next non-empty iterator
     // current is set to null when all iterators are exhausted
     @tailrec
-    private[this] def advance(): Boolean = {
+    private[this] def advance(): Boolean =
       if (queue.isEmpty) {
         current = null
         false
@@ -194,7 +194,6 @@ object Iterator {
           true
         } else advance()
       }
-    }
     def hasNext =
       if (currentHasNextChecked) true
       else if (current eq null) false
@@ -733,7 +732,7 @@ trait Iterator[+A] extends TraversableOnce[A] { self =>
         if (lookahead == null) lookahead = new mutable.Queue[A]
         lookahead += a
       }
-      def hasNext = {
+      def hasNext =
         if (status < 0) (lookahead ne null) && lookahead.nonEmpty
         else if (status > 0) true
         else {
@@ -743,15 +742,13 @@ trait Iterator[+A] extends TraversableOnce[A] { self =>
           } else status = -1
           status > 0
         }
-      }
-      def next() = {
+      def next() =
         if (hasNext) {
           if (status == 1) {
             status = 0; hd
           } else lookahead.dequeue()
         } else empty.next()
-      }
-      def finish(): Boolean = {
+      def finish(): Boolean =
         if (status == -1) false
         else if (status == -2) {
           status = -1
@@ -769,7 +766,6 @@ trait Iterator[+A] extends TraversableOnce[A] { self =>
           }
           false
         }
-      }
     }
 
     val leading = new Leading
@@ -782,7 +778,7 @@ trait Iterator[+A] extends TraversableOnce[A] { self =>
        *   1 defer to self
        */
       private[this] var status = -1
-      def hasNext = {
+      def hasNext =
         if (status > 0) self.hasNext
         else {
           if (status == 0) true
@@ -795,8 +791,7 @@ trait Iterator[+A] extends TraversableOnce[A] { self =>
             self.hasNext
           }
         }
-      }
-      def next() = {
+      def next() =
         if (hasNext) {
           if (status > 0) self.next()
           else {
@@ -806,7 +801,6 @@ trait Iterator[+A] extends TraversableOnce[A] { self =>
             ans
           }
         } else Iterator.empty.next()
-      }
 
       override def toString = "unknown-if-empty iterator"
     }
@@ -1214,7 +1208,7 @@ trait Iterator[+A] extends TraversableOnce[A] { self =>
 
       // if 0 elements are requested, or if the number of newly obtained
       // elements is less than the gap between sequences, we are done.
-      def deliver(howMany: Int) = {
+      def deliver(howMany: Int) =
         (howMany > 0 && (isFirst || len > gap)) && {
           if (!isFirst) buffer trimStart (step min prevSize)
 
@@ -1226,7 +1220,6 @@ trait Iterator[+A] extends TraversableOnce[A] { self =>
           filled = true
           true
         }
-      }
 
       if (xs.isEmpty) false // self ran out of elements
       else if (_partial)
@@ -1237,12 +1230,11 @@ trait Iterator[+A] extends TraversableOnce[A] { self =>
     }
 
     // fill() returns false if no more sequences can be produced
-    private def fill(): Boolean = {
+    private def fill(): Boolean =
       if (!self.hasNext) false
       // the first time we grab size, but after that we grab step
       else if (buffer.isEmpty) go(size)
       else go(step)
-    }
 
     def hasNext = filled || fill()
     def next = {

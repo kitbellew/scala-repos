@@ -21,14 +21,13 @@ private[internal] trait GlbLubs { self: SymbolTable =>
   private def printLubMatrix(btsMap: Map[Type, List[Type]], depth: Depth) {
     import util.TableDef
     import TableDef.Column
-    def str(tp: Type) = {
+    def str(tp: Type) =
       if (tp == NoType) ""
       else {
         val s = ("" + tp).replaceAll("""[\w.]+\.(\w+)""", "$1")
         if (s.length < 60) s
         else (s take 57) + "..."
       }
-    }
 
     val sorted =
       btsMap.toList.sortWith((x, y) => x._1.typeSymbol isLess y._1.typeSymbol)
@@ -53,7 +52,7 @@ private[internal] trait GlbLubs { self: SymbolTable =>
     *  @return List of symbol pairs holding the recursive type
     *    parameter and the parameter which references it.
     */
-  def findRecursiveBounds(ts: List[Type]): List[(Symbol, Symbol)] = {
+  def findRecursiveBounds(ts: List[Type]): List[(Symbol, Symbol)] =
     if (ts.isEmpty) Nil
     else {
       val sym = ts.head.typeSymbol
@@ -61,7 +60,6 @@ private[internal] trait GlbLubs { self: SymbolTable =>
       for (p <- sym.typeParams; in <- sym.typeParams;
            if in.info.bounds contains p) yield p -> in
     }
-  }
 
   // only called when strictInference
   private def willViolateRecursiveBounds(
@@ -530,7 +528,7 @@ private[internal] trait GlbLubs { self: SymbolTable =>
             res
         }
     }
-    def glb1(ts0: List[Type]): Type = {
+    def glb1(ts0: List[Type]): Type =
       try {
         val (ts, tparams) = stripExistentialsAndTypeVars(ts0)
         val glbOwner = commonOwner(ts)
@@ -612,7 +610,6 @@ private[internal] trait GlbLubs { self: SymbolTable =>
           if (ts forall (t => NullTpe <:< t)) NullTpe
           else NothingTpe
       }
-    }
     // if (settings.debug.value) { println(indent + "glb of " + ts + " at depth "+depth); indent = indent + "  " } //DEBUG
     if (Statistics.canEnable) Statistics.incCounter(nestedLubCount)
     glb0(ts)

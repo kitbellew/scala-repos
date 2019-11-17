@@ -102,14 +102,13 @@ class JdbcRDD[T: ClassTag](
       stmt.setLong(2, part.upper)
       val rs = stmt.executeQuery()
 
-      override def getNext(): T = {
+      override def getNext(): T =
         if (rs.next()) {
           mapRow(rs)
         } else {
           finished = true
           null.asInstanceOf[T]
         }
-      }
 
       override def close() {
         try {
@@ -139,10 +138,9 @@ class JdbcRDD[T: ClassTag](
 }
 
 object JdbcRDD {
-  def resultSetToObjectArray(rs: ResultSet): Array[Object] = {
+  def resultSetToObjectArray(rs: ResultSet): Array[Object] =
     Array.tabulate[Object](rs.getMetaData.getColumnCount)(i =>
       rs.getObject(i + 1))
-  }
 
   trait ConnectionFactory extends Serializable {
     @throws[Exception]
@@ -214,9 +212,8 @@ object JdbcRDD {
       numPartitions: Int): JavaRDD[Array[Object]] = {
 
     val mapRow = new JFunction[ResultSet, Array[Object]] {
-      override def call(resultSet: ResultSet): Array[Object] = {
+      override def call(resultSet: ResultSet): Array[Object] =
         resultSetToObjectArray(resultSet)
-      }
     }
 
     create(

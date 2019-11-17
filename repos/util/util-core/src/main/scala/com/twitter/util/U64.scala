@@ -45,13 +45,12 @@ class RichU64Long(l64: Long) {
 }
 
 class RichU64ByteArray(bytes: Array[Byte]) {
-  private def deSign(b: Byte): Int = {
+  private def deSign(b: Byte): Int =
     if (b < 0) {
       b + 256
     } else {
       b
     }
-  }
 
   // Note: this is padded, so we have lexical ordering.
   def toU64HexString =
@@ -68,12 +67,11 @@ class RichU64ByteArray(bytes: Array[Byte]) {
   * string
   */
 class RichU64String(string: String) {
-  private[this] def validateHexDigit(c: Char): Unit = {
+  private[this] def validateHexDigit(c: Char): Unit =
     if (!(('0' <= c && c <= '9') || ('a' <= c && c <= 'f') ||
           ('A' <= c && c <= 'F'))) {
       throw new NumberFormatException("For input string: \"" + string + "\"")
     }
-  }
 
   if (string.length > 16) {
     throw new NumberFormatException("Number longer than 16 hex characters")

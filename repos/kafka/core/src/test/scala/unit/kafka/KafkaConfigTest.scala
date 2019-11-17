@@ -32,9 +32,8 @@ class KafkaTest {
   class ExitCalled extends SecurityException {}
 
   private class NoExitSecurityManager extends SecurityManager {
-    override def checkExit(status: Int): Unit = {
+    override def checkExit(status: Int): Unit =
       throw new ExitCalled
-    }
 
     override def checkPermission(perm: Permission): Unit = {}
 
@@ -42,14 +41,12 @@ class KafkaTest {
   }
 
   @Before
-  def setSecurityManager(): Unit = {
+  def setSecurityManager(): Unit =
     System.setSecurityManager(new NoExitSecurityManager)
-  }
 
   @After
-  def setOriginalSecurityManager(): Unit = {
+  def setOriginalSecurityManager(): Unit =
     System.setSecurityManager(originalSecurityManager)
-  }
 
   @Test
   def testGetKafkaConfigFromArgs(): Unit = {
@@ -139,9 +136,8 @@ class KafkaTest {
     assertEquals("truststore_password", config.sslTruststorePassword.value)
   }
 
-  def prepareDefaultConfig(): String = {
+  def prepareDefaultConfig(): String =
     prepareConfig(Array("broker.id=1", "zookeeper.connect=somewhere"))
-  }
 
   def prepareConfig(lines: Array[String]): String = {
     val file = File.createTempFile("kafkatest", ".properties")

@@ -76,7 +76,7 @@ object ActionCreator {
 
   def bindingsFromConfiguration(
       environment: Environment,
-      configuration: Configuration): Seq[Binding[_]] = {
+      configuration: Configuration): Seq[Binding[_]] =
     Reflect
       .configuredClass[
         ActionCreator,
@@ -90,7 +90,6 @@ object ActionCreator {
         val impl = either.fold(identity, identity)
         Seq(BindingKey(classOf[ActionCreator]).to(impl))
       }
-  }
 }
 
 /**
@@ -130,7 +129,7 @@ class DefaultHttpRequestHandler(
 
   private val context = configuration.context.stripSuffix("/")
 
-  private def inContext(path: String): Boolean = {
+  private def inContext(path: String): Boolean =
     // Assume context is a string without a trailing '/'.
     // Handle four cases:
     // * context.isEmpty
@@ -142,9 +141,8 @@ class DefaultHttpRequestHandler(
     // * path.startsWith(context) && path.charAt(context.length) == '/')
     //   - Path starts with context followed by a '/' character.
     context.isEmpty ||
-    (path.startsWith(context) &&
-    (path.length == context.length || path.charAt(context.length) == '/'))
-  }
+      (path.startsWith(context) &&
+        (path.length == context.length || path.charAt(context.length) == '/'))
 
   def handlerForRequest(request: RequestHeader) = {
 
@@ -196,9 +194,8 @@ class DefaultHttpRequestHandler(
   /**
     * Apply filters to the given action.
     */
-  protected def filterAction(next: EssentialAction): EssentialAction = {
+  protected def filterAction(next: EssentialAction): EssentialAction =
     filters.foldRight(next)(_ apply _)
-  }
 
   /**
     * Called when an HTTP request has been received.
@@ -211,9 +208,8 @@ class DefaultHttpRequestHandler(
     * @param request The request
     * @return A handler to handle the request, if one can be found
     */
-  def routeRequest(request: RequestHeader): Option[Handler] = {
+  def routeRequest(request: RequestHeader): Option[Handler] =
     router.handlerFor(request)
-  }
 }
 
 /**
@@ -255,11 +251,10 @@ class JavaCompatibleHttpRequestHandler @Inject() (
       configuration,
       filters.filters: _*) {
 
-  override def routeRequest(request: RequestHeader): Option[Handler] = {
+  override def routeRequest(request: RequestHeader): Option[Handler] =
     super.routeRequest(request) match {
       case Some(javaHandler: JavaHandler) =>
         Some(javaHandler.withComponents(components))
       case other => other
     }
-  }
 }

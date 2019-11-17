@@ -44,9 +44,8 @@ private[master] class FileSystemPersistenceEngine(
 
   new File(dir).mkdir()
 
-  override def persist(name: String, obj: Object): Unit = {
+  override def persist(name: String, obj: Object): Unit =
     serializeIntoFile(new File(dir + File.separator + name), obj)
-  }
 
   override def unpersist(name: String): Unit = {
     val f = new File(dir + File.separator + name)

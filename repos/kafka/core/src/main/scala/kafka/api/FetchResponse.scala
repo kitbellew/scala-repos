@@ -204,7 +204,7 @@ object FetchResponse {
       dataGroupedByTopic: Map[
         String,
         Map[TopicAndPartition, FetchResponsePartitionData]],
-      requestVersion: Int): Int = {
+      requestVersion: Int): Int =
     headerSize(requestVersion) + dataGroupedByTopic.foldLeft(0) {
       case (folded, (topic, partitionDataMap)) =>
         val topicData = TopicData(topic, partitionDataMap.map {
@@ -213,7 +213,6 @@ object FetchResponse {
         })
         folded + topicData.sizeInBytes
     }
-  }
 }
 
 case class FetchResponse(

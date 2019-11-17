@@ -43,7 +43,7 @@ class ScUnderscoreSectionImpl(node: ASTNode)
   protected override def innerType(ctx: TypingContext): TypeResult[ScType] = {
     bindingExpr match {
       case Some(ref: ScReferenceExpression) =>
-        def fun(): TypeResult[ScType] = {
+        def fun(): TypeResult[ScType] =
           ref.getNonValueType(TypingContext.empty).map {
             case ScTypePolymorphicType(internalType, typeParameters) =>
               ScTypePolymorphicType(
@@ -56,7 +56,6 @@ class ScUnderscoreSectionImpl(node: ASTNode)
                 getProject,
                 getResolveScope)
           }
-        }
         ref.bind() match {
           case Some(ScalaResolveResult(f: ScFunction, _))
               if f.paramClauses.clauses.length == 0 =>

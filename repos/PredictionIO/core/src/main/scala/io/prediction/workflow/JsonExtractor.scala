@@ -37,8 +37,7 @@ object JsonExtractor {
       o: Any,
       json4sFormats: Formats = Utils.json4sDefaultFormats,
       gsonTypeAdapterFactories: Seq[TypeAdapterFactory] = Seq
-        .empty[TypeAdapterFactory]): JValue = {
-
+        .empty[TypeAdapterFactory]): JValue =
     extractorOption match {
       case JsonExtractorOption.Both =>
         val json4sResult = Extraction.decompose(o)(json4sFormats)
@@ -51,7 +50,6 @@ object JsonExtractor {
       case JsonExtractorOption.Gson =>
         parse(gson(gsonTypeAdapterFactories).toJson(o))
     }
-  }
 
   def extract[T](
       extractorOption: JsonExtractorOption,
@@ -59,8 +57,7 @@ object JsonExtractor {
       clazz: Class[T],
       json4sFormats: Formats = Utils.json4sDefaultFormats,
       gsonTypeAdapterFactories: Seq[TypeAdapterFactory] = Seq
-        .empty[TypeAdapterFactory]): T = {
-
+        .empty[TypeAdapterFactory]): T =
     extractorOption match {
       case JsonExtractorOption.Both =>
         try {
@@ -74,7 +71,6 @@ object JsonExtractor {
       case JsonExtractorOption.Gson =>
         extractWithGson(json, clazz, gsonTypeAdapterFactories)
     }
-  }
 
   def paramToJson(
       extractorOption: JsonExtractorOption,
@@ -89,22 +85,18 @@ object JsonExtractor {
 
   def paramsToJson(
       extractorOption: JsonExtractorOption,
-      params: Seq[(String, Params)]): String = {
+      params: Seq[(String, Params)]): String =
     compact(render(paramsToJValue(extractorOption, params)))
-  }
 
   def engineParamsToJson(
       extractorOption: JsonExtractorOption,
-      params: EngineParams): String = {
+      params: EngineParams): String =
     compact(render(engineParamsToJValue(extractorOption, params)))
-  }
 
   def engineParamstoPrettyJson(
       extractorOption: JsonExtractorOption,
-      params: EngineParams): String = {
-
+      params: EngineParams): String =
     pretty(render(engineParamsToJValue(extractorOption, params)))
-  }
 
   private def engineParamsToJValue(
       extractorOption: JsonExtractorOption,
@@ -154,20 +146,16 @@ object JsonExtractor {
   private def extractWithJson4sNative[T](
       json: String,
       formats: Formats,
-      clazz: Class[T]): T = {
-
+      clazz: Class[T]): T =
     Extraction
       .extract(parse(json), TypeInfo(clazz, None))(formats)
       .asInstanceOf[T]
-  }
 
   private def extractWithGson[T](
       json: String,
       clazz: Class[T],
-      gsonTypeAdapterFactories: Seq[TypeAdapterFactory]): T = {
-
+      gsonTypeAdapterFactories: Seq[TypeAdapterFactory]): T =
     gson(gsonTypeAdapterFactories).fromJson(json, clazz)
-  }
 
   private def gson(gsonTypeAdapterFactories: Seq[TypeAdapterFactory]): Gson = {
     val gsonBuilder = new GsonBuilder()

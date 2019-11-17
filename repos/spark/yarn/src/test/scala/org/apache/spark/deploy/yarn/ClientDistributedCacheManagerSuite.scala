@@ -44,9 +44,8 @@ class ClientDistributedCacheManagerSuite
     override def getVisibility(
         conf: Configuration,
         uri: URI,
-        statCache: Map[URI, FileStatus]): LocalResourceVisibility = {
+        statCache: Map[URI, FileStatus]): LocalResourceVisibility =
       LocalResourceVisibility.PRIVATE
-    }
   }
 
   test("test getFileStatus empty") {

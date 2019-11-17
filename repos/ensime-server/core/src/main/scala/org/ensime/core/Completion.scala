@@ -335,11 +335,10 @@ trait CompletionControl { self: RichPresentationCompiler =>
 
     val typeSearchResults = typeSearch.flatMap(Await.result(_, Duration.Inf))
 
-    def keywordCompletions(prefix: String): Seq[CompletionInfo] = {
+    def keywordCompletions(prefix: String): Seq[CompletionInfo] =
       if (prefix.length > 0) {
         Keywords.keywordCompletions.filter(_.name.startsWith(prefix))
       } else Seq()
-    }
 
     buff.toList ++ typeSearchResults.getOrElse(Nil) ++ keywordCompletions(
       context.prefix)
@@ -405,7 +404,7 @@ trait Completion { self: RichPresentationCompiler =>
 
   def completePackageMember(
       path: String,
-      prefix: String): List[CompletionInfo] = {
+      prefix: String): List[CompletionInfo] =
     packageSymFromPath(path) match {
       case Some(sym) =>
         val memberSyms = packageMembers(sym).filterNot { s =>
@@ -433,7 +432,6 @@ trait Completion { self: RichPresentationCompiler =>
           .sortBy(ci => (ci.relevance, ci.name))
       case _ => List.empty
     }
-  }
 }
 
 object CompletionUtil {

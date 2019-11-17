@@ -51,9 +51,8 @@ class PEventsSpec extends Specification with TestEvents {
     dbName
   )
 
-  def stopSpark = {
+  def stopSpark =
     sc.stop()
-  }
 
   def is = s2"""
 

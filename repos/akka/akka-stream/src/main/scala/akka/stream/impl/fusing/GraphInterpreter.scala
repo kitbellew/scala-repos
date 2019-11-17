@@ -728,13 +728,12 @@ private[stream] final class GraphInterpreter(
 
   // Register that a connection in which the given stage participated has been completed and therefore the stage
   // itself might stop, too.
-  private def completeConnection(stageId: Int): Unit = {
+  private def completeConnection(stageId: Int): Unit =
     if (stageId != Boundary) {
       val activeConnections = shutdownCounter(stageId)
       if (activeConnections > 0)
         shutdownCounter(stageId) = activeConnections - 1
     }
-  }
 
   private[stream] def setKeepGoing(
       logic: GraphStageLogic,
@@ -742,7 +741,7 @@ private[stream] final class GraphInterpreter(
     if (enabled) shutdownCounter(logic.stageId) |= KeepGoingFlag
     else shutdownCounter(logic.stageId) &= KeepGoingMask
 
-  private def finalizeStage(logic: GraphStageLogic): Unit = {
+  private def finalizeStage(logic: GraphStageLogic): Unit =
     try {
       logic.postStop()
       logic.afterPostStop()
@@ -754,7 +753,6 @@ private[stream] final class GraphInterpreter(
           assembly.stages(logic.stageId),
           e.getMessage)
     }
-  }
 
   private[stream] def push(connection: Int, elem: Any): Unit = {
     val currentState = portStates(connection)

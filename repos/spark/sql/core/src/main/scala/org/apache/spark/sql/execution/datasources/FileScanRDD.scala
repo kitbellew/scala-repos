@@ -51,9 +51,8 @@ class FileScanRDD(
 
   override def compute(
       split: Partition,
-      context: TaskContext): Iterator[InternalRow] = {
+      context: TaskContext): Iterator[InternalRow] =
     throw new NotImplementedError("Not Implemented Yet")
-  }
 
   override protected def getPartitions: Array[Partition] = Array.empty
 }

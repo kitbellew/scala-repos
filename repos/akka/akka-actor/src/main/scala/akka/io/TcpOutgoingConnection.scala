@@ -44,7 +44,7 @@ private[io] class TcpOutgoingConnection(
   private def stop(): Unit =
     stopWith(CloseInformation(Set(commander), connect.failureMessage))
 
-  private def reportConnectFailure(thunk: ⇒ Unit): Unit = {
+  private def reportConnectFailure(thunk: ⇒ Unit): Unit =
     try {
       thunk
     } catch {
@@ -55,7 +55,6 @@ private[io] class TcpOutgoingConnection(
           e)
         stop()
     }
-  }
 
   def receive: Receive = {
     case registration: ChannelRegistration ⇒
@@ -87,7 +86,7 @@ private[io] class TcpOutgoingConnection(
 
   def register(
       address: InetSocketAddress,
-      registration: ChannelRegistration): Unit = {
+      registration: ChannelRegistration): Unit =
     reportConnectFailure {
       log.debug("Attempting connection to [{}]", address)
       if (channel.connect(address))
@@ -98,42 +97,38 @@ private[io] class TcpOutgoingConnection(
           connecting(registration, tcp.Settings.FinishConnectRetries))
       }
     }
-  }
 
   def connecting(
       registration: ChannelRegistration,
       remainingFinishConnectRetries: Int): Receive = {
-    {
-      case ChannelConnectable ⇒
-        reportConnectFailure {
-          if (channel.finishConnect()) {
-            if (timeout.isDefined)
-              context.setReceiveTimeout(Duration.Undefined) // Clear the timeout
-            log.debug("Connection established to [{}]", remoteAddress)
-            completeConnect(registration, commander, options)
+    case ChannelConnectable ⇒
+      reportConnectFailure {
+        if (channel.finishConnect()) {
+          if (timeout.isDefined)
+            context.setReceiveTimeout(Duration.Undefined) // Clear the timeout
+          log.debug("Connection established to [{}]", remoteAddress)
+          completeConnect(registration, commander, options)
+        } else {
+          if (remainingFinishConnectRetries > 0) {
+            context.system.scheduler.scheduleOnce(1.millisecond) {
+              channelRegistry.register(channel, SelectionKey.OP_CONNECT)
+            }(context.dispatcher)
+            context.become(
+              connecting(registration, remainingFinishConnectRetries - 1))
           } else {
-            if (remainingFinishConnectRetries > 0) {
-              context.system.scheduler.scheduleOnce(1.millisecond) {
-                channelRegistry.register(channel, SelectionKey.OP_CONNECT)
-              }(context.dispatcher)
-              context.become(
-                connecting(registration, remainingFinishConnectRetries - 1))
-            } else {
-              log.debug(
-                "Could not establish connection because finishConnect " +
-                  "never returned true (consider increasing akka.io.tcp.finish-connect-retries)")
-              stop()
-            }
+            log.debug("Could not establish connection because finishConnect " +
+              "never returned true (consider increasing akka.io.tcp.finish-connect-retries)")
+            stop()
           }
         }
+      }
 
-      case ReceiveTimeout ⇒
-        if (timeout.isDefined)
-          context.setReceiveTimeout(Duration.Undefined) // Clear the timeout
-        log.debug(
-          "Connect timeout expired, could not establish connection to [{}]",
-          remoteAddress)
-        stop()
-    }
+    case ReceiveTimeout ⇒
+      if (timeout.isDefined)
+        context.setReceiveTimeout(Duration.Undefined) // Clear the timeout
+      log.debug(
+        "Connect timeout expired, could not establish connection to [{}]",
+        remoteAddress)
+      stop()
   }
 }

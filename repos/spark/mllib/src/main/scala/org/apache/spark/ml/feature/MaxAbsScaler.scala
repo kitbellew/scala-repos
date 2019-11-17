@@ -90,9 +90,8 @@ class MaxAbsScaler @Since("2.0.0") (override val uid: String)
       new MaxAbsScalerModel(uid, Vectors.dense(maxAbs)).setParent(this))
   }
 
-  override def transformSchema(schema: StructType): StructType = {
+  override def transformSchema(schema: StructType): StructType =
     validateAndTransformSchema(schema)
-  }
 
   override def copy(extra: ParamMap): MaxAbsScaler = defaultCopy(extra)
 }
@@ -137,9 +136,8 @@ class MaxAbsScalerModel private[ml] (
     dataset.withColumn($(outputCol), reScale(col($(inputCol))))
   }
 
-  override def transformSchema(schema: StructType): StructType = {
+  override def transformSchema(schema: StructType): StructType =
     validateAndTransformSchema(schema)
-  }
 
   override def copy(extra: ParamMap): MaxAbsScalerModel = {
     val copied = new MaxAbsScalerModel(uid, maxAbs)

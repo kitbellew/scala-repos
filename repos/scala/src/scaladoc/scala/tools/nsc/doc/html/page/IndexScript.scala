@@ -67,15 +67,14 @@ class IndexScript(universe: doc.Universe) extends Page {
   }
 
   def allPackages = {
-    def f(parent: Package): List[Package] = {
+    def f(parent: Package): List[Package] =
       parent.packages.flatMap(
         p => f(p) :+ p
       )
-    }
     f(universe.rootPackage).sortBy(_.toString)
   }
 
-  def allPackagesWithTemplates = {
+  def allPackagesWithTemplates =
     Map(allPackages.map((key) => {
       key -> key.templates.collect {
         case t: DocTemplateEntity
@@ -84,7 +83,6 @@ class IndexScript(universe: doc.Universe) extends Page {
           t
       }
     }): _*)
-  }
 
   /** Gets the short description i.e. the first sentence of the docstring */
   def shortDesc(mbr: MemberEntity): String = mbr.comment.fold("") { c =>

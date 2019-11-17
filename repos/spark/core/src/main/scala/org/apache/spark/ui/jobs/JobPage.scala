@@ -54,7 +54,7 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
       <text x="35px" y="42px">Removed</text>
     </svg></div>.toString.filter(_ != '\n')
 
-  private def makeStageEvent(stageInfos: Seq[StageInfo]): Seq[String] = {
+  private def makeStageEvent(stageInfos: Seq[StageInfo]): Seq[String] =
     stageInfos.map { stage =>
       val stageId = stage.stageId
       val attemptId = stage.attemptId
@@ -87,7 +87,6 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
          |}
        """.stripMargin
     }
-  }
 
   def makeExecutorEvent(
       executorUIDatas: HashMap[String, ExecutorUIData]): Seq[String] = {

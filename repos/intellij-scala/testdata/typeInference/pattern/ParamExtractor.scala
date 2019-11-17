@@ -1,14 +1,12 @@
 abstract class ParamExtractor {
   import ParamExtractor._
 
-  def buggedfFunction(filter: Filter) = {
-
+  def buggedfFunction(filter: Filter) =
     2 match {
       case filter(a) =>
         /*start*/
         a /*end*/
     }
-  }
 }
 
 object ParamExtractor {

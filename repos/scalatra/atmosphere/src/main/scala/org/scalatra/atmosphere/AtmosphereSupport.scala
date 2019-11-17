@@ -95,7 +95,7 @@ trait AtmosphereSupport
     }
 
   private[this] implicit def filterConfig2servletConfig(
-      fc: FilterConfig): ServletConfig = {
+      fc: FilterConfig): ServletConfig =
     new ServletConfig {
       def getInitParameter(name: String): String =
         getServletContext.getInitParameter(name)
@@ -103,7 +103,6 @@ trait AtmosphereSupport
       def getServletName() = fc.getFilterName()
       def getServletContext() = fc.getServletContext()
     }
-  }
 
   abstract override def initialize(config: ConfigT) {
     super.initialize(config)

@@ -25,7 +25,7 @@ class ClassfileDepickler(file: FileObject) {
     } finally in.close()
   }
 
-  def getTypeAliases: Seq[RawType] = {
+  def getTypeAliases: Seq[RawType] =
     scalasig match {
       case Some(sig: ScalaSig) =>
         sig.symbols.flatMap {
@@ -34,19 +34,16 @@ class ClassfileDepickler(file: FileObject) {
         }
       case None => Nil
     }
-  }
 
-  private def access(sym: Symbol): Access = {
+  private def access(sym: Symbol): Access =
     if (sym.isPrivate) Private
     else if (sym.isProtected) Protected
     else Public
-  }
 
-  private def symbolName(a: Symbol): String = {
+  private def symbolName(a: Symbol): String =
     a.parent match {
       case Some(s: SymbolInfoSymbol) => symbolName(s) + "$" + a.name
       case Some(s: Symbol)           => s.toString + "." + a.name
       case None                      => a.name
     }
-  }
 }

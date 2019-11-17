@@ -130,7 +130,7 @@ class SbtProjectDataServiceTest extends ProjectDataServiceTestCase {
       ScalaCompilerConfiguration.instanceIn(getProject).incrementalityType)
   }
 
-  private def setUpJdks(): Unit = {
+  private def setUpJdks(): Unit =
     ApplicationManagerEx.getApplicationEx.runWriteAction(new Runnable {
       def run(): Unit = {
         val projectJdkTable = ProjectJdkTable.getInstance()
@@ -139,8 +139,7 @@ class SbtProjectDataServiceTest extends ProjectDataServiceTestCase {
         projectJdkTable.addJdk(IdeaTestUtil.getMockJdk18)
       }
     })
-    // TODO: find a way to create mock Android SDK
-  }
+  // TODO: find a way to create mock Android SDK
 
   private def generateProject(
       basePackages: Seq[String],

@@ -56,9 +56,8 @@ abstract class Estimator[M <: Model[M]] extends PipelineStage {
     *                 These values override any specified in this Estimator's embedded ParamMap.
     * @return fitted model
     */
-  def fit(dataset: DataFrame, paramMap: ParamMap): M = {
+  def fit(dataset: DataFrame, paramMap: ParamMap): M =
     copy(paramMap).fit(dataset)
-  }
 
   /**
     * Fits a model to the input data.
@@ -75,9 +74,8 @@ abstract class Estimator[M <: Model[M]] extends PipelineStage {
     *                  These values override any specified in this Estimator's embedded ParamMap.
     * @return fitted models, matching the input parameter maps
     */
-  def fit(dataset: DataFrame, paramMaps: Array[ParamMap]): Seq[M] = {
+  def fit(dataset: DataFrame, paramMaps: Array[ParamMap]): Seq[M] =
     paramMaps.map(fit(dataset, _))
-  }
 
   override def copy(extra: ParamMap): Estimator[M]
 }

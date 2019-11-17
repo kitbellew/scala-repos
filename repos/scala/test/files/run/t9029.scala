@@ -9,7 +9,6 @@ object Test {
     assert(yy._1 == "!")
     assert(yy._2 == 42)
   }
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     test1
-  }
 }

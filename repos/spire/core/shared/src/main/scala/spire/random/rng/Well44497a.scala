@@ -133,13 +133,12 @@ object Well44497a extends GeneratorCompanion[Well44497a, (Array[Int], Int)] {
   @inline private final def mat3neg(t: Int, v: Int) = v << -t
   // @inline private final def mat4pos(t: Int, b: Int, v: Int) = v ^ ((v >>> t) & b)
   // @inline private final def mat4neg(t: Int, b: Int, v: Int) = v ^ ((v << -t) & b)
-  @inline private final def mat5(r: Int, a: Int, ds: Int, dt: Int, v: Int) = {
+  @inline private final def mat5(r: Int, a: Int, ds: Int, dt: Int, v: Int) =
     if ((v & dt) != 0) {
       (((v << r) ^ (v >>> (32 - r))) & ds) ^ a
     } else {
       ((v << r) ^ (v >>> (32 - r))) & ds
     }
-  }
 
   def randomSeed(): (Array[Int], Int) =
     (Utils.seedFromInt(R, Utils.intFromTime()), 0)

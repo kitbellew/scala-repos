@@ -6,17 +6,16 @@ package scala.pickling.generator
   */
 private[pickling] class ExternalizablePickling extends PicklingAlgorithm {
 
-  def isExternalizable(tpe: IrClass): Boolean = {
+  def isExternalizable(tpe: IrClass): Boolean =
     (tpe.className == "java.io.Externalizable") ||
-    tpe.parentClasses.exists(isExternalizable)
-  }
+      tpe.parentClasses.exists(isExternalizable)
 
   /**
     * Attempts to construct pickling logic for a given type.
     */
   override def generate(
       tpe: IrClass,
-      logger: AlgorithmLogger): AlgorithmResult = {
+      logger: AlgorithmLogger): AlgorithmResult =
     if (isExternalizable(tpe)) {
       logger.warn(
         s"Using Externalizable interface for $tpe.  This may be less efficient than writing your own pickler/unpickler.")
@@ -26,5 +25,4 @@ private[pickling] class ExternalizablePickling extends PicklingAlgorithm {
           unpickle = UnpickleExternalizable(tpe)
         ))
     } else AlgorithmFailure(s"$tpe does not extend java.io.Externalizable")
-  }
 }

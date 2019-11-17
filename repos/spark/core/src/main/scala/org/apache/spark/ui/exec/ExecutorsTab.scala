@@ -89,7 +89,7 @@ class ExecutorsListener(
   }
 
   override def onApplicationStart(
-      applicationStart: SparkListenerApplicationStart): Unit = {
+      applicationStart: SparkListenerApplicationStart): Unit =
     applicationStart.driverLogs.foreach { logs =>
       val storageStatus = activeStorageStatusList.find { s =>
         s.blockManagerId.executorId == SparkContext.LEGACY_DRIVER_IDENTIFIER ||
@@ -99,7 +99,6 @@ class ExecutorsListener(
         executorToLogUrls(s.blockManagerId.executorId) = logs.toMap
       }
     }
-  }
 
   override def onTaskStart(taskStart: SparkListenerTaskStart): Unit =
     synchronized {

@@ -49,13 +49,11 @@ class WorksheetFoldGroup(
     regions -= FoldRegionInfo(region, expanded = true, 0, 0, 0)
   }
 
-  def onExpand(expandedRegion: WorksheetFoldRegionDelegate): Boolean = {
+  def onExpand(expandedRegion: WorksheetFoldRegionDelegate): Boolean =
     traverseAndChange(expandedRegion, expand = true)
-  }
 
-  def onCollapse(collapsedRegion: WorksheetFoldRegionDelegate): Boolean = {
+  def onCollapse(collapsedRegion: WorksheetFoldRegionDelegate): Boolean =
     traverseAndChange(collapsedRegion, expand = false)
-  }
 
   def getCorrespondInfo = regions map {
     case FoldRegionInfo(

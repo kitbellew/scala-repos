@@ -41,13 +41,12 @@ object Credentials {
       Map(auths: _*)
     }
 
-    def apply(in: String): Map[String, String] = {
+    def apply(in: String): Map[String, String] =
       parseAll(content, in) match {
         case Success(result, _) => result
         case x: Failure         => throw new IOException(x.toString)
         case x: Error           => throw new IOException(x.toString)
       }
-    }
   }
 
   def apply(file: File): Map[String, String] =
@@ -55,12 +54,11 @@ object Credentials {
 
   def apply(data: String): Map[String, String] = parser(data)
 
-  def byName(name: String): Map[String, String] = {
+  def byName(name: String): Map[String, String] =
     apply(
       new File(
         System.getenv().asScala.getOrElse("KEY_FOLDER", "/etc/keys"),
         name))
-  }
 }
 
 /**

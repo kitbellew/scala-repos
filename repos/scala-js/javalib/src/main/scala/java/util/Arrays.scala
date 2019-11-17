@@ -11,11 +11,10 @@ import scala.collection.immutable
 object Arrays {
 
   @inline
-  private final implicit def naturalOrdering[T <: AnyRef]: Ordering[T] = {
+  private final implicit def naturalOrdering[T <: AnyRef]: Ordering[T] =
     new Ordering[T] {
       def compare(x: T, y: T): Int = x.asInstanceOf[Comparable[T]].compareTo(y)
     }
-  }
 
   @noinline def sort(a: Array[Int]): Unit =
     sortImpl(a)
@@ -119,7 +118,7 @@ object Arrays {
     */
   @noinline
   private def quickSort[@specialized K](a: Array[K], i0: Int, iN: Int)(
-      implicit ord: Ordering[K]): Unit = {
+      implicit ord: Ordering[K]): Unit =
     if (iN - i0 < qSortThreshold) {
       insertionSort(a, i0, iN)
     } else {
@@ -208,7 +207,6 @@ object Arrays {
         quickSort(a, i0, iA) // Should be tail recursion
       }
     }
-  }
 
   // Ordering[T] might be slow especially for boxed primitives, so use binary
   // search variant of insertion sort
@@ -252,7 +250,7 @@ object Arrays {
 
   @noinline
   private def quickSortAnyRef(a: Array[AnyRef], i0: Int, iN: Int)(
-      implicit ord: Ordering[AnyRef]): Unit = {
+      implicit ord: Ordering[AnyRef]): Unit =
     if (iN - i0 < qSortThreshold) {
       insertionSortAnyRef(a, i0, iN)
     } else {
@@ -341,7 +339,6 @@ object Arrays {
         quickSortAnyRef(a, i0, iA) // Should be tail recursion
       }
     }
-  }
 
   @noinline
   private final def insertionSortAnyRef(a: Array[AnyRef], i0: Int, iN: Int)(
@@ -509,7 +506,7 @@ object Arrays {
       startIndex: Int,
       endIndex: Int,
       key: T,
-      lt: (T, T) => Boolean): Int = {
+      lt: (T, T) => Boolean): Int =
     if (startIndex == endIndex) {
       // Not found
       -startIndex - 1
@@ -526,7 +523,6 @@ object Arrays {
         binarySearchImpl(a, mid + 1, endIndex, key, lt)
       }
     }
-  }
 
   @inline
   @tailrec
@@ -534,7 +530,7 @@ object Arrays {
       a: Array[AnyRef],
       startIndex: Int,
       endIndex: Int,
-      key: AnyRef): Int = {
+      key: AnyRef): Int =
     if (startIndex == endIndex) {
       // Not found
       -startIndex - 1
@@ -551,7 +547,6 @@ object Arrays {
         binarySearchImplRef(a, mid + 1, endIndex, key)
       }
     }
-  }
 
   @noinline def equals(a: Array[Long], b: Array[Long]): Boolean =
     equalsImpl(a, b)
@@ -581,11 +576,10 @@ object Arrays {
     equalsImpl(a, b)
 
   @inline
-  private def equalsImpl[T](a: Array[T], b: Array[T]): Boolean = {
+  private def equalsImpl[T](a: Array[T], b: Array[T]): Boolean =
     (a eq b) ||
-    (a != null && b != null && a.length == b.length &&
-    a.indices.forall(i => a(i) == b(i)))
-  }
+      (a != null && b != null && a.length == b.length &&
+        a.indices.forall(i => a(i) == b(i)))
 
   @noinline def fill(a: Array[Long], value: Long): Unit =
     fillImpl(a, 0, a.length, value, checkIndices = false)
@@ -733,20 +727,18 @@ object Arrays {
   def copyOfRange[T <: AnyRef](
       original: Array[T],
       from: Int,
-      to: Int): Array[T] = {
+      to: Int): Array[T] =
     copyOfRangeImpl[T](original, from, to)(
       ClassTag(original.getClass.getComponentType)).asInstanceOf[Array[T]]
-  }
 
   @noinline
   def copyOfRange[T <: AnyRef, U <: AnyRef](
       original: Array[U],
       from: Int,
       to: Int,
-      newType: Class[_ <: Array[T]]): Array[T] = {
+      newType: Class[_ <: Array[T]]): Array[T] =
     copyOfRangeImpl[AnyRef](original.asInstanceOf[Array[AnyRef]], from, to)(
       ClassTag(newType.getComponentType)).asInstanceOf[Array[T]]
-  }
 
   @noinline
   def copyOfRange(original: Array[Byte], start: Int, end: Int): Array[Byte] =
@@ -799,9 +791,8 @@ object Arrays {
     ret
   }
 
-  @inline private def checkArrayLength(len: Int): Unit = {
+  @inline private def checkArrayLength(len: Int): Unit =
     if (len < 0) throw new NegativeArraySizeException
-  }
 
   @inline private def checkIndicesForCopyOfRange(
       len: Int,
@@ -811,7 +802,7 @@ object Arrays {
     if (start < 0 || start > len) throw new ArrayIndexOutOfBoundsException
   }
 
-  @noinline def asList[T](a: Array[T]): List[T] = {
+  @noinline def asList[T](a: Array[T]): List[T] =
     new AbstractList[T] with RandomAccess {
       def size(): Int =
         a.length
@@ -825,7 +816,6 @@ object Arrays {
         ret
       }
     }
-  }
 
   @noinline def hashCode(a: Array[Long]): Int =
     hashCodeImpl[Long](a)
@@ -858,16 +848,15 @@ object Arrays {
   private def hashCodeImpl[T](
       a: Array[T],
       elementHashCode: T => Int = (x: T) => x.asInstanceOf[AnyRef].hashCode)
-      : Int = {
+      : Int =
     if (a == null) 0
     else
       a.foldLeft(1)((acc, x) =>
         31 * acc + (if (x == null) 0 else elementHashCode(x)))
-  }
 
   @noinline def deepHashCode(a: Array[AnyRef]): Int = {
     @inline
-    def getHash(elem: AnyRef): Int = {
+    def getHash(elem: AnyRef): Int =
       elem match {
         case elem: Array[AnyRef]  => deepHashCode(elem)
         case elem: Array[Long]    => hashCode(elem)
@@ -880,15 +869,13 @@ object Arrays {
         case elem: Array[Double]  => hashCode(elem)
         case _                    => elem.hashCode
       }
-    }
     hashCodeImpl(a, getHash)
   }
 
-  @noinline def deepEquals(a1: Array[AnyRef], a2: Array[AnyRef]): Boolean = {
+  @noinline def deepEquals(a1: Array[AnyRef], a2: Array[AnyRef]): Boolean =
     if (a1 eq a2) true
     else if (a1 == null || a2 == null || a1.length != a2.length) false
     else a1.indices.forall(i => Objects.deepEquals(a1(i), a2(i)))
-  }
 
   @noinline def toString(a: Array[Long]): String =
     toStringImpl[Long](a)
@@ -918,10 +905,9 @@ object Arrays {
     toStringImpl[AnyRef](a)
 
   @inline
-  private def toStringImpl[T](a: Array[T]): String = {
+  private def toStringImpl[T](a: Array[T]): String =
     if (a == null) "null"
     else a.mkString("[", ", ", "]")
-  }
 
   @noinline def deepToString(a: Array[AnyRef]): String =
     deepToStringImpl(a, immutable.HashSet.empty[AsRef])
@@ -930,7 +916,7 @@ object Arrays {
       a: Array[AnyRef],
       branch: immutable.Set[AsRef]): String = {
     @inline
-    def valueToString(e: AnyRef): String = {
+    def valueToString(e: AnyRef): String =
       if (e == null) "null"
       else {
         e match {
@@ -946,7 +932,6 @@ object Arrays {
           case _                 => String.valueOf(e)
         }
       }
-    }
     if (a == null) "null"
     else if (branch.contains(new AsRef(a))) "[...]"
     else a.iterator.map(valueToString).mkString("[", ", ", "]")
@@ -966,21 +951,19 @@ object Arrays {
   }
 
   @inline
-  private def toOrdering[T](cmp: Comparator[T]): Ordering[T] = {
+  private def toOrdering[T](cmp: Comparator[T]): Ordering[T] =
     new Ordering[T] {
       def compare(x: T, y: T): Int = cmp.compare(x, y)
     }
-  }
 
   private final class AsRef(val inner: AnyRef) {
     override def hashCode(): Int =
       System.identityHashCode(inner)
 
-    override def equals(obj: Any): Boolean = {
+    override def equals(obj: Any): Boolean =
       obj match {
         case obj: AsRef => obj.inner eq inner
         case _          => false
       }
-    }
   }
 }

@@ -41,13 +41,12 @@ abstract class ScalaDocEnterActionTestBase
       getEditorAdapter,
       getEditorAdapter.getCaretModel.getCurrentCaret,
       new DataContext {
-        def getData(dataId: String): AnyRef = {
+        def getData(dataId: String): AnyRef =
           dataId match {
             case "Language" | "language" => getFileAdapter.getLanguage
             case "Project" | "project"   => getFileAdapter.getProject
             case _                       => null
           }
-        }
       }
     )
 

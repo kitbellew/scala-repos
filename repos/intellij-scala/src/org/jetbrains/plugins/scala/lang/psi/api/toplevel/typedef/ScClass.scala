@@ -22,13 +22,11 @@ import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
 trait ScClass extends ScTypeDefinition with ScParameterOwner {
   def constructor: Option[ScPrimaryConstructor]
 
-  def secondaryConstructors: Seq[ScFunction] = {
+  def secondaryConstructors: Seq[ScFunction] =
     functions.filter(_.isConstructor)
-  }
 
-  def constructors: Array[PsiMethod] = {
+  def constructors: Array[PsiMethod] =
     (secondaryConstructors ++ constructor.toSeq).toArray
-  }
 
   def clauses: Option[ScParameters] = constructor match {
     case Some(x: ScPrimaryConstructor) => Some(x.parameterList)
@@ -45,11 +43,10 @@ trait ScClass extends ScTypeDefinition with ScParameterOwner {
     }
   }
 
-  protected def typeParamString: String = {
+  protected def typeParamString: String =
     if (typeParameters.nonEmpty)
       typeParameters.map(ScalaPsiUtil.typeParamString).mkString("[", ", ", "]")
     else ""
-  }
 
   def tooBigForUnapply: Boolean = constructor.exists(_.parameters.length > 22)
 

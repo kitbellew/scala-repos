@@ -46,9 +46,8 @@ object ConnectionTestApp {
     source.via(clientFlow).to(sink).run()
   }
 
-  def sendPoolFlow(uri: Uri, id: Int): Unit = {
+  def sendPoolFlow(uri: Uri, id: Int): Unit =
     sourceActor ! ((buildRequest(uri), id))
-  }
 
   def sendPoolFuture(uri: Uri, id: Int): Unit = {
     val responseFuture: Future[HttpResponse] =
@@ -70,7 +69,7 @@ object ConnectionTestApp {
   private def buildRequest(uri: Uri): HttpRequest =
     HttpRequest(uri = uri)
 
-  private def handleResponse(httpResp: Try[HttpResponse], id: Int): Unit = {
+  private def handleResponse(httpResp: Try[HttpResponse], id: Int): Unit =
     httpResp match {
       case Success(httpRes) ⇒
         println(s"$id: OK (${httpRes.status.intValue})")
@@ -79,7 +78,6 @@ object ConnectionTestApp {
       case Failure(ex) ⇒
         println(s"$id: $ex")
     }
-  }
 
   def main(args: Array[String]): Unit = {
     for (i ← 1 to 1000) {

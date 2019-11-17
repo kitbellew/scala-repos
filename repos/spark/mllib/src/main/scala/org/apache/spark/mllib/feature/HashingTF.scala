@@ -64,23 +64,20 @@ class HashingTF(val numFeatures: Int) extends Serializable {
     * Transforms the input document into a sparse term frequency vector (Java version).
     */
   @Since("1.1.0")
-  def transform(document: JavaIterable[_]): Vector = {
+  def transform(document: JavaIterable[_]): Vector =
     transform(document.asScala)
-  }
 
   /**
     * Transforms the input document to term frequency vectors.
     */
   @Since("1.1.0")
-  def transform[D <: Iterable[_]](dataset: RDD[D]): RDD[Vector] = {
+  def transform[D <: Iterable[_]](dataset: RDD[D]): RDD[Vector] =
     dataset.map(this.transform)
-  }
 
   /**
     * Transforms the input document to term frequency vectors (Java version).
     */
   @Since("1.1.0")
-  def transform[D <: JavaIterable[_]](dataset: JavaRDD[D]): JavaRDD[Vector] = {
+  def transform[D <: JavaIterable[_]](dataset: JavaRDD[D]): JavaRDD[Vector] =
     dataset.rdd.map(this.transform).toJavaRDD()
-  }
 }

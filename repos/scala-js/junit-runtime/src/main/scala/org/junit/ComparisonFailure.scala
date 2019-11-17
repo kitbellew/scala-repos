@@ -14,7 +14,7 @@ object ComparisonFailure {
     private val DIFF_END: String = "]"
     private val DIFF_START: String = "["
 
-    def compact(message: String): String = {
+    def compact(message: String): String =
       if (expected == null || actual == null || expected.equals(actual)) {
         Assert.format(message, expected, actual)
       } else {
@@ -26,7 +26,6 @@ object ComparisonFailure {
           compactedPrefix + extractor.expectedDiff() + compactedSuffix,
           compactedPrefix + extractor.actualDiff() + compactedSuffix)
       }
-    }
 
     private[junit] def sharedPrefix(): String = {
       val end: Int = Math.min(expected.length, actual.length)
@@ -60,17 +59,15 @@ object ComparisonFailure {
 
       def actualDiff(): String = extractDiff(actual)
 
-      def compactPrefix(): String = {
+      def compactPrefix(): String =
         if (_sharedPrefix.length() <= MAX_CONTEXT_LENGTH) _sharedPrefix
         else
           ELLIPSIS + _sharedPrefix.substring(
             _sharedPrefix.length() - MAX_CONTEXT_LENGTH)
-      }
 
-      def compactSuffix(): String = {
+      def compactSuffix(): String =
         if (_sharedSuffix.length() <= MAX_CONTEXT_LENGTH) _sharedSuffix
         else _sharedSuffix.substring(0, MAX_CONTEXT_LENGTH) + ELLIPSIS
-      }
 
       private def extractDiff(source: String): String = {
         val sub = source.substring(

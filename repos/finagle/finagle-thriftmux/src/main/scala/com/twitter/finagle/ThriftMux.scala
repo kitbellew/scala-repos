@@ -485,11 +485,10 @@ object ThriftMux
     def serve(
         addr: SocketAddress,
         factory: ServiceFactory[Array[Byte], Array[Byte]]
-    ): ListeningServer = {
+    ): ListeningServer =
       muxer.serve(
         addr,
         MuxToArrayFilter.andThen(tracingFilter).andThen(factory))
-    }
 
     // Java-friendly forwarders
     // See https://issues.scala-lang.org/browse/SI-8905

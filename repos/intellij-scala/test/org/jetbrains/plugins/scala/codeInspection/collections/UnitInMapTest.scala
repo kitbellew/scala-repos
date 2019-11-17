@@ -14,7 +14,7 @@ class UnitInMapTest extends OperationsOnCollectionInspectionTest {
   override def hint: String =
     InspectionBundle.message("use.foreach.instead.of.map")
 
-  def test1(): Unit = {
+  def test1(): Unit =
     doTest(
       s"""
         |Seq("1", "2").map { x =>
@@ -41,7 +41,6 @@ class UnitInMapTest extends OperationsOnCollectionInspectionTest {
         |}
       """.stripMargin
     )
-  }
 
   def test2(): Unit = {
     check(s"val mapped = Seq(1, 2).map(${START}println(_)$END)")
@@ -57,7 +56,6 @@ class UnitInMapTest extends OperationsOnCollectionInspectionTest {
        """.stripMargin)
   }
 
-  def testFunctionToFunctionToUnit(): Unit = {
+  def testFunctionToFunctionToUnit(): Unit =
     checkTextHasNoErrors(s"Seq(1, 2).map(x => $START() => println(x)$END)")
-  }
 }

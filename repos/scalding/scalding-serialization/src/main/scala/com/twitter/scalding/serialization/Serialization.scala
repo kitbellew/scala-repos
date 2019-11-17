@@ -90,7 +90,7 @@ object Serialization {
       implicit ser: Serialization[T]): Try[Unit] =
     ser.write(out, t)
 
-  def toBytes[T](t: T)(implicit ser: Serialization[T]): Array[Byte] = {
+  def toBytes[T](t: T)(implicit ser: Serialization[T]): Array[Byte] =
     ser.dynamicSize(t) match {
       case None =>
         val baos = new ByteArrayOutputStream
@@ -104,7 +104,6 @@ object Serialization {
         write(os, t).get // this should only throw on OOM
         bytes
     }
-  }
 
   def fromBytes[T: Serialization](b: Array[Byte]): Try[T] =
     read(new ByteArrayInputStream(b))

@@ -108,7 +108,7 @@ class QueryCompiler(val phases: Vector[Phase]) extends Logging {
 
   protected[this] def detectRebuiltLeafs(
       n1: Node,
-      n2: Node): Set[RefId[Dumpable]] = {
+      n2: Node): Set[RefId[Dumpable]] =
     if (n1 eq n2) Set.empty
     else {
       val chres = n1.children.iterator
@@ -117,7 +117,6 @@ class QueryCompiler(val phases: Vector[Phase]) extends Logging {
         .foldLeft(Set.empty[RefId[Dumpable]])(_ ++ _)
       if (chres.isEmpty) Set(RefId(n2)) else chres
     }
-  }
 }
 
 object QueryCompiler {

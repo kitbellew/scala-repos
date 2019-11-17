@@ -70,19 +70,17 @@ object Math {
   @inline def toDegrees(a: scala.Double): scala.Double = a * 180.0 / PI
   @inline def toRadians(a: scala.Double): scala.Double = a / 180.0 * PI
 
-  @inline def signum(a: scala.Double): scala.Double = {
+  @inline def signum(a: scala.Double): scala.Double =
     if (a > 0) 1.0
     else if (a < 0) -1.0
     else a
-  }
 
-  @inline def signum(a: scala.Float): scala.Float = {
+  @inline def signum(a: scala.Float): scala.Float =
     if (a > 0) 1.0f
     else if (a < 0) -1.0f
     else a
-  }
 
-  def cbrt(a: scala.Double): scala.Double = {
+  def cbrt(a: scala.Double): scala.Double =
     if (a == 0 || a.isNaN) {
       a
     } else {
@@ -102,7 +100,6 @@ object Math {
       }
       sign * xi
     }
-  }
 
   def nextUp(a: scala.Double): scala.Double = {
     // js implementation of nextUp https://gist.github.com/Yaffle/4654250
@@ -115,7 +112,7 @@ object Math {
       def iter(
           x: scala.Double,
           xi: scala.Double,
-          n: scala.Double): scala.Double = {
+          n: scala.Double): scala.Double =
         if (Math.abs(xi - x) >= 1e-16) {
           val c0 = (xi + x) / 2
           val c =
@@ -126,7 +123,6 @@ object Math {
           else if (a < c) iter(x = x, xi = c, n = c)
           else iter(x = c, xi = xi, n = c)
         } else xi
-      }
       val d = Math.max(Math.abs(a) * 2e-16, MinPositiveValue)
       val ad = a + d
       val xi0 =
@@ -136,20 +132,18 @@ object Math {
     }
   }
 
-  def nextAfter(a: scala.Double, b: scala.Double): scala.Double = {
+  def nextAfter(a: scala.Double, b: scala.Double): scala.Double =
     if (b < a) -nextUp(-a)
     else if (a < b) nextUp(a)
     else if (a != a || b != b) scala.Double.NaN
     else b
-  }
 
-  def ulp(a: scala.Double): scala.Double = {
+  def ulp(a: scala.Double): scala.Double =
     if (abs(a) == scala.Double.PositiveInfinity) scala.Double.PositiveInfinity
     else if (abs(a) == scala.Double.MaxValue) pow(2, 971)
     else nextAfter(abs(a), scala.Double.MaxValue) - a
-  }
 
-  def hypot(a: scala.Double, b: scala.Double): scala.Double = {
+  def hypot(a: scala.Double, b: scala.Double): scala.Double =
     // http://en.wikipedia.org/wiki/Hypot#Implementation
     if (abs(a) == scala.Double.PositiveInfinity ||
         abs(b) == scala.Double.PositiveInfinity) scala.Double.PositiveInfinity
@@ -164,31 +158,27 @@ object Math {
       val t = min(x, y) / m
       m * sqrt(1 + t * t)
     }
-  }
 
-  def expm1(a: scala.Double): scala.Double = {
+  def expm1(a: scala.Double): scala.Double =
     // https://github.com/ghewgill/picomath/blob/master/javascript/expm1.js
     if (a == 0 || a.isNaN) a
     // Power Series http://en.wikipedia.org/wiki/Power_series
     // for small values of a, exp(a) = 1 + a + (a*a)/2
     else if (abs(a) < 1e-5) a + 0.5 * a * a
     else exp(a) - 1.0
-  }
 
-  def sinh(a: scala.Double): scala.Double = {
+  def sinh(a: scala.Double): scala.Double =
     if (a.isNaN || a == 0.0 || abs(a) == scala.Double.PositiveInfinity) a
     else (exp(a) - exp(-a)) / 2.0
-  }
 
-  def cosh(a: scala.Double): scala.Double = {
+  def cosh(a: scala.Double): scala.Double =
     if (a.isNaN) a
     else if (a == 0.0) 1.0
     else if (abs(a) == scala.Double.PositiveInfinity)
       scala.Double.PositiveInfinity
     else (exp(a) + exp(-a)) / 2.0
-  }
 
-  def tanh(a: scala.Double): scala.Double = {
+  def tanh(a: scala.Double): scala.Double =
     if (a.isNaN || a == 0.0) a
     else if (abs(a) == scala.Double.PositiveInfinity) signum(a)
     else {
@@ -203,7 +193,6 @@ object Math {
         1.0 - (2.0 * ret)
       }
     }
-  }
 
   def addExact(a: scala.Int, b: scala.Int): scala.Int = {
     val res = a + b

@@ -396,9 +396,9 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
         nxtIdx = if (isStaticMethod) 0 else 1
       }
 
-      def contains(locSym: Symbol): Boolean = { slots.contains(locSym) }
+      def contains(locSym: Symbol): Boolean = slots.contains(locSym)
 
-      def apply(locSym: Symbol): Local = { slots.apply(locSym) }
+      def apply(locSym: Symbol): Local = slots.apply(locSym)
 
       /* Make a fresh local variable, ensuring a unique name.
        * The invoker must make sure inner classes are tracked for the sym's tpe.
@@ -412,14 +412,12 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
         locSym
       }
 
-      def makeLocal(locSym: Symbol): Local = {
+      def makeLocal(locSym: Symbol): Local =
         makeLocal(locSym, symInfoTK(locSym))
-      }
 
-      def getOrMakeLocal(locSym: Symbol): Local = {
+      def getOrMakeLocal(locSym: Symbol): Local =
         // `getOrElse` below has the same effect as `getOrElseUpdate` because `makeLocal()` adds an entry to the `locals` map.
         slots.getOrElse(locSym, makeLocal(locSym))
-      }
 
       private def makeLocal(sym: Symbol, tk: BType): Local = {
         assert(!slots.contains(sym), "attempt to create duplicate local var.")
@@ -477,7 +475,7 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
 
     // helpers around program-points.
     def lastInsn: asm.tree.AbstractInsnNode = mnode.instructions.getLast
-    def currProgramPoint(): asm.Label = {
+    def currProgramPoint(): asm.Label =
       lastInsn match {
         case labnode: asm.tree.LabelNode => labnode.getLabel
         case _ =>
@@ -485,19 +483,17 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
           mnode visitLabel pp
           pp
       }
-    }
     def markProgramPoint(lbl: asm.Label) {
       val skip = (lbl == null) || isAtProgramPoint(lbl)
       if (!skip) {
         mnode visitLabel lbl
       }
     }
-    def isAtProgramPoint(lbl: asm.Label): Boolean = {
+    def isAtProgramPoint(lbl: asm.Label): Boolean =
       (lastInsn match {
         case labnode: asm.tree.LabelNode => (labnode.getLabel == lbl);
         case _                           => false
       })
-    }
     def lineNumber(tree: Tree) {
       if (!emitLines || !tree.pos.isDefined) return;
       val nr = tree.pos.finalPosition.line

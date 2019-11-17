@@ -22,7 +22,7 @@ object rank extends UFunc {
   implicit def implRankFromSVD[M, S](
       implicit canSVD: svd.Impl[M, SVD[_, S]],
       maxS: max.Impl[S, Double],
-      travS: CanTraverseValues[S, Double]): Impl[M, Int] = {
+      travS: CanTraverseValues[S, Double]): Impl[M, Int] =
     new Impl[M, Int] {
       def apply(m: M): Int = {
         val SVD(u, s, vt) = svd(m)
@@ -39,12 +39,11 @@ object rank extends UFunc {
         n
       }
     }
-  }
 
   implicit def implRankTol[M, S](
       implicit canSVD: svd.Impl[M, (_, S, _)],
       maxS: max.Impl[S, Double],
-      travS: CanTraverseValues[S, Double]): Impl2[M, Double, Int] = {
+      travS: CanTraverseValues[S, Double]): Impl2[M, Double, Int] =
     new Impl2[M, Double, Int] {
       def apply(m: M, tol: Double): Int = {
         val (u, s, vt) = svd(m)
@@ -59,5 +58,4 @@ object rank extends UFunc {
         n
       }
     }
-  }
 }

@@ -35,24 +35,22 @@ sealed trait CPath { self =>
     if (nodes.isEmpty) None else Some(CPath(nodes.take(nodes.length - 1): _*))
 
   def ancestors: List[CPath] = {
-    def ancestors0(path: CPath, acc: List[CPath]): List[CPath] = {
+    def ancestors0(path: CPath, acc: List[CPath]): List[CPath] =
       path.parent match {
         case None => acc
 
         case Some(parent) => ancestors0(parent, parent :: acc)
       }
-    }
 
     ancestors0(this, Nil).reverse
   }
 
-  def combine(paths: Seq[CPath]): Seq[CPath] = {
+  def combine(paths: Seq[CPath]): Seq[CPath] =
     if (paths.isEmpty) Seq(this)
     else
       paths map { path =>
         CPath(this.nodes ++ path.nodes)
       }
-  }
 
   def \(that: CPath): CPath = CPath(self.nodes ++ that.nodes)
   def \(that: String): CPath = CPath(self.nodes :+ CPathField(that))
@@ -65,14 +63,13 @@ sealed trait CPath { self =>
   def hasPrefix(p: CPath): Boolean = nodes.startsWith(p.nodes)
   def hasSuffix(p: CPath): Boolean = nodes.endsWith(p.nodes)
 
-  def take(length: Int): Option[CPath] = {
+  def take(length: Int): Option[CPath] =
     (nodes.length >= length).option(CPath(nodes.take(length)))
-  }
 
   def dropPrefix(p: CPath): Option[CPath] = {
     def remainder(
         nodes: List[CPathNode],
-        toDrop: List[CPathNode]): Option[CPath] = {
+        toDrop: List[CPathNode]): Option[CPath] =
       nodes match {
         case x :: xs =>
           toDrop match {
@@ -85,7 +82,6 @@ sealed trait CPath { self =>
           if (toDrop.isEmpty) Some(CPath(nodes))
           else None
       }
-    }
 
     remainder(nodes, p.nodes)
   }
@@ -275,7 +271,7 @@ object CPath {
   }
 
   def makeStructuredTree[A](pathsAndValues: Seq[(CPath, A)]) = {
-    def inner[A](paths: Seq[PathWithLeaf[A]]): Seq[CPathTree[A]] = {
+    def inner[A](paths: Seq[PathWithLeaf[A]]): Seq[CPathTree[A]] =
       if (paths.size == 1 && paths.head.size == 0) {
         List(LeafNode(paths.head.value))
       } else {
@@ -300,7 +296,6 @@ object CPath {
           }
         result
       }
-    }
 
     val leaves =
       pathsAndValues.sortBy(_._1) map {
@@ -311,13 +306,12 @@ object CPath {
     RootNode(inner(leaves))
   }
 
-  def makeTree[A](cpaths0: Seq[CPath], values: Seq[A]): CPathTree[A] = {
+  def makeTree[A](cpaths0: Seq[CPath], values: Seq[A]): CPathTree[A] =
     if (cpaths0.isEmpty && values.length == 1)
       RootNode(Seq(LeafNode(values.head)))
     else if (cpaths0.length == values.length)
       makeStructuredTree(cpaths0.sorted zip values)
     else RootNode(Seq.empty[CPathTree[A]])
-  }
 
   implicit def singleNodePath(node: CPathNode) = CPath(node)
 

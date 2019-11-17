@@ -41,7 +41,7 @@ trait MinimalScalaTest extends Output with Features {
       snippets
     }
 
-    def in[U](snippet: => U) = {
+    def in[U](snippet: => U) =
       try {
         bufferPrintln("- " + s)
         snippet
@@ -52,7 +52,6 @@ trait MinimalScalaTest extends Output with Features {
           bufferPrintln(e.getStackTrace().mkString("\n"))
           throwables += e
       }
-    }
   }
 
   implicit def objectops(obj: Any) = new {
@@ -61,7 +60,7 @@ trait MinimalScalaTest extends Output with Features {
     def mustEqual(other: Any) = mustBe(other)
   }
 
-  def intercept[T <: Throwable: Manifest](body: => Any): T = {
+  def intercept[T <: Throwable: Manifest](body: => Any): T =
     try {
       body
       throw new Exception(
@@ -71,7 +70,6 @@ trait MinimalScalaTest extends Output with Features {
         if (manifest[T].runtimeClass != t.getClass) throw t
         else t.asInstanceOf[T]
     }
-  }
 
   def checkType[T: Manifest, S](
       in: Future[T],
@@ -102,7 +100,6 @@ class TestLatch(count: Int = 1) extends Awaitable[Unit] {
   }
 
   @throws(classOf[Exception])
-  def result(atMost: Duration)(implicit permit: CanAwait): Unit = {
+  def result(atMost: Duration)(implicit permit: CanAwait): Unit =
     ready(atMost)
-  }
 }

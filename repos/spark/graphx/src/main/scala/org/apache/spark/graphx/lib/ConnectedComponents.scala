@@ -45,7 +45,7 @@ object ConnectedComponents {
 
     val ccGraph = graph.mapVertices { case (vid, _) => vid }
     def sendMessage(
-        edge: EdgeTriplet[VertexId, ED]): Iterator[(VertexId, VertexId)] = {
+        edge: EdgeTriplet[VertexId, ED]): Iterator[(VertexId, VertexId)] =
       if (edge.srcAttr < edge.dstAttr) {
         Iterator((edge.dstId, edge.srcAttr))
       } else if (edge.srcAttr > edge.dstAttr) {
@@ -53,7 +53,6 @@ object ConnectedComponents {
       } else {
         Iterator.empty
       }
-    }
     val initialMessage = Long.MaxValue
     val pregelGraph =
       Pregel(ccGraph, initialMessage, maxIterations, EdgeDirection.Either)(
@@ -75,7 +74,6 @@ object ConnectedComponents {
     *         connected component
     */
   def run[VD: ClassTag, ED: ClassTag](
-      graph: Graph[VD, ED]): Graph[VertexId, ED] = {
+      graph: Graph[VD, ED]): Graph[VertexId, ED] =
     run(graph, Int.MaxValue)
-  }
 }

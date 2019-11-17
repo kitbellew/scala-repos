@@ -26,7 +26,7 @@ class InterpreterBenchmark {
 
   @Benchmark
   @OperationsPerInvocation(100000)
-  def graph_interpreter_100k_elements(): Unit = {
+  def graph_interpreter_100k_elements(): Unit =
     new GraphInterpreterSpecKit {
       new TestSetup {
         val identities = Vector.fill(numberOfIds)(GraphStages.identity[Int])
@@ -47,7 +47,6 @@ class InterpreterBenchmark {
         interpreter.execute(Int.MaxValue)
       }
     }
-  }
 }
 
 object InterpreterBenchmark {
@@ -61,14 +60,13 @@ object InterpreterBenchmark {
     setHandler(
       out,
       new OutHandler {
-        override def onPull(): Unit = {
+        override def onPull(): Unit =
           if (idx < data.size) {
             push(out, data(idx))
             idx += 1
           } else {
             completeStage()
           }
-        }
         override def onDownstreamFinish(): Unit = completeStage()
       }
     )

@@ -24,15 +24,13 @@ object ForwarderService {
   @Path("hello")
   class PingResource @Inject() () {
     @GET
-    def index(): Response = {
+    def index(): Response =
       Response.ok().entity("Hi").build()
-    }
 
     @GET
     @Path("/crash")
-    def crash(): Response = {
+    def crash(): Response =
       Response.serverError().entity("Error").build()
-    }
   }
 
   class LeaderInfoModule(elected: Boolean, leaderHostPort: Option[String])

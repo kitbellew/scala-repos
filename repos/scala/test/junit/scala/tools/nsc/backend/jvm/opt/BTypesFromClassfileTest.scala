@@ -40,7 +40,7 @@ class BTypesFromClassfileTest {
   def sameBType(
       fromSym: ClassBType,
       fromClassfile: ClassBType,
-      checked: Set[InternalName] = Set.empty): Set[InternalName] = {
+      checked: Set[InternalName] = Set.empty): Set[InternalName] =
     if (checked(fromSym.internalName)) checked
     else {
       assert(fromSym == fromClassfile, s"$fromSym != $fromClassfile")
@@ -49,7 +49,6 @@ class BTypesFromClassfileTest {
         fromClassfile.info.get,
         checked + fromSym.internalName)
     }
-  }
 
   def sameBTypes(
       fromSyms: Iterable[ClassBType],

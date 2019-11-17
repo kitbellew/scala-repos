@@ -406,18 +406,15 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
   /**
     * Set the field to the value
     */
-  def set(value: FieldType): FieldType = {
+  def set(value: FieldType): FieldType =
     if (safe_? || writePermission_?) i_set_!(value)
     else throw new Exception("Do not have permissions to set this field")
-  }
 
-  def :=[Q <% FieldType](v: Q): FieldType = {
+  def :=[Q <% FieldType](v: Q): FieldType =
     set(v)
-  }
 
-  def :=(v: FieldType): FieldType = {
+  def :=(v: FieldType): FieldType =
     set(v)
-  }
 
   private var _name: String = null
 
@@ -530,9 +527,8 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
     */
   def setFilter: List[FieldType => FieldType] = Nil
 
-  protected final def i_set_!(value: FieldType): FieldType = {
+  protected final def i_set_!(value: FieldType): FieldType =
     real_i_set_!(runFilters(value, setFilter))
-  }
 
   def runFilters(
       in: FieldType,
@@ -577,18 +573,16 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
     * Convert the field to its "context free" type (e.g., String, Int, Long, etc.)
     * If there are no read permissions, the value will be obscured
     */
-  def get: FieldType = {
+  def get: FieldType =
     if (safe_? || readPermission_?) i_is_!
     else i_obscure_!(i_is_!)
-  }
 
   /**
     * What value was the field's value when it was pulled from the DB?
     */
-  def was: FieldType = {
+  def was: FieldType =
     if (safe_? || readPermission_?) i_was_!
     else i_obscure_!(i_was_!)
-  }
 
   /**
     * The actual value of the field
@@ -714,19 +708,18 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
   /**
     * Does the "right thing" comparing mapped fields
     */
-  override def equals(other: Any): Boolean = {
+  override def equals(other: Any): Boolean =
     (other match {
       case e: scala.Equals => e canEqual this
       case _               => true
     }) &&
-    (other match {
-      case mapped: MappedField[_, _] => this.i_is_! == mapped.i_is_!
-      case ov: AnyRef
-          if (ov ne null) && dbFieldClass.isAssignableFrom(ov.getClass) =>
-        this.get == runFilters(ov.asInstanceOf[FieldType], setFilter)
-      case ov => this.get == ov
-    })
-  }
+      (other match {
+        case mapped: MappedField[_, _] => this.i_is_! == mapped.i_is_!
+        case ov: AnyRef
+            if (ov ne null) && dbFieldClass.isAssignableFrom(ov.getClass) =>
+          this.get == runFilters(ov.asInstanceOf[FieldType], setFilter)
+        case ov => this.get == ov
+      })
 
   def canEqual(that: Any) = that match {
     case ar: AnyRef => ar.getClass == this.getClass

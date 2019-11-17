@@ -41,13 +41,12 @@ class OsgiActorSystemFactory(
     * ensuring that the default/reference configuration is loaded from the akka-actor bundle.
     * Configuration files found in akka-actor bundle
     */
-  def actorSystemConfig(context: BundleContext): Config = {
+  def actorSystemConfig(context: BundleContext): Config =
     config.withFallback(
       ConfigFactory
         .load(classloader)
         .withFallback(ConfigFactory.defaultReference(
           OsgiActorSystemFactory.akkaActorClassLoader)))
-  }
 
   /**
     * Determine the name for the [[akka.actor.ActorSystem]]

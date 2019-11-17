@@ -318,9 +318,8 @@ class JavaSparkContext(val sc: SparkContext)
     * @param path Directory to the input data files
     * @return An RDD of data with values, represented as byte arrays
     */
-  def binaryRecords(path: String, recordLength: Int): JavaRDD[Array[Byte]] = {
+  def binaryRecords(path: String, recordLength: Int): JavaRDD[Array[Byte]] =
     new JavaRDD(sc.binaryRecords(path, recordLength))
-  }
 
   /** Get an RDD for a Hadoop SequenceFile with given key and value types.
     *
@@ -723,9 +722,8 @@ class JavaSparkContext(val sc: SparkContext)
     * '''Note:''' As it will be reused in all Hadoop RDDs, it's better not to modify it unless you
     * plan to set some global configurations for all Hadoop RDDs.
     */
-  def hadoopConfiguration(): Configuration = {
+  def hadoopConfiguration(): Configuration =
     sc.hadoopConfiguration
-  }
 
   /**
     * Set the directory under which RDDs are going to be checkpointed. The directory must
@@ -840,12 +838,11 @@ class JavaSparkContext(val sc: SparkContext)
     * Returns an Java map of JavaRDDs that have marked themselves as persistent via cache() call.
     * Note that this does not necessarily mean the caching or computation was successful.
     */
-  def getPersistentRDDs: JMap[java.lang.Integer, JavaRDD[_]] = {
+  def getPersistentRDDs: JMap[java.lang.Integer, JavaRDD[_]] =
     sc.getPersistentRDDs
       .mapValues(s => JavaRDD.fromRDD(s))
       .asJava
       .asInstanceOf[JMap[java.lang.Integer, JavaRDD[_]]]
-  }
 }
 
 object JavaSparkContext {

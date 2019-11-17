@@ -41,7 +41,7 @@ private[evaluation] object AreaUnderCurve {
     *
     * @param curve a RDD of ordered 2D points stored in pairs representing a curve
     */
-  def of(curve: RDD[(Double, Double)]): Double = {
+  def of(curve: RDD[(Double, Double)]): Double =
     curve
       .sliding(2)
       .aggregate(0.0)(
@@ -49,14 +49,13 @@ private[evaluation] object AreaUnderCurve {
           auc + trapezoid(points),
         combOp = _ + _
       )
-  }
 
   /**
     * Returns the area under the given curve.
     *
     * @param curve an iterator over ordered 2D points stored in pairs representing a curve
     */
-  def of(curve: Iterable[(Double, Double)]): Double = {
+  def of(curve: Iterable[(Double, Double)]): Double =
     curve.toIterator
       .sliding(2)
       .withPartial(false)
@@ -65,5 +64,4 @@ private[evaluation] object AreaUnderCurve {
           auc + trapezoid(points),
         combop = _ + _
       )
-  }
 }

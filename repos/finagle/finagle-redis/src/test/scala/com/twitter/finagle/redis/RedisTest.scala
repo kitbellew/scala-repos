@@ -86,9 +86,8 @@ trait RedisClientServerIntegrationTest
     .build()
 
   private[this] val service = new Service[Command, Reply] {
-    def apply(cmd: Command): Future[Reply] = {
+    def apply(cmd: Command): Future[Reply] =
       svcClient(cmd)
-    }
   }
 
   private[this] val server = ServerBuilder()

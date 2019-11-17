@@ -72,14 +72,13 @@ class DerefSlice(source: Slice, derefBy: PartialFunction[Int, CPathNode])
 
             def apply(row: Int) = refCol0(row)
 
-            def isDefinedAt(row: Int) = {
+            def isDefinedAt(row: Int) =
               derefBy.isDefinedAt(row) && {
                 if (row0 != row) {
                   row0 = row; refCol0 = refCol(row)
                 }
                 refCol0 != null && refCol0.isDefinedAt(row)
               }
-            }
           }
 
         case CLong =>
@@ -94,14 +93,13 @@ class DerefSlice(source: Slice, derefBy: PartialFunction[Int, CPathNode])
 
             def apply(row: Int) = refCol0(row)
 
-            def isDefinedAt(row: Int) = {
+            def isDefinedAt(row: Int) =
               derefBy.isDefinedAt(row) && {
                 if (row0 != row) {
                   row0 = row; refCol0 = refCol(row)
                 }
                 refCol0 != null && refCol0.isDefinedAt(row)
               }
-            }
           }
 
         case CDouble =>
@@ -116,14 +114,13 @@ class DerefSlice(source: Slice, derefBy: PartialFunction[Int, CPathNode])
 
             def apply(row: Int) = refCol0(row)
 
-            def isDefinedAt(row: Int) = {
+            def isDefinedAt(row: Int) =
               derefBy.isDefinedAt(row) && {
                 if (row0 != row) {
                   row0 = row; refCol0 = refCol(row)
                 }
                 refCol0 != null && refCol0.isDefinedAt(row)
               }
-            }
           }
 
         case CNum =>
@@ -138,14 +135,13 @@ class DerefSlice(source: Slice, derefBy: PartialFunction[Int, CPathNode])
 
             def apply(row: Int) = refCol0(row)
 
-            def isDefinedAt(row: Int) = {
+            def isDefinedAt(row: Int) =
               derefBy.isDefinedAt(row) && {
                 if (row0 != row) {
                   row0 = row; refCol0 = refCol(row)
                 }
                 refCol0 != null && refCol0.isDefinedAt(row)
               }
-            }
           }
 
         case CString =>
@@ -160,14 +156,13 @@ class DerefSlice(source: Slice, derefBy: PartialFunction[Int, CPathNode])
 
             def apply(row: Int) = refCol0(row)
 
-            def isDefinedAt(row: Int) = {
+            def isDefinedAt(row: Int) =
               derefBy.isDefinedAt(row) && {
                 if (row0 != row) {
                   row0 = row; refCol0 = refCol(row)
                 }
                 refCol0 != null && refCol0.isDefinedAt(row)
               }
-            }
           }
 
         case CDate =>
@@ -182,14 +177,13 @@ class DerefSlice(source: Slice, derefBy: PartialFunction[Int, CPathNode])
 
             def apply(row: Int) = refCol0(row)
 
-            def isDefinedAt(row: Int) = {
+            def isDefinedAt(row: Int) =
               derefBy.isDefinedAt(row) && {
                 if (row0 != row) {
                   row0 = row; refCol0 = refCol(row)
                 }
                 refCol0 != null && refCol0.isDefinedAt(row)
               }
-            }
           }
 
         case CPeriod =>
@@ -204,14 +198,13 @@ class DerefSlice(source: Slice, derefBy: PartialFunction[Int, CPathNode])
 
             def apply(row: Int) = refCol0(row)
 
-            def isDefinedAt(row: Int) = {
+            def isDefinedAt(row: Int) =
               derefBy.isDefinedAt(row) && {
                 if (row0 != row) {
                   row0 = row; refCol0 = refCol(row)
                 }
                 refCol0 != null && refCol0.isDefinedAt(row)
               }
-            }
           }
 
         case cArrayType: CArrayType[a] =>
@@ -227,14 +220,13 @@ class DerefSlice(source: Slice, derefBy: PartialFunction[Int, CPathNode])
 
             def apply(row: Int) = refCol0(row)
 
-            def isDefinedAt(row: Int) = {
+            def isDefinedAt(row: Int) =
               derefBy.isDefinedAt(row) && {
                 if (row0 != row) {
                   row0 = row; refCol0 = refCol(row)
                 }
                 refCol0 != null && refCol0.isDefinedAt(row)
               }
-            }
           }
 
         case CEmptyObject =>

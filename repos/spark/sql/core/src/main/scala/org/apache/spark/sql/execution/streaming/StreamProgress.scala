@@ -59,9 +59,8 @@ class StreamProgress {
     copied
   }
 
-  private[sql] def toCompositeOffset(source: Seq[Source]): CompositeOffset = {
+  private[sql] def toCompositeOffset(source: Seq[Source]): CompositeOffset =
     CompositeOffset(source.map(get))
-  }
 
   override def toString: String =
     currentOffsets.map { case (k, v) => s"$k: $v" }.mkString("{", ",", "}")

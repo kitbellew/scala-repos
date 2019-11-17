@@ -57,9 +57,8 @@ class TopicMetadataRequest(
 
   def sizeInBytes: Int = underlying.sizeInBytes()
 
-  override def toString(): String = {
+  override def toString(): String =
     describe(true)
-  }
 
   override def describe(details: Boolean): String = {
     val topicMetadataRequest = new StringBuilder

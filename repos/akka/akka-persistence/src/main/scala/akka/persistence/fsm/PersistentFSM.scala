@@ -68,9 +68,8 @@ trait PersistentFSM[S <: FSMState, D, E]
   /**
     * After recovery events are handled as in usual FSM actor
     */
-  override def receiveCommand: Receive = {
+  override def receiveCommand: Receive =
     super[PersistentFSMBase].receive
-  }
 
   /**
     * Discover the latest recorded state
@@ -293,7 +292,7 @@ object PersistentFSM {
         replies: List[Any] = replies,
         notifies: Boolean = notifies,
         domainEvents: Seq[E] = domainEvents,
-        afterTransitionDo: D ⇒ Unit = afterTransitionDo): State[S, D, E] = {
+        afterTransitionDo: D ⇒ Unit = afterTransitionDo): State[S, D, E] =
       State(
         stateName,
         stateData,
@@ -302,7 +301,6 @@ object PersistentFSM {
         replies,
         domainEvents,
         afterTransitionDo)(notifies)
-    }
 
     /**
       * Modify state transition descriptor to include a state timeout for the
@@ -321,43 +319,37 @@ object PersistentFSM {
       *
       * @return this state transition descriptor
       */
-    def replying(replyValue: Any): State[S, D, E] = {
+    def replying(replyValue: Any): State[S, D, E] =
       copy(replies = replyValue :: replies)
-    }
 
     /**
       * Modify state transition descriptor with new state data. The data will be
       * set when transitioning to the new state.
       */
     private[akka] def using(
-        @deprecatedName('nextStateDate) nextStateData: D): State[S, D, E] = {
+        @deprecatedName('nextStateDate) nextStateData: D): State[S, D, E] =
       copy(stateData = nextStateData)
-    }
 
     /**
       * INTERNAL API.
       */
-    private[akka] def withStopReason(reason: Reason): State[S, D, E] = {
+    private[akka] def withStopReason(reason: Reason): State[S, D, E] =
       copy(stopReason = Some(reason))
-    }
 
-    private[akka] def withNotification(notifies: Boolean): State[S, D, E] = {
+    private[akka] def withNotification(notifies: Boolean): State[S, D, E] =
       copy(notifies = notifies)
-    }
 
     /**
       * Specify domain events to be applied when transitioning to the new state.
       */
-    @varargs def applying(events: E*): State[S, D, E] = {
+    @varargs def applying(events: E*): State[S, D, E] =
       copy(domainEvents = domainEvents ++ events)
-    }
 
     /**
       * Register a handler to be triggered after the state has been persisted successfully
       */
-    def andThen(handler: D ⇒ Unit): State[S, D, E] = {
+    def andThen(handler: D ⇒ Unit): State[S, D, E] =
       copy(afterTransitionDo = handler)
-    }
   }
 
   /**

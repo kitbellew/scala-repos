@@ -114,7 +114,7 @@ class OffsetIndex(
   /**
     * The last entry in the index
     */
-  def readLastEntry(): OffsetPosition = {
+  def readLastEntry(): OffsetPosition =
     inLock(lock) {
       size.get match {
         case 0 => OffsetPosition(baseOffset, 0)
@@ -124,7 +124,6 @@ class OffsetIndex(
             physical(this.mmap, s - 1))
       }
     }
-  }
 
   /**
     * Find the largest offset less than or equal to the given targetOffset
@@ -136,7 +135,7 @@ class OffsetIndex(
     * If the target offset is smaller than the least entry in the index (or the index is empty),
     * the pair (baseOffset, 0) is returned.
     */
-  def lookup(targetOffset: Long): OffsetPosition = {
+  def lookup(targetOffset: Long): OffsetPosition =
     maybeLock(lock) {
       val idx = mmap.duplicate
       val slot = indexSlotFor(idx, targetOffset)
@@ -146,7 +145,6 @@ class OffsetIndex(
           baseOffset + relativeOffset(idx, slot),
           physical(idx, slot))
     }
-  }
 
   /**
     * Find the slot in which the largest offset less than or equal to the given
@@ -193,7 +191,7 @@ class OffsetIndex(
     * @param n The entry number in the index
     * @return The offset/position pair at that entry
     */
-  def entry(n: Int): OffsetPosition = {
+  def entry(n: Int): OffsetPosition =
     maybeLock(lock) {
       if (n >= entries)
         throw new IllegalArgumentException(
@@ -202,7 +200,6 @@ class OffsetIndex(
       val idx = mmap.duplicate
       OffsetPosition(relativeOffset(idx, n), physical(idx, n))
     }
-  }
 
   /**
     * Append an entry for the given offset/location pair to the index. This entry must have a larger offset than all subsequent entries.

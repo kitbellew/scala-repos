@@ -67,13 +67,11 @@ object Resolvers {
   val mercurial: Resolver = new DistributedVCS {
     override val scheme = "hg"
 
-    override def clone(from: String, to: File): Unit = {
+    override def clone(from: String, to: File): Unit =
       run("hg", "clone", "-q", from, to.getAbsolutePath)
-    }
 
-    override def checkout(branch: String, in: File): Unit = {
+    override def checkout(branch: String, in: File): Unit =
       run(Some(in), "hg", "checkout", "-q", branch)
-    }
   }.toResolver
 
   val git: Resolver = (info: ResolveInfo) => {

@@ -31,10 +31,9 @@ private[columnar] trait Encoder[T <: AtomicType] {
 
   def uncompressedSize: Int
 
-  def compressionRatio: Double = {
+  def compressionRatio: Double =
     if (uncompressedSize > 0) compressedSize.toDouble / uncompressedSize
     else 1.0
-  }
 
   def compress(from: ByteBuffer, to: ByteBuffer): ByteBuffer
 }
@@ -76,12 +75,11 @@ private[columnar] object CompressionScheme {
 
   private val typeIdToScheme = all.map(scheme => scheme.typeId -> scheme).toMap
 
-  def apply(typeId: Int): CompressionScheme = {
+  def apply(typeId: Int): CompressionScheme =
     typeIdToScheme.getOrElse(
       typeId,
       throw new UnsupportedOperationException(
         s"Unrecognized compression scheme type ID: $typeId"))
-  }
 
   def columnHeaderSize(columnBuffer: ByteBuffer): Int = {
     val header = columnBuffer.duplicate().order(ByteOrder.nativeOrder)

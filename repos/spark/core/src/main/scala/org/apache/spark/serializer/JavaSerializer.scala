@@ -127,19 +127,16 @@ private[spark] class JavaSerializerInstance(
     in.readObject()
   }
 
-  override def serializeStream(s: OutputStream): SerializationStream = {
+  override def serializeStream(s: OutputStream): SerializationStream =
     new JavaSerializationStream(s, counterReset, extraDebugInfo)
-  }
 
-  override def deserializeStream(s: InputStream): DeserializationStream = {
+  override def deserializeStream(s: InputStream): DeserializationStream =
     new JavaDeserializationStream(s, defaultClassLoader)
-  }
 
   def deserializeStream(
       s: InputStream,
-      loader: ClassLoader): DeserializationStream = {
+      loader: ClassLoader): DeserializationStream =
     new JavaDeserializationStream(s, loader)
-  }
 }
 
 /**

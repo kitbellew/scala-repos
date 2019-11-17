@@ -61,11 +61,10 @@ case class Aggregator[K, V, C](
   /** Update task metrics after populating the external map. */
   private def updateMetrics(
       context: TaskContext,
-      map: ExternalAppendOnlyMap[_, _, _]): Unit = {
+      map: ExternalAppendOnlyMap[_, _, _]): Unit =
     Option(context).foreach { c =>
       c.taskMetrics().incMemoryBytesSpilled(map.memoryBytesSpilled)
       c.taskMetrics().incDiskBytesSpilled(map.diskBytesSpilled)
       c.taskMetrics().incPeakExecutionMemory(map.peakMemoryUsedBytes)
     }
-  }
 }

@@ -67,7 +67,7 @@ class ScalaTargetElementEvaluator extends TargetElementEvaluatorEx {
 
   private object isVarSetterFakeMethod {
     val setterSuffixes = Seq("_=", "_$eq")
-    def unapply(ref: ScReferenceElement): Option[ScReferencePattern] = {
+    def unapply(ref: ScReferenceElement): Option[ScReferencePattern] =
       ref.resolve() match {
         case fakeMethod: FakePsiMethod
             if setterSuffixes.exists(fakeMethod.getName.endsWith) =>
@@ -81,12 +81,11 @@ class ScalaTargetElementEvaluator extends TargetElementEvaluatorEx {
           }
         case _ => None
       }
-    }
   }
 
   private object isVarSetterWrapper {
     val setterSuffix = "_$eq"
-    def unapply(ref: PsiReferenceExpression): Option[ScReferencePattern] = {
+    def unapply(ref: PsiReferenceExpression): Option[ScReferencePattern] =
       ref.resolve() match {
         case wrapper: PsiTypedDefinitionWrapper
             if wrapper.getName endsWith setterSuffix =>
@@ -100,7 +99,6 @@ class ScalaTargetElementEvaluator extends TargetElementEvaluatorEx {
           }
         case _ => None
       }
-    }
   }
 
   private object isCaseClassParameter {

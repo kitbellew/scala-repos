@@ -27,7 +27,7 @@ case class MFunctionColumn(
 object MFunctionColumn {
   def getFunctionColumns(
       functionPattern: MQName,
-      columnNamePattern: String = "%") = {
+      columnNamePattern: String = "%") =
     ResultSetAction[MFunctionColumn] { s =>
       try s.metaData.getFunctionColumns(
         functionPattern.catalog_?,
@@ -60,5 +60,4 @@ object MFunctionColumn {
         r.<<
       )
     }
-  }
 }

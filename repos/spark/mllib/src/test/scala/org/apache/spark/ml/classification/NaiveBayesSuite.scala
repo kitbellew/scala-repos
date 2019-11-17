@@ -99,7 +99,7 @@ class NaiveBayesSuite
   def validateProbabilities(
       featureAndProbabilities: DataFrame,
       model: NaiveBayesModel,
-      modelType: String): Unit = {
+      modelType: String): Unit =
     featureAndProbabilities.collect().foreach {
       case Row(features: Vector, probability: Vector) => {
         assert(probability.toArray.sum ~== 1.0 relTol 1.0e-10)
@@ -114,7 +114,6 @@ class NaiveBayesSuite
         assert(probability ~== expected relTol 1.0e-10)
       }
     }
-  }
 
   test("params") {
     ParamsSuite.checkParams(new NaiveBayes)

@@ -20,9 +20,8 @@ class Is[T](matcher: Matcher[T]) extends BaseMatcher[T] {
 
   override def describeMismatch(
       item: AnyRef,
-      mismatchDescription: Description): Unit = {
+      mismatchDescription: Description): Unit =
     matcher.describeMismatch(item, mismatchDescription)
-  }
 }
 
 object Is {

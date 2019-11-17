@@ -155,7 +155,7 @@ class JobServiceSpec extends TestJobService {
       progress: BigDecimal,
       unit: String,
       info: Option[JValue] = None,
-      prev: Option[BigDecimal] = None) = {
+      prev: Option[BigDecimal] = None) =
     putStatusRaw(jobId, prev)(
       JObject(
         JField("message", JString(message)) :: JField(
@@ -163,7 +163,6 @@ class JobServiceSpec extends TestJobService {
           JNum(progress)) :: JField("unit", JString(unit)) ::
           (info map (JField("info", _) :: Nil) getOrElse Nil)
       ))
-  }
 
   def putStatusAndGetId(
       jobId: String,
@@ -171,12 +170,11 @@ class JobServiceSpec extends TestJobService {
       progress: BigDecimal,
       unit: String,
       info: Option[JValue] = None,
-      prev: Option[BigDecimal] = None) = {
+      prev: Option[BigDecimal] = None) =
     for {
       res <- putStatus(jobId, message, progress, unit, info, prev)
       Some(JNum(id)) = res.content map (_ \ "id")
     } yield id
-  }
 
   def getStatus(jobId: String) =
     jobsClient.get[JValue]("/jobs/%s/status".format(jobId))

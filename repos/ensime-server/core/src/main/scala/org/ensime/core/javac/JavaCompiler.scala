@@ -105,16 +105,13 @@ class JavaCompiler(
     }
   }
 
-  def askTypeAtPoint(file: SourceFileInfo, offset: Int): Option[TypeInfo] = {
+  def askTypeAtPoint(file: SourceFileInfo, offset: Int): Option[TypeInfo] =
     pathToPoint(file, offset) flatMap {
       case (info: CompilationInfo, path: TreePath) =>
         getTypeMirror(info, offset).map(typeMirrorToTypeInfo)
     }
-  }
 
-  def askSymbolAtPoint(
-      file: SourceFileInfo,
-      offset: Int): Option[SymbolInfo] = {
+  def askSymbolAtPoint(file: SourceFileInfo, offset: Int): Option[SymbolInfo] =
     pathToPoint(file, offset) flatMap {
       case (info: CompilationInfo, path: TreePath) =>
         def withName(name: String): Option[SymbolInfo] = {
@@ -143,25 +140,22 @@ class JavaCompiler(
           case _                   => None
         }
     }
-  }
 
   def askDocSignatureAtPoint(
       file: SourceFileInfo,
-      offset: Int): Option[DocSigPair] = {
+      offset: Int): Option[DocSigPair] =
     pathToPoint(file, offset) flatMap {
       case (info: CompilationInfo, path: TreePath) =>
         docSignature(info, path)
     }
-  }
 
   def askCompletionsAtPoint(
       file: SourceFileInfo,
       offset: Int,
       maxResults: Int,
       caseSens: Boolean
-  ): CompletionInfoList = {
+  ): CompletionInfoList =
     completionsAt(file, offset, maxResults, caseSens)
-  }
 
   protected def pathToPoint(
       file: SourceFileInfo,
@@ -187,7 +181,7 @@ class JavaCompiler(
     }
   }
 
-  private def typeMirrorToTypeInfo(tm: TypeMirror): TypeInfo = {
+  private def typeMirrorToTypeInfo(tm: TypeMirror): TypeInfo =
     BasicTypeInfo(
       tm.toString,
       DeclaredAs.Class,
@@ -195,7 +189,6 @@ class JavaCompiler(
       List(),
       List(),
       Some(EmptySourcePosition()))
-  }
 
   private def getTypeMirror(
       info: CompilationInfo,
@@ -279,7 +272,7 @@ class JavaCompiler(
   private class JavaDiagnosticListener
       extends DiagnosticListener[JavaFileObject]
       with ReportHandler {
-    def report(diag: Diagnostic[_ <: JavaFileObject]): Unit = {
+    def report(diag: Diagnostic[_ <: JavaFileObject]): Unit =
       reportHandler.reportJavaNotes(
         List(
           Note(
@@ -300,7 +293,6 @@ class JavaCompiler(
             diag.getColumnNumber().toInt
           )
         ))
-    }
   }
 
   private class SilencedDiagnosticListener

@@ -58,7 +58,7 @@ class ScModifierListImpl private (
     }
   }
 
-  private def prop2String(prop: IElementType): String = {
+  private def prop2String(prop: IElementType): String =
     prop match {
       case ScalaTokenTypes.kOVERRIDE  => "override"
       case ScalaTokenTypes.kPRIVATE   => "private"
@@ -71,7 +71,6 @@ class ScModifierListImpl private (
       case ScalaTokenTypes.kCASE      => "case"
       case _                          => ""
     }
-  }
 
   def accessModifier: Option[ScAccessModifier] = {
     val stub = getStub
@@ -249,7 +248,7 @@ class ScModifierListImpl private (
     }
   }
 
-  def findAnnotation(name: String): PsiAnnotation = {
+  def findAnnotation(name: String): PsiAnnotation =
     getAnnotations.find(_.getQualifiedName == name) match {
       case None if name == "java.lang.Override" =>
         val factory = JavaPsiFacade.getInstance(getProject).getElementFactory
@@ -257,7 +256,6 @@ class ScModifierListImpl private (
       case None    => null
       case Some(x) => x
     }
-  }
 
   def has(prop: IElementType) = {
     val modifier = getStubOrPsiChild(ScalaElementTypes.ACCESS_MODIFIER)
@@ -287,9 +285,8 @@ class ScModifierListImpl private (
     }
   }
 
-  def addAnnotation(qualifiedName: String): PsiAnnotation = {
+  def addAnnotation(qualifiedName: String): PsiAnnotation =
     null
-  }
 
   override def accept(visitor: ScalaElementVisitor) {
     visitor.visitModifierList(this)

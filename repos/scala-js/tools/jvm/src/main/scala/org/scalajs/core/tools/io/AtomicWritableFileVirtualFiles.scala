@@ -4,10 +4,9 @@ import java.io._
 import java.net.URI
 
 trait AtomicWritableFileVirtualTextFile extends WritableFileVirtualTextFile {
-  override def contentWriter: Writer = {
+  override def contentWriter: Writer =
     new BufferedWriter(
       new OutputStreamWriter(new AtomicFileOutputStream(file), "UTF-8"))
-  }
 }
 
 object AtomicWritableFileVirtualTextFile {
@@ -29,12 +28,11 @@ object AtomicWritableFileVirtualBinaryFile {
 trait AtomicWritableFileVirtualJSFile
     extends WritableFileVirtualJSFile
     with AtomicWritableFileVirtualTextFile {
-  override def sourceMapWriter: Writer = {
+  override def sourceMapWriter: Writer =
     new BufferedWriter(
       new OutputStreamWriter(
         new AtomicFileOutputStream(sourceMapFile),
         "UTF-8"))
-  }
 }
 
 object AtomicWritableFileVirtualJSFile {

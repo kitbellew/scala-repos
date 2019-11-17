@@ -79,9 +79,8 @@ object ZkUtils {
   /*
    * Used in tests
    */
-  def apply(zkClient: ZkClient, isZkSecurityEnabled: Boolean): ZkUtils = {
+  def apply(zkClient: ZkClient, isZkSecurityEnabled: Boolean): ZkUtils =
     new ZkUtils(zkClient, null, isZkSecurityEnabled)
-  }
 
   def createZkClient(
       zkUrl: String,
@@ -125,13 +124,11 @@ object ZkUtils {
   /*
    * Get calls that only depend on static paths
    */
-  def getTopicPath(topic: String): String = {
+  def getTopicPath(topic: String): String =
     ZkUtils.BrokerTopicsPath + "/" + topic
-  }
 
-  def getTopicPartitionsPath(topic: String): String = {
+  def getTopicPartitionsPath(topic: String): String =
     getTopicPath(topic) + "/partitions"
-  }
 
   def getTopicPartitionPath(topic: String, partitionId: Int): String =
     getTopicPartitionsPath(topic) + "/" + partitionId
@@ -182,12 +179,11 @@ class ZkUtils(
 
   val DefaultAcls: java.util.List[ACL] = ZkUtils.DefaultAcls(isSecure)
 
-  def getController(): Int = {
+  def getController(): Int =
     readDataMaybeNull(ControllerPath)._1 match {
       case Some(controller) => KafkaController.parseControllerId(controller)
       case None             => throw new KafkaException("Controller doesn't exist")
     }
-  }
 
   def getSortedBrokerList(): Seq[Int] =
     getChildren(BrokerIdsPath).map(_.toInt).sorted
@@ -198,17 +194,15 @@ class ZkUtils(
   }
 
   def getAllBrokerEndPointsForChannel(
-      protocolType: SecurityProtocol): Seq[BrokerEndPoint] = {
+      protocolType: SecurityProtocol): Seq[BrokerEndPoint] =
     getAllBrokersInCluster().map(_.getBrokerEndPoint(protocolType))
-  }
 
   def getLeaderAndIsrForPartition(
       topic: String,
-      partition: Int): Option[LeaderAndIsr] = {
+      partition: Int): Option[LeaderAndIsr] =
     ReplicationUtils
       .getLeaderIsrAndEpochForPartition(this, topic, partition)
       .map(_.leaderAndIsr)
-  }
 
   def setupCommonPaths() {
     for (path <- persistentZkPaths) makeSurePersistentPathExists(path)
@@ -264,9 +258,8 @@ class ZkUtils(
     * users can provide brokerId in the config , inorder to avoid conflicts between zk generated
     * seqId and config.brokerId we increment zk seqId by KafkaConfig.MaxReservedBrokerId.
     */
-  def getBrokerSequenceId(MaxReservedBrokerId: Int): Int = {
+  def getBrokerSequenceId(MaxReservedBrokerId: Int): Int =
     getSequenceId(BrokerSequenceIdPath) + MaxReservedBrokerId
-  }
 
   /**
     * Gets the in-sync replicas (ISR) for a specific topic and partition
@@ -391,7 +384,7 @@ class ZkUtils(
 
   def leaderAndIsrZkData(
       leaderAndIsr: LeaderAndIsr,
-      controllerEpoch: Int): String = {
+      controllerEpoch: Int): String =
     Json.encode(
       Map(
         "version" -> 1,
@@ -399,14 +392,12 @@ class ZkUtils(
         "leader_epoch" -> leaderAndIsr.leaderEpoch,
         "controller_epoch" -> controllerEpoch,
         "isr" -> leaderAndIsr.isr))
-  }
 
   /**
     * Get JSON partition to replica map from zookeeper.
     */
-  def replicaAssignmentZkData(map: Map[String, Seq[Int]]): String = {
+  def replicaAssignmentZkData(map: Map[String, Seq[Int]]): String =
     Json.encode(Map("version" -> 1, "partitions" -> map))
-  }
 
   /**
     *  make sure a persistent path exists in ZK. Create the path if not exist.
@@ -442,7 +433,7 @@ class ZkUtils(
   private def createEphemeralPath(
       path: String,
       data: String,
-      acls: java.util.List[ACL] = DefaultAcls): Unit = {
+      acls: java.util.List[ACL] = DefaultAcls): Unit =
     try {
       ZkPath.createEphemeral(zkClient, path, data, acls)
     } catch {
@@ -451,7 +442,6 @@ class ZkUtils(
         ZkPath.createEphemeral(zkClient, path, data, acls)
       }
     }
-  }
 
   /**
     * Create an ephemeral node with the given path and data.
@@ -460,7 +450,7 @@ class ZkUtils(
   def createEphemeralPathExpectConflict(
       path: String,
       data: String,
-      acls: java.util.List[ACL] = DefaultAcls): Unit = {
+      acls: java.util.List[ACL] = DefaultAcls): Unit =
     try {
       createEphemeralPath(path, data, acls)
     } catch {
@@ -488,7 +478,6 @@ class ZkUtils(
       }
       case e2: Throwable => throw e2
     }
-  }
 
   /**
     * Create an persistent node with the given path and data. Create parents if necessary.
@@ -496,7 +485,7 @@ class ZkUtils(
   def createPersistentPath(
       path: String,
       data: String = "",
-      acls: java.util.List[ACL] = DefaultAcls): Unit = {
+      acls: java.util.List[ACL] = DefaultAcls): Unit =
     try {
       ZkPath.createPersistent(zkClient, path, data, acls)
     } catch {
@@ -505,14 +494,12 @@ class ZkUtils(
         ZkPath.createPersistent(zkClient, path, data, acls)
       }
     }
-  }
 
   def createSequentialPersistentPath(
       path: String,
       data: String = "",
-      acls: java.util.List[ACL] = DefaultAcls): String = {
+      acls: java.util.List[ACL] = DefaultAcls): String =
     ZkPath.createPersistentSequential(zkClient, path, data, acls)
-  }
 
   /**
     * Update the value of a persistent node with the given path and data.
@@ -522,7 +509,7 @@ class ZkUtils(
   def updatePersistentPath(
       path: String,
       data: String,
-      acls: java.util.List[ACL] = DefaultAcls) = {
+      acls: java.util.List[ACL] = DefaultAcls) =
     try {
       zkClient.writeData(path, data)
     } catch {
@@ -538,7 +525,6 @@ class ZkUtils(
       }
       case e2: Throwable => throw e2
     }
-  }
 
   /**
     * Conditional update the persistent path data, return (true, newVersion) if it succeeds, otherwise (the path doesn't
@@ -553,7 +539,7 @@ class ZkUtils(
       data: String,
       expectVersion: Int,
       optionalChecker: Option[(ZkUtils, String, String) => (Boolean, Int)] =
-        None): (Boolean, Int) = {
+        None): (Boolean, Int) =
     try {
       val stat = zkClient.writeDataReturnStat(path, data, expectVersion)
       debug(
@@ -576,7 +562,6 @@ class ZkUtils(
             .format(path, data, expectVersion, e2.getMessage))
         (false, -1)
     }
-  }
 
   /**
     * Conditional update the persistent path data, return (true, newVersion) if it succeeds, otherwise (the current
@@ -585,7 +570,7 @@ class ZkUtils(
   def conditionalUpdatePersistentPathIfExists(
       path: String,
       data: String,
-      expectVersion: Int): (Boolean, Int) = {
+      expectVersion: Int): (Boolean, Int) =
     try {
       val stat = zkClient.writeDataReturnStat(path, data, expectVersion)
       debug(
@@ -600,7 +585,6 @@ class ZkUtils(
             .format(path, data, expectVersion, e.getMessage))
         (false, -1)
     }
-  }
 
   /**
     * Update the value of a persistent node with the given path and data.
@@ -609,7 +593,7 @@ class ZkUtils(
   def updateEphemeralPath(
       path: String,
       data: String,
-      acls: java.util.List[ACL] = DefaultAcls): Unit = {
+      acls: java.util.List[ACL] = DefaultAcls): Unit =
     try {
       zkClient.writeData(path, data)
     } catch {
@@ -619,9 +603,8 @@ class ZkUtils(
       }
       case e2: Throwable => throw e2
     }
-  }
 
-  def deletePath(path: String): Boolean = {
+  def deletePath(path: String): Boolean =
     try {
       zkClient.delete(path)
     } catch {
@@ -631,20 +614,18 @@ class ZkUtils(
         false
       case e2: Throwable => throw e2
     }
-  }
 
   /**
     * Conditional delete the persistent path data, return true if it succeeds,
     * otherwise (the current version is not the expected version)
     */
-  def conditionalDeletePath(path: String, expectedVersion: Int): Boolean = {
+  def conditionalDeletePath(path: String, expectedVersion: Int): Boolean =
     try {
       zkClient.delete(path, expectedVersion)
       true
     } catch {
       case e: KeeperException.BadVersionException => false
     }
-  }
 
   def deletePathRecursive(path: String) {
     try {
@@ -695,9 +676,8 @@ class ZkUtils(
   /**
     * Check if the given path exists
     */
-  def pathExists(path: String): Boolean = {
+  def pathExists(path: String): Boolean =
     zkClient.exists(path)
-  }
 
   def getCluster(): Cluster = {
     val cluster = new Cluster
@@ -784,7 +764,7 @@ class ZkUtils(
   }
 
   def getPartitionsForTopics(
-      topics: Seq[String]): mutable.Map[String, Seq[Int]] = {
+      topics: Seq[String]): mutable.Map[String, Seq[Int]] =
     getPartitionAssignmentForTopics(topics).map { topicAndPartitionMap =>
       val topic = topicAndPartitionMap._1
       val partitionMap = topicAndPartitionMap._2
@@ -793,7 +773,6 @@ class ZkUtils(
           .format(topic, partitionMap))
       (topic -> partitionMap.keys.toSeq.sortWith((s, t) => s < t))
     }
-  }
 
   def getPartitionsBeingReassigned(
       ): Map[TopicAndPartition, ReassignedPartitionsContext] = {
@@ -811,7 +790,7 @@ class ZkUtils(
 
   // Parses without deduplicating keys so the the data can be checked before allowing reassignment to proceed
   def parsePartitionReassignmentDataWithoutDedup(
-      jsonData: String): Seq[(TopicAndPartition, Seq[Int])] = {
+      jsonData: String): Seq[(TopicAndPartition, Seq[Int])] =
     Json.parseFull(jsonData) match {
       case Some(m) =>
         m.asInstanceOf[Map[String, Any]].get("partitions") match {
@@ -831,12 +810,10 @@ class ZkUtils(
       case None =>
         Seq.empty
     }
-  }
 
   def parsePartitionReassignmentData(
-      jsonData: String): Map[TopicAndPartition, Seq[Int]] = {
+      jsonData: String): Map[TopicAndPartition, Seq[Int]] =
     parsePartitionReassignmentDataWithoutDedup(jsonData).toMap
-  }
 
   def parseTopicsData(jsonData: String): Seq[String] = {
     var topics = List.empty[String]
@@ -858,7 +835,7 @@ class ZkUtils(
   }
 
   def getPartitionReassignmentZkData(
-      partitionsToBeReassigned: Map[TopicAndPartition, Seq[Int]]): String = {
+      partitionsToBeReassigned: Map[TopicAndPartition, Seq[Int]]): String =
     Json.encode(
       Map(
         "version" -> 1,
@@ -868,7 +845,6 @@ class ZkUtils(
               "topic" -> e._1.topic,
               "partition" -> e._1.partition,
               "replicas" -> e._2))))
-  }
 
   def updatePartitionReassignmentData(
       partitionsToBeReassigned: Map[TopicAndPartition, Seq[Int]]) {
@@ -955,12 +931,11 @@ class ZkUtils(
     * @param brokerId The broker id
     * @return An optional Broker object encapsulating the broker metadata
     */
-  def getBrokerInfo(brokerId: Int): Option[Broker] = {
+  def getBrokerInfo(brokerId: Int): Option[Broker] =
     readDataMaybeNull(BrokerIdsPath + "/" + brokerId)._1 match {
       case Some(brokerInfo) => Some(Broker.createBroker(brokerId, brokerInfo))
       case None             => None
     }
-  }
 
   /**
     * This API produces a sequence number by creating / updating given path in zookeeper
@@ -969,7 +944,7 @@ class ZkUtils(
     */
   def getSequenceId(
       path: String,
-      acls: java.util.List[ACL] = DefaultAcls): Int = {
+      acls: java.util.List[ACL] = DefaultAcls): Int =
     try {
       val stat = zkClient.writeDataReturnStat(path, "", -1)
       stat.getVersion
@@ -987,7 +962,6 @@ class ZkUtils(
         }
       }
     }
-  }
 
   def getAllTopics(): Seq[String] = {
     val topics = getChildrenParentMayNotExist(BrokerTopicsPath)
@@ -1020,14 +994,12 @@ class ZkUtils(
     }
   }
 
-  def getConsumerGroups() = {
+  def getConsumerGroups() =
     getChildren(ConsumersPath)
-  }
 
-  def getTopicsByConsumerGroup(consumerGroup: String) = {
+  def getTopicsByConsumerGroup(consumerGroup: String) =
     getChildrenParentMayNotExist(
       new ZKGroupDirs(consumerGroup).consumerGroupOwnersDir)
-  }
 
   def getAllConsumerGroupsForTopic(topic: String): Set[String] = {
     val groups = getChildrenParentMayNotExist(ConsumersPath)
@@ -1056,10 +1028,9 @@ private object ZKStringSerializer extends ZkSerializer {
     data.asInstanceOf[String].getBytes("UTF-8")
 
   @throws(classOf[ZkMarshallingError])
-  def deserialize(bytes: Array[Byte]): Object = {
+  def deserialize(bytes: Array[Byte]): Object =
     if (bytes == null) null
     else new String(bytes, "UTF-8")
-  }
 }
 
 class ZKGroupDirs(val group: String) {

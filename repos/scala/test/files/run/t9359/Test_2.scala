@@ -20,9 +20,8 @@ object Test extends BytecodeTest {
     t.visitInnerClass(n.name, n.outerName, n.innerName, n.access)
     t.getText.get(0);
   }
-  def show(): Unit = {
+  def show(): Unit =
     for (n <- loadClassNode("C").innerClasses.asScala.toList.sortBy(_.name)) {
       println(tost(n))
     }
-  }
 }

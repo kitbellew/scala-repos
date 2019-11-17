@@ -16,9 +16,8 @@ import scala.collection.immutable.HashMap
 
 abstract class StockStrategy[M: ClassTag]
     extends LAlgorithm[TrainingData, (TrainingData, M), QueryDate, Prediction] {
-  def train(trainingData: TrainingData): (TrainingData, M) = {
+  def train(trainingData: TrainingData): (TrainingData, M) =
     (trainingData, createModel(trainingData.view))
-  }
 
   def createModel(dataView: DataView): M
 

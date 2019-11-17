@@ -196,14 +196,13 @@ private[http] object WebSocket {
         setHandler(
           in,
           new InHandler {
-            override def onPush(): Unit = {
+            override def onPush(): Unit =
               grab(in) match {
                 case b: BypassEvent with MessagePart ⇒
                   emit(bypass, b, () ⇒ emit(user, b, pullIn))
                 case b: BypassEvent ⇒ emit(bypass, b, pullIn)
                 case m: MessagePart ⇒ emit(user, m, pullIn)
               }
-            }
           }
         )
         val pullIn = () ⇒ tryPull(in)
@@ -211,9 +210,8 @@ private[http] object WebSocket {
         setHandler(bypass, eagerTerminateOutput)
         setHandler(user, ignoreTerminateOutput)
 
-        override def preStart(): Unit = {
+        override def preStart(): Unit =
           pullIn()
-        }
       }
   }
 

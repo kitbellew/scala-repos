@@ -10,9 +10,7 @@ class JUnitAssumptionsTest {
 
   private val ShallNotPass = false
 
-  def testIfAssumePass(
-      assumption: => Unit,
-      shouldPass: Boolean = true): Unit = {
+  def testIfAssumePass(assumption: => Unit, shouldPass: Boolean = true): Unit =
     try {
       assumption
       if (!shouldPass) fail("Assumption should have failed")
@@ -20,7 +18,6 @@ class JUnitAssumptionsTest {
       case assVio: AssumptionViolatedException =>
         if (shouldPass) throw assVio
     }
-  }
 
   @Test
   def testAssumeTrue(): Unit = {

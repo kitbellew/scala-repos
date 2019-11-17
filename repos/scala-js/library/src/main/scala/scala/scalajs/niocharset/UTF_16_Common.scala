@@ -40,7 +40,7 @@ private[niocharset] abstract class UTF_16_Common protected (
     def decodeLoop(in: ByteBuffer, out: CharBuffer): CoderResult = {
       @inline
       @tailrec
-      def loop(): CoderResult = {
+      def loop(): CoderResult =
         if (in.remaining < 2) CoderResult.UNDERFLOW
         else {
           val b1 = in.get() & 0xff
@@ -109,7 +109,6 @@ private[niocharset] abstract class UTF_16_Common protected (
             }
           }
         }
-      }
 
       loop()
     }
@@ -147,7 +146,7 @@ private[niocharset] abstract class UTF_16_Common protected (
       val bigEndian = endianness != LittleEndian
 
       @inline
-      def putChar(c: Char): Unit = {
+      def putChar(c: Char): Unit =
         if (bigEndian) {
           out.put((c >> 8).toByte)
           out.put(c.toByte)
@@ -155,11 +154,10 @@ private[niocharset] abstract class UTF_16_Common protected (
           out.put(c.toByte)
           out.put((c >> 8).toByte)
         }
-      }
 
       @inline
       @tailrec
-      def loop(): CoderResult = {
+      def loop(): CoderResult =
         if (in.remaining == 0) CoderResult.UNDERFLOW
         else {
           val c1 = in.get()
@@ -198,7 +196,6 @@ private[niocharset] abstract class UTF_16_Common protected (
             }
           }
         }
-      }
 
       loop()
     }

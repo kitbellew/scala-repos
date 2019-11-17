@@ -92,7 +92,7 @@ class Dispatchers(
   def hasDispatcher(id: String): Boolean =
     dispatcherConfigurators.containsKey(id) || cachingConfig.hasPath(id)
 
-  private def lookupConfigurator(id: String): MessageDispatcherConfigurator = {
+  private def lookupConfigurator(id: String): MessageDispatcherConfigurator =
     dispatcherConfigurators.get(id) match {
       case null ⇒
         // It doesn't matter if we create a dispatcher configurator that isn't used due to concurrent lookup.
@@ -110,7 +110,6 @@ class Dispatchers(
 
       case existing ⇒ existing
     }
-  }
 
   /**
     * Register a [[MessageDispatcherConfigurator]] that will be
@@ -132,9 +131,8 @@ class Dispatchers(
   /**
     * INTERNAL API
     */
-  private[akka] def config(id: String): Config = {
+  private[akka] def config(id: String): Config =
     config(id, settings.config.getConfig(id))
-  }
 
   /**
     * INTERNAL API

@@ -84,7 +84,7 @@ abstract class ChangeSignatureTestBase
     }
   }
 
-  protected def addFileToProject(fileName: String, text: String): PsiFile = {
+  protected def addFileToProject(fileName: String, text: String): PsiFile =
     inWriteAction {
       val vFile =
         LightPlatformTestCase.getSourceRoot.createChildData(null, fileName)
@@ -99,7 +99,6 @@ abstract class ChangeSignatureTestBase
       PsiDocumentManager.getInstance(getProjectAdapter).commitAllDocuments()
       psiFile
     }
-  }
 
   protected def getTextFromTestData(fileName: String) = {
     val file = new File(getTestDataPath + fileName)

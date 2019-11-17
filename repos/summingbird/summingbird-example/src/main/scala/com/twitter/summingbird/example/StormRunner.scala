@@ -116,16 +116,15 @@ object StormRunner {
     * you all set up if you don't already have memcache installed
     * locally.)
     */
-  def apply(args: Args): StormExecutionConfig = {
+  def apply(args: Args): StormExecutionConfig =
     new StormExecutionConfig {
       override val name = "SummingbirdExample"
 
       // No Ackers
       override def transformConfig(
-          config: Map[String, AnyRef]): Map[String, AnyRef] = {
+          config: Map[String, AnyRef]): Map[String, AnyRef] =
         config ++ List(
           (BTConfig.TOPOLOGY_ACKER_EXECUTORS -> (new java.lang.Integer(0))))
-      }
 
       override def getNamedOptions: Map[String, Options] = Map(
         "DEFAULT" -> Options()
@@ -136,7 +135,6 @@ object StormRunner {
       )
       override def graph = wordCount[Storm](spout, storeSupplier)
     }
-  }
 
   /**
     * Once you've got this running in the background, fire up another

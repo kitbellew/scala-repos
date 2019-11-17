@@ -414,9 +414,8 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
     }
   }
 
-  private def isMultiline(node: ASTNode): Boolean = {
+  private def isMultiline(node: ASTNode): Boolean =
     node.getText.indexOf("\n") != -1
-  }
 
   private def isMultilineBodyInMatchStmt(node: ASTNode): Boolean = {
     val children = node.getPsi.asInstanceOf[ScMatchStmt].children
@@ -598,35 +597,28 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
     }
   }
 
-  private def isCustomRegionStart(elementText: String): Boolean = {
+  private def isCustomRegionStart(elementText: String): Boolean =
     isTagRegionStart(elementText) || isSimpleRegionStart(elementText)
-  }
 
-  private def isTagRegionStart(elementText: String): Boolean = {
+  private def isTagRegionStart(elementText: String): Boolean =
     elementText.contains("<editor-fold")
-  }
 
-  private def isSimpleRegionStart(elementText: String): Boolean = {
+  private def isSimpleRegionStart(elementText: String): Boolean =
     elementText.contains("region") && elementText.matches("..?\\s*region.*")
-  }
 
-  private def isCustomRegionEnd(elementText: String): Boolean = {
+  private def isCustomRegionEnd(elementText: String): Boolean =
     isTagRegionEnd(elementText) || isSimpleRegionEnd(elementText)
-  }
 
-  private def isTagRegionEnd(elementText: String): Boolean = {
+  private def isTagRegionEnd(elementText: String): Boolean =
     elementText.contains("</editor-fold")
-  }
 
-  private def isSimpleRegionEnd(elementText: String): Boolean = {
+  private def isSimpleRegionEnd(elementText: String): Boolean =
     elementText.contains("endregion")
-  }
 
-  private def isWorksheetResults(node: ASTNode): Boolean = {
+  private def isWorksheetResults(node: ASTNode): Boolean =
     node.getPsi.isInstanceOf[PsiComment] &&
-    (node.getText.startsWith(WorksheetFoldingBuilder.FIRST_LINE_PREFIX) ||
-    node.getText.startsWith(WorksheetFoldingBuilder.LINE_PREFIX))
-  }
+      (node.getText.startsWith(WorksheetFoldingBuilder.FIRST_LINE_PREFIX) ||
+        node.getText.startsWith(WorksheetFoldingBuilder.LINE_PREFIX))
 
   override def isDumbAware: Boolean = true
 }

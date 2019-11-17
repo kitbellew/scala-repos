@@ -474,10 +474,9 @@ trait IterableSplitter[+T]
     output
   }
 
-  private[parallel] def debugInformation = {
+  private[parallel] def debugInformation =
     // can be overridden in subclasses
     "Parallel iterator: " + this.getClass
-  }
 
   /* iterator transformers */
 

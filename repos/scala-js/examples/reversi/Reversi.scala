@@ -63,27 +63,24 @@ class Reversi(jQuery: JQueryStatic, playground: JQuery) {
   val status = createStatus()
   buildUI()
 
-  def createResetButton() = {
+  def createResetButton() =
     jQuery(
       "<input>",
       js.Dynamic.literal(
         `type` = "button",
         value = "Reset"
       )).click(reset _)
-  }
 
-  def createPassButton() = {
+  def createPassButton() =
     jQuery(
       "<input>",
       js.Dynamic.literal(
         `type` = "button",
         value = "Pass"
       )).click(pass _)
-  }
 
-  def createStatus() = {
+  def createStatus() =
     jQuery("<span>")
-  }
 
   def buildUI() {
     // Some dimensions
@@ -221,15 +218,13 @@ class Reversi(jQuery: JQueryStatic, playground: JQuery) {
     nextTurn()
   }
 
-  def existsValidMove(): Boolean = {
+  def existsValidMove(): Boolean =
     allSquares.exists(isValidMove)
-  }
 
-  def isValidMove(square: Square): Boolean = {
+  def isValidMove(square: Square): Boolean =
     !computeFlips(square).isEmpty
-  }
 
-  def computeFlips(square: Square): List[Square] = {
+  def computeFlips(square: Square): List[Square] =
     if (square.owner != NoPlayer) Nil
     else {
       for {
@@ -238,7 +233,6 @@ class Reversi(jQuery: JQueryStatic, playground: JQuery) {
         flip <- computeFlipsInDirection(square.x, square.y, i, j)
       } yield flip
     }
-  }
 
   def computeFlipsInDirection(
       x: Int,
@@ -266,7 +260,7 @@ class Reversi(jQuery: JQueryStatic, playground: JQuery) {
     else Nil
   }
 
-  def computeScore(): (Int, Int) = {
+  def computeScore(): (Int, Int) =
     allSquares.foldLeft((0, 0)) {
       case ((white, black), square) =>
         square.owner match {
@@ -275,7 +269,6 @@ class Reversi(jQuery: JQueryStatic, playground: JQuery) {
           case NoPlayer => (white, black)
         }
     }
-  }
 
   def nextTurn() {
     currentPlayer = currentPlayer.opponent

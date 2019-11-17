@@ -245,9 +245,8 @@ final class DataFrameWriter private[sql] (df: DataFrame) {
     *
     * @since 2.0.0
     */
-  def startStream(path: String): ContinuousQuery = {
+  def startStream(path: String): ContinuousQuery =
     option("path", path).startStream()
-  }
 
   /**
     * Starts the execution of the streaming query, which will continually output results to the given
@@ -277,10 +276,9 @@ final class DataFrameWriter private[sql] (df: DataFrame) {
     *
     * @since 1.4.0
     */
-  def insertInto(tableName: String): Unit = {
+  def insertInto(tableName: String): Unit =
     insertInto(
       df.sqlContext.sessionState.sqlParser.parseTableIdentifier(tableName))
-  }
 
   private def insertInto(tableIdent: TableIdentifier): Unit = {
     assertNotBucketed()
@@ -372,12 +370,11 @@ final class DataFrameWriter private[sql] (df: DataFrame) {
             s"existing columns (${validColumnNames.mkString(", ")})"))
   }
 
-  private def assertNotBucketed(): Unit = {
+  private def assertNotBucketed(): Unit =
     if (numBuckets.isDefined || sortColumnNames.isDefined) {
       throw new IllegalArgumentException(
         "Currently we don't support writing bucketed data to this data source.")
     }
-  }
 
   /**
     * Saves the content of the [[DataFrame]] as the specified table.
@@ -397,10 +394,9 @@ final class DataFrameWriter private[sql] (df: DataFrame) {
     *
     * @since 1.4.0
     */
-  def saveAsTable(tableName: String): Unit = {
+  def saveAsTable(tableName: String): Unit =
     saveAsTable(
       df.sqlContext.sessionState.sqlParser.parseTableIdentifier(tableName))
-  }
 
   private def saveAsTable(tableIdent: TableIdentifier): Unit = {
     val tableExists =

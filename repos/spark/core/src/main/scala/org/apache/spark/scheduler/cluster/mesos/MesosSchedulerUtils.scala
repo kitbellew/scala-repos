@@ -116,7 +116,7 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
     * This driver is expected to not be running.
     * This method returns only after the scheduler has registered with Mesos.
     */
-  def startScheduler(newDriver: SchedulerDriver): Unit = {
+  def startScheduler(newDriver: SchedulerDriver): Unit =
     synchronized {
       if (mesosDriver != null) {
         registerLatch.await()
@@ -155,24 +155,20 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
       // without leaving a broken context that won't be able to schedule any tasks
       error.foreach(throw _)
     }
-  }
 
-  def getResource(res: JList[Resource], name: String): Double = {
+  def getResource(res: JList[Resource], name: String): Double =
     // A resource can have multiple values in the offer since it can either be from
     // a specific role or wildcard.
     res.asScala.filter(_.getName == name).map(_.getScalar.getValue).sum
-  }
 
   /**
     * Signal that the scheduler has registered with Mesos.
     */
-  protected def markRegistered(): Unit = {
+  protected def markRegistered(): Unit =
     registerLatch.countDown()
-  }
 
-  protected def markErr(): Unit = {
+  protected def markErr(): Unit =
     registerLatch.countDown()
-  }
 
   def createResource(
       name: String,
@@ -231,21 +227,19 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
   }
 
   /** Helper method to get the key,value-set pair for a Mesos Attribute protobuf */
-  protected def getAttribute(attr: Attribute): (String, Set[String]) = {
+  protected def getAttribute(attr: Attribute): (String, Set[String]) =
     (attr.getName, attr.getText.getValue.split(',').toSet)
-  }
 
   /** Build a Mesos resource protobuf object */
   protected def createResource(
       resourceName: String,
-      quantity: Double): Protos.Resource = {
+      quantity: Double): Protos.Resource =
     Resource
       .newBuilder()
       .setName(resourceName)
       .setType(Value.Type.SCALAR)
       .setScalar(Value.Scalar.newBuilder().setValue(quantity).build())
       .build()
-  }
 
   /**
     * Converts the attributes from the resource offer into a Map of name -> Attribute Value
@@ -254,7 +248,7 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
     * @return
     */
   protected def toAttributeMap(
-      offerAttributes: JList[Attribute]): Map[String, GeneratedMessage] = {
+      offerAttributes: JList[Attribute]): Map[String, GeneratedMessage] =
     offerAttributes.asScala
       .map(attr => {
         val attrValue = attr.getType match {
@@ -266,7 +260,6 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
         (attr.getName, attrValue)
       })
       .toMap
-  }
 
   /**
     * Match the requirements (if any) to the offer attributes.
@@ -276,7 +269,7 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
     */
   def matchesAttributeRequirements(
       slaveOfferConstraints: Map[String, Set[String]],
-      offerAttributes: Map[String, GeneratedMessage]): Boolean = {
+      offerAttributes: Map[String, GeneratedMessage]): Boolean =
     slaveOfferConstraints.forall {
       // offer has the required attribute and subsumes the required values for that attribute
       case (name, requiredValues) =>
@@ -303,7 +296,6 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
             requiredValues.contains(textValue.getValue)
         }
     }
-  }
 
   /**
     * Parses the attributes constraints provided to spark and build a matching data struct:
@@ -373,7 +365,7 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
     * @return memory requirement as (0.1 * <memoryOverhead>) or MEMORY_OVERHEAD_MINIMUM
     *         (whichever is larger)
     */
-  def executorMemory(sc: SparkContext): Int = {
+  def executorMemory(sc: SparkContext): Int =
     sc.conf.getInt(
       "spark.mesos.executor.memoryOverhead",
       math
@@ -381,18 +373,15 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
           MEMORY_OVERHEAD_FRACTION * sc.executorMemory,
           MEMORY_OVERHEAD_MINIMUM)
         .toInt) + sc.executorMemory
-  }
 
-  def setupUris(uris: String, builder: CommandInfo.Builder): Unit = {
+  def setupUris(uris: String, builder: CommandInfo.Builder): Unit =
     uris.split(",").foreach { uri =>
       builder.addUris(CommandInfo.URI.newBuilder().setValue(uri.trim()))
     }
-  }
 
   protected def getRejectOfferDurationForUnmetConstraints(
-      sc: SparkContext): Long = {
+      sc: SparkContext): Long =
     sc.conf.getTimeAsSeconds(
       "spark.mesos.rejectOfferDurationForUnmetConstraints",
       "120s")
-  }
 }

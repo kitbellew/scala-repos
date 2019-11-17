@@ -127,7 +127,7 @@ trait HasFlags {
   def isDeferredOrJavaDefault = hasFlag(DEFERRED | JAVA_DEFAULTMETHOD)
   def isDeferredNotJavaDefault = isDeferred && !hasFlag(JAVA_DEFAULTMETHOD)
 
-  def flagBitsToString(bits: Long): String = {
+  def flagBitsToString(bits: Long): String =
     // Fast path for common case
     if (bits == 0L) ""
     else {
@@ -147,7 +147,6 @@ trait HasFlags {
       }
       if (sb eq null) "" else sb.toString
     }
-  }
 
   def accessString: String = {
     val pw = if (hasAccessBoundary) privateWithin.toString else ""

@@ -50,14 +50,13 @@ case class SortOrder(child: Expression, direction: SortDirection)
   /** Sort order is not foldable because we don't have an eval for it. */
   override def foldable: Boolean = false
 
-  override def checkInputDataTypes(): TypeCheckResult = {
+  override def checkInputDataTypes(): TypeCheckResult =
     if (RowOrdering.isOrderable(dataType)) {
       TypeCheckResult.TypeCheckSuccess
     } else {
       TypeCheckResult.TypeCheckFailure(
         s"cannot sort data type ${dataType.simpleString}")
     }
-  }
 
   override def dataType: DataType = child.dataType
   override def nullable: Boolean = child.nullable

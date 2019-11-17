@@ -166,7 +166,7 @@ private[spark] object FileAppender extends Logging {
         }
     }
 
-    def createSizeBasedAppender(): FileAppender = {
+    def createSizeBasedAppender(): FileAppender =
       rollingSizeBytes match {
         case IntParam(bytes) =>
           logInfo(
@@ -181,7 +181,6 @@ private[spark] object FileAppender extends Logging {
             s"Illegal size [$rollingSizeBytes] for rolling executor logs, rolling logs not enabled")
           new FileAppender(inputStream, file)
       }
-    }
 
     rollingStrategy match {
       case "" =>

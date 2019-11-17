@@ -59,11 +59,10 @@ private[sql] class DefaultSource extends FileFormat with DataSourceRegister {
   override def inferSchema(
       sqlContext: SQLContext,
       options: Map[String, String],
-      files: Seq[FileStatus]): Option[StructType] = {
+      files: Seq[FileStatus]): Option[StructType] =
     OrcFileOperator.readSchema(
       files.map(_.getPath.toUri.toString),
       Some(sqlContext.sparkContext.hadoopConfiguration))
-  }
 
   override def prepareWrite(
       sqlContext: SQLContext,
@@ -107,9 +106,8 @@ private[sql] class DefaultSource extends FileFormat with DataSourceRegister {
           path: String,
           bucketId: Option[Int],
           dataSchema: StructType,
-          context: TaskAttemptContext): OutputWriter = {
+          context: TaskAttemptContext): OutputWriter =
         new OrcOutputWriter(path, bucketId, dataSchema, context)
-      }
     }
   }
 
@@ -227,11 +225,10 @@ private[orc] class OrcOutputWriter(
       serializer.serialize(cachedOrcStruct, structOI))
   }
 
-  override def close(): Unit = {
+  override def close(): Unit =
     if (recordWriterInstantiated) {
       recordWriter.close(Reporter.NULL)
     }
-  }
 }
 
 private[orc] case class OrcTableScan(

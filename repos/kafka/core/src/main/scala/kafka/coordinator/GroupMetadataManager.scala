@@ -121,9 +121,8 @@ class GroupMetadataManager(
   /**
     * Get the group associated with the given groupId, or null if not found
     */
-  def getGroup(groupId: String): GroupMetadata = {
+  def getGroup(groupId: String): GroupMetadata =
     groupsCache.get(groupId)
-  }
 
   /**
     * Add a group or get the group associated with the given groupId if it already exists
@@ -765,9 +764,8 @@ class GroupMetadataManager(
   /*
    * Check if the offset metadata length is valid
    */
-  private def validateOffsetMetadataLength(metadata: String): Boolean = {
+  private def validateOffsetMetadataLength(metadata: String): Boolean =
     metadata == null || metadata.length() <= config.maxMetadataSize
-  }
 
   def shutdown() {
     shuttingDown.set(true)
@@ -1112,7 +1110,7 @@ object GroupMetadataManager {
     * @param buffer input byte-buffer
     * @return an offset-metadata object from the message
     */
-  def readOffsetMessageValue(buffer: ByteBuffer): OffsetAndMetadata = {
+  def readOffsetMessageValue(buffer: ByteBuffer): OffsetAndMetadata =
     if (buffer == null) {
       // tombstone
       null
@@ -1143,7 +1141,6 @@ object GroupMetadataManager {
         throw new IllegalStateException("Unknown offset message version")
       }
     }
-  }
 
   /**
     * Decodes the group metadata messages' payload and retrieves its member metadatafrom it
@@ -1153,7 +1150,7 @@ object GroupMetadataManager {
     */
   def readGroupMessageValue(
       groupId: String,
-      buffer: ByteBuffer): GroupMetadata = {
+      buffer: ByteBuffer): GroupMetadata =
     if (buffer == null) {
       // tombstone
       null
@@ -1221,7 +1218,6 @@ object GroupMetadataManager {
           "Unknown group metadata message version")
       }
     }
-  }
 
   // Formatter for use with tools such as console consumer: Consumer should also set exclude.internal.topics to false.
   // (specify --formatter "kafka.coordinator.GroupMetadataManager\$OffsetsMessageFormatter" when consuming __consumer_offsets)

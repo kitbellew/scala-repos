@@ -89,12 +89,11 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
     dstream.repartition(numPartitions)
 
   /** Method that generates a RDD for the given Duration */
-  def compute(validTime: Time): JavaPairRDD[K, V] = {
+  def compute(validTime: Time): JavaPairRDD[K, V] =
     dstream.compute(validTime) match {
       case Some(rdd) => new JavaPairRDD(rdd)
       case None      => null
     }
-  }
 
   /**
     * Return a new DStream which is computed based on windowed batches of this DStream.
@@ -177,9 +176,8 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
     */
   def reduceByKey(
       func: JFunction2[V, V, V],
-      partitioner: Partitioner): JavaPairDStream[K, V] = {
+      partitioner: Partitioner): JavaPairDStream[K, V] =
     dstream.reduceByKey(func, partitioner)
-  }
 
   /**
     * Combine elements of each key in DStream's RDDs using custom function. This is similar to the
@@ -228,9 +226,8 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
     *                       batching interval
     */
   def groupByKeyAndWindow(
-      windowDuration: Duration): JavaPairDStream[K, JIterable[V]] = {
+      windowDuration: Duration): JavaPairDStream[K, JIterable[V]] =
     dstream.groupByKeyAndWindow(windowDuration).mapValues(_.asJava)
-  }
 
   /**
     * Return a new DStream by applying `groupByKey` over a sliding window. Similar to
@@ -244,11 +241,10 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
     */
   def groupByKeyAndWindow(
       windowDuration: Duration,
-      slideDuration: Duration): JavaPairDStream[K, JIterable[V]] = {
+      slideDuration: Duration): JavaPairDStream[K, JIterable[V]] =
     dstream
       .groupByKeyAndWindow(windowDuration, slideDuration)
       .mapValues(_.asJava)
-  }
 
   /**
     * Return a new DStream by applying `groupByKey` over a sliding window on `this` DStream.
@@ -264,11 +260,10 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
   def groupByKeyAndWindow(
       windowDuration: Duration,
       slideDuration: Duration,
-      numPartitions: Int): JavaPairDStream[K, JIterable[V]] = {
+      numPartitions: Int): JavaPairDStream[K, JIterable[V]] =
     dstream
       .groupByKeyAndWindow(windowDuration, slideDuration, numPartitions)
       .mapValues(_.asJava)
-  }
 
   /**
     * Return a new DStream by applying `groupByKey` over a sliding window on `this` DStream.
@@ -285,11 +280,10 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
       windowDuration: Duration,
       slideDuration: Duration,
       partitioner: Partitioner
-  ): JavaPairDStream[K, JIterable[V]] = {
+  ): JavaPairDStream[K, JIterable[V]] =
     dstream
       .groupByKeyAndWindow(windowDuration, slideDuration, partitioner)
       .mapValues(_.asJava)
-  }
 
   /**
     * Create a new DStream by applying `reduceByKey` over a sliding window on `this` DStream.
@@ -302,9 +296,8 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
     */
   def reduceByKeyAndWindow(
       reduceFunc: JFunction2[V, V, V],
-      windowDuration: Duration): JavaPairDStream[K, V] = {
+      windowDuration: Duration): JavaPairDStream[K, V] =
     dstream.reduceByKeyAndWindow(reduceFunc, windowDuration)
-  }
 
   /**
     * Return a new DStream by applying `reduceByKey` over a sliding window. This is similar to
@@ -321,9 +314,8 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
       reduceFunc: JFunction2[V, V, V],
       windowDuration: Duration,
       slideDuration: Duration
-  ): JavaPairDStream[K, V] = {
+  ): JavaPairDStream[K, V] =
     dstream.reduceByKeyAndWindow(reduceFunc, windowDuration, slideDuration)
-  }
 
   /**
     * Return a new DStream by applying `reduceByKey` over a sliding window. This is similar to
@@ -342,13 +334,12 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
       windowDuration: Duration,
       slideDuration: Duration,
       numPartitions: Int
-  ): JavaPairDStream[K, V] = {
+  ): JavaPairDStream[K, V] =
     dstream.reduceByKeyAndWindow(
       reduceFunc,
       windowDuration,
       slideDuration,
       numPartitions)
-  }
 
   /**
     * Return a new DStream by applying `reduceByKey` over a sliding window. Similar to
@@ -367,13 +358,12 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
       windowDuration: Duration,
       slideDuration: Duration,
       partitioner: Partitioner
-  ): JavaPairDStream[K, V] = {
+  ): JavaPairDStream[K, V] =
     dstream.reduceByKeyAndWindow(
       reduceFunc,
       windowDuration,
       slideDuration,
       partitioner)
-  }
 
   /**
     * Return a new DStream by reducing over a using incremental computation.
@@ -396,13 +386,12 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
       invReduceFunc: JFunction2[V, V, V],
       windowDuration: Duration,
       slideDuration: Duration
-  ): JavaPairDStream[K, V] = {
+  ): JavaPairDStream[K, V] =
     dstream.reduceByKeyAndWindow(
       reduceFunc,
       invReduceFunc,
       windowDuration,
       slideDuration)
-  }
 
   /**
     * Return a new DStream by applying incremental `reduceByKey` over a sliding window.
@@ -431,7 +420,7 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
       slideDuration: Duration,
       numPartitions: Int,
       filterFunc: JFunction[(K, V), java.lang.Boolean]
-  ): JavaPairDStream[K, V] = {
+  ): JavaPairDStream[K, V] =
     dstream.reduceByKeyAndWindow(
       reduceFunc,
       invReduceFunc,
@@ -440,7 +429,6 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
       numPartitions,
       (p: (K, V)) => filterFunc(p).booleanValue()
     )
-  }
 
   /**
     * Return a new DStream by applying incremental `reduceByKey` over a sliding window.
@@ -469,7 +457,7 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
       slideDuration: Duration,
       partitioner: Partitioner,
       filterFunc: JFunction[(K, V), java.lang.Boolean]
-  ): JavaPairDStream[K, V] = {
+  ): JavaPairDStream[K, V] =
     dstream.reduceByKeyAndWindow(
       reduceFunc,
       invReduceFunc,
@@ -478,7 +466,6 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
       partitioner,
       (p: (K, V)) => filterFunc(p).booleanValue()
     )
-  }
 
   /**
     * :: Experimental ::
@@ -511,12 +498,11 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
   @Experimental
   def mapWithState[StateType, MappedType](
       spec: StateSpec[K, V, StateType, MappedType])
-      : JavaMapWithStateDStream[K, V, StateType, MappedType] = {
+      : JavaMapWithStateDStream[K, V, StateType, MappedType] =
     new JavaMapWithStateDStream(
       dstream.mapWithState(spec)(
         JavaSparkContext.fakeClassTag,
         JavaSparkContext.fakeClassTag))
-  }
 
   private def convertUpdateStateFunction[S](
       in: JFunction2[JList[V], Optional[S], Optional[S]])
@@ -924,18 +910,16 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
   }
 
   /** Convert to a JavaDStream */
-  def toJavaDStream(): JavaDStream[(K, V)] = {
+  def toJavaDStream(): JavaDStream[(K, V)] =
     new JavaDStream[(K, V)](dstream)
-  }
 
   override val classTag: ClassTag[(K, V)] = fakeClassTag
 }
 
 object JavaPairDStream {
   implicit def fromPairDStream[K: ClassTag, V: ClassTag](
-      dstream: DStream[(K, V)]): JavaPairDStream[K, V] = {
+      dstream: DStream[(K, V)]): JavaPairDStream[K, V] =
     new JavaPairDStream[K, V](dstream)
-  }
 
   def fromJavaDStream[K, V](
       dstream: JavaDStream[(K, V)]): JavaPairDStream[K, V] = {
@@ -945,7 +929,6 @@ object JavaPairDStream {
   }
 
   def scalaToJavaLong[K: ClassTag](
-      dstream: JavaPairDStream[K, Long]): JavaPairDStream[K, jl.Long] = {
+      dstream: JavaPairDStream[K, Long]): JavaPairDStream[K, jl.Long] =
     DStream.toPairDStreamFunctions(dstream.dstream).mapValues(jl.Long.valueOf)
-  }
 }

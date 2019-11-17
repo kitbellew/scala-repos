@@ -65,15 +65,12 @@ private[graphx] class VertexPartitionOps[VD: ClassTag](
     self: VertexPartition[VD])
     extends VertexPartitionBaseOps[VD, VertexPartition](self) {
 
-  def withIndex(index: VertexIdToIndexMap): VertexPartition[VD] = {
+  def withIndex(index: VertexIdToIndexMap): VertexPartition[VD] =
     new VertexPartition(index, self.values, self.mask)
-  }
 
-  def withValues[VD2: ClassTag](values: Array[VD2]): VertexPartition[VD2] = {
+  def withValues[VD2: ClassTag](values: Array[VD2]): VertexPartition[VD2] =
     new VertexPartition(self.index, values, self.mask)
-  }
 
-  def withMask(mask: BitSet): VertexPartition[VD] = {
+  def withMask(mask: BitSet): VertexPartition[VD] =
     new VertexPartition(self.index, self.values, mask)
-  }
 }

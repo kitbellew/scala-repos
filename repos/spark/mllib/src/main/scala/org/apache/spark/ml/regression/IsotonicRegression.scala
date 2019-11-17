@@ -81,9 +81,8 @@ private[regression] trait IsotonicRegressionBase
   setDefault(isotonic -> true, featureIndex -> 0)
 
   /** Checks whether the input has weight column. */
-  protected[ml] def hasWeightCol: Boolean = {
+  protected[ml] def hasWeightCol: Boolean =
     isDefined(weightCol) && $(weightCol) != ""
-  }
 
   /**
     * Extracts (label, feature, weight) from input dataset.
@@ -199,9 +198,8 @@ class IsotonicRegression @Since("1.5.0") (
   }
 
   @Since("1.5.0")
-  override def transformSchema(schema: StructType): StructType = {
+  override def transformSchema(schema: StructType): StructType =
     validateAndTransformSchema(schema, fitting = true)
-  }
 }
 
 @Since("1.6.0")
@@ -254,10 +252,9 @@ class IsotonicRegressionModel private[ml] (
   def predictions: Vector = Vectors.dense(oldModel.predictions)
 
   @Since("1.5.0")
-  override def copy(extra: ParamMap): IsotonicRegressionModel = {
+  override def copy(extra: ParamMap): IsotonicRegressionModel =
     copyValues(new IsotonicRegressionModel(uid, oldModel), extra)
       .setParent(parent)
-  }
 
   @Since("1.5.0")
   override def transform(dataset: DataFrame): DataFrame = {
@@ -276,9 +273,8 @@ class IsotonicRegressionModel private[ml] (
   }
 
   @Since("1.5.0")
-  override def transformSchema(schema: StructType): StructType = {
+  override def transformSchema(schema: StructType): StructType =
     validateAndTransformSchema(schema, fitting = false)
-  }
 
   @Since("1.6.0")
   override def write: MLWriter =

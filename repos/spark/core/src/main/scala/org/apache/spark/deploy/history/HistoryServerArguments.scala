@@ -35,7 +35,7 @@ private[history] class HistoryServerArguments(
   parse(args.toList)
 
   @tailrec
-  private def parse(args: List[String]): Unit = {
+  private def parse(args: List[String]): Unit =
     if (args.length == 1) {
       setLogDirectory(args.head)
     } else {
@@ -56,7 +56,6 @@ private[history] class HistoryServerArguments(
           printUsageAndExit(1)
       }
     }
-  }
 
   private def setLogDirectory(value: String): Unit = {
     logWarning(

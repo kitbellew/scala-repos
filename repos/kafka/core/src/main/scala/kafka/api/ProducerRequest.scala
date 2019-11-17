@@ -116,7 +116,7 @@ case class ProducerRequest(
     }
   }
 
-  def sizeInBytes: Int = {
+  def sizeInBytes: Int =
     2 + /* versionId */
     4 + /* correlationId */
     shortStringLength(clientId) + /* client id */
@@ -133,18 +133,16 @@ case class ProducerRequest(
           })
         }
     })
-  }
 
   def numPartitions = data.size
 
-  override def toString(): String = {
+  override def toString(): String =
     describe(true)
-  }
 
   override def handleError(
       e: Throwable,
       requestChannel: RequestChannel,
-      request: RequestChannel.Request): Unit = {
+      request: RequestChannel.Request): Unit =
     if (request.requestObj.asInstanceOf[ProducerRequest].requiredAcks == 0) {
       requestChannel.closeConnection(request.processor, request)
     } else {
@@ -164,7 +162,6 @@ case class ProducerRequest(
           request,
           new RequestOrResponseSend(request.connectionId, errorResponse)))
     }
-  }
 
   override def describe(details: Boolean): String = {
     val producerRequest = new StringBuilder

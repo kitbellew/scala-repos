@@ -89,7 +89,7 @@ class RowFormatSpec
   def arrayColumnsFor(size: Int, refs: List[ColumnRef]): List[ArrayColumn[_]] =
     refs map JDBMSlice.columnFor(CPath.Identity, size) map (_._2)
 
-  def verify(rows: List[List[CValue]], cols: List[Column]) = {
+  def verify(rows: List[List[CValue]], cols: List[Column]) =
     rows.zipWithIndex foreach {
       case (values, row) =>
         (values zip cols) foreach
@@ -110,7 +110,6 @@ class RowFormatSpec
               col(row) must_== xs
           })
     }
-  }
 
   implicit lazy val arbColumnRefs = Arbitrary(genColumnRefs)
 

@@ -101,7 +101,7 @@ class AsyncSemaphore protected (initialPermits: Int, maxWaiters: Option[Int]) {
     * or a Future.Exception[RejectedExecutionException] if the configured maximum number of waitq
     * would be exceeded.
     */
-  def acquire(): Future[Permit] = {
+  def acquire(): Future[Permit] =
     self.synchronized {
       if (closed.isDefined) return Future.exception(closed.get)
 
@@ -125,7 +125,6 @@ class AsyncSemaphore protected (initialPermits: Int, maxWaiters: Option[Int]) {
         }
       }
     }
-  }
 
   /**
     * Execute the function asynchronously when a permit becomes available.
@@ -137,7 +136,7 @@ class AsyncSemaphore protected (initialPermits: Int, maxWaiters: Option[Int]) {
     *         maximum value of waitq is reached, Future.Exception[RejectedExecutionException] is
     *         returned.
     */
-  def acquireAndRun[T](func: => Future[T]): Future[T] = {
+  def acquireAndRun[T](func: => Future[T]): Future[T] =
     acquire() flatMap { permit =>
       val f = try func
       catch {
@@ -151,7 +150,6 @@ class AsyncSemaphore protected (initialPermits: Int, maxWaiters: Option[Int]) {
         permit.release()
       }
     }
-  }
 
   /**
     * Execute the function when a permit becomes available.
@@ -163,13 +161,12 @@ class AsyncSemaphore protected (initialPermits: Int, maxWaiters: Option[Int]) {
     *         maximum value of waitq is reached, Future.Exception[RejectedExecutionException] is
     *         returned.
     */
-  def acquireAndRunSync[T](func: => T): Future[T] = {
+  def acquireAndRunSync[T](func: => T): Future[T] =
     acquire() flatMap { permit =>
       Future(func) ensure {
         permit.release()
       }
     }
-  }
 }
 
 object AsyncSemaphore {

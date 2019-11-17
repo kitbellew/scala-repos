@@ -54,7 +54,6 @@ final class StackTraceElement(
     result
   }
 
-  override def hashCode(): Int = {
+  override def hashCode(): Int =
     declaringClass.hashCode() ^ methodName.hashCode()
-  }
 }

@@ -65,7 +65,7 @@ private[v2] object InfoEmbedResolver {
     }
   }
 
-  def resolveGroup(embeds: Set[String]): Set[GroupInfo.Embed] = {
+  def resolveGroup(embeds: Set[String]): Set[GroupInfo.Embed] =
     embeds.flatMap {
       case EmbedGroups => Some(GroupInfo.Embed.Groups)
       case EmbedApps   => Some(GroupInfo.Embed.Apps)
@@ -73,7 +73,6 @@ private[v2] object InfoEmbedResolver {
         log.warn(s"unknown group embed argument: $unknown")
         None
     }
-  }
 
   /**
     * Resolve apps and groups embed parameter into distinct sets.

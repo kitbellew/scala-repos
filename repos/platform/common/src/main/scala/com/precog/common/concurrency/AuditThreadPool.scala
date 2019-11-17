@@ -81,13 +81,12 @@ class AuditExecutor(
 
   def totalTime: Long = cumulativeCpuTime.get
 
-  private def workerFinished(worker: WorkerThread): Unit = {
+  private def workerFinished(worker: WorkerThread): Unit =
     threadUpdateLock.synchronized {
       workers -= worker
       cumulativeCpuTime.addAndGet(worker.cpuDelta)
       threadCount.decrementAndGet
     }
-  }
 
   /**
     Called by threads to determine if they should continue waiting when the queue has no work for them

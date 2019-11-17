@@ -269,9 +269,8 @@ class RequestBuilder[HasUrl, HasForm] private[http] (
     *
     * Java convenience variant.
     */
-  def setHeader(name: String, values: java.lang.Iterable[String]): This = {
+  def setHeader(name: String, values: java.lang.Iterable[String]): This =
     setHeader(name, values.toSeq)
-  }
 
   /**
     * Add a new header with the specified name and value.
@@ -285,9 +284,8 @@ class RequestBuilder[HasUrl, HasForm] private[http] (
   /**
     * Add group of headers expressed as a Map
     */
-  def addHeaders(headers: Map[String, String]): This = {
+  def addHeaders(headers: Map[String, String]): This =
     headers.foldLeft(this) { case (b, (k, v)) => b.addHeader(k, v) }
-  }
 
   /**
     * Declare the request will be proxied. Results in using the
@@ -325,12 +323,11 @@ class RequestBuilder[HasUrl, HasForm] private[http] (
       implicit HTTP_REQUEST_BUILDER_IS_NOT_FULLY_SPECIFIED: RequestBuilder.RequestEvidence[
         HasUrl,
         HasForm]
-  ): Request = {
+  ): Request =
     content match {
       case Some(content) => withContent(method, content)
       case None          => withoutContent(method)
     }
-  }
 
   /**
     * Construct an HTTP GET request.

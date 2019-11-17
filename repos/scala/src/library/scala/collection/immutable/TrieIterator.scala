@@ -101,13 +101,12 @@ private[collection] abstract class TrieIterator[+T](elems: Array[Iterable[T]])
       }
 
   def hasNext = (subIter ne null) || depth >= 0
-  def next(): T = {
+  def next(): T =
     if (subIter ne null) {
       val el = subIter.next()
       if (!subIter.hasNext) subIter = null
       el
     } else next0(arrayD, posD)
-  }
 
   @tailrec private[this] def next0(elems: Array[Iterable[T]], i: Int): T = {
     if (i == elems.length - 1) {

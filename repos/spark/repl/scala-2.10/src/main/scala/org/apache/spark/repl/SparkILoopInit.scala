@@ -71,13 +71,12 @@ private[repl] trait SparkILoopInit { self: SparkILoop =>
 
   // Spins off a thread which awaits a single message once the interpreter
   // has been initialized.
-  protected def createAsyncListener() = {
+  protected def createAsyncListener() =
     io.spawn {
       withLock(initCompilerCondition.await())
       asyncMessage("[info] compiler init time: " + elapsed() + " s.")
       postInitialization()
     }
-  }
 
   // called from main repl loop
   protected def awaitInitialized(): Boolean = {

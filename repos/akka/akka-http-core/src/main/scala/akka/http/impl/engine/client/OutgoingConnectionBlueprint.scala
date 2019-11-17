@@ -207,14 +207,13 @@ private[http] object OutgoingConnectionBlueprint {
         private def idle = this
         private var completionDeferred = false
 
-        def setIdleHandlers(): Unit = {
+        def setIdleHandlers(): Unit =
           if (completionDeferred) {
             completeStage()
           } else {
             setHandler(in, idle)
             setHandler(out, idle)
           }
-        }
 
         def onPush(): Unit = grab(in) match {
           case ResponseStart(
@@ -236,11 +235,10 @@ private[http] object OutgoingConnectionBlueprint {
               s"ResponseStart expected but $other received.")
         }
 
-        def onPull(): Unit = {
+        def onPull(): Unit =
           if (!entitySubstreamStarted) pull(in)
-        }
 
-        override def onDownstreamFinish(): Unit = {
+        override def onDownstreamFinish(): Unit =
           // if downstream cancels while streaming entity,
           // make sure we also cancel the entity source, but
           // after being done with streaming the entity
@@ -249,7 +247,6 @@ private[http] object OutgoingConnectionBlueprint {
           } else {
             completeStage()
           }
-        }
 
         setIdleHandlers()
 
@@ -300,7 +297,7 @@ private[http] object OutgoingConnectionBlueprint {
 
         private def createEntity(
             creator: EntityCreator[ResponseOutput, ResponseEntity])
-            : ResponseEntity = {
+            : ResponseEntity =
           creator match {
             case StrictEntityCreator(entity) ⇒
               // upstream demanded one element, which it just got
@@ -316,7 +313,6 @@ private[http] object OutgoingConnectionBlueprint {
               setHandler(in, substreamHandler)
               creator(Source.fromGraph(entitySource.source))
           }
-        }
       }
   }
 

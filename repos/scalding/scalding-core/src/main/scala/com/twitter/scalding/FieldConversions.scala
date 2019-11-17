@@ -68,14 +68,13 @@ trait LowPriorityFieldConversions {
 trait FieldConversions extends LowPriorityFieldConversions {
 
   // Cascading Fields are either java.lang.String or java.lang.Integer, both are comparable.
-  def asList(f: Fields): List[Comparable[_]] = {
+  def asList(f: Fields): List[Comparable[_]] =
     f.iterator.asScala.toList.asInstanceOf[List[Comparable[_]]]
-  }
   // Cascading Fields are either java.lang.String or java.lang.Integer, both are comparable.
   def asSet(f: Fields): Set[Comparable[_]] = asList(f).toSet
 
   // TODO get the comparator also
-  def getField(f: Fields, idx: Int): Fields = { new Fields(f.get(idx)) }
+  def getField(f: Fields, idx: Int): Fields = new Fields(f.get(idx))
 
   def hasInts(f: Fields): Boolean = f.iterator.asScala.exists {
     _.isInstanceOf[java.lang.Integer]
@@ -90,7 +89,7 @@ trait FieldConversions extends LowPriorityFieldConversions {
     * 3) If they are equal, REPLACE is used.
     * 4) Otherwise, ALL is used.
     */
-  def defaultMode(fromFields: Fields, toFields: Fields): Fields = {
+  def defaultMode(fromFields: Fields, toFields: Fields): Fields =
     if (toFields.isArguments) {
       //In this case we replace the input with the output
       Fields.REPLACE
@@ -116,7 +115,6 @@ trait FieldConversions extends LowPriorityFieldConversions {
         case (false, false) => Fields.ALL
       }
     }
-  }
 
   //Single entry fields:
   implicit def unitToFields(u: Unit) = Fields.NONE
@@ -128,20 +126,19 @@ trait FieldConversions extends LowPriorityFieldConversions {
   /**
     * '* means Fields.ALL, otherwise we take the .name
     */
-  implicit def symbolToFields(x: Symbol) = {
+  implicit def symbolToFields(x: Symbol) =
     if (x == '*) {
       Fields.ALL
     } else {
       new Fields(x.name)
     }
-  }
   implicit def fieldToFields(f: Field[_]) = RichFields(f)
 
   @tailrec
   final def newSymbol(
       avoid: Set[Symbol],
       guess: Symbol,
-      trial: Int = 0): Symbol = {
+      trial: Int = 0): Symbol =
     if (!avoid(guess)) {
       //We are good:
       guess
@@ -155,7 +152,6 @@ trait FieldConversions extends LowPriorityFieldConversions {
         newSymbol(avoid, guess, trial + 1)
       }
     }
-  }
 
   final def ensureUniqueFields(
       left: Fields,
@@ -196,9 +192,8 @@ trait FieldConversions extends LowPriorityFieldConversions {
     new Fields(f.toSeq.map(_.name): _*)
   implicit def strFields[T <: TraversableOnce[String]](f: T) =
     new Fields(f.toSeq: _*)
-  implicit def intFields[T <: TraversableOnce[Int]](f: T) = {
+  implicit def intFields[T <: TraversableOnce[Int]](f: T) =
     new Fields(f.toSeq.map { new java.lang.Integer(_) }: _*)
-  }
   implicit def fieldFields[T <: TraversableOnce[Field[_]]](f: T) =
     RichFields(f.toSeq)
 

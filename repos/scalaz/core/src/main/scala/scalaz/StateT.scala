@@ -282,7 +282,7 @@ private trait StateTBindRec[S, F[_]]
   implicit def B: BindRec[F]
 
   def tailrecM[A, B](f: A => StateT[F, S, A \/ B])(a: A): StateT[F, S, B] = {
-    def go(t: (S, A)): F[(S, A) \/ (S, B)] = {
+    def go(t: (S, A)): F[(S, A) \/ (S, B)] =
       F.map(f(t._2)(t._1)) {
         case (s, m) =>
           m match {
@@ -290,7 +290,6 @@ private trait StateTBindRec[S, F[_]]
             case \/-(b)  => \/-((s, b))
           }
       }
-    }
 
     IndexedStateT(s => B.tailrecM(go)((s, a)))
   }

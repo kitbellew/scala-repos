@@ -149,7 +149,7 @@ object TerminateJson {
       (stack, buf)
     }
 
-    def terminal(stack: ArrayStack[Int]): Option[CharBuffer] = {
+    def terminal(stack: ArrayStack[Int]): Option[CharBuffer] =
       if (stack.isEmpty) None
       else
         Some({
@@ -169,11 +169,10 @@ object TerminateJson {
           }
           CharBuffer.wrap(sb.toString)
         })
-    }
 
     def rec(
         stack0: ArrayStack[Int],
-        stream: StreamT[M, CharBuffer]): StreamT[M, CharBuffer] = {
+        stream: StreamT[M, CharBuffer]): StreamT[M, CharBuffer] =
       StreamT(stream.uncons map {
         case Some((buf0, tail)) =>
           val (stack, buf) = build(stack0, buf0)
@@ -183,7 +182,6 @@ object TerminateJson {
             StreamT.Yield(buf, StreamT.empty)
           } getOrElse StreamT.Done
       })
-    }
 
     val init = new ArrayStack[Int]
     init.push(ExpectValue)

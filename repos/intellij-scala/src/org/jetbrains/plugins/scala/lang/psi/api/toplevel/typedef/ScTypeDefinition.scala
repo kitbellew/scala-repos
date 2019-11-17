@@ -68,9 +68,8 @@ trait ScTypeDefinition
 
   def getSourceMirrorClass: PsiClass
 
-  override def isEquivalentTo(another: PsiElement): Boolean = {
+  override def isEquivalentTo(another: PsiElement): Boolean =
     PsiClassImplUtil.isClassEquivalentTo(this, another)
-  }
 
   def allInnerTypeDefinitions: Seq[ScTypeDefinition] = members.collect {
     case td: ScTypeDefinition => td

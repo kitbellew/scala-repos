@@ -26,14 +26,13 @@ object TestRunner {
     val eventHandler = new SimpleEventHandler
     val loggers = Array[Logger](new SimpleLogger)
 
-    def taskLoop(tasks: Iterable[Task]): Unit = {
+    def taskLoop(tasks: Iterable[Task]): Unit =
       if (tasks.nonEmpty)
         tasks.head.execute(
           eventHandler,
           loggers,
           newTasks => taskLoop(tasks.tail ++ newTasks))
       else if (eventHandler.hasFailed) sys.error("Some tests have failed")
-    }
 
     taskLoop(tasks)
   }
@@ -48,10 +47,9 @@ object TestRunner {
 
     def hasFailed: Boolean = failed
 
-    def handle(ev: Event) = {
+    def handle(ev: Event) =
       if (ev.status == Status.Error || ev.status == Status.Failure)
         failed = true
-    }
   }
 
   private class SimpleLogger extends Logger {

@@ -18,7 +18,7 @@ class SuppressByScalaCommentFix(key: HighlightDisplayKey)
     extends SuppressByCommentFix(key, classOf[ScBlockStatement]) {
   override def getContainer(context: PsiElement): PsiElement = {
     @tailrec
-    def inner(elem: PsiElement): ScBlockStatement = {
+    def inner(elem: PsiElement): ScBlockStatement =
       elem match {
         case (bs: ScBlockStatement) childOf (_: ScBlock | _: ScExtendsBlock |
             _: ScEarlyDefinitions) =>
@@ -27,7 +27,6 @@ class SuppressByScalaCommentFix(key: HighlightDisplayKey)
         case _ =>
           inner(PsiTreeUtil.getParentOfType(elem, classOf[ScBlockStatement]))
       }
-    }
     inner(context)
   }
 }

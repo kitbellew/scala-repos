@@ -422,7 +422,7 @@ private[math] object Division {
 
     @inline
     @tailrec
-    def loop(): Unit = {
+    def loop(): Unit =
       // INV: op2 >= op1 && both are odd unless op1 = 0
 
       // Optimization for small operands
@@ -451,7 +451,6 @@ private[math] object Division {
         op1 = swap
         if (op1.sign != 0) loop
       }
-    }
 
     loop()
     op2.shiftLeft(pow2Count)
@@ -641,7 +640,7 @@ private[math] object Division {
 
       @inline
       @tailrec
-      def loop(): Unit = {
+      def loop(): Unit =
         if (u.compareTo(v) <= BigInteger.EQUALS) {
           Elementary.inplaceSubtract(v, u)
           if (v.signum() != 0) {
@@ -653,7 +652,6 @@ private[math] object Division {
             loop()
           }
         }
-      }
       loop()
     }
 

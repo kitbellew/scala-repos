@@ -127,7 +127,7 @@ class VecInt(values: Array[Int]) extends Vec[Int] { self =>
     }
   }
 
-  private[saddle] def toArray: Array[Int] = {
+  private[saddle] def toArray: Array[Int] =
     // need to check if we're a view on an array
     if (!needsCopy) values
     else {
@@ -139,7 +139,6 @@ class VecInt(values: Array[Int]) extends Vec[Int] { self =>
       }
       buf
     }
-  }
 
   /** Default equality does an iterative, element-wise equality check of all values. */
   override def equals(o: Any): Boolean = o match {

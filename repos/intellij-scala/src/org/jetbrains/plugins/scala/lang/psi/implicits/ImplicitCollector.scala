@@ -63,7 +63,7 @@ object ImplicitCollector {
   val cache = ContainerUtil
     .newConcurrentMap[(PsiElement, ScType), Seq[ScalaResolveResult]]()
 
-  def exprType(expr: ScExpression, fromUnder: Boolean): Option[ScType] = {
+  def exprType(expr: ScExpression, fromUnder: Boolean): Option[ScType] =
     expr.getTypeWithoutImplicits(fromUnderscore = fromUnder).toOption.map {
       case tp =>
         ScType.extractDesignatorSingletonType(tp) match {
@@ -71,7 +71,6 @@ object ImplicitCollector {
           case _         => tp
         }
     }
-  }
 
   sealed trait ImplicitResult
 
@@ -474,7 +473,7 @@ class ImplicitCollector(
                         val polymorphicTypeParameters =
                           typeParameters.map(new TypeParameter(_))
                         def inferValueType(
-                            tp: ScType): (ScType, Seq[TypeParameter]) = {
+                            tp: ScType): (ScType, Seq[TypeParameter]) =
                           if (isExtensionConversion) {
                             tp match {
                               case ScTypePolymorphicType(
@@ -504,7 +503,6 @@ class ImplicitCollector(
                                 (tp.inferValueType, typeParams)
                               case _ => (tp.inferValueType, Seq.empty)
                             }
-                        }
                         var nonValueType: TypeResult[ScType] = Success(
                           if (polymorphicTypeParameters.isEmpty) methodType
                           else
@@ -514,13 +512,12 @@ class ImplicitCollector(
                           Some(place))
                         try {
                           def reportWrong(result: ImplicitResult)
-                              : Some[(ScalaResolveResult, ScSubstitutor)] = {
+                              : Some[(ScalaResolveResult, ScSubstitutor)] =
                             Some(
                               c.copy(
                                 problems = Seq(WrongTypeParameterInferred),
                                 implicitReason = result),
                               subst)
-                          }
                           def updateImplicitParameters(
                               ): Some[(ScalaResolveResult, ScSubstitutor)] = {
                             val expected = Some(tp)
@@ -592,7 +589,7 @@ class ImplicitCollector(
                               def addImportsUsed(
                                   result: ScalaResolveResult,
                                   results: Seq[ScalaResolveResult])
-                                  : ScalaResolveResult = {
+                                  : ScalaResolveResult =
                                 results.foldLeft(result) {
                                   case (
                                       r1: ScalaResolveResult,
@@ -600,7 +597,6 @@ class ImplicitCollector(
                                     r1.copy(
                                       importsUsed = r1.importsUsed ++ r2.importsUsed)
                                 }
-                              }
                               Some(
                                 addImportsUsed(
                                   c.copy(
@@ -862,7 +858,7 @@ class ImplicitCollector(
     updateAliases(noAbstracts)
   }
 
-  private def coreType(tp: ScType): ScType = {
+  private def coreType(tp: ScType): ScType =
     tp match {
       case ScCompoundType(comps, _, _) =>
         abstractsToUpper(ScCompoundType(comps, Map.empty, Map.empty))
@@ -892,14 +888,14 @@ class ImplicitCollector(
           )).removeUndefines()
       case _ => abstractsToUpper(tp).removeUndefines()
     }
-  }
 
-  private def dominates(t: ScType, u: ScType): Boolean = {
+  private def dominates(t: ScType, u: ScType): Boolean =
     complexity(t) > complexity(u) &&
-    topLevelTypeConstructors(t).intersect(topLevelTypeConstructors(u)).nonEmpty
-  }
+      topLevelTypeConstructors(t)
+        .intersect(topLevelTypeConstructors(u))
+        .nonEmpty
 
-  private def topLevelTypeConstructors(tp: ScType): Set[ScType] = {
+  private def topLevelTypeConstructors(tp: ScType): Set[ScType] =
     tp match {
       case ScProjectionType(_, element, _)    => Set(ScDesignatorType(element))
       case ScParameterizedType(designator, _) => Set(designator)
@@ -911,9 +907,8 @@ class ImplicitCollector(
         comps.flatMap(topLevelTypeConstructors).toSet
       case _ => Set(tp)
     }
-  }
 
-  private def complexity(tp: ScType): Int = {
+  private def complexity(tp: ScType): Int =
     tp match {
       case ScProjectionType(proj, _, _) => 1 + complexity(proj)
       case ScParameterizedType(des, args) =>
@@ -925,5 +920,4 @@ class ImplicitCollector(
       case ScCompoundType(comps, _, _) => comps.foldLeft(0)(_ + complexity(_))
       case _                           => 1
     }
-  }
 }

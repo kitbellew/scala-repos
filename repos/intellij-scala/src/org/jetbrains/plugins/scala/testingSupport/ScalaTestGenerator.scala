@@ -31,7 +31,7 @@ import org.jetbrains.plugins.scala.testingSupport.test.{
 }
 
 class ScalaTestGenerator extends TestGenerator {
-  def generateTest(project: Project, d: CreateTestDialog): PsiElement = {
+  def generateTest(project: Project, d: CreateTestDialog): PsiElement =
     postponeFormattingWithin(project) {
       inWriteAction {
         try {
@@ -51,7 +51,6 @@ class ScalaTestGenerator extends TestGenerator {
         }
       }
     }
-  }
 
   override def toString: String = ScalaFileType.SCALA_LANGUAGE.getDisplayName
 

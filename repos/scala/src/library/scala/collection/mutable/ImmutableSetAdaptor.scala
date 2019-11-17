@@ -48,5 +48,5 @@ class ImmutableSetAdaptor[A](protected var set: immutable.Set[A])
 
   def -=(elem: A): this.type = { set = set - elem; this }
 
-  override def clear(): Unit = { set = set.empty }
+  override def clear(): Unit = set = set.empty
 }

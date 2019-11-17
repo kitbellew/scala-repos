@@ -20,7 +20,7 @@ object JavaParsers {
   val parse = BodyParsers.parse
 
   def toJavaMultipartFormData[A](multipart: MultipartFormData[TemporaryFile])
-      : play.mvc.Http.MultipartFormData[File] = {
+      : play.mvc.Http.MultipartFormData[File] =
     new play.mvc.Http.MultipartFormData[File] {
       lazy val asFormUrlEncoded = {
         multipart.asFormUrlEncoded.mapValues(_.toArray).asJava
@@ -35,9 +35,8 @@ object JavaParsers {
         }.asJava
       }
     }
-  }
 
-  def toJavaRaw(rawBuffer: RawBuffer): play.mvc.Http.RawBuffer = {
+  def toJavaRaw(rawBuffer: RawBuffer): play.mvc.Http.RawBuffer =
     new play.mvc.Http.RawBuffer {
       def size = rawBuffer.size
       def asBytes(maxLength: Int) = rawBuffer.asBytes(maxLength).orNull
@@ -45,7 +44,6 @@ object JavaParsers {
       def asFile = rawBuffer.asFile
       override def toString = rawBuffer.toString
     }
-  }
 
   def trampoline: Executor =
     play.api.libs.iteratee.Execution.Implicits.trampoline

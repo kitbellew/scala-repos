@@ -340,10 +340,9 @@ object Task {
         case (a, residuals) =>
           a.map((_, residuals.map(new Task(_))))
       })
-    override def gatherUnordered[A](fs: Seq[Task[A]]): Task[List[A]] = {
+    override def gatherUnordered[A](fs: Seq[Task[A]]): Task[List[A]] =
       new Task(F.map(F.gatherUnordered(fs.map(_ get)))(eithers =>
         Traverse[List].sequenceU(eithers)))
-    }
     def fail[A](e: Throwable): Task[A] = new Task(Future.now(-\/(e)))
     def attempt[A](a: Task[A]): Task[Throwable \/ A] = a.attempt
     def tailrecM[A, B](f: A => Task[A \/ B])(a: A): Task[B] =

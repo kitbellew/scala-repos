@@ -50,9 +50,8 @@ trait JoinAlgorithms {
     *
     */
   def coGroupBy(f: Fields, j: JoinMode = InnerJoinMode)(
-      builder: CoGroupBuilder => GroupBuilder): Pipe = {
+      builder: CoGroupBuilder => GroupBuilder): Pipe =
     builder(new CoGroupBuilder(f, j)).schedule(pipe.getName, pipe)
-  }
 
   /**
     * == WARNING ==
@@ -129,7 +128,7 @@ trait JoinAlgorithms {
   /**
     * Flip between LeftJoin to RightJoin
     */
-  private def flipJoiner(j: Joiner): Joiner = {
+  private def flipJoiner(j: Joiner): Joiner =
     j match {
       case outer: OuterJoin => outer
       case inner: InnerJoin => inner
@@ -140,9 +139,8 @@ trait JoinAlgorithms {
           "cannot use joiner " + other +
             " since it cannot be flipped safely")
     }
-  }
 
-  def joinerToJoinModes(j: Joiner) = {
+  def joinerToJoinModes(j: Joiner) =
     j match {
       case i: InnerJoin => (InnerJoinMode, InnerJoinMode)
       case l: LeftJoin  => (InnerJoinMode, OuterJoinMode)
@@ -152,7 +150,6 @@ trait JoinAlgorithms {
         throw new InvalidJoinModeException(
           "cannot convert joiner to joiner modes")
     }
-  }
 
   /**
     * Joins the first set of keys in the first pipe to the second set of keys in the second pipe.
@@ -210,9 +207,8 @@ trait JoinAlgorithms {
       fs: (Fields, Fields),
       that: Pipe,
       joiner: Joiner = new InnerJoin,
-      reducers: Int = -1) = {
+      reducers: Int = -1) =
     that.joinWithSmaller((fs._2, fs._1), pipe, flipJoiner(joiner), reducers)
-  }
 
   /**
     * This is joinWithSmaller with joiner parameter fixed to LeftJoin. If the item is absent on the right put null for the keys and values
@@ -220,19 +216,14 @@ trait JoinAlgorithms {
   def leftJoinWithSmaller(
       fs: (Fields, Fields),
       that: Pipe,
-      reducers: Int = -1) = {
+      reducers: Int = -1) =
     joinWithSmaller(fs, that, new LeftJoin, reducers)
-  }
 
   /**
     * This is joinWithLarger with joiner parameter fixed to LeftJoin. If the item is absent on the right put null for the keys and values
     */
-  def leftJoinWithLarger(
-      fs: (Fields, Fields),
-      that: Pipe,
-      reducers: Int = -1) = {
+  def leftJoinWithLarger(fs: (Fields, Fields), that: Pipe, reducers: Int = -1) =
     joinWithLarger(fs, that, new LeftJoin, reducers)
-  }
 
   /**
     * This does an assymmetric join, using cascading's "HashJoin".  This only runs through
@@ -271,7 +262,7 @@ trait JoinAlgorithms {
     }
   }
 
-  def leftJoinWithTiny(fs: (Fields, Fields), that: Pipe) = {
+  def leftJoinWithTiny(fs: (Fields, Fields), that: Pipe) =
     //Rename these pipes to avoid cascading name conflicts
     new HashJoin(
       assignName(pipe),
@@ -279,7 +270,6 @@ trait JoinAlgorithms {
       assignName(that),
       fs._2,
       WrappedJoiner(new LeftJoin))
-  }
 
   /**
     * Performs a block join, otherwise known as a replicate fragment join (RF join).
@@ -359,8 +349,7 @@ trait JoinAlgorithms {
       f: Fields,
       replication: Int,
       otherReplication: Int,
-      swap: Boolean = false): Pipe = {
-
+      swap: Boolean = false): Pipe =
     /**
       * We need to seed exactly once and capture that seed. If we let
       * each task create a seed, a restart will change the computation,
@@ -372,7 +361,6 @@ trait JoinAlgorithms {
         if (swap) rfs.map { case (i, j) => (j, i) }
         else rfs
     }
-  }
 
   /**
     * Returns a list of the dummy replication fields used to replicate groups in skewed joins.
@@ -410,10 +398,7 @@ trait JoinAlgorithms {
     }
   }
 
-  private def assertValidJoinMode(
-      joiner: Joiner,
-      left: Int,
-      right: Int): Unit = {
+  private def assertValidJoinMode(joiner: Joiner, left: Int, right: Int): Unit =
     (joiner, left, right) match {
       case (i: InnerJoin, _, _) => ()
       case (k: LeftJoin, 1, _)  => ()
@@ -423,7 +408,6 @@ trait JoinAlgorithms {
           "you cannot use joiner " + j + " with left replication " + l +
             " and right replication " + r)
     }
-  }
 
   /**
     * Performs a skewed join, which is useful when the data has extreme skew.
@@ -563,14 +547,13 @@ trait JoinAlgorithms {
       otherPipe: Pipe,
       sampleRate: Double = 0.001,
       reducers: Int = -1,
-      replicator: SkewReplication = SkewReplicationA()): Pipe = {
+      replicator: SkewReplication = SkewReplicationA()): Pipe =
     otherPipe.skewJoinWithSmaller(
       (fs._2, fs._1),
       pipe,
       sampleRate,
       reducers,
       replicator)
-  }
 
   /**
     * Helper method for performing skewed joins. This replicates the rows in {pipe} according
@@ -651,10 +634,9 @@ private[scalding] object WrappedJoiner {
   /**
     * Wrap the given Joiner in a WrappedJoiner instance if it is not already wrapped.
     */
-  def apply(joiner: Joiner): WrappedJoiner = {
+  def apply(joiner: Joiner): WrappedJoiner =
     joiner match {
       case wrapped: WrappedJoiner => wrapped
       case _                      => new WrappedJoiner(joiner)
     }
-  }
 }

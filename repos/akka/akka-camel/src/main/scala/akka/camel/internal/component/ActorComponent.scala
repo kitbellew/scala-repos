@@ -164,7 +164,7 @@ private[camel] class ActorProducer(val endpoint: ActorEndpoint, camel: Camel)
     */
   private[camel] def processExchangeAdapter(
       exchange: CamelExchangeAdapter,
-      callback: AsyncCallback): Boolean = {
+      callback: AsyncCallback): Boolean =
     if (!exchange.isOutCapable && endpoint.autoAck) {
       fireAndForget(messageFor(exchange), exchange)
       callback.done(true)
@@ -215,7 +215,6 @@ private[camel] class ActorProducer(val endpoint: ActorEndpoint, camel: Camel)
       })
       false
     }
-  }
 
   // FIXME #3074 how do we solve this with actorSelection?
   private def fireAndForget(

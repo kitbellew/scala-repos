@@ -272,7 +272,7 @@ sealed abstract class List[+A]
   }
 
   final override def map[B, That](f: A => B)(
-      implicit bf: CanBuildFrom[List[A], B, That]): That = {
+      implicit bf: CanBuildFrom[List[A], B, That]): That =
     if (bf eq List.ReusableCBF) {
       if (this eq Nil) Nil.asInstanceOf[That]
       else {
@@ -288,10 +288,9 @@ sealed abstract class List[+A]
         h.asInstanceOf[That]
       }
     } else super.map(f)
-  }
 
   final override def collect[B, That](pf: PartialFunction[A, B])(
-      implicit bf: CanBuildFrom[List[A], B, That]): That = {
+      implicit bf: CanBuildFrom[List[A], B, That]): That =
     if (bf eq List.ReusableCBF) {
       if (this eq Nil) Nil.asInstanceOf[That]
       else {
@@ -320,10 +319,9 @@ sealed abstract class List[+A]
         h.asInstanceOf[That]
       }
     } else super.collect(pf)
-  }
 
   final override def flatMap[B, That](f: A => GenTraversableOnce[B])(
-      implicit bf: CanBuildFrom[List[A], B, That]): That = {
+      implicit bf: CanBuildFrom[List[A], B, That]): That =
     if (bf eq List.ReusableCBF) {
       if (this eq Nil) Nil.asInstanceOf[That]
       else {
@@ -348,7 +346,6 @@ sealed abstract class List[+A]
         (if (!found) Nil else h).asInstanceOf[That]
       }
     } else super.flatMap(f)
-  }
 
   @inline final override def takeWhile(p: A => Boolean): List[A] = {
     val b = new ListBuffer[A]

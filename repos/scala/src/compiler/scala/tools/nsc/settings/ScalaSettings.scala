@@ -526,12 +526,11 @@ trait ScalaSettings
     descr = "Enable optimizations",
     domain = YoptChoices)
 
-  private def optEnabled(choice: YoptChoices.Choice) = {
+  private def optEnabled(choice: YoptChoices.Choice) =
     !Yopt.contains(YoptChoices.lNone) && {
       Yopt.contains(choice) || !Yopt.isSetByUser &&
       YoptChoices.lDefault.expandsTo.contains(choice)
     }
-  }
 
   def YoptNone = Yopt.contains(YoptChoices.lNone)
   def YoptUnreachableCode = optEnabled(YoptChoices.unreachableCode)
@@ -733,7 +732,7 @@ trait ScalaSettings
     val Discard = "discard"
   }
 
-  def conflictWarning: Option[String] = {
+  def conflictWarning: Option[String] =
     // See cd878232b5 for an example how to warn about conflicting settings
 
     /*
@@ -746,7 +745,6 @@ trait ScalaSettings
      */
 
     None
-  }
 }
 
 object ClassPathRepresentationType {

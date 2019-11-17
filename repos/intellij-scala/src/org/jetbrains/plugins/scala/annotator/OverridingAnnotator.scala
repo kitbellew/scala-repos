@@ -33,7 +33,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.Signature
   * Date: 30.01.12
   */
 trait OverridingAnnotator {
-  private def isConcreteElement(element: PsiElement): Boolean = {
+  private def isConcreteElement(element: PsiElement): Boolean =
     element match {
       case _: ScFunctionDefinition                => true
       case f: ScFunctionDeclaration if f.isNative => true
@@ -56,7 +56,6 @@ trait OverridingAnnotator {
       case _: ScTypeAliasDefinition => true
       case _                        => false
     }
-  }
 
   private def isConcrete(signature: Signature): Boolean = {
     val element = ScalaPsiUtil.nameContext(signature.namedElement)

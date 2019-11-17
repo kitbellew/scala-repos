@@ -8,12 +8,11 @@ import breeze.linalg.svd.{SVD, DenseSVD}
   */
 object cond extends UFunc {
   implicit def canDetUsingSVD[T](
-      implicit svdImpl: svd.Impl[T, DenseSVD]): Impl[T, Double] = {
+      implicit svdImpl: svd.Impl[T, DenseSVD]): Impl[T, Double] =
     new Impl[T, Double] {
       def apply(X: T): Double = {
         val SVD(_, vecs, _) = svd(X)
         vecs(0) / vecs(vecs.length - 1)
       }
     }
-  }
 }

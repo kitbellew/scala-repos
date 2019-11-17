@@ -43,7 +43,7 @@ class StaticMemoryManagerSuite extends MemoryManagerSuite {
 
   override protected def createMemoryManager(
       maxOnHeapExecutionMemory: Long,
-      maxOffHeapExecutionMemory: Long): StaticMemoryManager = {
+      maxOffHeapExecutionMemory: Long): StaticMemoryManager =
     new StaticMemoryManager(
       conf.clone
         .set("spark.memory.fraction", "1")
@@ -53,7 +53,6 @@ class StaticMemoryManagerSuite extends MemoryManagerSuite {
       maxStorageMemory = 0,
       numCores = 1
     )
-  }
 
   test("basic execution memory") {
     val maxExecutionMem = 1000L

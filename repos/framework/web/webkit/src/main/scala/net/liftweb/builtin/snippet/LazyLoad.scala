@@ -107,21 +107,18 @@ object LazyLoad extends DispatchSnippet {
     * provide a `placeholderTemplate` that is a `NodeSeq` that should be used
     * while the async rendering takes place.
     */
-  def render(xhtml: NodeSeq, placeholderTemplate: Box[NodeSeq]): NodeSeq = {
+  def render(xhtml: NodeSeq, placeholderTemplate: Box[NodeSeq]): NodeSeq =
     render(Replace(_, xhtml), placeholderTemplate)
-  }
 
-  def render(xhtml: NodeSeq): NodeSeq = {
+  def render(xhtml: NodeSeq): NodeSeq =
     render(xhtml, Empty)
-  }
 
   // Helper to deal with Boxed markup.
-  private def handleMarkupBox(markup: Box[NodeSeq]): NodeSeq = {
+  private def handleMarkupBox(markup: Box[NodeSeq]): NodeSeq =
     markup match {
       case Full(html)         => html
       case Failure(msg, _, _) => Comment(msg)
       case Empty =>
         Comment("FIX" + "ME: Asynchronous rendering failed for unknown reason.")
     }
-  }
 }

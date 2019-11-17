@@ -101,7 +101,7 @@ private class ForkJoinScheduler(
     }
   }
 
-  def blocking[T](f: => T)(implicit perm: CanAwait): T = {
+  def blocking[T](f: => T)(implicit perm: CanAwait): T =
     Thread.currentThread() match {
       case _: IsManagedThread =>
         // Flush out our local scheduler before proceeding.
@@ -133,7 +133,6 @@ private class ForkJoinScheduler(
         // There's nothing we can do.
         f
     }
-  }
 
   // We can't provide useful/cheap implementations of these.
   def numDispatches = -1L

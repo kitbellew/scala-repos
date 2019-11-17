@@ -43,10 +43,9 @@ trait ReplConfig {
       alt
   }
   private[nsc] def substituteAndLog[T](label: String, alt: => T)(
-      body: => T): T = {
+      body: => T): T =
     try body
     catch logAndDiscard(label, alt)
-  }
 
   def isReplTrace: Boolean = replProps.trace
   def isReplDebug: Boolean = replProps.debug || isReplTrace

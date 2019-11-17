@@ -48,8 +48,7 @@ class ScalaTestFinder extends JavaTestFinder {
     TestFinderHelper.getSortedElements(res, true)
   }
 
-  override def findClassesForTest(element: PsiElement) = {
+  override def findClassesForTest(element: PsiElement) =
     //this is a temporary hack to avoid further duplication - JavaTestFinder locates tests for scala just fine
     new java.util.ArrayList[PsiElement]()
-  }
 }

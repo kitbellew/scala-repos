@@ -19,12 +19,11 @@ object Helpers {
     bytes
   }
 
-  def bytesToInt(bytes: Array[Byte], offset: Int): Int = {
+  def bytesToInt(bytes: Array[Byte], offset: Int): Int =
     (0 until 4).foldLeft(0)(
       (value, index) =>
         value +
           ((bytes(index + offset) & 0x000000FF) << ((4 - 1 - index) * 8)))
-  }
 
   /**
     * Convenience helper to cast the given Option of Any to an Option of the given type. Will throw a ClassCastException
@@ -82,13 +81,12 @@ object Helpers {
   class ResultOrError[R](result: R) {
     private[this] var contents: Either[R, Throwable] = Left(result)
 
-    def update(value: => R) = {
+    def update(value: => R) =
       contents = try {
         Left(value)
       } catch {
         case (error: Throwable) => Right(error)
       }
-    }
 
     def apply() = contents match {
       case Left(result) => result

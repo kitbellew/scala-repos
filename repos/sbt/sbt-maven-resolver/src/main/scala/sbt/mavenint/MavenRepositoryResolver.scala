@@ -264,10 +264,9 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
               originalMdResource: ResolvedResource,
               md: ModuleDescriptor,
               src: File,
-              dest: File): Unit = {
+              dest: File): Unit =
             // a basic ivy file is written containing default data
             XmlModuleDescriptorWriter.write(md, dest);
-          }
         }
       )
       rmr
@@ -411,7 +410,7 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
   /** Adds the dependency mediators required based on the managed dependency instances from this pom. */
   def addManagedDependenciesFromAether(
       result: AetherDescriptorResult,
-      md: DefaultModuleDescriptor): Unit = {
+      md: DefaultModuleDescriptor): Unit =
     for (d <- result.getManagedDependencies.asScala) {
       // TODO - Figure out what to do about exclusions on managed dependencies.
       md.addDependencyDescriptorMediator(
@@ -419,14 +418,11 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
           .newInstance(d.getArtifact.getGroupId, d.getArtifact.getArtifactId),
         ExactPatternMatcher.INSTANCE,
         new OverrideDependencyDescriptorMediator(null, d.getArtifact.getVersion) {
-          override def mediate(
-              dd: DependencyDescriptor): DependencyDescriptor = {
+          override def mediate(dd: DependencyDescriptor): DependencyDescriptor =
             super.mediate(dd)
-          }
         }
       )
     }
-  }
 
   /** Adds the list of dependencies this artifact has on other artifacts. */
   def addDependenciesFromAether(
@@ -607,17 +603,15 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
 
   override def beginPublishTransaction(
       module: ModuleRevisionId,
-      overwrite: Boolean): Unit = {
+      overwrite: Boolean): Unit =
     currentTransaction match {
       case Some(t) =>
         throw new IllegalStateException(
           s"Publish Transaction already open for [$getName]")
       case None => currentTransaction = Some(PublishTransaction(module, Nil))
     }
-  }
-  override def abortPublishTransaction(): Unit = {
+  override def abortPublishTransaction(): Unit =
     currentTransaction = None
-  }
 
   def getClassifier(art: Artifact): Option[String] =
     // TODO - Do we need to look anywere else?
@@ -650,7 +644,7 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
       case other => MavenRepositoryResolver.DEFAULT_ARTIFACT_CONFIGURATION
     }
 
-  override def commitPublishTransaction(): Unit = {
+  override def commitPublishTransaction(): Unit =
     // TODO - actually send all artifacts to aether
     currentTransaction match {
       case Some(t) =>
@@ -677,9 +671,8 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
         throw new IllegalStateException(
           s"Publish Transaction already open for [$getName]")
     }
-  }
 
-  override def publish(art: Artifact, file: File, overwrite: Boolean): Unit = {
+  override def publish(art: Artifact, file: File, overwrite: Boolean): Unit =
     currentTransaction match {
       case Some(t) =>
         val allArts = t.artifacts ++ List(art -> file)
@@ -688,7 +681,6 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
         throw new IllegalStateException(
           ("MavenRepositories require transactional publish"))
     }
-  }
 
   override def equals(a: Any): Boolean =
     a match {

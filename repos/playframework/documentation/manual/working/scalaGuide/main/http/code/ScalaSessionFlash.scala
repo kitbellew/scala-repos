@@ -145,12 +145,11 @@ package scalaguide.http.scalasessionflash {
         action: Action[A],
         expectedResponse: Int = OK,
         request: => Request[A] = FakeRequest())(
-        assertions: Future[Result] => T) = {
+        assertions: Future[Result] => T) =
       running() { _ =>
         val result = action(request)
         status(result) must_== expectedResponse
         assertions(result)
       }
-    }
   }
 }

@@ -69,16 +69,14 @@ object Scalar {
   /**
     * Provides implicit unboxing from double scalar to primitive
     */
-  implicit def scalarUnboxD(ds: Scalar[Double]): Double = {
+  implicit def scalarUnboxD(ds: Scalar[Double]): Double =
     if (ds.isNA) Double.NaN else ds.get
-  }
 
   /**
     * Provides implicit unboxing from float scalar to primitive
     */
-  implicit def scalarUnboxF(ds: Scalar[Float]): Float = {
+  implicit def scalarUnboxF(ds: Scalar[Float]): Float =
     if (ds.isNA) Float.NaN else ds.get
-  }
 
   /**
     * Scalar is isomorphic to Option

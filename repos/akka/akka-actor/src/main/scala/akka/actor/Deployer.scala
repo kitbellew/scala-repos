@@ -62,7 +62,7 @@ final case class Deploy(
     * precedence. The “path” of the other Deploy is not taken into account. All
     * other members are merged using `X.withFallback(other.X)`.
     */
-  def withFallback(other: Deploy): Deploy = {
+  def withFallback(other: Deploy): Deploy =
     Deploy(
       path,
       config.withFallback(other.config),
@@ -72,7 +72,6 @@ final case class Deploy(
       else dispatcher,
       if (mailbox == Deploy.NoMailboxGiven) other.mailbox else mailbox
     )
-  }
 }
 
 /**

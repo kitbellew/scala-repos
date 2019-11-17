@@ -499,14 +499,13 @@ object Menu extends MenuSingleton {
     def listToFrom(in: List[String]): Box[ConvertFrom]
 
     object ExtractSan {
-      def unapply(in: List[String]): Option[(List[String], Box[ConvertTo])] = {
+      def unapply(in: List[String]): Option[(List[String], Box[ConvertTo])] =
         for {
           (path, paramList) <- extractAndConvertPath(in)
           toConvert <- listToFrom(paramList)
         } yield {
           path -> parser(toConvert)
         }
-      }
     }
 
     /**
@@ -822,7 +821,7 @@ final class ParamLocLink[T](
     extends Loc.Link[T](path.map(_.pathItem), headMatch) {
 
   @tailrec
-  def test(toTest: List[String], path: List[LocPath]): Boolean = {
+  def test(toTest: List[String], path: List[LocPath]): Boolean =
     (toTest, path) match {
       case (Nil, Nil)                                    => true
       case (Nil, _)                                      => false
@@ -831,11 +830,9 @@ final class ParamLocLink[T](
       case (_ :: ts, * :: ps)                            => test(ts, ps)
       case (_ :: ts, _ :: ps)                            => test(ts, ps)
     }
-  }
 
-  override def isDefinedAt(req: Req): Boolean = {
+  override def isDefinedAt(req: Req): Boolean =
     test(req.path.partPath, path)
-  }
 
   /**
     * Override this method to modify the uriList with data from the Loc's value

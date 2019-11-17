@@ -63,13 +63,12 @@ object ScalaDirectoryService {
     classes(0)
   }
 
-  private def getIncorrectTemplateMessage(templateName: String): String = {
+  private def getIncorrectTemplateMessage(templateName: String): String =
     PsiBundle.message(
       "psi.error.incorroect.class.template.message",
       FileTemplateManager.getInstance
         .internalTemplateToSubject(templateName),
       templateName)
-  }
 
   private def templateForUnitTest(
       templateName: String,

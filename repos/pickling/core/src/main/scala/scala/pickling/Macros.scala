@@ -18,7 +18,7 @@ trait TypeAnalysis extends Macro {
   def isClosed(sym: TypeSymbol): Boolean =
     whyNotClosed(sym).isEmpty
 
-  def whyNotClosed(sym: TypeSymbol): Seq[String] = {
+  def whyNotClosed(sym: TypeSymbol): Seq[String] =
     if (sym.isEffectivelyFinal) Nil
     else if (isCaseClass(sym)) Nil
     else if (sym.isClass) {
@@ -33,7 +33,6 @@ trait TypeAnalysis extends Macro {
     } else {
       List(s"'${sym.fullName}' is not a class or trait")
     }
-  }
 }
 
 import HasCompat._

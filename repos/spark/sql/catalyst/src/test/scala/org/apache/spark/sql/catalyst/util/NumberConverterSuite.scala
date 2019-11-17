@@ -27,11 +27,10 @@ class NumberConverterSuite extends SparkFunSuite {
       n: String,
       fromBase: Int,
       toBase: Int,
-      expected: String): Unit = {
+      expected: String): Unit =
     assert(
       convert(UTF8String.fromString(n).getBytes, fromBase, toBase) === UTF8String
         .fromString(expected))
-  }
 
   test("convert") {
     checkConv("3", 10, 2, "11")

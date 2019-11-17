@@ -59,7 +59,7 @@ class Broker[T] {
 
   def send(msg: T): Offer[Unit] = new Offer[Unit] {
     @tailrec
-    def prepare() = {
+    def prepare() =
       state.get match {
         case s @ Receiving(rq) =>
           if (rq.isEmpty) throw new IllegalStateException()
@@ -86,7 +86,6 @@ class Broker[T] {
 
           if (state.compareAndSet(s, nextState)) p else prepare()
       }
-    }
   }
 
   val recv: Offer[T] = new Offer[T] {

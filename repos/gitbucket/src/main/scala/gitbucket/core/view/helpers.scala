@@ -146,18 +146,16 @@ object helpers
   /**
     * Tests whether the given file is renderable. It's tested by the file extension.
     */
-  def isRenderable(fileName: String): Boolean = {
+  def isRenderable(fileName: String): Boolean =
     PluginRegistry().renderableExtensions
       .exists(extension => fileName.toLowerCase.endsWith("." + extension))
-  }
 
   /**
     * Creates a link to the issue or the pull request from the issue id.
     */
   def issueLink(repository: RepositoryService.RepositoryInfo, issueId: Int)(
-      implicit context: Context): Html = {
+      implicit context: Context): Html =
     Html(createIssueLink(repository, issueId))
-  }
 
   /**
     * Returns &lt;img&gt; which displays the avatar icon for the given user name.
@@ -194,9 +192,8 @@ object helpers
 
   import scala.util.matching.Regex._
   implicit class RegexReplaceString(s: String) {
-    def replaceAll(pattern: String, replacer: (Match) => String): String = {
+    def replaceAll(pattern: String, replacer: (Match) => String): String =
       pattern.r.replaceAllIn(s, (m: Match) => replacer(m).replace("$", "\\$"))
-    }
   }
 
   /**
@@ -322,7 +319,7 @@ object helpers
   /**
     * Returns file type for AceEditor.
     */
-  def editorType(fileName: String): String = {
+  def editorType(fileName: String): String =
     fileName.toLowerCase match {
       case x if (x.endsWith(".bat"))     => "batchfile"
       case x if (x.endsWith(".java"))    => "java"
@@ -355,7 +352,6 @@ object helpers
       case x if (x.endsWith(".yml"))     => "yaml"
       case _                             => "plain_text"
     }
-  }
 
   def pre(value: Html): Html =
     Html(

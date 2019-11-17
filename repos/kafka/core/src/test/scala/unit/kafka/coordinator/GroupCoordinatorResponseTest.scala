@@ -1252,9 +1252,8 @@ class GroupCoordinatorResponseTest extends JUnitSuite {
     Await.result(responseFuture, Duration(40, TimeUnit.MILLISECONDS))
   }
 
-  private def await[T](future: Future[T], millis: Long): T = {
+  private def await[T](future: Future[T], millis: Long): T =
     Await.result(future, Duration(millis, TimeUnit.MILLISECONDS))
-  }
 
   private def commitOffsets(
       groupId: String,

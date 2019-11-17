@@ -37,12 +37,11 @@ trait EitherPicklers {
       lp: Pickler[Left[L, R]],
       t: FastTypeTag[Either[L, R]]): Pickler[Either[L, R]] =
     new AbstractPickler[Either[L, R]] {
-      override def pickle(picklee: Either[L, R], builder: PBuilder): Unit = {
+      override def pickle(picklee: Either[L, R], builder: PBuilder): Unit =
         picklee match {
           case l: Left[L, R]  => lp.pickle(l, builder)
           case r: Right[L, R] => rp.pickle(r, builder)
         }
-      }
       override def tag: FastTypeTag[Either[L, R]] = t
       override def toString = s"EitherPickler($t)"
     }
@@ -78,11 +77,10 @@ trait EitherPicklers {
       lp: Unpickler[Left[L, R]],
       t: FastTypeTag[Either[L, R]]): Unpickler[Either[L, R]] =
     new AbstractUnpickler[Either[L, R]] {
-      override def unpickle(tag: String, reader: PReader): Any = {
+      override def unpickle(tag: String, reader: PReader): Any =
         if (tag == rp.tag.key) rp.unpickle(tag, reader)
         else if (tag == lp.tag.key) lp.unpickle(tag, reader)
         else throw new PicklingException(s"Unknown type tag for Either: $tag")
-      }
       override def tag: FastTypeTag[Either[L, R]] = t
       override def toString = s"EitherUnpickler($tag)"
     }

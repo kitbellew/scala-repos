@@ -37,7 +37,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       itemStringIntMap = itemStringIntMap)
   }
 
-  def predict(model: ALSModel, query: Query): PredictedResult = {
+  def predict(model: ALSModel, query: Query): PredictedResult =
     // Convert String ID to Int index for Mllib
     model.userStringIntMap
       .get(query.user)
@@ -55,5 +55,4 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
         logger.info(s"No prediction for unknown user ${query.user}.")
         new PredictedResult(Array.empty)
       }
-  }
 }

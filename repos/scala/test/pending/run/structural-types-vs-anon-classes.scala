@@ -11,7 +11,6 @@ object Test {
     m
   }
 
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     println(makeAwesomeMonkey(Nil, Nil, new Tail) beAwesome)
-  }
 }

@@ -46,19 +46,18 @@ trait ClusteringLibSpecs[M[+_]]
 
   val line = Line(0, 0, "")
 
-  def testEval(graph: DepGraph): Set[SEvent] = {
+  def testEval(graph: DepGraph): Set[SEvent] =
     consumeEval(graph, defaultEvaluationContext) match {
       case Success(results) => results
       case Failure(error)   => throw error
     }
-  }
 
   implicit def arrayOps[@specialized(Double) A](lhs: Array[A]) =
     new ArrayOps(lhs)
 
   def kMediansCost(
       points: Array[Array[Double]],
-      centers: Array[Array[Double]]): Double = {
+      centers: Array[Array[Double]]): Double =
     points.foldLeft(0.0) { (cost, p) =>
       cost + centers
         .map({ c =>
@@ -66,7 +65,6 @@ trait ClusteringLibSpecs[M[+_]]
         })
         .qmin
     }
-  }
 
   val ClusterIdPattern = """cluster\d+""".r
 
@@ -104,12 +102,11 @@ trait ClusteringLibSpecs[M[+_]]
     cost must be_<(3 * targetCost)
   }
 
-  def clusterInput(dataset: String, k: Long) = {
+  def clusterInput(dataset: String, k: Long) =
     dag.Morph2(
       KMediansClustering,
       dag.AbsoluteLoad(Const(CString(dataset))(line))(line),
       dag.Const(CLong(k))(line))(line)
-  }
 
   "k-medians clustering" should {
     "compute trivial k-medians clustering" in {
@@ -327,7 +324,7 @@ trait ClusteringLibSpecs[M[+_]]
 
   def assign(
       points: Array[Array[Double]],
-      centers: Array[Array[Double]]): Map[RValue, String] = {
+      centers: Array[Array[Double]]): Map[RValue, String] =
     points.map { p =>
       val id =
         (0 until centers.length) minBy { i =>
@@ -335,14 +332,12 @@ trait ClusteringLibSpecs[M[+_]]
         }
       pointToJson(p) -> ("cluster" + (id + 1))
     }.toMap
-  }
 
-  def makeClusters(centers: Array[Array[Double]]) = {
+  def makeClusters(centers: Array[Array[Double]]) =
     RObject(pointsToJson(centers).zipWithIndex.map {
       case (ctr, idx) =>
         ("cluster" + (idx + 1), ctr)
     }.toMap)
-  }
 
   def createDAG(pointsDataSet: String, modelDataSet: String) = {
     val points = dag.AbsoluteLoad(Const(CString(pointsDataSet))(line))(line)

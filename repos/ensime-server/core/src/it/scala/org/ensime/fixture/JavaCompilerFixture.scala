@@ -67,10 +67,9 @@ object JavaCompilerFixture {
 class JavaStoreReporter extends ReportHandler {
   var notes = scala.collection.mutable.HashSet[Note]()
   override def messageUser(str: String): Unit = {}
-  override def clearAllJavaNotes(): Unit = { this.notes.clear() }
-  override def reportJavaNotes(notes: List[Note]): Unit = {
+  override def clearAllJavaNotes(): Unit = this.notes.clear()
+  override def reportJavaNotes(notes: List[Note]): Unit =
     this.notes ++= notes
-  }
 }
 
 trait IsolatedJavaCompilerFixture
@@ -86,7 +85,7 @@ trait IsolatedJavaCompilerFixture
           JavaCompiler,
           JavaStoreReporter,
           SearchService) => Any
-  ): Any = {
+  ): Any =
     withVFS { implicit vfs =>
       withTestKit { testkit =>
         import testkit._
@@ -99,5 +98,4 @@ trait IsolatedJavaCompilerFixture
         }
       }
     }
-  }
 }

@@ -89,9 +89,8 @@ case class MockTask(
     val period: Long)
     extends Ordered[MockTask] {
   def periodic = period >= 0
-  def compare(t: MockTask): Int = {
+  def compare(t: MockTask): Int =
     if (t.nextExecution == nextExecution) 0
     else if (t.nextExecution < nextExecution) -1
     else 1
-  }
 }

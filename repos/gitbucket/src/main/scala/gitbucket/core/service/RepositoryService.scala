@@ -347,7 +347,7 @@ trait RepositoryService { self: AccountService =>
     * @return the repository information
     */
   def getRepository(userName: String, repositoryName: String)(
-      implicit s: Session): Option[RepositoryInfo] = {
+      implicit s: Session): Option[RepositoryInfo] =
     (Repositories filter { t =>
       t.byRepository(userName, repositoryName)
     } firstOption) map { repository =>
@@ -374,7 +374,6 @@ trait RepositoryService { self: AccountService =>
         getRepositoryManagers(repository.userName)
       )
     }
-  }
 
   /**
     * Returns the repositories without private repository that user does not have access right.
@@ -384,7 +383,7 @@ trait RepositoryService { self: AccountService =>
     * @return the repository infomation list
     */
   def getAllRepositories(userName: String)(
-      implicit s: Session): List[(String, String)] = {
+      implicit s: Session): List[(String, String)] =
     Repositories
       .filter { t1 =>
         (t1.isPrivate === false.bind) || (t1.userName === userName.bind) ||
@@ -398,12 +397,11 @@ trait RepositoryService { self: AccountService =>
         (t.userName, t.repositoryName)
       }
       .list
-  }
 
   def getUserRepositories(
       userName: String,
       withoutPhysicalInfo: Boolean = false)(
-      implicit s: Session): List[RepositoryInfo] = {
+      implicit s: Session): List[RepositoryInfo] =
     Repositories
       .filter { t1 =>
         (t1.userName === userName.bind) ||
@@ -432,7 +430,6 @@ trait RepositoryService { self: AccountService =>
           getRepositoryManagers(repository.userName)
         )
       }
-  }
 
   /**
     * Returns the list of visible repositories for the specified user.
@@ -448,7 +445,7 @@ trait RepositoryService { self: AccountService =>
       loginAccount: Option[Account],
       repositoryUserName: Option[String] = None,
       withoutPhysicalInfo: Boolean = false)(
-      implicit s: Session): List[RepositoryInfo] = {
+      implicit s: Session): List[RepositoryInfo] =
     (loginAccount match {
       // for Administrators
       case Some(x) if (x.isAdmin) => Repositories
@@ -488,7 +485,6 @@ trait RepositoryService { self: AccountService =>
           getRepositoryManagers(repository.userName)
         )
       }
-  }
 
   private def getRepositoryManagers(userName: String)(
       implicit s: Session): Seq[String] =
@@ -595,7 +591,7 @@ trait RepositoryService { self: AccountService =>
   def hasWritePermission(
       owner: String,
       repository: String,
-      loginAccount: Option[Account])(implicit s: Session): Boolean = {
+      loginAccount: Option[Account])(implicit s: Session): Boolean =
     loginAccount match {
       case Some(a) if (a.isAdmin)           => true
       case Some(a) if (a.userName == owner) => true
@@ -604,7 +600,6 @@ trait RepositoryService { self: AccountService =>
         true
       case _ => false
     }
-  }
 
   private def getForkedCount(userName: String, repositoryName: String)(
       implicit s: Session): Int =

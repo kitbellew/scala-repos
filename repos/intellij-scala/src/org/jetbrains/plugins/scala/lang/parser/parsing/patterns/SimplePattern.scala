@@ -122,7 +122,7 @@ object SimplePattern extends ParserNode {
           builder.advanceLexer() //Ate (
           builder.disableNewlines
 
-          def parseSeqWildcard(withComma: Boolean): Boolean = {
+          def parseSeqWildcard(withComma: Boolean): Boolean =
             if (if (withComma)
                   lookAhead(
                     builder,
@@ -150,7 +150,6 @@ object SimplePattern extends ParserNode {
             } else {
               false
             }
-          }
 
           def parseSeqWildcardBinding(withComma: Boolean): Boolean = {
             if (if (withComma)

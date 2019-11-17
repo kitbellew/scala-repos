@@ -16,20 +16,18 @@ object PlayMagicForJava {
   /** Transforms a Play Java `Optional` to a proper Scala `Option`. */
   implicit def javaOptionToScala[T](x: Optional[T]): Option[T] = x.asScala
 
-  implicit def implicitJavaLang: play.api.i18n.Lang = {
+  implicit def implicitJavaLang: play.api.i18n.Lang =
     try {
       play.mvc.Http.Context.Implicit.lang.asInstanceOf[play.api.i18n.Lang]
     } catch {
       case NonFatal(_) => play.api.i18n.Lang.defaultLang
     }
-  }
 
   /**
     * Implicit conversion of a Play Java form `Field` to a proper Scala form `Field`.
     */
   implicit def javaFieldtoScalaField(
-      jField: play.data.Form.Field): play.api.data.Field = {
-
+      jField: play.data.Form.Field): play.api.data.Field =
     new play.api.data.Field(
       null,
       jField.name,
@@ -44,17 +42,14 @@ object PlayMagicForJava {
       Option(jField.value)
     ) {
 
-      override def apply(key: String) = {
+      override def apply(key: String) =
         javaFieldtoScalaField(jField.sub(key))
-      }
 
       override lazy val indexes = jField.indexes.asScala.toSeq.map(_.toInt)
     }
-  }
 
-  implicit def requestHeader: play.api.mvc.RequestHeader = {
+  implicit def requestHeader: play.api.mvc.RequestHeader =
     play.mvc.Http.Context.Implicit.ctx._requestHeader
-  }
 
   implicit def implicitJavaMessages: play.api.i18n.Messages =
     try {

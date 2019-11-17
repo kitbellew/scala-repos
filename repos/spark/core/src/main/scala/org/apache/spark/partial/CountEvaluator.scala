@@ -36,7 +36,7 @@ private[spark] class CountEvaluator(totalOutputs: Int, confidence: Double)
     sum += taskResult
   }
 
-  override def currentResult(): BoundedDouble = {
+  override def currentResult(): BoundedDouble =
     if (outputsMerged == totalOutputs) {
       new BoundedDouble(sum, 1.0, sum, sum)
     } else if (outputsMerged == 0) {
@@ -56,5 +56,4 @@ private[spark] class CountEvaluator(totalOutputs: Int, confidence: Double)
       val high = mean + confFactor * stdev
       new BoundedDouble(mean, confidence, low, high)
     }
-  }
 }

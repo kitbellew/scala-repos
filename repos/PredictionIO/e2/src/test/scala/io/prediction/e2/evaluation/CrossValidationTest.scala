@@ -59,7 +59,7 @@ class CrossValidationTest
     (trainingData, testingData.collect().toSeq)
   }
 
-  def splitData(k: Int, labeledPointsRDD: RDD[LabeledPoint]): Seq[Fold] = {
+  def splitData(k: Int, labeledPointsRDD: RDD[LabeledPoint]): Seq[Fold] =
     CommonHelperFunctions.splitData[
       LabeledPoint,
       CrossValidationTest.TrainingData,
@@ -72,7 +72,6 @@ class CrossValidationTest
       CrossValidationTest.toTrainingData,
       CrossValidationTest.toQuery,
       CrossValidationTest.toActualResult)
-  }
 
   "Fold count" should "equal evalK" in {
     val labeledPointsRDD = sc.parallelize(labeledPoints)

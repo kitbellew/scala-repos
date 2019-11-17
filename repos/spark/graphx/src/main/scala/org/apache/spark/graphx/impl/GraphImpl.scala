@@ -71,18 +71,16 @@ class GraphImpl[VD: ClassTag, ED: ClassTag] protected (
     replicatedVertexView.edges.checkpoint()
   }
 
-  override def isCheckpointed: Boolean = {
+  override def isCheckpointed: Boolean =
     vertices.isCheckpointed && replicatedVertexView.edges.isCheckpointed
-  }
 
-  override def getCheckpointFiles: Seq[String] = {
+  override def getCheckpointFiles: Seq[String] =
     Seq(
       vertices.getCheckpointFile,
       replicatedVertexView.edges.getCheckpointFile).flatMap {
       case Some(path) => Seq(path)
       case None       => Seq()
     }
-  }
 
   override def unpersist(blocking: Boolean = true): Graph[VD, ED] = {
     unpersistVertices(blocking)
@@ -97,9 +95,8 @@ class GraphImpl[VD: ClassTag, ED: ClassTag] protected (
   }
 
   override def partitionBy(
-      partitionStrategy: PartitionStrategy): Graph[VD, ED] = {
+      partitionStrategy: PartitionStrategy): Graph[VD, ED] =
     partitionBy(partitionStrategy, edges.partitions.length)
-  }
 
   override def partitionBy(
       partitionStrategy: PartitionStrategy,
@@ -131,14 +128,13 @@ class GraphImpl[VD: ClassTag, ED: ClassTag] protected (
     GraphImpl.fromExistingRDDs(vertices.withEdges(newEdges), newEdges)
   }
 
-  override def reverse: Graph[VD, ED] = {
+  override def reverse: Graph[VD, ED] =
     new GraphImpl(
       vertices.reverseRoutingTables(),
       replicatedVertexView.reverse())
-  }
 
   override def mapVertices[VD2: ClassTag](f: (VertexId, VD) => VD2)(
-      implicit eq: VD =:= VD2 = null): Graph[VD2, ED] = {
+      implicit eq: VD =:= VD2 = null): Graph[VD2, ED] =
     // The implicit parameter eq will be populated by the compiler if VD and VD2 are equal, and left
     // null if not
     if (eq != null) {
@@ -156,7 +152,6 @@ class GraphImpl[VD: ClassTag, ED: ClassTag] protected (
         vertices.mapVertexPartitions(_.map(f)),
         replicatedVertexView.edges)
     }
-  }
 
   override def mapEdges[ED2: ClassTag](
       f: (PartitionID, Iterator[Edge[ED]]) => Iterator[ED2]): Graph[VD, ED2] = {
@@ -305,7 +300,7 @@ class GraphImpl[VD: ClassTag, ED: ClassTag] protected (
 
   override def outerJoinVertices[U: ClassTag, VD2: ClassTag](
       other: RDD[(VertexId, U)])(updateF: (VertexId, VD, Option[U]) => VD2)(
-      implicit eq: VD =:= VD2 = null): Graph[VD2, ED] = {
+      implicit eq: VD =:= VD2 = null): Graph[VD2, ED] =
     // The implicit parameter eq will be populated by the compiler if VD and VD2 are equal, and left
     // null if not
     if (eq != null) {
@@ -322,10 +317,9 @@ class GraphImpl[VD: ClassTag, ED: ClassTag] protected (
       val newVerts = vertices.leftJoin(other)(updateF)
       GraphImpl(newVerts, replicatedVertexView.edges)
     }
-  }
 
   /** Test whether the closure accesses the attribute with name `attrName`. */
-  private def accessesVertexAttr(closure: AnyRef, attrName: String): Boolean = {
+  private def accessesVertexAttr(closure: AnyRef, attrName: String): Boolean =
     try {
       BytecodeUtils.invokedMethod(
         closure,
@@ -335,7 +329,6 @@ class GraphImpl[VD: ClassTag, ED: ClassTag] protected (
       case _: ClassNotFoundException =>
         true // if we don't know, be conservative
     }
-  }
 } // end of class GraphImpl
 
 object GraphImpl {
@@ -345,26 +338,24 @@ object GraphImpl {
       edges: RDD[Edge[ED]],
       defaultVertexAttr: VD,
       edgeStorageLevel: StorageLevel,
-      vertexStorageLevel: StorageLevel): GraphImpl[VD, ED] = {
+      vertexStorageLevel: StorageLevel): GraphImpl[VD, ED] =
     fromEdgeRDD(
       EdgeRDD.fromEdges(edges),
       defaultVertexAttr,
       edgeStorageLevel,
       vertexStorageLevel)
-  }
 
   /** Create a graph from EdgePartitions, setting referenced vertices to `defaultVertexAttr`. */
   def fromEdgePartitions[VD: ClassTag, ED: ClassTag](
       edgePartitions: RDD[(PartitionID, EdgePartition[ED, VD])],
       defaultVertexAttr: VD,
       edgeStorageLevel: StorageLevel,
-      vertexStorageLevel: StorageLevel): GraphImpl[VD, ED] = {
+      vertexStorageLevel: StorageLevel): GraphImpl[VD, ED] =
     fromEdgeRDD(
       EdgeRDD.fromEdgePartitions(edgePartitions),
       defaultVertexAttr,
       edgeStorageLevel,
       vertexStorageLevel)
-  }
 
   /** Create a graph from vertices and edges, setting missing vertices to `defaultVertexAttr`. */
   def apply[VD: ClassTag, ED: ClassTag](
@@ -408,11 +399,10 @@ object GraphImpl {
     */
   def fromExistingRDDs[VD: ClassTag, ED: ClassTag](
       vertices: VertexRDD[VD],
-      edges: EdgeRDD[ED]): GraphImpl[VD, ED] = {
+      edges: EdgeRDD[ED]): GraphImpl[VD, ED] =
     new GraphImpl(
       vertices,
       new ReplicatedVertexView(edges.asInstanceOf[EdgeRDDImpl[ED, VD]]))
-  }
 
   /**
     * Create a graph from an EdgeRDD with the correct vertex type, setting missing vertices to

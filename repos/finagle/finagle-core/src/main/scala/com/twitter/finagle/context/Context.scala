@@ -264,7 +264,7 @@ final class MarshalledContext extends Context {
       extends Env {
     @volatile private var cachedEnv: Env = null
 
-    private def env[A](key: Key[A]): Env = {
+    private def env[A](key: Key[A]): Env =
       if (cachedEnv != null) cachedEnv
       else if (key.marshalId != marshalId) next
       else
@@ -277,7 +277,6 @@ final class MarshalledContext extends Context {
             // Should we log some warnings?
             next
         }
-    }
 
     def apply[A](key: Key[A]): A = env(key).apply(key)
     def get[A](key: Key[A]): Option[A] = env(key).get(key)

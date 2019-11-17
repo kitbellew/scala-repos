@@ -19,10 +19,9 @@ class HttpTransport(repository: RemoteRepository) extends AbstractTransporter {
     }
   private def toResource(task: TransportTask): Resource =
     new URLResource(toURL(task))
-  override def implPeek(peek: PeekTask): Unit = {
+  override def implPeek(peek: PeekTask): Unit =
     if (!toResource(peek).exists())
       throw new NotFoundException(s"Could not find ${peek.getLocation}")
-  }
   override def implClose(): Unit = ()
   override def implGet(out: GetTask): Unit = {
     if (!toResource(out).exists())

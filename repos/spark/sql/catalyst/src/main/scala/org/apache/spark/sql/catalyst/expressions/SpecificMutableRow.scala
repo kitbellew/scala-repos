@@ -215,9 +215,8 @@ final class SpecificMutableRow(val values: Array[MutableValue])
 
   override def numFields: Int = values.length
 
-  override def setNullAt(i: Int): Unit = {
+  override def setNullAt(i: Int): Unit =
     values(i).isNull = true
-  }
 
   override def isNullAt(i: Int): Boolean = values(i).isNull
 
@@ -248,9 +247,8 @@ final class SpecificMutableRow(val values: Array[MutableValue])
     currentValue.value = value
   }
 
-  override def getInt(i: Int): Int = {
+  override def getInt(i: Int): Int =
     values(i).asInstanceOf[MutableInt].value
-  }
 
   override def setFloat(ordinal: Int, value: Float): Unit = {
     val currentValue = values(ordinal).asInstanceOf[MutableFloat]
@@ -258,9 +256,8 @@ final class SpecificMutableRow(val values: Array[MutableValue])
     currentValue.value = value
   }
 
-  override def getFloat(i: Int): Float = {
+  override def getFloat(i: Int): Float =
     values(i).asInstanceOf[MutableFloat].value
-  }
 
   override def setBoolean(ordinal: Int, value: Boolean): Unit = {
     val currentValue = values(ordinal).asInstanceOf[MutableBoolean]
@@ -268,9 +265,8 @@ final class SpecificMutableRow(val values: Array[MutableValue])
     currentValue.value = value
   }
 
-  override def getBoolean(i: Int): Boolean = {
+  override def getBoolean(i: Int): Boolean =
     values(i).asInstanceOf[MutableBoolean].value
-  }
 
   override def setDouble(ordinal: Int, value: Double): Unit = {
     val currentValue = values(ordinal).asInstanceOf[MutableDouble]
@@ -278,9 +274,8 @@ final class SpecificMutableRow(val values: Array[MutableValue])
     currentValue.value = value
   }
 
-  override def getDouble(i: Int): Double = {
+  override def getDouble(i: Int): Double =
     values(i).asInstanceOf[MutableDouble].value
-  }
 
   override def setShort(ordinal: Int, value: Short): Unit = {
     val currentValue = values(ordinal).asInstanceOf[MutableShort]
@@ -288,9 +283,8 @@ final class SpecificMutableRow(val values: Array[MutableValue])
     currentValue.value = value
   }
 
-  override def getShort(i: Int): Short = {
+  override def getShort(i: Int): Short =
     values(i).asInstanceOf[MutableShort].value
-  }
 
   override def setLong(ordinal: Int, value: Long): Unit = {
     val currentValue = values(ordinal).asInstanceOf[MutableLong]
@@ -298,9 +292,8 @@ final class SpecificMutableRow(val values: Array[MutableValue])
     currentValue.value = value
   }
 
-  override def getLong(i: Int): Long = {
+  override def getLong(i: Int): Long =
     values(i).asInstanceOf[MutableLong].value
-  }
 
   override def setByte(ordinal: Int, value: Byte): Unit = {
     val currentValue = values(ordinal).asInstanceOf[MutableByte]
@@ -308,7 +301,6 @@ final class SpecificMutableRow(val values: Array[MutableValue])
     currentValue.value = value
   }
 
-  override def getByte(i: Int): Byte = {
+  override def getByte(i: Int): Byte =
     values(i).asInstanceOf[MutableByte].value
-  }
 }

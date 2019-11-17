@@ -197,7 +197,7 @@ private[stream] object ActorGraphInterpreter {
       }
     }
 
-    def onNext(elem: Any): Unit = {
+    def onNext(elem: Any): Unit =
       if (!upstreamCompleted) {
         if (inputBufferElements == size)
           throw new IllegalStateException("Input buffer overrun")
@@ -207,7 +207,6 @@ private[stream] object ActorGraphInterpreter {
         inputBufferElements += 1
         if (isAvailable(out)) push(out, dequeue())
       }
-    }
 
     def onError(e: Throwable): Unit =
       if (!upstreamCompleted || !downstreamCanceled) {
@@ -247,7 +246,7 @@ private[stream] object ActorGraphInterpreter {
     setHandler(
       out,
       new OutHandler {
-        override def onPull(): Unit = {
+        override def onPull(): Unit =
           if (inputBufferElements > 1) push(out, dequeue())
           else if (inputBufferElements == 1) {
             if (upstreamCompleted) {
@@ -257,7 +256,6 @@ private[stream] object ActorGraphInterpreter {
           } else if (upstreamCompleted) {
             complete(out)
           }
-        }
 
         override def onDownstreamFinish(): Unit = cancel()
 
@@ -293,16 +291,15 @@ private[stream] object ActorGraphInterpreter {
       tryOnNext(subscriber, elem)
     }
 
-    private def complete(): Unit = {
+    private def complete(): Unit =
       // No need to complete if had already been cancelled, or we closed earlier
       if (!(upstreamCompleted || downstreamCompleted)) {
         upstreamCompleted = true
         if (exposedPublisher ne null) exposedPublisher.shutdown(None)
         if (subscriber ne null) tryOnComplete(subscriber)
       }
-    }
 
-    def fail(e: Throwable): Unit = {
+    def fail(e: Throwable): Unit =
       // No need to fail if had already been cancelled, or we closed earlier
       if (!(downstreamCompleted || upstreamCompleted)) {
         upstreamCompleted = true
@@ -311,7 +308,6 @@ private[stream] object ActorGraphInterpreter {
         if ((subscriber ne null) && !e.isInstanceOf[SpecViolation])
           tryOnError(subscriber, e)
       }
-    }
 
     setHandler(
       in,
@@ -351,7 +347,7 @@ private[stream] object ActorGraphInterpreter {
       }
     }
 
-    def requestMore(elements: Long): Unit = {
+    def requestMore(elements: Long): Unit =
       if (elements < 1) {
         cancel(in)
         fail(
@@ -362,7 +358,6 @@ private[stream] object ActorGraphInterpreter {
           downstreamDemand = Long.MaxValue // Long overflow, Reactive Streams Spec 3:17: effectively unbounded
         if (!hasBeenPulled(in) && !isClosed(in)) pull(in)
       }
-    }
 
     def cancel(): Unit = {
       downstreamCompleted = true
@@ -558,7 +553,7 @@ private[stream] final class GraphInterpreterShell(
     else enqueueToShortCircuit(resume)
   }
 
-  def runBatch(actorEventLimit: Int): Int = {
+  def runBatch(actorEventLimit: Int): Int =
     try {
       val usingShellLimit = shellEventLimit < actorEventLimit
       val remainingQuota =
@@ -585,7 +580,6 @@ private[stream] final class GraphInterpreterShell(
         tryAbort(e)
         actorEventLimit - 1
     }
-  }
 
   /**
     * Attempts to abort execution, by first propagating the reason given until either
@@ -593,7 +587,7 @@ private[stream] final class GraphInterpreterShell(
     *  - the event limit is reached
     *  - a new error is encountered
     */
-  def tryAbort(ex: Throwable): Unit = {
+  def tryAbort(ex: Throwable): Unit =
     // This should handle termination while interpreter is running. If the upstream have been closed already this
     // call has no effect and therefore do the right thing: nothing.
     try {
@@ -609,7 +603,6 @@ private[stream] final class GraphInterpreterShell(
       outputs.foreach(_.fail(ex))
       inputs.foreach(_.cancel())
     }
-  }
 
   override def toString: String =
     s"GraphInterpreterShell\n  ${assembly.toString.replace("\n", "\n  ")}"

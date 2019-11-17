@@ -99,15 +99,13 @@ private[parquet] class CatalystWriteSupport
     new WriteContext(messageType, metadata)
   }
 
-  override def prepareForWrite(recordConsumer: RecordConsumer): Unit = {
+  override def prepareForWrite(recordConsumer: RecordConsumer): Unit =
     this.recordConsumer = recordConsumer
-  }
 
-  override def write(row: InternalRow): Unit = {
+  override def write(row: InternalRow): Unit =
     consumeMessage {
       writeFields(row, schema, rootFieldWriters)
     }
-  }
 
   private def writeFields(
       row: InternalRow,
@@ -124,7 +122,7 @@ private[parquet] class CatalystWriteSupport
     }
   }
 
-  private def makeWriter(dataType: DataType): ValueWriter = {
+  private def makeWriter(dataType: DataType): ValueWriter =
     dataType match {
       case BooleanType =>
         (row: SpecializedGetters, ordinal: Int) =>
@@ -204,7 +202,6 @@ private[parquet] class CatalystWriteSupport
       // TODO Adds IntervalType support
       case _ => sys.error(s"Unsupported data type $dataType.")
     }
-  }
 
   private def makeDecimalWriter(precision: Int, scale: Int): ValueWriter = {
     assert(

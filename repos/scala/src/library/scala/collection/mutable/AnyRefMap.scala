@@ -91,7 +91,7 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
   private def imbalanced: Boolean =
     (_size + _vacant) > 0.5 * mask || _vacant > _size
 
-  private def hashOf(key: K): Int = {
+  private def hashOf(key: K): Int =
     if (key eq null) 0x41081989
     else {
       val h = key.hashCode
@@ -100,7 +100,6 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
       val j = (i ^ (i >>> 13))
       if (j == 0) 0x41081989 else j & 0x7FFFFFFF
     }
-  }
 
   private def seekEntry(h: Int, k: AnyRef): Int = {
     var e = h & mask
@@ -319,13 +318,12 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
       true
     }
 
-    def next: (K, V) = {
+    def next: (K, V) =
       if (hasNext) {
         val ans = (kz(index).asInstanceOf[K], vz(index).asInstanceOf[V])
         index += 1
         ans
       } else throw new NoSuchElementException("next")
-    }
   }
 
   override def foreach[U](f: ((K, V)) => U) {

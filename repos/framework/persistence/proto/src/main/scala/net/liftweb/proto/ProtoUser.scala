@@ -624,7 +624,7 @@ trait ProtoUser {
     curUserId(Full(id))
   }
 
-  def logUserIn(who: TheUserType, postLogin: () => Nothing): Nothing = {
+  def logUserIn(who: TheUserType, postLogin: () => Nothing): Nothing =
     if (destroySessionOnLogin) {
       S.session
         .openOrThrowException("we have a session here")
@@ -636,7 +636,6 @@ trait ProtoUser {
       logUserIn(who)
       postLogin()
     }
-  }
 
   def logUserIn(who: TheUserType) {
     curUserId.remove()
@@ -686,15 +685,14 @@ trait ProtoUser {
 
   def currentUser: Box[TheUserType] = curUser.get
 
-  def signupXhtml(user: TheUserType) = {
+  def signupXhtml(user: TheUserType) =
     (<form method="post" action={S.uri}><table><tr><td
               colspan="2">{S.?("sign.up")}</td></tr>
           {localForm(user, false, signupFields)}
           <tr><td>&nbsp;</td><td><input type="submit" /></td></tr>
                                         </table></form>)
-  }
 
-  def signupMailBody(user: TheUserType, validationLink: String): Elem = {
+  def signupMailBody(user: TheUserType, validationLink: String): Elem =
     (<html>
         <head>
           <title>{S.?("sign.up.confirmation")}</title>
@@ -711,7 +709,6 @@ trait ProtoUser {
           </p>
         </body>
      </html>)
-  }
 
   def signupMailSubject = S.?("sign.up.confirmation")
 
@@ -805,17 +802,15 @@ trait ProtoUser {
       }
     }
 
-    def innerSignup = {
+    def innerSignup =
       ("type=submit" #> signupSubmitButton(S ? "sign.up", testSignup _)) apply signupXhtml(
         theUser)
-    }
 
     innerSignup
   }
 
-  def signupSubmitButton(name: String, func: () => Any = () => {}): NodeSeq = {
+  def signupSubmitButton(name: String, func: () => Any = () => {}): NodeSeq =
     standardSubmitButton(name, func)
-  }
 
   def emailFrom = "noreply@" + S.hostName
 
@@ -850,7 +845,7 @@ trait ProtoUser {
     */
   def userNameNotFoundString: String = S.?("email.address.not.found")
 
-  def loginXhtml = {
+  def loginXhtml =
     (<form method="post" action={S.uri}><table><tr><td
               colspan="2">{S.?("log.in")}</td></tr>
           <tr><td>{userNameFieldString}</td><td><input type="text" class="email" /></td></tr>
@@ -858,7 +853,6 @@ trait ProtoUser {
           <tr><td><a href={lostPasswordPath.mkString("/", "/", "")}
                 >{S.?("recover.password")}</a></td><td><input type="submit" /></td></tr></table>
      </form>)
-  }
 
   /**
     * Given an username (probably email address), find the user
@@ -926,15 +920,13 @@ trait ProtoUser {
     bind(loginXhtml)
   }
 
-  def loginSubmitButton(name: String, func: () => Any = () => {}): NodeSeq = {
+  def loginSubmitButton(name: String, func: () => Any = () => {}): NodeSeq =
     standardSubmitButton(name, func)
-  }
 
-  def standardSubmitButton(name: String, func: () => Any = () => {}) = {
+  def standardSubmitButton(name: String, func: () => Any = () => {}) =
     SHtml.submit(name, func)
-  }
 
-  def lostPasswordXhtml = {
+  def lostPasswordXhtml =
     (<form method="post" action={S.uri}>
         <table><tr><td
               colspan="2">{S.?("enter.email")}</td></tr>
@@ -942,9 +934,8 @@ trait ProtoUser {
           <tr><td>&nbsp;</td><td><input type="submit" /></td></tr>
         </table>
      </form>)
-  }
 
-  def passwordResetMailBody(user: TheUserType, resetLink: String): Elem = {
+  def passwordResetMailBody(user: TheUserType, resetLink: String): Elem =
     (<html>
         <head>
           <title>{S.?("reset.password.confirmation")}</title>
@@ -961,7 +952,6 @@ trait ProtoUser {
           </p>
         </body>
      </html>)
-  }
 
   /**
     * Generate the mail bodies to send with the password reset link.
@@ -1020,11 +1010,10 @@ trait ProtoUser {
 
   def lostPasswordSubmitButton(
       name: String,
-      func: () => Any = () => {}): NodeSeq = {
+      func: () => Any = () => {}): NodeSeq =
     standardSubmitButton(name, func)
-  }
 
-  def passwordResetXhtml = {
+  def passwordResetXhtml =
     (<form method="post" action={S.uri}>
         <table><tr><td colspan="2">{S.?("reset.your.password")}</td></tr>
           <tr><td>{S.?("enter.your.new.password")}</td><td><input type="password" /></td></tr>
@@ -1032,7 +1021,6 @@ trait ProtoUser {
           <tr><td>&nbsp;</td><td><input type="submit" /></td></tr>
         </table>
      </form>)
-  }
 
   def passwordReset(id: String) =
     findUserByUniqueId(id) match {
@@ -1064,11 +1052,10 @@ trait ProtoUser {
 
   def resetPasswordSubmitButton(
       name: String,
-      func: () => Any = () => {}): NodeSeq = {
+      func: () => Any = () => {}): NodeSeq =
     standardSubmitButton(name, func)
-  }
 
-  def changePasswordXhtml = {
+  def changePasswordXhtml =
     (<form method="post" action={S.uri}>
         <table><tr><td colspan="2">{S.?("change.password")}</td></tr>
           <tr><td>{S.?("old.password")}</td><td><input type="password" class="old-password" /></td></tr>
@@ -1077,7 +1064,6 @@ trait ProtoUser {
           <tr><td>&nbsp;</td><td><input type="submit" /></td></tr>
         </table>
      </form>)
-  }
 
   def changePassword = {
     val user = currentUser.openOrThrowException(
@@ -1114,18 +1100,16 @@ trait ProtoUser {
 
   def changePasswordSubmitButton(
       name: String,
-      func: () => Any = () => {}): NodeSeq = {
+      func: () => Any = () => {}): NodeSeq =
     standardSubmitButton(name, func)
-  }
 
-  def editXhtml(user: TheUserType) = {
+  def editXhtml(user: TheUserType) =
     (<form method="post" action={S.uri}>
         <table><tr><td colspan="2">{S.?("edit")}</td></tr>
           {localForm(user, true, editFields)}
           <tr><td>&nbsp;</td><td><input type="submit" /></td></tr>
         </table>
      </form>)
-  }
 
   object editFunc extends RequestVar[Box[() => NodeSeq]](Empty) {
     override lazy val __nameSalt = Helpers.nextFuncName
@@ -1159,17 +1143,15 @@ trait ProtoUser {
       }
     }
 
-    def innerEdit = {
+    def innerEdit =
       ("type=submit" #> editSubmitButton(S.?("save"), testEdit _)) apply editXhtml(
         theUser)
-    }
 
     innerEdit
   }
 
-  def editSubmitButton(name: String, func: () => Any = () => {}): NodeSeq = {
+  def editSubmitButton(name: String, func: () => Any = () => {}): NodeSeq =
     standardSubmitButton(name, func)
-  }
 
   def logout = {
     logoutCurrentUser
@@ -1187,14 +1169,13 @@ trait ProtoUser {
   protected def localForm(
       user: TheUserType,
       ignorePassword: Boolean,
-      fields: List[FieldPointerType]): NodeSeq = {
+      fields: List[FieldPointerType]): NodeSeq =
     for {
       pointer <- fields
       field <- computeFieldFromPointer(user, pointer).toList if field.show_? &&
         (!ignorePassword || !pointer.isPasswordField_?)
       form <- field.toForm.toList
     } yield <tr><td>{field.displayName}</td><td>{form}</td></tr>
-  }
 
   protected def wrapIt(in: NodeSeq): NodeSeq =
     screenWrap.map(new RuleTransformer(new RewriteRule {

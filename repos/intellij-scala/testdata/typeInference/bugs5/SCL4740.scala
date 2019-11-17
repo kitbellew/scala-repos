@@ -42,7 +42,7 @@ object PhoneCode {
     val result = phoneEntries
       .flatMap(phoneNumber => {
         // 16 lines
-        def collectPossibleTranslations(current: Step): Seq[Step] = {
+        def collectPossibleTranslations(current: Step): Seq[Step] =
           current.ifFinished.getOrElse({
             def allMatches(matchAgainst: String) = {
               //collect all possible next translation steps of the remaining numbers
@@ -59,7 +59,6 @@ object PhoneCode {
             }
             allMatches(current.remaining).flatMap(collectPossibleTranslations)
           })
-        }
         /*start*/
         collectPossibleTranslations(
           Step("", cleanString(phoneNumber), phoneNumber)) /*end*/

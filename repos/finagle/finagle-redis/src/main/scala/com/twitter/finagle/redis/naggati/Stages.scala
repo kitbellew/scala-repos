@@ -141,7 +141,7 @@ object Stages {
     * @param encoding byte-to-character encoding to use
     */
   def readLine(removeLF: Boolean, encoding: String)(
-      process: String => NextStep): Stage = {
+      process: String => NextStep): Stage =
     ensureDelimiter('\n'.toByte) { (n, buffer) =>
       val end =
         if ((n > 1) &&
@@ -154,7 +154,6 @@ object Stages {
       buffer.readBytes(byteBuffer)
       process(new String(byteBuffer, 0, (if (removeLF) end else n), encoding))
     }
-  }
 
   /**
     * Read a line, terminated by LF or CRLF, and pass that line as a string (decoded using

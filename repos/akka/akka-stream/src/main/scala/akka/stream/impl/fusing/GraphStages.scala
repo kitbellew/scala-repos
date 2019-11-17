@@ -92,26 +92,23 @@ object GraphStages {
         setHandler(
           in,
           new InHandler {
-            override def onPush(): Unit = {
+            override def onPush(): Unit =
               if (isAvailable(out)) {
                 push(out, grab(in))
                 tryPull(in)
               }
-            }
-            override def onUpstreamFinish(): Unit = {
+            override def onUpstreamFinish(): Unit =
               if (!isAvailable(in)) completeStage()
-            }
           }
         )
 
         setHandler(out, new OutHandler {
-          override def onPull(): Unit = {
+          override def onPull(): Unit =
             if (isAvailable(in)) {
               push(out, grab(in))
               if (isClosed(in)) completeStage()
               else pull(in)
             }
-          }
         })
 
         override def preStart(): Unit = tryPull(in)
@@ -222,7 +219,7 @@ object GraphStages {
           override def onDownstreamFinish(): Unit = cancel(shape.in2)
         })
 
-        override def preStart(): Unit = {
+        override def preStart(): Unit =
           promise.success(new Breaker(getAsyncCallback[Operation] {
             case Complete ⇒
               complete(shape.out1)
@@ -236,7 +233,6 @@ object GraphStages {
             case CompleteAndCancel ⇒ completeStage()
             case FailAndCancel(ex) ⇒ failStage(ex)
           }.invoke))
-        }
       }
 
       (logic, promise.future)

@@ -16,7 +16,7 @@ class ScalaTemplatePreprocessor extends TemplatePreprocessor {
       file: PsiFile,
       caretOffset: Int,
       textToInsert: String,
-      templateText: String): Unit = {
+      templateText: String): Unit =
     Option(file.findElementAt(caretOffset))
       .map { caretElem =>
         var res = caretElem
@@ -39,5 +39,4 @@ class ScalaTemplatePreprocessor extends TemplatePreprocessor {
           }
         case _ =>
       }
-  }
 }

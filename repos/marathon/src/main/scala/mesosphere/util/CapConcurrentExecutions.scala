@@ -32,14 +32,13 @@ object CapConcurrentExecutions {
       actorRefFactory: ActorRefFactory,
       actorName: String,
       maxParallel: Int,
-      maxQueued: Int): CapConcurrentExecutions = {
+      maxQueued: Int): CapConcurrentExecutions =
     new CapConcurrentExecutions(
       metrics,
       actorRefFactory,
       actorName,
       maxParallel,
       maxQueued)
-  }
 }
 
 class CapConcurrentExecutionsMetrics(metrics: Metrics, metricsClass: Class[_]) {
@@ -152,7 +151,7 @@ private[util] class RestrictParallelExecutionsActor(
     metrics.queued.setValue(queue.size)
   }
 
-  private[this] def startNext(): Unit = {
+  private[this] def startNext(): Unit =
     queue.dequeueOption.foreach {
       case (next, newQueue) =>
         queue = newQueue
@@ -170,7 +169,6 @@ private[util] class RestrictParallelExecutionsActor(
           myself ! Finished
         }(CallerThreadExecutionContext.callerThreadExecutionContext)
     }
-  }
 }
 
 private[util] object RestrictParallelExecutionsActor {

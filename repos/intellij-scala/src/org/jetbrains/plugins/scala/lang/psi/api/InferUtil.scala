@@ -402,7 +402,7 @@ object InferUtil {
     def applyImplicitViewToResult(
         mt: ScMethodType,
         expectedType: Option[ScType],
-        fromSAM: Boolean = false): ScType = {
+        fromSAM: Boolean = false): ScType =
       expectedType match {
         case Some(expectedType @ ScFunctionType(expectedRet, expectedParams))
             if expectedParams.length == mt.params.length &&
@@ -444,7 +444,6 @@ object InferUtil {
             fromSAM = true)
         case _ => mt
       }
-    }
 
     nonValueType.map {
       case tpt @ ScTypePolymorphicType(mt: ScMethodType, typeParams) =>
@@ -454,7 +453,7 @@ object InferUtil {
     }
   }
 
-  def extractImplicitParameterType(r: ScalaResolveResult): ScType = {
+  def extractImplicitParameterType(r: ScalaResolveResult): ScType =
     r match {
       case r: ScalaResolveResult if r.implicitParameterType.isDefined =>
         r.implicitParameterType.get
@@ -469,9 +468,8 @@ object InferUtil {
       case ScalaResolveResult(fun: ScFunction, subst) =>
         subst.subst(fun.getTypeNoImplicits(TypingContext.empty).get)
     }
-  }
 
-  def undefineSubstitutor(typeParams: Seq[TypeParameter]): ScSubstitutor = {
+  def undefineSubstitutor(typeParams: Seq[TypeParameter]): ScSubstitutor =
     typeParams.foldLeft(ScSubstitutor.empty) {
       (subst: ScSubstitutor, tp: TypeParameter) =>
         subst.bindT(
@@ -479,7 +477,6 @@ object InferUtil {
           new ScUndefinedType(
             new ScTypeParameterType(tp.ptp, ScSubstitutor.empty)))
     }
-  }
 
   def localTypeInference(
       retType: ScType,
@@ -488,7 +485,7 @@ object InferUtil {
       typeParams: Seq[TypeParameter],
       shouldUndefineParameters: Boolean = true,
       safeCheck: Boolean = false,
-      filterTypeParams: Boolean = true): ScTypePolymorphicType = {
+      filterTypeParams: Boolean = true): ScTypePolymorphicType =
     localTypeInferenceWithApplicability(
       retType,
       params,
@@ -497,7 +494,6 @@ object InferUtil {
       shouldUndefineParameters,
       safeCheck,
       filterTypeParams)._1
-  }
 
   class SafeCheckException extends ControlThrowable
 
@@ -689,7 +685,7 @@ object InferUtil {
                   }
               }
 
-              def updateWithSubst(sub: ScSubstitutor): ScTypePolymorphicType = {
+              def updateWithSubst(sub: ScSubstitutor): ScTypePolymorphicType =
                 ScTypePolymorphicType(
                   sub.subst(retType),
                   typeParams
@@ -717,7 +713,7 @@ object InferUtil {
                               case _ =>
                                 def checkNamed(
                                     named: PsiNamedElement,
-                                    typeParams: Seq[ScTypeParam]): Boolean = {
+                                    typeParams: Seq[ScTypeParam]): Boolean =
                                   named match {
                                     case t: ScTypeParametersOwner =>
                                       if (typeParams.length != t.typeParameters.length)
@@ -737,7 +733,6 @@ object InferUtil {
                                         _.typeParameters.isEmpty)
                                     case _ => false
                                   }
-                                }
                                 ScType.extractDesignated(
                                   tp,
                                   withoutAliases = false) match {
@@ -774,7 +769,6 @@ object InferUtil {
                           () => sub.subst(tp.upperType()),
                           tp.ptp))
                 )
-              }
 
               un.getSubstitutor match {
                 case Some(unSubstitutor) => updateWithSubst(unSubstitutor)

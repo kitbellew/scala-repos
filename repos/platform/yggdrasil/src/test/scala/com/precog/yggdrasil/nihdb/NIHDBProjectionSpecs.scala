@@ -110,12 +110,11 @@ class NIHDBProjectionSpecs
 
     def close(proj: NIHDB) = fromFuture(proj.close(actorSystem))
 
-    def stop = {
+    def stop =
       (for {
         _ <- IO { close(nihdb) }
         _ <- IOUtils.recursiveDelete(workDir)
       } yield ()).unsafePerformIO
-    }
   }
 
   "NIHDBProjections" should {

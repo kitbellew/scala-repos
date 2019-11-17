@@ -408,9 +408,8 @@ object TestSubscriber {
       *
       * See also [[#expectSubscriptionAndError(Boolean)]] if no demand should be signalled.
       */
-    def expectSubscriptionAndError(): Throwable = {
+    def expectSubscriptionAndError(): Throwable =
       expectSubscriptionAndError(true)
-    }
 
     /**
       * Expect subscription to be followed immediatly by an error signal.
@@ -488,7 +487,7 @@ object TestSubscriber {
       *
       * Expect given next element or error signal, returning whichever was signalled.
       */
-    def expectNextOrError(): Either[Throwable, I] = {
+    def expectNextOrError(): Either[Throwable, I] =
       probe.fishForMessage(hint = s"OnNext(_) or error") {
         case OnNext(element) ⇒ true
         case OnError(cause) ⇒ true
@@ -496,15 +495,12 @@ object TestSubscriber {
         case OnNext(n: I @unchecked) ⇒ Right(n)
         case OnError(err) ⇒ Left(err)
       }
-    }
 
     /**
       * Fluent DSL
       * Expect given next element or error signal.
       */
-    def expectNextOrError(
-        element: I,
-        cause: Throwable): Either[Throwable, I] = {
+    def expectNextOrError(element: I, cause: Throwable): Either[Throwable, I] =
       probe.fishForMessage(
         hint = s"OnNext($element) or ${cause.getClass.getName}") {
         case OnNext(`element`) ⇒ true
@@ -513,12 +509,11 @@ object TestSubscriber {
         case OnNext(n: I @unchecked) ⇒ Right(n)
         case OnError(err) ⇒ Left(err)
       }
-    }
 
     /**
       * Expect next element or stream completion - returning whichever was signalled.
       */
-    def expectNextOrComplete(): Either[OnComplete.type, I] = {
+    def expectNextOrComplete(): Either[OnComplete.type, I] =
       probe.fishForMessage(hint = s"OnNext(_) or OnComplete") {
         case OnNext(n) ⇒ true
         case OnComplete ⇒ true
@@ -526,7 +521,6 @@ object TestSubscriber {
         case OnComplete ⇒ Left(OnComplete)
         case OnNext(n: I @unchecked) ⇒ Right(n)
       }
-    }
 
     /**
       * Fluent DSL
@@ -561,13 +555,12 @@ object TestSubscriber {
       self
     }
 
-    def expectNextPF[T](f: PartialFunction[Any, T]): T = {
+    def expectNextPF[T](f: PartialFunction[Any, T]): T =
       expectEventPF {
         case OnNext(n) ⇒
           assert(f.isDefinedAt(n))
           f(n)
       }
-    }
 
     def expectEventPF[T](f: PartialFunction[SubscriberEvent, T]): T =
       probe.expectMsgPF[T]()(f.asInstanceOf[PartialFunction[Any, T]])

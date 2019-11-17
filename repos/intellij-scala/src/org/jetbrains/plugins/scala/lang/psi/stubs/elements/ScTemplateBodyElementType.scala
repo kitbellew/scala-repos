@@ -26,23 +26,20 @@ class ScTemplateBodyElementType[Func <: ScTemplateBody]
       stub: ScTemplateBodyStub,
       dataStream: StubOutputStream): Unit = {}
 
-  def createPsi(stub: ScTemplateBodyStub): ScTemplateBody = {
+  def createPsi(stub: ScTemplateBodyStub): ScTemplateBody =
     new ScTemplateBodyImpl(stub)
-  }
 
   def createStubImpl[ParentPsi <: PsiElement](
       psi: ScTemplateBody,
-      parentStub: StubElement[ParentPsi]): ScTemplateBodyStub = {
+      parentStub: StubElement[ParentPsi]): ScTemplateBodyStub =
     new ScTemplateBodyStubImpl(parentStub, this)
-  }
 
   def deserializeImpl(
       dataStream: StubInputStream,
-      parentStub: Any): ScTemplateBodyStub = {
+      parentStub: Any): ScTemplateBodyStub =
     new ScTemplateBodyStubImpl(
       parentStub.asInstanceOf[StubElement[PsiElement]],
       this)
-  }
 
   def indexStub(stub: ScTemplateBodyStub, sink: IndexSink): Unit = {}
 

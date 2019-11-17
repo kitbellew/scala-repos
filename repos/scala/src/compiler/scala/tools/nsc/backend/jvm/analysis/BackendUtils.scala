@@ -167,14 +167,13 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
       srBoxedUnitRef.descriptor)
 
   private val anonfunAdaptedName = """.*\$anonfun\$\d+\$adapted""".r
-  def hasAdaptedImplMethod(closureInit: ClosureInstantiation): Boolean = {
+  def hasAdaptedImplMethod(closureInit: ClosureInstantiation): Boolean =
     isrJFunctionType(
       Type
         .getReturnType(closureInit.lambdaMetaFactoryCall.indy.desc)
         .getInternalName) && anonfunAdaptedName.pattern
       .matcher(closureInit.lambdaMetaFactoryCall.implMethod.getName)
       .matches
-  }
 
   private def primitiveAsmTypeToBType(primitiveType: Type): PrimitiveBType =
     (primitiveType.getSort: @switch) match {
@@ -189,7 +188,7 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
       case _            => null
     }
 
-  def isScalaBox(insn: MethodInsnNode): Boolean = {
+  def isScalaBox(insn: MethodInsnNode): Boolean =
     insn.owner == srBoxesRunTimeRef.internalName && {
       val args = Type.getArgumentTypes(insn.desc)
       args.length == 1 &&
@@ -199,7 +198,6 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
         case _ => false
       })
     }
-  }
 
   def getScalaBox(primitiveType: Type): MethodInsnNode = {
     val bType = primitiveAsmTypeToBType(primitiveType)
@@ -211,15 +209,14 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
       methodBType.descriptor, /*itf =*/ false)
   }
 
-  def isScalaUnbox(insn: MethodInsnNode): Boolean = {
+  def isScalaUnbox(insn: MethodInsnNode): Boolean =
     insn.owner == srBoxesRunTimeRef.internalName &&
-    (srBoxesRuntimeUnboxToMethods.get(
-      primitiveAsmTypeToBType(Type.getReturnType(insn.desc))) match {
-      case Some(MethodNameAndType(name, tp)) =>
-        name == insn.name && tp.descriptor == insn.desc
-      case _ => false
-    })
-  }
+      (srBoxesRuntimeUnboxToMethods.get(
+        primitiveAsmTypeToBType(Type.getReturnType(insn.desc))) match {
+        case Some(MethodNameAndType(name, tp)) =>
+          name == insn.name && tp.descriptor == insn.desc
+        case _ => false
+      })
 
   def getScalaUnbox(primitiveType: Type): MethodInsnNode = {
     val bType = primitiveAsmTypeToBType(primitiveType)
@@ -246,21 +243,19 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
   def isJavaUnbox(insn: MethodInsnNode): Boolean =
     calleeInMap(insn, javaUnboxMethods)
 
-  def isPredefAutoBox(insn: MethodInsnNode): Boolean = {
+  def isPredefAutoBox(insn: MethodInsnNode): Boolean =
     insn.owner == PredefRef.internalName &&
-    (predefAutoBoxMethods.get(insn.name) match {
-      case Some(tp) => insn.desc == tp.descriptor
-      case _        => false
-    })
-  }
+      (predefAutoBoxMethods.get(insn.name) match {
+        case Some(tp) => insn.desc == tp.descriptor
+        case _        => false
+      })
 
-  def isPredefAutoUnbox(insn: MethodInsnNode): Boolean = {
+  def isPredefAutoUnbox(insn: MethodInsnNode): Boolean =
     insn.owner == PredefRef.internalName &&
-    (predefAutoUnboxMethods.get(insn.name) match {
-      case Some(tp) => insn.desc == tp.descriptor
-      case _        => false
-    })
-  }
+      (predefAutoUnboxMethods.get(insn.name) match {
+        case Some(tp) => insn.desc == tp.descriptor
+        case _        => false
+      })
 
   def isRefCreate(insn: MethodInsnNode): Boolean =
     calleeInMap(insn, srRefCreateMethods)
@@ -271,16 +266,14 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
     Type
       .getArgumentTypes(srRefCreateMethods(refClass).methodType.descriptor)(0)
 
-  def isSideEffectFreeCall(insn: MethodInsnNode): Boolean = {
+  def isSideEffectFreeCall(insn: MethodInsnNode): Boolean =
     isScalaBox(insn) || isScalaUnbox(insn) || isJavaBox(insn) ||
-    // not java unbox, it may NPE
-    isSideEffectFreeConstructorCall(insn)
-  }
+      // not java unbox, it may NPE
+      isSideEffectFreeConstructorCall(insn)
 
-  def isNonNullMethodInvocation(mi: MethodInsnNode): Boolean = {
+  def isNonNullMethodInvocation(mi: MethodInsnNode): Boolean =
     isJavaBox(mi) || isScalaBox(mi) || isPredefAutoBox(mi) ||
-    isRefCreate(mi) || isRefZero(mi)
-  }
+      isRefCreate(mi) || isRefZero(mi)
 
   def isModuleLoad(insn: AbstractInsnNode, moduleName: InternalName): Boolean =
     insn match {
@@ -315,28 +308,25 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
     )
   }
 
-  def isSideEffectFreeConstructorCall(insn: MethodInsnNode): Boolean = {
+  def isSideEffectFreeConstructorCall(insn: MethodInsnNode): Boolean =
     insn.name == INSTANCE_CONSTRUCTOR_NAME &&
-    sideEffectFreeConstructors((insn.owner, insn.desc))
-  }
+      sideEffectFreeConstructors((insn.owner, insn.desc))
 
   private lazy val classesOfSideEffectFreeConstructors =
     sideEffectFreeConstructors.map(_._1)
 
-  def isNewForSideEffectFreeConstructor(insn: AbstractInsnNode) = {
+  def isNewForSideEffectFreeConstructor(insn: AbstractInsnNode) =
     insn.getOpcode == NEW && {
       val ti = insn.asInstanceOf[TypeInsnNode]
       classesOfSideEffectFreeConstructors.contains(ti.desc)
     }
-  }
 
-  def isBoxedUnit(insn: AbstractInsnNode) = {
+  def isBoxedUnit(insn: AbstractInsnNode) =
     insn.getOpcode == GETSTATIC && {
       val fi = insn.asInstanceOf[FieldInsnNode]
       fi.owner == srBoxedUnitRef.internalName && fi.name == "UNIT" &&
       fi.desc == srBoxedUnitRef.descriptor
     }
-  }
 
   def isrJFunctionType(internalName: InternalName): Boolean =
     srJFunctionRefs(internalName)
@@ -518,16 +508,14 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
       // once an instruction has been treated, contains -1 to prevent re-enqueuing
       val stackHeights = new Array[Int](size)
 
-      def enqInsn(insn: AbstractInsnNode, height: Int): Unit = {
+      def enqInsn(insn: AbstractInsnNode, height: Int): Unit =
         enqInsnIndex(method.instructions.indexOf(insn), height)
-      }
 
-      def enqInsnIndex(insnIndex: Int, height: Int): Unit = {
+      def enqInsnIndex(insnIndex: Int, height: Int): Unit =
         if (insnIndex < size && stackHeights(insnIndex) != -1) {
           stackHeights(insnIndex) = height
           enq(insnIndex)
         }
-      }
 
       val tcbIt = method.tryCatchBlocks.iterator()
       while (tcbIt.hasNext) {

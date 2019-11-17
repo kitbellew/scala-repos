@@ -180,9 +180,8 @@ class DateTest extends WordSpec {
   }
   "A DateRange" should {
     "correctly iterate on each duration" in {
-      def rangeContainTest(d1: DateRange, dur: Duration) = {
+      def rangeContainTest(d1: DateRange, dur: Duration) =
         assert(d1.each(dur).forall((d1r: DateRange) => d1.contains(d1r)))
-      }
       rangeContainTest(DateRange("2010-10-01", "2010-10-13"), Weeks(1))
       rangeContainTest(DateRange("2010-10-01", "2010-10-13"), Weeks(2))
       rangeContainTest(DateRange("2010-10-01", "2010-10-13"), Days(1))
@@ -254,9 +253,8 @@ class DateTest extends WordSpec {
     }
   }
   "Time units" should {
-    def isSame(d1: Duration, d2: Duration) = {
+    def isSame(d1: Duration, d2: Duration) =
       (RichDate("2011-12-01") + d1) == (RichDate("2011-12-01") + d2)
-    }
     "have 1000 milliseconds in a sec" in {
       assert(isSame(Millisecs(1000), Seconds(1)))
       assert(Seconds(1).toMillisecs === 1000L)
@@ -375,15 +373,13 @@ class DateTest extends WordSpec {
 
     def eachElementDistinct(dates: List[String]) =
       dates.size == dates.toSet.size
-    def globMatchesDate(glob: String)(date: String) = {
+    def globMatchesDate(glob: String)(date: String) =
       java.util.regex.Pattern.matches(glob.replaceAll("\\*", "[0-9]*"), date)
-    }
     def bruteForce(pattern: String, dr: DateRange, dur: Duration)(
-        implicit tz: java.util.TimeZone) = {
+        implicit tz: java.util.TimeZone) =
       dr.each(dur).map { (dr: DateRange) =>
         String.format(pattern, dr.start.toCalendar(tz))
       }
-    }
 
     "handle random test cases" in {
       // This kind of implicit is not safe (what does the long mean?)

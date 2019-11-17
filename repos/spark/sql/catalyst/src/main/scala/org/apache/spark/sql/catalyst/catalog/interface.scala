@@ -36,11 +36,10 @@ import org.apache.spark.sql.catalyst.plans.logical.{LeafNode, LogicalPlan}
 abstract class ExternalCatalog {
   import ExternalCatalog._
 
-  protected def requireDbExists(db: String): Unit = {
+  protected def requireDbExists(db: String): Unit =
     if (!databaseExists(db)) {
       throw new AnalysisException(s"Database $db does not exist")
     }
-  }
 
   // --------------------------------------------------------------------------
   // Databases
@@ -246,7 +245,7 @@ case class CatalogTable(
       outputFormat: Option[String] = storage.outputFormat,
       serde: Option[String] = storage.serde,
       serdeProperties: Map[String, String] = storage.serdeProperties)
-      : CatalogTable = {
+      : CatalogTable =
     copy(
       storage = CatalogStorageFormat(
         locationUri,
@@ -254,7 +253,6 @@ case class CatalogTable(
         outputFormat,
         serde,
         serdeProperties))
-  }
 }
 
 case class CatalogTableType private (name: String)

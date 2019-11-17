@@ -56,7 +56,7 @@ class ScalaUnusedImportPass(
   private var myOptimizeImportsRunnable: Runnable = null
 
   override def collectInformationWithProgress(
-      progress: ProgressIndicator): Unit = {
+      progress: ProgressIndicator): Unit =
     file match {
       case scalaFile: ScalaFile
           if HighlightingLevelManager.getInstance(file.getProject) shouldInspect file =>
@@ -81,7 +81,6 @@ class ScalaUnusedImportPass(
       case _: ScalaFile => myHighlights = Collections.emptyList()
       case _            =>
     }
-  }
 
   override def applyInformationWithProgress(): Unit = {
     if (myHighlights == null) return

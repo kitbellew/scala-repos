@@ -20,7 +20,7 @@ class HostMetricsExporter(val registry: Metrics)
   def this() = this(MetricsStatsReceiver.defaultHostRegistry)
   val pattern = "/admin/per_host_metrics.json"
 
-  override def apply(request: Request): Future[Response] = {
+  override def apply(request: Request): Future[Response] =
     if (perHostStats()) {
       super.apply(request)
     } else {
@@ -34,5 +34,4 @@ class HostMetricsExporter(val registry: Metrics)
         |}""".stripMargin)
       Future.value(response)
     }
-  }
 }

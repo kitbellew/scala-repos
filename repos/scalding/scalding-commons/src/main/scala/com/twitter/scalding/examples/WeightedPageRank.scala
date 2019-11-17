@@ -73,17 +73,16 @@ class WeightedPageRank(args: Args) extends Job(args) {
     }
   }
 
-  def getInputPagerank(fileName: String) = {
+  def getInputPagerank(fileName: String) =
     Tsv(fileName).read.mapTo((0, 1) -> ('src_id_input, 'mass_input)) {
       input: (Int, Double) =>
         input
     }
-  }
 
   /**
     * read the pregenerated nodes file <'src_id, 'dst_ids, 'weights, 'mass_prior>
     */
-  def getNodes(fileName: String) = {
+  def getNodes(fileName: String) =
     mode match {
       case Hdfs(_, conf) => {
         SequenceFile(fileName).read
@@ -116,16 +115,14 @@ class WeightedPageRank(args: Args) extends Job(args) {
           }
       }
     }
-  }
 
   /**
     * the total number of nodes, single line file
     */
-  def getNumNodes(fileName: String) = {
+  def getNumNodes(fileName: String) =
     Tsv(fileName).read.mapTo(0 -> 'size) { input: Int =>
       input
     }
-  }
 
   /**
     * one iteration of pagerank

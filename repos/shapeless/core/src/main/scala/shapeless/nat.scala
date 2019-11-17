@@ -102,10 +102,9 @@ trait NatMacroDefns {
     val _0Sym = typeOf[_0].typeSymbol
 
     @tailrec
-    def loop(i: Int, acc: Tree): Tree = {
+    def loop(i: Int, acc: Tree): Tree =
       if (i == 0) acc
       else loop(i - 1, AppliedTypeTree(Ident(succSym), List(acc)))
-    }
 
     loop(i, Ident(_0Sym))
   }
@@ -115,10 +114,9 @@ trait NatMacroDefns {
     val _0Tpe = typeOf[_0]
 
     @tailrec
-    def loop(i: Int, acc: Type): Type = {
+    def loop(i: Int, acc: Type): Type =
       if (i == 0) acc
       else loop(i - 1, appliedType(succTpe, acc))
-    }
 
     loop(i, _0Tpe)
   }

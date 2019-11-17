@@ -368,10 +368,9 @@ trait Extractors { self: Utils =>
       acceptTerms: Boolean,
       acceptTypes: Boolean) {
     def unapply(tree: Tree): Option[(Tree, TermName, Tree, Long, String)] = {
-      def acceptFreeTermFactory(name: Name) = {
+      def acceptFreeTermFactory(name: Name) =
         (acceptTerms && name == nme.newFreeTerm) ||
-        (acceptTypes && name == nme.newFreeType)
-      }
+          (acceptTypes && name == nme.newFreeType)
       tree match {
         case ValDef(
             _,

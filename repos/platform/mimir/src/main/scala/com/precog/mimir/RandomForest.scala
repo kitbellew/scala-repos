@@ -356,7 +356,7 @@ object RegressionForest {
 
 case class ClassificationForest[K](trees: List[DecisionTree[K]])
     extends Forest[K] {
-  def predict(v: Array[Double]): K = {
+  def predict(v: Array[Double]): K =
     trees
       .foldLeft(Map.empty[K, Int]) { (acc, classify) =>
         val k = classify(v)
@@ -364,7 +364,6 @@ case class ClassificationForest[K](trees: List[DecisionTree[K]])
       }
       .maxBy(_._2)
       ._1
-  }
   def ++(that: Forest[K]) = ClassificationForest(trees ++ that.trees)
 }
 
@@ -378,13 +377,12 @@ object ClassificationForest {
 }
 
 trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
-  private def makeArrays(table: Table): M[Array[Array[Double]]] = {
+  private def makeArrays(table: Table): M[Array[Array[Double]]] =
     extract(table) {
       case (c: HomogeneousArrayColumn[_]) => { (row: Int) =>
         c(row).asInstanceOf[Array[Double]]
       }
     }
-  }
 
   private def collapse[@specialized(Double) A: Manifest](
       chunks0: List[Array[A]]): Array[A] = {
@@ -409,7 +407,7 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
   private def sliceToArray[@specialized(Double) A: Manifest](
       slice: Slice,
-      zero: => A)(pf: PartialFunction[Column, Int => A]): Option[Array[A]] = {
+      zero: => A)(pf: PartialFunction[Column, Int => A]): Option[Array[A]] =
     slice.columns.values.collectFirst {
       case c if pf.isDefinedAt(c) => {
         val extract = pf(c)
@@ -426,13 +424,12 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         xs
       }
     }
-  }
 
   private def extract[@specialized(Double) A: Manifest](table: Table)(
       pf: PartialFunction[Column, Int => A]): M[Array[A]] = {
     def die = sys.error("Cannot handle undefined rows. Expected dense column.")
 
-    def loop(stream: StreamT[M, Slice], acc: List[Array[A]]): M[Array[A]] = {
+    def loop(stream: StreamT[M, Slice], acc: List[Array[A]]): M[Array[A]] =
       stream.uncons flatMap {
         case Some((head, tail)) =>
           val valuesOpt: Option[Array[A]] = sliceToArray[A](head, die)(pf)
@@ -441,7 +438,6 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         case None =>
           M.point(collapse(acc.reverse))
       }
-    }
 
     loop(table.slices, Nil)
   }
@@ -460,7 +456,7 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       def extractDependent(table: Table): M[Array[RValue]] = {
         def loop(
             stream: StreamT[M, Slice],
-            acc: List[Array[RValue]]): M[Array[RValue]] = {
+            acc: List[Array[RValue]]): M[Array[RValue]] =
           stream.uncons flatMap {
             case Some((head, tail)) =>
               loop(tail, Array.tabulate(head.size)(head.toRValue(_)) :: acc)
@@ -468,7 +464,6 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
             case None =>
               M.point(collapse(acc.reverse))
           }
-        }
 
         loop(table.slices, Nil)
       }
@@ -624,10 +619,7 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
           })
       }
 
-      def makeForest(
-          table: Table,
-          tpe: JType,
-          prev: F = Monoid[F].zero): M[F] = {
+      def makeForest(table: Table, tpe: JType, prev: F = Monoid[F].zero): M[F] =
         if (prev.trees.size > maxForestSize) {
           M.point(prev)
         } else {
@@ -701,7 +693,6 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
             }
           }
         }
-      }
 
       def morph1Apply(forests: Seq[(JType, F)]) = new Morph1Apply {
         import TransSpecModule._
@@ -723,7 +714,7 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
           lazy val objectTable: Table = table.transform(spec)
 
-          def predict(stream: StreamT[M, Slice]): StreamT[M, Slice] = {
+          def predict(stream: StreamT[M, Slice]): StreamT[M, Slice] =
             StreamT(stream.uncons map {
               case Some((head, tail)) => {
                 val valueColumns =
@@ -773,7 +764,6 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
               case None =>
                 StreamT.Done
             })
-          }
 
           val predictions =
             if (forests.isEmpty) {

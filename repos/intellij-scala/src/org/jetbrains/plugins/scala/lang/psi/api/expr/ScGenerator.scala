@@ -16,9 +16,8 @@ trait ScGenerator extends ScalaPsiElement with ScPatterned {
 
   def rvalue: ScExpression
 
-  def valKeyword: Option[PsiElement] = {
+  def valKeyword: Option[PsiElement] =
     Option(getNode.findChildByType(ScalaTokenTypes.kVAL)).map(_.getPsi)
-  }
 
   override def accept(visitor: ScalaElementVisitor) =
     visitor.visitGenerator(this)

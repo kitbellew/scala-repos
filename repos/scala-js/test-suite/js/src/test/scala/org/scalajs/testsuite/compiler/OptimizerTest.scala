@@ -286,9 +286,8 @@ class OptimizerTest {
     assertEquals("undefined is undefined", "undefined is " + ())
   }
 
-  @Test def must_not_break_when_folding_null_and_stringLit(): Unit = {
+  @Test def must_not_break_when_folding_null_and_stringLit(): Unit =
     assertEquals("Damien is not null", "Damien is not " + null)
-  }
 
   @Test def must_not_break_when_folding_char_and_stringLit(): Unit = {
     assertEquals("Scala.js", 'S' + "cala.js")

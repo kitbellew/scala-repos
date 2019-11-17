@@ -18,13 +18,12 @@ class SelectionBenchmarks extends MyBenchmark {
   implicit val lexicographic: Order[Complex[Double]] =
     new Order[Complex[Double]] {
       override def eqv(a: Complex[Double], b: Complex[Double]) = a == b
-      def compare(a: Complex[Double], b: Complex[Double]): Int = {
+      def compare(a: Complex[Double], b: Complex[Double]): Int =
         if (a.real < b.real) -1
         else if (a.real > b.real) 1
         else if (a.imag < b.imag) -1
         else if (a.imag > b.imag) 1
         else 0
-      }
     }
 
   @Param(Array("3", "4", "6", "9", "13", "18"))

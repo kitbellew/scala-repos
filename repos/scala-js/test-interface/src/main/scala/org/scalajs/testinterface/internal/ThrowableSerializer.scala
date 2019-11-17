@@ -20,11 +20,10 @@ object ThrowableSerializer {
     res
   }
 
-  private def serializeTraceElem(e: StackTraceElement): js.Dynamic = {
+  private def serializeTraceElem(e: StackTraceElement): js.Dynamic =
     lit(
       className = e.getClassName,
       methodName = e.getMethodName,
       fileName = e.getFileName,
       lineNumber = e.getLineNumber)
-  }
 }

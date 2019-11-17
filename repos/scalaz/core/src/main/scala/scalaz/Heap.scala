@@ -68,7 +68,7 @@ sealed abstract class Heap[A] {
   def minimumO: Option[A] = fold(None, (_, _, t) => Some(t.rootLabel.value))
 
   /**Delete the minimum key from the heap and return the resulting heap. O(log n) */
-  def deleteMin: Heap[A] = {
+  def deleteMin: Heap[A] =
     fold(
       Empty[A],
       (s, leq, t) =>
@@ -83,7 +83,6 @@ sealed abstract class Heap[A] {
           }
         }
     )
-  }
 
   def adjustMin(f: A => A): Heap[A] = this match {
     case Heap(s, leq, Node(Ranked(r, x), xs)) =>
@@ -130,7 +129,7 @@ sealed abstract class Heap[A] {
             else (Empty[A], singletonWith(leq, x.value))))
 
   /**Partition the heap of the elements that are less than, equal to, and greater than a given value. O(n)*/
-  def split(a: A): (Heap[A], Heap[A], Heap[A]) = {
+  def split(a: A): (Heap[A], Heap[A], Heap[A]) =
     fold(
       (Empty[A], Empty[A], Empty[A]),
       (s, leq, t) => {
@@ -142,7 +141,6 @@ sealed abstract class Heap[A] {
         t foldMap (x => f(x.value))
       }
     )
-  }
 
   /**Return a heap consisting of the least n elements of this heap. O(n log n) */
   def take(n: Int) = withList(_.take(n))

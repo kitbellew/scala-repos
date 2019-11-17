@@ -17,15 +17,13 @@ sealed abstract class EphemeralStream[A] {
 
   private[scalaz] def tail: () => EphemeralStream[A]
 
-  def headOption: Option[A] = {
+  def headOption: Option[A] =
     if (isEmpty) None
     else Some(head())
-  }
 
-  def tailOption: Option[EphemeralStream[A]] = {
+  def tailOption: Option[EphemeralStream[A]] =
     if (isEmpty) None
     else Some(tail())
-  }
 
   def toList: List[A] = {
     def lcons(xs: => List[A])(x: => A) = x :: xs
@@ -86,7 +84,7 @@ sealed abstract class EphemeralStream[A] {
       Monad[M].bind(p(hh))(if (_) Monad[M].point(Some(hh)) else tail() findM p)
     }
 
-  def findMapM[M[_]: Monad, B](f: A => M[Option[B]]): M[Option[B]] = {
+  def findMapM[M[_]: Monad, B](f: A => M[Option[B]]): M[Option[B]] =
     if (isEmpty) Monad[M].point(None)
     else {
       val hh = head()
@@ -94,7 +92,6 @@ sealed abstract class EphemeralStream[A] {
         case Some(b) => Monad[M].point(Some(b)); case None => tail() findMapM f
       }
     }
-  }
 
   def reverse: EphemeralStream[A] = {
     def lcons(xs: => List[A])(x: => A) = x :: xs
@@ -191,7 +188,7 @@ sealed abstract class EphemeralStreamInstances {
         fa.foldLeft(z)(b => a => f(b, a))
       override def zipWithL[A, B, C](
           fa: EphemeralStream[A],
-          fb: EphemeralStream[B])(f: (A, Option[B]) => C) = {
+          fb: EphemeralStream[B])(f: (A, Option[B]) => C) =
         if (fa.isEmpty) emptyEphemeralStream
         else {
           val (bo, bTail) =
@@ -199,7 +196,6 @@ sealed abstract class EphemeralStreamInstances {
             else (Some(fb.head()), fb.tail())
           cons(f(fa.head(), bo), zipWithL(fa.tail(), bTail)(f))
         }
-      }
       override def zipWithR[A, B, C](
           fa: EphemeralStream[A],
           fb: EphemeralStream[B])(f: (Option[A], B) => C) =
@@ -212,7 +208,7 @@ sealed abstract class EphemeralStreamInstances {
           G.apply2(f(x), ys)((b, bs) => EphemeralStream.cons(b, bs))
         }
       }
-      override def index[A](fa: EphemeralStream[A], i: Int): Option[A] = {
+      override def index[A](fa: EphemeralStream[A], i: Int): Option[A] =
         if (i < 0) None
         else {
           var n = i
@@ -223,7 +219,6 @@ sealed abstract class EphemeralStreamInstances {
           }
           if (these.isEmpty) None else Some(these.head())
         }
-      }
       def tailrecM[A, B](f: A => EphemeralStream[A \/ B])(
           a: A): EphemeralStream[B] = {
         def go(s: EphemeralStream[A \/ B]): EphemeralStream[B] = {

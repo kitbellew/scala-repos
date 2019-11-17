@@ -27,9 +27,8 @@ object Test {
     def fromInt(a: Int): Int = a
   }
 
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     println((5: Expr[Int]) + 10 + 15 * 20)
-  }
 }
 
 trait Pattern {
@@ -170,7 +169,7 @@ trait Pattern {
     def >=(other: Expr[T])(implicit n: NumericOps[T], o: Ordering[T]) =
       GE(this, other)
 
-    private def generalize(implicit num: NumericOps[T]): Expr[T] = {
+    private def generalize(implicit num: NumericOps[T]): Expr[T] =
       this match {
         case Add2(a, b)    => Add(a :: b :: Nil)
         case Add3(a, b, c) => Add(a :: b :: c :: Nil)
@@ -183,15 +182,13 @@ trait Pattern {
           })
         case x => x
       }
-    }
 
-    private def specialize(implicit num: NumericOps[T]): Expr[T] = {
+    private def specialize(implicit num: NumericOps[T]): Expr[T] =
       this match {
         case Add(Seq(a, b))    => Add2(a, b)
         case Add(Seq(a, b, c)) => Add3(a, b, c)
         case x                 => x
       }
-    }
 
     /** Eliminates common negated components of a sum */
     private def reduceComponents(components: List[Expr[T]])(
@@ -208,7 +205,7 @@ trait Pattern {
 
     /** Simplifies this expression to make evaluation faster and more accurate.
       *  Performs only one pass. */
-    private def reduce(implicit num: NumericOps[T]): Expr[T] = {
+    private def reduce(implicit num: NumericOps[T]): Expr[T] =
       this match {
         case Add(Seq(Neg(x), Neg(y), Neg(z)))   => Neg(Add(List(x, y, z)))
         case Add(Seq(Mul(x, y), z)) if (x == z) => Mul(x, Add(List(y, One[T])))
@@ -304,15 +301,13 @@ trait Pattern {
         case Log(Exp(x)) => x
         case x           => x
       }
-    }
 
-    private def optimizeWith(f: Expr[T] => Expr[T]): Expr[T] = {
+    private def optimizeWith(f: Expr[T] => Expr[T]): Expr[T] =
       f(
         mapArgs(
           EndoFunction[Expr[_]](
             a => a match { case x: Expr[T] => x.optimizeWith(f) }
           )))
-    }
 
     /** Simplifies this expression to make evaluation faster and more accurate.*/
     def simplify(implicit num: NumericOps[T]): Expr[T] = {

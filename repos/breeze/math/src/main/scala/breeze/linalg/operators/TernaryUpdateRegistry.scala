@@ -40,9 +40,8 @@ trait TernaryUpdateRegistry[A, B, C, Op]
       c: C,
       m: Map[
         (Class[_], Class[_], Class[_]),
-        UFunc.InPlaceImpl3[Op, _ <: A, _ <: B, _ <: C]]): Unit = {
+        UFunc.InPlaceImpl3[Op, _ <: A, _ <: B, _ <: C]]): Unit =
     throw new RuntimeException("Multiple bindings for method: " + m)
-  }
 
   def apply(a: A, b: B, c: C) {
     val ac = a.asInstanceOf[AnyRef].getClass

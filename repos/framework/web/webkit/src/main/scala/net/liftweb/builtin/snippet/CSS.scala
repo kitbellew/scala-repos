@@ -42,7 +42,7 @@ object CSS extends DispatchSnippet {
     * to your template and Lift will replace it with the path to the blueprint css styles
     * (screen and print media)
     */
-  def blueprint: NodeSeq = {
+  def blueprint: NodeSeq =
     <xml:group>
       <link rel="stylesheet" href={
       "/" + LiftRules.resourceServerPath +
@@ -59,7 +59,6 @@ object CSS extends DispatchSnippet {
         S.contextPath + """/""" + LiftRules.resourceServerPath +
         """/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
     """)
-  }
 
   /**
     * Add
@@ -72,11 +71,10 @@ object CSS extends DispatchSnippet {
     * css styles
     * (screen media)
     */
-  def fancyType: NodeSeq = {
+  def fancyType: NodeSeq =
     <link rel="stylesheet" href={
       "/" + LiftRules.resourceServerPath +
         "/blueprint/plugins/fancy-type/screen.css"
     }
       type="text/css" media="screen, projection"/>
-  }
 }

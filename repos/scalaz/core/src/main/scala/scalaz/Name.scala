@@ -77,12 +77,11 @@ object Name {
 }
 
 object Need {
-  def apply[A](a: => A): Need[A] = {
+  def apply[A](a: => A): Need[A] =
     new Need[A] {
       private[this] lazy val value0: A = a
       def value = value0
     }
-  }
   def unapply[A](x: Need[A]): Option[A] = Some(x.value)
 
   implicit val need: Monad[Need]

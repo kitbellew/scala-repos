@@ -124,7 +124,7 @@ private[json] object Meta {
     def constructors(
         t: Type,
         visited: Set[Type],
-        context: Option[Context]): List[DeclaredConstructor] = {
+        context: Option[Context]): List[DeclaredConstructor] =
       Reflection.constructors(t, formats.parameterNameReader, context).map {
         case (c, args) =>
           DeclaredConstructor(c, args.map {
@@ -136,7 +136,6 @@ private[json] object Meta {
                 Context(name, c.getDeclaringClass, args))
           })
       }
-    }
 
     def toArg(
         name: String,

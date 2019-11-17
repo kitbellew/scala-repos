@@ -35,9 +35,8 @@ private[stat] object SpearmanCorrelation extends Correlation with Logging {
   /**
     * Compute Spearman's correlation for two datasets.
     */
-  override def computeCorrelation(x: RDD[Double], y: RDD[Double]): Double = {
+  override def computeCorrelation(x: RDD[Double], y: RDD[Double]): Double =
     computeCorrelationWithMatrixImpl(x, y)
-  }
 
   /**
     * Compute Spearman's correlation matrix S, for the input matrix, where S(i, j) is the

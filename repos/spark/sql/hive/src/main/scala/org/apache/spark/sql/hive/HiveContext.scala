@@ -70,9 +70,8 @@ private[hive] case class CurrentDatabase(ctx: HiveContext)
   override def dataType: DataType = StringType
   override def foldable: Boolean = true
   override def nullable: Boolean = false
-  override def eval(input: InternalRow): Any = {
+  override def eval(input: InternalRow): Any =
     UTF8String.fromString(ctx.metadataHive.currentDatabase)
-  }
 }
 
 /**
@@ -112,7 +111,7 @@ class HiveContext private[hive] (
     * temporary tables and SessionState, but sharing the same CacheManager, IsolatedClientLoader
     * and Hive client (both of execution and metadata) with existing HiveContext.
     */
-  override def newSession(): HiveContext = {
+  override def newSession(): HiveContext =
     new HiveContext(
       sc = sc,
       cacheManager = cacheManager,
@@ -120,7 +119,6 @@ class HiveContext private[hive] (
       execHive = executionHive.newSession(),
       metaHive = metadataHive.newSession(),
       isRootContext = false)
-  }
 
   @transient
   protected[sql] override lazy val sessionState = new HiveSessionState(self)
@@ -239,9 +237,8 @@ class HiveContext private[hive] (
     * Overrides default Hive configurations to avoid breaking changes to Spark SQL users.
     *  - allow SQL11 keywords to be used as identifiers
     */
-  private[sql] def defaultOverrides() = {
+  private[sql] def defaultOverrides() =
     setConf(ConfVars.HIVE_SUPPORT_SQL11_RESERVED_KEYWORDS.varname, "false")
-  }
 
   defaultOverrides()
 
@@ -356,11 +353,10 @@ class HiveContext private[hive] (
       isolatedLoader.createClient()
     }
 
-  protected[sql] override def parseSql(sql: String): LogicalPlan = {
+  protected[sql] override def parseSql(sql: String): LogicalPlan =
     executionHive.withHiveState {
       super.parseSql(substitutor.substitute(hiveconf, sql))
     }
-  }
 
   override protected[sql] def executePlan(
       plan: LogicalPlan): this.QueryExecution =
@@ -482,14 +478,11 @@ class HiveContext private[hive] (
     hiveconf.set(key, value)
   }
 
-  override private[sql] def setConf[T](
-      entry: SQLConfEntry[T],
-      value: T): Unit = {
+  override private[sql] def setConf[T](entry: SQLConfEntry[T], value: T): Unit =
     setConf(entry.key, entry.stringConverter(value))
-  }
 
   /** Overridden by child classes that need to set configuration before the client init. */
-  protected def configure(): Map[String, String] = {
+  protected def configure(): Map[String, String] =
     // Hive 0.14.0 introduces timeout operations in HiveConf, and changes default values of a bunch
     // of time `ConfVar`s by adding time suffixes (`s`, `ms`, and `d` etc.).  This breaks backwards-
     // compatibility when users are trying to connecting to a Hive metastore of lower version,
@@ -541,7 +534,6 @@ class HiveContext private[hive] (
       case (confVar, unit) =>
         confVar.varname -> hiveconf.getTimeVar(confVar, unit).toString
     }.toMap
-  }
 
   /**
     * SQLConf and HiveConf contracts:
@@ -582,11 +574,10 @@ class HiveContext private[hive] (
     * This is currently only used for DDLs and will be removed as soon as Spark can parse
     * all supported Hive DDLs itself.
     */
-  protected[sql] override def runNativeSql(sqlText: String): Seq[Row] = {
+  protected[sql] override def runNativeSql(sqlText: String): Seq[Row] =
     runSqlHive(sqlText).map { s =>
       Row(s)
     }
-  }
 
   /** Extends QueryExecution with hive specific features. */
   protected[sql] class QueryExecution(logicalPlan: LogicalPlan)

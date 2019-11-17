@@ -82,10 +82,9 @@ class VectorBuilder[@spec(Double, Int, Float, Long) E](
     acc
   }
 
-  private def boundsCheck(i: Int): Unit = {
+  private def boundsCheck(i: Int): Unit =
     if (length >= 0 && (i < 0 || i >= size))
       throw new scala.IndexOutOfBoundsException(i + " not in [0," + size + ")")
-  }
 
   def update(i: Int, v: E) {
     boundsCheck(i)
@@ -127,27 +126,24 @@ class VectorBuilder[@spec(Double, Int, Float, Long) E](
 
   def isActive(rawIndex: Int) = rawIndex < used && rawIndex > 0
 
-  override def toString = {
+  override def toString =
     (index.iterator zip data.iterator)
       .take(used)
       .mkString(s"VectorBuilder($length)(", ", ", ")")
-  }
 
-  def copy: VectorBuilder[E] = {
+  def copy: VectorBuilder[E] =
     new VectorBuilder[E](
       ArrayUtil.copyOf(index, index.length),
       ArrayUtil.copyOf(data, index.length),
       activeSize,
       size)
-  }
 
-  def zerosLike: VectorBuilder[E] = {
+  def zerosLike: VectorBuilder[E] =
     new VectorBuilder[E](
       new Array[Int](0),
       ArrayUtil.newArrayLike(data, 0),
       0,
       size)
-  }
 
   def reserve(nnz: Int) {
     if (nnz < _data.length) {
@@ -169,12 +165,11 @@ class VectorBuilder[@spec(Double, Int, Float, Long) E](
     hv
   }
 
-  private def requirePositiveLength(): Unit = {
+  private def requirePositiveLength(): Unit =
     if (size < 0) {
       throw new scala.UnsupportedOperationException(
         "Can't make a vector with a negative length!")
     }
-  }
 
   def toDenseVector: DenseVector[E] = {
     requirePositiveLength()
@@ -358,44 +353,37 @@ object VectorBuilder extends VectorBuilderOps {
   class CanCopyBuilder[
       @spec(Double, Int, Float, Long) V: ClassTag: Semiring: Zero]
       extends CanCopy[VectorBuilder[V]] {
-    def apply(v1: VectorBuilder[V]) = {
+    def apply(v1: VectorBuilder[V]) =
       v1.copy
-    }
   }
 
   class CanZerosBuilder[
       @spec(Double, Int, Float, Long) V: ClassTag: Semiring: Zero]
       extends CanCreateZerosLike[VectorBuilder[V], VectorBuilder[V]] {
-    def apply(v1: VectorBuilder[V]) = {
+    def apply(v1: VectorBuilder[V]) =
       v1.zerosLike
-    }
   }
 
   implicit def canCopyBuilder[@spec(Double, Int, Float, Long) V: ClassTag: Semiring: Zero]
-      : CanCopyBuilder[V] = {
+      : CanCopyBuilder[V] =
     new CanCopyBuilder[V]
-  }
   implicit def canZerosBuilder[@spec(Double, Int, Float, Long) V: ClassTag: Semiring: Zero]
-      : CanZerosBuilder[V] = {
+      : CanZerosBuilder[V] =
     new CanZerosBuilder[V]
-  }
 
   implicit def canZeroBuilder[@spec(Double, Int, Float, Long) V: Semiring: Zero: ClassTag]
-      : CanCreateZeros[VectorBuilder[V], Int] = {
+      : CanCreateZeros[VectorBuilder[V], Int] =
     new CanCreateZeros[VectorBuilder[V], Int] {
       def apply(d: Int): VectorBuilder[V] = zeros(d)
     }
-  }
 
   implicit def negFromScale[@spec(Double, Int, Float, Long) V](
       implicit scale: OpMulScalar.Impl2[VectorBuilder[V], V, VectorBuilder[V]],
-      field: Ring[V]): OpNeg.Impl[VectorBuilder[V], VectorBuilder[V]] = {
+      field: Ring[V]): OpNeg.Impl[VectorBuilder[V], VectorBuilder[V]] =
     new OpNeg.Impl[VectorBuilder[V], VectorBuilder[V]] {
-      override def apply(a: VectorBuilder[V]) = {
+      override def apply(a: VectorBuilder[V]) =
         scale(a, field.negate(field.one))
-      }
     }
-  }
 
   // private stuff
 

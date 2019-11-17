@@ -13,7 +13,6 @@ class ForwardingActor(destination: ActorRef) extends Actor {
 }
 
 object ForwardingActor {
-  def props(destination: ActorRef): Props = {
+  def props(destination: ActorRef): Props =
     Props(classOf[ForwardingActor], destination)
-  }
 }

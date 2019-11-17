@@ -42,9 +42,8 @@ class BinaryType private () extends AtomicType {
   }
 
   private[sql] val ordering = new Ordering[InternalType] {
-    def compare(x: Array[Byte], y: Array[Byte]): Int = {
+    def compare(x: Array[Byte], y: Array[Byte]): Int =
       TypeUtils.compareBinary(x, y)
-    }
   }
 
   /**

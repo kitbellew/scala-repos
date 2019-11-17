@@ -58,23 +58,20 @@ trait HeadActionSpec
       .orElse(stream) // GET /stream/0
       .orElse(chunkedResponse) // GET /chunked
 
-    def withServer[T](block: WSClient => T): T = {
+    def withServer[T](block: WSClient => T): T =
       // Routes from HttpBinApplication
       Server.withRouter()(routes) { implicit port =>
         implicit val mat = Play.current.materializer
         WsTestClient.withClient(block)
       }
-    }
 
-    def serverWithAction[T](action: EssentialAction)(
-        block: WSClient => T): T = {
+    def serverWithAction[T](action: EssentialAction)(block: WSClient => T): T =
       Server.withRouter() {
         case _ => action
       } { implicit port =>
         implicit val mat = Play.current.materializer
         WsTestClient.withClient(block)
       }
-    }
 
     "return 200 in response to a URL with a GET handler" in withServer {
       client =>

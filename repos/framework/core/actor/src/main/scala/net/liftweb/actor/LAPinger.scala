@@ -69,9 +69,8 @@ object LAPinger {
       msg: T,
       delay: Long): ScheduledFuture[Unit] = {
     val r = new Callable[Unit] {
-      def call: Unit = {
+      def call: Unit =
         to ! msg
-      }
     }
     try {
       service.schedule(r, delay, TimeUnit.MILLISECONDS)

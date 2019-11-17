@@ -124,17 +124,15 @@ private[hive] class HiveMetastoreCatalog(
   case class QualifiedTableName(database: String, name: String)
 
   private def getQualifiedTableName(
-      tableIdent: TableIdentifier): QualifiedTableName = {
+      tableIdent: TableIdentifier): QualifiedTableName =
     QualifiedTableName(
       tableIdent.database.getOrElse(client.currentDatabase).toLowerCase,
       tableIdent.table.toLowerCase)
-  }
 
-  private def getQualifiedTableName(t: CatalogTable): QualifiedTableName = {
+  private def getQualifiedTableName(t: CatalogTable): QualifiedTableName =
     QualifiedTableName(
       t.name.database.getOrElse(client.currentDatabase).toLowerCase,
       t.name.table.toLowerCase)
-  }
 
   /** A cache of Spark SQL data source tables that have been accessed. */
   protected[hive] val cachedDataSourceTables
@@ -144,7 +142,7 @@ private[hive] class HiveMetastoreCatalog(
         logDebug(s"Creating new cached data source for $in")
         val table = client.getTable(in.database, in.name)
 
-        def schemaStringFromParts: Option[String] = {
+        def schemaStringFromParts: Option[String] =
           table.properties.get("spark.sql.sources.schema.numParts").map {
             numParts =>
               val parts = (0 until numParts.toInt).map { index =>
@@ -162,9 +160,8 @@ private[hive] class HiveMetastoreCatalog(
               // Stick all parts back to a single schema string.
               parts.mkString
           }
-        }
 
-        def getColumnNames(colType: String): Seq[String] = {
+        def getColumnNames(colType: String): Seq[String] =
           table.properties
             .get(s"spark.sql.sources.schema.num${colType.capitalize}Cols")
             .map { numCols =>
@@ -177,7 +174,6 @@ private[hive] class HiveMetastoreCatalog(
               }
             }
             .getOrElse(Nil)
-        }
 
         // Originally, we used spark.sql.sources.schema to store the schema of a data source table.
         // After SPARK-6024, we removed this flag.
@@ -222,7 +218,7 @@ private[hive] class HiveMetastoreCatalog(
     CacheBuilder.newBuilder().maximumSize(1000).build(cacheLoader)
   }
 
-  override def refreshTable(tableIdent: TableIdentifier): Unit = {
+  override def refreshTable(tableIdent: TableIdentifier): Unit =
     // refreshTable does not eagerly reload the cache. It just invalidate the cache.
     // Next time when we use the table, it will be populated in the cache.
     // Since we also cache ParquetRelations converted from Hive Parquet tables and
@@ -232,11 +228,9 @@ private[hive] class HiveMetastoreCatalog(
     // cache loader (e.g. cannot find data source provider, which is only defined for
     // data source table.).
     invalidateTable(tableIdent)
-  }
 
-  def invalidateTable(tableIdent: TableIdentifier): Unit = {
+  def invalidateTable(tableIdent: TableIdentifier): Unit =
     cachedDataSourceTables.invalidate(getQualifiedTableName(tableIdent))
-  }
 
   def createDataSourceTable(
       tableIdent: TableIdentifier,
@@ -338,7 +332,7 @@ private[hive] class HiveMetastoreCatalog(
       className = provider,
       options = options)
 
-    def newSparkSQLSpecificMetastoreTable(): CatalogTable = {
+    def newSparkSQLSpecificMetastoreTable(): CatalogTable =
       CatalogTable(
         name = TableIdentifier(tblName, Option(dbName)),
         tableType = tableType,
@@ -352,7 +346,6 @@ private[hive] class HiveMetastoreCatalog(
         ),
         properties = tableProperties.toMap
       )
-    }
 
     def newHiveCompatibleMetastoreTable(
         relation: HadoopFsRelation,
@@ -523,7 +516,7 @@ private[hive] class HiveMetastoreCatalog(
         pathsInMetastore: Seq[String],
         schemaInMetastore: StructType,
         partitionSpecInMetastore: Option[PartitionSpec])
-        : Option[LogicalRelation] = {
+        : Option[LogicalRelation] =
       cachedDataSourceTables.getIfPresent(tableIdentifier) match {
         case null => None // Cache miss
         case logical @ LogicalRelation(
@@ -559,7 +552,6 @@ private[hive] class HiveMetastoreCatalog(
           cachedDataSourceTables.invalidate(tableIdentifier)
           None
       }
-    }
 
     val result =
       if (metastoreRelation.hiveQlTable.isPartitioned) {
@@ -858,23 +850,20 @@ private[hive] class HiveMetastoreCatalog(
     */
   override def registerTable(
       tableIdent: TableIdentifier,
-      plan: LogicalPlan): Unit = {
+      plan: LogicalPlan): Unit =
     throw new UnsupportedOperationException
-  }
 
   /**
     * UNIMPLEMENTED: It needs to be decided how we will persist in-memory tables to the metastore.
     * For now, if this functionality is desired mix in the in-memory [[OverrideCatalog]].
     */
-  override def unregisterTable(tableIdent: TableIdentifier): Unit = {
+  override def unregisterTable(tableIdent: TableIdentifier): Unit =
     throw new UnsupportedOperationException
-  }
 
   override def unregisterAllTables(): Unit = {}
 
-  override def setCurrentDatabase(databaseName: String): Unit = {
+  override def setCurrentDatabase(databaseName: String): Unit =
     client.setCurrentDatabase(databaseName)
-  }
 }
 
 /**
@@ -948,16 +937,14 @@ private[hive] case class MetastoreRelation(
     case _ => false
   }
 
-  override def hashCode(): Int = {
+  override def hashCode(): Int =
     Objects.hashCode(databaseName, tableName, alias, output)
-  }
 
   override protected def otherCopyArgs: Seq[AnyRef] =
     table :: sqlContext :: Nil
 
-  private def toHiveColumn(c: CatalogColumn): FieldSchema = {
+  private def toHiveColumn(c: CatalogColumn): FieldSchema =
     new FieldSchema(c.name, c.dataType, c.comment.orNull)
-  }
 
   // TODO: merge this with HiveClientImpl#toHiveTable
   @transient val hiveQlTable: HiveTable = {
@@ -1074,13 +1061,12 @@ private[hive] case class MetastoreRelation(
   }
 
   /** Only compare database and tablename, not alias. */
-  override def sameResult(plan: LogicalPlan): Boolean = {
+  override def sameResult(plan: LogicalPlan): Boolean =
     plan match {
       case mr: MetastoreRelation =>
         mr.databaseName == databaseName && mr.tableName == tableName
       case _ => false
     }
-  }
 
   val tableDesc = new TableDesc(
     hiveQlTable.getInputFormatClass,
@@ -1130,9 +1116,8 @@ private[hive] case class MetastoreRelation(
     }
   }
 
-  override def newInstance(): MetastoreRelation = {
+  override def newInstance(): MetastoreRelation =
     MetastoreRelation(databaseName, tableName, alias)(table, client, sqlContext)
-  }
 }
 
 private[hive] object HiveMetastoreTypes {

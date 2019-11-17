@@ -106,10 +106,9 @@ object PackExamples extends App {
   implicit val sc = new Show[C] { def show = "C" }
 
   def use3[T, U, V](t: T, u: U, v: V)(
-      implicit pack: Pack[Show, T :: U :: V :: HNil]) = {
+      implicit pack: Pack[Show, T :: U :: V :: HNil]) =
     // Instances automatically unpacked here
     (show(t), show(u), show(v))
-  }
 
   // Instances automatically packed here
   assert(use3(a, b, c) == ("A", "B", "C"))

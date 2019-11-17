@@ -58,7 +58,7 @@ object CreateWorkflow extends Logging {
 
   case class AlgorithmParams(name: String, params: JValue)
 
-  private def stringFromFile(filePath: String): String = {
+  private def stringFromFile(filePath: String): String =
     try {
       val uri = new URI(filePath)
       val fs = FileSystem.get(uri, new Configuration())
@@ -68,7 +68,6 @@ object CreateWorkflow extends Logging {
         error(s"Error reading from file: ${e.getMessage}. Aborting workflow.")
         sys.exit(1)
     }
-  }
 
   val parser = new scopt.OptionParser[WorkflowConfig]("CreateWorkflow") {
     override def errorOnUnknownArgument: Boolean = false

@@ -16,9 +16,8 @@ object TaskTrackerActor {
   def props(
       metrics: ActorMetrics,
       taskLoader: TaskLoader,
-      taskUpdaterProps: ActorRef => Props): Props = {
+      taskUpdaterProps: ActorRef => Props): Props =
     Props(new TaskTrackerActor(metrics, taskLoader, taskUpdaterProps))
-  }
 
   /** Query the current [[TaskTracker.AppTasks]] from the [[TaskTrackerActor]]. */
   private[impl] case object List

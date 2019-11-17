@@ -9,7 +9,7 @@ object B {
 
   var a: A = _
   var b: Boolean = false
-  def y: A = {
+  def y: A =
     if (b) {
       a = new A { type T = Int; var v = 1 }
       a
@@ -18,7 +18,6 @@ object B {
       b = true
       a
     }
-  }
 }
 
 object Test extends App {

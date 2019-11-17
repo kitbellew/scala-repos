@@ -65,18 +65,17 @@ object Runner extends Logging {
     }
   }
 
-  def cleanup(fs: Option[FileSystem], uri: Option[URI]): Unit = {
+  def cleanup(fs: Option[FileSystem], uri: Option[URI]): Unit =
     (fs, uri) match {
       case (Some(f), Some(u)) =>
         f.close()
       case _ => Unit
     }
-  }
 
   def detectFilePaths(
       fileSystem: Option[FileSystem],
       uri: Option[URI],
-      args: Seq[String]): Seq[String] = {
+      args: Seq[String]): Seq[String] =
     args map { arg =>
       val f = try {
         new File(new URI(arg))
@@ -89,7 +88,6 @@ object Runner extends Logging {
         arg
       }
     }
-  }
 
   def runOnSpark(
       className: String,

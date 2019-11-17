@@ -313,44 +313,36 @@ class TestJavaStreamingListener extends JavaStreamingListener {
     null
 
   override def onReceiverStarted(
-      receiverStarted: JavaStreamingListenerReceiverStarted): Unit = {
+      receiverStarted: JavaStreamingListenerReceiverStarted): Unit =
     this.receiverStarted = receiverStarted
-  }
 
   override def onReceiverError(
-      receiverError: JavaStreamingListenerReceiverError): Unit = {
+      receiverError: JavaStreamingListenerReceiverError): Unit =
     this.receiverError = receiverError
-  }
 
   override def onReceiverStopped(
-      receiverStopped: JavaStreamingListenerReceiverStopped): Unit = {
+      receiverStopped: JavaStreamingListenerReceiverStopped): Unit =
     this.receiverStopped = receiverStopped
-  }
 
   override def onBatchSubmitted(
-      batchSubmitted: JavaStreamingListenerBatchSubmitted): Unit = {
+      batchSubmitted: JavaStreamingListenerBatchSubmitted): Unit =
     this.batchSubmitted = batchSubmitted
-  }
 
   override def onBatchStarted(
-      batchStarted: JavaStreamingListenerBatchStarted): Unit = {
+      batchStarted: JavaStreamingListenerBatchStarted): Unit =
     this.batchStarted = batchStarted
-  }
 
   override def onBatchCompleted(
-      batchCompleted: JavaStreamingListenerBatchCompleted): Unit = {
+      batchCompleted: JavaStreamingListenerBatchCompleted): Unit =
     this.batchCompleted = batchCompleted
-  }
 
   override def onOutputOperationStarted(
       outputOperationStarted: JavaStreamingListenerOutputOperationStarted)
-      : Unit = {
+      : Unit =
     this.outputOperationStarted = outputOperationStarted
-  }
 
   override def onOutputOperationCompleted(
       outputOperationCompleted: JavaStreamingListenerOutputOperationCompleted)
-      : Unit = {
+      : Unit =
     this.outputOperationCompleted = outputOperationCompleted
-  }
 }

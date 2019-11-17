@@ -104,15 +104,13 @@ private[spark] class ParallelCollectionRDD[T: ClassTag](
       .toArray
   }
 
-  override def compute(s: Partition, context: TaskContext): Iterator[T] = {
+  override def compute(s: Partition, context: TaskContext): Iterator[T] =
     new InterruptibleIterator(
       context,
       s.asInstanceOf[ParallelCollectionPartition[T]].iterator)
-  }
 
-  override def getPreferredLocations(s: Partition): Seq[String] = {
+  override def getPreferredLocations(s: Partition): Seq[String] =
     locationPrefs.getOrElse(s.index, Nil)
-  }
 }
 
 private object ParallelCollectionRDD {
@@ -129,13 +127,12 @@ private object ParallelCollectionRDD {
     }
     // Sequences need to be sliced at the same set of index positions for operations
     // like RDD.zip() to behave as expected
-    def positions(length: Long, numSlices: Int): Iterator[(Int, Int)] = {
+    def positions(length: Long, numSlices: Int): Iterator[(Int, Int)] =
       (0 until numSlices).iterator.map(i => {
         val start = ((i * length) / numSlices).toInt
         val end = (((i + 1) * length) / numSlices).toInt
         (start, end)
       })
-    }
     seq match {
       case r: Range => {
         positions(r.length, numSlices).zipWithIndex

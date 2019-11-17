@@ -78,14 +78,12 @@ trait LocationLineManager { self: ScalaPositionManager =>
 
   private def customizedLocations(
       refType: ReferenceType,
-      line: Int): Seq[Location] = {
+      line: Int): Seq[Location] =
     lineToCustomizedLocationCache.getOrElse((refType, line), Seq.empty)
-  }
 
-  private def checkAndUpdateCaches(refType: ReferenceType) = {
+  private def checkAndUpdateCaches(refType: ReferenceType) =
     if (!seenRefTypes.contains(refType))
       inReadAction(computeCustomizedLocationsFor(refType))
-  }
 
   private def cacheCustomLine(location: Location, customLine: Int): Unit = {
     customizedLocationsCache.put(location, customLine)
@@ -117,7 +115,7 @@ trait LocationLineManager { self: ScalaPositionManager =>
     //scalac sometimes generates very strange line numbers for <init> method
     def customizeLineForConstructors(): Unit = {
       //2.12 generates line number for return of constructor, it has no use in debugger
-      def isReturnInstr(location: Location): Boolean = {
+      def isReturnInstr(location: Location): Boolean =
         try {
           val bytecodes = location.method().bytecodes()
           val index = location.codeIndex()
@@ -125,7 +123,6 @@ trait LocationLineManager { self: ScalaPositionManager =>
         } catch {
           case e: Throwable => false
         }
-      }
 
       def shouldPointAtStartLine(location: Location): Boolean = {
         if (location.codeIndex() != 0) return false
@@ -260,12 +257,11 @@ trait LocationLineManager { self: ScalaPositionManager =>
       }
 
       def customizeFor(caseClauses: ScCaseClauses): Unit = {
-        def tooSmall(m: Method) = {
+        def tooSmall(m: Method) =
           try m.allLineLocations().size() <= 3
           catch {
             case ae: AbsentInformationException => true
           }
-        }
 
         val baseLine = caseClauses.getParent match {
           case ms: ScMatchStmt => ms.expr.map(elementStartLine)

@@ -31,9 +31,8 @@ class ShardCoordinatorTest extends WordSpec with MockitoSugar {
           Await.result(Future { f(zk) } ensure { zk.release })
         }
 
-        def acquire(coord: ShardCoordinator) = {
+        def acquire(coord: ShardCoordinator) =
           coord.acquire within (new JavaTimer(true), 1.second)
-        }
 
         "provide shards" in {
           withClient { zk =>

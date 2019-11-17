@@ -52,7 +52,6 @@ class GraphiteClient(address: InetSocketAddress) extends Closeable {
     finally writer.close()
   }
 
-  protected def sanitize(s: String): String = {
+  protected def sanitize(s: String): String =
     WHITESPACE.matcher(s).replaceAll("-")
-  }
 }

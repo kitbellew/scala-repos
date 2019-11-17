@@ -81,7 +81,7 @@ trait Controller
     * }
     * }}}
     */
-  implicit def request2lang(implicit request: RequestHeader): Lang = {
+  implicit def request2lang(implicit request: RequestHeader): Lang =
     play.api.Play.privateMaybeApplication
       .map(
         app =>
@@ -91,5 +91,4 @@ trait Controller
             .lang)
       .getOrElse(request.acceptLanguages.headOption
         .getOrElse(play.api.i18n.Lang.defaultLang))
-  }
 }

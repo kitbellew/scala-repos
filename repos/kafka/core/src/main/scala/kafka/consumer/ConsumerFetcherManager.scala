@@ -137,7 +137,7 @@ class ConsumerFetcherManager(
 
   override def createFetcherThread(
       fetcherId: Int,
-      sourceBroker: BrokerEndPoint): AbstractFetcherThread = {
+      sourceBroker: BrokerEndPoint): AbstractFetcherThread =
     new ConsumerFetcherThread(
       "ConsumerFetcherThread-%s-%d-%d"
         .format(consumerIdString, fetcherId, sourceBroker.id),
@@ -145,7 +145,6 @@ class ConsumerFetcherManager(
       sourceBroker,
       partitionMap,
       this)
-  }
 
   def startConnections(
       topicInfos: Iterable[PartitionTopicInfo],

@@ -23,12 +23,11 @@ trait PsiElementExtTrait {
   def parents: Iterator[PsiElement] = new ParentsIterator(repr)
   def containingFile: Option[PsiFile] = Option(repr.getContainingFile)
 
-  def parentsInFile: Iterator[PsiElement] = {
+  def parentsInFile: Iterator[PsiElement] =
     repr match {
       case _: PsiFile | _: PsiDirectory => Iterator.empty
       case _                            => new ParentsIterator(repr).takeWhile(!_.isInstanceOf[PsiFile])
     }
-  }
 
   def contexts: Iterator[PsiElement] = new ContextsIterator(repr)
 

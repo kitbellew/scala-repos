@@ -126,7 +126,7 @@ case class FetchRequest(
     }
   }
 
-  def sizeInBytes: Int = {
+  def sizeInBytes: Int =
     2 + /* versionId */
     4 + /* correlationId */
     shortStringLength(clientId) + 4 + /* replicaId */
@@ -142,7 +142,6 @@ case class FetchRequest(
         4 /* fetch size */
         )
     })
-  }
 
   def isFromFollower = Request.isValidBrokerId(replicaId)
 
@@ -152,9 +151,8 @@ case class FetchRequest(
 
   def numPartitions = requestInfo.size
 
-  override def toString(): String = {
+  override def toString(): String =
     describe(true)
-  }
 
   override def handleError(
       e: Throwable,

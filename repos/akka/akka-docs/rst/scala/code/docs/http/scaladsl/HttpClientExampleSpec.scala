@@ -92,9 +92,8 @@ class HttpClientExampleSpec extends WordSpec with Matchers {
 
       val http = Http(context.system)
 
-      override def preStart() = {
+      override def preStart() =
         http.singleRequest(HttpRequest(uri = "http://akka.io")).pipeTo(self)
-      }
 
       def receive = {
         case HttpResponse(StatusCodes.OK, headers, entity, _) =>

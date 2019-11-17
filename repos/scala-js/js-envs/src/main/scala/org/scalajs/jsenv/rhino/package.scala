@@ -18,9 +18,8 @@ package object rhino {
     def evaluateFile(
         scope: Scriptable,
         file: VirtualJSFile,
-        securityDomain: AnyRef = null): Any = {
+        securityDomain: AnyRef = null): Any =
       self.evaluateString(scope, file.content, file.path, 1, securityDomain)
-    }
   }
 
   private[rhino] implicit class ScriptableObjectOps(val self: Scriptable) {
@@ -31,12 +30,11 @@ package object rhino {
             context: Context,
             scope: Scriptable,
             thisObj: Scriptable,
-            args: Array[AnyRef]): AnyRef = {
+            args: Array[AnyRef]): AnyRef =
           function(args) match {
             case () => Undefined.instance
             case r  => r.asInstanceOf[AnyRef]
           }
-        }
       }
 
       ScriptableObject.putProperty(self, name, rhinoFunction)

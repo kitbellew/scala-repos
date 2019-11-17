@@ -31,9 +31,8 @@ trait DateParser extends java.io.Serializable { self =>
 
   def rescueWith(second: DateParser): DateParser =
     new DateParser {
-      def parse(s: String)(implicit tz: TimeZone) = {
+      def parse(s: String)(implicit tz: TimeZone) =
         self.parse(s) orElse second.parse(s)
-      }
     }
 }
 

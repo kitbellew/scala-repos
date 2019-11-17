@@ -257,9 +257,8 @@ class StreamingKMeans @Since("1.2.0") (
     * Return the latest model.
     */
   @Since("1.2.0")
-  def latestModel(): StreamingKMeansModel = {
+  def latestModel(): StreamingKMeansModel =
     model
-  }
 
   /**
     * Update the clustering model by training on batches of data from a DStream.
@@ -299,10 +298,9 @@ class StreamingKMeans @Since("1.2.0") (
     * Java-friendly version of `predictOn`.
     */
   @Since("1.4.0")
-  def predictOn(data: JavaDStream[Vector]): JavaDStream[java.lang.Integer] = {
+  def predictOn(data: JavaDStream[Vector]): JavaDStream[java.lang.Integer] =
     JavaDStream.fromDStream(
       predictOn(data.dstream).asInstanceOf[DStream[java.lang.Integer]])
-  }
 
   /**
     * Use the model to make predictions on the values of a DStream and carry over its keys.
@@ -331,12 +329,11 @@ class StreamingKMeans @Since("1.2.0") (
   }
 
   /** Check whether cluster centers have been initialized. */
-  private[this] def assertInitialized(): Unit = {
+  private[this] def assertInitialized(): Unit =
     if (model.clusterCenters == null) {
       throw new IllegalStateException(
         "Initial cluster centers must be set before starting predictions")
     }
-  }
 }
 
 private[clustering] object StreamingKMeans {

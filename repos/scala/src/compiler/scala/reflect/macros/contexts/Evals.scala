@@ -13,7 +13,7 @@ trait Evals { self: Context =>
     .createImporter(universe)
     .asInstanceOf[ru.Importer { val from: universe.type }]
 
-  def eval[T](expr: Expr[T]): T = {
+  def eval[T](expr: Expr[T]): T =
     expr.tree match {
       case global.Literal(global.Constant(value)) =>
         value.asInstanceOf[T]
@@ -21,5 +21,4 @@ trait Evals { self: Context =>
         val imported = evalImporter.importTree(expr.tree)
         evalToolBox.eval(imported).asInstanceOf[T]
     }
-  }
 }

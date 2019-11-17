@@ -15,10 +15,9 @@ trait Precedence {
   * All the level of operator precedence in Scala
   */
 object Precedence {
-  def opWrap(s: Precedence, selfOpPred: Int) = {
+  def opWrap(s: Precedence, selfOpPred: Int) =
     if (s.opPred >= selfOpPred) s.toString
     else "(" + s + ")"
-  }
   val Letters = 0
   val | = 1
   val ^ = 2

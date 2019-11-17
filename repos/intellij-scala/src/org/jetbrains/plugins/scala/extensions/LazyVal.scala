@@ -8,8 +8,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.ScPatternDefinition
   * @author Nikolay.Tropin
   */
 object LazyVal {
-  def unapply(pd: ScPatternDefinition): Option[ScPatternDefinition] = {
+  def unapply(pd: ScPatternDefinition): Option[ScPatternDefinition] =
     if (pd.hasModifierProperty("lazy")) Some(pd)
     else None
-  }
 }

@@ -156,7 +156,7 @@ case class CategoricalNaiveBayesModel(
     * @param features features for classification
     *
     */
-  def predict(features: Array[String]): String = {
+  def predict(features: Array[String]): String =
     priors.keySet
       .map { label =>
         (label, logScoreInternal(label, features))
@@ -166,7 +166,6 @@ case class CategoricalNaiveBayesModel(
       .take(1)
       .head
       ._1
-  }
 }
 
 /**
@@ -187,7 +186,6 @@ case class LabeledPoint(label: String, features: Array[String]) {
     case _                  => false
   }
 
-  override def hashCode(): Int = {
+  override def hashCode(): Int =
     this.toString.hashCode
-  }
 }

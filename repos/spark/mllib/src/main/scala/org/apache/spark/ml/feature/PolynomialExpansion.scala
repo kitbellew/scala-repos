@@ -84,9 +84,8 @@ class PolynomialExpansion(override val uid: String)
 @Since("1.6.0")
 object PolynomialExpansion extends DefaultParamsReadable[PolynomialExpansion] {
 
-  private def choose(n: Int, k: Int): Int = {
+  private def choose(n: Int, k: Int): Int =
     Range(n, n - k, -1).product / Range(k, 1, -1).product
-  }
 
   private def getPolySize(numFeatures: Int, degree: Int): Int =
     choose(numFeatures + degree, degree)
@@ -194,13 +193,12 @@ object PolynomialExpansion extends DefaultParamsReadable[PolynomialExpansion] {
     new SparseVector(polySize - 1, polyIndices.result(), polyValues.result())
   }
 
-  private[feature] def expand(v: Vector, degree: Int): Vector = {
+  private[feature] def expand(v: Vector, degree: Int): Vector =
     v match {
       case dv: DenseVector  => expand(dv, degree)
       case sv: SparseVector => expand(sv, degree)
       case _                => throw new IllegalArgumentException
     }
-  }
 
   @Since("1.6.0")
   override def load(path: String): PolynomialExpansion = super.load(path)

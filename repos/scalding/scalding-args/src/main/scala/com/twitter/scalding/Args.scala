@@ -56,14 +56,13 @@ object Args {
         .toMap)
   }
 
-  def isNumber(arg: String): Boolean = {
+  def isNumber(arg: String): Boolean =
     try {
       arg.toDouble
       true
     } catch {
       case e: NumberFormatException => false
     }
-  }
 }
 
 class Args(val m: Map[String, List[String]]) extends java.io.Serializable {
@@ -110,13 +109,12 @@ class Args(val m: Map[String, List[String]]) extends java.io.Serializable {
     */
   def apply(position: Int): String = required(position)
 
-  override def equals(other: Any): Boolean = {
+  override def equals(other: Any): Boolean =
     if (other.isInstanceOf[Args]) {
       other.asInstanceOf[Args].m.equals(m)
     } else {
       false
     }
-  }
 
   override def hashCode(): Int = m.hashCode()
 
@@ -137,7 +135,7 @@ class Args(val m: Map[String, List[String]]) extends java.io.Serializable {
       throw ArgsException("Please only provide a single value for --" + key)
   }
 
-  def toList: List[String] = {
+  def toList: List[String] =
     m.foldLeft(List[String]()) { (args, kvlist) =>
       val k = kvlist._1
       val values = kvlist._2
@@ -149,7 +147,6 @@ class Args(val m: Map[String, List[String]]) extends java.io.Serializable {
         values ++ args
       }
     }
-  }
 
   /**
     * Asserts whether all the args belong to the given set of accepted arguments.
@@ -178,7 +175,7 @@ class Args(val m: Map[String, List[String]]) extends java.io.Serializable {
       throw ArgsException("Please provide at most one value for --" + key)
   }
 
-  def int(key: String, default: Int): Int = {
+  def int(key: String, default: Int): Int =
     optional(key)
       .map(
         value =>
@@ -188,7 +185,6 @@ class Args(val m: Map[String, List[String]]) extends java.io.Serializable {
               throw ArgsException(s"Invalid value ${value} for -- ${key}")
           })
       .getOrElse(default)
-  }
 
   def int(key: String): Int = {
     val value = required(key)
@@ -199,7 +195,7 @@ class Args(val m: Map[String, List[String]]) extends java.io.Serializable {
     }
   }
 
-  def long(key: String, default: Long): Long = {
+  def long(key: String, default: Long): Long =
     optional(key)
       .map(
         value =>
@@ -209,7 +205,6 @@ class Args(val m: Map[String, List[String]]) extends java.io.Serializable {
               throw ArgsException(s"Invalid value ${value} for -- ${key}")
           })
       .getOrElse(default)
-  }
 
   def long(key: String): Long = {
     val value = required(key)
@@ -220,7 +215,7 @@ class Args(val m: Map[String, List[String]]) extends java.io.Serializable {
     }
   }
 
-  def float(key: String, default: Float): Float = {
+  def float(key: String, default: Float): Float =
     optional(key)
       .map(
         value =>
@@ -230,7 +225,6 @@ class Args(val m: Map[String, List[String]]) extends java.io.Serializable {
               throw ArgsException(s"Invalid value ${value} for -- ${key}")
           })
       .getOrElse(default)
-  }
 
   def float(key: String): Float = {
     val value = required(key)
@@ -241,7 +235,7 @@ class Args(val m: Map[String, List[String]]) extends java.io.Serializable {
     }
   }
 
-  def double(key: String, default: Double): Double = {
+  def double(key: String, default: Double): Double =
     optional(key)
       .map(
         value =>
@@ -251,7 +245,6 @@ class Args(val m: Map[String, List[String]]) extends java.io.Serializable {
               throw ArgsException(s"Invalid value ${value} for -- ${key}")
           })
       .getOrElse(default)
-  }
 
   def double(key: String): Double = {
     val value = required(key)

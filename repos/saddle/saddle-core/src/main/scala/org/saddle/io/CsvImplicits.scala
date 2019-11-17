@@ -120,12 +120,11 @@ object CsvImplicits {
       val separ = settings.separChar.toString
       val quote = settings.quoteChar.toString
 
-      def quotify(seq: Seq[String]): Seq[String] = {
+      def quotify(seq: Seq[String]): Seq[String] =
         if (settings.useQuote)
           seq.map { s =>
             if (s.contains(separ)) "%s%s%s".format(quote, s, quote) else s
           } else seq
-      }
 
       def writeHeader(rsm: ScalarTag[RX], csm: ScalarTag[CX]) {
         // get depth (number of levels) of row and column indexes

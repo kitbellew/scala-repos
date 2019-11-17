@@ -32,9 +32,8 @@ class DefaultSSLEngineProvider(
 
   val sslContext: SSLContext = createSSLContext(appProvider)
 
-  override def createSSLEngine: SSLEngine = {
+  override def createSSLEngine: SSLEngine =
     sslContext.createSSLEngine()
-  }
 
   def createSSLContext(applicationProvider: ApplicationProvider): SSLContext = {
     val httpsConfig =

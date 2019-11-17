@@ -132,7 +132,7 @@ object TestOffsetManager {
         "Commit thread %d ended. Last committed offset: %d.".format(id, offset))
     }
 
-    def stats = {
+    def stats =
       "Commit thread %d :: Error count: %d; Max:%f; Min: %f; Mean: %f; Commit count: %d"
         .format(
           id,
@@ -141,7 +141,6 @@ object TestOffsetManager {
           timer.min(),
           timer.mean(),
           numCommits.get())
-    }
   }
 
   class FetchThread(numGroups: Int, fetchIntervalMs: Long, zkUtils: ZkUtils)
@@ -225,7 +224,7 @@ object TestOffsetManager {
       metadataChannel.disconnect()
     }
 
-    def stats = {
+    def stats =
       "Fetch thread :: Error count: %d; Max:%f; Min: %f; Mean: %f; Fetch count: %d"
         .format(
           numErrors.get(),
@@ -233,7 +232,6 @@ object TestOffsetManager {
           timer.min(),
           timer.mean(),
           timer.count())
-    }
   }
 
   def main(args: Array[String]) {

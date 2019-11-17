@@ -37,7 +37,7 @@ abstract class ParquetSchemaTest extends ParquetTest with SharedSQLContext {
       messageType: String,
       binaryAsString: Boolean,
       int96AsTimestamp: Boolean,
-      writeLegacyParquetFormat: Boolean): Unit = {
+      writeLegacyParquetFormat: Boolean): Unit =
     testSchema(
       testName,
       StructType.fromAttributes(ScalaReflection.attributesFor[T]),
@@ -45,7 +45,6 @@ abstract class ParquetSchemaTest extends ParquetTest with SharedSQLContext {
       binaryAsString,
       int96AsTimestamp,
       writeLegacyParquetFormat)
-  }
 
   protected def testParquetToCatalyst(
       testName: String,
@@ -1164,7 +1163,7 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
       testName: String,
       parquetSchema: String,
       catalystSchema: StructType,
-      expectedSchema: String): Unit = {
+      expectedSchema: String): Unit =
     test(s"Clipping - $testName") {
       val expected = MessageTypeParser.parseMessageType(expectedSchema)
       val actual = CatalystReadSupport.clipParquetSchema(
@@ -1185,7 +1184,6 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
             cause)
       }
     }
-  }
 
   testSchemaClipping(
     "simple nested struct",

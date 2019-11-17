@@ -25,7 +25,7 @@ class MaxFailuresCheck[T, U](val maxFailures: Int)(
     extends CheckedInversion[T, U] {
 
   private val failures = new AtomicInteger(0)
-  def apply(input: U): Option[T] = {
+  def apply(input: U): Option[T] =
     try {
       Some(injection.invert(input).get)
     } catch {
@@ -37,5 +37,4 @@ class MaxFailuresCheck[T, U](val maxFailures: Int)(
           "maximum decoding errors exceeded")
         None
     }
-  }
 }

@@ -107,7 +107,7 @@ private[launcher] class OfferProcessorImpl(
 
   private[this] def acceptOffer(
       offerId: OfferID,
-      taskOpsWithSource: Seq[TaskOpWithSource]): Future[Unit] = {
+      taskOpsWithSource: Seq[TaskOpWithSource]): Future[Unit] =
     if (taskLauncher.acceptOffer(offerId, taskOpsWithSource.map(_.op))) {
       log.debug("Offer [{}]. Task launch successful", offerId.getValue)
       taskOpsWithSource.foreach(_.accept())
@@ -117,10 +117,9 @@ private[launcher] class OfferProcessorImpl(
       taskOpsWithSource.foreach(_.reject("driver unavailable"))
       revertTaskOps(taskOpsWithSource.view.map(_.op))
     }
-  }
 
   /** Revert the effects of the task ops on the task state. */
-  private[this] def revertTaskOps(ops: Iterable[TaskOp]): Future[Unit] = {
+  private[this] def revertTaskOps(ops: Iterable[TaskOp]): Future[Unit] =
     ops
       .foldLeft(Future.successful(())) { (terminatedFuture, nextOp) =>
         terminatedFuture.flatMap { _ =>
@@ -136,7 +135,6 @@ private[launcher] class OfferProcessorImpl(
         case NonFatal(e) =>
           throw new RuntimeException("while reverting task ops", e)
       }
-  }
 
   /**
     * Saves the given tasks sequentially, evaluating before each save whether the given deadline has been reached

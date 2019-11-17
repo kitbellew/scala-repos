@@ -1,10 +1,9 @@
 object test {
   foo
 
-  def foo = {
+  def foo =
     /*start*/
     1 /*end*/ + 2
-  }
 }
 /*
 object test {

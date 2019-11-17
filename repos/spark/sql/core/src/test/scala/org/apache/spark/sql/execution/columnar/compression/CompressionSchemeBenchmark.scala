@@ -44,9 +44,8 @@ import org.apache.spark.util.Utils._
   */
 object CompressionSchemeBenchmark extends AllCompressionSchemes {
 
-  private[this] def allocateLocal(size: Int): ByteBuffer = {
+  private[this] def allocateLocal(size: Int): ByteBuffer =
     ByteBuffer.allocate(size).order(ByteOrder.nativeOrder)
-  }
 
   private[this] def genLowerSkewData() = {
     val rng = new LogNormalDistribution(0.0, 0.01)

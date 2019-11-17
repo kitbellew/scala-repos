@@ -248,12 +248,10 @@ trait MySQLProfile extends JdbcProfile { profile =>
   }
 
   class TableDDLBuilder(table: Table[_]) extends super.TableDDLBuilder(table) {
-    override protected def dropForeignKey(fk: ForeignKey) = {
+    override protected def dropForeignKey(fk: ForeignKey) =
       "ALTER TABLE " + table.tableName + " DROP FOREIGN KEY " + fk.name
-    }
-    override protected def dropPrimaryKey(pk: PrimaryKey): String = {
+    override protected def dropPrimaryKey(pk: PrimaryKey): String =
       "ALTER TABLE " + table.tableName + " DROP PRIMARY KEY"
-    }
   }
 
   class ColumnDDLBuilder(column: FieldSymbol)

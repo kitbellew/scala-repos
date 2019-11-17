@@ -28,15 +28,12 @@ class JavaAnalyzer(
     javaCompiler = new JavaCompiler(
       config,
       new ReportHandler {
-        override def messageUser(str: String): Unit = {
+        override def messageUser(str: String): Unit =
           broadcaster ! SendBackgroundMessageEvent(str, 101)
-        }
-        override def clearAllJavaNotes(): Unit = {
+        override def clearAllJavaNotes(): Unit =
           broadcaster ! ClearAllJavaNotesEvent
-        }
-        override def reportJavaNotes(notes: List[Note]): Unit = {
+        override def reportJavaNotes(notes: List[Note]): Unit =
           broadcaster ! NewJavaNotesEvent(isFull = false, notes)
-        }
       },
       indexer,
       search,

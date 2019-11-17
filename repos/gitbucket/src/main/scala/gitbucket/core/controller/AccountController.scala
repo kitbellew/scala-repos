@@ -584,7 +584,7 @@ trait AccountControllerBase extends AccountManagementControllerBase {
     override def validate(
         name: String,
         value: String,
-        messages: Messages): Option[String] = {
+        messages: Messages): Option[String] =
       if (value
             .split(",")
             .exists {
@@ -593,7 +593,6 @@ trait AccountControllerBase extends AccountManagementControllerBase {
               }
             }) None
       else Some("Must select one manager at least.")
-    }
   }
 
   private def validPublicKey: Constraint = new Constraint() {
@@ -611,11 +610,10 @@ trait AccountControllerBase extends AccountManagementControllerBase {
     override def validate(
         name: String,
         value: String,
-        messages: Messages): Option[String] = {
+        messages: Messages): Option[String] =
       getAccountByUserName(value) match {
         case Some(_) => None
         case None    => Some("Invalid Group/User Account.")
       }
-    }
   }
 }

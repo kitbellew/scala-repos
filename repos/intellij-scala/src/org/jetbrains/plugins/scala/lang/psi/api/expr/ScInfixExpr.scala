@@ -26,12 +26,11 @@ trait ScInfixExpr extends ScExpression with ScSugarCallExpr {
     }
   }
 
-  def typeArgs: Option[ScTypeArgs] = {
+  def typeArgs: Option[ScTypeArgs] =
     findChildrenByClassScala(classOf[ScTypeArgs]) match {
       case Array(tpArg: ScTypeArgs) => Some(tpArg)
       case _                        => None
     }
-  }
 
   def rOp: ScExpression = {
     val exprs: Array[ScExpression] = findChildrenByClassScala(

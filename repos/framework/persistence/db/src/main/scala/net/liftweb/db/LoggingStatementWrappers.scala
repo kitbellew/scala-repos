@@ -119,7 +119,7 @@ object DBLog {
 
   private def proxyPreparedStatement(
       stmt: => PreparedStatement,
-      query: String) = {
+      query: String) =
     try {
       Proxy
         .newProxyInstance(
@@ -133,7 +133,6 @@ object DBLog {
           "Error preparing statement: \"%s\"".format(query),
           sqle)
     }
-  }
 
   /**
     * This class corresponds to a logged version of java.sql.Statement. All operations

@@ -36,9 +36,8 @@ private[stat] object PearsonCorrelation extends Correlation with Logging {
   /**
     * Compute the Pearson correlation for two datasets. NaN if either vector has 0 variance.
     */
-  override def computeCorrelation(x: RDD[Double], y: RDD[Double]): Double = {
+  override def computeCorrelation(x: RDD[Double], y: RDD[Double]): Double =
     computeCorrelationWithMatrixImpl(x, y)
-  }
 
   /**
     * Compute the Pearson correlation matrix S, for the input matrix, where S(i, j) is the
@@ -103,7 +102,6 @@ private[stat] object PearsonCorrelation extends Correlation with Logging {
     Matrices.fromBreeze(cov)
   }
 
-  private def closeToZero(value: Double, threshold: Double = 1e-12): Boolean = {
+  private def closeToZero(value: Double, threshold: Double = 1e-12): Boolean =
     math.abs(value) <= threshold
-  }
 }

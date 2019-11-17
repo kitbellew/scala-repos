@@ -63,9 +63,8 @@ class TriangleMesh(
     */
   def vertexFormat: ObjectProperty[jfxss.VertexFormat] =
     delegate.vertexFormatProperty()
-  def vertexFormat_=(v: VertexFormat): Unit = {
+  def vertexFormat_=(v: VertexFormat): Unit =
     ObjectProperty.fillProperty(vertexFormat, v)
-  }
 
   /** Gets the number of array components representing a single face. */
   def faceElementSize = delegate.getFaceElementSize()

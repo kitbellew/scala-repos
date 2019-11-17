@@ -30,7 +30,7 @@ object ProdServerStart {
     * @param process The process (real or abstract) to use for starting the
     * server.
     */
-  def start(process: ServerProcess): ServerWithStop = {
+  def start(process: ServerProcess): ServerWithStop =
     try {
 
       // Read settings
@@ -66,7 +66,6 @@ object ProdServerStart {
       case NonFatal(e) =>
         process.exit("Oops, cannot start the server.", cause = Some(e))
     }
-  }
 
   /**
     * Read the server config from the current process's command
@@ -95,7 +94,7 @@ object ProdServerStart {
       file
     }
 
-    def parsePort(portType: String): Option[Int] = {
+    def parsePort(portType: String): Option[Int] =
       configuration.getString(s"play.server.${portType}.port").flatMap {
         case "disabled" => None
         case str =>
@@ -107,7 +106,6 @@ object ProdServerStart {
           }
           Some(i)
       }
-    }
 
     val httpPort = parsePort("http")
     val httpsPort = parsePort("https")

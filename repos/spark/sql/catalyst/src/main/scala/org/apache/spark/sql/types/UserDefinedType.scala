@@ -58,10 +58,9 @@ abstract class UserDefinedType[UserType >: Null]
   /** Convert a SQL datum to the user type */
   def deserialize(datum: Any): UserType
 
-  override private[sql] def jsonValue: JValue = {
+  override private[sql] def jsonValue: JValue =
     ("type" -> "udt") ~ ("class" -> this.getClass.getName) ~
       ("pyClass" -> pyUDT) ~ ("sqlType" -> sqlType.jsonValue)
-  }
 
   /**
     * Class object for the UserType
@@ -106,10 +105,9 @@ private[sql] class PythonUserDefinedType(
   /* There is no Java class for Python UDT */
   override def userClass: java.lang.Class[Any] = null
 
-  override private[sql] def jsonValue: JValue = {
+  override private[sql] def jsonValue: JValue =
     ("type" -> "udt") ~ ("pyClass" -> pyUDT) ~
       ("serializedClass" -> serializedPyClass) ~ ("sqlType" -> sqlType.jsonValue)
-  }
 
   override def equals(other: Any): Boolean = other match {
     case that: PythonUserDefinedType => this.pyUDT.equals(that.pyUDT)

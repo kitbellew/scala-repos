@@ -32,7 +32,7 @@ object Infos {
         kind: ClassKind = ClassKind.Class,
         superClass: Option[String] = None,
         interfaces: List[String] = Nil,
-        methods: List[MethodInfo] = Nil): ClassInfo = {
+        methods: List[MethodInfo] = Nil): ClassInfo =
       new ClassInfo(
         encodedName,
         isExported,
@@ -40,7 +40,6 @@ object Infos {
         superClass,
         interfaces,
         methods)
-    }
   }
 
   final class MethodInfo private (
@@ -72,7 +71,7 @@ object Infos {
         instantiatedClasses: List[String] = Nil,
         accessedModules: List[String] = Nil,
         usedInstanceTests: List[String] = Nil,
-        accessedClassData: List[String] = Nil): MethodInfo = {
+        accessedClassData: List[String] = Nil): MethodInfo =
       new MethodInfo(
         encodedName,
         isStatic,
@@ -86,7 +85,6 @@ object Infos {
         usedInstanceTests,
         accessedClassData
       )
-    }
   }
 
   final class ClassInfoBuilder {
@@ -132,7 +130,7 @@ object Infos {
       this
     }
 
-    def result(): ClassInfo = {
+    def result(): ClassInfo =
       ClassInfo(
         encodedName,
         isExported,
@@ -140,7 +138,6 @@ object Infos {
         superClass,
         interfaces.toList,
         methods.toList)
-    }
   }
 
   final class MethodInfoBuilder {
@@ -252,7 +249,7 @@ object Infos {
       case ArrayType(base, _) => base
     }
 
-    def result(): MethodInfo = {
+    def result(): MethodInfo =
       MethodInfo(
         encodedName = encodedName,
         isStatic = isStatic,
@@ -267,7 +264,6 @@ object Infos {
         usedInstanceTests = usedInstanceTests.toList,
         accessedClassData = accessedClassData.toList
       )
-    }
   }
 
   /** Generates the [[ClassInfo]] of a [[Trees.ClassDef]]. */
@@ -309,9 +305,8 @@ object Infos {
 
   /** Generates the [[MethodInfo]] of a list of [[Trees.ConstructorExportDef]]s. */
   def generateExportedConstructorsInfo(
-      constructorDefs: List[ConstructorExportDef]): MethodInfo = {
+      constructorDefs: List[ConstructorExportDef]): MethodInfo =
     new GenInfoTraverser().generateExportedConstructorsInfo(constructorDefs)
-  }
 
   private final class GenInfoTraverser extends Traversers.Traverser {
     private val builder = new MethodInfoBuilder

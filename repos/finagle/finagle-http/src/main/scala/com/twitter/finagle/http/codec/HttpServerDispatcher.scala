@@ -130,7 +130,7 @@ class HttpServerDispatcher(
     }
   }
 
-  protected def setKeepAlive(rep: Response, keepAlive: Boolean): Unit = {
+  protected def setKeepAlive(rep: Response, keepAlive: Boolean): Unit =
     rep.version match {
       case Version.Http10 =>
         if (keepAlive) {
@@ -145,5 +145,4 @@ class HttpServerDispatcher(
           rep.headers.set(Fields.Connection, "close")
         }
     }
-  }
 }

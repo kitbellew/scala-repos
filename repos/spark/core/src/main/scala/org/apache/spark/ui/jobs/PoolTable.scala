@@ -29,17 +29,16 @@ import org.apache.spark.ui.UIUtils
 private[ui] class PoolTable(pools: Seq[Schedulable], parent: StagesTab) {
   private val listener = parent.progressListener
 
-  def toNodeSeq: Seq[Node] = {
+  def toNodeSeq: Seq[Node] =
     listener.synchronized {
       poolTable(poolRow, pools)
     }
-  }
 
   private def poolTable(
       makeRow: (
           Schedulable,
           HashMap[String, HashMap[Int, StageInfo]]) => Seq[Node],
-      rows: Seq[Schedulable]): Seq[Node] = {
+      rows: Seq[Schedulable]): Seq[Node] =
     <table class="table table-bordered table-striped table-condensed sortable table-fixed">
       <thead>
         <th>Pool Name</th>
@@ -53,7 +52,6 @@ private[ui] class PoolTable(pools: Seq[Schedulable], parent: StagesTab) {
         {rows.map(r => makeRow(r, listener.poolToActiveStages))}
       </tbody>
     </table>
-  }
 
   private def poolRow(
       p: Schedulable,

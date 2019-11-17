@@ -34,9 +34,8 @@ class ThreadUtilsSuite extends SparkFunSuite {
       ThreadUtils.newDaemonSingleThreadExecutor("this-is-a-thread-name")
     @volatile var threadName = ""
     executor.submit(new Runnable {
-      override def run(): Unit = {
+      override def run(): Unit =
         threadName = Thread.currentThread().getName()
-      }
     })
     executor.shutdown()
     executor.awaitTermination(10, TimeUnit.SECONDS)
@@ -86,9 +85,8 @@ class ThreadUtilsSuite extends SparkFunSuite {
       // Submit a new task and it should be put into the queue since the thread number reaches the
       // limitation
       cachedThreadPool.execute(new Runnable {
-        override def run(): Unit = {
+        override def run(): Unit =
           latch.await(10, TimeUnit.SECONDS)
-        }
       })
 
       assert(cachedThreadPool.getActiveCount === maxThreadNumber)

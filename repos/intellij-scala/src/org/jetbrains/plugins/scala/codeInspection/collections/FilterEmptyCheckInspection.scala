@@ -20,7 +20,7 @@ class FilterEmptyCheckInspection extends OperationOnCollectionInspection {
 object FilterIsEmptyCheck extends SimplificationType {
   override def hint = InspectionBundle.message("filter.empty.check.hint")
 
-  override def getSimplification(expr: ScExpression): Option[Simplification] = {
+  override def getSimplification(expr: ScExpression): Option[Simplification] =
     expr match {
       case CheckIsEmpty(qual `.filter` (pred), s, e)
           if qual != null && !hasSideEffects(pred) =>
@@ -31,7 +31,6 @@ object FilterIsEmptyCheck extends SimplificationType {
         Some(replace(expr).withText(notExistsText).highlightRange(start, end))
       case _ => None
     }
-  }
 }
 
 object FilterNonEmptyCheck extends SimplificationType {

@@ -317,10 +317,9 @@ private[parquet] class CatalystRowConverter(
 
       case DateType =>
         new CatalystPrimitiveConverter(updater) {
-          override def addInt(value: Int): Unit = {
+          override def addInt(value: Int): Unit =
             // DateType is not specialized in `SpecificMutableRow`, have to box it here.
             updater.set(value.asInstanceOf[DateType#InternalType])
-          }
         }
 
       // A repeated field that is neither contained by a `LIST`- or `MAP`-annotated group nor
@@ -365,15 +364,13 @@ private[parquet] class CatalystRowConverter(
 
     override def hasDictionarySupport: Boolean = true
 
-    override def setDictionary(dictionary: Dictionary): Unit = {
+    override def setDictionary(dictionary: Dictionary): Unit =
       this.expandedDictionary = Array.tabulate(dictionary.getMaxId + 1) { i =>
         UTF8String.fromBytes(dictionary.decodeToBinary(i).getBytes)
       }
-    }
 
-    override def addValueFromDictionary(dictionaryId: Int): Unit = {
+    override def addValueFromDictionary(dictionaryId: Int): Unit =
       updater.set(expandedDictionary(dictionaryId))
-    }
 
     override def addBinary(value: Binary): Unit = {
       // The underlying `ByteBuffer` implementation is guaranteed to be `HeapByteBuffer`, so here we
@@ -399,30 +396,25 @@ private[parquet] class CatalystRowConverter(
 
     override def hasDictionarySupport: Boolean = true
 
-    override def addValueFromDictionary(dictionaryId: Int): Unit = {
+    override def addValueFromDictionary(dictionaryId: Int): Unit =
       updater.set(expandedDictionary(dictionaryId))
-    }
 
     // Converts decimals stored as INT32
-    override def addInt(value: Int): Unit = {
+    override def addInt(value: Int): Unit =
       addLong(value: Long)
-    }
 
     // Converts decimals stored as INT64
-    override def addLong(value: Long): Unit = {
+    override def addLong(value: Long): Unit =
       updater.set(decimalFromLong(value))
-    }
 
     // Converts decimals stored as either FIXED_LENGTH_BYTE_ARRAY or BINARY
-    override def addBinary(value: Binary): Unit = {
+    override def addBinary(value: Binary): Unit =
       updater.set(decimalFromBinary(value))
-    }
 
-    protected def decimalFromLong(value: Long): Decimal = {
+    protected def decimalFromLong(value: Long): Decimal =
       Decimal(value, precision, scale)
-    }
 
-    protected def decimalFromBinary(value: Binary): Decimal = {
+    protected def decimalFromBinary(value: Binary): Decimal =
       if (precision <= Decimal.MAX_LONG_DIGITS) {
         // Constructs a `Decimal` with an unscaled `Long` value if possible.
         val unscaled = CatalystRowConverter.binaryToUnscaledLong(value)
@@ -434,7 +426,6 @@ private[parquet] class CatalystRowConverter(
           precision,
           scale)
       }
-    }
   }
 
   private class CatalystIntDictionaryAwareDecimalConverter(
@@ -443,11 +434,10 @@ private[parquet] class CatalystRowConverter(
       updater: ParentContainerUpdater)
       extends CatalystDecimalConverter(precision, scale, updater) {
 
-    override def setDictionary(dictionary: Dictionary): Unit = {
+    override def setDictionary(dictionary: Dictionary): Unit =
       this.expandedDictionary = Array.tabulate(dictionary.getMaxId + 1) { id =>
         decimalFromLong(dictionary.decodeToInt(id).toLong)
       }
-    }
   }
 
   private class CatalystLongDictionaryAwareDecimalConverter(
@@ -456,11 +446,10 @@ private[parquet] class CatalystRowConverter(
       updater: ParentContainerUpdater)
       extends CatalystDecimalConverter(precision, scale, updater) {
 
-    override def setDictionary(dictionary: Dictionary): Unit = {
+    override def setDictionary(dictionary: Dictionary): Unit =
       this.expandedDictionary = Array.tabulate(dictionary.getMaxId + 1) { id =>
         decimalFromLong(dictionary.decodeToLong(id))
       }
-    }
   }
 
   private class CatalystBinaryDictionaryAwareDecimalConverter(
@@ -469,11 +458,10 @@ private[parquet] class CatalystRowConverter(
       updater: ParentContainerUpdater)
       extends CatalystDecimalConverter(precision, scale, updater) {
 
-    override def setDictionary(dictionary: Dictionary): Unit = {
+    override def setDictionary(dictionary: Dictionary): Unit =
       this.expandedDictionary = Array.tabulate(dictionary.getMaxId + 1) { id =>
         decimalFromBinary(dictionary.decodeToBinary(id))
       }
-    }
   }
 
   /**
@@ -548,7 +536,7 @@ private[parquet] class CatalystRowConverter(
     private def isElementType(
         parquetRepeatedType: Type,
         catalystElementType: DataType,
-        parentName: String): Boolean = {
+        parentName: String): Boolean =
       (parquetRepeatedType, catalystElementType) match {
         case (t: PrimitiveType, _)                    => true
         case (t: GroupType, _) if t.getFieldCount > 1 => true
@@ -563,7 +551,6 @@ private[parquet] class CatalystRowConverter(
           true
         case _ => false
       }
-    }
 
     /** Array element converter */
     private final class ElementConverter(

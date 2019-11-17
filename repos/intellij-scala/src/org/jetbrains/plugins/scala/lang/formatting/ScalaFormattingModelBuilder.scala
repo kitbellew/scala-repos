@@ -45,9 +45,8 @@ sealed class ScalaFormattingModelBuilder extends FormattingModelBuilder {
   def getRangeAffectingIndent(
       file: PsiFile,
       offset: Int,
-      elementAtOffset: ASTNode): TextRange = {
+      elementAtOffset: ASTNode): TextRange =
     elementAtOffset.getTextRange
-  }
 }
 
 object ScalaFormattingModelBuilder {

@@ -55,9 +55,8 @@ class ClassfileWatcher(
     case _ =>
   }
 
-  override def postStop(): Unit = {
+  override def postStop(): Unit =
     impls.foreach(_.shutdown())
-  }
 }
 
 class SourceWatcher(
@@ -99,12 +98,11 @@ private class ApachePollingFileWatcher(
     new DefaultFileMonitor(new FileListener {
       def watched(event: FileChangeEvent) = selector.includeFile(event.getFile)
 
-      def fileChanged(event: FileChangeEvent): Unit = {
+      def fileChanged(event: FileChangeEvent): Unit =
         if (watched(event)) {
           if (log.isDebugEnabled()) log.debug(s"${event.getFile} was changed")
           listeners foreach (_.fileChanged(event.getFile))
         }
-      }
       def fileCreated(event: FileChangeEvent): Unit =
         if (watched(event)) {
           if (log.isDebugEnabled()) log.debug(s"${event.getFile} was created")
@@ -150,7 +148,6 @@ private class ApachePollingFileWatcher(
 
   init(restarted = false)
 
-  override def shutdown(): Unit = {
+  override def shutdown(): Unit =
     fm.stop()
-  }
 }

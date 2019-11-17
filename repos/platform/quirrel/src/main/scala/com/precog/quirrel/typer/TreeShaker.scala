@@ -29,7 +29,7 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
   /**
     * @return The <em>root</em> of the shaken tree
     */
-  def shakeTree(tree: Expr): Expr = {
+  def shakeTree(tree: Expr): Expr =
     // if binder rejects a tree, shaking it can remove the errors
     if (bindNames(tree.root) forall isWarning) {
       val (root, _, _, errors) = performShake(tree.root)
@@ -42,7 +42,6 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
     } else {
       tree.root
     }
-  }
 
   def performShake(tree: Expr): (
       Expr,

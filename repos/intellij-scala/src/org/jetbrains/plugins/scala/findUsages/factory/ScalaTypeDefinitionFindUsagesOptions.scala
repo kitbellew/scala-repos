@@ -19,7 +19,7 @@ class ScalaTypeDefinitionFindUsagesOptions(project: Project)
   var isMembersUsages = false
   var isSearchCompanionModule = false
 
-  override def equals(o: Any): Boolean = {
+  override def equals(o: Any): Boolean =
     o match {
       case other: ScalaTypeDefinitionFindUsagesOptions =>
         if (!super.equals(o)) return false
@@ -31,7 +31,6 @@ class ScalaTypeDefinitionFindUsagesOptions(project: Project)
         true
       case _ => false
     }
-  }
 
   override def hashCode(): Int = {
     var res = super.hashCode()

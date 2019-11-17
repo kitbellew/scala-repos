@@ -39,9 +39,8 @@ case class SegmentsWrapper(
 
   // FIXME: This should use an identity of Array[Long](projectionId,
   // blockId), but the evaluator will cry if we do that right now
-  private def keyFor(row: Int): Long = {
+  private def keyFor(row: Int): Long =
     (projectionId.toLong << 44) ^ (blockId << 16) ^ row.toLong
-  }
 
   private def buildKeyColumns(length: Int): Set[(ColumnRef, Column)] = {
     val hoId = (projectionId.toLong << 32) | (blockId >>> 32)

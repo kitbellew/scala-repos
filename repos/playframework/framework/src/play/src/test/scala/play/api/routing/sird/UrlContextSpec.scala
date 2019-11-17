@@ -117,9 +117,8 @@ object UrlContextSpec extends Specification {
   }
 
   "query string interpolation" should {
-    def qs(params: (String, String)*) = {
+    def qs(params: (String, String)*) =
       params.groupBy(_._1).mapValues(_.map(_._2))
-    }
 
     "allow required parameter extraction" in {
       "match" in {

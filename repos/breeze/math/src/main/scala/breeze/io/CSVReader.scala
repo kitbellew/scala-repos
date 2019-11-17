@@ -16,18 +16,16 @@ object CSVReader {
       separator: Char = ',',
       quote: Char = '"',
       escape: Char = '\\',
-      skipLines: Int = 0): IndexedSeq[IndexedSeq[String]] = {
+      skipLines: Int = 0): IndexedSeq[IndexedSeq[String]] =
     iterator(input, separator, quote, escape, skipLines).toIndexedSeq
-  }
 
   def parse(
       input: String,
       separator: Char = ',',
       quote: Char = '"',
       escape: Char = '\\',
-      skipLines: Int = 0): IndexedSeq[IndexedSeq[String]] = {
+      skipLines: Int = 0): IndexedSeq[IndexedSeq[String]] =
     read(new StringReader(input), separator, quote, escape, skipLines)
-  }
 
   def iterator(
       input: Reader,

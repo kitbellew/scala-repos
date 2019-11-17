@@ -95,10 +95,9 @@ object Await {
     */
   @throws(classOf[TimeoutException])
   @throws(classOf[InterruptedException])
-  def ready[T <: Awaitable[_]](awaitable: T, timeout: Duration): T = {
+  def ready[T <: Awaitable[_]](awaitable: T, timeout: Duration): T =
     if (awaitable.isReady) awaitable.ready(timeout)
     else Scheduler.blocking { awaitable.ready(timeout) }
-  }
 
   /** $result */
   @throws(classOf[Exception])

@@ -26,12 +26,10 @@ class TailRec {
   object X {
     @tailrec // okay, all other annotated methods should fail.
     def foo: Any = {
-      {
-        @tailrec def inner(i: Int): Int = 1 + inner(i)
-        inner(0)
-        this
-      }.foo
-    }
+      @tailrec def inner(i: Int): Int = 1 + inner(i)
+      inner(0)
+      this
+    }.foo
   }
 
   Some(new AnyRef) map { phooie =>

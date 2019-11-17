@@ -32,7 +32,7 @@ object SecurityHeadersFilterSpec extends PlaySpecification {
     Configuration(typesafeConfig)
   }
 
-  def withApplication[T](result: Result, config: String)(block: => T): T = {
+  def withApplication[T](result: Result, config: String)(block: => T): T =
     running(
       _.configure(configure(config)).overrides(
         bind[Router].to(Router.from {
@@ -40,7 +40,6 @@ object SecurityHeadersFilterSpec extends PlaySpecification {
         }),
         bind[HttpFilters].to[Filters]
       ))(_ => block)
-  }
 
   "security headers" should {
 

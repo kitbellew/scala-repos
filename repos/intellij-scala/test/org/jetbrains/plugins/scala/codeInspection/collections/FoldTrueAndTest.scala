@@ -46,7 +46,7 @@ class FoldTrueAndTest extends OperationsOnCollectionInspectionTest {
     checkTextHasNoErrors(text, hint, inspectionClass)
   }
 
-  def testWithoutSideEffect(): Unit = {
+  def testWithoutSideEffect(): Unit =
     doTest(
       s"""
          |List(0).${START}foldLeft(true) {(x, y) =>
@@ -74,9 +74,8 @@ class FoldTrueAndTest extends OperationsOnCollectionInspectionTest {
         |})
       """.stripMargin
     )
-  }
 
-  def testWithSideEffect(): Unit = {
+  def testWithSideEffect(): Unit =
     checkTextHasNoErrors("""
         |var q = 1
         |List(0).foldLeft(true) {(x, y) =>
@@ -87,7 +86,6 @@ class FoldTrueAndTest extends OperationsOnCollectionInspectionTest {
         |  }
         |}
       """.stripMargin)
-  }
 
   override val inspectionClass = classOf[FoldTrueAndInspection]
 }

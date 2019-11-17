@@ -177,7 +177,7 @@ object WorkflowUtils extends Logging {
       field: String,
       classMap: Map[String, Class[_]],
       engineLanguage: EngineLanguage.Value,
-      jsonExtractor: JsonExtractorOption): (String, Params) = {
+      jsonExtractor: JsonExtractorOption): (String, Params) =
     variantJson findField {
       case JField(f, _) => f == field
       case _            => false
@@ -215,7 +215,6 @@ object WorkflowUtils extends Logging {
 
       (np.name, extractedParams)
     } getOrElse ("", EmptyParams())
-  }
 
   /** Grab environmental variables that starts with 'PIO_'. */
   def pioEnvVars: Map[String, String] =
@@ -331,7 +330,7 @@ object WorkflowUtils extends Logging {
   }
 
   def extractSparkConf(root: JValue): List[(String, String)] = {
-    def flatten(jv: JValue): List[(List[String], String)] = {
+    def flatten(jv: JValue): List[(List[String], String)] =
       jv match {
         case JObject(fields) =>
           for ((namePrefix, childJV) <- fields;
@@ -344,7 +343,6 @@ object WorkflowUtils extends Logging {
         case JNothing => List()
         case _        => List(List() -> jv.values.toString)
       }
-    }
 
     flatten(root \ "sparkConf")
       .map(x => (x._1.reduce((a, b) => s"$a.$b"), x._2))

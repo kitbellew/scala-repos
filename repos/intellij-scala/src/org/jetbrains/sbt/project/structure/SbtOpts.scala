@@ -32,7 +32,7 @@ object SbtOpts {
     "-jvm-debug" -> debuggerOpts
   )
 
-  private def process(opts: Seq[String]): Seq[String] = {
+  private def process(opts: Seq[String]): Seq[String] =
     opts.flatMap { opt =>
       if (opt.startsWith("-no-share")) Some(noShareOpts)
       else if (opt.startsWith("-no-global")) Some(noGlobalOpts)
@@ -42,13 +42,11 @@ object SbtOpts {
       else if (opt.startsWith("-D")) Some(opt)
       else None
     }
-  }
 
-  private def processOptWithArg(opt: String): Option[String] = {
+  private def processOptWithArg(opt: String): Option[String] =
     sbtToJdkOpts.find { case (k, _) => opt.startsWith(k) }.flatMap {
       case (k, x) =>
         val v = opt.replace(k, "").trim
         if (v.isEmpty) None else Some(x + v)
     }
-  }
 }

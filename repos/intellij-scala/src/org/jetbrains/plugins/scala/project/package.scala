@@ -92,14 +92,13 @@ package object project {
         .exportedOnly()
 
       enumerator.forEachLibrary(new Processor[Library] {
-        override def process(library: Library) = {
+        override def process(library: Library) =
           if (library.isScalaSdk) {
             result = Some(new ScalaSdk(library))
             false
           } else {
             true
           }
-        }
       })
 
       result
@@ -271,13 +270,12 @@ package object project {
     @deprecated("legacy code, use scalaLanguageLevelOrDefault", "14.10.14")
     def languageLevel: ScalaLanguageLevel = {
       @tailrec
-      def getContainingFileByContext(element: PsiElement): PsiFile = {
+      def getContainingFileByContext(element: PsiElement): PsiFile =
         element match {
           case file: PsiFile => file
           case null          => null
           case elem          => getContainingFileByContext(elem.getContext)
         }
-      }
       val file: PsiFile = getContainingFileByContext(element)
       if (file == null || file.getVirtualFile == null)
         return ScalaLanguageLevel.Default

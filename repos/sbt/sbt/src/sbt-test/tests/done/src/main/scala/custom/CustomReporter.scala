@@ -16,13 +16,12 @@ class CustomReporter extends ResourcefulReporter {
     writer.close()
   }
 
-  def apply(event: Event): Unit = {
+  def apply(event: Event): Unit =
     event match {
       case runCompleted: RunCompleted =>
         writeFile("target/RunCompleted", "RunCompleted")
       case _ =>
     }
-  }
 
   def dispose(): Unit = {
     val file = new File("target/dispose")

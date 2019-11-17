@@ -201,13 +201,12 @@ class StubbedActorContext[T](val name: String, override val props: Props[T])(
         _children += name -> i
         i.ref.untypedRef
     }
-  override def stop(child: ActorRef[Nothing]): Boolean = {
+  override def stop(child: ActorRef[Nothing]): Boolean =
     // removal is asynchronous, so don’t do it here; explicit removeInbox needed from outside
     _children.get(child.path.name) match {
       case None ⇒ false
       case Some(inbox) ⇒ inbox.ref == child
     }
-  }
   def watch[U](other: ActorRef[U]): ActorRef[U] = other
   def watch(other: akka.actor.ActorRef): other.type = other
   def unwatch[U](other: ActorRef[U]): ActorRef[U] = other

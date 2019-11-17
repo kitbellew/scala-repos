@@ -58,7 +58,7 @@ class StatCounter(values: TraversableOnce[Double]) extends Serializable {
   }
 
   /** Merge another StatCounter into this one, adding up the internal statistics. */
-  def merge(other: StatCounter): StatCounter = {
+  def merge(other: StatCounter): StatCounter =
     if (other == this) {
       merge(other.copy()) // Avoid overwriting fields in a weird order
     } else {
@@ -84,7 +84,6 @@ class StatCounter(values: TraversableOnce[Double]) extends Serializable {
       }
       this
     }
-  }
 
   /** Clone this StatCounter */
   def copy(): StatCounter = {
@@ -108,25 +107,23 @@ class StatCounter(values: TraversableOnce[Double]) extends Serializable {
   def min: Double = minValue
 
   /** Return the variance of the values. */
-  def variance: Double = {
+  def variance: Double =
     if (n == 0) {
       Double.NaN
     } else {
       m2 / n
     }
-  }
 
   /**
     * Return the sample variance, which corrects for bias in estimating the variance by dividing
     * by N-1 instead of N.
     */
-  def sampleVariance: Double = {
+  def sampleVariance: Double =
     if (n <= 1) {
       Double.NaN
     } else {
       m2 / (n - 1)
     }
-  }
 
   /** Return the standard deviation of the values. */
   def stdev: Double = math.sqrt(variance)
@@ -137,14 +134,13 @@ class StatCounter(values: TraversableOnce[Double]) extends Serializable {
     */
   def sampleStdev: Double = math.sqrt(sampleVariance)
 
-  override def toString: String = {
+  override def toString: String =
     "(count: %d, mean: %f, stdev: %f, max: %f, min: %f)".format(
       count,
       mean,
       stdev,
       max,
       min)
-  }
 }
 
 object StatCounter {

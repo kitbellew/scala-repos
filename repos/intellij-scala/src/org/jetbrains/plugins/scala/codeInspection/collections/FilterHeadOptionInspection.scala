@@ -17,7 +17,7 @@ object FilterHeadOption extends SimplificationType {
 
   def hint = InspectionBundle.message("filter.headOption.hint")
 
-  override def getSimplification(expr: ScExpression): Option[Simplification] = {
+  override def getSimplification(expr: ScExpression): Option[Simplification] =
     expr match {
       case qual `.filter` (cond) `.headOption` () if !hasSideEffects(cond) =>
         Some(
@@ -26,5 +26,4 @@ object FilterHeadOption extends SimplificationType {
             .highlightFrom(qual))
       case _ => None
     }
-  }
 }

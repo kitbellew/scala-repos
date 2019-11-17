@@ -68,10 +68,9 @@ private[streaming] class FileBasedWriteAheadLog(
   private val executionContext =
     ExecutionContext.fromExecutorService(forkJoinPool)
 
-  override protected def logName = {
+  override protected def logName =
     getClass.getName.stripSuffix("$") +
       callerName.map("_" + _).getOrElse("").replaceAll("[ ]", "_")
-  }
 
   private var currentLogPath: Option[String] = None
   private var currentLogWriter: FileBasedWriteAheadLogWriter = null
@@ -271,9 +270,8 @@ private[streaming] object FileBasedWriteAheadLog {
 
   val logFileRegex = """log-(\d+)-(\d+)""".r
 
-  def timeToLogFile(startTime: Long, stopTime: Long): String = {
+  def timeToLogFile(startTime: Long, stopTime: Long): String =
     s"log-$startTime-$stopTime"
-  }
 
   def getCallerName(): Option[String] = {
     val blacklist = Seq("WriteAheadLog", "Logging", "java.lang", "scala.")
@@ -288,7 +286,7 @@ private[streaming] object FileBasedWriteAheadLog {
   }
 
   /** Convert a sequence of files to a sequence of sorted LogInfo objects */
-  def logFilesTologInfo(files: Seq[Path]): Seq[LogInfo] = {
+  def logFilesTologInfo(files: Seq[Path]): Seq[LogInfo] =
     files
       .flatMap { file =>
         logFileRegex.findFirstIn(file.getName()) match {
@@ -301,7 +299,6 @@ private[streaming] object FileBasedWriteAheadLog {
         }
       }
       .sortBy { _.startTime }
-  }
 
   /**
     * This creates an iterator from a parallel collection, by keeping at most `n` objects in memory

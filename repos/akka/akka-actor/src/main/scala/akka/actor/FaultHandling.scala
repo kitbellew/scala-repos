@@ -516,7 +516,7 @@ case class AllForOneStrategy(
       child: ActorRef,
       cause: Throwable,
       stats: ChildRestartStats,
-      children: Iterable[ChildRestartStats]): Unit = {
+      children: Iterable[ChildRestartStats]): Unit =
     if (children.nonEmpty) {
       if (restart &&
           children.forall(_.requestRestartPermission(retriesWindow)))
@@ -525,7 +525,6 @@ case class AllForOneStrategy(
             restartChild(crs.child, cause, suspendFirst = (crs.child != child)))
       else for (c ← children) context.stop(c.child)
     }
-  }
 }
 
 /**
@@ -626,9 +625,8 @@ case class OneForOneStrategy(
       child: ActorRef,
       cause: Throwable,
       stats: ChildRestartStats,
-      children: Iterable[ChildRestartStats]): Unit = {
+      children: Iterable[ChildRestartStats]): Unit =
     if (restart && stats.requestRestartPermission(retriesWindow))
       restartChild(child, cause, suspendFirst = false)
     else context.stop(child) //TODO optimization to drop child here already?
-  }
 }

@@ -14,13 +14,12 @@ class GetOrElseNullInspection extends OperationOnCollectionInspection {
 }
 
 object GetOrElseNull extends SimplificationType {
-  override def getSimplification(expr: ScExpression) = {
+  override def getSimplification(expr: ScExpression) =
     expr match {
       case qual `.getOrElse`(literal("null")) =>
         Some(replace(expr).withText(invocationText(qual, "orNull")))
       case _ => None
     }
-  }
 
   override def hint = InspectionBundle.message("getOrElse.null.hint")
 }

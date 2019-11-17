@@ -12,10 +12,9 @@ class LongOverflowArithTest extends WordSpec {
     val random = new Random
     val maxSqrt = 3037000499L
 
-    def randLong() = {
+    def randLong() =
       if (random.nextInt > 0) random.nextLong() % maxSqrt
       else random.nextLong()
-    }
 
     "add" in {
       def test(a: Long, b: Long) {

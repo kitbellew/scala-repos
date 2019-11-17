@@ -66,7 +66,7 @@ class ESApps(client: Client, config: StorageClientConfig, index: String)
     Some(id)
   }
 
-  def get(id: Int): Option[App] = {
+  def get(id: Int): Option[App] =
     try {
       val response = client.prepareGet(index, estype, id.toString).get()
       Some(read[App](response.getSourceAsString))
@@ -76,9 +76,8 @@ class ESApps(client: Client, config: StorageClientConfig, index: String)
         None
       case e: NullPointerException => None
     }
-  }
 
-  def getByName(name: String): Option[App] = {
+  def getByName(name: String): Option[App] =
     try {
       val response = client
         .prepareSearch(index)
@@ -96,9 +95,8 @@ class ESApps(client: Client, config: StorageClientConfig, index: String)
         error(e.getMessage)
         None
     }
-  }
 
-  def getAll(): Seq[App] = {
+  def getAll(): Seq[App] =
     try {
       val builder = client.prepareSearch(index).setTypes(estype)
       ESUtils.getAll[App](client, builder)
@@ -107,9 +105,8 @@ class ESApps(client: Client, config: StorageClientConfig, index: String)
         error(e.getMessage)
         Seq[App]()
     }
-  }
 
-  def update(app: App): Unit = {
+  def update(app: App): Unit =
     try {
       val response = client
         .prepareIndex(index, estype, app.id.toString)
@@ -119,14 +116,12 @@ class ESApps(client: Client, config: StorageClientConfig, index: String)
       case e: ElasticsearchException =>
         error(e.getMessage)
     }
-  }
 
-  def delete(id: Int): Unit = {
+  def delete(id: Int): Unit =
     try {
       client.prepareDelete(index, estype, id.toString).get
     } catch {
       case e: ElasticsearchException =>
         error(e.getMessage)
     }
-  }
 }

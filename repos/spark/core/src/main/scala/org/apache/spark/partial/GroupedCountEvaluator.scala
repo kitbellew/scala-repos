@@ -47,7 +47,7 @@ private[spark] class GroupedCountEvaluator[T: ClassTag](
     }
   }
 
-  override def currentResult(): Map[T, BoundedDouble] = {
+  override def currentResult(): Map[T, BoundedDouble] =
     if (outputsMerged == totalOutputs) {
       val result = new JHashMap[T, BoundedDouble](sums.size)
       sums.foreach {
@@ -73,5 +73,4 @@ private[spark] class GroupedCountEvaluator[T: ClassTag](
       }
       result.asScala
     }
-  }
 }

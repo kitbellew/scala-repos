@@ -31,9 +31,8 @@ abstract class WithApplicationLoader(
     extends Around
     with Scope {
   implicit lazy val app = applicationLoader.load(context)
-  def around[T: AsResult](t: => T): Result = {
+  def around[T: AsResult](t: => T): Result =
     Helpers.running(app)(AsResult.effectively(t))
-  }
 }
 
 /**
@@ -52,9 +51,8 @@ abstract class WithApplication(
 
   implicit def implicitApp = app
   implicit def implicitMaterializer = app.materializer
-  override def around[T: AsResult](t: => T): Result = {
+  override def around[T: AsResult](t: => T): Result =
     Helpers.running(app)(AsResult.effectively(t))
-  }
 }
 
 /**
@@ -106,11 +104,10 @@ abstract class WithBrowser[WEBDRIVER <: WebDriver](
   lazy val browser: TestBrowser =
     TestBrowser(webDriver, Some("http://localhost:" + port))
 
-  override def around[T: AsResult](t: => T): Result = {
+  override def around[T: AsResult](t: => T): Result =
     try {
       Helpers.running(TestServer(port, app))(AsResult.effectively(t))
     } finally {
       browser.quit()
     }
-  }
 }

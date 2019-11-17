@@ -56,9 +56,8 @@ class UniformGenerator extends RandomDataGenerator[Double] {
   private val random = new XORShiftRandom()
 
   @Since("1.1.0")
-  override def nextValue(): Double = {
+  override def nextValue(): Double =
     random.nextDouble()
-  }
 
   @Since("1.1.0")
   override def setSeed(seed: Long): Unit = random.setSeed(seed)
@@ -79,9 +78,8 @@ class StandardNormalGenerator extends RandomDataGenerator[Double] {
   private val random = new XORShiftRandom()
 
   @Since("1.1.0")
-  override def nextValue(): Double = {
+  override def nextValue(): Double =
     random.nextGaussian()
-  }
 
   @Since("1.1.0")
   override def setSeed(seed: Long): Unit = random.setSeed(seed)
@@ -213,9 +211,8 @@ class WeibullGenerator(val alpha: Double, val beta: Double)
 
   override def nextValue(): Double = rng.sample()
 
-  override def setSeed(seed: Long): Unit = {
+  override def setSeed(seed: Long): Unit =
     rng.reseedRandomGenerator(seed)
-  }
 
   override def copy(): WeibullGenerator = new WeibullGenerator(alpha, beta)
 }

@@ -133,7 +133,7 @@ private[saddle] object JoinHelper {
 
   private def applyUnsorter(
       unsorter: Array[Int],
-      labels: Array[Int]): Array[Int] = {
+      labels: Array[Int]): Array[Int] =
     if (unsorter.length > 0) array.take(unsorter, labels, -1)
     else {
       val ll = labels.length
@@ -145,7 +145,6 @@ private[saddle] object JoinHelper {
       }
       ar
     }
-  }
 
   // Wrapper traits for inner logic; not anonymous functions to avoid boxing
 
@@ -218,7 +217,7 @@ private[saddle] object JoinHelper {
         rc: Int,
         lpos: Int,
         rpos: Int,
-        pos: Int): Int = {
+        pos: Int): Int =
       if (rc == 0) {
         var j = 0
         while (j < lc) {
@@ -249,7 +248,6 @@ private[saddle] object JoinHelper {
         }
         pos + lc * rc
       }
-    }
   }
 
   private object ljMarker extends LabelMarker {
@@ -260,7 +258,7 @@ private[saddle] object JoinHelper {
         rc: Int,
         lpos: Int,
         rpos: Int,
-        pos: Int): Int = {
+        pos: Int): Int =
       if (rc == 0) {
         var j = 0
         while (j < lc) {
@@ -283,7 +281,6 @@ private[saddle] object JoinHelper {
         }
         pos + lc * rc
       }
-    }
   }
 }
 

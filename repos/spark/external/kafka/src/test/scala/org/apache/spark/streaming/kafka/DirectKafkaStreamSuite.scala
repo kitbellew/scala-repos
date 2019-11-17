@@ -161,12 +161,11 @@ class DirectKafkaStreamSuite
       "auto.offset.reset" -> "largest"
     )
     val kc = new KafkaCluster(kafkaParams)
-    def getLatestOffset(): Long = {
+    def getLatestOffset(): Long =
       kc.getLatestLeaderOffsets(Set(topicPartition))
         .right
         .get(topicPartition)
         .offset
-    }
 
     // Send some initial messages before starting context
     kafkaTestUtils.sendMessages(topic, data)
@@ -214,12 +213,11 @@ class DirectKafkaStreamSuite
       "auto.offset.reset" -> "largest"
     )
     val kc = new KafkaCluster(kafkaParams)
-    def getLatestOffset(): Long = {
+    def getLatestOffset(): Long =
       kc.getLatestLeaderOffsets(Set(topicPartition))
         .right
         .get(topicPartition)
         .offset
-    }
 
     // Send some initial messages before starting context
     kafkaTestUtils.sendMessages(topic, data)
@@ -526,14 +524,13 @@ class DirectKafkaStreamSuite
 
   /** Get the generated offset ranges from the DirectKafkaStream */
   private def getOffsetRanges[K, V](
-      kafkaStream: DStream[(K, V)]): Seq[(Time, Array[OffsetRange])] = {
+      kafkaStream: DStream[(K, V)]): Seq[(Time, Array[OffsetRange])] =
     kafkaStream.generatedRDDs
       .mapValues { rdd =>
         rdd.asInstanceOf[KafkaRDD[K, V, _, _, (K, V)]].offsetRanges
       }
       .toSeq
       .sortBy { _._1 }
-  }
 
   private def getDirectKafkaStream(
       topic: String,
@@ -578,28 +575,24 @@ object DirectKafkaStreamSuite {
     val numRecordsCompleted = new AtomicLong(0L)
 
     override def onBatchSubmitted(
-        batchSubmitted: StreamingListenerBatchSubmitted): Unit = {
+        batchSubmitted: StreamingListenerBatchSubmitted): Unit =
       numRecordsSubmitted.addAndGet(batchSubmitted.batchInfo.numRecords)
-    }
 
     override def onBatchStarted(
-        batchStarted: StreamingListenerBatchStarted): Unit = {
+        batchStarted: StreamingListenerBatchStarted): Unit =
       numRecordsStarted.addAndGet(batchStarted.batchInfo.numRecords)
-    }
 
     override def onBatchCompleted(
-        batchCompleted: StreamingListenerBatchCompleted): Unit = {
+        batchCompleted: StreamingListenerBatchCompleted): Unit =
       numRecordsCompleted.addAndGet(batchCompleted.batchInfo.numRecords)
-    }
   }
 }
 
 private[streaming] class ConstantEstimator(@volatile private var rate: Long)
     extends RateEstimator {
 
-  def updateRate(newRate: Long): Unit = {
+  def updateRate(newRate: Long): Unit =
     rate = newRate
-  }
 
   def compute(
       time: Long,

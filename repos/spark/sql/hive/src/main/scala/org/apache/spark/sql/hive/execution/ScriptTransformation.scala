@@ -140,7 +140,7 @@ private[hive] case class ScriptTransformation(
           }
         val mutableRow = new SpecificMutableRow(output.map(_.dataType))
 
-        override def hasNext: Boolean = {
+        override def hasNext: Boolean =
           if (outputSerde == null) {
             if (curLine == null) {
               curLine = reader.readLine()
@@ -180,7 +180,6 @@ private[hive] case class ScriptTransformation(
           } else {
             true
           }
-        }
 
         override def next(): InternalRow = {
           if (!hasNext) {
@@ -357,7 +356,7 @@ private[hive] case class HiveScriptIOSchema(
     outputRowFormat.toMap.withDefault((k) => defaultFormat(k))
 
   def initInputSerDe(
-      input: Seq[Expression]): Option[(AbstractSerDe, ObjectInspector)] = {
+      input: Seq[Expression]): Option[(AbstractSerDe, ObjectInspector)] =
     inputSerdeClass.map { serdeClass =>
       val (columns, columnTypes) = parseAttrs(input)
       val serde = initSerDe(serdeClass, columns, columnTypes, inputSerdeProps)
@@ -369,10 +368,9 @@ private[hive] case class HiveScriptIOSchema(
         .asInstanceOf[ObjectInspector]
       (serde, objectInspector)
     }
-  }
 
-  def initOutputSerDe(output: Seq[Attribute])
-      : Option[(AbstractSerDe, StructObjectInspector)] = {
+  def initOutputSerDe(
+      output: Seq[Attribute]): Option[(AbstractSerDe, StructObjectInspector)] =
     outputSerdeClass.map { serdeClass =>
       val (columns, columnTypes) = parseAttrs(output)
       val serde = initSerDe(serdeClass, columns, columnTypes, outputSerdeProps)
@@ -381,7 +379,6 @@ private[hive] case class HiveScriptIOSchema(
         .asInstanceOf[StructObjectInspector]
       (serde, structObjectInspector)
     }
-  }
 
   private def parseAttrs(
       attrs: Seq[Expression]): (Seq[String], Seq[DataType]) = {
@@ -418,7 +415,7 @@ private[hive] case class HiveScriptIOSchema(
 
   def recordReader(
       inputStream: InputStream,
-      conf: Configuration): Option[RecordReader] = {
+      conf: Configuration): Option[RecordReader] =
     recordReaderClass.map { klass =>
       val instance =
         Utils.classForName(klass).newInstance().asInstanceOf[RecordReader]
@@ -427,18 +424,16 @@ private[hive] case class HiveScriptIOSchema(
       instance.initialize(inputStream, conf, props)
       instance
     }
-  }
 
   def recordWriter(
       outputStream: OutputStream,
-      conf: Configuration): Option[RecordWriter] = {
+      conf: Configuration): Option[RecordWriter] =
     recordWriterClass.map { klass =>
       val instance =
         Utils.classForName(klass).newInstance().asInstanceOf[RecordWriter]
       instance.initialize(outputStream, conf)
       instance
     }
-  }
 
   def inputRowFormatSQL: Option[String] =
     getRowFormatSQL(inputRowFormat, inputSerdeClass, inputSerdeProps)

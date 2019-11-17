@@ -28,9 +28,8 @@ import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
 object Bounds {
-  def lub(seq: Seq[ScType]): ScType = {
+  def lub(seq: Seq[ScType]): ScType =
     seq.reduce((l: ScType, r: ScType) => lub(l, r))
-  }
 
   //similar to Scala code, this code is duplicated and optimized to avoid closures.
   def typeDepth(ts: Seq[ScType]): Int = {
@@ -56,12 +55,11 @@ object Bounds {
   }
 
   //This weird method is copy from Scala compiler. See scala.reflect.internal.Types#lubDepthAdjust
-  private def lubDepthAdjust(td: Int, bd: Int): Int = {
+  private def lubDepthAdjust(td: Int, bd: Int): Int =
     if (bd <= 3) bd
     else if (bd <= 5) td max (bd - 1)
     else if (bd <= 7) td max (bd - 2)
     else (td - 1) max (bd - 3)
-  }
 
   private class Options(_tp: ScType) extends {
     val tp = _tp match {
@@ -109,7 +107,7 @@ object Bounds {
       }
     }
 
-    def isInheritorOrSelf(bClass: Options): Boolean = {
+    def isInheritorOrSelf(bClass: Options): Boolean =
       (getNamedElement, bClass.getNamedElement) match {
         case (base: PsiClass, inheritor: PsiClass) =>
           ScEquivalenceUtil.smartEquivalence(base, inheritor) ||
@@ -124,7 +122,6 @@ object Bounds {
           false
         case _ => false //class can't be inheritor of type alias
       }
-    }
 
     def getNamedElement: PsiNamedElement = typeNamedElement.get._1
 
@@ -134,20 +131,19 @@ object Bounds {
         case p: PsiClass    => p.getTypeParameters
       }
 
-    def baseDesignator: ScType = {
+    def baseDesignator: ScType =
       projectionOption match {
         case Some(proj) =>
           ScProjectionType(proj, getNamedElement, superReference = false)
         case None => ScType.designator(getNamedElement)
       }
-    }
 
     def superSubstitutor(bClass: Options): Option[ScSubstitutor] = {
       def superSubstitutor(
           base: PsiClass,
           drv: PsiClass,
           drvSubst: ScSubstitutor,
-          visited: mutable.Set[PsiClass]): Option[ScSubstitutor] = {
+          visited: mutable.Set[PsiClass]): Option[ScSubstitutor] =
         if (base.getManager.areElementsEquivalent(base, drv)) Some(drvSubst)
         else {
           if (visited.contains(drv)) None
@@ -175,7 +171,6 @@ object Bounds {
             None
           }
         }
-      }
       (getNamedElement, bClass.getNamedElement) match {
         case (base: PsiClass, drv: PsiClass) =>
           superSubstitutor(
@@ -211,7 +206,7 @@ object Bounds {
     }
   }
 
-  def glb(t1: ScType, t2: ScType, checkWeak: Boolean = false): ScType = {
+  def glb(t1: ScType, t2: ScType, checkWeak: Boolean = false): ScType =
     if (t1.conforms(t2, checkWeak)) t1
     else if (t2.conforms(t1, checkWeak)) t2
     else {
@@ -243,7 +238,6 @@ object Bounds {
         case _ => ScCompoundType(Seq(t1, t2), Map.empty, Map.empty)
       }
     }
-  }
 
   def glb(typez: Seq[ScType], checkWeak: Boolean): ScType = {
     if (typez.length == 1) typez(0)
@@ -260,10 +254,9 @@ object Bounds {
   def weakLub(t1: ScType, t2: ScType): ScType = lub(t1, t2, checkWeak = true)
 
   private def lub(seq: Seq[ScType], checkWeak: Boolean)(
-      implicit stopAddingUpperBound: Boolean): ScType = {
+      implicit stopAddingUpperBound: Boolean): ScType =
     seq.reduce((l: ScType, r: ScType) =>
       lub(l, r, lubDepth(Seq(l, r)), checkWeak))
-  }
 
   private def lub(t1: ScType, t2: ScType, depth: Int, checkWeak: Boolean)(
       implicit stopAddingUpperBound: Boolean): ScType = {
@@ -404,7 +397,7 @@ object Bounds {
       depth: Int,
       checkWeak: Boolean,
       count: Int = 1)(implicit stopAddingUpperBound: Boolean)
-      : (ScType, Option[ScExistentialArgument]) = {
+      : (ScType, Option[ScExistentialArgument]) =
     if (substed1 equiv substed2) (substed1, None)
     else {
       if (substed1 conforms substed2) {
@@ -488,7 +481,6 @@ object Bounds {
         }
       }
     }
-  }
 
   private def getTypeForAppending(
       clazz1: Options,

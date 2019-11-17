@@ -262,11 +262,10 @@ trait LinearSeqOptimized[+A, +Repr <: LinearSeqOptimized[A, Repr]]
 
   override /*SeqLike*/
   def lengthCompare(len: Int): Int = {
-    @tailrec def loop(i: Int, xs: Repr): Int = {
+    @tailrec def loop(i: Int, xs: Repr): Int =
       if (i == len) if (xs.isEmpty) 0 else 1
       else if (xs.isEmpty) -1
       else loop(i + 1, xs.tail)
-    }
     if (len < 0) 1
     else loop(0, this)
   }

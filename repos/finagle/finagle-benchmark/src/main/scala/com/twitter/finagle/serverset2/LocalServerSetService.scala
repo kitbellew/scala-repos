@@ -111,7 +111,7 @@ private[serverset2] object LocalServerSetService extends App {
       s"ServerSet ${setToUpdate + 1} now has ${membersets(setToUpdate).size} members.")
   }
 
-  private def addMembers(serversetIndex: Int, toAdd: Int): Unit = {
+  private def addMembers(serversetIndex: Int, toAdd: Int): Unit =
     (1 to toAdd).foreach { _ =>
       membersets(serversetIndex) :+= zkClient
         .create()
@@ -119,15 +119,13 @@ private[serverset2] object LocalServerSetService extends App {
         .withMode(CreateMode.EPHEMERAL_SEQUENTIAL)
         .forPath(serversets(serversetIndex) + "/member_", nextJsonMember())
     }
-  }
 
-  private def removeMembers(index: Int, toRemove: Int): Unit = {
+  private def removeMembers(index: Int, toRemove: Int): Unit =
     (1 to toRemove).foreach { _ =>
       val removeMe = membersets(index).head
       membersets(index) = membersets(index).tail
       zkClient.delete().forPath(removeMe)
     }
-  }
 
   private def nextJsonMember(): Array[Byte] = {
     val id = nextMemberId

@@ -24,7 +24,7 @@ class DangerousCatchAllInspection extends LocalInspectionTool {
 
   override def buildVisitor(
       holder: ProblemsHolder,
-      isOnTheFly: Boolean): PsiElementVisitor = {
+      isOnTheFly: Boolean): PsiElementVisitor =
     new ScalaElementVisitor {
       override def visitCatchBlock(catchBlock: ScCatchBlock) {
         val expr = catchBlock.expression.orNull
@@ -62,5 +62,4 @@ class DangerousCatchAllInspection extends LocalInspectionTool {
         }
       }
     }
-  }
 }

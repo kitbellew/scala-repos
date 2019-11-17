@@ -23,9 +23,8 @@ object ZippedPartitionsSuite {
   def procZippedData(
       i: Iterator[Int],
       s: Iterator[String],
-      d: Iterator[Double]): Iterator[Int] = {
+      d: Iterator[Double]): Iterator[Int] =
     Iterator(i.toArray.size, s.toArray.size, d.toArray.size)
-  }
 }
 
 class ZippedPartitionsSuite extends SparkFunSuite with SharedSparkContext {

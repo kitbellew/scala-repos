@@ -80,11 +80,10 @@ private[spark] class BlockStatusListener extends SparkListener {
   }
 
   override def onBlockManagerAdded(
-      blockManagerAdded: SparkListenerBlockManagerAdded): Unit = {
+      blockManagerAdded: SparkListenerBlockManagerAdded): Unit =
     synchronized {
       blockManagers.put(blockManagerAdded.blockManagerId, mutable.HashMap())
     }
-  }
 
   override def onBlockManagerRemoved(
       blockManagerRemoved: SparkListenerBlockManagerRemoved): Unit =

@@ -128,9 +128,8 @@ object Field {
     override def close(
         a: BigDecimal,
         b: BigDecimal,
-        tolerance: Double): Boolean = {
+        tolerance: Double): Boolean =
       (a - b).abs <= tolerance * (a.abs max b.abs)
-    }
 
     implicit val normImpl: norm.Impl[BigDecimal, Double] =
       new norm.Impl[BigDecimal, Double] {

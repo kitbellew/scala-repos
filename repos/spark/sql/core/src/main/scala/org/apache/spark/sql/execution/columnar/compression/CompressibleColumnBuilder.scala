@@ -64,9 +64,8 @@ private[columnar] trait CompressibleColumnBuilder[T <: AtomicType]
     super.initialize(initialSize, columnName, useCompression)
   }
 
-  protected def isWorthCompressing(encoder: Encoder[T]) = {
+  protected def isWorthCompressing(encoder: Encoder[T]) =
     encoder.compressionRatio < 0.8
-  }
 
   private def gatherCompressibilityStats(
       row: InternalRow,

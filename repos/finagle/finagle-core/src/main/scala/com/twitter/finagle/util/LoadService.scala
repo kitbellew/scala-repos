@@ -175,7 +175,7 @@ private object ClassPath {
       case _: URISyntaxException => None
     }
 
-  private[util] def readLines(source: Source): Seq[String] = {
+  private[util] def readLines(source: Source): Seq[String] =
     try {
       source.getLines().toArray.flatMap { line =>
         val commentIdx = line.indexOf('#')
@@ -188,7 +188,6 @@ private object ClassPath {
     } finally {
       source.close()
     }
-  }
 }
 
 object loadServiceIgnoredPaths

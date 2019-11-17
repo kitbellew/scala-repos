@@ -87,7 +87,7 @@ object WebSocketFlowHandler {
 
             def toMessage(
                 messageType: MessageType.Type,
-                data: ByteString): Message = {
+                data: ByteString): Message =
               messageType match {
                 case MessageType.Text   => TextMessage(data.utf8String)
                 case MessageType.Binary => BinaryMessage(data)
@@ -95,7 +95,6 @@ object WebSocketFlowHandler {
                 case MessageType.Pong   => PongMessage(data)
                 case MessageType.Close  => parseCloseMessage(data)
               }
-            }
 
             def consumeMessage(): Message = {
               val read = grab(remoteIn)
@@ -144,19 +143,17 @@ object WebSocketFlowHandler {
             setHandler(
               appOut,
               new OutHandler {
-                override def onPull() = {
+                override def onPull() =
                   // We always pull from the remote in when the app pulls, even if closing, since if we get a message from
                   // the client and we're still open, we still want to send it.
                   if (!hasBeenPulled(remoteIn)) {
                     pull(remoteIn)
                   }
-                }
 
-                override def onDownstreamFinish() = {
+                override def onDownstreamFinish() =
                   if (state == Open) {
                     serverInitiatedClose(CloseMessage(Some(CloseCodes.Regular)))
                   }
-                }
               }
             )
 
@@ -233,7 +230,7 @@ object WebSocketFlowHandler {
             setHandler(
               appIn,
               new InHandler {
-                override def onPush() = {
+                override def onPush() =
                   if (state == Open) {
                     grab(appIn) match {
                       case close: CloseMessage =>
@@ -249,15 +246,13 @@ object WebSocketFlowHandler {
                   } else {
                     // We're closed, ignore
                   }
-                }
 
-                override def onUpstreamFinish() = {
+                override def onUpstreamFinish() =
                   if (state == Open) {
                     serverInitiatedClose(CloseMessage(Some(CloseCodes.Regular)))
                   }
-                }
 
-                override def onUpstreamFailure(ex: Throwable) = {
+                override def onUpstreamFailure(ex: Throwable) =
                   if (state == Open) {
                     serverInitiatedClose(
                       CloseMessage(Some(CloseCodes.UnexpectedCondition)))
@@ -267,14 +262,13 @@ object WebSocketFlowHandler {
                       "WebSocket flow threw exception after the WebSocket was closed",
                       ex)
                   }
-                }
               }
             )
 
             setHandler(
               remoteOut,
               new OutHandler {
-                override def onPull() = {
+                override def onPull() =
                   state match {
                     case ClientInitiatedClose(close) =>
                       // Acknowledge the client close, and then complete
@@ -306,7 +300,6 @@ object WebSocketFlowHandler {
                         }
                       }
                   }
-                }
               }
             )
           }

@@ -26,7 +26,7 @@ trait UnsafeHelpers extends SLF4JLogging {
 
   protected def unsafeGetElement(
       info: CompilationInfo,
-      t: Tree): Option[Element] = {
+      t: Tree): Option[Element] =
     t match {
       case t: JCCompilationUnit => Some(t.packge)
       case t: JCClassDecl       => Some(t.sym)
@@ -42,5 +42,4 @@ trait UnsafeHelpers extends SLF4JLogging {
       case t: JCTree             => if (t.`type` != null) Some(t.`type`.tsym) else None
       case _                     => None
     }
-  }
 }

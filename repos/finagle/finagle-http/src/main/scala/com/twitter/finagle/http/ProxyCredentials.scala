@@ -8,14 +8,13 @@ object ProxyCredentials {
       credentials: java.util.Map[String, String]): Option[ProxyCredentials] =
     apply(credentials.toMap)
 
-  def apply(credentials: Map[String, String]): Option[ProxyCredentials] = {
+  def apply(credentials: Map[String, String]): Option[ProxyCredentials] =
     for {
       user <- credentials.get("http_proxy_user")
       pass <- credentials.get("http_proxy_pass")
     } yield {
       ProxyCredentials(user, pass)
     }
-  }
 }
 
 case class ProxyCredentials(username: String, password: String) {

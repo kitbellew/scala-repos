@@ -169,12 +169,11 @@ package util {
           scheduleOnce("ToStrictTimeoutTimer", timeout)
 
         setHandler(out, new OutHandler {
-          override def onPull(): Unit = {
+          override def onPull(): Unit =
             if (emptyStream) {
               push(out, HttpEntity.Strict(contentType, ByteString.empty))
               completeStage()
             } else pull(in)
-          }
         })
 
         setHandler(
@@ -184,12 +183,11 @@ package util {
               bytes ++= grab(in)
               pull(in)
             }
-            override def onUpstreamFinish(): Unit = {
+            override def onUpstreamFinish(): Unit =
               if (isAvailable(out)) {
                 push(out, HttpEntity.Strict(contentType, bytes.result()))
                 completeStage()
               } else emptyStream = true
-            }
           }
         )
 

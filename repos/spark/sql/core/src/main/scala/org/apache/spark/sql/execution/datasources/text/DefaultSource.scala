@@ -170,7 +170,6 @@ class TextOutputWriter(
     recordWriter.write(NullWritable.get(), buffer)
   }
 
-  override def close(): Unit = {
+  override def close(): Unit =
     recordWriter.close(context)
-  }
 }

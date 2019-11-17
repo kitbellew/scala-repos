@@ -71,9 +71,8 @@ trait Dependent {
   /**
     * Remove from all dependencies
     */
-  protected def unregisterFromAllDependencies(): Unit = {
+  protected def unregisterFromAllDependencies(): Unit =
     whoDoIDependOn.foreach(_.removeDependent(this))
-  }
 }
 
 /**
@@ -146,11 +145,10 @@ trait Cell[T] extends Dependent {
     * Notify dependents of a state change.  Note this
     * will be performed on a separate thread asynchronously
     */
-  def notifyDependents(): Unit = {
+  def notifyDependents(): Unit =
     Schedule.schedule(
       () => dependents.foreach(_.predicateChanged(this)),
       TimeSpan(0))
-  }
 
   /**
     * Get a List of the Dependents
@@ -318,9 +316,8 @@ final case class FuncCell1[A, Z](a: Cell[A], f: A => Z) extends Cell[Z] {
   /**
     * If the predicate cell changes, the Dependent will be notified
     */
-  def predicateChanged(which: Cell[_]): Unit = {
+  def predicateChanged(which: Cell[_]): Unit =
     notifyDependents()
-  }
 
   a.addDependent(this)
 
@@ -403,9 +400,8 @@ final case class FuncCell4[A, B, C, D, Z](
   /**
     * If the predicate cell changes, the Dependent will be notified
     */
-  def predicateChanged(which: Cell[_]): Unit = {
+  def predicateChanged(which: Cell[_]): Unit =
     notifyDependents()
-  }
 
   a.addDependent(this)
   b.addDependent(this)
@@ -440,9 +436,8 @@ final case class FuncCell5[A, B, C, D, E, Z](
   /**
     * If the predicate cell changes, the Dependent will be notified
     */
-  def predicateChanged(which: Cell[_]): Unit = {
+  def predicateChanged(which: Cell[_]): Unit =
     notifyDependents()
-  }
 
   a.addDependent(this)
   b.addDependent(this)

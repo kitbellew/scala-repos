@@ -42,10 +42,9 @@ case class LeaderAndIsr(
       isr,
       LeaderAndIsr.initialZKVersion)
 
-  override def toString(): String = {
+  override def toString(): String =
     Json.encode(
       Map("leader" -> leader, "leader_epoch" -> leaderEpoch, "isr" -> isr))
-  }
 }
 
 object PartitionStateInfo {

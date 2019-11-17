@@ -47,14 +47,12 @@ trait ServerProcess {
 class RealServerProcess(val args: Seq[String]) extends ServerProcess {
   def classLoader: ClassLoader = Thread.currentThread.getContextClassLoader
   def properties: Properties = System.getProperties
-  def pid: Option[String] = {
+  def pid: Option[String] =
     ManagementFactory.getRuntimeMXBean.getName.split('@').headOption
-  }
-  def addShutdownHook(hook: => Unit): Unit = {
+  def addShutdownHook(hook: => Unit): Unit =
     Runtime.getRuntime.addShutdownHook(new Thread {
       override def run() = hook
     })
-  }
   def exit(
       message: String,
       cause: Option[Throwable] = None,

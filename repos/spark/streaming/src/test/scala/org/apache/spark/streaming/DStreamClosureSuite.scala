@@ -43,14 +43,13 @@ class DStreamClosureSuite extends SparkFunSuite with BeforeAndAfterAll {
     ssc = new StreamingContext(sc, Seconds(1))
   }
 
-  override def afterAll(): Unit = {
+  override def afterAll(): Unit =
     try {
       ssc.stop(stopSparkContext = true)
       ssc = null
     } finally {
       super.afterAll()
     }
-  }
 
   test("user provided closures are actually cleaned") {
     val dstream = new DummyInputDStream(ssc)
@@ -84,7 +83,7 @@ class DStreamClosureSuite extends SparkFunSuite with BeforeAndAfterAll {
     * We use return statements as an indication that a closure is actually being cleaned.
     * We expect closure cleaner to find the return statements in the user provided closures.
     */
-  private def expectCorrectException(body: => Unit): Unit = {
+  private def expectCorrectException(body: => Unit): Unit =
     try {
       body
     } catch {
@@ -94,7 +93,6 @@ class DStreamClosureSuite extends SparkFunSuite with BeforeAndAfterAll {
           s"Expected ReturnStatementInClosureException, but got $e.\n" +
             "This means the closure provided by user is not actually cleaned.")
     }
-  }
 
   // DStream operations
   private def testMap(ds: DStream[Int]): Unit = expectCorrectException {
@@ -158,7 +156,7 @@ class DStreamClosureSuite extends SparkFunSuite with BeforeAndAfterAll {
     expectCorrectException { ds.reduceByKey(reduceF, 5) }
     expectCorrectException { ds.reduceByKey(reduceF, new HashPartitioner(5)) }
   }
-  private def testCombineByKey(ds: DStream[(Int, Int)]): Unit = {
+  private def testCombineByKey(ds: DStream[(Int, Int)]): Unit =
     expectCorrectException {
       ds.combineByKey[Int]({ _: Int =>
         return; 1
@@ -166,7 +164,6 @@ class DStreamClosureSuite extends SparkFunSuite with BeforeAndAfterAll {
         case (_: Int, _: Int)    => return; 1
       }, new HashPartitioner(5))
     }
-  }
   private def testReduceByKeyAndWindow(ds: DStream[(Int, Int)]): Unit = {
     val reduceF = (_: Int, _: Int) => { return; 1 }
     val filterF = (_: (Int, Int)) => { return; false }

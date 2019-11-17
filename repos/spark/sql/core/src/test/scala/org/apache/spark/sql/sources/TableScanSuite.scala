@@ -30,9 +30,8 @@ class DefaultSource extends SimpleScanSource
 class SimpleScanSource extends RelationProvider {
   override def createRelation(
       sqlContext: SQLContext,
-      parameters: Map[String, String]): BaseRelation = {
+      parameters: Map[String, String]): BaseRelation =
     SimpleScan(parameters("from").toInt, parameters("TO").toInt)(sqlContext)
-  }
 }
 
 case class SimpleScan(from: Int, to: Int)(@transient val sqlContext: SQLContext)
@@ -69,7 +68,7 @@ case class AllDataTypesScan(from: Int, to: Int, userSpecifiedSchema: StructType)
 
   override def needConversion: Boolean = true
 
-  override def buildScan(): RDD[Row] = {
+  override def buildScan(): RDD[Row] =
     sqlContext.sparkContext.parallelize(from to to).map { i =>
       Row(
         s"str_$i",
@@ -97,7 +96,6 @@ case class AllDataTypesScan(from: Int, to: Int, userSpecifiedSchema: StructType)
           Row(Seq(Date.valueOf(s"1970-01-${i + 1}"))))
       )
     }
-  }
 }
 
 class TableScanSuite extends DataSourceTest with SharedSQLContext {

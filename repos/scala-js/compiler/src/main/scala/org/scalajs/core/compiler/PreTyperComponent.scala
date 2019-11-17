@@ -115,14 +115,13 @@ abstract class PreTyperComponent
     }
   }
 
-  private def needsAnnotations(classDef: ClassDef): Boolean = {
+  private def needsAnnotations(classDef: ClassDef): Boolean =
     classDef.name == nme.ANON_CLASS_NAME.toTypeName &&
-    classDef.impl.body.exists {
-      case vdef: ValDef => needsAnnotations(vdef)
-      case ddef: DefDef => needsAnnotations(ddef)
-      case _            => false
-    }
-  }
+      classDef.impl.body.exists {
+        case vdef: ValDef => needsAnnotations(vdef)
+        case ddef: DefDef => needsAnnotations(ddef)
+        case _            => false
+      }
 
   private def needsAnnotations(vdef: ValDef): Boolean =
     vdef.mods.isPublic
