@@ -160,10 +160,9 @@ object SideEffectsUtil {
       case ref: ScReferenceExpression =>
         ref
           .bind()
-          .exists(
-            rr =>
-              rr.implicitConversionClass.isDefined ||
-                rr.implicitFunction.isDefined)
+          .exists(rr =>
+            rr.implicitConversionClass.isDefined ||
+              rr.implicitFunction.isDefined)
       case _ => false
     }
   }

@@ -571,11 +571,10 @@ object MixinNodes {
           else
             ScParameterizedType(
               ScType.designator(clazz),
-              clazz.getTypeParameters.map(
-                tp =>
-                  ScalaPsiManager
-                    .instance(clazz.getProject)
-                    .typeVariable(tp)))
+              clazz.getTypeParameters.map(tp =>
+                ScalaPsiManager
+                  .instance(clazz.getProject)
+                  .typeVariable(tp)))
         clazz match {
           case td: ScTypeDefinition =>
             td.getType(TypingContext.empty).getOrElse(default)

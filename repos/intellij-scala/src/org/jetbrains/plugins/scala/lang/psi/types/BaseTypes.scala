@@ -27,12 +27,11 @@ object BaseTypes {
     t match {
       case ScDesignatorType(td: ScTemplateDefinition) =>
         reduce(
-          td.superTypes.flatMap(
-            tp =>
-              if (!notAll)
-                BaseTypes
-                  .get(tp, notAll, visitedAliases = visitedAliases) ++ Seq(tp)
-              else Seq(tp)))
+          td.superTypes.flatMap(tp =>
+            if (!notAll)
+              BaseTypes
+                .get(tp, notAll, visitedAliases = visitedAliases) ++ Seq(tp)
+            else Seq(tp)))
       case ScDesignatorType(c: PsiClass) =>
         reduce(c.getSuperTypes.flatMap { p =>
           if (!notAll)
@@ -119,10 +118,12 @@ object BaseTypes {
           ScExistentialType(bt, wilds).simplify()
         }
       case ScCompoundType(comps, _, _) =>
-        reduce(if (notAll) comps
-        else
-          comps.flatMap(comp =>
-            BaseTypes.get(comp, visitedAliases = visitedAliases) ++ Seq(comp)))
+        reduce(
+          if (notAll) comps
+          else
+            comps.flatMap(comp =>
+              BaseTypes.get(comp, visitedAliases = visitedAliases) ++ Seq(
+                comp)))
       case proj @ ScProjectionType(p, elem, _) =>
         val s = proj.actualSubst
         elem match {

@@ -203,16 +203,14 @@ class ScImportStmtImpl private (
                 if complProc.includePrefixImports =>
               val settings: ScalaCodeStyleSettings =
                 ScalaCodeStyleSettings.getInstance(getProject)
-              val prefixImports = settings.getImportsWithPrefix.filter(
-                s =>
-                  !s.startsWith(ScalaCodeStyleSettings.EXCLUDE_PREFIX) &&
-                    s.substring(0, s.lastIndexOf(".")) == pack.getQualifiedName)
-              val excludeImports = settings.getImportsWithPrefix.filter(
-                s =>
-                  s.startsWith(ScalaCodeStyleSettings.EXCLUDE_PREFIX) &&
-                    s.substring(
-                      ScalaCodeStyleSettings.EXCLUDE_PREFIX.length,
-                      s.lastIndexOf(".")) == pack.getQualifiedName)
+              val prefixImports = settings.getImportsWithPrefix.filter(s =>
+                !s.startsWith(ScalaCodeStyleSettings.EXCLUDE_PREFIX) &&
+                  s.substring(0, s.lastIndexOf(".")) == pack.getQualifiedName)
+              val excludeImports = settings.getImportsWithPrefix.filter(s =>
+                s.startsWith(ScalaCodeStyleSettings.EXCLUDE_PREFIX) &&
+                  s.substring(
+                    ScalaCodeStyleSettings.EXCLUDE_PREFIX.length,
+                    s.lastIndexOf(".")) == pack.getQualifiedName)
               val names = new mutable.HashSet[String]()
               for (prefixImport <- prefixImports) {
                 names +=

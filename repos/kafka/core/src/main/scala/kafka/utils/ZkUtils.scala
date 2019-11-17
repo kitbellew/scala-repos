@@ -862,12 +862,11 @@ class ZkUtils(
     Json.encode(
       Map(
         "version" -> 1,
-        "partitions" -> partitionsToBeReassigned.map(
-          e =>
-            Map(
-              "topic" -> e._1.topic,
-              "partition" -> e._1.partition,
-              "replicas" -> e._2))))
+        "partitions" -> partitionsToBeReassigned.map(e =>
+          Map(
+            "topic" -> e._1.topic,
+            "partition" -> e._1.partition,
+            "replicas" -> e._2))))
   }
 
   def updatePartitionReassignmentData(

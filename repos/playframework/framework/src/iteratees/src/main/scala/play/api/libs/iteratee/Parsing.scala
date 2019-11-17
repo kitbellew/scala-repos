@@ -100,14 +100,13 @@ object Parsing {
                     .filter(!_.content.isEmpty)
                     .foldLeft(Future.successful(Array[Byte]() -> Cont(k))) {
                       (p, m) =>
-                        p.flatMap(
-                          i =>
-                            i._2.fold1(
-                              (a, e) =>
-                                Future.successful(
-                                  (i._1 ++ m.content, Done(a, e))),
-                              k => Future.successful((i._1, k(Input.El(m)))),
-                              (err, e) => throw new Exception())(dec))(dec)
+                        p.flatMap(i =>
+                          i._2.fold1(
+                            (a, e) =>
+                              Future.successful(
+                                (i._1 ++ m.content, Done(a, e))),
+                            k => Future.successful((i._1, k(Input.El(m)))),
+                            (err, e) => throw new Exception())(dec))(dec)
                     }
                   fed.flatMap {
                     case (ss, i) =>

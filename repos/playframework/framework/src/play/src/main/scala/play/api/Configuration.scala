@@ -1169,14 +1169,13 @@ private[play] object ConfigLoader {
   implicit val seqBooleanLoader =
     ConfigLoader(_.getBooleanList).map(toScala(_).map(_.booleanValue()))
 
-  implicit val durationLoader: ConfigLoader[Duration] = ConfigLoader(
-    config =>
-      path =>
-        if (!config.getIsNull(path))
-          FiniteDuration(
-            config.getDuration(path, TimeUnit.MILLISECONDS),
-            TimeUnit.MILLISECONDS)
-        else Duration.Inf)
+  implicit val durationLoader: ConfigLoader[Duration] = ConfigLoader(config =>
+    path =>
+      if (!config.getIsNull(path))
+        FiniteDuration(
+          config.getDuration(path, TimeUnit.MILLISECONDS),
+          TimeUnit.MILLISECONDS)
+      else Duration.Inf)
 
   implicit val finiteDurationLoader: ConfigLoader[FiniteDuration] =
     ConfigLoader(config => config.getDuration(_, TimeUnit.MILLISECONDS))

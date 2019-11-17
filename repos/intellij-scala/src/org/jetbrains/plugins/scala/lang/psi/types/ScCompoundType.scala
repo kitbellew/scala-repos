@@ -215,13 +215,12 @@ case class ScCompoundType(
                 new Signature(
                   s.name,
                   s.substitutedTypes.map(
-                    _.map(
-                      f =>
-                        () =>
-                          f().recursiveVarianceUpdateModifiable(
-                            newData,
-                            update,
-                            1))),
+                    _.map(f =>
+                      () =>
+                        f().recursiveVarianceUpdateModifiable(
+                          newData,
+                          update,
+                          1))),
                   s.paramLength,
                   tParams,
                   ScSubstitutor.empty,

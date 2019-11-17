@@ -222,15 +222,13 @@ class Interaction @Since("1.6.0") (override val uid: String)
     inputAttrs.zipWithIndex.flatMap {
       case (nominal: NominalAttribute, i) =>
         if (nominal.values.isDefined) {
-          nominal.values.get.map(
-            v =>
-              BinaryAttribute.defaultAttr.withName(
-                format(i, nominal.name, Some(v))))
+          nominal.values.get.map(v =>
+            BinaryAttribute.defaultAttr.withName(
+              format(i, nominal.name, Some(v))))
         } else {
-          Array.tabulate(nominal.getNumValues.get)(
-            j =>
-              BinaryAttribute.defaultAttr.withName(
-                format(i, nominal.name, Some(j.toString))))
+          Array.tabulate(nominal.getNumValues.get)(j =>
+            BinaryAttribute.defaultAttr.withName(
+              format(i, nominal.name, Some(j.toString))))
         }
       case (a: Attribute, i) =>
         Seq(NumericAttribute.defaultAttr.withName(format(i, a.name, None)))

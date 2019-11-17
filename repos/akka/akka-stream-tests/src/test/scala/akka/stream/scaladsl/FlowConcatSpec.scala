@@ -102,11 +102,10 @@ class FlowConcatSpec extends BaseTwoStreamsSetup {
       val subscriber = setup(nonemptyPublisher(1 to 4), failedPublisher)
       subscriber.expectSubscription().request(5)
 
-      val errorSignalled = (1 to 4).foldLeft(false)(
-        (errorSignalled, e) ⇒
-          if (!errorSignalled)
-            subscriber.expectNextOrError(e, TestException).isLeft
-          else true)
+      val errorSignalled = (1 to 4).foldLeft(false)((errorSignalled, e) ⇒
+        if (!errorSignalled)
+          subscriber.expectNextOrError(e, TestException).isLeft
+        else true)
       if (!errorSignalled) subscriber.expectSubscriptionAndError(TestException)
     }
 
@@ -119,11 +118,10 @@ class FlowConcatSpec extends BaseTwoStreamsSetup {
       val subscriber = setup(nonemptyPublisher(1 to 4), soonToFailPublisher)
       subscriber.expectSubscription().request(5)
 
-      val errorSignalled = (1 to 4).foldLeft(false)(
-        (errorSignalled, e) ⇒
-          if (!errorSignalled)
-            subscriber.expectNextOrError(e, TestException).isLeft
-          else true)
+      val errorSignalled = (1 to 4).foldLeft(false)((errorSignalled, e) ⇒
+        if (!errorSignalled)
+          subscriber.expectNextOrError(e, TestException).isLeft
+        else true)
       if (!errorSignalled) subscriber.expectSubscriptionAndError(TestException)
     }
 

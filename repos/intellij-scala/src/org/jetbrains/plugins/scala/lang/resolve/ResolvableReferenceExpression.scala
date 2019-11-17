@@ -475,10 +475,9 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
         val secondaryConstructors = (c: ScClass) => {
           if (c != clazz) Seq.empty
           else {
-            c.secondaryConstructors.filter(
-              f =>
-                !PsiTreeUtil.isContextAncestor(f, s, true) &&
-                  f.getTextRange.getStartOffset < s.getTextRange.getStartOffset)
+            c.secondaryConstructors.filter(f =>
+              !PsiTreeUtil.isContextAncestor(f, s, true) &&
+                f.getTextRange.getStartOffset < s.getTextRange.getStartOffset)
           }
         }
         processConstructor(s, tp, typeArgs, arguments, secondaryConstructors)

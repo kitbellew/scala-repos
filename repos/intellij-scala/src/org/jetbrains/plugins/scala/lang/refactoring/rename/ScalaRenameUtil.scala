@@ -213,9 +213,8 @@ object ScalaRenameUtil {
   def sameElement(range: RangeMarker, element: PsiElement): Boolean = {
     val newElemRange = Option(ScalaRenameUtil.findSubstituteElement(element))
       .map(_.getTextRange)
-    newElemRange.exists(
-      nr =>
-        nr.getStartOffset == range.getStartOffset &&
-          nr.getEndOffset == range.getEndOffset)
+    newElemRange.exists(nr =>
+      nr.getStartOffset == range.getStartOffset &&
+        nr.getEndOffset == range.getEndOffset)
   }
 }

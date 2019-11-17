@@ -980,12 +980,11 @@ object Project extends ProjectExtra {
               value)(f))
       }
     def keepAs(key: TaskKey[S]): Def.Initialize[Task[S]] =
-      (i, Keys.resolvedScoped)(
-        (t, scoped) =>
-          tx(
-            t,
-            (state, value) =>
-              set(resolveContext(key, scoped.scope, state), state, value)))
+      (i, Keys.resolvedScoped)((t, scoped) =>
+        tx(
+          t,
+          (state, value) =>
+            set(resolveContext(key, scoped.scope, state), state, value)))
   }
 
   import scala.reflect._

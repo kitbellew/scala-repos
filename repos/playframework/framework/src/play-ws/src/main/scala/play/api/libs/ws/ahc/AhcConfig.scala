@@ -338,11 +338,10 @@ class AhcConfigBuilder(ahcConfig: AhcWSClientConfig = AhcWSClientConfig()) {
       tmf.getTrustManagers()(0).asInstanceOf[X509TrustManager]
 
     val constraints = sslConfig.disabledKeyAlgorithms
-      .map(
-        a =>
-          AlgorithmConstraintsParser
-            .parseAll(AlgorithmConstraintsParser.expression, a)
-            .get)
+      .map(a =>
+        AlgorithmConstraintsParser
+          .parseAll(AlgorithmConstraintsParser.expression, a)
+          .get)
       .toSet
     val algorithmChecker = new AlgorithmChecker(
       keyConstraints = constraints,

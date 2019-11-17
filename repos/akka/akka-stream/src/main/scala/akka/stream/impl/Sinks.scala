@@ -399,13 +399,13 @@ final private[stream] class QueueSink[T]()
       }
 
       override def postStop(): Unit =
-        stopCallback(
-          promise ⇒
-            promise.failure(new IllegalStateException(
+        stopCallback(promise ⇒
+          promise.failure(
+            new IllegalStateException(
               "Stream is terminated. QueueSink is detached")))
 
-      private val callback: AsyncCallback[Requested[T]] = getAsyncCallback(
-        promise ⇒
+      private val callback: AsyncCallback[Requested[T]] =
+        getAsyncCallback(promise ⇒
           currentRequest match {
             case Some(_) ⇒
               promise.failure(new IllegalStateException(

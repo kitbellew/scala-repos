@@ -334,8 +334,8 @@ object DependencyHelpers {
       ScalaVersionDependentModuleID(v => Seq(f(v)))
     def fromPF(
         f: PartialFunction[String, ModuleID]): ScalaVersionDependentModuleID =
-      ScalaVersionDependentModuleID(
-        version => if (f.isDefinedAt(version)) Seq(f(version)) else Nil)
+      ScalaVersionDependentModuleID(version =>
+        if (f.isDefinedAt(version)) Seq(f(version)) else Nil)
   }
 
   /**

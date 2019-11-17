@@ -19,9 +19,7 @@ abstract class ParallelSeqCheck[T](collName: String)
   def fromSeq(s: Seq[T]): CollType
 
   override def instances(vals: Seq[Gen[T]]): Gen[Seq[T]] = oneOf(
-    sized(
-      sz => ofSize(vals, sz)
-    ),
+    sized(sz => ofSize(vals, sz)),
     for (sz <- choose(1000, 2000)) yield ofSize(vals, sz)
   )
 

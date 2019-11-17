@@ -137,26 +137,20 @@ object ReplicaVerificationTool extends Logging {
       clientId,
       maxWaitMs)
     val brokerMap = topicsMetadataResponse.brokers.map(b => (b.id, b)).toMap
-    val filteredTopicMetadata = topicsMetadataResponse.topicsMetadata.filter(
-      topicMetadata =>
+    val filteredTopicMetadata =
+      topicsMetadataResponse.topicsMetadata.filter(topicMetadata =>
         if (topicWhiteListFiler.isTopicAllowed(
               topicMetadata.topic,
               excludeInternalTopics = false)) true
-        else false
-    )
+        else false)
     val topicPartitionReplicaList: Seq[TopicPartitionReplica] =
-      filteredTopicMetadata.flatMap(
-        topicMetadataResponse =>
-          topicMetadataResponse.partitionsMetadata.flatMap(
-            partitionMetadata =>
-              partitionMetadata.replicas.map(
-                broker =>
-                  TopicPartitionReplica(
-                    topic = topicMetadataResponse.topic,
-                    partitionId = partitionMetadata.partitionId,
-                    replicaId = broker.id))
-          )
-      )
+      filteredTopicMetadata.flatMap(topicMetadataResponse =>
+        topicMetadataResponse.partitionsMetadata.flatMap(partitionMetadata =>
+          partitionMetadata.replicas.map(broker =>
+            TopicPartitionReplica(
+              topic = topicMetadataResponse.topic,
+              partitionId = partitionMetadata.partitionId,
+              replicaId = broker.id))))
     debug("Selected topic partitions: " + topicPartitionReplicaList)
     val topicAndPartitionsPerBroker: Map[Int, Seq[TopicAndPartition]] =
       topicPartitionReplicaList.groupBy(_.replicaId).map {
@@ -180,16 +174,13 @@ object ReplicaVerificationTool extends Logging {
         expectedReplicasPerTopicAndPartition)
     val leadersPerBroker: Map[Int, Seq[TopicAndPartition]] =
       filteredTopicMetadata
-        .flatMap(
-          topicMetadataResponse =>
-            topicMetadataResponse.partitionsMetadata.map(
-              partitionMetadata =>
-                (
-                  new TopicAndPartition(
-                    topicMetadataResponse.topic,
-                    partitionMetadata.partitionId),
-                  partitionMetadata.leader.get.id))
-        )
+        .flatMap(topicMetadataResponse =>
+          topicMetadataResponse.partitionsMetadata.map(partitionMetadata =>
+            (
+              new TopicAndPartition(
+                topicMetadataResponse.topic,
+                partitionMetadata.partitionId),
+              partitionMetadata.leader.get.id)))
         .groupBy(_._2)
         .mapValues(topicAndPartitionAndLeaderIds =>
           topicAndPartitionAndLeaderIds.map {
@@ -309,11 +300,10 @@ private class ReplicaBuffer(
         ReplicaVerificationTool.clientId)
       val initialOffsetMap: Map[TopicAndPartition, PartitionOffsetRequestInfo] =
         topicAndPartitions
-          .map(
-            topicAndPartition =>
-              topicAndPartition -> PartitionOffsetRequestInfo(
-                initialOffsetTime,
-                1))
+          .map(topicAndPartition =>
+            topicAndPartition -> PartitionOffsetRequestInfo(
+              initialOffsetTime,
+              1))
           .toMap
       val offsetRequest = OffsetRequest(initialOffsetMap)
       val offsetResponse = consumer.getOffsetsBefore(offsetRequest)

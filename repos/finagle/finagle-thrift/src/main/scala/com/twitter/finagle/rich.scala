@@ -200,13 +200,11 @@ private[twitter] object ThriftUtil {
           Seq(impl, protocolFactory, stats, Int.box(maxThriftBufferSize))
         val newArgs = oldArgs :+ label
         def newConsCall: Option[BinaryService] =
-          findConstructor(serviceCls, newParameters: _*).map(
-            cons => cons.newInstance(newArgs: _*)
-          )
+          findConstructor(serviceCls, newParameters: _*).map(cons =>
+            cons.newInstance(newArgs: _*))
         def oldConsCall: Option[BinaryService] =
-          findConstructor(serviceCls, oldParameters: _*).map(
-            cons => cons.newInstance(oldArgs: _*)
-          )
+          findConstructor(serviceCls, oldParameters: _*).map(cons =>
+            cons.newInstance(oldArgs: _*))
         newConsCall.orElse(oldConsCall)
       }).flatten
 

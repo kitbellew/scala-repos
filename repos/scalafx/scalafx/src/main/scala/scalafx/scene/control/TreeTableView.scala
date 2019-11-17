@@ -834,8 +834,8 @@ class TreeTableView[S](
     * It is recommended that rather than override the sort method that a different sort policy be provided instead.
     */
   def sortPolicy: ObjectProperty[TreeTableView[S] => Boolean] =
-    ObjectProperty(
-      (ttv: TreeTableView[S]) => delegate.sortPolicyProperty.get().call(ttv))
+    ObjectProperty((ttv: TreeTableView[S]) =>
+      delegate.sortPolicyProperty.get().call(ttv))
   def sortPolicy_=(v: TreeTableView[S] => Boolean): Unit = {
     ObjectProperty.fillProperty[TreeTableView[S] => Boolean](sortPolicy, v)
   }

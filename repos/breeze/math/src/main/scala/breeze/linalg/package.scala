@@ -215,10 +215,9 @@ package object linalg {
   def lowerTriangular[T: Semiring: ClassTag: Zero](
       X: Matrix[T]): DenseMatrix[T] = {
     val N = X.rows
-    DenseMatrix.tabulate(N, N)(
-      (i, j) =>
-        if (j <= i) X(i, j)
-        else implicitly[Semiring[T]].zero)
+    DenseMatrix.tabulate(N, N)((i, j) =>
+      if (j <= i) X(i, j)
+      else implicitly[Semiring[T]].zero)
   }
 
   /**
@@ -228,10 +227,9 @@ package object linalg {
   def strictlyLowerTriangular[T: Semiring: ClassTag: Zero](
       X: Matrix[T]): DenseMatrix[T] = {
     val N = X.rows
-    DenseMatrix.tabulate(N, N)(
-      (i, j) =>
-        if (j < i) X(i, j)
-        else implicitly[Semiring[T]].zero)
+    DenseMatrix.tabulate(N, N)((i, j) =>
+      if (j < i) X(i, j)
+      else implicitly[Semiring[T]].zero)
   }
 
   /**
@@ -241,10 +239,9 @@ package object linalg {
   def upperTriangular[T: Semiring: ClassTag: Zero](
       X: Matrix[T]): DenseMatrix[T] = {
     val N = X.rows
-    DenseMatrix.tabulate(N, N)(
-      (i, j) =>
-        if (j >= i) X(i, j)
-        else implicitly[Semiring[T]].zero)
+    DenseMatrix.tabulate(N, N)((i, j) =>
+      if (j >= i) X(i, j)
+      else implicitly[Semiring[T]].zero)
   }
 
   /**
@@ -254,10 +251,9 @@ package object linalg {
   def strictlyUpperTriangular[T: Semiring: ClassTag: Zero](
       X: Matrix[T]): DenseMatrix[T] = {
     val N = X.rows
-    DenseMatrix.tabulate(N, N)(
-      (i, j) =>
-        if (j > i) X(i, j)
-        else implicitly[Semiring[T]].zero)
+    DenseMatrix.tabulate(N, N)((i, j) =>
+      if (j > i) X(i, j)
+      else implicitly[Semiring[T]].zero)
   }
 
   /**

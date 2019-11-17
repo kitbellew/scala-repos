@@ -48,9 +48,7 @@ trait BinaryVectorizerFixture {
 
   def vecSum(vec1: Vector, vec2: Vector): Array[Double] = {
     (0 until vec1.size)
-      .map(
-        k => vec1(k) + vec2(k)
-      )
+      .map(k => vec1(k) + vec2(k))
       .toArray
   }
 }

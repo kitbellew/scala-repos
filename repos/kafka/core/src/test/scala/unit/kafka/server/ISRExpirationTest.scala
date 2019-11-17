@@ -93,14 +93,13 @@ class IsrExpirationTest {
     val leaderReplica = partition0.getReplica(configs.head.brokerId).get
 
     // let the follower catch up to the Leader logEndOffset (15)
-    (partition0.assignedReplicas() - leaderReplica).foreach(
-      r =>
-        r.updateLogReadResult(
-          new LogReadResult(
-            FetchDataInfo(new LogOffsetMetadata(15L), MessageSet.Empty),
-            -1L,
-            -1,
-            true)))
+    (partition0.assignedReplicas() - leaderReplica).foreach(r =>
+      r.updateLogReadResult(
+        new LogReadResult(
+          FetchDataInfo(new LogOffsetMetadata(15L), MessageSet.Empty),
+          -1L,
+          -1,
+          true)))
     var partition0OSR = partition0.getOutOfSyncReplicas(
       leaderReplica,
       configs.head.replicaLagTimeMaxMs)
@@ -192,14 +191,13 @@ class IsrExpirationTest {
 
     time.sleep(75)
 
-    (partition0.assignedReplicas() - leaderReplica).foreach(
-      r =>
-        r.updateLogReadResult(
-          new LogReadResult(
-            FetchDataInfo(new LogOffsetMetadata(11L), MessageSet.Empty),
-            -1L,
-            -1,
-            false)))
+    (partition0.assignedReplicas() - leaderReplica).foreach(r =>
+      r.updateLogReadResult(
+        new LogReadResult(
+          FetchDataInfo(new LogOffsetMetadata(11L), MessageSet.Empty),
+          -1L,
+          -1,
+          false)))
     partition0OSR = partition0.getOutOfSyncReplicas(
       leaderReplica,
       configs.head.replicaLagTimeMaxMs)
@@ -220,14 +218,13 @@ class IsrExpirationTest {
       partition0OSR.map(_.brokerId))
 
     // Now actually make a fetch to the end of the log. The replicas should be back in ISR
-    (partition0.assignedReplicas() - leaderReplica).foreach(
-      r =>
-        r.updateLogReadResult(
-          new LogReadResult(
-            FetchDataInfo(new LogOffsetMetadata(15L), MessageSet.Empty),
-            -1L,
-            -1,
-            true)))
+    (partition0.assignedReplicas() - leaderReplica).foreach(r =>
+      r.updateLogReadResult(
+        new LogReadResult(
+          FetchDataInfo(new LogOffsetMetadata(15L), MessageSet.Empty),
+          -1L,
+          -1,
+          true)))
     partition0OSR = partition0.getOutOfSyncReplicas(
       leaderReplica,
       configs.head.replicaLagTimeMaxMs)

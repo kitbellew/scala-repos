@@ -205,13 +205,12 @@ object arityize {
       vdef: c.universe.TypeDef): List[c.universe.TypeDef] = {
     import c.mirror.universe._
     if (shouldExpand(c)(vdef.mods)) {
-      List.tabulate(order)(
-        i =>
-          TypeDef(
-            vdef.mods,
-            newTypeName(vdef.name.encoded + (i + 1)),
-            vdef.tparams,
-            vdef.rhs))
+      List.tabulate(order)(i =>
+        TypeDef(
+          vdef.mods,
+          newTypeName(vdef.name.encoded + (i + 1)),
+          vdef.tparams,
+          vdef.rhs))
     } else if (shouldRepeat(c)(vdef.mods)) {
       List.fill(order)(vdef)
     } else {

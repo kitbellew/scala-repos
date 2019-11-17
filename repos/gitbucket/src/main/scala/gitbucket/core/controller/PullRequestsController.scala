@@ -105,49 +105,48 @@ trait PullRequestsControllerBase extends ControllerBase {
     }
   })
 
-  get("/:owner/:repository/pull/:id")(referrersOnly {
-    repository =>
-      params("id").toIntOpt.flatMap {
-        issueId =>
-          val owner = repository.owner
-          val name = repository.name
-          getPullRequest(owner, name, issueId) map {
-            case (issue, pullreq) =>
-              using(Git.open(getRepositoryDir(owner, name))) {
-                git =>
-                  val (commits, diffs) =
-                    getRequestCompareInfo(
-                      owner,
-                      name,
-                      pullreq.commitIdFrom,
-                      owner,
-                      name,
-                      pullreq.commitIdTo)
-                  html.pullreq(
-                    issue,
-                    pullreq,
-                    (commits.flatten
-                      .map(commit =>
-                        getCommitComments(owner, name, commit.id, true))
-                      .flatten
-                      .toList ::: getComments(owner, name, issueId))
-                      .sortWith((a, b) =>
-                        a.registeredDate before b.registeredDate),
-                    getIssueLabels(owner, name, issueId),
-                    (getCollaborators(owner, name) :::
-                      (if (getAccountByUserName(owner).get.isGroupAccount) Nil
-                       else List(owner))).sorted,
-                    getMilestonesWithIssueCount(owner, name),
-                    getLabels(owner, name),
-                    commits,
-                    diffs,
-                    hasWritePermission(owner, name, context.loginAccount),
-                    repository,
-                    flash.toMap.map(f => f._1 -> f._2.toString)
-                  )
-              }
-          }
-      } getOrElse NotFound
+  get("/:owner/:repository/pull/:id")(referrersOnly { repository =>
+    params("id").toIntOpt.flatMap {
+      issueId =>
+        val owner = repository.owner
+        val name = repository.name
+        getPullRequest(owner, name, issueId) map {
+          case (issue, pullreq) =>
+            using(Git.open(getRepositoryDir(owner, name))) {
+              git =>
+                val (commits, diffs) =
+                  getRequestCompareInfo(
+                    owner,
+                    name,
+                    pullreq.commitIdFrom,
+                    owner,
+                    name,
+                    pullreq.commitIdTo)
+                html.pullreq(
+                  issue,
+                  pullreq,
+                  (commits.flatten
+                    .map(commit =>
+                      getCommitComments(owner, name, commit.id, true))
+                    .flatten
+                    .toList ::: getComments(owner, name, issueId))
+                    .sortWith((a, b) =>
+                      a.registeredDate before b.registeredDate),
+                  getIssueLabels(owner, name, issueId),
+                  (getCollaborators(owner, name) :::
+                    (if (getAccountByUserName(owner).get.isGroupAccount) Nil
+                     else List(owner))).sorted,
+                  getMilestonesWithIssueCount(owner, name),
+                  getLabels(owner, name),
+                  commits,
+                  diffs,
+                  hasWritePermission(owner, name, context.loginAccount),
+                  repository,
+                  flash.toMap.map(f => f._1 -> f._2.toString)
+                )
+            }
+        }
+    } getOrElse NotFound
   })
 
   ajaxGet("/:owner/:repository/pull/:id/mergeguide")(referrersOnly {
@@ -601,13 +600,12 @@ trait PullRequestsControllerBase extends ControllerBase {
                         forkedRepository.name)
                   },
                   commits.flatten
-                    .map(
-                      commit =>
-                        getCommitComments(
-                          forkedRepository.owner,
-                          forkedRepository.name,
-                          commit.id,
-                          false))
+                    .map(commit =>
+                      getCommitComments(
+                        forkedRepository.owner,
+                        forkedRepository.name,
+                        commit.id,
+                        false))
                     .flatten
                     .toList,
                   originId,

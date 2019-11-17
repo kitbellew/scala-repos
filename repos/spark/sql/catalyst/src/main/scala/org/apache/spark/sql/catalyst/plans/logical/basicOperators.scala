@@ -93,10 +93,9 @@ case class Generate(
 
   def output: Seq[Attribute] = {
     val qualified = qualifier
-      .map(
-        q =>
-          // prepend the new qualifier to the existed one
-          generatorOutput.map(a => a.withQualifiers(q +: a.qualifiers)))
+      .map(q =>
+        // prepend the new qualifier to the existed one
+        generatorOutput.map(a => a.withQualifiers(q +: a.qualifiers)))
       .getOrElse(generatorOutput)
 
     if (join) child.output ++ qualified else qualified
@@ -217,16 +216,15 @@ case class Union(children: Seq[LogicalPlan]) extends LogicalPlan {
   override lazy val resolved: Boolean = {
     // allChildrenCompatible needs to be evaluated after childrenResolved
     def allChildrenCompatible: Boolean =
-      children.tail.forall(
-        child =>
-          // compare the attribute number with the first child
-          child.output.length == children.head.output.length &&
-            // compare the data types with the first child
-            child.output
-              .zip(children.head.output)
-              .forall {
-                case (l, r) => l.dataType == r.dataType
-              })
+      children.tail.forall(child =>
+        // compare the attribute number with the first child
+        child.output.length == children.head.output.length &&
+          // compare the data types with the first child
+          child.output
+            .zip(children.head.output)
+            .forall {
+              case (l, r) => l.dataType == r.dataType
+            })
 
     children.length > 1 && childrenResolved && allChildrenCompatible
   }
@@ -254,12 +252,11 @@ case class Union(children: Seq[LogicalPlan]) extends LogicalPlan {
 
   override protected def validConstraints: Set[Expression] = {
     children
-      .map(
-        child =>
-          rewriteConstraints(
-            children.head.output,
-            child.output,
-            child.constraints))
+      .map(child =>
+        rewriteConstraints(
+          children.head.output,
+          child.output,
+          child.constraints))
       .reduce(_ intersect _)
   }
 }

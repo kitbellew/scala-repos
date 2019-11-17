@@ -236,12 +236,11 @@ trait IssuesControllerBase extends ControllerBase {
         .flatMap { issue =>
           val actionOpt = params
             .get("action")
-            .filter(
-              _ =>
-                isEditable(
-                  issue.userName,
-                  issue.repositoryName,
-                  issue.openedUserName))
+            .filter(_ =>
+              isEditable(
+                issue.userName,
+                issue.repositoryName,
+                issue.openedUserName))
           handleComment(issue, Some(form.content), repository, actionOpt) map {
             case (issue, id) =>
               redirect(
@@ -258,12 +257,11 @@ trait IssuesControllerBase extends ControllerBase {
         .flatMap { issue =>
           val actionOpt = params
             .get("action")
-            .filter(
-              _ =>
-                isEditable(
-                  issue.userName,
-                  issue.repositoryName,
-                  issue.openedUserName))
+            .filter(_ =>
+              isEditable(
+                issue.userName,
+                issue.repositoryName,
+                issue.openedUserName))
           handleComment(issue, form.content, repository, actionOpt) map {
             case (issue, id) =>
               redirect(

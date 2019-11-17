@@ -69,11 +69,10 @@ class ScDocTagValueImpl(node: ASTNode)
 
   def multiResolve(incompleteCode: Boolean): Array[ResolveResult] =
     getParametersVariants
-      .filter(
-        a =>
-          a.name == refName ||
-            ScalaPsiUtil.convertMemberName(a.name) == ScalaPsiUtil
-              .convertMemberName(refName))
+      .filter(a =>
+        a.name == refName ||
+          ScalaPsiUtil.convertMemberName(a.name) == ScalaPsiUtil
+            .convertMemberName(refName))
       .map(new ScalaResolveResult(_))
 
   override def toString = "ScalaDocTagValue: " + getText

@@ -71,11 +71,10 @@ object TestkitConfig {
   lazy val testClasses: Seq[Class[_ <: GenericTest[_ >: Null <: TestDB]]] =
     getStrings(testkitConfig, "testClasses")
       .getOrElse(Nil)
-      .map(
-        n =>
-          Class
-            .forName(n)
-            .asInstanceOf[Class[_ <: GenericTest[_ >: Null <: TestDB]]])
+      .map(n =>
+        Class
+          .forName(n)
+          .asInstanceOf[Class[_ <: GenericTest[_ >: Null <: TestDB]]])
 
   /** The duration after which asynchronous tests should be aborted and failed */
   lazy val asyncTimeout = Duration(

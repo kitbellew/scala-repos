@@ -15,11 +15,10 @@ object TestProject extends Build {
       managedClasspath in Provided <<= (classpathTypes, update) map {
         (cpts, report) =>
           Classpaths.managedJars(Provided, cpts, report)
-      }, check <<= InputTask(
-        _ =>
-          Space ~> token(
-            Compile.name.id | Runtime.name | Provided.name | Test.name) ~ token(
-            Space ~> Bool)) { result =>
+      }, check <<= InputTask(_ =>
+        Space ~> token(
+          Compile.name.id | Runtime.name | Provided.name | Test.name) ~ token(
+          Space ~> Bool)) { result =>
         (
           result,
           managedClasspath in Provided,

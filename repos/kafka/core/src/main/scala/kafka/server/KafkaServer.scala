@@ -180,12 +180,11 @@ class KafkaServer(
   val correlationId: AtomicInteger = new AtomicInteger(0)
   val brokerMetaPropsFile = "meta.properties"
   val brokerMetadataCheckpoints = config.logDirs
-    .map(
-      logDir =>
-        (
-          logDir,
-          new BrokerMetadataCheckpoint(
-            new File(logDir + File.separator + brokerMetaPropsFile))))
+    .map(logDir =>
+      (
+        logDir,
+        new BrokerMetadataCheckpoint(
+          new File(logDir + File.separator + brokerMetaPropsFile))))
     .toMap
 
   newGauge(

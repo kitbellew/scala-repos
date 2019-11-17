@@ -57,8 +57,8 @@ abstract class MembershipChangeListenerExitingSpec
           system.actorOf(Props(new Actor {
             def receive = {
               case state: CurrentClusterState ⇒
-                if (state.members.exists(
-                      m ⇒ m.address == secondAddress && m.status == Exiting))
+                if (state.members.exists(m ⇒
+                      m.address == secondAddress && m.status == Exiting))
                   exitingLatch.countDown()
               case MemberExited(m) if m.address == secondAddress ⇒
                 exitingLatch.countDown()
@@ -81,8 +81,8 @@ abstract class MembershipChangeListenerExitingSpec
           system.actorOf(Props(new Actor {
             def receive = {
               case state: CurrentClusterState ⇒
-                if (state.members.exists(
-                      m ⇒ m.address == secondAddress && m.status == Exiting))
+                if (state.members.exists(m ⇒
+                      m.address == secondAddress && m.status == Exiting))
                   exitingLatch.countDown()
               case MemberExited(m) if m.address == secondAddress ⇒
                 exitingLatch.countDown()

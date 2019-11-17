@@ -74,10 +74,9 @@ class ConvertibleToMethodValueInspection
   }
 
   private def allArgsUnderscores(args: Seq[ScExpression]): Boolean = {
-    args.nonEmpty && args.forall(
-      arg =>
-        arg.isInstanceOf[ScUnderscoreSection] &&
-          ScUnderScoreSectionUtil.isUnderscore(arg))
+    args.nonEmpty && args.forall(arg =>
+      arg.isInstanceOf[ScUnderscoreSection] &&
+        ScUnderScoreSectionUtil.isUnderscore(arg))
   }
 
   private def onlyStableValuesUsed(qual: ScExpression): Boolean = {

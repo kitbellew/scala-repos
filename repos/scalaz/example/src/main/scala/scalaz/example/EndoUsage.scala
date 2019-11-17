@@ -42,8 +42,8 @@ object EndoUsage extends App {
 
   case class Person(first: String, last: String, age: Int)
 
-  val lowercaseFirst: Endo[Person] = Endo(
-    p ⇒ p.copy(first = p.first.toLowerCase))
+  val lowercaseFirst: Endo[Person] =
+    Endo(p ⇒ p.copy(first = p.first.toLowerCase))
   val lowercaseLast: Endo[Person] = Endo(p ⇒ p.copy(last = p.last.toLowerCase))
   val trimFirst: Endo[Person] = Endo(p ⇒ p.copy(first = p.first.trim))
   val trimLast: Endo[Person] = Endo(p ⇒ p.copy(last = p.last.trim))

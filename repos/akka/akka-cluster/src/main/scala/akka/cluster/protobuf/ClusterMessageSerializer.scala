@@ -291,14 +291,13 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
         case (observer, version) ⇒
           val subjectReachability = reachability
             .recordsFrom(observer)
-            .map(
-              r ⇒
-                cm.SubjectReachability
-                  .newBuilder()
-                  .setAddressIndex(mapUniqueAddress(r.subject))
-                  .setStatus(cm.ReachabilityStatus.valueOf(
-                    reachabilityStatusToInt(r.status)))
-                  .setVersion(r.version))
+            .map(r ⇒
+              cm.SubjectReachability
+                .newBuilder()
+                .setAddressIndex(mapUniqueAddress(r.subject))
+                .setStatus(cm.ReachabilityStatus.valueOf(
+                  reachabilityStatusToInt(r.status)))
+                .setVersion(r.version))
           cm.ObserverReachability
             .newBuilder()
             .setAddressIndex(mapUniqueAddress(observer))

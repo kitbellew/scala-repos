@@ -667,9 +667,8 @@ private[spark] object TaskSchedulerImpl {
     _keyList ++= map.keys
 
     // order keyList based on population of value in map
-    val keyList = _keyList.sortWith(
-      (left, right) => map(left).size > map(right).size
-    )
+    val keyList =
+      _keyList.sortWith((left, right) => map(left).size > map(right).size)
 
     val retval = new ArrayBuffer[T](keyList.size * 2)
     var index = 0

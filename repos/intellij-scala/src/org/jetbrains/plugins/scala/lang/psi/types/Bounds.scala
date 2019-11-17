@@ -502,11 +502,10 @@ object Bounds {
       case (Some(superSubst1), Some(superSubst2)) =>
         val tp = ScParameterizedType(
           baseClassDesignator,
-          baseClass.getTypeParameters.map(
-            tp =>
-              ScalaPsiManager
-                .instance(baseClass.getNamedElement.getProject)
-                .typeVariable(tp)))
+          baseClass.getTypeParameters.map(tp =>
+            ScalaPsiManager
+              .instance(baseClass.getNamedElement.getProject)
+              .typeVariable(tp)))
         val tp1 = superSubst1.subst(tp).asInstanceOf[ScParameterizedType]
         val tp2 = superSubst2.subst(tp).asInstanceOf[ScParameterizedType]
         val resTypeArgs = new ArrayBuffer[ScType]

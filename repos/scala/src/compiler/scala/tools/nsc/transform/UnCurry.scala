@@ -290,13 +290,12 @@ abstract class UnCurry
               additionalFlags = ARTIFACT)
 
             // new function whose body is just a call to the lifted method
-            val newFun = deriveFunction(fun)(
-              _ =>
-                typedFunPos(
-                  gen.mkForwarder(
-                    gen.mkAttributedRef(liftedMethod.symbol),
-                    funParams :: Nil)
-                ))
+            val newFun = deriveFunction(fun)(_ =>
+              typedFunPos(
+                gen.mkForwarder(
+                  gen.mkAttributedRef(liftedMethod.symbol),
+                  funParams :: Nil)
+              ))
             typedFunPos(Block(liftedMethod, super.transform(newFun)))
           }
       }
@@ -903,11 +902,10 @@ abstract class UnCurry
         case (p, false) => p.tpe
       }
       val forwresult = dd.symbol.tpe_*.finalResultType
-      val forwformsyms = map2(forwformals, flatparams)(
-        (tp, oldparam) =>
-          currentClass
-            .newValueParameter(oldparam.name.toTermName, oldparam.pos)
-            .setInfo(tp))
+      val forwformsyms = map2(forwformals, flatparams)((tp, oldparam) =>
+        currentClass
+          .newValueParameter(oldparam.name.toTermName, oldparam.pos)
+          .setInfo(tp))
       def mono = MethodType(forwformsyms, forwresult)
       val forwtype = dd.symbol.tpe match {
         case MethodType(_, _) => mono

@@ -1814,13 +1814,12 @@ trait LiftScreen
   }
 
   protected def bindLocalAction(selector: String, func: () => JsCmd): CssSel = {
-    mapLocalAction(func)(
-      name =>
-        selector #> (SHtml
-          .makeAjaxCall(LiftRules.jsArtifacts.serialize(NextId.get) +
-            ("&" + LocalActionRef.get + "=" + name))
-          .cmd)
-          .toJsCmd)
+    mapLocalAction(func)(name =>
+      selector #> (SHtml
+        .makeAjaxCall(LiftRules.jsArtifacts.serialize(NextId.get) +
+          ("&" + LocalActionRef.get + "=" + name))
+        .cmd)
+        .toJsCmd)
   }
 
   protected def mapLocalAction[T](func: () => JsCmd)(f: String => T): T = {
@@ -1919,18 +1918,17 @@ trait LiftScreen
       theScreen.screenTop, //screenTop: Box[Elem],
       theScreen.screenFields
         .filter(_.shouldDisplay_?)
-        .flatMap(
-          f =>
-            if (f.show_?)
-              List(
-                ScreenFieldInfo(
-                  f,
-                  f.displayHtml,
-                  f.helpAsHtml,
-                  f.toForm,
-                  fieldBinding(f),
-                  fieldTransform(f)))
-            else Nil), //fields: List[ScreenFieldInfo],
+        .flatMap(f =>
+          if (f.show_?)
+            List(
+              ScreenFieldInfo(
+                f,
+                f.displayHtml,
+                f.helpAsHtml,
+                f.toForm,
+                fieldBinding(f),
+                fieldTransform(f)))
+          else Nil), //fields: List[ScreenFieldInfo],
       Empty, // prev: Box[Elem],
       Full(cancelButton), // cancel: Box[Elem],
       Empty, // next: Box[Elem],

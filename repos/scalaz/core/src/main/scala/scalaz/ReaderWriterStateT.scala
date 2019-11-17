@@ -258,8 +258,8 @@ private trait ReaderWriterStateTMonad[F[_], R, W, S]
     ReaderWriterStateT((_, s) => F.point((w, (), s)))
   def listen[A](ma: ReaderWriterStateT[F, R, W, S, A])
       : ReaderWriterStateT[F, R, W, S, (A, W)] =
-    ReaderWriterStateT(
-      (r, s) => F.map(ma.run(r, s)) { case (w, a, s1) => (w, (a, w), s1) })
+    ReaderWriterStateT((r, s) =>
+      F.map(ma.run(r, s)) { case (w, a, s1) => (w, (a, w), s1) })
 }
 
 private trait ReaderWriterStateTHoist[R, W, S]

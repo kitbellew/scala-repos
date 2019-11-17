@@ -314,10 +314,9 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
         val pre1 = this(pre)
         // when searching for a specialized class, take care to map all
         // type parameters that are subtypes of AnyRef to AnyRef
-        val args1 = map2(args, sym.info.typeParams)(
-          (tp, orig) =>
-            if (isSpecializedAnyRefSubtype(tp, orig)) AnyRefTpe
-            else tp)
+        val args1 = map2(args, sym.info.typeParams)((tp, orig) =>
+          if (isSpecializedAnyRefSubtype(tp, orig)) AnyRefTpe
+          else tp)
         specializedClass
           .get((sym, TypeEnv.fromSpecialization(sym, args1))) match {
           case Some(sym1) => typeRef(pre1, sym1, survivingArgs(sym, args))
@@ -2154,14 +2153,11 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
           if (info(m).target.hasAccessorFlag) hasSpecializedFields = true
           if (m.isClassConstructor) {
             val origParams = parameters(info(m).target)
-            val vparams = (
-              map2(m.info.paramTypes, origParams)(
-                (tp, sym) =>
-                  m.newValue(
-                    specializedName(sym, typeEnv(sClass)),
-                    sym.pos,
-                    sym.flags) setInfo tp)
-            )
+            val vparams = (map2(m.info.paramTypes, origParams)((tp, sym) =>
+              m.newValue(
+                specializedName(sym, typeEnv(sClass)),
+                sym.pos,
+                sym.flags) setInfo tp))
             // param accessors for private members (the others are inherited from the generic class)
             if (m.isPrimaryConstructor) {
               for (param <- vparams;
@@ -2275,12 +2271,11 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
         && clazz.info.decl(f.name).suchThat(_.isGetter) != NoSymbol
     )
 
-    val argss = mmap(paramss)(
-      x =>
-        if (initializesSpecializedField(x.symbol))
-          gen.mkAsInstanceOf(Literal(Constant(null)), x.symbol.tpe)
-        else
-          Ident(x.symbol))
+    val argss = mmap(paramss)(x =>
+      if (initializesSpecializedField(x.symbol))
+        gen.mkAsInstanceOf(Literal(Constant(null)), x.symbol.tpe)
+      else
+        Ident(x.symbol))
     atPos(pos) { (receiver /: argss)(Apply.apply) }
   }
 
@@ -2297,8 +2292,7 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
   private def makeArguments(fun: Symbol, vparams: List[Symbol]): List[Tree] = (
     //! TODO: make sure the param types are seen from the right prefix
     map2(fun.info.paramTypes, vparams)((tp, arg) =>
-      gen.maybeMkAsInstanceOf(Ident(arg), tp, arg.tpe))
-  )
+      gen.maybeMkAsInstanceOf(Ident(arg), tp, arg.tpe)))
 
   class SpecializationTransformer(unit: CompilationUnit) extends Transformer {
     informProgress("specializing " + unit)

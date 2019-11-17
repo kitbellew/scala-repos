@@ -289,8 +289,8 @@ class SparkListenerSuite
         taskInfoMetrics.foreach {
           case (taskInfo, taskMetrics) =>
             taskMetrics.resultSize should be > (0L)
-            if (stageInfo.rddInfos.exists(
-                  info => info.name == d2.name || info.name == d3.name)) {
+            if (stageInfo.rddInfos.exists(info =>
+                  info.name == d2.name || info.name == d3.name)) {
               taskMetrics.inputMetrics should not be ('defined)
               taskMetrics.outputMetrics should not be ('defined)
               taskMetrics.shuffleWriteMetrics should be('defined)

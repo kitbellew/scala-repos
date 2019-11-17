@@ -1220,9 +1220,8 @@ object Forms {
       a2: (String, Mapping[A2]),
       a3: (String, Mapping[A3]),
       a4: (String, Mapping[A4])): Mapping[(A1, A2, A3, A4)] =
-    mapping(a1, a2, a3, a4)(
-      (a1: A1, a2: A2, a3: A3, a4: A4) => (a1, a2, a3, a4))(
-      (t: (A1, A2, A3, A4)) => Some(t))
+    mapping(a1, a2, a3, a4)((a1: A1, a2: A2, a3: A3, a4: A4) =>
+      (a1, a2, a3, a4))((t: (A1, A2, A3, A4)) => Some(t))
 
   def tuple[A1, A2, A3, A4, A5](
       a1: (String, Mapping[A1]),

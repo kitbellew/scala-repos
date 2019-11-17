@@ -68,12 +68,11 @@ trait EndToEndAuthorizationTest extends IntegrationTestHarness with SaslSetup {
   override val serverCount = 3
   override val setClusterAcl = Some { () =>
     AclCommand.main(clusterAclArgs)
-    servers.foreach(
-      s =>
-        TestUtils.waitAndVerifyAcls(
-          ClusterActionAcl,
-          s.apis.authorizer.get,
-          clusterResource))
+    servers.foreach(s =>
+      TestUtils.waitAndVerifyAcls(
+        ClusterActionAcl,
+        s.apis.authorizer.get,
+        clusterResource))
   }
   val numRecords = 1
   val group = "group"
@@ -210,12 +209,11 @@ trait EndToEndAuthorizationTest extends IntegrationTestHarness with SaslSetup {
     }
     super.setUp
     AclCommand.main(topicBrokerReadAclArgs)
-    servers.foreach(
-      s =>
-        TestUtils.waitAndVerifyAcls(
-          TopicBrokerReadAcl,
-          s.apis.authorizer.get,
-          new Resource(Topic, "*")))
+    servers.foreach(s =>
+      TestUtils.waitAndVerifyAcls(
+        TopicBrokerReadAcl,
+        s.apis.authorizer.get,
+        new Resource(Topic, "*")))
     // create the test topic with all the brokers as replicas
     TestUtils.createTopic(zkUtils, topic, 1, 3, this.servers)
   }
@@ -309,12 +307,11 @@ trait EndToEndAuthorizationTest extends IntegrationTestHarness with SaslSetup {
   @Test
   def testNoGroupAcl {
     AclCommand.main(produceAclArgs)
-    servers.foreach(
-      s =>
-        TestUtils.waitAndVerifyAcls(
-          TopicWriteAcl ++ TopicDescribeAcl,
-          s.apis.authorizer.get,
-          topicResource))
+    servers.foreach(s =>
+      TestUtils.waitAndVerifyAcls(
+        TopicWriteAcl ++ TopicDescribeAcl,
+        s.apis.authorizer.get,
+        topicResource))
     //Produce records
     debug("Starting to send records")
     sendRecords(numRecords, tp)

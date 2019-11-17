@@ -41,11 +41,10 @@ class OfferProcessorImplTest
   test("match successful, launch tasks successful") {
     Given("an offer")
     val dummySource = new DummySource
-    val tasksWithSource = tasks.map(
-      task =>
-        TaskOpWithSource(
-          dummySource,
-          f.launch(task, MarathonTestHelper.makeTaskFromTaskInfo(task))))
+    val tasksWithSource = tasks.map(task =>
+      TaskOpWithSource(
+        dummySource,
+        f.launch(task, MarathonTestHelper.makeTaskFromTaskInfo(task))))
     val offerProcessor = createProcessor()
 
     val deadline: Timestamp = clock.now() + 1.second
@@ -83,11 +82,10 @@ class OfferProcessorImplTest
   test("match successful, launch tasks unsuccessful") {
     Given("an offer")
     val dummySource = new DummySource
-    val tasksWithSource = tasks.map(
-      task =>
-        TaskOpWithSource(
-          dummySource,
-          f.launch(task, MarathonTestHelper.makeTaskFromTaskInfo(task))))
+    val tasksWithSource = tasks.map(task =>
+      TaskOpWithSource(
+        dummySource,
+        f.launch(task, MarathonTestHelper.makeTaskFromTaskInfo(task))))
 
     val offerProcessor = createProcessor()
 
@@ -182,11 +180,10 @@ class OfferProcessorImplTest
   test("match successful but very slow so that we are hitting storage timeout") {
     Given("an offer")
     val dummySource = new DummySource
-    val tasksWithSource = tasks.map(
-      task =>
-        TaskOpWithSource(
-          dummySource,
-          f.launch(task, MarathonTestHelper.makeTaskFromTaskInfo(task))))
+    val tasksWithSource = tasks.map(task =>
+      TaskOpWithSource(
+        dummySource,
+        f.launch(task, MarathonTestHelper.makeTaskFromTaskInfo(task))))
 
     val offerProcessor = createProcessor()
 
@@ -223,11 +220,10 @@ class OfferProcessorImplTest
     "match successful but first store is so slow that we are hitting storage timeout") {
     Given("an offer")
     val dummySource = new DummySource
-    val tasksWithSource = tasks.map(
-      task =>
-        TaskOpWithSource(
-          dummySource,
-          f.launch(task, MarathonTestHelper.makeTaskFromTaskInfo(task))))
+    val tasksWithSource = tasks.map(task =>
+      TaskOpWithSource(
+        dummySource,
+        f.launch(task, MarathonTestHelper.makeTaskFromTaskInfo(task))))
 
     val offerProcessor = createProcessor()
 

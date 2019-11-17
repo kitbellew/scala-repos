@@ -207,16 +207,15 @@ private class SelectorMap(binds: List[CssBind])
 
     final def applyAttributeRules(bindList: List[CssBind], elem: Elem): Elem = {
       bindList
-        .map(
-          b =>
-            (
-              b,
-              b.css
-                .openOrThrowException(
-                  "Guarded with test before calling this method")
-                .subNodes
-                .openOrThrowException(
-                  "Guarded with test before calling this method")))
+        .map(b =>
+          (
+            b,
+            b.css
+              .openOrThrowException(
+                "Guarded with test before calling this method")
+              .subNodes
+              .openOrThrowException(
+                "Guarded with test before calling this method")))
         .foldLeft(elem) {
           case (elem, (bind, AttrSubNode(attr))) => {
             val calced = bind.calculate(elem).map(findElemIfThereIsOne _)
@@ -431,15 +430,14 @@ private class SelectorMap(binds: List[CssBind])
                 realE.minimizeEmpty,
                 todo.transform(realE.child, calced.head): _*)
             case _ if id.isEmpty =>
-              calced.map(
-                kids =>
-                  new Elem(
-                    realE.prefix,
-                    realE.label,
-                    realE.attributes,
-                    realE.scope,
-                    realE.minimizeEmpty,
-                    todo.transform(realE.child, kids): _*))
+              calced.map(kids =>
+                new Elem(
+                  realE.prefix,
+                  realE.label,
+                  realE.attributes,
+                  realE.scope,
+                  realE.minimizeEmpty,
+                  todo.transform(realE.child, kids): _*))
 
             case _ => {
               val noId = removeId(realE.attributes)

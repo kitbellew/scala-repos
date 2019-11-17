@@ -182,10 +182,9 @@ abstract class Delambdafy
             methSym
               .newSyntheticValueParam(param.tpe, param.name.toTermName)) ::: map2(
             targetFunctionParams,
-            functionParamTypes)(
-            (param, tp) =>
-              methSym
-                .newSyntheticValueParam(boxedType(tp), param.name.toTermName))
+            functionParamTypes)((param, tp) =>
+            methSym
+              .newSyntheticValueParam(boxedType(tp), param.name.toTermName))
 
         val bridgeResultType: Type = {
           if (target.info.resultType == UnitTpe &&

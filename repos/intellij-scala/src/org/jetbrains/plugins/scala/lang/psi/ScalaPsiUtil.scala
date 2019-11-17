@@ -377,11 +377,10 @@ object ScalaPsiUtil {
         case cl: ScTrait =>
           ScParameterizedType(
             ScType.designator(cl),
-            cl.typeParameters.map(
-              tp =>
-                new ScUndefinedType(
-                  new ScTypeParameterType(tp, ScSubstitutor.empty),
-                  1)))
+            cl.typeParameters.map(tp =>
+              new ScUndefinedType(
+                new ScTypeParameterType(tp, ScSubstitutor.empty),
+                1)))
       } flatMap {
         case p: ScParameterizedType => Some(p)
         case _                      => None

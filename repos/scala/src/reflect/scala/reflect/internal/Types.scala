@@ -3623,12 +3623,11 @@ trait Types
     override def instantiateTypeParams(
         formals: List[Symbol],
         actuals: List[Type]) = {
-      val annotations1 = annotations.map(
-        info =>
-          AnnotationInfo(
-            info.atp.instantiateTypeParams(formals, actuals),
-            info.args,
-            info.assocs).setPos(info.pos))
+      val annotations1 = annotations.map(info =>
+        AnnotationInfo(
+          info.atp.instantiateTypeParams(formals, actuals),
+          info.args,
+          info.assocs).setPos(info.pos))
       val underlying1 = underlying.instantiateTypeParams(formals, actuals)
       if ((annotations1 eq annotations) && (underlying1 eq underlying)) this
       else AnnotatedType(annotations1, underlying1)
@@ -4150,7 +4149,8 @@ trait Types
       clazz: Symbol,
       tparams: List[Symbol]): List[Symbol] = {
     val eparams = mapWithIndex(tparams)((tparam, i) =>
-      clazz.newExistential(newTypeName("?" + i), clazz.pos) setInfo tparam.info.bounds)
+      clazz
+        .newExistential(newTypeName("?" + i), clazz.pos) setInfo tparam.info.bounds)
 
     eparams map (_ substInfo (tparams, eparams))
   }

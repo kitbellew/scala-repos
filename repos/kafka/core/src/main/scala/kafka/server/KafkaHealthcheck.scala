@@ -55,14 +55,13 @@ class KafkaHealthcheck(
   def register() {
     val jmxPort =
       System.getProperty("com.sun.management.jmxremote.port", "-1").toInt
-    val updatedEndpoints = advertisedEndpoints.mapValues(
-      endpoint =>
-        if (endpoint.host == null || endpoint.host.trim.isEmpty)
-          EndPoint(
-            InetAddress.getLocalHost.getCanonicalHostName,
-            endpoint.port,
-            endpoint.protocolType)
-        else endpoint)
+    val updatedEndpoints = advertisedEndpoints.mapValues(endpoint =>
+      if (endpoint.host == null || endpoint.host.trim.isEmpty)
+        EndPoint(
+          InetAddress.getLocalHost.getCanonicalHostName,
+          endpoint.port,
+          endpoint.protocolType)
+      else endpoint)
 
     // the default host and port are here for compatibility with older client
     // only PLAINTEXT is supported as default

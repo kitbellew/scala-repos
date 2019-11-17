@@ -26,10 +26,9 @@ private[tests] trait CoreTestDefs
           // universal check file that we can provide for this to work
           reporter.println("retrieved %d members".format(members.size))
           compiler ask { () =>
-            val filtered = members.filterNot(
-              member =>
-                (member.sym.name string_== "getClass") ||
-                  member.sym.isConstructor)
+            val filtered = members.filterNot(member =>
+              (member.sym.name string_== "getClass") ||
+                member.sym.isConstructor)
             reporter println
               (filtered.map(_.forceInfoString).sorted mkString "\n")
           }

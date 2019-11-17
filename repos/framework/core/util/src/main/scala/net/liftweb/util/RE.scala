@@ -73,10 +73,9 @@ class REDoer[T](
     val ma = new REMatcher(other, compiled)
     if (!ma.matches) Empty
     else
-      func.flatMap(
-        f =>
-          if (f.isDefinedAt((obj, ma.capture))) Full(f((obj, ma.capture)))
-          else Empty)
+      func.flatMap(f =>
+        if (f.isDefinedAt((obj, ma.capture))) Full(f((obj, ma.capture)))
+        else Empty)
   }
 }
 

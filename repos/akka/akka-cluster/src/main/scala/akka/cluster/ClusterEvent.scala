@@ -465,11 +465,10 @@ private[cluster] final class ClusterDomainEventPublisher
       unreachable = unreachable,
       seenBy = latestGossip.seenBy.map(_.address),
       leader = latestGossip.leader(selfUniqueAddress).map(_.address),
-      roleLeaderMap = latestGossip.allRoles.map(
-        r ⇒
-          r -> latestGossip
-            .roleLeader(r, selfUniqueAddress)
-            .map(_.address))(collection.breakOut)
+      roleLeaderMap = latestGossip.allRoles.map(r ⇒
+        r -> latestGossip
+          .roleLeader(r, selfUniqueAddress)
+          .map(_.address))(collection.breakOut)
     )
     receiver ! state
   }

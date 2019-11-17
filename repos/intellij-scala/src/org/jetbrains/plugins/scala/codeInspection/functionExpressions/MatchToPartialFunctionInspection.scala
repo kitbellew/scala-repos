@@ -170,8 +170,9 @@ class MatchToPartialFunctionQuickFix(
           .findAll()
           .asScala
         for {
-          (clause, index) <- matchStmt.caseClauses.zipWithIndex if refs.exists(
-            ref => PsiTreeUtil.isAncestor(clause, ref.getElement, false))
+          (clause, index) <- matchStmt.caseClauses.zipWithIndex
+          if refs.exists(ref =>
+            PsiTreeUtil.isAncestor(clause, ref.getElement, false))
         } yield index
       case _ => Nil
     }

@@ -280,8 +280,8 @@ object S extends S {
       LFuncHolder(f)
 
     implicit def boolToAF(f: Boolean => Any): AFuncHolder =
-      LFuncHolder(
-        lst => f(lst.foldLeft(false)((v, str) => v || Helpers.toBoolean(str))))
+      LFuncHolder(lst =>
+        f(lst.foldLeft(false)((v, str) => v || Helpers.toBoolean(str))))
   }
 }
 
@@ -495,10 +495,9 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   def findCookie(name: String): Box[HTTPCookie] =
     Box
       .legacyNullTest(_responseCookies.value)
-      .flatMap(
-        rc =>
-          Box(rc.inCookies.filter(_.name == name))
-            .map(_.clone().asInstanceOf[HTTPCookie]))
+      .flatMap(rc =>
+        Box(rc.inCookies.filter(_.name == name))
+          .map(_.clone().asInstanceOf[HTTPCookie]))
 
   /**
     * Get the cookie value for the given cookie
@@ -670,8 +669,9 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     */
   def highLevelSessionDispatchList: List[DispatchHolder] =
     session map
-      (_.highLevelSessionDispatcher.toList
-        .map(t => DispatchHolder(t._1, t._2))) openOr Nil
+      (
+        _.highLevelSessionDispatcher.toList
+          .map(t => DispatchHolder(t._1, t._2))) openOr Nil
 
   /**
     * Adds a dispatch function for the current session, as opposed to a global
@@ -755,8 +755,9 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * @see LiftRules # rewrite
     */
   def sessionRewriter: List[RewriteHolder] =
-    session map (_.sessionRewriter.toList
-      .map(t => RewriteHolder(t._1, t._2))) openOr Nil
+    session map (
+      _.sessionRewriter.toList
+        .map(t => RewriteHolder(t._1, t._2))) openOr Nil
 
   /**
     * Adds a per-session rewrite function. This can be used if you only want a particular rewrite
@@ -1129,31 +1130,30 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
       case Full(Nil) => {
         _resBundle.set(
           LiftRules.resourceForCurrentLoc.vend() ::: LiftRules.resourceNames
-            .flatMap(
-              name =>
-                tryo {
-                  if (Props.devMode) {
-                    tryo {
-                      val clz = this.getClass.getClassLoader
-                        .loadClass("java.util.ResourceBundle")
-                      val meth = clz.getDeclaredMethods
-                        .filter { m =>
-                          m.getName == "clearCache" &&
-                          m.getParameterTypes.length == 0
-                        }
-                        .toList
-                        .head
-                      meth.invoke(null)
-                    }
+            .flatMap(name =>
+              tryo {
+                if (Props.devMode) {
+                  tryo {
+                    val clz = this.getClass.getClassLoader
+                      .loadClass("java.util.ResourceBundle")
+                    val meth = clz.getDeclaredMethods
+                      .filter { m =>
+                        m.getName == "clearCache" &&
+                        m.getParameterTypes.length == 0
+                      }
+                      .toList
+                      .head
+                    meth.invoke(null)
                   }
-                  List(ResourceBundle.getBundle(name, loc))
-                }.openOr(
-                  NamedPF
-                    .applyBox(
-                      (name, loc),
-                      LiftRules.resourceBundleFactories.toList)
-                    .map(List(_)) openOr Nil
-                )))
+                }
+                List(ResourceBundle.getBundle(name, loc))
+              }.openOr(
+                NamedPF
+                  .applyBox(
+                    (name, loc),
+                    LiftRules.resourceBundleFactories.toList)
+                  .map(List(_)) openOr Nil
+              )))
         _resBundle.value
       }
       case Full(bundles) => bundles
@@ -1675,9 +1675,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   def setHeader(name: String, value: String) {
     Box
       .legacyNullTest(_responseHeaders.value)
-      .foreach(
-        rh => rh.headers = rh.headers + (name -> value)
-      )
+      .foreach(rh => rh.headers = rh.headers + (name -> value))
   }
 
   /**
@@ -1701,12 +1699,10 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   def getResponseHeaders(in: List[(String, String)]): List[(String, String)] = {
     Box
       .legacyNullTest(_responseHeaders.value)
-      .map(
-        rh =>
-          rh.headers.iterator.toList ::: in.filter {
-            case (n, v) => !rh.headers.contains(n)
-          }
-      )
+      .map(rh =>
+        rh.headers.iterator.toList ::: in.filter {
+          case (n, v) => !rh.headers.contains(n)
+        })
       .openOr(Nil)
   }
 
@@ -1724,9 +1720,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   def getResponseHeader(name: String): Box[String] = {
     Box
       .legacyNullTest(_responseHeaders.value)
-      .map(
-        rh => Box(rh.headers.get(name))
-      )
+      .map(rh => Box(rh.headers.get(name)))
       .openOr(Empty)
   }
 
@@ -1758,9 +1752,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   def setDocType(what: Box[String]) {
     Box
       .legacyNullTest(_responseHeaders.value)
-      .foreach(
-        rh => rh.docType = what
-      )
+      .foreach(rh => rh.docType = what)
   }
 
   /**
@@ -1773,9 +1765,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   def getDocType: (Boolean, Box[String]) =
     Box
       .legacyNullTest(_responseHeaders.value)
-      .map(
-        rh => (rh.overrodeDocType, rh.docType)
-      )
+      .map(rh => (rh.overrodeDocType, rh.docType))
       .openOr((false, Empty))
 
   private object _skipDocType extends TransientRequestVar(false)
@@ -3051,8 +3041,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     val name = formFuncName
     addFunctionMap(
       name,
-      SFuncHolder(
-        (s: String) => JsonParser.parseOpt(s).map(in) getOrElse JsCmds.Noop))
+      SFuncHolder((s: String) =>
+        JsonParser.parseOpt(s).map(in) getOrElse JsCmds.Noop))
     f(name)
   }
 

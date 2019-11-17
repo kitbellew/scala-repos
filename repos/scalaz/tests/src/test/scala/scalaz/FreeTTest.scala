@@ -86,12 +86,11 @@ object FreeTTest extends SpecLite {
 
     "not stack overflow with 50k binds" in {
       val expected = Applicative[FreeTListOption].point(())
-      val result = BindRec[FreeTListOption].tailrecM(
-        (i: Int) =>
-          if (i < 50000)
-            Applicative[FreeTListOption].point(\/.left[Int, Unit](i + 1))
-          else
-            Applicative[FreeTListOption].point(\/.right[Int, Unit](())))(0)
+      val result = BindRec[FreeTListOption].tailrecM((i: Int) =>
+        if (i < 50000)
+          Applicative[FreeTListOption].point(\/.left[Int, Unit](i + 1))
+        else
+          Applicative[FreeTListOption].point(\/.right[Int, Unit](())))(0)
 
       Equal[FreeTListOption[Unit]].equal(expected, result)
     }
@@ -100,8 +99,7 @@ object FreeTTest extends SpecLite {
       val expected = Applicative[FreeTListOption].point(())
       val result =
         (0 until 50000).foldLeft(Applicative[FreeTListOption].point(()))(
-          (fu, i) => fu.flatMap(u => Applicative[FreeTListOption].point(u))
-        )
+          (fu, i) => fu.flatMap(u => Applicative[FreeTListOption].point(u)))
 
       Equal[FreeTListOption[Unit]].equal(expected, result)
     }
@@ -110,8 +108,7 @@ object FreeTTest extends SpecLite {
       val expected = Applicative[FreeTListOption].point(())
       val result = (0 until 50000).foldLeft(
         ().point[FreeTListOption].flatMap(u => u.point[FreeTListOption]))(
-        (fu, i) => fu.map(u => u)
-      )
+        (fu, i) => fu.map(u => u))
 
       Equal[FreeTListOption[Unit]].equal(expected, result)
     }

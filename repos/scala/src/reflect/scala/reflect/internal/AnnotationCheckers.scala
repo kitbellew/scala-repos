@@ -129,20 +129,18 @@ trait AnnotationCheckers { self: SymbolTable =>
       targs: List[Type]): List[TypeBounds] =
     if (annotationCheckers.isEmpty) bounds
     else
-      annotationCheckers.foldLeft(bounds)(
-        (bounds, checker) =>
-          if (!checker.isActive()) bounds
-          else checker.adaptBoundsToAnnotations(bounds, tparams, targs))
+      annotationCheckers.foldLeft(bounds)((bounds, checker) =>
+        if (!checker.isActive()) bounds
+        else checker.adaptBoundsToAnnotations(bounds, tparams, targs))
 
   /* The following methods will be removed with the deprecated methods is AnnotationChecker. */
 
   def addAnnotations(tree: Tree, tpe: Type): Type =
     if (annotationCheckers.isEmpty) tpe
     else
-      annotationCheckers.foldLeft(tpe)(
-        (tpe, checker) =>
-          if (!checker.isActive()) tpe
-          else checker.addAnnotations(tree, tpe))
+      annotationCheckers.foldLeft(tpe)((tpe, checker) =>
+        if (!checker.isActive()) tpe
+        else checker.addAnnotations(tree, tpe))
 
   def canAdaptAnnotations(tree: Tree, mode: Mode, pt: Type): Boolean =
     if (annotationCheckers.isEmpty) false
@@ -154,16 +152,14 @@ trait AnnotationCheckers { self: SymbolTable =>
   def adaptAnnotations(tree: Tree, mode: Mode, pt: Type): Tree =
     if (annotationCheckers.isEmpty) tree
     else
-      annotationCheckers.foldLeft(tree)(
-        (tree, checker) =>
-          if (!checker.isActive()) tree
-          else checker.adaptAnnotations(tree, mode, pt))
+      annotationCheckers.foldLeft(tree)((tree, checker) =>
+        if (!checker.isActive()) tree
+        else checker.adaptAnnotations(tree, mode, pt))
 
   def adaptTypeOfReturn(tree: Tree, pt: Type, default: => Type): Type =
     if (annotationCheckers.isEmpty) default
     else
-      annotationCheckers.foldLeft(default)(
-        (tpe, checker) =>
-          if (!checker.isActive()) tpe
-          else checker.adaptTypeOfReturn(tree, pt, tpe))
+      annotationCheckers.foldLeft(default)((tpe, checker) =>
+        if (!checker.isActive()) tpe
+        else checker.adaptTypeOfReturn(tree, pt, tpe))
 }

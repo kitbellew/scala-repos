@@ -122,10 +122,9 @@ private[sql] class SQLListener(conf: SparkConf)
       activeExecutions.get(executionId).foreach { executionUIData =>
         executionUIData.jobs(jobId) = JobExecutionStatus.RUNNING
         executionUIData.stages ++= stageIds
-        stageIds.foreach(
-          stageId =>
-            _stageIdToStageMetrics(stageId) =
-              new SQLStageMetrics(stageAttemptId = 0))
+        stageIds.foreach(stageId =>
+          _stageIdToStageMetrics(stageId) =
+            new SQLStageMetrics(stageAttemptId = 0))
         _jobIdToExecutionId(jobId) = executionId
       }
     }

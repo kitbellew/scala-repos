@@ -123,13 +123,12 @@ object GzipFilterSpec extends PlaySpecification with DataTables {
       implicit mat =>
         val result = makeGzipRequest
         checkGzipped(result)
-        header(VARY, result) must beSome.which(
-          header =>
-            header
-              .split(",")
-              .filter(_.toLowerCase(java.util.Locale.ENGLISH) == ACCEPT_ENCODING
-                .toLowerCase(java.util.Locale.ENGLISH))
-              .size == 1)
+        header(VARY, result) must beSome.which(header =>
+          header
+            .split(",")
+            .filter(_.toLowerCase(java.util.Locale.ENGLISH) == ACCEPT_ENCODING
+              .toLowerCase(java.util.Locale.ENGLISH))
+            .size == 1)
     }
   }
 

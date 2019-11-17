@@ -219,12 +219,11 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
       within: (() => Tree) => Tree): Tree = {
     var used = false
     if (treeInfo.isExprSafeToInline(expr)) {
-      within(
-        () =>
-          if (used) expr.duplicate
-          else {
-            used = true; expr
-          })
+      within(() =>
+        if (used) expr.duplicate
+        else {
+          used = true; expr
+        })
     } else {
       val (valDef, identFn) =
         mkPackedValDef(expr, owner, unit.freshTermName("ev$"))

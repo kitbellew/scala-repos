@@ -199,10 +199,9 @@ trait Printers { self: Universe =>
       if (printKinds) printer.withKinds else printer.withoutKinds)
     printMirrors.value.map(printMirrors =>
       if (printMirrors) printer.withMirrors else printer.withoutMirrors)
-    printPositions.value.map(
-      printPositions =>
-        if (printPositions) printer.withPositions
-        else printer.withoutPositions)
+    printPositions.value.map(printPositions =>
+      if (printPositions) printer.withPositions
+      else printer.withoutPositions)
     printer.print(what)
     writer.flush()
     buffer.toString

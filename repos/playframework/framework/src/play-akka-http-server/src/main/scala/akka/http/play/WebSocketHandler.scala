@@ -163,8 +163,8 @@ object WebSocketHandler {
     Message,
     _] = {
     AkkaStreams.bypassWith(
-      Flow[Either[Message, RawMessage]].transform(
-        () =>
+      Flow[Either[Message, RawMessage]]
+        .transform(() =>
           new PushStage[
             Either[Message, RawMessage],
             Either[RawMessage, Message]] {

@@ -39,16 +39,15 @@ class HTTPRequestServlet(
   lazy val cookies: List[HTTPCookie] = {
     req.getSession(false) // do this to make sure we capture the JSESSIONID cookie
     (Box !! req.getCookies).map(
-      _.toList.map(
-        c =>
-          HTTPCookie(
-            c.getName,
-            Box !! (c.getValue),
-            Box !! (c.getDomain),
-            Box !! (c.getPath),
-            Box !! (c.getMaxAge),
-            Box !! (c.getVersion),
-            Box !! (c.getSecure)))) openOr Nil
+      _.toList.map(c =>
+        HTTPCookie(
+          c.getName,
+          Box !! (c.getValue),
+          Box !! (c.getDomain),
+          Box !! (c.getPath),
+          Box !! (c.getMaxAge),
+          Box !! (c.getVersion),
+          Box !! (c.getSecure)))) openOr Nil
   }
 
   lazy val authType: Box[String] = Box !! req.getAuthType
@@ -176,12 +175,11 @@ class HTTPRequestServlet(
                 .asInstanceOf[java.util.Iterator[String]]
                 .toList
           val map: Map[String, List[String]] = Map(
-            names.map(
-              n =>
-                n -> headers
-                  .getHeaders(n)
-                  .asInstanceOf[java.util.Iterator[String]]
-                  .toList): _*)
+            names.map(n =>
+              n -> headers
+                .getHeaders(n)
+                .asInstanceOf[java.util.Iterator[String]]
+                .toList): _*)
           LiftRules.withMimeHeaders(map) {
             LiftRules.handleMimeFile(
               f.getFieldName,

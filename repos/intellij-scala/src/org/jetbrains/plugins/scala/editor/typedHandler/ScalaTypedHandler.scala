@@ -67,8 +67,8 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
     def chooseXmlTask(withAttr: Boolean) {
       c match {
         case '>' =>
-          myTask = completeXmlTag(
-            tag => "</" + Option(tag.getTagName).getOrElse("") + ">")
+          myTask = completeXmlTag(tag =>
+            "</" + Option(tag.getTagName).getOrElse("") + ">")
         case '/'             => myTask = completeEmptyXmlTag(editor)
         case '=' if withAttr => myTask = completeXmlAttributeQuote(editor)
         case _               =>

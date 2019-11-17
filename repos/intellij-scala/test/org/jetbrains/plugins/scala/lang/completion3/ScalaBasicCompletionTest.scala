@@ -862,10 +862,9 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
 
     completeLookupItem(
       activeLookup
-        .find(
-          le =>
-            le.getLookupString == "Option" &&
-              le.getPsiElement.isInstanceOf[ScClass])
+        .find(le =>
+          le.getLookupString == "Option" &&
+            le.getPsiElement.isInstanceOf[ScClass])
         .get,
       '[')
 

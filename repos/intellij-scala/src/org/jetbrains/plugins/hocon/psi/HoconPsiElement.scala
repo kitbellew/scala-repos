@@ -76,10 +76,9 @@ sealed abstract class HoconPsiElement(ast: ASTNode)
       ch.getNode.getElementType == TokenType.WHITE_SPACE)
 
   def nonWhitespaceOrCommentChildren =
-    allChildren.filterNot(
-      ch =>
-        (HoconTokenSets.Comment | TokenType.WHITE_SPACE)
-          .contains(ch.getNode.getElementType))
+    allChildren.filterNot(ch =>
+      (HoconTokenSets.Comment | TokenType.WHITE_SPACE)
+        .contains(ch.getNode.getElementType))
 
   def findChildren[T <: HoconPsiElement: ClassTag] =
     allChildren.collect {
@@ -378,11 +377,10 @@ final class HPath(ast: ASTNode)
     */
   def allKeys: Option[List[HKey]] = {
     def allKeysIn(path: HPath, acc: List[HKey]): Option[List[HKey]] =
-      path.validKey.flatMap(
-        key =>
-          path.prefix
-            .map(prePath => allKeysIn(prePath, key :: acc))
-            .getOrElse(Some(key :: acc)))
+      path.validKey.flatMap(key =>
+        path.prefix
+          .map(prePath => allKeysIn(prePath, key :: acc))
+          .getOrElse(Some(key :: acc)))
     allKeysIn(this, Nil)
   }
 

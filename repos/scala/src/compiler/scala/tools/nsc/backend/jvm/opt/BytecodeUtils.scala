@@ -365,16 +365,15 @@ object BytecodeUtils {
     methodNode.localVariables
       .iterator()
       .asScala
-      .map(
-        localVariable =>
-          new LocalVariableNode(
-            prefix + localVariable.name,
-            localVariable.desc,
-            localVariable.signature,
-            labelMap(localVariable.start),
-            labelMap(localVariable.end),
-            localVariable.index + shift
-          ))
+      .map(localVariable =>
+        new LocalVariableNode(
+          prefix + localVariable.name,
+          localVariable.desc,
+          localVariable.signature,
+          labelMap(localVariable.start),
+          labelMap(localVariable.end),
+          localVariable.index + shift
+        ))
       .toList
   }
 
@@ -388,14 +387,13 @@ object BytecodeUtils {
     methodNode.tryCatchBlocks
       .iterator()
       .asScala
-      .map(
-        tryCatch =>
-          new TryCatchBlockNode(
-            labelMap(tryCatch.start),
-            labelMap(tryCatch.end),
-            labelMap(tryCatch.handler),
-            tryCatch.`type`
-          ))
+      .map(tryCatch =>
+        new TryCatchBlockNode(
+          labelMap(tryCatch.start),
+          labelMap(tryCatch.end),
+          labelMap(tryCatch.handler),
+          tryCatch.`type`
+        ))
       .toList
   }
 

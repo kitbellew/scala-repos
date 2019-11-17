@@ -90,8 +90,9 @@ final case class LazyEitherT[F[_], A, B](run: F[LazyEither[A, B]]) {
   def traverse[G[_], C](f: B => G[C])(
       implicit F: Traverse[F],
       G: Applicative[G]): G[LazyEitherT[F, A, C]] = {
-    G.map(F.traverse(run)(o =>
-      LazyEither.lazyEitherInstance[A].traverse(o)(f)))(LazyEitherT(_))
+    G.map(
+      F.traverse(run)(o => LazyEither.lazyEitherInstance[A].traverse(o)(f)))(
+      LazyEitherT(_))
   }
 
   def foldRight[Z](z: => Z)(f: (B, => Z) => Z)(implicit F: Foldable[F]): Z = {
@@ -182,12 +183,11 @@ object LazyEitherT extends LazyEitherTInstances {
         implicit m: Bind[F]): LazyEitherT[F, A, B] = {
       val g = lazyEitherT.run
       LazyEitherT(
-        m.bind(g)(
-          (z: LazyEither[A, B]) =>
-            z.fold(
-              _ => g,
-              _ => x.run
-            )))
+        m.bind(g)((z: LazyEither[A, B]) =>
+          z.fold(
+            _ => g,
+            _ => x.run
+          )))
     }
 
     def toLazyOption(implicit F: Functor[F]): LazyOptionT[F, A] =

@@ -61,11 +61,10 @@ object IntentionUtil {
     before.foreach(c => CodeEditUtil.setNodeGenerated(c.getNode, true))
     after.foreach(c => CodeEditUtil.setNodeGenerated(c.getNode, true))
 
-    after.foreach(
-      c =>
-        if (anchor.getNextSibling != null)
-          parent.getNode.addChild(c.getNode, anchor.getNextSibling.getNode)
-        else parent.getNode.addChild(c.getNode))
+    after.foreach(c =>
+      if (anchor.getNextSibling != null)
+        parent.getNode.addChild(c.getNode, anchor.getNextSibling.getNode)
+      else parent.getNode.addChild(c.getNode))
     before.foreach(c => parent.getNode.addChild(c.getNode, anchor.getNode))
   }
 

@@ -200,13 +200,10 @@ object Extraction {
     def submap(prefix: String): Map[String, String] =
       Map(
         map
-          .filter(
-            t =>
-              t._1 == prefix || t._1.startsWith(prefix + ".") ||
-                t._1.startsWith(prefix + "["))
-          .map(
-            t => (t._1.substring(prefix.length), t._2)
-          )
+          .filter(t =>
+            t._1 == prefix || t._1.startsWith(prefix + ".") ||
+              t._1.startsWith(prefix + "["))
+          .map(t => (t._1.substring(prefix.length), t._2))
           .toList
           .toArray: _*
       )

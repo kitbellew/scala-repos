@@ -166,11 +166,10 @@ trait VectorFunctions {
     */
   final def takeWhileM[A, M[_]: Monad](as: Vector[A])(
       p: A => M[Boolean]): M[Vector[A]] =
-    lazyFoldRight(as, Monad[M].point(empty[A]))(
-      (a, as) =>
-        Monad[M].bind(p(a))(b =>
-          if (b) Monad[M].map(as)((tt: Vector[A]) => a +: tt)
-          else Monad[M].point(empty)))
+    lazyFoldRight(as, Monad[M].point(empty[A]))((a, as) =>
+      Monad[M].bind(p(a))(b =>
+        if (b) Monad[M].map(as)((tt: Vector[A]) => a +: tt)
+        else Monad[M].point(empty)))
 
   /** Run `p(a)`s and collect `as` while `p` yields false.  Don't run
     * any `p`s after the first true.

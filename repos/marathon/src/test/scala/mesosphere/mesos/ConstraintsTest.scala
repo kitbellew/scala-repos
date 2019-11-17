@@ -63,11 +63,8 @@ class ConstraintsTest extends MarathonSpec with GivenWhenThen with Matchers {
         .map(num =>
           makeSampleTask(s"$num", Map("rack" -> "rack-1", "color" -> "blue"))) ++ 10
         .to(19)
-        .map(
-          num =>
-            makeSampleTask(
-              s"$num",
-              Map("rack" -> "rack-1", "color" -> "green"))) ++ 20
+        .map(num =>
+          makeSampleTask(s"$num", Map("rack" -> "rack-1", "color" -> "green"))) ++ 20
         .to(29)
         .map(num =>
           makeSampleTask(s"$num", Map("rack" -> "rack-2", "color" -> "blue"))) ++ 30

@@ -173,12 +173,11 @@ object StaticDatabaseConfigMacros {
 
     def findUri(ann: Seq[c.universe.Annotation]): Option[String] =
       ann
-        .map(
-          a =>
-            c.typecheck(
-              a.tree,
-              pt = weakTypeOf[StaticDatabaseConfig],
-              silent = true))
+        .map(a =>
+          c.typecheck(
+            a.tree,
+            pt = weakTypeOf[StaticDatabaseConfig],
+            silent = true))
         .collectFirst {
           case Apply(Select(_, _), List(Literal(Constant(uri: String)))) => uri
         }

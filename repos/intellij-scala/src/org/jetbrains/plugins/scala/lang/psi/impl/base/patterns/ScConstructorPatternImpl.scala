@@ -141,18 +141,15 @@ class ScConstructorPatternImpl(node: ASTNode)
               if (fun.typeParameters.isEmpty) substitutor
               else {
                 val undefSubst: ScSubstitutor =
-                  fun.typeParameters.foldLeft(ScSubstitutor.empty)(
-                    (s, p) =>
-                      s.bindT(
-                        (p.name, ScalaPsiUtil.getPsiElementId(p)),
-                        ScUndefinedType(
-                          new ScTypeParameterType(p, substitutor))))
+                  fun.typeParameters.foldLeft(ScSubstitutor.empty)((s, p) =>
+                    s.bindT(
+                      (p.name, ScalaPsiUtil.getPsiElementId(p)),
+                      ScUndefinedType(new ScTypeParameterType(p, substitutor))))
                 val emptySubst: ScSubstitutor =
-                  fun.typeParameters.foldLeft(ScSubstitutor.empty)(
-                    (s, p) =>
-                      s.bindT(
-                        (p.name, ScalaPsiUtil.getPsiElementId(p)),
-                        p.upperBound.getOrAny))
+                  fun.typeParameters.foldLeft(ScSubstitutor.empty)((s, p) =>
+                    s.bindT(
+                      (p.name, ScalaPsiUtil.getPsiElementId(p)),
+                      p.upperBound.getOrAny))
                 val emptyRes = substitutor followed emptySubst
                 val result = fun.parameters(0).getType(TypingContext.empty)
                 if (result.isEmpty) emptyRes

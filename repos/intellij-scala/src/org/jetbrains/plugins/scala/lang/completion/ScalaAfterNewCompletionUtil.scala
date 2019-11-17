@@ -290,10 +290,9 @@ object ScalaAfterNewCompletionUtil {
             def process(clazz: PsiClass): Boolean = {
               if (clazz.name == null || clazz.name == "") return true
               val undefines: Seq[ScUndefinedType] =
-                clazz.getTypeParameters.map(
-                  ptp =>
-                    new ScUndefinedType(
-                      new ScTypeParameterType(ptp, ScSubstitutor.empty)))
+                clazz.getTypeParameters.map(ptp =>
+                  new ScUndefinedType(
+                    new ScTypeParameterType(ptp, ScSubstitutor.empty)))
               val predefinedType =
                 if (clazz.getTypeParameters.nonEmpty) {
                   ScParameterizedType(ScDesignatorType(clazz), undefines)

@@ -414,9 +414,9 @@ object JavaToScala {
                   if mc.getMethodExpression.getQualifiedName == "this" =>
                 Some(convertPsiToIntermdeiate(m.getBody, externalProperties))
               case _ =>
-                getStatements(m).map(
-                  statements =>
-                    BlockConstruction(LiteralExpression("this()") +: statements
+                getStatements(m).map(statements =>
+                  BlockConstruction(
+                    LiteralExpression("this()") +: statements
                       .map(convertPsiToIntermdeiate(_, externalProperties))))
             }
           } else {
@@ -572,16 +572,14 @@ object JavaToScala {
         }
         val tryBlock = Option(t.getTryBlock).map((c: PsiCodeBlock) =>
           convertPsiToIntermdeiate(c, externalProperties))
-        val catches = t.getCatchSections.map(
-          (cb: PsiCatchSection) =>
-            (
-              convertPsiToIntermdeiate(cb.getParameter, externalProperties),
-              convertPsiToIntermdeiate(cb.getCatchBlock, externalProperties)))
-        val finallys = Option(t.getFinallyBlock).map(
-          (f: PsiCodeBlock) =>
-            f.getStatements
-              .map(convertPsiToIntermdeiate(_, externalProperties))
-              .toSeq)
+        val catches = t.getCatchSections.map((cb: PsiCatchSection) =>
+          (
+            convertPsiToIntermdeiate(cb.getParameter, externalProperties),
+            convertPsiToIntermdeiate(cb.getCatchBlock, externalProperties)))
+        val finallys = Option(t.getFinallyBlock).map((f: PsiCodeBlock) =>
+          f.getStatements
+            .map(convertPsiToIntermdeiate(_, externalProperties))
+            .toSeq)
         TryCatchStatement(
           resourcesVariables.toSeq,
           tryBlock,

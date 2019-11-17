@@ -114,12 +114,11 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
     def typeParameterUsedIn(
         parameter: ScTypeParam,
         elements: Seq[PsiElement]) = {
-      elements.exists(
-        elem =>
-          ReferencesSearch
-            .search(parameter, new LocalSearchScope(elem))
-            .findAll()
-            .nonEmpty)
+      elements.exists(elem =>
+        ReferencesSearch
+          .search(parameter, new LocalSearchScope(elem))
+          .findAll()
+          .nonEmpty)
     }
     val typeParamsForCall: String = {
       val typeParams = prototype.typeParameters

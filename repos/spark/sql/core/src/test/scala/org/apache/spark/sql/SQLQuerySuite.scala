@@ -458,12 +458,11 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
       sql(
         "SELECT nestedData, nestedData[0][0], nestedData[0][0] + nestedData[0][1] FROM arrayData"),
       arrayData
-        .map(
-          d =>
-            Row(
-              d.nestedData,
-              d.nestedData(0)(0),
-              d.nestedData(0)(0) + d.nestedData(0)(1)))
+        .map(d =>
+          Row(
+            d.nestedData,
+            d.nestedData(0)(0),
+            d.nestedData(0)(0) + d.nestedData(0)(1)))
         .collect()
         .toSeq
     )

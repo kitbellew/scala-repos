@@ -27,11 +27,10 @@ class ScalaAnnotatedMacro extends Macro {
         val project = context.getProject
         val scope = GlobalSearchScope.allScope(project)
         Option(params.head.calculateResult(context))
-          .flatMap(
-            res =>
-              ScalaPsiManager
-                .instance(project)
-                .getCachedClass(scope, res.toString))
+          .flatMap(res =>
+            ScalaPsiManager
+              .instance(project)
+              .getCachedClass(scope, res.toString))
           .map(AnnotatedMembersSearch.search(_, scope))
           .getOrElse(EmptyQuery.getEmptyQuery[PsiMember])
     }

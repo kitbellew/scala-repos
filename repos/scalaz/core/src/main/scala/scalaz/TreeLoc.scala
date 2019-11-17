@@ -298,8 +298,7 @@ sealed abstract class TreeLocInstances {
                         lefts = lefts.head #:: lefts.tail,
                         rights = rights.head #:: rights.tail,
                         parents = parents.head #:: parents.tail
-                      )
-                  )
+                      ))
                 case Empty =>
                   G.apply3(fa.tree.traverse1(f), lefts1, rights1)(
                     (tree, lefts, rights) =>
@@ -308,8 +307,7 @@ sealed abstract class TreeLocInstances {
                         lefts = lefts.head #:: lefts.tail,
                         rights = rights.head #:: rights.tail,
                         parents = Empty
-                      )
-                  )
+                      ))
               }
             case Empty =>
               fa.parents match {
@@ -324,18 +322,15 @@ sealed abstract class TreeLocInstances {
                         lefts = lefts.head #:: lefts.tail,
                         rights = Empty,
                         parents = parents.head #:: parents.tail
-                      )
-                  )
+                      ))
                 case Empty =>
-                  G.apply2(fa.tree.traverse1(f), lefts1)(
-                    (tree, lefts) =>
-                      TreeLoc(
-                        tree = tree,
-                        lefts = lefts.head #:: lefts.tail,
-                        rights = Empty,
-                        parents = Empty
-                      )
-                  )
+                  G.apply2(fa.tree.traverse1(f), lefts1)((tree, lefts) =>
+                    TreeLoc(
+                      tree = tree,
+                      lefts = lefts.head #:: lefts.tail,
+                      rights = Empty,
+                      parents = Empty
+                    ))
               }
           }
         case Empty =>
@@ -354,33 +349,28 @@ sealed abstract class TreeLocInstances {
                         lefts = Empty,
                         rights = rights.head #:: rights.tail,
                         parents = parents.head #:: parents.tail
-                      )
-                  )
+                      ))
                 case Empty =>
-                  G.apply2(fa.tree.traverse1(f), rights1)(
-                    (tree, rights) =>
-                      TreeLoc(
-                        tree = tree,
-                        lefts = Empty,
-                        rights = rights.head #:: rights.tail,
-                        parents = Empty
-                      )
-                  )
+                  G.apply2(fa.tree.traverse1(f), rights1)((tree, rights) =>
+                    TreeLoc(
+                      tree = tree,
+                      lefts = Empty,
+                      rights = rights.head #:: rights.tail,
+                      parents = Empty
+                    ))
               }
             case Empty =>
               fa.parents match {
                 case p #:: ps =>
                   G.apply2(
                     fa.tree.traverse1(f),
-                    ParentsT1.traverse1(OneAnd(p, ps))(f))(
-                    (tree, parents) =>
-                      TreeLoc(
-                        tree = tree,
-                        lefts = Empty,
-                        rights = Empty,
-                        parents = parents.head #:: parents.tail
-                      )
-                  )
+                    ParentsT1.traverse1(OneAnd(p, ps))(f))((tree, parents) =>
+                    TreeLoc(
+                      tree = tree,
+                      lefts = Empty,
+                      rights = Empty,
+                      parents = parents.head #:: parents.tail
+                    ))
                 case Empty =>
                   G.map(fa.tree.traverse1(f))(t =>
                     TreeLoc(t, Empty, Empty, Empty))

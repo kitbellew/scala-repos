@@ -502,10 +502,9 @@ trait Solving extends Logic {
               // partition symbols according to whether they appear in positive and/or negative literals
               val pos = new mutable.HashSet[Int]()
               val neg = new mutable.HashSet[Int]()
-              mforeach(clauses)(
-                lit =>
-                  if (lit.positive) pos += lit.variable
-                  else neg += lit.variable)
+              mforeach(clauses)(lit =>
+                if (lit.positive) pos += lit.variable
+                else neg += lit.variable)
 
               // appearing in both positive and negative
               val impures = pos intersect neg

@@ -458,10 +458,9 @@ object Real extends RealInstances {
   def roundUp(r: Rational): SafeLong = SafeLong(r.round.toBigInt)
 
   def div2n(x: Real, n: Int): Real =
-    Real(
-      p =>
-        if (p >= n) x(p - n)
-        else roundUp(Rational(x(p), SafeLong.two.pow(n))))
+    Real(p =>
+      if (p >= n) x(p - n)
+      else roundUp(Rational(x(p), SafeLong.two.pow(n))))
 
   def mul2n(x: Real, n: Int): Real =
     Real(p => x(p + n))

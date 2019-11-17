@@ -124,10 +124,9 @@ sealed abstract class Heap[A] {
     fold(
       (Empty[A], Empty[A]),
       (_, leq, t) =>
-        t.foldMap(
-          x =>
-            if (p(x.value)) (singletonWith(leq, x.value), Empty[A])
-            else (Empty[A], singletonWith(leq, x.value))))
+        t.foldMap(x =>
+          if (p(x.value)) (singletonWith(leq, x.value), Empty[A])
+          else (Empty[A], singletonWith(leq, x.value))))
 
   /**Partition the heap of the elements that are less than, equal to, and greater than a given value. O(n)*/
   def split(a: A): (Heap[A], Heap[A], Heap[A]) = {

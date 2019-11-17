@@ -291,10 +291,9 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
       // SI-9393: the classfile / java source parsers add Annotation and ClassfileAnnotation to the
       // parents of a java annotations. undo this for the backend (where we need classfile-level information).
       if (classSym.hasJavaAnnotationFlag)
-        parents.filterNot(
-          c =>
-            c.typeSymbol == ClassfileAnnotationClass ||
-              c.typeSymbol == AnnotationClass)
+        parents.filterNot(c =>
+          c.typeSymbol == ClassfileAnnotationClass ||
+            c.typeSymbol == AnnotationClass)
       else parents
     }
 

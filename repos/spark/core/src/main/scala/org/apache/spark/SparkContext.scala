@@ -1321,11 +1321,10 @@ class SparkContext(config: SparkConf)
         path,
         classOf[NullWritable],
         classOf[BytesWritable],
-        minPartitions).flatMap(
-        x =>
-          Utils.deserialize[Array[T]](
-            x._2.getBytes,
-            Utils.getContextOrSparkClassLoader))
+        minPartitions).flatMap(x =>
+        Utils.deserialize[Array[T]](
+          x._2.getBytes,
+          Utils.getContextOrSparkClassLoader))
     }
 
   protected[spark] def checkpointFile[T: ClassTag](path: String): RDD[T] =

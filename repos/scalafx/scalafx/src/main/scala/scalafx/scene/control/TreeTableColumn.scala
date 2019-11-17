@@ -298,10 +298,9 @@ class TreeTableColumn[S, T](
     */
   def cellValueFactory: ObjectProperty[
     TreeTableColumn.CellDataFeatures[S, T] => ObservableValue[T, T]] =
-    ObjectProperty(
-      (features: TreeTableColumn.CellDataFeatures[S, T]) =>
-        jfxObservableValue2sfx[T](
-          delegate.cellValueFactoryProperty.getValue.call(features)))
+    ObjectProperty((features: TreeTableColumn.CellDataFeatures[S, T]) =>
+      jfxObservableValue2sfx[T](
+        delegate.cellValueFactoryProperty.getValue.call(features)))
 
   def cellValueFactory_=(
       f: TreeTableColumn.CellDataFeatures[S, T] => ObservableValue[T, T]) {

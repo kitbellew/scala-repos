@@ -120,10 +120,9 @@ trait ModelFactoryImplicitSupport {
 
       // Filter out non-sensical conversions from value types
       if (isPrimitiveValueType(sym.tpe_*))
-        conversions = conversions.filter(
-          (ic: ImplicitConversionImpl) =>
-            hardcoded
-              .valueClassFilter(sym.nameString, ic.conversionQualifiedName))
+        conversions = conversions.filter((ic: ImplicitConversionImpl) =>
+          hardcoded
+            .valueClassFilter(sym.nameString, ic.conversionQualifiedName))
 
       // Put the visible conversions in front
       val (ownConversions, commonConversions) =

@@ -324,10 +324,9 @@ trait AnalyzerPlugins { self: Analyzer =>
   private def invoke[T](op: CumulativeOp[T]): T = {
     if (analyzerPlugins.isEmpty) op.default
     else
-      analyzerPlugins.foldLeft(op.default)(
-        (current, plugin) =>
-          if (!plugin.isActive()) current
-          else op.accumulate(current, plugin))
+      analyzerPlugins.foldLeft(op.default)((current, plugin) =>
+        if (!plugin.isActive()) current
+        else op.accumulate(current, plugin))
   }
 
   /** @see AnalyzerPlugin.pluginsPt */
@@ -530,9 +529,8 @@ trait AnalyzerPlugins { self: Analyzer =>
     // performance opt
     if (macroPlugins.isEmpty) stats
     else
-      macroPlugins.foldLeft(stats)(
-        (current, plugin) =>
-          if (!plugin.isActive()) current
-          else plugin.pluginsEnterStats(typer, current))
+      macroPlugins.foldLeft(stats)((current, plugin) =>
+        if (!plugin.isActive()) current
+        else plugin.pluginsEnterStats(typer, current))
   }
 }

@@ -166,10 +166,9 @@ class ReassignedPartitionLeaderSelector(controllerContext: ControllerContext)
       .newReplicas
     val currentLeaderEpoch = currentLeaderAndIsr.leaderEpoch
     val currentLeaderIsrZkPathVersion = currentLeaderAndIsr.zkVersion
-    val aliveReassignedInSyncReplicas = reassignedInSyncReplicas.filter(
-      r =>
-        controllerContext.liveBrokerIds.contains(r) &&
-          currentLeaderAndIsr.isr.contains(r))
+    val aliveReassignedInSyncReplicas = reassignedInSyncReplicas.filter(r =>
+      controllerContext.liveBrokerIds.contains(r) &&
+        currentLeaderAndIsr.isr.contains(r))
     val newLeaderOpt = aliveReassignedInSyncReplicas.headOption
     newLeaderOpt match {
       case Some(newLeader) =>

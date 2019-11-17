@@ -123,14 +123,13 @@ class DispatchersSpec
 
   lazy val allDispatchers: Map[String, MessageDispatcher] = {
     validTypes
-      .map(
-        t ⇒
-          (
-            t,
-            from(
-              ConfigFactory
-                .parseMap(Map(tipe -> t, id -> t).asJava)
-                .withFallback(defaultDispatcherConfig))))
+      .map(t ⇒
+        (
+          t,
+          from(
+            ConfigFactory
+              .parseMap(Map(tipe -> t, id -> t).asJava)
+              .withFallback(defaultDispatcherConfig))))
       .toMap
   }
 

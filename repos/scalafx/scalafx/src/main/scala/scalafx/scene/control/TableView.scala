@@ -385,8 +385,8 @@ class TableView[S](
     * A function which produces a TableRow.
     */
   def rowFactory: ObjectProperty[TableView[S] => TableRow[S]] =
-    ObjectProperty(
-      (view: TableView[S]) => delegate.rowFactoryProperty.value.call(view))
+    ObjectProperty((view: TableView[S]) =>
+      delegate.rowFactoryProperty.value.call(view))
   def rowFactory_=(factory: TableView[S] => TableRow[S]) {
     delegate.rowFactoryProperty.setValue(
       new jfxu.Callback[jfxsc.TableView[S], jfxsc.TableRow[S]] {

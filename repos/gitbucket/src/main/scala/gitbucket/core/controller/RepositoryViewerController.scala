@@ -633,17 +633,16 @@ trait RepositoryViewerControllerBase extends ControllerBase {
         origin = repository.repository.originUserName.isEmpty
       )
       .sortBy(br => (br.mergeInfo.isEmpty, br.commitTime))
-      .map(
-        br =>
-          (
-            br,
-            getPullRequestByRequestCommit(
-              repository.owner,
-              repository.name,
-              repository.repository.defaultBranch,
-              br.name,
-              br.commitId),
-            protectedBranches.contains(br.name)))
+      .map(br =>
+        (
+          br,
+          getPullRequestByRequestCommit(
+            repository.owner,
+            repository.name,
+            repository.repository.defaultBranch,
+            br.name,
+            br.commitId),
+          protectedBranches.contains(br.name)))
       .reverse
 
     html.branches(

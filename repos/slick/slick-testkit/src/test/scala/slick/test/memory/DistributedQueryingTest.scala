@@ -80,13 +80,12 @@ class DistributedQueryingTest {
                 us.result.map(d => assertEquals(uData.toSet, d.toSet)),
                 ts.flatMap(t => us.map(u => (t, u)))
                   .result
-                  .map(
-                    d =>
-                      assertEquals(
-                        tData
-                          .flatMap(t => uData.map(u => (t, u)))
-                          .toSet,
-                        d.toSet))
+                  .map(d =>
+                    assertEquals(
+                      tData
+                        .flatMap(t => uData.map(u => (t, u)))
+                        .toSet,
+                      d.toSet))
               )),
             Duration.Inf
           )

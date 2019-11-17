@@ -282,10 +282,9 @@ object TestTransport {
       val controlPromise: Promise[Unit] = Promise()
       val originalBehavior = currentBehavior
 
-      push(
-        (params: A) ⇒
-          for (delayed ← controlPromise.future;
-               original ← originalBehavior(params)) yield original)
+      push((params: A) ⇒
+        for (delayed ← controlPromise.future;
+             original ← originalBehavior(params)) yield original)
 
       controlPromise
     }

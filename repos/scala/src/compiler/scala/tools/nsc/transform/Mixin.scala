@@ -856,35 +856,33 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
             }
           } else if (needsInitFlag(sym) && !isEmpty && !clazz.hasFlag(TRAIT)) {
             assert(fieldOffset contains sym, sym)
-            deriveDefDef(stat)(
-              rhs =>
-                (mkCheckedAccessor(
-                  clazz,
-                  _: Tree,
-                  fieldOffset(sym),
-                  stat.pos,
-                  sym))(
-                  if (sym.tpe.resultType.typeSymbol == UnitClass) UNIT
-                  else rhs
-                ))
+            deriveDefDef(stat)(rhs =>
+              (mkCheckedAccessor(
+                clazz,
+                _: Tree,
+                fieldOffset(sym),
+                stat.pos,
+                sym))(
+                if (sym.tpe.resultType.typeSymbol == UnitClass) UNIT
+                else rhs
+              ))
           } else if (sym.isConstructor) {
             deriveDefDef(stat)(addInitBits(clazz, _))
           } else if (settings.checkInit && !clazz.isTrait && sym.isSetter) {
             val getter = sym.getterIn(clazz)
             if (needsInitFlag(getter) && fieldOffset.isDefinedAt(getter))
-              deriveDefDef(stat)(
-                rhs =>
-                  Block(
-                    List(
-                      rhs,
-                      localTyper
-                        .typed(
-                          mkSetFlag(
-                            clazz,
-                            fieldOffset(getter),
-                            getter,
-                            bitmapKind(getter)))),
-                    UNIT))
+              deriveDefDef(stat)(rhs =>
+                Block(
+                  List(
+                    rhs,
+                    localTyper
+                      .typed(
+                        mkSetFlag(
+                          clazz,
+                          fieldOffset(getter),
+                          getter,
+                          bitmapKind(getter)))),
+                  UNIT))
             else stat
           } else stat
         }

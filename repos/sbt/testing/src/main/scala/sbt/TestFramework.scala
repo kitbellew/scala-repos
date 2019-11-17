@@ -85,13 +85,12 @@ final class TestRunner(
   final def tasks(testDefs: Set[TestDefinition]): Array[TestTask] =
     delegate.tasks(
       testDefs
-        .map(
-          df =>
-            new TaskDef(
-              df.name,
-              df.fingerprint,
-              df.explicitlySpecified,
-              df.selectors))
+        .map(df =>
+          new TaskDef(
+            df.name,
+            df.fingerprint,
+            df.explicitlySpecified,
+            df.selectors))
         .toArray)
 
   final def run(
@@ -146,12 +145,11 @@ object TestFramework {
 
   private[sbt] def safeForeach[T](it: Iterable[T], log: Logger)(
       f: T => Unit): Unit =
-    it.foreach(
-      i =>
-        try f(i)
-        catch {
-          case e: Exception => log.trace(e); log.error(e.toString)
-        })
+    it.foreach(i =>
+      try f(i)
+      catch {
+        case e: Exception => log.trace(e); log.error(e.toString)
+      })
 
   private[sbt] def hashCode(f: Fingerprint): Int = f match {
     case s: SubclassFingerprint  => (s.isModule, s.superclassName).hashCode

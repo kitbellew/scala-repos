@@ -473,12 +473,11 @@ object ScalaExtractMethodUtils {
     val methodCallText = s"${settings.methodName}$paramsText"
     var needExtractorsFromMultipleReturn = false
 
-    val outputTypedNames = settings.outputs.map(
-      o =>
-        ScalaExtractMethodUtils.typedName(
-          outputName(o),
-          o.returnType.canonicalText,
-          o.fromElement.getProject))
+    val outputTypedNames = settings.outputs.map(o =>
+      ScalaExtractMethodUtils.typedName(
+        outputName(o),
+        o.returnType.canonicalText,
+        o.fromElement.getProject))
     val ics = settings.innerClassSettings
 
     def patternForDeclaration: String = {

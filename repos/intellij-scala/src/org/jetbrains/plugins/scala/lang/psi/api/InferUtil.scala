@@ -540,11 +540,10 @@ object InferUtil {
       else ScSubstitutor.empty
     val abstractSubst =
       ScTypePolymorphicType(retType, typeParams).abstractTypeSubstitutor
-    val paramsWithUndefTypes = params.map(
-      p =>
-        p.copy(
-          paramType = s.subst(p.paramType),
-          expectedType = abstractSubst.subst(p.paramType)))
+    val paramsWithUndefTypes = params.map(p =>
+      p.copy(
+        paramType = s.subst(p.paramType),
+        expectedType = abstractSubst.subst(p.paramType)))
     val c = Compatibility.checkConformanceExt(
       checkNames = true,
       paramsWithUndefTypes,
@@ -583,10 +582,9 @@ object InferUtil {
                     var hasRecursiveTypeParameters = false
                     typez.recursiveUpdate {
                       case tpt: ScTypeParameterType =>
-                        typeParams.find(
-                          tp =>
-                            (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) ==
-                              (tpt.name, tpt.getId)) match {
+                        typeParams.find(tp =>
+                          (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) ==
+                            (tpt.name, tpt.getId)) match {
                           case None => (true, tpt)
                           case _ =>
                             hasRecursiveTypeParameters = true
@@ -658,10 +656,9 @@ object InferUtil {
                       var hasRecursiveTypeParameters = false
                       typez.recursiveUpdate {
                         case tpt: ScTypeParameterType =>
-                          typeParams.find(
-                            tp =>
-                              (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) ==
-                                (tpt.name, tpt.getId)) match {
+                          typeParams.find(tp =>
+                            (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) ==
+                              (tpt.name, tpt.getId)) match {
                             case None => (true, tpt)
                             case _ =>
                               hasRecursiveTypeParameters = true
@@ -765,14 +762,13 @@ object InferUtil {
                         }
                         !removeMe
                     }
-                    .map(
-                      tp =>
-                        TypeParameter(
-                          tp.name,
-                          tp.typeParams /* doesn't important here */,
-                          () => sub.subst(tp.lowerType()),
-                          () => sub.subst(tp.upperType()),
-                          tp.ptp))
+                    .map(tp =>
+                      TypeParameter(
+                        tp.name,
+                        tp.typeParams /* doesn't important here */,
+                        () => sub.subst(tp.lowerType()),
+                        () => sub.subst(tp.upperType()),
+                        tp.ptp))
                 )
               }
 

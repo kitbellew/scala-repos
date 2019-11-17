@@ -37,8 +37,8 @@ class ExecutionTest {
         TestExecutionContext,
         TestExecutionContext,
         A]): A = {
-    _testExecution(
-      ec1 => _testExecution(ec2 => _testExecution(ec3 => f(ec1, ec2, ec3))))
+    _testExecution(ec1 =>
+      _testExecution(ec2 => _testExecution(ec3 => f(ec1, ec2, ec3))))
   }
 
   private def _mustExecute[A](expectedCount: => Int)(

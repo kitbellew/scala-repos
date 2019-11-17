@@ -1134,9 +1134,7 @@ trait EntityPage extends HtmlPage {
               "gt4s: " + encoded +
                 span
                   .attribute("title")
-                  .map(
-                    node => ". " + node
-                  )
+                  .map(node => ". " + node)
                   .getOrElse(""),
               scala.xml.Null)
           } else {

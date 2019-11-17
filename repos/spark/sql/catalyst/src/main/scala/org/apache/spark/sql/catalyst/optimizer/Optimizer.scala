@@ -491,11 +491,10 @@ object CollapseProject extends Rule[LogicalPlan] {
           })
           .asInstanceOf[Seq[NamedExpression]]
         // collapse 2 projects may introduce unnecessary Aliases, trim them here.
-        val cleanedProjection = substitutedProjection.map(
-          p =>
-            CleanupAliases
-              .trimNonTopLevelAliases(p)
-              .asInstanceOf[NamedExpression])
+        val cleanedProjection = substitutedProjection.map(p =>
+          CleanupAliases
+            .trimNonTopLevelAliases(p)
+            .asInstanceOf[NamedExpression])
         Project(cleanedProjection, child)
       }
 
@@ -528,11 +527,10 @@ object CollapseProject extends Rule[LogicalPlan] {
           })
           .asInstanceOf[Seq[NamedExpression]]
         // collapse 2 projects may introduce unnecessary Aliases, trim them here.
-        val cleanedProjection = substitutedProjection.map(
-          p =>
-            CleanupAliases
-              .trimNonTopLevelAliases(p)
-              .asInstanceOf[NamedExpression])
+        val cleanedProjection = substitutedProjection.map(p =>
+          CleanupAliases
+            .trimNonTopLevelAliases(p)
+            .asInstanceOf[NamedExpression])
         agg.copy(aggregateExpressions = cleanedProjection)
       }
   }

@@ -1393,10 +1393,9 @@ trait Namers extends MethodSynthesis { self: Analyzer =>
                   }
                 }
                 val ClassDef(_, _, rtparams, _) = resetAttrs(cdef.duplicate)
-                defTparams = rtparams.map(
-                  rt =>
-                    copyTypeDef(rt)(
-                      mods = rt.mods &~ (COVARIANT | CONTRAVARIANT)))
+                defTparams = rtparams.map(rt =>
+                  copyTypeDef(rt)(
+                    mods = rt.mods &~ (COVARIANT | CONTRAVARIANT)))
                 nmr
               } else
                 ownerNamer getOrElse {

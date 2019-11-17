@@ -143,12 +143,11 @@ class ReplicaManager(
     new ReplicaFetcherManager(config, this, metrics, jTime, threadNamePrefix)
   private val highWatermarkCheckPointThreadStarted = new AtomicBoolean(false)
   val highWatermarkCheckpoints = config.logDirs
-    .map(
-      dir =>
-        (
-          new File(dir).getAbsolutePath,
-          new OffsetCheckpoint(
-            new File(dir, ReplicaManager.HighWatermarkFilename))))
+    .map(dir =>
+      (
+        new File(dir).getAbsolutePath,
+        new OffsetCheckpoint(
+          new File(dir, ReplicaManager.HighWatermarkFilename))))
     .toMap
   private var hwThreadInitialized = false
   this.logIdent = "[Replica Manager on Broker " + localBrokerId + "]: "
@@ -623,12 +622,11 @@ class ReplicaManager(
     //                        4) some error happens while reading data
     if (timeout <= 0 || fetchInfo.size <= 0 ||
         bytesReadable >= fetchMinBytes || errorReadingData) {
-      val fetchPartitionData = logReadResults.mapValues(
-        result =>
-          FetchResponsePartitionData(
-            result.errorCode,
-            result.hw,
-            result.info.messageSet))
+      val fetchPartitionData = logReadResults.mapValues(result =>
+        FetchResponsePartitionData(
+          result.errorCode,
+          result.hw,
+          result.info.messageSet))
       responseCallback(fetchPartitionData)
     } else {
       // construct the fetch results from the read results
@@ -971,17 +969,16 @@ class ReplicaManager(
       partitionState: Map[Partition, LeaderAndIsrRequest.PartitionState],
       correlationId: Int,
       responseMap: mutable.Map[TopicPartition, Short]): Set[Partition] = {
-    partitionState.foreach(
-      state =>
-        stateChangeLogger.trace(
-          ("Broker %d handling LeaderAndIsr request correlationId %d from controller %d epoch %d " +
-            "starting the become-leader transition for partition %s")
-            .format(
-              localBrokerId,
-              correlationId,
-              controllerId,
-              epoch,
-              TopicAndPartition(state._1.topic, state._1.partitionId))))
+    partitionState.foreach(state =>
+      stateChangeLogger.trace(
+        ("Broker %d handling LeaderAndIsr request correlationId %d from controller %d epoch %d " +
+          "starting the become-leader transition for partition %s")
+          .format(
+            localBrokerId,
+            correlationId,
+            controllerId,
+            epoch,
+            TopicAndPartition(state._1.topic, state._1.partitionId))))
 
     for (partition <- partitionState.keys)
       responseMap.put(
@@ -1159,11 +1156,10 @@ class ReplicaManager(
 
       logManager.truncateTo(
         partitionsToMakeFollower
-          .map(
-            partition =>
-              (
-                new TopicAndPartition(partition),
-                partition.getOrCreateReplica().highWatermark.messageOffset))
+          .map(partition =>
+            (
+              new TopicAndPartition(partition),
+              partition.getOrCreateReplica().highWatermark.messageOffset))
           .toMap)
       partitionsToMakeFollower.foreach { partition =>
         val topicPartitionOperationKey =
@@ -1202,15 +1198,14 @@ class ReplicaManager(
         // we do not need to check if the leader exists again since this has been done at the beginning of this process
         val partitionsToMakeFollowerWithLeaderAndOffset =
           partitionsToMakeFollower
-            .map(
-              partition =>
-                new TopicAndPartition(partition) -> BrokerAndInitialOffset(
-                  metadataCache.getAliveBrokers
-                    .find(_.id == partition.leaderReplicaIdOpt.get)
-                    .get
-                    .getBrokerEndPoint(config.interBrokerSecurityProtocol),
-                  partition.getReplica().get.logEndOffset.messageOffset
-                ))
+            .map(partition =>
+              new TopicAndPartition(partition) -> BrokerAndInitialOffset(
+                metadataCache.getAliveBrokers
+                  .find(_.id == partition.leaderReplicaIdOpt.get)
+                  .get
+                  .getBrokerEndPoint(config.interBrokerSecurityProtocol),
+                partition.getReplica().get.logEndOffset.messageOffset
+              ))
             .toMap
         replicaFetcherManager.addFetcherForPartitions(
           partitionsToMakeFollowerWithLeaderAndOffset)

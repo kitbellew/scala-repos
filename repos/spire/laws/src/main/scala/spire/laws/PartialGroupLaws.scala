@@ -35,17 +35,16 @@ trait PartialGroupLaws[A] extends GroupLaws[A] {
   def groupoid(implicit A: Groupoid[A]) = new GroupProperties(
     name = "groupoid",
     parent = Some(semigroupoid),
-    "left identity" → forAll(
-      (a: A) => (a.leftId |+|?? a) && ((a.leftId() |+|? a).get === a)),
-    "right identity" → forAll(
-      (a: A) => (a |+|?? a.rightId) && ((a |+|? a.rightId).get === a)),
-    "product with inverse is always defined" → forAll(
-      (a: A) => (a |+|?? a.inverse) && (a.inverse |+|?? a)),
-    "product with inverse is a left and right identity" → forAll(
-      (a: A, b: A) =>
-        !(a |+|?? b) ||
-          (((a |+|? b).get |+|? b.inverse).get === a &&
-            ((a.inverse |+|? a).get |+|? b).get === b))
+    "left identity" → forAll((a: A) =>
+      (a.leftId |+|?? a) && ((a.leftId() |+|? a).get === a)),
+    "right identity" → forAll((a: A) =>
+      (a |+|?? a.rightId) && ((a |+|? a.rightId).get === a)),
+    "product with inverse is always defined" → forAll((a: A) =>
+      (a |+|?? a.inverse) && (a.inverse |+|?? a)),
+    "product with inverse is a left and right identity" → forAll((a: A, b: A) =>
+      !(a |+|?? b) ||
+        (((a |+|? b).get |+|? b.inverse).get === a &&
+          ((a.inverse |+|? a).get |+|? b).get === b))
   )
 }
 

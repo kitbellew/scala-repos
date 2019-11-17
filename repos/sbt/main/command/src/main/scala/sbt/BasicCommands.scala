@@ -146,10 +146,9 @@ object BasicCommands {
       s.log.warn(Compat.ClearOnFailureDeprecated)
       s.copy(onFailure = None)
     },
-    Command.arb(
-      s =>
-        token(Compat.OnFailure, hide = const(true))
-          .flatMap(x => otherCommandParser(s))) { (s, arg) =>
+    Command.arb(s =>
+      token(Compat.OnFailure, hide = const(true))
+        .flatMap(x => otherCommandParser(s))) { (s, arg) =>
       s.log.warn(Compat.OnFailureDeprecated)
       s.copy(onFailure = Some(arg))
     },
@@ -162,10 +161,9 @@ object BasicCommands {
   def clearOnFailure =
     Command.command(ClearOnFailure)(s => s.copy(onFailure = None))
   def stashOnFailure =
-    Command.command(StashOnFailure)(
-      s =>
-        s.copy(onFailure = None)
-          .update(OnFailureStack)(s.onFailure :: _.toList.flatten))
+    Command.command(StashOnFailure)(s =>
+      s.copy(onFailure = None)
+        .update(OnFailureStack)(s.onFailure :: _.toList.flatten))
   def popOnFailure = Command.command(PopOnFailure) { s =>
     val stack = s.get(OnFailureStack).getOrElse(Nil)
     val updated =
@@ -193,11 +191,10 @@ object BasicCommands {
         val loader =
           if (cp.isEmpty) parentLoader
           else toLoader(cp.map(f => new File(f)), parentLoader)
-        val loaded = args.map(
-          arg =>
-            ModuleUtilities
-              .getObject(arg, loader)
-              .asInstanceOf[State => State])
+        val loaded = args.map(arg =>
+          ModuleUtilities
+            .getObject(arg, loader)
+            .asInstanceOf[State => State])
         (state /: loaded)((s, obj) => obj(s))
     }
   def callParser: Parser[(Seq[String], Seq[String])] =
@@ -207,10 +204,9 @@ object BasicCommands {
     val base =
       StringBasic & not('-' ~> any.*, "Class name cannot start with '-'.")
     def single(s: String) = Completions.single(Completion.displayOnly(s))
-    val compl = TokenCompletions.fixed(
-      (seen, level) =>
-        if (seen.startsWith("-")) Completions.nil
-        else single("<class name>"))
+    val compl = TokenCompletions.fixed((seen, level) =>
+      if (seen.startsWith("-")) Completions.nil
+      else single("<class name>"))
     token(base, compl)
   }
   private[this] def classpathOptionParser: Parser[Seq[String]] =

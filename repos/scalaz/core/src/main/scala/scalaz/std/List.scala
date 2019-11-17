@@ -227,10 +227,9 @@ trait ListFunctions {
       p: A => M[Boolean]): M[List[A]] = as match {
     case Nil => Monad[M].point(Nil)
     case h :: t =>
-      Monad[M].bind(p(h))(
-        b =>
-          if (b) Monad[M].map(takeWhileM(t)(p))((tt: List[A]) => h :: tt)
-          else Monad[M].point(Nil))
+      Monad[M].bind(p(h))(b =>
+        if (b) Monad[M].map(takeWhileM(t)(p))((tt: List[A]) => h :: tt)
+        else Monad[M].point(Nil))
   }
 
   /** Run `p(a)`s and collect `as` while `p` yields false.  Don't run
@@ -277,12 +276,11 @@ trait ListFunctions {
       p: A => M[Boolean]): M[(List[A], List[A])] = as match {
     case Nil => Monad[M].point(Nil, Nil)
     case h :: t =>
-      Monad[M].bind(p(h))(
-        b =>
-          if (b)
-            Monad[M]
-              .map(spanM(t)(p))((k: (List[A], List[A])) => (h :: k._1, k._2))
-          else Monad[M].point(Nil, as))
+      Monad[M].bind(p(h))(b =>
+        if (b)
+          Monad[M]
+            .map(spanM(t)(p))((k: (List[A], List[A])) => (h :: k._1, k._2))
+        else Monad[M].point(Nil, as))
   }
 
   /** `spanM` with `p`'s complement. */

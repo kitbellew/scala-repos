@@ -449,13 +449,12 @@ private[http] abstract class HttpMessageParser[
             EntityChunk(
               HttpEntity
                 .Chunk(input.slice(cursor, chunkBodyEnd).compact, extension)))
-          Trampoline(
-            _ ⇒
-              parseChunk(
-                input,
-                chunkBodyEnd + terminatorLen,
-                isLastMessage,
-                totalBytesRead + chunkSize))
+          Trampoline(_ ⇒
+            parseChunk(
+              input,
+              chunkBodyEnd + terminatorLen,
+              isLastMessage,
+              totalBytesRead + chunkSize))
         }
         byteChar(input, chunkBodyEnd) match {
           case '\r' if byteChar(input, chunkBodyEnd + 1) == '\n' ⇒ result(2)

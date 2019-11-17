@@ -33,12 +33,11 @@ object Framing {
       maximumFrameLength: Int,
       allowTruncation: Boolean = false): Flow[ByteString, ByteString, NotUsed] =
     Flow[ByteString]
-      .transform(
-        () ⇒
-          new DelimiterFramingStage(
-            delimiter,
-            maximumFrameLength,
-            allowTruncation))
+      .transform(() ⇒
+        new DelimiterFramingStage(
+          delimiter,
+          maximumFrameLength,
+          allowTruncation))
       .named("delimiterFraming")
 
   /**
@@ -65,13 +64,12 @@ object Framing {
       fieldLength >= 1 && fieldLength <= 4,
       "Length field length must be 1, 2, 3 or 4.")
     Flow[ByteString]
-      .transform(
-        () ⇒
-          new LengthFieldFramingStage(
-            fieldLength,
-            fieldOffset,
-            maximumFrameLength,
-            byteOrder))
+      .transform(() ⇒
+        new LengthFieldFramingStage(
+          fieldLength,
+          fieldOffset,
+          maximumFrameLength,
+          byteOrder))
       .named("lengthFieldFraming")
   }
 

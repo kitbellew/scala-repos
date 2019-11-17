@@ -33,8 +33,7 @@ class Statements(indent: Int) {
   def collapse_dotted_name(name: Seq[Ast.identifier]): Ast.expr = {
     name.tail
       .foldLeft[Ast.expr](Ast.expr.Name(name.head, Ast.expr_context.Load))(
-        (x, y) => Ast.expr.Attribute(x, y, Ast.expr_context.Load)
-      )
+        (x, y) => Ast.expr.Attribute(x, y, Ast.expr_context.Load))
   }
 
   val decorator: P[Ast.expr] =

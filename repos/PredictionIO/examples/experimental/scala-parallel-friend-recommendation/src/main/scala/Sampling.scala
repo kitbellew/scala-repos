@@ -88,10 +88,9 @@ object Sampling {
       }
     }
     val vertex: Seq[(VertexId, Int)] = sampledVertices.map(v => (v, 1)).toSeq
-    val edges = graph.edges.filter(
-      e =>
-        sampledVertices.contains(e.srcId) &&
-          sampledVertices.contains(e.dstId))
+    val edges = graph.edges.filter(e =>
+      sampledVertices.contains(e.srcId) &&
+        sampledVertices.contains(e.dstId))
     Graph(sc.parallelize(vertex), edges)
   }
 

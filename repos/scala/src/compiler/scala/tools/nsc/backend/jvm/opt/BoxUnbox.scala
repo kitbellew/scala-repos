@@ -345,16 +345,15 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
         def replaceExtractionOps(): Unit = {
           if (boxKind.boxedTypes.lengthCompare(1) == 0) {
             // fast path for single-value boxes
-            allConsumers.foreach(
-              extraction =>
-                extraction
-                  .postExtractionAdaptationOps(boxKind.boxedTypes.head) match {
-                  case Nil =>
-                    toDelete ++= extraction.allInsns
-                  case ops =>
-                    toReplace(extraction.consumer) = ops
-                    toDelete ++= extraction.allInsns - extraction.consumer
-                })
+            allConsumers.foreach(extraction =>
+              extraction
+                .postExtractionAdaptationOps(boxKind.boxedTypes.head) match {
+                case Nil =>
+                  toDelete ++= extraction.allInsns
+                case ops =>
+                  toReplace(extraction.consumer) = ops
+                  toDelete ++= extraction.allInsns - extraction.consumer
+              })
           } else {
             for (extraction <- allConsumers) {
               val valueIndex = boxKind.extractedValueIndex(extraction)

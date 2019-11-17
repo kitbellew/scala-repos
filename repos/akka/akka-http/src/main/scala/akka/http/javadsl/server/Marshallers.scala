@@ -36,11 +36,10 @@ object Marshallers {
   def toEntityString[T](
       mediaType: MediaType.WithOpenCharset,
       convert: function.Function[T, String]): Marshaller[T] =
-    MarshallerImpl(
-      _ ⇒
-        ScalaMarshaller
-          .stringMarshaller(mediaType.asScala)
-          .compose[T](convert(_)))
+    MarshallerImpl(_ ⇒
+      ScalaMarshaller
+        .stringMarshaller(mediaType.asScala)
+        .compose[T](convert(_)))
 
   /**
     * Creates a marshaller by specifying a media type and conversion function from `T` to String.
@@ -49,11 +48,10 @@ object Marshallers {
   def toEntityString[T](
       mediaType: MediaType.WithFixedCharset,
       convert: function.Function[T, String]): Marshaller[T] =
-    MarshallerImpl(
-      _ ⇒
-        ScalaMarshaller
-          .stringMarshaller(mediaType.asScala)
-          .compose[T](convert(_)))
+    MarshallerImpl(_ ⇒
+      ScalaMarshaller
+        .stringMarshaller(mediaType.asScala)
+        .compose[T](convert(_)))
 
   /**
     * Creates a marshaller from a ContentType and a conversion function from `T` to a `Array[Byte]`.
@@ -82,13 +80,12 @@ object Marshallers {
       contentType: ContentType,
       convert: function.Function[T, ResponseEntity]): Marshaller[T] =
     MarshallerImpl { _ ⇒
-      ScalaMarshaller.withFixedContentType(contentType.asScala)(
-        t ⇒
-          HttpResponse
-            .create()
-            .withStatus(200)
-            .withEntity(convert(t))
-            .asScala)
+      ScalaMarshaller.withFixedContentType(contentType.asScala)(t ⇒
+        HttpResponse
+          .create()
+          .withStatus(200)
+          .withEntity(convert(t))
+          .asScala)
     }
 
   /**

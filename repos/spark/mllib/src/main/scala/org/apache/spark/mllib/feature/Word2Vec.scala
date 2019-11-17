@@ -175,14 +175,13 @@ class Word2Vec extends Serializable with Logging {
       .map(w => (w, 1))
       .reduceByKey(_ + _)
       .filter(_._2 >= minCount)
-      .map(
-        x =>
-          VocabWord(
-            x._1,
-            x._2,
-            new Array[Int](MAX_CODE_LENGTH),
-            new Array[Int](MAX_CODE_LENGTH),
-            0))
+      .map(x =>
+        VocabWord(
+          x._1,
+          x._2,
+          new Array[Int](MAX_CODE_LENGTH),
+          new Array[Int](MAX_CODE_LENGTH),
+          0))
       .collect()
       .sortWith((a, b) => a.cn > b.cn)
 

@@ -70,11 +70,10 @@ trait ScClass extends ScTypeDefinition with ScParameterOwner {
               val params = clauses.head.parameters
               if (params.isEmpty) "scala.Boolean"
               else {
-                val strings = params.map(
-                  p =>
-                    (if (p.isRepeatedParameter) "scala.Seq[" else "") +
-                      p.typeElement.fold("scala.Any")(_.getText) +
-                      (if (p.isRepeatedParameter) "]" else ""))
+                val strings = params.map(p =>
+                  (if (p.isRepeatedParameter) "scala.Seq[" else "") +
+                    p.typeElement.fold("scala.Any")(_.getText) +
+                    (if (p.isRepeatedParameter) "]" else ""))
                 strings.mkString(
                   "scala.Option[" + (if (strings.length > 1) "(" else ""),
                   ", ",
@@ -104,22 +103,20 @@ trait ScClass extends ScTypeDefinition with ScParameterOwner {
                  x.parameterList.clauses.head.isImplicit) "()"
              else "") +
               x.parameterList.clauses
-                .map(
-                  c =>
-                    c.parameters
-                      .map(
-                        p =>
-                          p.name + " : " +
-                            p.typeElement.fold("Any")(_.getText) +
-                            (if (p.isDefaultParam)
-                               " = " +
-                                 p.getDefaultExpression.fold("{}")(_.getText)
-                             else if (p.isRepeatedParameter) "*"
-                             else ""))
-                      .mkString(
-                        if (c.isImplicit) "(implicit " else "(",
-                        ", ",
-                        ")"))
+                .map(c =>
+                  c.parameters
+                    .map(p =>
+                      p.name + " : " +
+                        p.typeElement.fold("Any")(_.getText) +
+                        (if (p.isDefaultParam)
+                           " = " +
+                             p.getDefaultExpression.fold("{}")(_.getText)
+                         else if (p.isRepeatedParameter) "*"
+                         else ""))
+                    .mkString(
+                      if (c.isImplicit) "(implicit " else "(",
+                      ", ",
+                      ")"))
                 .mkString("")
           case None => ""
         }

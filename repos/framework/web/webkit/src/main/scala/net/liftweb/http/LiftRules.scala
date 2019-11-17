@@ -1016,8 +1016,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   /**
     * The default action to take when the JavaScript action fails
     */
-  @volatile var ajaxDefaultFailure: Box[() => JsCmd] = Full(
-    () => JsCmds.Alert(S.?("ajax.error")))
+  @volatile var ajaxDefaultFailure: Box[() => JsCmd] =
+    Full(() => JsCmds.Alert(S.?("ajax.error")))
 
   /**
     * A function that takes the current HTTP request and returns the current
@@ -1065,15 +1065,14 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
                 .get("parallel")
                 .headOption == Some(Text("true"))) {
             DataAttributeProcessorAnswerFuture(
-              LAFuture(
-                () =>
-                  new Elem(
-                    "lift",
-                    snippetName,
-                    decodedMetaData,
-                    element.scope,
-                    false,
-                    element)))
+              LAFuture(() =>
+                new Elem(
+                  "lift",
+                  snippetName,
+                  decodedMetaData,
+                  element.scope,
+                  false,
+                  element)))
           } else {
             new Elem(
               "lift",
@@ -1812,19 +1811,18 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
         val css = LiftRules.loadResourceAsString(cssPath);
 
         () => {
-          css.map(
-            str =>
-              CSSHelpers.fixCSS(
-                new BufferedReader(new StringReader(str)),
-                prefix openOr (S.contextPath)) match {
-                case (Full(c), _) => CSSResponse(c)
-                case (x, input) => {
-                  logger.info(
-                    "Fixing " + cssPath +
-                      " failed with result %s".format(x));
-                  CSSResponse(input)
-                }
-              })
+          css.map(str =>
+            CSSHelpers.fixCSS(
+              new BufferedReader(new StringReader(str)),
+              prefix openOr (S.contextPath)) match {
+              case (Full(c), _) => CSSResponse(c)
+              case (x, input) => {
+                logger.info(
+                  "Fixing " + cssPath +
+                    " failed with result %s".format(x));
+                CSSResponse(input)
+              }
+            })
         }
       }
     }

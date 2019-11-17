@@ -295,13 +295,12 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
           val callPrefix = gen.mkMethodCall(sel, targs, This(origThis) :: Nil)
 
           // Apply all the argument lists.
-          deriveDefDef(tree)(
-            _ =>
-              atOwner(origMeth)(
-                localTyper.typedPos(rhs.pos)(
-                  gen.mkForwarder(callPrefix, mmap(vparamss)(_.symbol))
-                )
-              ))
+          deriveDefDef(tree)(_ =>
+            atOwner(origMeth)(
+              localTyper.typedPos(rhs.pos)(
+                gen.mkForwarder(callPrefix, mmap(vparamss)(_.symbol))
+              )
+            ))
         case _ =>
           super.transform(tree)
       }

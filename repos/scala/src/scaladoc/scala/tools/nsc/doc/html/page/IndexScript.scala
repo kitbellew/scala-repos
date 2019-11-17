@@ -68,9 +68,7 @@ class IndexScript(universe: doc.Universe) extends Page {
 
   def allPackages = {
     def f(parent: Package): List[Package] = {
-      parent.packages.flatMap(
-        p => f(p) :+ p
-      )
+      parent.packages.flatMap(p => f(p) :+ p)
     }
     f(universe.rootPackage).sortBy(_.toString)
   }

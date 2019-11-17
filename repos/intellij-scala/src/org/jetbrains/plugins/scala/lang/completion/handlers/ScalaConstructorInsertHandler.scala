@@ -78,10 +78,9 @@ class ScalaConstructorInsertHandler extends InsertHandler[LookupElement] {
             c.secondaryConstructors.foreach(fun =>
               if (fun.parameters.nonEmpty) hasNonEmptyParams = true)
           case _ =>
-            clazz.getConstructors.foreach(
-              meth =>
-                if (meth.getParameterList.getParametersCount > 0)
-                  hasNonEmptyParams = true)
+            clazz.getConstructors.foreach(meth =>
+              if (meth.getParameterList.getParametersCount > 0)
+                hasNonEmptyParams = true)
         }
         if (context.getCompletionChar == '(') hasNonEmptyParams = true
         if (item.typeParametersProblem) {

@@ -452,11 +452,10 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
     val joined = rdd1.groupWith(rdd2, rdd3, rdd4).collect()
     assert(joined.size === 4)
     val joinedSet = joined
-      .map(
-        x =>
-          (
-            x._1,
-            (x._2._1.toList, x._2._2.toList, x._2._3.toList, x._2._4.toList)))
+      .map(x =>
+        (
+          x._1,
+          (x._2._1.toList, x._2._2.toList, x._2._3.toList, x._2._4.toList)))
       .toSet
     assert(
       joinedSet === Set(

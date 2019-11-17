@@ -100,10 +100,9 @@ object MultilineStringUtil {
           ref.resolve() match {
             case funDef: ScFunction =>
               val tpe = funDef.returnType
-              tpe.exists(
-                scType =>
-                  scType.canonicalText.endsWith("java.lang.String") ||
-                    scType.canonicalText.endsWith("scala.Predef.String"))
+              tpe.exists(scType =>
+                scType.canonicalText.endsWith("java.lang.String") ||
+                  scType.canonicalText.endsWith("scala.Predef.String"))
             case _ => true
           }
         case _ => true

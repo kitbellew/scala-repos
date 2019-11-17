@@ -362,14 +362,13 @@ private[spark] class MesosSchedulerBackend(
         case (slaveId, tasks) =>
           slaveIdToWorkerOffer
             .get(slaveId)
-            .foreach(
-              o =>
-                listenerBus.post(
-                  SparkListenerExecutorAdded(
-                    System.currentTimeMillis(),
-                    slaveId,
-                    // TODO: Add support for log urls for Mesos
-                    new ExecutorInfo(o.host, o.cores, Map.empty))))
+            .foreach(o =>
+              listenerBus.post(
+                SparkListenerExecutorAdded(
+                  System.currentTimeMillis(),
+                  slaveId,
+                  // TODO: Add support for log urls for Mesos
+                  new ExecutorInfo(o.host, o.cores, Map.empty))))
           logTrace(
             s"Launching Mesos tasks on slave '$slaveId', tasks:\n${getTasksSummary(tasks)}")
           d.launchTasks(

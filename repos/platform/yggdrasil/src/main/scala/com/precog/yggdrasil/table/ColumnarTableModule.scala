@@ -663,10 +663,9 @@ trait ColumnarTableModule[M[+_]]
             // Indices by their keyschemas so that we end up intersecting
             // key with their subset.
             keys0.flatMap { key0 =>
-              keys1.flatMap(
-                key1 =>
-                  if (consistent(key0, key1)) Some(merge(key0, key1))
-                  else None)
+              keys1.flatMap(key1 =>
+                if (consistent(key0, key1)) Some(merge(key0, key1))
+                else None)
             }
           }
 

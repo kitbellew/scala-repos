@@ -71,13 +71,12 @@ abstract class AbstractSourceCodeGenerator(model: m.Model)
     trait EntityTypeDef extends super.EntityTypeDef {
       def code = {
         val args = columns
-          .map(
-            c =>
-              c.default
-                .map(v => s"${c.name}: ${c.exposedType} = $v")
-                .getOrElse(
-                  s"${c.name}: ${c.exposedType}"
-                ))
+          .map(c =>
+            c.default
+              .map(v => s"${c.name}: ${c.exposedType} = $v")
+              .getOrElse(
+                s"${c.name}: ${c.exposedType}"
+              ))
           .mkString(", ")
         if (classEnabled) {
           val prns = (parents.take(1).map(" extends " + _) ++ parents

@@ -183,15 +183,14 @@ class DeleteConsumerGroupTest extends KafkaServerTestHarness {
       groups.map(group => new ZKGroupTopicDirs(group, topicToDelete))
     val groupTopicDirsForOtherTopic =
       groups.map(group => new ZKGroupTopicDirs(group, otherTopic))
-    groupTopicDirsForTopicToDelete.foreach(
-      dir =>
-        fillInConsumerGroupInfo(
-          topicToDelete,
-          dir.group,
-          "consumer",
-          0,
-          10,
-          false))
+    groupTopicDirsForTopicToDelete.foreach(dir =>
+      fillInConsumerGroupInfo(
+        topicToDelete,
+        dir.group,
+        "consumer",
+        0,
+        10,
+        false))
     groupTopicDirsForOtherTopic.foreach(dir =>
       fillInConsumerGroupInfo(otherTopic, dir.group, "consumer", 0, 10, false))
 

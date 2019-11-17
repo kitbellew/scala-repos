@@ -208,13 +208,12 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
       permissionType: PermissionType,
       acls: Set[Acl]): Boolean = {
     acls
-      .find(
-        acl =>
-          acl.permissionType == permissionType &&
-            (acl.principal == principal ||
-              acl.principal == Acl.WildCardPrincipal) &&
-            (operations == acl.operation || acl.operation == All) &&
-            (acl.host == host || acl.host == Acl.WildCardHost))
+      .find(acl =>
+        acl.permissionType == permissionType &&
+          (acl.principal == principal ||
+            acl.principal == Acl.WildCardPrincipal) &&
+          (operations == acl.operation || acl.operation == All) &&
+          (acl.host == host || acl.host == Acl.WildCardHost))
       .map { acl: Acl =>
         authorizerLogger.debug(
           s"operation = $operations on resource = $resource from host = $host is $permissionType based on acl = $acl")

@@ -231,12 +231,11 @@ object ActorSelection {
                       elements = iter.toVector,
                       wildcardFanOut = sel.wildcardFanOut ||
                         matchingChildren.size > 1)
-                    matchingChildren.foreach(
-                      c ⇒
-                        deliverSelection(
-                          c.asInstanceOf[InternalActorRef],
-                          sender,
-                          m))
+                    matchingChildren.foreach(c ⇒
+                      deliverSelection(
+                        c.asInstanceOf[InternalActorRef],
+                        sender,
+                        m))
                   }
                 }
             }

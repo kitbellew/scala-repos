@@ -475,12 +475,11 @@ class KafkaApis(
         responseStatus: Map[TopicPartition, PartitionResponse]) {
 
       val mergedResponseStatus =
-        responseStatus ++ unauthorizedRequestInfo.mapValues(
-          _ =>
-            new PartitionResponse(
-              Errors.TOPIC_AUTHORIZATION_FAILED.code,
-              -1,
-              Message.NoTimestamp))
+        responseStatus ++ unauthorizedRequestInfo.mapValues(_ =>
+          new PartitionResponse(
+            Errors.TOPIC_AUTHORIZATION_FAILED.code,
+            -1,
+            Message.NoTimestamp))
 
       var errorInResponse = false
 
@@ -719,11 +718,10 @@ class KafkaApis(
             new Resource(Topic, topicPartition.topic))
       }
 
-    val unauthorizedResponseStatus = unauthorizedRequestInfo.mapValues(
-      _ =>
-        new ListOffsetResponse.PartitionData(
-          Errors.TOPIC_AUTHORIZATION_FAILED.code,
-          List[JLong]().asJava))
+    val unauthorizedResponseStatus = unauthorizedRequestInfo.mapValues(_ =>
+      new ListOffsetResponse.PartitionData(
+        Errors.TOPIC_AUTHORIZATION_FAILED.code,
+        List[JLong]().asJava))
 
     val responseMap =
       authorizedRequestInfo.map(elem => {
@@ -980,12 +978,11 @@ class KafkaApis(
       }
     }
 
-    val unauthorizedTopicMetadata = unauthorizedTopics.map(
-      topic =>
-        new MetadataResponse.TopicMetadata(
-          Errors.TOPIC_AUTHORIZATION_FAILED,
-          topic,
-          java.util.Collections.emptyList()))
+    val unauthorizedTopicMetadata = unauthorizedTopics.map(topic =>
+      new MetadataResponse.TopicMetadata(
+        Errors.TOPIC_AUTHORIZATION_FAILED,
+        topic,
+        java.util.Collections.emptyList()))
 
     val topicMetadata =
       if (authorizedTopics.isEmpty) Seq.empty[MetadataResponse.TopicMetadata]

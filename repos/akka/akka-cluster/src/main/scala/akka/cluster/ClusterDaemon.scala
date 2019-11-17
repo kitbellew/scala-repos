@@ -983,8 +983,8 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
       val downed = latestGossip.members.collect {
         case m if m.status == Down ⇒ m.uniqueAddress
       }
-      if (downed.forall(
-            node ⇒ unreachable(node) || latestGossip.seenByNode(node))) {
+      if (downed.forall(node ⇒
+            unreachable(node) || latestGossip.seenByNode(node))) {
         // the reason for not shutting down immediately is to give the gossip a chance to spread
         // the downing information to other downed nodes, so that they can shutdown themselves
         logInfo("Shutting down myself")

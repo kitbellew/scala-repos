@@ -68,10 +68,9 @@ object Comet {
     */
   def string(callbackName: String): Flow[String, ByteString, NotUsed] = {
     Flow[String]
-      .map(
-        str =>
-          ByteString.fromString(
-            "'" + StringEscapeUtils.escapeEcmaScript(str) + "'"))
+      .map(str =>
+        ByteString.fromString(
+          "'" + StringEscapeUtils.escapeEcmaScript(str) + "'"))
       .via(flow(callbackName))
   }
 

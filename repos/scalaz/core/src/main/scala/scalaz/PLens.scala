@@ -512,10 +512,9 @@ trait PLensFunctions extends PLensInstances with PLensFamilyFunctions {
     plens(v => v.lift(n) map (a => Store(x => v patch (n, Vector(x), 1), a)))
 
   def vectorLastPLens[A]: Vector[A] @?> A =
-    plens(
-      v =>
-        v.lastOption map
-          (a => Store(x => v patch (v.length - 1, Vector(x), 1), a)))
+    plens(v =>
+      v.lastOption map
+        (a => Store(x => v patch (v.length - 1, Vector(x), 1), a)))
 
   import Stream._
 
@@ -558,16 +557,14 @@ trait PLensFunctions extends PLensInstances with PLensFamilyFunctions {
     streamLookupByPLens(Equal[K].equal(k, _))
 
   def ephemeralStreamHeadPLens[A]: EphemeralStream[A] @?> A =
-    plens(
-      s =>
-        if (s.isEmpty) None
-        else Some(Store(EphemeralStream.cons(_, s.tail()), s.head())))
+    plens(s =>
+      if (s.isEmpty) None
+      else Some(Store(EphemeralStream.cons(_, s.tail()), s.head())))
 
   def ephemeralStreamTailPLens[A]: EphemeralStream[A] @?> EphemeralStream[A] =
-    plens(
-      s =>
-        if (s.isEmpty) None
-        else Some(Store(EphemeralStream.cons(s.head(), _), s.tail())))
+    plens(s =>
+      if (s.isEmpty) None
+      else Some(Store(EphemeralStream.cons(s.head(), _), s.tail())))
 
   def ephemeralStreamNthPLens[A](n: Int): EphemeralStream[A] @?> A =
     if (n < 0) nil
@@ -626,20 +623,18 @@ abstract class PLensInstances {
     new Unzip[λ[α => PLensFamily[S, R, α, α]]] {
       def unzip[A, B](a: PLensFamily[S, R, (A, B), (A, B)]) =
         (
-          plensFamily(
-            x =>
-              a run x map
-                (c => {
-                  val (p, q) = c.pos
-                  IndexedStore(a => c.put((a, q)): R, p)
-                })),
-          plensFamily(
-            x =>
-              a run x map
-                (c => {
-                  val (p, q) = c.pos
-                  IndexedStore(a => c.put((p, a)): R, q)
-                }))
+          plensFamily(x =>
+            a run x map
+              (c => {
+                val (p, q) = c.pos
+                IndexedStore(a => c.put((a, q)): R, p)
+              })),
+          plensFamily(x =>
+            a run x map
+              (c => {
+                val (p, q) = c.pos
+                IndexedStore(a => c.put((p, a)): R, q)
+              }))
         )
     }
 

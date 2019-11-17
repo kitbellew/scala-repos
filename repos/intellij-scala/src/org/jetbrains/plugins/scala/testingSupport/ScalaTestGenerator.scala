@@ -528,12 +528,11 @@ object ScalaTestGenerator {
           "\n" + normalIndentString + "\"\"\"",
         psiManager),
       closingBrace)
-    testNames.map(
-      testName =>
-        templateBody.addBefore(
-          ScalaPsiElementFactory
-            .createMethodFromText("def " + testName + " = ok", psiManager),
-          closingBrace))
+    testNames.map(testName =>
+      templateBody.addBefore(
+        ScalaPsiElementFactory
+          .createMethodFromText("def " + testName + " = ok", psiManager),
+        closingBrace))
   }
 
   private def generateSpecs2ScriptSpecificationMethods(

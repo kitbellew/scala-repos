@@ -253,11 +253,10 @@ object expand {
               c.error(
                 t.pos,
                 "arguments to @exclude does not have the same arity as the type symbols!")
-          args.map(
-            aa =>
-              (targs zip aa
-                .map(c.typeCheck(_))
-                .map(_.symbol.asModule.companionSymbol.asType.toType)).toMap)
+          args.map(aa =>
+            (targs zip aa
+              .map(c.typeCheck(_))
+              .map(_.symbol.asModule.companionSymbol.asType.toType)).toMap)
       }
       .flatten
       .toSeq

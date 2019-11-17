@@ -150,10 +150,9 @@ class ScClsStubBuilder extends ClsStubBuilder {
   private class ParentDirectory(dir: VirtualFile) extends Directory {
     def contains(name: String): Boolean = {
       if (dir == null) return false
-      !dir.getChildren.forall(
-        child =>
-          child.getExtension != "class" ||
-            NameTransformer.decode(child.getNameWithoutExtension) == name)
+      !dir.getChildren.forall(child =>
+        child.getExtension != "class" ||
+          NameTransformer.decode(child.getNameWithoutExtension) == name)
     }
   }
 }

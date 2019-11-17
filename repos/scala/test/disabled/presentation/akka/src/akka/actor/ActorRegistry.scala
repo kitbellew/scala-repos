@@ -76,10 +76,9 @@ final class ActorRegistry private[actor] () extends ListenerManagement {
     */
   def actorsFor[T <: Actor](message: Any)(
       implicit classTag: ClassTag[T]): Array[ActorRef] =
-    filter(
-      a =>
-        classTag.erasure.isAssignableFrom(a.actor.getClass) &&
-          a.isDefinedAt(message))
+    filter(a =>
+      classTag.erasure.isAssignableFrom(a.actor.getClass) &&
+        a.isDefinedAt(message))
 
   /**
     * Finds all actors that satisfy a predicate.

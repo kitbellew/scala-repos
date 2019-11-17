@@ -106,17 +106,15 @@ sealed abstract class Future[+A] {
     this.stepInterruptibly(cancel) match {
       case Now(a) if !cancel.get => cb(a).run
       case Async(onFinish) if !cancel.get =>
-        onFinish(
-          a =>
-            if (!cancel.get) cb(a)
-            else Trampoline.done(()))
+        onFinish(a =>
+          if (!cancel.get) cb(a)
+          else Trampoline.done(()))
       case BindAsync(onFinish, g) if !cancel.get =>
-        onFinish(
-          x =>
-            if (!cancel.get)
-              Trampoline.delay(g(x)) map
-                (_ unsafePerformListenInterruptibly (cb, cancel))
-            else Trampoline.done(()))
+        onFinish(x =>
+          if (!cancel.get)
+            Trampoline.delay(g(x)) map
+              (_ unsafePerformListenInterruptibly (cb, cancel))
+          else Trampoline.done(()))
       case _ if cancel.get => ()
     }
 

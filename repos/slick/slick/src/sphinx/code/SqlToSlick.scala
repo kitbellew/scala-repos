@@ -278,11 +278,10 @@ object SqlToSlick extends App {
         //#sqlQueryImplicitJoin
         val slick = //#slickQueryImplicitJoin
           people
-            .flatMap(
-              p =>
-                addresses
-                  .filter(a => p.addressId === a.id)
-                  .map(a => (p.name, a.city)))
+            .flatMap(p =>
+              addresses
+                .filter(a => p.addressId === a.id)
+                .map(a => (p.name, a.city)))
             .result
 
         //#slickQueryImplicitJoin

@@ -150,12 +150,11 @@ class DelayedFetch(
       fetchMetadata.fetchOnlyCommitted,
       fetchMetadata.fetchPartitionStatus.mapValues(status => status.fetchInfo))
 
-    val fetchPartitionData = logReadResults.mapValues(
-      result =>
-        FetchResponsePartitionData(
-          result.errorCode,
-          result.hw,
-          result.info.messageSet))
+    val fetchPartitionData = logReadResults.mapValues(result =>
+      FetchResponsePartitionData(
+        result.errorCode,
+        result.hw,
+        result.info.messageSet))
 
     responseCallback(fetchPartitionData)
   }

@@ -182,10 +182,9 @@ private[cluster] final case class Gossip(
       }
     unreachable.forall(m ⇒
       Gossip.convergenceSkipUnreachableWithMemberStatus(m.status)) &&
-    !members.exists(
-      m ⇒
-        Gossip.convergenceMemberStatus(m.status) &&
-          !seenByNode(m.uniqueAddress))
+    !members.exists(m ⇒
+      Gossip.convergenceMemberStatus(m.status) &&
+        !seenByNode(m.uniqueAddress))
   }
 
   lazy val reachabilityExcludingDownedObservers: Reachability = {
@@ -210,10 +209,9 @@ private[cluster] final case class Gossip(
     val reachableMembers =
       if (overview.reachability.isAllReachable) mbrs
       else
-        mbrs.filter(
-          m ⇒
-            overview.reachability.isReachable(m.uniqueAddress) ||
-              m.uniqueAddress == selfUniqueAddress)
+        mbrs.filter(m ⇒
+          overview.reachability.isReachable(m.uniqueAddress) ||
+            m.uniqueAddress == selfUniqueAddress)
     if (reachableMembers.isEmpty) None
     else
       reachableMembers

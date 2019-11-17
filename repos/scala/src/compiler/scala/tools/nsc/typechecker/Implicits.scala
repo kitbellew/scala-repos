@@ -1159,11 +1159,10 @@ trait Implicits { self: Analyzer =>
       /** Returns all eligible ImplicitInfos and their SearchResults in a map.
         */
       def findAll() =
-        linkedMapFrom(eligible)(
-          x =>
-            try typedImplicit(x, ptChecked = false, isLocalToCallsite)
-            finally context.reporter
-              .clearAll())
+        linkedMapFrom(eligible)(x =>
+          try typedImplicit(x, ptChecked = false, isLocalToCallsite)
+          finally context.reporter
+            .clearAll())
 
       /** Returns the SearchResult of the best match.
         */

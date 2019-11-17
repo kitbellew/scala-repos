@@ -21,11 +21,10 @@ class HoconLexerTest extends HoconFileSetTestCase("lexer") {
     val tokenIterator = Iterator
       .iterate(lexer)(advance)
       .takeWhile(_.getTokenType != null)
-      .map(
-        l =>
-          (
-            l.getTokenType,
-            fileContents.substring(l.getTokenStart, l.getTokenEnd)))
+      .map(l =>
+        (
+          l.getTokenType,
+          fileContents.substring(l.getTokenStart, l.getTokenEnd)))
 
     tokenIterator
       .map {

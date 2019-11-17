@@ -115,8 +115,8 @@ object JsMacroImpl {
             case t @ TypeRef(_, _, Nil) => Some(List(t))
             case t @ TypeRef(_, _, args) =>
               import c.universe.definitions.TupleClass
-              if (!TupleClass.seq.exists(
-                    tupleSym => t.baseType(tupleSym) ne NoType))
+              if (!TupleClass.seq.exists(tupleSym =>
+                    t.baseType(tupleSym) ne NoType))
                 Some(List(t))
               else if (t <:< typeOf[Product]) Some(args)
               else None
@@ -264,10 +264,9 @@ object JsMacroImpl {
 
         val applyParams = params.foldLeft(List[Tree]())((l, e) =>
           l :+ Ident(TermName(e.name.encodedName.toString)))
-        val vals = params.foldLeft(List[Tree]())(
-          (l, e) =>
-            // Let type inference infer the type by using the empty type, TypeTree()
-            l :+ q"val ${TermName(e.name.encodedName.toString)}: ${TypeTree()}")
+        val vals = params.foldLeft(List[Tree]())((l, e) =>
+          // Let type inference infer the type by using the empty type, TypeTree()
+          l :+ q"val ${TermName(e.name.encodedName.toString)}: ${TypeTree()}")
 
         q"(..$vals) => $companionObject.apply(..${applyParams.init}, ${applyParams.last}: _*)"
       } else {

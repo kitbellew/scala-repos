@@ -237,8 +237,9 @@ object Boilerplate {
       val nestedProducts = (0 until (arity - 2))
         .foldRight(s"cartesian.product(f${arity - 2}, f${arity - 1})")(
           (i, acc) => s"cartesian.product(f$i, $acc)")
-      val `nested (a..n)` = (0 until (arity - 2)).foldRight(
-        s"(a${arity - 2}, a${arity - 1})")((i, acc) => s"(a$i, $acc)")
+      val `nested (a..n)` =
+        (0 until (arity - 2)).foldRight(s"(a${arity - 2}, a${arity - 1})")(
+          (i, acc) => s"(a$i, $acc)")
 
       block"""
          |package cats

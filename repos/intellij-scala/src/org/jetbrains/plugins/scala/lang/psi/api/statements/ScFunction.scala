@@ -587,11 +587,10 @@ trait ScFunction
       if (option.isEmpty) return None
       option.get.primarySuper
         .filter(_.info.isInstanceOf[PhysicalSignature])
-        .map(
-          node =>
-            (
-              node.info.asInstanceOf[PhysicalSignature].method,
-              node.info.substitutor))
+        .map(node =>
+          (
+            node.info.asInstanceOf[PhysicalSignature].method,
+            node.info.substitutor))
     } else None
   }
 

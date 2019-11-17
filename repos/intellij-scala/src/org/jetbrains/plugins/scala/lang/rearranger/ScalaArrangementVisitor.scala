@@ -465,15 +465,14 @@ class ScalaArrangementVisitor(
         }
         unseparableRanges
           .get(entry)
-          .foreach(
-            queue =>
-              queue.enqueue(
-                createNewEntry(
-                  body,
-                  new TextRange(newOffset, child.getTextRange.getEndOffset),
-                  UNSEPARABLE_RANGE,
-                  null,
-                  canArrange = true)))
+          .foreach(queue =>
+            queue.enqueue(
+              createNewEntry(
+                body,
+                new TextRange(newOffset, child.getTextRange.getEndOffset),
+                UNSEPARABLE_RANGE,
+                null,
+                canArrange = true)))
         None
       } else startOffset
     })

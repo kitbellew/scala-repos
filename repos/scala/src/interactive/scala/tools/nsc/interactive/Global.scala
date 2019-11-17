@@ -1325,15 +1325,13 @@ with ContextTrees with RichCompilationUnits with Picklers {
               val enteredAlternatives = Set(entered, entered.capitalize)
               head.inits
                 .filter(_.length <= entered.length)
-                .exists(
-                  init =>
-                    enteredAlternatives.exists(
-                      entered =>
-                        lenientMatch(
-                          entered.stripPrefix(init),
-                          tail,
-                          matchCount +
-                            (if (init.isEmpty) 0 else 1))))
+                .exists(init =>
+                  enteredAlternatives.exists(entered =>
+                    lenientMatch(
+                      entered.stripPrefix(init),
+                      tail,
+                      matchCount +
+                        (if (init.isEmpty) 0 else 1))))
           }
         }
         val containsAllEnteredChars = {

@@ -197,15 +197,13 @@ class JDBCLEvents(
                 sqls
                   .toOrConditionOpt(x.map(y => Some(sqls"event = $y")): _*))
               .getOrElse(None),
-            targetEntityType.map(
-              x =>
-                x.map(y => sqls"targetEntityType = $y")
-                  .getOrElse(sqls"targetEntityType IS NULL")),
+            targetEntityType.map(x =>
+              x.map(y => sqls"targetEntityType = $y")
+                .getOrElse(sqls"targetEntityType IS NULL")),
             targetEntityId
-              .map(
-                x =>
-                  x.map(y => sqls"targetEntityId = $y")
-                    .getOrElse(sqls"targetEntityId IS NULL"))
+              .map(x =>
+                x.map(y => sqls"targetEntityId = $y")
+                  .getOrElse(sqls"targetEntityId IS NULL"))
           )
           .map(sqls.where(_))
           .getOrElse(sqls"")

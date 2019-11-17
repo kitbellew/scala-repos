@@ -122,9 +122,8 @@ object OrmToSlick extends App {
     };
     {
       //#slickQueryWithTypes
-      val q = (people: Query[People, Person, Seq]).filter(
-        (p: People) => (((p.age: Rep[Int]) < 5 || p.age > 65): Rep[Boolean])
-      )
+      val q = (people: Query[People, Person, Seq]).filter((p: People) =>
+        (((p.age: Rep[Int]) < 5 || p.age > 65): Rep[Boolean]))
       //#slickQueryWithTypes
     };
     {

@@ -56,12 +56,11 @@ private[launcher] class TaskLauncherImpl(
       refuseMilliseconds: Option[Long]): Unit = {
     val declined = withDriver(s"declineOffer(${offerID.getValue})") {
       val filters = refuseMilliseconds
-        .map(
-          seconds =>
-            Protos.Filters
-              .newBuilder()
-              .setRefuseSeconds(seconds / 1000.0)
-              .build())
+        .map(seconds =>
+          Protos.Filters
+            .newBuilder()
+            .setRefuseSeconds(seconds / 1000.0)
+            .build())
         .getOrElse(Protos.Filters.getDefaultInstance)
       _.declineOffer(offerID, filters)
     }

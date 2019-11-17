@@ -57,11 +57,10 @@ trait ScAnnotationsHolder extends ScalaPsiElement with PsiAnnotationOwner {
     hasAnnotation(clazz.qualifiedName).isDefined
 
   def hasAnnotation(qualifiedName: String): Option[ScAnnotation] = {
-    annotations.find(
-      annot =>
-        acceptType(
-          annot.typeElement.getType(TypingContext.empty).getOrAny,
-          qualifiedName))
+    annotations.find(annot =>
+      acceptType(
+        annot.typeElement.getType(TypingContext.empty).getOrAny,
+        qualifiedName))
   }
 
   def allMatchingAnnotations(qualifiedName: String): Seq[ScAnnotation] = {

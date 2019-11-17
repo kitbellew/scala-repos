@@ -285,11 +285,10 @@ class FlowStageSpec
       val p = Source(List(1, 2, 3)).runWith(Sink.asPublisher(false))
       val p2 = Source
         .fromPublisher(p)
-        .map(
-          elem ⇒
-            if (elem == 2)
-              throw new IllegalArgumentException("two not allowed")
-            else elem)
+        .map(elem ⇒
+          if (elem == 2)
+            throw new IllegalArgumentException("two not allowed")
+          else elem)
         .transform(() ⇒
           new StatefulStage[Int, Int] {
             override def initial = new State {

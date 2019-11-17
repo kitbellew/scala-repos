@@ -380,13 +380,11 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
         (pair._1, pair._2.openOrThrowException("these are all Full")))
 
       val fieldsToUnset: List[String] = otherFields
-        .filter(
-          pair =>
-            pair._2 match {
-              case Empty => true
-              case _     => false
-            }
-        )
+        .filter(pair =>
+          pair._2 match {
+            case Empty => true
+            case _     => false
+          })
         .map(_._1)
 
       if (fieldsToSet.length > 0 || fieldsToUnset.length > 0) {

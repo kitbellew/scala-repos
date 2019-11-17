@@ -89,10 +89,9 @@ object Form extends DispatchSnippet {
   private def addAjaxForm: MetaData = {
     val id = Helpers.nextFuncName
 
-    val attr = S.currentAttrsToMetaData(
-      name =>
-        name != "id" && name != "onsubmit" && name != "action" &&
-          name != "form")
+    val attr = S.currentAttrsToMetaData(name =>
+      name != "id" && name != "onsubmit" && name != "action" &&
+        name != "form")
 
     val pre = S.attr.~("onsubmit").map(_.text + ";") getOrElse ""
 

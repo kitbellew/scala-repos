@@ -500,12 +500,11 @@ trait Infer extends Checkable { self: Analyzer =>
       if (isConservativelyCompatible(
             restpe.instantiateTypeParams(tparams, tvars),
             pt))
-        map2(tparams, tvars)(
-          (tparam, tvar) =>
-            try instantiateToBound(tvar, varianceInTypes(formals)(tparam))
-            catch {
-              case ex: NoInstance => WildcardType
-            })
+        map2(tparams, tvars)((tparam, tvar) =>
+          try instantiateToBound(tvar, varianceInTypes(formals)(tparam))
+          catch {
+            case ex: NoInstance => WildcardType
+          })
       else tvars map (_ => WildcardType)
     }
 
