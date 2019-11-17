@@ -325,10 +325,8 @@ trait ShardServiceCombinators
         delegate.service(
           request
             .copy(parameters = request.parameters + ('sync -> "async"))) map {
-          f =>
-            { (cred: (APIKey, AccountDetails)) =>
-              f(cred, Path(path))
-            }
+          f => (cred: (APIKey, AccountDetails)) =>
+            f(cred, Path(path))
         }
       }
 
@@ -344,9 +342,8 @@ trait ShardServiceCombinators
     val service0 =
       service map {
         (f: ((APIKey, AccountDetails)) => Future[HttpResponse[B]]) =>
-          { (v: Validation[String, (APIKey, AccountDetails)]) =>
+          (v: Validation[String, (APIKey, AccountDetails)]) =>
             v.fold(msg => M.point(forbidden(msg) map inj), f)
-          }
       }
     new FindAccountService(accountFinder)(service0)
   }
@@ -367,7 +364,7 @@ final class FindAccountService[A, B](accountFinder: AccountFinder[Future])(
     (request: HttpRequest[A]) =>
       delegate.service(request) map {
         (f: Validation[String, (APIKey, AccountDetails)] => Future[B]) =>
-          { (apiKey: APIKey) =>
+          (apiKey: APIKey) =>
             val details =
               OptionT(accountFinder.findAccountByAPIKey(apiKey)) flatMap {
                 accountId =>
@@ -377,7 +374,6 @@ final class FindAccountService[A, B](accountFinder: AccountFinder[Future])(
               account => Success((apiKey, account)),
               Failure("Cannot find account for API key: " + apiKey))
             result flatMap f
-          }
       }
   }
 

@@ -359,10 +359,8 @@ class CForBenchmarks extends MyBenchmark {
     val arr2 = arr.clone
     val len = size
     cfor(0)(_ < len, _ + 1) { i =>
-      {
-        val value = arr2(i)
-        arr2(i) = value * 2
-      }
+      val value = arr2(i)
+      arr2(i) = value * 2
     }
   }
 }

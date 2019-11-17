@@ -201,7 +201,6 @@ abstract class AggregationIterator(
     } else {
       // Grouping only.
       (currentBuffer: MutableRow, row: InternalRow) =>
-        {}
     }
   }
 

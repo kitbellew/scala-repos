@@ -41,14 +41,10 @@ object Engine0 {
     override def readEval(
         sc: SparkContext): Seq[(TrainingData, EvalInfo, RDD[(Query, Actual)])] =
       (0 until en).map { ex =>
-        {
-          val qaSeq: Seq[(Query, Actual)] = (0 until qn).map { qx =>
-            {
-              (Query(id, ex = ex, qx = qx), Actual(id, ex, qx))
-            }
-          }
-          (TrainingData(id), EvalInfo(id), sc.parallelize(qaSeq))
+        val qaSeq: Seq[(Query, Actual)] = (0 until qn).map { qx =>
+          (Query(id, ex = ex, qx = qx), Actual(id, ex, qx))
         }
+        (TrainingData(id), EvalInfo(id), sc.parallelize(qaSeq))
       }
   }
 
@@ -64,14 +60,10 @@ object Engine0 {
     override def readEval(
         sc: SparkContext): Seq[(TrainingData, EvalInfo, RDD[(Query, Actual)])] =
       (0 until params.en).map { ex =>
-        {
-          val qaSeq: Seq[(Query, Actual)] = (0 until params.qn).map { qx =>
-            {
-              (Query(id, ex = ex, qx = qx), Actual(id, ex, qx))
-            }
-          }
-          (TrainingData(id), EvalInfo(id), sc.parallelize(qaSeq))
+        val qaSeq: Seq[(Query, Actual)] = (0 until params.qn).map { qx =>
+          (Query(id, ex = ex, qx = qx), Actual(id, ex, qx))
         }
+        (TrainingData(id), EvalInfo(id), sc.parallelize(qaSeq))
       }
   }
 
@@ -94,14 +86,10 @@ object Engine0 {
     override def readEval(
         sc: SparkContext): Seq[(TrainingData, EvalInfo, RDD[(Query, Actual)])] =
       (0 until params.en).map { ex =>
-        {
-          val qaSeq: Seq[(Query, Actual)] = (0 until params.qn).map { qx =>
-            {
-              (Query(id, ex = ex, qx = qx), Actual(id, ex, qx))
-            }
-          }
-          (TrainingData(id), EvalInfo(id), sc.parallelize(qaSeq))
+        val qaSeq: Seq[(Query, Actual)] = (0 until params.qn).map { qx =>
+          (Query(id, ex = ex, qx = qx), Actual(id, ex, qx))
         }
+        (TrainingData(id), EvalInfo(id), sc.parallelize(qaSeq))
       }
   }
 
@@ -112,14 +100,10 @@ object Engine0 {
     override def readEval(
         ): Seq[(TrainingData, EvalInfo, Seq[(Query, Actual)])] =
       (0 until en).map { ex =>
-        {
-          val qaSeq: Seq[(Query, Actual)] = (0 until qn).map { qx =>
-            {
-              (Query(id, ex = ex, qx = qx), Actual(id, ex, qx))
-            }
-          }
-          (TrainingData(id), EvalInfo(id), qaSeq)
+        val qaSeq: Seq[(Query, Actual)] = (0 until qn).map { qx =>
+          (Query(id, ex = ex, qx = qx), Actual(id, ex, qx))
         }
+        (TrainingData(id), EvalInfo(id), qaSeq)
       }
   }
 
@@ -135,14 +119,10 @@ object Engine0 {
     override def readEval(
         ): Seq[(TrainingData, EvalInfo, Seq[(Query, Actual)])] =
       (0 until params.en).map { ex =>
-        {
-          val qaSeq: Seq[(Query, Actual)] = (0 until params.qn).map { qx =>
-            {
-              (Query(id, ex = ex, qx = qx), Actual(id, ex, qx))
-            }
-          }
-          (TrainingData(id), EvalInfo(id), qaSeq)
+        val qaSeq: Seq[(Query, Actual)] = (0 until params.qn).map { qx =>
+          (Query(id, ex = ex, qx = qx), Actual(id, ex, qx))
         }
+        (TrainingData(id), EvalInfo(id), qaSeq)
       }
   }
 

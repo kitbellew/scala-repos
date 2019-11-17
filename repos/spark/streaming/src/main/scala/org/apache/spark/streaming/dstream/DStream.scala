@@ -445,7 +445,6 @@ abstract class DStream[T: ClassTag](
       case Some(rdd) => {
         val jobFunc = () => {
           val emptyFunc = { (iterator: Iterator[T]) =>
-            {}
           }
           context.sparkContext.runJob(rdd, emptyFunc)
         }
@@ -765,17 +764,15 @@ abstract class DStream[T: ClassTag](
     */
   def print(num: Int): Unit = ssc.withScope {
     def foreachFunc: (RDD[T], Time) => Unit = { (rdd: RDD[T], time: Time) =>
-      {
-        val firstNum = rdd.take(num + 1)
-        // scalastyle:off println
-        println("-------------------------------------------")
-        println(s"Time: $time")
-        println("-------------------------------------------")
-        firstNum.take(num).foreach(println)
-        if (firstNum.length > num) println("...")
-        println()
-        // scalastyle:on println
-      }
+      val firstNum = rdd.take(num + 1)
+      // scalastyle:off println
+      println("-------------------------------------------")
+      println(s"Time: $time")
+      println("-------------------------------------------")
+      firstNum.take(num).foreach(println)
+      if (firstNum.length > num) println("...")
+      println()
+    // scalastyle:on println
     }
     foreachRDD(
       context.sparkContext.clean(foreachFunc),

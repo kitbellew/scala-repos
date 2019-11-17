@@ -146,11 +146,9 @@ object CssSelectorParser extends PackratParsers with ImplicitConversions {
     // of the selectors will be cached, it's not really a performance hit
     cache.get(toParse) or {
       internalParse(toParse).map { sel =>
-        {
-          // cache the result
-          cache(toParse) = sel
-          sel
-        }
+        // cache the result
+        cache(toParse) = sel
+        sel
       }
     }
   }

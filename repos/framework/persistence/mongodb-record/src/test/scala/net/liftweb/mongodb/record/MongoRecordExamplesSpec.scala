@@ -132,15 +132,13 @@ package mongotestrecords {
         val dbl = new BasicDBList
 
         value.foreach { m =>
-          {
-            val dbo = new BasicDBObject
+          val dbo = new BasicDBObject
 
-            m.keys.foreach(k => {
-              dbo.put(k.toString, m.getOrElse(k, ""))
-            })
+          m.keys.foreach(k => {
+            dbo.put(k.toString, m.getOrElse(k, ""))
+          })
 
-            dbl.add(dbo)
-          }
+          dbl.add(dbo)
         }
 
         dbl

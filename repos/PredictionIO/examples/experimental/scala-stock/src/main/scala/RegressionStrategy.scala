@@ -130,10 +130,8 @@ class RegressionStrategy(params: RegressionStrategyParams)
 
     val prediction =
       query.tickers.filter(ticker => model.contains(ticker)).map { ticker =>
-        {
-          val p = predictOne(model(ticker), ticker, dataView)
-          (ticker, p)
-        }
+        val p = predictOne(model(ticker), ticker, dataView)
+        (ticker, p)
       }
 
     Prediction(HashMap[String, Double](prediction: _*))

@@ -140,16 +140,12 @@ abstract class MappedBoolean[T <: Mapper[T]](val fieldOwner: T)
       columnName: String): (T, AnyRef) => Unit =
     inst match {
       case null => { (inst: T, v: AnyRef) =>
-        {
-          val tv = getField(inst, accessor).asInstanceOf[MappedBoolean[T]];
-          tv.data = Full(false)
-        }
+        val tv = getField(inst, accessor).asInstanceOf[MappedBoolean[T]];
+        tv.data = Full(false)
       }
       case _ => { (inst: T, v: AnyRef) =>
-        {
-          val tv = getField(inst, accessor).asInstanceOf[MappedBoolean[T]];
-          tv.data = Full(toBoolean(v))
-        }
+        val tv = getField(inst, accessor).asInstanceOf[MappedBoolean[T]];
+        tv.data = Full(toBoolean(v))
       }
     }
 

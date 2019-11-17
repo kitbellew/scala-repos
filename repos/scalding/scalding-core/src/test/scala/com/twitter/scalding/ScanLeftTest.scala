@@ -12,9 +12,7 @@ class AddRankingWithScanLeft(args: Args) extends Job(args) {
       group.sortBy('height).reverse
       group.scanLeft(('height) -> ('rank))((0L)) {
         (rank: Long, user_id: Double) =>
-          {
-            (rank + 1L)
-          }
+          (rank + 1L)
       }
     }
     // scanLeft generates an extra line per group, thus remove it

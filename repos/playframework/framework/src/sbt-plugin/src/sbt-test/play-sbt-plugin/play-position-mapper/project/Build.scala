@@ -57,9 +57,7 @@ object ApplicationBuild extends Build {
     .settings(
       version := appVersion,
       extraLoggers ~= { currentFunction => (key: ScopedKey[_]) =>
-        {
-          bufferLogger +: currentFunction(key)
-        }
+        bufferLogger +: currentFunction(key)
       },
       scalaVersion := sys.props.get("scala.version").getOrElse("2.11.7"),
       checkLogContainsTask,

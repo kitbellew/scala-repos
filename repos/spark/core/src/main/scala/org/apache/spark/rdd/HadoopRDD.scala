@@ -471,19 +471,17 @@ private[spark] object HadoopRDD extends Logging {
       infos: Array[AnyRef]): Seq[String] = {
     val out = ListBuffer[String]()
     infos.foreach { loc =>
-      {
-        val locationStr = HadoopRDD.SPLIT_INFO_REFLECTIONS.get.getLocation
-          .invoke(loc)
-          .asInstanceOf[String]
-        if (locationStr != "localhost") {
-          if (HadoopRDD.SPLIT_INFO_REFLECTIONS.get.isInMemory
-                .invoke(loc)
-                .asInstanceOf[Boolean]) {
-            logDebug("Partition " + locationStr + " is cached by Hadoop.")
-            out += new HDFSCacheTaskLocation(locationStr).toString
-          } else {
-            out += new HostTaskLocation(locationStr).toString
-          }
+      val locationStr = HadoopRDD.SPLIT_INFO_REFLECTIONS.get.getLocation
+        .invoke(loc)
+        .asInstanceOf[String]
+      if (locationStr != "localhost") {
+        if (HadoopRDD.SPLIT_INFO_REFLECTIONS.get.isInMemory
+              .invoke(loc)
+              .asInstanceOf[Boolean]) {
+          logDebug("Partition " + locationStr + " is cached by Hadoop.")
+          out += new HDFSCacheTaskLocation(locationStr).toString
+        } else {
+          out += new HostTaskLocation(locationStr).toString
         }
       }
     }

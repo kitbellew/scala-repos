@@ -119,17 +119,13 @@ class BernoulliCellSampler[T](
     } else {
       if (complement) {
         items.filter { item =>
-          {
-            val x = rng.nextDouble()
-            (x < lb) || (x >= ub)
-          }
+          val x = rng.nextDouble()
+          (x < lb) || (x >= ub)
         }
       } else {
         items.filter { item =>
-          {
-            val x = rng.nextDouble()
-            (x >= lb) && (x < ub)
-          }
+          val x = rng.nextDouble()
+          (x >= lb) && (x < ub)
         }
       }
     }

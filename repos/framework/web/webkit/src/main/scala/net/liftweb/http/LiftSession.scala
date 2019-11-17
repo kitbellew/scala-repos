@@ -125,20 +125,16 @@ object LiftSession {
         case Full(ParamPair(value, clz)) =>
           const
             .find { cp =>
-              {
-                cp.getParameterTypes.length == 2 &&
-                cp.getParameterTypes().apply(0).isAssignableFrom(clz) && cp
-                  .getParameterTypes()
-                  .apply(1)
-                  .isAssignableFrom(classOf[LiftSession])
-              }
+              cp.getParameterTypes.length == 2 &&
+              cp.getParameterTypes().apply(0).isAssignableFrom(clz) && cp
+                .getParameterTypes()
+                .apply(1)
+                .isAssignableFrom(classOf[LiftSession])
             }
             .map(const => PAndSessionConstructor(const)) orElse const
             .find { cp =>
-              {
-                cp.getParameterTypes.length == 1 &&
-                cp.getParameterTypes().apply(0).isAssignableFrom(clz)
-              }
+              cp.getParameterTypes.length == 1 &&
+              cp.getParameterTypes().apply(0).isAssignableFrom(clz)
             }
             .map(const => PConstructor(const)) orElse nullConstructor()
 

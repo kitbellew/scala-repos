@@ -86,10 +86,8 @@ class APIKeyValidService[A, B](
       APIKey => Future[B]] {
   val service = { (request: HttpRequest[A]) =>
     delegate.service(request) map {
-      (f: APIKey => Future[B]) =>
-        { (apiKeyV: Validation[String, APIKey]) =>
-          apiKeyV.fold(error, f)
-        }
+      (f: APIKey => Future[B]) => (apiKeyV: Validation[String, APIKey]) =>
+        apiKeyV.fold(error, f)
     }
   }
 

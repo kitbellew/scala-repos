@@ -98,35 +98,33 @@ trait ScTypePsiTypeBridge {
                 ScParameterizedType(
                   des,
                   tps.map({ tp =>
-                    {
-                      val arrayOfTypes: Array[PsiClassType] =
-                        tp.getExtendsListTypes ++ tp.getImplementsListTypes
-                      ScSkolemizedType(
-                        s"_$$${ index += 1; index }",
-                        Nil,
-                        types.Nothing,
-                        arrayOfTypes.length match {
-                          case 0 => types.Any
-                          case 1 =>
-                            create(
-                              arrayOfTypes.apply(0),
-                              project,
-                              scope,
-                              visitedRawTypes + clazz)
-                          case _ =>
-                            ScCompoundType(
-                              arrayOfTypes.map(
-                                create(
-                                  _,
-                                  project,
-                                  scope,
-                                  visitedRawTypes +
-                                    clazz)),
-                              Map.empty,
-                              Map.empty)
-                        }
-                      )
-                    }
+                    val arrayOfTypes: Array[PsiClassType] =
+                      tp.getExtendsListTypes ++ tp.getImplementsListTypes
+                    ScSkolemizedType(
+                      s"_$$${ index += 1; index }",
+                      Nil,
+                      types.Nothing,
+                      arrayOfTypes.length match {
+                        case 0 => types.Any
+                        case 1 =>
+                          create(
+                            arrayOfTypes.apply(0),
+                            project,
+                            scope,
+                            visitedRawTypes + clazz)
+                        case _ =>
+                          ScCompoundType(
+                            arrayOfTypes.map(
+                              create(
+                                _,
+                                project,
+                                scope,
+                                visitedRawTypes +
+                                  clazz)),
+                            Map.empty,
+                            Map.empty)
+                      }
+                    )
                   })
                 ).unpackedType
               case _ =>

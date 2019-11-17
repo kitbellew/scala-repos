@@ -2,9 +2,7 @@ import annotation._
 
 object Tail {
   def tcInFunc: Unit = { () =>
-    {
-      @tailrec def foo: Int = foo + 1
-    }
+    @tailrec def foo: Int = foo + 1
   }
   def tcInBooleanExprFirstOp(x: Int, v: Int): Boolean = {
     @tailrec def foo: Int = foo + 1

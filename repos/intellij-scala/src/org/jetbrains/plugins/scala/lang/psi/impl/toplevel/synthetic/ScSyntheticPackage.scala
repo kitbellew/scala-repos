@@ -173,10 +173,8 @@ object ScSyntheticPackage {
 
           def getClasses(scope: GlobalSearchScope) =
             getClasses.filter { clazz =>
-              {
-                val file = clazz.getContainingFile.getVirtualFile
-                file != null && scope.contains(file)
-              }
+              val file = clazz.getContainingFile.getVirtualFile
+              file != null && scope.contains(file)
             }
 
           def getParentPackage = ScPackageImpl.findPackage(project, pname)
@@ -195,11 +193,9 @@ object ScSyntheticPackage {
                 else ""
               if (tail.length == 0) {
                 p.packagings.foreach { pack =>
-                  {
-                    val own = pack.ownNamePart
-                    val i = own.indexOf(".")
-                    addPackage(if (i > 0) own.substring(0, i) else own)
-                  }
+                  val own = pack.ownNamePart
+                  val i = own.indexOf(".")
+                  addPackage(if (i > 0) own.substring(0, i) else own)
                 }
                 p.typeDefs.foreach {
                   case o: ScObject

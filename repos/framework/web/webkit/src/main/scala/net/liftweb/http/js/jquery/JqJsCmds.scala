@@ -41,14 +41,12 @@ object JqWiringSupport {
     */
   def fade: (String, Boolean, JsCmd) => JsCmd = {
     (id: String, first: Boolean, cmd: JsCmd) =>
-      {
-        if (first) cmd
-        else {
-          val sel = "jQuery('#'+" + id.encJs + ")"
-          Run(
-            sel + ".fadeOut('fast', function() {" + cmd.toJsCmd + " " + sel +
-              ".fadeIn('fast');})")
-        }
+      if (first) cmd
+      else {
+        val sel = "jQuery('#'+" + id.encJs + ")"
+        Run(
+          sel + ".fadeOut('fast', function() {" + cmd.toJsCmd + " " + sel +
+            ".fadeIn('fast');})")
       }
   }
 
@@ -57,14 +55,12 @@ object JqWiringSupport {
     */
   def slideDown: (String, Boolean, JsCmd) => JsCmd = {
     (id: String, first: Boolean, cmd: JsCmd) =>
-      {
-        if (first) cmd
-        else {
-          val sel = "jQuery('#'+" + id.encJs + ")"
-          Run(
-            sel + ".hide(); " + cmd.toJsCmd + " " + sel +
-              ".slideDown('fast')")
-        }
+      if (first) cmd
+      else {
+        val sel = "jQuery('#'+" + id.encJs + ")"
+        Run(
+          sel + ".hide(); " + cmd.toJsCmd + " " + sel +
+            ".slideDown('fast')")
       }
   }
 
@@ -73,12 +69,10 @@ object JqWiringSupport {
     */
   def slideUp: (String, Boolean, JsCmd) => JsCmd = {
     (id: String, first: Boolean, cmd: JsCmd) =>
-      {
-        if (first) cmd
-        else {
-          val sel = "jQuery('#'+" + id.encJs + ")"
-          Run(sel + ".hide(); " + cmd.toJsCmd + " " + sel + ".slideUp('fast')")
-        }
+      if (first) cmd
+      else {
+        val sel = "jQuery('#'+" + id.encJs + ")"
+        Run(sel + ".hide(); " + cmd.toJsCmd + " " + sel + ".slideUp('fast')")
       }
   }
 

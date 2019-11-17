@@ -773,7 +773,7 @@ trait EntityPage extends HtmlPage {
         <dt>Attributes</dt>
         <dd>{
           fvs map { fv =>
-            { inlineToHtml(fv.text) ++ scala.xml.Text(" ") }
+            inlineToHtml(fv.text) ++ scala.xml.Text(" ")
           }
         }</dd>
       }

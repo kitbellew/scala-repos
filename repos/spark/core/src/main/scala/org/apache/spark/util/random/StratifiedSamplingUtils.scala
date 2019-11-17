@@ -147,21 +147,19 @@ private[spark] object StratifiedSamplingUtils extends Logging {
     (
         result1: mutable.Map[K, AcceptanceResult],
         result2: mutable.Map[K, AcceptanceResult]) =>
-      {
-        // take union of both key sets in case one partition doesn't contain all keys
-        result1.keySet.union(result2.keySet).foreach { key =>
-          // Use result2 to keep the combined result since r1 is usual empty
-          val entry1 = result1.get(key)
-          if (result2.contains(key)) {
-            result2(key).merge(entry1)
-          } else {
-            if (entry1.isDefined) {
-              result2 += (key -> entry1.get)
-            }
+      // take union of both key sets in case one partition doesn't contain all keys
+      result1.keySet.union(result2.keySet).foreach { key =>
+        // Use result2 to keep the combined result since r1 is usual empty
+        val entry1 = result1.get(key)
+        if (result2.contains(key)) {
+          result2(key).merge(entry1)
+        } else {
+          if (entry1.isDefined) {
+            result2 += (key -> entry1.get)
           }
         }
-        result2
       }
+      result2
   }
 
   /**
@@ -271,16 +269,14 @@ private[spark] object StratifiedSamplingUtils extends Logging {
         }
       }
     } else { (idx: Int, iter: Iterator[(K, V)]) =>
-      {
-        val rng = new RandomDataGenerator()
-        rng.reSeed(seed + idx)
-        iter.flatMap { item =>
-          val count = rng.nextPoisson(fractions(item._1))
-          if (count == 0) {
-            Iterator.empty
-          } else {
-            Iterator.fill(count)(item)
-          }
+      val rng = new RandomDataGenerator()
+      rng.reSeed(seed + idx)
+      iter.flatMap { item =>
+        val count = rng.nextPoisson(fractions(item._1))
+        if (count == 0) {
+          Iterator.empty
+        } else {
+          Iterator.fill(count)(item)
         }
       }
     }

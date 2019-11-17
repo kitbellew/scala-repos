@@ -6,9 +6,7 @@ import scala.tools.reflect.ToolBox
 object Test extends App {
   def foo[T](ys: List[T]): Int => Int = {
     val fun = reify { (x: Int) =>
-      {
-        x
-      }
+      x
     }
 
     val toolbox = cm.mkToolBox()

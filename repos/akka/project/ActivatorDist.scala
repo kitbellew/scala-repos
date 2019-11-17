@@ -30,37 +30,35 @@ object ActivatorDist {
       buildStructure,
       streams) map {
       (project, projectBase, activatorDistDirectory, version, structure, s) =>
-        {
-          val directories = projectBase
-            .listFiles(DirectoryFilter)
-            .filter(dir => (dir / "activator.properties").exists)
-          val rootGitignoreLines =
-            IO.readLines(AkkaBuild.root.base / ".gitignore")
-          for (dir <- directories) {
-            val localGitignoreLines =
-              if ((dir / ".gitignore").exists) IO.readLines(dir / ".gitignore")
-              else Nil
-            val gitignoreFileFilter =
-              (".gitignore" :: localGitignoreLines ::: rootGitignoreLines)
-                .foldLeft[FileFilter](NothingFilter)((acc, x) => acc || x)
-            val filteredPathFinder =
-              PathFinder(dir) descendantsExcept ("*", gitignoreFileFilter) filter
-                (_.isFile)
-            filteredPathFinder pair Path.rebase(
-              dir,
-              activatorDistDirectory / dir.name) map {
-              case (source, target) =>
-                s.log.info(s"copying: $source -> $target")
-                IO.copyFile(source, target, preserveLastModified = true)
-            }
-            val targetDir = activatorDistDirectory / dir.name
-            val targetFile =
-              activatorDistDirectory / (dir.name + "-" + version + ".zip")
-            s.log.info(s"zipping: $targetDir -> $targetFile")
-            Dist.zip(targetDir, targetFile)
+        val directories = projectBase
+          .listFiles(DirectoryFilter)
+          .filter(dir => (dir / "activator.properties").exists)
+        val rootGitignoreLines =
+          IO.readLines(AkkaBuild.root.base / ".gitignore")
+        for (dir <- directories) {
+          val localGitignoreLines =
+            if ((dir / ".gitignore").exists) IO.readLines(dir / ".gitignore")
+            else Nil
+          val gitignoreFileFilter =
+            (".gitignore" :: localGitignoreLines ::: rootGitignoreLines)
+              .foldLeft[FileFilter](NothingFilter)((acc, x) => acc || x)
+          val filteredPathFinder =
+            PathFinder(dir) descendantsExcept ("*", gitignoreFileFilter) filter
+              (_.isFile)
+          filteredPathFinder pair Path.rebase(
+            dir,
+            activatorDistDirectory / dir.name) map {
+            case (source, target) =>
+              s.log.info(s"copying: $source -> $target")
+              IO.copyFile(source, target, preserveLastModified = true)
           }
-
-          activatorDistDirectory
+          val targetDir = activatorDistDirectory / dir.name
+          val targetFile =
+            activatorDistDirectory / (dir.name + "-" + version + ".zip")
+          s.log.info(s"zipping: $targetDir -> $targetFile")
+          Dist.zip(targetDir, targetFile)
         }
+
+        activatorDistDirectory
     }
 }

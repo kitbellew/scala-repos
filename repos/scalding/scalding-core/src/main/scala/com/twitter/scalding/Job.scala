@@ -520,15 +520,13 @@ class ScriptJob(cmds: Iterable[String]) extends Job(Args("")) {
   override def run =
     try {
       cmds.dropWhile { cmd: String =>
-        {
-          new java.lang.ProcessBuilder("bash", "-c", cmd)
-            .start()
-            .waitFor() match {
-            case x if x != 0 =>
-              println(cmd + " failed, exitStatus: " + x)
-              false
-            case 0 => true
-          }
+        new java.lang.ProcessBuilder("bash", "-c", cmd)
+          .start()
+          .waitFor() match {
+          case x if x != 0 =>
+            println(cmd + " failed, exitStatus: " + x)
+            false
+          case 0 => true
         }
       }.isEmpty
     } catch {

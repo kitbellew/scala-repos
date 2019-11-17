@@ -95,23 +95,21 @@ class WeightedPageRank(args: Args) extends Job(args) {
         Tsv(fileName).read
           .mapTo((0, 1, 2, 3) -> ('src_id, 'dst_ids, 'weights, 'mass_prior)) {
             input: (Int, String, String, Double) =>
-              {
-                (
-                  input._1,
-                  // convert string to int array
-                  if (input._2 != null && input._2.length > 0) {
-                    input._2.split(",").map { _.toInt }
-                  } else {
-                    Array[Int]()
-                  },
-                  // convert string to float array
-                  if (input._3 != null && input._3.length > 0) {
-                    input._3.split(",").map { _.toFloat }
-                  } else {
-                    Array[Float]()
-                  },
-                  input._4)
-              }
+              (
+                input._1,
+                // convert string to int array
+                if (input._2 != null && input._2.length > 0) {
+                  input._2.split(",").map { _.toInt }
+                } else {
+                  Array[Int]()
+                },
+                // convert string to float array
+                if (input._3 != null && input._3.length > 0) {
+                  input._3.split(",").map { _.toFloat }
+                } else {
+                  Array[Float]()
+                },
+                input._4)
           }
       }
     }
@@ -158,25 +156,23 @@ class WeightedPageRank(args: Args) extends Job(args) {
     val pagerankNext = nodeJoined
       .flatMapTo(('dst_ids, 'weights, 'mass_input) -> ('src_id, 'mass_n)) {
         args: (Array[Int], Array[Float], Double) =>
-          {
-            if (args._1.length > 0) {
-              if (WEIGHTED) {
-                // weighted distribution
-                val total: Double = args._2.sum
-                (args._1 zip args._2).map { idWeight: (Int, Float) =>
-                  (idWeight._1, args._3 * idWeight._2 / total)
-                }
-              } else {
-                // equal distribution
-                val dist: Double = args._3 / args._1.length
-                args._1.map { id: Int =>
-                  (id, dist)
-                }
+          if (args._1.length > 0) {
+            if (WEIGHTED) {
+              // weighted distribution
+              val total: Double = args._2.sum
+              (args._1 zip args._2).map { idWeight: (Int, Float) =>
+                (idWeight._1, args._3 * idWeight._2 / total)
               }
             } else {
-              //Here is a node that points to no other nodes (dangling)
-              Nil
+              // equal distribution
+              val dist: Double = args._3 / args._1.length
+              args._1.map { id: Int =>
+                (id, dist)
+              }
             }
+          } else {
+            //Here is a node that points to no other nodes (dangling)
+            Nil
           }
       }
       .groupBy('src_id) {

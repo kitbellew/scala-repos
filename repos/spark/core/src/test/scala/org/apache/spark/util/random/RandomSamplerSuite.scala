@@ -73,10 +73,8 @@ class RandomSamplerSuite extends SparkFunSuite with Matchers {
     val rng = new PoissonDistribution(f)
     rng.reseedRandomGenerator(rngSeed.nextLong)
     data.flatMap { v =>
-      {
-        val rep = rng.sample()
-        if (rep == 0) Iterator.empty else Iterator.fill(rep)(v)
-      }
+      val rep = rng.sample()
+      if (rep == 0) Iterator.empty else Iterator.fill(rep)(v)
     }
   }
 

@@ -110,9 +110,7 @@ object SaddleWrapper {
     val tickers = data.colIx.toVec.contents
 
     val tickerDataSeq = tickers.map { ticker =>
-      {
-        (ticker, data.firstCol(ticker).toVec.contents)
-      }
+      (ticker, data.firstCol(ticker).toVec.contents)
     }
 
     (timeIndex, tickerDataSeq)

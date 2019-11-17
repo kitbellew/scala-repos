@@ -124,11 +124,9 @@ trait BlockSortSpec[M[+_]]
 
     implicit val gen = sample(objectSchema(_, 3))
     check { (sample: SampleData) =>
-      {
-        val Some((_, schema)) = sample.schema
+      val Some((_, schema)) = sample.schema
 
-        testSortDense(sample, sortOrder, false, schema.map(_._1).head)
-      }
+      testSortDense(sample, sortOrder, false, schema.map(_._1).head)
     }
   }
 

@@ -230,17 +230,13 @@ abstract class MappedPassword[T <: Mapper[T]](val fieldOwner: T)
       columnName: String): (T, Long, Boolean) => Unit =
     if (columnName.endsWith("_slt")) {
       { (inst: T, v: Long, isNull: Boolean) =>
-        {
-          val tv = getField(inst, accessor).asInstanceOf[MappedPassword[T]];
-          tv.salt_i() = if (isNull) null else v.toString
-        }
+        val tv = getField(inst, accessor).asInstanceOf[MappedPassword[T]];
+        tv.salt_i() = if (isNull) null else v.toString
       }
     } else if (columnName.endsWith("_pw")) {
       { (inst: T, v: Long, isNull: Boolean) =>
-        {
-          val tv = getField(inst, accessor).asInstanceOf[MappedPassword[T]];
-          tv.password() = if (isNull) null else v.toString
-        }
+        val tv = getField(inst, accessor).asInstanceOf[MappedPassword[T]];
+        tv.password() = if (isNull) null else v.toString
       }
     } else {
       null
@@ -250,17 +246,13 @@ abstract class MappedPassword[T <: Mapper[T]](val fieldOwner: T)
       columnName: String): (T, String) => Unit =
     if (columnName.endsWith("_slt")) {
       { (inst: T, v: String) =>
-        {
-          val tv = getField(inst, accessor).asInstanceOf[MappedPassword[T]];
-          tv.salt_i() = v
-        }
+        val tv = getField(inst, accessor).asInstanceOf[MappedPassword[T]];
+        tv.salt_i() = v
       }
     } else if (columnName.endsWith("_pw")) {
       { (inst: T, v: String) =>
-        {
-          val tv = getField(inst, accessor).asInstanceOf[MappedPassword[T]];
-          tv.password() = v
-        }
+        val tv = getField(inst, accessor).asInstanceOf[MappedPassword[T]];
+        tv.password() = v
       }
     } else {
       null
@@ -281,29 +273,23 @@ abstract class MappedPassword[T <: Mapper[T]](val fieldOwner: T)
     if (columnName.endsWith("_slt")) {
       inst match {
         case null => { (inst: T, v: AnyRef) =>
-          {}
         }
         case _ => { (inst: T, v: AnyRef) =>
-          {
-            val tv =
-              getField(inst, accessor).asInstanceOf[MappedPassword[T]];
-            tv.salt_i() = (if (v == null) null else v.toString);
-            tv.resetDirty
-          }
+          val tv =
+            getField(inst, accessor).asInstanceOf[MappedPassword[T]];
+          tv.salt_i() = (if (v == null) null else v.toString);
+          tv.resetDirty
         }
       }
     } else if (columnName.endsWith("_pw")) {
       inst match {
         case null => { (inst: T, v: AnyRef) =>
-          {}
         }
         case _ => { (inst: T, v: AnyRef) =>
-          {
-            val tv =
-              getField(inst, accessor).asInstanceOf[MappedPassword[T]];
-            tv.password() = (if (v == null) null else v.toString);
-            tv.resetDirty
-          }
+          val tv =
+            getField(inst, accessor).asInstanceOf[MappedPassword[T]];
+          tv.password() = (if (v == null) null else v.toString);
+          tv.resetDirty
         }
       }
     } else {

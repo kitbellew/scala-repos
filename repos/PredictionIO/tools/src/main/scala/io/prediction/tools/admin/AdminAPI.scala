@@ -72,19 +72,15 @@ class AdminServiceActor(val commandClient: CommandClient)
         }
       }
     } ~ path("cmd" / "app" / Segment / "data") { appName =>
-      {
-        delete {
-          respondWithMediaType(MediaTypes.`application/json`) {
-            complete(commandClient.futureAppDataDelete(appName))
-          }
+      delete {
+        respondWithMediaType(MediaTypes.`application/json`) {
+          complete(commandClient.futureAppDataDelete(appName))
         }
       }
     } ~ path("cmd" / "app" / Segment) { appName =>
-      {
-        delete {
-          respondWithMediaType(MediaTypes.`application/json`) {
-            complete(commandClient.futureAppDelete(appName))
-          }
+      delete {
+        respondWithMediaType(MediaTypes.`application/json`) {
+          complete(commandClient.futureAppDelete(appName))
         }
       }
     } ~ path("cmd" / "app") {

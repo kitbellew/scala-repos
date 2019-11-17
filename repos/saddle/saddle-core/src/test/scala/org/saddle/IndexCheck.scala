@@ -148,10 +148,8 @@ class IndexCheck extends Specification with ScalaCheck {
       implicit val arbIndex = Arbitrary(IndexArbitraries.indexIntNoDups)
 
       forAll { (ix1: Index[Int], ix2: Index[Int]) =>
-        {
-          ix1 must_== serializedCopy(ix1)
-          ix2 must_== serializedCopy(ix2)
-        }
+        ix1 must_== serializedCopy(ix1)
+        ix2 must_== serializedCopy(ix2)
       }
     }
   }
@@ -285,10 +283,8 @@ class IndexCheck extends Specification with ScalaCheck {
       implicit val arbIndex = Arbitrary(IndexArbitraries.indexTimeWithDups)
 
       forAll { (ix1: Index[DateTime], ix2: Index[DateTime]) =>
-        {
-          ix1 must_== serializedCopy(ix1)
-          ix2 must_== serializedCopy(ix2)
-        }
+        ix1 must_== serializedCopy(ix1)
+        ix2 must_== serializedCopy(ix2)
       }
     }
   }

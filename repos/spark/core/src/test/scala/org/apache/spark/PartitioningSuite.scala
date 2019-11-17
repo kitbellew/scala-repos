@@ -79,18 +79,16 @@ class PartitioningSuite
       case (numPartitions, partitioner) =>
         val rangeBounds = partitioner.invokePrivate(decoratedRangeBounds())
         1.to(1000).map { element =>
-          {
-            val partition = partitioner.getPartition(element)
-            if (numPartitions > 1) {
-              if (partition < rangeBounds.size) {
-                assert(element <= rangeBounds(partition))
-              }
-              if (partition > 0) {
-                assert(element > rangeBounds(partition - 1))
-              }
-            } else {
-              assert(partition === 0)
+          val partition = partitioner.getPartition(element)
+          if (numPartitions > 1) {
+            if (partition < rangeBounds.size) {
+              assert(element <= rangeBounds(partition))
             }
+            if (partition > 0) {
+              assert(element > rangeBounds(partition - 1))
+            }
+          } else {
+            assert(partition === 0)
           }
         }
     }

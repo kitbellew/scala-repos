@@ -109,17 +109,15 @@ trait MetaProtoExtendedSession[T <: ProtoExtendedSession[T]]
     * </code>
     */
   def testCookieEarlyInStateful: Box[Req] => Unit = { ignoredReq =>
-    {
-      (recoverUserId, S.findCookie(CookieName)) match {
-        case (Empty, Full(c)) =>
-          find(By(cookieId, c.value openOr "")) match {
-            case Full(es) if es.expiration.get < millis => es.delete_!
-            case Full(es)                               => logUserIdIn(es.userId.get)
-            case _                                      =>
-          }
+    (recoverUserId, S.findCookie(CookieName)) match {
+      case (Empty, Full(c)) =>
+        find(By(cookieId, c.value openOr "")) match {
+          case Full(es) if es.expiration.get < millis => es.delete_!
+          case Full(es)                               => logUserIdIn(es.userId.get)
+          case _                                      =>
+        }
 
-        case _ =>
-      }
+      case _ =>
     }
   }
 }

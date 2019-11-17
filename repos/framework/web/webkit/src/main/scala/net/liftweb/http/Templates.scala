@@ -130,14 +130,12 @@ object Templates {
                 .map(_.text) orElse e
                 .attribute("class")
                 .flatMap { ns =>
-                  {
-                    val clz = ns.text.charSplit(' ')
-                    clz.flatMap {
-                      case s if s.startsWith("lift:content_id=") =>
-                        Some(urlDecode(s.substring("lift:content_id=".length)))
-                      case _ => None
-                    }.headOption
-                  }
+                  val clz = ns.text.charSplit(' ')
+                  clz.flatMap {
+                    case s if s.startsWith("lift:content_id=") =>
+                      Some(urlDecode(s.substring("lift:content_id=".length)))
+                    case _ => None
+                  }.headOption
                 }
             }
 
@@ -338,18 +336,14 @@ abstract class SnippetFailureException(msg: String)
   def buildStackTrace: NodeSeq =
     getStackTrace.toList
       .dropWhile { e =>
-        {
-          val cn = e.getClassName
-          cn.startsWith("net.liftweb.http") ||
-          cn.startsWith("net.liftweb.common") ||
-          cn.startsWith("net.liftweb.util")
-        }
+        val cn = e.getClassName
+        cn.startsWith("net.liftweb.http") ||
+        cn.startsWith("net.liftweb.common") ||
+        cn.startsWith("net.liftweb.util")
       }
       .filter { e =>
-        {
-          val cn = e.getClassName
-          !cn.startsWith("java.lang") && !cn.startsWith("sun.")
-        }
+        val cn = e.getClassName
+        !cn.startsWith("java.lang") && !cn.startsWith("sun.")
       }
       .take(10)
       .toList

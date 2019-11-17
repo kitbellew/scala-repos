@@ -1012,15 +1012,13 @@ trait SHtml extends Loggable {
       attrs: ElemAttr*): ChoiceHolder[T] = {
     val groupName = Helpers.nextFuncName
     val itemList = opts.map { v =>
-      {
-        ChoiceItem(
-          v,
-          attrs.foldLeft(<input type="radio" name={groupName}
+      ChoiceItem(
+        v,
+        attrs.foldLeft(<input type="radio" name={groupName}
                                      value={Helpers.nextFuncName}/>)(_ % _) % checked(
-            deflt == Full(v)) %
-            ("onclick" -> ajaxCall(Str(""), ignore => ajaxFunc(v))._2.toJsCmd)
-        )
-      }
+          deflt == Full(v)) %
+          ("onclick" -> ajaxCall(Str(""), ignore => ajaxFunc(v))._2.toJsCmd)
+      )
     }
     ChoiceHolder(itemList)
   }
@@ -1564,10 +1562,8 @@ trait SHtml extends Loggable {
                 case Full(name) => dupWithName(e, name)
                 case _ =>
                   fmapFunc(func) { name =>
-                    {
-                      radioName = Full(name)
-                      dupWithName(e, name)
-                    }
+                    radioName = Full(name)
+                    dupWithName(e, name)
                   }
               }
 
@@ -1579,11 +1575,9 @@ trait SHtml extends Loggable {
                   dupWithName(e, name)
                 case _ =>
                   fmapFunc(func) { name =>
-                    {
-                      checkBoxName = Full(name)
-                      checkBoxCnt += 1
-                      dupWithName(e, name)
-                    }
+                    checkBoxName = Full(name)
+                    checkBoxCnt += 1
+                    dupWithName(e, name)
                   }
               }
 
@@ -2529,27 +2523,25 @@ trait SHtml extends Loggable {
         case x :: _ =>
           onSubmit(possible.filter(_._1 == x).headOption.map(_._2))
       })) { name =>
-      {
-        val items = possible.zipWithIndex.map {
-          case ((id, value), idx) => {
-            val radio =
-              attrs.foldLeft(<input type="radio"
+      val items = possible.zipWithIndex.map {
+        case ((id, value), idx) => {
+          val radio =
+            attrs.foldLeft(<input type="radio"
                              name={name} value={id}/>)(_ % _) % checked(
-                deflt.filter(_ == value).isDefined)
+              deflt.filter(_ == value).isDefined)
 
-            val elem =
-              if (idx == 0) {
-                radio ++ <input type="hidden" value={hiddenId} name={name}/>
-              } else {
-                radio
-              }
+          val elem =
+            if (idx == 0) {
+              radio ++ <input type="hidden" value={hiddenId} name={name}/>
+            } else {
+              radio
+            }
 
-            ChoiceItem(value, elem)
-          }
+          ChoiceItem(value, elem)
         }
-
-        ChoiceHolder(items)
       }
+
+      ChoiceHolder(items)
     }
   }
 

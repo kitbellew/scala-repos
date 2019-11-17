@@ -315,18 +315,16 @@ object Menu extends DispatchSnippet {
     text match {
       case TitleText(attrs, str) => {
         r.map { rt =>
-          {
-            val rts = rt.text
-            val idx = str.indexOf("%*%")
-            val bodyStr =
-              if (idx >= 0) {
-                str.substring(0, idx) + rts + str.substring(idx + 3)
-              } else {
-                str + " " + rts
-              }
+          val rts = rt.text
+          val idx = str.indexOf("%*%")
+          val bodyStr =
+            if (idx >= 0) {
+              str.substring(0, idx) + rts + str.substring(idx + 3)
+            } else {
+              str + " " + rts
+            }
 
-            <title>{bodyStr}</title> % attrs
-          }
+          <title>{bodyStr}</title> % attrs
         } openOr text
       }
 

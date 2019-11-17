@@ -106,13 +106,11 @@ object VideoCubeDemo extends JFXApp {
   )
 
   val mediaPlayers = vidFiles.map { filename =>
-    {
-      val file = new File(folder, filename)
-      val media = new Media(file.toURI.toURL.toExternalForm)
-      new MediaPlayer(media) {
-        volume = 0.5
-        cycleCount = MediaPlayer.Indefinite
-      }
+    val file = new File(folder, filename)
+    val media = new Media(file.toURI.toURL.toExternalForm)
+    new MediaPlayer(media) {
+      volume = 0.5
+      cycleCount = MediaPlayer.Indefinite
     }
   }
 

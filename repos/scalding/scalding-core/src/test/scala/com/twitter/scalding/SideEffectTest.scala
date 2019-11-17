@@ -90,13 +90,11 @@ class ZipBuffer(args: Args) extends Job(args) {
     .groupBy('oddOrEven) {
       _.using { createState }.mapStream('line -> ('l1, 'l2)) {
         (accu, iter: Iterator[String]) =>
-          {
-            accu.lastLine = iter.next()
-            for (line <- iter) yield {
-              val result = (accu.lastLine, line)
-              accu.lastLine = line
-              result
-            }
+          accu.lastLine = iter.next()
+          for (line <- iter) yield {
+            val result = (accu.lastLine, line)
+            accu.lastLine = line
+            result
           }
       }
     }

@@ -106,15 +106,13 @@ object JsonAstSpec extends Specification with JValueGen with ScalaCheck {
   "Remove removes only matching elements" in {
     forAllNoShrink(genJValue, genJValueClass) {
       (json: JValue, x: Class[_ <: JValue]) =>
-        {
-          val removed = json remove typePredicate(x)
-          val Diff(c, a, d) = json diff removed
-          val elemsLeft =
-            removed filter {
-              case _ => true
-            }
-          c == JNothing && a == JNothing && elemsLeft.forall(_.getClass != x)
-        }
+        val removed = json remove typePredicate(x)
+        val Diff(c, a, d) = json diff removed
+        val elemsLeft =
+          removed filter {
+            case _ => true
+          }
+        c == JNothing && a == JNothing && elemsLeft.forall(_.getClass != x)
     }
   }
 

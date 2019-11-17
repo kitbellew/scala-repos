@@ -7,9 +7,7 @@ object Test extends App {
   def foo[T](ys: List[T]): Int => Int = {
     class Foo[T](ys: List[T]) {
       val fun = reify { (x: Int) =>
-        {
-          x + ys.length
-        }
+        x + ys.length
       }
     }
 

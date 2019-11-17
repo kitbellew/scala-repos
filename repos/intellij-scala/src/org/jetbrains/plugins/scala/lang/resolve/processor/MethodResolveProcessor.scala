@@ -746,21 +746,19 @@ object MethodResolveProcessor {
     def mapper(applicationImplicits: Boolean): Set[ScalaResolveResult] =
       if (argumentClauses.nonEmpty) {
         input.flatMap(expand).map { r =>
-          {
-            val pr = problemsFor(r, applicationImplicits, proc)
-            r.innerResolveResult match {
-              case Some(rr) =>
-                r.copy(
-                  innerResolveResult = Some(
-                    rr.copy(
-                      problems = pr.problems,
-                      defaultParameterUsed = pr.defaultParameterUsed)))
-              case _ =>
-                r.copy(
-                  problems = pr.problems,
-                  defaultParameterUsed = pr.defaultParameterUsed,
-                  resultUndef = Some(pr.undefSubst))
-            }
+          val pr = problemsFor(r, applicationImplicits, proc)
+          r.innerResolveResult match {
+            case Some(rr) =>
+              r.copy(
+                innerResolveResult = Some(
+                  rr.copy(
+                    problems = pr.problems,
+                    defaultParameterUsed = pr.defaultParameterUsed)))
+            case _ =>
+              r.copy(
+                problems = pr.problems,
+                defaultParameterUsed = pr.defaultParameterUsed,
+                resultUndef = Some(pr.undefSubst))
           }
         }
       } else

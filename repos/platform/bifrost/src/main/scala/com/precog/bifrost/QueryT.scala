@@ -106,11 +106,8 @@ trait QueryTMonad[Q[+_], M[+_]]
     super.map(ma)(f)
   override def ap[A, B](ma: => QueryT[Q, M, A])(
       mf: => QueryT[Q, M, A => B]): QueryT[Q, M, B] =
-    QueryT(M.ap(ma.run)(M.map(mf.run) {
-      (qf: Q[A => B]) =>
-        { (qa: Q[A]) =>
-          Q.ap(qa)(qf)
-        }
+    QueryT(M.ap(ma.run)(M.map(mf.run) { (qf: Q[A => B]) => (qa: Q[A]) =>
+      Q.ap(qa)(qf)
     }))
 }
 

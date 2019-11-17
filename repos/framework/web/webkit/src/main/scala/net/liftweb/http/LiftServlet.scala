@@ -953,16 +953,14 @@ class LiftServlet extends Loggable {
       .map(ar => "lift.updWatch('" + ar.who.uniqueId + "', '" + ar.when + "');")
       .mkString("\n")
     val jsUpdateStuff = ret2.map { ar =>
-      {
-        val ret = ar.response.toJavaScript(session, ar.displayAll)
+      val ret = ar.response.toJavaScript(session, ar.displayAll)
 
-        if (!S.functionMap.isEmpty) {
-          session.updateFunctionMap(S.functionMap, ar.who.uniqueId, ar.when)
-          S.clearFunctionMap
-        }
-
-        ret
+      if (!S.functionMap.isEmpty) {
+        session.updateFunctionMap(S.functionMap, ar.who.uniqueId, ar.when)
+        S.clearFunctionMap
       }
+
+      ret
     }
 
     actors foreach (_._1 ! ClearNotices)

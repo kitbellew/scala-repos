@@ -219,39 +219,37 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
           val scanBuilder
               : (Seq[Attribute], Array[Filter]) => RDD[InternalRow] = {
             (requiredColumns: Seq[Attribute], filters: Array[Filter]) =>
-              {
-                val bucketed = t.location
-                  .allFiles()
-                  .filterNot(_.getPath.getName startsWith "_")
-                  .groupBy { f =>
-                    BucketingUtils
-                      .getBucketId(f.getPath.getName)
-                      .getOrElse(sys.error(s"Invalid bucket file ${f.getPath}"))
-                  }
-
-                val bucketedDataMap = bucketed.mapValues { bucketFiles =>
-                  t.fileFormat
-                    .buildInternalScan(
-                      t.sqlContext,
-                      t.dataSchema,
-                      requiredColumns.map(_.name).toArray,
-                      filters,
-                      None,
-                      bucketFiles,
-                      confBroadcast,
-                      t.options)
-                    .coalesce(1)
+              val bucketed = t.location
+                .allFiles()
+                .filterNot(_.getPath.getName startsWith "_")
+                .groupBy { f =>
+                  BucketingUtils
+                    .getBucketId(f.getPath.getName)
+                    .getOrElse(sys.error(s"Invalid bucket file ${f.getPath}"))
                 }
 
-                val bucketedRDD = new UnionRDD(
-                  t.sqlContext.sparkContext,
-                  (0 until spec.numBuckets).map { bucketId =>
-                    bucketedDataMap.get(bucketId).getOrElse {
-                      t.sqlContext.emptyResult: RDD[InternalRow]
-                    }
-                  })
-                bucketedRDD
+              val bucketedDataMap = bucketed.mapValues { bucketFiles =>
+                t.fileFormat
+                  .buildInternalScan(
+                    t.sqlContext,
+                    t.dataSchema,
+                    requiredColumns.map(_.name).toArray,
+                    filters,
+                    None,
+                    bucketFiles,
+                    confBroadcast,
+                    t.options)
+                  .coalesce(1)
               }
+
+              val bucketedRDD = new UnionRDD(
+                t.sqlContext.sparkContext,
+                (0 until spec.numBuckets).map { bucketId =>
+                  bucketedDataMap.get(bucketId).getOrElse {
+                    t.sqlContext.emptyResult: RDD[InternalRow]
+                  }
+                })
+              bucketedRDD
           }
 
           pruneFilterProject(l, projects, filters, scanBuilder) :: Nil
@@ -312,91 +310,87 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
     // will union all partitions and attach partition values if needed.
     val scanBuilder: (Seq[Attribute], Array[Filter]) => RDD[InternalRow] = {
       (requiredColumns: Seq[Attribute], filters: Array[Filter]) =>
-        {
+        relation.bucketSpec match {
+          case Some(spec) if relation.sqlContext.conf.bucketingEnabled =>
+            val requiredDataColumns = requiredColumns.filterNot(c =>
+              partitionColumnNames.contains(c.name))
 
-          relation.bucketSpec match {
-            case Some(spec) if relation.sqlContext.conf.bucketingEnabled =>
-              val requiredDataColumns = requiredColumns.filterNot(c =>
-                partitionColumnNames.contains(c.name))
-
-              // Builds RDD[Row]s for each selected partition.
-              val perPartitionRows: Seq[(Int, RDD[InternalRow])] =
-                partitions.flatMap {
-                  case Partition(partitionValues, files) =>
-                    val bucketed = files.groupBy { f =>
-                      BucketingUtils
-                        .getBucketId(f.getPath.getName)
-                        .getOrElse(
-                          sys.error(s"Invalid bucket file ${f.getPath}"))
-                    }
-
-                    bucketed.map { bucketFiles =>
-                      // Don't scan any partition columns to save I/O.  Here we are being optimistic and
-                      // assuming partition columns data stored in data files are always consistent with
-                      // those partition values encoded in partition directory paths.
-                      val dataRows = relation.fileFormat.buildInternalScan(
-                        relation.sqlContext,
-                        relation.dataSchema,
-                        requiredDataColumns.map(_.name).toArray,
-                        filters,
-                        buckets,
-                        bucketFiles._2,
-                        confBroadcast,
-                        options)
-
-                      // Merges data values with partition values.
-                      bucketFiles._1 -> mergeWithPartitionValues(
-                        requiredColumns,
-                        requiredDataColumns,
-                        partitionColumns,
-                        partitionValues,
-                        dataRows)
-                    }
-                }
-
-              val bucketedDataMap: Map[Int, Seq[RDD[InternalRow]]] =
-                perPartitionRows.groupBy(_._1).mapValues(_.map(_._2))
-
-              val bucketed = new UnionRDD(
-                relation.sqlContext.sparkContext,
-                (0 until spec.numBuckets).map { bucketId =>
-                  bucketedDataMap
-                    .get(bucketId)
-                    .map(i => i.reduce(_ ++ _).coalesce(1))
-                    .getOrElse {
-                      relation.sqlContext.emptyResult: RDD[InternalRow]
-                    }
-                }
-              )
-              bucketed
-
-            case _ =>
-              val requiredDataColumns = requiredColumns.filterNot(c =>
-                partitionColumnNames.contains(c.name))
-
-              // Builds RDD[Row]s for each selected partition.
-              val perPartitionRows = partitions.map {
+            // Builds RDD[Row]s for each selected partition.
+            val perPartitionRows: Seq[(Int, RDD[InternalRow])] =
+              partitions.flatMap {
                 case Partition(partitionValues, files) =>
-                  val dataRows = relation.fileFormat.buildInternalScan(
-                    relation.sqlContext,
-                    relation.dataSchema,
-                    requiredDataColumns.map(_.name).toArray,
-                    filters,
-                    buckets,
-                    files,
-                    confBroadcast,
-                    options)
+                  val bucketed = files.groupBy { f =>
+                    BucketingUtils
+                      .getBucketId(f.getPath.getName)
+                      .getOrElse(sys.error(s"Invalid bucket file ${f.getPath}"))
+                  }
 
-                  // Merges data values with partition values.
-                  mergeWithPartitionValues(
-                    requiredColumns,
-                    requiredDataColumns,
-                    partitionColumns,
-                    partitionValues,
-                    dataRows)
+                  bucketed.map { bucketFiles =>
+                    // Don't scan any partition columns to save I/O.  Here we are being optimistic and
+                    // assuming partition columns data stored in data files are always consistent with
+                    // those partition values encoded in partition directory paths.
+                    val dataRows = relation.fileFormat.buildInternalScan(
+                      relation.sqlContext,
+                      relation.dataSchema,
+                      requiredDataColumns.map(_.name).toArray,
+                      filters,
+                      buckets,
+                      bucketFiles._2,
+                      confBroadcast,
+                      options)
+
+                    // Merges data values with partition values.
+                    bucketFiles._1 -> mergeWithPartitionValues(
+                      requiredColumns,
+                      requiredDataColumns,
+                      partitionColumns,
+                      partitionValues,
+                      dataRows)
+                  }
               }
-              new UnionRDD(relation.sqlContext.sparkContext, perPartitionRows)
-          }
+
+            val bucketedDataMap: Map[Int, Seq[RDD[InternalRow]]] =
+              perPartitionRows.groupBy(_._1).mapValues(_.map(_._2))
+
+            val bucketed = new UnionRDD(
+              relation.sqlContext.sparkContext,
+              (0 until spec.numBuckets).map { bucketId =>
+                bucketedDataMap
+                  .get(bucketId)
+                  .map(i => i.reduce(_ ++ _).coalesce(1))
+                  .getOrElse {
+                    relation.sqlContext.emptyResult: RDD[InternalRow]
+                  }
+              }
+            )
+            bucketed
+
+          case _ =>
+            val requiredDataColumns = requiredColumns.filterNot(c =>
+              partitionColumnNames.contains(c.name))
+
+            // Builds RDD[Row]s for each selected partition.
+            val perPartitionRows = partitions.map {
+              case Partition(partitionValues, files) =>
+                val dataRows = relation.fileFormat.buildInternalScan(
+                  relation.sqlContext,
+                  relation.dataSchema,
+                  requiredDataColumns.map(_.name).toArray,
+                  filters,
+                  buckets,
+                  files,
+                  confBroadcast,
+                  options)
+
+                // Merges data values with partition values.
+                mergeWithPartitionValues(
+                  requiredColumns,
+                  requiredDataColumns,
+                  partitionColumns,
+                  partitionValues,
+                  dataRows)
+            }
+            new UnionRDD(relation.sqlContext.sparkContext, perPartitionRows)
         }
     }
 
@@ -441,15 +435,13 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
             .length == 1)
         var partitionIdx = 0
         partitionColumnSchema.fields.foreach { f =>
-          {
-            if (f.name.equals(attr.name)) {
-              ColumnVectorUtils.populate(
-                result.column(resultIdx),
-                partitionValues,
-                partitionIdx)
-            }
-            partitionIdx += 1
+          if (f.name.equals(attr.name)) {
+            ColumnVectorUtils.populate(
+              result.column(resultIdx),
+              partitionValues,
+              partitionIdx)
           }
+          partitionIdx += 1
         }
       }
       resultIdx += 1
@@ -493,27 +485,25 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
           var mergedBatch: ColumnarBatch = null
 
           iterator.map { input =>
-            {
-              if (input.isInstanceOf[InternalRow]) {
-                unsafeProjection(
-                  mutableJoinedRow(
-                    input.asInstanceOf[InternalRow],
-                    unsafePartitionValues))
-              } else {
-                require(input.isInstanceOf[ColumnarBatch])
-                val inputBatch = input.asInstanceOf[ColumnarBatch]
-                if (inputBatch != mergedBatch) {
-                  mergedBatch = inputBatch
-                  columnBatch = projectedColumnBatch(
-                    inputBatch,
-                    requiredColumns,
-                    dataColumns,
-                    partitionColumnSchema,
-                    partitionValues)
-                }
-                columnBatch.setNumRows(inputBatch.numRows())
-                columnBatch
+            if (input.isInstanceOf[InternalRow]) {
+              unsafeProjection(
+                mutableJoinedRow(
+                  input.asInstanceOf[InternalRow],
+                  unsafePartitionValues))
+            } else {
+              require(input.isInstanceOf[ColumnarBatch])
+              val inputBatch = input.asInstanceOf[ColumnarBatch]
+              if (inputBatch != mergedBatch) {
+                mergedBatch = inputBatch
+                columnBatch = projectedColumnBatch(
+                  inputBatch,
+                  requiredColumns,
+                  dataColumns,
+                  partitionColumnSchema,
+                  partitionValues)
               }
+              columnBatch.setNumRows(inputBatch.numRows())
+              columnBatch
             }
           }
         }

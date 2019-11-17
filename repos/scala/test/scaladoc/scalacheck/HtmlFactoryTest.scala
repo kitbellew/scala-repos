@@ -166,10 +166,8 @@ object Test extends Properties("HtmlFactory") {
     createTemplate("Trac4366.scala") match {
       case node: scala.xml.Node => {
         shortComments(node).exists { n =>
-          {
-            val str = n.toString
-            str.contains("<code>foo</code>") && str.contains("</strong>")
-          }
+          val str = n.toString
+          str.contains("<code>foo</code>") && str.contains("</strong>")
         }
       }
       case _ => false

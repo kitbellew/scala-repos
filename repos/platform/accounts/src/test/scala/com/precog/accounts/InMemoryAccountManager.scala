@@ -74,10 +74,8 @@ class InMemoryAccountManager[M[+_]](resetExpiration: Int = 1)(
     createAccount(email, password, creationDate, plan, parentId, None) { _ =>
       M.point(java.util.UUID.randomUUID().toString.toLowerCase)
     } map { account =>
-      {
-        accounts -= account.accountId
-        accounts += (accountId -> account.copy(accountId = accountId))
-      }
+      accounts -= account.accountId
+      accounts += (accountId -> account.copy(accountId = accountId))
     }
 
   def findAccountByAPIKey(apiKey: APIKey): M[Option[AccountId]] =

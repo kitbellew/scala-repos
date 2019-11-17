@@ -14,7 +14,7 @@ trait OneselfAuthenticator { self: ControllerBase =>
   protected def oneselfOnly[T](action: T => Any) =
     (form: T) => { authenticate(action(form)) }
 
-  private def authenticate(action: => Any) = {
+  private def authenticate(action: => Any) =
     defining(request.paths) { paths =>
       context.loginAccount match {
         case Some(x) if (x.isAdmin)              => action
@@ -22,7 +22,6 @@ trait OneselfAuthenticator { self: ControllerBase =>
         case _                                   => Unauthorized()
       }
     }
-  }
 }
 
 /**
@@ -35,7 +34,7 @@ trait OwnerAuthenticator {
   protected def ownerOnly[T](action: (T, RepositoryInfo) => Any) =
     (form: T) => { authenticate(action(form, _)) }
 
-  private def authenticate(action: (RepositoryInfo) => Any) = {
+  private def authenticate(action: (RepositoryInfo) => Any) =
     defining(request.paths) { paths =>
       getRepository(paths(0), paths(1)).map { repository =>
         context.loginAccount match {
@@ -50,7 +49,6 @@ trait OwnerAuthenticator {
         }
       } getOrElse NotFound()
     }
-  }
 }
 
 /**
@@ -61,12 +59,11 @@ trait UsersAuthenticator { self: ControllerBase =>
   protected def usersOnly[T](action: T => Any) =
     (form: T) => { authenticate(action(form)) }
 
-  private def authenticate(action: => Any) = {
+  private def authenticate(action: => Any) =
     context.loginAccount match {
       case Some(x) => action
       case None    => Unauthorized()
     }
-  }
 }
 
 /**
@@ -77,12 +74,11 @@ trait AdminAuthenticator { self: ControllerBase =>
   protected def adminOnly[T](action: T => Any) =
     (form: T) => { authenticate(action(form)) }
 
-  private def authenticate(action: => Any) = {
+  private def authenticate(action: => Any) =
     context.loginAccount match {
       case Some(x) if (x.isAdmin) => action
       case _                      => Unauthorized()
     }
-  }
 }
 
 /**
@@ -95,7 +91,7 @@ trait CollaboratorsAuthenticator {
   protected def collaboratorsOnly[T](action: (T, RepositoryInfo) => Any) =
     (form: T) => { authenticate(action(form, _)) }
 
-  private def authenticate(action: (RepositoryInfo) => Any) = {
+  private def authenticate(action: (RepositoryInfo) => Any) =
     defining(request.paths) { paths =>
       getRepository(paths(0), paths(1)).map { repository =>
         context.loginAccount match {
@@ -109,7 +105,6 @@ trait CollaboratorsAuthenticator {
         }
       } getOrElse NotFound()
     }
-  }
 }
 
 /**
@@ -121,7 +116,7 @@ trait ReferrerAuthenticator { self: ControllerBase with RepositoryService =>
   protected def referrersOnly[T](action: (T, RepositoryInfo) => Any) =
     (form: T) => { authenticate(action(form, _)) }
 
-  private def authenticate(action: (RepositoryInfo) => Any) = {
+  private def authenticate(action: (RepositoryInfo) => Any) =
     defining(request.paths) { paths =>
       getRepository(paths(0), paths(1)).map { repository =>
         if (!repository.repository.isPrivate) {
@@ -139,7 +134,6 @@ trait ReferrerAuthenticator { self: ControllerBase with RepositoryService =>
         }
       } getOrElse NotFound()
     }
-  }
 }
 
 /**
@@ -152,7 +146,7 @@ trait ReadableUsersAuthenticator {
   protected def readableUsersOnly[T](action: (T, RepositoryInfo) => Any) =
     (form: T) => { authenticate(action(form, _)) }
 
-  private def authenticate(action: (RepositoryInfo) => Any) = {
+  private def authenticate(action: (RepositoryInfo) => Any) =
     defining(request.paths) { paths =>
       getRepository(paths(0), paths(1)).map { repository =>
         context.loginAccount match {
@@ -168,7 +162,6 @@ trait ReadableUsersAuthenticator {
         }
       } getOrElse NotFound()
     }
-  }
 }
 
 /**
@@ -179,7 +172,7 @@ trait GroupManagerAuthenticator { self: ControllerBase with AccountService =>
   protected def managersOnly[T](action: T => Any) =
     (form: T) => { authenticate(action(form)) }
 
-  private def authenticate(action: => Any) = {
+  private def authenticate(action: => Any) =
     defining(request.paths) { paths =>
       context.loginAccount match {
         case Some(x) if (getGroupMembers(paths(0)).exists { member =>
@@ -189,5 +182,4 @@ trait GroupManagerAuthenticator { self: ControllerBase with AccountService =>
         case _ => Unauthorized()
       }
     }
-  }
 }

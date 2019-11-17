@@ -383,15 +383,13 @@ object GeneralizedLinearRegression
     val reweightFunc
         : (Instance, WeightedLeastSquaresModel) => (Double, Double) = {
       (instance: Instance, model: WeightedLeastSquaresModel) =>
-        {
-          val eta = model.predict(instance.features)
-          val mu = fitted(eta)
-          val offset = eta + (instance.label - mu) * link.deriv(mu)
-          val weight =
-            instance.weight /
-              (math.pow(this.link.deriv(mu), 2.0) * family.variance(mu))
-          (offset, weight)
-        }
+        val eta = model.predict(instance.features)
+        val mu = fitted(eta)
+        val offset = eta + (instance.label - mu) * link.deriv(mu)
+        val weight =
+          instance.weight /
+            (math.pow(this.link.deriv(mu), 2.0) * family.variance(mu))
+        (offset, weight)
     }
   }
 

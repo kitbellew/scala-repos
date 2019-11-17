@@ -370,14 +370,12 @@ private[util] trait Props extends Logger {
 
     def vendStreams: List[(String, () => Box[InputStream])] =
       whereToLook() ::: toTry.map { f =>
-        {
-          val name = f() + "props"
-          name -> { () =>
-            val res = tryo { getClass.getResourceAsStream(name) }
-              .filter(_ ne null)
-            trace("Trying to open resource %s. Result=%s".format(name, res))
-            res
-          }
+        val name = f() + "props"
+        name -> { () =>
+          val res = tryo { getClass.getResourceAsStream(name) }
+            .filter(_ ne null)
+          trace("Trying to open resource %s. Result=%s".format(name, res))
+          res
         }
       }
 

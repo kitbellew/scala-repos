@@ -153,15 +153,13 @@ class ObservableBufferSpec[T]
     var addedElement = ""
     var expectedPosition = -1
     buffer onChange { (list, changes) =>
-      {
-        changes.toList match {
-          case (List(Add(position, elements))) =>
-            changeCount += 1
-            position should be(expectedPosition)
-            elements should have size 1
-            elements.toSeq(0) should equal(addedElement)
-          case _ => fail("Unexpected changes: " + changes)
-        }
+      changes.toList match {
+        case (List(Add(position, elements))) =>
+          changeCount += 1
+          position should be(expectedPosition)
+          elements should have size 1
+          elements.toSeq(0) should equal(addedElement)
+        case _ => fail("Unexpected changes: " + changes)
       }
     }
 
@@ -230,15 +228,13 @@ class ObservableBufferSpec[T]
     var removedElement = ""
     var expectedPosition = -1
     buffer onChange { (list, changes) =>
-      {
-        changes.toList match {
-          case (List(Remove(position, elements))) =>
-            changeCount += 1
-            position should be(expectedPosition)
-            elements should have size 1
-            elements.toSeq(0) should equal(removedElement)
-          case _ => fail("Unexpected changes: " + changes)
-        }
+      changes.toList match {
+        case (List(Remove(position, elements))) =>
+          changeCount += 1
+          position should be(expectedPosition)
+          elements should have size 1
+          elements.toSeq(0) should equal(removedElement)
+        case _ => fail("Unexpected changes: " + changes)
       }
     }
 
@@ -502,11 +498,9 @@ class ObservableBufferSpec[T]
     // Preparation
     val buffer = ObservableBuffer("a", "b", "c", "d", "e")
     buffer onChange { (list, changes) =>
-      {
-        list.toList should equal(List("c", "d"))
-        changes.toList should equal(
-          List(Remove(0, Buffer("a", "b")), Remove(2, Buffer("e"))))
-      }
+      list.toList should equal(List("c", "d"))
+      changes.toList should equal(
+        List(Remove(0, Buffer("a", "b")), Remove(2, Buffer("e"))))
     }
 
     // Execution
@@ -520,14 +514,12 @@ class ObservableBufferSpec[T]
     // Preparation
     val buffer = ObservableBuffer("a", "b", "c", "d", "e")
     buffer onChange { (list, changes) =>
-      {
-        list.toList should equal(List("b", "d"))
-        changes.toList should equal(
-          List(
-            Remove(0, Buffer("a")),
-            Remove(1, Buffer("c")),
-            Remove(2, Buffer("e"))))
-      }
+      list.toList should equal(List("b", "d"))
+      changes.toList should equal(
+        List(
+          Remove(0, Buffer("a")),
+          Remove(1, Buffer("c")),
+          Remove(2, Buffer("e"))))
     }
 
     // Execution
@@ -552,12 +544,10 @@ class ObservableBufferSpec[T]
     var changesDetected = 0
 
     buffer onChange { (list, changes) =>
-      {
-        changesDetected += 1
-        list.toList should equal(List(5, 4, 3, 2, 1))
-        changes.toList should equal(
-          List(Remove(0, Buffer(1, 2, 3, 4, 5)), Add(0, Buffer(5, 4, 3, 2, 1))))
-      }
+      changesDetected += 1
+      list.toList should equal(List(5, 4, 3, 2, 1))
+      changes.toList should equal(
+        List(Remove(0, Buffer(1, 2, 3, 4, 5)), Add(0, Buffer(5, 4, 3, 2, 1))))
     }
 
     ObservableBuffer.revertBuffer(buffer)
@@ -570,12 +560,10 @@ class ObservableBufferSpec[T]
     var changesDetected = 0
 
     buffer onChange { (list, changes) =>
-      {
-        changesDetected += 1
-        list.toList should equal(List(0, 2, 3, 0, 5))
-        changes.toList should equal(
-          List(Remove(0, Buffer(1, 2, 3, 1, 5)), Add(0, Buffer(0, 2, 3, 0, 5))))
-      }
+      changesDetected += 1
+      list.toList should equal(List(0, 2, 3, 0, 5))
+      changes.toList should equal(
+        List(Remove(0, Buffer(1, 2, 3, 1, 5)), Add(0, Buffer(0, 2, 3, 0, 5))))
     }
 
     buffer.replaceAll(1, 0)
@@ -588,14 +576,12 @@ class ObservableBufferSpec[T]
     var changesDetected = 0
 
     buffer onChange { (list, changes) =>
-      {
-        changesDetected += 1
-        list.toList should equal(List(-1, -1, -1, -1, -1))
-        changes.toList should equal(
-          List(
-            Remove(0, Buffer(1, 2, 3, 4, 5)),
-            Add(0, Buffer(-1, -1, -1, -1, -1))))
-      }
+      changesDetected += 1
+      list.toList should equal(List(-1, -1, -1, -1, -1))
+      changes.toList should equal(
+        List(
+          Remove(0, Buffer(1, 2, 3, 4, 5)),
+          Add(0, Buffer(-1, -1, -1, -1, -1))))
     }
 
     ObservableBuffer.fillAll(buffer, -1)
@@ -610,18 +596,16 @@ class ObservableBufferSpec[T]
     val removedValues = Buffer.empty[Any]
     val permutations = Buffer.empty[Buffer[(Int, Int)]]
     buffer onChange { (list, changes) =>
-      {
-        for (change <- changes) change match {
-          case Add(pos, addedBuffer) =>
-            addedValues ++= addedBuffer.toBuffer
-          case Remove(pos, removedBuffer) =>
-            removedValues ++= removedBuffer.toBuffer
-          case Reorder(start, end, permutation) =>
-            val p = Buffer.empty[(Int, Int)]
-            (start until end).foreach(i => p += ((i, permutation(i))))
-            permutations += p
-          case Update(pas, updated) => println(s"  case Update: $change")
-        }
+      for (change <- changes) change match {
+        case Add(pos, addedBuffer) =>
+          addedValues ++= addedBuffer.toBuffer
+        case Remove(pos, removedBuffer) =>
+          removedValues ++= removedBuffer.toBuffer
+        case Reorder(start, end, permutation) =>
+          val p = Buffer.empty[(Int, Int)]
+          (start until end).foreach(i => p += ((i, permutation(i))))
+          permutations += p
+        case Update(pas, updated) => println(s"  case Update: $change")
       }
     }
 

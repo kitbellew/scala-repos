@@ -113,9 +113,7 @@ class CommandClient(
     Future {
       val apps = appClient.getAll().sortBy(_.name)
       val appsRes = apps.map { app =>
-        {
-          new AppResponse(app.id, app.name, accessKeyClient.getByAppid(app.id))
-        }
+        new AppResponse(app.id, app.name, accessKeyClient.getByAppid(app.id))
       }
       new AppListResponse(1, "Successful retrieved app list.", appsRes)
     }

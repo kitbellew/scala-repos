@@ -16,19 +16,15 @@ object Test extends Properties("NaN-Ordering") {
   )
 
   property("Float min") = forAll(specFloats, specFloats) { (d1, d2) =>
-    {
-      val mathmin = math.min(d1, d2)
-      val numericmin = d1 min d2
-      mathmin == numericmin || mathmin.isNaN && numericmin.isNaN
-    }
+    val mathmin = math.min(d1, d2)
+    val numericmin = d1 min d2
+    mathmin == numericmin || mathmin.isNaN && numericmin.isNaN
   }
 
   property("Float max") = forAll(specFloats, specFloats) { (d1, d2) =>
-    {
-      val mathmax = math.max(d1, d2)
-      val numericmax = d1 max d2
-      mathmax == numericmax || mathmax.isNaN && numericmax.isNaN
-    }
+    val mathmax = math.max(d1, d2)
+    val numericmax = d1 max d2
+    mathmax == numericmax || mathmax.isNaN && numericmax.isNaN
   }
 
   val numFloat = implicitly[Numeric[Float]]
@@ -54,19 +50,15 @@ object Test extends Properties("NaN-Ordering") {
   }
 
   property("Float reverse.min") = forAll(specFloats, specFloats) { (d1, d2) =>
-    {
-      val mathmax = math.max(d1, d2)
-      val numericmin = numFloat.reverse.min(d1, d2)
-      mathmax == numericmin || mathmax.isNaN && numericmin.isNaN
-    }
+    val mathmax = math.max(d1, d2)
+    val numericmin = numFloat.reverse.min(d1, d2)
+    mathmax == numericmin || mathmax.isNaN && numericmin.isNaN
   }
 
   property("Float reverse.max") = forAll(specFloats, specFloats) { (d1, d2) =>
-    {
-      val mathmin = math.min(d1, d2)
-      val numericmax = numFloat.reverse.max(d1, d2)
-      mathmin == numericmax || mathmin.isNaN && numericmax.isNaN
-    }
+    val mathmin = math.min(d1, d2)
+    val numericmax = numFloat.reverse.max(d1, d2)
+    mathmin == numericmax || mathmin.isNaN && numericmax.isNaN
   }
 
   property("Float reverse.lt") = forAll(specFloats, specFloats) { (d1, d2) =>
@@ -102,19 +94,15 @@ object Test extends Properties("NaN-Ordering") {
 
   // ticket #5104
   property("Double min") = forAll(specDoubles, specDoubles) { (d1, d2) =>
-    {
-      val mathmin = math.min(d1, d2)
-      val numericmin = d1 min d2
-      mathmin == numericmin || mathmin.isNaN && numericmin.isNaN
-    }
+    val mathmin = math.min(d1, d2)
+    val numericmin = d1 min d2
+    mathmin == numericmin || mathmin.isNaN && numericmin.isNaN
   }
 
   property("Double max") = forAll(specDoubles, specDoubles) { (d1, d2) =>
-    {
-      val mathmax = math.max(d1, d2)
-      val numericmax = d1 max d2
-      mathmax == numericmax || mathmax.isNaN && numericmax.isNaN
-    }
+    val mathmax = math.max(d1, d2)
+    val numericmax = d1 max d2
+    mathmax == numericmax || mathmax.isNaN && numericmax.isNaN
   }
 
   val numDouble = implicitly[Numeric[Double]]
@@ -141,20 +129,16 @@ object Test extends Properties("NaN-Ordering") {
 
   property("Double reverse.min") = forAll(specDoubles, specDoubles) {
     (d1, d2) =>
-      {
-        val mathmax = math.max(d1, d2)
-        val numericmin = numDouble.reverse.min(d1, d2)
-        mathmax == numericmin || mathmax.isNaN && numericmin.isNaN
-      }
+      val mathmax = math.max(d1, d2)
+      val numericmin = numDouble.reverse.min(d1, d2)
+      mathmax == numericmin || mathmax.isNaN && numericmin.isNaN
   }
 
   property("Double reverse.max") = forAll(specDoubles, specDoubles) {
     (d1, d2) =>
-      {
-        val mathmin = math.min(d1, d2)
-        val numericmax = numDouble.reverse.max(d1, d2)
-        mathmin == numericmax || mathmin.isNaN && numericmax.isNaN
-      }
+      val mathmin = math.min(d1, d2)
+      val numericmax = numDouble.reverse.max(d1, d2)
+      mathmin == numericmax || mathmin.isNaN && numericmax.isNaN
   }
 
   property("Double reverse.lt") = forAll(specDoubles, specDoubles) { (d1, d2) =>

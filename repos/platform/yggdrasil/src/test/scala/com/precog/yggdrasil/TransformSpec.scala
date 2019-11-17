@@ -482,9 +482,7 @@ trait TransformSpec[M[+_]]
       case JArray(li) => li
       case _          => sys.error("expected JArray")
     }).map { k =>
-      {
-        JObject(List(JField("value", k), JField("key", JArray(List(JNum(0))))))
-      }
+      JObject(List(JField("value", k), JField("key", JArray(List(JNum(0))))))
     }.toStream
 
     val sample = SampleData(data)

@@ -354,12 +354,10 @@ object Act {
           Aggregation.defaultShow(state, showTasks = action == ShowAction)
         evaluatingParser(state, structure, showConfig)(preparedPairs) map {
           evaluate => () =>
-            {
-              val keyStrings =
-                preparedPairs.map(pp => showKey(pp.key)).mkString(", ")
-              state.log.debug("Evaluating tasks: " + keyStrings)
-              evaluate()
-            }
+            val keyStrings =
+              preparedPairs.map(pp => showKey(pp.key)).mkString(", ")
+            state.log.debug("Evaluating tasks: " + keyStrings)
+            evaluate()
         }
       }
       action match {

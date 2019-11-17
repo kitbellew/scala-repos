@@ -532,22 +532,20 @@ object AkkaBuild extends Build {
         compile in Compile) map
         ((_, _, _, _, _, _, _, c) => c),
       test in Test ~= { x =>
-        {
-          def executeMvnCommands(failureMessage: String, commands: String*) =
-            if ({
-              List(
-                "sh",
-                "-c",
-                commands.mkString(
-                  "cd akka-samples/akka-sample-osgi-dining-hakkers; mvn ",
-                  " ",
-                  "")) !
-            } != 0) throw new Exception(failureMessage)
-          executeMvnCommands(
-            "Osgi sample Dining hakkers test failed",
-            "clean",
-            "install")
-        }
+        def executeMvnCommands(failureMessage: String, commands: String*) =
+          if ({
+            List(
+              "sh",
+              "-c",
+              commands.mkString(
+                "cd akka-samples/akka-sample-osgi-dining-hakkers; mvn ",
+                " ",
+                "")) !
+          } != 0) throw new Exception(failureMessage)
+        executeMvnCommands(
+          "Osgi sample Dining hakkers test failed",
+          "clean",
+          "install")
       }
     )
     .settings(dontPublishSettings: _*)

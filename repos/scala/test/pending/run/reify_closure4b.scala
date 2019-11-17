@@ -9,9 +9,7 @@ object Test extends App {
       val y1 = y
 
       val fun = reify { (x: Int) =>
-        {
-          x + y1
-        }
+        x + y1
       }
     }
 

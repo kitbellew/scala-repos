@@ -992,12 +992,10 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
     */
   private def objectSetterFor(field: BaseMappedField) = {
     (st: PreparedStatement, index: Int, value: AnyRef, columnType: Int) =>
-      {
-        if (field.dbIgnoreSQLType_?) {
-          st.setObject(index, value)
-        } else {
-          st.setObject(index, value, columnType)
-        }
+      if (field.dbIgnoreSQLType_?) {
+        st.setObject(index, value)
+      } else {
+        st.setObject(index, value, columnType)
       }
   }
 
@@ -1246,10 +1244,8 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
                     bsl(objInst, rs.getBoolean(pos), rs.wasNull)
                 }
                 case _ => { (rs: ResultSet, pos: Int, objInst: A) =>
-                  {
-                    val res = rs.getObject(pos)
-                    findApplier(colName, res).foreach(f => f(objInst, res))
-                  }
+                  val res = rs.getObject(pos)
+                  findApplier(colName, res).foreach(f => f(objInst, res))
                 }
               })
             }
