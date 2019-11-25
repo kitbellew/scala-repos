@@ -215,13 +215,12 @@ trait RepositoryService { self: AccountService =>
           .list
           .toMap
         IssueLabels.insertAll(
-          issueLabels.map(
-            x =>
-              x.copy(
-                labelId = newLabelMap(oldLabelMap(x.labelId)),
-                userName = newUserName,
-                repositoryName = newRepositoryName
-              )): _*)
+          issueLabels.map(x =>
+            x.copy(
+              labelId = newLabelMap(oldLabelMap(x.labelId)),
+              userName = newUserName,
+              repositoryName = newRepositoryName
+            )): _*)
 
         if (account.isGroupAccount) {
           Collaborators.insertAll(getGroupMembers(newUserName).map(m =>

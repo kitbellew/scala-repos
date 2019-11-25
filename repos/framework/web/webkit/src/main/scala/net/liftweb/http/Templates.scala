@@ -281,10 +281,9 @@ object Templates {
       case Nil             => ("default_template", "index")
     }
     val trans = List[String => String](n => n, n => camelify(n))
-    val toTry = trans.flatMap(
-      f =>
-        (LiftRules.buildPackage("view") ::: ("lift.app.view" :: Nil))
-          .map(_ + "." + f(controller)))
+    val toTry = trans.flatMap(f =>
+      (LiftRules.buildPackage("view") ::: ("lift.app.view" :: Nil))
+        .map(_ + "." + f(controller)))
 
     first(toTry) { clsName =>
       try {

@@ -112,10 +112,9 @@ trait AccountService {
       map
     } else {
       map ++ Accounts
-        .filter(
-          t =>
-            (t.userName inSetBind needs) &&
-              (t.removed === false.bind, !includeRemoved))
+        .filter(t =>
+          (t.userName inSetBind needs) &&
+            (t.removed === false.bind, !includeRemoved))
         .list
         .map(a => a.userName -> a)
         .toMap

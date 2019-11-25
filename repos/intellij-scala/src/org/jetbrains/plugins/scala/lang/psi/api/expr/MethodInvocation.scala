@@ -357,11 +357,10 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
                 .map(ScType.designator(_))
                 .getOrElse(types.Any)
               (
-                res.map(
-                  tp =>
-                    ScTupleType(Seq(stringType, tp))(
-                      getProject,
-                      getResolveScope)),
+                res.map(tp =>
+                  ScTupleType(Seq(stringType, tp))(
+                    getProject,
+                    getResolveScope)),
                 imports)
             }
           }

@@ -141,13 +141,12 @@ case class SimpleFilteredScan(from: Int, to: Int)(
     sqlContext.sparkContext
       .parallelize(from to to)
       .filter(eval)
-      .map(
-        i =>
-          Row.fromSeq(
-            rowBuilders
-              .map(_(i))
-              .reduceOption(_ ++ _)
-              .getOrElse(Seq.empty)))
+      .map(i =>
+        Row.fromSeq(
+          rowBuilders
+            .map(_(i))
+            .reduceOption(_ ++ _)
+            .getOrElse(Seq.empty)))
   }
 }
 

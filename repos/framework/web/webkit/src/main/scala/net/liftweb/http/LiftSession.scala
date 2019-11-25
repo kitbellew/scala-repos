@@ -914,18 +914,17 @@ class LiftSession(
     }
 
     import scala.collection.JavaConversions._
-    (0 /: nmessageCallback)(
-      (l, v) =>
-        l +
-          (v._2.owner match {
-            case Full(owner) if (owner == ownerName) =>
-              v._2.lastSeen = time
-              1
-            case Empty =>
-              v._2.lastSeen = time
-              1
-            case _ => 0
-          }))
+    (0 /: nmessageCallback)((l, v) =>
+      l +
+        (v._2.owner match {
+          case Full(owner) if (owner == ownerName) =>
+            v._2.lastSeen = time
+            1
+          case Empty =>
+            v._2.lastSeen = time
+            1
+          case _ => 0
+        }))
   }
 
   /**
@@ -1662,8 +1661,8 @@ class LiftSession(
     val requestVarFunc = RequestVarHandler.generateSnapshotRestorer[T]()
 
     () => {
-      requestVarFunc(
-        () => executeInScope(currentReq, renderVersion)(deferredFunction()))
+      requestVarFunc(() =>
+        executeInScope(currentReq, renderVersion)(deferredFunction()))
     }
   }
 
@@ -1680,8 +1679,8 @@ class LiftSession(
     val requestVarFunc = RequestVarHandler.generateSnapshotRestorer[T]()
 
     (in: A) => {
-      requestVarFunc(
-        () => executeInScope(currentReq, renderVersion)(deferredFunction(in)))
+      requestVarFunc(() =>
+        executeInScope(currentReq, renderVersion)(deferredFunction(in)))
     }
   }
 

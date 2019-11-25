@@ -27,21 +27,20 @@ object MyBuild extends Build {
   def demoState(s: State, i: Int): State = s put (sample, i + 1)
 
   def checkInit: Initialize[InputTask[Unit]] =
-    InputTask(
-      (_: State) => token(Space ~> IntBasic) ~ token(Space ~> IntBasic).?) {
-      key =>
-        (key, updateDemo, state) map {
-          case ((curExpected, prevExpected), value, s) =>
-            val prev = s get sample
-            assert(
-              value == curExpected,
-              "Expected current value to be " + curExpected + ", got " +
-                value)
-            assert(
-              prev == prevExpected,
-              "Expected previous value to be " + prevExpected + ", got " +
-                prev)
-        }
+    InputTask((_: State) =>
+      token(Space ~> IntBasic) ~ token(Space ~> IntBasic).?) { key =>
+      (key, updateDemo, state) map {
+        case ((curExpected, prevExpected), value, s) =>
+          val prev = s get sample
+          assert(
+            value == curExpected,
+            "Expected current value to be " + curExpected + ", got " +
+              value)
+          assert(
+            prev == prevExpected,
+            "Expected previous value to be " + prevExpected + ", got " +
+              prev)
+      }
     }
 
   def inMemorySetting =

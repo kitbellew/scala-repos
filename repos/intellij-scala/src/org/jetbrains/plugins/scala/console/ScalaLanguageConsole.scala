@@ -87,19 +87,17 @@ class ScalaLanguageConsole(project: Project, title: String)
     }
     scalaFile.getChildren.foreach {
       case v: ScValue =>
-        v.declaredElements.foreach(
-          td =>
-            addValue(
-              td.name,
-              td.nameId.getTextRange,
-              replaceWithPlaceholder = true))
+        v.declaredElements.foreach(td =>
+          addValue(
+            td.name,
+            td.nameId.getTextRange,
+            replaceWithPlaceholder = true))
       case v: ScVariable =>
-        v.declaredElements.foreach(
-          td =>
-            addValue(
-              td.name,
-              td.nameId.getTextRange,
-              replaceWithPlaceholder = true))
+        v.declaredElements.foreach(td =>
+          addValue(
+            td.name,
+            td.nameId.getTextRange,
+            replaceWithPlaceholder = true))
       case f: ScFunction =>
         addValue(f.name, f.getTextRange, replaceWithPlaceholder = false)
       case o: ScObject =>

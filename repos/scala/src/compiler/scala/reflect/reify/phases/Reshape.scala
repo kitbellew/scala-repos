@@ -340,10 +340,9 @@ trait Reshape { self: Reifier =>
                 if (!ddef.symbol.isPrivate) flags1 = flags1 & ~PRIVATE
                 val privateWithin1 = ddef.mods.privateWithin
                 val annotations1 =
-                  accessors(vdef).foldLeft(annotations)(
-                    (curr, acc) =>
-                      curr ++
-                        (acc.symbol.annotations map toPreTyperAnnotation))
+                  accessors(vdef).foldLeft(annotations)((curr, acc) =>
+                    curr ++
+                      (acc.symbol.annotations map toPreTyperAnnotation))
                 Modifiers(flags1, privateWithin1, annotations1) setPositions mods.positions
               } else {
                 mods

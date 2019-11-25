@@ -461,15 +461,14 @@ class ImplicitCollector(
                         Some(c.copy(implicitReason = OkResult), subst)
                       else {
                         val methodType = lastImplicit
-                          .map(
-                            li =>
-                              subst.subst(
-                                ScMethodType(
-                                  ret,
-                                  li.getSmartParameters,
-                                  isImplicit = true)(
-                                  place.getProject,
-                                  place.getResolveScope)))
+                          .map(li =>
+                            subst.subst(
+                              ScMethodType(
+                                ret,
+                                li.getSmartParameters,
+                                isImplicit = true)(
+                                place.getProject,
+                                place.getResolveScope)))
                           .getOrElse(ret)
                         val polymorphicTypeParameters =
                           typeParameters.map(new TypeParameter(_))
@@ -480,10 +479,9 @@ class ImplicitCollector(
                               case ScTypePolymorphicType(
                                   internalType,
                                   typeParams) =>
-                                val filteredTypeParams = typeParams.filter(
-                                  tp =>
-                                    !tp.lowerType().equiv(types.Nothing) ||
-                                      !tp.upperType().equiv(types.Any))
+                                val filteredTypeParams = typeParams.filter(tp =>
+                                  !tp.lowerType().equiv(types.Nothing) ||
+                                    !tp.upperType().equiv(types.Any))
                                 val newPolymorphicType = ScTypePolymorphicType(
                                   internalType,
                                   filteredTypeParams)
@@ -801,8 +799,7 @@ class ImplicitCollector(
       if (fullInfo)
         return (candidates.toSeq.map(c =>
           forMap(c, withLocalTypeInference = false, checkFast = false)) ++ candidates.toSeq
-          .map(c =>
-            forMap(c, withLocalTypeInference = true, checkFast = false)))
+          .map(c => forMap(c, withLocalTypeInference = true, checkFast = false)))
           .flatMap(_.toSeq)
           .map(_._1)
           .toSet

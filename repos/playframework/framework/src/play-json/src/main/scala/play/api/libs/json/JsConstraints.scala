@@ -67,14 +67,13 @@ trait PathReads {
 
   def jsPickBranch[A <: JsValue](path: JsPath)(
       implicit reads: Reads[A]): Reads[JsObject] =
-    Reads[JsObject](
-      js =>
-        path
-          .asSingleJsResult(js)
-          .flatMap { jsv =>
-            reads.reads(jsv).repath(path)
-          }
-          .map(jsv => JsPath.createObj(path -> jsv)))
+    Reads[JsObject](js =>
+      path
+        .asSingleJsResult(js)
+        .flatMap { jsv =>
+          reads.reads(jsv).repath(path)
+        }
+        .map(jsv => JsPath.createObj(path -> jsv)))
 
   def jsPut(path: JsPath, a: => JsValue) =
     Reads[JsObject](json => JsSuccess(JsPath.createObj(path -> a)))
@@ -168,13 +167,12 @@ trait ConstraintReads {
   def pattern(
       regex: => scala.util.matching.Regex,
       error: String = "error.pattern")(implicit reads: Reads[String]) =
-    Reads[String](
-      js =>
-        reads
-          .reads(js)
-          .flatMap { o =>
-            regex.unapplySeq(o).map(_ => JsSuccess(o)).getOrElse(JsError(error))
-          })
+    Reads[String](js =>
+      reads
+        .reads(js)
+        .flatMap { o =>
+          regex.unapplySeq(o).map(_ => JsSuccess(o)).getOrElse(JsError(error))
+        })
 
   def email(implicit reads: Reads[String]): Reads[String] =
     pattern(
@@ -238,10 +236,9 @@ trait PathWrites {
     OWrites[JsValue] { js =>
       JsPath.createObj(
         path -> path(js).headOption
-          .flatMap(
-            js =>
-              js.asOpt[JsObject]
-                .map(obj => obj.deepMerge(wrs.writes(obj))))
+          .flatMap(js =>
+            js.asOpt[JsObject]
+              .map(obj => obj.deepMerge(wrs.writes(obj))))
           .getOrElse(JsNull)
       )
     }

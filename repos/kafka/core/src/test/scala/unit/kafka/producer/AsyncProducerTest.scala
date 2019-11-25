@@ -48,10 +48,9 @@ class AsyncProducerTest {
   val props = Seq(createBrokerConfig(1, "127.0.0.1:1", port = 65534))
   val configs = props.map(KafkaConfig.fromProps)
   val brokerList = configs
-    .map(
-      c =>
-        org.apache.kafka.common.utils.Utils
-          .formatAddress(c.hostName, c.port))
+    .map(c =>
+      org.apache.kafka.common.utils.Utils
+        .formatAddress(c.hostName, c.port))
     .mkString(",")
 
   @Test
@@ -299,19 +298,17 @@ class AsyncProducerTest {
     )
 
     val serializedData = handler.serialize(produceData)
-    val deserializedData = serializedData.map(
-      d =>
-        new KeyedMessage[String, String](
-          d.topic,
-          TestUtils.readString(d.message.payload)))
+    val deserializedData = serializedData.map(d =>
+      new KeyedMessage[String, String](
+        d.topic,
+        TestUtils.readString(d.message.payload)))
 
     // Test that the serialize handles seq from a Stream
     val streamedSerializedData = handler.serialize(Stream(produceData: _*))
-    val deserializedStreamData = streamedSerializedData.map(
-      d =>
-        new KeyedMessage[String, String](
-          d.topic,
-          TestUtils.readString(d.message.payload)))
+    val deserializedStreamData = streamedSerializedData.map(d =>
+      new KeyedMessage[String, String](
+        d.topic,
+        TestUtils.readString(d.message.payload)))
 
     TestUtils.checkEquals(produceData.iterator, deserializedData.iterator)
     TestUtils.checkEquals(produceData.iterator, deserializedStreamData.iterator)
@@ -644,12 +641,11 @@ class AsyncProducerTest {
       messages: Seq[Array[Byte]]): ByteBufferMessageSet = {
     new ByteBufferMessageSet(
       NoCompressionCodec,
-      messages.map(
-        m =>
-          new Message(
-            key = key,
-            bytes = m,
-            timestamp = 0L,
-            magicValue = Message.MagicValue_V1)): _*)
+      messages.map(m =>
+        new Message(
+          key = key,
+          bytes = m,
+          timestamp = 0L,
+          magicValue = Message.MagicValue_V1)): _*)
   }
 }

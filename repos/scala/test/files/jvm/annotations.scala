@@ -172,18 +172,18 @@ object Test4 {
       .sortWith((x, y) => x.toString < y.toString) foreach printSourceAnnotations
     classOf[Foo10].getDeclaredFields
       .sortWith((x, y) => x.toString < y.toString) foreach printSourceAnnotations
-    classOf[Foo10].getDeclaredMethods.sortWith(
-      (x, y) => x.toString < y.toString) foreach printSourceAnnotations
+    classOf[Foo10].getDeclaredMethods.sortWith((x, y) =>
+      x.toString < y.toString) foreach printSourceAnnotations
     classOf[Foo10].getDeclaredConstructors foreach printParamSourceAnnotations
     classOf[Foo11].getDeclaredFields
       .sortWith((x, y) => x.toString < y.toString) foreach printSourceAnnotations
-    classOf[Foo11].getDeclaredMethods.sortWith(
-      (x, y) => x.toString < y.toString) foreach printSourceAnnotations
+    classOf[Foo11].getDeclaredMethods.sortWith((x, y) =>
+      x.toString < y.toString) foreach printSourceAnnotations
     classOf[Foo11].getDeclaredConstructors foreach printParamSourceAnnotations
     classOf[Foo12].getDeclaredFields
       .sortWith((x, y) => x.toString < y.toString) foreach printSourceAnnotations
-    classOf[Foo12].getDeclaredMethods.sortWith(
-      (x, y) => x.toString < y.toString) foreach printSourceAnnotations
+    classOf[Foo12].getDeclaredMethods.sortWith((x, y) =>
+      x.toString < y.toString) foreach printSourceAnnotations
     classOf[Foo12].getDeclaredConstructors foreach printParamSourceAnnotations
   }
 }

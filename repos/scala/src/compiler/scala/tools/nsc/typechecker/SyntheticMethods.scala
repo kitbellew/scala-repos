@@ -129,13 +129,12 @@ trait SyntheticMethods extends ast.TreeDSL { self: Analyzer =>
       }
     }
     def productIteratorMethod = {
-      createMethod(nme.productIterator, iteratorOfType(AnyTpe))(
-        _ =>
-          gen.mkMethodCall(
-            ScalaRunTimeModule,
-            nme.typedProductIterator,
-            List(AnyTpe),
-            List(mkThis)))
+      createMethod(nme.productIterator, iteratorOfType(AnyTpe))(_ =>
+        gen.mkMethodCall(
+          ScalaRunTimeModule,
+          nme.typedProductIterator,
+          List(AnyTpe),
+          List(mkThis)))
     }
 
     /* Common code for productElement and (currently disabled) productElementName */
@@ -451,13 +450,12 @@ trait SyntheticMethods extends ast.TreeDSL { self: Analyzer =>
       (lb ++= templ.body ++= synthesize()).toList
     }
 
-    deriveTemplate(templ)(
-      body =>
-        if (clazz.isCase) caseTemplateBody()
-        else
-          synthesize() match {
-            case Nil => body // avoiding unnecessary copy
-            case ms  => body ++ ms
-          })
+    deriveTemplate(templ)(body =>
+      if (clazz.isCase) caseTemplateBody()
+      else
+        synthesize() match {
+          case Nil => body // avoiding unnecessary copy
+          case ms  => body ++ ms
+        })
   }
 }

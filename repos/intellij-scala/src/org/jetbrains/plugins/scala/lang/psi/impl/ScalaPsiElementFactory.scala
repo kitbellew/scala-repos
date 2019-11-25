@@ -1217,10 +1217,9 @@ object ScalaPsiElementFactory {
             val extendsTypes = param.getExtendsListTypes
             val extendsTypesText =
               if (extendsTypes.length > 0) {
-                val typeTexts = extendsTypes.map(
-                  (t: PsiClassType) =>
-                    ScType.canonicalText(
-                      substitutor.subst(ScType.create(t, method.getProject))))
+                val typeTexts = extendsTypes.map((t: PsiClassType) =>
+                  ScType.canonicalText(
+                    substitutor.subst(ScType.create(t, method.getProject))))
                 typeTexts.mkString(" <: ", " with ", "")
               } else ""
             param.name + extendsTypesText

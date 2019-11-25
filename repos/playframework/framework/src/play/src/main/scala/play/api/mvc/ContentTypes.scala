@@ -417,10 +417,9 @@ trait BodyParsers {
       * @param maxLength Max length allowed or returns EntityTooLarge HTTP response.
       */
     def json(maxLength: Int): BodyParser[JsValue] = when(
-      _.contentType.exists(
-        m =>
-          m.equalsIgnoreCase("text/json") ||
-            m.equalsIgnoreCase("application/json")),
+      _.contentType.exists(m =>
+        m.equalsIgnoreCase("text/json") ||
+          m.equalsIgnoreCase("application/json")),
       tolerantJson(maxLength),
       createBadResult(
         "Expecting text/json or application/json body",
@@ -825,11 +824,10 @@ trait BodyParsers {
             case MaxSizeExceeded(_) =>
               val badResult = Future
                 .successful(())
-                .flatMap(
-                  _ =>
-                    createBadResult(
-                      "Request Entity Too Large",
-                      REQUEST_ENTITY_TOO_LARGE)(request))(defaultCtx)
+                .flatMap(_ =>
+                  createBadResult(
+                    "Request Entity Too Large",
+                    REQUEST_ENTITY_TOO_LARGE)(request))(defaultCtx)
               badResult.map(Left(_))
             case MaxSizeNotExceeded => resultFuture
           }

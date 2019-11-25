@@ -746,11 +746,10 @@ case class Menu(loc: Loc[_], private val convertableKids: ConvertableToMenu*)
     Menu(loc, f(kids.toList): _*)
 
   private[sitemap] def validate {
-    _parent.foreach(
-      p =>
-        if (p.isRoot_?)
-          throw new SiteMapException(
-            "Menu items with root location (\"/\") cannot have children"))
+    _parent.foreach(p =>
+      if (p.isRoot_?)
+        throw new SiteMapException(
+          "Menu items with root location (\"/\") cannot have children"))
     kids.foreach(_.validate)
   }
 

@@ -545,16 +545,15 @@ class ControllerBrokerRequestBatch(controller: KafkaController)
       leaderAndIsrRequestMap.clear()
       updateMetadataRequestMap.foreach {
         case (broker, partitionStateInfos) =>
-          partitionStateInfos.foreach(
-            p =>
-              stateChangeLogger.trace(
-                ("Controller %d epoch %d sending UpdateMetadata request %s " +
-                  "to broker %d for partition %s").format(
-                  controllerId,
-                  controllerEpoch,
-                  p._2.leaderIsrAndControllerEpoch,
-                  broker,
-                  p._1)))
+          partitionStateInfos.foreach(p =>
+            stateChangeLogger.trace(
+              ("Controller %d epoch %d sending UpdateMetadata request %s " +
+                "to broker %d for partition %s").format(
+                controllerId,
+                controllerEpoch,
+                p._2.leaderIsrAndControllerEpoch,
+                broker,
+                p._1)))
           val partitionStates = partitionStateInfos.map {
             case (topicPartition, partitionStateInfo) =>
               val LeaderIsrAndControllerEpoch(leaderIsr, controllerEpoch) =

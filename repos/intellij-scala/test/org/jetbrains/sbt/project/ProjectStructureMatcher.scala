@@ -23,20 +23,18 @@ trait ProjectStructureMatcher {
 
   def assertProjectsEqual(expected: project, actual: Project): Unit = {
     assertEquals("Project name", expected.name, actual.getName)
-    expected.foreach(sdk)(
-      it =>
-        assertEquals(
-          "Project SDK",
-          it,
-          roots.ProjectRootManager.getInstance(actual).getProjectSdk))
-    expected.foreach(languageLevel)(
-      it =>
-        assertEquals(
-          "Project language level",
-          it,
-          roots.LanguageLevelProjectExtension
-            .getInstance(actual)
-            .getLanguageLevel))
+    expected.foreach(sdk)(it =>
+      assertEquals(
+        "Project SDK",
+        it,
+        roots.ProjectRootManager.getInstance(actual).getProjectSdk))
+    expected.foreach(languageLevel)(it =>
+      assertEquals(
+        "Project language level",
+        it,
+        roots.LanguageLevelProjectExtension
+          .getInstance(actual)
+          .getLanguageLevel))
     expected.foreach(modules)(assertProjectModulesEqual(actual))
     expected.foreach(libraries)(assertProjectLibrariesEqual(actual))
   }

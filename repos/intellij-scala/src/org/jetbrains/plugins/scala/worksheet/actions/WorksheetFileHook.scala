@@ -127,10 +127,9 @@ class WorksheetFileHook(private val project: Project) extends ProjectComponent {
 
   def enableRun(file: VirtualFile, hasErrors: Boolean) {
     cleanAndAdd(file, Some(new RunWorksheetAction))
-    statusDisplay.foreach(
-      display =>
-        if (hasErrors) display.onFailedCompiling()
-        else display.onSuccessfulCompiling())
+    statusDisplay.foreach(display =>
+      if (hasErrors) display.onFailedCompiling()
+      else display.onSuccessfulCompiling())
   }
 
   private def cleanAndAdd(

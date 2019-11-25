@@ -456,18 +456,17 @@ class ObjectMapping5[R, A1, A2, A3, A4, A5](
 
   def withPrefix(prefix: String): ObjectMapping5[R, A1, A2, A3, A4, A5] =
     addPrefix(prefix)
-      .map(
-        newKey =>
-          new ObjectMapping5(
-            apply,
-            unapply,
-            f1,
-            f2,
-            f3,
-            f4,
-            f5,
-            newKey,
-            constraints))
+      .map(newKey =>
+        new ObjectMapping5(
+          apply,
+          unapply,
+          f1,
+          f2,
+          f3,
+          f4,
+          f5,
+          newKey,
+          constraints))
       .getOrElse(this)
 
   def verifying(
@@ -567,19 +566,18 @@ class ObjectMapping6[R, A1, A2, A3, A4, A5, A6](
 
   def withPrefix(prefix: String): ObjectMapping6[R, A1, A2, A3, A4, A5, A6] =
     addPrefix(prefix)
-      .map(
-        newKey =>
-          new ObjectMapping6(
-            apply,
-            unapply,
-            f1,
-            f2,
-            f3,
-            f4,
-            f5,
-            f6,
-            newKey,
-            constraints))
+      .map(newKey =>
+        new ObjectMapping6(
+          apply,
+          unapply,
+          f1,
+          f2,
+          f3,
+          f4,
+          f5,
+          f6,
+          newKey,
+          constraints))
       .getOrElse(this)
 
   def verifying(addConstraints: Constraint[R]*)
@@ -688,20 +686,19 @@ class ObjectMapping7[R, A1, A2, A3, A4, A5, A6, A7](
   def withPrefix(
       prefix: String): ObjectMapping7[R, A1, A2, A3, A4, A5, A6, A7] =
     addPrefix(prefix)
-      .map(
-        newKey =>
-          new ObjectMapping7(
-            apply,
-            unapply,
-            f1,
-            f2,
-            f3,
-            f4,
-            f5,
-            f6,
-            f7,
-            newKey,
-            constraints))
+      .map(newKey =>
+        new ObjectMapping7(
+          apply,
+          unapply,
+          f1,
+          f2,
+          f3,
+          f4,
+          f5,
+          f6,
+          f7,
+          newKey,
+          constraints))
       .getOrElse(this)
 
   def verifying(addConstraints: Constraint[R]*)
@@ -817,21 +814,20 @@ class ObjectMapping8[R, A1, A2, A3, A4, A5, A6, A7, A8](
   def withPrefix(
       prefix: String): ObjectMapping8[R, A1, A2, A3, A4, A5, A6, A7, A8] =
     addPrefix(prefix)
-      .map(
-        newKey =>
-          new ObjectMapping8(
-            apply,
-            unapply,
-            f1,
-            f2,
-            f3,
-            f4,
-            f5,
-            f6,
-            f7,
-            f8,
-            newKey,
-            constraints))
+      .map(newKey =>
+        new ObjectMapping8(
+          apply,
+          unapply,
+          f1,
+          f2,
+          f3,
+          f4,
+          f5,
+          f6,
+          f7,
+          f8,
+          newKey,
+          constraints))
       .getOrElse(this)
 
   def verifying(addConstraints: Constraint[R]*)
@@ -955,22 +951,21 @@ class ObjectMapping9[R, A1, A2, A3, A4, A5, A6, A7, A8, A9](
   def withPrefix(
       prefix: String): ObjectMapping9[R, A1, A2, A3, A4, A5, A6, A7, A8, A9] =
     addPrefix(prefix)
-      .map(
-        newKey =>
-          new ObjectMapping9(
-            apply,
-            unapply,
-            f1,
-            f2,
-            f3,
-            f4,
-            f5,
-            f6,
-            f7,
-            f8,
-            f9,
-            newKey,
-            constraints))
+      .map(newKey =>
+        new ObjectMapping9(
+          apply,
+          unapply,
+          f1,
+          f2,
+          f3,
+          f4,
+          f5,
+          f6,
+          f7,
+          f8,
+          f9,
+          newKey,
+          constraints))
       .getOrElse(this)
 
   def verifying(addConstraints: Constraint[R]*)
@@ -1102,23 +1097,22 @@ class ObjectMapping10[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10](
   def withPrefix(prefix: String)
       : ObjectMapping10[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10] =
     addPrefix(prefix)
-      .map(
-        newKey =>
-          new ObjectMapping10(
-            apply,
-            unapply,
-            f1,
-            f2,
-            f3,
-            f4,
-            f5,
-            f6,
-            f7,
-            f8,
-            f9,
-            f10,
-            newKey,
-            constraints))
+      .map(newKey =>
+        new ObjectMapping10(
+          apply,
+          unapply,
+          f1,
+          f2,
+          f3,
+          f4,
+          f5,
+          f6,
+          f7,
+          f8,
+          f9,
+          f10,
+          newKey,
+          constraints))
       .getOrElse(this)
 
   def verifying(addConstraints: Constraint[R]*)
@@ -1259,24 +1253,23 @@ class ObjectMapping11[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11](
   def withPrefix(prefix: String)
       : ObjectMapping11[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11] =
     addPrefix(prefix)
-      .map(
-        newKey =>
-          new ObjectMapping11(
-            apply,
-            unapply,
-            f1,
-            f2,
-            f3,
-            f4,
-            f5,
-            f6,
-            f7,
-            f8,
-            f9,
-            f10,
-            f11,
-            newKey,
-            constraints))
+      .map(newKey =>
+        new ObjectMapping11(
+          apply,
+          unapply,
+          f1,
+          f2,
+          f3,
+          f4,
+          f5,
+          f6,
+          f7,
+          f8,
+          f9,
+          f10,
+          f11,
+          newKey,
+          constraints))
       .getOrElse(this)
 
   def verifying(addConstraints: Constraint[R]*)
@@ -1424,25 +1417,24 @@ class ObjectMapping12[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12](
   def withPrefix(prefix: String)
       : ObjectMapping12[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12] =
     addPrefix(prefix)
-      .map(
-        newKey =>
-          new ObjectMapping12(
-            apply,
-            unapply,
-            f1,
-            f2,
-            f3,
-            f4,
-            f5,
-            f6,
-            f7,
-            f8,
-            f9,
-            f10,
-            f11,
-            f12,
-            newKey,
-            constraints))
+      .map(newKey =>
+        new ObjectMapping12(
+          apply,
+          unapply,
+          f1,
+          f2,
+          f3,
+          f4,
+          f5,
+          f6,
+          f7,
+          f8,
+          f9,
+          f10,
+          f11,
+          f12,
+          newKey,
+          constraints))
       .getOrElse(this)
 
   def verifying(addConstraints: Constraint[R]*): ObjectMapping12[
@@ -1637,26 +1629,25 @@ class ObjectMapping13[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13]
     A12,
     A13] =
     addPrefix(prefix)
-      .map(
-        newKey =>
-          new ObjectMapping13(
-            apply,
-            unapply,
-            f1,
-            f2,
-            f3,
-            f4,
-            f5,
-            f6,
-            f7,
-            f8,
-            f9,
-            f10,
-            f11,
-            f12,
-            f13,
-            newKey,
-            constraints))
+      .map(newKey =>
+        new ObjectMapping13(
+          apply,
+          unapply,
+          f1,
+          f2,
+          f3,
+          f4,
+          f5,
+          f6,
+          f7,
+          f8,
+          f9,
+          f10,
+          f11,
+          f12,
+          f13,
+          newKey,
+          constraints))
       .getOrElse(this)
 
   def verifying(addConstraints: Constraint[R]*): ObjectMapping13[
@@ -1878,27 +1869,26 @@ class ObjectMapping14[
     A13,
     A14] =
     addPrefix(prefix)
-      .map(
-        newKey =>
-          new ObjectMapping14(
-            apply,
-            unapply,
-            f1,
-            f2,
-            f3,
-            f4,
-            f5,
-            f6,
-            f7,
-            f8,
-            f9,
-            f10,
-            f11,
-            f12,
-            f13,
-            f14,
-            newKey,
-            constraints))
+      .map(newKey =>
+        new ObjectMapping14(
+          apply,
+          unapply,
+          f1,
+          f2,
+          f3,
+          f4,
+          f5,
+          f6,
+          f7,
+          f8,
+          f9,
+          f10,
+          f11,
+          f12,
+          f13,
+          f14,
+          newKey,
+          constraints))
       .getOrElse(this)
 
   def verifying(addConstraints: Constraint[R]*): ObjectMapping14[
@@ -2132,28 +2122,27 @@ class ObjectMapping15[
     A14,
     A15] =
     addPrefix(prefix)
-      .map(
-        newKey =>
-          new ObjectMapping15(
-            apply,
-            unapply,
-            f1,
-            f2,
-            f3,
-            f4,
-            f5,
-            f6,
-            f7,
-            f8,
-            f9,
-            f10,
-            f11,
-            f12,
-            f13,
-            f14,
-            f15,
-            newKey,
-            constraints))
+      .map(newKey =>
+        new ObjectMapping15(
+          apply,
+          unapply,
+          f1,
+          f2,
+          f3,
+          f4,
+          f5,
+          f6,
+          f7,
+          f8,
+          f9,
+          f10,
+          f11,
+          f12,
+          f13,
+          f14,
+          f15,
+          newKey,
+          constraints))
       .getOrElse(this)
 
   def verifying(addConstraints: Constraint[R]*): ObjectMapping15[
@@ -2446,29 +2435,28 @@ class ObjectMapping16[
     A15,
     A16] =
     addPrefix(prefix)
-      .map(
-        newKey =>
-          new ObjectMapping16(
-            apply,
-            unapply,
-            f1,
-            f2,
-            f3,
-            f4,
-            f5,
-            f6,
-            f7,
-            f8,
-            f9,
-            f10,
-            f11,
-            f12,
-            f13,
-            f14,
-            f15,
-            f16,
-            newKey,
-            constraints))
+      .map(newKey =>
+        new ObjectMapping16(
+          apply,
+          unapply,
+          f1,
+          f2,
+          f3,
+          f4,
+          f5,
+          f6,
+          f7,
+          f8,
+          f9,
+          f10,
+          f11,
+          f12,
+          f13,
+          f14,
+          f15,
+          f16,
+          newKey,
+          constraints))
       .getOrElse(this)
 
   def verifying(addConstraints: Constraint[R]*): ObjectMapping16[
@@ -2774,30 +2762,29 @@ class ObjectMapping17[
     A16,
     A17] =
     addPrefix(prefix)
-      .map(
-        newKey =>
-          new ObjectMapping17(
-            apply,
-            unapply,
-            f1,
-            f2,
-            f3,
-            f4,
-            f5,
-            f6,
-            f7,
-            f8,
-            f9,
-            f10,
-            f11,
-            f12,
-            f13,
-            f14,
-            f15,
-            f16,
-            f17,
-            newKey,
-            constraints))
+      .map(newKey =>
+        new ObjectMapping17(
+          apply,
+          unapply,
+          f1,
+          f2,
+          f3,
+          f4,
+          f5,
+          f6,
+          f7,
+          f8,
+          f9,
+          f10,
+          f11,
+          f12,
+          f13,
+          f14,
+          f15,
+          f16,
+          f17,
+          newKey,
+          constraints))
       .getOrElse(this)
 
   def verifying(addConstraints: Constraint[R]*): ObjectMapping17[
@@ -3117,31 +3104,30 @@ class ObjectMapping18[
     A17,
     A18] =
     addPrefix(prefix)
-      .map(
-        newKey =>
-          new ObjectMapping18(
-            apply,
-            unapply,
-            f1,
-            f2,
-            f3,
-            f4,
-            f5,
-            f6,
-            f7,
-            f8,
-            f9,
-            f10,
-            f11,
-            f12,
-            f13,
-            f14,
-            f15,
-            f16,
-            f17,
-            f18,
-            newKey,
-            constraints))
+      .map(newKey =>
+        new ObjectMapping18(
+          apply,
+          unapply,
+          f1,
+          f2,
+          f3,
+          f4,
+          f5,
+          f6,
+          f7,
+          f8,
+          f9,
+          f10,
+          f11,
+          f12,
+          f13,
+          f14,
+          f15,
+          f16,
+          f17,
+          f18,
+          newKey,
+          constraints))
       .getOrElse(this)
 
   def verifying(addConstraints: Constraint[R]*): ObjectMapping18[
@@ -3476,32 +3462,31 @@ class ObjectMapping19[
     A18,
     A19] =
     addPrefix(prefix)
-      .map(
-        newKey =>
-          new ObjectMapping19(
-            apply,
-            unapply,
-            f1,
-            f2,
-            f3,
-            f4,
-            f5,
-            f6,
-            f7,
-            f8,
-            f9,
-            f10,
-            f11,
-            f12,
-            f13,
-            f14,
-            f15,
-            f16,
-            f17,
-            f18,
-            f19,
-            newKey,
-            constraints))
+      .map(newKey =>
+        new ObjectMapping19(
+          apply,
+          unapply,
+          f1,
+          f2,
+          f3,
+          f4,
+          f5,
+          f6,
+          f7,
+          f8,
+          f9,
+          f10,
+          f11,
+          f12,
+          f13,
+          f14,
+          f15,
+          f16,
+          f17,
+          f18,
+          f19,
+          newKey,
+          constraints))
       .getOrElse(this)
 
   def verifying(addConstraints: Constraint[R]*): ObjectMapping19[
@@ -3850,33 +3835,32 @@ class ObjectMapping20[
     A19,
     A20] =
     addPrefix(prefix)
-      .map(
-        newKey =>
-          new ObjectMapping20(
-            apply,
-            unapply,
-            f1,
-            f2,
-            f3,
-            f4,
-            f5,
-            f6,
-            f7,
-            f8,
-            f9,
-            f10,
-            f11,
-            f12,
-            f13,
-            f14,
-            f15,
-            f16,
-            f17,
-            f18,
-            f19,
-            f20,
-            newKey,
-            constraints))
+      .map(newKey =>
+        new ObjectMapping20(
+          apply,
+          unapply,
+          f1,
+          f2,
+          f3,
+          f4,
+          f5,
+          f6,
+          f7,
+          f8,
+          f9,
+          f10,
+          f11,
+          f12,
+          f13,
+          f14,
+          f15,
+          f16,
+          f17,
+          f18,
+          f19,
+          f20,
+          newKey,
+          constraints))
       .getOrElse(this)
 
   def verifying(addConstraints: Constraint[R]*): ObjectMapping20[
@@ -4239,34 +4223,33 @@ class ObjectMapping21[
     A20,
     A21] =
     addPrefix(prefix)
-      .map(
-        newKey =>
-          new ObjectMapping21(
-            apply,
-            unapply,
-            f1,
-            f2,
-            f3,
-            f4,
-            f5,
-            f6,
-            f7,
-            f8,
-            f9,
-            f10,
-            f11,
-            f12,
-            f13,
-            f14,
-            f15,
-            f16,
-            f17,
-            f18,
-            f19,
-            f20,
-            f21,
-            newKey,
-            constraints))
+      .map(newKey =>
+        new ObjectMapping21(
+          apply,
+          unapply,
+          f1,
+          f2,
+          f3,
+          f4,
+          f5,
+          f6,
+          f7,
+          f8,
+          f9,
+          f10,
+          f11,
+          f12,
+          f13,
+          f14,
+          f15,
+          f16,
+          f17,
+          f18,
+          f19,
+          f20,
+          f21,
+          newKey,
+          constraints))
       .getOrElse(this)
 
   def verifying(addConstraints: Constraint[R]*): ObjectMapping21[
@@ -4644,35 +4627,34 @@ class ObjectMapping22[
     A21,
     A22] =
     addPrefix(prefix)
-      .map(
-        newKey =>
-          new ObjectMapping22(
-            apply,
-            unapply,
-            f1,
-            f2,
-            f3,
-            f4,
-            f5,
-            f6,
-            f7,
-            f8,
-            f9,
-            f10,
-            f11,
-            f12,
-            f13,
-            f14,
-            f15,
-            f16,
-            f17,
-            f18,
-            f19,
-            f20,
-            f21,
-            f22,
-            newKey,
-            constraints))
+      .map(newKey =>
+        new ObjectMapping22(
+          apply,
+          unapply,
+          f1,
+          f2,
+          f3,
+          f4,
+          f5,
+          f6,
+          f7,
+          f8,
+          f9,
+          f10,
+          f11,
+          f12,
+          f13,
+          f14,
+          f15,
+          f16,
+          f17,
+          f18,
+          f19,
+          f20,
+          f21,
+          f22,
+          newKey,
+          constraints))
       .getOrElse(this)
 
   def verifying(addConstraints: Constraint[R]*): ObjectMapping22[

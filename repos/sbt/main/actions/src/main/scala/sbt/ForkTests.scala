@@ -86,13 +86,12 @@ private[sbt] object ForkTests {
               new ForkConfiguration(log.ansiCodesSupported, parallel)
             os.writeObject(config)
 
-            val taskdefs = opts.tests.map(
-              t =>
-                new TaskDef(
-                  t.name,
-                  forkFingerprint(t.fingerprint),
-                  t.explicitlySpecified,
-                  t.selectors))
+            val taskdefs = opts.tests.map(t =>
+              new TaskDef(
+                t.name,
+                forkFingerprint(t.fingerprint),
+                t.explicitlySpecified,
+                t.selectors))
             os.writeObject(taskdefs.toArray)
 
             os.writeInt(runners.size)

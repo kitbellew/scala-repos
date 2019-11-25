@@ -123,10 +123,9 @@ object TestConfigurationUtil {
         infixExpr.getInvokedExpr match {
           case refExpr: ScReferenceExpression if refExpr.refName == "+" =>
             getStaticTestNameElement(infixExpr.lOp, allowSymbolLiterals)
-              .flatMap(
-                left =>
-                  getStaticTestNameElement(infixExpr.rOp, allowSymbolLiterals)
-                    .map(left + _.toString))
+              .flatMap(left =>
+                getStaticTestNameElement(infixExpr.rOp, allowSymbolLiterals)
+                  .map(left + _.toString))
           case _ => None
         }
       case methodCall: ScMethodCall =>
@@ -150,11 +149,10 @@ object TestConfigurationUtil {
               }
             methodCall.argumentExpressions.headOption
               .flatMap(getStaticTestNameElement(_, allowSymbolLiterals))
-              .flatMap(
-                arg =>
-                  refExpr.smartQualifier
-                    .flatMap(getStaticTestNameElement(_, allowSymbolLiterals))
-                    .flatMap(helper(_, arg)))
+              .flatMap(arg =>
+                refExpr.smartQualifier
+                  .flatMap(getStaticTestNameElement(_, allowSymbolLiterals))
+                  .flatMap(helper(_, arg)))
           case refExpr: ScReferenceExpression
               if twoArgMethods.contains(refExpr.refName) &&
                 methodCall.argumentExpressions.size == 2 =>

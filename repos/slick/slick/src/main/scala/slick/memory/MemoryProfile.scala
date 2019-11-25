@@ -112,11 +112,10 @@ trait MemoryProfile extends RelationalProfile with MemoryQueryingProfile {
           val fromV = run(from).asInstanceOf[TraversableOnce[Any]]
           val b =
             cons.createBuilder(el.classTag).asInstanceOf[Builder[Any, Any]]
-          b ++= fromV.map(
-            v =>
-              converter
-                .asInstanceOf[ResultConverter[MemoryResultConverterDomain, _]]
-                .read(v.asInstanceOf[QueryInterpreter.ProductValue]))
+          b ++= fromV.map(v =>
+            converter
+              .asInstanceOf[ResultConverter[MemoryResultConverterDomain, _]]
+              .read(v.asInstanceOf[QueryInterpreter.ProductValue]))
           b.result()
         case n => super.run(n)
       }
@@ -239,15 +238,14 @@ trait MemoryProfile extends RelationalProfile with MemoryQueryingProfile {
       extends super.SchemaActionExtensionMethodsImpl {
     protected[this] val tables = schema.asInstanceOf[DDL].tables
     def create = dbAction { session =>
-      tables.foreach(
-        t =>
-          session.database.createTable(
-            t.tableName,
-            t.create_*.map { fs =>
-              new HeapBackend.Column(fs, typeInfoFor(fs.tpe))
-            }.toIndexedSeq,
-            t.indexes.toIndexedSeq,
-            t.tableConstraints.toIndexedSeq))
+      tables.foreach(t =>
+        session.database.createTable(
+          t.tableName,
+          t.create_*.map { fs =>
+            new HeapBackend.Column(fs, typeInfoFor(fs.tpe))
+          }.toIndexedSeq,
+          t.indexes.toIndexedSeq,
+          t.tableConstraints.toIndexedSeq))
     }
     def drop = dbAction { session =>
       tables.foreach(t => session.database.dropTable(t.tableName))

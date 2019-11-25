@@ -82,10 +82,9 @@ class IRs[U <: Universe with Singleton](val uni: U) {
 
     val goodAccessorsNotParams = filteredAccessors.filterNot(_.isParamAccessor)
 
-    val goodAccessorsNotParamsVars = goodAccessorsNotParams.filter(
-      acc =>
-        acc.isSetter &&
-          acc.accessed != NoSymbol) // 2.10 compat: !acc.isAbstract
+    val goodAccessorsNotParamsVars = goodAccessorsNotParams.filter(acc =>
+      acc.isSetter &&
+        acc.accessed != NoSymbol) // 2.10 compat: !acc.isAbstract
 
     goodAccessorsNotParamsVars.map { symSetter: MethodSymbol =>
       val sym = symSetter.getter.asMethod
@@ -368,8 +367,8 @@ class IRs[U <: Universe with Singleton](val uni: U) {
     val ctorParams =
       if (ctor != NoSymbol)
         ctor.asMethod.paramss.flatten.flatMap { sym =>
-          if (transientAccessors.exists(
-                acc => acc.name.toString == sym.name.toString)) List()
+          if (transientAccessors.exists(acc =>
+                acc.name.toString == sym.name.toString)) List()
           else List(sym.asTerm)
         } else Nil
 

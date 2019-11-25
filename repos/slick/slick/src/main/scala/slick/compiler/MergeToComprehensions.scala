@@ -26,15 +26,14 @@ class MergeToComprehensions extends Phase {
   type Mappings = ConstArray[((TypeSymbol, TermSymbol), List[TermSymbol])]
 
   def apply(state: CompilerState) =
-    state.map(
-      n =>
-        ClientSideOp
-          .mapResultSetMapping(n, keepType = false) { rsm =>
-            rsm.copy(from = convert(rsm.from), map = rsm.map.replace {
-              case r: Ref => r.untyped
-            })
-          }
-          .infer())
+    state.map(n =>
+      ClientSideOp
+        .mapResultSetMapping(n, keepType = false) { rsm =>
+          rsm.copy(from = convert(rsm.from), map = rsm.map.replace {
+            case r: Ref => r.untyped
+          })
+        }
+        .infer())
 
   def convert(tree: Node): Node = {
     // Find all references into tables so we can convert TableNodes to Comprehensions

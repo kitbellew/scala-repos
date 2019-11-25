@@ -175,11 +175,10 @@ object Sink {
     new Sink(
       scaladsl.Sink
         .seq[In]
-        .mapMaterializedValue(
-          fut ⇒
-            fut
-              .map(sq ⇒ sq.asJava)(ExecutionContexts.sameThreadExecutionContext)
-              .toJava))
+        .mapMaterializedValue(fut ⇒
+          fut
+            .map(sq ⇒ sq.asJava)(ExecutionContexts.sameThreadExecutionContext)
+            .toJava))
   }
 
   /**

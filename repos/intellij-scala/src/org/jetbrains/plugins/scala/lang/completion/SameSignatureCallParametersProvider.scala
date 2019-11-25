@@ -189,12 +189,11 @@ class SameSignatureCallParametersProvider extends ScalaCompletionContributor {
                       case fun: ScMethodLike =>
                         val params = fun.effectiveParameterClauses
                         if (params.length > index)
-                          params(index).effectiveParameters.map(
-                            p =>
-                              (
-                                p.name,
-                                subst.subst(
-                                  p.getType(TypingContext.empty).getOrAny)))
+                          params(index).effectiveParameters.map(p =>
+                            (
+                              p.name,
+                              subst.subst(
+                                p.getType(TypingContext.empty).getOrAny)))
                         else Seq.empty
                     }
                     .filter(_.length > 1)

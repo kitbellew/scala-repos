@@ -307,11 +307,10 @@ private[http] object HttpServerBluePrint {
       }
 
     Flow[SessionBytes]
-      .transform(
-        () ⇒
-          // each connection uses a single (private) request parser instance for all its requests
-          // which builds a cache of all header instances seen on that connection
-          rootParser.createShallowCopy().stage)
+      .transform(() ⇒
+        // each connection uses a single (private) request parser instance for all its requests
+        // which builds a cache of all header instances seen on that connection
+        rootParser.createShallowCopy().stage)
       .named("rootParser")
       .map(establishAbsoluteUri)
   }
@@ -425,13 +424,12 @@ private[http] object HttpServerBluePrint {
     import materializer.executionContext
 
     set {
-      requestEnd.fast.map(
-        _ ⇒
-          new TimeoutSetup(
-            Deadline.now,
-            schedule(initialTimeout, this),
-            initialTimeout,
-            this))
+      requestEnd.fast.map(_ ⇒
+        new TimeoutSetup(
+          Deadline.now,
+          schedule(initialTimeout, this),
+          initialTimeout,
+          this))
     }
 
     override def apply(request: HttpRequest) =

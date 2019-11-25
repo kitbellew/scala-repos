@@ -29,9 +29,7 @@ trait NamedCometActorTrait extends BaseCometActor with Loggable {
   override def localSetup = {
     NamedCometListener
       .getOrAddDispatchersFor(name)
-      .foreach(
-        dispatcher => dispatcher ! registerCometActor(this, name)
-      )
+      .foreach(dispatcher => dispatcher ! registerCometActor(this, name))
     super.localSetup()
   }
 
@@ -41,9 +39,7 @@ trait NamedCometActorTrait extends BaseCometActor with Loggable {
   override def localShutdown = {
     NamedCometListener
       .getOrAddDispatchersFor(name)
-      .foreach(
-        dispatcher => dispatcher ! unregisterCometActor(this)
-      )
+      .foreach(dispatcher => dispatcher ! unregisterCometActor(this))
     super.localShutdown()
   }
 

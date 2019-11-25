@@ -150,50 +150,46 @@ object Schemifier extends Loggable {
       }
 
       val toRun =
-        tables.foldLeft(EmptyCollector)(
-          (b, t) =>
-            b + ensureTable(
-              performWrite,
-              logFunc,
+        tables.foldLeft(EmptyCollector)((b, t) =>
+          b + ensureTable(
+            performWrite,
+            logFunc,
+            t,
+            connection,
+            actualTableNames)) +
+          tables.foldLeft(EmptyCollector)((b, t) =>
+            b + tableCheck(
               t,
-              connection,
-              actualTableNames)) +
-          tables.foldLeft(EmptyCollector)(
-            (b, t) =>
-              b + tableCheck(
+              "ensureColumns",
+              ensureColumns(
+                performWrite,
+                logFunc,
                 t,
-                "ensureColumns",
-                ensureColumns(
-                  performWrite,
-                  logFunc,
-                  t,
-                  connection,
-                  actualTableNames))) +
+                connection,
+                actualTableNames))) +
           (if (structureOnly) EmptyCollector
            else
-             (tables.foldLeft(EmptyCollector)(
-               (b, t) =>
+             (tables.foldLeft(EmptyCollector)((b, t) =>
+               b + tableCheck(
+                 t,
+                 "ensureIndexes",
+                 ensureIndexes(
+                   performWrite,
+                   logFunc,
+                   t,
+                   connection,
+                   actualTableNames))) +
+               tables.foldLeft(EmptyCollector)((b, t) =>
                  b + tableCheck(
                    t,
-                   "ensureIndexes",
-                   ensureIndexes(
+                   "ensureConstraints",
+                   ensureConstraints(
                      performWrite,
                      logFunc,
                      t,
+                     dbId,
                      connection,
-                     actualTableNames))) +
-               tables.foldLeft(EmptyCollector)(
-                 (b, t) =>
-                   b + tableCheck(
-                     t,
-                     "ensureConstraints",
-                     ensureConstraints(
-                       performWrite,
-                       logFunc,
-                       t,
-                       dbId,
-                       connection,
-                       actualTableNames)))))
+                     actualTableNames)))))
 
       if (performWrite) {
         logger.debug("Executing DDL statements")
@@ -380,9 +376,10 @@ object Schemifier extends Loggable {
           }
         })
       // FIXME deal with column types
-      (field
-        .dbColumnNames(field.name)
-        .filter(f => !cols.map(_.toLowerCase).contains(f.toLowerCase)))
+      (
+        field
+          .dbColumnNames(field.name)
+          .filter(f => !cols.map(_.toLowerCase).contains(f.toLowerCase)))
         .foreach { colName =>
           logger.trace(
             "Column does not exist: %s.%s ".format(table.dbTableName, colName))

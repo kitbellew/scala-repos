@@ -161,11 +161,10 @@ abstract class LazyVals
                 (transform(rhs), EmptyTree)
               }
 
-            val ddef1 = deriveDefDef(tree)(
-              _ =>
-                if (LocalLazyValFinder.find(res))
-                  typed(addBitmapDefs(sym, res))
-                else res)
+            val ddef1 = deriveDefDef(tree)(_ =>
+              if (LocalLazyValFinder.find(res))
+                typed(addBitmapDefs(sym, res))
+              else res)
             if (slowPathDef != EmptyTree) {
               // The contents of this block are flattened into the enclosing statement sequence, see flattenThickets
               // This is a poor man's version of dotty's Thicket: https://github.com/lampepfl/dotty/blob/d5280358d1/src/dotty/tools/dotc/ast/Trees.scala#L707
@@ -219,13 +218,12 @@ abstract class LazyVals
           val If(cond0, thenp0, elsep0) = ifp1
 
           if (LocalLazyValFinder.find(thenp0))
-            deriveLabelDef(l)(
-              _ =>
-                treeCopy.If(
-                  ifp1,
-                  cond0,
-                  typed(addBitmapDefs(sym.owner, thenp0)),
-                  elsep0))
+            deriveLabelDef(l)(_ =>
+              treeCopy.If(
+                ifp1,
+                cond0,
+                typed(addBitmapDefs(sym.owner, thenp0)),
+                elsep0))
           else l
 
         case l @ LabelDef(name0, params0, block @ Block(stats0, expr))
@@ -233,12 +231,11 @@ abstract class LazyVals
               name0.startsWith(nme.DO_WHILE_PREFIX) =>
           val stats1 = super.transformTrees(stats0)
           if (LocalLazyValFinder.find(stats1))
-            deriveLabelDef(l)(
-              _ =>
-                treeCopy.Block(
-                  block,
-                  typed(addBitmapDefs(sym.owner, stats1.head)) :: stats1.tail,
-                  expr))
+            deriveLabelDef(l)(_ =>
+              treeCopy.Block(
+                block,
+                typed(addBitmapDefs(sym.owner, stats1.head)) :: stats1.tail,
+                expr))
           else l
 
         case _ => super.transform(tree)

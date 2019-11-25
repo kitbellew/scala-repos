@@ -218,12 +218,11 @@ object Source {
       f: function.Function[S, CompletionStage[Optional[Pair[S, E]]]])
       : Source[E, NotUsed] =
     new Source(
-      scaladsl.Source.unfoldAsync(s)(
-        (s: S) ⇒
-          f.apply(s)
-            .toScala
-            .map(_.asScala.map(_.toScala))(
-              akka.dispatch.ExecutionContexts.sameThreadExecutionContext)))
+      scaladsl.Source.unfoldAsync(s)((s: S) ⇒
+        f.apply(s)
+          .toScala
+          .map(_.asScala.map(_.toScala))(
+            akka.dispatch.ExecutionContexts.sameThreadExecutionContext)))
 
   /**
     * Create a `Source` that immediately ends the stream with the `cause` failure to every connected `Sink`.

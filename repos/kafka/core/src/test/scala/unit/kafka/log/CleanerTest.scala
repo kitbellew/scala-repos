@@ -178,12 +178,11 @@ class CleanerTest extends JUnitSuite {
 
   /* extract all the keys from a log */
   def keysInLog(log: Log): Iterable[Int] =
-    log.logSegments.flatMap(
-      s =>
-        s.log
-          .filter(!_.message.isNull)
-          .filter(_.message.hasKey)
-          .map(m => TestUtils.readString(m.message.key).toInt))
+    log.logSegments.flatMap(s =>
+      s.log
+        .filter(!_.message.isNull)
+        .filter(_.message.hasKey)
+        .map(m => TestUtils.readString(m.message.key).toInt))
 
   def unkeyedMessageCountInLog(log: Log) =
     log.logSegments

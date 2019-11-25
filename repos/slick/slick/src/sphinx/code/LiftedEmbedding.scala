@@ -137,14 +137,13 @@ object LiftedEmbedding extends App {
   val users = TableQuery[Users]
   //#mappedtable
   def usersForInsert =
-    users.map(
-      u =>
-        (u.first, u.last).shaped <>
-          ({ t =>
-            User(None, t._1, t._2)
-          }, { (u: User) =>
-            Some((u.first, u.last))
-          }))
+    users.map(u =>
+      (u.first, u.last).shaped <>
+        ({ t =>
+          User(None, t._1, t._2)
+        }, { (u: User) =>
+          Some((u.first, u.last))
+        }))
 //#insert2
 
 //#index
@@ -448,8 +447,8 @@ object LiftedEmbedding extends App {
 
       {
         //#compiled2
-        val userPaged = Compiled(
-          (d: ConstColumn[Long], t: ConstColumn[Long]) => users.drop(d).take(t))
+        val userPaged = Compiled((d: ConstColumn[Long], t: ConstColumn[Long]) =>
+          users.drop(d).take(t))
 
         val usersAction1 = userPaged(2, 1).result
         val usersAction2 = userPaged(1, 3).result

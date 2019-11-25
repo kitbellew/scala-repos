@@ -87,12 +87,11 @@ object Upgrade_0_8_3 {
   def hasPIOPrefix(eventClient: LEvents, appId: Int): Boolean = {
     eventClient
       .find(appId = appId)
-      .filter(
-        e =>
-          (obsEntityTypes.contains(e.entityType) || e.targetEntityType
-            .map(obsEntityTypes.contains(_))
-            .getOrElse(false) ||
-            (!e.properties.keySet.forall(!obsProperties.contains(_)))))
+      .filter(e =>
+        (obsEntityTypes.contains(e.entityType) || e.targetEntityType
+          .map(obsEntityTypes.contains(_))
+          .getOrElse(false) ||
+          (!e.properties.keySet.forall(!obsProperties.contains(_)))))
       .hasNext
   }
 

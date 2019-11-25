@@ -33,16 +33,15 @@ object InputTask {
 
     import std.FullInstance._
     def toTask(in: String): Initialize[Task[T]] = flatten(
-      (Def.stateKey zipWith i)(
-        (sTask, it) =>
-          sTask map
-            (s =>
-              Parser.parse(in, it.parser(s)) match {
-                case Right(t) => Def.value(t)
-                case Left(msg) =>
-                  val indented = msg.lines.map("   " + _).mkString("\n")
-                  sys.error(s"Invalid programmatic input:\n$indented")
-              }))
+      (Def.stateKey zipWith i)((sTask, it) =>
+        sTask map
+          (s =>
+            Parser.parse(in, it.parser(s)) match {
+              case Right(t) => Def.value(t)
+              case Left(msg) =>
+                val indented = msg.lines.map("   " + _).mkString("\n")
+                sys.error(s"Invalid programmatic input:\n$indented")
+            }))
     )
   }
 

@@ -157,8 +157,8 @@ class FutureTests extends MinimalScalaTest {
         f.failed eq f,
         "Future.failed must be the same instance as Future.failed")
 
-      ECNotUsed(
-        ec => f.foreach(_ => fail("foreach should not have been called"))(ec))
+      ECNotUsed(ec =>
+        f.foreach(_ => fail("foreach should not have been called"))(ec))
       ECNotUsed(ec =>
         f.onSuccess({
           case _ => fail("onSuccess should not have been called")

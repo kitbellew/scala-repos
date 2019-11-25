@@ -1289,8 +1289,8 @@ private[optimizer] abstract class OptimizerCore(
               else dynamicCall(cls, methodName)
             val allocationSites =
               (treceiver :: targs).map(_.tpe.allocationSite)
-            if (impls.isEmpty || impls.exists(
-                  impl => scope.implsBeingInlined((allocationSites, impl)))) {
+            if (impls.isEmpty || impls.exists(impl =>
+                  scope.implsBeingInlined((allocationSites, impl)))) {
               // isEmpty could happen, have to leave it as is for the TypeError
               treeNotInlined
             } else if (impls.size == 1) {
@@ -3494,14 +3494,14 @@ private[optimizer] abstract class OptimizerCore(
                       doMakeTree(newBody, actualTypes),
                       refinedOrigType))
                 } { recordType =>
-                  if (actualTypes.exists(
-                        t => t != recordType && t != NothingType))
+                  if (actualTypes.exists(t =>
+                        t != recordType && t != NothingType))
                     cancelFun()
 
                   val resultTree = doMakeTree(newBody, actualTypes)
 
-                  if (origTypes.exists(
-                        t => t != refinedOrigType && !t.isNothingType))
+                  if (origTypes.exists(t =>
+                        t != refinedOrigType && !t.isNothingType))
                     cancelFun()
 
                   cont(
@@ -3743,12 +3743,11 @@ private[optimizer] abstract class OptimizerCore(
                   (intLocalDefs, cont1) =>
                     val List(lhsLocalDef, rhsLocalDef) = intLocalDefs
                     doDoBuildInner(
-                      Some(
-                        () =>
-                          BinaryOp(
-                            op,
-                            LongFromInt(lhsLocalDef.newReplacement),
-                            LongFromInt(rhsLocalDef.newReplacement))))(cont1)
+                      Some(() =>
+                        BinaryOp(
+                          op,
+                          LongFromInt(lhsLocalDef.newReplacement),
+                          LongFromInt(rhsLocalDef.newReplacement))))(cont1)
                 }(cont)
 
               case _ =>

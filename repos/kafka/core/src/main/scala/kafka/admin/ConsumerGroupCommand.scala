@@ -203,13 +203,12 @@ object ConsumerGroupCommand {
       if (topics.isEmpty)
         println("No topic available for consumer group provided")
       printDescribeHeader()
-      topics.foreach(
-        topic =>
-          describeTopic(
-            group,
-            topic,
-            channelSocketTimeoutMs,
-            channelRetryBackoffMs))
+      topics.foreach(topic =>
+        describeTopic(
+          group,
+          topic,
+          channelSocketTimeoutMs,
+          channelRetryBackoffMs))
     }
 
     private def describeTopic(

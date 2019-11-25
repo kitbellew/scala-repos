@@ -206,13 +206,11 @@ trait EnumeratorTFunctions {
       import MO._
       def apply[A] =
         (s: StepT[IoExceptionOr[E], F, A]) =>
-          s.mapCont(
-            k => {
-              val i = get()
-              if (gotdata(i)) k(elInput(i.map(render))) >>== apply[A]
-              else s.pointI
-            }
-          )
+          s.mapCont(k => {
+            val i = get()
+            if (gotdata(i)) k(elInput(i.map(render))) >>== apply[A]
+            else s.pointI
+          })
     }
 
   def enumReader[F[_]](r: => java.io.Reader)(
@@ -243,11 +241,9 @@ trait EnumeratorTFunctions {
       private val limit = max.map(_ min (a.length)).getOrElse(a.length)
       def apply[A] = {
         def loop(pos: Int): StepT[E, F, A] => IterateeT[E, F, A] = { s =>
-          s.mapCont(
-            k =>
-              if (limit > pos) k(elInput(a(pos))) >>== loop(pos + 1)
-              else s.pointI
-          )
+          s.mapCont(k =>
+            if (limit > pos) k(elInput(a(pos))) >>== loop(pos + 1)
+            else s.pointI)
         }
         loop(min)
       }

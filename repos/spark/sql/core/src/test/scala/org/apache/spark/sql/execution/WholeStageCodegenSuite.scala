@@ -39,12 +39,11 @@ class WholeStageCodegenSuite extends SparkPlanTest with SharedSQLContext {
     val plan = df.queryExecution.executedPlan
     assert(
       plan
-        .find(
-          p =>
-            p.isInstanceOf[WholeStageCodegen] && p
-              .asInstanceOf[WholeStageCodegen]
-              .child
-              .isInstanceOf[TungstenAggregate])
+        .find(p =>
+          p.isInstanceOf[WholeStageCodegen] && p
+            .asInstanceOf[WholeStageCodegen]
+            .child
+            .isInstanceOf[TungstenAggregate])
         .isDefined)
     assert(df.collect() === Array(Row(9, 4.5)))
   }
@@ -54,12 +53,11 @@ class WholeStageCodegenSuite extends SparkPlanTest with SharedSQLContext {
     val plan = df.queryExecution.executedPlan
     assert(
       plan
-        .find(
-          p =>
-            p.isInstanceOf[WholeStageCodegen] && p
-              .asInstanceOf[WholeStageCodegen]
-              .child
-              .isInstanceOf[TungstenAggregate])
+        .find(p =>
+          p.isInstanceOf[WholeStageCodegen] && p
+            .asInstanceOf[WholeStageCodegen]
+            .child
+            .isInstanceOf[TungstenAggregate])
         .isDefined)
     assert(df.collect() === Array(Row(0, 1), Row(1, 1), Row(2, 1)))
   }
@@ -73,12 +71,11 @@ class WholeStageCodegenSuite extends SparkPlanTest with SharedSQLContext {
       sqlContext.range(10).join(broadcast(smallDF), col("k") === col("id"))
     assert(
       df.queryExecution.executedPlan
-        .find(
-          p =>
-            p.isInstanceOf[WholeStageCodegen] && p
-              .asInstanceOf[WholeStageCodegen]
-              .child
-              .isInstanceOf[BroadcastHashJoin])
+        .find(p =>
+          p.isInstanceOf[WholeStageCodegen] && p
+            .asInstanceOf[WholeStageCodegen]
+            .child
+            .isInstanceOf[BroadcastHashJoin])
         .isDefined)
     assert(
       df.collect() === Array(Row(1, 1, "1"), Row(1, 1, "1"), Row(2, 2, "2")))

@@ -343,13 +343,12 @@ private[json] object Meta {
                 val arg = typeArgs.getOrElse(v, v)
                 if (arg == classOf[java.lang.Object])
                   context
-                    .map(
-                      ctx =>
-                        ScalaSigReader.readConstructor(
-                          ctx.argName,
-                          ctx.containingClass,
-                          idx,
-                          ctx.allArgs.map(_._1)))
+                    .map(ctx =>
+                      ScalaSigReader.readConstructor(
+                        ctx.argName,
+                        ctx.containingClass,
+                        idx,
+                        ctx.allArgs.map(_._1)))
                     .getOrElse(arg)
                 else arg
               case (x, _) => x

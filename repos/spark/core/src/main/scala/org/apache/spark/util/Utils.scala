@@ -1040,9 +1040,7 @@ private[spark] object Utils extends Logging {
 
     filesAndDirs.exists(_.lastModified() > cutoffTimeInMillis) || filesAndDirs
       .filter(_.isDirectory)
-      .exists(
-        subdir => doesDirectoryContainAnyNewFiles(subdir, cutoff)
-      )
+      .exists(subdir => doesDirectoryContainAnyNewFiles(subdir, cutoff))
   }
 
   /**

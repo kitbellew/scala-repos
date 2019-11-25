@@ -326,8 +326,8 @@ object ScopeSuggester {
       mutable.MutableList()
 
     def handleOneFile(file: ScalaFile) {
-      if (packageObject.exists(
-            (x: ScTypeDefinition) => x.getContainingFile == file)) {} else {
+      if (packageObject.exists((x: ScTypeDefinition) =>
+            x.getContainingFile == file)) {} else {
         val occurrences =
           ScalaRefactoringUtil.getTypeElementOccurrences(typeElement, file)
         allOcurrences += occurrences

@@ -123,10 +123,9 @@ sealed trait DBIOAction[+R, +S <: NoStream, -E <: Effect] extends Dumpable {
 
   def withFilter(p: R => Boolean)(
       implicit executor: ExecutionContext): DBIOAction[R, NoStream, E] =
-    flatMap(
-      v =>
-        if (p(v)) SuccessAction(v)
-        else throw new NoSuchElementException("Action.withFilter failed"))
+    flatMap(v =>
+      if (p(v)) SuccessAction(v)
+      else throw new NoSuchElementException("Action.withFilter failed"))
 
   /** Transform the result of a successful execution of this action, if the given partial function is defined at that value,
     * otherwise, the result DBIOAction will fail with a `NoSuchElementException`.
@@ -134,13 +133,12 @@ sealed trait DBIOAction[+R, +S <: NoStream, -E <: Effect] extends Dumpable {
     * If this action fails, the resulting action also fails. */
   def collect[R2](pf: PartialFunction[R, R2])(
       implicit executor: ExecutionContext): DBIOAction[R2, NoStream, E] =
-    map(
-      r1 =>
-        pf.applyOrElse(
-          r1,
-          (r: R) =>
-            throw new NoSuchElementException(
-              s"DBIOAction.collect partial function is not defined at: $r")))
+    map(r1 =>
+      pf.applyOrElse(
+        r1,
+        (r: R) =>
+          throw new NoSuchElementException(
+            s"DBIOAction.collect partial function is not defined at: $r")))
 
   /** Return an action which contains the Throwable with which this action failed as its result.
     * If this action succeeded, the resulting action fails with a NoSuchElementException. */
@@ -219,12 +217,11 @@ object DBIOAction {
         new SynchronousDatabaseAction.Fused[M[R], NoStream, BasicBackend, E] {
           def run(context: BasicBackend#Context) = {
             val b = cbf()
-            g.foreach(
-              a =>
-                b += a
-                  .asInstanceOf[
-                    SynchronousDatabaseAction[R, NoStream, BasicBackend, E]]
-                  .run(context))
+            g.foreach(a =>
+              b += a
+                .asInstanceOf[
+                  SynchronousDatabaseAction[R, NoStream, BasicBackend, E]]
+                .run(context))
             b.result()
           }
           override def nonFusedEquivalentAction = SequenceAction[R, M[R], E](g)
@@ -251,12 +248,11 @@ object DBIOAction {
           new SynchronousDatabaseAction.Fused[Seq[R], NoStream, BasicBackend, E] {
             def run(context: BasicBackend#Context) = {
               val b = new ArrayBuffer[R](g.length)
-              g.foreach(
-                a =>
-                  b += a
-                    .asInstanceOf[
-                      SynchronousDatabaseAction[R, NoStream, BasicBackend, E]]
-                    .run(context))
+              g.foreach(a =>
+                b += a
+                  .asInstanceOf[
+                    SynchronousDatabaseAction[R, NoStream, BasicBackend, E]]
+                  .run(context))
               b
             }
             override def nonFusedEquivalentAction =

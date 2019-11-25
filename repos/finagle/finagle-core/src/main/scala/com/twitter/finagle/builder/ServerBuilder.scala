@@ -379,14 +379,13 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
       caCertificatePath: String = null,
       ciphers: String = null,
       nextProtos: String = null): This =
-    newFinagleSslEngine(
-      () =>
-        Ssl.server(
-          certificatePath,
-          keyPath,
-          caCertificatePath,
-          ciphers,
-          nextProtos))
+    newFinagleSslEngine(() =>
+      Ssl.server(
+        certificatePath,
+        keyPath,
+        caCertificatePath,
+        ciphers,
+        nextProtos))
 
   /**
     * Provide a raw SSL engine that is used to establish SSL sessions.

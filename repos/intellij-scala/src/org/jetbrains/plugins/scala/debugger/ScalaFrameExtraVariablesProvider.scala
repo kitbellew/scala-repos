@@ -101,11 +101,10 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
         null,
         ResolveState.initial)
       completionProcessor.candidates
-        .filter(
-          srr =>
-            !alreadyCollected.asScala
-              .map(ScalaParameterNameAdjuster.fixName)
-              .contains(srr.name))
+        .filter(srr =>
+          !alreadyCollected.asScala
+            .map(ScalaParameterNameAdjuster.fixName)
+            .contains(srr.name))
         .filter(canEvaluate(_, elem))
     }
     val candidates =

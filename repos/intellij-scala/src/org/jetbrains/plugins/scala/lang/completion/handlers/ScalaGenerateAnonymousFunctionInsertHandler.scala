@@ -78,10 +78,9 @@ class ScalaGenerateAnonymousFunctionInsertHandler(
               if (abstractNames.contains(refName)) {
                 val prefixLength =
                   ScTypePresentation.ABSTRACT_TYPE_PREFIX.length
-                val node = abstracts.find(
-                  a =>
-                    ScTypePresentation.ABSTRACT_TYPE_PREFIX +
-                      a.tpt.name == refName) match {
+                val node = abstracts.find(a =>
+                  ScTypePresentation.ABSTRACT_TYPE_PREFIX +
+                    a.tpt.name == refName) match {
                   case Some(abstr) =>
                     import org.jetbrains.plugins.scala.lang.psi.types.{
                       Any,

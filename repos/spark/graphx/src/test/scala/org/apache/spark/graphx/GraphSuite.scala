@@ -134,11 +134,10 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
       val verts = 1 to n
       val graph = Graph.fromEdgeTuples(
         sc.parallelize(
-          verts.flatMap(
-            x =>
-              verts
-                .withFilter(y => y % x == 0)
-                .map(y => (x: VertexId, y: VertexId))),
+          verts.flatMap(x =>
+            verts
+              .withFilter(y => y % x == 0)
+              .map(y => (x: VertexId, y: VertexId))),
           p),
         0)
       assert(graph.edges.partitions.length === p)

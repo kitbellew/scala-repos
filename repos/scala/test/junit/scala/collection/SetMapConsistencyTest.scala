@@ -564,11 +564,10 @@ class SetMapConsistencyTest {
       val lm2 = new LongMap[String](_.toString)
       lm2 += (5L -> "fish", 0L -> "unicorn")
       val hm2 = (new HashMap[Long, String]) ++= lm2
-      List(Long.MinValue, 0L, 1L, 5L).forall(
-        i =>
-          lm2.get(i) == hm2.get(i) && lm2.getOrElse(i, "") == hm2
-            .getOrElse(i, "") && lm2(i) == hm2.get(i).getOrElse(i.toString) &&
-            lm2.getOrNull(i) == hm2.get(i).orNull)
+      List(Long.MinValue, 0L, 1L, 5L).forall(i =>
+        lm2.get(i) == hm2.get(i) && lm2.getOrElse(i, "") == hm2
+          .getOrElse(i, "") && lm2(i) == hm2.get(i).getOrElse(i.toString) &&
+          lm2.getOrNull(i) == hm2.get(i).orNull)
     }
   }
 
@@ -612,13 +611,12 @@ class SetMapConsistencyTest {
         new AnyRefMap[String, String](x => if (x == null) "null" else x)
       arm2 += ("cod" -> "fish", "Rarity" -> "unicorn")
       val hm2 = (new HashMap[String, String]) ++= arm2
-      List(null, "cod", "sparrow", "Rarity").forall(
-        i =>
-          arm2.get(i) == hm2.get(i) &&
-            arm2.getOrElse(i, "") == hm2.getOrElse(i, "") && arm2(i) == hm2
-            .get(i)
-            .getOrElse(if (i == null) "null" else i.toString) &&
-            arm2.getOrNull(i) == hm2.get(i).orNull)
+      List(null, "cod", "sparrow", "Rarity").forall(i =>
+        arm2.get(i) == hm2.get(i) &&
+          arm2.getOrElse(i, "") == hm2.getOrElse(i, "") && arm2(i) == hm2
+          .get(i)
+          .getOrElse(if (i == null) "null" else i.toString) &&
+          arm2.getOrNull(i) == hm2.get(i).orNull)
     }
   }
 

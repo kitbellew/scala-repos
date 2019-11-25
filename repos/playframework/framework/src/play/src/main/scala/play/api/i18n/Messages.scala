@@ -578,10 +578,9 @@ class DefaultMessagesApi @Inject() (
     val pattern: Option[String] =
       codesToTry.foldLeft[Option[String]](None)((res, lang) =>
         res.orElse(messages.get(lang).flatMap(_.get(key))))
-    pattern.map(
-      pattern =>
-        new MessageFormat(pattern, lang.toLocale)
-          .format(args.map(_.asInstanceOf[java.lang.Object]).toArray))
+    pattern.map(pattern =>
+      new MessageFormat(pattern, lang.toLocale)
+        .format(args.map(_.asInstanceOf[java.lang.Object]).toArray))
   }
 
   def isDefinedAt(key: String)(implicit lang: Lang): Boolean = {

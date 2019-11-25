@@ -579,50 +579,46 @@ protected[kestrel] class ThriftConnectedClient(
     }
 
   def flush(queueName: String): Future[Response] =
-    withClient[Values](
-      client =>
-        client
-          .flushQueue(queueName)
-          .map { _ =>
-            Values(Nil)
-          })
+    withClient[Values](client =>
+      client
+        .flushQueue(queueName)
+        .map { _ =>
+          Values(Nil)
+        })
 
   def delete(queueName: String): Future[Response] =
-    withClient[Response](
-      client =>
-        client
-          .deleteQueue(queueName)
-          .map { _ =>
-            Deleted()
-          })
+    withClient[Response](client =>
+      client
+        .deleteQueue(queueName)
+        .map { _ =>
+          Deleted()
+        })
 
   def set(
       queueName: String,
       value: Buf,
       expiry: Time = Time.epoch): Future[Response] = {
     val timeout = safeLongToInt(expiry.inMilliseconds)
-    withClient[Response](
-      client =>
-        client
-          .put(queueName, List(Buf.ByteBuffer.Owned.extract(value)), timeout)
-          .map { _ =>
-            Stored()
-          })
+    withClient[Response](client =>
+      client
+        .put(queueName, List(Buf.ByteBuffer.Owned.extract(value)), timeout)
+        .map { _ =>
+          Stored()
+        })
   }
 
   def get(
       queueName: String,
       waitUpTo: Duration = 0.seconds): Future[Option[Buf]] = {
     val waitUpToMsec = safeLongToInt(waitUpTo.inMilliseconds)
-    withClient[Option[Buf]](
-      client =>
-        client
-          .get(queueName, 1, waitUpToMsec)
-          .map {
-            case Seq()           => None
-            case Seq(item: Item) => Some(Buf.ByteBuffer.Owned(item.data))
-            case _               => throw new IllegalArgumentException
-          })
+    withClient[Option[Buf]](client =>
+      client
+        .get(queueName, 1, waitUpToMsec)
+        .map {
+          case Seq()           => None
+          case Seq(item: Item) => Some(Buf.ByteBuffer.Owned(item.data))
+          case _               => throw new IllegalArgumentException
+        })
   }
 
   private def openRead(queueName: String)(

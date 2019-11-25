@@ -236,15 +236,14 @@ private trait CofreeZipApply[F[_]]
         Tag
           .unwrap(fa)
           .t
-          .flatMap(
-            fat =>
-              Tag
-                .unwrap(f)
-                .t
-                .map(fab =>
-                  F.apply2(Tags.Zip.subst(fat), Tags.Zip.subst(fab)) { (a, b) =>
-                    Tag.unwrap(ap(a)(b))
-                  }))
+          .flatMap(fat =>
+            Tag
+              .unwrap(f)
+              .t
+              .map(fab =>
+                F.apply2(Tags.Zip.subst(fat), Tags.Zip.subst(fab)) { (a, b) =>
+                  Tag.unwrap(ap(a)(b))
+                }))
       )
     )
 }

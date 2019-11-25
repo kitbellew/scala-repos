@@ -666,10 +666,9 @@ class Log(
     // find any segments that match the user-supplied predicate UNLESS it is the final segment
     // and it is empty (since we would just end up re-creating it
     val lastSegment = activeSegment
-    val deletable = logSegments.takeWhile(
-      s =>
-        predicate(s) &&
-          (s.baseOffset != lastSegment.baseOffset || s.size > 0))
+    val deletable = logSegments.takeWhile(s =>
+      predicate(s) &&
+        (s.baseOffset != lastSegment.baseOffset || s.size > 0))
     val numToDelete = deletable.size
     if (numToDelete > 0) {
       lock synchronized {

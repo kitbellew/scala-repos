@@ -82,10 +82,9 @@ class DeleteTopicTest extends ZooKeeperTestHarness {
       servers.filter(s => s.config.brokerId == controllerId).head
     val leaderIdOpt = zkUtils.getLeaderForPartition(topic, 0)
     val follower = servers
-      .filter(
-        s =>
-          s.config.brokerId != leaderIdOpt.get &&
-            s.config.brokerId != controllerId)
+      .filter(s =>
+        s.config.brokerId != leaderIdOpt.get &&
+          s.config.brokerId != controllerId)
       .last
     follower.shutdown()
 

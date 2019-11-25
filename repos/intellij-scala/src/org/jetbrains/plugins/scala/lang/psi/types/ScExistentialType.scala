@@ -436,16 +436,15 @@ case class ScExistentialType(
         if (ex eq this) newSet = rejected ++ ex.wildcards.map(_.name)
         ScExistentialType(
           q,
-          _wildcards.map(
-            arg =>
-              ScExistentialArgument(
-                arg.name,
-                arg.args.map(arg =>
-                  updateRecursive(arg, newSet, -variance)
-                    .asInstanceOf[ScTypeParameterType]),
-                updateRecursive(arg.lowerBound, newSet, -variance),
-                updateRecursive(arg.upperBound, newSet, variance)
-              ))
+          _wildcards.map(arg =>
+            ScExistentialArgument(
+              arg.name,
+              arg.args.map(arg =>
+                updateRecursive(arg, newSet, -variance)
+                  .asInstanceOf[ScTypeParameterType]),
+              updateRecursive(arg.lowerBound, newSet, -variance),
+              updateRecursive(arg.upperBound, newSet, variance)
+            ))
         )
       case ScThisType(clazz) => tp
       case ScDesignatorType(element) =>
@@ -476,10 +475,9 @@ case class ScExistentialType(
       case ScSkolemizedType(name, args, lower, upper) =>
         ScSkolemizedType(
           name,
-          args.map(
-            arg =>
-              updateRecursive(arg, rejected, -variance)
-                .asInstanceOf[ScTypeParameterType]),
+          args.map(arg =>
+            updateRecursive(arg, rejected, -variance)
+              .asInstanceOf[ScTypeParameterType]),
           updateRecursive(lower, rejected, -variance),
           updateRecursive(upper, rejected, variance)
         )
@@ -491,10 +489,9 @@ case class ScExistentialType(
       case m @ ScMethodType(returnType, params, isImplicit) =>
         ScMethodType(
           updateRecursive(returnType, rejected, variance),
-          params.map(
-            param =>
-              param.copy(paramType =
-                updateRecursive(param.paramType, rejected, -variance))),
+          params.map(param =>
+            param.copy(paramType =
+              updateRecursive(param.paramType, rejected, -variance))),
           isImplicit)(m.project, m.scope)
       case ScAbstractType(tpt, lower, upper) =>
         ScAbstractType(
@@ -506,15 +503,14 @@ case class ScExistentialType(
       case ScTypePolymorphicType(internalType, typeParameters) =>
         ScTypePolymorphicType(
           updateRecursive(internalType, rejected, variance),
-          typeParameters.map(
-            tp =>
-              TypeParameter(
-                tp.name,
-                tp.typeParams /* todo: is it important here to update? */,
-                () => updateRecursive(tp.lowerType(), rejected, variance),
-                () => updateRecursive(tp.upperType(), rejected, variance),
-                tp.ptp
-              ))
+          typeParameters.map(tp =>
+            TypeParameter(
+              tp.name,
+              tp.typeParams /* todo: is it important here to update? */,
+              () => updateRecursive(tp.lowerType(), rejected, variance),
+              () => updateRecursive(tp.upperType(), rejected, variance),
+              tp.ptp
+            ))
         )
       case _ => tp
     }

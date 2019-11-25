@@ -65,13 +65,12 @@ class InlineInfoTest extends ClearAfterClass {
     val classes =
       compileClasses(compiler)(code, allowMessage = _ => true) // SD-86 inline warnings
 
-    val fromSyms = classes.map(
-      c =>
-        compiler.genBCode.bTypes
-          .classBTypeFromInternalName(c.name)
-          .info
-          .get
-          .inlineInfo)
+    val fromSyms = classes.map(c =>
+      compiler.genBCode.bTypes
+        .classBTypeFromInternalName(c.name)
+        .info
+        .get
+        .inlineInfo)
 
     val fromAttrs = classes.map(c => {
       assert(

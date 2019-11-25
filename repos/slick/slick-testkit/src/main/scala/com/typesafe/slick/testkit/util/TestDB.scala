@@ -213,11 +213,10 @@ abstract class JdbcTestDB(val confName: String) extends SqlTestDB {
           .as[Int]): _*)
   def assertNotTablesExist(tables: String*) =
     DBIO.seq(
-      tables.map(
-        t =>
-          sql"""select 1 from #${profile.quoteIdentifier(t)} where 1 < 0"""
-            .as[Int]
-            .failed): _*)
+      tables.map(t =>
+        sql"""select 1 from #${profile.quoteIdentifier(t)} where 1 < 0"""
+          .as[Int]
+          .failed): _*)
   def createSingleSessionDatabase(
       implicit session: profile.Backend#Session,
       executor: AsyncExecutor = AsyncExecutor
@@ -277,11 +276,10 @@ abstract class ExternalJdbcTestDB(confName: String)
       : Seq[Class[_ <: GenericTest[_ >: Null <: TestDB]]] = TestkitConfig
     .getStrings(config, "testClasses")
     .map(
-      _.map(
-        n =>
-          Class
-            .forName(n)
-            .asInstanceOf[Class[_ <: GenericTest[_ >: Null <: TestDB]]]))
+      _.map(n =>
+        Class
+          .forName(n)
+          .asInstanceOf[Class[_ <: GenericTest[_ >: Null <: TestDB]]]))
     .getOrElse(super.testClasses)
 
   def databaseFor(path: String) =

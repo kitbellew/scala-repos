@@ -184,14 +184,13 @@ object RandomDataGenerator {
           new CalendarInterval(months, ns)
         })
       case DecimalType.Fixed(precision, scale) =>
-        Some(
-          () =>
-            BigDecimal
-              .apply(
-                rand.nextLong() % math.pow(10, precision).toLong,
-                scale,
-                new MathContext(precision))
-              .bigDecimal)
+        Some(() =>
+          BigDecimal
+            .apply(
+              rand.nextLong() % math.pow(10, precision).toLong,
+              scale,
+              new MathContext(precision))
+            .bigDecimal)
       case DoubleType =>
         randomNumeric[Double](
           rand,

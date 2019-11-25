@@ -1131,17 +1131,16 @@ sealed abstract class FingerTreeInstances {
   implicit def nodeMeasure[A, V](
       implicit m: Reducer[A, V]): Reducer[Node[V, A], V] = {
     implicit val vm = m.monoid
-    UnitReducer(
-      (a: Node[V, A]) =>
-        a fold ((v, _, _) => v,
-        (v, _, _, _) => v))
+    UnitReducer((a: Node[V, A]) =>
+      a fold ((v, _, _) => v,
+      (v, _, _, _) => v))
   }
 
   implicit def fingerTreeMeasure[A, V](
       implicit m: Reducer[A, V]): Reducer[FingerTree[V, A], V] = {
     implicit val vm = m.monoid
-    UnitReducer(
-      (a: FingerTree[V, A]) => a.fold(v => v, (v, x) => v, (v, x, y, z) => v))
+    UnitReducer((a: FingerTree[V, A]) =>
+      a.fold(v => v, (v, x) => v, (v, x, y, z) => v))
   }
 
   implicit def nodeFoldable[V] =
@@ -1489,8 +1488,8 @@ object OrdSeq {
 
   def apply[A: Order](as: A*): OrdSeq[A] = {
     val z: OrdSeq[A] = {
-      val keyer: Reducer[A, LastOption[A]] = UnitReducer(
-        (a: A) => Tags.Last(some(a)))
+      val keyer: Reducer[A, LastOption[A]] =
+        UnitReducer((a: A) => Tags.Last(some(a)))
       ordSeq(empty[LastOption[A], A](keyer))
     }
     as.foldLeft(z)((x, y) => x insert y)

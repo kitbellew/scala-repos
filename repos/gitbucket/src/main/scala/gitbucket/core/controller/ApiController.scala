@@ -204,12 +204,11 @@ trait ApiControllerBase extends ControllerBase {
         body <- extractFromJsonBody[CreateAComment].map(_.body) if !body.isEmpty
         action = params
           .get("action")
-          .filter(
-            _ =>
-              isEditable(
-                issue.userName,
-                issue.repositoryName,
-                issue.openedUserName))
+          .filter(_ =>
+            isEditable(
+              issue.userName,
+              issue.repositoryName,
+              issue.openedUserName))
         (issue, id) <- handleComment(issue, Some(body), repository, action)
         issueComment <- getComment(
           repository.owner,

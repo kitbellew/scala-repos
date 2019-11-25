@@ -1680,11 +1680,10 @@ abstract class RefChecks
     private def checkDeprecatedOvers(tree: Tree) {
       val symbol = tree.symbol
       if (symbol.isDeprecated) {
-        val concrOvers = symbol.allOverriddenSymbols.filter(
-          sym =>
-            !sym.isDeprecated &&
-              !sym.isDeferred && !sym.hasDeprecatedOverridingAnnotation &&
-              !sym.enclClass.hasDeprecatedInheritanceAnnotation)
+        val concrOvers = symbol.allOverriddenSymbols.filter(sym =>
+          !sym.isDeprecated &&
+            !sym.isDeferred && !sym.hasDeprecatedOverridingAnnotation &&
+            !sym.enclClass.hasDeprecatedInheritanceAnnotation)
         if (!concrOvers.isEmpty)
           currentRun.reporting.deprecationWarning(
             tree.pos,

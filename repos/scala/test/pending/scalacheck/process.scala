@@ -92,10 +92,10 @@ class ProcessSpecification extends Properties("Process I/O") {
 	property("#&& correct") = forAll( (exitCodes: Array[Byte]) => checkBinary(exitCodes)(_ #&& _)(_ && _))
 	property("#|| correct") = forAll( (exitCodes: Array[Byte]) => checkBinary(exitCodes)(_ #|| _)(_ || _))
 	property("### correct") = forAll( (exitCodes: Array[Byte]) => checkBinary(exitCodes)(_ ### _)( (x,latest) => latest))*/
-  property("Pipe to output file") = forAll(
-    (data: Array[Byte]) => checkFileOut(data))
-  property("Pipe to input file") = forAll(
-    (data: Array[Byte]) => checkFileIn(data))
+  property("Pipe to output file") =
+    forAll((data: Array[Byte]) => checkFileOut(data))
+  property("Pipe to input file") =
+    forAll((data: Array[Byte]) => checkFileIn(data))
   property("Pipe to process") = forAll((data: Array[Byte]) => checkPipe(data))
 
   private def checkBinary(codes: Array[Byte])(

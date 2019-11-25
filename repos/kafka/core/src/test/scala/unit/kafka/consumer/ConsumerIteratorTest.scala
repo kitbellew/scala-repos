@@ -55,16 +55,15 @@ class ConsumerIteratorTest extends KafkaServerTestHarness {
   @Before
   override def setUp() {
     super.setUp()
-    topicInfos = configs.map(
-      c =>
-        new PartitionTopicInfo(
-          topic,
-          0,
-          queue,
-          new AtomicLong(consumedOffset),
-          new AtomicLong(0),
-          new AtomicInteger(0),
-          ""))
+    topicInfos = configs.map(c =>
+      new PartitionTopicInfo(
+        topic,
+        0,
+        queue,
+        new AtomicLong(consumedOffset),
+        new AtomicLong(0),
+        new AtomicInteger(0),
+        ""))
     createTopic(
       zkUtils,
       topic,

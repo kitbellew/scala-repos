@@ -369,8 +369,8 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
         check((a: ByteString, b: ByteString) ⇒ (a ++ b).size == a.size + b.size)
       }
       "dropping" in {
-        check(
-          (a: ByteString, b: ByteString) ⇒ (a ++ b).drop(b.size).size == a.size)
+        check((a: ByteString, b: ByteString) ⇒
+          (a ++ b).drop(b.size).size == a.size)
       }
     }
 

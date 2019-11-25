@@ -1065,11 +1065,10 @@ private[kafka] class ZookeeperConsumerConnector(
       /* even if one of the partition ownership attempt has failed, return false */
       if (hasPartitionOwnershipFailed > 0) {
         // remove all paths that we have owned in ZK
-        successfullyOwnedPartitions.foreach(
-          topicAndPartition =>
-            deletePartitionOwnershipFromZK(
-              topicAndPartition._1,
-              topicAndPartition._2))
+        successfullyOwnedPartitions.foreach(topicAndPartition =>
+          deletePartitionOwnershipFromZK(
+            topicAndPartition._1,
+            topicAndPartition._2))
         false
       } else true
     }

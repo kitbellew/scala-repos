@@ -98,12 +98,10 @@ final case class WriterT[F[_], W, A](run: F[(W, A)]) { self =>
     })(writerT(_))
 
   def rwst[R, S](implicit F: Functor[F]): ReaderWriterStateT[F, R, W, S, A] =
-    ReaderWriterStateT(
-      (r, s) =>
-        F.map(self.run) {
-          case (w, a) => (w, a, s)
-        }
-    )
+    ReaderWriterStateT((r, s) =>
+      F.map(self.run) {
+        case (w, a) => (w, a, s)
+      })
 
   def wpoint[G[_]](
       implicit F: Functor[F],

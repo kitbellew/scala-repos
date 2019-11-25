@@ -260,10 +260,9 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
         LOG.info(s"No extensions found for current IDEA version")
         None
     }
-    checkedDescriptor.map(
-      descriptor =>
-        manifest.copy(pluginDescriptors = Seq(descriptor))(
-          manifest.isBlackListed))
+    checkedDescriptor.map(descriptor =>
+      manifest.copy(pluginDescriptors = Seq(descriptor))(
+        manifest.isBlackListed))
   }
 
   private def loadCachedInjectors() = {
@@ -304,10 +303,9 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
       project,
       INJECTOR_MANIFEST_NAME,
       GlobalSearchScope.allScope(project))
-    psiFiles.map(
-      f =>
-        jarFS.getJarRootForLocalFile(
-          jarFS.getVirtualFileForJar(f.getVirtualFile)))
+    psiFiles.map(f =>
+      jarFS.getJarRootForLocalFile(
+        jarFS.getVirtualFileForJar(f.getVirtualFile)))
   }
 
   private def isJarCacheUpToDate(manifest: JarManifest): Boolean = {

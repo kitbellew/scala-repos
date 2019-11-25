@@ -87,14 +87,13 @@ trait Apply[F[_]] extends Functor[F] { self =>
       fg: => F[G])(f: F[(A, B, C, D, E, FF, G) => R]): F[R] =
     ap3(fe, ff, fg)(
       ap4(fa, fb, fc, fd)(
-        map(f)(
-          f =>
-            (
-                (
-                    a: A,
-                    b: B,
-                    c: C,
-                    d: D) => (e: E, ff: FF, g: G) => f(a, b, c, d, e, ff, g)))))
+        map(f)(f =>
+          (
+              (
+                  a: A,
+                  b: B,
+                  c: C,
+                  d: D) => (e: E, ff: FF, g: G) => f(a, b, c, d, e, ff, g)))))
   def ap8[A, B, C, D, E, FF, G, H, R](
       fa: => F[A],
       fb: => F[B],
@@ -106,15 +105,14 @@ trait Apply[F[_]] extends Functor[F] { self =>
       fh: => F[H])(f: F[(A, B, C, D, E, FF, G, H) => R]): F[R] =
     ap4(fe, ff, fg, fh)(
       ap4(fa, fb, fc, fd)(
-        map(f)(
-          f =>
-            (
-                (
-                    a: A,
-                    b: B,
-                    c: C,
-                    d: D) =>
-                  (e: E, ff: FF, g: G, h: H) => f(a, b, c, d, e, ff, g, h)))))
+        map(f)(f =>
+          (
+              (
+                  a: A,
+                  b: B,
+                  c: C,
+                  d: D) =>
+                (e: E, ff: FF, g: G, h: H) => f(a, b, c, d, e, ff, g, h)))))
 
   def apply2[A, B, C](fa: => F[A], fb: => F[B])(f: (A, B) => C): F[C] =
     ap(fb)(map(fa)(f.curried))
@@ -231,21 +229,20 @@ trait Apply[F[_]] extends Functor[F] { self =>
     apply3(
       tuple4(fa, fb, fc, fd),
       tuple4(fe, ff, fg, fh),
-      tuple4(fi, fj, fk, fl))(
-      (t, t2, t3) =>
-        f(
-          t._1,
-          t._2,
-          t._3,
-          t._4,
-          t2._1,
-          t2._2,
-          t2._3,
-          t2._4,
-          t3._1,
-          t3._2,
-          t3._3,
-          t3._4))
+      tuple4(fi, fj, fk, fl))((t, t2, t3) =>
+      f(
+        t._1,
+        t._2,
+        t._3,
+        t._4,
+        t2._1,
+        t2._2,
+        t2._3,
+        t2._4,
+        t3._1,
+        t3._2,
+        t3._3,
+        t3._4))
 
   def tuple2[A, B](fa: => F[A], fb: => F[B]): F[(A, B)] =
     apply2(fa, fb)((_, _))

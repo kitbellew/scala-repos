@@ -319,11 +319,10 @@ class ScalaDocumentationProvider extends CodeDocumentationProvider {
       }
     }
     findDocCommentOwner(startPoint)
-      .map(
-        d =>
-          Pair.create(
-            d.asInstanceOf[PsiElement],
-            d.getDocComment.asInstanceOf[PsiComment]))
+      .map(d =>
+        Pair.create(
+          d.asInstanceOf[PsiElement],
+          d.getDocComment.asInstanceOf[PsiComment]))
       .orNull
   }
 }

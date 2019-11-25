@@ -244,8 +244,8 @@ class Dialog[R](override val delegate: jfxsc.Dialog[R] = new jfxsc.Dialog[R]())
     * this callback must be specified.
     */
   def resultConverter: ObjectProperty[ButtonType => R] =
-    ObjectProperty(
-      (bt: ButtonType) => delegate.resultConverterProperty.getValue.call(bt))
+    ObjectProperty((bt: ButtonType) =>
+      delegate.resultConverterProperty.getValue.call(bt))
   def resultConverter_=(f: ButtonType => R): Unit = {
     delegate.setResultConverter(new jfxu.Callback[jfxsc.ButtonType, R] {
       override def call(param: jfxsc.ButtonType): R = f(param)

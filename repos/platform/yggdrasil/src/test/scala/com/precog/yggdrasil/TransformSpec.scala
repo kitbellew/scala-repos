@@ -367,8 +367,8 @@ trait TransformSpec[M[+_]]
   }
 
   def checkMap2Eq = {
-    implicit val gen = sample(
-      _ => Seq(JPath("value1") -> CDouble, JPath("value2") -> CLong))
+    implicit val gen =
+      sample(_ => Seq(JPath("value1") -> CDouble, JPath("value2") -> CLong))
     check { (sample: SampleData) =>
       val table = fromSample(sample)
       val results = toJson(table.transform {
@@ -397,8 +397,8 @@ trait TransformSpec[M[+_]]
   }
 
   def checkMap2Add = {
-    implicit val gen = sample(
-      _ => Seq(JPath("value1") -> CLong, JPath("value2") -> CLong))
+    implicit val gen =
+      sample(_ => Seq(JPath("value1") -> CLong, JPath("value2") -> CLong))
     check { (sample: SampleData) =>
       val table = fromSample(sample)
       val results = toJson(table.transform {
@@ -739,8 +739,8 @@ trait TransformSpec[M[+_]]
     def hasVal1Val2(jv: JValue): Boolean =
       (jv \? ".value.value1").nonEmpty && (jv \? ".value.value2").nonEmpty
 
-    val genBase: Gen[SampleData] = sample(
-      _ => Seq(JPath("value1") -> CLong, JPath("value2") -> CLong)).arbitrary
+    val genBase: Gen[SampleData] = sample(_ =>
+      Seq(JPath("value1") -> CLong, JPath("value2") -> CLong)).arbitrary
     implicit val gen: Arbitrary[SampleData] = Arbitrary {
       genBase map { sd =>
         SampleData(
@@ -1189,8 +1189,8 @@ trait TransformSpec[M[+_]]
   }
 
   def checkObjectConcat = {
-    implicit val gen = sample(
-      _ => Seq(JPath("value1") -> CLong, JPath("value2") -> CLong))
+    implicit val gen =
+      sample(_ => Seq(JPath("value1") -> CLong, JPath("value2") -> CLong))
     check { (sample: SampleData) =>
       val table = fromSample(sample)
       val resultsInner = toJson(table.transform {
@@ -1253,8 +1253,8 @@ trait TransformSpec[M[+_]]
   }
 
   def checkObjectConcatOverwrite = {
-    implicit val gen = sample(
-      _ => Seq(JPath("value1") -> CLong, JPath("value2") -> CLong))
+    implicit val gen =
+      sample(_ => Seq(JPath("value1") -> CLong, JPath("value2") -> CLong))
     check { (sample: SampleData) =>
       val table = fromSample(sample)
       val resultsInner = toJson(table.transform {
@@ -1319,8 +1319,8 @@ trait TransformSpec[M[+_]]
   }
 
   def checkArrayConcat = {
-    implicit val gen = sample(
-      _ => Seq(JPath("[0]") -> CLong, JPath("[1]") -> CLong))
+    implicit val gen =
+      sample(_ => Seq(JPath("[0]") -> CLong, JPath("[1]") -> CLong))
     check { (sample0: SampleData) =>
       /***
       important note:
@@ -2121,12 +2121,11 @@ trait TransformSpec[M[+_]]
   }
 
   def checkTypedTrivial = {
-    implicit val gen = sample(
-      _ =>
-        Seq(
-          JPath("value1") -> CLong,
-          JPath("value2") -> CBoolean,
-          JPath("value3") -> CLong))
+    implicit val gen = sample(_ =>
+      Seq(
+        JPath("value1") -> CLong,
+        JPath("value2") -> CBoolean,
+        JPath("value3") -> CLong))
     check { (sample: SampleData) =>
       val table = fromSample(sample)
 

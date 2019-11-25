@@ -135,10 +135,9 @@ case class AhcWSRequest(
     copy(auth = Some((username, password, scheme)))
 
   def withHeaders(hdrs: (String, String)*): WSRequest = {
-    val headers = hdrs.foldLeft(this.headers)(
-      (m, hdr) =>
-        if (m.contains(hdr._1)) m.updated(hdr._1, m(hdr._1) :+ hdr._2)
-        else m + (hdr._1 -> Seq(hdr._2)))
+    val headers = hdrs.foldLeft(this.headers)((m, hdr) =>
+      if (m.contains(hdr._1)) m.updated(hdr._1, m(hdr._1) :+ hdr._2)
+      else m + (hdr._1 -> Seq(hdr._2)))
     copy(headers = headers)
   }
 

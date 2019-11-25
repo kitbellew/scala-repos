@@ -722,16 +722,15 @@ object TestUtils extends Logging {
         Map(protocol -> EndPoint("localhost", 6667, protocol)).toMap,
         b.rack)
     }
-    brokers.foreach(
-      b =>
-        zkUtils.registerBrokerInZk(
-          b.id,
-          "localhost",
-          6667,
-          b.endPoints,
-          jmxPort = -1,
-          rack = b.rack,
-          ApiVersion.latestVersion))
+    brokers.foreach(b =>
+      zkUtils.registerBrokerInZk(
+        b.id,
+        "localhost",
+        6667,
+        b.endPoints,
+        jmxPort = -1,
+        rack = b.rack,
+        ApiVersion.latestVersion))
     brokers
   }
 
@@ -1274,11 +1273,10 @@ object TestUtils extends Logging {
     // ensure that the topic-partition has been deleted from all brokers' replica managers
     TestUtils.waitUntilTrue(
       () =>
-        servers.forall(
-          server =>
-            topicAndPartitions.forall(tp =>
-              server.replicaManager
-                .getPartition(tp.topic, tp.partition) == None)),
+        servers.forall(server =>
+          topicAndPartitions.forall(tp =>
+            server.replicaManager
+              .getPartition(tp.topic, tp.partition) == None)),
       "Replica manager's should have deleted all of this topic's partitions"
     )
     // ensure that logs from all replicas are deleted if delete topic is marked successful in zookeeper

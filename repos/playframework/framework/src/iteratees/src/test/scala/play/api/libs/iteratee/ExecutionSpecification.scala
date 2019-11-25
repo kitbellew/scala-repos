@@ -26,8 +26,8 @@ trait ExecutionSpecification { self: SpecificationLike =>
       TestExecutionContext,
       TestExecutionContext,
       TestExecutionContext) => A): A = {
-    testExecution(
-      ec1 => testExecution(ec2 => testExecution(ec3 => f(ec1, ec2, ec3))))
+    testExecution(ec1 =>
+      testExecution(ec2 => testExecution(ec3 => f(ec1, ec2, ec3))))
   }
 
   def mustExecute[A](expectedCount: => Int)(f: ExecutionContext => A): A = {

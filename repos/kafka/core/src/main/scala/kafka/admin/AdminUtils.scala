@@ -538,12 +538,11 @@ object AdminUtils extends Logging {
       }
     }
 
-    partitionReplicaAssignment.values.foreach(
-      reps =>
-        require(
-          reps.size == reps.toSet.size,
-          "Duplicate replica assignment found: " +
-            partitionReplicaAssignment))
+    partitionReplicaAssignment.values.foreach(reps =>
+      require(
+        reps.size == reps.toSet.size,
+        "Duplicate replica assignment found: " +
+          partitionReplicaAssignment))
 
     // Configs only matter if a topic is being created. Changing configs via AlterTopic is not supported
     if (!update) {

@@ -129,13 +129,12 @@ class ScalaFindUsagesHandler(
               Array(IS_GETTER, SETTER)
             case _ => Array.empty
           }
-          a.map(
-            role =>
-              t.getTypedDefinitionWrapper(
-                isStatic = false,
-                isInterface = false,
-                role = role,
-                cClass = None))
+          a.map(role =>
+            t.getTypedDefinitionWrapper(
+              isStatic = false,
+              isInterface = false,
+              role = role,
+              cClass = None))
         }
       case _ => Array.empty
     }

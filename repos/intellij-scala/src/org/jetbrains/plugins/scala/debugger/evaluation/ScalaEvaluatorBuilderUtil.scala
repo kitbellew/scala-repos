@@ -136,8 +136,8 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
         return stableObjectEvaluator(o)
       case _ =>
     }
-    val (outerClass, iterationCount) = findContextClass(
-      e => e == null || e == containingClass)
+    val (outerClass, iterationCount) =
+      findContextClass(e => e == null || e == containingClass)
 
     if (outerClass != null) new ScalaThisEvaluator(iterationCount)
     else new ScalaThisEvaluator()
@@ -154,8 +154,8 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
       if (isSuper) new ScalaSuperDelegate(e) else e
 
     def default: Evaluator = {
-      val (result, iters) = findContextClass(
-        e => e == null || e.isInstanceOf[PsiClass])
+      val (result, iters) =
+        findContextClass(e => e == null || e.isInstanceOf[PsiClass])
       if (result == null) thisEval(0)
       else thisEval(iters)
     }
@@ -230,8 +230,8 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
       case t: ScTrait =>
         thisOrSuperEvaluator(None, isSuper = true)
       case _ =>
-        val (outerClass, iters) = findContextClass(
-          e => e == null || e == containingClass)
+        val (outerClass, iters) =
+          findContextClass(e => e == null || e == containingClass)
 
         if (outerClass != null) new ScalaThisEvaluator(iters)
         else null
@@ -820,12 +820,11 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
               val methodName = defaultParameterMethodName(fun, paramIndex)
               val localParams = p.paramInCode.toSeq
                 .flatMap(DebuggerUtil.localParamsForDefaultParam(_))
-              val localParamRefs = localParams.map(
-                td =>
-                  ScalaPsiElementFactory.createExpressionWithContextFromText(
-                    td.name,
-                    call.getContext,
-                    call))
+              val localParamRefs = localParams.map(td =>
+                ScalaPsiElementFactory.createExpressionWithContextFromText(
+                  td.name,
+                  call.getContext,
+                  call))
               val localEvals = localParamRefs.map(evaluatorFor(_))
               functionEvaluator(
                 ref.qualifier,
@@ -1433,8 +1432,8 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
           if (isOfPrimitiveType(p)) eval
           else boxEvaluator(eval)
         }
-        val (outerClass, iters) = findContextClass(
-          e => e == null || e == containingClass)
+        val (outerClass, iters) =
+          findContextClass(e => e == null || e == containingClass)
         val outerThis = outerClass match {
           case obj: ScObject if isStable(obj) => None
           case null                           => None

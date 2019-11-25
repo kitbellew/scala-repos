@@ -285,10 +285,9 @@ abstract class BTypes {
     def fromClassfileWithoutAttribute = {
       val warning = {
         val isScala =
-          classNode.attrs != null && classNode.attrs.asScala.exists(
-            a =>
-              a.`type` == BTypes.ScalaAttributeName ||
-                a.`type` == BTypes.ScalaSigAttributeName)
+          classNode.attrs != null && classNode.attrs.asScala.exists(a =>
+            a.`type` == BTypes.ScalaAttributeName ||
+              a.`type` == BTypes.ScalaSigAttributeName)
         if (isScala) Some(NoInlineInfoAttribute(classNode.name))
         else None
       }

@@ -129,8 +129,8 @@ object SlickBuild extends Build {
             "-groups"
           )),
       logBuffered := false,
-      repoKind <<= (version)(
-        v => if (v.trim.endsWith("SNAPSHOT")) "snapshots" else "releases"),
+      repoKind <<= (version)(v =>
+        if (v.trim.endsWith("SNAPSHOT")) "snapshots" else "releases"),
       publishTo <<= (repoKind) {
         case "snapshots" =>
           Some(
@@ -239,15 +239,14 @@ object SlickBuild extends Build {
       name := "Slick",
       description := "Scala Language-Integrated Connection Kit",
       libraryDependencies ++= Dependencies.mainDependencies,
-      scalacOptions in (Compile, doc) <++= version.map(
-        v =>
-          Seq(
-            "-doc-source-url",
-            "https://github.com/slick/slick/blob/" +
-              v + "/slick/src/main€{FILE_PATH}.scala",
-            "-doc-root-content",
-            "scaladoc-root.txt"
-          )),
+      scalacOptions in (Compile, doc) <++= version.map(v =>
+        Seq(
+          "-doc-source-url",
+          "https://github.com/slick/slick/blob/" +
+            v + "/slick/src/main€{FILE_PATH}.scala",
+          "-doc-root-content",
+          "scaladoc-root.txt"
+        )),
       (sphinxEnv in Sphinx) := (sphinxEnv in Sphinx).value +
         ("version" -> version.value.replaceFirst("""(\d*.\d*).*""", """$1""")) +
         ("release" -> version.value),
@@ -327,13 +326,12 @@ object SlickBuild extends Build {
         "testkit") ++ Seq(
         name := "Slick-TestKit",
         description := "Test Kit for Slick (Scala Language-Integrated Connection Kit)",
-        scalacOptions in (Compile, doc) <++= version.map(
-          v =>
-            Seq(
-              "-doc-source-url",
-              "https://github.com/slick/slick/blob/" + v +
-                "/slick-testkit/src/main€{FILE_PATH}.scala"
-            )),
+        scalacOptions in (Compile, doc) <++= version.map(v =>
+          Seq(
+            "-doc-source-url",
+            "https://github.com/slick/slick/blob/" + v +
+              "/slick-testkit/src/main€{FILE_PATH}.scala"
+          )),
         testOptions += Tests.Argument(
           TestFrameworks.JUnit,
           "-q",
@@ -393,13 +391,12 @@ object SlickBuild extends Build {
         "codegen") ++ commonSdlcSettings ++ Seq(
         name := "Slick-CodeGen",
         description := "Code Generator for Slick (Scala Language-Integrated Connection Kit)",
-        scalacOptions in (Compile, doc) <++= version.map(
-          v =>
-            Seq(
-              "-doc-source-url",
-              "https://github.com/slick/slick/blob/" + v +
-                "/slick-codegen/src/main€{FILE_PATH}.scala"
-            )),
+        scalacOptions in (Compile, doc) <++= version.map(v =>
+          Seq(
+            "-doc-source-url",
+            "https://github.com/slick/slick/blob/" + v +
+              "/slick-codegen/src/main€{FILE_PATH}.scala"
+          )),
         unmanagedResourceDirectories in Test +=
           (baseDirectory in aRootProject).value / "common-test-resources",
         test := (),
@@ -415,13 +412,12 @@ object SlickBuild extends Build {
         "hikaricp") ++ commonSdlcSettings ++ osgiSettings ++ Seq(
         name := "Slick-HikariCP",
         description := "HikariCP integration for Slick (Scala Language-Integrated Connection Kit)",
-        scalacOptions in (Compile, doc) <++= version.map(
-          v =>
-            Seq(
-              "-doc-source-url",
-              "https://github.com/slick/slick/blob/" + v +
-                "/slick-hikaricp/src/main€{FILE_PATH}.scala"
-            )),
+        scalacOptions in (Compile, doc) <++= version.map(v =>
+          Seq(
+            "-doc-source-url",
+            "https://github.com/slick/slick/blob/" + v +
+              "/slick-hikaricp/src/main€{FILE_PATH}.scala"
+          )),
         libraryDependencies += Dependencies.hikariCP,
         test := (),
         testOnly := (), // suppress test status output

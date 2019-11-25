@@ -268,8 +268,8 @@ class GroupBuilder(val groupFields: Fields)
       outFields,
       conv,
       setter)
-    every(
-      pipe => new Every(pipe, inFields, b, defaultMode(inFields, outFields)))
+    every(pipe =>
+      new Every(pipe, inFields, b, defaultMode(inFields, outFields)))
   }
 
   def reverse: GroupBuilder = {
@@ -310,8 +310,8 @@ class GroupBuilder(val groupFields: Fields)
       conv,
       setter
     )
-    every(
-      pipe => new Every(pipe, inFields, b, defaultMode(inFields, outFields)))
+    every(pipe =>
+      new Every(pipe, inFields, b, defaultMode(inFields, outFields)))
   }
 
   def groupMode: GroupMode =
@@ -432,8 +432,8 @@ class GroupBuilder(val groupFields: Fields)
         outFields,
         conv,
         setter)
-      every(
-        pipe => new Every(pipe, inFields, b, defaultMode(inFields, outFields)))
+      every(pipe =>
+        new Every(pipe, inFields, b, defaultMode(inFields, outFields)))
     }
   }
 }

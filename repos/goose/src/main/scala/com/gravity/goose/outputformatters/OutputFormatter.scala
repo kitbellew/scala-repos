@@ -78,11 +78,12 @@ trait OutputFormatter {
   def convertToText(topNode: Element): String = topNode match {
     case null => ""
     case node => {
-      (node
-        .children()
-        .map((e: Element) => {
-          StringEscapeUtils.unescapeHtml(e.text).trim
-        }))
+      (
+        node
+          .children()
+          .map((e: Element) => {
+            StringEscapeUtils.unescapeHtml(e.text).trim
+          }))
         .toList
         .mkString("\n\n")
     }

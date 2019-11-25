@@ -34,9 +34,8 @@ class BinaryVectorizer(propertyMap: HashMap[(String, String), Int])
   }
 
   def toBinary(map: Array[(String, String)]): Vector = {
-    val mapArr: Seq[(Int, Double)] = map.flatMap(
-      e => propertyMap.get(e).map(idx => (idx, 1.0))
-    )
+    val mapArr: Seq[(Int, Double)] =
+      map.flatMap(e => propertyMap.get(e).map(idx => (idx, 1.0)))
 
     Vectors.sparse(numFeatures, mapArr)
   }

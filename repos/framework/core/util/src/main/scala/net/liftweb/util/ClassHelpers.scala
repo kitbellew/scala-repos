@@ -331,10 +331,9 @@ trait ClassHelpers { self: ControlHelpers =>
        * add some extra $ for ex.
        */
       def alternateMethods: List[Method] =
-        clz.getDeclaredMethods.toList.filter(
-          m =>
-            m.getName.equals(meth) && isPublic(m.getModifiers) &&
-              m.getParameterTypes.length == params.length)
+        clz.getDeclaredMethods.toList.filter(m =>
+          m.getName.equals(meth) && isPublic(m.getModifiers) &&
+            m.getParameterTypes.length == params.length)
       methCacheLock.read {
         def key = (clz.getName, meth, params.length)
         if (Props.productionMode && methodCache.contains(key)) {

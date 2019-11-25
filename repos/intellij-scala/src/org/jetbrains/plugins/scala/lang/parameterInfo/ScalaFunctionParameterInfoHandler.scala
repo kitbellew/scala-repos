@@ -733,17 +733,16 @@ class ScalaFunctionParameterInfoHandler
                         AnnotationParameters(
                           clazz.getMethods.toSeq
                             .filter(_.isInstanceOf[PsiAnnotationMethod])
-                            .map(
-                              meth =>
-                                (
-                                  meth.name,
-                                  ScType.create(
-                                    meth.getReturnType,
-                                    meth.getProject,
-                                    meth.getResolveScope),
-                                  meth
-                                    .asInstanceOf[PsiAnnotationMethod]
-                                    .getDefaultValue))),
+                            .map(meth =>
+                              (
+                                meth.name,
+                                ScType.create(
+                                  meth.getReturnType,
+                                  meth.getProject,
+                                  meth.getResolveScope),
+                                meth
+                                  .asInstanceOf[PsiAnnotationMethod]
+                                  .getDefaultValue))),
                         i)
                     res += resulting
                   case clazz: PsiClass

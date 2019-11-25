@@ -192,7 +192,7 @@ object TestResultLogger {
       show("Error during tests:", Level.Error, select(TestResult.Error))
     })
 
-    val printNoTests = TestResultLogger(
-      (log, results, taskName) => log.info("No tests to run for " + taskName))
+    val printNoTests = TestResultLogger((log, results, taskName) =>
+      log.info("No tests to run for " + taskName))
   }
 }

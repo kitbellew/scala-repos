@@ -193,11 +193,10 @@ class MacroExpandAction extends AnAction {
             val children = block.getChildren
             block.children
               .find(_.isInstanceOf[ScalaPsiElement])
-              .foreach(
-                p =>
-                  p.putCopyableUserData(
-                    MacroExpandAction.EXPANDED_KEY,
-                    holder.getText))
+              .foreach(p =>
+                p.putCopyableUserData(
+                  MacroExpandAction.EXPANDED_KEY,
+                  holder.getText))
             holder.getParent.addRangeAfter(
               children.tail.head,
               children.dropRight(1).last,

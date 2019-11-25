@@ -556,10 +556,9 @@ private[stream] final class GraphInterpreter(
 
   private def shutdownCounters: String =
     shutdownCounter
-      .map(
-        x ⇒
-          if (x >= KeepGoingFlag) s"${x & KeepGoingMask}(KeepGoing)"
-          else x.toString)
+      .map(x ⇒
+        if (x >= KeepGoingFlag) s"${x & KeepGoingMask}(KeepGoing)"
+        else x.toString)
       .mkString(",")
 
   /**

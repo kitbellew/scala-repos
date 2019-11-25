@@ -814,12 +814,11 @@ private[hive] trait HiveInspectors {
     inspector match {
       case s: StructObjectInspector =>
         StructType(
-          s.getAllStructFieldRefs.asScala.map(
-            f =>
-              types.StructField(
-                f.getFieldName,
-                inspectorToDataType(f.getFieldObjectInspector),
-                nullable = true)))
+          s.getAllStructFieldRefs.asScala.map(f =>
+            types.StructField(
+              f.getFieldName,
+              inspectorToDataType(f.getFieldObjectInspector),
+              nullable = true)))
       case l: ListObjectInspector =>
         ArrayType(inspectorToDataType(l.getListElementObjectInspector))
       case m: MapObjectInspector =>

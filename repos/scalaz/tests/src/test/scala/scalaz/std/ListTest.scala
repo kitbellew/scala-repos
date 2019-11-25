@@ -21,8 +21,8 @@ object ListTest extends SpecLite {
   import std.list.listSyntax._
   import syntax.foldable._
 
-  "intercalate empty list is flatten" ! forAll(
-    (a: List[List[Int]]) => a.intercalate(List[Int]()) must_=== (a.flatten))
+  "intercalate empty list is flatten" ! forAll((a: List[List[Int]]) =>
+    a.intercalate(List[Int]()) must_=== (a.flatten))
 
   "intersperse then remove odd items is identity" ! forAll {
     (a: List[Int], b: Int) =>

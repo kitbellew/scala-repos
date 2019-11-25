@@ -193,13 +193,12 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
                         (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)),
                         new ScTypeVariable(tp.name))
                   }
-                val arguments = typeParams.toList.map(
-                  tp =>
-                    new ScExistentialArgument(
-                      tp.name,
-                      List.empty /* todo? */,
-                      s.subst(tp.lowerType()),
-                      s.subst(tp.upperType())))
+                val arguments = typeParams.toList.map(tp =>
+                  new ScExistentialArgument(
+                    tp.name,
+                    List.empty /* todo? */,
+                    s.subst(tp.lowerType()),
+                    s.subst(tp.upperType())))
                 Left(
                   params.map(p =>
                     p.copy(paramType =
@@ -224,13 +223,12 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
                         (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)),
                         new ScTypeVariable(tp.name))
                   }
-                val arguments = typeParams.toList.map(
-                  tp =>
-                    new ScExistentialArgument(
-                      tp.name,
-                      List.empty /* todo? */,
-                      s.subst(tp.lowerType()),
-                      s.subst(tp.upperType())))
+                val arguments = typeParams.toList.map(tp =>
+                  new ScExistentialArgument(
+                    tp.name,
+                    List.empty /* todo? */,
+                    s.subst(tp.lowerType()),
+                    s.subst(tp.upperType())))
                 Right(ScExistentialType(s.subst(internal), arguments))
               }
             case _ => Right(tp)
@@ -320,10 +318,9 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
                   var hasRecursiveTypeParameters = false
                   typez.recursiveUpdate {
                     case tpt: ScTypeParameterType =>
-                      typeParams.find(
-                        tp =>
-                          (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) ==
-                            (tpt.name, tpt.getId)) match {
+                      typeParams.find(tp =>
+                        (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) ==
+                          (tpt.name, tpt.getId)) match {
                         case None => (true, tpt)
                         case _ =>
                           hasRecursiveTypeParameters = true

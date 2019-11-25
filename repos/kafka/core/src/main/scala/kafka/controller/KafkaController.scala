@@ -268,10 +268,9 @@ class KafkaController(
         inLock(controllerContext.controllerLock) {
           if (!isActive()) 0
           else
-            controllerContext.partitionLeadershipInfo.count(
-              p =>
-                !controllerContext.liveOrShuttingDownBrokerIds.contains(
-                  p._2.leaderAndIsr.leader))
+            controllerContext.partitionLeadershipInfo.count(p =>
+              !controllerContext.liveOrShuttingDownBrokerIds.contains(
+                p._2.leaderAndIsr.leader))
         }
       }
     }
@@ -342,13 +341,12 @@ class KafkaController(
         inLock(controllerContext.controllerLock) {
           controllerContext
             .partitionsOnBroker(id)
-            .map(
-              topicAndPartition =>
-                (
-                  topicAndPartition,
-                  controllerContext
-                    .partitionReplicaAssignment(topicAndPartition)
-                    .size))
+            .map(topicAndPartition =>
+              (
+                topicAndPartition,
+                controllerContext
+                  .partitionReplicaAssignment(topicAndPartition)
+                  .size))
         }
 
       allPartitionsAndReplicationFactorOnBroker.foreach {
@@ -1947,10 +1945,9 @@ class IsrChangeNotificationListener(controller: KafkaController)
         }
       } finally {
         // delete processed children
-        childrenAsScala.map(
-          x =>
-            controller.controllerContext.zkUtils
-              .deletePath(ZkUtils.IsrChangeNotificationPath + "/" + x))
+        childrenAsScala.map(x =>
+          controller.controllerContext.zkUtils
+            .deletePath(ZkUtils.IsrChangeNotificationPath + "/" + x))
       }
     }
   }

@@ -131,9 +131,8 @@ class InputFormatInfo(
     val retval = new ArrayBuffer[SplitInfo]()
     instance
       .getSplits(jobConf, jobConf.getNumMapTasks())
-      .foreach(
-        elem => retval ++= SplitInfo.toSplitInfo(inputFormatClazz, path, elem)
-      )
+      .foreach(elem =>
+        retval ++= SplitInfo.toSplitInfo(inputFormatClazz, path, elem))
 
     retval.toSet
   }

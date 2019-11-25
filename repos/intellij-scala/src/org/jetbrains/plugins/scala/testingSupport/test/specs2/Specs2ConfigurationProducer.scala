@@ -120,14 +120,13 @@ with AbstractTestConfigurationProducer {
       PsiTreeUtil.getParentOfType(element, classOf[ScTypeDefinition], false)
     if (parent == null) return false
     val suiteClasses = suitePaths
-      .map(
-        suite =>
-          ScalaPsiManager
-            .instance(parent.getProject)
-            .getCachedClass(
-              suite,
-              element.getResolveScope,
-              ScalaPsiManager.ClassCategory.TYPE))
+      .map(suite =>
+        ScalaPsiManager
+          .instance(parent.getProject)
+          .getCachedClass(
+            suite,
+            element.getResolveScope,
+            ScalaPsiManager.ClassCategory.TYPE))
       .filter(_ != null)
     if (suiteClasses.isEmpty) return false
     val suiteClazz = suiteClasses.head
@@ -168,12 +167,11 @@ with AbstractTestConfigurationProducer {
 
     val psiManager = ScalaPsiManager.instance(testClassDef.getProject)
     val suiteClasses = suitePaths
-      .map(
-        suite =>
-          psiManager.getCachedClass(
-            suite,
-            element.getResolveScope,
-            ScalaPsiManager.ClassCategory.TYPE))
+      .map(suite =>
+        psiManager.getCachedClass(
+          suite,
+          element.getResolveScope,
+          ScalaPsiManager.ClassCategory.TYPE))
       .filter(_ != null)
     if (suiteClasses.isEmpty) return (null, null)
     val suiteClazz = suiteClasses.head

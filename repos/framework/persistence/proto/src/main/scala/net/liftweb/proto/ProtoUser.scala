@@ -380,8 +380,8 @@ trait ProtoUser {
     * Overwrite in order to add custom LocParams. Attention: Not calling super will change the default behavior!
     */
   protected def loginMenuLocParams: List[LocParam[Unit]] =
-    If(notLoggedIn_? _, S.?("already.logged.in")) :: Template(
-      () => wrapIt(login)) :: Nil
+    If(notLoggedIn_? _, S.?("already.logged.in")) :: Template(() =>
+      wrapIt(login)) :: Nil
 
   /**
     * If you have more than 1 ProtoUser in your application, you'll need to distinguish the menu names.

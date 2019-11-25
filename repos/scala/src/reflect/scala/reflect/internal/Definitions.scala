@@ -129,10 +129,10 @@ trait Definitions extends api.StandardDefinitions { self: SymbolTable =>
       symbolsMapFilt(ScalaValueClasses, nameToWeight.keySet, nameToWeight)
     lazy val boxedModule = classesMap(x => getModuleByName(boxedName(x)))
     lazy val boxedClass = classesMap(x => getClassByName(boxedName(x)))
-    lazy val refClass = classesMap(
-      x => getRequiredClass("scala.runtime." + x + "Ref"))
-    lazy val volatileRefClass = classesMap(
-      x => getRequiredClass("scala.runtime.Volatile" + x + "Ref"))
+    lazy val refClass =
+      classesMap(x => getRequiredClass("scala.runtime." + x + "Ref"))
+    lazy val volatileRefClass =
+      classesMap(x => getRequiredClass("scala.runtime.Volatile" + x + "Ref"))
 
     lazy val allRefClasses: Set[Symbol] = {
       refClass.values.toSet ++ volatileRefClass.values.toSet ++ Set(

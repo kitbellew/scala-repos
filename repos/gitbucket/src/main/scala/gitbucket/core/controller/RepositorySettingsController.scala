@@ -362,13 +362,12 @@ trait RepositorySettingsControllerBase extends ControllerBase {
           "responce" -> Await
             .result(
               resFuture
-                .map(
-                  res =>
-                    Map(
-                      "status" -> res.getStatusLine(),
-                      "body" -> EntityUtils.toString(res.getEntity()),
-                      "headers" -> _headers(res.getAllHeaders())
-                    ))
+                .map(res =>
+                  Map(
+                    "status" -> res.getStatusLine(),
+                    "body" -> EntityUtils.toString(res.getEntity()),
+                    "headers" -> _headers(res.getAllHeaders())
+                  ))
                 .recover(toErrorMap),
               20 seconds
             )

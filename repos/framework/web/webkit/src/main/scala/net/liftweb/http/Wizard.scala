@@ -252,11 +252,10 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
       Full(Text(screenCount.toString)), //screenCount: Box[NodeSeq],
       wizardTop, // wizardTop: Box[Elem],
       theScreen.screenTop, //screenTop: Box[Elem],
-      extraFields ::: theScreen.screenFields.flatMap(
-        f =>
-          if (f.show_?)
-            List(ScreenFieldInfo(f, f.displayHtml, f.helpAsHtml, f.toForm))
-          else Nil), //fields: List[ScreenFieldInfo],
+      extraFields ::: theScreen.screenFields.flatMap(f =>
+        if (f.show_?)
+          List(ScreenFieldInfo(f, f.displayHtml, f.helpAsHtml, f.toForm))
+        else Nil), //fields: List[ScreenFieldInfo],
       prevButton, // prev: Box[Elem],
       Full(cancelButton), // cancel: Box[Elem],
       nextButton, // next: Box[Elem],

@@ -30,12 +30,11 @@ sealed abstract class IterateeT[E, F[_], A] {
     * Run this iteratee
     */
   def run(implicit F: Monad[F]): F[A] = {
-    F.bind((this &= enumEofT[E, F]).value)(
-      (s: StepT[E, F, A]) =>
-        s.fold(
-          cont = _ => sys.error("diverging iteratee"),
-          done = (a, _) => F.point(a)
-        ))
+    F.bind((this &= enumEofT[E, F]).value)((s: StepT[E, F, A]) =>
+      s.fold(
+        cont = _ => sys.error("diverging iteratee"),
+        done = (a, _) => F.point(a)
+      ))
   }
 
   def flatMap[B](f: A => IterateeT[E, F, B])(
@@ -48,10 +47,11 @@ sealed abstract class IterateeT[E, F[_], A] {
             done = (a, i) =>
               if (i.isEmpty) f(a).value
               else
-                F.bind(f(a).value)(_.fold(
-                  cont = kk => kk(i).value,
-                  done = (aa, _) => F.point(StepT.sdone[E, F, B](aa, i))
-                ))
+                F.bind(f(a).value)(
+                  _.fold(
+                    cont = kk => kk(i).value,
+                    done = (aa, _) => F.point(StepT.sdone[E, F, B](aa, i))
+                  ))
           )))
     through(this)
   }

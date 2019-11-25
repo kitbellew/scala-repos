@@ -217,11 +217,10 @@ class FlowMapAsyncSpec extends AkkaSpec {
     "resume when future is completed with null" in {
       val c = TestSubscriber.manualProbe[String]()
       val p = Source(List("a", "b", "c"))
-        .mapAsync(4)(
-          elem ⇒
-            if (elem == "b")
-              Future.successful(null)
-            else Future.successful(elem))
+        .mapAsync(4)(elem ⇒
+          if (elem == "b")
+            Future.successful(null)
+          else Future.successful(elem))
         .withAttributes(supervisionStrategy(resumingDecider))
         .to(Sink.fromSubscriber(c))
         .run()

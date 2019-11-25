@@ -1830,14 +1830,13 @@ abstract class RDD[T: ClassTag](
         if (storageLevel != StorageLevel.NONE) storageLevel.description else ""
       val storageInfo = rdd.context
         .getRDDStorageInfo(_.id == rdd.id)
-        .map(
-          info =>
-            "    CachedPartitions: %d; MemorySize: %s; ExternalBlockStoreSize: %s; DiskSize: %s"
-              .format(
-                info.numCachedPartitions,
-                bytesToString(info.memSize),
-                bytesToString(info.externalBlockStoreSize),
-                bytesToString(info.diskSize)))
+        .map(info =>
+          "    CachedPartitions: %d; MemorySize: %s; ExternalBlockStoreSize: %s; DiskSize: %s"
+            .format(
+              info.numCachedPartitions,
+              bytesToString(info.memSize),
+              bytesToString(info.externalBlockStoreSize),
+              bytesToString(info.diskSize)))
 
       s"$rdd [$persistence]" +: storageInfo
     }
@@ -1856,12 +1855,11 @@ abstract class RDD[T: ClassTag](
             true)
         case _ =>
           val frontDeps = rdd.dependencies.take(len - 1)
-          val frontDepStrings = frontDeps.flatMap(
-            d =>
-              debugString(
-                d.rdd,
-                prefix,
-                d.isInstanceOf[ShuffleDependency[_, _, _]]))
+          val frontDepStrings = frontDeps.flatMap(d =>
+            debugString(
+              d.rdd,
+              prefix,
+              d.isInstanceOf[ShuffleDependency[_, _, _]]))
 
           val lastDep = rdd.dependencies.last
           val lastDepStrings = debugString(

@@ -227,10 +227,9 @@ object PullRequestService {
           .map(CommitStatus
             .pending(branchProtection.owner, branchProtection.repository, _))
     val hasRequiredStatusProblem =
-      needStatusCheck && branchProtection.contexts.exists(
-        context =>
-          statuses.find(_.context == context).map(_.state) != Some(
-            CommitState.SUCCESS))
+      needStatusCheck && branchProtection.contexts.exists(context =>
+        statuses.find(_.context == context).map(_.state) != Some(
+          CommitState.SUCCESS))
     val hasProblem =
       hasRequiredStatusProblem || hasConflict ||
         (!statuses.isEmpty &&

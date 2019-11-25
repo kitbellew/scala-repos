@@ -366,10 +366,9 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
 
   def ormapFromProto(ormap: rd.ORMap): ORMap[ReplicatedData] = {
     val entries = ormap.getEntriesList.asScala
-      .map(
-        entry ⇒
-          entry.getKey -> otherMessageFromProto(entry.getValue)
-            .asInstanceOf[ReplicatedData])
+      .map(entry ⇒
+        entry.getKey -> otherMessageFromProto(entry.getValue)
+          .asInstanceOf[ReplicatedData])
       .toMap
     new ORMap(
       keys = orsetFromProto(ormap.getKeys).asInstanceOf[ORSet[String]],

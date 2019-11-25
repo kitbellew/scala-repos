@@ -5,8 +5,7 @@ object Test {
   val numbers =
     (
       ((-3 to 3) ++ List(17, 127, Int.MaxValue, Int.MinValue + 1)).distinct
-        .sortBy(n => (math.abs(n), n))
-      ) :+ Int.MinValue
+        .sortBy(n => (math.abs(n), n))) :+ Int.MinValue
 
   // reducing output a little
   val endpoints = numbers filterNot Set(-3, -2, 2, 17, 127)

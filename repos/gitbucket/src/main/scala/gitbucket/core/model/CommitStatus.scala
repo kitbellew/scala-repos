@@ -107,8 +107,8 @@ object CommitState {
     }
   }
 
-  implicit val getResult: GetResult[CommitState] = GetResult(
-    r => CommitState(r.<<))
-  implicit val getResultOpt: GetResult[Option[CommitState]] = GetResult(
-    r => r.<<?[String].map(CommitState(_)))
+  implicit val getResult: GetResult[CommitState] =
+    GetResult(r => CommitState(r.<<))
+  implicit val getResultOpt: GetResult[Option[CommitState]] =
+    GetResult(r => r.<<?[String].map(CommitState(_)))
 }

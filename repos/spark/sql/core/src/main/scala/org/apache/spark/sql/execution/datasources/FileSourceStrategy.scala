@@ -122,13 +122,12 @@ private[sql] object FileSourceStrategy extends Strategy with Logging {
           logInfo(s"Planning with ${bucketing.numBuckets} buckets")
           val bucketed = selectedPartitions
             .flatMap { p =>
-              p.files.map(
-                f =>
-                  PartitionedFile(
-                    p.values,
-                    f.getPath.toUri.toString,
-                    0,
-                    f.getLen))
+              p.files.map(f =>
+                PartitionedFile(
+                  p.values,
+                  f.getPath.toUri.toString,
+                  0,
+                  f.getLen))
             }
             .groupBy { f =>
               BucketingUtils

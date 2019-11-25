@@ -81,11 +81,10 @@ object SimplifyBooleanUtil {
           expr.getContext,
           expr)
       val children = getScExprChildren(exprCopy)
-      children.foreach(
-        child =>
-          exprCopy.getNode.replaceChild(
-            child.getNode,
-            simplify(child, isTopLevel = false).getNode))
+      children.foreach(child =>
+        exprCopy.getNode.replaceChild(
+          child.getNode,
+          simplify(child, isTopLevel = false).getNode))
       simplifyTrivially(exprCopy)
     } else expr
   }

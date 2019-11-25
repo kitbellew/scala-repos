@@ -304,16 +304,15 @@ object IO extends IOInstances {
   }
 
   def tailrecM[A, B](f: A => IO[A \/ B])(a: A): IO[B] =
-    io(
-      rw =>
-        BindRec[Trampoline]
-          .tailrecM[(Tower[IvoryTower], A), (Tower[IvoryTower], B)] {
-            case (nw0, x) =>
-              f(x)(nw0).map {
-                case (nw1, e) =>
-                  e.bimap((nw1, _), (nw1, _))
-              }
-          }((rw, a)))
+    io(rw =>
+      BindRec[Trampoline]
+        .tailrecM[(Tower[IvoryTower], A), (Tower[IvoryTower], B)] {
+          case (nw0, x) =>
+            f(x)(nw0).map {
+              case (nw1, e) =>
+                e.bimap((nw1, _), (nw1, _))
+            }
+        }((rw, a)))
 
   /** An IO action is an ST action. */
   implicit def IOToST[A](io: IO[A]): ST[IvoryTower, A] =

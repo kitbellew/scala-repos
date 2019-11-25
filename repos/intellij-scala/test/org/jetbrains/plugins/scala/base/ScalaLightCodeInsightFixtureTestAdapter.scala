@@ -207,10 +207,9 @@ abstract class ScalaLightCodeInsightFixtureTestAdapter
       "Highlights with this description are at " + ranges.mkString(" ") +
         ", but has to be at " + (selectionStart, selectionEnd)
     assert(
-      withRightDescription.exists(
-        info =>
-          info.getStartOffset == selectionStart &&
-            info.getEndOffset == selectionEnd),
+      withRightDescription.exists(info =>
+        info.getStartOffset == selectionStart &&
+          info.getEndOffset == selectionEnd),
       message)
   }
 
@@ -240,13 +239,12 @@ abstract class ScalaLightCodeInsightFixtureTestAdapter
     }
     myFixture
       .doHighlighting()
-      .foreach(
-        info =>
-          if (info != null && info.quickFixActionRanges != null &&
-              checkCaret(info.getStartOffset, info.getEndOffset))
-            actions ++=
-              (for (pair <- info.quickFixActionRanges if pair != null)
-                yield pair.getFirst.getAction))
+      .foreach(info =>
+        if (info != null && info.quickFixActionRanges != null &&
+            checkCaret(info.getStartOffset, info.getEndOffset))
+          actions ++=
+            (for (pair <- info.quickFixActionRanges if pair != null)
+              yield pair.getFirst.getAction))
 
     assert(actions.nonEmpty, "There is no available fixes.")
 

@@ -33,20 +33,17 @@ sealed abstract class IndexedStateT[F[_], -S1, S2, A] { self =>
     exec(S.zero)
 
   def map[B](f: A => B)(implicit F: Functor[F]): IndexedStateT[F, S1, S2, B] =
-    mapsf(
-      (sf: (S1 => F[(S2, A)])) => (s: S1) => F.map(sf(s))(t => (t._1, f(t._2))))
+    mapsf((sf: (S1 => F[(S2, A)])) =>
+      (s: S1) => F.map(sf(s))(t => (t._1, f(t._2))))
 
   def xmap[X1, X2](f: S2 => X1)(g: X2 => S1): IndexedStateT[F, X2, X1, A] =
-    IndexedStateT.createState(
-      (F: Monad[F]) => (x: X2) => F.map(self(g(x))(F))(t => (f(t._1), t._2))
-    )
+    IndexedStateT.createState((F: Monad[F]) =>
+      (x: X2) => F.map(self(g(x))(F))(t => (f(t._1), t._2)))
 
   /** Map both the return value and final state using the given function. */
   def mapK[G[_], B, S](f: F[(S2, A)] => G[(S, B)])(
       implicit M: Monad[F]): IndexedStateT[G, S1, S, B] =
-    IndexedStateT.createState(
-      (m: Monad[G]) => (s: S1) => f(apply(s)(M))
-    )
+    IndexedStateT.createState((m: Monad[G]) => (s: S1) => f(apply(s)(M)))
 
   import BijectionT._
   def bmap[X, S >: S2 <: S1](b: Bijection[S, X]): StateT[F, X, A] =
@@ -78,21 +75,19 @@ sealed abstract class IndexedStateT[F[_], -S1, S2, A] { self =>
   def lift[M[_]](
       implicit F: Monad[F],
       M: Applicative[M]): IndexedStateT[λ[α => M[F[α]]], S1, S2, A] =
-    IndexedStateT.createState[λ[α => M[F[α]]], S1, S2, A](
-      (m: Monad[λ[α => M[F[α]]]]) => (s: S1) => M.point(self(s))
-    )
+    IndexedStateT.createState[λ[α => M[F[α]]], S1, S2, A]((m: Monad[λ[α => M[
+      F[α]]]]) => (s: S1) => M.point(self(s)))
 
   import Liskov._
   def unlift[M[_], FF[_], S <: S1](
       implicit M: Comonad[M],
       F: Monad[λ[α => M[FF[α]]]],
       ev: this.type <~< IndexedStateT[λ[α => M[FF[α]]], S, S2, A])
-      : IndexedStateT[FF, S, S2, A] = IndexedStateT.createState(
-    (m: Monad[FF]) =>
+      : IndexedStateT[FF, S, S2, A] =
+    IndexedStateT.createState((m: Monad[FF]) =>
       (s: S) => {
         M.copoint(ev(self)(s))
-      }
-  )
+      })
 
   def unliftId[M[_], S <: S1](
       implicit M: Comonad[M],
@@ -103,14 +98,11 @@ sealed abstract class IndexedStateT[F[_], -S1, S2, A] { self =>
   def rwst[W, R](
       implicit F: Monad[F],
       W: Monoid[W]): IndexedReaderWriterStateT[F, R, W, S1, S2, A] =
-    IndexedReaderWriterStateT(
-      (r, s) =>
-        F.bind[S1 => F[(S2, A)], (W, A, S2)](getF(F))(
-          (sf: (S1 => F[(S2, A)])) =>
-            F.map(sf(s)) {
-              case (s, a) => (W.zero, a, s)
-            })
-    )
+    IndexedReaderWriterStateT((r, s) =>
+      F.bind[S1 => F[(S2, A)], (W, A, S2)](getF(F))((sf: (S1 => F[(S2, A)])) =>
+        F.map(sf(s)) {
+          case (s, a) => (W.zero, a, s)
+        }))
 
   def zoom[S0, S3, S <: S1](l: LensFamily[S0, S3, S, S2])(
       implicit F: Functor[F]): IndexedStateT[F, S0, S3, A] =
@@ -330,9 +322,8 @@ private trait StateTHoist[S] extends Hoist[λ[(g[_], a) => StateT[g, S, a]]] {
 
   def hoist[M[_]: Monad, N[_]](f: M ~> N) =
     new (StateTF[M, S]#f ~> StateTF[N, S]#f) {
-      def apply[A](action: StateT[M, S, A]) = IndexedStateT.createState(
-        (n: Monad[N]) => (s: S) => f(action.run(s))
-      )
+      def apply[A](action: StateT[M, S, A]) =
+        IndexedStateT.createState((n: Monad[N]) => (s: S) => f(action.run(s)))
     }
 
   implicit def apply[G[_]: Monad]: Monad[StateT[G, S, ?]] =

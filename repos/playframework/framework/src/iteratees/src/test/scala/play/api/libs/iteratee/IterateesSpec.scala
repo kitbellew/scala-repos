@@ -96,13 +96,12 @@ object IterateesSpec
 
     "fold input with fold1" in {
       mustExecute(1) { foldEC =>
-        mustTranslate3To(5)(
-          it =>
-            Iteratee.flatten(
-              it.fold1(
-                (a, i) => Future.successful(Done(a + 2, i)),
-                _ => ???,
-                (_, _) => ???)(foldEC)))
+        mustTranslate3To(5)(it =>
+          Iteratee.flatten(
+            it.fold1(
+              (a, i) => Future.successful(Done(a + 2, i)),
+              _ => ???,
+              (_, _) => ???)(foldEC)))
       }
     }
 
@@ -466,18 +465,16 @@ object IterateesSpec
     "do nothing on an Cont iteratee that eventually becomes Done with input after several steps" in {
       mustExecute(4) { implicit foldEC =>
         val it = delayed(
-          cont(
-            input1 =>
-              delayed(
-                cont(
-                  input2 =>
+          cont(input1 =>
+            delayed(
+              cont(input2 =>
+                delayed(
+                  cont(input3 =>
                     delayed(
-                      cont(input3 =>
-                        delayed(
-                          done(input1 + input2 + input3)
-                        ))
+                      done(input1 + input2 + input3)
                     ))
-              ))
+                ))
+            ))
         ).recover { case t: Throwable => unexpected }
         val actual = await(Enumerator(expected, expected, expected) |>>> it)
         actual must equalTo(expected * 3)
@@ -487,18 +484,16 @@ object IterateesSpec
     "recover with the expected fallback value from a Cont iteratee that eventually becomes an Error iteratee after several steps" in {
       mustExecute(5) { implicit foldEC =>
         val it = delayed(
-          cont(
-            input1 =>
-              delayed(
-                cont(
-                  input2 =>
+          cont(input1 =>
+            delayed(
+              cont(input2 =>
+                delayed(
+                  cont(input3 =>
                     delayed(
-                      cont(input3 =>
-                        delayed(
-                          error(input1 + input2 + input3)
-                        ))
+                      error(input1 + input2 + input3)
                     ))
-              ))
+                ))
+            ))
         ).recover { case t: Throwable => expected }
         val actual =
           await(Enumerator(unexpected, unexpected, unexpected) |>>> it)

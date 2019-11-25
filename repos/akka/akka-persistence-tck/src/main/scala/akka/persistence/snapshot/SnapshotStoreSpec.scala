@@ -132,7 +132,8 @@ abstract class SnapshotStoreSpec(config: Config)
     }
     "delete a single snapshot identified by sequenceNr in snapshot metadata" in {
       val md =
-        metadata(2).copy(timestamp = 0L) // don't care about timestamp for delete of single snap
+        metadata(2)
+          .copy(timestamp = 0L) // don't care about timestamp for delete of single snap
       val cmd = DeleteSnapshot(md)
       val sub = TestProbe()
 

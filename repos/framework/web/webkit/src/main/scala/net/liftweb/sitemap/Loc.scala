@@ -180,8 +180,8 @@ trait Loc[T] {
 
   def rewrite: LocRewrite = Empty
 
-  def rewritePF: Box[LiftRules.RewritePF] = rewrite.map(
-    rw =>
+  def rewritePF: Box[LiftRules.RewritePF] =
+    rewrite.map(rw =>
       new NamedPartialFunction[RewriteRequest, RewriteResponse] {
         def functionName = rw match {
           case rw: NamedPartialFunction[_, _] => rw.functionName
@@ -195,8 +195,7 @@ trait Loc[T] {
           requestValue.set(param)
           ret
         }
-      }
-  )
+      })
 
   /**
     * A `PartialFunction` that maps a snippet name, and an optional `Loc` value, in a `Tuple2`,

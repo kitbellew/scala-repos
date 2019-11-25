@@ -196,10 +196,9 @@ object Constraints {
           runningTasks.iterator.filterNot(task =>
             toKillTasks.contains(task.taskId))
 
-      val matchingTask = tried.find(
-        tryTask =>
-          distributions.forall(
-            _.isMoreEvenWithout(toKillTasks + (tryTask.taskId -> tryTask))))
+      val matchingTask = tried.find(tryTask =>
+        distributions.forall(
+          _.isMoreEvenWithout(toKillTasks + (tryTask.taskId -> tryTask))))
 
       matchingTask match {
         case Some(task) => toKillTasks += task.taskId -> task

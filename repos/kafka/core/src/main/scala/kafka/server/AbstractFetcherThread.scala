@@ -248,14 +248,13 @@ abstract class AbstractFetcherThread(
       for (partition <- partitions) {
         partitionMap
           .get(partition)
-          .foreach(
-            currentPartitionFetchState =>
-              if (currentPartitionFetchState.isActive)
-                partitionMap.put(
-                  partition,
-                  new PartitionFetchState(
-                    currentPartitionFetchState.offset,
-                    new DelayedItem(delay))))
+          .foreach(currentPartitionFetchState =>
+            if (currentPartitionFetchState.isActive)
+              partitionMap.put(
+                partition,
+                new PartitionFetchState(
+                  currentPartitionFetchState.offset,
+                  new DelayedItem(delay))))
       }
       partitionMapCond.signalAll()
     } finally partitionMapLock.unlock()

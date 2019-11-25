@@ -414,8 +414,7 @@ class BindingFactoryTest
     val end =
       Stack.Leaf(
         Stack.Role("end"),
-        ServiceFactory(
-          () => Future.value(Service.mk[Path, Path](Future.value))))
+        ServiceFactory(() => Future.value(Service.mk[Path, Path](Future.value))))
 
     val params = Stack.Params.empty + BindingFactory.Dest(name)
     val factory = module.toStack(end).make(params)

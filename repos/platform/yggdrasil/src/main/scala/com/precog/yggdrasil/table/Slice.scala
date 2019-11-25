@@ -130,8 +130,7 @@ trait Slice { source =>
             ref,
             pairs
               .map(_._2)
-              .reduceLeft(
-                (c1, c2) => Column.unionRightSemigroup.append(c1, c2)))
+              .reduceLeft((c1, c2) => Column.unionRightSemigroup.append(c1, c2)))
       } toMap
     }
   }

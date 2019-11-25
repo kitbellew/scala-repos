@@ -241,10 +241,9 @@ case class ScMethodType(
       case _ =>
         new ScMethodType(
           returnType.recursiveUpdate(update, newVisited),
-          params.map(
-            p =>
-              p.copy(
-                paramType = p.paramType.recursiveUpdate(update, newVisited))),
+          params.map(p =>
+            p.copy(
+              paramType = p.paramType.recursiveUpdate(update, newVisited))),
           isImplicit)(project, scope)
     }
   }
@@ -358,10 +357,9 @@ case class ScTypePolymorphicType(
       var hasRecursiveTypeParameters = false
       typez.recursiveUpdate {
         case tpt: ScTypeParameterType =>
-          typeParameters.find(
-            tp =>
-              (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) ==
-                (tpt.name, tpt.getId)) match {
+          typeParameters.find(tp =>
+            (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) ==
+              (tpt.name, tpt.getId)) match {
             case None => (true, tpt)
             case _ =>
               hasRecursiveTypeParameters = true
@@ -396,10 +394,9 @@ case class ScTypePolymorphicType(
       var hasRecursiveTypeParameters = false
       typez.recursiveUpdate {
         case tpt: ScTypeParameterType =>
-          typeParameters.find(
-            tp =>
-              (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) ==
-                (tpt.name, tpt.getId)) match {
+          typeParameters.find(tp =>
+            (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) ==
+              (tpt.name, tpt.getId)) match {
             case None => (true, tpt)
             case _ =>
               hasRecursiveTypeParameters = true

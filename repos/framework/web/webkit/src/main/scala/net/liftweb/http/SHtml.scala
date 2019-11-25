@@ -257,13 +257,12 @@ trait SHtml extends Loggable {
   private def jsonCall_*(
       jsCalcValue: JsExp,
       func: AFuncHolder): (String, JsExp) =
-    fmapFunc((func))(
-      name =>
-        (
-          name,
-          makeAjaxCall(
-            JsRaw("'" + name + "=' + encodeURIComponent(JSON.stringify(" +
-              jsCalcValue.toJsCmd + "))"))))
+    fmapFunc((func))(name =>
+      (
+        name,
+        makeAjaxCall(
+          JsRaw("'" + name + "=' + encodeURIComponent(JSON.stringify(" +
+            jsCalcValue.toJsCmd + "))"))))
 
   /**
     * Build a JavaScript function that will perform an AJAX call based on a value calculated in JavaScript
@@ -277,14 +276,14 @@ trait SHtml extends Loggable {
       jsCalcValue: JsExp,
       ajaxContext: AjaxContext,
       func: AFuncHolder): (String, JsExp) =
-    fmapFunc((func))(
-      name =>
-        (
-          name,
-          makeAjaxCall(
-            JsRaw("'" + name + "=' + encodeURIComponent(JSON.stringify(" +
+    fmapFunc((func))(name =>
+      (
+        name,
+        makeAjaxCall(
+          JsRaw(
+            "'" + name + "=' + encodeURIComponent(JSON.stringify(" +
               jsCalcValue.toJsCmd + "))"),
-            ajaxContext)))
+          ajaxContext)))
 
   def fajaxCall[T](jsCalcValue: JsExp, func: String => JsCmd)(
       f: (String, JsExp) => T): T = {
@@ -302,13 +301,12 @@ trait SHtml extends Loggable {
   private def ajaxCall_*(
       jsCalcValue: JsExp,
       func: AFuncHolder): (String, JsExp) =
-    fmapFunc((func))(
-      name =>
-        (
-          name,
-          makeAjaxCall(
-            JsRaw("'" + name + "=' + encodeURIComponent(" +
-              jsCalcValue.toJsCmd + ")"))))
+    fmapFunc((func))(name =>
+      (
+        name,
+        makeAjaxCall(
+          JsRaw("'" + name + "=' + encodeURIComponent(" +
+            jsCalcValue.toJsCmd + ")"))))
 
   /**
     * Build a JavaScript function that will perform an AJAX call based on a value calculated in JavaScript
@@ -322,14 +320,14 @@ trait SHtml extends Loggable {
       jsCalcValue: JsExp,
       ajaxContext: AjaxContext,
       func: AFuncHolder): (String, JsExp) =
-    fmapFunc((func))(
-      name =>
-        (
-          name,
-          makeAjaxCall(
-            JsRaw("'" + name + "=' + encodeURIComponent(" +
+    fmapFunc((func))(name =>
+      (
+        name,
+        makeAjaxCall(
+          JsRaw(
+            "'" + name + "=' + encodeURIComponent(" +
               jsCalcValue.toJsCmd + ")"),
-            ajaxContext)))
+          ajaxContext)))
 
   private def deferCall(data: JsExp, jsFunc: Call): Call =
     Call(
@@ -1311,10 +1309,9 @@ trait SHtml extends Loggable {
       func: () => Any,
       body: NodeSeq,
       attrs: ElemAttr*): Elem = {
-    fmapFunc((a: List[String]) => { func(); true })(
-      key =>
-        attrs.foldLeft(
-          <a href={Helpers.appendFuncToURL(to, key + "=_")}>{body}</a>)(_ % _))
+    fmapFunc((a: List[String]) => { func(); true })(key =>
+      attrs.foldLeft(
+        <a href={Helpers.appendFuncToURL(to, key + "=_")}>{body}</a>)(_ % _))
   }
 
   private def makeFormElement(
@@ -2817,11 +2814,11 @@ trait SHtml extends Loggable {
       func: AFuncHolder,
       id: Box[String],
       attrs: ElemAttr*): NodeSeq = {
-    fmapFunc(func)(
-      name =>
-        (attrs.foldLeft(<input type="checkbox" name={name} value="true"/>)(
-          _ % _) % checked(value) % setId(id)) ++
-          (<input type="hidden" name={name} value="false"/>))
+    fmapFunc(func)(name =>
+      (attrs
+        .foldLeft(<input type="checkbox" name={name} value="true"/>)(_ % _) % checked(
+        value) % setId(id)) ++
+        (<input type="hidden" name={name} value="false"/>))
   }
 }
 

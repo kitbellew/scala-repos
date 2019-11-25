@@ -429,12 +429,10 @@ object CachesUtil {
       fun: ScModifiableTypedDeclaration): Unit = {
     val project = fun.getProject
 
-    doQueueWithLock(
-      queue => {
-        if (!queue.exists(_._1 == fun)) {
-          queue.enqueue((fun, project)); needToCheckFuns = true
-        }
+    doQueueWithLock(queue => {
+      if (!queue.exists(_._1 == fun)) {
+        queue.enqueue((fun, project)); needToCheckFuns = true
       }
-    )
+    })
   }
 }

@@ -870,7 +870,8 @@ class FutureSpec
     }
     "not recover from exception" in {
       f((future, result) ⇒
-        Await.result(future.recover({ case _ ⇒ "pigdog" }), timeout.duration) should ===(
+        Await
+          .result(future.recover({ case _ ⇒ "pigdog" }), timeout.duration) should ===(
           result))
     }
     "perform action on result" in {
@@ -881,22 +882,20 @@ class FutureSpec
       }
     }
     "not project a failure" in {
-      f(
-        (future, result) ⇒
-          (intercept[NoSuchElementException] {
-            Await.result(future.failed, timeout.duration)
-          }).getMessage should ===(
-            "Future.failed not completed with a throwable."))
+      f((future, result) ⇒
+        (intercept[NoSuchElementException] {
+          Await.result(future.failed, timeout.duration)
+        }).getMessage should ===(
+          "Future.failed not completed with a throwable."))
     }
     "not perform action on exception" is pending
     "cast using mapTo" in {
-      f(
-        (future, result) ⇒
-          Await.result(
-            future
-              .mapTo[Boolean]
-              .recover({ case _: ClassCastException ⇒ false }),
-            timeout.duration) should ===(false))
+      f((future, result) ⇒
+        Await.result(
+          future
+            .mapTo[Boolean]
+            .recover({ case _: ClassCastException ⇒ false }),
+          timeout.duration) should ===(false))
     }
   }
 
@@ -967,10 +966,9 @@ class FutureSpec
     }
     "not perform action on result" is pending
     "project a failure" in {
-      f(
-        (future, message) ⇒
-          Await.result(future.failed, timeout.duration).getMessage should ===(
-            message))
+      f((future, message) ⇒
+        Await.result(future.failed, timeout.duration).getMessage should ===(
+          message))
     }
     "perform action on exception" in {
       f { (future, message) ⇒

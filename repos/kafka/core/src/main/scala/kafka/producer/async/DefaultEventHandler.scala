@@ -382,14 +382,12 @@ class DefaultEventHandler[K, V](
           if (logger.isTraceEnabled) {
             val successfullySentData =
               response.status.filter(_._2.error == Errors.NONE.code)
-            successfullySentData.foreach(
-              m =>
-                messagesPerTopic(m._1).foreach(
-                  message =>
-                    trace(
-                      "Successfully sent message: %s".format(
-                        if (message.message.isNull) null
-                        else message.message.toString()))))
+            successfullySentData.foreach(m =>
+              messagesPerTopic(m._1).foreach(message =>
+                trace(
+                  "Successfully sent message: %s".format(
+                    if (message.message.isNull) null
+                    else message.message.toString()))))
           }
           val failedPartitionsAndStatus =
             response.status.filter(_._2.error != Errors.NONE.code).toSeq
@@ -397,11 +395,10 @@ class DefaultEventHandler[K, V](
             failedPartitionsAndStatus.map(partitionStatus => partitionStatus._1)
           if (failedTopicPartitions.size > 0) {
             val errorString = failedPartitionsAndStatus
-              .sortWith(
-                (p1, p2) =>
-                  p1._1.topic.compareTo(p2._1.topic) < 0 ||
-                    (p1._1.topic.compareTo(p2._1.topic) == 0 &&
-                      p1._1.partition < p2._1.partition))
+              .sortWith((p1, p2) =>
+                p1._1.topic.compareTo(p2._1.topic) < 0 ||
+                  (p1._1.topic.compareTo(p2._1.topic) == 0 &&
+                    p1._1.partition < p2._1.partition))
               .map {
                 case (topicAndPartition, status) =>
                   topicAndPartition.toString + ": " +

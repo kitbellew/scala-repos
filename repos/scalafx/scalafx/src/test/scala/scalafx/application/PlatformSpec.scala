@@ -45,19 +45,17 @@ class PlatformSpec extends FlatSpec with Matchers with RunOnApplicationThread {
     val scalaMethods = Platform.getClass.getMethods
     for (jm <- javaMethods if Modifier.isPublic(jm.getModifiers) &&
            Modifier.isStatic(jm.getModifiers)) {
-      val found = scalaMethods.exists(
-        sm => {
-          def firstToUpper(s: String) = s.head.toUpper + s.tail
+      val found = scalaMethods.exists(sm => {
+        def firstToUpper(s: String) = s.head.toUpper + s.tail
 
-          val javaName = jm.getName
-          val scalaName = sm.getName
-          scalaName == javaName ||
-          "is" + firstToUpper(scalaName) == javaName ||
-          "get" + firstToUpper(scalaName) == javaName ||
-          "set" + firstToUpper(scalaName) == javaName ||
-          scalaName + "Property" == javaName
-        }
-      )
+        val javaName = jm.getName
+        val scalaName = sm.getName
+        scalaName == javaName ||
+        "is" + firstToUpper(scalaName) == javaName ||
+        "get" + firstToUpper(scalaName) == javaName ||
+        "set" + firstToUpper(scalaName) == javaName ||
+        scalaName + "Property" == javaName
+      })
 
       assert(found, "Declares equivalent of `" + jm.getName + "`")
     }

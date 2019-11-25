@@ -955,35 +955,34 @@ trait Typers
         // avoid throwing spurious DivergentImplicit errors
         if (context.reporter.hasErrors) setError(tree)
         else
-          withCondConstrTyper(treeInfo.isSelfOrSuperConstrCall(tree))(
-            typer1 =>
-              if (original != EmptyTree && pt != WildcardType)
-                (typer1 silent { tpr =>
-                  val withImplicitArgs = tpr.applyImplicitArgs(tree)
-                  if (tpr.context.reporter.hasErrors)
-                    tree // silent will wrap it in SilentTypeError anyway
-                  else tpr.typed(withImplicitArgs, mode, pt)
-                } orElse { _ =>
-                  val resetTree = resetAttrs(original)
-                  resetTree match {
-                    case treeInfo.Applied(fun, targs, args) =>
-                      if (fun.symbol != null && fun.symbol.isError)
-                        // SI-9041 Without this, we leak error symbols past the typer!
-                        // because the fallback typechecking notices the error-symbol,
-                        // refuses to re-attempt typechecking, and presumes that someone
-                        // else was responsible for issuing the related type error!
-                        fun.setSymbol(NoSymbol)
-                    case _ =>
-                  }
-                  debuglog(s"fallback on implicits: ${tree}/$resetTree")
-                  val tree1 = typed(resetTree, mode)
-                  // Q: `typed` already calls `pluginsTyped` and `adapt`. the only difference here is that
-                  // we pass `EmptyTree` as the `original`. intended? added in 2009 (53d98e7d42) by martin.
-                  tree1 setType pluginsTyped(tree1.tpe, this, tree1, mode, pt)
-                  if (tree1.isEmpty) tree1
-                  else adapt(tree1, mode, pt, EmptyTree)
-                })
-              else typer1.typed(typer1.applyImplicitArgs(tree), mode, pt))
+          withCondConstrTyper(treeInfo.isSelfOrSuperConstrCall(tree))(typer1 =>
+            if (original != EmptyTree && pt != WildcardType)
+              (typer1 silent { tpr =>
+                val withImplicitArgs = tpr.applyImplicitArgs(tree)
+                if (tpr.context.reporter.hasErrors)
+                  tree // silent will wrap it in SilentTypeError anyway
+                else tpr.typed(withImplicitArgs, mode, pt)
+              } orElse { _ =>
+                val resetTree = resetAttrs(original)
+                resetTree match {
+                  case treeInfo.Applied(fun, targs, args) =>
+                    if (fun.symbol != null && fun.symbol.isError)
+                      // SI-9041 Without this, we leak error symbols past the typer!
+                      // because the fallback typechecking notices the error-symbol,
+                      // refuses to re-attempt typechecking, and presumes that someone
+                      // else was responsible for issuing the related type error!
+                      fun.setSymbol(NoSymbol)
+                  case _ =>
+                }
+                debuglog(s"fallback on implicits: ${tree}/$resetTree")
+                val tree1 = typed(resetTree, mode)
+                // Q: `typed` already calls `pluginsTyped` and `adapt`. the only difference here is that
+                // we pass `EmptyTree` as the `original`. intended? added in 2009 (53d98e7d42) by martin.
+                tree1 setType pluginsTyped(tree1.tpe, this, tree1, mode, pt)
+                if (tree1.isEmpty) tree1
+                else adapt(tree1, mode, pt, EmptyTree)
+              })
+            else typer1.typed(typer1.applyImplicitArgs(tree), mode, pt))
       }
 
       def instantiateToMethodType(mt: MethodType): Tree = {
@@ -2554,8 +2553,8 @@ trait Typers
       if (tpt1.tpe.typeSymbol != NothingClass && !context.returnsSeen &&
           rhs1.tpe.typeSymbol != NothingClass) rhs1 = checkDead(rhs1)
 
-      if (!isPastTyper && meth.owner.isClass && meth.paramss.exists(
-            ps => ps.exists(_.hasDefault) && isRepeatedParamType(ps.last.tpe)))
+      if (!isPastTyper && meth.owner.isClass && meth.paramss.exists(ps =>
+            ps.exists(_.hasDefault) && isRepeatedParamType(ps.last.tpe)))
         StarWithDefaultError(meth)
 
       if (!isPastTyper) {

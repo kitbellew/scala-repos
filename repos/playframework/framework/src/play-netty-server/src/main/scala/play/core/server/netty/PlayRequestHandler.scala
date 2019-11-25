@@ -167,17 +167,15 @@ private[play] class PlayRequestHandler(val server: NettyServer)
       //handle bad websocket request
       case Right((ws: WebSocket, app)) =>
         logger.trace("Bad websocket request")
-        val action = EssentialAction(
-          _ =>
-            Accumulator.done(
-              Results
-                .Status(Status.UPGRADE_REQUIRED)(
-                  "Upgrade to WebSocket required")
-                .withHeaders(
-                  HeaderNames.UPGRADE -> "websocket",
-                  HeaderNames.CONNECTION -> HeaderNames.UPGRADE
-                )
-            ))
+        val action = EssentialAction(_ =>
+          Accumulator.done(
+            Results
+              .Status(Status.UPGRADE_REQUIRED)("Upgrade to WebSocket required")
+              .withHeaders(
+                HeaderNames.UPGRADE -> "websocket",
+                HeaderNames.CONNECTION -> HeaderNames.UPGRADE
+              )
+          ))
         handleAction(action, requestHeader, request, Some(app))
 
       case Left(e) =>

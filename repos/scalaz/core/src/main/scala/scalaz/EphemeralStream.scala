@@ -325,10 +325,9 @@ object EphemeralStream extends EphemeralStreamInstances {
       case other                                => other.toIndexedSeq
     }
     val size = as.size
-    unfold(0)(
-      b =>
-        if (b < size) Some((as0(b), b + 1))
-        else None)
+    unfold(0)(b =>
+      if (b < size) Some((as0(b), b + 1))
+      else None)
   }
 
   class ConsWrap[A](e: => EphemeralStream[A]) {

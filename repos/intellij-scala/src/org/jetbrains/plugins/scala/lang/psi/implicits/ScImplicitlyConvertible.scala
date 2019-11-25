@@ -320,11 +320,10 @@ class ScImplicitlyConvertible(
           case cl: ScTrait =>
             ScParameterizedType(
               ScType.designator(cl),
-              cl.typeParameters.map(
-                tp =>
-                  new ScUndefinedType(
-                    new ScTypeParameterType(tp, ScSubstitutor.empty),
-                    1)))
+              cl.typeParameters.map(tp =>
+                new ScUndefinedType(
+                  new ScTypeParameterType(tp, ScSubstitutor.empty),
+                  1)))
         } flatMap {
           case p: ScParameterizedType => Some(p)
           case _                      => None
@@ -418,10 +417,9 @@ class ScImplicitlyConvertible(
                   var hasRecursiveTypeParameters = false
                   typez.recursiveUpdate {
                     case tpt: ScTypeParameterType =>
-                      f.typeParameters.find(
-                        tp =>
-                          (tp.name, ScalaPsiUtil.getPsiElementId(tp)) ==
-                            (tpt.name, tpt.getId)) match {
+                      f.typeParameters.find(tp =>
+                        (tp.name, ScalaPsiUtil.getPsiElementId(tp)) ==
+                          (tpt.name, tpt.getId)) match {
                         case None => (true, tpt)
                         case _ =>
                           hasRecursiveTypeParameters = true
@@ -589,10 +587,9 @@ class ScImplicitlyConvertible(
         case cl: ScTrait =>
           ScParameterizedType(
             ScType.designator(funClass),
-            cl.typeParameters.map(
-              tp =>
-                new ScUndefinedType(
-                  new ScTypeParameterType(tp, ScSubstitutor.empty))))
+            cl.typeParameters.map(tp =>
+              new ScUndefinedType(
+                new ScTypeParameterType(tp, ScSubstitutor.empty))))
         case _ => null
       }
     }

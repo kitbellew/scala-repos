@@ -554,10 +554,9 @@ object StreamLayout {
          |  Name: ${this.attributes.nameOrDefault("unnamed")}
          |  Modules:
          |    ${subModules.iterator
-           .map(
-             m ⇒
-               m.attributes.nameLifted.getOrElse(
-                 m.toString.replaceAll("\n", "\n    ")))
+           .map(m ⇒
+             m.attributes.nameLifted.getOrElse(
+               m.toString.replaceAll("\n", "\n    ")))
            .mkString("\n    ")}
          |  Downstreams: ${downstreams.iterator
            .map {

@@ -69,11 +69,10 @@ trait ScalaUnusedImportPassBase { self: TextEditorHighlightingPass =>
           case Some(sel: ScImportSelector) if sel.importedName == "_" =>
             Seq[Annotation]()
           case Some(psi)
-              if qName.exists(
-                qName =>
-                  ScalaCodeStyleSettings
-                    .getInstance(file.getProject)
-                    .isAlwaysUsedImport(qName)) =>
+              if qName.exists(qName =>
+                ScalaCodeStyleSettings
+                  .getInstance(file.getProject)
+                  .isAlwaysUsedImport(qName)) =>
             Seq.empty
           case Some(psi) =>
             val annotation = annotationHolder.createWarningAnnotation(

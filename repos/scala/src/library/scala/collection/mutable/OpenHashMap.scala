@@ -223,8 +223,8 @@ class OpenHashMap[Key, Value](initialSize: Int)
 
   override def clone() = {
     val it = new OpenHashMap[Key, Value]
-    foreachUndeletedEntry(
-      entry => it.put(entry.key, entry.hash, entry.value.get))
+    foreachUndeletedEntry(entry =>
+      it.put(entry.key, entry.hash, entry.value.get))
     it
   }
 
@@ -251,8 +251,8 @@ class OpenHashMap[Key, Value](initialSize: Int)
   }
 
   override def transform(f: (Key, Value) => Value) = {
-    foreachUndeletedEntry(
-      entry => entry.value = Some(f(entry.key, entry.value.get)))
+    foreachUndeletedEntry(entry =>
+      entry.value = Some(f(entry.key, entry.value.get)))
     this
   }
 
