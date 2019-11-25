@@ -336,34 +336,36 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
         }
       }
       val currentTime = System.currentTimeMillis()
-      val (taskTable, taskTableHTML) = try {
-        val _taskTable = new TaskPagedTable(
-          parent.conf,
-          UIUtils.prependBaseUri(parent.basePath) +
-            s"/stages/stage?id=${stageId}&attempt=${stageAttemptId}",
-          tasks,
-          hasAccumulators,
-          stageData.hasInput,
-          stageData.hasOutput,
-          stageData.hasShuffleRead,
-          stageData.hasShuffleWrite,
-          stageData.hasBytesSpilled,
-          currentTime,
-          pageSize = taskPageSize,
-          sortColumn = taskSortColumn,
-          desc = taskSortDesc
-        )
-        (_taskTable, _taskTable.table(page))
-      } catch {
-        case e @ (_: IllegalArgumentException | _: IndexOutOfBoundsException) =>
-          val errorMessage = <div class="alert alert-error">
+      val (taskTable, taskTableHTML) =
+        try {
+          val _taskTable = new TaskPagedTable(
+            parent.conf,
+            UIUtils.prependBaseUri(parent.basePath) +
+              s"/stages/stage?id=${stageId}&attempt=${stageAttemptId}",
+            tasks,
+            hasAccumulators,
+            stageData.hasInput,
+            stageData.hasOutput,
+            stageData.hasShuffleRead,
+            stageData.hasShuffleWrite,
+            stageData.hasBytesSpilled,
+            currentTime,
+            pageSize = taskPageSize,
+            sortColumn = taskSortColumn,
+            desc = taskSortDesc
+          )
+          (_taskTable, _taskTable.table(page))
+        } catch {
+          case e @ (_: IllegalArgumentException |
+              _: IndexOutOfBoundsException) =>
+            val errorMessage = <div class="alert alert-error">
               <p>Error while rendering stage table:</p>
               <pre>
                 {Utils.exceptionString(e)}
               </pre>
             </div>
-          (null, errorMessage)
-      }
+            (null, errorMessage)
+        }
 
       val jsForScrollingDownToTaskTable = <script>
           {

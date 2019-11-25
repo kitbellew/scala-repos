@@ -90,12 +90,13 @@ class FixedPointCheck
         val (_, denom, fx, fy, ax, ay) = build(x, y, z, noZero)
         val az = g(ax, ay)
 
-        val ofz = try {
-          implicit val scale = FixedScale(denom)
-          Some(f(fx, fy, scale))
-        } catch {
-          case _: FixedPointOverflow => None
-        }
+        val ofz =
+          try {
+            implicit val scale = FixedScale(denom)
+            Some(f(fx, fy, scale))
+          } catch {
+            case _: FixedPointOverflow => None
+          }
 
         ofz match {
           case Some(fz) =>
@@ -139,12 +140,13 @@ class FixedPointCheck
         val (d, denom, fx, ax) = buildHalf(x, z)
         val az = g(ax, y)
 
-        val ofz = try {
-          implicit val scale = FixedScale(denom)
-          Some(f(fx, y, scale))
-        } catch {
-          case _: FixedPointOverflow => None
-        }
+        val ofz =
+          try {
+            implicit val scale = FixedScale(denom)
+            Some(f(fx, y, scale))
+          } catch {
+            case _: FixedPointOverflow => None
+          }
 
         ofz match {
           case Some(fz) =>
@@ -173,12 +175,13 @@ class FixedPointCheck
 
       val az = Rational(x, denom).pow(k)
 
-      val ofz = try {
-        implicit val scale = FixedScale(denom)
-        Some(new FixedPoint(x).pow(k))
-      } catch {
-        case _: FixedPointOverflow => None
-      }
+      val ofz =
+        try {
+          implicit val scale = FixedScale(denom)
+          Some(new FixedPoint(x).pow(k))
+        } catch {
+          case _: FixedPointOverflow => None
+        }
 
       ofz match {
         case Some(fz) =>

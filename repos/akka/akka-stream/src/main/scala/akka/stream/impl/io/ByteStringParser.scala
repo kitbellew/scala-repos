@@ -37,25 +37,26 @@ private[akka] abstract class ByteStringParser[T]
     @tailrec private def doParse(): Unit =
       if (buffer.nonEmpty) {
         val reader = new ByteReader(buffer)
-        val cont = try {
-          val parseResult = current.parse(reader)
-          acceptUpstreamFinish = parseResult.acceptUpstreamFinish
-          parseResult.result.map(emit(objOut, _))
-          if (parseResult.nextStep == FinishedParser) {
-            completeStage()
-            false
-          } else {
-            buffer = reader.remainingData
-            current = parseResult.nextStep
-            true
+        val cont =
+          try {
+            val parseResult = current.parse(reader)
+            acceptUpstreamFinish = parseResult.acceptUpstreamFinish
+            parseResult.result.map(emit(objOut, _))
+            if (parseResult.nextStep == FinishedParser) {
+              completeStage()
+              false
+            } else {
+              buffer = reader.remainingData
+              current = parseResult.nextStep
+              true
+            }
+          } catch {
+            case NeedMoreData ⇒
+              acceptUpstreamFinish = false
+              if (current.canWorkWithPartialData) buffer = reader.remainingData
+              pull(bytesIn)
+              false
           }
-        } catch {
-          case NeedMoreData ⇒
-            acceptUpstreamFinish = false
-            if (current.canWorkWithPartialData) buffer = reader.remainingData
-            pull(bytesIn)
-            false
-        }
         if (cont) doParse()
       } else pull(bytesIn)
 

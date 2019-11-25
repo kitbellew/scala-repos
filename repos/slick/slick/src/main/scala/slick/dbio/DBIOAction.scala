@@ -596,15 +596,16 @@ trait SynchronousDatabaseAction[
     case a: SynchronousDatabaseAction[_, _, _, _] =>
       new SynchronousDatabaseAction.Fused[R, S, B, E with E2] {
         def run(context: B#Context): R = {
-          val res = try self.run(context)
-          catch {
-            case NonFatal(ex) =>
-              try a
-                .asInstanceOf[SynchronousDatabaseAction[Any, NoStream, B, E2]]
-                .run(context)
-              catch ignoreFollowOnError
-              throw ex
-          }
+          val res =
+            try self.run(context)
+            catch {
+              case NonFatal(ex) =>
+                try a
+                  .asInstanceOf[SynchronousDatabaseAction[Any, NoStream, B, E2]]
+                  .run(context)
+                catch ignoreFollowOnError
+                throw ex
+            }
           a.asInstanceOf[SynchronousDatabaseAction[Any, S, B, E2]].run(context)
           res
         }
@@ -619,12 +620,13 @@ trait SynchronousDatabaseAction[
     new SynchronousDatabaseAction.Fused[R, S, B, E] {
       def run(context: B#Context): R = {
         context.pin
-        val res = try self.run(context)
-        catch {
-          case NonFatal(ex) =>
-            context.unpin
-            throw ex
-        }
+        val res =
+          try self.run(context)
+          catch {
+            case NonFatal(ex) =>
+              context.unpin
+              throw ex
+          }
         context.unpin
         res
       }
@@ -730,24 +732,25 @@ object SynchronousDatabaseAction {
           ec) if ec eq DBIO.sameThreadExecutionContext =>
         new SynchronousDatabaseAction.Fused[R, S, BasicBackend, E] {
           def run(context: BasicBackend#Context): R = {
-            val res = try {
-              base
-                .asInstanceOf[
-                  SynchronousDatabaseAction[R, S, BasicBackend, Effect]]
-                .run(context)
-            } catch {
-              case NonFatal(ex) =>
-                try {
-                  val a2 = f(Some(ex))
-                  a2.asInstanceOf[SynchronousDatabaseAction[
-                      Any,
-                      NoStream,
-                      BasicBackend,
-                      Effect]]
-                    .run(context)
-                } catch { case NonFatal(_) if keepFailure => () }
-                throw ex
-            }
+            val res =
+              try {
+                base
+                  .asInstanceOf[
+                    SynchronousDatabaseAction[R, S, BasicBackend, Effect]]
+                  .run(context)
+              } catch {
+                case NonFatal(ex) =>
+                  try {
+                    val a2 = f(Some(ex))
+                    a2.asInstanceOf[SynchronousDatabaseAction[
+                        Any,
+                        NoStream,
+                        BasicBackend,
+                        Effect]]
+                      .run(context)
+                  } catch { case NonFatal(_) if keepFailure => () }
+                  throw ex
+              }
             val a2 = f(None)
             a2.asInstanceOf[
                 SynchronousDatabaseAction[Any, NoStream, BasicBackend, Effect]]

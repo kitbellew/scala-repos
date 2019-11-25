@@ -1125,24 +1125,25 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
         if (tree.pos.isDefined)
           s"line ${tree.pos.line} of ${tree.pos.source.file}"
         else "<unknown>"
-      val context_s = try {
-        // Taking 3 before, 3 after the fingered line.
-        val start = 0 max (tree.pos.line - 3)
-        val xs =
-          scala.reflect.io
-            .File(tree.pos.source.file.file)
-            .lines drop start take 7
-        val strs =
-          xs.zipWithIndex map {
-            case (line, idx) => f"${start + idx}%6d $line"
-          }
-        strs.mkString(
-          "== Source file context for tree position ==\n\n",
-          "\n",
-          "")
-      } catch {
-        case t: Exception => devWarning("" + t); "<Cannot read source file>"
-      }
+      val context_s =
+        try {
+          // Taking 3 before, 3 after the fingered line.
+          val start = 0 max (tree.pos.line - 3)
+          val xs =
+            scala.reflect.io
+              .File(tree.pos.source.file.file)
+              .lines drop start take 7
+          val strs =
+            xs.zipWithIndex map {
+              case (line, idx) => f"${start + idx}%6d $line"
+            }
+          strs.mkString(
+            "== Source file context for tree position ==\n\n",
+            "\n",
+            "")
+        } catch {
+          case t: Exception => devWarning("" + t); "<Cannot read source file>"
+        }
 
       val info1 = formatExplain(
         "while compiling" -> currentSource.path,

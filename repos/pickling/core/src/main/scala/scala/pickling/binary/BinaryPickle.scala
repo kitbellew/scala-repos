@@ -204,13 +204,14 @@ class BinaryPickleReader(in: BinaryInput, format: BinaryPickleFormat)
             FastTypeTag.Ref
           case _ =>
             // do not consume lookahead byte
-            val res = try {
-              in.getStringWithLookahead(lookahead)
-            } catch {
-              case PicklingException(msg, cause) =>
-                throw PicklingException(
-                  s"error decoding type string. debug info: $hints\ncause:$msg")
-            }
+            val res =
+              try {
+                in.getStringWithLookahead(lookahead)
+              } catch {
+                case PicklingException(msg, cause) =>
+                  throw PicklingException(
+                    s"error decoding type string. debug info: $hints\ncause:$msg")
+              }
             res
         }
       }

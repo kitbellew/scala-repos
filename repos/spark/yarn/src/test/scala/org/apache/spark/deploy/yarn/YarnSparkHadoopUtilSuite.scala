@@ -48,14 +48,15 @@ class YarnSparkHadoopUtilSuite
     with Logging
     with ResetSystemProperties {
 
-  val hasBash = try {
-    val exitCode =
-      Runtime.getRuntime().exec(Array("bash", "--version")).waitFor()
-    exitCode == 0
-  } catch {
-    case e: IOException =>
-      false
-  }
+  val hasBash =
+    try {
+      val exitCode =
+        Runtime.getRuntime().exec(Array("bash", "--version")).waitFor()
+      exitCode == 0
+    } catch {
+      case e: IOException =>
+        false
+    }
 
   if (!hasBash) {
     logWarning("Cannot execute bash, skipping bash tests.")

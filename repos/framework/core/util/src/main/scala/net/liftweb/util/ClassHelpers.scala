@@ -340,13 +340,15 @@ trait ClassHelpers { self: ControlHelpers =>
           methodCache(key)
         } else {
 
-          val ret = try {
-            val classes: Array[Class[_]] = ptypes openOr params.map(_.getClass)
-            List(clz.getMethod(meth, classes: _*))
-          } catch {
-            case e: NullPointerException  => Nil
-            case e: NoSuchMethodException => alternateMethods
-          }
+          val ret =
+            try {
+              val classes: Array[Class[_]] = ptypes openOr params.map(
+                _.getClass)
+              List(clz.getMethod(meth, classes: _*))
+            } catch {
+              case e: NullPointerException  => Nil
+              case e: NoSuchMethodException => alternateMethods
+            }
           if (Props.productionMode) {
             methCacheLock.upgrade(methodCache(key) = ret)
           }

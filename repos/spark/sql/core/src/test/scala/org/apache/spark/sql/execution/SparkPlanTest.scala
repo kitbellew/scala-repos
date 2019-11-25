@@ -156,33 +156,35 @@ object SparkPlanTest {
     val expectedOutputPlan = expectedPlanFunction(
       input.queryExecution.sparkPlan)
 
-    val expectedAnswer: Seq[Row] = try {
-      executePlan(expectedOutputPlan, sqlContext)
-    } catch {
-      case NonFatal(e) =>
-        val errorMessage = s"""
+    val expectedAnswer: Seq[Row] =
+      try {
+        executePlan(expectedOutputPlan, sqlContext)
+      } catch {
+        case NonFatal(e) =>
+          val errorMessage = s"""
              | Exception thrown while executing Spark plan to calculate expected answer:
              | $expectedOutputPlan
              | == Exception ==
              | $e
              | ${org.apache.spark.sql.catalyst.util.stackTraceToString(e)}
           """.stripMargin
-        return Some(errorMessage)
-    }
+          return Some(errorMessage)
+      }
 
-    val actualAnswer: Seq[Row] = try {
-      executePlan(outputPlan, sqlContext)
-    } catch {
-      case NonFatal(e) =>
-        val errorMessage = s"""
+    val actualAnswer: Seq[Row] =
+      try {
+        executePlan(outputPlan, sqlContext)
+      } catch {
+        case NonFatal(e) =>
+          val errorMessage = s"""
              | Exception thrown while executing Spark plan:
              | $outputPlan
              | == Exception ==
              | $e
              | ${org.apache.spark.sql.catalyst.util.stackTraceToString(e)}
           """.stripMargin
-        return Some(errorMessage)
-    }
+          return Some(errorMessage)
+      }
 
     SQLTestUtils
       .compareAnswers(actualAnswer, expectedAnswer, sortAnswers)
@@ -216,19 +218,20 @@ object SparkPlanTest {
 
     val outputPlan = planFunction(input.map(_.queryExecution.sparkPlan))
 
-    val sparkAnswer: Seq[Row] = try {
-      executePlan(outputPlan, sqlContext)
-    } catch {
-      case NonFatal(e) =>
-        val errorMessage = s"""
+    val sparkAnswer: Seq[Row] =
+      try {
+        executePlan(outputPlan, sqlContext)
+      } catch {
+        case NonFatal(e) =>
+          val errorMessage = s"""
              | Exception thrown while executing Spark plan:
              | $outputPlan
              | == Exception ==
              | $e
              | ${org.apache.spark.sql.catalyst.util.stackTraceToString(e)}
           """.stripMargin
-        return Some(errorMessage)
-    }
+          return Some(errorMessage)
+      }
 
     SQLTestUtils.compareAnswers(sparkAnswer, expectedAnswer, sortAnswers).map {
       errorMessage =>

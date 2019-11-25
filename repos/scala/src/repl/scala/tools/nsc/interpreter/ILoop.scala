@@ -167,8 +167,9 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
 
       val xs = words(line)
       val current = history.index
-      val count = try xs.head.toInt
-      catch { case _: Exception => defaultLines }
+      val count =
+        try xs.head.toInt
+        catch { case _: Exception => defaultLines }
       val lines = history.asStrings takeRight count
       val offset = current - lines.size + 1
 

@@ -99,12 +99,13 @@ object ProdServerStart {
       configuration.getString(s"play.server.${portType}.port").flatMap {
         case "disabled" => None
         case str =>
-          val i = try Integer.parseInt(str)
-          catch {
-            case _: NumberFormatException =>
-              throw ServerStartException(
-                s"Invalid ${portType.toUpperCase} port: $str")
-          }
+          val i =
+            try Integer.parseInt(str)
+            catch {
+              case _: NumberFormatException =>
+                throw ServerStartException(
+                  s"Invalid ${portType.toUpperCase} port: $str")
+            }
           Some(i)
       }
     }

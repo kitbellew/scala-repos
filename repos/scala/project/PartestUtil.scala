@@ -88,30 +88,32 @@ object PartestUtil {
     // superset of the --grep built into partest itself.
     val Grep = {
       def expandGrep(x: String): Seq[String] = {
-        val matchingFileContent = try {
-          val Pattern = ("(?i)" + x).r
-          testFiles.allTestCases.filter {
-            case (testFile, testPath) =>
-              val assocFiles =
-                List(".check", ".flags").map(testFile.getParentFile / _)
-              val sourceFiles =
-                if (testFile.isFile) List(testFile)
-                else testFile.**(AllPassFilter).get.toList
-              val allFiles = testFile :: assocFiles ::: sourceFiles
-              allFiles.exists { f =>
-                f.exists && f.isFile &&
-                Pattern.findFirstIn(IO.read(f)).isDefined
-              }
+        val matchingFileContent =
+          try {
+            val Pattern = ("(?i)" + x).r
+            testFiles.allTestCases.filter {
+              case (testFile, testPath) =>
+                val assocFiles =
+                  List(".check", ".flags").map(testFile.getParentFile / _)
+                val sourceFiles =
+                  if (testFile.isFile) List(testFile)
+                  else testFile.**(AllPassFilter).get.toList
+                val allFiles = testFile :: assocFiles ::: sourceFiles
+                allFiles.exists { f =>
+                  f.exists && f.isFile &&
+                  Pattern.findFirstIn(IO.read(f)).isDefined
+                }
+            }
+          } catch {
+            case _: Throwable => Nil
           }
-        } catch {
-          case _: Throwable => Nil
-        }
-        val matchingFileName = try {
-          val filter = GlobFilter("*" + x + "*")
-          testFiles.allTestCases.filter(x => filter.accept(x._1.name))
-        } catch {
-          case t: Throwable => Nil
-        }
+        val matchingFileName =
+          try {
+            val filter = GlobFilter("*" + x + "*")
+            testFiles.allTestCases.filter(x => filter.accept(x._1.name))
+          } catch {
+            case t: Throwable => Nil
+          }
         (matchingFileContent ++ matchingFileName).map(_._2).distinct.sorted
       }
 

@@ -184,13 +184,14 @@ object WorkflowUtils extends Logging {
     } map { jv =>
       implicit lazy val formats =
         Utils.json4sDefaultFormats + new NameParamsSerializer
-      val np: NameParams = try {
-        jv._2.extract[NameParams]
-      } catch {
-        case e: Exception =>
-          error(s"Unable to extract $field name and params $jv")
-          throw e
-      }
+      val np: NameParams =
+        try {
+          jv._2.extract[NameParams]
+        } catch {
+          case e: Exception =>
+            error(s"Unable to extract $field name and params $jv")
+            throw e
+        }
       val extractedParams = np.params
         .map { p =>
           try {

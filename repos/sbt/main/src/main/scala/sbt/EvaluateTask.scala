@@ -554,11 +554,12 @@ object EvaluateTask {
           Execute.config(config.checkCycles, overwriteNode),
           triggers,
           config.progressReporter)(taskToNode)
-      val (newState, result) = try {
-        val results = x.runKeep(root)(service)
-        storeValuesForPrevious(results, state, streams)
-        applyResults(results, state, root)
-      } catch { case inc: Incomplete => (state, Inc(inc)) } finally shutdown()
+      val (newState, result) =
+        try {
+          val results = x.runKeep(root)(service)
+          storeValuesForPrevious(results, state, streams)
+          applyResults(results, state, root)
+        } catch { case inc: Incomplete => (state, Inc(inc)) } finally shutdown()
       val replaced = transformInc(result)
       logIncResult(replaced, state, streams)
       (newState, replaced)

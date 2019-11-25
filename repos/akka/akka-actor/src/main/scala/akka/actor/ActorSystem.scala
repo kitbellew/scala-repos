@@ -706,21 +706,22 @@ private[akka] class ActorSystemImpl(
 
   val scheduler: Scheduler = createScheduler()
 
-  val provider: ActorRefProvider = try {
-    val arguments = Vector(
-      classOf[String] -> name,
-      classOf[Settings] -> settings,
-      classOf[EventStream] -> eventStream,
-      classOf[DynamicAccess] -> dynamicAccess)
+  val provider: ActorRefProvider =
+    try {
+      val arguments = Vector(
+        classOf[String] -> name,
+        classOf[Settings] -> settings,
+        classOf[EventStream] -> eventStream,
+        classOf[DynamicAccess] -> dynamicAccess)
 
-    dynamicAccess
-      .createInstanceFor[ActorRefProvider](ProviderClass, arguments)
-      .get
-  } catch {
-    case NonFatal(e) ⇒
-      Try(stopScheduler())
-      throw e
-  }
+      dynamicAccess
+        .createInstanceFor[ActorRefProvider](ProviderClass, arguments)
+        .get
+    } catch {
+      case NonFatal(e) ⇒
+        Try(stopScheduler())
+        throw e
+    }
 
   def deadLetters: ActorRef = provider.deadLetters
 
@@ -764,23 +765,24 @@ private[akka] class ActorSystemImpl(
   def /(actorName: String): ActorPath = guardian.path / actorName
   def /(path: Iterable[String]): ActorPath = guardian.path / path
 
-  private lazy val _start: this.type = try {
-    registerOnTermination(stopScheduler())
-    // the provider is expected to start default loggers, LocalActorRefProvider does this
-    provider.init(this)
-    if (settings.LogDeadLetters > 0)
-      logDeadLetterListener = Some(
-        systemActorOf(Props[DeadLetterListener], "deadLetterListener"))
-    eventStream.startUnsubscriber()
-    loadExtensions()
-    if (LogConfigOnStart) logConfiguration()
-    this
-  } catch {
-    case NonFatal(e) ⇒
-      try terminate()
-      catch { case NonFatal(_) ⇒ Try(stopScheduler()) }
-      throw e
-  }
+  private lazy val _start: this.type =
+    try {
+      registerOnTermination(stopScheduler())
+      // the provider is expected to start default loggers, LocalActorRefProvider does this
+      provider.init(this)
+      if (settings.LogDeadLetters > 0)
+        logDeadLetterListener = Some(
+          systemActorOf(Props[DeadLetterListener], "deadLetterListener"))
+      eventStream.startUnsubscriber()
+      loadExtensions()
+      if (LogConfigOnStart) logConfiguration()
+      this
+    } catch {
+      case NonFatal(e) ⇒
+        try terminate()
+        catch { case NonFatal(_) ⇒ Try(stopScheduler()) }
+        throw e
+    }
 
   def start(): this.type = _start
   def registerOnTermination[T](code: ⇒ T) {

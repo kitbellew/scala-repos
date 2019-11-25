@@ -72,20 +72,21 @@ object Watched {
     if (watchState.count > 0)
       printIfDefined(watched watchingMessage watchState)
 
-    val (triggered, newWatchState, newState) = try {
-      val (triggered, newWatchState) = SourceModificationWatch.watch(
-        sourcesFinder,
-        watched.pollInterval,
-        watchState)(shouldTerminate)
-      (triggered, newWatchState, s)
-    } catch {
-      case e: Exception =>
-        val log = s.log
-        log.error(
-          "Error occurred obtaining files to watch.  Terminating continuous execution...")
-        State.handleException(e, s, log)
-        (false, watchState, s.fail)
-    }
+    val (triggered, newWatchState, newState) =
+      try {
+        val (triggered, newWatchState) = SourceModificationWatch.watch(
+          sourcesFinder,
+          watched.pollInterval,
+          watchState)(shouldTerminate)
+        (triggered, newWatchState, s)
+      } catch {
+        case e: Exception =>
+          val log = s.log
+          log.error(
+            "Error occurred obtaining files to watch.  Terminating continuous execution...")
+          State.handleException(e, s, log)
+          (false, watchState, s.fail)
+      }
 
     if (triggered) {
       printIfDefined(watched triggeredMessage newWatchState)

@@ -54,10 +54,11 @@ private[netty3] class ChannelConnector[In, Out](
     require(addr != null)
     val elapsed = Stopwatch.start()
 
-    val ch = try newChannel()
-    catch {
-      case NonFatal(exc) => return Future.exception(exc)
-    }
+    val ch =
+      try newChannel()
+      catch {
+        case NonFatal(exc) => return Future.exception(exc)
+      }
 
     // Transport is now bound to the channel; this is done prior to
     // it being connected so we don't lose any messages.

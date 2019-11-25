@@ -446,17 +446,18 @@ abstract class MultiNodeSpec(
           base.indexOf(tag) match {
             case -1 ⇒ base
             case start ⇒
-              val replaceWith = try r.addr
-              catch {
-                case NonFatal(e) ⇒
-                  // might happen if all test cases are ignored (excluded) and
-                  // controller node is finished/exited before r.addr is run
-                  // on the other nodes
-                  val unresolved =
-                    "akka://unresolved-replacement-" + r.role.name
-                  log.warning(unresolved + " due to: " + e.getMessage)
-                  unresolved
-              }
+              val replaceWith =
+                try r.addr
+                catch {
+                  case NonFatal(e) ⇒
+                    // might happen if all test cases are ignored (excluded) and
+                    // controller node is finished/exited before r.addr is run
+                    // on the other nodes
+                    val unresolved =
+                      "akka://unresolved-replacement-" + r.role.name
+                    log.warning(unresolved + " due to: " + e.getMessage)
+                    unresolved
+                }
               base.replace(tag, replaceWith)
           }
       }

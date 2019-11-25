@@ -71,14 +71,15 @@ object Template extends Logging {
     } else {
       val jsonString =
         Source.fromFile(templateJson)(scala.io.Codec.ISO8859).mkString
-      val json = try {
-        parse(jsonString)
-      } catch {
-        case e: org.json4s.ParserUtil.ParseException =>
-          warn(
-            s"$templateJson cannot be parsed. Template metadata will not be available.")
-          return TemplateMetaData()
-      }
+      val json =
+        try {
+          parse(jsonString)
+        } catch {
+          case e: org.json4s.ParserUtil.ParseException =>
+            warn(
+              s"$templateJson cannot be parsed. Template metadata will not be available.")
+            return TemplateMetaData()
+        }
       val pioVersionMin = json \ "pio" \ "version" \ "min"
       pioVersionMin match {
         case JString(s) => TemplateMetaData(pioVersionMin = Some(s))
@@ -96,11 +97,12 @@ object Template extends Logging {
     * @return
     */
   def httpOptionalProxy(url: String): HttpRequest = {
-    val gitProxy = try {
-      Some(Process("git config --global http.proxy").lines.toList(0))
-    } catch {
-      case e: Throwable => None
-    }
+    val gitProxy =
+      try {
+        Some(Process("git config --global http.proxy").lines.toList(0))
+      } catch {
+        case e: Throwable => None
+      }
 
     val (host, port) =
       gitProxy map { p =>
@@ -129,13 +131,14 @@ object Template extends Logging {
       repos: Seq[String],
       apiType: String,
       repoFilename: String): Map[String, GitHubCache] = {
-    val reposCache = try {
-      val cache =
-        Source.fromFile(repoFilename)(scala.io.Codec.ISO8859).mkString
-      read[Map[String, GitHubCache]](cache)
-    } catch {
-      case e: Throwable => Map[String, GitHubCache]()
-    }
+    val reposCache =
+      try {
+        val cache =
+          Source.fromFile(repoFilename)(scala.io.Codec.ISO8859).mkString
+        read[Map[String, GitHubCache]](cache)
+      } catch {
+        case e: Throwable => Map[String, GitHubCache]()
+      }
     val newReposCache =
       reposCache ++
         (try {
@@ -317,23 +320,25 @@ object Template extends Logging {
     val url =
       s"https://github.com/${ca.template.repository}/archive/${tag.name}.zip"
     println(s"Going to download $url")
-    val trial = try {
-      httpOptionalProxy(url).asBytes
-    } catch {
-      case e: ConnectException =>
-        githubConnectErrorMessage(e)
-        return 1
-    }
-    val finalTrial = try {
-      trial.location.map { loc =>
-        println(s"Redirecting to $loc")
-        httpOptionalProxy(loc).asBytes
-      } getOrElse trial
-    } catch {
-      case e: ConnectException =>
-        githubConnectErrorMessage(e)
-        return 1
-    }
+    val trial =
+      try {
+        httpOptionalProxy(url).asBytes
+      } catch {
+        case e: ConnectException =>
+          githubConnectErrorMessage(e)
+          return 1
+      }
+    val finalTrial =
+      try {
+        trial.location.map { loc =>
+          println(s"Redirecting to $loc")
+          httpOptionalProxy(loc).asBytes
+        } getOrElse trial
+      } catch {
+        case e: ConnectException =>
+          githubConnectErrorMessage(e)
+          return 1
+      }
     val zipFilename =
       s"${ca.template.repository.replace('/', '-')}-${tag.name}.zip"
     FileUtils.writeByteArrayToFile(new File(zipFilename), finalTrial.body)
@@ -376,20 +381,21 @@ object Template extends Logging {
 
     val engineJsonFile = new File(ca.template.directory, "engine.json")
 
-    val engineJson = try {
-      Some(parse(Source.fromFile(engineJsonFile).mkString))
-    } catch {
-      case e: java.io.IOException =>
-        error(
-          "Unable to read engine.json. Skipping automatic package " +
-            "name replacement.")
-        None
-      case e: MappingException =>
-        error(
-          "Unable to parse engine.json. Skipping automatic package " +
-            "name replacement.")
-        None
-    }
+    val engineJson =
+      try {
+        Some(parse(Source.fromFile(engineJsonFile).mkString))
+      } catch {
+        case e: java.io.IOException =>
+          error(
+            "Unable to read engine.json. Skipping automatic package " +
+              "name replacement.")
+          None
+        case e: MappingException =>
+          error(
+            "Unable to parse engine.json. Skipping automatic package " +
+              "name replacement.")
+          None
+      }
 
     val engineFactory =
       engineJson.map { ej =>

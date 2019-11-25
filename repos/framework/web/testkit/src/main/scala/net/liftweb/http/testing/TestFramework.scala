@@ -50,28 +50,29 @@ trait ToResponse { self: BaseGetPoster =>
       httpClient: HttpClient,
       getter: HttpMethodBase): ResponseType = {
 
-    val ret: ResponseType = try {
-      (baseUrl + fullUrl, httpClient.executeMethod(getter)) match {
-        case (server, responseCode) =>
-          val respHeaders = slurpApacheHeaders(getter.getResponseHeaders)
+    val ret: ResponseType =
+      try {
+        (baseUrl + fullUrl, httpClient.executeMethod(getter)) match {
+          case (server, responseCode) =>
+            val respHeaders = slurpApacheHeaders(getter.getResponseHeaders)
 
-          new HttpResponse(
-            baseUrl,
-            responseCode,
-            getter.getStatusText,
-            respHeaders,
-            for {
-              st <- Box !! getter.getResponseBodyAsStream
-              bytes <- tryo(readWholeStream(st))
-            } yield bytes,
-            httpClient
-          )
+            new HttpResponse(
+              baseUrl,
+              responseCode,
+              getter.getStatusText,
+              respHeaders,
+              for {
+                st <- Box !! getter.getResponseBodyAsStream
+                bytes <- tryo(readWholeStream(st))
+              } yield bytes,
+              httpClient
+            )
+        }
+      } catch {
+        case e: IOException => new CompleteFailure(baseUrl + fullUrl, Full(e))
+      } finally {
+        getter.releaseConnection
       }
-    } catch {
-      case e: IOException => new CompleteFailure(baseUrl + fullUrl, Full(e))
-    } finally {
-      getter.releaseConnection
-    }
 
     ret
   }
@@ -86,29 +87,30 @@ trait ToBoxTheResponse { self: BaseGetPoster =>
       httpClient: HttpClient,
       getter: HttpMethodBase): Box[TheResponse] = {
 
-    val ret = try {
-      (baseUrl + fullUrl, httpClient.executeMethod(getter)) match {
-        case (server, responseCode) =>
-          val respHeaders = slurpApacheHeaders(getter.getResponseHeaders)
+    val ret =
+      try {
+        (baseUrl + fullUrl, httpClient.executeMethod(getter)) match {
+          case (server, responseCode) =>
+            val respHeaders = slurpApacheHeaders(getter.getResponseHeaders)
 
-          Full(
-            new TheResponse(
-              baseUrl,
-              responseCode,
-              getter.getStatusText,
-              respHeaders,
-              for {
-                st <- Box !! getter.getResponseBodyAsStream
-                bytes <- tryo(readWholeStream(st))
-              } yield bytes,
-              httpClient
-            ))
+            Full(
+              new TheResponse(
+                baseUrl,
+                responseCode,
+                getter.getStatusText,
+                respHeaders,
+                for {
+                  st <- Box !! getter.getResponseBodyAsStream
+                  bytes <- tryo(readWholeStream(st))
+                } yield bytes,
+                httpClient
+              ))
+        }
+      } catch {
+        case e: IOException => Failure(baseUrl + fullUrl, Full(e), Empty)
+      } finally {
+        getter.releaseConnection
       }
-    } catch {
-      case e: IOException => Failure(baseUrl + fullUrl, Full(e), Empty)
-    } finally {
-      getter.releaseConnection
-    }
 
     ret
   }

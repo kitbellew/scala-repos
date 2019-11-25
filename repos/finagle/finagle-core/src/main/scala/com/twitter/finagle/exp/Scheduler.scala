@@ -38,19 +38,20 @@ private[finagle] object FinagleScheduler {
   }
 
   private def switchToBridged(numWorkers: Int) {
-    val queue = try Class
-      .forName(
-        "java.util.concurrent.LinkedTransferQueue"
-      )
-      .newInstance
-      .asInstanceOf[BlockingQueue[Runnable]]
-    catch {
-      case _: ClassNotFoundException => {
-        log.info(
-          "bridged scheduler is not available on pre java 7, using local instead")
-        return
+    val queue =
+      try Class
+        .forName(
+          "java.util.concurrent.LinkedTransferQueue"
+        )
+        .newInstance
+        .asInstanceOf[BlockingQueue[Runnable]]
+      catch {
+        case _: ClassNotFoundException => {
+          log.info(
+            "bridged scheduler is not available on pre java 7, using local instead")
+          return
+        }
       }
-    }
 
     Scheduler.setUnsafe(
       new BridgedThreadPoolScheduler(

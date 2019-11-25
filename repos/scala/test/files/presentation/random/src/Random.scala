@@ -15,19 +15,20 @@ import java.util.Random
 object randomclient {
 
   def main(args: Array[String]) {
-    val filter /*?*/ = try {
-      Integer.parseInt(args(0) /*?*/ ) match {
-        case 1 =>
-          x: Int => x % 2 != 0
-        case 2 =>
-          x: Int => x % 2 == 0
-        case _ =>
-          x: Int => x != 0
+    val filter /*?*/ =
+      try {
+        Integer.parseInt(args(0) /*?*/ ) match {
+          case 1 =>
+            x: Int => x % 2 != 0
+          case 2 =>
+            x: Int => x % 2 == 0
+          case _ =>
+            x: Int => x != 0
+        }
+      } catch {
+        case _ /*?*/ =>
+          x: Int => x < 100
       }
-    } catch {
-      case _ /*?*/ =>
-        x: Int => x < 100
-    }
 
     try {
       val ia = InetAddress.getByName("localhost")

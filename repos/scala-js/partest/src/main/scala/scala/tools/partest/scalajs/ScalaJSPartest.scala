@@ -102,11 +102,12 @@ trait ScalaJSSuiteRunner extends SuiteRunner {
     val state =
       if (failed && !runner.logFile.canRead) runner.genPass()
       else {
-        val (state, elapsed) = try timed(runner.run())
-        catch {
-          case t: Throwable =>
-            throw new RuntimeException(s"Error running $testFile", t)
-        }
+        val (state, elapsed) =
+          try timed(runner.run())
+          catch {
+            case t: Throwable =>
+              throw new RuntimeException(s"Error running $testFile", t)
+          }
         NestUI.reportTest(state)
         runner.cleanup()
         state

@@ -741,34 +741,36 @@ abstract class Erasure
     /** A replacement for the standard typer's `typed1` method.
       */
     override def typed1(tree: Tree, mode: Mode, pt: Type): Tree = {
-      val tree1 = try {
-        tree match {
-          case InjectDerivedValue(arg) =>
-            (tree.attachments.get[TypeRefAttachment]: @unchecked) match {
-              case Some(itype) =>
-                val tref = itype.tpe
-                val argPt = enteringErasure(erasedValueClassArg(tref))
-                log(s"transforming inject $arg -> $tref/$argPt")
-                val result = typed(arg, mode, argPt)
-                log(
-                  s"transformed inject $arg -> $tref/$argPt = $result:${result.tpe}")
-                return result setType ErasedValueType(tref.sym, result.tpe)
-            }
-          case _ =>
-            super.typed1(adaptMember(tree), mode, pt)
+      val tree1 =
+        try {
+          tree match {
+            case InjectDerivedValue(arg) =>
+              (tree.attachments.get[TypeRefAttachment]: @unchecked) match {
+                case Some(itype) =>
+                  val tref = itype.tpe
+                  val argPt = enteringErasure(erasedValueClassArg(tref))
+                  log(s"transforming inject $arg -> $tref/$argPt")
+                  val result = typed(arg, mode, argPt)
+                  log(
+                    s"transformed inject $arg -> $tref/$argPt = $result:${result.tpe}")
+                  return result setType ErasedValueType(tref.sym, result.tpe)
+              }
+            case _ =>
+              super.typed1(adaptMember(tree), mode, pt)
+          }
+        } catch {
+          case er: TypeError =>
+            Console.println(
+              "exception when typing " + tree + "/" + tree.getClass)
+            Console.println(er.msg + " in file " + context.owner.sourceFile)
+            er.printStackTrace
+            abort("unrecoverable error")
+          case ex: Exception =>
+            //if (settings.debug.value)
+            try Console.println("exception when typing " + tree)
+            finally throw ex
+            throw ex
         }
-      } catch {
-        case er: TypeError =>
-          Console.println("exception when typing " + tree + "/" + tree.getClass)
-          Console.println(er.msg + " in file " + context.owner.sourceFile)
-          er.printStackTrace
-          abort("unrecoverable error")
-        case ex: Exception =>
-          //if (settings.debug.value)
-          try Console.println("exception when typing " + tree)
-          finally throw ex
-          throw ex
-      }
 
       def adaptCase(cdef: CaseDef): CaseDef = {
         val newCdef = deriveCaseDef(cdef)(adaptToType(_, tree1.tpe))

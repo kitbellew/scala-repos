@@ -217,33 +217,36 @@ object ReflectiveAccess {
       assert(fqn ne null)
 
       // First, use the specified CL
-      val first = try {
-        Right(classloader.loadClass(fqn).asInstanceOf[Class[T]])
-      } catch {
-        case c: ClassNotFoundException => Left(c)
-      }
-
-      if (first.isRight) first
-      else {
-        // Second option is to use the ContextClassLoader
-        val second = try {
-          Right(
-            Thread.currentThread.getContextClassLoader
-              .loadClass(fqn)
-              .asInstanceOf[Class[T]])
+      val first =
+        try {
+          Right(classloader.loadClass(fqn).asInstanceOf[Class[T]])
         } catch {
           case c: ClassNotFoundException => Left(c)
         }
 
-        if (second.isRight) second
-        else {
-          val third = try {
-            if (classloader ne loader)
-              Right(loader.loadClass(fqn).asInstanceOf[Class[T]])
-            else Left(null) //Horrid
+      if (first.isRight) first
+      else {
+        // Second option is to use the ContextClassLoader
+        val second =
+          try {
+            Right(
+              Thread.currentThread.getContextClassLoader
+                .loadClass(fqn)
+                .asInstanceOf[Class[T]])
           } catch {
             case c: ClassNotFoundException => Left(c)
           }
+
+        if (second.isRight) second
+        else {
+          val third =
+            try {
+              if (classloader ne loader)
+                Right(loader.loadClass(fqn).asInstanceOf[Class[T]])
+              else Left(null) //Horrid
+            } catch {
+              case c: ClassNotFoundException => Left(c)
+            }
 
           if (third.isRight) third
           else {

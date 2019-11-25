@@ -56,10 +56,11 @@ class IoSpec extends WordSpec with Matchers {
       val in = new InputStream {
         def read() = throw e
       }
-      val caught = try {
-        copy(in, new ByteArrayOutputStream)
-        None
-      } catch { case ex: Throwable => Some(ex) }
+      val caught =
+        try {
+          copy(in, new ByteArrayOutputStream)
+          None
+        } catch { case ex: Throwable => Some(ex) }
       caught should equal(Some(e))
     }
   }

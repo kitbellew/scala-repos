@@ -379,13 +379,14 @@ private[spark] object SerializationDebugger extends Logging {
     * Object to hold all the reflection objects. If we run on a JVM that we cannot understand,
     * this field will be null and this the debug helper should be disabled.
     */
-  private val reflect: ObjectStreamClassReflection = try {
-    new ObjectStreamClassReflection
-  } catch {
-    case e: Exception =>
-      logWarning("Cannot find private methods using reflection", e)
-      null
-  }
+  private val reflect: ObjectStreamClassReflection =
+    try {
+      new ObjectStreamClassReflection
+    } catch {
+      case e: Exception =>
+        logWarning("Cannot find private methods using reflection", e)
+        null
+    }
 
   private class ObjectStreamClassReflection {
 

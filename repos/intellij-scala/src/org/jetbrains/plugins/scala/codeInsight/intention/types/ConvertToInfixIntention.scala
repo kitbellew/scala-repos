@@ -57,15 +57,16 @@ class ConvertToInfixIntention extends PsiElementBaseIntentionAction {
       newTypeText,
       element.getManager)
     if (paramTypeElement.isValid) {
-      val replaced = try {
-        paramTypeElement.replace(newTypeElement)
-      } catch {
-        case npe: NullPointerException =>
-          throw new RuntimeException(
-            "Unable to replace: %s with %s"
-              .format(paramTypeElement, newTypeText),
-            npe)
-      }
+      val replaced =
+        try {
+          paramTypeElement.replace(newTypeElement)
+        } catch {
+          case npe: NullPointerException =>
+            throw new RuntimeException(
+              "Unable to replace: %s with %s"
+                .format(paramTypeElement, newTypeText),
+              npe)
+        }
       UndoUtil.markPsiFileForUndo(replaced.getContainingFile)
     }
   }

@@ -82,11 +82,12 @@ object Helpers {
     private[this] var contents: Either[R, Throwable] = Left(result)
 
     def update(value: => R) = {
-      contents = try {
-        Left(value)
-      } catch {
-        case (error: Throwable) => Right(error)
-      }
+      contents =
+        try {
+          Left(value)
+        } catch {
+          case (error: Throwable) => Right(error)
+        }
     }
 
     def apply() = contents match {

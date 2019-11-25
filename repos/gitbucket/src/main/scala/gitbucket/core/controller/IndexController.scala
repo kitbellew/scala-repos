@@ -168,12 +168,13 @@ trait IndexControllerBase extends ControllerBase {
   get("/:owner/:repository/search")(referrersOnly { repository =>
     defining(params("q").trim, params.getOrElse("type", "code")) {
       case (query, target) =>
-        val page = try {
-          val i = params.getOrElse("page", "1").toInt
-          if (i <= 0) 1 else i
-        } catch {
-          case e: NumberFormatException => 1
-        }
+        val page =
+          try {
+            val i = params.getOrElse("page", "1").toInt
+            if (i <= 0) 1 else i
+          } catch {
+            case e: NumberFormatException => 1
+          }
 
         target.toLowerCase match {
           case "issue" =>

@@ -6,11 +6,12 @@ import io.netty.channel.{ChannelHandlerContext, ChannelInboundHandlerAdapter}
 
 private[netty4] class TlsShutdownHandler(o: Object)
     extends ChannelInboundHandlerAdapter {
-  private[this] val shutdownMethod: Option[Method] = try {
-    Some(o.getClass.getMethod("shutdown"))
-  } catch {
-    case _: NoSuchMethodException => None
-  }
+  private[this] val shutdownMethod: Option[Method] =
+    try {
+      Some(o.getClass.getMethod("shutdown"))
+    } catch {
+      case _: NoSuchMethodException => None
+    }
 
   private[this] def shutdownAfterChannelClosure(): Unit =
     shutdownMethod.foreach { method =>

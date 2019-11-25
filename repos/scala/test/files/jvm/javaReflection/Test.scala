@@ -59,21 +59,23 @@ object Test {
     } catch { case e: InternalError => e.getMessage }
 
   def assertNotAnonymous(c: Class[_]) = {
-    val an = try {
-      c.isAnonymousClass
-    } catch {
-      // isAnonymousClass is implemented using getSimpleName, which may throw.
-      case e: InternalError => false
-    }
+    val an =
+      try {
+        c.isAnonymousClass
+      } catch {
+        // isAnonymousClass is implemented using getSimpleName, which may throw.
+        case e: InternalError => false
+      }
     assert(!an, c)
   }
 
   def ruleMemberOrLocal(c: Class[_]) = {
     // if it throws, then it's because of the call from isLocalClass to isAnonymousClass.
     // we know that isAnonymousClass is always false, so it has to be a local class.
-    val loc = try {
-      c.isLocalClass
-    } catch { case e: InternalError => true }
+    val loc =
+      try {
+        c.isLocalClass
+      } catch { case e: InternalError => true }
     if (loc) assert(!c.isMemberClass, c)
     if (c.isMemberClass) assert(!loc, c)
   }

@@ -173,15 +173,16 @@ object JdbcUtils extends Logging {
       dialect: JdbcDialect): Iterator[Byte] = {
     val conn = getConnection()
     var committed = false
-    val supportsTransactions = try {
-      conn.getMetaData().supportsDataManipulationTransactionsOnly() || conn
-        .getMetaData()
-        .supportsDataDefinitionAndDataManipulationTransactions()
-    } catch {
-      case NonFatal(e) =>
-        logWarning("Exception while detecting transaction support", e)
-        true
-    }
+    val supportsTransactions =
+      try {
+        conn.getMetaData().supportsDataManipulationTransactionsOnly() || conn
+          .getMetaData()
+          .supportsDataDefinitionAndDataManipulationTransactions()
+      } catch {
+        case NonFatal(e) =>
+          logWarning("Exception while detecting transaction support", e)
+          true
+      }
 
     try {
       if (supportsTransactions) {

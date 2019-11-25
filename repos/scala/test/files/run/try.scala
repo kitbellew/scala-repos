@@ -32,16 +32,18 @@ object Test extends AnyRef with App {
 
   def try3 = {
     Console.print("1 + 1 = ");
-    val x = try {
-      1
-    } catch {
-      case e: Error => 1;
-    }
-    this.n = try {
-      1
-    } catch {
-      case e: Error => 1;
-    }
+    val x =
+      try {
+        1
+      } catch {
+        case e: Error => 1;
+      }
+    this.n =
+      try {
+        1
+      } catch {
+        case e: Error => 1;
+      }
     Console.println(x + n);
   }
 
@@ -49,18 +51,19 @@ object Test extends AnyRef with App {
 
   def try4 = {
     if (instance == null) {
-      instance = try {
-        "" //new String();
-      } catch {
-        case _: Throwable =>
-          val cs = "aaa";
-          if (cs.length() > 0) {
-            "" //new String();
-          } else {
-            throw new Error("fatal error");
-            null
-          }
-      }
+      instance =
+        try {
+          "" //new String();
+        } catch {
+          case _: Throwable =>
+            val cs = "aaa";
+            if (cs.length() > 0) {
+              "" //new String();
+            } else {
+              throw new Error("fatal error");
+              null
+            }
+        }
     }
   }
 
@@ -83,11 +86,12 @@ object Test extends AnyRef with App {
 
   class A {
     private val result = {
-      val y = try {
-        x
-      } catch {
-        case _: Error => 1;
-      };
+      val y =
+        try {
+          x
+        } catch {
+          case _: Error => 1;
+        };
       x + y
     }
     Console.print("1 + 1 = ");
@@ -100,11 +104,12 @@ object Test extends AnyRef with App {
       def get = null
     }
 
-    var sekw: SekwencjaArray = try {
-      null
-    } catch {
-      case _: Throwable => null
-    }
+    var sekw: SekwencjaArray =
+      try {
+        null
+      } catch {
+        case _: Throwable => null
+      }
 
     new AnyRef {
       def getValueAt(row: Int, col: Int) = sekw.get

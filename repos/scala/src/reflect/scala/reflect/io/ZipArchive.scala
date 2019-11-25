@@ -138,12 +138,13 @@ final class FileZipArchive(file: JFile) extends ZipArchive(file) {
   lazy val (root, allDirs) = {
     val root = new DirEntry("/")
     val dirs = mutable.HashMap[String, DirEntry]("/" -> root)
-    val zipFile = try {
-      new ZipFile(file)
-    } catch {
-      case ioe: IOException =>
-        throw new IOException("Error accessing " + file.getPath, ioe)
-    }
+    val zipFile =
+      try {
+        new ZipFile(file)
+      } catch {
+        case ioe: IOException =>
+          throw new IOException("Error accessing " + file.getPath, ioe)
+      }
 
     val enum = zipFile.entries()
 

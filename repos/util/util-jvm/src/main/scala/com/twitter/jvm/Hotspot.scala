@@ -28,16 +28,19 @@ class Hotspot extends Jvm {
     ObjectName.getInstance("com.sun.management:type=HotSpotDiagnostic")
 
   private[this] val jvm: VMManagement = {
-    val fld = try {
-      // jdk5/6 have jvm field in ManagementFactory class
-      Class.forName("sun.management.ManagementFactory").getDeclaredField("jvm")
-    } catch {
-      case _: NoSuchFieldException =>
-        // jdk7 moves jvm field to ManagementFactoryHelper class
+    val fld =
+      try {
+        // jdk5/6 have jvm field in ManagementFactory class
         Class
-          .forName("sun.management.ManagementFactoryHelper")
+          .forName("sun.management.ManagementFactory")
           .getDeclaredField("jvm")
-    }
+      } catch {
+        case _: NoSuchFieldException =>
+          // jdk7 moves jvm field to ManagementFactoryHelper class
+          Class
+            .forName("sun.management.ManagementFactoryHelper")
+            .getDeclaredField("jvm")
+      }
     fld.setAccessible(true)
     fld.get(null).asInstanceOf[VMManagement]
   }
@@ -139,20 +142,21 @@ class Hotspot extends Jvm {
   private val log = Logger.getLogger(getClass.getName)
 
   private[this] val safepointBean = {
-    val runtimeBean = try {
-      Class
-        .forName("sun.management.ManagementFactory")
-        .getMethod("getHotspotRuntimeMBean")
-        .invoke(null)
-      // jdk 6 has HotspotRuntimeMBean in the ManagementFactory class
-    } catch {
-      case _: Throwable =>
+    val runtimeBean =
+      try {
         Class
-          .forName("sun.management.ManagementFactoryHelper")
+          .forName("sun.management.ManagementFactory")
           .getMethod("getHotspotRuntimeMBean")
           .invoke(null)
-      // jdks 7 and 8 have HotspotRuntimeMBean in the ManagementFactoryHelper class
-    }
+        // jdk 6 has HotspotRuntimeMBean in the ManagementFactory class
+      } catch {
+        case _: Throwable =>
+          Class
+            .forName("sun.management.ManagementFactoryHelper")
+            .getMethod("getHotspotRuntimeMBean")
+            .invoke(null)
+        // jdks 7 and 8 have HotspotRuntimeMBean in the ManagementFactoryHelper class
+      }
 
     def asSafepointBean(x: AnyRef) = {
       x.asInstanceOf[{

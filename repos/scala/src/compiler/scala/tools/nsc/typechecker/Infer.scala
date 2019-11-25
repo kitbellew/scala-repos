@@ -204,10 +204,11 @@ trait Infer extends Checkable { self: Analyzer =>
       // (but it'd be nicer if that weren't so)
       def name = {
         val sym = tree.symbol
-        val nameStr = try sym.toString
-        catch {
-          case _: CyclicReference => sym.nameString
-        }
+        val nameStr =
+          try sym.toString
+          catch {
+            case _: CyclicReference => sym.nameString
+          }
         newTermName(s"<error: $nameStr>")
       }
       def errorClass =
@@ -320,11 +321,12 @@ trait Infer extends Checkable { self: Analyzer =>
               if (sym.isTerm)
                 sym.cookJavaRawInfo()
               else sym // xform java rawtypes into existentials
-            val owntype = (try pre memberType sym1
-            catch {
-              case ex: MalformedType =>
-                malformed(ex, pre memberType underlyingSymbol(sym))
-            })
+            val owntype =
+              (try pre memberType sym1
+              catch {
+                case ex: MalformedType =>
+                  malformed(ex, pre memberType underlyingSymbol(sym))
+              })
             tree setSymbol sym1 setType
               (pre match {
                 case _: SuperType =>

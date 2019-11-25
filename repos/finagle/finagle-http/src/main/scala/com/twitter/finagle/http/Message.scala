@@ -341,11 +341,12 @@ abstract class Message extends HttpMessageProxy {
 
   /** Get the content as a string. */
   def contentString: String = {
-    val encoding = try {
-      Charset.forName(charset getOrElse "UTF-8")
-    } catch {
-      case _: Throwable => Message.Utf8
-    }
+    val encoding =
+      try {
+        Charset.forName(charset getOrElse "UTF-8")
+      } catch {
+        case _: Throwable => Message.Utf8
+      }
     getContent.toString(encoding)
   }
 

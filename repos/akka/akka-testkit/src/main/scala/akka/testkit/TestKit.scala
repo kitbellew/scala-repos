@@ -289,13 +289,14 @@ trait TestKitBase {
 
     @tailrec
     def poll(t: Duration) {
-      val failed = try {
-        a; false
-      } catch {
-        case NonFatal(e) ⇒
-          if ((now + t) >= stop) throw e
-          true
-      }
+      val failed =
+        try {
+          a; false
+        } catch {
+          case NonFatal(e) ⇒
+            if ((now + t) >= stop) throw e
+            true
+        }
       if (failed) {
         Thread.sleep(t.toMillis)
         poll((stop - now) min interval)
@@ -335,8 +336,9 @@ trait TestKitBase {
     val prev_end = end
     end = start + max_diff
 
-    val ret = try f
-    finally end = prev_end
+    val ret =
+      try f
+      finally end = prev_end
 
     val diff = now - start
     assert(

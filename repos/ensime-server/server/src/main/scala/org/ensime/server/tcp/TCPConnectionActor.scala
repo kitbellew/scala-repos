@@ -79,18 +79,19 @@ class TCPConnectionActor(
   }
 
   def sendMessage(envelope: RpcResponseEnvelope): Unit = {
-    val msg = try {
-      protocol.encode(envelope)
-    } catch {
-      case NonFatal(t) =>
-        log.error(t, s"Problem serialising $envelope")
-        protocol.encode(
-          RpcResponseEnvelope(
-            envelope.callId,
-            EnsimeServerError(s"Server error: ${t.getMessage}")
+    val msg =
+      try {
+        protocol.encode(envelope)
+      } catch {
+        case NonFatal(t) =>
+          log.error(t, s"Problem serialising $envelope")
+          protocol.encode(
+            RpcResponseEnvelope(
+              envelope.callId,
+              EnsimeServerError(s"Server error: ${t.getMessage}")
+            )
           )
-        )
-    }
+      }
     connection ! Tcp.Write(msg, Ack)
     context.become(busy, discardOld = true)
   }

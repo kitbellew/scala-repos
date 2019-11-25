@@ -42,13 +42,14 @@ class ULongTest
 
   property("n / 0 -> ArithmeticException") {
     forAll { (n: ULong) =>
-      val error = try {
-        n / zero
-        false
-      } catch {
-        case _: ArithmeticException => true
-        case _: Exception           => false
-      }
+      val error =
+        try {
+          n / zero
+          false
+        } catch {
+          case _: ArithmeticException => true
+          case _: Exception           => false
+        }
       error shouldBe true
     }
   }
@@ -179,13 +180,14 @@ class UIntTest
 
   property("n / 0 -> ArithmeticException") {
     forAll { (n: UInt) =>
-      val error = try {
-        n / zero
-        false
-      } catch {
-        case _: ArithmeticException => true
-        case _: Exception           => false
-      }
+      val error =
+        try {
+          n / zero
+          false
+        } catch {
+          case _: ArithmeticException => true
+          case _: Exception           => false
+        }
       error shouldBe true
     }
   }
@@ -290,13 +292,14 @@ class UShortTest
 
   property("n / 0 -> ArithmeticException") {
     forAll { (n: UShort) =>
-      val error = try {
-        n / zero
-        false
-      } catch {
-        case _: ArithmeticException => true
-        case _: Exception           => false
-      }
+      val error =
+        try {
+          n / zero
+          false
+        } catch {
+          case _: ArithmeticException => true
+          case _: Exception           => false
+        }
       error shouldBe true
     }
   }
@@ -401,13 +404,14 @@ class UByteTest
 
   property("n / 0 -> ArithmeticException") {
     forAll { (n: UByte) =>
-      val error = try {
-        n / zero
-        false
-      } catch {
-        case _: ArithmeticException => true
-        case _: Exception           => false
-      }
+      val error =
+        try {
+          n / zero
+          false
+        } catch {
+          case _: ArithmeticException => true
+          case _: Exception           => false
+        }
       error shouldBe true
     }
   }

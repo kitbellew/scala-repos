@@ -47,10 +47,11 @@ final class SbtHandler(
   private[this] def onNewSbtInstance(
       f: (Process, IPC.Server) => Unit): Option[SbtInstance] = {
     val server = IPC.unmanagedServer
-    val p = try newRemote(server)
-    catch {
-      case e: Throwable => server.close(); throw e
-    }
+    val p =
+      try newRemote(server)
+      catch {
+        case e: Throwable => server.close(); throw e
+      }
     val ai = Some(SbtInstance(p, server))
     try f(p, server)
     catch {

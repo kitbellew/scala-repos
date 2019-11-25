@@ -551,17 +551,19 @@ object HistoryServerSuite {
     connection.setRequestMethod("GET")
     connection.connect()
     val code = connection.getResponseCode()
-    val inStream = try {
-      Option(connection.getInputStream())
-    } catch {
-      case io: IOException => None
-    }
-    val errString = try {
-      val err = Option(connection.getErrorStream())
-      err.map(IOUtils.toString)
-    } catch {
-      case io: IOException => None
-    }
+    val inStream =
+      try {
+        Option(connection.getInputStream())
+      } catch {
+        case io: IOException => None
+      }
+    val errString =
+      try {
+        val err = Option(connection.getErrorStream())
+        err.map(IOUtils.toString)
+      } catch {
+        case io: IOException => None
+      }
     (code, inStream, errString)
   }
 

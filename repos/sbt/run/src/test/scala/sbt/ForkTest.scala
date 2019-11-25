@@ -42,10 +42,11 @@ object ForkTest extends Properties("Fork") {
                 .toList
                 .flatten ++ mainAndArgs
             val config = ForkOptions(outputStrategy = Some(LoggedOutput(log)))
-            val exitCode = try Fork.java(config, args)
-            catch {
-              case e: Exception => e.printStackTrace; 1
-            }
+            val exitCode =
+              try Fork.java(config, args)
+              catch {
+                case e: Exception => e.printStackTrace; 1
+              }
             val expectedCode = if (optionName.isEmpty) 1 else 0
             s"temporary directory: ${dir.getAbsolutePath}" |: s"required classpath: ${requiredEntries
               .mkString("\n\t", "\n\t", "")}" |: s"main and args: ${mainAndArgs.mkString(

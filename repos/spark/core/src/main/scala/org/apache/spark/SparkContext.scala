@@ -2604,61 +2604,65 @@ object SparkContext extends Logging {
         (backend, scheduler)
 
       case "yarn" if deployMode == "cluster" =>
-        val scheduler = try {
-          val clazz = Utils.classForName(
-            "org.apache.spark.scheduler.cluster.YarnClusterScheduler")
-          val cons = clazz.getConstructor(classOf[SparkContext])
-          cons.newInstance(sc).asInstanceOf[TaskSchedulerImpl]
-        } catch {
-          // TODO: Enumerate the exact reasons why it can fail
-          // But irrespective of it, it means we cannot proceed !
-          case e: Exception => {
-            throw new SparkException("YARN mode not available ?", e)
+        val scheduler =
+          try {
+            val clazz = Utils.classForName(
+              "org.apache.spark.scheduler.cluster.YarnClusterScheduler")
+            val cons = clazz.getConstructor(classOf[SparkContext])
+            cons.newInstance(sc).asInstanceOf[TaskSchedulerImpl]
+          } catch {
+            // TODO: Enumerate the exact reasons why it can fail
+            // But irrespective of it, it means we cannot proceed !
+            case e: Exception => {
+              throw new SparkException("YARN mode not available ?", e)
+            }
           }
-        }
-        val backend = try {
-          val clazz = Utils.classForName(
-            "org.apache.spark.scheduler.cluster.YarnClusterSchedulerBackend")
-          val cons = clazz.getConstructor(
-            classOf[TaskSchedulerImpl],
-            classOf[SparkContext])
-          cons
-            .newInstance(scheduler, sc)
-            .asInstanceOf[CoarseGrainedSchedulerBackend]
-        } catch {
-          case e: Exception => {
-            throw new SparkException("YARN mode not available ?", e)
+        val backend =
+          try {
+            val clazz = Utils.classForName(
+              "org.apache.spark.scheduler.cluster.YarnClusterSchedulerBackend")
+            val cons = clazz.getConstructor(
+              classOf[TaskSchedulerImpl],
+              classOf[SparkContext])
+            cons
+              .newInstance(scheduler, sc)
+              .asInstanceOf[CoarseGrainedSchedulerBackend]
+          } catch {
+            case e: Exception => {
+              throw new SparkException("YARN mode not available ?", e)
+            }
           }
-        }
         scheduler.initialize(backend)
         (backend, scheduler)
 
       case "yarn" if deployMode == "client" =>
-        val scheduler = try {
-          val clazz = Utils.classForName(
-            "org.apache.spark.scheduler.cluster.YarnScheduler")
-          val cons = clazz.getConstructor(classOf[SparkContext])
-          cons.newInstance(sc).asInstanceOf[TaskSchedulerImpl]
-        } catch {
-          case e: Exception => {
-            throw new SparkException("YARN mode not available ?", e)
+        val scheduler =
+          try {
+            val clazz = Utils.classForName(
+              "org.apache.spark.scheduler.cluster.YarnScheduler")
+            val cons = clazz.getConstructor(classOf[SparkContext])
+            cons.newInstance(sc).asInstanceOf[TaskSchedulerImpl]
+          } catch {
+            case e: Exception => {
+              throw new SparkException("YARN mode not available ?", e)
+            }
           }
-        }
 
-        val backend = try {
-          val clazz = Utils.classForName(
-            "org.apache.spark.scheduler.cluster.YarnClientSchedulerBackend")
-          val cons = clazz.getConstructor(
-            classOf[TaskSchedulerImpl],
-            classOf[SparkContext])
-          cons
-            .newInstance(scheduler, sc)
-            .asInstanceOf[CoarseGrainedSchedulerBackend]
-        } catch {
-          case e: Exception => {
-            throw new SparkException("YARN mode not available ?", e)
+        val backend =
+          try {
+            val clazz = Utils.classForName(
+              "org.apache.spark.scheduler.cluster.YarnClientSchedulerBackend")
+            val cons = clazz.getConstructor(
+              classOf[TaskSchedulerImpl],
+              classOf[SparkContext])
+            cons
+              .newInstance(scheduler, sc)
+              .asInstanceOf[CoarseGrainedSchedulerBackend]
+          } catch {
+            case e: Exception => {
+              throw new SparkException("YARN mode not available ?", e)
+            }
           }
-        }
 
         scheduler.initialize(backend)
         (backend, scheduler)

@@ -74,13 +74,14 @@ object FilesSpec extends Specification with After {
         }
         val app = appLoader.load(context)
         Play.start(app)
-        val tempFile = try {
-          val tempFile = TemporaryFile()
-          tempFile.file.exists must beTrue
-          tempFile.file
-        } finally {
-          Play.stop(app)
-        }
+        val tempFile =
+          try {
+            val tempFile = TemporaryFile()
+            tempFile.file.exists must beTrue
+            tempFile.file
+          } finally {
+            Play.stop(app)
+          }
         tempFile.exists must beFalse
       }
     }

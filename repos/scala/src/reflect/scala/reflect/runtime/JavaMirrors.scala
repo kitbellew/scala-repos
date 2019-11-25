@@ -1009,22 +1009,23 @@ private[scala] trait JavaMirrors
       def completeRest(): Unit = gilSynchronized {
         val tparams = clazz.rawInfo.typeParams
 
-        val parents = try {
-          parentsLevel += 1
-          val jsuperclazz = jclazz.getGenericSuperclass
-          val ifaces = jclazz.getGenericInterfaces.toList map typeToScala
-          val isAnnotation = JavaAccFlags(jclazz).isAnnotation
-          if (isAnnotation)
-            AnnotationClass.tpe :: ClassfileAnnotationClass.tpe :: ifaces
-          else if (jclazz.isInterface)
-            ObjectTpe :: ifaces // interfaces have Object as superclass in the classfile (see jvm spec), but getGenericSuperclass seems to return null
-          else
-            (if (jsuperclazz == null)
-               AnyTpe
-             else typeToScala(jsuperclazz)) :: ifaces
-        } finally {
-          parentsLevel -= 1
-        }
+        val parents =
+          try {
+            parentsLevel += 1
+            val jsuperclazz = jclazz.getGenericSuperclass
+            val ifaces = jclazz.getGenericInterfaces.toList map typeToScala
+            val isAnnotation = JavaAccFlags(jclazz).isAnnotation
+            if (isAnnotation)
+              AnnotationClass.tpe :: ClassfileAnnotationClass.tpe :: ifaces
+            else if (jclazz.isInterface)
+              ObjectTpe :: ifaces // interfaces have Object as superclass in the classfile (see jvm spec), but getGenericSuperclass seems to return null
+            else
+              (if (jsuperclazz == null)
+                 AnyTpe
+               else typeToScala(jsuperclazz)) :: ifaces
+          } finally {
+            parentsLevel -= 1
+          }
         clazz setInfo GenPolyType(
           tparams,
           new ClassInfoType(parents, newScope, clazz))

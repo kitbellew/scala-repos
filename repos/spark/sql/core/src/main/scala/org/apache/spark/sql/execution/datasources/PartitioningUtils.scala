@@ -472,12 +472,13 @@ private[sql] object PartitioningUtils {
     while (i < path.length) {
       val c = path.charAt(i)
       if (c == '%' && i + 2 < path.length) {
-        val code: Int = try {
-          Integer.valueOf(path.substring(i + 1, i + 3), 16)
-        } catch {
-          case e: Exception =>
-            -1: Integer
-        }
+        val code: Int =
+          try {
+            Integer.valueOf(path.substring(i + 1, i + 3), 16)
+          } catch {
+            case e: Exception =>
+              -1: Integer
+          }
         if (code >= 0) {
           sb.append(code.asInstanceOf[Char])
           i += 3

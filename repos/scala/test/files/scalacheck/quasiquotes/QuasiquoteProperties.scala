@@ -77,15 +77,16 @@ trait Helpers {
   def assertThrows[T <: AnyRef](f: => Any)(
       implicit manifest: Manifest[T]): Unit = {
     val clazz = manifest.runtimeClass.asInstanceOf[Class[T]]
-    val thrown = try {
-      f
-      false
-    } catch {
-      case u: Throwable =>
-        if (!clazz.isAssignableFrom(u.getClass))
-          assert(false, s"wrong exception: $u")
-        true
-    }
+    val thrown =
+      try {
+        f
+        false
+      } catch {
+        case u: Throwable =>
+          if (!clazz.isAssignableFrom(u.getClass))
+            assert(false, s"wrong exception: $u")
+          true
+      }
     if (!thrown) assert(false, "exception wasn't thrown")
   }
 

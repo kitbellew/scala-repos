@@ -94,12 +94,13 @@ private[spark] class IndexShuffleBlockResolver(
     }
     val lengths = new Array[Long](blocks)
     // Read the lengths of blocks
-    val in = try {
-      new DataInputStream(new BufferedInputStream(new FileInputStream(index)))
-    } catch {
-      case e: IOException =>
-        return null
-    }
+    val in =
+      try {
+        new DataInputStream(new BufferedInputStream(new FileInputStream(index)))
+      } catch {
+        case e: IOException =>
+          return null
+      }
     try {
       // Convert the offsets into lengths of each block
       var offset = in.readLong()

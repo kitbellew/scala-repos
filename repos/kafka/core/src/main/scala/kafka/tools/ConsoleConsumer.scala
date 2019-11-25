@@ -131,24 +131,25 @@ object ConsoleConsumer extends Logging {
       consumer: BaseConsumer,
       skipMessageOnError: Boolean) {
     while (messageCount < maxMessages || maxMessages == -1) {
-      val msg: BaseConsumerRecord = try {
-        consumer.receive()
-      } catch {
-        case nse: StreamEndException =>
-          trace(
-            "Caught StreamEndException because consumer is shutdown, ignore and terminate.")
-          // Consumer is already closed
-          return
-        case nse: WakeupException =>
-          trace(
-            "Caught WakeupException because consumer is shutdown, ignore and terminate.")
-          // Consumer will be closed
-          return
-        case e: Throwable =>
-          error("Error processing message, terminating consumer process: ", e)
-          // Consumer will be closed
-          return
-      }
+      val msg: BaseConsumerRecord =
+        try {
+          consumer.receive()
+        } catch {
+          case nse: StreamEndException =>
+            trace(
+              "Caught StreamEndException because consumer is shutdown, ignore and terminate.")
+            // Consumer is already closed
+            return
+          case nse: WakeupException =>
+            trace(
+              "Caught WakeupException because consumer is shutdown, ignore and terminate.")
+            // Consumer will be closed
+            return
+          case e: Throwable =>
+            error("Error processing message, terminating consumer process: ", e)
+            // Consumer will be closed
+            return
+        }
       messageCount += 1
       try {
         formatter.writeTo(

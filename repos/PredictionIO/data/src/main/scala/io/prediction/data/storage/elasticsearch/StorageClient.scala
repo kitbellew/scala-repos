@@ -27,28 +27,29 @@ class StorageClient(val config: StorageClientConfig)
     extends BaseStorageClient
     with Logging {
   override val prefix = "ES"
-  val client = try {
-    val hosts = config.properties
-      .get("HOSTS")
-      .map(_.split(",").toSeq)
-      .getOrElse(Seq("localhost"))
-    val ports = config.properties
-      .get("PORTS")
-      .map(_.split(",").toSeq.map(_.toInt))
-      .getOrElse(Seq(9300))
-    val settings = ImmutableSettings
-      .settingsBuilder()
-      .put(
-        "cluster.name",
-        config.properties.getOrElse("CLUSTERNAME", "elasticsearch"))
-    val transportClient = new TransportClient(settings)
-    (hosts zip ports) foreach { hp =>
-      transportClient.addTransportAddress(
-        new InetSocketTransportAddress(hp._1, hp._2))
+  val client =
+    try {
+      val hosts = config.properties
+        .get("HOSTS")
+        .map(_.split(",").toSeq)
+        .getOrElse(Seq("localhost"))
+      val ports = config.properties
+        .get("PORTS")
+        .map(_.split(",").toSeq.map(_.toInt))
+        .getOrElse(Seq(9300))
+      val settings = ImmutableSettings
+        .settingsBuilder()
+        .put(
+          "cluster.name",
+          config.properties.getOrElse("CLUSTERNAME", "elasticsearch"))
+      val transportClient = new TransportClient(settings)
+      (hosts zip ports) foreach { hp =>
+        transportClient.addTransportAddress(
+          new InetSocketTransportAddress(hp._1, hp._2))
+      }
+      transportClient
+    } catch {
+      case e: ConnectTransportException =>
+        throw new StorageClientException(e.getMessage, e)
     }
-    transportClient
-  } catch {
-    case e: ConnectTransportException =>
-      throw new StorageClientException(e.getMessage, e)
-  }
 }

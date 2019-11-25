@@ -299,11 +299,12 @@ object ImageUtils extends Logging {
         localContext.setAttribute(
           ClientContext.COOKIE_STORE,
           HtmlFetcher.emptyCookieStore)
-        val response = try {
-          config.getHtmlFetcher.getHttpClient.execute(httpget, localContext)
-        } catch {
-          case ex: Exception => throw new ImageFetchException(imageSrc, ex)
-        }
+        val response =
+          try {
+            config.getHtmlFetcher.getHttpClient.execute(httpget, localContext)
+          } catch {
+            case ex: Exception => throw new ImageFetchException(imageSrc, ex)
+          }
 
         val respStatus = response.getStatusLine.getStatusCode
 

@@ -939,10 +939,11 @@ class FutureTests extends MinimalScalaTest {
     }
 
     "should not throw when Await.ready" in {
-      val expected = try Success(5 / 0)
-      catch {
-        case a: ArithmeticException => Failure(a)
-      }
+      val expected =
+        try Success(5 / 0)
+        catch {
+          case a: ArithmeticException => Failure(a)
+        }
       val f = Future(5).map(_ / 0)
       Await.ready(f, defaultTimeout).value.get.toString mustBe expected.toString
     }

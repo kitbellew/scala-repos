@@ -115,13 +115,14 @@ private[spark] class TaskSchedulerImpl(
   var rootPool: Pool = null
   // default scheduler is FIFO
   private val schedulingModeConf = conf.get("spark.scheduler.mode", "FIFO")
-  val schedulingMode: SchedulingMode = try {
-    SchedulingMode.withName(schedulingModeConf.toUpperCase)
-  } catch {
-    case e: java.util.NoSuchElementException =>
-      throw new SparkException(
-        s"Unrecognized spark.scheduler.mode: $schedulingModeConf")
-  }
+  val schedulingMode: SchedulingMode =
+    try {
+      SchedulingMode.withName(schedulingModeConf.toUpperCase)
+    } catch {
+      case e: java.util.NoSuchElementException =>
+        throw new SparkException(
+          s"Unrecognized spark.scheduler.mode: $schedulingModeConf")
+    }
 
   // This is a var so that we can reset it for testing purposes.
   private[spark] var taskResultGetter = new TaskResultGetter(sc.env, this)

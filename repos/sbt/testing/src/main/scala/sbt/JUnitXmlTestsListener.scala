@@ -22,10 +22,11 @@ import testing.{
 class JUnitXmlTestsListener(val outputDir: String) extends TestsListener {
 
   /**Current hostname so we know which machine executed the tests*/
-  val hostname = try InetAddress.getLocalHost.getHostName
-  catch {
-    case x: IOException => "localhost"
-  }
+  val hostname =
+    try InetAddress.getLocalHost.getHostName
+    catch {
+      case x: IOException => "localhost"
+    }
 
   /**The dir in which we put all result files. Is equal to the given dir + "/test-reports"*/
   val targetDir = new File(outputDir + "/test-reports/")

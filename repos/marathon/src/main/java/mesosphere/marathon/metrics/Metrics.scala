@@ -81,12 +81,13 @@ object Metrics {
   class Timer(private[metrics] val timer: com.codahale.metrics.Timer) {
     def timeFuture[T](future: => Future[T]): Future[T] = {
       val startTime = System.nanoTime()
-      val f = try future
-      catch {
-        case NonFatal(e) =>
-          timer.update(System.nanoTime() - startTime, TimeUnit.NANOSECONDS)
-          throw e
-      }
+      val f =
+        try future
+        catch {
+          case NonFatal(e) =>
+            timer.update(System.nanoTime() - startTime, TimeUnit.NANOSECONDS)
+            throw e
+        }
       import mesosphere.util.CallerThreadExecutionContext.callerThreadExecutionContext
       f.onComplete {
         case _ =>

@@ -503,14 +503,15 @@ object BuiltinCommands {
       else Aggregation.evaluatingParser(s, structure, show)(kvs)
     } yield () => {
       def export0(s: State): State = lastImpl(s, kvs, Some(ExportStream))
-      val newS = try f()
-      catch {
-        case e: Exception =>
-          try export0(s)
-          finally {
-            throw e
-          }
-      }
+      val newS =
+        try f()
+        catch {
+          case e: Exception =>
+            try export0(s)
+            finally {
+              throw e
+            }
+        }
       export0(newS)
     }
   }
@@ -699,19 +700,20 @@ object BuiltinCommands {
     val s =
       if (s1 has Keys.stateCompilerCache) s1 else registerCompilerCache(s1)
 
-    val (eval, structure) = try Load.defaultLoad(
-      s,
-      base,
-      s.log,
-      Project.inPluginProject(s),
-      Project.extraBuilds(s))
-    catch {
-      case ex: compiler.EvalException =>
-        s0.log.debug(ex.getMessage)
-        ex.getStackTrace map (ste => s"\tat $ste") foreach (s0.log.debug(_))
-        ex.setStackTrace(Array.empty)
-        throw ex
-    }
+    val (eval, structure) =
+      try Load.defaultLoad(
+        s,
+        base,
+        s.log,
+        Project.inPluginProject(s),
+        Project.extraBuilds(s))
+      catch {
+        case ex: compiler.EvalException =>
+          s0.log.debug(ex.getMessage)
+          ex.getStackTrace map (ste => s"\tat $ste") foreach (s0.log.debug(_))
+          ex.setStackTrace(Array.empty)
+          throw ex
+      }
 
     val session = Load.initialSession(structure, eval, s0)
     SessionSettings.checkSession(session, s)
@@ -722,13 +724,14 @@ object BuiltinCommands {
     val cache =
       if (maxCompilers == null) CompilerCache.fresh
       else {
-        val num = try maxCompilers.toInt
-        catch {
-          case e: NumberFormatException =>
-            throw new RuntimeException(
-              "Resident compiler limit must be an integer.",
-              e)
-        }
+        val num =
+          try maxCompilers.toInt
+          catch {
+            case e: NumberFormatException =>
+              throw new RuntimeException(
+                "Resident compiler limit must be an integer.",
+                e)
+          }
         if (num <= 0) CompilerCache.fresh else CompilerCache(num)
       }
     s.put(Keys.stateCompilerCache, cache)

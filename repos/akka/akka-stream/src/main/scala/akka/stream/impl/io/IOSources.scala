@@ -70,19 +70,20 @@ private[akka] final class InputStreamSource(
     val materializer = ActorMaterializer.downcast(context.materializer)
     val ioResultPromise = Promise[IOResult]()
 
-    val pub = try {
-      val is = createInputStream() // can throw, i.e. FileNotFound
+    val pub =
+      try {
+        val is = createInputStream() // can throw, i.e. FileNotFound
 
-      val props = InputStreamPublisher.props(is, ioResultPromise, chunkSize)
+        val props = InputStreamPublisher.props(is, ioResultPromise, chunkSize)
 
-      val ref = materializer.actorOf(context, props)
-      akka.stream.actor.ActorPublisher[ByteString](ref)
-    } catch {
-      case ex: Exception ⇒
-        ioResultPromise.failure(ex)
-        ErrorPublisher(ex, attributes.nameOrDefault("inputStreamSource"))
-          .asInstanceOf[Publisher[ByteString]]
-    }
+        val ref = materializer.actorOf(context, props)
+        akka.stream.actor.ActorPublisher[ByteString](ref)
+      } catch {
+        case ex: Exception ⇒
+          ioResultPromise.failure(ex)
+          ErrorPublisher(ex, attributes.nameOrDefault("inputStreamSource"))
+            .asInstanceOf[Publisher[ByteString]]
+      }
 
     (pub, ioResultPromise.future)
   }

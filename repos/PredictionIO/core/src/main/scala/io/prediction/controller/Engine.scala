@@ -649,16 +649,17 @@ object Engine {
       logger.info("Data sanity check is on.")
     }
 
-    val td = try {
-      dataSource.readTrainingBase(sc)
-    } catch {
-      case e: StorageClientException =>
-        logger.error(
-          s"Error occured reading from data source. (Reason: " +
-            e.getMessage + ") Please see the log for debugging details.",
-          e)
-        sys.exit(1)
-    }
+    val td =
+      try {
+        dataSource.readTrainingBase(sc)
+      } catch {
+        case e: StorageClientException =>
+          logger.error(
+            s"Error occured reading from data source. (Reason: " +
+              e.getMessage + ") Please see the log for debugging details.",
+            e)
+          sys.exit(1)
+      }
 
     if (!params.skipSanityCheck) {
       td match {

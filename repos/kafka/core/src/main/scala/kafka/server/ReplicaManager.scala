@@ -674,112 +674,113 @@ class ReplicaManager(
         BrokerTopicStats.getBrokerTopicStats(topic).totalFetchRequestRate.mark()
         BrokerTopicStats.getBrokerAllTopicsStats().totalFetchRequestRate.mark()
 
-        val partitionDataAndOffsetInfo = try {
-          trace(
-            "Fetching log segment for topic %s, partition %d, offset %d, size %d"
-              .format(topic, partition, offset, fetchSize))
+        val partitionDataAndOffsetInfo =
+          try {
+            trace(
+              "Fetching log segment for topic %s, partition %d, offset %d, size %d"
+                .format(topic, partition, offset, fetchSize))
 
-          // decide whether to only fetch from leader
-          val localReplica =
-            if (fetchOnlyFromLeader) getLeaderReplicaIfLocal(topic, partition)
-            else getReplicaOrException(topic, partition)
+            // decide whether to only fetch from leader
+            val localReplica =
+              if (fetchOnlyFromLeader) getLeaderReplicaIfLocal(topic, partition)
+              else getReplicaOrException(topic, partition)
 
-          // decide whether to only fetch committed data (i.e. messages below high watermark)
-          val maxOffsetOpt =
-            if (readOnlyCommitted)
-              Some(localReplica.highWatermark.messageOffset)
-            else None
+            // decide whether to only fetch committed data (i.e. messages below high watermark)
+            val maxOffsetOpt =
+              if (readOnlyCommitted)
+                Some(localReplica.highWatermark.messageOffset)
+              else None
 
-          /* Read the LogOffsetMetadata prior to performing the read from the log.
-           * We use the LogOffsetMetadata to determine if a particular replica is in-sync or not.
-           * Using the log end offset after performing the read can lead to a race condition
-           * where data gets appended to the log immediately after the replica has consumed from it
-           * This can cause a replica to always be out of sync.
-           */
-          val initialLogEndOffset = localReplica.logEndOffset
-          val logReadInfo = localReplica.log match {
-            case Some(log) =>
-              log.read(offset, fetchSize, maxOffsetOpt)
-            case None =>
+            /* Read the LogOffsetMetadata prior to performing the read from the log.
+             * We use the LogOffsetMetadata to determine if a particular replica is in-sync or not.
+             * Using the log end offset after performing the read can lead to a race condition
+             * where data gets appended to the log immediately after the replica has consumed from it
+             * This can cause a replica to always be out of sync.
+             */
+            val initialLogEndOffset = localReplica.logEndOffset
+            val logReadInfo = localReplica.log match {
+              case Some(log) =>
+                log.read(offset, fetchSize, maxOffsetOpt)
+              case None =>
+                error(
+                  "Leader for partition [%s,%d] does not have a local log"
+                    .format(topic, partition))
+                FetchDataInfo(
+                  LogOffsetMetadata.UnknownOffsetMetadata,
+                  MessageSet.Empty)
+            }
+
+            val readToEndOfLog =
+              initialLogEndOffset.messageOffset -
+                logReadInfo.fetchOffsetMetadata.messageOffset <= 0
+
+            LogReadResult(
+              logReadInfo,
+              localReplica.highWatermark.messageOffset,
+              fetchSize,
+              readToEndOfLog,
+              None)
+          } catch {
+            // NOTE: Failed fetch requests metric is not incremented for known exceptions since it
+            // is supposed to indicate un-expected failure of a broker in handling a fetch request
+            case utpe: UnknownTopicOrPartitionException =>
+              LogReadResult(
+                FetchDataInfo(
+                  LogOffsetMetadata.UnknownOffsetMetadata,
+                  MessageSet.Empty),
+                -1L,
+                fetchSize,
+                false,
+                Some(utpe))
+            case nle: NotLeaderForPartitionException =>
+              LogReadResult(
+                FetchDataInfo(
+                  LogOffsetMetadata.UnknownOffsetMetadata,
+                  MessageSet.Empty),
+                -1L,
+                fetchSize,
+                false,
+                Some(nle))
+            case rnae: ReplicaNotAvailableException =>
+              LogReadResult(
+                FetchDataInfo(
+                  LogOffsetMetadata.UnknownOffsetMetadata,
+                  MessageSet.Empty),
+                -1L,
+                fetchSize,
+                false,
+                Some(rnae))
+            case oor: OffsetOutOfRangeException =>
+              LogReadResult(
+                FetchDataInfo(
+                  LogOffsetMetadata.UnknownOffsetMetadata,
+                  MessageSet.Empty),
+                -1L,
+                fetchSize,
+                false,
+                Some(oor))
+            case e: Throwable =>
+              BrokerTopicStats
+                .getBrokerTopicStats(topic)
+                .failedFetchRequestRate
+                .mark()
+              BrokerTopicStats
+                .getBrokerAllTopicsStats()
+                .failedFetchRequestRate
+                .mark()
               error(
-                "Leader for partition [%s,%d] does not have a local log"
-                  .format(topic, partition))
-              FetchDataInfo(
-                LogOffsetMetadata.UnknownOffsetMetadata,
-                MessageSet.Empty)
+                "Error processing fetch operation on partition [%s,%d] offset %d"
+                  .format(topic, partition, offset),
+                e)
+              LogReadResult(
+                FetchDataInfo(
+                  LogOffsetMetadata.UnknownOffsetMetadata,
+                  MessageSet.Empty),
+                -1L,
+                fetchSize,
+                false,
+                Some(e))
           }
-
-          val readToEndOfLog =
-            initialLogEndOffset.messageOffset -
-              logReadInfo.fetchOffsetMetadata.messageOffset <= 0
-
-          LogReadResult(
-            logReadInfo,
-            localReplica.highWatermark.messageOffset,
-            fetchSize,
-            readToEndOfLog,
-            None)
-        } catch {
-          // NOTE: Failed fetch requests metric is not incremented for known exceptions since it
-          // is supposed to indicate un-expected failure of a broker in handling a fetch request
-          case utpe: UnknownTopicOrPartitionException =>
-            LogReadResult(
-              FetchDataInfo(
-                LogOffsetMetadata.UnknownOffsetMetadata,
-                MessageSet.Empty),
-              -1L,
-              fetchSize,
-              false,
-              Some(utpe))
-          case nle: NotLeaderForPartitionException =>
-            LogReadResult(
-              FetchDataInfo(
-                LogOffsetMetadata.UnknownOffsetMetadata,
-                MessageSet.Empty),
-              -1L,
-              fetchSize,
-              false,
-              Some(nle))
-          case rnae: ReplicaNotAvailableException =>
-            LogReadResult(
-              FetchDataInfo(
-                LogOffsetMetadata.UnknownOffsetMetadata,
-                MessageSet.Empty),
-              -1L,
-              fetchSize,
-              false,
-              Some(rnae))
-          case oor: OffsetOutOfRangeException =>
-            LogReadResult(
-              FetchDataInfo(
-                LogOffsetMetadata.UnknownOffsetMetadata,
-                MessageSet.Empty),
-              -1L,
-              fetchSize,
-              false,
-              Some(oor))
-          case e: Throwable =>
-            BrokerTopicStats
-              .getBrokerTopicStats(topic)
-              .failedFetchRequestRate
-              .mark()
-            BrokerTopicStats
-              .getBrokerAllTopicsStats()
-              .failedFetchRequestRate
-              .mark()
-            error(
-              "Error processing fetch operation on partition [%s,%d] offset %d"
-                .format(topic, partition, offset),
-              e)
-            LogReadResult(
-              FetchDataInfo(
-                LogOffsetMetadata.UnknownOffsetMetadata,
-                MessageSet.Empty),
-              -1L,
-              fetchSize,
-              false,
-              Some(e))
-        }
         (TopicAndPartition(topic, partition), partitionDataAndOffsetInfo)
     }
   }

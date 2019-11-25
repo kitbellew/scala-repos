@@ -71,23 +71,25 @@ class Eval(target: Option[File]) {
 
   import Eval.jvmId
 
-  private lazy val compilerPath = try {
-    classPathOfClass("scala.tools.nsc.Interpreter")
-  } catch {
-    case e: Throwable =>
-      throw new RuntimeException(
-        "Unable to load Scala interpreter from classpath (scala-compiler jar is missing?)",
-        e)
-  }
+  private lazy val compilerPath =
+    try {
+      classPathOfClass("scala.tools.nsc.Interpreter")
+    } catch {
+      case e: Throwable =>
+        throw new RuntimeException(
+          "Unable to load Scala interpreter from classpath (scala-compiler jar is missing?)",
+          e)
+    }
 
-  private lazy val libPath = try {
-    classPathOfClass("scala.AnyVal")
-  } catch {
-    case e: Throwable =>
-      throw new RuntimeException(
-        "Unable to load scala base object from classpath (scala-library jar is missing?)",
-        e)
-  }
+  private lazy val libPath =
+    try {
+      classPathOfClass("scala.AnyVal")
+    } catch {
+      case e: Throwable =>
+        throw new RuntimeException(
+          "Unable to load scala base object from classpath (scala-library jar is missing?)",
+          e)
+    }
 
   /**
     * Preprocessors to run the code through before it is passed to the Scala compiler.
@@ -527,11 +529,12 @@ class Eval(target: Option[File]) {
             case _       => ""
           }
           // the line number is not always available
-          val lineMessage = try {
-            "line " + (pos.line - lineOffset)
-          } catch {
-            case _: Throwable => ""
-          }
+          val lineMessage =
+            try {
+              "line " + (pos.line - lineOffset)
+            } catch {
+              case _: Throwable => ""
+            }
           messages += (severityName + lineMessage + ": " + message) ::
             (if (pos.isDefined) {
                pos.inUltimateSource(pos.source).lineContent.stripLineEnd ::

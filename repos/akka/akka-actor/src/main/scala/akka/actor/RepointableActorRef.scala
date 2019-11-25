@@ -95,13 +95,14 @@ private[akka] class RepointableActorRef(
   def point(catchFailures: Boolean): this.type =
     underlying match {
       case u: UnstartedCell ⇒
-        val cell = try newCell(u)
-        catch {
-          case NonFatal(ex) if catchFailures ⇒
-            val safeDispatcher = system.dispatchers.defaultGlobalDispatcher
-            new ActorCell(system, this, props, safeDispatcher, supervisor)
-              .initWithFailure(ex)
-        }
+        val cell =
+          try newCell(u)
+          catch {
+            case NonFatal(ex) if catchFailures ⇒
+              val safeDispatcher = system.dispatchers.defaultGlobalDispatcher
+              new ActorCell(system, this, props, safeDispatcher, supervisor)
+                .initWithFailure(ex)
+          }
         /*
          * The problem here was that if the real actor (which will start running
          * at cell.start()) creates children in its constructor, then this may

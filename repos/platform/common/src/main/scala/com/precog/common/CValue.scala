@@ -400,18 +400,20 @@ object CType {
     case JBool(_) => Some(CBoolean)
 
     case JNum(d) => {
-      lazy val isLong = try {
-        d.toLongExact
-        true
-      } catch {
-        case _: ArithmeticException => false
-      }
+      lazy val isLong =
+        try {
+          d.toLongExact
+          true
+        } catch {
+          case _: ArithmeticException => false
+        }
 
-      lazy val isDouble = try {
-        BigDecimal(d.toDouble.toString, MathContext.UNLIMITED) == d
-      } catch {
-        case _: NumberFormatException | _: ArithmeticException => false
-      }
+      lazy val isDouble =
+        try {
+          BigDecimal(d.toDouble.toString, MathContext.UNLIMITED) == d
+        } catch {
+          case _: NumberFormatException | _: ArithmeticException => false
+        }
 
       if (isLong) Some(CLong)
       else if (isDouble) Some(CDouble)

@@ -565,14 +565,17 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
       addRepositories(request)
       request
     }
-    val (aetherResults, failed) = try {
-      (system.resolveArtifacts(session, requests.toList.asJava).asScala, false)
-    } catch {
-      case e: org.eclipse.aether.resolution.ArtifactResolutionException =>
-        Message.error(
-          s"Failed to resolve artifacts from ${getName}, ${e.getMessage}")
-        (e.getResults.asScala, true)
-    }
+    val (aetherResults, failed) =
+      try {
+        (
+          system.resolveArtifacts(session, requests.toList.asJava).asScala,
+          false)
+      } catch {
+        case e: org.eclipse.aether.resolution.ArtifactResolutionException =>
+          Message.error(
+            s"Failed to resolve artifacts from ${getName}, ${e.getMessage}")
+          (e.getResults.asScala, true)
+      }
     for ((result, art) <- aetherResults zip artifacts) {
       Message.debug(s"Aether resolved artifact result: $result")
       val adr = new ArtifactDownloadReport(art)

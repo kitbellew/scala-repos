@@ -114,13 +114,14 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
       serializerId: Int,
       clazz: Option[Class[_ <: T]]): Try[T] =
     Try {
-      val serializer = try serializerByIdentity(serializerId)
-      catch {
-        case _: NoSuchElementException ⇒
-          throw new NotSerializableException(
-            s"Cannot find serializer with id [$serializerId]. The most probable reason is that the configuration entry " +
-              "akka.actor.serializers is not in synch between the two systems.")
-      }
+      val serializer =
+        try serializerByIdentity(serializerId)
+        catch {
+          case _: NoSuchElementException ⇒
+            throw new NotSerializableException(
+              s"Cannot find serializer with id [$serializerId]. The most probable reason is that the configuration entry " +
+                "akka.actor.serializers is not in synch between the two systems.")
+        }
       serializer.fromBinary(bytes, clazz).asInstanceOf[T]
     }
 
@@ -134,13 +135,14 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
       serializerId: Int,
       manifest: String): Try[AnyRef] =
     Try {
-      val serializer = try serializerByIdentity(serializerId)
-      catch {
-        case _: NoSuchElementException ⇒
-          throw new NotSerializableException(
-            s"Cannot find serializer with id [$serializerId]. The most probable reason is that the configuration entry " +
-              "akka.actor.serializers is not in synch between the two systems.")
-      }
+      val serializer =
+        try serializerByIdentity(serializerId)
+        catch {
+          case _: NoSuchElementException ⇒
+            throw new NotSerializableException(
+              s"Cannot find serializer with id [$serializerId]. The most probable reason is that the configuration entry " +
+                "akka.actor.serializers is not in synch between the two systems.")
+        }
       serializer match {
         case s2: SerializerWithStringManifest ⇒ s2.fromBinary(bytes, manifest)
         case s1 ⇒

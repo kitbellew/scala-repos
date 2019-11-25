@@ -79,10 +79,11 @@ object ScalaSyntheticProvider {
   }
 
   private def onlyInvokesStatic(m: Method): Boolean = {
-    val bytecodes = try m.bytecodes()
-    catch {
-      case t: Throwable => return false
-    }
+    val bytecodes =
+      try m.bytecodes()
+      catch {
+        case t: Throwable => return false
+      }
 
     var i = 0
     while (i < bytecodes.length) {

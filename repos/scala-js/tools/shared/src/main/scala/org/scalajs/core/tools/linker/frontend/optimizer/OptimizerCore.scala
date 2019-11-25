@@ -108,21 +108,27 @@ private[optimizer] abstract class OptimizerCore(
       originalDef: MethodDef): LinkedMember[MethodDef] = {
     try {
       val MethodDef(static, name, params, resultType, body) = originalDef
-      val (newParams, newBody1) = try {
-        transformIsolatedBody(Some(myself), thisType, params, resultType, body)
-      } catch {
-        case _: TooManyRollbacksException =>
-          usedLocalNames.clear()
-          usedLabelNames.clear()
-          statesInUse = Nil
-          disableOptimisticOptimizations = true
+      val (newParams, newBody1) =
+        try {
           transformIsolatedBody(
             Some(myself),
             thisType,
             params,
             resultType,
             body)
-      }
+        } catch {
+          case _: TooManyRollbacksException =>
+            usedLocalNames.clear()
+            usedLabelNames.clear()
+            statesInUse = Nil
+            disableOptimisticOptimizations = true
+            transformIsolatedBody(
+              Some(myself),
+              thisType,
+              params,
+              resultType,
+              body)
+        }
       val newBody =
         if (name.name == "init___") tryElimStoreModule(newBody1)
         else newBody1

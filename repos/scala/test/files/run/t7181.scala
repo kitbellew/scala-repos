@@ -18,12 +18,13 @@ case class CaughtException(action: Action) extends RuntimeException
 object Test extends App {
   def test(action: Action, expectException: Boolean = false) {
     var gotException = false
-    val result = try driver(action)
-    catch {
-      case UncaughtException(a) =>
-        gotException = true
-        a
-    }
+    val result =
+      try driver(action)
+      catch {
+        case UncaughtException(a) =>
+          gotException = true
+          a
+      }
     if (gotException) assert(expectException, "Got unexpected exception")
     else assert(!expectException, "Did not get expected exception")
 
@@ -32,39 +33,40 @@ object Test extends App {
   }
 
   def driver(action: Action): Action = {
-    val result = try {
-      action match {
-        case MainNormalExit =>
-          println(s"normal exit $action")
-          action
-        case MainReturn =>
-          println(s"return $action")
-          return action
-        case MainUncaughtException =>
-          println(s"uncaught exception $action")
-          throw UncaughtException(action)
-        case _ =>
-          println(s"caught exception $action")
-          throw CaughtException(action)
-      }
-    } catch {
-      case CaughtException(action) =>
+    val result =
+      try {
         action match {
-          case ExceptionNormalExit =>
+          case MainNormalExit =>
             println(s"normal exit $action")
             action
-          case ExceptionReturn =>
+          case MainReturn =>
             println(s"return $action")
             return action
-          case ExceptionUncaughtException =>
+          case MainUncaughtException =>
             println(s"uncaught exception $action")
             throw UncaughtException(action)
           case _ =>
-            sys.error(s"unexpected $action in exception handler")
+            println(s"caught exception $action")
+            throw CaughtException(action)
         }
-    } finally {
-      println(s"finally $action")
-    }
+      } catch {
+        case CaughtException(action) =>
+          action match {
+            case ExceptionNormalExit =>
+              println(s"normal exit $action")
+              action
+            case ExceptionReturn =>
+              println(s"return $action")
+              return action
+            case ExceptionUncaughtException =>
+              println(s"uncaught exception $action")
+              throw UncaughtException(action)
+            case _ =>
+              sys.error(s"unexpected $action in exception handler")
+          }
+      } finally {
+        println(s"finally $action")
+      }
     println(s"normal flow $action")
     result
   }

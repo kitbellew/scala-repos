@@ -148,12 +148,13 @@ private[http] abstract class HttpMessageParser[
       hh: Boolean = false): StateResult =
     if (headerCount < maxHeaderCount) {
       var lineEnd = 0
-      val resultHeader = try {
-        lineEnd = headerParser.parseHeaderLine(input, lineStart)()
-        headerParser.resultHeader
-      } catch {
-        case NotEnoughDataException ⇒ null
-      }
+      val resultHeader =
+        try {
+          lineEnd = headerParser.parseHeaderLine(input, lineStart)()
+          headerParser.resultHeader
+        } catch {
+          case NotEnoughDataException ⇒ null
+        }
       resultHeader match {
         case null ⇒
           continue(input, lineStart)(

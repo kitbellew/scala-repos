@@ -233,12 +233,13 @@ class InterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(
                 val fstaticSym = fstaticTag.tpe.typeSymbol
                 if (fstaticSym.isEffectivelyFinal)
                   freader.hintElidedType(fstaticTag)
-                val fdynamicTag = try {
-                  freader.beginEntry()
-                } catch {
-                  case e @ PicklingException(msg, cause) =>
-                    debug(
-                      s"""error in interpreted runtime unpickler while reading tag of field '${fir.name}
+                val fdynamicTag =
+                  try {
+                    freader.beginEntry()
+                  } catch {
+                    case e @ PicklingException(msg, cause) =>
+                      debug(
+                        s"""error in interpreted runtime unpickler while reading tag of field '${fir.name}
 ':
                          |$msg
 
@@ -246,8 +247,8 @@ class InterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(
 '
                          |static type of field: '${fir.tpe.key}'
                          |""".stripMargin)
-                    throw e
-                }
+                      throw e
+                  }
                 val fval = {
                   if (freader.atPrimitive) {
                     val result = freader.readPrimitive()
@@ -345,18 +346,19 @@ class ShareNothingInterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(
                 val fstaticSym = fstaticTag.tpe.typeSymbol
                 if (fstaticSym.isEffectivelyFinal)
                   freader.hintElidedType(fstaticTag)
-                val fdynamicTag = try {
-                  freader.beginEntry()
-                } catch {
-                  case e @ PicklingException(msg, cause) =>
-                    debug(
-                      s"""error in interpreted runtime unpickler while reading tag of field '${fir.name}':
+                val fdynamicTag =
+                  try {
+                    freader.beginEntry()
+                  } catch {
+                    case e @ PicklingException(msg, cause) =>
+                      debug(
+                        s"""error in interpreted runtime unpickler while reading tag of field '${fir.name}':
                          |$msg
                          |enclosing object has type: '${tagKey}'
                          |static type of field: '${fir.tpe.key}'
                          |""".stripMargin)
-                    throw e
-                }
+                      throw e
+                  }
                 val fval = {
                   if (freader.atPrimitive) {
                     val result = freader.readPrimitive()

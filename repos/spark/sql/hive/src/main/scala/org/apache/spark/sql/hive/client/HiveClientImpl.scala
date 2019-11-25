@@ -125,44 +125,45 @@ private[hive] class HiveClientImpl(
       }
     }
 
-    val ret = try {
-      // originState will be created if not exists, will never be null
-      val originalState = SessionState.get()
-      if (originalState.isInstanceOf[CliSessionState]) {
-        // In `SparkSQLCLIDriver`, we have already started a `CliSessionState`,
-        // which contains information like configurations from command line. Later
-        // we call `SparkSQLEnv.init()` there, which would run into this part again.
-        // so we should keep `conf` and reuse the existing instance of `CliSessionState`.
-        originalState
-      } else {
-        val initialConf = new HiveConf(hadoopConf, classOf[SessionState])
-        // HiveConf is a Hadoop Configuration, which has a field of classLoader and
-        // the initial value will be the current thread's context class loader
-        // (i.e. initClassLoader at here).
-        // We call initialConf.setClassLoader(initClassLoader) at here to make
-        // this action explicit.
-        initialConf.setClassLoader(initClassLoader)
-        config.foreach {
-          case (k, v) =>
-            if (k.toLowerCase.contains("password")) {
-              logDebug(s"Hive Config: $k=xxx")
-            } else {
-              logDebug(s"Hive Config: $k=$v")
-            }
-            initialConf.set(k, v)
+    val ret =
+      try {
+        // originState will be created if not exists, will never be null
+        val originalState = SessionState.get()
+        if (originalState.isInstanceOf[CliSessionState]) {
+          // In `SparkSQLCLIDriver`, we have already started a `CliSessionState`,
+          // which contains information like configurations from command line. Later
+          // we call `SparkSQLEnv.init()` there, which would run into this part again.
+          // so we should keep `conf` and reuse the existing instance of `CliSessionState`.
+          originalState
+        } else {
+          val initialConf = new HiveConf(hadoopConf, classOf[SessionState])
+          // HiveConf is a Hadoop Configuration, which has a field of classLoader and
+          // the initial value will be the current thread's context class loader
+          // (i.e. initClassLoader at here).
+          // We call initialConf.setClassLoader(initClassLoader) at here to make
+          // this action explicit.
+          initialConf.setClassLoader(initClassLoader)
+          config.foreach {
+            case (k, v) =>
+              if (k.toLowerCase.contains("password")) {
+                logDebug(s"Hive Config: $k=xxx")
+              } else {
+                logDebug(s"Hive Config: $k=$v")
+              }
+              initialConf.set(k, v)
+          }
+          val state = new SessionState(initialConf)
+          if (clientLoader.cachedHive != null) {
+            Hive.set(clientLoader.cachedHive.asInstanceOf[Hive])
+          }
+          SessionState.start(state)
+          state.out = new PrintStream(outputBuffer, true, "UTF-8")
+          state.err = new PrintStream(outputBuffer, true, "UTF-8")
+          state
         }
-        val state = new SessionState(initialConf)
-        if (clientLoader.cachedHive != null) {
-          Hive.set(clientLoader.cachedHive.asInstanceOf[Hive])
-        }
-        SessionState.start(state)
-        state.out = new PrintStream(outputBuffer, true, "UTF-8")
-        state.err = new PrintStream(outputBuffer, true, "UTF-8")
-        state
+      } finally {
+        Thread.currentThread().setContextClassLoader(original)
       }
-    } finally {
-      Thread.currentThread().setContextClassLoader(original)
-    }
     ret
   }
 
@@ -246,10 +247,11 @@ private[hive] class HiveClientImpl(
     // with the HiveConf in `state` to override the context class loader of the current
     // thread.
     shim.setCurrentSessionState(state)
-    val ret = try f
-    finally {
-      Thread.currentThread().setContextClassLoader(original)
-    }
+    val ret =
+      try f
+      finally {
+        Thread.currentThread().setContextClassLoader(original)
+      }
     ret
   }
 

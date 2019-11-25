@@ -208,9 +208,10 @@ case class RichRequest(r: HttpServletRequest) extends AttributesMap {
             "UTF-8"
           else "ISO-8859-1"
         } else encoding
-      val body: String = try {
-        Source.fromInputStream(r.getInputStream, enc).mkString
-      } catch { case e: java.io.IOException => "" }
+      val body: String =
+        try {
+          Source.fromInputStream(r.getInputStream, enc).mkString
+        } catch { case e: java.io.IOException => "" }
       update(cachedBodyKey, body)
       body
     }

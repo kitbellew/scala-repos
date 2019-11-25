@@ -196,13 +196,15 @@ object CreateWorkflow extends Logging {
               s"${wfc.engineVariant}. Aborting.")
           sys.exit(1)
       }
-      val (engineLanguage, engineFactoryObj) = try {
-        WorkflowUtils.getEngine(engineFactory, getClass.getClassLoader)
-      } catch {
-        case e @ (_: ClassNotFoundException | _: NoSuchMethodException) =>
-          error(s"Unable to obtain engine: ${e.getMessage}. Aborting workflow.")
-          sys.exit(1)
-      }
+      val (engineLanguage, engineFactoryObj) =
+        try {
+          WorkflowUtils.getEngine(engineFactory, getClass.getClassLoader)
+        } catch {
+          case e @ (_: ClassNotFoundException | _: NoSuchMethodException) =>
+            error(
+              s"Unable to obtain engine: ${e.getMessage}. Aborting workflow.")
+            sys.exit(1)
+        }
 
       val engine: BaseEngine[_, _, _, _] = engineFactoryObj()
 

@@ -148,13 +148,14 @@ object Modules {
       val moduleClass = loadModuleClass()
 
       def tryConstruct(args: AnyRef*): Option[T] = {
-        val ctor: Option[Constructor[T]] = try {
-          val argTypes = args.map(_.getClass)
-          Some(moduleClass.getConstructor(argTypes: _*))
-        } catch {
-          case _: NoSuchMethodException => None
-          case _: SecurityException     => None
-        }
+        val ctor: Option[Constructor[T]] =
+          try {
+            val argTypes = args.map(_.getClass)
+            Some(moduleClass.getConstructor(argTypes: _*))
+          } catch {
+            case _: NoSuchMethodException => None
+            case _: SecurityException     => None
+          }
         ctor.map(_.newInstance(args: _*))
       }
 

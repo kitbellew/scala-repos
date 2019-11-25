@@ -229,31 +229,34 @@ class ConfigSSLContextBuilder(
   def buildKeyManager(
       ksc: KeyStoreConfig,
       algorithmChecker: AlgorithmChecker): X509KeyManager = {
-    val keyStore = try {
-      keyStoreBuilder(ksc).build()
-    } catch {
-      case e: java.lang.ArithmeticException =>
-        // This bug only exists in 1.6: we'll only check on 1.6 and explain after the exception.
-        val willExplodeOnEmptyPassword = foldVersion(
-          run16 = warnOnPKCS12EmptyPasswordBug(ksc),
-          runHigher = false)
-        if (willExplodeOnEmptyPassword) {
-          val msg =
-            """You are running JDK 1.6, have a PKCS12 keystore with a null or empty password, and have run into a JSSE bug.
+    val keyStore =
+      try {
+        keyStoreBuilder(ksc).build()
+      } catch {
+        case e: java.lang.ArithmeticException =>
+          // This bug only exists in 1.6: we'll only check on 1.6 and explain after the exception.
+          val willExplodeOnEmptyPassword = foldVersion(
+            run16 = warnOnPKCS12EmptyPasswordBug(ksc),
+            runHigher = false)
+          if (willExplodeOnEmptyPassword) {
+            val msg =
+              """You are running JDK 1.6, have a PKCS12 keystore with a null or empty password, and have run into a JSSE bug.
               |The bug is closed in JDK 1.8, and backported to 1.7u4 / b13, so upgrading will fix this.
               |Please see: http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6879539
             """.stripMargin
-          throw new IllegalStateException(msg, e)
-        } else {
-          throw e
-        }
-      case bpe: javax.crypto.BadPaddingException =>
-        // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6415637
-        // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6974037
-        // If you run into "Given final block not properly padded", then it's because you entered in the
-        // wrong password for the keystore, and JSSE tries to decrypt and only then verify the MAC.
-        throw new SecurityException("Mac verify error: invalid password?", bpe)
-    }
+            throw new IllegalStateException(msg, e)
+          } else {
+            throw e
+          }
+        case bpe: javax.crypto.BadPaddingException =>
+          // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6415637
+          // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6974037
+          // If you run into "Given final block not properly padded", then it's because you entered in the
+          // wrong password for the keystore, and JSSE tries to decrypt and only then verify the MAC.
+          throw new SecurityException(
+            "Mac verify error: invalid password?",
+            bpe)
+      }
 
     if (!validateStoreContainsPrivateKeys(ksc, keyStore)) {
       logger.warn(

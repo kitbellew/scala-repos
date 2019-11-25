@@ -1006,10 +1006,11 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
     val rowRDD1 = unparsedStrings.map { r =>
       val values = r.split(",").map(_.trim)
-      val v4 = try values(3).toInt
-      catch {
-        case _: NumberFormatException => null
-      }
+      val v4 =
+        try values(3).toInt
+        catch {
+          case _: NumberFormatException => null
+        }
       Row(values(0).toInt, values(1), values(2).toBoolean, v4)
     }
 
@@ -1042,10 +1043,11 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
     val rowRDD2 = unparsedStrings.map { r =>
       val values = r.split(",").map(_.trim)
-      val v4 = try values(3).toInt
-      catch {
-        case _: NumberFormatException => null
-      }
+      val v4 =
+        try values(3).toInt
+        catch {
+          case _: NumberFormatException => null
+        }
       Row(Row(values(0).toInt, values(2).toBoolean), Map(values(1) -> v4))
     }
 
@@ -1067,10 +1069,11 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
     // The value of a MapType column can be a mutable map.
     val rowRDD3 = unparsedStrings.map { r =>
       val values = r.split(",").map(_.trim)
-      val v4 = try values(3).toInt
-      catch {
-        case _: NumberFormatException => null
-      }
+      val v4 =
+        try values(3).toInt
+        catch {
+          case _: NumberFormatException => null
+        }
       Row(
         Row(values(0).toInt, values(2).toBoolean),
         scala.collection.mutable.Map(values(1) -> v4))

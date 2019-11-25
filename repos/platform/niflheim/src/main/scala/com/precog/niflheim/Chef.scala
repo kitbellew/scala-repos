@@ -60,13 +60,14 @@ final case class Chef(blockFormat: CookedBlockFormat, format: SegmentFormat)
         val relativized = new File(file.getName)
         val channel: WritableByteChannel =
           new FileOutputStream(file).getChannel()
-        val result = try {
-          format.writer.writeSegment(channel, seg) map { _ =>
-            (seg.id, relativized)
+        val result =
+          try {
+            format.writer.writeSegment(channel, seg) map { _ =>
+              (seg.id, relativized)
+            }
+          } finally {
+            channel.close()
           }
-        } finally {
-          channel.close()
-        }
         result.toValidationNel
       }
 

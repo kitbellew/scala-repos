@@ -187,11 +187,12 @@ class MongoAPIKeyManagerSpec
       ExecutionContext.defaultExecutionContext(defaultActorSystem)
 
     val dbName = "test_v1_" + dbId.getAndIncrement()
-    val testDB = try {
-      mongo.database(dbName)
-    } catch {
-      case t => logger.error("Error during DB setup: " + t); throw t
-    }
+    val testDB =
+      try {
+        mongo.database(dbName)
+      } catch {
+        case t => logger.error("Error during DB setup: " + t); throw t
+      }
 
     val to = Duration(30, "seconds")
     implicit val queryTimeout: Timeout = to

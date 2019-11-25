@@ -147,10 +147,11 @@ class MemorySink(schema: StructType) extends Sink with Logging {
   def toDebugString: String = synchronized {
     batches
       .map { b =>
-        val dataStr = try b.data.collect().mkString(" ")
-        catch {
-          case NonFatal(e) => "[Error converting to string]"
-        }
+        val dataStr =
+          try b.data.collect().mkString(" ")
+          catch {
+            case NonFatal(e) => "[Error converting to string]"
+          }
         s"${b.end}: $dataStr"
       }
       .mkString("\n")

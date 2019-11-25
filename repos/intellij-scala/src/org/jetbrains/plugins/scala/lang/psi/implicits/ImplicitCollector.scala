@@ -562,20 +562,21 @@ class ImplicitCollector(
                                   }
                                 case _ =>
                               }
-                              val (resType, results) = try {
-                                InferUtil.updateTypeWithImplicitParameters(
-                                  nonValueType.getOrElse(
-                                    return reportWrong(BadTypeResult)),
-                                  place,
-                                  Some(fun),
-                                  check = !fullInfo,
-                                  searchImplicitsRecursively + 1,
-                                  fullInfo)
-                              } catch {
-                                case e: SafeCheckException =>
-                                  return reportWrong(
-                                    CantInferTypeParameterResult)
-                              }
+                              val (resType, results) =
+                                try {
+                                  InferUtil.updateTypeWithImplicitParameters(
+                                    nonValueType.getOrElse(
+                                      return reportWrong(BadTypeResult)),
+                                    place,
+                                    Some(fun),
+                                    check = !fullInfo,
+                                    searchImplicitsRecursively + 1,
+                                    fullInfo)
+                                } catch {
+                                  case e: SafeCheckException =>
+                                    return reportWrong(
+                                      CantInferTypeParameterResult)
+                                }
                               if (fullInfo && results.exists(_.exists(
                                     _.name == InferUtil.notFoundParameterName)))
                                 return Some(

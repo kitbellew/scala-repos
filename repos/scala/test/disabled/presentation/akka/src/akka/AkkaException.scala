@@ -35,9 +35,10 @@ class AkkaException(message: String = "", cause: Throwable = null)
 }
 
 object AkkaException {
-  val hostname = try {
-    InetAddress.getLocalHost.getHostName
-  } catch {
-    case e: UnknownHostException => "unknown"
-  }
+  val hostname =
+    try {
+      InetAddress.getLocalHost.getHostName
+    } catch {
+      case e: UnknownHostException => "unknown"
+    }
 }

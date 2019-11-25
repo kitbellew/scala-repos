@@ -312,17 +312,18 @@ class Log(
       info(
         "Recovering unflushed segment %d in log %s."
           .format(curr.baseOffset, name))
-      val truncatedBytes = try {
-        curr.recover(config.maxMessageSize)
-      } catch {
-        case e: InvalidOffsetException =>
-          val startOffset = curr.baseOffset
-          warn(
-            "Found invalid offset during recovery for log " + dir.getName +
-              ". Deleting the corrupt segment and " +
-              "creating an empty one with starting offset " + startOffset)
-          curr.truncateTo(startOffset)
-      }
+      val truncatedBytes =
+        try {
+          curr.recover(config.maxMessageSize)
+        } catch {
+          case e: InvalidOffsetException =>
+            val startOffset = curr.baseOffset
+            warn(
+              "Found invalid offset during recovery for log " + dir.getName +
+                ". Deleting the corrupt segment and " +
+                "creating an empty one with starting offset " + startOffset)
+            curr.truncateTo(startOffset)
+        }
       if (truncatedBytes > 0) {
         // we had an invalid message, delete all remaining log
         warn(
@@ -388,24 +389,25 @@ class Log(
           val offset = new LongRef(nextOffsetMetadata.messageOffset)
           appendInfo.firstOffset = offset.value
           val now = time.milliseconds
-          val (validatedMessages, messageSizesMaybeChanged) = try {
-            validMessages.validateMessagesAndAssignOffsets(
-              offset,
-              now,
-              appendInfo.sourceCodec,
-              appendInfo.targetCodec,
-              config.compact,
-              config.messageFormatVersion.messageFormatVersion,
-              config.messageTimestampType,
-              config.messageTimestampDifferenceMaxMs
-            )
-          } catch {
-            case e: IOException =>
-              throw new KafkaException(
-                "Error in validating messages while appending to log '%s'"
-                  .format(name),
-                e)
-          }
+          val (validatedMessages, messageSizesMaybeChanged) =
+            try {
+              validMessages.validateMessagesAndAssignOffsets(
+                offset,
+                now,
+                appendInfo.sourceCodec,
+                appendInfo.targetCodec,
+                config.compact,
+                config.messageFormatVersion.messageFormatVersion,
+                config.messageTimestampType,
+                config.messageTimestampDifferenceMaxMs
+              )
+            } catch {
+              case e: IOException =>
+                throw new KafkaException(
+                  "Error in validating messages while appending to log '%s'"
+                    .format(name),
+                  e)
+            }
           validMessages = validatedMessages
           appendInfo.lastOffset = offset.value - 1
           if (config.messageTimestampType == TimestampType.LOG_APPEND_TIME)

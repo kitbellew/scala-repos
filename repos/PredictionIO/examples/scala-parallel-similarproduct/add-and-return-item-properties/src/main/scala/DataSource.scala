@@ -35,16 +35,17 @@ class DataSource(val dsp: DataSourceParams)
       )(sc)
       .map {
         case (entityId, properties) =>
-          val user = try {
-            User()
-          } catch {
-            case e: Exception => {
-              logger.error(
-                s"Failed to get properties ${properties} of" +
-                  s" user ${entityId}. Exception: ${e}.")
-              throw e
+          val user =
+            try {
+              User()
+            } catch {
+              case e: Exception => {
+                logger.error(
+                  s"Failed to get properties ${properties} of" +
+                    s" user ${entityId}. Exception: ${e}.")
+                throw e
+              }
             }
-          }
           (entityId, user)
       }
       .cache()
@@ -57,22 +58,23 @@ class DataSource(val dsp: DataSourceParams)
       )(sc)
       .map {
         case (entityId, properties) =>
-          val item = try {
-            // Assume categories is optional property of item.
-            Item(
-              title = properties.get[String]("title"),
-              date = properties.get[String]("date"),
-              imdbUrl = properties.get[String]("imdbUrl"),
-              categories = properties.getOpt[List[String]]("categories")
-            )
-          } catch {
-            case e: Exception => {
-              logger.error(
-                s"Failed to get properties ${properties} of" +
-                  s" item ${entityId}. Exception: ${e}.")
-              throw e
+          val item =
+            try {
+              // Assume categories is optional property of item.
+              Item(
+                title = properties.get[String]("title"),
+                date = properties.get[String]("date"),
+                imdbUrl = properties.get[String]("imdbUrl"),
+                categories = properties.getOpt[List[String]]("categories")
+              )
+            } catch {
+              case e: Exception => {
+                logger.error(
+                  s"Failed to get properties ${properties} of" +
+                    s" item ${entityId}. Exception: ${e}.")
+                throw e
+              }
             }
-          }
           (entityId, item)
       }
       .cache()
@@ -88,24 +90,25 @@ class DataSource(val dsp: DataSourceParams)
       )(sc)
       // eventsDb.find() returns RDD[Event]
       .map { event =>
-        val viewEvent = try {
-          event.event match {
-            case "view" =>
-              ViewEvent(
-                user = event.entityId,
-                item = event.targetEntityId.get,
-                t = event.eventTime.getMillis)
-            case _ =>
-              throw new Exception(s"Unexpected event ${event} is read.")
+        val viewEvent =
+          try {
+            event.event match {
+              case "view" =>
+                ViewEvent(
+                  user = event.entityId,
+                  item = event.targetEntityId.get,
+                  t = event.eventTime.getMillis)
+              case _ =>
+                throw new Exception(s"Unexpected event ${event} is read.")
+            }
+          } catch {
+            case e: Exception => {
+              logger.error(
+                s"Cannot convert ${event} to ViewEvent." +
+                  s" Exception: ${e}.")
+              throw e
+            }
           }
-        } catch {
-          case e: Exception => {
-            logger.error(
-              s"Cannot convert ${event} to ViewEvent." +
-                s" Exception: ${e}.")
-            throw e
-          }
-        }
         viewEvent
       }
       .cache()

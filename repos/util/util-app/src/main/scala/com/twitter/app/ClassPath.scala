@@ -119,10 +119,11 @@ private object ClassPath {
       buf: mutable.Buffer[Info],
       seenUris: mutable.Set[URI]
   ): Unit = {
-    val jarFile = try new JarFile(file)
-    catch {
-      case _: IOException => return // not a Jar file
-    }
+    val jarFile =
+      try new JarFile(file)
+      catch {
+        case _: IOException => return // not a Jar file
+      }
 
     try {
       for (uri <- jarClasspath(file, jarFile.getManifest)) {

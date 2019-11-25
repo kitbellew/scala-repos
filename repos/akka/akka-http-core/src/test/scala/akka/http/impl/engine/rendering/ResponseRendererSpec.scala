@@ -712,12 +712,13 @@ class ResponseRendererSpec
           .run()
 
         // we try to find out if the renderer has already flagged completion even without the upstream being completed
-        val wasCompleted = try {
-          Await.ready(wasCompletedFuture, 100.millis)
-          true
-        } catch {
-          case NonFatal(_) ⇒ false
-        }
+        val wasCompleted =
+          try {
+            Await.ready(wasCompletedFuture, 100.millis)
+            true
+          } catch {
+            case NonFatal(_) ⇒ false
+          }
         Await
           .result(resultFuture, 250.millis)
           .reduceLeft(_ ++ _)

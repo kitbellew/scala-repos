@@ -257,21 +257,23 @@ private[rest] abstract class SubmitRequestServlet extends RestServlet {
   protected override def doPost(
       requestServlet: HttpServletRequest,
       responseServlet: HttpServletResponse): Unit = {
-    val responseMessage = try {
-      val requestMessageJson =
-        Source.fromInputStream(requestServlet.getInputStream).mkString
-      val requestMessage =
-        SubmitRestProtocolMessage.fromJson(requestMessageJson)
-      // The response should have already been validated on the client.
-      // In case this is not true, validate it ourselves to avoid potential NPEs.
-      requestMessage.validate()
-      handleSubmit(requestMessageJson, requestMessage, responseServlet)
-    } catch {
-      // The client failed to provide a valid JSON, so this is not our fault
-      case e @ (_: JsonProcessingException | _: SubmitRestProtocolException) =>
-        responseServlet.setStatus(HttpServletResponse.SC_BAD_REQUEST)
-        handleError("Malformed request: " + formatException(e))
-    }
+    val responseMessage =
+      try {
+        val requestMessageJson =
+          Source.fromInputStream(requestServlet.getInputStream).mkString
+        val requestMessage =
+          SubmitRestProtocolMessage.fromJson(requestMessageJson)
+        // The response should have already been validated on the client.
+        // In case this is not true, validate it ourselves to avoid potential NPEs.
+        requestMessage.validate()
+        handleSubmit(requestMessageJson, requestMessage, responseServlet)
+      } catch {
+        // The client failed to provide a valid JSON, so this is not our fault
+        case e @ (_: JsonProcessingException |
+            _: SubmitRestProtocolException) =>
+          responseServlet.setStatus(HttpServletResponse.SC_BAD_REQUEST)
+          handleError("Malformed request: " + formatException(e))
+      }
     sendResponse(responseMessage, responseServlet)
   }
 

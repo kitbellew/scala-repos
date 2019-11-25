@@ -35,16 +35,17 @@ class DataSource(val dsp: DataSourceParams)
       )(sc)
       .map {
         case (entityId, properties) =>
-          val user = try {
-            User()
-          } catch {
-            case e: Exception => {
-              logger.error(
-                s"Failed to get properties ${properties} of" +
-                  s" user ${entityId}. Exception: ${e}.")
-              throw e
+          val user =
+            try {
+              User()
+            } catch {
+              case e: Exception => {
+                logger.error(
+                  s"Failed to get properties ${properties} of" +
+                    s" user ${entityId}. Exception: ${e}.")
+                throw e
+              }
             }
-          }
           (entityId, user)
       }
       .cache()
@@ -57,17 +58,18 @@ class DataSource(val dsp: DataSourceParams)
       )(sc)
       .map {
         case (entityId, properties) =>
-          val item = try {
-            // Assume categories is optional property of item.
-            Item(categories = properties.getOpt[List[String]]("categories"))
-          } catch {
-            case e: Exception => {
-              logger.error(
-                s"Failed to get properties ${properties} of" +
-                  s" item ${entityId}. Exception: ${e}.")
-              throw e
+          val item =
+            try {
+              // Assume categories is optional property of item.
+              Item(categories = properties.getOpt[List[String]]("categories"))
+            } catch {
+              case e: Exception => {
+                logger.error(
+                  s"Failed to get properties ${properties} of" +
+                    s" item ${entityId}. Exception: ${e}.")
+                throw e
+              }
             }
-          }
           (entityId, item)
       }
       .cache()
@@ -83,26 +85,27 @@ class DataSource(val dsp: DataSourceParams)
       )(sc)
       // eventsDb.find() returns RDD[Event]
       .map { event =>
-        val rateEvent = try {
-          event.event match {
-            case "rate" =>
-              RateEvent(
-                // MODIFIED
-                user = event.entityId,
-                item = event.targetEntityId.get,
-                rating = event.properties.get[Double]("rating"), // ADDED
-                t = event.eventTime.getMillis)
-            case _ =>
-              throw new Exception(s"Unexpected event ${event} is read.")
+        val rateEvent =
+          try {
+            event.event match {
+              case "rate" =>
+                RateEvent(
+                  // MODIFIED
+                  user = event.entityId,
+                  item = event.targetEntityId.get,
+                  rating = event.properties.get[Double]("rating"), // ADDED
+                  t = event.eventTime.getMillis)
+              case _ =>
+                throw new Exception(s"Unexpected event ${event} is read.")
+            }
+          } catch {
+            case e: Exception => {
+              logger.error(
+                s"Cannot convert ${event} to RateEvent." + // MODIFIED
+                  s" Exception: ${e}.")
+              throw e
+            }
           }
-        } catch {
-          case e: Exception => {
-            logger.error(
-              s"Cannot convert ${event} to RateEvent." + // MODIFIED
-                s" Exception: ${e}.")
-            throw e
-          }
-        }
         rateEvent
       }
       .cache()

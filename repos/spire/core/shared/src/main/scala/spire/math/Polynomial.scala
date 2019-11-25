@@ -122,12 +122,13 @@ object Polynomial extends PolynomialInstances {
         val e0 = Option(m2.group(3)).getOrElse("")
         val e = if (e0 != "") e0 else if (v == "") "0" else "1"
 
-        val t = try {
-          T(Rational(c), v, e.toInt)
-        } catch {
-          case _: Exception =>
-            throw new IllegalArgumentException(s"illegal term: $c*x^$e")
-        }
+        val t =
+          try {
+            T(Rational(c), v, e.toInt)
+          } catch {
+            case _: Exception =>
+              throw new IllegalArgumentException(s"illegal term: $c*x^$e")
+          }
         parse(s2.substring(m2.end), if (t.c == 0) ts else t :: ts)
       }
 

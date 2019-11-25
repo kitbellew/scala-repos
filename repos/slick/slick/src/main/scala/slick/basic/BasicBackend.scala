@@ -140,13 +140,15 @@ trait BasicBackend { self =>
         val ctx = createCtx(s)
         if (streamLogger.isDebugEnabled)
           streamLogger.debug(s"Signaling onSubscribe($ctx)")
-        val subscribed = try {
-          s.onSubscribe(ctx.subscription); true
-        } catch {
-          case NonFatal(ex) =>
-            streamLogger.warn("Subscriber.onSubscribe failed unexpectedly", ex)
-            false
-        }
+        val subscribed =
+          try {
+            s.onSubscribe(ctx.subscription); true
+          } catch {
+            case NonFatal(ex) =>
+              streamLogger
+                .warn("Subscriber.onSubscribe failed unexpectedly", ex)
+              false
+          }
         if (subscribed) {
           try {
             runInContext(a, ctx, true, true).onComplete {
@@ -316,19 +318,21 @@ trait BasicBackend { self =>
           def run: Unit =
             try {
               ctx.readSync
-              val res = try {
-                acquireSession(ctx)
-                val res = try a.run(ctx)
-                catch {
-                  case NonFatal(ex) =>
-                    releaseSession(ctx, true)
-                    throw ex
+              val res =
+                try {
+                  acquireSession(ctx)
+                  val res =
+                    try a.run(ctx)
+                    catch {
+                      case NonFatal(ex) =>
+                        releaseSession(ctx, true)
+                        throw ex
+                    }
+                  releaseSession(ctx, false)
+                  res
+                } finally {
+                  ctx.sync = 0
                 }
-                releaseSession(ctx, false)
-                res
-              } finally {
-                ctx.sync = 0
-              }
               promise.success(res)
             } catch { case NonFatal(ex) => promise.tryFailure(ex) }
         })

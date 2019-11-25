@@ -300,31 +300,32 @@ class LazyMacros(val c: whitebox.Context)
       def resolveInstance(state: State)(tpe: Type): Option[(State, Tree)] = {
         val former = State.current
         State.current = Some(state)
-        val (state0, tree) = try {
-          val tree = c.inferImplicitValue(tpe, silent = true)
-          if (tree.isEmpty) {
-            tpe.typeSymbol.annotations
-              .find(
-                _.tree.tpe =:= typeOf[_root_.scala.annotation.implicitNotFound])
-              .foreach { infAnn =>
-                val global = c.universe.asInstanceOf[scala.tools.nsc.Global]
-                val analyzer: global.analyzer.type = global.analyzer
-                val gTpe = tpe.asInstanceOf[global.Type]
-                val errorMsg = gTpe.typeSymbolDirect match {
-                  case analyzer.ImplicitNotFoundMsg(msg) =>
-                    msg.format(
-                      TermName("evidence").asInstanceOf[global.TermName],
-                      gTpe)
-                  case _ =>
-                    s"Implicit value of type $tpe not found"
+        val (state0, tree) =
+          try {
+            val tree = c.inferImplicitValue(tpe, silent = true)
+            if (tree.isEmpty) {
+              tpe.typeSymbol.annotations
+                .find(_.tree.tpe =:= typeOf[
+                  _root_.scala.annotation.implicitNotFound])
+                .foreach { infAnn =>
+                  val global = c.universe.asInstanceOf[scala.tools.nsc.Global]
+                  val analyzer: global.analyzer.type = global.analyzer
+                  val gTpe = tpe.asInstanceOf[global.Type]
+                  val errorMsg = gTpe.typeSymbolDirect match {
+                    case analyzer.ImplicitNotFoundMsg(msg) =>
+                      msg.format(
+                        TermName("evidence").asInstanceOf[global.TermName],
+                        gTpe)
+                    case _ =>
+                      s"Implicit value of type $tpe not found"
+                  }
+                  setAnnotation(errorMsg)
                 }
-                setAnnotation(errorMsg)
-              }
+            }
+            (State.current.get, tree)
+          } finally {
+            State.current = former
           }
-          (State.current.get, tree)
-        } finally {
-          State.current = former
-        }
 
         if (tree == EmptyTree) None
         else Some((state0, tree))

@@ -174,19 +174,20 @@ object PlayRun {
     val watchState =
       ws.getOrElse(state get ContinuousState getOrElse WatchState.empty)
 
-    val (triggered, newWatchState, newState) = try {
-      val (triggered, newWatchState) = SourceModificationWatch.watch(
-        sourcesFinder,
-        watched.pollInterval,
-        watchState)(shouldTerminate)
-      (triggered, newWatchState, state)
-    } catch {
-      case e: Exception =>
-        val log = state.log
-        log.error(
-          "Error occurred obtaining files to watch.  Terminating continuous execution...")
-        (false, watchState, state.fail)
-    }
+    val (triggered, newWatchState, newState) =
+      try {
+        val (triggered, newWatchState) = SourceModificationWatch.watch(
+          sourcesFinder,
+          watched.pollInterval,
+          watchState)(shouldTerminate)
+        (triggered, newWatchState, state)
+      } catch {
+        case e: Exception =>
+          val log = state.log
+          log.error(
+            "Error occurred obtaining files to watch.  Terminating continuous execution...")
+          (false, watchState, state.fail)
+      }
 
     if (triggered) {
       //Then launch compile

@@ -79,19 +79,20 @@ trait FileUploadSupport extends ServletBase with HasMultipartConfig {
   override def handle(
       req: HttpServletRequest,
       res: HttpServletResponse): Unit = {
-    val req2 = try {
-      if (isMultipartRequest(req)) {
-        val bodyParams = extractMultipartParams(req)
-        val mergedFormParams = mergeFormParamsWithQueryString(req, bodyParams)
+    val req2 =
+      try {
+        if (isMultipartRequest(req)) {
+          val bodyParams = extractMultipartParams(req)
+          val mergedFormParams = mergeFormParamsWithQueryString(req, bodyParams)
 
-        wrapRequest(req, mergedFormParams)
-      } else req
-    } catch {
-      case e: Exception => {
-        req.setAttribute(ScalatraBase.PrehandleExceptionKey, e)
-        req
+          wrapRequest(req, mergedFormParams)
+        } else req
+      } catch {
+        case e: Exception => {
+          req.setAttribute(ScalatraBase.PrehandleExceptionKey, e)
+          req
+        }
       }
-    }
 
     super.handle(req2, res)
   }

@@ -877,15 +877,16 @@ private[akka] final case class Log[T](
     log = logAdapter match {
       case Some(l) ⇒ l
       case _ ⇒
-        val mat = try ActorMaterializer.downcast(ctx.materializer)
-        catch {
-          case ex: Exception ⇒
-            throw new RuntimeException(
-              "Log stage can only provide LoggingAdapter when used with ActorMaterializer! " +
-                "Provide a LoggingAdapter explicitly or use the actor based flow materializer.",
-              ex
-            )
-        }
+        val mat =
+          try ActorMaterializer.downcast(ctx.materializer)
+          catch {
+            case ex: Exception ⇒
+              throw new RuntimeException(
+                "Log stage can only provide LoggingAdapter when used with ActorMaterializer! " +
+                  "Provide a LoggingAdapter explicitly or use the actor based flow materializer.",
+                ex
+              )
+          }
 
         Logging(mat.system, ctx)(fromLifecycleContext)
     }

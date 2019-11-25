@@ -27,13 +27,14 @@ class StaticOnlyWithManualPicklerTest extends FunSuite {
           throw FakeImplementation()
         def tag = FastTypeTag[NotClosed]
       }
-    val pkl: JSONPickle = try {
-      pickle(x)
-      throw new AssertionError(
-        "Should have used the fake implementation pickler")
-    } catch {
-      case FakeImplementation() => JSONPickle("")
-    }
+    val pkl: JSONPickle =
+      try {
+        pickle(x)
+        throw new AssertionError(
+          "Should have used the fake implementation pickler")
+      } catch {
+        case FakeImplementation() => JSONPickle("")
+      }
     try {
       unpickle[NotClosed](pkl)
       throw new AssertionError(

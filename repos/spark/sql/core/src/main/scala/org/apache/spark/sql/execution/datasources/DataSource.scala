@@ -329,19 +329,20 @@ case class DataSource(
         // If we are appending to a table that already exists, make sure the partitioning matches
         // up.  If we fail to load the table for whatever reason, ignore the check.
         if (mode == SaveMode.Append) {
-          val existingPartitionColumnSet = try {
-            Some(
-              resolveRelation()
-                .asInstanceOf[HadoopFsRelation]
-                .location
-                .partitionSpec()
-                .partitionColumns
-                .fieldNames
-                .toSet)
-          } catch {
-            case e: Exception =>
-              None
-          }
+          val existingPartitionColumnSet =
+            try {
+              Some(
+                resolveRelation()
+                  .asInstanceOf[HadoopFsRelation]
+                  .location
+                  .partitionSpec()
+                  .partitionColumns
+                  .fieldNames
+                  .toSet)
+            } catch {
+              case e: Exception =>
+                None
+            }
 
           existingPartitionColumnSet.foreach { ex =>
             if (ex.map(_.toLowerCase) != partitionColumns

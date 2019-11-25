@@ -295,8 +295,9 @@ class SparkILoop(
 
       val xs = words(line)
       val current = history.index
-      val count = try xs.head.toInt
-      catch { case _: Exception => defaultLines }
+      val count =
+        try xs.head.toInt
+        catch { case _: Exception => defaultLines }
       val lines = history.asStrings takeRight count
       val offset = current - lines.size + 1
 
@@ -584,8 +585,9 @@ class SparkILoop(
       }
     }
   // private lazy val javap = substituteAndLog[Javap]("javap", NoJavap)(newJavap())
-  private lazy val javap = try newJavap()
-  catch { case _: Exception => null }
+  private lazy val javap =
+    try newJavap()
+    catch { case _: Exception => null }
 
   // Still todo: modules.
   private def typeCommand(line0: String): Result = {
@@ -738,9 +740,10 @@ class SparkILoop(
         }
     }
     def innerLoop() {
-      val shouldContinue = try {
-        processLine(readOneLine())
-      } catch { case t: Throwable => crashRecovery(t) }
+      val shouldContinue =
+        try {
+          processLine(readOneLine())
+        } catch { case t: Throwable => crashRecovery(t) }
       if (shouldContinue) innerLoop()
     }
     innerLoop()

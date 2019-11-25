@@ -61,10 +61,11 @@ object CurrentOrigin {
 
   def withOrigin[A](o: Origin)(f: => A): A = {
     set(o)
-    val ret = try f
-    finally {
-      reset()
-    }
+    val ret =
+      try f
+      finally {
+        reset()
+      }
     reset()
     ret
   }

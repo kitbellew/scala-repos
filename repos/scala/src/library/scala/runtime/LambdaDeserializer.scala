@@ -77,19 +77,20 @@ object LambdaDeserializer {
       }
 
       // Lookup the implementation method
-      val implMethod: MethodHandle = try {
-        findMember(
-          lookup,
-          getImplMethodKind,
-          implClass,
-          getImplMethodName,
-          implMethodSig)
-      } catch {
-        case e: ReflectiveOperationException =>
-          throw new IllegalArgumentException(
-            "Illegal lambda deserialization",
-            e)
-      }
+      val implMethod: MethodHandle =
+        try {
+          findMember(
+            lookup,
+            getImplMethodKind,
+            implClass,
+            getImplMethodName,
+            implMethodSig)
+        } catch {
+          case e: ReflectiveOperationException =>
+            throw new IllegalArgumentException(
+              "Illegal lambda deserialization",
+              e)
+        }
 
       val flags: Int =
         LambdaMetafactory.FLAG_SERIALIZABLE | LambdaMetafactory.FLAG_MARKERS

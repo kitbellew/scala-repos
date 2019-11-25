@@ -22,15 +22,16 @@ final class JUnitExecuteTest(
   def executeTests(): Unit = {
     val jUnitMetadata = classMetadata.metadata()
 
-    val assumptionViolated = try {
-      for (method <- jUnitMetadata.beforeClassMethod)
-        classMetadata.invoke(method.name)
-      false
-    } catch {
-      case _: AssumptionViolatedException |
-          _: internal.AssumptionViolatedException =>
-        true
-    }
+    val assumptionViolated =
+      try {
+        for (method <- jUnitMetadata.beforeClassMethod)
+          classMetadata.invoke(method.name)
+        false
+      } catch {
+        case _: AssumptionViolatedException |
+            _: internal.AssumptionViolatedException =>
+          true
+      }
 
     if (assumptionViolated) {
       logFormattedInfo(null, "ignored")

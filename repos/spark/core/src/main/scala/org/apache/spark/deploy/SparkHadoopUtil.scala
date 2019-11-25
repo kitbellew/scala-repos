@@ -392,15 +392,16 @@ class SparkHadoopUtil extends Logging {
 object SparkHadoopUtil {
 
   private lazy val hadoop = new SparkHadoopUtil
-  private lazy val yarn = try {
-    Utils
-      .classForName("org.apache.spark.deploy.yarn.YarnSparkHadoopUtil")
-      .newInstance()
-      .asInstanceOf[SparkHadoopUtil]
-  } catch {
-    case e: Exception =>
-      throw new SparkException("Unable to load YARN support", e)
-  }
+  private lazy val yarn =
+    try {
+      Utils
+        .classForName("org.apache.spark.deploy.yarn.YarnSparkHadoopUtil")
+        .newInstance()
+        .asInstanceOf[SparkHadoopUtil]
+    } catch {
+      case e: Exception =>
+        throw new SparkException("Unable to load YARN support", e)
+    }
 
   val SPARK_YARN_CREDS_TEMP_EXTENSION = ".tmp"
 

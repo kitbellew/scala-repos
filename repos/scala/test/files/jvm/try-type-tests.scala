@@ -152,11 +152,12 @@ trait TryStandard {
 
   def testFoldFailureFailure(): Unit = {
     val t = Failure(new Exception("foo"))
-    val res = try {
-      t.fold(_ => throw new Exception("bar"), "Returns " + _)
-    } catch {
-      case e: Throwable => "Throws " + e
-    }
+    val res =
+      try {
+        t.fold(_ => throw new Exception("bar"), "Returns " + _)
+      } catch {
+        case e: Throwable => "Throws " + e
+      }
     assert(res == "Throws java.lang.Exception: bar")
   }
 

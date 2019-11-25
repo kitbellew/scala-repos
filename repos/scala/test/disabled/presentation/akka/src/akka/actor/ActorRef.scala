@@ -1100,19 +1100,20 @@ class LocalActorRef private[akka] (
                 true
 
               case _ => // either permanent or none where default is permanent
-                val success = try {
-                  performRestart()
-                  true
-                } catch {
-                  case e =>
-                    EventHandler.error(
-                      e,
-                      this,
-                      "Exception in restart of Actor [%s]".format(toString))
-                    false // an error or exception here should trigger a retry
-                } finally {
-                  currentMessage = null
-                }
+                val success =
+                  try {
+                    performRestart()
+                    true
+                  } catch {
+                    case e =>
+                      EventHandler.error(
+                        e,
+                        this,
+                        "Exception in restart of Actor [%s]".format(toString))
+                      false // an error or exception here should trigger a retry
+                  } finally {
+                    currentMessage = null
+                  }
                 if (success) {
                   _status = ActorRefInternals.RUNNING
                   dispatcher.resume(this)
@@ -1227,17 +1228,18 @@ class LocalActorRef private[akka] (
         clazz: Class[_],
         actor: Actor,
         value: ActorRef): Boolean = {
-      val success = try {
-        val selfField = clazz.getDeclaredField("self")
-        val someSelfField = clazz.getDeclaredField("someSelf")
-        selfField.setAccessible(true)
-        someSelfField.setAccessible(true)
-        selfField.set(actor, value)
-        someSelfField.set(actor, if (value ne null) Some(value) else null)
-        true
-      } catch {
-        case e: NoSuchFieldException => false
-      }
+      val success =
+        try {
+          val selfField = clazz.getDeclaredField("self")
+          val someSelfField = clazz.getDeclaredField("someSelf")
+          selfField.setAccessible(true)
+          someSelfField.setAccessible(true)
+          selfField.set(actor, value)
+          someSelfField.set(actor, if (value ne null) Some(value) else null)
+          true
+        } catch {
+          case e: NoSuchFieldException => false
+        }
 
       if (success) true
       else {

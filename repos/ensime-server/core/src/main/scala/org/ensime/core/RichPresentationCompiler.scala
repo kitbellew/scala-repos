@@ -380,13 +380,14 @@ class RichPresentationCompiler(
     if (isNoParamArrowType(tpe)) {
       typePublicMembers(typeOrArrowTypeResult(tpe))
     } else {
-      val members: Iterable[Member] = try {
-        wrapTypeMembers(p)
-      } catch {
-        case e: Throwable =>
-          logger.error("Error retrieving type members:", e)
-          List.empty
-      }
+      val members: Iterable[Member] =
+        try {
+          wrapTypeMembers(p)
+        } catch {
+          case e: Throwable =>
+            logger.error("Error retrieving type members:", e)
+            List.empty
+        }
       // Remove duplicates
       // Filter out synthetic things
       val bySym = new mutable.LinkedHashMap[Symbol, Member]

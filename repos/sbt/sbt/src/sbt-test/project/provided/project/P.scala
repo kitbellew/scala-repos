@@ -32,9 +32,10 @@ object P extends Build {
       shouldSucceed: Boolean): Unit = {
     val loader = classpath.ClasspathUtilities.toLoader(cp.files)
     println("Checking " + label)
-    val err = try {
-      Class.forName("org.example.ProvidedTest", false, loader); None
-    } catch { case e: Exception => Some(e) }
+    val err =
+      try {
+        Class.forName("org.example.ProvidedTest", false, loader); None
+      } catch { case e: Exception => Some(e) }
 
     (err, shouldSucceed) match {
       case (None, true) | (Some(_), false) => ()

@@ -426,12 +426,13 @@ abstract class HiveComparisonTest
                   if (containsCommands) {
                     originalQuery
                   } else {
-                    val convertedSQL = try {
-                      new SQLBuilder(originalQuery.analyzed, TestHive).toSQL
-                    } catch {
-                      case NonFatal(e) =>
-                        fail(
-                          s"""Cannot convert the following HiveQL query plan back to SQL query string:
+                    val convertedSQL =
+                      try {
+                        new SQLBuilder(originalQuery.analyzed, TestHive).toSQL
+                      } catch {
+                        case NonFatal(e) =>
+                          fail(
+                            s"""Cannot convert the following HiveQL query plan back to SQL query string:
                         |
                         |# Original HiveQL query string:
                         |$queryString
@@ -439,9 +440,9 @@ abstract class HiveComparisonTest
                         |# Resolved query plan:
                         |${originalQuery.analyzed.treeString}
                      """.stripMargin,
-                          e
-                        )
-                    }
+                            e
+                          )
+                      }
 
                     try {
                       val queryExecution =
@@ -516,41 +517,42 @@ abstract class HiveComparisonTest
 
               // If this query is reading other tables that were created during this test run
               // also print out the query plans and results for those.
-              val computedTablesMessages: String = try {
-                val tablesRead =
-                  new TestHive.QueryExecution(query).executedPlan.collect {
-                    case ts: HiveTableScan => ts.relation.tableName
-                  }.toSet
+              val computedTablesMessages: String =
+                try {
+                  val tablesRead =
+                    new TestHive.QueryExecution(query).executedPlan.collect {
+                      case ts: HiveTableScan => ts.relation.tableName
+                    }.toSet
 
-                TestHive.reset()
-                val executions = queryList.map(new TestHive.QueryExecution(_))
-                executions.foreach(_.toRdd)
-                val tablesGenerated = queryList.zip(executions).flatMap {
-                  case (q, e) =>
-                    e.sparkPlan.collect {
-                      case i: InsertIntoHiveTable
-                          if tablesRead contains i.table.tableName =>
-                        (q, e, i)
-                    }
-                }
+                  TestHive.reset()
+                  val executions = queryList.map(new TestHive.QueryExecution(_))
+                  executions.foreach(_.toRdd)
+                  val tablesGenerated = queryList.zip(executions).flatMap {
+                    case (q, e) =>
+                      e.sparkPlan.collect {
+                        case i: InsertIntoHiveTable
+                            if tablesRead contains i.table.tableName =>
+                          (q, e, i)
+                      }
+                  }
 
-                tablesGenerated
-                  .map {
-                    case (hiveql, execution, insert) =>
-                      s"""
+                  tablesGenerated
+                    .map {
+                      case (hiveql, execution, insert) =>
+                        s"""
                      |=== Generated Table ===
                      |$hiveql
                      |$execution
                      |== Results ==
                      |${insert.child.execute().collect().mkString("\n")}
                    """.stripMargin
-                  }
-                  .mkString("\n")
-              } catch {
-                case NonFatal(e) =>
-                  logError("Failed to compute generated tables", e)
-                  s"Couldn't compute dependent tables: $e"
-              }
+                    }
+                    .mkString("\n")
+                } catch {
+                  case NonFatal(e) =>
+                    logError("Failed to compute generated tables", e)
+                    s"Couldn't compute dependent tables: $e"
+                }
 
               val errorMessage = s"""
                   |Results do not match for $testCaseName:

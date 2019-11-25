@@ -151,13 +151,14 @@ private[cors] trait AbstractCORSPolicy {
       val taggedRequest =
         request.copy(tags = request.tags + (CORSFilter.RequestTag -> origin))
       // We must recover any errors so that we can add the headers to them to allow clients to see the result
-      val result = try {
-        next(taggedRequest).recoverWith {
+      val result =
+        try {
+          next(taggedRequest).recoverWith {
+            case e: Throwable => errorHandler.onServerError(taggedRequest, e)
+          }
+        } catch {
           case e: Throwable => errorHandler.onServerError(taggedRequest, e)
         }
-      } catch {
-        case e: Throwable => errorHandler.onServerError(taggedRequest, e)
-      }
       result.map(_.withHeaders(headerBuilder.result(): _*))
     }
   }

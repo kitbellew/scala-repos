@@ -93,16 +93,17 @@ object DatabaseConfig {
       nOld.getOrElse(config.getString(basePath + "profile")) // trigger the correct error
     }
 
-    val untypedP = try {
-      if (n.endsWith("$"))
-        classLoader.loadClass(n).getField("MODULE$").get(null)
-      else classLoader.loadClass(n).newInstance()
-    } catch {
-      case NonFatal(ex) =>
-        throw new SlickException(
-          s"""Error getting instance of profile "$n"""",
-          ex)
-    }
+    val untypedP =
+      try {
+        if (n.endsWith("$"))
+          classLoader.loadClass(n).getField("MODULE$").get(null)
+        else classLoader.loadClass(n).newInstance()
+      } catch {
+        case NonFatal(ex) =>
+          throw new SlickException(
+            s"""Error getting instance of profile "$n"""",
+            ex)
+      }
     val pClass = implicitly[ClassTag[P]].runtimeClass
     if (!pClass.isInstance(untypedP))
       throw new SlickException(

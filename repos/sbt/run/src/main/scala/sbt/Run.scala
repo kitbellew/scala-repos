@@ -52,10 +52,11 @@ class ForkRun(config: ForkOptions) extends ScalaRun {
       process.destroy()
       1
     }
-    val exitCode = try process.exitValue()
-    catch {
-      case e: InterruptedException => cancel()
-    }
+    val exitCode =
+      try process.exitValue()
+      catch {
+        case e: InterruptedException => cancel()
+      }
     processExitCode(exitCode, "runner")
   }
   private def classpathOption(classpath: Seq[File]) =

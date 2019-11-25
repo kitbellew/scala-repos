@@ -145,16 +145,18 @@ private[process] trait ProcessImpl { self: Process.type =>
         else defaultIO.withOutput(source.connectIn)
       val secondIO = defaultIO.withInput(sink.connectOut)
 
-      val second = try b.run(secondIO)
-      catch onError { err =>
-        releaseResources(source, sink)
-        throw err
-      }
-      val first = try a.run(firstIO)
-      catch onError { err =>
-        releaseResources(source, sink, second)
-        throw err
-      }
+      val second =
+        try b.run(secondIO)
+        catch onError { err =>
+          releaseResources(source, sink)
+          throw err
+        }
+      val first =
+        try a.run(firstIO)
+        catch onError { err =>
+          releaseResources(source, sink, second)
+          throw err
+        }
       runInterruptible {
         val exit1 = first.exitValue()
         val exit2 = second.exitValue()

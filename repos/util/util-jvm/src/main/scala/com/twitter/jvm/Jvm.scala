@@ -245,25 +245,27 @@ object Jvm {
     *
     * @note this is fragile as the RuntimeMXBean doesn't specify the name format.
     */
-  lazy val ProcessId: Option[Int] = try {
-    ManagementFactory.getRuntimeMXBean.getName
-      .split("@")
-      .headOption
-      .map(_.toInt)
-  } catch {
-    case NonFatal(t) =>
-      log.log(Level.WARNING, "failed to find process id", t)
-      None
-  }
+  lazy val ProcessId: Option[Int] =
+    try {
+      ManagementFactory.getRuntimeMXBean.getName
+        .split("@")
+        .headOption
+        .map(_.toInt)
+    } catch {
+      case NonFatal(t) =>
+        log.log(Level.WARNING, "failed to find process id", t)
+        None
+    }
 
   private lazy val executor = Executors.newScheduledThreadPool(
     1,
     new NamedPoolThreadFactory("util-jvm-timer", true))
 
-  private lazy val _jvm = try new Hotspot
-  catch {
-    case NonFatal(_) => NilJvm
-  }
+  private lazy val _jvm =
+    try new Hotspot
+    catch {
+      case NonFatal(_) => NilJvm
+    }
 
   private val log = Logger.getLogger(getClass.getName)
 

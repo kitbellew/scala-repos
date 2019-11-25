@@ -251,11 +251,12 @@ object MergeService {
     }
     def checkConflictForce(): Boolean = {
       val merger = MergeStrategy.RECURSIVE.newMerger(repository, true)
-      val conflicted = try {
-        !merger.merge(mergeBaseTip, mergeTip)
-      } catch {
-        case e: NoMergeBaseException => true
-      }
+      val conflicted =
+        try {
+          !merger.merge(mergeBaseTip, mergeTip)
+        } catch {
+          case e: NoMergeBaseException => true
+        }
       val mergeTipCommit =
         using(new RevWalk(repository))(_.parseCommit(mergeTip))
       val committer = mergeTipCommit.getCommitterIdent;

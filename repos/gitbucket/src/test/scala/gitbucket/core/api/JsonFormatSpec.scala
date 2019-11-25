@@ -395,19 +395,20 @@ class JsonFormatSpec extends FunSuite {
       .compile("""^\s*//.*$""", Pattern.MULTILINE)
       .matcher(expectJson)
       .replaceAll("")
-    val js2 = try {
-      parse(json2)
-    } catch {
-      case e: com.fasterxml.jackson.core.JsonParseException => {
-        val p =
-          java.lang.Math.max(e.getLocation.getCharOffset() - 10, 0).toInt
-        val message =
-          json2.substring(p, java.lang.Math.min(p + 100, json2.length))
-        throw new com.fasterxml.jackson.core.JsonParseException(
-          message + e.getMessage,
-          e.getLocation)
+    val js2 =
+      try {
+        parse(json2)
+      } catch {
+        case e: com.fasterxml.jackson.core.JsonParseException => {
+          val p =
+            java.lang.Math.max(e.getLocation.getCharOffset() - 10, 0).toInt
+          val message =
+            json2.substring(p, java.lang.Math.min(p + 100, json2.length))
+          throw new com.fasterxml.jackson.core.JsonParseException(
+            message + e.getMessage,
+            e.getLocation)
+        }
       }
-    }
     val js1 = parse(resultJson)
     assert(js1 === js2)
   }

@@ -277,12 +277,13 @@ object Typeable extends TupleTypeableInstances with LowPriorityTypeable {
       def describe = {
         val typeParams = fields map (_.describe) mkString (",")
         // Workaround for https://issues.scala-lang.org/browse/SI-5425
-        val name = try {
-          erased.getSimpleName
-        } catch {
-          case _: InternalError =>
-            erased.getName
-        }
+        val name =
+          try {
+            erased.getSimpleName
+          } catch {
+            case _: InternalError =>
+              erased.getName
+          }
         s"$name[$typeParams]"
       }
     }

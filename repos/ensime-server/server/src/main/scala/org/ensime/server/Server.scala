@@ -139,13 +139,14 @@ object Server {
     if (!ensimeFile.exists() || !ensimeFile.isFile)
       throw new RuntimeException(s".ensime file ($ensimeFile) not found")
 
-    implicit val config = try {
-      EnsimeConfigProtocol.parse(Files.toString(ensimeFile, Charsets.UTF_8))
-    } catch {
-      case e: Throwable =>
-        log.error(s"There was a problem parsing $ensimeFile", e)
-        throw e
-    }
+    implicit val config =
+      try {
+        EnsimeConfigProtocol.parse(Files.toString(ensimeFile, Charsets.UTF_8))
+      } catch {
+        case e: Throwable =>
+          log.error(s"There was a problem parsing $ensimeFile", e)
+          throw e
+      }
 
     val protocol: Protocol = propOrElse("ensime.protocol", "swank") match {
       case "swank" => new SwankProtocol

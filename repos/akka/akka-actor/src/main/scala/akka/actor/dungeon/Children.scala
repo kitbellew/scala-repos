@@ -353,28 +353,29 @@ private[akka] trait Children {
     else {
       reserveChild(name)
       // this name will either be unreserved or overwritten with a real child below
-      val actor = try {
-        val childPath =
-          new ChildActorPath(cell.self.path, name, ActorCell.newUid())
-        cell.provider.actorOf(
-          cell.systemImpl,
-          props,
-          cell.self,
-          childPath,
-          systemService = systemService,
-          deploy = None,
-          lookupDeploy = true,
-          async = async)
-      } catch {
-        case e: InterruptedException ⇒
-          unreserveChild(name)
-          Thread
-            .interrupted() // clear interrupted flag before throwing according to java convention
-          throw e
-        case NonFatal(e) ⇒
-          unreserveChild(name)
-          throw e
-      }
+      val actor =
+        try {
+          val childPath =
+            new ChildActorPath(cell.self.path, name, ActorCell.newUid())
+          cell.provider.actorOf(
+            cell.systemImpl,
+            props,
+            cell.self,
+            childPath,
+            systemService = systemService,
+            deploy = None,
+            lookupDeploy = true,
+            async = async)
+        } catch {
+          case e: InterruptedException ⇒
+            unreserveChild(name)
+            Thread
+              .interrupted() // clear interrupted flag before throwing according to java convention
+            throw e
+          case NonFatal(e) ⇒
+            unreserveChild(name)
+            throw e
+        }
       // mailbox==null during RoutedActorCell constructor, where suspends are queued otherwise
       if (mailbox ne null) for (_ ← 1 to mailbox.suspendCount) actor.suspend()
       initChild(actor)

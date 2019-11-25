@@ -21,13 +21,14 @@ trait ComTests extends AsyncTests {
   }
 
   private def assertThrowClosed(msg: String, body: => Unit): Unit = {
-    val thrown = try {
-      body
-      false
-    } catch {
-      case _: ComJSEnv.ComClosedException =>
-        true
-    }
+    val thrown =
+      try {
+        body
+        false
+      } catch {
+        case _: ComJSEnv.ComClosedException =>
+          true
+      }
 
     assertTrue(msg, thrown)
   }

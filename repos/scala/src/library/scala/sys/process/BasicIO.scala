@@ -197,11 +197,12 @@ object BasicIO {
     def halting = { Thread.currentThread.interrupt(); null }
     def readFully(): Unit =
       if (working) {
-        val line = try readLine()
-        catch {
-          case _: InterruptedException    => halting
-          case e: IOException if !working => halting
-        }
+        val line =
+          try readLine()
+          catch {
+            case _: InterruptedException    => halting
+            case e: IOException if !working => halting
+          }
         if (line != null) {
           processLine(line)
           readFully()
@@ -262,11 +263,12 @@ object BasicIO {
       if (byteCount > 0) {
         out.write(buffer, 0, byteCount)
         // flush() will throw an exception once the process has terminated
-        val available = try {
-          out.flush(); true
-        } catch {
-          case _: IOException => false
-        }
+        val available =
+          try {
+            out.flush(); true
+          } catch {
+            case _: IOException => false
+          }
         if (available) loop()
       }
     }

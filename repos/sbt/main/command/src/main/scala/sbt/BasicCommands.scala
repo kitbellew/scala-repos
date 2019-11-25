@@ -75,11 +75,12 @@ object BasicCommands {
   }
 
   def runHelp(s: State, h: Help)(arg: Option[String]): State = {
-    val message = try Help.message(h, arg)
-    catch {
-      case NonFatal(ex) =>
-        ex.toString
-    }
+    val message =
+      try Help.message(h, arg)
+      catch {
+        case NonFatal(ex) =>
+          ex.toString
+      }
     System.out.println(message)
     s
   }

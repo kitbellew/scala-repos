@@ -35,13 +35,14 @@ object Test extends App {
     val msym = moduleA.symbol.info.decl(TermName(methName)).asMethod
     println(s"meth = $msym")
     val mmirror = moduleA.reflectMethod(msym)
-    val mresult = try {
-      mmirror(arg)
-    } catch {
-      case ex: Exception =>
-        val ex1 = scala.reflect.runtime.ReflectionUtils.unwrapThrowable(ex)
-        s"${ex1.getClass}: ${ex1.getMessage}"
-    }
+    val mresult =
+      try {
+        mmirror(arg)
+      } catch {
+        case ex: Exception =>
+          val ex1 = scala.reflect.runtime.ReflectionUtils.unwrapThrowable(ex)
+          s"${ex1.getClass}: ${ex1.getMessage}"
+      }
     println(
       s"as seen by Scala reflection: ${msym.asInstanceOf[scala.reflect.internal.Symbols#Symbol].defString}")
     println(

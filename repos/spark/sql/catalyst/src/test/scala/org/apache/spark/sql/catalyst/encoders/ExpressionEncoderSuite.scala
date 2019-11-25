@@ -302,11 +302,12 @@ class ExpressionEncoderSuite extends PlanTest with AnalysisTest {
       val row = encoder.toRow(input)
       val schema = encoder.schema.toAttributes
       val boundEncoder = encoder.defaultBinding
-      val convertedBack = try boundEncoder.fromRow(row)
-      catch {
-        case e: Exception =>
-          fail(
-            s"""Exception thrown while decoding
+      val convertedBack =
+        try boundEncoder.fromRow(row)
+        catch {
+          case e: Exception =>
+            fail(
+              s"""Exception thrown while decoding
               |Converted: $row
               |Schema: ${schema.mkString(",")}
               |${encoder.schema.treeString}
@@ -315,9 +316,9 @@ class ExpressionEncoderSuite extends PlanTest with AnalysisTest {
               |$boundEncoder
               |
             """.stripMargin,
-            e
-          )
-      }
+              e
+            )
+        }
 
       // Test the correct resolution of serialization / deserialization.
       val attr =
@@ -352,22 +353,23 @@ class ExpressionEncoderSuite extends PlanTest with AnalysisTest {
           case other => other.getClass.getName
         }
 
-        val encodedData = try {
-          row
-            .toSeq(encoder.schema)
-            .zip(schema)
-            .map {
-              case (
-                  a: ArrayData,
-                  AttributeReference(_, ArrayType(et, _), _, _)) =>
-                a.toArray[Any](et).toSeq
-              case (other, _) =>
-                other
-            }
-            .mkString("[", ",", "]")
-        } catch {
-          case e: Throwable => s"Failed to toSeq: $e"
-        }
+        val encodedData =
+          try {
+            row
+              .toSeq(encoder.schema)
+              .zip(schema)
+              .map {
+                case (
+                    a: ArrayData,
+                    AttributeReference(_, ArrayType(et, _), _, _)) =>
+                  a.toArray[Any](et).toSeq
+                case (other, _) =>
+                  other
+              }
+              .mkString("[", ",", "]")
+          } catch {
+            case e: Throwable => s"Failed to toSeq: $e"
+          }
 
         fail(s"""Encoded/Decoded data does not match input data
              |

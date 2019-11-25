@@ -599,45 +599,50 @@ private[spark] class BlockManager(
     while (locationIterator.hasNext) {
       val loc = locationIterator.next()
       logDebug(s"Getting remote block $blockId from $loc")
-      val data = try {
-        blockTransferService
-          .fetchBlockSync(loc.host, loc.port, loc.executorId, blockId.toString)
-          .nioByteBuffer()
-      } catch {
-        case NonFatal(e) =>
-          runningFailureCount += 1
-          totalFailureCount += 1
+      val data =
+        try {
+          blockTransferService
+            .fetchBlockSync(
+              loc.host,
+              loc.port,
+              loc.executorId,
+              blockId.toString)
+            .nioByteBuffer()
+        } catch {
+          case NonFatal(e) =>
+            runningFailureCount += 1
+            totalFailureCount += 1
 
-          if (totalFailureCount >= maxFetchFailures) {
-            // Give up trying anymore locations. Either we've tried all of the original locations,
-            // or we've refreshed the list of locations from the master, and have still
-            // hit failures after trying locations from the refreshed list.
-            throw new BlockFetchException(
-              s"Failed to fetch block after" +
-                s" ${totalFailureCount} fetch failures. Most recent failure cause:",
+            if (totalFailureCount >= maxFetchFailures) {
+              // Give up trying anymore locations. Either we've tried all of the original locations,
+              // or we've refreshed the list of locations from the master, and have still
+              // hit failures after trying locations from the refreshed list.
+              throw new BlockFetchException(
+                s"Failed to fetch block after" +
+                  s" ${totalFailureCount} fetch failures. Most recent failure cause:",
+                e)
+            }
+
+            logWarning(
+              s"Failed to fetch remote block $blockId " +
+                s"from $loc (failed attempt $runningFailureCount)",
               e)
-          }
 
-          logWarning(
-            s"Failed to fetch remote block $blockId " +
-              s"from $loc (failed attempt $runningFailureCount)",
-            e)
+            // If there is a large number of executors then locations list can contain a
+            // large number of stale entries causing a large number of retries that may
+            // take a significant amount of time. To get rid of these stale entries
+            // we refresh the block locations after a certain number of fetch failures
+            if (runningFailureCount >= maxFailuresBeforeLocationRefresh) {
+              locationIterator = getLocations(blockId).iterator
+              logDebug(
+                s"Refreshed locations from the driver " +
+                  s"after ${runningFailureCount} fetch failures.")
+              runningFailureCount = 0
+            }
 
-          // If there is a large number of executors then locations list can contain a
-          // large number of stale entries causing a large number of retries that may
-          // take a significant amount of time. To get rid of these stale entries
-          // we refresh the block locations after a certain number of fetch failures
-          if (runningFailureCount >= maxFailuresBeforeLocationRefresh) {
-            locationIterator = getLocations(blockId).iterator
-            logDebug(
-              s"Refreshed locations from the driver " +
-                s"after ${runningFailureCount} fetch failures.")
-            runningFailureCount = 0
-          }
-
-          // This location failed, so we retry fetch from a different one by returning null here
-          null
-      }
+            // This location failed, so we retry fetch from a different one by returning null here
+            null
+        }
 
       if (data != null) {
         return Some(new ChunkedByteBuffer(data))
@@ -914,22 +919,23 @@ private[spark] class BlockManager(
 
     val startTimeMs = System.currentTimeMillis
     var blockWasSuccessfullyStored: Boolean = false
-    val result: Option[T] = try {
-      val res = putBody(putBlockInfo)
-      blockWasSuccessfullyStored = res.isEmpty
-      res
-    } finally {
-      if (blockWasSuccessfullyStored) {
-        if (keepReadLock) {
-          blockInfoManager.downgradeLock(blockId)
+    val result: Option[T] =
+      try {
+        val res = putBody(putBlockInfo)
+        blockWasSuccessfullyStored = res.isEmpty
+        res
+      } finally {
+        if (blockWasSuccessfullyStored) {
+          if (keepReadLock) {
+            blockInfoManager.downgradeLock(blockId)
+          } else {
+            blockInfoManager.unlock(blockId)
+          }
         } else {
-          blockInfoManager.unlock(blockId)
+          blockInfoManager.removeBlock(blockId)
+          logWarning(s"Putting block $blockId failed")
         }
-      } else {
-        blockInfoManager.removeBlock(blockId)
-        logWarning(s"Putting block $blockId failed")
       }
-    }
     if (level.replication > 1) {
       logDebug(
         "Putting block %s with replication took %s"

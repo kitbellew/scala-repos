@@ -78,11 +78,12 @@ object Runner extends Logging {
       uri: Option[URI],
       args: Seq[String]): Seq[String] = {
     args map { arg =>
-      val f = try {
-        new File(new URI(arg))
-      } catch {
-        case e: Throwable => new File(arg)
-      }
+      val f =
+        try {
+          new File(new URI(arg))
+        } catch {
+          case e: Throwable => new File(arg)
+        }
       if (f.exists()) {
         handleScratchFile(fileSystem, uri, f)
       } else {

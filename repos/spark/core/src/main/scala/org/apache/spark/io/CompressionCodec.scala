@@ -71,14 +71,15 @@ private[spark] object CompressionCodec {
   def createCodec(conf: SparkConf, codecName: String): CompressionCodec = {
     val codecClass =
       shortCompressionCodecNames.getOrElse(codecName.toLowerCase, codecName)
-    val codec = try {
-      val ctor =
-        Utils.classForName(codecClass).getConstructor(classOf[SparkConf])
-      Some(ctor.newInstance(conf).asInstanceOf[CompressionCodec])
-    } catch {
-      case e: ClassNotFoundException   => None
-      case e: IllegalArgumentException => None
-    }
+    val codec =
+      try {
+        val ctor =
+          Utils.classForName(codecClass).getConstructor(classOf[SparkConf])
+        Some(ctor.newInstance(conf).asInstanceOf[CompressionCodec])
+      } catch {
+        case e: ClassNotFoundException   => None
+        case e: IllegalArgumentException => None
+      }
     codec.getOrElse(
       throw new IllegalArgumentException(
         s"Codec [$codecName] is not available. " +
@@ -179,11 +180,12 @@ class SnappyCompressionCodec(conf: SparkConf) extends CompressionCodec {
   * Before a new version of the library, we only call the method once and cache the result.
   */
 private final object SnappyCompressionCodec {
-  private lazy val version: String = try {
-    Snappy.getNativeLibraryVersion
-  } catch {
-    case e: Error => throw new IllegalArgumentException(e)
-  }
+  private lazy val version: String =
+    try {
+      Snappy.getNativeLibraryVersion
+    } catch {
+      case e: Error => throw new IllegalArgumentException(e)
+    }
 }
 
 /**

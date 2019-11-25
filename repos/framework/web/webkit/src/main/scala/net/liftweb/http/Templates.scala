@@ -217,27 +217,28 @@ object Templates {
                 val name =
                   pls + p + (if (suffix.length > 0) "." + suffix else "")
                 import scala.xml.dtd.ValidationException
-                val xmlb = try {
-                  LiftRules.doWithResource(name)(parser.parse) match {
-                    case Full(seq) => seq
-                    case _         => Empty
-                  }
-                } catch {
-                  case e: ValidationException
-                      if Props.devMode | Props.testMode =>
-                    return Helpers.errorDiv(<div>Error locating template: <b>{
-                      name
-                    }</b><br/>
+                val xmlb =
+                  try {
+                    LiftRules.doWithResource(name)(parser.parse) match {
+                      case Full(seq) => seq
+                      case _         => Empty
+                    }
+                  } catch {
+                    case e: ValidationException
+                        if Props.devMode | Props.testMode =>
+                      return Helpers.errorDiv(<div>Error locating template: <b>{
+                        name
+                      }</b><br/>
                       Message: <b>{e.getMessage}</b><br/>
                       {
-                      <pre>{e.toString}{
-                        e.getStackTrace.map(_.toString).mkString("\n")
-                      }</pre>
-                    }
+                        <pre>{e.toString}{
+                          e.getStackTrace.map(_.toString).mkString("\n")
+                        }</pre>
+                      }
                     </div>)
 
-                  case e: ValidationException => Empty
-                }
+                    case e: ValidationException => Empty
+                  }
                 if (xmlb.isDefined) {
                   found = true
                   val rawElems = xmlb.openOrThrowException("passes isDefined")

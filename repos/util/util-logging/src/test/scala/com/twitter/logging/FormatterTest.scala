@@ -173,12 +173,13 @@ class FormatterTest extends WordSpec {
       }
 
       "simple" in {
-        val exception = try {
-          ExceptionLooper.cycle(10)
-          null
-        } catch {
-          case t: Throwable => t
-        }
+        val exception =
+          try {
+            ExceptionLooper.cycle(10)
+            null
+          } catch {
+            case t: Throwable => t
+          }
         assert(
           Formatter.formatStackTrace(exception, 5).map { scrub(_) } == List(
             "    at com.twitter.logging.FormatterTest$$.cycle(FormatterTest.scala:NNN)",
@@ -191,12 +192,13 @@ class FormatterTest extends WordSpec {
       }
 
       "nested" in {
-        val exception = try {
-          ExceptionLooper.cycle2(2)
-          null
-        } catch {
-          case t: Throwable => t
-        }
+        val exception =
+          try {
+            ExceptionLooper.cycle2(2)
+            null
+          } catch {
+            case t: Throwable => t
+          }
         assert(
           Formatter.formatStackTrace(exception, 2).map { scrub(_) } == List(
             "    at com.twitter.logging.FormatterTest$$.cycle2(FormatterTest.scala:NNN)",

@@ -116,20 +116,22 @@ object Test {
     }
 
   def withValue1: Unit = {
-    val x = try {
-      10
-    } finally {
-      Console.println("Oh, oh");
-    };
+    val x =
+      try {
+        10
+      } finally {
+        Console.println("Oh, oh");
+      };
     Console.println(x);
   }
 
   def withValue2: Unit = {
-    val x = try {
-      null
-    } finally {
-      Console.println("droped a null");
-    };
+    val x =
+      try {
+        null
+      } finally {
+        Console.println("droped a null");
+      };
     Console.println(x);
   }
 

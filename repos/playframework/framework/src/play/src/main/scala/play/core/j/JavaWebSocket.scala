@@ -31,12 +31,13 @@ object JavaWebSocket extends JavaHelpers {
     WebSocket { request =>
       val javaContext = createJavaContext(request)
 
-      val javaWebSocket = try {
-        JContext.current.set(javaContext)
-        FutureConverters.toScala(retrieveWebSocket)
-      } finally {
-        JContext.current.remove()
-      }
+      val javaWebSocket =
+        try {
+          JContext.current.set(javaContext)
+          FutureConverters.toScala(retrieveWebSocket)
+        } finally {
+          JContext.current.remove()
+        }
 
       javaWebSocket.map { jws =>
         val reject = Option(jws.rejectWith())

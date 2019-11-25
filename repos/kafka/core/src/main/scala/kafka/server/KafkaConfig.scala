@@ -1778,15 +1778,16 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
 
   private def validateUniquePortAndProtocol(listeners: String) {
 
-    val endpoints = try {
-      val listenerList = CoreUtils.parseCsvList(listeners)
-      listenerList.map(listener => EndPoint.createEndPoint(listener))
-    } catch {
-      case e: Exception =>
-        throw new IllegalArgumentException(
-          "Error creating broker listeners from '%s': %s"
-            .format(listeners, e.getMessage))
-    }
+    val endpoints =
+      try {
+        val listenerList = CoreUtils.parseCsvList(listeners)
+        listenerList.map(listener => EndPoint.createEndPoint(listener))
+      } catch {
+        case e: Exception =>
+          throw new IllegalArgumentException(
+            "Error creating broker listeners from '%s': %s"
+              .format(listeners, e.getMessage))
+      }
     // filter port 0 for unit tests
     val endpointsWithoutZeroPort = endpoints.map(ep => ep.port).filter(_ != 0)
     val distinctPorts = endpointsWithoutZeroPort.distinct

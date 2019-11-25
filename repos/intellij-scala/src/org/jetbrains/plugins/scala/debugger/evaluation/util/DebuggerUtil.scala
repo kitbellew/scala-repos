@@ -412,11 +412,12 @@ object DebuggerUtil {
   def jvmClassAtPosition(
       sourcePosition: SourcePosition,
       debugProcess: DebugProcess): Option[ReferenceType] = {
-    val allClasses = try {
-      debugProcess.getPositionManager.getAllClasses(sourcePosition)
-    } catch {
-      case e: NoDataException => return None
-    }
+    val allClasses =
+      try {
+        debugProcess.getPositionManager.getAllClasses(sourcePosition)
+      } catch {
+        case e: NoDataException => return None
+      }
 
     if (!allClasses.isEmpty) Some(allClasses.get(0))
     else None

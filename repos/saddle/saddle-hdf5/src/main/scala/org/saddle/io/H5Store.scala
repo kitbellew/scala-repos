@@ -472,18 +472,19 @@ object H5Store {
 
     H5Reg.save(spaceToUse, H5S)
 
-    val attribute_id = try {
-      H5.H5Acreate(
-        node_id,
-        attr,
-        tcsz,
-        spaceToUse,
-        HDF5Constants.H5P_DEFAULT,
-        HDF5Constants.H5P_DEFAULT)
-    } catch {
-      case e: HDF5LibraryException =>
-        H5.H5Aopen(node_id, attr, HDF5Constants.H5P_DEFAULT)
-    }
+    val attribute_id =
+      try {
+        H5.H5Acreate(
+          node_id,
+          attr,
+          tcsz,
+          spaceToUse,
+          HDF5Constants.H5P_DEFAULT,
+          HDF5Constants.H5P_DEFAULT)
+      } catch {
+        case e: HDF5LibraryException =>
+          H5.H5Aopen(node_id, attr, HDF5Constants.H5P_DEFAULT)
+      }
 
     H5Reg.save(attribute_id, H5A)
 
@@ -561,18 +562,19 @@ object H5Store {
 
     H5Reg.save(spaceToUse, H5S)
 
-    val attribute_id = try {
-      H5.H5Acreate(
-        node_id,
-        attr,
-        HDF5Constants.H5T_NATIVE_LONG,
-        spaceToUse,
-        HDF5Constants.H5P_DEFAULT,
-        HDF5Constants.H5P_DEFAULT)
-    } catch {
-      case e: HDF5LibraryException =>
-        H5.H5Aopen(node_id, attr, HDF5Constants.H5P_DEFAULT)
-    }
+    val attribute_id =
+      try {
+        H5.H5Acreate(
+          node_id,
+          attr,
+          HDF5Constants.H5T_NATIVE_LONG,
+          spaceToUse,
+          HDF5Constants.H5P_DEFAULT,
+          HDF5Constants.H5P_DEFAULT)
+      } catch {
+        case e: HDF5LibraryException =>
+          H5.H5Aopen(node_id, attr, HDF5Constants.H5P_DEFAULT)
+      }
     assertException(attribute_id >= 0, "Bad attribute id")
 
     H5Reg.save(attribute_id, H5A)
@@ -591,18 +593,19 @@ object H5Store {
 
     H5Reg.save(spaceToUse, H5S)
 
-    val attribute_id = try {
-      H5.H5Acreate(
-        node_id,
-        attr,
-        HDF5Constants.H5T_STD_B8LE,
-        spaceToUse,
-        HDF5Constants.H5P_DEFAULT,
-        HDF5Constants.H5P_DEFAULT)
-    } catch {
-      case e: HDF5LibraryException =>
-        H5.H5Aopen(node_id, attr, HDF5Constants.H5P_DEFAULT)
-    }
+    val attribute_id =
+      try {
+        H5.H5Acreate(
+          node_id,
+          attr,
+          HDF5Constants.H5T_STD_B8LE,
+          spaceToUse,
+          HDF5Constants.H5P_DEFAULT,
+          HDF5Constants.H5P_DEFAULT)
+      } catch {
+        case e: HDF5LibraryException =>
+          H5.H5Aopen(node_id, attr, HDF5Constants.H5P_DEFAULT)
+      }
     assertException(attribute_id >= 0, "Bad attribute id")
 
     H5Reg.save(attribute_id, H5A)

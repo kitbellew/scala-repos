@@ -39,15 +39,16 @@ object Test {
     assertThat(3, List(9, 10)) { it.sliding(2, 4) }
 
     // make sure it throws past the end
-    val thrown = try {
-      val it = List(1, 2, 3).sliding(2)
-      it.next
-      it.next
-      it.next
-      false
-    } catch {
-      case _: NoSuchElementException => true
-    }
+    val thrown =
+      try {
+        val it = List(1, 2, 3).sliding(2)
+        it.next
+        it.next
+        it.next
+        false
+      } catch {
+        case _: NoSuchElementException => true
+      }
     assert(thrown)
   }
 }

@@ -143,8 +143,9 @@ abstract class FormatInterpolator {
             s0
           }
       }
-      val s = try StringContext.processEscapes(s0)
-      catch escapeHatch
+      val s =
+        try StringContext.processEscapes(s0)
+        catch escapeHatch
       val ms = fpat findAllMatchIn s
 
       def errorLeading(op: Conversion) =

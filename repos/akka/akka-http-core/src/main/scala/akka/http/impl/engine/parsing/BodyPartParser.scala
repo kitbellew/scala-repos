@@ -152,14 +152,15 @@ private[http] final class BodyPartParser(
       }
 
     var lineEnd = 0
-    val resultHeader = try {
-      if (!boundary(input, lineStart)) {
-        lineEnd = headerParser.parseHeaderLine(input, lineStart)()
-        headerParser.resultHeader
-      } else BoundaryHeader
-    } catch {
-      case NotEnoughDataException ⇒ null
-    }
+    val resultHeader =
+      try {
+        if (!boundary(input, lineStart)) {
+          lineEnd = headerParser.parseHeaderLine(input, lineStart)()
+          headerParser.resultHeader
+        } else BoundaryHeader
+      } catch {
+        case NotEnoughDataException ⇒ null
+      }
     resultHeader match {
       case null ⇒
         continue(input, lineStart)(

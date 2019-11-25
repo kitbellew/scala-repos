@@ -1030,12 +1030,13 @@ object Load {
         t(prev)
       }
     // 2. Discover all the autoplugins and contributed configurations.
-    val autoPlugins = try loadedPlugins.detected
-      .deducePluginsFromProject(transformedProject, log)
-    catch {
-      case e: AutoPluginException =>
-        throw translateAutoPluginException(e, transformedProject)
-    }
+    val autoPlugins =
+      try loadedPlugins.detected
+        .deducePluginsFromProject(transformedProject, log)
+      catch {
+        case e: AutoPluginException =>
+          throw translateAutoPluginException(e, transformedProject)
+      }
     val autoConfigs = autoPlugins.flatMap(_.projectConfigurations)
 
     // 3. Use AddSettings instance to order all Setting[_]s appropriately

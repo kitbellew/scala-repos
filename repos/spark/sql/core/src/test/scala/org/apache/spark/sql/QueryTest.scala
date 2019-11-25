@@ -91,19 +91,20 @@ abstract class QueryTest extends PlanTest {
   protected def checkDecoding[T](
       ds: => Dataset[T],
       expectedAnswer: T*): Unit = {
-    val decoded = try ds.collect().toSet
-    catch {
-      case e: Exception =>
-        fail(
-          s"""
+    val decoded =
+      try ds.collect().toSet
+      catch {
+        case e: Exception =>
+          fail(
+            s"""
              |Exception collecting dataset as objects
              |${ds.resolvedTEncoder}
              |${ds.resolvedTEncoder.fromRowExpression.treeString}
              |${ds.queryExecution}
            """.stripMargin,
-          e
-        )
-    }
+            e
+          )
+      }
 
     // Handle the case where the return type is an array
     val isArray = decoded.headOption.map(_.getClass.isArray).getOrElse(false)
@@ -134,20 +135,21 @@ abstract class QueryTest extends PlanTest {
   protected def checkAnswer(
       df: => DataFrame,
       expectedAnswer: Seq[Row]): Unit = {
-    val analyzedDF = try df
-    catch {
-      case ae: AnalysisException =>
-        if (ae.plan.isDefined) {
-          fail(s"""
+    val analyzedDF =
+      try df
+      catch {
+        case ae: AnalysisException =>
+          if (ae.plan.isDefined) {
+            fail(s"""
                |Failed to analyze query: $ae
                |${ae.plan.get}
                |
                |${stackTraceToString(ae)}
                |""".stripMargin)
-        } else {
-          throw ae
-        }
-    }
+          } else {
+            throw ae
+          }
+      }
 
     checkJsonFormat(analyzedDF)
 
@@ -232,17 +234,18 @@ abstract class QueryTest extends PlanTest {
     // bypass hive tests before we fix all corner cases in hive module.
     if (this.getClass.getName.startsWith("org.apache.spark.sql.hive")) return
 
-    val jsonString = try {
-      logicalPlan.toJSON
-    } catch {
-      case NonFatal(e) =>
-        fail(
-          s"""
+    val jsonString =
+      try {
+        logicalPlan.toJSON
+      } catch {
+        case NonFatal(e) =>
+          fail(
+            s"""
              |Failed to parse logical plan to JSON:
              |${logicalPlan.treeString}
            """.stripMargin,
-          e)
-    }
+            e)
+      }
 
     // scala function is not serializable to JSON, use null to replace them so that we can compare
     // the plans later.
@@ -260,20 +263,21 @@ abstract class QueryTest extends PlanTest {
       case i: InMemoryRelation => i
     }
 
-    val jsonBackPlan = try {
-      TreeNode.fromJSON[LogicalPlan](jsonString, sqlContext.sparkContext)
-    } catch {
-      case NonFatal(e) =>
-        fail(
-          s"""
+    val jsonBackPlan =
+      try {
+        TreeNode.fromJSON[LogicalPlan](jsonString, sqlContext.sparkContext)
+      } catch {
+        case NonFatal(e) =>
+          fail(
+            s"""
              |Failed to rebuild the logical plan from JSON:
              |${logicalPlan.treeString}
              |
              |${logicalPlan.prettyJson}
            """.stripMargin,
-          e
-        )
-    }
+            e
+          )
+      }
 
     val normalized2 =
       jsonBackPlan transformDown {
@@ -342,18 +346,19 @@ object QueryTest {
   def checkAnswer(df: DataFrame, expectedAnswer: Seq[Row]): Option[String] = {
     val isSorted = df.logicalPlan.collect { case s: logical.Sort => s }.nonEmpty
 
-    val sparkAnswer = try df.collect().toSeq
-    catch {
-      case e: Exception =>
-        val errorMessage = s"""
+    val sparkAnswer =
+      try df.collect().toSeq
+      catch {
+        case e: Exception =>
+          val errorMessage = s"""
             |Exception thrown while executing query:
             |${df.queryExecution}
             |== Exception ==
             |$e
             |${org.apache.spark.sql.catalyst.util.stackTraceToString(e)}
           """.stripMargin
-        return Some(errorMessage)
-    }
+          return Some(errorMessage)
+      }
 
     sameRows(expectedAnswer, sparkAnswer, isSorted).map { results =>
       s"""

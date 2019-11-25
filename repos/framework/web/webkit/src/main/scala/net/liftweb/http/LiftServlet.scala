@@ -455,13 +455,14 @@ class LiftServlet extends Loggable {
     }
 
     /* Go through the pipeline and send response if full **/
-    val resp: Box[LiftResponse] = try {
-      stepThroughPipeline(processingPipeline)
-    } catch {
-      case foc: LiftFlowOfControlException => throw foc
-      case e: Exception if !e.getClass.getName.endsWith("RetryRequest") =>
-        S.runExceptionHandlers(req, e)
-    }
+    val resp: Box[LiftResponse] =
+      try {
+        stepThroughPipeline(processingPipeline)
+      } catch {
+        case foc: LiftFlowOfControlException => throw foc
+        case e: Exception if !e.getClass.getName.endsWith("RetryRequest") =>
+          S.runExceptionHandlers(req, e)
+      }
 
     tryo {
       LiftRules.onEndServicing.toList.foreach(_(req, resp))
@@ -492,65 +493,67 @@ class LiftServlet extends Loggable {
       NamedPF.find(toMatch, LiftRules.dispatchTable(req.request)) match {
         case Full(pf) =>
           LiftSession.onBeginServicing.foreach(_(liftSession, req))
-          val ret: (Boolean, Box[LiftResponse]) = try {
+          val ret: (Boolean, Box[LiftResponse]) =
             try {
-              // run the continuation in the new session
-              // if there is a continuation
-              continuation match {
-                case Full(func) => {
-                  func()
-                  S.redirectTo("/")
+              try {
+                // run the continuation in the new session
+                // if there is a continuation
+                continuation match {
+                  case Full(func) => {
+                    func()
+                    S.redirectTo("/")
+                  }
+                  case _ => // do nothing
                 }
-                case _ => // do nothing
-              }
 
-              liftSession.runParams(req)
-              S.functionLifespan(true) {
-                pf(toMatch)() match {
-                  case Full(v) =>
-                    (
-                      true,
-                      Full(
-                        LiftRules.convertResponse(
-                          (
-                            liftSession.checkRedirect(v),
-                            Nil,
-                            S.responseCookies,
-                            req))))
+                liftSession.runParams(req)
+                S.functionLifespan(true) {
+                  pf(toMatch)() match {
+                    case Full(v) =>
+                      (
+                        true,
+                        Full(
+                          LiftRules.convertResponse(
+                            (
+                              liftSession.checkRedirect(v),
+                              Nil,
+                              S.responseCookies,
+                              req))))
 
-                  case Empty =>
-                    (true, LiftRules.notFoundOrIgnore(req, Full(liftSession)))
+                    case Empty =>
+                      (true, LiftRules.notFoundOrIgnore(req, Full(liftSession)))
 
-                  case f: net.liftweb.common.Failure =>
-                    (
-                      true,
-                      net.liftweb.common
-                        .Full(liftSession.checkRedirect(req.createNotFound(f))))
+                    case f: net.liftweb.common.Failure =>
+                      (
+                        true,
+                        net.liftweb.common
+                          .Full(
+                            liftSession.checkRedirect(req.createNotFound(f))))
+                  }
                 }
-              }
-            } catch {
-              case ite: java.lang.reflect.InvocationTargetException
-                  if (ite.getCause.isInstanceOf[ResponseShortcutException]) =>
-                (
-                  true,
-                  Full(
-                    liftSession.handleRedirect(
-                      ite.getCause.asInstanceOf[ResponseShortcutException],
-                      req)))
+              } catch {
+                case ite: java.lang.reflect.InvocationTargetException
+                    if (ite.getCause.isInstanceOf[ResponseShortcutException]) =>
+                  (
+                    true,
+                    Full(
+                      liftSession.handleRedirect(
+                        ite.getCause.asInstanceOf[ResponseShortcutException],
+                        req)))
 
-              case rd: net.liftweb.http.ResponseShortcutException =>
-                (true, Full(liftSession.handleRedirect(rd, req)))
+                case rd: net.liftweb.http.ResponseShortcutException =>
+                  (true, Full(liftSession.handleRedirect(rd, req)))
+              }
+            } finally {
+              if (S.functionMap.size > 0) {
+                liftSession.updateFunctionMap(
+                  S.functionMap,
+                  S.renderVersion,
+                  millis)
+                S.clearFunctionMap
+              }
+              liftSession.notices = S.getNotices
             }
-          } finally {
-            if (S.functionMap.size > 0) {
-              liftSession.updateFunctionMap(
-                S.functionMap,
-                S.renderVersion,
-                millis)
-              S.clearFunctionMap
-            }
-            liftSession.notices = S.getNotices
-          }
 
           LiftSession.onEndServicing.foreach(_(liftSession, req, ret._2))
           ret

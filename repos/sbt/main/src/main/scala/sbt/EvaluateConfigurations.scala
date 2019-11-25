@@ -246,17 +246,18 @@ object EvaluateConfigurations {
       range: LineRange): TrackedEvalResult[internals.DslEntry] = {
     // TODO - Should we try to namespace these between.sbt files?  IF they hash to the same value, they may actually be
     // exactly the same setting, so perhaps we don't care?
-    val result = try {
-      eval.eval(
-        expression,
-        imports = new EvalImports(imports, name),
-        srcName = name,
-        tpeName = Some(SettingsDefinitionName),
-        line = range.start)
-    } catch {
-      case e: sbt.compiler.EvalException =>
-        throw new MessageOnlyException(e.getMessage)
-    }
+    val result =
+      try {
+        eval.eval(
+          expression,
+          imports = new EvalImports(imports, name),
+          srcName = name,
+          tpeName = Some(SettingsDefinitionName),
+          line = range.start)
+      } catch {
+        case e: sbt.compiler.EvalException =>
+          throw new MessageOnlyException(e.getMessage)
+      }
     // TODO - keep track of configuration classes defined.
     TrackedEvalResult(result.generated, loader => {
       val pos = RangePosition(name, range shift 1)

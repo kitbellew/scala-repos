@@ -151,15 +151,16 @@ object DataFlow {
       value.get getOrElse {
         val out = actorOf(new Out(this)).start()
 
-        val result = try {
-          blockedReaders offer out
-          (out !! Get).as[T]
-        } catch {
-          case e: Exception =>
-            EventHandler.error(e, this, e.getMessage)
-            out ! Exit
-            throw e
-        }
+        val result =
+          try {
+            blockedReaders offer out
+            (out !! Get).as[T]
+          } catch {
+            case e: Exception =>
+              EventHandler.error(e, this, e.getMessage)
+              out ! Exit
+              throw e
+          }
 
         result.getOrElse(
           throw new DataFlowVariableException("Timed out (after " +

@@ -128,29 +128,30 @@ private[finagle] class ServiceFactoryCache[Key, Req, Rep](
       }
     }
 
-    val svc = try {
-      nmiss.incr()
+    val svc =
+      try {
+        nmiss.incr()
 
-      val factory = new IdlingFactory(newFactory(key))
+        val factory = new IdlingFactory(newFactory(key))
 
-      if (cache.size < maxCacheSize) {
-        cache += (key -> factory)
-        cache(key).apply(conn)
-      } else {
-        findEvictee() match {
-          case Some(evicted) =>
-            nevict.incr()
-            cache(evicted).close()
-            cache = cache - evicted + (key -> factory)
-            cache(key).apply(conn)
-          case None =>
-            noneshot.incr()
-            oneshot(factory, conn)
+        if (cache.size < maxCacheSize) {
+          cache += (key -> factory)
+          cache(key).apply(conn)
+        } else {
+          findEvictee() match {
+            case Some(evicted) =>
+              nevict.incr()
+              cache(evicted).close()
+              cache = cache - evicted + (key -> factory)
+              cache(key).apply(conn)
+            case None =>
+              noneshot.incr()
+              oneshot(factory, conn)
+          }
         }
+      } finally {
+        writeLock.unlock()
       }
-    } finally {
-      writeLock.unlock()
-    }
 
     svc
   }

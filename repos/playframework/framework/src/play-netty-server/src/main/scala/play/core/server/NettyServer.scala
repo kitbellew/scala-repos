@@ -88,13 +88,14 @@ class NettyServer(
   /**
     * SSL engine provider, only created if needed.
     */
-  private lazy val sslEngineProvider: Option[SSLEngineProvider] = try {
-    Some(ServerSSLEngine.createSSLEngineProvider(config, applicationProvider))
-  } catch {
-    case NonFatal(e) =>
-      logger.error(s"cannot load SSL context", e)
-      None
-  }
+  private lazy val sslEngineProvider: Option[SSLEngineProvider] =
+    try {
+      Some(ServerSSLEngine.createSSLEngineProvider(config, applicationProvider))
+    } catch {
+      case NonFatal(e) =>
+        logger.error(s"cannot load SSL context", e)
+        None
+    }
 
   private def setOptions(
       setOption: (ChannelOption[AnyRef], AnyRef) => Any,

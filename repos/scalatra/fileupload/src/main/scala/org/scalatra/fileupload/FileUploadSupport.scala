@@ -38,24 +38,25 @@ trait FileUploadSupport extends ServletBase {
   import org.scalatra.fileupload.FileUploadSupport._
 
   override def handle(req: HttpServletRequest, resp: HttpServletResponse) {
-    val req2 = try {
-      if (isMultipartContent(req)) {
-        val bodyParams = extractMultipartParams(req)
-        var mergedParams = bodyParams.formParams
-        // Add the query string parameters
-        req.getParameterMap foreach {
-          case (name, values) =>
-            val formValues = mergedParams.getOrElse(name, List.empty)
-            mergedParams += name -> (values.toList ++ formValues)
+    val req2 =
+      try {
+        if (isMultipartContent(req)) {
+          val bodyParams = extractMultipartParams(req)
+          var mergedParams = bodyParams.formParams
+          // Add the query string parameters
+          req.getParameterMap foreach {
+            case (name, values) =>
+              val formValues = mergedParams.getOrElse(name, List.empty)
+              mergedParams += name -> (values.toList ++ formValues)
+          }
+          wrapRequest(req, mergedParams)
+        } else req
+      } catch {
+        case e: FileUploadException => {
+          req.setAttribute(ScalatraBase.PrehandleExceptionKey, e)
+          req
         }
-        wrapRequest(req, mergedParams)
-      } else req
-    } catch {
-      case e: FileUploadException => {
-        req.setAttribute(ScalatraBase.PrehandleExceptionKey, e)
-        req
       }
-    }
 
     super.handle(req2, resp)
   }

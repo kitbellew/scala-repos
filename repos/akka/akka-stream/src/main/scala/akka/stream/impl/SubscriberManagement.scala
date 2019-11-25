@@ -137,14 +137,15 @@ private[akka] trait SubscriberManagement[T]
                   Long.MinValue
                 else 0
               } else if (buffer.count(subscription) > 0) {
-                val goOn = try {
-                  subscription.dispatch(buffer.read(subscription))
-                  true
-                } catch {
-                  case _: SpecViolation ⇒
-                    unregisterSubscriptionInternal(subscription)
-                    false
-                }
+                val goOn =
+                  try {
+                    subscription.dispatch(buffer.read(subscription))
+                    true
+                  } catch {
+                    case _: SpecViolation ⇒
+                      unregisterSubscriptionInternal(subscription)
+                      false
+                  }
                 if (goOn)
                   dispatchFromBufferAndReturnRemainingRequested(
                     requested - 1,

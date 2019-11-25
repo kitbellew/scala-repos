@@ -3,13 +3,14 @@ object Test extends App {
   val arr = new Array[Int](10)
 
   def tryit(label: String, start: Int, len: Int): Unit = {
-    val status = try {
-      val it = ns.toIterator
-      it.copyToArray(arr, start, len)
-      "ok"
-    } catch {
-      case e: Exception => e.toString
-    }
+    val status =
+      try {
+        val it = ns.toIterator
+        it.copyToArray(arr, start, len)
+        "ok"
+      } catch {
+        case e: Exception => e.toString
+      }
     println("%s: %s" format (label, status))
   }
 

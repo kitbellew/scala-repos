@@ -234,12 +234,13 @@ class RegexMatcherTest {
   def should_throw_exception_if_match_accessors_are_called_before_find(
       ): Unit = {
     def checkInvalidAccess(block: => Unit): Unit = {
-      val exception: Throwable = try {
-        block
-        throw new Error("No exception thrown")
-      } catch {
-        case e: Throwable => e
-      }
+      val exception: Throwable =
+        try {
+          block
+          throw new Error("No exception thrown")
+        } catch {
+          case e: Throwable => e
+        }
 
       assertEquals(
         "java.lang.IllegalStateException",

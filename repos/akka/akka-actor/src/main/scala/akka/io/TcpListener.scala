@@ -50,34 +50,35 @@ private[io] class TcpListener(
 
   var acceptLimit = if (bind.pullMode) 0 else BatchAcceptLimit
 
-  val localAddress = try {
-    val socket = channel.socket
-    bind.options.foreach(_.beforeServerSocketBind(socket))
-    socket.bind(bind.localAddress, bind.backlog)
-    val ret = socket.getLocalSocketAddress match {
-      case isa: InetSocketAddress ⇒ isa
-      case x ⇒
-        throw new IllegalArgumentException(
-          s"bound to unknown SocketAddress [$x]")
+  val localAddress =
+    try {
+      val socket = channel.socket
+      bind.options.foreach(_.beforeServerSocketBind(socket))
+      socket.bind(bind.localAddress, bind.backlog)
+      val ret = socket.getLocalSocketAddress match {
+        case isa: InetSocketAddress ⇒ isa
+        case x ⇒
+          throw new IllegalArgumentException(
+            s"bound to unknown SocketAddress [$x]")
+      }
+      channelRegistry.register(
+        channel,
+        if (bind.pullMode) 0 else SelectionKey.OP_ACCEPT)
+      log.debug("Successfully bound to {}", ret)
+      bind.options.foreach {
+        case o: Inet.SocketOptionV2 ⇒ o.afterBind(channel.socket)
+        case _ ⇒
+      }
+      ret
+    } catch {
+      case NonFatal(e) ⇒
+        bindCommander ! bind.failureMessage
+        log.error(
+          e,
+          "Bind failed for TCP channel on endpoint [{}]",
+          bind.localAddress)
+        context.stop(self)
     }
-    channelRegistry.register(
-      channel,
-      if (bind.pullMode) 0 else SelectionKey.OP_ACCEPT)
-    log.debug("Successfully bound to {}", ret)
-    bind.options.foreach {
-      case o: Inet.SocketOptionV2 ⇒ o.afterBind(channel.socket)
-      case _ ⇒
-    }
-    ret
-  } catch {
-    case NonFatal(e) ⇒
-      bindCommander ! bind.failureMessage
-      log.error(
-        e,
-        "Bind failed for TCP channel on endpoint [{}]",
-        bind.localAddress)
-      context.stop(self)
-  }
 
   override def supervisorStrategy =
     SelectionHandler.connectionSupervisorStrategy

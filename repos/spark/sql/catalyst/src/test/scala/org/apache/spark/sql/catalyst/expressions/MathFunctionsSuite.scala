@@ -139,10 +139,11 @@ class MathFunctionsSuite extends SparkFunSuite with ExpressionEvalHelper {
   private def checkNaNWithoutCodegen(
       expression: Expression,
       inputRow: InternalRow = EmptyRow): Unit = {
-    val actual = try evaluate(expression, inputRow)
-    catch {
-      case e: Exception => fail(s"Exception evaluating $expression", e)
-    }
+    val actual =
+      try evaluate(expression, inputRow)
+      catch {
+        case e: Exception => fail(s"Exception evaluating $expression", e)
+      }
     if (!actual.asInstanceOf[Double].isNaN) {
       fail(
         s"Incorrect evaluation (codegen off): $expression, " +

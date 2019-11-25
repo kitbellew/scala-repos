@@ -86,13 +86,15 @@ class MavenRemoteRepositoryResolver(
         MavenRepositoryResolver.MAVEN_METADATA_XML,
         Metadata.Nature.RELEASE_OR_SNAPSHOT))
     if (!isUseCacheOnly) metadataRequest.setRepository(aetherRepository)
-    val metadataResultOpt = try system
-      .resolveMetadata(session, java.util.Arrays.asList(metadataRequest))
-      .asScala
-      .headOption
-    catch {
-      case e: org.eclipse.aether.resolution.ArtifactResolutionException => None
-    }
+    val metadataResultOpt =
+      try system
+        .resolveMetadata(session, java.util.Arrays.asList(metadataRequest))
+        .asScala
+        .headOption
+      catch {
+        case e: org.eclipse.aether.resolution.ArtifactResolutionException =>
+          None
+      }
     try metadataResultOpt match {
       case Some(md) if md.isResolved =>
         import org.apache.maven.artifact.repository.metadata.io.xpp3.MetadataXpp3Reader

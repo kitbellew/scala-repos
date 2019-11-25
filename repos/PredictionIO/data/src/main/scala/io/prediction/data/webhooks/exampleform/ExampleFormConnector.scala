@@ -50,23 +50,24 @@ import org.json4s.JObject
 private[prediction] object ExampleFormConnector extends FormConnector {
 
   override def toEventJson(data: Map[String, String]): JObject = {
-    val json = try {
-      data.get("type") match {
-        case Some("userAction")     => userActionToEventJson(data)
-        case Some("userActionItem") => userActionItemToEventJson(data)
-        case Some(x) =>
+    val json =
+      try {
+        data.get("type") match {
+          case Some("userAction")     => userActionToEventJson(data)
+          case Some("userActionItem") => userActionItemToEventJson(data)
+          case Some(x) =>
+            throw new ConnectorException(
+              s"Cannot convert unknown type ${x} to event JSON")
+          case None =>
+            throw new ConnectorException(s"The field 'type' is required.")
+        }
+      } catch {
+        case e: ConnectorException => throw e
+        case e: Exception =>
           throw new ConnectorException(
-            s"Cannot convert unknown type ${x} to event JSON")
-        case None =>
-          throw new ConnectorException(s"The field 'type' is required.")
+            s"Cannot convert ${data} to event JSON. ${e.getMessage()}",
+            e)
       }
-    } catch {
-      case e: ConnectorException => throw e
-      case e: Exception =>
-        throw new ConnectorException(
-          s"Cannot convert ${data} to event JSON. ${e.getMessage()}",
-          e)
-    }
     json
   }
 

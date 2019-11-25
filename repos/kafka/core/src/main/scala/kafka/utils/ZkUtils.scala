@@ -665,13 +665,14 @@ class ZkUtils(
 
   def readDataMaybeNull(path: String): (Option[String], Stat) = {
     val stat: Stat = new Stat()
-    val dataAndStat = try {
-      (Some(zkClient.readData(path, stat)), stat)
-    } catch {
-      case e: ZkNoNodeException =>
-        (None, stat)
-      case e2: Throwable => throw e2
-    }
+    val dataAndStat =
+      try {
+        (Some(zkClient.readData(path, stat)), stat)
+      } catch {
+        case e: ZkNoNodeException =>
+          (None, stat)
+        case e2: Throwable => throw e2
+      }
     dataAndStat
   }
 

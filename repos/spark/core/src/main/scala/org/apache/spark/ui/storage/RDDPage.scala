@@ -79,19 +79,20 @@ private[ui] class RDDPage(parent: StorageTab) extends WebUIPage("rdd") {
         1
       }
     }
-    val blockTableHTML = try {
-      val _blockTable = new BlockPagedTable(
-        UIUtils.prependBaseUri(parent.basePath) +
-          s"/storage/rdd/?id=${rddId}",
-        rddStorageInfo.partitions.get,
-        blockPageSize,
-        blockSortColumn,
-        blockSortDesc)
-      _blockTable.table(page)
-    } catch {
-      case e @ (_: IllegalArgumentException | _: IndexOutOfBoundsException) =>
-        <div class="alert alert-error">{e.getMessage}</div>
-    }
+    val blockTableHTML =
+      try {
+        val _blockTable = new BlockPagedTable(
+          UIUtils.prependBaseUri(parent.basePath) +
+            s"/storage/rdd/?id=${rddId}",
+          rddStorageInfo.partitions.get,
+          blockPageSize,
+          blockSortColumn,
+          blockSortDesc)
+        _blockTable.table(page)
+      } catch {
+        case e @ (_: IllegalArgumentException | _: IndexOutOfBoundsException) =>
+          <div class="alert alert-error">{e.getMessage}</div>
+      }
 
     val jsForScrollingDownToBlockTable = <script>
         {

@@ -290,12 +290,13 @@ trait ContextErrors { self: Analyzer =>
           tree: Tree,
           tpt: Tree,
           tparams: List[Symbol]) = {
-        val tptSafeString: String = try {
-          tpt.tpe.toString()
-        } catch {
-          case _: CyclicReference =>
-            tpt.toString()
-        }
+        val tptSafeString: String =
+          try {
+            tpt.tpe.toString()
+          } catch {
+            case _: CyclicReference =>
+              tpt.toString()
+          }
         val msg =
           "wrong number of type arguments for " + tptSafeString +
             ", should be " + tparams.length

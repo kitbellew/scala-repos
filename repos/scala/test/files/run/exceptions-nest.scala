@@ -87,7 +87,8 @@ object Test extends App {
         x = 4;
         try {
           x = 41
-        } catch { case _: Exception => x = 42 }; x = 43
+        } catch { case _: Exception => x = 42 }
+        ; x = 43
     }
     x
   }

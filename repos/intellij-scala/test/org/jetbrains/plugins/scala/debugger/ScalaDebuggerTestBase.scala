@@ -229,14 +229,15 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
       return false
     }
     val ois = new ObjectInputStream(new FileInputStream(file))
-    val result = try {
-      val obj = ois.readObject()
-      obj match {
-        case map: mutable.HashMap[String, Array[Byte]] @unchecked =>
-          checksums = map; true
-        case _ => false
-      }
-    } finally ois.close()
+    val result =
+      try {
+        val obj = ois.readObject()
+        obj match {
+          case map: mutable.HashMap[String, Array[Byte]] @unchecked =>
+            checksums = map; true
+          case _ => false
+        }
+      } finally ois.close()
     result
   }
 

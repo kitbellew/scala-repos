@@ -158,14 +158,15 @@ class Codec[A: Manifest](
       channel: Channel,
       buffer: ChannelBuffer) = {
     val readableBytes = buffer.readableBytes()
-    val nextStep = try {
-      stage(buffer)
-    } catch {
-      case e: Throwable =>
-        // reset state before throwing.
-        stage = firstStage
-        throw e
-    }
+    val nextStep =
+      try {
+        stage(buffer)
+      } catch {
+        case e: Throwable =>
+          // reset state before throwing.
+          stage = firstStage
+          throw e
+      }
     bytesReadCounter(readableBytes - buffer.readableBytes())
     nextStep match {
       case Incomplete =>

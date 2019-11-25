@@ -23,12 +23,13 @@ trait ClassfileIndexer {
     require(name.getBaseName.endsWith(".class"), s"$name is not a class file")
 
     val in = file.getContent.getInputStream
-    val raw = try {
-      val reader = new ClassReader(in)
-      val receiver = new AsmCallback
-      reader.accept(receiver, ClassReader.SKIP_FRAMES)
-      receiver
-    } finally in.close()
+    val raw =
+      try {
+        val reader = new ClassReader(in)
+        val receiver = new AsmCallback
+        reader.accept(receiver, ClassReader.SKIP_FRAMES)
+        receiver
+      } finally in.close()
 
     (raw.clazz, raw.refs)
   }

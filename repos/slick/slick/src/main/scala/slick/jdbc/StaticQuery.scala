@@ -69,32 +69,34 @@ object ActionBasedSQLInterpolation {
 
     val uri = StaticDatabaseConfigMacros.getURI(ctxt)
     //TODO The database configuration and connection should be cached for subsequent macro invocations
-    val dc = try DatabaseConfig
-      .forURI[JdbcProfile](new URI(uri), ClassLoaderUtil.defaultClassLoader)
-    catch {
-      case ex @ (_: ConfigException | _: SlickException) =>
-        ctxt.abort(
-          ctxt.enclosingPosition,
-          s"""Cannot load @StaticDatabaseConfig("$uri"): ${ex.getMessage}""")
-    }
-    val rTypes = try {
-      val a = SimpleJdbcAction { ctx =>
-        ctx.session.withPreparedStatement(macroTreeBuilder.staticQueryString) {
-          _.getMetaData match {
-            case null => Vector()
-            case resultMeta =>
-              Vector.tabulate(resultMeta.getColumnCount) { i =>
-                val modelBuilder = dc.profile.createModelBuilder(Nil, true)(
-                  scala.concurrent.ExecutionContext.global)
-                modelBuilder.jdbcTypeToScala(
-                  resultMeta.getColumnType(i + 1),
-                  resultMeta.getColumnTypeName(i + 1))
-              }
+    val dc =
+      try DatabaseConfig
+        .forURI[JdbcProfile](new URI(uri), ClassLoaderUtil.defaultClassLoader)
+      catch {
+        case ex @ (_: ConfigException | _: SlickException) =>
+          ctxt.abort(
+            ctxt.enclosingPosition,
+            s"""Cannot load @StaticDatabaseConfig("$uri"): ${ex.getMessage}""")
+      }
+    val rTypes =
+      try {
+        val a = SimpleJdbcAction { ctx =>
+          ctx.session.withPreparedStatement(macroTreeBuilder.staticQueryString) {
+            _.getMetaData match {
+              case null => Vector()
+              case resultMeta =>
+                Vector.tabulate(resultMeta.getColumnCount) { i =>
+                  val modelBuilder = dc.profile.createModelBuilder(Nil, true)(
+                    scala.concurrent.ExecutionContext.global)
+                  modelBuilder.jdbcTypeToScala(
+                    resultMeta.getColumnType(i + 1),
+                    resultMeta.getColumnTypeName(i + 1))
+                }
+            }
           }
         }
-      }
-      Await.result(dc.db.run(a), Duration.Inf)
-    } finally dc.db.close()
+        Await.result(dc.db.run(a), Duration.Inf)
+      } finally dc.db.close()
 
     reify {
       val rconv =

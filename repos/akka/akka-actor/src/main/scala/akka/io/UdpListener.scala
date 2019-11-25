@@ -43,32 +43,33 @@ private[io] class UdpListener(
     .create()
   channel.configureBlocking(false)
 
-  val localAddress = try {
-    val socket = channel.socket
-    bind.options.foreach(_.beforeDatagramBind(socket))
-    socket.bind(bind.localAddress)
-    val ret = socket.getLocalSocketAddress match {
-      case isa: InetSocketAddress ⇒ isa
-      case x ⇒
-        throw new IllegalArgumentException(
-          s"bound to unknown SocketAddress [$x]")
+  val localAddress =
+    try {
+      val socket = channel.socket
+      bind.options.foreach(_.beforeDatagramBind(socket))
+      socket.bind(bind.localAddress)
+      val ret = socket.getLocalSocketAddress match {
+        case isa: InetSocketAddress ⇒ isa
+        case x ⇒
+          throw new IllegalArgumentException(
+            s"bound to unknown SocketAddress [$x]")
+      }
+      channelRegistry.register(channel, OP_READ)
+      log.debug("Successfully bound to [{}]", ret)
+      bind.options.foreach {
+        case o: Inet.SocketOptionV2 ⇒ o.afterBind(channel.socket)
+        case _ ⇒
+      }
+      ret
+    } catch {
+      case NonFatal(e) ⇒
+        bindCommander ! CommandFailed(bind)
+        log.error(
+          e,
+          "Failed to bind UDP channel to endpoint [{}]",
+          bind.localAddress)
+        context.stop(self)
     }
-    channelRegistry.register(channel, OP_READ)
-    log.debug("Successfully bound to [{}]", ret)
-    bind.options.foreach {
-      case o: Inet.SocketOptionV2 ⇒ o.afterBind(channel.socket)
-      case _ ⇒
-    }
-    ret
-  } catch {
-    case NonFatal(e) ⇒
-      bindCommander ! CommandFailed(bind)
-      log.error(
-        e,
-        "Failed to bind UDP channel to endpoint [{}]",
-        bind.localAddress)
-      context.stop(self)
-  }
 
   def receive: Receive = {
     case registration: ChannelRegistration ⇒

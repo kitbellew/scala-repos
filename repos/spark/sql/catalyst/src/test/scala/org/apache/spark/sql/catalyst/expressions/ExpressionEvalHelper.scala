@@ -99,10 +99,11 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
       expected: Any,
       inputRow: InternalRow = EmptyRow): Unit = {
 
-    val actual = try evaluate(expression, inputRow)
-    catch {
-      case e: Exception => fail(s"Exception evaluating $expression", e)
-    }
+    val actual =
+      try evaluate(expression, inputRow)
+      catch {
+        case e: Exception => fail(s"Exception evaluating $expression", e)
+      }
     if (!checkResult(actual, expected)) {
       val input = if (inputRow == EmptyRow) "" else s", input: $inputRow"
       fail(
@@ -275,11 +276,12 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
   private def cmpInterpretWithCodegen(
       inputRow: InternalRow,
       expr: Expression): Unit = {
-    val interpret = try {
-      evaluate(expr, inputRow)
-    } catch {
-      case e: Exception => fail(s"Exception evaluating $expr", e)
-    }
+    val interpret =
+      try {
+        evaluate(expr, inputRow)
+      } catch {
+        case e: Exception => fail(s"Exception evaluating $expr", e)
+      }
 
     val plan = generateProject(
       GenerateMutableProjection.generate(

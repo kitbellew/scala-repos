@@ -321,8 +321,9 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon { self =>
       }
       peekahead()
       // try it, in case it is recoverable
-      val res = try tree
-      catch { case e: Exception => pushback(); throw e }
+      val res =
+        try tree
+        catch { case e: Exception => pushback(); throw e }
       if (res.isEmpty) pushback()
       res
     }

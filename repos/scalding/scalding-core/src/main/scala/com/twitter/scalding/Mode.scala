@@ -183,18 +183,19 @@ trait HadoopMode extends Mode {
       Mode.CascadingFlowProcessClassKey,
       Mode.DefaultHadoopFlowProcess)
 
-    val fp = try {
-      val clazz = Class.forName(flowProcessClass)
-      val ctor = clazz.getConstructor(classOf[JobConf])
-      ctor.newInstance(conf).asInstanceOf[FlowProcess[JobConf]]
-    } catch {
-      case ncd: ClassNotFoundException => {
-        throw new ModeLoadException(
-          "Failed to load Cascading flow process class " +
-            flowProcessClass,
-          ncd)
+    val fp =
+      try {
+        val clazz = Class.forName(flowProcessClass)
+        val ctor = clazz.getConstructor(classOf[JobConf])
+        ctor.newInstance(conf).asInstanceOf[FlowProcess[JobConf]]
+      } catch {
+        case ncd: ClassNotFoundException => {
+          throw new ModeLoadException(
+            "Failed to load Cascading flow process class " +
+              flowProcessClass,
+            ncd)
+        }
       }
-    }
 
     htap.retrieveSourceFields(fp)
     htap.sourceConfInit(fp, conf)

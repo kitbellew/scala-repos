@@ -209,27 +209,28 @@ private[impl] class OfferMatcherManagerActor private (
   private[this] def receiveMatchedTasks: Receive = {
     case OfferMatcher.MatchedTaskOps(offerId, addedOps, resendOffer) =>
       def processAddedTasks(data: OfferData): OfferData = {
-        val dataWithTasks = try {
-          val (acceptedOps, rejectedOps) = addedOps.splitAt(
-            Seq(
-              launchTokens,
-              addedOps.size,
-              conf.maxTasksPerOffer() - data.ops.size).min)
+        val dataWithTasks =
+          try {
+            val (acceptedOps, rejectedOps) = addedOps.splitAt(
+              Seq(
+                launchTokens,
+                addedOps.size,
+                conf.maxTasksPerOffer() - data.ops.size).min)
 
-          rejectedOps.foreach(_.reject(
-            "not enough launch tokens OR already scheduled sufficient tasks on offer"))
+            rejectedOps.foreach(_.reject(
+              "not enough launch tokens OR already scheduled sufficient tasks on offer"))
 
-          val newData: OfferData = data.addTasks(acceptedOps)
-          launchTokens -= acceptedOps.size
-          metrics.launchTokenGauge.setValue(launchTokens)
-          newData
-        } catch {
-          case NonFatal(e) =>
-            log.error(
-              s"unexpected error processing ops for ${offerId.getValue} from ${sender()}",
-              e)
-            data
-        }
+            val newData: OfferData = data.addTasks(acceptedOps)
+            launchTokens -= acceptedOps.size
+            metrics.launchTokenGauge.setValue(launchTokens)
+            newData
+          } catch {
+            case NonFatal(e) =>
+              log.error(
+                s"unexpected error processing ops for ${offerId.getValue} from ${sender()}",
+                e)
+              data
+          }
 
         dataWithTasks.nextMatcherOpt match {
           case Some((matcher, contData)) =>

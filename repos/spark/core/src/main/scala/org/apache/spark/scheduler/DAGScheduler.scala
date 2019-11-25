@@ -1083,31 +1083,32 @@ private[spark] class DAGScheduler(
           stage = s.id,
           maxPartitionId = s.rdd.partitions.length - 1)
     }
-    val taskIdToLocations: Map[Int, Seq[TaskLocation]] = try {
-      stage match {
-        case s: ShuffleMapStage =>
-          partitionsToCompute.map { id =>
-            (id, getPreferredLocs(stage.rdd, id))
-          }.toMap
-        case s: ResultStage =>
-          val job = s.activeJob.get
-          partitionsToCompute.map { id =>
-            val p = s.partitions(id)
-            (id, getPreferredLocs(stage.rdd, p))
-          }.toMap
+    val taskIdToLocations: Map[Int, Seq[TaskLocation]] =
+      try {
+        stage match {
+          case s: ShuffleMapStage =>
+            partitionsToCompute.map { id =>
+              (id, getPreferredLocs(stage.rdd, id))
+            }.toMap
+          case s: ResultStage =>
+            val job = s.activeJob.get
+            partitionsToCompute.map { id =>
+              val p = s.partitions(id)
+              (id, getPreferredLocs(stage.rdd, p))
+            }.toMap
+        }
+      } catch {
+        case NonFatal(e) =>
+          stage.makeNewStageAttempt(partitionsToCompute.size)
+          listenerBus.post(
+            SparkListenerStageSubmitted(stage.latestInfo, properties))
+          abortStage(
+            stage,
+            s"Task creation failed: $e\n${Utils.exceptionString(e)}",
+            Some(e))
+          runningStages -= stage
+          return
       }
-    } catch {
-      case NonFatal(e) =>
-        stage.makeNewStageAttempt(partitionsToCompute.size)
-        listenerBus.post(
-          SparkListenerStageSubmitted(stage.latestInfo, properties))
-        abortStage(
-          stage,
-          s"Task creation failed: $e\n${Utils.exceptionString(e)}",
-          Some(e))
-        runningStages -= stage
-        return
-    }
 
     stage.makeNewStageAttempt(
       partitionsToCompute.size,
@@ -1151,46 +1152,47 @@ private[spark] class DAGScheduler(
         return
     }
 
-    val tasks: Seq[Task[_]] = try {
-      stage match {
-        case stage: ShuffleMapStage =>
-          partitionsToCompute.map { id =>
-            val locs = taskIdToLocations(id)
-            val part = stage.rdd.partitions(id)
-            new ShuffleMapTask(
-              stage.id,
-              stage.latestInfo.attemptId,
-              taskBinary,
-              part,
-              locs,
-              stage.internalAccumulators)
-          }
+    val tasks: Seq[Task[_]] =
+      try {
+        stage match {
+          case stage: ShuffleMapStage =>
+            partitionsToCompute.map { id =>
+              val locs = taskIdToLocations(id)
+              val part = stage.rdd.partitions(id)
+              new ShuffleMapTask(
+                stage.id,
+                stage.latestInfo.attemptId,
+                taskBinary,
+                part,
+                locs,
+                stage.internalAccumulators)
+            }
 
-        case stage: ResultStage =>
-          val job = stage.activeJob.get
-          partitionsToCompute.map { id =>
-            val p: Int = stage.partitions(id)
-            val part = stage.rdd.partitions(p)
-            val locs = taskIdToLocations(id)
-            new ResultTask(
-              stage.id,
-              stage.latestInfo.attemptId,
-              taskBinary,
-              part,
-              locs,
-              id,
-              stage.internalAccumulators)
-          }
+          case stage: ResultStage =>
+            val job = stage.activeJob.get
+            partitionsToCompute.map { id =>
+              val p: Int = stage.partitions(id)
+              val part = stage.rdd.partitions(p)
+              val locs = taskIdToLocations(id)
+              new ResultTask(
+                stage.id,
+                stage.latestInfo.attemptId,
+                taskBinary,
+                part,
+                locs,
+                id,
+                stage.internalAccumulators)
+            }
+        }
+      } catch {
+        case NonFatal(e) =>
+          abortStage(
+            stage,
+            s"Task creation failed: $e\n${Utils.exceptionString(e)}",
+            Some(e))
+          runningStages -= stage
+          return
       }
-    } catch {
-      case NonFatal(e) =>
-        abortStage(
-          stage,
-          s"Task creation failed: $e\n${Utils.exceptionString(e)}",
-          Some(e))
-        runningStages -= stage
-        return
-    }
 
     if (tasks.size > 0) {
       logInfo(

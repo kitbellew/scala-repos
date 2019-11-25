@@ -102,13 +102,14 @@ private[concurrent] object ExecutionContextImpl {
             ForkJoinPool.managedBlock(new ForkJoinPool.ManagedBlocker {
               @volatile var isdone = false
               override def block(): Boolean = {
-                result = try {
-                  // When we block, switch out the BlockContext temporarily so that nested blocking does not created N new Threads
-                  BlockContext.withBlockContext(
-                    BlockContext.defaultBlockContext) { thunk }
-                } finally {
-                  isdone = true
-                }
+                result =
+                  try {
+                    // When we block, switch out the BlockContext temporarily so that nested blocking does not created N new Threads
+                    BlockContext.withBlockContext(
+                      BlockContext.defaultBlockContext) { thunk }
+                  } finally {
+                    isdone = true
+                  }
 
                 true
               }

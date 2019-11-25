@@ -118,11 +118,12 @@ private class ForkJoinScheduler(
           override def block() = {
             numBlocks.incr()
             activeBlocks.incrementAndGet()
-            res = try f
-            finally {
-              ok = true
-              activeBlocks.decrementAndGet()
-            }
+            res =
+              try f
+              finally {
+                ok = true
+                activeBlocks.decrementAndGet()
+              }
             true
           }
           override def isReleasable = ok

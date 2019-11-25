@@ -1103,16 +1103,17 @@ private[spark] class Client(
     var lastState: YarnApplicationState = null
     while (true) {
       Thread.sleep(interval)
-      val report: ApplicationReport = try {
-        getApplicationReport(appId)
-      } catch {
-        case e: ApplicationNotFoundException =>
-          logError(s"Application $appId not found.")
-          return (YarnApplicationState.KILLED, FinalApplicationStatus.KILLED)
-        case NonFatal(e) =>
-          logError(s"Failed to contact YARN for application $appId.", e)
-          return (YarnApplicationState.FAILED, FinalApplicationStatus.FAILED)
-      }
+      val report: ApplicationReport =
+        try {
+          getApplicationReport(appId)
+        } catch {
+          case e: ApplicationNotFoundException =>
+            logError(s"Application $appId not found.")
+            return (YarnApplicationState.KILLED, FinalApplicationStatus.KILLED)
+          case NonFatal(e) =>
+            logError(s"Failed to contact YARN for application $appId.", e)
+            return (YarnApplicationState.FAILED, FinalApplicationStatus.FAILED)
+        }
       val state = report.getYarnApplicationState
 
       if (logApplicationReport) {

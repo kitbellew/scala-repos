@@ -382,13 +382,14 @@ abstract class PrepJSInterop
     }
 
     private def genConstructorOf(tree: Tree, tpeArg: Tree): Tree = {
-      val classValue = try {
-        typer.typedClassOf(tree, tpeArg)
-      } catch {
-        case typeError: TypeError =>
-          reporter.error(typeError.pos, typeError.msg)
-          EmptyTree
-      }
+      val classValue =
+        try {
+          typer.typedClassOf(tree, tpeArg)
+        } catch {
+          case typeError: TypeError =>
+            reporter.error(typeError.pos, typeError.msg)
+            EmptyTree
+        }
 
       if (classValue != EmptyTree) {
         val Literal(classConstant) = classValue

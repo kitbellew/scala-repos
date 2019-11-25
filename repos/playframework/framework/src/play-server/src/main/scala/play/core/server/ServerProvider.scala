@@ -66,21 +66,23 @@ object ServerProvider {
       .getOrElse(
         throw new ServerStartException(
           s"No ServerProvider configured with key '$ClassNameConfigKey'"))
-    val clazz = try classLoader.loadClass(className)
-    catch {
-      case _: ClassNotFoundException =>
-        throw ServerStartException(
-          s"Couldn't find ServerProvider class '$className'")
-    }
+    val clazz =
+      try classLoader.loadClass(className)
+      catch {
+        case _: ClassNotFoundException =>
+          throw ServerStartException(
+            s"Couldn't find ServerProvider class '$className'")
+      }
     if (!classOf[ServerProvider].isAssignableFrom(clazz))
       throw ServerStartException(
         s"Class ${clazz.getName} must implement ServerProvider interface")
-    val ctor = try clazz.getConstructor()
-    catch {
-      case _: NoSuchMethodException =>
-        throw ServerStartException(
-          s"ServerProvider class ${clazz.getName} must have a public default constructor")
-    }
+    val ctor =
+      try clazz.getConstructor()
+      catch {
+        case _: NoSuchMethodException =>
+          throw ServerStartException(
+            s"ServerProvider class ${clazz.getName} must have a public default constructor")
+      }
     ctor.newInstance().asInstanceOf[ServerProvider]
   }
 

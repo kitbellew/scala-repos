@@ -296,21 +296,22 @@ object Storage extends Logging {
     val originalClassName = tag.tpe.toString.split('.')
     val rawClassName = sourceType + "." + classPrefix + originalClassName.last
     val className = "io.prediction.data.storage." + rawClassName
-    val clazz = try {
-      Class.forName(className)
-    } catch {
-      case e: ClassNotFoundException =>
-        try {
-          Class.forName(rawClassName)
-        } catch {
-          case e: ClassNotFoundException =>
-            throw new StorageClientException(
-              "No storage backend " +
-                "implementation can be found (tried both " +
-                s"$className and $rawClassName)",
-              e)
-        }
-    }
+    val clazz =
+      try {
+        Class.forName(className)
+      } catch {
+        case e: ClassNotFoundException =>
+          try {
+            Class.forName(rawClassName)
+          } catch {
+            case e: ClassNotFoundException =>
+              throw new StorageClientException(
+                "No storage backend " +
+                  "implementation can be found (tried both " +
+                  s"$className and $rawClassName)",
+                e)
+          }
+      }
     val constructor = clazz.getConstructors()(0)
     try {
       constructor.newInstance(ctorArgs: _*).asInstanceOf[T]

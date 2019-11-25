@@ -38,15 +38,16 @@ private[prediction] object SegmentIOConnector extends JsonConnector {
         throw new ConnectorException(s"Failed to get segment.io API version.")
     }
 
-    val common = try {
-      data.extract[Common]
-    } catch {
-      case e: Throwable ⇒
-        throw new ConnectorException(
-          s"Cannot extract Common field from $data. ${e.getMessage}",
-          e
-        )
-    }
+    val common =
+      try {
+        data.extract[Common]
+      } catch {
+        case e: Throwable ⇒
+          throw new ConnectorException(
+            s"Cannot extract Common field from $data. ${e.getMessage}",
+            e
+          )
+      }
 
     try {
       common.`type` match {

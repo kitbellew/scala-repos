@@ -74,18 +74,19 @@ private[sbt] case class SbtParser(file: File, lines: Seq[String])
     val content = indexedLines.mkString(END_OF_LINE)
     val fileName = file.getAbsolutePath
 
-    val parsed = try {
-      toolbox.parse(content)
-    } catch {
-      case e: ToolBoxError =>
-        val seq = toolbox.frontEnd.infos.map { i =>
-          s"""[$fileName]:${i.pos.line}: ${i.msg}"""
-        }
-        val errorMessage = seq.mkString(EOL)
+    val parsed =
+      try {
+        toolbox.parse(content)
+      } catch {
+        case e: ToolBoxError =>
+          val seq = toolbox.frontEnd.infos.map { i =>
+            s"""[$fileName]:${i.pos.line}: ${i.msg}"""
+          }
+          val errorMessage = seq.mkString(EOL)
 
-        val error =
-          if (errorMessage.contains(XML_ERROR)) {
-            s"""
+          val error =
+            if (errorMessage.contains(XML_ERROR)) {
+              s"""
                |$errorMessage
                |Probably problem with parsing xml group, please add parens or semicolons:
                |Replace:
@@ -96,11 +97,11 @@ private[sbt] case class SbtParser(file: File, lines: Seq[String])
                |val xmlGroup = <a/><b/>;
                |
              """.stripMargin
-          } else {
-            errorMessage
-          }
-        throw new MessageOnlyException(error)
-    }
+            } else {
+              errorMessage
+            }
+          throw new MessageOnlyException(error)
+      }
     val parsedTrees = parsed match {
       case Block(stmt, expr) =>
         stmt :+ expr

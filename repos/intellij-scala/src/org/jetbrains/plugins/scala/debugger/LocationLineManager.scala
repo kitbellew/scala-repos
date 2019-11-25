@@ -60,13 +60,14 @@ trait LocationLineManager { self: ScalaPositionManager =>
   }
 
   def locationsOfLine(refType: ReferenceType, line: Int): Seq[Location] = {
-    val jvmLocations: util.List[Location] = try {
-      if (debugProcess.getVirtualMachineProxy.versionHigher("1.4"))
-        refType.locationsOfLine(DebugProcess.JAVA_STRATUM, null, line + 1)
-      else refType.locationsOfLine(line + 1)
-    } catch {
-      case aie: AbsentInformationException => return Seq.empty
-    }
+    val jvmLocations: util.List[Location] =
+      try {
+        if (debugProcess.getVirtualMachineProxy.versionHigher("1.4"))
+          refType.locationsOfLine(DebugProcess.JAVA_STRATUM, null, line + 1)
+        else refType.locationsOfLine(line + 1)
+      } catch {
+        case aie: AbsentInformationException => return Seq.empty
+      }
 
     checkAndUpdateCaches(refType)
 
@@ -168,10 +169,11 @@ trait LocationLineManager { self: ScalaPositionManager =>
       def skipTypeCheckOptimization(
           method: Method,
           caseLineLocations: Seq[Location]): Unit = {
-        val bytecodes = try method.bytecodes()
-        catch {
-          case t: Throwable => return
-        }
+        val bytecodes =
+          try method.bytecodes()
+          catch {
+            case t: Throwable => return
+          }
 
         def cacheCorrespondingIloadLocations(iconst_0Loc: Location): Unit = {
           val codeIndex = iconst_0Loc.codeIndex().toInt
@@ -203,10 +205,11 @@ trait LocationLineManager { self: ScalaPositionManager =>
       def skipReturnValueAssignment(
           method: Method,
           caseLinesLocations: Seq[Seq[Location]]): Unit = {
-        val bytecodes = try method.bytecodes()
-        catch {
-          case t: Throwable => return
-        }
+        val bytecodes =
+          try method.bytecodes()
+          catch {
+            case t: Throwable => return
+          }
 
         def storeCode(location: Location): Option[Seq[Byte]] = {
           val codeIndex = location.codeIndex().toInt
@@ -240,10 +243,11 @@ trait LocationLineManager { self: ScalaPositionManager =>
           !customizedLocationsCache.contains(_))
         if (locations.size <= 1) return
 
-        val bytecodes = try method.bytecodes()
-        catch {
-          case t: Throwable => return
-        }
+        val bytecodes =
+          try method.bytecodes()
+          catch {
+            case t: Throwable => return
+          }
 
         val tail: Seq[Location] = locations.tail
 

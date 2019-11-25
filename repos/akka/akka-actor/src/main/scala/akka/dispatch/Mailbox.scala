@@ -1156,26 +1156,27 @@ object BoundedControlAwareMailbox {
       var remaining = pushTimeOut.toNanos
 
       putLock.lockInterruptibly()
-      val inserted = try {
-        var stop = false
-        while (size.get() == capacity && !stop) {
-          remaining = notFull.awaitNanos(remaining)
-          stop = remaining <= 0
+      val inserted =
+        try {
+          var stop = false
+          while (size.get() == capacity && !stop) {
+            remaining = notFull.awaitNanos(remaining)
+            stop = remaining <= 0
+          }
+
+          if (stop) {
+            false
+          } else {
+            q.add(envelope)
+            val c = size.incrementAndGet()
+
+            if (c < capacity) notFull.signal()
+
+            true
+          }
+        } finally {
+          putLock.unlock()
         }
-
-        if (stop) {
-          false
-        } else {
-          q.add(envelope)
-          val c = size.incrementAndGet()
-
-          if (c < capacity) notFull.signal()
-
-          true
-        }
-      } finally {
-        putLock.unlock()
-      }
 
       if (!inserted) {
         receiver

@@ -209,13 +209,14 @@ abstract class Parser(
         ParseError(reportedErrorPos, principalErrorPos, traces.result())
       }
       if (phase3.traceNr < errorTraceCollectionLimit) {
-        val trace: RuleTrace = try {
-          phase = phase3
-          runRule()
-          null // we managed to complete the run w/o exception, i.e. we have collected all traces
-        } catch {
-          case e: TracingBubbleException ⇒ e.trace
-        }
+        val trace: RuleTrace =
+          try {
+            phase = phase3
+            runRule()
+            null // we managed to complete the run w/o exception, i.e. we have collected all traces
+          } catch {
+            case e: TracingBubbleException ⇒ e.trace
+          }
         if (trace eq null) done
         else
           phase4_collectRuleTraces(

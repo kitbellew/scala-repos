@@ -130,13 +130,14 @@ object Hashable extends LowPriorityHashable {
   // the idea here of cloning the MessageDigest is from Google's Guava.
   // it shaves off a significant amount of clock time and object allocations
   private[this] val MessageDigestMd5 = MessageDigest.getInstance("MD5")
-  private[this] val Md5SupportsClone: Boolean = try {
-    MessageDigestMd5.clone()
-    true
-  } catch {
-    case _: CloneNotSupportedException =>
-      false
-  }
+  private[this] val Md5SupportsClone: Boolean =
+    try {
+      MessageDigestMd5.clone()
+      true
+    } catch {
+      case _: CloneNotSupportedException =>
+        false
+    }
   private[this] def newMd5MessageDigest(): MessageDigest = {
     if (Md5SupportsClone) MessageDigestMd5.clone().asInstanceOf[MessageDigest]
     else MessageDigest.getInstance("MD5")

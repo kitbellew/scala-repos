@@ -2010,15 +2010,16 @@ class ConstFuture[A](result: Try[A]) extends Future[A] {
       def run() {
         val current = Local.save()
         Local.restore(saved)
-        val computed = try f(result)
-        catch {
-          case e: NonLocalReturnControl[_] =>
-            Future.exception(new FutureNonLocalReturnControl(e))
-          case NonFatal(e) => Future.exception(e)
-          case t: Throwable =>
-            Monitor.handle(t)
-            throw t
-        } finally Local.restore(current)
+        val computed =
+          try f(result)
+          catch {
+            case e: NonLocalReturnControl[_] =>
+              Future.exception(new FutureNonLocalReturnControl(e))
+            case NonFatal(e) => Future.exception(e)
+            case t: Throwable =>
+              Monitor.handle(t)
+              throw t
+          } finally Local.restore(current)
         p.become(computed)
       }
     })
