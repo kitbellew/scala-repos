@@ -8,7 +8,8 @@ object Interpreter {
           val newDesc = mkDataProp(n)
           n match { case _ => return }
       }
-    } catch { case e: Throwable => } finally {}
+    } catch { case e: Throwable => }
+    finally {}
 }
 
 object Test extends App {

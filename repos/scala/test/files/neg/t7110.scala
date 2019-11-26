@@ -8,6 +8,5 @@ object Test {
   } finally ??? // no warn
   try {
     ???
-  } catch { case _: Throwable => }
-  // no warn
+  } catch { case _: Throwable => } // no warn
 }
