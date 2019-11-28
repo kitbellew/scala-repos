@@ -12,42 +12,51 @@ import org.jetbrains.plugins.scala.lang.psi.api.ScalaRecursiveElementVisitor
 import org.jetbrains.plugins.scala.lang.psi.api.base.patterns.ScBindingPattern
 import org.jetbrains.plugins.scala.lang.psi.api.base.types.ScSimpleTypeElement
 import org.jetbrains.plugins.scala.lang.psi.api.statements._
-import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{ScMember, ScTemplateDefinition}
+import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{
+  ScMember,
+  ScTemplateDefinition
+}
 import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
-import org.jetbrains.plugins.scala.lang.psi.types.result.{Success, TypingContext}
+import org.jetbrains.plugins.scala.lang.psi.types.result.{
+  Success,
+  TypingContext
+}
 import org.jetbrains.plugins.scala.lang.refactoring.extractTrait.ScalaExtractMemberInfo
 import org.jetbrains.plugins.scala.lang.refactoring.util.ScalaChangeContextUtil
 
 import scala.collection.mutable.ArrayBuffer
 
 /**
- * Nikolay.Tropin
- * 2014-05-27
- */
-class ScalaPullUpProcessor(project: Project,
-                           sourceClass: ScTemplateDefinition,
-                           targetClass: ScTemplateDefinition,
-                           memberInfos: Seq[ScalaExtractMemberInfo]) extends BaseRefactoringProcessor(project) {
-  override def createUsageViewDescriptor(usages: Array[UsageInfo]): UsageViewDescriptor =
+  * Nikolay.Tropin
+  * 2014-05-27
+  */
+class ScalaPullUpProcessor(
+    project: Project,
+    sourceClass: ScTemplateDefinition,
+    targetClass: ScTemplateDefinition,
+    memberInfos: Seq[ScalaExtractMemberInfo])
+    extends BaseRefactoringProcessor(project) {
+  override def createUsageViewDescriptor(
+      usages: Array[UsageInfo]): UsageViewDescriptor =
     new PullUpUsageViewDescriptor
 
-  override def getCommandName = RefactoringBundle.message("pullUp.command", sourceClass.name)
+  override def getCommandName =
+    RefactoringBundle.message("pullUp.command", sourceClass.name)
 
-  override def performRefactoring(usages: Array[UsageInfo]) = {
-
-  }
+  override def performRefactoring(usages: Array[UsageInfo]) = {}
 
   override def findUsages() = Array[UsageInfo]()
 
   /**
-   * Should be invoked in write action
-   * */
+    * Should be invoked in write action
+    * */
   def moveMembersToBase() {
     val manager = targetClass.getManager
     val extendsBlock = targetClass.extendsBlock
     val templateBody = extendsBlock.templateBody match {
       case Some(tb) => tb
-      case None => extendsBlock.add(ScalaPsiElementFactory.createTemplateBody(manager))
+      case None =>
+        extendsBlock.add(ScalaPsiElementFactory.createTemplateBody(manager))
     }
     val anchor = templateBody.getLastChild
 
@@ -65,12 +74,17 @@ class ScalaPullUpProcessor(project: Project,
       } {
         handleOldMember(info)
 
-        templateBody.addBefore(ScalaPsiElementFactory.createNewLine(manager), anchor)
-        val added = templateBody.addBefore(memberCopy, anchor).asInstanceOf[ScMember]
+        templateBody.addBefore(
+          ScalaPsiElementFactory.createNewLine(manager),
+          anchor)
+        val added =
+          templateBody.addBefore(memberCopy, anchor).asInstanceOf[ScMember]
         if (info.isToAbstract) TypeAdjuster.markToAdjust(added)
         else movedDefinitions += added
       }
-      templateBody.addBefore(ScalaPsiElementFactory.createNewLine(manager), anchor)
+      templateBody.addBefore(
+        ScalaPsiElementFactory.createNewLine(manager),
+        anchor)
 
       ScalaChangeContextUtil.decodeContextInfo(movedDefinitions)
     }
@@ -85,26 +99,35 @@ class ScalaPullUpProcessor(project: Project,
   private def reformatAfter() {
     val documentManager = PsiDocumentManager.getInstance(project)
     val csManager = CodeStyleManager.getInstance(project)
-    val targetDocument = documentManager.getDocument(targetClass.getContainingFile)
+    val targetDocument =
+      documentManager.getDocument(targetClass.getContainingFile)
     documentManager.doPostponedOperationsAndUnblockDocument(targetDocument)
     csManager.reformat(targetClass)
-    val sourceDocument = documentManager.getDocument(sourceClass.getContainingFile)
+    val sourceDocument =
+      documentManager.getDocument(sourceClass.getContainingFile)
     documentManager.doPostponedOperationsAndUnblockDocument(sourceDocument)
-    csManager.adjustLineIndent(sourceClass.getContainingFile, sourceClass.getTextRange)
+    csManager.adjustLineIndent(
+      sourceClass.getContainingFile,
+      sourceClass.getTextRange)
   }
 
-  private def memberCopiesToExtract(info: ScalaExtractMemberInfo): Seq[ScMember] = {
+  private def memberCopiesToExtract(
+      info: ScalaExtractMemberInfo): Seq[ScMember] = {
     info match {
       case ScalaExtractMemberInfo(decl: ScDeclaration, _) =>
         val member = decl.copy().asInstanceOf[ScMember]
         Seq(member)
       case ScalaExtractMemberInfo(m, true) =>
-        declarationsText(m).map(ScalaPsiElementFactory.createDeclarationFromText(_, m.getParent, m).asInstanceOf[ScMember])
-      case ScalaExtractMemberInfo(m, false) if m.hasModifierProperty("override") =>
+        declarationsText(m).map(
+          ScalaPsiElementFactory
+            .createDeclarationFromText(_, m.getParent, m)
+            .asInstanceOf[ScMember])
+      case ScalaExtractMemberInfo(m, false)
+          if m.hasModifierProperty("override") =>
         val copy = m.copy().asInstanceOf[ScMember]
         copy.setModifierProperty("override", value = false)
         val shift = "override ".length
-        ScalaChangeContextUtil.shiftAssociations(copy, - shift)
+        ScalaChangeContextUtil.shiftAssociations(copy, -shift)
         Seq(copy)
       case _ => Seq(info.getMember.copy().asInstanceOf[ScMember])
     }
@@ -113,8 +136,9 @@ class ScalaPullUpProcessor(project: Project,
   private def handleOldMember(info: ScalaExtractMemberInfo) = {
     info match {
       case ScalaExtractMemberInfo(m: ScDeclaration, _) => m.delete()
-      case ScalaExtractMemberInfo(m, false) => m.delete()
-      case ScalaExtractMemberInfo(m, true) => m.setModifierProperty("override", value = true)
+      case ScalaExtractMemberInfo(m, false)            => m.delete()
+      case ScalaExtractMemberInfo(m, true) =>
+        m.setModifierProperty("override", value = true)
     }
   }
 
@@ -122,7 +146,7 @@ class ScalaPullUpProcessor(project: Project,
     def textForBinding(b: ScBindingPattern) = {
       val typeText = b.getType(TypingContext.empty) match {
         case Success(t, _) => s": ${t.canonicalText}"
-        case _ => ""
+        case _             => ""
       }
       s"${b.name}$typeText"
     }
@@ -135,7 +159,9 @@ class ScalaPullUpProcessor(project: Project,
         copy.accept(new ScalaRecursiveElementVisitor() {
           override def visitSimpleTypeElement(te: ScSimpleTypeElement) = {
             val tpe = te.calcType
-            te.replace(ScalaPsiElementFactory.createTypeElementFromText(tpe.canonicalText, te.getManager))
+            te.replace(
+              ScalaPsiElementFactory
+                .createTypeElementFromText(tpe.canonicalText, te.getManager))
           }
         })
         Seq(copy.getText)
@@ -158,10 +184,12 @@ class ScalaPullUpProcessor(project: Project,
           Option(copy.aliasedTypeElement)
         ).flatten.foreach(_.delete())
         Seq(copy.getText)
-      case _ => throw new IllegalArgumentException(s"Cannot create declaration text from member ${m.getText}")
+      case _ =>
+        throw new IllegalArgumentException(
+          s"Cannot create declaration text from member ${m.getText}")
     }
   }
-  
+
   private class PullUpUsageViewDescriptor extends UsageViewDescriptor {
     def getProcessedElementsHeader: String = "Pull up members from"
 
@@ -170,6 +198,7 @@ class ScalaPullUpProcessor(project: Project,
     def getCodeReferencesText(usagesCount: Int, filesCount: Int): String =
       s"Class to pull up members to ${targetClass.name}"
 
-    def getCommentReferencesText(usagesCount: Int, filesCount: Int): String = null
+    def getCommentReferencesText(usagesCount: Int, filesCount: Int): String =
+      null
   }
 }

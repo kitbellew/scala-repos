@@ -10,8 +10,8 @@ import com.twitter.conversions.time._
 import com.twitter.util.{Duration, Future, Promise, Stopwatch, Time}
 
 /**
- * A CPU profile.
- */
+  * A CPU profile.
+  */
 case class CpuProfile(
     // Counts of each observed stack.
     counts: Map[Seq[StackTraceElement], Long],
@@ -21,14 +21,14 @@ case class CpuProfile(
     count: Int,
     // The number of samples missed.
     missed: Int
-  ) {
+) {
 
   /**
-   * Write a Google pprof-compatible profile to `out`. The format is
-   * documented here:
-   *
-   *   http://google-perftools.googlecode.com/svn/trunk/doc/cpuprofile-fileformat.html
-   */
+    * Write a Google pprof-compatible profile to `out`. The format is
+    * documented here:
+    *
+    *   http://google-perftools.googlecode.com/svn/trunk/doc/cpuprofile-fileformat.html
+    */
   def writeGoogleProfile(out: OutputStream) {
     var next = 1
     val uniq = mutable.HashMap[StackTraceElement, Int]()
@@ -80,36 +80,40 @@ object CpuProfile {
   )
 
   /**
-   * When looking for RUNNABLEs, the JVM's notion of runnable differs from the
-   * from kernel's definition and for some well known cases, we can filter
-   * out threads that are actually asleep.
-   * See http://www.brendangregg.com/blog/2014-06-09/java-cpu-sampling-using-hprof.html
-   */
+    * When looking for RUNNABLEs, the JVM's notion of runnable differs from the
+    * from kernel's definition and for some well known cases, we can filter
+    * out threads that are actually asleep.
+    * See http://www.brendangregg.com/blog/2014-06-09/java-cpu-sampling-using-hprof.html
+    */
   private[jvm] def isRunnable(stackElem: StackTraceElement): Boolean =
-    !IdleClassAndMethod.contains((stackElem.getClassName, stackElem.getMethodName))
+    !IdleClassAndMethod.contains(
+      (stackElem.getClassName, stackElem.getMethodName))
 
   /**
-   * Profile CPU usage of threads in `state` for `howlong`, sampling
-   * stacks at `frequency` Hz.
-   *
-   * As an example, using Nyquist's sampling theorem, we see that
-   * sampling at 100Hz will accurately represent components 50Hz or
-   * less; ie. any stack that contributes 2% or more to the total CPU
-   * time.
-   *
-   * Note that the maximum sampling frequency is set to 1000Hz.
-   * Anything greater than this is likely to consume considerable
-   * amounts of CPU while sampling.
-   *
-   * The profiler will discount its own stacks.
-   *
-   * TODO:
-   *
-   *   - Should we synthesize GC frames? GC has significant runtime
-   *   impact, so it seems nonfaithful to exlude them.
-   *   - Limit stack depth?
-   */
-  def record(howlong: Duration, frequency: Int, state: Thread.State): CpuProfile = {
+    * Profile CPU usage of threads in `state` for `howlong`, sampling
+    * stacks at `frequency` Hz.
+    *
+    * As an example, using Nyquist's sampling theorem, we see that
+    * sampling at 100Hz will accurately represent components 50Hz or
+    * less; ie. any stack that contributes 2% or more to the total CPU
+    * time.
+    *
+    * Note that the maximum sampling frequency is set to 1000Hz.
+    * Anything greater than this is likely to consume considerable
+    * amounts of CPU while sampling.
+    *
+    * The profiler will discount its own stacks.
+    *
+    * TODO:
+    *
+    *   - Should we synthesize GC frames? GC has significant runtime
+    *   impact, so it seems nonfaithful to exlude them.
+    *   - Limit stack depth?
+    */
+  def record(
+      howlong: Duration,
+      frequency: Int,
+      state: Thread.State): CpuProfile = {
     require(frequency < 1000)
 
     // TODO: it may make sense to write a custom hash function here
@@ -119,7 +123,7 @@ object CpuProfile {
     val bean = ManagementFactory.getThreadMXBean()
     val elapsed = Stopwatch.start()
     val end = howlong.fromNow
-    val period = (1000000/frequency).microseconds
+    val period = (1000000 / frequency).microseconds
     val myId = Thread.currentThread().getId()
     var next = Time.now
 
@@ -128,8 +132,8 @@ object CpuProfile {
 
     while (Time.now < end) {
       for (thread <- bean.dumpAllThreads(false, false)
-          if thread.getThreadState() == state
-          && thread.getThreadId() != myId) {
+           if thread.getThreadState() == state
+             && thread.getThreadId() != myId) {
         val s = thread.getStackTrace().toSeq
         if (s.nonEmpty) {
           val include = state != Thread.State.RUNNABLE || isRunnable(s.head)
@@ -157,10 +161,13 @@ object CpuProfile {
     record(howlong, frequency, Thread.State.RUNNABLE)
 
   /**
-   * Call `record` in a thread with the given parameters, returning a
-   * `Future` representing the completion of the profile.
-   */
-  def recordInThread(howlong: Duration, frequency: Int, state: Thread.State): Future[CpuProfile] = {
+    * Call `record` in a thread with the given parameters, returning a
+    * `Future` representing the completion of the profile.
+    */
+  def recordInThread(
+      howlong: Duration,
+      frequency: Int,
+      state: Thread.State): Future[CpuProfile] = {
     val p = new Promise[CpuProfile]
     val thr = new Thread("CpuProfile") {
       override def run() {

@@ -36,7 +36,8 @@ class SchemeDirectivesExamplesSpec extends RoutingSpec {
     // tests:
     Get("http://www.example.com/hello") ~> route ~> check {
       status shouldEqual MovedPermanently
-      header[Location] shouldEqual Some(Location(Uri("https://www.example.com/hello")))
+      header[Location] shouldEqual Some(
+        Location(Uri("https://www.example.com/hello")))
     }
 
     Get("https://www.example.com/hello") ~> route ~> check {

@@ -1,17 +1,26 @@
 package org.jetbrains.plugins.scala.debugger.evaluateExpression
 
-import org.jetbrains.plugins.scala.debugger.{ScalaDebuggerTestCase, ScalaVersion_2_11, ScalaVersion_2_12}
+import org.jetbrains.plugins.scala.debugger.{
+  ScalaDebuggerTestCase,
+  ScalaVersion_2_11,
+  ScalaVersion_2_12
+}
 
 /**
- * User: Alefas
- * Date: 20.10.11
- */
+  * User: Alefas
+  * Date: 20.10.11
+  */
+class ScalaThisAndSuperEvaluationTest
+    extends ScalaThisAndSuperEvaluationTestBaseClass
+    with ScalaVersion_2_11
+class ScalaThisAndSuperEvaluationTest_212
+    extends ScalaThisAndSuperEvaluationTestBaseClass
+    with ScalaVersion_2_12
 
-class ScalaThisAndSuperEvaluationTest extends ScalaThisAndSuperEvaluationTestBaseClass with ScalaVersion_2_11
-class ScalaThisAndSuperEvaluationTest_212 extends ScalaThisAndSuperEvaluationTestBaseClass with ScalaVersion_2_12
-
-abstract class ScalaThisAndSuperEvaluationTestBaseClass extends ScalaDebuggerTestCase {
-  addFileWithBreakpoints("TraitThis.scala",
+abstract class ScalaThisAndSuperEvaluationTestBaseClass
+    extends ScalaDebuggerTestCase {
+  addFileWithBreakpoints(
+    "TraitThis.scala",
     s"""
        |object TraitThis {
        |  trait Z {
@@ -32,7 +41,8 @@ abstract class ScalaThisAndSuperEvaluationTestBaseClass extends ScalaDebuggerTes
     }
   }
 
-  addFileWithBreakpoints("Base.scala",
+  addFileWithBreakpoints(
+    "Base.scala",
     s"""
        |class BaseClass {
        |  def foo = 1
@@ -43,7 +53,8 @@ abstract class ScalaThisAndSuperEvaluationTestBaseClass extends ScalaDebuggerTes
        |}
       """.stripMargin.trim()
   )
-  addFileWithBreakpoints("SuperInvocation.scala",
+  addFileWithBreakpoints(
+    "SuperInvocation.scala",
     s"""
        |object SuperInvocation extends BaseClass {
        |  def main(args: Array[String]) {
@@ -59,7 +70,8 @@ abstract class ScalaThisAndSuperEvaluationTestBaseClass extends ScalaDebuggerTes
     }
   }
 
-  addFileWithBreakpoints("InvocationFromInner.scala",
+  addFileWithBreakpoints(
+    "InvocationFromInner.scala",
     s"""
        |object InvocationFromInner extends BaseClass {
        |  trait Z {
@@ -80,7 +92,8 @@ abstract class ScalaThisAndSuperEvaluationTestBaseClass extends ScalaDebuggerTes
     }
   }
 
-  addFileWithBreakpoints("ThisInvocationFromInner.scala",
+  addFileWithBreakpoints(
+    "ThisInvocationFromInner.scala",
     s"""
        |object ThisInvocationFromInner extends BaseClass {
        |  trait Z {
@@ -101,7 +114,8 @@ abstract class ScalaThisAndSuperEvaluationTestBaseClass extends ScalaDebuggerTes
     }
   }
 
-  addFileWithBreakpoints("ThisInvocationFromInnerClass.scala",
+  addFileWithBreakpoints(
+    "ThisInvocationFromInnerClass.scala",
     s"""
        |class ThisInvocationFromInnerClass extends BaseClass {
        |  trait Z {
@@ -128,7 +142,8 @@ abstract class ScalaThisAndSuperEvaluationTestBaseClass extends ScalaDebuggerTes
     }
   }
 
-  addFileWithBreakpoints("SuperInvocationFromInner.scala",
+  addFileWithBreakpoints(
+    "SuperInvocationFromInner.scala",
     s"""
        |object SuperInvocationFromInner extends BaseClass {
        |  trait Z {
@@ -149,7 +164,8 @@ abstract class ScalaThisAndSuperEvaluationTestBaseClass extends ScalaDebuggerTes
     }
   }
 
-  addFileWithBreakpoints("SuperTraitInvocationFromInner.scala",
+  addFileWithBreakpoints(
+    "SuperTraitInvocationFromInner.scala",
     s"""
        |class SuperTraitInvocationFromInner extends BaseTrait {
        |  trait Z {
@@ -175,7 +191,8 @@ abstract class ScalaThisAndSuperEvaluationTestBaseClass extends ScalaDebuggerTes
     }
   }
 
-  addFileWithBreakpoints("SuperTraitInvocation.scala",
+  addFileWithBreakpoints(
+    "SuperTraitInvocation.scala",
     s"""
        |object SuperTraitInvocation extends BaseTrait {
        |  def main(args: Array[String]) {
@@ -191,7 +208,8 @@ abstract class ScalaThisAndSuperEvaluationTestBaseClass extends ScalaDebuggerTes
     }
   }
 
-  addFileWithBreakpoints("Sample.scala",
+  addFileWithBreakpoints(
+    "Sample.scala",
     s"""
        |trait IOI {
        |  def ioi = 2
@@ -223,7 +241,8 @@ abstract class ScalaThisAndSuperEvaluationTestBaseClass extends ScalaDebuggerTes
     }
   }
 
-  addFileWithBreakpoints("InnerOuterEtc.scala",
+  addFileWithBreakpoints(
+    "InnerOuterEtc.scala",
     s"""
        |object InnerOuterEtc {
        |  class Outer extends BaseClass {

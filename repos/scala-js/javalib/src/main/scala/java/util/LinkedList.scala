@@ -3,8 +3,12 @@ package java.util
 import scala.annotation.tailrec
 import scala.collection.JavaConversions._
 
-class LinkedList[E]() extends AbstractSequentialList[E]
-    with List[E] with Deque[E] with Cloneable with Serializable {
+class LinkedList[E]()
+    extends AbstractSequentialList[E]
+    with List[E]
+    with Deque[E]
+    with Cloneable
+    with Serializable {
 
   def this(c: Collection[_ <: E]) = {
     this()
@@ -112,8 +116,7 @@ class LinkedList[E]() extends AbstractSequentialList[E]
   override def addAll(c: Collection[_ <: E]): Boolean = {
     val iter = c.iterator
     val changed = iter.hasNext()
-    while (iter.hasNext())
-      addLast(iter.next())
+    while (iter.hasNext()) addLast(iter.next())
 
     changed
   }
@@ -129,7 +132,7 @@ class LinkedList[E]() extends AbstractSequentialList[E]
     else if (index == size - 1) last
     else {
       var current: Node[E] = null
-      if (index <= size/2) {
+      if (index <= size / 2) {
         current = head
         for (_ <- 0 until index)
           current = current.next
@@ -263,12 +266,14 @@ class LinkedList[E]() extends AbstractSequentialList[E]
       private var i: Double = index
 
       private var currentNode: Node[E] =
-        if (index == size) null else
-        getNodeAt(index)
+        if (index == size) null
+        else
+          getNodeAt(index)
 
       private var lastNode: Node[E] =
-        if (currentNode ne null) null else
-        LinkedList.this.last
+        if (currentNode ne null) null
+        else
+          LinkedList.this.last
 
       def hasNext(): Boolean =
         i < size

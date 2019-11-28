@@ -33,17 +33,20 @@ class JSNameTest {
     assertEquals(0.2, obj.internalVar)
   }
 
-  @Test def should_work_with_defs_that_are_properties_in_Scala_js_defined_trait_issue_2197(): Unit = {
+  @Test def should_work_with_defs_that_are_properties_in_Scala_js_defined_trait_issue_2197()
+      : Unit = {
     val obj = js.Dynamic.literal(jsDef = 1).asInstanceOf[PropDefSJSDefined]
     assertEquals(1, obj.internalDef)
   }
 
-  @Test def should_work_with_vals_in_Scala_js_defined_trait_issue_2197(): Unit = {
+  @Test def should_work_with_vals_in_Scala_js_defined_trait_issue_2197()
+      : Unit = {
     val obj = js.Dynamic.literal(jsVal = "hi").asInstanceOf[PropValSJSDefined]
     assertEquals("hi", obj.internalVal)
   }
 
-  @Test def should_work_with_vars_in_Scala_js_defined_trait_issue_2197(): Unit = {
+  @Test def should_work_with_vars_in_Scala_js_defined_trait_issue_2197()
+      : Unit = {
     val obj = js.Dynamic.literal(jsVar = 0.1).asInstanceOf[PropVarSJSDefined]
     assertEquals(0.1, obj.internalVar)
     obj.internalVar = 0.2

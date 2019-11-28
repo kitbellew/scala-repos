@@ -1,19 +1,19 @@
 /*
- *  ____    ____    _____    ____    ___     ____ 
+ *  ____    ____    _____    ____    ___     ____
  * |  _ \  |  _ \  | ____|  / ___|  / _/    / ___|        Precog (R)
  * | |_) | | |_) | |  _|   | |     | |  /| | |  _         Advanced Analytics Engine for NoSQL Data
  * |  __/  |  _ <  | |___  | |___  |/ _| | | |_| |        Copyright (C) 2010 - 2013 SlamData, Inc.
  * |_|     |_| \_\ |_____|  \____|   /__/   \____|        All Rights Reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the 
- * GNU Affero General Public License as published by the Free Software Foundation, either version 
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Affero General Public License as published by the Free Software Foundation, either version
  * 3 of the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
  * the GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License along with this 
+ * You should have received a copy of the GNU Affero General Public License along with this
  * program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
@@ -44,17 +44,20 @@ trait LinearRegressionTestSupport[M[+_]]
 
   def morph2Input(morph: Morphism2, dataLeft: String, dataRight: String) = {
     val line = Line(0, 0, "")
-    dag.Morph2(morph,
+    dag.Morph2(
+      morph,
       dag.AbsoluteLoad(Const(CString(dataLeft))(line))(line),
-      dag.AbsoluteLoad(Const(CString(dataRight))(line))(line)
-    )(line)
+      dag.AbsoluteLoad(Const(CString(dataRight))(line))(line))(line)
   }
 
-  def createLinearSamplePoints(length: Int, noSamples: Int, actualThetas: Array[Double]): Seq[(Array[Double], Double)] = {
+  def createLinearSamplePoints(
+      length: Int,
+      noSamples: Int,
+      actualThetas: Array[Double]): Seq[(Array[Double], Double)] = {
     val testSeqX = {
       def createXs: Array[Double] = {
-        Seq.fill(length - 1)(Random.nextDouble) map {
-          x => x * 2.0 - 1.0
+        Seq.fill(length - 1)(Random.nextDouble) map { x =>
+          x * 2.0 - 1.0
         } toArray
       }
 
@@ -64,19 +67,20 @@ trait LinearRegressionTestSupport[M[+_]]
     val deciders = Seq.fill(noSamples)(Random.nextDouble)
 
     val testSeqY = {
-      testSeqX map { 
+      testSeqX map {
         case xs => {
           val yvalue = dotProduct(actualThetas, 1.0 +: xs)
           yvalue + Random.nextGaussian
         }
       }
     }
-  
+
     testSeqX zip testSeqY
   }
 }
 
-trait LinearRegressionSpecs[M[+_]] extends Specification 
+trait LinearRegressionSpecs[M[+_]]
+    extends Specification
     with EvaluatorTestSupport[M]
     with LinearRegressionTestSupport[M]
     with LongIdMemoryDatasetConsumer[M] { self =>
@@ -88,25 +92,32 @@ trait LinearRegressionSpecs[M[+_]] extends Specification
   def testEval(graph: DepGraph): Set[SEvent] = {
     consumeEval(graph, defaultEvaluationContext) match {
       case Success(results) => results
-      case Failure(error) => throw error
+      case Failure(error)   => throw error
     }
   }
 
   def makeDAG(points: String) = {
     val line = Line(1, 1, "")
 
-    dag.Morph2(MultiLinearRegression,
-      dag.Join(DerefArray, Cross(Some(TableModule.CrossOrder.CrossLeft)),
+    dag.Morph2(
+      MultiLinearRegression,
+      dag.Join(
+        DerefArray,
+        Cross(Some(TableModule.CrossOrder.CrossLeft)),
         dag.AbsoluteLoad(Const(CString(points))(line))(line),
         dag.Const(CLong(1))(line))(line),
-      dag.Join(DerefArray, Cross(Some(TableModule.CrossOrder.CrossLeft)),
+      dag.Join(
+        DerefArray,
+        Cross(Some(TableModule.CrossOrder.CrossLeft)),
         dag.AbsoluteLoad(Const(CString(points))(line))(line),
-        dag.Const(CLong(0))(line))(line))(line)
+        dag.Const(CLong(0))(line))(line)
+    )(line)
   }
 
   val numPoints = 100
 
-  def produceResult(cpaths: Seq[CPath], num: Int, actualThetas: Array[Double]): (Set[SEvent], Seq[(Array[Double], Double)]) = {
+  def produceResult(cpaths: Seq[CPath], num: Int, actualThetas: Array[Double])
+      : (Set[SEvent], Seq[(Array[Double], Double)]) = {
     val samples = createLinearSamplePoints(num, numPoints, actualThetas)
 
     val points = jvalues(samples, cpaths) map { _.renderCompact }
@@ -132,11 +143,15 @@ trait LinearRegressionSpecs[M[+_]] extends Specification
   }
 
   def computeRSquared(ys: List[Seq[Double]]) = {
-    val yMeans = ys map { seq => seq.sum / seq.size }
+    val yMeans = ys map { seq =>
+      seq.sum / seq.size
+    }
 
     val ssTotals = ys.zip(yMeans) map {
       case (ys, yMean) =>
-        val diffs = ys map { y => math.pow(y - yMean, 2d) }
+        val diffs = ys map { y =>
+          math.pow(y - yMean, 2d)
+        }
         diffs.sum
     }
     val ssTotal = ssTotals.sum / ssTotals.size
@@ -163,9 +178,8 @@ trait LinearRegressionSpecs[M[+_]] extends Specification
 
     //runs the linear regression function on `loops` sets of data generated from the same distribution
     while (i < loops) {
-      val cpaths = Seq(
-        CPath(CPathIndex(0), CPathIndex(0)),
-        CPath(CPathIndex(1))) sorted
+      val cpaths =
+        Seq(CPath(CPathIndex(0), CPathIndex(0)), CPath(CPathIndex(1))) sorted
 
       val (result, samples) = produceResult(cpaths, num, actualThetas)
 
@@ -178,15 +192,18 @@ trait LinearRegressionSpecs[M[+_]] extends Specification
           val SArray(arr) = fields("coefficients")
           val SDecimal(rSquared) = fields("RSquared")
 
-          val (SDecimal(theta1), SDecimal(error1)) = (arr(0): @unchecked) match {
-            case SArray(Vector(SObject(obj))) => returnValues(obj)
-          }
+          val (SDecimal(theta1), SDecimal(error1)) =
+            (arr(0): @unchecked) match {
+              case SArray(Vector(SObject(obj))) => returnValues(obj)
+            }
 
-          val (SDecimal(theta0), SDecimal(error0)) = (arr(1): @unchecked) match {
-            case SObject(obj) => returnValues(obj)
-          }
-              
-          (List(theta0.toDouble, theta1.toDouble),
+          val (SDecimal(theta0), SDecimal(error0)) =
+            (arr(1): @unchecked) match {
+              case SObject(obj) => returnValues(obj)
+            }
+
+          (
+            List(theta0.toDouble, theta1.toDouble),
             List(error0.toDouble, error1.toDouble),
             rSquared.toDouble)
       }
@@ -198,14 +215,16 @@ trait LinearRegressionSpecs[M[+_]] extends Specification
 
       i += 1
     }
-    
+
     val combinedThetas = combineResults(num, thetas)
     val combinedErrors = combineResults(num, errors)
 
     val allThetas = actualThetas zip combinedThetas
     val okThetas = allThetas map { case (t, ts) => isOk(t, ts) }
 
-    val actualErrors = combinedThetas map { t => madMedian(t)._1 }
+    val actualErrors = combinedThetas map { t =>
+      madMedian(t)._1
+    }
 
     val allErrors = actualErrors zip combinedErrors
 
@@ -217,7 +236,7 @@ trait LinearRegressionSpecs[M[+_]] extends Specification
     val ys = sampleValues map { _.map { _._2 } }
     val expectedRSquared = computeRSquared(ys)
 
-    isOk(expectedRSquared, rSquareds) mustEqual true 
+    isOk(expectedRSquared, rSquareds) mustEqual true
   }
 
   def testThreeFeatures = {
@@ -252,30 +271,50 @@ trait LinearRegressionSpecs[M[+_]] extends Specification
           val SArray(arr) = fields("coefficients")
           val SDecimal(rSquared) = fields("RSquared")
 
-          val (SDecimal(theta1), SDecimal(error1)) = (arr(0): @unchecked) match { case SObject(map) =>
-            (map("bar"): @unchecked) match { case SObject(obj) =>
-              returnValues(obj)
+          val (SDecimal(theta1), SDecimal(error1)) =
+            (arr(0): @unchecked) match {
+              case SObject(map) =>
+                (map("bar"): @unchecked) match {
+                  case SObject(obj) =>
+                    returnValues(obj)
+                }
             }
-          }
 
-          val (SDecimal(theta2), SDecimal(error2)) = (arr(0): @unchecked) match { case SObject(map) =>
-            (map("baz"): @unchecked) match { case SObject(obj) =>
-              returnValues(obj)
+          val (SDecimal(theta2), SDecimal(error2)) =
+            (arr(0): @unchecked) match {
+              case SObject(map) =>
+                (map("baz"): @unchecked) match {
+                  case SObject(obj) =>
+                    returnValues(obj)
+                }
             }
-          }
 
-          val (SDecimal(theta3), SDecimal(error3)) = (arr(0): @unchecked) match { case SObject(map) =>
-            (map("foo"): @unchecked) match { case SObject(obj) =>
-              returnValues(obj)
+          val (SDecimal(theta3), SDecimal(error3)) =
+            (arr(0): @unchecked) match {
+              case SObject(map) =>
+                (map("foo"): @unchecked) match {
+                  case SObject(obj) =>
+                    returnValues(obj)
+                }
             }
-          }
 
-          val (SDecimal(theta0), SDecimal(error0)) = (arr(1): @unchecked) match { case SObject(obj) =>
-            returnValues(obj)
-          }
+          val (SDecimal(theta0), SDecimal(error0)) =
+            (arr(1): @unchecked) match {
+              case SObject(obj) =>
+                returnValues(obj)
+            }
 
-          (List(theta0.toDouble, theta1.toDouble, theta2.toDouble, theta3.toDouble),
-            List(error0.toDouble, error1.toDouble, error2.toDouble, error3.toDouble),
+          (
+            List(
+              theta0.toDouble,
+              theta1.toDouble,
+              theta2.toDouble,
+              theta3.toDouble),
+            List(
+              error0.toDouble,
+              error1.toDouble,
+              error2.toDouble,
+              error3.toDouble),
             rSquared.toDouble)
       }
 
@@ -293,7 +332,9 @@ trait LinearRegressionSpecs[M[+_]] extends Specification
     val allThetas = actualThetas zip combineResults(num, thetas)
     val okThetas = allThetas map { case (t, ts) => isOk(t, ts) }
 
-    val actualErrors = combinedThetas map { t => madMedian(t)._1 }
+    val actualErrors = combinedThetas map { t =>
+      madMedian(t)._1
+    }
 
     val allErrors = actualErrors zip combinedErrors
     val okErrors = allErrors map { case (e, es) => isOk(e, es) } toArray
@@ -304,7 +345,7 @@ trait LinearRegressionSpecs[M[+_]] extends Specification
     val ys = sampleValues map { _.map { _._2 } }
     val expectedRSquared = computeRSquared(ys)
 
-    isOk(expectedRSquared, rSquareds) mustEqual true 
+    isOk(expectedRSquared, rSquareds) mustEqual true
   }
 
   def testThreeSchemata = {
@@ -334,13 +375,20 @@ trait LinearRegressionSpecs[M[+_]] extends Specification
       val cpaths = Seq(
         CPath(CPathIndex(0), CPathField("ack"), CPathIndex(0)),
         CPath(CPathIndex(0), CPathField("bak"), CPathField("bazoo")),
-        CPath(CPathIndex(0), CPathField("bar"), CPathField("baz"), CPathIndex(0)),
+        CPath(
+          CPathIndex(0),
+          CPathField("bar"),
+          CPathField("baz"),
+          CPathIndex(0)),
         CPath(CPathIndex(0), CPathField("foo")),
-        CPath(CPathIndex(1))) sorted
+        CPath(CPathIndex(1))
+      ) sorted
 
       val samples = {
         val samples0 = createLinearSamplePoints(num, 100, actualThetas)
-        samples0 map { case (xs, y) => (Random.nextGaussian +: Random.nextGaussian +: xs, y) }
+        samples0 map {
+          case (xs, y) => (Random.nextGaussian +: Random.nextGaussian +: xs, y)
+        }
       }
       val points = jvalues(samples, cpaths, num) map { _.renderCompact }
 
@@ -349,9 +397,10 @@ trait LinearRegressionSpecs[M[+_]] extends Specification
       IOUtils.writeSeqToFile(points, tmpFile).unsafePerformIO
 
       val pointsString0 = "filesystem" + tmpFile.toString
-      val pointsString = pointsString0.take(pointsString0.length - suffix.length)
-      
-      val input = makeDAG(pointsString) 
+      val pointsString =
+        pointsString0.take(pointsString0.length - suffix.length)
+
+      val input = makeDAG(pointsString)
 
       val result = testEval(input)
       tmpFile.delete()
@@ -367,26 +416,35 @@ trait LinearRegressionSpecs[M[+_]] extends Specification
           val SArray(arr) = fields("coefficients")
           val SDecimal(rSquared) = fields("RSquared")
 
-          val (SDecimal(theta1), SDecimal(error1)) = (arr(0): @unchecked) match { case SObject(map) => 
-            (map("bar"): @unchecked) match { case SObject(map) => 
-              (map("baz"): @unchecked) match { case SArray(Vector(SObject(obj))) =>
+          val (SDecimal(theta1), SDecimal(error1)) =
+            (arr(0): @unchecked) match {
+              case SObject(map) =>
+                (map("bar"): @unchecked) match {
+                  case SObject(map) =>
+                    (map("baz"): @unchecked) match {
+                      case SArray(Vector(SObject(obj))) =>
+                        returnValues(obj)
+                    }
+                }
+            }
+
+          val (SDecimal(theta2), SDecimal(error2)) =
+            (arr(0): @unchecked) match {
+              case SObject(map) =>
+                (map("foo"): @unchecked) match {
+                  case SObject(obj) =>
+                    returnValues(obj)
+                }
+            }
+
+          val (SDecimal(theta0), SDecimal(error0)) =
+            (arr(1): @unchecked) match {
+              case SObject(obj) =>
                 returnValues(obj)
-              }
             }
-          }
 
-          val (SDecimal(theta2), SDecimal(error2)) = (arr(0): @unchecked) match { case SObject(map) =>
-            (map("foo"): @unchecked) match { case SObject(obj) =>
-              returnValues(obj)
-            }
-          }
-
-          val (SDecimal(theta0), SDecimal(error0)) = (arr(1): @unchecked) match {
-            case SObject(obj) =>
-              returnValues(obj)
-          }
-
-          (List(theta0.toDouble, theta1.toDouble, theta2.toDouble), 
+          (
+            List(theta0.toDouble, theta1.toDouble, theta2.toDouble),
             List(error0.toDouble, error1.toDouble, error2.toDouble),
             rSquared.toDouble)
       }
@@ -408,7 +466,9 @@ trait LinearRegressionSpecs[M[+_]] extends Specification
       i += 1
     }
 
-    def getBooleans(actuals: List[Double], values: List[List[Double]]): Array[Boolean] = {
+    def getBooleans(
+        actuals: List[Double],
+        values: List[List[Double]]): Array[Boolean] = {
       val zipped = actuals zip combineResults(num, values)
       zipped map { case (t, ts) => isOk(t, ts) } toArray
     }
@@ -428,9 +488,10 @@ trait LinearRegressionSpecs[M[+_]] extends Specification
 
     val zipped = actualErrors zip errors
 
-    val resultErrors = zipped map { case (actual, err) =>
-      val z = actual zip combineResults(num, err) 
-      z map { case (e, es) => isOk(e, es) }
+    val resultErrors = zipped map {
+      case (actual, err) =>
+        val z = actual zip combineResults(num, err)
+        z map { case (e, es) => isOk(e, es) }
     }
 
     val expected = Array.fill(num)(true)
@@ -460,10 +521,13 @@ trait LinearRegressionSpecs[M[+_]] extends Specification
   //more comprehensive linear prediction tests in muspelheim
   "linear prediction" should {
     "return empty set when given incorrectly formatted model" in {
-      val input = morph2Input(LinearPrediction, "/hom/model1data", "/hom/model1")
+      val input =
+        morph2Input(LinearPrediction, "/hom/model1data", "/hom/model1")
       testEval(input) must beEmpty
     }
   }
 }
 
-object LinearRegressionSpecs extends LinearRegressionSpecs[test.YId] with test.YIdInstances
+object LinearRegressionSpecs
+    extends LinearRegressionSpecs[test.YId]
+    with test.YIdInstances

@@ -7,12 +7,12 @@ import org.scalatest.junit.JUnitRunner
 
 import com.twitter.util.Promise
 
-
 abstract class LocalSchedulerTest(lifo: Boolean) extends FunSuite {
   private val scheduler = new LocalScheduler(lifo)
-  def submit(f: => Unit) = scheduler.submit(new Runnable {
-    def run() = f
-  })
+  def submit(f: => Unit) =
+    scheduler.submit(new Runnable {
+      def run() = f
+    })
 
   val N = 100
 
@@ -64,7 +64,10 @@ class LocalSchedulerFifoTest extends LocalSchedulerTest(false)
 class LocalSchedulerLifoTest extends LocalSchedulerTest(true)
 
 @RunWith(classOf[JUnitRunner])
-class ThreadPoolSchedulerTest extends FunSuite with Eventually with IntegrationPatience {
+class ThreadPoolSchedulerTest
+    extends FunSuite
+    with Eventually
+    with IntegrationPatience {
   test("works") {
     val p = new Promise[Unit]
     val scheduler = new ThreadPoolScheduler("test")

@@ -1,10 +1,10 @@
 package net.liftweb
 package documentation
 
-import java.io.{File,PrintStream}
+import java.io.{File, PrintStream}
 
 import scala.io.Source
-import scala.xml.{Elem,NodeSeq}
+import scala.xml.{Elem, NodeSeq}
 
 import common._
 import util.Html5
@@ -16,21 +16,24 @@ case class ExampleFunction(function: String) extends ExamplePart
 case class ExampleOutput(output: String) extends ExamplePart
 
 case class FileContents(filename: String, contents: String)
-case class ExampleContents(filename: String, exampleLabel: String, setupCode: String, exampleParts: List[ExamplePart])
+case class ExampleContents(
+    filename: String,
+    exampleLabel: String,
+    setupCode: String,
+    exampleParts: List[ExamplePart])
 
 object ExtractCssSelectorExamples extends App {
   private def contentsToProcess(basePath: String): Box[List[FileContents]] = {
     val docsFile = new File(s"$basePath")
 
     for {
-      docsDir <-
-        ((Full(docsFile)
-          .filter(_.exists) ?~ s"'$docsFile' should be a directory, but does not exist.")
-          .filter(_.isDirectory) ?~ s"'$docsFile' should be a directory, not a file.")
+      docsDir <- ((Full(docsFile)
+        .filter(_.exists) ?~ s"'$docsFile' should be a directory, but does not exist.")
+        .filter(_.isDirectory) ?~ s"'$docsFile' should be a directory, not a file.")
     } yield {
       for {
         file <- docsDir.listFiles.toList
-          if file.getName.endsWith(".html")
+        if file.getName.endsWith(".html")
         fileContents <- tryo(Source.fromFile(file).mkString)
       } yield {
         FileContents(file.getName.replace('.', '-'), fileContents)
@@ -38,16 +41,19 @@ object ExtractCssSelectorExamples extends App {
     }
   }
 
-  private def extractPart(partBuilder: (String)=>ExamplePart)(ns: NodeSeq): Option[ExamplePart] = {
+  private def extractPart(partBuilder: (String) => ExamplePart)(
+      ns: NodeSeq): Option[ExamplePart] = {
     var part: Option[ExamplePart] = None
 
     val partExtractor =
-      "code" #> { ns: NodeSeq => ns match {
-        case codeElement: Elem if codeElement.label == "code" =>
-          part = Some(partBuilder(codeElement.text))
-          codeElement
-        case other => other
-      } }
+      "code" #> { ns: NodeSeq =>
+        ns match {
+          case codeElement: Elem if codeElement.label == "code" =>
+            part = Some(partBuilder(codeElement.text))
+            codeElement
+          case other => other
+        }
+      }
 
     partExtractor(ns)
 
@@ -63,7 +69,8 @@ object ExtractCssSelectorExamples extends App {
     }
   }
 
-  private def extractExamplesFromContents(fileContents: FileContents): List[ExampleContents] = {
+  private def extractExamplesFromContents(
+      fileContents: FileContents): List[ExampleContents] = {
     Html5.parse(fileContents.contents).toList.flatMap { html =>
       var setupCode: String = ""
 
@@ -84,20 +91,23 @@ object ExtractCssSelectorExamples extends App {
           var exampleLabel = "No label"
 
           var labelExtractor =
-            ".title" #> { title: NodeSeq => title match {
-              case titleElement: Elem if titleElement.label == "div" =>
-                exampleLabel = titleElement.text
+            ".title" #> { title: NodeSeq =>
+              title match {
+                case titleElement: Elem if titleElement.label == "div" =>
+                  exampleLabel = titleElement.text
 
-                titleElement
-              case other => other
-            }}
+                  titleElement
+                case other => other
+              }
+            }
           val partExtractor =
             ".listingblock" #> { part: NodeSeq =>
               var specializedPartExtractor =
                 part match {
                   case inputBlock: Elem if hasClass_?(inputBlock, "input") =>
                     Some(extractPart(ExampleInput(_)) _)
-                  case selectorBlock: Elem if hasClass_?(selectorBlock, "selector") =>
+                  case selectorBlock: Elem
+                      if hasClass_?(selectorBlock, "selector") =>
                     Some(extractPart(ExampleFunction(_)) _)
                   case outputBlock: Elem if hasClass_?(outputBlock, "output") =>
                     Some(extractPart(ExampleOutput(_)) _)
@@ -116,7 +126,11 @@ object ExtractCssSelectorExamples extends App {
 
           (labelExtractor & partExtractor)(exampleNodes)
 
-          exampleContents ::= ExampleContents(fileContents.filename, exampleLabel, setupCode, parts.reverse)
+          exampleContents ::= ExampleContents(
+            fileContents.filename,
+            exampleLabel,
+            setupCode,
+            parts.reverse)
 
           exampleNodes
         }
@@ -142,13 +156,14 @@ object ExtractCssSelectorExamples extends App {
 
     examples match {
       case Full(exampleContents) =>
-        val testPath = s"${args(1)}/core/documentation-helpers/src/test/scala/net/liftweb/documentation"
+        val testPath =
+          s"${args(1)}/core/documentation-helpers/src/test/scala/net/liftweb/documentation"
         (new File(testPath)).mkdirs
 
         for {
           (normalizedFilename, contents) <- exampleContents.groupBy(_.filename)
         } {
-          val filename = camelify(normalizedFilename.replace('-','_'))
+          val filename = camelify(normalizedFilename.replace('-', '_'))
 
           val examples =
             for {
@@ -204,7 +219,7 @@ object ExtractCssSelectorExamples extends App {
         }
 
       case Failure(message, _, _) => Console.err.println(message)
-      case _ => Console.err.println("Unknown error.")
+      case _                      => Console.err.println("Unknown error.")
     }
   }
 }

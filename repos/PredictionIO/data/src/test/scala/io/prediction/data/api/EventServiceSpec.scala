@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.data.api
 
 import io.prediction.data.storage.Storage
@@ -35,7 +34,7 @@ class EventServiceSpec extends Specification {
   val eventClient = Storage.getLEvents()
   val accessKeysClient = Storage.getMetaDataAccessKeys()
   val channelsClient = Storage.getMetaDataChannels()
-  
+
   val eventServiceActor = system.actorOf(
     Props(
       new EventServiceActor(

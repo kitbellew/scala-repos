@@ -8,35 +8,40 @@ package scala
 package tools.nsc.settings
 
 /**
- * Represents a single Scala version in a manner that
- * supports easy comparison and sorting.
- */
+  * Represents a single Scala version in a manner that
+  * supports easy comparison and sorting.
+  */
 sealed abstract class ScalaVersion extends Ordered[ScalaVersion] {
   def unparse: String
 }
 
 /**
- * A scala version that sorts higher than all actual versions
- */
+  * A scala version that sorts higher than all actual versions
+  */
 case object NoScalaVersion extends ScalaVersion {
   def unparse = "none"
 
   def compare(that: ScalaVersion): Int = that match {
     case NoScalaVersion => 0
-    case _ => 1
+    case _              => 1
   }
 }
 
 /**
- * A specific Scala version, not one of the magic min/max versions. An SpecificScalaVersion
- * may or may not be a released version - i.e. this same class is used to represent
- * final, release candidate, milestone, and development builds. The build argument is used
- * to segregate builds
- */
-case class SpecificScalaVersion(major: Int, minor: Int, rev: Int, build: ScalaBuild) extends ScalaVersion {
+  * A specific Scala version, not one of the magic min/max versions. An SpecificScalaVersion
+  * may or may not be a released version - i.e. this same class is used to represent
+  * final, release candidate, milestone, and development builds. The build argument is used
+  * to segregate builds
+  */
+case class SpecificScalaVersion(
+    major: Int,
+    minor: Int,
+    rev: Int,
+    build: ScalaBuild)
+    extends ScalaVersion {
   def unparse = s"${major}.${minor}.${rev}${build.unparse}"
 
-  def compare(that: ScalaVersion): Int =  that match {
+  def compare(that: ScalaVersion): Int = that match {
     case SpecificScalaVersion(thatMajor, thatMinor, thatRev, thatBuild) =>
       // this could be done more cleanly by importing scala.math.Ordering.Implicits, but we have to do these
       // comparisons a lot so I'm using brute force direct style code
@@ -48,34 +53,37 @@ case class SpecificScalaVersion(major: Int, minor: Int, rev: Int, build: ScalaBu
       else if (rev > thatRev) 1
       else build compare thatBuild
     case AnyScalaVersion => 1
-    case NoScalaVersion => -1
+    case NoScalaVersion  => -1
   }
 }
 
 /**
- * A Scala version that sorts lower than all actual versions
- */
+  * A Scala version that sorts lower than all actual versions
+  */
 case object AnyScalaVersion extends ScalaVersion {
   def unparse = "any"
 
   def compare(that: ScalaVersion): Int = that match {
     case AnyScalaVersion => 0
-    case _ => -1
+    case _               => -1
   }
 }
 
 /**
- * Factory methods for producing ScalaVersions
- */
+  * Factory methods for producing ScalaVersions
+  */
 object ScalaVersion {
-  private val dot   = """\."""
-  private val dash  = "-"
+  private val dot = """\."""
+  private val dash = "-"
   private val vchar = """\d""" //"[^-+.]"
-  private val vpat  = s"(?s)($vchar+)(?:$dot($vchar+)(?:$dot($vchar+)(?:$dash(.*))?)?)?".r
+  private val vpat =
+    s"(?s)($vchar+)(?:$dot($vchar+)(?:$dot($vchar+)(?:$dash(.*))?)?)?".r
   private val rcpat = """(?i)rc(\d*)""".r
   private val mspat = """(?i)m(\d*)""".r
 
-  def apply(versionString: String, errorHandler: String => Unit): ScalaVersion = {
+  def apply(
+      versionString: String,
+      errorHandler: String => Unit): ScalaVersion = {
     def error() = errorHandler(
       s"Bad version (${versionString}) not major[.minor[.revision[-suffix]]]"
     )
@@ -97,38 +105,44 @@ object ScalaVersion {
       case ""     => NoScalaVersion
       case "any"  => AnyScalaVersion
       case vpat(majorS, minorS, revS, buildS) =>
-        SpecificScalaVersion(toInt(majorS), toInt(minorS), toInt(revS), toBuild(buildS))
-      case _      => error() ; AnyScalaVersion
+        SpecificScalaVersion(
+          toInt(majorS),
+          toInt(minorS),
+          toInt(revS),
+          toBuild(buildS))
+      case _ => error(); AnyScalaVersion
     }
   }
 
   def apply(versionString: String): ScalaVersion =
-      apply(versionString, msg => throw new NumberFormatException(msg))
+    apply(versionString, msg => throw new NumberFormatException(msg))
 
   /**
-   * The version of the compiler running now
-   */
+    * The version of the compiler running now
+    */
   val current = apply(util.Properties.versionNumberString)
 
   /**
-   * The 2.8.0 version.
-   */
+    * The 2.8.0 version.
+    */
   val twoDotEight = SpecificScalaVersion(2, 8, 0, Final)
 }
 
 /**
- * Represents the data after the dash in major.minor.rev-build
- */
+  * Represents the data after the dash in major.minor.rev-build
+  */
 abstract class ScalaBuild extends Ordered[ScalaBuild] {
+
   /**
-   * Return a version of this build information that can be parsed back into the
-   * same ScalaBuild
-   */
+    * Return a version of this build information that can be parsed back into the
+    * same ScalaBuild
+    */
   def unparse: String
 }
+
 /**
- * A development, test, nightly, snapshot or other "unofficial" build
- */
+  * A development, test, nightly, snapshot or other "unofficial" build
+  */
 case class Development(id: String) extends ScalaBuild {
   def unparse = s"-${id}"
 
@@ -142,9 +156,10 @@ case class Development(id: String) extends ScalaBuild {
     case _ => 1
   }
 }
+
 /**
- * A final final
- */
+  * A final final
+  */
 case object Final extends ScalaBuild {
   def unparse = ""
 
@@ -152,13 +167,13 @@ case object Final extends ScalaBuild {
     case Final => 0
     // a final is newer than anything other than a development build or another final
     case Development(_) => -1
-    case _ => 1
+    case _              => 1
   }
 }
 
 /**
- * A candidate for final release
- */
+  * A candidate for final release
+  */
 case class RC(n: Int) extends ScalaBuild {
   def unparse = s"-RC${n}"
 
@@ -167,13 +182,13 @@ case class RC(n: Int) extends ScalaBuild {
     case RC(thatN) => n - thatN
     // an rc is older than anything other than a milestone or another rc
     case Milestone(_) => 1
-    case _ => -1
+    case _            => -1
   }
 }
 
 /**
- * An intermediate release
- */
+  * An intermediate release
+  */
 case class Milestone(n: Int) extends ScalaBuild {
   def unparse = s"-M${n}"
 

@@ -13,7 +13,7 @@ trait MarkovChainFixture {
       )
     }
   }
-  
+
   def fiveByFiveMatrix = {
     new {
       val matrixEntries = Seq(

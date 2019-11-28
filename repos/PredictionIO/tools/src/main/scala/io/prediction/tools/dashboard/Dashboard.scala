@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.tools.dashboard
 
 import com.typesafe.config.ConfigFactory
@@ -36,19 +35,17 @@ import spray.routing.authentication.{Authentication, UserPass, BasicAuth}
 
 import scala.concurrent.duration._
 
-case class DashboardConfig(
-  ip: String = "localhost",
-  port: Int = 9000)
+case class DashboardConfig(ip: String = "localhost", port: Int = 9000)
 
-object Dashboard extends Logging with SSLConfiguration{
+object Dashboard extends Logging with SSLConfiguration {
   def main(args: Array[String]): Unit = {
     val parser = new scopt.OptionParser[DashboardConfig]("Dashboard") {
       opt[String]("ip") action { (x, c) =>
         c.copy(ip = x)
-      } text("IP to bind to (default: localhost).")
+      } text ("IP to bind to (default: localhost).")
       opt[Int]("port") action { (x, c) =>
         c.copy(port = x)
-      } text("Port to bind to (default: 9000).")
+      } text ("Port to bind to (default: 9000).")
     }
 
     parser.parse(args, DashboardConfig()) map { dc =>
@@ -71,14 +68,17 @@ object Dashboard extends Logging with SSLConfiguration{
   }
 }
 
-class DashboardActor(
-    val dc: DashboardConfig)
-  extends Actor with DashboardService {
+class DashboardActor(val dc: DashboardConfig)
+    extends Actor
+    with DashboardService {
   def actorRefFactory: ActorContext = context
   def receive: Actor.Receive = runRoute(dashboardRoute)
 }
 
-trait DashboardService extends HttpService with KeyAuthentication with CORSSupport {
+trait DashboardService
+    extends HttpService
+    with KeyAuthentication
+    with CORSSupport {
 
   implicit def executionContext: ExecutionContext = actorRefFactory.dispatcher
   val dc: DashboardConfig
@@ -92,65 +92,63 @@ trait DashboardService extends HttpService with KeyAuthentication with CORSSuppo
           respondWithMediaType(`text/html`) {
             complete {
               val completedInstances = evaluationInstances.getCompleted
-              html.index(
-                dc,
-                serverStartTime,
-                pioEnvVars,
-                completedInstances).toString
+              html
+                .index(dc, serverStartTime, pioEnvVars, completedInstances)
+                .toString
             }
           }
         }
       }
     } ~
-    pathPrefix("engine_instances" / Segment) { instanceId =>
-      path("evaluator_results.txt") {
-        get {
-          respondWithMediaType(`text/plain`) {
-            evaluationInstances.get(instanceId).map { i =>
-              complete(i.evaluatorResults)
-            } getOrElse {
-              complete(StatusCodes.NotFound)
-            }
-          }
-        }
-      } ~
-      path("evaluator_results.html") {
-        get {
-          respondWithMediaType(`text/html`) {
-            evaluationInstances.get(instanceId).map { i =>
-              complete(i.evaluatorResultsHTML)
-            } getOrElse {
-              complete(StatusCodes.NotFound)
-            }
-          }
-        }
-      } ~
-      path("evaluator_results.json") {
-        get {
-          respondWithMediaType(`application/json`) {
-            evaluationInstances.get(instanceId).map { i =>
-              complete(i.evaluatorResultsJSON)
-            } getOrElse {
-              complete(StatusCodes.NotFound)
-            }
-          }
-        }
-      } ~
-      cors {
-        path("local_evaluator_results.json") {
+      pathPrefix("engine_instances" / Segment) { instanceId =>
+        path("evaluator_results.txt") {
           get {
-            respondWithMediaType(`application/json`) {
+            respondWithMediaType(`text/plain`) {
               evaluationInstances.get(instanceId).map { i =>
-                complete(i.evaluatorResultsJSON)
+                complete(i.evaluatorResults)
               } getOrElse {
                 complete(StatusCodes.NotFound)
               }
             }
           }
-        }
+        } ~
+          path("evaluator_results.html") {
+            get {
+              respondWithMediaType(`text/html`) {
+                evaluationInstances.get(instanceId).map { i =>
+                  complete(i.evaluatorResultsHTML)
+                } getOrElse {
+                  complete(StatusCodes.NotFound)
+                }
+              }
+            }
+          } ~
+          path("evaluator_results.json") {
+            get {
+              respondWithMediaType(`application/json`) {
+                evaluationInstances.get(instanceId).map { i =>
+                  complete(i.evaluatorResultsJSON)
+                } getOrElse {
+                  complete(StatusCodes.NotFound)
+                }
+              }
+            }
+          } ~
+          cors {
+            path("local_evaluator_results.json") {
+              get {
+                respondWithMediaType(`application/json`) {
+                  evaluationInstances.get(instanceId).map { i =>
+                    complete(i.evaluatorResultsJSON)
+                  } getOrElse {
+                    complete(StatusCodes.NotFound)
+                  }
+                }
+              }
+            }
+          }
+      } ~
+      pathPrefix("assets") {
+        getFromResourceDirectory("assets")
       }
-    } ~
-    pathPrefix("assets") {
-      getFromResourceDirectory("assets")
-    }
 }

@@ -49,17 +49,18 @@ trait HashJoin {
       case LeftSemi =>
         left.output
       case x =>
-        throw new IllegalArgumentException(s"HashJoin should not take $x as the JoinType")
+        throw new IllegalArgumentException(
+          s"HashJoin should not take $x as the JoinType")
     }
   }
 
   protected lazy val (buildPlan, streamedPlan) = buildSide match {
-    case BuildLeft => (left, right)
+    case BuildLeft  => (left, right)
     case BuildRight => (right, left)
   }
 
   protected lazy val (buildKeys, streamedKeys) = buildSide match {
-    case BuildLeft => (leftKeys, rightKeys)
+    case BuildLeft  => (leftKeys, rightKeys)
     case BuildRight => (rightKeys, leftKeys)
   }
 
@@ -88,11 +89,14 @@ trait HashJoin {
             // with two same ints have hash code 0, we rotate the bits of second one.
             val rotated = if (e.dataType == IntegerType) {
               // (e >>> 15) | (e << 17)
-              BitwiseOr(ShiftRightUnsigned(e, Literal(15)), ShiftLeft(e, Literal(17)))
+              BitwiseOr(
+                ShiftRightUnsigned(e, Literal(15)),
+                ShiftLeft(e, Literal(17)))
             } else {
               e
             }
-            keyExpr = BitwiseOr(ShiftLeft(keyExpr, Literal(bits)),
+            keyExpr = BitwiseOr(
+              ShiftLeft(keyExpr, Literal(bits)),
               BitwiseAnd(Cast(rotated, LongType), Literal((1L << bits) - 1)))
             width -= bits
           }
@@ -117,9 +121,11 @@ trait HashJoin {
     UnsafeProjection.create(rewriteKeyExpr(streamedKeys), streamedPlan.output)
 
   @transient private[this] lazy val boundCondition = if (condition.isDefined) {
-    newPredicate(condition.getOrElse(Literal(true)), left.output ++ right.output)
-  } else {
-    (r: InternalRow) => true
+    newPredicate(
+      condition.getOrElse(Literal(true)),
+      left.output ++ right.output)
+  } else { (r: InternalRow) =>
+    true
   }
 
   protected def createResultProjection: (InternalRow) => InternalRow =
@@ -165,8 +171,14 @@ trait HashJoin {
 
           // found some matches
           buildSide match {
-            case BuildRight => joinRow(currentStreamedRow, currentHashMatches(currentMatchPosition))
-            case BuildLeft => joinRow(currentHashMatches(currentMatchPosition), currentStreamedRow)
+            case BuildRight =>
+              joinRow(
+                currentStreamedRow,
+                currentHashMatches(currentMatchPosition))
+            case BuildLeft =>
+              joinRow(
+                currentHashMatches(currentMatchPosition),
+                currentStreamedRow)
           }
           if (boundCondition(joinRow)) {
             return true
@@ -174,7 +186,7 @@ trait HashJoin {
             currentMatchPosition += 1
           }
         }
-        false  // unreachable
+        false // unreachable
       }
 
       override final def next(): InternalRow = {
@@ -192,8 +204,10 @@ trait HashJoin {
 
   @transient protected[this] lazy val EMPTY_LIST = CompactBuffer[InternalRow]()
 
-  @transient private[this] lazy val leftNullRow = new GenericInternalRow(left.output.length)
-  @transient private[this] lazy val rightNullRow = new GenericInternalRow(right.output.length)
+  @transient private[this] lazy val leftNullRow = new GenericInternalRow(
+    left.output.length)
+  @transient private[this] lazy val rightNullRow = new GenericInternalRow(
+    right.output.length)
 
   protected[this] def leftOuterIterator(
       key: InternalRow,
@@ -260,17 +274,18 @@ trait HashJoin {
   }
 
   protected def hashSemiJoin(
-    streamIter: Iterator[InternalRow],
-    hashedRelation: HashedRelation,
-    numOutputRows: LongSQLMetric): Iterator[InternalRow] = {
+      streamIter: Iterator[InternalRow],
+      hashedRelation: HashedRelation,
+      numOutputRows: LongSQLMetric): Iterator[InternalRow] = {
     val joinKeys = streamSideKeyGenerator
     val joinedRow = new JoinedRow
     streamIter.filter { current =>
       val key = joinKeys(current)
       lazy val rowBuffer = hashedRelation.get(key)
-      val r = !key.anyNull && rowBuffer != null && (condition.isEmpty || rowBuffer.exists {
-        (row: InternalRow) => boundCondition(joinedRow(current, row))
-      })
+      val r = !key.anyNull && rowBuffer != null && (condition.isEmpty || rowBuffer
+        .exists { (row: InternalRow) =>
+          boundCondition(joinedRow(current, row))
+        })
       if (r) numOutputRows += 1
       r
     }

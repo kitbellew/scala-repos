@@ -8,22 +8,39 @@ import org.scalacheck.Arbitrary._
 import org.scalatest._
 import prop._
 
-class NumberPropertiesTest extends PropSpec with Matchers with GeneratorDrivenPropertyChecks {
+class NumberPropertiesTest
+    extends PropSpec
+    with Matchers
+    with GeneratorDrivenPropertyChecks {
   property("Number.apply(Long)") {
-    forAll { (n: Long) => Number(n) shouldBe n }
-    forAll { (n: Long) => Number(n) shouldBe SafeLong(n) }
+    forAll { (n: Long) =>
+      Number(n) shouldBe n
+    }
+    forAll { (n: Long) =>
+      Number(n) shouldBe SafeLong(n)
+    }
     // we need to do (n - 1).abs to ensure we don't get a negative number
-    forAll { (n: Long) => Number((n - 1).abs) shouldBe Natural((n - 1).abs) }
+    forAll { (n: Long) =>
+      Number((n - 1).abs) shouldBe Natural((n - 1).abs)
+    }
   }
 
   property("Number.apply(BigInt)") {
-    forAll { (n: BigInt) => Number(n) shouldBe n }
-    forAll { (n: BigInt) => Number(n) shouldBe SafeLong(n) }
-    forAll { (n: BigInt) => Number(n.abs) shouldBe Natural(n.abs) }
+    forAll { (n: BigInt) =>
+      Number(n) shouldBe n
+    }
+    forAll { (n: BigInt) =>
+      Number(n) shouldBe SafeLong(n)
+    }
+    forAll { (n: BigInt) =>
+      Number(n.abs) shouldBe Natural(n.abs)
+    }
   }
 
   property("Number.apply(BigDecimal)") {
-    forAll { (n: BigDecimal) => Number(n) shouldBe n }
+    forAll { (n: BigDecimal) =>
+      Number(n) shouldBe n
+    }
   }
 
   property("Number.apply(Rational)") {
@@ -40,19 +57,27 @@ class NumberPropertiesTest extends PropSpec with Matchers with GeneratorDrivenPr
   }
 
   property("RationalNumber == Int") {
-    forAll { (n: Int) => bothEq(Number(Rational(n)), n) }
+    forAll { (n: Int) =>
+      bothEq(Number(Rational(n)), n)
+    }
   }
 
   property("RationalNumber == Long") {
-    forAll { (n: Long) => bothEq(Number(Rational(n)), n) }
+    forAll { (n: Long) =>
+      bothEq(Number(Rational(n)), n)
+    }
   }
 
   property("RationalNumber == Double") {
-    forAll { (n: Double) => bothEq(Number(Rational(n)), n) }
+    forAll { (n: Double) =>
+      bothEq(Number(Rational(n)), n)
+    }
   }
 
   property("RationalNumber == BigInt") {
-    forAll { (n: BigInt) => Number(Rational(n)) shouldBe n }
+    forAll { (n: BigInt) =>
+      Number(Rational(n)) shouldBe n
+    }
   }
 
   property("Long + Long") {
@@ -78,7 +103,7 @@ class NumberTest extends FunSuite {
     Number(3.toShort)
     Number(3)
     Number(3L)
-    Number(3.0F)
+    Number(3.0f)
     Number(3.0)
     Number("333333333333333333333333333333")
     Number("99.253895895395839583958953895389538958395839583958958953")
@@ -100,7 +125,8 @@ class NumberTest extends FunSuite {
     assert(Number(4) ** Number(30.5) === FloatNumber(2.305843009213694e18))
 
     assert(Number(100) ** Number(200.0) === Number(100) ** Number(200))
-    assert(Number(100) ** Number(200) === Number("10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"))
+    assert(Number(100) ** Number(200) === Number(
+      "10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"))
 
     // DecimalNumber is honest when its roots aren't perfect
     val z1 = Number("81") ** Number("0.5") - Number("9.0")

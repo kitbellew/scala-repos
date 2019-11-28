@@ -17,22 +17,23 @@ object Timeline extends LilaController {
       negotiate(
         html = {
           if (HTTPRequest.isXhr(ctx.req))
-            Env.timeline.entryRepo.userEntries(me.id) map { html.timeline.entries(_) }
-          else {
+            Env.timeline.entryRepo.userEntries(me.id) map {
+              html.timeline.entries(_)
+            } else {
             val entries = Env.timeline.entryRepo.moreUserEntries(me.id, nb)
             entries map { html.timeline.more(_) }
           }
         },
         _ => {
           val entries = Env.timeline.entryRepo.moreUserEntries(me.id, nb)
-          entries map { es => Ok(Json.obj("entries" -> es)) }
+          entries map { es =>
+            Ok(Json.obj("entries" -> es))
+          }
         }
       )
   }
 
-
-  def unsub(channel: String) = Auth { implicit ctx =>
-    me =>
-      Env.timeline.unsubApi.set(channel, me.id, ~get("unsub") == "on")
+  def unsub(channel: String) = Auth { implicit ctx => me =>
+    Env.timeline.unsubApi.set(channel, me.id, ~get("unsub") == "on")
   }
 }

@@ -61,7 +61,8 @@ class EnsembleProgressBar extends EnsembleExample {
         new ProgressBar {
           maxWidth = 300
           progress = 1
-        })
+        }
+      )
     }
   }
 }

@@ -23,7 +23,7 @@ import org.apache.spark.mllib.util.TestingUtils._
 
 class RegressionMetricsSuite extends SparkFunSuite with MLlibTestSparkContext {
   val obs = List[Double](77, 85, 62, 55, 63, 88, 57, 81, 51)
-  val eps = 1E-5
+  val eps = 1e-5
 
   test("regression metrics for unbiased (includes intercept term) predictor") {
     /* Verify results in R:
@@ -51,14 +51,21 @@ class RegressionMetricsSuite extends SparkFunSuite with MLlibTestSparkContext {
         r2
         [1] 0.89968225
      */
-    val preds = List(72.08, 91.88, 65.48, 52.28, 62.18, 81.98, 58.88, 78.68, 55.58)
+    val preds =
+      List(72.08, 91.88, 65.48, 52.28, 62.18, 81.98, 58.88, 78.68, 55.58)
     val predictionAndObservations = sc.parallelize(preds.zip(obs), 2)
     val metrics = new RegressionMetrics(predictionAndObservations)
-    assert(metrics.explainedVariance ~== 157.3 absTol eps,
+    assert(
+      metrics.explainedVariance ~== 157.3 absTol eps,
       "explained variance regression score mismatch")
-    assert(metrics.meanAbsoluteError ~== 3.7355556 absTol eps, "mean absolute error mismatch")
-    assert(metrics.meanSquaredError ~== 17.539511 absTol eps, "mean squared error mismatch")
-    assert(metrics.rootMeanSquaredError ~== 4.18802 absTol eps,
+    assert(
+      metrics.meanAbsoluteError ~== 3.7355556 absTol eps,
+      "mean absolute error mismatch")
+    assert(
+      metrics.meanSquaredError ~== 17.539511 absTol eps,
+      "mean squared error mismatch")
+    assert(
+      metrics.rootMeanSquaredError ~== 4.18802 absTol eps,
       "root mean squared error mismatch")
     assert(metrics.r2 ~== 0.89968225 absTol eps, "r2 score mismatch")
   }
@@ -90,14 +97,21 @@ class RegressionMetricsSuite extends SparkFunSuite with MLlibTestSparkContext {
         r2
         [1] 0.99185395
      */
-    val preds = List(72.12, 99.17, 63.11, 45.08, 58.6, 85.65, 54.09, 81.14, 49.58)
+    val preds =
+      List(72.12, 99.17, 63.11, 45.08, 58.6, 85.65, 54.09, 81.14, 49.58)
     val predictionAndObservations = sc.parallelize(preds.zip(obs), 2)
     val metrics = new RegressionMetrics(predictionAndObservations, true)
-    assert(metrics.explainedVariance ~== 294.88167 absTol eps,
+    assert(
+      metrics.explainedVariance ~== 294.88167 absTol eps,
       "explained variance regression score mismatch")
-    assert(metrics.meanAbsoluteError ~== 4.5888889 absTol eps, "mean absolute error mismatch")
-    assert(metrics.meanSquaredError ~== 39.958711 absTol eps, "mean squared error mismatch")
-    assert(metrics.rootMeanSquaredError ~== 6.3212903 absTol eps,
+    assert(
+      metrics.meanAbsoluteError ~== 4.5888889 absTol eps,
+      "mean absolute error mismatch")
+    assert(
+      metrics.meanSquaredError ~== 39.958711 absTol eps,
+      "mean squared error mismatch")
+    assert(
+      metrics.rootMeanSquaredError ~== 6.3212903 absTol eps,
       "root mean squared error mismatch")
     assert(metrics.r2 ~== 0.99185395 absTol eps, "r2 score mismatch")
   }
@@ -125,11 +139,17 @@ class RegressionMetricsSuite extends SparkFunSuite with MLlibTestSparkContext {
     val preds = obs
     val predictionAndObservations = sc.parallelize(preds.zip(obs), 2)
     val metrics = new RegressionMetrics(predictionAndObservations)
-    assert(metrics.explainedVariance ~== 174.83951 absTol eps,
+    assert(
+      metrics.explainedVariance ~== 174.83951 absTol eps,
       "explained variance regression score mismatch")
-    assert(metrics.meanAbsoluteError ~== 0.0 absTol eps, "mean absolute error mismatch")
-    assert(metrics.meanSquaredError ~== 0.0 absTol eps, "mean squared error mismatch")
-    assert(metrics.rootMeanSquaredError ~== 0.0 absTol eps,
+    assert(
+      metrics.meanAbsoluteError ~== 0.0 absTol eps,
+      "mean absolute error mismatch")
+    assert(
+      metrics.meanSquaredError ~== 0.0 absTol eps,
+      "mean squared error mismatch")
+    assert(
+      metrics.rootMeanSquaredError ~== 0.0 absTol eps,
       "root mean squared error mismatch")
     assert(metrics.r2 ~== 1.0 absTol eps, "r2 score mismatch")
   }

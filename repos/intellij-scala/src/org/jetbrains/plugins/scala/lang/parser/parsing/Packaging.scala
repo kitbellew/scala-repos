@@ -8,16 +8,15 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.builder.ScalaPsiBuilder
 import org.jetbrains.plugins.scala.lang.parser.parsing.top.Qual_Id
 import org.jetbrains.plugins.scala.lang.parser.util.ParserUtils
 
-/** 
-* @author Alexander Podkhalyuzin
-* Date: 05.02.2008
-*/
-
+/**
+  * @author Alexander Podkhalyuzin
+  * Date: 05.02.2008
+  */
 /*
  * Packaging := 'package' QualId [nl] '{' TopStatSeq '}'
  */
 object Packaging {
-  def parse(builder: ScalaPsiBuilder):Boolean = {
+  def parse(builder: ScalaPsiBuilder): Boolean = {
     val packMarker = builder.mark
     builder.getTokenType match {
       case ScalaTokenTypes.kPACKAGE =>
@@ -38,7 +37,7 @@ object Packaging {
             builder.enableNewlines
             ParserUtils.parseLoopUntilRBrace(builder, () => {
               //parse packaging body
-              TopStatSeq parse(builder, true)
+              TopStatSeq parse (builder, true)
             })
             builder.restoreNewlinesState
             packMarker.done(ScalaElementTypes.PACKAGING)

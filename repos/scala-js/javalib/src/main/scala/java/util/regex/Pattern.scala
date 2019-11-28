@@ -28,8 +28,8 @@ final class Pattern private (jsRegExp: js.RegExp, _pattern: String, _flags: Int)
        */
       val jsFlags = {
         (if (jsRegExp.global) "g" else "") +
-        (if (jsRegExp.ignoreCase) "i" else "") +
-        (if (jsRegExp.multiline) "m" else "")
+          (if (jsRegExp.ignoreCase) "i" else "") +
+          (if (jsRegExp.multiline) "m" else "")
       }
       new js.RegExp(jsRegExp.source, jsFlags)
     }
@@ -50,7 +50,7 @@ final class Pattern private (jsRegExp: js.RegExp, _pattern: String, _flags: Int)
     var prevEnd = 0
 
     // Actually split original string
-    while ((result.length < lim-1) && matcher.find()) {
+    while ((result.length < lim - 1) && matcher.find()) {
       result.push(inputStr.substring(prevEnd, matcher.start))
       prevEnd = matcher.end
     }
@@ -63,8 +63,7 @@ final class Pattern private (jsRegExp: js.RegExp, _pattern: String, _flags: Int)
     } else {
       var len = result.length
       if (limit == 0) {
-        while (len > 1 && result(len-1).isEmpty)
-          len -= 1
+        while (len > 1 && result(len - 1).isEmpty) len -= 1
       }
 
       val actualResult = new Array[String](len)
@@ -91,15 +90,15 @@ object Pattern {
         (quote(regex), flags)
       } else {
         trySplitHack(regex, flags) orElse
-        tryFlagHack(regex, flags) getOrElse
-        (regex, flags)
+          tryFlagHack(regex, flags) getOrElse
+          (regex, flags)
       }
     }
 
     val jsFlags = {
       "g" +
-      (if ((flags1 & CASE_INSENSITIVE) != 0) "i" else "") +
-      (if ((flags1 & MULTILINE) != 0) "m" else "")
+        (if ((flags1 & CASE_INSENSITIVE) != 0) "i" else "") +
+        (if ((flags1 & MULTILINE) != 0) "m" else "")
     }
 
     val jsRegExp = new js.RegExp(jsPattern, jsFlags)
@@ -119,8 +118,9 @@ object Pattern {
     while (i < s.length) {
       val c = s.charAt(i)
       result += ((c: @switch) match {
-        case '\\' | '.' | '(' | ')' | '[' | ']' | '{' | '}' | '|'
-          | '?' | '*' | '+' | '^' | '$' => "\\"+c
+        case '\\' | '.' | '(' | ')' | '[' | ']' | '{' | '}' | '|' | '?' | '*' |
+            '+' | '^' | '$' =>
+          "\\" + c
         case _ => c
       })
       i += 1
@@ -129,8 +129,8 @@ object Pattern {
   }
 
   /** This is a hack to support StringLike.split().
-   *  It replaces occurrences of \Q<char>\E by quoted(<char>)
-   */
+    *  It replaces occurrences of \Q<char>\E by quoted(<char>)
+    */
   @inline
   private def trySplitHack(pat: String, flags: Int) = {
     val m = splitHackPat.exec(pat)
@@ -146,10 +146,14 @@ object Pattern {
     if (m != null) {
       val newPat = pat.substring(m(0).get.length) // cut off the flag specifiers
       val flags1 = m(1).fold(flags0) { chars =>
-        chars.foldLeft(flags0) { (f, c) => f | charToFlag(c) }
+        chars.foldLeft(flags0) { (f, c) =>
+          f | charToFlag(c)
+        }
       }
       val flags2 = m(2).fold(flags1) { chars =>
-        chars.foldLeft(flags1) { (f, c) => f & ~charToFlag(c) }
+        chars.foldLeft(flags1) { (f, c) =>
+          f & ~charToFlag(c)
+        }
       }
       Some((newPat, flags2))
     } else

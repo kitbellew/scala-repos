@@ -23,14 +23,16 @@ object PEMEncodedKeyManager {
   class ExternalExecutableFailed(message: String) extends Exception(message)
 
   def apply(
-    certificatePath: String,
-    keyPath: String,
-    caCertPath: Option[String]
+      certificatePath: String,
+      keyPath: String,
+      caCertPath: Option[String]
   ): Array[KeyManager] =
     makeKeystore(
       Files.readBytes(new File(certificatePath)),
       Files.readBytes(new File(keyPath)),
-      caCertPath map { filename => Files.readBytes(new File(filename)) }
+      caCertPath map { filename =>
+        Files.readBytes(new File(filename))
+      }
     )
 
   private[this] def secret(length: Int): Array[Char] = {
@@ -45,10 +47,10 @@ object PEMEncodedKeyManager {
   }
 
   private[this] def makeKeystore(
-    certificate: Array[Byte],
-    key: Array[Byte],
-    caCert: Option[Array[Byte]]
-  ) : Array[KeyManager] = {
+      certificate: Array[Byte],
+      key: Array[Byte],
+      caCert: Option[Array[Byte]]
+  ): Array[KeyManager] = {
 
     // Create a secure directory for the conversion
     val path = TempDirectory.create()
@@ -69,20 +71,23 @@ object PEMEncodedKeyManager {
     // if the chain is present, use it instead of the cert (chain contains cert)
     caCert match {
       case Some(c) => StreamIO.copy(new ByteArrayInputStream(c), f)
-      case None => StreamIO.copy(new ByteArrayInputStream(certificate), f)
+      case None    => StreamIO.copy(new ByteArrayInputStream(certificate), f)
     }
     StreamIO.copy(new ByteArrayInputStream(key), f)
     f.close()
 
-
     // Import the PEM-encoded certificate and key to a PKCS12 file
     Shell.run(
       Array(
-        "openssl",   "pkcs12",
+        "openssl",
+        "pkcs12",
         "-export",
-        "-password", "pass:%s".format(passwordStr),
-        "-in",       pemPath,
-        "-out",      p12Path
+        "-password",
+        "pass:%s".format(passwordStr),
+        "-in",
+        pemPath,
+        "-out",
+        p12Path
       )
     )
 
@@ -91,13 +96,19 @@ object PEMEncodedKeyManager {
       Array(
         "keytool",
         "-importkeystore",
-        "-srckeystore",  p12Path,
-        "-srcstoretype", "PKCS12",
-        "-destkeystore", jksPath,
+        "-srckeystore",
+        p12Path,
+        "-srcstoretype",
+        "PKCS12",
+        "-destkeystore",
+        jksPath,
         "-trustcacerts",
-        "-srcstorepass", passwordStr,
-        "-keypass",      passwordStr,
-        "-storepass",    passwordStr
+        "-srcstorepass",
+        passwordStr,
+        "-keypass",
+        passwordStr,
+        "-storepass",
+        passwordStr
       )
     )
 

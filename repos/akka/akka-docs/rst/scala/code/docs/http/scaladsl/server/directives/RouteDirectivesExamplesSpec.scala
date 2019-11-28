@@ -5,7 +5,7 @@
 package docs.http.scaladsl.server.directives
 
 import akka.http.scaladsl.model._
-import akka.http.scaladsl.server.{ Route, ValidationRejection }
+import akka.http.scaladsl.server.{Route, ValidationRejection}
 import akka.testkit.EventFilter
 import docs.http.scaladsl.server.RoutingSpec
 
@@ -84,7 +84,9 @@ class RouteDirectivesExamplesSpec extends RoutingSpec {
     }
   }
 
-  "failwith-examples" in EventFilter[RuntimeException](start = "Error during processing of request", occurrences = 1).intercept {
+  "failwith-examples" in EventFilter[RuntimeException](
+    start = "Error during processing of request",
+    occurrences = 1).intercept {
     val route =
       path("foo") {
         failWith(new RuntimeException("Oops."))

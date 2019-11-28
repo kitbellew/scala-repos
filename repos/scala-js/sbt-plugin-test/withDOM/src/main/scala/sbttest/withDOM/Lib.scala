@@ -16,7 +16,7 @@ object Lib {
       val bodies = getElementsByTagName("body")
       if (bodies.length > 0)
         bodies(0)
-      else 
+      else
         document
     }
 

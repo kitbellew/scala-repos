@@ -5,7 +5,7 @@ package play.api.libs.streams.impl
 
 import org.reactivestreams._
 import org.specs2.mutable.Specification
-import scala.concurrent.{ Future, Promise }
+import scala.concurrent.{Future, Promise}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 

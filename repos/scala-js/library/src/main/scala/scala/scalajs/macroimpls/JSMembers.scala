@@ -6,21 +6,20 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package scala.scalajs.macroimpls
 
 import Compat210._
 
 /** JSMember is an ADT more or less equivalent to Scala's MethodType
- *  that allows to distinguish setters and getters from methods.
- *
- *  It also allows to check method conformance based on Scala.js' JavaScript
- *  calling conventions.
- *
- *  Currently does not support polymorphic method types.
- *
- *  @author Tobias Schlatter
- */
+  *  that allows to distinguish setters and getters from methods.
+  *
+  *  It also allows to check method conformance based on Scala.js' JavaScript
+  *  calling conventions.
+  *
+  *  Currently does not support polymorphic method types.
+  *
+  *  @author Tobias Schlatter
+  */
 private[macroimpls] trait JSMembers {
   // Import macros only here, otherwise we collide with Compat210._
   import scala.reflect.macros._
@@ -31,6 +30,7 @@ private[macroimpls] trait JSMembers {
   import c.universe._
 
   sealed trait JSMember {
+
     /** Whether this JSMember conforms to that JSMember */
     def conformsTo(that: JSMember): Boolean
 
@@ -47,8 +47,8 @@ private[macroimpls] trait JSMembers {
       else info.toString
   }
 
-  case class JSMethod(params: List[JSMethodParam],
-      resultType: Type) extends JSMember {
+  case class JSMethod(params: List[JSMethodParam], resultType: Type)
+      extends JSMember {
 
     def conformsTo(that: JSMember): Boolean = that match {
       case JSMethod(thatParams, thatResultType) =>
@@ -86,10 +86,10 @@ private[macroimpls] trait JSMembers {
   }
 
   /** Place holder for unsupported members.
-   *
-   *  In source type position, these members can be ignored.
-   *  In target type position, these members will trigger errors.
-   */
+    *
+    *  In source type position, these members can be ignored.
+    *  In target type position, these members will trigger errors.
+    */
   case class UnsupportedMember(sym: Symbol, tpe: Type) extends JSMember {
     def conformsTo(that: JSMember): Boolean = false
     def displayStr(name: String): String = s"unsupported $name ($sym)"

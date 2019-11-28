@@ -20,10 +20,14 @@ class InputStreamTest extends CommonStreamsTests {
 
   class DummyInputStream(val length: Int) extends InputStream {
     private var i: Int = 0
-    def read(): Int = if (i < length) { i += 1; i } else -1
+    def read(): Int =
+      if (i < length) {
+        i += 1; i
+      } else -1
   }
 
-  @Test def should_provide_a_default_implementation_of_read_to_an_array(): Unit = {
+  @Test def should_provide_a_default_implementation_of_read_to_an_array()
+      : Unit = {
     val stream = new DummyInputStream(200)
 
     val buf = new Array[Byte](50)
@@ -34,7 +38,9 @@ class InputStreamTest extends CommonStreamsTests {
 
     // Should read another 20 (next: 71)
     assertEquals(20, stream.read(buf, 10, 20))
-    assertArrayEquals(((1 to 10) ++ (51 to 70) ++ (31 to 50)).toArray.map(_.toByte), buf)
+    assertArrayEquals(
+      ((1 to 10) ++ (51 to 70) ++ (31 to 50)).toArray.map(_.toByte),
+      buf)
 
     // Test some Exception conditions
     expectThrows(classOf[IndexOutOfBoundsException], stream.read(buf, -1, 10))
@@ -43,12 +49,14 @@ class InputStreamTest extends CommonStreamsTests {
 
     // Buffer should be unmodified
     assertArrayEquals(
-        ((1 to 10) ++ (51 to 70) ++ (31 to 50)).toArray.map(_.toByte), buf)
+      ((1 to 10) ++ (51 to 70) ++ (31 to 50)).toArray.map(_.toByte),
+      buf)
 
     // Should read nothing (next: 71)
     assertEquals(0, stream.read(buf, 10, 0))
     assertArrayEquals(
-        ((1 to 10) ++ (51 to 70) ++ (31 to 50)).toArray.map(_.toByte), buf)
+      ((1 to 10) ++ (51 to 70) ++ (31 to 50)).toArray.map(_.toByte),
+      buf)
 
     // Skip 40 bytes (next: 111)
     assertEquals(40L, stream.skip(40))
@@ -56,18 +64,21 @@ class InputStreamTest extends CommonStreamsTests {
     // Read 50 bytes, should wrap (next: 161)
     assertEquals(50, stream.read(buf))
     assertArrayEquals(
-        ((111 to 127) ++ (-128 to -96)).toArray.map(_.toByte), buf)
+      ((111 to 127) ++ (-128 to -96)).toArray.map(_.toByte),
+      buf)
 
     // Read 45 bytes, should read 40 (next: EOF)
     assertEquals(40, stream.read(buf, 5, 45))
     assertArrayEquals(
-        ((111 to 115) ++ (-95 to -56) ++ (-100 to -96)).toArray.map(_.toByte), buf)
+      ((111 to 115) ++ (-95 to -56) ++ (-100 to -96)).toArray.map(_.toByte),
+      buf)
 
     // Read 50 bytes, should read nothing
     assertEquals(-1, stream.read(buf))
     assertEquals(0, stream.read(buf, 0, 0))
     assertArrayEquals(
-        ((111 to 115) ++ (-95 to -56) ++ (-100 to -96)).toArray.map(_.toByte), buf)
+      ((111 to 115) ++ (-95 to -56) ++ (-100 to -96)).toArray.map(_.toByte),
+      buf)
   }
 
   @Test def should_provide_a_default_implementation_of_skip(): Unit = {

@@ -1,9 +1,4 @@
-
-
-
 import collection._
-
-
 
 object Test {
 

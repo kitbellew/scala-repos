@@ -1,8 +1,8 @@
 package akka.remote.transport
 
-import com.typesafe.config.{ ConfigFactory, Config }
+import com.typesafe.config.{ConfigFactory, Config}
 import akka.actor._
-import akka.testkit.{ TimingTest, DefaultTimeout, ImplicitSender, AkkaSpec }
+import akka.testkit.{TimingTest, DefaultTimeout, ImplicitSender, AkkaSpec}
 import ThrottlerTransportAdapterSpec._
 import scala.concurrent.duration._
 import scala.concurrent.Await
@@ -31,7 +31,7 @@ object ThrottlerTransportAdapterSpec {
   class Echo extends Actor {
     override def receive = {
       case "ping" ⇒ sender() ! "pong"
-      case x      ⇒ sender() ! x
+      case x ⇒ sender() ! x
     }
   }
 
@@ -49,41 +49,61 @@ object ThrottlerTransportAdapterSpec {
       case "start" ⇒
         self ! "sendNext"
         startTime = System.nanoTime()
-      case "sendNext" ⇒ if (messageCount > 0) {
-        remote ! "ping"
-        self ! "sendNext"
-        messageCount -= 1
-      }
+      case "sendNext" ⇒
+        if (messageCount > 0) {
+          remote ! "ping"
+          self ! "sendNext"
+          messageCount -= 1
+        }
       case "pong" ⇒
         received += 1
-        if (received >= MessageCount) controller ! (System.nanoTime() - startTime)
+        if (received >= MessageCount)
+          controller ! (System.nanoTime() - startTime)
     }
   }
 
   final case class Lost(msg: String)
 }
 
-class ThrottlerTransportAdapterSpec extends AkkaSpec(configA) with ImplicitSender with DefaultTimeout {
+class ThrottlerTransportAdapterSpec
+    extends AkkaSpec(configA)
+    with ImplicitSender
+    with DefaultTimeout {
 
   val systemB = ActorSystem("systemB", system.settings.config)
   val remote = systemB.actorOf(Props[Echo], "echo")
 
-  val rootB = RootActorPath(systemB.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress)
+  val rootB = RootActorPath(
+    systemB.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress)
   val here = {
     system.actorSelection(rootB / "user" / "echo") ! Identify(None)
     expectMsgType[ActorIdentity].ref.get
   }
 
   def throttle(direction: Direction, mode: ThrottleMode): Boolean = {
-    val rootBAddress = Address("akka", "systemB", "localhost", rootB.address.port.get)
-    val transport = system.asInstanceOf[ExtendedActorSystem].provider.asInstanceOf[RemoteActorRefProvider].transport
-    Await.result(transport.managementCommand(SetThrottle(rootBAddress, direction, mode)), 3.seconds)
+    val rootBAddress =
+      Address("akka", "systemB", "localhost", rootB.address.port.get)
+    val transport = system
+      .asInstanceOf[ExtendedActorSystem]
+      .provider
+      .asInstanceOf[RemoteActorRefProvider]
+      .transport
+    Await.result(
+      transport.managementCommand(SetThrottle(rootBAddress, direction, mode)),
+      3.seconds)
   }
 
   def disassociate(): Boolean = {
-    val rootBAddress = Address("akka", "systemB", "localhost", rootB.address.port.get)
-    val transport = system.asInstanceOf[ExtendedActorSystem].provider.asInstanceOf[RemoteActorRefProvider].transport
-    Await.result(transport.managementCommand(ForceDisassociate(rootBAddress)), 3.seconds)
+    val rootBAddress =
+      Address("akka", "systemB", "localhost", rootB.address.port.get)
+    val transport = system
+      .asInstanceOf[ExtendedActorSystem]
+      .provider
+      .asInstanceOf[RemoteActorRefProvider]
+      .transport
+    Await.result(
+      transport.managementCommand(ForceDisassociate(rootBAddress)),
+      3.seconds)
   }
 
   "ThrottlerTransportAdapter" must {
@@ -91,7 +111,8 @@ class ThrottlerTransportAdapterSpec extends AkkaSpec(configA) with ImplicitSende
       throttle(Direction.Send, TokenBucket(200, 500, 0, 0)) should ===(true)
       val tester = system.actorOf(Props(classOf[ThrottlingTester], here, self)) ! "start"
 
-      val time = NANOSECONDS.toSeconds(expectMsgType[Long]((TotalTime + 3).seconds))
+      val time =
+        NANOSECONDS.toSeconds(expectMsgType[Long]((TotalTime + 3).seconds))
       log.warning("Total time of transmission: " + time)
       time should be > (TotalTime - 3)
       throttle(Direction.Send, Unthrottled) should ===(true)
@@ -127,7 +148,7 @@ class ThrottlerTransportAdapterSpec extends AkkaSpec(configA) with ImplicitSende
 
       here ! "Cleanup"
       fishForMessage(5.seconds) {
-        case "Cleanup"           ⇒ true
+        case "Cleanup" ⇒ true
         case Lost("Blackhole 3") ⇒ false
       }
     }
@@ -135,23 +156,34 @@ class ThrottlerTransportAdapterSpec extends AkkaSpec(configA) with ImplicitSende
   }
 
   override def beforeTermination() {
-    system.eventStream.publish(TestEvent.Mute(
-      EventFilter.warning(source = "akka://AkkaProtocolStressTest/user/$a", start = "received dead letter"),
-      EventFilter.warning(pattern = "received dead letter.*(InboundPayload|Disassociate)")))
-    systemB.eventStream.publish(TestEvent.Mute(
-      EventFilter[EndpointException](),
-      EventFilter.error(start = "AssociationError"),
-      EventFilter.warning(pattern = "received dead letter.*(InboundPayload|Disassociate)")))
+    system.eventStream.publish(
+      TestEvent.Mute(
+        EventFilter.warning(
+          source = "akka://AkkaProtocolStressTest/user/$a",
+          start = "received dead letter"),
+        EventFilter.warning(pattern =
+          "received dead letter.*(InboundPayload|Disassociate)")
+      ))
+    systemB.eventStream.publish(
+      TestEvent.Mute(
+        EventFilter[EndpointException](),
+        EventFilter.error(start = "AssociationError"),
+        EventFilter.warning(pattern =
+          "received dead letter.*(InboundPayload|Disassociate)")
+      ))
   }
 
   override def afterTermination(): Unit = shutdown(systemB)
 }
 
-class ThrottlerTransportAdapterGenericSpec extends GenericTransportSpec(withAkkaProtocol = true) {
+class ThrottlerTransportAdapterGenericSpec
+    extends GenericTransportSpec(withAkkaProtocol = true) {
 
   def transportName = "ThrottlerTransportAdapter"
   def schemeIdentifier = "akka.trttl"
   def freshTransport(testTransport: TestTransport) =
-    new ThrottlerTransportAdapter(testTransport, system.asInstanceOf[ExtendedActorSystem])
+    new ThrottlerTransportAdapter(
+      testTransport,
+      system.asInstanceOf[ExtendedActorSystem])
 
 }

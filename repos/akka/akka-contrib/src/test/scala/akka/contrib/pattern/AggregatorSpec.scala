@@ -1,9 +1,9 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.contrib.pattern
 
-import akka.testkit.{ ImplicitSender, TestKit }
+import akka.testkit.{ImplicitSender, TestKit}
 import org.scalatest.FunSuiteLike
 import org.scalatest.Matchers
 import scala.annotation.tailrec
@@ -14,26 +14,32 @@ import scala.concurrent.duration._
 import scala.math.BigDecimal.int2bigDecimal
 
 import akka.actor._
-/**
- * Sample and test code for the aggregator patter.
- * This is based on Jamie Allen's tutorial at
- * http://jaxenter.com/tutorial-asynchronous-programming-with-akka-actors-46220.html
- */
 
+/**
+  * Sample and test code for the aggregator patter.
+  * This is based on Jamie Allen's tutorial at
+  * http://jaxenter.com/tutorial-asynchronous-programming-with-akka-actors-46220.html
+  */
 sealed trait AccountType
 case object Checking extends AccountType
 case object Savings extends AccountType
 case object MoneyMarket extends AccountType
 
-final case class GetCustomerAccountBalances(id: Long, accountTypes: Set[AccountType])
+final case class GetCustomerAccountBalances(
+    id: Long,
+    accountTypes: Set[AccountType])
 final case class GetAccountBalances(id: Long)
 
-final case class AccountBalances(accountType: AccountType,
-                                 balance: Option[List[(Long, BigDecimal)]])
+final case class AccountBalances(
+    accountType: AccountType,
+    balance: Option[List[(Long, BigDecimal)]])
 
-final case class CheckingAccountBalances(balances: Option[List[(Long, BigDecimal)]])
-final case class SavingsAccountBalances(balances: Option[List[(Long, BigDecimal)]])
-final case class MoneyMarketAccountBalances(balances: Option[List[(Long, BigDecimal)]])
+final case class CheckingAccountBalances(
+    balances: Option[List[(Long, BigDecimal)]])
+final case class SavingsAccountBalances(
+    balances: Option[List[(Long, BigDecimal)]])
+final case class MoneyMarketAccountBalances(
+    balances: Option[List[(Long, BigDecimal)]])
 
 case object TimedOut
 case object CantUnderstand
@@ -71,16 +77,18 @@ class AccountBalanceRetriever extends Actor with Aggregator {
   }
   //#initial-expect
 
-  class AccountAggregator(originalSender: ActorRef,
-                          id: Long, types: Set[AccountType]) {
+  class AccountAggregator(
+      originalSender: ActorRef,
+      id: Long,
+      types: Set[AccountType]) {
 
     val results =
       mutable.ArrayBuffer.empty[(AccountType, Option[List[(Long, BigDecimal)]])]
 
     if (types.size > 0)
       types foreach {
-        case Checking    ⇒ fetchCheckingAccountsBalance()
-        case Savings     ⇒ fetchSavingsAccountsBalance()
+        case Checking ⇒ fetchCheckingAccountsBalance()
+        case Savings ⇒ fetchSavingsAccountsBalance()
         case MoneyMarket ⇒ fetchMoneyMarketAccountsBalance()
       }
     else collectBalances() // Empty type list yields empty response
@@ -139,9 +147,9 @@ final case class EvaluationResults(name: String, eval: List[Int])
 final case class FinalResponse(qualifiedValues: List[String])
 
 /**
- * An actor sample demonstrating use of unexpect and chaining.
- * This is just an example and not a complete test case.
- */
+  * An actor sample demonstrating use of unexpect and chaining.
+  * This is just an example and not a complete test case.
+  */
 class ChainingSample extends Actor with Aggregator {
 
   expectOnce {
@@ -187,10 +195,16 @@ class ChainingSample extends Actor with Aggregator {
 }
 //#chain-sample
 
-class AggregatorSpec extends TestKit(ActorSystem("test")) with ImplicitSender with FunSuiteLike with Matchers {
+class AggregatorSpec
+    extends TestKit(ActorSystem("test"))
+    with ImplicitSender
+    with FunSuiteLike
+    with Matchers {
 
   test("Test request 1 account type") {
-    system.actorOf(Props[AccountBalanceRetriever]) ! GetCustomerAccountBalances(1, Set(Savings))
+    system.actorOf(Props[AccountBalanceRetriever]) ! GetCustomerAccountBalances(
+      1,
+      Set(Savings))
     receiveOne(10.seconds) match {
       case result: List[_] ⇒
         result should have size 1
@@ -223,7 +237,7 @@ class WorkListSpec extends FunSuiteLike {
     // ProcessAndRemove something in the middle
     val processed = workList process {
       case TestEntry(9) ⇒ true
-      case _            ⇒ false
+      case _ ⇒ false
     }
     assert(!processed)
   }
@@ -261,19 +275,19 @@ class WorkListSpec extends FunSuiteLike {
     // ProcessAndRemove something in the middle
     assert(workList process {
       case TestEntry(2) ⇒ true
-      case _            ⇒ false
+      case _ ⇒ false
     })
 
     // ProcessAndRemove the head
     assert(workList process {
       case TestEntry(0) ⇒ true
-      case _            ⇒ false
+      case _ ⇒ false
     })
 
     // ProcessAndRemove the tail
     assert(workList process {
       case TestEntry(3) ⇒ true
-      case _            ⇒ false
+      case _ ⇒ false
     })
   }
 
@@ -287,7 +301,7 @@ class WorkListSpec extends FunSuiteLike {
   test("Process permanent entry") {
     assert(workList process {
       case TestEntry(4) ⇒ true
-      case _            ⇒ false
+      case _ ⇒ false
     })
   }
 
@@ -306,7 +320,7 @@ class WorkListSpec extends FunSuiteLike {
     val processed =
       workList process {
         case TestEntry(2) ⇒ true
-        case _            ⇒ false
+        case _ ⇒ false
       }
 
     assert(!processed)
@@ -314,7 +328,7 @@ class WorkListSpec extends FunSuiteLike {
     val processed2 =
       workList process {
         case TestEntry(5) ⇒ true
-        case _            ⇒ false
+        case _ ⇒ false
       }
 
     assert(!processed2)
@@ -323,10 +337,14 @@ class WorkListSpec extends FunSuiteLike {
 
   test("Append two lists") {
     workList.removeAll()
-    0 to 4 foreach { id ⇒ workList.add(TestEntry(id), permanent = false) }
+    0 to 4 foreach { id ⇒
+      workList.add(TestEntry(id), permanent = false)
+    }
 
     val l2 = new WorkList[TestEntry]
-    5 to 9 foreach { id ⇒ l2.add(TestEntry(id), permanent = true) }
+    5 to 9 foreach { id ⇒
+      l2.add(TestEntry(id), permanent = true)
+    }
 
     workList addAll l2
 

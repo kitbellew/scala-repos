@@ -59,6 +59,7 @@ class EnsembleQuadCurve extends EnsembleExample {
         stroke = Color.Blue
         fill = Color.White
         strokeWidth = 2d
-      })
+      }
+    )
   }
 }

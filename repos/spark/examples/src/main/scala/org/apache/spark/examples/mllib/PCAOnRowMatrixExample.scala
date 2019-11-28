@@ -52,7 +52,9 @@ object PCAOnRowMatrixExample {
     // $example off$
     val collect = projected.rows.collect()
     println("Projected Row Matrix of principal component:")
-    collect.foreach { vector => println(vector) }
+    collect.foreach { vector =>
+      println(vector)
+    }
   }
 }
 // scalastyle:on println

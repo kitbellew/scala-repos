@@ -7,7 +7,7 @@ import scala.concurrent.duration._
 
 import lila.common.PimpedConfig._
 import lila.hub.actorApi.map.Ask
-import lila.hub.{ ActorMap, Sequencer }
+import lila.hub.{ActorMap, Sequencer}
 import lila.socket.actorApi.GetVersion
 import lila.socket.History
 import makeTimeout.short
@@ -47,9 +47,8 @@ final class Env(
 
   lazy val forms = new DataForm
 
-  lazy val cached = new Cached(
-    createdTtl = CreatedCacheTtl,
-    rankingTtl = RankingCacheTtl)
+  lazy val cached =
+    new Cached(createdTtl = CreatedCacheTtl, rankingTtl = RankingCacheTtl)
 
   lazy val api = new TournamentApi(
     cached = cached,
@@ -79,17 +78,15 @@ final class Env(
     chat = hub.actor.chat,
     flood = flood)
 
-  lazy val winners = new Winners(
-    mongoCache = mongoCache,
-    ttl = LeaderboardCacheTtl)
+  lazy val winners =
+    new Winners(mongoCache = mongoCache, ttl = LeaderboardCacheTtl)
 
   lazy val jsonView = new JsonView(lightUser, cached, performance)
 
   lazy val scheduleJsonView = new ScheduleJsonView(lightUser)
 
-  lazy val leaderboardApi = new LeaderboardApi(
-    coll = leaderboardColl,
-    maxPerPage = 20)
+  lazy val leaderboardApi =
+    new LeaderboardApi(coll = leaderboardColl, maxPerPage = 20)
 
   private lazy val leaderboardIndexer = new LeaderboardIndexer(
     tournamentColl = tournamentColl,
@@ -97,14 +94,17 @@ final class Env(
 
   private val socketHub = system.actorOf(
     Props(new lila.socket.SocketHubActor.Default[Socket] {
-      def mkActor(tournamentId: String) = new Socket(
-        tournamentId = tournamentId,
-        history = new History(ttl = HistoryMessageTtl),
-        jsonView = jsonView,
-        uidTimeout = UidTimeout,
-        socketTimeout = SocketTimeout,
-        lightUser = lightUser)
-    }), name = SocketName)
+      def mkActor(tournamentId: String) =
+        new Socket(
+          tournamentId = tournamentId,
+          history = new History(ttl = HistoryMessageTtl),
+          jsonView = jsonView,
+          uidTimeout = UidTimeout,
+          socketTimeout = SocketTimeout,
+          lightUser = lightUser)
+    }),
+    name = SocketName
+  )
 
   private val sequencerMap = system.actorOf(Props(ActorMap { id =>
     new Sequencer(
@@ -115,21 +115,27 @@ final class Env(
 
   system.actorOf(Props(new ApiActor(api = api)), name = ApiActorName)
 
-  system.actorOf(Props(new CreatedOrganizer(
-    api = api,
-    isOnline = isOnline
-  )))
+  system.actorOf(
+    Props(
+      new CreatedOrganizer(
+        api = api,
+        isOnline = isOnline
+      )))
 
-  private val reminder = system.actorOf(Props(new Reminder(
-    renderer = hub.actor.renderer
-  )))
+  private val reminder = system.actorOf(
+    Props(
+      new Reminder(
+        renderer = hub.actor.renderer
+      )))
 
-  system.actorOf(Props(new StartedOrganizer(
-    api = api,
-    reminder = reminder,
-    isOnline = isOnline,
-    socketHub = socketHub
-  )))
+  system.actorOf(
+    Props(
+      new StartedOrganizer(
+        api = api,
+        reminder = reminder,
+        isOnline = isOnline,
+        socketHub = socketHub
+      )))
 
   system.actorOf(Props(new Scheduler(api)))
 
@@ -143,10 +149,8 @@ final class Env(
     }
   }
 
-  private lazy val autoPairing = new AutoPairing(
-    roundMap = roundMap,
-    system = system,
-    onStart = onStart)
+  private lazy val autoPairing =
+    new AutoPairing(roundMap = roundMap, system = system, onStart = onStart)
 
   private[tournament] lazy val tournamentColl = db(CollectionTournament)
   private[tournament] lazy val pairingColl = db(CollectionPairing)

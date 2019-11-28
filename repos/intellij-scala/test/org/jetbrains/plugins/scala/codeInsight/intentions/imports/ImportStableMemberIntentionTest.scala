@@ -5,9 +5,9 @@ import org.jetbrains.plugins.scala.codeInsight.intention.imports.ImportStableMem
 import org.jetbrains.plugins.scala.codeInsight.intentions.ScalaIntentionTestBase
 
 /**
- * Nikolay.Tropin
- * 2014-03-18
- */
+  * Nikolay.Tropin
+  * 2014-03-18
+  */
 class ImportStableMemberIntentionTest extends ScalaIntentionTestBase {
   override def familyName: String = ImportStableMemberIntention.familyName
 

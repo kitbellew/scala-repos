@@ -12,11 +12,13 @@ import play.api.libs.ws._
 import scala.concurrent.Future
 
 /**
- * Logs WSRequest and pulls information into Curl format to an SLF4J logger.
- *
- * @param logger an SLF4J logger
- */
-class AhcCurlRequestLogger(logger: org.slf4j.Logger) extends WSRequestFilter with CurlFormat {
+  * Logs WSRequest and pulls information into Curl format to an SLF4J logger.
+  *
+  * @param logger an SLF4J logger
+  */
+class AhcCurlRequestLogger(logger: org.slf4j.Logger)
+    extends WSRequestFilter
+    with CurlFormat {
   def apply(executor: WSRequestExecutor): WSRequestExecutor = {
     new WSRequestExecutor {
       override def execute(request: WSRequest): Future[WSResponse] = {
@@ -30,7 +32,8 @@ class AhcCurlRequestLogger(logger: org.slf4j.Logger) extends WSRequestFilter wit
 
 object AhcCurlRequestLogger {
 
-  private val logger = LoggerFactory.getLogger("play.api.libs.ws.ahc.AhcCurlRequestLogger")
+  private val logger =
+    LoggerFactory.getLogger("play.api.libs.ws.ahc.AhcCurlRequestLogger")
 
   private val instance = new AhcCurlRequestLogger(logger)
 
@@ -88,11 +91,15 @@ trait CurlFormat {
   }
 
   protected def findCharset(request: AhcWSRequest): String = {
-    request.contentType.map { ct =>
-      Option(HttpUtils.parseCharset(ct)).getOrElse {
-        StandardCharsets.UTF_8
-      }.name()
-    }.getOrElse(HttpUtils.parseCharset("UTF-8").name())
+    request.contentType
+      .map { ct =>
+        Option(HttpUtils.parseCharset(ct))
+          .getOrElse {
+            StandardCharsets.UTF_8
+          }
+          .name()
+      }
+      .getOrElse(HttpUtils.parseCharset("UTF-8").name())
   }
 
   def quote(unsafe: String): String = unsafe.replace("'", "'\\''")

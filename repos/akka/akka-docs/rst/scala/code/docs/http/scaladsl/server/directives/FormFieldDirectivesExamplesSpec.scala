@@ -12,7 +12,8 @@ class FormFieldDirectivesExamplesSpec extends RoutingSpec {
   "formFields" in {
     val route =
       formFields('color, 'age.as[Int]) { (color, age) =>
-        complete(s"The color is '$color' and the age ten years ago was ${age - 10}")
+        complete(
+          s"The color is '$color' and the age ten years ago was ${age - 10}")
       }
 
     // tests:
@@ -49,7 +50,8 @@ class FormFieldDirectivesExamplesSpec extends RoutingSpec {
       formFieldMap { fields =>
         def formFieldString(formField: (String, String)): String =
           s"""${formField._1} = '${formField._2}'"""
-        complete(s"The form fields are ${fields.map(formFieldString).mkString(", ")}")
+        complete(
+          s"The form fields are ${fields.map(formFieldString).mkString(", ")}")
       }
 
     // tests:
@@ -80,7 +82,8 @@ class FormFieldDirectivesExamplesSpec extends RoutingSpec {
       formFieldSeq { fields =>
         def formFieldString(formField: (String, String)): String =
           s"""${formField._1} = '${formField._2}'"""
-        complete(s"The form fields are ${fields.map(formFieldString).mkString(", ")}")
+        complete(
+          s"The form fields are ${fields.map(formFieldString).mkString(", ")}")
       }
 
     // tests:

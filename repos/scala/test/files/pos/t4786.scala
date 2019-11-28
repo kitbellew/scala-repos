@@ -21,4 +21,3 @@ object Test extends App {
   val m1 = DenseFloatBuilder.zeros // in 2.9 crash goes away if explicit type "DenseMatrixFlt" is assigned to m1
   val m2 = m1.duplicate(DenseFloatBuilder)
 }
-

@@ -1,16 +1,18 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.io
 
 import akka.actor.Props
 import akka.io.UdpConnected.Connect
 
 /**
- * INTERNAL API
- */
+  * INTERNAL API
+  */
 private[io] class UdpConnectedManager(udpConn: UdpConnectedExt)
-  extends SelectionHandler.SelectorBasedManager(udpConn.settings, udpConn.settings.NrOfSelectors) {
+    extends SelectionHandler.SelectorBasedManager(
+      udpConn.settings,
+      udpConn.settings.NrOfSelectors) {
 
   def receive = workerForCommandHandler {
     case c: Connect ⇒

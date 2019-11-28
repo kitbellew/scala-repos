@@ -7,7 +7,8 @@ package pkg {
       import c.universe._
       val sym = c.weakTypeOf[T].typeSymbol
       val g = c.universe.asInstanceOf[scala.tools.nsc.Global]
-      c.Expr[Boolean](Literal(Constant(g.currentRun.compiles(sym.asInstanceOf[g.Symbol]))))
+      c.Expr[Boolean](
+        Literal(Constant(g.currentRun.compiles(sym.asInstanceOf[g.Symbol]))))
     }
     def compiles[T]: Boolean = macro impl[T]
   }

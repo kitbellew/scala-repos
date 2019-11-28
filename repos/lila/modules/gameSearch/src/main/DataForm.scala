@@ -1,6 +1,6 @@
 package lila.gameSearch
 
-import chess.{ Mode }
+import chess.{Mode}
 import org.joda.time.DateTime
 import play.api.data._
 import play.api.data.Forms._
@@ -11,50 +11,51 @@ import lila.search.Range
 
 private[gameSearch] final class DataForm {
 
-  val search = Form(mapping(
-    "players" -> mapping(
-      "a" -> optional(nonEmptyText),
-      "b" -> optional(nonEmptyText),
-      "winner" -> optional(nonEmptyText),
-      "white" -> optional(nonEmptyText),
-      "black" -> optional(nonEmptyText)
-    )(SearchPlayer.apply)(SearchPlayer.unapply),
-    "winnerColor" -> optional(numberIn(Query.winnerColors)),
-    "perf" -> optional(numberIn(Query.perfs)),
-    "source" -> optional(numberIn(Query.sources)),
-    "mode" -> optional(numberIn(Query.modes)),
-    "turnsMin" -> optional(numberIn(Query.turns)),
-    "turnsMax" -> optional(numberIn(Query.turns)),
-    "ratingMin" -> optional(numberIn(Query.averageRatings)),
-    "ratingMax" -> optional(numberIn(Query.averageRatings)),
-    "hasAi" -> optional(numberIn(Query.hasAis)),
-    "aiLevelMin" -> optional(numberIn(Query.aiLevels)),
-    "aiLevelMax" -> optional(numberIn(Query.aiLevels)),
-    "durationMin" -> optional(numberIn(Query.durations)),
-    "durationMax" -> optional(numberIn(Query.durations)),
-    "clock" -> mapping(
-      "initMin" -> optional(numberIn(Query.clockInits)),
-      "initMax" -> optional(numberIn(Query.clockInits)),
-      "incMin" -> optional(numberIn(Query.clockIncs)),
-      "incMax" -> optional(numberIn(Query.clockIncs))
-    )(SearchClock.apply)(SearchClock.unapply),
-    "dateMin" -> DataForm.dateField,
-    "dateMax" -> DataForm.dateField,
-    "status" -> optional(numberIn(Query.statuses)),
-    "analysed" -> optional(number),
-    "sort" -> optional(mapping(
-      "field" -> stringIn(Sorting.fields),
-      "order" -> stringIn(Sorting.orders)
-    )(SearchSort.apply)(SearchSort.unapply))
-  )(SearchData.apply)(SearchData.unapply)) fill SearchData()
+  val search = Form(
+    mapping(
+      "players" -> mapping(
+        "a" -> optional(nonEmptyText),
+        "b" -> optional(nonEmptyText),
+        "winner" -> optional(nonEmptyText),
+        "white" -> optional(nonEmptyText),
+        "black" -> optional(nonEmptyText)
+      )(SearchPlayer.apply)(SearchPlayer.unapply),
+      "winnerColor" -> optional(numberIn(Query.winnerColors)),
+      "perf" -> optional(numberIn(Query.perfs)),
+      "source" -> optional(numberIn(Query.sources)),
+      "mode" -> optional(numberIn(Query.modes)),
+      "turnsMin" -> optional(numberIn(Query.turns)),
+      "turnsMax" -> optional(numberIn(Query.turns)),
+      "ratingMin" -> optional(numberIn(Query.averageRatings)),
+      "ratingMax" -> optional(numberIn(Query.averageRatings)),
+      "hasAi" -> optional(numberIn(Query.hasAis)),
+      "aiLevelMin" -> optional(numberIn(Query.aiLevels)),
+      "aiLevelMax" -> optional(numberIn(Query.aiLevels)),
+      "durationMin" -> optional(numberIn(Query.durations)),
+      "durationMax" -> optional(numberIn(Query.durations)),
+      "clock" -> mapping(
+        "initMin" -> optional(numberIn(Query.clockInits)),
+        "initMax" -> optional(numberIn(Query.clockInits)),
+        "incMin" -> optional(numberIn(Query.clockIncs)),
+        "incMax" -> optional(numberIn(Query.clockIncs))
+      )(SearchClock.apply)(SearchClock.unapply),
+      "dateMin" -> DataForm.dateField,
+      "dateMax" -> DataForm.dateField,
+      "status" -> optional(numberIn(Query.statuses)),
+      "analysed" -> optional(number),
+      "sort" -> optional(
+        mapping(
+          "field" -> stringIn(Sorting.fields),
+          "order" -> stringIn(Sorting.orders)
+        )(SearchSort.apply)(SearchSort.unapply))
+    )(SearchData.apply)(SearchData.unapply)) fill SearchData()
 }
 
 private[gameSearch] object DataForm {
 
   val DateDelta = """^(\d+)(\w)$""".r
-  private val dateConstraint = Constraints.pattern(
-    regex = DateDelta,
-    error = "Invalid date.")
+  private val dateConstraint =
+    Constraints.pattern(regex = DateDelta, error = "Invalid date.")
   val dateField = optional(nonEmptyText.verifying(dateConstraint))
 }
 
@@ -82,26 +83,28 @@ private[gameSearch] case class SearchData(
 
   def sortOrDefault = sort | SearchSort()
 
-  def query = Query(
-    user1 = players.cleanA,
-    user2 = players.cleanB,
-    winner = players.cleanWinner,
-    winnerColor = winnerColor,
-    perf = perf,
-    source = source,
-    rated = mode flatMap Mode.apply map (_.rated),
-    turns = Range(turnsMin, turnsMax),
-    averageRating = Range(ratingMin, ratingMax),
-    hasAi = hasAi map (_ == 1),
-    aiLevel = Range(aiLevelMin, aiLevelMax),
-    duration = Range(durationMin, durationMax),
-    clock = Clocking(clock.initMin, clock.initMax, clock.incMin, clock.incMax),
-    date = Range(dateMin flatMap toDate, dateMax flatMap toDate),
-    status = status,
-    analysed = analysed map (_ == 1),
-    whiteUser = players.cleanWhite,
-    blackUser = players.cleanBlack,
-    sorting = Sorting(sortOrDefault.field, sortOrDefault.order))
+  def query =
+    Query(
+      user1 = players.cleanA,
+      user2 = players.cleanB,
+      winner = players.cleanWinner,
+      winnerColor = winnerColor,
+      perf = perf,
+      source = source,
+      rated = mode flatMap Mode.apply map (_.rated),
+      turns = Range(turnsMin, turnsMax),
+      averageRating = Range(ratingMin, ratingMax),
+      hasAi = hasAi map (_ == 1),
+      aiLevel = Range(aiLevelMin, aiLevelMax),
+      duration = Range(durationMin, durationMax),
+      clock = Clocking(clock.initMin, clock.initMax, clock.incMin, clock.incMax),
+      date = Range(dateMin flatMap toDate, dateMax flatMap toDate),
+      status = status,
+      analysed = analysed map (_ == 1),
+      whiteUser = players.cleanWhite,
+      blackUser = players.cleanBlack,
+      sorting = Sorting(sortOrDefault.field, sortOrDefault.order)
+    )
 
   def nonEmptyQuery = Some(query).filter(_.nonEmpty)
 
@@ -115,9 +118,8 @@ private[gameSearch] case class SearchData(
     case DateDelta(n, "y") => parseIntOption(n) map DateTime.now.minusYears
     case _                 => None
   }
-  private val dateConstraint = Constraints.pattern(
-    regex = DateDelta,
-    error = "Invalid date.")
+  private val dateConstraint =
+    Constraints.pattern(regex = DateDelta, error = "Invalid date.")
 }
 
 private[gameSearch] case class SearchPlayer(
@@ -133,16 +135,18 @@ private[gameSearch] case class SearchPlayer(
   def cleanWhite = oneOf(white)
   def cleanBlack = oneOf(black)
 
-  private def oneOf(s: Option[String]) = clean(s).filter(List(cleanA, cleanB).flatten.contains)
-  private def clean(s: Option[String]) = s map (_.trim.toLowerCase) filter (_.nonEmpty)
+  private def oneOf(s: Option[String]) =
+    clean(s).filter(List(cleanA, cleanB).flatten.contains)
+  private def clean(s: Option[String]) =
+    s map (_.trim.toLowerCase) filter (_.nonEmpty)
 }
 
 private[gameSearch] case class SearchSort(
-  field: String = Sorting.default.f,
-  order: String = Sorting.default.order)
+    field: String = Sorting.default.f,
+    order: String = Sorting.default.order)
 
 private[gameSearch] case class SearchClock(
-  initMin: Option[Int] = None,
-  initMax: Option[Int] = None,
-  incMin: Option[Int] = None,
-  incMax: Option[Int] = None)
+    initMin: Option[Int] = None,
+    initMax: Option[Int] = None,
+    incMin: Option[Int] = None,
+    incMax: Option[Int] = None)

@@ -18,11 +18,11 @@ package akka.http.impl.model.parser
 import akka.parboiled2._
 
 /**
- * For certain high-performance use-cases it is better to construct Strings
- * that the parser is to produce/extract from the input in a char-by-char fashion.
- *
- * Mixing this trait into your parser gives you a simple facility to support this.
- */
+  * For certain high-performance use-cases it is better to construct Strings
+  * that the parser is to produce/extract from the input in a char-by-char fashion.
+  *
+  * Mixing this trait into your parser gives you a simple facility to support this.
+  */
 private[parser] trait StringBuilding { this: Parser ⇒
   protected val sb = new java.lang.StringBuilder
 

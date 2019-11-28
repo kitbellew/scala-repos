@@ -22,7 +22,11 @@ import scala.collection.mutable.ArrayBuffer
 import org.scalatest.concurrent.Eventually._
 import org.scalatest.time.SpanSugar._
 
-import org.apache.spark.scheduler.{SparkListener, SparkListenerTaskStart, TaskLocality}
+import org.apache.spark.scheduler.{
+  SparkListener,
+  SparkListenerTaskStart,
+  TaskLocality
+}
 import org.apache.spark.scheduler.TaskLocality.TaskLocality
 import org.apache.spark.storage.{StorageLevel, StreamBlockId}
 import org.apache.spark.streaming._
@@ -45,14 +49,15 @@ class ReceiverTrackerSuite extends TestSuiteBase {
           assert(RateTestReceiver.getActive().nonEmpty)
         }
 
-
         // Verify that the rate of the block generator in the receiver get updated
         val activeReceiver = RateTestReceiver.getActive().get
         tracker.sendRateUpdate(inputDStream.id, newRateLimit)
         eventually(timeout(5 seconds)) {
-          assert(activeReceiver.getDefaultBlockGeneratorRateLimit() === newRateLimit,
+          assert(
+            activeReceiver.getDefaultBlockGeneratorRateLimit() === newRateLimit,
             "default block generator did not receive rate update")
-          assert(activeReceiver.getCustomBlockGeneratorRateLimit() === newRateLimit,
+          assert(
+            activeReceiver.getCustomBlockGeneratorRateLimit() === newRateLimit,
             "other block generator did not receive rate update")
         }
       } finally {
@@ -65,7 +70,8 @@ class ReceiverTrackerSuite extends TestSuiteBase {
     withStreamingContext(new StreamingContext(conf, Milliseconds(100))) { ssc =>
       @volatile var startTimes = 0
       ssc.addStreamingListener(new StreamingListener {
-        override def onReceiverStarted(receiverStarted: StreamingListenerReceiverStarted): Unit = {
+        override def onReceiverStarted(
+            receiverStarted: StreamingListenerReceiverStarted): Unit = {
           startTimes += 1
         }
       })
@@ -81,32 +87,35 @@ class ReceiverTrackerSuite extends TestSuiteBase {
     }
   }
 
-  test("SPARK-11063: TaskSetManager should use Receiver RDD's preferredLocations") {
+  test(
+    "SPARK-11063: TaskSetManager should use Receiver RDD's preferredLocations") {
     // Use ManualClock to prevent from starting batches so that we can make sure the only task is
     // for starting the Receiver
-    val _conf = conf.clone.set("spark.streaming.clock", "org.apache.spark.util.ManualClock")
-    withStreamingContext(new StreamingContext(_conf, Milliseconds(100))) { ssc =>
-      @volatile var receiverTaskLocality: TaskLocality = null
-      ssc.sparkContext.addSparkListener(new SparkListener {
-        override def onTaskStart(taskStart: SparkListenerTaskStart): Unit = {
-          receiverTaskLocality = taskStart.taskInfo.taskLocality
+    val _conf = conf.clone
+      .set("spark.streaming.clock", "org.apache.spark.util.ManualClock")
+    withStreamingContext(new StreamingContext(_conf, Milliseconds(100))) {
+      ssc =>
+        @volatile var receiverTaskLocality: TaskLocality = null
+        ssc.sparkContext.addSparkListener(new SparkListener {
+          override def onTaskStart(taskStart: SparkListenerTaskStart): Unit = {
+            receiverTaskLocality = taskStart.taskInfo.taskLocality
+          }
+        })
+        val input = ssc.receiverStream(new TestReceiver)
+        val output = new TestOutputStream(input)
+        output.register()
+        ssc.start()
+        eventually(timeout(10 seconds), interval(10 millis)) {
+          // If preferredLocations is set correctly, receiverTaskLocality should be PROCESS_LOCAL
+          assert(receiverTaskLocality === TaskLocality.PROCESS_LOCAL)
         }
-      })
-      val input = ssc.receiverStream(new TestReceiver)
-      val output = new TestOutputStream(input)
-      output.register()
-      ssc.start()
-      eventually(timeout(10 seconds), interval(10 millis)) {
-        // If preferredLocations is set correctly, receiverTaskLocality should be PROCESS_LOCAL
-        assert(receiverTaskLocality === TaskLocality.PROCESS_LOCAL)
-      }
     }
   }
 }
 
 /** An input DStream with for testing rate controlling */
 private[streaming] class RateTestInputDStream(_ssc: StreamingContext)
-  extends ReceiverInputDStream[Int](_ssc) {
+    extends ReceiverInputDStream[Int](_ssc) {
 
   override def getReceiver(): Receiver[Int] = new RateTestReceiver(id)
 
@@ -123,12 +132,16 @@ private[streaming] class RateTestInputDStream(_ssc: StreamingContext)
 }
 
 /** A receiver implementation for testing rate controlling */
-private[streaming] class RateTestReceiver(receiverId: Int, host: Option[String] = None)
-  extends Receiver[Int](StorageLevel.MEMORY_ONLY) {
+private[streaming] class RateTestReceiver(
+    receiverId: Int,
+    host: Option[String] = None)
+    extends Receiver[Int](StorageLevel.MEMORY_ONLY) {
 
   private lazy val customBlockGenerator = supervisor.createBlockGenerator(
     new BlockGeneratorListener {
-      override def onPushBlock(blockId: StreamBlockId, arrayBuffer: ArrayBuffer[_]): Unit = {}
+      override def onPushBlock(
+          blockId: StreamBlockId,
+          arrayBuffer: ArrayBuffer[_]): Unit = {}
       override def onError(message: String, throwable: Throwable): Unit = {}
       override def onGenerateBlock(blockId: StreamBlockId): Unit = {}
       override def onAddData(data: Any, metadata: Any): Unit = {}
@@ -158,9 +171,9 @@ private[streaming] class RateTestReceiver(receiverId: Int, host: Option[String] 
 }
 
 /**
- * A helper object to RateTestReceiver that give access to the currently active RateTestReceiver
- * instance.
- */
+  * A helper object to RateTestReceiver that give access to the currently active RateTestReceiver
+  * instance.
+  */
 private[streaming] object RateTestReceiver {
   @volatile private var activeReceiver: RateTestReceiver = null
 
@@ -176,8 +189,8 @@ private[streaming] object RateTestReceiver {
 }
 
 /**
- * A custom receiver that could be stopped via StoppableReceiver.shouldStop
- */
+  * A custom receiver that could be stopped via StoppableReceiver.shouldStop
+  */
 class StoppableReceiver extends Receiver[Int](StorageLevel.MEMORY_ONLY) {
 
   var receivingThreadOption: Option[Thread] = None

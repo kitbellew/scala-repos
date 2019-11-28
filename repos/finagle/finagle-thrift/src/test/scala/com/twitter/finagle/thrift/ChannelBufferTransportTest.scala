@@ -10,7 +10,7 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class ChannelBufferTransportTest extends FunSuite with MockitoSugar {
 
-  class ChannelContext{
+  class ChannelContext {
     val buf = mock[ChannelBuffer]
     lazy val t = new ChannelBufferToTransport(buf)
   }
@@ -41,4 +41,3 @@ class ChannelBufferTransportTest extends FunSuite with MockitoSugar {
     assert(t.read(b, 0, 3) == 3)
   }
 }
-

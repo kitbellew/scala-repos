@@ -17,13 +17,15 @@ import grizzled.slf4j.Logger
 case class DataSourceParams(appId: Int) extends Params
 
 class DataSource(val dsp: DataSourceParams)
-  extends PDataSource[TrainingData,
-      EmptyEvaluationInfo, Query, EmptyActualResult] {
+    extends PDataSource[
+      TrainingData,
+      EmptyEvaluationInfo,
+      Query,
+      EmptyActualResult] {
 
   @transient lazy val logger = Logger[this.type]
 
-  override
-  def readTraining(sc: SparkContext): TrainingData = {
+  override def readTraining(sc: SparkContext): TrainingData = {
     val eventsDb = Storage.getPEvents()
 
     val users: EntityMap[User] = eventsDb.extractEntityMap[User](
@@ -55,25 +57,25 @@ class DataSource(val dsp: DataSourceParams)
       entityType = Some("user"),
       eventNames = Some(List("rate", "buy")), // read "rate" and "buy" event
       // targetEntityType is optional field of an event.
-      targetEntityType = Some(Some("item")))(sc)
+      targetEntityType = Some(Some("item"))
+    )(sc)
 
     val ratingsRDD: RDD[Rating] = eventsRDD.map { event =>
-      val rating = try {
-        val ratingValue: Double = event.event match {
-          case "rate" => event.properties.get[Double]("rating")
-          case "buy" => 4.0 // map buy event to rating value of 4
-          case _ => throw new Exception(s"Unexpected event ${event} is read.")
+      val rating =
+        try {
+          val ratingValue: Double = event.event match {
+            case "rate" => event.properties.get[Double]("rating")
+            case "buy"  => 4.0 // map buy event to rating value of 4
+            case _      => throw new Exception(s"Unexpected event ${event} is read.")
+          }
+          // entityId and targetEntityId is String
+          Rating(event.entityId, event.targetEntityId.get, ratingValue)
+        } catch {
+          case e: Exception => {
+            logger.error(s"Cannot convert ${event} to Rating. Exception: ${e}.")
+            throw e
+          }
         }
-        // entityId and targetEntityId is String
-        Rating(event.entityId,
-          event.targetEntityId.get,
-          ratingValue)
-      } catch {
-        case e: Exception => {
-          logger.error(s"Cannot convert ${event} to Rating. Exception: ${e}.")
-          throw e
-        }
-      }
       rating
     }
     new TrainingData(users, items, ratingsRDD)
@@ -81,31 +83,31 @@ class DataSource(val dsp: DataSourceParams)
 }
 
 case class User(
-  attr0: Double,
-  attr1: Int,
-  attr2: Int
+    attr0: Double,
+    attr1: Int,
+    attr2: Int
 )
 
 case class Item(
-  attrA: String,
-  attrB: Int,
-  attrC: Boolean
+    attrA: String,
+    attrB: Int,
+    attrC: Boolean
 )
 
 case class Rating(
-  user: String,
-  item: String,
-  rating: Double
+    user: String,
+    item: String,
+    rating: Double
 )
 
 class TrainingData(
-  val users: EntityMap[User],
-  val items: EntityMap[Item],
-  val ratings: RDD[Rating]
+    val users: EntityMap[User],
+    val items: EntityMap[Item],
+    val ratings: RDD[Rating]
 ) extends Serializable {
   override def toString = {
     s"users: [${users.size} (${users.take(2).toString}...)]" +
-    s"items: [${items.size} (${items.take(2).toString}...)]" +
-    s"ratings: [${ratings.count()}] (${ratings.take(2).toList}...)"
+      s"items: [${items.size} (${items.take(2).toString}...)]" +
+      s"ratings: [${ratings.count()}] (${ratings.take(2).toList}...)"
   }
 }

@@ -19,7 +19,9 @@ object ServiceRegistrySpec extends MultiNodeConfig {
   val node2 = role("node-2")
   val node3 = role("node-3")
 
-  commonConfig(ConfigFactory.parseString("""
+  commonConfig(
+    ConfigFactory.parseString(
+      """
     akka.loglevel = INFO
     akka.actor.provider = "akka.cluster.ClusterActorRefProvider"
     akka.log-dead-letters-during-shutdown = off
@@ -37,7 +39,10 @@ class ServiceRegistrySpecMultiJvmNode1 extends ServiceRegistrySpec
 class ServiceRegistrySpecMultiJvmNode2 extends ServiceRegistrySpec
 class ServiceRegistrySpecMultiJvmNode3 extends ServiceRegistrySpec
 
-class ServiceRegistrySpec extends MultiNodeSpec(ServiceRegistrySpec) with STMultiNodeSpec with ImplicitSender {
+class ServiceRegistrySpec
+    extends MultiNodeSpec(ServiceRegistrySpec)
+    with STMultiNodeSpec
+    with ImplicitSender {
   import ServiceRegistrySpec._
   import ServiceRegistry._
 
@@ -75,7 +80,8 @@ class ServiceRegistrySpec extends MultiNodeSpec(ServiceRegistrySpec) with STMult
       awaitAssert {
         val probe = TestProbe()
         registry.tell(Lookup("a"), probe.ref)
-        probe.expectMsgType[Bindings].services.map(_.path.name) should be(Set("a1"))
+        probe.expectMsgType[Bindings].services.map(_.path.name) should be(
+          Set("a1"))
       }
 
       enterBarrier("after-2")
@@ -91,9 +97,11 @@ class ServiceRegistrySpec extends MultiNodeSpec(ServiceRegistrySpec) with STMult
       }
 
       probe.within(10.seconds) {
-        probe.expectMsgType[BindingChanged].services.map(_.path.name) should be(Set("a1", "a2"))
+        probe.expectMsgType[BindingChanged].services.map(_.path.name) should be(
+          Set("a1", "a2"))
         registry.tell(Lookup("a"), probe.ref)
-        probe.expectMsgType[Bindings].services.map(_.path.name) should be(Set("a1", "a2"))
+        probe.expectMsgType[Bindings].services.map(_.path.name) should be(
+          Set("a1", "a2"))
       }
 
       enterBarrier("after-4")
@@ -105,14 +113,17 @@ class ServiceRegistrySpec extends MultiNodeSpec(ServiceRegistrySpec) with STMult
 
       runOn(node2) {
         registry.tell(Lookup("a"), probe.ref)
-        val a2 = probe.expectMsgType[Bindings].services.find(_.path.name == "a2").get
+        val a2 =
+          probe.expectMsgType[Bindings].services.find(_.path.name == "a2").get
         a2 ! PoisonPill
       }
 
       probe.within(10.seconds) {
-        probe.expectMsgType[BindingChanged].services.map(_.path.name) should be(Set("a1"))
+        probe.expectMsgType[BindingChanged].services.map(_.path.name) should be(
+          Set("a1"))
         registry.tell(Lookup("a"), probe.ref)
-        probe.expectMsgType[Bindings].services.map(_.path.name) should be(Set("a1"))
+        probe.expectMsgType[Bindings].services.map(_.path.name) should be(
+          Set("a1"))
       }
 
       enterBarrier("after-5")
@@ -120,7 +131,8 @@ class ServiceRegistrySpec extends MultiNodeSpec(ServiceRegistrySpec) with STMult
 
     "replicate many service entries" in within(10.seconds) {
       for (i ← 100 until 200) {
-        val service = system.actorOf(Props[Service], name = myself.name + "_" + i)
+        val service =
+          system.actorOf(Props[Service], name = myself.name + "_" + i)
         registry ! Register("a" + i, service)
       }
 
@@ -128,7 +140,8 @@ class ServiceRegistrySpec extends MultiNodeSpec(ServiceRegistrySpec) with STMult
         val probe = TestProbe()
         for (i ← 100 until 200) {
           registry.tell(Lookup("a" + i), probe.ref)
-          probe.expectMsgType[Bindings].services.map(_.path.name) should be(roles.map(_.name + "_" + i).toSet)
+          probe.expectMsgType[Bindings].services.map(_.path.name) should be(
+            roles.map(_.name + "_" + i).toSet)
         }
       }
 
@@ -138,4 +151,3 @@ class ServiceRegistrySpec extends MultiNodeSpec(ServiceRegistrySpec) with STMult
   }
 
 }
-

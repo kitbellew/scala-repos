@@ -7,8 +7,13 @@ private[nio] object GenHeapBufferView {
   trait NewHeapBufferView[BufferType <: Buffer] {
     def bytesPerElem: Int
 
-    def apply(capacity: Int, byteArray: Array[Byte], byteArrayOffset: Int,
-        initialPosition: Int, initialLimit: Int, readOnly: Boolean,
+    def apply(
+        capacity: Int,
+        byteArray: Array[Byte],
+        byteArrayOffset: Int,
+        initialPosition: Int,
+        initialLimit: Int,
+        readOnly: Boolean,
         isBigEndian: Boolean): BufferType
   }
 
@@ -19,13 +24,19 @@ private[nio] object GenHeapBufferView {
     val byteBufferPos = byteBuffer.position
     val viewCapacity =
       (byteBuffer.limit - byteBufferPos) / newHeapBufferView.bytesPerElem
-    newHeapBufferView(viewCapacity, byteBuffer._array,
-        byteBuffer._arrayOffset + byteBufferPos,
-        0, viewCapacity, byteBuffer.isReadOnly, byteBuffer.isBigEndian)
+    newHeapBufferView(
+      viewCapacity,
+      byteBuffer._array,
+      byteBuffer._arrayOffset + byteBufferPos,
+      0,
+      viewCapacity,
+      byteBuffer.isReadOnly,
+      byteBuffer.isBigEndian)
   }
 }
 
-private[nio] final class GenHeapBufferView[B <: Buffer](val self: B) extends AnyVal {
+private[nio] final class GenHeapBufferView[B <: Buffer](val self: B)
+    extends AnyVal {
   import self._
 
   type NewThisHeapBufferView = GenHeapBufferView.NewHeapBufferView[BufferType]
@@ -35,16 +46,27 @@ private[nio] final class GenHeapBufferView[B <: Buffer](val self: B) extends Any
       implicit newHeapBufferView: NewThisHeapBufferView): BufferType = {
     val newCapacity = remaining
     val bytesPerElem = newHeapBufferView.bytesPerElem
-    newHeapBufferView(newCapacity, _byteArray,
-        _byteArrayOffset + bytesPerElem*position,
-        0, newCapacity, isReadOnly, isBigEndian)
+    newHeapBufferView(
+      newCapacity,
+      _byteArray,
+      _byteArrayOffset + bytesPerElem * position,
+      0,
+      newCapacity,
+      isReadOnly,
+      isBigEndian)
   }
 
   @inline
   def generic_duplicate()(
       implicit newHeapBufferView: NewThisHeapBufferView): BufferType = {
-    val result = newHeapBufferView(capacity, _byteArray, _byteArrayOffset,
-        position, limit, isReadOnly, isBigEndian)
+    val result = newHeapBufferView(
+      capacity,
+      _byteArray,
+      _byteArrayOffset,
+      position,
+      limit,
+      isReadOnly,
+      isBigEndian)
     result._mark = _mark
     result
   }
@@ -52,8 +74,14 @@ private[nio] final class GenHeapBufferView[B <: Buffer](val self: B) extends Any
   @inline
   def generic_asReadOnlyBuffer()(
       implicit newHeapBufferView: NewThisHeapBufferView): BufferType = {
-    val result = newHeapBufferView(capacity, _byteArray, _byteArrayOffset,
-        position, limit, true, isBigEndian)
+    val result = newHeapBufferView(
+      capacity,
+      _byteArray,
+      _byteArrayOffset,
+      position,
+      limit,
+      true,
+      isBigEndian)
     result._mark = _mark
     result
   }
@@ -66,8 +94,12 @@ private[nio] final class GenHeapBufferView[B <: Buffer](val self: B) extends Any
 
     val len = remaining
     val bytesPerElem = newHeapBufferView.bytesPerElem
-    System.arraycopy(_byteArray, _byteArrayOffset + bytesPerElem*position,
-        _byteArray, _byteArrayOffset, bytesPerElem * len)
+    System.arraycopy(
+      _byteArray,
+      _byteArrayOffset + bytesPerElem * position,
+      _byteArray,
+      _byteArrayOffset,
+      bytesPerElem * len)
     _mark = -1
     limit(capacity)
     position(len)
@@ -77,13 +109,16 @@ private[nio] final class GenHeapBufferView[B <: Buffer](val self: B) extends Any
   @inline
   def generic_order(): ByteOrder =
     if (isBigEndian) ByteOrder.BIG_ENDIAN
-    else             ByteOrder.LITTLE_ENDIAN
+    else ByteOrder.LITTLE_ENDIAN
 
   @inline
   def byteArrayBits(
       implicit newHeapBufferView: NewThisHeapBufferView): ByteArrayBits = {
-    ByteArrayBits(_byteArray, _byteArrayOffset, isBigEndian,
-        newHeapBufferView.bytesPerElem)
+    ByteArrayBits(
+      _byteArray,
+      _byteArrayOffset,
+      isBigEndian,
+      newHeapBufferView.bytesPerElem)
   }
 
 }

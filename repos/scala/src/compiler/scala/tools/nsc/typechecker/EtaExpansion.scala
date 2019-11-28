@@ -10,44 +10,46 @@ import scala.collection.mutable.ListBuffer
 import symtab.Flags._
 
 /** This trait ...
- *
- *  @author  Martin Odersky
- *  @version 1.0
- */
+  *
+  *  @author  Martin Odersky
+  *  @version 1.0
+  */
 trait EtaExpansion { self: Analyzer =>
 
   import global._
 
   object etaExpansion {
     private def isMatch(vparam: ValDef, arg: Tree) = arg match {
-      case Ident(name)  => vparam.name == name
-      case _            => false
+      case Ident(name) => vparam.name == name
+      case _           => false
     }
 
-    def unapply(tree: Tree): Option[(List[ValDef], Tree, List[Tree])] = tree match {
-      case Function(vparams, Apply(fn, args)) if (vparams corresponds args)(isMatch) =>
-        Some((vparams, fn, args))
-      case _ =>
-        None
-    }
+    def unapply(tree: Tree): Option[(List[ValDef], Tree, List[Tree])] =
+      tree match {
+        case Function(vparams, Apply(fn, args))
+            if (vparams corresponds args)(isMatch) =>
+          Some((vparams, fn, args))
+        case _ =>
+          None
+      }
   }
 
   /** <p>
-   *    Expand partial function applications of type `type`.
-   *  </p><pre>
-   *  p.f(es_1)...(es_n)
-   *     ==>  {
-   *            <b>private synthetic val</b> eta$f   = p.f   // if p is not stable
-   *            ...
-   *            <b>private synthetic val</b> eta$e_i = e_i    // if e_i is not stable
-   *            ...
-   *            (ps_1 => ... => ps_m => eta$f([es_1])...([es_m])(ps_1)...(ps_m))
-   *          }</pre>
-   *  <p>
-   *    tree is already attributed
-   *  </p>
-   */
-  def etaExpand(unit : CompilationUnit, tree: Tree, typer: Typer): Tree = {
+    *    Expand partial function applications of type `type`.
+    *  </p><pre>
+    *  p.f(es_1)...(es_n)
+    *     ==>  {
+    *            <b>private synthetic val</b> eta$f   = p.f   // if p is not stable
+    *            ...
+    *            <b>private synthetic val</b> eta$e_i = e_i    // if e_i is not stable
+    *            ...
+    *            (ps_1 => ... => ps_m => eta$f([es_1])...([es_m])(ps_1)...(ps_m))
+    *          }</pre>
+    *  <p>
+    *    tree is already attributed
+    *  </p>
+    */
+  def etaExpand(unit: CompilationUnit, tree: Tree, typer: Typer): Tree = {
     val tpe = tree.tpe
     var cnt = 0 // for NoPosition
     def freshName() = {
@@ -89,7 +91,8 @@ trait EtaExpansion { self: Analyzer =>
           defs ++= stats
           liftoutPrefix(fun)
         case Apply(fn, args) =>
-          val byName: Int => Option[Boolean] = fn.tpe.params.map(p => definitions.isByNameParamType(p.tpe)).lift
+          val byName: Int => Option[Boolean] =
+            fn.tpe.params.map(p => definitions.isByNameParamType(p.tpe)).lift
           val newArgs = mapWithIndex(args) { (arg, i) =>
             // with repeated params, there might be more or fewer args than params
             liftout(arg, byName(i).getOrElse(false))
@@ -99,7 +102,9 @@ trait EtaExpansion { self: Analyzer =>
           treeCopy.TypeApply(tree, liftoutPrefix(fn), args).clearType()
         case Select(qual, name) =>
           val name = tree.symbol.name // account for renamed imports, SI-7233
-          treeCopy.Select(tree, liftout(qual, byName = false), name).clearType() setSymbol NoSymbol
+          treeCopy
+            .Select(tree, liftout(qual, byName = false), name)
+            .clearType() setSymbol NoSymbol
         case Ident(name) =>
           tree
       }
@@ -110,18 +115,24 @@ trait EtaExpansion { self: Analyzer =>
     /* Eta-expand lifted tree. */
     def expand(tree: Tree, tpe: Type): Tree = tpe match {
       case mt @ MethodType(paramSyms, restpe) if !mt.isImplicit =>
-        val params: List[(ValDef, Boolean)] = paramSyms.map {
-          sym =>
-            val origTpe = sym.tpe
-            val isRepeated = definitions.isRepeatedParamType(origTpe)
-            // SI-4176 Don't leak A* in eta-expanded function types. See t4176b.scala
-            val droppedStarTpe = if (settings.etaExpandKeepsStar) origTpe else dropIllegalStarTypes(origTpe)
-            val valDef = ValDef(Modifiers(SYNTHETIC | PARAM), sym.name.toTermName, TypeTree(droppedStarTpe), EmptyTree)
-            (valDef, isRepeated)
+        val params: List[(ValDef, Boolean)] = paramSyms.map { sym =>
+          val origTpe = sym.tpe
+          val isRepeated = definitions.isRepeatedParamType(origTpe)
+          // SI-4176 Don't leak A* in eta-expanded function types. See t4176b.scala
+          val droppedStarTpe =
+            if (settings.etaExpandKeepsStar) origTpe
+            else dropIllegalStarTypes(origTpe)
+          val valDef = ValDef(
+            Modifiers(SYNTHETIC | PARAM),
+            sym.name.toTermName,
+            TypeTree(droppedStarTpe),
+            EmptyTree)
+          (valDef, isRepeated)
         }
         atPos(tree.pos.makeTransparent) {
           val args = params.map {
-            case (valDef, isRepeated) => gen.paramToArg(Ident(valDef.name), isRepeated)
+            case (valDef, isRepeated) =>
+              gen.paramToArg(Ident(valDef.name), isRepeated)
           }
           Function(params.map(_._1), expand(Apply(tree, args), restpe))
         }

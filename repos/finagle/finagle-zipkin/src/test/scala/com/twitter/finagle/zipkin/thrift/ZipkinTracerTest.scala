@@ -13,11 +13,15 @@ import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import java.net.InetSocketAddress
 
 @RunWith(classOf[JUnitRunner])
-class ZipkinTracerTest extends FunSuite with MockitoSugar with GeneratorDrivenPropertyChecks {
+class ZipkinTracerTest
+    extends FunSuite
+    with MockitoSugar
+    with GeneratorDrivenPropertyChecks {
   import ZipkinTracerTest._
 
   test("ZipkinTracer should handle sampling") {
-    val traceId = TraceId(Some(SpanId(123)), Some(SpanId(123)), SpanId(123), None)
+    val traceId =
+      TraceId(Some(SpanId(123)), Some(SpanId(123)), SpanId(123), None)
 
     val underlying = mock[RawZipkinTracer]
     val tracer = new ZipkinTracer(underlying, 0f)
@@ -26,12 +30,15 @@ class ZipkinTracerTest extends FunSuite with MockitoSugar with GeneratorDrivenPr
     assert(tracer.sampleTrace(traceId) == Some(true))
   }
 
-  test("ZipkinTracer should pass through trace id with sampled true despite of sample rate") {
-    val traceId = TraceId(Some(SpanId(123)), Some(SpanId(123)), SpanId(123), None)
+  test(
+    "ZipkinTracer should pass through trace id with sampled true despite of sample rate") {
+    val traceId =
+      TraceId(Some(SpanId(123)), Some(SpanId(123)), SpanId(123), None)
 
     val underlying = mock[RawZipkinTracer]
     val tracer = new ZipkinTracer(underlying, 0f)
-    val id = TraceId(Some(SpanId(123)), Some(SpanId(123)), SpanId(123), Some(true))
+    val id =
+      TraceId(Some(SpanId(123)), Some(SpanId(123)), SpanId(123), Some(true))
     val record = Record(id, Time.now, Annotation.ClientSend())
     tracer.record(record)
     verify(underlying).record(record)
@@ -71,13 +78,19 @@ private[twitter] object ZipkinTracerTest {
       LocalAddr(new InetSocketAddress(0))),
     // We only guarantee successful deserialization for primitive values and
     // Strings, here we test String.
-    for (v <- Gen.oneOf(arbitrary[AnyVal], arbitrary[String])) yield BinaryAnnotation("k", v)
+    for (v <- Gen.oneOf(arbitrary[AnyVal], arbitrary[String]))
+      yield BinaryAnnotation("k", v)
   )
 
-  def genEvent(etype: events.Event.Type): Gen[events.Event] = for {
-    ann <- genAnnotation
-    tid <- arbitrary[Long]
-    sid <- arbitrary[Long]
-  } yield events.Event(etype, Time.now, objectVal = ann,
-    traceIdVal = tid, spanIdVal = sid)
+  def genEvent(etype: events.Event.Type): Gen[events.Event] =
+    for {
+      ann <- genAnnotation
+      tid <- arbitrary[Long]
+      sid <- arbitrary[Long]
+    } yield events.Event(
+      etype,
+      Time.now,
+      objectVal = ann,
+      traceIdVal = tid,
+      spanIdVal = sid)
 }

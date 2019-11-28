@@ -17,10 +17,10 @@ import akka.cluster.Cluster
 import akka.cluster.MultiNodeClusterSpec
 import akka.cluster.NodeMetrics
 import akka.pattern.ask
-import akka.remote.testkit.{ MultiNodeSpec, MultiNodeConfig }
+import akka.remote.testkit.{MultiNodeSpec, MultiNodeConfig}
 import akka.routing.GetRoutees
 import akka.routing.FromConfig
-import akka.testkit.{ LongRunningTest, DefaultTimeout, ImplicitSender }
+import akka.testkit.{LongRunningTest, DefaultTimeout, ImplicitSender}
 import akka.routing.ActorRefRoutee
 import akka.routing.Routees
 
@@ -45,7 +45,9 @@ object AdaptiveLoadBalancingRouterMultiJvmSpec extends MultiNodeConfig {
         val allocateBytes = (0.7 * (max - used)).toInt
         val numberOfArrays = allocateBytes / 1024
         usedMemory = Array.ofDim(numberOfArrays, 248) // each 248 element Int array will use ~ 1 kB
-        log.info("used heap after: [{}] bytes", ManagementFactory.getMemoryMXBean.getHeapMemoryUsage.getUsed)
+        log.info(
+          "used heap after: [{}] bytes",
+          ManagementFactory.getMemoryMXBean.getHeapMemoryUsage.getUsed)
         sender() ! "done"
     }
   }
@@ -57,7 +59,10 @@ object AdaptiveLoadBalancingRouterMultiJvmSpec extends MultiNodeConfig {
   val second = role("second")
   val third = role("third")
 
-  commonConfig(debugConfig(on = false).withFallback(ConfigFactory.parseString("""
+  commonConfig(
+    debugConfig(on = false)
+      .withFallback(ConfigFactory.parseString(
+        """
       akka.failure-detector.acceptable-heartbeat-pause = 10s
       akka.cluster.metrics.collect-interval = 1s
       akka.cluster.metrics.gossip-interval = 1s
@@ -78,25 +83,35 @@ object AdaptiveLoadBalancingRouterMultiJvmSpec extends MultiNodeConfig {
           }
         }
       }
-    """)).withFallback(MultiNodeClusterSpec.clusterConfig))
+    """))
+      .withFallback(MultiNodeClusterSpec.clusterConfig))
 
 }
 
 class TestCustomMetricsSelector(config: Config) extends MetricsSelector {
-  override def weights(nodeMetrics: Set[NodeMetrics]): Map[Address, Int] = Map.empty
+  override def weights(nodeMetrics: Set[NodeMetrics]): Map[Address, Int] =
+    Map.empty
 }
 
-class AdaptiveLoadBalancingRouterMultiJvmNode1 extends AdaptiveLoadBalancingRouterSpec
-class AdaptiveLoadBalancingRouterMultiJvmNode2 extends AdaptiveLoadBalancingRouterSpec
-class AdaptiveLoadBalancingRouterMultiJvmNode3 extends AdaptiveLoadBalancingRouterSpec
+class AdaptiveLoadBalancingRouterMultiJvmNode1
+    extends AdaptiveLoadBalancingRouterSpec
+class AdaptiveLoadBalancingRouterMultiJvmNode2
+    extends AdaptiveLoadBalancingRouterSpec
+class AdaptiveLoadBalancingRouterMultiJvmNode3
+    extends AdaptiveLoadBalancingRouterSpec
 
-abstract class AdaptiveLoadBalancingRouterSpec extends MultiNodeSpec(AdaptiveLoadBalancingRouterMultiJvmSpec)
-  with MultiNodeClusterSpec
-  with ImplicitSender with DefaultTimeout {
+abstract class AdaptiveLoadBalancingRouterSpec
+    extends MultiNodeSpec(AdaptiveLoadBalancingRouterMultiJvmSpec)
+    with MultiNodeClusterSpec
+    with ImplicitSender
+    with DefaultTimeout {
   import AdaptiveLoadBalancingRouterMultiJvmSpec._
 
   def currentRoutees(router: ActorRef) =
-    Await.result(router ? GetRoutees, timeout.duration).asInstanceOf[Routees].routees
+    Await
+      .result(router ? GetRoutees, timeout.duration)
+      .asInstanceOf[Routees]
+      .routees
 
   def receiveReplies(expectedReplies: Int): Map[Address, Int] = {
     val zero = Map.empty[Address, Int] ++ roles.map(address(_) -> 0)
@@ -108,23 +123,30 @@ abstract class AdaptiveLoadBalancingRouterSpec extends MultiNodeSpec(AdaptiveLoa
   }
 
   /**
-   * Fills in self address for local ActorRef
-   */
+    * Fills in self address for local ActorRef
+    */
   def fullAddress(actorRef: ActorRef): Address = actorRef.path.address match {
     case Address(_, _, None, None) ⇒ cluster.selfAddress
-    case a                         ⇒ a
+    case a ⇒ a
   }
 
   def startRouter(name: String): ActorRef = {
-    val router = system.actorOf(ClusterRouterPool(
-      local = AdaptiveLoadBalancingPool(HeapMetricsSelector),
-      settings = ClusterRouterPoolSettings(totalInstances = 10, maxInstancesPerNode = 1, allowLocalRoutees = true, useRole = None)).
-      props(Props[Echo]),
-      name)
+    val router = system.actorOf(
+      ClusterRouterPool(
+        local = AdaptiveLoadBalancingPool(HeapMetricsSelector),
+        settings = ClusterRouterPoolSettings(
+          totalInstances = 10,
+          maxInstancesPerNode = 1,
+          allowLocalRoutees = true,
+          useRole = None)
+      ).props(Props[Echo]),
+      name
+    )
     // it may take some time until router receives cluster member events
     awaitAssert { currentRoutees(router).size should ===(roles.size) }
     val routees = currentRoutees(router)
-    routees.map { case ActorRefRoutee(ref) ⇒ fullAddress(ref) }.toSet should ===(roles.map(address).toSet)
+    routees.map { case ActorRefRoutee(ref) ⇒ fullAddress(ref) }.toSet should ===(
+      roles.map(address).toSet)
     router
   }
 
@@ -199,7 +221,8 @@ abstract class AdaptiveLoadBalancingRouterSpec extends MultiNodeSpec(AdaptiveLoa
         // it may take some time until router receives cluster member events
         awaitAssert { currentRoutees(router3).size should ===(9) }
         val routees = currentRoutees(router3)
-        routees.map { case ActorRefRoutee(ref) ⇒ fullAddress(ref) }.toSet should ===(Set(address(first)))
+        routees.map { case ActorRefRoutee(ref) ⇒ fullAddress(ref) }.toSet should ===(
+          Set(address(first)))
       }
       enterBarrier("after-4")
     }
@@ -210,8 +233,8 @@ abstract class AdaptiveLoadBalancingRouterSpec extends MultiNodeSpec(AdaptiveLoa
         // it may take some time until router receives cluster member events
         awaitAssert { currentRoutees(router4).size should ===(6) }
         val routees = currentRoutees(router4)
-        routees.map { case ActorRefRoutee(ref) ⇒ fullAddress(ref) }.toSet should ===(Set(
-          address(first), address(second), address(third)))
+        routees.map { case ActorRefRoutee(ref) ⇒ fullAddress(ref) }.toSet should ===(
+          Set(address(first), address(second), address(third)))
       }
       enterBarrier("after-5")
     }

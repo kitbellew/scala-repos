@@ -2,7 +2,10 @@ package org.jetbrains.plugins.hocon.highlight
 
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.fileTypes.SyntaxHighlighterFactory
-import com.intellij.openapi.options.colors.{AttributesDescriptor, ColorSettingsPage}
+import com.intellij.openapi.options.colors.{
+  AttributesDescriptor,
+  ColorSettingsPage
+}
 import org.jetbrains.plugins.hocon.highlight.{HoconHighlighterColors => HHC}
 import org.jetbrains.plugins.hocon.lang.HoconLanguage
 
@@ -31,32 +34,33 @@ class HoconColorSettingsPage extends ColorSettingsPage {
        |<braces>}</braces>
        |""".stripMargin.trim
 
-  def getAdditionalHighlightingTagToDescriptorMap = Map(
-    "badchar" -> HHC.BadCharacter,
-    "hashcomment" -> HHC.HashComment,
-    "doubleslashcomment" -> HHC.DoubleSlashComment,
-    "null" -> HHC.Null,
-    "boolean" -> HHC.Boolean,
-    "number" -> HHC.Number,
-    "quotedstring" -> HHC.QuotedString,
-    "multilinestring" -> HHC.MultilineString,
-    "validstringescape" -> HHC.ValidStringEscape,
-    "invalidstringescape" -> HHC.InvalidStringEscape,
-    "brackets" -> HHC.Brackets,
-    "braces" -> HHC.Braces,
-    "imparens" -> HHC.IncludeModifierParens,
-    "substbraces" -> HHC.SubBraces,
-    "pathvalueseparator" -> HHC.KeyValueSeparator,
-    "comma" -> HHC.Comma,
-    "include" -> HHC.Include,
-    "inclmod" -> HHC.IncludeModifier,
-    "substsign" -> HHC.SubstitutionSign,
-    "optsubstsign" -> HHC.OptionalSubstitutionSign,
-    "unquotedstring" -> HHC.UnquotedString,
-    "dot" -> HHC.PathSeparator,
-    "key" -> HHC.EntryKey,
-    "substkey" -> HHC.SubstitutionKey
-  ).asJava
+  def getAdditionalHighlightingTagToDescriptorMap =
+    Map(
+      "badchar" -> HHC.BadCharacter,
+      "hashcomment" -> HHC.HashComment,
+      "doubleslashcomment" -> HHC.DoubleSlashComment,
+      "null" -> HHC.Null,
+      "boolean" -> HHC.Boolean,
+      "number" -> HHC.Number,
+      "quotedstring" -> HHC.QuotedString,
+      "multilinestring" -> HHC.MultilineString,
+      "validstringescape" -> HHC.ValidStringEscape,
+      "invalidstringescape" -> HHC.InvalidStringEscape,
+      "brackets" -> HHC.Brackets,
+      "braces" -> HHC.Braces,
+      "imparens" -> HHC.IncludeModifierParens,
+      "substbraces" -> HHC.SubBraces,
+      "pathvalueseparator" -> HHC.KeyValueSeparator,
+      "comma" -> HHC.Comma,
+      "include" -> HHC.Include,
+      "inclmod" -> HHC.IncludeModifier,
+      "substsign" -> HHC.SubstitutionSign,
+      "optsubstsign" -> HHC.OptionalSubstitutionSign,
+      "unquotedstring" -> HHC.UnquotedString,
+      "dot" -> HHC.PathSeparator,
+      "key" -> HHC.EntryKey,
+      "substkey" -> HHC.SubstitutionKey
+    ).asJava
 
   def getHighlighter =
     SyntaxHighlighterFactory.getSyntaxHighlighter(HoconLanguage, null, null)

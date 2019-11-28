@@ -12,7 +12,10 @@ import java.{util => ju}
 
 import org.junit.Assert._
 import org.junit.Test
-import org.scalajs.testsuite.javalib.util.{AbstractCollectionFactory, AbstractCollectionTest}
+import org.scalajs.testsuite.javalib.util.{
+  AbstractCollectionFactory,
+  AbstractCollectionTest
+}
 
 import scala.collection.JavaConversions._
 import scala.language.implicitConversions
@@ -20,7 +23,8 @@ import scala.reflect.ClassTag
 
 class ConcurrentLinkedQueueTest extends AbstractCollectionTest {
 
-  override def factory: ConcurrentLinkedQueueFactory = new ConcurrentLinkedQueueFactory
+  override def factory: ConcurrentLinkedQueueFactory =
+    new ConcurrentLinkedQueueFactory
 
   @Test def should_store_and_remove_ordered_integers(): Unit = {
     val pq = factory.empty[Int]
@@ -111,7 +115,8 @@ class ConcurrentLinkedQueueTest extends AbstractCollectionTest {
     assertEquals(6, pq.size())
   }
 
-  @Test def should_check_contained_values_even_in_double_corner_cases(): Unit = {
+  @Test def should_check_contained_values_even_in_double_corner_cases()
+      : Unit = {
     val pq = factory.empty[Double]
 
     assertTrue(pq.add(11111.0))

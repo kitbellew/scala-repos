@@ -7,17 +7,31 @@ import mesosphere.marathon.core.base.Clock
 import mesosphere.marathon.core.launcher.OfferProcessor
 import mesosphere.marathon.core.launchqueue.LaunchQueue
 import mesosphere.marathon.core.task.update.TaskStatusUpdateProcessor
-import mesosphere.marathon.event.{ SchedulerDisconnectedEvent, SchedulerRegisteredEvent, SchedulerReregisteredEvent }
+import mesosphere.marathon.event.{
+  SchedulerDisconnectedEvent,
+  SchedulerRegisteredEvent,
+  SchedulerReregisteredEvent
+}
 import mesosphere.marathon.state.AppRepository
-import mesosphere.marathon.test.{ Mockito, MarathonActorSupport }
-import mesosphere.util.state.{ FrameworkIdUtil, MesosLeaderInfo, MutableMesosLeaderInfo }
+import mesosphere.marathon.test.{Mockito, MarathonActorSupport}
+import mesosphere.util.state.{
+  FrameworkIdUtil,
+  MesosLeaderInfo,
+  MutableMesosLeaderInfo
+}
 import org.apache.mesos.Protos._
 import org.apache.mesos.SchedulerDriver
-import org.scalatest.{ Matchers, GivenWhenThen, BeforeAndAfterAll }
+import org.scalatest.{Matchers, GivenWhenThen, BeforeAndAfterAll}
 
 import scala.concurrent.Future
 
-class MarathonSchedulerTest extends MarathonActorSupport with MarathonSpec with BeforeAndAfterAll with Mockito with Matchers with GivenWhenThen {
+class MarathonSchedulerTest
+    extends MarathonActorSupport
+    with MarathonSpec
+    with BeforeAndAfterAll
+    with Mockito
+    with Matchers
+    with GivenWhenThen {
 
   var probe: TestProbe = _
   var repo: AppRepository = _
@@ -29,7 +43,9 @@ class MarathonSchedulerTest extends MarathonActorSupport with MarathonSpec with 
   var eventBus: EventStream = _
   var offerProcessor: OfferProcessor = _
   var taskStatusProcessor: TaskStatusUpdateProcessor = _
-  var suicideFn: (Boolean) => Unit = { _ => () }
+  var suicideFn: (Boolean) => Unit = { _ =>
+    ()
+  }
 
   before {
     repo = mock[AppRepository]
@@ -66,7 +82,8 @@ class MarathonSchedulerTest extends MarathonActorSupport with MarathonSpec with 
       .setValue("some_id")
       .build()
 
-    val masterInfo = MasterInfo.newBuilder()
+    val masterInfo = MasterInfo
+      .newBuilder()
       .setId("")
       .setIp(0)
       .setPort(5050)
@@ -84,15 +101,15 @@ class MarathonSchedulerTest extends MarathonActorSupport with MarathonSpec with 
       assert(msg.master == masterInfo.getHostname)
       assert(msg.eventType == "scheduler_registered_event")
       assert(mesosLeaderInfo.currentLeaderUrl.get == "http://some_host:5050/")
-    }
-    finally {
+    } finally {
       eventBus.unsubscribe(probe.ref)
     }
   }
 
   test("Publishes event when reregistered") {
     val driver = mock[SchedulerDriver]
-    val masterInfo = MasterInfo.newBuilder()
+    val masterInfo = MasterInfo
+      .newBuilder()
       .setId("")
       .setIp(0)
       .setPort(5050)
@@ -109,8 +126,7 @@ class MarathonSchedulerTest extends MarathonActorSupport with MarathonSpec with 
       assert(msg.master == masterInfo.getHostname)
       assert(msg.eventType == "scheduler_reregistered_event")
       assert(mesosLeaderInfo.currentLeaderUrl.get == "http://some_host:5050/")
-    }
-    finally {
+    } finally {
       eventBus.unsubscribe(probe.ref)
     }
   }
@@ -127,8 +143,7 @@ class MarathonSchedulerTest extends MarathonActorSupport with MarathonSpec with 
       val msg = probe.expectMsgType[SchedulerDisconnectedEvent]
 
       assert(msg.eventType == "scheduler_disconnected_event")
-    }
-    finally {
+    } finally {
       eventBus.unsubscribe(probe.ref)
     }
   }
@@ -144,7 +159,7 @@ class MarathonSchedulerTest extends MarathonActorSupport with MarathonSpec with 
 
     Then("Suicide is called without removing the framework id")
     suicideCall should be(defined)
-    suicideCall.get should be (false)
+    suicideCall.get should be(false)
   }
 
   test("Suicide with a framework error will remove the framework id") {
@@ -158,6 +173,6 @@ class MarathonSchedulerTest extends MarathonActorSupport with MarathonSpec with 
 
     Then("Suicide is called with removing the framework id")
     suicideCall should be(defined)
-    suicideCall.get should be (true)
+    suicideCall.get should be(true)
   }
 }

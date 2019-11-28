@@ -12,7 +12,7 @@ import mesosphere.marathon.core.task.bus.{
 }
 import mesosphere.marathon.core.task.bus.TaskStatusObservables.TaskStatusUpdate
 import org.mockito.Mockito
-import rx.lang.scala.{ Observable, Subject }
+import rx.lang.scala.{Observable, Subject}
 import rx.lang.scala.subjects.PublishSubject
 
 class OfferMatcherLaunchTokensActorTest extends MarathonSpec {
@@ -66,7 +66,8 @@ class OfferMatcherLaunchTokensActorTest extends MarathonSpec {
     offerMatcherManager = mock[OfferMatcherManager]
 
     actorRef = TestActorRef[OfferMatcherLaunchTokensActor](
-      OfferMatcherLaunchTokensActor.props(conf, taskStatusObservables, offerMatcherManager)
+      OfferMatcherLaunchTokensActor
+        .props(conf, taskStatusObservables, offerMatcherManager)
     )
   }
 

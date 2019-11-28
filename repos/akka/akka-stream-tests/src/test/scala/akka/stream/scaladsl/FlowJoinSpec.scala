@@ -1,9 +1,14 @@
 /**
- * Copyright (C) 2014-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2014-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.stream.scaladsl
 
-import akka.stream.{ FlowShape, ActorMaterializer, ActorMaterializerSettings, OverflowStrategy }
+import akka.stream.{
+  FlowShape,
+  ActorMaterializer,
+  ActorMaterializerSettings,
+  OverflowStrategy
+}
 import akka.stream.testkit._
 import akka.stream.testkit.Utils._
 import akka.stream.testkit.scaladsl._
@@ -14,7 +19,8 @@ import org.scalatest.time._
 
 import scala.collection.immutable
 
-class FlowJoinSpec extends AkkaSpec(ConfigFactory.parseString("akka.loglevel=INFO")) {
+class FlowJoinSpec
+    extends AkkaSpec(ConfigFactory.parseString("akka.loglevel=INFO")) {
 
   val settings = ActorMaterializerSettings(system)
     .withInputBuffer(initialSize = 2, maxSize = 16)
@@ -60,8 +66,8 @@ class FlowJoinSpec extends AkkaSpec(ConfigFactory.parseString("akka.loglevel=INF
     "allow for merge cycle" in assertAllStagesStopped {
       val source = Source.single("lonely traveler")
 
-      val flow1 = Flow.fromGraph(GraphDSL.create(Sink.head[String]) { implicit b ⇒
-        sink ⇒
+      val flow1 = Flow.fromGraph(GraphDSL.create(Sink.head[String]) {
+        implicit b ⇒ sink ⇒
           import GraphDSL.Implicits._
           val merge = b.add(Merge[String](2))
           val broadcast = b.add(Broadcast[String](2, eagerCancel = true))
@@ -78,8 +84,8 @@ class FlowJoinSpec extends AkkaSpec(ConfigFactory.parseString("akka.loglevel=INF
     "allow for merge preferred cycle" in assertAllStagesStopped {
       val source = Source.single("lonely traveler")
 
-      val flow1 = Flow.fromGraph(GraphDSL.create(Sink.head[String]) { implicit b ⇒
-        sink ⇒
+      val flow1 = Flow.fromGraph(GraphDSL.create(Sink.head[String]) {
+        implicit b ⇒ sink ⇒
           import GraphDSL.Implicits._
           val merge = b.add(MergePreferred[String](1))
           val broadcast = b.add(Broadcast[String](2, eagerCancel = true))
@@ -96,20 +102,21 @@ class FlowJoinSpec extends AkkaSpec(ConfigFactory.parseString("akka.loglevel=INF
     "allow for zip cycle" in assertAllStagesStopped {
       val source = Source(immutable.Seq("traveler1", "traveler2"))
 
-      val flow = Flow.fromGraph(GraphDSL.create(TestSink.probe[(String, String)]) { implicit b ⇒
-        sink ⇒
-          import GraphDSL.Implicits._
-          val zip = b.add(Zip[String, String])
-          val broadcast = b.add(Broadcast[(String, String)](2))
-          source ~> zip.in0
-          zip.out ~> broadcast.in
-          broadcast.out(0) ~> sink
+      val flow =
+        Flow.fromGraph(GraphDSL.create(TestSink.probe[(String, String)]) {
+          implicit b ⇒ sink ⇒
+            import GraphDSL.Implicits._
+            val zip = b.add(Zip[String, String])
+            val broadcast = b.add(Broadcast[(String, String)](2))
+            source ~> zip.in0
+            zip.out ~> broadcast.in
+            broadcast.out(0) ~> sink
 
-          FlowShape(zip.in1, broadcast.out(1))
-      })
+            FlowShape(zip.in1, broadcast.out(1))
+        })
 
-      val feedback = Flow.fromGraph(GraphDSL.create(Source.single("ignition")) { implicit b ⇒
-        ignition ⇒
+      val feedback = Flow.fromGraph(GraphDSL.create(Source.single("ignition")) {
+        implicit b ⇒ ignition ⇒
           import GraphDSL.Implicits._
           val flow = b.add(Flow[(String, String)].map(_._1))
           val merge = b.add(Merge[String](2))
@@ -126,8 +133,9 @@ class FlowJoinSpec extends AkkaSpec(ConfigFactory.parseString("akka.loglevel=INF
     }
 
     "allow for concat cycle" in assertAllStagesStopped {
-      val flow = Flow.fromGraph(GraphDSL.create(TestSource.probe[String](system), Sink.head[String])(Keep.both) { implicit b ⇒
-        (source, sink) ⇒
+      val flow = Flow.fromGraph(
+        GraphDSL.create(TestSource.probe[String](system), Sink.head[String])(
+          Keep.both) { implicit b ⇒ (source, sink) ⇒
           import GraphDSL.Implicits._
           val concat = b.add(Concat[String](2))
           val broadcast = b.add(Broadcast[String](2, eagerCancel = true))
@@ -136,7 +144,7 @@ class FlowJoinSpec extends AkkaSpec(ConfigFactory.parseString("akka.loglevel=INF
           broadcast.out(0) ~> sink
 
           FlowShape(concat.in(1), broadcast.out(1))
-      })
+        })
 
       val (probe, result) = flow.join(Flow[String]).run()
       probe.sendNext("lonely traveler")
@@ -149,8 +157,8 @@ class FlowJoinSpec extends AkkaSpec(ConfigFactory.parseString("akka.loglevel=INF
     "allow for interleave cycle" in assertAllStagesStopped {
       val source = Source.single("lonely traveler")
 
-      val flow1 = Flow.fromGraph(GraphDSL.create(Sink.head[String]) { implicit b ⇒
-        sink ⇒
+      val flow1 = Flow.fromGraph(GraphDSL.create(Sink.head[String]) {
+        implicit b ⇒ sink ⇒
           import GraphDSL.Implicits._
           val merge = b.add(Interleave[String](2, 1))
           val broadcast = b.add(Broadcast[String](2, eagerCancel = true))

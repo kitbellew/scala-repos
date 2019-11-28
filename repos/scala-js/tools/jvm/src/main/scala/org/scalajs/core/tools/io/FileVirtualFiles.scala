@@ -26,33 +26,35 @@ object FileVirtualFile extends (File => FileVirtualFile) {
     new FileVirtualFile(f)
 
   /** Tests whether the given file has the specified extension.
-   *  Extension contain the '.', so a typical value for `ext` would be ".js".
-   *  The comparison is case-sensitive.
-   */
+    *  Extension contain the '.', so a typical value for `ext` would be ".js".
+    *  The comparison is case-sensitive.
+    */
   def hasExtension(file: File, ext: String): Boolean =
     file.getName.endsWith(ext)
 
   /** Returns a new file with the same parent as the given file but a different
-   *  name.
-   */
+    *  name.
+    */
   def withName(file: File, newName: String): File =
     new File(file.getParentFile(), newName)
 
   /** Returns a new file with the same path as the given file but a different
-   *  extension.
-   *  Extension contain the '.', so a typical value for `ext` would be ".js".
-   *  Precondition: hasExtension(file, oldExt)
-   */
+    *  extension.
+    *  Extension contain the '.', so a typical value for `ext` would be ".js".
+    *  Precondition: hasExtension(file, oldExt)
+    */
   def withExtension(file: File, oldExt: String, newExt: String): File = {
-    require(hasExtension(file, oldExt),
-        s"File $file does not have extension '$oldExt'")
+    require(
+      hasExtension(file, oldExt),
+      s"File $file does not have extension '$oldExt'")
     withName(file, file.getName.stripSuffix(oldExt) + newExt)
   }
 }
 
 /** A [[VirtualTextFile]] implemented by an actual file on the file system. */
-class FileVirtualTextFile(f: File) extends FileVirtualFile(f)
-                                      with VirtualTextFile {
+class FileVirtualTextFile(f: File)
+    extends FileVirtualFile(f)
+    with VirtualTextFile {
   import FileVirtualTextFile._
 
   override def content: String = readFileToString(file)
@@ -71,11 +73,12 @@ object FileVirtualTextFile extends (File => FileVirtualTextFile) {
   }
 }
 
-trait WritableFileVirtualTextFile extends FileVirtualTextFile
-                                     with WritableVirtualTextFile {
+trait WritableFileVirtualTextFile
+    extends FileVirtualTextFile
+    with WritableVirtualTextFile {
   override def contentWriter: Writer = {
-    new BufferedWriter(new OutputStreamWriter(
-        new FileOutputStream(file), "UTF-8"))
+    new BufferedWriter(
+      new OutputStreamWriter(new FileOutputStream(file), "UTF-8"))
   }
 }
 
@@ -85,8 +88,9 @@ object WritableFileVirtualTextFile {
 }
 
 /** A [[VirtualBinaryFile]] implemented by an actual file on the file system. */
-class FileVirtualBinaryFile(f: File) extends FileVirtualFile(f)
-                                        with VirtualBinaryFile {
+class FileVirtualBinaryFile(f: File)
+    extends FileVirtualFile(f)
+    with VirtualBinaryFile {
   import FileVirtualBinaryFile._
 
   override def inputStream: InputStream =
@@ -108,8 +112,9 @@ object FileVirtualBinaryFile extends (File => FileVirtualBinaryFile) {
   }
 }
 
-trait WritableFileVirtualBinaryFile extends FileVirtualBinaryFile
-                                       with WritableVirtualBinaryFile {
+trait WritableFileVirtualBinaryFile
+    extends FileVirtualBinaryFile
+    with WritableVirtualBinaryFile {
   override def outputStream: OutputStream =
     new BufferedOutputStream(new FileOutputStream(file))
 }
@@ -119,8 +124,9 @@ object WritableFileVirtualBinaryFile {
     new FileVirtualBinaryFile(f) with WritableFileVirtualBinaryFile
 }
 
-class FileVirtualJSFile(f: File) extends FileVirtualTextFile(f)
-                                    with VirtualJSFile {
+class FileVirtualJSFile(f: File)
+    extends FileVirtualTextFile(f)
+    with VirtualJSFile {
   import FileVirtualFile._
   import FileVirtualTextFile._
 
@@ -136,7 +142,8 @@ object FileVirtualJSFile extends (File => FileVirtualJSFile) {
   def apply(f: File): FileVirtualJSFile =
     new FileVirtualJSFile(f)
 
-  def relative(f: File,
+  def relative(
+      f: File,
       relPath: String): FileVirtualJSFile with RelativeVirtualFile = {
     new FileVirtualJSFile(f) with RelativeVirtualFile {
       def relativePath: String = relPath
@@ -144,13 +151,14 @@ object FileVirtualJSFile extends (File => FileVirtualJSFile) {
   }
 }
 
-trait WritableFileVirtualJSFile extends FileVirtualJSFile
-                                   with WritableFileVirtualTextFile
-                                   with WritableVirtualJSFile {
+trait WritableFileVirtualJSFile
+    extends FileVirtualJSFile
+    with WritableFileVirtualTextFile
+    with WritableVirtualJSFile {
 
   override def sourceMapWriter: Writer = {
-    new BufferedWriter(new OutputStreamWriter(
-        new FileOutputStream(sourceMapFile), "UTF-8"))
+    new BufferedWriter(
+      new OutputStreamWriter(new FileOutputStream(sourceMapFile), "UTF-8"))
   }
 }
 
@@ -160,7 +168,8 @@ object WritableFileVirtualJSFile {
 }
 
 class FileVirtualScalaJSIRFile(f: File)
-    extends FileVirtualBinaryFile(f) with VirtualSerializedScalaJSIRFile
+    extends FileVirtualBinaryFile(f)
+    with VirtualSerializedScalaJSIRFile
 
 object FileVirtualScalaJSIRFile extends (File => FileVirtualScalaJSIRFile) {
   import FileVirtualFile._
@@ -168,7 +177,8 @@ object FileVirtualScalaJSIRFile extends (File => FileVirtualScalaJSIRFile) {
   def apply(f: File): FileVirtualScalaJSIRFile =
     new FileVirtualScalaJSIRFile(f)
 
-  def relative(f: File,
+  def relative(
+      f: File,
       relPath: String): FileVirtualScalaJSIRFile with RelativeVirtualFile = {
     new FileVirtualScalaJSIRFile(f) with RelativeVirtualFile {
       def relativePath: String = relPath

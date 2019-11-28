@@ -10,4 +10,3 @@ trait Three extends One {
 
   def f4[T <: Alias[Int]](f: T) = 0
 }
-

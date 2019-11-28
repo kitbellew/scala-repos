@@ -14,15 +14,19 @@ sealed trait Advice {
   def mate = info.mate
 
   def makeComment(withEval: Boolean, withBestMove: Boolean): String =
-    withEval.??(evalComment ?? { c => s"($c) " }) +
+    withEval.??(evalComment ?? { c =>
+      s"($c) "
+    }) +
       (this match {
         case MateAdvice(seq, _, _, _) => seq.desc
         case CpAdvice(nag, _, _)      => nag.toString
       }) + "." + {
-        withBestMove ?? {
-          info.variation.headOption ?? { move => s" Best move was $move." }
+      withBestMove ?? {
+        info.variation.headOption ?? { move =>
+          s" Best move was $move."
         }
       }
+    }
 
   def evalComment: Option[String] = {
     List(prev.evalComment, info.evalComment).flatten mkString " → "
@@ -31,13 +35,12 @@ sealed trait Advice {
 
 private[analyse] object Advice {
 
-  def apply(prev: Info, info: Info): Option[Advice] = CpAdvice(prev, info) orElse MateAdvice(prev, info)
+  def apply(prev: Info, info: Info): Option[Advice] =
+    CpAdvice(prev, info) orElse MateAdvice(prev, info)
 }
 
-private[analyse] case class CpAdvice(
-  nag: Nag,
-  info: Info,
-  prev: Info) extends Advice
+private[analyse] case class CpAdvice(nag: Nag, info: Info, prev: Info)
+    extends Advice
 
 private[analyse] object CpAdvice {
 
@@ -59,26 +62,27 @@ private[analyse] object CpAdvice {
   //   nag ← cpNags find { case (d, n) => d <= delta } map (_._2)
   // } yield CpAdvice(nag, info, prev)
 
-  private val cpNags = List(
-    300 -> Nag.Blunder,
-    100 -> Nag.Mistake,
-    50 -> Nag.Inaccuracy)
+  private val cpNags =
+    List(300 -> Nag.Blunder, 100 -> Nag.Mistake, 50 -> Nag.Inaccuracy)
 
-  def apply(prev: Info, info: Info): Option[CpAdvice] = for {
-    cp ← prev.score map (_.ceiled.centipawns)
-    infoCp ← info.score map (_.ceiled.centipawns)
-    delta = (infoCp - cp) |> { d => info.color.fold(-d, d) }
-    nag ← cpNags find { case (d, n) => d <= delta } map (_._2)
-  } yield CpAdvice(nag, info, prev)
+  def apply(prev: Info, info: Info): Option[CpAdvice] =
+    for {
+      cp ← prev.score map (_.ceiled.centipawns)
+      infoCp ← info.score map (_.ceiled.centipawns)
+      delta = (infoCp - cp) |> { d =>
+        info.color.fold(-d, d)
+      }
+      nag ← cpNags find { case (d, n) => d <= delta } map (_._2)
+    } yield CpAdvice(nag, info, prev)
 }
 
 private[analyse] sealed abstract class MateSequence(val desc: String)
-private[analyse] case object MateDelayed extends MateSequence(
-  desc = "Not the best checkmate sequence")
-private[analyse] case object MateLost extends MateSequence(
-  desc = "Lost forced checkmate sequence")
-private[analyse] case object MateCreated extends MateSequence(
-  desc = "Checkmate is now unavoidable")
+private[analyse] case object MateDelayed
+    extends MateSequence(desc = "Not the best checkmate sequence")
+private[analyse] case object MateLost
+    extends MateSequence(desc = "Lost forced checkmate sequence")
+private[analyse] case object MateCreated
+    extends MateSequence(desc = "Checkmate is now unavoidable")
 
 private[analyse] object MateSequence {
   def apply(prev: Option[Int], next: Option[Int]): Option[MateSequence] =
@@ -90,10 +94,11 @@ private[analyse] object MateSequence {
     }
 }
 private[analyse] case class MateAdvice(
-  sequence: MateSequence,
-  nag: Nag,
-  info: Info,
-  prev: Info) extends Advice
+    sequence: MateSequence,
+    nag: Nag,
+    info: Info,
+    prev: Info)
+    extends Advice
 private[analyse] object MateAdvice {
 
   def apply(prev: Info, info: Info): Option[MateAdvice] = {

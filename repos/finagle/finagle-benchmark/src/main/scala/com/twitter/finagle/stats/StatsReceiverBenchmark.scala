@@ -137,7 +137,8 @@ object StatsReceiverBenchmark {
 
     def ostrichGet(): StatsSummary = ostrich.repr.get()
     def metricsGet(): util.Map[String, Number] = metrics.registry.sample()
-    def metricsBucketedGet(): util.Map[String, Number] = metricsBucketed.registry.sample()
+    def metricsBucketedGet(): util.Map[String, Number] =
+      metricsBucketed.registry.sample()
     def statsGet(): java.lang.Iterable[CStat[_]] = Stats.getVariables()
 
     @Setup(Level.Trial)

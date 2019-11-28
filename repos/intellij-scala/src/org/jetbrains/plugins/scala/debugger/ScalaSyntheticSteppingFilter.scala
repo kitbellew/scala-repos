@@ -1,6 +1,10 @@
 package org.jetbrains.plugins.scala.debugger
 
-import com.intellij.debugger.engine.{DebugProcess, ExtraSteppingFilter, SuspendContext}
+import com.intellij.debugger.engine.{
+  DebugProcess,
+  ExtraSteppingFilter,
+  SuspendContext
+}
 import com.intellij.psi.PsiElement
 import com.sun.jdi.Location
 import com.sun.jdi.request.StepRequest
@@ -11,8 +15,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.ScTemplateDefin
 import org.jetbrains.plugins.scala.lang.refactoring.util.ScalaNamesUtil
 
 /**
- * @author Nikolay.Tropin
- */
+  * @author Nikolay.Tropin
+  */
 class ScalaSyntheticSteppingFilter extends ExtraSteppingFilter {
 
   override def isApplicable(context: SuspendContext): Boolean = {
@@ -24,12 +28,15 @@ class ScalaSyntheticSteppingFilter extends ExtraSteppingFilter {
     isSynthetic(location, debugProcess)
   }
 
-  override def getStepRequestDepth(context: SuspendContext): Int = StepRequest.STEP_INTO
+  override def getStepRequestDepth(context: SuspendContext): Int =
+    StepRequest.STEP_INTO
 
-  private def isSynthetic(location: Location, debugProcess: DebugProcess): Boolean = {
+  private def isSynthetic(
+      location: Location,
+      debugProcess: DebugProcess): Boolean = {
     val positionManager = ScalaPositionManager.instance(debugProcess) match {
       case Some(m) => m
-      case None => return true
+      case None    => return true
     }
 
     val method = location.method()
@@ -38,28 +45,34 @@ class ScalaSyntheticSteppingFilter extends ExtraSteppingFilter {
 
     if (positionManager.shouldSkip(location)) return true
 
-    if (name.startsWith("apply") || ScalaPositionManager.isIndyLambda(method)) return false
+    if (name.startsWith("apply") || ScalaPositionManager.isIndyLambda(method))
+      return false
 
     if (method.isConstructor) return false
 
     inReadAction {
       positionManager.findElementByReferenceType(location.declaringType()) match {
         case Some(td: ScTemplateDefinition) =>
-          td.functions.forall(f => !nameMatches(name, f.name)) && !hasLocalFun(name, td)
+          td.functions.forall(f => !nameMatches(name, f.name)) && !hasLocalFun(
+            name,
+            td)
         case _ => false
       }
     }
   }
 
   private def hasLocalFun(name: String, td: PsiElement): Boolean = {
-    td.depthFirst(elem => elem == td || !ScalaEvaluatorBuilderUtil.isGenerateClass(elem)).exists {
-      case fun: ScFunction if fun.isLocal => nameMatches(name, fun.name)
-      case _ => false
-    }
+    td.depthFirst(elem =>
+        elem == td || !ScalaEvaluatorBuilderUtil.isGenerateClass(elem))
+      .exists {
+        case fun: ScFunction if fun.isLocal => nameMatches(name, fun.name)
+        case _                              => false
+      }
   }
 
   private def nameMatches(jvmName: String, funName: String) = {
     val encoded = ScalaNamesUtil.toJavaName(funName)
-    encoded == jvmName || jvmName.startsWith(encoded + "$") || jvmName.contains("$$" + encoded + "$")
+    encoded == jvmName || jvmName.startsWith(encoded + "$") || jvmName.contains(
+      "$$" + encoded + "$")
   }
 }

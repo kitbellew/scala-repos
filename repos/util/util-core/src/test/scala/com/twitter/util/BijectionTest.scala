@@ -10,11 +10,12 @@ class BijectionTest extends WordSpec {
 
   val fooject = new Bijection[Foo, Int] {
     def apply(f: Foo) = f.i
-    def invert(i: Int) = if (i % 2 == 0) Foo(i) else fail("not really a bijection, natch")
+    def invert(i: Int) =
+      if (i % 2 == 0) Foo(i) else fail("not really a bijection, natch")
   }
 
   def isAFoo(i: Int) = i match {
-    case fooject(f) => "a foo! "+ f.toString
+    case fooject(f) => "a foo! " + f.toString
     case _          => "not a foo"
   }
 

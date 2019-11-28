@@ -6,25 +6,25 @@
 **        val system = new M() with N() {}
 **                         ^
 ** To me it seems like the code is perfectly fine...
-*/
+ */
 abstract class M() {
-    val _N: N;
-    val n: _N.n;
-    val _M: M = this;
-    val m: _M.m = new _M.m();
-    class m() {
-        // module body of M
-    }
+  val _N: N;
+  val n: _N.n;
+  val _M: M = this;
+  val m: _M.m = new _M.m();
+  class m() {
+    // module body of M
+  }
 }
 trait N {
-    val _N: N = this;
-    val n: _N.n = new _N.n();
-    val _M: M;
-    val m: _M.m;
-    class n() {
-        // module body of N
-    }
+  val _N: N = this;
+  val n: _N.n = new _N.n();
+  val _M: M;
+  val m: _M.m;
+  class n() {
+    // module body of N
+  }
 }
 object O {
-    val system = new M() with N {}
+  val system = new M() with N {}
 }

@@ -2,8 +2,8 @@
 trait Foo[@specialized A, Repr] {
   self: Repr =>
 }
-trait Bar[A] extends Foo[A, Object] { }
-class Baz extends Foo[Int, Baz] { }
+trait Bar[A] extends Foo[A, Object] {}
+class Baz extends Foo[Int, Baz] {}
 
 // concrete
 trait Bippy {
@@ -15,4 +15,4 @@ trait FooC[@specialized A] {
   f(10)
 }
 
-class BazC extends FooC[Int] with Bippy { }
+class BazC extends FooC[Int] with Bippy {}

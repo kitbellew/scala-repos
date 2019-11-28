@@ -4,10 +4,9 @@ import com.intellij.testFramework.PlatformTestUtil
 import org.jetbrains.plugins.scala.base.ScalaFixtureTestCase
 
 /**
- * @author Alefas
- * @since 05.04.12
- */
-
+  * @author Alefas
+  * @since 05.04.12
+  */
 class LexerPerformanceTest extends ScalaFixtureTestCase {
   def testPerformance() {
     val text = """
@@ -2170,7 +2169,9 @@ object Expressions {
 }
 """
 
-    PlatformTestUtil.assertTiming("Lexer performance test", 1000,
+    PlatformTestUtil.assertTiming(
+      "Lexer performance test",
+      1000,
       new Runnable {
         def run() {
           try {
@@ -2179,12 +2180,12 @@ object Expressions {
             while (lexer.getTokenType != null) {
               lexer.advance()
             }
-          }
-          catch {
+          } catch {
             case e: RuntimeException =>
           }
         }
-      })
+      }
+    )
   }
 
 }

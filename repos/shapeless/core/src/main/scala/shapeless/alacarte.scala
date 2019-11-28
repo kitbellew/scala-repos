@@ -19,7 +19,7 @@ package shapeless
 import scala.reflect.ClassTag
 
 import record._
-import ops.hlist.{ Length, Tupler }
+import ops.hlist.{Length, Tupler}
 import ops.nat.ToInt
 import ops.record.Merger
 
@@ -88,9 +88,12 @@ trait PolymorphicEqualityFacet extends ProductISOFacet {
 
     def equals(c: C, other: Any): Boolean =
       (c.asInstanceOf[AnyRef] eq other.asInstanceOf[AnyRef]) ||
-        typ.cast(other).map { that =>
-          (toProduct(c) == toProduct(that)) && canEqual(that, c)
-        }.getOrElse(false)
+        typ
+          .cast(other)
+          .map { that =>
+            (toProduct(c) == toProduct(that)) && canEqual(that, c)
+          }
+          .getOrElse(false)
 
     def hashCode(c: C): Int = toProduct(c).hashCode
   }
@@ -118,13 +121,14 @@ trait CopyFacet extends CaseClassFacet {
   val ops: CopyOps
 
   trait CopyMethods extends RecordArgs { self: C =>
-    def copyRecord[R <: HList](rec: R)(implicit merger: ops.CopyMerger[R]): C = ops.copy(this, rec)
+    def copyRecord[R <: HList](rec: R)(implicit merger: ops.CopyMerger[R]): C =
+      ops.copy(this, rec)
   }
 }
 
 trait ToStringFacet extends ProductFacet {
   trait ToStringOps extends ProductOps {
-    def toString(c: C): String = productPrefix+toProduct(c).toString
+    def toString(c: C): String = productPrefix + toProduct(c).toString
   }
 
   val ops: ToStringOps
@@ -134,33 +138,33 @@ trait ToStringFacet extends ProductFacet {
   }
 }
 
-trait DefaultCaseClassDefns extends
-  ApplyUnapplyFacet with
-  ProductFacet with
-  PolymorphicEqualityFacet with
-  CopyFacet with
-  ToStringFacet {
+trait DefaultCaseClassDefns
+    extends ApplyUnapplyFacet
+    with ProductFacet
+    with PolymorphicEqualityFacet
+    with CopyFacet
+    with ToStringFacet {
 
-  trait CaseClassOps extends
-    ApplyUnapplyOps with
-    ProductOps with
-    PolymorphicEqualityOps with
-    CopyOps with
-    ToStringOps
+  trait CaseClassOps
+      extends ApplyUnapplyOps
+      with ProductOps
+      with PolymorphicEqualityOps
+      with CopyOps
+      with ToStringOps
 
-  trait CaseClassCompanion extends
-    ApplyUnapplyCompanion
+  trait CaseClassCompanion extends ApplyUnapplyCompanion
 
-  trait CaseClass extends
-    ProductMethods with
-    PolymorphicEqualityMethods with
-    CopyMethods with
-    ToStringMethods { self: C => }
+  trait CaseClass
+      extends ProductMethods
+      with PolymorphicEqualityMethods
+      with CopyMethods
+      with ToStringMethods { self: C =>
+  }
 
   val ops: CaseClassOps
 
-  def Ops[Repr0 <: HList, LRepr0 <: HList, P0 <: Product, N <: Nat]
-    (implicit
+  def Ops[Repr0 <: HList, LRepr0 <: HList, P0 <: Product, N <: Nat](
+      implicit
       gen0: Generic.Aux[C, Repr0],
       lgen0: LabelledGeneric.Aux[C, LRepr0],
       len: Length.Aux[Repr0, N],
@@ -168,18 +172,17 @@ trait DefaultCaseClassDefns extends
       tup: Tupler.Aux[Repr0, P0],
       pgen0: Generic.Aux[P0, Repr0],
       typ0: Typeable[C],
-      tag0: ClassTag[C]
-    ) =
-      new CaseClassOps {
-        type Repr = Repr0
-        type LRepr = LRepr0
-        type P = P0
-        val gen = gen0
-        val lgen = lgen0
-        val pgen = pgen0
-        val typ = typ0
-        val tag = tag0
-        val productPrefix = tag0.runtimeClass.getName.split("(\\.|\\$)").last
-        val productArity = toInt()
-      }
+      tag0: ClassTag[C]) =
+    new CaseClassOps {
+      type Repr = Repr0
+      type LRepr = LRepr0
+      type P = P0
+      val gen = gen0
+      val lgen = lgen0
+      val pgen = pgen0
+      val typ = typ0
+      val tag = tag0
+      val productPrefix = tag0.runtimeClass.getName.split("(\\.|\\$)").last
+      val productArity = toInt()
+    }
 }

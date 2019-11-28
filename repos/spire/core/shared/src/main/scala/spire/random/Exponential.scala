@@ -2,17 +2,20 @@ package spire
 package random
 
 trait Exponential[@sp(Float, Double) A] extends Any {
+
   /**
-   * Return an `A` that has an exponential distribution from 0, with
-   * the given `rate` parameter.
-   */
+    * Return an `A` that has an exponential distribution from 0, with
+    * the given `rate` parameter.
+    */
   def apply(rate: A): Dist[A]
 }
 
 object Exponential extends ExponentialInstances {
-  @inline final def apply[@sp(Float, Double) A](implicit e: Exponential[A]): Exponential[A] = e
+  @inline final def apply[@sp(Float, Double) A](
+      implicit e: Exponential[A]): Exponential[A] = e
 
-  def apply[@sp(Float, Double) A](rate: A)(implicit e: Exponential[A]): Dist[A] = e(rate)
+  def apply[@sp(Float, Double) A](rate: A)(
+      implicit e: Exponential[A]): Dist[A] = e(rate)
 }
 
 trait ExponentialInstances {

@@ -21,7 +21,8 @@ object IntegrationTag extends Tag("integration")
   * Convenience trait, which will mark all test cases as integration tests.
   */
 trait IntegrationFunSuite extends FunSuite {
-  override protected def test(testName: String, testTags: Tag*)(testFun: => Unit): Unit = {
+  override protected def test(testName: String, testTags: Tag*)(
+      testFun: => Unit): Unit = {
     super.test(testName, IntegrationTag +: testTags: _*)(testFun)
   }
 }
@@ -37,13 +38,16 @@ trait ExternalMarathonIntegrationTest {
 
   def env = {
     val envName = "MESOS_NATIVE_JAVA_LIBRARY"
-    if (sys.env.contains(envName)) sys.env else sys.env + (envName -> config.mesosLib)
+    if (sys.env.contains(envName)) sys.env
+    else sys.env + (envName -> config.mesosLib)
   }
 
   def startMarathon(port: Int, args: String*): Unit = {
     val cwd = new File(".")
     ProcessKeeper.startMarathon(
-      cwd, env, List("--http_port", port.toString, "--zk", config.zk) ++ args.toList,
+      cwd,
+      env,
+      List("--http_port", port.toString, "--zk", config.zk) ++ args.toList,
       processName = s"marathon_$port"
     )
   }
@@ -59,7 +63,12 @@ object ExternalMarathonIntegrationTest {
 /**
   * Health check helper to define health behaviour of launched applications
   */
-class IntegrationHealthCheck(val appId: PathId, val versionId: String, val port: Int, var state: Boolean, var lastUpdate: DateTime = DateTime.now) {
+class IntegrationHealthCheck(
+    val appId: PathId,
+    val versionId: String,
+    val port: Int,
+    var state: Boolean,
+    var lastUpdate: DateTime = DateTime.now) {
 
   case class HealthStatusChange(deadLine: Deadline, state: Boolean)
   private[this] var changes = List.empty[HealthStatusChange]
@@ -97,6 +106,6 @@ class IntegrationHealthCheck(val appId: PathId, val versionId: String, val port:
     result
   }
 
-  def pingSince(duration: Duration): Boolean = DateTime.now.minusMillis(duration.toMillis.toInt).isBefore(lastUpdate)
+  def pingSince(duration: Duration): Boolean =
+    DateTime.now.minusMillis(duration.toMillis.toInt).isBefore(lastUpdate)
 }
-

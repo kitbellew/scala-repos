@@ -2,7 +2,11 @@ package org.jetbrains.plugins.scala
 package annotator.createFromUsage
 
 import com.intellij.codeInsight.intention.IntentionAction
-import com.intellij.codeInsight.template.{TemplateBuilder, TemplateBuilderImpl, TemplateManager}
+import com.intellij.codeInsight.template.{
+  TemplateBuilder,
+  TemplateBuilderImpl,
+  TemplateManager
+}
 import com.intellij.codeInsight.{CodeInsightUtilCore, FileModificationService}
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.fileEditor.ex.IdeDocumentHistory
@@ -18,17 +22,17 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef._
 import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory._
 
 /**
- * Nikolay.Tropin
- * 2014-08-01
- */
+  * Nikolay.Tropin
+  * 2014-08-01
+  */
 abstract class CreateApplyOrUnapplyQuickFix(td: ScTypeDefinition)
-        extends IntentionAction {
+    extends IntentionAction {
   override val getText = {
     val classKind = td match {
       case _: ScObject => "object"
-      case _: ScTrait => "trait"
-      case _: ScClass => "class"
-      case _ => ""
+      case _: ScTrait  => "trait"
+      case _: ScClass  => "class"
+      case _           => ""
     }
     s"$getFamilyName in $classKind ${td.name}"
   }
@@ -36,15 +40,17 @@ abstract class CreateApplyOrUnapplyQuickFix(td: ScTypeDefinition)
   def isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean = {
     if (!td.isValid) return false
     td.getContainingFile match {
-      case _: ScalaCodeFragment => false
+      case _: ScalaCodeFragment         => false
       case f: ScalaFile if f.isWritable => true
-      case _ => false
+      case _                            => false
     }
   }
 
   def startInWriteAction = false
 
-  protected def createEntity(block: ScExtendsBlock, text: String): PsiElement = {
+  protected def createEntity(
+      block: ScExtendsBlock,
+      text: String): PsiElement = {
     if (block.templateBody.isEmpty)
       block.add(createTemplateBody(block.getManager))
 
@@ -63,7 +69,9 @@ abstract class CreateApplyOrUnapplyQuickFix(td: ScTypeDefinition)
 
   protected def methodText: String
 
-  protected def addElementsToTemplate(method: ScFunction, builder: TemplateBuilder): Unit
+  protected def addElementsToTemplate(
+      method: ScFunction,
+      builder: TemplateBuilder): Unit
 
   def invoke(project: Project, editor: Editor, file: PsiFile) {
     PsiDocumentManager.getInstance(project).commitAllDocuments()
@@ -73,7 +81,8 @@ abstract class CreateApplyOrUnapplyQuickFix(td: ScTypeDefinition)
     IdeDocumentHistory.getInstance(project).includeCurrentPlaceAsChangePlace()
 
     inWriteAction {
-      val entity = createEntity(td.extendsBlock, methodText).asInstanceOf[ScFunction]
+      val entity =
+        createEntity(td.extendsBlock, methodText).asInstanceOf[ScFunction]
 
       ScalaPsiUtil.adjustTypes(entity)
 
@@ -87,7 +96,8 @@ abstract class CreateApplyOrUnapplyQuickFix(td: ScTypeDefinition)
 
       val newEditor = CreateFromUsageUtil.positionCursor(entity.getLastChild)
       val range = entity.getTextRange
-      newEditor.getDocument.deleteString(range.getStartOffset, range.getEndOffset)
+      newEditor.getDocument
+        .deleteString(range.getStartOffset, range.getEndOffset)
       TemplateManager.getInstance(project).startTemplate(newEditor, template)
     }
   }

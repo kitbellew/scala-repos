@@ -19,10 +19,13 @@ import org.jetbrains.sbt.project.settings.SbtProjectSettings
 import org.jetbrains.sbt.settings.SbtSystemSettings
 
 /**
- * @author Nikolay Obedin
- * @since 8/4/15.
- */
-abstract class ImportingTestCase extends ExternalSystemImportingTestCase with ProjectStructureMatcher with SbtStructureSetup {
+  * @author Nikolay Obedin
+  * @since 8/4/15.
+  */
+abstract class ImportingTestCase
+    extends ExternalSystemImportingTestCase
+    with ProjectStructureMatcher
+    with SbtStructureSetup {
 
   val Log = Logger.getInstance(this.getClass)
 
@@ -36,13 +39,16 @@ abstract class ImportingTestCase extends ExternalSystemImportingTestCase with Pr
     assertProjectsEqual(expected, myProject)
   }
 
-  override protected def getExternalSystemId: ProjectSystemId = SbtProjectSystem.Id
+  override protected def getExternalSystemId: ProjectSystemId =
+    SbtProjectSystem.Id
 
   override protected def getExternalSystemConfigFileName: String = Sbt.BuildFile
 
-  override protected def getTestsTempDir: String = "" // Use default temp directory
+  override protected def getTestsTempDir: String =
+    "" // Use default temp directory
 
-  override protected def getCurrentExternalProjectSettings: ExternalProjectSettings = {
+  override protected def getCurrentExternalProjectSettings
+      : ExternalProjectSettings = {
     val settings = new SbtProjectSettings
     val internalSdk = JavaAwareProjectJdkTableImpl.getInstanceEx.getInternalJdk
     settings.setJdk(internalSdk.getName)
@@ -56,6 +62,6 @@ abstract class ImportingTestCase extends ExternalSystemImportingTestCase with Pr
   }
 
   private def setUpProjectDirectory(): Unit =
-    myProjectRoot = LocalFileSystem.getInstance.refreshAndFindFileByIoFile(testProjectDir)
+    myProjectRoot =
+      LocalFileSystem.getInstance.refreshAndFindFileByIoFile(testProjectDir)
 }
-

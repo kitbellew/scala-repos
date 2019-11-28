@@ -58,6 +58,7 @@ class EnsembleCheckBox extends EnsembleExample {
         text = "Disabled"
         selected = true
         disable = true
-      })
+      }
+    )
   }
 }

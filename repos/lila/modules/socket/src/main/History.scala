@@ -37,7 +37,10 @@ final class History[Metadata](ttl: Duration) {
 
 object History {
 
-  case class Message[Metadata](payload: JsObject, version: Int, metadata: Metadata) {
+  case class Message[Metadata](
+      payload: JsObject,
+      version: Int,
+      metadata: Metadata) {
 
     lazy val fullMsg = payload + ("v" -> JsNumber(version))
 

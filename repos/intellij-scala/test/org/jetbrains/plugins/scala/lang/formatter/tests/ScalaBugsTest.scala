@@ -4,9 +4,8 @@ import com.intellij.psi.codeStyle.CommonCodeStyleSettings
 import org.jetbrains.plugins.scala.lang.formatter.AbstractScalaFormatterTestBase
 
 /**
- * @author Alexander Podkhalyuzin
- */
-
+  * @author Alexander Podkhalyuzin
+  */
 class ScalaBugsTest extends AbstractScalaFormatterTestBase {
   /* stub:
   def test {
@@ -22,7 +21,7 @@ class ScalaBugsTest extends AbstractScalaFormatterTestBase {
 
   def testSCL2424() {
     val before =
-"""
+      """
 someMethod(new Something, abc, def)
 """.replace("\r", "")
 
@@ -31,7 +30,7 @@ someMethod(new Something, abc, def)
 
   def testSCL2425() {
     val before =
-"""
+      """
 import foo.{Foo, Bar}
 """.replace("\r", "")
 
@@ -40,7 +39,7 @@ import foo.{Foo, Bar}
 
   def testSCL2477() {
     val before =
-"""
+      """
 class Foo {
   //some comment
 	private val i = 0;
@@ -54,7 +53,7 @@ class Foo {
 }
 """.replace("\r", "")
     val after =
-"""
+      """
 class Foo {
   //some comment
   private val i = 0;
@@ -73,7 +72,7 @@ class Foo {
 
   def testSCL1875() {
     val before =
-"""
+      """
 /**
  * something{@link Foo}
  *something
@@ -81,7 +80,7 @@ class Foo {
 class A
 """.replace("\r", "")
     val after =
-"""
+      """
 /**
   * something{@link Foo}
   * something
@@ -95,7 +94,7 @@ class A
     val settings = getCommonSettings
     settings.BRACE_STYLE = CommonCodeStyleSettings.NEXT_LINE
     val before =
-"""
+      """
 val n = Seq(1,2,3)
 n.foreach
 {
@@ -106,7 +105,7 @@ n.foreach
 }
 """.replace("\r", "")
     val after =
-"""
+      """
 val n = Seq(1, 2, 3)
 n.foreach
 {
@@ -123,13 +122,13 @@ n.foreach
     getScalaSettings.KEEP_ONE_LINE_LAMBDAS_IN_ARG_LIST = true
 
     val before =
-"""
+      """
 Set(1, 2, 3).filter{a => a % 2 == 0}
 List((1, 2), (2, 3), (3, 4)).map {case (k: Int, n: Int) => k + n}
 Map(1 -> "aa", 2 -> "bb", 3 -> "cc").filter{ case (1, "aa") => true; case _ => false}
 """.replace("\r", "")
     val after =
-"""
+      """
 Set(1, 2, 3).filter { a => a % 2 == 0 }
 List((1, 2), (2, 3), (3, 4)).map { case (k: Int, n: Int) => k + n }
 Map(1 -> "aa", 2 -> "bb", 3 -> "cc").filter { case (1, "aa") => true; case _ => false }
@@ -143,14 +142,14 @@ Map(1 -> "aa", 2 -> "bb", 3 -> "cc").filter { case (1, "aa") => true; case _ => 
     getScalaSettings.PLACE_CLOSURE_PARAMETERS_ON_NEW_LINE = true
 
     val before =
-"""
+      """
 Set(1, 2, 3).filter{a => a % 2 == 0}
 List((1, 2), (2, 3), (3, 4)).map {case (k: Int, n: Int) => k + n}
 Map(1 -> "aa", 2 -> "bb", 3 -> "cc").filter{ case (1, "aa") => true; case _ => false}
 """.replace("\r", "")
 
     val after =
-"""
+      """
 Set(1, 2, 3).filter {
   a => a % 2 == 0
 }
@@ -171,7 +170,7 @@ Map(1 -> "aa", 2 -> "bb", 3 -> "cc").filter {
     getCommonSettings.KEEP_SIMPLE_METHODS_IN_ONE_LINE = true
 
     val before =
-"""
+      """
 def func() {println("test")}
 
 def func2() {
@@ -179,7 +178,7 @@ def func2() {
 """.replace("\r", "")
 
     val after =
-"""
+      """
 def func() { println("test") }
 
 def func2() {
@@ -194,7 +193,7 @@ def func2() {
     getCommonSettings.KEEP_SIMPLE_METHODS_IN_ONE_LINE = false
 
     val before =
-"""
+      """
 def func() {  println()}
 
 def func2() { println()
@@ -202,7 +201,7 @@ def func2() { println()
 """.replace("\r", "")
 
     val after =
-"""
+      """
 def func() {
   println()
 }
@@ -219,7 +218,7 @@ def func2() {
     getScalaSettings.NOT_CONTINUATION_INDENT_FOR_PARAMS = true
 
     val before =
-"""
+      """
 def m = {
   () => 123
 }
@@ -238,7 +237,7 @@ def f[T](i: Int) {
 """.replace("\r", "")
 
     val after =
-"""
+      """
 def m = {
   () => 123
 }
@@ -265,7 +264,7 @@ def f[T](i: Int) {
     getCommonSettings.SPACE_BEFORE_METHOD_PARENTHESES = true
 
     val before =
-"""
+      """
 def f() {
   println()
 }
@@ -288,7 +287,7 @@ def ::= (o: Any) {}
 """.replace("\r", "")
 
     val after =
-"""
+      """
 def f () {
   println()
 }
@@ -319,7 +318,7 @@ def ::= (o: Any) {}
     getCommonSettings.SPACE_BEFORE_METHOD_PARENTHESES = true
 
     val before =
-"""
+      """
 def f() {
   println()
 }
@@ -373,7 +372,7 @@ def ::= (o: Any) {}
     getCommonSettings.SPACE_BEFORE_METHOD_PARENTHESES = false
 
     val before =
-"""
+      """
 def f() {
   println()
 }
@@ -427,7 +426,7 @@ def ::= (o: Any) {}
     getCommonSettings.SPACE_BEFORE_METHOD_PARENTHESES = false
 
     val before =
-"""
+      """
 def f() {
   println()
 }
@@ -480,7 +479,7 @@ def ::= (o: Any) {}
     getCommonSettings.SPACE_BEFORE_METHOD_PARENTHESES = false
 
     val before =
-"""
+      """
 def f() {
   println()
 }
@@ -533,14 +532,14 @@ def ::=(o: Any) {}
     getCommonSettings.SPACE_BEFORE_METHOD_PARENTHESES = true
 
     val before =
-"""
+      """
 def f(i: Int)(j: Int) {}
 
 f(1)(2)
 """.replace("\r", "")
 
     val after =
-"""
+      """
 def f (i: Int)(j: Int) {}
 
 f (1)(2)
@@ -554,7 +553,7 @@ f (1)(2)
     getCommonSettings.SPACE_BEFORE_METHOD_CALL_PARENTHESES = false
 
     val before =
-"""
+      """
 class A(i: Int) {
   def this(s: String) {
     this (s.length)
@@ -577,7 +576,7 @@ class B(i: Int)(s: String) {
 """.replace("\r", "")
 
     val after =
-"""
+      """
 class A(i: Int) {
   def this(s: String) {
     this(s.length)
@@ -694,7 +693,7 @@ bars foreach {case (x, y) => list.add(x + y)}
   def testSCL6702() {
     getCurrentCodeStyleSettings.FORMATTER_TAGS_ENABLED = true
     val before =
-    """
+      """
       |//@formatter:off
       |class SCL6702 {
       |  def foo(p: String ) {
@@ -709,7 +708,7 @@ bars foreach {case (x, y) => list.add(x + y)}
     """.stripMargin.replace("\r", "")
 
     val after =
-    """
+      """
       |//@formatter:off
       |class SCL6702 {
       |  def foo(p: String ) {
@@ -1058,7 +1057,8 @@ bars foreach {case (x, y) => list.add(x + y)}
   }
 
   def testSCL2469(): Unit = {
-    getCommonSettings.VARIABLE_ANNOTATION_WRAP = CommonCodeStyleSettings.WRAP_ALWAYS
+    getCommonSettings.VARIABLE_ANNOTATION_WRAP =
+      CommonCodeStyleSettings.WRAP_ALWAYS
 
     val before =
       """
@@ -1164,7 +1164,8 @@ bars foreach {case (x, y) => list.add(x + y)}
   }
 
   def testSCL2999(): Unit = {
-    getCommonSettings.EXTENDS_LIST_WRAP = CommonCodeStyleSettings.WRAP_ON_EVERY_ITEM
+    getCommonSettings.EXTENDS_LIST_WRAP =
+      CommonCodeStyleSettings.WRAP_ON_EVERY_ITEM
     getScalaSettings.WRAP_BEFORE_WITH_KEYWORD = true
     getCommonSettings.getIndentOptions.CONTINUATION_INDENT_SIZE = 4
 
@@ -1410,7 +1411,6 @@ bars foreach {case (x, y) => list.add(x + y)}
 
     doTextTest(before, after)
   }
-
 
   def testSCL9136_1(): Unit = {
     getCommonSettings.BRACE_STYLE = CommonCodeStyleSettings.NEXT_LINE

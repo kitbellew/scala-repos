@@ -12,11 +12,11 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.twitter.summingbird.chill
 
-import org.scalacheck.{ Arbitrary, Properties }
+import org.scalacheck.{Arbitrary, Properties}
 import org.scalacheck.Prop._
 import org.scalatest.WordSpec
 import com.twitter.chill._
@@ -36,7 +36,9 @@ object SerializationLaws extends Properties("SerializationLaws") {
 
   def round[T](ser: KSerializer[T], t: T): T = {
     val kinst = (new ScalaKryoInstantiator)
-      .withRegistrar({ (k: Kryo) => k.register(t.getClass, ser); () })
+      .withRegistrar({ (k: Kryo) =>
+        k.register(t.getClass, ser); ()
+      })
     KryoPool.withBuffer(1, kinst, 100, 10000).deepCopy(t)
   }
 

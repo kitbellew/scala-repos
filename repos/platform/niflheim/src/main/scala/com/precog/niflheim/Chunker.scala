@@ -1,19 +1,19 @@
 /*
- *  ____    ____    _____    ____    ___     ____ 
+ *  ____    ____    _____    ____    ___     ____
  * |  _ \  |  _ \  | ____|  / ___|  / _/    / ___|        Precog (R)
  * | |_) | | |_) | |  _|   | |     | |  /| | |  _         Advanced Analytics Engine for NoSQL Data
  * |  __/  |  _ <  | |___  | |___  |/ _| | | |_| |        Copyright (C) 2010 - 2013 SlamData, Inc.
  * |_|     |_| \_\ |_____|  \____|   /__/   \____|        All Rights Reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the 
- * GNU Affero General Public License as published by the Free Software Foundation, either version 
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Affero General Public License as published by the Free Software Foundation, either version
  * 3 of the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
  * the GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License along with this 
+ * You should have received a copy of the GNU Affero General Public License along with this
  * program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
@@ -21,16 +21,16 @@ package com.precog.niflheim
 
 import java.io.IOException
 import java.nio.ByteBuffer
-import java.nio.channels.{ ReadableByteChannel, WritableByteChannel }
+import java.nio.channels.{ReadableByteChannel, WritableByteChannel}
 import java.util.zip.Adler32
 
 import scalaz._
 
 /**
- * This class provides some nice method for writing/reading bytes to channels.
- * It does this by writing the data out in chunks. These chunks are fixed and
- * can use a checksum to ensure our data isn't corrupted.
- */
+  * This class provides some nice method for writing/reading bytes to channels.
+  * It does this by writing the data out in chunks. These chunks are fixed and
+  * can use a checksum to ensure our data isn't corrupted.
+  */
 trait Chunker {
   def verify: Boolean
   val ChunkSize = 4096
@@ -73,7 +73,8 @@ trait Chunker {
     remaining - len
   }
 
-  def write[A](channel: WritableByteChannel, maxSize: Int)(f: ByteBuffer => A): Validation[IOException, A] = {
+  def write[A](channel: WritableByteChannel, maxSize: Int)(
+      f: ByteBuffer => A): Validation[IOException, A] = {
     val buffer = allocate(maxSize)
     val result = f(buffer)
     buffer.flip()
@@ -86,12 +87,14 @@ trait Chunker {
         }
       }
       Success(result)
-    } catch { case ex: IOException =>
-      Failure(ex)
+    } catch {
+      case ex: IOException =>
+        Failure(ex)
     }
   }
 
-  def read(channel: ReadableByteChannel): Validation[IOException, ByteBuffer] = {
+  def read(
+      channel: ReadableByteChannel): Validation[IOException, ByteBuffer] = {
     try {
       val chunk = allocate(ChunkSize)
       while (chunk.remaining() > 0) {
@@ -111,8 +114,9 @@ trait Chunker {
       buffer.flip()
 
       Success(buffer)
-    } catch { case ioe: IOException =>
-      Failure(ioe)
+    } catch {
+      case ioe: IOException =>
+        Failure(ioe)
     }
   }
 }

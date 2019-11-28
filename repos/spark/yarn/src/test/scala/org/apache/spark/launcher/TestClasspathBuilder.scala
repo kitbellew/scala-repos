@@ -20,14 +20,15 @@ package org.apache.spark.launcher
 import java.util.{List => JList, Map => JMap}
 
 /**
- * Exposes AbstractCommandBuilder to the YARN tests, so that they can build classpaths the same
- * way other cluster managers do.
- */
+  * Exposes AbstractCommandBuilder to the YARN tests, so that they can build classpaths the same
+  * way other cluster managers do.
+  */
 private[spark] class TestClasspathBuilder extends AbstractCommandBuilder {
 
   childEnv.put(CommandBuilderUtils.ENV_SPARK_HOME, sys.props("spark.test.home"))
 
-  override def buildClassPath(extraCp: String): JList[String] = super.buildClassPath(extraCp)
+  override def buildClassPath(extraCp: String): JList[String] =
+    super.buildClassPath(extraCp)
 
   /** Not used by the YARN tests. */
   override def buildCommand(env: JMap[String, String]): JList[String] =

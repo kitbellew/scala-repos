@@ -16,18 +16,19 @@ object JSTreeExtractors {
   object jse { // scalastyle:ignore
 
     object BlockOrAlone {
-      def unapply(tree: Tree): Some[(List[Tree], Tree)] = Some(tree match {
-        case Block(trees) => (trees.init, trees.last)
-        case _            => (Nil, tree)
-      })
+      def unapply(tree: Tree): Some[(List[Tree], Tree)] =
+        Some(tree match {
+          case Block(trees) => (trees.init, trees.last)
+          case _            => (Nil, tree)
+        })
     }
 
     /**
-     *  A partially literally named sequence (like in a call to applyDynamicNamed)
-     *  Where some parameters are expected to be literally named.
-     *
-     *  Example (Scala): method(("name1", x), (a, y), z)
-     */
+      *  A partially literally named sequence (like in a call to applyDynamicNamed)
+      *  Where some parameters are expected to be literally named.
+      *
+      *  Example (Scala): method(("name1", x), (a, y), z)
+      */
     object LitNamedExtractor {
       def extractFrom(exprs: List[Tree]): List[(StringLiteral, Tree)] = {
         // Note that with 'failIfNonLit = false'
@@ -40,7 +41,7 @@ object JSTreeExtractors {
           exprs: List[Tree],
           acc: List[(StringLiteral, Tree)],
           failIfNonLit: Boolean
-        ): Option[List[(StringLiteral, Tree)]] = exprs match {
+      ): Option[List[(StringLiteral, Tree)]] = exprs match {
         case Tuple2(name: StringLiteral, value) :: xs =>
           genNamedLitExtract(xs, (name, value) :: acc, failIfNonLit)
         case _ :: xs =>
@@ -53,11 +54,11 @@ object JSTreeExtractors {
     }
 
     /**
-     *  A literally named sequence (like in a call to applyDynamicNamed)
-     *  Where all parameters are expected to be literally named.
-     *
-     *  Example (Scala): method(("name1", x), ("name2", y))
-     */
+      *  A literally named sequence (like in a call to applyDynamicNamed)
+      *  Where all parameters are expected to be literally named.
+      *
+      *  Example (Scala): method(("name1", x), ("name2", y))
+      */
     object LitNamed {
       def unapply(exprs: List[Tree]): Option[List[(StringLiteral, Tree)]] = {
         LitNamedExtractor.genNamedLitExtract(exprs, Nil, true)
@@ -65,16 +66,15 @@ object JSTreeExtractors {
     }
 
     /**
-     *  A literal Tuple2
-     *
-     *  Example  (Scala): (x, y)
-     *  But also (Scala): x -> y
-     */
+      *  A literal Tuple2
+      *
+      *  Example  (Scala): (x, y)
+      *  But also (Scala): x -> y
+      */
     object Tuple2 {
       def unapply(tree: Tree): Option[(Tree, Tree)] = tree match {
         // case (x, y)
-        case New(ClassType("T2"), Ident("init___O__O", _),
-            List(_1, _2)) =>
+        case New(ClassType("T2"), Ident("init___O__O", _), List(_1, _2)) =>
           Some((_1, _2))
         // case x -> y
         case Apply(

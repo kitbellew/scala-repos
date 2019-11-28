@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.tools.console
 
 import java.io.BufferedInputStream
@@ -39,54 +38,52 @@ import scala.sys.process._
 import scalaj.http._
 
 case class TemplateArgs(
-  directory: String = "",
-  repository: String = "",
-  version: Option[String] = None,
-  name: Option[String] = None,
-  packageName: Option[String] = None,
-  email: Option[String] = None)
+    directory: String = "",
+    repository: String = "",
+    version: Option[String] = None,
+    name: Option[String] = None,
+    packageName: Option[String] = None,
+    email: Option[String] = None)
 
 case class GitHubTag(
-  name: String,
-  zipball_url: String,
-  tarball_url: String,
-  commit: GitHubCommit)
+    name: String,
+    zipball_url: String,
+    tarball_url: String,
+    commit: GitHubCommit)
 
-case class GitHubCommit(
-  sha: String,
-  url: String)
+case class GitHubCommit(sha: String, url: String)
 
-case class GitHubCache(
-  headers: Map[String, String],
-  body: String)
+case class GitHubCache(headers: Map[String, String], body: String)
 
-case class TemplateEntry(
-  repo: String)
+case class TemplateEntry(repo: String)
 
-case class TemplateMetaData(
-  pioVersionMin: Option[String] = None)
+case class TemplateMetaData(pioVersionMin: Option[String] = None)
 
 object Template extends Logging {
   implicit val formats = Utils.json4sDefaultFormats
 
   def templateMetaData(templateJson: File): TemplateMetaData = {
     if (!templateJson.exists) {
-      warn(s"$templateJson does not exist. Template metadata will not be available. " +
-        "(This is safe to ignore if you are not working on a template.)")
+      warn(
+        s"$templateJson does not exist. Template metadata will not be available. " +
+          "(This is safe to ignore if you are not working on a template.)")
       TemplateMetaData()
     } else {
-      val jsonString = Source.fromFile(templateJson)(scala.io.Codec.ISO8859).mkString
-      val json = try {
-        parse(jsonString)
-      } catch {
-        case e: org.json4s.ParserUtil.ParseException =>
-          warn(s"$templateJson cannot be parsed. Template metadata will not be available.")
-          return TemplateMetaData()
-      }
+      val jsonString =
+        Source.fromFile(templateJson)(scala.io.Codec.ISO8859).mkString
+      val json =
+        try {
+          parse(jsonString)
+        } catch {
+          case e: org.json4s.ParserUtil.ParseException =>
+            warn(
+              s"$templateJson cannot be parsed. Template metadata will not be available.")
+            return TemplateMetaData()
+        }
       val pioVersionMin = json \ "pio" \ "version" \ "min"
       pioVersionMin match {
         case JString(s) => TemplateMetaData(pioVersionMin = Some(s))
-        case _ => TemplateMetaData()
+        case _          => TemplateMetaData()
       }
     }
   }
@@ -100,30 +97,32 @@ object Template extends Logging {
     * @return
     */
   def httpOptionalProxy(url: String): HttpRequest = {
-    val gitProxy = try {
-      Some(Process("git config --global http.proxy").lines.toList(0))
-    } catch {
-      case e: Throwable => None
-    }
+    val gitProxy =
+      try {
+        Some(Process("git config --global http.proxy").lines.toList(0))
+      } catch {
+        case e: Throwable => None
+      }
 
     val (host, port) = gitProxy map { p =>
       val proxyUri = new URI(p)
-      (Option(proxyUri.getHost),
+      (
+        Option(proxyUri.getHost),
         if (proxyUri.getPort == -1) None else Some(proxyUri.getPort))
     } getOrElse {
-      (sys.props.get("http.proxyHost"),
-        sys.props.get("http.proxyPort").map { p =>
+      (sys.props.get("http.proxyHost"), sys.props.get("http.proxyPort").map {
+        p =>
           try {
             Some(p.toInt)
           } catch {
             case e: NumberFormatException => None
           }
-        } getOrElse None)
+      } getOrElse None)
     }
 
     (host, port) match {
       case (Some(h), Some(p)) => Http(url).proxy(h, p)
-      case _ => Http(url)
+      case _                  => Http(url)
     }
   }
 
@@ -131,13 +130,14 @@ object Template extends Logging {
       repos: Seq[String],
       apiType: String,
       repoFilename: String): Map[String, GitHubCache] = {
-    val reposCache = try {
-      val cache =
-        Source.fromFile(repoFilename)(scala.io.Codec.ISO8859).mkString
+    val reposCache =
+      try {
+        val cache =
+          Source.fromFile(repoFilename)(scala.io.Codec.ISO8859).mkString
         read[Map[String, GitHubCache]](cache)
-    } catch {
-      case e: Throwable => Map[String, GitHubCache]()
-    }
+      } catch {
+        case e: Throwable => Map[String, GitHubCache]()
+      }
     val newReposCache = reposCache ++ (try {
       repos.map { repo =>
         val url = s"https://api.github.com/repos/$repo/$apiType"
@@ -173,14 +173,12 @@ object Template extends Logging {
   }
 
   def sub(repo: String, name: String, email: String, org: String): Unit = {
-    val data = Map(
-      "repo" -> repo,
-      "name" -> name,
-      "email" -> email,
-      "org" -> org)
+    val data =
+      Map("repo" -> repo, "name" -> name, "email" -> email, "org" -> org)
     try {
-      httpOptionalProxy("http://update.prediction.io/templates.subscribe").
-        postData("json=" + write(data)).asString
+      httpOptionalProxy("http://update.prediction.io/templates.subscribe")
+        .postData("json=" + write(data))
+        .asString
     } catch {
       case e: Throwable => error("Unable to subscribe.")
     }
@@ -188,8 +186,7 @@ object Template extends Logging {
 
   def meta(repo: String, name: String, org: String): Unit = {
     try {
-      httpOptionalProxy(
-        s"http://meta.prediction.io/templates/$repo/$org/$name").asString
+      httpOptionalProxy(s"http://meta.prediction.io/templates/$repo/$org/$name").asString
     } catch {
       case e: Throwable => debug("Template metadata unavailable.")
     }
@@ -200,27 +197,31 @@ object Template extends Logging {
     try {
       val templatesJson = Source.fromURL(templatesUrl).mkString("")
       val templates = read[List[TemplateEntry]](templatesJson)
-      println("The following is a list of template IDs registered on " +
-        "PredictionIO Template Gallery:")
+      println(
+        "The following is a list of template IDs registered on " +
+          "PredictionIO Template Gallery:")
       println()
       templates.sortBy(_.repo.toLowerCase).foreach { template =>
         println(template.repo)
       }
       println()
-      println("Notice that it is possible use any GitHub repository as your " +
-        "engine template ID (e.g. YourOrg/YourTemplate).")
+      println(
+        "Notice that it is possible use any GitHub repository as your " +
+          "engine template ID (e.g. YourOrg/YourTemplate).")
       0
     } catch {
       case e: Throwable =>
-        error(s"Unable to list templates from $templatesUrl " +
-          s"(${e.getMessage}). Aborting.")
+        error(
+          s"Unable to list templates from $templatesUrl " +
+            s"(${e.getMessage}). Aborting.")
         1
     }
   }
 
   def githubConnectErrorMessage(e: ConnectException): Unit = {
-    error(s"Unable to connect to GitHub (Reason: ${e.getMessage}). " +
-      "Please check your network configuration and proxy settings.")
+    error(
+      s"Unable to connect to GitHub (Reason: ${e.getMessage}). " +
+        "Please check your network configuration and proxy settings.")
   }
 
   def get(ca: ConsoleArgs): Int = {
@@ -232,8 +233,9 @@ object Template extends Logging {
         read[List[GitHubTag]](repo.body)
       } catch {
         case e: MappingException =>
-          error(s"Either ${ca.template.repository} is not a valid GitHub " +
-            "repository, or it does not have any tag. Aborting.")
+          error(
+            s"Either ${ca.template.repository} is not a valid GitHub " +
+              "repository, or it does not have any tag. Aborting.")
           return 1
       }
     } getOrElse {
@@ -268,8 +270,9 @@ object Template extends Logging {
     println(s"Author's e-mail:       $email")
     println(s"Author's organization: $organization")
 
-    var subscribe = readLine("Would you like to be informed about new bug " +
-      "fixes and security updates of this template? (Y/n) ")
+    var subscribe = readLine(
+      "Would you like to be informed about new bug " +
+        "fixes and security updates of this template? (Y/n) ")
     var valid = false
 
     do {
@@ -308,28 +311,28 @@ object Template extends Logging {
     val url =
       s"https://github.com/${ca.template.repository}/archive/${tag.name}.zip"
     println(s"Going to download $url")
-    val trial = try {
-      httpOptionalProxy(url).asBytes
-    } catch {
-      case e: ConnectException =>
-        githubConnectErrorMessage(e)
-        return 1
-    }
-    val finalTrial = try {
-      trial.location.map { loc =>
-        println(s"Redirecting to $loc")
-        httpOptionalProxy(loc).asBytes
-      } getOrElse trial
-    } catch {
-      case e: ConnectException =>
-        githubConnectErrorMessage(e)
-        return 1
-    }
+    val trial =
+      try {
+        httpOptionalProxy(url).asBytes
+      } catch {
+        case e: ConnectException =>
+          githubConnectErrorMessage(e)
+          return 1
+      }
+    val finalTrial =
+      try {
+        trial.location.map { loc =>
+          println(s"Redirecting to $loc")
+          httpOptionalProxy(loc).asBytes
+        } getOrElse trial
+      } catch {
+        case e: ConnectException =>
+          githubConnectErrorMessage(e)
+          return 1
+      }
     val zipFilename =
       s"${ca.template.repository.replace('/', '-')}-${tag.name}.zip"
-    FileUtils.writeByteArrayToFile(
-      new File(zipFilename),
-      finalTrial.body)
+    FileUtils.writeByteArrayToFile(new File(zipFilename), finalTrial.body)
     val zis = new ZipInputStream(
       new BufferedInputStream(new FileInputStream(zipFilename)))
     val bufferSize = 4096
@@ -337,8 +340,8 @@ object Template extends Logging {
     var ze = zis.getNextEntry
     while (ze != null) {
       val filenameSegments = ze.getName.split(File.separatorChar)
-      val destFilename = (ca.template.directory +: filenameSegments.tail).
-        mkString(File.separator)
+      val destFilename = (ca.template.directory +: filenameSegments.tail)
+        .mkString(File.separator)
       if (ze.isDirectory) {
         new File(destFilename).mkdirs
       } else {
@@ -357,7 +360,7 @@ object Template extends Logging {
         val nameOnly = new File(destFilename).getName
 
         if (organization != "" &&
-          (nameOnly.endsWith(".scala") ||
+            (nameOnly.endsWith(".scala") ||
             nameOnly == "build.sbt" ||
             nameOnly == "engine.json")) {
           filesToModify += destFilename
@@ -371,18 +374,21 @@ object Template extends Logging {
     val engineJsonFile =
       new File(ca.template.directory, "engine.json")
 
-    val engineJson = try {
-      Some(parse(Source.fromFile(engineJsonFile).mkString))
-    } catch {
-      case e: java.io.IOException =>
-        error("Unable to read engine.json. Skipping automatic package " +
-          "name replacement.")
-        None
-      case e: MappingException =>
-        error("Unable to parse engine.json. Skipping automatic package " +
-          "name replacement.")
-        None
-    }
+    val engineJson =
+      try {
+        Some(parse(Source.fromFile(engineJsonFile).mkString))
+      } catch {
+        case e: java.io.IOException =>
+          error(
+            "Unable to read engine.json. Skipping automatic package " +
+              "name replacement.")
+          None
+        case e: MappingException =>
+          error(
+            "Unable to parse engine.json. Skipping automatic package " +
+              "name replacement.")
+          None
+      }
 
     val engineFactory = engineJson.map { ej =>
       (ej \ "engineFactory").extractOpt[String]
@@ -402,14 +408,16 @@ object Template extends Logging {
           processedLines.mkString("\n"))
       }
     } getOrElse {
-      error("engineFactory is not found in engine.json. Skipping automatic " +
-        "package name replacement.")
+      error(
+        "engineFactory is not found in engine.json. Skipping automatic " +
+          "package name replacement.")
     }
 
     verifyTemplateMinVersion(new File(ca.template.directory, "template.json"))
 
-    println(s"Engine template ${ca.template.repository} is now ready at " +
-      ca.template.directory)
+    println(
+      s"Engine template ${ca.template.repository} is now ready at " +
+        ca.template.directory)
 
     0
   }

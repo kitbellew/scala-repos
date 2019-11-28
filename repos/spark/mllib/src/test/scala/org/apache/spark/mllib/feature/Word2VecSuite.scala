@@ -28,7 +28,8 @@ class Word2VecSuite extends SparkFunSuite with MLlibTestSparkContext {
   test("Word2Vec") {
     val sentence = "a b " * 100 + "a c " * 10
     val localDoc = Seq(sentence, sentence)
-    val doc = sc.parallelize(localDoc)
+    val doc = sc
+      .parallelize(localDoc)
       .map(line => line.split(" ").toSeq)
     val model = new Word2Vec().setVectorSize(10).setSeed(42L).fit(doc)
     val syms = model.findSynonyms("a", 2)
@@ -40,14 +41,16 @@ class Word2VecSuite extends SparkFunSuite with MLlibTestSparkContext {
     // and a Word2VecMap give the same values.
     val word2VecMap = model.getVectors
     val newModel = new Word2VecModel(word2VecMap)
-    assert(newModel.getVectors.mapValues(_.toSeq) === word2VecMap.mapValues(_.toSeq))
+    assert(
+      newModel.getVectors.mapValues(_.toSeq) === word2VecMap.mapValues(_.toSeq))
   }
 
   test("Word2Vec throws exception when vocabulary is empty") {
     intercept[IllegalArgumentException] {
       val sentence = "a b c"
       val localDoc = Seq(sentence, sentence)
-      val doc = sc.parallelize(localDoc)
+      val doc = sc
+        .parallelize(localDoc)
         .map(line => line.split(" ").toSeq)
       new Word2Vec().setMinCount(10).fit(doc)
     }
@@ -84,7 +87,9 @@ class Word2VecSuite extends SparkFunSuite with MLlibTestSparkContext {
     try {
       model.save(sc, path)
       val sameModel = Word2VecModel.load(sc, path)
-      assert(sameModel.getVectors.mapValues(_.toSeq) === model.getVectors.mapValues(_.toSeq))
+      assert(
+        sameModel.getVectors.mapValues(_.toSeq) === model.getVectors.mapValues(
+          _.toSeq))
     } finally {
       Utils.deleteRecursively(tempDir)
     }
@@ -93,7 +98,8 @@ class Word2VecSuite extends SparkFunSuite with MLlibTestSparkContext {
 
   test("big model load / save") {
     // create a model bigger than 32MB since 9000 * 1000 * 4 > 2^25
-    val word2VecMap = Map((0 to 9000).map(i => s"$i" -> Array.fill(1000)(0.1f)): _*)
+    val word2VecMap =
+      Map((0 to 9000).map(i => s"$i" -> Array.fill(1000)(0.1f)): _*)
     val model = new Word2VecModel(word2VecMap)
 
     val tempDir = Utils.createTempDir()
@@ -102,11 +108,12 @@ class Word2VecSuite extends SparkFunSuite with MLlibTestSparkContext {
     try {
       model.save(sc, path)
       val sameModel = Word2VecModel.load(sc, path)
-      assert(sameModel.getVectors.mapValues(_.toSeq) === model.getVectors.mapValues(_.toSeq))
+      assert(
+        sameModel.getVectors.mapValues(_.toSeq) === model.getVectors.mapValues(
+          _.toSeq))
     } finally {
       Utils.deleteRecursively(tempDir)
     }
   }
-
 
 }

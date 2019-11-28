@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.data.storage
 
 import org.specs2._
@@ -46,20 +45,25 @@ class LEventsSpec extends Specification with TestEvents {
 
   val appId = 1
 
-  def events(eventClient: LEvents) = sequential ^ s2"""
+  def events(eventClient: LEvents) =
+    sequential ^ s2"""
 
     init default ${initDefault(eventClient)}
-    insert 3 test events and get back by event ID ${insertAndGetEvents(eventClient)}
-    insert 3 test events with timezone and get back by event ID ${insertAndGetTimezone(eventClient)}
+    insert 3 test events and get back by event ID ${insertAndGetEvents(
+      eventClient)}
+    insert 3 test events with timezone and get back by event ID ${insertAndGetTimezone(
+      eventClient)}
     insert and delete by ID ${insertAndDelete(eventClient)}
     insert test user events ${insertTestUserEvents(eventClient)}
     find user events ${findUserEvents(eventClient)}
     aggregate user properties ${aggregateUserProperties(eventClient)}
     aggregate one user properties ${aggregateOneUserProperties(eventClient)}
-    aggregate non-existent user properties ${aggregateNonExistentUserProperties(eventClient)}
+    aggregate non-existent user properties ${aggregateNonExistentUserProperties(
+      eventClient)}
     init channel ${initChannel(eventClient)}
     insert 2 events to channel ${insertChannel(eventClient)}
-    insert 1 event to channel and delete by ID  ${insertAndDeleteChannel(eventClient)}
+    insert 1 event to channel and delete by ID  ${insertAndDeleteChannel(
+      eventClient)}
     find events from channel ${findChannel(eventClient)}
     remove default ${removeDefault(eventClient)}
     remove channel ${removeChannel(eventClient)}
@@ -72,7 +76,8 @@ class LEventsSpec extends Specification with TestEvents {
     dbName
   )
 
-  def jdbcDO = Storage.getDataObject[LEvents](StorageTestUtils.jdbcSourceName, dbName)
+  def jdbcDO =
+    Storage.getDataObject[LEvents](StorageTestUtils.jdbcSourceName, dbName)
 
   def initDefault(eventClient: LEvents) = {
     eventClient.init(appId)
@@ -81,16 +86,19 @@ class LEventsSpec extends Specification with TestEvents {
   def insertAndGetEvents(eventClient: LEvents) = {
 
     // events from TestEvents trait
-    val listOfEvents = List(r1,r2,r3)
+    val listOfEvents = List(r1, r2, r3)
 
     val insertResp = listOfEvents.map { eventClient.insert(_, appId) }
 
     val insertedEventId: List[String] = insertResp
 
-    val insertedEvent: List[Option[Event]] = listOfEvents.zip(insertedEventId)
+    val insertedEvent: List[Option[Event]] = listOfEvents
+      .zip(insertedEventId)
       .map { case (e, id) => Some(e.copy(eventId = Some(id))) }
 
-    val getResp = insertedEventId.map { id => eventClient.get(id, appId) }
+    val getResp = insertedEventId.map { id =>
+      eventClient.get(id, appId)
+    }
 
     val getEvents = getResp
 
@@ -104,10 +112,13 @@ class LEventsSpec extends Specification with TestEvents {
 
     val insertedEventId: List[String] = insertResp
 
-    val insertedEvent: List[Option[Event]] = listOfEvents.zip(insertedEventId)
+    val insertedEvent: List[Option[Event]] = listOfEvents
+      .zip(insertedEventId)
       .map { case (e, id) => Some(e.copy(eventId = Some(id))) }
 
-    val getResp = insertedEventId.map { id => eventClient.get(id, appId) }
+    val getResp = insertedEventId.map { id =>
+      eventClient.get(id, appId)
+    }
 
     val getEvents = getResp
 
@@ -126,24 +137,23 @@ class LEventsSpec extends Specification with TestEvents {
     val resultAfter = eventClient.get(eventId, appId)
 
     (resultBefore must beEqualTo(Some(expectedBefore))) and
-    (deleteStatus must beEqualTo(true)) and
-    (resultAfter must beEqualTo(None))
+      (deleteStatus must beEqualTo(true)) and
+      (resultAfter must beEqualTo(None))
   }
 
   def insertTestUserEvents(eventClient: LEvents) = {
     // events from TestEvents trait
     val listOfEvents = Vector(u1e5, u2e2, u1e3, u1e1, u2e3, u2e1, u1e4, u1e2)
 
-    listOfEvents.map{ eventClient.insert(_, appId) }
+    listOfEvents.map { eventClient.insert(_, appId) }
 
     success
   }
 
   def findUserEvents(eventClient: LEvents) = {
 
-    val results: List[Event] = eventClient.find(
-      appId = appId,
-      entityType = Some("user"))
+    val results: List[Event] = eventClient
+      .find(appId = appId, entityType = Some("user"))
       .toList
       .map(e => e.copy(eventId = None)) // ignore eventID
 
@@ -155,9 +165,8 @@ class LEventsSpec extends Specification with TestEvents {
 
   def aggregateUserProperties(eventClient: LEvents) = {
 
-    val result: Map[String, PropertyMap] = eventClient.aggregateProperties(
-      appId = appId,
-      entityType = "user")
+    val result: Map[String, PropertyMap] =
+      eventClient.aggregateProperties(appId = appId, entityType = "user")
 
     val expected = Map(
       "u1" -> PropertyMap(u1, u1BaseTime, u1LastTime),
@@ -196,9 +205,9 @@ class LEventsSpec extends Specification with TestEvents {
   def insertChannel(eventClient: LEvents) = {
 
     // events from TestEvents trait
-    val listOfEvents = List(r4,r5)
+    val listOfEvents = List(r4, r5)
 
-    listOfEvents.map( eventClient.insert(_, appId, Some(channelId)) )
+    listOfEvents.map(eventClient.insert(_, appId, Some(channelId)))
 
     success
   }
@@ -216,18 +225,19 @@ class LEventsSpec extends Specification with TestEvents {
     val resultAfter = eventClient.get(eventId, appId, Some(channelId))
 
     (resultBefore must beEqualTo(Some(expectedBefore))) and
-    (deleteStatus must beEqualTo(true)) and
-    (resultAfter must beEqualTo(None))
+      (deleteStatus must beEqualTo(true)) and
+      (resultAfter must beEqualTo(None))
   }
 
   def findChannel(eventClient: LEvents) = {
 
-    val results: List[Event] = eventClient.find(
-      appId = appId,
-      channelId = Some(channelId)
-    )
-    .toList
-    .map(e => e.copy(eventId = None)) // ignore eventId
+    val results: List[Event] = eventClient
+      .find(
+        appId = appId,
+        channelId = Some(channelId)
+      )
+      .toList
+      .map(e => e.copy(eventId = None)) // ignore eventId
 
     // same events in insertChannel
     val expected = List(r4, r5)

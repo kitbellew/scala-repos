@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.tools.export
 
 import io.prediction.controller.Utils
@@ -27,14 +26,14 @@ import org.apache.spark.sql.SQLContext
 import org.json4s.native.Serialization._
 
 case class EventsToFileArgs(
-  env: String = "",
-  logFile: String = "",
-  appId: Int = 0,
-  channel: Option[String] = None,
-  outputPath: String = "",
-  format: String = "parquet",
-  verbose: Boolean = false,
-  debug: Boolean = false)
+    env: String = "",
+    logFile: String = "",
+    appId: Int = 0,
+    channel: Option[String] = None,
+    outputPath: String = "",
+    format: String = "parquet",
+    verbose: Boolean = false,
+    debug: Boolean = false)
 
 object EventsToFile extends Logging {
   def main(args: Array[String]): Unit = {
@@ -67,7 +66,8 @@ object EventsToFile extends Logging {
     parser.parse(args, EventsToFileArgs()) map { args =>
       // get channelId
       val channels = Storage.getMetaDataChannels
-      val channelMap = channels.getByAppid(args.appId).map(c => (c.name, c.id)).toMap
+      val channelMap =
+        channels.getByAppid(args.appId).map(c => (c.name, c.id)).toMap
 
       val channelId: Option[Int] = args.channel.map { ch =>
         if (!channelMap.contains(ch)) {

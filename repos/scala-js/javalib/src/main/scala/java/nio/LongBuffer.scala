@@ -14,9 +14,11 @@ object LongBuffer {
 }
 
 abstract class LongBuffer private[nio] (
-    _capacity: Int, private[nio] val _array: Array[Long],
+    _capacity: Int,
+    private[nio] val _array: Array[Long],
     private[nio] val _arrayOffset: Int)
-    extends Buffer(_capacity) with Comparable[LongBuffer] {
+    extends Buffer(_capacity)
+    with Comparable[LongBuffer] {
 
   private[nio] type ElementType = Long
   private[nio] type BufferType = LongBuffer
@@ -93,12 +95,18 @@ abstract class LongBuffer private[nio] (
   private[nio] def store(index: Int, elem: Long): Unit
 
   @inline
-  private[nio] def load(startIndex: Int,
-      dst: Array[Long], offset: Int, length: Int): Unit =
+  private[nio] def load(
+      startIndex: Int,
+      dst: Array[Long],
+      offset: Int,
+      length: Int): Unit =
     GenBuffer(this).generic_load(startIndex, dst, offset, length)
 
   @inline
-  private[nio] def store(startIndex: Int,
-      src: Array[Long], offset: Int, length: Int): Unit =
+  private[nio] def store(
+      startIndex: Int,
+      src: Array[Long],
+      offset: Int,
+      length: Int): Unit =
     GenBuffer(this).generic_store(startIndex, src, offset, length)
 }

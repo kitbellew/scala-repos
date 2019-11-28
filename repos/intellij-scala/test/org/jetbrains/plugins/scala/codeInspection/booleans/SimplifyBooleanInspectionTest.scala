@@ -4,10 +4,11 @@ package codeInspection.booleans
 import org.jetbrains.plugins.scala.base.ScalaLightCodeInsightFixtureTestAdapter
 
 /**
- * Nikolay.Tropin
- * 4/24/13
- */
-class SimplifyBooleanInspectionTest extends ScalaLightCodeInsightFixtureTestAdapter {
+  * Nikolay.Tropin
+  * 4/24/13
+  */
+class SimplifyBooleanInspectionTest
+    extends ScalaLightCodeInsightFixtureTestAdapter {
   val s = ScalaLightCodeInsightFixtureTestAdapter.SELECTION_START
   val e = ScalaLightCodeInsightFixtureTestAdapter.SELECTION_END
   val annotation = "Simplify boolean expression"
@@ -17,7 +18,11 @@ class SimplifyBooleanInspectionTest extends ScalaLightCodeInsightFixtureTestAdap
   }
 
   private def testFix(text: String, result: String, hint: String) {
-    testQuickFix(text.replace("\r", ""), result.replace("\r", ""), hint, classOf[SimplifyBooleanInspection])
+    testQuickFix(
+      text.replace("\r", ""),
+      result.replace("\r", ""),
+      hint,
+      classOf[SimplifyBooleanInspection])
   }
 
   private def checkHasNoErrors(text: String) {
@@ -56,7 +61,7 @@ class SimplifyBooleanInspectionTest extends ScalaLightCodeInsightFixtureTestAdap
     check(selectedText)
 
     val text =
-       """val a = true
+      """val a = true
           |true && a""".stripMargin
     val result = """val a = true
                     |a""".stripMargin
@@ -71,7 +76,7 @@ class SimplifyBooleanInspectionTest extends ScalaLightCodeInsightFixtureTestAdap
 
     val text = """val a = true
                    |a | false""".stripMargin
-    val result =  """val a = true
+    val result = """val a = true
                     |a""".stripMargin
     val hint = "Simplify a | false"
     testFix(text, result, hint)
@@ -115,7 +120,7 @@ class SimplifyBooleanInspectionTest extends ScalaLightCodeInsightFixtureTestAdap
   }
 
   def test_TrueNotEqualsA() {
-    val selectedText =  s"""val a = true
+    val selectedText = s"""val a = true
                             |val flag: Boolean = ${s}true != a$e""".stripMargin
     check(selectedText)
 

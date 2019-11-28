@@ -10,7 +10,11 @@ package scala
 package collection.parallel
 
 import java.util.concurrent.ThreadPoolExecutor
-import java.util.concurrent.{ForkJoinPool, RecursiveAction, ForkJoinWorkerThread}
+import java.util.concurrent.{
+  ForkJoinPool,
+  RecursiveAction,
+  ForkJoinWorkerThread
+}
 import scala.concurrent.ExecutionContext
 import scala.util.control.Breaks._
 import scala.annotation.unchecked.uncheckedVariance
@@ -21,9 +25,9 @@ trait Task[R, +Tp] {
   def repr = this.asInstanceOf[Tp]
 
   /** Body of the task - non-divisible unit of work done by this task.
-   *  Optionally is provided with the result from the previous completed task
-   *  or `None` if there was no previous task (or the previous task is uncompleted or unknown).
-   */
+    *  Optionally is provided with the result from the previous completed task
+    *  or `None` if there was no previous task (or the previous task is uncompleted or unknown).
+    */
   def leaf(result: Option[R])
 
   /** A result that can be accessed once the task is completed. */
@@ -54,8 +58,8 @@ trait Task[R, +Tp] {
     } catch {
       case thr: Throwable =>
         result = result // ensure that effects of `leaf` are visible
-      throwable = thr
-      signalAbort()
+        throwable = thr
+        signalAbort()
     }
   }
 
@@ -79,40 +83,46 @@ trait Task[R, +Tp] {
   private[parallel] def signalAbort() {}
 }
 
-
 /** A trait that declares task execution capabilities used
- *  by parallel collections.
- */
+  *  by parallel collections.
+  */
 trait Tasks {
 
-  private[parallel] val debugMessages = scala.collection.mutable.ArrayBuffer[String]()
+  private[parallel] val debugMessages =
+    scala.collection.mutable.ArrayBuffer[String]()
 
   private[parallel] def debuglog(s: String) = synchronized {
     debugMessages += s
   }
 
   trait WrappedTask[R, +Tp] {
+
     /** the body of this task - what it executes, how it gets split and how results are merged. */
     val body: Task[R, Tp]
 
     def split: Seq[WrappedTask[R, Tp]]
+
     /** Code that gets called after the task gets started - it may spawn other tasks instead of calling `leaf`. */
     def compute()
+
     /** Start task. */
     def start()
+
     /** Wait for task to finish. */
     def sync()
+
     /** Try to cancel the task.
-     *  @return     `true` if cancellation is successful.
-     */
+      *  @return     `true` if cancellation is successful.
+      */
     def tryCancel(): Boolean
+
     /** If the task has been cancelled successfully, those syncing on it may
-     *  automatically be notified, depending on the implementation. If they
-     *  aren't, this release method should be called after processing the
-     *  cancelled task.
-     *
-     *  This method may be overridden.
-     */
+      *  automatically be notified, depending on the implementation. If they
+      *  aren't, this release method should be called after processing the
+      *  cancelled task.
+      *
+      *  This method may be overridden.
+      */
     def release() {}
   }
 
@@ -132,11 +142,9 @@ trait Tasks {
 
 }
 
-
-
 /** This trait implements scheduling by employing
- *  an adaptive work stealing technique.
- */
+  *  an adaptive work stealing technique.
+  */
 trait AdaptiveWorkStealingTasks extends Tasks {
 
   trait WrappedTask[R, Tp] extends super.WrappedTask[R, Tp] {
@@ -145,13 +153,14 @@ trait AdaptiveWorkStealingTasks extends Tasks {
 
     def split: Seq[WrappedTask[R, Tp]]
 
-    def compute() = if (body.shouldSplitFurther) {
-      internal()
-      release()
-    } else {
-      body.tryLeaf(None)
-      release()
-    }
+    def compute() =
+      if (body.shouldSplitFurther) {
+        internal()
+        release()
+      } else {
+        body.tryLeaf(None)
+        release()
+      }
 
     def internal() = {
       var last = spawnSubtasks()
@@ -208,7 +217,6 @@ trait AdaptiveWorkStealingTasks extends Tasks {
   protected def newWrappedTask[R, Tp](b: Task[R, Tp]): WrappedTask[R, Tp]
 
 }
-
 
 /** An implementation of tasks objects based on the Java thread pooling API. */
 @deprecated("Use `ForkJoinTasks` instead.", "2.11.0")
@@ -331,7 +339,8 @@ object ThreadPoolTasks {
   val defaultThreadPool = new ThreadPoolExecutor(
     numCores,
     Int.MaxValue,
-    60L, TimeUnit.MILLISECONDS,
+    60L,
+    TimeUnit.MILLISECONDS,
     new LinkedBlockingQueue[Runnable],
     new ThreadFactory {
       def newThread(r: Runnable) = {
@@ -355,25 +364,24 @@ object FutureThreadPoolTasks {
   val defaultThreadPool = Executors.newCachedThreadPool()
 }
 
-
-
 /**
- * A trait describing objects that provide a fork/join pool.
- */
+  * A trait describing objects that provide a fork/join pool.
+  */
 trait HavingForkJoinPool {
   def forkJoinPool: ForkJoinPool
 }
 
-
 /** An implementation trait for parallel tasks based on the fork/join framework.
- *
- *  @define fjdispatch
- *  If the current thread is a fork/join worker thread, the task's `fork` method will
- *  be invoked. Otherwise, the task will be executed on the fork/join pool.
- */
+  *
+  *  @define fjdispatch
+  *  If the current thread is a fork/join worker thread, the task's `fork` method will
+  *  be invoked. Otherwise, the task will be executed on the fork/join pool.
+  */
 trait ForkJoinTasks extends Tasks with HavingForkJoinPool {
 
-  trait WrappedTask[R, +Tp] extends RecursiveAction with super.WrappedTask[R, Tp] {
+  trait WrappedTask[R, +Tp]
+      extends RecursiveAction
+      with super.WrappedTask[R, Tp] {
     def start() = fork
     def sync() = join
     def tryCancel = tryUnfork
@@ -383,14 +391,14 @@ trait ForkJoinTasks extends Tasks with HavingForkJoinPool {
   protected def newWrappedTask[R, Tp](b: Task[R, Tp]): WrappedTask[R, Tp]
 
   /** The fork/join pool of this collection.
-   */
+    */
   def forkJoinPool: ForkJoinPool = environment.asInstanceOf[ForkJoinPool]
   val environment: ForkJoinPool
 
   /** Executes a task and does not wait for it to finish - instead returns a future.
-   *
-   *  $fjdispatch
-   */
+    *
+    *  $fjdispatch
+    */
   def execute[R, Tp](task: Task[R, Tp]): () => R = {
     val fjtask = newWrappedTask(task)
 
@@ -408,12 +416,12 @@ trait ForkJoinTasks extends Tasks with HavingForkJoinPool {
   }
 
   /** Executes a task on a fork/join pool and waits for it to finish.
-   *  Returns its result when it does.
-   *
-   *  $fjdispatch
-   *
-   *  @return    the result of the task
-   */
+    *  Returns its result when it does.
+    *
+    *  $fjdispatch
+    *
+    *  @return    the result of the task
+    */
   def executeAndWaitResult[R, Tp](task: Task[R, Tp]): R = {
     val fjtask = newWrappedTask(task)
 
@@ -438,10 +446,13 @@ object ForkJoinTasks {
 
 /* Some boilerplate due to no deep mixin composition. Not sure if it can be done differently without them.
  */
-trait AdaptiveWorkStealingForkJoinTasks extends ForkJoinTasks with AdaptiveWorkStealingTasks {
+trait AdaptiveWorkStealingForkJoinTasks
+    extends ForkJoinTasks
+    with AdaptiveWorkStealingTasks {
 
   class WrappedTask[R, Tp](val body: Task[R, Tp])
-  extends super[ForkJoinTasks].WrappedTask[R, Tp] with super[AdaptiveWorkStealingTasks].WrappedTask[R, Tp] {
+      extends super[ForkJoinTasks].WrappedTask[R, Tp]
+      with super[AdaptiveWorkStealingTasks].WrappedTask[R, Tp] {
     def split = body.split.map(b => newWrappedTask(b))
   }
 
@@ -449,10 +460,13 @@ trait AdaptiveWorkStealingForkJoinTasks extends ForkJoinTasks with AdaptiveWorkS
 }
 
 @deprecated("Use `AdaptiveWorkStealingForkJoinTasks` instead.", "2.11.0")
-trait AdaptiveWorkStealingThreadPoolTasks extends ThreadPoolTasks with AdaptiveWorkStealingTasks {
+trait AdaptiveWorkStealingThreadPoolTasks
+    extends ThreadPoolTasks
+    with AdaptiveWorkStealingTasks {
 
   class WrappedTask[R, Tp](val body: Task[R, Tp])
-  extends super[ThreadPoolTasks].WrappedTask[R, Tp] with super[AdaptiveWorkStealingTasks].WrappedTask[R, Tp] {
+      extends super[ThreadPoolTasks].WrappedTask[R, Tp]
+      with super[AdaptiveWorkStealingTasks].WrappedTask[R, Tp] {
     def split = body.split.map(b => newWrappedTask(b))
   }
 
@@ -460,9 +474,10 @@ trait AdaptiveWorkStealingThreadPoolTasks extends ThreadPoolTasks with AdaptiveW
 }
 
 /** An implementation of the `Tasks` that uses Scala `Future`s to compute
- *  the work encapsulated in each task.
- */
-private[parallel] final class FutureTasks(executor: ExecutionContext) extends Tasks {
+  *  the work encapsulated in each task.
+  */
+private[parallel] final class FutureTasks(executor: ExecutionContext)
+    extends Tasks {
   import scala.concurrent._
   import scala.util._
 
@@ -471,18 +486,19 @@ private[parallel] final class FutureTasks(executor: ExecutionContext) extends Ta
   val environment: ExecutionContext = executor
 
   /** Divides this task into a lot of small tasks and executes them asynchronously
-   *  using futures.
-   *  Folds the futures and merges them asynchronously.
-   */
+    *  using futures.
+    *  Folds the futures and merges them asynchronously.
+    */
   private def exec[R, Tp](topLevelTask: Task[R, Tp]): Future[R] = {
     implicit val ec = environment
 
     /** Constructs a tree of futures where tasks can be reasonably split.
-     */
+      */
     def compute(task: Task[R, Tp], depth: Int): Future[Task[R, Tp]] = {
       if (task.shouldSplitFurther && depth < maxdepth) {
         val subtasks = task.split
-        val subfutures = for (subtask <- subtasks.iterator) yield compute(subtask, depth + 1)
+        val subfutures =
+          for (subtask <- subtasks.iterator) yield compute(subtask, depth + 1)
         subfutures.reduceLeft { (firstFuture, nextFuture) =>
           for {
             firstTask <- firstFuture
@@ -498,10 +514,11 @@ private[parallel] final class FutureTasks(executor: ExecutionContext) extends Ta
           case Failure(exception) =>
             task.throwable = exception
         }
-      } else Future {
-        task.tryLeaf(None)
-        task
-      }
+      } else
+        Future {
+          task.tryLeaf(None)
+          task
+        }
     }
 
     compute(topLevelTask, 0) map { t =>
@@ -526,36 +543,38 @@ private[parallel] final class FutureTasks(executor: ExecutionContext) extends Ta
 }
 
 /** This tasks implementation uses execution contexts to spawn a parallel computation.
- *  
- *  As an optimization, it internally checks whether the execution context is the
- *  standard implementation based on fork/join pools, and if it is, creates a
- *  `ForkJoinTaskSupport` that shares the same pool to forward its request to it.
- *
- *  Otherwise, it uses an execution context exclusive `Tasks` implementation to
- *  divide the tasks into smaller chunks and execute operations on it.
- */
+  *
+  *  As an optimization, it internally checks whether the execution context is the
+  *  standard implementation based on fork/join pools, and if it is, creates a
+  *  `ForkJoinTaskSupport` that shares the same pool to forward its request to it.
+  *
+  *  Otherwise, it uses an execution context exclusive `Tasks` implementation to
+  *  divide the tasks into smaller chunks and execute operations on it.
+  */
 trait ExecutionContextTasks extends Tasks {
   def executionContext = environment
 
   val environment: ExecutionContext
 
   /** A driver serves as a target for this proxy `Tasks` object.
-   *  
-   *  If the execution context has the standard implementation and uses fork/join pools,
-   *  the driver is `ForkJoinTaskSupport` with the same pool, as an optimization.
-   *  Otherwise, the driver will be a Scala `Future`-based implementation.
-   */
+    *
+    *  If the execution context has the standard implementation and uses fork/join pools,
+    *  the driver is `ForkJoinTaskSupport` with the same pool, as an optimization.
+    *  Otherwise, the driver will be a Scala `Future`-based implementation.
+    */
   private val driver: Tasks = executionContext match {
-    case eci: scala.concurrent.impl.ExecutionContextImpl => eci.executor match {
-      case fjp: ForkJoinPool => new ForkJoinTaskSupport(fjp)
-      case _ => new FutureTasks(environment)
-    }
+    case eci: scala.concurrent.impl.ExecutionContextImpl =>
+      eci.executor match {
+        case fjp: ForkJoinPool => new ForkJoinTaskSupport(fjp)
+        case _                 => new FutureTasks(environment)
+      }
     case _ => new FutureTasks(environment)
   }
 
   def execute[R, Tp](task: Task[R, Tp]): () => R = driver execute task
 
-  def executeAndWaitResult[R, Tp](task: Task[R, Tp]): R = driver executeAndWaitResult task
+  def executeAndWaitResult[R, Tp](task: Task[R, Tp]): R =
+    driver executeAndWaitResult task
 
   def parallelismLevel = driver.parallelismLevel
 }

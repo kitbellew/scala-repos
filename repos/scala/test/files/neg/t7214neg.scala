@@ -26,7 +26,7 @@ class Crash {
   }
   (t: Any) match {
     case Extractor() =>
-    case _ =>
+    case _           =>
   }
 
   // checking that correct outer tests are applied when
@@ -35,7 +35,8 @@ class Crash {
   type CdotT = c.T
   type C2dotT = c2.T
 
-  val outerField = t.getClass.getDeclaredFields.find(_.getName contains ("outer")).get
+  val outerField =
+    t.getClass.getDeclaredFields.find(_.getName contains ("outer")).get
   outerField.setAccessible(true)
 
   (t: Any) match {
@@ -54,4 +55,3 @@ class C {
 object Test extends App {
   new Crash
 }
-

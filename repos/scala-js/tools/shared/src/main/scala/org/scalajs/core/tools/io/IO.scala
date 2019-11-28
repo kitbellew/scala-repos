@@ -7,21 +7,22 @@ import scala.reflect.ClassTag
 import java.io._
 
 object IO {
+
   /** Returns the lines in an input stream.
-   *  Lines do not contain the new line characters.
-   */
+    *  Lines do not contain the new line characters.
+    */
   def readLines(stream: InputStream): List[String] =
     readLines(new InputStreamReader(stream))
 
   /** Returns the lines in a string.
-   *  Lines do not contain the new line characters.
-   */
+    *  Lines do not contain the new line characters.
+    */
   def readLines(content: String): List[String] =
     readLines(new StringReader(content))
 
   /** Returns the lines in a reader.
-   *  Lines do not contain the new line characters.
-   */
+    *  Lines do not contain the new line characters.
+    */
   def readLines(reader: Reader): List[String] = {
     val br = new BufferedReader(reader)
     try {
@@ -125,9 +126,10 @@ object IO {
   }
 
   /** Concatenates a bunch of VirtualTextFiles to a WritableVirtualTextFile.
-   *  Adds a '\n' after each file.
-   */
-  def concatFiles(output: WritableVirtualTextFile,
+    *  Adds a '\n' after each file.
+    */
+  def concatFiles(
+      output: WritableVirtualTextFile,
       files: Seq[VirtualTextFile]): Unit = {
     val out = output.contentWriter
 
@@ -143,5 +145,5 @@ object IO {
   }
 
   @inline
-  private def newBuffer[T : ClassTag] = new Array[T](4096)
+  private def newBuffer[T: ClassTag] = new Array[T](4096)
 }

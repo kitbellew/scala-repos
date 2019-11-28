@@ -11,10 +11,13 @@ final class DummyTask(
 
   def tags: Array[String] = Array()
 
-  def execute(eventHandler: EventHandler, loggers: Array[Logger]): Array[Task] = {
+  def execute(
+      eventHandler: EventHandler,
+      loggers: Array[Logger]): Array[Task] = {
     try {
       // Just create a new instance.
-      val inst = TestUtils.newInstance(taskDef.fullyQualifiedName,
+      val inst = TestUtils.newInstance(
+        taskDef.fullyQualifiedName,
         runner.testClassLoader)(Seq())
 
       eventHandler.handle(new DummyEvent(taskDef, None))
@@ -32,12 +35,15 @@ final class DummyTask(
     Array()
   }
 
-  def execute(eventHandler: EventHandler, loggers: Array[Logger],
+  def execute(
+      eventHandler: EventHandler,
+      loggers: Array[Logger],
       continuation: Array[Task] => Unit): Unit = {
     continuation(execute(eventHandler, loggers))
   }
 
-  private class DummyEvent(taskDef: TaskDef, t: Option[Throwable]) extends Event {
+  private class DummyEvent(taskDef: TaskDef, t: Option[Throwable])
+      extends Event {
     val fullyQualifiedName: String = taskDef.fullyQualifiedName
     val fingerprint: Fingerprint = taskDef.fingerprint
     val selector: Selector = new SuiteSelector

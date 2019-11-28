@@ -16,17 +16,17 @@ object SizedSink {
     )
 
   /**
-   * An in-memory circular buffer of events. When `capacity` is reached,
-   * new writes via `event` do not block, rather they overwrite the
-   * oldest event.
-   *
-   * @param approxSize approximate for the max number of events to keep in-memory.
-   * @param milliTime gets the current time in millis from the epoch.
-   *          This is exposed to allow for more control in tests.
-   */
+    * An in-memory circular buffer of events. When `capacity` is reached,
+    * new writes via `event` do not block, rather they overwrite the
+    * oldest event.
+    *
+    * @param approxSize approximate for the max number of events to keep in-memory.
+    * @param milliTime gets the current time in millis from the epoch.
+    *          This is exposed to allow for more control in tests.
+    */
   private[twitter] def apply(
-    approxSize: Int,
-    milliTime: () => Long = () => System.currentTimeMillis()
+      approxSize: Int,
+      milliTime: () => Long = () => System.currentTimeMillis()
   ): Sink = {
     require(approxSize > 0, s"approxSize must be positive: $approxSize")
     new SizedSink(nextPowOf2(approxSize), milliTime)
@@ -39,34 +39,37 @@ object SizedSink {
       var objectVal: Object,
       var doubleVal: Double,
       var traceIdVal: Long,
-      var spanIdVal: Long)
-  {
+      var spanIdVal: Long) {
     def isDefined: Boolean = etype != null
 
     def toEvent: Event =
-      Event(etype, Time.fromMilliseconds(whenMillis), longVal, objectVal, doubleVal, traceIdVal, spanIdVal)
+      Event(
+        etype,
+        Time.fromMilliseconds(whenMillis),
+        longVal,
+        objectVal,
+        doubleVal,
+        traceIdVal,
+        spanIdVal)
   }
 
 }
 
 /**
- * An in-memory circular buffer of events. When `capacity` is reached,
- * new writes via `event` do not block, rather they overwrite the
- * oldest event.
- *
- * This class is thread-safe and effort is taken to
- * keep object allocations from calls to `event` to a minimum.
- *
- * @param capacity the max number of events to keep in-memory.
- *          Must be a positive power of 2.
- * @param milliTime gets the current time in millis from the epoch.
- *          This is exposed to allow for more control in tests.
- */
-class SizedSink private[events](
-    capacity: Int,
-    milliTime: () => Long)
-  extends Sink
-{
+  * An in-memory circular buffer of events. When `capacity` is reached,
+  * new writes via `event` do not block, rather they overwrite the
+  * oldest event.
+  *
+  * This class is thread-safe and effort is taken to
+  * keep object allocations from calls to `event` to a minimum.
+  *
+  * @param capacity the max number of events to keep in-memory.
+  *          Must be a positive power of 2.
+  * @param milliTime gets the current time in millis from the epoch.
+  *          This is exposed to allow for more control in tests.
+  */
+class SizedSink private[events] (capacity: Int, milliTime: () => Long)
+    extends Sink {
   import SizedSink._
 
   require(capacity > 0, s"capacity must be positive: $capacity")
@@ -79,7 +82,9 @@ class SizedSink private[events](
 
   // require capacity be a power of 2:
   // http://en.wikipedia.org/wiki/Power_of_two#Fast_algorithm_to_check_if_a_positive_number_is_a_power_of_two
-  require((capacity & (capacity - 1)) == 0, s"capacity must be power of 2: $capacity")
+  require(
+    (capacity & (capacity - 1)) == 0,
+    s"capacity must be power of 2: $capacity")
 
   private[this] val pos = new AtomicLong(0)
 
@@ -96,12 +101,12 @@ class SizedSink private[events](
   }
 
   override def event(
-    etype: Type,
-    longVal: Long = Event.NoLong,
-    objectVal: Object = Event.NoObject,
-    doubleVal: Double = Event.NoDouble,
-    traceIdVal: Long = Event.NoTraceId,
-    spanIdVal: Long = Event.NoSpanId
+      etype: Type,
+      longVal: Long = Event.NoLong,
+      objectVal: Object = Event.NoObject,
+      doubleVal: Double = Event.NoDouble,
+      traceIdVal: Long = Event.NoTraceId,
+      spanIdVal: Long = Event.NoSpanId
   ): Unit = {
     require(etype != null)
 

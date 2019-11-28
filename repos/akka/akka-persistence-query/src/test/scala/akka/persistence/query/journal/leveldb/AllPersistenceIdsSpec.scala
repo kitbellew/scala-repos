@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2015-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2015-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.persistence.query.journal.leveldb
 
 import scala.concurrent.duration._
@@ -14,7 +14,8 @@ import akka.testkit.AkkaSpec
 import akka.testkit.ImplicitSender
 
 object AllPersistenceIdsSpec {
-  val config = """
+  val config =
+    """
     akka.loglevel = INFO
     akka.persistence.journal.plugin = "akka.persistence.journal.leveldb"
     akka.persistence.journal.leveldb.dir = "target/journal-AllPersistenceIdsSpec"
@@ -22,12 +23,15 @@ object AllPersistenceIdsSpec {
     """
 }
 
-class AllPersistenceIdsSpec extends AkkaSpec(AllPersistenceIdsSpec.config)
-  with Cleanup with ImplicitSender {
+class AllPersistenceIdsSpec
+    extends AkkaSpec(AllPersistenceIdsSpec.config)
+    with Cleanup
+    with ImplicitSender {
 
   implicit val mat = ActorMaterializer()(system)
 
-  val queries = PersistenceQuery(system).readJournalFor[LeveldbReadJournal](LeveldbReadJournal.Identifier)
+  val queries = PersistenceQuery(system)
+    .readJournalFor[LeveldbReadJournal](LeveldbReadJournal.Identifier)
 
   "Leveldb query AllPersistenceIds" must {
 
@@ -46,7 +50,8 @@ class AllPersistenceIdsSpec extends AkkaSpec(AllPersistenceIdsSpec.config)
       val src = queries.currentPersistenceIds()
       val probe = src.runWith(TestSink.probe[String])
       probe.within(10.seconds) {
-        probe.request(5)
+        probe
+          .request(5)
           .expectNextUnordered("a", "b", "c")
           .expectComplete()
       }
@@ -60,7 +65,8 @@ class AllPersistenceIdsSpec extends AkkaSpec(AllPersistenceIdsSpec.config)
       val src = queries.allPersistenceIds()
       val probe = src.runWith(TestSink.probe[String])
       probe.within(10.seconds) {
-        probe.request(5)
+        probe
+          .request(5)
           .expectNextUnorderedN(List("a", "b", "c", "d"))
 
         system.actorOf(TestActor.props("e")) ! "e1"

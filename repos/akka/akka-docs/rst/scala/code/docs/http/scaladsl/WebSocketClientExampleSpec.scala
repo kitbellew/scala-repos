@@ -1,18 +1,18 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package docs.http.scaladsl
 
 import akka.actor.ActorSystem
-import akka.http.scaladsl.model.headers.{ BasicHttpCredentials, Authorization }
-import org.scalatest.{ Matchers, WordSpec }
+import akka.http.scaladsl.model.headers.{BasicHttpCredentials, Authorization}
+import org.scalatest.{Matchers, WordSpec}
 
 class WebSocketClientExampleSpec extends WordSpec with Matchers {
 
   "singleWebSocket-request-example" in {
     pending // compile-time only test
     //#single-WebSocket-request
-    import akka.{ Done, NotUsed }
+    import akka.{Done, NotUsed}
     import akka.http.scaladsl.Http
     import akka.stream.ActorMaterializer
     import akka.stream.scaladsl._
@@ -44,7 +44,9 @@ class WebSocketClientExampleSpec extends WordSpec with Matchers {
     // completes or fails when the connection succeeds or fails
     // and closed is a Future[Done] representing the stream completion from above
     val (upgradeResponse, closed) =
-      Http().singleWebSocketRequest(WebSocketRequest("ws://echo.websocket.org"), flow)
+      Http().singleWebSocketRequest(
+        WebSocketRequest("ws://echo.websocket.org"),
+        flow)
 
     val connected = upgradeResponse.map { upgrade =>
       // just like a regular http request we can get 404 NotFound,
@@ -52,7 +54,8 @@ class WebSocketClientExampleSpec extends WordSpec with Matchers {
       if (upgrade.response.status == StatusCodes.OK) {
         Done
       } else {
-        throw new RuntimeException(s"Connection failed: ${upgrade.response.status}")
+        throw new RuntimeException(
+          s"Connection failed: ${upgrade.response.status}")
       }
     }
 
@@ -82,8 +85,9 @@ class WebSocketClientExampleSpec extends WordSpec with Matchers {
       Http().singleWebSocketRequest(
         WebSocketRequest(
           "ws://example.com:8080/some/path",
-          extraHeaders = Seq(Authorization(
-            BasicHttpCredentials("johan", "correcthorsebatterystaple")))),
+          extraHeaders = Seq(
+            Authorization(
+              BasicHttpCredentials("johan", "correcthorsebatterystaple")))),
         flow)
     //#authorized-single-WebSocket-request
   }
@@ -117,7 +121,8 @@ class WebSocketClientExampleSpec extends WordSpec with Matchers {
     val outgoing = Source.single(TextMessage("hello world!"))
 
     // flow to use (note: not re-usable!)
-    val webSocketFlow = Http().webSocketClientFlow(WebSocketRequest("ws://echo.websocket.org"))
+    val webSocketFlow =
+      Http().webSocketClientFlow(WebSocketRequest("ws://echo.websocket.org"))
 
     // the materialized value is a tuple with
     // upgradeResponse is a Future[WebSocketUpgradeResponse] that
@@ -135,7 +140,8 @@ class WebSocketClientExampleSpec extends WordSpec with Matchers {
       if (upgrade.response.status == StatusCodes.OK) {
         Future.successful(Done)
       } else {
-        throw new RuntimeException(s"Connection failed: ${upgrade.response.status}")
+        throw new RuntimeException(
+          s"Connection failed: ${upgrade.response.status}")
       }
     }
 

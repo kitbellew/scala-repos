@@ -32,9 +32,13 @@ import org.apache.spark.util.StatCounter
  *
  * TODO update tests to use TestingUtils for floating point comparison after PR 1367 is merged
  */
-class RandomRDDsSuite extends SparkFunSuite with MLlibTestSparkContext with Serializable {
+class RandomRDDsSuite
+    extends SparkFunSuite
+    with MLlibTestSparkContext
+    with Serializable {
 
-  def testGeneratedRDD(rdd: RDD[Double],
+  def testGeneratedRDD(
+      rdd: RDD[Double],
       expectedSize: Long,
       expectedNumPartitions: Int,
       expectedMean: Double,
@@ -48,7 +52,8 @@ class RandomRDDsSuite extends SparkFunSuite with MLlibTestSparkContext with Seri
   }
 
   // assume test RDDs are small
-  def testGeneratedVectorRDD(rdd: RDD[Vector],
+  def testGeneratedVectorRDD(
+      rdd: RDD[Vector],
       expectedRows: Long,
       expectedColumns: Int,
       expectedNumPartitions: Int,
@@ -57,10 +62,12 @@ class RandomRDDsSuite extends SparkFunSuite with MLlibTestSparkContext with Seri
       epsilon: Double = 0.01) {
     assert(expectedNumPartitions === rdd.partitions.size)
     val values = new ArrayBuffer[Double]()
-    rdd.collect.foreach { vector => {
-      assert(vector.size === expectedColumns)
-      values ++= vector.toArray
-    }}
+    rdd.collect.foreach { vector =>
+      {
+        assert(vector.size === expectedColumns)
+        values ++= vector.toArray
+      }
+    }
     assert(expectedRows === values.size / expectedColumns)
     val stats = new StatCounter(values)
     assert(math.abs(stats.mean - expectedMean) < epsilon)
@@ -94,14 +101,23 @@ class RandomRDDsSuite extends SparkFunSuite with MLlibTestSparkContext with Seri
     assert(count === size)
 
     // size needs to be positive
-    intercept[IllegalArgumentException] { new RandomRDD(sc, 0, 10, new UniformGenerator, 0L) }
+    intercept[IllegalArgumentException] {
+      new RandomRDD(sc, 0, 10, new UniformGenerator, 0L)
+    }
 
     // numPartitions needs to be positive
-    intercept[IllegalArgumentException] { new RandomRDD(sc, 100, 0, new UniformGenerator, 0L) }
+    intercept[IllegalArgumentException] {
+      new RandomRDD(sc, 100, 0, new UniformGenerator, 0L)
+    }
 
     // partition size needs to be <= Int.MaxValue
     intercept[IllegalArgumentException] {
-      new RandomRDD(sc, Int.MaxValue.toLong * 100L, 99, new UniformGenerator, 0L)
+      new RandomRDD(
+        sc,
+        Int.MaxValue.toLong * 100L,
+        99,
+        new UniformGenerator,
+        0L)
     }
   }
 
@@ -129,16 +145,47 @@ class RandomRDDsSuite extends SparkFunSuite with MLlibTestSparkContext with Seri
       val normal = RandomRDDs.normalRDD(sc, size, numPartitions, seed)
       testGeneratedRDD(normal, size, numPartitions, 0.0, 1.0)
 
-      val logNormal = RandomRDDs.logNormalRDD(sc, 0.0, 1.0, size, numPartitions, seed)
-      testGeneratedRDD(logNormal, size, numPartitions, logNormalMean, logNormalStd, 0.1)
+      val logNormal =
+        RandomRDDs.logNormalRDD(sc, 0.0, 1.0, size, numPartitions, seed)
+      testGeneratedRDD(
+        logNormal,
+        size,
+        numPartitions,
+        logNormalMean,
+        logNormalStd,
+        0.1)
 
-      val poisson = RandomRDDs.poissonRDD(sc, poissonMean, size, numPartitions, seed)
-      testGeneratedRDD(poisson, size, numPartitions, poissonMean, math.sqrt(poissonMean), 0.1)
+      val poisson =
+        RandomRDDs.poissonRDD(sc, poissonMean, size, numPartitions, seed)
+      testGeneratedRDD(
+        poisson,
+        size,
+        numPartitions,
+        poissonMean,
+        math.sqrt(poissonMean),
+        0.1)
 
-      val exponential = RandomRDDs.exponentialRDD(sc, exponentialMean, size, numPartitions, seed)
-      testGeneratedRDD(exponential, size, numPartitions, exponentialMean, exponentialMean, 0.1)
+      val exponential = RandomRDDs.exponentialRDD(
+        sc,
+        exponentialMean,
+        size,
+        numPartitions,
+        seed)
+      testGeneratedRDD(
+        exponential,
+        size,
+        numPartitions,
+        exponentialMean,
+        exponentialMean,
+        0.1)
 
-      val gamma = RandomRDDs.gammaRDD(sc, gammaShape, gammaScale, size, numPartitions, seed)
+      val gamma = RandomRDDs.gammaRDD(
+        sc,
+        gammaShape,
+        gammaScale,
+        size,
+        numPartitions,
+        seed)
       testGeneratedRDD(gamma, size, numPartitions, gammaMean, gammaStd, 0.1)
 
     }
@@ -173,17 +220,53 @@ class RandomRDDsSuite extends SparkFunSuite with MLlibTestSparkContext with Seri
       val normal = RandomRDDs.normalVectorRDD(sc, rows, cols, parts, seed)
       testGeneratedVectorRDD(normal, rows, cols, parts, 0.0, 1.0)
 
-      val logNormal = RandomRDDs.logNormalVectorRDD(sc, 0.0, 1.0, rows, cols, parts, seed)
-      testGeneratedVectorRDD(logNormal, rows, cols, parts, logNormalMean, logNormalStd, 0.1)
+      val logNormal =
+        RandomRDDs.logNormalVectorRDD(sc, 0.0, 1.0, rows, cols, parts, seed)
+      testGeneratedVectorRDD(
+        logNormal,
+        rows,
+        cols,
+        parts,
+        logNormalMean,
+        logNormalStd,
+        0.1)
 
-      val poisson = RandomRDDs.poissonVectorRDD(sc, poissonMean, rows, cols, parts, seed)
-      testGeneratedVectorRDD(poisson, rows, cols, parts, poissonMean, math.sqrt(poissonMean), 0.1)
+      val poisson =
+        RandomRDDs.poissonVectorRDD(sc, poissonMean, rows, cols, parts, seed)
+      testGeneratedVectorRDD(
+        poisson,
+        rows,
+        cols,
+        parts,
+        poissonMean,
+        math.sqrt(poissonMean),
+        0.1)
 
       val exponential =
-        RandomRDDs.exponentialVectorRDD(sc, exponentialMean, rows, cols, parts, seed)
-      testGeneratedVectorRDD(exponential, rows, cols, parts, exponentialMean, exponentialMean, 0.1)
+        RandomRDDs.exponentialVectorRDD(
+          sc,
+          exponentialMean,
+          rows,
+          cols,
+          parts,
+          seed)
+      testGeneratedVectorRDD(
+        exponential,
+        rows,
+        cols,
+        parts,
+        exponentialMean,
+        exponentialMean,
+        0.1)
 
-      val gamma = RandomRDDs.gammaVectorRDD(sc, gammaShape, gammaScale, rows, cols, parts, seed)
+      val gamma = RandomRDDs.gammaVectorRDD(
+        sc,
+        gammaShape,
+        gammaScale,
+        rows,
+        cols,
+        parts,
+        seed)
       testGeneratedVectorRDD(gamma, rows, cols, parts, gammaMean, gammaStd, 0.1)
     }
   }

@@ -21,13 +21,14 @@ trait ComTests extends AsyncTests {
   }
 
   private def assertThrowClosed(msg: String, body: => Unit): Unit = {
-    val thrown = try {
-      body
-      false
-    } catch {
-      case _: ComJSEnv.ComClosedException =>
-        true
-    }
+    val thrown =
+      try {
+        body
+        false
+      } catch {
+        case _: ComJSEnv.ComClosedException =>
+          true
+      }
 
     assertTrue(msg, thrown)
   }
@@ -69,8 +70,9 @@ trait ComTests extends AsyncTests {
     for (i <- 0 until 10)
       assertEquals(s"msg: $i", com.receive())
 
-    assertThrowClosed("Expect receive to throw after closing of channel",
-        com.receive())
+    assertThrowClosed(
+      "Expect receive to throw after closing of channel",
+      com.receive())
 
     com.close()
     com.await(DefaultTimeout)
@@ -108,14 +110,14 @@ trait ComTests extends AsyncTests {
     envs.foreach(start)
 
     val ops = List[ComJSRunner => Unit](
-        _.send("ping"),
-        com => assertEquals("pong", com.receive())
+      _.send("ping"),
+      com => assertEquals("pong", com.receive())
     )
 
     for {
-      i   <- 0 until n
+      i <- 0 until n
       env <- envs
-      op  <- ops
+      op <- ops
     } op(env)
 
     envs.foreach(_.close())

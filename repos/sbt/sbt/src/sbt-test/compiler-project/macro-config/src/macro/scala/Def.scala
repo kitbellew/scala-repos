@@ -1,8 +1,7 @@
 import scala.reflect.macros.Context
 import language.experimental.macros
 
-object Def
-{
+object Def {
   def desugar(a: Any): String = macro desugarImpl
 
   def desugarImpl(c: Context)(a: c.Expr[Any]) = {

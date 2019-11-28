@@ -3,12 +3,14 @@ package org.jetbrains.plugins.scala.codeInspection.collections
 import org.jetbrains.plugins.scala.codeInspection.InspectionBundle
 
 /**
- * @author Nikolay.Tropin
- */
+  * @author Nikolay.Tropin
+  */
 class MapContainsTrue extends OperationsOnCollectionInspectionTest {
-  override val inspectionClass: Class[_ <: OperationOnCollectionInspection] = classOf[MapToBooleanContainsInspection]
+  override val inspectionClass: Class[_ <: OperationOnCollectionInspection] =
+    classOf[MapToBooleanContainsInspection]
 
-  override def hint: String = InspectionBundle.message("replace.map.contains.true.with.exists")
+  override def hint: String =
+    InspectionBundle.message("replace.map.contains.true.with.exists")
 
   def testSimple(): Unit = {
     doTest(
@@ -48,9 +50,11 @@ class MapContainsTrue extends OperationsOnCollectionInspectionTest {
 }
 
 class MapContainsFalse extends OperationsOnCollectionInspectionTest {
-  override val inspectionClass: Class[_ <: OperationOnCollectionInspection] = classOf[MapToBooleanContainsInspection]
+  override val inspectionClass: Class[_ <: OperationOnCollectionInspection] =
+    classOf[MapToBooleanContainsInspection]
 
-  override def hint: String = InspectionBundle.message("replace.map.contains.false.with.not.forall")
+  override def hint: String =
+    InspectionBundle.message("replace.map.contains.false.with.not.forall")
 
   def testSimple(): Unit = {
     doTest(

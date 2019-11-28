@@ -31,7 +31,8 @@ class BufBenchmark extends StdBenchAnnotations {
 
     byteArrayBuf = Buf.ByteArray.Owned(raw, start, end)
     byteBufferBuf = Buf.ByteBuffer.Owned(bb)
-    concatBuf = byteArrayBuf.slice(0, size / 2).concat(byteArrayBuf.slice(size / 2, size))
+    concatBuf =
+      byteArrayBuf.slice(0, size / 2).concat(byteArrayBuf.slice(size / 2, size))
     all = Array(byteArrayBuf, byteBufferBuf, concatBuf)
 
     val rnd = new Random(120412421512L)
@@ -132,9 +133,6 @@ class BufBenchmark extends StdBenchAnnotations {
   @Benchmark
   def asByteArrayConcatBuf(): Array[Byte] =
     asByteArray(concatBuf)
-
-
-
   @Benchmark
   def stringToUtf8Buf(): Buf =
     Buf.Utf8(string)

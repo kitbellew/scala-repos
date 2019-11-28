@@ -4,9 +4,8 @@ import com.intellij.psi.PsiNamedElement
 import org.jetbrains.plugins.scala.extensions._
 
 /**
- * @author Alexander Podkhalyuzin
- */
-
+  * @author Alexander Podkhalyuzin
+  */
 abstract sealed class ValueUsed(val e: PsiNamedElement) {
   override def toString: String = e.name
 }
@@ -21,6 +20,7 @@ case class ReadValueUsed(override val e: PsiNamedElement) extends ValueUsed(e) {
   override def toString: String = "ValueRead(" + super.toString + ""
 }
 
-case class WriteValueUsed(override val e: PsiNamedElement) extends ValueUsed(e) {
+case class WriteValueUsed(override val e: PsiNamedElement)
+    extends ValueUsed(e) {
   override def toString: String = "ValueWrite(" + super.toString + ""
 }

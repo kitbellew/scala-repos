@@ -35,9 +35,9 @@ import org.apache.spark.rpc.RpcEndpointRef
 import org.apache.spark.util.{Clock, SystemClock, Utils}
 
 /**
- * Manages the execution of one driver, including automatically restarting the driver on failure.
- * This is currently only used in standalone cluster deploy mode.
- */
+  * Manages the execution of one driver, including automatically restarting the driver on failure.
+  * This is currently only used in standalone cluster deploy mode.
+  */
 private[deploy] class DriverRunner(
     conf: SparkConf,
     val driverId: String,
@@ -47,7 +47,7 @@ private[deploy] class DriverRunner(
     val worker: RpcEndpointRef,
     val workerUrl: String,
     val securityManager: SecurityManager)
-  extends Logging {
+    extends Logging {
 
   @volatile private var process: Option[Process] = None
   @volatile private var killed = false
@@ -68,7 +68,8 @@ private[deploy] class DriverRunner(
 
   private var clock: Clock = new SystemClock()
   private var sleeper = new Sleeper {
-    def sleep(seconds: Int): Unit = (0 until seconds).takeWhile(f => {Thread.sleep(1000); !killed})
+    def sleep(seconds: Int): Unit =
+      (0 until seconds).takeWhile(f => { Thread.sleep(1000); !killed })
   }
 
   /** Starts a thread to run and manage the driver. */
@@ -81,16 +82,19 @@ private[deploy] class DriverRunner(
 
           def substituteVariables(argument: String): String = argument match {
             case "{{WORKER_URL}}" => workerUrl
-            case "{{USER_JAR}}" => localJarFilename
-            case other => other
+            case "{{USER_JAR}}"   => localJarFilename
+            case other            => other
           }
 
           // TODO: If we add ability to submit multiple jars they should also be added here
-          val builder = CommandUtils.buildProcessBuilder(driverDesc.command, securityManager,
-            driverDesc.mem, sparkHome.getAbsolutePath, substituteVariables)
+          val builder = CommandUtils.buildProcessBuilder(
+            driverDesc.command,
+            securityManager,
+            driverDesc.mem,
+            sparkHome.getAbsolutePath,
+            substituteVariables)
           launchDriver(builder, driverDir, driverDesc.supervise)
-        }
-        catch {
+        } catch {
           case e: Exception => finalException = Some(e)
         }
 
@@ -102,7 +106,7 @@ private[deploy] class DriverRunner(
           } else {
             finalExitCode match {
               case Some(0) => DriverState.FINISHED
-              case _ => DriverState.FAILED
+              case _       => DriverState.FAILED
             }
           }
 
@@ -122,9 +126,9 @@ private[deploy] class DriverRunner(
   }
 
   /**
-   * Creates the working directory for this driver.
-   * Will throw an exception if there are errors preparing the directory.
-   */
+    * Creates the working directory for this driver.
+    * Will throw an exception if there are errors preparing the directory.
+    */
   private def createWorkingDirectory(): File = {
     val driverDir = new File(workDir, driverId)
     if (!driverDir.exists() && !driverDir.mkdirs()) {
@@ -134,9 +138,9 @@ private[deploy] class DriverRunner(
   }
 
   /**
-   * Download the user jar into the supplied directory and return its local path.
-   * Will throw an exception if there are errors downloading the jar.
-   */
+    * Download the user jar into the supplied directory and return its local path.
+    * Will throw an exception if there are errors downloading the jar.
+    */
   private def downloadUserJar(driverDir: File): String = {
     val jarPath = new Path(driverDesc.jarUrl)
 
@@ -146,7 +150,8 @@ private[deploy] class DriverRunner(
     val localJarFile = new File(driverDir, jarFileName)
     val localJarFilename = localJarFile.getAbsolutePath
 
-    if (!localJarFile.exists()) { // May already exist if running multiple workers on one node
+    if (!localJarFile
+          .exists()) { // May already exist if running multiple workers on one node
       logInfo(s"Copying user jar $jarPath to $destPath")
       Utils.fetchFile(
         driverDesc.jarUrl,
@@ -159,13 +164,17 @@ private[deploy] class DriverRunner(
     }
 
     if (!localJarFile.exists()) { // Verify copy succeeded
-      throw new Exception(s"Did not see expected jar $jarFileName in $driverDir")
+      throw new Exception(
+        s"Did not see expected jar $jarFileName in $driverDir")
     }
 
     localJarFilename
   }
 
-  private def launchDriver(builder: ProcessBuilder, baseDir: File, supervise: Boolean) {
+  private def launchDriver(
+      builder: ProcessBuilder,
+      baseDir: File,
+      supervise: Boolean) {
     builder.directory(baseDir)
     def initialize(process: Process): Unit = {
       // Redirect stdout and stderr to files
@@ -173,8 +182,10 @@ private[deploy] class DriverRunner(
       CommandUtils.redirectStream(process.getInputStream, stdout)
 
       val stderr = new File(baseDir, "stderr")
-      val formattedCommand = builder.command.asScala.mkString("\"", "\" \"", "\"")
-      val header = "Launch Command: %s\n%s\n\n".format(formattedCommand, "=" * 40)
+      val formattedCommand =
+        builder.command.asScala.mkString("\"", "\" \"", "\"")
+      val header =
+        "Launch Command: %s\n%s\n\n".format(formattedCommand, "=" * 40)
       Files.append(header, stderr, StandardCharsets.UTF_8)
       CommandUtils.redirectStream(process.getErrorStream, stderr)
     }
@@ -182,7 +193,9 @@ private[deploy] class DriverRunner(
   }
 
   def runCommandWithRetry(
-      command: ProcessBuilderLike, initialize: Process => Unit, supervise: Boolean): Unit = {
+      command: ProcessBuilderLike,
+      initialize: Process => Unit,
+      supervise: Boolean): Unit = {
     // Time to wait between submission retries.
     var waitSeconds = 1
     // A run of this many seconds resets the exponential back-off.
@@ -191,10 +204,13 @@ private[deploy] class DriverRunner(
     var keepTrying = !killed
 
     while (keepTrying) {
-      logInfo("Launch Command: " + command.command.mkString("\"", "\" \"", "\""))
+      logInfo(
+        "Launch Command: " + command.command.mkString("\"", "\" \"", "\""))
 
       synchronized {
-        if (killed) { return }
+        if (killed) {
+          return
+        }
         process = Some(command.start())
         initialize(process.get)
       }
@@ -206,7 +222,8 @@ private[deploy] class DriverRunner(
       }
 
       if (supervise && exitCode != 0 && !killed) {
-        logInfo(s"Command exited with status $exitCode, re-launching after $waitSeconds s.")
+        logInfo(
+          s"Command exited with status $exitCode, re-launching after $waitSeconds s.")
         sleeper.sleep(waitSeconds)
         waitSeconds = waitSeconds * 2 // exponential back-off
       }
@@ -228,8 +245,9 @@ private[deploy] trait ProcessBuilderLike {
 }
 
 private[deploy] object ProcessBuilderLike {
-  def apply(processBuilder: ProcessBuilder): ProcessBuilderLike = new ProcessBuilderLike {
-    override def start(): Process = processBuilder.start()
-    override def command: Seq[String] = processBuilder.command().asScala
-  }
+  def apply(processBuilder: ProcessBuilder): ProcessBuilderLike =
+    new ProcessBuilderLike {
+      override def start(): Process = processBuilder.start()
+      override def command: Seq[String] = processBuilder.command().asScala
+    }
 }

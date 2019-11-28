@@ -4,8 +4,8 @@ import breeze.benchmark.{MyRunner, BreezeBenchmark}
 import spire.syntax.cfor._
 
 /**
- * Created by dlwh on 8/14/15.
- */
+  * Created by dlwh on 8/14/15.
+  */
 class DenseScaleBenchmark extends BreezeBenchmark {
   assert(usingNatives)
 
@@ -47,7 +47,5 @@ class DenseScaleBenchmark extends BreezeBenchmark {
   }
 
 }
-
-
 
 object DenseScaleBenchmark extends MyRunner(classOf[DenseScaleBenchmark])

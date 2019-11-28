@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.testadapter
 
 import sbt.testing._
@@ -33,10 +32,10 @@ private[testadapter] object TaskDefSerializers {
     def deserialize(x: JSON): TaskDef = {
       val obj = new JSONObjExtractor(x)
       new TaskDef(
-          obj.fld[String]("fullyQualifiedName"),
-          obj.fld[Fingerprint]("fingerprint"),
-          obj.fld[Boolean]("explicitlySpecified"),
-          obj.fld[List[Selector]]("selectors").toArray)
+        obj.fld[String]("fullyQualifiedName"),
+        obj.fld[Fingerprint]("fingerprint"),
+        obj.fld[Boolean]("explicitlySpecified"),
+        obj.fld[List[Selector]]("selectors").toArray)
     }
   }
 

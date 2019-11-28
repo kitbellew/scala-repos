@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.stream.scaladsl
 
 import akka.NotUsed
@@ -34,7 +34,10 @@ class FlowConcatAllSpec extends AkkaSpec {
       val main = Source(List(s1, s2, s3, s4, s5))
 
       val subscriber = TestSubscriber.manualProbe[Int]()
-      main.flatMapConcat(ConstantFun.scalaIdentityFunction).to(Sink.fromSubscriber(subscriber)).run()
+      main
+        .flatMapConcat(ConstantFun.scalaIdentityFunction)
+        .to(Sink.fromSubscriber(subscriber))
+        .run()
       val subscription = subscriber.expectSubscription()
       subscription.request(10)
       for (i ← 1 to 10)
@@ -63,7 +66,11 @@ class FlowConcatAllSpec extends AkkaSpec {
     "on onError on master stream cancel the current open substream and signal error" in assertAllStagesStopped {
       val publisher = TestPublisher.manualProbe[Source[Int, NotUsed]]()
       val subscriber = TestSubscriber.manualProbe[Int]()
-      Source.fromPublisher(publisher).flatMapConcat(ConstantFun.scalaIdentityFunction).to(Sink.fromSubscriber(subscriber)).run()
+      Source
+        .fromPublisher(publisher)
+        .flatMapConcat(ConstantFun.scalaIdentityFunction)
+        .to(Sink.fromSubscriber(subscriber))
+        .run()
 
       val upstream = publisher.expectSubscription()
       val downstream = subscriber.expectSubscription()
@@ -83,13 +90,18 @@ class FlowConcatAllSpec extends AkkaSpec {
     "on onError on master stream cancel the currently opening substream and signal error" in assertAllStagesStopped {
       val publisher = TestPublisher.manualProbe[Source[Int, NotUsed]]()
       val subscriber = TestSubscriber.manualProbe[Int]()
-      Source.fromPublisher(publisher).flatMapConcat(ConstantFun.scalaIdentityFunction).to(Sink.fromSubscriber(subscriber)).run()
+      Source
+        .fromPublisher(publisher)
+        .flatMapConcat(ConstantFun.scalaIdentityFunction)
+        .to(Sink.fromSubscriber(subscriber))
+        .run()
 
       val upstream = publisher.expectSubscription()
       val downstream = subscriber.expectSubscription()
       downstream.request(1000)
 
-      val substreamPublisher = TestPublisher.manualProbe[Int](autoOnSubscribe = false)
+      val substreamPublisher =
+        TestPublisher.manualProbe[Int](autoOnSubscribe = false)
       val substreamFlow = Source.fromPublisher(substreamPublisher)
       upstream.expectRequest()
       upstream.sendNext(substreamFlow)
@@ -106,7 +118,11 @@ class FlowConcatAllSpec extends AkkaSpec {
     "on onError on opening substream, cancel the master stream and signal error " in assertAllStagesStopped {
       val publisher = TestPublisher.manualProbe[Source[Int, _]]()
       val subscriber = TestSubscriber.manualProbe[Int]()
-      Source.fromPublisher(publisher).flatMapConcat(_ ⇒ throw testException).to(Sink.fromSubscriber(subscriber)).run()
+      Source
+        .fromPublisher(publisher)
+        .flatMapConcat(_ ⇒ throw testException)
+        .to(Sink.fromSubscriber(subscriber))
+        .run()
 
       val upstream = publisher.expectSubscription()
       val downstream = subscriber.expectSubscription()
@@ -123,7 +139,11 @@ class FlowConcatAllSpec extends AkkaSpec {
     "on onError on open substream, cancel the master stream and signal error " in assertAllStagesStopped {
       val publisher = TestPublisher.manualProbe[Source[Int, NotUsed]]()
       val subscriber = TestSubscriber.manualProbe[Int]()
-      Source.fromPublisher(publisher).flatMapConcat(ConstantFun.scalaIdentityFunction).to(Sink.fromSubscriber(subscriber)).run()
+      Source
+        .fromPublisher(publisher)
+        .flatMapConcat(ConstantFun.scalaIdentityFunction)
+        .to(Sink.fromSubscriber(subscriber))
+        .run()
 
       val upstream = publisher.expectSubscription()
       val downstream = subscriber.expectSubscription()
@@ -143,7 +163,11 @@ class FlowConcatAllSpec extends AkkaSpec {
     "on cancellation cancel the current open substream and the master stream" in assertAllStagesStopped {
       val publisher = TestPublisher.manualProbe[Source[Int, NotUsed]]()
       val subscriber = TestSubscriber.manualProbe[Int]()
-      Source.fromPublisher(publisher).flatMapConcat(ConstantFun.scalaIdentityFunction).to(Sink.fromSubscriber(subscriber)).run()
+      Source
+        .fromPublisher(publisher)
+        .flatMapConcat(ConstantFun.scalaIdentityFunction)
+        .to(Sink.fromSubscriber(subscriber))
+        .run()
 
       val upstream = publisher.expectSubscription()
       val downstream = subscriber.expectSubscription()
@@ -164,13 +188,18 @@ class FlowConcatAllSpec extends AkkaSpec {
     "on cancellation cancel the currently opening substream and the master stream" in assertAllStagesStopped {
       val publisher = TestPublisher.manualProbe[Source[Int, NotUsed]]()
       val subscriber = TestSubscriber.manualProbe[Int]()
-      Source.fromPublisher(publisher).flatMapConcat(ConstantFun.scalaIdentityFunction).to(Sink.fromSubscriber(subscriber)).run()
+      Source
+        .fromPublisher(publisher)
+        .flatMapConcat(ConstantFun.scalaIdentityFunction)
+        .to(Sink.fromSubscriber(subscriber))
+        .run()
 
       val upstream = publisher.expectSubscription()
       val downstream = subscriber.expectSubscription()
       downstream.request(1000)
 
-      val substreamPublisher = TestPublisher.manualProbe[Int](autoOnSubscribe = false)
+      val substreamPublisher =
+        TestPublisher.manualProbe[Int](autoOnSubscribe = false)
       val substreamFlow = Source.fromPublisher(substreamPublisher)
       upstream.expectRequest()
       upstream.sendNext(substreamFlow)

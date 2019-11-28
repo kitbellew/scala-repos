@@ -21,26 +21,27 @@ import org.apache.spark.sql.catalyst.expressions._
 import org.apache.spark.sql.types._
 
 /**
- * Generates a [[Projection]] that returns an [[UnsafeRow]].
- *
- * It generates the code for all the expressions, compute the total length for all the columns
- * (can be accessed via variables), and then copy the data into a scratch buffer space in the
- * form of UnsafeRow (the scratch buffer will grow as needed).
- *
- * Note: The returned UnsafeRow will be pointed to a scratch buffer inside the projection.
- */
-object GenerateUnsafeProjection extends CodeGenerator[Seq[Expression], UnsafeProjection] {
+  * Generates a [[Projection]] that returns an [[UnsafeRow]].
+  *
+  * It generates the code for all the expressions, compute the total length for all the columns
+  * (can be accessed via variables), and then copy the data into a scratch buffer space in the
+  * form of UnsafeRow (the scratch buffer will grow as needed).
+  *
+  * Note: The returned UnsafeRow will be pointed to a scratch buffer inside the projection.
+  */
+object GenerateUnsafeProjection
+    extends CodeGenerator[Seq[Expression], UnsafeProjection] {
 
   /** Returns true iff we support this data type. */
   def canSupport(dataType: DataType): Boolean = dataType match {
-    case NullType => true
-    case t: AtomicType => true
-    case _: CalendarIntervalType => true
-    case t: StructType => t.toSeq.forall(field => canSupport(field.dataType))
-    case t: ArrayType if canSupport(t.elementType) => true
+    case NullType                                               => true
+    case t: AtomicType                                          => true
+    case _: CalendarIntervalType                                => true
+    case t: StructType                                          => t.toSeq.forall(field => canSupport(field.dataType))
+    case t: ArrayType if canSupport(t.elementType)              => true
     case MapType(kt, vt, _) if canSupport(kt) && canSupport(vt) => true
-    case udt: UserDefinedType[_] => canSupport(udt.sqlType)
-    case _ => false
+    case udt: UserDefinedType[_]                                => canSupport(udt.sqlType)
+    case _                                                      => false
   }
 
   // TODO: if the nullability of field is correct, we can use it to save null check.
@@ -49,18 +50,25 @@ object GenerateUnsafeProjection extends CodeGenerator[Seq[Expression], UnsafePro
       input: String,
       fieldTypes: Seq[DataType],
       bufferHolder: String): String = {
-    val fieldEvals = fieldTypes.zipWithIndex.map { case (dt, i) =>
-      val fieldName = ctx.freshName("fieldName")
-      val code = s"final ${ctx.javaType(dt)} $fieldName = ${ctx.getValue(input, dt, i.toString)};"
-      val isNull = s"$input.isNullAt($i)"
-      ExprCode(code, isNull, fieldName)
+    val fieldEvals = fieldTypes.zipWithIndex.map {
+      case (dt, i) =>
+        val fieldName = ctx.freshName("fieldName")
+        val code =
+          s"final ${ctx.javaType(dt)} $fieldName = ${ctx.getValue(input, dt, i.toString)};"
+        val isNull = s"$input.isNullAt($i)"
+        ExprCode(code, isNull, fieldName)
     }
 
     s"""
       if ($input instanceof UnsafeRow) {
         ${writeUnsafeData(ctx, s"((UnsafeRow) $input)", bufferHolder)}
       } else {
-        ${writeExpressionsToBuffer(ctx, input, fieldEvals, fieldTypes, bufferHolder)}
+        ${writeExpressionsToBuffer(
+      ctx,
+      input,
+      fieldEvals,
+      fieldTypes,
+      bufferHolder)}
       }
     """
   }
@@ -74,7 +82,9 @@ object GenerateUnsafeProjection extends CodeGenerator[Seq[Expression], UnsafePro
       isTopLevel: Boolean = false): String = {
     val rowWriterClass = classOf[UnsafeRowWriter].getName
     val rowWriter = ctx.freshName("rowWriter")
-    ctx.addMutableState(rowWriterClass, rowWriter,
+    ctx.addMutableState(
+      rowWriterClass,
+      rowWriter,
       s"this.$rowWriter = new $rowWriterClass($bufferHolder, ${inputs.length});")
 
     val resetWriter = if (isTopLevel) {
@@ -96,7 +106,7 @@ object GenerateUnsafeProjection extends CodeGenerator[Seq[Expression], UnsafePro
       case ((input, dataType), index) =>
         val dt = dataType match {
           case udt: UserDefinedType[_] => udt.sqlType
-          case other => other
+          case other                   => other
         }
         val tmpCursor = ctx.freshName("tmpCursor")
 
@@ -113,7 +123,11 @@ object GenerateUnsafeProjection extends CodeGenerator[Seq[Expression], UnsafePro
               // Remember the current cursor so that we can calculate how many bytes are
               // written later.
               final int $tmpCursor = $bufferHolder.cursor;
-              ${writeStructToBuffer(ctx, input.value, t.map(_.dataType), bufferHolder)}
+              ${writeStructToBuffer(
+              ctx,
+              input.value,
+              t.map(_.dataType),
+              bufferHolder)}
               $rowWriter.setOffsetAndSize($index, $tmpCursor, $bufferHolder.cursor - $tmpCursor);
             """
 
@@ -176,7 +190,9 @@ object GenerateUnsafeProjection extends CodeGenerator[Seq[Expression], UnsafePro
       bufferHolder: String): String = {
     val arrayWriterClass = classOf[UnsafeArrayWriter].getName
     val arrayWriter = ctx.freshName("arrayWriter")
-    ctx.addMutableState(arrayWriterClass, arrayWriter,
+    ctx.addMutableState(
+      arrayWriterClass,
+      arrayWriter,
       s"this.$arrayWriter = new $arrayWriterClass();")
     val numElements = ctx.freshName("numElements")
     val index = ctx.freshName("index")
@@ -184,15 +200,15 @@ object GenerateUnsafeProjection extends CodeGenerator[Seq[Expression], UnsafePro
 
     val et = elementType match {
       case udt: UserDefinedType[_] => udt.sqlType
-      case other => other
+      case other                   => other
     }
 
     val jt = ctx.javaType(et)
 
     val fixedElementSize = et match {
       case t: DecimalType if t.precision <= Decimal.MAX_LONG_DIGITS => 8
-      case _ if ctx.isPrimitiveType(jt) => et.defaultSize
-      case _ => 0
+      case _ if ctx.isPrimitiveType(jt)                             => et.defaultSize
+      case _                                                        => 0
     }
 
     val writeElement = et match {
@@ -252,7 +268,6 @@ object GenerateUnsafeProjection extends CodeGenerator[Seq[Expression], UnsafePro
     val values = ctx.freshName("values")
     val tmpCursor = ctx.freshName("tmpCursor")
 
-
     // Writes out unsafe map according to the format described in `UnsafeMapData`.
     s"""
       if ($input instanceof UnsafeMapData) {
@@ -278,10 +293,13 @@ object GenerateUnsafeProjection extends CodeGenerator[Seq[Expression], UnsafePro
   }
 
   /**
-   * If the input is already in unsafe format, we don't need to go through all elements/fields,
-   * we can directly write it.
-   */
-  private def writeUnsafeData(ctx: CodegenContext, input: String, bufferHolder: String) = {
+    * If the input is already in unsafe format, we don't need to go through all elements/fields,
+    * we can directly write it.
+    */
+  private def writeUnsafeData(
+      ctx: CodegenContext,
+      input: String,
+      bufferHolder: String) = {
     val sizeInBytes = ctx.freshName("sizeInBytes")
     s"""
       final int $sizeInBytes = $input.getSizeInBytes();
@@ -306,11 +324,16 @@ object GenerateUnsafeProjection extends CodeGenerator[Seq[Expression], UnsafePro
     }
 
     val result = ctx.freshName("result")
-    ctx.addMutableState("UnsafeRow", result, s"$result = new UnsafeRow(${expressions.length});")
+    ctx.addMutableState(
+      "UnsafeRow",
+      result,
+      s"$result = new UnsafeRow(${expressions.length});")
 
     val holder = ctx.freshName("holder")
     val holderClass = classOf[BufferHolder].getName
-    ctx.addMutableState(holderClass, holder,
+    ctx.addMutableState(
+      holderClass,
+      holder,
       s"this.$holder = new $holderClass($result, ${numVarLenFields * 32});")
 
     val resetBufferHolder = if (numVarLenFields == 0) {
@@ -328,7 +351,13 @@ object GenerateUnsafeProjection extends CodeGenerator[Seq[Expression], UnsafePro
     val evalSubexpr = ctx.subexprFunctions.mkString("\n")
 
     val writeExpressions =
-      writeExpressionsToBuffer(ctx, ctx.INPUT_ROW, exprEvals, exprTypes, holder, isTopLevel = true)
+      writeExpressionsToBuffer(
+        ctx,
+        ctx.INPUT_ROW,
+        exprEvals,
+        exprTypes,
+        holder,
+        isTopLevel = true)
 
     val code =
       s"""
@@ -343,7 +372,9 @@ object GenerateUnsafeProjection extends CodeGenerator[Seq[Expression], UnsafePro
   protected def canonicalize(in: Seq[Expression]): Seq[Expression] =
     in.map(ExpressionCanonicalizer.execute)
 
-  protected def bind(in: Seq[Expression], inputSchema: Seq[Attribute]): Seq[Expression] =
+  protected def bind(
+      in: Seq[Expression],
+      inputSchema: Seq[Attribute]): Seq[Expression] =
     in.map(BindReferences.bindReference(_, inputSchema))
 
   def generate(
@@ -390,7 +421,8 @@ object GenerateUnsafeProjection extends CodeGenerator[Seq[Expression], UnsafePro
       }
       """
 
-    logDebug(s"code for ${expressions.mkString(",")}:\n${CodeFormatter.format(code)}")
+    logDebug(
+      s"code for ${expressions.mkString(",")}:\n${CodeFormatter.format(code)}")
 
     val c = CodeGenerator.compile(code)
     c.generate(ctx.references.toArray).asInstanceOf[UnsafeProjection]

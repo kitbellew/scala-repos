@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.sbtplugin
 
 import scala.collection.mutable
@@ -24,8 +23,10 @@ private[sbtplugin] object ScalajspUtils {
     new ScalaJSIRFilesOnClasspathExamples(relPaths)
 
   /** An [[ExampleSource]] showing .sjsir files on a classpath. */
-  private class ScalaJSIRFilesOnClasspathExamples(allRelPaths: Seq[String],
-      prefix: String = "") extends ExampleSource {
+  private class ScalaJSIRFilesOnClasspathExamples(
+      allRelPaths: Seq[String],
+      prefix: String = "")
+      extends ExampleSource {
 
     override def apply(): Iterable[String] = {
       val allExamples = (for {

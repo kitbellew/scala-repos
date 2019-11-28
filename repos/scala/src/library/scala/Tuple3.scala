@@ -9,18 +9,18 @@
 
 package scala
 
-
 /** A tuple of 3 elements; the canonical representation of a [[scala.Product3]].
- *
- *  @constructor  Create a new tuple with 3 elements. Note that it is more idiomatic to create a Tuple3 via `(t1, t2, t3)`
- *  @param  _1   Element 1 of this Tuple3
- *  @param  _2   Element 2 of this Tuple3
- *  @param  _3   Element 3 of this Tuple3
- */
-@deprecatedInheritance("Tuples will be made final in a future version.", "2.11.0")
+  *
+  *  @constructor  Create a new tuple with 3 elements. Note that it is more idiomatic to create a Tuple3 via `(t1, t2, t3)`
+  *  @param  _1   Element 1 of this Tuple3
+  *  @param  _2   Element 2 of this Tuple3
+  *  @param  _3   Element 3 of this Tuple3
+  */
+@deprecatedInheritance(
+  "Tuples will be made final in a future version.",
+  "2.11.0")
 case class Tuple3[+T1, +T2, +T3](_1: T1, _2: T2, _3: T3)
-  extends Product3[T1, T2, T3]
-{
+    extends Product3[T1, T2, T3] {
   override def toString() = "(" + _1 + "," + _2 + "," + _3 + ")"
-  
+
 }

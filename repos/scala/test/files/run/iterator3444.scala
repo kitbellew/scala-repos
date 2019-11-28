@@ -1,5 +1,3 @@
-
-
 // ticked #3444
 object Test {
 

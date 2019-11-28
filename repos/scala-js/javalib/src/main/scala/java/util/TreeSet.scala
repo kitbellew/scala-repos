@@ -6,7 +6,7 @@ import scala.math.Ordering
 
 import scala.collection.JavaConversions._
 
-class TreeSet[E] (_comparator: Comparator[_ >: E])
+class TreeSet[E](_comparator: Comparator[_ >: E])
     extends AbstractSet[E]
     with NavigableSet[E]
     with Cloneable
@@ -123,20 +123,22 @@ class TreeSet[E] (_comparator: Comparator[_ >: E])
   override def addAll(c: Collection[_ <: E]): Boolean = {
     val iter = c.iterator()
     var changed = false
-    while (iter.hasNext)
-      changed = add(iter.next()) || changed
+    while (iter.hasNext) changed = add(iter.next()) || changed
     changed
   }
 
   override def removeAll(c: Collection[_]): Boolean = {
     val iter = c.iterator()
     var changed = false
-    while (iter.hasNext)
-      changed = inner.remove(Box(iter.next).asInstanceOf[Box[E]]) || changed
+    while (iter.hasNext) changed = inner.remove(
+      Box(iter.next).asInstanceOf[Box[E]]) || changed
     changed
   }
 
-  def subSet(fromElement: E, fromInclusive: Boolean, toElement: E,
+  def subSet(
+      fromElement: E,
+      fromInclusive: Boolean,
+      toElement: E,
       toInclusive: Boolean): NavigableSet[E] = {
     val boxedFrom = Box(fromElement)
     val boxedTo = Box(toElement)
@@ -153,9 +155,13 @@ class TreeSet[E] (_comparator: Comparator[_ >: E])
       base
     }
 
-    new NavigableView(this, subSetFun,
-        Some(fromElement), fromInclusive,
-        Some(toElement), toInclusive)
+    new NavigableView(
+      this,
+      subSetFun,
+      Some(fromElement),
+      fromInclusive,
+      Some(toElement),
+      toInclusive)
   }
 
   def headSet(toElement: E, inclusive: Boolean): NavigableSet[E] = {
@@ -171,9 +177,7 @@ class TreeSet[E] (_comparator: Comparator[_ >: E])
       base
     }
 
-    new NavigableView(this, headSetFun,
-        None, true,
-        Some(toElement), inclusive)
+    new NavigableView(this, headSetFun, None, true, Some(toElement), inclusive)
   }
 
   def tailSet(fromElement: E, inclusive: Boolean): NavigableSet[E] = {
@@ -188,9 +192,13 @@ class TreeSet[E] (_comparator: Comparator[_ >: E])
       base
     }
 
-    new NavigableView(this, tailSetFun,
-        Some(fromElement), inclusive,
-        None, true)
+    new NavigableView(
+      this,
+      tailSetFun,
+      Some(fromElement),
+      inclusive,
+      None,
+      true)
   }
 
   def subSet(fromElement: E, toElement: E): SortedSet[E] =

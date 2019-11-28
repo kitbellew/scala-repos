@@ -24,31 +24,36 @@ import org.apache.spark.annotation.DeveloperApi
 import org.apache.spark.util.Utils
 
 /**
- * :: DeveloperApi ::
- * Flags for controlling the storage of an RDD. Each StorageLevel records whether to use memory,
- * or ExternalBlockStore, whether to drop the RDD to disk if it falls out of memory or
- * ExternalBlockStore, whether to keep the data in memory in a serialized format, and whether
- * to replicate the RDD partitions on multiple nodes.
- *
- * The [[org.apache.spark.storage.StorageLevel$]] singleton object contains some static constants
- * for commonly useful storage levels. To create your own storage level object, use the
- * factory method of the singleton object (`StorageLevel(...)`).
- */
+  * :: DeveloperApi ::
+  * Flags for controlling the storage of an RDD. Each StorageLevel records whether to use memory,
+  * or ExternalBlockStore, whether to drop the RDD to disk if it falls out of memory or
+  * ExternalBlockStore, whether to keep the data in memory in a serialized format, and whether
+  * to replicate the RDD partitions on multiple nodes.
+  *
+  * The [[org.apache.spark.storage.StorageLevel$]] singleton object contains some static constants
+  * for commonly useful storage levels. To create your own storage level object, use the
+  * factory method of the singleton object (`StorageLevel(...)`).
+  */
 @DeveloperApi
-class StorageLevel private(
+class StorageLevel private (
     private var _useDisk: Boolean,
     private var _useMemory: Boolean,
     private var _useOffHeap: Boolean,
     private var _deserialized: Boolean,
     private var _replication: Int = 1)
-  extends Externalizable {
+    extends Externalizable {
 
   // TODO: Also add fields for caching priority, dataset ID, and flushing.
   private def this(flags: Int, replication: Int) {
-    this((flags & 8) != 0, (flags & 4) != 0, (flags & 2) != 0, (flags & 1) != 0, replication)
+    this(
+      (flags & 8) != 0,
+      (flags & 4) != 0,
+      (flags & 2) != 0,
+      (flags & 1) != 0,
+      replication)
   }
 
-  def this() = this(false, true, false, false)  // For deserialization
+  def this() = this(false, true, false, false) // For deserialization
 
   def useDisk: Boolean = _useDisk
   def useMemory: Boolean = _useMemory
@@ -56,13 +61,21 @@ class StorageLevel private(
   def deserialized: Boolean = _deserialized
   def replication: Int = _replication
 
-  assert(replication < 40, "Replication restricted to be less than 40 for calculating hash codes")
+  assert(
+    replication < 40,
+    "Replication restricted to be less than 40 for calculating hash codes")
 
   if (useOffHeap) {
     require(!useDisk, "Off-heap storage level does not support using disk")
-    require(!useMemory, "Off-heap storage level does not support using heap memory")
-    require(!deserialized, "Off-heap storage level does not support deserialized storage")
-    require(replication == 1, "Off-heap storage level does not support multiple replication")
+    require(
+      !useMemory,
+      "Off-heap storage level does not support using heap memory")
+    require(
+      !deserialized,
+      "Off-heap storage level does not support deserialized storage")
+    require(
+      replication == 1,
+      "Off-heap storage level does not support multiple replication")
   }
 
   override def clone(): StorageLevel = {
@@ -72,15 +85,16 @@ class StorageLevel private(
   override def equals(other: Any): Boolean = other match {
     case s: StorageLevel =>
       s.useDisk == useDisk &&
-      s.useMemory == useMemory &&
-      s.useOffHeap == useOffHeap &&
-      s.deserialized == deserialized &&
-      s.replication == replication
+        s.useMemory == useMemory &&
+        s.useOffHeap == useOffHeap &&
+        s.deserialized == deserialized &&
+        s.replication == replication
     case _ =>
       false
   }
 
-  def isValid: Boolean = (useMemory || useDisk || useOffHeap) && (replication > 0)
+  def isValid: Boolean =
+    (useMemory || useDisk || useOffHeap) && (replication > 0)
 
   def toInt: Int = {
     var ret = 0
@@ -133,11 +147,10 @@ class StorageLevel private(
   }
 }
 
-
 /**
- * Various [[org.apache.spark.storage.StorageLevel]] defined and utility functions for creating
- * new storage levels.
- */
+  * Various [[org.apache.spark.storage.StorageLevel]] defined and utility functions for creating
+  * new storage levels.
+  */
 object StorageLevel {
   val NONE = new StorageLevel(false, false, false, false)
   val DISK_ONLY = new StorageLevel(true, false, false, false)
@@ -155,30 +168,30 @@ object StorageLevel {
   val OFF_HEAP = MEMORY_ONLY_SER
 
   /**
-   * :: DeveloperApi ::
-   * Return the StorageLevel object with the specified name.
-   */
+    * :: DeveloperApi ::
+    * Return the StorageLevel object with the specified name.
+    */
   @DeveloperApi
   def fromString(s: String): StorageLevel = s match {
-    case "NONE" => NONE
-    case "DISK_ONLY" => DISK_ONLY
-    case "DISK_ONLY_2" => DISK_ONLY_2
-    case "MEMORY_ONLY" => MEMORY_ONLY
-    case "MEMORY_ONLY_2" => MEMORY_ONLY_2
-    case "MEMORY_ONLY_SER" => MEMORY_ONLY_SER
-    case "MEMORY_ONLY_SER_2" => MEMORY_ONLY_SER_2
-    case "MEMORY_AND_DISK" => MEMORY_AND_DISK
-    case "MEMORY_AND_DISK_2" => MEMORY_AND_DISK_2
-    case "MEMORY_AND_DISK_SER" => MEMORY_AND_DISK_SER
+    case "NONE"                  => NONE
+    case "DISK_ONLY"             => DISK_ONLY
+    case "DISK_ONLY_2"           => DISK_ONLY_2
+    case "MEMORY_ONLY"           => MEMORY_ONLY
+    case "MEMORY_ONLY_2"         => MEMORY_ONLY_2
+    case "MEMORY_ONLY_SER"       => MEMORY_ONLY_SER
+    case "MEMORY_ONLY_SER_2"     => MEMORY_ONLY_SER_2
+    case "MEMORY_AND_DISK"       => MEMORY_AND_DISK
+    case "MEMORY_AND_DISK_2"     => MEMORY_AND_DISK_2
+    case "MEMORY_AND_DISK_SER"   => MEMORY_AND_DISK_SER
     case "MEMORY_AND_DISK_SER_2" => MEMORY_AND_DISK_SER_2
-    case "OFF_HEAP" => OFF_HEAP
-    case _ => throw new IllegalArgumentException(s"Invalid StorageLevel: $s")
+    case "OFF_HEAP"              => OFF_HEAP
+    case _                       => throw new IllegalArgumentException(s"Invalid StorageLevel: $s")
   }
 
   /**
-   * :: DeveloperApi ::
-   * Create a new StorageLevel object without setting useOffHeap.
-   */
+    * :: DeveloperApi ::
+    * Create a new StorageLevel object without setting useOffHeap.
+    */
   @DeveloperApi
   def apply(
       useDisk: Boolean,
@@ -187,35 +200,41 @@ object StorageLevel {
       deserialized: Boolean,
       replication: Int): StorageLevel = {
     getCachedStorageLevel(
-      new StorageLevel(useDisk, useMemory, useOffHeap, deserialized, replication))
+      new StorageLevel(
+        useDisk,
+        useMemory,
+        useOffHeap,
+        deserialized,
+        replication))
   }
 
   /**
-   * :: DeveloperApi ::
-   * Create a new StorageLevel object.
-   */
+    * :: DeveloperApi ::
+    * Create a new StorageLevel object.
+    */
   @DeveloperApi
   def apply(
       useDisk: Boolean,
       useMemory: Boolean,
       deserialized: Boolean,
       replication: Int = 1): StorageLevel = {
-    getCachedStorageLevel(new StorageLevel(useDisk, useMemory, false, deserialized, replication))
+    getCachedStorageLevel(
+      new StorageLevel(useDisk, useMemory, false, deserialized, replication))
   }
 
   /**
-   * :: DeveloperApi ::
-   * Create a new StorageLevel object from its integer representation.
-   */
+    * :: DeveloperApi ::
+    * Create a new StorageLevel object from its integer representation.
+    */
   @DeveloperApi
   def apply(flags: Int, replication: Int): StorageLevel = {
     getCachedStorageLevel(new StorageLevel(flags, replication))
   }
 
   /**
-   * :: DeveloperApi ::
-   * Read StorageLevel object from ObjectInput stream.
-   */
+    * :: DeveloperApi ::
+    * Read StorageLevel object from ObjectInput stream.
+    */
   @DeveloperApi
   def apply(in: ObjectInput): StorageLevel = {
     val obj = new StorageLevel()
@@ -223,9 +242,11 @@ object StorageLevel {
     getCachedStorageLevel(obj)
   }
 
-  private[spark] val storageLevelCache = new ConcurrentHashMap[StorageLevel, StorageLevel]()
+  private[spark] val storageLevelCache =
+    new ConcurrentHashMap[StorageLevel, StorageLevel]()
 
-  private[spark] def getCachedStorageLevel(level: StorageLevel): StorageLevel = {
+  private[spark] def getCachedStorageLevel(
+      level: StorageLevel): StorageLevel = {
     storageLevelCache.putIfAbsent(level, level)
     storageLevelCache.get(level)
   }

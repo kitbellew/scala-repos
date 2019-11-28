@@ -4,23 +4,23 @@ import io.prediction.controller.IEngineFactory
 import io.prediction.controller.Engine
 
 case class Query(
-  items: List[String],
-  num: Int,
-  categories: Option[Set[String]],
-  whiteList: Option[Set[String]],
-  blackList: Option[Set[String]]
+    items: List[String],
+    num: Int,
+    categories: Option[Set[String]],
+    whiteList: Option[Set[String]],
+    blackList: Option[Set[String]]
 ) extends Serializable
 
 case class PredictedResult(
-  itemScores: Array[ItemScore]
+    itemScores: Array[ItemScore]
 ) extends Serializable
 
 case class ItemScore(
-  item: String,
-  title: String,
-  date: String,
-  imdbUrl: String,
-  score: Double
+    item: String,
+    title: String,
+    date: String,
+    imdbUrl: String,
+    score: Double
 ) extends Serializable
 
 object SimilarProductEngine extends IEngineFactory {

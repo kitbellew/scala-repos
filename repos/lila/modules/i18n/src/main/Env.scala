@@ -35,21 +35,15 @@ final class Env(
     langs = Lang.availables(play.api.Play.current).toSet,
     default = I18nKey.en)
 
-  lazy val translator = new Translator(
-    messages = messages,
-    pool = pool)
+  lazy val translator = new Translator(messages = messages, pool = pool)
 
   lazy val keys = new I18nKeys(translator)
 
-  lazy val requestHandler = new I18nRequestHandler(
-    pool,
-    RequestHandlerProtocol,
-    CdnDomain)
+  lazy val requestHandler =
+    new I18nRequestHandler(pool, RequestHandlerProtocol, CdnDomain)
 
-  lazy val jsDump = new JsDump(
-    path = appPath + "/" + WebPathRelative,
-    pool = pool,
-    keys = keys)
+  lazy val jsDump =
+    new JsDump(path = appPath + "/" + WebPathRelative, pool = pool, keys = keys)
 
   lazy val fileFix = new FileFix(
     path = appPath + "/" + FilePathRelative,
@@ -57,14 +51,10 @@ final class Env(
     keys = keys,
     messages = messages)
 
-  lazy val transInfos = TransInfos(
-    messages = messages,
-    keys = keys)
+  lazy val transInfos = TransInfos(messages = messages, keys = keys)
 
-  lazy val forms = new DataForm(
-    keys = keys,
-    captcher = captcher,
-    callApi = callApi)
+  lazy val forms =
+    new DataForm(keys = keys, captcher = captcher, callApi = callApi)
 
   def upstreamFetch = new UpstreamFetch(id => UpstreamUrlPattern format id)
 
@@ -87,7 +77,9 @@ final class Env(
 
   def jsonFromVersion(v: Int): Fu[JsValue] = {
     import tube.translationTube
-    TranslationRepo findFrom v map { ts => Json toJson ts }
+    TranslationRepo findFrom v map { ts =>
+      Json toJson ts
+    }
   }
 
   def cli = new lila.common.Cli {

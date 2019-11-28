@@ -23,25 +23,27 @@ case class Donation(
 object Donation {
 
   def make(
-    payPalTnx: Option[String],
-    payPalSub: Option[String],
-    email: Option[String],
-    name: Option[String],
-    userId: Option[String],
-    gross: Int,
-    fee: Int,
-    message: String) = Donation(
-    _id = ornicar.scalalib.Random nextStringUppercase 8,
-    payPalTnx = payPalTnx,
-    payPalSub = payPalSub,
-    email = email,
-    name = name,
-    userId = userId,
-    date = DateTime.now,
-    gross = gross,
-    fee = fee,
-    net = gross - fee,
-    message = message,
-    public = true,
-    publicAmount = false)
+      payPalTnx: Option[String],
+      payPalSub: Option[String],
+      email: Option[String],
+      name: Option[String],
+      userId: Option[String],
+      gross: Int,
+      fee: Int,
+      message: String) =
+    Donation(
+      _id = ornicar.scalalib.Random nextStringUppercase 8,
+      payPalTnx = payPalTnx,
+      payPalSub = payPalSub,
+      email = email,
+      name = name,
+      userId = userId,
+      date = DateTime.now,
+      gross = gross,
+      fee = fee,
+      net = gross - fee,
+      message = message,
+      public = true,
+      publicAmount = false
+    )
 }

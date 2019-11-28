@@ -1,19 +1,19 @@
 /*
- *  ____    ____    _____    ____    ___     ____ 
+ *  ____    ____    _____    ____    ___     ____
  * |  _ \  |  _ \  | ____|  / ___|  / _/    / ___|        Precog (R)
  * | |_) | | |_) | |  _|   | |     | |  /| | |  _         Advanced Analytics Engine for NoSQL Data
  * |  __/  |  _ <  | |___  | |___  |/ _| | | |_| |        Copyright (C) 2010 - 2013 SlamData, Inc.
  * |_|     |_| \_\ |_____|  \____|   /__/   \____|        All Rights Reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the 
- * GNU Affero General Public License as published by the Free Software Foundation, either version 
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Affero General Public License as published by the Free Software Foundation, either version
  * 3 of the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
  * the GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License along with this 
+ * You should have received a copy of the GNU Affero General Public License along with this
  * program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
@@ -28,7 +28,6 @@ import java.io.File
 
 import blueeyes.json._
 
-
 object IngestTest {
 
   private def time[A](f: => Any): Long = {
@@ -38,15 +37,19 @@ object IngestTest {
   }
 
   private def dataDirs(runner: NIHDBPerfTestRunner[_]): List[File] =
-    List(runner.yggConfig.dataDir, runner.yggConfig.archiveDir,
-      runner.yggConfig.cacheDir, runner.yggConfig.scratchDir)
+    List(
+      runner.yggConfig.dataDir,
+      runner.yggConfig.archiveDir,
+      runner.yggConfig.cacheDir,
+      runner.yggConfig.scratchDir)
 
   private def ensureDataDirsAreEmpty(runner: NIHDBPerfTestRunner[_]) {
     dataDirs(runner) foreach { dir =>
       if (!dir.exists()) {
         dir.mkdirs()
       } else if (!dir.list().isEmpty) {
-        sys.error("Cannot run ingest performance tests on non-empty directory '%s'." format dir)
+        sys.error(
+          "Cannot run ingest performance tests on non-empty directory '%s'." format dir)
       }
     }
   }
@@ -62,12 +65,13 @@ object IngestTest {
 
   def run(config: RunConfig) {
     import akka.actor.ActorSystem
-    import akka.dispatch.{ Future, ExecutionContext, Await }
+    import akka.dispatch.{Future, ExecutionContext, Await}
     import PerfTestPrettyPrinters._
     import RunConfig.OutputFormat
 
     try {
-      val runner = new NIHDBPerfTestRunner(SimpleTimer,
+      val runner = new NIHDBPerfTestRunner(
+        SimpleTimer,
         optimize = config.optimize,
         apiKey = "dummyAPIKey",
         _rootDir = config.rootDir)
@@ -88,17 +92,21 @@ object IngestTest {
         def run(n: Int): Map[String, Option[Statistics]] = {
           import scalaz.syntax.monoid._
 
-          (0 until n).foldLeft(Map.empty[String, Option[Statistics]]) { (stats, _) =>
-            config.ingest.foldLeft(stats) { case (stats, (path, file)) =>
-              stats + (path -> (stats.getOrElse(path, None) |+| Some(timeIngest(path, file))))
-            }
+          (0 until n).foldLeft(Map.empty[String, Option[Statistics]]) {
+            (stats, _) =>
+              config.ingest.foldLeft(stats) {
+                case (stats, (path, file)) =>
+                  stats + (path -> (stats.getOrElse(path, None) |+| Some(
+                    timeIngest(path, file))))
+              }
           }
         }
 
         run(config.dryRuns)
         val stats = run(config.runs)
-        println(JObject(stats.toList collect { case (path, Some(s)) =>
-          JField(path, s.toJson)
+        println(JObject(stats.toList collect {
+          case (path, Some(s)) =>
+            JField(path, s.toJson)
         }))
 
       } finally {
@@ -111,7 +119,9 @@ object IngestTest {
     RunConfig.fromCommandLine(args.toList) match {
       case Failure(errors) =>
         System.err.println("Error parsing command lines:")
-        errors.list foreach { msg => System.err.println("\t" + msg) }
+        errors.list foreach { msg =>
+          System.err.println("\t" + msg)
+        }
         System.err.println()
 
       case Success(config) =>
@@ -119,4 +129,3 @@ object IngestTest {
     }
   }
 }
-

@@ -7,7 +7,8 @@ import org.scalacheck.Gen
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import org.ensime.util.EnsimeSpec
 
-class SexpParserCheck extends EnsimeSpec
+class SexpParserCheck
+    extends EnsimeSpec
     with GeneratorDrivenPropertyChecks
     with ArbitrarySexp {
 
@@ -38,7 +39,9 @@ trait ArbitrarySexp {
     alphaStr.filter(_.nonEmpty).map(SexpSymbol)
 
   lazy val genSexpKey: Gen[SexpSymbol] =
-    alphaStr.filter(_.nonEmpty).map { s => SexpSymbol(":" + s) }
+    alphaStr.filter(_.nonEmpty).map { s =>
+      SexpSymbol(":" + s)
+    }
 
   // TODO: String/Char should be selected from a wider range
   // TODO: arbitrary[BigDecimal] but it freezes the tests
@@ -62,21 +65,22 @@ trait ArbitrarySexp {
     nonEmptyListOf(genSexp(level + 1)).map(SexpList(_))
 
   def genSexpData(level: Int): Gen[Sexp] =
-    mapOfN(2, zip(genSexpKey, genSexp(level + 1))).map {
-      kvs => SexpData(kvs.toList)
+    mapOfN(2, zip(genSexpKey, genSexp(level + 1))).map { kvs =>
+      SexpData(kvs.toList)
     }
 
   // our parser is soooo slow for deep trees
   def genSexp(level: Int): Gen[Sexp] =
     if (level >= 4) genSexpAtom
-    else lzy {
-      oneOf(
-        genSexpAtom,
-        genSexpCons(level + 1),
-        genSexpList(level + 1),
-        genSexpData(level + 1)
-      )
-    }
+    else
+      lzy {
+        oneOf(
+          genSexpAtom,
+          genSexpCons(level + 1),
+          genSexpList(level + 1),
+          genSexpData(level + 1)
+        )
+      }
 
   implicit def arbSexp: Arbitrary[Sexp] = Arbitrary(genSexp(0))
 }

@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.twitter.summingbird.batch
 
@@ -27,24 +27,23 @@ import com.twitter.algebird.{
   ExclusiveLower,
   Universe
 }
-import com.twitter.bijection.{ Bijection, Injection }
+import com.twitter.bijection.{Bijection, Injection}
 import scala.collection.Iterator.iterate
 
 /**
- * The Batch is the fundamental work unit of the Hadoop portion of
- * Summingbird. Batches are processed offline and pushed into a
- * persistent store for serving. The offline Batches include the sum
- * of all Values for each Key. If the Value is zero, it is omitted
- * (i.e. zero[Value] is indistinguishable from having never seen a
- * Value for a given Key).  Each Batch has a unique BatchID. Each
- * event falls into a single BatchID (which is a concrete type
- * isomorphic to Long).
- *
- * @author Oscar Boykin
- * @author Sam Ritchie
- * @author Ashu Singhal
- */
-
+  * The Batch is the fundamental work unit of the Hadoop portion of
+  * Summingbird. Batches are processed offline and pushed into a
+  * persistent store for serving. The offline Batches include the sum
+  * of all Values for each Key. If the Value is zero, it is omitted
+  * (i.e. zero[Value] is indistinguishable from having never seen a
+  * Value for a given Key).  Each Batch has a unique BatchID. Each
+  * event falls into a single BatchID (which is a concrete type
+  * isomorphic to Long).
+  *
+  * @author Oscar Boykin
+  * @author Sam Ritchie
+  * @author Ashu Singhal
+  */
 object BatchID {
   import OrderedFromOrderingExt._
   implicit val equiv: Equiv[BatchID] = Equiv.by(_.id)
@@ -53,20 +52,22 @@ object BatchID {
   def apply(str: String) = new BatchID(str.split("\\.")(1).toLong)
 
   /**
-   * Returns an Iterator[BatchID] containing the range
-   * `[startBatch, endBatch]` (inclusive).
-   */
+    * Returns an Iterator[BatchID] containing the range
+    * `[startBatch, endBatch]` (inclusive).
+    */
   def range(start: BatchID, end: BatchID): Iterable[BatchID] =
     new Iterable[BatchID] {
       def iterator = iterate(start)(_.next).takeWhile(_ <= end)
     }
 
   /**
-   * Returns true if the supplied interval of BatchID can
-   */
+    * Returns true if the supplied interval of BatchID can
+    */
   def toInterval(iter: TraversableOnce[BatchID]): Option[Interval[BatchID]] =
     iter
-      .map { b => (b, b, 1L) }
+      .map { b =>
+        (b, b, 1L)
+      }
       .reduceOption { (left, right) =>
         val (lmin, lmax, lcnt) = left
         val (rmin, rmax, rcnt) = right
@@ -84,12 +85,12 @@ object BatchID {
       .orElse(Some(Empty[BatchID]())) // there was nothing it iter
 
   /**
-   * Returns all the BatchIDs that are contained in the interval
-   */
+    * Returns all the BatchIDs that are contained in the interval
+    */
   def toIterable(interval: Interval[BatchID]): Iterable[BatchID] =
     interval match {
-      case Empty() => Iterable.empty
-      case Universe() => range(Min, Max)
+      case Empty()               => Iterable.empty
+      case Universe()            => range(Min, Max)
       case ExclusiveUpper(upper) => range(Min, upper.prev)
       case InclusiveUpper(upper) => range(Min, upper)
       case ExclusiveLower(lower) => range(lower.next, Max)

@@ -29,11 +29,10 @@ import java.io.File
 case class DataSourceParams(val filepath: String) extends Params
 
 case class DataSource(val dsp: DataSourceParams)
-  extends PDataSource[DataSourceParams, Null, RDD[Rating], (Int, Int), Double] {
+    extends PDataSource[DataSourceParams, Null, RDD[Rating], (Int, Int), Double] {
 
-  override
-  def read(sc: SparkContext)
-  : Seq[(Null, RDD[Rating], RDD[((Int, Int), Double)])] = {
+  override def read(
+      sc: SparkContext): Seq[(Null, RDD[Rating], RDD[((Int, Int), Double)])] = {
     val data = sc.textFile(dsp.filepath)
     val ratings: RDD[Rating] = data.map(_.split("::") match {
       case Array(user, item, rate) =>
@@ -49,16 +48,18 @@ case class DataSource(val dsp: DataSourceParams)
 }
 
 case class AlgorithmParams(
-  val rank: Int = 10,
-  val numIterations: Int = 20,
-  val lambda: Double = 0.01,
-  val persistModel: Boolean = false) extends Params
+    val rank: Int = 10,
+    val numIterations: Int = 20,
+    val lambda: Double = 0.01,
+    val persistModel: Boolean = false)
+    extends Params
 
-class PMatrixFactorizationModel(rank: Int,
+class PMatrixFactorizationModel(
+    rank: Int,
     userFeatures: RDD[(Int, Array[Double])],
     productFeatures: RDD[(Int, Array[Double])])
-  extends MatrixFactorizationModel(rank, userFeatures, productFeatures)
-  with IPersistentModel[AlgorithmParams] {
+    extends MatrixFactorizationModel(rank, userFeatures, productFeatures)
+    with IPersistentModel[AlgorithmParams] {
   def save(id: String, params: AlgorithmParams, sc: SparkContext): Boolean = {
     if (params.persistModel) {
       sc.parallelize(Seq(rank)).saveAsObjectFile(s"/tmp/${id}/rank")
@@ -70,7 +71,7 @@ class PMatrixFactorizationModel(rank: Int,
 }
 
 object PMatrixFactorizationModel
-  extends IPersistentModelLoader[AlgorithmParams, PMatrixFactorizationModel] {
+    extends IPersistentModelLoader[AlgorithmParams, PMatrixFactorizationModel] {
   def apply(id: String, params: AlgorithmParams, sc: Option[SparkContext]) = {
     new PMatrixFactorizationModel(
       rank = sc.get.objectFile[Int](s"/tmp/${id}/rank").first,
@@ -80,8 +81,12 @@ object PMatrixFactorizationModel
 }
 
 class ALSAlgorithm(val ap: AlgorithmParams)
-  extends PAlgorithm[AlgorithmParams, RDD[Rating],
-      PMatrixFactorizationModel, (Int, Int), Double] {
+    extends PAlgorithm[
+      AlgorithmParams,
+      RDD[Rating],
+      PMatrixFactorizationModel,
+      (Int, Int),
+      Double] {
 
   def train(data: RDD[Rating]): PMatrixFactorizationModel = {
     val m = ALS.train(data, ap.rank, ap.numIterations, ap.lambda)
@@ -91,25 +96,24 @@ class ALSAlgorithm(val ap: AlgorithmParams)
       productFeatures = m.productFeatures)
   }
 
-  override
-  def batchPredict(
-    model: PMatrixFactorizationModel,
-    feature: RDD[(Long, (Int, Int))]): RDD[(Long, Double)] = {
+  override def batchPredict(
+      model: PMatrixFactorizationModel,
+      feature: RDD[(Long, (Int, Int))]): RDD[(Long, Double)] = {
     val indexlessFeature = feature.values
 
     val prediction: RDD[Rating] = model.predict(indexlessFeature)
 
-    val p: RDD[((Int, Int), Double)] = prediction.map {
-      r => ((r.user, r.product), r.rating)
+    val p: RDD[((Int, Int), Double)] = prediction.map { r =>
+      ((r.user, r.product), r.rating)
     }
 
-    feature.map{ _.swap }
-    .join(p)
-    .map { case (up, (fi, r)) => (fi,r) }
+    feature
+      .map { _.swap }
+      .join(p)
+      .map { case (up, (fi, r)) => (fi, r) }
   }
 
-  def predict(
-    model: PMatrixFactorizationModel, feature: (Int, Int)): Double = {
+  def predict(model: PMatrixFactorizationModel, feature: (Int, Int)): Double = {
     model.predict(feature._1, feature._2)
   }
 
@@ -130,7 +134,7 @@ object Run {
       algorithmParamsList = Seq(("", ap)),
       servingClassOpt = Some(LFirstServing(classOf[ALSAlgorithm])),
       params = WorkflowParams(
-	batch = "Imagine: P Recommendations",
+        batch = "Imagine: P Recommendations",
         verbose = 1
       )
     )
@@ -147,12 +151,13 @@ object RecommendationEngine extends IEngineFactory {
   }
 }
 
-
-class Tuple2IntSerializer extends CustomSerializer[(Int, Int)](format => (
-  {
-    case JArray(List(JInt(x), JInt(y))) => (x.intValue, y.intValue)
-  },
-  {
-    case x: (Int, Int) => JArray(List(JInt(x._1), JInt(x._2)))
-  }
-))
+class Tuple2IntSerializer
+    extends CustomSerializer[(Int, Int)](
+      format =>
+        (
+          {
+            case JArray(List(JInt(x), JInt(y))) => (x.intValue, y.intValue)
+          }, {
+            case x: (Int, Int) => JArray(List(JInt(x._1), JInt(x._2)))
+          }
+        ))

@@ -20,12 +20,18 @@ package org.apache.spark.ml.attribute
 import scala.annotation.varargs
 
 import org.apache.spark.annotation.DeveloperApi
-import org.apache.spark.sql.types.{DoubleType, Metadata, MetadataBuilder, NumericType, StructField}
+import org.apache.spark.sql.types.{
+  DoubleType,
+  Metadata,
+  MetadataBuilder,
+  NumericType,
+  StructField
+}
 
 /**
- * :: DeveloperApi ::
- * Abstract class for ML attributes.
- */
+  * :: DeveloperApi ::
+  * Abstract class for ML attributes.
+  */
 @DeveloperApi
 sealed abstract class Attribute extends Serializable {
 
@@ -58,26 +64,26 @@ sealed abstract class Attribute extends Serializable {
   def withoutIndex: Attribute
 
   /**
-   * Tests whether this attribute is numeric, true for [[NumericAttribute]] and [[BinaryAttribute]].
-   */
+    * Tests whether this attribute is numeric, true for [[NumericAttribute]] and [[BinaryAttribute]].
+    */
   def isNumeric: Boolean
 
   /**
-   * Tests whether this attribute is nominal, true for [[NominalAttribute]] and [[BinaryAttribute]].
-   */
+    * Tests whether this attribute is nominal, true for [[NominalAttribute]] and [[BinaryAttribute]].
+    */
   def isNominal: Boolean
 
   /**
-   * Converts this attribute to [[Metadata]].
-   * @param withType whether to include the type info
-   */
+    * Converts this attribute to [[Metadata]].
+    * @param withType whether to include the type info
+    */
   private[attribute] def toMetadataImpl(withType: Boolean): Metadata
 
   /**
-   * Converts this attribute to [[Metadata]]. For numeric attributes, the type info is excluded to
-   * save space, because numeric type is the default attribute type. For nominal and binary
-   * attributes, the type info is included.
-   */
+    * Converts this attribute to [[Metadata]]. For numeric attributes, the type info is excluded to
+    * save space, because numeric type is the default attribute type. For nominal and binary
+    * attributes, the type info is included.
+    */
   private[attribute] def toMetadataImpl(): Metadata = {
     if (attrType == AttributeType.Numeric) {
       toMetadataImpl(withType = false)
@@ -98,13 +104,15 @@ sealed abstract class Attribute extends Serializable {
   def toMetadata(): Metadata = toMetadata(Metadata.empty)
 
   /**
-   * Converts to a [[StructField]] with some existing metadata.
-   * @param existingMetadata existing metadata to carry over
-   */
+    * Converts to a [[StructField]] with some existing metadata.
+    * @param existingMetadata existing metadata to carry over
+    */
   def toStructField(existingMetadata: Metadata): StructField = {
     val newMetadata = new MetadataBuilder()
       .withMetadata(existingMetadata)
-      .putMetadata(AttributeKeys.ML_ATTR, withoutName.withoutIndex.toMetadataImpl())
+      .putMetadata(
+        AttributeKeys.ML_ATTR,
+        withoutName.withoutIndex.toMetadataImpl())
       .build()
     StructField(name.get, DoubleType, nullable = false, newMetadata)
   }
@@ -119,14 +127,16 @@ sealed abstract class Attribute extends Serializable {
 private[attribute] trait AttributeFactory {
 
   /**
-   * Creates an [[Attribute]] from a [[Metadata]] instance.
-   */
+    * Creates an [[Attribute]] from a [[Metadata]] instance.
+    */
   private[attribute] def fromMetadata(metadata: Metadata): Attribute
 
   /**
-   * Creates an [[Attribute]] from a [[StructField]] instance, optionally preserving name.
-   */
-  private[ml] def decodeStructField(field: StructField, preserveName: Boolean): Attribute = {
+    * Creates an [[Attribute]] from a [[StructField]] instance, optionally preserving name.
+    */
+  private[ml] def decodeStructField(
+      field: StructField,
+      preserveName: Boolean): Attribute = {
     require(field.dataType.isInstanceOf[NumericType])
     val metadata = field.metadata
     val mlAttr = AttributeKeys.ML_ATTR
@@ -143,18 +153,20 @@ private[attribute] trait AttributeFactory {
   }
 
   /**
-   * Creates an [[Attribute]] from a [[StructField]] instance.
-   */
-  def fromStructField(field: StructField): Attribute = decodeStructField(field, false)
+    * Creates an [[Attribute]] from a [[StructField]] instance.
+    */
+  def fromStructField(field: StructField): Attribute =
+    decodeStructField(field, false)
 }
 
 /**
- * :: DeveloperApi ::
- */
+  * :: DeveloperApi ::
+  */
 @DeveloperApi
 object Attribute extends AttributeFactory {
 
-  private[attribute] override def fromMetadata(metadata: Metadata): Attribute = {
+  private[attribute] override def fromMetadata(
+      metadata: Metadata): Attribute = {
     import org.apache.spark.ml.attribute.AttributeKeys._
     val attrType = if (metadata.contains(TYPE)) {
       metadata.getString(TYPE)
@@ -178,17 +190,16 @@ object Attribute extends AttributeFactory {
   }
 }
 
-
 /**
- * :: DeveloperApi ::
- * A numeric attribute with optional summary statistics.
- * @param name optional name
- * @param index optional index
- * @param min optional min value
- * @param max optional max value
- * @param std optional standard deviation
- * @param sparsity optional sparsity (ratio of zeros)
- */
+  * :: DeveloperApi ::
+  * A numeric attribute with optional summary statistics.
+  * @param name optional name
+  * @param index optional index
+  * @param min optional min value
+  * @param max optional max value
+  * @param std optional standard deviation
+  * @param sparsity optional sparsity (ratio of zeros)
+  */
 @DeveloperApi
 class NumericAttribute private[ml] (
     override val name: Option[String] = None,
@@ -196,7 +207,8 @@ class NumericAttribute private[ml] (
     val min: Option[Double] = None,
     val max: Option[Double] = None,
     val std: Option[Double] = None,
-    val sparsity: Option[Double] = None) extends Attribute {
+    val sparsity: Option[Double] = None)
+    extends Attribute {
 
   std.foreach { s =>
     require(s >= 0.0, s"Standard deviation cannot be negative but got $s.")
@@ -207,10 +219,12 @@ class NumericAttribute private[ml] (
 
   override def attrType: AttributeType = AttributeType.Numeric
 
-  override def withName(name: String): NumericAttribute = copy(name = Some(name))
+  override def withName(name: String): NumericAttribute =
+    copy(name = Some(name))
   override def withoutName: NumericAttribute = copy(name = None)
 
-  override def withIndex(index: Int): NumericAttribute = copy(index = Some(index))
+  override def withIndex(index: Int): NumericAttribute =
+    copy(index = Some(index))
   override def withoutIndex: NumericAttribute = copy(index = None)
 
   /** Copy with a new min value. */
@@ -218,7 +232,6 @@ class NumericAttribute private[ml] (
 
   /** Copy without the min value. */
   def withoutMin: NumericAttribute = copy(min = None)
-
 
   /** Copy with a new max value. */
   def withMax(max: Double): NumericAttribute = copy(max = Some(max))
@@ -233,20 +246,23 @@ class NumericAttribute private[ml] (
   def withoutStd: NumericAttribute = copy(std = None)
 
   /** Copy with a new sparsity. */
-  def withSparsity(sparsity: Double): NumericAttribute = copy(sparsity = Some(sparsity))
+  def withSparsity(sparsity: Double): NumericAttribute =
+    copy(sparsity = Some(sparsity))
 
   /** Copy without the sparsity. */
   def withoutSparsity: NumericAttribute = copy(sparsity = None)
 
   /** Copy without summary statistics. */
-  def withoutSummary: NumericAttribute = copy(min = None, max = None, std = None, sparsity = None)
+  def withoutSummary: NumericAttribute =
+    copy(min = None, max = None, std = None, sparsity = None)
 
   override def isNumeric: Boolean = true
 
   override def isNominal: Boolean = false
 
   /** Convert this attribute to metadata. */
-  override private[attribute] def toMetadataImpl(withType: Boolean): Metadata = {
+  override private[attribute] def toMetadataImpl(
+      withType: Boolean): Metadata = {
     import org.apache.spark.ml.attribute.AttributeKeys._
     val bldr = new MetadataBuilder()
     if (withType) bldr.putString(TYPE, attrType.name)
@@ -297,49 +313,60 @@ class NumericAttribute private[ml] (
 }
 
 /**
- * :: DeveloperApi ::
- * Factory methods for numeric attributes.
- */
+  * :: DeveloperApi ::
+  * Factory methods for numeric attributes.
+  */
 @DeveloperApi
 object NumericAttribute extends AttributeFactory {
 
   /** The default numeric attribute. */
   val defaultAttr: NumericAttribute = new NumericAttribute
 
-  private[attribute] override def fromMetadata(metadata: Metadata): NumericAttribute = {
+  private[attribute] override def fromMetadata(
+      metadata: Metadata): NumericAttribute = {
     import org.apache.spark.ml.attribute.AttributeKeys._
-    val name = if (metadata.contains(NAME)) Some(metadata.getString(NAME)) else None
-    val index = if (metadata.contains(INDEX)) Some(metadata.getLong(INDEX).toInt) else None
-    val min = if (metadata.contains(MIN)) Some(metadata.getDouble(MIN)) else None
-    val max = if (metadata.contains(MAX)) Some(metadata.getDouble(MAX)) else None
-    val std = if (metadata.contains(STD)) Some(metadata.getDouble(STD)) else None
-    val sparsity = if (metadata.contains(SPARSITY)) Some(metadata.getDouble(SPARSITY)) else None
+    val name =
+      if (metadata.contains(NAME)) Some(metadata.getString(NAME)) else None
+    val index =
+      if (metadata.contains(INDEX)) Some(metadata.getLong(INDEX).toInt)
+      else None
+    val min =
+      if (metadata.contains(MIN)) Some(metadata.getDouble(MIN)) else None
+    val max =
+      if (metadata.contains(MAX)) Some(metadata.getDouble(MAX)) else None
+    val std =
+      if (metadata.contains(STD)) Some(metadata.getDouble(STD)) else None
+    val sparsity =
+      if (metadata.contains(SPARSITY)) Some(metadata.getDouble(SPARSITY))
+      else None
     new NumericAttribute(name, index, min, max, std, sparsity)
   }
 }
 
 /**
- * :: DeveloperApi ::
- * A nominal attribute.
- * @param name optional name
- * @param index optional index
- * @param isOrdinal whether this attribute is ordinal (optional)
- * @param numValues optional number of values. At most one of `numValues` and `values` can be
- *                  defined.
- * @param values optional values. At most one of `numValues` and `values` can be defined.
- */
+  * :: DeveloperApi ::
+  * A nominal attribute.
+  * @param name optional name
+  * @param index optional index
+  * @param isOrdinal whether this attribute is ordinal (optional)
+  * @param numValues optional number of values. At most one of `numValues` and `values` can be
+  *                  defined.
+  * @param values optional values. At most one of `numValues` and `values` can be defined.
+  */
 @DeveloperApi
 class NominalAttribute private[ml] (
     override val name: Option[String] = None,
     override val index: Option[Int] = None,
     val isOrdinal: Option[Boolean] = None,
     val numValues: Option[Int] = None,
-    val values: Option[Array[String]] = None) extends Attribute {
+    val values: Option[Array[String]] = None)
+    extends Attribute {
 
   numValues.foreach { n =>
     require(n >= 0, s"numValues cannot be negative but got $n.")
   }
-  require(!(numValues.isDefined && values.isDefined),
+  require(
+    !(numValues.isDefined && values.isDefined),
     "Cannot have both numValues and values defined.")
 
   override def attrType: AttributeType = AttributeType.Nominal
@@ -363,10 +390,12 @@ class NominalAttribute private[ml] (
   /** Gets a value given its index. */
   def getValue(index: Int): String = values.get(index)
 
-  override def withName(name: String): NominalAttribute = copy(name = Some(name))
+  override def withName(name: String): NominalAttribute =
+    copy(name = Some(name))
   override def withoutName: NominalAttribute = copy(name = None)
 
-  override def withIndex(index: Int): NominalAttribute = copy(index = Some(index))
+  override def withIndex(index: Int): NominalAttribute =
+    copy(index = Some(index))
   override def withoutIndex: NominalAttribute = copy(index = None)
 
   /** Copy with new values and empty `numValues`. */
@@ -394,9 +423,9 @@ class NominalAttribute private[ml] (
   def withoutNumValues: NominalAttribute = copy(numValues = None)
 
   /**
-   * Get the number of values, either from `numValues` or from `values`.
-   * Return None if unknown.
-   */
+    * Get the number of values, either from `numValues` or from `values`.
+    * Return None if unknown.
+    */
   def getNumValues: Option[Int] = {
     if (numValues.nonEmpty) {
       numValues
@@ -417,7 +446,8 @@ class NominalAttribute private[ml] (
     new NominalAttribute(name, index, isOrdinal, numValues, values)
   }
 
-  override private[attribute] def toMetadataImpl(withType: Boolean): Metadata = {
+  override private[attribute] def toMetadataImpl(
+      withType: Boolean): Metadata = {
     import org.apache.spark.ml.attribute.AttributeKeys._
     val bldr = new MetadataBuilder()
     if (withType) bldr.putString(TYPE, attrType.name)
@@ -454,44 +484,55 @@ class NominalAttribute private[ml] (
 }
 
 /**
- * :: DeveloperApi ::
- * Factory methods for nominal attributes.
- */
+  * :: DeveloperApi ::
+  * Factory methods for nominal attributes.
+  */
 @DeveloperApi
 object NominalAttribute extends AttributeFactory {
 
   /** The default nominal attribute. */
   final val defaultAttr: NominalAttribute = new NominalAttribute
 
-  private[attribute] override def fromMetadata(metadata: Metadata): NominalAttribute = {
+  private[attribute] override def fromMetadata(
+      metadata: Metadata): NominalAttribute = {
     import org.apache.spark.ml.attribute.AttributeKeys._
-    val name = if (metadata.contains(NAME)) Some(metadata.getString(NAME)) else None
-    val index = if (metadata.contains(INDEX)) Some(metadata.getLong(INDEX).toInt) else None
-    val isOrdinal = if (metadata.contains(ORDINAL)) Some(metadata.getBoolean(ORDINAL)) else None
+    val name =
+      if (metadata.contains(NAME)) Some(metadata.getString(NAME)) else None
+    val index =
+      if (metadata.contains(INDEX)) Some(metadata.getLong(INDEX).toInt)
+      else None
+    val isOrdinal =
+      if (metadata.contains(ORDINAL)) Some(metadata.getBoolean(ORDINAL))
+      else None
     val numValues =
-      if (metadata.contains(NUM_VALUES)) Some(metadata.getLong(NUM_VALUES).toInt) else None
+      if (metadata.contains(NUM_VALUES))
+        Some(metadata.getLong(NUM_VALUES).toInt)
+      else None
     val values =
-      if (metadata.contains(VALUES)) Some(metadata.getStringArray(VALUES)) else None
+      if (metadata.contains(VALUES)) Some(metadata.getStringArray(VALUES))
+      else None
     new NominalAttribute(name, index, isOrdinal, numValues, values)
   }
 }
 
 /**
- * :: DeveloperApi ::
- * A binary attribute.
- * @param name optional name
- * @param index optional index
- * @param values optional values. If set, its size must be 2.
- */
+  * :: DeveloperApi ::
+  * A binary attribute.
+  * @param name optional name
+  * @param index optional index
+  * @param values optional values. If set, its size must be 2.
+  */
 @DeveloperApi
 class BinaryAttribute private[ml] (
     override val name: Option[String] = None,
     override val index: Option[Int] = None,
     val values: Option[Array[String]] = None)
-  extends Attribute {
+    extends Attribute {
 
   values.foreach { v =>
-    require(v.length == 2, s"Number of values must be 2 for a binary attribute but got ${v.toSeq}.")
+    require(
+      v.length == 2,
+      s"Number of values must be 2 for a binary attribute but got ${v.toSeq}.")
   }
 
   override def attrType: AttributeType = AttributeType.Binary
@@ -503,14 +544,15 @@ class BinaryAttribute private[ml] (
   override def withName(name: String): BinaryAttribute = copy(name = Some(name))
   override def withoutName: BinaryAttribute = copy(name = None)
 
-  override def withIndex(index: Int): BinaryAttribute = copy(index = Some(index))
+  override def withIndex(index: Int): BinaryAttribute =
+    copy(index = Some(index))
   override def withoutIndex: BinaryAttribute = copy(index = None)
 
   /**
-   * Copy with new values.
-   * @param negative name for negative
-   * @param positive name for positive
-   */
+    * Copy with new values.
+    * @param negative name for negative
+    * @param positive name for positive
+    */
   def withValues(negative: String, positive: String): BinaryAttribute =
     copy(values = Some(Array(negative, positive)))
 
@@ -525,7 +567,8 @@ class BinaryAttribute private[ml] (
     new BinaryAttribute(name, index, values)
   }
 
-  override private[attribute] def toMetadataImpl(withType: Boolean): Metadata = {
+  override private[attribute] def toMetadataImpl(
+      withType: Boolean): Metadata = {
     import org.apache.spark.ml.attribute.AttributeKeys._
     val bldr = new MetadataBuilder
     if (withType) bldr.putString(TYPE, attrType.name)
@@ -556,29 +599,34 @@ class BinaryAttribute private[ml] (
 }
 
 /**
- * :: DeveloperApi ::
- * Factory methods for binary attributes.
- */
+  * :: DeveloperApi ::
+  * Factory methods for binary attributes.
+  */
 @DeveloperApi
 object BinaryAttribute extends AttributeFactory {
 
   /** The default binary attribute. */
   final val defaultAttr: BinaryAttribute = new BinaryAttribute
 
-  private[attribute] override def fromMetadata(metadata: Metadata): BinaryAttribute = {
+  private[attribute] override def fromMetadata(
+      metadata: Metadata): BinaryAttribute = {
     import org.apache.spark.ml.attribute.AttributeKeys._
-    val name = if (metadata.contains(NAME)) Some(metadata.getString(NAME)) else None
-    val index = if (metadata.contains(INDEX)) Some(metadata.getLong(INDEX).toInt) else None
+    val name =
+      if (metadata.contains(NAME)) Some(metadata.getString(NAME)) else None
+    val index =
+      if (metadata.contains(INDEX)) Some(metadata.getLong(INDEX).toInt)
+      else None
     val values =
-      if (metadata.contains(VALUES)) Some(metadata.getStringArray(VALUES)) else None
+      if (metadata.contains(VALUES)) Some(metadata.getStringArray(VALUES))
+      else None
     new BinaryAttribute(name, index, values)
   }
 }
 
 /**
- * :: DeveloperApi ::
- * An unresolved attribute.
- */
+  * :: DeveloperApi ::
+  * An unresolved attribute.
+  */
 @DeveloperApi
 object UnresolvedAttribute extends Attribute {
 
@@ -594,7 +642,8 @@ object UnresolvedAttribute extends Attribute {
 
   override def name: Option[String] = None
 
-  override private[attribute] def toMetadataImpl(withType: Boolean): Metadata = {
+  override private[attribute] def toMetadataImpl(
+      withType: Boolean): Metadata = {
     Metadata.empty
   }
 

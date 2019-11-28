@@ -1,7 +1,7 @@
 package docs.stream.cookbook
 
 import akka.NotUsed
-import akka.stream.scaladsl.{ Flow, Sink, Source }
+import akka.stream.scaladsl.{Flow, Sink, Source}
 import akka.stream.testkit._
 import scala.concurrent.duration._
 import akka.testkit.TestLatch
@@ -19,7 +19,9 @@ class RecipeSimpleDrop extends RecipeSpec {
       //#simple-drop
       val latch = TestLatch(2)
       val realDroppyStream =
-        Flow[Message].conflate((lastMessage, newMessage) => { latch.countDown(); newMessage })
+        Flow[Message].conflate((lastMessage, newMessage) => {
+          latch.countDown(); newMessage
+        })
 
       val pub = TestPublisher.probe[Message]()
       val sub = TestSubscriber.manualProbe[Message]()

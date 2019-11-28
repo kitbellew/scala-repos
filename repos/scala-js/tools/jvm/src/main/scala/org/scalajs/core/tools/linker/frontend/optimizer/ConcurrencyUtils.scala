@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.core.tools.linker.frontend.optimizer
 
 import scala.annotation.tailrec
@@ -18,7 +17,7 @@ import java.util.concurrent.atomic._
 private[optimizer] object ConcurrencyUtils {
 
   /** An atomic accumulator supports adding single elements and retrieving and
-   *  deleting all contained elements */
+    *  deleting all contained elements */
   type AtomicAcc[T] = AtomicReference[List[T]]
 
   object AtomicAcc {
@@ -62,7 +61,7 @@ private[optimizer] object ConcurrencyUtils {
     @inline final def empty[T]: TrieSet[T] = TrieMap.empty
   }
 
-  implicit class TrieMapOps[K,V](val map: TrieMap[K,V]) extends AnyVal {
+  implicit class TrieMapOps[K, V](val map: TrieMap[K, V]) extends AnyVal {
     @inline final def getOrPut(k: K, default: => V): V = {
       map.get(k).getOrElse {
         val v = default

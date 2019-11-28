@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2014-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2014-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package docs.stream.io
 
 import java.util.concurrent.atomic.AtomicReference
@@ -47,10 +47,11 @@ class StreamTcpDocSpec extends AkkaSpec {
         println(s"New connection from: ${connection.remoteAddress}")
 
         val echo = Flow[ByteString]
-          .via(Framing.delimiter(
-            ByteString("\n"),
-            maximumFrameLength = 256,
-            allowTruncation = true))
+          .via(
+            Framing.delimiter(
+              ByteString("\n"),
+              maximumFrameLength = 256,
+              allowTruncation = true))
           .map(_.utf8String)
           .map(_ + "!!!\n")
           .map(ByteString(_))
@@ -70,7 +71,6 @@ class StreamTcpDocSpec extends AkkaSpec {
     //#welcome-banner-chat-server
 
     connections.runForeach { connection =>
-
       // server logic, parses incoming commands
       val commandParser = Flow[String].takeWhile(_ != "BYE").map(_ + "!")
 
@@ -79,13 +79,16 @@ class StreamTcpDocSpec extends AkkaSpec {
       val welcome = Source.single(welcomeMsg)
 
       val serverLogic = Flow[ByteString]
-        .via(Framing.delimiter(
-          ByteString("\n"),
-          maximumFrameLength = 256,
-          allowTruncation = true))
+        .via(
+          Framing.delimiter(
+            ByteString("\n"),
+            maximumFrameLength = 256,
+            allowTruncation = true))
         .map(_.utf8String)
         //#welcome-banner-chat-server
-        .map { command ⇒ serverProbe.ref ! command; command }
+        .map { command ⇒
+          serverProbe.ref ! command; command
+        }
         //#welcome-banner-chat-server
         .via(commandParser)
         // merge in the initial banner after parser
@@ -118,15 +121,17 @@ class StreamTcpDocSpec extends AkkaSpec {
       //#repl-client
 
       val replParser =
-        Flow[String].takeWhile(_ != "q")
+        Flow[String]
+          .takeWhile(_ != "q")
           .concat(Source.single("BYE"))
           .map(elem => ByteString(s"$elem\n"))
 
       val repl = Flow[ByteString]
-        .via(Framing.delimiter(
-          ByteString("\n"),
-          maximumFrameLength = 256,
-          allowTruncation = true))
+        .via(
+          Framing.delimiter(
+            ByteString("\n"),
+            maximumFrameLength = 256,
+            allowTruncation = true))
         .map(_.utf8String)
         .map(text => println("Server: " + text))
         .map(_ => readLine("> "))

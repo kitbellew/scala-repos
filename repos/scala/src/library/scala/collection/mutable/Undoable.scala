@@ -6,22 +6,20 @@
 **                          |/                                          **
 \*                                                                      */
 
-
-
 package scala
 package collection
 package mutable
 
-
 /** Classes that mix in the `Undoable` class provide an operation
- *  `undo` which can be used to undo the last operation.
- *
- *  @author  Matthias Zenger
- *  @version 1.0, 08/07/2003
- *  @since   1
- */
+  *  `undo` which can be used to undo the last operation.
+  *
+  *  @author  Matthias Zenger
+  *  @version 1.0, 08/07/2003
+  *  @since   1
+  */
 trait Undoable {
+
   /** Undo the last operation.
-   */
+    */
   def undo(): Unit
 }

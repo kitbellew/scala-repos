@@ -22,7 +22,9 @@ object Dependencies {
       awesomepom,
       typesafe,
       prismic,
-      t2v, jgitMaven, sprayRepo)
+      t2v,
+      jgitMaven,
+      sprayRepo)
   }
 
   val scalaz = "org.scalaz" %% "scalaz-core" % "7.1.7"

@@ -33,7 +33,13 @@ import scalafx.application.JFXApp.PrimaryStage
 import scalafx.geometry.{HPos, Pos, VPos}
 import scalafx.scene.Scene
 import scalafx.scene.control.{CheckBox, Label, TextField}
-import scalafx.scene.layout.{AnchorPane, ColumnConstraints, GridPane, Priority, VBox}
+import scalafx.scene.layout.{
+  AnchorPane,
+  ColumnConstraints,
+  GridPane,
+  Priority,
+  VBox
+}
 import scalafx.scene.paint.Color
 
 object SliderControlDemo extends JFXApp {
@@ -102,8 +108,7 @@ object SliderControlDemo extends JFXApp {
   pnlControls.columnConstraints = List(ccOdd, ccEven, ccOdd, ccEven)
 
   val box = new VBox(5.0) {
-    children = List(sliderControl,
-      pnlControls)
+    children = List(sliderControl, pnlControls)
   }
   VBox.setVgrow(sliderControl, Priority.Never)
   VBox.setVgrow(pnlControls, Priority.Always)

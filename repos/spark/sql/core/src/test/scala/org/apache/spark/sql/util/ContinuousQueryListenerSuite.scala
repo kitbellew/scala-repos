@@ -31,9 +31,16 @@ import org.scalatest.time.SpanSugar._
 import org.apache.spark.sql._
 import org.apache.spark.sql.execution.streaming._
 import org.apache.spark.sql.test.SharedSQLContext
-import org.apache.spark.sql.util.ContinuousQueryListener.{QueryProgress, QueryStarted, QueryTerminated}
+import org.apache.spark.sql.util.ContinuousQueryListener.{
+  QueryProgress,
+  QueryStarted,
+  QueryTerminated
+}
 
-class ContinuousQueryListenerSuite extends StreamTest with SharedSQLContext with BeforeAndAfter {
+class ContinuousQueryListenerSuite
+    extends StreamTest
+    with SharedSQLContext
+    with BeforeAndAfter {
 
   import testImplicits._
 
@@ -78,7 +85,9 @@ class ContinuousQueryListenerSuite extends StreamTest with SharedSQLContext with
             assert(status != null)
             assert(status.active == true)
             assert(status.sourceStatuses(0).offset === Some(LongOffset(0)))
-            assert(status.sinkStatus.offset === Some(CompositeOffset.fill(LongOffset(0))))
+            assert(
+              status.sinkStatus.offset === Some(
+                CompositeOffset.fill(LongOffset(0))))
 
             // No termination events
             assert(listener.terminationStatus === null)
@@ -92,7 +101,9 @@ class ContinuousQueryListenerSuite extends StreamTest with SharedSQLContext with
 
             assert(status.active === false) // must be inactive by the time onQueryTerm is called
             assert(status.sourceStatuses(0).offset === Some(LongOffset(0)))
-            assert(status.sinkStatus.offset === Some(CompositeOffset.fill(LongOffset(0))))
+            assert(
+              status.sinkStatus.offset === Some(
+                CompositeOffset.fill(LongOffset(0))))
           }
           listener.checkAsyncErrors()
         }
@@ -136,7 +147,9 @@ class ContinuousQueryListenerSuite extends StreamTest with SharedSQLContext with
         require(listener.startStatus === null)
         testStream(MemoryStream[Int].toDS)(
           StartStream,
-          Assert(listener.startStatus !== null, "onQueryStarted not called before query returned"),
+          Assert(
+            listener.startStatus !== null,
+            "onQueryStarted not called before query returned"),
           StopStream,
           Assert { listener.checkAsyncErrors() }
         )
@@ -144,8 +157,8 @@ class ContinuousQueryListenerSuite extends StreamTest with SharedSQLContext with
     }
   }
 
-
-  private def withListenerAdded(listener: ContinuousQueryListener)(body: => Unit): Unit = {
+  private def withListenerAdded(listener: ContinuousQueryListener)(
+      body: => Unit): Unit = {
     @volatile var query: StreamExecution = null
     try {
       failAfter(1 minute) {
@@ -166,7 +179,7 @@ class ContinuousQueryListenerSuite extends StreamTest with SharedSQLContext with
 
   class QueryStatusCollector extends ContinuousQueryListener {
 
-    private val asyncTestWaiter = new Waiter  // to catch errors in the async listener events
+    private val asyncTestWaiter = new Waiter // to catch errors in the async listener events
 
     @volatile var startStatus: QueryStatus = null
     @volatile var terminationStatus: QueryStatus = null
@@ -178,7 +191,8 @@ class ContinuousQueryListenerSuite extends StreamTest with SharedSQLContext with
       progressStatuses.clear()
 
       // To reset the waiter
-      try asyncTestWaiter.await(timeout(1 milliseconds)) catch {
+      try asyncTestWaiter.await(timeout(1 milliseconds))
+      catch {
         case NonFatal(e) =>
       }
     }
@@ -186,7 +200,6 @@ class ContinuousQueryListenerSuite extends StreamTest with SharedSQLContext with
     def checkAsyncErrors(): Unit = {
       asyncTestWaiter.await(timeout(streamingTimeout))
     }
-
 
     override def onQueryStarted(queryStarted: QueryStarted): Unit = {
       asyncTestWaiter {
@@ -196,14 +209,18 @@ class ContinuousQueryListenerSuite extends StreamTest with SharedSQLContext with
 
     override def onQueryProgress(queryProgress: QueryProgress): Unit = {
       asyncTestWaiter {
-        assert(startStatus != null, "onQueryProgress called before onQueryStarted")
+        assert(
+          startStatus != null,
+          "onQueryProgress called before onQueryStarted")
         progressStatuses.add(QueryStatus(queryProgress.query))
       }
     }
 
     override def onQueryTerminated(queryTerminated: QueryTerminated): Unit = {
       asyncTestWaiter {
-        assert(startStatus != null, "onQueryTerminated called before onQueryStarted")
+        assert(
+          startStatus != null,
+          "onQueryTerminated called before onQueryStarted")
         terminationStatus = QueryStatus(queryTerminated.query)
       }
       asyncTestWaiter.dismiss()
@@ -211,14 +228,18 @@ class ContinuousQueryListenerSuite extends StreamTest with SharedSQLContext with
   }
 
   case class QueryStatus(
-    active: Boolean,
-    expection: Option[Exception],
-    sourceStatuses: Array[SourceStatus],
-    sinkStatus: SinkStatus)
+      active: Boolean,
+      expection: Option[Exception],
+      sourceStatuses: Array[SourceStatus],
+      sinkStatus: SinkStatus)
 
   object QueryStatus {
     def apply(query: ContinuousQuery): QueryStatus = {
-      QueryStatus(query.isActive, query.exception, query.sourceStatuses, query.sinkStatus)
+      QueryStatus(
+        query.isActive,
+        query.exception,
+        query.sourceStatuses,
+        query.sinkStatus)
     }
   }
 }

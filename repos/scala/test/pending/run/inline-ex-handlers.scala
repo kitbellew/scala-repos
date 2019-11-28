@@ -15,11 +15,11 @@ object TestInlineHandlersNoInline {
 
     try {
       if (nextInt % 2 == 0)
-      throw new IllegalArgumentException("something")
+        throw new IllegalArgumentException("something")
       result = 1
     } catch {
       case e: StackOverflowError =>
-      println("Stack overflow")
+        println("Stack overflow")
     }
 
     result
@@ -35,11 +35,11 @@ object TestInlineHandlersSimpleInline {
 
     try {
       if (nextInt % 2 == 0)
-      throw new IllegalArgumentException("something")
+        throw new IllegalArgumentException("something")
       result = 1
     } catch {
       case e: IllegalArgumentException =>
-      println("IllegalArgumentException")
+        println("IllegalArgumentException")
     }
 
     result
@@ -55,11 +55,11 @@ object TestInlineHandlersSubclassInline {
 
     try {
       if (nextInt % 2 == 0)
-      throw new IllegalArgumentException("something")
+        throw new IllegalArgumentException("something")
       result = 1
     } catch {
       case e: RuntimeException =>
-      println("RuntimeException")
+        println("RuntimeException")
     }
 
     result
@@ -75,7 +75,7 @@ object TestInlineHandlersFinallyInline {
 
     try {
       if (nextInt % 2 == 0)
-      throw new IllegalArgumentException("something")
+        throw new IllegalArgumentException("something")
       result = 1
     } catch {
       case e: Exception => throw e
@@ -88,7 +88,6 @@ object TestInlineHandlersFinallyInline {
   }
 }
 
-
 case class MyException(message: String) extends RuntimeException(message)
 
 /** For this class, we test inlining for a case class error */
@@ -100,7 +99,7 @@ object TestInlineHandlersCaseClassExceptionInline {
 
     try {
       if (nextInt % 2 == 0)
-      throw new MyException("something")
+        throw new MyException("something")
       result = 1
     } catch {
       case MyException(message) => println(message)
@@ -109,7 +108,6 @@ object TestInlineHandlersCaseClassExceptionInline {
     result
   }
 }
-
 
 /** For this class, inline should take place in the inner handler */
 object TestInlineHandlersNestedHandlerInnerInline {
@@ -121,7 +119,7 @@ object TestInlineHandlersNestedHandlerInnerInline {
     try {
       try {
         if (nextInt % 2 == 0)
-        throw new MyException("something")
+          throw new MyException("something")
         result = 1
       } catch {
         case MyException(message) => println(message)
@@ -134,7 +132,6 @@ object TestInlineHandlersNestedHandlerInnerInline {
   }
 }
 
-
 /** For this class, inline should take place in the outer handler */
 object TestInlineHandlersNestedHandlerOuterInline {
 
@@ -145,7 +142,7 @@ object TestInlineHandlersNestedHandlerOuterInline {
     try {
       try {
         if (nextInt % 2 == 0)
-        throw new MyException("something")
+          throw new MyException("something")
         result = 1
       } catch {
         case e: IllegalArgumentException => println("IllegalArgumentException")
@@ -158,7 +155,6 @@ object TestInlineHandlersNestedHandlerOuterInline {
   }
 }
 
-
 /** For this class, inline should take place in the all handlers (inner, outer and finally) */
 object TestInlineHandlersNestedHandlerAllInline {
 
@@ -169,17 +165,17 @@ object TestInlineHandlersNestedHandlerAllInline {
     try {
       try {
         if (nextInt % 2 == 0)
-        throw new MyException("something")
+          throw new MyException("something")
         result = 1
       } catch {
         case MyException(message) =>
-        println(message)
-        throw MyException(message)
+          println(message)
+          throw MyException(message)
       }
     } catch {
       case MyException(message) =>
-      println(message)
-      throw MyException(message)
+        println(message)
+        throw MyException(message)
     } finally {
       println("finally")
       result = (result - 1) / 2
@@ -188,7 +184,6 @@ object TestInlineHandlersNestedHandlerAllInline {
     result
   }
 }
-
 
 /** This class is meant to test whether the inline handler is copied only once for multiple inlines */
 object TestInlineHandlersSingleCopy {
@@ -200,17 +195,17 @@ object TestInlineHandlersSingleCopy {
     try {
 
       if (nextInt % 2 == 0)
-      throw new MyException("something")
+        throw new MyException("something")
 
       println("A side effect in the middle")
       result = 3 // another one
 
       if (nextInt % 3 == 2)
-      throw new MyException("something else")
+        throw new MyException("something else")
       result = 1
     } catch {
       case MyException(message) =>
-      println(message)
+        println(message)
     }
 
     result
@@ -263,11 +258,10 @@ object TestInlineHandlersSynchronizedWithStackDoubleThrow {
     result.length
   }
 }
-*/
-
+  */
 /** This test should check the preciseness of the inliner: it should not do any inlining here
-* as it is not able to discern between the different exceptions
-*/
+  * as it is not able to discern between the different exceptions
+  */
 object TestInlineHandlersPreciseness {
 
   def main(args: Array[String]): Unit = {
@@ -275,18 +269,18 @@ object TestInlineHandlersPreciseness {
 
     try {
       val exception: Throwable =
-      if (scala.util.Random.nextInt % 2 == 0)
-      new IllegalArgumentException("even")
-      else
-      new StackOverflowError("odd")
+        if (scala.util.Random.nextInt % 2 == 0)
+          new IllegalArgumentException("even")
+        else
+          new StackOverflowError("odd")
       throw exception
     } catch {
       case e: IllegalArgumentException =>
-      println("Correct, IllegalArgumentException")
+        println("Correct, IllegalArgumentException")
       case e: StackOverflowError =>
-      println("Correct, StackOverflowException")
+        println("Correct, StackOverflowException")
       case t: Throwable =>
-      println("WROOOONG, not Throwable!")
+        println("WROOOONG, not Throwable!")
     }
   }
 }
@@ -302,7 +296,7 @@ object TestInlineHandlersDoubleNoLocal {
 
     try {
       a1.synchronized {
-        a2. synchronized {
+        a2.synchronized {
           throw new MyException("crash")
         }
       }

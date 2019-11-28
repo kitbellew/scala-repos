@@ -1,6 +1,5 @@
-trait Analyzer extends Typers{
+trait Analyzer extends Typers {
   val global: Global
-
 
 }
 trait Definitions { self: SymbolTable =>
@@ -19,9 +18,7 @@ trait Definitions { self: SymbolTable =>
   }
 }
 
-abstract class SymbolTable extends Symbols with Definitions {
-
-}
+abstract class SymbolTable extends Symbols with Definitions {}
 
 trait Symbols { self: SymbolTable =>
   class TermSymbol
@@ -35,7 +32,8 @@ trait Typers {
 }
 
 class Global extends SymbolTable {
-  lazy val analyzer = new {val global: Global.this.type = Global.this} with Analyzer
+  lazy val analyzer = new { val global: Global.this.type = Global.this }
+  with Analyzer
 
   def currentRun: Run = null
 
@@ -51,7 +49,8 @@ abstract class D {
   val runDefinitions = currentRun.runDefinitions
   import runDefinitions.{Predef_???, x}
 
-  /*start*/Predef_???/*end*/
+  /*start*/
+  Predef_??? /*end*/
   x
 }
 //D.this.global.TermSymbol

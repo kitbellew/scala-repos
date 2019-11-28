@@ -12,20 +12,25 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr._
 import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
 
 /**
- * @author Ksenia.Sautina
- * @since 4/9/12
- */
+  * @author Ksenia.Sautina
+  * @since 4/9/12
+  */
 object ConvertFromInfixExpressionIntention {
   val familyName = "Convert from infix expression"
 }
 
-class ConvertFromInfixExpressionIntention extends PsiElementBaseIntentionAction {
+class ConvertFromInfixExpressionIntention
+    extends PsiElementBaseIntentionAction {
   def getFamilyName = ConvertFromInfixExpressionIntention.familyName
 
   override def getText: String = getFamilyName
 
-  def isAvailable(project: Project, editor: Editor, element: PsiElement): Boolean = {
-    val infixExpr : ScInfixExpr = PsiTreeUtil.getParentOfType(element, classOf[ScInfixExpr], false)
+  def isAvailable(
+      project: Project,
+      editor: Editor,
+      element: PsiElement): Boolean = {
+    val infixExpr: ScInfixExpr =
+      PsiTreeUtil.getParentOfType(element, classOf[ScInfixExpr], false)
     if (infixExpr == null) return false
     val range: TextRange = infixExpr.operation.nameId.getTextRange
     val offset = editor.getCaretModel.getOffset
@@ -33,7 +38,8 @@ class ConvertFromInfixExpressionIntention extends PsiElementBaseIntentionAction 
   }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
-    val infixExpr : ScInfixExpr = PsiTreeUtil.getParentOfType(element, classOf[ScInfixExpr], false)
+    val infixExpr: ScInfixExpr =
+      PsiTreeUtil.getParentOfType(element, classOf[ScInfixExpr], false)
     if (infixExpr == null || !infixExpr.isValid) return
 
     val start = infixExpr.getTextRange.getStartOffset
@@ -42,10 +48,11 @@ class ConvertFromInfixExpressionIntention extends PsiElementBaseIntentionAction 
     val methodCallExpr = ScalaPsiElementFactory.createEquivMethodCall(infixExpr)
     val referenceExpr = methodCallExpr.getInvokedExpr match {
       case ref: ScReferenceExpression => ref
-      case call: ScGenericCall => call.referencedExpr.asInstanceOf[ScReferenceExpression]
+      case call: ScGenericCall =>
+        call.referencedExpr.asInstanceOf[ScReferenceExpression]
     }
     val size = referenceExpr.nameId.getTextRange.getStartOffset -
-       methodCallExpr.getTextRange.getStartOffset
+      methodCallExpr.getTextRange.getStartOffset
 
     inWriteAction {
       infixExpr.replaceExpression(methodCallExpr, removeParenthesis = true)

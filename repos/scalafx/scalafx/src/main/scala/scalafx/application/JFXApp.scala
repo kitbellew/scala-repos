@@ -41,23 +41,35 @@ import scalafx.stage.Stage
 object JFXApp {
 
   var Stage: jfxs.Stage = null
-  @deprecated("Prefer Scala naming convention over Java, use `Stage` instead.", "8.0.60-R10")
+  @deprecated(
+    "Prefer Scala naming convention over Java, use `Stage` instead.",
+    "8.0.60-R10")
   def STAGE: jfxs.Stage = Stage
-  @deprecated("Prefer Scala naming convention over Java, use `Stage` instead.", "8.0.60-R10")
+  @deprecated(
+    "Prefer Scala naming convention over Java, use `Stage` instead.",
+    "8.0.60-R10")
   def STAGE_=(stage: jfxs.Stage): Unit = Stage = stage
 
   var ActiveApp: JFXApp = null
-  @deprecated("Prefer Scala naming convention over Java, use `ActiveApp` instead.", "8.0.60-R10")
+  @deprecated(
+    "Prefer Scala naming convention over Java, use `ActiveApp` instead.",
+    "8.0.60-R10")
   def ACTIVE_APP: JFXApp = ActiveApp
-  @deprecated("Prefer Scala naming convention over Java, use `ActiveApp` instead.", "8.0.60-R10")
+  @deprecated(
+    "Prefer Scala naming convention over Java, use `ActiveApp` instead.",
+    "8.0.60-R10")
   def ACTIVE_APP_=(app: JFXApp): Unit = ActiveApp = app
 
   private[application] var ActiveJFXApp: jfxa.Application = null
 
   var AutoShow: Boolean = true
-  @deprecated("Prefer Scala naming convention over Java, use `AutoShow` instead.", "8.0.60-R10")
+  @deprecated(
+    "Prefer Scala naming convention over Java, use `AutoShow` instead.",
+    "8.0.60-R10")
   def AUTO_SHOW: Boolean = true
-  @deprecated("Prefer Scala naming convention over Java, use `AutoShow` instead.", "8.0.60-R10")
+  @deprecated(
+    "Prefer Scala naming convention over Java, use `AutoShow` instead.",
+    "8.0.60-R10")
   def AUTO_SHOW_=(autoShow: Boolean) = AutoShow = true
 
   /**
@@ -67,7 +79,8 @@ object JFXApp {
     """^--([A-Za-z_][^=]*?)=(.*)$""".r
 
   object Parameters {
-    implicit def sfxParameters2jfx(p: Parameters): Application.Parameters = if (p != null) p.delegate else null
+    implicit def sfxParameters2jfx(p: Parameters): Application.Parameters =
+      if (p != null) p.delegate else null
 
     /**
       * Creates a new instance of Parameters
@@ -104,18 +117,21 @@ object JFXApp {
   /**
     * Default implementation for Parameters class.
     */
-  private[application] class ParametersImpl(arguments: Seq[String]) extends Parameters {
+  private[application] class ParametersImpl(arguments: Seq[String])
+      extends Parameters {
 
-    private var namedArguments: mutable.Map[String, String] = mutable.Map.empty[String, String]
-    private var unnamedArguments                            = Buffer.empty[String]
-    private var filled                                      = false
+    private var namedArguments: mutable.Map[String, String] =
+      mutable.Map.empty[String, String]
+    private var unnamedArguments = Buffer.empty[String]
+    private var filled = false
 
     private def parseArguments() {
       if (!filled) {
         arguments.foreach(arg =>
           keyValue.findFirstMatchIn(arg) match {
             case None => unnamedArguments += arg
-            case Some(matcher) => namedArguments(matcher.group(1)) = matcher.group(2)
+            case Some(matcher) =>
+              namedArguments(matcher.group(1)) = matcher.group(2)
           })
         filled = true
       }
@@ -165,8 +181,8 @@ object JFXApp {
     *
     * @param url  The URL to the stylesheet as a String.
     */
-  def userAgentStylesheet_=(url: String): Unit = jfxa.Application.setUserAgentStylesheet(url)
-
+  def userAgentStylesheet_=(url: String): Unit =
+    jfxa.Application.setUserAgentStylesheet(url)
 
   /**
     * Empty parameters for an application
@@ -285,7 +301,7 @@ trait JFXApp extends DelayedInit {
     arguments = args
     // Put any further non-essential initialization here.
     /* Launch the JFX application.
-    */
+     */
     jfxa.Application.launch(classOf[AppHelper], args: _*)
   }
 
@@ -294,9 +310,11 @@ trait JFXApp extends DelayedInit {
     * Execute the construction/initialization code of all classes/objects that extend JFXApp, that was earlier passed
     * to delayedInit() by the compiler.
     */
-  private[application] final def init(): Unit = for (initCode <- subClassInitCode) initCode()
+  private[application] final def init(): Unit =
+    for (initCode <- subClassInitCode) initCode()
 
-  def hostServices: HostServices = ApplicationIncludes.jfxHostServices2sfx(JFXApp.ActiveJFXApp.getHostServices)
+  def hostServices: HostServices =
+    ApplicationIncludes.jfxHostServices2sfx(JFXApp.ActiveJFXApp.getHostServices)
 
   /**
     * This method is called when the application should stop, and provides a convenient place to prepare
@@ -307,6 +325,5 @@ trait JFXApp extends DelayedInit {
     *
     * NOTE: This method is called on the JavaFX Application Thread, the same as javafx.Application.stop method.
     */
-  def stopApp() {
-  }
+  def stopApp() {}
 }

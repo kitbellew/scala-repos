@@ -61,7 +61,8 @@ object arb {
   implicit def term[A: Arbitrary]: Arbitrary[poly.Term[A]] =
     Arbitrary(gen.term[A])
 
-  implicit def polynomial[A: Arbitrary: Semiring: Eq: ClassTag]: Arbitrary[Polynomial[A]] =
+  implicit def polynomial[A: Arbitrary: Semiring: Eq: ClassTag]
+      : Arbitrary[Polynomial[A]] =
     Arbitrary(gen.polynomial[A])
 
   implicit def complex[A: Arbitrary]: Arbitrary[Complex[A]] =
@@ -76,7 +77,8 @@ object arb {
   implicit def bound[A: Arbitrary]: Arbitrary[Bound[A]] =
     Arbitrary(gen.bound[A])
 
-  implicit def interval[A: Arbitrary: Order: AdditiveMonoid]: Arbitrary[Interval[A]] =
+  implicit def interval[A: Arbitrary: Order: AdditiveMonoid]
+      : Arbitrary[Interval[A]] =
     Arbitrary(gen.interval[A])
 
   implicit def freeMonoid[A: Arbitrary]: Arbitrary[FreeMonoid[A]] =

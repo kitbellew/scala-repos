@@ -4,10 +4,9 @@ import org.jetbrains.plugins.scala.codeInsight.intention.controlflow.MergeElseIf
 import org.jetbrains.plugins.scala.codeInsight.intentions.ScalaIntentionTestBase
 
 /**
- * @author Ksenia.Sautina
- * @since 6/6/12
- */
-
+  * @author Ksenia.Sautina
+  * @since 6/6/12
+  */
 class MergeElseIfIntentionTest extends ScalaIntentionTestBase {
   val familyName = MergeElseIfIntention.familyName
 

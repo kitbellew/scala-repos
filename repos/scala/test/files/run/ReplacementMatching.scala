@@ -1,10 +1,4 @@
-
-
-
 import util.matching._
-
-
-
 
 object Test {
 
@@ -15,18 +9,21 @@ object Test {
 
   def replacementMatching {
     val regex = """\$\{(.+?)\}""".r
-    val replaced = regex.replaceAllIn("Replacing: ${main}. And another method: ${foo}.",
-        (m: util.matching.Regex.Match) => {
-      val identifier = m.group(1)
-      identifier
-    })
+    val replaced = regex.replaceAllIn(
+      "Replacing: ${main}. And another method: ${foo}.",
+      (m: util.matching.Regex.Match) => {
+        val identifier = m.group(1)
+        identifier
+      })
     assert(replaced == "Replacing: main. And another method: foo.")
 
     val regex3 = """\$\{(.+?)\}""".r
-    val replaced3 = regex3.replaceSomeIn("Replacing: ${main}. And another: ${foo}.", (m: util.matching.Regex.Match) => {
-      val id = m.group(1)
-      if (id.startsWith("m")) Some(id) else None
-    })
+    val replaced3 = regex3.replaceSomeIn(
+      "Replacing: ${main}. And another: ${foo}.",
+      (m: util.matching.Regex.Match) => {
+        val id = m.group(1)
+        if (id.startsWith("m")) Some(id) else None
+      })
     assert(replaced3 == "Replacing: main. And another: ${foo}.")
   }
 

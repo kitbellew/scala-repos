@@ -15,10 +15,11 @@ import org.ensime.util.file._
 import org.ensime.api._
 
 object EnsimeConfigProtocol {
-  object Protocol extends DefaultSexpProtocol
-    with OptionAltFormat
-    with ScalariformFormat
-    with CamelCaseToDashes
+  object Protocol
+      extends DefaultSexpProtocol
+      with OptionAltFormat
+      with ScalariformFormat
+      with CamelCaseToDashes
   import org.ensime.config.EnsimeConfigProtocol.Protocol._
 
   private val log = Logger(this.getClass.getName)
@@ -57,12 +58,13 @@ object EnsimeConfigProtocol {
         dir.mkdirs()
       }
     }
-    Canonised(m.copy(
-      target = None,
-      targets = m.targetDirs,
-      testTarget = None,
-      testTargets = m.testTargetDirs,
-      sourceRoots = m.sourceRoots
-    ))
+    Canonised(
+      m.copy(
+        target = None,
+        targets = m.targetDirs,
+        testTarget = None,
+        testTargets = m.testTargetDirs,
+        sourceRoots = m.sourceRoots
+      ))
   }
 }

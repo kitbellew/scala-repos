@@ -5,7 +5,7 @@
 package akka.http.scaladsl.testkit
 
 import org.scalatest.exceptions.TestFailedException
-import org.scalatest.{ BeforeAndAfterAll, Suite }
+import org.scalatest.{BeforeAndAfterAll, Suite}
 
 //# source-quote
 trait TestFrameworkInterface {

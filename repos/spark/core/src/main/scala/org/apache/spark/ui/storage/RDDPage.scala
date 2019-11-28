@@ -22,7 +22,11 @@ import javax.servlet.http.HttpServletRequest
 
 import scala.xml.{Node, Unparsed}
 
-import org.apache.spark.status.api.v1.{AllRDDResource, RDDDataDistribution, RDDPartitionInfo}
+import org.apache.spark.status.api.v1.{
+  AllRDDResource,
+  RDDDataDistribution,
+  RDDPartitionInfo
+}
 import org.apache.spark.ui.{PagedDataSource, PagedTable, UIUtils, WebUIPage}
 import org.apache.spark.util.Utils
 
@@ -41,21 +45,29 @@ private[ui] class RDDPage(parent: StorageTab) extends WebUIPage("rdd") {
     val parameterBlockPrevPageSize = request.getParameter("block.prevPageSize")
 
     val blockPage = Option(parameterBlockPage).map(_.toInt).getOrElse(1)
-    val blockSortColumn = Option(parameterBlockSortColumn).getOrElse("Block Name")
-    val blockSortDesc = Option(parameterBlockSortDesc).map(_.toBoolean).getOrElse(false)
-    val blockPageSize = Option(parameterBlockPageSize).map(_.toInt).getOrElse(100)
-    val blockPrevPageSize = Option(parameterBlockPrevPageSize).map(_.toInt).getOrElse(blockPageSize)
+    val blockSortColumn =
+      Option(parameterBlockSortColumn).getOrElse("Block Name")
+    val blockSortDesc =
+      Option(parameterBlockSortDesc).map(_.toBoolean).getOrElse(false)
+    val blockPageSize =
+      Option(parameterBlockPageSize).map(_.toInt).getOrElse(100)
+    val blockPrevPageSize =
+      Option(parameterBlockPrevPageSize).map(_.toInt).getOrElse(blockPageSize)
 
     val rddId = parameterId.toInt
-    val rddStorageInfo = AllRDDResource.getRDDStorageInfo(rddId, listener, includeDetails = true)
+    val rddStorageInfo = AllRDDResource
+      .getRDDStorageInfo(rddId, listener, includeDetails = true)
       .getOrElse {
         // Rather than crashing, render an "RDD Not Found" page
         return UIUtils.headerSparkPage("RDD Not Found", Seq[Node](), parent)
       }
 
     // Worker table
-    val workerTable = UIUtils.listingTable(workerHeader, workerRow,
-      rddStorageInfo.dataDistribution.get, id = Some("rdd-storage-by-worker-table"))
+    val workerTable = UIUtils.listingTable(
+      workerHeader,
+      workerRow,
+      rddStorageInfo.dataDistribution.get,
+      id = Some("rdd-storage-by-worker-table"))
 
     // Block table
     val page: Int = {
@@ -67,24 +79,26 @@ private[ui] class RDDPage(parent: StorageTab) extends WebUIPage("rdd") {
         1
       }
     }
-    val blockTableHTML = try {
-      val _blockTable = new BlockPagedTable(
-        UIUtils.prependBaseUri(parent.basePath) + s"/storage/rdd/?id=${rddId}",
-        rddStorageInfo.partitions.get,
-        blockPageSize,
-        blockSortColumn,
-        blockSortDesc)
-      _blockTable.table(page)
-    } catch {
-      case e @ (_ : IllegalArgumentException | _ : IndexOutOfBoundsException) =>
-        <div class="alert alert-error">{e.getMessage}</div>
-    }
+    val blockTableHTML =
+      try {
+        val _blockTable = new BlockPagedTable(
+          UIUtils
+            .prependBaseUri(parent.basePath) + s"/storage/rdd/?id=${rddId}",
+          rddStorageInfo.partitions.get,
+          blockPageSize,
+          blockSortColumn,
+          blockSortDesc)
+        _blockTable.table(page)
+      } catch {
+        case e @ (_: IllegalArgumentException | _: IndexOutOfBoundsException) =>
+          <div class="alert alert-error">{e.getMessage}</div>
+      }
 
     val jsForScrollingDownToBlockTable =
       <script>
         {
-          Unparsed {
-            """
+        Unparsed {
+          """
               |$(function() {
               |  if (/.*&block.sort=.*$/.test(location.search)) {
               |    var topOffset = $("#blocks-section").offset().top;
@@ -92,8 +106,8 @@ private[ui] class RDDPage(parent: StorageTab) extends WebUIPage("rdd") {
               |  }
               |});
             """.stripMargin
-          }
         }
+      }
       </script>
 
     val content =
@@ -127,7 +141,9 @@ private[ui] class RDDPage(parent: StorageTab) extends WebUIPage("rdd") {
       <div class="row-fluid">
         <div class="span12">
           <h4>
-            Data Distribution on {rddStorageInfo.dataDistribution.map(_.size).getOrElse(0)}
+            Data Distribution on {
+        rddStorageInfo.dataDistribution.map(_.size).getOrElse(0)
+      }
             Executors
           </h4>
           {workerTable}
@@ -141,14 +157,14 @@ private[ui] class RDDPage(parent: StorageTab) extends WebUIPage("rdd") {
         {blockTableHTML ++ jsForScrollingDownToBlockTable}
       </div>;
 
-    UIUtils.headerSparkPage("RDD Storage Info for " + rddStorageInfo.name, content, parent)
+    UIUtils.headerSparkPage(
+      "RDD Storage Info for " + rddStorageInfo.name,
+      content,
+      parent)
   }
 
   /** Header fields for the worker table */
-  private def workerHeader = Seq(
-    "Host",
-    "Memory Usage",
-    "Disk Usage")
+  private def workerHeader = Seq("Host", "Memory Usage", "Disk Usage")
 
   /** Render an HTML row representing a worker */
   private def workerRow(worker: RDDDataDistribution): Seq[Node] = {
@@ -174,9 +190,11 @@ private[ui] class BlockDataSource(
     rddPartitions: Seq[RDDPartitionInfo],
     pageSize: Int,
     sortColumn: String,
-    desc: Boolean) extends PagedDataSource[BlockTableRowData](pageSize) {
+    desc: Boolean)
+    extends PagedDataSource[BlockTableRowData](pageSize) {
 
-  private val data = rddPartitions.map(blockRow).sorted(ordering(sortColumn, desc))
+  private val data =
+    rddPartitions.map(blockRow).sorted(ordering(sortColumn, desc))
 
   override def dataSize: Int = data.size
 
@@ -194,31 +212,49 @@ private[ui] class BlockDataSource(
   }
 
   /**
-   * Return Ordering according to sortColumn and desc
-   */
-  private def ordering(sortColumn: String, desc: Boolean): Ordering[BlockTableRowData] = {
+    * Return Ordering according to sortColumn and desc
+    */
+  private def ordering(
+      sortColumn: String,
+      desc: Boolean): Ordering[BlockTableRowData] = {
     val ordering = sortColumn match {
-      case "Block Name" => new Ordering[BlockTableRowData] {
-        override def compare(x: BlockTableRowData, y: BlockTableRowData): Int =
-          Ordering.String.compare(x.blockName, y.blockName)
-      }
-      case "Storage Level" => new Ordering[BlockTableRowData] {
-        override def compare(x: BlockTableRowData, y: BlockTableRowData): Int =
-          Ordering.String.compare(x.storageLevel, y.storageLevel)
-      }
-      case "Size in Memory" => new Ordering[BlockTableRowData] {
-        override def compare(x: BlockTableRowData, y: BlockTableRowData): Int =
-          Ordering.Long.compare(x.memoryUsed, y.memoryUsed)
-      }
-      case "Size on Disk" => new Ordering[BlockTableRowData] {
-        override def compare(x: BlockTableRowData, y: BlockTableRowData): Int =
-          Ordering.Long.compare(x.diskUsed, y.diskUsed)
-      }
-      case "Executors" => new Ordering[BlockTableRowData] {
-        override def compare(x: BlockTableRowData, y: BlockTableRowData): Int =
-          Ordering.String.compare(x.executors, y.executors)
-      }
-      case unknownColumn => throw new IllegalArgumentException(s"Unknown column: $unknownColumn")
+      case "Block Name" =>
+        new Ordering[BlockTableRowData] {
+          override def compare(
+              x: BlockTableRowData,
+              y: BlockTableRowData): Int =
+            Ordering.String.compare(x.blockName, y.blockName)
+        }
+      case "Storage Level" =>
+        new Ordering[BlockTableRowData] {
+          override def compare(
+              x: BlockTableRowData,
+              y: BlockTableRowData): Int =
+            Ordering.String.compare(x.storageLevel, y.storageLevel)
+        }
+      case "Size in Memory" =>
+        new Ordering[BlockTableRowData] {
+          override def compare(
+              x: BlockTableRowData,
+              y: BlockTableRowData): Int =
+            Ordering.Long.compare(x.memoryUsed, y.memoryUsed)
+        }
+      case "Size on Disk" =>
+        new Ordering[BlockTableRowData] {
+          override def compare(
+              x: BlockTableRowData,
+              y: BlockTableRowData): Int =
+            Ordering.Long.compare(x.diskUsed, y.diskUsed)
+        }
+      case "Executors" =>
+        new Ordering[BlockTableRowData] {
+          override def compare(
+              x: BlockTableRowData,
+              y: BlockTableRowData): Int =
+            Ordering.String.compare(x.executors, y.executors)
+        }
+      case unknownColumn =>
+        throw new IllegalArgumentException(s"Unknown column: $unknownColumn")
     }
     if (desc) {
       ordering.reverse
@@ -233,7 +269,8 @@ private[ui] class BlockPagedTable(
     rddPartitions: Seq[RDDPartitionInfo],
     pageSize: Int,
     sortColumn: String,
-    desc: Boolean) extends PagedTable[BlockTableRowData] {
+    desc: Boolean)
+    extends PagedTable[BlockTableRowData] {
 
   override def tableId: String = "rdd-storage-by-block-table"
 
@@ -246,11 +283,8 @@ private[ui] class BlockPagedTable(
 
   override def pageNumberFormField: String = "block.page"
 
-  override val dataSource: BlockDataSource = new BlockDataSource(
-    rddPartitions,
-    pageSize,
-    sortColumn,
-    desc)
+  override val dataSource: BlockDataSource =
+    new BlockDataSource(rddPartitions, pageSize, sortColumn, desc)
 
   override def pageLink(page: Int): String = {
     val encodedSortColumn = URLEncoder.encode(sortColumn, "UTF-8")

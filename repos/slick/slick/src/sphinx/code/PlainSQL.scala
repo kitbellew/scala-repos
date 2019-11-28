@@ -21,13 +21,31 @@ object PlainSQL extends App {
 
   //#getresult
   // Case classes for our data
-  case class Supplier(id: Int, name: String, street: String, city: String, state: String, zip: String)
-  case class Coffee(name: String, supID: Int, price: Double, sales: Int, total: Int)
+  case class Supplier(
+      id: Int,
+      name: String,
+      street: String,
+      city: String,
+      state: String,
+      zip: String)
+  case class Coffee(
+      name: String,
+      supID: Int,
+      price: Double,
+      sales: Int,
+      total: Int)
 
   // Result set getters
-  implicit val getSupplierResult = GetResult(r => Supplier(r.nextInt, r.nextString, r.nextString,
-    r.nextString, r.nextString, r.nextString))
-  implicit val getCoffeeResult = GetResult(r => Coffee(r.<<, r.<<, r.<<, r.<<, r.<<))
+  implicit val getSupplierResult = GetResult(r =>
+    Supplier(
+      r.nextInt,
+      r.nextString,
+      r.nextString,
+      r.nextString,
+      r.nextString,
+      r.nextString))
+  implicit val getCoffeeResult =
+    GetResult(r => Coffee(r.<<, r.<<, r.<<, r.<<, r.<<))
   //#getresult
 
   val db = Database.forConfig("h2mem1")
@@ -111,8 +129,9 @@ object PlainSQL extends App {
     // Iterate through all coffees and output them
     sql"select * from coffees".as[Coffee].map { cs =>
       println("Coffees:")
-      for(c <- cs)
-        println("* " + c.name + "\t" + c.supID + "\t" + c.price + "\t" + c.sales + "\t" + c.total)
+      for (c <- cs)
+        println(
+          "* " + c.name + "\t" + c.supID + "\t" + c.price + "\t" + c.sales + "\t" + c.total)
     }
 
   def namesByPrice(price: Double): DBIO[Seq[(String, String)]] = {
@@ -179,4 +198,4 @@ object TypedSQL extends App {
   } finally db.close
 }
 
-*/
+ */

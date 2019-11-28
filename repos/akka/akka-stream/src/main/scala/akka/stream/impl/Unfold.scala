@@ -1,19 +1,20 @@
 /**
- * Copyright (C) 2015-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2015-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.stream.scaladsl
 
 import akka.stream.impl.Stages.DefaultAttributes
-import akka.stream.stage.{ OutHandler, GraphStageLogic, GraphStage }
+import akka.stream.stage.{OutHandler, GraphStageLogic, GraphStage}
 import akka.stream._
 
 import scala.concurrent.Future
-import scala.util.{ Failure, Success, Try }
+import scala.util.{Failure, Success, Try}
 
 /**
- * INTERNAL API
- */
-private[akka] final class Unfold[S, E](s: S, f: S ⇒ Option[(S, E)]) extends GraphStage[SourceShape[E]] {
+  * INTERNAL API
+  */
+private[akka] final class Unfold[S, E](s: S, f: S ⇒ Option[(S, E)])
+    extends GraphStage[SourceShape[E]] {
   val out: Outlet[E] = Outlet("Unfold.out")
   override val shape: SourceShape[E] = SourceShape(out)
   override def initialAttributes: Attributes = DefaultAttributes.unfold
@@ -34,9 +35,10 @@ private[akka] final class Unfold[S, E](s: S, f: S ⇒ Option[(S, E)]) extends Gr
 }
 
 /**
- * INTERNAL API
- */
-private[akka] final class UnfoldAsync[S, E](s: S, f: S ⇒ Future[Option[(S, E)]]) extends GraphStage[SourceShape[E]] {
+  * INTERNAL API
+  */
+private[akka] final class UnfoldAsync[S, E](s: S, f: S ⇒ Future[Option[(S, E)]])
+    extends GraphStage[SourceShape[E]] {
   val out: Outlet[E] = Outlet("UnfoldAsync.out")
   override val shape: SourceShape[E] = SourceShape(out)
   override def initialAttributes: Attributes = DefaultAttributes.unfoldAsync
@@ -47,7 +49,7 @@ private[akka] final class UnfoldAsync[S, E](s: S, f: S ⇒ Future[Option[(S, E)]
 
       override def preStart() = {
         val ac = getAsyncCallback[Try[Option[(S, E)]]] {
-          case Failure(ex)   ⇒ fail(out, ex)
+          case Failure(ex) ⇒ fail(out, ex)
           case Success(None) ⇒ complete(out)
           case Success(Some((newS, elem))) ⇒
             push(out, elem)
@@ -58,7 +60,8 @@ private[akka] final class UnfoldAsync[S, E](s: S, f: S ⇒ Future[Option[(S, E)]
 
       setHandler(out, new OutHandler {
         override def onPull(): Unit =
-          f(state).onComplete(asyncHandler)(akka.dispatch.ExecutionContexts.sameThreadExecutionContext)
+          f(state).onComplete(asyncHandler)(
+            akka.dispatch.ExecutionContexts.sameThreadExecutionContext)
       })
     }
 }

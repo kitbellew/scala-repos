@@ -2,7 +2,7 @@ package org.scalatra
 package scalate
 
 import java.io.PrintWriter
-import javax.servlet.http.{ HttpServletRequest, HttpServletResponse }
+import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 
 import org.fusesource.scalate.Binding
 
@@ -18,12 +18,16 @@ trait ScalateUrlGeneratorSupport extends ScalateSupport {
   override protected def createTemplateEngine(config: ConfigT) = {
     val engine = super.createTemplateEngine(config)
     //    val generatorBinding = Binding("urlGenerator", classOf[UrlGeneratorSupport].getName, true)
-    val routeBindings = this.reflectRoutes.keys map (Binding(_, classOf[Route].getName))
+    val routeBindings = this.reflectRoutes.keys map (Binding(
+      _,
+      classOf[Route].getName))
     engine.bindings = engine.bindings ::: routeBindings.toList
     engine
   }
 
-  override protected def createRenderContext(out: PrintWriter)(implicit request: HttpServletRequest, response: HttpServletResponse) = {
+  override protected def createRenderContext(out: PrintWriter)(
+      implicit request: HttpServletRequest,
+      response: HttpServletResponse) = {
     val context = super.createRenderContext(out)
     for ((name, route) <- this.reflectRoutes)
       context.attributes.update(name, route)

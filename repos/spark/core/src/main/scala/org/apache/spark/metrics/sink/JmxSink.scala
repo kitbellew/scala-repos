@@ -23,8 +23,11 @@ import com.codahale.metrics.{JmxReporter, MetricRegistry}
 
 import org.apache.spark.SecurityManager
 
-private[spark] class JmxSink(val property: Properties, val registry: MetricRegistry,
-    securityMgr: SecurityManager) extends Sink {
+private[spark] class JmxSink(
+    val property: Properties,
+    val registry: MetricRegistry,
+    securityMgr: SecurityManager)
+    extends Sink {
 
   val reporter: JmxReporter = JmxReporter.forRegistry(registry).build()
 
@@ -36,6 +39,6 @@ private[spark] class JmxSink(val property: Properties, val registry: MetricRegis
     reporter.stop()
   }
 
-  override def report() { }
+  override def report() {}
 
 }

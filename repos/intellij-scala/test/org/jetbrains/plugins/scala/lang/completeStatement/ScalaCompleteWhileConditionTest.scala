@@ -2,10 +2,10 @@ package org.jetbrains.plugins.scala
 package lang.completeStatement
 
 /**
- * @author Ksenia.Sautina
- * @author Dmitry.Naydanov
- * @since 2/25/13
- */
+  * @author Ksenia.Sautina
+  * @author Dmitry.Naydanov
+  * @since 2/25/13
+  */
 class ScalaCompleteWhileConditionTest extends ScalaCompleteStatementTestBase {
   def testWhileCondition1() {
     val fileText =
@@ -75,7 +75,6 @@ class ScalaCompleteWhileConditionTest extends ScalaCompleteStatementTestBase {
 
     checkScalaFileByText(fileText, resultText)
   }
-
 
   def testWhileCondition4() {
     val fileText =

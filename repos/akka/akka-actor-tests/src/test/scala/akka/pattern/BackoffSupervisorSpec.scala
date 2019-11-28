@@ -1,7 +1,6 @@
 /**
- * Copyright (C) 2015-2016 Lightbend Inc. <http://www.lightbend.com>
- */
-
+  * Copyright (C) 2015-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.pattern
 
 import scala.concurrent.duration._
@@ -22,7 +21,7 @@ object BackoffSupervisorSpec {
   class Child(probe: ActorRef) extends Actor {
     def receive = {
       case "boom" ⇒ throw new TestException
-      case msg    ⇒ probe ! msg
+      case msg ⇒ probe ! msg
     }
   }
 
@@ -44,9 +43,12 @@ object BackoffSupervisorSpec {
 class BackoffSupervisorSpec extends AkkaSpec with ImplicitSender {
   import BackoffSupervisorSpec._
 
-  def onStopOptions(props: Props = Child.props(testActor)) = Backoff.onStop(props, "c1", 100.millis, 3.seconds, 0.2)
-  def onFailureOptions(props: Props = Child.props(testActor)) = Backoff.onFailure(props, "c1", 100.millis, 3.seconds, 0.2)
-  def create(options: BackoffOptions) = system.actorOf(BackoffSupervisor.props(options))
+  def onStopOptions(props: Props = Child.props(testActor)) =
+    Backoff.onStop(props, "c1", 100.millis, 3.seconds, 0.2)
+  def onFailureOptions(props: Props = Child.props(testActor)) =
+    Backoff.onFailure(props, "c1", 100.millis, 3.seconds, 0.2)
+  def create(options: BackoffOptions) =
+    system.actorOf(BackoffSupervisor.props(options))
 
   "BackoffSupervisor" must {
     "start child again when it stops when using `Backoff.onStop`" in {
@@ -164,13 +166,11 @@ class BackoffSupervisorSpec extends AkkaSpec with ImplicitSender {
         }
 
         assertManualReset(
-          create(onStopOptions(ManualChild.props(testActor))
-            .withManualReset
+          create(onStopOptions(ManualChild.props(testActor)).withManualReset
             .withSupervisorStrategy(stoppingStrategy)))
 
         assertManualReset(
-          create(onFailureOptions(ManualChild.props(testActor))
-            .withManualReset
+          create(onFailureOptions(ManualChild.props(testActor)).withManualReset
             .withSupervisorStrategy(restartingStrategy)))
       }
     }

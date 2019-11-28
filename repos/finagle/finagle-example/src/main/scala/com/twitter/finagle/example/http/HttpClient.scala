@@ -8,26 +8,26 @@ import com.twitter.io.Charsets
 import com.twitter.util.Future
 
 /**
- * A somewhat advanced example of using Filters with Clients. Below, HTTP 4xx and 5xx
- * class requests are converted to Exceptions. Additionally, two parallel requests are
- * made and when they both return (the two Futures are joined) the TCP connection(s)
- * are closed.
- */
+  * A somewhat advanced example of using Filters with Clients. Below, HTTP 4xx and 5xx
+  * class requests are converted to Exceptions. Additionally, two parallel requests are
+  * made and when they both return (the two Futures are joined) the TCP connection(s)
+  * are closed.
+  */
 object HttpClient {
   class InvalidRequest extends Exception
 
   /**
-   * Convert HTTP 4xx and 5xx class responses into Exceptions.
-   */
+    * Convert HTTP 4xx and 5xx class responses into Exceptions.
+    */
   class HandleErrors extends SimpleFilter[Request, Response] {
     def apply(request: Request, service: Service[Request, Response]) = {
       // flatMap asynchronously responds to requests and can "map" them to both
       // success and failure values:
       service(request) flatMap { response =>
         response.status match {
-          case Status.Ok => Future.value(response)
+          case Status.Ok        => Future.value(response)
           case Status.Forbidden => Future.exception(new InvalidRequest)
-          case _ => Future.exception(new Exception(response.status.reason))
+          case _                => Future.exception(new Exception(response.status.reason))
         }
       }
     }
@@ -55,7 +55,8 @@ object HttpClient {
     }
   }
 
-  private[this] def makeAuthorizedRequest(client: Service[Request, Response]) = {
+  private[this] def makeAuthorizedRequest(
+      client: Service[Request, Response]) = {
     val authorizedRequest = Request(Version.Http11, Method.Get, "/")
     authorizedRequest.headerMap.add(Fields.Authorization, "open sesame")
 
@@ -65,13 +66,15 @@ object HttpClient {
     }
   }
 
-  private[this] def makeUnauthorizedRequest(client: Service[Request, Response]) = {
+  private[this] def makeUnauthorizedRequest(
+      client: Service[Request, Response]) = {
     val unauthorizedRequest = Request(Version.Http11, Method.Get, "/")
 
     // use the onFailure callback since we convert HTTP 4xx and 5xx class
     // responses to Exceptions.
     client(unauthorizedRequest) onFailure { error =>
-      println("))) Unauthorized request errored (as desired): " + error.getClass.getName)
+      println(
+        "))) Unauthorized request errored (as desired): " + error.getClass.getName)
     }
   }
 }

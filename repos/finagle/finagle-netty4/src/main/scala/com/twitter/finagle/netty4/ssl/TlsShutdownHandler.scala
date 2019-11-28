@@ -4,7 +4,8 @@ import java.lang.reflect.Method
 import javax.net.ssl.SSLException
 import io.netty.channel.{ChannelHandlerContext, ChannelInboundHandlerAdapter}
 
-private[netty4] class TlsShutdownHandler(o: Object) extends ChannelInboundHandlerAdapter {
+private[netty4] class TlsShutdownHandler(o: Object)
+    extends ChannelInboundHandlerAdapter {
   private[this] val shutdownMethod: Option[Method] =
     try {
       Some(o.getClass.getMethod("shutdown"))
@@ -17,7 +18,9 @@ private[netty4] class TlsShutdownHandler(o: Object) extends ChannelInboundHandle
       method.invoke(o)
     }
 
-  override def exceptionCaught(ctx: ChannelHandlerContext, t: Throwable): Unit = {
+  override def exceptionCaught(
+      ctx: ChannelHandlerContext,
+      t: Throwable): Unit = {
     // remove the ssl handler so that it doesn't trap the disconnect
     if (t.isInstanceOf[SSLException])
       ctx.pipeline().remove("ssl")

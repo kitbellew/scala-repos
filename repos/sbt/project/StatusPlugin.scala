@@ -6,7 +6,8 @@ object StatusPlugin extends AutoPlugin {
   override def trigger = allRequirements
 
   object autoImport {
-    lazy val publishStatus = settingKey[String]("possible values are snapshots or releases.")
+    lazy val publishStatus =
+      settingKey[String]("possible values are snapshots or releases.")
   }
 
   import autoImport._
@@ -37,15 +38,14 @@ object StatusPlugin extends AutoPlugin {
         Nil,
       state)
   }
-  def stamp(v: String): String =
-    {
-      val Snapshot = "-SNAPSHOT" 
-      if (v endsWith Snapshot) (v stripSuffix Snapshot) + "-" + timestampString(System.currentTimeMillis)
-      else sys.error("Release version '" + v + "' cannot be stamped")
-    }
-  def timestampString(time: Long): String =
-    {
-      val format = new java.text.SimpleDateFormat("yyyyMMdd-HHmmss")
-      format.format(new java.util.Date(time))
-    }
+  def stamp(v: String): String = {
+    val Snapshot = "-SNAPSHOT"
+    if (v endsWith Snapshot)
+      (v stripSuffix Snapshot) + "-" + timestampString(System.currentTimeMillis)
+    else sys.error("Release version '" + v + "' cannot be stamped")
+  }
+  def timestampString(time: Long): String = {
+    val format = new java.text.SimpleDateFormat("yyyyMMdd-HHmmss")
+    format.format(new java.util.Date(time))
+  }
 }

@@ -4,20 +4,23 @@
 package play.it.http.parsing
 
 import akka.actor.ActorSystem
-import akka.stream.{ ActorMaterializer, Materializer }
+import akka.stream.{ActorMaterializer, Materializer}
 import akka.stream.scaladsl.Source
 import play.api.libs.streams.Accumulator
 
 import scala.concurrent.Future
 
 import play.api.libs.iteratee.ExecutionSpecification
-import play.api.mvc.{ BodyParser, Results, Result }
-import play.api.test.{ FakeRequest, PlaySpecification }
+import play.api.mvc.{BodyParser, Results, Result}
+import play.api.test.{FakeRequest, PlaySpecification}
 
 import org.specs2.ScalaCheck
-import org.scalacheck.{ Arbitrary, Gen }
+import org.scalacheck.{Arbitrary, Gen}
 
-object BodyParserSpec extends PlaySpecification with ExecutionSpecification with ScalaCheck {
+object BodyParserSpec
+    extends PlaySpecification
+    with ExecutionSpecification
+    with ScalaCheck {
 
   def run[A](bodyParser: BodyParser[A]) = {
     import scala.concurrent.ExecutionContext.Implicits.global
@@ -50,7 +53,8 @@ object BodyParserSpec extends PlaySpecification with ExecutionSpecification with
     Arbitrary {
       Gen.oneOf(
         Results.Ok,
-        Results.BadRequest, Results.NotFound,
+        Results.BadRequest,
+        Results.NotFound,
         Results.InternalServerError
       )
     }
@@ -83,7 +87,8 @@ object BodyParserSpec extends PlaySpecification with ExecutionSpecification with
       val dbl = (i: Int) => i * 2
       mustExecute(3) { implicit ec => // three executions from `map`
         run {
-          constant(x).map(inc)
+          constant(x)
+            .map(inc)
             .map(dbl)
         } must_== run {
           constant(x).map(inc andThen dbl)
@@ -119,7 +124,8 @@ object BodyParserSpec extends PlaySpecification with ExecutionSpecification with
          * and one from `Future.flatMapM`
          */
         run {
-          constant(x).mapM(inc)(mapMEC)
+          constant(x)
+            .mapM(inc)(mapMEC)
             .mapM(dbl)(mapMEC)
         } must_== run {
           constant(x).mapM { y =>
@@ -154,7 +160,8 @@ object BodyParserSpec extends PlaySpecification with ExecutionSpecification with
       val dbl = (i: Int) => Right(i * 2)
       mustExecute(3) { implicit ec => // three executions from `validate`
         run {
-          constant(x).validate(inc)
+          constant(x)
+            .validate(inc)
             .validate(dbl)
         } must_== run {
           constant(x).validate { y =>
@@ -175,7 +182,9 @@ object BodyParserSpec extends PlaySpecification with ExecutionSpecification with
     "pass through simple result (case 2)" in prop { (s1: Result, s2: Result) =>
       mustExecute(1) { implicit ec => // one execution from `validate`
         run {
-          simpleResult(s1).validate { _ => Left(s2) }
+          simpleResult(s1).validate { _ =>
+            Left(s2)
+          }
         } must beLeft(s1)
       }
     }
@@ -183,7 +192,9 @@ object BodyParserSpec extends PlaySpecification with ExecutionSpecification with
     "fail with simple result" in prop { (s: Result) =>
       mustExecute(1) { implicit ec => // one execution from `validate`
         run {
-          constant(0).validate { _ => Left(s) }
+          constant(0).validate { _ =>
+            Left(s)
+          }
         } must beLeft(s)
       }
     }
@@ -217,7 +228,9 @@ object BodyParserSpec extends PlaySpecification with ExecutionSpecification with
     "pass through simple result (case 1)" in prop { (s: Result) =>
       mustExecute(1) { implicit ec => // one execution from `validateM`
         run {
-          simpleResult(s).validateM { x => Future.successful(Right(x)) }
+          simpleResult(s).validateM { x =>
+            Future.successful(Right(x))
+          }
         } must beLeft(s)
       }
     }
@@ -225,7 +238,9 @@ object BodyParserSpec extends PlaySpecification with ExecutionSpecification with
     "pass through simple result (case 2)" in prop { (s1: Result, s2: Result) =>
       mustExecute(1) { implicit ec => // one execution from `validateM`
         run {
-          simpleResult(s1).validateM { _ => Future.successful(Left(s2)) }
+          simpleResult(s1).validateM { _ =>
+            Future.successful(Left(s2))
+          }
         } must beLeft(s1)
       }
     }
@@ -233,7 +248,9 @@ object BodyParserSpec extends PlaySpecification with ExecutionSpecification with
     "fail with simple result" in prop { (s: Result) =>
       mustExecute(1) { implicit ec => // one execution from `validateM`
         run {
-          constant(0).validateM { _ => Future.successful(Left(s)) }
+          constant(0).validateM { _ =>
+            Future.successful(Left(s))
+          }
         } must beLeft(s)
       }
     }

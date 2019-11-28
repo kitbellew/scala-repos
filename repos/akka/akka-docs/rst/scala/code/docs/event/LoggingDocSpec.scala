@@ -1,9 +1,9 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package docs.event
 
-import akka.actor.{ Actor, Props }
+import akka.actor.{Actor, Props}
 import akka.testkit.AkkaSpec
 
 object LoggingDocSpec {
@@ -17,8 +17,11 @@ object LoggingDocSpec {
       log.debug("Starting")
     }
     override def preRestart(reason: Throwable, message: Option[Any]) {
-      log.error(reason, "Restarting due to [{}] when processing [{}]",
-        reason.getMessage, message.getOrElse(""))
+      log.error(
+        reason,
+        "Restarting due to [{}] when processing [{}]",
+        reason.getMessage,
+        message.getOrElse(""))
     }
     def receive = {
       case "test" => log.info("Received test")
@@ -116,7 +119,7 @@ object LoggingDocSpec {
 
 class LoggingDocSpec extends AkkaSpec {
 
-  import LoggingDocSpec.{ MdcActor, MdcActorMixin, MyActor, Req }
+  import LoggingDocSpec.{MdcActor, MdcActorMixin, MyActor, Req}
 
   "use a logging actor" in {
     val myActor = system.actorOf(Props[MyActor])
@@ -136,7 +139,7 @@ class LoggingDocSpec extends AkkaSpec {
   "allow registration to dead letters" in {
     new AnyRef {
       //#deadletters
-      import akka.actor.{ Actor, DeadLetter, Props }
+      import akka.actor.{Actor, DeadLetter, Props}
 
       class Listener extends Actor {
         def receive = {
@@ -160,8 +163,10 @@ class LoggingDocSpec extends AkkaSpec {
     new AnyRef {
       class Listener extends Actor {
         def receive = {
-          case m: Jazz       => println(s"${self.path.name} is listening to: ${m.artist}")
-          case m: Electronic => println(s"${self.path.name} is listening to: ${m.artist}")
+          case m: Jazz =>
+            println(s"${self.path.name} is listening to: ${m.artist}")
+          case m: Electronic =>
+            println(s"${self.path.name} is listening to: ${m.artist}")
         }
       }
 

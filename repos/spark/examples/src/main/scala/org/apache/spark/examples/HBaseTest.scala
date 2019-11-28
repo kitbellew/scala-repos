@@ -52,7 +52,9 @@ object HBaseTest {
       admin.createTable(tableDesc)
     }
 
-    val hBaseRDD = sc.newAPIHadoopRDD(conf, classOf[TableInputFormat],
+    val hBaseRDD = sc.newAPIHadoopRDD(
+      conf,
+      classOf[TableInputFormat],
       classOf[org.apache.hadoop.hbase.io.ImmutableBytesWritable],
       classOf[org.apache.hadoop.hbase.client.Result])
 

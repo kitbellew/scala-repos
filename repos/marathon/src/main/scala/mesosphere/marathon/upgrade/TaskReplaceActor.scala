@@ -1,12 +1,12 @@
 package mesosphere.marathon.upgrade
 
-import akka.actor.{ Actor, ActorLogging, Cancellable }
+import akka.actor.{Actor, ActorLogging, Cancellable}
 import akka.event.EventStream
 import mesosphere.marathon.TaskUpgradeCanceledException
 import mesosphere.marathon.core.launchqueue.LaunchQueue
 import mesosphere.marathon.core.task.Task
 import mesosphere.marathon.core.task.tracker.TaskTracker
-import mesosphere.marathon.event.{ HealthStatusChanged, MesosStatusUpdateEvent }
+import mesosphere.marathon.event.{HealthStatusChanged, MesosStatusUpdateEvent}
 import mesosphere.marathon.state.AppDefinition
 import mesosphere.marathon.upgrade.TaskReplaceActor._
 import org.apache.mesos.Protos.TaskID
@@ -22,7 +22,9 @@ class TaskReplaceActor(
     taskTracker: TaskTracker,
     eventBus: EventStream,
     app: AppDefinition,
-    promise: Promise[Unit]) extends Actor with ActorLogging {
+    promise: Promise[Unit])
+    extends Actor
+    with ActorLogging {
   import context.dispatcher
 
   val tasksToKill = taskTracker.appTasksLaunchedSync(app.id)
@@ -33,23 +35,27 @@ class TaskReplaceActor(
   var newTasksStarted: Int = 0
   var oldTaskIds = tasksToKill.map(_.taskId).toSet
   val toKill = oldTaskIds.to[mutable.Queue]
-  var maxCapacity = (app.instances * (1 + app.upgradeStrategy.maximumOverCapacity)).toInt
+  var maxCapacity =
+    (app.instances * (1 + app.upgradeStrategy.maximumOverCapacity)).toInt
   var outstandingKills = Set.empty[Task.Id]
-  val periodicalRetryKills: Cancellable = context.system.scheduler.schedule(15.seconds, 15.seconds, self, RetryKills)
+  val periodicalRetryKills: Cancellable =
+    context.system.scheduler.schedule(15.seconds, 15.seconds, self, RetryKills)
 
   override def preStart(): Unit = {
     eventBus.subscribe(self, classOf[MesosStatusUpdateEvent])
     eventBus.subscribe(self, classOf[HealthStatusChanged])
 
-    val minHealthy = (app.instances * app.upgradeStrategy.minimumHealthCapacity).ceil.toInt
+    val minHealthy =
+      (app.instances * app.upgradeStrategy.minimumHealthCapacity).ceil.toInt
     val nrToKillImmediately = math.max(0, toKill.size - minHealthy)
 
     // make sure at least one task can be started to get the ball rolling
     if (nrToKillImmediately == 0 && maxCapacity == app.instances)
       maxCapacity += 1
 
-    log.info(s"For minimumHealthCapacity ${app.upgradeStrategy.minimumHealthCapacity} of ${app.id.toString} leave " +
-      s"$minHealthy tasks running, maximum capacity $maxCapacity, killing $nrToKillImmediately tasks immediately")
+    log.info(
+      s"For minimumHealthCapacity ${app.upgradeStrategy.minimumHealthCapacity} of ${app.id.toString} leave " +
+        s"$minHealthy tasks running, maximum capacity $maxCapacity, killing $nrToKillImmediately tasks immediately")
 
     for (_ <- 0 until nrToKillImmediately) {
       killNextOldTask()
@@ -66,8 +72,7 @@ class TaskReplaceActor(
     periodicalRetryKills.cancel()
     if (!promise.isCompleted)
       promise.tryFailure(
-        new TaskUpgradeCanceledException(
-          "The task upgrade has been cancelled"))
+        new TaskUpgradeCanceledException("The task upgrade has been cancelled"))
   }
 
   override def receive: Receive = {
@@ -81,24 +86,59 @@ class TaskReplaceActor(
   }
 
   def taskStateBehavior: Receive = {
-    case MesosStatusUpdateEvent(slaveId, taskId, "TASK_RUNNING", _, `appId`, _, _, _, `versionString`, _, _) =>
+    case MesosStatusUpdateEvent(
+        slaveId,
+        taskId,
+        "TASK_RUNNING",
+        _,
+        `appId`,
+        _,
+        _,
+        _,
+        `versionString`,
+        _,
+        _) =>
       handleStartedTask(taskId)
   }
 
   def healthCheckingBehavior: Receive = {
-    case HealthStatusChanged(`appId`, taskId, `version`, true, _, _) if !healthy(taskId) =>
+    case HealthStatusChanged(`appId`, taskId, `version`, true, _, _)
+        if !healthy(taskId) =>
       handleStartedTask(taskId)
   }
 
   def commonBehavior: Receive = {
     // New task failed to start, restart it
-    case MesosStatusUpdateEvent(slaveId, taskId, FailedToStart(_), _, `appId`, _, _, _, `versionString`, _, _) if !oldTaskIds(taskId) => // scalastyle:ignore line.size.limit
-      log.error(s"New task $taskId failed on slave $slaveId during app $appId restart")
+    case MesosStatusUpdateEvent(
+        slaveId,
+        taskId,
+        FailedToStart(_),
+        _,
+        `appId`,
+        _,
+        _,
+        _,
+        `versionString`,
+        _,
+        _) if !oldTaskIds(taskId) => // scalastyle:ignore line.size.limit
+      log.error(
+        s"New task $taskId failed on slave $slaveId during app $appId restart")
       healthy -= taskId
       taskQueue.add(app)
 
     // Old task successfully killed
-    case MesosStatusUpdateEvent(slaveId, taskId, KillComplete(_), _, `appId`, _, _, _, _, _, _) if oldTaskIds(taskId) => // scalastyle:ignore line.size.limit
+    case MesosStatusUpdateEvent(
+        slaveId,
+        taskId,
+        KillComplete(_),
+        _,
+        `appId`,
+        _,
+        _,
+        _,
+        _,
+        _,
+        _) if oldTaskIds(taskId) => // scalastyle:ignore line.size.limit
       oldTaskIds -= taskId
       outstandingKills -= taskId
       reconcileNewTasks()
@@ -111,11 +151,13 @@ class TaskReplaceActor(
   }
 
   def reconcileNewTasks(): Unit = {
-    val leftCapacity = math.max(0, maxCapacity - oldTaskIds.size - newTasksStarted)
+    val leftCapacity =
+      math.max(0, maxCapacity - oldTaskIds.size - newTasksStarted)
     val tasksNotStartedYet = math.max(0, app.instances - newTasksStarted)
     val tasksToStartNow = math.min(tasksNotStartedYet, leftCapacity)
     if (tasksToStartNow > 0) {
-      log.info(s"Reconciling tasks during app $appId restart: queuing $tasksToStartNow new tasks")
+      log.info(
+        s"Reconciling tasks during app $appId restart: queuing $tasksToStartNow new tasks")
       taskQueue.add(app, tasksToStartNow)
       newTasksStarted += tasksToStartNow
     }
@@ -133,7 +175,8 @@ class TaskReplaceActor(
 
       maybeNewTaskId match {
         case Some(newTaskId: Task.Id) =>
-          log.info(s"Killing old $nextOldTask because $newTaskId became reachable")
+          log.info(
+            s"Killing old $nextOldTask because $newTaskId became reachable")
         case _ =>
           log.info(s"Killing old $nextOldTask")
       }
@@ -145,13 +188,14 @@ class TaskReplaceActor(
 
   def checkFinished(): Unit = {
     if (healthy.size == app.instances && oldTaskIds.isEmpty) {
-      log.info(s"App All new tasks for $appId are healthy and all old tasks have been killed")
+      log.info(
+        s"App All new tasks for $appId are healthy and all old tasks have been killed")
       promise.success(())
       context.stop(self)
-    }
-    else if (log.isDebugEnabled) {
-      log.debug(s"For app: [${app.id}] there are [${healthy.size}] healthy new instances and " +
-        s"[${oldTaskIds.size}] old instances.")
+    } else if (log.isDebugEnabled) {
+      log.debug(
+        s"For app: [${app.id}] there are [${healthy.size}] healthy new instances and " +
+          s"[${oldTaskIds.size}] old instances.")
     }
   }
 
@@ -163,7 +207,8 @@ class TaskReplaceActor(
   }
 
   def buildTaskId(id: String): TaskID =
-    TaskID.newBuilder()
+    TaskID
+      .newBuilder()
       .setValue(id)
       .build()
 }
@@ -174,4 +219,3 @@ object TaskReplaceActor {
 
   case object RetryKills
 }
-

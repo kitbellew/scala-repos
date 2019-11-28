@@ -1,4 +1,3 @@
-
 object InvestmentType extends Enumeration {
   val Debt = Value("DEBT")
   val Future = Value("FUTURE")
@@ -9,18 +8,20 @@ object Test {
   def main(args: Array[String]) = {
     val buf = new java.io.ByteArrayOutputStream
     val oos = new java.io.ObjectOutputStream(buf)
-    InvestmentType.values.foreach {i => oos.writeObject(i)}
+    InvestmentType.values.foreach { i =>
+      oos.writeObject(i)
+    }
     oos.flush
     oos.close
     val ois = new java.io.ObjectInputStream(
-                new java.io.ByteArrayInputStream(buf.toByteArray))
+      new java.io.ByteArrayInputStream(buf.toByteArray))
     var obj: Object = null
     foreach(ois) { obj =>
       obj match {
-        case InvestmentType.Debt => println("got " + obj)
+        case InvestmentType.Debt   => println("got " + obj)
         case InvestmentType.Equity => println("got " + obj)
         case InvestmentType.Future => println("got " + obj)
-        case _ => println("unknown: " + obj + " of: " + obj.getClass)
+        case _                     => println("unknown: " + obj + " of: " + obj.getClass)
       }
     }
   }

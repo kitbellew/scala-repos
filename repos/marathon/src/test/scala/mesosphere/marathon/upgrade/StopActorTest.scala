@@ -1,16 +1,19 @@
 package mesosphere.marathon.upgrade
 
-import akka.actor.{ ActorRef, Props }
-import akka.testkit.TestActor.{ AutoPilot, NoAutoPilot }
+import akka.actor.{ActorRef, Props}
+import akka.testkit.TestActor.{AutoPilot, NoAutoPilot}
 import akka.testkit.TestProbe
 import mesosphere.marathon.test.MarathonActorSupport
 import mesosphere.marathon.upgrade.DeploymentActor.Cancel
-import org.scalatest.{ FunSuiteLike, Matchers }
+import org.scalatest.{FunSuiteLike, Matchers}
 
 import scala.concurrent.duration._
-import scala.concurrent.{ Await, Promise }
+import scala.concurrent.{Await, Promise}
 
-class StopActorTest extends MarathonActorSupport with FunSuiteLike with Matchers {
+class StopActorTest
+    extends MarathonActorSupport
+    with FunSuiteLike
+    with Matchers {
 
   test("Stop") {
     val promise = Promise[Boolean]()
@@ -23,7 +26,8 @@ class StopActorTest extends MarathonActorSupport with FunSuiteLike with Matchers
           NoAutoPilot
       }
     })
-    val ref = system.actorOf(Props(classOf[StopActor], probe.ref, promise, new Exception))
+    val ref = system.actorOf(
+      Props(classOf[StopActor], probe.ref, promise, new Exception))
 
     watch(ref)
     expectTerminated(ref)

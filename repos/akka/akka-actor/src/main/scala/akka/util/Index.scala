@@ -1,32 +1,37 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.util
 
 import annotation.tailrec
 
-import java.util.concurrent.{ ConcurrentSkipListSet, ConcurrentHashMap }
+import java.util.concurrent.{ConcurrentSkipListSet, ConcurrentHashMap}
 import java.util.Comparator
-import scala.collection.JavaConverters.{ asScalaIteratorConverter, collectionAsScalaIterableConverter }
+import scala.collection.JavaConverters.{
+  asScalaIteratorConverter,
+  collectionAsScalaIterableConverter
+}
 
 /**
- * An implementation of a ConcurrentMultiMap
- * Adds/remove is serialized over the specified key
- * Reads are fully concurrent &lt;-- el-cheapo
- */
+  * An implementation of a ConcurrentMultiMap
+  * Adds/remove is serialized over the specified key
+  * Reads are fully concurrent &lt;-- el-cheapo
+  */
 class Index[K, V](val mapSize: Int, val valueComparator: Comparator[V]) {
 
-  def this(mapSize: Int, cmp: (V, V) ⇒ Int) = this(mapSize, new Comparator[V] {
-    def compare(a: V, b: V): Int = cmp(a, b)
-  })
+  def this(mapSize: Int, cmp: (V, V) ⇒ Int) =
+    this(mapSize, new Comparator[V] {
+      def compare(a: V, b: V): Int = cmp(a, b)
+    })
 
-  private val container = new ConcurrentHashMap[K, ConcurrentSkipListSet[V]](mapSize)
+  private val container =
+    new ConcurrentHashMap[K, ConcurrentSkipListSet[V]](mapSize)
   private val emptySet = new ConcurrentSkipListSet[V]
 
   /**
-   * Associates the value of type V with the key of type K
-   * @return true if the value didn't exist for the key previously, and false otherwise
-   */
+    * Associates the value of type V with the key of type K
+    * @return true if the value didn't exist for the key previously, and false otherwise
+    */
   def put(key: K, value: V): Boolean = {
     //Tailrecursive spin-locking put
     @tailrec
@@ -37,7 +42,8 @@ class Index[K, V](val mapSize: Int, val valueComparator: Comparator[V]) {
 
       if (set ne null) {
         set.synchronized {
-          if (set.isEmpty) retry = true //IF the set is empty then it has been removed, so signal retry
+          if (set.isEmpty)
+            retry = true //IF the set is empty then it has been removed, so signal retry
           else { //Else add the value to the set and signal that retry is not needed
             added = set add v
             retry = false
@@ -51,7 +57,8 @@ class Index[K, V](val mapSize: Int, val valueComparator: Comparator[V]) {
         val oldSet = container.putIfAbsent(k, newSet)
         if (oldSet ne null) {
           oldSet.synchronized {
-            if (oldSet.isEmpty) retry = true //IF the set is empty then it has been removed, so signal retry
+            if (oldSet.isEmpty)
+              retry = true //IF the set is empty then it has been removed, so signal retry
             else { //Else try to add the value to the set and signal that retry is not needed
               added = oldSet add v
               retry = false
@@ -68,18 +75,18 @@ class Index[K, V](val mapSize: Int, val valueComparator: Comparator[V]) {
   }
 
   /**
-   * @return Some(value) for the first matching value where the supplied function returns true for the given key,
-   * if no matches it returns None
-   */
+    * @return Some(value) for the first matching value where the supplied function returns true for the given key,
+    * if no matches it returns None
+    */
   def findValue(key: K)(f: (V) ⇒ Boolean): Option[V] =
     container get key match {
       case null ⇒ None
-      case set  ⇒ set.iterator.asScala find f
+      case set ⇒ set.iterator.asScala find f
     }
 
   /**
-   * Returns an Iterator of V containing the values for the supplied key, or an empty iterator if the key doesn't exist
-   */
+    * Returns an Iterator of V containing the values for the supplied key, or an empty iterator if the key doesn't exist
+    */
   def valueIterator(key: K): scala.Iterator[V] = {
     container.get(key) match {
       case null ⇒ Iterator.empty
@@ -88,14 +95,16 @@ class Index[K, V](val mapSize: Int, val valueComparator: Comparator[V]) {
   }
 
   /**
-   * Applies the supplied function to all keys and their values
-   */
+    * Applies the supplied function to all keys and their values
+    */
   def foreach(fun: (K, V) ⇒ Unit): Unit =
-    container.entrySet.iterator.asScala foreach { e ⇒ e.getValue.iterator.asScala.foreach(fun(e.getKey, _)) }
+    container.entrySet.iterator.asScala foreach { e ⇒
+      e.getValue.iterator.asScala.foreach(fun(e.getKey, _))
+    }
 
   /**
-   * Returns the union of all value sets.
-   */
+    * Returns the union of all value sets.
+    */
   def values: Set[V] = {
     val builder = Set.newBuilder[V]
     for {
@@ -106,14 +115,14 @@ class Index[K, V](val mapSize: Int, val valueComparator: Comparator[V]) {
   }
 
   /**
-   * Returns the key set.
-   */
+    * Returns the key set.
+    */
   def keys: Iterable[K] = container.keySet.asScala
 
   /**
-   * Disassociates the value of type V from the key of type K
-   * @return true if the value was disassociated from the key and false if it wasn't previously associated with the key
-   */
+    * Disassociates the value of type V from the key of type K
+    * @return true if the value was disassociated from the key and false if it wasn't previously associated with the key
+    */
   def remove(key: K, value: V): Boolean = {
     val set = container get key
 
@@ -130,9 +139,9 @@ class Index[K, V](val mapSize: Int, val valueComparator: Comparator[V]) {
   }
 
   /**
-   * Disassociates all the values for the specified key
-   * @return None if the key wasn't associated at all, or Some(scala.Iterable[V]) if it was associated
-   */
+    * Disassociates all the values for the specified key
+    * @return None if the key wasn't associated at all, or Some(scala.Iterable[V]) if it was associated
+    */
   def remove(key: K): Option[Iterable[V]] = {
     val set = container get key
 
@@ -147,8 +156,8 @@ class Index[K, V](val mapSize: Int, val valueComparator: Comparator[V]) {
   }
 
   /**
-   * Removes the specified value from all keys
-   */
+    * Removes the specified value from all keys
+    */
   def removeValue(value: V): Unit = {
     val i = container.entrySet().iterator()
     while (i.hasNext) {
@@ -167,26 +176,29 @@ class Index[K, V](val mapSize: Int, val valueComparator: Comparator[V]) {
   }
 
   /**
-   * @return true if the underlying containers is empty, may report false negatives when the last remove is underway
-   */
+    * @return true if the underlying containers is empty, may report false negatives when the last remove is underway
+    */
   def isEmpty: Boolean = container.isEmpty
 
   /**
-   *  Removes all keys and all values
-   */
+    *  Removes all keys and all values
+    */
   def clear(): Unit = {
     val i = container.entrySet().iterator()
     while (i.hasNext) {
       val e = i.next()
       val set = e.getValue()
-      if (set ne null) { set.synchronized { set.clear(); container.remove(e.getKey, emptySet) } }
+      if (set ne null) {
+        set.synchronized { set.clear(); container.remove(e.getKey, emptySet) }
+      }
     }
   }
 }
 
 /**
- * An implementation of a ConcurrentMultiMap
- * Adds/remove is serialized over the specified key
- * Reads are fully concurrent &lt;-- el-cheapo
- */
-class ConcurrentMultiMap[K, V](mapSize: Int, valueComparator: Comparator[V]) extends Index[K, V](mapSize, valueComparator)
+  * An implementation of a ConcurrentMultiMap
+  * Adds/remove is serialized over the specified key
+  * Reads are fully concurrent &lt;-- el-cheapo
+  */
+class ConcurrentMultiMap[K, V](mapSize: Int, valueComparator: Comparator[V])
+    extends Index[K, V](mapSize, valueComparator)

@@ -9,18 +9,18 @@ import org.openjdk.jmh.annotations._
 import java.util.concurrent.TimeUnit
 
 /**
- * Investigate serverset resolver allocations when members are thrashing in zookeeper. Intended to
- * be run before and after making a change to detect memory leaks or large differences in allocation
- * patterns.
- *
- * 1. Run the server separately to isolate client allocations:
- *  ./pants run finagle/finagle-benchmark/src/main/scala:serverset-service
- *
- * 2. Run this client in sbt
- * $ ./sbt
- * > project finagle-benchmark
- * > run ServerSetResolver -prof gc
- */
+  * Investigate serverset resolver allocations when members are thrashing in zookeeper. Intended to
+  * be run before and after making a change to detect memory leaks or large differences in allocation
+  * patterns.
+  *
+  * 1. Run the server separately to isolate client allocations:
+  *  ./pants run finagle/finagle-benchmark/src/main/scala:serverset-service
+  *
+  * 2. Run this client in sbt
+  * $ ./sbt
+  * > project finagle-benchmark
+  * > run ServerSetResolver -prof gc
+  */
 @State(Scope.Benchmark)
 @Fork(1)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
@@ -36,21 +36,21 @@ class ServerSetResolver {
   @Param(Array("1")) var stabilizationSec = 1
 
   /**
-   * Specifies how long the test runs (as serverset monitoring
-   * will continue for the lifetime of the test).
-   */
+    * Specifies how long the test runs (as serverset monitoring
+    * will continue for the lifetime of the test).
+    */
   @Param(Array("120")) var testRuntimeSec = 120
 
   val logger = Logger(getClass)
 
   /**
-   * This test will use the zk2 resolver to resolve and monitor updates to N serversets.
-   * The tests counterpart [[LocalServerSetService]] will be (deterministically) thrashing
-   * the serverset by constantly adding and removing members.
-   *
-   * This should be used for measuring allocation and GC impact of serverset resolution
-   * during zk churn.
-   */
+    * This test will use the zk2 resolver to resolve and monitor updates to N serversets.
+    * The tests counterpart [[LocalServerSetService]] will be (deterministically) thrashing
+    * the serverset by constantly adding and removing members.
+    *
+    * This should be used for measuring allocation and GC impact of serverset resolution
+    * during zk churn.
+    */
   @Benchmark
   def resolveChurningServerSets(): Int = {
 
@@ -58,9 +58,14 @@ class ServerSetResolver {
     implicit val timer = DefaultTimer.twitter
 
     val stabilizationWindow = Duration.fromSeconds(stabilizationSec)
-    val resolver = new Zk2Resolver(NullStatsReceiver, stabilizationWindow, stabilizationWindow, stabilizationWindow)
+    val resolver = new Zk2Resolver(
+      NullStatsReceiver,
+      stabilizationWindow,
+      stabilizationWindow,
+      stabilizationWindow)
 
-    val serverSetPaths = LocalServerSetService.createServerSetPaths(serverSetsToResolve)
+    val serverSetPaths =
+      LocalServerSetService.createServerSetPaths(serverSetsToResolve)
 
     // For the lifetime of this test, monitor changes to all N serversets
     // (The resolver is always monitoring changes)
@@ -76,14 +81,15 @@ class ServerSetResolver {
   }
 
   /**
-   * Resolve and monitor changes to a single serverset for the lifetime of the test.
-   */
+    * Resolve and monitor changes to a single serverset for the lifetime of the test.
+    */
   def monitorServersetChanges(resolver: Zk2Resolver, zkPath: String): Unit = {
     resolver.bind(s"localhost:$zkListenPort!$zkPath").changes.respond {
-      case Addr.Bound(set, metadata) => logger.info(s"Serverset $zkPath has ${set.size} entries")
-      case Addr.Neg => unexpectedError(s"negative resolution of $zkPath")
+      case Addr.Bound(set, metadata) =>
+        logger.info(s"Serverset $zkPath has ${set.size} entries")
+      case Addr.Neg         => unexpectedError(s"negative resolution of $zkPath")
       case Addr.Failed(exc) => unexpectedError(s"$zkPath: Addr.Failure[$exc]")
-      case Addr.Pending => logger.info(s"$zkPath is pending...")
+      case Addr.Pending     => logger.info(s"$zkPath is pending...")
     }
   }
 

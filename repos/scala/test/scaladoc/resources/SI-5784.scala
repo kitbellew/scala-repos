@@ -1,5 +1,6 @@
 package test.templates {
   object `package` {
+
     /** @template */
     type String = java.lang.String
     val String = new StringCompanion
@@ -8,10 +9,12 @@ package test.templates {
 
   /** @contentDiagram */
   trait Base {
+
     /** @documentable */
     type String = test.templates.String
+
     /** @template
-     * @inheritanceDiagram */
+      * @inheritanceDiagram */
     type T <: Foo
     val T: FooExtractor
     trait Foo { def foo: Int }
@@ -20,8 +23,9 @@ package test.templates {
 
   /** @contentDiagram */
   trait Api extends Base {
+
     /** @documentable
-     *  @inheritanceDiagram */
+      *  @inheritanceDiagram */
     override type T <: FooApi
     trait FooApi extends Foo { def bar: String }
   }

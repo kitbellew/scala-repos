@@ -9,14 +9,12 @@ class DiffUtilSpec extends EnsimeSpec {
     val originalContent =
       """|line1
          |line2
-         |line3"""
-        .stripMargin.lines.toSeq
+         |line3""".stripMargin.lines.toSeq
 
     val revisedContent =
       """|line1
          |new-line2
-         |line3"""
-        .stripMargin.lines.toSeq
+         |line3""".stripMargin.lines.toSeq
     val a = new File("a").getAbsolutePath()
     val b = new File("b").getAbsolutePath()
     val expectedDiff =

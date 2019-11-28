@@ -30,10 +30,11 @@ object SCL6854 {
 
     // removing the FooNumberAny builder also fixes the error highlighting
     object Builder extends Level1 {
-      implicit def FooNumberAnyBuilder[T](implicit p: Numeric[T]) = new Builder[T, FooNumberAny[T]] {
-        def buildInstance(value: T) =
-          FooNumberAny(value)
-      }
+      implicit def FooNumberAnyBuilder[T](implicit p: Numeric[T]) =
+        new Builder[T, FooNumberAny[T]] {
+          def buildInstance(value: T) =
+            FooNumberAny(value)
+        }
     }
 
   }
@@ -62,7 +63,8 @@ object SCL6854 {
 
     println()
 
-    /*start*/(anyRef, anyRefExp, someBoolean, anyNumber)/*end*/
+    /*start*/
+    (anyRef, anyRefExp, someBoolean, anyNumber) /*end*/
   }
 
 }

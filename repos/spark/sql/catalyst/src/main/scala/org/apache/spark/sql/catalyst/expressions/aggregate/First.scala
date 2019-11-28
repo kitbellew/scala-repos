@@ -22,20 +22,22 @@ import org.apache.spark.sql.catalyst.expressions._
 import org.apache.spark.sql.types._
 
 /**
- * Returns the first value of `child` for a group of rows. If the first value of `child`
- * is `null`, it returns `null` (respecting nulls). Even if [[First]] is used on a already
- * sorted column, if we do partial aggregation and final aggregation (when mergeExpression
- * is used) its result will not be deterministic (unless the input table is sorted and has
- * a single partition, and we use a single reducer to do the aggregation.).
- */
-case class First(child: Expression, ignoreNullsExpr: Expression) extends DeclarativeAggregate {
+  * Returns the first value of `child` for a group of rows. If the first value of `child`
+  * is `null`, it returns `null` (respecting nulls). Even if [[First]] is used on a already
+  * sorted column, if we do partial aggregation and final aggregation (when mergeExpression
+  * is used) its result will not be deterministic (unless the input table is sorted and has
+  * a single partition, and we use a single reducer to do the aggregation.).
+  */
+case class First(child: Expression, ignoreNullsExpr: Expression)
+    extends DeclarativeAggregate {
 
   def this(child: Expression) = this(child, Literal.create(false, BooleanType))
 
   private val ignoreNulls: Boolean = ignoreNullsExpr match {
     case Literal(b: Boolean, BooleanType) => b
     case _ =>
-      throw new AnalysisException("The second argument of First should be a boolean literal.")
+      throw new AnalysisException(
+        "The second argument of First should be a boolean literal.")
   }
 
   override def children: Seq[Expression] = child :: Nil
@@ -55,7 +57,8 @@ case class First(child: Expression, ignoreNullsExpr: Expression) extends Declara
 
   private lazy val valueSet = AttributeReference("valueSet", BooleanType)()
 
-  override lazy val aggBufferAttributes: Seq[AttributeReference] = first :: valueSet :: Nil
+  override lazy val aggBufferAttributes
+      : Seq[AttributeReference] = first :: valueSet :: Nil
 
   override lazy val initialValues: Seq[Literal] = Seq(
     /* first = */ Literal.create(null, child.dataType),
@@ -88,5 +91,6 @@ case class First(child: Expression, ignoreNullsExpr: Expression) extends Declara
 
   override lazy val evaluateExpression: AttributeReference = first
 
-  override def toString: String = s"first($child)${if (ignoreNulls) " ignore nulls"}"
+  override def toString: String =
+    s"first($child)${if (ignoreNulls) " ignore nulls"}"
 }

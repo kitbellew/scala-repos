@@ -34,12 +34,12 @@ import scalafx.scene.image.{Image, ImageView}
 import scalafx.scene.layout.{Priority, VBox}
 
 /**
- * A sample that shows a simple hyperlink and a hyperlink with an image.
- *
- * @see scalafx.scene.control.Hyperlink
- * @related controls/GraphicButton
- * @resource /scalafx/ensemble/images/icon-48x48.png
- */
+  * A sample that shows a simple hyperlink and a hyperlink with an image.
+  *
+  * @see scalafx.scene.control.Hyperlink
+  * @related controls/GraphicButton
+  * @resource /scalafx/ensemble/images/icon-48x48.png
+  */
 class EnsembleHyperlink extends EnsembleExample {
 
   def getContent = new VBox {
@@ -54,9 +54,12 @@ class EnsembleHyperlink extends EnsembleExample {
       new Hyperlink {
         text = "Hyperlink with Image"
         graphic = new ImageView {
-          image = new Image(this.getClass.getResourceAsStream("/scalafx/ensemble/images/icon-48x48.png"))
+          image = new Image(
+            this.getClass
+              .getResourceAsStream("/scalafx/ensemble/images/icon-48x48.png"))
           margin = Insets(0, 0, 0, 10)
         }
-      })
+      }
+    )
   }
 }

@@ -39,24 +39,32 @@ case class Entry(
 
 object Entry {
 
-  private[timeline] def make(users: List[String], data: Atom): Option[Entry] = (data match {
-    case d: Follow      => "follow" -> Json.toJson(d)
-    case d: TeamJoin    => "team-join" -> Json.toJson(d)
-    case d: TeamCreate  => "team-create" -> Json.toJson(d)
-    case d: ForumPost   => "forum-post" -> Json.toJson(d)
-    case d: NoteCreate  => "note-create" -> Json.toJson(d)
-    case d: TourJoin    => "tour-join" -> Json.toJson(d)
-    case d: QaQuestion  => "qa-question" -> Json.toJson(d)
-    case d: QaAnswer    => "qa-answer" -> Json.toJson(d)
-    case d: QaComment   => "qa-comment" -> Json.toJson(d)
-    case d: GameEnd     => "game-end" -> Json.toJson(d)
-    case d: SimulCreate => "simul-create" -> Json.toJson(d)
-    case d: SimulJoin   => "simul-join" -> Json.toJson(d)
-  }) match {
-    case (typ, json) => json.asOpt[JsObject] map {
-      new Entry(BSONObjectID.generate, users, typ, data.channel.some, _, DateTime.now)
+  private[timeline] def make(users: List[String], data: Atom): Option[Entry] =
+    (data match {
+      case d: Follow      => "follow" -> Json.toJson(d)
+      case d: TeamJoin    => "team-join" -> Json.toJson(d)
+      case d: TeamCreate  => "team-create" -> Json.toJson(d)
+      case d: ForumPost   => "forum-post" -> Json.toJson(d)
+      case d: NoteCreate  => "note-create" -> Json.toJson(d)
+      case d: TourJoin    => "tour-join" -> Json.toJson(d)
+      case d: QaQuestion  => "qa-question" -> Json.toJson(d)
+      case d: QaAnswer    => "qa-answer" -> Json.toJson(d)
+      case d: QaComment   => "qa-comment" -> Json.toJson(d)
+      case d: GameEnd     => "game-end" -> Json.toJson(d)
+      case d: SimulCreate => "simul-create" -> Json.toJson(d)
+      case d: SimulJoin   => "simul-join" -> Json.toJson(d)
+    }) match {
+      case (typ, json) =>
+        json.asOpt[JsObject] map {
+          new Entry(
+            BSONObjectID.generate,
+            users,
+            typ,
+            data.channel.some,
+            _,
+            DateTime.now)
+        }
     }
-  }
 
   import play.modules.reactivemongo.json.ImplicitBSONHandlers._
   import lila.db.BSON.BSONJodaDateTimeHandler
@@ -64,9 +72,6 @@ object Entry {
   implicit val EntryBSONHandler = Macros.handler[Entry]
 
   implicit val entryWrites = OWrites[Entry] { e =>
-    Json.obj(
-      "type" -> e.typ,
-      "data" -> e.data,
-      "date" -> e.date)
+    Json.obj("type" -> e.typ, "data" -> e.data, "date" -> e.date)
   }
 }

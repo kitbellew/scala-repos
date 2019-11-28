@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.controller
 
 import _root_.java.io.File
@@ -42,9 +41,7 @@ import scala.language.existentials
   * @tparam R Type of the primary metric score
   * @group Evaluation
   */
-case class MetricScores[R](
-  score: R,
-  otherScores: Seq[Any])
+case class MetricScores[R](score: R, otherScores: Seq[Any])
 
 /** Contains all results of a [[MetricEvaluator]]
   *
@@ -59,14 +56,14 @@ case class MetricScores[R](
   * @group Evaluation
   */
 case class MetricEvaluatorResult[R](
-  bestScore: MetricScores[R],
-  bestEngineParams: EngineParams,
-  bestIdx: Int,
-  metricHeader: String,
-  otherMetricHeaders: Seq[String],
-  engineParamsScores: Seq[(EngineParams, MetricScores[R])],
-  outputPath: Option[String])
-extends BaseEvaluatorResult {
+    bestScore: MetricScores[R],
+    bestEngineParams: EngineParams,
+    bestIdx: Int,
+    metricHeader: String,
+    otherMetricHeaders: Seq[String],
+    engineParamsScores: Seq[(EngineParams, MetricScores[R])],
+    outputPath: Option[String])
+    extends BaseEvaluatorResult {
 
   override def toOneLiner(): String = {
     val idx = engineParamsScores.map(_._1).indexOf(bestEngineParams)
@@ -78,14 +75,15 @@ extends BaseEvaluatorResult {
       new NameParamsSerializer
     write(this)
   }
-  
+
   override def toHTML(): String = html.metric_evaluator().toString()
-  
+
   override def toString: String = {
     implicit lazy val formats = Utils.json4sDefaultFormats +
       new NameParamsSerializer
-    
-    val bestEPStr = JsonExtractor.engineParamstoPrettyJson(Both, bestEngineParams)
+
+    val bestEPStr =
+      JsonExtractor.engineParamstoPrettyJson(Both, bestEngineParams)
 
     val strings = Seq(
       "MetricEvaluatorResult:",
@@ -98,8 +96,8 @@ extends BaseEvaluatorResult {
       otherMetricHeaders.zip(bestScore.otherScores).map {
         case (h, s) => s"  $h: $s"
       } ++
-      outputPath.toSeq.map {
-        p => s"The best variant params can be found in $p"
+      outputPath.toSeq.map { p =>
+        s"The best variant params can be found in $p"
       }
 
     strings.mkString("\n")
@@ -112,27 +110,21 @@ extends BaseEvaluatorResult {
   */
 object MetricEvaluator {
   def apply[EI, Q, P, A, R](
-    metric: Metric[EI, Q, P, A, R],
-    otherMetrics: Seq[Metric[EI, Q, P, A, _]],
-    outputPath: String): MetricEvaluator[EI, Q, P, A, R] = {
-    new MetricEvaluator[EI, Q, P, A, R](
-      metric,
-      otherMetrics,
-      Some(outputPath))
+      metric: Metric[EI, Q, P, A, R],
+      otherMetrics: Seq[Metric[EI, Q, P, A, _]],
+      outputPath: String): MetricEvaluator[EI, Q, P, A, R] = {
+    new MetricEvaluator[EI, Q, P, A, R](metric, otherMetrics, Some(outputPath))
   }
 
   def apply[EI, Q, P, A, R](
-    metric: Metric[EI, Q, P, A, R],
-    otherMetrics: Seq[Metric[EI, Q, P, A, _]])
-  : MetricEvaluator[EI, Q, P, A, R] = {
-    new MetricEvaluator[EI, Q, P, A, R](
-      metric,
-      otherMetrics,
-      None)
+      metric: Metric[EI, Q, P, A, R],
+      otherMetrics: Seq[Metric[EI, Q, P, A, _]])
+      : MetricEvaluator[EI, Q, P, A, R] = {
+    new MetricEvaluator[EI, Q, P, A, R](metric, otherMetrics, None)
   }
-  
-  def apply[EI, Q, P, A, R](metric: Metric[EI, Q, P, A, R])
-  : MetricEvaluator[EI, Q, P, A, R] = {
+
+  def apply[EI, Q, P, A, R](
+      metric: Metric[EI, Q, P, A, R]): MetricEvaluator[EI, Q, P, A, R] = {
     new MetricEvaluator[EI, Q, P, A, R](
       metric,
       Seq[Metric[EI, Q, P, A, _]](),
@@ -144,22 +136,24 @@ object MetricEvaluator {
   }
 
   case class EngineVariant(
-    id: String,
-    description: String,
-    engineFactory: String,
-    datasource: NameParams,
-    preparator: NameParams,
-    algorithms: Seq[NameParams],
-    serving: NameParams) {
+      id: String,
+      description: String,
+      engineFactory: String,
+      datasource: NameParams,
+      preparator: NameParams,
+      algorithms: Seq[NameParams],
+      serving: NameParams) {
 
-    def this(evaluation: Evaluation, engineParams: EngineParams) = this(
-      id = "",
-      description = "",
-      engineFactory = evaluation.getClass.getName,
-      datasource = new NameParams(engineParams.dataSourceParams),
-      preparator = new NameParams(engineParams.preparatorParams),
-      algorithms = engineParams.algorithmParamsList.map(np => new NameParams(np)),
-      serving = new NameParams(engineParams.servingParams))
+    def this(evaluation: Evaluation, engineParams: EngineParams) =
+      this(
+        id = "",
+        description = "",
+        engineFactory = evaluation.getClass.getName,
+        datasource = new NameParams(engineParams.dataSourceParams),
+        preparator = new NameParams(engineParams.preparatorParams),
+        algorithms =
+          engineParams.algorithmParamsList.map(np => new NameParams(np)),
+        serving = new NameParams(engineParams.servingParams))
   }
 }
 
@@ -179,30 +173,32 @@ object MetricEvaluator {
   * @group Evaluation
   */
 @DeveloperApi
-class MetricEvaluator[EI, Q, P, A, R] (
-  val metric: Metric[EI, Q, P, A, R],
-  val otherMetrics: Seq[Metric[EI, Q, P, A, _]],
-  val outputPath: Option[String])
-  extends BaseEvaluator[EI, Q, P, A, MetricEvaluatorResult[R]] {
+class MetricEvaluator[EI, Q, P, A, R](
+    val metric: Metric[EI, Q, P, A, R],
+    val otherMetrics: Seq[Metric[EI, Q, P, A, _]],
+    val outputPath: Option[String])
+    extends BaseEvaluator[EI, Q, P, A, MetricEvaluatorResult[R]] {
   @transient lazy val logger = Logger[this.type]
   @transient val engineInstances = Storage.getMetaDataEngineInstances()
 
   def saveEngineJson(
-    evaluation: Evaluation,
-    engineParams: EngineParams,
-    outputPath: String) {
+      evaluation: Evaluation,
+      engineParams: EngineParams,
+      outputPath: String) {
 
     val now = DateTime.now
     val evalClassName = evaluation.getClass.getName
-    
+
     val variant = MetricEvaluator.EngineVariant(
       id = s"$evalClassName $now",
       description = "",
       engineFactory = evalClassName,
       datasource = new MetricEvaluator.NameParams(engineParams.dataSourceParams),
       preparator = new MetricEvaluator.NameParams(engineParams.preparatorParams),
-      algorithms = engineParams.algorithmParamsList.map(np => new MetricEvaluator.NameParams(np)),
-      serving = new MetricEvaluator.NameParams(engineParams.servingParams))
+      algorithms = engineParams.algorithmParamsList.map(np =>
+        new MetricEvaluator.NameParams(np)),
+      serving = new MetricEvaluator.NameParams(engineParams.servingParams)
+    )
 
     implicit lazy val formats = Utils.json4sDefaultFormats
 
@@ -213,40 +209,41 @@ class MetricEvaluator[EI, Q, P, A, R] (
   }
 
   def evaluateBase(
-    sc: SparkContext,
-    evaluation: Evaluation,
-    engineEvalDataSet: Seq[(EngineParams, Seq[(EI, RDD[(Q, P, A)])])],
-    params: WorkflowParams): MetricEvaluatorResult[R] = {
+      sc: SparkContext,
+      evaluation: Evaluation,
+      engineEvalDataSet: Seq[(EngineParams, Seq[(EI, RDD[(Q, P, A)])])],
+      params: WorkflowParams): MetricEvaluatorResult[R] = {
 
-    val evalResultList: Seq[(EngineParams, MetricScores[R])] = engineEvalDataSet
-    .zipWithIndex
-    .par
-    .map { case ((engineParams, evalDataSet), idx) => 
-      val metricScores = MetricScores[R](
-        metric.calculate(sc, evalDataSet),
-        otherMetrics.map(_.calculate(sc, evalDataSet)))
-      (engineParams, metricScores)
-    }
-    .seq
-    
+    val evalResultList: Seq[(EngineParams, MetricScores[R])] =
+      engineEvalDataSet.zipWithIndex.par.map {
+        case ((engineParams, evalDataSet), idx) =>
+          val metricScores = MetricScores[R](
+            metric.calculate(sc, evalDataSet),
+            otherMetrics.map(_.calculate(sc, evalDataSet)))
+          (engineParams, metricScores)
+      }.seq
+
     implicit lazy val formats = Utils.json4sDefaultFormats +
       new NameParamsSerializer
 
-    evalResultList.zipWithIndex.foreach { case ((ep, r), idx) =>
-      logger.info(s"Iteration $idx")
-      logger.info(s"EngineParams: ${JsonExtractor.engineParamsToJson(Both, ep)}")
-      logger.info(s"Result: $r")
+    evalResultList.zipWithIndex.foreach {
+      case ((ep, r), idx) =>
+        logger.info(s"Iteration $idx")
+        logger.info(
+          s"EngineParams: ${JsonExtractor.engineParamsToJson(Both, ep)}")
+        logger.info(s"Result: $r")
     }
 
     // use max. take implicit from Metric.
-    val ((bestEngineParams, bestScore), bestIdx) = evalResultList
-    .zipWithIndex
-    .reduce { (x, y) =>
-      if (metric.compare(x._1._2.score, y._1._2.score) >= 0) x else y
-    }
+    val ((bestEngineParams, bestScore), bestIdx) = evalResultList.zipWithIndex
+      .reduce { (x, y) =>
+        if (metric.compare(x._1._2.score, y._1._2.score) >= 0) x else y
+      }
 
     // save engine params if it is set.
-    outputPath.foreach { path => saveEngineJson(evaluation, bestEngineParams, path) }
+    outputPath.foreach { path =>
+      saveEngineJson(evaluation, bestEngineParams, path)
+    }
 
     MetricEvaluatorResult(
       bestScore = bestScore,
@@ -255,6 +252,7 @@ class MetricEvaluator[EI, Q, P, A, R] (
       metricHeader = metric.header,
       otherMetricHeaders = otherMetrics.map(_.header),
       engineParamsScores = evalResultList,
-      outputPath = outputPath)
+      outputPath = outputPath
+    )
   }
 }

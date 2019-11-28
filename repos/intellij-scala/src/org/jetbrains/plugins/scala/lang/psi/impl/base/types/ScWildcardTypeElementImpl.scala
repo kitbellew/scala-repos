@@ -10,21 +10,29 @@ import com.intellij.psi.PsiElementVisitor
 import org.jetbrains.plugins.scala.lang.psi.api.ScalaElementVisitor
 import org.jetbrains.plugins.scala.lang.psi.api.base.types._
 import org.jetbrains.plugins.scala.lang.psi.types.result.TypingContext
-import org.jetbrains.plugins.scala.lang.psi.types.{ScExistentialArgument, ScExistentialType, ScTypeVariable}
+import org.jetbrains.plugins.scala.lang.psi.types.{
+  ScExistentialArgument,
+  ScExistentialType,
+  ScTypeVariable
+}
 
 /**
-* @author Alexander Podkhalyuzin
-* Date: 11.04.2008
-*/
-
-class ScWildcardTypeElementImpl(node: ASTNode) extends ScalaPsiElementImpl(node) with ScTypeBoundsOwnerImpl with ScWildcardTypeElement {
+  * @author Alexander Podkhalyuzin
+  * Date: 11.04.2008
+  */
+class ScWildcardTypeElementImpl(node: ASTNode)
+    extends ScalaPsiElementImpl(node)
+    with ScTypeBoundsOwnerImpl
+    with ScWildcardTypeElement {
   override def toString: String = "WildcardType: " + getText
 
   protected def innerType(ctx: TypingContext) = {
     for {
       lb <- lowerBound
       ub <- upperBound
-    } yield new ScExistentialType(ScTypeVariable("_$1"), List(new ScExistentialArgument("_$1", Nil, lb, ub)))
+    } yield new ScExistentialType(
+      ScTypeVariable("_$1"),
+      List(new ScExistentialArgument("_$1", Nil, lb, ub)))
   }
 
   override def accept(visitor: ScalaElementVisitor) {
@@ -34,7 +42,7 @@ class ScWildcardTypeElementImpl(node: ASTNode) extends ScalaPsiElementImpl(node)
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
       case s: ScalaElementVisitor => s.visitWildcardTypeElement(this)
-      case _ => super.accept(visitor)
+      case _                      => super.accept(visitor)
     }
   }
 }

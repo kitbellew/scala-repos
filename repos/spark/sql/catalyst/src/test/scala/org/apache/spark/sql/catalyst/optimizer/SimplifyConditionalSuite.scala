@@ -19,22 +19,29 @@ package org.apache.spark.sql.catalyst.optimizer
 
 import org.apache.spark.sql.catalyst.dsl.plans._
 import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.expressions.Literal.{FalseLiteral, TrueLiteral}
+import org.apache.spark.sql.catalyst.expressions.Literal.{
+  FalseLiteral,
+  TrueLiteral
+}
 import org.apache.spark.sql.catalyst.plans.PlanTest
 import org.apache.spark.sql.catalyst.plans.logical._
 import org.apache.spark.sql.catalyst.rules._
 import org.apache.spark.sql.types.IntegerType
 
-
 class SimplifyConditionalSuite extends PlanTest with PredicateHelper {
 
   object Optimize extends RuleExecutor[LogicalPlan] {
-    val batches = Batch("SimplifyConditionals", FixedPoint(50), SimplifyConditionals) :: Nil
+    val batches = Batch(
+      "SimplifyConditionals",
+      FixedPoint(50),
+      SimplifyConditionals) :: Nil
   }
 
   protected def assertEquivalent(e1: Expression, e2: Expression): Unit = {
-    val correctAnswer = Project(Alias(e2, "out")() :: Nil, OneRowRelation).analyze
-    val actual = Optimize.execute(Project(Alias(e1, "out")() :: Nil, OneRowRelation).analyze)
+    val correctAnswer =
+      Project(Alias(e2, "out")() :: Nil, OneRowRelation).analyze
+    val actual = Optimize.execute(
+      Project(Alias(e1, "out")() :: Nil, OneRowRelation).analyze)
     comparePlans(actual, correctAnswer)
   }
 
@@ -43,25 +50,25 @@ class SimplifyConditionalSuite extends PlanTest with PredicateHelper {
   private val unreachableBranch = (FalseLiteral, Literal(20))
 
   test("simplify if") {
-    assertEquivalent(
-      If(TrueLiteral, Literal(10), Literal(20)),
-      Literal(10))
+    assertEquivalent(If(TrueLiteral, Literal(10), Literal(20)), Literal(10))
 
-    assertEquivalent(
-      If(FalseLiteral, Literal(10), Literal(20)),
-      Literal(20))
+    assertEquivalent(If(FalseLiteral, Literal(10), Literal(20)), Literal(20))
   }
 
   test("remove unreachable branches") {
     // i.e. removing branches whose conditions are always false
     assertEquivalent(
-      CaseWhen(unreachableBranch :: normalBranch :: unreachableBranch :: Nil, None),
+      CaseWhen(
+        unreachableBranch :: normalBranch :: unreachableBranch :: Nil,
+        None),
       CaseWhen(normalBranch :: Nil, None))
   }
 
   test("remove entire CaseWhen if only the else branch is reachable") {
     assertEquivalent(
-      CaseWhen(unreachableBranch :: unreachableBranch :: Nil, Some(Literal(30))),
+      CaseWhen(
+        unreachableBranch :: unreachableBranch :: Nil,
+        Some(Literal(30))),
       Literal(30))
 
     assertEquivalent(
@@ -76,7 +83,9 @@ class SimplifyConditionalSuite extends PlanTest with PredicateHelper {
 
     // Test branch elimination and simplification in combination
     assertEquivalent(
-      CaseWhen(unreachableBranch :: unreachableBranch:: trueBranch :: normalBranch :: Nil, None),
+      CaseWhen(
+        unreachableBranch :: unreachableBranch :: trueBranch :: normalBranch :: Nil,
+        None),
       Literal(5))
 
     // Make sure this doesn't trigger if there is a non-foldable branch before the true branch

@@ -25,23 +25,33 @@ import org.apache.spark.internal.Logging
 import org.apache.spark.network.BlockDataManager
 import org.apache.spark.network.buffer.{ManagedBuffer, NioManagedBuffer}
 import org.apache.spark.network.client.{RpcResponseCallback, TransportClient}
-import org.apache.spark.network.server.{OneForOneStreamManager, RpcHandler, StreamManager}
-import org.apache.spark.network.shuffle.protocol.{BlockTransferMessage, OpenBlocks, StreamHandle, UploadBlock}
+import org.apache.spark.network.server.{
+  OneForOneStreamManager,
+  RpcHandler,
+  StreamManager
+}
+import org.apache.spark.network.shuffle.protocol.{
+  BlockTransferMessage,
+  OpenBlocks,
+  StreamHandle,
+  UploadBlock
+}
 import org.apache.spark.serializer.Serializer
 import org.apache.spark.storage.{BlockId, StorageLevel}
 
 /**
- * Serves requests to open blocks by simply registering one chunk per block requested.
- * Handles opening and uploading arbitrary BlockManager blocks.
- *
- * Opened blocks are registered with the "one-for-one" strategy, meaning each Transport-layer Chunk
- * is equivalent to one Spark-level shuffle block.
- */
+  * Serves requests to open blocks by simply registering one chunk per block requested.
+  * Handles opening and uploading arbitrary BlockManager blocks.
+  *
+  * Opened blocks are registered with the "one-for-one" strategy, meaning each Transport-layer Chunk
+  * is equivalent to one Spark-level shuffle block.
+  */
 class NettyBlockRpcServer(
     appId: String,
     serializer: Serializer,
     blockManager: BlockDataManager)
-  extends RpcHandler with Logging {
+    extends RpcHandler
+    with Logging {
 
   private val streamManager = new OneForOneStreamManager()
 
@@ -56,14 +66,18 @@ class NettyBlockRpcServer(
       case openBlocks: OpenBlocks =>
         val blocks: Seq[ManagedBuffer] =
           openBlocks.blockIds.map(BlockId.apply).map(blockManager.getBlockData)
-        val streamId = streamManager.registerStream(appId, blocks.iterator.asJava)
+        val streamId =
+          streamManager.registerStream(appId, blocks.iterator.asJava)
         logTrace(s"Registered streamId $streamId with ${blocks.size} buffers")
-        responseContext.onSuccess(new StreamHandle(streamId, blocks.size).toByteBuffer)
+        responseContext.onSuccess(
+          new StreamHandle(streamId, blocks.size).toByteBuffer)
 
       case uploadBlock: UploadBlock =>
         // StorageLevel is serialized as bytes using our JavaSerializer.
         val level: StorageLevel =
-          serializer.newInstance().deserialize(ByteBuffer.wrap(uploadBlock.metadata))
+          serializer
+            .newInstance()
+            .deserialize(ByteBuffer.wrap(uploadBlock.metadata))
         val data = new NioManagedBuffer(ByteBuffer.wrap(uploadBlock.blockData))
         val blockId = BlockId(uploadBlock.blockId)
         blockManager.putBlockData(blockId, data, level)

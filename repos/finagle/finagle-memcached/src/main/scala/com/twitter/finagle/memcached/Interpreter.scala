@@ -8,8 +8,8 @@ import com.twitter.io.Buf
 import com.twitter.util.{Future, Time}
 
 /**
- * Evaluates a given Memcached operation and returns the result.
- */
+  * Evaluates a given Memcached operation and returns the result.
+  */
 class Interpreter(map: AtomicMap[Buf, Entry]) {
 
   import ParserUtils._
@@ -120,8 +120,11 @@ class Interpreter(map: AtomicMap[Buf, Entry]) {
           existing match {
             case Some(entry) if entry.valid =>
               val Buf.Utf8(existingString) = entry.value
-              if (!existingString.isEmpty && !DigitsPattern.matcher(existingString).matches())
-                throw new ClientError("cannot increment or decrement non-numeric value")
+              if (!existingString.isEmpty && !DigitsPattern
+                    .matcher(existingString)
+                    .matches())
+                throw new ClientError(
+                  "cannot increment or decrement non-numeric value")
 
               val existingValue: Long =
                 if (existingString.isEmpty) 0L
@@ -151,12 +154,15 @@ class Interpreter(map: AtomicMap[Buf, Entry]) {
     Values(
       keys.flatMap { key =>
         map.lock(key) { data =>
-          data.get(key).filter { entry =>
-            entry.valid
-          }.map { entry =>
-            val value = entry.value
-            Value(key, value, Some(generateCasUnique(value)))
-          }
+          data
+            .get(key)
+            .filter { entry =>
+              entry.valid
+            }
+            .map { entry =>
+              val value = entry.value
+              Value(key, value, Some(generateCasUnique(value)))
+            }
         }
       }
     )
@@ -166,16 +172,17 @@ class Interpreter(map: AtomicMap[Buf, Entry]) {
 
 private[memcached] object Interpreter {
   /*
-  * Using non-cryptographic goodFastHash Hashing Algorithm
-  * for we only care about speed for testing.
-  *
-  * The real memcached uses uint64_t for cas tokens,
-  * so we convert the hash to a String
-  * representation of an unsigned Long so it can be
-  * used as a cas token.
-  */
+   * Using non-cryptographic goodFastHash Hashing Algorithm
+   * for we only care about speed for testing.
+   *
+   * The real memcached uses uint64_t for cas tokens,
+   * so we convert the hash to a String
+   * representation of an unsigned Long so it can be
+   * used as a cas token.
+   */
   private[memcached] def generateCasUnique(value: Buf): Buf = {
-    val hashAsUnsignedLong = Hashing.goodFastHash(32)
+    val hashAsUnsignedLong = Hashing
+      .goodFastHash(32)
       .newHasher(value.length)
       .putBytes(Buf.ByteArray.Owned.extract(value))
       .hash()
@@ -186,12 +193,14 @@ private[memcached] object Interpreter {
 }
 
 case class Entry(value: Buf, expiry: Time) {
+
   /**
-   * Whether or not the cache entry has expired
-   */
+    * Whether or not the cache entry has expired
+    */
   def valid: Boolean = expiry == Time.epoch || Time.now < expiry
 }
 
-class InterpreterService(interpreter: Interpreter) extends Service[Command, Response] {
+class InterpreterService(interpreter: Interpreter)
+    extends Service[Command, Response] {
   def apply(command: Command) = Future(interpreter(command))
 }

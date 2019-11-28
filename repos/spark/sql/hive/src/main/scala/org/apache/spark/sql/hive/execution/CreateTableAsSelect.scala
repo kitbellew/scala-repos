@@ -20,23 +20,29 @@ package org.apache.spark.sql.hive.execution
 import org.apache.spark.sql.{AnalysisException, Row, SQLContext}
 import org.apache.spark.sql.catalyst.TableIdentifier
 import org.apache.spark.sql.catalyst.catalog.{CatalogColumn, CatalogTable}
-import org.apache.spark.sql.catalyst.plans.logical.{InsertIntoTable, LogicalPlan}
+import org.apache.spark.sql.catalyst.plans.logical.{
+  InsertIntoTable,
+  LogicalPlan
+}
 import org.apache.spark.sql.execution.command.RunnableCommand
-import org.apache.spark.sql.hive.{HiveContext, HiveMetastoreTypes, MetastoreRelation}
+import org.apache.spark.sql.hive.{
+  HiveContext,
+  HiveMetastoreTypes,
+  MetastoreRelation
+}
 
 /**
- * Create table and insert the query result into it.
- * @param tableDesc the Table Describe, which may contains serde, storage handler etc.
- * @param query the query whose result will be insert into the new relation
- * @param allowExisting allow continue working if it's already exists, otherwise
- *                      raise exception
- */
-private[hive]
-case class CreateTableAsSelect(
+  * Create table and insert the query result into it.
+  * @param tableDesc the Table Describe, which may contains serde, storage handler etc.
+  * @param query the query whose result will be insert into the new relation
+  * @param allowExisting allow continue working if it's already exists, otherwise
+  *                      raise exception
+  */
+private[hive] case class CreateTableAsSelect(
     tableDesc: CatalogTable,
     query: LogicalPlan,
     allowExisting: Boolean)
-  extends RunnableCommand {
+    extends RunnableCommand {
 
   private val tableIdentifier = tableDesc.name
 
@@ -52,12 +58,14 @@ case class CreateTableAsSelect(
 
       val withFormat =
         tableDesc.withNewStorage(
-          inputFormat =
-            tableDesc.storage.inputFormat.orElse(Some(classOf[TextInputFormat].getName)),
-          outputFormat =
-            tableDesc.storage.outputFormat
-              .orElse(Some(classOf[HiveIgnoreKeyTextOutputFormat[Text, Text]].getName)),
-          serde = tableDesc.storage.serde.orElse(Some(classOf[LazySimpleSerDe].getName)))
+          inputFormat = tableDesc.storage.inputFormat
+            .orElse(Some(classOf[TextInputFormat].getName)),
+          outputFormat = tableDesc.storage.outputFormat
+            .orElse(
+              Some(classOf[HiveIgnoreKeyTextOutputFormat[Text, Text]].getName)),
+          serde = tableDesc.storage.serde
+            .orElse(Some(classOf[LazySimpleSerDe].getName))
+        )
 
       val withSchema = if (withFormat.schema.isEmpty) {
         // Hive doesn't support specifying the column list for target table in CTAS
@@ -69,10 +77,12 @@ case class CreateTableAsSelect(
         withFormat
       }
 
-      hiveContext.sessionState.catalog.client.createTable(withSchema, ignoreIfExists = false)
+      hiveContext.sessionState.catalog.client
+        .createTable(withSchema, ignoreIfExists = false)
 
       // Get the Metastore Relation
-      hiveContext.sessionState.catalog.lookupRelation(tableIdentifier, None) match {
+      hiveContext.sessionState.catalog
+        .lookupRelation(tableIdentifier, None) match {
         case r: MetastoreRelation => r
       }
     }
@@ -86,7 +96,10 @@ case class CreateTableAsSelect(
         throw new AnalysisException(s"$tableIdentifier already exists.")
       }
     } else {
-      hiveContext.executePlan(InsertIntoTable(metastoreRelation, Map(), query, true, false)).toRdd
+      hiveContext
+        .executePlan(
+          InsertIntoTable(metastoreRelation, Map(), query, true, false))
+        .toRdd
     }
 
     Seq.empty[Row]

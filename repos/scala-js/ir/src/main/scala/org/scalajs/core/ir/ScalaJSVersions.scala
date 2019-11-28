@@ -16,11 +16,11 @@ object ScalaJSVersions {
   val currentIsSnapshot: Boolean = current endsWith "-SNAPSHOT"
 
   /** Version of binary IR emitted by this version of Scala.js.
-   *
-   *  This should be either of:
-   *  - a prior release version (i.e. "0.5.0", *not* "0.5.0-SNAPSHOT")
-   *  - `current`
-   */
+    *
+    *  This should be either of:
+    *  - a prior release version (i.e. "0.5.0", *not* "0.5.0-SNAPSHOT")
+    *  - `current`
+    */
   val binaryEmitted: String = "0.6.8"
 
   /** Versions whose binary files we can support (used by deserializer) */

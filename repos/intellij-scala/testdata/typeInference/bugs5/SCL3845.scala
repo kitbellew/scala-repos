@@ -5,7 +5,8 @@ class A {
 
 trait T { this: A =>
   def getList(): B = {
-    /*start*/value/*end*/
+    /*start*/
+    value /*end*/
   }
 }
 //T.this.B

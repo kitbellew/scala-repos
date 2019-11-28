@@ -3,31 +3,44 @@ package codeInsight.delegateMethod
 
 import com.intellij.testFramework.IdeaTestUtil
 import com.intellij.testFramework.builders.JavaModuleFixtureBuilder
-import com.intellij.testFramework.fixtures.{JavaCodeInsightFixtureTestCase, ModuleFixture}
+import com.intellij.testFramework.fixtures.{
+  JavaCodeInsightFixtureTestCase,
+  ModuleFixture
+}
 import org.jetbrains.plugins.scala.codeInsight.delegate.ScalaGenerateDelegateHandler
 import org.jetbrains.plugins.scala.settings.ScalaApplicationSettings
 import org.junit.Assert._
 
 /**
- * Nikolay.Tropin
- * 2014-03-27
- */
-class ScalaDelegateToJavaMethodTest  extends JavaCodeInsightFixtureTestCase {
-  protected override def tuneFixture(moduleBuilder: JavaModuleFixtureBuilder[_ <: ModuleFixture]) {
+  * Nikolay.Tropin
+  * 2014-03-27
+  */
+class ScalaDelegateToJavaMethodTest extends JavaCodeInsightFixtureTestCase {
+  protected override def tuneFixture(
+      moduleBuilder: JavaModuleFixtureBuilder[_ <: ModuleFixture]) {
     moduleBuilder.setMockJdkLevel(JavaModuleFixtureBuilder.MockJdkLevel.jdk15)
     moduleBuilder.addJdk(IdeaTestUtil.getMockJdk14Path.getPath)
   }
 
-  def runTest(javaText: String, scalaText: String, expectedText: String, specifyRetType: Boolean = true) {
+  def runTest(
+      javaText: String,
+      scalaText: String,
+      expectedText: String,
+      specifyRetType: Boolean = true) {
     def clean(s: String): String = s.replace("\r", "").stripMargin.trim
 
     myFixture.addFileToProject("JavaClass.java", clean(javaText))
-    val scalaFile = myFixture.configureByText("ScalaDummy.scala", clean(scalaText))
-    val oldSpecifyType = ScalaApplicationSettings.getInstance.SPECIFY_RETURN_TYPE_EXPLICITLY
-    ScalaApplicationSettings.getInstance.SPECIFY_RETURN_TYPE_EXPLICITLY = specifyRetType
-    new ScalaGenerateDelegateHandler().invoke(myFixture.getProject, myFixture.getEditor, scalaFile)
+    val scalaFile =
+      myFixture.configureByText("ScalaDummy.scala", clean(scalaText))
+    val oldSpecifyType =
+      ScalaApplicationSettings.getInstance.SPECIFY_RETURN_TYPE_EXPLICITLY
+    ScalaApplicationSettings.getInstance.SPECIFY_RETURN_TYPE_EXPLICITLY =
+      specifyRetType
+    new ScalaGenerateDelegateHandler()
+      .invoke(myFixture.getProject, myFixture.getEditor, scalaFile)
     assertEquals(clean(expectedText), clean(scalaFile.getText))
-    ScalaApplicationSettings.getInstance.SPECIFY_RETURN_TYPE_EXPLICITLY = oldSpecifyType
+    ScalaApplicationSettings.getInstance.SPECIFY_RETURN_TYPE_EXPLICITLY =
+      oldSpecifyType
   }
 
   def testJavaFieldTarget() {

@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.tools
 
 import java.io.File
@@ -29,14 +28,18 @@ import scala.sys.process._
 
 object Runner extends Logging {
   def envStringToMap(env: String): Map[String, String] =
-    env.split(',').flatMap(p =>
-      p.split('=') match {
-        case Array(k, v) => List(k -> v)
-        case _ => Nil
-      }
-    ).toMap
+    env
+      .split(',')
+      .flatMap(p =>
+        p.split('=') match {
+          case Array(k, v) => List(k -> v)
+          case _           => Nil
+        })
+      .toMap
 
-  def argumentValue(arguments: Seq[String], argumentName: String): Option[String] = {
+  def argumentValue(
+      arguments: Seq[String],
+      argumentName: String): Option[String] = {
     val argumentIndex = arguments.indexOf(argumentName)
     try {
       arguments(argumentIndex) // just to make it error out if index is -1
@@ -53,9 +56,8 @@ object Runner extends Logging {
     val localFilePath = localFile.getCanonicalPath
     (fileSystem, uri) match {
       case (Some(fs), Some(u)) =>
-        val dest = fs.makeQualified(Path.mergePaths(
-          new Path(u),
-          new Path(localFilePath)))
+        val dest = fs.makeQualified(
+          Path.mergePaths(new Path(u), new Path(localFilePath)))
         info(s"Copying $localFile to ${dest.toString}")
         fs.copyFromLocalFile(new Path(localFilePath), dest)
         dest.toUri.toString
@@ -76,11 +78,12 @@ object Runner extends Logging {
       uri: Option[URI],
       args: Seq[String]): Seq[String] = {
     args map { arg =>
-      val f = try {
-        new File(new URI(arg))
-      } catch {
-        case e: Throwable => new File(arg)
-      }
+      val f =
+        try {
+          new File(new URI(arg))
+        } catch {
+          case e: Throwable => new File(arg)
+        }
       if (f.exists()) {
         handleScratchFile(fileSystem, uri, f)
       } else {
@@ -96,7 +99,8 @@ object Runner extends Logging {
       extraJars: Seq[URI]): Int = {
     // Return error for unsupported cases
     val deployMode =
-      argumentValue(ca.common.sparkPassThrough, "--deploy-mode").getOrElse("client")
+      argumentValue(ca.common.sparkPassThrough, "--deploy-mode")
+        .getOrElse("client")
     val master =
       argumentValue(ca.common.sparkPassThrough, "--master").getOrElse("local")
 
@@ -105,7 +109,8 @@ object Runner extends Logging {
         error("--scratch-uri cannot be set when deploy mode is client")
         return 1
       case (_, "cluster", m) if m.startsWith("spark://") =>
-        error("Using cluster deploy mode with Spark standalone cluster is not supported")
+        error(
+          "Using cluster deploy mode with Spark standalone cluster is not supported")
         return 1
       case _ => Unit
     }
@@ -116,13 +121,14 @@ object Runner extends Logging {
     }
 
     // Collect and serialize PIO_* environmental variables
-    val pioEnvVars = sys.env.filter(kv => kv._1.startsWith("PIO_")).map(kv =>
-      s"${kv._1}=${kv._2}"
-    ).mkString(",")
+    val pioEnvVars = sys.env
+      .filter(kv => kv._1.startsWith("PIO_"))
+      .map(kv => s"${kv._1}=${kv._2}")
+      .mkString(",")
 
     // Location of Spark
-    val sparkHome = ca.common.sparkHome.getOrElse(
-      sys.env.getOrElse("SPARK_HOME", "."))
+    val sparkHome =
+      ca.common.sparkHome.getOrElse(sys.env.getOrElse("SPARK_HOME", "."))
 
     // Local path to PredictionIO assembly JAR
     val mainJar = handleScratchFile(
@@ -132,8 +138,9 @@ object Runner extends Logging {
 
     // Extra JARs that are needed by the driver
     val driverClassPathPrefix =
-      argumentValue(ca.common.sparkPassThrough, "--driver-class-path") map { v =>
-        Seq(v)
+      argumentValue(ca.common.sparkPassThrough, "--driver-class-path") map {
+        v =>
+          Seq(v)
       } getOrElse {
         Nil
       }
@@ -192,7 +199,8 @@ object Runner extends Logging {
       Seq(mainJar),
       detectFilePaths(fs, ca.common.scratchUri, classArgs),
       Seq("--env", pioEnvVars),
-      verbose).flatten.filter(_ != "")
+      verbose
+    ).flatten.filter(_ != "")
     info(s"Submission command: ${sparkSubmit.mkString(" ")}")
     val proc = Process(
       sparkSubmit,

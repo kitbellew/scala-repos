@@ -46,8 +46,8 @@ class MoreAnyRefs {
   trait B
 
   // don't leak anon/refinements
-  def f1 = (new A with B { }).getClass()
-  def f2 = (new B with A { }).getClass()
+  def f1 = (new A with B {}).getClass()
+  def f2 = (new B with A {}).getClass()
   def f3 = (new { def bippy() = 5 }).getClass()
   def f4 = (new A { def bippy() = 5 }).getClass()
 }

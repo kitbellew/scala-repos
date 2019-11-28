@@ -1,7 +1,6 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
-
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.cluster.metrics
 
 import scala.language.postfixOps
@@ -24,8 +23,8 @@ import akka.actor.ActorSystem
 import akka.dispatch.Dispatchers
 
 /**
- * Redirect different logging sources to SLF4J.
- */
+  * Redirect different logging sources to SLF4J.
+  */
 trait RedirectLogging {
 
   def redirectLogging(): Unit = {
@@ -39,21 +38,24 @@ trait RedirectLogging {
 }
 
 /**
- * Provide sigar library from `project/target` location.
- */
-case class SimpleSigarProvider(location: String = "native") extends SigarProvider {
+  * Provide sigar library from `project/target` location.
+  */
+case class SimpleSigarProvider(location: String = "native")
+    extends SigarProvider {
   def extractFolder = s"${System.getProperty("user.dir")}/target/${location}"
 }
 
 /**
- * Provide sigar library as static mock.
- */
+  * Provide sigar library as static mock.
+  */
 case class MockitoSigarProvider(
-  pid: Long = 123,
-  loadAverage: Array[Double] = Array(0.7, 0.3, 0.1),
-  cpuCombined: Double = 0.5,
-  cpuStolen: Double = 0.2,
-  steps: Int = 5) extends SigarProvider with MockitoSugar {
+    pid: Long = 123,
+    loadAverage: Array[Double] = Array(0.7, 0.3, 0.1),
+    cpuCombined: Double = 0.5,
+    cpuStolen: Double = 0.2,
+    steps: Int = 5)
+    extends SigarProvider
+    with MockitoSugar {
 
   import org.hyperic.sigar._
   import org.mockito.Mockito._
@@ -86,10 +88,10 @@ case class MockitoSigarProvider(
 }
 
 /**
- * Used when testing metrics without full cluster
- *
- * TODO change factory after https://github.com/akka/akka/issues/16369
- */
+  * Used when testing metrics without full cluster
+  *
+  * TODO change factory after https://github.com/akka/akka/issues/16369
+  */
 trait MetricsCollectorFactory { this: AkkaSpec ⇒
   import MetricsConfig._
   import org.hyperic.sigar.Sigar
@@ -118,34 +120,41 @@ trait MetricsCollectorFactory { this: AkkaSpec ⇒
 
   /** Create Sigar collector. Rely on sigar-loader provisioner. */
   def collectorSigarProvision: MetricsCollector =
-    new SigarMetricsCollector(selfAddress, defaultDecayFactor, SimpleSigarProvider().createSigarInstance)
+    new SigarMetricsCollector(
+      selfAddress,
+      defaultDecayFactor,
+      SimpleSigarProvider().createSigarInstance)
 
   /** Create Sigar collector. Rely on static sigar library mock. */
   def collectorSigarMockito: MetricsCollector =
-    new SigarMetricsCollector(selfAddress, defaultDecayFactor, MockitoSigarProvider().createSigarInstance)
+    new SigarMetricsCollector(
+      selfAddress,
+      defaultDecayFactor,
+      MockitoSigarProvider().createSigarInstance)
 
-  def isSigar(collector: MetricsCollector): Boolean = collector.isInstanceOf[SigarMetricsCollector]
+  def isSigar(collector: MetricsCollector): Boolean =
+    collector.isInstanceOf[SigarMetricsCollector]
 }
 
 /**
- *
- */
+  *
+  */
 class MockitoSigarMetricsCollector(system: ActorSystem)
-  extends SigarMetricsCollector(
-    Address("akka.tcp", system.name),
-    MetricsConfig.defaultDecayFactor,
-    MockitoSigarProvider().createSigarInstance) {
-}
+    extends SigarMetricsCollector(
+      Address("akka.tcp", system.name),
+      MetricsConfig.defaultDecayFactor,
+      MockitoSigarProvider().createSigarInstance) {}
 
 /**
- * Metrics test configurations.
- */
+  * Metrics test configurations.
+  */
 object MetricsConfig {
 
   val defaultDecayFactor = 2.0 / (1 + 10)
 
   /** Test w/o cluster, with collection enabled. */
-  val defaultEnabled = """
+  val defaultEnabled =
+    """
     akka.cluster.metrics {
       collector {
         enabled = on
@@ -157,7 +166,8 @@ object MetricsConfig {
   """
 
   /** Test w/o cluster, with collection disabled. */
-  val defaultDisabled = """
+  val defaultDisabled =
+    """
     akka.cluster.metrics {
       collector {
         enabled = off
@@ -167,7 +177,8 @@ object MetricsConfig {
   """
 
   /** Test in cluster, with manual collection activation, collector mock, fast. */
-  val clusterSigarMock = """
+  val clusterSigarMock =
+    """
     akka.cluster.metrics {
       periodic-tasks-initial-delay = 100ms
       collector {
@@ -183,8 +194,8 @@ object MetricsConfig {
 }
 
 /**
- * Current cluster metrics, updated periodically via event bus.
- */
+  * Current cluster metrics, updated periodically via event bus.
+  */
 class ClusterMetricsView(system: ExtendedActorSystem) extends Closeable {
 
   val extension = ClusterMetricsExtension(system)
@@ -199,17 +210,25 @@ class ClusterMetricsView(system: ExtendedActorSystem) extends Closeable {
 
   /** Create actor that subscribes to the cluster eventBus to update current read view state. */
   private val eventBusListener: ActorRef = {
-    system.systemActorOf(Props(new Actor with ActorLogging with RequiresMessageQueue[UnboundedMessageQueueSemantics] {
-      override def preStart(): Unit = extension.subscribe(self)
-      override def postStop(): Unit = extension.unsubscribe(self)
-      def receive = {
-        case ClusterMetricsChanged(nodes) ⇒
-          currentMetricsSet = nodes
-          collectedMetricsList = nodes :: collectedMetricsList
-        case _ ⇒
-        // Ignore.
-      }
-    }).withDispatcher(Dispatchers.DefaultDispatcherId).withDeploy(Deploy.local), name = "metrics-event-bus-listener")
+    system.systemActorOf(
+      Props(
+        new Actor
+          with ActorLogging
+          with RequiresMessageQueue[UnboundedMessageQueueSemantics] {
+          override def preStart(): Unit = extension.subscribe(self)
+          override def postStop(): Unit = extension.unsubscribe(self)
+          def receive = {
+            case ClusterMetricsChanged(nodes) ⇒
+              currentMetricsSet = nodes
+              collectedMetricsList = nodes :: collectedMetricsList
+            case _ ⇒
+            // Ignore.
+          }
+        })
+        .withDispatcher(Dispatchers.DefaultDispatcherId)
+        .withDeploy(Deploy.local),
+      name = "metrics-event-bus-listener"
+    )
   }
 
   /** Current cluster metrics. */

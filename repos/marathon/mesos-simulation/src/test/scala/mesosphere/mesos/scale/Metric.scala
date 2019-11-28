@@ -22,47 +22,53 @@ case class Counter(name: String, count: Int) extends Metric {
   override def mean: Double = count.toDouble
 }
 
-case class Histogram(name: String,
-                     count: Int,
-                     max: Double,
-                     mean: Double,
-                     min: Double,
-                     p50: Double,
-                     p75: Double,
-                     p95: Double,
-                     p98: Double,
-                     p99: Double,
-                     p999: Double,
-                     stddev: Double) extends Metric
+case class Histogram(
+    name: String,
+    count: Int,
+    max: Double,
+    mean: Double,
+    min: Double,
+    p50: Double,
+    p75: Double,
+    p95: Double,
+    p98: Double,
+    p99: Double,
+    p999: Double,
+    stddev: Double)
+    extends Metric
 
-case class Meter(name: String,
-                 count: Int,
-                 m15_rate: Double,
-                 m1_rate: Double,
-                 m5_rate: Double,
-                 mean_rate: Double,
-                 units: String) extends Metric {
+case class Meter(
+    name: String,
+    count: Int,
+    m15_rate: Double,
+    m1_rate: Double,
+    m5_rate: Double,
+    mean_rate: Double,
+    units: String)
+    extends Metric {
   override def mean: Double = mean_rate
 }
 
-case class Timer(name: String,
-                 count: Int,
-                 max: Double,
-                 mean: Double,
-                 min: Double,
-                 p50: Double,
-                 p75: Double,
-                 p95: Double,
-                 p98: Double,
-                 p99: Double,
-                 p999: Double,
-                 stddev: Double,
-                 m15_rate: Double,
-                 m1_rate: Double,
-                 m5_rate: Double,
-                 mean_rate: Double,
-                 duration_units: String,
-                 rate_units: String) extends Metric
+case class Timer(
+    name: String,
+    count: Int,
+    max: Double,
+    mean: Double,
+    min: Double,
+    p50: Double,
+    p75: Double,
+    p95: Double,
+    p98: Double,
+    p99: Double,
+    p999: Double,
+    stddev: Double,
+    m15_rate: Double,
+    m1_rate: Double,
+    m5_rate: Double,
+    mean_rate: Double,
+    duration_units: String,
+    rate_units: String)
+    extends Metric
 
 case class MetricsSample(
     version: String,
@@ -72,7 +78,7 @@ case class MetricsSample(
     meters: Seq[Meter],
     timers: Seq[Timer]) {
 
-  def all: Map[String, Seq[Metric]] = Map (
+  def all: Map[String, Seq[Metric]] = Map(
     "gauges" -> gauges,
     "counters" -> counters,
     "gauges" -> gauges,
@@ -83,6 +89,7 @@ case class MetricsSample(
 }
 
 object MetricsFormat {
+
   /**
     * Special Reads function, that transform reads a given json object
     *  { "a" : {}, "b" : {} } into an array of form
@@ -93,7 +100,8 @@ object MetricsFormat {
     override def reads(js: JsValue): JsResult[Seq[T]] = {
       JsSuccess(js.as[JsObject].fields.map {
         case (name, value) =>
-          val obj = JsObject(value.as[JsObject].fields :+ ("name" -> JsString(name)))
+          val obj =
+            JsObject(value.as[JsObject].fields :+ ("name" -> JsString(name)))
           t.reads(obj).get
       })
     }

@@ -1,4 +1,3 @@
-
 object Test extends App {
   import scala.tools.nsc.io._
 
@@ -7,5 +6,3 @@ object Test extends App {
   assert(dir.lookupName("foo", true) != null)
 
 }
-
-

@@ -18,9 +18,18 @@
 package org.apache.spark.sql.catalyst.optimizer
 
 import org.apache.spark.sql.catalyst.dsl.plans._
-import org.apache.spark.sql.catalyst.expressions.{Alias, CurrentDate, CurrentTimestamp, Literal}
+import org.apache.spark.sql.catalyst.expressions.{
+  Alias,
+  CurrentDate,
+  CurrentTimestamp,
+  Literal
+}
 import org.apache.spark.sql.catalyst.plans.PlanTest
-import org.apache.spark.sql.catalyst.plans.logical.{LocalRelation, LogicalPlan, Project}
+import org.apache.spark.sql.catalyst.plans.logical.{
+  LocalRelation,
+  LogicalPlan,
+  Project
+}
 import org.apache.spark.sql.catalyst.rules.RuleExecutor
 import org.apache.spark.sql.catalyst.util.DateTimeUtils
 
@@ -30,7 +39,8 @@ class ComputeCurrentTimeSuite extends PlanTest {
   }
 
   test("analyzer should replace current_timestamp with literals") {
-    val in = Project(Seq(Alias(CurrentTimestamp(), "a")(), Alias(CurrentTimestamp(), "b")()),
+    val in = Project(
+      Seq(Alias(CurrentTimestamp(), "a")(), Alias(CurrentTimestamp(), "b")()),
       LocalRelation())
 
     val min = System.currentTimeMillis() * 1000
@@ -38,9 +48,10 @@ class ComputeCurrentTimeSuite extends PlanTest {
     val max = (System.currentTimeMillis() + 1) * 1000
 
     val lits = new scala.collection.mutable.ArrayBuffer[Long]
-    plan.transformAllExpressions { case e: Literal =>
-      lits += e.value.asInstanceOf[Long]
-      e
+    plan.transformAllExpressions {
+      case e: Literal =>
+        lits += e.value.asInstanceOf[Long]
+        e
     }
     assert(lits.size == 2)
     assert(lits(0) >= min && lits(0) <= max)
@@ -49,16 +60,19 @@ class ComputeCurrentTimeSuite extends PlanTest {
   }
 
   test("analyzer should replace current_date with literals") {
-    val in = Project(Seq(Alias(CurrentDate(), "a")(), Alias(CurrentDate(), "b")()), LocalRelation())
+    val in = Project(
+      Seq(Alias(CurrentDate(), "a")(), Alias(CurrentDate(), "b")()),
+      LocalRelation())
 
     val min = DateTimeUtils.millisToDays(System.currentTimeMillis())
     val plan = Optimize.execute(in.analyze).asInstanceOf[Project]
     val max = DateTimeUtils.millisToDays(System.currentTimeMillis())
 
     val lits = new scala.collection.mutable.ArrayBuffer[Int]
-    plan.transformAllExpressions { case e: Literal =>
-      lits += e.value.asInstanceOf[Int]
-      e
+    plan.transformAllExpressions {
+      case e: Literal =>
+        lits += e.value.asInstanceOf[Int]
+        e
     }
     assert(lits.size == 2)
     assert(lits(0) >= min && lits(0) <= max)

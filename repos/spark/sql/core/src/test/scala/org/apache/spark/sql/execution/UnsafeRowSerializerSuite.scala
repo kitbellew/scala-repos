@@ -31,9 +31,10 @@ import org.apache.spark.util.collection.ExternalSorter
 import org.apache.spark.util.Utils
 
 /**
- * used to test close InputStream in UnsafeRowSerializer
- */
-class ClosableByteArrayInputStream(buf: Array[Byte]) extends ByteArrayInputStream(buf) {
+  * used to test close InputStream in UnsafeRowSerializer
+  */
+class ClosableByteArrayInputStream(buf: Array[Byte])
+    extends ByteArrayInputStream(buf) {
   var closed: Boolean = false
   override def close(): Unit = {
     closed = true
@@ -51,7 +52,8 @@ class UnsafeRowSerializerSuite extends SparkFunSuite with LocalSparkContext {
   private def unsafeRowConverter(schema: Array[DataType]): Row => UnsafeRow = {
     val converter = UnsafeProjection.create(schema)
     (row: Row) => {
-      converter(CatalystTypeConverters.convertToCatalyst(row).asInstanceOf[InternalRow])
+      converter(
+        CatalystTypeConverters.convertToCatalyst(row).asInstanceOf[InternalRow])
     }
   }
 
@@ -65,7 +67,8 @@ class UnsafeRowSerializerSuite extends SparkFunSuite with LocalSparkContext {
 
   test("basic row serialization") {
     val rows = Seq(Row("Hello", 1), Row("World", 2))
-    val unsafeRows = rows.map(row => toUnsafeRow(row, Array(StringType, IntegerType)))
+    val unsafeRows =
+      rows.map(row => toUnsafeRow(row, Array(StringType, IntegerType)))
     val serializer = new UnsafeRowSerializer(numFields = 2).newInstance()
     val baos = new ByteArrayOutputStream()
     val serializerStream = serializer.serializeStream(baos)
@@ -75,9 +78,11 @@ class UnsafeRowSerializerSuite extends SparkFunSuite with LocalSparkContext {
     }
     serializerStream.close()
     val input = new ClosableByteArrayInputStream(baos.toByteArray)
-    val deserializerIter = serializer.deserializeStream(input).asKeyValueIterator
+    val deserializerIter =
+      serializer.deserializeStream(input).asKeyValueIterator
     for (expectedRow <- unsafeRows) {
-      val actualRow = deserializerIter.next().asInstanceOf[(Integer, UnsafeRow)]._2
+      val actualRow =
+        deserializerIter.next().asInstanceOf[(Integer, UnsafeRow)]._2
       assert(expectedRow.getSizeInBytes === actualRow.getSizeInBytes)
       assert(expectedRow.getString(0) === actualRow.getString(0))
       assert(expectedRow.getInt(1) === actualRow.getInt(1))
@@ -89,7 +94,8 @@ class UnsafeRowSerializerSuite extends SparkFunSuite with LocalSparkContext {
   test("close empty input stream") {
     val input = new ClosableByteArrayInputStream(Array.empty)
     val serializer = new UnsafeRowSerializer(numFields = 2).newInstance()
-    val deserializerIter = serializer.deserializeStream(input).asKeyValueIterator
+    val deserializerIter =
+      serializer.deserializeStream(input).asKeyValueIterator
     assert(!deserializerIter.hasNext)
     assert(input.closed)
   }
@@ -113,7 +119,13 @@ class UnsafeRowSerializerSuite extends SparkFunSuite with LocalSparkContext {
       }
       val taskMemoryManager = new TaskMemoryManager(sc.env.memoryManager, 0)
       val taskContext = new TaskContextImpl(
-        0, 0, 0, 0, taskMemoryManager, null, InternalAccumulator.create(sc))
+        0,
+        0,
+        0,
+        0,
+        taskMemoryManager,
+        null,
+        InternalAccumulator.create(sc))
 
       val sorter = new ExternalSorter[Int, UnsafeRow, UnsafeRow](
         taskContext,
@@ -147,7 +159,8 @@ class UnsafeRowSerializerSuite extends SparkFunSuite with LocalSparkContext {
     sc = new SparkContext("local", "test", conf)
     val row = Row("Hello", 123)
     val unsafeRow = toUnsafeRow(row, Array(StringType, IntegerType))
-    val rowsRDD = sc.parallelize(Seq((0, unsafeRow), (1, unsafeRow), (0, unsafeRow)))
+    val rowsRDD = sc
+      .parallelize(Seq((0, unsafeRow), (1, unsafeRow), (0, unsafeRow)))
       .asInstanceOf[RDD[Product2[Int, InternalRow]]]
     val dependency =
       new ShuffleDependency[Int, InternalRow, InternalRow](

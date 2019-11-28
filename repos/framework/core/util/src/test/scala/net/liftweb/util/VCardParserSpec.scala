@@ -20,18 +20,17 @@ package util
 import org.specs2.matcher.XmlMatchers
 import org.specs2.mutable.Specification
 
-
 /**
- * Systems under specification for VCardParser.
- */
+  * Systems under specification for VCardParser.
+  */
 object VCardParserSpec extends Specification with XmlMatchers {
   "VCardParser Specification".title
 
   "VCard" should {
     "parse correctly" in {
 
-    val vcard =
-      """BEGIN:VCARD
+      val vcard =
+        """BEGIN:VCARD
         |VERSION:2.1
         |N:Gump;Forrest
         |FN:Forrest Gump
@@ -43,7 +42,7 @@ object VCardParserSpec extends Specification with XmlMatchers {
 
       val list = VCardParser.parse(vcard)
       list must beLike {
-        case Left(l)  => {
+        case Left(l) => {
           import VCardParser._
           l must_==
             List(
@@ -51,11 +50,18 @@ object VCardParserSpec extends Specification with XmlMatchers {
               VCardEntry(VCardKey("VERSION", List()), List("2.1")),
               VCardEntry(VCardKey("N", List()), List("Gump", "Forrest")),
               VCardEntry(VCardKey("FN", List()), List("Forrest Gump")),
-              VCardEntry(VCardKey("ORG", List()), List("Bubba Gump Shrimp Co.")),
+              VCardEntry(
+                VCardKey("ORG", List()),
+                List("Bubba Gump Shrimp Co.")),
               VCardEntry(VCardKey("TITLE", List()), List("Shrimp Man")),
-              VCardEntry(VCardKey("TEL", List(("WORK", ""), ("VOICE", ""))), List("(111) 555-1212")),
-              VCardEntry(VCardKey("TEL", List(("HOME", ""), ("VOICE", ""))), List("(404) 555-1212")),
-              VCardEntry(VCardKey("END", List()), List("VCARD")))
+              VCardEntry(
+                VCardKey("TEL", List(("WORK", ""), ("VOICE", ""))),
+                List("(111) 555-1212")),
+              VCardEntry(
+                VCardKey("TEL", List(("HOME", ""), ("VOICE", ""))),
+                List("(404) 555-1212")),
+              VCardEntry(VCardKey("END", List()), List("VCARD"))
+            )
         }
       }
 

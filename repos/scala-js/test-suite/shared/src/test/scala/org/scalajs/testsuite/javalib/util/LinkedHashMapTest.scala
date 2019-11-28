@@ -68,7 +68,8 @@ abstract class LinkedHashMapTest extends HashMapTest {
       assertEquals(expectedValue(index), value)
   }
 
-  @Test def should_iterate_in_the_same_order_after_removal_of_elements(): Unit = {
+  @Test def should_iterate_in_the_same_order_after_removal_of_elements()
+      : Unit = {
     val lhm = factory.empty[jl.Integer, String]
     (0 until 100).foreach(key => lhm.put(key, s"elem $key"))
 
@@ -111,7 +112,7 @@ abstract class LinkedHashMapTest extends HashMapTest {
     val expectedKey = {
       if (factory.accessOrder) {
         val keys = (2 until 42) ++ (43 until 52) ++ (53 until 98) ++
-            List(99, 0, 100, 42, 52, 1, 98)
+          List(99, 0, 100, 42, 52, 1, 98)
         keys.takeRight(withSizeLimit.getOrElse(keys.length))
       } else {
         if (withSizeLimit.isDefined) (55 until 100) ++ List(0, 100, 42, 52, 1)
@@ -203,12 +204,17 @@ abstract class LinkedHashMapTest extends HashMapTest {
 
 object LinkedHashMapFactory {
   def allFactories: Iterator[MapFactory] = {
-    Iterator(new LinkedHashMapFactory(true, Some(50)), new LinkedHashMapFactory(true, None),
-        new LinkedHashMapFactory(false, Some(50)), new LinkedHashMapFactory(false, None))
+    Iterator(
+      new LinkedHashMapFactory(true, Some(50)),
+      new LinkedHashMapFactory(true, None),
+      new LinkedHashMapFactory(false, Some(50)),
+      new LinkedHashMapFactory(false, None))
   }
 }
 
-class LinkedHashMapFactory(val accessOrder: Boolean, val withSizeLimit: Option[Int])
+class LinkedHashMapFactory(
+    val accessOrder: Boolean,
+    val withSizeLimit: Option[Int])
     extends HashMapFactory {
   def orderName: String =
     if (accessOrder) "access-order"
@@ -223,7 +229,8 @@ class LinkedHashMapFactory(val accessOrder: Boolean, val withSizeLimit: Option[I
     withSizeLimit match {
       case Some(limit) =>
         new ju.LinkedHashMap[K, V](16, 0.75f, accessOrder) {
-          override protected def removeEldestEntry(eldest: ju.Map.Entry[K, V]): Boolean =
+          override protected def removeEldestEntry(
+              eldest: ju.Map.Entry[K, V]): Boolean =
             size > limit
         }
 

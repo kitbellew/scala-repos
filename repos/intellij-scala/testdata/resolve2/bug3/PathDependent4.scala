@@ -8,20 +8,19 @@ trait K {
   import definitions._
 
   val treeInfo.Applied(ff) = new U
-  /* line: 18 */f(ff)
+  /* line: 18 */
+  f(ff)
 }
 
 trait Definitions {
-  self : Global =>
+  self: Global =>
   object definitions extends DefinitionsClass
   class DefinitionsClass {
-    def f(f: F) : F = new F
+    def f(f: F): F = new F
     def f(x: Int) = 123
   }
 
-  object treeInfo extends F {
-
-  }
+  object treeInfo extends F {}
 }
 
 trait Test {
@@ -34,9 +33,7 @@ trait Test {
   }
 }
 
-class Global extends Definitions with Test {
-
-}
+class Global extends Definitions with Test {}
 
 trait Z extends K with C {
   val global: Global

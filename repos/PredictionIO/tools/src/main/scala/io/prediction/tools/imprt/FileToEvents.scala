@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.tools.imprt
 
 import io.prediction.controller.Utils
@@ -29,13 +28,13 @@ import org.json4s.native.Serialization._
 import scala.util.{Failure, Try}
 
 case class FileToEventsArgs(
-  env: String = "",
-  logFile: String = "",
-  appId: Int = 0,
-  channel: Option[String] = None,
-  inputPath: String = "",
-  verbose: Boolean = false,
-  debug: Boolean = false)
+    env: String = "",
+    logFile: String = "",
+    appId: Int = 0,
+    channel: Option[String] = None,
+    inputPath: String = "",
+    verbose: Boolean = false,
+    debug: Boolean = false)
 
 object FileToEvents extends Logging {
   def main(args: Array[String]): Unit = {
@@ -65,7 +64,8 @@ object FileToEvents extends Logging {
     parser.parse(args, FileToEventsArgs()) map { args =>
       // get channelId
       val channels = Storage.getMetaDataChannels
-      val channelMap = channels.getByAppid(args.appId).map(c => (c.name, c.id)).toMap
+      val channelMap =
+        channels.getByAppid(args.appId).map(c => (c.name, c.id)).toMap
 
       val channelId: Option[Int] = args.channel.map { ch =>
         if (!channelMap.contains(ch)) {
@@ -85,17 +85,16 @@ object FileToEvents extends Logging {
         mode = "Import",
         batch = "App ID " + args.appId + channelStr,
         executorEnv = Runner.envStringToMap(args.env))
-      val rdd = sc.textFile(args.inputPath).filter(_.trim.nonEmpty).map { json =>
-        Try(read[Event](json)).recoverWith {
-          case e: Throwable =>
-            error(s"\nmalformed json => $json")
-            Failure(e)
-        }.get
+      val rdd = sc.textFile(args.inputPath).filter(_.trim.nonEmpty).map {
+        json =>
+          Try(read[Event](json)).recoverWith {
+            case e: Throwable =>
+              error(s"\nmalformed json => $json")
+              Failure(e)
+          }.get
       }
       val events = Storage.getPEvents()
-      events.write(events = rdd,
-        appId = args.appId,
-        channelId = channelId)(sc)
+      events.write(events = rdd, appId = args.appId, channelId = channelId)(sc)
       info("Events are imported.")
       info("Done.")
     }

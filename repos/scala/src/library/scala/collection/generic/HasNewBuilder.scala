@@ -12,6 +12,7 @@ package generic
 import mutable.Builder
 
 trait HasNewBuilder[+A, +Repr] extends Any {
+
   /** The builder that builds instances of Repr */
   protected[this] def newBuilder: Builder[A, Repr]
 }

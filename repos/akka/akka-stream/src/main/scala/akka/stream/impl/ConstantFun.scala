@@ -1,10 +1,10 @@
 /**
- * Copyright (C) 2015-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2015-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.stream.impl
 
-import akka.japi.function.{ Function ⇒ JFun, Function2 ⇒ JFun2 }
-import akka.japi.{ Pair ⇒ JPair }
+import akka.japi.function.{Function ⇒ JFun, Function2 ⇒ JFun2}
+import akka.japi.{Pair ⇒ JPair}
 
 private[akka] object ConstantFun {
   private[this] val JavaIdentityFunction = new JFun[Any, Any] {
@@ -15,9 +15,11 @@ private[akka] object ConstantFun {
     def apply(p1: AnyRef, p2: AnyRef): AnyRef JPair AnyRef = JPair(p1, p2)
   }
 
-  def javaCreatePairFunction[A, B]: JFun2[A, B, JPair[A, B]] = JavaPairFunction.asInstanceOf[JFun2[A, B, JPair[A, B]]]
+  def javaCreatePairFunction[A, B]: JFun2[A, B, JPair[A, B]] =
+    JavaPairFunction.asInstanceOf[JFun2[A, B, JPair[A, B]]]
 
-  def javaIdentityFunction[T]: JFun[T, T] = JavaIdentityFunction.asInstanceOf[JFun[T, T]]
+  def javaIdentityFunction[T]: JFun[T, T] =
+    JavaIdentityFunction.asInstanceOf[JFun[T, T]]
 
   def scalaIdentityFunction[T]: T ⇒ T = conforms
 

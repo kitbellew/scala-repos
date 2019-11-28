@@ -34,16 +34,18 @@ import scalafx.scene.image.{Image, ImageView}
 import scalafx.scene.layout.VBox
 
 /**
- * Several Label controls, displayed in various alignments with respect to an
- * image.
- *
- * @see scalafx.scene.control.Label
- * @resource /scalafx/ensemble/images/icon-48x48.png
- */
+  * Several Label controls, displayed in various alignments with respect to an
+  * image.
+  *
+  * @see scalafx.scene.control.Label
+  * @resource /scalafx/ensemble/images/icon-48x48.png
+  */
 class EnsembleAdvancedLabel extends EnsembleExample {
 
   def getContent = {
-    val icon = new Image(this.getClass.getResourceAsStream("/scalafx/ensemble/images/icon-48x48.png"))
+    val icon = new Image(
+      this.getClass
+        .getResourceAsStream("/scalafx/ensemble/images/icon-48x48.png"))
     new VBox {
       spacing = 10
       padding = Insets(20)
@@ -72,7 +74,8 @@ class EnsembleAdvancedLabel extends EnsembleExample {
           text = "Image centered"
           graphic = new ImageView(icon)
           contentDisplay = ContentDisplay.Center
-        })
+        }
+      )
     }
   }
 }

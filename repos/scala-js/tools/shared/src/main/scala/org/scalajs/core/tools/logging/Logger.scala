@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.core.tools.logging
 
 /** Abstract logger for our tools. Designed after sbt's Loggers. */

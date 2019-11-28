@@ -17,12 +17,15 @@ import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class Netty4ChannelInitializerTest
-  extends FunSuite
-  with Eventually
-  with IntegrationPatience {
+    extends FunSuite
+    with Eventually
+    with IntegrationPatience {
 
   val writeDiscardHandler = new ChannelOutboundHandlerAdapter {
-    override def write(ctx: ChannelHandlerContext, msg: scala.Any, promise: ChannelPromise): Unit = ()
+    override def write(
+        ctx: ChannelHandlerContext,
+        msg: scala.Any,
+        promise: ChannelPromise): Unit = ()
   }
 
   val nop = new ChannelHandler {
@@ -39,7 +42,6 @@ class Netty4ChannelInitializerTest
     val baseParams = Params.empty + Stats(sr)
   }
 
-
   test("Netty4ChannelInitializer channel writes can time out") {
     new Ctx {
       val params = baseParams + Transport.Liveness(
@@ -50,7 +52,10 @@ class Netty4ChannelInitializerTest
       val init = new Netty4ChannelInitializer(_ => (), params, () => nop)
       init.initChannel(srv)
 
-      srv.pipeline.addBefore("writeCompletionTimeout", "writeDiscardHandler", writeDiscardHandler)
+      srv.pipeline.addBefore(
+        "writeCompletionTimeout",
+        "writeDiscardHandler",
+        writeDiscardHandler)
 
       // WriteCompletionTimeoutHandler throws a WriteTimeOutException after the message is lost.
       srv.writeAndFlush("hi")

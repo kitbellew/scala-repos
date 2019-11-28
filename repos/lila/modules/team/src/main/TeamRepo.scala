@@ -1,6 +1,6 @@
 package lila.team
 
-import org.joda.time.{ DateTime, Period }
+import org.joda.time.{DateTime, Period}
 import play.api.libs.json.Json
 import play.modules.reactivemongo.json.ImplicitBSONHandlers.JsObjectWriter
 import reactivemongo.api._
@@ -18,16 +18,18 @@ object TeamRepo {
     $find.one($select(id) ++ Json.obj("createdBy" -> createdBy))
 
   def teamIdsByCreator(userId: String): Fu[List[String]] =
-    teamTube.coll.distinct("_id", BSONDocument("createdBy" -> userId).some) map lila.db.BSON.asStrings
+    teamTube.coll
+      .distinct("_id", BSONDocument("createdBy" -> userId).some) map lila.db.BSON.asStrings
 
   def name(id: String): Fu[Option[String]] =
     $primitive.one($select(id), "name")(_.asOpt[String])
 
   def userHasCreatedSince(userId: String, duration: Period): Fu[Boolean] =
-    $count.exists(Json.obj(
-      "createdAt" -> $gt($date(DateTime.now minus duration)),
-      "createdBy" -> userId
-    ))
+    $count.exists(
+      Json.obj(
+        "createdAt" -> $gt($date(DateTime.now minus duration)),
+        "createdBy" -> userId
+      ))
 
   def ownerOf(teamId: String): Fu[Option[String]] =
     $primitive.one($select(teamId), "createdBy")(_.asOpt[String])

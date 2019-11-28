@@ -1,6 +1,8 @@
 package java.util.concurrent.atomic
 
-class AtomicLong(private[this] var value: Long) extends Number with Serializable {
+class AtomicLong(private[this] var value: Long)
+    extends Number
+    with Serializable {
   def this() = this(0L)
 
   final def get(): Long = value
@@ -18,7 +20,8 @@ class AtomicLong(private[this] var value: Long) extends Number with Serializable
   }
 
   final def compareAndSet(expect: Long, update: Long): Boolean = {
-    if (expect != value) false else {
+    if (expect != value) false
+    else {
       value = update
       true
     }

@@ -20,7 +20,7 @@ class DesugarForIntention extends PsiElementBaseIntentionAction {
   def isAvailable(project: Project, editor: Editor, element: PsiElement) = {
     element match {
       case e @ Parent(_: ScForStatement) => true
-      case _ => false
+      case _                             => false
     }
   }
 
@@ -28,11 +28,15 @@ class DesugarForIntention extends PsiElementBaseIntentionAction {
     val statement = element.getParent.asInstanceOf[ScForStatement]
     statement.getDesugarizedExprText(forDisplay = true) match {
       case Some(expText) =>
-        val desugared = ScalaPsiElementFactory.createExpressionWithContextFromText(expText, statement.getContext, statement)
+        val desugared =
+          ScalaPsiElementFactory.createExpressionWithContextFromText(
+            expText,
+            statement.getContext,
+            statement)
         val result = statement.replace(desugared.copy())
         val manager: CodeStyleManager = CodeStyleManager.getInstance(project)
         manager.reformat(result)
-     case None =>
+      case None =>
     }
   }
 }

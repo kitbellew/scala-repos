@@ -25,9 +25,10 @@ object PlayMagicForJava {
   }
 
   /**
-   * Implicit conversion of a Play Java form `Field` to a proper Scala form `Field`.
-   */
-  implicit def javaFieldtoScalaField(jField: play.data.Form.Field): play.api.data.Field = {
+    * Implicit conversion of a Play Java form `Field` to a proper Scala form `Field`.
+    */
+  implicit def javaFieldtoScalaField(
+      jField: play.data.Form.Field): play.api.data.Field = {
 
     new play.api.data.Field(
       null,
@@ -37,10 +38,8 @@ object PlayMagicForJava {
       },
       Option(jField.format).map(f => f._1 -> f._2.asScala),
       jField.errors.asScala.map { jE =>
-        play.api.data.FormError(
-          jE.key,
-          jE.messages.asScala,
-          jE.arguments.asScala)
+        play.api.data
+          .FormError(jE.key, jE.messages.asScala, jE.arguments.asScala)
       },
       Option(jField.value)) {
 
@@ -60,7 +59,8 @@ object PlayMagicForJava {
   implicit def implicitJavaMessages: play.api.i18n.Messages =
     try {
       val jmessages = play.mvc.Http.Context.current().messages()
-      play.api.i18n.Messages(jmessages.lang(), jmessages.messagesApi().scalaApi())
+      play.api.i18n
+        .Messages(jmessages.lang(), jmessages.messagesApi().scalaApi())
     } catch {
       case NonFatal(_) =>
         val app = play.api.Play.privateMaybeApplication.get

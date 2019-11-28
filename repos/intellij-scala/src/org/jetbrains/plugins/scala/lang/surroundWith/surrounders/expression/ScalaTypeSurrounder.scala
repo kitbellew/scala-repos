@@ -26,7 +26,7 @@ class ScalaTypeSurrounder extends ScalaExpressionSurrounder {
     if (elements.length != 1) return false
     elements(0) match {
       case x: ScExpression => true
-      case _ => return false
+      case _               => return false
     }
   }
 
@@ -38,18 +38,20 @@ class ScalaTypeSurrounder extends ScalaExpressionSurrounder {
     }
 
     withType.getPsi match {
-      case x: ScParenthesisedExpr => x.expr match {
-        case Some(y: ScTypedStmt) => y.typeElement match {
-          case Some(te: ScTypeElement) => {
-            if (te.getText() == "Any")
-              te.getTextRange
-            else
-              defaultRange
-          }
+      case x: ScParenthesisedExpr =>
+        x.expr match {
+          case Some(y: ScTypedStmt) =>
+            y.typeElement match {
+              case Some(te: ScTypeElement) => {
+                if (te.getText() == "Any")
+                  te.getTextRange
+                else
+                  defaultRange
+              }
+              case _ => defaultRange
+            }
           case _ => defaultRange
         }
-        case _ => defaultRange
-      }
       case _ => defaultRange
     }
   }

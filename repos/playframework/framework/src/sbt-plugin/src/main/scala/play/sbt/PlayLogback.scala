@@ -7,8 +7,8 @@ import sbt.Keys._
 import sbt._
 
 /**
- * This plugin enables Play Logback
- */
+  * This plugin enables Play Logback
+  */
 object PlayLogback extends AutoPlugin {
   override def requires = Play
 

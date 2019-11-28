@@ -33,8 +33,8 @@ object Runner {
     )
 
     logger.error("Runner. before evaluation!!!")
-    val evaluator = new VanillaEvaluator() 
-    
+    val evaluator = new VanillaEvaluator()
+
     logger.error("Runner before runEval!!!")
     Workflow.runEval(
       engine = engine,

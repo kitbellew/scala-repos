@@ -20,6 +20,4 @@ object Test {
 
   val x5 = b !!! c // always compiled due to the order of Ph2 and Ph
 
-
-
 }

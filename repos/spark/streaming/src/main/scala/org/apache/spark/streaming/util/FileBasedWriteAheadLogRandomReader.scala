@@ -22,12 +22,14 @@ import java.nio.ByteBuffer
 import org.apache.hadoop.conf.Configuration
 
 /**
- * A random access reader for reading write ahead log files written using
- * [[org.apache.spark.streaming.util.FileBasedWriteAheadLogWriter]]. Given the file segment info,
- * this reads the record (ByteBuffer) from the log file.
- */
-private[streaming] class FileBasedWriteAheadLogRandomReader(path: String, conf: Configuration)
-  extends Closeable {
+  * A random access reader for reading write ahead log files written using
+  * [[org.apache.spark.streaming.util.FileBasedWriteAheadLogWriter]]. Given the file segment info,
+  * this reads the record (ByteBuffer) from the log file.
+  */
+private[streaming] class FileBasedWriteAheadLogRandomReader(
+    path: String,
+    conf: Configuration)
+    extends Closeable {
 
   private val instream = HdfsUtils.getInputStream(path, conf)
   private var closed = (instream == null) // the file may be deleted as we're opening the stream
@@ -36,7 +38,8 @@ private[streaming] class FileBasedWriteAheadLogRandomReader(path: String, conf: 
     assertOpen()
     instream.seek(segment.offset)
     val nextLength = instream.readInt()
-    HdfsUtils.checkState(nextLength == segment.length,
+    HdfsUtils.checkState(
+      nextLength == segment.length,
       s"Expected message length to be ${segment.length}, but was $nextLength")
     val buffer = new Array[Byte](nextLength)
     instream.readFully(buffer)
@@ -49,6 +52,8 @@ private[streaming] class FileBasedWriteAheadLogRandomReader(path: String, conf: 
   }
 
   private def assertOpen() {
-    HdfsUtils.checkState(!closed, "Stream is closed. Create a new Reader to read from the file.")
+    HdfsUtils.checkState(
+      !closed,
+      "Stream is closed. Create a new Reader to read from the file.")
   }
 }

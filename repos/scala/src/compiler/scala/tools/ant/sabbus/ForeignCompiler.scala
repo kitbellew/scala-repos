@@ -6,7 +6,6 @@
 **                          |/                                          **
 \*                                                                      */
 
-
 package scala.tools.ant.sabbus
 
 import java.io.File
@@ -23,7 +22,9 @@ class ForeignCompiler {
     nsc
   }
 
-  private val error: (String => Nothing) = { msg => throw new Exception(msg) }
+  private val error: (String => Nothing) = { msg =>
+    throw new Exception(msg)
+  }
 
   private def settings = new scala.tools.nsc.Settings(error)
 
@@ -33,8 +34,7 @@ class ForeignCompiler {
     try {
       val command = new CompilerCommand(args.toList, settings)
       new Global(command.settings, reporter)
-    }
-    catch {
+    } catch {
       case ex @ FatalError(msg) =>
         throw new Exception(msg, ex)
     }

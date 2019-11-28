@@ -27,7 +27,9 @@ import org.apache.spark.sql.catalyst.rules.RuleExecutor
 class AggregateOptimizeSuite extends PlanTest {
 
   object Optimize extends RuleExecutor[LogicalPlan] {
-    val batches = Batch("Aggregate", FixedPoint(100),
+    val batches = Batch(
+      "Aggregate",
+      FixedPoint(100),
       RemoveLiteralFromGroupExpressions) :: Nil
   }
 

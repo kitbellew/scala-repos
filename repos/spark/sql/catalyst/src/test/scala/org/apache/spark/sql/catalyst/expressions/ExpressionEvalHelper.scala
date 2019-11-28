@@ -30,8 +30,8 @@ import org.apache.spark.sql.types.DataType
 import org.apache.spark.util.Utils
 
 /**
- * A few helper functions for expression evaluation testing. Mixin this trait to use them.
- */
+  * A few helper functions for expression evaluation testing. Mixin this trait to use them.
+  */
 trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
   self: SparkFunSuite =>
 
@@ -40,10 +40,15 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
   }
 
   protected def checkEvaluation(
-      expression: => Expression, expected: Any, inputRow: InternalRow = EmptyRow): Unit = {
+      expression: => Expression,
+      expected: Any,
+      inputRow: InternalRow = EmptyRow): Unit = {
     val catalystValue = CatalystTypeConverters.convertToCatalyst(expected)
     checkEvaluationWithoutCodegen(expression, catalystValue, inputRow)
-    checkEvaluationWithGeneratedMutableProjection(expression, catalystValue, inputRow)
+    checkEvaluationWithGeneratedMutableProjection(
+      expression,
+      catalystValue,
+      inputRow)
     if (GenerateUnsafeProjection.canSupport(expression.dataType)) {
       checkEvalutionWithUnsafeProjection(expression, catalystValue, inputRow)
     }
@@ -51,9 +56,9 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
   }
 
   /**
-   * Check the equality between result of expression and expected value, it will handle
-   * Array[Byte] and Spread[Double].
-   */
+    * Check the equality between result of expression and expected value, it will handle
+    * Array[Byte] and Spread[Double].
+    */
   protected def checkResult(result: Any, expected: Any): Boolean = {
     (result, expected) match {
       case (result: Array[Byte], expected: Array[Byte]) =>
@@ -64,10 +69,12 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
     }
   }
 
-  protected def evaluate(expression: Expression, inputRow: InternalRow = EmptyRow): Any = {
+  protected def evaluate(
+      expression: Expression,
+      inputRow: InternalRow = EmptyRow): Any = {
     expression.foreach {
       case n: Nondeterministic => n.setInitialValues()
-      case _ =>
+      case _                   =>
     }
     expression.eval(inputRow)
   }
@@ -79,8 +86,7 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
       generator
     } catch {
       case e: Throwable =>
-        fail(
-          s"""
+        fail(s"""
             |Code generation of $expression failed:
             |$e
             |${Utils.exceptionString(e)}
@@ -93,14 +99,17 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
       expected: Any,
       inputRow: InternalRow = EmptyRow): Unit = {
 
-    val actual = try evaluate(expression, inputRow) catch {
-      case e: Exception => fail(s"Exception evaluating $expression", e)
-    }
+    val actual =
+      try evaluate(expression, inputRow)
+      catch {
+        case e: Exception => fail(s"Exception evaluating $expression", e)
+      }
     if (!checkResult(actual, expected)) {
       val input = if (inputRow == EmptyRow) "" else s", input: $inputRow"
-      fail(s"Incorrect evaluation (codegen off): $expression, " +
-        s"actual: $actual, " +
-        s"expected: $expected$input")
+      fail(
+        s"Incorrect evaluation (codegen off): $expression, " +
+          s"actual: $actual, " +
+          s"expected: $expected$input")
     }
   }
 
@@ -110,13 +119,15 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
       inputRow: InternalRow = EmptyRow): Unit = {
 
     val plan = generateProject(
-      GenerateMutableProjection.generate(Alias(expression, s"Optimized($expression)")() :: Nil)(),
+      GenerateMutableProjection.generate(
+        Alias(expression, s"Optimized($expression)")() :: Nil)(),
       expression)
 
     val actual = plan(inputRow).get(0, expression.dataType)
     if (!checkResult(actual, expected)) {
       val input = if (inputRow == EmptyRow) "" else s", input: $inputRow"
-      fail(s"Incorrect evaluation: $expression, actual: $actual, expected: $expected$input")
+      fail(
+        s"Incorrect evaluation: $expression, actual: $actual, expected: $expected$input")
     }
   }
 
@@ -126,7 +137,8 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
       inputRow: InternalRow = EmptyRow): Unit = {
 
     val plan = generateProject(
-      GenerateUnsafeProjection.generate(Alias(expression, s"Optimized($expression)")() :: Nil),
+      GenerateUnsafeProjection.generate(
+        Alias(expression, s"Optimized($expression)")() :: Nil),
       expression)
 
     val unsafeRow = plan(inputRow)
@@ -135,15 +147,18 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
     if (expected == null) {
       if (!unsafeRow.isNullAt(0)) {
         val expectedRow = InternalRow(expected)
-        fail("Incorrect evaluation in unsafe mode: " +
-          s"$expression, actual: $unsafeRow, expected: $expectedRow$input")
+        fail(
+          "Incorrect evaluation in unsafe mode: " +
+            s"$expression, actual: $unsafeRow, expected: $expectedRow$input")
       }
     } else {
       val lit = InternalRow(expected)
-      val expectedRow = UnsafeProjection.create(Array(expression.dataType)).apply(lit)
+      val expectedRow =
+        UnsafeProjection.create(Array(expression.dataType)).apply(lit)
       if (unsafeRow != expectedRow) {
-        fail("Incorrect evaluation in unsafe mode: " +
-          s"$expression, actual: $unsafeRow, expected: $expectedRow$input")
+        fail(
+          "Incorrect evaluation in unsafe mode: " +
+            s"$expression, actual: $unsafeRow, expected: $expectedRow$input")
       }
     }
   }
@@ -152,9 +167,14 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
       expression: Expression,
       expected: Any,
       inputRow: InternalRow = EmptyRow): Unit = {
-    val plan = Project(Alias(expression, s"Optimized($expression)")() :: Nil, OneRowRelation)
+    val plan = Project(
+      Alias(expression, s"Optimized($expression)")() :: Nil,
+      OneRowRelation)
     val optimizedPlan = DefaultOptimizer.execute(plan)
-    checkEvaluationWithoutCodegen(optimizedPlan.expressions.head, expected, inputRow)
+    checkEvaluationWithoutCodegen(
+      optimizedPlan.expressions.head,
+      expected,
+      inputRow)
   }
 
   protected def checkDoubleEvaluation(
@@ -166,45 +186,47 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
     checkEvaluationWithOptimization(expression, expected)
 
     var plan = generateProject(
-      GenerateMutableProjection.generate(Alias(expression, s"Optimized($expression)")() :: Nil)(),
+      GenerateMutableProjection.generate(
+        Alias(expression, s"Optimized($expression)")() :: Nil)(),
       expression)
     var actual = plan(inputRow).get(0, expression.dataType)
     assert(checkResult(actual, expected))
 
     plan = generateProject(
-      GenerateUnsafeProjection.generate(Alias(expression, s"Optimized($expression)")() :: Nil),
+      GenerateUnsafeProjection.generate(
+        Alias(expression, s"Optimized($expression)")() :: Nil),
       expression)
-    actual = FromUnsafeProjection(expression.dataType :: Nil)(
-      plan(inputRow)).get(0, expression.dataType)
+    actual = FromUnsafeProjection(expression.dataType :: Nil)(plan(inputRow))
+      .get(0, expression.dataType)
     assert(checkResult(actual, expected))
   }
 
   /**
-   * Test evaluation results between Interpreted mode and Codegen mode, making sure we have
-   * consistent result regardless of the evaluation method we use.
-   *
-   * This method test against unary expressions by feeding them arbitrary literals of `dataType`.
-   */
+    * Test evaluation results between Interpreted mode and Codegen mode, making sure we have
+    * consistent result regardless of the evaluation method we use.
+    *
+    * This method test against unary expressions by feeding them arbitrary literals of `dataType`.
+    */
   def checkConsistencyBetweenInterpretedAndCodegen(
       c: Expression => Expression,
       dataType: DataType): Unit = {
-    forAll (LiteralGenerator.randomGen(dataType)) { (l: Literal) =>
+    forAll(LiteralGenerator.randomGen(dataType)) { (l: Literal) =>
       cmpInterpretWithCodegen(EmptyRow, c(l))
     }
   }
 
   /**
-   * Test evaluation results between Interpreted mode and Codegen mode, making sure we have
-   * consistent result regardless of the evaluation method we use.
-   *
-   * This method test against binary expressions by feeding them arbitrary literals of `dataType1`
-   * and `dataType2`.
-   */
+    * Test evaluation results between Interpreted mode and Codegen mode, making sure we have
+    * consistent result regardless of the evaluation method we use.
+    *
+    * This method test against binary expressions by feeding them arbitrary literals of `dataType1`
+    * and `dataType2`.
+    */
   def checkConsistencyBetweenInterpretedAndCodegen(
       c: (Expression, Expression) => Expression,
       dataType1: DataType,
       dataType2: DataType): Unit = {
-    forAll (
+    forAll(
       LiteralGenerator.randomGen(dataType1),
       LiteralGenerator.randomGen(dataType2)
     ) { (l1: Literal, l2: Literal) =>
@@ -213,18 +235,18 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
   }
 
   /**
-   * Test evaluation results between Interpreted mode and Codegen mode, making sure we have
-   * consistent result regardless of the evaluation method we use.
-   *
-   * This method test against ternary expressions by feeding them arbitrary literals of `dataType1`,
-   * `dataType2` and `dataType3`.
-   */
+    * Test evaluation results between Interpreted mode and Codegen mode, making sure we have
+    * consistent result regardless of the evaluation method we use.
+    *
+    * This method test against ternary expressions by feeding them arbitrary literals of `dataType1`,
+    * `dataType2` and `dataType3`.
+    */
   def checkConsistencyBetweenInterpretedAndCodegen(
       c: (Expression, Expression, Expression) => Expression,
       dataType1: DataType,
       dataType2: DataType,
       dataType3: DataType): Unit = {
-    forAll (
+    forAll(
       LiteralGenerator.randomGen(dataType1),
       LiteralGenerator.randomGen(dataType2),
       LiteralGenerator.randomGen(dataType3)
@@ -234,51 +256,58 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
   }
 
   /**
-   * Test evaluation results between Interpreted mode and Codegen mode, making sure we have
-   * consistent result regardless of the evaluation method we use.
-   *
-   * This method test against expressions take Seq[Expression] as input by feeding them
-   * arbitrary length Seq of arbitrary literal of `dataType`.
-   */
+    * Test evaluation results between Interpreted mode and Codegen mode, making sure we have
+    * consistent result regardless of the evaluation method we use.
+    *
+    * This method test against expressions take Seq[Expression] as input by feeding them
+    * arbitrary length Seq of arbitrary literal of `dataType`.
+    */
   def checkConsistencyBetweenInterpretedAndCodegen(
       c: Seq[Expression] => Expression,
       dataType: DataType,
       minNumElements: Int = 0): Unit = {
-    forAll (Gen.listOf(LiteralGenerator.randomGen(dataType))) { (literals: Seq[Literal]) =>
-      whenever(literals.size >= minNumElements) {
-        cmpInterpretWithCodegen(EmptyRow, c(literals))
-      }
+    forAll(Gen.listOf(LiteralGenerator.randomGen(dataType))) {
+      (literals: Seq[Literal]) =>
+        whenever(literals.size >= minNumElements) {
+          cmpInterpretWithCodegen(EmptyRow, c(literals))
+        }
     }
   }
 
-  private def cmpInterpretWithCodegen(inputRow: InternalRow, expr: Expression): Unit = {
-    val interpret = try {
-      evaluate(expr, inputRow)
-    } catch {
-      case e: Exception => fail(s"Exception evaluating $expr", e)
-    }
+  private def cmpInterpretWithCodegen(
+      inputRow: InternalRow,
+      expr: Expression): Unit = {
+    val interpret =
+      try {
+        evaluate(expr, inputRow)
+      } catch {
+        case e: Exception => fail(s"Exception evaluating $expr", e)
+      }
 
     val plan = generateProject(
-      GenerateMutableProjection.generate(Alias(expr, s"Optimized($expr)")() :: Nil)(),
+      GenerateMutableProjection.generate(
+        Alias(expr, s"Optimized($expr)")() :: Nil)(),
       expr)
     val codegen = plan(inputRow).get(0, expr.dataType)
 
     if (!compareResults(interpret, codegen)) {
-      fail(s"Incorrect evaluation: $expr, interpret: $interpret, codegen: $codegen")
+      fail(
+        s"Incorrect evaluation: $expr, interpret: $interpret, codegen: $codegen")
     }
   }
 
   /**
-   * Check the equality between result of expression and expected value, it will handle
-   * Array[Byte] and Spread[Double].
-   */
+    * Check the equality between result of expression and expected value, it will handle
+    * Array[Byte] and Spread[Double].
+    */
   private[this] def compareResults(result: Any, expected: Any): Boolean = {
     (result, expected) match {
       case (result: Array[Byte], expected: Array[Byte]) =>
         java.util.Arrays.equals(result, expected)
       case (result: Double, expected: Spread[Double @unchecked]) =>
         expected.asInstanceOf[Spread[Double]].isWithin(result)
-      case (result: Double, expected: Double) if result.isNaN && expected.isNaN =>
+      case (result: Double, expected: Double)
+          if result.isNaN && expected.isNaN =>
         true
       case (result: Float, expected: Float) if result.isNaN && expected.isNaN =>
         true

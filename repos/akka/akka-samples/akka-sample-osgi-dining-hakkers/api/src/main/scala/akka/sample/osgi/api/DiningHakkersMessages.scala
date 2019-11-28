@@ -21,7 +21,8 @@ case object Think extends DiningHakkerMessage
 
 case object Identify extends DiningHakkerMessage
 
-final case class Identification(name: String, busyWith: String) extends DiningHakkerMessage
+final case class Identification(name: String, busyWith: String)
+    extends DiningHakkerMessage
 
 case object SubscribeToHakkerStateChanges extends DiningHakkerMessage
 
@@ -31,4 +32,5 @@ final case class TrackHakker(hakker: ActorRef) extends DiningHakkerMessage
 
 final case class GetEatingCount(hakkerName: String) extends DiningHakkerMessage
 
-final case class EatingCount(hakkerName: String, count: Int) extends DiningHakkerMessage
+final case class EatingCount(hakkerName: String, count: Int)
+    extends DiningHakkerMessage

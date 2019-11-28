@@ -9,12 +9,14 @@ import org.jetbrains.plugins.scala.codeInsight.ScalaCodeInsightTestBase
 import org.jetbrains.plugins.scala.extensions._
 
 /**
- * User: Dmitry Naydanov
- * Date: 12/9/11
- */
-
+  * User: Dmitry Naydanov
+  * Date: 12/9/11
+  */
 class ScalaDocCompletionTest extends ScalaCodeInsightTestBase {
-  protected def genericCompletionComparison(initialText: String, finalText: String, filter: LookupElement => Boolean) {
+  protected def genericCompletionComparison(
+      initialText: String,
+      finalText: String,
+      filter: LookupElement => Boolean) {
     val fileText = initialText.stripMargin('|').replaceAll("\r", "").trim()
     val resultText = finalText.stripMargin('|').replaceAll("\r", "").trim()
 
@@ -25,8 +27,13 @@ class ScalaDocCompletionTest extends ScalaCodeInsightTestBase {
     checkResultByText(resultText)
   }
 
-  protected def genericCompletionComprasion(initialText: String,  finalText: String,  preferedLookupString: String) {
-    genericCompletionComparison(initialText, finalText,
+  protected def genericCompletionComprasion(
+      initialText: String,
+      finalText: String,
+      preferedLookupString: String) {
+    genericCompletionComparison(
+      initialText,
+      finalText,
       (le: LookupElement) => le.getLookupString == preferedLookupString)
   }
 
@@ -80,7 +87,8 @@ class ScalaDocCompletionTest extends ScalaCodeInsightTestBase {
       |  * [[java.util.HashMap
       |  */
       """,
-      (al: LookupElement) => al.getObject.asInstanceOf[PsiClass].qualifiedName == "java.util.HashMap"
+      (al: LookupElement) =>
+        al.getObject.asInstanceOf[PsiClass].qualifiedName == "java.util.HashMap"
     )
   }
 

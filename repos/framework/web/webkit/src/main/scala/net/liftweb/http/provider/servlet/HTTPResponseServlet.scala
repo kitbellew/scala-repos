@@ -28,7 +28,7 @@ import Helpers._
 
 class HTTPResponseServlet(resp: HttpServletResponse) extends HTTPResponse {
   private var _status = 0;
- 
+
   def addCookies(cookies: List[HTTPCookie]) = cookies.foreach {
     case c =>
       val cookie = new javax.servlet.http.Cookie(c.name, c.value openOr null)
@@ -41,7 +41,8 @@ class HTTPResponseServlet(resp: HttpServletResponse) extends HTTPResponse {
         import scala.language.reflectiveCalls
 
         try {
-          val cook30 = cookie.asInstanceOf[{def setHttpOnly(b: Boolean): Unit}]
+          val cook30 =
+            cookie.asInstanceOf[{ def setHttpOnly(b: Boolean): Unit }]
           cook30.setHttpOnly(bv)
         } catch {
           case e: Exception => // swallow.. the exception will be thrown for Servlet 2.5 containers but work for servlet
@@ -54,9 +55,9 @@ class HTTPResponseServlet(resp: HttpServletResponse) extends HTTPResponse {
   private val shouldEncodeUrl = LiftRules.encodeJSessionIdInUrl_?
 
   /**
-   * Encode the JSESSIONID in the URL if specified by LiftRules
-   */
-  def encodeUrl(url: String): String = 
+    * Encode the JSESSIONID in the URL if specified by LiftRules
+    */
+  def encodeUrl(url: String): String =
     if (shouldEncodeUrl) {
       resp encodeURL url
     } else {
@@ -64,7 +65,8 @@ class HTTPResponseServlet(resp: HttpServletResponse) extends HTTPResponse {
     }
 
   def addHeaders(headers: List[HTTPParam]) {
-    val appearOnce = Set(LiftRules.overwrittenReponseHeaders.vend.map(_.toLowerCase): _*)
+    val appearOnce = Set(
+      LiftRules.overwrittenReponseHeaders.vend.map(_.toLowerCase): _*)
     for (h <- headers;
          value <- h.values) {
       if (appearOnce.contains(h.name.toLowerCase)) resp.setHeader(h.name, value)
@@ -79,12 +81,11 @@ class HTTPResponseServlet(resp: HttpServletResponse) extends HTTPResponse {
   }
 
   def getStatus = _status
- 
+
   def setStatusWithReason(status: Int, reason: String) = {
     _status = status
-    resp sendError  (status, reason)
+    resp sendError (status, reason)
   }
 
   def outputStream: OutputStream = resp.getOutputStream
 }
-

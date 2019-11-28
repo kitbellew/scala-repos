@@ -7,11 +7,17 @@ import org.slf4j.Logger
 import org.specs2.concurrent.ExecutionEnv
 import org.specs2.mock.Mockito
 import play.api.libs.ws._
-import play.api.test.{ WithServer, WsTestClient, PlaySpecification, WithApplication }
+import play.api.test.{
+  WithServer,
+  WsTestClient,
+  PlaySpecification,
+  WithApplication
+}
 
 import scala.concurrent.Future
 
-class AhcCurlRequestLoggerSpec extends PlaySpecification
+class AhcCurlRequestLoggerSpec
+    extends PlaySpecification
     with WsTestClient
     with Mockito
     with org.specs2.specification.mutable.ExecutionEnvironment {
@@ -29,7 +35,8 @@ class AhcCurlRequestLoggerSpec extends PlaySpecification
           "user-agent" -> "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.94 Safari/537.36"
         )
 
-        val responseFuture = client.withRequestFilter(AhcCurlRequestLogger(logger))
+        val responseFuture = client
+          .withRequestFilter(AhcCurlRequestLogger(logger))
           .withHeaders(headers: _*)
           .get()
         responseFuture must beAnInstanceOf[AhcWSResponse].await
@@ -47,7 +54,8 @@ class AhcCurlRequestLoggerSpec extends PlaySpecification
         val client = wsUrl("/")
         val logger = mock[Logger]
 
-        val responseFuture = client.withRequestFilter(AhcCurlRequestLogger(logger))
+        val responseFuture = client
+          .withRequestFilter(AhcCurlRequestLogger(logger))
           .post(Map("key" -> Seq("value")))
         responseFuture must beAnInstanceOf[AhcWSResponse].await
 
@@ -65,7 +73,8 @@ class AhcCurlRequestLoggerSpec extends PlaySpecification
         val logger = mock[Logger]
         val headers = Seq("Content-Type" -> "text/plain; charset=utf-8")
 
-        val responseFuture = client.withRequestFilter(AhcCurlRequestLogger(logger))
+        val responseFuture = client
+          .withRequestFilter(AhcCurlRequestLogger(logger))
           .withHeaders(headers: _*)
           .post("this is plain text")
         responseFuture must beAnInstanceOf[AhcWSResponse].await
@@ -84,7 +93,8 @@ class AhcCurlRequestLoggerSpec extends PlaySpecification
         val logger = mock[Logger]
         val requestLogger = AhcCurlRequestLogger(logger)
 
-        val responseFuture = client.withRequestFilter(AhcCurlRequestLogger(logger))
+        val responseFuture = client
+          .withRequestFilter(AhcCurlRequestLogger(logger))
           .withQueryString("search" -> "&?$HOME'")
           .get()
         responseFuture must beAnInstanceOf[AhcWSResponse].await
@@ -104,7 +114,8 @@ class AhcCurlRequestLoggerSpec extends PlaySpecification
           "Content-Type" -> "text/plain; charset=utf-8"
         )
 
-        val responseFuture = client.withRequestFilter(AhcCurlRequestLogger(logger))
+        val responseFuture = client
+          .withRequestFilter(AhcCurlRequestLogger(logger))
           .withHeaders(headers: _*)
           .post("this is ' text with a hanging quote")
         responseFuture must beAnInstanceOf[AhcWSResponse].await
@@ -123,7 +134,8 @@ class AhcCurlRequestLoggerSpec extends PlaySpecification
         val client = wsUrl("/")
         val logger = mock[Logger]
 
-        val responseFuture = client.withRequestFilter(AhcCurlRequestLogger(logger))
+        val responseFuture = client
+          .withRequestFilter(AhcCurlRequestLogger(logger))
           .withBody(Map("param1" -> Seq("value1")))
           .put(Map("key" -> Seq("value")))
         responseFuture must beAnInstanceOf[AhcWSResponse].await

@@ -4,11 +4,11 @@ package lang.xml
 import org.jetbrains.plugins.scala.base.ScalaLightCodeInsightFixtureTestAdapter
 
 /**
- * User: Dmitry Naydanov
- * Date: 3/5/12
- */
-
-class XmlAttributeQuotesTypingTest extends ScalaLightCodeInsightFixtureTestAdapter {
+  * User: Dmitry Naydanov
+  * Date: 3/5/12
+  */
+class XmlAttributeQuotesTypingTest
+    extends ScalaLightCodeInsightFixtureTestAdapter {
 
   def testQuotesAfterFirstAttribute() {
     val text = "class A { val xml = <aaa attr" + CARET_MARKER + "\n}"
@@ -19,7 +19,8 @@ class XmlAttributeQuotesTypingTest extends ScalaLightCodeInsightFixtureTestAdapt
 
   def testQuotesAfterSecondAttribute() {
     val text = "class A { val xml = <aaa attr1=\"blahlbha\" attr2" + CARET_MARKER + "\n}"
-    val assumedStub = "class A { val xml = <aaa attr1=\"blahlbha\" attr2=\"\"\n}"
+    val assumedStub =
+      "class A { val xml = <aaa attr1=\"blahlbha\" attr2=\"\"\n}"
 
     checkGeneratedTextAfterTyping(text, assumedStub, '=')
   }

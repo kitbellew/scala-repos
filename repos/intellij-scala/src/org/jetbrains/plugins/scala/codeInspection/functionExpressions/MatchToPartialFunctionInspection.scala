@@ -11,7 +11,10 @@ import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.{ResolveResult, PsiDocumentManager, PsiElement}
 import org.jetbrains.plugins.scala.codeInspection.functionExpressions.MatchToPartialFunctionInspection._
-import org.jetbrains.plugins.scala.codeInspection.{AbstractFixOnTwoPsiElements, AbstractInspection}
+import org.jetbrains.plugins.scala.codeInspection.{
+  AbstractFixOnTwoPsiElements,
+  AbstractInspection
+}
 import org.jetbrains.plugins.scala.extensions.childOf
 import org.jetbrains.plugins.scala.lang.lexer.ScalaTokenTypes
 import org.jetbrains.plugins.scala.lang.psi.api.base.patterns._
@@ -24,41 +27,58 @@ import org.jetbrains.plugins.scala.lang.resolve.ScalaResolveResult
 import scala.collection.JavaConverters._
 
 /**
- * Nikolay.Tropin
- * 9/26/13
- */
-class MatchToPartialFunctionInspection extends AbstractInspection(inspectionId){
+  * Nikolay.Tropin
+  * 9/26/13
+  */
+class MatchToPartialFunctionInspection
+    extends AbstractInspection(inspectionId) {
   def actionFor(holder: ProblemsHolder): PartialFunction[PsiElement, Any] = {
-    case fun @ ScFunctionExpr(Seq(param), Some(ms @ ScMatchStmt(ref: ScReferenceExpression, _)))
-      if ref.resolve() == param && !(param.typeElement.isDefined && notExpectedType(fun)) && checkSameResolve(fun) =>
+    case fun @ ScFunctionExpr(
+          Seq(param),
+          Some(ms @ ScMatchStmt(ref: ScReferenceExpression, _)))
+        if ref.resolve() == param && !(param.typeElement.isDefined && notExpectedType(
+          fun)) && checkSameResolve(fun) =>
       registerProblem(holder, ms, fun)
-    case fun @ ScFunctionExpr(Seq(param), Some(ScBlock(ms @ ScMatchStmt(ref: ScReferenceExpression, _))))
-      if ref.resolve() == param && !(param.typeElement.isDefined && notExpectedType(fun)) && checkSameResolve(fun) =>
+    case fun @ ScFunctionExpr(
+          Seq(param),
+          Some(ScBlock(ms @ ScMatchStmt(ref: ScReferenceExpression, _))))
+        if ref.resolve() == param && !(param.typeElement.isDefined && notExpectedType(
+          fun)) && checkSameResolve(fun) =>
       registerProblem(holder, ms, fun) //if fun is last statement in block, result can be block without braces
-    case ms @ ScMatchStmt(und: ScUnderscoreSection, _) if checkSameResolve(ms) =>
+    case ms @ ScMatchStmt(und: ScUnderscoreSection, _)
+        if checkSameResolve(ms) =>
       registerProblem(holder, ms, ms)
   }
 
   private def notExpectedType(expr: ScExpression) = {
     (expr.getType(), expr.expectedType()) match {
-      case (Success(tpe: ScType, _), Some(expType: ScType)) => !expType.equiv(tpe)
+      case (Success(tpe: ScType, _), Some(expType: ScType)) =>
+        !expType.equiv(tpe)
       case _ => true
     }
   }
 
-  private def registerProblem(holder: ProblemsHolder, ms: ScMatchStmt, fExprToReplace: ScExpression) = {
+  private def registerProblem(
+      holder: ProblemsHolder,
+      ms: ScMatchStmt,
+      fExprToReplace: ScExpression) = {
     def leftBraceOffset(ms: ScMatchStmt): Option[Int] = {
       val leftBrace = ms.findFirstChildByType(ScalaTokenTypes.tLBRACE)
       leftBrace match {
         case elem: PsiElement => Option(elem.getTextRange.getStartOffset)
-        case _ => None
+        case _                => None
       }
     }
     for (offset <- leftBraceOffset(ms)) {
       val endOffsetInParent = offset - fExprToReplace.getTextRange.getStartOffset
       val rangeInParent = new TextRange(0, endOffsetInParent)
       val fix = new MatchToPartialFunctionQuickFix(ms, fExprToReplace)
-      holder.registerProblem(fExprToReplace, inspectionName, ProblemHighlightType.GENERIC_ERROR_OR_WARNING, rangeInParent, fix)
+      holder.registerProblem(
+        fExprToReplace,
+        inspectionName,
+        ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
+        rangeInParent,
+        fix)
     }
   }
 
@@ -68,19 +88,24 @@ class MatchToPartialFunctionInspection extends AbstractInspection(inspectionId){
     val call = PsiTreeUtil.getParentOfType(argExpr, classOf[MethodInvocation])
     val arg = argExpr match {
       case _ childOf (x childOf (_: ScArgumentExprList)) => x
-      case _ childOf (x childOf (_: ScInfixExpr)) => x
-      case _ => argExpr
+      case _ childOf (x childOf (_: ScInfixExpr))        => x
+      case _                                             => argExpr
     }
     if (call == null || !call.argumentExpressions.contains(arg)) return true
     val (refText, oldResolve) = call match {
-      case ScInfixExpr(qual, r, _) => (s"${qual.getText}.${r.refName}", r.resolve())
+      case ScInfixExpr(qual, r, _) =>
+        (s"${qual.getText}.${r.refName}", r.resolve())
       case ScMethodCall(r: ScReferenceExpression, _) => (r.getText, r.resolve())
-      case _ => return true
+      case _                                         => return true
     }
 
-    val newCall = ScalaPsiElementFactory.createExpressionWithContextFromText(refText + dummyCaseClauses, call.getContext, call)
+    val newCall = ScalaPsiElementFactory.createExpressionWithContextFromText(
+      refText + dummyCaseClauses,
+      call.getContext,
+      call)
     newCall match {
-      case ScMethodCall(ref: ScReferenceExpression, _) => ref.resolve() == oldResolve
+      case ScMethodCall(ref: ScReferenceExpression, _) =>
+        ref.resolve() == oldResolve
       case _ => true
     }
   }
@@ -88,11 +113,17 @@ class MatchToPartialFunctionInspection extends AbstractInspection(inspectionId){
 
 object MatchToPartialFunctionInspection {
   val inspectionId = "MatchToPartialFunction"
-  val inspectionName = "Convert match statement to pattern matching anonymous function"
+  val inspectionName =
+    "Convert match statement to pattern matching anonymous function"
 }
 
-class MatchToPartialFunctionQuickFix(matchStmt: ScMatchStmt, fExprToReplace: ScExpression)
-        extends AbstractFixOnTwoPsiElements(inspectionName, matchStmt, fExprToReplace) {
+class MatchToPartialFunctionQuickFix(
+    matchStmt: ScMatchStmt,
+    fExprToReplace: ScExpression)
+    extends AbstractFixOnTwoPsiElements(
+      inspectionName,
+      matchStmt,
+      fExprToReplace) {
   def doApplyFix(project: Project) {
     val mStmt = getFirstElement
     val fExpr = getSecondElement
@@ -101,16 +132,25 @@ class MatchToPartialFunctionQuickFix(matchStmt: ScMatchStmt, fExprToReplace: ScE
     if (leftBrace == null) return
 
     addNamingPatterns(matchStmtCopy, needNamingPattern(mStmt))
-    matchStmtCopy.deleteChildRange(matchStmtCopy.getFirstChild, leftBrace.getPrevSibling)
-    val newBlock = ScalaPsiElementFactory.createExpressionFromText(matchStmtCopy.getText, mStmt.getManager)
-    CodeEditUtil.setOldIndentation(newBlock.getNode.asInstanceOf[TreeElement], CodeEditUtil.getOldIndentation(matchStmtCopy.getNode))
+    matchStmtCopy.deleteChildRange(
+      matchStmtCopy.getFirstChild,
+      leftBrace.getPrevSibling)
+    val newBlock = ScalaPsiElementFactory.createExpressionFromText(
+      matchStmtCopy.getText,
+      mStmt.getManager)
+    CodeEditUtil.setOldIndentation(
+      newBlock.getNode.asInstanceOf[TreeElement],
+      CodeEditUtil.getOldIndentation(matchStmtCopy.getNode))
     extensions.inWriteAction {
       fExpr.getParent match {
-        case (argList: ScArgumentExprList) childOf (call: ScMethodCall) if argList.exprs.size == 1 =>
+        case (argList: ScArgumentExprList) childOf (call: ScMethodCall)
+            if argList.exprs.size == 1 =>
           val newMethCall =
-            ScalaPsiElementFactory.createExpressionFromText(call.getInvokedExpr.getText + " " + newBlock.getText, fExpr.getManager)
+            ScalaPsiElementFactory.createExpressionFromText(
+              call.getInvokedExpr.getText + " " + newBlock.getText,
+              fExpr.getManager)
           call.replace(newMethCall)
-        case block@ScBlock(`fExpr`) =>
+        case block @ ScBlock(`fExpr`) =>
           block.replace(newBlock)
         case _ =>
           fExpr.replace(newBlock)
@@ -124,30 +164,48 @@ class MatchToPartialFunctionQuickFix(matchStmt: ScMatchStmt, fExprToReplace: ScE
       case ScMatchStmt(expr: ScReferenceExpression, _) =>
         val arg = expr.resolve()
         if (arg == null) return Nil
-        val refs = ReferencesSearch.search(arg, new LocalSearchScope(matchStmt)).findAll().asScala
+        val refs = ReferencesSearch
+          .search(arg, new LocalSearchScope(matchStmt))
+          .findAll()
+          .asScala
         for {
           (clause, index) <- matchStmt.caseClauses.zipWithIndex
-          if refs.exists(ref => PsiTreeUtil.isAncestor(clause, ref.getElement, false))
+          if refs.exists(ref =>
+            PsiTreeUtil.isAncestor(clause, ref.getElement, false))
         } yield index
       case _ => Nil
     }
   }
 
-  private def addNamingPatterns(matchStmt: ScMatchStmt, indexes: Seq[Int]): Unit = {
+  private def addNamingPatterns(
+      matchStmt: ScMatchStmt,
+      indexes: Seq[Int]): Unit = {
     val clauses = matchStmt.caseClauses
-    val name = matchStmt.expr.map(_.getText).getOrElse(return)
+    val name = matchStmt.expr
+      .map(_.getText)
+      .getOrElse(return
+      )
     indexes.map(i => clauses(i).pattern).foreach {
-      case Some(w: ScWildcardPattern) => w.replace(ScalaPsiElementFactory.createPatternFromText(name, matchStmt.getManager))
+      case Some(w: ScWildcardPattern) =>
+        w.replace(
+          ScalaPsiElementFactory
+            .createPatternFromText(name, matchStmt.getManager))
       case Some(p: ScPattern) =>
-        val newPatternText = if (needParentheses(p)) s"$name @ (${p.getText})" else s"$name @ ${p.getText}"
-        p.replace(ScalaPsiElementFactory.createPatternFromText(newPatternText, matchStmt.getManager))
+        val newPatternText =
+          if (needParentheses(p)) s"$name @ (${p.getText})"
+          else s"$name @ ${p.getText}"
+        p.replace(
+          ScalaPsiElementFactory
+            .createPatternFromText(newPatternText, matchStmt.getManager))
       case _ =>
     }
   }
 
   private def needParentheses(p: ScPattern): Boolean = p match {
     case _: ScReferencePattern | _: ScLiteralPattern | _: ScConstructorPattern |
-         _: ScParenthesisedPattern | _: ScTuplePattern | _: ScStableReferenceElementPattern => false
+        _: ScParenthesisedPattern | _: ScTuplePattern |
+        _: ScStableReferenceElementPattern =>
+      false
     case _ => true
   }
 }

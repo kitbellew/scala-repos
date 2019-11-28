@@ -7,9 +7,9 @@ import scala.collection.JavaConverters._
 import com.intellij.openapi.util.io.FileUtil
 
 /**
- * @author Nikolay Obedin
- * @since 11/27/14.
- */
+  * @author Nikolay Obedin
+  * @since 11/27/14.
+  */
 object SbtOpts {
 
   def loadFrom(directory: File): Seq[String] = {
@@ -20,9 +20,11 @@ object SbtOpts {
       Seq.empty
   }
 
-  private val noShareOpts  = "-Dsbt.global.base=project/.sbtboot -Dsbt.boot.directory=project/.boot -Dsbt.ivy.home=project/.ivy"
+  private val noShareOpts =
+    "-Dsbt.global.base=project/.sbtboot -Dsbt.boot.directory=project/.boot -Dsbt.ivy.home=project/.ivy"
   private val noGlobalOpts = "-Dsbt.global.base=project/.sbtboot"
-  private val debuggerOpts = "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address="
+  private val debuggerOpts =
+    "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address="
 
   private val sbtToJdkOpts: Map[String, String] = Map(
     "-sbt-boot" -> "-Dsbt.boot.directory=",
@@ -37,7 +39,7 @@ object SbtOpts {
         Some(noShareOpts)
       else if (opt.startsWith("-no-global"))
         Some(noGlobalOpts)
-      else if (sbtToJdkOpts.exists { case (k,_) => opt.startsWith(k) })
+      else if (sbtToJdkOpts.exists { case (k, _) => opt.startsWith(k) })
         processOptWithArg(opt)
       else if (opt.startsWith("-J"))
         Some(opt.substring(2))
@@ -49,9 +51,10 @@ object SbtOpts {
   }
 
   private def processOptWithArg(opt: String): Option[String] = {
-    sbtToJdkOpts.find{ case (k,_) => opt.startsWith(k)}.flatMap { case (k,x) =>
-      val v = opt.replace(k, "").trim
-      if (v.isEmpty) None else Some(x + v)
+    sbtToJdkOpts.find { case (k, _) => opt.startsWith(k) }.flatMap {
+      case (k, x) =>
+        val v = opt.replace(k, "").trim
+        if (v.isEmpty) None else Some(x + v)
     }
   }
 }

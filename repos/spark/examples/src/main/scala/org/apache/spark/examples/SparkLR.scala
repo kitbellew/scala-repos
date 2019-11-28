@@ -27,17 +27,17 @@ import breeze.linalg.{DenseVector, Vector}
 import org.apache.spark._
 
 /**
- * Logistic regression based classification.
- * Usage: SparkLR [slices]
- *
- * This is an example implementation for learning how to use Spark. For more conventional use,
- * please refer to either org.apache.spark.mllib.classification.LogisticRegressionWithSGD or
- * org.apache.spark.mllib.classification.LogisticRegressionWithLBFGS based on your needs.
- */
+  * Logistic regression based classification.
+  * Usage: SparkLR [slices]
+  *
+  * This is an example implementation for learning how to use Spark. For more conventional use,
+  * please refer to either org.apache.spark.mllib.classification.LogisticRegressionWithSGD or
+  * org.apache.spark.mllib.classification.LogisticRegressionWithLBFGS based on your needs.
+  */
 object SparkLR {
-  val N = 10000  // Number of data points
-  val D = 10   // Number of dimensions
-  val R = 0.7  // Scaling factor
+  val N = 10000 // Number of data points
+  val D = 10 // Number of dimensions
+  val R = 0.7 // Scaling factor
   val ITERATIONS = 5
   val rand = new Random(42)
 
@@ -46,7 +46,7 @@ object SparkLR {
   def generateData: Array[DataPoint] = {
     def generatePoint(i: Int): DataPoint = {
       val y = if (i % 2 == 0) -1 else 1
-      val x = DenseVector.fill(D) {rand.nextGaussian + y * R}
+      val x = DenseVector.fill(D) { rand.nextGaussian + y * R }
       DataPoint(x, y)
     }
     Array.tabulate(N)(generatePoint)
@@ -71,14 +71,16 @@ object SparkLR {
     val points = sc.parallelize(generateData, numSlices).cache()
 
     // Initialize w to a random value
-    var w = DenseVector.fill(D) {2 * rand.nextDouble - 1}
+    var w = DenseVector.fill(D) { 2 * rand.nextDouble - 1 }
     println("Initial w: " + w)
 
     for (i <- 1 to ITERATIONS) {
       println("On iteration " + i)
-      val gradient = points.map { p =>
-        p.x * (1 / (1 + exp(-p.y * (w.dot(p.x)))) - 1) * p.y
-      }.reduce(_ + _)
+      val gradient = points
+        .map { p =>
+          p.x * (1 / (1 + exp(-p.y * (w.dot(p.x)))) - 1) * p.y
+        }
+        .reduce(_ + _)
       w -= gradient
     }
 

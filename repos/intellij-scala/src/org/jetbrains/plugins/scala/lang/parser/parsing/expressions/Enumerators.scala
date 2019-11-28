@@ -9,10 +9,9 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.builder.ScalaPsiBuilder
 import org.jetbrains.plugins.scala.lang.parser.parsing.patterns.Guard
 
 /**
-* @author Alexander Podkhalyuzin
-* Date: 06.03.2008
-*/
-
+  * @author Alexander Podkhalyuzin
+  * Date: 06.03.2008
+  */
 /*
  * Enumerators ::= Generator {semi Enumerator}
  */
@@ -31,8 +30,8 @@ object Enumerators {
           builder.advanceLexer()
           false
         case _ if builder.newlineBeforeCurrentToken => false
-        case _ if Guard.parse(builder) => true
-        case _ => exit = false; true
+        case _ if Guard.parse(builder)              => true
+        case _                                      => exit = false; true
       }
       if (!guard && !Enumerator.parse(builder)) exit = false
     }

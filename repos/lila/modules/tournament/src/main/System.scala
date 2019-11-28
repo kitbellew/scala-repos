@@ -19,7 +19,9 @@ object System {
 
   val all = List(Arena)
 
-  val byId = all map { s => (s.id -> s) } toMap
+  val byId = all map { s =>
+    (s.id -> s)
+  } toMap
 
   def apply(id: Int): Option[System] = byId get id
   def orDefault(id: Int): System = apply(id) getOrElse default
@@ -27,9 +29,9 @@ object System {
 
 trait PairingSystem {
   def createPairings(
-    tournament: Tournament,
-    users: WaitingUsers,
-    ranking: Ranking): Fu[Pairings]
+      tournament: Tournament,
+      users: WaitingUsers,
+      ranking: Ranking): Fu[Pairings]
 }
 
 trait Score {

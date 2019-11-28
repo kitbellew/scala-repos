@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.cluster
 
 import language.postfixOps
@@ -27,29 +27,38 @@ object UnreachableNodeJoinsAgainMultiNodeConfig extends MultiNodeConfig {
   val third = role("third")
   val fourth = role("fourth")
 
-  commonConfig(ConfigFactory.parseString(
-    """
+  commonConfig(
+    ConfigFactory
+      .parseString("""
       akka.remote.log-remote-lifecycle-events = off
-    """).withFallback(debugConfig(on = false).withFallback(MultiNodeClusterSpec.clusterConfig)))
+    """)
+      .withFallback(debugConfig(on = false)
+        .withFallback(MultiNodeClusterSpec.clusterConfig)))
 
   testTransport(on = true)
 
 }
 
-class UnreachableNodeJoinsAgainMultiJvmNode1 extends UnreachableNodeJoinsAgainSpec
-class UnreachableNodeJoinsAgainMultiJvmNode2 extends UnreachableNodeJoinsAgainSpec
-class UnreachableNodeJoinsAgainMultiJvmNode3 extends UnreachableNodeJoinsAgainSpec
-class UnreachableNodeJoinsAgainMultiJvmNode4 extends UnreachableNodeJoinsAgainSpec
+class UnreachableNodeJoinsAgainMultiJvmNode1
+    extends UnreachableNodeJoinsAgainSpec
+class UnreachableNodeJoinsAgainMultiJvmNode2
+    extends UnreachableNodeJoinsAgainSpec
+class UnreachableNodeJoinsAgainMultiJvmNode3
+    extends UnreachableNodeJoinsAgainSpec
+class UnreachableNodeJoinsAgainMultiJvmNode4
+    extends UnreachableNodeJoinsAgainSpec
 
 abstract class UnreachableNodeJoinsAgainSpec
-  extends MultiNodeSpec(UnreachableNodeJoinsAgainMultiNodeConfig)
-  with MultiNodeClusterSpec {
+    extends MultiNodeSpec(UnreachableNodeJoinsAgainMultiNodeConfig)
+    with MultiNodeClusterSpec {
 
   import UnreachableNodeJoinsAgainMultiNodeConfig._
 
   muteMarkingAsUnreachable()
 
-  def allBut(role: RoleName, roles: immutable.Seq[RoleName] = roles): immutable.Seq[RoleName] = {
+  def allBut(
+      role: RoleName,
+      roles: immutable.Seq[RoleName] = roles): immutable.Seq[RoleName] = {
     roles.filterNot(_ == role)
   }
 
@@ -93,7 +102,8 @@ abstract class UnreachableNodeJoinsAgainSpec
             val members = clusterView.members
             clusterView.unreachableMembers.size should ===(roles.size - 1)
           }
-          clusterView.unreachableMembers.map(_.address) should ===((allButVictim map address).toSet)
+          clusterView.unreachableMembers.map(_.address) should ===(
+            (allButVictim map address).toSet)
         }
       }
 
@@ -108,7 +118,8 @@ abstract class UnreachableNodeJoinsAgainSpec
           awaitSeenSameState(allButVictim map address: _*)
           // still one unreachable
           clusterView.unreachableMembers.size should ===(1)
-          clusterView.unreachableMembers.head.address should ===(node(victim).address)
+          clusterView.unreachableMembers.head.address should ===(
+            node(victim).address)
           clusterView.unreachableMembers.head.status should ===(MemberStatus.Up)
         }
       }
@@ -125,8 +136,12 @@ abstract class UnreachableNodeJoinsAgainSpec
       runOn(allButVictim: _*) {
         // eventually removed
         awaitMembersUp(roles.size - 1, Set(victim))
-        awaitAssert(clusterView.unreachableMembers should ===(Set.empty), 15 seconds)
-        awaitAssert(clusterView.members.map(_.address) should ===((allButVictim map address).toSet))
+        awaitAssert(
+          clusterView.unreachableMembers should ===(Set.empty),
+          15 seconds)
+        awaitAssert(
+          clusterView.members.map(_.address) should ===(
+            (allButVictim map address).toSet))
 
       }
 
@@ -159,27 +174,39 @@ abstract class UnreachableNodeJoinsAgainSpec
       }
 
       runOn(victim) {
-        val victimAddress = system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
+        val victimAddress =
+          system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
         Await.ready(system.whenTerminated, 10 seconds)
         // create new ActorSystem with same host:port
-        val freshSystem = ActorSystem(system.name, ConfigFactory.parseString(s"""
+        val freshSystem = ActorSystem(
+          system.name,
+          ConfigFactory.parseString(s"""
             akka.remote.netty.tcp {
               hostname = ${victimAddress.host.get}
               port = ${victimAddress.port.get}
             }
-            """).withFallback(system.settings.config))
+            """).withFallback(system.settings.config)
+        )
 
         try {
           Cluster(freshSystem).join(masterAddress)
           within(15 seconds) {
-            awaitAssert(Cluster(freshSystem).readView.members.map(_.address) should contain(victimAddress))
-            awaitAssert(Cluster(freshSystem).readView.members.size should ===(expectedNumberOfMembers))
-            awaitAssert(Cluster(freshSystem).readView.members.map(_.status) should ===(Set(MemberStatus.Up)))
+            awaitAssert(
+              Cluster(freshSystem).readView.members
+                .map(_.address) should contain(victimAddress))
+            awaitAssert(
+              Cluster(freshSystem).readView.members.size should ===(
+                expectedNumberOfMembers))
+            awaitAssert(
+              Cluster(freshSystem).readView.members.map(_.status) should ===(
+                Set(MemberStatus.Up)))
           }
 
           // signal to master node that victim is done
           val endProbe = TestProbe()(freshSystem)
-          val endActor = freshSystem.actorOf(Props(classOf[EndActor], endProbe.ref, Some(masterAddress)), "end")
+          val endActor = freshSystem.actorOf(
+            Props(classOf[EndActor], endProbe.ref, Some(masterAddress)),
+            "end")
           endActor ! EndActor.SendEnd
           endProbe.expectMsg(EndActor.EndAck)
 

@@ -10,7 +10,8 @@ import actorApi._
 import lila.socket._
 import lila.socket.actorApi.SendToFlag
 
-private[site] final class Socket(timeout: Duration) extends SocketActor[Member](timeout) {
+private[site] final class Socket(timeout: Duration)
+    extends SocketActor[Member](timeout) {
 
   override val startsOnApplicationBoot = true
 

@@ -25,7 +25,9 @@ class BasicRouteSpecs extends RoutingSpec {
     "collect rejections from both sub routes" in {
       Delete() ~> {
         get { completeOk } ~ put { completeOk }
-      } ~> check { rejections shouldEqual Seq(MethodRejection(GET), MethodRejection(PUT)) }
+      } ~> check {
+        rejections shouldEqual Seq(MethodRejection(GET), MethodRejection(PUT))
+      }
     }
     "clear rejections that have already been 'overcome' by previous directives" in {
       Put() ~> {
@@ -113,7 +115,8 @@ class BasicRouteSpecs extends RoutingSpec {
     "extract two arguments" in {
       case class Person(name: String, age: Int)
 
-      val personPath = path("person" / Segment / IntNumber).as(Person)(echoComplete)
+      val personPath =
+        path("person" / Segment / IntNumber).as(Person)(echoComplete)
 
       Get("/person/john/38") ~> personPath ~> check {
         responseAs[String] shouldEqual "Person(john,38)"
@@ -135,7 +138,9 @@ class BasicRouteSpecs extends RoutingSpec {
     "re-execute inner routes every time" in {
       var a = ""
       val dynamicRoute = get { a += "x"; complete(a) }
-      def expect(route: Route, s: String) = Get() ~> route ~> check { responseAs[String] shouldEqual s }
+      def expect(route: Route, s: String) = Get() ~> route ~> check {
+        responseAs[String] shouldEqual s
+      }
 
       expect(dynamicRoute, "x")
       expect(dynamicRoute, "xx")
@@ -146,7 +151,8 @@ class BasicRouteSpecs extends RoutingSpec {
 
   case object MyException extends RuntimeException
   "Route sealing" should {
-    "catch route execution exceptions" in EventFilter[MyException.type](occurrences = 1).intercept {
+    "catch route execution exceptions" in EventFilter[MyException.type](occurrences =
+      1).intercept {
       Get("/abc") ~> Route.seal {
         get { ctx ⇒
           throw MyException
@@ -155,7 +161,8 @@ class BasicRouteSpecs extends RoutingSpec {
         status shouldEqual StatusCodes.InternalServerError
       }
     }
-    "catch route building exceptions" in EventFilter[MyException.type](occurrences = 1).intercept {
+    "catch route building exceptions" in EventFilter[MyException.type](occurrences =
+      1).intercept {
       Get("/abc") ~> Route.seal {
         get {
           throw MyException
@@ -164,7 +171,8 @@ class BasicRouteSpecs extends RoutingSpec {
         status shouldEqual StatusCodes.InternalServerError
       }
     }
-    "convert all rejections to responses" in EventFilter[RuntimeException](occurrences = 1).intercept {
+    "convert all rejections to responses" in EventFilter[RuntimeException](occurrences =
+      1).intercept {
       object MyRejection extends Rejection
       Get("/abc") ~> Route.seal {
         get {

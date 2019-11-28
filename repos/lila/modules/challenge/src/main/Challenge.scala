@@ -1,7 +1,7 @@
 package lila.challenge
 
 import chess.variant.{Variant, FromPosition}
-import chess.{ Mode, Clock, Speed }
+import chess.{Mode, Clock, Speed}
 import org.joda.time.DateTime
 
 import lila.game.PerfPicker
@@ -105,29 +105,35 @@ object Challenge {
   }
 
   private def perfTypeOf(variant: Variant, timeControl: TimeControl): PerfType =
-    PerfPicker.perfType(speedOf(timeControl), variant, timeControl match {
-      case TimeControl.Correspondence(d) => d.some
-      case _                             => none
-    }).orElse {
-      (variant == FromPosition) option perfTypeOf(chess.variant.Standard, timeControl)
-    }.|(PerfType.Correspondence)
+    PerfPicker
+      .perfType(speedOf(timeControl), variant, timeControl match {
+        case TimeControl.Correspondence(d) => d.some
+        case _                             => none
+      })
+      .orElse {
+        (variant == FromPosition) option perfTypeOf(
+          chess.variant.Standard,
+          timeControl)
+      }
+      .|(PerfType.Correspondence)
 
   private val idSize = 8
 
   private def randomId = ornicar.scalalib.Random nextStringUppercase idSize
 
-  private def toRegistered(variant: Variant, timeControl: TimeControl)(u: User) =
+  private def toRegistered(variant: Variant, timeControl: TimeControl)(
+      u: User) =
     Registered(u.id, Rating(u.perfs(perfTypeOf(variant, timeControl))))
 
   def make(
-    variant: Variant,
-    initialFen: Option[String],
-    timeControl: TimeControl,
-    mode: Mode,
-    color: String,
-    challenger: Either[String, User],
-    destUser: Option[User],
-    rematchOf: Option[String]): Challenge = {
+      variant: Variant,
+      initialFen: Option[String],
+      timeControl: TimeControl,
+      mode: Mode,
+      color: String,
+      challenger: Either[String, User],
+      destUser: Option[User],
+      rematchOf: Option[String]): Challenge = {
     val (colorChoice, finalColor) = color match {
       case "white" => ColorChoice.White -> chess.White
       case "black" => ColorChoice.Black -> chess.Black

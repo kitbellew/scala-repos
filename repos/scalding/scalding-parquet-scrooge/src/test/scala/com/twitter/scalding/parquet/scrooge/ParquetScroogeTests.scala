@@ -1,6 +1,10 @@
 package com.twitter.scalding.parquet.scrooge
 
-import com.twitter.scalding.parquet.{ StrictColumnProjectionString, DeprecatedColumnProjectionString, ParquetSourcesTestsBase }
+import com.twitter.scalding.parquet.{
+  StrictColumnProjectionString,
+  DeprecatedColumnProjectionString,
+  ParquetSourcesTestsBase
+}
 import com.twitter.scrooge.ThriftStruct
 import org.apache.thrift.protocol.TProtocol
 import org.apache.parquet.filter2.predicate.FilterPredicate
@@ -8,7 +12,8 @@ import org.apache.parquet.filter2.predicate.FilterPredicate
 class ParquetScroogeTests extends ParquetSourcesTestsBase {
 
   "DailySuffixParquetScrooge" should {
-    val default = new DailySuffixParquetScrooge[MockThriftStruct](path, dateRange)
+    val default =
+      new DailySuffixParquetScrooge[MockThriftStruct](path, dateRange)
 
     testDefaultFilter(default)
 
@@ -22,17 +27,22 @@ class ParquetScroogeTests extends ParquetSourcesTestsBase {
     testReturnProvidedColumns(
       new DailySuffixParquetScrooge[MockThriftStruct](path, dateRange) {
         override def withColumns: Set[String] = columnStrings
-      }, DeprecatedColumnProjectionString(columnStrings))
+      },
+      DeprecatedColumnProjectionString(columnStrings)
+    )
 
     testReturnProvidedColumns(
       new DailySuffixParquetScrooge[MockThriftStruct](path, dateRange) {
         override def withColumnProjections: Set[String] = columnStrings
-      }, StrictColumnProjectionString(columnStrings))
+      },
+      StrictColumnProjectionString(columnStrings)
+    )
 
   }
 
   "HourlySuffixParquetScrooge" should {
-    val default = new HourlySuffixParquetScrooge[MockThriftStruct](path, dateRange)
+    val default =
+      new HourlySuffixParquetScrooge[MockThriftStruct](path, dateRange)
 
     testDefaultFilter(default)
 
@@ -46,17 +56,22 @@ class ParquetScroogeTests extends ParquetSourcesTestsBase {
     testReturnProvidedColumns(
       new HourlySuffixParquetScrooge[MockThriftStruct](path, dateRange) {
         override def withColumns: Set[String] = columnStrings
-      }, DeprecatedColumnProjectionString(columnStrings))
+      },
+      DeprecatedColumnProjectionString(columnStrings)
+    )
 
     testReturnProvidedColumns(
       new HourlySuffixParquetScrooge[MockThriftStruct](path, dateRange) {
         override def withColumnProjections: Set[String] = columnStrings
-      }, StrictColumnProjectionString(columnStrings))
+      },
+      StrictColumnProjectionString(columnStrings)
+    )
 
   }
 
   "FixedPathParquetScrooge" should {
-    val default = new FixedPathParquetScrooge[MockThriftStruct](path, path, path)
+    val default =
+      new FixedPathParquetScrooge[MockThriftStruct](path, path, path)
 
     testDefaultFilter(default)
 
@@ -70,12 +85,16 @@ class ParquetScroogeTests extends ParquetSourcesTestsBase {
     testReturnProvidedColumns(
       new FixedPathParquetScrooge[MockThriftStruct](path, path, path) {
         override def withColumns: Set[String] = columnStrings
-      }, DeprecatedColumnProjectionString(columnStrings))
+      },
+      DeprecatedColumnProjectionString(columnStrings)
+    )
 
     testReturnProvidedColumns(
       new FixedPathParquetScrooge[MockThriftStruct](path, path, path) {
         override def withColumnProjections: Set[String] = columnStrings
-      }, StrictColumnProjectionString(columnStrings))
+      },
+      StrictColumnProjectionString(columnStrings)
+    )
 
   }
 

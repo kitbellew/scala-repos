@@ -9,13 +9,15 @@ object Test extends App {
   def foo[T: TypeTag](ys: List[T]): Int => Int = {
     val z = 1
     var y = 0
-    val fun = reify{(x: Int) => {
-      y += 1
-      q += 1
-      println("q = " + q)
-      println("y = " + y)
-      x + ys.length * z + q + y
-    }}
+    val fun = reify { (x: Int) =>
+      {
+        y += 1
+        q += 1
+        println("q = " + q)
+        println("y = " + y)
+        x + ys.length * z + q + y
+      }
+    }
 
     if (clo == null) {
       val toolbox = cm.mkToolBox()

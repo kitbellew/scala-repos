@@ -18,18 +18,20 @@ final class Env(
   private val UserDisplayMax = config getInt "user.display_max"
   private val UserActorName = config getString "user.actor.name"
 
-  lazy val entryRepo = new EntryRepo(
-    coll = entryColl,
-    userMax = UserDisplayMax)
+  lazy val entryRepo = new EntryRepo(coll = entryColl, userMax = UserDisplayMax)
 
-  system.actorOf(Props(new Push(
-    lobbySocket = lobbySocket,
-    renderer = renderer,
-    getFriendIds = getFriendIds,
-    getFollowerIds = getFollowerIds,
-    unsubApi = unsubApi,
-    entryRepo = entryRepo
-  )), name = UserActorName)
+  system.actorOf(
+    Props(
+      new Push(
+        lobbySocket = lobbySocket,
+        renderer = renderer,
+        getFriendIds = getFriendIds,
+        getFollowerIds = getFollowerIds,
+        unsubApi = unsubApi,
+        entryRepo = entryRepo
+      )),
+    name = UserActorName
+  )
 
   lazy val unsubApi = new UnsubApi(unsubColl)
 
@@ -39,10 +41,11 @@ final class Env(
   def status(channel: String)(userId: String): Fu[Option[Boolean]] =
     unsubApi.get(channel, userId) flatMap {
       case true => fuccess(Some(true)) // unsubed
-      case false => entryRepo.channelUserIdRecentExists(channel, userId) map {
-        case true  => Some(false) // subed
-        case false => None // not applicable
-      }
+      case false =>
+        entryRepo.channelUserIdRecentExists(channel, userId) map {
+          case true  => Some(false) // subed
+          case false => None // not applicable
+        }
     }
 
   private[timeline] lazy val entryColl = db(CollectionEntry)

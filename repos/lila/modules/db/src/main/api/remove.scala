@@ -20,5 +20,6 @@ object $remove {
 
   def apply[ID: Writes, A <: Identified[ID]: TubeInColl](doc: A): Funit =
     byId(doc.id)
-  def apply[A <: Identified[String]: TubeInColl](doc: A): Funit = apply[String, A](doc)
+  def apply[A <: Identified[String]: TubeInColl](doc: A): Funit =
+    apply[String, A](doc)
 }

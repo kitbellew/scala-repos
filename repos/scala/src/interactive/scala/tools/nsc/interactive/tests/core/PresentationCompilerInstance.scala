@@ -20,10 +20,10 @@ private[tests] trait PresentationCompilerInstance extends TestSettings {
   }
 
   /**
-   * Called before instantiating the presentation compiler's instance.
-   * You should provide an implementation of this method if you need
-   * to customize the `settings` used to instantiate the presentation compiler.
-   * */
+    * Called before instantiating the presentation compiler's instance.
+    * You should provide an implementation of this method if you need
+    * to customize the `settings` used to instantiate the presentation compiler.
+    * */
   protected def prepareSettings(settings: Settings) {}
 
   protected def printClassPath(implicit reporter: Reporter) {

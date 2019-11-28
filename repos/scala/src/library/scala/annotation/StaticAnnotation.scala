@@ -9,10 +9,10 @@
 package scala.annotation
 
 /** A base class for static annotations. These are available
- *  to the Scala type checker, even across different compilation units.
- *
- *  @author  Martin Odersky
- *  @version 1.1, 2/02/2007
- *  @since   2.4
- */
+  *  to the Scala type checker, even across different compilation units.
+  *
+  *  @author  Martin Odersky
+  *  @version 1.1, 2/02/2007
+  *  @since   2.4
+  */
 trait StaticAnnotation extends Annotation

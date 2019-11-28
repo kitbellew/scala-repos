@@ -9,9 +9,7 @@ import org.scalatest._
 import org.scalatest.mock.MockitoSugar
 
 @RunWith(classOf[JUnitRunner])
-class RefreshTest
-  extends FunSuite
-  with MockitoSugar {
+class RefreshTest extends FunSuite with MockitoSugar {
 
   class Ctx {
     val provider = mock[() => Future[Int]]
@@ -91,7 +89,8 @@ class RefreshTest
     verify(provider, times(1))()
   }
 
-  test("it should fail both responses if request is in flight, then request again") {
+  test(
+    "it should fail both responses if request is in flight, then request again") {
     val ctx = new Ctx
     import ctx._
 

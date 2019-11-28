@@ -1,31 +1,36 @@
 package com.twitter.finagle.stats
 
-import com.twitter.common.metrics.{Histogram, HistogramInterface, Percentile, Snapshot}
+import com.twitter.common.metrics.{
+  Histogram,
+  HistogramInterface,
+  Percentile,
+  Snapshot
+}
 import com.twitter.conversions.time._
 import com.twitter.util.{Duration, Time}
 import java.util.concurrent.atomic.AtomicReference
 
 /**
- * Adapts `BucketedHistogram` to the `HistogramInterface`.
- *
- * This is safe to use from multiple threads.
- *
- * @param latchPeriod how often calls to [[snapshot()]]
- *   should trigger a rolling of the collection bucket.
- */
+  * Adapts `BucketedHistogram` to the `HistogramInterface`.
+  *
+  * This is safe to use from multiple threads.
+  *
+  * @param latchPeriod how often calls to [[snapshot()]]
+  *   should trigger a rolling of the collection bucket.
+  */
 private[stats] class MetricsBucketedHistogram(
     name: String,
     percentiles: Array[Double] = Histogram.DEFAULT_QUANTILES,
     latchPeriod: Duration = MetricsBucketedHistogram.DefaultLatchPeriod)
-  extends HistogramInterface
-{
+    extends HistogramInterface {
   assert(name.length > 0)
 
   private[this] val nextSnapAfter = new AtomicReference(Time.Undefined)
 
   // thread-safety provided via synchronization on `current`
   private[this] val current = BucketedHistogram()
-  private[this] val snap = new MetricsBucketedHistogram.MutableSnapshot(percentiles)
+  private[this] val snap =
+    new MetricsBucketedHistogram.MutableSnapshot(percentiles)
 
   def getName: String = name
 
@@ -45,7 +50,9 @@ private[stats] class MetricsBucketedHistogram(
     // requests for the snapshot will return values from the previous `latchPeriod`.
 
     if (Time.Undefined eq nextSnapAfter.get) {
-      nextSnapAfter.compareAndSet(Time.Undefined, JsonExporter.startOfNextMinute)
+      nextSnapAfter.compareAndSet(
+        Time.Undefined,
+        JsonExporter.startOfNextMinute)
     }
 
     current.synchronized {
@@ -65,10 +72,13 @@ private[stats] class MetricsBucketedHistogram(
         val _max = snap.max
         val _min = snap.min
         val _avg = snap.avg
-        val ps = new Array[Percentile](MetricsBucketedHistogram.this.percentiles.length)
+        val ps = new Array[Percentile](
+          MetricsBucketedHistogram.this.percentiles.length)
         var i = 0
         while (i < ps.length) {
-          ps(i) = new Percentile(MetricsBucketedHistogram.this.percentiles(i), snap.quantiles(i))
+          ps(i) = new Percentile(
+            MetricsBucketedHistogram.this.percentiles(i),
+            snap.quantiles(i))
           i += 1
         }
         override def count(): Long = _count
@@ -80,9 +90,11 @@ private[stats] class MetricsBucketedHistogram(
         override def sum(): Long = _sum
 
         override def toString: String = {
-          val _ps = ps.map { p =>
-            s"p${p.getQuantile}=${p.getValue}"
-          }.mkString("[", ", ", "]")
+          val _ps = ps
+            .map { p =>
+              s"p${p.getQuantile}=${p.getValue}"
+            }
+            .mkString("[", ", ", "]")
 
           s"Snapshot(count=${_count}, max=${_max}, min=${_min}, avg=${_avg}, sum=${_sum}, %s=${_ps})"
         }
@@ -97,14 +109,14 @@ private object MetricsBucketedHistogram {
   private val DefaultLatchPeriod = 1.minute
 
   /**
-   * A mutable struct used to store the most recent calculation
-   * of snapshot. By reusing a single instance per Stat allows us to
-   * avoid creating objects with medium length lifetimes that would
-   * need to exist from one stat collection to the next.
-   *
-   * NOT THREAD SAFE, and thread-safety must be provided
-   * by the MetricsBucketedHistogram that owns a given instance.
-   */
+    * A mutable struct used to store the most recent calculation
+    * of snapshot. By reusing a single instance per Stat allows us to
+    * avoid creating objects with medium length lifetimes that would
+    * need to exist from one stat collection to the next.
+    *
+    * NOT THREAD SAFE, and thread-safety must be provided
+    * by the MetricsBucketedHistogram that owns a given instance.
+    */
   private final class MutableSnapshot(percentiles: Array[Double]) {
     var count = 0L
     var sum = 0L

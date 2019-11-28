@@ -26,20 +26,28 @@ trait AnalysisTest extends PlanTest {
 
   val (caseSensitiveAnalyzer, caseInsensitiveAnalyzer) = {
     val caseSensitiveConf = new SimpleCatalystConf(caseSensitiveAnalysis = true)
-    val caseInsensitiveConf = new SimpleCatalystConf(caseSensitiveAnalysis = false)
+    val caseInsensitiveConf = new SimpleCatalystConf(
+      caseSensitiveAnalysis = false)
 
     val caseSensitiveCatalog = new SimpleCatalog(caseSensitiveConf)
     val caseInsensitiveCatalog = new SimpleCatalog(caseInsensitiveConf)
 
-    caseSensitiveCatalog.registerTable(TableIdentifier("TaBlE"), TestRelations.testRelation)
-    caseInsensitiveCatalog.registerTable(TableIdentifier("TaBlE"), TestRelations.testRelation)
+    caseSensitiveCatalog.registerTable(
+      TableIdentifier("TaBlE"),
+      TestRelations.testRelation)
+    caseInsensitiveCatalog.registerTable(
+      TableIdentifier("TaBlE"),
+      TestRelations.testRelation)
 
     new Analyzer(caseSensitiveCatalog, EmptyFunctionRegistry, caseSensitiveConf) {
       override val extendedResolutionRules = EliminateSubqueryAliases :: Nil
     } ->
-    new Analyzer(caseInsensitiveCatalog, EmptyFunctionRegistry, caseInsensitiveConf) {
-      override val extendedResolutionRules = EliminateSubqueryAliases :: Nil
-    }
+      new Analyzer(
+        caseInsensitiveCatalog,
+        EmptyFunctionRegistry,
+        caseInsensitiveConf) {
+        override val extendedResolutionRules = EliminateSubqueryAliases :: Nil
+      }
   }
 
   protected def getAnalyzer(caseSensitive: Boolean) = {
@@ -61,7 +69,8 @@ trait AnalysisTest extends PlanTest {
       caseSensitive: Boolean = true): Unit = {
     val analyzer = getAnalyzer(caseSensitive)
     val analysisAttempt = analyzer.execute(inputPlan)
-    try analyzer.checkAnalysis(analysisAttempt) catch {
+    try analyzer.checkAnalysis(analysisAttempt)
+    catch {
       case a: AnalysisException =>
         fail(
           s"""
@@ -70,7 +79,9 @@ trait AnalysisTest extends PlanTest {
             |
             |Partial Analysis
             |$analysisAttempt
-          """.stripMargin, a)
+          """.stripMargin,
+          a
+        )
     }
   }
 
@@ -83,9 +94,10 @@ trait AnalysisTest extends PlanTest {
       analyzer.checkAnalysis(analyzer.execute(inputPlan))
     }
 
-    if (!expectedErrors.map(_.toLowerCase).forall(e.getMessage.toLowerCase.contains)) {
-      fail(
-        s"""Exception message should contain the following substrings:
+    if (!expectedErrors
+          .map(_.toLowerCase)
+          .forall(e.getMessage.toLowerCase.contains)) {
+      fail(s"""Exception message should contain the following substrings:
            |
            |  ${expectedErrors.mkString("\n  ")}
            |

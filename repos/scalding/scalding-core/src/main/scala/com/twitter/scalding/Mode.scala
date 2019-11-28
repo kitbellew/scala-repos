@@ -12,17 +12,17 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 package com.twitter.scalding
 
 import java.io.File
-import java.util.{ UUID, Properties }
+import java.util.{UUID, Properties}
 
 import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.fs.{ FileSystem, Path }
+import org.apache.hadoop.fs.{FileSystem, Path}
 import org.apache.hadoop.mapred.JobConf
 
-import cascading.flow.{ FlowProcess, FlowConnector, FlowDef, Flow }
+import cascading.flow.{FlowProcess, FlowConnector, FlowDef, Flow}
 import cascading.flow.local.LocalFlowConnector
 import cascading.flow.local.LocalFlowProcess
 import cascading.property.AppProps
@@ -33,23 +33,26 @@ import cascading.tuple.TupleEntryIterator
 import scala.annotation.tailrec
 import scala.collection.JavaConverters._
 import scala.collection.mutable.Buffer
-import scala.collection.mutable.{ Map => MMap }
-import scala.collection.mutable.{ Set => MSet }
-import scala.util.{ Failure, Success }
+import scala.collection.mutable.{Map => MMap}
+import scala.collection.mutable.{Set => MSet}
+import scala.util.{Failure, Success}
 
 import org.slf4j.LoggerFactory
 
 case class ModeException(message: String) extends RuntimeException(message)
 
-case class ModeLoadException(message: String, origin: ClassNotFoundException) extends RuntimeException(origin)
+case class ModeLoadException(message: String, origin: ClassNotFoundException)
+    extends RuntimeException(origin)
 
 object Mode {
+
   /**
-   * This is a Args and a Mode together. It is used purely as
-   * a work-around for the fact that Job only accepts an Args object,
-   * but needs a Mode inside.
-   */
-  private class ArgsWithMode(argsMap: Map[String, List[String]], val mode: Mode) extends Args(argsMap) {
+    * This is a Args and a Mode together. It is used purely as
+    * a work-around for the fact that Job only accepts an Args object,
+    * but needs a Mode inside.
+    */
+  private class ArgsWithMode(argsMap: Map[String, List[String]], val mode: Mode)
+      extends Args(argsMap) {
     override def +(keyvals: (String, Iterable[String])): Args =
       new ArgsWithMode(super.+(keyvals).m, mode)
   }
@@ -60,7 +63,7 @@ object Mode {
   /** Get a Mode if this Args was the result of a putMode */
   def getMode(args: Args): Option[Mode] = args match {
     case withMode: ArgsWithMode => Some(withMode.mode)
-    case _ => None
+    case _                      => None
   }
 
   val CascadingFlowConnectorClassKey = "cascading.flow.connector.class"
@@ -69,10 +72,12 @@ object Mode {
   val DefaultHadoopFlowConnector = "cascading.flow.hadoop.HadoopFlowConnector"
   val DefaultHadoopFlowProcess = "cascading.flow.hadoop.HadoopFlowProcess"
 
-  val DefaultHadoop2Mr1FlowConnector = "cascading.flow.hadoop2.Hadoop2MR1FlowConnector"
+  val DefaultHadoop2Mr1FlowConnector =
+    "cascading.flow.hadoop2.Hadoop2MR1FlowConnector"
   val DefaultHadoop2Mr1FlowProcess = "cascading.flow.hadoop.HadoopFlowProcess" // no Hadoop2MR1FlowProcess as of Cascading 3.0.0-wip-75?
 
-  val DefaultHadoop2TezFlowConnector = "cascading.flow.tez.Hadoop2TezFlowConnector"
+  val DefaultHadoop2TezFlowConnector =
+    "cascading.flow.tez.Hadoop2TezFlowConnector"
   val DefaultHadoop2TezFlowProcess = "cascading.flow.tez.Hadoop2TezFlowProcess"
 
   // This should be passed ALL the args supplied after the job name
@@ -80,12 +85,14 @@ object Mode {
     val strictSources = args.boolean("tool.partialok") == false
     if (!strictSources) {
       // TODO we should do smarter logging here
-      println("[Scalding:INFO] using --tool.partialok. Missing log data won't cause errors.")
+      println(
+        "[Scalding:INFO] using --tool.partialok. Missing log data won't cause errors.")
     }
 
     if (args.boolean("local"))
       Local(strictSources)
-    else if (args.boolean("hdfs")) /* FIXME: should we start printing deprecation warnings ? It's okay to set manually c.f.*.class though */
+    else if (args.boolean("hdfs"))
+      /* FIXME: should we start printing deprecation warnings ? It's okay to set manually c.f.*.class though */
       Hdfs(strictSources, config)
     else if (args.boolean("hadoop1")) {
       config.set(CascadingFlowConnectorClassKey, DefaultHadoopFlowConnector)
@@ -100,7 +107,8 @@ object Mode {
       config.set(CascadingFlowProcessClassKey, DefaultHadoop2TezFlowProcess)
       Hdfs(strictSources, config)
     } else
-      throw ArgsException("[ERROR] Mode must be one of --local, --hadoop1, --hadoop2-mr1, --hadoop2-tez or --hdfs, you provided none")
+      throw ArgsException(
+        "[ERROR] Mode must be one of --local, --hadoop1, --hadoop2-mr1, --hadoop2-tez or --hdfs, you provided none")
   }
 }
 
@@ -111,12 +119,15 @@ trait Mode extends java.io.Serializable {
    */
   def openForRead(config: Config, tap: Tap[_, _, _]): TupleEntryIterator
 
-  @deprecated("A Config is needed, especially if any kryo serialization has been used", "0.12.0")
+  @deprecated(
+    "A Config is needed, especially if any kryo serialization has been used",
+    "0.12.0")
   final def openForRead(tap: Tap[_, _, _]): TupleEntryIterator =
     openForRead(Config.defaultFrom(this), tap)
 
   // Returns true if the file exists on the current filesystem.
   def fileExists(filename: String): Boolean
+
   /** Create a new FlowConnector for this cascading planner */
   def newFlowConnector(props: Config): FlowConnector
 }
@@ -132,16 +143,20 @@ trait HadoopMode extends Mode {
       case Some(Success(cls)) => asMap + (jarKey -> cls)
       case Some(Failure(err)) =>
         // This may or may not cause the job to fail at submission, let's punt till then
-        LoggerFactory.getLogger(getClass)
+        LoggerFactory
+          .getLogger(getClass)
           .error(
-            "Could not create class from: %s in config key: %s, Job may fail.".format(conf.get(jarKey), AppProps.APP_JAR_CLASS),
+            "Could not create class from: %s in config key: %s, Job may fail."
+              .format(conf.get(jarKey), AppProps.APP_JAR_CLASS),
             err)
         // Just delete the key and see if it fails when cascading tries to submit
         asMap - jarKey
       case None => asMap
     }
 
-    val flowConnectorClass = jobConf.get(Mode.CascadingFlowConnectorClassKey, Mode.DefaultHadoopFlowConnector)
+    val flowConnectorClass = jobConf.get(
+      Mode.CascadingFlowConnectorClassKey,
+      Mode.DefaultHadoopFlowConnector)
 
     try {
       val clazz = Class.forName(flowConnectorClass)
@@ -149,7 +164,9 @@ trait HadoopMode extends Mode {
       ctor.newInstance(finalMap.asJava).asInstanceOf[FlowConnector]
     } catch {
       case ncd: ClassNotFoundException => {
-        throw new ModeLoadException("Failed to load Cascading flow connector class " + flowConnectorClass, ncd)
+        throw new ModeLoadException(
+          "Failed to load Cascading flow connector class " + flowConnectorClass,
+          ncd)
       }
     }
   }
@@ -159,19 +176,24 @@ trait HadoopMode extends Mode {
     val htap = tap.asInstanceOf[Tap[JobConf, _, _]]
     val conf = new JobConf(true) // initialize the default config
     // copy over Config
-    config.toMap.foreach{ case (k, v) => conf.set(k, v) }
+    config.toMap.foreach { case (k, v) => conf.set(k, v) }
 
-    val flowProcessClass = jobConf.get(Mode.CascadingFlowProcessClassKey, Mode.DefaultHadoopFlowProcess)
+    val flowProcessClass = jobConf.get(
+      Mode.CascadingFlowProcessClassKey,
+      Mode.DefaultHadoopFlowProcess)
 
-    val fp = try {
-      val clazz = Class.forName(flowProcessClass)
-      val ctor = clazz.getConstructor(classOf[JobConf])
-      ctor.newInstance(conf).asInstanceOf[FlowProcess[JobConf]]
-    } catch {
-      case ncd: ClassNotFoundException => {
-        throw new ModeLoadException("Failed to load Cascading flow process class " + flowProcessClass, ncd)
+    val fp =
+      try {
+        val clazz = Class.forName(flowProcessClass)
+        val ctor = clazz.getConstructor(classOf[JobConf])
+        ctor.newInstance(conf).asInstanceOf[FlowProcess[JobConf]]
+      } catch {
+        case ncd: ClassNotFoundException => {
+          throw new ModeLoadException(
+            "Failed to load Cascading flow process class " + flowProcessClass,
+            ncd)
+        }
       }
-    }
 
     htap.retrieveSourceFields(fp)
     htap.sourceConfInit(fp, conf)
@@ -199,10 +221,12 @@ trait CascadingLocal extends Mode {
 trait TestMode extends Mode {
   private var fileSet = Set[String]()
   def registerTestFiles(files: Set[String]) = fileSet = files
-  override def fileExists(filename: String): Boolean = fileSet.contains(filename)
+  override def fileExists(filename: String): Boolean =
+    fileSet.contains(filename)
 }
 
-case class Hdfs(strict: Boolean, @transient conf: Configuration) extends HadoopMode {
+case class Hdfs(strict: Boolean, @transient conf: Configuration)
+    extends HadoopMode {
   override def jobConf = conf
   override def fileExists(filename: String): Boolean = {
     val path = new Path(filename)
@@ -210,9 +234,11 @@ case class Hdfs(strict: Boolean, @transient conf: Configuration) extends HadoopM
   }
 }
 
-case class HadoopTest(@transient conf: Configuration,
-  @transient buffers: Source => Option[Buffer[Tuple]])
-  extends HadoopMode with TestMode {
+case class HadoopTest(
+    @transient conf: Configuration,
+    @transient buffers: Source => Option[Buffer[Tuple]])
+    extends HadoopMode
+    with TestMode {
 
   // This is a map from source.toString to disk path
   private val writePaths = MMap[Source, String]()
@@ -238,7 +264,9 @@ case class HadoopTest(@transient conf: Configuration,
   // Looks up a local path to write the given source to
   def getWritePathFor(src: Source): String = {
     val rndIdx = new java.util.Random().nextInt(1 << 30)
-    writePaths.getOrElseUpdate(src, allocateNewPath(basePath + src.getClass.getName, rndIdx))
+    writePaths.getOrElseUpdate(
+      src,
+      allocateNewPath(basePath + src.getClass.getName, rndIdx))
   }
 
   def finalize(src: Source) {
@@ -269,6 +297,8 @@ case class Local(strictSources: Boolean) extends CascadingLocal {
 }
 
 /**
- * Memory only testing for unit tests
- */
-case class Test(buffers: (Source) => Option[Buffer[Tuple]]) extends TestMode with CascadingLocal
+  * Memory only testing for unit tests
+  */
+case class Test(buffers: (Source) => Option[Buffer[Tuple]])
+    extends TestMode
+    with CascadingLocal

@@ -4,11 +4,11 @@ package codeInsight.unwrap
 import com.intellij.codeInsight.unwrap.UnwrapDescriptorBase
 
 /**
- * Nikolay.Tropin
- * 2014-06-26
- */
+  * Nikolay.Tropin
+  * 2014-06-26
+  */
 class ScalaUnwrapDescriptor extends UnwrapDescriptorBase {
-  override def createUnwrappers() = Array (
+  override def createUnwrappers() = Array(
     new ScalaInfixUnwrapper,
     new ScalaMethodCallArgUnwrapper,
     new ScalaTupleUnwrapper,

@@ -10,10 +10,13 @@ object Complex {
   def impl[T: c.WeakTypeTag](c: Context): c.Expr[Complex[T]] = {
     import c.universe._
     val tpe = weakTypeOf[T]
-    for (f <- tpe.decls.collect{case f: TermSymbol if f.isParamAccessor && !f.isMethod => f}) {
+    for (f <- tpe.decls.collect {
+           case f: TermSymbol if f.isParamAccessor && !f.isMethod => f
+         }) {
       val trecur = appliedType(typeOf[Complex[_]], List(f.info))
       val recur = c.inferImplicitValue(trecur, silent = true)
-      if (recur == EmptyTree) c.abort(c.enclosingPosition, s"couldn't synthesize $trecur")
+      if (recur == EmptyTree)
+        c.abort(c.enclosingPosition, s"couldn't synthesize $trecur")
     }
     c.Expr[Null](Literal(Constant(null)))
   }

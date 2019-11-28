@@ -5,10 +5,13 @@
 package akka.http.scaladsl.server
 package directives
 
-import org.scalatest.{ FreeSpec, Inside }
+import org.scalatest.{FreeSpec, Inside}
 import akka.http.scaladsl.unmarshalling.Unmarshaller._
 
-class ParameterDirectivesSpec extends FreeSpec with GenericRoutingSpec with Inside {
+class ParameterDirectivesSpec
+    extends FreeSpec
+    with GenericRoutingSpec
+    with Inside {
   "when used with 'as[Int]' the parameter directive should" - {
     "extract a parameter value as Int" in {
       Get("/?amount=123") ~> {
@@ -20,7 +23,10 @@ class ParameterDirectivesSpec extends FreeSpec with GenericRoutingSpec with Insi
         parameter('amount.as[Int]) { echoComplete }
       } ~> check {
         inside(rejection) {
-          case MalformedQueryParamRejection("amount", "'1x3' is not a valid 32-bit signed integer value", Some(_)) ⇒
+          case MalformedQueryParamRejection(
+              "amount",
+              "'1x3' is not a valid 32-bit signed integer value",
+              Some(_)) ⇒
         }
       }
     }
@@ -45,7 +51,10 @@ class ParameterDirectivesSpec extends FreeSpec with GenericRoutingSpec with Insi
           parameter("amount".as[Int].?) { echoComplete }
         } ~> check {
           inside(rejection) {
-            case MalformedQueryParamRejection("amount", "'x' is not a valid 32-bit signed integer value", Some(_)) ⇒
+            case MalformedQueryParamRejection(
+                "amount",
+                "'x' is not a valid 32-bit signed integer value",
+                Some(_)) ⇒
           }
         }
       }
@@ -81,7 +90,10 @@ class ParameterDirectivesSpec extends FreeSpec with GenericRoutingSpec with Insi
         parameter('amount.as(HexInt)) { echoComplete }
       } ~> check {
         inside(rejection) {
-          case MalformedQueryParamRejection("amount", "'1x3' is not a valid 32-bit hexadecimal integer value", Some(_)) ⇒
+          case MalformedQueryParamRejection(
+              "amount",
+              "'1x3' is not a valid 32-bit hexadecimal integer value",
+              Some(_)) ⇒
         }
       }
     }
@@ -106,7 +118,10 @@ class ParameterDirectivesSpec extends FreeSpec with GenericRoutingSpec with Insi
           parameter("amount".as(HexInt).?) { echoComplete }
         } ~> check {
           inside(rejection) {
-            case MalformedQueryParamRejection("amount", "'x' is not a valid 32-bit hexadecimal integer value", Some(_)) ⇒
+            case MalformedQueryParamRejection(
+                "amount",
+                "'x' is not a valid 32-bit hexadecimal integer value",
+                Some(_)) ⇒
           }
         }
       }
@@ -132,7 +147,10 @@ class ParameterDirectivesSpec extends FreeSpec with GenericRoutingSpec with Insi
         parameter('really.as[Boolean]) { echoComplete }
       } ~> check {
         inside(rejection) {
-          case MalformedQueryParamRejection("really", "'absolutely' is not a valid Boolean value", None) ⇒
+          case MalformedQueryParamRejection(
+              "really",
+              "'absolutely' is not a valid Boolean value",
+              None) ⇒
         }
       }
     }
@@ -147,8 +165,12 @@ class ParameterDirectivesSpec extends FreeSpec with GenericRoutingSpec with Insi
       } ~> check { responseAs[String] shouldEqual "EllenParsons" }
     }
     "correctly extract an optional parameter" in {
-      Get("/?foo=bar") ~> parameters('foo.?) { echoComplete } ~> check { responseAs[String] shouldEqual "Some(bar)" }
-      Get("/?foo=bar") ~> parameters('baz.?) { echoComplete } ~> check { responseAs[String] shouldEqual "None" }
+      Get("/?foo=bar") ~> parameters('foo.?) { echoComplete } ~> check {
+        responseAs[String] shouldEqual "Some(bar)"
+      }
+      Get("/?foo=bar") ~> parameters('baz.?) { echoComplete } ~> check {
+        responseAs[String] shouldEqual "None"
+      }
     }
     "ignore additional parameters" in {
       Get("/?name=Parsons&FirstName=Ellen&age=29") ~> {
@@ -162,12 +184,15 @@ class ParameterDirectivesSpec extends FreeSpec with GenericRoutingSpec with Insi
         parameters('name, 'FirstName, 'age) { (name, firstName, age) ⇒
           completeOk
         }
-      } ~> check { rejection shouldEqual MissingQueryParamRejection("FirstName") }
+      } ~> check {
+        rejection shouldEqual MissingQueryParamRejection("FirstName")
+      }
     }
     "supply the default value if an optional parameter is missing" in {
       Get("/?name=Parsons&FirstName=Ellen") ~> {
-        parameters("name".?, 'FirstName, 'age ? "29", 'eyes.?) { (name, firstName, age, eyes) ⇒
-          complete(firstName + name + age + eyes)
+        parameters("name".?, 'FirstName, 'age ? "29", 'eyes.?) {
+          (name, firstName, age, eyes) ⇒
+            complete(firstName + name + age + eyes)
         }
       } ~> check { responseAs[String] shouldEqual "EllenSome(Parsons)29None" }
     }
@@ -194,7 +219,9 @@ class ParameterDirectivesSpec extends FreeSpec with GenericRoutingSpec with Insi
         (post | parameter('method ! "post")) { complete("POST") } ~
           get { complete("GET") }
       }
-      Get("/?method=post") ~> route ~> check { responseAs[String] shouldEqual "POST" }
+      Get("/?method=post") ~> route ~> check {
+        responseAs[String] shouldEqual "POST"
+      }
       Post() ~> route ~> check { responseAs[String] shouldEqual "POST" }
       Get() ~> route ~> check { responseAs[String] shouldEqual "GET" }
     }
@@ -227,7 +254,8 @@ class ParameterDirectivesSpec extends FreeSpec with GenericRoutingSpec with Insi
     val completeAsList =
       parameterSeq { params ⇒
         val sorted = params.sorted
-        complete(s"${sorted.size}: [${sorted.map(e ⇒ e._1 + " -> " + e._2).mkString(", ")}]")
+        complete(
+          s"${sorted.size}: [${sorted.map(e ⇒ e._1 + " -> " + e._2).mkString(", ")}]")
       }
 
     "extract parameters with different keys" in {

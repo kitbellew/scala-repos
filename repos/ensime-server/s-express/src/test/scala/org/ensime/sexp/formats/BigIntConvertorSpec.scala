@@ -3,7 +3,7 @@
 package org.ensime.sexp.formats
 
 import BigIntConvertor._
-import org.scalacheck.{ Arbitrary, Gen }
+import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import scala.collection.immutable.BitSet
 import org.ensime.util.EnsimeSpec
@@ -31,7 +31,9 @@ class BigIntConvertorSpec extends EnsimeSpec {
   }
 }
 
-class BigIntConvertorCheck extends EnsimeSpec with GeneratorDrivenPropertyChecks {
+class BigIntConvertorCheck
+    extends EnsimeSpec
+    with GeneratorDrivenPropertyChecks {
 
   def positiveIntStream: Arbitrary[Stream[Int]] = Arbitrary {
     Gen.containerOf[Stream, Int](Gen.chooseNum(0, 2 * Short.MaxValue))

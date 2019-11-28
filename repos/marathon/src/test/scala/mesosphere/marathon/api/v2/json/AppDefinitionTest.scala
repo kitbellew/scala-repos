@@ -1,7 +1,7 @@
 package mesosphere.marathon.api.v2.json
 
 import com.wix.accord._
-import mesosphere.marathon.{ Protos, MarathonTestHelper, MarathonSpec }
+import mesosphere.marathon.{Protos, MarathonTestHelper, MarathonSpec}
 import mesosphere.marathon.Protos.Constraint
 import mesosphere.marathon.Protos.HealthCheckDefinition.Protocol
 import mesosphere.marathon.api.JsonTestHelper
@@ -11,10 +11,10 @@ import mesosphere.marathon.state.Container.Docker
 import mesosphere.marathon.state.DiscoveryInfo.Port
 import mesosphere.marathon.state.PathId._
 import mesosphere.marathon.state._
-import org.apache.mesos.{ Protos => mesos }
+import org.apache.mesos.{Protos => mesos}
 import org.scalatest.Matchers
 import play.api.data.validation.ValidationError
-import play.api.libs.json.{ JsError, Json }
+import play.api.libs.json.{JsError, Json}
 
 import scala.collection.immutable.Seq
 import scala.concurrent.duration._
@@ -22,7 +22,10 @@ import scala.concurrent.duration._
 class AppDefinitionTest extends MarathonSpec with Matchers {
 
   test("Validation") {
-    def shouldViolate(app: AppDefinition, path: String, template: String): Unit = {
+    def shouldViolate(
+        app: AppDefinition,
+        path: String,
+        template: String): Unit = {
       validate(app) match {
         case Success => fail()
         case f: Failure =>
@@ -30,27 +33,27 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
 
           assert(violations.exists { v =>
             v.path.contains(path) && v.message == template
-          },
-            s"Violations:\n${violations.mkString}"
-          )
+          }, s"Violations:\n${violations.mkString}")
       }
     }
 
-    def shouldNotViolate(app: AppDefinition, path: String, template: String): Unit = {
+    def shouldNotViolate(
+        app: AppDefinition,
+        path: String,
+        template: String): Unit = {
       validate(app) match {
         case Success =>
         case f: Failure =>
           val violations = ValidationHelper.getAllRuleConstrains(f)
           assert(!violations.exists { v =>
             v.path.contains(path) && v.message == template
-          },
-            s"Violations:\n${violations.mkString}"
-          )
+          }, s"Violations:\n${violations.mkString}")
       }
     }
 
     var app = AppDefinition(id = "a b".toRootPath)
-    val idError = "must fully match regular expression '^(([a-z0-9]|[a-z0-9][a-z0-9\\-]*[a-z0-9])\\.)*([a-z0-9]|[a-z0-9][a-z0-9\\-]*[a-z0-9])|(\\.|\\.\\.)$'"
+    val idError =
+      "must fully match regular expression '^(([a-z0-9]|[a-z0-9][a-z0-9\\-]*[a-z0-9])\\.)*([a-z0-9]|[a-z0-9][a-z0-9\\-]*[a-z0-9])|(\\.|\\.\\.)$'"
     MarathonTestHelper.validateJsonSchema(app, false)
     shouldViolate(app, "/id", idError)
 
@@ -97,16 +100,17 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
     app = AppDefinition(
       id = "test".toPath,
       cmd = Some("true"),
-      container = Some(Container(
-        docker = Some(Docker(
-          image = "mesosphere/marathon",
-          network = Some(mesos.ContainerInfo.DockerInfo.Network.BRIDGE),
-          portMappings = Some(Seq(
-            Docker.PortMapping(8080, 0, 0, "tcp", Some("foo")),
-            Docker.PortMapping(8081, 0, 0, "tcp", Some("foo"))
+      container = Some(
+        Container(
+          docker = Some(Docker(
+            image = "mesosphere/marathon",
+            network = Some(mesos.ContainerInfo.DockerInfo.Network.BRIDGE),
+            portMappings = Some(Seq(
+              Docker.PortMapping(8080, 0, 0, "tcp", Some("foo")),
+              Docker.PortMapping(8081, 0, 0, "tcp", Some("foo"))
+            ))
           ))
-        ))
-      )),
+        )),
       portDefinitions = Nil
     )
     shouldViolate(
@@ -132,17 +136,19 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
     val correct = AppDefinition(id = "test".toPath)
 
     app = correct.copy(
-      container = Some(Container(
-        docker = Some(Docker(
-          image = "mesosphere/marathon",
-          network = Some(mesos.ContainerInfo.DockerInfo.Network.BRIDGE),
-          portMappings = Some(Seq(
-            Docker.PortMapping(8080, 0, 0, "tcp", Some("foo")),
-            Docker.PortMapping(8081, 0, 0, "tcp", Some("bar"))
+      container = Some(
+        Container(
+          docker = Some(Docker(
+            image = "mesosphere/marathon",
+            network = Some(mesos.ContainerInfo.DockerInfo.Network.BRIDGE),
+            portMappings = Some(Seq(
+              Docker.PortMapping(8080, 0, 0, "tcp", Some("foo")),
+              Docker.PortMapping(8081, 0, 0, "tcp", Some("bar"))
+            ))
           ))
-        ))
-      )),
-      portDefinitions = Nil)
+        )),
+      portDefinitions = Nil
+    )
     shouldNotViolate(
       app,
       "/container/docker/portMappings",
@@ -258,15 +264,16 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
     MarathonTestHelper.validateJsonSchema(app, false)
 
     app = correct.copy(
-      container = Some(Container(
-        docker = Some(Docker(
-          network = Some(mesos.ContainerInfo.DockerInfo.Network.BRIDGE),
-          portMappings = Some(Seq(
-            Docker.PortMapping(8080, 0, 0, "tcp"),
-            Docker.PortMapping(8081, 0, 0, "tcp")
+      container = Some(
+        Container(
+          docker = Some(Docker(
+            network = Some(mesos.ContainerInfo.DockerInfo.Network.BRIDGE),
+            portMappings = Some(Seq(
+              Docker.PortMapping(8080, 0, 0, "tcp"),
+              Docker.PortMapping(8081, 0, 0, "tcp")
+            ))
           ))
-        ))
-      )),
+        )),
       portDefinitions = Nil,
       healthChecks = Set(HealthCheck(portIndex = Some(1)))
     )
@@ -278,12 +285,14 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
     MarathonTestHelper.validateJsonSchema(app, false) // missing image
 
     app = correct.copy(
-      container = Some(Container(
-        docker = Some(Docker(
-          network = Some(mesos.ContainerInfo.DockerInfo.Network.BRIDGE),
-          portMappings = None
-        ))
-      )),
+      container = Some(
+        Container(
+          docker = Some(
+            Docker(
+              network = Some(mesos.ContainerInfo.DockerInfo.Network.BRIDGE),
+              portMappings = None
+            ))
+        )),
       portDefinitions = Nil,
       healthChecks = Set(HealthCheck(protocol = Protocol.COMMAND))
     )
@@ -307,7 +316,9 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
     MarathonTestHelper.validateJsonSchema(app)
 
     app = correct.copy(
-      fetch = Seq(FetchUri(uri = "http://example.com/valid"), FetchUri(uri = "d://\not-a-uri"))
+      fetch = Seq(
+        FetchUri(uri = "http://example.com/valid"),
+        FetchUri(uri = "d://\not-a-uri"))
     )
 
     shouldViolate(
@@ -319,18 +330,29 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
     MarathonTestHelper.validateJsonSchema(app)
 
     app = correct.copy(
-      fetch = Seq(FetchUri(uri = "http://example.com/valid"), FetchUri(uri = "/root/file"))
+      fetch = Seq(
+        FetchUri(uri = "http://example.com/valid"),
+        FetchUri(uri = "/root/file"))
     )
 
-    shouldNotViolate(app,
-      "/fetch(1)",
-      "URI has invalid syntax."
-    )
+    shouldNotViolate(app, "/fetch(1)", "URI has invalid syntax.")
 
-    shouldViolate(app.copy(mem = -3.0), "/mem", "got -3.0, expected 0.0 or more")
-    shouldViolate(app.copy(cpus = -3.0), "/cpus", "got -3.0, expected 0.0 or more")
-    shouldViolate(app.copy(disk = -3.0), "/disk", "got -3.0, expected 0.0 or more")
-    shouldViolate(app.copy(instances = -3), "/instances", "got -3, expected 0 or more")
+    shouldViolate(
+      app.copy(mem = -3.0),
+      "/mem",
+      "got -3.0, expected 0.0 or more")
+    shouldViolate(
+      app.copy(cpus = -3.0),
+      "/cpus",
+      "got -3.0, expected 0.0 or more")
+    shouldViolate(
+      app.copy(disk = -3.0),
+      "/disk",
+      "got -3.0, expected 0.0 or more")
+    shouldViolate(
+      app.copy(instances = -3),
+      "/instances",
+      "got -3, expected 0 or more")
   }
 
   test("SerializationRoundtrip empty") {
@@ -343,7 +365,9 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
 
   private[this] def fromJson(json: String): AppDefinition = {
     import Formats._
-    Json.fromJson[AppDefinition](Json.parse(json)).getOrElse(throw new RuntimeException(s"could not parse: $json"))
+    Json
+      .fromJson[AppDefinition](Json.parse(json))
+      .getOrElse(throw new RuntimeException(s"could not parse: $json"))
   }
 
   test("Reading app definition with command health check") {
@@ -452,7 +476,8 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
     reread.healthChecks.head.portIndex should be(None)
   }
 
-  test("Reading AppDefinition adds portIndex if you have at least one portMapping") {
+  test(
+    "Reading AppDefinition adds portIndex if you have at least one portMapping") {
     import Formats._
 
     val app = AppDefinition(
@@ -480,7 +505,8 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
     reread.healthChecks.head.portIndex should be(Some(0))
   }
 
-  test("Reading AppDefinition does not add portIndex if there are no ports nor portMappings") {
+  test(
+    "Reading AppDefinition does not add portIndex if there are no ports nor portMappings") {
     import Formats._
 
     val app = AppDefinition(
@@ -513,15 +539,22 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
     val app4 = AppDefinition(
       id = "bridged-webapp".toPath,
       cmd = Some("python3 -m http.server 8080"),
-      container = Some(Container(
-        docker = Some(Docker(
-          image = "python:3",
-          network = Some(Network.BRIDGE),
-          portMappings = Some(Seq(
-            PortMapping(containerPort = 8080, hostPort = 0, servicePort = 9000, protocol = "tcp")
-          ))
+      container = Some(
+        Container(
+          docker = Some(
+            Docker(
+              image = "python:3",
+              network = Some(Network.BRIDGE),
+              portMappings = Some(
+                Seq(
+                  PortMapping(
+                    containerPort = 8080,
+                    hostPort = 0,
+                    servicePort = 9000,
+                    protocol = "tcp")
+                ))
+            ))
         ))
-      ))
     )
 
     val json4 =
@@ -552,8 +585,16 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
       id = "app-with-fetch".toPath,
       cmd = Some("brew update"),
       fetch = Seq(
-        new FetchUri(uri = "http://example.com/file1", executable = false, extract = true, cache = true),
-        new FetchUri(uri = "http://example.com/file2", executable = true, extract = false, cache = false)
+        new FetchUri(
+          uri = "http://example.com/file1",
+          executable = false,
+          extract = true,
+          cache = true),
+        new FetchUri(
+          uri = "http://example.com/file2",
+          executable = true,
+          extract = false,
+          cache = false)
       )
     )
 
@@ -607,8 +648,16 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
       id = "app-with-fetch".toPath,
       cmd = Some("brew update"),
       fetch = Seq(
-        new FetchUri(uri = "http://example.com/file1", executable = false, extract = true, cache = true),
-        new FetchUri(uri = "http://example.com/file2", executable = true, extract = false, cache = false)
+        new FetchUri(
+          uri = "http://example.com/file1",
+          executable = false,
+          extract = true,
+          cache = true),
+        new FetchUri(
+          uri = "http://example.com/file2",
+          executable = true,
+          extract = false,
+          cache = false)
       )
     )
 
@@ -632,16 +681,17 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
       id = "app-with-ip-address".toPath,
       cmd = Some("python3 -m http.server 8080"),
       portDefinitions = Nil,
-      ipAddress = Some(IpAddress(
-        groups = Seq("a", "b", "c"),
-        labels = Map(
-          "foo" -> "bar",
-          "baz" -> "buzz"
-        ),
-        discoveryInfo = DiscoveryInfo(
-          ports = Seq(Port(name = "http", number = 80, protocol = "tcp"))
-        )
-      )),
+      ipAddress = Some(
+        IpAddress(
+          groups = Seq("a", "b", "c"),
+          labels = Map(
+            "foo" -> "bar",
+            "baz" -> "buzz"
+          ),
+          discoveryInfo = DiscoveryInfo(
+            ports = Seq(Port(name = "http", number = 80, protocol = "tcp"))
+          )
+        )),
       maxLaunchDelay = 3600.seconds
     )
 
@@ -676,14 +726,15 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
       id = "app-with-ip-address".toPath,
       cmd = Some("python3 -m http.server 8080"),
       portDefinitions = Nil,
-      ipAddress = Some(IpAddress(
-        groups = Seq("a", "b", "c"),
-        labels = Map(
-          "foo" -> "bar",
-          "baz" -> "buzz"
-        ),
-        discoveryInfo = DiscoveryInfo.empty
-      )),
+      ipAddress = Some(
+        IpAddress(
+          groups = Seq("a", "b", "c"),
+          labels = Map(
+            "foo" -> "bar",
+            "baz" -> "buzz"
+          ),
+          discoveryInfo = DiscoveryInfo.empty
+        )),
       maxLaunchDelay = 3600.seconds
     )
 
@@ -749,7 +800,9 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
 
     import Formats._
     val result = Json.fromJson[AppDefinition](Json.parse(json))
-    assert(result == JsError(ValidationError("You cannot specify both an IP address and ports")))
+    assert(
+      result == JsError(
+        ValidationError("You cannot specify both an IP address and ports")))
   }
 
   test("App may not have both uris and fetch") {
@@ -764,14 +817,20 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
 
     import Formats._
     val result = Json.fromJson[AppDefinition](Json.parse(json))
-    assert(result == JsError(ValidationError("You cannot specify both uris and fetch fields")))
+    assert(
+      result == JsError(
+        ValidationError("You cannot specify both uris and fetch fields")))
   }
 
   test("Residency serialization (toProto) and deserialization (fromProto)") {
-    val app = AppDefinition(id = "/test".toRootPath,
-      residency = Some(Residency(
-        relaunchEscalationTimeoutSeconds = 3600,
-        taskLostBehavior = Protos.ResidencyDefinition.TaskLostBehavior.WAIT_FOREVER)))
+    val app = AppDefinition(
+      id = "/test".toRootPath,
+      residency = Some(
+        Residency(
+          relaunchEscalationTimeoutSeconds = 3600,
+          taskLostBehavior =
+            Protos.ResidencyDefinition.TaskLostBehavior.WAIT_FOREVER))
+    )
     val proto = app.toProto
 
     proto.hasResidency shouldBe true

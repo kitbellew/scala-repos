@@ -42,10 +42,15 @@ class RunLengthEncodingSuite extends SparkFunSuite {
       // Tests encoder
       // -------------
 
-      val builder = TestCompressibleColumnBuilder(columnStats, columnType, RunLengthEncoding)
-      val (values, rows) = makeUniqueValuesAndSingleValueRows(columnType, uniqueValueCount)
-      val inputSeq = inputRuns.flatMap { case (index, run) =>
-        Seq.fill(run)(index)
+      val builder = TestCompressibleColumnBuilder(
+        columnStats,
+        columnType,
+        RunLengthEncoding)
+      val (values, rows) =
+        makeUniqueValuesAndSingleValueRows(columnType, uniqueValueCount)
+      val inputSeq = inputRuns.flatMap {
+        case (index, run) =>
+          Seq.fill(run)(index)
       }
 
       inputSeq.foreach(i => builder.appendFrom(rows(i), 0))
@@ -55,21 +60,26 @@ class RunLengthEncodingSuite extends SparkFunSuite {
       val headerSize = CompressionScheme.columnHeaderSize(buffer)
 
       // Compression scheme ID + compressed contents
-      val compressedSize = 4 + inputRuns.map { case (index, _) =>
-        // 4 extra bytes each run for run length
-        columnType.actualSize(rows(index), 0) + 4
+      val compressedSize = 4 + inputRuns.map {
+        case (index, _) =>
+          // 4 extra bytes each run for run length
+          columnType.actualSize(rows(index), 0) + 4
       }.sum
 
       // 4 extra bytes for compression scheme type ID
-      assertResult(headerSize + compressedSize, "Wrong buffer capacity")(buffer.capacity)
+      assertResult(headerSize + compressedSize, "Wrong buffer capacity")(
+        buffer.capacity)
 
       // Skips column header
       buffer.position(headerSize)
-      assertResult(RunLengthEncoding.typeId, "Wrong compression scheme ID")(buffer.getInt())
+      assertResult(RunLengthEncoding.typeId, "Wrong compression scheme ID")(
+        buffer.getInt())
 
-      inputRuns.foreach { case (index, run) =>
-        assertResult(values(index), "Wrong column element value")(columnType.extract(buffer))
-        assertResult(run, "Wrong run length")(buffer.getInt())
+      inputRuns.foreach {
+        case (index, run) =>
+          assertResult(values(index), "Wrong column element value")(
+            columnType.extract(buffer))
+          assertResult(run, "Wrong run length")(buffer.getInt())
       }
 
       // -------------

@@ -8,10 +8,10 @@ import _root_.org.jetbrains.sbt.settings.SbtSystemSettings
 import com.intellij.openapi.project.Project
 
 /**
- * Mixin to use with tests involving setup of sbt-launch or/and sbt-structure
- * @author Nikolay Obedin
- * @since 10/19/15.
- */
+  * Mixin to use with tests involving setup of sbt-launch or/and sbt-structure
+  * @author Nikolay Obedin
+  * @since 10/19/15.
+  */
 trait SbtStructureSetup {
 
   val IvyCacheDir: File = new File(TestUtils.getIvyCachePath)

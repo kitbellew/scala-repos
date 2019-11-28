@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.remote
 
 import language.postfixOps
@@ -27,8 +27,9 @@ object RemoteNodeRestartDeathWatchMultiJvmSpec extends MultiNodeConfig {
   val first = role("first")
   val second = role("second")
 
-  commonConfig(debugConfig(on = false).withFallback(
-    ConfigFactory.parseString("""
+  commonConfig(
+    debugConfig(on = false).withFallback(ConfigFactory.parseString(
+      """
       akka.loglevel = INFO
       akka.remote.log-remote-lifecycle-events = off
       akka.remote.transport-failure-detector.heartbeat-interval = 1 s
@@ -50,12 +51,15 @@ object RemoteNodeRestartDeathWatchMultiJvmSpec extends MultiNodeConfig {
 
 // Several different variations of the test
 
-class RemoteNodeRestartDeathWatchMultiJvmNode1 extends RemoteNodeRestartDeathWatchSpec
-class RemoteNodeRestartDeathWatchMultiJvmNode2 extends RemoteNodeRestartDeathWatchSpec
+class RemoteNodeRestartDeathWatchMultiJvmNode1
+    extends RemoteNodeRestartDeathWatchSpec
+class RemoteNodeRestartDeathWatchMultiJvmNode2
+    extends RemoteNodeRestartDeathWatchSpec
 
 abstract class RemoteNodeRestartDeathWatchSpec
-  extends MultiNodeSpec(RemoteNodeRestartDeathWatchMultiJvmSpec)
-  with STMultiNodeSpec with ImplicitSender {
+    extends MultiNodeSpec(RemoteNodeRestartDeathWatchMultiJvmSpec)
+    with STMultiNodeSpec
+    with ImplicitSender {
 
   import RemoteNodeRestartDeathWatchMultiJvmSpec._
 
@@ -88,14 +92,16 @@ abstract class RemoteNodeRestartDeathWatchSpec
         within(5.seconds) {
           // retry because the Subject actor might not be started yet
           awaitAssert {
-            system.actorSelection(RootActorPath(secondAddress) / "user" / "subject") ! "shutdown"
+            system.actorSelection(
+              RootActorPath(secondAddress) / "user" / "subject") ! "shutdown"
             expectMsg(1.second, "shutdown-ack")
           }
         }
       }
 
       runOn(second) {
-        val addr = system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
+        val addr =
+          system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
         system.actorOf(Props[Subject], "subject")
         enterBarrier("actors-started")
 
@@ -103,12 +109,15 @@ abstract class RemoteNodeRestartDeathWatchSpec
 
         Await.ready(system.whenTerminated, 30.seconds)
 
-        val freshSystem = ActorSystem(system.name, ConfigFactory.parseString(s"""
+        val freshSystem = ActorSystem(
+          system.name,
+          ConfigFactory.parseString(s"""
                     akka.remote.netty.tcp {
                       hostname = ${addr.host.get}
                       port = ${addr.port.get}
                     }
-                    """).withFallback(system.settings.config))
+                    """).withFallback(system.settings.config)
+        )
         freshSystem.actorOf(Props[Subject], "subject")
 
         Await.ready(freshSystem.whenTerminated, 30.seconds)

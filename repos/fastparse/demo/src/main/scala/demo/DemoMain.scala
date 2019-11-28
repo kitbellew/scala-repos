@@ -31,7 +31,10 @@ object DemoMain {
   }
   @JSExport
   def whitespaceMath(container: html.Div) = {
-    helper(container, fastparse.WhiteSpaceMathTests.expr, "  (  (  1+1  * 2   ) +( 3* 4  *5  )  )/3")
+    helper(
+      container,
+      fastparse.WhiteSpaceMathTests.expr,
+      "  (  (  1+1  * 2   ) +( 3* 4  *5  )  )/3")
   }
   @JSExport
   def indentation(container: html.Div) = {
@@ -52,7 +55,9 @@ object DemoMain {
   }
   @JSExport
   def json(container: html.Div) = {
-    helper(container, fastparse.JsonTests.jsonExpr,
+    helper(
+      container,
+      fastparse.JsonTests.jsonExpr,
       """{
         |  "firstName": "John",
         |  "lastName": "Smith",
@@ -73,7 +78,8 @@ object DemoMain {
         |          "number": "646 555-4567"
         |      }
         |  ]
-        |}""".stripMargin)
+        |}""".stripMargin
+    )
   }
   def helper(container: html.Div, parser: Parser[_], default: String) = {
     import scalatags.JsDom.all._
@@ -85,11 +91,11 @@ object DemoMain {
       default
     ).render
 
-    val outputBox = div(width:="45%", float.right, overflowX.scroll).render
+    val outputBox = div(width := "45%", float.right, overflowX.scroll).render
 
     def recalc() = {
       inputBox.rows = inputBox.value.lines.length
-      val details = parser.parse(inputBox.value) match{
+      val details = parser.parse(inputBox.value) match {
         case s: Parsed.Success[_] =>
           table(
             width := "100%",
@@ -98,7 +104,9 @@ object DemoMain {
           )
 
         case Parsed.Failure(lastParser, index, extra) =>
-          val pretty = fastparse.Utils.literalize( extra.input.slice( index, index + 15)).toString
+          val pretty = fastparse.Utils
+            .literalize(extra.input.slice(index, index + 15))
+            .toString
           table(
             width := "100%",
             tr(td("Failure!")),

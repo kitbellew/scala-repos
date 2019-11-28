@@ -6,7 +6,10 @@ import org.junit.Assert._
 import org.ops4j.pax.exam
 import org.ops4j.pax.exam.Configuration
 import org.ops4j.pax.exam.junit.PaxExam
-import org.ops4j.pax.exam.spi.reactors.{AllConfinedStagedReactorFactory, ExamReactorStrategy}
+import org.ops4j.pax.exam.spi.reactors.{
+  AllConfinedStagedReactorFactory,
+  ExamReactorStrategy
+}
 import slick.osgi.testutil._
 import slick.util.GlobalConfig
 
@@ -22,9 +25,13 @@ class BasicTest extends SlickOsgiHelper {
   @Test
   def testPlainSQL: Unit = wrap {
     import slick.jdbc.H2Profile.api._
-    val a = sql"select {fn database()}".as[String].head.map(res => assertEquals("TEST-OSGI", res))
+    val a = sql"select {fn database()}"
+      .as[String]
+      .head
+      .map(res => assertEquals("TEST-OSGI", res))
     val db = Database.forURL("jdbc:h2:mem:test-osgi")
-    try Await.result(db.run(a), Duration.Inf) finally db.close
+    try Await.result(db.run(a), Duration.Inf)
+    finally db.close
   }
 
   @Test

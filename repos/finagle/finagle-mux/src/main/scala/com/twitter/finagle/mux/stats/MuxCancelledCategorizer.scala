@@ -5,14 +5,14 @@ import com.twitter.finagle.stats.CancelledCategorizer
 import com.twitter.util.Throwables.RootCause
 
 /**
- * Matcher for Throwables caused by a ClientDiscardedRequestException.
- */
+  * Matcher for Throwables caused by a ClientDiscardedRequestException.
+  */
 object MuxCancelledCategorizer {
   def unapply(exc: Throwable): Option[ClientDiscardedRequestException] = {
     exc match {
-      case t: ClientDiscardedRequestException => Some(t)
+      case t: ClientDiscardedRequestException    => Some(t)
       case RootCause(MuxCancelledCategorizer(t)) => Some(t)
-      case _ => None
+      case _                                     => None
     }
   }
 
@@ -20,4 +20,3 @@ object MuxCancelledCategorizer {
     case MuxCancelledCategorizer(_) => CancelledCategorizer.Cancelled
   }
 }
-
