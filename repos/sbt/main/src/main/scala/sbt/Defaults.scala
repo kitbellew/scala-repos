@@ -2861,14 +2861,12 @@ object Classpaths {
 
   // try/catch for supporting earlier launchers
   def bootIvyHome(app: xsbti.AppConfiguration): Option[File] =
-    try {
-      Option(app.provider.scalaProvider.launcher.ivyHome)
-    } catch { case _: NoSuchMethodError => None }
+    try { Option(app.provider.scalaProvider.launcher.ivyHome) }
+    catch { case _: NoSuchMethodError => None }
 
   def bootChecksums(app: xsbti.AppConfiguration): Seq[String] =
-    try {
-      app.provider.scalaProvider.launcher.checksums.toSeq
-    } catch { case _: NoSuchMethodError => IvySbt.DefaultChecksums }
+    try { app.provider.scalaProvider.launcher.checksums.toSeq }
+    catch { case _: NoSuchMethodError => IvySbt.DefaultChecksums }
 
   def isOverrideRepositories(app: xsbti.AppConfiguration): Boolean =
     try app.provider.scalaProvider.launcher.isOverrideRepositories
@@ -2888,20 +2886,17 @@ object Classpaths {
     } catch { case _: NoSuchMethodError => None }
 
   private[this] def mavenCompatible(ivyRepo: xsbti.IvyRepository): Boolean =
-    try {
-      ivyRepo.mavenCompatible
-    } catch { case _: NoSuchMethodError => false }
+    try { ivyRepo.mavenCompatible }
+    catch { case _: NoSuchMethodError => false }
 
   private[this] def skipConsistencyCheck(
       ivyRepo: xsbti.IvyRepository): Boolean =
-    try {
-      ivyRepo.skipConsistencyCheck
-    } catch { case _: NoSuchMethodError => false }
+    try { ivyRepo.skipConsistencyCheck }
+    catch { case _: NoSuchMethodError => false }
 
   private[this] def descriptorOptional(ivyRepo: xsbti.IvyRepository): Boolean =
-    try {
-      ivyRepo.descriptorOptional
-    } catch { case _: NoSuchMethodError => false }
+    try { ivyRepo.descriptorOptional }
+    catch { case _: NoSuchMethodError => false }
 
   private[this] def bootRepository(repo: xsbti.Repository): Resolver = {
     import xsbti.Predefined
@@ -2918,9 +2913,8 @@ object Classpaths {
           case "file" =>
             // This hackery is to deal suitably with UNC paths on Windows. Once we can assume Java7, Paths should save us from this.
             val file =
-              try {
-                new File(i.url.toURI)
-              } catch {
+              try { new File(i.url.toURI) }
+              catch {
                 case e: java.net.URISyntaxException => new File(i.url.getPath)
               }
             Resolver.file(i.id, file)(patterns)

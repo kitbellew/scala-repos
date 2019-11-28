@@ -1219,11 +1219,8 @@ object JGitUtil {
                   .iterator
                   .next)
                 .map(_.name),
-              if (blame.getSourcePath(i) == path) {
-                None
-              } else {
-                Some(blame.getSourcePath(i))
-              },
+              if (blame.getSourcePath(i) == path) { None }
+              else { Some(blame.getSourcePath(i)) },
               c.getCommitterIdent.getWhen,
               c.getShortMessage,
               Set.empty

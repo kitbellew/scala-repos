@@ -650,14 +650,8 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
             } else {
               Nil
             },
-            if (stageData.hasInput) <tr>{
-              inputQuantiles
-            }</tr>
-            else Nil,
-            if (stageData.hasOutput) <tr>{
-              outputQuantiles
-            }</tr>
-            else Nil,
+            if (stageData.hasInput) <tr>{inputQuantiles}</tr> else Nil,
+            if (stageData.hasOutput) <tr>{outputQuantiles}</tr> else Nil,
             if (stageData.hasShuffleRead) {
               <tr class={TaskDetailsClassNames.SHUFFLE_READ_BLOCKED_TIME}>
                 {shuffleReadBlockedQuantiles}
@@ -669,17 +663,12 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
             } else {
               Nil
             },
-            if (stageData.hasShuffleWrite) <tr>{
-              shuffleWriteQuantiles
-            }</tr>
+            if (stageData.hasShuffleWrite) <tr>{shuffleWriteQuantiles}</tr>
             else Nil,
-            if (stageData.hasBytesSpilled) <tr>{
-              memoryBytesSpilledQuantiles
-            }</tr>
+            if (stageData.hasBytesSpilled)
+              <tr>{memoryBytesSpilledQuantiles}</tr>
             else Nil,
-            if (stageData.hasBytesSpilled) <tr>{
-              diskBytesSpilledQuantiles
-            }</tr>
+            if (stageData.hasBytesSpilled) <tr>{diskBytesSpilledQuantiles}</tr>
             else Nil
           )
 
@@ -705,9 +694,8 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
       val executorTable = new ExecutorTable(stageId, stageAttemptId, parent)
 
       val maybeAccumulableTable: Seq[Node] =
-        if (hasAccumulators) {
-          <h4>Accumulators</h4> ++ accumulableTable
-        } else Seq()
+        if (hasAccumulators) { <h4>Accumulators</h4> ++ accumulableTable }
+        else Seq()
 
       val content =
         summary ++

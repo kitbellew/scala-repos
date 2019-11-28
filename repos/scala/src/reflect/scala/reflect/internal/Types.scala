@@ -2356,9 +2356,7 @@ trait Types
     private def baseTypeOfNonClassTypeRefLogged(clazz: Symbol) =
       if (pendingBaseTypes add this)
         try relativeInfo.baseType(clazz)
-        finally {
-          pendingBaseTypes remove this
-        }
+        finally { pendingBaseTypes remove this }
       // TODO: is this optimization for AnyClass worth it? (or is it playing last-ditch cycle defense?)
       // NOTE: for correctness, it only applies for non-class types
       // (e.g., a package class should not get AnyTpe as its supertype, ever)
@@ -4354,9 +4352,8 @@ trait Types
   final def sameLength(xs1: List[_], xs2: List[_]) =
     compareLengths(xs1, xs2) == 0
   @tailrec final def compareLengths(xs1: List[_], xs2: List[_]): Int =
-    if (xs1.isEmpty) {
-      if (xs2.isEmpty) 0 else -1
-    } else if (xs2.isEmpty) 1
+    if (xs1.isEmpty) { if (xs2.isEmpty) 0 else -1 }
+    else if (xs2.isEmpty) 1
     else compareLengths(xs1.tail, xs2.tail)
 
   /** Again avoiding calling length, but the lengthCompare interface is clunky.
@@ -4983,11 +4980,8 @@ trait Types
   /** Execute `op` while printing a trace of the operations on types executed. */
   def withTypesExplained[A](op: => A): A = {
     val s = explainSwitch
-    try {
-      explainSwitch = true; op
-    } finally {
-      explainSwitch = s
-    }
+    try { explainSwitch = true; op }
+    finally { explainSwitch = s }
   }
 
   def isUnboundedGeneric(tp: Type) = tp match {

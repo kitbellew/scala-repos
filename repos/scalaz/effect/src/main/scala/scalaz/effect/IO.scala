@@ -73,9 +73,8 @@ sealed abstract class IO[A] {
   /** Executes the handler if an exception is raised. */
   def except(handler: Throwable => IO[A]): IO[A] =
     io(rw =>
-      try {
-        Free.pure(this(rw).run)
-      } catch { case e: Throwable => handler(e)(rw) })
+      try { Free.pure(this(rw).run) }
+      catch { case e: Throwable => handler(e)(rw) })
 
   /**
     * Executes the handler for exceptions that are raised and match the given predicate.

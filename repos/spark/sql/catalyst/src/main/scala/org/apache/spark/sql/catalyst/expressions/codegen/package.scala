@@ -55,9 +55,7 @@ package object codegen {
 
       val packageDir =
         new java.io.File(dumpDirectory, generatedClass.getPackage.getName)
-      if (!packageDir.exists()) {
-        packageDir.mkdir()
-      }
+      if (!packageDir.exists()) { packageDir.mkdir() }
 
       val classFile =
         new java.io.File(

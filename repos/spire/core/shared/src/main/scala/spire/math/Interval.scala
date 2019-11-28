@@ -789,11 +789,8 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
         def next: A = {
           val r = x
           val next = x + step
-          if (test(x, next)) {
-            x = next
-          } else {
-            ok = false
-          }
+          if (test(x, next)) { x = next }
+          else { ok = false }
           r
         }
       }

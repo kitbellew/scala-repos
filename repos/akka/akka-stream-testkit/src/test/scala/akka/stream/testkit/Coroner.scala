@@ -68,9 +68,8 @@ object Coroner { // FIXME: remove once going back to project dependencies
     }
 
     override def result(atMost: Duration)(implicit permit: CanAwait): Boolean =
-      try {
-        Await.result(cancelPromise.future, atMost)
-      } catch { case _: TimeoutException ⇒ false }
+      try { Await.result(cancelPromise.future, atMost) }
+      catch { case _: TimeoutException ⇒ false }
 
   }
 

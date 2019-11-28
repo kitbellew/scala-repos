@@ -68,9 +68,8 @@ class RangeConsistencyTest {
           if (rn.nextBoolean) Range.inclusive(start, end, step)
           else Range(start, end, step)
 
-        try {
-          r.length
-        } catch { case iae: IllegalArgumentException => control.Breaks.break }
+        try { r.length }
+        catch { case iae: IllegalArgumentException => control.Breaks.break }
 
         val lpuff = rn.nextInt(4) match {
           case 0 => 1L

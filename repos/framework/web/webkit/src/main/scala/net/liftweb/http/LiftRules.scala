@@ -1458,11 +1458,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     */
   def doWithResource[T](name: String)(f: InputStream => T): Box[T] =
     getResource(name) map { _.openStream } map { is =>
-      try {
-        f(is)
-      } finally {
-        is.close
-      }
+      try { f(is) }
+      finally { is.close }
     }
 
   /**

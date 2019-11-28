@@ -199,9 +199,8 @@ sealed abstract class Rational
     case that: Algebraic => that == this
     case that: BigInt    => isWhole && toBigInt == that
     case that: BigDecimal =>
-      try {
-        toBigDecimal(that.mc) == that
-      } catch { case ae: ArithmeticException => false }
+      try { toBigDecimal(that.mc) == that }
+      catch { case ae: ArithmeticException => false }
     case that: SafeLong      => SafeLong(toBigInt) == that
     case that: Number        => Number(this) == that
     case that: Natural       => isWhole && this == Rational(that.toBigInt)

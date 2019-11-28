@@ -100,9 +100,7 @@ private[rest] abstract class SubmitRestProtocolMessage {
     * If the assertion fails, throw a [[SubmitRestProtocolException]].
     */
   protected def assert(condition: Boolean, failMessage: String): Unit = {
-    if (!condition) {
-      throw new SubmitRestProtocolException(failMessage)
-    }
+    if (!condition) { throw new SubmitRestProtocolException(failMessage) }
   }
 }
 

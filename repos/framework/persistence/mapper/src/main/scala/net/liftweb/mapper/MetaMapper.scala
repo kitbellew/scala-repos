@@ -490,11 +490,7 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
 
     var wav = whereAdded
 
-    def whereOrAnd =
-      if (wav) " AND "
-      else {
-        wav = true; " WHERE "
-      }
+    def whereOrAnd = if (wav) " AND " else { wav = true; " WHERE " }
 
     class DBFuncWrapper(dbFunc: Box[String]) {
       def apply(field: String) = dbFunc match {

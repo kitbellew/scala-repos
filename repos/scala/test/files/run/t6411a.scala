@@ -36,9 +36,8 @@ object Test extends App {
     println(s"meth = $msym")
     val mmirror = moduleA.reflectMethod(msym)
     val mresult =
-      try {
-        mmirror(arg)
-      } catch {
+      try { mmirror(arg) }
+      catch {
         case ex: Exception =>
           val ex1 = scala.reflect.runtime.ReflectionUtils.unwrapThrowable(ex)
           s"${ex1.getClass}: ${ex1.getMessage}"

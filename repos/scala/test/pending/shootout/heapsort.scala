@@ -24,9 +24,8 @@ object heapsort {
     l = (n >> 1) + 1;
     ir = n;
     while (true) {
-      if (l > 1) {
-        l = l - 1; rra = ra(l);
-      } else {
+      if (l > 1) { l = l - 1; rra = ra(l); }
+      else {
         rra = ra(ir);
         ra(ir) = ra(1);
         ir = ir - 1;
@@ -38,9 +37,7 @@ object heapsort {
       i = l;
       j = l << 1;
       while (j <= ir) {
-        if (j < ir && ra(j) < ra(j + 1)) {
-          j = j + 1;
-        }
+        if (j < ir && ra(j) < ra(j + 1)) { j = j + 1; }
         if (rra < ra(j)) {
           ra(i) = ra(j);
           i = j;
@@ -63,9 +60,8 @@ object heapsort {
 
   private def toPositiveInt(s: Array[String]) = {
     val i =
-      try {
-        Integer.parseInt(s(0));
-      } catch { case _ => 1 }
+      try { Integer.parseInt(s(0)); }
+      catch { case _ => 1 }
     if (i > 0) i; else 1;
   }
 

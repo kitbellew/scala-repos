@@ -77,15 +77,13 @@ class Run(instance: ScalaInstance, trapExit: Boolean, nativeTmp: File)
     log.info("Running " + mainClass + " " + options.mkString(" "))
 
     def execute() =
-      try {
-        run0(mainClass, classpath, options, log)
-      } catch {
+      try { run0(mainClass, classpath, options, log) }
+      catch {
         case e: java.lang.reflect.InvocationTargetException => throw e.getCause
       }
     def directExecute() =
-      try {
-        execute(); None
-      } catch { case e: Exception => log.trace(e); Some(e.toString) }
+      try { execute(); None }
+      catch { case e: Exception => log.trace(e); Some(e.toString) }
 
     if (trapExit) Run.executeTrapExit(execute(), log) else directExecute()
   }
@@ -106,11 +104,8 @@ class Run(instance: ScalaInstance, trapExit: Boolean, nativeTmp: File)
     val currentThread = Thread.currentThread
     val oldLoader = Thread.currentThread.getContextClassLoader
     currentThread.setContextClassLoader(loader)
-    try {
-      main.invoke(null, options.toArray[String])
-    } finally {
-      currentThread.setContextClassLoader(oldLoader)
-    }
+    try { main.invoke(null, options.toArray[String]) }
+    finally { currentThread.setContextClassLoader(oldLoader) }
   }
   def getMainMethod(mainClassName: String, loader: ClassLoader) = {
     val mainClass = Class.forName(mainClassName, true, loader)

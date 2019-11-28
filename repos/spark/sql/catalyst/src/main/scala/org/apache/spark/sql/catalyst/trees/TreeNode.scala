@@ -63,9 +63,7 @@ object CurrentOrigin {
     set(o)
     val ret =
       try f
-      finally {
-        reset()
-      }
+      finally { reset() }
     reset()
     ret
   }

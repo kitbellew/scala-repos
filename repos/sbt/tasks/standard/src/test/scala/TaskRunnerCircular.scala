@@ -20,9 +20,8 @@ object TaskRunnerCircularTest extends Properties("TaskRunner Circular") {
         else
           iterate(task(t - 1).named((t - 1).toString))
       }
-    try {
-      checkResult(tryRun(iterate(top), true, workers), intermediate)
-    } catch {
+    try { checkResult(tryRun(iterate(top), true, workers), intermediate) }
+    catch {
       case i: Incomplete if cyclic(i) =>
         ("Unexpected cyclic exception: " + i) |: false
     }
@@ -36,9 +35,8 @@ object TaskRunnerCircularTest extends Properties("TaskRunner Circular") {
         else
           iterate(task(t - 1).named((t - 1).toString), i - 1)
       }
-    try {
-      tryRun(top, true, workers); false
-    } catch { case i: Incomplete => cyclic(i) }
+    try { tryRun(top, true, workers); false }
+    catch { case i: Incomplete => cyclic(i) }
   }
   def cyclic(i: Incomplete) =
     Incomplete

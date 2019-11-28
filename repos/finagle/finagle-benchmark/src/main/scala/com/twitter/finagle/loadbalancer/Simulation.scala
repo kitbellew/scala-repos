@@ -217,9 +217,7 @@ private[finagle] object Simulation extends com.twitter.app.App {
         n += 1
       }
 
-      if (Rem > 0 && ms % (1000 / Rem) == 0) {
-        call()
-      }
+      if (Rem > 0 && ms % (1000 / Rem) == 0) { call() }
 
       ms += 1
 

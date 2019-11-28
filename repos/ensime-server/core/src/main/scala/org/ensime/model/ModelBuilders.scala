@@ -91,9 +91,7 @@ trait ModelBuilders { self: RichPresentationCompiler =>
         val byView = members.groupBy(_.viaView)
         val viaView = if (byView.size == 1) {
           byView.keys.headOption.filter(_ != NoSymbol)
-        } else {
-          None
-        }
+        } else { None }
 
         // Do one top level sort by name on members, before
         // subdividing into kinds of members.

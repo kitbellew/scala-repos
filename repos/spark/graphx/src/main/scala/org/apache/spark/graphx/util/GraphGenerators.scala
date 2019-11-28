@@ -279,16 +279,10 @@ object GraphGenerators extends Logging {
       vertices
         .flatMap {
           case (vid, (r, c)) =>
-            (if (r + 1 < rows) {
-               Seq((sub2ind(r, c), sub2ind(r + 1, c)))
-             } else {
-               Seq.empty
-             }) ++
-              (if (c + 1 < cols) {
-                 Seq((sub2ind(r, c), sub2ind(r, c + 1)))
-               } else {
-                 Seq.empty
-               })
+            (if (r + 1 < rows) { Seq((sub2ind(r, c), sub2ind(r + 1, c))) }
+             else { Seq.empty }) ++
+              (if (c + 1 < cols) { Seq((sub2ind(r, c), sub2ind(r, c + 1))) }
+               else { Seq.empty })
         }
         .map { case (src, dst) => Edge(src, dst, 1.0) }
     Graph(vertices, edges)

@@ -17,11 +17,8 @@ object Test extends App {
   def x = {
     null match { case _ => }
 
-    try {
-      1
-    } finally {
-      while (false) {}
-    }
+    try { 1 }
+    finally { while (false) {} }
   }
 
   bar(null, null)

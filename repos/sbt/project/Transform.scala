@@ -105,8 +105,7 @@ object Transform {
     out
   }
   def read(file: File): Option[String] =
-    try {
-      Some(IO.read(file))
-    } catch { case _: java.io.IOException => None }
+    try { Some(IO.read(file)) }
+    catch { case _: java.io.IOException => None }
   lazy val Property = """\$\{\{([\w.-]+)\}\}""".r
 }

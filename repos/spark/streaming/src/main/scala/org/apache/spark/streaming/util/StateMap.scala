@@ -263,9 +263,7 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
       new OpenHashMapBasedStateMap[K, S](
         initialCapacity = initCapacity,
         deltaChainThreshold)
-    } else {
-      null
-    }
+    } else { null }
 
     val iterOfActiveSessions = parentStateMap.getAll()
 

@@ -291,9 +291,8 @@ trait TestKitBase {
     @tailrec
     def poll(t: Duration) {
       val failed =
-        try {
-          a; false
-        } catch {
+        try { a; false }
+        catch {
           case NonFatal(e) ⇒
             if ((now + t) >= stop) throw e
             true
@@ -991,8 +990,7 @@ private[testkit] abstract class CachingPartialFunction[A, B <: AnyRef]
 
   var cache: B = _
   final def isDefinedAt(x: A): Boolean =
-    try {
-      cache = `match`(x); true
-    } catch { case NoMatch ⇒ cache = null.asInstanceOf[B]; false }
+    try { cache = `match`(x); true }
+    catch { case NoMatch ⇒ cache = null.asInstanceOf[B]; false }
   final override def apply(x: A): B = cache
 }

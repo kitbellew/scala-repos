@@ -56,9 +56,7 @@ trait BaseGenericInternalRow extends InternalRow {
     val len = numFields
     var i = 0
     while (i < len) {
-      if (isNullAt(i)) {
-        return true
-      }
+      if (isNullAt(i)) { return true }
       i += 1
     }
     false

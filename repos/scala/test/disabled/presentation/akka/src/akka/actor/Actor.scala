@@ -260,11 +260,8 @@ object Actor extends ListenerManagement {
       self.dispatcher = dispatcher
       def receive = {
         case Spawn =>
-          try {
-            body
-          } finally {
-            self.stop()
-          }
+          try { body }
+          finally { self.stop() }
       }
     }).start() ! Spawn
   }
@@ -284,9 +281,8 @@ object Actor extends ListenerManagement {
     */
   implicit def futureToAnyOptionAsTypedOption(anyFuture: Future[_]) =
     new AnyOptionAsTypedOption({
-      try {
-        anyFuture.await
-      } catch { case t: FutureTimeoutException => }
+      try { anyFuture.await }
+      catch { case t: FutureTimeoutException => }
       anyFuture.resultOrException
     })
 }

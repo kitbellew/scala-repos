@@ -62,9 +62,8 @@ object Extraction {
     */
   def extractOpt[A](
       json: JValue)(implicit formats: Formats, mf: Manifest[A]): Option[A] =
-    try {
-      Some(extract(json)(formats, mf))
-    } catch { case _: MappingException => None }
+    try { Some(extract(json)(formats, mf)) }
+    catch { case _: MappingException => None }
 
   /** Decompose a case class into JSON.
     * <p>

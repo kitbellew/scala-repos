@@ -77,9 +77,7 @@ abstract class ManagedArrayBlockingQueue[E >: Null <: AnyRef](
     checkNotNull(e)
     locked {
       if (count == items.length || !accept(e, count)) false
-      else {
-        insert(e); true
-      }
+      else { insert(e); true }
     }
   }
 

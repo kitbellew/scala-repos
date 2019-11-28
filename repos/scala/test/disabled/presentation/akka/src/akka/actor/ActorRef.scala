@@ -991,9 +991,7 @@ class LocalActorRef private[akka] (
             throw e
         }
       }
-    } finally {
-      guard.lock.unlock
-    }
+    } finally { guard.lock.unlock }
   }
 
   protected[akka] def handleTrapExit(dead: ActorRef, reason: Throwable) {

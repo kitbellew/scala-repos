@@ -60,9 +60,8 @@ object Test extends Properties("Division of Duration by Long") {
 
   property("with overflow") = forAll(genTwoLarge) {
     case (a, b) =>
-      try {
-        mul(a, b); false
-      } catch { case _: IllegalArgumentException => true }
+      try { mul(a, b); false }
+      catch { case _: IllegalArgumentException => true }
   }
 
   property("on overflow edge cases") = forAll(genBorderline) {
@@ -71,8 +70,7 @@ object Test extends Properties("Division of Duration by Long") {
         a != Long.MinValue && // must fail due to illegal duration length
           (b != Long.MinValue || a == 0) && // Long factor may only be MinValue if the duration is zero, otherwise the result will be illegal
           (abs(b) <= Long.MaxValue / max(1, abs(a))) // check the rest against the “safe” division method
-      try {
-        mul(a, b); shouldFit
-      } catch { case _: IllegalArgumentException => !shouldFit }
+      try { mul(a, b); shouldFit }
+      catch { case _: IllegalArgumentException => !shouldFit }
   }
 }

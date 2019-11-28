@@ -73,9 +73,8 @@ object Test {
     // if it throws, then it's because of the call from isLocalClass to isAnonymousClass.
     // we know that isAnonymousClass is always false, so it has to be a local class.
     val loc =
-      try {
-        c.isLocalClass
-      } catch { case e: InternalError => true }
+      try { c.isLocalClass }
+      catch { case e: InternalError => true }
     if (loc)
       assert(!c.isMemberClass, c)
     if (c.isMemberClass)

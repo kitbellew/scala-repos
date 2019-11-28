@@ -489,9 +489,7 @@ trait StreamTest extends QueryTest with Timeouts {
         }
       }
     }
-    if (!running) {
-      actions += StartStream
-    }
+    if (!running) { actions += StartStream }
     addCheck()
     testStream(ds)(actions: _*)
   }

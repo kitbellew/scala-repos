@@ -29,9 +29,8 @@ trait CommonRunner {
       urls: Seq[URL],
       objectName: String,
       arguments: Seq[String]): Either[Throwable, Boolean] = {
-    try {
-      run(urls, objectName, arguments); Right(true)
-    } catch { case e: Throwable => Left(unwrap(e)) }
+    try { run(urls, objectName, arguments); Right(true) }
+    catch { case e: Throwable => Left(unwrap(e)) }
   }
 }
 

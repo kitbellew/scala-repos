@@ -4224,9 +4224,8 @@ trait Typers
             else if (!annType.typeSymbol.isSubClass(ClassfileAnnotationClass))
               reportAnnotationError(NestedAnnotationError(ann, annType))
 
-            if (annInfo.atp.isErroneous) {
-              hasError = true; None
-            } else Some(NestedAnnotArg(annInfo))
+            if (annInfo.atp.isErroneous) { hasError = true; None }
+            else Some(NestedAnnotArg(annInfo))
 
           // use of Array.apply[T: ClassTag](xs: T*): Array[T]
           // and    Array.apply(x: Int, xs: Int*): Array[Int]       (and similar)

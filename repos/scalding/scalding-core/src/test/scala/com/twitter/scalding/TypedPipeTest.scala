@@ -28,9 +28,8 @@ import typed.MultiJoin
 
 object TUtil {
   def printStack(fn: => Unit) {
-    try {
-      fn
-    } catch { case e: Throwable => e.printStackTrace; throw e }
+    try { fn }
+    catch { case e: Throwable => e.printStackTrace; throw e }
   }
 }
 

@@ -228,11 +228,7 @@ trait PaginatorSnippet[T] extends Paginator[T] {
     if (first == newFirst || newFirst < 0 || newFirst >= count)
       ns
     else
-      <a href={
-        pageUrl(newFirst)
-      }>{
-        ns
-      }</a>
+      <a href={pageUrl(newFirst)}>{ns}</a>
 
   /**
     * Generates links to multiple pages with arbitrary XML delimiting them.

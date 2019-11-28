@@ -23,11 +23,8 @@ object IPC {
 
   def pullServer[T](f: Server => T): T = {
     val server = makeServer
-    try {
-      f(new Server(server))
-    } finally {
-      server.close()
-    }
+    try { f(new Server(server)) }
+    finally { server.close() }
   }
   def unmanagedServer: Server = new Server(makeServer)
   def makeServer: ServerSocket = {
@@ -35,11 +32,8 @@ object IPC {
     def nextPort = random.nextInt(portMax - portMin + 1) + portMin
     def createServer(attempts: Int): ServerSocket =
       if (attempts > 0)
-        try {
-          new ServerSocket(nextPort, 1, loopback)
-        } catch {
-          case _: Exception => createServer(attempts - 1)
-        }
+        try { new ServerSocket(nextPort, 1, loopback) }
+        catch { case _: Exception => createServer(attempts - 1) }
       else
         sys.error("Could not connect to socket: maximum attempts exceeded")
     createServer(10)
@@ -55,18 +49,12 @@ object IPC {
       }
     }
 
-    try {
-      listen()
-    } finally {
-      server.close()
-    }
+    try { listen() }
+    finally { server.close() }
   }
   private def ipc[T](s: Socket)(f: IPC => T): T =
-    try {
-      f(new IPC(s))
-    } finally {
-      s.close()
-    }
+    try { f(new IPC(s)) }
+    finally { s.close() }
 
   final class Server private[IPC] (s: ServerSocket) extends NotNull {
     def port = s.getLocalPort

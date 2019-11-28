@@ -139,9 +139,7 @@ class ExecutorBasedEventDrivenWorkStealingDispatcher(
     try {
       donationInProgress.value = true
       while (donateFrom(mbox)) {} //When we reregister, first donate messages to another actor
-    } finally {
-      donationInProgress.value = false
-    }
+    } finally { donationInProgress.value = false }
 
     if (!mbox.isEmpty) //If we still have messages left to process, reschedule for execution
       super.reRegisterForExecution(mbox)
@@ -182,9 +180,7 @@ class ExecutorBasedEventDrivenWorkStealingDispatcher(
         case null      => false
         case recipient => donate(message, recipient)
       }
-    } finally {
-      donationInProgress.value = false
-    }
+    } finally { donationInProgress.value = false }
 
   /**
     * Rewrites the message and adds that message to the recipients mailbox

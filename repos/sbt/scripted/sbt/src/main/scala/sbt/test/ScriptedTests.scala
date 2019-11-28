@@ -65,9 +65,8 @@ final class ScriptedTests(
             log.info("D " + str + " [DISABLED]")
             None
           } else {
-            try {
-              scriptedTest(str, testDirectory, prescripted, log); None
-            } catch {
+            try { scriptedTest(str, testDirectory, prescripted, log); None }
+            catch {
               case _: TestException | _: PendingTestSuccessException =>
                 Some(str)
             }
@@ -131,9 +130,7 @@ final class ScriptedTests(
       case e: Exception =>
         testFailed()
         if (!pending) throw e
-    } finally {
-      buffered.clear()
-    }
+    } finally { buffered.clear() }
   }
 }
 

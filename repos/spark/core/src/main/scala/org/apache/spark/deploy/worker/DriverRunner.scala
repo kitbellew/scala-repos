@@ -208,9 +208,7 @@ private[deploy] class DriverRunner(
         "Launch Command: " + command.command.mkString("\"", "\" \"", "\""))
 
       synchronized {
-        if (killed) {
-          return
-        }
+        if (killed) { return }
         process = Some(command.start())
         initialize(process.get)
       }

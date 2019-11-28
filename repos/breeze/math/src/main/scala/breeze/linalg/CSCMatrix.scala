@@ -93,21 +93,13 @@ class CSCMatrix[@spec(Double, Int, Float, Long) V: Zero](
       if (used > data.length) {
         // need to grow array
         val newLength = {
-          if (data.length == 0) {
-            4
-          } else if (data.length < 0x0400) {
-            data.length * 2
-          } else if (data.length < 0x0800) {
-            data.length + 0x0400
-          } else if (data.length < 0x1000) {
-            data.length + 0x0800
-          } else if (data.length < 0x2000) {
-            data.length + 0x1000
-          } else if (data.length < 0x4000) {
-            data.length + 0x2000
-          } else {
-            data.length + 0x4000
-          }
+          if (data.length == 0) { 4 }
+          else if (data.length < 0x0400) { data.length * 2 }
+          else if (data.length < 0x0800) { data.length + 0x0400 }
+          else if (data.length < 0x1000) { data.length + 0x0800 }
+          else if (data.length < 0x2000) { data.length + 0x1000 }
+          else if (data.length < 0x4000) { data.length + 0x2000 }
+          else { data.length + 0x4000 }
         }
 
         // allocate new arrays

@@ -180,9 +180,8 @@ class Parser(s: String) {
 
   def rep[a](p: => a): List[a] = {
     val t = p;
-    if (token == ",") {
-      token = it.next; t :: rep(p)
-    } else List(t)
+    if (token == ",") { token = it.next; t :: rep(p) }
+    else List(t)
   }
 
   def constructor: Term = {
@@ -201,11 +200,9 @@ class Parser(s: String) {
 
   def term: Term = {
     val ch = token.charAt(0);
-    if ('A' <= ch && ch <= 'Z') {
-      val a = token; token = it.next; Var(a)
-    } else if (it.isDelimiter(ch)) {
-      syntaxError("term expected"); null
-    } else constructor
+    if ('A' <= ch && ch <= 'Z') { val a = token; token = it.next; Var(a) }
+    else if (it.isDelimiter(ch)) { syntaxError("term expected"); null }
+    else constructor
   }
 
   def line: Clause = {

@@ -57,9 +57,7 @@ abstract class BCodeSyncAndTry extends BCodeBodyBuilder {
       registerCleanup(monCleanup)
       genLoad(args.head, expectedType /* toTypeKind(tree.tpe.resultType) */ )
       unregisterCleanup(monCleanup)
-      if (hasResult) {
-        locals.store(monitorResult)
-      }
+      if (hasResult) { locals.store(monitorResult) }
       nopIfNeeded(startProtected)
       val endProtected = currProgramPoint()
 
@@ -70,9 +68,7 @@ abstract class BCodeSyncAndTry extends BCodeBodyBuilder {
        */
       locals.load(monitor)
       emit(asm.Opcodes.MONITOREXIT)
-      if (hasResult) {
-        locals.load(monitorResult)
-      }
+      if (hasResult) { locals.load(monitorResult) }
       val postHandler = new asm.Label
       bc goTo postHandler
 
@@ -117,9 +113,7 @@ abstract class BCodeSyncAndTry extends BCodeBodyBuilder {
      */
     def nopIfNeeded(lbl: asm.Label) {
       val noInstructionEmitted = isAtProgramPoint(lbl)
-      if (noInstructionEmitted) {
-        emit(asm.Opcodes.NOP)
-      }
+      if (noInstructionEmitted) { emit(asm.Opcodes.NOP) }
     }
 
     /*
@@ -390,13 +384,9 @@ abstract class BCodeSyncAndTry extends BCodeBodyBuilder {
         }
       }
       // when duplicating, the above guarantees new asm.Labels are used for LabelDefs contained in the finalizer (their vars are reused, that's ok)
-      if (tmp != null) {
-        locals.store(tmp)
-      }
+      if (tmp != null) { locals.store(tmp) }
       genLoad(finalizer, UNIT)
-      if (tmp != null) {
-        locals.load(tmp)
-      }
+      if (tmp != null) { locals.load(tmp) }
       if (isDuplicate) {
         jumpDest = saved
       }

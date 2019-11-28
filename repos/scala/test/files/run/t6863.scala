@@ -68,18 +68,16 @@ object Test {
   }
   def tryFinally() = {
     var x =
-      try {
-        "42"
-      } finally ()
+      try { "42" }
+      finally ()
     assert({ () =>
       x
     }.apply == "42")
   }
   def tryCatch() = {
     var x =
-      try {
-        "42"
-      } catch { case _: Throwable => "43" }
+      try { "42" }
+      catch { case _: Throwable => "43" }
     assert({ () =>
       x
     }.apply == "42")
@@ -129,9 +127,7 @@ object Test {
       val y = 42
       if (true)
         try "42"
-        catch {
-          case _: Throwable => "43"
-        }
+        catch { case _: Throwable => "43" }
       else "44"
     }
     assert({ () =>

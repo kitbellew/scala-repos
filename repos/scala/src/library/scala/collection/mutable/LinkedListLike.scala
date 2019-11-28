@@ -126,9 +126,7 @@ trait LinkedListLike[A, This <: Seq[A] with LinkedListLike[A, This]]
       else loop(x.next)
     }
     if (isEmpty) that
-    else {
-      loop(repr); repr
-    }
+    else { loop(repr); repr }
   }
 
   /** Insert linked list `that` at current position of this linked list

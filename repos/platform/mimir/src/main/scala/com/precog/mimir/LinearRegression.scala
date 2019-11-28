@@ -183,9 +183,8 @@ trait LinearRegressionLibModule[M[+_]]
           var j = 0
           while (i < length) {
             val idx = {
-              if (bitset(i)) {
-                j += 1; zero
-              } else values(i - j)
+              if (bitset(i)) { j += 1; zero }
+              else values(i - j)
             }
             acc(i) = idx
             i += 1

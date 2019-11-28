@@ -77,11 +77,8 @@ abstract class SimpleParentRunner[T](testClass: Class[_])
     children = children.filter { ch =>
       if (!filter.shouldRun(describeChild(ch))) false
       else
-        try {
-          filter.apply(ch); true
-        } catch {
-          case _: NoTestsRemainException => false
-        }
+        try { filter.apply(ch); true }
+        catch { case _: NoTestsRemainException => false }
     }
     if (children.isEmpty) throw new NoTestsRemainException
   }

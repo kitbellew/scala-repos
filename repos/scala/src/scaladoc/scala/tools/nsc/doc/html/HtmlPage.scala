@@ -146,34 +146,18 @@ abstract class HtmlPage extends Page { thisPage =>
   def linkToHtml(text: Inline, link: LinkTo, hasLinks: Boolean) = link match {
     case LinkToTpl(dtpl: TemplateEntity) =>
       if (hasLinks)
-        <a href={
-          relativeLinkTo(dtpl)
-        } class="extype" name={
-          dtpl.qualifiedName
-        }>{
+        <a href={relativeLinkTo(dtpl)} class="extype" name={dtpl.qualifiedName}>{
           inlineToHtml(text)
         }</a>
       else
-        <span class="extype" name={
-          dtpl.qualifiedName
-        }>{
-          inlineToHtml(text)
-        }</span>
+        <span class="extype" name={dtpl.qualifiedName}>{inlineToHtml(text)}</span>
     case LinkToMember(mbr: MemberEntity, inTpl: TemplateEntity) =>
       if (hasLinks)
-        <a href={
-          relativeLinkTo(inTpl) + "#" + mbr.signature
-        } class="extmbr" name={
+        <a href={relativeLinkTo(inTpl) + "#" + mbr.signature} class="extmbr" name={
           mbr.qualifiedName
-        }>{
-          inlineToHtml(text)
-        }</a>
+        }>{inlineToHtml(text)}</a>
       else
-        <span class="extmbr" name={
-          mbr.qualifiedName
-        }>{
-          inlineToHtml(text)
-        }</span>
+        <span class="extmbr" name={mbr.qualifiedName}>{inlineToHtml(text)}</span>
     case Tooltip(tooltip) =>
       <span class="extype" name={tooltip}>{inlineToHtml(text)}</span>
     case LinkToExternal(name, url) =>

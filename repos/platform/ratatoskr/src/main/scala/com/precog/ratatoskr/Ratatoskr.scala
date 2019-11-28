@@ -410,9 +410,7 @@ object KafkaTools extends Command {
       }
 
       import msg._
-      if (state.index % trackInterval == 0) {
-        trackState(state)
-      }
+      if (state.index % trackInterval == 0) { trackState(state) }
 
       if (path.length > 0) {
         val size = data.map(_.value.renderCompact.length).sum

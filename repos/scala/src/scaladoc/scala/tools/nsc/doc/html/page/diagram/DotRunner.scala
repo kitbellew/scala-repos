@@ -214,9 +214,7 @@ class DotProcess(settings: doc.Settings) {
           outputString.put(buffer.toString)
           buffer.setLength(0)
         }
-        if (error) {
-          stdOut.close(); return
-        }
+        if (error) { stdOut.close(); return }
         line = reader.readLine
       }
       assert(!outputString.isSet)

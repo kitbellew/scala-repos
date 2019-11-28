@@ -198,9 +198,8 @@ trait Printers extends api.Printers { self: SymbolTable =>
       }
     private def ifSym(tree: Tree, p: Symbol => Boolean) = symFn(tree, p, false)
 
-    def printOpt(prefix: String, tree: Tree) = if (tree.nonEmpty) {
-      print(prefix, tree)
-    }
+    def printOpt(prefix: String, tree: Tree) =
+      if (tree.nonEmpty) { print(prefix, tree) }
 
     def printModifiers(tree: Tree, mods: Modifiers): Unit = printFlags(
       if (tree.symbol == NoSymbol) mods.flags else tree.symbol.flags,

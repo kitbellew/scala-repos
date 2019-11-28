@@ -30,28 +30,22 @@ object Test extends App {
   }
 
   def typedWildcardTry {
-    try {
-      bla
-    } catch { case _: ClassCastException => bla }
+    try { bla }
+    catch { case _: ClassCastException => bla }
   }
 
   def wildcardTry {
-    try {
-      bla
-    } catch { case _: Throwable => bla }
+    try { bla }
+    catch { case _: Throwable => bla }
   }
 
   def tryPlusFinally {
-    try {
-      bla
-    } finally {
-      println("finally")
-    }
+    try { bla }
+    finally { println("finally") }
   }
 
   def catchAndPassToLambda {
-    try {
-      bla
-    } catch { case ex: Exception => val f = () => ex }
+    try { bla }
+    catch { case ex: Exception => val f = () => ex }
   }
 }

@@ -375,11 +375,8 @@ trait ManagedActorClassification { this: ActorEventBus with ActorClassifier ⇒
       }
     }
 
-    try {
-      dissociateAsMonitored(actor)
-    } finally {
-      dissociateAsMonitor(actor)
-    }
+    try { dissociateAsMonitored(actor) }
+    finally { dissociateAsMonitor(actor) }
   }
 
   @tailrec
@@ -530,11 +527,8 @@ trait ActorClassification { this: ActorEventBus with ActorClassifier ⇒
       }
     }
 
-    try {
-      dissociateAsMonitored(monitored)
-    } finally {
-      dissociateAsMonitor(monitored)
-    }
+    try { dissociateAsMonitored(monitored) }
+    finally { dissociateAsMonitor(monitored) }
   }
 
   @tailrec

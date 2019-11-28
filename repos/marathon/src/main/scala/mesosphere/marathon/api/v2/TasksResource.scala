@@ -131,9 +131,8 @@ class TasksResource @Inject() (
     implicit identity =>
       val taskIds = (Json.parse(body) \ "ids").as[Set[String]]
       val tasksToAppId = taskIds.map { id =>
-        try {
-          id -> Task.Id.appId(id)
-        } catch {
+        try { id -> Task.Id.appId(id) }
+        catch {
           case e: MatchError =>
             throw new BadRequestException(s"Invalid task id '$id'.")
         }

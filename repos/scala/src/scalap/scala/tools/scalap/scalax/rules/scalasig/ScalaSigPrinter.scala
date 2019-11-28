@@ -224,9 +224,7 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
 
     t match {
       case NullaryMethodType(resType) =>
-        if (printResult) {
-          print(": "); printType(resType)
-        }
+        if (printResult) { print(": "); printType(resType) }
       case mt @ MethodType(resType, paramSymbols) => _pmt(mt)
       case pt @ PolyType(mt, typeParams) => {
         print(typeParamString(typeParams))

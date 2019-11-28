@@ -504,9 +504,8 @@ object ForkJoinExecutorConfigurator {
     override def getRawResult(): Unit = ()
     override def setRawResult(unit: Unit): Unit = ()
     final override def exec(): Boolean =
-      try {
-        runnable.run(); true
-      } catch {
+      try { runnable.run(); true }
+      catch {
         case ie: InterruptedException ⇒
           Thread.currentThread.interrupt()
           false

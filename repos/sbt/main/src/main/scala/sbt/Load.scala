@@ -128,9 +128,8 @@ object Load {
       log)
   }
   private def bootIvyHome(app: xsbti.AppConfiguration): Option[File] =
-    try {
-      Option(app.provider.scalaProvider.launcher.ivyHome)
-    } catch { case _: NoSuchMethodError => None }
+    try { Option(app.provider.scalaProvider.launcher.ivyHome) }
+    catch { case _: NoSuchMethodError => None }
   def injectGlobal(state: State): Seq[Setting[_]] =
     (appConfiguration in GlobalScope :== state.configuration) +:
       LogManager.settingsLogger(state) +:
@@ -1267,10 +1266,7 @@ object Load {
     def addToLoader() = pm.loader add Path.toURLs(data(depcp))
 
     val parentLoader =
-      if (depcp.isEmpty) pm.initialLoader
-      else {
-        addToLoader(); pm.loader
-      }
+      if (depcp.isEmpty) pm.initialLoader else { addToLoader(); pm.loader }
     val pluginLoader =
       if (defcp.isEmpty)
         parentLoader

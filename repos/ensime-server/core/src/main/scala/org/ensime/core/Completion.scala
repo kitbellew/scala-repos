@@ -406,11 +406,8 @@ trait Completion { self: RichPresentationCompiler =>
         }
         memberSyms
           .flatMap { s =>
-            val name = if (s.hasPackageFlag) {
-              s.nameString
-            } else {
-              typeShortName(s)
-            }
+            val name = if (s.hasPackageFlag) { s.nameString }
+            else { typeShortName(s) }
             if (name.startsWith(prefix))
               Some(
                 CompletionInfo(

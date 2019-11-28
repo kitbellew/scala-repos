@@ -446,9 +446,7 @@ abstract class ClassfileParser {
       innerClasses innerSymbol name
     else
       try lookupClass(name)
-      catch {
-        case _: FatalError => loadClassSymbol(name)
-      }
+      catch { case _: FatalError => loadClassSymbol(name) }
   }
 
   def parseClass() {
@@ -467,9 +465,8 @@ abstract class ClassfileParser {
         List(AnyRefTpe) // dummy superclass, will be replaced by pickled information
       } else
         raiseLoaderLevel {
-          val superType = if (jflags.isAnnotation) {
-            u2; AnnotationClass.tpe
-          } else pool.getSuperClass(u2).tpe_*
+          val superType = if (jflags.isAnnotation) { u2; AnnotationClass.tpe }
+          else pool.getSuperClass(u2).tpe_*
           val ifaceCount = u2
           var ifaces =
             for (i <- List.range(0, ifaceCount))

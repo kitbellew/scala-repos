@@ -652,9 +652,7 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
             val dir = versionDir(v)
             val openf = if (NIHDB.hasProjection(dir)) {
               resourceBuilder.openNIHDB _
-            } else {
-              resourceBuilder.openBlob _
-            }
+            } else { resourceBuilder.openBlob _ }
 
             for {
               resource <- EitherT {

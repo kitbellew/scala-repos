@@ -91,9 +91,7 @@ trait ServletFilterProvider extends Filter with HTTPProvider {
             }
           )
         )
-      } finally {
-        LiftRules.reqCnt.decrementAndGet()
-      }
+      } finally { LiftRules.reqCnt.decrementAndGet() }
     }
   }
 }

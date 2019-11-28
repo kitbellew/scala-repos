@@ -16,9 +16,7 @@ trait Helpers { self: Global =>
         sym.tpe.members
       } else if (sym.isClass || sym.isPackageClass || sym.isPackageObjectClass) {
         sym.companionModule.tpe.members
-      } else {
-        List.empty
-      }
+      } else { List.empty }
     members.toList.filter { _.name.toString == "apply" }
   }
 
@@ -28,9 +26,7 @@ trait Helpers { self: Global =>
         sym.tpe.members
       } else if (sym.isModule || sym.isModuleClass || sym.isPackageObject) {
         sym.companionClass.tpe.members
-      } else {
-        List.empty
-      }
+      } else { List.empty }
     members.toList.filter { _.isConstructor }
   }
 
@@ -134,9 +130,7 @@ trait Helpers { self: Global =>
                            .map(typeFullName(_, true))
                            .mkString(", ") +
                          "]"
-                     } else {
-                       ""
-                     })
+                     } else { "" })
     } else withoutArgs
   }
 

@@ -246,9 +246,7 @@ object Menu extends DispatchSnippet {
   }
 
   private def renderWhat(expandAll: Boolean): Seq[MenuItem] =
-    (if (expandAll) for {
-       sm <- LiftRules.siteMap; req <- S.request
-     } yield sm.buildMenu(req.location).lines
+    (if (expandAll) for { sm <- LiftRules.siteMap; req <- S.request } yield sm.buildMenu(req.location).lines
      else S.request.map(_.buildMenu.lines)) openOr Nil
 
   def jsonMenu(ignore: NodeSeq): NodeSeq = {

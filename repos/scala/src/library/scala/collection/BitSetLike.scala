@@ -110,9 +110,8 @@ trait BitSetLike[+This <: BitSetLike[This] with SortedSet[Int]]
       current != end
     }
     def next(): Int =
-      if (hasNext) {
-        val r = current; current += 1; r
-      } else Iterator.empty.next()
+      if (hasNext) { val r = current; current += 1; r }
+      else Iterator.empty.next()
   }
 
   override def foreach[U](f: Int => U) {

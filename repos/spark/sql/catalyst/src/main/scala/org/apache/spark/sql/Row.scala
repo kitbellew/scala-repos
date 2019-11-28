@@ -373,9 +373,7 @@ trait Row extends Serializable {
     val len = length
     var i = 0
     while (i < len) {
-      if (isNullAt(i)) {
-        return true
-      }
+      if (isNullAt(i)) { return true }
       i += 1
     }
     false

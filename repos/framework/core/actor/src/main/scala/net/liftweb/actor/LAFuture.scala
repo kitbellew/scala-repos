@@ -177,9 +177,8 @@ class LAFuture[T](val scheduler: LAScheduler) {
     */
   def onSuccess(f: T => Unit) {
     synchronized {
-      if (satisfied) {
-        LAFuture.executeWithObservers(scheduler, () => f(item))
-      } else if (!aborted) {
+      if (satisfied) { LAFuture.executeWithObservers(scheduler, () => f(item)) }
+      else if (!aborted) {
         toDo ::= f
       }
     }

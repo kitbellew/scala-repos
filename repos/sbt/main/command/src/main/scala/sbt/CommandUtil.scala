@@ -23,9 +23,8 @@ object CommandUtil {
 
   // slightly better fallback in case of older launcher
   def bootDirectory(state: State): File =
-    try {
-      state.configuration.provider.scalaProvider.launcher.bootDirectory
-    } catch { case e: NoSuchMethodError => new File(".").getAbsoluteFile }
+    try { state.configuration.provider.scalaProvider.launcher.bootDirectory }
+    catch { case e: NoSuchMethodError => new File(".").getAbsoluteFile }
 
   def aligned(
       pre: String,

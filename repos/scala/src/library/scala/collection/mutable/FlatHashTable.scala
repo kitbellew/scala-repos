@@ -213,9 +213,8 @@ trait FlatHashTable[A] extends FlatHashTable.HashUtils[A] {
       i < table.length
     }
     def next(): A =
-      if (hasNext) {
-        i += 1; entryToElem(table(i - 1))
-      } else Iterator.empty.next()
+      if (hasNext) { i += 1; entryToElem(table(i - 1)) }
+      else Iterator.empty.next()
   }
 
   private def growTable() {

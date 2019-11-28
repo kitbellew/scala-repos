@@ -508,9 +508,8 @@ object TypedActor
               }
             case m if m.returnsJOption || m.returnsOption ⇒
               val f = ask(actor, m)(timeout)
-              (try {
-                Await.ready(f, timeout.duration).value
-              } catch { case _: TimeoutException ⇒ None }) match {
+              (try { Await.ready(f, timeout.duration).value }
+              catch { case _: TimeoutException ⇒ None }) match {
                 case None | Some(Success(NullResponse)) | Some(
                       Failure(_: AskTimeoutException)) ⇒
                   if (m.returnsJOption) JOption.none[Any] else None

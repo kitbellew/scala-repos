@@ -368,9 +368,8 @@ trait DefaultReads extends LowPriorityDefaultReads {
     // REMEMBER THAT SIMPLEDATEFORMAT IS NOT THREADSAFE
     val df = new java.text.SimpleDateFormat(pattern)
     df.setLenient(false)
-    try {
-      Some(df.parse(input))
-    } catch {
+    try { Some(df.parse(input)) }
+    catch {
       case x: java.text.ParseException =>
         None
     }

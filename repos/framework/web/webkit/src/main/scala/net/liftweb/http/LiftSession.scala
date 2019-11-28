@@ -1912,15 +1912,11 @@ class LiftSession(
                               if (intersection.isEmpty) NodeSeq.Empty
                               else
                                 <div>There are possible matching methods (
-                                {
-                                  intersection
-                                }
+                                {intersection}
                                 ),
                                 but none has the required signature:
                                 <pre>def
-                                  {
-                                  method
-                                }
+                                  {method}
                                   (in: NodeSeq): NodeSeq</pre>
                               </div>,
                               wholeTag
@@ -2939,9 +2935,8 @@ class LiftSession(
             payload = in \ "payload"
             reified <- if (func.manifest == jvmanifest) Some(payload)
             else {
-              try {
-                Some(payload.extract(defaultFormats, func.manifest))
-              } catch {
+              try { Some(payload.extract(defaultFormats, func.manifest)) }
+              catch {
                 case e: Exception =>
                   logger.error(
                     "Failed to extract " + payload + " as " + func.manifest,

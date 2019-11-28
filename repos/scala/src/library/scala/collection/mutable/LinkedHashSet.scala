@@ -84,9 +84,8 @@ class LinkedHashSet[A]
     private var cur = firstEntry
     def hasNext = cur ne null
     def next =
-      if (hasNext) {
-        val res = cur.key; cur = cur.later; res
-      } else Iterator.empty.next()
+      if (hasNext) { val res = cur.key; cur = cur.later; res }
+      else Iterator.empty.next()
   }
 
   override def foreach[U](f: A => U) {
@@ -108,9 +107,7 @@ class LinkedHashSet[A]
   protected def createNewEntry[B](key: A, dummy: B): Entry = {
     val e = new Entry(key)
     if (firstEntry eq null) firstEntry = e
-    else {
-      lastEntry.later = e; e.earlier = lastEntry
-    }
+    else { lastEntry.later = e; e.earlier = lastEntry }
     lastEntry = e
     e
   }

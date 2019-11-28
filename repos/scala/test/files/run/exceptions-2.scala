@@ -238,9 +238,8 @@ object Test {
       // Always make sure result sets and statements are closed,
       // and the connection is returned to the pool
       if (x != 10) {
-        try {
-          Console.println("Fin");
-        } catch { case e: java.io.IOException => ; }
+        try { Console.println("Fin"); }
+        catch { case e: java.io.IOException => ; }
       }
     }
   }
@@ -277,9 +276,8 @@ object Test {
       }
     } finally {
       Console.println("Outer finally");
-      try {
-        1
-      } catch { case e: java.io.IOException => () }
+      try { 1 }
+      catch { case e: java.io.IOException => () }
     }
 
   /** Test that empty finally clauses containing while are correctly emitted.

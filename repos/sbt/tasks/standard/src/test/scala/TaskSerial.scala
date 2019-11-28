@@ -90,11 +90,8 @@ object TaskTest {
       Execute.config(checkCycles),
       Execute.noTriggers,
       ExecuteProgress.empty[Task])(taskToNode(idK[Task]))
-    try {
-      x.run(root)(service)
-    } finally {
-      shutdown()
-    }
+    try { x.run(root)(service) }
+    finally { shutdown() }
   }
   def tryRun[T](
       root: Task[T],

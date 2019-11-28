@@ -253,9 +253,7 @@ class CheckpointSuite
 
   override def afterFunction() {
     try {
-      if (ssc != null) {
-        ssc.stop()
-      }
+      if (ssc != null) { ssc.stop() }
       Utils.deleteRecursively(new File(checkpointDir))
     } finally {
       super.afterFunction()

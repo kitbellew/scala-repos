@@ -58,9 +58,7 @@ object JDBMSlice {
       if (source.hasNext) {
         val entry = source.next
         val rowKey = entry.getKey
-        if (row == 0) {
-          firstKey = rowKey
-        }
+        if (row == 0) { firstKey = rowKey }
         lastKey = rowKey
 
         keyDecoder.decodeToRow(row, rowKey)

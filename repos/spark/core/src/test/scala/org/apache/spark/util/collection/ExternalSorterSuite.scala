@@ -617,9 +617,7 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
     if (withFailures) {
       intercept[SparkException] {
         sorter.insertAll((0 until size).iterator.map { i =>
-          if (i == size - 1) {
-            throw new SparkException("intentional failure")
-          }
+          if (i == size - 1) { throw new SparkException("intentional failure") }
           (i, i)
         })
       }

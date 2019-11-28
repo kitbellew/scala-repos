@@ -138,9 +138,8 @@ trait BasicBackend { self =>
         if (streamLogger.isDebugEnabled)
           streamLogger.debug(s"Signaling onSubscribe($ctx)")
         val subscribed =
-          try {
-            s.onSubscribe(ctx.subscription); true
-          } catch {
+          try { s.onSubscribe(ctx.subscription); true }
+          catch {
             case NonFatal(ex) =>
               streamLogger
                 .warn("Subscriber.onSubscribe failed unexpectedly", ex)
@@ -324,9 +323,7 @@ trait BasicBackend { self =>
                     }
                   releaseSession(ctx, false)
                   res
-                } finally {
-                  ctx.sync = 0
-                }
+                } finally { ctx.sync = 0 }
               promise.success(res)
             } catch { case NonFatal(ex) => promise.tryFailure(ex) }
         })

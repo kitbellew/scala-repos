@@ -448,9 +448,7 @@ trait Infer extends Checkable {
 
       if (conforms)
         try solve()
-        catch {
-          case _: NoInstance => null
-        }
+        catch { case _: NoInstance => null }
       else
         null
     }

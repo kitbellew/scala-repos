@@ -10,9 +10,8 @@ object Try {
   case class PredicateDoesNotObtain() extends Exception()
 
   def apply[R](r: => R): Try[R] = {
-    try {
-      Return(r)
-    } catch {
+    try { Return(r) }
+    catch {
       case NonFatal(e) => Throw(e)
     }
   }

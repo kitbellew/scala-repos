@@ -140,9 +140,7 @@ case class BaseBolt[I, O](
 
   private def fail(inputs: Seq[InputState[Tuple]], error: Throwable): Unit = {
     executor.notifyFailure(inputs, error)
-    if (!earlyAck) {
-      inputs.foreach(_.fail(collector.fail(_)))
-    }
+    if (!earlyAck) { inputs.foreach(_.fail(collector.fail(_))) }
     logError("Storm DAG of: %d tuples failed".format(inputs.size), error)
   }
 
@@ -156,9 +154,7 @@ case class BaseBolt[I, O](
       val tsIn = executor.decoder.invert(tuple.getValues).get // Failing to decode here is an ERROR
       // Don't hold on to the input values
       clearValues(tuple)
-      if (earlyAck) {
-        collector.ack(tuple)
-      }
+      if (earlyAck) { collector.ack(tuple) }
       executor.execute(InputState(tuple), tsIn)
     } else {
       collector.ack(tuple)
@@ -192,9 +188,7 @@ case class BaseBolt[I, O](
       }
     }
     // Always ack a tuple on completion:
-    if (!earlyAck) {
-      inputs.foreach(_.ack(collector.ack(_)))
-    }
+    if (!earlyAck) { inputs.foreach(_.ack(collector.ack(_))) }
 
     logger.debug(
       "bolt finished processed {} linked tuples, emitted: {}",
@@ -217,9 +211,7 @@ case class BaseBolt[I, O](
   }
 
   override def declareOutputFields(declarer: OutputFieldsDeclarer) {
-    if (hasDependants) {
-      declarer.declare(outputFields)
-    }
+    if (hasDependants) { declarer.declare(outputFields) }
   }
 
   override val getComponentConfiguration = null

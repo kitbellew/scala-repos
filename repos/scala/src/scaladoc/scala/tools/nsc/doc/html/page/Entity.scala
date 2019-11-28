@@ -284,11 +284,7 @@ trait EntityPage extends HtmlPage {
         {owner}
         <h1>{displayName}{permalink(tpl)}</h1>
         {
-      if (tpl.isPackage) NodeSeq.Empty
-      else
-        <h3>{
-          companionAndPackage(tpl)
-        }</h3>
+      if (tpl.isPackage) NodeSeq.Empty else <h3>{companionAndPackage(tpl)}</h3>
     }
       </div>
 
@@ -389,9 +385,7 @@ trait EntityPage extends HtmlPage {
       else
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
-              <ol>{
-          constructors map (memberToHtml(_, tpl))
-        }</ol>
+              <ol>{constructors map (memberToHtml(_, tpl))}</ol>
             </div>
     }
 
@@ -400,9 +394,7 @@ trait EntityPage extends HtmlPage {
       else
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol>{
-          typeMembers map (memberToHtml(_, tpl))
-        }</ol>
+              <ol>{typeMembers map (memberToHtml(_, tpl))}</ol>
             </div>
     }
 
@@ -411,9 +403,7 @@ trait EntityPage extends HtmlPage {
       else
         <div class="values members">
               <h3>Abstract Value Members</h3>
-              <ol>{
-          absValueMembers map (memberToHtml(_, tpl))
-        }</ol>
+              <ol>{absValueMembers map (memberToHtml(_, tpl))}</ol>
             </div>
     }
 
@@ -439,9 +429,7 @@ trait EntityPage extends HtmlPage {
       else
         <div class="values members">
               <h3>Shadowed Implicit Value Members</h3>
-              <ol>{
-          shadowedImplicitMembers map (memberToHtml(_, tpl))
-        }</ol>
+              <ol>{shadowedImplicitMembers map (memberToHtml(_, tpl))}</ol>
             </div>
     }
 
@@ -450,9 +438,7 @@ trait EntityPage extends HtmlPage {
       else
         <div class="values members">
               <h3>Deprecated Value Members</h3>
-              <ol>{
-          deprValueMembers map (memberToHtml(_, tpl))
-        }</ol>
+              <ol>{deprValueMembers map (memberToHtml(_, tpl))}</ol>
             </div>
     }
         </div>
@@ -512,9 +498,7 @@ trait EntityPage extends HtmlPage {
       if (Set("epfl", "EPFL").contains(tpl.universe.settings.docfooter.value))
         <div id="footer">Scala programming documentation. Copyright (c) 2003-2016 <a href="http://www.epfl.ch" target="_top">EPFL</a>, with contributions from <a href="http://www.lightbend.com" target="_top">Lightbend</a>.</div>
       else
-        <div id="footer"> {
-          tpl.universe.settings.docfooter.value
-        } </div>
+        <div id="footer"> {tpl.universe.settings.docfooter.value} </div>
     }
     </body>
   }
@@ -576,9 +560,7 @@ trait EntityPage extends HtmlPage {
             if (shortComment.text.trim == longComment.text.trim)
               NodeSeq.Empty
             else
-              <div class="fullcomment">{
-                longComment
-              }</div>
+              <div class="fullcomment">{longComment}</div>
 
           shortComment ++ includedLongComment
         }
@@ -614,10 +596,7 @@ trait EntityPage extends HtmlPage {
 
     val memberComment =
       if (mbr.comment.isEmpty) NodeSeq.Empty
-      else
-        <div class="comment cmt">{
-          commentToHtml(mbr.comment)
-        }</div>
+      else <div class="comment cmt">{commentToHtml(mbr.comment)}</div>
 
     val authorComment =
       if (!s.docAuthor || mbr.comment.isEmpty ||
@@ -629,9 +608,7 @@ trait EntityPage extends HtmlPage {
           if (mbr.comment.get.authors.size > 1) <h6>Authors:</h6>
           else <h6>Author:</h6>
         }
-        {
-          mbr.comment.get.authors map bodyToHtml
-        }
+        {mbr.comment.get.authors map bodyToHtml}
       </div>
 
     val paramComments = {
@@ -960,9 +937,7 @@ trait EntityPage extends HtmlPage {
       if (attributesInfo.isEmpty)
         NodeSeq.Empty
       else
-        <dl class="attributes block"> {
-          attributesInfo
-        }</dl>
+        <dl class="attributes block"> {attributesInfo}</dl>
 
     val linearization = mbr match {
       case dtpl: DocTemplateEntity
@@ -1118,19 +1093,11 @@ trait EntityPage extends HtmlPage {
           val value = if (mbr.isConstructor) tpl.name else mbr.name
           val span =
             if (mbr.deprecation.isDefined)
-              <span class={
-                nameClass + " deprecated"
-              } title={
+              <span class={nameClass + " deprecated"} title={
                 "Deprecated: " + bodyToStr(mbr.deprecation.get)
-              }>{
-                value
-              }</span>
+              }>{value}</span>
             else
-              <span class={
-                nameClass
-              }>{
-                value
-              }</span>
+              <span class={nameClass}>{value}</span>
           val encoded = scala.reflect.NameTransformer.encode(value)
           if (encoded != value) {
             span % new UnprefixedAttribute(
@@ -1143,14 +1110,10 @@ trait EntityPage extends HtmlPage {
           }
         }
         if (!nameLink.isEmpty)
-          <a title={
-            mbr.comment.fold("")(c => inlineToStr(c.short))
-          } href={
+          <a title={mbr.comment.fold("")(c => inlineToStr(c.short))} href={
             nameLink
           }>
-              {
-            nameHtml
-          }
+              {nameHtml}
             </a>
         else nameHtml
       }{
@@ -1195,9 +1158,8 @@ trait EntityPage extends HtmlPage {
             }
             def implicitCheck(vlss: List[ValueParam]): NodeSeq = vlss match {
               case vl :: vls =>
-                if (vl.isImplicit) {
-                  <span class="implicit">implicit </span>
-                } else Text("")
+                if (vl.isImplicit) { <span class="implicit">implicit </span> }
+                else Text("")
               case _ => Text("")
             }
             vlsss map { vlss =>
@@ -1222,9 +1184,7 @@ trait EntityPage extends HtmlPage {
             case abt: MemberEntity with AbstractType =>
               val b2s = boundsToHtml(abt.hi, abt.lo, hasLinks)
               if (b2s != NodeSeq.Empty)
-                <span class="result">{
-                  b2s
-                }</span>
+                <span class="result">{b2s}</span>
               else NodeSeq.Empty
 
             case alt: MemberEntity with AliasType =>
@@ -1313,15 +1273,9 @@ trait EntityPage extends HtmlPage {
       myXml ++= codeStringToXml(str.substring(index, length))
 
     if (length < 36)
-      <span class="symbol">{
-        myXml
-      }</span>
+      <span class="symbol">{myXml}</span>
     else
-      <span class="defval" name={
-        myXml
-      }>{
-        "..."
-      }</span>
+      <span class="defval" name={myXml}>{"..."}</span>
   }
 
   private def argumentsToHtml(argss: List[ValueArgument]): NodeSeq = {

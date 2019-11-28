@@ -138,9 +138,7 @@ object Test {
       if (shouldBeTopLevel) Contexts.topLevel else Contexts.values.toList
 
     if (depth == 0) {
-      if (p(nested)) {
-        bodies += body; triggers += trigger
-      }
+      if (p(nested)) { bodies += body; triggers += trigger }
     } else {
       for (ctx <- enums) {
         val (body1, trigger1) = ctx match {

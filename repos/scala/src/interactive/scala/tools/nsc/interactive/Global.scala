@@ -656,9 +656,7 @@ with ContextTrees with RichCompilationUnits with Picklers {
   private def serviceParsedEntered() {
     var atOldRun = true
     for ((source, rs) <- getParsedEnteredResponses; r <- rs) {
-      if (atOldRun) {
-        newTyperRun(); atOldRun = false
-      }
+      if (atOldRun) { newTyperRun(); atOldRun = false }
       getParsedEnteredNow(source, r)
     }
     getParsedEnteredResponses.clear()

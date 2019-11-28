@@ -76,9 +76,8 @@ private[sbt] final class Execute[A[_] <: AnyRef](
     "State: " + state.toString + "\n\nResults: " + results + "\n\nCalls: " + callers + "\n\n"
 
   def run[T](root: A[T])(implicit strategy: Strategy): Result[T] =
-    try {
-      runKeep(root)(strategy)(root)
-    } catch { case i: Incomplete => Inc(i) }
+    try { runKeep(root)(strategy)(root) }
+    catch { case i: Incomplete => Inc(i) }
   def runKeep[T](root: A[T])(implicit strategy: Strategy): RMap[A, Result] = {
     assert(state.isEmpty, "Execute already running/ran.")
 

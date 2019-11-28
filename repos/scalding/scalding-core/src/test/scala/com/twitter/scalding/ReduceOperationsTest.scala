@@ -23,11 +23,8 @@ class SortWithTakeJob(args: Args) extends Job(args) {
       .groupBy('key) {
         _.sortWithTake[(Long, Double)]((('item_id, 'score), 'top_items), 5) {
           (item_0: (Long, Double), item_1: (Long, Double)) =>
-            if (item_0._2 == item_1._2) {
-              item_0._1 > item_1._1
-            } else {
-              item_0._2 > item_1._2
-            }
+            if (item_0._2 == item_1._2) { item_0._1 > item_1._1 }
+            else { item_0._2 > item_1._2 }
         }
       }
       .map('top_items -> 'top_items) {

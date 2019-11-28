@@ -185,9 +185,8 @@ private[concurrent] object ExecutionContextImpl {
     final override def setRawResult(u: Unit): Unit = ()
     final override def getRawResult(): Unit = ()
     final override def exec(): Boolean =
-      try {
-        runnable.run(); true
-      } catch {
+      try { runnable.run(); true }
+      catch {
         case anything: Throwable =>
           val t = Thread.currentThread
           t.getUncaughtExceptionHandler match {

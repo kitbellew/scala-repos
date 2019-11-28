@@ -4,13 +4,11 @@ object Test {
   def newarray(i: Int): Unit = new Array[Int](i)
 
   def check(x: => Any) =
-    try {
-      x; sys.error("failed to throw NPE!")
-    } catch { case _: NullPointerException => }
+    try { x; sys.error("failed to throw NPE!") }
+    catch { case _: NullPointerException => }
   def checkNegSize(x: => Any) =
-    try {
-      x; sys.error("failed to throw NegativeArraySizeException!")
-    } catch { case _: NegativeArraySizeException => }
+    try { x; sys.error("failed to throw NegativeArraySizeException!") }
+    catch { case _: NegativeArraySizeException => }
 
   def main(args: Array[String]) {
     check(len(null)) // bug: did not NPE

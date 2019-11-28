@@ -13,9 +13,7 @@ class MapMonoid[K, V](implicit val scalar: Semigroup[V])
     var xx = x
     var yy = y
     var f = scalar.op _
-    if (x.size < y.size) {
-      xx = y; yy = x; f = (x: V, y: V) => scalar.op(y, x)
-    }
+    if (x.size < y.size) { xx = y; yy = x; f = (x: V, y: V) => scalar.op(y, x) }
     yy.foldLeft(xx) { (z, kv) =>
       z.updated(kv._1, (xx get kv._1).map(u => f(u, kv._2)).getOrElse(kv._2))
     }
@@ -40,9 +38,7 @@ class MapSemiring[K, V](implicit val scalar: Semiring[V])
   def plus(x: Map[K, V], y: Map[K, V]): Map[K, V] = {
     var xx = x
     var yy = y
-    if (x.size < y.size) {
-      xx = y; yy = x
-    }
+    if (x.size < y.size) { xx = y; yy = x }
     yy.foldLeft(xx) { (z, kv) =>
       z.updated(
         kv._1,
@@ -82,9 +78,7 @@ class MapVectorSpace[K, V](override implicit val scalar: Field[V])
     var xx = x
     var yy = y
     var f = scalar.times _
-    if (x.size < y.size) {
-      xx = y; yy = x
-    }
+    if (x.size < y.size) { xx = y; yy = x }
     yy.foldLeft(zero) { (z, kv) =>
       (xx get kv._1)
         .map(u => z.updated(kv._1, scalar.times(u, kv._2)))

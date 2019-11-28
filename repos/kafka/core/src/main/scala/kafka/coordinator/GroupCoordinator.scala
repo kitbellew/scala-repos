@@ -846,9 +846,7 @@ class GroupCoordinator(
           val joinResult = JoinGroupResult(
             members = if (member.memberId == group.leaderId) {
               group.currentMemberMetadata
-            } else {
-              Map.empty
-            },
+            } else { Map.empty },
             memberId = member.memberId,
             generationId = group.generationId,
             subProtocol = group.protocol,

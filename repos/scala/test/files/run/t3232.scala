@@ -14,9 +14,8 @@ object Test {
 
     // exception required
     List(e1, e2) foreach { f =>
-      try {
-        f(); assert(false)
-      } catch { case _: Throwable => () }
+      try { f(); assert(false) }
+      catch { case _: Throwable => () }
     }
   }
 }

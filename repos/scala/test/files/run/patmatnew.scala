@@ -750,9 +750,8 @@ object Test {
     object C {
 
       def unapply(xs: L): Option[(Int, L)] = {
-        if (xs.isEmpty) {
-          println("xs is empty"); None
-        } else
+        if (xs.isEmpty) { println("xs is empty"); None }
+        else
           Some((xs.head, new L(xs.tail)))
       }
 

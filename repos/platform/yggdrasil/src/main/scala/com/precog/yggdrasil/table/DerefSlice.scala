@@ -74,9 +74,7 @@ class DerefSlice(source: Slice, derefBy: PartialFunction[Int, CPathNode])
 
             def isDefinedAt(row: Int) = {
               derefBy.isDefinedAt(row) && {
-                if (row0 != row) {
-                  row0 = row; refCol0 = refCol(row)
-                }
+                if (row0 != row) { row0 = row; refCol0 = refCol(row) }
                 refCol0 != null && refCol0.isDefinedAt(row)
               }
             }
@@ -96,9 +94,7 @@ class DerefSlice(source: Slice, derefBy: PartialFunction[Int, CPathNode])
 
             def isDefinedAt(row: Int) = {
               derefBy.isDefinedAt(row) && {
-                if (row0 != row) {
-                  row0 = row; refCol0 = refCol(row)
-                }
+                if (row0 != row) { row0 = row; refCol0 = refCol(row) }
                 refCol0 != null && refCol0.isDefinedAt(row)
               }
             }
@@ -118,9 +114,7 @@ class DerefSlice(source: Slice, derefBy: PartialFunction[Int, CPathNode])
 
             def isDefinedAt(row: Int) = {
               derefBy.isDefinedAt(row) && {
-                if (row0 != row) {
-                  row0 = row; refCol0 = refCol(row)
-                }
+                if (row0 != row) { row0 = row; refCol0 = refCol(row) }
                 refCol0 != null && refCol0.isDefinedAt(row)
               }
             }
@@ -140,9 +134,7 @@ class DerefSlice(source: Slice, derefBy: PartialFunction[Int, CPathNode])
 
             def isDefinedAt(row: Int) = {
               derefBy.isDefinedAt(row) && {
-                if (row0 != row) {
-                  row0 = row; refCol0 = refCol(row)
-                }
+                if (row0 != row) { row0 = row; refCol0 = refCol(row) }
                 refCol0 != null && refCol0.isDefinedAt(row)
               }
             }
@@ -162,9 +154,7 @@ class DerefSlice(source: Slice, derefBy: PartialFunction[Int, CPathNode])
 
             def isDefinedAt(row: Int) = {
               derefBy.isDefinedAt(row) && {
-                if (row0 != row) {
-                  row0 = row; refCol0 = refCol(row)
-                }
+                if (row0 != row) { row0 = row; refCol0 = refCol(row) }
                 refCol0 != null && refCol0.isDefinedAt(row)
               }
             }
@@ -184,9 +174,7 @@ class DerefSlice(source: Slice, derefBy: PartialFunction[Int, CPathNode])
 
             def isDefinedAt(row: Int) = {
               derefBy.isDefinedAt(row) && {
-                if (row0 != row) {
-                  row0 = row; refCol0 = refCol(row)
-                }
+                if (row0 != row) { row0 = row; refCol0 = refCol(row) }
                 refCol0 != null && refCol0.isDefinedAt(row)
               }
             }
@@ -206,9 +194,7 @@ class DerefSlice(source: Slice, derefBy: PartialFunction[Int, CPathNode])
 
             def isDefinedAt(row: Int) = {
               derefBy.isDefinedAt(row) && {
-                if (row0 != row) {
-                  row0 = row; refCol0 = refCol(row)
-                }
+                if (row0 != row) { row0 = row; refCol0 = refCol(row) }
                 refCol0 != null && refCol0.isDefinedAt(row)
               }
             }
@@ -229,9 +215,7 @@ class DerefSlice(source: Slice, derefBy: PartialFunction[Int, CPathNode])
 
             def isDefinedAt(row: Int) = {
               derefBy.isDefinedAt(row) && {
-                if (row0 != row) {
-                  row0 = row; refCol0 = refCol(row)
-                }
+                if (row0 != row) { row0 = row; refCol0 = refCol(row) }
                 refCol0 != null && refCol0.isDefinedAt(row)
               }
             }

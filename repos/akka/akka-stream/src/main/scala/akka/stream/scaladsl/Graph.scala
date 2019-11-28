@@ -384,11 +384,8 @@ final class MergeSorted[T: Ordering] extends GraphStage[FanInShape2[T, T, T]] {
     def nullOut(): Unit = other = null.asInstanceOf[T]
 
     def dispatch(l: T, r: T): Unit =
-      if (l < r) {
-        other = r; emit(out, l, readL)
-      } else {
-        other = l; emit(out, r, readR)
-      }
+      if (l < r) { other = r; emit(out, l, readL) }
+      else { other = l; emit(out, r, readR) }
 
     val dispatchR = dispatch(other, _: T)
     val dispatchL = dispatch(_: T, other)

@@ -98,9 +98,8 @@ class Random private (rng64: () => Long) {
 
       if (s >= 1) nextGaussian
       else {
-        val bm = if (s != 0) {
-          math.sqrt(-2.0 * math.log(s) / s)
-        } else s
+        val bm = if (s != 0) { math.sqrt(-2.0 * math.log(s) / s) }
+        else s
         next = u1 * bm
         u2 * bm
       }

@@ -50,9 +50,8 @@ object `package` {
     implicit def toFileObject(f: File): FileObject = vfile(f)
 
     private def withContext[T](msg: String)(t: => T): T =
-      try {
-        t
-      } catch {
+      try { t }
+      catch {
         case e: FileSystemException =>
           throw new FileSystemException(e.getMessage + " in " + msg, e)
       }

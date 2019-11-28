@@ -37,9 +37,8 @@ private[ui] class StageTableBase(
 
   protected def columns: Seq[Node] = {
     <th>Stage Id</th> ++ {
-      if (isFairScheduler) {
-        <th>Pool Name</th>
-      } else Seq.empty
+      if (isFairScheduler) { <th>Pool Name</th> }
+      else Seq.empty
     } ++
       <th>Description</th>
     <th>Submitted</th>
@@ -133,9 +132,8 @@ private[ui] class StageTableBase(
 
   protected def missingStageRow(stageId: Int): Seq[Node] = {
     <td>{stageId}</td> ++ {
-      if (isFairScheduler) {
-        <td>-</td>
-      } else Seq.empty
+      if (isFairScheduler) { <td>-</td> }
+      else Seq.empty
     } ++
       <td>No data available for this stage</td> ++ // Description
       <td></td> ++ // Submitted

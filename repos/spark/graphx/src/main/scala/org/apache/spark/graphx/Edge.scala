@@ -42,10 +42,7 @@ case class Edge[@specialized(Char, Int, Boolean, Byte, Long, Float, Double) ED](
     * @return the id of the other vertex on the edge.
     */
   def otherVertexId(vid: VertexId): VertexId =
-    if (srcId == vid) dstId
-    else {
-      assert(dstId == vid); srcId
-    }
+    if (srcId == vid) dstId else { assert(dstId == vid); srcId }
 
   /**
     * Return the relative direction of the edge to the corresponding
@@ -57,9 +54,7 @@ case class Edge[@specialized(Char, Int, Boolean, Byte, Long, Float, Double) ED](
     */
   def relativeDirection(vid: VertexId): EdgeDirection =
     if (vid == srcId) EdgeDirection.Out
-    else {
-      assert(vid == dstId); EdgeDirection.In
-    }
+    else { assert(vid == dstId); EdgeDirection.In }
 }
 
 object Edge {
