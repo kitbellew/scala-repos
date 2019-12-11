@@ -11,14 +11,16 @@ package collection
 package mutable
 
 /** Class used internally for default map model.
- *  @since 2.3
- */
+  *  @since 2.3
+  */
 final class DefaultEntry[A, B](val key: A, var value: B)
-      extends HashEntry[A, DefaultEntry[A, B]] with Serializable
-{
+    extends HashEntry[A, DefaultEntry[A, B]]
+    with Serializable {
   override def toString = chainString
 
   def chainString = {
-    "(kv: " + key + ", " + value + ")" + (if (next != null) " -> " + next.toString else "")
+    "(kv: " + key + ", " + value + ")" + (if (next != null)
+                                            " -> " + next.toString
+                                          else "")
   }
 }

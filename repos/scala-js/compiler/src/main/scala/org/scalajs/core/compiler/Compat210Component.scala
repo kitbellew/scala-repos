@@ -10,10 +10,10 @@ import scala.collection.mutable
 import scala.tools.nsc._
 
 /** Hacks to have our source code compatible with 2.10 and 2.11.
- *  It exposes 2.11 API in a 2.10 compiler.
- *
- *  @author Sébastien Doeraene
- */
+  *  It exposes 2.11 API in a 2.10 compiler.
+  *
+  *  @author Sébastien Doeraene
+  */
 trait Compat210Component {
 
   val global: Global
@@ -43,14 +43,15 @@ trait Compat210Component {
     global.exitingPhase(ph)(op)
   }
 
-  implicit final class GlobalCompat(
-      self: Compat210Component.this.global.type) {
+  implicit final class GlobalCompat(self: Compat210Component.this.global.type) {
 
     def enteringPhase[T](ph: Phase)(op: => T): T = self.beforePhase(ph)(op)
-    def beforePhase[T](ph: Phase)(op: => T): T = sys.error("infinite loop in Compat")
+    def beforePhase[T](ph: Phase)(op: => T): T =
+      sys.error("infinite loop in Compat")
 
     def exitingPhase[T](ph: Phase)(op: => T): T = self.afterPhase(ph)(op)
-    def afterPhase[T](ph: Phase)(op: => T): T = sys.error("infinite loop in Compat")
+    def afterPhase[T](ph: Phase)(op: => T): T =
+      sys.error("infinite loop in Compat")
 
     def delambdafy: DelambdafyCompat.type = DelambdafyCompat
   }
@@ -124,7 +125,8 @@ trait Compat210Component {
 
   // Compat to support: new overridingPairs.Cursor(sym).iterator
 
-  implicit class OverridingPairsCursor2Iterable(cursor: overridingPairs.Cursor) {
+  implicit class OverridingPairsCursor2Iterable(
+      cursor: overridingPairs.Cursor) {
     def iterator: Iterator[SymbolPair] = new Iterator[SymbolPair] {
       skipIgnoredEntries()
 
@@ -138,14 +140,13 @@ trait Compat210Component {
       }
 
       private def skipIgnoredEntries(): Unit = {
-        while (cursor.hasNext && ignoreNextEntry)
-          cursor.next()
+        while (cursor.hasNext && ignoreNextEntry) cursor.next()
       }
 
       /** In 2.10 the overridingPairs.Cursor returns some false positives
-       *  on overriding members. The known false positives are always trying to
-       *  override the `isInstanceOf` method.
-       */
+        *  on overriding members. The known false positives are always trying to
+        *  override the `isInstanceOf` method.
+        */
       private def ignoreNextEntry: Boolean =
         cursor.overriding.name == nme.isInstanceOf_
     }
@@ -153,9 +154,10 @@ trait Compat210Component {
     class SymbolPair(val low: Symbol, val high: Symbol)
 
     /** To make this compat code compile in 2.11 as the fields `overriding` and
-     *  `overridden` are only present in 2.10.
-     */
-    private implicit class Cursor210toCursor211(cursor: overridingPairs.Cursor) {
+      *  `overridden` are only present in 2.10.
+      */
+    private implicit class Cursor210toCursor211(
+        cursor: overridingPairs.Cursor) {
       def overriding: Symbol = sys.error("infinite loop in Compat")
       def overridden: Symbol = sys.error("infinite loop in Compat")
     }
@@ -167,7 +169,7 @@ trait Compat210Component {
     def valueClazz: Symbol = self.original.typeSymbol
     def erasedUnderlying: Type =
       enteringPhase(currentRun.erasurePhase)(
-          erasure.erasedValueClassArg(self.original))
+        erasure.erasedValueClassArg(self.original))
     def original: TypeRef = sys.error("infinite loop in Compat")
   }
 
@@ -181,7 +183,7 @@ trait Compat210Component {
 
     def repeatedToSingle(t: Type): Type = t match {
       case TypeRef(_, self.RepeatedParamClass, arg :: Nil) => arg
-      case _ => t
+      case _                                               => t
     }
 
   }
@@ -210,7 +212,8 @@ object Compat210Component {
     }
   }
 
-  private implicit final class AnalyzerCompat(self: scala.tools.nsc.typechecker.Analyzer) {
+  private implicit final class AnalyzerCompat(
+      self: scala.tools.nsc.typechecker.Analyzer) {
     def FUNmode = { // scalastyle:ignore
       import Compat210Component.LowPriorityMode._
       {

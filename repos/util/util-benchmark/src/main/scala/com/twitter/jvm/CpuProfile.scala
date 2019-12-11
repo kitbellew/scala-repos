@@ -38,18 +38,18 @@ object CpuProfileBenchmark {
     // the stack.  μ and σ are for *this* stack.
     class Stack(rng: Random, μ: Int, σ: Int) {
       def apply() = {
-        val depth = math.max(1, μ + (rng.nextGaussian*σ).toInt)
+        val depth = math.max(1, μ + (rng.nextGaussian * σ).toInt)
         dive(depth)
       }
 
       private def dive(depth: Int): Int = {
         if (depth == 0) {
           while (true) {
-            Thread.sleep(10<<20)
+            Thread.sleep(10 << 20)
           }
           1
         } else
-          1+dive(depth-1)  // make sure we don't tail recurse
+          1 + dive(depth - 1) // make sure we don't tail recurse
       }
     }
 
@@ -63,19 +63,26 @@ object CpuProfileBenchmark {
       val stack = new Stack(new Random(rngSeed), stackMeanSize, stackStddev)
       threads = for (_ <- 0 until nthreads) yield new Thread {
         override def run() {
-          try stack() catch {
+          try stack()
+          catch {
             case _: InterruptedException =>
           }
         }
       }
 
-      threads foreach { t => t.start() }
+      threads foreach { t =>
+        t.start()
+      }
     }
 
     @TearDown(Level.Iteration)
     def tearDown() {
-      threads foreach { t => t.interrupt() }
-      threads foreach { t => t.join() }
+      threads foreach { t =>
+        t.interrupt()
+      }
+      threads foreach { t =>
+        t.join()
+      }
       threads = Seq()
     }
     var threads = Seq[Thread]()

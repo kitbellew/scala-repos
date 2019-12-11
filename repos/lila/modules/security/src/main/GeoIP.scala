@@ -1,6 +1,6 @@
 package lila.security
 
-import com.sanoma.cda.geoip.{ MaxMindIpGeo, IpLocation }
+import com.sanoma.cda.geoip.{MaxMindIpGeo, IpLocation}
 
 import scala.concurrent.duration._
 
@@ -26,7 +26,8 @@ case class Location(
 
   def shortCountry: String = ~country.split(',').headOption
 
-  override def toString = List(shortCountry.some, region, city).flatten mkString " > "
+  override def toString =
+    List(shortCountry.some, region, city).flatten mkString " > "
 }
 
 object Location {

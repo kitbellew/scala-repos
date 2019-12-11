@@ -7,7 +7,7 @@ import scala.concurrent.duration._
 
 import lila.common.PimpedConfig._
 import lila.hub.actorApi.map.Ask
-import lila.hub.{ ActorMap, Sequencer }
+import lila.hub.{ActorMap, Sequencer}
 import lila.socket.actorApi.GetVersion
 import lila.socket.History
 import makeTimeout.short
@@ -36,8 +36,7 @@ final class Env(
   }
   import settings._
 
-  lazy val repo = new SimulRepo(
-    simulColl = simulColl)
+  lazy val repo = new SimulRepo(simulColl = simulColl)
 
   lazy val api = new SimulApi(
     repo = repo,
@@ -57,15 +56,18 @@ final class Env(
 
   private val socketHub = system.actorOf(
     Props(new lila.socket.SocketHubActor.Default[Socket] {
-      def mkActor(simulId: String) = new Socket(
-        simulId = simulId,
-        history = new History(ttl = HistoryMessageTtl),
-        getSimul = repo.find,
-        jsonView = jsonView,
-        uidTimeout = UidTimeout,
-        socketTimeout = SocketTimeout,
-        lightUser = lightUser)
-    }), name = SocketName)
+      def mkActor(simulId: String) =
+        new Socket(
+          simulId = simulId,
+          history = new History(ttl = HistoryMessageTtl),
+          getSimul = repo.find,
+          jsonView = jsonView,
+          uidTimeout = UidTimeout,
+          socketTimeout = SocketTimeout,
+          lightUser = lightUser)
+    }),
+    name = SocketName
+  )
 
   lazy val socketHandler = new SocketHandler(
     hub = hub,
@@ -74,30 +76,39 @@ final class Env(
     flood = flood,
     exists = repo.exists)
 
-  system.actorOf(Props(new Actor {
-    override def preStart() {
-      system.lilaBus.subscribe(self, 'finishGame, 'adjustCheater, 'moveEvent)
-    }
-    import akka.pattern.pipe
-    def receive = {
-      case lila.game.actorApi.FinishGame(game, _, _) => api finishGame game
-      case lila.hub.actorApi.mod.MarkCheater(userId) => api ejectCheater userId
-      case lila.hub.actorApi.simul.GetHostIds        => api.currentHostIds pipeTo sender
-      case move: lila.hub.actorApi.round.MoveEvent =>
-        move.simulId foreach { simulId =>
-          move.opponentUserId foreach { opId =>
-            hub.actor.userRegister ! lila.hub.actorApi.SendTo(opId,
-              lila.socket.Socket.makeMessage("simulPlayerMove", move.gameId))
+  system.actorOf(
+    Props(new Actor {
+      override def preStart() {
+        system.lilaBus.subscribe(self, 'finishGame, 'adjustCheater, 'moveEvent)
+      }
+      import akka.pattern.pipe
+      def receive = {
+        case lila.game.actorApi.FinishGame(game, _, _) => api finishGame game
+        case lila.hub.actorApi.mod.MarkCheater(userId) =>
+          api ejectCheater userId
+        case lila.hub.actorApi.simul.GetHostIds =>
+          api.currentHostIds pipeTo sender
+        case move: lila.hub.actorApi.round.MoveEvent =>
+          move.simulId foreach { simulId =>
+            move.opponentUserId foreach { opId =>
+              hub.actor.userRegister ! lila.hub.actorApi.SendTo(
+                opId,
+                lila.socket.Socket.makeMessage("simulPlayerMove", move.gameId))
+            }
           }
-        }
-    }
-  }), name = ActorName)
+      }
+    }),
+    name = ActorName
+  )
 
-  def isHosting(userId: String): Fu[Boolean] = api.currentHostIds map (_ contains userId)
+  def isHosting(userId: String): Fu[Boolean] =
+    api.currentHostIds map (_ contains userId)
 
-  val allCreated = lila.memo.AsyncCache.single(repo.allCreated, timeToLive = CreatedCacheTtl)
+  val allCreated =
+    lila.memo.AsyncCache.single(repo.allCreated, timeToLive = CreatedCacheTtl)
 
-  val allCreatedFeaturable = lila.memo.AsyncCache.single(repo.allCreatedFeaturable, timeToLive = CreatedCacheTtl)
+  val allCreatedFeaturable = lila.memo.AsyncCache
+    .single(repo.allCreatedFeaturable, timeToLive = CreatedCacheTtl)
 
   def version(tourId: String): Fu[Int] =
     socketHub ? Ask(tourId, GetVersion) mapTo manifest[Int]

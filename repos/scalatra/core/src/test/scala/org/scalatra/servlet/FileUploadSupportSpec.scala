@@ -7,25 +7,28 @@ import org.scalatra.test.specs2.MutableScalatraSpec
 
 import scala.collection.JavaConversions._
 
-class FileUploadSupportSpecServlet extends ScalatraServlet with FileUploadSupport {
+class FileUploadSupportSpecServlet
+    extends ScalatraServlet
+    with FileUploadSupport {
   def headersToHeaders() {
-    request.getHeaderNames.filter(_.startsWith("X")).foreach(header =>
-      response.setHeader(header, request.getHeader(header))
-    )
+    request.getHeaderNames
+      .filter(_.startsWith("X"))
+      .foreach(header => response.setHeader(header, request.getHeader(header)))
   }
 
   def fileParamsToHeaders() {
     fileParams.foreach(fileParam => {
       response.setHeader("File-" + fileParam._1 + "-Name", fileParam._2.name)
-      response.setHeader("File-" + fileParam._1 + "-Size", fileParam._2.size.toString)
-      response.setHeader("File-" + fileParam._1 + "-SHA", DigestUtils.shaHex(fileParam._2.get()))
+      response
+        .setHeader("File-" + fileParam._1 + "-Size", fileParam._2.size.toString)
+      response.setHeader(
+        "File-" + fileParam._1 + "-SHA",
+        DigestUtils.shaHex(fileParam._2.get()))
     })
   }
 
   def paramsToHeaders() {
-    params.foreach(param =>
-      response.setHeader(param._1, param._2)
-    )
+    params.foreach(param => response.setHeader(param._1, param._2))
   }
 
   post("/upload") {
@@ -65,7 +68,9 @@ class FileUploadSupportSpecServlet extends ScalatraServlet with FileUploadSuppor
       items.foreach(item => {
         response.setHeader("File-" + name + i + "-Name", item.name)
         response.setHeader("File-" + name + i + "-Size", item.size.toString)
-        response.setHeader("File-" + name + i + "-SHA", DigestUtils.shaHex(item.get()))
+        response.setHeader(
+          "File-" + name + i + "-SHA",
+          DigestUtils.shaHex(item.get()))
 
         i += 1
       })
@@ -91,11 +96,14 @@ class FileUploadSupportSpecServlet extends ScalatraServlet with FileUploadSuppor
   }
 }
 
-class FileUploadSupportMaxSizeTestServlet extends ScalatraServlet with FileUploadSupport {
-  configureMultipartHandling(MultipartConfig(
-    maxFileSize = Some(1024),
-    fileSizeThreshold = Some(1024 * 1024 * 1024)
-  ))
+class FileUploadSupportMaxSizeTestServlet
+    extends ScalatraServlet
+    with FileUploadSupport {
+  configureMultipartHandling(
+    MultipartConfig(
+      maxFileSize = Some(1024),
+      fileSizeThreshold = Some(1024 * 1024 * 1024)
+    ))
 
   error {
     case e: SizeConstraintExceededException => {
@@ -118,8 +126,10 @@ class FileUploadSupportSpec extends MutableScalatraSpec {
   def postExample[A](f: => A): A = {
     val params = Map("param1" -> "one", "param2" -> "two")
     val files = Map(
-      "text" -> new File("core/src/test/resources/org/scalatra/servlet/lorem_ipsum.txt"),
-      "binary" -> new File("core/src/test/resources/org/scalatra/servlet/smiley.png")
+      "text" -> new File(
+        "core/src/test/resources/org/scalatra/servlet/lorem_ipsum.txt"),
+      "binary" -> new File(
+        "core/src/test/resources/org/scalatra/servlet/smiley.png")
     )
 
     val headers = Map(
@@ -134,8 +144,13 @@ class FileUploadSupportSpec extends MutableScalatraSpec {
 
   def postMultiExample[A](f: => A): A = {
     val files =
-      ("files[]", new File("core/src/test/resources/org/scalatra/servlet/lorem_ipsum.txt")) ::
-        ("files[]", new File("core/src/test/resources/org/scalatra/servlet/smiley.png")) :: Nil
+      (
+        "files[]",
+        new File(
+          "core/src/test/resources/org/scalatra/servlet/lorem_ipsum.txt")) ::
+        (
+          "files[]",
+          new File("core/src/test/resources/org/scalatra/servlet/smiley.png")) :: Nil
 
     post("/uploadFileMultiParams", Map(), files) {
       f
@@ -144,7 +159,9 @@ class FileUploadSupportSpec extends MutableScalatraSpec {
 
   def postPass[A](f: => A): A = {
     val params = Map("param1" -> "one", "param2" -> "two")
-    val files = Map("text" -> new File("core/src/test/resources/org/scalatra/servlet/lorem_ipsum.txt"))
+    val files = Map(
+      "text" -> new File(
+        "core/src/test/resources/org/scalatra/servlet/lorem_ipsum.txt"))
 
     post("/passUpload/file", params, files) {
       f
@@ -264,14 +281,24 @@ class FileUploadSupportSpec extends MutableScalatraSpec {
 
   "POST with multipart/form-data and maxFileSize set" should {
     "handle IllegalStateException by wrapping it as SizeConstraintExceededException handled by error handler" in {
-      post("/max-size/upload", Map(), Map("file" -> new File("core/src/test/resources/org/scalatra/servlet/smiley.png"))) {
+      post(
+        "/max-size/upload",
+        Map(),
+        Map(
+          "file" -> new File(
+            "core/src/test/resources/org/scalatra/servlet/smiley.png"))) {
         (status mustEqual 413) and
           (body mustEqual "too much!")
       }
     }
 
     "allow file uploads smaller than the specified max file size" in {
-      post("/max-size/upload", Map(), Map("file" -> new File("core/src/test/resources/org/scalatra/servlet/lorem_ipsum.txt"))) {
+      post(
+        "/max-size/upload",
+        Map(),
+        Map(
+          "file" -> new File(
+            "core/src/test/resources/org/scalatra/servlet/lorem_ipsum.txt"))) {
         body must_== "ok"
       }
     }
@@ -289,7 +316,9 @@ class FileUploadSupportSpec extends MutableScalatraSpec {
   "FileItem.write" should {
     "know how to write to a File instance" in {
       val params = Map()
-      val files = Map("document" -> new File("core/src/test/resources/org/scalatra/servlet/lorem_ipsum.txt"))
+      val files = Map(
+        "document" -> new File(
+          "core/src/test/resources/org/scalatra/servlet/lorem_ipsum.txt"))
 
       post("/file-item-write", params, files) {
         body must_== "file size: 651"

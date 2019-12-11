@@ -8,14 +8,14 @@ object Test extends App {
 
   // all cases are reachable and the match is exhaustive
   (C: X) match {
-    case B =>
-    case C =>
+    case B    =>
+    case C    =>
     case A(_) =>
   }
 
   (true: Boolean) match { case true => } // not exhaustive, but reachable
   (true: Boolean) match { case true => case false => } // exhaustive, reachable
-  (true: Boolean) match { case true => case false =>  case _ => } // exhaustive, last case is unreachable
-  (true: Boolean) match { case true => case false =>  case _: Boolean => } // exhaustive, last case is unreachable
-  (true: Boolean) match { case true => case false =>  case _: Any => } // exhaustive, last case is unreachable
+  (true: Boolean) match { case true => case false => case _ => } // exhaustive, last case is unreachable
+  (true: Boolean) match { case true => case false => case _: Boolean => } // exhaustive, last case is unreachable
+  (true: Boolean) match { case true => case false => case _: Any => } // exhaustive, last case is unreachable
 }

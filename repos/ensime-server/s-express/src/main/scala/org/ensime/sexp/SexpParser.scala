@@ -4,12 +4,12 @@ package org.ensime.sexp
 
 import org.parboiled2._
 
-import scala.util.{ Failure, Success }
+import scala.util.{Failure, Success}
 
 /**
- * Parse Emacs Lisp into an `Sexp`. Other lisp variants may
- * require tweaking, e.g. Scheme's nil, infinity, NaN, etc.
- */
+  * Parse Emacs Lisp into an `Sexp`. Other lisp variants may
+  * require tweaking, e.g. Scheme's nil, infinity, NaN, etc.
+  */
 object SexpParser {
 
   def parse(desc: String): Sexp = {
@@ -18,7 +18,8 @@ object SexpParser {
       case Success(d) =>
         d
       case Failure(error: ParseError) =>
-        val msg = parser.formatError(error, new ErrorFormatter(showTraces = true))
+        val msg =
+          parser.formatError(error, new ErrorFormatter(showTraces = true))
         throw new Exception("Failed to parse sexp: " + msg)
       case Failure(other) =>
         throw new Exception("Failed to parse sexp: ", other)
@@ -60,9 +61,9 @@ object SexpParser {
 }
 
 /**
- * Parse Emacs Lisp into an `Sexp`. Other lisp variants may
- * require tweaking, e.g. Scheme's nil, infinity, NaN, etc.
- */
+  * Parse Emacs Lisp into an `Sexp`. Other lisp variants may
+  * require tweaking, e.g. Scheme's nil, infinity, NaN, etc.
+  */
 class SexpParser(val input: ParserInput) extends Parser with StringBuilding {
 
   import SexpParser._
@@ -72,13 +73,15 @@ class SexpParser(val input: ParserInput) extends Parser with StringBuilding {
 
   private def SexpConsP: Rule1[SexpCons] = rule {
     LeftBrace ~ SexpP ~ Whitespace ~ '.' ~ Whitespace ~ SexpP ~ RightBrace ~> {
-      (x: Sexp, y: Sexp) => SexpCons(x, y)
+      (x: Sexp, y: Sexp) =>
+        SexpCons(x, y)
     }
   }
 
   private def SexpListP: Rule1[Sexp] = rule {
     LeftBrace ~ SexpP ~ zeroOrMore(Whitespace ~ SexpP) ~ RightBrace ~> {
-      (head: Sexp, tail: Seq[Sexp]) => { SexpList(head :: tail.toList) }
+      (head: Sexp, tail: Seq[Sexp]) =>
+        { SexpList(head :: tail.toList) }
     }
   }
 
@@ -90,7 +93,9 @@ class SexpParser(val input: ParserInput) extends Parser with StringBuilding {
     '?' ~ NormalChar ~> { SexpChar }
   }
 
-  def SexpStringP = rule { '"' ~ clearSB() ~ CharactersSB ~ '"' ~ push(SexpString(sb.toString)) }
+  def SexpStringP = rule {
+    '"' ~ clearSB() ~ CharactersSB ~ '"' ~ push(SexpString(sb.toString))
+  }
 
   def CharactersSB = rule { zeroOrMore(NormalCharSB | '\\' ~ EscapedCharSB) }
 
@@ -114,10 +119,12 @@ class SexpParser(val input: ParserInput) extends Parser with StringBuilding {
   )
 
   def SexpNumberP = rule {
-    capture(Integer ~ optional(Frac) ~ optional(Exp)) ~> { s: String => SexpNumber(BigDecimal(s)) }
+    capture(Integer ~ optional(Frac) ~ optional(Exp)) ~> { s: String =>
+      SexpNumber(BigDecimal(s))
+    }
   }
 
-  import CharPredicate.{ Digit, Digit19 }
+  import CharPredicate.{Digit, Digit19}
 
   def Integer = rule {
     optional('-') ~ (Digit19 ~ Digits | Digit)
@@ -142,12 +149,15 @@ class SexpParser(val input: ParserInput) extends Parser with StringBuilding {
   }
 
   private def SexpQuotedP: Rule1[Sexp] = rule {
-    '\'' ~ SexpP ~> { v: Sexp => SexpCons(SexpQuote, v) }
+    '\'' ~ SexpP ~> { v: Sexp =>
+      SexpCons(SexpQuote, v)
+    }
   }
 
   private def SexpSymbolP: Rule1[SexpAtom] = rule {
     // ? allowed at the end of symbol names
-    capture(oneOrMore(SymbolStartCharPredicate) ~ zeroOrMore(SymbolBodyCharPredicate) ~ optional('?')) ~> { sym: String =>
+    capture(oneOrMore(SymbolStartCharPredicate) ~ zeroOrMore(
+      SymbolBodyCharPredicate) ~ optional('?')) ~> { sym: String =>
       if (sym == "nil") SexpNil
       else SexpSymbol(sym)
     }

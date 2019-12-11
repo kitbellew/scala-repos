@@ -4,7 +4,7 @@ package lang
 import scala.scalajs.js
 
 object Math {
-  final val E  = 2.718281828459045
+  final val E = 2.718281828459045
   final val PI = 3.141592653589793
 
   @inline def abs(a: scala.Int): scala.Int = if (a < 0) -a else a
@@ -13,14 +13,20 @@ object Math {
   @inline def abs(a: scala.Double): scala.Double = js.Math.abs(a)
 
   @inline def max(a: scala.Int, b: scala.Int): scala.Int = if (a > b) a else b
-  @inline def max(a: scala.Long, b: scala.Long): scala.Long = if (a > b) a else b
-  @inline def max(a: scala.Float, b: scala.Float): scala.Float = js.Math.max(a, b).toFloat
-  @inline def max(a: scala.Double, b: scala.Double): scala.Double = js.Math.max(a, b)
+  @inline def max(a: scala.Long, b: scala.Long): scala.Long =
+    if (a > b) a else b
+  @inline def max(a: scala.Float, b: scala.Float): scala.Float =
+    js.Math.max(a, b).toFloat
+  @inline def max(a: scala.Double, b: scala.Double): scala.Double =
+    js.Math.max(a, b)
 
   @inline def min(a: scala.Int, b: scala.Int): scala.Int = if (a < b) a else b
-  @inline def min(a: scala.Long, b: scala.Long): scala.Long = if (a < b) a else b
-  @inline def min(a: scala.Float, b: scala.Float): scala.Float = js.Math.min(a, b).toFloat
-  @inline def min(a: scala.Double, b: scala.Double): scala.Double = js.Math.min(a, b)
+  @inline def min(a: scala.Long, b: scala.Long): scala.Long =
+    if (a < b) a else b
+  @inline def min(a: scala.Float, b: scala.Float): scala.Float =
+    js.Math.min(a, b).toFloat
+  @inline def min(a: scala.Double, b: scala.Double): scala.Double =
+    js.Math.min(a, b)
 
   @inline def ceil(a: scala.Double): scala.Double = js.Math.ceil(a)
   @inline def floor(a: scala.Double): scala.Double = js.Math.floor(a)
@@ -42,7 +48,8 @@ object Math {
   @inline def round(a: scala.Double): scala.Long = js.Math.round(a).toLong
 
   @inline def sqrt(a: scala.Double): scala.Double = js.Math.sqrt(a)
-  @inline def pow(a: scala.Double, b: scala.Double): scala.Double = js.Math.pow(a, b)
+  @inline def pow(a: scala.Double, b: scala.Double): scala.Double =
+    js.Math.pow(a, b)
 
   @inline def exp(a: scala.Double): scala.Double = js.Math.exp(a)
   @inline def log(a: scala.Double): scala.Double = js.Math.log(a)
@@ -55,7 +62,8 @@ object Math {
   @inline def asin(a: scala.Double): scala.Double = js.Math.asin(a)
   @inline def acos(a: scala.Double): scala.Double = js.Math.acos(a)
   @inline def atan(a: scala.Double): scala.Double = js.Math.atan(a)
-  @inline def atan2(y: scala.Double, x: scala.Double): scala.Double = js.Math.atan2(y, x)
+  @inline def atan2(y: scala.Double, x: scala.Double): scala.Double =
+    js.Math.atan2(y, x)
 
   @inline def random(): scala.Double = js.Math.random()
 
@@ -86,7 +94,7 @@ object Math {
       var xi = pow(value, 0.3333333333333333)
 
       //Halley's Method (http://metamerist.com/cbrt/cbrt.htm)
-      while (abs(x - xi) >= 1E-16) {
+      while (abs(x - xi) >= 1e-16) {
         x = xi
         val x3 = js.Math.pow(x, 3)
         val x3Plusa = x3 + value
@@ -97,7 +105,7 @@ object Math {
   }
 
   def nextUp(a: scala.Double): scala.Double = {
-  // js implementation of nextUp https://gist.github.com/Yaffle/4654250
+    // js implementation of nextUp https://gist.github.com/Yaffle/4654250
     import scala.Double._
     if (a != a || a == PositiveInfinity)
       a
@@ -108,8 +116,11 @@ object Math {
     else if (a == 0)
       MinPositiveValue
     else {
-      def iter(x: scala.Double, xi: scala.Double, n: scala.Double): scala.Double = {
-        if (Math.abs(xi - x) >= 1E-16) {
+      def iter(
+          x: scala.Double,
+          xi: scala.Double,
+          n: scala.Double): scala.Double = {
+        if (Math.abs(xi - x) >= 1e-16) {
           val c0 = (xi + x) / 2
           val c =
             if (c0 == NegativeInfinity || c0 == PositiveInfinity)
@@ -119,10 +130,9 @@ object Math {
           if (n == c) xi
           else if (a < c) iter(x = x, xi = c, n = c)
           else iter(x = c, xi = xi, n = c)
-        }
-        else xi
+        } else xi
       }
-      val d = Math.max(Math.abs(a) * 2E-16, MinPositiveValue)
+      val d = Math.max(Math.abs(a) * 2e-16, MinPositiveValue)
       val ad = a + d
       val xi0 =
         if (ad == PositiveInfinity) MaxValue
@@ -176,7 +186,7 @@ object Math {
       a
     // Power Series http://en.wikipedia.org/wiki/Power_series
     // for small values of a, exp(a) = 1 + a + (a*a)/2
-    else if (abs(a) < 1E-5)
+    else if (abs(a) < 1e-5)
       a + 0.5 * a * a
     else
       exp(a) - 1.0

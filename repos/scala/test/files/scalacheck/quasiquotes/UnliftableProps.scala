@@ -76,7 +76,9 @@ object UnliftableProps extends QuasiquoteProperties("unliftable") {
   }
 
   implicit def unliftList[T: Unliftable]: Unliftable[List[T]] = Unliftable {
-    case q"scala.collection.immutable.List(..$args)" if args.forall { implicitly[Unliftable[T]].unapply(_).nonEmpty } =>
+    case q"scala.collection.immutable.List(..$args)" if args.forall {
+          implicitly[Unliftable[T]].unapply(_).nonEmpty
+        } =>
       val ut = implicitly[Unliftable[T]]
       args.flatMap { ut.unapply(_) }
   }
@@ -117,21 +119,36 @@ object UnliftableProps extends QuasiquoteProperties("unliftable") {
     val q"${t5: (Int, Int, Int, Int, Int)}" = q"(1, 2, 3, 4, 5)"
     val q"${t6: (Int, Int, Int, Int, Int, Int)}" = q"(1, 2, 3, 4, 5, 6)"
     val q"${t7: (Int, Int, Int, Int, Int, Int, Int)}" = q"(1, 2, 3, 4, 5, 6, 7)"
-    val q"${t8: (Int, Int, Int, Int, Int, Int, Int, Int)}" = q"(1, 2, 3, 4, 5, 6, 7, 8)"
-    val q"${t9: (Int, Int, Int, Int, Int, Int, Int, Int, Int)}" = q"(1, 2, 3, 4, 5, 6, 7, 8, 9)"
-    val q"${t10: (Int, Int, Int, Int, Int, Int, Int, Int, Int, Int)}" = q"(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)"
-    val q"${t11: (Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int)}" = q"(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11)"
-    val q"${t12: (Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int)}" = q"(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)"
-    val q"${t13: (Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int)}" = q"(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13)"
-    val q"${t14: (Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int)}" = q"(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14)"
-    val q"${t15: (Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int)}" = q"(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)"
-    val q"${t16: (Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int)}" = q"(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)"
-    val q"${t17: (Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int)}" = q"(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17)"
-    val q"${t18: (Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int)}" = q"(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18)"
-    val q"${t19: (Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int)}" = q"(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19)"
-    val q"${t20: (Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int)}" = q"(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20)"
-    val q"${t21: (Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int)}" = q"(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21)"
-    val q"${t22: (Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int)}" = q"(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22)"
+    val q"${t8: (Int, Int, Int, Int, Int, Int, Int, Int)}" =
+      q"(1, 2, 3, 4, 5, 6, 7, 8)"
+    val q"${t9: (Int, Int, Int, Int, Int, Int, Int, Int, Int)}" =
+      q"(1, 2, 3, 4, 5, 6, 7, 8, 9)"
+    val q"${t10: (Int, Int, Int, Int, Int, Int, Int, Int, Int, Int)}" =
+      q"(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)"
+    val q"${t11: (Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int)}" =
+      q"(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11)"
+    val q"${t12: (Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int)}" =
+      q"(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)"
+    val q"${t13: (Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int)}" =
+      q"(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13)"
+    val q"${t14: (Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int)}" =
+      q"(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14)"
+    val q"${t15: (Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int)}" =
+      q"(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)"
+    val q"${t16: (Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int)}" =
+      q"(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)"
+    val q"${t17: (Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int)}" =
+      q"(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17)"
+    val q"${t18: (Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int)}" =
+      q"(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18)"
+    val q"${t19: (Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int)}" =
+      q"(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19)"
+    val q"${t20: (Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int)}" =
+      q"(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20)"
+    val q"${t21: (Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int)}" =
+      q"(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21)"
+    val q"${t22: (Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int)}" =
+      q"(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22)"
     // assert(t1 == Tuple1(1))
     assert(t2 == (1, 2))
     assert(t3 == (1, 2, 3))
@@ -149,16 +166,22 @@ object UnliftableProps extends QuasiquoteProperties("unliftable") {
     assert(t15 == (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15))
     assert(t16 == (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16))
     assert(t17 == (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17))
-    assert(t18 == (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18))
-    assert(t19 == (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19))
-    assert(t20 == (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20))
-    assert(t21 == (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21))
-    assert(t22 == (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22))
+    assert(
+      t18 == (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18))
+    assert(
+      t19 == (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19))
+    assert(
+      t20 == (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20))
+    assert(
+      t21 == (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21))
+    assert(
+      t22 == (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22))
   }
 
   property("unlift xml comment") = test {
     implicit val unliftXmlComment = Unliftable[xml.Comment] {
-      case q"new _root_.scala.xml.Comment(${value: String})" => xml.Comment(value)
+      case q"new _root_.scala.xml.Comment(${value: String})" =>
+        xml.Comment(value)
     }
     val q"${comment: xml.Comment}" = q"<!--foo-->"
     assert(comment.commentText == "foo")

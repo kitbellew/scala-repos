@@ -11,10 +11,10 @@ import org.junit.Test
 import org.junit.Assert._
 
 /** Tests the compiler re-patching of native longs to
- *  scala.scalajs.runtime.Long
- *  see org.scalajs.testsuite.jsinterop.RuntimeLongTest
- *  for a test of the implementation itself
- */
+  *  scala.scalajs.runtime.Long
+  *  see org.scalajs.testsuite.jsinterop.RuntimeLongTest
+  *  for a test of the implementation itself
+  */
 class LongTest {
   @Test def `should_correctly_handle_literals`(): Unit = {
     assertEquals(105L, 5L + 100L)
@@ -33,9 +33,9 @@ class LongTest {
   }
 
   @Test def `should_correctly_dispatch_binary_ops_on_Longs`(): Unit = {
-    assertEquals(25F, 5L * 5F, 0F)
-    assertEquals(1F, 5L % 4F, 0F)
-    assertEquals(20F, 5F * 4L, 0F)
+    assertEquals(25f, 5L * 5f, 0f)
+    assertEquals(1f, 5L % 4f, 0f)
+    assertEquals(20f, 5f * 4L, 0f)
   }
 
   @Test def `should_support_shifts_with_Longs_#622`(): Unit = {
@@ -115,7 +115,7 @@ class LongTest {
   }
 
   @Test def `should_correctly_implement_is/asInstanceOf_Longs`(): Unit = {
-    val dyn:  Any  = 5L
+    val dyn: Any = 5L
     val stat: Long = 5L
 
     assertEquals(5L, stat.asInstanceOf[Long])

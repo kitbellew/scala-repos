@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2015-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2015-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.stream.scaladsl
 
 import org.scalactic.ConversionCheckedTripleEquals
@@ -19,8 +19,7 @@ class FlowDetacherSpec extends AkkaSpec {
   "A Detacher" must {
 
     "pass through all elements" in Utils.assertAllStagesStopped {
-      Source(1 to 100)
-        .detach
+      Source(1 to 100).detach
         .runWith(Sink.seq)
         .futureValue should ===(1 to 100)
     }
@@ -37,14 +36,16 @@ class FlowDetacherSpec extends AkkaSpec {
 
     }
 
-    "emit the last element when completed without demand" in Utils.assertAllStagesStopped {
-      Source.single(42)
-        .detach
-        .runWith(TestSink.probe)
-        .ensureSubscription()
-        .expectNoMsg(500.millis)
-        .requestNext() should ===(42)
-    }
+    "emit the last element when completed without demand" in Utils
+      .assertAllStagesStopped {
+        Source
+          .single(42)
+          .detach
+          .runWith(TestSink.probe)
+          .ensureSubscription()
+          .expectNoMsg(500.millis)
+          .requestNext() should ===(42)
+      }
 
   }
 

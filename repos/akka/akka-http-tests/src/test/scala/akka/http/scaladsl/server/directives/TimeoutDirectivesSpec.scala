@@ -4,11 +4,11 @@
 
 package akka.http.scaladsl.server.directives
 
-import akka.http.scaladsl.model.{ HttpResponse, StatusCodes }
+import akka.http.scaladsl.model.{HttpResponse, StatusCodes}
 import akka.http.scaladsl.server.IntegrationRoutingSpec
 
 import scala.concurrent.duration._
-import scala.concurrent.{ Future, Promise }
+import scala.concurrent.{Future, Promise}
 
 class TimeoutDirectivesSpec extends IntegrationRoutingSpec {
 
@@ -31,8 +31,10 @@ class TimeoutDirectivesSpec extends IntegrationRoutingSpec {
   }
 
   "allow mapping the response" in {
-    val timeoutResponse = HttpResponse(StatusCodes.EnhanceYourCalm,
-      entity = "Unable to serve response within time limit, please enchance your calm.")
+    val timeoutResponse = HttpResponse(
+      StatusCodes.EnhanceYourCalm,
+      entity =
+        "Unable to serve response within time limit, please enchance your calm.")
 
     val route =
       path("timeout") {

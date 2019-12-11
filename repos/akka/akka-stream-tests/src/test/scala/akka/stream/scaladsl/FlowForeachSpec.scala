@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2014-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2014-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.stream.scaladsl
 
 import scala.util.control.NoStackTrace

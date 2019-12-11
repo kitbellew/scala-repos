@@ -19,9 +19,10 @@ class RetriesTest extends FunSuite {
     case Throw(_: MyRetryEx) => true
   }
 
-  private[this] def newRetryPolicy(retries: Int) = RetryPolicy.tries(
-    retries + 1, // 1 request and `retries` retries
-    retryFn)
+  private[this] def newRetryPolicy(retries: Int) =
+    RetryPolicy.tries(
+      retries + 1, // 1 request and `retries` retries
+      retryFn)
 
   private[this] val requeableEx =
     Failure.wrap(new RuntimeException("yep"), Failure.Restartable)
@@ -31,7 +32,9 @@ class RetriesTest extends FunSuite {
   private val end: Stack[ServiceFactory[Exception, Int]] = Stack.Leaf(
     Stack.Role("test"),
     ServiceFactory.const(
-      Service.mk[Exception, Int] { req => Future.exception(req) }
+      Service.mk[Exception, Int] { req =>
+        Future.exception(req)
+      }
     )
   )
 
@@ -42,7 +45,8 @@ class RetriesTest extends FunSuite {
       ttl = 1.second, // simplifies the math such that minRetries == minRetriesPerSecond
       minRetriesPerSec = minBudget,
       percentCanRetry = 0.0, // this shouldn't be a factor because we are relying on the reserve
-      nowMillis = Stopwatch.timeMillis)
+      nowMillis = Stopwatch.timeMillis
+    )
 
   test("moduleRetryableWrites only does requeues") {
     val stats = new InMemoryStatsReceiver()
@@ -142,7 +146,8 @@ class RetriesTest extends FunSuite {
         ttl = 20.seconds, // give a long window so we don't need to worry
         minRetriesPerSec = 1, // works out to 20 minimum retries per ttl
         percentCanRetry = 0.0, // this shouldn't be a factor because we are relying on the reserve
-        nowMillis = Stopwatch.systemMillis)
+        nowMillis = Stopwatch.systemMillis
+      )
 
     val params = Stack.Params.empty +
       param.Stats(stats) +
@@ -194,9 +199,9 @@ class RetriesTest extends FunSuite {
 
   /** Uses 4 retries for the RetryPolicy */
   private def endToEndToEndSvc(
-    stats: InMemoryStatsReceiver,
-    backReqs: AtomicInteger,
-    mkBudget: () => RetryBudget
+      stats: InMemoryStatsReceiver,
+      backReqs: AtomicInteger,
+      mkBudget: () => RetryBudget
   ): Service[Exception, Int] = {
     val midParams = Stack.Params.empty +
       param.Stats(stats.scope("mid")) +
@@ -216,15 +221,15 @@ class RetriesTest extends FunSuite {
     )
 
     // wire em together.
-    val midToBack: Stack[ServiceFactory[Exception, Int]] = Stack.Leaf(
-      Stack.Role("mid-back"),
-      backSvc)
-    val midSvcFactory = Retries.moduleWithRetryPolicy.toStack(midToBack).make(midParams)
+    val midToBack: Stack[ServiceFactory[Exception, Int]] =
+      Stack.Leaf(Stack.Role("mid-back"), backSvc)
+    val midSvcFactory =
+      Retries.moduleWithRetryPolicy.toStack(midToBack).make(midParams)
 
-    val frontToMid: Stack[ServiceFactory[Exception, Int]] = Stack.Leaf(
-      Stack.Role("front-mid"),
-      midSvcFactory)
-    val frontSvcFactory = Retries.moduleWithRetryPolicy.toStack(frontToMid).make(frontParams)
+    val frontToMid: Stack[ServiceFactory[Exception, Int]] =
+      Stack.Leaf(Stack.Role("front-mid"), midSvcFactory)
+    val frontSvcFactory =
+      Retries.moduleWithRetryPolicy.toStack(frontToMid).make(frontParams)
     Await.result(frontSvcFactory(), 5.seconds)
   }
 
@@ -238,11 +243,12 @@ class RetriesTest extends FunSuite {
     val stats = new InMemoryStatsReceiver()
     val backReqs = new AtomicInteger()
     val retryPercent = 0.2 // 20% retries
-    def mkBudget() = RetryBudget(
-      60.seconds,
-      0, // keep minimum out of this to simplify
-      retryPercent,
-      Stopwatch.timeMillis)
+    def mkBudget() =
+      RetryBudget(
+        60.seconds,
+        0, // keep minimum out of this to simplify
+        retryPercent,
+        Stopwatch.timeMillis)
 
     val svc = endToEndToEndSvc(stats, backReqs, mkBudget)
 
@@ -255,10 +261,12 @@ class RetriesTest extends FunSuite {
       }
 
       // verify each layer only sees 20% more
-      assert((numReqs * 0.2).toInt ==
-        nRetries(stats.stats(Seq("front", "retries"))))
-      assert((numReqs * (0.2 * 1.2)).toInt ==
-        nRetries(stats.stats(Seq("mid", "retries"))))
+      assert(
+        (numReqs * 0.2).toInt ==
+          nRetries(stats.stats(Seq("front", "retries"))))
+      assert(
+        (numReqs * (0.2 * 1.2)).toInt ==
+          nRetries(stats.stats(Seq("mid", "retries"))))
       // numReqs + front's retries + mid's retries
       // which is a 1.44x multiplier
       assert((numReqs * 1.44).toInt == backReqs.get)
@@ -281,10 +289,12 @@ class RetriesTest extends FunSuite {
         }
       }
 
-      assert(numReqs * retries ==
-        nRetries(stats.stats(Seq("front", "retries"))))
-      assert((numReqs * retries) + (numReqs * retries * retries) ==
-        nRetries(stats.stats(Seq("mid", "retries"))))
+      assert(
+        numReqs * retries ==
+          nRetries(stats.stats(Seq("front", "retries"))))
+      assert(
+        (numReqs * retries) + (numReqs * retries * retries) ==
+          nRetries(stats.stats(Seq("mid", "retries"))))
       // there is a 25x multiplier. each initial front attempt triggers
       // 1 attempt + 4 retries = 5 reqs from the mid to the backend,
       // and the front will do that a total of 5 times (so 5 * 5 = 25)

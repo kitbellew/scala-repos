@@ -14,9 +14,11 @@ class C {
     List[Object](new E, m, f, g())
   }
 }
- 
+
 object Test extends App {
   val x = new C().fun.apply() ::: new C().met.apply()
-  val results = x.map(_.getClass).map(cls => (cls, cls.getEnclosingClass, cls.getEnclosingMethod))
+  val results = x
+    .map(_.getClass)
+    .map(cls => (cls, cls.getEnclosingClass, cls.getEnclosingMethod))
   println(results.mkString("\n"))
 }

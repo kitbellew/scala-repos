@@ -15,7 +15,9 @@ trait EvalLoop {
   def loop(action: (String) => Unit) {
     @tailrec def inner() {
       Console.print(prompt)
-      val line = try StdIn.readLine() catch { case _: EOFException => null }
+      val line =
+        try StdIn.readLine()
+        catch { case _: EOFException => null }
       if (line != null && line != "") {
         action(line)
         inner()

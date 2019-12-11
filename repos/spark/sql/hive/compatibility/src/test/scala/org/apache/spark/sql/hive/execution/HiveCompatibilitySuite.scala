@@ -27,8 +27,8 @@ import org.apache.spark.sql.hive.test.TestHive
 import org.apache.spark.sql.internal.SQLConf
 
 /**
- * Runs the test cases that are included in the hive distribution.
- */
+  * Runs the test cases that are included in the hive distribution.
+  */
 class HiveCompatibilitySuite extends HiveQueryFileTest with BeforeAndAfter {
   // TODO: bundle in jar files... get from classpath
   private lazy val hiveQueryDir = TestHive.getHiveFile(
@@ -37,7 +37,8 @@ class HiveCompatibilitySuite extends HiveQueryFileTest with BeforeAndAfter {
   private val originalTimeZone = TimeZone.getDefault
   private val originalLocale = Locale.getDefault
   private val originalColumnBatchSize = TestHive.conf.columnBatchSize
-  private val originalInMemoryPartitionPruning = TestHive.conf.inMemoryPartitionPruning
+  private val originalInMemoryPartitionPruning =
+    TestHive.conf.inMemoryPartitionPruning
 
   def testCases: Seq[(String, File)] = {
     hiveQueryDir.listFiles.map(f => f.getName.stripSuffix(".q") -> f)
@@ -64,7 +65,9 @@ class HiveCompatibilitySuite extends HiveQueryFileTest with BeforeAndAfter {
     TimeZone.setDefault(originalTimeZone)
     Locale.setDefault(originalLocale)
     TestHive.setConf(SQLConf.COLUMN_BATCH_SIZE, originalColumnBatchSize)
-    TestHive.setConf(SQLConf.IN_MEMORY_PARTITION_PRUNING, originalInMemoryPartitionPruning)
+    TestHive.setConf(
+      SQLConf.IN_MEMORY_PARTITION_PRUNING,
+      originalInMemoryPartitionPruning)
     TestHive.sessionState.functionRegistry.restore()
 
     // For debugging dump some statistics about how much time was spent in various optimizer rules.
@@ -90,11 +93,9 @@ class HiveCompatibilitySuite extends HiveQueryFileTest with BeforeAndAfter {
     "describe_pretty",
     "describe_syntax",
     "orc_ends_with_nulls",
-
     // Setting a default property does not seem to get reset and thus changes the answer for many
     // subsequent tests.
     "create_default_prop",
-
     // User/machine specific test answers, breaks the caching mechanism.
     "authorization_3",
     "authorization_5",
@@ -110,20 +111,16 @@ class HiveCompatibilitySuite extends HiveQueryFileTest with BeforeAndAfter {
     "protectmode2",
     // "describe_table",
     "describe_comment_nonascii",
-
     "create_merge_compressed",
     "create_view",
     "create_view_partitioned",
     "database_location",
     "database_properties",
-
     // DFS commands
     "symlink_text_input_format",
-
     // Weird DDL differences result in failures on jenkins.
     "create_like2",
     "partitions_json",
-
     // This test is totally fine except that it includes wrong queries and expects errors, but error
     // message format in Hive and Spark SQL differ. Should workaround this later.
     "udf_to_unix_timestamp",
@@ -133,8 +130,6 @@ class HiveCompatibilitySuite extends HiveQueryFileTest with BeforeAndAfter {
     // we can cast dates likes '2015-03-18' to a timestamp and extract the minutes.
     // Hive returns null for minute('2015-03-18')
     "udf_minute",
-
-
     // Cant run without local map/reduce.
     "index_auto_update",
     "index_auto_self_join",
@@ -158,16 +153,12 @@ class HiveCompatibilitySuite extends HiveQueryFileTest with BeforeAndAfter {
     "annotate_stats.*",
     "database_drop",
     "index_serde",
-
-
     // Hive seems to think 1.0 > NaN = true && 1.0 < NaN = false... which is wrong.
     // http://stackoverflow.com/a/1573715
     "ops_comparison",
-
     // Tests that seems to never complete on hive...
     "skewjoin",
     "database",
-
     // These tests fail and and exit the JVM.
     "auto_join18_multi_distinct",
     "join18_multi_distinct",
@@ -176,91 +167,67 @@ class HiveCompatibilitySuite extends HiveQueryFileTest with BeforeAndAfter {
     "input_dfs",
     "metadata_export_drop",
     "repair",
-
     // Uses a serde that isn't on the classpath... breaks other tests.
     "bucketizedhiveinputformat",
-
     // Avro tests seem to change the output format permanently thus breaking the answer cache, until
     // we figure out why this is the case let just ignore all of avro related tests.
     ".*avro.*",
-
     // Unique joins are weird and will require a lot of hacks (see comments in hive parser).
     "uniquejoin",
-
     // Hive seems to get the wrong answer on some outer joins.  MySQL agrees with catalyst.
     "auto_join29",
-
     // No support for multi-alias i.e. udf as (e1, e2, e3).
     "allcolref_in_udf",
-
     // No support for TestSerDe (not published afaik)
     "alter1",
     "input16",
-
     // No support for unpublished test udfs.
     "autogen_colalias",
-
     // Hive does not support buckets.
     ".*bucket.*",
-
     // We have our own tests based on these query files.
     ".*window.*",
-
     // Fails in hive with authorization errors.
     "alter_rename_partition_authorization",
     "authorization.*",
-
     // Hadoop version specific tests
     "archive_corrupt",
-
     // No support for case sensitivity is resolution using hive properties atm.
     "case_sensitivity",
-
     // Flaky test, Hive sometimes returns different set of 10 rows.
     "lateral_view_outer",
-
     // After stop taking the `stringOrError` route, exceptions are thrown from these cases.
     // See SPARK-2129 for details.
     "join_view",
     "mergejoins_mixed",
-
     // Returning the result of a describe state as a JSON object is not supported.
     "describe_table_json",
     "describe_database_json",
     "describe_formatted_view_partitioned_json",
-
     // Hive returns the results of describe as plain text. Comments with multiple lines
     // introduce extra lines in the Hive results, which make the result comparison fail.
     "describe_comment_indent",
-
     // Limit clause without a ordering, which causes failure.
     "orc_predicate_pushdown",
-
     // Requires precision decimal support:
     "udf_when",
     "udf_case",
-
     // the table src(key INT, value STRING) is not the same as HIVE unittest. In Hive
     // is src(key STRING, value STRING), and in the reflect.q, it failed in
     // Integer.valueOf, which expect the first argument passed as STRING type not INT.
     "udf_reflect",
-
     // Sort with Limit clause causes failure.
     "ctas",
     "ctas_hadoop20",
-
     // timestamp in array, the output format of Hive contains double quotes, while
     // Spark SQL doesn't
     "udf_sort_array",
-
     // It has a bug and it has been fixed by
     // https://issues.apache.org/jira/browse/HIVE-7673 (in Hive 0.14 and trunk).
     "input46",
-
     // These tests were broken by the hive client isolation PR.
     "part_inherit_tbl_props",
     "part_inherit_tbl_props_with_star",
-
     "nullformatCTAS", // SPARK-7411: need to finish CTAS parser
 
     // The isolated classloader seemed to make some of our test reset mechanisms less robust.
@@ -269,68 +236,51 @@ class HiveCompatibilitySuite extends HiveQueryFileTest with BeforeAndAfter {
 
     // the answer is sensitive for jdk version
     "udf_java_method",
-
     // Spark SQL use Long for TimestampType, lose the precision under 1us
     "timestamp_1",
     "timestamp_2",
     "timestamp_udf",
-
     // Hive returns string from UTC formatted timestamp, spark returns timestamp type
     "date_udf",
-
     // Can't compare the result that have newline in it
     "udf_get_json_object",
-
     // Unlike Hive, we do support log base in (0, 1.0], therefore disable this
     "udf7",
-
     // Trivial changes to DDL output
     "compute_stats_empty_table",
     "compute_stats_long",
     "create_view_translate",
     "show_create_table_serde",
     "show_tblproperties",
-
     // Odd changes to output
     "merge4",
-
     // Unsupported underscore syntax.
     "inputddl5",
-
     // Thift is broken...
     "inputddl8",
-
     // Hive changed ordering of ddl:
     "varchar_union1",
-
     // Parser changes in Hive 1.2
     "input25",
     "input26",
-
     // Uses invalid table name
     "innerjoin",
-
     // classpath problems
     "compute_stats.*",
     "udf_bitmap_.*",
-
     // The difference between the double numbers generated by Hive and Spark
     // can be ignored (e.g., 0.6633880657639323 and 0.6633880657639322)
     "udaf_corr",
-
     // Feature removed in HIVE-11145
     "alter_partition_protect_mode",
     "drop_partitions_ignore_protection",
     "protectmode",
-
     // Hive returns null rather than NaN when n = 1
     "udaf_covar_samp",
-
     // The implementation of GROUPING__ID in Hive is wrong (not match with doc).
     "groupby_grouping_id1",
     "groupby_grouping_id2",
     "groupby_grouping_sets1",
-
     // Spark parser treats numerical literals differently: it creates decimals instead of doubles.
     "udf_abs",
     "udf_format_number",
@@ -340,9 +290,9 @@ class HiveCompatibilitySuite extends HiveQueryFileTest with BeforeAndAfter {
   )
 
   /**
-   * The set of tests that are believed to be working in catalyst. Tests not on whiteList or
-   * blacklist are implicitly marked as ignored.
-   */
+    * The set of tests that are believed to be working in catalyst. Tests not on whiteList or
+    * blacklist are implicitly marked as ignored.
+    */
   override def whiteList: Seq[String] = Seq(
     "add_part_exist",
     "add_part_multiple",

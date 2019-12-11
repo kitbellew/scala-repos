@@ -1,18 +1,21 @@
 /**
- * Copyright (C) 2009-2011 Scalable Solutions AB <http://scalablesolutions.se>
- */
-
+  * Copyright (C) 2009-2011 Scalable Solutions AB <http://scalablesolutions.se>
+  */
 package akka.util
 
 import java.util.concurrent.locks.ReentrantLock
-import java.util.concurrent.{ TimeUnit, BlockingQueue }
-import java.util.{ AbstractQueue, Queue, Collection, Iterator }
+import java.util.concurrent.{TimeUnit, BlockingQueue}
+import java.util.{AbstractQueue, Queue, Collection, Iterator}
 
 class BoundedBlockingQueue[E <: AnyRef](
-  val maxCapacity: Int, private val backing: Queue[E]) extends AbstractQueue[E] with BlockingQueue[E] {
+    val maxCapacity: Int,
+    private val backing: Queue[E])
+    extends AbstractQueue[E]
+    with BlockingQueue[E] {
 
   backing match {
-    case null => throw new IllegalArgumentException("Backing Queue may not be null")
+    case null =>
+      throw new IllegalArgumentException("Backing Queue may not be null")
     case b: BlockingQueue[_] =>
       require(maxCapacity > 0)
       require(b.size() == 0)
@@ -31,8 +34,7 @@ class BoundedBlockingQueue[E <: AnyRef](
     if (e eq null) throw new NullPointerException
     lock.lock()
     try {
-      while (backing.size() == maxCapacity)
-        notFull.await()
+      while (backing.size() == maxCapacity) notFull.await()
       require(backing.offer(e))
       notEmpty.signal()
     } finally {
@@ -43,8 +45,7 @@ class BoundedBlockingQueue[E <: AnyRef](
   def take(): E = { //Blocks until not empty
     lock.lockInterruptibly()
     try {
-      while (backing.size() == 0)
-        notEmpty.await()
+      while (backing.size() == 0) notEmpty.await()
       val e = backing.poll()
       require(e ne null)
       notFull.signal()

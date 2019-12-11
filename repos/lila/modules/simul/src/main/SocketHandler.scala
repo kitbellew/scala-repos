@@ -10,7 +10,7 @@ import lila.common.PimpedJson._
 import lila.hub.actorApi.map._
 import lila.security.Flood
 import akka.actor.ActorSelection
-import lila.socket.actorApi.{ Connected => _, _ }
+import lila.socket.actorApi.{Connected => _, _}
 import lila.socket.Handler
 import lila.user.User
 import makeTimeout.short
@@ -23,9 +23,9 @@ private[simul] final class SocketHandler(
     exists: Simul.ID => Fu[Boolean]) {
 
   def join(
-    simId: String,
-    uid: String,
-    user: Option[User]): Fu[Option[JsSocketHandler]] =
+      simId: String,
+      uid: String,
+      user: Option[User]): Fu[Option[JsSocketHandler]] =
     exists(simId) flatMap {
       _ ?? {
         for {
@@ -40,15 +40,19 @@ private[simul] final class SocketHandler(
     }
 
   private def controller(
-    socket: ActorRef,
-    simId: String,
-    uid: String,
-    member: Member): Handler.Controller = {
-    case ("p", o) => o int "v" foreach { v => socket ! PingVersion(uid, v) }
-    case ("talk", o) => o str "d" foreach { text =>
-      member.userId foreach { userId =>
-        chat ! lila.chat.actorApi.UserTalk(simId, userId, text, socket)
+      socket: ActorRef,
+      simId: String,
+      uid: String,
+      member: Member): Handler.Controller = {
+    case ("p", o) =>
+      o int "v" foreach { v =>
+        socket ! PingVersion(uid, v)
       }
-    }
+    case ("talk", o) =>
+      o str "d" foreach { text =>
+        member.userId foreach { userId =>
+          chat ! lila.chat.actorApi.UserTalk(simId, userId, text, socket)
+        }
+      }
   }
 }

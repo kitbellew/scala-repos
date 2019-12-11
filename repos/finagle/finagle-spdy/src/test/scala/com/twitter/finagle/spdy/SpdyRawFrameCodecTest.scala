@@ -2,7 +2,11 @@ package com.twitter.finagle.spdy
 
 import org.jboss.netty.buffer.{ChannelBuffer, ChannelBuffers}
 import org.jboss.netty.handler.codec.embedder.{DecoderEmbedder, EncoderEmbedder}
-import org.jboss.netty.handler.codec.spdy.{DefaultSpdyHeadersFrame, SpdyHeadersFrame, SpdyVersion}
+import org.jboss.netty.handler.codec.spdy.{
+  DefaultSpdyHeadersFrame,
+  SpdyHeadersFrame,
+  SpdyVersion
+}
 import org.junit.runner.RunWith
 import org.scalatest.FunSuite
 import org.scalatest.junit.JUnitRunner
@@ -37,7 +41,9 @@ class SpdyRawFrameCodecTest extends FunSuite {
     channel.offer(spdyHeadersFrame)
     val channelBuffer = channel.poll().asInstanceOf[ChannelBuffer]
     assert(channelBuffer.readableBytes == headersFrame.length)
-    headersFrame foreach { b => assert(channelBuffer.readByte == b) }
+    headersFrame foreach { b =>
+      assert(channelBuffer.readByte == b)
+    }
     assert(channel.finish == false)
   }
 }

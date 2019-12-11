@@ -1,13 +1,13 @@
 package mesosphere.marathon.health
 
-import akka.actor.{ Actor, ActorLogging, ActorRef, Cancellable, Props }
+import akka.actor.{Actor, ActorLogging, ActorRef, Cancellable, Props}
 import akka.event.EventStream
 import mesosphere.marathon.Protos.HealthCheckDefinition.Protocol
 import mesosphere.marathon.core.task.Task
 import mesosphere.marathon.core.task.tracker.TaskTracker
 import mesosphere.marathon.event._
-import mesosphere.marathon.state.{ AppDefinition, Timestamp }
-import mesosphere.marathon.{ MarathonScheduler, MarathonSchedulerDriverHolder }
+import mesosphere.marathon.state.{AppDefinition, Timestamp}
+import mesosphere.marathon.{MarathonScheduler, MarathonSchedulerDriverHolder}
 
 class HealthCheckActor(
     app: AppDefinition,
@@ -15,10 +15,12 @@ class HealthCheckActor(
     marathonScheduler: MarathonScheduler,
     healthCheck: HealthCheck,
     taskTracker: TaskTracker,
-    eventBus: EventStream) extends Actor with ActorLogging {
+    eventBus: EventStream)
+    extends Actor
+    with ActorLogging {
 
   import context.dispatcher
-  import mesosphere.marathon.health.HealthCheckActor.{ GetTaskHealth, _ }
+  import mesosphere.marathon.health.HealthCheckActor.{GetTaskHealth, _}
   import mesosphere.marathon.health.HealthCheckWorker.HealthCheckJob
 
   var nextScheduledCheck: Option[Cancellable] = None
@@ -61,7 +63,8 @@ class HealthCheckActor(
       app.version,
       healthCheck
     )
-    val activeTaskIds = taskTracker.appTasksLaunchedSync(app.id).map(_.taskId).toSet
+    val activeTaskIds =
+      taskTracker.appTasksLaunchedSync(app.id).map(_.taskId).toSet
     // The Map built with filterKeys wraps the original map and contains a reference to activeTaskIds.
     // Therefore we materialize it into a new map.
     taskHealth = taskHealth.filterKeys(activeTaskIds).iterator.toMap
@@ -107,7 +110,8 @@ class HealthCheckActor(
 
       // kill the task
       marathonSchedulerDriverHolder.driver.foreach { driver =>
-        log.info(s"Send kill request for ${task.taskId} on host ${task.agentInfo.host} to driver")
+        log.info(
+          s"Send kill request for ${task.taskId} on host ${task.agentInfo.host} to driver")
         driver.killTask(task.taskId.mesosTaskId)
       }
     }
@@ -118,16 +122,17 @@ class HealthCheckActor(
     // for the first time.  Also ignore failures while the task is staging.
     task.launched.fold(true) { launched =>
       health.firstSuccess.isEmpty &&
-        launched.status.startedAt.fold(true) { startedAt =>
-          startedAt + healthCheck.gracePeriod > Timestamp.now()
-        }
+      launched.status.startedAt.fold(true) { startedAt =>
+        startedAt + healthCheck.gracePeriod > Timestamp.now()
+      }
     }
   }
 
   //TODO: fix style issue and enable this scalastyle check
   //scalastyle:off cyclomatic.complexity method.length
   def receive: Receive = {
-    case GetTaskHealth(taskId) => sender() ! taskHealth.getOrElse(taskId, Health(taskId))
+    case GetTaskHealth(taskId) =>
+      sender() ! taskHealth.getOrElse(taskId, Health(taskId))
 
     case GetAppHealth =>
       sender() ! AppHealth(taskHealth.values.toSeq)
@@ -138,7 +143,11 @@ class HealthCheckActor(
       scheduleNextHealthCheck()
 
     case result: HealthResult if result.version == app.version =>
-      log.info("Received health result for app [{}] version [{}]: [{}]", app.id, app.version, result)
+      log.info(
+        "Received health result for app [{}] version [{}]: [{}]",
+        app.id,
+        app.version,
+        result)
       val taskId = result.taskId
       val health = taskHealth.getOrElse(taskId, Health(taskId))
 
@@ -151,8 +160,7 @@ class HealthCheckActor(
               if (ignoreFailures(task, health)) {
                 // Don't update health
                 health
-              }
-              else {
+              } else {
                 eventBus.publish(FailedHealthCheck(app.id, taskId, healthCheck))
                 checkConsecutiveFailures(task, health)
                 health.update(result)

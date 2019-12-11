@@ -7,7 +7,6 @@ object forbug {
   }
 }
 
-
 class A {
   def doSome(a: Int): this.type = {
     println(a)
@@ -16,4 +15,3 @@ class A {
 }
 
 case class ValDef(a: A)
-

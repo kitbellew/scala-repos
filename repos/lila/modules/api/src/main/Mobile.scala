@@ -9,11 +9,11 @@ object Mobile {
   object Api {
 
     case class Old(
-      version: Int,
-      // date when a newer version was released
-      deprecatedAt: DateTime,
-      // date when the server stops accepting requests
-      unsupportedAt: DateTime)
+        version: Int,
+        // date when a newer version was released
+        deprecatedAt: DateTime,
+        // date when the server stops accepting requests
+        unsupportedAt: DateTime)
 
     def currentVersion = 1
 
@@ -31,10 +31,11 @@ object Mobile {
     def requestVersion(req: RequestHeader): Option[Int] = {
       val accepts = ~req.headers.get(HeaderNames.ACCEPT)
       if (accepts contains "application/vnd.lichess.v1+json") some(1)
-      else req.path match {
-        case PathPattern(version) => parseIntOption(version)
-        case _                    => None
-      }
+      else
+        req.path match {
+          case PathPattern(version) => parseIntOption(version)
+          case _                    => None
+        }
     }
 
     def requested(req: RequestHeader) = requestVersion(req).isDefined

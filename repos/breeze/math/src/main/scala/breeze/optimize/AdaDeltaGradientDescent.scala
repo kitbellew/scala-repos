@@ -5,27 +5,39 @@ import breeze.numerics.sqrt
 import breeze.stats.distributions.{Rand, RandBasis}
 
 /**
- * Created by jda on 3/17/15.
- */
-class AdaDeltaGradientDescent[T](rho: Double,
-                                 maxIter: Int,
-                                 tolerance: Double = 1e-5,
-                                 improvementTolerance: Double = 1e-4,
-                                 minImprovementWindow: Int = 50)
-                                (implicit vspace: MutableFiniteCoordinateField[T, _, Double],
-                                 rand: RandBasis = Rand)
-    extends StochasticGradientDescent[T](1d, maxIter, tolerance, minImprovementWindow) {
+  * Created by jda on 3/17/15.
+  */
+class AdaDeltaGradientDescent[T](
+    rho: Double,
+    maxIter: Int,
+    tolerance: Double = 1e-5,
+    improvementTolerance: Double = 1e-4,
+    minImprovementWindow: Int = 50)(
+    implicit vspace: MutableFiniteCoordinateField[T, _, Double],
+    rand: RandBasis = Rand)
+    extends StochasticGradientDescent[T](
+      1d,
+      maxIter,
+      tolerance,
+      minImprovementWindow) {
 
   val epsilon = 1e-6
   import vspace._
 
   case class History(avgSqGradient: T, avgSqDelta: T)
 
-  override protected def initialHistory(f: StochasticDiffFunction[T], init: T): History = {
+  override protected def initialHistory(
+      f: StochasticDiffFunction[T],
+      init: T): History = {
     History(zeroLike(init), zeroLike(init))
   }
 
-  override protected def updateHistory(newX: T, newGrad: T, newVal: Double, f: StochasticDiffFunction[T], oldState: State): History = {
+  override protected def updateHistory(
+      newX: T,
+      newGrad: T,
+      newVal: Double,
+      f: StochasticDiffFunction[T],
+      oldState: State): History = {
     val oldAvgSqGradient = oldState.history.avgSqGradient
     val newAvgSqGradient = (oldAvgSqGradient * rho) + ((newGrad :* newGrad) * (1 - rho))
 
@@ -44,7 +56,10 @@ class AdaDeltaGradientDescent[T](rho: Double,
     state.x + delta
   }
 
-  override def determineStepSize(state: State, f: StochasticDiffFunction[T], dir: T) = {
+  override def determineStepSize(
+      state: State,
+      f: StochasticDiffFunction[T],
+      dir: T) = {
     defaultStepSize
   }
 

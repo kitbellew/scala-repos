@@ -18,8 +18,8 @@
 package org.apache.spark.sql.execution
 
 /**
- * Physical execution operators for join operations.
- */
+  * Physical execution operators for join operations.
+  */
 package object joins {
 
   sealed abstract class BuildSide

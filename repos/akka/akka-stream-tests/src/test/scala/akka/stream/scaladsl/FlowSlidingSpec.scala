@@ -1,10 +1,10 @@
 /**
- * Copyright (C) 2015-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2015-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.stream.scaladsl
 
 import akka.stream.testkit.Utils._
-import akka.stream.{ ActorMaterializer, ActorMaterializerSettings }
+import akka.stream.{ActorMaterializer, ActorMaterializerSettings}
 import akka.stream.testkit._
 import org.scalacheck.Gen
 import org.scalatest.concurrent.ScalaFutures
@@ -24,8 +24,13 @@ class FlowSlidingSpec extends AkkaSpec with GeneratorDrivenPropertyChecks {
     def check(gen: Gen[(Int, Int, Int)]): Unit =
       forAll(gen, MinSize(1000), MaxSize(1000)) {
         case (len, win, step) ⇒
-          val af = Source.fromIterator(() ⇒ Iterator.from(0).take(len)).sliding(win, step).runFold(Seq.empty[Seq[Int]])(_ :+ _)
-          val cf = Source.fromIterator(() ⇒ Iterator.from(0).take(len).sliding(win, step)).runFold(Seq.empty[Seq[Int]])(_ :+ _)
+          val af = Source
+            .fromIterator(() ⇒ Iterator.from(0).take(len))
+            .sliding(win, step)
+            .runFold(Seq.empty[Seq[Int]])(_ :+ _)
+          val cf = Source
+            .fromIterator(() ⇒ Iterator.from(0).take(len).sliding(win, step))
+            .runFold(Seq.empty[Seq[Int]])(_ :+ _)
           af.futureValue should be(cf.futureValue)
       }
 
@@ -54,7 +59,10 @@ class FlowSlidingSpec extends AkkaSpec with GeneratorDrivenPropertyChecks {
     }
 
     "work with empty sources" in assertAllStagesStopped {
-      Source.empty.sliding(1).runForeach(testActor ! _).map(_ ⇒ "done") pipeTo testActor
+      Source.empty
+        .sliding(1)
+        .runForeach(testActor ! _)
+        .map(_ ⇒ "done") pipeTo testActor
       expectMsg("done")
     }
   }

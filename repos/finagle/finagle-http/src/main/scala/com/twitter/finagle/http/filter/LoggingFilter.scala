@@ -11,11 +11,9 @@ import com.twitter.util.{Duration, Future, Return, Throw, Time, Stopwatch}
 import java.util.TimeZone
 import org.apache.commons.lang.time.FastDateFormat
 
-
 trait LogFormatter extends CoreLogFormatter[Request, Response] {
   def escape(s: String): String = LogFormatter.escape(s)
 }
-
 
 object LogFormatter {
   private val BackslashV = 0x0b.toByte
@@ -63,7 +61,6 @@ object LogFormatter {
   }
 }
 
-
 /** Apache-style common log formatter */
 class CommonLogFormatter extends LogFormatter {
   /* See http://httpd.apache.org/docs/2.0/logs.html
@@ -81,13 +78,15 @@ class CommonLogFormatter extends LogFormatter {
    *   %D: response time in milliseconds
    *   "%{User-Agent}i": user agent
    */
-  val DateFormat = FastDateFormat.getInstance("dd/MMM/yyyy:HH:mm:ss Z",
-                     TimeZone.getTimeZone("GMT"))
+  val DateFormat = FastDateFormat.getInstance(
+    "dd/MMM/yyyy:HH:mm:ss Z",
+    TimeZone.getTimeZone("GMT"))
   def format(request: Request, response: Response, responseTime: Duration) = {
     val remoteAddr = request.remoteAddress.getHostAddress
 
     val contentLength = response.length
-    val contentLengthStr = if (contentLength > 0) contentLength.toString else "-"
+    val contentLengthStr =
+      if (contentLength > 0) contentLength.toString else "-"
 
     val uaStr = request.userAgent.getOrElse("-")
 
@@ -114,37 +113,43 @@ class CommonLogFormatter extends LogFormatter {
     builder.toString
   }
 
-  def formatException(request: Request, throwable: Throwable, responseTime: Duration): String = throw new UnsupportedOperationException("Log throwables as empty 500s instead")
+  def formatException(
+      request: Request,
+      throwable: Throwable,
+      responseTime: Duration): String =
+    throw new UnsupportedOperationException(
+      "Log throwables as empty 500s instead")
 
   def formattedDate(): String =
     DateFormat.format(Time.now.toDate)
 }
 
-
 /**
- *  Logging filter.
- *
- * Logs all requests according to formatter.
- * Note this may be used upstream of a ValidateRequestFilter, so the URL and
- * parameters may be invalid.
- */
+  *  Logging filter.
+  *
+  * Logs all requests according to formatter.
+  * Note this may be used upstream of a ValidateRequestFilter, so the URL and
+  * parameters may be invalid.
+  */
 class LoggingFilter[REQUEST <: Request](
-  val log: Logger,
-  val formatter: CoreLogFormatter[REQUEST, Response]
+    val log: Logger,
+    val formatter: CoreLogFormatter[REQUEST, Response]
 ) extends CoreLoggingFilter[REQUEST, Response] {
 
   // Treat exceptions as empty 500 errors
-  override protected def logException(duration: Duration, request: REQUEST, throwable: Throwable) {
+  override protected def logException(
+      duration: Duration,
+      request: REQUEST,
+      throwable: Throwable) {
     val response = Response(request.version, Status.InternalServerError)
     val line = formatter.format(request, response, duration)
     log.info(line)
   }
 }
 
-
-object LoggingFilter extends LoggingFilter[Request]({
-    val log = Logger("access")
-    log.setUseParentHandlers(false)
-    log
-  },
-  new CommonLogFormatter)
+object LoggingFilter
+    extends LoggingFilter[Request]({
+      val log = Logger("access")
+      log.setUseParentHandlers(false)
+      log
+    }, new CommonLogFormatter)

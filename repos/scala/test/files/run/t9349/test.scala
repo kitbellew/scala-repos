@@ -6,7 +6,7 @@ object Test {
         val i = new o.Inner
     }
     o1 match {
-      case o : Outer =>
+      case o: Outer =>
         val i = new o.Inner
 
     }

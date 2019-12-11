@@ -1,12 +1,12 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.routing
 
-import com.typesafe.config.{ Config, ConfigFactory }
+import com.typesafe.config.{Config, ConfigFactory}
 
 import language.postfixOps
-import akka.actor.{ ActorSystem, Actor, Props, ActorRef }
+import akka.actor.{ActorSystem, Actor, Props, ActorRef}
 import akka.testkit._
 import akka.testkit.TestEvent._
 import scala.concurrent.Await
@@ -37,7 +37,10 @@ object ResizerSpec {
 }
 
 @org.junit.runner.RunWith(classOf[org.scalatest.junit.JUnitRunner])
-class ResizerSpec extends AkkaSpec(ResizerSpec.config) with DefaultTimeout with ImplicitSender {
+class ResizerSpec
+    extends AkkaSpec(ResizerSpec.config)
+    with DefaultTimeout
+    with ImplicitSender {
 
   import akka.routing.ResizerSpec._
 
@@ -47,12 +50,19 @@ class ResizerSpec extends AkkaSpec(ResizerSpec.config) with DefaultTimeout with 
   }
 
   def routeeSize(router: ActorRef): Int =
-    Await.result(router ? GetRoutees, timeout.duration).asInstanceOf[Routees].routees.size
+    Await
+      .result(router ? GetRoutees, timeout.duration)
+      .asInstanceOf[Routees]
+      .routees
+      .size
 
   "Resizer fromConfig" must {
     def parseCfg(cfgString: String): Config = {
-      val referenceCfg = ConfigFactory.defaultReference(ActorSystem.findClassLoader())
-      ConfigFactory.parseString(cfgString).withFallback(referenceCfg.getConfig("akka.actor.deployment.default"))
+      val referenceCfg =
+        ConfigFactory.defaultReference(ActorSystem.findClassLoader())
+      ConfigFactory
+        .parseString(cfgString)
+        .withFallback(referenceCfg.getConfig("akka.actor.deployment.default"))
     }
 
     "load DefaultResizer from config when resizer is enabled" in {
@@ -95,9 +105,7 @@ class ResizerSpec extends AkkaSpec(ResizerSpec.config) with DefaultTimeout with 
   "DefaultResizer" must {
 
     "use settings to evaluate capacity" in {
-      val resizer = DefaultResizer(
-        lowerBound = 2,
-        upperBound = 3)
+      val resizer = DefaultResizer(lowerBound = 2, upperBound = 3)
 
       val c1 = resizer.capacity(Vector.empty[Routee])
       c1 should ===(2)
@@ -110,10 +118,8 @@ class ResizerSpec extends AkkaSpec(ResizerSpec.config) with DefaultTimeout with 
     }
 
     "use settings to evaluate rampUp" in {
-      val resizer = DefaultResizer(
-        lowerBound = 2,
-        upperBound = 10,
-        rampupRate = 0.2)
+      val resizer =
+        DefaultResizer(lowerBound = 2, upperBound = 10, rampupRate = 0.2)
 
       resizer.rampup(pressure = 9, capacity = 10) should ===(0)
       resizer.rampup(pressure = 5, capacity = 5) should ===(1)
@@ -139,11 +145,10 @@ class ResizerSpec extends AkkaSpec(ResizerSpec.config) with DefaultTimeout with 
     "be possible to define programmatically" in {
       val latch = new TestLatch(3)
 
-      val resizer = DefaultResizer(
-        lowerBound = 2,
-        upperBound = 3)
-      val router = system.actorOf(RoundRobinPool(nrOfInstances = 0, resizer = Some(resizer)).
-        props(Props[TestActor]))
+      val resizer = DefaultResizer(lowerBound = 2, upperBound = 3)
+      val router = system.actorOf(
+        RoundRobinPool(nrOfInstances = 0, resizer = Some(resizer))
+          .props(Props[TestActor]))
 
       router ! latch
       router ! latch
@@ -182,14 +187,15 @@ class ResizerSpec extends AkkaSpec(ResizerSpec.config) with DefaultTimeout with 
         messagesPerResize = 1,
         backoffThreshold = 0.0)
 
-      val router = system.actorOf(RoundRobinPool(nrOfInstances = 0, resizer = Some(resizer)).props(
-        Props(new Actor {
-          def receive = {
-            case d: FiniteDuration ⇒
-              Thread.sleep(d.dilated.toMillis); sender() ! "done"
-            case "echo" ⇒ sender() ! "reply"
-          }
-        })))
+      val router = system.actorOf(
+        RoundRobinPool(nrOfInstances = 0, resizer = Some(resizer))
+          .props(Props(new Actor {
+            def receive = {
+              case d: FiniteDuration ⇒
+                Thread.sleep(d.dilated.toMillis); sender() ! "done"
+              case "echo" ⇒ sender() ! "reply"
+            }
+          })))
 
       // first message should create the minimum number of routees
       router ! "echo"
@@ -227,13 +233,14 @@ class ResizerSpec extends AkkaSpec(ResizerSpec.config) with DefaultTimeout with 
         pressureThreshold = 1,
         messagesPerResize = 2)
 
-      val router = system.actorOf(RoundRobinPool(nrOfInstances = 0, resizer = Some(resizer)).props(
-        Props(new Actor {
-          def receive = {
-            case n: Int if n <= 0 ⇒ // done
-            case n: Int           ⇒ Thread.sleep((n millis).dilated.toMillis)
-          }
-        })))
+      val router = system.actorOf(
+        RoundRobinPool(nrOfInstances = 0, resizer = Some(resizer))
+          .props(Props(new Actor {
+            def receive = {
+              case n: Int if n <= 0 ⇒ // done
+              case n: Int ⇒ Thread.sleep((n millis).dilated.toMillis)
+            }
+          })))
 
       // put some pressure on the router
       for (m ← 0 until 15) {

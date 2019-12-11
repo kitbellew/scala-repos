@@ -6,8 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
-
 package scala.scalajs.js
 
 @native

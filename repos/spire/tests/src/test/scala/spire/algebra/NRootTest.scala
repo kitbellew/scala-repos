@@ -6,7 +6,6 @@ import java.math.BigInteger
 import spire.implicits._
 import org.scalatest.FunSuite
 
-
 class NRootTest extends FunSuite {
   def testIntegralNRoot[A: Ring: NRoot: ClassTag]: Unit = {
     val cls = implicitly[ClassTag[A]].runtimeClass.getSimpleName
@@ -65,4 +64,3 @@ class NRootTest extends FunSuite {
     }
   }
 }
-

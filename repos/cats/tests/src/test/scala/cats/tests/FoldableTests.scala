@@ -6,36 +6,39 @@ import org.scalacheck.Arbitrary
 
 import cats.std.all._
 
-abstract class FoldableCheck[F[_]: Foldable](name: String)(implicit ArbFInt: Arbitrary[F[Int]]) extends CatsSuite with PropertyChecks {
+abstract class FoldableCheck[F[_]: Foldable](name: String)(
+    implicit ArbFInt: Arbitrary[F[Int]])
+    extends CatsSuite
+    with PropertyChecks {
 
   def iterator[T](fa: F[T]): Iterator[T]
 
   test("summation") {
     forAll { (fa: F[Int]) =>
       val total = iterator(fa).sum
-      fa.foldLeft(0)(_ + _) should === (total)
-      fa.foldRight(Now(0))((x, ly) => ly.map(x + _)).value should === (total)
-      fa.fold should === (total)
-      fa.foldMap(identity) should === (total)
+      fa.foldLeft(0)(_ + _) should ===(total)
+      fa.foldRight(Now(0))((x, ly) => ly.map(x + _)).value should ===(total)
+      fa.fold should ===(total)
+      fa.foldMap(identity) should ===(total)
     }
   }
 
   test("find/exists/forall/filter_/dropWhile_") {
     forAll { (fa: F[Int], n: Int) =>
-      fa.find(_ > n)   should === (iterator(fa).find(_ > n))
-      fa.exists(_ > n) should === (iterator(fa).exists(_ > n))
-      fa.forall(_ > n) should === (iterator(fa).forall(_ > n))
-      fa.filter_(_ > n) should === (iterator(fa).filter(_ > n).toList)
-      fa.dropWhile_(_ > n) should === (iterator(fa).dropWhile(_ > n).toList)
-      fa.takeWhile_(_ > n) should === (iterator(fa).takeWhile(_ > n).toList)
+      fa.find(_ > n) should ===(iterator(fa).find(_ > n))
+      fa.exists(_ > n) should ===(iterator(fa).exists(_ > n))
+      fa.forall(_ > n) should ===(iterator(fa).forall(_ > n))
+      fa.filter_(_ > n) should ===(iterator(fa).filter(_ > n).toList)
+      fa.dropWhile_(_ > n) should ===(iterator(fa).dropWhile(_ > n).toList)
+      fa.takeWhile_(_ > n) should ===(iterator(fa).takeWhile(_ > n).toList)
     }
   }
 
   test("toList/isEmpty/nonEmpty") {
     forAll { (fa: F[Int]) =>
-      fa.toList should === (iterator(fa).toList)
-      fa.isEmpty should === (iterator(fa).isEmpty)
-      fa.nonEmpty should === (iterator(fa).nonEmpty)
+      fa.toList should ===(iterator(fa).toList)
+      fa.isEmpty should ===(iterator(fa).isEmpty)
+      fa.nonEmpty should ===(iterator(fa).nonEmpty)
     }
   }
 }
@@ -48,25 +51,27 @@ class FoldableTestsAdditional extends CatsSuite {
       if (a === goal) Now(true) else lb
     }
 
-
   test("Foldable[List]") {
     val F = Foldable[List]
 
     // some basic sanity checks
     val ns = (1 to 10).toList
     val total = ns.sum
-    F.foldLeft(ns, 0)(_ + _) should === (total)
-    F.foldRight(ns, Now(0))((x, ly) => ly.map(x + _)).value should === (total)
-    F.fold(ns) should === (total)
+    F.foldLeft(ns, 0)(_ + _) should ===(total)
+    F.foldRight(ns, Now(0))((x, ly) => ly.map(x + _)).value should ===(total)
+    F.fold(ns) should ===(total)
 
     // more basic checks
     val names = List("Aaron", "Betty", "Calvin", "Deirdra")
-    F.foldMap(names)(_.length) should === (names.map(_.length).sum)
-    val sumM = F.foldM(names, "") { (acc, x) => (Some(acc + x): Option[String]) }
+    F.foldMap(names)(_.length) should ===(names.map(_.length).sum)
+    val sumM = F.foldM(names, "") { (acc, x) =>
+      (Some(acc + x): Option[String])
+    }
     assert(sumM == Some("AaronBettyCalvinDeirdra"))
     val notCalvin = F.foldM(names, "") { (acc, x) =>
       if (x == "Calvin") (None: Option[String])
-      else (Some(acc + x): Option[String]) }
+      else (Some(acc + x): Option[String])
+    }
     assert(notCalvin == None)
 
     // test trampolining
@@ -74,8 +79,9 @@ class FoldableTestsAdditional extends CatsSuite {
     assert(contains(large, 10000).value)
 
     // safely build large lists
-    val larger = F.foldRight(large, Now(List.empty[Int]))((x, lxs) => lxs.map((x + 1) :: _))
-    larger.value should === (large.map(_ + 1))
+    val larger = F.foldRight(large, Now(List.empty[Int]))((x, lxs) =>
+      lxs.map((x + 1) :: _))
+    larger.value should ===(large.map(_ + 1))
   }
 
   test("Foldable[List].foldM stack safety") {
@@ -83,7 +89,7 @@ class FoldableTestsAdditional extends CatsSuite {
       if (x == 0) None else Some(acc + x)
 
     val n = 100000L
-    val expected = n*(n+1)/2
+    val expected = n * (n + 1) / 2
     val actual = Foldable[List].foldM((1L to n).toList, 0L)(nonzero)
     assert(actual.get == expected)
   }

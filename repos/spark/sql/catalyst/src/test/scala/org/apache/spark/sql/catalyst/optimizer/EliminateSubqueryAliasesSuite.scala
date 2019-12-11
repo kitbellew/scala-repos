@@ -27,16 +27,20 @@ import org.apache.spark.sql.catalyst.plans.PlanTest
 import org.apache.spark.sql.catalyst.plans.logical._
 import org.apache.spark.sql.catalyst.rules._
 
-
 class EliminateSubqueryAliasesSuite extends PlanTest with PredicateHelper {
 
   object Optimize extends RuleExecutor[LogicalPlan] {
-    val batches = Batch("EliminateSubqueryAliases", Once, EliminateSubqueryAliases) :: Nil
+    val batches = Batch(
+      "EliminateSubqueryAliases",
+      Once,
+      EliminateSubqueryAliases) :: Nil
   }
 
   private def assertEquivalent(e1: Expression, e2: Expression): Unit = {
-    val correctAnswer = Project(Alias(e2, "out")() :: Nil, OneRowRelation).analyze
-    val actual = Optimize.execute(Project(Alias(e1, "out")() :: Nil, OneRowRelation).analyze)
+    val correctAnswer =
+      Project(Alias(e2, "out")() :: Nil, OneRowRelation).analyze
+    val actual = Optimize.execute(
+      Project(Alias(e1, "out")() :: Nil, OneRowRelation).analyze)
     comparePlans(actual, correctAnswer)
   }
 
@@ -60,7 +64,8 @@ class EliminateSubqueryAliasesSuite extends PlanTest with PredicateHelper {
 
   test("eliminate multiple subqueries") {
     val input = LocalRelation('a.int, 'b.int)
-    val query = Filter(TrueLiteral,
+    val query = Filter(
+      TrueLiteral,
       SubqueryAlias("c", SubqueryAlias("b", SubqueryAlias("a", input))))
     comparePlans(
       afterOptimization(query),

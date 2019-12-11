@@ -14,11 +14,15 @@ class MiscDirectivesExamplesSpec extends RoutingSpec {
 
   "extractClientIP-example" in {
     val route = extractClientIP { ip =>
-      complete("Client's ip is " + ip.toOption.map(_.getHostAddress).getOrElse("unknown"))
+      complete(
+        "Client's ip is " + ip.toOption
+          .map(_.getHostAddress)
+          .getOrElse("unknown"))
     }
 
     // tests:
-    Get("/").withHeaders(`Remote-Address`(RemoteAddress(InetAddress.getByName("192.168.3.12")))) ~> route ~> check {
+    Get("/").withHeaders(`Remote-Address`(
+      RemoteAddress(InetAddress.getByName("192.168.3.12")))) ~> route ~> check {
       responseAs[String] shouldEqual "Client's ip is 192.168.3.12"
     }
   }
@@ -81,7 +85,9 @@ class MiscDirectivesExamplesSpec extends RoutingSpec {
   "validate-example" in {
     val route =
       extractUri { uri =>
-        validate(uri.path.toString.size < 5, s"Path too long: '${uri.path.toString}'") {
+        validate(
+          uri.path.toString.size < 5,
+          s"Path too long: '${uri.path.toString}'") {
           complete(s"Full URI: $uri")
         }
       }
@@ -91,7 +97,9 @@ class MiscDirectivesExamplesSpec extends RoutingSpec {
       responseAs[String] shouldEqual "Full URI: http://example.com/234"
     }
     Get("/abcdefghijkl") ~> route ~> check {
-      rejection shouldEqual ValidationRejection("Path too long: '/abcdefghijkl'", None)
+      rejection shouldEqual ValidationRejection(
+        "Path too long: '/abcdefghijkl'",
+        None)
     }
   }
 }

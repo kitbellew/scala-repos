@@ -2,18 +2,24 @@ package org.jetbrains.plugins.scala
 package codeInspection.etaExpansion
 
 import com.intellij.codeInspection.LocalInspectionTool
-import org.jetbrains.plugins.scala.codeInspection.{InspectionBundle, ScalaLightInspectionFixtureTestAdapter}
+import org.jetbrains.plugins.scala.codeInspection.{
+  InspectionBundle,
+  ScalaLightInspectionFixtureTestAdapter
+}
 
 /**
- * Nikolay.Tropin
- * 6/3/13
- */
-class ConvertibleToMethodValueInspectionTest extends ScalaLightInspectionFixtureTestAdapter {
+  * Nikolay.Tropin
+  * 6/3/13
+  */
+class ConvertibleToMethodValueInspectionTest
+    extends ScalaLightInspectionFixtureTestAdapter {
   val annotation = InspectionBundle.message("convertible.to.method.value.name")
-  val hintAnon = InspectionBundle.message("convertible.to.method.value.anonymous.hint")
+  val hintAnon =
+    InspectionBundle.message("convertible.to.method.value.anonymous.hint")
   val hintEta = InspectionBundle.message("convertible.to.method.value.eta.hint")
 
-  protected def classOfInspection: Class[_ <: LocalInspectionTool] = classOf[ConvertibleToMethodValueInspection]
+  protected def classOfInspection: Class[_ <: LocalInspectionTool] =
+    classOf[ConvertibleToMethodValueInspection]
 
   def test_methodCallUntyped() {
     val selected = s"""object A {
@@ -323,7 +329,7 @@ class ConvertibleToMethodValueInspectionTest extends ScalaLightInspectionFixture
                    |  list.map(${START}AObj.foo(_)$END)
                    |}
       """.stripMargin
-    val result =s"""class A(s: String) {
+    val result = s"""class A(s: String) {
                     |  def foo(x: String) = x
                     |}
                     |

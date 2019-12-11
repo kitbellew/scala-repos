@@ -1,7 +1,6 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
-
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.camel
 
 import language.postfixOps
@@ -11,27 +10,37 @@ import akka.actor._
 import org.scalatest.Matchers
 import org.scalatest.WordSpec
 import akka.camel.TestSupport._
-import org.apache.camel.model.{ RouteDefinition }
+import org.apache.camel.model.{RouteDefinition}
 import org.apache.camel.builder.Builder
-import org.apache.camel.{ FailedToCreateRouteException, CamelExecutionException }
-import java.util.concurrent.{ ExecutionException, TimeUnit, TimeoutException }
+import org.apache.camel.{FailedToCreateRouteException, CamelExecutionException}
+import java.util.concurrent.{ExecutionException, TimeUnit, TimeoutException}
 import akka.actor.Status.Failure
 import scala.concurrent.duration._
-import scala.concurrent.{ ExecutionContext, Await }
+import scala.concurrent.{ExecutionContext, Await}
 import akka.testkit._
 import akka.util.Timeout
 
-class ConsumerIntegrationTest extends WordSpec with Matchers with NonSharedCamelSystem {
+class ConsumerIntegrationTest
+    extends WordSpec
+    with Matchers
+    with NonSharedCamelSystem {
   "ConsumerIntegrationTest" must {
     val defaultTimeoutDuration = 10 seconds
     implicit val defaultTimeout = Timeout(defaultTimeoutDuration)
     implicit def ec: ExecutionContext = system.dispatcher
 
     "Consumer must throw FailedToCreateRouteException, while awaiting activation, if endpoint is invalid" in {
-      filterEvents(EventFilter[FailedToCreateRouteException](pattern = "failed to activate.*", occurrences = 1)) {
-        val actorRef = system.actorOf(Props(new TestActor(uri = "some invalid uri")), "invalidActor")
+      filterEvents(
+        EventFilter[FailedToCreateRouteException](
+          pattern = "failed to activate.*",
+          occurrences = 1)) {
+        val actorRef = system.actorOf(
+          Props(new TestActor(uri = "some invalid uri")),
+          "invalidActor")
         intercept[FailedToCreateRouteException] {
-          Await.result(camel.activationFutureFor(actorRef), defaultTimeoutDuration)
+          Await.result(
+            camel.activationFutureFor(actorRef),
+            defaultTimeoutDuration)
         }
       }
     }
@@ -43,18 +52,24 @@ class ConsumerIntegrationTest extends WordSpec with Matchers with NonSharedCamel
           case m: CamelMessage ⇒ sender() ! "received " + m.bodyAs[String]
         }
       }, name = "direct-a1")
-      camel.sendTo("direct:a1", msg = "some message") should ===("received some message")
+      camel.sendTo("direct:a1", msg = "some message") should ===(
+        "received some message")
     }
 
     "Consumer must time-out if consumer is slow" taggedAs TimingTest in {
       val SHORT_TIMEOUT = 10 millis
       val LONG_WAIT = 1 second
 
-      val ref = start(new Consumer {
-        override def replyTimeout = SHORT_TIMEOUT
-        def endpointUri = "direct:a3"
-        def receive = { case _ ⇒ { Thread.sleep(LONG_WAIT.toMillis); sender() ! "done" } }
-      }, name = "ignore-this-deadletter-timeout-consumer-reply")
+      val ref = start(
+        new Consumer {
+          override def replyTimeout = SHORT_TIMEOUT
+          def endpointUri = "direct:a3"
+          def receive = {
+            case _ ⇒ { Thread.sleep(LONG_WAIT.toMillis); sender() ! "done" }
+          }
+        },
+        name = "ignore-this-deadletter-timeout-consumer-reply"
+      )
 
       intercept[CamelExecutionException] {
         camel.sendTo("direct:a3", msg = "some msg 3")
@@ -65,18 +80,21 @@ class ConsumerIntegrationTest extends WordSpec with Matchers with NonSharedCamel
 
     "Consumer must process messages even after actor restart" in {
       val restarted = TestLatch()
-      val consumer = start(new Consumer {
-        def endpointUri = "direct:a2"
+      val consumer = start(
+        new Consumer {
+          def endpointUri = "direct:a2"
 
-        def receive = {
-          case "throw"         ⇒ throw new TestException("")
-          case m: CamelMessage ⇒ sender() ! "received " + m.bodyAs[String]
-        }
+          def receive = {
+            case "throw" ⇒ throw new TestException("")
+            case m: CamelMessage ⇒ sender() ! "received " + m.bodyAs[String]
+          }
 
-        override def postRestart(reason: Throwable) {
-          restarted.countDown()
-        }
-      }, "direct-a2")
+          override def postRestart(reason: Throwable) {
+            restarted.countDown()
+          }
+        },
+        "direct-a2"
+      )
       filterEvents(EventFilter[TestException](occurrences = 1)) {
         consumer ! "throw"
         Await.ready(restarted, defaultTimeoutDuration)
@@ -93,7 +111,9 @@ class ConsumerIntegrationTest extends WordSpec with Matchers with NonSharedCamel
       camel.routeCount should be > (0)
 
       system.stop(consumer)
-      Await.result(camel.deactivationFutureFor(consumer), defaultTimeoutDuration)
+      Await.result(
+        camel.deactivationFutureFor(consumer),
+        defaultTimeoutDuration)
 
       camel.routeCount should ===(0)
     }
@@ -105,31 +125,44 @@ class ConsumerIntegrationTest extends WordSpec with Matchers with NonSharedCamel
       camel.routeCount should be > (0)
       camel.routes.get(0).getEndpoint.getEndpointUri should ===("direct://test")
       system.stop(consumer)
-      Await.result(camel.deactivationFutureFor(consumer), defaultTimeoutDuration)
+      Await.result(
+        camel.deactivationFutureFor(consumer),
+        defaultTimeoutDuration)
       camel.routeCount should ===(0)
       stop(consumer)
     }
 
     "Error passing consumer supports error handling through route modification" in {
-      val ref = start(new ErrorThrowingConsumer("direct:error-handler-test") {
-        override def onRouteDefinition = (rd: RouteDefinition) ⇒ {
-          rd.onException(classOf[TestException]).handled(true).transform(Builder.exceptionMessage).end
-        }
-      }, name = "direct-error-handler-test")
+      val ref = start(
+        new ErrorThrowingConsumer("direct:error-handler-test") {
+          override def onRouteDefinition = (rd: RouteDefinition) ⇒ {
+            rd.onException(classOf[TestException])
+              .handled(true)
+              .transform(Builder.exceptionMessage)
+              .end
+          }
+        },
+        name = "direct-error-handler-test"
+      )
       filterEvents(EventFilter[TestException](occurrences = 1)) {
-        camel.sendTo("direct:error-handler-test", msg = "hello") should ===("error: hello")
+        camel.sendTo("direct:error-handler-test", msg = "hello") should ===(
+          "error: hello")
       }
       stop(ref)
     }
 
     "Error passing consumer supports redelivery through route modification" in {
-      val ref = start(new FailingOnceConsumer("direct:failing-once-concumer") {
-        override def onRouteDefinition = (rd: RouteDefinition) ⇒ {
-          rd.onException(classOf[TestException]).maximumRedeliveries(1).end
-        }
-      }, name = "direct-failing-once-consumer")
+      val ref = start(
+        new FailingOnceConsumer("direct:failing-once-concumer") {
+          override def onRouteDefinition = (rd: RouteDefinition) ⇒ {
+            rd.onException(classOf[TestException]).maximumRedeliveries(1).end
+          }
+        },
+        name = "direct-failing-once-consumer"
+      )
       filterEvents(EventFilter[TestException](occurrences = 1)) {
-        camel.sendTo("direct:failing-once-concumer", msg = "hello") should ===("accepted: hello")
+        camel.sendTo("direct:failing-once-concumer", msg = "hello") should ===(
+          "accepted: hello")
       }
       stop(ref)
     }
@@ -139,7 +172,10 @@ class ConsumerIntegrationTest extends WordSpec with Matchers with NonSharedCamel
         def endpointUri = "direct:manual-ack"
         def receive = { case _ ⇒ sender() ! Ack }
       }, name = "direct-manual-ack-1")
-      camel.template.asyncSendBody("direct:manual-ack", "some message").get(defaultTimeoutDuration.toSeconds, TimeUnit.SECONDS) should ===(null) //should not timeout
+      camel.template
+        .asyncSendBody("direct:manual-ack", "some message")
+        .get(defaultTimeoutDuration.toSeconds, TimeUnit.SECONDS) should ===(
+        null) //should not timeout
       stop(ref)
     }
 
@@ -151,7 +187,9 @@ class ConsumerIntegrationTest extends WordSpec with Matchers with NonSharedCamel
       }, name = "direct-manual-ack-2")
 
       intercept[ExecutionException] {
-        camel.template.asyncSendBody("direct:manual-ack", "some message").get(defaultTimeoutDuration.toSeconds, TimeUnit.SECONDS)
+        camel.template
+          .asyncSendBody("direct:manual-ack", "some message")
+          .get(defaultTimeoutDuration.toSeconds, TimeUnit.SECONDS)
       }.getCause.getCause should ===(someException)
       stop(ref)
     }
@@ -164,14 +202,19 @@ class ConsumerIntegrationTest extends WordSpec with Matchers with NonSharedCamel
       }, name = "direct-manual-ack-3")
 
       intercept[ExecutionException] {
-        camel.template.asyncSendBody("direct:manual-ack", "some message").get(defaultTimeoutDuration.toSeconds, TimeUnit.SECONDS)
+        camel.template
+          .asyncSendBody("direct:manual-ack", "some message")
+          .get(defaultTimeoutDuration.toSeconds, TimeUnit.SECONDS)
       }.getCause.getCause.getMessage should include("Failed to get Ack")
       stop(ref)
     }
     "respond to onRouteDefinition" in {
-      val ref = start(new ErrorRespondingConsumer("direct:error-responding-consumer-1"), "error-responding-consumer")
+      val ref = start(
+        new ErrorRespondingConsumer("direct:error-responding-consumer-1"),
+        "error-responding-consumer")
       filterEvents(EventFilter[TestException](occurrences = 1)) {
-        val response = camel.sendTo("direct:error-responding-consumer-1", "some body")
+        val response =
+          camel.sendTo("direct:error-responding-consumer-1", "some body")
         response should ===("some body has an error")
       }
       stop(ref)
@@ -181,7 +224,8 @@ class ConsumerIntegrationTest extends WordSpec with Matchers with NonSharedCamel
 
 class ErrorThrowingConsumer(override val endpointUri: String) extends Consumer {
   def receive = {
-    case msg: CamelMessage ⇒ throw new TestException("error: %s" format msg.body)
+    case msg: CamelMessage ⇒
+      throw new TestException("error: %s" format msg.body)
   }
   override def preRestart(reason: Throwable, message: Option[Any]) {
     super.preRestart(reason, message)
@@ -189,13 +233,17 @@ class ErrorThrowingConsumer(override val endpointUri: String) extends Consumer {
   }
 }
 
-class ErrorRespondingConsumer(override val endpointUri: String) extends Consumer {
+class ErrorRespondingConsumer(override val endpointUri: String)
+    extends Consumer {
   def receive = {
     case msg: CamelMessage ⇒ throw new TestException("Error!")
   }
   override def onRouteDefinition = (rd: RouteDefinition) ⇒ {
     // Catch TestException and handle it by returning a modified version of the in message
-    rd.onException(classOf[TestException]).handled(true).transform(Builder.body.append(" has an error")).end
+    rd.onException(classOf[TestException])
+      .handled(true)
+      .transform(Builder.body.append(" has an error"))
+      .end
   }
 
   final override def preRestart(reason: Throwable, message: Option[Any]) {

@@ -25,7 +25,10 @@ import org.mockito.Matchers._
 import org.mockito.Mockito._
 
 import org.apache.spark.SparkFunSuite
-import org.apache.spark.network.client.{TransportClient, TransportResponseHandler}
+import org.apache.spark.network.client.{
+  TransportClient,
+  TransportResponseHandler
+}
 import org.apache.spark.network.server.StreamManager
 import org.apache.spark.rpc._
 
@@ -33,7 +36,9 @@ class NettyRpcHandlerSuite extends SparkFunSuite {
 
   val env = mock(classOf[NettyRpcEnv])
   val sm = mock(classOf[StreamManager])
-  when(env.deserialize(any(classOf[TransportClient]), any(classOf[ByteBuffer]))(any()))
+  when(
+    env.deserialize(any(classOf[TransportClient]), any(classOf[ByteBuffer]))(
+      any()))
     .thenReturn(RequestMessage(RpcAddress("localhost", 12345), null, null))
 
   test("receive") {
@@ -41,11 +46,14 @@ class NettyRpcHandlerSuite extends SparkFunSuite {
     val nettyRpcHandler = new NettyRpcHandler(dispatcher, env, sm)
 
     val channel = mock(classOf[Channel])
-    val client = new TransportClient(channel, mock(classOf[TransportResponseHandler]))
-    when(channel.remoteAddress()).thenReturn(new InetSocketAddress("localhost", 40000))
+    val client =
+      new TransportClient(channel, mock(classOf[TransportResponseHandler]))
+    when(channel.remoteAddress())
+      .thenReturn(new InetSocketAddress("localhost", 40000))
     nettyRpcHandler.channelActive(client)
 
-    verify(dispatcher, times(1)).postToAll(RemoteProcessConnected(RpcAddress("localhost", 40000)))
+    verify(dispatcher, times(1))
+      .postToAll(RemoteProcessConnected(RpcAddress("localhost", 40000)))
   }
 
   test("connectionTerminated") {
@@ -53,16 +61,20 @@ class NettyRpcHandlerSuite extends SparkFunSuite {
     val nettyRpcHandler = new NettyRpcHandler(dispatcher, env, sm)
 
     val channel = mock(classOf[Channel])
-    val client = new TransportClient(channel, mock(classOf[TransportResponseHandler]))
-    when(channel.remoteAddress()).thenReturn(new InetSocketAddress("localhost", 40000))
+    val client =
+      new TransportClient(channel, mock(classOf[TransportResponseHandler]))
+    when(channel.remoteAddress())
+      .thenReturn(new InetSocketAddress("localhost", 40000))
     nettyRpcHandler.channelActive(client)
 
-    when(channel.remoteAddress()).thenReturn(new InetSocketAddress("localhost", 40000))
+    when(channel.remoteAddress())
+      .thenReturn(new InetSocketAddress("localhost", 40000))
     nettyRpcHandler.channelInactive(client)
 
-    verify(dispatcher, times(1)).postToAll(RemoteProcessConnected(RpcAddress("localhost", 40000)))
-    verify(dispatcher, times(1)).postToAll(
-      RemoteProcessDisconnected(RpcAddress("localhost", 40000)))
+    verify(dispatcher, times(1))
+      .postToAll(RemoteProcessConnected(RpcAddress("localhost", 40000)))
+    verify(dispatcher, times(1))
+      .postToAll(RemoteProcessDisconnected(RpcAddress("localhost", 40000)))
   }
 
 }

@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.workflow
 
 import java.io.File
@@ -59,7 +58,9 @@ object WorkflowUtils extends Logging {
     * @throws NoSuchMethodException
     *         Thrown when engine factory's apply() method is not implemented.
     */
-  def getEngine(engine: String, cl: ClassLoader): (EngineLanguage.Value, EngineFactory) = {
+  def getEngine(
+      engine: String,
+      cl: ClassLoader): (EngineLanguage.Value, EngineFactory) = {
     val runtimeMirror = universe.runtimeMirror(cl)
     val engineModule = runtimeMirror.staticModule(engine)
     val engineObject = runtimeMirror.reflectModule(engineModule)
@@ -69,17 +70,19 @@ object WorkflowUtils extends Logging {
         engineObject.instance.asInstanceOf[EngineFactory]
       )
     } catch {
-      case e @ (_: NoSuchFieldException | _: ClassNotFoundException) => try {
-        (
-          EngineLanguage.Java,
-          Class.forName(engine).newInstance.asInstanceOf[EngineFactory]
-        )
-      }
+      case e @ (_: NoSuchFieldException | _: ClassNotFoundException) =>
+        try {
+          (
+            EngineLanguage.Java,
+            Class.forName(engine).newInstance.asInstanceOf[EngineFactory]
+          )
+        }
     }
   }
 
-  def getEngineParamsGenerator(epg: String, cl: ClassLoader):
-    (EngineLanguage.Value, EngineParamsGenerator) = {
+  def getEngineParamsGenerator(
+      epg: String,
+      cl: ClassLoader): (EngineLanguage.Value, EngineParamsGenerator) = {
     val runtimeMirror = universe.runtimeMirror(cl)
     val epgModule = runtimeMirror.staticModule(epg)
     val epgObject = runtimeMirror.reflectModule(epgModule)
@@ -89,16 +92,19 @@ object WorkflowUtils extends Logging {
         epgObject.instance.asInstanceOf[EngineParamsGenerator]
       )
     } catch {
-      case e @ (_: NoSuchFieldException | _: ClassNotFoundException) => try {
-        (
-          EngineLanguage.Java,
-          Class.forName(epg).newInstance.asInstanceOf[EngineParamsGenerator]
-        )
-      }
+      case e @ (_: NoSuchFieldException | _: ClassNotFoundException) =>
+        try {
+          (
+            EngineLanguage.Java,
+            Class.forName(epg).newInstance.asInstanceOf[EngineParamsGenerator]
+          )
+        }
     }
   }
 
-  def getEvaluation(evaluation: String, cl: ClassLoader): (EngineLanguage.Value, Evaluation) = {
+  def getEvaluation(
+      evaluation: String,
+      cl: ClassLoader): (EngineLanguage.Value, Evaluation) = {
     val runtimeMirror = universe.runtimeMirror(cl)
     val evaluationModule = runtimeMirror.staticModule(evaluation)
     val evaluationObject = runtimeMirror.reflectModule(evaluationModule)
@@ -108,12 +114,13 @@ object WorkflowUtils extends Logging {
         evaluationObject.instance.asInstanceOf[Evaluation]
       )
     } catch {
-      case e @ (_: NoSuchFieldException | _: ClassNotFoundException) => try {
-        (
-          EngineLanguage.Java,
-          Class.forName(evaluation).newInstance.asInstanceOf[Evaluation]
-        )
-      }
+      case e @ (_: NoSuchFieldException | _: ClassNotFoundException) =>
+        try {
+          (
+            EngineLanguage.Java,
+            Class.forName(evaluation).newInstance.asInstanceOf[Evaluation]
+          )
+        }
     }
   }
 
@@ -139,17 +146,20 @@ object WorkflowUtils extends Logging {
     val pClass = clazz.getConstructors.head.getParameterTypes
     if (pClass.size == 0) {
       if (json != "") {
-        warn(s"Non-empty parameters supplied to ${clazz.getName}, but its " +
-          "constructor does not accept any arguments. Stubbing with empty " +
-          "parameters.")
+        warn(
+          s"Non-empty parameters supplied to ${clazz.getName}, but its " +
+            "constructor does not accept any arguments. Stubbing with empty " +
+            "parameters.")
       }
       EmptyParams()
     } else {
       val apClass = pClass.head
       try {
-        JsonExtractor.extract(jsonExtractor, json, apClass, f).asInstanceOf[Params]
+        JsonExtractor
+          .extract(jsonExtractor, json, apClass, f)
+          .asInstanceOf[Params]
       } catch {
-        case e@(_: MappingException | _: JsonSyntaxException) =>
+        case e @ (_: MappingException | _: JsonSyntaxException) =>
           error(
             s"Unable to extract parameters for ${apClass.getName} from " +
               s"JSON string: $json. Aborting workflow.",
@@ -167,38 +177,41 @@ object WorkflowUtils extends Logging {
       jsonExtractor: JsonExtractorOption): (String, Params) = {
     variantJson findField {
       case JField(f, _) => f == field
-      case _ => false
+      case _            => false
     } map { jv =>
       implicit lazy val formats = Utils.json4sDefaultFormats + new NameParamsSerializer
-      val np: NameParams = try {
-        jv._2.extract[NameParams]
-      } catch {
-        case e: Exception =>
-          error(s"Unable to extract $field name and params $jv")
-          throw e
-      }
-      val extractedParams = np.params.map { p =>
+      val np: NameParams =
         try {
-          if (!classMap.contains(np.name)) {
-            error(s"Unable to find $field class with name '${np.name}'" +
-              " defined in Engine.")
-            sys.exit(1)
-          }
-          WorkflowUtils.extractParams(
-            engineLanguage,
-            compact(render(p)),
-            classMap(np.name),
-            jsonExtractor,
-            formats)
+          jv._2.extract[NameParams]
         } catch {
           case e: Exception =>
-            error(s"Unable to extract $field params $p")
+            error(s"Unable to extract $field name and params $jv")
             throw e
         }
-      }.getOrElse(EmptyParams())
+      val extractedParams = np.params
+        .map { p =>
+          try {
+            if (!classMap.contains(np.name)) {
+              error(s"Unable to find $field class with name '${np.name}'" +
+                " defined in Engine.")
+              sys.exit(1)
+            }
+            WorkflowUtils.extractParams(
+              engineLanguage,
+              compact(render(p)),
+              classMap(np.name),
+              jsonExtractor,
+              formats)
+          } catch {
+            case e: Exception =>
+              error(s"Unable to extract $field params $p")
+              throw e
+          }
+        }
+        .getOrElse(EmptyParams())
 
       (np.name, extractedParams)
-    } getOrElse("", EmptyParams())
+    } getOrElse ("", EmptyParams())
   }
 
   /** Grab environmental variables that starts with 'PIO_'. */
@@ -265,9 +278,9 @@ object WorkflowUtils extends Logging {
       "MYSQL_JDBC_DRIVER",
       "HADOOP_CONF_DIR",
       "HBASE_CONF_DIR")
-    thirdPartyPaths.map(p =>
-      sys.env.get(p).map(Seq(_)).getOrElse(Seq[String]())
-    ).flatten
+    thirdPartyPaths
+      .map(p => sys.env.get(p).map(Seq(_)).getOrElse(Seq[String]()))
+      .flatten
   }
 
   def modifyLogging(verbose: Boolean): Unit = {
@@ -289,13 +302,14 @@ object WorkflowUtils extends Logging {
     val paramsOpt = (jv \ "params").extract[Option[JValue]]
 
     if (nameOpt.isEmpty && paramsOpt.isEmpty) {
-      error("Unable to find 'name' or 'params' fields in" +
-        s" ${compact(render(jv))}.\n" +
-        "Since 0.8.4, the 'params' field is required in engine.json" +
-        " in order to specify parameters for DataSource, Preparator or" +
-        " Serving.\n" +
-        "Please go to http://docs.prediction.io/resources/upgrade/" +
-        " for detailed instruction of how to change engine.json.")
+      error(
+        "Unable to find 'name' or 'params' fields in" +
+          s" ${compact(render(jv))}.\n" +
+          "Since 0.8.4, the 'params' field is required in engine.json" +
+          " in order to specify parameters for DataSource, Preparator or" +
+          " Serving.\n" +
+          "Please go to http://docs.prediction.io/resources/upgrade/" +
+          " for detailed instruction of how to change engine.json.")
       sys.exit(1)
     }
 
@@ -319,13 +333,13 @@ object WorkflowUtils extends Logging {
         case JObject(fields) =>
           for ((namePrefix, childJV) <- fields;
                (name, value) <- flatten(childJV))
-          yield (namePrefix :: name) -> value
+            yield (namePrefix :: name) -> value
         case JArray(_) => {
           error("Arrays are not allowed in the sparkConf section of engine.js.")
           sys.exit(1)
         }
         case JNothing => List()
-        case _ => List(List() -> jv.values.toString)
+        case _        => List(List() -> jv.values.toString)
       }
     }
 
@@ -336,14 +350,16 @@ object WorkflowUtils extends Logging {
 
 case class NameParams(name: String, params: Option[JValue])
 
-class NameParamsSerializer extends CustomSerializer[NameParams](format => ( {
-  case jv: JValue => WorkflowUtils.extractNameParams(jv)
-}, {
-  case x: NameParams =>
-    JObject(JField("name", JString(x.name)) ::
-      JField("params", x.params.getOrElse(JNothing)) :: Nil)
-}
-  ))
+class NameParamsSerializer
+    extends CustomSerializer[NameParams](format =>
+      ({
+        case jv: JValue => WorkflowUtils.extractNameParams(jv)
+      }, {
+        case x: NameParams =>
+          JObject(
+            JField("name", JString(x.name)) ::
+              JField("params", x.params.getOrElse(JNothing)) :: Nil)
+      }))
 
 /** Collection of reusable workflow related utilities that touch on Apache
   * Spark. They are separated to avoid compilation problems with certain code.
@@ -359,34 +375,35 @@ object SparkWorkflowUtils extends Logging {
     val pmmModule = runtimeMirror.staticModule(pmm.className)
     val pmmObject = runtimeMirror.reflectModule(pmmModule)
     try {
-      pmmObject.instance.asInstanceOf[PersistentModelLoader[AP, M]](
-        runId,
-        params,
-        sc)
+      pmmObject.instance
+        .asInstanceOf[PersistentModelLoader[AP, M]](runId, params, sc)
     } catch {
-      case e @ (_: NoSuchFieldException | _: ClassNotFoundException) => try {
-        val loadMethod = Class.forName(pmm.className).getMethod(
-          "load",
-          classOf[String],
-          classOf[Params],
-          classOf[SparkContext])
-        loadMethod.invoke(null, runId, params, sc.orNull).asInstanceOf[M]
-      } catch {
-        case e: ClassNotFoundException =>
-          error(s"Model class ${pmm.className} cannot be found.")
-          throw e
-        case e: NoSuchMethodException =>
-          error(
-            "The load(String, Params, SparkContext) method cannot be found.")
-          throw e
-      }
+      case e @ (_: NoSuchFieldException | _: ClassNotFoundException) =>
+        try {
+          val loadMethod = Class
+            .forName(pmm.className)
+            .getMethod(
+              "load",
+              classOf[String],
+              classOf[Params],
+              classOf[SparkContext])
+          loadMethod.invoke(null, runId, params, sc.orNull).asInstanceOf[M]
+        } catch {
+          case e: ClassNotFoundException =>
+            error(s"Model class ${pmm.className} cannot be found.")
+            throw e
+          case e: NoSuchMethodException =>
+            error(
+              "The load(String, Params, SparkContext) method cannot be found.")
+            throw e
+        }
     }
   }
 }
 
-class UpgradeCheckRunner(
-    val component: String,
-    val engine: String) extends Runnable with Logging {
+class UpgradeCheckRunner(val component: String, val engine: String)
+    extends Runnable
+    with Logging {
   val version = BuildInfo.version
   val versionsHost = "http://direct.prediction.io/"
 

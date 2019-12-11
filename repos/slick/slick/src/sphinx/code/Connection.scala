@@ -21,48 +21,55 @@ object Connection extends App {
     def * = (name, image)
   }
   val coffees = TableQuery[Coffees]
-  if (false){
+  if (false) {
     val dataSource = null.asInstanceOf[javax.sql.DataSource]
     //#forDataSource
     val db = Database.forDataSource(dataSource: javax.sql.DataSource)
     //#forDataSource
   }
-  if (false){
+  if (false) {
     val dataSource = null.asInstanceOf[slick.jdbc.DatabaseUrlDataSource]
     //#forDatabaseURL
-    val db = Database.forDataSource(dataSource: slick.jdbc.DatabaseUrlDataSource)
+    val db =
+      Database.forDataSource(dataSource: slick.jdbc.DatabaseUrlDataSource)
     //#forDatabaseURL
   }
-  if(false) {
+  if (false) {
     val jndiName = ""
     //#forName
     val db = Database.forName(jndiName: String)
     //#forName
-  }
-  ;{
+  };
+  {
     //#forConfig
     val db = Database.forConfig("mydb")
     //#forConfig
     db.close
-  }
-  ;{
+  };
+  {
     //#forURL
-    val db = Database.forURL("jdbc:h2:mem:test1;DB_CLOSE_DELAY=-1", driver="org.h2.Driver")
+    val db = Database.forURL(
+      "jdbc:h2:mem:test1;DB_CLOSE_DELAY=-1",
+      driver = "org.h2.Driver")
     //#forURL
     db.close
-  }
-  ;{
+  };
+  {
     //#forURL2
-    val db = Database.forURL("jdbc:h2:mem:test1;DB_CLOSE_DELAY=-1", driver="org.h2.Driver",
-      executor = AsyncExecutor("test1", numThreads=10, queueSize=1000))
+    val db = Database.forURL(
+      "jdbc:h2:mem:test1;DB_CLOSE_DELAY=-1",
+      driver = "org.h2.Driver",
+      executor = AsyncExecutor("test1", numThreads = 10, queueSize = 1000))
     //#forURL2
     db.close
   }
-  val db = Database.forURL("jdbc:h2:mem:test2;INIT="+coffees.schema.createStatements.mkString("\\;"), driver="org.h2.Driver")
+  val db = Database.forURL(
+    "jdbc:h2:mem:test2;INIT=" + coffees.schema.createStatements.mkString("\\;"),
+    driver = "org.h2.Driver")
   try {
     val lines = new ArrayBuffer[Any]()
-    def println(s: Any) = lines += s
-    ;{
+    def println(s: Any) = lines += s;
+    {
       //#materialize
       val q = for (c <- coffees) yield c.name
       val a = q.result
@@ -71,7 +78,8 @@ object Connection extends App {
       f.onSuccess { case s => println(s"Result: $s") }
       //#materialize
       Await.result(f, Duration.Inf)
-    };{
+    };
+    {
       //#stream
       val q = for (c <- coffees) yield c.name
       val a = q.result
@@ -81,11 +89,14 @@ object Connection extends App {
       // Use Akka Streams for more elaborate stream processing.
       //#stream
       val f =
-      //#stream
-      p.foreach { s => println(s"Element: $s") }
+        //#stream
+        p.foreach { s =>
+          println(s"Element: $s")
+        }
       //#stream
       Await.result(f, Duration.Inf)
-    };{
+    };
+    {
       //#streamblob
       val q = for (c <- coffees) yield c.image
       val a = q.result
@@ -95,7 +106,8 @@ object Connection extends App {
         b.getBytes(0, b.length().toInt)
       }
       //#streamblob
-    };{
+    };
+    {
       //#transaction
       val a = (for {
         ns <- coffees.filter(_.name.startsWith("ESPRESSO")).map(_.name).result
@@ -105,7 +117,8 @@ object Connection extends App {
       val f: Future[Unit] = db.run(a)
       //#transaction
       Await.result(f, Duration.Inf)
-    };{
+    };
+    {
       //#rollback
       val countAction = coffees.length.result
 
@@ -118,7 +131,7 @@ object Connection extends App {
 
       val errorHandleAction = rollbackAction.asTry.flatMap {
         case Failure(e: Throwable) => DBIO.successful(e.getMessage)
-        case Success(_) => DBIO.successful("never reached")
+        case Success(_)            => DBIO.successful("never reached")
       }
 
       // Here we show that that coffee count is the same before and after the attempted insert.
@@ -126,7 +139,8 @@ object Connection extends App {
       val f = db.run(countAction zip errorHandleAction zip countAction).map {
         case ((initialCount, result), finalCount) =>
           // init: 5, final: 5, result: Roll it back
-          println(s"init: ${initialCount}, final: ${finalCount}, result: ${result}")
+          println(
+            s"init: ${initialCount}, final: ${finalCount}, result: ${result}")
           result
       }
 

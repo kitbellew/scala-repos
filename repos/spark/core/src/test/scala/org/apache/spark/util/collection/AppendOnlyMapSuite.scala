@@ -55,7 +55,7 @@ class AppendOnlyMapSuite extends SparkFunSuite {
     assert(map("101") === null)
     assert(map(null) === null)
     val set = new HashSet[(String, String)]
-    for ((k, v) <- map) {   // Test the foreach method
+    for ((k, v) <- map) { // Test the foreach method
       set += ((k, v))
     }
     assert(set === (1 to 100).map(_.toString).map(x => (x, x)).toSet)
@@ -73,7 +73,7 @@ class AppendOnlyMapSuite extends SparkFunSuite {
     assert(map(0) === null)
     assert(map(101) === null)
     val set = new HashSet[(Int, Int)]
-    for ((k, v) <- map) {   // Test the foreach method
+    for ((k, v) <- map) { // Test the foreach method
       set += ((k, v))
     }
     assert(set === (1 to 100).map(x => (x, x)).toSet)
@@ -193,7 +193,9 @@ class AppendOnlyMapSuite extends SparkFunSuite {
     // All subsequent calls to apply, update, changeValue and iterator should throw exception
     intercept[AssertionError] { map.apply("1") }
     intercept[AssertionError] { map.update("1", "2013") }
-    intercept[AssertionError] { map.changeValue("1", (hadValue, oldValue) => "2014") }
+    intercept[AssertionError] {
+      map.changeValue("1", (hadValue, oldValue) => "2014")
+    }
     intercept[AssertionError] { map.iterator }
   }
 }

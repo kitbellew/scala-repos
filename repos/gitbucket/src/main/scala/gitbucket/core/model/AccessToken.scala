@@ -1,6 +1,5 @@
 package gitbucket.core.model
 
-
 trait AccessTokenComponent { self: Profile =>
   import profile.simple._
   lazy val AccessTokens = TableQuery[AccessTokens]
@@ -10,12 +9,13 @@ trait AccessTokenComponent { self: Profile =>
     val userName = column[String]("USER_NAME")
     val tokenHash = column[String]("TOKEN_HASH")
     val note = column[String]("NOTE")
-    def * = (accessTokenId, userName, tokenHash, note) <> (AccessToken.tupled, AccessToken.unapply)
+    def * =
+      (accessTokenId, userName, tokenHash, note) <> (AccessToken.tupled, AccessToken.unapply)
   }
 }
 case class AccessToken(
-  accessTokenId: Int = 0,
-  userName: String,
-  tokenHash: String,
-  note: String
+    accessTokenId: Int = 0,
+    userName: String,
+    tokenHash: String,
+    note: String
 )

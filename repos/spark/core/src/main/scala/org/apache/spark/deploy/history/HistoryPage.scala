@@ -23,13 +23,17 @@ import scala.xml.Node
 
 import org.apache.spark.ui.{UIUtils, WebUIPage}
 
-private[history] class HistoryPage(parent: HistoryServer) extends WebUIPage("") {
+private[history] class HistoryPage(parent: HistoryServer)
+    extends WebUIPage("") {
 
   def render(request: HttpServletRequest): Seq[Node] = {
     val requestedIncomplete =
-      Option(request.getParameter("showIncomplete")).getOrElse("false").toBoolean
+      Option(request.getParameter("showIncomplete"))
+        .getOrElse("false")
+        .toBoolean
 
-    val allApps = parent.getApplicationList()
+    val allApps = parent
+      .getApplicationList()
       .filter(_.completed != requestedIncomplete)
     val allAppsSize = allApps.size
 
@@ -38,34 +42,38 @@ private[history] class HistoryPage(parent: HistoryServer) extends WebUIPage("") 
       <div>
           <div class="span12">
             <ul class="unstyled">
-              {providerConfig.map { case (k, v) => <li><strong>{k}:</strong> {v}</li> }}
+              {
+        providerConfig.map { case (k, v) => <li><strong>{k}:</strong> {v}</li> }
+      }
             </ul>
             {
-            if (allAppsSize > 0) {
-              <script src={UIUtils.prependBaseUri("/static/dataTables.rowsGroup.js")}></script> ++
-              <div id="history-summary" class="span12 pagination"></div> ++
-              <script src={UIUtils.prependBaseUri("/static/historypage.js")}> </script>
-            } else if (requestedIncomplete) {
-              <h4>No incomplete applications found!</h4>
-            } else {
-              <h4>No completed applications found!</h4> ++
-                <p>Did you specify the correct logging directory?
+        if (allAppsSize > 0) {
+          <script src={
+            UIUtils.prependBaseUri("/static/dataTables.rowsGroup.js")
+          }></script> ++
+            <div id="history-summary" class="span12 pagination"></div> ++
+            <script src={UIUtils.prependBaseUri("/static/historypage.js")}> </script>
+        } else if (requestedIncomplete) {
+          <h4>No incomplete applications found!</h4>
+        } else {
+          <h4>No completed applications found!</h4> ++
+            <p>Did you specify the correct logging directory?
                   Please verify your setting of <span style="font-style:italic">
                   spark.history.fs.logDirectory</span> and whether you have the permissions to
                   access it.<br /> It is also possible that your application did not run to
                   completion or did not stop the SparkContext.
                 </p>
-            }
-            }
+        }
+      }
 
             <a href={makePageLink(!requestedIncomplete)}>
               {
-              if (requestedIncomplete) {
-                "Back to completed applications"
-              } else {
-                "Show incomplete applications"
-              }
-              }
+        if (requestedIncomplete) {
+          "Back to completed applications"
+        } else {
+          "Show incomplete applications"
+        }
+      }
             </a>
           </div>
       </div>

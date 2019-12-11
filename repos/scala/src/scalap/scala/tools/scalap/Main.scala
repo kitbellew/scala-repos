@@ -3,12 +3,12 @@
 **  __\ \/ /__/ __ |/ /__/ __ |/ ___/  (c) 2003-2013, LAMP/EPFL
 ** /____/\___/_/ |_/____/_/ |_/_/      http://scala-lang.org/
 **
-*/
+ */
 
 package scala
 package tools.scalap
 
-import java.io.{ PrintStream, OutputStreamWriter, ByteArrayOutputStream }
+import java.io.{PrintStream, OutputStreamWriter, ByteArrayOutputStream}
 import scala.reflect.NameTransformer
 import scala.tools.nsc.Settings
 import scala.tools.nsc.classpath.AggregateFlatClassPath
@@ -22,32 +22,34 @@ import scala.tools.util.PathResolverFactory
 import scalax.rules.scalasig._
 
 /**The main object used to execute scalap on the command-line.
- *
- * @author Matthias Zenger, Stephane Micheloud, Burak Emir, Ilya Sergey
- */
+  *
+  * @author Matthias Zenger, Stephane Micheloud, Burak Emir, Ilya Sergey
+  */
 class Main {
-  val SCALA_SIG            = "ScalaSig"
+  val SCALA_SIG = "ScalaSig"
   val SCALA_SIG_ANNOTATION = "Lscala/reflect/ScalaSignature;"
   val SCALA_LONG_SIG_ANNOTATION = "Lscala/reflect/ScalaLongSignature;"
-  val BYTES_VALUE          = "bytes"
+  val BYTES_VALUE = "bytes"
 
-  val versionMsg = "Scala classfile decoder %s -- %s\n".format(Properties.versionString, Properties.copyrightString)
+  val versionMsg = "Scala classfile decoder %s -- %s\n".format(
+    Properties.versionString,
+    Properties.copyrightString)
 
   /**Verbose program run?
-   */
+    */
   var verbose = false
   var printPrivates = false
 
   def isScalaFile(bytes: Array[Byte]): Boolean = {
-    val byteCode  = ByteCode(bytes)
+    val byteCode = ByteCode(bytes)
     val classFile = ClassFileParser.parse(byteCode)
     classFile.attribute("ScalaSig").isDefined
   }
 
   /**Processes the given Java class file.
-   *
-   * @param clazz the class file to be processed.
-   */
+    *
+    * @param clazz the class file to be processed.
+    */
   def processJavaClassFile(clazz: Classfile): Unit = {
     // construct a new output stream writer
     val out = new OutputStreamWriter(Console.out)
@@ -57,12 +59,13 @@ class Main {
     out.flush()
   }
 
-  def isPackageObjectFile(s: String) = s != null && (s.endsWith(".package") || s == "package")
+  def isPackageObjectFile(s: String) =
+    s != null && (s.endsWith(".package") || s == "package")
 
   def parseScalaSignature(scalaSig: ScalaSig, isPackageObject: Boolean) = {
-    val baos   = new ByteArrayOutputStream
+    val baos = new ByteArrayOutputStream
     val stream = new PrintStream(baos)
-    val syms   = scalaSig.topLevelClasses ++ scalaSig.topLevelObjects
+    val syms = scalaSig.topLevelClasses ++ scalaSig.topLevelObjects
 
     syms.head.parent match {
       // Partial match
@@ -99,13 +102,14 @@ class Main {
   }
 
   /** Executes scalap with the given arguments and classpath for the
-   *  class denoted by `classname`.
-   */
-  def process(args: Arguments, path: ClassFileLookup[AbstractFile])(classname: String): Unit = {
+    *  class denoted by `classname`.
+    */
+  def process(args: Arguments, path: ClassFileLookup[AbstractFile])(
+      classname: String): Unit = {
     // find the classfile
     val encName = classname match {
       case "scala.AnyRef" => "java.lang.Object"
-      case _ =>
+      case _              =>
         // we have to encode every fragment of a name separately, otherwise the NameTransformer
         // will encode using unicode escaping dot separators as well
         // we can afford allocations because this is not a performance critical code
@@ -115,7 +119,8 @@ class Main {
     path.findClassFile(encName) match {
       case Some(classFile) =>
         if (verbose) {
-          Console.println(Console.BOLD + "FILENAME" + Console.RESET + " = " + classFile.path)
+          Console.println(
+            Console.BOLD + "FILENAME" + Console.RESET + " = " + classFile.path)
         }
         val bytes = classFile.toByteArray
         if (isScalaFile(bytes)) {
@@ -127,8 +132,8 @@ class Main {
           val clazz = new Classfile(reader)
           processJavaClassFile(clazz)
         }
-        // if the class corresponds to the artificial class scala.Any.
-        // (see member list in class scala.tool.nsc.symtab.Definitions)
+      // if the class corresponds to the artificial class scala.Any.
+      // (see member list in class scala.tool.nsc.symtab.Definitions)
       case _ =>
         Console.println(s"class/object $classname not found.")
     }
@@ -166,7 +171,7 @@ object Main extends Main {
   }
 
   def main(args: Array[String]): Unit =
-  // print usage information if there is no command-line argument
+    // print usage information if there is no command-line argument
     if (args.isEmpty) usage()
     else {
       val arguments = parseArguments(args)
@@ -191,14 +196,16 @@ object Main extends Main {
 
       // print the classpath if output is verbose
       if (verbose)
-        Console.println(Console.BOLD + "CLASSPATH" + Console.RESET + " = " + path.asClassPathString)
+        Console.println(
+          Console.BOLD + "CLASSPATH" + Console.RESET + " = " + path.asClassPathString)
 
       // process all given classes
       arguments.getOthers foreach process(arguments, path)
     }
 
   private def parseArguments(args: Array[String]) =
-    Arguments.Parser('-')
+    Arguments
+      .Parser('-')
       .withOption(opts.showPrivateDefs)
       .withOption(opts.verbose)
       .withOption(opts.version)
@@ -211,15 +218,20 @@ object Main extends Main {
       .withOption(opts.logClassPath)
       .parse(args)
 
-  private def createClassPath(cpArg: Option[String], settings: Settings) = cpArg match {
-    case Some(cp) => settings.YclasspathImpl.value match {
-      case ClassPathRepresentationType.Flat =>
-        AggregateFlatClassPath(new FlatClassPathFactory(settings).classesInExpandedPath(cp))
-      case ClassPathRepresentationType.Recursive =>
-        new JavaClassPath(DefaultJavaContext.classesInExpandedPath(cp), DefaultJavaContext)
+  private def createClassPath(cpArg: Option[String], settings: Settings) =
+    cpArg match {
+      case Some(cp) =>
+        settings.YclasspathImpl.value match {
+          case ClassPathRepresentationType.Flat =>
+            AggregateFlatClassPath(
+              new FlatClassPathFactory(settings).classesInExpandedPath(cp))
+          case ClassPathRepresentationType.Recursive =>
+            new JavaClassPath(
+              DefaultJavaContext.classesInExpandedPath(cp),
+              DefaultJavaContext)
+        }
+      case _ =>
+        settings.classpath.value = "." // include '.' in the default classpath SI-6669
+        PathResolverFactory.create(settings).result
     }
-    case _ =>
-      settings.classpath.value = "." // include '.' in the default classpath SI-6669
-      PathResolverFactory.create(settings).result
-  }
 }

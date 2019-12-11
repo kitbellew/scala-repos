@@ -4,5 +4,5 @@ object Test extends App {
   import scala.tools.reflect.ToolBox
   val tree = Select(Ident(TermName("Macros")), TermName("foo"))
   try cm.mkToolBox().eval(tree)
-  catch { case ex: Throwable =>  println(ex.getMessage) }
+  catch { case ex: Throwable => println(ex.getMessage) }
 }

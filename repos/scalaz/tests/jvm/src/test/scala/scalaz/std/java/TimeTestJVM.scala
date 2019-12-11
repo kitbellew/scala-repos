@@ -18,29 +18,32 @@ object TimeTestJVM extends SpecLite {
   private[this] val smallIntArb = Arbitrary(Gen.choose(1, 100000))
 
   implicit val LocalDateTimeArbitrary: Arbitrary[LocalDateTime] =
-    Arbitrary(Apply[Gen].apply7(
-      Gen.choose(Year.MIN_VALUE, Year.MAX_VALUE),
-      Gen.choose(1, 12),
-      Gen.choose(1, 28),
-      Gen.choose(0, 23),
-      Gen.choose(0, 59),
-      Gen.choose(0, 59),
-      Gen.choose(0, 999999999)
-    )(LocalDateTime.of(_, _, _, _, _, _, _)))
+    Arbitrary(
+      Apply[Gen].apply7(
+        Gen.choose(Year.MIN_VALUE, Year.MAX_VALUE),
+        Gen.choose(1, 12),
+        Gen.choose(1, 28),
+        Gen.choose(0, 23),
+        Gen.choose(0, 59),
+        Gen.choose(0, 59),
+        Gen.choose(0, 999999999)
+      )(LocalDateTime.of(_, _, _, _, _, _, _)))
 
   implicit val InstantArbitrary: Arbitrary[Instant] =
-    arb[Long].map { Instant.ofEpochMilli(_)}
+    arb[Long].map { Instant.ofEpochMilli(_) }
 
   implicit val zonedOffsetArbitrary: Arbitrary[ZoneOffset] =
     Arbitrary(
-      Apply[Gen].apply3(Gen.choose(0, 17), Gen.choose(0, 59), Gen.choose(0, 59))(
-        ZoneOffset.ofHoursMinutesSeconds
-      )
+      Apply[Gen]
+        .apply3(Gen.choose(0, 17), Gen.choose(0, 59), Gen.choose(0, 59))(
+          ZoneOffset.ofHoursMinutesSeconds
+        )
     )
 
   implicit val zoneIdArbitrary: Arbitrary[ZoneId] =
     Arbitrary(
-      Gen.oneOf(ZoneId.getAvailableZoneIds.asScala.map(ZoneId.of)(collection.breakOut))
+      Gen.oneOf(
+        ZoneId.getAvailableZoneIds.asScala.map(ZoneId.of)(collection.breakOut))
     )
 
   implicit val offsetDateTimeArbitrary: Arbitrary[OffsetDateTime] =

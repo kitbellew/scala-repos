@@ -1,19 +1,19 @@
 package mesosphere.marathon.health
 
-import java.net.{ InetAddress, ServerSocket }
+import java.net.{InetAddress, ServerSocket}
 
 import akka.actor.Props
-import akka.testkit.{ ImplicitSender, TestActorRef }
+import akka.testkit.{ImplicitSender, TestActorRef}
 import mesosphere.marathon.Protos.HealthCheckDefinition.Protocol
 import mesosphere.marathon.core.task.Task
 import mesosphere.marathon.state.AppDefinition
 import mesosphere.marathon.state.PathId._
 import mesosphere.marathon.test.MarathonActorSupport
-import mesosphere.marathon.{ MarathonSpec, MarathonTestHelper }
+import mesosphere.marathon.{MarathonSpec, MarathonTestHelper}
 import org.scalatest.Matchers
 
 import scala.concurrent.duration._
-import scala.concurrent.{ Await, Future }
+import scala.concurrent.{Await, Future}
 
 class HealthCheckWorkerActorTest
     extends MarathonActorSupport
@@ -35,16 +35,26 @@ class HealthCheckWorkerActorTest
     }
 
     val task =
-      MarathonTestHelper.runningTask("test_id")
-        .withAgentInfo(_.copy(host = InetAddress.getLocalHost.getCanonicalHostName))
+      MarathonTestHelper
+        .runningTask("test_id")
+        .withAgentInfo(
+          _.copy(host = InetAddress.getLocalHost.getCanonicalHostName))
         .withNetworking(Task.HostPorts(socketPort))
 
-    val ref = TestActorRef[HealthCheckWorkerActor](Props(classOf[HealthCheckWorkerActor]))
+    val ref = TestActorRef[HealthCheckWorkerActor](
+      Props(classOf[HealthCheckWorkerActor]))
     val app = AppDefinition(id = "test_id".toPath)
-    ref ! HealthCheckJob(app, task, task.launched.get, HealthCheck(protocol = Protocol.TCP, portIndex = Some(0)))
+    ref ! HealthCheckJob(
+      app,
+      task,
+      task.launched.get,
+      HealthCheck(protocol = Protocol.TCP, portIndex = Some(0)))
 
-    try { Await.result(res, 1.seconds) }
-    finally { socket.close() }
+    try {
+      Await.result(res, 1.seconds)
+    } finally {
+      socket.close()
+    }
 
     expectMsgPF(1.seconds) {
       case Healthy(taskId, _, _) => ()
@@ -60,16 +70,26 @@ class HealthCheckWorkerActorTest
     }
 
     val task =
-      MarathonTestHelper.runningTask("test_id")
-        .withAgentInfo(_.copy(host = InetAddress.getLocalHost.getCanonicalHostName))
+      MarathonTestHelper
+        .runningTask("test_id")
+        .withAgentInfo(
+          _.copy(host = InetAddress.getLocalHost.getCanonicalHostName))
         .withNetworking(Task.HostPorts(socketPort))
 
-    val ref = TestActorRef[HealthCheckWorkerActor](Props(classOf[HealthCheckWorkerActor]))
+    val ref = TestActorRef[HealthCheckWorkerActor](
+      Props(classOf[HealthCheckWorkerActor]))
     val app = AppDefinition(id = "test_id".toPath)
-    ref ! HealthCheckJob(app, task, task.launched.get, HealthCheck(protocol = Protocol.TCP, portIndex = Some(0)))
+    ref ! HealthCheckJob(
+      app,
+      task,
+      task.launched.get,
+      HealthCheck(protocol = Protocol.TCP, portIndex = Some(0)))
 
-    try { Await.result(res, 1.seconds) }
-    finally { socket.close() }
+    try {
+      Await.result(res, 1.seconds)
+    } finally {
+      socket.close()
+    }
 
     expectMsgPF(1.seconds) {
       case _: HealthResult => ()

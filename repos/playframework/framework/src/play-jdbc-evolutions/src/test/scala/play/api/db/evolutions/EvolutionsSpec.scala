@@ -3,10 +3,10 @@
  */
 package play.api.db.evolutions
 
-import java.sql.{ ResultSet, SQLException }
+import java.sql.{ResultSet, SQLException}
 
-import org.specs2.mutable.{ After, Specification }
-import play.api.db.{ Database, Databases }
+import org.specs2.mutable.{After, Specification}
+import play.api.db.{Database, Databases}
 
 // TODO: fuctional test with InvalidDatabaseRevision exception
 
@@ -45,7 +45,13 @@ object EvolutionsSpec extends Specification {
       val scripts = evolutions.scripts(Seq(b1, a2, b3))
 
       scripts must have length (6)
-      scripts must_== Seq(DownScript(a3), DownScript(a2), DownScript(a1), UpScript(b1), UpScript(a2), UpScript(b3))
+      scripts must_== Seq(
+        DownScript(a3),
+        DownScript(a2),
+        DownScript(a1),
+        UpScript(b1),
+        UpScript(a2),
+        UpScript(b3))
 
       evolutions.evolve(scripts, autocommit = true)
 
@@ -61,10 +67,12 @@ object EvolutionsSpec extends Specification {
       val broken = evolutions.scripts(Seq(c1, a2, a3))
       val fixed = evolutions.scripts(Seq(a1, a2, a3))
 
-      evolutions.evolve(broken, autocommit = true) must throwAn[InconsistentDatabase]
+      evolutions.evolve(broken, autocommit = true) must throwAn[
+        InconsistentDatabase]
 
       // inconsistent until resolved
-      evolutions.evolve(fixed, autocommit = true) must throwAn[InconsistentDatabase]
+      evolutions.evolve(fixed, autocommit = true) must throwAn[
+        InconsistentDatabase]
 
       evolutions.resolve(1)
 
@@ -87,7 +95,9 @@ object EvolutionsSpec extends Specification {
     }
 
     trait ProvideHelperForTesting { this: WithEvolutions =>
-      Evolutions.withEvolutions(database, SimpleEvolutionsReader.forDefault(a1, a2, a3)) {
+      Evolutions.withEvolutions(
+        database,
+        SimpleEvolutionsReader.forDefault(a1, a2, a3)) {
         // Check that there's data in the database
         val resultSet = executeQuery("select * from test")
         resultSet.next must beTrue
@@ -100,7 +110,8 @@ object EvolutionsSpec extends Specification {
 
     trait ProvideHelperForTestingSchema { this: WithEvolutions =>
       // Check if the play_evolutions table was created within the testschema
-      val resultSet = executeQuery("select count(0) from testschema.play_evolutions")
+      val resultSet =
+        executeQuery("select count(0) from testschema.play_evolutions")
       resultSet.next must beTrue
       resultSet.close()
     }
@@ -111,19 +122,26 @@ object EvolutionsSpec extends Specification {
     "apply down scripts" in new DownScripts with WithEvolutions
     "apply down scripts derby" in new DownScripts with WithDerbyEvolutions
 
-    "report inconsistent state and resolve" in new ReportInconsistentStateAndResolve with WithEvolutions
-    "report inconsistent state and resolve derby" in new ReportInconsistentStateAndResolve with WithDerbyEvolutions
+    "report inconsistent state and resolve" in new ReportInconsistentStateAndResolve
+      with WithEvolutions
+    "report inconsistent state and resolve derby" in new ReportInconsistentStateAndResolve
+      with WithDerbyEvolutions
 
     "reset the database" in new ResetDatabase with WithEvolutions
     "reset the database derby" in new ResetDatabase with WithDerbyEvolutions
 
-    "provide a helper for testing" in new ProvideHelperForTesting with WithEvolutions
-    "provide a helper for testing derby" in new ProvideHelperForTesting with WithDerbyEvolutions
+    "provide a helper for testing" in new ProvideHelperForTesting
+      with WithEvolutions
+    "provide a helper for testing derby" in new ProvideHelperForTesting
+      with WithDerbyEvolutions
 
     // Test if the play_evolutions table gets created within a schema
-    "create test schema derby" in new CreateSchema with WithDerbyEvolutionsSchema
-    "reset the database to trigger creation of the play_evolutions table in the testschema derby" in new ResetDatabase with WithDerbyEvolutionsSchema
-    "provide a helper for testing derby schema" in new ProvideHelperForTestingSchema with WithDerbyEvolutionsSchema
+    "create test schema derby" in new CreateSchema
+      with WithDerbyEvolutionsSchema
+    "reset the database to trigger creation of the play_evolutions table in the testschema derby" in new ResetDatabase
+      with WithDerbyEvolutionsSchema
+    "provide a helper for testing derby schema" in new ProvideHelperForTestingSchema
+      with WithDerbyEvolutionsSchema
   }
 
   trait WithEvolutions extends After {
@@ -133,7 +151,8 @@ object EvolutionsSpec extends Specification {
 
     lazy val connection = database.getConnection()
 
-    def executeQuery(sql: String): ResultSet = connection.createStatement.executeQuery(sql)
+    def executeQuery(sql: String): ResultSet =
+      connection.createStatement.executeQuery(sql)
 
     def execute(sql: String): Boolean = connection.createStatement.execute(sql)
 

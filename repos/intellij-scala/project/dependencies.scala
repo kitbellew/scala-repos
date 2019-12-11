@@ -1,6 +1,5 @@
 import sbt._
 
-
 object Versions {
   val scalaVersion = "2.11.6"
   val sbtVersion = "0.13.9"
@@ -159,19 +158,28 @@ object DependencyGroups {
   )
 
   val scalaRunner = Seq(
-    "org.specs2" %% "specs2" % "2.3.11" % "provided" excludeAll ExclusionRule(organization = "org.ow2.asm")
+    "org.specs2" %% "specs2" % "2.3.11" % "provided" excludeAll ExclusionRule(organization =
+      "org.ow2.asm")
   )
 
   val runners = Seq(
-    "org.specs2" %% "specs2" % "2.3.11" % "provided"  excludeAll ExclusionRule(organization = "org.ow2.asm"),
+    "org.specs2" %% "specs2" % "2.3.11" % "provided" excludeAll ExclusionRule(organization =
+      "org.ow2.asm"),
     "org.scalatest" % "scalatest_2.11" % "2.2.1" % "provided",
     "com.lihaoyi" %% "utest" % "0.3.1" % "provided"
   )
 
   val sbtLaunchTestDownloader =
-    Seq("0.12.4", "0.13.0", "0.13.1", "0.13.2",
-        "0.13.5", "0.13.6", "0.13.7", "0.13.8",
-        "0.13.9")
+    Seq(
+      "0.12.4",
+      "0.13.0",
+      "0.13.1",
+      "0.13.2",
+      "0.13.5",
+      "0.13.6",
+      "0.13.7",
+      "0.13.8",
+      "0.13.9")
       .map(v => "org.scala-sbt" % "sbt-launch" % v)
 
   val testDownloader = Seq(
@@ -195,9 +203,9 @@ object DependencyGroups {
     "org.scalatest" % "scalatest_2.11" % "2.1.7",
     "org.scalatest" % "scalatest_2.10" % "2.1.7",
     "org.scalatest" % "scalatest_2.10" % "1.9.2",
-    "com.github.julien-truffaut"  %%  "monocle-core"    % "1.2.0",
-    "com.github.julien-truffaut"  %%  "monocle-generic" % "1.2.0",
-    "com.github.julien-truffaut"  %%  "monocle-macro"   % "1.2.0",
+    "com.github.julien-truffaut" %% "monocle-core" % "1.2.0",
+    "com.github.julien-truffaut" %% "monocle-generic" % "1.2.0",
+    "com.github.julien-truffaut" %% "monocle-macro" % "1.2.0",
     "io.spray" %% "spray-routing" % "1.3.1",
     "com.typesafe.slick" %% "slick" % "3.1.0",
     "org.scala-lang.modules" % "scala-async_2.11" % "0.9.5",
@@ -205,15 +213,13 @@ object DependencyGroups {
   )
 
   val testScalaLibraryDownloader = Seq(
-    "org.scala-lang" % "scala-library" % "2.10.6" withSources(),
+    "org.scala-lang" % "scala-library" % "2.10.6" withSources (),
     "org.scala-lang" % "scala-reflect" % "2.10.6",
     "org.scala-lang" % "scala-compiler" % "2.10.6",
-
-    "org.scala-lang" % "scala-library" % "2.11.7" withSources(),
+    "org.scala-lang" % "scala-library" % "2.11.7" withSources (),
     "org.scala-lang" % "scala-reflect" % "2.11.7",
     "org.scala-lang" % "scala-compiler" % "2.11.7",
-
-    "org.scala-lang" % "scala-library" % "2.12.0-M2" withSources(),
+    "org.scala-lang" % "scala-library" % "2.12.0-M2" withSources (),
     "org.scala-lang" % "scala-reflect" % "2.12.0-M2",
     "org.scala-lang" % "scala-compiler" % "2.12.0-M2"
   )

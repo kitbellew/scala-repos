@@ -6,19 +6,17 @@
 **                          |/                                          **
 \*                                                                      */
 
-
-
 package scala
 package collection
 package mutable
 
 /** This class is used internally. It implements the mutable `Map`
- *  class in terms of three functions: `findEntry`, `addEntry`, and `entries`.
- *
- *  @author  Matthias Zenger
- *  @version 1.0, 08/07/2003
- *  @since   1
- */
+  *  class in terms of three functions: `findEntry`, `addEntry`, and `entries`.
+  *
+  *  @author  Matthias Zenger
+  *  @version 1.0, 08/07/2003
+  *  @since   1
+  */
 @deprecated("This trait will be removed.", "2.11.0")
 trait DefaultMapModel[A, B] extends Map[A, B] {
 
@@ -36,12 +34,17 @@ trait DefaultMapModel[A, B] extends Map[A, B] {
 
   override def put(key: A, value: B): Option[B] = {
     val e = findEntry(key)
-    if (e == null) { addEntry(new Entry(key, value)); None }
-    else { val v = e.value; e.value = value; Some(v) }
+    if (e == null) {
+      addEntry(new Entry(key, value)); None
+    } else {
+      val v = e.value; e.value = value; Some(v)
+    }
   }
 
-  def += (kv: (A, B)): this.type = { put(kv._1, kv._2); this }
+  def +=(kv: (A, B)): this.type = { put(kv._1, kv._2); this }
 
-  def iterator = entries map {e => (e.key, e.value)}
+  def iterator = entries map { e =>
+    (e.key, e.value)
+  }
 
 }

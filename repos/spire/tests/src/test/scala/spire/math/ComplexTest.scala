@@ -49,11 +49,11 @@ class ComplexTest extends FunSuite {
   test("complex arithmetic") {
     val i = Complex.i[Double]
 
-    val a = 4.0 + 3.0*i
-    val b = 1.0 + 2.0*i
-    val c = 2.0 + 0.0*i
+    val a = 4.0 + 3.0 * i
+    val b = 1.0 + 2.0 * i
+    val c = 2.0 + 0.0 * i
 
-    assert(a + b === 5.0+5.0*i)
+    assert(a + b === 5.0 + 5.0 * i)
     assert(b + c === Complex(3.0, 2.0))
     assert(b + c === Complex(3.0, 2.0))
 
@@ -77,9 +77,9 @@ class ComplexTest extends FunSuite {
     val one = Complex.one[Double]
 
     val z = e.pow(i * pi) + one
-    assert (z.real === 0.0)
-    assert (z.imag < 0.000000000000001) // sigh...
-    assert (z.imag > -0.000000000000001)
+    assert(z.real === 0.0)
+    assert(z.imag < 0.000000000000001) // sigh...
+    assert(z.imag > -0.000000000000001)
   }
 
   test("test roots of unity") {
@@ -112,8 +112,8 @@ class ComplexTest extends FunSuite {
     val e_ipi = fc.pow(e, ipi)
     val z = fc.add(e_ipi, fc.one)
 
-    assert(fc.real(z) == 0.0F)
-    assert(fc.imag(z) < 0.000000001F)
+    assert(fc.real(z) == 0.0f)
+    assert(fc.imag(z) < 0.000000001f)
 
     assert(fc.multiply(fc.i, fc.i) === fc(-1f, 0f))
     assert(fc.imag(fc(-1f, 0f)) === 0f)
@@ -136,22 +136,36 @@ class ComplexTest extends FunSuite {
 
     val z = e.pow(i * pi) + one
 
-    assert(z.real == 0.0F)
-    assert(z.imag < 0.000000001F)
+    assert(z.real == 0.0f)
+    assert(z.imag < 0.000000001f)
   }
 
   test("complex trigonometry") {
     // these are just a spot check to avoid sign errors
 
-    assert(Complex(3.0, 5.0).sin == Complex(10.472508533940392, -73.46062169567367))
-    assert(Complex(3.0, -5.0).sin == Complex(10.472508533940392, 73.46062169567367))
-    assert(Complex(-3.0, 5.0).sin == Complex(-10.472508533940392, -73.46062169567367))
-    assert(Complex(-3.0, -5.0).sin == Complex(-10.472508533940392, 73.46062169567367))
+    assert(
+      Complex(3.0, 5.0).sin == Complex(10.472508533940392, -73.46062169567367))
+    assert(
+      Complex(3.0, -5.0).sin == Complex(10.472508533940392, 73.46062169567367))
+    assert(
+      Complex(-3.0, 5.0).sin == Complex(
+        -10.472508533940392,
+        -73.46062169567367))
+    assert(
+      Complex(-3.0, -5.0).sin == Complex(
+        -10.472508533940392,
+        73.46062169567367))
 
-    assert(Complex(3.0, 5.0).cos == Complex(-73.46729221264526, -10.471557674805572))
-    assert(Complex(3.0, -5.0).cos == Complex(-73.46729221264526, 10.471557674805572))
-    assert(Complex(-3.0, 5.0).cos == Complex(-73.46729221264526, 10.471557674805572))
-    assert(Complex(-3.0, -5.0).cos == Complex(-73.46729221264526, -10.471557674805572))
+    assert(
+      Complex(3.0, 5.0).cos == Complex(-73.46729221264526, -10.471557674805572))
+    assert(
+      Complex(3.0, -5.0).cos == Complex(-73.46729221264526, 10.471557674805572))
+    assert(
+      Complex(-3.0, 5.0).cos == Complex(-73.46729221264526, 10.471557674805572))
+    assert(
+      Complex(-3.0, -5.0).cos == Complex(
+        -73.46729221264526,
+        -10.471557674805572))
   }
 
   test("complex norm") {

@@ -3,16 +3,18 @@ import language.existentials
 object Test {
   class Def[T]
   class Exp[T]
-  class Contra[-T] { def head[T1 <: T] : T1 = ??? }
-  class Cov[+T] { }
+  class Contra[-T] { def head[T1 <: T]: T1 = ??? }
+  class Cov[+T] {}
 
-  case class ArrayApply[T](x: Exp[Array[T]], i: Exp[Int], j: Exp[_]) extends Def[T]
+  case class ArrayApply[T](x: Exp[Array[T]], i: Exp[Int], j: Exp[_])
+      extends Def[T]
 
-  val IntArrayApply = ArrayApply[Int](new Exp[Array[Int]], new Exp[Int], new Exp[Int])
+  val IntArrayApply =
+    ArrayApply[Int](new Exp[Array[Int]], new Exp[Int], new Exp[Int])
 
   def f(x: Any) = x match {
-    case xs: Iterable[Any]    => xs.head // okay
-    case _                    => 0
+    case xs: Iterable[Any] => xs.head // okay
+    case _                 => 0
   }
   def f2(x: Any) = x match {
     case xs: Iterable[String] => xs.head // unchecked
@@ -37,7 +39,7 @@ object Test {
   }
 
   def co1(x: List[Cov[List[Int]]]) = x match {
-    case _: Seq[Cov[Seq[Any]]] => true  // okay
+    case _: Seq[Cov[Seq[Any]]] => true // okay
     case _                     => false
   }
 

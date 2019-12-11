@@ -21,8 +21,8 @@ import org.apache.spark.sql.{QueryTest, Row}
 import org.apache.spark.sql.hive.test.TestHiveSingleton
 
 /**
- * A set of tests that validates commands can also be queried by like a table
- */
+  * A set of tests that validates commands can also be queried by like a table
+  */
 class HiveOperatorQueryableSuite extends QueryTest with TestHiveSingleton {
   import hiveContext._
 
@@ -36,18 +36,15 @@ class HiveOperatorQueryableSuite extends QueryTest with TestHiveSingleton {
       Seq(
         Row("col_name", "string", "name of the column"),
         Row("data_type", "string", "data type of the column"),
-        Row("comment", "string", "comment of the column")))
+        Row("comment", "string", "comment of the column"))
+    )
 
     checkAnswer(
       sql("select * from mydesc"),
-      Seq(
-        Row("key", "int", null),
-        Row("value", "string", null)))
+      Seq(Row("key", "int", null), Row("value", "string", null)))
 
     checkAnswer(
       sql("select col_name, data_type, comment from mydesc"),
-      Seq(
-        Row("key", "int", null),
-        Row("value", "string", null)))
+      Seq(Row("key", "int", null), Row("value", "string", null)))
   }
 }

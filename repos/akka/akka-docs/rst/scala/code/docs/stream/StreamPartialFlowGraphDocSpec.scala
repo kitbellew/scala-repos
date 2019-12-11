@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2014-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2014-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package docs.stream
 
 import akka.actor.ActorRef
@@ -8,7 +8,7 @@ import akka.stream._
 import akka.stream.scaladsl._
 import akka.testkit.AkkaSpec
 
-import scala.concurrent.{ Await, Future }
+import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
 
 class StreamPartialFlowGraphDocSpec extends AkkaSpec {
@@ -31,8 +31,8 @@ class StreamPartialFlowGraphDocSpec extends AkkaSpec {
 
     val resultSink = Sink.head[Int]
 
-    val g = RunnableGraph.fromGraph(GraphDSL.create(resultSink) { implicit b =>
-      sink =>
+    val g = RunnableGraph.fromGraph(GraphDSL.create(resultSink) {
+      implicit b => sink =>
         import GraphDSL.Implicits._
 
         // importing the partial graph will return its shape (inlets & outlets)

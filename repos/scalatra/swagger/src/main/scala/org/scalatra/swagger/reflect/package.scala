@@ -1,9 +1,9 @@
 package org.scalatra.swagger
 
-import java.lang.reflect.{ Constructor => JConstructor }
+import java.lang.reflect.{Constructor => JConstructor}
 import java.util.concurrent.ConcurrentHashMap
 
-import com.thoughtworks.paranamer.{ BytecodeReadingParanamer, CachingParanamer }
+import com.thoughtworks.paranamer.{BytecodeReadingParanamer, CachingParanamer}
 
 package object reflect {
 
@@ -30,7 +30,8 @@ package object reflect {
   private[reflect] val ConstructorDefault = "$lessinit$greater$default"
   private[reflect] val ModuleFieldName = "MODULE$"
   private[reflect] val ClassLoaders = Vector(getClass.getClassLoader)
-  private[this] val paranamer = new CachingParanamer(new BytecodeReadingParanamer)
+  private[this] val paranamer = new CachingParanamer(
+    new BytecodeReadingParanamer)
 
   object ParanamerReader extends ParameterNameReader {
     def lookupParameterNames(constructor: JConstructor[_]): Seq[String] =

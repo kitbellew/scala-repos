@@ -23,7 +23,11 @@ import java.net.ServerSocket
 import java.util.Random
 
 /** Represents a page view on a website with associated dimension data. */
-class PageView(val url: String, val status: Int, val zipCode: Int, val userID: Int)
+class PageView(
+    val url: String,
+    val status: Int,
+    val zipCode: Int,
+    val userID: Int)
     extends Serializable {
   override def toString(): String = {
     "%s\t%s\t%s\t%s\n".format(url, status, zipCode, userID)
@@ -51,13 +55,12 @@ object PageView extends Serializable {
   */
 // scalastyle:on
 object PageViewGenerator {
-  val pages = Map("http://foo.com/" -> .7,
-                  "http://foo.com/news" -> 0.2,
-                  "http://foo.com/contact" -> .1)
-  val httpStatus = Map(200 -> .95,
-                       404 -> .05)
-  val userZipCode = Map(94709 -> .5,
-                        94117 -> .5)
+  val pages = Map(
+    "http://foo.com/" -> .7,
+    "http://foo.com/news" -> 0.2,
+    "http://foo.com/contact" -> .1)
+  val httpStatus = Map(200 -> .95, 404 -> .05)
+  val userZipCode = Map(94709 -> .5, 94117 -> .5)
   val userID = Map((1 to 100).map(_ -> .01): _*)
 
   def pickFromDistribution[T](inputMap: Map[T, Double]): T = {
@@ -69,7 +72,10 @@ object PageViewGenerator {
         return item
       }
     }
-    inputMap.take(1).head._1 // Shouldn't get here if probabilities add up to 1.0
+    inputMap
+      .take(1)
+      .head
+      ._1 // Shouldn't get here if probabilities add up to 1.0
   }
 
   def getNextClickEvent(): String = {

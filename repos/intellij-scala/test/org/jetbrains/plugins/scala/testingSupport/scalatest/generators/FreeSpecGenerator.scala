@@ -8,7 +8,8 @@ import org.jetbrains.plugins.scala.testingSupport.scalatest.ScalaTestTestCase
   */
 trait FreeSpecGenerator extends ScalaTestTestCase {
   def addFreeSpec() {
-    addFileToProject("FreeSpecTest.scala",
+    addFileToProject(
+      "FreeSpecTest.scala",
       """
         |import org.scalatest._
         |
@@ -28,7 +29,8 @@ trait FreeSpecGenerator extends ScalaTestTestCase {
   }
 
   def addComplexFreeSpec() = {
-    addFileToProject("ComplexFreeSpec.scala",
+    addFileToProject(
+      "ComplexFreeSpec.scala",
       """
         |import org.scalatest._
         |
@@ -63,6 +65,7 @@ trait FreeSpecGenerator extends ScalaTestTestCase {
         |
         |  "Empty scope" - {}
         |}
-      """.stripMargin.trim())
+      """.stripMargin.trim()
+    )
   }
 }

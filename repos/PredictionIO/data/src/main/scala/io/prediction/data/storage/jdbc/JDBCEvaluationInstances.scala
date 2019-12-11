@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.data.storage.jdbc
 
 import grizzled.slf4j.Logging
@@ -22,8 +21,13 @@ import io.prediction.data.storage.StorageClientConfig
 import scalikejdbc._
 
 /** JDBC implementations of [[EvaluationInstances]] */
-class JDBCEvaluationInstances(client: String, config: StorageClientConfig, prefix: String)
-  extends EvaluationInstances with Logging {
+class JDBCEvaluationInstances(
+    client: String,
+    config: StorageClientConfig,
+    prefix: String)
+    extends EvaluationInstances
+    with Logging {
+
   /** Database table name for this data access object */
   val tableName = JDBCUtils.prefixTableName(prefix, "evaluationinstances")
   DB autoCommit { implicit session =>
@@ -62,8 +66,9 @@ class JDBCEvaluationInstances(client: String, config: StorageClientConfig, prefi
     id
   }
 
-  def get(id: String): Option[EvaluationInstance] = DB localTx { implicit session =>
-    sql"""
+  def get(id: String): Option[EvaluationInstance] = DB localTx {
+    implicit session =>
+      sql"""
     SELECT
       id,
       status,
@@ -157,6 +162,7 @@ class JDBCEvaluationInstances(client: String, config: StorageClientConfig, prefi
       sparkConf = JDBCUtils.stringToMap(rs.string("sparkConf")),
       evaluatorResults = rs.string("evaluatorResults"),
       evaluatorResultsHTML = rs.string("evaluatorResultsHTML"),
-      evaluatorResultsJSON = rs.string("evaluatorResultsJSON"))
+      evaluatorResultsJSON = rs.string("evaluatorResultsJSON")
+    )
   }
 }

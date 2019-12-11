@@ -11,10 +11,11 @@ import org.scalatest.concurrent.{Eventually, IntegrationPatience}
 import org.scalatest.junit.{AssertionsForJUnit, JUnitRunner}
 
 @RunWith(classOf[JUnitRunner])
-class ThresholdFailureDetectorTest extends FunSuite
-  with AssertionsForJUnit
-  with Eventually
-  with IntegrationPatience {
+class ThresholdFailureDetectorTest
+    extends FunSuite
+    with AssertionsForJUnit
+    with Eventually
+    with IntegrationPatience {
   def testt(desc: String)(f: TimeControl => Unit): Unit =
     test(desc) {
       Time.withCurrentTimeFrozen(f)
@@ -175,7 +176,8 @@ class ThresholdFailureDetectorTest extends FunSuite
     val failAfter = 5
 
     def ping() = {
-      if (n.incrementAndGet() >= failAfter) Future.exception(new Exception("test"))
+      if (n.incrementAndGet() >= failAfter)
+        Future.exception(new Exception("test"))
       else Future.Done
     }
 

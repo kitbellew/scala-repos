@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.data.storage
 
 import io.prediction.annotation.DeveloperApi
@@ -27,6 +26,7 @@ import org.joda.time.DateTime
   */
 @DeveloperApi
 object LEventAggregator {
+
   /** :: DeveloperApi ::
     * Aggregate all properties grouped by entity type given an iterator of
     * [[Event]]s with the latest property values from all [[Event]]s, and their
@@ -41,11 +41,13 @@ object LEventAggregator {
       .groupBy(_.entityId)
       .mapValues(_.sortBy(_.eventTime.getMillis)
         .foldLeft[Prop](Prop())(propAggregator))
-      .filter{ case (k, v) => v.dm.isDefined }
-      .mapValues{ v =>
-        require(v.firstUpdated.isDefined,
+      .filter { case (k, v) => v.dm.isDefined }
+      .mapValues { v =>
+        require(
+          v.firstUpdated.isDefined,
           "Unexpected Error: firstUpdated cannot be None.")
-        require(v.lastUpdated.isDefined,
+        require(
+          v.lastUpdated.isDefined,
           "Unexpected Error: lastUpdated cannot be None.")
 
         PropertyMap(
@@ -64,16 +66,18 @@ object LEventAggregator {
     * @return An optional [[PropertyMap]]
     */
   @DeveloperApi
-  def aggregatePropertiesSingle(events: Iterator[Event])
-  : Option[PropertyMap] = {
+  def aggregatePropertiesSingle(
+      events: Iterator[Event]): Option[PropertyMap] = {
     val prop = events.toList
       .sortBy(_.eventTime.getMillis)
       .foldLeft[Prop](Prop())(propAggregator)
 
-    prop.dm.map{ d =>
-      require(prop.firstUpdated.isDefined,
+    prop.dm.map { d =>
+      require(
+        prop.firstUpdated.isDefined,
         "Unexpected Error: firstUpdated cannot be None.")
-      require(prop.lastUpdated.isDefined,
+      require(
+        prop.lastUpdated.isDefined,
         "Unexpected Error: lastUpdated cannot be None.")
 
       PropertyMap(
@@ -87,9 +91,9 @@ object LEventAggregator {
   /** Event names that control aggregation: \$set, \$unset, and \$delete */
   val eventNames = List("$set", "$unset", "$delete")
 
-  private
-  def dataMapAggregator: ((Option[DataMap], Event) => Option[DataMap]) = {
-    (p, e) => {
+  private def dataMapAggregator
+      : ((Option[DataMap], Event) => Option[DataMap]) = { (p, e) =>
+    {
       e.event match {
         case "$set" => {
           if (p == None) {
@@ -106,24 +110,27 @@ object LEventAggregator {
           }
         }
         case "$delete" => None
-        case _ => p // do nothing for others
+        case _         => p // do nothing for others
       }
     }
   }
 
-  private
-  def propAggregator: ((Prop, Event) => Prop) = {
-    (p, e) => {
+  private def propAggregator: ((Prop, Event) => Prop) = { (p, e) =>
+    {
       e.event match {
         case "$set" | "$unset" | "$delete" => {
           Prop(
             dm = dataMapAggregator(p.dm, e),
-            firstUpdated = p.firstUpdated.map { t =>
-              first(t, e.eventTime)
-            }.orElse(Some(e.eventTime)),
-            lastUpdated = p.lastUpdated.map { t =>
-              last(t, e.eventTime)
-            }.orElse(Some(e.eventTime))
+            firstUpdated = p.firstUpdated
+              .map { t =>
+                first(t, e.eventTime)
+              }
+              .orElse(Some(e.eventTime)),
+            lastUpdated = p.lastUpdated
+              .map { t =>
+                last(t, e.eventTime)
+              }
+              .orElse(Some(e.eventTime))
           )
         }
         case _ => p // do nothing for others
@@ -131,15 +138,15 @@ object LEventAggregator {
     }
   }
 
-  private
-  def first(a: DateTime, b: DateTime): DateTime = if (b.isBefore(a)) b else a
+  private def first(a: DateTime, b: DateTime): DateTime =
+    if (b.isBefore(a)) b else a
 
-  private
-  def last(a: DateTime, b: DateTime): DateTime = if (b.isAfter(a)) b else a
+  private def last(a: DateTime, b: DateTime): DateTime =
+    if (b.isAfter(a)) b else a
 
   private case class Prop(
-    dm: Option[DataMap] = None,
-    firstUpdated: Option[DateTime] = None,
-    lastUpdated: Option[DateTime] = None
+      dm: Option[DataMap] = None,
+      firstUpdated: Option[DateTime] = None,
+      lastUpdated: Option[DateTime] = None
   )
 }

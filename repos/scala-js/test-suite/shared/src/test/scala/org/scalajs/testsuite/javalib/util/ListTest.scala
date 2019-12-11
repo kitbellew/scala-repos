@@ -288,7 +288,8 @@ trait ListTest extends CollectionTest {
     assertEquals(-1, al.lastIndexOf("four"))
   }
 
-  @Test def shouldGiveTheFirstOrLastIndexOfAnElementForDoubleCornerCases(): Unit = {
+  @Test def shouldGiveTheFirstOrLastIndexOfAnElementForDoubleCornerCases()
+      : Unit = {
     val al = factory.empty[Double]
 
     al.add(-0.0)
@@ -457,13 +458,16 @@ trait ListTest extends CollectionTest {
 
 object ListFactory {
   def allFactories: Iterator[ListFactory] =
-    Iterator(new ArrayListFactory, new LinkedListFactory, new AbstractListFactory)
+    Iterator(
+      new ArrayListFactory,
+      new LinkedListFactory,
+      new AbstractListFactory)
 }
 
 trait ListFactory extends CollectionFactory {
   def empty[E: ClassTag]: ju.List[E]
 
   /** Sortable using java.util.Collections.sort
-   */
+    */
   def sortableUsingCollections: Boolean = true
 }

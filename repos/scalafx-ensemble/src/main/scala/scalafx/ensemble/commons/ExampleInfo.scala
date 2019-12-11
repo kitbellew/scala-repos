@@ -29,13 +29,12 @@ package scalafx.ensemble.commons
 
 import scala.util.matching.Regex
 
-
 object ExampleInfo {
 
   val examplesDir = "/scalafx/ensemble/example/"
 
   def formatAddSpaces(name: String): String =
-    name.replaceAll( """([\p{Upper}\d])""", " $1").trim
+    name.replaceAll("""([\p{Upper}\d])""", " $1").trim
 
   def formatNoSpaces(name: String): String = name.replaceAllLiterally(" ", "")
 
@@ -43,10 +42,12 @@ object ExampleInfo {
     examplesDir + groupName.toLowerCase + "/" + formatNoSpaces(exampleName) + "Sample.png"
 
   def sourcecodePath(exampleName: String, groupName: String): String =
-    examplesDir + groupName.toLowerCase + "/" + "Ensemble" + formatNoSpaces(exampleName) + ".scala"
+    examplesDir + groupName.toLowerCase + "/" + "Ensemble" + formatNoSpaces(
+      exampleName) + ".scala"
 
   def className(exampleName: String, groupName: String): String =
-    "scalafx.ensemble.example." + groupName.toLowerCase + ".Ensemble" + ExampleInfo.formatNoSpaces(exampleName)
+    "scalafx.ensemble.example." + groupName.toLowerCase + ".Ensemble" + ExampleInfo
+      .formatNoSpaces(exampleName)
 }
 
 /** Creates stand alone example source code. */
@@ -55,14 +56,16 @@ class ExampleInfo(exampleName: String, exampleGroupName: String) {
   import ExampleInfo._
 
   /** Source code for the sample. */
-  lazy val sourceCode: String = loadAndConvertSourceCode(sourcecodePath(exampleName, exampleGroupName))
+  lazy val sourceCode: String = loadAndConvertSourceCode(
+    sourcecodePath(exampleName, exampleGroupName))
 
   /** Name of example's main class, extracted from the source code, excluding package prefix. */
   lazy val classSimpleName: String = {
     val pattern = "object\\s*(\\S*)\\s*extends\\s*JFXApp".r
     pattern findFirstIn sourceCode match {
       case Some(pattern(name)) => name
-      case None                => throw new IllegalArgumentException("Cannot extract sample class name.")
+      case None =>
+        throw new IllegalArgumentException("Cannot extract sample class name.")
     }
   }
 
@@ -75,11 +78,15 @@ class ExampleInfo(exampleName: String, exampleGroupName: String) {
   /** Collection of resources used by this example */
   lazy val resources: Set[String] = {
     def extract(pattern: Regex): Seq[String] = {
-      val resources = for (pattern(resourcePath) <- pattern findAllIn sourceCode) yield resourcePath
-      resources.map(r => if (r.startsWith("/")) r else "/" + packagePath + "/" + r).toSeq
+      val resources =
+        for (pattern(resourcePath) <- pattern findAllIn sourceCode)
+          yield resourcePath
+      resources
+        .map(r => if (r.startsWith("/")) r else "/" + packagePath + "/" + r)
+        .toSeq
     }
 
-    extract( """@resource\s*(\S*)""".r).toSet
+    extract("""@resource\s*(\S*)""".r).toSet
   }
 
   private def extractPackageName(source: String): String = {
@@ -100,7 +107,8 @@ class ExampleInfo(exampleName: String, exampleGroupName: String) {
 
   private def extractStageProperties(sourceRaw: String): Seq[String] = {
     val pattern = """@stage-property\s*(.*)""".r
-    val properties = for (pattern(property) <- pattern findAllIn sourceRaw) yield property.trim
+    val properties =
+      for (pattern(property) <- pattern findAllIn sourceRaw) yield property.trim
     properties.toSeq
   }
 
@@ -113,17 +121,17 @@ class ExampleInfo(exampleName: String, exampleGroupName: String) {
     val stageProperties = extractStageProperties(sourceRaw)
 
     // Remove initial comment
-    var source = sourceRaw.replaceFirst( """(?s)/\*(.*?)\*/""", "")
+    var source = sourceRaw.replaceFirst("""(?s)/\*(.*?)\*/""", "")
 
     // Remove package statement, for a time being, so it is easier to prepend to the source code
     val originalPackageName = extractPackageName(source)
-    source = source.replaceFirst( """package\s*\S*""", "")
+    source = source.replaceFirst("""package\s*\S*""", "")
 
     // Remove empty lines at the beginning
-    source = source.replaceFirst( """(?s)\s*""", "")
+    source = source.replaceFirst("""(?s)\s*""", "")
 
     // Remove information about added properties
-    source = source.replaceAll( """\s*//\s*@stage-property\s*(.*)""", "")
+    source = source.replaceAll("""\s*//\s*@stage-property\s*(.*)""", "")
 
     // Append copyright, package, and required imports
     source = "" +
@@ -131,14 +139,15 @@ class ExampleInfo(exampleName: String, exampleGroupName: String) {
       " * Copyright 2013 ScalaFX Project\n" +
       " * All right reserved.\n" +
       " */\n" +
-      (if (!originalPackageName.isEmpty) "package " + originalPackageName + "\n" else "") +
+      (if (!originalPackageName.isEmpty) "package " + originalPackageName + "\n"
+       else "") +
       "\n" +
       "import scalafx.application.JFXApp\n" +
       "import scalafx.scene.Scene\n" +
       source
 
     // Remove local imports
-    source = source.replaceAll( """import scalafx.ensemble.\S*\s*""", "")
+    source = source.replaceAll("""import scalafx.ensemble.\S*\s*""", "")
 
     // Change `class ExampleSomething extends EnsembleExample {`
     // to     `object SomethingSample extends JFXApp
@@ -151,13 +160,14 @@ class ExampleInfo(exampleName: String, exampleGroupName: String) {
       "\n\n" +
       "  stage = new JFXApp.PrimaryStage {\n" +
       "    title = \"" + formatAddSpaces(extractSampleName(sourceRaw)) + " Example\"\n" +
-      (if (stageProperties.isEmpty) "" else stageProperties.mkString("    ", "\n    ", "\n")) +
+      (if (stageProperties.isEmpty) ""
+       else stageProperties.mkString("    ", "\n    ", "\n")) +
       "    scene = new Scene {\n" +
       "      root ="
-    source = source.replaceFirst( """\s*def\s*getContent\s*=""", stageHeader)
+    source = source.replaceFirst("""\s*def\s*getContent\s*=""", stageHeader)
 
     // Cleanup extra carriage-return characters
-    source = source.replaceAll( """\r\n""", "\n")
+    source = source.replaceAll("""\r\n""", "\n")
 
     // Locate code that needs additional braces since two were introduced in `stageHeader`
     val openingBraceIndex = {
@@ -165,7 +175,9 @@ class ExampleInfo(exampleName: String, exampleGroupName: String) {
       require(start >= 0, "Internal error, failed to find `stageHeader`.")
       source.indexOf("{", start + stageHeader.length)
     }
-    require(openingBraceIndex >= 0, "Internal error, failed to find `stageHeader`.")
+    require(
+      openingBraceIndex >= 0,
+      "Internal error, failed to find `stageHeader`.")
     // Get index of closing brace
     val closingBraceIndex = {
       var braceCount = 1

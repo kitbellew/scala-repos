@@ -14,7 +14,9 @@ import scala.beans.BeanProperty
     new Storage("hocon_settings.xml")
   )
 )
-class HoconProjectSettings extends PersistentStateComponent[HoconProjectSettings] with ExportableComponent {
+class HoconProjectSettings
+    extends PersistentStateComponent[HoconProjectSettings]
+    with ExportableComponent {
   def getState = this
 
   def loadState(state: HoconProjectSettings) =

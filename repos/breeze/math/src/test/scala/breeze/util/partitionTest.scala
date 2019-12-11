@@ -21,9 +21,9 @@ package breeze.util
 import org.scalatest.FunSuite
 
 /**
- * TODO
- *
- * @author dlwh
+  * TODO
+  *
+  * @author dlwh
  **/
 class partitionTest extends FunSuite {
 

@@ -7,7 +7,13 @@ import com.twitter.app.GlobalFlag
 import com.twitter.common.metrics.Metrics
 import com.twitter.conversions.time._
 import com.twitter.finagle.Service
-import com.twitter.finagle.http.{MediaType, RequestParamMap, Response, Request, Status}
+import com.twitter.finagle.http.{
+  MediaType,
+  RequestParamMap,
+  Response,
+  Request,
+  Status
+}
 import com.twitter.finagle.util.DefaultTimer
 import com.twitter.io.Buf
 import com.twitter.logging.Logger
@@ -21,31 +27,33 @@ import scala.io.{Codec, Source}
 import scala.util.matching.Regex
 
 /**
- * Blacklist of regex, comma-separated. Comma is a reserved character and
- * cannot be used. Used with regexes from statsFilterFile.
- *
- * See http://www.scala-lang.org/api/current/#scala.util.matching.Regex
- */
-object statsFilter extends GlobalFlag[String](
-  "",
-  "Comma-separated regexes that indicate which metrics to filter out")
-
+  * Blacklist of regex, comma-separated. Comma is a reserved character and
+  * cannot be used. Used with regexes from statsFilterFile.
+  *
+  * See http://www.scala-lang.org/api/current/#scala.util.matching.Regex
+  */
+object statsFilter
+    extends GlobalFlag[String](
+      "",
+      "Comma-separated regexes that indicate which metrics to filter out")
 
 /**
- * Comma-separated blacklist of files. Each file may have multiple filters,
- * separated by new lines. Used with regexes from statsFilter.
- *
- * See http://www.scala-lang.org/api/current/#scala.util.matching.Regex
- */
-object statsFilterFile extends GlobalFlag[Set[File]](
-  Set.empty[File],
-  "Comma separated files of newline separated regexes that indicate which metrics to filter out")
+  * Comma-separated blacklist of files. Each file may have multiple filters,
+  * separated by new lines. Used with regexes from statsFilter.
+  *
+  * See http://www.scala-lang.org/api/current/#scala.util.matching.Regex
+  */
+object statsFilterFile
+    extends GlobalFlag[Set[File]](
+      Set.empty[File],
+      "Comma separated files of newline separated regexes that indicate which metrics to filter out")
 
-object useCounterDeltas extends GlobalFlag[Boolean](
-  false,
-  "Return deltas for counters instead of absolute values. " +
-    "Provides compatibility with the behavior from 'Ostrich'"
-)
+object useCounterDeltas
+    extends GlobalFlag[Boolean](
+      false,
+      "Return deltas for counters instead of absolute values. " +
+        "Provides compatibility with the behavior from 'Ostrich'"
+    )
 
 object JsonExporter {
 
@@ -55,10 +63,8 @@ object JsonExporter {
   private val log = Logger.get()
 }
 
-class JsonExporter(
-    registry: Metrics,
-    timer: Timer)
-  extends Service[Request, Response] { self =>
+class JsonExporter(registry: Metrics, timer: Timer)
+    extends Service[Request, Response] { self =>
 
   import JsonExporter._
 
@@ -108,8 +114,11 @@ class JsonExporter(
       if (vals.isEmpty) {
         false
       } else {
-        if (vals.exists(_ == "60")) true else {
-          log.warning(s"${getClass.getName} request ignored due to unsupported period: '${vals.mkString(",")}'")
+        if (vals.exists(_ == "60")) true
+        else {
+          log.warning(
+            s"${getClass.getName} request ignored due to unsupported period: '${vals
+              .mkString(",")}'")
           false
         }
       }
@@ -122,21 +131,22 @@ class JsonExporter(
 
   // package protected for testing
   private[stats] def readBooleanParam(
-    params: RequestParamMap,
-    name: String,
-    default: Boolean
+      params: RequestParamMap,
+      name: String,
+      default: Boolean
   ): Boolean = {
     val vals = params.getAll(name)
     if (vals.nonEmpty)
-      vals.exists { v => v == "1" || v == "true" }
-    else
+      vals.exists { v =>
+        v == "1" || v == "true"
+      } else
       default
   }
 
   private[this] def getOrRegisterLatchedStats(): CounterDeltas = synchronized {
     deltas match {
       case Some(ds) => ds
-      case None =>
+      case None     =>
         // Latching should happen every minute, at the top of the minute.
         deltas = Some(new CounterDeltas())
         timer.schedule(startOfNextMinute, 1.minute) {
@@ -148,18 +158,20 @@ class JsonExporter(
   }
 
   def json(
-    pretty: Boolean,
-    filtered: Boolean,
-    counterDeltasOn: Boolean = false
+      pretty: Boolean,
+      filtered: Boolean,
+      counterDeltasOn: Boolean = false
   ): String = {
-    val gauges = try registry.sampleGauges().asScala catch {
-      case NonFatal(e) =>
-        // because gauges run arbitrary user code, we want to protect ourselves here.
-        // while the underlying registry should protect against individual misbehaving
-        // gauges, an extra level of belt-and-suspenders seemed worthwhile.
-        log.error(e, "exception while collecting gauges")
-        Map.empty[String, Number]
-    }
+    val gauges =
+      try registry.sampleGauges().asScala
+      catch {
+        case NonFatal(e) =>
+          // because gauges run arbitrary user code, we want to protect ourselves here.
+          // while the underlying registry should protect against individual misbehaving
+          // gauges, an extra level of belt-and-suspenders seemed worthwhile.
+          log.error(e, "exception while collecting gauges")
+          Map.empty[String, Number]
+      }
     val histos = registry.sampleHistograms().asScala
     val counters = if (counterDeltasOn && useCounterDeltas()) {
       getOrRegisterLatchedStats().deltas
@@ -192,14 +204,15 @@ class JsonExporter(
   def mkRegex(regexesString: String): Option[Regex] = {
     regexesString.split(",") match {
       case Array("") => None
-      case regexes => mkRegex(regexes)
+      case regexes   => mkRegex(regexes)
     }
   }
 
-  def filterSample(sample: collection.Map[String, Number]): collection.Map[String, Number] = {
+  def filterSample(sample: collection.Map[String, Number])
+      : collection.Map[String, Number] = {
     statsFilterRegex match {
       case Some(regex) => sample.filterKeys(!regex.pattern.matcher(_).matches)
-      case None => sample
+      case None        => sample
     }
   }
 

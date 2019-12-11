@@ -1,6 +1,7 @@
 package mesosphere.mesos.scale
 
 object DisplayHelpers {
+
   /** Formatting function. The first parameter is the input string and the second parameter the desired length. */
   type ColumnFormat = ((String, Int) => String)
 
@@ -19,7 +20,9 @@ object DisplayHelpers {
       (" " * (length - str.length)) + str
   }
 
-  def printTable(columnFormats: Seq[ColumnFormat], rowsWithAny: Seq[IndexedSeq[Any]]): Unit = {
+  def printTable(
+      columnFormats: Seq[ColumnFormat],
+      rowsWithAny: Seq[IndexedSeq[Any]]): Unit = {
     val rows = rowsWithAny.map(_.map(_.toString))
 
     val columns = columnFormats.size
@@ -40,7 +43,9 @@ object DisplayHelpers {
   def withUnderline(header: IndexedSeq[String]): Seq[IndexedSeq[String]] = {
     IndexedSeq(
       header,
-      header.map { str => "-" * str.length }
+      header.map { str =>
+        "-" * str.length
+      }
     )
   }
 }

@@ -18,22 +18,27 @@
 package org.apache.spark.sql.execution
 
 import org.apache.spark.sql.catalyst.{expressions, InternalRow}
-import org.apache.spark.sql.catalyst.expressions.{ExprId, Literal, SubqueryExpression}
-import org.apache.spark.sql.catalyst.expressions.codegen.{CodegenContext, ExprCode}
+import org.apache.spark.sql.catalyst.expressions.{
+  ExprId,
+  Literal,
+  SubqueryExpression
+}
+import org.apache.spark.sql.catalyst.expressions.codegen.{
+  CodegenContext,
+  ExprCode
+}
 import org.apache.spark.sql.catalyst.plans.logical.{LogicalPlan, ReturnAnswer}
 import org.apache.spark.sql.catalyst.rules.Rule
 import org.apache.spark.sql.internal.SessionState
 import org.apache.spark.sql.types.DataType
 
 /**
- * A subquery that will return only one row and one column.
- *
- * This is the physical copy of ScalarSubquery to be used inside SparkPlan.
- */
-case class ScalarSubquery(
-    @transient executedPlan: SparkPlan,
-    exprId: ExprId)
-  extends SubqueryExpression {
+  * A subquery that will return only one row and one column.
+  *
+  * This is the physical copy of ScalarSubquery to be used inside SparkPlan.
+  */
+case class ScalarSubquery(@transient executedPlan: SparkPlan, exprId: ExprId)
+    extends SubqueryExpression {
 
   override def query: LogicalPlan = throw new UnsupportedOperationException
   override def withNewPlan(plan: LogicalPlan): SubqueryExpression = {
@@ -60,13 +65,14 @@ case class ScalarSubquery(
 }
 
 /**
- * Convert the subquery from logical plan into executed plan.
- */
+  * Convert the subquery from logical plan into executed plan.
+  */
 case class PlanSubqueries(sessionState: SessionState) extends Rule[SparkPlan] {
   def apply(plan: SparkPlan): SparkPlan = {
     plan.transformAllExpressions {
       case subquery: expressions.ScalarSubquery =>
-        val sparkPlan = sessionState.planner.plan(ReturnAnswer(subquery.query)).next()
+        val sparkPlan =
+          sessionState.planner.plan(ReturnAnswer(subquery.query)).next()
         val executedPlan = sessionState.prepareForExecution.execute(sparkPlan)
         ScalarSubquery(executedPlan, subquery.exprId)
     }

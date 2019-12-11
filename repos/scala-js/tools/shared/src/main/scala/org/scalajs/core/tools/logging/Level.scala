@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.core.tools.logging
 
 import scala.math.Ordered
@@ -18,7 +17,7 @@ abstract sealed class Level extends Ordered[Level] { x =>
 
 object Level {
   case object Error extends Level { protected val order = 4 }
-  case object Warn  extends Level { protected val order = 3 }
-  case object Info  extends Level { protected val order = 2 }
+  case object Warn extends Level { protected val order = 3 }
+  case object Info extends Level { protected val order = 2 }
   case object Debug extends Level { protected val order = 1 }
 }

@@ -11,7 +11,13 @@ object NettyHeadersWrapperSpec extends Specification {
 
   val headers: Headers = {
     val nettyHeaders = new DefaultHttpHeaders()
-    val headersToAdd = Seq("a" -> "a1", "a" -> "a2", "b" -> "b1", "b" -> "b2", "B" -> "b3", "c" -> "c1")
+    val headersToAdd = Seq(
+      "a" -> "a1",
+      "a" -> "a2",
+      "b" -> "b1",
+      "b" -> "b2",
+      "B" -> "b3",
+      "c" -> "c1")
     for ((k, v) <- headersToAdd) nettyHeaders.add(k, v)
     new NettyHeadersWrapper(nettyHeaders)
   }
@@ -75,7 +81,11 @@ object NettyHeadersWrapperSpec extends Specification {
     }
 
     "add headers" in {
-      headers.add("a" -> "a3", "a" -> "a4").getAll("a") must_== Seq("a1", "a2", "a3", "a4")
+      headers.add("a" -> "a3", "a" -> "a4").getAll("a") must_== Seq(
+        "a1",
+        "a2",
+        "a3",
+        "a4")
     }
 
     "remove headers by case insensitive" in {
@@ -84,23 +94,43 @@ object NettyHeadersWrapperSpec extends Specification {
     }
 
     "replace headers by case insensitive" in {
-      headers.replace("a" -> "a3", "A" -> "a4").getAll("a") must_== Seq("a3", "a4")
+      headers.replace("a" -> "a3", "A" -> "a4").getAll("a") must_== Seq(
+        "a3",
+        "a4")
     }
 
     "equal other Headers by case insensitive" in {
-      val other = Headers("A" -> "a1", "a" -> "a2", "b" -> "b1", "b" -> "b2", "B" -> "b3", "C" -> "c1")
+      val other = Headers(
+        "A" -> "a1",
+        "a" -> "a2",
+        "b" -> "b1",
+        "b" -> "b2",
+        "B" -> "b3",
+        "C" -> "c1")
       (headers must_== other) and
         (headers.## must_== other.##)
     }
 
     "equal other Headers with same relative order" in {
-      val other = Headers("A" -> "a1", "a" -> "a2", "b" -> "b1", "b" -> "b2", "B" -> "b3", "c" -> "c1")
+      val other = Headers(
+        "A" -> "a1",
+        "a" -> "a2",
+        "b" -> "b1",
+        "b" -> "b2",
+        "B" -> "b3",
+        "c" -> "c1")
       (headers must_== other) and
         (headers.## must_== other.##)
     }
 
     "not equal other Headers with different relative order" in {
-      headers must_!= Headers("a" -> "a2", "A" -> "a1", "b" -> "b1", "b" -> "b2", "B" -> "b3", "c" -> "C1")
+      headers must_!= Headers(
+        "a" -> "a2",
+        "A" -> "a1",
+        "b" -> "b1",
+        "b" -> "b2",
+        "B" -> "b3",
+        "c" -> "C1")
     }
   }
 

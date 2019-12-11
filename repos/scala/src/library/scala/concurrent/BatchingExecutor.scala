@@ -12,39 +12,41 @@ import java.util.concurrent.Executor
 import scala.annotation.tailrec
 
 /**
- * Mixin trait for an Executor
- * which groups multiple nested `Runnable.run()` calls
- * into a single Runnable passed to the original
- * Executor. This can be a useful optimization
- * because it bypasses the original context's task
- * queue and keeps related (nested) code on a single
- * thread which may improve CPU affinity. However,
- * if tasks passed to the Executor are blocking
- * or expensive, this optimization can prevent work-stealing
- * and make performance worse. Also, some ExecutionContext
- * may be fast enough natively that this optimization just
- * adds overhead.
- * The default ExecutionContext.global is already batching
- * or fast enough not to benefit from it; while
- * `fromExecutor` and `fromExecutorService` do NOT add
- * this optimization since they don't know whether the underlying
- * executor will benefit from it.
- * A batching executor can create deadlocks if code does
- * not use `scala.concurrent.blocking` when it should,
- * because tasks created within other tasks will block
- * on the outer task completing.
- * This executor may run tasks in any order, including LIFO order.
- * There are no ordering guarantees.
- *
- * WARNING: The underlying Executor's execute-method must not execute the submitted Runnable
- * in the calling thread synchronously. It must enqueue/handoff the Runnable.
- */
+  * Mixin trait for an Executor
+  * which groups multiple nested `Runnable.run()` calls
+  * into a single Runnable passed to the original
+  * Executor. This can be a useful optimization
+  * because it bypasses the original context's task
+  * queue and keeps related (nested) code on a single
+  * thread which may improve CPU affinity. However,
+  * if tasks passed to the Executor are blocking
+  * or expensive, this optimization can prevent work-stealing
+  * and make performance worse. Also, some ExecutionContext
+  * may be fast enough natively that this optimization just
+  * adds overhead.
+  * The default ExecutionContext.global is already batching
+  * or fast enough not to benefit from it; while
+  * `fromExecutor` and `fromExecutorService` do NOT add
+  * this optimization since they don't know whether the underlying
+  * executor will benefit from it.
+  * A batching executor can create deadlocks if code does
+  * not use `scala.concurrent.blocking` when it should,
+  * because tasks created within other tasks will block
+  * on the outer task completing.
+  * This executor may run tasks in any order, including LIFO order.
+  * There are no ordering guarantees.
+  *
+  * WARNING: The underlying Executor's execute-method must not execute the submitted Runnable
+  * in the calling thread synchronously. It must enqueue/handoff the Runnable.
+  */
 private[concurrent] trait BatchingExecutor extends Executor {
 
   // invariant: if "_tasksLocal.get ne null" then we are inside BatchingRunnable.run; if it is null, we are outside
   private val _tasksLocal = new ThreadLocal[List[Runnable]]()
 
-  private class Batch(val initial: List[Runnable]) extends Runnable with BlockContext {
+  private class Batch(val initial: List[Runnable])
+      extends Runnable
+      with BlockContext {
     private var parentBlockContext: BlockContext = _
     // this method runs in the delegate ExecutionContext's thread
     override def run(): Unit = {
@@ -103,10 +105,13 @@ private[concurrent] trait BatchingExecutor extends Executor {
   override def execute(runnable: Runnable): Unit = {
     if (batchable(runnable)) { // If we can batch the runnable
       _tasksLocal.get match {
-        case null => unbatchedExecute(new Batch(List(runnable))) // If we aren't in batching mode yet, enqueue batch
-        case some => _tasksLocal.set(runnable :: some) // If we are already in batching mode, add to batch
+        case null =>
+          unbatchedExecute(new Batch(List(runnable))) // If we aren't in batching mode yet, enqueue batch
+        case some =>
+          _tasksLocal.set(runnable :: some) // If we are already in batching mode, add to batch
       }
-    } else unbatchedExecute(runnable) // If not batchable, just delegate to underlying
+    } else
+      unbatchedExecute(runnable) // If not batchable, just delegate to underlying
   }
 
   /** Override this to define which runnables will be batched. */

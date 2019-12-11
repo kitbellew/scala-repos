@@ -27,12 +27,11 @@ import org.apache.spark.rpc.RpcEndpointRef
 import org.apache.spark.storage.BlockManagerMessages._
 import org.apache.spark.util.{RpcUtils, ThreadUtils}
 
-private[spark]
-class BlockManagerMaster(
+private[spark] class BlockManagerMaster(
     var driverEndpoint: RpcEndpointRef,
     conf: SparkConf,
     isDriver: Boolean)
-  extends Logging {
+    extends Logging {
 
   val timeout = RpcUtils.askRpcTimeout(conf)
 
@@ -44,7 +43,9 @@ class BlockManagerMaster(
 
   /** Register the BlockManager's id with the driver. */
   def registerBlockManager(
-      blockManagerId: BlockManagerId, maxMemSize: Long, slaveEndpoint: RpcEndpointRef): Unit = {
+      blockManagerId: BlockManagerId,
+      maxMemSize: Long,
+      slaveEndpoint: RpcEndpointRef): Unit = {
     logInfo("Trying to register BlockManager")
     tell(RegisterBlockManager(blockManagerId, maxMemSize, slaveEndpoint))
     logInfo("Registered BlockManager")
@@ -68,15 +69,16 @@ class BlockManagerMaster(
   }
 
   /** Get locations of multiple blockIds from the driver */
-  def getLocations(blockIds: Array[BlockId]): IndexedSeq[Seq[BlockManagerId]] = {
+  def getLocations(
+      blockIds: Array[BlockId]): IndexedSeq[Seq[BlockManagerId]] = {
     driverEndpoint.askWithRetry[IndexedSeq[Seq[BlockManagerId]]](
       GetLocationsMultipleBlockIds(blockIds))
   }
 
   /**
-   * Check if block manager master has a block. Note that this can be used to check for only
-   * those blocks that are reported to block manager master.
-   */
+    * Check if block manager master has a block. Note that this can be used to check for only
+    * those blocks that are reported to block manager master.
+    */
   def contains(blockId: BlockId): Boolean = {
     !getLocations(blockId).isEmpty
   }
@@ -87,13 +89,14 @@ class BlockManagerMaster(
   }
 
   def getExecutorEndpointRef(executorId: String): Option[RpcEndpointRef] = {
-    driverEndpoint.askWithRetry[Option[RpcEndpointRef]](GetExecutorEndpointRef(executorId))
+    driverEndpoint.askWithRetry[Option[RpcEndpointRef]](
+      GetExecutorEndpointRef(executorId))
   }
 
   /**
-   * Remove a block from the slaves that have it. This can only be used to remove
-   * blocks that the driver knows about.
-   */
+    * Remove a block from the slaves that have it. This can only be used to remove
+    * blocks that the driver knows about.
+    */
   def removeBlock(blockId: BlockId) {
     driverEndpoint.askWithRetry[Boolean](RemoveBlock(blockId))
   }
@@ -112,7 +115,8 @@ class BlockManagerMaster(
 
   /** Remove all blocks belonging to the given shuffle. */
   def removeShuffle(shuffleId: Int, blocking: Boolean) {
-    val future = driverEndpoint.askWithRetry[Future[Seq[Boolean]]](RemoveShuffle(shuffleId))
+    val future = driverEndpoint
+      .askWithRetry[Future[Seq[Boolean]]](RemoveShuffle(shuffleId))
     future.onFailure {
       case e: Exception =>
         logWarning(s"Failed to remove shuffle $shuffleId - ${e.getMessage}", e)
@@ -123,13 +127,18 @@ class BlockManagerMaster(
   }
 
   /** Remove all blocks belonging to the given broadcast. */
-  def removeBroadcast(broadcastId: Long, removeFromMaster: Boolean, blocking: Boolean) {
+  def removeBroadcast(
+      broadcastId: Long,
+      removeFromMaster: Boolean,
+      blocking: Boolean) {
     val future = driverEndpoint.askWithRetry[Future[Seq[Int]]](
       RemoveBroadcast(broadcastId, removeFromMaster))
     future.onFailure {
       case e: Exception =>
-        logWarning(s"Failed to remove broadcast $broadcastId" +
-          s" with removeFromMaster = $removeFromMaster - ${e.getMessage}", e)
+        logWarning(
+          s"Failed to remove broadcast $broadcastId" +
+            s" with removeFromMaster = $removeFromMaster - ${e.getMessage}",
+          e)
     }(ThreadUtils.sameThread)
     if (blocking) {
       timeout.awaitResult(future)
@@ -137,13 +146,14 @@ class BlockManagerMaster(
   }
 
   /**
-   * Return the memory status for each block manager, in the form of a map from
-   * the block manager's id to two long values. The first value is the maximum
-   * amount of memory allocated for the block manager, while the second is the
-   * amount of remaining memory.
-   */
+    * Return the memory status for each block manager, in the form of a map from
+    * the block manager's id to two long values. The first value is the maximum
+    * amount of memory allocated for the block manager, while the second is the
+    * amount of remaining memory.
+    */
   def getMemoryStatus: Map[BlockManagerId, (Long, Long)] = {
-    driverEndpoint.askWithRetry[Map[BlockManagerId, (Long, Long)]](GetMemoryStatus)
+    driverEndpoint
+      .askWithRetry[Map[BlockManagerId, (Long, Long)]](GetMemoryStatus)
   }
 
   def getStorageStatus: Array[StorageStatus] = {
@@ -151,13 +161,13 @@ class BlockManagerMaster(
   }
 
   /**
-   * Return the block's status on all block managers, if any. NOTE: This is a
-   * potentially expensive operation and should only be used for testing.
-   *
-   * If askSlaves is true, this invokes the master to query each block manager for the most
-   * updated block statuses. This is useful when the master is not informed of the given block
-   * by all block managers.
-   */
+    * Return the block's status on all block managers, if any. NOTE: This is a
+    * potentially expensive operation and should only be used for testing.
+    *
+    * If askSlaves is true, this invokes the master to query each block manager for the most
+    * updated block statuses. This is useful when the master is not informed of the given block
+    * by all block managers.
+    */
   def getBlockStatus(
       blockId: BlockId,
       askSlaves: Boolean = true): Map[BlockManagerId, BlockStatus] = {
@@ -167,33 +177,41 @@ class BlockManagerMaster(
      * should not block on waiting for a block manager, which can in turn be waiting for the
      * master endpoint for a response to a prior message.
      */
-    val response = driverEndpoint.
-      askWithRetry[Map[BlockManagerId, Future[Option[BlockStatus]]]](msg)
+    val response = driverEndpoint
+      .askWithRetry[Map[BlockManagerId, Future[Option[BlockStatus]]]](msg)
     val (blockManagerIds, futures) = response.unzip
     implicit val sameThread = ThreadUtils.sameThread
     val cbf =
-      implicitly[
-        CanBuildFrom[Iterable[Future[Option[BlockStatus]]],
+      implicitly[CanBuildFrom[
+        Iterable[Future[Option[BlockStatus]]],
         Option[BlockStatus],
         Iterable[Option[BlockStatus]]]]
-    val blockStatus = timeout.awaitResult(
-      Future.sequence[Option[BlockStatus], Iterable](futures)(cbf, ThreadUtils.sameThread))
+    val blockStatus =
+      timeout.awaitResult(Future.sequence[Option[BlockStatus], Iterable](
+        futures)(cbf, ThreadUtils.sameThread))
     if (blockStatus == null) {
-      throw new SparkException("BlockManager returned null for BlockStatus query: " + blockId)
+      throw new SparkException(
+        "BlockManager returned null for BlockStatus query: " + blockId)
     }
-    blockManagerIds.zip(blockStatus).flatMap { case (blockManagerId, status) =>
-      status.map { s => (blockManagerId, s) }
-    }.toMap
+    blockManagerIds
+      .zip(blockStatus)
+      .flatMap {
+        case (blockManagerId, status) =>
+          status.map { s =>
+            (blockManagerId, s)
+          }
+      }
+      .toMap
   }
 
   /**
-   * Return a list of ids of existing blocks such that the ids match the given filter. NOTE: This
-   * is a potentially expensive operation and should only be used for testing.
-   *
-   * If askSlaves is true, this invokes the master to query each block manager for the most
-   * updated block statuses. This is useful when the master is not informed of the given block
-   * by all block managers.
-   */
+    * Return a list of ids of existing blocks such that the ids match the given filter. NOTE: This
+    * is a potentially expensive operation and should only be used for testing.
+    *
+    * If askSlaves is true, this invokes the master to query each block manager for the most
+    * updated block statuses. This is useful when the master is not informed of the given block
+    * by all block managers.
+    */
   def getMatchingBlockIds(
       filter: BlockId => Boolean,
       askSlaves: Boolean): Seq[BlockId] = {
@@ -203,9 +221,9 @@ class BlockManagerMaster(
   }
 
   /**
-   * Find out if the executor has cached blocks. This method does not consider broadcast blocks,
-   * since they are not reported the master.
-   */
+    * Find out if the executor has cached blocks. This method does not consider broadcast blocks,
+    * since they are not reported the master.
+    */
   def hasCachedBlocks(executorId: String): Boolean = {
     driverEndpoint.askWithRetry[Boolean](HasCachedBlocks(executorId))
   }
@@ -222,7 +240,8 @@ class BlockManagerMaster(
   /** Send a one-way message to the master endpoint, to which we expect it to reply with true. */
   private def tell(message: Any) {
     if (!driverEndpoint.askWithRetry[Boolean](message)) {
-      throw new SparkException("BlockManagerMasterEndpoint returned false, expected true.")
+      throw new SparkException(
+        "BlockManagerMasterEndpoint returned false, expected true.")
     }
   }
 

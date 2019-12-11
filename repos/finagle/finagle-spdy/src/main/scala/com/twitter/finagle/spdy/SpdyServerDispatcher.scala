@@ -7,10 +7,9 @@ import com.twitter.util.{Closable, Local, Time}
 import org.jboss.netty.handler.codec.http.{HttpRequest, HttpResponse}
 
 class SpdyServerDispatcher(
-  trans: Transport[HttpResponse, HttpRequest],
-  service: Service[HttpRequest, HttpResponse])
-  extends Closable
-{
+    trans: Transport[HttpResponse, HttpRequest],
+    service: Service[HttpRequest, HttpResponse])
+    extends Closable {
   private[this] def loop(): Unit = {
     trans.read() onFailure { exc =>
       service.close()
@@ -18,9 +17,10 @@ class SpdyServerDispatcher(
       loop()
       trans.peerCertificate match {
         case None => service(req)
-        case Some(cert) => Contexts.local.let(Transport.peerCertCtx, cert) {
-          service(req)
-        }
+        case Some(cert) =>
+          Contexts.local.let(Transport.peerCertCtx, cert) {
+            service(req)
+          }
       }
     } flatMap { rep =>
       trans.write(rep)

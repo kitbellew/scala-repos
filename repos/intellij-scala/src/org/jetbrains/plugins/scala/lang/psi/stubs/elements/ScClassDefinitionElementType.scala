@@ -10,10 +10,10 @@ import com.intellij.psi.PsiElement
 import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.ScClass
 
 /**
- * @author ilyas
- */
-
-class ScClassDefinitionElementType extends ScTemplateDefinitionElementType[ScClass]("class definition") {
+  * @author ilyas
+  */
+class ScClassDefinitionElementType
+    extends ScTemplateDefinitionElementType[ScClass]("class definition") {
 
   def createElement(node: ASTNode): PsiElement = new ScClassImpl(node)
 

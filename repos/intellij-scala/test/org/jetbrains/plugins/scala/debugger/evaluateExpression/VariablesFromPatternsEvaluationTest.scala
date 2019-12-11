@@ -1,18 +1,28 @@
 package org.jetbrains.plugins.scala
 package debugger.evaluateExpression
 
-import org.jetbrains.plugins.scala.debugger.{ScalaDebuggerTestCase, ScalaVersion_2_11, ScalaVersion_2_12}
+import org.jetbrains.plugins.scala.debugger.{
+  ScalaDebuggerTestCase,
+  ScalaVersion_2_11,
+  ScalaVersion_2_12
+}
 
 /**
- * Nikolay.Tropin
- * 8/5/13
- */
-class VariablesFromPatternsEvaluationTest extends VariablesFromPatternsEvaluationTestBase with ScalaVersion_2_11
+  * Nikolay.Tropin
+  * 8/5/13
+  */
+class VariablesFromPatternsEvaluationTest
+    extends VariablesFromPatternsEvaluationTestBase
+    with ScalaVersion_2_11
 
-class VariablesFromPatternsEvaluationTest_212 extends VariablesFromPatternsEvaluationTestBase with ScalaVersion_2_12
+class VariablesFromPatternsEvaluationTest_212
+    extends VariablesFromPatternsEvaluationTestBase
+    with ScalaVersion_2_12
 
-abstract class VariablesFromPatternsEvaluationTestBase extends ScalaDebuggerTestCase{
-  addFileWithBreakpoints("Match.scala",
+abstract class VariablesFromPatternsEvaluationTestBase
+    extends ScalaDebuggerTestCase {
+  addFileWithBreakpoints(
+    "Match.scala",
     s"""
        |object Match {
        |  val name = "name"
@@ -41,7 +51,8 @@ abstract class VariablesFromPatternsEvaluationTestBase extends ScalaDebuggerTest
     }
   }
 
-  addFileWithBreakpoints("MatchInForStmt.scala",
+  addFileWithBreakpoints(
+    "MatchInForStmt.scala",
     s"""
        |object MatchInForStmt {
        |  val name = "name"
@@ -76,8 +87,8 @@ abstract class VariablesFromPatternsEvaluationTestBase extends ScalaDebuggerTest
     }
   }
 
-  addFileWithBreakpoints("RegexMatch.scala",
-    {
+  addFileWithBreakpoints(
+    "RegexMatch.scala", {
       val pattern = """"(-)?(\\d+)(\\.\\d*)?".r"""
       s"""
          |object RegexMatch {
@@ -93,7 +104,6 @@ abstract class VariablesFromPatternsEvaluationTestBase extends ScalaDebuggerTest
          |}
       """.stripMargin.trim()
     }
-
   )
   def testRegexMatch() {
     runDebugger() {
@@ -105,7 +115,8 @@ abstract class VariablesFromPatternsEvaluationTestBase extends ScalaDebuggerTest
     }
   }
 
-  addFileWithBreakpoints("Multilevel.scala",
+  addFileWithBreakpoints(
+    "Multilevel.scala",
     s"""
        |object Multilevel {
        |  val name = "name"
@@ -139,7 +150,8 @@ abstract class VariablesFromPatternsEvaluationTestBase extends ScalaDebuggerTest
     }
   }
 
-  addFileWithBreakpoints("LocalInMatch.scala",
+  addFileWithBreakpoints(
+    "LocalInMatch.scala",
     s"""
        |object LocalInMatch {
        |  val name = "name"
@@ -167,7 +179,8 @@ abstract class VariablesFromPatternsEvaluationTestBase extends ScalaDebuggerTest
     }
   }
 
-  addFileWithBreakpoints("AnonymousInMatch.scala",
+  addFileWithBreakpoints(
+    "AnonymousInMatch.scala",
     s"""
        |object AnonymousInMatch {
        |  val name = "name"

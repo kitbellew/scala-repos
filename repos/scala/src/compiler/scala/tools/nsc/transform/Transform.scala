@@ -7,15 +7,15 @@ package scala.tools.nsc
 package transform
 
 /** <p>
- *    A base class for transforms.
- *  </p>
- *  <p>
- *    A transform contains a compiler phase which applies a tree transformer.
- *  </p>
- *
- *  @author Martin Odersky
- *  @version 1.0
- */
+  *    A base class for transforms.
+  *  </p>
+  *  <p>
+  *    A transform contains a compiler phase which applies a tree transformer.
+  *  </p>
+  *
+  *  @author Martin Odersky
+  *  @version 1.0
+  */
 trait Transform extends SubComponent {
 
   /** The transformer factory */
@@ -31,4 +31,3 @@ trait Transform extends SubComponent {
     }
   }
 }
-

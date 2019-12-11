@@ -57,17 +57,21 @@ class UIUtilsSuite extends SparkFunSuite {
     )
   }
 
-  test("SPARK-11906: Progress bar should not overflow because of speculative tasks") {
-    val generated = makeProgressBar(2, 3, 0, 0, 4).head.child.filter(_.label == "div")
+  test(
+    "SPARK-11906: Progress bar should not overflow because of speculative tasks") {
+    val generated =
+      makeProgressBar(2, 3, 0, 0, 4).head.child.filter(_.label == "div")
     val expected = Seq(
       <div class="bar bar-completed" style="width: 75.0%"></div>,
       <div class="bar bar-running" style="width: 25.0%"></div>
     )
-    assert(generated.sameElements(expected),
+    assert(
+      generated.sameElements(expected),
       s"\nRunning progress bar should round down\n\nExpected:\n$expected\nGenerated:\n$generated")
   }
 
-  test("decodeURLParameter (SPARK-12708: Sorting task error in Stages Page when yarn mode.)") {
+  test(
+    "decodeURLParameter (SPARK-12708: Sorting task error in Stages Page when yarn mode.)") {
     val encoded1 = "%252F"
     val decoded1 = "/"
     val encoded2 = "%253Cdriver%253E"
@@ -82,9 +86,13 @@ class UIUtilsSuite extends SparkFunSuite {
   }
 
   private def verify(
-      desc: String, expected: Elem, errorMsg: String = "", baseUrl: String = ""): Unit = {
+      desc: String,
+      expected: Elem,
+      errorMsg: String = "",
+      baseUrl: String = ""): Unit = {
     val generated = makeDescription(desc, baseUrl)
-    assert(generated.sameElements(expected),
+    assert(
+      generated.sameElements(expected),
       s"\n$errorMsg\n\nExpected:\n$expected\nGenerated:\n$generated")
   }
 }

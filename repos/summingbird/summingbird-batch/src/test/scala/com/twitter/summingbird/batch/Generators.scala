@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.twitter.summingbird.batch
 
@@ -22,22 +22,24 @@ import org.scalacheck.Gen
 import com.twitter.algebird.Interval
 
 /**
- * Generators useful in testing Summingbird's batch module.
- */
+  * Generators useful in testing Summingbird's batch module.
+  */
 object Generators {
   implicit val batchIdArb: Arbitrary[BatchID] =
     Arbitrary { Arbitrary.arbitrary[Long].map { BatchID(_) } }
 
   implicit val arbTimestamp: Arbitrary[Timestamp] = Arbitrary {
     // a relevant 200 or so year range
-    Gen.choose(-137878042589500L, 137878042589500L)
+    Gen
+      .choose(-137878042589500L, 137878042589500L)
       .map { Timestamp(_) }
   }
 
   implicit val dateArb: Arbitrary[java.util.Date] =
     Arbitrary {
       // a relevant 200 or so year range
-      Gen.choose(-137878042589500L, 137878042589500L)
+      Gen
+        .choose(-137878042589500L, 137878042589500L)
         .map { new java.util.Date(_) }
     }
 

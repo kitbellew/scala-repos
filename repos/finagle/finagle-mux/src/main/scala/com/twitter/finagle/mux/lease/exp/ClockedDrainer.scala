@@ -3,26 +3,37 @@ package com.twitter.finagle.mux.lease.exp
 import com.twitter.app.GlobalFlag
 import com.twitter.conversions.storage.intToStorageUnitableWholeNumber
 import com.twitter.conversions.time._
-import com.twitter.finagle.stats.{StatsReceiver, NullStatsReceiver, DefaultStatsReceiver}
-import com.twitter.util.{Duration, Stopwatch, StorageUnit, Timer, Time, NilStopwatch}
+import com.twitter.finagle.stats.{
+  StatsReceiver,
+  NullStatsReceiver,
+  DefaultStatsReceiver
+}
+import com.twitter.util.{
+  Duration,
+  Stopwatch,
+  StorageUnit,
+  Timer,
+  Time,
+  NilStopwatch
+}
 import java.util.Collections
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.logging.Logger
 
 /**
- * ClockedDrainer is a thread which keeps track of the garbage collector and
- * guesses when it will pause.
- *
- * @param coord controls how long we sleep for
- * @param forceGc forces a gc on invocation
- * @param space represents the current state of the JVM's heap
- * @param rSnooper keeps track of request rate vis a vis heap allocations
- * @param log is used for logging, will be removed later
- * @param lr is used for logging things in a pretty way
- * @param statsReceiver keeps track of the stats
- * @param verbose whether the logging should be verbose or not
- */
+  * ClockedDrainer is a thread which keeps track of the garbage collector and
+  * guesses when it will pause.
+  *
+  * @param coord controls how long we sleep for
+  * @param forceGc forces a gc on invocation
+  * @param space represents the current state of the JVM's heap
+  * @param rSnooper keeps track of request rate vis a vis heap allocations
+  * @param log is used for logging, will be removed later
+  * @param lr is used for logging things in a pretty way
+  * @param statsReceiver keeps track of the stats
+  * @param verbose whether the logging should be verbose or not
+  */
 // NB: this is a mess, but it's actually fairly straightforward.
 // There are four stages, wrapped in an infinite loop.
 // The stages are:
@@ -31,18 +42,19 @@ import java.util.logging.Logger
 // GC
 // Undrain
 private[finagle] class ClockedDrainer(
-  coord: Coordinator,
-  forceGc: () => Unit,
-  space: MemorySpace,
-  rSnooper: RequestSnooper,
-  log: Logger,
-  lr: LogsReceiver = NullLogsReceiver,
-  statsReceiver: StatsReceiver = NullStatsReceiver,
-  verbose: Boolean = false
-) extends Thread("GcDrainer") with Lessor {
+    coord: Coordinator,
+    forceGc: () => Unit,
+    space: MemorySpace,
+    rSnooper: RequestSnooper,
+    log: Logger,
+    lr: LogsReceiver = NullLogsReceiver,
+    statsReceiver: StatsReceiver = NullStatsReceiver,
+    verbose: Boolean = false
+) extends Thread("GcDrainer")
+    with Lessor {
 
-  private[this] val lessees = Collections.newSetFromMap(
-    new ConcurrentHashMap[Lessee, java.lang.Boolean])
+  private[this] val lessees =
+    Collections.newSetFromMap(new ConcurrentHashMap[Lessee, java.lang.Boolean])
 
   private[this] val requestCount = new AtomicInteger(0)
   private[this] val narrival = new AtomicInteger(0)
@@ -76,25 +88,26 @@ private[finagle] class ClockedDrainer(
     val openForGauge = statsReceiver.addGauge("openfor_ms") {
       openFor() match {
         case Duration.Finite(d) => d.inMilliseconds.toFloat
-        case _ => -1F
+        case _                  => -1f
       }
     }
 
     val closedForGauge = statsReceiver.addGauge("closedfor_ms") {
       closedFor() match {
         case Duration.Finite(d) => d.inMilliseconds.toFloat
-        case _ => -1F
+        case _                  => -1f
       }
     }
 
-    val discountGauge = statsReceiver.addGauge("discount") { space.discount().inBytes.toFloat }
+    val discountGauge = statsReceiver.addGauge("discount") {
+      space.discount().inBytes.toFloat
+    }
   }
 
   def npending() = {
     var s = 0
     val iter = lessees.iterator()
-    while (iter.hasNext)
-      s += iter.next().npending()
+    while (iter.hasNext) s += iter.next().npending()
     s
   }
 
@@ -141,18 +154,19 @@ private[finagle] class ClockedDrainer(
 
     upkeep("open", init)
 
-    coord.sleepUntilDiscountRemaining(space, { () =>
-      if (verbose) {
-        log.info("AWAIT-DISCOUNT: discount="+space.discount()+
-          "; clock="+coord.counter +
-          "; space="+space
+    coord.sleepUntilDiscountRemaining(
+      space, { () =>
+        if (verbose) {
+          log.info(
+            "AWAIT-DISCOUNT: discount=" + space.discount() +
+              "; clock=" + coord.counter +
+              "; space=" + space)
+        }
 
-        )
+        // discount (bytes) / rate (bytes / second) == expiry (seconds)
+        issueAll((space.discount.inBytes / coord.counter.rate).toLong.seconds)
       }
-
-      // discount (bytes) / rate (bytes / second) == expiry (seconds)
-      issueAll((space.discount.inBytes / coord.counter.rate).toLong.seconds)
-    })
+    )
   }
 
   // DRAINING
@@ -175,19 +189,19 @@ private[finagle] class ClockedDrainer(
 
   private[this] def issueAll(duration: Duration) {
     val iter = lessees.iterator()
-    while (iter.hasNext)
-      iter.next().issue(duration)
+    while (iter.hasNext) iter.next().issue(duration)
   }
 
   private[this] def finishDraining() {
     val maxWait = calculateMaxWait
 
     if (verbose) {
-      log.info("AWAIT-DRAIN: n="+npending()+
-        "; clock="+coord.counter+
-        "; space="+space+
-        "; maxWaitMs="+maxWait.inMilliseconds+
-        "; minDiscount="+space.minDiscount)
+      log.info(
+        "AWAIT-DRAIN: n=" + npending() +
+          "; clock=" + coord.counter +
+          "; space=" + space +
+          "; maxWaitMs=" + maxWait.inMilliseconds +
+          "; minDiscount=" + space.minDiscount)
     }
 
     coord.sleepUntilFinishedDraining(space, maxWait, npending, log)
@@ -201,7 +215,9 @@ private[finagle] class ClockedDrainer(
     forcedGc = 0
     if (coord.counter.info.generation() == generation) {
       val n = npending()
-      if (verbose) log.info("FORCE-GC: n="+n+"; clock="+coord.counter+"; space="+space)
+      if (verbose)
+        log.info(
+          "FORCE-GC: n=" + n + "; clock=" + coord.counter + "; space=" + space)
 
       lr.record("byteLeft", coord.counter.info.remaining().inBytes.toString)
 
@@ -265,26 +281,28 @@ private[finagle] class ClockedDrainer(
   }
 }
 
-
-object drainerDiscountRange extends GlobalFlag(
-  (50.megabytes, 600.megabytes), "Range of discount")
+object drainerDiscountRange
+    extends GlobalFlag((50.megabytes, 600.megabytes), "Range of discount")
 
 object drainerPercentile extends GlobalFlag(95, "GC drainer cutoff percentile")
 
 object drainerDebug extends GlobalFlag(false, "GC drainer debug log (verbose)")
 object drainerEnabled extends GlobalFlag(false, "GC drainer enabled")
 
-object nackOnExpiredLease extends GlobalFlag(false, "nack when the lease has expired")
+object nackOnExpiredLease
+    extends GlobalFlag(false, "nack when the lease has expired")
 
 private[finagle] object ClockedDrainer {
   private[this] val log = Logger.getLogger("ClockedDrainer")
-  private[this] val lr = if (drainerDebug()) new DedupingLogsReceiver(log) else NullLogsReceiver
+  private[this] val lr =
+    if (drainerDebug()) new DedupingLogsReceiver(log) else NullLogsReceiver
 
   lazy val flagged: Lessor = if (drainerEnabled()) {
     Coordinator.create() match {
       case None =>
-        log.warning("Failed to acquire a ParNew+CMS Coordinator; cannot "+
-          "construct drainer")
+        log.warning(
+          "Failed to acquire a ParNew+CMS Coordinator; cannot " +
+            "construct drainer")
         Lessor.nil
       case Some(coord) =>
         val rSnooper = new RequestSnooper(

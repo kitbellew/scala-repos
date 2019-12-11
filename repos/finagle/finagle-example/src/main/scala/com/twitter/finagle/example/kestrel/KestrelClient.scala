@@ -10,11 +10,11 @@ import com.twitter.finagle.service.Backoff
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**
- * This example show how to configure a client doing reliable reads
- * from multiple kestrel servers.
- *
- * This shows how to process messages continuously from a kestrel queue.
- */
+  * This example show how to configure a client doing reliable reads
+  * from multiple kestrel servers.
+  *
+  * This shows how to process messages continuously from a kestrel queue.
+  */
 object KestrelClient {
 
   def main(args: Array[String]) {
@@ -29,11 +29,12 @@ object KestrelClient {
     val stopped = new AtomicBoolean(false)
 
     val clients: Seq[Client] = hosts map { host =>
-      Client(ClientBuilder()
-        .codec(Kestrel())
-        .hosts(host)
-        .hostConnectionLimit(1) // process at most 1 item per connection concurrently
-        .buildFactory())
+      Client(
+        ClientBuilder()
+          .codec(Kestrel())
+          .hosts(host)
+          .hostConnectionLimit(1) // process at most 1 item per connection concurrently
+          .buildFactory())
     }
 
     val readHandles: Seq[ReadHandle] = {
@@ -53,7 +54,7 @@ object KestrelClient {
     // Attach an async message handler that prints the messages to stdout
     readHandle.messages foreach { msg =>
       try {
-        val Buf.Utf8(str) = msg.bytes 
+        val Buf.Utf8(str) = msg.bytes
         println(str)
       } finally {
         msg.ack.sync() // if we don't do this, no more msgs will come to us

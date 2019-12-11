@@ -33,7 +33,7 @@ private[spark] class ApplicationInfo(
     val submitDate: Date,
     val driver: RpcEndpointRef,
     defaultCores: Int)
-  extends Serializable {
+    extends Serializable {
 
   @transient var state: ApplicationState.Value = _
   @transient var executors: mutable.HashMap[Int, ExecutorDesc] = _
@@ -52,10 +52,11 @@ private[spark] class ApplicationInfo(
 
   init()
 
-  private def readObject(in: java.io.ObjectInputStream): Unit = Utils.tryOrIOException {
-    in.defaultReadObject()
-    init()
-  }
+  private def readObject(in: java.io.ObjectInputStream): Unit =
+    Utils.tryOrIOException {
+      in.defaultReadObject()
+      init()
+    }
 
   private def init() {
     state = ApplicationState.WAITING
@@ -85,7 +86,12 @@ private[spark] class ApplicationInfo(
       worker: WorkerInfo,
       cores: Int,
       useID: Option[Int] = None): ExecutorDesc = {
-    val exec = new ExecutorDesc(newExecutorId(useID), this, worker, cores, desc.memoryPerExecutorMB)
+    val exec = new ExecutorDesc(
+      newExecutorId(useID),
+      this,
+      worker,
+      cores,
+      desc.memoryPerExecutorMB)
     executors(exec.id) = exec
     coresGranted += cores
     exec
@@ -124,9 +130,9 @@ private[spark] class ApplicationInfo(
   }
 
   /**
-   * Return the limit on the number of executors this application can have.
-   * For testing only.
-   */
+    * Return the limit on the number of executors this application can have.
+    * For testing only.
+    */
   private[deploy] def getExecutorLimit: Int = executorLimit
 
   def duration: Long = {
@@ -138,9 +144,9 @@ private[spark] class ApplicationInfo(
   }
 
   /**
-   * Returns the original application UI url unless there is its address at history server
-   * is defined
-   */
+    * Returns the original application UI url unless there is its address at history server
+    * is defined
+    */
   def curAppUIUrl: String = appUIUrlAtHistoryServer.getOrElse(desc.appUiUrl)
 
 }

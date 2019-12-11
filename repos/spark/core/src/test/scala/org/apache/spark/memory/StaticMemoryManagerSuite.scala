@@ -27,8 +27,8 @@ class StaticMemoryManagerSuite extends MemoryManagerSuite {
   private val conf = new SparkConf().set("spark.storage.unrollFraction", "0.4")
 
   /**
-   * Make a [[StaticMemoryManager]] and a [[MemoryStore]] with limited class dependencies.
-   */
+    * Make a [[StaticMemoryManager]] and a [[MemoryStore]] with limited class dependencies.
+    */
   private def makeThings(
       maxExecutionMem: Long,
       maxStorageMem: Long): (StaticMemoryManager, MemoryStore) = {
@@ -59,21 +59,29 @@ class StaticMemoryManagerSuite extends MemoryManagerSuite {
     val taskAttemptId = 0L
     val (mm, _) = makeThings(maxExecutionMem, Long.MaxValue)
     assert(mm.executionMemoryUsed === 0L)
-    assert(mm.acquireExecutionMemory(10L, taskAttemptId, MemoryMode.ON_HEAP) === 10L)
+    assert(
+      mm.acquireExecutionMemory(10L, taskAttemptId, MemoryMode.ON_HEAP) === 10L)
     assert(mm.executionMemoryUsed === 10L)
-    assert(mm.acquireExecutionMemory(100L, taskAttemptId, MemoryMode.ON_HEAP) === 100L)
+    assert(mm
+      .acquireExecutionMemory(100L, taskAttemptId, MemoryMode.ON_HEAP) === 100L)
     // Acquire up to the max
-    assert(mm.acquireExecutionMemory(1000L, taskAttemptId, MemoryMode.ON_HEAP) === 890L)
+    assert(mm
+      .acquireExecutionMemory(1000L, taskAttemptId, MemoryMode.ON_HEAP) === 890L)
     assert(mm.executionMemoryUsed === maxExecutionMem)
-    assert(mm.acquireExecutionMemory(1L, taskAttemptId, MemoryMode.ON_HEAP) === 0L)
+    assert(
+      mm.acquireExecutionMemory(1L, taskAttemptId, MemoryMode.ON_HEAP) === 0L)
     assert(mm.executionMemoryUsed === maxExecutionMem)
     mm.releaseExecutionMemory(800L, taskAttemptId, MemoryMode.ON_HEAP)
     assert(mm.executionMemoryUsed === 200L)
     // Acquire after release
-    assert(mm.acquireExecutionMemory(1L, taskAttemptId, MemoryMode.ON_HEAP) === 1L)
+    assert(
+      mm.acquireExecutionMemory(1L, taskAttemptId, MemoryMode.ON_HEAP) === 1L)
     assert(mm.executionMemoryUsed === 201L)
     // Release beyond what was acquired
-    mm.releaseExecutionMemory(maxExecutionMem, taskAttemptId, MemoryMode.ON_HEAP)
+    mm.releaseExecutionMemory(
+      maxExecutionMem,
+      taskAttemptId,
+      MemoryMode.ON_HEAP)
     assert(mm.executionMemoryUsed === 0L)
   }
 
@@ -128,10 +136,12 @@ class StaticMemoryManagerSuite extends MemoryManagerSuite {
     val dummyBlock = TestBlockId("ain't nobody love like you do")
     val (mm, ms) = makeThings(maxExecutionMem, maxStorageMem)
     // Only execution memory should increase
-    assert(mm.acquireExecutionMemory(100L, taskAttemptId, MemoryMode.ON_HEAP) === 100L)
+    assert(mm
+      .acquireExecutionMemory(100L, taskAttemptId, MemoryMode.ON_HEAP) === 100L)
     assert(mm.storageMemoryUsed === 0L)
     assert(mm.executionMemoryUsed === 100L)
-    assert(mm.acquireExecutionMemory(1000L, taskAttemptId, MemoryMode.ON_HEAP) === 100L)
+    assert(mm
+      .acquireExecutionMemory(1000L, taskAttemptId, MemoryMode.ON_HEAP) === 100L)
     assert(mm.storageMemoryUsed === 0L)
     assert(mm.executionMemoryUsed === 200L)
     // Only storage memory should increase

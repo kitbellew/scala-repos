@@ -26,7 +26,7 @@ class AssertThrowsTest {
         assertThrows[Foo] { throw new Bar }
         false
       } catch {
-        case bar: Bar => true
+        case bar: Bar     => true
         case e: Throwable => fail(s"expected Bar but got $e"); false
       }
     })
@@ -38,6 +38,7 @@ class AssertThrowsTest {
     } catch {
       case e: AssertionError => return
     }
-    fail("assertThrows should error if the tested expression does not throw anything")
+    fail(
+      "assertThrows should error if the tested expression does not throw anything")
   }
 }

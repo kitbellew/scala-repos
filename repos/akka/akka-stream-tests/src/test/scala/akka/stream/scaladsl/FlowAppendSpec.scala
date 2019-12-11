@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.stream.scaladsl
 
 import akka.actor.ActorSystem
@@ -32,7 +32,8 @@ class FlowAppendSpec extends AkkaSpec with River {
     "append Flow" in riverOf[String] { subscriber ⇒
       Source(elements)
         .via(otherFlow)
-        .to(Sink.fromSubscriber(subscriber)).run()
+        .to(Sink.fromSubscriber(subscriber))
+        .run()
     }
 
     "append Sink" in riverOf[String] { subscriber ⇒
@@ -49,7 +50,8 @@ trait River { self: Matchers ⇒
   val elements = 1 to 10
   val otherFlow = Flow[Int].map(_.toString)
 
-  def riverOf[T](flowConstructor: Subscriber[T] ⇒ Unit)(implicit system: ActorSystem) = {
+  def riverOf[T](flowConstructor: Subscriber[T] ⇒ Unit)(
+      implicit system: ActorSystem) = {
     val subscriber = TestSubscriber.manualProbe[T]()
 
     flowConstructor(subscriber)

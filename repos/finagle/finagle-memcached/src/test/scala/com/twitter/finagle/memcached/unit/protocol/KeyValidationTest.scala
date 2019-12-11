@@ -12,7 +12,7 @@ import com.twitter.io.{Buf, Charsets}
 class KeyValidationTest extends FunSuite {
 
   private class BasicKeyValidation(
-    override val keys: Seq[Buf]
+      override val keys: Seq[Buf]
   ) extends KeyValidation
 
   test("reject invalid key that is too long") {
@@ -38,7 +38,9 @@ class KeyValidationTest extends FunSuite {
       val x = intercept[IllegalArgumentException] {
         new BasicKeyValidation(Seq(bad))
       }
-      assert(x.getMessage.contains("key cannot have whitespace or control characters"))
+      assert(
+        x.getMessage.contains(
+          "key cannot have whitespace or control characters"))
     }
   }
 }

@@ -6,8 +6,8 @@ import org.scalatest.prop._
 import spire.implicits._
 
 /**
- * @author stucchio
- */
+  * @author stucchio
+  */
 class uniqueTest extends FunSuite {
   test("unique works") {
     val v = DenseVector(1.0, 1.0, 2.0, 3.0, 3.0, 1.0, 5.0)

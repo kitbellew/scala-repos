@@ -79,27 +79,29 @@ private[deploy] object RPackageUtils extends Logging {
       }
     } else {
       level match {
-        case Level.INFO => logInfo(msg)
+        case Level.INFO    => logInfo(msg)
         case Level.WARNING => logWarning(msg)
-        case Level.SEVERE => logError(msg, e)
-        case _ => logDebug(msg)
+        case Level.SEVERE  => logError(msg, e)
+        case _             => logDebug(msg)
       }
     }
   }
 
   /**
-   * Checks the manifest of the Jar whether there is any R source code bundled with it.
-   * Exposed for testing.
-   */
+    * Checks the manifest of the Jar whether there is any R source code bundled with it.
+    * Exposed for testing.
+    */
   private[deploy] def checkManifestForR(jar: JarFile): Boolean = {
     val manifest = jar.getManifest.getMainAttributes
-    manifest.getValue(hasRPackage) != null && manifest.getValue(hasRPackage).trim == "true"
+    manifest.getValue(hasRPackage) != null && manifest
+      .getValue(hasRPackage)
+      .trim == "true"
   }
 
   /**
-   * Runs the standard R package installation code to build the R package from source.
-   * Multiple runs don't cause problems.
-   */
+    * Runs the standard R package installation code to build the R package from source.
+    * Multiple runs don't cause problems.
+    */
   private def rPackageBuilder(
       dir: File,
       printStream: PrintStream,
@@ -120,11 +122,16 @@ private[deploy] object RPackageUtils extends Logging {
       val env = builder.environment()
       val rPackageDir = RUtils.sparkRPackagePath(isDriver = true)
       env.put("SPARKR_PACKAGE_DIR", rPackageDir.mkString(","))
-      env.put("R_PROFILE_USER",
-        Seq(rPackageDir(0), "SparkR", "profile", "general.R").mkString(File.separator))
+      env.put(
+        "R_PROFILE_USER",
+        Seq(rPackageDir(0), "SparkR", "profile", "general.R")
+          .mkString(File.separator))
 
       val process = builder.start()
-      new RedirectThread(process.getInputStream, printStream, "redirect R packaging").start()
+      new RedirectThread(
+        process.getInputStream,
+        printStream,
+        "redirect R packaging").start()
       process.waitFor() == 0
     } catch {
       case e: Throwable =>
@@ -134,9 +141,12 @@ private[deploy] object RPackageUtils extends Logging {
   }
 
   /**
-   * Extracts the files under /R in the jar to a temporary directory for building.
-   */
-  private def extractRFolder(jar: JarFile, printStream: PrintStream, verbose: Boolean): File = {
+    * Extracts the files under /R in the jar to a temporary directory for building.
+    */
+  private def extractRFolder(
+      jar: JarFile,
+      printStream: PrintStream,
+      verbose: Boolean): File = {
     val tempDir = Utils.createTempDir(null)
     val jarEntries = jar.entries()
     while (jarEntries.hasMoreElements) {
@@ -166,8 +176,8 @@ private[deploy] object RPackageUtils extends Logging {
   }
 
   /**
-   * Extracts the files under /R in the jar to a temporary directory for building.
-   */
+    * Extracts the files under /R in the jar to a temporary directory for building.
+    */
   private[deploy] def checkAndBuildRPackage(
       jars: String,
       printStream: PrintStream = null,
@@ -177,13 +187,20 @@ private[deploy] object RPackageUtils extends Logging {
       if (file.exists()) {
         val jar = new JarFile(file)
         if (checkManifestForR(jar)) {
-          print(s"$file contains R source code. Now installing package.", printStream, Level.INFO)
+          print(
+            s"$file contains R source code. Now installing package.",
+            printStream,
+            Level.INFO)
           val rSource = extractRFolder(jar, printStream, verbose)
           if (RUtils.rPackages.isEmpty) {
             RUtils.rPackages = Some(Utils.createTempDir().getAbsolutePath)
           }
           try {
-            if (!rPackageBuilder(rSource, printStream, verbose, RUtils.rPackages.get)) {
+            if (!rPackageBuilder(
+                  rSource,
+                  printStream,
+                  verbose,
+                  RUtils.rPackages.get)) {
               print(s"ERROR: Failed to build R package in $file.", printStream)
               print(RJarDoc, printStream)
             }
@@ -194,23 +211,32 @@ private[deploy] object RPackageUtils extends Logging {
           }
         } else {
           if (verbose) {
-            print(s"$file doesn't contain R source code, skipping...", printStream)
+            print(
+              s"$file doesn't contain R source code, skipping...",
+              printStream)
           }
         }
       } else {
-        print(s"WARN: $file resolved as dependency, but not found.", printStream, Level.WARNING)
+        print(
+          s"WARN: $file resolved as dependency, but not found.",
+          printStream,
+          Level.WARNING)
       }
     }
   }
 
-  private def listFilesRecursively(dir: File, excludePatterns: Seq[String]): Set[File] = {
+  private def listFilesRecursively(
+      dir: File,
+      excludePatterns: Seq[String]): Set[File] = {
     if (!dir.exists()) {
       Set.empty[File]
     } else {
       if (dir.isDirectory) {
         val subDir = dir.listFiles(new FilenameFilter {
           override def accept(dir: File, name: String): Boolean = {
-            !excludePatterns.map(name.contains).reduce(_ || _) // exclude files with given pattern
+            !excludePatterns
+              .map(name.contains)
+              .reduce(_ || _) // exclude files with given pattern
           }
         })
         subDir.flatMap(listFilesRecursively(_, excludePatterns)).toSet
@@ -228,7 +254,8 @@ private[deploy] object RPackageUtils extends Logging {
     if (!zipFile.delete()) {
       logWarning(s"Error deleting ${zipFile.getPath()}")
     }
-    val zipOutputStream = new ZipOutputStream(new FileOutputStream(zipFile, false))
+    val zipOutputStream = new ZipOutputStream(
+      new FileOutputStream(zipFile, false))
     try {
       filesToBundle.foreach { file =>
         // get the relative paths for proper naming in the zip file

@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.actor
 
 import language.postfixOps
@@ -61,7 +61,7 @@ object ActorWithStashSpec {
           case msg ⇒ stash()
         }
       case "done" ⇒ state.finished.await
-      case msg    ⇒ stash()
+      case msg ⇒ stash()
     }
   }
 
@@ -69,7 +69,9 @@ object ActorWithStashSpec {
     def receive = Actor.emptyBehavior
   }
 
-  class TerminatedMessageStashingActor(probe: ActorRef) extends Actor with Stash {
+  class TerminatedMessageStashingActor(probe: ActorRef)
+      extends Actor
+      with Stash {
     val watched = context.watch(context.actorOf(Props[WatchedActor]))
     var stashed = false
 
@@ -102,7 +104,10 @@ object ActorWithStashSpec {
 class JavaActorWithStashSpec extends StashJavaAPI with JUnitSuiteLike
 
 @org.junit.runner.RunWith(classOf[org.scalatest.junit.JUnitRunner])
-class ActorWithStashSpec extends AkkaSpec(ActorWithStashSpec.testConf) with DefaultTimeout with BeforeAndAfterEach {
+class ActorWithStashSpec
+    extends AkkaSpec(ActorWithStashSpec.testConf)
+    with DefaultTimeout
+    with BeforeAndAfterEach {
   import ActorWithStashSpec._
 
   override def atStartup {
@@ -142,8 +147,11 @@ class ActorWithStashSpec extends AkkaSpec(ActorWithStashSpec.testConf) with Defa
     }
 
     "process stashed messages after restart" in {
-      val boss = system.actorOf(Props(new Supervisor(
-        OneForOneStrategy(maxNrOfRetries = 2, withinTimeRange = 1 second)(List(classOf[Throwable])))))
+      val boss = system.actorOf(
+        Props(
+          new Supervisor(
+            OneForOneStrategy(maxNrOfRetries = 2, withinTimeRange = 1 second)(
+              List(classOf[Throwable])))))
 
       val restartLatch = new TestLatch
       val hasMsgLatch = new TestLatch
@@ -168,7 +176,8 @@ class ActorWithStashSpec extends AkkaSpec(ActorWithStashSpec.testConf) with Defa
           super.preRestart(reason, message)
         }
       })
-      val slave = Await.result((boss ? slaveProps).mapTo[ActorRef], timeout.duration)
+      val slave =
+        Await.result((boss ? slaveProps).mapTo[ActorRef], timeout.duration)
 
       slave ! "hello"
       slave ! "crash"

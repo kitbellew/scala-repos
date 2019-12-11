@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2014-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2014-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.stream.testkit
 
 import scala.collection.immutable
@@ -17,21 +17,28 @@ object TestUtils { // FIXME: remove once going back to project dependencies
     def close(): Unit
     def getLocalPort: Int
   }
-  implicit class GeneralDatagramSocket(val s: DatagramSocket) extends GeneralSocket {
+  implicit class GeneralDatagramSocket(val s: DatagramSocket)
+      extends GeneralSocket {
     def bind(sa: SocketAddress): Unit = s.bind(sa)
     def close(): Unit = s.close()
     def getLocalPort: Int = s.getLocalPort
   }
-  implicit class GeneralServerSocket(val s: ServerSocket) extends GeneralSocket {
+  implicit class GeneralServerSocket(val s: ServerSocket)
+      extends GeneralSocket {
     def bind(sa: SocketAddress): Unit = s.bind(sa)
     def close(): Unit = s.close()
     def getLocalPort: Int = s.getLocalPort
   }
 
-  def temporaryServerAddress(address: String = "127.0.0.1", udp: Boolean = false): InetSocketAddress =
+  def temporaryServerAddress(
+      address: String = "127.0.0.1",
+      udp: Boolean = false): InetSocketAddress =
     temporaryServerAddresses(1, address, udp).head
 
-  def temporaryServerAddresses(numberOfAddresses: Int, hostname: String = "127.0.0.1", udp: Boolean = false): immutable.IndexedSeq[InetSocketAddress] = {
+  def temporaryServerAddresses(
+      numberOfAddresses: Int,
+      hostname: String = "127.0.0.1",
+      udp: Boolean = false): immutable.IndexedSeq[InetSocketAddress] = {
     Vector.fill(numberOfAddresses) {
       val serverSocket: GeneralSocket =
         if (udp) DatagramChannel.open().socket()

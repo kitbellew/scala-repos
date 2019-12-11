@@ -22,34 +22,42 @@ final class DataForm {
   val clockExtraDefault = 0
 
   val colors = List("white", "random", "black")
-  val colorChoices = List(
-    "white" -> "White",
-    "random" -> "Random",
-    "black" -> "Black")
+  val colorChoices =
+    List("white" -> "White", "random" -> "Random", "black" -> "Black")
   val colorDefault = "white"
 
-  def create = Form(mapping(
-    "clockTime" -> numberIn(clockTimeChoices),
-    "clockIncrement" -> numberIn(clockIncrementChoices),
-    "clockExtra" -> numberIn(clockExtraChoices),
-    "variants" -> list {
-      number.verifying(Set(chess.variant.Standard.id, chess.variant.Chess960.id,
-        chess.variant.KingOfTheHill.id, chess.variant.ThreeCheck.id,
-        chess.variant.Antichess.id, chess.variant.Atomic.id, chess.variant.Horde.id, chess.variant.RacingKings.id, chess.variant.Crazyhouse.id) contains _)
-    }.verifying("At least one variant", _.nonEmpty),
-    "color" -> stringIn(colorChoices)
-  )(SimulSetup.apply)(SimulSetup.unapply)
-  ) fill SimulSetup(
-    clockTime = clockTimeDefault,
-    clockIncrement = clockIncrementDefault,
-    clockExtra = clockExtraDefault,
-    variants = List(chess.variant.Standard.id),
-    color = colorDefault)
+  def create =
+    Form(
+      mapping(
+        "clockTime" -> numberIn(clockTimeChoices),
+        "clockIncrement" -> numberIn(clockIncrementChoices),
+        "clockExtra" -> numberIn(clockExtraChoices),
+        "variants" -> list {
+          number.verifying(Set(
+            chess.variant.Standard.id,
+            chess.variant.Chess960.id,
+            chess.variant.KingOfTheHill.id,
+            chess.variant.ThreeCheck.id,
+            chess.variant.Antichess.id,
+            chess.variant.Atomic.id,
+            chess.variant.Horde.id,
+            chess.variant.RacingKings.id,
+            chess.variant.Crazyhouse.id
+          ) contains _)
+        }.verifying("At least one variant", _.nonEmpty),
+        "color" -> stringIn(colorChoices)
+      )(SimulSetup.apply)(SimulSetup.unapply)) fill SimulSetup(
+      clockTime = clockTimeDefault,
+      clockIncrement = clockIncrementDefault,
+      clockExtra = clockExtraDefault,
+      variants = List(chess.variant.Standard.id),
+      color = colorDefault
+    )
 }
 
 case class SimulSetup(
-  clockTime: Int,
-  clockIncrement: Int,
-  clockExtra: Int,
-  variants: List[Int],
-  color: String)
+    clockTime: Int,
+    clockIncrement: Int,
+    clockExtra: Int,
+    variants: List[Int],
+    color: String)

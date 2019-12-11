@@ -1,12 +1,14 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
-
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.persistence.serialization
 
 import java.util.UUID
 import akka.actor._
-import akka.persistence.AtLeastOnceDelivery.{ AtLeastOnceDeliverySnapshot, UnconfirmedDelivery }
+import akka.persistence.AtLeastOnceDelivery.{
+  AtLeastOnceDeliverySnapshot,
+  UnconfirmedDelivery
+}
 import akka.persistence._
 import akka.serialization._
 import akka.testkit._
@@ -40,8 +42,8 @@ object SerializerSpecConfigs {
       }
     """)
 
-  val remote = ConfigFactory.parseString(
-    """
+  val remote =
+    ConfigFactory.parseString("""
       akka {
         actor {
           provider = "akka.remote.RemoteActorRefProvider"
@@ -60,7 +62,8 @@ object SerializerSpecConfigs {
     """)
 
   def config(configs: String*): Config =
-    configs.foldLeft(ConfigFactory.empty)((r, c) ⇒ r.withFallback(ConfigFactory.parseString(c)))
+    configs.foldLeft(ConfigFactory.empty)((r, c) ⇒
+      r.withFallback(ConfigFactory.parseString(c)))
 
 }
 
@@ -108,9 +111,11 @@ class SnapshotSerializerPersistenceSpec extends AkkaSpec(customSerializers) {
           "6024a8328a45e90200007870616263"
 
       val bytes = decodeHex(oldSnapshot.toCharArray)
-      val deserialized = serializer.fromBinary(bytes, None).asInstanceOf[Snapshot]
+      val deserialized =
+        serializer.fromBinary(bytes, None).asInstanceOf[Snapshot]
 
-      val deserializedDataStr = new String(deserialized.data.asInstanceOf[Array[Byte]], UTF_8)
+      val deserializedDataStr =
+        new String(deserialized.data.asInstanceOf[Array[Byte]], UTF_8)
       dataStr should ===(deserializedDataStr)
     }
 
@@ -132,9 +137,11 @@ class SnapshotSerializerPersistenceSpec extends AkkaSpec(customSerializers) {
           "6937fddb0e66740200007870616263"
 
       val bytes = decodeHex(oldSnapshot.toCharArray)
-      val deserialized = serializer.fromBinary(bytes, None).asInstanceOf[Snapshot]
+      val deserialized =
+        serializer.fromBinary(bytes, None).asInstanceOf[Snapshot]
 
-      val deserializedDataStr = new String(deserialized.data.asInstanceOf[Array[Byte]], UTF_8)
+      val deserializedDataStr =
+        new String(deserialized.data.asInstanceOf[Array[Byte]], UTF_8)
       dataStr should ===(deserializedDataStr)
     }
   }
@@ -146,7 +153,12 @@ class MessageSerializerPersistenceSpec extends AkkaSpec(customSerializers) {
   "A message serializer" when {
     "not given a manifest" must {
       "handle custom Persistent message serialization" in {
-        val persistent = PersistentRepr(MyPayload("a"), 13, "p1", "", writerUuid = UUID.randomUUID().toString)
+        val persistent = PersistentRepr(
+          MyPayload("a"),
+          13,
+          "p1",
+          "",
+          writerUuid = UUID.randomUUID().toString)
         val serializer = serialization.findSerializerFor(persistent)
 
         val bytes = serializer.toBinary(persistent)
@@ -158,11 +170,17 @@ class MessageSerializerPersistenceSpec extends AkkaSpec(customSerializers) {
 
     "given a PersistentRepr manifest" must {
       "handle custom Persistent message serialization" in {
-        val persistent = PersistentRepr(MyPayload("b"), 13, "p1", "", writerUuid = UUID.randomUUID().toString)
+        val persistent = PersistentRepr(
+          MyPayload("b"),
+          13,
+          "p1",
+          "",
+          writerUuid = UUID.randomUUID().toString)
         val serializer = serialization.findSerializerFor(persistent)
 
         val bytes = serializer.toBinary(persistent)
-        val deserialized = serializer.fromBinary(bytes, Some(classOf[PersistentRepr]))
+        val deserialized =
+          serializer.fromBinary(bytes, Some(classOf[PersistentRepr]))
 
         deserialized should ===(persistent.withPayload(MyPayload(".b.")))
       }
@@ -170,7 +188,12 @@ class MessageSerializerPersistenceSpec extends AkkaSpec(customSerializers) {
 
     "given payload serializer with string manifest" must {
       "handle serialization" in {
-        val persistent = PersistentRepr(MyPayload2("a", 17), 13, "p1", "", writerUuid = UUID.randomUUID().toString)
+        val persistent = PersistentRepr(
+          MyPayload2("a", 17),
+          13,
+          "p1",
+          "",
+          writerUuid = UUID.randomUUID().toString)
         val serializer = serialization.findSerializerFor(persistent)
 
         val bytes = serializer.toBinary(persistent)
@@ -187,13 +210,15 @@ class MessageSerializerPersistenceSpec extends AkkaSpec(customSerializers) {
         // now the system is updated to version 2 with new class MyPayload2
         // and MyPayload2Serializer that handles migration from old MyPayload
         val serializer2 = serialization.serializerFor(classOf[MyPayload2])
-        val deserialized = serializer2.fromBinary(bytes, Some(oldEvent.getClass))
+        val deserialized =
+          serializer2.fromBinary(bytes, Some(oldEvent.getClass))
 
         deserialized should be(MyPayload2(".a.", 0))
       }
 
       "be able to deserialize data when class is removed" in {
-        val serializer = serialization.findSerializerFor(PersistentRepr("x", 13, "p1", ""))
+        val serializer =
+          serialization.findSerializerFor(PersistentRepr("x", 13, "p1", ""))
 
         // It was created with:
         // val old = PersistentRepr(OldPayload('A'), 13, "p1", true, testActor)
@@ -213,7 +238,8 @@ class MessageSerializerPersistenceSpec extends AkkaSpec(customSerializers) {
         // OldPayloadSerializer is adjusted to migrate OldPayload
         val bytes = decodeHex(oldData.toCharArray)
 
-        val deserialized = serializer.fromBinary(bytes, None).asInstanceOf[PersistentRepr]
+        val deserialized =
+          serializer.fromBinary(bytes, None).asInstanceOf[PersistentRepr]
 
         deserialized.payload should be(MyPayload("OldPayload(A)"))
       }
@@ -235,11 +261,14 @@ class MessageSerializerPersistenceSpec extends AkkaSpec(customSerializers) {
             "31393337"
 
         val bytes = decodeHex(oldData.toCharArray)
-        val expected = PersistentRepr(MyPayload(".a."), 13, "p1", "", true, Actor.noSender)
+        val expected =
+          PersistentRepr(MyPayload(".a."), 13, "p1", "", true, Actor.noSender)
         val serializer = serialization.findSerializerFor(expected)
-        val deserialized = serializer.fromBinary(bytes, None).asInstanceOf[PersistentRepr]
+        val deserialized =
+          serializer.fromBinary(bytes, None).asInstanceOf[PersistentRepr]
         deserialized.sender should not be (null)
-        val deserializedWithoutSender = deserialized.update(sender = Actor.noSender)
+        val deserializedWithoutSender =
+          deserialized.update(sender = Actor.noSender)
         deserializedWithoutSender should be(expected)
       }
     }
@@ -251,21 +280,32 @@ class MessageSerializerPersistenceSpec extends AkkaSpec(customSerializers) {
         val serializer = serialization.findSerializerFor(snap)
 
         val bytes = serializer.toBinary(snap)
-        val deserialized = serializer.fromBinary(bytes, Some(classOf[AtLeastOnceDeliverySnapshot]))
+        val deserialized = serializer.fromBinary(
+          bytes,
+          Some(classOf[AtLeastOnceDeliverySnapshot]))
 
         deserialized should ===(snap)
       }
 
       "handle a few unconfirmed" in {
         val unconfirmed = Vector(
-          UnconfirmedDelivery(deliveryId = 1, destination = testActor.path, "a"),
-          UnconfirmedDelivery(deliveryId = 2, destination = testActor.path, "b"),
-          UnconfirmedDelivery(deliveryId = 3, destination = testActor.path, 42))
+          UnconfirmedDelivery(
+            deliveryId = 1,
+            destination = testActor.path,
+            "a"),
+          UnconfirmedDelivery(
+            deliveryId = 2,
+            destination = testActor.path,
+            "b"),
+          UnconfirmedDelivery(deliveryId = 3, destination = testActor.path, 42)
+        )
         val snap = AtLeastOnceDeliverySnapshot(17, unconfirmed)
         val serializer = serialization.findSerializerFor(snap)
 
         val bytes = serializer.toBinary(snap)
-        val deserialized = serializer.fromBinary(bytes, Some(classOf[AtLeastOnceDeliverySnapshot]))
+        val deserialized = serializer.fromBinary(
+          bytes,
+          Some(classOf[AtLeastOnceDeliverySnapshot]))
 
         deserialized should ===(snap)
       }
@@ -277,7 +317,10 @@ class MessageSerializerPersistenceSpec extends AkkaSpec(customSerializers) {
 object MessageSerializerRemotingSpec {
   class LocalActor(port: Int) extends Actor {
     def receive = {
-      case m ⇒ context.actorSelection(s"akka.tcp://remote@127.0.0.1:${port}/user/remote").tell(m, Actor.noSender)
+      case m ⇒
+        context
+          .actorSelection(s"akka.tcp://remote@127.0.0.1:${port}/user/remote")
+          .tell(m, Actor.noSender)
     }
   }
 
@@ -298,11 +341,15 @@ object MessageSerializerRemotingSpec {
     system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
 }
 
-class MessageSerializerRemotingSpec extends AkkaSpec(remote.withFallback(customSerializers)) with DefaultTimeout {
+class MessageSerializerRemotingSpec
+    extends AkkaSpec(remote.withFallback(customSerializers))
+    with DefaultTimeout {
   import MessageSerializerRemotingSpec._
 
-  val remoteSystem = ActorSystem("remote", remote.withFallback(customSerializers))
-  val localActor = system.actorOf(Props(classOf[LocalActor], port(remoteSystem)), "local")
+  val remoteSystem =
+    ActorSystem("remote", remote.withFallback(customSerializers))
+  val localActor =
+    system.actorOf(Props(classOf[LocalActor], port(remoteSystem)), "local")
 
   val serialization = SerializationExtension(system)
 
@@ -332,7 +379,8 @@ class MessageSerializerRemotingSpec extends AkkaSpec(remote.withFallback(customS
     }
 
     "serialize manifest provided by EventAdapter" in {
-      val p1 = PersistentRepr(MyPayload("a"), sender = testActor).withManifest("manifest")
+      val p1 = PersistentRepr(MyPayload("a"), sender = testActor)
+        .withManifest("manifest")
       val bytes = serialization.serialize(p1).get
       val back = serialization.deserialize(bytes, classOf[PersistentRepr]).get
       require(p1.manifest == back.manifest)
@@ -359,11 +407,12 @@ class MyPayloadSerializer extends Serializer {
     case MyPayload(data) ⇒ s".${data}".getBytes(UTF_8)
   }
 
-  def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef = manifest match {
-    case Some(MyPayloadClass) ⇒ MyPayload(s"${new String(bytes, UTF_8)}.")
-    case Some(c)              ⇒ throw new Exception(s"unexpected manifest ${c}")
-    case None                 ⇒ throw new Exception("no manifest")
-  }
+  def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef =
+    manifest match {
+      case Some(MyPayloadClass) ⇒ MyPayload(s"${new String(bytes, UTF_8)}.")
+      case Some(c) ⇒ throw new Exception(s"unexpected manifest ${c}")
+      case None ⇒ throw new Exception("no manifest")
+    }
 }
 
 class MyPayload2Serializer extends SerializerWithStringManifest {
@@ -380,15 +429,16 @@ class MyPayload2Serializer extends SerializerWithStringManifest {
     case MyPayload2(data, n) ⇒ s".$data:$n".getBytes(UTF_8)
   }
 
-  def fromBinary(bytes: Array[Byte], manifest: String): AnyRef = manifest match {
-    case ManifestV2 ⇒
-      val parts = new String(bytes, UTF_8).split(":")
-      MyPayload2(data = parts(0) + ".", n = parts(1).toInt)
-    case ManifestV1 ⇒
-      MyPayload2(data = s"${new String(bytes, UTF_8)}.", n = 0)
-    case other ⇒
-      throw new Exception(s"unexpected manifest [$other]")
-  }
+  def fromBinary(bytes: Array[Byte], manifest: String): AnyRef =
+    manifest match {
+      case ManifestV2 ⇒
+        val parts = new String(bytes, UTF_8).split(":")
+        MyPayload2(data = parts(0) + ".", n = parts(1).toInt)
+      case ManifestV1 ⇒
+        MyPayload2(data = s"${new String(bytes, UTF_8)}.", n = 0)
+      case other ⇒
+        throw new Exception(s"unexpected manifest [$other]")
+    }
 }
 
 class MySnapshotSerializer extends Serializer {
@@ -401,11 +451,12 @@ class MySnapshotSerializer extends Serializer {
     case MySnapshot(data) ⇒ s".${data}".getBytes(UTF_8)
   }
 
-  def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef = manifest match {
-    case Some(MySnapshotClass) ⇒ MySnapshot(s"${new String(bytes, UTF_8)}.")
-    case Some(c)               ⇒ throw new Exception(s"unexpected manifest ${c}")
-    case None                  ⇒ throw new Exception("no manifest")
-  }
+  def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef =
+    manifest match {
+      case Some(MySnapshotClass) ⇒ MySnapshot(s"${new String(bytes, UTF_8)}.")
+      case Some(c) ⇒ throw new Exception(s"unexpected manifest ${c}")
+      case None ⇒ throw new Exception("no manifest")
+    }
 }
 
 class MySnapshotSerializer2 extends SerializerWithStringManifest {
@@ -420,12 +471,13 @@ class MySnapshotSerializer2 extends SerializerWithStringManifest {
     case MySnapshot2(data) ⇒ s".${data}".getBytes(UTF_8)
   }
 
-  def fromBinary(bytes: Array[Byte], manifest: String): AnyRef = manifest match {
-    case CurrentManifest | OldManifest ⇒
-      MySnapshot2(s"${new String(bytes, UTF_8)}.")
-    case other ⇒
-      throw new Exception(s"unexpected manifest [$other]")
-  }
+  def fromBinary(bytes: Array[Byte], manifest: String): AnyRef =
+    manifest match {
+      case CurrentManifest | OldManifest ⇒
+        MySnapshot2(s"${new String(bytes, UTF_8)}.")
+      case other ⇒
+        throw new Exception(s"unexpected manifest [$other]")
+    }
 }
 
 class OldPayloadSerializer extends SerializerWithStringManifest {
@@ -442,11 +494,12 @@ class OldPayloadSerializer extends SerializerWithStringManifest {
       o.toString.getBytes(UTF_8)
   }
 
-  def fromBinary(bytes: Array[Byte], manifest: String): AnyRef = manifest match {
-    case OldPayloadClassName ⇒
-      MyPayload(new String(bytes, UTF_8))
-    case MyPayloadClassName ⇒ MyPayload(s"${new String(bytes, UTF_8)}.")
-    case other ⇒
-      throw new Exception(s"unexpected manifest [$other]")
-  }
+  def fromBinary(bytes: Array[Byte], manifest: String): AnyRef =
+    manifest match {
+      case OldPayloadClassName ⇒
+        MyPayload(new String(bytes, UTF_8))
+      case MyPayloadClassName ⇒ MyPayload(s"${new String(bytes, UTF_8)}.")
+      case other ⇒
+        throw new Exception(s"unexpected manifest [$other]")
+    }
 }

@@ -25,12 +25,13 @@ import org.specs2.mutable.Specification
 
 import com.mongodb._
 
-
 package mongoclientsaverecords {
 
   import field._
 
-  class SaveDoc private () extends MongoRecord[SaveDoc] with ObjectIdPk[SaveDoc] {
+  class SaveDoc private ()
+      extends MongoRecord[SaveDoc]
+      with ObjectIdPk[SaveDoc] {
     def meta = SaveDoc
 
     object name extends StringField(this, 12)
@@ -41,7 +42,6 @@ package mongoclientsaverecords {
     createIndex(("name" -> 1), true) // unique name
   }
 }
-
 
 /**
   * Systems under specification for MongoClientSave.

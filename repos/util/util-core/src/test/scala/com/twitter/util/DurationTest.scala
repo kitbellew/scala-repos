@@ -55,8 +55,8 @@ class DurationTest extends { val ops = Duration } with TimeLikeSpec[Duration] {
 
         assert(
           (c >= Long.MaxValue && d == Duration.Top) ||
-          (c <= Long.MinValue && d == Duration.Bottom) ||
-          (d == c.toLong.nanoseconds)
+            (c <= Long.MinValue && d == Duration.Bottom) ||
+            (d == c.toLong.nanoseconds)
         )
       }
     }
@@ -95,7 +95,7 @@ class DurationTest extends { val ops = Duration } with TimeLikeSpec[Duration] {
 
     "unary_-" in {
       assert(-((10.seconds).inSeconds) == -10)
-      assert(-((Long.MinValue+1).nanoseconds) == Long.MaxValue.nanoseconds)
+      assert(-((Long.MinValue + 1).nanoseconds) == Long.MaxValue.nanoseconds)
       assert(-(Long.MinValue.nanoseconds) == Duration.Top)
     }
 
@@ -156,8 +156,8 @@ class DurationTest extends { val ops = Duration } with TimeLikeSpec[Duration] {
 
         assert(
           (c >= Long.MaxValue && d == Duration.Top) ||
-          (c <= Long.MinValue && d == Duration.Bottom) ||
-          (d == c.toLong.nanoseconds)
+            (c <= Long.MinValue && d == Duration.Bottom) ||
+            (d == c.toLong.nanoseconds)
         )
       }
     }
@@ -207,11 +207,13 @@ class DurationTest extends { val ops = Duration } with TimeLikeSpec[Duration] {
     }
 
     "toString should display as sums" in {
-      assert((9999999.seconds).toString == "115.days+17.hours+46.minutes+39.seconds")
+      assert(
+        (9999999.seconds).toString == "115.days+17.hours+46.minutes+39.seconds")
     }
 
     "toString should handle negative durations" in {
-      assert((-9999999.seconds).toString == "-115.days-17.hours-46.minutes-39.seconds")
+      assert(
+        (-9999999.seconds).toString == "-115.days-17.hours-46.minutes-39.seconds")
     }
 
     "parse the format from toString" in {
@@ -233,29 +235,30 @@ class DurationTest extends { val ops = Duration } with TimeLikeSpec[Duration] {
 
     "parse" in {
       Seq(
-        " 1.second"                   -> 1.second,
-        "+1.second"                   -> 1.second,
-        "-1.second"                   -> -1.second,
-        "1.SECOND"                    -> 1.second,
-        "1.day - 1.second"            -> (1.day - 1.second),
-        "1.day"                       -> 1.day,
-        "1.microsecond"               -> 1.microsecond,
-        "1.millisecond"               -> 1.millisecond,
-        "1.second"                    -> 1.second,
+        " 1.second" -> 1.second,
+        "+1.second" -> 1.second,
+        "-1.second" -> -1.second,
+        "1.SECOND" -> 1.second,
+        "1.day - 1.second" -> (1.day - 1.second),
+        "1.day" -> 1.day,
+        "1.microsecond" -> 1.microsecond,
+        "1.millisecond" -> 1.millisecond,
+        "1.second" -> 1.second,
         "1.second+1.minute  +  1.day" -> (1.second + 1.minute + 1.day),
-        "1.second+1.second"           -> 2.seconds,
-        "2.hours"                     -> 2.hours,
-        "3.days"                      -> 3.days,
-        "321.nanoseconds"             -> 321.nanoseconds,
-        "65.minutes"                  -> 65.minutes,
-        "876.milliseconds"            -> 876.milliseconds,
-        "98.seconds"                  -> 98.seconds,
-        "Duration.Bottom"             -> Duration.Bottom,
-        "Duration.Top"                -> Duration.Top,
-        "Duration.Undefined"          -> Duration.Undefined,
-        "duration.TOP"                -> Duration.Top
-      ) foreach { case (s, d) =>
-        assert(Duration.parse(s) == d)
+        "1.second+1.second" -> 2.seconds,
+        "2.hours" -> 2.hours,
+        "3.days" -> 3.days,
+        "321.nanoseconds" -> 321.nanoseconds,
+        "65.minutes" -> 65.minutes,
+        "876.milliseconds" -> 876.milliseconds,
+        "98.seconds" -> 98.seconds,
+        "Duration.Bottom" -> Duration.Bottom,
+        "Duration.Top" -> Duration.Top,
+        "Duration.Undefined" -> Duration.Undefined,
+        "duration.TOP" -> Duration.Top
+      ) foreach {
+        case (s, d) =>
+          assert(Duration.parse(s) == d)
       }
     }
 

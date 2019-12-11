@@ -1,19 +1,19 @@
 /*
- *  ____    ____    _____    ____    ___     ____ 
+ *  ____    ____    _____    ____    ___     ____
  * |  _ \  |  _ \  | ____|  / ___|  / _/    / ___|        Precog (R)
  * | |_) | | |_) | |  _|   | |     | |  /| | |  _         Advanced Analytics Engine for NoSQL Data
  * |  __/  |  _ <  | |___  | |___  |/ _| | | |_| |        Copyright (C) 2010 - 2013 SlamData, Inc.
  * |_|     |_| \_\ |_____|  \____|   /__/   \____|        All Rights Reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the 
- * GNU Affero General Public License as published by the Free Software Foundation, either version 
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Affero General Public License as published by the Free Software Foundation, either version
  * 3 of the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
  * the GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License along with this 
+ * You should have received a copy of the GNU Affero General Public License along with this
  * program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
@@ -25,25 +25,24 @@ import com.precog.util._
 
 import org.joda.time.{DateTime, Period}
 
-import java.nio.{ ByteBuffer, CharBuffer }
-import java.nio.charset.{ Charset, CharsetEncoder, CoderResult }
+import java.nio.{ByteBuffer, CharBuffer}
+import java.nio.charset.{Charset, CharsetEncoder, CoderResult}
 
 import com.precog.util.BitSetUtil.Implicits._
 
 import scala.annotation.tailrec
-import scala.{ specialized => spec }
+import scala.{specialized => spec}
 
-import java.math.{ BigDecimal => BigDec }
+import java.math.{BigDecimal => BigDec}
 import java.math.MathContext
 
-
 /**
- * Codecs allow a writer to deal with the case where we have a buffer overflow
- * when attempting to write all data to the buffer. This lets the writer return
- * some state indicating more data needs to be written. This state is then
- * given to a `writeMore` method so it can finish the writing. It may take
- * several calls to `writeMore` before it all is finally written.
- */
+  * Codecs allow a writer to deal with the case where we have a buffer overflow
+  * when attempting to write all data to the buffer. This lets the writer return
+  * some state indicating more data needs to be written. This state is then
+  * given to a `writeMore` method so it can finish the writing. It may take
+  * several calls to `writeMore` before it all is finally written.
+  */
 trait Codec[@spec(Boolean, Long, Double) A] { self =>
   type S
 
@@ -54,41 +53,42 @@ trait Codec[@spec(Boolean, Long, Double) A] { self =>
   def maxSize(a: A): Int = encodedSize(a)
 
   /**
-   * Returns a lower bound on the space required in a buffer so that `a` can
-   * be written.
-   */
+    * Returns a lower bound on the space required in a buffer so that `a` can
+    * be written.
+    */
   def minSize(a: A): Int = 8
 
   /**
-   * Initiate a write. If a is successfully written (in its entirety) to
-   * `buffer`, then `None` is returned. Otherwise, `Some(s)` is returned,
-   * indicating that some more data (ie. `s`) still needs to be written using
-   * `writeMore(s, _)`. This last condition will normally happen when we run
-   * out of space in the buffer, so `a` was only partially written.
-   */
+    * Initiate a write. If a is successfully written (in its entirety) to
+    * `buffer`, then `None` is returned. Otherwise, `Some(s)` is returned,
+    * indicating that some more data (ie. `s`) still needs to be written using
+    * `writeMore(s, _)`. This last condition will normally happen when we run
+    * out of space in the buffer, so `a` was only partially written.
+    */
   def writeInit(a: A, buffer: ByteBuffer): Option[S]
 
   /**
-   * Writes the remaining data from a call to `writeInit` to `buffer`. If this
-   * is written completely and successfully, `None` is returned. Otherwise,
-   * `Some(s2)` is returned, which contains more data to be written with
-   * `writeMore`.
-   */
+    * Writes the remaining data from a call to `writeInit` to `buffer`. If this
+    * is written completely and successfully, `None` is returned. Otherwise,
+    * `Some(s2)` is returned, which contains more data to be written with
+    * `writeMore`.
+    */
   def writeMore(s: S, buffer: ByteBuffer): Option[S]
 
   /**
-   * Writes `a` using a `ByteBufferMonad`. This is much slower than just using
-   * writeInit/writeMore.
-   */
+    * Writes `a` using a `ByteBufferMonad`. This is much slower than just using
+    * writeInit/writeMore.
+    */
   def write[M[+_]](a: A)(implicit M: ByteBufferMonad[M]): M[Unit] = {
     import scalaz.syntax.monad._
 
     val min = minSize(a)
 
-    def loop(s: S): M[Unit] = for {
-      buf <- M.getBuffer(min)
-      _ <- writeMore(s, buf) map (loop(_)) getOrElse ().point[M]
-    } yield ()
+    def loop(s: S): M[Unit] =
+      for {
+        buf <- M.getBuffer(min)
+        _ <- writeMore(s, buf) map (loop(_)) getOrElse ().point[M]
+      } yield ()
 
     for {
       buf <- M.getBuffer(min)
@@ -97,12 +97,16 @@ trait Codec[@spec(Boolean, Long, Double) A] { self =>
   }
 
   /**
-   * Writes `a` entirely to a series of `ByteBuffer`s returned by `acquire`.
-   * The returned set of `ByteBuffer`s is in reverse order, so that calls
-   * to `writeAll` can be chained by passing in the previous result to `used`.
-   */
-  def writeAll(a: A)(acquire: () => ByteBuffer, used: List[ByteBuffer] = Nil): List[ByteBuffer] = {
-    @inline @tailrec def loop(s: Option[S], buffers: List[ByteBuffer]): List[ByteBuffer] = s match {
+    * Writes `a` entirely to a series of `ByteBuffer`s returned by `acquire`.
+    * The returned set of `ByteBuffer`s is in reverse order, so that calls
+    * to `writeAll` can be chained by passing in the previous result to `used`.
+    */
+  def writeAll(a: A)(
+      acquire: () => ByteBuffer,
+      used: List[ByteBuffer] = Nil): List[ByteBuffer] = {
+    @inline @tailrec def loop(
+        s: Option[S],
+        buffers: List[ByteBuffer]): List[ByteBuffer] = s match {
       case None => buffers
       case Some(s) =>
         val buf = acquire()
@@ -120,22 +124,22 @@ trait Codec[@spec(Boolean, Long, Double) A] { self =>
   }
 
   /**
-   * Performs an *unsafe* write of `a` to `buffer`. This does not perform any
-   * safety checks and assumes `buffer` has at least `encodedSize(a)` bytes
-   * remaining. The behaviour if this is not the case is undefined.
-   */
+    * Performs an *unsafe* write of `a` to `buffer`. This does not perform any
+    * safety checks and assumes `buffer` has at least `encodedSize(a)` bytes
+    * remaining. The behaviour if this is not the case is undefined.
+    */
   def writeUnsafe(a: A, buffer: ByteBuffer): Unit
 
   /**
-   * Reads a value of type `A` from `buffer`. This should generally follow the
-   * contract that `writeUnsafe(a, buffer); read(buffer) == a`.
-   */
+    * Reads a value of type `A` from `buffer`. This should generally follow the
+    * contract that `writeUnsafe(a, buffer); read(buffer) == a`.
+    */
   def read(buffer: ByteBuffer): A
 
   /**
-   * This is similar to `read(buffer)`, except that a value does not actually
-   * need to be returned.
-   */
+    * This is similar to `read(buffer)`, except that a value does not actually
+    * need to be returned.
+    */
   def skip(buffer: ByteBuffer): Unit = read(buffer)
 
   def as[B](to: B => A, from: A => B): Codec[B] = new Codec[B] {
@@ -160,9 +164,9 @@ object Codec {
   private val byteBufferPool = new ByteBufferPool()
 
   /**
-   * A utility method for getting the encoded version of `a` as an array of
-   * bytes.
-   */
+    * A utility method for getting the encoded version of `a` as an array of
+    * bytes.
+    */
   def writeToArray[A](a: A)(implicit codec: Codec[A]): Array[Byte] = {
     import ByteBufferPool._
 
@@ -177,12 +181,13 @@ object Codec {
   private final val TRUE_VALUE = 1.toByte
 
   @tailrec
-  def writePackedInt(n: Int, buf: ByteBuffer): Unit = if ((n & ~0x7F) != 0) {
-    buf.put((n & 0x7F | 0x80).toByte)
-    writePackedInt(n >> 7, buf)
-  } else {
-    buf.put((n & 0x7F).toByte)
-  }
+  def writePackedInt(n: Int, buf: ByteBuffer): Unit =
+    if ((n & ~0x7F) != 0) {
+      buf.put((n & 0x7F | 0x80).toByte)
+      writePackedInt(n >> 7, buf)
+    } else {
+      buf.put((n & 0x7F).toByte)
+    }
 
   def readPackedInt(buf: ByteBuffer): Int = {
     @tailrec def loop(n: Int, offset: Int): Int = {
@@ -197,11 +202,17 @@ object Codec {
   }
 
   @tailrec
-  def sizePackedInt(n: Int, size: Int = 1): Int = if ((n & ~0x7F) != 0) {
-    sizePackedInt(n >>> 7, size + 1)
-  } else size
+  def sizePackedInt(n: Int, size: Int = 1): Int =
+    if ((n & ~0x7F) != 0) {
+      sizePackedInt(n >>> 7, size + 1)
+    } else size
 
-  case class CompositeCodec[A, B, C](codecA: Codec[A], codecB: Codec[B], from: C => (A, B), to: (A, B) => C) extends Codec[C] {
+  case class CompositeCodec[A, B, C](
+      codecA: Codec[A],
+      codecB: Codec[B],
+      from: C => (A, B),
+      to: (A, B) => C)
+      extends Codec[C] {
     type S = Either[(codecA.S, B), codecB.S]
 
     def encodedSize(c: C) = {
@@ -209,7 +220,8 @@ object Codec {
       codecA.encodedSize(a) + codecB.encodedSize(b)
     }
 
-    override def minSize(c: C) = codecA.minSize(from(c)._1) max codecB.minSize(from(c)._2)
+    override def minSize(c: C) =
+      codecA.minSize(from(c)._1) max codecB.minSize(from(c)._2)
     override def maxSize(c: C) = {
       val (a, b) = from(c)
       codecA.maxSize(a) + codecB.maxSize(b)
@@ -223,11 +235,14 @@ object Codec {
 
     def writeInit(c: C, buf: ByteBuffer): Option[S] = {
       val (a, b) = from(c)
-      (codecA.writeInit(a, buf) map (s => Left((s, b)))) orElse (codecB.writeInit(b, buf) map (Right(_)))
+      (codecA.writeInit(a, buf) map (s => Left((s, b)))) orElse (codecB
+        .writeInit(b, buf) map (Right(_)))
     }
 
     def writeMore(more: S, buf: ByteBuffer) = more match {
-      case Left((s, b)) => (codecA.writeMore(s, buf) map (s => Left((s, b)))) orElse (codecB.writeInit(b, buf) map (Right(_)))
+      case Left((s, b)) =>
+        (codecA.writeMore(s, buf) map (s => Left((s, b)))) orElse (codecB
+          .writeInit(b, buf) map (Right(_)))
       case Right(s) => codecB.writeMore(s, buf) map (Right(_))
     }
 
@@ -247,12 +262,13 @@ object Codec {
     override def maxSize(a: A) = size
     override def minSize(a: A) = size
 
-    def writeInit(a: A, b: ByteBuffer): Option[A] = if (b.remaining >= size) {
-      writeUnsafe(a, b)
-      None
-    } else {
-      Some(a)
-    }
+    def writeInit(a: A, b: ByteBuffer): Option[A] =
+      if (b.remaining >= size) {
+        writeUnsafe(a, b)
+        None
+      } else {
+        Some(a)
+      }
 
     def writeMore(a: A, b: ByteBuffer): Option[A] = writeInit(a, b)
     override def skip(buf: ByteBuffer) {
@@ -260,14 +276,12 @@ object Codec {
     }
   }
 
-
   case class ConstCodec[A](a: A) extends FixedWidthCodec[A] {
     val size = 0
     def writeUnsafe(a: A, sink: ByteBuffer): Unit = ()
     def read(buffer: ByteBuffer): A = a
-    override def skip(buf: ByteBuffer) { }
+    override def skip(buf: ByteBuffer) {}
   }
-
 
   implicit case object ByteCodec extends FixedWidthCodec[Byte] {
     val size = 1
@@ -281,12 +295,13 @@ object Codec {
       if (x) sink.put(TRUE_VALUE) else sink.put(FALSE_VALUE)
     }
     def read(src: ByteBuffer): Boolean = src.get() match {
-      case TRUE_VALUE => true
+      case TRUE_VALUE  => true
       case FALSE_VALUE => false
-      case invalid => sys.error("Error reading boolean: expecting %d or %d, found %d" format (TRUE_VALUE, FALSE_VALUE, invalid))
+      case invalid =>
+        sys.error(
+          "Error reading boolean: expecting %d or %d, found %d" format (TRUE_VALUE, FALSE_VALUE, invalid))
     }
   }
-
 
   case object LongCodec extends FixedWidthCodec[Long] {
     val size = 8
@@ -324,7 +339,9 @@ object Codec {
 
       @inline @tailrec
       def loop(n: Long): Unit = if (n != 0) {
-        buf.put(if ((n & ~0x7FL) != 0) (n & 0x7FL | 0x80L).toByte else (n & 0x7FL).toByte)
+        buf.put(
+          if ((n & ~0x7FL) != 0) (n & 0x7FL | 0x80L).toByte
+          else (n & 0x7FL).toByte)
         loop(n >> 7)
       }
 
@@ -363,7 +380,8 @@ object Codec {
     }
   }
 
-  implicit val DateCodec = Codec[Long].as[DateTime](_.getMillis, new DateTime(_))
+  implicit val DateCodec =
+    Codec[Long].as[DateTime](_.getMillis, new DateTime(_))
 
   implicit val PeriodCodec = Codec[Long].as[Period](_.getMillis, new Period(_))
 
@@ -415,7 +433,8 @@ object Codec {
     }
 
     def writeInit(a: String, sink: ByteBuffer): Option[S] = {
-      if (sink.remaining < 5) Some(Left(a)) else {
+      if (sink.remaining < 5) Some(Left(a))
+      else {
         writePackedInt(strEncodedSize(a), sink)
 
         val source = CharBuffer.wrap(a)
@@ -473,21 +492,25 @@ object Codec {
     }
   }
 
-
-  implicit val JBigDecimalCodec = CompositeCodec[Array[Byte], Long, BigDec](arrayCodec[Byte], PackedLongCodec,
+  implicit val JBigDecimalCodec = CompositeCodec[Array[Byte], Long, BigDec](
+    arrayCodec[Byte],
+    PackedLongCodec,
     x => (x.unscaledValue.toByteArray, x.scale.toLong),
     (u, s) => new BigDec(new java.math.BigInteger(u), s.toInt))
 
-  implicit val BigDecimalCodec = JBigDecimalCodec.as[BigDecimal](_.underlying, BigDecimal(_, MathContext.UNLIMITED))
+  implicit val BigDecimalCodec = JBigDecimalCodec
+    .as[BigDecimal](_.underlying, BigDecimal(_, MathContext.UNLIMITED))
 
-  final class IndexedSeqCodec[A](val elemCodec: Codec[A]) extends Codec[IndexedSeq[A]] {
+  final class IndexedSeqCodec[A](val elemCodec: Codec[A])
+      extends Codec[IndexedSeq[A]] {
 
     type S = Either[IndexedSeq[A], (elemCodec.S, List[A])]
 
     override def minSize(as: IndexedSeq[A]): Int = 5
-    override def maxSize(as: IndexedSeq[A]): Int = as.foldLeft(0) { (acc, a) =>
-      acc + elemCodec.maxSize(a)
-    } + 5
+    override def maxSize(as: IndexedSeq[A]): Int =
+      as.foldLeft(0) { (acc, a) =>
+        acc + elemCodec.maxSize(a)
+      } + 5
 
     def encodedSize(as: IndexedSeq[A]): Int = {
       val size = as.foldLeft(0) { (acc, a) =>
@@ -502,16 +525,19 @@ object Codec {
     }
 
     @tailrec
-    private def writeArray(as: List[A], sink: ByteBuffer): Option[S] = as match {
-      case a :: as => elemCodec.writeInit(a, sink) match {
-        case Some(s) => Some(Right((s, as)))
-        case None => writeArray(as, sink)
+    private def writeArray(as: List[A], sink: ByteBuffer): Option[S] =
+      as match {
+        case a :: as =>
+          elemCodec.writeInit(a, sink) match {
+            case Some(s) => Some(Right((s, as)))
+            case None    => writeArray(as, sink)
+          }
+        case _ => None
       }
-      case _ => None
-    }
 
     def writeInit(as: IndexedSeq[A], sink: ByteBuffer): Option[S] = {
-      if (sink.remaining < 5) Some(Left(as)) else {
+      if (sink.remaining < 5) Some(Left(as))
+      else {
         writePackedInt(as.length, sink)
         writeArray(as.toList, sink)
       }
@@ -519,7 +545,10 @@ object Codec {
 
     def writeMore(more: S, sink: ByteBuffer): Option[S] = more match {
       case Left(as) => writeInit(as, sink)
-      case Right((s, as)) => elemCodec.writeMore(s, sink) map (Right(_, as)) orElse writeArray(as.toList, sink)
+      case Right((s, as)) =>
+        elemCodec.writeMore(s, sink) map (Right(_, as)) orElse writeArray(
+          as.toList,
+          sink)
     }
 
     def read(src: ByteBuffer): IndexedSeq[A] =
@@ -532,28 +561,34 @@ object Codec {
     }
   }
 
-  implicit def IndexedSeqCodec[A](implicit elemCodec: Codec[A]) = new IndexedSeqCodec(elemCodec)
+  implicit def IndexedSeqCodec[A](implicit elemCodec: Codec[A]) =
+    new IndexedSeqCodec(elemCodec)
 
-  implicit def arrayCodec[@spec(Boolean,Long,Double) A: Codec: Manifest]: Codec[Array[A]] = ArrayCodec(Codec[A])
+  implicit def arrayCodec[@spec(Boolean, Long, Double) A: Codec: Manifest]
+      : Codec[Array[A]] = ArrayCodec(Codec[A])
 
-  case class ArrayCodec[@spec(Boolean,Long,Double) A: Manifest](elemCodec: Codec[A]) extends Codec[Array[A]] {
+  case class ArrayCodec[@spec(Boolean, Long, Double) A: Manifest](
+      elemCodec: Codec[A])
+      extends Codec[Array[A]] {
     type S = Either[Array[A], (elemCodec.S, Array[A], Int)]
 
     override def minSize(as: Array[A]): Int = 5
     override def maxSize(as: Array[A]): Int = {
       @tailrec
-      def loop(row: Int, size: Int): Int = if (row < as.length) {
-        loop(row + 1, size + elemCodec.maxSize(as(row)))
-      } else size
+      def loop(row: Int, size: Int): Int =
+        if (row < as.length) {
+          loop(row + 1, size + elemCodec.maxSize(as(row)))
+        } else size
 
       loop(0, 5)
     }
 
     def encodedSize(as: Array[A]): Int = {
       @tailrec
-      def loop(row: Int, size: Int): Int = if (row < as.length) {
-        loop(row + 1, size + elemCodec.encodedSize(as(row)))
-      } else size
+      def loop(row: Int, size: Int): Int =
+        if (row < as.length) {
+          loop(row + 1, size + elemCodec.encodedSize(as(row)))
+        } else size
       loop(0, sizePackedInt(as.length))
     }
 
@@ -568,15 +603,20 @@ object Codec {
     }
 
     @tailrec
-    private def writeArray(as: Array[A], row: Int, sink: ByteBuffer): Option[S] = if (row < as.length) {
-      elemCodec.writeInit(as(row), sink) match {
-        case Some(s) => Some(Right((s, as, row + 1)))
-        case None => writeArray(as, row + 1, sink)
-      }
-    } else None
+    private def writeArray(
+        as: Array[A],
+        row: Int,
+        sink: ByteBuffer): Option[S] =
+      if (row < as.length) {
+        elemCodec.writeInit(as(row), sink) match {
+          case Some(s) => Some(Right((s, as, row + 1)))
+          case None    => writeArray(as, row + 1, sink)
+        }
+      } else None
 
     def writeInit(as: Array[A], sink: ByteBuffer): Option[S] = {
-      if (sink.remaining < 5) Some(Left(as)) else {
+      if (sink.remaining < 5) Some(Left(as))
+      else {
         writePackedInt(as.length, sink)
         writeArray(as, 0, sink)
       }
@@ -584,7 +624,12 @@ object Codec {
 
     def writeMore(more: S, sink: ByteBuffer): Option[S] = more match {
       case Left(as) => writeInit(as, sink)
-      case Right((s, as, row)) => elemCodec.writeMore(s, sink) map (s => Right((s, as, row))) orElse writeArray(as, row, sink)
+      case Right((s, as, row)) =>
+        elemCodec
+          .writeMore(s, sink) map (s => Right((s, as, row))) orElse writeArray(
+          as,
+          row,
+          sink)
     }
 
     def read(src: ByteBuffer): Array[A] = {
@@ -609,13 +654,14 @@ object Codec {
       extends Codec[CWrappedValue[A]] {
     type S = codec.S
     def encodedSize(a: CWrappedValue[A]) = codec.encodedSize(a.value)
-    def writeUnsafe(a: CWrappedValue[A], sink: ByteBuffer) = codec.writeUnsafe(a.value, sink)
-    def writeInit(a: CWrappedValue[A], sink: ByteBuffer) = codec.writeInit(a.value, sink)
+    def writeUnsafe(a: CWrappedValue[A], sink: ByteBuffer) =
+      codec.writeUnsafe(a.value, sink)
+    def writeInit(a: CWrappedValue[A], sink: ByteBuffer) =
+      codec.writeInit(a.value, sink)
     def writeMore(s: S, sink: ByteBuffer) = codec.writeMore(s, sink)
     def read(src: ByteBuffer) = cType(codec.read(src))
     override def skip(buf: ByteBuffer) = codec.skip(buf)
   }
-
 
   // Problem: This can't be specialised.
   trait StatefulCodec {
@@ -626,16 +672,20 @@ object Codec {
       codec.writeInit(a, sink) map (State(_))
 
     case class State(s: codec.S) {
-      def more(sink: ByteBuffer): Option[State] = codec.writeMore(s, sink) map (State(_))
+      def more(sink: ByteBuffer): Option[State] =
+        codec.writeMore(s, sink) map (State(_))
     }
   }
 
-  def wrappedWriteInit[AA](a: AA, sink: ByteBuffer)(implicit _codec: Codec[AA]): Option[StatefulCodec#State] = (new StatefulCodec {
-    type A = AA
-    val codec = _codec
-  }).init(a, sink)
+  def wrappedWriteInit[AA](a: AA, sink: ByteBuffer)(
+      implicit _codec: Codec[AA]): Option[StatefulCodec#State] =
+    (new StatefulCodec {
+      type A = AA
+      val codec = _codec
+    }).init(a, sink)
 
-  implicit val BitSetCodec = ArrayCodec[Long](LongCodec)(implicitly).as[BitSet](_.getBits, BitSetUtil.fromArray)
+  implicit val BitSetCodec = ArrayCodec[Long](LongCodec)(implicitly)
+    .as[BitSet](_.getBits, BitSetUtil.fromArray)
 
   case class SparseBitSetCodec(size: Int) extends Codec[BitSet] {
 
@@ -725,7 +775,8 @@ object Codec {
       }
 
       val len = rec(bs.toList, 0, size, 0)
-      java.util.Arrays.copyOf(bytes, (len >>> 3) + 1) // The +1 covers the extra 2 '0' bits.
+      java.util.Arrays
+        .copyOf(bytes, (len >>> 3) + 1) // The +1 covers the extra 2 '0' bits.
     }
 
     def readBitSet(src: ByteBuffer): BitSet = {
@@ -746,9 +797,9 @@ object Codec {
           val c = (l + r) / 2
           (get(offset), get(offset + 1)) match {
             case (false, false) => offset + 2
-            case (false, true) => read(c, r, offset + 2)
-            case (true, false) => read(l, c, offset + 2)
-            case (true, true) => read(c, r, read(l, c, offset + 2))
+            case (false, true)  => read(c, r, offset + 2)
+            case (true, false)  => read(l, c, offset + 2)
+            case (true, true)   => read(c, r, read(l, c, offset + 2))
           }
         }
       }
@@ -758,7 +809,6 @@ object Codec {
       bits
     }
   }
-
 
   case class SparseRawBitSetCodec(size: Int) extends Codec[RawBitSet] {
 
@@ -882,7 +932,8 @@ object Codec {
       }
 
       val len = rec(RawBitSet.toList(bs), 0, size, 0)
-      java.util.Arrays.copyOf(bytes, (len >>> 3) + 1) // The +1 covers the extra 2 '0' bits.
+      java.util.Arrays
+        .copyOf(bytes, (len >>> 3) + 1) // The +1 covers the extra 2 '0' bits.
     }
 
     def readBitSet(src: ByteBuffer): RawBitSet = {
@@ -904,9 +955,9 @@ object Codec {
           val c = (l + r) / 2
           (get(offset), get(offset + 1)) match {
             case (false, false) => offset + 2
-            case (false, true) => read(c, r, offset + 2)
-            case (true, false) => read(l, c, offset + 2)
-            case (true, true) => read(c, r, read(l, c, offset + 2))
+            case (false, true)  => read(c, r, offset + 2)
+            case (true, false)  => read(l, c, offset + 2)
+            case (true, true)   => read(c, r, read(l, c, offset + 2))
           }
         }
       }
@@ -917,4 +968,3 @@ object Codec {
     }
   }
 }
-

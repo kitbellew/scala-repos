@@ -1,19 +1,19 @@
 /*
- *  ____    ____    _____    ____    ___     ____ 
+ *  ____    ____    _____    ____    ___     ____
  * |  _ \  |  _ \  | ____|  / ___|  / _/    / ___|        Precog (R)
  * | |_) | | |_) | |  _|   | |     | |  /| | |  _         Advanced Analytics Engine for NoSQL Data
  * |  __/  |  _ <  | |___  | |___  |/ _| | | |_| |        Copyright (C) 2010 - 2013 SlamData, Inc.
  * |_|     |_| \_\ |_____|  \____|   /__/   \____|        All Rights Reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the 
- * GNU Affero General Public License as published by the Free Software Foundation, either version 
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Affero General Public License as published by the Free Software Foundation, either version
  * 3 of the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
  * the GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License along with this 
+ * You should have received a copy of the GNU Affero General Public License along with this
  * program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
@@ -42,19 +42,19 @@ case object Tick
 case class Schedule(at: Long, thunk: () => Any)
 
 /**
- * A ticker is an attempt at being able to get a bit of sanity back into timing
- * futures. Basically, it let's you schedule a thunk to be run at a specific
- * point in time (a particular tick). The ticker can be advanced by sending it
- * a `Tick` message. We can also schedule thunks by sending a `Schedule`
- * message. The schedule is always relative to the time at which the message is
- * processed, so all scheduled thunks will always run.
- *
- * This actor shouldn't be used directly, but in conjunction with the
- * `SchedulableFuturesModule`, which provides a schedule method to create a
- * `Future` out of a thunk. The futures are still no deterministic, but the
- * combination of these 2 classes allows the timing of future completion to be
- * synchronized a bit more.
- */
+  * A ticker is an attempt at being able to get a bit of sanity back into timing
+  * futures. Basically, it let's you schedule a thunk to be run at a specific
+  * point in time (a particular tick). The ticker can be advanced by sending it
+  * a `Tick` message. We can also schedule thunks by sending a `Schedule`
+  * message. The schedule is always relative to the time at which the message is
+  * processed, so all scheduled thunks will always run.
+  *
+  * This actor shouldn't be used directly, but in conjunction with the
+  * `SchedulableFuturesModule`, which provides a schedule method to create a
+  * `Future` out of a thunk. The futures are still no deterministic, but the
+  * combination of these 2 classes allows the timing of future completion to be
+  * synchronized a bit more.
+  */
 class Ticker(ticks: AtomicLong) extends Actor {
   private var schedule: Map[Long, List[() => Any]] = Map.empty
 
@@ -77,11 +77,15 @@ class Ticker(ticks: AtomicLong) extends Actor {
 }
 
 /**
- * This is a `Clock` whose time comes from an atomic long, which can be updated
- * manually. The current time will always be `start + duration * ticks.get`,
- * where the duration is in milliseconds.
- */
-class ManualClock(ticks: AtomicLong, start: DateTime = new DateTime, val duration: Long = 50) extends Clock {
+  * This is a `Clock` whose time comes from an atomic long, which can be updated
+  * manually. The current time will always be `start + duration * ticks.get`,
+  * where the duration is in milliseconds.
+  */
+class ManualClock(
+    ticks: AtomicLong,
+    start: DateTime = new DateTime,
+    val duration: Long = 50)
+    extends Clock {
   def now(): DateTime = {
     val cur = start.getMillis() + ticks.get() * duration
     new DateTime(cur)
@@ -93,13 +97,13 @@ class ManualClock(ticks: AtomicLong, start: DateTime = new DateTime, val duratio
 }
 
 /**
- * This trait provides a way to schedule thunks for execution at somewhat
- * predictable times. The `schedule` method can be given the number of ticks
- * to wait before executing a thunk and will return a Future which will
- * complete at that time. It also provides a clock whose time is directly tied
- * to `ticks`, which would presumably be used by the `Ticker` to keep track of
- * ticks processed.
- */
+  * This trait provides a way to schedule thunks for execution at somewhat
+  * predictable times. The `schedule` method can be given the number of ticks
+  * to wait before executing a thunk and will return a Future which will
+  * complete at that time. It also provides a clock whose time is directly tied
+  * to `ticks`, which would presumably be used by the `Ticker` to keep track of
+  * ticks processed.
+  */
 trait SchedulableFuturesModule {
   implicit def executionContext: ExecutionContext
 

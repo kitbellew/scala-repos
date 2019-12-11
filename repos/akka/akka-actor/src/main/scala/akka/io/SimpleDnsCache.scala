@@ -13,9 +13,11 @@ private[io] sealed trait PeriodicCacheCleanup {
 class SimpleDnsCache extends Dns with PeriodicCacheCleanup {
   import akka.io.SimpleDnsCache._
 
-  private val cache = new AtomicReference(new Cache(
-    immutable.SortedSet()(ExpiryEntryOrdering),
-    immutable.Map(), clock))
+  private val cache = new AtomicReference(
+    new Cache(
+      immutable.SortedSet()(ExpiryEntryOrdering),
+      immutable.Map(),
+      clock))
 
   private val nanoBase = System.nanoTime()
 
@@ -45,7 +47,10 @@ class SimpleDnsCache extends Dns with PeriodicCacheCleanup {
 }
 
 object SimpleDnsCache {
-  private class Cache(queue: immutable.SortedSet[ExpiryEntry], cache: immutable.Map[String, CacheEntry], clock: () ⇒ Long) {
+  private class Cache(
+      queue: immutable.SortedSet[ExpiryEntry],
+      cache: immutable.Map[String, CacheEntry],
+      clock: () ⇒ Long) {
     def get(name: String): Option[Resolved] = {
       for {
         e ← cache.get(name)
@@ -81,7 +86,8 @@ object SimpleDnsCache {
     def isValid(clock: Long): Boolean = clock < until
   }
 
-  private class ExpiryEntry(val name: String, val until: Long) extends Ordered[ExpiryEntry] {
+  private class ExpiryEntry(val name: String, val until: Long)
+      extends Ordered[ExpiryEntry] {
     def isValid(clock: Long): Boolean = clock < until
     override def compare(that: ExpiryEntry): Int = -until.compareTo(that.until)
   }

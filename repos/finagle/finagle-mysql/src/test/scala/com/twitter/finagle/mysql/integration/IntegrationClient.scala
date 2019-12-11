@@ -12,28 +12,33 @@ trait IntegrationClient {
   private val logger = Logger.getLogger("integration-client")
 
   // Check if default mysql port is available.
-  val isPortAvailable = try {
-    val socket = new ServerSocket(3306)
-    socket.close()
-    true
-  } catch {
-    case e: BindException => false
-  }
+  val isPortAvailable =
+    try {
+      val socket = new ServerSocket(3306)
+      socket.close()
+      true
+    } catch {
+      case e: BindException => false
+    }
 
-  val propFile = new File(System.getProperty("user.home") +
-    "/.finagle-mysql/integration-test.properties")
+  val propFile = new File(
+    System.getProperty("user.home") +
+      "/.finagle-mysql/integration-test.properties")
 
   val p = new Properties
-  val propFileExists = try {
-    val fis = new FileInputStream(propFile)
-    p.load(fis)
-    fis.close()
-    true
-  } catch {
-    case NonFatal(e) =>
-      logger.log(Level.WARNING, "Error loading integration.properties, skipping integration test")
-      false
-  }
+  val propFileExists =
+    try {
+      val fis = new FileInputStream(propFile)
+      p.load(fis)
+      fis.close()
+      true
+    } catch {
+      case NonFatal(e) =>
+        logger.log(
+          Level.WARNING,
+          "Error loading integration.properties, skipping integration test")
+        false
+    }
 
   // It's likely that we can run this test
   // if a mysql instance is running and a valid
@@ -46,10 +51,11 @@ trait IntegrationClient {
     val username = p.getProperty("username", "<user>")
     val password = p.getProperty("password", null)
     val db = p.getProperty("db", "test")
-    Some(Mysql.client
-      .withCredentials(username, password)
-      .withDatabase(db)
-      .newRichClient("localhost:3306"))
+    Some(
+      Mysql.client
+        .withCredentials(username, password)
+        .withDatabase(db)
+        .newRichClient("localhost:3306"))
   } else {
     None
   }

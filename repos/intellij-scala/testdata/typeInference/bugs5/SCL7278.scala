@@ -27,7 +27,8 @@ object SCL7278 {
   }
 
   val z: Z = new Z
-  /*start*/(new X(z).m, new Y(z).m, new Y2(z).m)/*end*/
+  /*start*/
+  (new X(z).m, new Y(z).m, new Y2(z).m) /*end*/
 
 }
 //(String, String, String)

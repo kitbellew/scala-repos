@@ -26,7 +26,11 @@ class EndpointRecorderTest extends FunSuite {
     def apply(req: Int) = Future.never
   })
 
-  def getEndpoints(registry: EndpointRegistry, name: String, dtab: Dtab, path: String): Option[Addr] = {
+  def getEndpoints(
+      registry: EndpointRegistry,
+      name: String,
+      dtab: Dtab,
+      path: String): Option[Addr] = {
     registry.endpoints(name).get(dtab).flatMap(_.get(path))
   }
 
@@ -44,14 +48,16 @@ class EndpointRecorderTest extends FunSuite {
 
   test("EndpointRecorder registers in EndpointRegistry") {
     val registry = new EndpointRegistry()
-    val factory = new EndpointRecorder(neverFactory, registry, name, dtab, path, endpoints)
+    val factory =
+      new EndpointRecorder(neverFactory, registry, name, dtab, path, endpoints)
 
     assert(getEndpoints(registry, name, dtab, path) == Some(bound))
   }
 
   test("EndpointRecorder deregisters on close()") {
     val registry = new EndpointRegistry()
-    val factory = new EndpointRecorder(neverFactory, registry, name, dtab, path, endpoints)
+    val factory =
+      new EndpointRecorder(neverFactory, registry, name, dtab, path, endpoints)
 
     assert(getEndpoints(registry, name, dtab, path) == Some(bound))
     factory.close()

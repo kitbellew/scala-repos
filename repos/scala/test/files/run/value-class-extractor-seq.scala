@@ -49,8 +49,8 @@ object Test {
   }
 
   def main(args: Array[String]): Unit = {
-    println(f(Array[Int](1,2,3)))
-    println(f(Array[Int](1,2,3,4,5)))
+    println(f(Array[Int](1, 2, 3)))
+    println(f(Array[Int](1, 2, 3, 4, 5)))
     println(f(Array[Int](1)))
   }
   // Bip(1, 2, 3)

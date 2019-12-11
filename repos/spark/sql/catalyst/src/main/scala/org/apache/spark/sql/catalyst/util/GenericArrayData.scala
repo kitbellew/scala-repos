@@ -51,11 +51,13 @@ class GenericArrayData(val array: Array[Any]) extends ArrayData {
   override def getLong(ordinal: Int): Long = getAs(ordinal)
   override def getFloat(ordinal: Int): Float = getAs(ordinal)
   override def getDouble(ordinal: Int): Double = getAs(ordinal)
-  override def getDecimal(ordinal: Int, precision: Int, scale: Int): Decimal = getAs(ordinal)
+  override def getDecimal(ordinal: Int, precision: Int, scale: Int): Decimal =
+    getAs(ordinal)
   override def getUTF8String(ordinal: Int): UTF8String = getAs(ordinal)
   override def getBinary(ordinal: Int): Array[Byte] = getAs(ordinal)
   override def getInterval(ordinal: Int): CalendarInterval = getAs(ordinal)
-  override def getStruct(ordinal: Int, numFields: Int): InternalRow = getAs(ordinal)
+  override def getStruct(ordinal: Int, numFields: Int): InternalRow =
+    getAs(ordinal)
   override def getArray(ordinal: Int): ArrayData = getAs(ordinal)
   override def getMap(ordinal: Int): MapData = getAs(ordinal)
 
@@ -87,20 +89,23 @@ class GenericArrayData(val array: Array[Any]) extends ArrayData {
         o1 match {
           case b1: Array[Byte] =>
             if (!o2.isInstanceOf[Array[Byte]] ||
-              !java.util.Arrays.equals(b1, o2.asInstanceOf[Array[Byte]])) {
+                !java.util.Arrays.equals(b1, o2.asInstanceOf[Array[Byte]])) {
               return false
             }
           case f1: Float if java.lang.Float.isNaN(f1) =>
-            if (!o2.isInstanceOf[Float] || ! java.lang.Float.isNaN(o2.asInstanceOf[Float])) {
+            if (!o2.isInstanceOf[Float] || !java.lang.Float.isNaN(
+                  o2.asInstanceOf[Float])) {
               return false
             }
           case d1: Double if java.lang.Double.isNaN(d1) =>
-            if (!o2.isInstanceOf[Double] || ! java.lang.Double.isNaN(o2.asInstanceOf[Double])) {
+            if (!o2.isInstanceOf[Double] || !java.lang.Double.isNaN(
+                  o2.asInstanceOf[Double])) {
               return false
             }
-          case _ => if (o1 != o2) {
-            return false
-          }
+          case _ =>
+            if (o1 != o2) {
+              return false
+            }
         }
       }
       i += 1
@@ -119,16 +124,16 @@ class GenericArrayData(val array: Array[Any]) extends ArrayData {
         } else {
           array(i) match {
             case b: Boolean => if (b) 0 else 1
-            case b: Byte => b.toInt
-            case s: Short => s.toInt
-            case i: Int => i
-            case l: Long => (l ^ (l >>> 32)).toInt
-            case f: Float => java.lang.Float.floatToIntBits(f)
+            case b: Byte    => b.toInt
+            case s: Short   => s.toInt
+            case i: Int     => i
+            case l: Long    => (l ^ (l >>> 32)).toInt
+            case f: Float   => java.lang.Float.floatToIntBits(f)
             case d: Double =>
               val b = java.lang.Double.doubleToLongBits(d)
               (b ^ (b >>> 32)).toInt
             case a: Array[Byte] => java.util.Arrays.hashCode(a)
-            case other => other.hashCode()
+            case other          => other.hashCode()
           }
         }
       result = 37 * result + update

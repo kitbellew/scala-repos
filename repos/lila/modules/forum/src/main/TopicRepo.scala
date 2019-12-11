@@ -47,5 +47,6 @@ sealed abstract class TopicRepo(troll: Boolean) {
   def incViews(topic: Topic): Funit =
     $update($select(topic.id), $inc("views" -> 1))
 
-  def byCategQuery(categ: Categ) = Json.obj("categId" -> categ.slug) ++ trollFilter
+  def byCategQuery(categ: Categ) =
+    Json.obj("categId" -> categ.slug) ++ trollFilter
 }

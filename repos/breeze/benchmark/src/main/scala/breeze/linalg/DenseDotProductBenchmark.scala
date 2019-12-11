@@ -7,8 +7,8 @@ import breeze.stats.distributions.Rand
 import spire.syntax.cfor._
 
 /**
- * Created by dlwh on 8/14/15.
- */
+  * Created by dlwh on 8/14/15.
+  */
 class DenseDotProductBenchmark extends BreezeBenchmark {
 
   val dv, dv2 = DenseVector.rand(5)
@@ -27,7 +27,12 @@ class DenseDotProductBenchmark extends BreezeBenchmark {
   def timeDirectBigDV(reps: Int) = {
     var sum = 0.0
     cforRange(0 until reps) { rep =>
-      sum += DenseVectorSupportMethods.dotProduct_Double(dvBig.data, 0, dv2Big.data, 0, dvBig.length)
+      sum += DenseVectorSupportMethods.dotProduct_Double(
+        dvBig.data,
+        0,
+        dv2Big.data,
+        0,
+        dvBig.length)
     }
     sum
   }
@@ -35,7 +40,9 @@ class DenseDotProductBenchmark extends BreezeBenchmark {
   def timeBigDVZip(reps: Int) = {
     var sum = 0.0
     cforRange(0 until reps) { rep =>
-      zipValues(dvBig, dv2Big).foreach { (x, y) => sum += x * y}
+      zipValues(dvBig, dv2Big).foreach { (x, y) =>
+        sum += x * y
+      }
     }
     sum
   }
@@ -68,11 +75,15 @@ class DenseDotProductBenchmark extends BreezeBenchmark {
     sum
   }
 
-
   def timeDirectBigFV(reps: Int) = {
     var sum = 0.0
     cforRange(0 until reps) { rep =>
-      sum += DenseVectorSupportMethods.dotProduct_Float(fvBig.data, 0, fv2Big.data, 0, fvBig.length)
+      sum += DenseVectorSupportMethods.dotProduct_Float(
+        fvBig.data,
+        0,
+        fv2Big.data,
+        0,
+        fvBig.length)
     }
     sum
   }
@@ -87,7 +98,8 @@ class DenseDotProductBenchmark extends BreezeBenchmark {
 
 }
 
-object DenseDotProductBenchmark extends MyRunner(classOf[DenseDotProductBenchmark])
+object DenseDotProductBenchmark
+    extends MyRunner(classOf[DenseDotProductBenchmark])
 
 object DenseDotProductX extends App {
   println((new DenseDotProductBenchmark).timeBigDVDotMasked(100000000))

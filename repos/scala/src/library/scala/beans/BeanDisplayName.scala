@@ -6,13 +6,11 @@
 **                          |/                                          **
 \*                                                                      */
 
-
 package scala.beans
 
 /** Provides a display name when generating bean information. This
- *  annotation can be attached to the bean itself, or to any member.
- *
- *  @author Ross Judson (rjudson@managedobjects.com)
- */
+  *  annotation can be attached to the bean itself, or to any member.
+  *
+  *  @author Ross Judson (rjudson@managedobjects.com)
+  */
 class BeanDisplayName(val name: String) extends scala.annotation.Annotation
-

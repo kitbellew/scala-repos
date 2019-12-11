@@ -8,13 +8,10 @@ import spray.http._
 import spray.httpx.RequestBuilding._
 import spray.util._
 
-
-class AdminAPISpec extends Specification{
+class AdminAPISpec extends Specification {
 
   val system = ActorSystem(Utils.actorSystemNameFrom(getClass))
-  val config = AdminServerConfig(
-    ip = "localhost",
-    port = 7071)
+  val config = AdminServerConfig(ip = "localhost", port = 7071)
 
   val commandClient = new CommandClient(
     appClient = Storage.getMetaDataApps,
@@ -22,7 +19,8 @@ class AdminAPISpec extends Specification{
     eventClient = Storage.getLEvents()
   )
 
-  val adminActor= system.actorOf(Props(classOf[AdminServiceActor], commandClient))
+  val adminActor =
+    system.actorOf(Props(classOf[AdminServiceActor], commandClient))
 
   "GET / request" should {
     "properly produce OK HttpResponses" in {

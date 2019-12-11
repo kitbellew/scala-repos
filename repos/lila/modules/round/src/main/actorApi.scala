@@ -7,7 +7,7 @@ import scala.concurrent.Promise
 import chess.Color
 import chess.format.Uci
 
-import lila.game.{ Game, Event, PlayerRef }
+import lila.game.{Game, Event, PlayerRef}
 import lila.socket.SocketMember
 import lila.user.User
 
@@ -29,15 +29,16 @@ sealed trait Member extends SocketMember {
 
 object Member {
   def apply(
-    channel: JsChannel,
-    user: Option[User],
-    color: Color,
-    playerIdOption: Option[String],
-    ip: String,
-    userTv: Option[String]): Member = {
+      channel: JsChannel,
+      user: Option[User],
+      color: Color,
+      playerIdOption: Option[String],
+      ip: String,
+      userTv: Option[String]): Member = {
     val userId = user map (_.id)
     val troll = user.??(_.troll)
-    playerIdOption.fold[Member](Watcher(channel, userId, color, troll, ip, userTv)) { playerId =>
+    playerIdOption.fold[Member](
+      Watcher(channel, userId, color, troll, ip, userTv)) { playerId =>
       Owner(channel, userId, playerId, color, troll, ip)
     }
   }
@@ -49,7 +50,8 @@ case class Owner(
     playerId: String,
     color: Color,
     troll: Boolean,
-    ip: String) extends Member {
+    ip: String)
+    extends Member {
 
   val playerIdOption = playerId.some
   val userTv = none
@@ -61,18 +63,19 @@ case class Watcher(
     color: Color,
     troll: Boolean,
     ip: String,
-    userTv: Option[String]) extends Member {
+    userTv: Option[String])
+    extends Member {
 
   val playerIdOption = none
 }
 
 case class Join(
-  uid: String,
-  user: Option[User],
-  color: Color,
-  playerId: Option[String],
-  ip: String,
-  userTv: Option[String])
+    uid: String,
+    user: Option[User],
+    color: Color,
+    playerId: Option[String],
+    ip: String,
+    userTv: Option[String])
 case class Connected(enumerator: JsEnumerator, member: Member)
 case class Bye(color: Color)
 case class IsGone(color: Color)
@@ -90,41 +93,41 @@ case class SetGame(game: Option[lila.game.Game])
 
 package round {
 
-case class HumanPlay(
-    playerId: String,
-    uci: Uci,
-    blur: Boolean,
-    lag: FiniteDuration,
-    promise: Option[Promise[Unit]] = None) {
+  case class HumanPlay(
+      playerId: String,
+      uci: Uci,
+      blur: Boolean,
+      lag: FiniteDuration,
+      promise: Option[Promise[Unit]] = None) {
 
-  val atNanos = nowNanos
-}
+    val atNanos = nowNanos
+  }
 
-case class PlayResult(events: Events, fen: String, lastMove: Option[String])
+  case class PlayResult(events: Events, fen: String, lastMove: Option[String])
 
-case class Abort(playerId: String)
-case object AbortForMaintenance
-case object Threefold
-case class Resign(playerId: String)
-case class ResignForce(playerId: String)
-case class NoStartColor(color: Color)
-case class DrawForce(playerId: String)
-case class DrawClaim(playerId: String)
-case class DrawYes(playerId: String)
-case class DrawNo(playerId: String)
-case object DrawForce
-case class RematchYes(playerId: String)
-case class RematchNo(playerId: String)
-case class TakebackYes(playerId: String)
-case class TakebackNo(playerId: String)
-case class Moretime(playerId: String)
-case object Outoftime
-case object Abandon
-case class ForecastPlay(lastMove: chess.Move)
-case class Cheat(color: Color)
-case class HoldAlert(playerId: String, mean: Int, sd: Int, ip: String)
-case class GoBerserk(color: Color)
-case class TournamentStanding(id: String)
+  case class Abort(playerId: String)
+  case object AbortForMaintenance
+  case object Threefold
+  case class Resign(playerId: String)
+  case class ResignForce(playerId: String)
+  case class NoStartColor(color: Color)
+  case class DrawForce(playerId: String)
+  case class DrawClaim(playerId: String)
+  case class DrawYes(playerId: String)
+  case class DrawNo(playerId: String)
+  case object DrawForce
+  case class RematchYes(playerId: String)
+  case class RematchNo(playerId: String)
+  case class TakebackYes(playerId: String)
+  case class TakebackNo(playerId: String)
+  case class Moretime(playerId: String)
+  case object Outoftime
+  case object Abandon
+  case class ForecastPlay(lastMove: chess.Move)
+  case class Cheat(color: Color)
+  case class HoldAlert(playerId: String, mean: Int, sd: Int, ip: String)
+  case class GoBerserk(color: Color)
+  case class TournamentStanding(id: String)
 }
 
 private[round] case object GetNbRounds

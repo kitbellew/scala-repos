@@ -7,35 +7,44 @@ import org.jetbrains.plugins.hocon.lexer.HoconLexer
 import org.jetbrains.plugins.hocon.psi._
 
 /**
- * Manipulator for unquoted string literals. For now, it is registered for [[org.jetbrains.plugins.hocon.psi.HoconPsiElement]].
- * It will be registered for dedicated class after proper hierarchy of PSI classes for HOCON is implemented.
- */
+  * Manipulator for unquoted string literals. For now, it is registered for [[org.jetbrains.plugins.hocon.psi.HoconPsiElement]].
+  * It will be registered for dedicated class after proper hierarchy of PSI classes for HOCON is implemented.
+  */
 class HStringManipulator extends AbstractElementManipulator[HString] {
 
   import org.jetbrains.plugins.hocon.lexer.HoconTokenType._
   import org.jetbrains.plugins.hocon.parser.HoconElementType._
 
-  def handleContentChange(str: HString, range: TextRange, newContent: String) = {
+  def handleContentChange(
+      str: HString,
+      range: TextRange,
+      newContent: String) = {
     val strType = str.stringType
     val oldText = str.getText
 
     val escapedContent = strType match {
       case MultilineString => newContent
-      case _ => StringUtil.escapeStringCharacters(newContent)
+      case _               => StringUtil.escapeStringCharacters(newContent)
     }
 
     val needsQuoting = strType == UnquotedString &&
-      (newContent.isEmpty || newContent.startsWith(" ") || newContent.endsWith(" ")
+      (newContent.isEmpty || newContent.startsWith(" ") || newContent.endsWith(
+        " ")
         || (str.elementType == KeyPart && newContent.contains('.'))
         || newContent.exists(HoconLexer.ForbiddenChars.contains) || escapedContent != newContent)
 
-    val unquotedText = oldText.substring(0, range.getStartOffset) + escapedContent + oldText.substring(range.getEndOffset)
-    val quotedText = if (needsQuoting) "\"" + unquotedText + "\"" else unquotedText
+    val unquotedText = oldText.substring(0, range.getStartOffset) + escapedContent + oldText
+      .substring(range.getEndOffset)
+    val quotedText =
+      if (needsQuoting) "\"" + unquotedText + "\"" else unquotedText
 
     val newString = str.elementType match {
-      case StringValue => HoconPsiElementFactory.createStringValue(quotedText, str.getManager)
-      case KeyPart => HoconPsiElementFactory.createKeyPart(quotedText, str.getManager)
-      case IncludeTarget => HoconPsiElementFactory.createIncludeTarget(quotedText, str.getManager)
+      case StringValue =>
+        HoconPsiElementFactory.createStringValue(quotedText, str.getManager)
+      case KeyPart =>
+        HoconPsiElementFactory.createKeyPart(quotedText, str.getManager)
+      case IncludeTarget =>
+        HoconPsiElementFactory.createIncludeTarget(quotedText, str.getManager)
     }
     str.getFirstChild.replace(newString.getFirstChild)
 

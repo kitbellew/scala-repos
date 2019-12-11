@@ -1,6 +1,6 @@
 package mesosphere.marathon.io.storage
 
-import java.io.{ File, FileInputStream, InputStream, OutputStream }
+import java.io.{File, FileInputStream, InputStream, OutputStream}
 import java.net.URI
 
 import org.apache.hadoop.conf.Configuration
@@ -124,9 +124,8 @@ object StorageProvider {
     case _          => false
   }
 
-  def examples: Map[String, String] = Map (
+  def examples: Map[String, String] = Map(
     "hdfs" -> "hdfs://localhost:54310/path/to/store",
     "file" -> "file:///var/log/store"
   )
 }
-

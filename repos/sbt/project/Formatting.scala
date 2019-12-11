@@ -1,6 +1,6 @@
 import sbt._
 import Keys._
-import com.typesafe.sbt.SbtScalariform.{ ScalariformKeys => sr, _ }
+import com.typesafe.sbt.SbtScalariform.{ScalariformKeys => sr, _}
 
 object Formatting {
   lazy val BuildConfig = config("build") extend Compile
@@ -10,10 +10,12 @@ object Formatting {
   lazy val prefs: Seq[Setting[_]] = {
     import scalariform.formatter.preferences._
     Seq(
-      sr.preferences := sr.preferences.value.setPreference(AlignSingleLineCaseStatements, true)
+      sr.preferences := sr.preferences.value
+        .setPreference(AlignSingleLineCaseStatements, true)
     )
   }
-  lazy val sbtFilesSettings: Seq[Setting[_]] = Seq() ++ scalariformSettings ++ prefs ++
+  lazy val sbtFilesSettings
+      : Seq[Setting[_]] = Seq() ++ scalariformSettings ++ prefs ++
     inConfig(BuildConfig)(configScalariformSettings) ++
     inConfig(BuildSbtConfig)(configScalariformSettings) ++
     Seq(

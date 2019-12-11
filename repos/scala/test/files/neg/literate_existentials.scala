@@ -1,4 +1,3 @@
-
 object LiterateExistentials {
 
 //  Let's play with Scala's type system a bit.
@@ -30,12 +29,8 @@ object LiterateExistentials {
 //  environment admit the top of the substitution rule (and thus, the bottom). If
 //  they do, we can say that the proposition is true.
 
-
 // In each case, we will also probe the compiler to see whether _it_ thinks that
 // the proposition holds, using an uncommented implicitly[_ <:< _] line.
-
-
-
 
 //  Proposition: Nothing :< (A forSome { type A >: String <: Any })
 //
@@ -54,7 +49,7 @@ object LiterateExistentials {
 //  V1 <: Any
 //
 //  Which simplify to:
-//  V1 >: String <: Any 
+//  V1 >: String <: Any
 //
 //  That's not inconsistent, so we can say that:
 //  T <: U forSome { type X1 >: L1 <: H1 }
@@ -62,9 +57,8 @@ object LiterateExistentials {
 //  Nothing <: A forSome { type A >: String <: Any }
 
 // Now to ask the compiler:
-  
-  implicitly[Nothing <:< (A forSome { type A >: String <: Any })]
 
+  implicitly[Nothing <:< (A forSome { type A >: String <: Any })]
 
 //  Let's try another:
 //
@@ -85,18 +79,16 @@ object LiterateExistentials {
 //
 //  Which simplify to:
 //
-//  V1 >: lub(Int, String) <: Any 
+//  V1 >: lub(Int, String) <: Any
 //
-//  V1 >: Any <: Any 
+//  V1 >: Any <: Any
 //
 //  We have demonstrated consistency! We can say that:
 //    T :< (U forSome { type U >: L1 <: H1 })
 //  Under our bindings, this is:
 //    Int :< (M forSome { type M >: String <: Any })
-  
+
   implicitly[Int <:< (M forSome { type M >: String <: Any })]
-
-
 
 //  Now, let's do a more complicated one:
 //
@@ -157,10 +149,10 @@ object LiterateExistentials {
 //  (Nothing, List[String]) <: ((A, B) forSome { type A >: String <: AnyRef; type B >: Null <: List[A] })
 
   implicitly[
-    (Nothing, List[String]) <:< ((A, B) forSome { type A >: String <: AnyRef; type B >: Null <: List[A] })
-   ]
-
-
+    (Nothing, List[String]) <:< ((A, B) forSome {
+      type A >: String <: AnyRef; type B >: Null <: List[A]
+    })
+  ]
 
 //  Now let's try one that isn't true:
 //
@@ -179,7 +171,7 @@ object LiterateExistentials {
 //  Nothing <: V1
 //  V1 <: String
 //
-//  V1 >: Int <: String 
+//  V1 >: Int <: String
 //
 //  Alas! These are inconsistent! There is no supertype of Int that is a
 //  subtype of String! Our substitution rule does not allow us to claim that our
@@ -188,8 +180,6 @@ object LiterateExistentials {
 
   implicitly[Int <:< (M forSome { type M >: Nothing <: String })] // fails
 // The preceding line causes the compiler to generate an error message.
-
-
 
 //  Let's look at one final example, courtesy of paulp.
 //  Proposition: String :< X forSome { type X >: Nothing <: String }

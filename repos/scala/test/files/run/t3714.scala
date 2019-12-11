@@ -2,7 +2,7 @@ trait Break {
   protected val break: Int;
 }
 
-case class BreakImpl(protected val break: Int) extends Break { }
+case class BreakImpl(protected val break: Int) extends Break {}
 
 object Test {
   // def f1(x: Break) = x match {
@@ -30,4 +30,3 @@ object Test {
     assert(f4(break) == 22)
   }
 }
-

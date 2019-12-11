@@ -7,14 +7,19 @@ package scala
 package tools.nsc
 package reporters
 
-import java.io.{ BufferedReader, PrintWriter }
+import java.io.{BufferedReader, PrintWriter}
 import scala.reflect.internal.util._
 import StringOps._
 
 /** This class implements a Reporter that displays messages on a text console.
- */
-class ConsoleReporter(val settings: Settings, reader: BufferedReader, writer: PrintWriter) extends AbstractReporter {
-  def this(settings: Settings) = this(settings, Console.in, new PrintWriter(Console.err, true))
+  */
+class ConsoleReporter(
+    val settings: Settings,
+    reader: BufferedReader,
+    writer: PrintWriter)
+    extends AbstractReporter {
+  def this(settings: Settings) =
+    this(settings, Console.in, new PrintWriter(Console.err, true))
 
   /** Whether a short file name should be displayed before errors */
   var shortname: Boolean = false
@@ -34,7 +39,7 @@ class ConsoleReporter(val settings: Settings, reader: BufferedReader, writer: Pr
   }
 
   /** Returns the number of errors issued totally as a string.
-   */
+    */
   private def getCountString(severity: Severity): String =
     StringOps.countElementsAsString((severity).count, label(severity))
 
@@ -53,14 +58,16 @@ class ConsoleReporter(val settings: Settings, reader: BufferedReader, writer: Pr
   }
 
   /** Prints the column marker of the given position.
-   */
+    */
   def printColumnMarker(pos: Position) =
-    if (pos.isDefined) { printMessage(" " * (pos.column - 1) + "^") }
+    if (pos.isDefined) {
+      printMessage(" " * (pos.column - 1) + "^")
+    }
 
   /** Prints the number of errors and warnings if their are non-zero. */
   def printSummary() {
     if (WARNING.count > 0) printMessage(getCountString(WARNING) + " found")
-    if (  ERROR.count > 0) printMessage(getCountString(ERROR  ) + " found")
+    if (ERROR.count > 0) printMessage(getCountString(ERROR) + " found")
   }
 
   def display(pos: Position, msg: String, severity: Severity) {

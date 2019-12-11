@@ -42,8 +42,12 @@ object Dependencies {
   lazy val jsch = "com.jcraft" % "jsch" % "0.1.46" intransitive ()
   lazy val sbinary = "org.scala-tools.sbinary" %% "sbinary" % "0.4.2"
   lazy val sbtSerialization = "org.scala-sbt" %% "serialization" % "0.1.2"
-  lazy val scalaCompiler = Def.setting { "org.scala-lang" % "scala-compiler" % scalaVersion.value }
-  lazy val scalaReflect = Def.setting { "org.scala-lang" % "scala-reflect" % scalaVersion.value }
+  lazy val scalaCompiler = Def.setting {
+    "org.scala-lang" % "scala-compiler" % scalaVersion.value
+  }
+  lazy val scalaReflect = Def.setting {
+    "org.scala-lang" % "scala-reflect" % scalaVersion.value
+  }
   lazy val scalaCheck = "org.scalacheck" %% "scalacheck" % "1.11.4"
   lazy val specs2 = "org.specs2" %% "specs2" % "2.3.11"
   lazy val junit = "junit" % "junit" % "4.11"
@@ -52,7 +56,7 @@ object Dependencies {
     Def.setting {
       scalaVersion.value match {
         case sv if (sv startsWith "2.9.") || (sv startsWith "2.10.") => Nil
-        case _ => ("org.scala-lang.modules" %% name % moduleVersion) :: Nil
+        case _                                                       => ("org.scala-lang.modules" %% name % moduleVersion) :: Nil
       }
     }
   lazy val scalaXml = scala211Module("scala-xml", "1.0.1")
@@ -72,7 +76,9 @@ object Dependencies {
   val aetherTransportWagon = "org.eclipse.aether" % "aether-transport-wagon" % aetherVersion
   val aetherTransportHttp = "org.eclipse.aether" % "aether-transport-http" % aetherVersion
   val aetherConnectorBasic = "org.eclipse.aether" % "aether-connector-basic" % aetherVersion
-  val sisuPlexus = ("org.eclipse.sisu" % "org.eclipse.sisu.plexus" % "0.3.0.M1").exclude("javax.enterprise", "cdi-api").exclude("com.google.code.findbugs", "jsr305")
+  val sisuPlexus = ("org.eclipse.sisu" % "org.eclipse.sisu.plexus" % "0.3.0.M1")
+    .exclude("javax.enterprise", "cdi-api")
+    .exclude("com.google.code.findbugs", "jsr305")
   val guice = "com.google.inject" % "guice" % "3.0"
   val guava = "com.google.guava" % "guava" % "18.0"
   val javaxInject = "javax.inject" % "javax.inject" % "1"
@@ -84,7 +90,7 @@ object Dependencies {
   val mvnWagonProviderApi = "org.apache.maven.wagon" % "wagon-provider-api" % mvnWagonVersion
   val mvnWagonLwHttp = "org.apache.maven.wagon" % "wagon-http-lightweight" % mvnWagonVersion
   val mvnWagonFile = "org.apache.maven.wagon" % "wagon-file" % mvnWagonVersion
-  */
+   */
   def aetherLibs =
     Seq(
       guava,

@@ -18,7 +18,11 @@
 package org.apache.spark.sql.catalyst.optimizer
 
 import org.apache.spark.sql.catalyst.SimpleCatalystConf
-import org.apache.spark.sql.catalyst.analysis.{Analyzer, EmptyFunctionRegistry, SimpleCatalog}
+import org.apache.spark.sql.catalyst.analysis.{
+  Analyzer,
+  EmptyFunctionRegistry,
+  SimpleCatalog
+}
 import org.apache.spark.sql.catalyst.dsl.expressions._
 import org.apache.spark.sql.catalyst.dsl.plans._
 import org.apache.spark.sql.catalyst.expressions._
@@ -27,14 +31,14 @@ import org.apache.spark.sql.catalyst.plans.logical._
 import org.apache.spark.sql.catalyst.rules._
 
 class EliminateSortsSuite extends PlanTest {
-  val conf = new SimpleCatalystConf(caseSensitiveAnalysis = true, orderByOrdinal = false)
+  val conf =
+    new SimpleCatalystConf(caseSensitiveAnalysis = true, orderByOrdinal = false)
   val catalog = new SimpleCatalog(conf)
   val analyzer = new Analyzer(catalog, EmptyFunctionRegistry, conf)
 
   object Optimize extends RuleExecutor[LogicalPlan] {
     val batches =
-      Batch("Eliminate Sorts", Once,
-        EliminateSorts) :: Nil
+      Batch("Eliminate Sorts", Once, EliminateSorts) :: Nil
   }
 
   val testRelation = LocalRelation('a.int, 'b.int, 'c.int)

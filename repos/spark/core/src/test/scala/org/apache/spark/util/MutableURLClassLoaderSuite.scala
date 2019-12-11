@@ -28,20 +28,25 @@ import org.apache.spark.{SparkContext, SparkException, SparkFunSuite, TestUtils}
 
 class MutableURLClassLoaderSuite extends SparkFunSuite with Matchers {
 
-  val urls2 = List(TestUtils.createJarWithClasses(
+  val urls2 = List(
+    TestUtils.createJarWithClasses(
       classNames = Seq("FakeClass1", "FakeClass2", "FakeClass3"),
       toStringValue = "2")).toArray
-  val urls = List(TestUtils.createJarWithClasses(
+  val urls = List(
+    TestUtils.createJarWithClasses(
       classNames = Seq("FakeClass1"),
       classNamesWithBase = Seq(("FakeClass2", "FakeClass3")), // FakeClass3 is in parent
       toStringValue = "1",
       classpathUrls = urls2)).toArray
 
-  val fileUrlsChild = List(TestUtils.createJarWithFiles(Map(
-    "resource1" -> "resource1Contents-child",
-    "resource2" -> "resource2Contents"))).toArray
-  val fileUrlsParent = List(TestUtils.createJarWithFiles(Map(
-    "resource1" -> "resource1Contents-parent"))).toArray
+  val fileUrlsChild = List(
+    TestUtils.createJarWithFiles(
+      Map(
+        "resource1" -> "resource1Contents-child",
+        "resource2" -> "resource2Contents"))).toArray
+  val fileUrlsParent = List(
+    TestUtils.createJarWithFiles(
+      Map("resource1" -> "resource1Contents-parent"))).toArray
 
   test("child first") {
     val parentLoader = new URLClassLoader(urls2, null)
@@ -105,7 +110,6 @@ class MutableURLClassLoaderSuite extends SparkFunSuite with Matchers {
       ("resource1Contents-child", "resource1Contents-parent")
   }
 
-
   test("driver sets context class loader in local mode") {
     // Test the case where the driver program sets a context classloader and then runs a job
     // in local mode. This is what happens when ./spark-submit is called with "local" as the
@@ -114,22 +118,25 @@ class MutableURLClassLoaderSuite extends SparkFunSuite with Matchers {
 
     val className = "ClassForDriverTest"
     val jar = TestUtils.createJarWithClasses(Seq(className))
-    val contextLoader = new URLClassLoader(Array(jar), Utils.getContextOrSparkClassLoader)
+    val contextLoader =
+      new URLClassLoader(Array(jar), Utils.getContextOrSparkClassLoader)
     Thread.currentThread().setContextClassLoader(contextLoader)
 
     val sc = new SparkContext("local", "driverLoaderTest")
 
     try {
-      sc.makeRDD(1 to 5, 2).mapPartitions { x =>
-        val loader = Thread.currentThread().getContextClassLoader
-        // scalastyle:off classforname
-        Class.forName(className, true, loader).newInstance()
-        // scalastyle:on classforname
-        Seq().iterator
-      }.count()
-    }
-    catch {
-      case e: SparkException if e.getMessage.contains("ClassNotFoundException") =>
+      sc.makeRDD(1 to 5, 2)
+        .mapPartitions { x =>
+          val loader = Thread.currentThread().getContextClassLoader
+          // scalastyle:off classforname
+          Class.forName(className, true, loader).newInstance()
+          // scalastyle:on classforname
+          Seq().iterator
+        }
+        .count()
+    } catch {
+      case e: SparkException
+          if e.getMessage.contains("ClassNotFoundException") =>
         fail("Local executor could not find class", e)
       case t: Throwable => fail("Unexpected exception ", t)
     }

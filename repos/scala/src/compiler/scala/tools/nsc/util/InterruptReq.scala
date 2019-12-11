@@ -2,11 +2,12 @@ package scala.tools.nsc
 package util
 
 /** A class of work items to be used in interrupt requests.
- *  Todo: we should replace the Eithers by Futures or Try's.
- */
+  *  Todo: we should replace the Eithers by Futures or Try's.
+  */
 abstract class InterruptReq {
+
   /** The result type of the operation
-   */
+    */
   type R
 
   /** The operation to be performed */
@@ -37,12 +38,12 @@ abstract class InterruptReq {
     while (result.isEmpty) {
       try {
         wait()
-      } catch { case _ : InterruptedException => () }
+      } catch { case _: InterruptedException => () }
     }
 
     result.get match {
       case Left(res) => res
-      case Right(t) => throw new FailedInterrupt(t)
+      case Right(t)  => throw new FailedInterrupt(t)
     }
   }
 
@@ -54,4 +55,5 @@ abstract class InterruptReq {
   }
 }
 
-class FailedInterrupt(cause: Throwable) extends Exception("Compiler exception during call to 'ask'", cause)
+class FailedInterrupt(cause: Throwable)
+    extends Exception("Compiler exception during call to 'ask'", cause)

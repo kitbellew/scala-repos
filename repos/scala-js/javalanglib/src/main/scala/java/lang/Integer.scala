@@ -72,7 +72,9 @@ object Integer {
     parseIntImpl(s, radix, signed = false)
 
   @inline
-  private def parseIntImpl(s: String, radix: scala.Int,
+  private def parseIntImpl(
+      s: String,
+      radix: scala.Int,
       signed: scala.Boolean): scala.Int = {
     def fail = throw new NumberFormatException(s"""For input string: "$s"""")
 
@@ -90,7 +92,8 @@ object Integer {
           if (Character.digit(s(i), radix) < 0) fail
           i += 1
         }
-        val res = js.Dynamic.global.parseInt(s, radix).asInstanceOf[scala.Double]
+        val res =
+          js.Dynamic.global.parseInt(s, radix).asInstanceOf[scala.Double]
 
         @inline def isOutOfBounds: scala.Boolean = {
           if (signed) res > MAX_VALUE || res < MIN_VALUE
@@ -124,7 +127,7 @@ object Integer {
   }
 
   @inline def toUnsignedLong(x: Int): scala.Long =
-    x.toLong & 0xffffffffL
+    x.toLong & 0xFFFFFFFFL
 
   def bitCount(i: scala.Int): scala.Int = {
     /* See http://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetParallel
@@ -189,10 +192,18 @@ object Integer {
       32
     } else {
       var r = 1
-      if ((x & 0xffff0000) == 0) { x <<= 16; r += 16 }
-      if ((x & 0xff000000) == 0) { x <<= 8; r += 8 }
-      if ((x & 0xf0000000) == 0) { x <<= 4; r += 4 }
-      if ((x & 0xc0000000) == 0) { x <<= 2; r += 2 }
+      if ((x & 0xffff0000) == 0) {
+        x <<= 16; r += 16
+      }
+      if ((x & 0xff000000) == 0) {
+        x <<= 8; r += 8
+      }
+      if ((x & 0xf0000000) == 0) {
+        x <<= 4; r += 4
+      }
+      if ((x & 0xc0000000) == 0) {
+        x <<= 2; r += 2
+      }
       r + (x >> 31)
     }
   }
@@ -223,7 +234,9 @@ object Integer {
   @inline def max(a: Int, b: Int): Int = Math.max(a, b)
   @inline def min(a: Int, b: Int): Int = Math.min(a, b)
 
-  @inline private[this] def toStringBase(i: scala.Int, base: scala.Int): String = {
+  @inline private[this] def toStringBase(
+      i: scala.Int,
+      base: scala.Int): String = {
     import js.JSNumberOps._
     i.toUint.toString(base)
   }

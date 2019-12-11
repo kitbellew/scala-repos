@@ -10,13 +10,13 @@ import Prop._
 trait CategoryTests[F[_, _]] extends ComposeTests[F] {
   def laws: CategoryLaws[F]
 
-  def category[A, B, C, D](implicit
-    ArbFAB: Arbitrary[F[A, B]],
-    ArbFBC: Arbitrary[F[B, C]],
-    ArbFCD: Arbitrary[F[C, D]],
-    EqFAB: Eq[F[A, B]],
-    EqFAD: Eq[F[A, D]]
-  ): RuleSet =
+  def category[A, B, C, D](
+      implicit
+      ArbFAB: Arbitrary[F[A, B]],
+      ArbFBC: Arbitrary[F[B, C]],
+      ArbFCD: Arbitrary[F[C, D]],
+      EqFAB: Eq[F[A, B]],
+      EqFAD: Eq[F[A, D]]): RuleSet =
     new DefaultRuleSet(
       name = "category",
       parent = Some(compose[A, B, C, D]),

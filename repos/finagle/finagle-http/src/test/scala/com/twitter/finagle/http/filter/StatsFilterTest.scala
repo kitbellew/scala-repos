@@ -14,7 +14,9 @@ class StatsFilterTest extends FunSuite {
   test("increment stats") {
     val receiver = new InMemoryStatsReceiver
 
-    val filter = new StatsFilter(receiver) andThen new Service[Request, Response] {
+    val filter = new StatsFilter(receiver) andThen new Service[
+      Request,
+      Response] {
       def apply(request: Request): Future[Response] = {
         val response = request.response
         response.statusCode = 404

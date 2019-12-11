@@ -34,8 +34,7 @@ abstract class InputStream extends Closeable {
 
   def skip(n: Long): Long = {
     var skipped = 0
-    while (skipped < n && read() != -1)
-      skipped += 1
+    while (skipped < n && read() != -1) skipped += 1
     skipped
   }
 

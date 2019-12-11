@@ -24,13 +24,17 @@ import org.apache.hadoop.conf.Configuration
 import org.apache.spark.internal.Logging
 
 /**
- * A reader for reading write ahead log files written using
- * [[org.apache.spark.streaming.util.FileBasedWriteAheadLogWriter]]. This reads
- * the records (bytebuffers) in the log file sequentially and return them as an
- * iterator of bytebuffers.
- */
-private[streaming] class FileBasedWriteAheadLogReader(path: String, conf: Configuration)
-  extends Iterator[ByteBuffer] with Closeable with Logging {
+  * A reader for reading write ahead log files written using
+  * [[org.apache.spark.streaming.util.FileBasedWriteAheadLogWriter]]. This reads
+  * the records (bytebuffers) in the log file sequentially and return them as an
+  * iterator of bytebuffers.
+  */
+private[streaming] class FileBasedWriteAheadLogReader(
+    path: String,
+    conf: Configuration)
+    extends Iterator[ByteBuffer]
+    with Closeable
+    with Logging {
 
   private val instream = HdfsUtils.getInputStream(path, conf)
   private var closed = (instream == null) // the file may be deleted as we're opening the stream
@@ -57,8 +61,10 @@ private[streaming] class FileBasedWriteAheadLogReader(path: String, conf: Config
           close()
           false
         case e: IOException =>
-          logWarning("Error while trying to read data. If the file was deleted, " +
-            "this should be okay.", e)
+          logWarning(
+            "Error while trying to read data. If the file was deleted, " +
+              "this should be okay.",
+            e)
           close()
           if (HdfsUtils.checkFileExists(path, conf)) {
             // If file exists, this could be a legitimate error

@@ -1,6 +1,10 @@
 package scala.reflect.reify
 
-import scala.reflect.macros.{ReificationException, UnexpectedReificationException, TypecheckException}
+import scala.reflect.macros.{
+  ReificationException,
+  UnexpectedReificationException,
+  TypecheckException
+}
 import scala.reflect.macros.contexts.Context
 
 abstract class Taggers {
@@ -26,18 +30,28 @@ abstract class Taggers {
     AnyRefTpe -> nme.AnyRef,
     ObjectTpe -> nme.Object,
     NothingTpe -> nme.Nothing,
-    NullTpe -> nme.Null)
+    NullTpe -> nme.Null
+  )
 
   def materializeClassTag(tpe: Type): Tree = {
     val tagModule = ClassTagModule
-    materializeTag(EmptyTree, tpe, tagModule, {
-      val erasure = c.reifyRuntimeClass(tpe, concrete = true)
-      val factory = TypeApply(Select(Ident(tagModule), nme.apply), List(TypeTree(tpe)))
-      Apply(factory, List(erasure))
-    })
+    materializeTag(
+      EmptyTree,
+      tpe,
+      tagModule, {
+        val erasure = c.reifyRuntimeClass(tpe, concrete = true)
+        val factory =
+          TypeApply(Select(Ident(tagModule), nme.apply), List(TypeTree(tpe)))
+        Apply(factory, List(erasure))
+      }
+    )
   }
 
-  def materializeTypeTag(universe: Tree, mirror: Tree, tpe: Type, concrete: Boolean): Tree = {
+  def materializeTypeTag(
+      universe: Tree,
+      mirror: Tree,
+      tpe: Type,
+      concrete: Boolean): Tree = {
     val tagType = if (concrete) TypeTagClass else WeakTypeTagClass
     // what we need here is to compose a type Universe # TypeTag[$tpe]
     // to look for an implicit that conforms to this type
@@ -45,22 +59,41 @@ abstract class Taggers {
     // nor TypeRef(ApiUniverseClass.thisType, tagType, List(tpe)) won't fit here
     // scala> :type -v def foo: scala.reflect.api.Universe#TypeTag[Int] = ???
     // NullaryMethodType(TypeRef(pre = TypeRef(TypeSymbol(Universe)), TypeSymbol(TypeTag), args = List($tpe))))
-    val unaffiliatedTagTpe = TypeRef(ApiUniverseClass.typeConstructor, tagType, List(tpe))
-    val unaffiliatedTag = c.inferImplicitValue(unaffiliatedTagTpe, silent = true, withMacrosDisabled = true)
+    val unaffiliatedTagTpe =
+      TypeRef(ApiUniverseClass.typeConstructor, tagType, List(tpe))
+    val unaffiliatedTag = c.inferImplicitValue(
+      unaffiliatedTagTpe,
+      silent = true,
+      withMacrosDisabled = true)
     unaffiliatedTag match {
       case success if !success.isEmpty =>
-        Apply(Select(success, nme.in), List(mirror orElse mkDefaultMirrorRef(c.universe)(universe, c.callsiteTyper)))
+        Apply(
+          Select(success, nme.in),
+          List(
+            mirror orElse mkDefaultMirrorRef(c.universe)(
+              universe,
+              c.callsiteTyper)))
       case _ =>
         val tagModule = if (concrete) TypeTagModule else WeakTypeTagModule
-        materializeTag(universe, tpe, tagModule, c.reifyType(universe, mirror, tpe, concrete = concrete))
+        materializeTag(
+          universe,
+          tpe,
+          tagModule,
+          c.reifyType(universe, mirror, tpe, concrete = concrete))
     }
   }
 
-  private def materializeTag(prefix: Tree, tpe: Type, tagModule: Symbol, materializer: => Tree): Tree = {
+  private def materializeTag(
+      prefix: Tree,
+      tpe: Type,
+      tagModule: Symbol,
+      materializer: => Tree): Tree = {
     val result =
       tpe match {
         case coreTpe if coreTags contains coreTpe =>
-          val ref = if (tagModule.isTopLevel) Ident(tagModule) else Select(prefix, tagModule.name)
+          val ref =
+            if (tagModule.isTopLevel) Ident(tagModule)
+            else Select(prefix, tagModule.name)
           Select(ref, coreTags(coreTpe))
         case _ =>
           translatingReificationErrors(materializer)
@@ -70,7 +103,8 @@ abstract class Taggers {
   }
 
   def materializeExpr(universe: Tree, mirror: Tree, expr: Tree): Tree = {
-    val result = translatingReificationErrors(c.reifyTree(universe, mirror, expr))
+    val result = translatingReificationErrors(
+      c.reifyTree(universe, mirror, expr))
     try c.typecheck(result)
     catch { case terr @ TypecheckException(pos, msg) => failExpr(result, terr) }
   }
@@ -91,12 +125,18 @@ abstract class Taggers {
     val PolyType(_, MethodType(_, tagTpe)) = fun.tpe
     val tagModule = tagTpe.typeSymbol.companionSymbol
     if (c.compilerSettings.contains("-Xlog-implicits"))
-      c.echo(c.enclosingPosition, s"cannot materialize ${tagModule.name}[$tpe] as $result because:\n$reason")
-    c.abort(c.enclosingPosition, "No %s available for %s".format(tagModule.name, tpe))
+      c.echo(
+        c.enclosingPosition,
+        s"cannot materialize ${tagModule.name}[$tpe] as $result because:\n$reason")
+    c.abort(
+      c.enclosingPosition,
+      "No %s available for %s".format(tagModule.name, tpe))
   }
 
   private def failExpr(result: Tree, reason: Any): Nothing = {
     val Apply(_, expr :: Nil) = c.macroApplication
-    c.abort(c.enclosingPosition, s"Cannot materialize $expr as $result because:\n$reason")
+    c.abort(
+      c.enclosingPosition,
+      s"Cannot materialize $expr as $result because:\n$reason")
   }
 }

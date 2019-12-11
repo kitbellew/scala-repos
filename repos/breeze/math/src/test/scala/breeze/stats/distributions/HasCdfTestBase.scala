@@ -23,9 +23,9 @@ import org.scalatest.FunSuite
 import org.scalatest.prop.Checkers
 
 /**
- * TODO
- *
- * @author dlwh
+  * TODO
+  *
+  * @author dlwh
  **/
 trait HasCdfTestBase extends FunSuite with Checkers {
   type Distr <: Density[Double] with Rand[Double] with HasCdf
@@ -35,13 +35,14 @@ trait HasCdfTestBase extends FunSuite with Checkers {
     check(Prop.forAll { (distr: Distr) =>
       val samples = distr.sample(10000)
       val (low, high) = {
-        if(samples(0) < samples(1)) (samples(0), samples(1))
+        if (samples(0) < samples(1)) (samples(0), samples(1))
         else (samples(1), samples(0))
       }
 
-      val inRange = samples.count(x => x >= low && x <= high) / (samples.length * 1.0)
+      val inRange = samples
+        .count(x => x >= low && x <= high) / (samples.length * 1.0)
       val prob = distr.probability(low, high)
-      if(prob >= 0 && math.abs(inRange - prob) <= 2E-2) {
+      if (prob >= 0 && math.abs(inRange - prob) <= 2e-2) {
         true
       } else {
         println(inRange, prob)
@@ -57,7 +58,7 @@ trait HasCdfTestBase extends FunSuite with Checkers {
 
       val inRange = samples.count(x => x <= high) / (samples.length * 1.0)
       val prob = distr.cdf(high)
-      if(prob >= 0 && math.abs(inRange - prob) <= 2E-2) {
+      if (prob >= 0 && math.abs(inRange - prob) <= 2e-2) {
         true
       } else {
         println(inRange, prob)

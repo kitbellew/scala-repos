@@ -14,8 +14,10 @@ import org.scalatest.junit.JUnitRunner
 
 @Ignore
 @RunWith(classOf[JUnitRunner])
-final class HyperLogLogClientServerIntegrationSuite extends RedisClientServerIntegrationTest {
-  implicit def convertToChannelBuffer(s: String): ChannelBuffer = StringToChannelBuffer(s)
+final class HyperLogLogClientServerIntegrationSuite
+    extends RedisClientServerIntegrationTest {
+  implicit def convertToChannelBuffer(s: String): ChannelBuffer =
+    StringToChannelBuffer(s)
 
   test("PFADD should work correctly", ClientServerTest, RedisTest) {
     withRedisClient { client =>
@@ -34,7 +36,9 @@ final class HyperLogLogClientServerIntegrationSuite extends RedisClientServerInt
   test("PFMERGE should work correctly", ClientServerTest, RedisTest) {
     withRedisClient { client =>
       val setup = List(PFAdd("foo", List("bar")), PFAdd("bar", List("baz"))) map client
-      val pfMergeResult = Future.collect(setup).flatMap(_ => client(PFMerge("baz", List("foo", "bar"))))
+      val pfMergeResult = Future
+        .collect(setup)
+        .flatMap(_ => client(PFMerge("baz", List("foo", "bar"))))
       assert(Await.result(pfMergeResult) == OKStatusReply)
     }
   }

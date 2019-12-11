@@ -13,16 +13,22 @@ import java.lang.Long.toHexString
 import java.lang.Float.intBitsToFloat
 import java.lang.Double.longBitsToDouble
 import scala.reflect.internal.{Flags, Names}
-import scala.reflect.internal.pickling.{ PickleBuffer, PickleFormat }
+import scala.reflect.internal.pickling.{PickleBuffer, PickleFormat}
 
 object ShowPickled extends Names {
   import PickleFormat._
 
-  case class PickleBufferEntry(num: Int, startIndex: Int, tag: Int, bytes: Array[Byte]) {
+  case class PickleBufferEntry(
+      num: Int,
+      startIndex: Int,
+      tag: Int,
+      bytes: Array[Byte]) {
     def isName = tag == TERMname || tag == TYPEname
     def hasName = tag match {
-      case TYPEsym | ALIASsym | CLASSsym | MODULEsym | VALsym | EXTref | EXTMODCLASSref => true
-      case _                                                                            => false
+      case TYPEsym | ALIASsym | CLASSsym | MODULEsym | VALsym | EXTref |
+          EXTMODCLASSref =>
+        true
+      case _ => false
     }
     def readName =
       if (isName) new String(bytes, "UTF-8")
@@ -53,56 +59,56 @@ object ShowPickled extends Names {
   }
 
   def tag2string(tag: Int): String = tag match {
-    case TERMname       => "TERMname"
-    case TYPEname       => "TYPEname"
-    case NONEsym        => "NONEsym"
-    case TYPEsym        => "TYPEsym"
-    case ALIASsym       => "ALIASsym"
-    case CLASSsym       => "CLASSsym"
-    case MODULEsym      => "MODULEsym"
-    case VALsym         => "VALsym"
-    case EXTref         => "EXTref"
-    case EXTMODCLASSref => "EXTMODCLASSref"
-    case NOtpe          => "NOtpe"
-    case NOPREFIXtpe    => "NOPREFIXtpe"
-    case THIStpe        => "THIStpe"
-    case SINGLEtpe      => "SINGLEtpe"
-    case CONSTANTtpe    => "CONSTANTtpe"
-    case TYPEREFtpe     => "TYPEREFtpe"
-    case TYPEBOUNDStpe  => "TYPEBOUNDStpe"
-    case REFINEDtpe     => "REFINEDtpe"
-    case CLASSINFOtpe   => "CLASSINFOtpe"
-    case METHODtpe      => "METHODtpe"
-    case POLYtpe        => "POLYtpe"
+    case TERMname          => "TERMname"
+    case TYPEname          => "TYPEname"
+    case NONEsym           => "NONEsym"
+    case TYPEsym           => "TYPEsym"
+    case ALIASsym          => "ALIASsym"
+    case CLASSsym          => "CLASSsym"
+    case MODULEsym         => "MODULEsym"
+    case VALsym            => "VALsym"
+    case EXTref            => "EXTref"
+    case EXTMODCLASSref    => "EXTMODCLASSref"
+    case NOtpe             => "NOtpe"
+    case NOPREFIXtpe       => "NOPREFIXtpe"
+    case THIStpe           => "THIStpe"
+    case SINGLEtpe         => "SINGLEtpe"
+    case CONSTANTtpe       => "CONSTANTtpe"
+    case TYPEREFtpe        => "TYPEREFtpe"
+    case TYPEBOUNDStpe     => "TYPEBOUNDStpe"
+    case REFINEDtpe        => "REFINEDtpe"
+    case CLASSINFOtpe      => "CLASSINFOtpe"
+    case METHODtpe         => "METHODtpe"
+    case POLYtpe           => "POLYtpe"
     case IMPLICITMETHODtpe => "METHODtpe" // IMPLICITMETHODtpe no longer used.
-    case SUPERtpe       => "SUPERtpe"
-    case LITERALunit    => "LITERALunit"
-    case LITERALboolean => "LITERALboolean"
-    case LITERALbyte    => "LITERALbyte"
-    case LITERALshort   => "LITERALshort"
-    case LITERALchar    => "LITERALchar"
-    case LITERALint     => "LITERALint"
-    case LITERALlong    => "LITERALlong"
-    case LITERALfloat   => "LITERALfloat"
-    case LITERALdouble  => "LITERALdouble"
-    case LITERALstring  => "LITERALstring"
-    case LITERALnull    => "LITERALnull"
-    case LITERALclass   => "LITERALclass"
-    case LITERALenum    => "LITERALenum"
-    case SYMANNOT       => "SYMANNOT"
-    case CHILDREN       => "CHILDREN"
-    case ANNOTATEDtpe   => "ANNOTATEDtpe"
-    case ANNOTINFO      => "ANNOTINFO"
-    case ANNOTARGARRAY  => "ANNOTARGARRAY"
-    case EXISTENTIALtpe => "EXISTENTIALtpe"
-    case TREE           => "TREE"
-    case MODIFIERS      => "MODIFIERS"
+    case SUPERtpe          => "SUPERtpe"
+    case LITERALunit       => "LITERALunit"
+    case LITERALboolean    => "LITERALboolean"
+    case LITERALbyte       => "LITERALbyte"
+    case LITERALshort      => "LITERALshort"
+    case LITERALchar       => "LITERALchar"
+    case LITERALint        => "LITERALint"
+    case LITERALlong       => "LITERALlong"
+    case LITERALfloat      => "LITERALfloat"
+    case LITERALdouble     => "LITERALdouble"
+    case LITERALstring     => "LITERALstring"
+    case LITERALnull       => "LITERALnull"
+    case LITERALclass      => "LITERALclass"
+    case LITERALenum       => "LITERALenum"
+    case SYMANNOT          => "SYMANNOT"
+    case CHILDREN          => "CHILDREN"
+    case ANNOTATEDtpe      => "ANNOTATEDtpe"
+    case ANNOTINFO         => "ANNOTINFO"
+    case ANNOTARGARRAY     => "ANNOTARGARRAY"
+    case EXISTENTIALtpe    => "EXISTENTIALtpe"
+    case TREE              => "TREE"
+    case MODIFIERS         => "MODIFIERS"
 
     case _ => "***BAD TAG***(" + tag + ")"
   }
 
   /** Extremely regrettably, essentially copied from PickleBuffer.
-   */
+    */
   def readNat(data: Array[Byte], index: Int): Int = {
     var idx = index
     var result = 0L
@@ -111,7 +117,7 @@ object ShowPickled extends Names {
       b = data(idx).toLong
       idx += 1
       result = (result << 7) + (b & 0x7f)
-    } while((b & 0x80) != 0L)
+    } while ((b & 0x80) != 0L)
 
     result.toInt
   }
@@ -147,12 +153,13 @@ object ShowPickled extends Names {
       printSymbolRef()
       val pflags = buf.readLongNat()
       def printFlags(privateWithin: Option[Int]) = {
-        val accessBoundary = (
-          for (idx <- privateWithin) yield {
-            val s = entryList nameAt idx
-            idx + "(" + s + ")"
-          }
-        )
+        val accessBoundary =
+          (
+            for (idx <- privateWithin) yield {
+              val s = entryList nameAt idx
+              idx + "(" + s + ")"
+            }
+          )
         val flagString = {
           val arg1 = Flags.pickledToRawFlags(pflags)
           accessBoundary match {
@@ -169,8 +176,7 @@ object ShowPickled extends Names {
       if (buf.readIndex == end) {
         printFlags(None)
         printReadNat(x)
-      }
-      else {
+      } else {
         printFlags(Some(x))
         printTypeRef()
       }
@@ -202,7 +208,9 @@ object ShowPickled extends Names {
           if (tag == CLASSsym && (buf.readIndex < end)) printTypeRef()
         case EXTref | EXTMODCLASSref =>
           printNameRef()
-          if (buf.readIndex < end) { printSymbolRef() }
+          if (buf.readIndex < end) {
+            printSymbolRef()
+          }
         case THIStpe =>
           printSymbolRef()
         case SINGLEtpe =>
@@ -223,37 +231,37 @@ object ShowPickled extends Names {
           printTypeRef(); buf.until(end, printSymbolRef)
         case LITERALboolean =>
           out.print(if (buf.readLong(len) == 0L) " false" else " true")
-        case LITERALbyte    =>
+        case LITERALbyte =>
           out.print(" " + buf.readLong(len).toByte)
-        case LITERALshort   =>
+        case LITERALshort =>
           out.print(" " + buf.readLong(len).toShort)
-        case LITERALchar    =>
+        case LITERALchar =>
           out.print(" " + buf.readLong(len).toChar)
-        case LITERALint     =>
+        case LITERALint =>
           out.print(" " + buf.readLong(len).toInt)
-        case LITERALlong    =>
+        case LITERALlong =>
           out.print(" " + buf.readLong(len))
-        case LITERALfloat   =>
+        case LITERALfloat =>
           out.print(" " + intBitsToFloat(buf.readLong(len).toInt))
-        case LITERALdouble  =>
+        case LITERALdouble =>
           out.print(" " + longBitsToDouble(buf.readLong(len)))
-        case LITERALstring  =>
+        case LITERALstring =>
           printNameRef()
-        case LITERALenum    =>
+        case LITERALenum =>
           printSymbolRef()
-        case LITERALnull    =>
+        case LITERALnull =>
           out.print(" <null>")
-        case LITERALclass   =>
+        case LITERALclass =>
           printTypeRef()
-        case CHILDREN       =>
+        case CHILDREN =>
           printSymbolRef(); buf.until(end, printSymbolRef)
-        case SYMANNOT       =>
+        case SYMANNOT =>
           printSymbolRef(); printTypeRef(); buf.until(end, printAnnotArgRef)
-        case ANNOTATEDtpe   =>
+        case ANNOTATEDtpe =>
           printTypeRef(); buf.until(end, printAnnotInfoRef)
-        case ANNOTINFO      =>
+        case ANNOTINFO =>
           printTypeRef(); buf.until(end, printAnnotArgRef)
-        case ANNOTARGARRAY  =>
+        case ANNOTARGARRAY =>
           buf.until(end, printConstAnnotArgRef)
         case EXISTENTIALtpe =>
           printTypeRef(); buf.until(end, printSymbolRef)
@@ -262,9 +270,12 @@ object ShowPickled extends Names {
       }
       out.println()
       if (buf.readIndex != end) {
-        out.println("BAD ENTRY END: computed = %d, actual = %d, bytes = %s".format(
-          end, buf.readIndex, buf.bytes.slice(index(i), (end max buf.readIndex)).mkString(", ")
-        ))
+        out.println(
+          "BAD ENTRY END: computed = %d, actual = %d, bytes = %s".format(
+            end,
+            buf.readIndex,
+            buf.bytes.slice(index(i), (end max buf.readIndex)).mkString(", ")
+          ))
       }
     }
 

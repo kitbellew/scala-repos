@@ -17,7 +17,7 @@ class FutureBenchmark extends StdBenchAnnotations {
       if (n > 0) p.respond(RespondFn)
       if (n > 1) p.respond(RespondFn)
       if (n > 2) p.respond(RespondFn)
-      j+=1
+      j += 1
     }
   }
 
@@ -106,7 +106,9 @@ class FutureBenchmark extends StdBenchAnnotations {
 object FutureBenchmark {
   final val N = 10
 
-  private val RespondFn: Try[Unit] => Unit = { _ => () }
+  private val RespondFn: Try[Unit] => Unit = { _ =>
+    ()
+  }
 
   private val NumToSelect = 5
 
@@ -132,8 +134,12 @@ object FutureBenchmark {
 
   @State(Scope.Thread)
   class PromiseUnitState {
-    val FlatMapFn = { _: Unit => Future.Unit }
-    val MapFn = { _: Unit => "hi" }
+    val FlatMapFn = { _: Unit =>
+      Future.Unit
+    }
+    val MapFn = { _: Unit =>
+      "hi"
+    }
 
     var promise: Promise[Unit] = _
 

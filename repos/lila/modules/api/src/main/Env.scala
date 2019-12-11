@@ -57,7 +57,8 @@ final class Env(
       },
       timeToLive = 30.seconds,
       default = Net.AssetVersion,
-      logger = lila.log("assetVersion"))
+      logger = lila.log("assetVersion")
+    )
     def get = cache get true
   }
 
@@ -92,8 +93,7 @@ final class Env(
     pgnDump = pgnDump,
     analysisApi = analysisApi)
 
-  val userGameApi = new UserGameApi(
-    bookmarkApi = bookmarkApi)
+  val userGameApi = new UserGameApi(bookmarkApi = bookmarkApi)
 
   val roundApi = new RoundApiBalancer(
     api = new RoundApi(
@@ -119,9 +119,11 @@ final class Env(
 
   lazy val cli = new Cli(system.lilaBus, renderer)
 
-  system.actorOf(Props(new KamonPusher(
-    countUsers = () => userEnv.onlineUserIdMemo.count
-  )))
+  system.actorOf(
+    Props(
+      new KamonPusher(
+        countUsers = () => userEnv.onlineUserIdMemo.count
+      )))
 }
 
 object Env {

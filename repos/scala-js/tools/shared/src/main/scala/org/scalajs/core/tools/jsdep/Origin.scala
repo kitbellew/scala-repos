@@ -11,7 +11,7 @@ final class Origin(val moduleName: String, val configuration: String) {
   override def equals(that: Any): Boolean = that match {
     case that: Origin =>
       this.moduleName == that.moduleName &&
-      this.configuration == that.configuration
+        this.configuration == that.configuration
     case _ =>
       false
   }
@@ -32,7 +32,7 @@ object Origin {
   implicit object OriginJSONSerializer extends JSONSerializer[Origin] {
     def serialize(x: Origin): JSON = {
       new JSONObjBuilder()
-        .fld("moduleName",    x.moduleName)
+        .fld("moduleName", x.moduleName)
         .fld("configuration", x.configuration)
         .toJSON
     }
@@ -42,8 +42,8 @@ object Origin {
     def deserialize(x: JSON): Origin = {
       val obj = new JSONObjExtractor(x)
       new Origin(
-          obj.fld[String]("moduleName"),
-          obj.fld[String]("configuration"))
+        obj.fld[String]("moduleName"),
+        obj.fld[String]("configuration"))
     }
   }
 }

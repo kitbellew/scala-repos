@@ -1,19 +1,19 @@
 /*
- *  ____    ____    _____    ____    ___     ____ 
+ *  ____    ____    _____    ____    ___     ____
  * |  _ \  |  _ \  | ____|  / ___|  / _/    / ___|        Precog (R)
  * | |_) | | |_) | |  _|   | |     | |  /| | |  _         Advanced Analytics Engine for NoSQL Data
  * |  __/  |  _ <  | |___  | |___  |/ _| | | |_| |        Copyright (C) 2010 - 2013 SlamData, Inc.
  * |_|     |_| \_\ |_____|  \____|   /__/   \____|        All Rights Reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the 
- * GNU Affero General Public License as published by the Free Software Foundation, either version 
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Affero General Public License as published by the Free Software Foundation, either version
  * 3 of the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
  * the GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License along with this 
+ * You should have received a copy of the GNU Affero General Public License along with this
  * program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
@@ -36,7 +36,7 @@ import scala.collection.mutable.LinkedHashSet
 import scala.util.Random
 
 import scalaz._
-import scalaz.effect.IO 
+import scalaz.effect.IO
 import scalaz.syntax.comonad._
 import scalaz.std.anyVal._
 import scalaz.std.stream._
@@ -55,7 +55,8 @@ import SampleData._
 
 // TODO: mix in a trait rather than defining Table directly
 
-trait IndicesSpec[M[+_]] extends ColumnarTableModuleTestSupport[M]
+trait IndicesSpec[M[+_]]
+    extends ColumnarTableModuleTestSupport[M]
     with TableModuleSpec[M]
     with IndicesModule[M] { spec =>
 
@@ -74,20 +75,34 @@ trait IndicesSpec[M[+_]] extends ColumnarTableModuleTestSupport[M]
   private val groupId = new java.util.concurrent.atomic.AtomicInteger
   def newGroupId = groupId.getAndIncrement
 
-  class Table(slices: StreamT[M, Slice], size: TableSize) extends ColumnarTable(slices, size) {
+  class Table(slices: StreamT[M, Slice], size: TableSize)
+      extends ColumnarTable(slices, size) {
     import trans._
     def load(apiKey: APIKey, jtpe: JType) = sys.error("todo")
-    def sort(sortKey: TransSpec1, sortOrder: DesiredSortOrder, unique: Boolean = false) = sys.error("todo")
-    def groupByN(groupKeys: Seq[TransSpec1], valueSpec: TransSpec1, sortOrder: DesiredSortOrder = SortAscending, unique: Boolean = false): M[Seq[Table]] = sys.error("todo")
+    def sort(
+        sortKey: TransSpec1,
+        sortOrder: DesiredSortOrder,
+        unique: Boolean = false) = sys.error("todo")
+    def groupByN(
+        groupKeys: Seq[TransSpec1],
+        valueSpec: TransSpec1,
+        sortOrder: DesiredSortOrder = SortAscending,
+        unique: Boolean = false): M[Seq[Table]] = sys.error("todo")
   }
-  
+
   trait TableCompanion extends ColumnarTableCompanion {
-    def apply(slices: StreamT[M, Slice], size: TableSize) = new Table(slices, size)
+    def apply(slices: StreamT[M, Slice], size: TableSize) =
+      new Table(slices, size)
 
-    def singleton(slice: Slice) = new Table(slice :: StreamT.empty[M, Slice], ExactSize(1))
+    def singleton(slice: Slice) =
+      new Table(slice :: StreamT.empty[M, Slice], ExactSize(1))
 
-    def align(sourceLeft: Table, alignOnL: TransSpec1, sourceRight: Table, alignOnR: TransSpec1):
-        M[(Table, Table)] = sys.error("not implemented here")
+    def align(
+        sourceLeft: Table,
+        alignOnL: TransSpec1,
+        sourceRight: Table,
+        alignOnR: TransSpec1): M[(Table, Table)] =
+      sys.error("not implemented here")
   }
 
   object Table extends TableCompanion
@@ -102,7 +117,8 @@ trait IndicesSpec[M[+_]] extends ColumnarTableModuleTestSupport[M]
       val keySpecs = Array(groupkey("a"), groupkey("b"))
       val valSpec = valuekey("c")
 
-      val index: TableIndex = TableIndex.createFromTable(table, keySpecs, valSpec).copoint
+      val index: TableIndex =
+        TableIndex.createFromTable(table, keySpecs, valSpec).copoint
 
       index.getUniqueKeys(0).size must_== 0
       index.getSubTable(Array(0), Array(CString("a"))).size == ExactSize(0)
@@ -124,16 +140,26 @@ trait IndicesSpec[M[+_]] extends ColumnarTableModuleTestSupport[M]
 {"a": 1, "c": [666]}
 """
 
-    val table = fromJson(JParser.parseManyFromString(json).valueOr(throw _).toStream)
+    val table =
+      fromJson(JParser.parseManyFromString(json).valueOr(throw _).toStream)
 
     val keySpecs = Array(groupkey("a"), groupkey("b"))
     val valSpec = valuekey("c")
 
-    val index: TableIndex = TableIndex.createFromTable(table, keySpecs, valSpec).copoint
+    val index: TableIndex =
+      TableIndex.createFromTable(table, keySpecs, valSpec).copoint
 
     "determine unique groupkey values" in {
-      index.getUniqueKeys(0) must_== Set(CLong(1), CLong(2), CLong(3), CString("foo"))
-      index.getUniqueKeys(1) must_== Set(CLong(2), CLong(999), CString("bar"), CString(""))
+      index.getUniqueKeys(0) must_== Set(
+        CLong(1),
+        CLong(2),
+        CLong(3),
+        CString("foo"))
+      index.getUniqueKeys(1) must_== Set(
+        CLong(2),
+        CLong(999),
+        CString("bar"),
+        CString(""))
     }
 
     "determine unique groupkey sets" in {
@@ -147,7 +173,10 @@ trait IndicesSpec[M[+_]] extends ColumnarTableModuleTestSupport[M]
       )
     }
 
-    def subtableSet(index: TableIndex, ids: Seq[Int], vs: Seq[RValue]): Set[RValue] =
+    def subtableSet(
+        index: TableIndex,
+        ids: Seq[Int],
+        vs: Seq[RValue]): Set[RValue] =
       index.getSubTable(ids, vs).toJson.copoint.toSet.map(RValue.fromJValue)
 
     def test(vs: Seq[RValue], result: Set[RValue]): Unit =
@@ -181,13 +210,21 @@ trait IndicesSpec[M[+_]] extends ColumnarTableModuleTestSupport[M]
       test(Array(CString("foo"), CLong(999)), empty)
     }
 
-    val index1 = TableIndex.createFromTable(
-      table, Array(groupkey("a")), valuekey("c")
-    ).copoint
+    val index1 = TableIndex
+      .createFromTable(
+        table,
+        Array(groupkey("a")),
+        valuekey("c")
+      )
+      .copoint
 
-    val index2 = TableIndex.createFromTable(
-      table, Array(groupkey("b")), valuekey("c")
-    ).copoint
+    val index2 = TableIndex
+      .createFromTable(
+        table,
+        Array(groupkey("b")),
+        valuekey("c")
+      )
+      .copoint
 
     "efficiently combine to produce unions" in {
 
@@ -254,7 +291,7 @@ object IndicesSpec extends IndicesSpec[Need] {
   val yggConfig = new IdSourceConfig with ColumnarTableModuleConfig {
     val maxSliceSize = 10
     val smallSliceSize = 3
-    
+
     val idSource = new FreshAtomicIdSource
   }
 }

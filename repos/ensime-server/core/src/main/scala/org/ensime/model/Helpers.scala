@@ -8,47 +8,53 @@ import org.ensime.api._
 
 trait Helpers { self: Global =>
 
-  import rootMirror.{ EmptyPackage, RootPackage }
+  import rootMirror.{EmptyPackage, RootPackage}
 
   def applySynonyms(sym: Symbol): List[Symbol] = {
-    val members = if (sym.isModule || sym.isModuleClass || sym.isPackageObject) {
-      sym.tpe.members
-    } else if (sym.isClass || sym.isPackageClass || sym.isPackageObjectClass) {
-      sym.companionModule.tpe.members
-    } else { List.empty }
+    val members =
+      if (sym.isModule || sym.isModuleClass || sym.isPackageObject) {
+        sym.tpe.members
+      } else if (sym.isClass || sym.isPackageClass || sym.isPackageObjectClass) {
+        sym.companionModule.tpe.members
+      } else {
+        List.empty
+      }
     members.toList.filter { _.name.toString == "apply" }
   }
 
   def constructorSynonyms(sym: Symbol): List[Symbol] = {
-    val members = if (sym.isClass || sym.isPackageClass || sym.isPackageObjectClass) {
-      sym.tpe.members
-    } else if (sym.isModule || sym.isModuleClass || sym.isPackageObject) {
-      sym.companionClass.tpe.members
-    } else { List.empty }
+    val members =
+      if (sym.isClass || sym.isPackageClass || sym.isPackageObjectClass) {
+        sym.tpe.members
+      } else if (sym.isModule || sym.isModuleClass || sym.isPackageObject) {
+        sym.companionClass.tpe.members
+      } else {
+        List.empty
+      }
     members.toList.filter { _.isConstructor }
   }
 
   def isArrowType(tpe: Type): Boolean = {
     tpe match {
       case _: MethodType => true
-      case _: PolyType => true
-      case _ => false
+      case _: PolyType   => true
+      case _             => false
     }
   }
 
   def isNoParamArrowType(tpe: Type): Boolean = {
     tpe match {
       case t: MethodType => t.paramss.flatten.isEmpty
-      case t: PolyType => t.paramss.flatten.isEmpty
-      case t: Type => false
+      case t: PolyType   => t.paramss.flatten.isEmpty
+      case t: Type       => false
     }
   }
 
   def typeOrArrowTypeResult(tpe: Type): Type = {
     tpe match {
       case t: MethodType => t.finalResultType
-      case t: PolyType => t.finalResultType
-      case t: Type => t
+      case t: PolyType   => t.finalResultType
+      case t: Type       => t
     }
   }
 
@@ -56,17 +62,21 @@ trait Helpers { self: Global =>
     if (isArrowType(tpe)) {
       CompletionSignature(
         tpe.paramss.map { sect =>
-          sect.map { p => (p.name.toString, typeFullName(p.tpe, true)) }
+          sect.map { p =>
+            (p.name.toString, typeFullName(p.tpe, true))
+          }
         },
         typeFullName(tpe.finalResultType, true),
-        tpe.paramss.exists { sect => sect.exists(_.isImplicit) }
+        tpe.paramss.exists { sect =>
+          sect.exists(_.isImplicit)
+        }
       )
     } else CompletionSignature(List.empty, typeFullName(tpe, true), false)
   }
 
   /**
-   *  Return the string used to index a symbol
-   */
+    *  Return the string used to index a symbol
+    */
   def symbolIndexerName(sym: Symbol): String = {
     def typeIndexerName(sym: Symbol): String = {
       val owner = sym.owner
@@ -86,7 +96,8 @@ trait Helpers { self: Global =>
     } else {
       symbolIndexerName(sym.owner) + "." + sym.encodedName
     }
-    name.replaceAll("\\.package\\$\\$", ".")
+    name
+      .replaceAll("\\.package\\$\\$", ".")
       .replaceAll("\\.package\\$\\.", ".")
       .replaceAll("\\.package\\$(?!$)", ".")
       .replaceAll("\\.package\\.", ".")
@@ -94,8 +105,8 @@ trait Helpers { self: Global =>
   }
 
   /**
-   * Generate qualified name, without args postfix.
-   */
+    * Generate qualified name, without args postfix.
+    */
   def typeFullName(tpe: Type, withTpeArgs: Boolean = false): String = {
     def nestedClassName(sym: Symbol): String = {
       outerClass(sym) match {
@@ -118,10 +129,14 @@ trait Helpers { self: Global =>
     }
     if (withTpeArgs) {
       withoutArgs + (if (tpe.typeArgs.size > 0) {
-        "[" +
-          tpe.typeArgs.map(typeFullName(_, true)).mkString(", ") +
-          "]"
-      } else { "" })
+                       "[" +
+                         tpe.typeArgs
+                           .map(typeFullName(_, true))
+                           .mkString(", ") +
+                         "]"
+                     } else {
+                       ""
+                     })
     } else withoutArgs
   }
 
@@ -136,9 +151,11 @@ trait Helpers { self: Global =>
   }
 
   /**
-   * Returns the type, object, or package symbol uniquely identified by name.
-   */
-  protected def symbolByName(name: String, rootSymbol: Symbol = RootClass): Option[Symbol] = {
+    * Returns the type, object, or package symbol uniquely identified by name.
+    */
+  protected def symbolByName(
+      name: String,
+      rootSymbol: Symbol = RootClass): Option[Symbol] = {
     def segments(name: String): List[Name] = {
       val len = name.length
       if (len == 0) {
@@ -147,17 +164,19 @@ trait Helpers { self: Global =>
 
       val idx = name.indexWhere(ch => ch == '.' || ch == '$')
       idx match {
-        case 0 => throw new IllegalArgumentException("Empty symbol part")
+        case 0  => throw new IllegalArgumentException("Empty symbol part")
         case -1 =>
           // Last part of symbol, no '$' -> a class
           return List(newTypeName(name))
         case _ =>
       }
 
-      val (cur, div, rest) = (name.take(idx), name.charAt(idx), name.drop(idx + 1))
+      val (cur, div, rest) =
+        (name.take(idx), name.charAt(idx), name.drop(idx + 1))
       if (div == '.') {
         if (rest == "") {
-          throw new IllegalArgumentException("Unexpected period at end of symbol name")
+          throw new IllegalArgumentException(
+            "Unexpected period at end of symbol name")
         } else {
           // part ends with '.' : a package
           newTermName(cur) :: segments(rest)
@@ -183,9 +202,9 @@ trait Helpers { self: Global =>
     }
     try {
       sym match {
-        case NoSymbol => None
+        case NoSymbol    => None
         case sym: Symbol => Some(sym)
-        case _ => None
+        case _           => None
       }
     } catch {
       case e: Throwable => None
@@ -223,15 +242,17 @@ trait Helpers { self: Global =>
   }
 
   /**
-   * Return a Symbol representing a package if it exists given the package path (com.foo.bar)
-   * @param path The full package path (com.foo.bar)
-   * @return Some(packageSymbol) if `path` represents a valid package or None
-   */
+    * Return a Symbol representing a package if it exists given the package path (com.foo.bar)
+    * @param path The full package path (com.foo.bar)
+    * @return Some(packageSymbol) if `path` represents a valid package or None
+    */
   def packageSymFromPath(path: String): Option[Symbol] = {
     symbolByName(
       if (path.endsWith("$")) path else path + "$",
       RootPackage
-    ).find { s => s.hasPackageFlag }
+    ).find { s =>
+      s.hasPackageFlag
+    }
   }
 
   /*
@@ -244,12 +265,13 @@ trait Helpers { self: Global =>
     def filterAndSort(symbols: Iterable[Symbol]) = {
       val validSyms = symbols.filter { s =>
         s != EmptyPackage && !isRoot(s) &&
-          // This check is necessary to prevent infinite looping..
-          ((isRoot(s.owner) && isRoot(parent)) || (s.owner.fullName == parent.fullName))
+        // This check is necessary to prevent infinite looping..
+        ((isRoot(s.owner) && isRoot(parent)) || (s.owner.fullName == parent.fullName))
       }
 
       // the nameString operation is depressingly expensive - mapping to tuples first reduces the overhead.
-      val vsPairsAsList: List[(String, Symbol)] = validSyms.map(vs => (vs.nameString, vs))(scala.collection.breakOut)
+      val vsPairsAsList: List[(String, Symbol)] =
+        validSyms.map(vs => (vs.nameString, vs))(scala.collection.breakOut)
       vsPairsAsList.sortBy(_._1).map(_._2)
     }
 

@@ -2,18 +2,17 @@ package spire
 package math
 import spire.algebra.Order
 
-
 /**
- *  Interface for a merging strategy object.
- */
+  *  Interface for a merging strategy object.
+  */
 trait Merge extends Any {
-  def merge[@sp A: Order: ClassTag](a:Array[A], b:Array[A]): Array[A]
+  def merge[@sp A: Order: ClassTag](a: Array[A], b: Array[A]): Array[A]
 }
 
 /**
- * Abstract class that can be used to implement custom binary merges with e.g. special collision behavior or an ordering
- * that is not defined via an Order[T] typeclass
- */
+  * Abstract class that can be used to implement custom binary merges with e.g. special collision behavior or an ordering
+  * that is not defined via an Order[T] typeclass
+  */
 abstract class BinaryMerge {
 
   private[this] final def binarySearchB(ai: Int, b0: Int, b1: Int): Int = {
@@ -34,28 +33,28 @@ abstract class BinaryMerge {
   }
 
   /**
-   * Compare element ai of the first sequence with element bi of the second sequence
-   * @param ai an index into the first sequence
-   * @param bi an index into the second sequence
-   * @return -1 if a(ai) &lt; b(bi), 0 if a(ai) == b(bi), 1 if a(ai) &gt; b(bi)
-   */
+    * Compare element ai of the first sequence with element bi of the second sequence
+    * @param ai an index into the first sequence
+    * @param bi an index into the second sequence
+    * @return -1 if a(ai) &lt; b(bi), 0 if a(ai) == b(bi), 1 if a(ai) &gt; b(bi)
+    */
   def compare(ai: Int, bi: Int): Int
 
   /**
-   * Called when elements a(ai) and b(bi) are equal according to compare
-   * @param ai
-   * @param bi
-   */
+    * Called when elements a(ai) and b(bi) are equal according to compare
+    * @param ai
+    * @param bi
+    */
   def collision(ai: Int, bi: Int): Unit
 
   /**
-   * Called for a subsequence of elements of a that are not overlapping any element of b
-   */
+    * Called for a subsequence of elements of a that are not overlapping any element of b
+    */
   def fromA(a0: Int, a1: Int, bi: Int): Unit
 
   /**
-   * Called for a subsequence of elements of b that are not overlapping any element of a
-   */
+    * Called for a subsequence of elements of b that are not overlapping any element of a
+    */
   def fromB(ai: Int, b0: Int, b1: Int): Unit
 
   def merge0(a0: Int, a1: Int, b0: Int, b1: Int): Unit = {
@@ -90,16 +89,16 @@ abstract class BinaryMerge {
 }
 
 /**
- *  Merge that uses binary search to reduce the number of comparisons
- *
- *  This can be orders of magnitude quicker than a linear merge for types that have a relatively expensive comparison
- *  operation (e.g. Rational, BigInt, tuples) and will not be much slower than linear merge even in the worst case for
- *  types that have a very fast comparison (e.g. Int)
- */
+  *  Merge that uses binary search to reduce the number of comparisons
+  *
+  *  This can be orders of magnitude quicker than a linear merge for types that have a relatively expensive comparison
+  *  operation (e.g. Rational, BigInt, tuples) and will not be much slower than linear merge even in the worst case for
+  *  types that have a very fast comparison (e.g. Int)
+  */
 object BinaryMerge extends Merge {
 
   def merge[@sp T: Order: ClassTag](a: Array[T], b: Array[T]): Array[T] = {
-    new ArrayBinaryMerge(a,b).result
+    new ArrayBinaryMerge(a, b).result
   }
 
   /*
@@ -113,7 +112,10 @@ object BinaryMerge extends Merge {
     }
   }*/
 
-  private class ArrayBinaryMerge[@specialized T](a: Array[T], b: Array[T])(implicit o: Order[T], c: ClassTag[T]) extends BinaryMerge {
+  private class ArrayBinaryMerge[@specialized T](a: Array[T], b: Array[T])(
+      implicit o: Order[T],
+      c: ClassTag[T])
+      extends BinaryMerge {
 
     def compare(ai: Int, bi: Int): Int = o.compare(a(ai), b(bi))
 
@@ -143,11 +145,11 @@ object BinaryMerge extends Merge {
 }
 
 /**
- *  Simple linear merge
- */
+  *  Simple linear merge
+  */
 object LinearMerge extends Merge {
 
-  def merge[@sp T: Order : ClassTag](a: Array[T], b: Array[T]): Array[T] = {
+  def merge[@sp T: Order: ClassTag](a: Array[T], b: Array[T]): Array[T] = {
     val o = implicitly[Order[T]]
     val r = Array.ofDim[T](a.length + b.length)
     var ri = 0

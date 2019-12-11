@@ -1,15 +1,15 @@
 /**
- * Copyright (C) 2014-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2014-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package docs.stream
 
 import akka.NotUsed
 import akka.actor.Cancellable
-import akka.stream.{ ClosedShape, FlowShape }
+import akka.stream.{ClosedShape, FlowShape}
 import akka.stream.scaladsl._
 import akka.testkit.AkkaSpec
 
-import scala.concurrent.{ Promise, Future }
+import scala.concurrent.{Promise, Future}
 
 class FlowDocSpec extends AkkaSpec {
 
@@ -78,7 +78,10 @@ class FlowDocSpec extends AkkaSpec {
     import scala.concurrent.duration._
     case object Tick
 
-    val timer = Source.tick(initialDelay = 1.second, interval = 1.seconds, tick = () => Tick)
+    val timer = Source.tick(
+      initialDelay = 1.second,
+      interval = 1.seconds,
+      tick = () => Tick)
 
     val timerCancel: Cancellable = Sink.ignore.runWith(timer)
     timerCancel.cancel()
@@ -135,7 +138,8 @@ class FlowDocSpec extends AkkaSpec {
     source.to(Sink.foreach(println(_)))
 
     // Starting from a Sink
-    val sink: Sink[Int, NotUsed] = Flow[Int].map(_ * 2).to(Sink.foreach(println(_)))
+    val sink: Sink[Int, NotUsed] =
+      Flow[Int].map(_ * 2).to(Sink.foreach(println(_)))
     Source(1 to 6).to(sink)
 
     // Broadcast to a sink inline
@@ -149,13 +153,14 @@ class FlowDocSpec extends AkkaSpec {
   "various ways of transforming materialized values" in {
     import scala.concurrent.duration._
 
-    val throttler = Flow.fromGraph(GraphDSL.create(Source.tick(1.second, 1.second, "test")) { implicit builder =>
-      tickSource =>
-        import GraphDSL.Implicits._
-        val zip = builder.add(ZipWith[String, Int, Int](Keep.right))
-        tickSource ~> zip.in0
-        FlowShape(zip.in1, zip.out)
-    })
+    val throttler =
+      Flow.fromGraph(GraphDSL.create(Source.tick(1.second, 1.second, "test")) {
+        implicit builder => tickSource =>
+          import GraphDSL.Implicits._
+          val zip = builder.add(ZipWith[String, Int, Int](Keep.right))
+          tickSource ~> zip.in0
+          FlowShape(zip.in1, zip.out)
+      })
 
     //#flow-mat-combine
     // An source that can be signalled explicitly from the outside
@@ -172,8 +177,10 @@ class FlowDocSpec extends AkkaSpec {
     val r1: RunnableGraph[Promise[Option[Int]]] = source.via(flow).to(sink)
 
     // Simple selection of materialized values by using Keep.right
-    val r2: RunnableGraph[Cancellable] = source.viaMat(flow)(Keep.right).to(sink)
-    val r3: RunnableGraph[Future[Int]] = source.via(flow).toMat(sink)(Keep.right)
+    val r2: RunnableGraph[Cancellable] =
+      source.viaMat(flow)(Keep.right).to(sink)
+    val r3: RunnableGraph[Future[Int]] =
+      source.via(flow).toMat(sink)(Keep.right)
 
     // Using runWith will always give the materialized values of the stages added
     // by runWith() itself
@@ -212,8 +219,8 @@ class FlowDocSpec extends AkkaSpec {
 
     // The result of r11 can be also achieved by using the Graph API
     val r12: RunnableGraph[(Promise[Option[Int]], Cancellable, Future[Int])] =
-      RunnableGraph.fromGraph(GraphDSL.create(source, flow, sink)((_, _, _)) { implicit builder =>
-        (src, f, dst) =>
+      RunnableGraph.fromGraph(GraphDSL.create(source, flow, sink)((_, _, _)) {
+        implicit builder => (src, f, dst) =>
           import GraphDSL.Implicits._
           src ~> f ~> dst
           ClosedShape
@@ -229,7 +236,10 @@ class FlowDocSpec extends AkkaSpec {
     val flow = Flow[Int].map(_ * 2).filter(_ > 500)
     val fused = Fusing.aggressive(flow)
 
-    Source.fromIterator { () => Iterator from 0 }
+    Source
+      .fromIterator { () =>
+        Iterator from 0
+      }
       .via(fused)
       .take(1000)
     //#explicit-fusing
@@ -238,7 +248,8 @@ class FlowDocSpec extends AkkaSpec {
   "defining asynchronous boundaries" in {
     //#flow-async
     Source(List(1, 2, 3))
-      .map(_ + 1).async
+      .map(_ + 1)
+      .async
       .map(_ * 2)
       .to(Sink.ignore)
     //#flow-async

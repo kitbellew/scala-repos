@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.jasminetest
 
 import scala.scalajs.js
@@ -58,8 +57,8 @@ object TestSuiteContext {
 
   def hasTag(tag: String): Boolean = tags.contains(tag)
 
-  private class IgnoredContext(
-      baseContext: TestSuiteContext) extends TestSuiteContext {
+  private class IgnoredContext(baseContext: TestSuiteContext)
+      extends TestSuiteContext {
     def describe(title: String)(test: => Unit): Unit =
       baseContext.xdescribe(title)(test)
     def it(title: String)(test: => Unit): Unit =

@@ -8,10 +8,9 @@ import org.jetbrains.plugins.scala.lang.lexer.ScalaTokenTypes
 import org.jetbrains.plugins.scala.lang.parser.parsing.builder.ScalaPsiBuilder
 
 /**
- * @author Alexander Podkhalyuzin
- *   Date: 29.02.2008
- */
-
+  * @author Alexander Podkhalyuzin
+  *   Date: 29.02.2008
+  */
 /*
  * Pattern2 ::= varid '@' Pattern3
  *            | _ '@' Pattern3
@@ -23,14 +22,15 @@ object Pattern2 {
 
     def isVarId = {
       val text = builder.getTokenText
-      text.substring(0, 1).toLowerCase != text.substring(0, 1) || 
-              text.apply(0) == '`' && text.apply(text.length - 1) == '`'
+      text.substring(0, 1).toLowerCase != text.substring(0, 1) ||
+      text.apply(0) == '`' && text.apply(text.length - 1) == '`'
     }
 
     def testForId = {
       val m = builder.mark
       builder.advanceLexer()
-      val s = Set(ScalaTokenTypes.tAT,
+      val s = Set(
+        ScalaTokenTypes.tAT,
         ScalaTokenTypes.tIDENTIFIER,
         ScalaTokenTypes.tDOT,
         ScalaTokenTypes.tLPARENTHESIS)

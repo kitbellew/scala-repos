@@ -7,7 +7,7 @@ import StringUtilities.nonEmpty
 import org.scalajs.core.tools.jsdep.JSDependency
 
 /** Something JavaScript related a project may depend on. Either a JavaScript
- *  module/library, or the DOM at runtime. */
+  *  module/library, or the DOM at runtime. */
 sealed trait AbstractJSDep {
   def configurations: Option[String]
 
@@ -15,8 +15,9 @@ sealed trait AbstractJSDep {
 
   def %(configurations: Configuration): AbstractJSDep = %(configurations.name)
   def %(configurations: String): AbstractJSDep = {
-    require(this.configurations.isEmpty,
-        "Configurations already specified for jsModule " + this)
+    require(
+      this.configurations.isEmpty,
+      "Configurations already specified for jsModule " + this)
     nonEmpty(configurations, "Configurations")
     withConfigs(Some(configurations))
   }
@@ -40,9 +41,8 @@ sealed trait JSModuleID extends AbstractJSDep {
 }
 
 /** A JavaScript module that resides inside a jar (probably webjar) */
-final case class JarJSModuleID(
-    module: ModuleID,
-    jsDep: JSDependency) extends JSModuleID {
+final case class JarJSModuleID(module: ModuleID, jsDep: JSDependency)
+    extends JSModuleID {
 
   def configurations: Option[String] = module.configurations
 
@@ -58,10 +58,11 @@ object JarJSModuleID {
 }
 
 /** A JavaScript module that we depend on, but is provided externally or
- *  by the project itself */
+  *  by the project itself */
 final case class ProvidedJSModuleID(
     jsDep: JSDependency,
-    configurations: Option[String]) extends JSModuleID {
+    configurations: Option[String])
+    extends JSModuleID {
 
   protected def withConfigs(configs: Option[String]): JSModuleID =
     copy(configurations = configs)
@@ -74,8 +75,8 @@ object ProvidedJSModuleID {
     ProvidedJSModuleID(new JSDependency(name, Nil), configurations)
 }
 
-final case class RuntimeDOMDep(
-    configurations: Option[String]) extends AbstractJSDep {
+final case class RuntimeDOMDep(configurations: Option[String])
+    extends AbstractJSDep {
 
   protected def withConfigs(configs: Option[String]): RuntimeDOMDep =
     copy(configurations = configs)

@@ -7,18 +7,19 @@ package org.scalajs.core.compiler
 
 import scala.tools.nsc._
 import scala.tools.nsc.plugins.{
-  Plugin => NscPlugin, PluginComponent => NscPluginComponent
+  Plugin => NscPlugin,
+  PluginComponent => NscPluginComponent
 }
-import scala.collection.{ mutable, immutable }
+import scala.collection.{mutable, immutable}
 
-import java.net.{ URI, URISyntaxException }
+import java.net.{URI, URISyntaxException}
 
 import org.scalajs.core.ir.Trees
 
 /** Main entry point for the Scala.js compiler plugin
- *
- *  @author Sébastien Doeraene
- */
+  *
+  *  @author Sébastien Doeraene
+  */
 class ScalaJSPlugin(val global: Global) extends NscPlugin {
   import global._
 
@@ -28,8 +29,10 @@ class ScalaJSPlugin(val global: Global) extends NscPlugin {
     if (global.forScaladoc) {
       List[NscPluginComponent](PrepInteropComponent)
     } else {
-      List[NscPluginComponent](PreTyperComponentComponent, PrepInteropComponent,
-          GenCodeComponent)
+      List[NscPluginComponent](
+        PreTyperComponentComponent,
+        PrepInteropComponent,
+        GenCodeComponent)
     }
   }
 
@@ -56,11 +59,11 @@ class ScalaJSPlugin(val global: Global) extends NscPlugin {
   }
 
   /** Checks and registers module exports on the symbol.
-   *  This bridge allows other plugins (such as ScalaJSJUnitPlugin) to register
-   *  new modules for export between jsinterop and jscode phases. It is meant to
-   *  be accessed using reflection. The calling code still must insert the
-   *  `@JSExport` annotation to the module.
-   */
+    *  This bridge allows other plugins (such as ScalaJSJUnitPlugin) to register
+    *  new modules for export between jsinterop and jscode phases. It is meant to
+    *  be accessed using reflection. The calling code still must insert the
+    *  `@JSExport` annotation to the module.
+    */
   def registerModuleExports(sym: Symbol): Unit =
     PrepInteropComponent.registerModuleExports(sym)
 
@@ -89,7 +92,8 @@ class ScalaJSPlugin(val global: Global) extends NscPlugin {
       ScalaJSPlugin.this.generatedJSAST(clDefs)
   }
 
-  override def processOptions(options: List[String],
+  override def processOptions(
+      options: List[String],
       error: String => Unit): Unit = {
     import ScalaJSOptions.URIMap
     import scalaJSOpts._
@@ -114,17 +118,19 @@ class ScalaJSPlugin(val global: Global) extends NscPlugin {
           }
         }
 
-      // The following options are deprecated (how do we show this to the user?)
+        // The following options are deprecated (how do we show this to the user?)
       } else if (option.startsWith("relSourceMap:")) {
         val uriStr = option.stripPrefix("relSourceMap:")
-        try { relSourceMap = Some(new URI(uriStr)) }
-        catch {
+        try {
+          relSourceMap = Some(new URI(uriStr))
+        } catch {
           case e: URISyntaxException => error(s"$uriStr is not a valid URI")
         }
       } else if (option.startsWith("absSourceMap:")) {
         val uriStr = option.stripPrefix("absSourceMap:")
-        try { absSourceMap = Some(new URI(uriStr)) }
-        catch {
+        try {
+          absSourceMap = Some(new URI(uriStr))
+        } catch {
           case e: URISyntaxException => error(s"$uriStr is not a valid URI")
         }
       } else {
@@ -134,10 +140,12 @@ class ScalaJSPlugin(val global: Global) extends NscPlugin {
 
     // Verify constraints
     if (_sourceURIMaps.nonEmpty && relSourceMap.isDefined)
-      error("You may not use mapSourceURI and relSourceMap together. " +
+      error(
+        "You may not use mapSourceURI and relSourceMap together. " +
           "Use another mapSourceURI option without second URI.")
     else if (_sourceURIMaps.nonEmpty && absSourceMap.isDefined)
-      error("You may not use mapSourceURI and absSourceMap together. " +
+      error(
+        "You may not use mapSourceURI and absSourceMap together. " +
           "Use another mapSourceURI option.")
     else if (absSourceMap.isDefined && relSourceMap.isEmpty)
       error("absSourceMap requires the use of relSourceMap")

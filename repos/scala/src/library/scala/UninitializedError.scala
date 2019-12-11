@@ -6,13 +6,11 @@
 **                          |/                                          **
 \*                                                                      */
 
-
-
 package scala
 
 /** This class represents uninitialized variable/value errors.
- *
- *  @author  Martin Odersky
- *  @since   2.5
- */
+  *
+  *  @author  Martin Odersky
+  *  @since   2.5
+  */
 final class UninitializedError extends RuntimeException("uninitialized value")

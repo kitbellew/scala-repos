@@ -1,9 +1,4 @@
-
-
-
 import scala.collection._
-
-
 
 object Test {
 

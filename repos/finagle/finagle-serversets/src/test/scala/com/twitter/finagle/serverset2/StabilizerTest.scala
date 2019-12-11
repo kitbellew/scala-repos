@@ -15,9 +15,9 @@ class StabilizerTest extends FunSuite {
     val addr1 = Address(1)
     val addr2 = Address(2)
     val addr3 = Address(3)
-    val waddr1 = WeightedAddress(addr1, 1D)
-    val waddr2 = WeightedAddress(addr1, 2D)
-    val waddr3 = WeightedAddress(addr2, 2D)
+    val waddr1 = WeightedAddress(addr1, 1d)
+    val waddr2 = WeightedAddress(addr1, 2d)
+    val waddr3 = WeightedAddress(addr2, 2d)
 
     val va = Var[Addr](Addr.Pending)
     val removalEvent = Event[Unit]()
@@ -49,8 +49,9 @@ class StabilizerTest extends FunSuite {
     assertStabilized(Addr.Pending)
   }
 
-  test("Additions are reflected immediately; "+
-    "removes are reflected after at least one removalEpoch") (new Ctx {
+  test(
+    "Additions are reflected immediately; " +
+      "removes are reflected after at least one removalEpoch")(new Ctx {
 
     setVa(Addr.Bound(addr1))
     assertStabilized(Addr.Bound(addr1))
@@ -69,7 +70,7 @@ class StabilizerTest extends FunSuite {
     assertStabilized(Addr.Neg)
   })
 
-  test("Pending resolutions don't tick out successful results") (new Ctx {
+  test("Pending resolutions don't tick out successful results")(new Ctx {
     setVa(Addr.Bound(addr1))
     assertStabilized(Addr.Bound(addr1))
     setVa(Addr.Bound(addr2))
@@ -88,8 +89,7 @@ class StabilizerTest extends FunSuite {
     assertStabilized(Addr.Bound(addr1, addr2))
   })
 
-
-  test("Removes are delayed while failures are observed") (new Ctx {
+  test("Removes are delayed while failures are observed")(new Ctx {
     setVa(Addr.Bound(addr1, addr2))
     assertStabilized(Addr.Bound(addr1, addr2))
 
@@ -120,30 +120,30 @@ class StabilizerTest extends FunSuite {
     assertStabilized(Addr.Bound(addr1))
   })
 
-  test("Removes are delayed while failures are observed on empty serversets") (new Ctx {
-    setVa(Addr.Neg)
-    assertStabilized(Addr.Neg)
+  test("Removes are delayed while failures are observed on empty serversets")(
+    new Ctx {
+      setVa(Addr.Neg)
+      assertStabilized(Addr.Neg)
 
-    pulse()
-    setVa(Addr.Failed(new Exception))
+      pulse()
+      setVa(Addr.Failed(new Exception))
 
-    assertStabilized(Addr.Neg)
+      assertStabilized(Addr.Neg)
 
-    pulse()
-    assertStabilized(Addr.Neg)
+      pulse()
+      assertStabilized(Addr.Neg)
 
-    pulse(); pulse(); pulse()
-    assertStabilized(Addr.Neg)
+      pulse(); pulse(); pulse()
+      assertStabilized(Addr.Neg)
 
-    setVa(Addr.Bound(addr1))
-    pulse()
-    assertStabilized(Addr.Bound(addr1))
-  })
+      setVa(Addr.Bound(addr1))
+      pulse()
+      assertStabilized(Addr.Bound(addr1))
+    })
 
-  test("Reflect additions while addrs are unstable") (new Ctx {
+  test("Reflect additions while addrs are unstable")(new Ctx {
     setVa(Addr.Bound(addr1, addr2))
     assertStabilized(Addr.Bound(addr1, addr2))
-
 
     pulse()
     setVa(Addr.Failed(new Exception))
@@ -159,7 +159,7 @@ class StabilizerTest extends FunSuite {
     pulse()
   })
 
-  test("Merge WeightedSocketAddresses") (new Ctx {
+  test("Merge WeightedSocketAddresses")(new Ctx {
     setVa(Addr.Bound(waddr1, addr2, addr3))
     assertStabilized(Addr.Bound(waddr1, addr2, addr3))
 
@@ -181,7 +181,7 @@ class StabilizerTest extends FunSuite {
     assertStabilized(Addr.Bound(waddr2, waddr3))
   })
 
-  test("Adds and removes are batched by batchEpoch") (new Ctx {
+  test("Adds and removes are batched by batchEpoch")(new Ctx {
     Time.withCurrentTimeFrozen { timeControl =>
       timeControl.advance(30.seconds)
       // update requires batchEpoch.notify
@@ -222,25 +222,27 @@ class StabilizerTest extends FunSuite {
     }
   })
 
-  test("Adds are published immediately when >1 epoch has passed since last update") (new Ctx {
-    Time.withCurrentTimeFrozen { timeControl =>
-      timeControl.advance(30.seconds)
-      va() = Addr.Bound(addr1)
-      assertBatchStabilized(Addr.Bound(addr1))
+  test(
+    "Adds are published immediately when >1 epoch has passed since last update")(
+    new Ctx {
+      Time.withCurrentTimeFrozen { timeControl =>
+        timeControl.advance(30.seconds)
+        va() = Addr.Bound(addr1)
+        assertBatchStabilized(Addr.Bound(addr1))
 
-      va() = Addr.Bound(addr1, addr2)
-      assertBatchStabilized(Addr.Bound(addr1))
-      timeControl.advance(30.seconds)
-      batchEvent.notify(())
-      assertBatchStabilized(Addr.Bound(addr1, addr2))
+        va() = Addr.Bound(addr1, addr2)
+        assertBatchStabilized(Addr.Bound(addr1))
+        timeControl.advance(30.seconds)
+        batchEvent.notify(())
+        assertBatchStabilized(Addr.Bound(addr1, addr2))
 
-      timeControl.advance(30.seconds)
-      va() = Addr.Bound(addr1, addr2, addr3)
-      assertBatchStabilized(Addr.Bound(addr1, addr2, addr3))
-    }
-  })
+        timeControl.advance(30.seconds)
+        va() = Addr.Bound(addr1, addr2, addr3)
+        assertBatchStabilized(Addr.Bound(addr1, addr2, addr3))
+      }
+    })
 
-  test("First update does not wait for epoch to turn") (new Ctx {
+  test("First update does not wait for epoch to turn")(new Ctx {
     Time.withCurrentTimeFrozen { timeControl =>
       timeControl.advance(1.seconds)
       va() = Addr.Bound(addr1)

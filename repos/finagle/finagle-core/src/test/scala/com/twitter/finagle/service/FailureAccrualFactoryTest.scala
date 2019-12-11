@@ -2,7 +2,13 @@ package com.twitter.finagle.service
 
 import com.twitter.conversions.time._
 import com.twitter.finagle.stats.{NullStatsReceiver, InMemoryStatsReceiver}
-import com.twitter.finagle.{Status, ServiceFactory, Service, ServiceFactoryWrapper, Stack}
+import com.twitter.finagle.{
+  Status,
+  ServiceFactory,
+  Service,
+  ServiceFactoryWrapper,
+  Stack
+}
 import com.twitter.finagle.param
 import com.twitter.finagle.service.exp.FailureAccrualPolicy
 import com.twitter.util._
@@ -24,14 +30,16 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
   val markDeadFor = Backoff.equalJittered(5.seconds, 60.seconds)
   val markDeadForList = markDeadFor.take(6)
 
-  def consecutiveFailures = FailureAccrualPolicy.consecutiveFailures(3, markDeadFor)
+  def consecutiveFailures =
+    FailureAccrualPolicy.consecutiveFailures(3, markDeadFor)
 
   class Helper(failureAccrualPolicy: FailureAccrualPolicy) {
     val statsReceiver = new InMemoryStatsReceiver()
     val underlyingService = mock[Service[Int, Int]]
     when(underlyingService.close(any[Time])) thenReturn Future.Done
     when(underlyingService.status) thenReturn Status.Open
-    when(underlyingService(Matchers.anyInt)) thenReturn Future.exception(new Exception)
+    when(underlyingService(Matchers.anyInt)) thenReturn Future.exception(
+      new Exception)
 
     val underlying = mock[ServiceFactory[Int, Int]]
     when(underlying.close(any[Time])) thenReturn Future.Done
@@ -41,7 +49,11 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     val timer = new MockTimer
 
     val factory = new FailureAccrualFactory[Int, Int](
-      underlying, failureAccrualPolicy, timer, statsReceiver, "test")
+      underlying,
+      failureAccrualPolicy,
+      timer,
+      statsReceiver,
+      "test")
     val service = Await.result(factory())
     verify(underlying)()
   }
@@ -80,7 +92,8 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     }
     val classifier: ResponseClassifier = {
       case ReqRep(in: Int, Throw(_)) if in < 0 => ResponseClass.Success
-      case ReqRep(_, Throw(ex)) if ex.getMessage.toInt == 10 => ResponseClass.Success
+      case ReqRep(_, Throw(ex)) if ex.getMessage.toInt == 10 =>
+        ResponseClass.Success
     }
     val stats = new InMemoryStatsReceiver()
     val faf = new FailureAccrualFactory[Int, Int](
@@ -101,7 +114,8 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     assert(stats.counter("removals")() == 1)
   }
 
-  test("a failing service should enter the probing state after the markDeadFor duration") {
+  test(
+    "a failing service should enter the probing state after the markDeadFor duration") {
     val h = new Helper(consecutiveFailures)
     import h._
 
@@ -146,7 +160,6 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     import h._
 
     Time.withCurrentTimeFrozen { timeControl =>
-
       when(underlyingService(456)) thenReturn Future.value(654)
 
       // 3 failures must occur before the service is initially removed,
@@ -198,7 +211,8 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     val underlyingService = mock[Service[Int, Int]]
     when(underlyingService.close(any[Time])) thenReturn Future.Done
     when(underlyingService.status) thenReturn Status.Open
-    when(underlyingService(Matchers.anyInt)) thenReturn Future.exception(new Exception)
+    when(underlyingService(Matchers.anyInt)) thenReturn Future.exception(
+      new Exception)
 
     val underlying = mock[ServiceFactory[Int, Int]]
     when(underlying.close(any[Time])) thenReturn Future.Done
@@ -208,12 +222,15 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     val timer = new MockTimer
 
     val factory = new FailureAccrualFactory[Int, Int](
-      underlying, FailureAccrualPolicy.consecutiveFailures(3, markDeadFor), timer, statsReceiver, "test")
+      underlying,
+      FailureAccrualPolicy.consecutiveFailures(3, markDeadFor),
+      timer,
+      statsReceiver,
+      "test")
     val service = Await.result(factory())
     verify(underlying)()
 
     Time.withCurrentTimeFrozen { timeControl =>
-
       // 3 failures must occur before the service is initially removed,
       // then one failure after each re-instating
       intercept[Exception] {
@@ -282,7 +299,6 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     import h._
 
     Time.withCurrentTimeFrozen { timeControl =>
-
       when(underlyingService(456)) thenReturn Future.value(654)
 
       // 3 failures must occur before the service is initially removed,
@@ -358,8 +374,9 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     }
   }
 
-  test("a failing service should only be able to accept one request after " +
-   "being revived, then multiple requests after it successfully completes") {
+  test(
+    "a failing service should only be able to accept one request after " +
+      "being revived, then multiple requests after it successfully completes") {
     val h = new Helper(consecutiveFailures)
     import h._
 
@@ -430,7 +447,8 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     }
   }
 
-  test("a failing service should reset failure counters after an individual success") {
+  test(
+    "a failing service should reset failure counters after an individual success") {
     val h = new Helper(consecutiveFailures)
     import h._
 
@@ -510,7 +528,6 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     import h._
 
     Time.withCurrentTimeFrozen { tc =>
-
       // Fail a request to mark dead
       intercept[Exception] {
         Await.result(service(123))
@@ -546,12 +563,18 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     when(underlying()) thenReturn Future.value(underlyingService)
 
     val factory = new FailureAccrualFactory[Int, Int](
-      underlying, FailureAccrualPolicy.consecutiveFailures(3, FailureAccrualFactory.jitteredBackoff), new MockTimer, statsReceiver, "test")
+      underlying,
+      FailureAccrualPolicy
+        .consecutiveFailures(3, FailureAccrualFactory.jitteredBackoff),
+      new MockTimer,
+      statsReceiver,
+      "test")
     val service = Await.result(factory())
     verify(underlying)()
   }
 
-  test("a healthy service should [service] pass through underlying availability") {
+  test(
+    "a healthy service should [service] pass through underlying availability") {
     val h = new HealthyServiceHelper
     import h._
 
@@ -560,7 +583,8 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     assert(!service.isAvailable)
   }
 
-  test("a healthy service should [factory] pass through underlying availability") {
+  test(
+    "a healthy service should [factory] pass through underlying availability") {
     val h = new HealthyServiceHelper
     import h._
 
@@ -585,7 +609,12 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     val exc = new Exception("i broked :-(")
     when(underlying()) thenReturn Future.exception(exc)
     val factory = new FailureAccrualFactory[Int, Int](
-      underlying, FailureAccrualPolicy.consecutiveFailures(3, FailureAccrualFactory.jitteredBackoff), new MockTimer, statsReceiver, "test")
+      underlying,
+      FailureAccrualPolicy
+        .consecutiveFailures(3, FailureAccrualFactory.jitteredBackoff),
+      new MockTimer,
+      statsReceiver,
+      "test")
   }
 
   test("a broken factory should fail after the given number of tries") {
@@ -615,11 +644,15 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
         failureAccrualPolicy: FailureAccrualPolicy,
         timer: Timer,
         label: String)
-      extends FailureAccrualFactory[Int, Int](
-        underlying, failureAccrualPolicy, timer, NullStatsReceiver, label) {
+        extends FailureAccrualFactory[Int, Int](
+          underlying,
+          failureAccrualPolicy,
+          timer,
+          NullStatsReceiver,
+          label) {
       override def isSuccess(reqRep: ReqRep): Boolean = {
         reqRep.response match {
-          case Throw(_) => false
+          case Throw(_)  => false
           case Return(x) => x != 321
         }
       }
@@ -637,7 +670,10 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
 
     val timer = new MockTimer
     val factory = new CustomizedFailureAccrualFactory(
-      underlying, FailureAccrualPolicy.consecutiveFailures(3, Backoff.const(5.seconds)), timer, "test")
+      underlying,
+      FailureAccrualPolicy.consecutiveFailures(3, Backoff.const(5.seconds)),
+      timer,
+      "test")
     val service = Await.result(factory())
     verify(underlying)()
   }
@@ -675,7 +711,8 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
   test("param") {
     import FailureAccrualFactory._
 
-    val failureAccrualPolicy = FailureAccrualPolicy.consecutiveFailures(42, Backoff.const(10.seconds))
+    val failureAccrualPolicy =
+      FailureAccrualPolicy.consecutiveFailures(42, Backoff.const(10.seconds))
 
     val p1: Param = Param.Configured(() => failureAccrualPolicy)
     val p2: Param = Replaced(_ => ServiceFactoryWrapper.identity)
@@ -683,58 +720,66 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
 
     assert((p1 match {
       case Param.Configured(x) => x()
-      case x => throw new MatchError(x)
+      case x                   => throw new MatchError(x)
     }) == failureAccrualPolicy)
 
     assert((p2 match {
       case Param.Replaced(f) => f(null)
-      case x => throw new MatchError(x)
+      case x                 => throw new MatchError(x)
     }) == ServiceFactoryWrapper.identity)
 
     assert(p3 match {
       case Disabled => true
-      case x => throw new MatchError(x)
+      case x        => throw new MatchError(x)
     })
 
     val ps1: Stack.Params = Stack.Params.empty + p1
     assert(ps1.contains[Param])
     assert((ps1[Param] match {
       case Param.Configured(x) => x()
-      case x => throw new MatchError(x)
+      case x                   => throw new MatchError(x)
     }) == failureAccrualPolicy)
 
     val ps2: Stack.Params = Stack.Params.empty + p2 + p1
     assert(ps2.contains[Param])
     assert((ps2[Param] match {
       case Param.Configured(x) => x()
-      case x => throw new MatchError(x)
+      case x                   => throw new MatchError(x)
     }) == failureAccrualPolicy)
 
     val ps3: Stack.Params = Stack.Params.empty + p1 + p2 + p3
     assert(ps3.contains[Param])
     assert(ps3[Param] match {
       case Disabled => true
-      case x => throw new MatchError(x)
+      case x        => throw new MatchError(x)
     })
   }
 
   test("module") {
     val h = new Helper(consecutiveFailures)
     val s: Stack[ServiceFactory[Int, Int]] =
-      FailureAccrualFactory.module[Int, Int].toStack(Stack.Leaf(Stack.Role("Service"), h.underlying))
+      FailureAccrualFactory
+        .module[Int, Int]
+        .toStack(Stack.Leaf(Stack.Role("Service"), h.underlying))
 
     val ps: Stack.Params = Stack.Params.empty + param.Stats(h.statsReceiver)
 
     // disabled
     Await.ready(s.make(ps + FailureAccrualFactory.Disabled).toService(10))
-    assert(!h.statsReceiver.counters.contains(Seq("failure_accrual", "removals")))
+    assert(
+      !h.statsReceiver.counters.contains(Seq("failure_accrual", "removals")))
 
     // replaced
-    Await.ready(s.make(ps + FailureAccrualFactory.Replaced(ServiceFactoryWrapper.identity)).toService(10))
-    assert(!h.statsReceiver.counters.contains(Seq("failure_accrual", "removals")))
+    Await.ready(s
+      .make(ps + FailureAccrualFactory.Replaced(ServiceFactoryWrapper.identity))
+      .toService(10))
+    assert(
+      !h.statsReceiver.counters.contains(Seq("failure_accrual", "removals")))
 
     // configured
-    Await.ready(s.make(ps + FailureAccrualFactory.Param(1, Duration.Top)).toService(10))
-    assert(h.statsReceiver.counters.contains(Seq("failure_accrual", "removals")))
+    Await.ready(
+      s.make(ps + FailureAccrualFactory.Param(1, Duration.Top)).toService(10))
+    assert(
+      h.statsReceiver.counters.contains(Seq("failure_accrual", "removals")))
   }
 }

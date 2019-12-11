@@ -25,7 +25,7 @@ object LiftSessionSpec extends Specification {
 
   private var receivedMessages = Vector[Int]()
   private object NoOp
-  
+
   private class TestCometActor extends CometActor {
     def render = NodeSeq.Empty
 
@@ -48,8 +48,13 @@ object LiftSessionSpec extends Specification {
         val sendingMessages = 1 to 20
         sendingMessages foreach (message =>
           session.sendCometActorMessage(cometName, Full(cometName), message))
-        session.findOrCreateComet[TestCometActor](Full(cometName), NodeSeq.Empty, Map.empty).map(comet =>
-          comet !? NoOp /* Block to allow time for all messages to be collected */)
+        session
+          .findOrCreateComet[TestCometActor](
+            Full(cometName),
+            NodeSeq.Empty,
+            Map.empty)
+          .map(comet =>
+            comet !? NoOp /* Block to allow time for all messages to be collected */ )
         receivedMessages mustEqual sendingMessages
       }
     }

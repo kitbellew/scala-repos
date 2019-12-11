@@ -73,7 +73,8 @@ class IdleConnectionFilterTest extends FunSuite with MockitoSugar {
     assert(filter.openConnections == 0)
   }
 
-  test("IdleConnectionFilter should try to close an idle connection if above lowerWaterMark") {
+  test(
+    "IdleConnectionFilter should try to close an idle connection if above lowerWaterMark") {
     val h = new ChannelHelper
     import h._
 
@@ -90,7 +91,8 @@ class IdleConnectionFilterTest extends FunSuite with MockitoSugar {
     verify(spyFilter, times(1)).closeIdleConnections()
   }
 
-  test("IdleConnectionFilter should don't close connections not yet answered by the server (long processing requests)") {
+  test(
+    "IdleConnectionFilter should don't close connections not yet answered by the server (long processing requests)") {
     val h = new ChannelHelper
     import h._
 
@@ -100,7 +102,8 @@ class IdleConnectionFilterTest extends FunSuite with MockitoSugar {
         def apply(req: String): Future[String] = new Promise[String]
       }
       val underlying = ServiceFactory.const(service)
-      val spyFilter = Mockito.spy(new IdleConnectionFilter(underlying, threshold))
+      val spyFilter =
+        Mockito.spy(new IdleConnectionFilter(underlying, threshold))
       assert(spyFilter.openConnections == 0)
       (1 to threshold.highWaterMark) map { _ =>
         val (c, _) = open(spyFilter)
@@ -130,7 +133,8 @@ class IdleConnectionFilterTest extends FunSuite with MockitoSugar {
     }
   }
 
-  test("IdleConnectionFilter should close an idle connection to accept a new one") {
+  test(
+    "IdleConnectionFilter should close an idle connection to accept a new one") {
     val h = new ChannelHelper
     import h._
 
@@ -145,7 +149,8 @@ class IdleConnectionFilterTest extends FunSuite with MockitoSugar {
         }
       }
       val underlying = ServiceFactory.const(service)
-      val spyFilter = Mockito.spy(new IdleConnectionFilter(underlying, threshold))
+      val spyFilter =
+        Mockito.spy(new IdleConnectionFilter(underlying, threshold))
 
       // Open all connections
       (1 to threshold.highWaterMark) map { _ =>
@@ -154,8 +159,8 @@ class IdleConnectionFilterTest extends FunSuite with MockitoSugar {
       }
 
       // Simulate response from the server
-      responses foreach {
-        f => f.setValue("toto")
+      responses foreach { f =>
+        f.setValue("toto")
       }
 
       // wait a long time

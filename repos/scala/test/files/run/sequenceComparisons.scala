@@ -1,5 +1,5 @@
-import scala.collection.{ mutable, immutable }
-import collection.{ Seq, Traversable }
+import scala.collection.{mutable, immutable}
+import collection.{Seq, Traversable}
 
 object Test {
   // TODO:
@@ -36,53 +36,76 @@ object Test {
     // _1 is inputs which must be true, _2 which must be false
     type Inputs = (List[List[T]], List[List[T]])
     case class Method(
-      f: (Seq[T], Seq[T]) => Boolean,
-      inputs: Inputs,
-      descr: String
+        f: (Seq[T], Seq[T]) => Boolean,
+        inputs: Inputs,
+        descr: String
     ) {
-      def trueList  = inputs._1
+      def trueList = inputs._1
       def falseList = inputs._2
     }
 
-    lazy val eqeq = Method(_ == _, (List(seqList), List(Nil, seqList drop 1, seqList ::: seqList)), "%s == %s")
+    lazy val eqeq = Method(
+      _ == _,
+      (List(seqList), List(Nil, seqList drop 1, seqList ::: seqList)),
+      "%s == %s")
 
     val startsWithInputs: Inputs
-    lazy val startsWith = Method(_ startsWith _, startsWithInputs, "%s startsWith %s")
+    lazy val startsWith =
+      Method(_ startsWith _, startsWithInputs, "%s startsWith %s")
 
     val endsWithInputs: Inputs
     lazy val endsWith = Method(_ endsWith _, endsWithInputs, "%s endsWith %s")
 
     val indexOfSliceInputs: Inputs
     private def subseqTest(s1: Seq[T], s2: Seq[T]) = (s1 indexOfSlice s2) != -1
-    lazy val indexOfSlice = Method(subseqTest _, indexOfSliceInputs, "(%s indexOfSlice %s) != -1")
+    lazy val indexOfSlice =
+      Method(subseqTest _, indexOfSliceInputs, "(%s indexOfSlice %s) != -1")
 
     val sameElementsInputs: Inputs
-    lazy val sameElements = Method(_ sameElements _, sameElementsInputs, "%s sameElements %s")
+    lazy val sameElements =
+      Method(_ sameElements _, sameElementsInputs, "%s sameElements %s")
 
-    def methodList = List(eqeq, startsWith, endsWith, indexOfSlice, sameElements)
+    def methodList =
+      List(eqeq, startsWith, endsWith, indexOfSlice, sameElements)
   }
 
   object test1 extends Data[Int] {
-    val seq = List(1,2,3,4,5)
+    val seq = List(1, 2, 3, 4, 5)
 
     val startsWithInputs = (
-      List(Nil, List(1), List(1,2), seq),
-      List(List(1,2,3,4,6), seq ::: List(5), List(0))
+      List(Nil, List(1), List(1, 2), seq),
+      List(List(1, 2, 3, 4, 6), seq ::: List(5), List(0))
     )
 
     val endsWithInputs = (
-      List(Nil, List(5), List(4,5), seq),
-      List(0 :: seq, List(5,2,3,4,5), List(3,4), List(5,6))
+      List(Nil, List(5), List(4, 5), seq),
+      List(0 :: seq, List(5, 2, 3, 4, 5), List(3, 4), List(5, 6))
     )
 
     val indexOfSliceInputs = (
-      List(Nil, List(1), List(3), List(5), List(1,2), List(2,3,4), List(4,5), seq),
-      List(List(1,2,3,5), List(6), List(5,4,3,2,1), List(2,1))
+      List(
+        Nil,
+        List(1),
+        List(3),
+        List(5),
+        List(1, 2),
+        List(2, 3, 4),
+        List(4, 5),
+        seq),
+      List(List(1, 2, 3, 5), List(6), List(5, 4, 3, 2, 1), List(2, 1))
     )
 
     val sameElementsInputs = (
-      List(List(1,2,3,4,5)),
-      List(Nil, List(1), List(1,2), List(2,3,4), List(2,3,4,5), List(2,3,4,5,1), List(1,2,3,5,4), seq.reverse)
+      List(List(1, 2, 3, 4, 5)),
+      List(
+        Nil,
+        List(1),
+        List(1, 2),
+        List(2, 3, 4),
+        List(2, 3, 4, 5),
+        List(2, 3, 4, 5, 1),
+        List(1, 2, 3, 5, 4),
+        seq.reverse)
     )
   }
 
@@ -99,7 +122,7 @@ object Test {
   }
 
   def runSeqs() = {
-    for (s1f <- seqMakers ; s2f <- seqMakers ; testData <- List(test1)) {
+    for (s1f <- seqMakers; s2f <- seqMakers; testData <- List(test1)) {
       import testData._
       val scrut = s1f(seq)
 

@@ -7,10 +7,9 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.ScTypeAliasDefinition
 import org.jetbrains.plugins.scala.lang.refactoring.util.ScTypeUtil.AliasType
 
 /**
- * User: Alexander Podkhalyuzin
- * Date: 28.04.2010
- */
-
+  * User: Alexander Podkhalyuzin
+  * Date: 28.04.2010
+  */
 object Equivalence {
   def equiv(l: ScType, r: ScType): Boolean =
     equivInner(l, r, new ScUndefinedSubstitutor)._1
@@ -23,14 +22,21 @@ object Equivalence {
     override def initialValue(): Boolean = false
   }
 
-  val cache: ConcurrentWeakHashMap[(ScType, ScType, Boolean), (Boolean, ScUndefinedSubstitutor)] =
-    new ConcurrentWeakHashMap[(ScType, ScType, Boolean), (Boolean, ScUndefinedSubstitutor)]()
+  val cache: ConcurrentWeakHashMap[
+    (ScType, ScType, Boolean),
+    (Boolean, ScUndefinedSubstitutor)] =
+    new ConcurrentWeakHashMap[
+      (ScType, ScType, Boolean),
+      (Boolean, ScUndefinedSubstitutor)]()
 
   /**
-   * @param falseUndef use false to consider undef type equals to any type
-   */
-  def equivInner(l: ScType, r: ScType, subst: ScUndefinedSubstitutor,
-                 falseUndef: Boolean = true): (Boolean, ScUndefinedSubstitutor) = {
+    * @param falseUndef use false to consider undef type equals to any type
+    */
+  def equivInner(
+      l: ScType,
+      r: ScType,
+      subst: ScUndefinedSubstitutor,
+      falseUndef: Boolean = true): (Boolean, ScUndefinedSubstitutor) = {
     ProgressManager.checkCanceled()
 
     if (l == r) return (true, subst)
@@ -38,14 +44,16 @@ object Equivalence {
     val key = (l, r, falseUndef)
 
     val nowEval = eval.get()
-    val tuple = if (nowEval) null else {
-      try {
-        eval.set(true)
-        cache.get(key)
-      } finally {
-        eval.set(false)
+    val tuple =
+      if (nowEval) null
+      else {
+        try {
+          eval.set(true)
+          cache.get(key)
+        } finally {
+          eval.set(false)
+        }
       }
-    }
     if (tuple != null) {
       if (subst.isEmpty) return tuple
       return tuple.copy(_2 = subst + tuple._2)
@@ -66,35 +74,45 @@ object Equivalence {
       }
 
       r.isAliasType match {
-        case Some(AliasType(ta: ScTypeAliasDefinition, _, _)) => return r.equivInner(l, subst, falseUndef)
+        case Some(AliasType(ta: ScTypeAliasDefinition, _, _)) =>
+          return r.equivInner(l, subst, falseUndef)
         case _ =>
       }
 
       l.isAliasType match {
-        case Some(AliasType(ta: ScTypeAliasDefinition, _, _)) => return l.equivInner(r, subst, falseUndef)
+        case Some(AliasType(ta: ScTypeAliasDefinition, _, _)) =>
+          return l.equivInner(r, subst, falseUndef)
         case _ =>
       }
 
       (l, r) match {
         case (_, _: ScUndefinedType) => r.equivInner(l, subst, falseUndef)
         case (_: ScUndefinedType, _) => l.equivInner(r, subst, falseUndef)
-        case (_, _: ScAbstractType) => r.equivInner(l, subst, falseUndef)
-        case (_: ScAbstractType, _) => l.equivInner(r, subst, falseUndef)
-        case (_, ScParameterizedType(_: ScAbstractType, _)) => r.equivInner(l, subst, falseUndef)
-        case (ScParameterizedType(_: ScAbstractType, _), _) => l.equivInner(r, subst, falseUndef)
+        case (_, _: ScAbstractType)  => r.equivInner(l, subst, falseUndef)
+        case (_: ScAbstractType, _)  => l.equivInner(r, subst, falseUndef)
+        case (_, ScParameterizedType(_: ScAbstractType, _)) =>
+          r.equivInner(l, subst, falseUndef)
+        case (ScParameterizedType(_: ScAbstractType, _), _) =>
+          l.equivInner(r, subst, falseUndef)
         case (_, AnyRef) => r.equivInner(l, subst, falseUndef)
-        case (_: StdType, _: ScProjectionType) => r.equivInner(l, subst, falseUndef)
-        case (_: ScDesignatorType, _: ScThisType) => r.equivInner(l, subst, falseUndef)
-        case (_: ScParameterizedType, _: JavaArrayType) => r.equivInner(l, subst, falseUndef)
+        case (_: StdType, _: ScProjectionType) =>
+          r.equivInner(l, subst, falseUndef)
+        case (_: ScDesignatorType, _: ScThisType) =>
+          r.equivInner(l, subst, falseUndef)
+        case (_: ScParameterizedType, _: JavaArrayType) =>
+          r.equivInner(l, subst, falseUndef)
         case (_, proj: ScProjectionType) => r.equivInner(l, subst, falseUndef)
-        case (_, proj: ScCompoundType) => r.equivInner(l, subst, falseUndef)
-        case (_, ex: ScExistentialType) => r.equivInner(l, subst, falseUndef)
-        case _ => l.equivInner(r, subst, falseUndef)
+        case (_, proj: ScCompoundType)   => r.equivInner(l, subst, falseUndef)
+        case (_, ex: ScExistentialType)  => r.equivInner(l, subst, falseUndef)
+        case _                           => l.equivInner(r, subst, falseUndef)
       }
     }
-    val res = guard.doPreventingRecursion(key, false, new Computable[(Boolean, ScUndefinedSubstitutor)] {
-      def compute(): (Boolean, ScUndefinedSubstitutor) = comp()
-    })
+    val res = guard.doPreventingRecursion(
+      key,
+      false,
+      new Computable[(Boolean, ScUndefinedSubstitutor)] {
+        def compute(): (Boolean, ScUndefinedSubstitutor) = comp()
+      })
     if (res == null) return (false, new ScUndefinedSubstitutor())
     if (!nowEval) {
       try {

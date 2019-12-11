@@ -36,7 +36,8 @@ object DecisionTreeRegressionExample {
 
     // $example on$
     // Load the data stored in LIBSVM format as a DataFrame.
-    val data = sqlContext.read.format("libsvm").load("data/mllib/sample_libsvm_data.txt")
+    val data =
+      sqlContext.read.format("libsvm").load("data/mllib/sample_libsvm_data.txt")
 
     // Automatically identify categorical features, and index them.
     // Here, we treat features with > 4 distinct values as continuous.

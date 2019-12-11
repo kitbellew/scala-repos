@@ -10,9 +10,9 @@ package scala
 package runtime
 
 /**
- * Dummy class which exist only to satisfy the JVM. It corresponds to
- * `scala.Null`. If such type appears in method signatures, it is erased
- * to this one. A private constructor ensures that Java code can't create
- * subclasses. The only value of type Null$ should be null
- */
+  * Dummy class which exist only to satisfy the JVM. It corresponds to
+  * `scala.Null`. If such type appears in method signatures, it is erased
+  * to this one. A private constructor ensures that Java code can't create
+  * subclasses. The only value of type Null$ should be null
+  */
 sealed abstract class Null$ private ()

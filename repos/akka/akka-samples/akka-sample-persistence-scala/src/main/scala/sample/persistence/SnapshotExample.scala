@@ -20,7 +20,9 @@ object SnapshotExample extends App {
       case SaveSnapshotSuccess(metadata)         => // ...
       case SaveSnapshotFailure(metadata, reason) => // ...
       case s: String =>
-        persist(s) { evt => state = state.updated(evt) }
+        persist(s) { evt =>
+          state = state.updated(evt)
+        }
     }
 
     def receiveRecover: Receive = {
@@ -34,7 +36,9 @@ object SnapshotExample extends App {
   }
 
   val system = ActorSystem("example")
-  val persistentActor = system.actorOf(Props(classOf[ExamplePersistentActor]), "persistentActor-3-scala")
+  val persistentActor = system.actorOf(
+    Props(classOf[ExamplePersistentActor]),
+    "persistentActor-3-scala")
 
   persistentActor ! "a"
   persistentActor ! "b"

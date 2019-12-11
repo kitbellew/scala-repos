@@ -1,10 +1,9 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
-
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.cluster
 
-import akka.actor.{ Address, AddressFromURIString }
+import akka.actor.{Address, AddressFromURIString}
 import org.scalatest.Matchers
 import org.scalatest.WordSpec
 import scala.collection.immutable.SortedSet
@@ -16,7 +15,8 @@ class MemberOrderingSpec extends WordSpec with Matchers {
   import Member.addressOrdering
   import MemberStatus._
 
-  def m(address: Address, status: MemberStatus): Member = TestMember(address, status)
+  def m(address: Address, status: MemberStatus): Member =
+    TestMember(address, status)
 
   "An Ordering[Member]" must {
 
@@ -30,7 +30,8 @@ class MemberOrderingSpec extends WordSpec with Matchers {
       seq.size should ===(3)
       seq(0) should ===(m(AddressFromURIString("akka://sys@darkstar:1111"), Up))
       seq(1) should ===(m(AddressFromURIString("akka://sys@darkstar:1112"), Up))
-      seq(2) should ===(m(AddressFromURIString("akka://sys@darkstar:1113"), Joining))
+      seq(2) should ===(
+        m(AddressFromURIString("akka://sys@darkstar:1113"), Joining))
     }
 
     "be sorted by address correctly" in {
@@ -93,11 +94,15 @@ class MemberOrderingSpec extends WordSpec with Matchers {
       val address2 = address1.copy(port = Some(9002))
       val address3 = address1.copy(port = Some(9003))
 
-      (SortedSet(m(address1, Joining)) - m(address1, Up)) should ===(SortedSet.empty[Member])
-      (SortedSet(m(address1, Exiting)) - m(address1, Removed)) should ===(SortedSet.empty[Member])
-      (SortedSet(m(address1, Up)) - m(address1, Exiting)) should ===(SortedSet.empty[Member])
-      (SortedSet(m(address2, Up), m(address3, Joining), m(address1, Exiting)) - m(address1, Removed)) should ===(
-        SortedSet(m(address2, Up), m(address3, Joining)))
+      (SortedSet(m(address1, Joining)) - m(address1, Up)) should ===(
+        SortedSet.empty[Member])
+      (SortedSet(m(address1, Exiting)) - m(address1, Removed)) should ===(
+        SortedSet.empty[Member])
+      (SortedSet(m(address1, Up)) - m(address1, Exiting)) should ===(
+        SortedSet.empty[Member])
+      (SortedSet(m(address2, Up), m(address3, Joining), m(address1, Exiting)) - m(
+        address1,
+        Removed)) should ===(SortedSet(m(address2, Up), m(address3, Joining)))
     }
 
   }

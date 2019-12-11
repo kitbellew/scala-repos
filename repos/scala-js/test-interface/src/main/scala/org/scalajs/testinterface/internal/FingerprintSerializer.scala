@@ -8,11 +8,13 @@ import sbt.testing._
 object FingerprintSerializer {
 
   def serialize(fp: Fingerprint): js.Dynamic = fp match {
-    case fp: AnnotatedFingerprint => lit(
+    case fp: AnnotatedFingerprint =>
+      lit(
         fpType = "AnnotatedFingerprint",
         isModule = fp.isModule,
         annotationName = fp.annotationName)
-    case fp: SubclassFingerprint => lit(
+    case fp: SubclassFingerprint =>
+      lit(
         fpType = "SubclassFingerprint",
         isModule = fp.isModule,
         superclassName = fp.superclassName,
@@ -26,13 +28,13 @@ object FingerprintSerializer {
     obj.fpType.asInstanceOf[String] match {
       case "AnnotatedFingerprint" =>
         new DeserializedAnnotatedFingerprint(
-            obj.isModule.asInstanceOf[Boolean],
-            obj.annotationName.asInstanceOf[String])
+          obj.isModule.asInstanceOf[Boolean],
+          obj.annotationName.asInstanceOf[String])
       case "SubclassFingerprint" =>
         new DeserializedSubclassFingerprint(
-            obj.isModule.asInstanceOf[Boolean],
-            obj.superclassName.asInstanceOf[String],
-            obj.requireNoArgConstructor.asInstanceOf[Boolean])
+          obj.isModule.asInstanceOf[Boolean],
+          obj.superclassName.asInstanceOf[String],
+          obj.requireNoArgConstructor.asInstanceOf[Boolean])
       case tpe =>
         throw new IllegalArgumentException(s"Unknown Fingerprint type: $tpe")
     }

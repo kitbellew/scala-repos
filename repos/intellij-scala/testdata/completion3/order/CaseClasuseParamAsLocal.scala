@@ -8,7 +8,7 @@ class CaseClasuseParamAsLocal {
     def testCase = {
       classParam match {
         case A(retparam) =>
-          ret<caret>
+          ret < caret >
         case _ =>
       }
     }

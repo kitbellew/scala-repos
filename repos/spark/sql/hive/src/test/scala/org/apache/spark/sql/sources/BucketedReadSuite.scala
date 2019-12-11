@@ -23,7 +23,10 @@ import org.apache.spark.sql._
 import org.apache.spark.sql.catalyst.expressions._
 import org.apache.spark.sql.catalyst.plans.physical.HashPartitioning
 import org.apache.spark.sql.execution.DataSourceScan
-import org.apache.spark.sql.execution.datasources.{BucketSpec, DataSourceStrategy}
+import org.apache.spark.sql.execution.datasources.{
+  BucketSpec,
+  DataSourceStrategy
+}
 import org.apache.spark.sql.execution.exchange.ShuffleExchange
 import org.apache.spark.sql.execution.joins.SortMergeJoin
 import org.apache.spark.sql.functions._
@@ -33,10 +36,14 @@ import org.apache.spark.sql.test.SQLTestUtils
 import org.apache.spark.util.Utils
 import org.apache.spark.util.collection.BitSet
 
-class BucketedReadSuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
+class BucketedReadSuite
+    extends QueryTest
+    with SQLTestUtils
+    with TestHiveSingleton {
   import testImplicits._
 
-  private val df = (0 until 50).map(i => (i % 5, i % 13, i.toString)).toDF("i", "j", "k")
+  private val df =
+    (0 until 50).map(i => (i % 5, i % 13, i.toString)).toDF("i", "j", "k")
   private val nullDF = (for {
     i <- 0 to 50
     s <- Seq(null, "a", "b", "c", "d", "e", "f", null, "g")
@@ -80,24 +87,32 @@ class BucketedReadSuite extends QueryTest with SQLTestUtils with TestHiveSinglet
       originalDataFrame: DataFrame): Unit = {
     // This test verifies parts of the plan. Disable whole stage codegen.
     withSQLConf(SQLConf.WHOLESTAGE_CODEGEN_ENABLED.key -> "false") {
-      val bucketedDataFrame = hiveContext.table("bucketed_table").select("i", "j", "k")
+      val bucketedDataFrame =
+        hiveContext.table("bucketed_table").select("i", "j", "k")
       val BucketSpec(numBuckets, bucketColumnNames, _) = bucketSpec
       // Limit: bucket pruning only works when the bucket column has one and only one column
       assert(bucketColumnNames.length == 1)
-      val bucketColumnIndex = bucketedDataFrame.schema.fieldIndex(bucketColumnNames.head)
-      val bucketColumn = bucketedDataFrame.schema.toAttributes(bucketColumnIndex)
+      val bucketColumnIndex =
+        bucketedDataFrame.schema.fieldIndex(bucketColumnNames.head)
+      val bucketColumn =
+        bucketedDataFrame.schema.toAttributes(bucketColumnIndex)
       val matchedBuckets = new BitSet(numBuckets)
       bucketValues.foreach { value =>
-        matchedBuckets.set(DataSourceStrategy.getBucketId(bucketColumn, numBuckets, value))
+        matchedBuckets.set(
+          DataSourceStrategy.getBucketId(bucketColumn, numBuckets, value))
       }
 
       // Filter could hide the bug in bucket pruning. Thus, skipping all the filters
-      val plan = bucketedDataFrame.filter(filterCondition).queryExecution.executedPlan
+      val plan =
+        bucketedDataFrame.filter(filterCondition).queryExecution.executedPlan
       val rdd = plan.find(_.isInstanceOf[DataSourceScan])
       assert(rdd.isDefined, plan)
 
-      val checkedResult = rdd.get.execute().mapPartitionsWithIndex { case (index, iter) =>
-        if (matchedBuckets.get(index % numBuckets) && iter.nonEmpty) Iterator(index) else Iterator()
+      val checkedResult = rdd.get.execute().mapPartitionsWithIndex {
+        case (index, iter) =>
+          if (matchedBuckets.get(index % numBuckets) && iter.nonEmpty)
+            Iterator(index)
+          else Iterator()
       }
       // TODO: These tests are not testing the right columns.
 //      // checking if all the pruned buckets are empty
@@ -222,15 +237,21 @@ class BucketedReadSuite extends QueryTest with SQLTestUtils with TestHiveSinglet
     }
   }
 
-  private val df1 = (0 until 50).map(i => (i % 5, i % 13, i.toString)).toDF("i", "j", "k").as("df1")
-  private val df2 = (0 until 50).map(i => (i % 7, i % 11, i.toString)).toDF("i", "j", "k").as("df2")
+  private val df1 = (0 until 50)
+    .map(i => (i % 5, i % 13, i.toString))
+    .toDF("i", "j", "k")
+    .as("df1")
+  private val df2 = (0 until 50)
+    .map(i => (i % 7, i % 11, i.toString))
+    .toDF("i", "j", "k")
+    .as("df2")
 
   /**
-   * A helper method to test the bucket read functionality using join.  It will save `df1` and `df2`
-   * to hive tables, bucketed or not, according to the given bucket specifics.  Next we will join
-   * these 2 tables, and firstly make sure the answer is corrected, and then check if the shuffle
-   * exists as user expected according to the `shuffleLeft` and `shuffleRight`.
-   */
+    * A helper method to test the bucket read functionality using join.  It will save `df1` and `df2`
+    * to hive tables, bucketed or not, according to the given bucket specifics.  Next we will join
+    * these 2 tables, and firstly make sure the answer is corrected, and then check if the shuffle
+    * exists as user expected according to the `shuffleLeft` and `shuffleRight`.
+    */
   private def testBucketing(
       bucketSpecLeft: Option[BucketSpec],
       bucketSpecRight: Option[BucketSpec],
@@ -238,19 +259,26 @@ class BucketedReadSuite extends QueryTest with SQLTestUtils with TestHiveSinglet
       shuffleLeft: Boolean,
       shuffleRight: Boolean): Unit = {
     withTable("bucketed_table1", "bucketed_table2") {
-      def withBucket(writer: DataFrameWriter, bucketSpec: Option[BucketSpec]): DataFrameWriter = {
-        bucketSpec.map { spec =>
-          writer.bucketBy(
-            spec.numBuckets,
-            spec.bucketColumnNames.head,
-            spec.bucketColumnNames.tail: _*)
-        }.getOrElse(writer)
+      def withBucket(
+          writer: DataFrameWriter,
+          bucketSpec: Option[BucketSpec]): DataFrameWriter = {
+        bucketSpec
+          .map { spec =>
+            writer.bucketBy(
+              spec.numBuckets,
+              spec.bucketColumnNames.head,
+              spec.bucketColumnNames.tail: _*)
+          }
+          .getOrElse(writer)
       }
 
-      withBucket(df1.write.format("parquet"), bucketSpecLeft).saveAsTable("bucketed_table1")
-      withBucket(df2.write.format("parquet"), bucketSpecRight).saveAsTable("bucketed_table2")
+      withBucket(df1.write.format("parquet"), bucketSpecLeft)
+        .saveAsTable("bucketed_table1")
+      withBucket(df2.write.format("parquet"), bucketSpecRight)
+        .saveAsTable("bucketed_table2")
 
-      withSQLConf(SQLConf.AUTO_BROADCASTJOIN_THRESHOLD.key -> "0",
+      withSQLConf(
+        SQLConf.AUTO_BROADCASTJOIN_THRESHOLD.key -> "0",
         SQLConf.WHOLESTAGE_CODEGEN_ENABLED.key -> "false") {
         val t1 = hiveContext.table("bucketed_table1")
         val t2 = hiveContext.table("bucketed_table2")
@@ -259,68 +287,120 @@ class BucketedReadSuite extends QueryTest with SQLTestUtils with TestHiveSinglet
         // First check the result is corrected.
         checkAnswer(
           joined.sort("bucketed_table1.k", "bucketed_table2.k"),
-          df1.join(df2, joinCondition(df1, df2, joinColumns)).sort("df1.k", "df2.k"))
+          df1
+            .join(df2, joinCondition(df1, df2, joinColumns))
+            .sort("df1.k", "df2.k"))
 
         assert(joined.queryExecution.executedPlan.isInstanceOf[SortMergeJoin])
-        val joinOperator = joined.queryExecution.executedPlan.asInstanceOf[SortMergeJoin]
+        val joinOperator =
+          joined.queryExecution.executedPlan.asInstanceOf[SortMergeJoin]
 
         assert(
-          joinOperator.left.find(_.isInstanceOf[ShuffleExchange]).isDefined == shuffleLeft,
-          s"expected shuffle in plan to be $shuffleLeft but found\n${joinOperator.left}")
+          joinOperator.left
+            .find(_.isInstanceOf[ShuffleExchange])
+            .isDefined == shuffleLeft,
+          s"expected shuffle in plan to be $shuffleLeft but found\n${joinOperator.left}"
+        )
         assert(
-          joinOperator.right.find(_.isInstanceOf[ShuffleExchange]).isDefined == shuffleRight,
-          s"expected shuffle in plan to be $shuffleRight but found\n${joinOperator.right}")
+          joinOperator.right
+            .find(_.isInstanceOf[ShuffleExchange])
+            .isDefined == shuffleRight,
+          s"expected shuffle in plan to be $shuffleRight but found\n${joinOperator.right}"
+        )
       }
     }
   }
 
-  private def joinCondition(left: DataFrame, right: DataFrame, joinCols: Seq[String]): Column = {
+  private def joinCondition(
+      left: DataFrame,
+      right: DataFrame,
+      joinCols: Seq[String]): Column = {
     joinCols.map(col => left(col) === right(col)).reduce(_ && _)
   }
 
   test("avoid shuffle when join 2 bucketed tables") {
     val bucketSpec = Some(BucketSpec(8, Seq("i", "j"), Nil))
-    testBucketing(bucketSpec, bucketSpec, Seq("i", "j"), shuffleLeft = false, shuffleRight = false)
+    testBucketing(
+      bucketSpec,
+      bucketSpec,
+      Seq("i", "j"),
+      shuffleLeft = false,
+      shuffleRight = false)
   }
 
   // Enable it after fix https://issues.apache.org/jira/browse/SPARK-12704
   ignore("avoid shuffle when join keys are a super-set of bucket keys") {
     val bucketSpec = Some(BucketSpec(8, Seq("i"), Nil))
-    testBucketing(bucketSpec, bucketSpec, Seq("i", "j"), shuffleLeft = false, shuffleRight = false)
+    testBucketing(
+      bucketSpec,
+      bucketSpec,
+      Seq("i", "j"),
+      shuffleLeft = false,
+      shuffleRight = false)
   }
 
   test("only shuffle one side when join bucketed table and non-bucketed table") {
     val bucketSpec = Some(BucketSpec(8, Seq("i", "j"), Nil))
-    testBucketing(bucketSpec, None, Seq("i", "j"), shuffleLeft = false, shuffleRight = true)
+    testBucketing(
+      bucketSpec,
+      None,
+      Seq("i", "j"),
+      shuffleLeft = false,
+      shuffleRight = true)
   }
 
-  test("only shuffle one side when 2 bucketed tables have different bucket number") {
+  test(
+    "only shuffle one side when 2 bucketed tables have different bucket number") {
     val bucketSpec1 = Some(BucketSpec(8, Seq("i", "j"), Nil))
     val bucketSpec2 = Some(BucketSpec(5, Seq("i", "j"), Nil))
-    testBucketing(bucketSpec1, bucketSpec2, Seq("i", "j"), shuffleLeft = false, shuffleRight = true)
+    testBucketing(
+      bucketSpec1,
+      bucketSpec2,
+      Seq("i", "j"),
+      shuffleLeft = false,
+      shuffleRight = true)
   }
 
-  test("only shuffle one side when 2 bucketed tables have different bucket keys") {
+  test(
+    "only shuffle one side when 2 bucketed tables have different bucket keys") {
     val bucketSpec1 = Some(BucketSpec(8, Seq("i"), Nil))
     val bucketSpec2 = Some(BucketSpec(8, Seq("j"), Nil))
-    testBucketing(bucketSpec1, bucketSpec2, Seq("i"), shuffleLeft = false, shuffleRight = true)
+    testBucketing(
+      bucketSpec1,
+      bucketSpec2,
+      Seq("i"),
+      shuffleLeft = false,
+      shuffleRight = true)
   }
 
   test("shuffle when join keys are not equal to bucket keys") {
     val bucketSpec = Some(BucketSpec(8, Seq("i"), Nil))
-    testBucketing(bucketSpec, bucketSpec, Seq("j"), shuffleLeft = true, shuffleRight = true)
+    testBucketing(
+      bucketSpec,
+      bucketSpec,
+      Seq("j"),
+      shuffleLeft = true,
+      shuffleRight = true)
   }
 
   test("shuffle when join 2 bucketed tables with bucketing disabled") {
     val bucketSpec = Some(BucketSpec(8, Seq("i", "j"), Nil))
     withSQLConf(SQLConf.BUCKETING_ENABLED.key -> "false") {
-      testBucketing(bucketSpec, bucketSpec, Seq("i", "j"), shuffleLeft = true, shuffleRight = true)
+      testBucketing(
+        bucketSpec,
+        bucketSpec,
+        Seq("i", "j"),
+        shuffleLeft = true,
+        shuffleRight = true)
     }
   }
 
   test("avoid shuffle when grouping keys are equal to bucket keys") {
     withTable("bucketed_table") {
-      df1.write.format("parquet").bucketBy(8, "i", "j").saveAsTable("bucketed_table")
+      df1.write
+        .format("parquet")
+        .bucketBy(8, "i", "j")
+        .saveAsTable("bucketed_table")
       val tbl = hiveContext.table("bucketed_table")
       val agged = tbl.groupBy("i", "j").agg(max("k"))
 
@@ -328,7 +408,10 @@ class BucketedReadSuite extends QueryTest with SQLTestUtils with TestHiveSinglet
         agged.sort("i", "j"),
         df1.groupBy("i", "j").agg(max("k")).sort("i", "j"))
 
-      assert(agged.queryExecution.executedPlan.find(_.isInstanceOf[ShuffleExchange]).isEmpty)
+      assert(
+        agged.queryExecution.executedPlan
+          .find(_.isInstanceOf[ShuffleExchange])
+          .isEmpty)
     }
   }
 
@@ -342,7 +425,10 @@ class BucketedReadSuite extends QueryTest with SQLTestUtils with TestHiveSinglet
         agged.sort("i", "j"),
         df1.groupBy("i", "j").agg(max("k")).sort("i", "j"))
 
-      assert(agged.queryExecution.executedPlan.find(_.isInstanceOf[ShuffleExchange]).isEmpty)
+      assert(
+        agged.queryExecution.executedPlan
+          .find(_.isInstanceOf[ShuffleExchange])
+          .isEmpty)
     }
   }
 

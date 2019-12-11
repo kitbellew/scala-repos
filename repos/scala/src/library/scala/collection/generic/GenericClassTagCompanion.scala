@@ -15,10 +15,10 @@ import scala.language.higherKinds
 import scala.reflect.ClassTag
 
 /** This class represents companions of classes which require ClassTags
- *  for their element types.
- *
- *  @author Aleksandar Prokopec
- */
+  *  for their element types.
+  *
+  *  @author Aleksandar Prokopec
+  */
 abstract class GenericClassTagCompanion[+CC[X] <: Traversable[X]] {
   protected[this] type Coll = CC[_]
 

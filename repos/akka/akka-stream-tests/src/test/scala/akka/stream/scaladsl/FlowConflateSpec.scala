@@ -1,11 +1,11 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.stream.scaladsl
 
 import akka.stream.ActorAttributes.supervisionStrategy
 import akka.stream.Attributes.inputBuffer
-import akka.stream.Supervision.{ resumingDecider, restartingDecider }
+import akka.stream.Supervision.{resumingDecider, restartingDecider}
 import akka.stream.testkit.Utils.TE
 import akka.testkit.TestLatch
 import scala.concurrent.Await
@@ -28,7 +28,11 @@ class FlowConflateSpec extends AkkaSpec {
       val publisher = TestPublisher.probe[Int]()
       val subscriber = TestSubscriber.manualProbe[Int]()
 
-      Source.fromPublisher(publisher).conflateWithSeed(seed = i ⇒ i)(aggregate = (sum, i) ⇒ sum + i).to(Sink.fromSubscriber(subscriber)).run()
+      Source
+        .fromPublisher(publisher)
+        .conflateWithSeed(seed = i ⇒ i)(aggregate = (sum, i) ⇒ sum + i)
+        .to(Sink.fromSubscriber(subscriber))
+        .run()
       val sub = subscriber.expectSubscription()
 
       for (i ← 1 to 100) {
@@ -44,7 +48,11 @@ class FlowConflateSpec extends AkkaSpec {
       val publisher = TestPublisher.probe[Int]()
       val subscriber = TestSubscriber.manualProbe[Int]()
 
-      Source.fromPublisher(publisher).conflate(_ + _).to(Sink.fromSubscriber(subscriber)).run()
+      Source
+        .fromPublisher(publisher)
+        .conflate(_ + _)
+        .to(Sink.fromSubscriber(subscriber))
+        .run()
       val sub = subscriber.expectSubscription()
 
       for (i ← 1 to 100) {
@@ -60,7 +68,11 @@ class FlowConflateSpec extends AkkaSpec {
       val publisher = TestPublisher.probe[Int]()
       val subscriber = TestSubscriber.manualProbe[Int]()
 
-      Source.fromPublisher(publisher).conflateWithSeed(seed = i ⇒ i)(aggregate = (sum, i) ⇒ sum + i).to(Sink.fromSubscriber(subscriber)).run()
+      Source
+        .fromPublisher(publisher)
+        .conflateWithSeed(seed = i ⇒ i)(aggregate = (sum, i) ⇒ sum + i)
+        .to(Sink.fromSubscriber(subscriber))
+        .run()
       val sub = subscriber.expectSubscription()
 
       for (i ← 1 to 100) {
@@ -76,7 +88,11 @@ class FlowConflateSpec extends AkkaSpec {
       val publisher = TestPublisher.probe[Int]()
       val subscriber = TestSubscriber.manualProbe[Int]()
 
-      Source.fromPublisher(publisher).conflate(_ + _).to(Sink.fromSubscriber(subscriber)).run()
+      Source
+        .fromPublisher(publisher)
+        .conflate(_ + _)
+        .to(Sink.fromSubscriber(subscriber))
+        .run()
       val sub = subscriber.expectSubscription()
 
       for (i ← 1 to 100) {
@@ -91,7 +107,9 @@ class FlowConflateSpec extends AkkaSpec {
     "work on a variable rate chain" in {
       val future = Source(1 to 1000)
         .conflateWithSeed(seed = i ⇒ i)(aggregate = (sum, i) ⇒ sum + i)
-        .map { i ⇒ if (ThreadLocalRandom.current().nextBoolean()) Thread.sleep(10); i }
+        .map { i ⇒
+          if (ThreadLocalRandom.current().nextBoolean()) Thread.sleep(10); i
+        }
         .runFold(0)(_ + _)
       Await.result(future, 10.seconds) should be(500500)
     }
@@ -99,7 +117,9 @@ class FlowConflateSpec extends AkkaSpec {
     "work on a variable rate chain (simple conflate)" in {
       val future = Source(1 to 1000)
         .conflate(_ + _)
-        .map { i ⇒ if (ThreadLocalRandom.current().nextBoolean()) Thread.sleep(10); i }
+        .map { i ⇒
+          if (ThreadLocalRandom.current().nextBoolean()) Thread.sleep(10); i
+        }
         .runFold(0)(_ + _)
       Await.result(future, 10.seconds) should be(500500)
     }
@@ -108,7 +128,11 @@ class FlowConflateSpec extends AkkaSpec {
       val publisher = TestPublisher.probe[Int]()
       val subscriber = TestSubscriber.manualProbe[Int]()
 
-      Source.fromPublisher(publisher).conflateWithSeed(seed = i ⇒ i)(aggregate = (sum, i) ⇒ sum + i).to(Sink.fromSubscriber(subscriber)).run()
+      Source
+        .fromPublisher(publisher)
+        .conflateWithSeed(seed = i ⇒ i)(aggregate = (sum, i) ⇒ sum + i)
+        .to(Sink.fromSubscriber(subscriber))
+        .run()
       val sub = subscriber.expectSubscription()
 
       sub.request(1)
@@ -146,7 +170,8 @@ class FlowConflateSpec extends AkkaSpec {
       val sinkProbe = TestSubscriber.probe[Int]()
       val exceptionLatch = TestLatch()
 
-      val future = Source.fromPublisher(sourceProbe)
+      val future = Source
+        .fromPublisher(sourceProbe)
         .conflateWithSeed { i ⇒
           if (i % 2 == 0) {
             exceptionLatch.open()
@@ -200,7 +225,8 @@ class FlowConflateSpec extends AkkaSpec {
       val sourceProbe = TestPublisher.probe[String]()
       val sinkProbe = TestSubscriber.probe[String]()
 
-      Source.fromPublisher(sourceProbe)
+      Source
+        .fromPublisher(sourceProbe)
         .via(conflate)
         .to(Sink.fromSubscriber(sinkProbe))
         .withAttributes(inputBuffer(initial = 4, max = 4))
@@ -226,7 +252,8 @@ class FlowConflateSpec extends AkkaSpec {
       val sinkProbe = TestSubscriber.probe[Vector[Int]]()
       val saw4Latch = TestLatch()
 
-      val future = Source.fromPublisher(sourceProbe)
+      val future = Source
+        .fromPublisher(sourceProbe)
         .conflateWithSeed(seed = i ⇒ Vector(i))((state, elem) ⇒
           if (elem == 2) {
             throw TE("three is a four letter word")

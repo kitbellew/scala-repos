@@ -6,6 +6,6 @@ object SCL5738 extends App {
     case _          => Map(key -> "unknown")
   } getOrElse Map.empty
 
-  println(/*start*/foo/*end*/)
+  println( /*start*/ foo /*end*/ )
 }
 //Map[String, Any]

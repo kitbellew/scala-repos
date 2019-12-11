@@ -56,7 +56,12 @@ class SQLExecutionSuite extends SparkFunSuite {
     try {
       // Should not throw IllegalArgumentException
       (1 to 100).par.foreach { _ =>
-        sc.parallelize(1 to 5).map { i => (i, i) }.toDF("a", "b").count()
+        sc.parallelize(1 to 5)
+          .map { i =>
+            (i, i)
+          }
+          .toDF("a", "b")
+          .count()
       }
     } finally {
       sc.stop()
@@ -64,8 +69,8 @@ class SQLExecutionSuite extends SparkFunSuite {
   }
 
   /**
-   * Trigger SPARK-10548 by mocking a parent and its child thread executing queries concurrently.
-   */
+    * Trigger SPARK-10548 by mocking a parent and its child thread executing queries concurrently.
+    */
   private def testConcurrentQueryExecution(sc: SparkContext): Unit = {
     val sqlContext = new SQLContext(sc)
     import sqlContext.implicits._
@@ -80,7 +85,12 @@ class SQLExecutionSuite extends SparkFunSuite {
     val child = new Thread {
       override def run(): Unit = {
         try {
-          sc.parallelize(1 to 100).map { i => (i, i) }.toDF("a", "b").collect()
+          sc.parallelize(1 to 100)
+            .map { i =>
+              (i, i)
+            }
+            .toDF("a", "b")
+            .collect()
         } catch {
           case t: Throwable =>
             throwable = Some(t)
@@ -102,12 +112,14 @@ class SQLExecutionSuite extends SparkFunSuite {
 }
 
 /**
- * A bad [[SparkContext]] that does not clone the inheritable thread local properties
- * when passing them to children threads.
- */
+  * A bad [[SparkContext]] that does not clone the inheritable thread local properties
+  * when passing them to children threads.
+  */
 private class BadSparkContext(conf: SparkConf) extends SparkContext(conf) {
-  protected[spark] override val localProperties = new InheritableThreadLocal[Properties] {
-    override protected def childValue(parent: Properties): Properties = new Properties(parent)
-    override protected def initialValue(): Properties = new Properties()
-  }
+  protected[spark] override val localProperties =
+    new InheritableThreadLocal[Properties] {
+      override protected def childValue(parent: Properties): Properties =
+        new Properties(parent)
+      override protected def initialValue(): Properties = new Properties()
+    }
 }

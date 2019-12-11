@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.data.api
 
 import java.util.ServiceLoader
@@ -42,8 +41,6 @@ object EventServerPluginContext extends Logging {
     serviceLoader foreach { service =>
       plugins(service.pluginType) += service.pluginName -> service
     }
-    new EventServerPluginContext(
-      plugins,
-      log)
+    new EventServerPluginContext(plugins, log)
   }
 }

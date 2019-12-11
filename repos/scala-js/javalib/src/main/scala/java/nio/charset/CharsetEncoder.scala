@@ -4,13 +4,17 @@ import scala.annotation.{switch, tailrec}
 
 import java.nio._
 
-abstract class CharsetEncoder protected (cs: Charset,
-    _averageBytesPerChar: Float, _maxBytesPerChar: Float,
+abstract class CharsetEncoder protected (
+    cs: Charset,
+    _averageBytesPerChar: Float,
+    _maxBytesPerChar: Float,
     private[this] var _replacement: Array[Byte]) {
 
   import CharsetEncoder._
 
-  protected def this(cs: Charset, _averageBytesPerChar: Float,
+  protected def this(
+      cs: Charset,
+      _averageBytesPerChar: Float,
       _maxBytesPerChar: Float) =
     this(cs, _averageBytesPerChar, _averageBytesPerChar, Array('?'.toByte))
 
@@ -51,7 +55,8 @@ abstract class CharsetEncoder protected (cs: Charset,
     @inline
     @tailrec
     def loop(outBufSize: Int): Boolean = {
-      val result = decoder.decode(replBuf, CharBuffer.allocate(outBufSize), true)
+      val result =
+        decoder.decode(replBuf, CharBuffer.allocate(outBufSize), true)
       if (result.isOverflow) {
         loop(outBufSize * 2)
       } else {
@@ -74,9 +79,11 @@ abstract class CharsetEncoder protected (cs: Charset,
 
   protected def implOnMalformedInput(newAction: CodingErrorAction): Unit = ()
 
-  def unmappableCharacterAction(): CodingErrorAction = _unmappableCharacterAction
+  def unmappableCharacterAction(): CodingErrorAction =
+    _unmappableCharacterAction
 
-  final def onUnmappableCharacter(newAction: CodingErrorAction): CharsetEncoder = {
+  final def onUnmappableCharacter(
+      newAction: CodingErrorAction): CharsetEncoder = {
     if (newAction == null)
       throw new IllegalArgumentException("null CodingErrorAction")
     _unmappableCharacterAction = newAction
@@ -84,12 +91,15 @@ abstract class CharsetEncoder protected (cs: Charset,
     this
   }
 
-  protected def implOnUnmappableCharacter(newAction: CodingErrorAction): Unit = ()
+  protected def implOnUnmappableCharacter(newAction: CodingErrorAction): Unit =
+    ()
 
   final def averageBytesPerChar(): Float = _averageBytesPerChar
   final def maxBytesPerChar(): Float = _maxBytesPerChar
 
-  final def encode(in: CharBuffer, out: ByteBuffer,
+  final def encode(
+      in: CharBuffer,
+      out: ByteBuffer,
       endOfInput: Boolean): CoderResult = {
 
     if (status == FLUSHED || (!endOfInput && status == END))
@@ -100,14 +110,15 @@ abstract class CharsetEncoder protected (cs: Charset,
     @inline
     @tailrec
     def loop(): CoderResult = {
-      val result1 = try {
-        encodeLoop(in, out)
-      } catch {
-        case ex: BufferOverflowException =>
-          throw new CoderMalfunctionError(ex)
-        case ex: BufferUnderflowException =>
-          throw new CoderMalfunctionError(ex)
-      }
+      val result1 =
+        try {
+          encodeLoop(in, out)
+        } catch {
+          case ex: BufferOverflowException =>
+            throw new CoderMalfunctionError(ex)
+          case ex: BufferUnderflowException =>
+            throw new CoderMalfunctionError(ex)
+        }
 
       val result2 = if (result1.isUnderflow) {
         val remaining = in.remaining
@@ -179,7 +190,7 @@ abstract class CharsetEncoder protected (cs: Charset,
       if (out.capacity == 0) {
         ByteBuffer.allocate(1)
       } else {
-        val result = ByteBuffer.allocate(out.capacity*2)
+        val result = ByteBuffer.allocate(out.capacity * 2)
         out.flip()
         result.put(out)
         result

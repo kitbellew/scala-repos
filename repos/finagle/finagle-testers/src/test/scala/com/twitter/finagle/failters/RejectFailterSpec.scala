@@ -8,8 +8,6 @@ import org.scalatest.FlatSpec
 import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
 import org.mockito.Mockito._
-
-
 @RunWith(classOf[JUnitRunner])
 case class RejectFailterSpec() extends FlatSpec with MustMatchers {
   behavior of "RejectFailters"
@@ -22,7 +20,7 @@ case class RejectFailterSpec() extends FlatSpec with MustMatchers {
     when(base.apply("hello")).thenReturn(Future.value("hi"))
     val stack = RejectFailter(Var(0.0)) andThen base
     1 to repeatFor foreach { _ =>
-      Await.result(stack("hello")) must equal ("hi")
+      Await.result(stack("hello")) must equal("hi")
     }
     verify(base, times(repeatFor)).apply("hello")
   }
@@ -33,7 +31,7 @@ case class RejectFailterSpec() extends FlatSpec with MustMatchers {
     when(base.apply("hello")).thenReturn(Future.value("hi"))
     val stack = ByzantineRejectFailter(Var(0.0)) andThen base
     1 to repeatFor foreach { _ =>
-      Await.result(stack("hello")) must equal ("hi")
+      Await.result(stack("hello")) must equal("hi")
     }
     verify(base, times(repeatFor)).apply("hello")
   }
@@ -49,14 +47,18 @@ case class RejectFailterSpec() extends FlatSpec with MustMatchers {
 
     try {
       Await.result(Future.collect(1 to repeatFor map { _ =>
-        stack("hello") onSuccess { _ => pass += 1 } onFailure { _ => fail += 1 }
+        stack("hello") onSuccess { _ =>
+          pass += 1
+        } onFailure { _ =>
+          fail += 1
+        }
       }))
     } catch {
-      case r : RejectedExecutionException => // Ignore
+      case r: RejectedExecutionException => // Ignore
     }
 
     val failRatio = fail.toDouble / repeatFor.toDouble
-    failRatio must be (0.5 plusOrMinus 0.05)
+    failRatio must be(0.5 plusOrMinus 0.05)
     // Verify that the service was called the number of required times
     verify(base, times(repeatFor)).apply("hello")
   }
@@ -72,13 +74,17 @@ case class RejectFailterSpec() extends FlatSpec with MustMatchers {
 
     1 to repeatFor foreach { _ =>
       try {
-        Await.result(stack("hello") onSuccess { _ => pass += 1 } onFailure { _ => fail += 1 })
+        Await.result(stack("hello") onSuccess { _ =>
+          pass += 1
+        } onFailure { _ =>
+          fail += 1
+        })
       } catch {
-        case t : RejectedExecutionException => // Ignore
+        case t: RejectedExecutionException => // Ignore
       }
     }
     val failRatio = fail.toDouble / repeatFor.toDouble
-    failRatio must be (0.5 plusOrMinus 0.05)
+    failRatio must be(0.5 plusOrMinus 0.05)
     verify(base, times(pass)).apply("hello")
   }
 

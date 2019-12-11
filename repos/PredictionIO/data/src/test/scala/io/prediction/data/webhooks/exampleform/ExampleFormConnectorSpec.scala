@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.data.webhooks.exampleform
 
 import io.prediction.data.webhooks.ConnectorTestUtil
@@ -34,7 +33,7 @@ class ExampleFormConnectorSpec extends Specification with ConnectorTestUtil {
         "context[prop1]" -> "2.345", // optional
         "context[prop2]" -> "value1", // optional
         "anotherProperty1" -> "100",
-        "anotherProperty2"-> "optional1", // optional
+        "anotherProperty2" -> "optional1", // optional
         "timestamp" -> "2015-01-02T00:30:12.984Z"
       )
 

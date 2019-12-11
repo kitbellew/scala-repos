@@ -1,7 +1,6 @@
 /**
- * Copyright (C) 2013-2016 Lightbend Inc. <http://www.lightbend.com>
- */
-
+  * Copyright (C) 2013-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package docs.duration
 
 import language.postfixOps

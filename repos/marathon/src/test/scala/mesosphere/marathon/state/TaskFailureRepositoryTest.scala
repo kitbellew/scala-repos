@@ -4,9 +4,12 @@ import com.codahale.metrics.MetricRegistry
 import mesosphere.marathon.MarathonSpec
 import mesosphere.marathon.metrics.Metrics
 import mesosphere.util.state.memory.InMemoryStore
-import org.scalatest.{ Matchers, GivenWhenThen }
+import org.scalatest.{Matchers, GivenWhenThen}
 
-class TaskFailureRepositoryTest extends MarathonSpec with GivenWhenThen with Matchers {
+class TaskFailureRepositoryTest
+    extends MarathonSpec
+    with GivenWhenThen
+    with Matchers {
   import TaskFailureTestHelper.taskFailure
   import mesosphere.FutureTestSupport._
 
@@ -69,6 +72,7 @@ class TaskFailureRepositoryTest extends MarathonSpec with GivenWhenThen with Mat
     )
     lazy val metricRegistry = new MetricRegistry
     lazy val metrics = new Metrics(metricRegistry)
-    lazy val taskFailureRepo = new TaskFailureRepository(entityStore, maxVersions = Some(1), metrics)
+    lazy val taskFailureRepo =
+      new TaskFailureRepository(entityStore, maxVersions = Some(1), metrics)
   }
 }

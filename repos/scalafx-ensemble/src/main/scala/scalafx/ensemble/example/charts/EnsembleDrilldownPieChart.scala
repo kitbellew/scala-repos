@@ -47,7 +47,8 @@ class EnsembleDrilldownPieChart extends EnsembleExample {
 
   def getContent = {
     //Drilldown Pie Chart style css
-    val drilldownPieChartCss = this.getClass.getResource("DrilldownChart.css").toExternalForm
+    val drilldownPieChartCss =
+      this.getClass.getResource("DrilldownChart.css").toExternalForm
 
     val pieChartData = ObservableBuffer(
       PieChart.Data("A", 20),
@@ -66,14 +67,16 @@ class EnsembleDrilldownPieChart extends EnsembleExample {
     pieChart
   }
 
-  def drillDownData = (pie: PieChart, pieData: PieChart.Data, labelPrefix: String) => {
-    pieData.node().onMouseClicked = (_: MouseEvent) => pie.data = Seq(
-      PieChart.Data(labelPrefix + "-1", 7),
-      PieChart.Data(labelPrefix + "-2", 2),
-      PieChart.Data(labelPrefix + "-3", 5),
-      PieChart.Data(labelPrefix + "-4", 3),
-      PieChart.Data(labelPrefix + "-5", 2)
-    )
-  }
+  def drillDownData =
+    (pie: PieChart, pieData: PieChart.Data, labelPrefix: String) => {
+      pieData.node().onMouseClicked = (_: MouseEvent) =>
+        pie.data = Seq(
+          PieChart.Data(labelPrefix + "-1", 7),
+          PieChart.Data(labelPrefix + "-2", 2),
+          PieChart.Data(labelPrefix + "-3", 5),
+          PieChart.Data(labelPrefix + "-4", 3),
+          PieChart.Data(labelPrefix + "-5", 2)
+        )
+    }
 
 }

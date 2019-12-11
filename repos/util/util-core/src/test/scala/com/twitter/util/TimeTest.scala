@@ -1,6 +1,11 @@
 package com.twitter.util
 
-import java.io.{ByteArrayInputStream, ByteArrayOutputStream, ObjectInputStream, ObjectOutputStream}
+import java.io.{
+  ByteArrayInputStream,
+  ByteArrayOutputStream,
+  ObjectInputStream,
+  ObjectOutputStream
+}
 import java.util.{Locale, TimeZone}
 import java.util.concurrent.TimeUnit
 
@@ -12,16 +17,18 @@ import org.scalatest.prop.GeneratorDrivenPropertyChecks
 
 import com.twitter.util.TimeConversions._
 
-trait TimeLikeSpec[T <: TimeLike[T]] extends WordSpec with GeneratorDrivenPropertyChecks {
+trait TimeLikeSpec[T <: TimeLike[T]]
+    extends WordSpec
+    with GeneratorDrivenPropertyChecks {
   val ops: TimeLikeOps[T]
   import ops._
 
   "Top, Bottom, Undefined, Nanoseconds(_), Finite(_)" should {
-    val easyVs = Seq(Zero, Top, Bottom, Undefined,
-      fromNanoseconds(1), fromNanoseconds(-1))
+    val easyVs =
+      Seq(Zero, Top, Bottom, Undefined, fromNanoseconds(1), fromNanoseconds(-1))
     val vs = easyVs ++ Seq(
-      fromNanoseconds(Long.MaxValue-1),
-      fromNanoseconds(Long.MinValue+1))
+      fromNanoseconds(Long.MaxValue - 1),
+      fromNanoseconds(Long.MinValue + 1))
 
     "behave like boxed doubles" in {
       assert((Top compare Undefined) < 0)
@@ -79,7 +86,8 @@ trait TimeLikeSpec[T <: TimeLike[T]] extends WordSpec with GeneratorDrivenProper
           case _              => true
         })
 
-      for (ns <- Seq(Long.MinValue, -1, 0, 1, Long.MaxValue); t = fromNanoseconds(ns))
+      for (ns <- Seq(Long.MinValue, -1, 0, 1, Long.MaxValue);
+           t = fromNanoseconds(ns))
         assert(t match {
           case Nanoseconds(`ns`) => true
           case _                 => false
@@ -93,7 +101,8 @@ trait TimeLikeSpec[T <: TimeLike[T]] extends WordSpec with GeneratorDrivenProper
           case _         => true
         })
 
-      for (ns <- Seq(Long.MinValue, -1, 0, 1, Long.MaxValue); t = fromNanoseconds(ns))
+      for (ns <- Seq(Long.MinValue, -1, 0, 1, Long.MaxValue);
+           t = fromNanoseconds(ns))
         assert(t match {
           case Finite(`t`) => true
           case _           => false
@@ -105,7 +114,8 @@ trait TimeLikeSpec[T <: TimeLike[T]] extends WordSpec with GeneratorDrivenProper
         val bytes = new ByteArrayOutputStream
         val out = new ObjectOutputStream(bytes)
         out.writeObject(v)
-        val in = new ObjectInputStream(new ByteArrayInputStream(bytes.toByteArray))
+        val in =
+          new ObjectInputStream(new ByteArrayInputStream(bytes.toByteArray))
         assert(in.readObject() == v)
       }
     }
@@ -198,7 +208,6 @@ trait TimeLikeSpec[T <: TimeLike[T]] extends WordSpec with GeneratorDrivenProper
       assert(Bottom.moreOrLessEquals(fromSeconds(0), Duration.Bottom) == false)
     }
 
-
     "Undefined diff to Bottom" in {
       assert((Bottom diff Bottom) == Duration.Undefined)
     }
@@ -237,7 +246,8 @@ trait TimeLikeSpec[T <: TimeLike[T]] extends WordSpec with GeneratorDrivenProper
       assert(Undefined.moreOrLessEquals(Top, Duration.Undefined) == true)
       assert(Undefined.moreOrLessEquals(Top, Duration.Zero) == false)
       assert(Undefined.moreOrLessEquals(fromSeconds(0), Duration.Top) == false)
-      assert(Undefined.moreOrLessEquals(fromSeconds(0), Duration.Undefined) == true)
+      assert(
+        Undefined.moreOrLessEquals(fromSeconds(0), Duration.Undefined) == true)
     }
 
     "Undefined on diff" in {
@@ -251,20 +261,20 @@ trait TimeLikeSpec[T <: TimeLike[T]] extends WordSpec with GeneratorDrivenProper
     "reflect their underlying value" in {
       val nss = Seq(
         2592000000000000000L, // 30000.days
-        1040403005001003L,  // 12.days+1.hour+3.seconds+5.milliseconds+1.microsecond+3.nanoseconds
-        123000000000L,  // 123.seconds
+        1040403005001003L, // 12.days+1.hour+3.seconds+5.milliseconds+1.microsecond+3.nanoseconds
+        123000000000L, // 123.seconds
         1L
       )
 
       for (ns <- nss) {
         val t = fromNanoseconds(ns)
         assert(t.inNanoseconds == ns)
-        assert(t.inMicroseconds == ns/1000L)
-        assert(t.inMilliseconds == ns/1000000L)
-        assert(t.inLongSeconds == ns/1000000000L)
-        assert(t.inMinutes == ns/60000000000L)
-        assert(t.inHours == ns/3600000000000L)
-        assert(t.inDays == ns/86400000000000L)
+        assert(t.inMicroseconds == ns / 1000L)
+        assert(t.inMilliseconds == ns / 1000000L)
+        assert(t.inLongSeconds == ns / 1000000000L)
+        assert(t.inMinutes == ns / 60000000000L)
+        assert(t.inHours == ns / 3600000000000L)
+        assert(t.inDays == ns / 86400000000000L)
       }
     }
   }
@@ -273,7 +283,7 @@ trait TimeLikeSpec[T <: TimeLike[T]] extends WordSpec with GeneratorDrivenProper
     "equal inLongSeconds when in 32-bit range" in {
       val nss = Seq(
         315370851000000000L, // 3650.days+3.hours+51.seconds
-        1040403005001003L,  // 12.days+1.hour+3.seconds+5.milliseconds+1.microsecond+3.nanoseconds
+        1040403005001003L, // 12.days+1.hour+3.seconds+5.milliseconds+1.microsecond+3.nanoseconds
         1L
       )
       for (ns <- nss) {
@@ -344,17 +354,17 @@ trait TimeLikeSpec[T <: TimeLike[T]] extends WordSpec with GeneratorDrivenProper
     "overflow millis" in {
       val millis = TimeUnit.NANOSECONDS.toMillis(Long.MaxValue)
       fromMilliseconds(millis) match {
-        case Nanoseconds(ns) => assert(ns == millis*1e6)
+        case Nanoseconds(ns) => assert(ns == millis * 1e6)
       }
-      assert(fromMilliseconds(millis+1) == Top)
+      assert(fromMilliseconds(millis + 1) == Top)
     }
 
     "underflow millis" in {
       val millis = TimeUnit.NANOSECONDS.toMillis(Long.MinValue)
       fromMilliseconds(millis) match {
-        case Nanoseconds(ns) => assert(ns == millis*1e6)
+        case Nanoseconds(ns) => assert(ns == millis * 1e6)
       }
-      assert(fromMilliseconds(millis-1) == Bottom)
+      assert(fromMilliseconds(millis - 1) == Bottom)
     }
   }
 }
@@ -385,10 +395,8 @@ class TimeFormatTest extends WordSpec {
 }
 
 @RunWith(classOf[JUnitRunner])
-class TimeTest extends { val ops = Time }
-  with TimeLikeSpec[Time]
-  with Eventually
-  with IntegrationPatience {
+class TimeTest extends { val ops = Time } with TimeLikeSpec[Time]
+with Eventually with IntegrationPatience {
 
   "Time" should {
     "work in collections" in {
@@ -397,7 +405,9 @@ class TimeTest extends { val ops = Time }
       assert(t0 == t1)
       assert(t0.hashCode == t1.hashCode)
       val pairs = List((t0, "foo"), (t1, "bar"))
-      assert(pairs.groupBy { case (time: Time, value: String) => time } == Map(t0 -> pairs))
+      assert(
+        pairs.groupBy { case (time: Time, value: String) => time } == Map(
+          t0 -> pairs))
     }
 
     "now should be now" in {
@@ -544,13 +554,17 @@ class TimeTest extends { val ops = Time }
     }
 
     "max" in {
-      assert((10.seconds.afterEpoch max 5.seconds.afterEpoch) == 10.seconds.afterEpoch)
-      assert((5.seconds.afterEpoch max 10.seconds.afterEpoch) == 10.seconds.afterEpoch)
+      assert(
+        (10.seconds.afterEpoch max 5.seconds.afterEpoch) == 10.seconds.afterEpoch)
+      assert(
+        (5.seconds.afterEpoch max 10.seconds.afterEpoch) == 10.seconds.afterEpoch)
     }
 
     "min" in {
-      assert((10.seconds.afterEpoch min 5.seconds.afterEpoch) == 5.seconds.afterEpoch)
-      assert((5.seconds.afterEpoch min 10.seconds.afterEpoch) == 5.seconds.afterEpoch)
+      assert(
+        (10.seconds.afterEpoch min 5.seconds.afterEpoch) == 5.seconds.afterEpoch)
+      assert(
+        (5.seconds.afterEpoch min 10.seconds.afterEpoch) == 5.seconds.afterEpoch)
     }
 
     "moreOrLessEquals" in {
@@ -565,7 +579,8 @@ class TimeTest extends { val ops = Time }
       val format = new TimeFormat("yyyy-MM-dd HH:mm:ss.SSS")
       val t0 = format.parse("2010-12-24 11:04:07.567")
       assert(t0.floor(1.millisecond) == t0)
-      assert(t0.floor(10.milliseconds) == format.parse("2010-12-24 11:04:07.560"))
+      assert(
+        t0.floor(10.milliseconds) == format.parse("2010-12-24 11:04:07.560"))
       assert(t0.floor(1.second) == format.parse("2010-12-24 11:04:07.000"))
       assert(t0.floor(5.second) == format.parse("2010-12-24 11:04:05.000"))
       assert(t0.floor(1.minute) == format.parse("2010-12-24 11:04:00.000"))
@@ -595,20 +610,28 @@ class TimeTest extends { val ops = Time }
       val tolerance = 2.microseconds // we permit 1us slop
 
       forAll { i: Int =>
-        assert(Time.fromSeconds(i).moreOrLessEquals(Time.fromFractionalSeconds(i.toDouble), tolerance))
+        assert(Time
+          .fromSeconds(i)
+          .moreOrLessEquals(Time.fromFractionalSeconds(i.toDouble), tolerance))
       }
 
       forAll { d: Double =>
         val magic = 9223372036854775L // cribbed from Time.fromMicroseconds
         val microseconds = d * 1.second.inMicroseconds
-        whenever (microseconds > -magic && microseconds < magic) {
-          assert(Time.fromMicroseconds(microseconds.toLong).moreOrLessEquals(Time.fromFractionalSeconds(d), tolerance))
+        whenever(microseconds > -magic && microseconds < magic) {
+          assert(
+            Time
+              .fromMicroseconds(microseconds.toLong)
+              .moreOrLessEquals(Time.fromFractionalSeconds(d), tolerance))
         }
       }
 
       forAll { l: Long =>
         val seconds: Double = l.toDouble / 1.second.inNanoseconds
-        assert(Time.fromFractionalSeconds(seconds).moreOrLessEquals(Time.fromNanoseconds(l), tolerance))
+        assert(
+          Time
+            .fromFractionalSeconds(seconds)
+            .moreOrLessEquals(Time.fromNanoseconds(l), tolerance))
       }
     }
 
@@ -616,28 +639,36 @@ class TimeTest extends { val ops = Time }
       assert(Time.fromMicroseconds(0).inNanoseconds == 0L)
       assert(Time.fromMicroseconds(-1).inNanoseconds == -1L * 1000L)
 
-      assert(Time.fromMicroseconds(Long.MaxValue).inNanoseconds == Long.MaxValue)
-      assert(Time.fromMicroseconds(Long.MaxValue-1) == Time.Top)
+      assert(
+        Time.fromMicroseconds(Long.MaxValue).inNanoseconds == Long.MaxValue)
+      assert(Time.fromMicroseconds(Long.MaxValue - 1) == Time.Top)
 
       assert(Time.fromMicroseconds(Long.MinValue) == Time.Bottom)
-      assert(Time.fromMicroseconds(Long.MinValue+1) == Time.Bottom)
+      assert(Time.fromMicroseconds(Long.MinValue + 1) == Time.Bottom)
 
-      val currentTimeMicros = System.currentTimeMillis()*1000
-      assert(Time.fromMicroseconds(currentTimeMicros).inNanoseconds == currentTimeMicros.microseconds.inNanoseconds)
+      val currentTimeMicros = System.currentTimeMillis() * 1000
+      assert(
+        Time
+          .fromMicroseconds(currentTimeMicros)
+          .inNanoseconds == currentTimeMicros.microseconds.inNanoseconds)
     }
 
     "fromMillis" in {
       assert(Time.fromMilliseconds(0).inNanoseconds == 0L)
       assert(Time.fromMilliseconds(-1).inNanoseconds == -1L * 1000000L)
 
-      assert(Time.fromMilliseconds(Long.MaxValue).inNanoseconds == Long.MaxValue)
-      assert(Time.fromMilliseconds(Long.MaxValue-1) == Time.Top)
+      assert(
+        Time.fromMilliseconds(Long.MaxValue).inNanoseconds == Long.MaxValue)
+      assert(Time.fromMilliseconds(Long.MaxValue - 1) == Time.Top)
 
       assert(Time.fromMilliseconds(Long.MinValue) == Time.Bottom)
-      assert(Time.fromMilliseconds(Long.MinValue+1) == Time.Bottom)
+      assert(Time.fromMilliseconds(Long.MinValue + 1) == Time.Bottom)
 
       val currentTimeMs = System.currentTimeMillis
-      assert(Time.fromMilliseconds(currentTimeMs).inNanoseconds == currentTimeMs * 1000000L)
+      assert(
+        Time
+          .fromMilliseconds(currentTimeMs)
+          .inNanoseconds == currentTimeMs * 1000000L)
     }
 
     "until" in {

@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 package com.twitter.scalding
 
 import java.util.Calendar
@@ -32,7 +32,8 @@ object AbsoluteDuration extends java.io.Serializable {
   val SEC_IN_MS = 1000
   val MIN_IN_MS = 60 * SEC_IN_MS
   val HOUR_IN_MS = 60 * MIN_IN_MS
-  val UTC_UNITS = List[TimeCons]((Hours, HOUR_IN_MS),
+  val UTC_UNITS = List[TimeCons](
+    (Hours, HOUR_IN_MS),
     (Minutes, MIN_IN_MS),
     (Seconds, SEC_IN_MS),
     (Millisecs, 1)).reverse
@@ -48,17 +49,21 @@ object AbsoluteDuration extends java.io.Serializable {
   def apply(count: Long, tunit: TimeUnit): AbsoluteDuration =
     fromMillisecs(tunit.toMillis(count))
 
-  def fromMillisecs(diffInMs: Long): AbsoluteDuration = fromMillisecs(diffInMs, UTC_UNITS, Nil)
+  def fromMillisecs(diffInMs: Long): AbsoluteDuration =
+    fromMillisecs(diffInMs, UTC_UNITS, Nil)
 
   @tailrec
-  private def fromMillisecs(diffInMs: Long, units: List[TimeCons], acc: List[AbsoluteDuration]): AbsoluteDuration = {
+  private def fromMillisecs(
+      diffInMs: Long,
+      units: List[TimeCons],
+      acc: List[AbsoluteDuration]): AbsoluteDuration = {
 
     if (diffInMs == 0L) {
       //We are done:
       acc match {
-        case Nil => units.head._1(0)
+        case Nil        => units.head._1(0)
         case (h :: Nil) => h
-        case _ => AbsoluteDurationList(acc)
+        case _          => AbsoluteDurationList(acc)
       }
     } else {
       units match {
@@ -79,9 +84,12 @@ object AbsoluteDuration extends java.io.Serializable {
           // We can't go any further, try to jam the rest into this unit:
           val (fn, cnt) = tc
           val theseUnits = diffInMs / cnt
-          require((theseUnits <= Int.MaxValue) && (theseUnits >= Int.MinValue),
-            "diff not representable in an Int: " + theseUnits + AbsoluteDurationList(acc) +
-              "total: " + (diffInMs + AbsoluteDurationList(acc).toMillisecs))
+          require(
+            (theseUnits <= Int.MaxValue) && (theseUnits >= Int.MinValue),
+            "diff not representable in an Int: " + theseUnits + AbsoluteDurationList(
+              acc) +
+              "total: " + (diffInMs + AbsoluteDurationList(acc).toMillisecs)
+          )
           val thisPart = fn(theseUnits.toInt)
           if (acc.isEmpty)
             thisPart
@@ -90,7 +98,8 @@ object AbsoluteDuration extends java.io.Serializable {
         }
         case Nil => {
           // These are left over millisecs, but should be unreachable
-          sys.error("this is only reachable if units is passed with a length == 0, which should never happen")
+          sys.error(
+            "this is only reachable if units is passed with a length == 0, which should never happen")
         }
       }
     }
@@ -104,7 +113,8 @@ sealed trait AbsoluteDuration extends Duration with Ordered[AbsoluteDuration] {
   // These are all in terms of toMillisecs
   def toSeconds: Double = toMillisecs / 1000.0
   override def addTo(that: RichDate) = RichDate(that.timestamp + toMillisecs)
-  override def subtractFrom(that: RichDate) = RichDate(that.timestamp - toMillisecs)
+  override def subtractFrom(that: RichDate) =
+    RichDate(that.timestamp - toMillisecs)
 
   def compare(that: AbsoluteDuration): Int =
     this.toMillisecs.compareTo(that.toMillisecs)
@@ -119,9 +129,9 @@ sealed trait AbsoluteDuration extends Duration with Ordered[AbsoluteDuration] {
     AbsoluteDuration.fromMillisecs(this.toMillisecs * that)
 
   /**
-   * Returns the number of times that divides this and the remainder
-   * The law is: that * result_.1 + result._2 == this
-   */
+    * Returns the number of times that divides this and the remainder
+    * The law is: that * result_.1 + result._2 == this
+    */
   def /(that: AbsoluteDuration): (Long, AbsoluteDuration) = {
     val divs = (this.toMillisecs / that.toMillisecs)
     val rem = this - (that * divs)
@@ -131,38 +141,43 @@ sealed trait AbsoluteDuration extends Duration with Ordered[AbsoluteDuration] {
   override def equals(eq: Any): Boolean = {
     eq match {
       case eqo: AbsoluteDuration => (eqo.toMillisecs) == this.toMillisecs
-      case _ => false
+      case _                     => false
     }
   }
   override def hashCode: Int = toMillisecs.hashCode
 }
 
-case class Millisecs(cnt: Int) extends Duration(Calendar.MILLISECOND, cnt, DateOps.UTC)
-  with AbsoluteDuration {
+case class Millisecs(cnt: Int)
+    extends Duration(Calendar.MILLISECOND, cnt, DateOps.UTC)
+    with AbsoluteDuration {
   override def toSeconds = cnt / 1000.0
   override def toMillisecs = cnt.toLong
 }
 
-case class Seconds(cnt: Int) extends Duration(Calendar.SECOND, cnt, DateOps.UTC)
-  with AbsoluteDuration {
+case class Seconds(cnt: Int)
+    extends Duration(Calendar.SECOND, cnt, DateOps.UTC)
+    with AbsoluteDuration {
   override def toSeconds = cnt.toDouble
   override def toMillisecs = (cnt.toLong) * 1000L
 }
 
-case class Minutes(cnt: Int) extends Duration(Calendar.MINUTE, cnt, DateOps.UTC)
-  with AbsoluteDuration {
+case class Minutes(cnt: Int)
+    extends Duration(Calendar.MINUTE, cnt, DateOps.UTC)
+    with AbsoluteDuration {
   override def toSeconds = cnt * 60.0
   override def toMillisecs = cnt.toLong * 60L * 1000L
 }
 
-case class Hours(cnt: Int) extends Duration(Calendar.HOUR, cnt, DateOps.UTC)
-  with AbsoluteDuration {
+case class Hours(cnt: Int)
+    extends Duration(Calendar.HOUR, cnt, DateOps.UTC)
+    with AbsoluteDuration {
   override def toSeconds = cnt * 60.0 * 60.0
   override def toMillisecs = cnt.toLong * 60L * 60L * 1000L
 }
 
 case class AbsoluteDurationList(parts: List[AbsoluteDuration])
-  extends AbstractDurationList[AbsoluteDuration](parts) with AbsoluteDuration {
-  override def toSeconds = parts.map{ _.toSeconds }.sum
-  override def toMillisecs: Long = parts.map{ _.toMillisecs }.sum
+    extends AbstractDurationList[AbsoluteDuration](parts)
+    with AbsoluteDuration {
+  override def toSeconds = parts.map { _.toSeconds }.sum
+  override def toMillisecs: Long = parts.map { _.toMillisecs }.sum
 }

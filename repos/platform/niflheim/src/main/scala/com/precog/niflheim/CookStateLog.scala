@@ -1,19 +1,19 @@
 /*
- *  ____    ____    _____    ____    ___     ____ 
+ *  ____    ____    _____    ____    ___     ____
  * |  _ \  |  _ \  | ____|  / ___|  / _/    / ___|        Precog (R)
  * | |_) | | |_) | |  _|   | |     | |  /| | |  _         Advanced Analytics Engine for NoSQL Data
  * |  __/  |  _ <  | |___  | |___  |/ _| | | |_| |        Copyright (C) 2010 - 2013 SlamData, Inc.
  * |_|     |_| \_\ |_____|  \____|   /__/   \____|        All Rights Reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the 
- * GNU Affero General Public License as published by the Free Software Foundation, either version 
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Affero General Public License as published by the Free Software Foundation, either version
  * 3 of the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
  * the GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License along with this 
+ * You should have received a copy of the GNU Affero General Public License along with this
  * program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
@@ -36,7 +36,8 @@ object CookStateLog {
   final val logName = "CookStateLog"
 }
 
-class CookStateLog(baseDir: File, scheduler: ScheduledExecutorService) extends Logging {
+class CookStateLog(baseDir: File, scheduler: ScheduledExecutorService)
+    extends Logging {
   import CookStateLog._
 
   private[this] val workLock = FileLock(baseDir, lockName)
@@ -54,7 +55,9 @@ class CookStateLog(baseDir: File, scheduler: ScheduledExecutorService) extends L
 
   def close = {
     if (pendingCookIds0.size > 0) {
-      logger.warn("Closing txLog with pending cooks: " + pendingCookIds0.keys.mkString("[", ", ", "]"))
+      logger.warn(
+        "Closing txLog with pending cooks: " + pendingCookIds0.keys
+          .mkString("[", ", ", "]"))
     }
     txLog.close()
     workLock.release
@@ -63,7 +66,7 @@ class CookStateLog(baseDir: File, scheduler: ScheduledExecutorService) extends L
   // Maps from blockId to txKey
   private[this] var pendingCookIds0 = SortedMap.empty[Long, Long]
 
-  private[this] var currentBlockId0 = -1l
+  private[this] var currentBlockId0 = -1L
 
   def pendingCookIds: List[Long] = pendingCookIds0.keys.toList
 
@@ -115,7 +118,8 @@ class CookStateLog(baseDir: File, scheduler: ScheduledExecutorService) extends L
   def completeCook(blockId: Long) = {
     assert(pendingCookIds0 contains blockId)
 
-    val completeTxKey = txLog.put(TXLogEntry.toBytes(CompleteCook(blockId)), true)
+    val completeTxKey =
+      txLog.put(TXLogEntry.toBytes(CompleteCook(blockId)), true)
 
     // Remove the entry from pending map and advance the mark to the
     // lowest remaining txKey, or the txKey of the completion if there
@@ -125,11 +129,10 @@ class CookStateLog(baseDir: File, scheduler: ScheduledExecutorService) extends L
 
     txLog.mark(pendingCookIds0.headOption match {
       case Some((_, txKey)) => txKey
-      case None => completeTxKey
+      case None             => completeTxKey
     })
   }
 }
-
 
 sealed trait TXLogEntry {
   def blockId: Long
@@ -145,13 +148,20 @@ object TXLogEntry extends Logging {
     buffer.getShort match {
       case 0x1 => StartCook(buffer.getLong)
       case 0x2 => CompleteCook(buffer.getLong)
-      case other => logger.error("Unknown TX log record type = %d, isCTRL = %s, isEOB = %s from %s".format(other, record.isCTRL, record.isEOB, record.data.mkString("[", ", ", "]")))
+      case other =>
+        logger.error(
+          "Unknown TX log record type = %d, isCTRL = %s, isEOB = %s from %s"
+            .format(
+              other,
+              record.isCTRL,
+              record.isEOB,
+              record.data.mkString("[", ", ", "]")))
     }
   }
 
   def toBytes(entry: TXLogEntry): Array[Array[Byte]] = {
     val (tpe, size) = entry match {
-      case StartCook(blockId) => (0x1, 42)
+      case StartCook(blockId)    => (0x1, 42)
       case CompleteCook(blockId) => (0x2, 42)
     }
 
@@ -164,5 +174,3 @@ object TXLogEntry extends Logging {
     Array[Array[Byte]](record)
   }
 }
-
-

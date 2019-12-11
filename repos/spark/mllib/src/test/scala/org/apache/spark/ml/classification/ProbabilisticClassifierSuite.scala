@@ -24,15 +24,19 @@ final class TestProbabilisticClassificationModel(
     override val uid: String,
     override val numFeatures: Int,
     override val numClasses: Int)
-  extends ProbabilisticClassificationModel[Vector, TestProbabilisticClassificationModel] {
+    extends ProbabilisticClassificationModel[
+      Vector,
+      TestProbabilisticClassificationModel] {
 
-  override def copy(extra: org.apache.spark.ml.param.ParamMap): this.type = defaultCopy(extra)
+  override def copy(extra: org.apache.spark.ml.param.ParamMap): this.type =
+    defaultCopy(extra)
 
   override protected def predictRaw(input: Vector): Vector = {
     input
   }
 
-  override protected def raw2probabilityInPlace(rawPrediction: Vector): Vector = {
+  override protected def raw2probabilityInPlace(
+      rawPrediction: Vector): Vector = {
     rawPrediction
   }
 
@@ -40,7 +44,6 @@ final class TestProbabilisticClassificationModel(
     predict(input)
   }
 }
-
 
 class ProbabilisticClassifierSuite extends SparkFunSuite {
 
@@ -61,11 +64,12 @@ class ProbabilisticClassifierSuite extends SparkFunSuite {
 object ProbabilisticClassifierSuite {
 
   /**
-   * Mapping from all Params to valid settings which differ from the defaults.
-   * This is useful for tests which need to exercise all Params, such as save/load.
-   * This excludes input columns to simplify some tests.
-   */
-  val allParamSettings: Map[String, Any] = ClassifierSuite.allParamSettings ++ Map(
+    * Mapping from all Params to valid settings which differ from the defaults.
+    * This is useful for tests which need to exercise all Params, such as save/load.
+    * This excludes input columns to simplify some tests.
+    */
+  val allParamSettings
+      : Map[String, Any] = ClassifierSuite.allParamSettings ++ Map(
     "probabilityCol" -> "myProbability",
     "thresholds" -> Array(0.4, 0.6)
   )

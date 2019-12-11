@@ -25,8 +25,9 @@ object TheseTest extends SpecLite {
     "List" ! forAll { (a: List[Int], b: List[Int]) =>
       unalignList(Align[List].align(a, b)) must_=== ((a, b))
     }
-    "EphemeralStream" ! forAll { (a: EphemeralStream[Int], b: EphemeralStream[Int]) =>
-      unalignStream(Align[EphemeralStream].align(a, b)) must_=== ((a, b))
+    "EphemeralStream" ! forAll {
+      (a: EphemeralStream[Int], b: EphemeralStream[Int]) =>
+        unalignStream(Align[EphemeralStream].align(a, b)) must_=== ((a, b))
     }
   }
 
@@ -35,7 +36,7 @@ object TheseTest extends SpecLite {
       ab.toThese.onlyThisOrThat must_=== Some(ab)
     }
     "handle both" ! forAll { (a: Int, b: String) =>
-      \&/.Both(a,b).onlyThisOrThat must_=== None
+      \&/.Both(a, b).onlyThisOrThat must_=== None
     }
   }
 

@@ -18,9 +18,12 @@ object Common {
   def newProject(projectName: String): Project =
     newProject(projectName, file(projectName))
 
-  def unmanagedJarsFrom(sdkDirectory: File, subdirectories: String*): Classpath = {
-    val sdkPathFinder = subdirectories.foldLeft(PathFinder.empty) { (finder, dir) =>
-      finder +++ (sdkDirectory / dir)
+  def unmanagedJarsFrom(
+      sdkDirectory: File,
+      subdirectories: String*): Classpath = {
+    val sdkPathFinder = subdirectories.foldLeft(PathFinder.empty) {
+      (finder, dir) =>
+        finder +++ (sdkDirectory / dir)
     }
     (sdkPathFinder * globFilter("*.jar")).classpath
   }
@@ -38,22 +41,24 @@ object Common {
     Path.userHome / ".IdeaData" / "IDEA-15" / "scala" / "test-system"
 
   def ivyHomeDir: File =
-    Option(System.getProperty("sbt.ivy.home")).fold(Path.userHome / ".ivy2")(file)
+    Option(System.getProperty("sbt.ivy.home"))
+      .fold(Path.userHome / ".ivy2")(file)
 
-  def commonTestSettings(packagedPluginDir: SettingKey[File]): Seq[Setting[_]] = Seq(
-    fork in Test := true,
-    parallelExecution := false,
-    javaOptions in Test := Seq(
-      "-Xms128m",
-      "-Xmx4096m",
-      "-XX:MaxPermSize=350m",
-      "-ea",
-      s"-Didea.system.path=$testSystemDir",
-      s"-Didea.config.path=$testConfigDir",
-      s"-Dsbt.ivy.home=$ivyHomeDir",
-      s"-Dplugin.path=${packagedPluginDir.value}"
-    ),
-    envVars in Test += "NO_FS_ROOTS_ACCESS_CHECK" -> "yes",
-    fullClasspath in Test <<= fullClasspath.in(Test).map(filterTestClasspath)
-  )
+  def commonTestSettings(packagedPluginDir: SettingKey[File]): Seq[Setting[_]] =
+    Seq(
+      fork in Test := true,
+      parallelExecution := false,
+      javaOptions in Test := Seq(
+        "-Xms128m",
+        "-Xmx4096m",
+        "-XX:MaxPermSize=350m",
+        "-ea",
+        s"-Didea.system.path=$testSystemDir",
+        s"-Didea.config.path=$testConfigDir",
+        s"-Dsbt.ivy.home=$ivyHomeDir",
+        s"-Dplugin.path=${packagedPluginDir.value}"
+      ),
+      envVars in Test += "NO_FS_ROOTS_ACCESS_CHECK" -> "yes",
+      fullClasspath in Test <<= fullClasspath.in(Test).map(filterTestClasspath)
+    )
 }

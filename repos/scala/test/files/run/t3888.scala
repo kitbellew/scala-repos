@@ -1,4 +1,3 @@
-
 // in a match, which notion of equals prevails?
 // extending Tuple doesn't seem to be at issue here.
 object Test {
@@ -9,18 +8,18 @@ object Test {
   def m1 =
     (1, 2) match {
       case T1 => true
-      case _ => false
+      case _  => false
     }
 
   def m2 =
     (1, 2) match {
       case T2 => true
-      case _ => false
+      case _  => false
     }
 
   def main(args: Array[String]) = {
-    assert( m1 )
-    assert( m2 )
+    assert(m1)
+    assert(m2)
   }
 }
 

@@ -41,18 +41,25 @@ class NotFoundSpec extends ScalatraSpec {
     }
   }, "/default/*")
 
-  addServlet(new ScalatraServlet {
-    post("/no-get") { "foo" }
-    put("/no-get") { "foo" }
+  addServlet(
+    new ScalatraServlet {
+      post("/no-get") { "foo" }
+      put("/no-get") { "foo" }
 
-    notFound { "custom not found" }
-    methodNotAllowed { _ => "custom method not allowed" }
-  }, "/custom/*")
+      notFound { "custom not found" }
+      methodNotAllowed { _ =>
+        "custom method not allowed"
+      }
+    },
+    "/custom/*"
+  )
 
   addServlet(new ScalatraServlet {
     post("/no-get") { "foo" }
     notFound { "fell through" }
-    methodNotAllowed { _ => pass() }
+    methodNotAllowed { _ =>
+      pass()
+    }
   }, "/pass-from-not-allowed/*")
 
   def customNotFound = get("/custom/matches-nothing") {

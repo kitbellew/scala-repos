@@ -38,8 +38,8 @@ import scalafx.scene.shape.Rectangle
 import scalafx.scene.{Group, Scene}
 
 /**
- * Example adapted from code showed in [[http://docs.oracle.com/javafx/2/canvas/jfxpub-canvas.htm]].
- */
+  * Example adapted from code showed in [[http://docs.oracle.com/javafx/2/canvas/jfxpub-canvas.htm]].
+  */
 object CanvasDoodleTest extends JFXApp {
 
   val canvas = new Canvas(200, 200)
@@ -48,7 +48,14 @@ object CanvasDoodleTest extends JFXApp {
   val rect = new Rectangle {
     height = 400
     width = 400
-    fill = new LinearGradient(0, 0, 1, 1, true, CycleMethod.Reflect, List(Stop(0, Color.Red), Stop(1, Color.Yellow)))
+    fill = new LinearGradient(
+      0,
+      0,
+      1,
+      1,
+      true,
+      CycleMethod.Reflect,
+      List(Stop(0, Color.Red), Stop(1, Color.Yellow)))
   }
 
   val rootPane = new Group
@@ -81,11 +88,11 @@ object CanvasDoodleTest extends JFXApp {
   }
 
   /**
-   * Resets the canvas to its original look by filling in a rectangle covering
-   * its entire width and height. Color.Blue is used in this demo.
-   *
-   * @param color The color to fill
-   */
+    * Resets the canvas to its original look by filling in a rectangle covering
+    * its entire width and height. Color.Blue is used in this demo.
+    *
+    * @param color The color to fill
+    */
   private def reset(color: Color) {
     gc.fill = color
     gc.fillRect(0, 0, canvas.width.get, canvas.height.get)

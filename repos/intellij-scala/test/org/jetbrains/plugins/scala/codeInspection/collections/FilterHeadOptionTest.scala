@@ -4,9 +4,9 @@ package codeInspection.collections
 import org.jetbrains.plugins.scala.codeInspection.InspectionBundle
 
 /**
- * Nikolay.Tropin
- * 5/30/13
- */
+  * Nikolay.Tropin
+  * 5/30/13
+  */
 class FilterHeadOptionTest extends OperationsOnCollectionInspectionTest {
   val hint = InspectionBundle.message("filter.headOption.hint")
   def test_1() {
@@ -34,8 +34,7 @@ class FilterHeadOptionTest extends OperationsOnCollectionInspectionTest {
   }
 
   def testSideEffect(): Unit = {
-    checkTextHasNoErrors(
-      """
+    checkTextHasNoErrors("""
         |List(0, 1).filter { x =>
         |  println(x)
         |  true

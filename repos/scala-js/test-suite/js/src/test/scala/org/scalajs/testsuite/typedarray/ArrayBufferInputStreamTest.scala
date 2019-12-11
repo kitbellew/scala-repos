@@ -65,7 +65,9 @@ trait ArrayBufferInputStreamTest {
     val buf = new Array[Byte](20)
 
     assertEquals(5, stream.read(buf, 10, 5))
-    assertArrayEquals(byteArray(Seq.fill(10)(0) ++ (1 to 5) ++ Seq.fill(5)(0)), buf)
+    assertArrayEquals(
+      byteArray(Seq.fill(10)(0) ++ (1 to 5) ++ Seq.fill(5)(0)),
+      buf)
 
     assertEquals(20, stream.read(buf, 0, 20))
     assertArrayEquals(byteArray(6 to 25), buf)
@@ -85,7 +87,7 @@ trait ArrayBufferInputStreamTest {
     assertArrayEquals(byteArray((46 to 50) ++ (11 to 25)), buf)
 
     assertEquals(-1, stream.read(buf, 0, 10))
-    assertEquals(0, stream.read(buf, 0,  0))
+    assertEquals(0, stream.read(buf, 0, 0))
     assertArrayEquals(byteArray((46 to 50) ++ (11 to 25)), buf)
   }
 
@@ -142,7 +144,7 @@ trait ArrayBufferInputStreamTest {
     def read(range: Range) = for (i <- range) assertEquals(i, stream.read())
 
     read(1 to 10)
-    stream.reset()  // mark must be 0 at creation
+    stream.reset() // mark must be 0 at creation
     read(1 to 5)
     stream.mark(length)
     read(6 to 22)
@@ -173,7 +175,8 @@ trait ArrayBufferInputStreamTest {
 
 object ArrayBufferInputStreamWithoutOffsetTest extends Requires.TypedArray
 
-class ArrayBufferInputStreamWithoutOffsetTest extends ArrayBufferInputStreamTest {
+class ArrayBufferInputStreamWithoutOffsetTest
+    extends ArrayBufferInputStreamTest {
   def mkStream(seq: Seq[Int]): InputStream = {
     import js.JSConverters._
     new ArrayBufferInputStream(new Int8Array(seq.toJSArray).buffer)

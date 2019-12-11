@@ -1,7 +1,7 @@
 package lila.worldMap
 
 import akka.actor._
-import com.sanoma.cda.geoip.{ MaxMindIpGeo, IpLocation }
+import com.sanoma.cda.geoip.{MaxMindIpGeo, IpLocation}
 import java.security.MessageDigest
 import lila.hub.actorApi.round.SocketEvent
 import play.api.libs.iteratee._
@@ -10,9 +10,8 @@ import scala.concurrent.duration._
 
 import lila.rating.PerfType
 
-private final class Stream(
-    geoIp: MaxMindIpGeo,
-    geoIpCacheTtl: Duration) extends Actor {
+private final class Stream(geoIp: MaxMindIpGeo, geoIpCacheTtl: Duration)
+    extends Actor {
 
   import Stream.game2json
 
@@ -39,11 +38,12 @@ private final class Stream(
     case SocketEvent.Stop(id) =>
       games -= id
       channel push Stream.Event.Remove(id)
-    case Stream.Get => sender ! {
-      Enumerator.enumerate(games.values.map(game2json(makeMd5))) andThen
-        Enumerator.enumerate(List(loadCompleteJson)) andThen
-        producer
-    }
+    case Stream.Get =>
+      sender ! {
+        Enumerator.enumerate(games.values.map(game2json(makeMd5))) andThen
+          Enumerator.enumerate(List(loadCompleteJson)) andThen
+          producer
+      }
   }
 
   val (enumerator, channel) = Concurrent.broadcast[Stream.Event]

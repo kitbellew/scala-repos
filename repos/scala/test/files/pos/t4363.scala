@@ -3,6 +3,6 @@ object Test {
 
   () => {
     trait FunkySuite extends Suite { override def bar() = () }
-    class MySuite extends FunkySuite { }
+    class MySuite extends FunkySuite {}
   }
 }

@@ -26,10 +26,10 @@ import org.apache.spark.scheduler.SchedulingMode
 
 // scalastyle:off
 /**
- * Continuously generates jobs that expose various features of the WebUI (internal testing tool).
- *
- * Usage: ./bin/spark-class org.apache.spark.ui.UIWorkloadGenerator [master] [FIFO|FAIR] [#job set (4 jobs per set)]
- */
+  * Continuously generates jobs that expose various features of the WebUI (internal testing tool).
+  *
+  * Usage: ./bin/spark-class org.apache.spark.ui.UIWorkloadGenerator [master] [FIFO|FAIR] [#job set (4 jobs per set)]
+  */
 // scalastyle:on
 private[spark] object UIWorkloadGenerator {
 
@@ -68,10 +68,12 @@ private[spark] object UIWorkloadGenerator {
     val jobs = Seq[(String, () => Long)](
       ("Count", baseData.count),
       ("Cache and Count", baseData.map(x => x).cache().count),
-      ("Single Shuffle", baseData.map(x => (x % 10, x)).reduceByKey(_ + _).count),
+      (
+        "Single Shuffle",
+        baseData.map(x => (x % 10, x)).reduceByKey(_ + _).count),
       ("Entirely failed phase", baseData.map(x => throw new Exception).count),
       ("Partially failed phase", {
-        baseData.map{x =>
+        baseData.map { x =>
           val probFailure = (4.0 / NUM_PARTITIONS)
           if (nextFloat() < probFailure) {
             throw new Exception("This is a task failure")
@@ -80,7 +82,7 @@ private[spark] object UIWorkloadGenerator {
         }.count
       }),
       ("Partially failed phase (longer tasks)", {
-        baseData.map{x =>
+        baseData.map { x =>
           val probFailure = (4.0 / NUM_PARTITIONS)
           if (nextFloat() < probFailure) {
             Thread.sleep(100)

@@ -25,8 +25,10 @@ import org.apache.spark.mllib.util.MLlibTestSparkContext
 import org.apache.spark.mllib.util.TestingUtils._
 import org.apache.spark.sql.{DataFrame, Row}
 
-class StandardScalerSuite extends SparkFunSuite with MLlibTestSparkContext
-  with DefaultReadWriteTest {
+class StandardScalerSuite
+    extends SparkFunSuite
+    with MLlibTestSparkContext
+    with DefaultReadWriteTest {
 
   @transient var data: Array[Vector] = _
   @transient var resWithStd: Array[Vector] = _
@@ -61,19 +63,22 @@ class StandardScalerSuite extends SparkFunSuite with MLlibTestSparkContext
   def assertResult(df: DataFrame): Unit = {
     df.select("standardized_features", "expected").collect().foreach {
       case Row(vector1: Vector, vector2: Vector) =>
-        assert(vector1 ~== vector2 absTol 1E-5,
+        assert(
+          vector1 ~== vector2 absTol 1e-5,
           "The vector value is not correct after standardization.")
     }
   }
 
   test("params") {
     ParamsSuite.checkParams(new StandardScaler)
-    ParamsSuite.checkParams(new StandardScalerModel("empty",
-      Vectors.dense(1.0), Vectors.dense(2.0)))
+    ParamsSuite.checkParams(
+      new StandardScalerModel("empty", Vectors.dense(1.0), Vectors.dense(2.0)))
   }
 
   test("Standardization with default parameter") {
-    val df0 = sqlContext.createDataFrame(data.zip(resWithStd)).toDF("features", "expected")
+    val df0 = sqlContext
+      .createDataFrame(data.zip(resWithStd))
+      .toDF("features", "expected")
 
     val standardScaler0 = new StandardScaler()
       .setInputCol("features")
@@ -84,9 +89,14 @@ class StandardScalerSuite extends SparkFunSuite with MLlibTestSparkContext
   }
 
   test("Standardization with setter") {
-    val df1 = sqlContext.createDataFrame(data.zip(resWithBoth)).toDF("features", "expected")
-    val df2 = sqlContext.createDataFrame(data.zip(resWithMean)).toDF("features", "expected")
-    val df3 = sqlContext.createDataFrame(data.zip(data)).toDF("features", "expected")
+    val df1 = sqlContext
+      .createDataFrame(data.zip(resWithBoth))
+      .toDF("features", "expected")
+    val df2 = sqlContext
+      .createDataFrame(data.zip(resWithMean))
+      .toDF("features", "expected")
+    val df3 =
+      sqlContext.createDataFrame(data.zip(data)).toDF("features", "expected")
 
     val standardScaler1 = new StandardScaler()
       .setInputCol("features")
@@ -124,8 +134,10 @@ class StandardScalerSuite extends SparkFunSuite with MLlibTestSparkContext
   }
 
   test("StandardScalerModel read/write") {
-    val instance = new StandardScalerModel("myStandardScalerModel",
-      Vectors.dense(1.0, 2.0), Vectors.dense(3.0, 4.0))
+    val instance = new StandardScalerModel(
+      "myStandardScalerModel",
+      Vectors.dense(1.0, 2.0),
+      Vectors.dense(3.0, 4.0))
     val newInstance = testDefaultReadWrite(instance)
     assert(newInstance.std === instance.std)
     assert(newInstance.mean === instance.mean)

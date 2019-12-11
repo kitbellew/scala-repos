@@ -5,15 +5,15 @@ import algebra.CommutativeGroup
 import algebra.ring.AdditiveCommutativeGroup
 
 trait AnyValInstances
-  extends IntInstances
-  with    ByteInstances
-  with    CharInstances
-  with    LongInstances
-  with    ShortInstances
-  with    FloatInstances
-  with    DoubleInstances
-  with    BooleanInstances
-  with    UnitInstances
+    extends IntInstances
+    with ByteInstances
+    with CharInstances
+    with LongInstances
+    with ShortInstances
+    with FloatInstances
+    with DoubleInstances
+    with BooleanInstances
+    with UnitInstances
 
 trait IntInstances extends algebra.std.IntInstances {
 
@@ -95,7 +95,7 @@ trait FloatInstances /* missing algebra type classes */ {
   implicit val floatAlgebra: CommutativeGroup[Float] with Order[Float] =
     new CommutativeGroup[Float] with Order[Float] {
       def combine(x: Float, y: Float): Float = x + y
-      def empty: Float = 0F
+      def empty: Float = 0f
       def inverse(x: Float): Float = -x
       def compare(x: Float, y: Float): Int =
         java.lang.Float.compare(x, y)
@@ -112,7 +112,7 @@ trait DoubleInstances /* missing algebra type classes */ {
   implicit val doubleAlgebra: CommutativeGroup[Double] with Order[Double] =
     new CommutativeGroup[Double] with Order[Double] {
       def combine(x: Double, y: Double): Double = x + y
-      def empty: Double = 0D
+      def empty: Double = 0d
       def inverse(x: Double): Double = -x
       def compare(x: Double, y: Double): Int =
         java.lang.Double.compare(x, y)

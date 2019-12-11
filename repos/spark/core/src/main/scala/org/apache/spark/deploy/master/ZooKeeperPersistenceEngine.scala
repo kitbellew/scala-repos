@@ -30,16 +30,16 @@ import org.apache.spark.deploy.SparkCuratorUtil
 import org.apache.spark.internal.Logging
 import org.apache.spark.serializer.Serializer
 
-
-private[master] class ZooKeeperPersistenceEngine(conf: SparkConf, val serializer: Serializer)
-  extends PersistenceEngine
-  with Logging {
+private[master] class ZooKeeperPersistenceEngine(
+    conf: SparkConf,
+    val serializer: Serializer)
+    extends PersistenceEngine
+    with Logging {
 
   private val WORKING_DIR = conf.get("spark.deploy.zookeeper.dir", "/spark") + "/master_status"
   private val zk: CuratorFramework = SparkCuratorUtil.newClient(conf)
 
   SparkCuratorUtil.mkdir(zk, WORKING_DIR)
-
 
   override def persist(name: String, obj: Object): Unit = {
     serializeIntoFile(WORKING_DIR + "/" + name, obj)
@@ -50,8 +50,11 @@ private[master] class ZooKeeperPersistenceEngine(conf: SparkConf, val serializer
   }
 
   override def read[T: ClassTag](prefix: String): Seq[T] = {
-    zk.getChildren.forPath(WORKING_DIR).asScala
-      .filter(_.startsWith(prefix)).flatMap(deserializeFromFile[T])
+    zk.getChildren
+      .forPath(WORKING_DIR)
+      .asScala
+      .filter(_.startsWith(prefix))
+      .flatMap(deserializeFromFile[T])
   }
 
   override def close() {
@@ -65,7 +68,8 @@ private[master] class ZooKeeperPersistenceEngine(conf: SparkConf, val serializer
     zk.create().withMode(CreateMode.PERSISTENT).forPath(path, bytes)
   }
 
-  private def deserializeFromFile[T](filename: String)(implicit m: ClassTag[T]): Option[T] = {
+  private def deserializeFromFile[T](filename: String)(
+      implicit m: ClassTag[T]): Option[T] = {
     val fileData = zk.getData().forPath(WORKING_DIR + "/" + filename)
     try {
       Some(serializer.newInstance().deserialize[T](ByteBuffer.wrap(fileData)))

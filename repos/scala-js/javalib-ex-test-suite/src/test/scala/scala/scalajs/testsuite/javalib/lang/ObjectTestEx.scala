@@ -12,11 +12,11 @@ import org.scalajs.jasminetest.JasmineTest
 import scala.scalajs.js
 
 /** Additional tests for java.lang.Object that have to be in a separate
- *  codebase than testSuite to be meaningful.
- *
- *  If moved to testSuite, those tests "fail to fail" due to mass effects
- *  produced by the immensity of the testSuite codebase.
- */
+  *  codebase than testSuite to be meaningful.
+  *
+  *  If moved to testSuite, those tests "fail to fail" due to mass effects
+  *  produced by the immensity of the testSuite codebase.
+  */
 object ObjectTestEx extends JasmineTest {
 
   describe("java.lang.Object ex") {
@@ -39,7 +39,8 @@ object ObjectTestEx extends JasmineTest {
       val o = new SomeCloneable(5)
       val o2 = o.clone()
       expect(o2.asInstanceOf[js.Any]).not.toBe(o.asInstanceOf[js.Any])
-      expect(o2.getClass.asInstanceOf[js.Any]).toBe(classOf[SomeCloneable].asInstanceOf[js.Any])
+      expect(o2.getClass.asInstanceOf[js.Any])
+        .toBe(classOf[SomeCloneable].asInstanceOf[js.Any])
       expect(o2.x).toEqual(5)
       expect(o2.y()).toEqual(8)
     }

@@ -3,9 +3,12 @@
 package org.ensime.jerk
 
 import org.ensime.api._
-import org.ensime.util.{ EnsimeSpec, EscapingStringInterpolation }
+import org.ensime.util.{EnsimeSpec, EscapingStringInterpolation}
 
-class JerkFormatsSpec extends EnsimeSpec with SprayJsonTestSupport with EnsimeTestData {
+class JerkFormatsSpec
+    extends EnsimeSpec
+    with SprayJsonTestSupport
+    with EnsimeTestData {
 
   import JerkFormats._
   import JerkEnvelopeFormats._
@@ -154,7 +157,11 @@ class JerkFormatsSpec extends EnsimeSpec with SprayJsonTestSupport with EnsimeTe
     )
 
     roundtrip(
-      PrepareRefactorReq(1, 'ignored, RenameRefactorDesc("bar", file1, 1, 100), false): RpcRequest,
+      PrepareRefactorReq(
+        1,
+        'ignored,
+        RenameRefactorDesc("bar", file1, 1, 100),
+        false): RpcRequest,
       s"""{"tpe":"ignored","procId":1,"params":{"newName":"bar","typehint":"RenameRefactorDesc","end":100,"file":"$file1","start":1},"typehint":"PrepareRefactorReq","interactive":false}"""
     )
 
@@ -175,7 +182,9 @@ class JerkFormatsSpec extends EnsimeSpec with SprayJsonTestSupport with EnsimeTe
 
     roundtrip(
       SymbolDesignationsReq(
-        Left(file1), 1, 100,
+        Left(file1),
+        1,
+        100,
         List(ObjectSymbol, ValSymbol)
       ): RpcRequest,
       s"""{"requestedTypes":[{"typehint":"ObjectSymbol"},{"typehint":"ValSymbol"}],"typehint":"SymbolDesignationsReq","end":100,"file":"$file1","start":1}"""
@@ -183,7 +192,9 @@ class JerkFormatsSpec extends EnsimeSpec with SprayJsonTestSupport with EnsimeTe
 
     roundtrip(
       SymbolDesignationsReq(
-        Right(SourceFileInfo(file1, None, None)), 1, 100,
+        Right(SourceFileInfo(file1, None, None)),
+        1,
+        100,
         List(ObjectSymbol, ValSymbol)
       ): RpcRequest,
       s"""{"requestedTypes":[{"typehint":"ObjectSymbol"},{"typehint":"ValSymbol"}],"typehint":"SymbolDesignationsReq","file":{"file":"$file1"}, "end":100,"start":1}"""
@@ -341,13 +352,21 @@ class JerkFormatsSpec extends EnsimeSpec with SprayJsonTestSupport with EnsimeTe
     )
 
     roundtrip(
-      DebugStepEvent(DebugThreadId(207), "threadNameStr", sourcePos1.file, sourcePos1.line): EnsimeServerMessage,
+      DebugStepEvent(
+        DebugThreadId(207),
+        "threadNameStr",
+        sourcePos1.file,
+        sourcePos1.line): EnsimeServerMessage,
       // why is the typehint not the first entry?
       s"""{"line":57,"typehint":"DebugStepEvent","file":"$file1","threadName":"threadNameStr","threadId":207}"""
     )
 
     roundtrip(
-      DebugBreakEvent(DebugThreadId(209), "threadNameStr", sourcePos1.file, sourcePos1.line): EnsimeServerMessage,
+      DebugBreakEvent(
+        DebugThreadId(209),
+        "threadNameStr",
+        sourcePos1.file,
+        sourcePos1.line): EnsimeServerMessage,
       s"""{"line":57,"typehint":"DebugBreakEvent","file":"$file1","threadName":"threadNameStr","threadId":209}"""
     )
 
@@ -360,7 +379,12 @@ class JerkFormatsSpec extends EnsimeSpec with SprayJsonTestSupport with EnsimeTe
       """{"typehint":"DebugVMDisconnectEvent"}"""
     )
     roundtrip(
-      DebugExceptionEvent(33L, dtid, "threadNameStr", Some(sourcePos1.file), Some(sourcePos1.line)): EnsimeServerMessage,
+      DebugExceptionEvent(
+        33L,
+        dtid,
+        "threadNameStr",
+        Some(sourcePos1.file),
+        Some(sourcePos1.line)): EnsimeServerMessage,
       s"""{"line":57,"exception":33,"typehint":"DebugExceptionEvent","file":"$file1","threadName":"threadNameStr","threadId":13}"""
     )
     roundtrip(
@@ -407,12 +431,20 @@ class JerkFormatsSpec extends EnsimeSpec with SprayJsonTestSupport with EnsimeTe
     )
 
     roundtrip(
-      DebugStringInstance("summaryStr", List(debugClassField), "typeNameStr", DebugObjectId(5L)): EnsimeServerMessage,
+      DebugStringInstance(
+        "summaryStr",
+        List(debugClassField),
+        "typeNameStr",
+        DebugObjectId(5L)): EnsimeServerMessage,
       """{"typehint":"DebugStringInstance","typeName":"typeNameStr","fields":[{"index":19,"name":"nameStr","typeName":"typeNameStr","summary":"summaryStr"}],"objectId":{"id":5},"summary":"summaryStr"}"""
     )
 
     roundtrip(
-      DebugObjectInstance("summaryStr", List(debugClassField), "typeNameStr", DebugObjectId(5L)): EnsimeServerMessage,
+      DebugObjectInstance(
+        "summaryStr",
+        List(debugClassField),
+        "typeNameStr",
+        DebugObjectId(5L)): EnsimeServerMessage,
       """{"typehint":"DebugObjectInstance","typeName":"typeNameStr","fields":[{"index":19,"name":"nameStr","typeName":"typeNameStr","summary":"summaryStr"}],"objectId":{"id":5},"summary":"summaryStr"}"""
     )
 
@@ -576,10 +608,11 @@ class JerkFormatsSpec extends EnsimeSpec with SprayJsonTestSupport with EnsimeTe
 
     roundtrip(
       SymbolDesignations(
-        symFile, List(
-        SymbolDesignation(7, 9, VarFieldSymbol),
-        SymbolDesignation(11, 22, ClassSymbol)
-      )
+        symFile,
+        List(
+          SymbolDesignation(7, 9, VarFieldSymbol),
+          SymbolDesignation(11, 22, ClassSymbol)
+        )
       ): EnsimeServerMessage,
       s"""{"typehint":"SymbolDesignations","file":"$symFile","syms":[{"start":7,"end":9,"symType":{"typehint":"VarFieldSymbol"}},{"start":11,"end":22,"symType":{"typehint":"ClassSymbol"}}]}"""
     )
@@ -590,7 +623,14 @@ class JerkFormatsSpec extends EnsimeSpec with SprayJsonTestSupport with EnsimeTe
     )
 
     roundtrip(
-      ImplicitInfos(List(ImplicitParamInfo(5, 6, symbolInfo, List(symbolInfo, symbolInfo), true))): EnsimeServerMessage,
+      ImplicitInfos(
+        List(
+          ImplicitParamInfo(
+            5,
+            6,
+            symbolInfo,
+            List(symbolInfo, symbolInfo),
+            true))): EnsimeServerMessage,
       """{"typehint":"ImplicitInfos","infos":[{"params":[{"name":"name","localName":"localName","type":{"name":"type1","fullName":"FOO.type1","typehint":"BasicTypeInfo","typeArgs":[],"members":[],"declAs":{"typehint":"Method"}},"isCallable":false},{"name":"name","localName":"localName","type":{"name":"type1","fullName":"FOO.type1","typehint":"BasicTypeInfo","typeArgs":[],"members":[],"declAs":{"typehint":"Method"}},"isCallable":false}],"typehint":"ImplicitParamInfo","fun":{"name":"name","localName":"localName","type":{"name":"type1","fullName":"FOO.type1","typehint":"BasicTypeInfo","typeArgs":[],"members":[],"declAs":{"typehint":"Method"}},"isCallable":false},"funIsImplicit":true,"end":6,"start":5}]}"""
     )
 

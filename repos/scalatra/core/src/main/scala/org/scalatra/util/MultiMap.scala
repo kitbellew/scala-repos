@@ -6,11 +6,13 @@ object MultiMap {
 
   def apply(): MultiMap = new MultiMap
 
-  def apply[SeqType <: Seq[String]](wrapped: Map[String, SeqType]): MultiMap = new MultiMap(wrapped)
+  def apply[SeqType <: Seq[String]](wrapped: Map[String, SeqType]): MultiMap =
+    new MultiMap(wrapped)
 
   def empty: MultiMap = apply()
 
-  implicit def map2MultiMap(map: Map[String, Seq[String]]): MultiMap = new MultiMap(map)
+  implicit def map2MultiMap(map: Map[String, Seq[String]]): MultiMap =
+    new MultiMap(map)
 
 }
 

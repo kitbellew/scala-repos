@@ -6,10 +6,7 @@ import com.typesafe.config.Config
 import lila.common.PimpedConfig._
 import lila.hub.actorApi.bookmark._
 
-final class Env(
-    config: Config,
-    system: ActorSystem,
-    db: lila.db.Env) {
+final class Env(config: Config, system: ActorSystem, db: lila.db.Env) {
 
   private val CollectionBookmark = config getString "collection.bookmark"
   private val PaginatorMaxPerPage = config getInt "paginator.max_per_page"
@@ -19,12 +16,9 @@ final class Env(
 
   private lazy val cached = new Cached
 
-  lazy val paginator = new PaginatorBuilder(
-    maxPerPage = PaginatorMaxPerPage)
+  lazy val paginator = new PaginatorBuilder(maxPerPage = PaginatorMaxPerPage)
 
-  lazy val api = new BookmarkApi(
-    cached = cached,
-    paginator = paginator)
+  lazy val api = new BookmarkApi(cached = cached, paginator = paginator)
 
   system.actorOf(Props(new Actor {
     def receive = {

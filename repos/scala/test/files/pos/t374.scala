@@ -1,8 +1,8 @@
 object tokens extends Enumeration {
   type Token = Value;
-  val BAD     = Value("<bad>");
-  val IDENT   = Value("ident");
-  val NAME    = Value("name");
+  val BAD = Value("<bad>");
+  val IDENT = Value("ident");
+  val NAME = Value("name");
 }
 
 object test extends AnyRef with App {
@@ -15,7 +15,6 @@ object test extends AnyRef with App {
       case None     => IDENT
       case Some(tk) => tk
     }
-  }
-  else
+  } else
     BAD
 }

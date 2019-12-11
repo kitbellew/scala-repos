@@ -15,7 +15,7 @@ package object util {
   private def shortenName(name: String): String = {
     if (name == "") return ""
     val segments = (name split '$').toList
-    val last     = segments.last
+    val last = segments.last
 
     if (last.length == 0)
       segments takeRight 2 mkString "$"
@@ -26,8 +26,8 @@ package object util {
   def shortClassOfInstance(x: AnyRef): String = shortClass(x.getClass)
   def shortClass(clazz: Class[_]): String = {
     val name: String = (clazz.getName split '.').last
-    def isModule     = name endsWith "$"                        // object
-    def isAnon       = (name split '$').last forall (_.isDigit) // anonymous class
+    def isModule = name endsWith "$" // object
+    def isAnon = (name split '$').last forall (_.isDigit) // anonymous class
 
     if (isModule)
       (name split '$' filterNot (_ == "")).last + "$"
@@ -36,8 +36,10 @@ package object util {
     else
       shortenName(name)
   }
+
   /**
-   * Adds the `sm` String interpolator to a [[scala.StringContext]].
-   */
-  implicit class StringContextStripMarginOps(val stringContext: StringContext) extends StripMarginInterpolator
+    * Adds the `sm` String interpolator to a [[scala.StringContext]].
+    */
+  implicit class StringContextStripMarginOps(val stringContext: StringContext)
+      extends StripMarginInterpolator
 }

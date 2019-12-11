@@ -37,8 +37,10 @@ class CatalystTypeConvertersSuite extends SparkFunSuite {
     DecimalType.USER_DEFAULT)
 
   test("null handling in rows") {
-    val schema = StructType(simpleTypes.map(t => StructField(t.getClass.getName, t)))
-    val convertToCatalyst = CatalystTypeConverters.createToCatalystConverter(schema)
+    val schema =
+      StructType(simpleTypes.map(t => StructField(t.getClass.getName, t)))
+    val convertToCatalyst =
+      CatalystTypeConverters.createToCatalystConverter(schema)
     val convertToScala = CatalystTypeConverters.createToScalaConverter(schema)
 
     val scalaRow = Row.fromSeq(Seq.fill(simpleTypes.length)(null))
@@ -47,7 +49,8 @@ class CatalystTypeConvertersSuite extends SparkFunSuite {
 
   test("null handling for individual values") {
     for (dataType <- simpleTypes) {
-      assert(CatalystTypeConverters.createToScalaConverter(dataType)(null) === null)
+      assert(
+        CatalystTypeConverters.createToScalaConverter(dataType)(null) === null)
     }
   }
 
@@ -59,6 +62,8 @@ class CatalystTypeConvertersSuite extends SparkFunSuite {
   }
 
   test("option handling in createToCatalystConverter") {
-    assert(CatalystTypeConverters.createToCatalystConverter(IntegerType)(Some(123)) === 123)
+    assert(
+      CatalystTypeConverters
+        .createToCatalystConverter(IntegerType)(Some(123)) === 123)
   }
 }

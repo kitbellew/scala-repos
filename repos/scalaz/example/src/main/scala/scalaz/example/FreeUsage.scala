@@ -1,6 +1,6 @@
 package scalaz.example
 
-import scalaz.{ Free, Monad, ~> }
+import scalaz.{Free, Monad, ~>}
 import scalaz.std.function._
 import scalaz.syntax.monad._
 import scalaz.effect.IO
@@ -13,16 +13,16 @@ object FreeUsage extends App {
   // An algebra of primitive operations in the context of a random number generator
   sealed trait RngOp[A]
   object RngOp {
-    case object NextBoolean              extends RngOp[Boolean]
-    case object NextDouble               extends RngOp[Double]
-    case object NextFloat                extends RngOp[Float]
-    case object NextGaussian             extends RngOp[Double]
-    case object NextInt                  extends RngOp[Int]
-    case class  NextIntInRange(max: Int) extends RngOp[Int]
-    case object NextLong                 extends RngOp[Long]
-    case object NextPrintableChar        extends RngOp[Char]
-    case class  NextString(length: Int)  extends RngOp[String]
-    case class  SetSeed(seed: Long)      extends RngOp[Unit]
+    case object NextBoolean extends RngOp[Boolean]
+    case object NextDouble extends RngOp[Double]
+    case object NextFloat extends RngOp[Float]
+    case object NextGaussian extends RngOp[Double]
+    case object NextInt extends RngOp[Int]
+    case class NextIntInRange(max: Int) extends RngOp[Int]
+    case object NextLong extends RngOp[Long]
+    case object NextPrintableChar extends RngOp[Char]
+    case class NextString(length: Int) extends RngOp[String]
+    case class SetSeed(seed: Long) extends RngOp[Unit]
   }
 
   // Free monad over the free functor of RngOp. The instance is not inferrable.
@@ -30,20 +30,21 @@ object FreeUsage extends App {
   implicit val MonadRng: Monad[Rng] = Free.freeMonad[RngOp]
 
   // Smart constructors for Rng[A]
-  val nextBoolean              = Free.liftF(RngOp.NextBoolean)
-  val nextDouble               = Free.liftF(RngOp.NextDouble)
-  val nextFloat                = Free.liftF(RngOp.NextFloat)
-  val nextGaussian             = Free.liftF(RngOp.NextGaussian)
-  val nextInt                  = Free.liftF(RngOp.NextInt)
+  val nextBoolean = Free.liftF(RngOp.NextBoolean)
+  val nextDouble = Free.liftF(RngOp.NextDouble)
+  val nextFloat = Free.liftF(RngOp.NextFloat)
+  val nextGaussian = Free.liftF(RngOp.NextGaussian)
+  val nextInt = Free.liftF(RngOp.NextInt)
   def nextIntInRange(max: Int) = Free.liftF(RngOp.NextIntInRange(max))
-  val nextLong                 = Free.liftF(RngOp.NextLong)
-  val nextPrintableChar        = Free.liftF(RngOp.NextPrintableChar)
-  def nextString(length: Int)  = Free.liftF(RngOp.NextString(length))
-  def setSeed(seed: Long)      = Free.liftF(RngOp.SetSeed(seed))
+  val nextLong = Free.liftF(RngOp.NextLong)
+  val nextPrintableChar = Free.liftF(RngOp.NextPrintableChar)
+  def nextString(length: Int) = Free.liftF(RngOp.NextString(length))
+  def setSeed(seed: Long) = Free.liftF(RngOp.SetSeed(seed))
 
   // You can of course derive new operations from the primitives
-  def nextNonNegativeInt       = nextInt.map(_.abs)
-  def choose[A](h: A, tl: A*)  = nextIntInRange(tl.length + 1).map((h +: tl).apply)
+  def nextNonNegativeInt = nextInt.map(_.abs)
+  def choose[A](h: A, tl: A*) =
+    nextIntInRange(tl.length + 1).map((h +: tl).apply)
 
   // Natural transformation to (Random => A)
   type RandomReader[A] = Random => A
@@ -61,7 +62,7 @@ object FreeUsage extends App {
           case RngOp.NextPrintableChar => _.nextPrintableChar
           case RngOp.NextString(n)     => _.nextString(n)
           case RngOp.SetSeed(n)        => _.setSeed(n)
-      }
+        }
     }
 
   // Now we have enough structure to run a program
@@ -83,8 +84,8 @@ object FreeUsage extends App {
     } yield (a, b, c)
 
   // Run that baby
-  println(prog.exec(0L))   // pure! always returns (60,28,green)
-  println(prog.exec(0L))   // exactly the same of course
+  println(prog.exec(0L)) // pure! always returns (60,28,green)
+  println(prog.exec(0L)) // exactly the same of course
   println(prog.exec(123L)) // (82,52,blue)
   println(prog.liftIO.unsafePerformIO) // DANGER: impure, who knows what will happen?
 
@@ -92,4 +93,3 @@ object FreeUsage extends App {
   println(nextBoolean.replicateM(10).exec(0L))
 
 }
-

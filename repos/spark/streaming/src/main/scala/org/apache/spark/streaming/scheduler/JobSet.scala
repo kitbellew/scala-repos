@@ -24,8 +24,7 @@ import org.apache.spark.streaming.Time
 /** Class representing a set of Jobs
   * belong to the same batch.
   */
-private[streaming]
-case class JobSet(
+private[streaming] case class JobSet(
     time: Time,
     jobs: Seq[Job],
     streamIdToInputInfo: Map[Int, StreamInputInfo] = Map.empty) {
@@ -39,7 +38,8 @@ case class JobSet(
   incompleteJobs ++= jobs
 
   def handleJobStart(job: Job) {
-    if (processingStartTime < 0) processingStartTime = System.currentTimeMillis()
+    if (processingStartTime < 0)
+      processingStartTime = System.currentTimeMillis()
   }
 
   def handleJobCompletion(job: Job) {
@@ -66,7 +66,9 @@ case class JobSet(
       submissionTime,
       if (hasStarted) Some(processingStartTime) else None,
       if (hasCompleted) Some(processingEndTime) else None,
-      jobs.map { job => (job.outputOpId, job.toOutputOperationInfo) }.toMap
+      jobs.map { job =>
+        (job.outputOpId, job.toOutputOperationInfo)
+      }.toMap
     )
   }
 }

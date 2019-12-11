@@ -41,10 +41,9 @@ import scalafx.scene.image.Image
 import scalafx.scene.layout.{GridPane, Priority, VBox}
 
 /**
- * Based on JavaFX version discussed in blog: [[http://code.makery.ch/blog/javafx-dialogs-official/ JavaFX Dialogs]]
- */
+  * Based on JavaFX version discussed in blog: [[http://code.makery.ch/blog/javafx-dialogs-official/ JavaFX Dialogs]]
+  */
 object DialogsDemo extends JFXApp {
-
 
   stage = new PrimaryStage {
     scene = new Scene {
@@ -58,7 +57,9 @@ object DialogsDemo extends JFXApp {
           button("Error", errorDialog),
           button("Exception", exceptionDialog),
           button("Confirmation", confirmationDialog),
-          button("Confirmation Dialog with Custom Actions", confirmationWithCustomActions),
+          button(
+            "Confirmation Dialog with Custom Actions",
+            confirmationWithCustomActions),
           button("Text Input", textInputDialog),
           button("Choice", choiceDialog)
         )
@@ -70,7 +71,7 @@ object DialogsDemo extends JFXApp {
   }
 
   def button[R](text: String, action: () => R) = new Button(text) {
-    onAction = handle {action()}
+    onAction = handle { action() }
     alignmentInParent = Pos.Center
     hgrow = Priority.Always
     maxWidth = Double.MaxValue
@@ -177,7 +178,8 @@ object DialogsDemo extends JFXApp {
       contentText = "Choose your option."
       // Note that we override here default dialog buttons, OK and Cancel, with new ones.
       // We could also just add to existing button using `++=`.
-      buttonTypes = Seq(ButtonTypeOne, ButtonTypeTwo, ButtonTypeThree, ButtonType.Cancel)
+      buttonTypes =
+        Seq(ButtonTypeOne, ButtonTypeTwo, ButtonTypeThree, ButtonType.Cancel)
     }
 
     val result = alert.showAndWait()

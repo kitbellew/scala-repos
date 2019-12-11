@@ -8,11 +8,13 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 
 /**
- * @author Alefas
- * @since 24/09/14.
- */
+  * @author Alefas
+  * @since 24/09/14.
+  */
 class PackageObjectEditorTabTitleProvider extends EditorTabTitleProvider {
-  override def getEditorTabTitle(project: Project, file: VirtualFile): String = {
+  override def getEditorTabTitle(
+      project: Project,
+      file: VirtualFile): String = {
     file.getName match {
       case "package.scala" if file.getParent != null =>
         val dirName = file.getParent.getName

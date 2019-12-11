@@ -9,7 +9,9 @@ import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.unmarshalling.PredefinedFromStringUnmarshallers
 import docs.http.scaladsl.server.RoutingSpec
 
-class ParameterDirectivesExamplesSpec extends RoutingSpec with PredefinedFromStringUnmarshallers {
+class ParameterDirectivesExamplesSpec
+    extends RoutingSpec
+    with PredefinedFromStringUnmarshallers {
   "example-1" in {
     val route =
       parameter('color) { color =>
@@ -29,7 +31,8 @@ class ParameterDirectivesExamplesSpec extends RoutingSpec with PredefinedFromStr
   "required-1" in {
     val route =
       parameters('color, 'backgroundColor) { (color, backgroundColor) =>
-        complete(s"The color is '$color' and the background is '$backgroundColor'")
+        complete(
+          s"The color is '$color' and the background is '$backgroundColor'")
       }
 
     // tests:
@@ -45,7 +48,8 @@ class ParameterDirectivesExamplesSpec extends RoutingSpec with PredefinedFromStr
     val route =
       parameters('color, 'backgroundColor.?) { (color, backgroundColor) =>
         val backgroundStr = backgroundColor.getOrElse("<undefined>")
-        complete(s"The color is '$color' and the background is '$backgroundStr'")
+        complete(
+          s"The color is '$color' and the background is '$backgroundStr'")
       }
 
     // tests:
@@ -58,8 +62,10 @@ class ParameterDirectivesExamplesSpec extends RoutingSpec with PredefinedFromStr
   }
   "optional-with-default" in {
     val route =
-      parameters('color, 'backgroundColor ? "white") { (color, backgroundColor) =>
-        complete(s"The color is '$color' and the background is '$backgroundColor'")
+      parameters('color, 'backgroundColor ? "white") {
+        (color, backgroundColor) =>
+          complete(
+            s"The color is '$color' and the background is '$backgroundColor'")
       }
 
     // tests:
@@ -106,9 +112,13 @@ class ParameterDirectivesExamplesSpec extends RoutingSpec with PredefinedFromStr
     val route =
       parameters('color, 'city.*) { (color, cities) =>
         cities.toList match {
-          case Nil         => complete(s"The color is '$color' and there are no cities.")
-          case city :: Nil => complete(s"The color is '$color' and the city is $city.")
-          case multiple    => complete(s"The color is '$color' and the cities are ${multiple.mkString(", ")}.")
+          case Nil =>
+            complete(s"The color is '$color' and there are no cities.")
+          case city :: Nil =>
+            complete(s"The color is '$color' and the city is $city.")
+          case multiple =>
+            complete(
+              s"The color is '$color' and the cities are ${multiple.mkString(", ")}.")
         }
       }
 
@@ -129,9 +139,13 @@ class ParameterDirectivesExamplesSpec extends RoutingSpec with PredefinedFromStr
     val route =
       parameters('color, 'distance.as[Int].*) { (color, cities) =>
         cities.toList match {
-          case Nil             => complete(s"The color is '$color' and there are no distances.")
-          case distance :: Nil => complete(s"The color is '$color' and the distance is $distance.")
-          case multiple        => complete(s"The color is '$color' and the distances are ${multiple.mkString(", ")}.")
+          case Nil =>
+            complete(s"The color is '$color' and there are no distances.")
+          case distance :: Nil =>
+            complete(s"The color is '$color' and the distance is $distance.")
+          case multiple =>
+            complete(
+              s"The color is '$color' and the distances are ${multiple.mkString(", ")}.")
         }
       }
 
@@ -151,8 +165,10 @@ class ParameterDirectivesExamplesSpec extends RoutingSpec with PredefinedFromStr
   "parameterMap" in {
     val route =
       parameterMap { params =>
-        def paramString(param: (String, String)): String = s"""${param._1} = '${param._2}'"""
-        complete(s"The parameters are ${params.map(paramString).mkString(", ")}")
+        def paramString(param: (String, String)): String =
+          s"""${param._1} = '${param._2}'"""
+        complete(
+          s"The parameters are ${params.map(paramString).mkString(", ")}")
       }
 
     // tests:
@@ -166,7 +182,8 @@ class ParameterDirectivesExamplesSpec extends RoutingSpec with PredefinedFromStr
   "parameterMultiMap" in {
     val route =
       parameterMultiMap { params =>
-        complete(s"There are parameters ${params.map(x => x._1 + " -> " + x._2.size).mkString(", ")}")
+        complete(
+          s"There are parameters ${params.map(x => x._1 + " -> " + x._2.size).mkString(", ")}")
       }
 
     // tests:
@@ -180,8 +197,10 @@ class ParameterDirectivesExamplesSpec extends RoutingSpec with PredefinedFromStr
   "parameterSeq" in {
     val route =
       parameterSeq { params =>
-        def paramString(param: (String, String)): String = s"""${param._1} = '${param._2}'"""
-        complete(s"The parameters are ${params.map(paramString).mkString(", ")}")
+        def paramString(param: (String, String)): String =
+          s"""${param._1} = '${param._2}'"""
+        complete(
+          s"The parameters are ${params.map(paramString).mkString(", ")}")
       }
 
     // tests:

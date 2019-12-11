@@ -18,7 +18,6 @@ class O3 extends C {
   def g2 = (f == f)
 }
 
-
 object Test {
   def main(args: Array[String]): Unit = {
     println(O1.g1)

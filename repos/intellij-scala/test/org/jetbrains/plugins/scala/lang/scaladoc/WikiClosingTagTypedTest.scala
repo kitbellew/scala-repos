@@ -4,10 +4,9 @@ package lang.scaladoc
 import org.jetbrains.plugins.scala.base.ScalaLightCodeInsightFixtureTestAdapter
 
 /**
- * User: Dmitry Naydanov
- * Date: 2/25/12
- */
-
+  * User: Dmitry Naydanov
+  * Date: 2/25/12
+  */
 class WikiClosingTagTypedTest extends ScalaLightCodeInsightFixtureTestAdapter {
 
   def testCodeLinkClosingTagInput() {

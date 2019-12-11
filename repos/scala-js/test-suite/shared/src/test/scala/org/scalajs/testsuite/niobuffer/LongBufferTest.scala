@@ -19,7 +19,9 @@ abstract class LongBufferTest extends BaseBufferTest {
       LongBuffer.allocate(capacity)
   }
 
-  class WrappedLongBufferFactory extends Factory with BufferFactory.WrappedBufferFactory {
+  class WrappedLongBufferFactory
+      extends Factory
+      with BufferFactory.WrappedBufferFactory {
     def baseWrap(array: Array[Long]): LongBuffer =
       LongBuffer.wrap(array)
 
@@ -30,7 +32,8 @@ abstract class LongBufferTest extends BaseBufferTest {
   class ByteBufferLongViewFactory(
       byteBufferFactory: BufferFactory.ByteBufferFactory,
       order: ByteOrder)
-      extends Factory with BufferFactory.ByteBufferViewFactory {
+      extends Factory
+      with BufferFactory.ByteBufferViewFactory {
     require(!byteBufferFactory.createsReadOnly)
 
     def baseAllocBuffer(capacity: Int): LongBuffer =
@@ -60,7 +63,8 @@ class AllocLongSlicedBufferTest extends LongBufferTest {
 // Long views of byte buffers
 
 abstract class LongViewOfByteBufferTest(
-    byteBufferFactory: BufferFactory.ByteBufferFactory, order: ByteOrder)
+    byteBufferFactory: BufferFactory.ByteBufferFactory,
+    order: ByteOrder)
     extends LongBufferTest {
 
   val factory: BufferFactory.LongBufferFactory =
@@ -68,49 +72,74 @@ abstract class LongViewOfByteBufferTest(
 }
 
 class LongViewOfAllocByteBufferBigEndianTest
-    extends LongViewOfByteBufferTest(new AllocByteBufferFactory, ByteOrder.BIG_ENDIAN)
+    extends LongViewOfByteBufferTest(
+      new AllocByteBufferFactory,
+      ByteOrder.BIG_ENDIAN)
 
 class LongViewOfWrappedByteBufferBigEndianTest
-    extends LongViewOfByteBufferTest(new WrappedByteBufferFactory, ByteOrder.BIG_ENDIAN)
+    extends LongViewOfByteBufferTest(
+      new WrappedByteBufferFactory,
+      ByteOrder.BIG_ENDIAN)
 
 class LongViewOfSlicedAllocByteBufferBigEndianTest
-    extends LongViewOfByteBufferTest(new SlicedAllocByteBufferFactory, ByteOrder.BIG_ENDIAN)
+    extends LongViewOfByteBufferTest(
+      new SlicedAllocByteBufferFactory,
+      ByteOrder.BIG_ENDIAN)
 
 class LongViewOfAllocByteBufferLittleEndianTest
-    extends LongViewOfByteBufferTest(new AllocByteBufferFactory, ByteOrder.LITTLE_ENDIAN)
+    extends LongViewOfByteBufferTest(
+      new AllocByteBufferFactory,
+      ByteOrder.LITTLE_ENDIAN)
 
 class LongViewOfWrappedByteBufferLittleEndianTest
-    extends LongViewOfByteBufferTest(new WrappedByteBufferFactory, ByteOrder.LITTLE_ENDIAN)
+    extends LongViewOfByteBufferTest(
+      new WrappedByteBufferFactory,
+      ByteOrder.LITTLE_ENDIAN)
 
 class LongViewOfSlicedAllocByteBufferLittleEndianTest
-    extends LongViewOfByteBufferTest(new SlicedAllocByteBufferFactory, ByteOrder.LITTLE_ENDIAN)
+    extends LongViewOfByteBufferTest(
+      new SlicedAllocByteBufferFactory,
+      ByteOrder.LITTLE_ENDIAN)
 
 // Read only Long views of byte buffers
 
 abstract class ReadOnlyLongViewOfByteBufferTest(
-    byteBufferFactory: BufferFactory.ByteBufferFactory, order: ByteOrder)
+    byteBufferFactory: BufferFactory.ByteBufferFactory,
+    order: ByteOrder)
     extends LongBufferTest {
 
   val factory: BufferFactory.LongBufferFactory = {
     new ByteBufferLongViewFactory(byteBufferFactory, order)
-        with BufferFactory.ReadOnlyBufferFactory
+      with BufferFactory.ReadOnlyBufferFactory
   }
 }
 
 class ReadOnlyLongViewOfAllocByteBufferBigEndianTest
-    extends ReadOnlyLongViewOfByteBufferTest(new AllocByteBufferFactory, ByteOrder.BIG_ENDIAN)
+    extends ReadOnlyLongViewOfByteBufferTest(
+      new AllocByteBufferFactory,
+      ByteOrder.BIG_ENDIAN)
 
 class ReadOnlyLongViewOfWrappedByteBufferBigEndianTest
-    extends ReadOnlyLongViewOfByteBufferTest(new WrappedByteBufferFactory, ByteOrder.BIG_ENDIAN)
+    extends ReadOnlyLongViewOfByteBufferTest(
+      new WrappedByteBufferFactory,
+      ByteOrder.BIG_ENDIAN)
 
 class ReadOnlyLongViewOfSlicedAllocByteBufferBigEndianTest
-    extends ReadOnlyLongViewOfByteBufferTest(new SlicedAllocByteBufferFactory, ByteOrder.BIG_ENDIAN)
+    extends ReadOnlyLongViewOfByteBufferTest(
+      new SlicedAllocByteBufferFactory,
+      ByteOrder.BIG_ENDIAN)
 
 class ReadOnlyLongViewOfAllocByteBufferLittleEndianTest
-    extends ReadOnlyLongViewOfByteBufferTest(new AllocByteBufferFactory, ByteOrder.LITTLE_ENDIAN)
+    extends ReadOnlyLongViewOfByteBufferTest(
+      new AllocByteBufferFactory,
+      ByteOrder.LITTLE_ENDIAN)
 
 class ReadOnlyLongViewOfWrappedByteBufferLittleEndianTest
-    extends ReadOnlyLongViewOfByteBufferTest(new WrappedByteBufferFactory, ByteOrder.LITTLE_ENDIAN)
+    extends ReadOnlyLongViewOfByteBufferTest(
+      new WrappedByteBufferFactory,
+      ByteOrder.LITTLE_ENDIAN)
 
 class ReadOnlyLongViewOfSlicedAllocByteBufferLittleEndianTest
-    extends ReadOnlyLongViewOfByteBufferTest(new SlicedAllocByteBufferFactory, ByteOrder.LITTLE_ENDIAN)
+    extends ReadOnlyLongViewOfByteBufferTest(
+      new SlicedAllocByteBufferFactory,
+      ByteOrder.LITTLE_ENDIAN)

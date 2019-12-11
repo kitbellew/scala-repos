@@ -9,10 +9,10 @@ import scala.concurrent.duration._
 import akka.util.ByteString
 
 import akka.stream.OverflowStrategy
-import akka.stream.scaladsl.{ Sink, Source, Flow }
+import akka.stream.scaladsl.{Sink, Source, Flow}
 
 import docs.http.scaladsl.server.RoutingSpec
-import akka.http.scaladsl.model.ws.{ TextMessage, Message, BinaryMessage }
+import akka.http.scaladsl.model.ws.{TextMessage, Message, BinaryMessage}
 import akka.http.scaladsl.testkit.WSProbe
 
 class WebSocketDirectivesExamplesSpec extends RoutingSpec {
@@ -20,7 +20,9 @@ class WebSocketDirectivesExamplesSpec extends RoutingSpec {
     def greeter: Flow[Message, Message, Any] =
       Flow[Message].mapConcat {
         case tm: TextMessage ⇒
-          TextMessage(Source.single("Hello ") ++ tm.textStream ++ Source.single("!")) :: Nil
+          TextMessage(
+            Source.single("Hello ") ++ tm.textStream ++ Source
+              .single("!")) :: Nil
         case bm: BinaryMessage ⇒
           // ignore binary messages but drain content to avoid the stream being clogged
           bm.dataStream.runWith(Sink.ignore)
@@ -60,7 +62,9 @@ class WebSocketDirectivesExamplesSpec extends RoutingSpec {
     def greeterService: Flow[Message, Message, Any] =
       Flow[Message].mapConcat {
         case tm: TextMessage ⇒
-          TextMessage(Source.single("Hello ") ++ tm.textStream ++ Source.single("!")) :: Nil
+          TextMessage(
+            Source.single("Hello ") ++ tm.textStream ++ Source
+              .single("!")) :: Nil
         case bm: BinaryMessage ⇒
           // ignore binary messages but drain content to avoid the stream being clogged
           bm.dataStream.runWith(Sink.ignore)
@@ -69,7 +73,7 @@ class WebSocketDirectivesExamplesSpec extends RoutingSpec {
 
     def echoService: Flow[Message, Message, Any] =
       Flow[Message]
-        // needed because a noop flow hasn't any buffer that would start processing in tests
+      // needed because a noop flow hasn't any buffer that would start processing in tests
         .buffer(1, OverflowStrategy.backpressure)
 
     def websocketMultipleProtocolRoute =

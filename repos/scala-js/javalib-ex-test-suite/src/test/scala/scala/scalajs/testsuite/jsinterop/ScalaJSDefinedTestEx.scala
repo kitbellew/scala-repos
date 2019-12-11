@@ -13,11 +13,11 @@ import scala.scalajs.js
 import scala.scalajs.js.annotation._
 
 /** Additional tests for Scala.js-defined JS classes that have to be in a
- *  separate codebase than testSuite to be meaningful.
- *
- *  If moved to testSuite, those tests "fail to fail" due to mass effects
- *  produced by the immensity of the testSuite codebase.
- */
+  *  separate codebase than testSuite to be meaningful.
+  *
+  *  If moved to testSuite, those tests "fail to fail" due to mass effects
+  *  produced by the immensity of the testSuite codebase.
+  */
 object ScalaJSDefinedTestEx extends JasmineTest {
 
   describe("Scala.js-defined JS classes ex") {

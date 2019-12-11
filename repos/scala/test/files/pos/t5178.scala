@@ -8,4 +8,4 @@ trait DefaultFileOps {
   override def withLock[R](start: Long = 5): Option[R] = None
 }
 
-class DefaultPath extends FileOps with DefaultFileOps { }
+class DefaultPath extends FileOps with DefaultFileOps {}

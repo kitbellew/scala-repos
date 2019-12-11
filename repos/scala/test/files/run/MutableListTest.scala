@@ -1,9 +1,4 @@
-
-
-
 import scala.collection.mutable.MutableList
-
-
 
 class ExtList[T] extends MutableList[T] {
   def printState {
@@ -114,13 +109,3 @@ object Test {
   }
 
 }
-
-
-
-
-
-
-
-
-
-

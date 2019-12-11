@@ -5,12 +5,17 @@ package akka.http.impl.engine.client
 
 import akka.http.impl.engine.client.OutgoingConnectionBlueprint.PrepareResponse
 import akka.http.impl.engine.parsing.ParserOutput
-import akka.http.impl.engine.parsing.ParserOutput.{ StrictEntityCreator, EntityStreamError, EntityChunk, StreamedEntityCreator }
+import akka.http.impl.engine.parsing.ParserOutput.{
+  StrictEntityCreator,
+  EntityStreamError,
+  EntityChunk,
+  StreamedEntityCreator
+}
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.settings.ParserSettings
-import akka.stream.{ ActorMaterializer, Attributes }
-import akka.stream.scaladsl.{ Sink, Source }
-import akka.stream.testkit.{ TestSubscriber, TestPublisher }
+import akka.stream.{ActorMaterializer, Attributes}
+import akka.stream.scaladsl.{Sink, Source}
+import akka.stream.testkit.{TestSubscriber, TestPublisher}
 import akka.util.ByteString
 import akka.testkit.AkkaSpec
 
@@ -24,12 +29,15 @@ class PrepareResponseSpec extends AkkaSpec {
     List(),
     StreamedEntityCreator[ParserOutput, ResponseEntity] { entityChunks ⇒
       val chunks = entityChunks.collect {
-        case EntityChunk(chunk)      ⇒ chunk
+        case EntityChunk(chunk) ⇒ chunk
         case EntityStreamError(info) ⇒ throw EntityStreamException(info)
       }
-      HttpEntity.Chunked(ContentTypes.`application/octet-stream`, HttpEntity.limitableChunkSource(chunks))
+      HttpEntity.Chunked(
+        ContentTypes.`application/octet-stream`,
+        HttpEntity.limitableChunkSource(chunks))
     },
-    closeRequested = false)
+    closeRequested = false
+  )
 
   val strictStart = ParserOutput.ResponseStart(
     StatusCodes.OK,
@@ -50,7 +58,8 @@ class PrepareResponseSpec extends AkkaSpec {
       val inProbe = TestPublisher.manualProbe[ParserOutput.ResponseOutput]()
       val responseProbe = TestSubscriber.manualProbe[HttpResponse]
 
-      Source.fromPublisher(inProbe)
+      Source
+        .fromPublisher(inProbe)
         .via(new PrepareResponse(parserSettings))
         .to(Sink.fromSubscriber(responseProbe))
         .withAttributes(Attributes.inputBuffer(1, 1))
@@ -95,7 +104,8 @@ class PrepareResponseSpec extends AkkaSpec {
       val inProbe = TestPublisher.manualProbe[ParserOutput.ResponseOutput]()
       val responseProbe = TestSubscriber.manualProbe[HttpResponse]
 
-      Source.fromPublisher(inProbe)
+      Source
+        .fromPublisher(inProbe)
         .via(new PrepareResponse(parserSettings))
         .to(Sink.fromSubscriber(responseProbe))
         .withAttributes(Attributes.inputBuffer(1, 1))
@@ -131,7 +141,8 @@ class PrepareResponseSpec extends AkkaSpec {
       val inProbe = TestPublisher.manualProbe[ParserOutput.ResponseOutput]()
       val responseProbe = TestSubscriber.manualProbe[HttpResponse]
 
-      Source.fromPublisher(inProbe)
+      Source
+        .fromPublisher(inProbe)
         .via(new PrepareResponse(parserSettings))
         .to(Sink.fromSubscriber(responseProbe))
         .withAttributes(Attributes.inputBuffer(1, 1))
@@ -172,7 +183,8 @@ class PrepareResponseSpec extends AkkaSpec {
       val inProbe = TestPublisher.manualProbe[ParserOutput.ResponseOutput]()
       val responseProbe = TestSubscriber.manualProbe[HttpResponse]
 
-      Source.fromPublisher(inProbe)
+      Source
+        .fromPublisher(inProbe)
         .via(new PrepareResponse(parserSettings))
         .to(Sink.fromSubscriber(responseProbe))
         .withAttributes(Attributes.inputBuffer(1, 1))
@@ -200,7 +212,8 @@ class PrepareResponseSpec extends AkkaSpec {
       val inProbe = TestPublisher.manualProbe[ParserOutput.ResponseOutput]()
       val responseProbe = TestSubscriber.manualProbe[HttpResponse]
 
-      Source.fromPublisher(inProbe)
+      Source
+        .fromPublisher(inProbe)
         .via(new PrepareResponse(parserSettings))
         .to(Sink.fromSubscriber(responseProbe))
         .withAttributes(Attributes.inputBuffer(1, 1))

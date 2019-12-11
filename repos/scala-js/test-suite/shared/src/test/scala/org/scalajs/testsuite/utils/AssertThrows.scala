@@ -3,18 +3,21 @@ package org.scalajs.testsuite.utils
 import scala.util.{Failure, Try, Success}
 
 object AssertThrows {
+
   /** Backport implementation of Assert.assertThrows to be used until JUnit 4.13 is
-   *  released. See org.junit.Assert.scala in jUnitRuntime.
-   */
-  private def assertThrowsBackport(expectedThrowable: Class[_ <: Throwable],
+    *  released. See org.junit.Assert.scala in jUnitRuntime.
+    */
+  private def assertThrowsBackport(
+      expectedThrowable: Class[_ <: Throwable],
       runnable: ThrowingRunnable): Unit = {
     expectThrowsBackport(expectedThrowable, runnable)
   }
 
   /** Backport implementation of Assert.expectThrows to be used until JUnit 4.13 is
-   *  released. See org.junit.Assert.scala in jUnitRuntime.
-   */
-  private def expectThrowsBackport[T <: Throwable](expectedThrowable: Class[T],
+    *  released. See org.junit.Assert.scala in jUnitRuntime.
+    */
+  private def expectThrowsBackport[T <: Throwable](
+      expectedThrowable: Class[T],
       runnable: ThrowingRunnable): T = {
     val result = {
       try {
@@ -26,7 +29,7 @@ object AssertThrows {
             actualThrown.asInstanceOf[T]
           } else {
             val mismatchMessage = "unexpected exception type thrown;" +
-                expectedThrowable.getSimpleName + " " + actualThrown.getClass.getSimpleName
+              expectedThrowable.getSimpleName + " " + actualThrown.getClass.getSimpleName
 
             val assertionError = new AssertionError(mismatchMessage)
             assertionError.initCause(actualThrown)
@@ -35,7 +38,8 @@ object AssertThrows {
       }
     }
     if (result == null) {
-      throw new AssertionError("expected " + expectedThrowable.getSimpleName +
+      throw new AssertionError(
+        "expected " + expectedThrowable.getSimpleName +
           " to be thrown, but nothing was thrown")
     } else {
       result
@@ -43,8 +47,8 @@ object AssertThrows {
   }
 
   /** Backport implementation of Assert.ThrowingRunnable to be used until
-   *  JUnit 4.13 is released. See org.junit.Assert.scala in jUnitRuntime.
-   */
+    *  JUnit 4.13 is released. See org.junit.Assert.scala in jUnitRuntime.
+    */
   private trait ThrowingRunnable {
     def run(): Unit
   }
@@ -55,13 +59,17 @@ object AssertThrows {
     }
   }
 
-  def assertThrows[T <: Throwable, U](expectedThrowable: Class[T], code: => U): Unit = {
+  def assertThrows[T <: Throwable, U](
+      expectedThrowable: Class[T],
+      code: => U): Unit = {
     assertThrowsBackport(expectedThrowable, throwingRunnable {
       code
     })
   }
 
-  def expectThrows[T <: Throwable, U](expectedThrowable: Class[T], code: => U): T = {
+  def expectThrows[T <: Throwable, U](
+      expectedThrowable: Class[T],
+      code: => U): T = {
     expectThrowsBackport(expectedThrowable, throwingRunnable {
       code
     })
