@@ -83,10 +83,9 @@ class DispatcherActorSpec
       val latch = new CountDownLatch(100)
       val start = new CountDownLatch(1)
       val fastOne =
-        system.actorOf(
-          Props(new Actor {
-            def receive = { case "sabotage" ⇒ works.set(false) }
-          }).withDispatcher(throughputDispatcher))
+        system.actorOf(Props(new Actor {
+          def receive = { case "sabotage" ⇒ works.set(false) }
+        }).withDispatcher(throughputDispatcher))
 
       val slowOne = system.actorOf(Props(new Actor {
         def receive = {

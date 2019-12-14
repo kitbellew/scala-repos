@@ -514,11 +514,11 @@ trait VectorOps { this: Vector.type =>
   @expand
   implicit def v_sField_Op[
       @expand.args(OpAdd, OpSub, OpMulScalar, OpMulMatrix, OpDiv, OpMod, OpPow) Op <: OpType,
-      T: Field: ClassTag](
-      implicit @expand.sequence[Op](
-        { f.+(_, _) }, { f.-(_, _) }, { f.*(_, _) }, { f.*(_, _) }, {
-          f./(_, _)
-        }, { f.%(_, _) }, { f.pow(_, _) }) op: Op.Impl2[T, T, T])
+      T: Field: ClassTag](implicit @expand.sequence[Op]({ f.+(_, _) }, {
+    f.-(_, _)
+  }, { f.*(_, _) }, { f.*(_, _) }, {
+    f./(_, _)
+  }, { f.%(_, _) }, { f.pow(_, _) }) op: Op.Impl2[T, T, T])
       : BinaryRegistry[Vector[T], T, Op.type, Vector[T]] =
     new BinaryRegistry[Vector[T], T, Op.type, Vector[T]] {
       val f = implicitly[Field[T]]
@@ -644,12 +644,13 @@ trait VectorOps { this: Vector.type =>
         OpSet,
         OpMod,
         OpPow) Op <: OpType,
-      T: Field: ClassTag](implicit @expand.sequence[Op]({ f.+(_, _) }, {
-    f.-(_, _)
-  }, { f.*(_, _) }, { f.*(_, _) }, { f./(_, _) }, { (a, b) =>
-    b
-  }, { f.%(_, _) }, { f.pow(_, _) })
-  op: Op.Impl2[T, T, T]): BinaryUpdateRegistry[Vector[T], T, Op.type] =
+      T: Field: ClassTag](
+      implicit @expand.sequence[Op]({ f.+(_, _) }, {
+        f.-(_, _)
+      }, { f.*(_, _) }, { f.*(_, _) }, { f./(_, _) }, { (a, b) =>
+        b
+      }, { f.%(_, _) }, { f.pow(_, _) })
+      op: Op.Impl2[T, T, T]): BinaryUpdateRegistry[Vector[T], T, Op.type] =
     new BinaryUpdateRegistry[Vector[T], T, Op.type] {
       val f = implicitly[Field[T]]
       override def bindingMissing(a: Vector[T], b: T): Unit = {

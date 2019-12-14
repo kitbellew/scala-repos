@@ -114,9 +114,10 @@ trait GenSymbols {
   def reifyFreeTerm(binding: Tree): Tree =
     reifyIntoSymtab(binding.symbol) { sym =>
       if (reifyDebug)
-        println("Free term" + (if (sym.isCapturedVariable) " (captured)"
-                               else
-                                 "") + ": " + sym + "(" + sym.accurateKindString + ")")
+        println(
+          "Free term" + (if (sym.isCapturedVariable) " (captured)"
+                         else
+                           "") + ": " + sym + "(" + sym.accurateKindString + ")")
       val name = newTermName(
         "" + nme.REIFY_FREE_PREFIX + sym.name + (if (sym.isType)
                                                    nme.REIFY_FREE_THIS_SUFFIX

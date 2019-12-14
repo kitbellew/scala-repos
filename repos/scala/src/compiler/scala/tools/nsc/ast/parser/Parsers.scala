@@ -2211,12 +2211,13 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
         *
         * XXX: Hook for IDE
         */
-      def simplePattern(): Tree = (
-        // simple diagnostics for this entry point
-        simplePattern(() =>
-          syntaxErrorOrIncompleteAnd(
-            "illegal start of simple pattern",
-            skipIt = true)(errorPatternTree)))
+      def simplePattern(): Tree =
+        (
+          // simple diagnostics for this entry point
+          simplePattern(() =>
+            syntaxErrorOrIncompleteAnd(
+              "illegal start of simple pattern",
+              skipIt = true)(errorPatternTree)))
       def simplePattern(onError: () => Tree): Tree = {
         val start = in.offset
         in.token match {

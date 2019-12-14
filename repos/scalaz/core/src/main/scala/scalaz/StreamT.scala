@@ -42,7 +42,8 @@ sealed class StreamT[M[_], A](val step: M[StreamT.Step[A, StreamT[M, A]]]) {
 
   def filter(p: A => Boolean)(implicit m: Functor[M]): StreamT[M, A] = stepMap {
     _(
-      yieldd = (a, as) => if (p(a)) Yield(a, as filter p) else Skip(as filter p),
+      yieldd =
+        (a, as) => if (p(a)) Yield(a, as filter p) else Skip(as filter p),
       skip = as => Skip(as filter p),
       done = Done)
   }

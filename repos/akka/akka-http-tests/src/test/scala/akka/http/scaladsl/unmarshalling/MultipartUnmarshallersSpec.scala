@@ -264,8 +264,7 @@ class MultipartUnmarshallersSpec
             |--ABCContent-type: application/json
             |content-disposition: form-data; name="email"
             |-----""".stripMarginWithNewline("\r\n")
-            )).to[Multipart.General]
-              .failed,
+            )).to[Multipart.General].failed,
             1.second
           )
           .getMessage shouldEqual "Illegal multipart boundary in message content"
@@ -282,8 +281,7 @@ class MultipartUnmarshallersSpec
             |
             |test@there.com
             |-----""".stripMarginWithNewline("\r\n")
-            )).to[Multipart.General]
-              .failed,
+            )).to[Multipart.General].failed,
             1.second
           )
           .getMessage shouldEqual

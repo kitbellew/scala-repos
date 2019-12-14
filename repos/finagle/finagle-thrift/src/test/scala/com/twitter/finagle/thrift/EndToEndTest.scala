@@ -521,7 +521,8 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
                 .name("server")
                 .reportTo(sr)
                 .bindTo(new InetSocketAddress(0))
-                .build(new Echo.FinagledService(fi, Protocols.binaryFactory()))),
+                .build(
+                  new Echo.FinagledService(fi, Protocols.binaryFactory()))),
       "ServerBuilder(codec)" ->
         (
             (

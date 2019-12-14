@@ -210,11 +210,12 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
   setModifyAcls(defaultAclUsers, sparkConf.get("spark.modify.acls", ""))
 
   private val secretKey = generateSecretKey()
-  logInfo("SecurityManager: authentication " + (if (authOn) "enabled"
-                                                else "disabled") +
-    "; ui acls " + (if (aclsOn) "enabled" else "disabled") +
-    "; users with view permissions: " + viewAcls.toString() +
-    "; users with modify permissions: " + modifyAcls.toString())
+  logInfo(
+    "SecurityManager: authentication " + (if (authOn) "enabled"
+                                          else "disabled") +
+      "; ui acls " + (if (aclsOn) "enabled" else "disabled") +
+      "; users with view permissions: " + viewAcls.toString() +
+      "; users with modify permissions: " + modifyAcls.toString())
 
   // Set our own authenticator to properly negotiate user/password for HTTP connections.
   // This is needed by the HTTP client fetching from the HttpServer. Put here so its

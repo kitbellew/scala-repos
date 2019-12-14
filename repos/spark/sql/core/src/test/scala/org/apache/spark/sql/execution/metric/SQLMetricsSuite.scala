@@ -281,8 +281,9 @@ class SQLMetricsSuite extends SparkFunSuite with SharedSQLContext {
     testSparkPlanMetrics(
       df,
       2,
-      Map(0L -> ("BroadcastLeftSemiJoinHash", Map(
-        "number of output rows" -> 2L))))
+      Map(
+        0L -> ("BroadcastLeftSemiJoinHash", Map(
+          "number of output rows" -> 2L))))
   }
 
   test("ShuffledHashJoin metrics") {

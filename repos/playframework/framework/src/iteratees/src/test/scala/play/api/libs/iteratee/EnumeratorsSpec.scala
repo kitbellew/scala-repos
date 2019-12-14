@@ -213,9 +213,11 @@ object EnumeratorsSpec
         val a = (0 to 10).toList
         val it = a.iterator
 
-        val enumerator = Enumerator.generateM(Future(if (it.hasNext)
-          Some(it.next())
-        else None))(generateEC) >>> Enumerator(12)
+        val enumerator = Enumerator.generateM(
+          Future(
+            if (it.hasNext)
+              Some(it.next())
+            else None))(generateEC) >>> Enumerator(12)
 
         Await.result(
           enumerator |>>> Iteratee.fold[Int, String]("")(_ + _)(foldEC),

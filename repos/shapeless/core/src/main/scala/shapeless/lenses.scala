@@ -530,7 +530,15 @@ trait LowPriorityMkPathOptic {
 
   type Aux1[S, P <: HList, Out0] = MkPathOptic[S, P] { type Out = Out0 }
 
-  implicit def mkCoselSelPathOptic[S, P <: HList, K, A, C <: Coproduct, I, E, R](
+  implicit def mkCoselSelPathOptic[
+      S,
+      P <: HList,
+      K,
+      A,
+      C <: Coproduct,
+      I,
+      E,
+      R](
       implicit
       mkPrefix: Aux[S, P, R, A],
       gen: Generic.Aux[A, C],

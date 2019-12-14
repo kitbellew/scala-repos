@@ -319,43 +319,42 @@ object SwaggerSerializers {
         }))
 
   class ModelSerializer
-      extends CustomSerializer[Model](
-        implicit formats =>
-          ({
-            case json: JObject =>
-              val properties = json \ "properties" match {
-                case JObject(entries) => {
-                  for ((key, value) <- entries)
-                    yield key -> value.extract[ModelProperty]
-                }
-                case _ => Nil
+      extends CustomSerializer[Model](implicit formats =>
+        ({
+          case json: JObject =>
+            val properties = json \ "properties" match {
+              case JObject(entries) => {
+                for ((key, value) <- entries)
+                  yield key -> value.extract[ModelProperty]
               }
+              case _ => Nil
+            }
 
-              Model(
-                (json \ "id").getAsOrElse(""),
-                (json \ "name").getAsOrElse((json \ "id").as[String]),
-                (json \ "qualifiedType").getAs[String].flatMap(_.blankOption),
-                (json \ "description").getAs[String].flatMap(_.blankOption),
-                properties,
-                (json \ "extends").getAs[String].flatMap(_.blankOption),
-                (json \ "discriminator").getAs[String].flatMap(_.blankOption)
-              )
-          }, {
-            case x: Model =>
-              val required =
-                for ((key, value) <- x.properties if value.required) yield key
-              ("id" -> x.id) ~
-                ("name" -> x.name) ~
-                ("qualifiedType" -> x.qualifiedName) ~
-                ("description" -> x.description) ~
-                ("required" -> required) ~
-                ("extends" -> x.baseModel.filter(s =>
-                  s.nonBlank && !s.trim.equalsIgnoreCase("VOID"))) ~
-                ("discriminator" -> x.discriminator) ~
-                ("properties" -> (x.properties.sortBy {
-                  case (_, p) ⇒ p.position
-                } map { case (k, v) => k -> Extraction.decompose(v) }))
-          }))
+            Model(
+              (json \ "id").getAsOrElse(""),
+              (json \ "name").getAsOrElse((json \ "id").as[String]),
+              (json \ "qualifiedType").getAs[String].flatMap(_.blankOption),
+              (json \ "description").getAs[String].flatMap(_.blankOption),
+              properties,
+              (json \ "extends").getAs[String].flatMap(_.blankOption),
+              (json \ "discriminator").getAs[String].flatMap(_.blankOption)
+            )
+        }, {
+          case x: Model =>
+            val required =
+              for ((key, value) <- x.properties if value.required) yield key
+            ("id" -> x.id) ~
+              ("name" -> x.name) ~
+              ("qualifiedType" -> x.qualifiedName) ~
+              ("description" -> x.description) ~
+              ("required" -> required) ~
+              ("extends" -> x.baseModel.filter(s =>
+                s.nonBlank && !s.trim.equalsIgnoreCase("VOID"))) ~
+              ("discriminator" -> x.discriminator) ~
+              ("properties" -> (x.properties.sortBy {
+                case (_, p) ⇒ p.position
+              } map { case (k, v) => k -> Extraction.decompose(v) }))
+        }))
 
   class ResponseMessageSerializer
       extends CustomSerializer[ResponseMessage[_]](implicit formats =>
