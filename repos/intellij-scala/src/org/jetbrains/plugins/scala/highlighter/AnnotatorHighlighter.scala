@@ -200,7 +200,9 @@ object AnnotatorHighlighter {
     val annotation = holder.createInfoAnnotation(refElement.nameId, null)
     resolvedElement match {
       case c: PsiClass
-          if ScType.baseTypesQualMap.contains(c.qualifiedName) => //this is td, it's important!
+          if ScType.baseTypesQualMap.contains(
+            c.qualifiedName
+          ) => //this is td, it's important!
         annotation.setTextAttributes(DefaultHighlighter.PREDEF)
       case x: ScClass if x.getModifierList.has(ScalaTokenTypes.kABSTRACT) =>
         annotation.setTextAttributes(DefaultHighlighter.ABSTRACT_CLASS)

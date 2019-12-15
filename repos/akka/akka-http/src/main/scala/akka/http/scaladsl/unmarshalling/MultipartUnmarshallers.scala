@@ -155,7 +155,10 @@ trait MultipartUnmarshallers {
                   val bodyParts = entity.dataBytes
                     .transform(() ⇒ parser)
                     .splitWhen(_.isInstanceOf[PartStart])
-                    .buffer(100, OverflowStrategy.backpressure) // FIXME remove (#19240)
+                    .buffer(
+                      100,
+                      OverflowStrategy.backpressure
+                    ) // FIXME remove (#19240)
                     .prefixAndTail(1)
                     .collect {
                       case (

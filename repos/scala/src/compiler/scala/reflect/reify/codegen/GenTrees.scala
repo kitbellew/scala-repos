@@ -160,7 +160,9 @@ trait GenTrees {
           mirrorCall(nme.Ident, reify(name))
         } else if (!sym.isLocalToReifee) {
           if (sym.isVariable && sym.owner.isTerm) {
-            captureVariable(sym) // Note order dependency: captureVariable needs to come before reification here.
+            captureVariable(
+              sym
+            ) // Note order dependency: captureVariable needs to come before reification here.
             mirrorCall(
               nme.Select,
               mirrorBuildCall(nme.mkIdent, reify(sym)),

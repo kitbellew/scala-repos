@@ -140,7 +140,10 @@ class ScalaCaseClassParametersNameContributer
           .map(_.patterns)
 
         if (patterns.isEmpty || (patterns.isDefined && patterns.get.length > classParams.length))
-          return ParameterWithPosition(None, -1) //try to type more param than can be
+          return ParameterWithPosition(
+            None,
+            -1
+          ) //try to type more param than can be
 
         val myPosition = patterns.get.indexOf(me)
         val coresponedParameter =

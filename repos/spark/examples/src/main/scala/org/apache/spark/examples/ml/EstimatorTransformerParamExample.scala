@@ -67,7 +67,10 @@ object EstimatorTransformerParamExample {
     // We may alternatively specify parameters using a ParamMap,
     // which supports several methods for specifying parameters.
     val paramMap = ParamMap(lr.maxIter -> 20)
-      .put(lr.maxIter, 30) // Specify 1 Param.  This overwrites the original maxIter.
+      .put(
+        lr.maxIter,
+        30
+      ) // Specify 1 Param.  This overwrites the original maxIter.
       .put(lr.regParam -> 0.1, lr.threshold -> 0.55) // Specify multiple Params.
 
     // One can also combine ParamMaps.

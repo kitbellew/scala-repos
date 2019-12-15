@@ -247,7 +247,9 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
                 !(m2.isInstanceOf[ScFunction] || m2.isInstanceOf[ScFun] || m2
                   .isInstanceOf[ScPrimaryConstructor]))) &&
                 (lastRepeated(params1) ^ lastRepeated(params2)))
-              return lastRepeated(params2) //todo: this is hack!!! see SCL-3846, SCL-4048
+              return lastRepeated(
+                params2
+              ) //todo: this is hack!!! see SCL-3846, SCL-4048
             if (lastRepeated(params1) && !lastRepeated(params2))
               params1 = params1.map {
                 case p: Parameter if p.isRepeated =>
@@ -299,7 +301,8 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
               type2,
               type1,
               immutable.Set.empty,
-              new ScUndefinedSubstitutor()) //todo: with implcits?
+              new ScUndefinedSubstitutor()
+            ) //todo: with implcits?
           //todo this is possible, when one variant is empty with implicit parameters, and second without parameters.
           //in this case it's logical that method without parameters must win...
           case (Left(_), Right(_)) if !r1.implicitCase => return false

@@ -37,7 +37,9 @@ class HTTPRequestServlet(
   }
 
   lazy val cookies: List[HTTPCookie] = {
-    req.getSession(false) // do this to make sure we capture the JSESSIONID cookie
+    req.getSession(
+      false
+    ) // do this to make sure we capture the JSESSIONID cookie
     (Box !! req.getCookies).map(
       _.toList.map(c =>
         HTTPCookie(

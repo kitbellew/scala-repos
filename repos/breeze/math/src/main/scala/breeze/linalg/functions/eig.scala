@@ -147,7 +147,8 @@ object eigSym extends UFunc {
     val work = Array.ofDim[Double](lwork)
     val info = new intW(0)
     lapack.dsyev(
-      if (rightEigenvectors) "V" else "N" /* eigenvalues N, eigenvalues & eigenvectors "V" */,
+      if (rightEigenvectors) "V"
+      else "N" /* eigenvalues N, eigenvalues & eigenvectors "V" */,
       "L" /* lower triangular */,
       N /* number of rows */,
       A.data,

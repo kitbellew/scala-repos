@@ -110,7 +110,9 @@ trait ScalaClassLoader extends JClassLoader {
     if (!Modifier.isStatic(method.getModifiers))
       throw new NoSuchMethodException(objectName + ".main is not static")
 
-    try asContext(method.invoke(null, Array(arguments.toArray: AnyRef): _*)) // !!! : AnyRef shouldn't be necessary
+    try asContext(
+      method.invoke(null, Array(arguments.toArray: AnyRef): _*)
+    ) // !!! : AnyRef shouldn't be necessary
     catch unwrapHandler({ case ex => throw ex })
   }
 }

@@ -155,7 +155,9 @@ object M4 {
   }
 
   def test_concat[a](xss: List[List[a]]) = {
-    Console.println(concat(xss).toString + " = concat(" + xss + ")"); // !!! .toString
+    Console.println(
+      concat(xss).toString + " = concat(" + xss + ")"
+    ); // !!! .toString
   }
 
   def test = {
@@ -168,15 +170,21 @@ object M4 {
     test_concat(List(List(1, 2, 3, 4, 5, 6), List[Int]())); // !!! [int]
     test_concat(List(List(1, 2, 3), List(4, 5, 6)));
     test_concat(List(List[Int](), List(1, 2, 3, 4, 5, 6))); // !!! [int]
-    test_concat(List(List(1, 2, 3, 4, 5, 6), List[Int](), List[Int]())); // !!! [int]
+    test_concat(
+      List(List(1, 2, 3, 4, 5, 6), List[Int](), List[Int]())
+    ); // !!! [int]
     test_concat(List(List(1, 2, 3, 4, 5), List(6), List[Int]())); // !!! [int]
     test_concat(List(List(1, 2, 3), List(4, 5, 6), List[Int]())); // !!! [int]
     test_concat(List(List(1), List(2, 3, 4, 5, 6), List[Int]())); // !!! [int]
-    test_concat(List(List[Int](), List(1, 2, 3, 4, 5, 6), List[Int]())); // !!! [int]
+    test_concat(
+      List(List[Int](), List(1, 2, 3, 4, 5, 6), List[Int]())
+    ); // !!! [int]
     test_concat(List(List[Int](), List(1, 2, 3, 4, 5), List(6))); // !!! [int]
     test_concat(List(List[Int](), List(1, 2, 3), List(4, 5, 6))); // !!! [int]
     test_concat(List(List[Int](), List(1), List(2, 3, 4, 5, 6))); // !!! [int]
-    test_concat(List(List[Int](), List[Int](), List(1, 2, 3, 4, 5, 6))); // !!! [int]
+    test_concat(
+      List(List[Int](), List[Int](), List(1, 2, 3, 4, 5, 6))
+    ); // !!! [int]
     test_concat(List(List(1, 2), List(3, 4), List(5, 6)));
     Console.println;
   }
@@ -196,7 +204,8 @@ object M5 {
 
   def test_zipFun[a, b](xs: List[a], ys: List[b]) = {
     Console.println(
-      zipFun(xs, ys).toString + " = zipFun(" + xs + "," + ys + ")"); // !!! .toString
+      zipFun(xs, ys).toString + " = zipFun(" + xs + "," + ys + ")"
+    ); // !!! .toString
   }
 
   def test = {
@@ -231,7 +240,8 @@ object M6 {
 
   def test_zipFun[a, b](xs: List[a], ys: List[b]) = {
     Console.println(
-      zipFun(xs, ys).toString + " = zipFun(" + xs + "," + ys + ")"); // !!! .toString
+      zipFun(xs, ys).toString + " = zipFun(" + xs + "," + ys + ")"
+    ); // !!! .toString
   }
 
   def test = {
@@ -264,7 +274,9 @@ object M7 {
   }
 
   def test_heads[a](xss: List[List[a]]) = {
-    Console.println(heads(xss).toString + " = heads(" + xss + ")"); // !!! .toString
+    Console.println(
+      heads(xss).toString + " = heads(" + xss + ")"
+    ); // !!! .toString
   }
 
   def test = {
@@ -276,9 +288,15 @@ object M7 {
     test_heads(List(List(1, 2, 3, 4, 5, 6)));
     test_heads(List(List(1, 2, 3, 4, 5, 6), List[Int]())); // !!! [int]
     test_heads(List(List[Int](), List(1, 2, 3, 4, 5, 6))); // !!! [int]
-    test_heads(List(List(1, 2, 3, 4, 5, 6), List[Int](), List[Int]())); // !!! [int]
-    test_heads(List(List[Int](), List(1, 2, 3, 4, 5, 6), List[Int]())); // !!! [int]
-    test_heads(List(List[Int](), List[Int](), List(1, 2, 3, 4, 5, 6))); // !!! [int]
+    test_heads(
+      List(List(1, 2, 3, 4, 5, 6), List[Int](), List[Int]())
+    ); // !!! [int]
+    test_heads(
+      List(List[Int](), List(1, 2, 3, 4, 5, 6), List[Int]())
+    ); // !!! [int]
+    test_heads(
+      List(List[Int](), List[Int](), List(1, 2, 3, 4, 5, 6))
+    ); // !!! [int]
 
     test_heads(List(List(1), List(2, 3, 4, 5, 6), List[Int]())); // !!! [int]
     test_heads(List(List[Int](), List(1), List(2, 3, 4, 5, 6))); // !!! [int]
@@ -309,7 +327,9 @@ object M8 {
   }
 
   def test_heads[a](xss: List[List[a]]) = {
-    Console.println(heads(xss).toString + " = heads(" + xss + ")"); // !!! .toString
+    Console.println(
+      heads(xss).toString + " = heads(" + xss + ")"
+    ); // !!! .toString
   }
 
   def test = {
@@ -321,9 +341,15 @@ object M8 {
     test_heads(List(List(1, 2, 3, 4, 5, 6)));
     test_heads(List(List(1, 2, 3, 4, 5, 6), List[Int]())); // !!! [int]
     test_heads(List(List[Int](), List(1, 2, 3, 4, 5, 6))); // !!! [int]
-    test_heads(List(List(1, 2, 3, 4, 5, 6), List[Int](), List[Int]())); // !!! [int]
-    test_heads(List(List[Int](), List(1, 2, 3, 4, 5, 6), List[Int]())); // !!! [int]
-    test_heads(List(List[Int](), List[Int](), List(1, 2, 3, 4, 5, 6))); // !!! [int]
+    test_heads(
+      List(List(1, 2, 3, 4, 5, 6), List[Int](), List[Int]())
+    ); // !!! [int]
+    test_heads(
+      List(List[Int](), List(1, 2, 3, 4, 5, 6), List[Int]())
+    ); // !!! [int]
+    test_heads(
+      List(List[Int](), List[Int](), List(1, 2, 3, 4, 5, 6))
+    ); // !!! [int]
 
     test_heads(List(List(1), List(2, 3, 4, 5, 6), List[Int]())); // !!! [int]
     test_heads(List(List[Int](), List(1), List(2, 3, 4, 5, 6))); // !!! [int]

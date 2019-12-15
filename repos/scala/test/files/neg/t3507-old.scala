@@ -10,6 +10,8 @@ object Test {
   val c /*: object _1.b.c forSome { val _1: A } */ = a.m // widening using existential
 
   def mani[T: Manifest](x: T) = ()
-  mani /*[object _1.b.c]*/ (c) // kaboom in manifestOfType / TreeGen.mkAttributedQualifier
+  mani /*[object _1.b.c]*/ (
+    c
+  ) // kaboom in manifestOfType / TreeGen.mkAttributedQualifier
   // --> _1 is not in scope here
 }

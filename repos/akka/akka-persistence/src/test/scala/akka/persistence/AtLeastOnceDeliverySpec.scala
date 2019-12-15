@@ -353,7 +353,8 @@ abstract class AtLeastOnceDeliverySpec(config: Config)
       // a-4 was re-delivered but lost
       probeA.expectMsgAllOf(
         Action(5, "a-5"), // re-delivered
-        Action(4, "a-4")) // re-delivered, 3rd time
+        Action(4, "a-4")
+      ) // re-delivered, 3rd time
 
       probeA.expectNoMsg(1.second)
     }

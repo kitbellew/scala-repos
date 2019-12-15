@@ -498,7 +498,9 @@ abstract class TailCalls extends Transform {
         // the prologue may be empty, usually it is the valdef that stores the scrut
         val (prologue, cases) = stats span (s => !s.isInstanceOf[LabelDef])
         traverse(expr)
-        traverseTrees(cases.reverse) // reverse so that we enter the matchEnd LabelDef before we see jumps to it
+        traverseTrees(
+          cases.reverse
+        ) // reverse so that we enter the matchEnd LabelDef before we see jumps to it
         traverseTreesNoTail(prologue) // selector (may be absent)
 
       case CaseDef(pat, guard, body) =>

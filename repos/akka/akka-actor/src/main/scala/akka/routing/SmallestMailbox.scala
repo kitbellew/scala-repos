@@ -70,7 +70,8 @@ class SmallestMailboxRoutingLogic extends RoutingLogic {
             (if (!hasMessages(target)) 0L
              else { //Race between hasMessages and numberOfMessages here, unfortunate the numberOfMessages returns 0 if unknown
                val noOfMsgs: Long = if (deep) numberOfMessages(target) else 0
-               if (noOfMsgs > 0) noOfMsgs else Long.MaxValue - 3 //Just better than a suspended actorref
+               if (noOfMsgs > 0) noOfMsgs
+               else Long.MaxValue - 3 //Just better than a suspended actorref
              })
         }
 

@@ -915,7 +915,8 @@ object MiMa extends AutoPlugin {
     Map(
       "2.3.11" -> Seq(
         ProblemFilters.exclude[MissingMethodProblem](
-          "akka.actor.ActorCell.clearActorFields") // #17805, incompatibility with 2.4.x fixed in 2.3.12
+          "akka.actor.ActorCell.clearActorFields"
+        ) // #17805, incompatibility with 2.4.x fixed in 2.3.12
       ),
       "2.3.14" -> bcIssuesBetween23and24,
       "2.4.0" -> Seq(
@@ -988,7 +989,8 @@ object MiMa extends AutoPlugin {
         ProblemFilters.exclude[DirectMissingMethodProblem](
           "akka.stream.impl.fusing.Drop.onPush"),
         ProblemFilters.exclude[FinalClassProblem](
-          "akka.stream.stage.GraphStageLogic$Reading"), // this class is private
+          "akka.stream.stage.GraphStageLogic$Reading"
+        ), // this class is private
 
         // #19815 make HTTP compile under Scala 2.12.0-M3
         ProblemFilters.exclude[IncompatibleMethTypeProblem](
@@ -1020,7 +1022,8 @@ object MiMa extends AutoPlugin {
         ProblemFilters.exclude[MissingTypesProblem](
           "akka.http.scaladsl.model.HttpRequest$"),
         ProblemFilters.exclude[IncompatibleResultTypeProblem](
-          "akka.http.scaladsl.model.HttpRequest.unapply"), // returned Option[HttpRequest], now returns HttpRequest – no Option allocations!
+          "akka.http.scaladsl.model.HttpRequest.unapply"
+        ), // returned Option[HttpRequest], now returns HttpRequest – no Option allocations!
         ProblemFilters.exclude[MissingMethodProblem](
           "akka.http.scaladsl.model.HttpRequest.<init>$default$1"),
         ProblemFilters.exclude[MissingMethodProblem](
@@ -1032,7 +1035,8 @@ object MiMa extends AutoPlugin {
         ProblemFilters.exclude[MissingMethodProblem](
           "akka.http.scaladsl.model.HttpRequest.<init>$default$5"),
         ProblemFilters.exclude[MissingTypesProblem](
-          "akka.http.scaladsl.model.HttpResponse"), // was a case class (Serializable, Product, Equals)
+          "akka.http.scaladsl.model.HttpResponse"
+        ), // was a case class (Serializable, Product, Equals)
         ProblemFilters.exclude[MissingMethodProblem](
           "akka.http.scaladsl.model.HttpResponse.productElement"),
         ProblemFilters.exclude[MissingMethodProblem](
@@ -1058,7 +1062,8 @@ object MiMa extends AutoPlugin {
         ProblemFilters.exclude[MissingTypesProblem](
           "akka.http.scaladsl.model.HttpResponse$"),
         ProblemFilters.exclude[IncompatibleResultTypeProblem](
-          "akka.http.scaladsl.model.HttpResponse.unapply"), // returned Option[HttpRequest], now returns HttpRequest – no Option allocations!
+          "akka.http.scaladsl.model.HttpResponse.unapply"
+        ), // returned Option[HttpRequest], now returns HttpRequest – no Option allocations!
         ProblemFilters.exclude[MissingMethodProblem](
           "akka.http.scaladsl.model.HttpResponse.<init>$default$1"),
         ProblemFilters.exclude[MissingMethodProblem](

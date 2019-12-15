@@ -330,7 +330,9 @@ class MapWithStateRDDSuite
               state.remove()
             case _ =>
           }
-          None.asInstanceOf[Option[Int]] // Do not return anything, not being tested
+          None.asInstanceOf[Option[
+            Int
+          ]] // Do not return anything, not being tested
         }
       val newDataRDD =
         sc.makeRDD(testData).partitionBy(testStateRDD.partitioner.get)
@@ -358,9 +360,21 @@ class MapWithStateRDDSuite
     }
 
     // Test no-op, no state should change
-    testStateUpdates(initStateRDD, Seq(), initStateWthTime) // should not scan any state
-    testStateUpdates(initStateRDD, Seq(("k1", 0)), initStateWthTime) // should not update existing state
-    testStateUpdates(initStateRDD, Seq(("k3", 0)), initStateWthTime) // should not create new state
+    testStateUpdates(
+      initStateRDD,
+      Seq(),
+      initStateWthTime
+    ) // should not scan any state
+    testStateUpdates(
+      initStateRDD,
+      Seq(("k1", 0)),
+      initStateWthTime
+    ) // should not update existing state
+    testStateUpdates(
+      initStateRDD,
+      Seq(("k3", 0)),
+      initStateWthTime
+    ) // should not create new state
 
     // Test creation of new state
     val rdd1 = testStateUpdates(
@@ -385,7 +399,12 @@ class MapWithStateRDDSuite
 
     val rdd4 = testStateUpdates(
       rdd3,
-      Seq(("x", 0), ("k2", 1), ("k2", 1), ("k3", 1)), // should update k2, 0 -> 2 and create k3, 0
+      Seq(
+        ("x", 0),
+        ("k2", 1),
+        ("k2", 1),
+        ("k3", 1)
+      ), // should update k2, 0 -> 2 and create k3, 0
       Set(("k1", 1, updateTime), ("k2", 2, updateTime), ("k3", 0, updateTime))
     )
 

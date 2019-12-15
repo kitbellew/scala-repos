@@ -38,7 +38,9 @@ class ScTraitImpl private (
     with ScTypeParametersOwner
     with ScTemplateDefinition {
   override def additionalJavaNames: Array[String] = {
-    Array(fakeCompanionClass.getName) //do not add fakeCompanionModule => will build tree from stubs everywhere
+    Array(
+      fakeCompanionClass.getName
+    ) //do not add fakeCompanionModule => will build tree from stubs everywhere
   }
 
   override def accept(visitor: PsiElementVisitor) {

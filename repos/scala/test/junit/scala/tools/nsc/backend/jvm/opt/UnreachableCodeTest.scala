@@ -160,7 +160,9 @@ class UnreachableCodeTest extends ClearAfterClass {
     val code =
       "def f: Int = { return 0; try { 1 } catch { case _: Exception => 2 } }"
     val m = singleMethod(dceCompiler)(code)
-    assertTrue(m.handlers.isEmpty) // redundant (if code is gone, handler is gone), but done once here for extra safety
+    assertTrue(
+      m.handlers.isEmpty
+    ) // redundant (if code is gone, handler is gone), but done once here for extra safety
     assertSameCode(m.instructions, wrapInDefault(Op(ICONST_0), Op(IRETURN)))
 
     val code2 =

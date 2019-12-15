@@ -118,9 +118,11 @@ class CoreBTypes[BTFS <: BTypesFromSymbols[_ <: Global]](val bTypes: BTFS) {
   lazy val jlCloneableRef
       : ClassBType = classBTypeFromSymbol(JavaCloneableClass) // java/lang/Cloneable
   lazy val jiSerializableRef: ClassBType = classBTypeFromSymbol(
-    JavaSerializableClass) // java/io/Serializable
+    JavaSerializableClass
+  ) // java/io/Serializable
   lazy val jlClassCastExceptionRef: ClassBType = classBTypeFromSymbol(
-    ClassCastExceptionClass) // java/lang/ClassCastException
+    ClassCastExceptionClass
+  ) // java/lang/ClassCastException
   lazy val juMapRef
       : ClassBType = classBTypeFromSymbol(JavaUtilMap) // java/util/Map
   lazy val juHashMapRef
@@ -131,9 +133,9 @@ class CoreBTypes[BTFS <: BTypesFromSymbols[_ <: Global]](val bTypes: BTFS) {
     requiredClass[java.lang.invoke.SerializedLambda])
   lazy val jliMethodHandlesRef: ClassBType = classBTypeFromSymbol(
     requiredClass[java.lang.invoke.MethodHandles])
-  lazy val jliMethodHandlesLookupRef
-      : ClassBType = classBTypeFromSymbol(exitingPickler(getRequiredClass(
-    "java.lang.invoke.MethodHandles.Lookup"))) // didn't find a reliable non-stringly-typed way that works for inner classes in the backend
+  lazy val jliMethodHandlesLookupRef: ClassBType = classBTypeFromSymbol(
+    exitingPickler(getRequiredClass("java.lang.invoke.MethodHandles.Lookup"))
+  ) // didn't find a reliable non-stringly-typed way that works for inner classes in the backend
   lazy val jliMethodTypeRef: ClassBType = classBTypeFromSymbol(
     requiredClass[java.lang.invoke.MethodType])
   lazy val jliCallSiteRef: ClassBType = classBTypeFromSymbol(
@@ -274,7 +276,9 @@ class CoreBTypes[BTFS <: BTypesFromSymbols[_ <: Global]](val bTypes: BTFS) {
     nonOverloadedConstructors(allRefClasses)
 
   private def specializedSubclasses(cls: Symbol): List[Symbol] = {
-    exitingSpecialize(cls.info) // the `transformInfo` method of specialization adds specialized subclasses to the `specializedClass` map
+    exitingSpecialize(
+      cls.info
+    ) // the `transformInfo` method of specialization adds specialized subclasses to the `specializedClass` map
     specializeTypes.specializedClass
       .collect({
         case ((`cls`, _), specCls) => specCls

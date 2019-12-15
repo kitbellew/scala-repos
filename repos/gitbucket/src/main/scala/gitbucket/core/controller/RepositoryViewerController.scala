@@ -825,8 +825,11 @@ trait RepositoryViewerControllerBase extends ControllerBase {
                   html.files(
                     revision,
                     repository,
-                    if (path == ".") Nil else path.split("/").toList, // current path
-                    new JGitUtil.CommitInfo(lastModifiedCommit), // last modified commit
+                    if (path == ".") Nil
+                    else path.split("/").toList, // current path
+                    new JGitUtil.CommitInfo(
+                      lastModifiedCommit
+                    ), // last modified commit
                     files,
                     readme,
                     hasWritePermission(

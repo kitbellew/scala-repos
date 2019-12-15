@@ -955,7 +955,9 @@ class MessageSpec extends FreeSpec with Matchers with WithMaterializerSpec {
       Flow.fromSinkAndSource(
         Flow[Message]
           .buffer(1, OverflowStrategy.backpressure)
-          .to(Sink.fromSubscriber(messageIn)), // alternatively need to request(1) before expectComplete
+          .to(
+            Sink.fromSubscriber(messageIn)
+          ), // alternatively need to request(1) before expectComplete
         Source.fromPublisher(messageOut)
       )
 
@@ -974,7 +976,10 @@ class MessageSpec extends FreeSpec with Matchers with WithMaterializerSpec {
       .via(printEvent("frameRendererIn"))
       .transform(() ⇒ new FrameEventRenderer)
       .via(printEvent("frameRendererOut"))
-      .buffer(1, OverflowStrategy.backpressure) // alternatively need to request(1) before expectComplete
+      .buffer(
+        1,
+        OverflowStrategy.backpressure
+      ) // alternatively need to request(1) before expectComplete
       .to(netOut.sink)
       .run()
 

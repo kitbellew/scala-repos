@@ -25,7 +25,9 @@ trait Iterable[A]
   override def companion: GenericCompanion[Iterable] = Iterable
   protected[this] override def parCombiner =
     ParIterable
-      .newCombiner[A] // if `mutable.IterableLike` gets introduced, please move this there!
+      .newCombiner[
+        A
+      ] // if `mutable.IterableLike` gets introduced, please move this there!
   override def seq: Iterable[A] = this
 }
 

@@ -262,12 +262,22 @@ object Sorting {
       if (ord eq Ordering.Int) java.util.Arrays.sort(a)
       else mergeSort[Int](a, 0, a.length, ord)
     case a: Array[Double] =>
-      mergeSort[Double](a, 0, a.length, ord) // Because not all NaNs are identical, stability is meaningful!
+      mergeSort[Double](
+        a,
+        0,
+        a.length,
+        ord
+      ) // Because not all NaNs are identical, stability is meaningful!
     case a: Array[Long] =>
       if (ord eq Ordering.Long) java.util.Arrays.sort(a)
       else mergeSort[Long](a, 0, a.length, ord)
     case a: Array[Float] =>
-      mergeSort[Float](a, 0, a.length, ord) // Because not all NaNs are identical, stability is meaningful!
+      mergeSort[Float](
+        a,
+        0,
+        a.length,
+        ord
+      ) // Because not all NaNs are identical, stability is meaningful!
     case a: Array[Char] =>
       if (ord eq Ordering.Char) java.util.Arrays.sort(a)
       else mergeSort[Char](a, 0, a.length, ord)

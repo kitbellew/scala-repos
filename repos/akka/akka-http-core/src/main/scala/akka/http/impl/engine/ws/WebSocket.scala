@@ -145,7 +145,9 @@ private[http] object WebSocket {
     def prepareMessages: Flow[MessagePart, Message, NotUsed] =
       Flow[MessagePart]
         .transform(() ⇒ new PrepareForUserHandler)
-        .splitWhen(_.isMessageEnd) // FIXME using splitAfter from #16885 would simplify protocol a lot
+        .splitWhen(
+          _.isMessageEnd
+        ) // FIXME using splitAfter from #16885 would simplify protocol a lot
         .collect {
           case m: MessageDataPart ⇒ m
         }

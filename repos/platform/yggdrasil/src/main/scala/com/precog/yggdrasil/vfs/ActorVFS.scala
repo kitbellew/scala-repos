@@ -188,7 +188,10 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         .flatMap(_.validated[BlobMetadata])
         .disjunction
         .map { metadata =>
-          FileBlobResource(new File(versionDir, "data"), metadata) //(actorSystem.dispatcher)
+          FileBlobResource(
+            new File(versionDir, "data"),
+            metadata
+          ) //(actorSystem.dispatcher)
         } leftMap {
         ResourceError.fromExtractorError(
           "Error reading metadata from versionDir %s".format(
@@ -724,7 +727,9 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
           IO {
             if (blobr.mimeType == FileContent.XQuirrelScript) {
               // invalidate the cache
-              val cachePath = path / Path(".cached") //TODO: factor out this logic
+              val cachePath = path / Path(
+                ".cached"
+              ) //TODO: factor out this logic
               //FIXME: remove eventId from archive messages?
               routingActor ! ArchiveMessage(
                 apiKey,

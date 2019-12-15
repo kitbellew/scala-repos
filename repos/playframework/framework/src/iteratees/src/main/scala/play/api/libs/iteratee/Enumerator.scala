@@ -83,7 +83,9 @@ trait Enumerator[E] {
     def apply[A](i: Iteratee[E, A]): Future[Iteratee[E, A]] =
       parent
         .apply(i)
-        .flatMap(e.apply)(dec) //bad implementation, should remove Input.EOF in the end of first
+        .flatMap(e.apply)(
+          dec
+        ) //bad implementation, should remove Input.EOF in the end of first
   }
 
   def interleave[B >: E](other: Enumerator[B]): Enumerator[B] =

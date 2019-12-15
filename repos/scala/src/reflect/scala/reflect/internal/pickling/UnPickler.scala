@@ -440,7 +440,10 @@ abstract class UnPickler {
         case NOPREFIXtpe => NoPrefix
         case THIStpe     => readThisType()
         case SINGLEtpe =>
-          SingleType(readTypeRef(), readSymbolRef().filter(_.isStable)) // SI-7596 account for overloading
+          SingleType(
+            readTypeRef(),
+            readSymbolRef().filter(_.isStable)
+          ) // SI-7596 account for overloading
         case SUPERtpe      => SuperType(readTypeRef(), readTypeRef())
         case CONSTANTtpe   => ConstantType(readConstantRef())
         case TYPEREFtpe    => TypeRef(readTypeRef(), readSymbolRef(), readTypes())
@@ -701,7 +704,10 @@ abstract class UnPickler {
 
     protected def readNameRef(): Name = at(readNat(), readName)
     protected def readTypeRef(): Type =
-      at(readNat(), () => readType()) // after the NMT_TRANSITION period, we can leave off the () => ... ()
+      at(
+        readNat(),
+        () => readType()
+      ) // after the NMT_TRANSITION period, we can leave off the () => ... ()
     protected def readConstantRef(): Constant = at(readNat(), readConstant)
     protected def readAnnotationRef(): AnnotationInfo =
       at(readNat(), readAnnotation)

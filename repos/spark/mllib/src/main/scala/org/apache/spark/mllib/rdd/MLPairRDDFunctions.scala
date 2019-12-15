@@ -50,7 +50,9 @@ class MLPairRDDFunctions[K: ClassTag, V: ClassTag](self: RDD[(K, V)])
           queue1 ++= queue2
         }
       )
-      .mapValues(_.toArray.sorted(ord.reverse)) // This is an min-heap, so we reverse the order.
+      .mapValues(
+        _.toArray.sorted(ord.reverse)
+      ) // This is an min-heap, so we reverse the order.
   }
 }
 

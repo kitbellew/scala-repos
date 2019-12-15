@@ -143,7 +143,10 @@ class NettyServer(
     val bootstrap = new Bootstrap()
       .channel(channelClass)
       .group(serverChannelEventLoop)
-      .option(ChannelOption.AUTO_READ, java.lang.Boolean.FALSE) // publisher does ctx.read()
+      .option(
+        ChannelOption.AUTO_READ,
+        java.lang.Boolean.FALSE
+      ) // publisher does ctx.read()
       .handler(channelPublisher)
       .localAddress(address)
 

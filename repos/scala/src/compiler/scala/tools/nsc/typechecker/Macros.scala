@@ -503,7 +503,9 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
                 val duplicatedArg = duplicateAndKeepPositions(arg)
                 fingerprint match {
                   case LiftedTyped =>
-                    context.Expr[Nothing](duplicatedArg)(TypeTag.Nothing) // TODO: SI-5752
+                    context.Expr[Nothing](duplicatedArg)(
+                      TypeTag.Nothing
+                    ) // TODO: SI-5752
                   case LiftedUntyped => duplicatedArg
                   case _ =>
                     abort(
@@ -925,7 +927,8 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
           }
         } catch {
           case ex: Throwable =>
-            if (openMacros.nonEmpty) popMacroContext() // weirdly we started popping on an empty stack when refactoring fatalWarnings logic
+            if (openMacros.nonEmpty)
+              popMacroContext() // weirdly we started popping on an empty stack when refactoring fatalWarnings logic
             val realex = ReflectionUtils.unwrapThrowable(ex)
             realex match {
               case ex: AbortMacroException => MacroGeneratedAbort(expandee, ex)

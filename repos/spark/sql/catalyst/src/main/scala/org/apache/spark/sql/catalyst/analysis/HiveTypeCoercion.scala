@@ -612,7 +612,9 @@ object HiveTypeCoercion {
               else Cast(right, widestType)
             If(pred, newLeft, newRight)
           }
-          .getOrElse(i) // If there is no applicable conversion, leave expression unchanged.
+          .getOrElse(
+            i
+          ) // If there is no applicable conversion, leave expression unchanged.
       // Convert If(null literal, _, _) into boolean type.
       // In the optimizer, we should short-circuit this directly into false value.
       case If(pred, left, right) if pred.dataType == NullType =>
@@ -669,7 +671,9 @@ object HiveTypeCoercion {
               b
             }
           }
-          .getOrElse(b) // If there is no applicable conversion, leave expression unchanged.
+          .getOrElse(
+            b
+          ) // If there is no applicable conversion, leave expression unchanged.
 
       case e: ImplicitCastInputTypes if e.inputTypes.nonEmpty =>
         val children: Seq[Expression] = e.children.zip(e.inputTypes).map {

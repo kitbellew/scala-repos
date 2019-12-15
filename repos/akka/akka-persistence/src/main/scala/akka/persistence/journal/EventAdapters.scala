@@ -145,7 +145,9 @@ private[akka] object EventAdapters {
     override def toJournal(event: Any): Any = throw onlyReadSideException
 
     override def fromJournal(event: Any, manifest: String): EventSeq =
-      EventSeq(adapters.flatMap(_.fromJournal(event, manifest).events): _*) // TODO could we could make EventSeq flatMappable
+      EventSeq(
+        adapters.flatMap(_.fromJournal(event, manifest).events): _*
+      ) // TODO could we could make EventSeq flatMappable
 
     override def toString =
       s"CombinedReadEventAdapter(${adapters.map(_.getClass.getCanonicalName).mkString(",")})"

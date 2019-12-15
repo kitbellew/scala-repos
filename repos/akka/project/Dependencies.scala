@@ -47,7 +47,8 @@ object Dependencies {
 
     val scalaXml = "org.scala-lang.modules" %% "scala-xml" % "1.0.5" // Scala License
     val scalaReflect = ScalaVersionDependentModuleID.versioned(
-      "org.scala-lang" % "scala-reflect" % _) // Scala License
+      "org.scala-lang" % "scala-reflect" % _
+    ) // Scala License
 
     val slf4jApi = "org.slf4j" % "slf4j-api" % "1.7.16" // MIT
 

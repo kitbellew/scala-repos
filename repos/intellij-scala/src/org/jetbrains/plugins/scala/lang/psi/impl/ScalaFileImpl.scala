@@ -198,7 +198,8 @@ class ScalaFileImpl(
         case _: PsiComment    => true
         case _                => false
       }
-      if (empty) return true // treat empty or commented files as scripts to avoid project recompilations
+      if (empty)
+        return true // treat empty or commented files as scripts to avoid project recompilations
       val childrenIterator = getNode.getChildren(null).iterator
       while (childrenIterator.hasNext) {
         val n = childrenIterator.next()

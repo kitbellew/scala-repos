@@ -48,7 +48,10 @@ object UserInfo {
     val AxAttribute = """^openid\.([^.]+\.value\.([^.]+(\.\d+)?))$""".r
     val extractAxAttribute: PartialFunction[String, (String, String)] = {
       case AxAttribute(fullKey, key, num) =>
-        (fullKey, key) // fullKey e.g. 'ext1.value.email', shortKey e.g. 'email' or 'fav_movie.2'
+        (
+          fullKey,
+          key
+        ) // fullKey e.g. 'ext1.value.email', shortKey e.g. 'email' or 'fav_movie.2'
     }
 
     private lazy val signedFields = params.get("openid.signed") flatMap {
@@ -366,7 +369,11 @@ private[openid] object Discovery {
           .findFirstIn(response.body)
           .orElse(delegateRegex.findFirstIn(response.body))
           .flatMap(extractHref(_))
-        OpenIDServer("http://specs.openid.net/auth/2.0/signon", url, delegate) //protocol version due to http://openid.net/specs/openid-authentication-2_0.html#html_disco
+        OpenIDServer(
+          "http://specs.openid.net/auth/2.0/signon",
+          url,
+          delegate
+        ) //protocol version due to http://openid.net/specs/openid-authentication-2_0.html#html_disco
       })
     }
 

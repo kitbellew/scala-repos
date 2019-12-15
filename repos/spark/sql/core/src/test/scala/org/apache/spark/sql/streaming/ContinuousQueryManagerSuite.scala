@@ -116,7 +116,9 @@ class ContinuousQueryManagerSuite
       val q1 =
         stopRandomQueryAsync(stopAfter = 100 milliseconds, withError = false)
       testAwaitAnyTermination(ExpectNotBlocked)
-      require(!q1.isActive) // should be inactive by the time the prev awaitAnyTerm returned
+      require(
+        !q1.isActive
+      ) // should be inactive by the time the prev awaitAnyTerm returned
 
       // All subsequent calls to awaitAnyTermination should be non-blocking
       testAwaitAnyTermination(ExpectNotBlocked)
@@ -129,7 +131,9 @@ class ContinuousQueryManagerSuite
       // the exception
       val q2 = stopRandomQueryAsync(100 milliseconds, withError = true)
       testAwaitAnyTermination(ExpectException[SparkException])
-      require(!q2.isActive) // should be inactive by the time the prev awaitAnyTerm returned
+      require(
+        !q2.isActive
+      ) // should be inactive by the time the prev awaitAnyTerm returned
 
       // All subsequent calls to awaitAnyTermination should throw the exception
       testAwaitAnyTermination(ExpectException[SparkException])
@@ -177,7 +181,9 @@ class ContinuousQueryManagerSuite
         awaitTimeout = 2 seconds,
         expectedReturnedValue = true,
         testBehaviorFor = 4 seconds)
-      require(!q1.isActive) // should be inactive by the time the prev awaitAnyTerm returned
+      require(
+        !q1.isActive
+      ) // should be inactive by the time the prev awaitAnyTerm returned
 
       // All subsequent calls to awaitAnyTermination should be non-blocking even if timeout is high
       testAwaitAnyTermination(
@@ -200,7 +206,9 @@ class ContinuousQueryManagerSuite
         ExpectException[SparkException],
         awaitTimeout = 1 seconds,
         testBehaviorFor = 2 seconds)
-      require(!q2.isActive) // should be inactive by the time the prev awaitAnyTerm returned
+      require(
+        !q2.isActive
+      ) // should be inactive by the time the prev awaitAnyTerm returned
 
       // All subsequent calls to awaitAnyTermination should throw the exception
       testAwaitAnyTermination(

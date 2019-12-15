@@ -334,7 +334,8 @@ object InferUtil {
             typeParams),
           _) if expectedType.isDefined && (!fromImplicitParameters || impl) =>
         def updateRes(expected: ScType) {
-          if (expected.equiv(types.Unit)) return //do not update according to Unit type
+          if (expected.equiv(types.Unit))
+            return //do not update according to Unit type
           val innerInternal = internal match {
             case ScMethodType(inter, _, innerImpl)
                 if innerImpl && !fromImplicitParameters =>

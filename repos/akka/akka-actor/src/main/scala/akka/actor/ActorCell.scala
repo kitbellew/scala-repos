@@ -614,7 +614,8 @@ private[akka] class ActorCell(
       if (stackAfter.nonEmpty)
         contextStack.set(
           if (stackAfter.head eq null) stackAfter.tail.tail
-          else stackAfter.tail) // pop null marker plus our context
+          else stackAfter.tail
+        ) // pop null marker plus our context
     }
   }
 

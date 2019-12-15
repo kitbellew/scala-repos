@@ -2194,7 +2194,9 @@ class DAGSchedulerSuite
             "ignored"),
           null)))
     scheduler.resubmitFailedStages()
-    assert(listener2.results.size === 0) // Second stage listener should not have a result yet
+    assert(
+      listener2.results.size === 0
+    ) // Second stage listener should not have a result yet
 
     // Stage 0 should now be running as task set 2; make its task succeed
     assert(taskSets(2).stageId === 0)
@@ -2207,7 +2209,9 @@ class DAGSchedulerSuite
         .map(_._1)
         .toSet ===
         HashSet(makeBlockManagerId("hostC"), makeBlockManagerId("hostB")))
-    assert(listener2.results.size === 0) // Second stage listener should still not have a result
+    assert(
+      listener2.results.size === 0
+    ) // Second stage listener should still not have a result
 
     // Stage 1 should now be running as task set 3; make its first task succeed
     assert(taskSets(3).stageId === 1)

@@ -37,7 +37,9 @@ class ProtobufSerializerSpec extends AkkaSpec {
         .get
         .asInstanceOf[SerializedMessage]
       deserialized.getSerializerId should ===(protobufMessage.getSerializerId)
-      deserialized.getMessage should ===(protobufMessage.getMessage) // same "hello"
+      deserialized.getMessage should ===(
+        protobufMessage.getMessage
+      ) // same "hello"
     }
 
   }

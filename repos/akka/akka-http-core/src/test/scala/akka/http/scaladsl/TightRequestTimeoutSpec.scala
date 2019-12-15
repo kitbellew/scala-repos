@@ -79,7 +79,9 @@ class TightRequestTimeoutSpec
       val response = Http()
         .singleRequest(HttpRequest(uri = s"http://$hostname:$port/"))
         .futureValue
-      response.status should ===(StatusCodes.ServiceUnavailable) // the timeout response
+      response.status should ===(
+        StatusCodes.ServiceUnavailable
+      ) // the timeout response
 
       p.expectMsgPF(hint = "Expected truncation error") {
         case Logging.Error(_, _, _, msg: String)

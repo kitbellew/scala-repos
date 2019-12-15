@@ -187,7 +187,10 @@ object GeneratedCodeTest {
     def assertAll(all: Seq[ERow]) = {
       assertEquals(3, all.size)
       assertEquals(Set(1, 2, 3), all.map(_.k1.get).toSet)
-      assertEquals(all.map(_.k2), all.map(_.k1.get)) // assert auto inc order, should be tested somewhere else as well
+      assertEquals(
+        all.map(_.k2),
+        all.map(_.k1.get)
+      ) // assert auto inc order, should be tested somewhere else as well
     }
     DBIO.seq(
       schema.create,

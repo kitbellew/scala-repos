@@ -427,7 +427,10 @@ trait TypeComparers {
           false // avoid some warnings when Nothing/Any are on the other side
         case (_, TypeRef(_, NothingClass, _)) => false
         case (pt1: PolyType, pt2: PolyType) =>
-          isPolySubType(pt1, pt2) // @assume both .isHigherKinded (both normalized to PolyType)
+          isPolySubType(
+            pt1,
+            pt2
+          ) // @assume both .isHigherKinded (both normalized to PolyType)
         case (_: PolyType, MethodType(ps, _)) if ps exists (_.tpe.isWildcard) =>
           false // don't warn on HasMethodMatching on right hand side
         case _ => // @assume !(both .isHigherKinded) thus cannot be subtypes
@@ -441,7 +444,10 @@ trait TypeComparers {
 
     ((tp1.typeSymbol eq NothingClass) // @M Nothing is subtype of every well-kinded type
     || (tp2.typeSymbol eq AnyClass) // @M Any is supertype of every well-kinded type (@PP: is it? What about continuations plugin?)
-    || isSub(tp1.normalize, tp2.normalize) && annotationsConform(tp1, tp2) // @M! normalize reduces higher-kinded case to PolyType's
+    || isSub(tp1.normalize, tp2.normalize) && annotationsConform(
+      tp1,
+      tp2
+    ) // @M! normalize reduces higher-kinded case to PolyType's
     )
   }
 

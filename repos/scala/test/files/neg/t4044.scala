@@ -12,5 +12,7 @@ object Test {
 
   M[B] // okay, (B :: (* -> * -> *) is kind-conformant to (N :: * -> * -> *)
 
-  M[C] // error, (C :: (* -> * -> * -> *) not kind-conformant to (N :: * -> * -> *)
+  M[
+    C
+  ] // error, (C :: (* -> * -> * -> *) not kind-conformant to (N :: * -> * -> *)
 }

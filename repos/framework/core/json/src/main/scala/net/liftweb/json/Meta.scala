@@ -365,7 +365,9 @@ private[json] object Meta {
           val vars =
             Map() ++ rawClassOf(p).getTypeParameters.toList
               .map(_.asInstanceOf[TypeVariable[_]])
-              .zip(p.getActualTypeArguments.toList) // FIXME this cast should not be needed
+              .zip(
+                p.getActualTypeArguments.toList
+              ) // FIXME this cast should not be needed
           argsInfo(constructor, vars)
         case x => fail("Do not know how query constructor info for " + x)
       }

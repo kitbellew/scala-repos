@@ -178,7 +178,9 @@ private[ui] class StoragePage(parent: StorageTab) extends WebUIPage("") {
   private def streamBlockTableRow(
       block: (BlockId, Seq[BlockUIData])): Seq[Node] = {
     val replications = block._2
-    assert(replications.size > 0) // This must be true because it's the result of "groupBy"
+    assert(
+      replications.size > 0
+    ) // This must be true because it's the result of "groupBy"
     if (replications.size == 1) {
       streamBlockTableSubrow(
         block._1,

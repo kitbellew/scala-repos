@@ -78,7 +78,9 @@ abstract class SessionVar[T](dflt: => T)
 
       if (showWarningWhenAccessedOutOfSessionScope_?)
         logger
-          .warn("Getting a SessionVar " + name + " outside session scope") // added warning per issue 188
+          .warn(
+            "Getting a SessionVar " + name + " outside session scope"
+          ) // added warning per issue 188
 
       Empty
   }
@@ -109,7 +111,8 @@ abstract class SessionVar[T](dflt: => T)
 
         if (showWarningWhenAccessedOutOfSessionScope_?)
           logger.warn(
-            "Setting a SessionVar " + name + " to " + value + " outside session scope") // added warning per issue 188
+            "Setting a SessionVar " + name + " to " + value + " outside session scope"
+          ) // added warning per issue 188
     }
 
   /**
@@ -208,7 +211,9 @@ abstract class ContainerVar[T](dflt: => T)(
     case _ => {
       if (showWarningWhenAccessedOutOfSessionScope_?)
         logger
-          .warn("Getting a SessionVar " + name + " outside session scope") // added warning per issue 188
+          .warn(
+            "Getting a SessionVar " + name + " outside session scope"
+          ) // added warning per issue 188
 
       Empty
     }
@@ -243,7 +248,8 @@ abstract class ContainerVar[T](dflt: => T)(
       case _ =>
         if (showWarningWhenAccessedOutOfSessionScope_?)
           logger.warn(
-            "Setting a ContainerVar " + name + " to " + value + " outside session scope") // added warning per issue 188
+            "Setting a ContainerVar " + name + " to " + value + " outside session scope"
+          ) // added warning per issue 188
     }
 
   /**

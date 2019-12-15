@@ -404,7 +404,11 @@ class EventStreamSpec extends AkkaSpec(EventStreamSpec.config) {
         es.subscribe(a2.ref, classOf[A])
         es.subscribe(a2.ref, classOf[T])
         fishForDebugMessage(a1, s"watching ${a2.ref}", 1 second)
-        fishForDebugMessage(a1, s"watching ${a2.ref}", 1 second) // the unsubscriber "starts to watch" each time, as watching is idempotent
+        fishForDebugMessage(
+          a1,
+          s"watching ${a2.ref}",
+          1 second
+        ) // the unsubscriber "starts to watch" each time, as watching is idempotent
 
         es.unsubscribe(a2.ref, classOf[A]) should equal(true)
         fishForDebugMessage(

@@ -181,7 +181,9 @@ trait PersistentFSMBase[S, D, E]
     */
   final def stay(): State =
     goto(currentState.stateName)
-      .withNotification(false) // cannot directly use currentState because of the timeout field
+      .withNotification(
+        false
+      ) // cannot directly use currentState because of the timeout field
 
   /**
     * Produce change descriptor to stop this FSM actor with reason "Normal".

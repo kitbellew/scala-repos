@@ -176,7 +176,8 @@ trait TypeAdaptingTransformer {
     def adaptToType(tree: Tree, pt: Type): Tree = {
       if (settings.debug && pt != WildcardType)
         log(
-          "adapting " + tree + ":" + tree.tpe + " : " + tree.tpe.parents + " to " + pt) //debug
+          "adapting " + tree + ":" + tree.tpe + " : " + tree.tpe.parents + " to " + pt
+        ) //debug
       if (tree.tpe <:< pt)
         tree
       else if (isDifferentErasedValueType(tree.tpe, pt))

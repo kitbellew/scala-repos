@@ -766,7 +766,9 @@ class SparkILoop(
       echo("Nothing to replay.")
     else
       for (cmd <- replayCommands) {
-        echo("Replaying: " + cmd) // flush because maybe cmd will have its own output
+        echo(
+          "Replaying: " + cmd
+        ) // flush because maybe cmd will have its own output
         command(cmd)
         echo("")
       }

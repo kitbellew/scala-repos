@@ -98,7 +98,9 @@ class TcpConnectionSpec extends AkkaSpec("""
         val connectionActor =
           createConnectionActor(options = Vector(SO.KeepAlive(false)))
         val clientChannel = connectionActor.underlyingActor.channel
-        clientChannel.socket.getKeepAlive should ===(true) // only set after connection is established
+        clientChannel.socket.getKeepAlive should ===(
+          true
+        ) // only set after connection is established
         EventFilter.warning(pattern = "registration timeout", occurrences = 1) intercept {
           selector.send(connectionActor, ChannelConnectable)
           clientChannel.socket.getKeepAlive should ===(false)
@@ -134,7 +136,9 @@ class TcpConnectionSpec extends AkkaSpec("""
           val wrote = serverSideChannel.write(buffer)
           wrote should ===(DataSize)
 
-          expectNoMsg(1000.millis) // data should have been transferred fully by now
+          expectNoMsg(
+            1000.millis
+          ) // data should have been transferred fully by now
 
           selector.send(connectionActor, ChannelReadable)
 
@@ -582,7 +586,9 @@ class TcpConnectionSpec extends AkkaSpec("""
     "report when peer closed the connection but allow further writes and acknowledge normal close" in
       new EstablishedConnectionTest(keepOpenOnPeerClosed = true) {
         run {
-          closeServerSideAndWaitForClientReadable(fullClose = false) // send EOF (fin) from the server side
+          closeServerSideAndWaitForClientReadable(fullClose =
+            false
+          ) // send EOF (fin) from the server side
 
           selector.send(connectionActor, ChannelReadable)
           connectionHandler.expectMsg(PeerClosed)
@@ -600,7 +606,9 @@ class TcpConnectionSpec extends AkkaSpec("""
     "report when peer closed the connection but allow further writes and acknowledge confirmed close" in
       new EstablishedConnectionTest(keepOpenOnPeerClosed = true) {
         run {
-          closeServerSideAndWaitForClientReadable(fullClose = false) // send EOF (fin) from the server side
+          closeServerSideAndWaitForClientReadable(fullClose =
+            false
+          ) // send EOF (fin) from the server side
 
           selector.send(connectionActor, ChannelReadable)
           connectionHandler.expectMsg(PeerClosed)

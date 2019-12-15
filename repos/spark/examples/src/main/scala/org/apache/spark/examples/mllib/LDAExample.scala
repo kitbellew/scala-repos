@@ -261,7 +261,8 @@ object LDAExample {
         .stages(2)
         .asInstanceOf[CountVectorizerModel]
         .vocabulary, // vocabulary
-      documents.map(_._2.numActives).sum().toLong) // total token count
+      documents.map(_._2.numActives).sum().toLong
+    ) // total token count
   }
 }
 // scalastyle:on println

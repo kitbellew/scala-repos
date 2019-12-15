@@ -8,7 +8,10 @@ object Test extends App {
   // re-order using names, call-site evaluation order
   test1(1, "@")
   test1(b = get("$"), a = get(2))
-  test1(a = get(3), b = get("**")) // should not transform into a block. how to test?
+  test1(
+    a = get(3),
+    b = get("**")
+  ) // should not transform into a block. how to test?
   test3(b = get(110), a = get(11))(c = get("\\"), d = get(2.399))
   test3(get(14), get(3920))(d = get("}"), c = get("["))
 

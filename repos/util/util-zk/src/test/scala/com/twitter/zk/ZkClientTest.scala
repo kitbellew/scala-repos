@@ -864,7 +864,9 @@ class ZkClientTest extends WordSpec with MockitoSugar {
         }
 
         updateTree foreach { z =>
-          watchChildren(z.path)(Future(z))(new Promise[WatchedEvent]) // nohollaback
+          watchChildren(z.path)(Future(z))(
+            new Promise[WatchedEvent]
+          ) // nohollaback
         }
 
         updateTree foreach { z =>

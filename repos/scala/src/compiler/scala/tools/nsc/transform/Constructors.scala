@@ -187,7 +187,9 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
       def omittableOuterAcc(sym: Symbol) =
         isEffectivelyFinal && sym.isOuterAccessor && !sym.isOverridingSymbol
       val omittables = mutable.Set.empty[Symbol] ++ (decls filter (sym =>
-        omittableParamAcc(sym) || omittableOuterAcc(sym))) // the closure only captures isEffectivelyFinal
+        omittableParamAcc(sym) || omittableOuterAcc(
+          sym
+        ))) // the closure only captures isEffectivelyFinal
 
       // no point traversing further once omittables is empty, all candidates ruled out already.
       object detectUsages extends Traverser {
@@ -200,7 +202,9 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
             def sym = tree.symbol
             tree match {
               case _: DefDef
-                  if (sym.owner eq clazz) && omittableOuterAcc(sym) => // don't mark as "needed" the field supporting this outer-accessor (not just yet)
+                  if (sym.owner eq clazz) && omittableOuterAcc(
+                    sym
+                  ) => // don't mark as "needed" the field supporting this outer-accessor (not just yet)
               case _: Select if omittables(sym) =>
                 omittables -= sym // mark usage
                 bodyOfOuterAccessor get sym foreach traverse // recurse to mark as needed the field supporting the outer-accessor-method

@@ -191,8 +191,12 @@ class LocalCheckpointSuite extends SparkFunSuite with LocalSparkContext {
     } catch {
       case se: SparkException =>
         assert(se.getMessage.contains(s"Checkpoint block $blockId not found"))
-        assert(se.getMessage.contains("rdd.checkpoint()")) // suggest an alternative
-        assert(se.getMessage.contains("fault-tolerant")) // justify the alternative
+        assert(
+          se.getMessage.contains("rdd.checkpoint()")
+        ) // suggest an alternative
+        assert(
+          se.getMessage.contains("fault-tolerant")
+        ) // justify the alternative
     }
   }
 

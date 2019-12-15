@@ -1519,7 +1519,9 @@ class KafkaController(
       val leaderIsrAndEpochOpt = ReplicationUtils
         .getLeaderIsrAndEpochForPartition(zkUtils, topic, partition)
       zkWriteCompleteOrUnnecessary = leaderIsrAndEpochOpt match {
-        case Some(leaderIsrAndEpoch) => // increment the leader epoch even if the ISR changes
+        case Some(
+            leaderIsrAndEpoch
+            ) => // increment the leader epoch even if the ISR changes
           val leaderAndIsr = leaderIsrAndEpoch.leaderAndIsr
           val controllerEpoch = leaderIsrAndEpoch.controllerEpoch
           if (controllerEpoch > epoch)
@@ -1859,7 +1861,9 @@ class ReassignedPartitionsIsrChangeListener(
             val newLeaderAndIsrOpt =
               zkUtils.getLeaderAndIsrForPartition(topic, partition)
             newLeaderAndIsrOpt match {
-              case Some(leaderAndIsr) => // check if new replicas have joined ISR
+              case Some(
+                  leaderAndIsr
+                  ) => // check if new replicas have joined ISR
                 val caughtUpReplicas = reassignedReplicas & leaderAndIsr.isr.toSet
                 if (caughtUpReplicas == reassignedReplicas) {
                   // resume the partition reassignment process

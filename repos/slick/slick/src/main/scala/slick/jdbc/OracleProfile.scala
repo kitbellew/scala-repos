@@ -115,7 +115,9 @@ trait OracleProfile extends JdbcProfile {
         implicitly[SetParameter[String]].applied(user)).as[String]
       mtables <- MTable
         .getTables(None, None, None, Some(Seq("TABLE")))
-        .map(_.filter(t => tables contains t.name.name)) // FIXME: this should check schema and maybe more
+        .map(
+          _.filter(t => tables contains t.name.name)
+        ) // FIXME: this should check schema and maybe more
     } yield mtables
   }
 

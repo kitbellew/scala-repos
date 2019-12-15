@@ -1044,7 +1044,8 @@ private[stream] final class GroupedWithin[T](n: Int, d: FiniteDuration)
         in,
         new InHandler {
           override def onPush(): Unit =
-            if (!groupClosed) nextElement(grab(in)) // otherwise keep the element for next round
+            if (!groupClosed)
+              nextElement(grab(in)) // otherwise keep the element for next round
           override def onUpstreamFinish(): Unit = {
             finished = true
             if (!groupClosed && elements > 0) closeGroup()

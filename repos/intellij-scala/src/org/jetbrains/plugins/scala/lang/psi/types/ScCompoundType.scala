@@ -356,7 +356,9 @@ object ScCompoundType {
                   1,
                   subst,
                   e),
-                psi.types.Unit)) //setter
+                psi.types.Unit
+              )
+            ) //setter
           }
         case valDecl: ScValue =>
           for (e <- valDecl.declaredElements) {

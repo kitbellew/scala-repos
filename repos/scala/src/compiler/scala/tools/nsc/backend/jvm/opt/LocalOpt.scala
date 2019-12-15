@@ -162,9 +162,12 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
     // In principle, for the inliner, a single removeUnreachableCodeImpl would be enough. But that
     // would potentially leave behind stale handlers (empty try block) which is not legal in the
     // classfile. So we run both removeUnreachableCodeImpl and removeEmptyExceptionHandlers.
-    if (method.instructions.size == 0) return false // fast path for abstract methods
-    if (unreachableCodeEliminated(method)) return false // we know there is no unreachable code
-    if (!AsmAnalyzer.sizeOKForBasicValue(method)) return false // the method is too large for running an analyzer
+    if (method.instructions.size == 0)
+      return false // fast path for abstract methods
+    if (unreachableCodeEliminated(method))
+      return false // we know there is no unreachable code
+    if (!AsmAnalyzer.sizeOKForBasicValue(method))
+      return false // the method is too large for running an analyzer
 
     // For correctness, after removing unreachable code, we have to eliminate empty exception
     // handlers, see scaladoc of def methodOptimizations. Removing an live handler may render more
@@ -208,7 +211,8 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
   def methodOptimizations(
       method: MethodNode,
       ownerClassName: InternalName): Boolean = {
-    if (method.instructions.size == 0) return false // fast path for abstract methods
+    if (method.instructions.size == 0)
+      return false // fast path for abstract methods
 
     // unreachable-code also removes unused local variable nodes and empty exception handlers.
     // This is required for correctness, for example:

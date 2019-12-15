@@ -617,7 +617,9 @@ private[http] object HttpServerBluePrint {
         class ResponseCtxOutHandler extends OutHandler {
           override def onPull() = {}
           override def onDownstreamFinish() =
-            cancel(httpResponseIn) // we cannot fully completeState() here as the websocket pipeline would not complete properly
+            cancel(
+              httpResponseIn
+            ) // we cannot fully completeState() here as the websocket pipeline would not complete properly
         }
         setHandler(
           responseCtxOut,

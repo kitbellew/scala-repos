@@ -846,7 +846,9 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
     def makeSafeTupleType(elems: List[Tree], offset: Offset) = {
       if (checkTupleSize(elems, offset)) makeTupleType(elems)
       else
-        makeTupleType(Nil) // create a dummy node; makeTupleType(elems) would fail
+        makeTupleType(
+          Nil
+        ) // create a dummy node; makeTupleType(elems) would fail
     }
 
     /** Create a tuple term Tree. If the arity is not supported, a syntax error is emitted. */
@@ -1472,7 +1474,10 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
       }
       if (inPattern) stringCheese
       else
-        withPlaceholders(stringCheese, isAny = true) // string interpolator params are Any* by definition
+        withPlaceholders(
+          stringCheese,
+          isAny = true
+        ) // string interpolator params are Any* by definition
     }
 
     /* ------------- NEW LINES ------------------------------------------------- */

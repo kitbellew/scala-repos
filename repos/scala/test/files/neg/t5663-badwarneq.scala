@@ -43,8 +43,12 @@ object Test {
   def main(a: Array[String]) {
     // nothing to do with Gavin
     println(new Some(1) == new Some(1)) // OK, true
-    println(new Some(1) == None) // Should complain on type, was: spuriously complains on fresh object
-    println(Some(1) == new Thing(1)) // Should complain on type, was: spuriously complains on fresh object
+    println(
+      new Some(1) == None
+    ) // Should complain on type, was: spuriously complains on fresh object
+    println(
+      Some(1) == new Thing(1)
+    ) // Should complain on type, was: spuriously complains on fresh object
 
     val t1 = new ThingOne(11)
     val t2: Thingy = new ThingTwo(11)
@@ -53,7 +57,9 @@ object Test {
     val c = new Cousin
 
     println(t1 == t2) // true, but apparently unrelated, a compromise warning
-    println(t4 == t2) // true, complains because ThingThree is final and Thingy not a subclass, stronger claim than unrelated
+    println(
+      t4 == t2
+    ) // true, complains because ThingThree is final and Thingy not a subclass, stronger claim than unrelated
     println(t2 == t3) // OK, two Thingy
     println(t3 == t2) // ditto with case receiver
     println(t3 == Some(1)) // false, warn on different cases
@@ -61,11 +67,15 @@ object Test {
 
     // don't warn on fresh cases
     println(new ThingOne(11) == t1) // OK, was: two cases not warnable on trunk
-    println(new ThingTwo(11) == t2) // true, was: spuriously complains on fresh object
+    println(
+      new ThingTwo(11) == t2
+    ) // true, was: spuriously complains on fresh object
     println(new ThingOne(11) == t3) // two cases not warnable on trunk
     println(new ThingTwo(11) == t3) // ditto
 
-    println(new Simple() == SimpleSibling) // like Some(1) == None, but needn't be final case
+    println(
+      new Simple() == SimpleSibling
+    ) // like Some(1) == None, but needn't be final case
 
     println(new ValueClass1(5) == new ValueClass1(5)) // ok
     println(new ValueClass1(5) == 5) // bad
@@ -75,7 +85,9 @@ object Test {
 
     println(new ValueClass2("abc") == new ValueClass2("abc")) // ok
     println(new ValueClass2("abc") == "abc") // bad
-    println(new ValueClass2(5) == new ValueClass1(5)) // bad - different value classes
+    println(
+      new ValueClass2(5) == new ValueClass1(5)
+    ) // bad - different value classes
     println(ValueClass3(5) == new ValueClass3(5)) // ok
     println(ValueClass3(5) == new ValueClass2(5)) // bad
     println(ValueClass3(5) == 5) // bad

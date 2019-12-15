@@ -147,7 +147,9 @@ trait TraitView[This <: android.view.View]
   @inline def hereWithoutStyle[LP <: ViewGroupLayoutParams[_, _]](
       implicit defaultLayoutParam: This => LP) = {
     val parent = parentViewGroupIfExists
-    if (parent != null)(parent.basis.asInstanceOf[ViewGroup]).addView(basis) // TODO remove asInstanceOf
+    if (parent != null)(parent.basis
+      .asInstanceOf[ViewGroup])
+      .addView(basis) // TODO remove asInstanceOf
     basis
   }
 

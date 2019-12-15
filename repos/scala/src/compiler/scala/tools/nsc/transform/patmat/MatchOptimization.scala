@@ -138,7 +138,9 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
                 .map(_.treeMaker)
           }
 
-        collapsedTreeMakers getOrElse tests.map(_.treeMaker) // sharedPrefix need not be empty (but it only contains True-tests, which are dropped above)
+        collapsedTreeMakers getOrElse tests.map(
+          _.treeMaker
+        ) // sharedPrefix need not be empty (but it only contains True-tests, which are dropped above)
       }
       okToCall = true // TODO: remove (debugging)
 
@@ -417,7 +419,8 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
             }
 
           if (unguardedComesLastOrAbsent /*(1)*/ && impliesCurr.forall(
-                caseEquals(currCase)) /*(2)*/ ) {
+                caseEquals(currCase)
+              ) /*(2)*/ ) {
             collapsed += (
               if (impliesCurr.isEmpty && !isGuardedCase(currCase)) currCase
               else collapse(currCase :: impliesCurr, currIsDefault)
@@ -528,7 +531,9 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
                     if (distinctAlts.size < switchableAlts.size) {
                       val duplicated = switchableAlts
                         .groupBy(extractConst)
-                        .flatMap(_._2.drop(1).take(1)) // report the first duplicated
+                        .flatMap(
+                          _._2.drop(1).take(1)
+                        ) // report the first duplicated
                       reporter.warning(
                         pos,
                         s"Pattern contains duplicate alternatives: ${duplicated.mkString(", ")}")
@@ -598,7 +603,9 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
       object SwitchablePattern {
         def unapply(pat: Tree): Option[Tree] = pat.tpe match {
           case ConstantType(const) if const.isIntRange =>
-            Some(Literal(Constant(const.intValue))) // TODO: Java 7 allows strings in switches
+            Some(
+              Literal(Constant(const.intValue))
+            ) // TODO: Java 7 allows strings in switches
           case _ => None
         }
       }
@@ -679,7 +686,10 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
             Some(
               Bind(
                 tm.nextBinder,
-                Typed(Ident(nme.WILDCARD), TypeTree(pt)) /* not used by back-end */ ))
+                Typed(
+                  Ident(nme.WILDCARD),
+                  TypeTree(pt)
+                ) /* not used by back-end */ ))
           case _ =>
             None
         }

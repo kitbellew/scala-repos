@@ -40,9 +40,7 @@ private object PoolGateway {
   * Removal of cache entries for terminated pools is also supported, because old gateway references that
   * get reused will automatically forward requests directed at them to the latest pool incarnation from the cache.
   */
-private[http] class PoolGateway(
-    hcps: HostConnectionPoolSetup,
-    _shutdownStartedPromise: Promise[Done])( // constructor arg only
+private[http] class PoolGateway(hcps: HostConnectionPoolSetup, _shutdownStartedPromise: Promise[Done])( // constructor arg only
     implicit system: ActorSystem,
     fm: Materializer) {
   import PoolGateway._

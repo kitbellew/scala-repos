@@ -324,7 +324,8 @@ class ActorSystemSpec
           val t = system.actorOf(Props[ActorSystemSpec.Terminater])
           failing should not be true // because once failing => always failing (it’s due to shutdown)
           created :+= t
-          if (created.size % 1000 == 0) Thread.sleep(50) // in case of unfair thread scheduling
+          if (created.size % 1000 == 0)
+            Thread.sleep(50) // in case of unfair thread scheduling
         } catch {
           case _: IllegalStateException ⇒ failing = true
         }

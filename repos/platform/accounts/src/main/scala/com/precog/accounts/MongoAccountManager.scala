@@ -67,7 +67,9 @@ trait ZKAccountIdSource extends AccountManager[Future] {
     val createdPath = zkc
       .createPersistentSequential(settings.zkAccountIdPath, Array.empty[Byte])
     createdPath
-      .substring(createdPath.length - 10) //last 10 characters are a sequential int
+      .substring(
+        createdPath.length - 10
+      ) //last 10 characters are a sequential int
   }
 }
 

@@ -157,7 +157,9 @@ abstract class Flatten extends InfoTransform {
               if (isQualifierSafeToElide(qual)) ref
               else
                 Block(List(qual), ref)
-                  .setType(tree.tpe) // need to execute the qualifier but refer directly to the lifted module.
+                  .setType(
+                    tree.tpe
+                  ) // need to execute the qualifier but refer directly to the lifted module.
             }
           }
         case _ =>

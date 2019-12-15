@@ -37,7 +37,8 @@ class WebJarServlet extends HttpServlet {
     //extract request data
     val jar = req.getServletPath // e.g. /ui
     var resource = req.getPathInfo // e.g. /fonts/icon.gif
-    if (resource.endsWith("/")) resource = resource + "index.html" // welcome file
+    if (resource.endsWith("/"))
+      resource = resource + "index.html" // welcome file
     val file = resource.split("/").last //e.g. icon.gif
     val mediaType = file.split("\\.").lastOption.getOrElse("") //e.g. gif
     val mime = Option(getServletContext.getMimeType(file))

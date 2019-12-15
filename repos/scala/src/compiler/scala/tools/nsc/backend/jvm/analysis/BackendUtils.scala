@@ -566,7 +566,11 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
               } else {
                 enqInsn(j.label, heightAfter)
                 val opc = j.getOpcode
-                if (opc != GOTO) enqInsnIndex(insnIndex + 1, heightAfter) // jump is conditional, so the successor is also a possible control flow target
+                if (opc != GOTO)
+                  enqInsnIndex(
+                    insnIndex + 1,
+                    heightAfter
+                  ) // jump is conditional, so the successor is also a possible control flow target
               }
 
             case l: LookupSwitchInsnNode =>

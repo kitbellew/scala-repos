@@ -137,7 +137,8 @@ class PhiAccrualFailureDetector(
 
     val newState = oldState.copy(
       history = newHistory,
-      timestamp = Some(timestamp)) // record new timestamp
+      timestamp = Some(timestamp)
+    ) // record new timestamp
 
     // if we won the race then update else try again
     if (!state.compareAndSet(oldState, newState)) heartbeat() // recur

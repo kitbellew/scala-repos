@@ -139,7 +139,10 @@ class BasicWorkflow
 
           asyncHelper.expectMsg(FullTypeCheckCompleteEvent)
 
-          project ! UsesOfSymbolAtPointReq(Left(fooFile), 119) // point on testMethod
+          project ! UsesOfSymbolAtPointReq(
+            Left(fooFile),
+            119
+          ) // point on testMethod
           expectMsgPF() {
             case ERangePositions(
                 List(

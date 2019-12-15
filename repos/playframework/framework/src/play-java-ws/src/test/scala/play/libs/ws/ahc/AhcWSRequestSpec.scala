@@ -44,7 +44,10 @@ class AhcWSRequestSpec extends Specification with Mockito {
       import scala.collection.JavaConverters._
       val client = mock[AhcWSClient]
       val req = new AhcWSRequest(client, "http://playframework.com/", null)
-        .setHeader("Content-Type", "application/x-www-form-urlencoded") // set content type by hand
+        .setHeader(
+          "Content-Type",
+          "application/x-www-form-urlencoded"
+        ) // set content type by hand
         .setBody("HELLO WORLD") // and body is set to string (see #5221)
         .asInstanceOf[AhcWSRequest]
         .buildRequest()
@@ -58,7 +61,10 @@ class AhcWSRequestSpec extends Specification with Mockito {
       val token = new OAuth.RequestToken("token", "secret")
       val calc = new OAuth.OAuthCalculator(consumerKey, token)
       val req = new AhcWSRequest(client, "http://playframework.com/", null)
-        .setHeader("Content-Type", "application/x-www-form-urlencoded") // set content type by hand
+        .setHeader(
+          "Content-Type",
+          "application/x-www-form-urlencoded"
+        ) // set content type by hand
         .setBody("param1=value1")
         .sign(calc)
         .asInstanceOf[AhcWSRequest]
@@ -75,9 +81,15 @@ class AhcWSRequestSpec extends Specification with Mockito {
       val token = new OAuth.RequestToken("token", "secret")
       val calc = new OAuth.OAuthCalculator(consumerKey, token)
       val req = new AhcWSRequest(client, "http://playframework.com/", null)
-        .setHeader("Content-Type", "application/x-www-form-urlencoded") // set content type by hand
+        .setHeader(
+          "Content-Type",
+          "application/x-www-form-urlencoded"
+        ) // set content type by hand
         .setBody("param1=value1")
-        .setHeader("Content-Length", "9001") // add a meaningless content length here...
+        .setHeader(
+          "Content-Length",
+          "9001"
+        ) // add a meaningless content length here...
         .sign(calc)
         .asInstanceOf[AhcWSRequest]
         .buildRequest()

@@ -67,7 +67,10 @@ private[spark] object ClosureCleaner extends Logging {
           val recurRet = getOuterClassesAndObjects(outer)
           return (f.getType :: recurRet._1, outer :: recurRet._2)
         } else {
-          return (f.getType :: Nil, outer :: Nil) // Stop at the first $outer that is not a closure
+          return (
+            f.getType :: Nil,
+            outer :: Nil
+          ) // Stop at the first $outer that is not a closure
         }
       }
     }

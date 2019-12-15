@@ -59,7 +59,8 @@ class ScConstructorPatternImpl(node: ASTNode)
                 else {
                   val params = clauses.head.parameters
                   if (params.isEmpty) return subpatterns.isEmpty
-                  if (params.length != subpatterns.length) return false //todo: repeated parameters?
+                  if (params.length != subpatterns.length)
+                    return false //todo: repeated parameters?
                   var i = 0
                   while (i < subpatterns.length) {
                     val tp = {

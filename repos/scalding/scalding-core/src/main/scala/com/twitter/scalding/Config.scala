@@ -550,7 +550,9 @@ object Config {
     val duplicateKeys = (m.keySet & asMap.keySet)
     if (duplicateKeys.isEmpty) Right(m ++ asMap)
     else
-      Left(conf.toMap.keySet.filter(duplicateKeys(_))) // make sure to return Set[String], and not cast
+      Left(
+        conf.toMap.keySet.filter(duplicateKeys(_))
+      ) // make sure to return Set[String], and not cast
   }
 
   /**

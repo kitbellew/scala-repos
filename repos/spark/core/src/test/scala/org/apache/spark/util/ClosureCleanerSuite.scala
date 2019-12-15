@@ -50,7 +50,9 @@ class ClosureCleanerSuite extends SparkFunSuite {
   }
 
   test("nested closures inside an object") {
-    assert(TestObjectWithNesting.run() === 96) // 4 * (1+2+3+4) + 4 * (1+2+3+4) + 16 * 1
+    assert(
+      TestObjectWithNesting.run() === 96
+    ) // 4 * (1+2+3+4) + 4 * (1+2+3+4) + 16 * 1
   }
 
   test("nested closures inside a class") {

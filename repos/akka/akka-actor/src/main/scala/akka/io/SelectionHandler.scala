@@ -148,7 +148,9 @@ private[io] object SelectionHandler {
               try {
                 // Cache because the performance implications of calling this on different platforms are not clear
                 val readyOps = key.readyOps()
-                key.interestOps(key.interestOps & ~readyOps) // prevent immediate reselection by always clearing
+                key.interestOps(
+                  key.interestOps & ~readyOps
+                ) // prevent immediate reselection by always clearing
                 val connection = key.attachment.asInstanceOf[ActorRef]
                 readyOps match {
                   case OP_READ ⇒ connection ! ChannelReadable
@@ -176,7 +178,9 @@ private[io] object SelectionHandler {
       override def run(): Unit =
         if (selector.isOpen)
           try super.run()
-          finally executionContext.execute(this) // re-schedule select behind all currently queued tasks
+          finally executionContext.execute(
+            this
+          ) // re-schedule select behind all currently queued tasks
     }
 
     executionContext.execute(select) // start selection "loop"
@@ -240,7 +244,10 @@ private[io] object SelectionHandler {
 
     private def execute(task: Task): Unit = {
       executionContext.execute(task)
-      if (wakeUp.compareAndSet(false, true)) // if possible avoid syscall and trade off with LOCK CMPXCHG
+      if (wakeUp.compareAndSet(
+            false,
+            true
+          )) // if possible avoid syscall and trade off with LOCK CMPXCHG
         selector.wakeup()
     }
 
@@ -334,7 +341,8 @@ private[io] class SelectionHandler(settings: SelectionHandlerSettings)
           .withDeploy(Deploy.local),
         name = newName)
       childCount += 1
-      if (MaxChannelsPerSelector > 0) context.watch(child) // we don't need to watch if we aren't limited
+      if (MaxChannelsPerSelector > 0)
+        context.watch(child) // we don't need to watch if we aren't limited
     } else {
       if (retriesLeft >= 1) {
         log.debug(

@@ -111,7 +111,9 @@ class ScalaScriptRunConfiguration(
         params.getVMParametersList.add(EMACS)
 
         params.setMainClass(MAIN_CLASS)
-        params.getProgramParametersList.add("-nocompdaemon") //todo: seems to be a bug in scala compiler. Ticket #1498
+        params.getProgramParametersList.add(
+          "-nocompdaemon"
+        ) //todo: seems to be a bug in scala compiler. Ticket #1498
         params.getProgramParametersList.add("-classpath")
         params.configureByModule(
           module,

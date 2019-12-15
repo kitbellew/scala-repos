@@ -51,6 +51,7 @@ class ScalaQualifiedNameProvider extends QualifiedNameProvider {
       fqn,
       element,
       editor,
-      project) //todo:
+      project
+    ) //todo:
   }
 }

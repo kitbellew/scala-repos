@@ -174,7 +174,10 @@ class Tools[C <: Context](val c: C) {
           mirror, {
             val cache = MutableMap[Symbol, MutableList[Symbol]]()
             def updateCache(bc: Symbol, c: Symbol) = {
-              if (bc != c && isRelevantSubclass(bc, c)) // TODO: what else do we want to ignore?
+              if (bc != c && isRelevantSubclass(
+                    bc,
+                    c
+                  )) // TODO: what else do we want to ignore?
                 cache.getOrElseUpdate(bc, MutableList()) += c
             }
             def loop(pkg: Symbol): Unit = {

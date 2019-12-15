@@ -60,7 +60,9 @@ private[cluster] object Gossip {
   */
 @SerialVersionUID(1L)
 private[cluster] final case class Gossip(
-    members: immutable.SortedSet[Member], // sorted set of members with their status, sorted by address
+    members: immutable.SortedSet[
+      Member
+    ], // sorted set of members with their status, sorted by address
     overview: GossipOverview = GossipOverview(),
     version: VectorClock = VectorClock()) { // vector clock version
 
@@ -222,7 +224,10 @@ private[cluster] final case class Gossip(
   def isSingletonCluster: Boolean = members.size == 1
 
   def member(node: UniqueAddress): Member = {
-    membersMap.getOrElse(node, Member.removed(node)) // placeholder for removed member
+    membersMap.getOrElse(
+      node,
+      Member.removed(node)
+    ) // placeholder for removed member
   }
 
   def hasMember(node: UniqueAddress): Boolean = membersMap.contains(node)

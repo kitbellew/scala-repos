@@ -365,7 +365,9 @@ class InterpreterSpec extends AkkaSpec with GraphInterpreterSpecKit {
       lastEvents() should be(Set.empty)
 
       downstream.requestOne()
-      lastEvents() should be(Set(RequestOne, OnNext(2))) // One element is still in the pipeline
+      lastEvents() should be(
+        Set(RequestOne, OnNext(2))
+      ) // One element is still in the pipeline
 
       downstream.requestOne()
       lastEvents() should be(Set(OnNext(10)))

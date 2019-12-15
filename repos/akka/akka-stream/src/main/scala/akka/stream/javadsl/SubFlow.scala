@@ -385,7 +385,9 @@ class SubFlow[-In, +Out, +Mat](
   def sliding(
       n: Int,
       step: Int = 1): SubFlow[In, java.util.List[Out @uncheckedVariance], Mat] =
-    new SubFlow(delegate.sliding(n, step).map(_.asJava)) // TODO optimize to one step
+    new SubFlow(
+      delegate.sliding(n, step).map(_.asJava)
+    ) // TODO optimize to one step
 
   /**
     * Similar to `fold` but is not a terminal operation,
@@ -524,7 +526,9 @@ class SubFlow[-In, +Out, +Mat](
     */
   def groupedWithin(n: Int, d: FiniteDuration)
       : SubFlow[In, java.util.List[Out @uncheckedVariance], Mat] =
-    new SubFlow(delegate.groupedWithin(n, d).map(_.asJava)) // TODO optimize to one step
+    new SubFlow(
+      delegate.groupedWithin(n, d).map(_.asJava)
+    ) // TODO optimize to one step
 
   /**
     * Shifts elements emission in time by a specified amount. It allows to store elements

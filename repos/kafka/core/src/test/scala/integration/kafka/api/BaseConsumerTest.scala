@@ -46,13 +46,18 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
   // configure the servers and clients
   this.serverConfig.setProperty(
     KafkaConfig.ControlledShutdownEnableProp,
-    "false") // speed up shutdown
+    "false"
+  ) // speed up shutdown
   this.serverConfig.setProperty(
     KafkaConfig.OffsetsTopicReplicationFactorProp,
-    "3") // don't want to lose offset
+    "3"
+  ) // don't want to lose offset
   this.serverConfig.setProperty(KafkaConfig.OffsetsTopicPartitionsProp, "1")
   this.serverConfig
-    .setProperty(KafkaConfig.GroupMinSessionTimeoutMsProp, "100") // set small enough session timeout
+    .setProperty(
+      KafkaConfig.GroupMinSessionTimeoutMsProp,
+      "100"
+    ) // set small enough session timeout
   this.serverConfig
     .setProperty(KafkaConfig.GroupMaxSessionTimeoutMsProp, "30000")
   this.producerConfig.setProperty(ProducerConfig.ACKS_CONFIG, "all")
@@ -217,7 +222,8 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
     val listener = new TestConsumerReassignmentListener()
     this.consumerConfig.setProperty(
       ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG,
-      "100") // timeout quickly to avoid slow test
+      "100"
+    ) // timeout quickly to avoid slow test
     this.consumerConfig
       .setProperty(ConsumerConfig.HEARTBEAT_INTERVAL_MS_CONFIG, "30")
     val consumer0 = new KafkaConsumer(
@@ -256,7 +262,8 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
 
     this.consumerConfig.setProperty(
       ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG,
-      "100") // timeout quickly to avoid slow test
+      "100"
+    ) // timeout quickly to avoid slow test
     this.consumerConfig
       .setProperty(ConsumerConfig.HEARTBEAT_INTERVAL_MS_CONFIG, "30")
     val consumer0 = new KafkaConsumer(
@@ -282,7 +289,8 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
   def testPauseStateNotPreservedByRebalance() {
     this.consumerConfig.setProperty(
       ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG,
-      "100") // timeout quickly to avoid slow test
+      "100"
+    ) // timeout quickly to avoid slow test
     this.consumerConfig
       .setProperty(ConsumerConfig.HEARTBEAT_INTERVAL_MS_CONFIG, "30")
     val consumer0 = new KafkaConsumer(

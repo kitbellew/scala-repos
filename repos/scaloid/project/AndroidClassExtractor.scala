@@ -146,7 +146,9 @@ object AndroidClassExtractor extends JavaConversionHelpers {
             "setForeground")) && // Android 2.1.1 has a weird undocumented method. manually ignore this.
           (!cls.getName.endsWith("WebView") || !m.getName.equals(
             "getZoomControls")) && //https://github.com/pocorall/scaloid/issues/56
-          (!cls.getName.endsWith("View") || !m.getName.equals("setBackground")) // manually specifies this method
+          (!cls.getName.endsWith("View") || !m.getName.equals(
+            "setBackground"
+          )) // manually specifies this method
         }
 
       val allMethodNames = clsMethods.map(_.getName).toSet
@@ -418,7 +420,9 @@ object AndroidClassExtractor extends JavaConversionHelpers {
 
         val inputFilter = new FilterBuilder()
           .include(FilterBuilder.prefix("android"))
-          .exclude(".*Honeycomb.*") // excluding some classes that depends on the Android library ABOVE 2.1.1
+          .exclude(
+            ".*Honeycomb.*"
+          ) // excluding some classes that depends on the Android library ABOVE 2.1.1
           .exclude(".*Compat.*")
 
         val r = new Reflections(
@@ -432,15 +436,21 @@ object AndroidClassExtractor extends JavaConversionHelpers {
         val res = clss.toList
           .filter(isPublic)
           .filter {
-            !_.getName.contains("$") // excludes inner classes for now - let's deal with it later
+            !_.getName.contains(
+              "$"
+            ) // excludes inner classes for now - let's deal with it later
           }
           .filter { n =>
             val name = n.toString
             !name.contains("webkit") || name
-              .contains("WebView") // excludes android.webkit.* in Android 2.1.1, which is deprecated
+              .contains(
+                "WebView"
+              ) // excludes android.webkit.* in Android 2.1.1, which is deprecated
           }
           .filter {
-            !_.getName.contains("RemoteViewsService") // excludes RemoteViewsService, because it is packaged weird place "android.view"
+            !_.getName.contains(
+              "RemoteViewsService"
+            ) // excludes RemoteViewsService, because it is packaged weird place "android.view"
           }
           .filter(sourceExists)
           .map(toAndroidClass)

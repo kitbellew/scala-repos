@@ -491,7 +491,10 @@ class InteroperabilityTest {
     """).asInstanceOf[InteroperabilityTestNoUnboxResultInStatement]
     obj.test() // in statement position, should not throw
     if (hasCompliantAsInstanceOfs)
-      assertThrows(classOf[Exception], obj.test()) // in expression position, should throw
+      assertThrows(
+        classOf[Exception],
+        obj.test()
+      ) // in expression position, should throw
   }
 
   @Test def should_asInstanceOf_values_received_from_calling_a_JS_interop_method()

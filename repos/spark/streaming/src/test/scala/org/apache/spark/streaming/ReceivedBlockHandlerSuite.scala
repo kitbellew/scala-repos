@@ -494,7 +494,9 @@ class ReceivedBlockHandlerSuite
       .zip(blockIds)
       .map {
         case (block, id) =>
-          manualClock.advance(500) // log rolling interval set to 1000 ms through SparkConf
+          manualClock.advance(
+            500
+          ) // log rolling interval set to 1000 ms through SparkConf
           logDebug("Inserting block " + id)
           receivedBlockHandler.storeBlock(id, block)
       }

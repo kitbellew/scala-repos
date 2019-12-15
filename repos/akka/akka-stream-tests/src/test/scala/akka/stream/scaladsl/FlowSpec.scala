@@ -392,7 +392,10 @@ class FlowSpec
         val downstream2Subscription = downstream2.expectSubscription()
 
         downstreamSubscription.request(5)
-        upstream.expectRequest(upstreamSubscription, 1) // because initialInputBufferSize=1
+        upstream.expectRequest(
+          upstreamSubscription,
+          1
+        ) // because initialInputBufferSize=1
 
         upstreamSubscription.sendNext("firstElement")
         downstream.expectNext("firstElement")
@@ -422,7 +425,10 @@ class FlowSpec
 
         downstreamSubscription.request(5)
 
-        upstream.expectRequest(upstreamSubscription, 1) // because initialInputBufferSize=1
+        upstream.expectRequest(
+          upstreamSubscription,
+          1
+        ) // because initialInputBufferSize=1
         upstreamSubscription.sendNext("element1")
         downstream.expectNext("element1")
         upstreamSubscription.expectRequest(1)
@@ -480,7 +486,9 @@ class FlowSpec
 
         upstreamSubscription.sendNext("a3")
         downstream.expectNext("a3")
-        downstream2.expectNoMsg(100.millis.dilated) // as nothing was requested yet, fanOutBox needs to cache element in this case
+        downstream2.expectNoMsg(
+          100.millis.dilated
+        ) // as nothing was requested yet, fanOutBox needs to cache element in this case
 
         downstream2Subscription.request(1)
         downstream2.expectNext("a3")
@@ -489,7 +497,10 @@ class FlowSpec
         // d2 now has 0 outstanding
         // buffer should be empty so we should be requesting one new element
 
-        upstream.expectRequest(upstreamSubscription, 1) // because of buffer size 1
+        upstream.expectRequest(
+          upstreamSubscription,
+          1
+        ) // because of buffer size 1
       }
     }
 
@@ -560,7 +571,9 @@ class FlowSpec
         downstream.expectNext("a3")
         downstream.expectComplete()
 
-        downstream2.expectNoMsg(100.millis.dilated) // as nothing was requested yet, fanOutBox needs to cache element in this case
+        downstream2.expectNoMsg(
+          100.millis.dilated
+        ) // as nothing was requested yet, fanOutBox needs to cache element in this case
 
         downstream2Subscription.request(1)
         downstream2.expectNext("a3")
@@ -651,7 +664,8 @@ class FlowSpec
         val filters = immutable.Seq(
           EventFilter[NullPointerException](),
           EventFilter[IllegalStateException](),
-          EventFilter[PostRestartException]()) // This is thrown because we attach the dummy failing actor to toplevel
+          EventFilter[PostRestartException]()
+        ) // This is thrown because we attach the dummy failing actor to toplevel
         try {
           system.eventStream.publish(Mute(filters))
 

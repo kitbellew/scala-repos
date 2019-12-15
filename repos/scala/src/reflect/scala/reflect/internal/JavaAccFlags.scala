@@ -53,7 +53,9 @@ final class JavaAccFlags private (val coded: Int) extends AnyVal {
     *  `foo` is the defining package.
     */
   def hasPackageAccessBoundary =
-    !has(JAVA_ACC_PRIVATE | JAVA_ACC_PUBLIC) // equivalently, allows protected or package level access
+    !has(
+      JAVA_ACC_PRIVATE | JAVA_ACC_PUBLIC
+    ) // equivalently, allows protected or package level access
   def isPackageProtected =
     !has(JAVA_ACC_PRIVATE | JAVA_ACC_PROTECTED | JAVA_ACC_PUBLIC)
 

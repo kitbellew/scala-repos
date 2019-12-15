@@ -435,7 +435,8 @@ object ScalaPsiUtil {
         .exprType(e, fromUnder = false)
         .getOrElse(return
         )
-      if (exprType.equiv(types.Nothing)) return //do not proceed with nothing type, due to performance problems.
+      if (exprType.equiv(types.Nothing))
+        return //do not proceed with nothing type, due to performance problems.
       val convertible = new ImplicitCollector(
         e,
         ScFunctionType(types.Any, Seq(exprType))(
@@ -595,7 +596,9 @@ object ScalaPsiUtil {
                                                                    ScalaPsiElementFactory
                                                                      .createExpressionFromText(
                                                                        "{val x: Nothing = null; x}",
-                                                                       call.getManager)) //we can't to not add something => add Nothing expression
+                                                                       call.getManager
+                                                                     )
+                                                                 ) //we can't to not add something => add Nothing expression
                                                              }
                                                            else Seq.empty)
     val (expr, exprTp, typeArgs: Seq[ScTypeElement]) =

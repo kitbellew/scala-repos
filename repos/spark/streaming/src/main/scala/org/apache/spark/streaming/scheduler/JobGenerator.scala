@@ -255,7 +255,9 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
       // Allocate the related blocks when recovering from failure, because some blocks that were
       // added but not allocated, are dangling in the queue after recovering, we have to allocate
       // those blocks to the next batch, which is the batch they were supposed to go.
-      jobScheduler.receiverTracker.allocateBlocksToBatch(time) // allocate received blocks to batch
+      jobScheduler.receiverTracker.allocateBlocksToBatch(
+        time
+      ) // allocate received blocks to batch
       jobScheduler.submitJobSet(JobSet(time, graph.generateJobs(time)))
     }
 
@@ -276,7 +278,9 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
     ssc.sparkContext
       .setLocalProperty(RDD.CHECKPOINT_ALL_MARKED_ANCESTORS, "true")
     Try {
-      jobScheduler.receiverTracker.allocateBlocksToBatch(time) // allocate received blocks to batch
+      jobScheduler.receiverTracker.allocateBlocksToBatch(
+        time
+      ) // allocate received blocks to batch
       graph.generateJobs(time) // generate jobs using allocated block
     } match {
       case Success(jobs) =>

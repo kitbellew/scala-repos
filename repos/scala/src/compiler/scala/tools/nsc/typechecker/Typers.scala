@@ -724,7 +724,10 @@ trait Typers
       )
       tree.tpe match {
         case MethodType(_, _) if stabilizable =>
-          tree setType MethodType(Nil, singleType(pre, sym)) // TODO: should this be a NullaryMethodType?
+          tree setType MethodType(
+            Nil,
+            singleType(pre, sym)
+          ) // TODO: should this be a NullaryMethodType?
         case _ => tree
       }
     }
@@ -1192,7 +1195,8 @@ trait Typers
                 tree,
                 this,
                 mode,
-                pt)) // (13)
+                pt
+              )) // (13)
             return typed(adaptAnnotations(tree, this, mode, pt), mode, pt)
 
           if (hasUndets)
@@ -1409,7 +1413,10 @@ trait Typers
       if (isAdaptableWithView(qual)) {
         qual.tpe.dealiasWiden match {
           case et: ExistentialType =>
-            qual setType et.skolemizeExistential(context.owner, qual) // open the existential
+            qual setType et.skolemizeExistential(
+              context.owner,
+              qual
+            ) // open the existential
           case _ =>
         }
         inferView(qual, qual.tpe, searchTemplate, reportAmbiguous, saveErrors) match {
@@ -1551,7 +1558,10 @@ trait Typers
             //see https://issues.scala-lang.org/browse/SI-6463
             case cd: ClassDef
                 if !cd.symbol.isAnonymousClass => // Don't warn about partial functions, etc. SI-7571
-              implRestriction(tree, "nested class") // avoiding Type Tests that might check the $outer pointer.
+              implRestriction(
+                tree,
+                "nested class"
+              ) // avoiding Type Tests that might check the $outer pointer.
             case Select(sup @ Super(qual, mix), selector)
                 if selector != nme.CONSTRUCTOR && qual.symbol == clazz && mix != tpnme.EMPTY =>
               //see https://issues.scala-lang.org/browse/SI-6483
@@ -3083,9 +3093,9 @@ trait Typers
           anonClass.newMethod(nme.isDefinedAt, tree.pos.makeTransparent, FINAL)
         val paramSym = mkParam(methodSym)
 
-        val methodBodyTyper = newTyper(context.makeNewScope(
-          context.tree,
-          methodSym)) // should use the DefDef for the context's tree, but it doesn't exist yet (we need the typer we're creating to create it)
+        val methodBodyTyper = newTyper(
+          context.makeNewScope(context.tree, methodSym)
+        ) // should use the DefDef for the context's tree, but it doesn't exist yet (we need the typer we're creating to create it)
         if (!paramSynthetic) methodBodyTyper.context.scope enter paramSym
         methodSym setInfo MethodType(List(paramSym), BooleanTpe)
 
@@ -3250,7 +3260,9 @@ trait Typers
           NoMods,
           bodyName,
           Nil,
-          List(fun.vparams.map(_.duplicate)), // must duplicate as we're also using them for `samDef`
+          List(
+            fun.vparams.map(_.duplicate)
+          ), // must duplicate as we're also using them for `samDef`
           TypeTree(samDefTp) setPos sampos.focus,
           fun.body
         )
@@ -3611,7 +3623,9 @@ trait Typers
                     ((e1.sym.getClass, e1.sym.info, e1.sym.ownerChain)))
 
                 DefDefinedTwiceError(e.sym, e1.sym)
-                scope.unlink(e1) // need to unlink to avoid later problems with lub; see #2779
+                scope.unlink(
+                  e1
+                ) // need to unlink to avoid later problems with lub; see #2779
               }
             e1 = scope.lookupNextEntry(e1)
           }
@@ -3632,7 +3646,9 @@ trait Typers
           for (sym <- scope)
             for (tree <- context.unit.synthetics get sym
                  if shouldAdd(sym)) { // OPT: shouldAdd is usually true. Call it here, rather than in the outer loop
-              newStats += typedStat(tree) // might add even more synthetics to the scope
+              newStats += typedStat(
+                tree
+              ) // might add even more synthetics to the scope
               context.unit.synthetics -= sym
             }
           // the type completer of a synthetic might add more synthetics. example: if the
@@ -3757,7 +3773,10 @@ trait Typers
           // less expensive than including them in inferMethodAlternative (see below).
           def shapeType(arg: Tree): Type = arg match {
             case Function(vparams, body) =>
-              functionType(vparams map (_ => AnyTpe), shapeType(body)) // TODO: should this be erased when retyping during erasure?
+              functionType(
+                vparams map (_ => AnyTpe),
+                shapeType(body)
+              ) // TODO: should this be erased when retyping during erasure?
             case AssignOrNamedArg(Ident(name), rhs) =>
               NamedType(name, shapeType(rhs))
             case _ =>
@@ -4099,7 +4118,10 @@ trait Typers
               doTypedApply(tree, fun, args, mode, pt)
             } else {
               def handlePolymorphicCall = {
-                assert(!mode.inPatternMode, mode) // this case cannot arise for patterns
+                assert(
+                  !mode.inPatternMode,
+                  mode
+                ) // this case cannot arise for patterns
                 val lenientTargs =
                   protoTypeArgs(tparams, formals, mt.resultApprox, pt)
                 val strictTargs = map2(lenientTargs, tparams)((targ, tparam) =>
@@ -4129,8 +4151,9 @@ trait Typers
                   debuglog(
                     "infer method inst " + fun + ", tparams = " + tparams + ", args = " + args1
                       .map(_.tpe) + ", pt = " + pt + ", lobounds = " + tparams
-                      .map(_.tpe.bounds.lo) + ", parambounds = " + tparams.map(
-                      _.info)) //debug
+                      .map(_.tpe.bounds.lo) + ", parambounds = " + tparams
+                      .map(_.info)
+                  ) //debug
                   // define the undetparams which have been fixed by this param list, replace the corresponding symbols in "fun"
                   // returns those undetparams which have not been instantiated.
                   val undetparams = inferMethodInstance(fun, tparams, args1, pt)
@@ -4459,7 +4482,8 @@ trait Typers
               if (pre.isVolatile) pre match {
                 case SingleType(_, sym) if sym.isSynthetic && isPastTyper =>
                   debuglog(
-                    s"ignoring volatility of prefix in pattern matcher generated inferred type: $tp") // See pos/t7459c.scala
+                    s"ignoring volatility of prefix in pattern matcher generated inferred type: $tp"
+                  ) // See pos/t7459c.scala
                 case _ =>
                   InferTypeWithVolatileTypeSelectionError(tree, pre)
               }
@@ -4749,7 +4773,8 @@ trait Typers
           findSelection(cxTree) match {
             case Some((opName, treeInfo.Applied(_, targs, _))) =>
               val fun = gen.mkTypeApply(Select(qual, opName), targs)
-              if (opName == nme.updateDynamic) suppressMacroExpansion(fun) // SI-7617
+              if (opName == nme.updateDynamic)
+                suppressMacroExpansion(fun) // SI-7617
               val nameStringLit = atPos(
                 treeSelection.pos
                   .withStart(treeSelection.pos.point)
@@ -5099,9 +5124,9 @@ trait Typers
               notifyUndetparamsAdded(context.undetparams)
               TypeTree()
                 .setOriginal(tpt0)
-                .setType(appliedType(
-                  tpt0.tpe,
-                  context.undetparams map (_.tpeHK))) // @PP: tpeHK! #3343, #4018, #4347.
+                .setType(
+                  appliedType(tpt0.tpe, context.undetparams map (_.tpeHK))
+                ) // @PP: tpeHK! #3343, #4018, #4347.
             } else tpt0
           else tpt0
         }
@@ -5787,8 +5812,10 @@ trait Typers
             .typedRefinement(templ)
           templ updateAttachment CompoundTypeTreeOriginalAttachment(
             parents1,
-            Nil) // stats are set elsewhere
-          tree setType (if (templ.exists(_.isErroneous)) ErrorType else self) // Being conservative to avoid SI-5361
+            Nil
+          ) // stats are set elsewhere
+          tree setType (if (templ.exists(_.isErroneous)) ErrorType
+                        else self) // Being conservative to avoid SI-5361
         }
       }
 
@@ -5870,7 +5897,9 @@ trait Typers
           } else {
             //Console.println("\{tpt1}:\{tpt1.symbol}:\{tpt1.symbol.info}")
             if (settings.debug)
-              Console.println(tpt1 + ":" + tpt1.symbol + ":" + tpt1.symbol.info) //debug
+              Console.println(
+                tpt1 + ":" + tpt1.symbol + ":" + tpt1.symbol.info
+              ) //debug
             AppliedTypeWrongNumberOfArgsError(tree, tpt1, tparams)
           }
         }
@@ -6105,8 +6134,11 @@ trait Typers
           if (suspiciousExpr.nonEmpty)
             warn("detected an interpolated expression") // "${...}"
           else
-            suspiciousIdents find isPlausible foreach (sym =>
-              warn(s"detected interpolated identifier `$$${sym.name}`")) // "$id"
+            suspiciousIdents find isPlausible foreach (
+                sym =>
+                  warn(
+                    s"detected interpolated identifier `$$${sym.name}`"
+                  )) // "$id"
         }
         lit match {
           case Literal(Constant(s: String))
@@ -6248,7 +6280,10 @@ trait Typers
         case tree: New       => typedNew(tree)
         case tree: Assign    => typedAssign(tree.lhs, tree.rhs)
         case tree: AssignOrNamedArg =>
-          typedAssign(tree.lhs, tree.rhs) // called by NamesDefaults in silent typecheck
+          typedAssign(
+            tree.lhs,
+            tree.rhs
+          ) // called by NamesDefaults in silent typecheck
         case tree: Super            => typedSuper(tree)
         case tree: Annotated        => typedAnnotated(tree)
         case tree: Return           => typedReturn(tree)
@@ -6272,7 +6307,9 @@ trait Typers
         case tree: Typed   => typedTyped(tree)
         case tree: This    => typedThis(tree) // SI-6104
         case tree: UnApply =>
-          abort(s"unexpected UnApply $tree") // turns out UnApply never reaches here
+          abort(
+            s"unexpected UnApply $tree"
+          ) // turns out UnApply never reaches here
         case _ =>
           if (mode.inPatternMode)
             typedInPatternMode(tree)
@@ -6365,7 +6402,8 @@ trait Typers
           // The only problematic case are (recoverable) cyclic reference errors which can pop up almost anywhere.
           typingStack.printTyping(
             tree,
-            "caught %s: while typing %s".format(ex, tree)) //DEBUG
+            "caught %s: while typing %s".format(ex, tree)
+          ) //DEBUG
           reportTypeError(context, tree.pos, ex)
           setError(tree)
         case ex: Exception =>
@@ -6412,7 +6450,11 @@ trait Typers
       *  E.g. is tree occurs in a context like `tree.m`.
       */
     def typedQualifier(tree: Tree, mode: Mode, pt: Type): Tree =
-      typed(tree, PolyQualifierModes | mode.onlyTypePat, pt) // TR: don't set BYVALmode, since qualifier might end up as by-name param to an implicit
+      typed(
+        tree,
+        PolyQualifierModes | mode.onlyTypePat,
+        pt
+      ) // TR: don't set BYVALmode, since qualifier might end up as by-name param to an implicit
 
     /** Types qualifier `tree` of a select node.
       *  E.g. is tree occurs in a context like `tree.m`.

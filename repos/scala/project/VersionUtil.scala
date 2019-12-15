@@ -147,7 +147,10 @@ object VersionUtil {
     finally in.close()
     props.asScala.toMap.map {
       case (k, v) =>
-        (k, sys.props.getOrElse(k, v)) // allow system properties to override versions.properties
+        (
+          k,
+          sys.props.getOrElse(k, v)
+        ) // allow system properties to override versions.properties
     }
   }
 

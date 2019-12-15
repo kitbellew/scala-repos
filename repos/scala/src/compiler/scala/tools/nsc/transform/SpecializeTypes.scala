@@ -174,7 +174,8 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
       case (sym, tpe) =>
         t2 get sym exists { t2tp =>
           (tpe == t2tp) || !(isPrimitiveValueType(tpe) || isPrimitiveValueType(
-            t2tp)) // u.t.b. (t2tp <:< AnyRefTpe)
+            t2tp
+          )) // u.t.b. (t2tp <:< AnyRefTpe)
         }
     }
 
@@ -621,7 +622,9 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
         clazzName,
         clazz.pos,
         (clazz.flags | SPECIALIZED) & ~CASE)
-      sClass.setAnnotations(clazz.annotations) // SI-8574 important that the subclass picks up @SerialVersionUID, @strictfp, etc.
+      sClass.setAnnotations(
+        clazz.annotations
+      ) // SI-8574 important that the subclass picks up @SerialVersionUID, @strictfp, etc.
 
       def cloneInSpecializedClass(
           member: Symbol,
@@ -672,7 +675,8 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
                 reporter.warning(
                   clazz.pos,
                   p.typeSymbol + " must be a trait. Specialized version of "
-                    + clazz + " will inherit generic " + p) // TODO change to error
+                    + clazz + " will inherit generic " + p
+                ) // TODO change to error
           }
           res
         }
@@ -751,7 +755,9 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
         info(om) =
           if (original.isDeferred) Forward(original)
           else Implementation(original)
-        typeEnv(om) = env ++ typeEnv(m) // add the environment for any method tparams
+        typeEnv(om) = env ++ typeEnv(
+          m
+        ) // add the environment for any method tparams
 
         newOverload(specMember, om, typeEnv(om))
         enterMember(om)
@@ -913,7 +919,9 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
       if (existing != NoSymbol)
         clazz.owner.info.decls.unlink(existing)
 
-      exitingSpecialize(clazz.owner.info.decls enter spc) //!!! assumes fully specialized classes
+      exitingSpecialize(
+        clazz.owner.info.decls enter spc
+      ) //!!! assumes fully specialized classes
     }
     if (subclasses.nonEmpty) clazz.resetFlag(FINAL)
     cleanAnyRefSpecCache(clazz, decls1)
@@ -968,11 +976,15 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
           val tps = survivingParams(sym.info.typeParams, env0)
           val specMember = sym.cloneSymbol(
             owner,
-            (sym.flags | SPECIALIZED) & ~DEFERRED) // <-- this needs newName = ...
+            (sym.flags | SPECIALIZED) & ~DEFERRED
+          ) // <-- this needs newName = ...
           val env = mapAnyRefsInSpecSym(env0, sym, specMember)
           val (keys, vals) = env.toList.unzip
 
-          specMember setName specializedName(sym, env) // <-- but the name is calculated based on the cloned symbol
+          specMember setName specializedName(
+            sym,
+            env
+          ) // <-- but the name is calculated based on the cloned symbol
           // debuglog("%s normalizes to %s%s".format(sym, specMember,
           //   if (tps.isEmpty) "" else " with params " + tps.mkString(", ")))
 
@@ -1752,7 +1764,9 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
         val tree1 = gen.mkTypeApply(specTree, residualTargs)
         debuglog("rewrote " + tree + " to " + tree1)
         localTyper
-          .typedOperator(atPos(tree.pos)(tree1)) // being polymorphic, it must be a method
+          .typedOperator(
+            atPos(tree.pos)(tree1)
+          ) // being polymorphic, it must be a method
       }
 
       curTree = tree
@@ -2127,7 +2141,8 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
         parameters(source) ::: origtparams,
         newSyms ::: newtparams,
         source.enclClass,
-        false) // don't make private fields public
+        false
+      ) // don't make private fields public
 
       val newBody = symSubstituter(body(source).duplicate)
       tpt modifyType (_.substSym(oldtparams, newtparams))

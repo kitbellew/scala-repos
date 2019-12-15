@@ -150,14 +150,16 @@ trait Names extends api.Names {
   /** Create a term name from string. */
   @deprecatedOverriding(
     "To synchronize, use `override def synchronizeNames = true`",
-    "2.11.0") // overridden in https://github.com/scala-ide/scala-ide/blob/master/org.scala-ide.sdt.core/src/scala/tools/eclipse/ScalaPresentationCompiler.scala
+    "2.11.0"
+  ) // overridden in https://github.com/scala-ide/scala-ide/blob/master/org.scala-ide.sdt.core/src/scala/tools/eclipse/ScalaPresentationCompiler.scala
   def newTermName(s: String): TermName =
     newTermName(s.toCharArray(), 0, s.length(), null)
 
   /** Create a type name from string. */
   @deprecatedOverriding(
     "To synchronize, use `override def synchronizeNames = true`",
-    "2.11.0") // overridden in https://github.com/scala-ide/scala-ide/blob/master/org.scala-ide.sdt.core/src/scala/tools/eclipse/ScalaPresentationCompiler.scala
+    "2.11.0"
+  ) // overridden in https://github.com/scala-ide/scala-ide/blob/master/org.scala-ide.sdt.core/src/scala/tools/eclipse/ScalaPresentationCompiler.scala
   def newTypeName(s: String): TypeName = newTermName(s).toTypeName
 
   /** Create a term name from the UTF8 encoded bytes in bs[offset..offset+len-1]. */
@@ -500,7 +502,8 @@ trait Names extends api.Names {
   final class NameOps[T <: Name](name: T) {
     import NameTransformer._
     def stripSuffix(suffix: String): T =
-      if (name endsWith suffix) dropRight(suffix.length) else name // OPT avoid creating a Name with `suffix`
+      if (name endsWith suffix) dropRight(suffix.length)
+      else name // OPT avoid creating a Name with `suffix`
     def stripSuffix(suffix: Name): T =
       if (name endsWith suffix) dropRight(suffix.length) else name
     def take(n: Int): T = name.subName(0, n).asInstanceOf[T]

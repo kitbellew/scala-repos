@@ -131,7 +131,9 @@ abstract class UseRoleIgnoredSpec
 
         val replies = receiveReplies(PoolRoutee, iterationCount)
 
-        replies(first) should ===(0) // should not be deployed locally, does not have required role
+        replies(first) should ===(
+          0
+        ) // should not be deployed locally, does not have required role
         replies(second) should be > 0
         replies(third) should be > 0
         replies.values.sum should ===(iterationCount)
@@ -166,7 +168,9 @@ abstract class UseRoleIgnoredSpec
 
         val replies = receiveReplies(GroupRoutee, iterationCount)
 
-        replies(first) should ===(0) // should not be deployed locally, does not have required role
+        replies(first) should ===(
+          0
+        ) // should not be deployed locally, does not have required role
         replies(second) should be > 0
         replies(third) should be > 0
         replies.values.sum should ===(iterationCount)
@@ -200,7 +204,9 @@ abstract class UseRoleIgnoredSpec
 
         val replies = receiveReplies(PoolRoutee, iterationCount)
 
-        replies(first) should ===(0) // should not be deployed locally, does not have required role
+        replies(first) should ===(
+          0
+        ) // should not be deployed locally, does not have required role
         replies(second) should be > 0
         replies(third) should be > 0
         replies.values.sum should ===(iterationCount)
@@ -235,7 +241,9 @@ abstract class UseRoleIgnoredSpec
 
         val replies = receiveReplies(GroupRoutee, iterationCount)
 
-        replies(first) should ===(0) // should not be deployed locally, does not have required role
+        replies(first) should ===(
+          0
+        ) // should not be deployed locally, does not have required role
         replies(second) should be > 0
         replies(third) should be > 0
         replies.values.sum should ===(iterationCount)

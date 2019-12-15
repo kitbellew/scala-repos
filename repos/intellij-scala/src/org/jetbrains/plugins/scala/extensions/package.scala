@@ -260,7 +260,9 @@ package object extensions {
         clazz match {
           case wrapper: PsiClassWrapper
               if wrapper.definition.isInstanceOf[ScObject] =>
-            return Some(wrapper) //this is static case, when containing class should be wrapper
+            return Some(
+              wrapper
+            ) //this is static case, when containing class should be wrapper
           case _ =>
         }
 

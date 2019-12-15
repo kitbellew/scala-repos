@@ -40,13 +40,17 @@ class SetupScalaSdkNotificationProvider(
       fileEditor: FileEditor) = {
     val hasSdk = Option(PsiManager.getInstance(project).findFile(file))
       .filter(_.getLanguage == ScalaLanguage.Instance)
-      .filter(!_.getName.endsWith(".sbt")) // root SBT files belong to main (not *-build) modules
+      .filter(
+        !_.getName.endsWith(".sbt")
+      ) // root SBT files belong to main (not *-build) modules
       .filter(_.isWritable)
       .flatMap(psiFile =>
         Option(ModuleUtilCore.findModuleForPsiElement(psiFile)))
       .filter(module =>
         ModuleUtil.getModuleType(module) == JavaModuleType.getModuleType)
-      .filter(!_.getName.endsWith("-build")) // gen-idea doesn't use the SBT module type
+      .filter(
+        !_.getName.endsWith("-build")
+      ) // gen-idea doesn't use the SBT module type
       .map(module => module.hasScala)
 
     if (hasSdk.contains(false))

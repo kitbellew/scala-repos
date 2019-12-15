@@ -94,10 +94,15 @@ private[log] class LogCleanerManager(
         }
         .filterNot {
           case (topicAndPartition, log) =>
-            inProgress.contains(topicAndPartition) // skip any logs already in-progress
+            inProgress.contains(
+              topicAndPartition
+            ) // skip any logs already in-progress
         }
         .map {
-          case (topicAndPartition, log) => // create a LogToClean instance for each
+          case (
+              topicAndPartition,
+              log
+              ) => // create a LogToClean instance for each
             // if the log segments are abnormally truncated and hence the checkpointed offset
             // is no longer valid, reset to the log starting offset and log the error event
             val logStartOffset = log.logSegments.head.baseOffset

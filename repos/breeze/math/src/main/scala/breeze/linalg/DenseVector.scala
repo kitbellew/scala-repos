@@ -47,7 +47,9 @@ import scalaxy.debug._
   * @param stride separation between elements
   * @param length number of elements
   */
-@SerialVersionUID(1L) // TODO: scala doesn't propagate this to specialized subclasses. Sigh.
+@SerialVersionUID(
+  1L
+) // TODO: scala doesn't propagate this to specialized subclasses. Sigh.
 class DenseVector[@spec(Double, Int, Float, Long) V](
     val data: Array[V],
     val offset: Int,

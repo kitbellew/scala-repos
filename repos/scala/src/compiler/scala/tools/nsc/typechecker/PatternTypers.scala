@@ -289,11 +289,15 @@ trait PatternTypers {
       // once the containing CaseDef has been type checked (see typedCase),
       // tree1's remaining type-slack skolems will be deskolemized (to the method type parameter skolems)
       tree1 modifyType {
-        case MethodType(ctorArgs, restpe) => // ctorArgs are actually in a covariant position, since this is the type of the subpatterns of the pattern represented by this Apply node
+        case MethodType(
+            ctorArgs,
+            restpe
+            ) => // ctorArgs are actually in a covariant position, since this is the type of the subpatterns of the pattern represented by this Apply node
           copyMethodType(
             tree1.tpe,
             ctorArgs map (_ modifyInfo extrapolate),
-            extrapolate(restpe)) // no need to clone ctorArgs, this is OUR method type
+            extrapolate(restpe)
+          ) // no need to clone ctorArgs, this is OUR method type
         case tp => tp
       }
     }
@@ -432,7 +436,12 @@ trait PatternTypers {
         // but at least make a proper type before passing it elsewhere
         val pt1 = pt.dealiasWiden match {
           case tr @ TypeRef(pre, sym, args) if args.nonEmpty =>
-            copyTypeRef(tr, pre, sym, sym.typeParams map (_.tpeHK)) // replace actual type args with dummies
+            copyTypeRef(
+              tr,
+              pre,
+              sym,
+              sym.typeParams map (_.tpeHK)
+            ) // replace actual type args with dummies
           case pt1 => pt1
         }
         if (isCheckable(pt1)) EmptyTree

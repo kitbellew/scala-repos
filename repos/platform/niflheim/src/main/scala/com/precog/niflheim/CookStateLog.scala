@@ -51,7 +51,9 @@ class CookStateLog(baseDir: File, scheduler: ScheduledExecutorService)
 
   private[this] val txLog = new Logger(txLogConfig)
   txLog.open()
-  txLog.setAutoMark(false) // We only mark when we're ready to write to a new raw log
+  txLog.setAutoMark(
+    false
+  ) // We only mark when we're ready to write to a new raw log
 
   def close = {
     if (pendingCookIds0.size > 0) {

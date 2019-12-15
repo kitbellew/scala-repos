@@ -121,7 +121,10 @@ trait SortedPaginator[T, C] extends Paginator[T] {
     * sortedPaginator.sort = sortedPaginator.sortedBy(columns.indexOf(clickedColumn))
     */
   def sortedBy(column: Int): SortState = sort match {
-    case (`column`, true) => // descending is only if it was already sorted ascending
+    case (
+        `column`,
+        true
+        ) => // descending is only if it was already sorted ascending
       (column, false)
     case _ =>
       (column, true)

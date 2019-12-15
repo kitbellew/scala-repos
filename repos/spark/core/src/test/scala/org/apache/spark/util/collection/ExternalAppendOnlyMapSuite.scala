@@ -467,7 +467,10 @@ class ExternalAppendOnlyMapSuite extends SparkFunSuite with LocalSparkContext {
   test("external aggregation updates peak execution memory") {
     val spillThreshold = 1000
     val conf = createSparkConf(loadDefaults = false)
-      .set("spark.shuffle.manager", "hash") // make sure we're not also using ExternalSorter
+      .set(
+        "spark.shuffle.manager",
+        "hash"
+      ) // make sure we're not also using ExternalSorter
       .set(
         "spark.shuffle.spill.numElementsForceSpillThreshold",
         spillThreshold.toString)

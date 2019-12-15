@@ -393,15 +393,24 @@ object StackTrace {
       .getOrElse("")
       .jsReplace("""^\s+at\s+""".re("gm"), "") // remove 'at' and indentation
       .jsReplace("""^(.+?)(?: \((.+)\))?$""".re("gm"), "$2@$1")
-      .jsReplace("""\r\n?""".re("gm"), "\n") // Rhino has platform-dependent EOL's
+      .jsReplace(
+        """\r\n?""".re("gm"),
+        "\n"
+      ) // Rhino has platform-dependent EOL's
       .jsSplit("\n")
   }
 
   private def extractChrome(e: js.Dynamic): js.Array[String] = {
     (e.stack.asInstanceOf[String] + "\n")
       .jsReplace("""^[\s\S]+?\s+at\s+""".re, " at ") // remove message
-      .jsReplace("""^\s+(at eval )?at\s+""".re("gm"), "") // remove 'at' and indentation
-      .jsReplace("""^([^\(]+?)([\n])""".re("gm"), "{anonymous}() ($1)$2") // see note
+      .jsReplace(
+        """^\s+(at eval )?at\s+""".re("gm"),
+        ""
+      ) // remove 'at' and indentation
+      .jsReplace(
+        """^([^\(]+?)([\n])""".re("gm"),
+        "{anonymous}() ($1)$2"
+      ) // see note
       .jsReplace(
         """^Object.<anonymous>\s*\(([^\)]+)\)""".re("gm"),
         "{anonymous}() ($1)")

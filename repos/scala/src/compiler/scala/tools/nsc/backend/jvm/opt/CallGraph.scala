@@ -588,7 +588,8 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
               samMethodType: Type,
               implMethod: Handle,
               instantiatedMethodType: Type,
-              xs @ _*) => // xs binding because IntelliJ gets confused about _@_*
+              xs @ _*
+              ) => // xs binding because IntelliJ gets confused about _@_*
             // LambdaMetaFactory performs a number of automatic adaptations when invoking the lambda
             // implementation method (casting, boxing, unboxing, and primitive widening, see Javadoc).
             //
@@ -638,7 +639,8 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
                 && samMethodType.getArgumentTypes.corresponds(
                   instantiatedMethodArgTypes)((samArgType, instArgType) =>
                   samArgType == instArgType || isReference(samArgType) && isReference(
-                    instArgType)) // (3)
+                    instArgType
+                  )) // (3)
             )
 
             if (isIndyLambda)

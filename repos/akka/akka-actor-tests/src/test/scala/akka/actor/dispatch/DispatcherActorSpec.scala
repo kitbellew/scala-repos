@@ -132,7 +132,9 @@ class DispatcherActorSpec
       slowOne ! "ping"
       fastOne ! "ping"
       assert(ready.await(2, TimeUnit.SECONDS) === true)
-      Thread.sleep(deadline.toMillis + 10) // wait just a bit more than the deadline
+      Thread.sleep(
+        deadline.toMillis + 10
+      ) // wait just a bit more than the deadline
       start.countDown()
       assert(latch.await(2, TimeUnit.SECONDS) === true)
     }

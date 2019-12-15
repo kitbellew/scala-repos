@@ -81,7 +81,10 @@ private[io] abstract class TcpConnection(
 
       // if we have resumed reading from pullMode while waiting for Register then register OP_READ interest
       if (pullMode && !readingSuspended) resumeReading(info)
-      doRead(info, None) // immediately try reading, pullMode is handled by readingSuspended
+      doRead(
+        info,
+        None
+      ) // immediately try reading, pullMode is handled by readingSuspended
       context.setReceiveTimeout(Duration.Undefined)
       context.become(connected(info))
 
@@ -414,7 +417,10 @@ private[io] abstract class TcpConnection(
         case WriteFile(path, offset, count, ack) ⇒
           PendingWriteFile(commander, path, offset, count, ack, tail)
         case CompoundWrite(h, t) ⇒ create(h, t)
-        case x @ Write(_, ack) ⇒ // empty write with either an ACK or a non-standard NoACK
+        case x @ Write(
+              _,
+              ack
+            ) ⇒ // empty write with either an ACK or a non-standard NoACK
           if (x.wantsAck) commander ! ack
           create(tail)
       }
@@ -454,7 +460,13 @@ private[io] abstract class TcpConnection(
           // we weren't able to write all bytes from the buffer, so we need to try again later
           if (data eq remainingData) this
           else
-            new PendingBufferWrite(commander, data, ack, buffer, tail) // copy with updated remainingData
+            new PendingBufferWrite(
+              commander,
+              data,
+              ack,
+              buffer,
+              tail
+            ) // copy with updated remainingData
 
         } else if (data.nonEmpty) {
           buffer.clear()

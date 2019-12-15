@@ -125,7 +125,8 @@ object Parsing {
                                   case Input.EOF =>
                                     Done(
                                       k(Input.El(Unmatched(suffix))),
-                                      Input.EOF) //suffix maybe empty
+                                      Input.EOF
+                                    ) //suffix maybe empty
                                   case other =>
                                     step(ss ++ suffix, Cont(k))(other)
                                 })),

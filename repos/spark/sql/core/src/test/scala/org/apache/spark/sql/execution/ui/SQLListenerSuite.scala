@@ -479,8 +479,14 @@ class SQLListenerMemoryLeakSuite extends SparkFunSuite {
       val conf = new SparkConf()
         .setMaster("local")
         .setAppName("test")
-        .set("spark.task.maxFailures", "1") // Don't retry the tasks to run this test quickly
-        .set("spark.sql.ui.retainedExecutions", "50") // Set it to 50 to run this test quickly
+        .set(
+          "spark.task.maxFailures",
+          "1"
+        ) // Don't retry the tasks to run this test quickly
+        .set(
+          "spark.sql.ui.retainedExecutions",
+          "50"
+        ) // Set it to 50 to run this test quickly
       val sc = new SparkContext(conf)
       try {
         SQLContext.clearSqlListener()

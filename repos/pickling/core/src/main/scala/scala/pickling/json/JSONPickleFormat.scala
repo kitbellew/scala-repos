@@ -167,7 +167,10 @@ package json {
     def putField(name: String, pickler: PBuilder => Unit): PBuilder =
       ignoringSharedRef {
         // assert(!primitives.contains(tags.top.key), tags.top)
-        if (!lastIsBrace) appendLine(",") // TODO: very inefficient, but here we don't care much about performance
+        if (!lastIsBrace)
+          appendLine(
+            ","
+          ) // TODO: very inefficient, but here we don't care much about performance
         append("\"" + name + "\": ")
         pickler(this)
         this
@@ -188,7 +191,10 @@ package json {
       this
     }
     def putElement(pickler: PBuilder => Unit): PBuilder = ignoringSharedRef {
-      if (!lastIsBracket) appendLine(",") // TODO: very inefficient, but here we don't care much about performance
+      if (!lastIsBracket)
+        appendLine(
+          ","
+        ) // TODO: very inefficient, but here we don't care much about performance
       pickler(this)
       this
     }

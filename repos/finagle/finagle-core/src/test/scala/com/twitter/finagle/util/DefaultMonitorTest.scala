@@ -32,7 +32,9 @@ class DefaultMonitorTest extends FunSuite with Matchers {
     assert(monitor.handle(f)) // still handled, but by the RootMonitor
     assert(handler.get == "")
 
-    assert(monitor.handle(new RuntimeException())) // still handled, but by the RootMonitor
+    assert(
+      monitor.handle(new RuntimeException())
+    ) // still handled, but by the RootMonitor
     assert(handler.get == "")
   }
 

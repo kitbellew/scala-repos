@@ -85,7 +85,8 @@ class ConsoleConsumerTest extends JUnitSuite {
       "--topic",
       "test",
       "--from-beginning",
-      "--new-consumer") //new
+      "--new-consumer"
+    ) //new
 
     //When
     val config = new ConsoleConsumer.ConsumerConfig(args)

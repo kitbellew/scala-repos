@@ -363,7 +363,10 @@ trait ScalaResultsHandlingSpec
         )
         .head
       response.body must beLeft("")
-      response.headers.get(CONTENT_LENGTH) must beOneOf(None, Some("0")) // Both header values are valid
+      response.headers.get(CONTENT_LENGTH) must beOneOf(
+        None,
+        Some("0")
+      ) // Both header values are valid
     }
 
     "not have a message body, nor a Content-Length, when a 304 response is returned" in withServer(
@@ -387,7 +390,10 @@ trait ScalaResultsHandlingSpec
         )
         .head
       response.body must beLeft("")
-      response.headers.get(CONTENT_LENGTH) must beOneOf(None, Some("0")) // Both header values are valid
+      response.headers.get(CONTENT_LENGTH) must beOneOf(
+        None,
+        Some("0")
+      ) // Both header values are valid
     }
 
     "return a 500 response if a forbidden character is used in a response's header field" in withServer(

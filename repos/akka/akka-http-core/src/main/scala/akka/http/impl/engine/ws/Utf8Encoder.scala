@@ -41,7 +41,9 @@ private[http] class Utf8Encoder extends PushStage[String, ByteString] {
           b(0x80 | ((char & 0x0fc0) >> 6)) // middle 6 bits
           b(0x80 | (char & 0x3f)) // lower 6 bits
         } else
-          throw new IllegalStateException("Char cannot be >= 2^16") // char value was converted from 16bit value
+          throw new IllegalStateException(
+            "Char cannot be >= 2^16"
+          ) // char value was converted from 16bit value
       else if (char >= SurrogateSecond && char <= 0xdfff) {
         surrogateValue |= (char & 0x3ff)
         b(0xf0 | ((surrogateValue & 0x1c0000) >> 18)) // upper 3 bits

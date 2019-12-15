@@ -107,8 +107,11 @@ trait FileAndResourceDirectives {
                         length,
                         StreamConverters
                           .fromInputStream(() ⇒ url.openStream())
-                          .withAttributes(ActorAttributes.dispatcher(
-                            settings.fileIODispatcher))) // TODO is this needed? It already uses `val inputStreamSource = name("inputStreamSource") and IODispatcher`
+                          .withAttributes(
+                            ActorAttributes
+                              .dispatcher(settings.fileIODispatcher)
+                          )
+                      ) // TODO is this needed? It already uses `val inputStreamSource = name("inputStreamSource") and IODispatcher`
                     }
                 }
               } else complete(HttpEntity.Empty)
@@ -272,7 +275,9 @@ object FileAndResourceDirectives extends FileAndResourceDirectives {
       case _ ⇒
         val conn = url.openConnection()
         try {
-          conn.setUseCaches(false) // otherwise the JDK will keep the connection open when we close!
+          conn.setUseCaches(
+            false
+          ) // otherwise the JDK will keep the connection open when we close!
           val len = conn.getContentLength
           val lm = conn.getLastModified
           Some(ResourceFile(url, len, lm))

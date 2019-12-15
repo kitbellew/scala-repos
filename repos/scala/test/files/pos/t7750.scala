@@ -4,5 +4,7 @@ trait Sizing
 
 object Test {
   null
-    .isInstanceOf[LazyCombiner[_, _, _]] // issued an existential feature warning
+    .isInstanceOf[
+      LazyCombiner[_, _, _]
+    ] // issued an existential feature warning
 }

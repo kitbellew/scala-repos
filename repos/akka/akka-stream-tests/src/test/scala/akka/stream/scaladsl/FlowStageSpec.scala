@@ -477,7 +477,9 @@ class FlowStageSpec
       inSub.sendNext(23)
       inSub.sendComplete()
 
-      outSub.request(1) // it depends on this line, i.e. generating backpressure between buffer and stage execution
+      outSub.request(
+        1
+      ) // it depends on this line, i.e. generating backpressure between buffer and stage execution
 
       out.expectNext(23)
       out.expectComplete()

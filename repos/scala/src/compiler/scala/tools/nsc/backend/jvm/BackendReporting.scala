@@ -53,7 +53,9 @@ object BackendReporting {
     def withFilter(f: B => Boolean)(implicit empty: A): Either[A, B] = v match {
       case Left(_) => v
       case Right(e) =>
-        if (f(e)) v else Left(empty) // scalaz.\/ requires an implicit Monoid m to get m.empty
+        if (f(e)) v
+        else
+          Left(empty) // scalaz.\/ requires an implicit Monoid m to get m.empty
     }
     def foreach[U](f: B => U) = v.right.foreach(f)
 

@@ -503,7 +503,8 @@ object JavaToScala {
                 modifiers,
                 name,
                 convertPsiToIntermdeiate(p.getTypeElement, externalProperties),
-                isArray = false) // should not happen
+                isArray = false
+              ) // should not happen
           }
         } else
           ParameterConstruction(
@@ -1167,7 +1168,9 @@ object JavaToScala {
           case _: PsiLocalVariable =>
           case _: PsiParameter     =>
           case _ =>
-            modifiers.append(SimpleModifier(ModifierType.FINAL)) //only to classes, not objects
+            modifiers.append(
+              SimpleModifier(ModifierType.FINAL)
+            ) //only to classes, not objects
         }
       }
 

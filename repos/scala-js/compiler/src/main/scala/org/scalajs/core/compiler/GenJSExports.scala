@@ -71,7 +71,9 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
         Nil
       } else {
         val exports = for {
-          (jsName, specs) <- ctorExports.groupBy(_._1.jsName) // group by exported name
+          (jsName, specs) <- ctorExports.groupBy(
+            _._1.jsName
+          ) // group by exported name
         } yield {
           val (namedExports, normalExports) = specs.partition(_._1.isNamed)
 
@@ -280,7 +282,12 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
       val setTree =
         if (setters.isEmpty) js.EmptyTree
         else
-          genExportSameArgc(1, false, setters.map(ExportedSymbol), 0) // we only have 1 argument
+          genExportSameArgc(
+            1,
+            false,
+            setters.map(ExportedSymbol),
+            0
+          ) // we only have 1 argument
 
       js.PropertyDef(
         js.StringLiteral(jsName),

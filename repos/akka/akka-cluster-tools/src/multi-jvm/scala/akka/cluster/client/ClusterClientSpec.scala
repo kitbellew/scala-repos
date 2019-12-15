@@ -341,7 +341,9 @@ class ClusterClientSpec
           "/user/service2",
           "shutdown",
           localAffinity = true)
-        Thread.sleep(2000) // to ensure that it is sent out before shutting down system
+        Thread.sleep(
+          2000
+        ) // to ensure that it is sent out before shutting down system
       }
 
       // There is only one client JVM and one server JVM left. The other JVMs have been exited

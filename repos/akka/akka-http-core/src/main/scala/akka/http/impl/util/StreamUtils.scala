@@ -360,7 +360,9 @@ private[http] object StreamUtils {
 
       def source[T]: Source[T, NotUsed] =
         _source
-          .asInstanceOf[Source[T, NotUsed]] // safe, because source won't generate any elements
+          .asInstanceOf[
+            Source[T, NotUsed]
+          ] // safe, because source won't generate any elements
       def open(): Unit = promise.success(())
     }
   }

@@ -165,7 +165,9 @@ trait ArrayLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                   new ModUnionColumn(colTable) with HomogeneousArrayColumn[a] {
                     val tpe = arrTpe
                     def apply(i: Int) =
-                      col(i).asInstanceOf[HomogeneousArrayColumn[a]](row(i)) // primitive arrays are still objects, so the erasure here is not a problem
+                      col(i).asInstanceOf[HomogeneousArrayColumn[a]](
+                        row(i)
+                      ) // primitive arrays are still objects, so the erasure here is not a problem
                   }
 
                 ref -> col

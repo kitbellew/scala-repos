@@ -277,7 +277,9 @@ private[akka] final case class Watch(
 /**
   * INTERNAL API
   */
-@SerialVersionUID(1L) // Watch and Unwatch have different signatures, but this can't be changed without breaking serialization compatibility
+@SerialVersionUID(
+  1L
+) // Watch and Unwatch have different signatures, but this can't be changed without breaking serialization compatibility
 private[akka] final case class Unwatch(watchee: ActorRef, watcher: ActorRef)
     extends SystemMessage // sent to tear down a DeathWatch
 /**

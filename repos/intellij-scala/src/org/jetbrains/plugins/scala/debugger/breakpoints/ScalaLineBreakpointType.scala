@@ -174,7 +174,9 @@ class ScalaLineBreakpointType
               dumbService.smartInvokeLater {
                 executeOnPooledThread {
                   if (lineBp.isValid) {
-                    inReadAction(getContainingMethod(lineBp)) //populating caches outside edt
+                    inReadAction(
+                      getContainingMethod(lineBp)
+                    ) //populating caches outside edt
                   }
                   invokeLater {
                     if (breakpointImpl.isValid) {

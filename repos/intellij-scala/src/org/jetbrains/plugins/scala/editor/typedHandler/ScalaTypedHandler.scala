@@ -135,7 +135,12 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
       PsiDocumentManager.getInstance(project).commitDocument(document)
     }
 
-    myTask(document, project, file.findElementAt(offset - 1), offset) // prev element is not valid here
+    myTask(
+      document,
+      project,
+      file.findElementAt(offset - 1),
+      offset
+    ) // prev element is not valid here
     Result.STOP
   }
 

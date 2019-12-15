@@ -287,8 +287,14 @@ class InlinerTest extends ClearAfterClass {
       c.methods.asScala.filter(_.name.length == 1).toList
     val List(fIns, gIns) = methods.map(instructionsFromMethod(_).dropNonOp)
     val invokeG = Invoke(INVOKEVIRTUAL, "C", "g", "()I", false)
-    assert(fIns contains invokeG, fIns) // no inlining into f, that request is elided
-    assert(gIns contains invokeG, gIns) // f is inlined into g, g invokes itself recursively
+    assert(
+      fIns contains invokeG,
+      fIns
+    ) // no inlining into f, that request is elided
+    assert(
+      gIns contains invokeG,
+      gIns
+    ) // f is inlined into g, g invokes itself recursively
 
     assert(callGraph.callsites.size == 3, callGraph.callsites)
     for (callsite <- callGraph.callsites.valuesIterator.flatMap(
@@ -312,7 +318,10 @@ class InlinerTest extends ClearAfterClass {
     val List(fIns, gIns, hIns) =
       methods.map(instructionsFromMethod(_).dropNonOp)
     val invokeG = Invoke(INVOKEVIRTUAL, "C", "g", "()I", false)
-    assert(fIns.count(_ == invokeG) == 2, fIns) // no inlining into f, these requests are elided
+    assert(
+      fIns.count(_ == invokeG) == 2,
+      fIns
+    ) // no inlining into f, these requests are elided
     assert(gIns.count(_ == invokeG) == 2, gIns)
     assert(hIns.count(_ == invokeG) == 2, hIns)
 
@@ -739,7 +748,10 @@ class InlinerTest extends ClearAfterClass {
     val List(ca, cb, t1, t2a, t2b) = compile(code, allowMessage = i => {
       count += 1; warnings.exists(i.msg contains _)
     })
-    assert(count == 8, count) // see comments, f is not inlined 4 times, additional warnings due to SD-86
+    assert(
+      count == 8,
+      count
+    ) // see comments, f is not inlined 4 times, additional warnings due to SD-86
 
     assertNoInvoke(getSingleMethod(t2a, "g2a"))
     assertInvoke(getSingleMethod(t2b, "g2b"), "T1", "f")
@@ -1043,8 +1055,12 @@ class InlinerTest extends ClearAfterClass {
     val List(c) = compile(code)
     val t = getSingleMethod(c, "t").instructions
     assertNoInvoke(t)
-    assert(1 == t.collect({ case Ldc(_, "hai!")     => }).size) // push-pop eliminates the first LDC("hai!")
-    assert(1 == t.collect({ case Jump(IFNONNULL, _) => }).size) // one single null check
+    assert(
+      1 == t.collect({ case Ldc(_, "hai!") => }).size
+    ) // push-pop eliminates the first LDC("hai!")
+    assert(
+      1 == t.collect({ case Jump(IFNONNULL, _) => }).size
+    ) // one single null check
   }
 
   @Test
@@ -1111,8 +1127,14 @@ class InlinerTest extends ClearAfterClass {
         hCall,
         post =
           List(InlineRequest(gCall, post = List(InlineRequest(fCall, Nil))))))
-    assertNoInvoke(convertMethod(iMeth)) // no invoke in i: first h is inlined, then the inlined call to g is also inlined, etc for f
-    assertInvoke(convertMethod(gMeth), "C", "f") // g itself still has the call to f
+    assertNoInvoke(
+      convertMethod(iMeth)
+    ) // no invoke in i: first h is inlined, then the inlined call to g is also inlined, etc for f
+    assertInvoke(
+      convertMethod(gMeth),
+      "C",
+      "f"
+    ) // g itself still has the call to f
   }
 
   @Test

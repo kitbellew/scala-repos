@@ -192,7 +192,9 @@ private[expr] object ExpectedTypes {
                 .asInstanceOf[ScInfixArgumentExpression]
                 .isCall)) ||
                 ref.qualifier.isDefined ||
-                ScUnderScoreSectionUtil.isUnderscore(expr) /* See SCL-3512, SCL-3525, SCL-4809, SCL-6785 */ =>
+                ScUnderScoreSectionUtil.isUnderscore(
+                  expr
+                ) /* See SCL-3512, SCL-3525, SCL-4809, SCL-6785 */ =>
             ref.bind() match {
               case Some(
                   ScalaResolveResult(

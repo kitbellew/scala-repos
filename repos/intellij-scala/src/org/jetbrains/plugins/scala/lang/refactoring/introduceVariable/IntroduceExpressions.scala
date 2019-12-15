@@ -250,7 +250,9 @@ trait IntroduceExpressions {
         case _ =>
           parExpr match {
             case forSt: ScForStatement =>
-              Some(forSt) //there are occurrences both in body and in enumerators
+              Some(
+                forSt
+              ) //there are occurrences both in body and in enumerators
             case _ => None
           }
       }
@@ -519,7 +521,8 @@ trait IntroduceExpressions {
           varName,
           varType,
           replaceAllOccurrences,
-          isVariable) //this for better debug
+          isVariable
+        ) //this for better debug
       }
     }
 

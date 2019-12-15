@@ -95,7 +95,9 @@ object InputWrapper {
     val tpe = c.weakTypeOf[T]
     val nme = newTermName(wrapName).encoded
     val sel = Select(Ident(iw), nme)
-    sel.setPos(pos) // need to set the position on Select, because that is where the compileTimeOnly check looks
+    sel.setPos(
+      pos
+    ) // need to set the position on Select, because that is where the compileTimeOnly check looks
     val tree = ApplyTree(TypeApply(sel, TypeTree(tpe) :: Nil), ts.tree :: Nil)
     tree.setPos(ts.tree.pos)
     // JZ: I'm not sure why we need to do this. Presumably a caller is wrapping this tree in a

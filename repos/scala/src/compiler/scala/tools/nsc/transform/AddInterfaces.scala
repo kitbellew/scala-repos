@@ -30,7 +30,8 @@ abstract class AddInterfaces extends InfoTransform { self: Erasure =>
       }
       if (clazz.isTrait) {
         decls foreach { sym =>
-          if (!sym.isType) sym.info // initialize to set lateMETHOD flag if necessary
+          if (!sym.isType)
+            sym.info // initialize to set lateMETHOD flag if necessary
         }
       }
       if (parents1 eq parents) tp

@@ -16,7 +16,10 @@ class TestProbeSpec extends AkkaSpec with DefaultTimeout {
     "reply to futures" in {
       val tk = TestProbe()
       val future = tk.ref ? "hello"
-      tk.expectMsg(0 millis, "hello") // TestActor runs on CallingThreadDispatcher
+      tk.expectMsg(
+        0 millis,
+        "hello"
+      ) // TestActor runs on CallingThreadDispatcher
       tk.lastMessage.sender ! "world"
       future should be('completed)
       Await.result(future, timeout.duration) should ===("world")

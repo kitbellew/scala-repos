@@ -51,8 +51,14 @@ class LimitConcurrentRequestsFilterTest
 
     When("requests where made before the limit")
     Future(rf.doFilter(request, response, chain))
-    latch.await(5, TimeUnit.SECONDS) should be(true) //make sure, first "request" has passed
-    rf.doFilter(request, response, chain) //no future, since that should fail synchronously
+    latch.await(5, TimeUnit.SECONDS) should be(
+      true
+    ) //make sure, first "request" has passed
+    rf.doFilter(
+      request,
+      response,
+      chain
+    ) //no future, since that should fail synchronously
 
     Then("The requests got answered")
     verify(chain, times(1)).doFilter(request, response)

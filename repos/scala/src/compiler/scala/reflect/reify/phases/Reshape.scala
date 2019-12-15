@@ -343,7 +343,9 @@ trait Reshape {
           if (reifyDebug)
             println(
               "resetting visibility of field: %s => %s".format(vdef, vdef1))
-          Some(vdef1) // no copyAttrs here, because new ValDef and old symbols are now out of sync
+          Some(
+            vdef1
+          ) // no copyAttrs here, because new ValDef and old symbols are now out of sync
         case ddef: DefDef if !ddef.mods.isLazy =>
           // lazy val accessors are removed in reshapeLazyVals
           // as they are needed to recreate lazy vals

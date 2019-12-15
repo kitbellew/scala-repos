@@ -418,7 +418,12 @@ class ZkUtils(
     } else acls
 
     if (!zkClient.exists(path))
-      ZkPath.createPersistent(zkClient, path, true, acl) //won't throw NoNodeException or NodeExistsException
+      ZkPath.createPersistent(
+        zkClient,
+        path,
+        true,
+        acl
+      ) //won't throw NoNodeException or NodeExistsException
   }
 
   /**

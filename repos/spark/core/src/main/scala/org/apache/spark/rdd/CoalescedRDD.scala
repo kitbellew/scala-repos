@@ -273,7 +273,10 @@ private class PartitionCoalescer(
         val pgroup = PartitionGroup(nxt_replica)
         groupArr += pgroup
         addPartToPGroup(nxt_part, pgroup)
-        groupHash.put(nxt_replica, ArrayBuffer(pgroup)) // list in case we have multiple
+        groupHash.put(
+          nxt_replica,
+          ArrayBuffer(pgroup)
+        ) // list in case we have multiple
         numCreated += 1
       }
     }
@@ -356,7 +359,9 @@ private class PartitionCoalescer(
     * @return array of partition groups
     */
   def run(): Array[PartitionGroup] = {
-    setupGroups(math.min(prev.partitions.length, maxPartitions)) // setup the groups (bins)
+    setupGroups(
+      math.min(prev.partitions.length, maxPartitions)
+    ) // setup the groups (bins)
     throwBalls() // assign partitions (balls) to each group (bins)
     getPartitions
   }

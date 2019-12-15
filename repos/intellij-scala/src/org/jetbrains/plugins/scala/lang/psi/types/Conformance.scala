@@ -1666,7 +1666,9 @@ object Conformance {
                     ScalaPsiElementFactory.createTypeParameterFromText(
                       wild.name,
                       PsiManager
-                        .getInstance(DecompilerUtil.obtainProject) //todo: remove obtainProject?
+                        .getInstance(
+                          DecompilerUtil.obtainProject
+                        ) //todo: remove obtainProject?
                     )
                   )
                 )

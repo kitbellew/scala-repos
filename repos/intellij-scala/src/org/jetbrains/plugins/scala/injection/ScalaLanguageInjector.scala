@@ -121,7 +121,9 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
     val annotationOwner = expression match {
       case lit: ScLiteral => lit getAnnotationOwner (annotationOwnerFor(_))
       case _ =>
-        annotationOwnerFor(expression) //.orElse(implicitAnnotationOwnerFor(literal))
+        annotationOwnerFor(
+          expression
+        ) //.orElse(implicitAnnotationOwnerFor(literal))
     }
 
     val annotation = annotationOwner flatMap {

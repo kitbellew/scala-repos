@@ -478,7 +478,10 @@ trait EvaluatorModule[M[+_]]
 
           def identityJoinSpec(ids: Vector[Int]): TransSpec1 = {
             if (ids.isEmpty) {
-              trans.ConstLiteral(CEmptyArray, SourceKey.Single) // join with undefined, probably
+              trans.ConstLiteral(
+                CEmptyArray,
+                SourceKey.Single
+              ) // join with undefined, probably
             } else {
               val components =
                 for (i <- ids)

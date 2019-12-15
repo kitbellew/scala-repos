@@ -212,7 +212,10 @@ trait TransSpecableModule[M[+_]]
                 trans.Map1(target, op.f2(MorphContext(ctx, node)).applyr(cv))
 
               case _ =>
-                trans.Typed(trans.Typed(target, JNullT), JTextT) // nuke all the things
+                trans.Typed(
+                  trans.Typed(target, JNullT),
+                  JTextT
+                ) // nuke all the things
             }
           })
 
@@ -227,7 +230,10 @@ trait TransSpecableModule[M[+_]]
                 trans.Map1(target, op.f2(MorphContext(ctx, node)).applyl(cv))
 
               case _ =>
-                trans.Typed(trans.Typed(target, JNullT), JTextT) // nuke all the things
+                trans.Typed(
+                  trans.Typed(target, JNullT),
+                  JTextT
+                ) // nuke all the things
             }
           })
 

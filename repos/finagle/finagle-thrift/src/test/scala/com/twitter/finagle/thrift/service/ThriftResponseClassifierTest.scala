@@ -52,7 +52,10 @@ class ThriftResponseClassifierTest extends FunSuite {
       }
     }
     testApplyOrElse("yep", Success)
-    testApplyOrElse("failing", Success) // falls through to the default classifier
+    testApplyOrElse(
+      "failing",
+      Success
+    ) // falls through to the default classifier
   }
 
   test("usingDeserializeCtx ignores exceptions during deserialization") {

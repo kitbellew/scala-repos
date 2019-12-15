@@ -14,7 +14,8 @@ class CacheDisablingFilter extends Filter {
       case httpResponse: HttpServletResponse =>
         httpResponse.setHeader(
           "Cache-Control",
-          "no-cache, no-store, must-revalidate") // HTTP 1.1
+          "no-cache, no-store, must-revalidate"
+        ) // HTTP 1.1
         httpResponse.setHeader("Pragma", "no-cache") // HTTP 1.0
         httpResponse.setHeader("Expires", "0") // Proxies
       case _ => // ignore other responses

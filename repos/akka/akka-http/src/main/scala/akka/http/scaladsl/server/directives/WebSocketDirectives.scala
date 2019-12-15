@@ -66,6 +66,8 @@ trait WebSocketDirectives {
             upgrade.requestedProtocols.exists(_ equalsIgnoreCase sub)))
         complete(upgrade.handleMessages(handler, subprotocol))
       else
-        reject(UnsupportedWebSocketSubprotocolRejection(subprotocol.get)) // None.forall == true
+        reject(
+          UnsupportedWebSocketSubprotocolRejection(subprotocol.get)
+        ) // None.forall == true
     }
 }

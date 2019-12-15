@@ -13,7 +13,8 @@ class Preparator extends PPreparator[TrainingData, PreparedData] {
       users = trainingData.users,
       items = trainingData.items,
       viewEvents = trainingData.viewEvents,
-      likeEvents = trainingData.likeEvents) // ADDED
+      likeEvents = trainingData.likeEvents
+    ) // ADDED
   }
 }
 

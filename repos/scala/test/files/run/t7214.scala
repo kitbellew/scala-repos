@@ -41,7 +41,9 @@ class Crash {
 
   (t: Any) match {
     case _: C2dotT =>
-      println(s"!!! wrong match. t.outer=${outerField.get(t)} / c2 = $c2") // this matches on 2.10.0
+      println(
+        s"!!! wrong match. t.outer=${outerField.get(t)} / c2 = $c2"
+      ) // this matches on 2.10.0
     case _: CdotT =>
     case _ =>
       println(s"!!! wrong match. t.outer=${outerField.get(t)} / c = $c")

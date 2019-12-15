@@ -33,7 +33,9 @@ trait Seq[+A]
   override def seq: Seq[A] = this
   protected[this] override def parCombiner =
     ParSeq
-      .newCombiner[A] // if `immutable.SeqLike` gets introduced, please move this there!
+      .newCombiner[
+        A
+      ] // if `immutable.SeqLike` gets introduced, please move this there!
 }
 
 /** $factoryInfo

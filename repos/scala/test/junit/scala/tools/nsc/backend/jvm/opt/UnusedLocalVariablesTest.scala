@@ -32,7 +32,10 @@ class UnusedLocalVariablesTest extends ClearAfterClass {
     assertLocalVarCount(code, 4) // `this, a, b, c`
 
     val code2 = """def f(): Unit = { var x = if (true) return else () }"""
-    assertLocalVarCount(code2, 1) // x is eliminated, constant folding in scalac removes the if
+    assertLocalVarCount(
+      code2,
+      1
+    ) // x is eliminated, constant folding in scalac removes the if
 
     val code3 = """def f: Unit = return""" // paramless method
     assertLocalVarCount(code3, 1) // this

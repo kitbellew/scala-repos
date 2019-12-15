@@ -122,13 +122,17 @@ object FormSpec extends Specification {
       myForm hasErrors () must beEqualTo(true)
       myForm.errors.get("dueDate").get(0).messages().size() must beEqualTo(3)
       myForm.errors.get("dueDate").get(0).messages().get(2) must beEqualTo(
-        "error.invalid.dueDate") // is ONLY defined in messages.fr
+        "error.invalid.dueDate"
+      ) // is ONLY defined in messages.fr
       myForm.errors.get("dueDate").get(0).messages().get(1) must beEqualTo(
-        "error.invalid.java.util.Date") // is defined in play's default messages file
+        "error.invalid.java.util.Date"
+      ) // is defined in play's default messages file
       myForm.errors.get("dueDate").get(0).messages().get(0) must beEqualTo(
-        "error.invalid") // is defined in play's default messages file
+        "error.invalid"
+      ) // is defined in play's default messages file
       myForm.errors.get("dueDate").get(0).message() must beEqualTo(
-        "error.invalid.dueDate") // is ONLY defined in messages.fr
+        "error.invalid.dueDate"
+      ) // is ONLY defined in messages.fr
     }
     "have an error due to badly formatted date after using changeLang" in new WithApplication(
       GuiceApplicationBuilder()
@@ -155,13 +159,17 @@ object FormSpec extends Specification {
       myForm hasErrors () must beEqualTo(true)
       myForm.errors.get("dueDate").get(0).messages().size() must beEqualTo(3)
       myForm.errors.get("dueDate").get(0).messages().get(2) must beEqualTo(
-        "error.invalid.dueDate") // is ONLY defined in messages.fr
+        "error.invalid.dueDate"
+      ) // is ONLY defined in messages.fr
       myForm.errors.get("dueDate").get(0).messages().get(1) must beEqualTo(
-        "error.invalid.java.util.Date") // is defined in play's default messages file
+        "error.invalid.java.util.Date"
+      ) // is defined in play's default messages file
       myForm.errors.get("dueDate").get(0).messages().get(0) must beEqualTo(
-        "error.invalid") // is defined in play's default messages file
+        "error.invalid"
+      ) // is defined in play's default messages file
       myForm.errors.get("dueDate").get(0).message() must beEqualTo(
-        "error.invalid.dueDate") // is ONLY defined in messages.fr
+        "error.invalid.dueDate"
+      ) // is ONLY defined in messages.fr
     }
     "have an error due to missing required value" in new WithApplication() {
       val req = dummyRequest(

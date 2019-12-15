@@ -99,7 +99,9 @@ class ContinuousQueryListenerSuite
             val status = listener.terminationStatus
             assert(status != null)
 
-            assert(status.active === false) // must be inactive by the time onQueryTerm is called
+            assert(
+              status.active === false
+            ) // must be inactive by the time onQueryTerm is called
             assert(status.sourceStatuses(0).offset === Some(LongOffset(0)))
             assert(
               status.sinkStatus.offset === Some(

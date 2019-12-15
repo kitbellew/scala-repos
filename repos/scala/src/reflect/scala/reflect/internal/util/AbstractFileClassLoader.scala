@@ -77,7 +77,9 @@ class AbstractFileClassLoader(val root: AbstractFile, parent: ClassLoader)
   override protected def findResources(name: String): JEnumeration[URL] =
     findResource(name) match {
       case null =>
-        JCollections.enumeration(JCollections.emptyList[URL]) //JCollections.emptyEnumeration[URL]
+        JCollections.enumeration(
+          JCollections.emptyList[URL]
+        ) //JCollections.emptyEnumeration[URL]
       case url => JCollections.enumeration(JCollections.singleton(url))
     }
 

@@ -228,7 +228,9 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
         if (!member.isMethod && !member.isModule && !member.isModuleVar) {
           assert(member.isTerm && !member.isDeferred, member)
           if (member.getterIn(clazz).isPrivate) {
-            member.makeNotPrivate(clazz) // this will also make getter&setter not private
+            member.makeNotPrivate(
+              clazz
+            ) // this will also make getter&setter not private
           }
           val getter = member.getterIn(clazz)
           if (getter == NoSymbol) addMember(clazz, newGetter(member))

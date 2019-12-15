@@ -208,7 +208,9 @@ class RandomAccessFile(file: File, arg0: String = "r")(
   @throws(classOf[IOException])
   final def readInt16(n: Int): Array[Short] = {
     val ba = new Array[Byte](n * 2)
-    rafObj.readFully(ba) //reading is much faster if many bytes are read simultaneously
+    rafObj.readFully(
+      ba
+    ) //reading is much faster if many bytes are read simultaneously
     val tr = new Array[Short](n)
     //the following is a hack to avoid the heavier Scala for loop
     var c = 0
@@ -293,7 +295,9 @@ class RandomAccessFile(file: File, arg0: String = "r")(
   @throws(classOf[IOException])
   final def readUInt16(n: Int): Array[Char] = {
     val ba = new Array[Byte](n * 2)
-    rafObj.readFully(ba) //reading is much faster if many bytes are read simultaneously
+    rafObj.readFully(
+      ba
+    ) //reading is much faster if many bytes are read simultaneously
     val tr = new Array[Char](n)
     //the following is a hack to avoid the heavier Scala for loop
     var c = 0
@@ -406,7 +410,9 @@ class RandomAccessFile(file: File, arg0: String = "r")(
   @throws(classOf[IOException])
   final def readInt32(n: Int): Array[Int] = {
     val ba = new Array[Byte](n * 4)
-    rafObj.readFully(ba) //reading is much faster if many bytes are read simultaneously
+    rafObj.readFully(
+      ba
+    ) //reading is much faster if many bytes are read simultaneously
     val tr = new Array[Int](n)
     //the following is a hack to avoid the heavier Scala for loop
     var c = 0
@@ -484,7 +490,9 @@ class RandomAccessFile(file: File, arg0: String = "r")(
   @throws(classOf[IOException])
   final def readUInt32(n: Int): Array[Long] = {
     val ba = new Array[Byte](n * 4)
-    rafObj.readFully(ba) //reading is much faster if many bytes are read simultaneously
+    rafObj.readFully(
+      ba
+    ) //reading is much faster if many bytes are read simultaneously
     val tr = new Array[Long](n)
     //the following is a hack to avoid the heavier Scala for loop
     var c = 0
@@ -545,7 +553,9 @@ class RandomAccessFile(file: File, arg0: String = "r")(
   @throws(classOf[IOException])
   final def readInt64(n: Int): Array[Long] = {
     val ba = new Array[Byte](n * 8)
-    rafObj.readFully(ba) //reading is much faster if many bytes are read simultaneously
+    rafObj.readFully(
+      ba
+    ) //reading is much faster if many bytes are read simultaneously
     val tr = new Array[Long](n)
     //the following is a hack to avoid the heavier Scala for loop
     var c = 0
@@ -638,7 +648,9 @@ class RandomAccessFile(file: File, arg0: String = "r")(
   @throws(classOf[IOException])
   final def readUInt64(n: Int): Array[ULong] = {
     val ba = new Array[Byte](n * 8)
-    rafObj.readFully(ba) //reading is much faster if many bytes are read simultaneously
+    rafObj.readFully(
+      ba
+    ) //reading is much faster if many bytes are read simultaneously
     val tr = new Array[ULong](n)
     //the following is a hack to avoid the heavier Scala for loop
     var c = 0
@@ -708,7 +720,9 @@ class RandomAccessFile(file: File, arg0: String = "r")(
   @throws(classOf[IOException])
   final def readUInt64Shifted(n: Int): Array[Long] = {
     val ba = new Array[Byte](n * 8)
-    rafObj.readFully(ba) //reading is much faster if many bytes are read simultaneously
+    rafObj.readFully(
+      ba
+    ) //reading is much faster if many bytes are read simultaneously
     val tr = new Array[Long](n)
     //the following is a hack to avoid the heavier Scala for loop
     var c = 0
@@ -773,7 +787,9 @@ class RandomAccessFile(file: File, arg0: String = "r")(
   @throws(classOf[IOException])
   final def readDouble(n: Int): Array[Double] = {
     val ba = new Array[Byte](n * 8)
-    rafObj.readFully(ba) //reading is much faster if many bytes are read simultaneously
+    rafObj.readFully(
+      ba
+    ) //reading is much faster if many bytes are read simultaneously
     val tr = new Array[Double](n)
     //the following is a hack to avoid the heavier Scala for loop
     var c = 0
@@ -802,7 +818,9 @@ class RandomAccessFile(file: File, arg0: String = "r")(
   @throws(classOf[IOException])
   final def readFloat(n: Int): Array[Float] = {
     val ba = new Array[Byte](n * 4)
-    rafObj.readFully(ba) //reading is much faster if many bytes are read simultaneously
+    rafObj.readFully(
+      ba
+    ) //reading is much faster if many bytes are read simultaneously
     val tr = new Array[Float](n)
     //the following is a hack to avoid the heavier Scala for loop
     var c = 0

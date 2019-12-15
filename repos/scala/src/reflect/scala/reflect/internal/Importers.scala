@@ -290,7 +290,10 @@ trait Importers { to: SymbolTable =>
         val myscope =
           if (myclazz.isPackageClass) newPackageScope(myclazz) else newScope
         val myclazzTpe = ClassInfoType(parents map importType, myscope, myclazz)
-        myclazz setInfo GenPolyType(myclazz.typeParams, myclazzTpe) // needed so that newly created symbols find their scope
+        myclazz setInfo GenPolyType(
+          myclazz.typeParams,
+          myclazzTpe
+        ) // needed so that newly created symbols find their scope
         decls foreach importSymbol // will enter itself into myclazz
         myclazzTpe
       case from.RefinedType(parents, decls) =>

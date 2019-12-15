@@ -212,13 +212,19 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
 
     t.dealiasWiden match {
       case TypeRef(_, ArrayClass, List(arg)) =>
-        ArrayBType(typeToBType(arg)) // Array type such as Array[Int] (kept by erasure)
+        ArrayBType(
+          typeToBType(arg)
+        ) // Array type such as Array[Int] (kept by erasure)
       case TypeRef(_, sym, _) if !sym.isClass =>
         nonClassTypeRefToBType(sym) // See comment on nonClassTypeRefToBType
       case TypeRef(_, sym, _) =>
-        primitiveOrClassToBType(sym) // Common reference to a type such as scala.Int or java.lang.String
+        primitiveOrClassToBType(
+          sym
+        ) // Common reference to a type such as scala.Int or java.lang.String
       case ClassInfoType(_, _, sym) =>
-        primitiveOrClassToBType(sym) // We get here, for example, for genLoadModule, which invokes typeToBType(moduleClassSymbol.info)
+        primitiveOrClassToBType(
+          sym
+        ) // We get here, for example, for genLoadModule, which invokes typeToBType(moduleClassSymbol.info)
 
       /* AnnotatedType should (probably) be eliminated by erasure. However we know it happens for
        * meta-annotated annotations (@(ann @getter) val x = 0), so we don't emit a warning.
@@ -326,17 +332,17 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
       classSymbol: Symbol): List[Symbol] =
     classSymbol.info.decls
       .collect({
-          case sym
-              if sym.isClass && !considerAsTopLevelImplementationArtifact(
-                sym) =>
-            sym
-          case sym
-              if sym.isModule && !considerAsTopLevelImplementationArtifact(
-                sym) => // impl classes get the lateMODULE flag in mixin
-            val r = exitingPickler(sym.moduleClass)
-            assert(r != NoSymbol, sym.fullLocationString)
-            r
-        })(collection.breakOut)
+        case sym
+            if sym.isClass && !considerAsTopLevelImplementationArtifact(sym) =>
+          sym
+        case sym
+            if sym.isModule && !considerAsTopLevelImplementationArtifact(
+              sym
+            ) => // impl classes get the lateMODULE flag in mixin
+          val r = exitingPickler(sym.moduleClass)
+          assert(r != NoSymbol, sym.fullLocationString)
+          r
+      })(collection.breakOut)
 
   private def setClassInfo(
       classSym: Symbol,
@@ -609,7 +615,9 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
               innerClassSym.isAnonymousClass || innerClassSym.isAnonymousFunction))
           None
         else
-          Some(innerClassSym.rawname + innerClassSym.moduleSuffix) // moduleSuffix for module classes
+          Some(
+            innerClassSym.rawname + innerClassSym.moduleSuffix
+          ) // moduleSuffix for module classes
       }
 
       Some(
@@ -684,7 +692,8 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
             nestedClasses = nested,
             nestedInfo = None,
             inlineInfo = EmptyInlineInfo.copy(isEffectivelyFinal = true)
-          )) // no method inline infos needed, scala never invokes methods on the mirror class
+          )
+        ) // no method inline infos needed, scala never invokes methods on the mirror class
         c
       }
     )

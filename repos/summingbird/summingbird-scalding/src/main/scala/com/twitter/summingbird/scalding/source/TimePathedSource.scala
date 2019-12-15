@@ -104,7 +104,9 @@ object TimePathedSource extends java.io.Serializable {
               (dr, toPath(dr.start))
             }
         }
-        .getOrElse(List((dateRange, pattern))) // This must not have any time after all
+        .getOrElse(
+          List((dateRange, pattern))
+        ) // This must not have any time after all
 
     def pathIsGood(p: String): Boolean = {
       val path = new Path(p)

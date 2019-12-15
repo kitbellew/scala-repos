@@ -706,7 +706,9 @@ trait ColumnarTableModule[M[+_]]
               })
               .toList
 
-            M.point(TableIndex.joinSubTables(subTableProjections).normalize) // TODO: normalize necessary?
+            M.point(
+              TableIndex.joinSubTables(subTableProjections).normalize
+            ) // TODO: normalize necessary?
           }
 
           nt(body(groupKeyTable, map))
@@ -2144,7 +2146,9 @@ trait ColumnarTableModule[M[+_]]
           case (None, paths) =>
             fresh(paths, leaf)
           case (jtype, paths) =>
-            sys.error("Invalid schema.") // This shouldn't happen for any real data.
+            sys.error(
+              "Invalid schema."
+            ) // This shouldn't happen for any real data.
         }
 
         cols.foldLeft(None: Option[JType]) {

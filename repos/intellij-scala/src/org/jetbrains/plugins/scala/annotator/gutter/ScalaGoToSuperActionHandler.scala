@@ -148,7 +148,10 @@ private object ScalaGoToSuperActionHandler {
         val superTypeMembers = ScalaPsiUtil.superTypeMembers(d)
         (Seq(), superTypeMembers)
       case _ =>
-        (Seq.empty, Seq.empty) //Case class synthetic companion object could also implement a value member.
+        (
+          Seq.empty,
+          Seq.empty
+        ) //Case class synthetic companion object could also implement a value member.
     }
   }
 }

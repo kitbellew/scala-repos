@@ -393,7 +393,9 @@ trait Contexts { self: Analyzer =>
             // immediate reporting of ambiguous errors is suppressed, so that they are buffered
             inSilentMode {
               try {
-                set(disable = ImplicitsEnabled | EnrichmentEnabled) // restored by inSilentMode
+                set(disable =
+                    ImplicitsEnabled | EnrichmentEnabled
+                ) // restored by inSilentMode
                 tryOnce(false)
                 reporter.hasErrors
               } catch {
@@ -658,7 +660,10 @@ trait Contexts { self: Analyzer =>
       currentRun.reporting.deprecationWarning(fixPosition(pos), sym, msg)
     def deprecationWarning(pos: Position, sym: Symbol): Unit =
       currentRun.reporting
-        .deprecationWarning(fixPosition(pos), sym) // TODO: allow this to escalate to an error, and implicit search will ignore deprecated implicits
+        .deprecationWarning(
+          fixPosition(pos),
+          sym
+        ) // TODO: allow this to escalate to an error, and implicit search will ignore deprecated implicits
 
     def featureWarning(
         pos: Position,
@@ -1389,7 +1394,8 @@ trait Contexts { self: Analyzer =>
       if (context.ambiguousErrors)
         reporter.error(
           context.fixPosition(err.errPos),
-          addDiagString(err.errMsg)) // force reporting... see TODO above
+          addDiagString(err.errMsg)
+        ) // force reporting... see TODO above
       else handleSuppressedAmbiguous(err)
 
     @inline final def withFreshErrorBuffer[T](expr: => T): T = {
@@ -1569,7 +1575,8 @@ trait Contexts { self: Analyzer =>
       case ErrorType        => tree setType NoType // fix for #2870
       case _ =>
         throw new FatalError(
-          "symbol " + tree.symbol + " has bad type: " + tree.symbol.info) //debug
+          "symbol " + tree.symbol + " has bad type: " + tree.symbol.info
+        ) //debug
     }
 
     /** Is name imported explicitly, not via wildcard? */

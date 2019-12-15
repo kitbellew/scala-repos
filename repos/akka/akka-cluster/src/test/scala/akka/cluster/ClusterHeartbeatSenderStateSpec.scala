@@ -225,7 +225,9 @@ class ClusterHeartbeatSenderStateSpec extends WordSpec with Matchers {
 
             case Unreachable ⇒
               if (node != selfUniqueAddress && state.activeReceivers(node)) {
-                state.failureDetector.heartbeat(node.address) // make sure the fd is created
+                state.failureDetector.heartbeat(
+                  node.address
+                ) // make sure the fd is created
                 fd(state, node).markNodeAsUnavailable()
                 state.failureDetector.isMonitoring(node.address) should ===(
                   true)

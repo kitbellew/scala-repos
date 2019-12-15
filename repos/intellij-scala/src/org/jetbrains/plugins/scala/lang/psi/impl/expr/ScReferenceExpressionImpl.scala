@@ -389,7 +389,9 @@ class ScReferenceExpressionImpl(node: ASTNode)
                 true) &&
                 stableTypeRequired && owner
                 .isInstanceOf[ScTypeDefinition] && owner == clazz =>
-            ScType.designator(param) //todo: think about projection from this type?
+            ScType.designator(
+              param
+            ) //todo: think about projection from this type?
           case _
               if owner != null && PsiTreeUtil.isContextAncestor(
                 owner,

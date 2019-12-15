@@ -23,7 +23,9 @@ class StateTrackerTest extends FlatSpec {
       assert(
         statsReceiver.counter(
           s"${SessionState.SyncConnected.name}_duration_ms")() == 2000)
-      stateTracker.transition(SessionState.Disconnected) // StateTracker.update should run
+      stateTracker.transition(
+        SessionState.Disconnected
+      ) // StateTracker.update should run
       assert(
         statsReceiver.counter(
           s"${SessionState.SyncConnected.name}_duration_ms")() == 2250)
@@ -32,7 +34,9 @@ class StateTrackerTest extends FlatSpec {
       assert(
         statsReceiver.counter(
           s"${SessionState.Disconnected.name}_duration_ms")() == 0)
-      stateTracker.transition(SessionState.SyncConnected) // StateTracker.update should run
+      stateTracker.transition(
+        SessionState.SyncConnected
+      ) // StateTracker.update should run
       assert(
         statsReceiver.counter(
           s"${SessionState.Disconnected.name}_duration_ms")() == 500)

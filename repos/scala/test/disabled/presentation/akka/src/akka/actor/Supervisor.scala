@@ -153,7 +153,11 @@ sealed class Supervisor(
             supervisor.link(actorRef)
             if (registerAsRemoteService)
               Actor.remote.register(actorRef)
-          case supervisorConfig @ SupervisorConfig(_, _, _) => // recursive supervisor configuration
+          case supervisorConfig @ SupervisorConfig(
+                _,
+                _,
+                _
+              ) => // recursive supervisor configuration
             val childSupervisor = Supervisor(supervisorConfig)
             supervisor.link(childSupervisor.supervisor)
             _childSupervisors.add(childSupervisor)

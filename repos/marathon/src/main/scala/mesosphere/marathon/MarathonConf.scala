@@ -184,7 +184,8 @@ trait MarathonConf
     "task_launch_timeout",
     descr = "Time, in milliseconds, to wait for a task to enter " +
       "the TASK_RUNNING state before killing it.",
-    default = Some(300000L)) // 300 seconds (5 minutes)
+    default = Some(300000L)
+  ) // 300 seconds (5 minutes)
 
   lazy val reconciliationInitialDelay = opt[Long](
     "reconciliation_initial_delay",
@@ -197,7 +198,8 @@ trait MarathonConf
     "reconciliation_interval",
     descr = "This is the length of time, in milliseconds, between task " +
       "reconciliation operations.",
-    default = Some(600000L)) // 600 seconds (10 minutes)
+    default = Some(600000L)
+  ) // 600 seconds (10 minutes)
 
   lazy val scaleAppsInitialDelay = opt[Long](
     "scale_apps_initial_delay",
@@ -210,7 +212,8 @@ trait MarathonConf
     "scale_apps_interval",
     descr = "This is the length of time, in milliseconds, between task " +
       "scale apps.",
-    default = Some(300000L)) // 300 seconds (5 minutes)
+    default = Some(300000L)
+  ) // 300 seconds (5 minutes)
 
   @deprecated(
     "marathon_store_timeout is no longer used and will be removed soon.",
@@ -226,7 +229,8 @@ trait MarathonConf
   lazy val mesosUser = opt[String](
     "mesos_user",
     descr = "Mesos user for this framework.",
-    default = new SystemProperties().get("user.name")) // Current logged in user
+    default = new SystemProperties().get("user.name")
+  ) // Current logged in user
 
   lazy val frameworkName = opt[String](
     "framework_name",

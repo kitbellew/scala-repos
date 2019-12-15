@@ -2,7 +2,10 @@ object SCL4093 {
   class IntellijScalaBug1 {
     def theBug() {
       val index = new IntellijBugSample
-      setIfNotNull( /*start*/ index.id_= /*end*/, "THIS SHOULD WORK!") // this line is correct scala
+      setIfNotNull(
+        /*start*/ index.id_= /*end*/,
+        "THIS SHOULD WORK!"
+      ) // this line is correct scala
     }
 
     /**

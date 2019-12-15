@@ -181,7 +181,10 @@ private[sql] object FileSourceStrategy extends Strategy with Logging {
           def closePartition(): Unit = {
             if (currentFiles.nonEmpty) {
               val newPartition =
-                FilePartition(partitions.size, currentFiles.toArray.toSeq) // Copy to a new Array.
+                FilePartition(
+                  partitions.size,
+                  currentFiles.toArray.toSeq
+                ) // Copy to a new Array.
               partitions.append(newPartition)
             }
             currentFiles.clear()

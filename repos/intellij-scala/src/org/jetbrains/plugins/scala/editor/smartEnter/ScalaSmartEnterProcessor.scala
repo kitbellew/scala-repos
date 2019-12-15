@@ -72,7 +72,8 @@ class ScalaSmartEnterProcessor extends SmartEnterProcessor {
         for (fixer <- ScalaSmartEnterProcessor.myFixers) {
           val go = fixer.apply(editor, this, psiElement)
 
-          if (LookupManager.getInstance(project).getActiveLookup != null) return //Lets dont spoil autocomplete
+          if (LookupManager.getInstance(project).getActiveLookup != null)
+            return //Lets dont spoil autocomplete
 
           go match {
             case fixer.WithEnter(inserted) =>

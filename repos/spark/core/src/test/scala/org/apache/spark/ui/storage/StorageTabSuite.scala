@@ -188,7 +188,10 @@ class StorageTabSuite extends SparkFunSuite with BeforeAndAfter {
       Seq(
         (RDDBlockId(0, 100), BlockStatus(none, 0L, 0L)),
         (RDDBlockId(1, 20), BlockStatus(none, 0L, 0L)),
-        (RDDBlockId(2, 40), BlockStatus(none, 0L, 0L)), // doesn't actually exist
+        (
+          RDDBlockId(2, 40),
+          BlockStatus(none, 0L, 0L)
+        ), // doesn't actually exist
         (RDDBlockId(4, 80), BlockStatus(none, 0L, 0L)) // doesn't actually exist
       ))
     bus.postToAll(

@@ -419,7 +419,8 @@ abstract class BTypes {
             } else if (isNullType) {
               if (other.isNothingType) false
               else if (other.isPrimitive) false
-              else true // Null conforms to all classes (except Nothing) and arrays.
+              else
+                true // Null conforms to all classes (except Nothing) and arrays.
             } else if (isNothingType) {
               true
             } else
@@ -1034,14 +1035,21 @@ abstract class BTypes {
       try {
         if (this == other) return Right(true)
         if (isInterface.orThrow) {
-          if (other == ObjectRef) return Right(true) // interfaces conform to Object
-          if (!other.isInterface.orThrow) return Right(false) // this is an interface, the other is some class other than object. interfaces cannot extend classes, so the result is false.
+          if (other == ObjectRef)
+            return Right(true) // interfaces conform to Object
+          if (!other.isInterface.orThrow)
+            return Right(
+              false
+            ) // this is an interface, the other is some class other than object. interfaces cannot extend classes, so the result is false.
           // else: this and other are both interfaces. continue to (*)
         } else {
           val sc = info.orThrow.superClass
           if (sc.isDefined && sc.get.isSubtypeOf(other).orThrow)
             return Right(true) // the superclass of this class conforms to other
-          if (!other.isInterface.orThrow) return Right(false) // this and other are both classes, and the superclass of this does not conform
+          if (!other.isInterface.orThrow)
+            return Right(
+              false
+            ) // this and other are both classes, and the superclass of this does not conform
           // else: this is a class, the other is an interface. continue to (*)
         }
 

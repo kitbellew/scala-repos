@@ -106,10 +106,14 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
       // create my cluster client solely based on a zk client and a path
       val mycluster1 =
         CachePoolCluster.newZkCluster(firstPoolPath, zookeeperClient)
-      Await.result(mycluster1.ready) // give it sometime for the cluster to get the initial set of memberships
+      Await.result(
+        mycluster1.ready
+      ) // give it sometime for the cluster to get the initial set of memberships
       val mycluster2 =
         CachePoolCluster.newZkCluster(secondPoolPath, zookeeperClient)
-      Await.result(mycluster2.ready) // give it sometime for the cluster to get the initial set of memberships
+      Await.result(
+        mycluster2.ready
+      ) // give it sometime for the cluster to get the initial set of memberships
 
       val client1 = KetamaClientBuilder()
         .clientBuilder(
@@ -173,10 +177,14 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
       // create my cluster client solely based on a zk client and a path
       val mycluster1 =
         CachePoolCluster.newZkCluster(firstPoolPath, zookeeperClient)
-      Await.result(mycluster1.ready) // give it sometime for the cluster to get the initial set of memberships
+      Await.result(
+        mycluster1.ready
+      ) // give it sometime for the cluster to get the initial set of memberships
       val mycluster2 =
         CachePoolCluster.newZkCluster(secondPoolPath, zookeeperClient)
-      Await.result(mycluster2.ready) // give it sometime for the cluster to get the initial set of memberships
+      Await.result(
+        mycluster2.ready
+      ) // give it sometime for the cluster to get the initial set of memberships
 
       val client1 = KetamaClientBuilder()
         .clientBuilder(
@@ -246,10 +254,14 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
       // create my cluster client solely based on a zk client and a path
       val mycluster1 =
         CachePoolCluster.newZkCluster(firstPoolPath, zookeeperClient)
-      Await.result(mycluster1.ready) // give it sometime for the cluster to get the initial set of memberships
+      Await.result(
+        mycluster1.ready
+      ) // give it sometime for the cluster to get the initial set of memberships
       val mycluster2 =
         CachePoolCluster.newZkCluster(secondPoolPath, zookeeperClient)
-      Await.result(mycluster2.ready) // give it sometime for the cluster to get the initial set of memberships
+      Await.result(
+        mycluster2.ready
+      ) // give it sometime for the cluster to get the initial set of memberships
 
       val client1 = KetamaClientBuilder()
         .clientBuilder(
@@ -319,10 +331,14 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
       // create my cluster client solely based on a zk client and a path
       val mycluster1 =
         CachePoolCluster.newZkCluster(firstPoolPath, zookeeperClient)
-      Await.result(mycluster1.ready) // give it sometime for the cluster to get the initial set of memberships
+      Await.result(
+        mycluster1.ready
+      ) // give it sometime for the cluster to get the initial set of memberships
       val mycluster2 =
         CachePoolCluster.newZkCluster(secondPoolPath, zookeeperClient)
-      Await.result(mycluster2.ready) // give it sometime for the cluster to get the initial set of memberships
+      Await.result(
+        mycluster2.ready
+      ) // give it sometime for the cluster to get the initial set of memberships
 
       val client1 = KetamaClientBuilder()
         .clientBuilder(
@@ -467,10 +483,14 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
       // create my cluster client solely based on a zk client and a path
       val mycluster1 =
         CachePoolCluster.newZkCluster(firstPoolPath, zookeeperClient)
-      Await.result(mycluster1.ready) // give it sometime for the cluster to get the initial set of memberships
+      Await.result(
+        mycluster1.ready
+      ) // give it sometime for the cluster to get the initial set of memberships
       val mycluster2 =
         CachePoolCluster.newZkCluster(secondPoolPath, zookeeperClient)
-      Await.result(mycluster2.ready) // give it sometime for the cluster to get the initial set of memberships
+      Await.result(
+        mycluster2.ready
+      ) // give it sometime for the cluster to get the initial set of memberships
 
       val client1 = KetamaClientBuilder()
         .clientBuilder(
@@ -571,10 +591,14 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
       // create my cluster client solely based on a zk client and a path
       val mycluster1 =
         CachePoolCluster.newZkCluster(firstPoolPath, zookeeperClient)
-      Await.result(mycluster1.ready) // give it sometime for the cluster to get the initial set of memberships
+      Await.result(
+        mycluster1.ready
+      ) // give it sometime for the cluster to get the initial set of memberships
       val mycluster2 =
         CachePoolCluster.newZkCluster(secondPoolPath, zookeeperClient)
-      Await.result(mycluster2.ready) // give it sometime for the cluster to get the initial set of memberships
+      Await.result(
+        mycluster2.ready
+      ) // give it sometime for the cluster to get the initial set of memberships
 
       val client1 = KetamaClientBuilder()
         .clientBuilder(
@@ -658,10 +682,14 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
       // create my cluster client solely based on a zk client and a path
       val mycluster1 =
         CachePoolCluster.newZkCluster(firstPoolPath, zookeeperClient)
-      Await.result(mycluster1.ready) // give it sometime for the cluster to get the initial set of memberships
+      Await.result(
+        mycluster1.ready
+      ) // give it sometime for the cluster to get the initial set of memberships
       val mycluster2 =
         CachePoolCluster.newZkCluster(secondPoolPath, zookeeperClient)
-      Await.result(mycluster2.ready) // give it sometime for the cluster to get the initial set of memberships
+      Await.result(
+        mycluster2.ready
+      ) // give it sometime for the cluster to get the initial set of memberships
 
       val client1 = KetamaClientBuilder()
         .clientBuilder(
@@ -719,10 +747,14 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
       // create my cluster client solely based on a zk client and a path
       val mycluster1 =
         CachePoolCluster.newZkCluster(firstPoolPath, zookeeperClient)
-      Await.result(mycluster1.ready) // give it sometime for the cluster to get the initial set of memberships
+      Await.result(
+        mycluster1.ready
+      ) // give it sometime for the cluster to get the initial set of memberships
       val mycluster2 =
         CachePoolCluster.newZkCluster(secondPoolPath, zookeeperClient)
-      Await.result(mycluster2.ready) // give it sometime for the cluster to get the initial set of memberships
+      Await.result(
+        mycluster2.ready
+      ) // give it sometime for the cluster to get the initial set of memberships
 
       val client1 = KetamaClientBuilder()
         .clientBuilder(
@@ -784,10 +816,14 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
       // create my cluster client solely based on a zk client and a path
       val mycluster1 =
         CachePoolCluster.newZkCluster(firstPoolPath, zookeeperClient)
-      Await.result(mycluster1.ready) // give it sometime for the cluster to get the initial set of memberships
+      Await.result(
+        mycluster1.ready
+      ) // give it sometime for the cluster to get the initial set of memberships
       val mycluster2 =
         CachePoolCluster.newZkCluster(secondPoolPath, zookeeperClient)
-      Await.result(mycluster2.ready) // give it sometime for the cluster to get the initial set of memberships
+      Await.result(
+        mycluster2.ready
+      ) // give it sometime for the cluster to get the initial set of memberships
 
       val client1 = KetamaClientBuilder()
         .clientBuilder(
@@ -825,10 +861,14 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
       // create my cluster client solely based on a zk client and a path
       val mycluster1 =
         CachePoolCluster.newZkCluster(firstPoolPath, zookeeperClient)
-      Await.result(mycluster1.ready) // give it sometime for the cluster to get the initial set of memberships
+      Await.result(
+        mycluster1.ready
+      ) // give it sometime for the cluster to get the initial set of memberships
       val mycluster2 =
         CachePoolCluster.newZkCluster(secondPoolPath, zookeeperClient)
-      Await.result(mycluster2.ready) // give it sometime for the cluster to get the initial set of memberships
+      Await.result(
+        mycluster2.ready
+      ) // give it sometime for the cluster to get the initial set of memberships
 
       val client1 = KetamaClientBuilder()
         .clientBuilder(
@@ -901,10 +941,14 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
       // create my cluster client solely based on a zk client and a path
       val mycluster1 =
         CachePoolCluster.newZkCluster(firstPoolPath, zookeeperClient)
-      Await.result(mycluster1.ready) // give it sometime for the cluster to get the initial set of memberships
+      Await.result(
+        mycluster1.ready
+      ) // give it sometime for the cluster to get the initial set of memberships
       val mycluster2 =
         CachePoolCluster.newZkCluster(secondPoolPath, zookeeperClient)
-      Await.result(mycluster2.ready) // give it sometime for the cluster to get the initial set of memberships
+      Await.result(
+        mycluster2.ready
+      ) // give it sometime for the cluster to get the initial set of memberships
 
       val client1 = KetamaClientBuilder()
         .clientBuilder(
@@ -959,10 +1003,14 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
       // create my cluster client solely based on a zk client and a path
       val mycluster1 =
         CachePoolCluster.newZkCluster(firstPoolPath, zookeeperClient)
-      Await.result(mycluster1.ready) // give it sometime for the cluster to get the initial set of memberships
+      Await.result(
+        mycluster1.ready
+      ) // give it sometime for the cluster to get the initial set of memberships
       val mycluster2 =
         CachePoolCluster.newZkCluster(secondPoolPath, zookeeperClient)
-      Await.result(mycluster2.ready) // give it sometime for the cluster to get the initial set of memberships
+      Await.result(
+        mycluster2.ready
+      ) // give it sometime for the cluster to get the initial set of memberships
 
       val client1 = KetamaClientBuilder()
         .clientBuilder(
@@ -1022,10 +1070,14 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
       // create my cluster client solely based on a zk client and a path
       val mycluster1 =
         CachePoolCluster.newZkCluster(firstPoolPath, zookeeperClient)
-      Await.result(mycluster1.ready) // give it sometime for the cluster to get the initial set of memberships
+      Await.result(
+        mycluster1.ready
+      ) // give it sometime for the cluster to get the initial set of memberships
       val mycluster2 =
         CachePoolCluster.newZkCluster(secondPoolPath, zookeeperClient)
-      Await.result(mycluster2.ready) // give it sometime for the cluster to get the initial set of memberships
+      Await.result(
+        mycluster2.ready
+      ) // give it sometime for the cluster to get the initial set of memberships
 
       val client1 = KetamaClientBuilder()
         .clientBuilder(
@@ -1090,10 +1142,14 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
       // create my cluster client solely based on a zk client and a path
       val mycluster1 =
         CachePoolCluster.newZkCluster(firstPoolPath, zookeeperClient)
-      Await.result(mycluster1.ready) // give it sometime for the cluster to get the initial set of memberships
+      Await.result(
+        mycluster1.ready
+      ) // give it sometime for the cluster to get the initial set of memberships
       val mycluster2 =
         CachePoolCluster.newZkCluster(secondPoolPath, zookeeperClient)
-      Await.result(mycluster2.ready) // give it sometime for the cluster to get the initial set of memberships
+      Await.result(
+        mycluster2.ready
+      ) // give it sometime for the cluster to get the initial set of memberships
 
       val client1 = KetamaClientBuilder()
         .clientBuilder(
@@ -1143,10 +1199,14 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
       // create my cluster client solely based on a zk client and a path
       val mycluster1 =
         CachePoolCluster.newZkCluster(firstPoolPath, zookeeperClient)
-      Await.result(mycluster1.ready) // give it sometime for the cluster to get the initial set of memberships
+      Await.result(
+        mycluster1.ready
+      ) // give it sometime for the cluster to get the initial set of memberships
       val mycluster2 =
         CachePoolCluster.newZkCluster(secondPoolPath, zookeeperClient)
-      Await.result(mycluster2.ready) // give it sometime for the cluster to get the initial set of memberships
+      Await.result(
+        mycluster2.ready
+      ) // give it sometime for the cluster to get the initial set of memberships
 
       val client1 = KetamaClientBuilder()
         .clientBuilder(
@@ -1205,10 +1265,14 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
       // create my cluster client solely based on a zk client and a path
       val mycluster1 =
         CachePoolCluster.newZkCluster(firstPoolPath, zookeeperClient)
-      Await.result(mycluster1.ready) // give it sometime for the cluster to get the initial set of memberships
+      Await.result(
+        mycluster1.ready
+      ) // give it sometime for the cluster to get the initial set of memberships
       val mycluster2 =
         CachePoolCluster.newZkCluster(secondPoolPath, zookeeperClient)
-      Await.result(mycluster2.ready) // give it sometime for the cluster to get the initial set of memberships
+      Await.result(
+        mycluster2.ready
+      ) // give it sometime for the cluster to get the initial set of memberships
 
       val client1 = KetamaClientBuilder()
         .clientBuilder(
@@ -1259,10 +1323,14 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
       // create my cluster client solely based on a zk client and a path
       val mycluster1 =
         CachePoolCluster.newZkCluster(firstPoolPath, zookeeperClient)
-      Await.result(mycluster1.ready) // give it sometime for the cluster to get the initial set of memberships
+      Await.result(
+        mycluster1.ready
+      ) // give it sometime for the cluster to get the initial set of memberships
       val mycluster2 =
         CachePoolCluster.newZkCluster(secondPoolPath, zookeeperClient)
-      Await.result(mycluster2.ready) // give it sometime for the cluster to get the initial set of memberships
+      Await.result(
+        mycluster2.ready
+      ) // give it sometime for the cluster to get the initial set of memberships
 
       val client1 = KetamaClientBuilder()
         .clientBuilder(

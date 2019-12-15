@@ -283,13 +283,21 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
             // reflective method call machinery
             val invokeName = MethodClass.tpe member nme.invoke_ // scala.reflect.Method.invoke(...)
             def cache =
-              REF(reflectiveMethodCache(ad.symbol.name.toString, paramTypes)) // cache Symbol
+              REF(
+                reflectiveMethodCache(ad.symbol.name.toString, paramTypes)
+              ) // cache Symbol
             def lookup =
-              Apply(cache, List(qual1() GETCLASS ())) // get Method object from cache
+              Apply(
+                cache,
+                List(qual1() GETCLASS ())
+              ) // get Method object from cache
             def invokeArgs =
               ArrayValue(TypeTree(ObjectTpe), params) // args for invocation
             def invocation =
-              (lookup DOT invokeName)(qual1(), invokeArgs) // .invoke(qual1, ...)
+              (lookup DOT invokeName)(
+                qual1(),
+                invokeArgs
+              ) // .invoke(qual1, ...)
 
             // exception catching machinery
             val invokeExc = currentOwner.newValue(mkTerm(""), ad.pos) setInfo InvocationTargetExceptionClass.tpe

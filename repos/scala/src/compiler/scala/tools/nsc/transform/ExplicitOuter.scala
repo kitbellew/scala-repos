@@ -481,7 +481,9 @@ abstract class ExplicitOuter
         case This(qual) =>
           if (sym == currentClass || sym.hasModuleFlag && sym.isStatic) tree
           else
-            atPos(tree.pos)(outerPath(outerValue, currentClass.outerClass, sym)) // (5)
+            atPos(tree.pos)(
+              outerPath(outerValue, currentClass.outerClass, sym)
+            ) // (5)
 
         case Select(qual, name) =>
           // make not private symbol accessed from inner classes, as well as
@@ -537,7 +539,9 @@ abstract class ExplicitOuter
               currentRun.reporting.uncheckedWarning(
                 tree.pos,
                 "The outer reference in this type test cannot be checked at run time.")
-            transform(TRUE) // urgh... drop condition if there's no accessor (or if it may disappear after constructors)
+            transform(
+              TRUE
+            ) // urgh... drop condition if there's no accessor (or if it may disappear after constructors)
           } else {
             // println("(base, acc)= "+(base, acc))
             val outerSelect = localTyper typed Apply(Select(base, acc), Nil)

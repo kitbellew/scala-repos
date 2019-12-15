@@ -860,7 +860,9 @@ private[akka] class ActorSystemImpl(
       case t: Throwable ⇒ throw t //Initialization failed, throw same again
       case other ⇒
         other
-          .asInstanceOf[T] //could be a T or null, in which case we return the null as T
+          .asInstanceOf[
+            T
+          ] //could be a T or null, in which case we return the null as T
     }
 
   @tailrec
@@ -876,18 +878,28 @@ private[akka] class ActorSystemImpl(
                   throw new IllegalStateException(
                     "Extension instance created as 'null' for extension [" + ext + "]")
                 case instance ⇒
-                  extensions.replace(ext, inProcessOfRegistration, instance) //Replace our in process signal with the initialized extension
+                  extensions.replace(
+                    ext,
+                    inProcessOfRegistration,
+                    instance
+                  ) //Replace our in process signal with the initialized extension
                   instance //Profit!
               }
             } catch {
               case t: Throwable ⇒
-                extensions.replace(ext, inProcessOfRegistration, t) //In case shit hits the fan, remove the inProcess signal
+                extensions.replace(
+                  ext,
+                  inProcessOfRegistration,
+                  t
+                ) //In case shit hits the fan, remove the inProcess signal
                 throw t //Escalate to caller
             } finally {
               inProcessOfRegistration.countDown //Always notify listeners of the inProcess signal
             }
           case other ⇒
-            registerExtension(ext) //Someone else is in process of registering an extension for this Extension, retry
+            registerExtension(
+              ext
+            ) //Someone else is in process of registering an extension for this Extension, retry
         }
       case existing ⇒ existing.asInstanceOf[T]
     }

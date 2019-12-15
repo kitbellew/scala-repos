@@ -103,7 +103,9 @@ object PresentationUtil {
           buffer.append(name)
         }
         buffer.append(": ")
-        buffer.append(presentationString(param.getType, substitutor)) //todo: create param type, java.lang.Object => Any
+        buffer.append(
+          presentationString(param.getType, substitutor)
+        ) //todo: create param type, java.lang.Object => Any
         buffer.toString()
       case fun: ScFunction =>
         val buffer: StringBuilder = new StringBuilder("")

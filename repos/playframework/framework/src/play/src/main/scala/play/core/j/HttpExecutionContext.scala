@@ -43,7 +43,9 @@ object HttpExecutionContext {
   def unprepared(delegate: ExecutionContext) = new ExecutionContext {
     def execute(runnable: Runnable) =
       delegate
-        .execute(runnable) // FIXME: Make calling this an error once SI-7383 is fixed
+        .execute(
+          runnable
+        ) // FIXME: Make calling this an error once SI-7383 is fixed
     def reportFailure(t: Throwable) = delegate.reportFailure(t)
     override def prepare(): ExecutionContext = fromThread(delegate)
   }

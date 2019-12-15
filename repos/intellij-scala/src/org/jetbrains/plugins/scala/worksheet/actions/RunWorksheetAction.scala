@@ -173,7 +173,8 @@ object RunWorksheetAction {
       Option(project.getBaseDir) map (_.getPath) getOrElse "",
       addToCp,
       "",
-      virtualFile.getCanonicalPath) //todo extract default java options??
+      virtualFile.getCanonicalPath
+    ) //todo extract default java options??
 
     setUpUiAndRun(params.createOSProcessHandler(), file)
   }

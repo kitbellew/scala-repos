@@ -184,7 +184,9 @@ object ReflectiveAccess {
           ctor.setAccessible(true)
           Right(ctor.newInstance(args: _*).asInstanceOf[T])
         case Left(exception) =>
-          Left(exception) //We could just cast this to Either[Exception, T] but it's ugly
+          Left(
+            exception
+          ) //We could just cast this to Either[Exception, T] but it's ugly
       }
     } catch {
       case e: Exception =>
@@ -204,7 +206,9 @@ object ReflectiveAccess {
           if (obj eq null) Left(new NullPointerException)
           else Right(obj.asInstanceOf[T])
         case Left(exception) =>
-          Left(exception) //We could just cast this to Either[Exception, T] but it's ugly
+          Left(
+            exception
+          ) //We could just cast this to Either[Exception, T] but it's ugly
       }
     } catch {
       case e: Exception =>
@@ -252,7 +256,9 @@ object ReflectiveAccess {
           if (third.isRight) third
           else {
             try {
-              Right(Class.forName(fqn).asInstanceOf[Class[T]]) // Last option is Class.forName
+              Right(
+                Class.forName(fqn).asInstanceOf[Class[T]]
+              ) // Last option is Class.forName
             } catch {
               case c: ClassNotFoundException => Left(c)
             }

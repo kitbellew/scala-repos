@@ -106,7 +106,13 @@ object Configuration {
       CipherConfig(true, config, cipher, localPort, remotePort)
     } catch {
       case (_: IllegalArgumentException) | (_: NoSuchAlgorithmException) ⇒
-        CipherConfig(false, AkkaSpec.testConf, cipher, localPort, remotePort) // Cannot match against the message since the message might be localized :S
+        CipherConfig(
+          false,
+          AkkaSpec.testConf,
+          cipher,
+          localPort,
+          remotePort
+        ) // Cannot match against the message since the message might be localized :S
     }
   }
 }

@@ -353,7 +353,9 @@ trait ParIterableLike[
   protected[this] def bf2seq[S, That](bf: CanBuildFrom[Repr, S, That]) =
     new CanBuildFrom[Sequential, S, That] {
       def apply(from: Sequential) =
-        bf.apply(from.par.asInstanceOf[Repr]) // !!! we only use this on `this.seq`, and know that `this.seq.par.getClass == this.getClass`
+        bf.apply(
+          from.par.asInstanceOf[Repr]
+        ) // !!! we only use this on `this.seq`, and know that `this.seq.par.getClass == this.getClass`
       def apply() = bf.apply()
     }
 
@@ -1630,7 +1632,14 @@ trait ParIterableLike[
         val opits = othpit.psplitWithSignalling(pit.remaining)
         val diff = len - pit.remaining
         Seq(
-          new ZipAll(pit.remaining, thiselem, thatelem, pbf, pit, opits(0)), // nothing wrong will happen with the cast below - elem T is never accessed
+          new ZipAll(
+            pit.remaining,
+            thiselem,
+            thatelem,
+            pbf,
+            pit,
+            opits(0)
+          ), // nothing wrong will happen with the cast below - elem T is never accessed
           new ZipAll(
             diff,
             thiselem,

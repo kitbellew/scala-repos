@@ -303,7 +303,10 @@ class MethodLevelOptsTest extends ClearAfterClass {
       getSingleMethod(c, "t"),
       List(
         IntOp(BIPUSH, 30),
-        VarOp(ISTORE, 3), // no constant propagation, so we keep the store (and load below) of a const
+        VarOp(
+          ISTORE,
+          3
+        ), // no constant propagation, so we keep the store (and load below) of a const
         VarOp(ILOAD, 1),
         VarOp(ILOAD, 2),
         VarOp(ILOAD, 3),

@@ -79,7 +79,9 @@ class TabulatorTest {
     val rows = sut tabulate items
     assert(rows.size == 8)
     assert(rows(0).size == 2)
-    assert(rows(0)(0).size == "ShutdownHookThread".length + sut.marginSize) // 21
+    assert(
+      rows(0)(0).size == "ShutdownHookThread".length + sut.marginSize
+    ) // 21
   }
   @Test def syswide() = {
     val sut = VTabby(width = 120)

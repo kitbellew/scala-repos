@@ -712,7 +712,8 @@ trait Implicits {
         case NullaryMethodType(restpe) => loop(restpe, pt)
         case PolyType(_, restpe)       => loop(restpe, pt)
         case ExistentialType(_, qtpe) =>
-          if (fast) loop(qtpe, pt) else normalize(tp) <:< pt // is !fast case needed??
+          if (fast) loop(qtpe, pt)
+          else normalize(tp) <:< pt // is !fast case needed??
         case _ => if (fast) isPlausiblySubType(tp, pt) else tp <:< pt
       }
       loop(tp0, pt0)
@@ -1023,10 +1024,17 @@ trait Implicits {
       /** True if a given ImplicitInfo (already known isValid) is eligible.
         */
       def survives(info: ImplicitInfo) = (
-        !isIneligible(info) // cyclic, erroneous, shadowed, or specially excluded
-          && isPlausiblyCompatible(info.tpe, wildPt) // optimization to avoid matchesPt
+        !isIneligible(
+          info
+        ) // cyclic, erroneous, shadowed, or specially excluded
+          && isPlausiblyCompatible(
+            info.tpe,
+            wildPt
+          ) // optimization to avoid matchesPt
           && !shadower
-            .isShadowed(info.name) // OPT rare, only check for plausible candidates
+            .isShadowed(
+              info.name
+            ) // OPT rare, only check for plausible candidates
           && matchesPt(info) // stable and matches expected type
       )
 
@@ -1323,7 +1331,9 @@ trait Implicits {
                 args foreach getParts
               }
             } else if (sym.isAliasType) {
-              getParts(tp.normalize) // SI-7180 Normalize needed to expand HK type refs
+              getParts(
+                tp.normalize
+              ) // SI-7180 Normalize needed to expand HK type refs
             } else if (sym.isAbstractType) {
               getParts(tp.bounds.hi)
             }
@@ -1566,7 +1576,10 @@ trait Implicits {
               // a manifest should have been found by normal searchImplicit
               EmptyTree
             }
-          case RefinedType(parents, decls) => // !!! not yet: if !full || decls.isEmpty =>
+          case RefinedType(
+              parents,
+              decls
+              ) => // !!! not yet: if !full || decls.isEmpty =>
             // refinement is not generated yet
             if (hasLength(parents, 1)) findManifest(parents.head)
             else if (full)
@@ -1639,7 +1652,9 @@ trait Implicits {
     private def materializeImplicit(pt: Type): SearchResult =
       pt match {
         case TypeRef(_, sym, _) if sym.isAbstractType =>
-          materializeImplicit(pt.dealias.bounds.lo) // #3977: use pt.dealias, not pt (if pt is a type alias, pt.bounds.lo == pt)
+          materializeImplicit(
+            pt.dealias.bounds.lo
+          ) // #3977: use pt.dealias, not pt (if pt is a type alias, pt.bounds.lo == pt)
         case pt @ TypeRef(pre, sym, arg :: Nil) =>
           sym match {
             case sym if ManifestSymbols(sym) => manifestOfType(arg, sym)
@@ -1846,7 +1861,10 @@ trait Implicits {
       format(typeArgsAtSym(paramTp) map (_.toString))
 
     def format(typeArgs: List[String]): String =
-      interpolate(msg, Map((typeParamNames zip typeArgs): _*)) // TODO: give access to the name and type of the implicit argument, etc?
+      interpolate(
+        msg,
+        Map((typeParamNames zip typeArgs): _*)
+      ) // TODO: give access to the name and type of the implicit argument, etc?
 
     def validate: Option[String] = {
       val refs = Intersobralator.findAllMatchIn(msg).map(_ group 1).toSet

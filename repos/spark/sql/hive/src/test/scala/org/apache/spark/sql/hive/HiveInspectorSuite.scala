@@ -159,7 +159,9 @@ class HiveInspectorSuite extends SparkFunSuite with HiveInspectors {
   def checkDataType(dt1: Seq[DataType], dt2: Seq[DataType]): Unit = {
     dt1.zip(dt2).foreach {
       case (dd1, dd2) =>
-        assert(dd1.getClass === dd2.getClass) // DecimalType doesn't has the default precision info
+        assert(
+          dd1.getClass === dd2.getClass
+        ) // DecimalType doesn't has the default precision info
     }
   }
 

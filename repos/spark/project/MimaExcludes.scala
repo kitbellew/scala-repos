@@ -1816,7 +1816,9 @@ object MimaExcludes {
         Seq( // Ignore some private methods in ALS.
           ProblemFilters.exclude[MissingMethodProblem](
             "org.apache.spark.mllib.recommendation.ALS.org$apache$spark$mllib$recommendation$ALS$^dateFeatures"),
-          ProblemFilters.exclude[MissingMethodProblem]( // The only public constructor is the one without arguments.
+          ProblemFilters.exclude[
+            MissingMethodProblem
+          ]( // The only public constructor is the one without arguments.
             "org.apache.spark.mllib.recommendation.ALS.this"),
           ProblemFilters.exclude[MissingMethodProblem](
             "org.apache.spark.mllib.recommendation.ALS.org$apache$spark$mllib$recommendation$ALS$$<init>$default$7"),

@@ -1018,7 +1018,9 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       isEffectiveRoot // has no prefix for real, <empty> or <root>
         || isAnonOrRefinementClass // has uninteresting <anon> or <refinement> prefix
         || nme
-          .isReplWrapperName(name) // has ugly $iw. prefix (doesn't call isInterpreterWrapper due to nesting)
+          .isReplWrapperName(
+            name
+          ) // has ugly $iw. prefix (doesn't call isInterpreterWrapper due to nesting)
     )
     def isFBounded = info match {
       case TypeBounds(_, _) => info.baseTypeSeq exists (_ contains this)
@@ -1235,7 +1237,9 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     final def isPossibleInRefinement = (
       !isConstructor
         && allOverriddenSymbols
-          .forall(_.owner.isRefinementClass) // this includes allOverriddenSymbols.isEmpty
+          .forall(
+            _.owner.isRefinementClass
+          ) // this includes allOverriddenSymbols.isEmpty
     )
 
     /** A a member of class `base` is incomplete if
@@ -3090,7 +3094,9 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     override def isGetter = isAccessor && !isSetter
     override def isDefaultGetter = name containsName nme.DEFAULT_GETTER_STRING
     override def isSetter =
-      isAccessor && nme.isSetterName(name) // todo: make independent of name, as this can be forged.
+      isAccessor && nme.isSetterName(
+        name
+      ) // todo: make independent of name, as this can be forged.
     override def isLocalDummy = nme.isLocalDummyName(name)
     override def isClassConstructor = name == nme.CONSTRUCTOR
     override def isMixinConstructor = name == nme.MIXIN_CONSTRUCTOR
@@ -3106,7 +3112,8 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       case LABEL        => "<label>" // CONTRAVARIANT / INCONSTRUCTOR
       case PRESUPER     => "<presuper>" // IMPLCLASS
       case BYNAMEPARAM =>
-        if (this.isValueParameter) "<bynameparam>" else "<captured>" // COVARIANT
+        if (this.isValueParameter) "<bynameparam>"
+        else "<captured>" // COVARIANT
       case _ => super.resolveOverloadedFlag(flag)
     }
 

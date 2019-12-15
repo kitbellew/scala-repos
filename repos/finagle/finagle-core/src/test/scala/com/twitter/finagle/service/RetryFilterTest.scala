@@ -291,7 +291,9 @@ class RetryFilterTest extends FunSpec with MockitoSugar with BeforeAndAfter {
             assert(f.isDefined == false)
             assert(timer.tasks.size == 1)
 
-            when(service(123)) thenReturn Future(321) // we succeed next time; tick!
+            when(service(123)) thenReturn Future(
+              321
+            ) // we succeed next time; tick!
             tc.advance(1.second); timer.tick()
 
             verify(service, times(2))(123)
@@ -380,7 +382,9 @@ class RetryFilterTest extends FunSpec with MockitoSugar with BeforeAndAfter {
             assert(f.isDefined == false)
             assert(timer.tasks.size == 1)
 
-            when(service(123)) thenReturn Future(goodResponse) // we succeed next time; tick!
+            when(service(123)) thenReturn Future(
+              goodResponse
+            ) // we succeed next time; tick!
             tc.advance(1.second); timer.tick()
 
             verify(service, times(2))(123)

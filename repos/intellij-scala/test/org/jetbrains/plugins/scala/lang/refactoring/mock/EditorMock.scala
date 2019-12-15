@@ -15,7 +15,8 @@ class EditorMock(text: String, offset: Int) extends EditorStub {
       s.count(_ == '\n'),
       s.reverse
         .takeWhile(_ != '\n')
-        .length) // Workaround for SI-5971 (should be "s.view.reverse.")
+        .length
+    ) // Workaround for SI-5971 (should be "s.view.reverse.")
   }
 
   override def logicalPositionToOffset(pos: LogicalPosition) =
