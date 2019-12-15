@@ -100,9 +100,8 @@ object EvaluateConfigurations {
       offset: Int): ParsedFile = {
     val (importStatements, settingsAndDefinitions) =
       splitExpressions(file, lines)
-    val allImports = builtinImports.map(s => (s, -1)) ++ addOffset(
-      offset,
-      importStatements)
+    val allImports = builtinImports
+      .map(s => (s, -1)) ++ addOffset(offset, importStatements)
     val (definitions, settings) = splitSettingsDefinitions(
       addOffsetToRange(offset, settingsAndDefinitions))
     new ParsedFile(allImports, definitions, settings)

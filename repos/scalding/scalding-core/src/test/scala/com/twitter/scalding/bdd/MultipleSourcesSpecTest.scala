@@ -74,7 +74,8 @@ class MultipleSourcesSpecTest extends WordSpec with Matchers with BddDsl {
         }
       } Then { buffer: Buffer[Tuple] =>
         {
-          buffer.forall(tuple => tuple.getString(2).endsWith("_transf")) shouldBe true
+          buffer
+            .forall(tuple => tuple.getString(2).endsWith("_transf")) shouldBe true
         }
       }
     }
@@ -103,7 +104,8 @@ class MultipleSourcesSpecTest extends WordSpec with Matchers with BddDsl {
           }
         } Then { buffer: Buffer[Tuple] =>
           {
-            buffer.forall(tuple => tuple.getString(2).endsWith("_transf")) shouldBe true
+            buffer
+              .forall(tuple => tuple.getString(2).endsWith("_transf")) shouldBe true
           }
         }
       }
@@ -131,7 +133,8 @@ class MultipleSourcesSpecTest extends WordSpec with Matchers with BddDsl {
         }
       } Then { buffer: Buffer[Tuple] =>
         {
-          buffer.forall(tuple => tuple.getString(2).endsWith("_transf")) shouldBe true
+          buffer
+            .forall(tuple => tuple.getString(2).endsWith("_transf")) shouldBe true
         }
       }
     }

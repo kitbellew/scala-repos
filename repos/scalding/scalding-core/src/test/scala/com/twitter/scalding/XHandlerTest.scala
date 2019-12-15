@@ -24,7 +24,8 @@ class XHandlerTest extends WordSpec with Matchers {
     "be handled if exist in default mapping" in {
       val rxh = RichXHandler()
       rxh.handlers.find(h => h(new PlannerException)) should not be empty
-      rxh.handlers.find(h => h(new InvalidSourceException("Invalid Source"))) should not be empty
+      rxh.handlers
+        .find(h => h(new InvalidSourceException("Invalid Source"))) should not be empty
       rxh.handlers.find(h => h(new NoSuchMethodError)) should not be empty
       rxh.handlers.find(h => h(new AbstractMethodError)) should not be empty
       rxh.handlers.find(h => h(new NoClassDefFoundError)) should not be empty

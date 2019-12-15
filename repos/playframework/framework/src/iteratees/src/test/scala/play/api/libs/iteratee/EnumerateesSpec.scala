@@ -285,7 +285,8 @@ object EnumerateesSpec
 
     "add one to each of the ints enumerated" in {
       mustExecute(4) { mapEC =>
-        val add1AndConsume = Enumeratee.map[Int](i => List(i + 1))(mapEC) &>> Iteratee
+        val add1AndConsume = Enumeratee
+          .map[Int](i => List(i + 1))(mapEC) &>> Iteratee
           .consume[List[Int]]()
         val enumerator = Enumerator(1, 2, 3, 4)
         Await.result(enumerator |>>> add1AndConsume, Duration.Inf) must equalTo(

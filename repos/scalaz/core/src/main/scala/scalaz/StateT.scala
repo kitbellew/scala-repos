@@ -33,8 +33,8 @@ sealed abstract class IndexedStateT[F[_], -S1, S2, A] { self =>
     exec(S.zero)
 
   def map[B](f: A => B)(implicit F: Functor[F]): IndexedStateT[F, S1, S2, B] =
-    mapsf((sf: (S1 => F[(S2, A)])) =>
-      (s: S1) => F.map(sf(s))(t => (t._1, f(t._2))))
+    mapsf(
+      (sf: (S1 => F[(S2, A)])) => (s: S1) => F.map(sf(s))(t => (t._1, f(t._2))))
 
   def xmap[X1, X2](f: S2 => X1)(g: X2 => S1): IndexedStateT[F, X2, X1, A] =
     IndexedStateT.createState((F: Monad[F]) =>
@@ -75,8 +75,8 @@ sealed abstract class IndexedStateT[F[_], -S1, S2, A] { self =>
   def lift[M[_]](
       implicit F: Monad[F],
       M: Applicative[M]): IndexedStateT[λ[α => M[F[α]]], S1, S2, A] =
-    IndexedStateT.createState[λ[α => M[F[α]]], S1, S2, A]((m: Monad[λ[α => M[
-      F[α]]]]) => (s: S1) => M.point(self(s)))
+    IndexedStateT.createState[λ[α => M[F[α]]], S1, S2, A](
+      (m: Monad[λ[α => M[F[α]]]]) => (s: S1) => M.point(self(s)))
 
   import Liskov._
   def unlift[M[_], FF[_], S <: S1](
@@ -99,10 +99,11 @@ sealed abstract class IndexedStateT[F[_], -S1, S2, A] { self =>
       implicit F: Monad[F],
       W: Monoid[W]): IndexedReaderWriterStateT[F, R, W, S1, S2, A] =
     IndexedReaderWriterStateT((r, s) =>
-      F.bind[S1 => F[(S2, A)], (W, A, S2)](getF(F))((sf: (S1 => F[(S2, A)])) =>
-        F.map(sf(s)) {
-          case (s, a) => (W.zero, a, s)
-        }))
+      F.bind[S1 => F[(S2, A)], (W, A, S2)](getF(F))(
+        (sf: (S1 => F[(S2, A)])) =>
+          F.map(sf(s)) {
+            case (s, a) => (W.zero, a, s)
+          }))
 
   def zoom[S0, S3, S <: S1](l: LensFamily[S0, S3, S, S2])(
       implicit F: Functor[F]): IndexedStateT[F, S0, S3, A] =

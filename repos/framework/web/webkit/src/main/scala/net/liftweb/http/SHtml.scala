@@ -953,10 +953,9 @@ trait SHtml extends Loggable {
 
   def ajaxCheckboxElem(settable: Settable { type ValueType = Boolean }, attrs: ElemAttr*)
       : Elem =
-    ajaxCheckbox(
-      settable.get,
-      (b: Boolean) => { settable.set(b); Noop },
-      attrs: _*)
+    ajaxCheckbox(settable.get, (b: Boolean) => {
+      settable.set(b); Noop
+    }, attrs: _*)
 
   def ajaxCheckbox(
       value: Boolean,

@@ -477,10 +477,11 @@ object Future {
     * exceptions.
     */
   def async[A](listen: (A => Unit) => Unit): Future[A] =
-    Async((cb: A => Trampoline[Unit]) =>
-      listen { a =>
-        cb(a).run
-      })
+    Async(
+      (cb: A => Trampoline[Unit]) =>
+        listen { a =>
+          cb(a).run
+        })
 
   /** Create a `Future` that will evaluate `a` using the given `ExecutorService`. */
   def apply[A](a: => A)(

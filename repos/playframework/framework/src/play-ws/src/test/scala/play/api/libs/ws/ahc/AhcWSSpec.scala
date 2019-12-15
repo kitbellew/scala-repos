@@ -83,8 +83,10 @@ object AhcWSSpec extends PlaySpecification with Mockito {
 
       import scala.collection.JavaConverters._
       val paramsList: Seq[Param] = req.getQueryParams.asScala.toSeq
-      paramsList.exists(p => (p.getName == "foo") && (p.getValue == "foo1")) must beTrue
-      paramsList.exists(p => (p.getName == "foo") && (p.getValue == "foo2")) must beTrue
+      paramsList
+        .exists(p => (p.getName == "foo") && (p.getValue == "foo1")) must beTrue
+      paramsList
+        .exists(p => (p.getName == "foo") && (p.getValue == "foo2")) must beTrue
       paramsList.count(p => p.getName == "foo") must beEqualTo(2)
     }
 

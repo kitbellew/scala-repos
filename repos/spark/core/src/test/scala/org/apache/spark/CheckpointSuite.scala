@@ -249,8 +249,8 @@ trait RDDCheckpointTester { self: SparkFunSuite =>
     * have large size.
     */
   protected def generateFatPairRDD(): RDD[(Int, Int)] = {
-    new FatPairRDD(sparkContext.makeRDD(1 to 100, 4), partitioner).mapValues(
-      x => x)
+    new FatPairRDD(sparkContext.makeRDD(1 to 100, 4), partitioner)
+      .mapValues(x => x)
   }
 }
 

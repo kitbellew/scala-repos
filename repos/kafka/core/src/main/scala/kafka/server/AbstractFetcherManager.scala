@@ -64,8 +64,8 @@ abstract class AbstractFetcherManager(
               .map(_._2.fetcherStats.requestRate.oneMinuteRate)
               .getOrElse(0)
 
-          fetcherThreadMap.foldLeft(headRate)(
-            (curMinAll, fetcherThreadMapEntry) => {
+          fetcherThreadMap
+            .foldLeft(headRate)((curMinAll, fetcherThreadMapEntry) => {
               fetcherThreadMapEntry._2.fetcherStats.requestRate.oneMinuteRate
                 .min(curMinAll)
             })

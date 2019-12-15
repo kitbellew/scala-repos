@@ -139,18 +139,19 @@ case class OffsetCommitRequest(
     }
 
     buffer.putInt(requestInfoGroupedByTopic.size) // number of topics
-    requestInfoGroupedByTopic.foreach(t1 => { // topic -> Map[TopicAndPartition, OffsetMetadataAndError]
-      writeShortString(buffer, t1._1) // topic
-      buffer.putInt(t1._2.size) // number of partitions for this topic
-      t1._2.foreach(t2 => {
-        buffer.putInt(t2._1.partition)
-        buffer.putLong(t2._2.offset)
-        // version 1 specific data
-        if (versionId == 1)
-          buffer.putLong(t2._2.commitTimestamp)
-        writeShortString(buffer, t2._2.metadata)
+    requestInfoGroupedByTopic.foreach(
+      t1 => { // topic -> Map[TopicAndPartition, OffsetMetadataAndError]
+        writeShortString(buffer, t1._1) // topic
+        buffer.putInt(t1._2.size) // number of partitions for this topic
+        t1._2.foreach(t2 => {
+          buffer.putInt(t2._1.partition)
+          buffer.putLong(t2._2.offset)
+          // version 1 specific data
+          if (versionId == 1)
+            buffer.putLong(t2._2.commitTimestamp)
+          writeShortString(buffer, t2._2.metadata)
+        })
       })
-    })
   }
 
   override def sizeInBytes =

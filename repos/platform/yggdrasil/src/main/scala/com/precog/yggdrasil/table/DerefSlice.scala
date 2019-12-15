@@ -256,8 +256,8 @@ class DerefSlice(source: Slice, derefBy: PartialFunction[Int, CPathNode])
         case CNull =>
           new NullColumn {
             def isDefinedAt(row: Int) =
-              derefBy.isDefinedAt(row) && derefColumns(derefBy(row)).exists(
-                cols => cols(resultRef).isDefinedAt(row))
+              derefBy.isDefinedAt(row) && derefColumns(derefBy(row))
+                .exists(cols => cols(resultRef).isDefinedAt(row))
           }
 
         case CUndefined => UndefinedColumn.raw

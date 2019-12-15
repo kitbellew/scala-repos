@@ -688,13 +688,15 @@ class ClosureCleanerSuite2
     val test3 = () => { () => test1() }
     val test4 = () => { () => test2() }
     val test5 = () => {
-      () => { () =>
-        test3()
+      () => {
+        () =>
+          test3()
       }
     }
     val test6 = () => {
-      () => { () =>
-        test4()
+      () => {
+        () =>
+          test4()
       }
     }
 

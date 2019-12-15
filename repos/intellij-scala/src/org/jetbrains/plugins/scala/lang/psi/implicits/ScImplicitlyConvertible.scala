@@ -478,8 +478,8 @@ class ScImplicitlyConvertible(
                       if (level >= Scala_2_10) {
                         if (probablyHasDepententMethodTypes) {
                           val params: Seq[Parameter] =
-                            f.paramClauses.clauses.last.effectiveParameters.map(
-                              param => new Parameter(param))
+                            f.paramClauses.clauses.last.effectiveParameters
+                              .map(param => new Parameter(param))
                           val (inferredParams, expr, _) =
                             InferUtil.findImplicits(
                               params,

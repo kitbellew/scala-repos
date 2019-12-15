@@ -244,8 +244,8 @@ class MutableSettings(val errorFn: String => Unit)
       descr: String,
       choices: List[String],
       default: String) =
-    ChoiceSetting(name, helpArg, descr, choices, default).withPostSetHook(
-      sett =>
+    ChoiceSetting(name, helpArg, descr, choices, default)
+      .withPostSetHook(sett =>
         if (sett.value != default) {
           sett.withDeprecationMessage(
             s"${name}:${sett.value} is deprecated, forcing use of $default")

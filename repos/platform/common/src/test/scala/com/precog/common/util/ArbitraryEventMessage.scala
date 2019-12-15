@@ -93,8 +93,8 @@ trait ArbitraryEventMessage extends ArbitraryJValue {
   def genRandomIngestMessage: Gen[IngestMessage] =
     for {
       ingest <- genRandomIngest if ingest.writeAs.isDefined
-      eventIds <- containerOfN[List, EventId](ingest.data.size, genEventId).map(
-        l => Vector(l: _*))
+      eventIds <- containerOfN[List, EventId](ingest.data.size, genEventId)
+        .map(l => Vector(l: _*))
       streamRef <- genStreamRef
     } yield {
       //TODO: Replace with IngestMessage.fromIngest when it's usable

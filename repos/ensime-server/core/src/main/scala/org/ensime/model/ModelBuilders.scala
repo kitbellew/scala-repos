@@ -52,8 +52,8 @@ trait ModelBuilders { self: RichPresentationCompiler =>
           .flatMap(LineSourcePositionHelper.fromFqnSymbol(_)(config, vfs))
           .flatMap { sourcePos =>
             if (sourcePos.file.getName.endsWith(".scala"))
-              askLinkPos(sym, AbstractFile.getFile(sourcePos.file)).flatMap(
-                pos => OffsetSourcePositionHelper.fromPosition(pos))
+              askLinkPos(sym, AbstractFile.getFile(sourcePos.file))
+                .flatMap(pos => OffsetSourcePositionHelper.fromPosition(pos))
             else
               Some(sourcePos)
           }

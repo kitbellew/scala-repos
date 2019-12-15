@@ -45,8 +45,10 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
         transformTrees(newStaticMembers.toList) ::: newBody)
       try if (newStaticInits.isEmpty) templ
       else
-        deriveTemplate(templ)(body =>
-          staticConstructor(body, localTyper, templ.pos)(newStaticInits.toList) :: body)
+        deriveTemplate(templ)(
+          body =>
+            staticConstructor(body, localTyper, templ.pos)(
+              newStaticInits.toList) :: body)
       finally clearStatics()
     }
     private def mkTerm(prefix: String): TermName = unit.freshTermName(prefix)

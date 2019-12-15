@@ -303,7 +303,8 @@ private[spark] class TaskSetManager(
       execId: String,
       host: String,
       locality: TaskLocality.Value): Option[(Int, TaskLocality.Value)] = {
-    speculatableTasks.retain(index => !successful(index)) // Remove finished tasks from set
+    speculatableTasks
+      .retain(index => !successful(index)) // Remove finished tasks from set
 
     def canRunOnHost(index: Int): Boolean =
       !hasAttemptOnHost(index, host) && !executorIsBlacklisted(execId, index)

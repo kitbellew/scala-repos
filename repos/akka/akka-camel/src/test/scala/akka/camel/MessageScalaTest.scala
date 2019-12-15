@@ -33,7 +33,8 @@ class MessageScalaTest extends FunSuite with Matchers with SharedCamelSystem {
   }
 
   test("mustTransformBodyAndPreserveHeaders") {
-    CamelMessage("a", Map("A" -> "1")).mapBody((body: String) ⇒ body + "b") should ===(
+    CamelMessage("a", Map("A" -> "1"))
+      .mapBody((body: String) ⇒ body + "b") should ===(
       CamelMessage("ab", Map("A" -> "1")))
   }
 

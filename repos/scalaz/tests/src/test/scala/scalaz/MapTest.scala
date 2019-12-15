@@ -691,12 +691,10 @@ object MapTest extends SpecLite {
     "mapKeys" in {
       fromList(List(5 -> "a", 3 -> "b")).mapKeys(_ + 1) must_=== (fromList(
         List(4 -> "b", 6 -> "a")))
-      fromList(List(1 -> "b", 2 -> "a", 3 -> "d", 4 -> "c")).mapKeys(_ => 1) must_=== (singleton(
-        1,
-        "c"))
-      fromList(List(1 -> "b", 2 -> "a", 3 -> "d", 4 -> "c")).mapKeys(_ => 3) must_=== (singleton(
-        3,
-        "c"))
+      fromList(List(1 -> "b", 2 -> "a", 3 -> "d", 4 -> "c"))
+        .mapKeys(_ => 1) must_=== (singleton(1, "c"))
+      fromList(List(1 -> "b", 2 -> "a", 3 -> "d", 4 -> "c"))
+        .mapKeys(_ => 3) must_=== (singleton(3, "c"))
     }
 
     "mapKeys sound" ! forAll { a: Int ==>> Int =>

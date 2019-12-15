@@ -131,8 +131,8 @@ class SquerylRecordSpec extends Specification with AroundExample {
           // There are three companies
           companiesAndEmployeesWithSameName must haveSize(3)
           // One company has the same name as an employee, two don't
-          companiesAndEmployeesWithSameName.filter(ce => ce.measures == 0) must haveSize(
-            2)
+          companiesAndEmployeesWithSameName
+            .filter(ce => ce.measures == 0) must haveSize(2)
 
           val employeesWithSameAdminSetting =
             join(employees, employees.leftOuter)((e1, e2) =>

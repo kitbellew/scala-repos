@@ -554,8 +554,8 @@ class UpgradedImageIExtractor(
         mainImage.imageExtractionType = "known"
         mainImage.confidenceScore = 90
 
-        getLocallyStoredImage(buildImagePath(mainImage.imageSrc)).foreach(
-          locallyStoredImage => {
+        getLocallyStoredImage(buildImagePath(mainImage.imageSrc))
+          .foreach(locallyStoredImage => {
             mainImage.bytes = locallyStoredImage.bytes
             mainImage.height = locallyStoredImage.height
             mainImage.width = locallyStoredImage.width

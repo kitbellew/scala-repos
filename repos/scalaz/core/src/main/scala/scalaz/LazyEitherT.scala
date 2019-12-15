@@ -108,8 +108,9 @@ final case class LazyEitherT[F[_], A, B](run: F[LazyEither[A, B]]) {
       implicit F: Apply[F]): LazyEitherT[F, A, C] = {
     // TODO check laziness
     LazyEitherT[F, A, C](
-      F.apply2(f.run, run)((ff: LazyEither[A, B => C], aa: LazyEither[A, B]) =>
-        LazyEither.lazyEitherInstance[A].ap(aa)(ff)))
+      F.apply2(f.run, run)(
+        (ff: LazyEither[A, B => C], aa: LazyEither[A, B]) =>
+          LazyEither.lazyEitherInstance[A].ap(aa)(ff)))
   }
 
   def left: LeftProjectionT[F, A, B] =

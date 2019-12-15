@@ -122,9 +122,11 @@ class FutureTests extends MinimalScalaTest {
       val s = "foo"
       val f = Future.successful(s)
 
-      ECNotUsed(ec =>
-        f.onFailure({ case _ => fail("onFailure should not have been called") })(
-          ec))
+      ECNotUsed(
+        ec =>
+          f.onFailure({
+            case _ => fail("onFailure should not have been called")
+          })(ec))
       assert(
         ECNotUsed(ec =>
           f.recover({ case _ => fail("recover should not have been called") })(
@@ -157,9 +159,11 @@ class FutureTests extends MinimalScalaTest {
 
       ECNotUsed(ec =>
         f.foreach(_ => fail("foreach should not have been called"))(ec))
-      ECNotUsed(ec =>
-        f.onSuccess({ case _ => fail("onSuccess should not have been called") })(
-          ec))
+      ECNotUsed(
+        ec =>
+          f.onSuccess({
+            case _ => fail("onSuccess should not have been called")
+          })(ec))
       assert(ECNotUsed(ec =>
         f.map(_ => fail("map should not have been called"))(ec)) eq f)
       assert(ECNotUsed(ec =>

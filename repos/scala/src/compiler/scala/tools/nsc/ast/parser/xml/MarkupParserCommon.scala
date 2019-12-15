@@ -114,11 +114,9 @@ private[scala] trait MarkupParserCommon {
 
   def xCharRef(it: Iterator[Char]): String = {
     var c = it.next()
-    Utility.parseCharRef(
-      () => c,
-      () => { c = it.next() },
-      reportSyntaxError _,
-      truncatedError _)
+    Utility.parseCharRef(() => c, () => {
+      c = it.next()
+    }, reportSyntaxError _, truncatedError _)
   }
 
   def xCharRef: String = xCharRef(() => ch, () => nextch())

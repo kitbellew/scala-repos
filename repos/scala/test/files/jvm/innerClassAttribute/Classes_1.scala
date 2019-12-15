@@ -282,7 +282,8 @@ object NestedInValueClass {
     // A has InnerClass entries for the two closures (and for A and A$). not for B / C
     def f = {
       def g =
-        List().map(x => ((s: String) => x)): @noinline // outer class A, no outer method (g is moved to the companion, doesn't exist in A)
+        List()
+          .map(x => ((s: String) => x)): @noinline // outer class A, no outer method (g is moved to the companion, doesn't exist in A)
       g.map(x => ((s: String) => x)): @noinline // outer class A, outer method f
     }
     // statements and field declarations are not allowed in value classes

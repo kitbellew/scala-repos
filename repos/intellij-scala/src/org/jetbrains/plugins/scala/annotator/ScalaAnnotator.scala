@@ -1566,7 +1566,8 @@ class ScalaAnnotator
               val compareTo = scTypeParam.owner
               val parentIt = checkParentOf.parents
               //if it's a function inside function we do not highlight it unless trait or class is defined inside this function
-              parentIt.find(e => e == compareTo || e.isInstanceOf[ScFunction]) match {
+              parentIt
+                .find(e => e == compareTo || e.isInstanceOf[ScFunction]) match {
                 case Some(_: ScFunction) =>
                 case _ =>
                   def findVariance: Int = {

@@ -53,9 +53,8 @@ class ScalaSyntheticSteppingFilter extends ExtraSteppingFilter {
     inReadAction {
       positionManager.findElementByReferenceType(location.declaringType()) match {
         case Some(td: ScTemplateDefinition) =>
-          td.functions.forall(f => !nameMatches(name, f.name)) && !hasLocalFun(
-            name,
-            td)
+          td.functions
+            .forall(f => !nameMatches(name, f.name)) && !hasLocalFun(name, td)
         case _ => false
       }
     }

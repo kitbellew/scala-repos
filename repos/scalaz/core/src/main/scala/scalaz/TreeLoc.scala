@@ -314,14 +314,14 @@ sealed abstract class TreeLocInstances {
                   G.apply3(
                     fa.tree.traverse1(f),
                     lefts1,
-                    ParentsT1.traverse1(OneAnd(p, ps))(f))(
-                    (tree, lefts, parents) =>
-                      TreeLoc(
-                        tree = tree,
-                        lefts = lefts.head #:: lefts.tail,
-                        rights = Empty,
-                        parents = parents.head #:: parents.tail
-                      ))
+                    ParentsT1
+                      .traverse1(OneAnd(p, ps))(f))((tree, lefts, parents) =>
+                    TreeLoc(
+                      tree = tree,
+                      lefts = lefts.head #:: lefts.tail,
+                      rights = Empty,
+                      parents = parents.head #:: parents.tail
+                    ))
                 case Empty =>
                   G.apply2(fa.tree.traverse1(f), lefts1)((tree, lefts) =>
                     TreeLoc(
@@ -341,14 +341,14 @@ sealed abstract class TreeLocInstances {
                   G.apply3(
                     fa.tree.traverse1(f),
                     rights1,
-                    ParentsT1.traverse1(OneAnd(p, ps))(f))(
-                    (tree, rights, parents) =>
-                      TreeLoc(
-                        tree = tree,
-                        lefts = Empty,
-                        rights = rights.head #:: rights.tail,
-                        parents = parents.head #:: parents.tail
-                      ))
+                    ParentsT1
+                      .traverse1(OneAnd(p, ps))(f))((tree, rights, parents) =>
+                    TreeLoc(
+                      tree = tree,
+                      lefts = Empty,
+                      rights = rights.head #:: rights.tail,
+                      parents = parents.head #:: parents.tail
+                    ))
                 case Empty =>
                   G.apply2(fa.tree.traverse1(f), rights1)((tree, rights) =>
                     TreeLoc(

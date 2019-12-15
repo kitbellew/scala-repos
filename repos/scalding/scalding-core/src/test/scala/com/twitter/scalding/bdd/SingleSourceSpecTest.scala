@@ -65,7 +65,8 @@ class SingleSourceSpecTest extends WordSpec with Matchers with BddDsl {
         }
       } Then { buffer: Buffer[Tuple] =>
         {
-          buffer.forall(tuple => tuple.getString(2).endsWith("_transf")) shouldBe true
+          buffer
+            .forall(tuple => tuple.getString(2).endsWith("_transf")) shouldBe true
         }
       }
     }
@@ -81,7 +82,8 @@ class SingleSourceSpecTest extends WordSpec with Matchers with BddDsl {
         }
       } Then { buffer: Buffer[Tuple] =>
         {
-          buffer.forall(tuple => tuple.getString(1).endsWith("_transf")) shouldBe true
+          buffer
+            .forall(tuple => tuple.getString(1).endsWith("_transf")) shouldBe true
         }
       }
     }
@@ -100,7 +102,8 @@ class SingleSourceSpecTest extends WordSpec with Matchers with BddDsl {
         }
       } Then { buffer: Buffer[Tuple] =>
         {
-          buffer.forall(tuple => tuple.getString(2).endsWith("_transf")) shouldBe true
+          buffer
+            .forall(tuple => tuple.getString(2).endsWith("_transf")) shouldBe true
         }
       }
     }

@@ -121,8 +121,8 @@ object SessionMaster extends LiftActor with Loggable {
 
       if (dead)(Failure("Dead session", Empty, Empty))
       else {
-        otherId.flatMap(a => Box !! nsessions.get(a)) or (Box !! nsessions.get(
-          id))
+        otherId
+          .flatMap(a => Box !! nsessions.get(a)) or (Box !! nsessions.get(id))
       }
     }
 
@@ -149,8 +149,8 @@ object SessionMaster extends LiftActor with Loggable {
     */
   def getSession(req: HTTPRequest, otherId: Box[String]): Box[LiftSession] =
     lockAndBump {
-      otherId.flatMap(a => Box !! nsessions.get(a)) or req.sessionId.flatMap(
-        id => Box !! nsessions.get(id))
+      otherId.flatMap(a => Box !! nsessions.get(a)) or req.sessionId
+        .flatMap(id => Box !! nsessions.get(id))
     }
 
   /**

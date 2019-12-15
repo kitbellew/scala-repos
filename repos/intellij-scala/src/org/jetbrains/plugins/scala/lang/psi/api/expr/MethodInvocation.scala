@@ -393,8 +393,8 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
                   this.applyOrUpdateElement)
               }
           if (useExpectedType) {
-            updateAccordingToExpectedType(Success(processedType, None)).foreach(
-              x => processedType = x)
+            updateAccordingToExpectedType(Success(processedType, None))
+              .foreach(x => processedType = x)
           }
           setApplyOrUpdate(applyOrUpdateResult)
           setImportsUsed(importsUsed)
