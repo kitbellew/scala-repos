@@ -195,10 +195,12 @@ object FSM {
     def forMax(timeout: Duration): State[S, D] = timeout match {
       case f: FiniteDuration ⇒ copy(timeout = Some(f))
       case Duration.Inf ⇒
-        copy(timeout = SomeMaxFiniteDuration
+        copy(timeout =
+          SomeMaxFiniteDuration
         ) // we map the Infinite duration to a special marker,
       case _ ⇒
-        copy(timeout = None
+        copy(timeout =
+          None
         ) // that means "cancel stateTimeout". This marker is needed
     } // so we do not have to break source/binary compat.
     // TODO: Can be removed once we can break State#timeout signature to `Option[Duration]`

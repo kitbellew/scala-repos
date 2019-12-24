@@ -351,7 +351,8 @@ abstract class KinesisStreamTests(aggregateTestData: Boolean)
       testUtils.pushData(1 to 5, aggregateTestData)
       assert(isCheckpointPresent && numBatchesWithData > 10)
     }
-    ssc.stop(stopSparkContext = true
+    ssc.stop(stopSparkContext =
+      true
     ) // stop the SparkContext so that the blocks are not reused
 
     // Restart the context from checkpoint and verify whether the

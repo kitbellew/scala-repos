@@ -492,7 +492,8 @@ trait ScExpression
     ProgressManager.checkCanceled()
 
     if (ScUnderScoreSectionUtil.underscores(this).nonEmpty) {
-      getTypeWithoutImplicits(fromUnderscore = true
+      getTypeWithoutImplicits(fromUnderscore =
+        true
       ) //to update implicitParametersFromUnder
       implicitParametersFromUnder
     } else {

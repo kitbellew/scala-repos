@@ -586,7 +586,8 @@ class TcpConnectionSpec extends AkkaSpec("""
     "report when peer closed the connection but allow further writes and acknowledge normal close" in
       new EstablishedConnectionTest(keepOpenOnPeerClosed = true) {
         run {
-          closeServerSideAndWaitForClientReadable(fullClose = false
+          closeServerSideAndWaitForClientReadable(fullClose =
+            false
           ) // send EOF (fin) from the server side
 
           selector.send(connectionActor, ChannelReadable)
@@ -605,7 +606,8 @@ class TcpConnectionSpec extends AkkaSpec("""
     "report when peer closed the connection but allow further writes and acknowledge confirmed close" in
       new EstablishedConnectionTest(keepOpenOnPeerClosed = true) {
         run {
-          closeServerSideAndWaitForClientReadable(fullClose = false
+          closeServerSideAndWaitForClientReadable(fullClose =
+            false
           ) // send EOF (fin) from the server side
 
           selector.send(connectionActor, ChannelReadable)
