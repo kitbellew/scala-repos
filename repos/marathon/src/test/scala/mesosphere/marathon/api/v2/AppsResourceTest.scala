@@ -226,8 +226,9 @@ class AppsResourceTest
     groupManager.app(PathId("/app")) returns Future.successful(Some(app))
 
     val appJson = Json.toJson(app).as[JsObject]
-    val appJsonWithOnlyPorts = appJson - "uris" - "portDefinitions" - "version" +
-      ("ports" -> Json.parse("""[1000, 1001]"""))
+    val appJsonWithOnlyPorts =
+      appJson - "uris" - "portDefinitions" - "version" +
+        ("ports" -> Json.parse("""[1000, 1001]"""))
     val body = Json.stringify(appJsonWithOnlyPorts).getBytes("UTF-8")
 
     When("The application is updated")

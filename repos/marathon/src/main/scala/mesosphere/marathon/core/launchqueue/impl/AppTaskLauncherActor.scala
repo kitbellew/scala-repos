@@ -465,7 +465,8 @@ private class AppTaskLauncherActor(
     }
 
     val inFlight = inFlightTaskOperations.size
-    val tasksLaunchedOrRunning = tasksMap.values.count(_.launched.isDefined) - inFlight
+    val tasksLaunchedOrRunning =
+      tasksMap.values.count(_.launched.isDefined) - inFlight
     val instanceCountDelta = tasksMap.size + tasksToLaunch - app.instances
     val matchInstanceStr =
       if (instanceCountDelta == 0) ""

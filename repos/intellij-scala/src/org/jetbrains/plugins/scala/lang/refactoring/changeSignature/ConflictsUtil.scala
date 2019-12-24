@@ -59,8 +59,9 @@ private[changeSignature] object ConflictsUtil {
 
       if (!isSimple) {
         val className = member.containingClass.qualifiedName
-        val message = s"Method is overriden in a composite $kind in $className. " +
-          "Converting it to function definition is not supported."
+        val message =
+          s"Method is overriden in a composite $kind in $className. " +
+            "Converting it to function definition is not supported."
 
         result.putValue(bp, message)
       }

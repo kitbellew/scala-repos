@@ -75,7 +75,8 @@ class BooleanSimplificationSuite extends PlanTest with PredicateHelper {
       ('a === 'b && 'c < 1 && 'a === 5) ||
       ('a === 'b && 'b < 5 && 'a > 1)
 
-    val expected = 'a === 'b && (('b > 3 && 'c > 2) || ('c < 1 && 'a === 5) || ('b < 5 && 'a > 1))
+    val expected =
+      'a === 'b && (('b > 3 && 'c > 2) || ('c < 1 && 'a === 5) || ('b < 5 && 'a > 1))
 
     checkCondition(input, expected)
   }

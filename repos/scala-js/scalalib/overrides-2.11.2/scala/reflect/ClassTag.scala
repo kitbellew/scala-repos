@@ -108,8 +108,9 @@ trait ClassTag[T]
   private[this] def unapplyImpl(
       x: Any,
       alternative: jClass[_] = null): Option[T] = {
-    val conforms = runtimeClass.isInstance(x) || (alternative != null && runtimeClass
-      .isAssignableFrom(alternative))
+    val conforms =
+      runtimeClass.isInstance(x) || (alternative != null && runtimeClass
+        .isAssignableFrom(alternative))
     if (conforms) Some(x.asInstanceOf[T]) else None
   }
 

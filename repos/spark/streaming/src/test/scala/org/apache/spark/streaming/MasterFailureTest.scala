@@ -257,7 +257,8 @@ private[streaming] object MasterFailureTest extends Logging {
         while (!killed && !isLastOutputGenerated && !isTimedOut) {
           Thread.sleep(100)
           timeRan = System.currentTimeMillis() - startTime
-          isLastOutputGenerated = (output.nonEmpty && output.last == lastExpectedOutput)
+          isLastOutputGenerated =
+            (output.nonEmpty && output.last == lastExpectedOutput)
           isTimedOut = (timeRan + totalTimeRan > maxTimeToRun)
         }
       } catch {
@@ -356,8 +357,8 @@ private[streaming] class KillingThread(
     try {
       // If it is the first killing, then allow the first checkpoint to be created
       var minKillWaitTime = if (MasterFailureTest.killCount == 0) 5000 else 2000
-      val killWaitTime = minKillWaitTime + math.abs(
-        Random.nextLong % maxKillWaitTime)
+      val killWaitTime =
+        minKillWaitTime + math.abs(Random.nextLong % maxKillWaitTime)
       logInfo("Kill wait time = " + killWaitTime)
       Thread.sleep(killWaitTime)
       logInfo(

@@ -141,7 +141,8 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
             case col: DateColumn =>
               var zmax: DateTime = {
                 val init = new DateTime(0)
-                val min = -292275054 - 1970 //the smallest Int value jodatime accepts
+                val min =
+                  -292275054 - 1970 //the smallest Int value jodatime accepts
 
                 init.plus(Period.years(min))
               }
@@ -191,7 +192,8 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
             case col: DateColumn =>
               var zmax: DateTime = {
                 val init = new DateTime(0)
-                val max = 292278993 - 1970 //the largest Int value jodatime accepts
+                val max =
+                  292278993 - 1970 //the largest Int value jodatime accepts
 
                 init.plus(Period.years(max))
               }

@@ -26,8 +26,8 @@ trait Plugins { global: Global =>
     */
   protected def loadRoughPluginsList(): List[Plugin] = {
     def asPath(p: String) = ClassPath split p
-    val paths = settings.plugin.value filter (_ != "") map (s =>
-      asPath(s) map Path.apply)
+    val paths =
+      settings.plugin.value filter (_ != "") map (s => asPath(s) map Path.apply)
     val dirs = {
       def injectDefault(s: String) =
         if (s.isEmpty) Defaults.scalaPluginPath else s

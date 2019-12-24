@@ -106,8 +106,9 @@ private[expr] object ExpectedTypes {
         : Array[(TypeResult[ScType], Boolean)] = {
       resolves.zip(types).map {
         case (r: ScalaResolveResult, tp) =>
-          val isNamedDynamic = r.isDynamic && r.name == ResolvableReferenceExpression
-            .APPLY_DYNAMIC_NAMED
+          val isNamedDynamic =
+            r.isDynamic && r.name == ResolvableReferenceExpression
+              .APPLY_DYNAMIC_NAMED
           (tp, isNamedDynamic)
         case (_, tp) => (tp, false)
       }
@@ -569,7 +570,8 @@ private[expr] object ExpectedTypes {
         if (cand.length == 1) {
           cand(0) match {
             case r @ ScalaResolveResult(fun: ScFunction, s) =>
-              val isDynamicNamed = r.isDynamic && r.name == ResolvableReferenceExpression.APPLY_DYNAMIC_NAMED
+              val isDynamicNamed =
+                r.isDynamic && r.name == ResolvableReferenceExpression.APPLY_DYNAMIC_NAMED
               def update(tp: ScType): ScType = {
                 if (r.isDynamic)
                   ResolvableReferenceExpression.getDynamicReturn(tp)
@@ -604,7 +606,8 @@ private[expr] object ExpectedTypes {
         if (cand.length == 1) {
           cand(0) match {
             case r @ ScalaResolveResult(fun: ScFunction, subst) =>
-              val isDynamicNamed = r.isDynamic && r.name == ResolvableReferenceExpression.APPLY_DYNAMIC_NAMED
+              val isDynamicNamed =
+                r.isDynamic && r.name == ResolvableReferenceExpression.APPLY_DYNAMIC_NAMED
               def update(tp: ScType): ScType = {
                 if (r.isDynamic)
                   ResolvableReferenceExpression.getDynamicReturn(tp)

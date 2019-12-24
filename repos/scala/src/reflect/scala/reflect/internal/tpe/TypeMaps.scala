@@ -550,8 +550,9 @@ private[internal] trait TypeMaps {
       capturedParams find (_.owner == clazz) match {
         case Some(p) => p.tpe
         case _ =>
-          val qvar = clazz freshExistential nme.SINGLETON_SUFFIX setInfo singletonBounds(
-            pre)
+          val qvar =
+            clazz freshExistential nme.SINGLETON_SUFFIX setInfo singletonBounds(
+              pre)
           _capturedParams ::= qvar
           debuglog(
             s"Captured This(${clazz.fullNameString}) seen from $seenFromPrefix: ${qvar.defString}")
@@ -1178,11 +1179,12 @@ private[internal] trait TypeMaps {
           sym
         }
       } else {
-        var rebind0 = pre.findMember(sym.name, BRIDGE, 0, stableOnly = true) orElse {
-          if (sym.isAliasType) throw missingAliasException
-          devWarning(s"$pre.$sym no longer exist at phase $phase")
-          throw new MissingTypeControl // For build manager and presentation compiler purposes
-        }
+        var rebind0 =
+          pre.findMember(sym.name, BRIDGE, 0, stableOnly = true) orElse {
+            if (sym.isAliasType) throw missingAliasException
+            devWarning(s"$pre.$sym no longer exist at phase $phase")
+            throw new MissingTypeControl // For build manager and presentation compiler purposes
+          }
         /* The two symbols have the same fully qualified name */
         def corresponds(sym1: Symbol, sym2: Symbol): Boolean =
           sym1.name == sym2.name && (sym1.isPackageClass || corresponds(

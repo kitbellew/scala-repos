@@ -296,7 +296,8 @@ abstract class LambdaLift extends InfoTransform {
           "searching for " + sym + "(" + sym.owner + ") in " + enclosure + " " + enclosure.logicallyEnclosingMember)
 
         val proxyName = proxyNames.getOrElse(sym, sym.name)
-        val ps = (proxies get enclosure.logicallyEnclosingMember).toList.flatten find (_.name == proxyName)
+        val ps =
+          (proxies get enclosure.logicallyEnclosingMember).toList.flatten find (_.name == proxyName)
         ps getOrElse searchIn(enclosure.skipConstructor.owner)
       }
       debuglog(
@@ -374,8 +375,8 @@ abstract class LambdaLift extends InfoTransform {
           if (ps.isEmpty) tree
           else {
             val paramSyms = cloneSymbols(ps).map(_.setFlag(PARAM))
-            val paramDefs = ps map (p =>
-              ValDef(p) setPos tree.pos setType NoType)
+            val paramDefs =
+              ps map (p => ValDef(p) setPos tree.pos setType NoType)
 
             sym.updateInfo(
               lifted(
@@ -387,8 +388,8 @@ abstract class LambdaLift extends InfoTransform {
           }
 
         case ClassDef(_, _, _, _) =>
-          val freeParamDefs = freeParams(sym) map (p =>
-            ValDef(p) setPos tree.pos setType NoType)
+          val freeParamDefs =
+            freeParams(sym) map (p => ValDef(p) setPos tree.pos setType NoType)
 
           if (freeParamDefs.isEmpty) tree
           else

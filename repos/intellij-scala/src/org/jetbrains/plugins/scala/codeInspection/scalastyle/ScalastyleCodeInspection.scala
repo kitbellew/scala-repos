@@ -29,7 +29,8 @@ object ScalastyleCodeInspection {
       val root = project.getBaseDir
       if (root == null) return None
 
-      val dirs = possibleLocations.flatMap(name => Option(root.findChild(name))) :+ root
+      val dirs =
+        possibleLocations.flatMap(name => Option(root.findChild(name))) :+ root
       dirs.flatMap(findConfigFile).headOption
     }
   }

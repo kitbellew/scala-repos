@@ -27,12 +27,10 @@ import org.apache.spark.sql.catalyst.rules._
 class InferFiltersFromConstraintsSuite extends PlanTest {
 
   object Optimize extends RuleExecutor[LogicalPlan] {
-    val batches = Batch(
-      "InferFilters",
-      FixedPoint(5),
-      InferFiltersFromConstraints) ::
-      Batch("PredicatePushdown", FixedPoint(5), PushPredicateThroughJoin) ::
-      Batch("CombineFilters", FixedPoint(5), CombineFilters) :: Nil
+    val batches =
+      Batch("InferFilters", FixedPoint(5), InferFiltersFromConstraints) ::
+        Batch("PredicatePushdown", FixedPoint(5), PushPredicateThroughJoin) ::
+        Batch("CombineFilters", FixedPoint(5), CombineFilters) :: Nil
   }
 
   val testRelation = LocalRelation('a.int, 'b.int, 'c.int)

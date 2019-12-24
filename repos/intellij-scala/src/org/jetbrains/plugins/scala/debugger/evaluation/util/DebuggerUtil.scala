@@ -226,7 +226,8 @@ object DebuggerUtil {
     }
     val simpleParameters =
       function.effectiveParameterClauses.flatMap(_.effectiveParameters)
-    val parameters = valueClassParameter ++: simpleParameters ++: localParameters
+    val parameters =
+      valueClassParameter ++: simpleParameters ++: localParameters
     val paramTypes =
       parameters.map(parameterForJVMSignature(_, subst)).mkString("(", "", ")")
     val resultType = function match {
@@ -439,9 +440,8 @@ object DebuggerUtil {
       case t: ScTypeDefinition =>
         if (isLocalClass(t)) new JVMClassAt(SourcePosition.createFromElement(t))
         else {
-          val qual = t.getQualifiedNameForDebugger + classnamePostfix(
-            t,
-            withPostfix)
+          val qual =
+            t.getQualifiedNameForDebugger + classnamePostfix(t, withPostfix)
           JVMNameUtil.getJVMRawText(qual)
         }
       case _ => JVMNameUtil.getJVMQualifiedName(clazz)

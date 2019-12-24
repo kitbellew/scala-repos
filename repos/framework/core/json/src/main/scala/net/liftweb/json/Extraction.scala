@@ -133,8 +133,8 @@ object Extraction {
                         .getOrElse(JField(n, JNothing))
                   }
               } getOrElse Nil
-              val uniqueFields = fields filterNot (f =>
-                args.find(_.name == f.name).isDefined)
+              val uniqueFields =
+                fields filterNot (f => args.find(_.name == f.name).isDefined)
               mkObject(x.getClass, uniqueFields ++ args)
           }
       }
@@ -352,8 +352,9 @@ object Extraction {
           fields filterNot (_.name == formats.typeHintFieldName))
         val deserializer = formats.typeHints.deserialize
         if (!deserializer.isDefinedAt(typeHint, obj)) {
-          val concreteClass = formats.typeHints.classFor(typeHint) getOrElse fail(
-            "Do not know how to deserialize '" + typeHint + "'")
+          val concreteClass =
+            formats.typeHints.classFor(typeHint) getOrElse fail(
+              "Do not know how to deserialize '" + typeHint + "'")
           val typeArgs = typeInfo.parameterizedType
             .map(_.getActualTypeArguments.toList.map(Meta.rawClassOf))
             .getOrElse(Nil)

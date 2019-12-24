@@ -93,7 +93,8 @@ object Configuration {
 
       val engine =
         NettySSLSupport.initializeClientSSL(settings, NoLogging).getEngine
-      val gotAllSupported = enabled.toSet diff engine.getSupportedCipherSuites.toSet
+      val gotAllSupported =
+        enabled.toSet diff engine.getSupportedCipherSuites.toSet
       val gotAllEnabled = enabled.toSet diff engine.getEnabledCipherSuites.toSet
       gotAllSupported.isEmpty || (throw new IllegalArgumentException(
         "Cipher Suite not supported: " + gotAllSupported))

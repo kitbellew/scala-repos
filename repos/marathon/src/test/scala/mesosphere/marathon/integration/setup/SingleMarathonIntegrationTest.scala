@@ -355,7 +355,8 @@ trait SingleMarathonIntegrationTest
     require(mesos.state.value.agents.size == 1, "one agent expected")
     WaitTestSupport.waitUntil("clean slate in Mesos", 30.seconds) {
       val agent = mesos.state.value.agents.head
-      val empty = agent.usedResources.isEmpty && agent.reservedResourcesByRole.isEmpty
+      val empty =
+        agent.usedResources.isEmpty && agent.reservedResourcesByRole.isEmpty
       if (!empty) {
         import mesosphere.marathon.integration.facades.MesosFormats._
         log.info(

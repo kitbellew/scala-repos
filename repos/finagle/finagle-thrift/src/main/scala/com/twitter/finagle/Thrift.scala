@@ -154,8 +154,8 @@ object Thrift
   case class Client(
       stack: Stack[ServiceFactory[ThriftClientRequest, Array[Byte]]] =
         Client.stack,
-      params: Stack.Params = StackClient.defaultParams + ProtocolLibrary(
-        "thrift")
+      params: Stack.Params =
+        StackClient.defaultParams + ProtocolLibrary("thrift")
   ) extends StdStackClient[ThriftClientRequest, Array[Byte], Client]
       with WithSessionPool[Client]
       with WithDefaultLoadBalancer[Client]
@@ -324,8 +324,8 @@ object Thrift
 
   case class Server(
       stack: Stack[ServiceFactory[Array[Byte], Array[Byte]]] = Server.stack,
-      params: Stack.Params = StackServer.defaultParams + ProtocolLibrary(
-        "thrift")
+      params: Stack.Params =
+        StackServer.defaultParams + ProtocolLibrary("thrift")
   ) extends StdStackServer[Array[Byte], Array[Byte], Server]
       with ThriftRichServer {
     protected def copy1(

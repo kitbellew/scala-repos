@@ -7,9 +7,10 @@ object Flat extends Build {
   lazy val root = Project(
     "root",
     file("."),
-    settings = Defaults.defaultSettings ++ forConfig(Compile, "src") ++ forConfig(
-      Test,
-      "test-src") ++ baseSettings)
+    settings =
+      Defaults.defaultSettings ++ forConfig(Compile, "src") ++ forConfig(
+        Test,
+        "test-src") ++ baseSettings)
 
   def baseSettings = Seq(
     scalaVersion := "2.8.1",

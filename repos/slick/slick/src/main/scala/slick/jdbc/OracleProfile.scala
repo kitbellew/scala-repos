@@ -304,8 +304,9 @@ trait OracleProfile extends JdbcProfile {
   class SequenceDDLBuilder[T](seq: Sequence[T])
       extends super.SequenceDDLBuilder(seq) {
     override def buildDDL: DDL = {
-      val b = new StringBuilder append "create sequence " append quoteIdentifier(
-        seq.name)
+      val b =
+        new StringBuilder append "create sequence " append quoteIdentifier(
+          seq.name)
       seq._increment.foreach { b append " increment by " append _ }
       seq._minValue.foreach { b append " minvalue " append _ }
       seq._maxValue.foreach { b append " maxvalue " append _ }

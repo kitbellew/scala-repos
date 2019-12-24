@@ -103,7 +103,8 @@ class ScalatraBroadcasterFactory(
       createIfNull: Boolean): T = {
     val bOpt = store get id
     if (bOpt.isDefined && !c.isAssignableFrom(bOpt.get.getClass)) {
-      val msg = "Invalid lookup class " + c.getName + ". Cached class is: " + bOpt.get.getClass.getName
+      val msg =
+        "Invalid lookup class " + c.getName + ". Cached class is: " + bOpt.get.getClass.getName
       logger.warn(msg)
       throw new IllegalStateException(msg)
     }

@@ -100,9 +100,8 @@ object EvaluateConfigurations {
       offset: Int): ParsedFile = {
     val (importStatements, settingsAndDefinitions) =
       splitExpressions(file, lines)
-    val allImports = builtinImports.map(s => (s, -1)) ++ addOffset(
-      offset,
-      importStatements)
+    val allImports =
+      builtinImports.map(s => (s, -1)) ++ addOffset(offset, importStatements)
     val (definitions, settings) = splitSettingsDefinitions(
       addOffsetToRange(offset, settingsAndDefinitions))
     new ParsedFile(allImports, definitions, settings)
@@ -171,8 +170,8 @@ object EvaluateConfigurations {
     }
     eval.unlinkDeferred()
     // Tracks all the files we generated from evaluating the sbt file.
-    val allGeneratedFiles = (definitions.generated ++ dslEntries.flatMap(
-      _.generated))
+    val allGeneratedFiles =
+      (definitions.generated ++ dslEntries.flatMap(_.generated))
     loader => {
       val projects =
         definitions.values(loader).collect {

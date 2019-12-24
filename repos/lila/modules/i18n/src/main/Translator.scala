@@ -6,7 +6,8 @@ import play.twirl.api.Html
 
 private[i18n] final class Translator(messages: Messages, pool: I18nPool) {
 
-  private val defaultMessages = messages.get("default") err "No default messages"
+  private val defaultMessages =
+    messages.get("default") err "No default messages"
 
   def html(key: String, args: List[Any])(implicit req: RequestHeader): Html =
     Html(str(key, args)(req))

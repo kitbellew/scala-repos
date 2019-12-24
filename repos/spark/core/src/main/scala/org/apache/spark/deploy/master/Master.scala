@@ -75,7 +75,8 @@ private[deploy] class Master(
   private def createDateFormat =
     new SimpleDateFormat("yyyyMMddHHmmss") // For application IDs
 
-  private val WORKER_TIMEOUT_MS = conf.getLong("spark.worker.timeout", 60) * 1000
+  private val WORKER_TIMEOUT_MS =
+    conf.getLong("spark.worker.timeout", 60) * 1000
   private val RETAINED_APPLICATIONS =
     conf.getInt("spark.deploy.retainedApplications", 200)
   private val RETAINED_DRIVERS =
@@ -724,15 +725,19 @@ private[deploy] class Master(
     /** Return whether the specified worker can launch an executor for this app. */
     def canLaunchExecutor(pos: Int): Boolean = {
       val keepScheduling = coresToAssign >= minCoresPerExecutor
-      val enoughCores = usableWorkers(pos).coresFree - assignedCores(pos) >= minCoresPerExecutor
+      val enoughCores =
+        usableWorkers(pos).coresFree - assignedCores(pos) >= minCoresPerExecutor
 
       // If we allow multiple executors per worker, then we can always launch new executors.
       // Otherwise, if there is already an executor on this worker, just give it more cores.
-      val launchingNewExecutor = !oneExecutorPerWorker || assignedExecutors(pos) == 0
+      val launchingNewExecutor =
+        !oneExecutorPerWorker || assignedExecutors(pos) == 0
       if (launchingNewExecutor) {
         val assignedMemory = assignedExecutors(pos) * memoryPerExecutor
-        val enoughMemory = usableWorkers(pos).memoryFree - assignedMemory >= memoryPerExecutor
-        val underLimit = assignedExecutors.sum + app.executors.size < app.executorLimit
+        val enoughMemory =
+          usableWorkers(pos).memoryFree - assignedMemory >= memoryPerExecutor
+        val underLimit =
+          assignedExecutors.sum + app.executors.size < app.executorLimit
         keepScheduling && enoughCores && enoughMemory && underLimit
       } else {
         // We're adding cores to an existing executor, so no need

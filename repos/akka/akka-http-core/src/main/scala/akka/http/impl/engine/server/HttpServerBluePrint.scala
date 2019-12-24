@@ -177,7 +177,8 @@ private[http] object HttpServerBluePrint {
                   .`Remote-Address`(RemoteAddress(remoteAddress.get)) +: hdrs
               else hdrs
 
-            val entity = createEntity(entityCreator) withSizeLimit settings.parserSettings.maxContentLength
+            val entity =
+              createEntity(entityCreator) withSizeLimit settings.parserSettings.maxContentLength
             push(
               out,
               HttpRequest(

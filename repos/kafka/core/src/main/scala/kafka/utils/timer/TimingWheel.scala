@@ -109,7 +109,8 @@ private[timer] class TimingWheel(
     new TimerTaskList(taskCounter)
   }
 
-  private[this] var currentTime = startMs - (startMs % tickMs) // rounding down to multiple of tickMs
+  private[this] var currentTime =
+    startMs - (startMs % tickMs) // rounding down to multiple of tickMs
 
   // overflowWheel can potentially be updated and read by two concurrent threads through add().
   // Therefore, it needs to be volatile due to the issue of Double-Checked Locking pattern with JVM

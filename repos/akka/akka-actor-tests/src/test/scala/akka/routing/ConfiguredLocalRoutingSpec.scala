@@ -163,8 +163,8 @@ class ConfiguredLocalRoutingSpec
           Props(classOf[SendRefAtStartup], testActor)),
         "weird")
       val recv = Set() ++ (for (_ ← 1 to 3) yield expectMsgType[ActorRef])
-      val expc = Set('a', 'b', 'c') map (i ⇒
-        system.actorFor("/user/weird/$" + i))
+      val expc =
+        Set('a', 'b', 'c') map (i ⇒ system.actorFor("/user/weird/$" + i))
       recv should ===(expc)
       expectNoMsg(1 second)
     }

@@ -203,11 +203,13 @@ class ScalaGenerateEqualsHandler extends LanguageCodeInsightActionHandler {
         val equalsMethod =
           Option(if (needEquals) createEquals(aClass, project) else null)
 
-        val needCanEqual = needEquals && hasCanEqual(aClass).isEmpty && !aClass.hasFinalModifier
+        val needCanEqual =
+          needEquals && hasCanEqual(aClass).isEmpty && !aClass.hasFinalModifier
         val canEqualMethod =
           Option(if (needCanEqual) createCanEqual(aClass, project) else null)
 
-        val newMethods = hashCodeMethod ++: equalsMethod ++: canEqualMethod ++: Nil
+        val newMethods =
+          hashCodeMethod ++: equalsMethod ++: canEqualMethod ++: Nil
         GenerationUtil.addMembers(aClass, newMethods, editor.getDocument)
       }
     } finally {

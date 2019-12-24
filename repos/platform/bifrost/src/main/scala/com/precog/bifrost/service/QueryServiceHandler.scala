@@ -110,8 +110,9 @@ abstract class QueryServiceHandler[A](implicit M: Monad[Future])
     opts.output match {
       case FileContent.TextCSV =>
         response
-          .copy(headers = response.headers + `Content-Type`(text / csv) + `Content-Disposition`(
-            attachment(Some("results.csv"))))
+          .copy(headers =
+            response.headers + `Content-Type`(text / csv) + `Content-Disposition`(
+              attachment(Some("results.csv"))))
       case _ =>
         response
           .copy(headers = response.headers + `Content-Type`(application / json))
@@ -276,9 +277,9 @@ class SyncQueryServiceHandler(
         val data = ensureTermination(data0)
         val prefix = CharBuffer.wrap(
           """{"errors":[],"warnings":[],"serverWarnings":[{"message":"Job service is down; errors/warnings are disabled."}],"data":""")
-        val result
-            : StreamT[Future, CharBuffer] = (prefix :: data) ++ (CharBuffer
-          .wrap("}") :: StreamT.empty[Future, CharBuffer])
+        val result: StreamT[Future, CharBuffer] =
+          (prefix :: data) ++ (CharBuffer
+            .wrap("}") :: StreamT.empty[Future, CharBuffer])
         HttpResponse[QueryResult](OK, content = Some(Right(result)))
           .point[Future]
 

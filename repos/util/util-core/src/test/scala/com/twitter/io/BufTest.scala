@@ -73,8 +73,9 @@ class BufTest
     val a2 = Array[Byte](4, 5, 6)
     val a3 = Array[Byte](7, 8, 9)
 
-    val buf = Buf.ByteArray.Owned(a1) concat Buf.ByteArray.Owned(a2) concat Buf.ByteArray
-      .Owned(a3)
+    val buf =
+      Buf.ByteArray.Owned(a1) concat Buf.ByteArray.Owned(a2) concat Buf.ByteArray
+        .Owned(a3)
     assert(buf.length == 9)
     val x = Array.fill(9) { 0.toByte }
     buf.write(x, 0)
@@ -86,8 +87,9 @@ class BufTest
     val a2 = Array.range(8, 16).map(_.toByte)
     val a3 = Array.range(16, 24).map(_.toByte)
     val arr = a1 ++ a2 ++ a3
-    val buf = Buf.ByteArray.Owned(a1) concat Buf.ByteArray.Owned(a2) concat Buf.ByteArray
-      .Owned(a3)
+    val buf =
+      Buf.ByteArray.Owned(a1) concat Buf.ByteArray.Owned(a2) concat Buf.ByteArray
+        .Owned(a3)
 
     for (i <- 0 until arr.length; j <- i until arr.length) {
       val w = new Array[Byte](j - i)

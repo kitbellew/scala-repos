@@ -197,8 +197,8 @@ class Tools[C <: Context](val c: C) {
                 pkg.name.toString != "jansi" && // TODO: and another one (jline.jar)
                 pkg.name.toString != "jsoup" // TODO: SI-3809
               }
-              val subpackages = pkgMembers filter (m =>
-                m.isPackage && recurIntoPackage(m))
+              val subpackages =
+                pkgMembers filter (m => m.isPackage && recurIntoPackage(m))
               subpackages foreach loop
             }
             loop(mirror.RootClass)
@@ -231,8 +231,8 @@ class Tools[C <: Context](val c: C) {
             // val tparamsMatch = subSym.typeParams.nonEmpty && tparamNames(baseSym) == tparamNames(subSym)
             val tparamsMatch = subSym.typeParams.nonEmpty && tparamNames(
               baseSym).length == tparamNames(subSym).length
-            val targsAreConcrete = baseTargs.nonEmpty && baseTargs.forall(
-              _.typeSymbol.isClass)
+            val targsAreConcrete =
+              baseTargs.nonEmpty && baseTargs.forall(_.typeSymbol.isClass)
             // NOTE: this is an extremely naïve heuristics
             // see http://groups.google.com/group/scala-internals/browse_thread/thread/3a43a6364b97b521 for more information
             if (tparamsMatch && targsAreConcrete)
@@ -372,8 +372,10 @@ abstract class Macro extends RichTypes { self =>
     shareAnalyzer.shouldBotherAboutLooping(tpe)
 
   def shareEverything = {
-    val shareEverything = c.inferImplicitValue(typeOf[refs.ShareEverything]) != EmptyTree
-    val shareNothing = c.inferImplicitValue(typeOf[refs.ShareNothing]) != EmptyTree
+    val shareEverything =
+      c.inferImplicitValue(typeOf[refs.ShareEverything]) != EmptyTree
+    val shareNothing =
+      c.inferImplicitValue(typeOf[refs.ShareNothing]) != EmptyTree
     if (shareEverything && shareNothing)
       c.abort(
         c.enclosingPosition,
@@ -382,8 +384,10 @@ abstract class Macro extends RichTypes { self =>
   }
 
   def shareNothing = {
-    val shareEverything = c.inferImplicitValue(typeOf[refs.ShareEverything]) != EmptyTree
-    val shareNothing = c.inferImplicitValue(typeOf[refs.ShareNothing]) != EmptyTree
+    val shareEverything =
+      c.inferImplicitValue(typeOf[refs.ShareEverything]) != EmptyTree
+    val shareNothing =
+      c.inferImplicitValue(typeOf[refs.ShareNothing]) != EmptyTree
     if (shareEverything && shareNothing)
       c.abort(
         c.enclosingPosition,

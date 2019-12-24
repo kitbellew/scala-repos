@@ -43,7 +43,8 @@ object ActivatorDist {
             val gitignoreFileFilter =
               (".gitignore" :: localGitignoreLines ::: rootGitignoreLines)
                 .foldLeft[FileFilter](NothingFilter)((acc, x) => acc || x)
-            val filteredPathFinder = PathFinder(dir) descendantsExcept ("*", gitignoreFileFilter) filter (_.isFile)
+            val filteredPathFinder =
+              PathFinder(dir) descendantsExcept ("*", gitignoreFileFilter) filter (_.isFile)
             filteredPathFinder pair Path.rebase(
               dir,
               activatorDistDirectory / dir.name) map {
@@ -52,7 +53,8 @@ object ActivatorDist {
                 IO.copyFile(source, target, preserveLastModified = true)
             }
             val targetDir = activatorDistDirectory / dir.name
-            val targetFile = activatorDistDirectory / (dir.name + "-" + version + ".zip")
+            val targetFile =
+              activatorDistDirectory / (dir.name + "-" + version + ".zip")
             s.log.info(s"zipping: $targetDir -> $targetFile")
             Dist.zip(targetDir, targetFile)
           }

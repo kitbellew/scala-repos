@@ -650,8 +650,8 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
           val todo = equalitySyms filterNot (b =>
             (b.const == sym.const) || excludedPair(
               ExcludedPair(b.const, sym.const)))
-          val (excluded, notExcluded) = todo partition (b =>
-            excludes(sym.const, b.const))
+          val (excluded, notExcluded) =
+            todo partition (b => excludes(sym.const, b.const))
           val implied = notExcluded filter (b => implies(sym.const, b.const))
 
           debug.patmat("eq axioms for: " + sym.const)
@@ -754,8 +754,8 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
               orig.tpe
             case _ =>
               // duplicate, don't mutate old tree (TODO: use a map tree -> type instead?)
-              val treeWithNarrowedType = t.duplicate setType freshExistentialSubtype(
-                t.tpe)
+              val treeWithNarrowedType =
+                t.duplicate setType freshExistentialSubtype(t.tpe)
               debug.patmat("uniqued: " + ((t, t.tpe, treeWithNarrowedType.tpe)))
               trees += treeWithNarrowedType
               treeWithNarrowedType.tpe

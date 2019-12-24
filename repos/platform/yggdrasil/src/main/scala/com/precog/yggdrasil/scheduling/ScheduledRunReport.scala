@@ -39,7 +39,8 @@ object ScheduledRunReport {
   implicit val iso =
     Iso.hlist(ScheduledRunReport.apply _, ScheduledRunReport.unapply _)
 
-  val schemaV1 = "id" :: "startedAt" :: "endedAt" :: "records" :: "messages" :: HNil
+  val schemaV1 =
+    "id" :: "startedAt" :: "endedAt" :: "records" :: "messages" :: HNil
 
   implicit val decomposer =
     decomposerV[ScheduledRunReport](schemaV1, Some("1.0".v))

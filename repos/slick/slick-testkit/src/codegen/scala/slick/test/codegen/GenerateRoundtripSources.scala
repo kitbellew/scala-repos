@@ -20,7 +20,8 @@ object GenerateRoundtripSources {
     object Tables extends Tables(profile)
     import Tables._
     import Tables.profile.api._
-    val ddl = posts.schema ++ categories.schema ++ typeTest.schema ++ large.schema ++ `null`.schema ++ X.schema ++ SingleNonOptionColumn.schema ++ SelfRef.schema
+    val ddl =
+      posts.schema ++ categories.schema ++ typeTest.schema ++ large.schema ++ `null`.schema ++ X.schema ++ SingleNonOptionColumn.schema ++ SelfRef.schema
     val a1 = profile
       .createModel(ignoreInvalidDefaults = false)
       .map(m =>

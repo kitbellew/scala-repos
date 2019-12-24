@@ -342,8 +342,8 @@ trait ClassHelpers { self: ControlHelpers =>
 
           val ret =
             try {
-              val classes: Array[Class[_]] = ptypes openOr params.map(
-                _.getClass)
+              val classes: Array[Class[_]] =
+                ptypes openOr params.map(_.getClass)
               List(clz.getMethod(meth, classes: _*))
             } catch {
               case e: NullPointerException  => Nil

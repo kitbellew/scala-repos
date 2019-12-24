@@ -345,8 +345,9 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
       val delayedHookSym = delayedHook.symbol.asInstanceOf[MethodSymbol]
 
       // transform to make the closure-class' default constructor assign the outer instance to its param-accessor field.
-      val hookCallerClass = (new ConstructorTransformer(unit)) transform delayedInitClosure(
-        delayedHookSym)
+      val hookCallerClass =
+        (new ConstructorTransformer(unit)) transform delayedInitClosure(
+          delayedHookSym)
       val delayedInitCall = localTyper.typedPos(impl.pos) {
         gen.mkMethodCall(
           This(clazz),
@@ -367,8 +368,9 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
     lazy val hasSpecializedFieldsSym = clazz.info.decl(nme.SPECIALIZED_INSTANCE)
     // The constructor of a non-specialized class that has specialized subclasses
     // should use `q"${hasSpecializedFieldsSym}()"` to guard the initialization of specialized fields.
-    lazy val guardSpecializedFieldInit = (hasSpecializedFieldsSym != NoSymbol) && !clazz
-      .hasFlag(SPECIALIZED)
+    lazy val guardSpecializedFieldInit =
+      (hasSpecializedFieldsSym != NoSymbol) && !clazz
+        .hasFlag(SPECIALIZED)
 
     /* Return a single list of statements, merging the generic class constructor with the
      * specialized stats. The original statements are retyped in the current class, and
@@ -518,13 +520,14 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
     private val stats = impl.body // the transformed template body
 
     // find and dissect primary constructor
-    private val (primaryConstr, _primaryConstrParams, primaryConstrBody) = stats collectFirst {
-      case dd @ DefDef(_, _, _, vps :: Nil, _, rhs: Block)
-          if dd.symbol.isPrimaryConstructor || dd.symbol.isMixinConstructor =>
-        (dd, vps map (_.symbol), rhs)
-    } getOrElse {
-      abort("no constructor in template: impl = " + impl)
-    }
+    private val (primaryConstr, _primaryConstrParams, primaryConstrBody) =
+      stats collectFirst {
+        case dd @ DefDef(_, _, _, vps :: Nil, _, rhs: Block)
+            if dd.symbol.isPrimaryConstructor || dd.symbol.isMixinConstructor =>
+          (dd, vps map (_.symbol), rhs)
+      } getOrElse {
+        abort("no constructor in template: impl = " + impl)
+      }
 
     def primaryConstrParams = _primaryConstrParams
     def usesSpecializedField = intoConstructor.usesSpecializedField
@@ -832,7 +835,8 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
 
       // Eliminate all field/accessor definitions that can be dropped from template
       // We never eliminate delayed hooks or the constructors, so, only filter `defs`.
-      val prunedStats = (defs filterNot omittableStat) ::: delayedHookDefs ::: constructors
+      val prunedStats =
+        (defs filterNot omittableStat) ::: delayedHookDefs ::: constructors
 
       //  Add the static initializers
       if (classInitStats.isEmpty) deriveTemplate(impl)(_ => prunedStats)

@@ -239,10 +239,10 @@ trait LineParsers extends InlineParsers {
 
   /** Parses a horizontal rule.
     */
-  val ruler
-      : Parser[MarkdownLine] = """ {0,3}(((-[ \t]*){3,})|((\*[ \t]*){3,}))$""".r ^^ {
-    new RulerLine(_)
-  }
+  val ruler: Parser[MarkdownLine] =
+    """ {0,3}(((-[ \t]*){3,})|((\*[ \t]*){3,}))$""".r ^^ {
+      new RulerLine(_)
+    }
 
   /** Matches a line starting with up to three spaces, a '>' and an optional whitespace.
     * (i.e.: the start or continuation of a block quote.)
@@ -254,18 +254,18 @@ trait LineParsers extends InlineParsers {
   /** A line that starts an unordered list item.
     * Matches a line starting with up to three spaces followed by an asterisk, a space, and any whitespace.
     */
-  val uItemStartLine
-      : Parser[UItemStartLine] = (""" {0,3}[\*\+-] [\t\v ]*""".r) ~ rest ^^ {
-    case prefix ~ payload => new UItemStartLine(prefix, payload)
-  }
+  val uItemStartLine: Parser[UItemStartLine] =
+    (""" {0,3}[\*\+-] [\t\v ]*""".r) ~ rest ^^ {
+      case prefix ~ payload => new UItemStartLine(prefix, payload)
+    }
 
   /** A line that starts an ordered list item.
     * Matches a line starting with up to three spaces followed by a number, a dot and a space, and any whitespace
     */
-  val oItemStartLine
-      : Parser[OItemStartLine] = (""" {0,3}[0-9]+\. [\t\v ]*""".r) ~ rest ^^ {
-    case prefix ~ payload => new OItemStartLine(prefix, payload)
-  }
+  val oItemStartLine: Parser[OItemStartLine] =
+    (""" {0,3}[0-9]+\. [\t\v ]*""".r) ~ rest ^^ {
+      case prefix ~ payload => new OItemStartLine(prefix, payload)
+    }
 
   /** Accepts an empty line. (A line that consists only of optional whitespace or the empty string.)
     */
@@ -290,11 +290,11 @@ trait LineParsers extends InlineParsers {
     * up to three spaces, three or more backticks, whitespace, an optional
     * language token, optional whitespace
     */
-  val extendedFencedCodeLine
-      : Parser[ExtendedFencedCode] = fencedCodeLine ~ """\w+[\t\v ]*""".r ^^ {
-    case prefix ~ languageToken =>
-      new ExtendedFencedCode(prefix.fullLine, languageToken)
-  }
+  val extendedFencedCodeLine: Parser[ExtendedFencedCode] =
+    fencedCodeLine ~ """\w+[\t\v ]*""".r ^^ {
+      case prefix ~ languageToken =>
+        new ExtendedFencedCode(prefix.fullLine, languageToken)
+    }
 
   /** Matches any line. Only called when all other line parsers have failed.
     * Makes sure line tokenizing does not fail and we do not loose any lines on the way.
@@ -306,8 +306,8 @@ trait LineParsers extends InlineParsers {
   ///////////////////////////////////////////////////////////////
   /** First tries for a setext header level 2, then for a ruler.
     */
-  val setext2OrRulerOrUItem
-      : Parser[MarkdownLine] = setextHeader2 | ruler | uItemStartLine
+  val setext2OrRulerOrUItem: Parser[MarkdownLine] =
+    setextHeader2 | ruler | uItemStartLine
 
   /** First tries for a ruler, then for an unordered list item start.
     */
@@ -319,6 +319,6 @@ trait LineParsers extends InlineParsers {
 
   /** Parses one of the fenced code lines
     */
-  val fencedCodeStartOrEnd
-      : Parser[MarkdownLine] = extendedFencedCodeLine | fencedCodeLine
+  val fencedCodeStartOrEnd: Parser[MarkdownLine] =
+    extendedFencedCodeLine | fencedCodeLine
 }

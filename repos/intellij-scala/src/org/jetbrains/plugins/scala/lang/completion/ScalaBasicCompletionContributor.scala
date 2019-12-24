@@ -96,7 +96,8 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
               (dummyPosition, false, false)
             case ScalaTokenTypes.tSTRING | ScalaTokenTypes.tMULTILINE_STRING =>
               //it's ok to use parameters here as we want just to calculate offset
-              val offsetInString = parameters.getOffset - parameters.getPosition.getTextRange.getStartOffset + 1
+              val offsetInString =
+                parameters.getOffset - parameters.getPosition.getTextRange.getStartOffset + 1
               val interpolated =
                 ScalaPsiElementFactory.createExpressionFromText(
                   "s" + dummyPosition.getText,
@@ -121,7 +122,8 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
               }
 
               //it's ok to use parameters here as we want just to calculate offset
-              val offsetInString = offset - dummyInterpolated.getTextRange.getStartOffset
+              val offsetInString =
+                offset - dummyInterpolated.getTextRange.getStartOffset
               val res = ScalaBasicCompletionContributor
                 .getStartEndPointForInterpolatedString(
                   interpolated,
@@ -461,7 +463,8 @@ object ScalaBasicCompletionContributor {
       val expr = injections(index)
       if (expr.isInstanceOf[ScBlock]) return None
       val stringText = interpolated.getText
-      val pointPosition = expr.getTextRange.getEndOffset - interpolated.getTextRange.getStartOffset
+      val pointPosition =
+        expr.getTextRange.getEndOffset - interpolated.getTextRange.getStartOffset
       if (stringText.charAt(pointPosition) == '.') {
         val restString = stringText.substring(pointPosition + 1)
         val lexer = new ScalaLexer()
@@ -470,7 +473,8 @@ object ScalaBasicCompletionContributor {
         if (lexer.getTokenType == ScalaTokenTypes.tIDENTIFIER) {
           val endPoint = lexer.getTokenEnd + pointPosition + 1
           if (endPoint >= offsetInString) {
-            val exprStartInString = expr.getTextRange.getStartOffset - interpolated.getTextRange.getStartOffset
+            val exprStartInString =
+              expr.getTextRange.getStartOffset - interpolated.getTextRange.getStartOffset
             Some(exprStartInString, endPoint)
           } else None
         } else None

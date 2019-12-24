@@ -172,7 +172,8 @@ object ScalaSigParsers extends RulesWithState with MemoisableRules {
   lazy val entries = allEntries(ScalaSigEntryParsers.entry) as "entries"
   lazy val symbols = allEntries(ScalaSigEntryParsers.symbol) as "symbols"
   lazy val methods = allEntries(ScalaSigEntryParsers.methodSymbol) as "methods"
-  lazy val attributes = allEntries(ScalaSigEntryParsers.attributeInfo) as "attributes"
+  lazy val attributes =
+    allEntries(ScalaSigEntryParsers.attributeInfo) as "attributes"
 
   lazy val topLevelClasses = allEntries(ScalaSigEntryParsers.topLevelClass)
   lazy val topLevelObjects = allEntries(ScalaSigEntryParsers.topLevelObject)
@@ -202,8 +203,8 @@ object ScalaSigEntryParsers extends RulesWithState with MemoisableRules {
   val index = read(_.index)
   val key = read(_.entryType)
 
-  lazy val entry
-      : EntryParser[Any] = symbol | typeEntry | literal | name | attributeInfo | annotInfo | children | get
+  lazy val entry: EntryParser[Any] =
+    symbol | typeEntry | literal | name | attributeInfo | annotInfo | children | get
 
   val ref = byteCodeEntryParser(nat)
 
@@ -219,7 +220,8 @@ object ScalaSigEntryParsers extends RulesWithState with MemoisableRules {
   lazy val typeRef = refTo(typeEntry)
   lazy val constantRef = refTo(literal)
 
-  val symbolInfo = nameRef ~ symbolRef ~ nat ~ (symbolRef ?) ~ ref ~ get ^~~~~~^ SymbolInfo
+  val symbolInfo =
+    nameRef ~ symbolRef ~ nat ~ (symbolRef ?) ~ ref ~ get ^~~~~~^ SymbolInfo
 
   def symHeader(key: Int): EntryParser[Any] = (key -~ none | (key + 64) -~ nat)
 
@@ -230,9 +232,12 @@ object ScalaSigEntryParsers extends RulesWithState with MemoisableRules {
   val aliasSymbol = symbolEntry(5) ^^ AliasSymbol as "alias"
   val classSymbol = symbolEntry(6) ~ (ref ?) ^~^ ClassSymbol as "class"
   val objectSymbol = symbolEntry(7) ^^ ObjectSymbol as "object"
-  val methodSymbol = symHeader(8) -~ /*(ref?) -~*/ symbolInfo ~ (ref ?) ^~^ MethodSymbol as "method"
-  val extRef = 9 -~ nameRef ~ (symbolRef ?) ~ get ^~~^ ExternalSymbol as "extRef"
-  val extModClassRef = 10 -~ nameRef ~ (symbolRef ?) ~ get ^~~^ ExternalSymbol as "extModClassRef"
+  val methodSymbol =
+    symHeader(8) -~ /*(ref?) -~*/ symbolInfo ~ (ref ?) ^~^ MethodSymbol as "method"
+  val extRef =
+    9 -~ nameRef ~ (symbolRef ?) ~ get ^~~^ ExternalSymbol as "extRef"
+  val extModClassRef =
+    10 -~ nameRef ~ (symbolRef ?) ~ get ^~~^ ExternalSymbol as "extModClassRef"
 
   lazy val symbol: EntryParser[Symbol] = oneOf(
     noSymbol,
@@ -285,9 +290,11 @@ object ScalaSigEntryParsers extends RulesWithState with MemoisableRules {
     35 -~ typeRef
   )
 
-  lazy val attributeInfo = 40 -~ symbolRef ~ typeRef ~ (constantRef ?) ~ (nameRef ~ constantRef *) ^~~~^ AttributeInfo // sym_Ref info_Ref {constant_Ref} {nameRef constantRef}
+  lazy val attributeInfo =
+    40 -~ symbolRef ~ typeRef ~ (constantRef ?) ~ (nameRef ~ constantRef *) ^~~~^ AttributeInfo // sym_Ref info_Ref {constant_Ref} {nameRef constantRef}
   lazy val children = 41 -~ (nat *) ^^ Children //sym_Ref {sym_Ref}
-  lazy val annotInfo = 43 -~ (nat *) ^^ AnnotInfo // attarg_Ref {constant_Ref attarg_Ref}
+  lazy val annotInfo =
+    43 -~ (nat *) ^^ AnnotInfo // attarg_Ref {constant_Ref attarg_Ref}
 
   lazy val topLevelClass = classSymbol filter isTopLevelClass
   lazy val topLevelObject = objectSymbol filter isTopLevel

@@ -232,8 +232,9 @@ class GeneralizedLinearRegression @Since("2.0.0") (
       }
       .first()
     if (numFeatures > WeightedLeastSquares.MAX_NUM_FEATURES) {
-      val msg = "Currently, GeneralizedLinearRegression only supports number of features" +
-        s" <= ${WeightedLeastSquares.MAX_NUM_FEATURES}. Found $numFeatures in the input dataset."
+      val msg =
+        "Currently, GeneralizedLinearRegression only supports number of features" +
+          s" <= ${WeightedLeastSquares.MAX_NUM_FEATURES}. Found $numFeatures in the input dataset."
       throw new SparkException(msg)
     }
 
@@ -387,8 +388,9 @@ object GeneralizedLinearRegression
           val eta = model.predict(instance.features)
           val mu = fitted(eta)
           val offset = eta + (instance.label - mu) * link.deriv(mu)
-          val weight = instance.weight / (math.pow(this.link.deriv(mu), 2.0) * family
-            .variance(mu))
+          val weight =
+            instance.weight / (math.pow(this.link.deriv(mu), 2.0) * family
+              .variance(mu))
           (offset, weight)
         }
     }

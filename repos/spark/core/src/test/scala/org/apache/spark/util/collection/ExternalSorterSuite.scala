@@ -486,8 +486,8 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
     val context = MemoryTestingUtils.fakeTaskContext(sc.env)
 
     val ord = implicitly[Ordering[Int]]
-    val elements = Iterator((1, 1), (5, 5)) ++ (0 until size).iterator.map(x =>
-      (2, 2))
+    val elements =
+      Iterator((1, 1), (5, 5)) ++ (0 until size).iterator.map(x => (2, 2))
 
     val sorter = new ExternalSorter[Int, Int, Int](
       context,

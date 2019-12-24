@@ -10,7 +10,8 @@ trait Enclosures {
 
   private lazy val site = callsiteTyper.context
   private lazy val enclTrees = site.enclosingContextChain map (_.tree)
-  private lazy val enclPoses = enclosingMacros map (_.macroApplication.pos) filterNot (_ eq NoPosition)
+  private lazy val enclPoses =
+    enclosingMacros map (_.macroApplication.pos) filterNot (_ eq NoPosition)
 
   private def lenientEnclosure[T <: Tree: ClassTag]: Tree =
     enclTrees collectFirst { case x: T => x } getOrElse EmptyTree
@@ -28,8 +29,8 @@ trait Enclosures {
   def enclosingTemplate: Template = strictEnclosure[Template]
   val enclosingImplicits: List[ImplicitCandidate] =
     site.openImplicits.map(_.toImplicitCandidate)
-  val enclosingMacros
-      : List[Context] = this :: universe.analyzer.openMacros // include self
+  val enclosingMacros: List[Context] =
+    this :: universe.analyzer.openMacros // include self
   val enclosingMethod: Tree = lenientEnclosure[DefDef]
   def enclosingDef: DefDef = strictEnclosure[DefDef]
   val enclosingPosition: Position =

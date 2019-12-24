@@ -306,7 +306,8 @@ trait CompletionControl {
         m match {
           case m @ ScopeMember(sym, tpe, accessible, viaView) =>
             val p = sym.pos
-            val inSymbol = p.isRange && (context.offset >= p.startOrCursor && context.offset <= p.endOrCursor)
+            val inSymbol =
+              p.isRange && (context.offset >= p.startOrCursor && context.offset <= p.endOrCursor)
             if (!sym.isConstructor && !inSymbol) {
               buff ++= toCompletionInfo(
                 context,

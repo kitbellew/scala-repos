@@ -63,7 +63,8 @@ object InstructionStackEffect {
       methodDesc: String,
       insn: AbstractInsnNode,
       forClassfile: Boolean): Int = {
-    val consumesReceiver = insn.getOpcode != INVOKESTATIC && insn.getOpcode != INVOKEDYNAMIC
+    val consumesReceiver =
+      insn.getOpcode != INVOKESTATIC && insn.getOpcode != INVOKEDYNAMIC
     if (forClassfile) {
       val sizes = Type.getArgumentsAndReturnSizes(methodDesc)
       val cons = (sizes >> 2) - (if (consumesReceiver) 0 else 1)

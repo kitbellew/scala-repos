@@ -914,8 +914,8 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
   }
 
   test("SPARK-8797: sort by float column containing NaN should not crash") {
-    val inputData = Seq.fill(10)(Tuple1(Float.NaN)) ++ (1 to 1000).map(x =>
-      Tuple1(x.toFloat))
+    val inputData =
+      Seq.fill(10)(Tuple1(Float.NaN)) ++ (1 to 1000).map(x => Tuple1(x.toFloat))
     val df = Random.shuffle(inputData).toDF("a")
     df.orderBy("a").collect()
   }

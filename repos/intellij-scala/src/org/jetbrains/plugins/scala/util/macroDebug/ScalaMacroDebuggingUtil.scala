@@ -73,7 +73,8 @@ object ScalaMacroDebuggingUtil {
     val canonicalPath = file.getVirtualFile.getCanonicalPath
 
     def createFile(): PsiFile = {
-      val dataStream = SYNTHETIC_SOURCE_ATTRIBUTE readAttribute file.getVirtualFile
+      val dataStream =
+        SYNTHETIC_SOURCE_ATTRIBUTE readAttribute file.getVirtualFile
       if (dataStream == null) return null
 
       var line = dataStream readUTF ()

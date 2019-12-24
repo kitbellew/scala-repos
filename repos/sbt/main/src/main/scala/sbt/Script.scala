@@ -39,9 +39,8 @@ object Script {
           block.offset + 1)(currentLoader)
       }
       val scriptAsSource = sources in Compile := script :: Nil
-      val asScript = scalacOptions ++= Seq(
-        "-Xscript",
-        script.getName.stripSuffix(".scala"))
+      val asScript =
+        scalacOptions ++= Seq("-Xscript", script.getName.stripSuffix(".scala"))
       val scriptSettings = Seq(
         asScript,
         scriptAsSource,

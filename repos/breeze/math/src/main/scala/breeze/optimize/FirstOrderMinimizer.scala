@@ -95,7 +95,8 @@ abstract class FirstOrderMinimizer[T, DF <: StochasticDiffFunction[T]](
         val x = takeStep(state, dir, stepSize)
         val (value, grad) = calculateObjective(adjustedFun, x, state.history)
         val (adjValue, adjGrad) = adjust(x, grad, value)
-        val oneOffImprovement = (state.adjustedValue - adjValue) / (state.adjustedValue.abs max adjValue.abs max 1e-6 * state.initialAdjVal.abs)
+        val oneOffImprovement =
+          (state.adjustedValue - adjValue) / (state.adjustedValue.abs max adjValue.abs max 1e-6 * state.initialAdjVal.abs)
         logger.info(
           f"Val and Grad Norm: $adjValue%.6g (rel: $oneOffImprovement%.3g) ${norm(adjGrad)}%.6g")
         val history = updateHistory(x, grad, value, adjustedFun, state)

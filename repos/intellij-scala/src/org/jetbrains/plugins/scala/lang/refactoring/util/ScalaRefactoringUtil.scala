@@ -1175,10 +1175,11 @@ object ScalaRefactoringUtil {
           ScalaTokenTypes.IDENTIFIER_TOKEN_SET.contains(prevElemType) || ScalaTokenTypes.KEYWORDS
             .contains(prevElemType)
         }
-        shift = pars.getTextRange.getStartOffset - inner.getTextRange.getStartOffset + (if (afterWord)
-                                                                                          1
-                                                                                        else
-                                                                                          0)
+        shift =
+          pars.getTextRange.getStartOffset - inner.getTextRange.getStartOffset + (if (afterWord)
+                                                                                    1
+                                                                                  else
+                                                                                    0)
         document.replaceString(
           textRange.getStartOffset,
           textRange.getEndOffset,
@@ -1208,7 +1209,8 @@ object ScalaRefactoringUtil {
         if (replaceAsInjection) {
           val withNextChar = file.getText
             .substring(newRange.getStartOffset, newRange.getEndOffset + 1)
-          val needBraces = ScalaNamesUtil.isIdentifier(withNextChar) && withNextChar.last != '$'
+          val needBraces =
+            ScalaNamesUtil.isIdentifier(withNextChar) && withNextChar.last != '$'
           val text = if (needBraces) s"$${$newString}" else s"$$$newString"
           shift += (if (needBraces) 2 else 1)
           document.replaceString(
@@ -1217,7 +1219,8 @@ object ScalaRefactoringUtil {
             text)
         } else {
           val quote = if (lit.isMultiLineString) "\"\"\"" else "\""
-          val isStart = newRange.getStartOffset == lit.contentRange.getStartOffset
+          val isStart =
+            newRange.getStartOffset == lit.contentRange.getStartOffset
           val isEnd = newRange.getEndOffset == lit.contentRange.getEndOffset
           val firstPart = if (!isStart) s"$quote + " else ""
           val lastPart = if (!isEnd) s" + $prefix$quote" else ""

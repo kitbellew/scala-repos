@@ -682,8 +682,8 @@ abstract class RankLike extends AggregateWindowFunction {
   protected val increaseRank =
     If(And(orderEquals, Not(EqualTo(rank, zero))), rank, rankSource)
 
-  override val aggBufferAttributes
-      : Seq[AttributeReference] = rank +: rowNumber +: orderAttrs
+  override val aggBufferAttributes: Seq[AttributeReference] =
+    rank +: rowNumber +: orderAttrs
   override val initialValues = zero +: one +: orderInit
   override val updateExpressions = increaseRank +: increaseRowNumber +: children
   override val evaluateExpression: Expression = rank

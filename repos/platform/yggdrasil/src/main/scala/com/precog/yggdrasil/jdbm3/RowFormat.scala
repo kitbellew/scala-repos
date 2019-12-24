@@ -453,12 +453,12 @@ trait ValueRowFormat extends RowFormat with RowFormatSupport {
     // @transient lazy val bitSetCodec = Codec[BitSet]
     @transient lazy val rawBitSetCodec = Codec[RawBitSet]
 
-    @transient private lazy val codecs
-        : List[Codec[_ <: CValue]] = columnRefs.toList map {
-      case ColumnRef(_, cType: CValueType[_]) =>
-        Codec.CValueCodec(cType)(codecForCValueType(cType))
-      case ColumnRef(_, cType: CNullType) => Codec.ConstCodec(cType)
-    }
+    @transient private lazy val codecs: List[Codec[_ <: CValue]] =
+      columnRefs.toList map {
+        case ColumnRef(_, cType: CValueType[_]) =>
+          Codec.CValueCodec(cType)(codecForCValueType(cType))
+        case ColumnRef(_, cType: CNullType) => Codec.ConstCodec(cType)
+      }
 
     type S = (Either[rawBitSetCodec.S, StatefulCodec#State], List[CValue])
 

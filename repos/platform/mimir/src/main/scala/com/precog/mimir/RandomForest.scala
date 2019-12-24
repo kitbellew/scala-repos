@@ -676,15 +676,16 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                 }
                 .reverse
 
-              val errors
-                  : M[List[Double]] = (forests zip validationSamples) traverse {
-                case (forest, table) =>
-                  withData(table) { (actual, features) =>
-                    val predicted = features map (forest.predict) // TODO: Unbox me!
-                    val error = findError(actual, predicted)
-                    error
-                  }
-              }
+              val errors: M[List[Double]] =
+                (forests zip validationSamples) traverse {
+                  case (forest, table) =>
+                    withData(table) { (actual, features) =>
+                      val predicted =
+                        features map (forest.predict) // TODO: Unbox me!
+                      val error = findError(actual, predicted)
+                      error
+                    }
+                }
 
               errors map (variance) flatMap { s2 =>
                 val forest = forests.last

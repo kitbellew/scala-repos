@@ -128,9 +128,10 @@ trait AbstractExamples extends Specification {
   }
 
   "JSON building example" in {
-    val json = JObject(JField("name", JString("joe")), JField("age", JInt(34))) ++ JObject(
-      JField("name", ("mazy")),
-      JField("age", JInt(31)))
+    val json =
+      JObject(JField("name", JString("joe")), JField("age", JInt(34))) ++ JObject(
+        JField("name", ("mazy")),
+        JField("age", JInt(31)))
     print(json) mustEqual """[{"name":"joe","age":34},{"name":"mazy","age":31}]"""
   }
 

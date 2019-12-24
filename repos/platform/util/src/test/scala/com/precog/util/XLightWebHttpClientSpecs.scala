@@ -44,7 +44,8 @@ object XLightWebHttpClientSpecs
     "submit a google search" in {
       val client = HttpClient("http://www.google.com")
       val request = (Request() / "search") ? ("q" -> "recursion")
-      val data = (client.execute(request) | sys.error("...")).copoint.body getOrElse ""
+      val data =
+        (client.execute(request) | sys.error("...")).copoint.body getOrElse ""
 
       data must contain("Did you mean")
     }
@@ -54,7 +55,8 @@ object XLightWebHttpClientSpecs
       val client = HttpClient("http://posttestserver.com")
       val request =
         (Request(HttpMethod.POST) / "post.php").withBody("text/plain", body)
-      val data = (client.execute(request) | sys.error("...")).copoint.body getOrElse ""
+      val data =
+        (client.execute(request) | sys.error("...")).copoint.body getOrElse ""
 
       data must contain("Post body was %d chars long".format(body.length))
     }

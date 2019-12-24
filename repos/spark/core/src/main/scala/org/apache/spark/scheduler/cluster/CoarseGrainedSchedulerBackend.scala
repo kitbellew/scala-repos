@@ -499,7 +499,8 @@ private[spark] class CoarseGrainedSchedulerBackend(
 
       numPendingExecutors += numAdditionalExecutors
       // Account for executors pending to be added or removed
-      val newTotal = numExistingExecutors + numPendingExecutors - executorsPendingToRemove.size
+      val newTotal =
+        numExistingExecutors + numPendingExecutors - executorsPendingToRemove.size
       doRequestTotalExecutors(newTotal)
     }
 

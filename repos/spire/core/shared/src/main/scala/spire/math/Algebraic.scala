@@ -1456,7 +1456,8 @@ object Algebraic extends AlgebraicInstances {
           val lhs = lhsExpr.getBound(this)
           val rhs = rhsExpr.getBound(this)
           val lc = lhs.lc * rhsExpr.degreeBound + rhs.lc * lhsExpr.degreeBound
-          val tc = lhs.measure * rhsExpr.degreeBound + rhs.measure * lhsExpr.degreeBound + 2 * degreeBound
+          val tc =
+            lhs.measure * rhsExpr.degreeBound + rhs.measure * lhsExpr.degreeBound + 2 * degreeBound
           val measure = tc
           val ub = max(lhs.ub, rhs.ub) + 1
           val lb = max(-measure, -(ub * (degreeBound - 1) + lc))
@@ -1467,7 +1468,8 @@ object Algebraic extends AlgebraicInstances {
           val rhs = rhsExpr.getBound(this)
           val lc = lhs.lc * rhsExpr.degreeBound + rhs.lc * lhsExpr.degreeBound
           val tc = lhs.tc * rhsExpr.degreeBound + rhs.tc * lhsExpr.degreeBound
-          val measure = lhs.measure * rhsExpr.degreeBound + rhs.measure * lhsExpr.degreeBound
+          val measure =
+            lhs.measure * rhsExpr.degreeBound + rhs.measure * lhsExpr.degreeBound
           val lb = lhs.lb + rhs.lb
           val ub = lhs.ub + rhs.ub
           Bound(lc, tc, measure, lb, ub)
@@ -1477,7 +1479,8 @@ object Algebraic extends AlgebraicInstances {
           val rhs = rhsExpr.getBound(this)
           val lc = lhs.lc * rhsExpr.degreeBound + rhs.tc * lhsExpr.degreeBound
           val tc = lhs.tc * rhsExpr.degreeBound + rhs.lc * lhsExpr.degreeBound
-          val measure = lhs.measure * rhsExpr.degreeBound + rhs.measure * lhsExpr.degreeBound
+          val measure =
+            lhs.measure * rhsExpr.degreeBound + rhs.measure * lhsExpr.degreeBound
           val lb = lhs.lb - rhs.ub
           val ub = lhs.ub - rhs.lb
           Bound(lc, tc, measure, lb, ub)

@@ -30,7 +30,8 @@ trait Validators {
         MacroImplNonTagImplicitParameters(implicitParams)
       val effectiveOwner =
         if (isImplMethod) macroImplOwner else macroImplOwner.owner
-      val effectivelyStatic = effectiveOwner.isStaticOwner || effectiveOwner.moduleClass.isStaticOwner
+      val effectivelyStatic =
+        effectiveOwner.isStaticOwner || effectiveOwner.moduleClass.isStaticOwner
       val correctBundleness =
         if (isImplMethod) macroImplOwner.isModuleClass
         else macroImplOwner.isClass && !macroImplOwner.isModuleClass

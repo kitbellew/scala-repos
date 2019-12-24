@@ -85,11 +85,13 @@ case class BaseBolt[I, O](
   private[this] val upperBound = maxExecutePerSec.upperBound * 10
   private[this] val PERIOD_LENGTH_MS = 10000L
 
-  private[this] val rampPeriods = maxExecutePerSec.rampUptimeMS / PERIOD_LENGTH_MS
+  private[this] val rampPeriods =
+    maxExecutePerSec.rampUptimeMS / PERIOD_LENGTH_MS
   private[this] val deltaPerPeriod: Long =
     if (rampPeriods > 0) (upperBound - lowerBound) / rampPeriods else 0
 
-  private[this] lazy val startPeriod = System.currentTimeMillis / PERIOD_LENGTH_MS
+  private[this] lazy val startPeriod =
+    System.currentTimeMillis / PERIOD_LENGTH_MS
   private[this] lazy val endRampPeriod = startPeriod + rampPeriods
 
   /*

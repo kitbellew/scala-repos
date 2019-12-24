@@ -51,7 +51,8 @@ private[forum] final class CategApi(env: Env) {
         author = none,
         userId = "lichess".some,
         ip = none,
-        text = "Welcome to the %s forum!\nOnly members of the team can post here, but everybody can read." format name,
+        text =
+          "Welcome to the %s forum!\nOnly members of the team can post here, but everybody can read." format name,
         number = 1,
         troll = false,
         hidden = topic.hidden,

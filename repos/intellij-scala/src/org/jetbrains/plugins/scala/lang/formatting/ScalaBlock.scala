@@ -72,7 +72,8 @@ class ScalaBlock(
       mySettings.getCustomSettings(classOf[ScalaCodeStyleSettings])
     val indentSize = mySettings.getIndentSize(ScalaFileType.SCALA_FILE_TYPE)
     val parent = getNode.getPsi
-    val braceShifted = mySettings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED
+    val braceShifted =
+      mySettings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED
     def isBlockOnlyScope(scope: PsiElement) =
       !isLeaf &&
         Set(ScalaTokenTypes.tLBRACE, ScalaTokenTypes.tLPARENTHESIS)

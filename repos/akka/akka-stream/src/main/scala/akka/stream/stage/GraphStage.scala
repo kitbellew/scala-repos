@@ -450,7 +450,8 @@ abstract class GraphStageLogic private[stream] (
   final protected def isAvailable[T](in: Inlet[T]): Boolean = {
     val connection = conn(in)
 
-    val normalArrived = (interpreter.portStates(conn(in)) & (InReady | InFailed)) == InReady
+    val normalArrived =
+      (interpreter.portStates(conn(in)) & (InReady | InFailed)) == InReady
 
     // Fast path
     if (normalArrived)

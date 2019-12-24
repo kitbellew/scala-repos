@@ -104,9 +104,8 @@ object InputTask {
       action: TaskKey[I] => Initialize[Task[T]]): Initialize[InputTask[T]] = {
     val dummyKey = localKey[Task[I]]
     val (marker, dummy) = dummyTask[I]
-    val it = action(TaskKey(dummyKey)) mapConstant subResultForDummy(
-      dummyKey,
-      dummy)
+    val it =
+      action(TaskKey(dummyKey)) mapConstant subResultForDummy(dummyKey, dummy)
     val act = it { tsk => (value: I) =>
       subForDummy(marker, value, tsk)
     }

@@ -193,7 +193,8 @@ abstract class NumericRange[T](
           (num eq scala.math.Numeric.ByteIsIntegral) ||
           (num eq scala.math.Numeric.CharIsIntegral)) {
         // We can do math with no overflow in a Long--easy
-        val exact = (numRangeElements * ((num toLong head) + (num toInt last))) / 2
+        val exact =
+          (numRangeElements * ((num toLong head) + (num toInt last))) / 2
         num fromInt exact.toInt
       } else if (num eq scala.math.Numeric.LongIsIntegral) {
         // Uh-oh, might be overflow, so we have to divide before we overflow.

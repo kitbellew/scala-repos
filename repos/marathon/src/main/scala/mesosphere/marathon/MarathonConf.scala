@@ -88,8 +88,9 @@ trait MarathonConf
 
   lazy val hostname = opt[String](
     "hostname",
-    descr = "The advertised hostname that is used for the communication with the Mesos master. " +
-      "The value is also stored in the persistent store so another standby host can redirect to the elected leader.",
+    descr =
+      "The advertised hostname that is used for the communication with the Mesos master. " +
+        "The value is also stored in the persistent store so another standby host can redirect to the elected leader.",
     default = Some(java.net.InetAddress.getLocalHost.getHostName)
   )
 
@@ -118,8 +119,9 @@ trait MarathonConf
 
   lazy val eventStreamMaxOutstandingMessages = opt[Int](
     "event_stream_max_outstanding_messages",
-    descr = "The event stream buffers events, that are not already consumed by clients. " +
-      "This number defines the number of events that get buffered on the server side, before messages are dropped.",
+    descr =
+      "The event stream buffers events, that are not already consumed by clients. " +
+        "This number defines the number of events that get buffered on the server side, before messages are dropped.",
     noshort = true,
     default = Some(50)
   )
@@ -217,9 +219,10 @@ trait MarathonConf
     "v0.12")
   lazy val marathonStoreTimeout = opt[Long](
     "marathon_store_timeout",
-    descr = "(deprecated) Maximum time, in milliseconds, to wait for persistent storage " +
-      "operations to complete. This option is no longer used and " +
-      "will be removed in a later release.",
+    descr =
+      "(deprecated) Maximum time, in milliseconds, to wait for persistent storage " +
+        "operations to complete. This option is no longer used and " +
+        "will be removed in a later release.",
     default = None
   )
 

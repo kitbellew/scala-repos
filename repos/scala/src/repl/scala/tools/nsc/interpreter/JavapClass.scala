@@ -50,8 +50,8 @@ class JavapClass(
   lazy val tool = JavapTool()
 
   def apply(args: Seq[String]): List[JpResult] = {
-    val (options0, targets) = args partition (s =>
-      (s startsWith "-") && s.length > 1)
+    val (options0, targets) =
+      args partition (s => (s startsWith "-") && s.length > 1)
     val (options, filter) = {
       val (opts, flag) = toolArgs(options0)
       (if (opts.isEmpty) DefaultOptions else opts, flag)

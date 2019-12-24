@@ -30,10 +30,8 @@ import org.apache.spark.sql.catalyst.rules._
 class EliminateSubqueryAliasesSuite extends PlanTest with PredicateHelper {
 
   object Optimize extends RuleExecutor[LogicalPlan] {
-    val batches = Batch(
-      "EliminateSubqueryAliases",
-      Once,
-      EliminateSubqueryAliases) :: Nil
+    val batches =
+      Batch("EliminateSubqueryAliases", Once, EliminateSubqueryAliases) :: Nil
   }
 
   private def assertEquivalent(e1: Expression, e2: Expression): Unit = {

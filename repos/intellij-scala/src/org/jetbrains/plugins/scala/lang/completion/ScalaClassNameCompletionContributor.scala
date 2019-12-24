@@ -131,7 +131,8 @@ object ScalaClassNameCompletionContributor {
       case ScalaTokenTypes.tSTRING | ScalaTokenTypes.tMULTILINE_STRING =>
         val position = dummyPosition
         //It's ok here to use parameters.getPosition
-        val offsetInString = parameters.getOffset - parameters.getPosition.getTextRange.getStartOffset + 1
+        val offsetInString =
+          parameters.getOffset - parameters.getPosition.getTextRange.getStartOffset + 1
         val interpolated =
           ScalaPsiElementFactory.createExpressionFromText(
             "s" + position.getText,

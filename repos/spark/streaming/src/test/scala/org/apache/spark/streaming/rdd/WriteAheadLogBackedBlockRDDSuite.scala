@@ -177,11 +177,11 @@ class WriteAheadLogBackedBlockRDDSuite
     }
 
     // Generate write ahead log record handles
-    val recordHandles = generateFakeRecordHandles(
-      numPartitions - numPartitionsInWAL) ++
-      generateWALRecordHandles(
-        data.takeRight(numPartitionsInWAL),
-        blockIds.takeRight(numPartitionsInWAL))
+    val recordHandles =
+      generateFakeRecordHandles(numPartitions - numPartitionsInWAL) ++
+        generateWALRecordHandles(
+          data.takeRight(numPartitionsInWAL),
+          blockIds.takeRight(numPartitionsInWAL))
 
     // Make sure that the left `numPartitionsInBM` blocks are in block manager, and others are not
     require(

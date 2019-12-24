@@ -12,10 +12,10 @@ final class DataForm {
 
   import DataForm._
 
-  val clockTimes
-      : Seq[Double] = Seq(0d, 1 / 2d, 3 / 4d, 1d, 3 / 2d) ++ (2d to 7d by 1d)
-  val clockTimesPrivate
-      : Seq[Double] = clockTimes ++ (10d to 30d by 5d) ++ (40d to 60d by 10d)
+  val clockTimes: Seq[Double] =
+    Seq(0d, 1 / 2d, 3 / 4d, 1d, 3 / 2d) ++ (2d to 7d by 1d)
+  val clockTimesPrivate: Seq[Double] =
+    clockTimes ++ (10d to 30d by 5d) ++ (40d to 60d by 10d)
   val clockTimeDefault = 2d
   private def formatLimit(l: Double) =
     chess.Clock.showLimit(l * 60 toInt) + {
@@ -25,7 +25,8 @@ final class DataForm {
   val clockTimePrivateChoices = optionsDouble(clockTimesPrivate, formatLimit)
 
   val clockIncrements = 0 to 2 by 1
-  val clockIncrementsPrivate = clockIncrements ++ (3 to 7) ++ (10 to 30 by 5) ++ (40 to 60 by 10)
+  val clockIncrementsPrivate =
+    clockIncrements ++ (3 to 7) ++ (10 to 30 by 5) ++ (40 to 60 by 10)
   val clockIncrementDefault = 0
   val clockIncrementChoices = options(clockIncrements, "%d second{s}")
   val clockIncrementPrivateChoices =

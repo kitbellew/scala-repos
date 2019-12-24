@@ -240,7 +240,8 @@ object Test2_immutable {
     check(xs1, _xs1)
 
     // ListMap
-    val lm1 = new ListMap[String, Int] + ("buffers" -> 20, "layers" -> 2, "title" -> 3)
+    val lm1 =
+      new ListMap[String, Int] + ("buffers" -> 20, "layers" -> 2, "title" -> 3)
     val _lm1: ListMap[String, Int] = read(write(lm1))
     check(lm1, _lm1)
 
@@ -453,10 +454,8 @@ object Test3_mutable {
     check(ts1, _ts1)
 
     // concurrent.TrieMap
-    val ct1 = TrieMap[Int, String]() ++= Array(
-      1 -> "one",
-      2 -> "two",
-      3 -> "three")
+    val ct1 =
+      TrieMap[Int, String]() ++= Array(1 -> "one", 2 -> "two", 3 -> "three")
     val _ct1: TrieMap[Int, String] = read(write(ct1))
     check(ct1, _ct1)
   } catch {

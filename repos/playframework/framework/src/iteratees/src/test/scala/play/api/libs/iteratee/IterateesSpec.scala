@@ -678,9 +678,10 @@ object IterateesSpec
     }
 
     "skip Input.Empty when taking elements" in {
-      val enum = Enumerator(1, 2) >>> Enumerator.enumInput(Input.Empty) >>> Enumerator(
-        3,
-        4)
+      val enum =
+        Enumerator(1, 2) >>> Enumerator.enumInput(Input.Empty) >>> Enumerator(
+          3,
+          4)
       await(enum |>>> takenAndNotTaken(3)) must equalTo((Seq(1, 2, 3), Seq(4)))
     }
 
@@ -756,9 +757,10 @@ object IterateesSpec
     }
 
     "skip Input.Empty when taking elements" in {
-      val enum = Enumerator(1, 2) >>> Enumerator.enumInput(Input.Empty) >>> Enumerator(
-        3,
-        4)
+      val enum =
+        Enumerator(1, 2) >>> Enumerator.enumInput(Input.Empty) >>> Enumerator(
+          3,
+          4)
       await(enum |>>> process(3)) must equalTo((Seq(1, 2, 3), false, Seq(4)))
     }
 

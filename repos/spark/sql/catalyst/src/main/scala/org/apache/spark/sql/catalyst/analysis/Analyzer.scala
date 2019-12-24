@@ -1021,7 +1021,8 @@ class Analyzer(
                 finalSortOrders,
                 global,
                 aggregate
-                  .copy(aggregateExpressions = originalAggExprs ++ needsPushDown)))
+                  .copy(aggregateExpressions =
+                    originalAggExprs ++ needsPushDown)))
           }
         } catch {
           // Attempting to resolve in the aggregate can result in ambiguity.  When this happens,
@@ -1075,7 +1076,8 @@ class Analyzer(
 
             resolvedGenerator = Generate(
               generator,
-              join = projectList.size > 1, // Only join if there are other expressions in SELECT.
+              join =
+                projectList.size > 1, // Only join if there are other expressions in SELECT.
               outer = false,
               qualifier = None,
               generatorOutput = makeGeneratorOutput(generator, names),

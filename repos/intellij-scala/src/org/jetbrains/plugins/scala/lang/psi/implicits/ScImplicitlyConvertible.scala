@@ -486,7 +486,8 @@ class ScImplicitlyConvertible(
                               None,
                               place,
                               check = false,
-                              abstractSubstitutor = subst followed dependentSubst followed unSubst)
+                              abstractSubstitutor =
+                                subst followed dependentSubst followed unSubst)
                           inferredParams
                             .zip(expr)
                             .map {
@@ -693,7 +694,8 @@ object ScImplicitlyConvertible {
 
   val IMPLICIT_REFERENCE_NAME = "implicitReferenceName"
   val IMPLICIT_EXPRESSION_NAME = "implicitExpressionName"
-  val IMPLICIT_CALL_TEXT = IMPLICIT_REFERENCE_NAME + "(" + IMPLICIT_EXPRESSION_NAME + ")"
+  val IMPLICIT_CALL_TEXT =
+    IMPLICIT_REFERENCE_NAME + "(" + IMPLICIT_EXPRESSION_NAME + ")"
 
   val FAKE_RESOLVE_RESULT_KEY: Key[ScalaResolveResult] =
     Key.create("fake.resolve.result.key")

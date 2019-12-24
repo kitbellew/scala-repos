@@ -82,7 +82,8 @@ trait Errors extends Traces {
 
     private def lengthMsg(flavor: String, violation: String, extra: Symbol) = {
       val noun = if (flavor == "value") "parameter" else "type parameter"
-      val message = noun + " lists have different length, " + violation + " extra " + noun
+      val message =
+        noun + " lists have different length, " + violation + " extra " + noun
       val suffix = if (extra ne NoSymbol) " " + extra.defString else ""
       message + suffix
     }

@@ -19,8 +19,8 @@ object Inbox {
     private val q = new ConcurrentLinkedQueue[T]
     private val r = new akka.actor.MinimalActorRef {
       override def provider: ActorRefProvider = ???
-      override val path
-          : ActorPath = RootActorPath(Address("akka", "SyncInbox")) / name
+      override val path: ActorPath =
+        RootActorPath(Address("akka", "SyncInbox")) / name
       override def !(msg: Any)(implicit sender: akka.actor.ActorRef) =
         q.offer(msg.asInstanceOf[T])
     }

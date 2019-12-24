@@ -104,9 +104,9 @@ class ReducerEstimatorTest
 
   "Single-step job with reducer estimator" should {
     "run with correct number of reducers" in {
-      val customConfig = Config.empty.addReducerEstimator(
-        classOf[InputSizeReducerEstimator]) +
-        (InputSizeReducerEstimator.BytesPerReducer -> (1L << 10).toString)
+      val customConfig =
+        Config.empty.addReducerEstimator(classOf[InputSizeReducerEstimator]) +
+          (InputSizeReducerEstimator.BytesPerReducer -> (1L << 10).toString)
 
       HadoopPlatformJobTest(new SimpleJob(_, customConfig), cluster).inspectCompletedFlow {
         flow =>
@@ -119,10 +119,10 @@ class ReducerEstimatorTest
     }
 
     "run with correct number of reducers when overriding set values" in {
-      val customConfig = Config.empty.addReducerEstimator(
-        classOf[InputSizeReducerEstimator]) +
-        (InputSizeReducerEstimator.BytesPerReducer -> (1L << 10).toString) +
-        (Config.ReducerEstimatorOverride -> "true")
+      val customConfig =
+        Config.empty.addReducerEstimator(classOf[InputSizeReducerEstimator]) +
+          (InputSizeReducerEstimator.BytesPerReducer -> (1L << 10).toString) +
+          (Config.ReducerEstimatorOverride -> "true")
 
       HadoopPlatformJobTest(new SimpleJob(_, customConfig), cluster).inspectCompletedFlow {
         flow =>
@@ -137,9 +137,9 @@ class ReducerEstimatorTest
 
   "Group-all job with reducer estimator" should {
     "run with correct number of reducers (i.e. 1)" in {
-      val customConfig = Config.empty.addReducerEstimator(
-        classOf[InputSizeReducerEstimator]) +
-        (InputSizeReducerEstimator.BytesPerReducer -> (1L << 10).toString)
+      val customConfig =
+        Config.empty.addReducerEstimator(classOf[InputSizeReducerEstimator]) +
+          (InputSizeReducerEstimator.BytesPerReducer -> (1L << 10).toString)
 
       HadoopPlatformJobTest(new GroupAllJob(_, customConfig), cluster).inspectCompletedFlow {
         flow =>
@@ -154,9 +154,9 @@ class ReducerEstimatorTest
 
   "Multi-step job with reducer estimator" should {
     "run with correct number of reducers in each step" in {
-      val customConfig = Config.empty.addReducerEstimator(
-        classOf[InputSizeReducerEstimator]) +
-        (InputSizeReducerEstimator.BytesPerReducer -> (1L << 10).toString)
+      val customConfig =
+        Config.empty.addReducerEstimator(classOf[InputSizeReducerEstimator]) +
+          (InputSizeReducerEstimator.BytesPerReducer -> (1L << 10).toString)
 
       HadoopPlatformJobTest(new HipJob(_, customConfig), cluster)
         .sink[Double](out)(_.head shouldBe 2.86 +- 0.0001)
@@ -172,9 +172,9 @@ class ReducerEstimatorTest
 
   "Map-only job with reducer estimator" should {
     "not set num reducers" in {
-      val customConfig = Config.empty.addReducerEstimator(
-        classOf[InputSizeReducerEstimator]) +
-        (InputSizeReducerEstimator.BytesPerReducer -> (1L << 10).toString)
+      val customConfig =
+        Config.empty.addReducerEstimator(classOf[InputSizeReducerEstimator]) +
+          (InputSizeReducerEstimator.BytesPerReducer -> (1L << 10).toString)
 
       HadoopPlatformJobTest(new SimpleMapOnlyJob(_, customConfig), cluster).inspectCompletedFlow {
         flow =>

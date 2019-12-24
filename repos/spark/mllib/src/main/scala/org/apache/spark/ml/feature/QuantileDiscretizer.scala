@@ -151,8 +151,8 @@ object QuantileDiscretizer
     val valueCountMap = samples.foldLeft(Map.empty[Double, Int]) { (m, x) =>
       m + ((x, m.getOrElse(x, 0) + 1))
     }
-    val valueCounts = valueCountMap.toSeq.sortBy(_._1).toArray ++ Array(
-      (Double.MaxValue, 1))
+    val valueCounts =
+      valueCountMap.toSeq.sortBy(_._1).toArray ++ Array((Double.MaxValue, 1))
     val possibleSplits = valueCounts.length - 1
     if (possibleSplits <= numSplits) {
       valueCounts.dropRight(1).map(_._1)

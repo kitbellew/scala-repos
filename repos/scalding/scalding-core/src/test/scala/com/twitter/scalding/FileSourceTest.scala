@@ -296,7 +296,8 @@ object TestPath {
     case "scalding-core" => getCurrentDirectory
     case _               => getCurrentDirectory + "/scalding-core"
   }
-  val testfsPathRoot = prefix + "/src/test/resources/com/twitter/scalding/test_filesystem/"
+  val testfsPathRoot =
+    prefix + "/src/test/resources/com/twitter/scalding/test_filesystem/"
 }
 
 object TestFileSource extends FileSource {

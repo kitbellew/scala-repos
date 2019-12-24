@@ -71,8 +71,8 @@ class ChooseTypeTextExpression(
   }
 
   override def lookupString(elem: ScTypeText): String = {
-    val useCanonicalText: Boolean = lookupItems.count(
-      _.presentableText == elem.presentableText) > 1
+    val useCanonicalText: Boolean =
+      lookupItems.count(_.presentableText == elem.presentableText) > 1
     if (useCanonicalText) elem.canonicalText.replace("_root_.", "")
     else elem.presentableText
   }

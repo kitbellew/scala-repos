@@ -59,7 +59,8 @@ abstract class Delambdafy
   class DelambdafyTransformer(unit: CompilationUnit)
       extends TypingTransformer(unit)
       with TypeAdapter {
-    private val lambdaClassDefs = new mutable.LinkedHashMap[Symbol, List[Tree]] withDefaultValue Nil
+    private val lambdaClassDefs =
+      new mutable.LinkedHashMap[Symbol, List[Tree]] withDefaultValue Nil
 
     val typer = localTyper
 
@@ -343,7 +344,8 @@ abstract class Delambdafy
         val name = unit.freshTypeName(
           s"$oldClassPart$suffix".replace("$anon", "$nestedInAnon"))
 
-        val lambdaClass = pkg newClassSymbol (name, originalFunction.pos, FINAL | SYNTHETIC) addAnnotation SerialVersionUIDAnnotation
+        val lambdaClass =
+          pkg newClassSymbol (name, originalFunction.pos, FINAL | SYNTHETIC) addAnnotation SerialVersionUIDAnnotation
         lambdaClass.associatedFile = unit.source.file
         // make sure currentRun.compiles(lambdaClass) is true (AddInterfaces does the same for trait impl classes)
         currentRun.symSource(lambdaClass) = funOwner.sourceFile
@@ -390,11 +392,12 @@ abstract class Delambdafy
         val decapturedFunction =
           decapturify.transform(originalFunction).asInstanceOf[Function]
 
-        val members = (optionSymbol(thisProxy).toList ++ (captureProxies2 map (_._2))) map {
-          member =>
-            lambdaClass.info.decls enter member
-            ValDef(member, gen.mkZero(member.tpe)) setPos decapturedFunction.pos
-        }
+        val members =
+          (optionSymbol(thisProxy).toList ++ (captureProxies2 map (_._2))) map {
+            member =>
+              lambdaClass.info.decls enter member
+              ValDef(member, gen.mkZero(member.tpe)) setPos decapturedFunction.pos
+          }
 
         // constructor
         val constr = createConstructor(lambdaClass, members)
@@ -578,7 +581,8 @@ abstract class Delambdafy
         val (needsReturnAdaptation, adaptedBody) =
           adaptAndPostErase(body, ObjectTpe)
 
-        val needsBridge = (paramNeedsAdaptation contains true) || needsReturnAdaptation
+        val needsBridge =
+          (paramNeedsAdaptation contains true) || needsReturnAdaptation
         if (needsBridge) {
           val methDef = DefDef(bridgeMethSym, List(bridgeParams), adaptedBody)
           newClass.info.decls enter bridgeMethSym

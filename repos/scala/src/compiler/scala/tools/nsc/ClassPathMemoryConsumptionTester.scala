@@ -37,8 +37,8 @@ object ClassPathMemoryConsumptionTester {
   private def doTest(args: Array[String]) = {
     val settings = loadSettings(args.toList)
 
-    val mains = (1 to settings.requiredInstances.value) map (_ =>
-      new MainRetainsGlobal)
+    val mains =
+      (1 to settings.requiredInstances.value) map (_ => new MainRetainsGlobal)
 
     // we need original settings without additional params to be able to use them later
     val baseArgs = argsWithoutRequiredInstances(args)

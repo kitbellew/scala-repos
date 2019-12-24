@@ -22,8 +22,9 @@ trait HttpEventConfiguration extends ScallopConf {
 
   lazy val httpEventEndpoints = opt[String](
     "http_endpoints",
-    descr = "The URLs of the event endpoints added to the current list of subscribers on startup. " +
-      "You can manage this list during runtime by using the /v2/eventSubscriptions API endpoint.",
+    descr =
+      "The URLs of the event endpoints added to the current list of subscribers on startup. " +
+        "You can manage this list during runtime by using the /v2/eventSubscriptions API endpoint.",
     required = false,
     noshort = true
   ).map(parseHttpEventEndpoints)

@@ -457,8 +457,9 @@ object Bounds {
               //don't calculate the lub of the types themselves, but of the components of their compound types (if existing)
               // example: the lub of "_ >: Int with Double <: AnyVal" & Long we need here should be AnyVal, not Any
               def getTypesForLubEvaluation(t: ScType) = Seq(t)
-              val typesToCover = getTypesForLubEvaluation(substed1) ++ getTypesForLubEvaluation(
-                substed2)
+              val typesToCover =
+                getTypesForLubEvaluation(substed1) ++ getTypesForLubEvaluation(
+                  substed2)
               val newLub =
                 Bounds.lub(typesToCover, checkWeak = false)(stopAddingUpperBound =
                   true)

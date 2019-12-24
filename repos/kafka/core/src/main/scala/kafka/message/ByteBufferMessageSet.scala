@@ -492,7 +492,8 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
       // 4. Message format conversion is needed.
 
       // No in place assignment situation 1 and 2
-      var inPlaceAssignment = sourceCodec == targetCodec && messageFormatVersion > Message.MagicValue_V0
+      var inPlaceAssignment =
+        sourceCodec == targetCodec && messageFormatVersion > Message.MagicValue_V0
 
       var maxTimestamp = Message.NoTimestamp
       val expectedInnerOffset = new LongRef(0)

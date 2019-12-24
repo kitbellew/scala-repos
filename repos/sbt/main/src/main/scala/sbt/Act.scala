@@ -231,8 +231,8 @@ object Act {
       knownKeys: Map[String, AttributeKey[_]],
       knownValues: IMap[AttributeKey, Set]): Parser[ScopeAxis[AttributeMap]] = {
     val extrasP = extrasParser(knownKeys, knownValues)
-    val extras = token('(', hide = _ == 1 && knownValues.isEmpty) ~> extrasP <~ token(
-      ')')
+    val extras =
+      token('(', hide = _ == 1 && knownValues.isEmpty) ~> extrasP <~ token(')')
     optionalAxis(extras, Global)
   }
 
@@ -280,8 +280,8 @@ object Act {
   def extraParser(
       knownKeys: Map[String, AttributeKey[_]],
       knownValues: IMap[AttributeKey, Set]): Parser[AttributeEntry[_]] = {
-    val keyp = knownIDParser(knownKeys, "Not a valid extra key") <~ token(
-      ':' ~ OptSpace)
+    val keyp =
+      knownIDParser(knownKeys, "Not a valid extra key") <~ token(':' ~ OptSpace)
     keyp flatMap {
       case key: AttributeKey[t] =>
         val valueMap: Map[String, t] =

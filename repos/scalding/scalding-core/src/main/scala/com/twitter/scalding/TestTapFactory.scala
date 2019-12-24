@@ -35,11 +35,11 @@ import scala.collection.JavaConverters._
   * Use this to create Taps for testing.
   */
 object TestTapFactory extends Serializable {
-  val sourceNotFoundError
-      : String = "Source %s does not appear in your test sources.  Make sure " +
-    "each source in your job has a corresponding source in the test sources that is EXACTLY " +
-    "equal.  Call the '.source' or '.sink' methods as appropriate on your JobTest to add test " +
-    "buffers for each source or sink."
+  val sourceNotFoundError: String =
+    "Source %s does not appear in your test sources.  Make sure " +
+      "each source in your job has a corresponding source in the test sources that is EXACTLY " +
+      "equal.  Call the '.source' or '.sink' methods as appropriate on your JobTest to add test " +
+      "buffers for each source or sink."
 
   def apply(
       src: Source,

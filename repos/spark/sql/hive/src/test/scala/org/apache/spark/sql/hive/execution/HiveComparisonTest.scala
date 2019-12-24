@@ -508,8 +508,10 @@ abstract class HiveComparisonTest
                 (!hiveQuery.logical.isInstanceOf[DescribeFunction]) &&
                 preparedHive != catalyst) {
 
-              val hivePrintOut = s"== HIVE - ${preparedHive.size} row(s) ==" +: preparedHive
-              val catalystPrintOut = s"== CATALYST - ${catalyst.size} row(s) ==" +: catalyst
+              val hivePrintOut =
+                s"== HIVE - ${preparedHive.size} row(s) ==" +: preparedHive
+              val catalystPrintOut =
+                s"== CATALYST - ${catalyst.size} row(s) ==" +: catalyst
 
               val resultComparison =
                 sideBySide(hivePrintOut, catalystPrintOut).mkString("\n")

@@ -185,9 +185,8 @@ class Matrix2OptimizationSpec extends WordSpec with Matchers {
   val g4 = product(g2, g2, true)
   val optimizedGraph8 = product(g4, g4, true)
 
-  val unoptimizedGraphVectorPlan = (g ^ (5)) * literal(
-    globM,
-    FiniteHint(Long.MaxValue, 1))
+  val unoptimizedGraphVectorPlan =
+    (g ^ (5)) * literal(globM, FiniteHint(Long.MaxValue, 1))
 
   val optimizedGraphVectorPlan = product(
     product(

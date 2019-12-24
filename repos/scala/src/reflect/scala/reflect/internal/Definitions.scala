@@ -123,7 +123,8 @@ trait Definitions extends api.StandardDefinitions {
 
     private def boxedName(name: Name) = sn.Boxed(name.toTypeName)
 
-    lazy val abbrvTag = symbolsMap(ScalaValueClasses, nameToTag) withDefaultValue OBJECT_TAG
+    lazy val abbrvTag =
+      symbolsMap(ScalaValueClasses, nameToTag) withDefaultValue OBJECT_TAG
     lazy val numericWeight =
       symbolsMapFilt(ScalaValueClasses, nameToWeight.keySet, nameToWeight)
     lazy val boxedModule = classesMap(x => getModuleByName(boxedName(x)))
@@ -176,10 +177,10 @@ trait Definitions extends api.StandardDefinitions {
     lazy val DoubleTpe = DoubleClass.tpe
     lazy val BooleanTpe = BooleanClass.tpe
 
-    lazy val ScalaNumericValueClasses = ScalaValueClasses filterNot Set[Symbol](
-      UnitClass,
-      BooleanClass)
-    lazy val ScalaValueClassesNoUnit = ScalaValueClasses filterNot (_ eq UnitClass)
+    lazy val ScalaNumericValueClasses =
+      ScalaValueClasses filterNot Set[Symbol](UnitClass, BooleanClass)
+    lazy val ScalaValueClassesNoUnit =
+      ScalaValueClasses filterNot (_ eq UnitClass)
     lazy val ScalaValueClasses: List[ClassSymbol] = List(
       UnitClass,
       BooleanClass,
@@ -444,8 +445,10 @@ trait Definitions extends api.StandardDefinitions {
       AnyTpe :: Nil,
       ABSTRACT | TRAIT | FINAL) markAllCompleted
     lazy val SerializableClass = requiredClass[scala.Serializable]
-    lazy val JavaSerializableClass = requiredClass[java.io.Serializable] modifyInfo fixupAsAnyTrait
-    lazy val ComparableClass = requiredClass[java.lang.Comparable[_]] modifyInfo fixupAsAnyTrait
+    lazy val JavaSerializableClass =
+      requiredClass[java.io.Serializable] modifyInfo fixupAsAnyTrait
+    lazy val ComparableClass =
+      requiredClass[java.lang.Comparable[_]] modifyInfo fixupAsAnyTrait
     lazy val JavaCloneableClass = requiredClass[java.lang.Cloneable]
     lazy val JavaNumberClass = requiredClass[java.lang.Number]
     lazy val JavaEnumClass = requiredClass[java.lang.Enum[_]]
@@ -815,9 +818,9 @@ trait Definitions extends api.StandardDefinitions {
       ctor.paramss match {
         case List(List(c)) =>
           val sym = c.info.typeSymbol
-          val isContextCompatible = sym.isNonBottomSubClass(
-            BlackboxContextClass) || sym.isNonBottomSubClass(
-            WhiteboxContextClass)
+          val isContextCompatible =
+            sym.isNonBottomSubClass(BlackboxContextClass) || sym
+              .isNonBottomSubClass(WhiteboxContextClass)
           if (isContextCompatible) c.info else NoType
         case _ =>
           NoType
@@ -1021,7 +1024,8 @@ trait Definitions extends api.StandardDefinitions {
       // (not even an implicit argument list -- to keep it simple for now)
       val tpSym = tp.typeSymbol
       val ctor = tpSym.primaryConstructor
-      val ctorOk = !ctor.exists || (!ctor.isOverloaded && ctor.isPublic && ctor.info.params.isEmpty && ctor.info.paramSectionCount <= 1)
+      val ctorOk =
+        !ctor.exists || (!ctor.isOverloaded && ctor.isPublic && ctor.info.params.isEmpty && ctor.info.paramSectionCount <= 1)
 
       if (tpSym.exists && ctorOk) {
         // find the single abstract member, if there is one
@@ -1206,14 +1210,13 @@ trait Definitions extends api.StandardDefinitions {
     lazy val Any_asInstanceOf =
       newT1NullaryMethod(AnyClass, nme.asInstanceOf_, FINAL)(_.typeConstructor)
 
-    lazy val primitiveGetClassMethods = Set[Symbol](
-      Any_getClass,
-      AnyVal_getClass) ++ (
-      ScalaValueClasses map (_.tpe member nme.getClass_)
-    )
+    lazy val primitiveGetClassMethods =
+      Set[Symbol](Any_getClass, AnyVal_getClass) ++ (
+        ScalaValueClasses map (_.tpe member nme.getClass_)
+      )
 
-    lazy val getClassMethods
-        : Set[Symbol] = primitiveGetClassMethods + Object_getClass
+    lazy val getClassMethods: Set[Symbol] =
+      primitiveGetClassMethods + Object_getClass
 
     // A type function from T => Class[U], used to determine the return
     // type of getClass calls.  The returned type is:
@@ -1667,7 +1670,8 @@ trait Definitions extends api.StandardDefinitions {
       *  Such symbols either don't have any underlying bytecode at all ("synthesized")
       *  or get loaded from bytecode but have their metadata adjusted ("hijacked").
       */
-    lazy val symbolsNotPresentInBytecode = syntheticCoreClasses ++ syntheticCoreMethods ++ hijackedCoreClasses
+    lazy val symbolsNotPresentInBytecode =
+      syntheticCoreClasses ++ syntheticCoreMethods ++ hijackedCoreClasses
 
     /** Is the symbol that of a parent which is added during parsing? */
     lazy val isPossibleSyntheticParent = ProductClass.seq
@@ -1899,11 +1903,11 @@ trait Definitions extends api.StandardDefinitions {
 
       lazy val Scala_Java8_CompatPackage =
         rootMirror.getPackageIfDefined("scala.runtime.java8")
-      lazy val Scala_Java8_CompatPackage_JFunction = (0 to MaxFunctionArity).toArray map (
-          i =>
-            getMemberIfDefined(
-              Scala_Java8_CompatPackage.moduleClass,
-              TypeName("JFunction" + i)))
+      lazy val Scala_Java8_CompatPackage_JFunction =
+        (0 to MaxFunctionArity).toArray map (i =>
+          getMemberIfDefined(
+            Scala_Java8_CompatPackage.moduleClass,
+            TypeName("JFunction" + i)))
     }
   }
 }

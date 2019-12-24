@@ -62,7 +62,8 @@ class FlipComparisonInInfixExprIntention extends PsiElementBaseIntentionAction {
     if (infixExpr == null || !infixExpr.isValid) return
 
     val start = infixExpr.getTextRange.getStartOffset
-    val diff = editor.getCaretModel.getOffset - infixExpr.operation.nameId.getTextRange.getStartOffset
+    val diff =
+      editor.getCaretModel.getOffset - infixExpr.operation.nameId.getTextRange.getStartOffset
     val expr = new StringBuilder
     val replaceOper = Map(
       "equals" -> "equals",

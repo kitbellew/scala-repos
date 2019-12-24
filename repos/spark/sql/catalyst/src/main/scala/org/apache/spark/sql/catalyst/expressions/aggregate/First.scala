@@ -57,8 +57,8 @@ case class First(child: Expression, ignoreNullsExpr: Expression)
 
   private lazy val valueSet = AttributeReference("valueSet", BooleanType)()
 
-  override lazy val aggBufferAttributes
-      : Seq[AttributeReference] = first :: valueSet :: Nil
+  override lazy val aggBufferAttributes: Seq[AttributeReference] =
+    first :: valueSet :: Nil
 
   override lazy val initialValues: Seq[Literal] = Seq(
     /* first = */ Literal.create(null, child.dataType),

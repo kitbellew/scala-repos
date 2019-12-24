@@ -47,8 +47,9 @@ class PsiTypedDefinitionWrapper(
           case _ => null
         }
     if (result == null) {
-      val message = "Containing class is null: " + typedDefinition.getContainingFile.getText + "\n" +
-        "typed Definition: " + typedDefinition.getTextRange.getStartOffset
+      val message =
+        "Containing class is null: " + typedDefinition.getContainingFile.getText + "\n" +
+          "typed Definition: " + typedDefinition.getTextRange.getStartOffset
       throw new RuntimeException(message)
     }
     result

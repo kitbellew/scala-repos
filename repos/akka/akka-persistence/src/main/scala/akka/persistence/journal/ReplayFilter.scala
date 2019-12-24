@@ -96,8 +96,9 @@ private[akka] class ReplayFilter(
         if (r.persistent.writerUuid == writerUuid) {
           // from same writer
           if (r.persistent.sequenceNr < seqNo) {
-            val errMsg = s"Invalid replayed event [${r.persistent.sequenceNr}] in wrong order from " +
-              s"writer [${r.persistent.writerUuid}] with persistenceId [${r.persistent.persistenceId}]"
+            val errMsg =
+              s"Invalid replayed event [${r.persistent.sequenceNr}] in wrong order from " +
+                s"writer [${r.persistent.writerUuid}] with persistenceId [${r.persistent.persistenceId}]"
             logIssue(errMsg)
             mode match {
               case RepairByDiscardOld ⇒ // discard
@@ -114,8 +115,9 @@ private[akka] class ReplayFilter(
 
         } else if (oldWriters.contains(r.persistent.writerUuid)) {
           // from old writer
-          val errMsg = s"Invalid replayed event [${r.persistent.sequenceNr}] from old " +
-            s"writer [${r.persistent.writerUuid}] with persistenceId [${r.persistent.persistenceId}]"
+          val errMsg =
+            s"Invalid replayed event [${r.persistent.sequenceNr}] from old " +
+              s"writer [${r.persistent.writerUuid}] with persistenceId [${r.persistent.persistenceId}]"
           logIssue(errMsg)
           mode match {
             case RepairByDiscardOld ⇒ // discard
@@ -140,8 +142,9 @@ private[akka] class ReplayFilter(
           while (iter.hasNext()) {
             val msg = iter.next()
             if (msg.persistent.sequenceNr >= seqNo) {
-              val errMsg = s"Invalid replayed event [${msg.persistent.sequenceNr}] in buffer from old " +
-                s"writer [${msg.persistent.writerUuid}] with persistenceId [${msg.persistent.persistenceId}]"
+              val errMsg =
+                s"Invalid replayed event [${msg.persistent.sequenceNr}] in buffer from old " +
+                  s"writer [${msg.persistent.writerUuid}] with persistenceId [${msg.persistent.persistenceId}]"
               logIssue(errMsg)
               mode match {
                 case RepairByDiscardOld ⇒ iter.remove() // discard

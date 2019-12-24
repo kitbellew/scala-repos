@@ -513,7 +513,8 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
               })
 
               if (isVarargs) {
-                val (normal, varargs) = wrappedArgs splitAt (defParams.length - 1)
+                val (normal, varargs) =
+                  wrappedArgs splitAt (defParams.length - 1)
                 normal :+ varargs // pack all varargs into a single Seq argument (varargs Scala style)
               } else wrappedArgs
             })
@@ -801,7 +802,8 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
       // we infer as much as possible (e.g. in the example above even though L is hopeless, C still can be inferred to Foo)
       // and then trigger macro expansion with the undetermined type parameters still there.
       // Thanks to that the materializer can take a look at what's going on and react accordingly.
-      val shouldInstantiate = typer.context.undetparams.nonEmpty && !mode.inPolyMode
+      val shouldInstantiate =
+        typer.context.undetparams.nonEmpty && !mode.inPolyMode
       if (shouldInstantiate) {
         if (isBlackbox(expandee))
           typer.instantiatePossiblyExpectingUnit(delayed, mode, outerPt)
@@ -944,8 +946,9 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
     */
   def macroExpandWithoutRuntime(typer: Typer, expandee: Tree): MacroStatus = {
     import typer.TyperErrorGen._
-    val fallbackSym = expandee.symbol.nextOverriddenSymbol orElse MacroImplementationNotFoundError(
-      expandee)
+    val fallbackSym =
+      expandee.symbol.nextOverriddenSymbol orElse MacroImplementationNotFoundError(
+        expandee)
     macroLogLite(s"falling back to: $fallbackSym")
 
     def mkFallbackTree(tree: Tree): Tree = {

@@ -1143,8 +1143,10 @@ abstract class ClassfileParser {
       val (innerClass, innerModule) = if (file == NoAbstractFile) {
         (newStub(name.toTypeName), newStub(name.toTermName))
       } else {
-        val cls = owner.newClass(name.toTypeName, NoPosition, sflags) setInfo completer
-        val mod = owner.newModule(name.toTermName, NoPosition, sflags) setInfo completer
+        val cls =
+          owner.newClass(name.toTypeName, NoPosition, sflags) setInfo completer
+        val mod =
+          owner.newModule(name.toTermName, NoPosition, sflags) setInfo completer
         mod.moduleClass setInfo loaders.moduleClassLoader
         List(cls, mod.moduleClass) foreach (_.associatedFile = file)
         (cls, mod)

@@ -94,7 +94,8 @@ object BasicCommands {
     val notQuoted = (NotQuoted ~ any.*) map {
       case (nq, s) => (nq +: s).mkString
     }
-    val quotedOrUnquotedSingleArgument = Space ~> (StringVerbatim | StringEscapable | notQuoted)
+    val quotedOrUnquotedSingleArgument =
+      Space ~> (StringVerbatim | StringEscapable | notQuoted)
 
     applyEffect(token(quotedOrUnquotedSingleArgument ?? "" examples ("", " ")))(
       runCompletions(state))
@@ -201,9 +202,8 @@ object BasicCommands {
       className,
       token(Space)))
   private[this] def className: Parser[String] = {
-    val base = StringBasic & not(
-      '-' ~> any.*,
-      "Class name cannot start with '-'.")
+    val base =
+      StringBasic & not('-' ~> any.*, "Class name cannot start with '-'.")
     def single(s: String) = Completions.single(Completion.displayOnly(s))
     val compl = TokenCompletions.fixed((seen, level) =>
       if (seen.startsWith("-")) Completions.nil else single("<class name>"))
@@ -244,8 +244,8 @@ object BasicCommands {
     }
 
   def shell = Command.command(Shell, Help.more(Shell, ShellDetailed)) { s =>
-    val history = (s get historyPath) getOrElse Some(
-      new File(s.baseDir, ".history"))
+    val history =
+      (s get historyPath) getOrElse Some(new File(s.baseDir, ".history"))
     val prompt = (s get shellPrompt) match {
       case Some(pf) => pf(s); case None => "> "
     }
@@ -311,7 +311,8 @@ object BasicCommands {
       val name = token(OpOrID.examples(aliasNames(s): _*))
       val assign = token(OptSpace ~ '=' ~ OptSpace)
       val sfree = removeAliases(s)
-      val to = matched(sfree.combinedParser, partial = true).failOnException | any.+.string
+      val to =
+        matched(sfree.combinedParser, partial = true).failOnException | any.+.string
       val base = (OptSpace ~> (name ~ (assign ~> to.?).?).?)
       applyEffect(base)(t => runAlias(s, t))
     }

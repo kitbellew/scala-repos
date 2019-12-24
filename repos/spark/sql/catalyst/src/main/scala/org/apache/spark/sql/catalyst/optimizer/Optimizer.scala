@@ -701,11 +701,12 @@ object InferFiltersFromConstraints
           right.outputSet)
       }
       // Remove those constraints that are already enforced by either the left or the right child
-      val additionalConstraints = constraints -- (left.constraints ++ right.constraints)
+      val additionalConstraints =
+        constraints -- (left.constraints ++ right.constraints)
       val newConditionOpt = conditionOpt match {
         case Some(condition) =>
-          val newFilters = additionalConstraints -- splitConjunctivePredicates(
-            condition)
+          val newFilters =
+            additionalConstraints -- splitConjunctivePredicates(condition)
           if (newFilters.nonEmpty)
             Option(And(newFilters.reduce(And), condition))
           else None

@@ -310,7 +310,8 @@ class MultipartUnmarshallersSpec
                         |not ok
                         |-----""".stripMarginWithNewline("\r\n")
         val byteStrings = content.map(c ⇒ ByteString(c.toString)) // one-char ByteStrings
-        val contentType = `multipart/form-data` withBoundary "-" withCharset `UTF-8`
+        val contentType =
+          `multipart/form-data` withBoundary "-" withCharset `UTF-8`
         Await
           .result(
             Unmarshal(HttpEntity
@@ -409,7 +410,8 @@ class MultipartUnmarshallersSpec
       "with a file" in {
         Unmarshal {
           HttpEntity.Default(
-            contentType = `multipart/form-data` withBoundary "XYZABC" withCharset `UTF-8`,
+            contentType =
+              `multipart/form-data` withBoundary "XYZABC" withCharset `UTF-8`,
             contentLength = 1, // not verified during unmarshalling
             data = Source {
               List(

@@ -97,8 +97,10 @@ trait Types
   /** In case anyone wants to turn on type parameter bounds being used
     *  to seed type constraints.
     */
-  private final val propagateParameterBoundsToTypeVars = sys.props contains "scalac.debug.prop-constraints"
-  private final val sharperSkolems = sys.props contains "scalac.experimental.sharper-skolems"
+  private final val propagateParameterBoundsToTypeVars =
+    sys.props contains "scalac.debug.prop-constraints"
+  private final val sharperSkolems =
+    sys.props contains "scalac.experimental.sharper-skolems"
 
   protected val enableTypeVarExperimentals = settings.Xexperimental.value
 
@@ -2907,7 +2909,8 @@ trait Types
           origin)
       }
 
-      val canSharpenBounds = (underlying.typeSymbol.isJavaDefined || sharperSkolems) && isStraightApplication
+      val canSharpenBounds =
+        (underlying.typeSymbol.isJavaDefined || sharperSkolems) && isStraightApplication
 
       if (canSharpenBounds)
         deriveType2(quantified, tpars, newSharpenedSkolem)(underlying)
@@ -2939,8 +2942,8 @@ trait Types
             (tpe exists (t => qset contains t.typeSymbol)) ||
             tpe.typeSymbol.isRefinementClass && (tpe.parents exists isQuantified)
           }
-          val (wildcardArgs, otherArgs) = args partition (arg =>
-            qset contains arg.typeSymbol)
+          val (wildcardArgs, otherArgs) =
+            args partition (arg => qset contains arg.typeSymbol)
           wildcardArgs.distinct == wildcardArgs &&
           !(otherArgs exists (arg => isQuantified(arg))) &&
           !(wildcardArgs exists (arg =>
@@ -2953,7 +2956,8 @@ trait Types
 
     override def safeToString: String = {
       def clauses = {
-        val str = quantified map (_.existentialToString) mkString (" forSome { ", "; ", " }")
+        val str =
+          quantified map (_.existentialToString) mkString (" forSome { ", "; ", " }")
         if (settings.explaintypes) "(" + str + ")" else str
       }
       underlying match {
@@ -4818,7 +4822,8 @@ trait Types
     case TypeRef(_, sym, _) :: rest =>
       val pres = tps map (_.prefix) // prefix normalizes automatically
       val pre = if (variance.isPositive) lub(pres, depth) else glb(pres, depth)
-      val argss = tps map (_.normalize.typeArgs) // symbol equality (of the tp in tps) was checked using typeSymbol, which normalizes, so should normalize before retrieving arguments
+      val argss =
+        tps map (_.normalize.typeArgs) // symbol equality (of the tp in tps) was checked using typeSymbol, which normalizes, so should normalize before retrieving arguments
       val capturedParams = new ListBuffer[Symbol]
       try {
         if (sym == ArrayClass && phase.erasedTypes) {
@@ -4867,9 +4872,10 @@ trait Types
                       // just err on the conservative side, i.e. with a bound that is too high.
                       // if(!(tparam.info.bounds contains tparam))   //@M can't deal with f-bounds, see #2251
 
-                      val qvar = commonOwner(as) freshExistential "" setInfo TypeBounds(
-                        g,
-                        l)
+                      val qvar =
+                        commonOwner(as) freshExistential "" setInfo TypeBounds(
+                          g,
+                          l)
                       capturedParams += qvar
                       qvar.tpe
                     }

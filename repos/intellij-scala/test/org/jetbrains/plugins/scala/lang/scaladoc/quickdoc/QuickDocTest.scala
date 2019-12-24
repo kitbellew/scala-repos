@@ -83,8 +83,9 @@ class QuickDocTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
       |   */
       | class A {}
       """
-    val testText = "aa\n     <dl><dt><b>See Also:</b></dt> <dd>someting</dd>\n    " +
-      " </dl><br><br><b>Example:</b><br> aaa\n     <br><br><b>Note:</b><br> qwerty"
+    val testText =
+      "aa\n     <dl><dt><b>See Also:</b></dt> <dd>someting</dd>\n    " +
+        " </dl><br><br><b>Example:</b><br> aaa\n     <br><br><b>Note:</b><br> qwerty"
 
     generateSimpleByText(fileText, testText)
   }
@@ -103,9 +104,10 @@ class QuickDocTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
       |   */
       | def f[T, E](i: Int, j: Int, k: String) {}
       """
-    val testText = "aa\n     <br>\n<DD><DL><DT><b>Parameters:</b><DD><code>i</code> - aaa  " +
-      "<DD><code>j</code> - bbb  <DD><code>k</code> - ccc  </DD></DL></DD><DD><DL><DT>" +
-      "<b>Type parameters:</b><DD><code>&lt;T&gt;</code> -  qqq  <DD><code>&lt;E&gt;</code> -  aaa  bbb"
+    val testText =
+      "aa\n     <br>\n<DD><DL><DT><b>Parameters:</b><DD><code>i</code> - aaa  " +
+        "<DD><code>j</code> - bbb  <DD><code>k</code> - ccc  </DD></DL></DD><DD><DL><DT>" +
+        "<b>Type parameters:</b><DD><code>&lt;T&gt;</code> -  qqq  <DD><code>&lt;E&gt;</code> -  aaa  bbb"
 
     generateSimpleByText(fileText, testText)
   }
@@ -119,8 +121,9 @@ class QuickDocTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
       |   */
       | def g() {}
       """
-    val testText = "\n     <br>\n<DD><DL><DT><b>Throws:</b><DD><a href=\"psi_element://java.lang.Exce" +
-      "ption\"><code>Exception</code></a> - aaaaaaaaaaaaaaa"
+    val testText =
+      "\n     <br>\n<DD><DL><DT><b>Throws:</b><DD><a href=\"psi_element://java.lang.Exce" +
+        "ption\"><code>Exception</code></a> - aaaaaaaaaaaaaaa"
 
     generateSimpleByText(fileText, testText)
   }
@@ -154,8 +157,9 @@ class QuickDocTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
       |   */
       | type myType[A, B, C] = HashMap[A, HashMap[B, C]]
       """
-    val testText = "\n     <br>\n<DD><DL><DT><b>Type parameters:</b><DD><code>&lt;A&gt;" +
-      "</code> -  <DD><code>&lt;B&gt;</code> -  dgjsdaf  <DD><code>&lt;C&gt;</code> -  "
+    val testText =
+      "\n     <br>\n<DD><DL><DT><b>Type parameters:</b><DD><code>&lt;A&gt;" +
+        "</code> -  <DD><code>&lt;B&gt;</code> -  dgjsdaf  <DD><code>&lt;C&gt;</code> -  "
 
     generateSimpleByText(fileText, testText)
   }
@@ -189,8 +193,9 @@ class QuickDocTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
       |   */
       | def f() {}
       """
-    val testText = "\n     <br><br><b>Note:</b><br> <b><u>THIS IS SPARTAAA!!!11</u></b>\n     " +
-      "<br><br><dl><dt><b>See Also:</b></dt> <sub>111<u>anything</u>111</sub><dd>"
+    val testText =
+      "\n     <br><br><b>Note:</b><br> <b><u>THIS IS SPARTAAA!!!11</u></b>\n     " +
+        "<br><br><dl><dt><b>See Also:</b></dt> <sub>111<u>anything</u>111</sub><dd>"
 
     generateSimpleByText(fileText, testText)
   }
@@ -230,8 +235,9 @@ class QuickDocTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
       |   */
       | val a = 1
       """
-    val testText = "\n     <sup>blah-blah\n    </sup>\n     <u>aaaaaaa<sub>bbbbbbb\n     " +
-      "</sub></u><dl><dt><b>See Also:</b></dt> <dd>something "
+    val testText =
+      "\n     <sup>blah-blah\n    </sup>\n     <u>aaaaaaa<sub>bbbbbbb\n     " +
+        "</sub></u><dl><dt><b>See Also:</b></dt> <dd>something "
 
     generateSimpleByText(fileText, testText)
   }

@@ -41,7 +41,8 @@ case class ResetToken(
 object ResetToken {
   implicit val iso = Iso.hlist(ResetToken.apply _, ResetToken.unapply _)
 
-  val schemaV1 = "tokenId" :: "accountId" :: "email" :: "expiresAt" :: "usedAt" :: HNil
+  val schemaV1 =
+    "tokenId" :: "accountId" :: "email" :: "expiresAt" :: "usedAt" :: HNil
 
   implicit val (decomposerV1, extractorV1) =
     serializationV(schemaV1, Some("1.0".v))

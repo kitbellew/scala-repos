@@ -69,7 +69,8 @@ object BSONHandlers {
           color: Color,
           id: Player.Id,
           uid: Player.UserId): Player = {
-        val builder = r.getO[Player.Builder](field)(playerBSONHandler) | emptyPlayerBuilder
+        val builder =
+          r.getO[Player.Builder](field)(playerBSONHandler) | emptyPlayerBuilder
         val win = winC map (_ == color)
         builder(color)(id)(uid)(win)
       }
@@ -101,8 +102,8 @@ object BSONHandlers {
         binaryMoveTimes = (r bytesO moveTimes) | ByteArray.empty,
         mode = Mode(r boolD rated),
         variant = realVariant,
-        crazyData = (realVariant == Crazyhouse) option r.get[Crazyhouse.Data](
-          crazyData),
+        crazyData =
+          (realVariant == Crazyhouse) option r.get[Crazyhouse.Data](crazyData),
         next = r strO next,
         bookmarks = r intD bookmarks,
         createdAt = createdAtValue,

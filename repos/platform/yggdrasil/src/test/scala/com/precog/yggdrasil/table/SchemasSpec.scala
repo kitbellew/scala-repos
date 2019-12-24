@@ -62,8 +62,9 @@ trait SchemasSpec[M[+_]]
       JObjectFixedT(Map("a" -> JNumberT, "b" -> JTextT)),
       JObjectFixedT(Map("a" -> JTextT, "b" -> JNumberT))
     )
-    val data = Stream.fill(10)(JParser.parseUnsafe("""{ "a": 1, "b": "2" }""")) ++
-      Stream.fill(10)(JParser.parseUnsafe("""{ "a": "x", "b": 2 }"""))
+    val data =
+      Stream.fill(10)(JParser.parseUnsafe("""{ "a": 1, "b": "2" }""")) ++
+        Stream.fill(10)(JParser.parseUnsafe("""{ "a": "x", "b": 2 }"""))
     val table = fromSample(SampleData(data), Some(10))
     table.schemas.copoint must_== expected
   }

@@ -3290,7 +3290,8 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
           } else {
             newLineOptWhenFollowedBy(LBRACE)
             val (self, body) =
-              templateBodyOpt(parenMeansSyntaxError = mods.isTrait || name.isTermName)
+              templateBodyOpt(parenMeansSyntaxError =
+                mods.isTrait || name.isTermName)
             (List(), self, body)
           }
         )

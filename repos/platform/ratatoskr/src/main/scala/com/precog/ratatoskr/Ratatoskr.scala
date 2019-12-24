@@ -393,7 +393,8 @@ object KafkaTools extends Command {
           if (pendingTimes.nonEmpty) {
             //println("Updating pending times: " + pendingTimes)
             interpolationMap ++= pendingTimes.map { interp =>
-              val interpFraction = (interp.index - lastTimestamp.index).toDouble / (newTimestamp.index - lastTimestamp.index)
+              val interpFraction =
+                (interp.index - lastTimestamp.index).toDouble / (newTimestamp.index - lastTimestamp.index)
               val timeSpanSize = newTimestamp.time - lastTimestamp.time
               val interpTS =
                 (interpFraction * timeSpanSize + lastTimestamp.time).toLong

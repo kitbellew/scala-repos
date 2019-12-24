@@ -119,7 +119,8 @@ object Constants {
   //
   // canvas
   //
-  val CANVAS_WIDTH = (NUMBER_OF_STONES + 1) * STONE_TOTAL_WIDTH + (NUMBER_OF_STONES - 1) * STONE_GAP
+  val CANVAS_WIDTH =
+    (NUMBER_OF_STONES + 1) * STONE_TOTAL_WIDTH + (NUMBER_OF_STONES - 1) * STONE_GAP
   //
 }
 
@@ -327,8 +328,8 @@ object theViewValues {
 class View(position: FrogShape => Int, val frogShapes: List[FrogShape]) {
   private def update(length: Int, next: (Double, Double) => Double) =
     (frogShape: FrogShape) => {
-      val frogShapeCenterX = FIRST_FROG_CENTER_X + STONE_STEP * position(
-        frogShape)
+      val frogShapeCenterX =
+        FIRST_FROG_CENTER_X + STONE_STEP * position(frogShape)
       val frogShapeCenterY = FROG_CENTER_Y
 
       Timeline(

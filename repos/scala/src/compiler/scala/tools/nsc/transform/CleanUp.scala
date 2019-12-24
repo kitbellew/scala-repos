@@ -281,7 +281,8 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
           /* Normal non-Array call */
           def genDefaultCall = {
             // reflective method call machinery
-            val invokeName = MethodClass.tpe member nme.invoke_ // scala.reflect.Method.invoke(...)
+            val invokeName =
+              MethodClass.tpe member nme.invoke_ // scala.reflect.Method.invoke(...)
             def cache =
               REF(reflectiveMethodCache(ad.symbol.name.toString, paramTypes)) // cache Symbol
             def lookup =
@@ -292,7 +293,8 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
               (lookup DOT invokeName)(qual1(), invokeArgs) // .invoke(qual1, ...)
 
             // exception catching machinery
-            val invokeExc = currentOwner.newValue(mkTerm(""), ad.pos) setInfo InvocationTargetExceptionClass.tpe
+            val invokeExc =
+              currentOwner.newValue(mkTerm(""), ad.pos) setInfo InvocationTargetExceptionClass.tpe
             def catchVar =
               Bind(
                 invokeExc,
@@ -402,7 +404,8 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
               abort(ad.symbol.toString)
           }
           typedPos {
-            val sym = currentOwner.newValue(mkTerm("qual"), ad.pos) setInfo qual0.tpe
+            val sym =
+              currentOwner.newValue(mkTerm("qual"), ad.pos) setInfo qual0.tpe
             qual = REF(sym)
 
             BLOCK(

@@ -207,8 +207,8 @@ class MultilabelMetrics @Since("1.2.0") (
     * (equals to micro-averaged document-based f1-measure)
     */
   @Since("1.2.0")
-  lazy val microF1Measure
-      : Double = 2.0 * sumTp / (2 * sumTp + sumFnClass + sumFpClass)
+  lazy val microF1Measure: Double =
+    2.0 * sumTp / (2 * sumTp + sumFnClass + sumFpClass)
 
   /**
     * Returns the sequence of labels in ascending order

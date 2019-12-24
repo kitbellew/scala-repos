@@ -347,10 +347,11 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
           None
       }
 
-    val charset = settings.encoding.valueSetByUser flatMap loadCharset getOrElse {
-      settings.encoding.value = defaultEncoding // A mandatory charset
-      Charset.forName(defaultEncoding)
-    }
+    val charset =
+      settings.encoding.valueSetByUser flatMap loadCharset getOrElse {
+        settings.encoding.value = defaultEncoding // A mandatory charset
+        Charset.forName(defaultEncoding)
+      }
 
     def loadReader(name: String): Option[SourceReader] = {
       def ccon =
@@ -721,7 +722,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
 
   /* The set of phase objects that is the basis for the compiler phase chain */
   protected lazy val phasesSet = new mutable.HashSet[SubComponent]
-  protected lazy val phasesDescMap = new mutable.HashMap[SubComponent, String] withDefaultValue ""
+  protected lazy val phasesDescMap =
+    new mutable.HashMap[SubComponent, String] withDefaultValue ""
 
   protected def addToPhasesSet(sub: SubComponent, descr: String) {
     phasesSet += sub

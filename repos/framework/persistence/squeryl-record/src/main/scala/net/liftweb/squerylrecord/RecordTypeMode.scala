@@ -317,11 +317,10 @@ trait RecordTypeMode extends PrimitiveTypeMode {
           val enumOption = f flatMap { f1: TypedField[EnumType#Value] =>
             f1.valueBox.toOption
           }
-          val outMapperOption
-              : Option[OutMapper[Enumeration#Value]] = enumOption map {
-            e: EnumType#Value =>
+          val outMapperOption: Option[OutMapper[Enumeration#Value]] =
+            enumOption map { e: EnumType#Value =>
               outMapperFromEnumValue(e): OutMapper[Enumeration#Value] /*crashes scala 2.9.1 without explicit type */
-          }
+            }
           outMapperOption.orNull
         }) with EnumExpression[Enumeration#Value]
           with SquerylRecordNonNumericalExpression[Enumeration#Value]

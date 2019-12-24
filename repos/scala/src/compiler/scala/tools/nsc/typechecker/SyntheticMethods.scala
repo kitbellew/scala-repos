@@ -45,8 +45,10 @@ trait SyntheticMethods extends ast.TreeDSL {
     Product_iterator,
     Product_canEqual)
   private lazy val valueSymbols = List(Any_hashCode, Any_equals)
-  private lazy val caseSymbols = List(Object_hashCode, Object_toString) ::: productSymbols
-  private lazy val caseValueSymbols = Any_toString :: valueSymbols ::: productSymbols
+  private lazy val caseSymbols =
+    List(Object_hashCode, Object_toString) ::: productSymbols
+  private lazy val caseValueSymbols =
+    Any_toString :: valueSymbols ::: productSymbols
   private lazy val caseObjectSymbols = Object_equals :: caseSymbols
   private def symbolsToSynthesize(clazz: Symbol): List[Symbol] = {
     if (clazz.isCase) {
@@ -188,7 +190,8 @@ trait SyntheticMethods extends ast.TreeDSL {
      */
     def equalsCore(eqmeth: Symbol, accessors: List[Symbol]) = {
       val otherName = context.unit.freshTermName(clazz.name + "$")
-      val otherSym = eqmeth.newValue(otherName, eqmeth.pos, SYNTHETIC) setInfo clazz.tpe
+      val otherSym =
+        eqmeth.newValue(otherName, eqmeth.pos, SYNTHETIC) setInfo clazz.tpe
       val pairwise = accessors map (acc =>
         fn(
           Select(mkThis, acc),
@@ -289,7 +292,8 @@ trait SyntheticMethods extends ast.TreeDSL {
 
     def specializedHashcode = {
       createMethod(nme.hashCode_, Nil, IntTpe) { m =>
-        val accumulator = m.newVariable(newTermName("acc"), m.pos, SYNTHETIC) setInfo IntTpe
+        val accumulator =
+          m.newVariable(newTermName("acc"), m.pos, SYNTHETIC) setInfo IntTpe
         val valdef = ValDef(accumulator, Literal(Constant(0xcafebabe)))
         val mixes = accessors map (acc =>
           Assign(

@@ -94,7 +94,8 @@ class ScalaImportOptimizer extends ImportOptimizer {
     if (indicator != null)
       indicator.setText2(file.getName + ": analyzing imports usage")
 
-    val size = allElementsInFile.size * 2 //processAllElementsConcurrentlyUnderProgress will be called 2 times
+    val size =
+      allElementsInFile.size * 2 //processAllElementsConcurrentlyUnderProgress will be called 2 times
     val counter = new AtomicInteger(0)
 
     def processAllElementsConcurrentlyUnderProgress(
@@ -249,7 +250,8 @@ class ScalaImportOptimizer extends ImportOptimizer {
     val newRange: TextRange =
       if (text.isEmpty) {
         var start = range.getStartOffset
-        while (start > 0 && documentText(start - 1).isWhitespace) start = start - 1
+        while (start > 0 && documentText(start - 1).isWhitespace) start =
+          start - 1
         val end = range.getEndOffset
         new TextRange(start, end)
       } else range
@@ -434,7 +436,8 @@ object ScalaImportOptimizer {
 
     val buffer = new ArrayBuffer[ImportInfo]()
 
-    val needReplaceWithFqnImports = addFullQualifiedImports && !(isLocalRange && isLocalImportsCanBeRelative)
+    val needReplaceWithFqnImports =
+      addFullQualifiedImports && !(isLocalRange && isLocalImportsCanBeRelative)
 
     if (needReplaceWithFqnImports)
       buffer ++= importInfos.map(_.withoutRelative)
@@ -465,7 +468,8 @@ object ScalaImportOptimizer {
 
     for (i <- importInfos.indices) {
       val info = importInfos(i)
-      val canAddRoot = info.relative.isEmpty && !info.rootUsed && info.isStableImport
+      val canAddRoot =
+        info.relative.isEmpty && !info.rootUsed && info.isStableImport
       if (canAddRoot && holderNames.contains(getFirstId(info.prefixQualifier)))
         importInfos.update(i, info.withRootPrefix)
       holderNames ++= info.allNames
@@ -498,8 +502,10 @@ object ScalaImportOptimizer {
       settings: OptimizeImportSettings): Unit = {
 
     def shouldUpdate(info: ImportInfo) = {
-      val needUpdate = info.singleNames.size >= settings.classCountToUseImportOnDemand
-      val mayUpdate = info.hiddenNames.isEmpty && info.renames.isEmpty && !info.wildcardHasUnusedImplicit
+      val needUpdate =
+        info.singleNames.size >= settings.classCountToUseImportOnDemand
+      val mayUpdate =
+        info.hiddenNames.isEmpty && info.renames.isEmpty && !info.wildcardHasUnusedImplicit
       if (needUpdate && mayUpdate) {
         val explicitNames = infos.flatMap {
           case `info` => Seq.empty
@@ -578,7 +584,8 @@ object ScalaImportOptimizer {
 
     val (samePrefixInfos, otherInfos) =
       infos.partition(_.prefixQualifier == actuallyInserted.prefixQualifier)
-    val samePrefixWithNewSplitted = samePrefixInfos.flatMap(_.split) ++ actuallyInserted.split
+    val samePrefixWithNewSplitted =
+      samePrefixInfos.flatMap(_.split) ++ actuallyInserted.split
     val (simpleInfos, notSimpleInfos) =
       samePrefixWithNewSplitted.partition(_.singleNames.nonEmpty)
 

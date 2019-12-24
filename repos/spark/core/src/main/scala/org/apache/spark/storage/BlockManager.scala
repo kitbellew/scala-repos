@@ -1115,7 +1115,8 @@ private[spark] class BlockManager(
     peerFetchLock.synchronized {
       val cachedPeersTtl =
         conf.getInt("spark.storage.cachedPeersTtl", 60 * 1000) // milliseconds
-      val timeout = System.currentTimeMillis - lastPeerFetchTime > cachedPeersTtl
+      val timeout =
+        System.currentTimeMillis - lastPeerFetchTime > cachedPeersTtl
       if (cachedPeers == null || forceFetch || timeout) {
         cachedPeers = master.getPeers(blockManagerId).sortBy(_.hashCode)
         lastPeerFetchTime = System.currentTimeMillis

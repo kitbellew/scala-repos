@@ -98,8 +98,8 @@ trait GenTrees {
         // and about how we deal with splices that contain them
         val isMetalevelBreach = splicee exists (sub =>
           sub.hasSymbolField && sub.symbol != NoSymbol && sub.symbol.metalevel > 0)
-        val isRuntimeEval = splicee exists (sub =>
-          sub.hasSymbolField && sub.symbol == ExprSplice)
+        val isRuntimeEval =
+          splicee exists (sub => sub.hasSymbolField && sub.symbol == ExprSplice)
         if (isMetalevelBreach || isRuntimeEval) {
           // we used to convert dynamic splices into runtime evals transparently, but we no longer do that
           // why? see comments in `Metalevels`

@@ -301,7 +301,8 @@ class ScalaGlobalMembersCompletionContributor
 
     val namesCache = ScalaShortNamesCacheManager.getInstance(ref.getProject)
 
-    val methodNamesIterator = namesCache.getAllMethodNames.iterator ++ namesCache.getAllJavaMethodNames.iterator
+    val methodNamesIterator =
+      namesCache.getAllMethodNames.iterator ++ namesCache.getAllJavaMethodNames.iterator
 
     def isAccessible(member: PsiMember, containingClass: PsiClass): Boolean = {
       invocationCount >= 3 || (ResolveUtils.isAccessible(
@@ -416,7 +417,8 @@ class ScalaGlobalMembersCompletionContributor
             val inheritors = ClassInheritorsSearch
               .search(field.containingClass, scope, true)
               .toArray(PsiClass.EMPTY_ARRAY)
-            val currentAndInheritors = Iterator(field.containingClass) ++ inheritors.iterator
+            val currentAndInheritors =
+              Iterator(field.containingClass) ++ inheritors.iterator
             for {
               containingClass <- currentAndInheritors
               if namedElement != null && isStatic(namedElement, containingClass)

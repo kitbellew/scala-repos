@@ -411,16 +411,17 @@ class MessageSpec extends FreeSpec with Matchers with WithMaterializerSpec {
     "supply automatic low-level websocket behavior" - {
       "respond to ping frames unmasking them on the server side" in new ServerTestSetup {
         val mask = Random.nextInt()
-        val input = frameHeader(Opcode.Ping, 6, fin = true, mask = Some(mask)) ++ maskedASCII(
-          "abcdef",
-          mask)._1
+        val input =
+          frameHeader(Opcode.Ping, 6, fin = true, mask = Some(mask)) ++ maskedASCII(
+            "abcdef",
+            mask)._1
 
         pushInput(input)
         expectFrameOnNetwork(Opcode.Pong, ByteString("abcdef"), fin = true)
       }
       "respond to ping frames masking them on the client side" in new ClientTestSetup {
-        val input = frameHeader(Opcode.Ping, 6, fin = true) ++ ByteString(
-          "abcdef")
+        val input =
+          frameHeader(Opcode.Ping, 6, fin = true) ++ ByteString("abcdef")
 
         pushInput(input)
         expectMaskedFrameOnNetwork(
@@ -490,8 +491,8 @@ class MessageSpec extends FreeSpec with Matchers with WithMaterializerSpec {
         sub.expectComplete()
       }
       "don't respond to unsolicited pong frames" in new ClientTestSetup {
-        val data = frameHeader(Opcode.Pong, 6, fin = true) ++ ByteString(
-          "abcdef")
+        val data =
+          frameHeader(Opcode.Pong, 6, fin = true) ++ ByteString("abcdef")
         pushInput(data)
         expectNoNetworkData()
       }
@@ -917,9 +918,10 @@ class MessageSpec extends FreeSpec with Matchers with WithMaterializerSpec {
       }
       "masked input on the client side" in new ClientTestSetup {
         val mask = Random.nextInt()
-        val input = frameHeader(Opcode.Binary, 6, fin = true, mask = Some(mask)) ++ maskedASCII(
-          "abcdef",
-          mask)._1
+        val input =
+          frameHeader(Opcode.Binary, 6, fin = true, mask = Some(mask)) ++ maskedASCII(
+            "abcdef",
+            mask)._1
 
         pushInput(input)
         expectProtocolErrorOnNetwork()

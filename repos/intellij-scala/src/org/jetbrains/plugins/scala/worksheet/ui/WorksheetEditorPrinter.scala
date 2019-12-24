@@ -156,7 +156,8 @@ class WorksheetEditorPrinter(
   private def init(): Option[Int] = {
     inited = true
 
-    val oldSync = originalEditor getUserData WorksheetEditorPrinter.DIFF_SYNC_SUPPORT
+    val oldSync =
+      originalEditor getUserData WorksheetEditorPrinter.DIFF_SYNC_SUPPORT
     if (oldSync != null) oldSync.dispose()
 
     WorksheetEditorPrinter.synch(
@@ -501,16 +502,15 @@ object WorksheetEditorPrinter {
   }
 
   def loadWorksheetEvaluation(file: ScalaFile): Option[(String, Float)] = {
-    val ratio = FileAttributeUtilCache.readAttribute(
-      LAST_WORKSHEET_RUN_RATIO,
-      file) map {
-      case rr =>
-        try {
-          java.lang.Float.parseFloat(rr)
-        } catch {
-          case _: NumberFormatException => 0.5f
-        }
-    } getOrElse 0.5f
+    val ratio =
+      FileAttributeUtilCache.readAttribute(LAST_WORKSHEET_RUN_RATIO, file) map {
+        case rr =>
+          try {
+            java.lang.Float.parseFloat(rr)
+          } catch {
+            case _: NumberFormatException => 0.5f
+          }
+      } getOrElse 0.5f
 
     FileAttributeUtilCache
       .readAttribute(LAST_WORKSHEET_RUN_RESULT, file)

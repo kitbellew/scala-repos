@@ -571,7 +571,8 @@ trait ProvenanceChecker extends parser.AST with Binder {
             to.provenance,
             Set()) + from.provenance))
 
-          val constraints2 = constraints + (from.provenance -> from) + (to.provenance -> to)
+          val constraints2 =
+            constraints + (from.provenance -> from) + (to.provenance -> to)
 
           val (inErrors, inConstr) = loop(in, relations3, constraints2)
 
@@ -857,9 +858,10 @@ trait ProvenanceChecker extends parser.AST with Binder {
                     val (leftErrors, leftConst, leftProv) = rec(left0)
                     val (rightErrors, rightConst, rightProv) = rec(right0)
 
-                    val prov = unifyProvenance(relations)(leftProv, rightProv) getOrElse ProductProvenance(
-                      leftProv,
-                      rightProv)
+                    val prov =
+                      unifyProvenance(relations)(leftProv, rightProv) getOrElse ProductProvenance(
+                        leftProv,
+                        rightProv)
                     val (err, const, finalProv) = compute(prov, prov)
 
                     val errors = leftErrors ++ rightErrors ++ err

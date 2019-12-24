@@ -2,7 +2,8 @@ import scala.reflect.io._
 import java.net.URLClassLoader
 
 object Test extends App {
-  val jarsOrDirectories = Set("partest.lib", "partest.reflect", "partest.comp") map sys.props
+  val jarsOrDirectories =
+    Set("partest.lib", "partest.reflect", "partest.comp") map sys.props
 
   object AllowedMissingClass {
     // Some classes in scala-compiler.jar have references to jline / ant classes, which seem to be

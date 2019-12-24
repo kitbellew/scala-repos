@@ -449,8 +449,9 @@ private[transport] class ProtocolStateActor(
       stop()
 
     case Event(HandshakeTimer, OutboundUnassociated(_, statusPromise, _)) ⇒
-      val errMsg = "No response from remote for outbound association. Associate timed out after " +
-        s"[${settings.HandshakeTimeout.toMillis} ms]."
+      val errMsg =
+        "No response from remote for outbound association. Associate timed out after " +
+          s"[${settings.HandshakeTimeout.toMillis} ms]."
       statusPromise.failure(new TimeoutException(errMsg))
       stop(FSM.Failure(TimeoutReason(errMsg)))
 

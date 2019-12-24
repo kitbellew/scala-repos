@@ -151,8 +151,8 @@ abstract class RefChecks
       // shaved 95% off the time spent in this method.
       val defaultGetters = defaultClass.info
         .findMembers(excludedFlags = PARAM, requiredFlags = DEFAULTPARAM)
-      val defaultMethodNames = defaultGetters map (sym =>
-        nme.defaultGetterToMethod(sym.name))
+      val defaultMethodNames =
+        defaultGetters map (sym => nme.defaultGetterToMethod(sym.name))
 
       defaultMethodNames.toList.distinct foreach { name =>
         val methods = clazz.info
@@ -644,7 +644,8 @@ abstract class RefChecks
         def checkOverrideDeprecated() {
           if (other.hasDeprecatedOverridingAnnotation && !member.ownerChain
                 .exists(x => x.isDeprecated || x.hasBridgeAnnotation)) {
-            val suffix = other.deprecatedOverridingMessage map (": " + _) getOrElse ""
+            val suffix =
+              other.deprecatedOverridingMessage map (": " + _) getOrElse ""
             val msg =
               s"overriding ${other.fullLocationString} is deprecated$suffix"
             currentRun.reporting.deprecationWarning(member.pos, other, msg)
@@ -717,8 +718,8 @@ abstract class RefChecks
             m.isDeferredNotJavaDefault && !ignoreDeferred(m))
           // Group missing members by the name of the underlying symbol,
           // to consolidate getters and setters.
-          val grouped = missing groupBy (sym =>
-            analyzer.underlyingSymbol(sym).name)
+          val grouped =
+            missing groupBy (sym => analyzer.underlyingSymbol(sym).name)
           val missingMethods = grouped.toList flatMap {
             case (name, syms) =>
               if (syms exists (_.isSetter)) syms filterNot (_.isGetter)
@@ -799,9 +800,10 @@ abstract class RefChecks
               matchingArity match {
                 // So far so good: only one candidate method
                 case Scope(concrete) =>
-                  val mismatches = abstractParams zip concrete.tpe.paramTypes filterNot {
-                    case (x, y) => x =:= y
-                  }
+                  val mismatches =
+                    abstractParams zip concrete.tpe.paramTypes filterNot {
+                      case (x, y) => x =:= y
+                    }
                   mismatches match {
                     // Only one mismatched parameter: say something useful.
                     case (pa, pc) :: Nil =>
@@ -1395,7 +1397,8 @@ abstract class RefChecks
         def matchingInnerObject() = {
           val newFlags = (module.flags | STABLE) & ~MODULE
           val newInfo = NullaryMethodType(module.moduleClass.tpe)
-          val accessor = site.newMethod(moduleName, module.pos, newFlags) setInfoAndEnter newInfo
+          val accessor =
+            site.newMethod(moduleName, module.pos, newFlags) setInfoAndEnter newInfo
 
           DefDef(accessor, Select(This(site), module)) :: Nil
         }

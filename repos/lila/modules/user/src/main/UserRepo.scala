@@ -193,8 +193,8 @@ object UserRepo {
     Json.obj(
       s"perfs.$perf.nb" -> $gte(30),
       s"perfs.$perf.gl.d" -> $lt(lila.rating.Glicko.provisionalDeviation))
-  val goodLadSelect = enabledSelect ++ engineSelect(false) ++ boosterSelect(
-    false)
+  val goodLadSelect =
+    enabledSelect ++ engineSelect(false) ++ boosterSelect(false)
   val goodLadSelectBson = BSONDocument(
     F.enabled -> true,
     F.engine -> BSONDocument("$ne" -> true),

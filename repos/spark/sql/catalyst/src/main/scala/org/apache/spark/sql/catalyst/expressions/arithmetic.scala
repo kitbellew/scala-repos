@@ -120,7 +120,8 @@ abstract class BinaryArithmetic extends BinaryOperator {
 
   override def dataType: DataType = left.dataType
 
-  override lazy val resolved = childrenResolved && checkInputDataTypes().isSuccess
+  override lazy val resolved =
+    childrenResolved && checkInputDataTypes().isSuccess
 
   /** Name of the function for this expression on a [[Decimal]] type. */
   def decimalMethod: String =

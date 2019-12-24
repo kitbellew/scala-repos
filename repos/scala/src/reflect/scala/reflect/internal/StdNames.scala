@@ -63,7 +63,8 @@ trait StdNames {
       * MaxNameLength can therefore be computed as follows:
       */
     val marker = "$$$$"
-    val maxSuffixLength = "$.class".length + 1 // potential module class suffix and file extension
+    val maxSuffixLength =
+      "$.class".length + 1 // potential module class suffix and file extension
     val MaxNameLength = math.min(
       settings.maxClassfileName.value - maxSuffixLength,
       2 * (settings.maxClassfileName.value - maxSuffixLength - 2 * marker.length - 32)
@@ -121,9 +122,9 @@ trait StdNames {
       .replace("$", "")
     val NESTED_IN_ANON_FUN: String = NESTED_IN + ANON_FUN_NAME.toString
       .replace("$", "")
-    val NESTED_IN_LAMBDA
-        : String = NESTED_IN + DELAMBDAFY_LAMBDA_CLASS_NAME.toString
-      .replace("$", "")
+    val NESTED_IN_LAMBDA: String =
+      NESTED_IN + DELAMBDAFY_LAMBDA_CLASS_NAME.toString
+        .replace("$", "")
 
     /**
       * Ensures that name mangling does not accidentally make a class respond `true` to any of
@@ -325,7 +326,8 @@ trait StdNames {
     val BITMAP_PREFIX = "bitmap$"
     val CHECK_IF_REFUTABLE_STRING = "check$ifrefutable$"
     val DEFAULT_GETTER_STRING = "$default$"
-    val DEFAULT_GETTER_INIT_STRING = NameTransformer.encode("<init>") + DEFAULT_GETTER_STRING
+    val DEFAULT_GETTER_INIT_STRING =
+      NameTransformer.encode("<init>") + DEFAULT_GETTER_STRING
     val DO_WHILE_PREFIX = "doWhile$"
     val EVIDENCE_PARAM_PREFIX = "evidence$"
     val EXCEPTION_RESULT_PREFIX = "exceptionResult"
@@ -1075,14 +1077,14 @@ trait StdNames {
 
     def newBitmapName(bitmapPrefix: Name, n: Int) = bitmapPrefix append ("" + n)
 
-    val BITMAP_NORMAL
-        : NameType = BITMAP_PREFIX + "" // initialization bitmap for public/protected lazy vals
-    val BITMAP_TRANSIENT
-        : NameType = BITMAP_PREFIX + "trans$" // initialization bitmap for transient lazy vals
-    val BITMAP_CHECKINIT
-        : NameType = BITMAP_PREFIX + "init$" // initialization bitmap for checkinit values
-    val BITMAP_CHECKINIT_TRANSIENT
-        : NameType = BITMAP_PREFIX + "inittrans$" // initialization bitmap for transient checkinit values
+    val BITMAP_NORMAL: NameType =
+      BITMAP_PREFIX + "" // initialization bitmap for public/protected lazy vals
+    val BITMAP_TRANSIENT: NameType =
+      BITMAP_PREFIX + "trans$" // initialization bitmap for transient lazy vals
+    val BITMAP_CHECKINIT: NameType =
+      BITMAP_PREFIX + "init$" // initialization bitmap for checkinit values
+    val BITMAP_CHECKINIT_TRANSIENT: NameType =
+      BITMAP_PREFIX + "inittrans$" // initialization bitmap for transient checkinit values
   }
 
   lazy val typeNames: tpnme.type = tpnme

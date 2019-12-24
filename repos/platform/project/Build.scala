@@ -150,7 +150,8 @@ object PlatformBuild extends Build {
     }
   )
 
-  val commonPluginsSettings = ScctPlugin.instrumentSettings ++ cpdSettings ++ graphSettings ++ commonSettings
+  val commonPluginsSettings =
+    ScctPlugin.instrumentSettings ++ cpdSettings ++ graphSettings ++ commonSettings
   val commonNexusSettings = nexusSettings ++ commonPluginsSettings
   val commonAssemblySettings = sbtassembly.Plugin.assemblySettings ++ Seq(
     test in assembly := {}) ++ commonNexusSettings
@@ -245,8 +246,9 @@ object PlatformBuild extends Build {
 
   /// Testing ///
 
-  lazy val muspelheim = Project(id = "muspelheim", base = file("muspelheim")).settings(
-    commonNexusSettings: _*) dependsOn (util % "compile->compile;test->test", common, quirrel, mimir, yggdrasil % "compile->compile;test->test", logging % "test->test")
+  lazy val muspelheim =
+    Project(id = "muspelheim", base = file("muspelheim")).settings(
+      commonNexusSettings: _*) dependsOn (util % "compile->compile;test->test", common, quirrel, mimir, yggdrasil % "compile->compile;test->test", logging % "test->test")
 
   lazy val surtr = Project(id = "surtr", base = file("surtr")).settings(
     commonAssemblySettings: _*) dependsOn (quirrel, mimir, yggdrasil, ingest, muspelheim % "compile->compile;test->test", logging % "test->test")

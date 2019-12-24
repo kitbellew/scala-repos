@@ -227,8 +227,8 @@ class ScImportStmtImpl private (
                 if (wildcard) !excludeNames.contains(name)
                 else names.contains(name)
               }
-              val newImportsUsed = Set(importsUsed.toSeq: _*) + ImportExprUsed(
-                importExpr)
+              val newImportsUsed =
+                Set(importsUsed.toSeq: _*) + ImportExprUsed(importExpr)
               val newState = state
                 .put(ScalaCompletionUtil.PREFIX_COMPLETION_KEY, true)
                 .put(ImportUsed.key, newImportsUsed)
@@ -259,8 +259,8 @@ class ScImportStmtImpl private (
           importExpr.selectorSet match {
             case None =>
               // Update the set of used imports
-              val newImportsUsed = Set(importsUsed.toSeq: _*) + ImportExprUsed(
-                importExpr)
+              val newImportsUsed =
+                Set(importsUsed.toSeq: _*) + ImportExprUsed(importExpr)
               var newState: ResolveState = state
                 .put(ImportUsed.key, newImportsUsed)
                 .put(ScSubstitutor.key, subst)
@@ -373,9 +373,9 @@ class ScImportStmtImpl private (
                       }
                     }
 
-                    val newImportsUsed: Set[ImportUsed] = Set(
-                      importsUsed.toSeq: _*) + ImportWildcardSelectorUsed(
-                      importExpr)
+                    val newImportsUsed: Set[ImportUsed] =
+                      Set(importsUsed.toSeq: _*) + ImportWildcardSelectorUsed(
+                        importExpr)
                     var newState: ResolveState = state
                       .put(ImportUsed.key, newImportsUsed)
                       .put(ScSubstitutor.key, subst)

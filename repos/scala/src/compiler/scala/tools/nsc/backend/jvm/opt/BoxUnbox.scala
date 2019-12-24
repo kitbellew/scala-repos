@@ -248,7 +248,8 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
               case (slot, tp) =>
                 new VarInsnNode(tp.getOpcode(ILOAD), slot)
             })(collection.breakOut)
-            toInsertBefore(creation.valuesConsumer) = storeInitialValues ::: loadOps
+            toInsertBefore(creation.valuesConsumer) =
+              storeInitialValues ::: loadOps
           } else {
             toReplace(creation.valuesConsumer) = storeInitialValues
             toDelete ++= creation.allInsns - creation.valuesConsumer
@@ -272,8 +273,9 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
             case extraction =>
               val (slot, tp) =
                 localSlots(boxKind.extractedValueIndex(extraction))
-              val loadOps = new VarInsnNode(tp.getOpcode(ILOAD), slot) :: extraction
-                .postExtractionAdaptationOps(tp)
+              val loadOps =
+                new VarInsnNode(tp.getOpcode(ILOAD), slot) :: extraction
+                  .postExtractionAdaptationOps(tp)
               if (keepBox) toReplace(extraction.consumer) = getPop(1) :: loadOps
               else toReplace(extraction.consumer) = loadOps
               toDelete ++= extraction.allInsns - extraction.consumer
@@ -360,8 +362,9 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
                   case (tp, i) =>
                     if (i == valueIndex) {
                       val resultSlot = getLocal(tp.getSize)
-                      loadOps = new VarInsnNode(tp.getOpcode(ILOAD), resultSlot) :: extraction
-                        .postExtractionAdaptationOps(tp)
+                      loadOps =
+                        new VarInsnNode(tp.getOpcode(ILOAD), resultSlot) :: extraction
+                          .postExtractionAdaptationOps(tp)
                       new VarInsnNode(tp.getOpcode(ISTORE), resultSlot)
                     } else {
                       getPop(tp.getSize)
@@ -938,8 +941,9 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
         case mi: MethodInsnNode =>
           val tupleClass = mi.owner
           if (isSpecializedTupleClass(expectedTupleClass)) {
-            val typeOK = tupleClass == expectedTupleClass || tupleClass == expectedTupleClass
-              .substring(0, expectedTupleClass.indexOf('$'))
+            val typeOK =
+              tupleClass == expectedTupleClass || tupleClass == expectedTupleClass
+                .substring(0, expectedTupleClass.indexOf('$'))
             if (typeOK) {
               if (isSpecializedTupleGetter(mi))
                 return Some(StaticGetterOrInstanceRead(mi))

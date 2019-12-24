@@ -80,7 +80,8 @@ object ScheduledTask {
 
   implicit val iso = Iso.hlist(ScheduledTask.apply _, ScheduledTask.unapply _)
 
-  val schemaV1 = "id" :: "repeat" :: "apiKey" :: "authorities" :: "prefix" :: "source" :: "sink" :: "timeout" :: HNil
+  val schemaV1 =
+    "id" :: "repeat" :: "apiKey" :: "authorities" :: "prefix" :: "source" :: "sink" :: "timeout" :: HNil
 
   implicit val decomposer: Decomposer[ScheduledTask] =
     decomposerV(schemaV1, Some("1.0".v))

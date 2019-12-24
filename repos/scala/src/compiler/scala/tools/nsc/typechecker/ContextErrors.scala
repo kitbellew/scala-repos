@@ -301,7 +301,8 @@ trait ContextErrors {
             case _: CyclicReference =>
               tpt.toString()
           }
-        val msg = "wrong number of type arguments for " + tptSafeString + ", should be " + tparams.length
+        val msg =
+          "wrong number of type arguments for " + tptSafeString + ", should be " + tparams.length
         issueNormalTypeError(tree, msg)
         setError(tree)
       }
@@ -888,7 +889,8 @@ trait ContextErrors {
 
       def DefDefinedTwiceError(sym0: Symbol, sym1: Symbol) = {
         // Most of this hard work is associated with SI-4893.
-        val isBug = sym0.isAbstractType && sym1.isAbstractType && (sym0.name startsWith "_$")
+        val isBug =
+          sym0.isAbstractType && sym1.isAbstractType && (sym0.name startsWith "_$")
         val addendums = List(
           if (sym0.associatedFile eq sym1.associatedFile)
             Some(
@@ -1013,8 +1015,8 @@ trait ContextErrors {
                 realex.getStackTrace().take(relevancyThreshold + 1)
               def isMacroInvoker(este: StackTraceElement) =
                 este.isNativeMethod || (este.getClassName != null && (este.getClassName contains "fastTrack"))
-              var threshold = relevantElements.reverse.indexWhere(
-                isMacroInvoker) + 1
+              var threshold =
+                relevantElements.reverse.indexWhere(isMacroInvoker) + 1
               while (threshold != relevantElements.length && isMacroInvoker(
                        relevantElements(
                          relevantElements.length - threshold - 1))) threshold += 1
@@ -1068,7 +1070,8 @@ trait ContextErrors {
           if (isUnaffiliatedExpr) "an expr"
           else if (isUnaffiliatedTree) "a tree"
           else "unexpected"
-        val isPathMismatch = expanded != null && (isUnaffiliatedExpr || isUnaffiliatedTree)
+        val isPathMismatch =
+          expanded != null && (isUnaffiliatedExpr || isUnaffiliatedTree)
         macroExpansionError(
           expandee,
           s"macro must return a compiler-specific $expected; returned value is " + (
@@ -1695,8 +1698,9 @@ trait ContextErrors {
 
     def WarnAfterNonSilentRecursiveInference(param: Symbol, arg: Tree)(
         implicit context: Context) = {
-      val note = "failed to determine if '" + param.name + " = ...' is a named argument or an assignment expression.\n" +
-        "an explicit type is required for the definition mentioned in the error message above."
+      val note =
+        "failed to determine if '" + param.name + " = ...' is a named argument or an assignment expression.\n" +
+          "an explicit type is required for the definition mentioned in the error message above."
       context.warning(arg.pos, note)
     }
 

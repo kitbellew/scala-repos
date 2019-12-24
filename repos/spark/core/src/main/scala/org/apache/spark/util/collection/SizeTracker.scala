@@ -95,7 +95,8 @@ private[spark] trait SizeTracker {
     */
   def estimateSize(): Long = {
     assert(samples.nonEmpty)
-    val extrapolatedDelta = bytesPerUpdate * (numUpdates - samples.last.numUpdates)
+    val extrapolatedDelta =
+      bytesPerUpdate * (numUpdates - samples.last.numUpdates)
     (samples.last.size + extrapolatedDelta).toLong
   }
 }

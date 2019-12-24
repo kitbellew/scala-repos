@@ -153,8 +153,8 @@ object Exception {
   final def allCatcher[T]: Catcher[T] = mkThrowableCatcher(_ => true, throw _)
 
   /** The empty `Catch` object. */
-  final val noCatch
-      : Catch[Nothing] = new Catch(nothingCatcher) withDesc "<nothing>"
+  final val noCatch: Catch[Nothing] =
+    new Catch(nothingCatcher) withDesc "<nothing>"
 
   /** A `Catch` object which catches everything. */
   final def allCatch[T]: Catch[T] =

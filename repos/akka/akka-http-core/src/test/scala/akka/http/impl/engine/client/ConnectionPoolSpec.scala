@@ -320,9 +320,8 @@ class ConnectionPoolSpec
     "produce an error if the request does not have an absolute URI" in {
       val request = HttpRequest(uri = "/foo")
       val responseFuture = Http().singleRequest(request)
-      val thrown = the[IllegalUriException] thrownBy Await.result(
-        responseFuture,
-        1.second)
+      val thrown =
+        the[IllegalUriException] thrownBy Await.result(responseFuture, 1.second)
       thrown should have message "Cannot determine request scheme and target endpoint as HttpMethod(GET) request to /foo doesn't have an absolute URI"
     }
   }

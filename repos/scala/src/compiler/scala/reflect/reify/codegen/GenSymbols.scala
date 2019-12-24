@@ -72,7 +72,8 @@ trait GenSymbols {
        *    object B { object B } => selectType(staticModule("B"), "B")
        *    object B { package B } => impossible
        */
-      val hasPackagelessParent = sym.ownerChain.tail.tail exists (_.isEmptyPackageClass)
+      val hasPackagelessParent =
+        sym.ownerChain.tail.tail exists (_.isEmptyPackageClass)
       if (sym.isStatic && (sym.isClass || sym.isModule) && !hasPackagelessParent) {
         // SI-6238: if applicable, emit references to StandardDefinitions instead of staticClass/staticModule calls
         val resolver = if (sym.isType) nme.staticClass else nme.staticModule
@@ -230,8 +231,8 @@ trait GenSymbols {
       //    produces valid Scala code (with vals in a block depending only on lexically preceding vals)
       val reification = reificode(sym)
       import reification.{name, binding}
-      val tree = reification.tree updateAttachment ReifyBindingAttachment(
-        binding)
+      val tree =
+        reification.tree updateAttachment ReifyBindingAttachment(binding)
       state.symtab += (sym, name.toTermName, tree)
     }
     fromSymtab

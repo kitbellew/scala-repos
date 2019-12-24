@@ -120,7 +120,8 @@ trait IntroduceExpressions {
 
         val callback = new Pass[OccurrencesChooser.ReplaceChoice] {
           def pass(replaceChoice: OccurrencesChooser.ReplaceChoice) {
-            val replaceAll = OccurrencesChooser.ReplaceChoice.NO != replaceChoice
+            val replaceAll =
+              OccurrencesChooser.ReplaceChoice.NO != replaceChoice
             val suggestedNames: Array[String] =
               NameSuggester.suggestNames(expr, validator)
             import scala.collection.JavaConversions.asJavaCollection
@@ -315,7 +316,8 @@ trait IntroduceExpressions {
       val selectedText = model.getSelectedText
       val lineNumber = document.getLineNumber(model.getSelectionStart)
 
-      val oneLineSelected = selectedText != null && lineText != null && selectedText.trim == lineText.trim
+      val oneLineSelected =
+        selectedText != null && lineText != null && selectedText.trim == lineText.trim
 
       val element = file.findElementAt(model.getSelectionStart)
       var parent = element

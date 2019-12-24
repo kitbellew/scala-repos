@@ -22,8 +22,10 @@ class AtmosphereChat
       title = "Scalatra Atmosphere Chat",
       content = bodyHtml,
       url = url(_, includeServletPath = false),
-      scripts = "/jquery/jquery.atmosphere.js" :: "/jquery/application.js" :: Nil,
-      defaultScripts = "/assets/js/jquery.min.js" :: "/assets/js/bootstrap.min.js" :: Nil
+      scripts =
+        "/jquery/jquery.atmosphere.js" :: "/jquery/application.js" :: Nil,
+      defaultScripts =
+        "/assets/js/jquery.min.js" :: "/assets/js/bootstrap.min.js" :: Nil
     )
   }
 
@@ -34,13 +36,15 @@ class AtmosphereChat
   }
 
   get("/broadcast") {
-    val jv = ("author" -> "System") ~ ("message" -> "big brother speaking") ~ ("time" -> (new Date().getTime.toString))
+    val jv =
+      ("author" -> "System") ~ ("message" -> "big brother speaking") ~ ("time" -> (new Date().getTime.toString))
     AtmosphereClient.broadcast(routeBasePath + "/the-chat", jv)
 
   }
 
   get("/broadcast-all") {
-    val jv = ("author" -> "System") ~ ("message" -> "big brother speaking") ~ ("time" -> (new Date().getTime.toString))
+    val jv =
+      ("author" -> "System") ~ ("message" -> "big brother speaking") ~ ("time" -> (new Date().getTime.toString))
     AtmosphereClient.broadcastAll(jv)
   }
 
@@ -69,7 +73,8 @@ class AtmosphereChat
             "Got message %s from %s".format(
               (json \ "message").extract[String],
               (json \ "author").extract[String]))
-          val msg = json merge (("time" -> (new Date().getTime.toString)): JValue)
+          val msg =
+            json merge (("time" -> (new Date().getTime.toString)): JValue)
           broadcast(msg) // by default a broadcast is to everyone but self
         //          send(msg) // also send to the sender
       }
@@ -104,7 +109,8 @@ class AtmosphereChat
               (json \ "message").extract[String],
               (json \ "author").extract[String],
               room))
-          val msg = json merge (("time" -> (new Date().getTime.toString)): JValue)
+          val msg =
+            json merge (("time" -> (new Date().getTime.toString)): JValue)
           broadcast(msg) // by default a broadcast is to everyone but self
         //          send(msg) // also send to the sender
       }

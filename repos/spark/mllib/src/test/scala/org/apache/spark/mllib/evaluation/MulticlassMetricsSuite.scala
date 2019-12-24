@@ -57,9 +57,12 @@ class MulticlassMetricsSuite extends SparkFunSuite with MLlibTestSparkContext {
     val f1measure0 = 2 * precision0 * recall0 / (precision0 + recall0)
     val f1measure1 = 2 * precision1 * recall1 / (precision1 + recall1)
     val f1measure2 = 2 * precision2 * recall2 / (precision2 + recall2)
-    val f2measure0 = (1 + 2 * 2) * precision0 * recall0 / (2 * 2 * precision0 + recall0)
-    val f2measure1 = (1 + 2 * 2) * precision1 * recall1 / (2 * 2 * precision1 + recall1)
-    val f2measure2 = (1 + 2 * 2) * precision2 * recall2 / (2 * 2 * precision2 + recall2)
+    val f2measure0 =
+      (1 + 2 * 2) * precision0 * recall0 / (2 * 2 * precision0 + recall0)
+    val f2measure1 =
+      (1 + 2 * 2) * precision1 * recall1 / (2 * 2 * precision1 + recall1)
+    val f2measure2 =
+      (1 + 2 * 2) * precision2 * recall2 / (2 * 2 * precision2 + recall2)
 
     assert(
       metrics.confusionMatrix.toArray.sameElements(confusionMatrix.toArray))

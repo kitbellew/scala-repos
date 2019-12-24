@@ -134,8 +134,9 @@ private[hive] class HiveFunctionRegistry(
           throw analysisException
         case throwable: Throwable =>
           // If there is any other error, we throw an AnalysisException.
-          val errorMessage = s"No handler for Hive udf ${functionInfo.getFunctionClass} " +
-            s"because: ${throwable.getMessage}."
+          val errorMessage =
+            s"No handler for Hive udf ${functionInfo.getFunctionClass} " +
+              s"because: ${throwable.getMessage}."
           throw new AnalysisException(errorMessage)
       }
     }

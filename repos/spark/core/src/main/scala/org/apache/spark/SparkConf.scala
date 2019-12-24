@@ -442,8 +442,9 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
     * idempotent - may mutate this conf object to convert deprecated settings to supported ones. */
   private[spark] def validateSettings() {
     if (contains("spark.local.dir")) {
-      val msg = "In Spark 1.0 and later spark.local.dir will be overridden by the value set by " +
-        "the cluster manager (via SPARK_LOCAL_DIRS in mesos/standalone and LOCAL_DIRS in YARN)."
+      val msg =
+        "In Spark 1.0 and later spark.local.dir will be overridden by the value set by " +
+          "the cluster manager (via SPARK_LOCAL_DIRS in mesos/standalone and LOCAL_DIRS in YARN)."
       logWarning(msg)
     }
 
@@ -469,13 +470,15 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
     // Validate spark.executor.extraJavaOptions
     getOption(executorOptsKey).map { javaOpts =>
       if (javaOpts.contains("-Dspark")) {
-        val msg = s"$executorOptsKey is not allowed to set Spark options (was '$javaOpts'). " +
-          "Set them directly on a SparkConf or in a properties file when using ./bin/spark-submit."
+        val msg =
+          s"$executorOptsKey is not allowed to set Spark options (was '$javaOpts'). " +
+            "Set them directly on a SparkConf or in a properties file when using ./bin/spark-submit."
         throw new Exception(msg)
       }
       if (javaOpts.contains("-Xmx") || javaOpts.contains("-Xms")) {
-        val msg = s"$executorOptsKey is not allowed to alter memory settings (was '$javaOpts'). " +
-          "Use spark.executor.memory instead."
+        val msg =
+          s"$executorOptsKey is not allowed to alter memory settings (was '$javaOpts'). " +
+            "Use spark.executor.memory instead."
         throw new Exception(msg)
       }
     }
@@ -488,10 +491,9 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
       "spark.storage.unrollFraction",
       "spark.storage.safetyFraction"
     )
-    val memoryKeys = Seq(
-      "spark.memory.fraction",
-      "spark.memory.storageFraction") ++
-      deprecatedMemoryKeys
+    val memoryKeys =
+      Seq("spark.memory.fraction", "spark.memory.storageFraction") ++
+        deprecatedMemoryKeys
     for (key <- memoryKeys) {
       val value = getDouble(key, 0.5)
       if (value > 1 || value < 0) {
@@ -584,8 +586,9 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
     }
 
     if (contains("spark.master") && get("spark.master").startsWith("yarn-")) {
-      val warning = s"spark.master ${get("spark.master")} is deprecated in Spark 2.0+, please " +
-        "instead use \"yarn\" with specified deploy mode."
+      val warning =
+        s"spark.master ${get("spark.master")} is deprecated in Spark 2.0+, please " +
+          "instead use \"yarn\" with specified deploy mode."
 
       get("spark.master") match {
         case "yarn-cluster" =>

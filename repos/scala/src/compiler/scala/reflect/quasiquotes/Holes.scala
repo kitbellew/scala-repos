@@ -115,8 +115,9 @@ trait Holes { self: Quasiquotes =>
           s"using $iterableRank"
         else "omitting the dots"
       val rankSuggestion = if (suggestRank) unquoteeRankMsg else ""
-      val suggestLifting = (annotatedRank == NoDot || iterableRank != NoDot) && !(iterableType <:< treeType) && !isLiftableType(
-        iterableType)
+      val suggestLifting =
+        (annotatedRank == NoDot || iterableRank != NoDot) && !(iterableType <:< treeType) && !isLiftableType(
+          iterableType)
       val liftedTpe = if (annotatedRank != NoDot) iterableType else unquotee.tpe
       val liftSuggestion =
         if (suggestLifting)

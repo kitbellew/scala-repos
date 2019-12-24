@@ -336,7 +336,8 @@ class KafkaApis(
         case (topicPartition, _) =>
           !metadataCache.contains(topicPartition.topic)
       }
-      val filteredRequestInfo = offsetCommitRequest.offsetData.asScala.toMap -- invalidRequestsInfo.keys
+      val filteredRequestInfo =
+        offsetCommitRequest.offsetData.asScala.toMap -- invalidRequestsInfo.keys
 
       val (authorizedRequestInfo, unauthorizedRequestInfo) =
         filteredRequestInfo.partition {
@@ -361,8 +362,9 @@ class KafkaApis(
                   s"on partition $topicPartition failed due to ${Errors.forCode(errorCode).exceptionName}")
             }
         }
-        val combinedCommitStatus = mergedCommitStatus.mapValues(new JShort(_)) ++ invalidRequestsInfo
-          .map(_._1 -> new JShort(Errors.UNKNOWN_TOPIC_OR_PARTITION.code))
+        val combinedCommitStatus =
+          mergedCommitStatus.mapValues(new JShort(_)) ++ invalidRequestsInfo
+            .map(_._1 -> new JShort(Errors.UNKNOWN_TOPIC_OR_PARTITION.code))
 
         val responseHeader = new ResponseHeader(header.correlationId)
         val responseBody = new OffsetCommitResponse(combinedCommitStatus.asJava)
@@ -550,7 +552,8 @@ class KafkaApis(
     if (authorizedRequestInfo.isEmpty)
       sendResponseCallback(Map.empty)
     else {
-      val internalTopicsAllowed = request.header.clientId == AdminUtils.AdminClientId
+      val internalTopicsAllowed =
+        request.header.clientId == AdminUtils.AdminClientId
 
       // Convert ByteBuffer to ByteBufferMessageSet
       val authorizedMessagesPerPartition = authorizedRequestInfo.map {
@@ -634,7 +637,8 @@ class KafkaApis(
           }
         } else responsePartitionData
 
-      val mergedPartitionData = convertedPartitionData ++ unauthorizedPartitionData
+      val mergedPartitionData =
+        convertedPartitionData ++ unauthorizedPartitionData
 
       mergedPartitionData.foreach {
         case (topicAndPartition, data) =>

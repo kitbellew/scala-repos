@@ -124,7 +124,8 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
     val absolutePath1 = file1.getAbsolutePath
 
     val file2 = File.createTempFile("someprefix2", "somesuffix2", dir)
-    val relativePath = file2.getParent + "/../" + file2.getParentFile.getName + "/" + file2.getName
+    val relativePath =
+      file2.getParent + "/../" + file2.getParentFile.getName + "/" + file2.getName
     val absolutePath2 = file2.getAbsolutePath
 
     try {

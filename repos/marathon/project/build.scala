@@ -87,13 +87,13 @@ object MarathonBuild extends Build {
     */
   lazy val formattingTestArg = Tests.Argument("-eDFG")
 
-  lazy val integrationTestSettings = inConfig(IntegrationTest)(
-    Defaults.testTasks) ++
-    Seq(
-      testOptions in IntegrationTest := Seq(
-        formattingTestArg,
-        Tests.Argument("-n", "integration"))
-    )
+  lazy val integrationTestSettings =
+    inConfig(IntegrationTest)(Defaults.testTasks) ++
+      Seq(
+        testOptions in IntegrationTest := Seq(
+          formattingTestArg,
+          Tests.Argument("-n", "integration"))
+      )
 
   lazy val testSettings = Seq(
     testOptions in Test := Seq(
@@ -351,30 +351,41 @@ object Dependency {
   val sprayClient = "io.spray" %% "spray-client" % V.Spray
   val sprayHttpx = "io.spray" %% "spray-httpx" % V.Spray
   val playJson = "com.typesafe.play" %% "play-json" % V.PlayJson
-  val chaos = "mesosphere" %% "chaos" % V.Chaos exclude ("org.glassfish.web", "javax.el")
+  val chaos =
+    "mesosphere" %% "chaos" % V.Chaos exclude ("org.glassfish.web", "javax.el")
   val guava = "com.google.guava" % "guava" % V.Guava
   val mesosUtils = "mesosphere" %% "mesos-utils" % V.MesosUtils
-  val jacksonCaseClass = "mesosphere" %% "jackson-case-class-module" % V.JacksonCCM
+  val jacksonCaseClass =
+    "mesosphere" %% "jackson-case-class-module" % V.JacksonCCM
   val jerseyServlet = "com.sun.jersey" % "jersey-servlet" % V.Jersey
-  val jettyEventSource = "org.eclipse.jetty" % "jetty-servlets" % V.JettyServlets
-  val jerseyMultiPart = "com.sun.jersey.contribs" % "jersey-multipart" % V.Jersey
+  val jettyEventSource =
+    "org.eclipse.jetty" % "jetty-servlets" % V.JettyServlets
+  val jerseyMultiPart =
+    "com.sun.jersey.contribs" % "jersey-multipart" % V.Jersey
   val jodaTime = "joda-time" % "joda-time" % V.JodaTime
   val jodaConvert = "org.joda" % "joda-convert" % V.JodaConvert
-  val twitterCommons = "com.twitter.common.zookeeper" % "candidate" % V.TwitterCommons
-  val uuidGenerator = "com.fasterxml.uuid" % "java-uuid-generator" % V.UUIDGenerator
+  val twitterCommons =
+    "com.twitter.common.zookeeper" % "candidate" % V.TwitterCommons
+  val uuidGenerator =
+    "com.fasterxml.uuid" % "java-uuid-generator" % V.UUIDGenerator
   val jGraphT = "org.javabits.jgrapht" % "jgrapht-core" % V.JGraphT
-  val hadoopHdfs = "org.apache.hadoop" % "hadoop-hdfs" % V.Hadoop excludeAll (excludeMortbayJetty, excludeJavaxServlet)
-  val hadoopCommon = "org.apache.hadoop" % "hadoop-common" % V.Hadoop excludeAll (excludeMortbayJetty,
-  excludeJavaxServlet)
+  val hadoopHdfs =
+    "org.apache.hadoop" % "hadoop-hdfs" % V.Hadoop excludeAll (excludeMortbayJetty, excludeJavaxServlet)
+  val hadoopCommon =
+    "org.apache.hadoop" % "hadoop-common" % V.Hadoop excludeAll (excludeMortbayJetty,
+    excludeJavaxServlet)
   val beanUtils = "commons-beanutils" % "commons-beanutils" % "1.9.2"
   val scallop = "org.rogach" %% "scallop" % V.Scallop
-  val jsonSchemaValidator = "com.github.fge" % "json-schema-validator" % V.JsonSchemaValidator
+  val jsonSchemaValidator =
+    "com.github.fge" % "json-schema-validator" % V.JsonSchemaValidator
   val twitterZk = "com.twitter" %% "util-zk" % V.TwitterZk
   val rxScala = "io.reactivex" %% "rxscala" % V.RxScala
   val marathonUI = "mesosphere.marathon" % "ui" % V.MarathonUI
-  val marathonApiConsole = "mesosphere.marathon" % "api-console" % V.MarathonApiConsole
+  val marathonApiConsole =
+    "mesosphere.marathon" % "api-console" % V.MarathonApiConsole
   val graphite = "io.dropwizard.metrics" % "metrics-graphite" % V.Graphite
-  val datadog = "org.coursera" % "dropwizard-metrics-datadog" % V.DataDog exclude ("ch.qos.logback", "logback-classic")
+  val datadog =
+    "org.coursera" % "dropwizard-metrics-datadog" % V.DataDog exclude ("ch.qos.logback", "logback-classic")
   val wixAccord = "com.wix" %% "accord-core" % V.WixAccord
 
   object Test {

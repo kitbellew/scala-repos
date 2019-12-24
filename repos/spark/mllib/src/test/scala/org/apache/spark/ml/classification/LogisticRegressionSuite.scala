@@ -1094,16 +1094,16 @@ object LogisticRegressionSuite {
     * This is useful for tests which need to exercise all Params, such as save/load.
     * This excludes input columns to simplify some tests.
     */
-  val allParamSettings
-      : Map[String, Any] = ProbabilisticClassifierSuite.allParamSettings ++ Map(
-    "probabilityCol" -> "myProbability",
-    "thresholds" -> Array(0.4, 0.6),
-    "regParam" -> 0.01,
-    "elasticNetParam" -> 0.1,
-    "maxIter" -> 2, // intentionally small
-    "fitIntercept" -> true,
-    "tol" -> 0.8,
-    "standardization" -> false,
-    "threshold" -> 0.6
-  )
+  val allParamSettings: Map[String, Any] =
+    ProbabilisticClassifierSuite.allParamSettings ++ Map(
+      "probabilityCol" -> "myProbability",
+      "thresholds" -> Array(0.4, 0.6),
+      "regParam" -> 0.01,
+      "elasticNetParam" -> 0.1,
+      "maxIter" -> 2, // intentionally small
+      "fitIntercept" -> true,
+      "tol" -> 0.8,
+      "standardization" -> false,
+      "threshold" -> 0.6
+    )
 }

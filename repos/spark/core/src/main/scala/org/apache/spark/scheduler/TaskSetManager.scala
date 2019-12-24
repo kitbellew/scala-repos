@@ -638,9 +638,10 @@ private[spark] class TaskSetManager(
     totalResultSize += size
     calculatedTasks += 1
     if (maxResultSize > 0 && totalResultSize > maxResultSize) {
-      val msg = s"Total size of serialized results of ${calculatedTasks} tasks " +
-        s"(${Utils.bytesToString(totalResultSize)}) is bigger than spark.driver.maxResultSize " +
-        s"(${Utils.bytesToString(maxResultSize)})"
+      val msg =
+        s"Total size of serialized results of ${calculatedTasks} tasks " +
+          s"(${Utils.bytesToString(totalResultSize)}) is bigger than spark.driver.maxResultSize " +
+          s"(${Utils.bytesToString(maxResultSize)})"
       logError(msg)
       abort(msg)
       false
@@ -708,8 +709,9 @@ private[spark] class TaskSetManager(
     val index = info.index
     copiesRunning(index) -= 1
     var accumUpdates: Seq[AccumulableInfo] = Seq.empty[AccumulableInfo]
-    val failureReason = s"Lost task ${info.id} in stage ${taskSet.id} (TID $tid, ${info.host}): " +
-      reason.asInstanceOf[TaskFailedReason].toErrorString
+    val failureReason =
+      s"Lost task ${info.id} in stage ${taskSet.id} (TID $tid, ${info.host}): " +
+        reason.asInstanceOf[TaskFailedReason].toErrorString
     val failureException: Option[Throwable] = reason match {
       case fetchFailed: FetchFailed =>
         logWarning(failureReason)

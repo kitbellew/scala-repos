@@ -1017,7 +1017,8 @@ trait AST extends Phases {
       def values = props map { _._2 }
 
       def form = {
-        val opt = (props map { case (_, e) => 'name ~ e } reduceOption { _ ~ _ })
+        val opt =
+          (props map { case (_, e) => 'name ~ e } reduceOption { _ ~ _ })
 
         opt map { 'leftCurl ~ _ ~ 'rightCurl } getOrElse sym
       }

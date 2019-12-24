@@ -582,9 +582,8 @@ object RandomForest extends Serializable with Logging {
           None
         }
       // Check if enough memory remains to add this node to the group.
-      val nodeMemUsage = RandomForest.aggregateSizeForNode(
-        metadata,
-        featureSubset) * 8L
+      val nodeMemUsage =
+        RandomForest.aggregateSizeForNode(metadata, featureSubset) * 8L
       if (memUsage + nodeMemUsage <= maxMemoryUsage) {
         nodeQueue.dequeue()
         mutableNodesForGroup.getOrElseUpdate(

@@ -700,7 +700,8 @@ class Scaladoc extends ScalaMatchingTask {
     } catch {
       case exception: Throwable =>
         exception.printStackTrace()
-        val msg = Option(exception.getMessage) getOrElse "no error message provided"
+        val msg =
+          Option(exception.getMessage) getOrElse "no error message provided"
         safeBuildError(
           s"Document failed because of an internal documenter error ($msg); see the error output for details.")
     }

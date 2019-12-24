@@ -26,7 +26,8 @@ object BytecodeUtils {
   final val maxJVMMethodSize = 65535
 
   // 5% margin, more than enough for the instructions added by the inliner (store / load args, null check for instance methods)
-  final val maxMethodSizeAfterInline = maxJVMMethodSize - (maxJVMMethodSize / 20)
+  final val maxMethodSizeAfterInline =
+    maxJVMMethodSize - (maxJVMMethodSize / 20)
 
   object Goto {
     def unapply(instruction: AbstractInsnNode): Option[JumpInsnNode] = {

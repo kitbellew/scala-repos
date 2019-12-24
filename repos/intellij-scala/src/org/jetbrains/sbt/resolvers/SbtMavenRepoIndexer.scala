@@ -152,7 +152,8 @@ class SbtMavenRepoIndexer private (val root: String, val indexDir: File)
           length: Int) =
         progressIndicator foreach { indicator =>
           downloadedBytes += length
-          val done = (downloadedBytes.toFloat / evt.getResource.getContentLength) / 2.0
+          val done =
+            (downloadedBytes.toFloat / evt.getResource.getContentLength) / 2.0
           indicator.setFraction(done)
         }
       override def transferStarted(evt: TransferEvent) =

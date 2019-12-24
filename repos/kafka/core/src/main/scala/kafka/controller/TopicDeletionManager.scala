@@ -79,7 +79,8 @@ class TopicDeletionManager(
     initialTopicsToBeDeleted: Set[String] = Set.empty,
     initialTopicsIneligibleForDeletion: Set[String] = Set.empty)
     extends Logging {
-  this.logIdent = "[Topic Deletion Manager " + controller.config.brokerId + "], "
+  this.logIdent =
+    "[Topic Deletion Manager " + controller.config.brokerId + "], "
   val controllerContext = controller.controllerContext
   val partitionStateMachine = controller.partitionStateMachine
   val replicaStateMachine = controller.replicaStateMachine
@@ -373,10 +374,12 @@ class TopicDeletionManager(
       case (topic, replicas) =>
         var aliveReplicasForTopic =
           controllerContext.allLiveReplicas().filter(p => p.topic.equals(topic))
-        val deadReplicasForTopic = replicasForTopicsToBeDeleted -- aliveReplicasForTopic
+        val deadReplicasForTopic =
+          replicasForTopicsToBeDeleted -- aliveReplicasForTopic
         val successfullyDeletedReplicas = controller.replicaStateMachine
           .replicasInState(topic, ReplicaDeletionSuccessful)
-        val replicasForDeletionRetry = aliveReplicasForTopic -- successfullyDeletedReplicas
+        val replicasForDeletionRetry =
+          aliveReplicasForTopic -- successfullyDeletedReplicas
         // move dead replicas directly to failed state
         replicaStateMachine
           .handleStateChanges(deadReplicasForTopic, ReplicaDeletionIneligible)

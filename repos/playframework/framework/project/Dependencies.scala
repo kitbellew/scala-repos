@@ -33,7 +33,8 @@ object Dependencies {
     Seq("logback-core", "logback-classic").map("ch.qos.logback" % _ % "1.1.4")
 
   val guava = "com.google.guava" % "guava" % "19.0"
-  val findBugs = "com.google.code.findbugs" % "jsr305" % "3.0.1" // Needed by guava
+  val findBugs =
+    "com.google.code.findbugs" % "jsr305" % "3.0.1" // Needed by guava
   val mockitoAll = "org.mockito" % "mockito-all" % "1.10.19"
 
   val h2database = "com.h2database" % "h2" % "1.4.191"
@@ -58,7 +59,8 @@ object Dependencies {
     "org.hibernate" % "hibernate-entitymanager" % "5.1.0.Final" % "test"
   )
 
-  val scalaJava8Compat = "org.scala-lang.modules" %% "scala-java8-compat" % "0.7.0"
+  val scalaJava8Compat =
+    "org.scala-lang.modules" %% "scala-java8-compat" % "0.7.0"
   def scalaParserCombinators(scalaVersion: String) =
     CrossVersion.partialVersion(scalaVersion) match {
       case Some((2, major)) if major >= 11 =>
@@ -267,15 +269,15 @@ object Dependencies {
     guava % Test
   ) ++ specsBuild.map(_ % Test) ++ logback.map(_ % Test)
 
-  val testDependencies = Seq(junit) ++ specsBuild.map(_ % Test) ++ logback.map(
-    _ % Test) ++ Seq(
-    junitInterface,
-    guava,
-    findBugs,
-    "net.sourceforge.htmlunit" % "htmlunit" % "2.20", // adds support for jQuery 2.20; can be removed as soon as fluentlenium has it in it's own dependencies
-    ("org.fluentlenium" % "fluentlenium-core" % "0.10.9")
-      .exclude("org.jboss.netty", "netty")
-  )
+  val testDependencies =
+    Seq(junit) ++ specsBuild.map(_ % Test) ++ logback.map(_ % Test) ++ Seq(
+      junitInterface,
+      guava,
+      findBugs,
+      "net.sourceforge.htmlunit" % "htmlunit" % "2.20", // adds support for jQuery 2.20; can be removed as soon as fluentlenium has it in it's own dependencies
+      ("org.fluentlenium" % "fluentlenium-core" % "0.10.9")
+        .exclude("org.jboss.netty", "netty")
+    )
 
   val playCacheDeps = "net.sf.ehcache" % "ehcache-core" % "2.6.11" +:
     (specsBuild.map(_ % Test) ++ logback.map(_ % Test))

@@ -130,8 +130,8 @@ object ConcurrentSpec
             },
             Duration(100, MILLISECONDS)
           ))
-        val fastEnumerator = Enumerator[Long](1, 2, 3, 4, 5, 6, 7, 8, 9,
-          10) >>> Enumerator.eof
+        val fastEnumerator =
+          Enumerator[Long](1, 2, 3, 4, 5, 6, 7, 8, 9, 10) >>> Enumerator.eof
         val preparedMapEC = mapEC.prepare()
         val result =
           fastEnumerator |>>>

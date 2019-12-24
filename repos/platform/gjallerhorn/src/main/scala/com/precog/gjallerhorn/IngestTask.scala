@@ -48,11 +48,12 @@ class IngestTask(settings: Settings)
   "ingest" should {
     "ingest json without a content type" in {
       val account = createAccount
-      val req = (((ingest / "sync" / "fs").POST / account.bareRootPath / "foo" / "")
-        <<? List(
-          "apiKey" -> account.apiKey,
-          "ownerAccountId" -> account.accountId)
-        << simpleData)
+      val req =
+        (((ingest / "sync" / "fs").POST / account.bareRootPath / "foo" / "")
+          <<? List(
+            "apiKey" -> account.apiKey,
+            "ownerAccountId" -> account.accountId)
+          << simpleData)
       val res = http(req)()
       EventuallyResults.eventually(10, 1.second) {
         val json =

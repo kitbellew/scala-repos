@@ -205,8 +205,9 @@ trait NormalizationHelperModule[M[+_]]
             }
 
             val bitsets = resultsAll.values map { _.definedAt(0, range.end) }
-            val definedBitset = bitsets reduceOption { _ & _ } getOrElse BitSetUtil
-              .create()
+            val definedBitset =
+              bitsets reduceOption { _ & _ } getOrElse BitSetUtil
+                .create()
 
             def intersectColumn(col: NumColumn): NumColumn = {
               new BitsetColumn(definedBitset) with NumColumn {

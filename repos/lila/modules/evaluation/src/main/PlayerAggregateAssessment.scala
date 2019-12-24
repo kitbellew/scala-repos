@@ -49,8 +49,8 @@ case class PlayerAggregateAssessment(
           || (cheatingSum + likelyCheatingSum).toDouble / assessmentsCount >= 0.10 - relationModifier)
     )
 
-    val bannable
-        : Boolean = (relatedCheatersCount == relatedUsersCount) && relatedUsersCount >= 1
+    val bannable: Boolean =
+      (relatedCheatersCount == relatedUsersCount) && relatedUsersCount >= 1
 
     def sigDif(dif: Int)(a: Option[Int], b: Option[Int]): Option[Boolean] =
       (a |@| b) apply { case (a, b) => b - a > dif }

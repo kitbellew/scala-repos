@@ -315,7 +315,8 @@ object TaskBuilder {
 
   val maxEnvironmentVarLength = 512
   val labelEnvironmentKeyPrefix = "MARATHON_APP_LABEL_"
-  val maxVariableLength = maxEnvironmentVarLength - labelEnvironmentKeyPrefix.length
+  val maxVariableLength =
+    maxEnvironmentVarLength - labelEnvironmentKeyPrefix.length
 
   def commandInfo(
       app: AppDefinition,

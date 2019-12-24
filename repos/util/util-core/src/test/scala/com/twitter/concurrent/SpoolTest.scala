@@ -50,8 +50,8 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
       assert(Await.result(s ++ Future(Spool.empty[Int])) == Spool.empty[Int])
       assert(Await.result(Spool.empty[Int] ++ Future(s)) == Spool.empty[Int])
 
-      val s2 = s ++ Future(
-        3 *:: Future.value(4 *:: Future.value(Spool.empty[Int])))
+      val s2 =
+        s ++ Future(3 *:: Future.value(4 *:: Future.value(Spool.empty[Int])))
       assert(Await.result(s2 flatMap (_.toSeq)) == Seq(3, 4))
     }
 

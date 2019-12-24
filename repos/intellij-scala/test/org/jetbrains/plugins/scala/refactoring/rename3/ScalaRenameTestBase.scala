@@ -144,8 +144,8 @@ abstract class ScalaRenameTestBase
       TargetElementUtil.REFERENCED_ELEMENT_ACCEPTED | TargetElementUtil.ELEMENT_NAME_ACCEPTED
     )
     assert(element != null, "Reference is not specified.")
-    val searchInComments = element.getText != null && element.getText.contains(
-      "Comments")
+    val searchInComments =
+      element.getText != null && element.getText.contains("Comments")
     var oldName: String = ""
     inWriteAction {
       val subst = RenamePsiElementProcessor

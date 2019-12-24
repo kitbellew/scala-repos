@@ -95,8 +95,8 @@ object Dist {
           val docs = doc / "docs"
           val docJars = doc / "jars"
           val libs = allSources.depJars ++ allSources.libJars
-          val (scalaLibs, akkaLibs) = libs partition (_.name.contains(
-            "scala-library"))
+          val (scalaLibs, akkaLibs) =
+            libs partition (_.name.contains("scala-library"))
           val lib = base / "lib"
           val libAkka = lib / "akka"
           val src = base / "src" / "akka"

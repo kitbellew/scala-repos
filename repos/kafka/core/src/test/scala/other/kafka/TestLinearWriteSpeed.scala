@@ -134,7 +134,8 @@ object TestLinearWriteSpeed {
         writables(i) =
           new ChannelWritable(new File(dir, "kafka-test-" + i + ".dat"), buffer)
       } else if (options.has(logOpt)) {
-        val segmentSize = rand.nextInt(512) * 1024 * 1024 + 64 * 1024 * 1024 // vary size to avoid herd effect
+        val segmentSize =
+          rand.nextInt(512) * 1024 * 1024 + 64 * 1024 * 1024 // vary size to avoid herd effect
         val logProperties = new Properties()
         logProperties.put(
           LogConfig.SegmentBytesProp,

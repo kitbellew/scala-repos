@@ -341,50 +341,64 @@ object ScalatraBuild extends Build {
   lazy val scalatraExample = Project(
     id = "scalatra-example",
     base = file("example"),
-    settings = scalatraSettings ++ doNotPublish ++ scalatraWithWarOverlays ++ Seq(
-      libraryDependencies += servletApi % "container;test;provided",
-      libraryDependencies += jettyWebsocket % "container;test;provided",
-      libraryDependencies += jettyServer % "container;test;provided",
-      libraryDependencies += jettyPlus % "container;test",
-      libraryDependencies ++= Seq(jettyWebapp % "container;test", slf4jSimple),
-      libraryDependencies += json4sJackson,
-      libraryDependencies += atmosphereJQuery,
-      description := "Scalatra example project",
-      previousArtifacts := Set.empty
-    )
+    settings =
+      scalatraSettings ++ doNotPublish ++ scalatraWithWarOverlays ++ Seq(
+        libraryDependencies += servletApi % "container;test;provided",
+        libraryDependencies += jettyWebsocket % "container;test;provided",
+        libraryDependencies += jettyServer % "container;test;provided",
+        libraryDependencies += jettyPlus % "container;test",
+        libraryDependencies ++= Seq(
+          jettyWebapp % "container;test",
+          slf4jSimple),
+        libraryDependencies += json4sJackson,
+        libraryDependencies += atmosphereJQuery,
+        description := "Scalatra example project",
+        previousArtifacts := Set.empty
+      )
   ) dependsOn (
     scalatraCore % "compile;test->test;provided->provided", scalatraScalate,
     scalatraAuth, scalatraFileupload, scalatraJetty, scalatraCommands, scalatraAtmosphere
   )
 
   object Dependencies {
-    lazy val parserCombinators = "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.4"
+    lazy val parserCombinators =
+      "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.4"
     lazy val xml = "org.scala-lang.modules" %% "scala-xml" % "1.0.5"
     lazy val akkaActor = "com.typesafe.akka" %% "akka-actor" % akkaVersion
     lazy val akkaTestkit = "com.typesafe.akka" %% "akka-testkit" % akkaVersion
     // TODO: 2.3 has incompatible API changes
-    lazy val atmosphereRuntime = "org.atmosphere" % "atmosphere-runtime" % "2.2.9"
-    lazy val atmosphereJQuery = "org.atmosphere.client" % "jquery" % "2.2.13" artifacts (Artifact(
-      "jquery",
-      "war",
-      "war"))
+    lazy val atmosphereRuntime =
+      "org.atmosphere" % "atmosphere-runtime" % "2.2.9"
+    lazy val atmosphereJQuery =
+      "org.atmosphere.client" % "jquery" % "2.2.13" artifacts (Artifact(
+        "jquery",
+        "war",
+        "war"))
     lazy val atmosphereClient = "org.atmosphere" % "wasync" % "2.1.2"
     lazy val atmosphereRedis = "org.atmosphere" % "atmosphere-redis" % "2.3.2"
-    lazy val atmosphereCompatJbossweb = "org.atmosphere" % "atmosphere-compat-jbossweb" % atmosphereCompatVersion
-    lazy val atmosphereCompatTomcat = "org.atmosphere" % "atmosphere-compat-tomcat" % atmosphereCompatVersion
-    lazy val atmosphereCompatTomcat7 = "org.atmosphere" % "atmosphere-compat-tomcat7" % atmosphereCompatVersion
+    lazy val atmosphereCompatJbossweb =
+      "org.atmosphere" % "atmosphere-compat-jbossweb" % atmosphereCompatVersion
+    lazy val atmosphereCompatTomcat =
+      "org.atmosphere" % "atmosphere-compat-tomcat" % atmosphereCompatVersion
+    lazy val atmosphereCompatTomcat7 =
+      "org.atmosphere" % "atmosphere-compat-tomcat7" % atmosphereCompatVersion
     lazy val base64 = "net.iharder" % "base64" % "2.3.8"
-    lazy val commonsFileupload = "commons-fileupload" % "commons-fileupload" % "1.3.1"
+    lazy val commonsFileupload =
+      "commons-fileupload" % "commons-fileupload" % "1.3.1"
     lazy val commonsIo = "commons-io" % "commons-io" % "2.4"
     lazy val commonsLang3 = "org.apache.commons" % "commons-lang3" % "3.4"
-    lazy val grizzledSlf4j = "org.clapper" %% "grizzled-slf4j" % grizzledSlf4jVersion
+    lazy val grizzledSlf4j =
+      "org.clapper" %% "grizzled-slf4j" % grizzledSlf4jVersion
     lazy val guice = "com.google.inject" % "guice" % "4.0"
-    lazy val httpclient = "org.apache.httpcomponents" % "httpclient" % httpcomponentsVersion
-    lazy val httpmime = "org.apache.httpcomponents" % "httpmime" % httpcomponentsVersion
+    lazy val httpclient =
+      "org.apache.httpcomponents" % "httpclient" % httpcomponentsVersion
+    lazy val httpmime =
+      "org.apache.httpcomponents" % "httpmime" % httpcomponentsVersion
     lazy val jettyServer = "org.eclipse.jetty" % "jetty-server" % jettyVersion
     lazy val jettyPlus = "org.eclipse.jetty" % "jetty-plus" % jettyVersion
     lazy val jettyServlet = "org.eclipse.jetty" % "jetty-servlet" % jettyVersion
-    lazy val jettyWebsocket = "org.eclipse.jetty.websocket" % "websocket-server" % jettyVersion
+    lazy val jettyWebsocket =
+      "org.eclipse.jetty.websocket" % "websocket-server" % jettyVersion
     lazy val jettyWebapp = "org.eclipse.jetty" % "jetty-webapp" % jettyVersion
     lazy val jodaConvert = "org.joda" % "joda-convert" % "1.8.1"
     lazy val jodaTime = "joda-time" % "joda-time" % "2.9.1"
@@ -393,9 +407,11 @@ object ScalatraBuild extends Build {
     lazy val json4sJackson = "org.json4s" %% "json4s-jackson" % json4sVersion
     lazy val json4sNative = "org.json4s" %% "json4s-native" % json4sVersion
     lazy val junit = "junit" % "junit" % "4.12"
-    lazy val jUniversalChardet = "com.googlecode.juniversalchardet" % "juniversalchardet" % "1.0.3"
+    lazy val jUniversalChardet =
+      "com.googlecode.juniversalchardet" % "juniversalchardet" % "1.0.3"
     lazy val logbackClassic = "ch.qos.logback" % "logback-classic" % "1.1.3"
-    lazy val mimeUtil = "eu.medsea.mimeutil" % "mime-util" % "2.1.3" exclude ("org.slf4j", "slf4j-log4j12") exclude ("log4j", "log4j")
+    lazy val mimeUtil =
+      "eu.medsea.mimeutil" % "mime-util" % "2.1.3" exclude ("org.slf4j", "slf4j-log4j12") exclude ("log4j", "log4j")
     lazy val mockitoAll = "org.mockito" % "mockito-all" % "1.10.19"
     lazy val rl = "org.scalatra.rl" %% "rl" % "0.4.10"
     lazy val scalajCollection = "org.scalaj" %% "scalaj-collection" % "1.2"
@@ -411,11 +427,15 @@ object ScalatraBuild extends Build {
       "org.specs2" %% "specs2-mock",
       "org.specs2" %% "specs2-matcher-extra"
     ).map(_ % specs2Version)
-    lazy val testJettyServlet = "org.eclipse.jetty" % "test-jetty-servlet" % jettyVersion
-    lazy val testng = "org.testng" % "testng" % "6.9.9" exclude ("junit", "junit")
+    lazy val testJettyServlet =
+      "org.eclipse.jetty" % "test-jetty-servlet" % jettyVersion
+    lazy val testng =
+      "org.testng" % "testng" % "6.9.9" exclude ("junit", "junit")
     lazy val metricsScala = "nl.grons" %% "metrics-scala" % "3.5.2"
-    lazy val metricsServlets = "io.dropwizard.metrics" % "metrics-servlets" % "3.1.2"
-    lazy val metricsServlet = "io.dropwizard.metrics" % "metrics-servlet" % "3.1.2"
+    lazy val metricsServlets =
+      "io.dropwizard.metrics" % "metrics-servlets" % "3.1.2"
+    lazy val metricsServlet =
+      "io.dropwizard.metrics" % "metrics-servlet" % "3.1.2"
     lazy val googleGuava = "com.google.guava" % "guava" % "19.0"
     lazy val googleFindBugs = "com.google.code.findbugs" % "jsr305" % "3.0.1"
 
@@ -430,21 +450,22 @@ object ScalatraBuild extends Build {
     private val specs2Version = "3.7.2"
   }
 
-  lazy val manifestSetting = packageOptions <+= (name, version, organization) map {
-    (title, version, vendor) =>
-      Package.ManifestAttributes(
-        "Created-By" -> "Simple Build Tool",
-        "Built-By" -> System.getProperty("user.name"),
-        "Build-Jdk" -> System.getProperty("java.version"),
-        "Specification-Title" -> title,
-        "Specification-Version" -> version,
-        "Specification-Vendor" -> vendor,
-        "Implementation-Title" -> title,
-        "Implementation-Version" -> version,
-        "Implementation-Vendor-Id" -> vendor,
-        "Implementation-Vendor" -> vendor
-      )
-  }
+  lazy val manifestSetting =
+    packageOptions <+= (name, version, organization) map {
+      (title, version, vendor) =>
+        Package.ManifestAttributes(
+          "Created-By" -> "Simple Build Tool",
+          "Built-By" -> System.getProperty("user.name"),
+          "Build-Jdk" -> System.getProperty("java.version"),
+          "Specification-Title" -> title,
+          "Specification-Version" -> version,
+          "Specification-Vendor" -> vendor,
+          "Implementation-Title" -> title,
+          "Implementation-Version" -> version,
+          "Implementation-Vendor-Id" -> vendor,
+          "Implementation-Vendor" -> vendor
+        )
+    }
 
   // Things we care about primarily because Maven Central demands them
   lazy val mavenCentralFrouFrou = Seq(

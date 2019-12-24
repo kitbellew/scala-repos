@@ -58,8 +58,8 @@ trait MapSubInstances0 extends MapSub {
           }
         }
     }
-    override val equalIsNatural
-        : Boolean = Equal[K].equalIsNatural && Equal[V].equalIsNatural
+    override val equalIsNatural: Boolean =
+      Equal[K].equalIsNatural && Equal[V].equalIsNatural
   }
 
   private[std] trait MapFoldable[K] extends Foldable.FromFoldr[XMap[K, ?]] {

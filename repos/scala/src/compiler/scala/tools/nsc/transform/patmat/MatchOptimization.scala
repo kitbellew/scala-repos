@@ -221,8 +221,8 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
         }.unzip
         val rerouteToReusedBinders = Substitution(from, to)
 
-        val collapsedDroppedSubst = sharedPrefix map (t =>
-          (toReused(t.treeMaker).substitution))
+        val collapsedDroppedSubst =
+          sharedPrefix map (t => (toReused(t.treeMaker).substitution))
 
         collapsedDroppedSubst.foldLeft(rerouteToReusedBinders)(_ >> _)
       }

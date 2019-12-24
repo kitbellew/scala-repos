@@ -467,7 +467,8 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
       mux: (U, QR) => RU): ReturningInsertActionComposer[U, RU] =
     new ReturningInsertActionComposerImpl[U, QR, RU](compiled, keys, mux)
 
-  protected lazy val useServerSideUpsert = capabilities contains JdbcCapabilities.insertOrUpdate
+  protected lazy val useServerSideUpsert =
+    capabilities contains JdbcCapabilities.insertOrUpdate
   protected lazy val useTransactionForUpsert = !useServerSideUpsert
   protected lazy val useServerSideUpsertReturning = useServerSideUpsert
   protected lazy val useTransactionForUpsertReturning =

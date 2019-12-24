@@ -14,9 +14,10 @@ trait OfferProcessorConfig extends ScallopConf {
 
   lazy val saveTasksToLaunchTimeout = opt[Int](
     "save_tasks_to_launch_timeout",
-    descr = "Timeout (ms) after matching an offer for saving all matched tasks that we are about to launch. " +
-      "When reaching the timeout, only the tasks that we could save within the timeout are also launched. " +
-      "All other task launches are temporarily rejected and retried later.",
+    descr =
+      "Timeout (ms) after matching an offer for saving all matched tasks that we are about to launch. " +
+        "When reaching the timeout, only the tasks that we could save within the timeout are also launched. " +
+        "All other task launches are temporarily rejected and retried later.",
     default = Some(3000)
   )
 

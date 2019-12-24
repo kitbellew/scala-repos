@@ -122,7 +122,8 @@ private[http] class HttpResponseRendererFactory(
           val r = new ByteStringRendering(responseHeaderSizeHint)
 
           import ctx.response._
-          val noEntity = entity.isKnownEmpty || ctx.requestMethod == HttpMethods.HEAD
+          val noEntity =
+            entity.isKnownEmpty || ctx.requestMethod == HttpMethods.HEAD
 
           def renderStatusLine(): Unit =
             protocol match {

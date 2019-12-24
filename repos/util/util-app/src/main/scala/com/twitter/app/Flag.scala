@@ -848,7 +848,8 @@ class Flags(
       includeGlobal: Boolean = this.includeGlobal,
       classLoader: ClassLoader = this.getClass.getClassLoader
   ): Iterable[Flag[_]] = synchronized {
-    var flags = TreeSet[Flag[_]]()(Ordering.by(_.name)) ++ this.flags.valuesIterator
+    var flags =
+      TreeSet[Flag[_]]()(Ordering.by(_.name)) ++ this.flags.valuesIterator
 
     if (includeGlobal) {
       flags ++= GlobalFlag.getAll(classLoader).iterator

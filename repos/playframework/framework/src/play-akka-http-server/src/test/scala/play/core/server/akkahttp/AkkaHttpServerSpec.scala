@@ -14,9 +14,8 @@ import akka.util.Timeout
 
 object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
   // Provide a flag to disable Akka HTTP tests
-  private val runTests: Boolean = (System.getProperty(
-    "run.akka.http.tests",
-    "true") == "true")
+  private val runTests: Boolean =
+    (System.getProperty("run.akka.http.tests", "true") == "true")
   skipAllIf(!runTests)
 
   sequential

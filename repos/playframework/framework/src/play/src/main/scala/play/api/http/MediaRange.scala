@@ -239,10 +239,10 @@ object MediaRange {
       tolerant(parameter <~ guard(end | ';' | ','), badParameter)
 
     val parameters = rep(';' ~> rep(' ') ~> tolerantParameter <~ rep(' '))
-    val mediaType
-        : Parser[MediaType] = (token <~ '/') ~ (token <~ rep(' ')) ~ parameters ^^ {
-      case mainType ~ subType ~ ps => MediaType(mainType, subType, ps.flatten)
-    }
+    val mediaType: Parser[MediaType] =
+      (token <~ '/') ~ (token <~ rep(' ')) ~ parameters ^^ {
+        case mainType ~ subType ~ ps => MediaType(mainType, subType, ps.flatten)
+      }
 
     /*
      * RFC 2616 section 14.1

@@ -74,7 +74,8 @@ object Util {
     val args = "xsbti.api" :: out.getAbsolutePath :: defs
       .map(_.getAbsolutePath)
       .toList
-    val mainClass = main getOrElse "No main class defined for datatype generator"
+    val mainClass =
+      main getOrElse "No main class defined for datatype generator"
     toError(run.run(mainClass, cp.files, args, s.log))
     (out ** "*.java").get
   }

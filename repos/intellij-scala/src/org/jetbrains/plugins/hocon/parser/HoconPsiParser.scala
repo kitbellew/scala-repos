@@ -144,8 +144,9 @@ class HoconPsiParser extends PsiParser {
         !ProperlyClosedQuotedString.pattern
           .matcher(builder.getTokenText)
           .matches
-      val unclosedMultilineString = builder.getTokenType == MultilineString && !builder.getTokenText
-        .endsWith("\"\"\"")
+      val unclosedMultilineString =
+        builder.getTokenType == MultilineString && !builder.getTokenText
+          .endsWith("\"\"\"")
 
       advanceLexer()
 
@@ -441,7 +442,8 @@ class HoconPsiParser extends PsiParser {
       advanceLexer()
 
       val gotPeriod = matches(Period)
-      val noPeriodWhitespace = gotPeriod && builder.rawTokenIndex == integerRawTokenIdx + 1
+      val noPeriodWhitespace =
+        gotPeriod && builder.rawTokenIndex == integerRawTokenIdx + 1
 
       if (gotPeriod) {
         textBuilder ++= builder.getTokenText
@@ -449,7 +451,8 @@ class HoconPsiParser extends PsiParser {
       }
 
       val gotDecimalPart = gotPeriod && matchesUnquoted(DecimalPartPattern)
-      val noDecimalPartWhitespace = gotDecimalPart && builder.rawTokenIndex == integerRawTokenIdx + 2
+      val noDecimalPartWhitespace =
+        gotDecimalPart && builder.rawTokenIndex == integerRawTokenIdx + 2
 
       if (gotDecimalPart) {
         textBuilder ++= builder.getTokenText

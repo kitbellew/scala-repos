@@ -139,8 +139,9 @@ object EnumerateesSpec
 
     "ignore chunks while predicate is valid" in {
       mustExecute(4) { dropWhileEC =>
-        val drop3AndConsume = Enumeratee.dropWhile[String](_ != "4")(
-          dropWhileEC) &>> Iteratee.consume[String]()
+        val drop3AndConsume =
+          Enumeratee.dropWhile[String](_ != "4")(dropWhileEC) &>> Iteratee
+            .consume[String]()
         val enumerator = Enumerator(Range(1, 20).map(_.toString): _*)
         Await.result(enumerator |>>> drop3AndConsume, Duration.Inf) must equalTo(
           Range(4, 20).map(_.toString).mkString)
@@ -192,8 +193,9 @@ object EnumerateesSpec
 
     "pass chunks until condition is not met" in {
       mustExecute(4) { takeWhileEC =>
-        val take3AndConsume = Enumeratee.takeWhile[String](_ != "4")(
-          takeWhileEC) &>> Iteratee.consume()
+        val take3AndConsume =
+          Enumeratee.takeWhile[String](_ != "4")(takeWhileEC) &>> Iteratee
+            .consume()
         val enumerator = Enumerator(Range(1, 20).map(_.toString): _*)
         Await.result(enumerator |>>> take3AndConsume, Duration.Inf) must equalTo(
           List(1, 2, 3).map(_.toString).mkString)
@@ -285,8 +287,9 @@ object EnumerateesSpec
 
     "add one to each of the ints enumerated" in {
       mustExecute(4) { mapEC =>
-        val add1AndConsume = Enumeratee.map[Int](i => List(i + 1))(mapEC) &>> Iteratee
-          .consume[List[Int]]()
+        val add1AndConsume =
+          Enumeratee.map[Int](i => List(i + 1))(mapEC) &>> Iteratee
+            .consume[List[Int]]()
         val enumerator = Enumerator(1, 2, 3, 4)
         Await.result(enumerator |>>> add1AndConsume, Duration.Inf) must equalTo(
           Seq(2, 3, 4, 5))
@@ -295,9 +298,10 @@ object EnumerateesSpec
 
     "infer its types correctly from previous enumeratee" in {
       mustExecute(0, 0) { (map1EC, map2EC) =>
-        val add1AndConsume = Enumeratee.map[Int](i => i + 1)(map1EC) ><> Enumeratee
-          .map[Int](i => List(i))(map2EC) &>>
-          Iteratee.consume[List[Int]]()
+        val add1AndConsume =
+          Enumeratee.map[Int](i => i + 1)(map1EC) ><> Enumeratee
+            .map[Int](i => List(i))(map2EC) &>>
+            Iteratee.consume[List[Int]]()
         val check: Iteratee[Int, List[Int]] = add1AndConsume
         true //this test is about compilation and if it compiles it means we got it right
       }
@@ -305,8 +309,8 @@ object EnumerateesSpec
 
     "infer its types correctly from the preceeding enumerator" in {
       mustExecute(0) { mapEC =>
-        val addOne = Enumerator(1, 2, 3, 4) &> Enumeratee.map[Int](i => i + 1)(
-          mapEC)
+        val addOne =
+          Enumerator(1, 2, 3, 4) &> Enumeratee.map[Int](i => i + 1)(mapEC)
         val check: Enumerator[Int] = addOne
         true //this test is about compilation and if it compiles it means we got it right
       }
@@ -404,9 +408,10 @@ object EnumerateesSpec
           implicitly[String => scala.collection.TraversableLike[Char, String]],
           splitEC) &>> Iteratee.consume()
 
-        val result = (Enumerator("dasdasdas ", "dadadasda\nshouldb\neinnext") &> Enumeratee
-          .grouped(upToSpace) ><> Enumeratee.map[String](_ + "|")(mapEC)) |>>> Iteratee
-          .consume[String]()
+        val result =
+          (Enumerator("dasdasdas ", "dadadasda\nshouldb\neinnext") &> Enumeratee
+            .grouped(upToSpace) ><> Enumeratee.map[String](_ + "|")(mapEC)) |>>> Iteratee
+            .consume[String]()
         Await.result(result, Duration.Inf) must equalTo(
           "dasdasdas dadadasda|shouldb|einnext|")
       }

@@ -7,8 +7,8 @@ import Keys._
 object SonatypeSupport {
   val GPL3 = ("GPL 3.0" -> url("http://www.gnu.org/licenses/gpl.html"))
   val LGPL3 = ("LGPL 3.0" -> url("http://www.gnu.org/licenses/lgpl.html"))
-  val Apache2 = ("Apache-2.0" -> url(
-    "http://www.apache.org/licenses/LICENSE-2.0"))
+  val Apache2 =
+    ("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0"))
 
   def sonatype(
       ghUser: String,

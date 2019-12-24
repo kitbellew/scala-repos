@@ -33,14 +33,16 @@ class XmlClosingTagAutoCompletionTest
   }
 
   def testComplicatedTag() {
-    val text = "class A { val xml = <a>blah blah <blah/> <b" + CARET_MARKER + "</a> }"
+    val text =
+      "class A { val xml = <a>blah blah <blah/> <b" + CARET_MARKER + "</a> }"
     val assumedStub = "class A { val xml = <a>blah blah <blah/> <b></b></a> }"
 
     checkGeneratedTextGt(text, assumedStub)
   }
 
   def testComplicatedEmptyTag() {
-    val text = "class A { val xml = <a>blah blah <blah/> <abc" + CARET_MARKER + "</a> }"
+    val text =
+      "class A { val xml = <a>blah blah <blah/> <abc" + CARET_MARKER + "</a> }"
     val assumedStub = "class A { val xml = <a>blah blah <blah/> <abc/></a> }"
 
     checkGeneratedTextSlash(text, assumedStub)

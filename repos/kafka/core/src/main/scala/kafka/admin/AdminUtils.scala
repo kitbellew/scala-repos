@@ -160,7 +160,8 @@ object AdminUtils extends Logging {
     for (_ <- 0 until nPartitions) {
       if (currentPartitionId > 0 && (currentPartitionId % brokerArray.length == 0))
         nextReplicaShift += 1
-      val firstReplicaIndex = (currentPartitionId + startIndex) % brokerArray.length
+      val firstReplicaIndex =
+        (currentPartitionId + startIndex) % brokerArray.length
       val replicaBuffer = mutable.ArrayBuffer(brokerArray(firstReplicaIndex))
       for (j <- 0 until replicationFactor - 1)
         replicaBuffer += brokerArray(
@@ -199,7 +200,8 @@ object AdminUtils extends Logging {
     for (_ <- 0 until nPartitions) {
       if (currentPartitionId > 0 && (currentPartitionId % arrangedBrokerList.size == 0))
         nextReplicaShift += 1
-      val firstReplicaIndex = (currentPartitionId + startIndex) % arrangedBrokerList.size
+      val firstReplicaIndex =
+        (currentPartitionId + startIndex) % arrangedBrokerList.size
       val leader = arrangedBrokerList(firstReplicaIndex)
       val replicaBuffer = mutable.ArrayBuffer(leader)
       val racksWithReplicas = mutable.Set(brokerRackMap(leader))
@@ -618,7 +620,8 @@ object AdminUtils extends Logging {
     writeEntityConfig(zkUtils, entityType, entityName, configs)
 
     // create the change notification
-    val seqNode = ZkUtils.EntityConfigChangesPath + "/" + EntityConfigChangeZnodePrefix
+    val seqNode =
+      ZkUtils.EntityConfigChangesPath + "/" + EntityConfigChangeZnodePrefix
     val content = Json.encode(getConfigChangeZnodeData(entityType, entityName))
     zkUtils.zkClient.createPersistentSequential(seqNode, content)
   }

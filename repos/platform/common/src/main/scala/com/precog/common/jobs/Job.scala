@@ -55,7 +55,8 @@ case class Job(
     state: JobState)
 object Job {
   implicit val iso = Iso.hlist(Job.apply _, Job.unapply _)
-  val schemaV1 = "id" :: "apiKey" :: "name" :: "type" :: "data" :: "state" :: HNil
+  val schemaV1 =
+    "id" :: "apiKey" :: "name" :: "type" :: "data" :: "state" :: HNil
   implicit val decomposerV1: Decomposer[Job] =
     decomposerV[Job](schemaV1, Some("1.0".v))
   implicit val extractorV1: Extractor[Job] =
@@ -90,7 +91,8 @@ object Status {
   import scalaz.syntax.apply._
 
   implicit val iso = Iso.hlist(Status.apply _, Status.unapply _)
-  val schemaV1 = "job" :: "id" :: "message" :: "progress" :: "unit" :: "info" :: HNil
+  val schemaV1 =
+    "job" :: "id" :: "message" :: "progress" :: "unit" :: "info" :: HNil
   implicit val decomposerV1: Decomposer[Status] =
     decomposerV[Status](schemaV1, Some("1.0".v))
   implicit val extractorV1: Extractor[Status] =

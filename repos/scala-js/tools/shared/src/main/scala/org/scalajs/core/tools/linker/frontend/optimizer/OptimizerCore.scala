@@ -1497,9 +1497,10 @@ private[optimizer] abstract class OptimizerCore(
           callIntrinsic(intrinsicCode, None, targs, isStat, usePreTransform)(
             cont)
         } else {
-          val shouldInline = target.inlineable && (target.shouldInline || shouldInlineBecauseOfArgs(
-            target,
-            targs))
+          val shouldInline =
+            target.inlineable && (target.shouldInline || shouldInlineBecauseOfArgs(
+              target,
+              targs))
           val allocationSites = targs.map(_.tpe.allocationSite)
           val beingInlined =
             scope.implsBeingInlined((allocationSites, target))

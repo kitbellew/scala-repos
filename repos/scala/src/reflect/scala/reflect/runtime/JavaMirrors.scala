@@ -649,8 +649,8 @@ private[scala] trait JavaMirrors
         // todo. this doesn't account for multiple vararg parameter lists
         // however those aren't supported by the mirror API: https://issues.scala-lang.org/browse/SI-6182
         // hence I leave this code as is, to be fixed when the corresponding bug is fixed
-        val varargMatch = args.length >= params.length - 1 && isVarArgsList(
-          params)
+        val varargMatch =
+          args.length >= params.length - 1 && isVarArgsList(params)
         if (!perfectMatch && !varargMatch) {
           val n_arguments =
             if (isVarArgsList(params)) s"${params.length - 1} or more"
@@ -1594,7 +1594,8 @@ private[scala] trait JavaMirrors
     def constructorToJava(constr: MethodSymbol): jConstructor[_] =
       constructorCache.toJava(constr) {
         val jclazz = classToJava(constr.owner.asClass)
-        val paramClasses = transformedType(constr).paramTypes map typeToJavaClass
+        val paramClasses =
+          transformedType(constr).paramTypes map typeToJavaClass
         val effectiveParamClasses =
           if (!constr.owner.owner.isStaticOwner)
             jclazz.getEnclosingClass +: paramClasses

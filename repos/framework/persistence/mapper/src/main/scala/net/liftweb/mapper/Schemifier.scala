@@ -531,7 +531,8 @@ object Schemifier extends Loggable {
               while (!foundIt && rs.next) {
                 val pkName = rs.getString(4)
                 val fkName = rs.getString(8)
-                foundIt = (field._dbColumnNameLC.toLowerCase == fkName.toLowerCase && field.dbKeyToColumn._dbColumnNameLC.toLowerCase == pkName.toLowerCase)
+                foundIt =
+                  (field._dbColumnNameLC.toLowerCase == fkName.toLowerCase && field.dbKeyToColumn._dbColumnNameLC.toLowerCase == pkName.toLowerCase)
               })
 
             if (!foundIt) {

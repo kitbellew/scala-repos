@@ -72,8 +72,9 @@ object ScopeSuggester {
     val isScriptFile =
       currentElement.getContainingFile.asInstanceOf[ScalaFile].isScriptFile()
 
-    val owners = ScalaRefactoringUtil.getTypeParameterOwnerList(currentElement) ++ ScalaRefactoringUtil
-      .getTypeAliasOwnersList(currentElement)
+    val owners =
+      ScalaRefactoringUtil.getTypeParameterOwnerList(currentElement) ++ ScalaRefactoringUtil
+        .getTypeAliasOwnersList(currentElement)
     var parent = getParent(currentElement, isScriptFile)
 
     //forbid to work with no template definition level

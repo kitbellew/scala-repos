@@ -99,8 +99,8 @@ trait ScTypePsiTypeBridge {
                   des,
                   tps.map({ tp =>
                     {
-                      val arrayOfTypes
-                          : Array[PsiClassType] = tp.getExtendsListTypes ++ tp.getImplementsListTypes
+                      val arrayOfTypes: Array[PsiClassType] =
+                        tp.getExtendsListTypes ++ tp.getImplementsListTypes
                       ScSkolemizedType(
                         s"_$$${ index += 1; index }",
                         Nil,

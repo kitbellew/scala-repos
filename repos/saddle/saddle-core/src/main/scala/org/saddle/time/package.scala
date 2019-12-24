@@ -167,8 +167,8 @@ package object time {
       */
     protected def getFieldFast(fld: DateTimeField): Vec[Int] = {
       val unit: Long = fld.getDurationField.getUnitMillis
-      val range
-          : Long = fld.getRangeDurationField.getUnitMillis / fld.getDurationField.getUnitMillis
+      val range: Long =
+        fld.getRangeDurationField.getUnitMillis / fld.getDurationField.getUnitMillis
       extractor(unit, range)
     }
   }

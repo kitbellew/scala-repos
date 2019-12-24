@@ -170,10 +170,9 @@ trait PullRequestsControllerBase extends ControllerBase {
                 commitStatues =
                   getCommitStatues(owner, name, pullreq.commitIdTo),
                 branchProtection = branchProtection,
-                branchIsOutOfDate = JGitUtil.getShaByRef(
-                  owner,
-                  name,
-                  pullreq.branch) != Some(pullreq.commitIdFrom),
+                branchIsOutOfDate =
+                  JGitUtil.getShaByRef(owner, name, pullreq.branch) != Some(
+                    pullreq.commitIdFrom),
                 needStatusCheck = context.loginAccount
                   .map { u =>
                     branchProtection.needStatusCheck(u.userName)

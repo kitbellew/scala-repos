@@ -185,7 +185,8 @@ private[hive] class HiveClientImpl(
     */
   private def retryLocked[A](f: => A): A = clientLoader.synchronized {
     // Hive sometimes retries internally, so set a deadline to avoid compounding delays.
-    val deadline = System.nanoTime + (retryLimit * retryDelayMillis * 1e6).toLong
+    val deadline =
+      System.nanoTime + (retryLimit * retryDelayMillis * 1e6).toLong
     var numTries = 0
     var caughtException: Exception = null
     do {

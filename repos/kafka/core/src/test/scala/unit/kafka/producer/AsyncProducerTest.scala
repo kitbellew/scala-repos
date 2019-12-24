@@ -550,8 +550,9 @@ class AsyncProducerTest {
       producerPool = producerPool,
       topicPartitionInfos = topicPartitionInfos,
       time = time)
-    val data = msgs.map(m => new KeyedMessage[Int, String](topic1, 0, m)) ++ msgs
-      .map(m => new KeyedMessage[Int, String](topic1, 1, m))
+    val data =
+      msgs.map(m => new KeyedMessage[Int, String](topic1, 0, m)) ++ msgs
+        .map(m => new KeyedMessage[Int, String](topic1, 1, m))
     handler.handle(data)
     handler.close()
 

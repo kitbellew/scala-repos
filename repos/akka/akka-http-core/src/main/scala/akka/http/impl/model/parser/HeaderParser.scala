@@ -105,7 +105,8 @@ private[http] object HeaderParser {
       value: String,
       settings: Settings = DefaultSettings): HeaderParser#Result = {
     import akka.parboiled2.EOI
-    val v = value + EOI // this makes sure the parser isn't broken even if there's no trailing garbage in this value
+    val v =
+      value + EOI // this makes sure the parser isn't broken even if there's no trailing garbage in this value
     val parser = new HeaderParser(v, settings)
     dispatch(parser, headerName) match {
       case r @ Right(_) if parser.cursor == v.length ⇒ r

@@ -21,7 +21,8 @@ object PomRepoTest extends Build {
     ivyPaths <<= baseDirectory(dir => new IvyPaths(dir, Some(dir / "ivy-home")))
   )
 
-  val local = "local-maven-repo" at "file://" + (Path.userHome / ".m2" / "repository").absolutePath
+  val local =
+    "local-maven-repo" at "file://" + (Path.userHome / ".m2" / "repository").absolutePath
 
   def pomIncludeRepository(base: File, prev: MavenRepository => Boolean) =
     (r: MavenRepository) =>

@@ -379,8 +379,9 @@ class DDLCommandSuite extends PlanTest {
       """.stripMargin
     val sql2 = "ALTER TABLE table_name SET FILEFORMAT INPUTFORMAT 'test' " +
       "OUTPUTFORMAT 'test' SERDE 'test'"
-    val sql3 = "ALTER TABLE table_name PARTITION (dt='2008-08-08', country='us') " +
-      "SET FILEFORMAT PARQUET"
+    val sql3 =
+      "ALTER TABLE table_name PARTITION (dt='2008-08-08', country='us') " +
+        "SET FILEFORMAT PARQUET"
     val parsed1 = parser.parsePlan(sql1)
     val parsed2 = parser.parsePlan(sql2)
     val parsed3 = parser.parsePlan(sql3)
@@ -407,8 +408,9 @@ class DDLCommandSuite extends PlanTest {
 
   test("alter table: set location") {
     val sql1 = "ALTER TABLE table_name SET LOCATION 'new location'"
-    val sql2 = "ALTER TABLE table_name PARTITION (dt='2008-08-08', country='us') " +
-      "SET LOCATION 'new location'"
+    val sql2 =
+      "ALTER TABLE table_name PARTITION (dt='2008-08-08', country='us') " +
+        "SET LOCATION 'new location'"
     val parsed1 = parser.parsePlan(sql1)
     val parsed2 = parser.parsePlan(sql2)
     val tableIdent = TableIdentifier("table_name", None)

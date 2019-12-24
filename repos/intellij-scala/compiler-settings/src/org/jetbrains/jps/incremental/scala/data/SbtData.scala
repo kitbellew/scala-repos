@@ -91,8 +91,8 @@ object SbtData {
 
   private def md5(file: File): Array[Byte] = {
     val md = MessageDigest.getInstance("MD5")
-    val isSource = file.getName.endsWith(".java") || file.getName.endsWith(
-      ".scala")
+    val isSource =
+      file.getName.endsWith(".java") || file.getName.endsWith(".scala")
     if (isSource) {
       val text =
         scala.io.Source.fromFile(file, "UTF-8").mkString.replace("\r", "")

@@ -517,7 +517,8 @@ abstract class TreeGen {
       name: TypeName,
       tparams: List[TypeDef],
       templ: Template): ClassDef = {
-    val isInterface = mods.isTrait && (templ.body forall treeInfo.isInterfaceMember)
+    val isInterface =
+      mods.isTrait && (templ.body forall treeInfo.isInterfaceMember)
     val mods1 = if (isInterface) (mods | Flags.INTERFACE) else mods
     ClassDef(mods1, name, tparams, templ)
   }

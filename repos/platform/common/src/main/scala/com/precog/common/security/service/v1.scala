@@ -63,8 +63,9 @@ object v1 {
     implicit val grantDetailsIso =
       Iso.hlist(GrantDetails.apply _, GrantDetails.unapply _)
 
-    val schema = "grantId" :: "name" :: "description" :: "permissions" :: ("createdAt" ||| new Instant(
-      0L)) :: "expirationDate" :: HNil
+    val schema =
+      "grantId" :: "name" :: "description" :: "permissions" :: ("createdAt" ||| new Instant(
+        0L)) :: "expirationDate" :: HNil
 
     implicit val (decomposerV1, extractorV1) =
       IsoSerialization.serialization[GrantDetails](schema)
@@ -80,7 +81,8 @@ object v1 {
     implicit val apiKeyDetailsIso =
       Iso.hlist(APIKeyDetails.apply _, APIKeyDetails.unapply _)
 
-    val schema = "apiKey" :: "name" :: "description" :: "grants" :: "issuerChain" :: HNil
+    val schema =
+      "apiKey" :: "name" :: "description" :: "grants" :: "issuerChain" :: HNil
 
     implicit val (decomposerV1, extractorV1) =
       IsoSerialization.serialization[APIKeyDetails](schema)

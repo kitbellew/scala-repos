@@ -271,8 +271,8 @@ private[akka] class TLSActor(
     UserOut)) || userOutCancelled
 
   // half-closed
-  val outboundHalfClosed = engineNeedsWrap && outputBunch.demandAvailableFor(
-    TransportOut)
+  val outboundHalfClosed =
+    engineNeedsWrap && outputBunch.demandAvailableFor(TransportOut)
   val inboundHalfClosed = transportInChoppingBlock && engineInboundOpen
 
   val bidirectional = TransferPhase(outbound || inbound) { () ⇒

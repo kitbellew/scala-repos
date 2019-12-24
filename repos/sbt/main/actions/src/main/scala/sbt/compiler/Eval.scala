@@ -607,6 +607,6 @@ private[sbt] object Eval {
     clazz.getField("MODULE$").get(null)
   }
 
-  private val classDirFilter: FileFilter = DirectoryFilter || GlobFilter(
-    "*.class")
+  private val classDirFilter: FileFilter =
+    DirectoryFilter || GlobFilter("*.class")
 }

@@ -178,8 +178,9 @@ package object rearranger {
   val scalaAccessModifiersValues =
     scalaAccessModifiersByName.toSet.map((x: tokensType) => x._2)
 
-  val scalaModifiers = scalaAccessModifiersValues ++ scalaOtherModifiersByName.toSet
-    .map((x: tokensType) => x._2)
+  val scalaModifiers =
+    scalaAccessModifiersValues ++ scalaOtherModifiersByName.toSet
+      .map((x: tokensType) => x._2)
 
   private type tokensType = (String, ArrangementSettingsToken)
 
@@ -187,11 +188,14 @@ package object rearranger {
     StdArrangementTokens.Order.BY_NAME,
     StdArrangementTokens.Order.KEEP)
 
-  val commonModifiers = scalaAccessModifiersValues + FINAL //TODO: determine if final is common
+  val commonModifiers =
+    scalaAccessModifiersValues + FINAL //TODO: determine if final is common
 
-  val scalaModifiersByName = scalaAccessModifiersByName ++ scalaOtherModifiersByName
+  val scalaModifiersByName =
+    scalaAccessModifiersByName ++ scalaOtherModifiersByName
 
-  val scalaTokensById = scalaAccessModifiersById ++ scalaOtherModifiersById ++ scalaTypesById
+  val scalaTokensById =
+    scalaAccessModifiersById ++ scalaOtherModifiersById ++ scalaTypesById
 
   val tokensForType = immutable.HashMap(
     TYPE -> (commonModifiers + OVERRIDE),

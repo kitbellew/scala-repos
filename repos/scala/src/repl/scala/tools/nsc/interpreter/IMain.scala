@@ -958,8 +958,8 @@ class IMain(
     def originalLine = if (_originalLine == null) line else _originalLine
 
     /** handlers for each tree in this request */
-    val handlers
-        : List[MemberHandler] = trees map (memberHandlers chooseHandler _)
+    val handlers: List[MemberHandler] =
+      trees map (memberHandlers chooseHandler _)
     val definesClass = handlers.exists {
       case _: ClassHandler => true
       case _               => false

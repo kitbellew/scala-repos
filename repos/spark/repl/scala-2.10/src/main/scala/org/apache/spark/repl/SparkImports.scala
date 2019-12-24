@@ -151,7 +151,8 @@ private[repl] trait SparkImports {
           case rh :: rest if !keepHandler(rh.handler) => select(rest, wanted)
           case rh :: rest =>
             import rh.handler._
-            val newWanted = wanted ++ referencedNames -- definedNames -- importedNames
+            val newWanted =
+              wanted ++ referencedNames -- definedNames -- importedNames
             rh :: select(rest, newWanted)
         }
       }

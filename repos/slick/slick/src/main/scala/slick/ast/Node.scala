@@ -361,7 +361,8 @@ abstract class ComplexFilteredQuery extends FilteredQuery with DefNode {
   def generators = ConstArray((generator, from))
   def withInferredType(scope: Type.Scope, typeChildren: Boolean): Self = {
     val from2 = from.infer(scope, typeChildren)
-    val genScope = scope + (generator -> from2.nodeType.asCollectionType.elementType)
+    val genScope =
+      scope + (generator -> from2.nodeType.asCollectionType.elementType)
     val this2 = mapChildren { ch =>
       if (ch eq from) from2 else ch.infer(genScope, typeChildren)
     }
@@ -898,7 +899,8 @@ final case class OptionFold(
       typeChildren: Boolean) = {
     val from2 = from.infer(scope, typeChildren)
     val ifEmpty2 = ifEmpty.infer(scope, typeChildren)
-    val genScope = scope + (gen -> from2.nodeType.structural.asOptionType.elementType)
+    val genScope =
+      scope + (gen -> from2.nodeType.structural.asOptionType.elementType)
     val map2 = map.infer(genScope, typeChildren)
     withChildren(ConstArray[Node](from2, ifEmpty2, map2)) :@ (if (!hasType)
                                                                 map2.nodeType

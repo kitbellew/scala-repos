@@ -37,8 +37,8 @@ object ForkTest extends Properties("Fork") {
       (optionName: Option[String], relCP: List[String]) =>
         IO.withTemporaryDirectory { dir =>
           TestLogger { log =>
-            val withScala = requiredEntries ::: relCP.map(rel =>
-              new File(dir, rel))
+            val withScala =
+              requiredEntries ::: relCP.map(rel => new File(dir, rel))
             val absClasspath = trimClasspath(Path.makeString(withScala))
             val args = optionName
               .map(_ :: absClasspath :: Nil)

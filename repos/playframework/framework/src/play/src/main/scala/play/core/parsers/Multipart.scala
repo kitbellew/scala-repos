@@ -474,7 +474,8 @@ object Multipart {
       try {
         val currentPartEnd = boyerMoore.nextIndex(input, partStart)
         val needleEnd = currentPartEnd + needle.length
-        val newMemoryBufferSize = memoryBufferSize + (currentPartEnd - partStart)
+        val newMemoryBufferSize =
+          memoryBufferSize + (currentPartEnd - partStart)
         if (newMemoryBufferSize > maxMemoryBufferSize) {
           bufferExceeded("Memory buffer full on part " + partName)
         } else if (crlf(input, needleEnd)) {

@@ -48,7 +48,8 @@ object EvaluationContext {
   implicit val iso =
     Iso.hlist(EvaluationContext.apply _, EvaluationContext.unapply _)
 
-  val schemaV1 = "apiKey" :: "account" :: "basePath" :: "scriptPath" :: "startTime" :: HNil
+  val schemaV1 =
+    "apiKey" :: "account" :: "basePath" :: "scriptPath" :: "startTime" :: HNil
 
   implicit val decomposer: Decomposer[EvaluationContext] =
     decomposerV(schemaV1, Some("1.0".v))

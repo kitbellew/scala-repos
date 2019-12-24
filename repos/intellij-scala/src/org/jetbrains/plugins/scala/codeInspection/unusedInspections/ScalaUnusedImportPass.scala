@@ -59,8 +59,8 @@ class ScalaUnusedImportPass(
     file match {
       case scalaFile: ScalaFile
           if HighlightingLevelManager.getInstance(file.getProject) shouldInspect file =>
-        val unusedImports
-            : Array[ImportUsed] = ImportTracker getInstance file.getProject getUnusedImport scalaFile
+        val unusedImports: Array[ImportUsed] =
+          ImportTracker getInstance file.getProject getUnusedImport scalaFile
         val annotations = collectAnnotations(
           unusedImports,
           new AnnotationHolderImpl(new AnnotationSession(file)))

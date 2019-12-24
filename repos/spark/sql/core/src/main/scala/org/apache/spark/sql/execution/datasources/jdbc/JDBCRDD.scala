@@ -158,7 +158,8 @@ private[sql] object JDBCRDD extends Logging {
             val fieldSize = rsmd.getPrecision(i + 1)
             val fieldScale = rsmd.getScale(i + 1)
             val isSigned = rsmd.isSigned(i + 1)
-            val nullable = rsmd.isNullable(i + 1) != ResultSetMetaData.columnNoNulls
+            val nullable =
+              rsmd.isNullable(i + 1) != ResultSetMetaData.columnNoNulls
             val metadata = new MetadataBuilder()
               .putString("name", columnName)
               .putLong("scale", fieldScale)

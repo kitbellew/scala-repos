@@ -185,7 +185,8 @@ object ActorModelSpec {
 
   def assertDispatcher(dispatcher: MessageDispatcherInterceptor)(
       stops: Long = dispatcher.stops.get())(implicit system: ActorSystem) {
-    val deadline = System.currentTimeMillis + dispatcher.shutdownTimeout.toMillis * 5
+    val deadline =
+      System.currentTimeMillis + dispatcher.shutdownTimeout.toMillis * 5
     try {
       await(deadline)(stops == dispatcher.stops.get)
     } catch {

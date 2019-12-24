@@ -288,7 +288,8 @@ class SourceMapWriter(
      *   So we get (value0 << 1) | 0 == value0 << 1 as required
      */
     val signExtended = value0 >> 31
-    val value = (((value0 ^ signExtended) - signExtended) << 1) | (signExtended & 1)
+    val value =
+      (((value0 ^ signExtended) - signExtended) << 1) | (signExtended & 1)
 
     // Write as many base-64 digits as necessary to encode value
     if (value < 26) {

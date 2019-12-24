@@ -390,8 +390,9 @@ object EnumeratorsSpec
     "supply input from a by-name arg" in {
       mustExecute(3) { repeatEC =>
         val count = new AtomicInteger(0)
-        val fut = Enumerator.repeat(count.incrementAndGet())(repeatEC) |>>> (Enumeratee
-          .take(3) &>> Iteratee.getChunks[Int])
+        val fut =
+          Enumerator.repeat(count.incrementAndGet())(repeatEC) |>>> (Enumeratee
+            .take(3) &>> Iteratee.getChunks[Int])
         Await.result(fut, Duration.Inf) must equalTo(List(1, 2, 3))
       }
     }

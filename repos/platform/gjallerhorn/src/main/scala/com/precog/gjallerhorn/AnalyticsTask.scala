@@ -78,8 +78,8 @@ class AnalyticsTask(settings: Settings)
         "mean((//foo).a)")
 
       EventuallyResults.eventually(10, 1.second) {
-        val res = (analytics / "queries" / jobId) <<? List(
-          "apiKey" -> account.apiKey)
+        val res =
+          (analytics / "queries" / jobId) <<? List("apiKey" -> account.apiKey)
         val str = Http(res OK as.String)()
         if (str != "") {
           val json =

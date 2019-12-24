@@ -227,7 +227,8 @@ object VectorIndexer extends DefaultParamsReadable[VectorIndexer] {
           case (featureValues: OpenHashSet[Double], featureIndex: Int) =>
             var sortedFeatureValues =
               featureValues.iterator.filter(_ != 0.0).toArray.sorted
-            val zeroExists = sortedFeatureValues.length + 1 == featureValues.size
+            val zeroExists =
+              sortedFeatureValues.length + 1 == featureValues.size
             if (zeroExists) {
               sortedFeatureValues = 0.0 +: sortedFeatureValues
             }

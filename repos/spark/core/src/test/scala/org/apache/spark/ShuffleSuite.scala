@@ -295,8 +295,9 @@ abstract class ShuffleSuite
         assert(diskBlockManager.getAllFiles().nonEmpty)
       } catch {
         case e: Exception =>
-          val errMsg = s"Failed with spark.shuffle.spill.compress=$shuffleSpillCompress," +
-            s" spark.shuffle.compress=$shuffleCompress"
+          val errMsg =
+            s"Failed with spark.shuffle.spill.compress=$shuffleSpillCompress," +
+              s" spark.shuffle.compress=$shuffleCompress"
           throw new Exception(errMsg, e)
       }
     }

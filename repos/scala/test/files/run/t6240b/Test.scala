@@ -9,8 +9,8 @@ object Test extends App {
   }
   val testClassesDir = prop("partest.output")
   assert(new File(testClassesDir).exists, testClassesDir)
-  val fullTestClassesClasspath = testClassesDir + prop("path.separator") + prop(
-    "java.class.path")
+  val fullTestClassesClasspath =
+    testClassesDir + prop("path.separator") + prop("java.class.path")
   val javaBinary =
     if (new File(prop("javacmd")).isAbsolute) prop("javacmd")
     else prop("java.home") + "/bin/" + prop("javacmd")

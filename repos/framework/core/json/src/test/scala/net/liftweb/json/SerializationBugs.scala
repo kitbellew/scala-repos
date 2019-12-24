@@ -135,8 +135,8 @@ object SerializationBugs extends Specification {
   }
 
   "Either can't be deserialized with type hints" in {
-    implicit val formats = DefaultFormats + FullTypeHints(
-      classOf[Either[_, _]] :: Nil)
+    implicit val formats =
+      DefaultFormats + FullTypeHints(classOf[Either[_, _]] :: Nil)
     val x = Eith(Left("hello"))
     val s = Serialization.write(x)
     read[Eith](s) mustEqual x

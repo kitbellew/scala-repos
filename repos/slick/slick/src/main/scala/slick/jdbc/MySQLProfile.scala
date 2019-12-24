@@ -279,10 +279,10 @@ trait MySQLProfile extends JdbcProfile { profile =>
       val t = sqlType + " not null"
       val increment = seq._increment.getOrElse(one)
       val desc = increment < zero
-      val minValue = seq._minValue getOrElse (if (desc)
-                                                fromInt(
-                                                  java.lang.Integer.MIN_VALUE)
-                                              else one)
+      val minValue =
+        seq._minValue getOrElse (if (desc)
+                                   fromInt(java.lang.Integer.MIN_VALUE)
+                                 else one)
       val maxValue = seq._maxValue getOrElse (if (desc) fromInt(-1)
                                               else
                                                 fromInt(

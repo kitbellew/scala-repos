@@ -85,8 +85,9 @@ class CaseClassPickling(
                   // TODO - other instances we need to delegate?
                   case _ => List()
                 }
-              val errors = (reflectionErrorMessage(pickle) ++ reflectionErrorMessage(
-                unpickle))
+              val errors =
+                (reflectionErrorMessage(pickle) ++ reflectionErrorMessage(
+                  unpickle))
               val errorString =
                 if (errors.isEmpty) "   unknown reason"
                 else errors.mkString("   - ", "\n   - ", "")
@@ -160,9 +161,8 @@ class CaseClassPickling(
       logger: AlgorithmLogger): AlgorithmResult = {
     // Scala modules are pickled differently, so we have to explicitly ignore `case object`
     if (tpe.isCaseClass && !tpe.isScalaModule) {
-      val behavior = (checkConstructorImpl(tpe, logger) join checkFactoryImpl(
-        tpe,
-        logger))
+      val behavior =
+        (checkConstructorImpl(tpe, logger) join checkFactoryImpl(tpe, logger))
       if (careAboutSubclasses && !tpe.isFinal) {
         // TODO - We need a different flag to say if we'll use runtime picklers *VS* reflection. The two features are not the same.
         tpe.closedSubclasses match {

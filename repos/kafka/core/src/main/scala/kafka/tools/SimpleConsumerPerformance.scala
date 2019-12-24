@@ -108,7 +108,8 @@ object SimpleConsumerPerformance {
         if (config.showDetailedStats) {
           val reportTime = System.currentTimeMillis
           val elapsed = (reportTime - lastReportTime) / 1000.0
-          val totalMBRead = ((totalBytesRead - lastBytesRead) * 1.0) / (1024 * 1024)
+          val totalMBRead =
+            ((totalBytesRead - lastBytesRead) * 1.0) / (1024 * 1024)
           println(
             ("%s, %d, %.4f, %.4f, %d, %.4f").format(
               config.dateFormat.format(reportTime),

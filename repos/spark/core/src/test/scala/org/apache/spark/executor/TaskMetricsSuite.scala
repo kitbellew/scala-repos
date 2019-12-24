@@ -651,7 +651,8 @@ class TaskMetricsSuite extends SparkFunSuite {
     unregisteredAccums.zipWithIndex.foreach { case (a, i) => a.setValue(i) }
     val registeredAccumInfos = registeredAccums.map(makeInfo)
     val unregisteredAccumInfos = unregisteredAccums.map(makeInfo)
-    val accumUpdates2 = accumUpdates1 ++ registeredAccumInfos ++ unregisteredAccumInfos
+    val accumUpdates2 =
+      accumUpdates1 ++ registeredAccumInfos ++ unregisteredAccumInfos
     // Simply checking that this does not crash:
     TaskMetrics.fromAccumulatorUpdates(accumUpdates2)
   }

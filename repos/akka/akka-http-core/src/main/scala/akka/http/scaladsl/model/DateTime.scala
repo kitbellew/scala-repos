@@ -187,7 +187,8 @@ object DateTime {
     val yd = y / 100
     d += y * 365 + (y >> 2) - yd + (yd >> 2)
     val dn = d - (1969 * 365 + 492 - 19 + 4)
-    val c = (dn - 1) * 86400L + hour * 3600L + minute * 60L + second // seconds since Jan 1, 1970, 00:00:00
+    val c =
+      (dn - 1) * 86400L + hour * 3600L + minute * 60L + second // seconds since Jan 1, 1970, 00:00:00
 
     new DateTime(
       year,

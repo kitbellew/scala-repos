@@ -137,10 +137,10 @@ class RatioBasedReducerEstimatorTest
 
   "Single-step job with ratio-based reducer estimator" should {
     "not set reducers when no history is found" in {
-      val customConfig = Config.empty.addReducerEstimator(
-        classOf[EmptyHistoryBasedEstimator]) +
-        (InputSizeReducerEstimator.BytesPerReducer -> "1k") +
-        (RatioBasedEstimator.inputRatioThresholdKey -> 0.10f.toString)
+      val customConfig =
+        Config.empty.addReducerEstimator(classOf[EmptyHistoryBasedEstimator]) +
+          (InputSizeReducerEstimator.BytesPerReducer -> "1k") +
+          (RatioBasedEstimator.inputRatioThresholdKey -> 0.10f.toString)
 
       HadoopPlatformJobTest(
         new SimpleJobWithNoSetReducers(_, customConfig),
@@ -154,10 +154,10 @@ class RatioBasedReducerEstimatorTest
     }
 
     "not set reducers when error fetching history" in {
-      val customConfig = Config.empty.addReducerEstimator(
-        classOf[ErrorHistoryBasedEstimator]) +
-        (InputSizeReducerEstimator.BytesPerReducer -> "1k") +
-        (RatioBasedEstimator.inputRatioThresholdKey -> 0.10f.toString)
+      val customConfig =
+        Config.empty.addReducerEstimator(classOf[ErrorHistoryBasedEstimator]) +
+          (InputSizeReducerEstimator.BytesPerReducer -> "1k") +
+          (RatioBasedEstimator.inputRatioThresholdKey -> 0.10f.toString)
 
       HadoopPlatformJobTest(
         new SimpleJobWithNoSetReducers(_, customConfig),

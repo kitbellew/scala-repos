@@ -472,7 +472,8 @@ private[hive] class HiveQl(conf: ParserConf)
               case _ => assert(false)
             }
             tableDesc = tableDesc.withNewStorage(
-              serdeProperties = tableDesc.storage.serdeProperties ++ serdeParams.asScala)
+              serdeProperties =
+                tableDesc.storage.serdeProperties ++ serdeParams.asScala)
           case Token("TOK_TABLELOCATION", child :: Nil) =>
             val location = EximUtil.relativeToAbsolutePath(
               hiveConf,
@@ -499,7 +500,8 @@ private[hive] class HiveQl(conf: ParserConf)
                 }
                 .toMap
               tableDesc = tableDesc.withNewStorage(
-                serdeProperties = tableDesc.storage.serdeProperties ++ serdeParams)
+                serdeProperties =
+                  tableDesc.storage.serdeProperties ++ serdeParams)
             }
           case Token("TOK_FILEFORMAT_GENERIC", child :: Nil) =>
             child.text.toLowerCase(Locale.ENGLISH) match {
@@ -578,8 +580,8 @@ private[hive] class HiveQl(conf: ParserConf)
             otherProps match {
               case Token("TOK_TABLEPROPERTIES", list :: Nil) :: Nil =>
                 tableDesc = tableDesc.withNewStorage(
-                  serdeProperties = tableDesc.storage.serdeProperties ++ getProperties(
-                    list))
+                  serdeProperties =
+                    tableDesc.storage.serdeProperties ++ getProperties(list))
               case _ =>
             }
 

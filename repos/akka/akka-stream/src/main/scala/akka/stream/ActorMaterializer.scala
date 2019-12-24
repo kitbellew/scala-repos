@@ -46,8 +46,8 @@ object ActorMaterializer {
       implicit context: ActorRefFactory): ActorMaterializer = {
     val system = actorSystemOf(context)
 
-    val settings = materializerSettings getOrElse ActorMaterializerSettings(
-      system)
+    val settings =
+      materializerSettings getOrElse ActorMaterializerSettings(system)
     apply(settings, namePrefix.getOrElse("flow"))(context)
   }
 

@@ -158,8 +158,8 @@ private[internal] trait GlbLubs {
           // frontier is not uniform yet, move it beyond the current minimal symbol;
           // lather, rinse, repeat
           val sym = minSym(ts0)
-          val newtps = tsBts map (ts =>
-            if (ts.head.typeSymbol == sym) ts.tail else ts)
+          val newtps =
+            tsBts map (ts => if (ts.head.typeSymbol == sym) ts.tail else ts)
           if (printLubs) {
             val str = (newtps.zipWithIndex map {
               case (tps, idx) =>

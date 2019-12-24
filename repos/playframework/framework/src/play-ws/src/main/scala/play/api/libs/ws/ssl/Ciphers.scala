@@ -179,6 +179,7 @@ object Ciphers {
 
   // See RFC 4346, RFC 5246, and RFC 5469
   // rc4 added to deprecated ciphers as of https://tools.ietf.org/html/rfc7465
-  val deprecatedCiphers = desCiphers ++ nullCiphers ++ anonCiphers ++ exportCiphers ++ rc4Ciphers
+  val deprecatedCiphers =
+    desCiphers ++ nullCiphers ++ anonCiphers ++ exportCiphers ++ rc4Ciphers
 
 }

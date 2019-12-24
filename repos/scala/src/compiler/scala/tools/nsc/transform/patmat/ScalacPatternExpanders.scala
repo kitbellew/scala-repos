@@ -182,7 +182,8 @@ trait ScalacPatternExpanders {
       def acceptMessage =
         if (extractor.isErroneous) ""
         else s" to hold ${extractor.offeringString}"
-      val requiresTupling = isUnapply && patterns.totalArity == 1 && productArity > 1
+      val requiresTupling =
+        isUnapply && patterns.totalArity == 1 && productArity > 1
 
       val normalizedExtractor = if (requiresTupling) {
         val tupled = extractor.asSinglePattern

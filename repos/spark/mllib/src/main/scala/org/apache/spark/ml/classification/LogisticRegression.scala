@@ -330,15 +330,17 @@ class LogisticRegression @Since("1.2.0") (
 
     val (coefficients, intercept, objectiveHistory) = {
       if (numInvalid != 0) {
-        val msg = s"Classification labels should be in {0 to ${numClasses - 1} " +
-          s"Found $numInvalid invalid labels."
+        val msg =
+          s"Classification labels should be in {0 to ${numClasses - 1} " +
+            s"Found $numInvalid invalid labels."
         logError(msg)
         throw new SparkException(msg)
       }
 
       if (numClasses > 2) {
-        val msg = s"Currently, LogisticRegression with ElasticNet in ML package only supports " +
-          s"binary classification. Found $numClasses in the input dataset."
+        val msg =
+          s"Currently, LogisticRegression with ElasticNet in ML package only supports " +
+            s"binary classification. Found $numClasses in the input dataset."
         logError(msg)
         throw new SparkException(msg)
       } else if ($(fitIntercept) && numClasses == 2 && histogram(0) == 0.0) {

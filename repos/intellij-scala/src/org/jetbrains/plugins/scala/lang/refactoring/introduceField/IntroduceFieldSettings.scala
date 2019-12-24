@@ -29,8 +29,8 @@ class IntroduceFieldSettings[T <: PsiElement](ifc: IntroduceFieldContext[T]) {
     ifc.canBeInitLocally(replaceAll = true)
   val canBeInitLocalOneOccurrence: Boolean =
     ifc.canBeInitLocally(replaceAll = false)
-  val canBeInitLocally
-      : Boolean = canBeInitLocalIfReplaceAll || canBeInitLocalOneOccurrence
+  val canBeInitLocally: Boolean =
+    canBeInitLocalIfReplaceAll || canBeInitLocalOneOccurrence
 
   var name: String = ifc.possibleNames(0)
   var scType: ScType = ifc.types(0)
@@ -61,7 +61,8 @@ class IntroduceFieldSettings[T <: PsiElement](ifc: IntroduceFieldContext[T]) {
   def replaceAll = replAll
   def replaceAll_=(value: Boolean) {
     replAll = value
-    initLocallyEnabled = replaceAll && canBeInitLocalIfReplaceAll || !replaceAll && canBeInitLocalOneOccurrence
+    initLocallyEnabled =
+      replaceAll && canBeInitLocalIfReplaceAll || !replaceAll && canBeInitLocalOneOccurrence
   }
   def setReplaceAll(value: Boolean) { replaceAll = value }
 

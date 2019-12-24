@@ -419,7 +419,8 @@ object URI {
       "[^\u0000-\u00a0\u1680\u2000-\u200a\u202f\u205f\u3000\u2028\u2029]"
 
     // uric          = reserved | unreserved | escaped | other
-    val uric = "(?:[;/?:@&=+$,\\[\\]a-z0-9-_.!~*'()]|" + escaped + "|" + other + ")"
+    val uric =
+      "(?:[;/?:@&=+$,\\[\\]a-z0-9-_.!~*'()]|" + escaped + "|" + other + ")"
 
     // pchar         = unreserved | escaped | other |
     //                 ":" | "@" | "&" | "=" | "+" | "$" | ","
@@ -443,7 +444,8 @@ object URI {
 
     // host          = hostname | IPv4address | IPv6reference
     //               ; IPv6reference added by RFC2732
-    val host = "(" + hostname + "|" + ipv4address + "|" + ipv6reference + ")" /*CAPT*/
+    val host =
+      "(" + hostname + "|" + ipv4address + "|" + ipv6reference + ")" /*CAPT*/
 
     // Inlined definition
     // port          = *digit
@@ -464,7 +466,8 @@ object URI {
 
     // reg_name      = 1*( unreserved | escaped | other | "$" | "," |
     //                     ";" | ":" | "@" | "&" | "=" | "+" )
-    val reg_name = "(?:[a-z0-9-_.!~*'()$,;:@&=+]|" + escaped + "|" + other + ")+"
+    val reg_name =
+      "(?:[a-z0-9-_.!~*'()$,;:@&=+]|" + escaped + "|" + other + ")+"
 
     // authority     = server | reg_name
     val authority = server + "|" + reg_name
@@ -495,7 +498,8 @@ object URI {
     //                     ";" | "@" | "&" | "=" | "+" | "$" | "," )
 
     // rel_path      = rel_segment [ abs_path ]
-    val rel_path = "(?:[a-z0-9-_.!~*'();@&=+$,]|" + escaped + ")*(?:" + abs_path + ")?"
+    val rel_path =
+      "(?:[a-z0-9-_.!~*'();@&=+$,]|" + escaped + ")*(?:" + abs_path + ")?"
 
     ///////////////////
     /// Query/Frag  ///
@@ -511,14 +515,16 @@ object URI {
     ///////////////////
 
     // hier_part     = ( net_path | abs_path ) [ "?" query ]
-    val hier_part = "(?:" + net_path + "|(" + abs_path + "))(?:\\?" + query + ")?" /*CAPT*/
+    val hier_part =
+      "(?:" + net_path + "|(" + abs_path + "))(?:\\?" + query + ")?" /*CAPT*/
 
     // Inlined definition
     // uric_no_slash = unreserved | escaped | ";" | "?" | ":" | "@" |
     //                 "&" | "=" | "+" | "$" | ","
 
     // opaque_part   = uric_no_slash *uric
-    val opaque_part = "(?:[a-z0-9-_.!~*'();?:@&=+$,]|" + escaped + ")" + uric + "*"
+    val opaque_part =
+      "(?:[a-z0-9-_.!~*'();?:@&=+$,]|" + escaped + ")" + uric + "*"
 
     ///////////////////
     ///    URIs     ///
@@ -528,14 +534,16 @@ object URI {
     val scheme = "([a-z][a-z0-9+-.]*)" /*CAPT*/
 
     // absoluteURI   = scheme ":" ( hier_part | opaque_part )
-    val absoluteURI = scheme + ":(?:(" + hier_part + ")|(" + opaque_part + "))" /*2CAPT*/
+    val absoluteURI =
+      scheme + ":(?:(" + hier_part + ")|(" + opaque_part + "))" /*2CAPT*/
 
     // relativeURI   = ( net_path | abs_path | rel_path ) [ "?" query ]
     val relativeURI = /*3CAPT*/
     "((?:" + net_path + "|(" + abs_path + ")|(" + rel_path + "))(?:\\?" + query + ")?)"
 
     // URI-reference = [ absoluteURI | relativeURI ] [ "#" fragment ]
-    val uriRef = "^(?:" + absoluteURI + "|" + relativeURI + ")(?:#" + fragment + ")?$"
+    val uriRef =
+      "^(?:" + absoluteURI + "|" + relativeURI + ")(?:#" + fragment + ")?$"
 
     new RegExp(uriRef, "i")
   }
@@ -551,7 +559,8 @@ object URI {
     final val AbsAbsPath = AbsNetPath + 1
     final val AbsQuery = AbsAbsPath + 1
     final val AbsOpaquePart = AbsQuery + 1
-    final val RelSchemeSpecificPart = AbsOpaquePart + 1 // Everything but the fragment
+    final val RelSchemeSpecificPart =
+      AbsOpaquePart + 1 // Everything but the fragment
     final val RelAuthority = RelSchemeSpecificPart + 1
     final val RelUserInfo = RelAuthority + 1
     final val RelHost = RelUserInfo + 1

@@ -27,7 +27,8 @@ class MessageTest extends FunSuite with AssertionsForJUnit {
     val bytes = s.getBytes(Charsets.Utf8)
     ChannelBuffers.wrappedBuffer(bytes)
   }
-  val goodDentries = Seq("/a=>/b", "/foo=>/$/inet/twitter.com/80") map (Dentry.read)
+  val goodDentries =
+    Seq("/a=>/b", "/foo=>/$/inet/twitter.com/80") map (Dentry.read)
   val goodDtabs = goodDentries.permutations map { ds =>
     Dtab(ds.toIndexedSeq)
   }

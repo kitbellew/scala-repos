@@ -26,7 +26,8 @@ class XmlUnmatchedTagInspectionTest
   }
 
   def testSimpleOpeningError() {
-    val text = "val xml = " + s + "<sdgdsjh attr1=\"1\">" + e + "blah lbah</asfgsd>"
+    val text =
+      "val xml = " + s + "<sdgdsjh attr1=\"1\">" + e + "blah lbah</asfgsd>"
 
     check(text, noClosingTagError)
   }

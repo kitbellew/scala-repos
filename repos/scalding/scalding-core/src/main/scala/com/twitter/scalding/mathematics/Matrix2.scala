@@ -779,12 +779,13 @@ object Matrix2 {
         subchainCosts.put((i, j), Long.MaxValue)
         for (k <- i to (j - 1)) {
           // the original did not multiply by (k - i) and (j - k - 1) respectively (this achieves spread out trees)
-          val cost = (k - i) * computeCosts(p, i, k) + (j - k - 1) * computeCosts(
-            p,
-            k + 1,
-            j) +
-            (p(i).sizeHint * (p(k).sizeHint * p(j).sizeHint)).total
-              .getOrElse(BigInt(0L))
+          val cost =
+            (k - i) * computeCosts(p, i, k) + (j - k - 1) * computeCosts(
+              p,
+              k + 1,
+              j) +
+              (p(i).sizeHint * (p(k).sizeHint * p(j).sizeHint)).total
+                .getOrElse(BigInt(0L))
           if (cost < subchainCosts((i, j))) {
             subchainCosts.put((i, j), cost)
             splitMarkers.put((i, j), k)

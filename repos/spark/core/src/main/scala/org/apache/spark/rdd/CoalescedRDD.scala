@@ -259,7 +259,8 @@ private class PartitionCoalescer(
     noLocality = false
 
     // number of iterations needed to be certain that we've seen most preferred locations
-    val expectedCoupons2 = 2 * (math.log(targetLen) * targetLen + targetLen + 0.5).toInt
+    val expectedCoupons2 =
+      2 * (math.log(targetLen) * targetLen + targetLen + 0.5).toInt
     var numCreated = 0
     var tries = 0
 

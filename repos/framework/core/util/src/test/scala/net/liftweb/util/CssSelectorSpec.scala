@@ -725,8 +725,9 @@ object CssBindHelpersSpec extends Specification with XmlMatchers {
     }
 
     "Deal with NodeSeq as a NodeSeq" in {
-      val f = "h6 *" #> ((Text("Some awesome ") ++ <strong>text</strong> ++ Text(
-        " here.")): NodeSeq)
+      val f =
+        "h6 *" #> ((Text("Some awesome ") ++ <strong>text</strong> ++ Text(
+          " here.")): NodeSeq)
       val xml = <h6>Dude, where's my car?</h6>
 
       val res = f(xml)
@@ -774,8 +775,8 @@ object CssBindHelpersSpec extends Specification with XmlMatchers {
     }
 
     "Map of funcs" in {
-      val func: NodeSeq => NodeSeq = "#horse" #> List(1, 2, 3).map(
-        ".item *" #> _)
+      val func: NodeSeq => NodeSeq =
+        "#horse" #> List(1, 2, 3).map(".item *" #> _)
       val answer: NodeSeq =
         func(<span><div id="horse">frog<span class="item">i</span></div></span>)
 

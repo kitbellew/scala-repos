@@ -960,9 +960,8 @@ private[akka] class ActorSystemImpl(
             (if (cell.childrenRefs.children.isEmpty) "" else "\n") +
             ({
               val children = cell.childrenRefs.children.toSeq.sorted
-              val bulk = children.dropRight(1) map (printNode(
-                _,
-                indent + "   |"))
+              val bulk =
+                children.dropRight(1) map (printNode(_, indent + "   |"))
               bulk ++ (children.lastOption map (printNode(_, indent + "    ")))
             } mkString ("\n"))
         case _ ⇒

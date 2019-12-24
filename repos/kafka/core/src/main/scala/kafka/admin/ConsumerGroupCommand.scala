@@ -525,8 +525,9 @@ object ConsumerGroupCommand {
   }
 
   class ConsumerGroupCommandOptions(args: Array[String]) {
-    val ZkConnectDoc = "REQUIRED (unless new-consumer is used): The connection string for the zookeeper connection in the form host:port. " +
-      "Multiple URLS can be given to allow fail-over."
+    val ZkConnectDoc =
+      "REQUIRED (unless new-consumer is used): The connection string for the zookeeper connection in the form host:port. " +
+        "Multiple URLS can be given to allow fail-over."
     val BootstrapServerDoc =
       "REQUIRED (only when using new-consumer): The server to connect to."
     val GroupDoc = "The consumer group we wish to act on."

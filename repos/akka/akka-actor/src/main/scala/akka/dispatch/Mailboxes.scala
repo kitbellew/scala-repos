@@ -157,8 +157,8 @@ private[akka] class Mailboxes(
 
     val mailboxRequirement: Class[_] = getMailboxRequirement(dispatcherConfig)
 
-    val hasMailboxRequirement
-        : Boolean = mailboxRequirement != classOf[MessageQueue]
+    val hasMailboxRequirement: Boolean =
+      mailboxRequirement != classOf[MessageQueue]
 
     val hasMailboxType =
       dispatcherConfig.hasPath("mailbox-type") &&

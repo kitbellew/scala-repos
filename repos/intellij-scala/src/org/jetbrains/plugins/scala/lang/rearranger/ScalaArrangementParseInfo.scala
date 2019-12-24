@@ -115,7 +115,8 @@ class ScalaArrangementParseInfo {
                     }
                   cache.put(dependentMethod, dependentMethodInfo)
                   dependency.addDependentMethodInfo(dependentMethodInfo)
-                  toProcess = (dependentMethod, dependentMethodInfo) :: toProcess
+                  toProcess =
+                    (dependentMethod, dependentMethodInfo) :: toProcess
                 })
           }
         case None =>

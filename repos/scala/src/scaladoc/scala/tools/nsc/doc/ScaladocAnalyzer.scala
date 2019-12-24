@@ -103,7 +103,8 @@ trait ScaladocAnalyzer extends Analyzer {
       useCase.aliases = context.scope.toList
       namer.enterSyms(trees)
       typedStats(trees, NoSymbol)
-      useCase.defined = context.scope.toList filterNot (useCase.aliases contains _)
+      useCase.defined =
+        context.scope.toList filterNot (useCase.aliases contains _)
 
       if (settings.debug)
         useCase.defined foreach (sym =>

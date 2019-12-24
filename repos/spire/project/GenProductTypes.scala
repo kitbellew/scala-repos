@@ -28,10 +28,10 @@ object GenProductTypes {
   def beginTrait: Block = { tpe =>
     import tpe._
 
-    val parents = ("%s[(%s)]" format (structure, types)) + (parentStructure map {
-      p =>
+    val parents =
+      ("%s[(%s)]" format (structure, types)) + (parentStructure map { p =>
         " with %sProduct%d[%s]" format (p, arity, types)
-    } getOrElse "")
+      } getOrElse "")
 
     "private[spire] trait %s[%s] extends %s {" format (name, specTypes, parents)
   }
@@ -148,7 +148,8 @@ object GenProductTypes {
       start: Int = 2,
       end: Int = 22): Seq[Definition] => String = { defns =>
     val imps = imports map ("import " + _) mkString "\n"
-    val header = "package %s\n%s\nimport scala.{ specialized => spec }" format (pkg, imps)
+    val header =
+      "package %s\n%s\nimport scala.{ specialized => spec }" format (pkg, imps)
     val body = defns map renderStructure(start, end) mkString "\n"
     val unified = "\n%s\n" format unifiedTrait(defns, start, end)
 

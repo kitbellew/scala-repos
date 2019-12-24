@@ -214,7 +214,8 @@ abstract class ResolveTestBase extends ScalaResolveTestCase {
       if (options.contains(Type)) {
         val expectedClass = Class.forName(options(Type))
         val targetClass = target.getClass
-        val text = Type + " - expected: " + expectedClass.getSimpleName + ", actual: " + targetClass.getSimpleName
+        val text =
+          Type + " - expected: " + expectedClass.getSimpleName + ", actual: " + targetClass.getSimpleName
         Assert.assertTrue(
           message(text),
           expectedClass.isAssignableFrom(targetClass))

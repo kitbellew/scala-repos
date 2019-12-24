@@ -33,7 +33,8 @@ final class InsightApi(
       .aggregate(pipeline(question, user.id))
       .flatMap { res =>
         val clusters = AggregationClusters(question, res)
-        val gameIds = scala.util.Random.shuffle(clusters.flatMap(_.gameIds)) take 4
+        val gameIds =
+          scala.util.Random.shuffle(clusters.flatMap(_.gameIds)) take 4
         GameRepo.userPovsByGameIds(gameIds, user) map { povs =>
           Answer(question, clusters, povs)
         }

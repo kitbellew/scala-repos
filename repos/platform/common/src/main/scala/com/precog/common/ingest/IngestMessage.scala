@@ -157,8 +157,9 @@ object IngestMessage {
   implicit val ingestMessageIso =
     Iso.hlist(IngestMessage.apply _, IngestMessage.unapply _)
 
-  val schemaV1 = "apiKey" :: "path" :: "writeAs" :: "data" :: "jobId" :: "timestamp" :: ("streamRef" ||| StreamRef.Append
-    .asInstanceOf[StreamRef]) :: HNil
+  val schemaV1 =
+    "apiKey" :: "path" :: "writeAs" :: "data" :: "jobId" :: "timestamp" :: ("streamRef" ||| StreamRef.Append
+      .asInstanceOf[StreamRef]) :: HNil
   implicit def seqExtractor[A: Extractor]: Extractor[Seq[A]] =
     implicitly[Extractor[List[A]]].map(_.toSeq)
 
@@ -213,8 +214,8 @@ object IngestMessage {
     }
 
   implicit val Decomposer: Decomposer[IngestMessage] = decomposerV1
-  implicit val Extractor
-      : Extractor[EventMessageExtraction] = extractorV1 <+> extractorV0
+  implicit val Extractor: Extractor[EventMessageExtraction] =
+    extractorV1 <+> extractorV0
 }
 
 case class ArchiveMessage(
@@ -235,7 +236,8 @@ object ArchiveMessage {
   implicit val archiveMessageIso =
     Iso.hlist(ArchiveMessage.apply _, ArchiveMessage.unapply _)
 
-  val schemaV1 = "apiKey" :: "path" :: "jobId" :: "eventId" :: "timestamp" :: HNil
+  val schemaV1 =
+    "apiKey" :: "path" :: "jobId" :: "eventId" :: "timestamp" :: HNil
 
   val decomposerV1: Decomposer[ArchiveMessage] =
     decomposerV[ArchiveMessage](schemaV1, Some("1.0".v))
@@ -258,8 +260,8 @@ object ArchiveMessage {
   }
 
   implicit val Decomposer: Decomposer[ArchiveMessage] = decomposerV1
-  implicit val Extractor
-      : Extractor[ArchiveMessage] = extractorV1 <+> extractorV0
+  implicit val Extractor: Extractor[ArchiveMessage] =
+    extractorV1 <+> extractorV0
 }
 
 case class StoreFileMessage(
@@ -282,7 +284,8 @@ object StoreFileMessage {
   implicit val storeFileMessageIso =
     Iso.hlist(StoreFileMessage.apply _, StoreFileMessage.unapply _)
 
-  val schemaV1 = "apiKey" :: "path" :: "writeAs" :: "jobId" :: "eventId" :: "content" :: "timestamp" :: "streamRef" :: HNil
+  val schemaV1 =
+    "apiKey" :: "path" :: "writeAs" :: "jobId" :: "eventId" :: "content" :: "timestamp" :: "streamRef" :: HNil
 
   implicit val Decomposer: Decomposer[StoreFileMessage] =
     decomposerV[StoreFileMessage](schemaV1, Some("1.0".v))

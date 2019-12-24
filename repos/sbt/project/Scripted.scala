@@ -13,7 +13,8 @@ object Scripted {
   lazy val scriptedSource = SettingKey[File]("scripted-source")
   lazy val scriptedPrescripted = TaskKey[File => Unit]("scripted-prescripted")
 
-  lazy val MavenResolverPluginTest = config("mavenResolverPluginTest") extend Compile
+  lazy val MavenResolverPluginTest =
+    config("mavenResolverPluginTest") extend Compile
 
   import sbt.complete._
   import DefaultParsers._
@@ -21,21 +22,22 @@ object Scripted {
   case class ScriptedTestPage(page: Int, total: Int)
   def scriptedParser(scriptedBase: File): Parser[Seq[String]] = {
     val scriptedFiles: NameFilter = ("test": NameFilter) | "pending"
-    val pairs = (scriptedBase * AllPassFilter * AllPassFilter * scriptedFiles).get map {
-      (f: File) =>
-        val p = f.getParentFile
-        (p.getParentFile.getName, p.getName)
-    }
+    val pairs =
+      (scriptedBase * AllPassFilter * AllPassFilter * scriptedFiles).get map {
+        (f: File) =>
+          val p = f.getParentFile
+          (p.getParentFile.getName, p.getName)
+      }
     val pairMap = pairs.groupBy(_._1).mapValues(_.map(_._2).toSet);
 
     val id = charClass(c => !c.isWhitespace && c != '/').+.string
     val groupP = token(id.examples(pairMap.keySet.toSet)) <~ token('/')
 
     // A parser for page definitions
-    val pageP
-        : Parser[ScriptedTestPage] = ("*" ~ NatBasic ~ "of" ~ NatBasic) map {
-      case _ ~ page ~ _ ~ total => ScriptedTestPage(page, total)
-    }
+    val pageP: Parser[ScriptedTestPage] =
+      ("*" ~ NatBasic ~ "of" ~ NatBasic) map {
+        case _ ~ page ~ _ ~ total => ScriptedTestPage(page, total)
+      }
     // Grabs the filenames from a given test group in the current page definition.
     def pagedFilenames(group: String, page: ScriptedTestPage): Seq[String] = {
       val files = pairMap(group).toSeq.sortBy(_.toLowerCase)

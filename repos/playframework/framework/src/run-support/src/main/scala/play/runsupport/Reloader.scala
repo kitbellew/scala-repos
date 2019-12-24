@@ -106,9 +106,8 @@ object Reloader {
       parsePortValue(httpPortString, Option(defaultHttpPort))
 
     // https port can be defined as a -Dhttps.port argument or system property
-    val httpsPortString
-        : Option[String] = prop("https.port") orElse devSettings.toMap.get(
-      "play.server.https.port")
+    val httpsPortString: Option[String] =
+      prop("https.port") orElse devSettings.toMap.get("play.server.https.port")
     val httpsPort = parsePortValue(httpsPortString)
 
     // http address can be defined as a -Dhttp.address argument or system property

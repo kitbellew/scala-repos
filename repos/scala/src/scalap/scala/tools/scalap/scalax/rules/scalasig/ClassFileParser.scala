@@ -101,11 +101,11 @@ object ClassFileParser extends ByteCodeReader {
   def parse(byteCode: ByteCode) = expect(classFile)(byteCode)
   def parseAnnotations(byteCode: ByteCode) = expect(annotations)(byteCode)
 
-  val magicNumber = (u4 filter (_ == 0xCAFEBABE)) | error(
-    "Not a valid class file")
+  val magicNumber =
+    (u4 filter (_ == 0xCAFEBABE)) | error("Not a valid class file")
   val version = u2 ~ u2 ^^ { case minor ~ major => (major, minor) }
-  val constantPool = (u2 ^^ ConstantPool) >> repeatUntil(constantPoolEntry)(
-    _ isFull)
+  val constantPool =
+    (u2 ^^ ConstantPool) >> repeatUntil(constantPoolEntry)(_ isFull)
 
   // NOTE currently most constants just evaluate to a string description
   // TODO evaluate to useful values
@@ -200,8 +200,8 @@ object ClassFileParser extends ByteCodeReader {
   }
 
   val element_value_pair = u2 ~ element_value ^~^ AnnotationElement
-  val annotation
-      : Parser[Annotation] = u2 ~ (u2 >> element_value_pair.times) ^~^ Annotation
+  val annotation: Parser[Annotation] =
+    u2 ~ (u2 >> element_value_pair.times) ^~^ Annotation
   val annotations = u2 >> annotation.times
 
   val field = u2 ~ u2 ~ u2 ~ attributes ^~~~^ Field
@@ -210,7 +210,8 @@ object ClassFileParser extends ByteCodeReader {
   val method = u2 ~ u2 ~ u2 ~ attributes ^~~~^ Method
   val methods = u2 >> method.times
 
-  val header = magicNumber -~ u2 ~ u2 ~ constantPool ~ u2 ~ u2 ~ u2 ~ interfaces ^~~~~~~^ ClassFileHeader
+  val header =
+    magicNumber -~ u2 ~ u2 ~ constantPool ~ u2 ~ u2 ~ u2 ~ interfaces ^~~~~~~^ ClassFileHeader
   val classFile = header ~ fields ~ methods ~ attributes ~- !u1 ^~~~^ ClassFile
 
   // TODO create a useful object, not just a string

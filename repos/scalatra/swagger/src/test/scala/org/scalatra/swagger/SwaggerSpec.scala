@@ -75,9 +75,12 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
 
   val listResourceJValue = readJson("api-docs.json") // merge (("basePath" -> ("http://localhost:" + port)):JValue)
 
-  val petOperationsJValue = readJson("pet.json") merge (("basePath" -> ("http://localhost:" + port)): JValue)
-  val storeOperationsJValue = readJson("store.json") merge (("basePath" -> ("http://localhost:" + port)): JValue)
-  val userOperationsJValue = readJson("user.json") merge (("basePath" -> ("http://localhost:" + port)): JValue)
+  val petOperationsJValue =
+    readJson("pet.json") merge (("basePath" -> ("http://localhost:" + port)): JValue)
+  val storeOperationsJValue =
+    readJson("store.json") merge (("basePath" -> ("http://localhost:" + port)): JValue)
+  val userOperationsJValue =
+    readJson("user.json") merge (("basePath" -> ("http://localhost:" + port)): JValue)
 
   private def readJson(file: String) = {
     val f = if (file startsWith "/") file else "/" + file
@@ -106,7 +109,8 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
       case _: Throwable ⇒ None
     }
 
-  val propOrder = "category" :: "name" :: "id" :: "tags" :: "status" :: "photoUrls" :: Nil
+  val propOrder =
+    "category" :: "name" :: "id" :: "tags" :: "status" :: "photoUrls" :: Nil
   def checkModelOrder = {
     get("/api-docs/pet") {
       val bd = JsonParser.parseOpt(body)
@@ -168,7 +172,8 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
       (j \ "licenseUrl" must_== info \ "licenseUrl")
   }
 
-  val petOperations = "updatePet" :: "addPet" :: "deletePet" :: "findPetsByTags" :: "findPetsByStatus" :: "getPetById" :: Nil
+  val petOperations =
+    "updatePet" :: "addPet" :: "deletePet" :: "findPetsByTags" :: "findPetsByStatus" :: "getPetById" :: Nil
   val storeOperations = "placeOrder" :: "deleteOrder" :: "getOrderById" :: Nil
   //  val operations = "allPets" :: Nil
   def listPetOperations = {
@@ -370,8 +375,8 @@ class SwaggerTestServlet(protected val swagger: Swagger)
     DefaultReaders.StringReader,
     DefaultWriters.StringWriter)
 
-  protected override val swaggerProduces
-      : List[String] = "application/json" :: "application/xml" :: "text/plain" :: "text/html" :: Nil
+  protected override val swaggerProduces: List[String] =
+    "application/json" :: "application/xml" :: "text/plain" :: "text/html" :: Nil
 
   protected override val swaggerConsumes: List[String] = Nil
 
@@ -480,8 +485,8 @@ class StoreApi(val swagger: Swagger)
   implicit val StringFormat = DefaultJsonFormats.GenericFormat(
     DefaultReaders.StringReader,
     DefaultWriters.StringWriter)
-  protected override val swaggerProduces
-      : List[String] = "application/json" :: "application/xml" :: Nil
+  protected override val swaggerProduces: List[String] =
+    "application/json" :: "application/xml" :: Nil
 
   protected override val swaggerConsumes: List[String] = Nil
 

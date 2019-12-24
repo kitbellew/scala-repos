@@ -153,9 +153,10 @@ class ZookeeperConsumerConnectorTest
     waitUntilLeaderIsElectedOrChanged(zkUtils, topic, 0)
     waitUntilLeaderIsElectedOrChanged(zkUtils, topic, 1)
 
-    val receivedMessages2 = getMessages(topicMessageStreams1, nMessages) ++ getMessages(
-      topicMessageStreams2,
-      nMessages)
+    val receivedMessages2 =
+      getMessages(topicMessageStreams1, nMessages) ++ getMessages(
+        topicMessageStreams2,
+        nMessages)
     assertEquals(sentMessages2.sorted, receivedMessages2.sorted)
 
     // also check partition ownership
@@ -178,9 +179,10 @@ class ZookeeperConsumerConnectorTest
     waitUntilLeaderIsElectedOrChanged(zkUtils, topic, 0)
     waitUntilLeaderIsElectedOrChanged(zkUtils, topic, 1)
 
-    val receivedMessages3 = getMessages(topicMessageStreams1, nMessages) ++ getMessages(
-      topicMessageStreams2,
-      nMessages)
+    val receivedMessages3 =
+      getMessages(topicMessageStreams1, nMessages) ++ getMessages(
+        topicMessageStreams2,
+        nMessages)
     assertEquals(sentMessages3.sorted, receivedMessages3.sorted)
 
     // also check partition ownership
@@ -210,13 +212,9 @@ class ZookeeperConsumerConnectorTest
     requestHandlerLogger.setLevel(Level.FATAL)
 
     // send some messages to each broker
-    val sentMessages1 = sendMessages(
-      servers,
-      topic,
-      nMessages,
-      0,
-      GZIPCompressionCodec) ++
-      sendMessages(servers, topic, nMessages, 1, GZIPCompressionCodec)
+    val sentMessages1 =
+      sendMessages(servers, topic, nMessages, 0, GZIPCompressionCodec) ++
+        sendMessages(servers, topic, nMessages, 1, GZIPCompressionCodec)
 
     waitUntilLeaderIsElectedOrChanged(zkUtils, topic, 0)
     waitUntilLeaderIsElectedOrChanged(zkUtils, topic, 1)
@@ -257,20 +255,17 @@ class ZookeeperConsumerConnectorTest
       new StringDecoder(),
       new StringDecoder())
     // send some messages to each broker
-    val sentMessages2 = sendMessages(
-      servers,
-      topic,
-      nMessages,
-      0,
-      GZIPCompressionCodec) ++
-      sendMessages(servers, topic, nMessages, 1, GZIPCompressionCodec)
+    val sentMessages2 =
+      sendMessages(servers, topic, nMessages, 0, GZIPCompressionCodec) ++
+        sendMessages(servers, topic, nMessages, 1, GZIPCompressionCodec)
 
     waitUntilLeaderIsElectedOrChanged(zkUtils, topic, 0)
     waitUntilLeaderIsElectedOrChanged(zkUtils, topic, 1)
 
-    val receivedMessages2 = getMessages(topicMessageStreams1, nMessages) ++ getMessages(
-      topicMessageStreams2,
-      nMessages)
+    val receivedMessages2 =
+      getMessages(topicMessageStreams1, nMessages) ++ getMessages(
+        topicMessageStreams2,
+        nMessages)
     assertEquals(sentMessages2.sorted, receivedMessages2.sorted)
 
     // also check partition ownership
@@ -289,20 +284,17 @@ class ZookeeperConsumerConnectorTest
       new StringDecoder(),
       new StringDecoder())
     // send some messages to each broker
-    val sentMessages3 = sendMessages(
-      servers,
-      topic,
-      nMessages,
-      0,
-      GZIPCompressionCodec) ++
-      sendMessages(servers, topic, nMessages, 1, GZIPCompressionCodec)
+    val sentMessages3 =
+      sendMessages(servers, topic, nMessages, 0, GZIPCompressionCodec) ++
+        sendMessages(servers, topic, nMessages, 1, GZIPCompressionCodec)
 
     waitUntilLeaderIsElectedOrChanged(zkUtils, topic, 0)
     waitUntilLeaderIsElectedOrChanged(zkUtils, topic, 1)
 
-    val receivedMessages3 = getMessages(topicMessageStreams1, nMessages) ++ getMessages(
-      topicMessageStreams2,
-      nMessages)
+    val receivedMessages3 =
+      getMessages(topicMessageStreams1, nMessages) ++ getMessages(
+        topicMessageStreams2,
+        nMessages)
     assertEquals(sentMessages3.sorted, receivedMessages3.sorted)
 
     // also check partition ownership
@@ -319,13 +311,9 @@ class ZookeeperConsumerConnectorTest
   @Test
   def testCompressionSetConsumption() {
     // send some messages to each broker
-    val sentMessages = sendMessages(
-      servers,
-      topic,
-      200,
-      0,
-      DefaultCompressionCodec) ++
-      sendMessages(servers, topic, 200, 1, DefaultCompressionCodec)
+    val sentMessages =
+      sendMessages(servers, topic, 200, 0, DefaultCompressionCodec) ++
+        sendMessages(servers, topic, 200, 1, DefaultCompressionCodec)
 
     TestUtils.waitUntilMetadataIsPropagated(servers, topic, 0)
     TestUtils.waitUntilMetadataIsPropagated(servers, topic, 1)
@@ -357,13 +345,9 @@ class ZookeeperConsumerConnectorTest
     requestHandlerLogger.setLevel(Level.FATAL)
 
     // send some messages to each broker
-    val sentMessages = sendMessages(
-      servers,
-      topic,
-      nMessages,
-      0,
-      NoCompressionCodec) ++
-      sendMessages(servers, topic, nMessages, 1, NoCompressionCodec)
+    val sentMessages =
+      sendMessages(servers, topic, nMessages, 0, NoCompressionCodec) ++
+        sendMessages(servers, topic, nMessages, 1, NoCompressionCodec)
 
     TestUtils.waitUntilMetadataIsPropagated(servers, topic, 0)
     TestUtils.waitUntilMetadataIsPropagated(servers, topic, 1)

@@ -160,7 +160,8 @@ class LiftServlet extends Loggable {
         if (LiftRules.logServiceRequestTiming) {
           logTime {
             val ret = doService(req, resp)
-            val msg = "Service request (" + req.request.method + ") " + req.request.uri + " returned " + resp.getStatus + ","
+            val msg =
+              "Service request (" + req.request.method + ") " + req.request.uri + " returned " + resp.getStatus + ","
             (msg, ret)
           }
         } else {
@@ -897,8 +898,8 @@ class LiftServlet extends Loggable {
 
   private object BeginContinuation
 
-  private lazy val cometTimeout
-      : Long = (LiftRules.cometRequestTimeout openOr 120) * 1000L
+  private lazy val cometTimeout: Long =
+    (LiftRules.cometRequestTimeout openOr 120) * 1000L
 
   private def setupContinuation(
       request: Req,

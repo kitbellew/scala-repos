@@ -194,7 +194,8 @@ class LogOffsetTest extends ZooKeeperTestHarness {
       log.append(new ByteBufferMessageSet(NoCompressionCodec, message))
     log.flush()
 
-    val now = time.milliseconds + 30000 // pretend it is the future to avoid race conditions with the fs
+    val now =
+      time.milliseconds + 30000 // pretend it is the future to avoid race conditions with the fs
 
     val offsets = server.apis.fetchOffsets(
       logManager,

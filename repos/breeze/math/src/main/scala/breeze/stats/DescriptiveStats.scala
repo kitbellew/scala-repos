@@ -40,7 +40,8 @@ case class MeanAndVariance(mean: Double, variance: Double, count: Long) {
     val m2a = this.variance * (this.count - 1)
     val m2b = other.variance * (other.count - 1)
 
-    val m2x = m2a + m2b + d * d * (other.count * this.count) / (other.count + this.count)
+    val m2x =
+      m2a + m2b + d * d * (other.count * this.count) / (other.count + this.count)
 
     val newVariance = m2x / (other.count + this.count - 1)
 
@@ -530,7 +531,8 @@ object DescriptiveStats {
           val newN = oldN + frac.fromInt(1)
           val newMu1 = oldMu1 + ((y._1 - oldMu1) / newN)
           val newMu2 = oldMu2 + ((y._2 - oldMu2) / newN)
-          val newC = oldC + ((y._1 - oldMu1) * (y._2 - newMu2)) //compute covariance in single pass
+          val newC =
+            oldC + ((y._1 - oldMu1) * (y._2 - newMu2)) //compute covariance in single pass
           (newMu1, newMu2, newC, newN)
       }
     if (n == 1) (mu1, mu2, 0) else (mu1, mu2, c / (n - frac.fromInt(1)))

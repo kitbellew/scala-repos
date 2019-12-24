@@ -144,7 +144,8 @@ trait PatternTypers {
     }
 
     private def boundedArrayType(bound: Type): Type = {
-      val tparam = context.owner freshExistential "" setInfo (TypeBounds upper bound)
+      val tparam =
+        context.owner freshExistential "" setInfo (TypeBounds upper bound)
       newExistentialType(tparam :: Nil, arrayType(tparam.tpe_*))
     }
 
@@ -263,7 +264,8 @@ trait PatternTypers {
       )
       val variantToSkolem = new VariantToSkolemMap
       val caseClassType = tree.tpe.prefix memberType caseClass
-      val caseConstructorType = caseClassType memberType caseClass.primaryConstructor
+      val caseConstructorType =
+        caseClassType memberType caseClass.primaryConstructor
       val tree1 = TypeTree(caseConstructorType) setOriginal tree
       val pt = if (untrustworthyPt) caseClassType else ptIn
 
@@ -341,8 +343,8 @@ trait PatternTypers {
           pt,
           canRemedy)
         // turn any unresolved type variables in freevars into existential skolems
-        val skolems = freeVars map (fv =>
-          unapplyContext.owner.newExistentialSkolem(fv, fv))
+        val skolems =
+          freeVars map (fv => unapplyContext.owner.newExistentialSkolem(fv, fv))
         pattp.substSym(freeVars, skolems)
       }
 
@@ -352,8 +354,8 @@ trait PatternTypers {
           else freshUnapplyArgType()
         )
       )
-      val unapplyArgTree = Ident(unapplyArg) updateAttachment SubpatternsAttachment(
-        args)
+      val unapplyArgTree =
+        Ident(unapplyArg) updateAttachment SubpatternsAttachment(args)
 
       // clearing the type is necessary so that ref will be stabilized; see bug 881
       val fun1 = typedPos(fun.pos)(
@@ -362,7 +364,8 @@ trait PatternTypers {
       def makeTypedUnapply() = {
         // the union of the expected type and the inferred type of the argument to unapply
         val glbType = glb(ensureFullyDefined(pt) :: unapplyArg.tpe_* :: Nil)
-        val wrapInTypeTest = canRemedy && !(fun1.symbol.owner isNonBottomSubClass ClassTagClass)
+        val wrapInTypeTest =
+          canRemedy && !(fun1.symbol.owner isNonBottomSubClass ClassTagClass)
         val formals = patmat
           .alignPatterns(context.asInstanceOf[analyzer.Context], fun1, args)
           .unexpandedFormals

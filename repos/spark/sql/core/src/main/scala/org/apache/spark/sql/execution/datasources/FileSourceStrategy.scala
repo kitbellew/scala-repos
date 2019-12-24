@@ -99,8 +99,8 @@ private[sql] object FileSourceStrategy extends Strategy with Logging {
         files.location.listFiles(partitionKeyFilters.toSeq)
 
       val filterAttributes = AttributeSet(afterScanFilters)
-      val requiredExpressions
-          : Seq[NamedExpression] = filterAttributes.toSeq ++ projects
+      val requiredExpressions: Seq[NamedExpression] =
+        filterAttributes.toSeq ++ projects
       val requiredAttributes =
         AttributeSet(requiredExpressions).map(_.name).toSet
 

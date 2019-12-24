@@ -683,7 +683,8 @@ trait Infer extends Checkable {
         val loBounds = tparams map (_.info.bounds.lo)
         def containsAny(t: Type) =
           (t contains AnyClass) || (t contains AnyValClass)
-        val hasAny = pt :: restpe :: formals ::: argtpes ::: loBounds exists (_.dealiasWidenChain exists containsAny)
+        val hasAny =
+          pt :: restpe :: formals ::: argtpes ::: loBounds exists (_.dealiasWidenChain exists containsAny)
         !hasAny
       }
       def argumentPosition(idx: Int): Position = context.tree match {
@@ -1595,8 +1596,8 @@ trait Infer extends Checkable {
       val c = context
       class InferTwice(pre: Type, alts: List[Symbol]) extends c.TryTwice {
         def tryOnce(isSecondTry: Boolean): Unit = {
-          val alts0 = alts filter (alt =>
-            isWeaklyCompatible(pre memberType alt, pt))
+          val alts0 =
+            alts filter (alt => isWeaklyCompatible(pre memberType alt, pt))
           val alts1 = if (alts0.isEmpty) alts else alts0
           val bests = bestAlternatives(alts1) { (sym1, sym2) =>
             val tp1 = pre memberType sym1
@@ -1792,8 +1793,8 @@ trait Infer extends Checkable {
     def inferPolyAlternatives(tree: Tree, argtypes: List[Type]): Unit = {
       val OverloadedType(pre, alts) = tree.tpe
       // Alternatives with a matching length type parameter list
-      val matchingLength = tree.symbol filter (alt =>
-        sameLength(alt.typeParams, argtypes))
+      val matchingLength =
+        tree.symbol filter (alt => sameLength(alt.typeParams, argtypes))
       def allMonoAlts = alts forall (_.typeParams.isEmpty)
       def errorKind = matchingLength match {
         case NoSymbol if allMonoAlts =>

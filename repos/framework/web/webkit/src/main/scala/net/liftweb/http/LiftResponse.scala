@@ -75,8 +75,8 @@ object CreatedResponse {
   def apply(
       json: JsonAST.JValue,
       addlHeaders: List[(String, String)]): LiftResponse = {
-    val headers
-        : List[(String, String)] = S.getResponseHeaders(Nil) ++ addlHeaders
+    val headers: List[(String, String)] =
+      S.getResponseHeaders(Nil) ++ addlHeaders
 
     new JsonResponse(new JsExp {
       lazy val toJsCmd = jsonPrinter(json)
@@ -822,8 +822,8 @@ case class XhtmlResponse(
     }
   }
 
-  override protected lazy val _encoding
-      : String = htmlProperties.encoding openOr ""
+  override protected lazy val _encoding: String =
+    htmlProperties.encoding openOr ""
 
   val headers: List[(String, String)] =
     _headers.find(_._1 equalsIgnoreCase "content-type") match {

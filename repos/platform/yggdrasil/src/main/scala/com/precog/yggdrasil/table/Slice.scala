@@ -397,10 +397,8 @@ trait Slice { source =>
             JArrayFixedT(elems),
             CArrayType(cElemType),
             CPath(CPathArray, cPath @ _*)) =>
-          val mappers = elems mapValues (flattenDeleteTree(
-            _,
-            cElemType,
-            CPath(cPath: _*)))
+          val mappers =
+            elems mapValues (flattenDeleteTree(_, cElemType, CPath(cPath: _*)))
           xs =>
             Some(xs.zipWithIndex map {
               case (x, j) =>
@@ -1077,8 +1075,8 @@ trait Slice { source =>
             case CPathField(name) :: tail => {
               target match {
                 case SchemaNode.Obj(nodes) => {
-                  val subTarget = nodes get name getOrElse SchemaNode.Union(
-                    Set())
+                  val subTarget =
+                    nodes get name getOrElse SchemaNode.Union(Set())
                   val result =
                     insert(subTarget, ColumnRef(CPath(tail), ctype), col)
                   SchemaNode.Obj(nodes + (name -> result))

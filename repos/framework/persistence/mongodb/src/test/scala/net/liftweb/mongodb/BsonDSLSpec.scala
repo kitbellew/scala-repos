@@ -108,7 +108,8 @@ object BsonDSLSpec extends Specification {
     }
 
     "Convert List[UUID] properly" in {
-      val uuidList = UUID.randomUUID :: UUID.randomUUID :: UUID.randomUUID :: Nil
+      val uuidList =
+        UUID.randomUUID :: UUID.randomUUID :: UUID.randomUUID :: Nil
       val qry: JObject = ("ids" -> uuidList)
       val dbo: DBObject = JObjectParser.parse(qry)(DefaultFormats)
       val uuidList2: List[UUID] = dbo

@@ -37,8 +37,9 @@ object FailFastFactory {
     val Success, Fail, Timeout, TimeoutFail, Close = Value
   }
 
-  private val defaultBackoffs = (Backoff.exponential(1.second, 2) take 5) ++ Backoff
-    .const(32.seconds)
+  private val defaultBackoffs =
+    (Backoff.exponential(1.second, 2) take 5) ++ Backoff
+      .const(32.seconds)
   private val rng = new Random
 
   val role = Stack.Role("FailFast")

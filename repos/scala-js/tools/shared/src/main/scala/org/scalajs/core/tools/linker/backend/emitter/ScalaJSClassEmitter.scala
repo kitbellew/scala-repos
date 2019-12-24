@@ -880,8 +880,9 @@ private[scalajs] final class ScalaJSClassEmitter(
                 //     "super constructor")
                 val decodedName =
                   Definitions.decodeClassName(className).stripSuffix("$")
-                val msg = s"Initializer of $decodedName called before completion " +
-                  "of its super constructor"
+                val msg =
+                  s"Initializer of $decodedName called before completion " +
+                    "of its super constructor"
                 val obj =
                   js.New(encodeClassVar("sjsr_UndefinedBehaviorError"), Nil)
                 val ctor = obj DOT js.Ident("init___T")

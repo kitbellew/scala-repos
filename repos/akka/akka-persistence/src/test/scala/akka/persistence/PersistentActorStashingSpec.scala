@@ -181,8 +181,8 @@ abstract class PersistentActorStashingSpec(config: Config)
     "support user stash operations with several stashed messages" in {
       val persistentActor = namedPersistentActor[T]
       val n = 10
-      val cmds = 1 to n flatMap (_ ⇒
-        List(Cmd("a"), Cmd("b-1"), Cmd("b-2"), Cmd("c")))
+      val cmds =
+        1 to n flatMap (_ ⇒ List(Cmd("a"), Cmd("b-1"), Cmd("b-2"), Cmd("c")))
       val evts = 1 to n flatMap (_ ⇒ List("a", "c", "b-1", "b-2"))
 
       cmds foreach (persistentActor ! _)

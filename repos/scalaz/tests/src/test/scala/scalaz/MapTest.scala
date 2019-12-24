@@ -425,8 +425,8 @@ object MapTest extends SpecLite {
     }
 
     "syntax" in {
-      val r = fromList(List(5 -> "a", 3 -> "b")) \\ fromList(
-        List(5 -> "A", 7 -> "C"))
+      val r =
+        fromList(List(5 -> "a", 3 -> "b")) \\ fromList(List(5 -> "A", 7 -> "C"))
       r must_== singleton[Int, String](3, "b")
     }
 

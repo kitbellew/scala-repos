@@ -178,14 +178,14 @@ private[ml] object RFormulaParser extends RegexParsers {
   private val term: Parser[Term] = intercept |
     interaction ^^ { case terms => ColumnInteraction(terms) } | dot | columnRef
 
-  private val terms
-      : Parser[List[Term]] = (term ~ rep("+" ~ term | "-" ~ term)) ^^ {
-    case op ~ list =>
-      list.foldLeft(List(op)) {
-        case (left, "+" ~ right) => left ++ Seq(right)
-        case (left, "-" ~ right) => left ++ Seq(Deletion(right))
-      }
-  }
+  private val terms: Parser[List[Term]] =
+    (term ~ rep("+" ~ term | "-" ~ term)) ^^ {
+      case op ~ list =>
+        list.foldLeft(List(op)) {
+          case (left, "+" ~ right) => left ++ Seq(right)
+          case (left, "-" ~ right) => left ++ Seq(Deletion(right))
+        }
+    }
 
   private val formula: Parser[ParsedRFormula] =
     (columnRef ~ "~" ~ terms) ^^ { case r ~ "~" ~ t => ParsedRFormula(r, t) }

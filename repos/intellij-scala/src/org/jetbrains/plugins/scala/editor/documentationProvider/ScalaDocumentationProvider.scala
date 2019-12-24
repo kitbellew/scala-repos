@@ -604,7 +604,8 @@ object ScalaDocumentationProvider {
       case function: ScFunction =>
         val parents = function.findSuperMethods()
         var returnTag: String = null
-        val needReturnTag = function.getReturnType != null && !function.hasUnitResultType
+        val needReturnTag =
+          function.getReturnType != null && !function.hasUnitResultType
 
         for (parent <- parents) {
           processProbablyJavaDocCommentWithOwner(parent)

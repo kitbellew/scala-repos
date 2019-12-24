@@ -83,7 +83,8 @@ object MLUtils {
           .filter(_.nonEmpty)
           .map { item =>
             val indexAndValue = item.split(':')
-            val index = indexAndValue(0).toInt - 1 // Convert 1-based indices to 0-based.
+            val index =
+              indexAndValue(0).toInt - 1 // Convert 1-based indices to 0-based.
             val value = indexAndValue(1).toDouble
             (index, value)
           }
@@ -393,15 +394,16 @@ object MLUtils {
      * The bound doesn't need the inner product, so we can use it as a sufficient condition to
      * check quickly whether the inner product approach is accurate.
      */
-    val precisionBound1 = 2.0 * EPSILON * sumSquaredNorm / (normDiff * normDiff + EPSILON)
+    val precisionBound1 =
+      2.0 * EPSILON * sumSquaredNorm / (normDiff * normDiff + EPSILON)
     if (precisionBound1 < precision) {
       sqDist = sumSquaredNorm - 2.0 * dot(v1, v2)
     } else if (v1.isInstanceOf[SparseVector] || v2.isInstanceOf[SparseVector]) {
       val dotValue = dot(v1, v2)
       sqDist = math.max(sumSquaredNorm - 2.0 * dotValue, 0.0)
-      val precisionBound2 = EPSILON * (sumSquaredNorm + 2.0 * math.abs(
-        dotValue)) /
-        (sqDist + EPSILON)
+      val precisionBound2 =
+        EPSILON * (sumSquaredNorm + 2.0 * math.abs(dotValue)) /
+          (sqDist + EPSILON)
       if (precisionBound2 > precision) {
         sqDist = Vectors.sqdist(v1, v2)
       }

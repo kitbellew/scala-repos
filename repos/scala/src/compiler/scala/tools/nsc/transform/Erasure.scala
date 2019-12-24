@@ -423,7 +423,8 @@ abstract class Erasure
   private lazy val poundPoundMethods = Set[Symbol](Any_##, Object_##)
   // Methods on Any/Object which we rewrite here while we still know what
   // is a primitive and what arrived boxed.
-  private lazy val interceptedMethods = poundPoundMethods ++ primitiveGetClassMethods
+  private lazy val interceptedMethods =
+    poundPoundMethods ++ primitiveGetClassMethods
 
 // -------- erasure on trees ------------------------------------------
 
@@ -530,7 +531,8 @@ abstract class Erasure
       if (!bridgeNeeded)
         return
 
-      var newFlags = (member.flags | BRIDGE | ARTIFACT) & ~(ACCESSOR | DEFERRED | LAZY | lateDEFERRED)
+      var newFlags =
+        (member.flags | BRIDGE | ARTIFACT) & ~(ACCESSOR | DEFERRED | LAZY | lateDEFERRED)
       // If `member` is a ModuleSymbol, the bridge should not also be a ModuleSymbol. Otherwise we
       // end up with two module symbols with the same name in the same scope, which is surprising
       // when implementing later phases.
@@ -585,9 +587,10 @@ abstract class Erasure
         // TODO: should we do this for user-defined unapplies as well?
         // does the first argument list have exactly one argument -- for user-defined unapplies we can't be sure
         def maybeWrap(bridgingCall: Tree): Tree = {
-          val guardExtractor = (// can't statically know which member is going to be selected, so don't let this depend on member.isSynthetic
-          (member.name == nme.unapply || member.name == nme.unapplySeq)
-            && !exitingErasure((member.tpe <:< other.tpe))) // no static guarantees (TODO: is the subtype test ever true?)
+          val guardExtractor =
+            (// can't statically know which member is going to be selected, so don't let this depend on member.isSynthetic
+            (member.name == nme.unapply || member.name == nme.unapplySeq)
+              && !exitingErasure((member.tpe <:< other.tpe))) // no static guarantees (TODO: is the subtype test ever true?)
 
           import CODE._
           val _false = FALSE
@@ -716,7 +719,8 @@ abstract class Erasure
               selectFrom(qual1)
             } else if (isMethodTypeWithEmptyParams(qual1.tpe)) {
               assert(qual1.symbol.isStable, qual1.symbol)
-              val applied = Apply(qual1, List()) setPos qual1.pos setType qual1.tpe.resultType
+              val applied =
+                Apply(qual1, List()) setPos qual1.pos setType qual1.tpe.resultType
               adaptMember(selectFrom(applied))
             } else if (!(qual1
                          .isInstanceOf[Super] || (qual1.tpe.typeSymbol isSubClass tree.symbol.owner))) {
@@ -1123,7 +1127,8 @@ abstract class Erasure
                     def alt1 = alts find (_.info.paramTypes.head =:= qual.tpe)
                     def alt2 =
                       ScalaRunTimeModule.info.member(nme.hash_) suchThat (_.info.paramTypes.head.typeSymbol == AnyClass)
-                    val newTree = gen.mkRuntimeCall(nme.hash_, qual :: Nil) setSymbol (alt1 getOrElse alt2)
+                    val newTree =
+                      gen.mkRuntimeCall(nme.hash_, qual :: Nil) setSymbol (alt1 getOrElse alt2)
 
                     global.typer.typed(newTree)
                 }

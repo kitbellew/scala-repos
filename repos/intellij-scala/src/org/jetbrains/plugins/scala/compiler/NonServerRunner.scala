@@ -36,16 +36,18 @@ class NonServerRunner(
   def buildProcess(
       args: Seq[String],
       listener: String => Unit): CompilationProcess = {
-    val sdk = Option(ProjectRootManager.getInstance(project).getProjectSdk) getOrElse {
-      val all = ProjectJdkTable.getInstance.getSdksOfType(JavaSdk.getInstance())
+    val sdk =
+      Option(ProjectRootManager.getInstance(project).getProjectSdk) getOrElse {
+        val all =
+          ProjectJdkTable.getInstance.getSdksOfType(JavaSdk.getInstance())
 
-      if (all.isEmpty) {
-        error("No JDK available")
-        return null
+        if (all.isEmpty) {
+          error("No JDK available")
+          return null
+        }
+
+        all.get(0)
       }
-
-      all.get(0)
-    }
 
     CompileServerLauncher.compilerJars.foreach {
       case p => assert(p.exists(), p.getPath)

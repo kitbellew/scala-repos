@@ -64,13 +64,13 @@ class ScriptRunner extends HasCompileSocket {
       settings: GenericRunnerSettings,
       scriptFileIn: String) = {
     val scriptFile = Path(scriptFileIn).toAbsolute.path
-    val compSettingNames = new Settings(sys.error).visibleSettings.toList map (_.name)
-    val compSettings = settings.visibleSettings.toList filter (compSettingNames contains _.name)
+    val compSettingNames =
+      new Settings(sys.error).visibleSettings.toList map (_.name)
+    val compSettings =
+      settings.visibleSettings.toList filter (compSettingNames contains _.name)
     val coreCompArgs = compSettings flatMap (_.unparse)
-    val compArgs = coreCompArgs ++ List(
-      "-Xscript",
-      scriptMain(settings),
-      scriptFile)
+    val compArgs =
+      coreCompArgs ++ List("-Xscript", scriptMain(settings), scriptFile)
 
     CompileSocket getOrCreateSocket "" match {
       case Some(sock) => compileOnServer(sock, compArgs)

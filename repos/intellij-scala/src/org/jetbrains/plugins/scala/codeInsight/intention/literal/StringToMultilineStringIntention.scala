@@ -117,7 +117,8 @@ class StringToMultilineStringIntention extends PsiElementBaseIntentionAction {
         }
         parts match {
           case Seq(Text(s)) =>
-            val newLiteralText = "\"" + StringUtil.escapeStringCharacters(s) + "\""
+            val newLiteralText =
+              "\"" + StringUtil.escapeStringCharacters(s) + "\""
             val newLiteral = ScalaPsiElementFactory.createExpressionFromText(
               newLiteralText,
               literal.getManager)

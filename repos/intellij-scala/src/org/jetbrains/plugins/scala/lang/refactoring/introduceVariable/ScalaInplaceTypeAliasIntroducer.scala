@@ -84,7 +84,8 @@ class ScalaInplaceTypeAliasIntroducer(
       oldName) {
 
   override def setAdvertisementText(text: String) = {
-    myAdvertisementText = "Press ctrl + alt + v" + " to show dialog with more options"
+    myAdvertisementText =
+      "Press ctrl + alt + v" + " to show dialog with more options"
   }
 
   override def startsOnTheSameElement(

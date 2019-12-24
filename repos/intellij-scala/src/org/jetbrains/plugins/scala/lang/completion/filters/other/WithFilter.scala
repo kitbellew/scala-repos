@@ -21,7 +21,8 @@ class WithFilter extends ElementFilter {
     val leaf = getLeafByOffset(context.getTextRange.getStartOffset, context)
     if (leaf != null) {
       var i = context.getTextRange.getStartOffset - 1
-      while (i >= 0 && context.getContainingFile.getText.charAt(i) == ' ') i = i - 1
+      while (i >= 0 && context.getContainingFile.getText.charAt(i) == ' ') i =
+        i - 1
       if (i >= 0) {
         var leaf1 = getLeafByOffset(i, context)
         while (leaf1 != null &&

@@ -637,7 +637,8 @@ private[ml] object RandomForest extends Logging {
 
           if (!isLeaf) {
             node.split = Some(split)
-            val childIsLeaf = (LearningNode.indexToLevel(nodeIndex) + 1) == metadata.maxDepth
+            val childIsLeaf =
+              (LearningNode.indexToLevel(nodeIndex) + 1) == metadata.maxDepth
             val leftChildIsLeaf = childIsLeaf || (stats.leftImpurity == 0.0)
             val rightChildIsLeaf = childIsLeaf || (stats.rightImpurity == 0.0)
             node.leftChild = Some(
@@ -728,7 +729,8 @@ private[ml] object RandomForest extends Logging {
     val leftWeight = leftCount / totalCount.toDouble
     val rightWeight = rightCount / totalCount.toDouble
 
-    val gain = impurity - leftWeight * leftImpurity - rightWeight * rightImpurity
+    val gain =
+      impurity - leftWeight * leftImpurity - rightWeight * rightImpurity
 
     // if information gain doesn't satisfy minimum information gain,
     // then this split is invalid, return invalid information gain stats.
@@ -1209,9 +1211,8 @@ private[ml] object RandomForest extends Logging {
           None
         }
       // Check if enough memory remains to add this node to the group.
-      val nodeMemUsage = RandomForest.aggregateSizeForNode(
-        metadata,
-        featureSubset) * 8L
+      val nodeMemUsage =
+        RandomForest.aggregateSizeForNode(metadata, featureSubset) * 8L
       if (memUsage + nodeMemUsage <= maxMemoryUsage) {
         nodeQueue.dequeue()
         mutableNodesForGroup.getOrElseUpdate(

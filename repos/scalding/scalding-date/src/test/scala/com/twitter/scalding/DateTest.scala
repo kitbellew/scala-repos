@@ -403,8 +403,8 @@ class DateTest extends WordSpec {
 
       val r = new java.util.Random()
       (0 until 100) foreach { step =>
-        val start = RichDate("2011-08-03").value.getTime + r.nextInt(
-          Int.MaxValue)
+        val start =
+          RichDate("2011-08-03").value.getTime + r.nextInt(Int.MaxValue)
         val dr = DateRange(start, start + r.nextInt(Int.MaxValue))
         val splits = bruteForce(pattern, dr, Hours(1))
         val globed = t1.globify(dr)

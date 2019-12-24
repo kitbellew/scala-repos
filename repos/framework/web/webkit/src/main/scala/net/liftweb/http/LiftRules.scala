@@ -425,7 +425,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
       val (which, invalid) = session.cometForHost(req.hostAndPath)
 
       // get the maximum requests given the browser type
-      val max = maxConcurrentRequests.vend(req) - 2 // this request and any open comet requests
+      val max =
+        maxConcurrentRequests.vend(req) - 2 // this request and any open comet requests
 
       // dump the oldest requests
       which.drop(max).foreach {
@@ -2407,9 +2408,9 @@ trait FormVendor {
     */
   def vendForm[T](implicit man: Manifest[T]): Box[(T, T => Any) => NodeSeq] = {
     val name = man.toString
-    val first
-        : Option[List[FormBuilderLocator[_]]] = requestForms.is.get(name) orElse sessionForms.is
-      .get(name)
+    val first: Option[List[FormBuilderLocator[_]]] =
+      requestForms.is.get(name) orElse sessionForms.is
+        .get(name)
 
     first match {
       case Some(x :: _) => Full(x.func.asInstanceOf[(T, T => Any) => NodeSeq])

@@ -389,7 +389,8 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       val newFlags = MODULEVAR | (if (this.isClass) PrivateLocal | SYNTHETIC
                                   else 0)
       val newInfo = thisType.memberType(accessor).finalResultType
-      val mval = newVariable(newName, accessor.pos.focus, newFlags.toLong) addAnnotation VolatileAttr
+      val mval =
+        newVariable(newName, accessor.pos.focus, newFlags.toLong) addAnnotation VolatileAttr
 
       if (this.isClass)
         mval setInfoAndEnter newInfo
@@ -1463,9 +1464,9 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       var b: java.lang.StringBuffer = null
       def loop(size: Int, sym: Symbol): Unit = {
         val symName = sym.name
-        val nSize = symName.length - (if (symName.endsWith(
-                                            nme.LOCAL_SUFFIX_STRING)) 1
-                                      else 0)
+        val nSize =
+          symName.length - (if (symName.endsWith(nme.LOCAL_SUFFIX_STRING)) 1
+                            else 0)
         if (sym.isRoot || sym.isRootPackage || sym == NoSymbol || sym.owner.isEffectiveRoot) {
           val capacity = size + nSize
           b = new java.lang.StringBuffer(capacity)
@@ -1851,7 +1852,8 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
                   infos = TypeHistory(currentPeriod + 1, info1, infos)
                   this.infos = infos
                 }
-                _validTo = currentPeriod + 1 // to enable reads from same symbol during info-transform
+                _validTo =
+                  currentPeriod + 1 // to enable reads from same symbol during info-transform
                 itr = itr.next
               }
               _validTo =
@@ -3123,7 +3125,8 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       this
     }
 
-    private val validAliasFlags = SUPERACCESSOR | PARAMACCESSOR | MIXEDIN | SPECIALIZED
+    private val validAliasFlags =
+      SUPERACCESSOR | PARAMACCESSOR | MIXEDIN | SPECIALIZED
 
     override def alias: Symbol =
       if (hasFlag(validAliasFlags)) initialize.referenced
@@ -3431,7 +3434,8 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
         tpePeriod = currentPeriod
 
       tpeCache = NoType // cycle marker
-      val noTypeParams = phase.erasedTypes && this != ArrayClass || unsafeTypeParams.isEmpty
+      val noTypeParams =
+        phase.erasedTypes && this != ArrayClass || unsafeTypeParams.isEmpty
       tpeCache = newTypeRef(
         if (noTypeParams) Nil
         else unsafeTypeParams map (_.typeConstructor)

@@ -170,8 +170,9 @@ class VectorIndexerSuite
         maxCategories: Int,
         categoricalFeatures: Set[Int]): Unit = {
       val collectedData = data.collect().map(_.getAs[Vector](0))
-      val errMsg = s"checkCategoryMaps failed for input with maxCategories=$maxCategories," +
-        s" categoricalFeatures=${categoricalFeatures.mkString(", ")}"
+      val errMsg =
+        s"checkCategoryMaps failed for input with maxCategories=$maxCategories," +
+          s" categoricalFeatures=${categoricalFeatures.mkString(", ")}"
       try {
         val vectorIndexer = getIndexer.setMaxCategories(maxCategories)
         val model = vectorIndexer.fit(data)

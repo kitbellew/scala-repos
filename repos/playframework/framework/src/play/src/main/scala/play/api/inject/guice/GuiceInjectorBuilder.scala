@@ -183,10 +183,9 @@ abstract class GuiceBuilder[Self] protected (
       binderOptions
     )
     val enabledModules = modules.map(_.disable(disabled))
-    val bindingModules = GuiceableModule.guiced(
-      environment,
-      configuration,
-      binderOptions)(enabledModules) :+ injectorModule
+    val bindingModules =
+      GuiceableModule.guiced(environment, configuration, binderOptions)(
+        enabledModules) :+ injectorModule
     val overrideModules =
       GuiceableModule.guiced(environment, configuration, binderOptions)(
         overrides)

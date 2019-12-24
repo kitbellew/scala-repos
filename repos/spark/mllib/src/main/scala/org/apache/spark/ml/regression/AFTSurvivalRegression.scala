@@ -522,7 +522,8 @@ private class AFTAggregator(parameters: BDV[Double], fitIntercept: Boolean)
     val xi = data.features.toBreeze
     val ti = data.label
     val delta = data.censor
-    val epsilon = (math.log(ti) - coefficients.dot(xi) - intercept * interceptFlag) / sigma
+    val epsilon =
+      (math.log(ti) - coefficients.dot(xi) - intercept * interceptFlag) / sigma
 
     lossSum += math.log(sigma) * delta
     lossSum += (math.exp(epsilon) - delta * epsilon)

@@ -59,7 +59,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
     */
   def isAnonymousOrLocalClass(classSym: Symbol): Boolean = {
     assert(classSym.isClass, s"not a class: $classSym")
-    val r = exitingPickler(classSym.isAnonymousClass) || !classSym.originalOwner.isClass
+    val r =
+      exitingPickler(classSym.isAnonymousClass) || !classSym.originalOwner.isClass
     if (r) {
       // phase travel necessary: after flatten, the name includes the name of outer classes.
       // if some outer name contains $lambda, a non-lambda class is considered lambda.
@@ -1101,7 +1102,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
       // TODO needed? for(ann <- m.annotations) { ann.symbol.initialize }
       val jgensig = staticForwarderGenericSignature(m, module)
       addRemoteExceptionAnnot(isRemoteClass, hasPublicBitSet(flags), m)
-      val (throws, others) = m.annotations partition (_.symbol == definitions.ThrowsClass)
+      val (throws, others) =
+        m.annotations partition (_.symbol == definitions.ThrowsClass)
       val thrownExceptions: List[String] = getExceptions(throws)
 
       val jReturnType = typeToBType(methodInfo.resultType)
@@ -1339,11 +1341,11 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
            s = f.setterIn(cls);
            if g.isPublic && !(f.name startsWith "$")) {
         // inserting $outer breaks the bean
-        fieldList = javaSimpleName(f) :: javaSimpleName(g) :: (if (s != NoSymbol)
-                                                                 javaSimpleName(
-                                                                   s)
-                                                               else
-                                                                 null) :: fieldList
+        fieldList =
+          javaSimpleName(f) :: javaSimpleName(g) :: (if (s != NoSymbol)
+                                                       javaSimpleName(s)
+                                                     else
+                                                       null) :: fieldList
       }
 
       val methodList: List[String] =

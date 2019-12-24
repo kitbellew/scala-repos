@@ -443,7 +443,8 @@ class SparkILoop(
 
     handlers.filterNot(_.importedSymbols.isEmpty).zipWithIndex foreach {
       case (handler, idx) =>
-        val (types, terms) = handler.importedSymbols partition (_.name.isTypeName)
+        val (types, terms) =
+          handler.importedSymbols partition (_.name.isTypeName)
         val imps = handler.implicitSymbols
         val found = tokens filter (handler importsSymbolNamed _)
         val typeMsg = if (types.isEmpty) "" else types.size + " types"
@@ -451,7 +452,8 @@ class SparkILoop(
         val implicitMsg = if (imps.isEmpty) "" else imps.size + " are implicit"
         val foundMsg =
           if (found.isEmpty) "" else found.mkString(" // imports: ", ", ", "")
-        val statsMsg = List(typeMsg, termMsg, implicitMsg) filterNot (_ == "") mkString ("(", ", ", ")")
+        val statsMsg =
+          List(typeMsg, termMsg, implicitMsg) filterNot (_ == "") mkString ("(", ", ", ")")
 
         intp.reporter.printMessage(
           "%2d) %-30s %s%s".format(
@@ -802,8 +804,8 @@ class SparkILoop(
     def apply(line: String): Result = line match {
       case "" => showUsage()
       case _ =>
-        val toRun = classOf[ProcessResult].getName + "(" + string2codeQuoted(
-          line) + ")"
+        val toRun =
+          classOf[ProcessResult].getName + "(" + string2codeQuoted(line) + ")"
         intp interpret toRun
         ()
     }
@@ -1059,8 +1061,8 @@ class SparkILoop(
       import scala.tools.nsc.io._
       import Properties.userHome
       import scala.compat.Platform.EOL
-      val autorun = replProps.replAutorunCode.option flatMap (f =>
-        io.File(f).safeSlurp())
+      val autorun =
+        replProps.replAutorunCode.option flatMap (f => io.File(f).safeSlurp())
       if (autorun.isDefined) intp.quietRun(autorun.get)
     })
 

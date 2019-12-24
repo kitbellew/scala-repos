@@ -34,7 +34,8 @@ private[master] class ZooKeeperLeaderElectionAgent(
     with LeaderElectionAgent
     with Logging {
 
-  val WORKING_DIR = conf.get("spark.deploy.zookeeper.dir", "/spark") + "/leader_election"
+  val WORKING_DIR =
+    conf.get("spark.deploy.zookeeper.dir", "/spark") + "/leader_election"
 
   private var zk: CuratorFramework = _
   private var leaderLatch: LeaderLatch = _

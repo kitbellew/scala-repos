@@ -579,25 +579,21 @@ object ScalaPsiUtil {
         ResolvableReferenceExpression.getDynamicNameForMethodInvocation(call)
       else if (isUpdate) "update"
       else "apply"
-    val args
-        : Seq[ScExpression] = call.argumentExpressions ++ (if (isUpdate)
-                                                             call.getContext
-                                                               .asInstanceOf[
-                                                                 ScAssignStmt]
-                                                               .getRExpression match {
-                                                               case Some(x) =>
-                                                                 Seq[
-                                                                   ScExpression](
-                                                                   x)
-                                                               case None =>
-                                                                 Seq[
-                                                                   ScExpression](
-                                                                   ScalaPsiElementFactory
-                                                                     .createExpressionFromText(
-                                                                       "{val x: Nothing = null; x}",
-                                                                       call.getManager)) //we can't to not add something => add Nothing expression
-                                                             }
-                                                           else Seq.empty)
+    val args: Seq[ScExpression] =
+      call.argumentExpressions ++ (if (isUpdate)
+                                     call.getContext
+                                       .asInstanceOf[ScAssignStmt]
+                                       .getRExpression match {
+                                       case Some(x) =>
+                                         Seq[ScExpression](x)
+                                       case None =>
+                                         Seq[ScExpression](
+                                           ScalaPsiElementFactory
+                                             .createExpressionFromText(
+                                               "{val x: Nothing = null; x}",
+                                               call.getManager)) //we can't to not add something => add Nothing expression
+                                     }
+                                   else Seq.empty)
     val (expr, exprTp, typeArgs: Seq[ScTypeElement]) =
       call.getEffectiveInvokedExpr match {
         case gen: ScGenericCall =>
@@ -1472,8 +1468,8 @@ object ScalaPsiUtil {
           fast = false,
           subst)
       case _ =>
-        val PARAM_OPTIONS
-            : Int = PsiFormatUtilBase.SHOW_NAME | PsiFormatUtilBase.SHOW_TYPE | PsiFormatUtilBase.TYPE_AFTER
+        val PARAM_OPTIONS: Int =
+          PsiFormatUtilBase.SHOW_NAME | PsiFormatUtilBase.SHOW_TYPE | PsiFormatUtilBase.TYPE_AFTER
         PsiFormatUtil.formatMethod(
           method,
           getPsiSubstitutor(subst, method.getProject, method.getResolveScope),
@@ -1850,8 +1846,9 @@ object ScalaPsiUtil {
             val startInParent: Int = from.getStartOffsetInParent
             val endInParent: Int = startInParent + from.getTextLength
             val parentText = parent.getText
-            val modifiedParentText = parentText.substring(0, startInParent) + from.getText + parentText
-              .substring(endInParent)
+            val modifiedParentText =
+              parentText.substring(0, startInParent) + from.getText + parentText
+                .substring(endInParent)
             val modifiedParent = ScalaPsiElementFactory
               .createExpressionFromText(modifiedParentText, parent.getContext)
             modifiedParent match {
@@ -2557,8 +2554,9 @@ object ScalaPsiUtil {
               case any => any
             }
             //must have exactly one abstract member and SAM must be monomorphic
-            val valid = abst.length == 1 && !abst.head.hasTypeParameters && constructorValidForSAM(
-              cl.getConstructors)
+            val valid =
+              abst.length == 1 && !abst.head.hasTypeParameters && constructorValidForSAM(
+                cl.getConstructors)
             if (valid) {
               //need to generate ScType for Java method
               val method = abst.head

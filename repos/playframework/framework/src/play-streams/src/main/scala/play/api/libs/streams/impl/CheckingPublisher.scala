@@ -35,8 +35,8 @@ private[streams] abstract class CheckingPublisher[T] extends Publisher[T] {
           new IllegalStateException(
             "Subscriber is already subscribed to this Publisher"))
       } else {
-        val newSubscriptions
-            : List[SubscriptionHandle[_]] = handle :: oldSubscriptions
+        val newSubscriptions: List[SubscriptionHandle[_]] =
+          handle :: oldSubscriptions
         if (subscriptions.compareAndSet(oldSubscriptions, newSubscriptions)) {
           handle.start()
         } else addSubscription()

@@ -2324,9 +2324,10 @@ object SparkContext extends Logging {
 
         if (activeContext.get() != null) {
           val ctx = activeContext.get()
-          val errMsg = "Only one SparkContext may be running in this JVM (see SPARK-2243)." +
-            " To ignore this error, set spark.driver.allowMultipleContexts = true. " +
-            s"The currently running SparkContext was created at:\n${ctx.creationSite.longForm}"
+          val errMsg =
+            "Only one SparkContext may be running in this JVM (see SPARK-2243)." +
+              " To ignore this error, set spark.driver.allowMultipleContexts = true. " +
+              s"The currently running SparkContext was created at:\n${ctx.creationSite.longForm}"
           val exception = new SparkException(errMsg)
           if (allowMultipleContexts) {
             logWarning(

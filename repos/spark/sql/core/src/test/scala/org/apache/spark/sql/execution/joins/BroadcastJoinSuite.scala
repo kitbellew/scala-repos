@@ -65,8 +65,8 @@ class BroadcastJoinSuite extends QueryTest with BeforeAndAfterAll {
       val df2 =
         sqlContext.createDataFrame(Seq((1, "1"), (2, "2"))).toDF("key", "value")
       // Comparison at the end is for broadcast left semi join
-      val joinExpression = df1("key") === df2("key") && df1("value") > df2(
-        "value")
+      val joinExpression =
+        df1("key") === df2("key") && df1("value") > df2("value")
       val df3 = df1.join(broadcast(df2), joinExpression, joinType)
       val plan =
         EnsureRequirements(sqlContext.sessionState.conf)

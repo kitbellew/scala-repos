@@ -62,7 +62,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
     override def compare(x: InlineRequest, y: InlineRequest): Int = {
       val xCs = x.callsite
       val yCs = y.callsite
-      val cls = xCs.callsiteClass.internalName compareTo yCs.callsiteClass.internalName
+      val cls =
+        xCs.callsiteClass.internalName compareTo yCs.callsiteClass.internalName
       if (cls != 0) return cls
 
       val name = xCs.callsiteMethod.name compareTo yCs.callsiteMethod.name
@@ -586,7 +587,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
         callsiteMethod = callsiteMethod,
         callsiteClass = callsiteClass,
         argInfos = argInfos,
-        callsiteStackHeight = callsiteStackHeight + originalCallsite.callsiteStackHeight
+        callsiteStackHeight =
+          callsiteStackHeight + originalCallsite.callsiteStackHeight
       )
       originalCallsite.inlinedClones += ClonedCallsite(newCallsite, callsite)
       callGraph.addCallsite(newCallsite)
@@ -597,7 +599,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
         val newIndy =
           instructionMap(originalClosureInit.lambdaMetaFactoryCall.indy)
             .asInstanceOf[InvokeDynamicInsnNode]
-        val capturedArgInfos = originalClosureInit.capturedArgInfos flatMap mapArgInfo
+        val capturedArgInfos =
+          originalClosureInit.capturedArgInfos flatMap mapArgInfo
         val newClosureInit = ClosureInstantiation(
           originalClosureInit.lambdaMetaFactoryCall.copy(indy = newIndy),
           callsiteMethod,

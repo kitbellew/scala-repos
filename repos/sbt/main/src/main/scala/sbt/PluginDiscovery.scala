@@ -45,13 +45,14 @@ object PluginDiscovery {
       "sbt.plugins.JUnitXmlReportPlugin" -> sbt.plugins.JUnitXmlReportPlugin
     )
     val detectedAutoPugins = discover[AutoPlugin](AutoPlugins)
-    val allAutoPlugins = (defaultAutoPlugins ++ detectedAutoPugins.modules) map {
-      case (name, value) =>
-        DetectedAutoPlugin(
-          name,
-          value,
-          sbt.Plugins.hasAutoImportGetter(value, loader))
-    }
+    val allAutoPlugins =
+      (defaultAutoPlugins ++ detectedAutoPugins.modules) map {
+        case (name, value) =>
+          DetectedAutoPlugin(
+            name,
+            value,
+            sbt.Plugins.hasAutoImportGetter(value, loader))
+      }
     new DetectedPlugins(
       discover[Plugin](Plugins),
       allAutoPlugins,

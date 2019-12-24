@@ -417,7 +417,8 @@ object ResolveUtils {
                 }
               }
             } else if (am.isProtected) { //todo: it's wrong if reference after not appropriate class type
-              val withCompanion = am.access != ScAccessModifier.Type.THIS_PROTECTED
+              val withCompanion =
+                am.access != ScAccessModifier.Type.THIS_PROTECTED
               val ref = am.getReference
               if (ref != null) {
                 val bind = ref.resolve

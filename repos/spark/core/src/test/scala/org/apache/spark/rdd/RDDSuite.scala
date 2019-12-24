@@ -476,7 +476,8 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
   test("coalesced RDDs with locality, fail first pass") {
     val initialPartitions = 1000
     val targetLen = 50
-    val couponCount = 2 * (math.log(targetLen) * targetLen + targetLen + 0.5).toInt // = 492
+    val couponCount =
+      2 * (math.log(targetLen) * targetLen + targetLen + 0.5).toInt // = 492
 
     val blocks = (1 to initialPartitions).map { i =>
       (i, List(if (i > couponCount) "m2" else "m1"))

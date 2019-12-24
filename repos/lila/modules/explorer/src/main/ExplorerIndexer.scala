@@ -27,7 +27,8 @@ private final class ExplorerIndexer(
   private val separator = "\n\n\n"
   private val datePattern = "yyyy-MM-dd"
   private val dateFormatter = DateTimeFormat forPattern datePattern
-  private val dateTimeFormatter = DateTimeFormat forPattern s"$datePattern HH:mm"
+  private val dateTimeFormatter =
+    DateTimeFormat forPattern s"$datePattern HH:mm"
   private val pgnDateFormat = DateTimeFormat forPattern "yyyy.MM.dd";
   private val endPointUrl = s"$endpoint/import/lichess"
   private val massImportEndPointUrl = s"$massImportEndpoint/import/lichess"
@@ -66,7 +67,8 @@ private final class ExplorerIndexer(
               .put(pairs.map(_._2) mkString separator)
               .flatMap {
                 case res if res.status == 200 =>
-                  val date = pairs.headOption.map(_._1.createdAt) ?? dateTimeFormatter.print
+                  val date =
+                    pairs.headOption.map(_._1.createdAt) ?? dateTimeFormatter.print
                   val nb = pairs.size
                   val gameMs = (nowMillis - millis) / nb.toDouble
                   logger.info(

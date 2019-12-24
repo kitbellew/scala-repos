@@ -232,9 +232,8 @@ class HypothesisTestSuite extends SparkFunSuite with MLlibTestSparkContext {
     val referenceStat3 = ksTest.kolmogorovSmirnovStatistic(
       new ExponentialDistribution(0.2),
       sampledExp.collect())
-    val referencePVal3 = 1 - ksTest.cdf(
-      referenceStat3,
-      sampledNorm.count().toInt)
+    val referencePVal3 =
+      1 - ksTest.cdf(referenceStat3, sampledNorm.count().toInt)
     // verify vs apache math commons ks test
     assert(result3.statistic ~== referenceStat3 relTol 1e-4)
     assert(result3.pValue ~== referencePVal3 relTol 1e-4)

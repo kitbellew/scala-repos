@@ -95,12 +95,12 @@ trait CommentFactoryBase { this: MemberLookupBase =>
         }
     }
 
-    override val shortDescription
-        : Option[Text] = shortDescription0.lastOption collect {
-      case Body(List(Paragraph(Chain(List(Summary(Text(e)))))))
-          if !e.trim.contains("\n") =>
-        Text(e)
-    }
+    override val shortDescription: Option[Text] =
+      shortDescription0.lastOption collect {
+        case Body(List(Paragraph(Chain(List(Summary(Text(e)))))))
+            if !e.trim.contains("\n") =>
+          Text(e)
+      }
 
     override val hideImplicitConversions: List[String] =
       hideImplicitConversions0 flatMap {

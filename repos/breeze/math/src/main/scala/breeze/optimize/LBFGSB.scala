@@ -212,8 +212,8 @@ class LBFGSB(
     oldT += dtMin
 
     for (sortIdx <- i until n) {
-      xCauchy(sortedIndeces(sortIdx)) = x(sortedIndeces(sortIdx)) + oldT * d(
-        sortedIndeces(sortIdx))
+      xCauchy(sortedIndeces(sortIdx)) =
+        x(sortedIndeces(sortIdx)) + oldT * d(sortedIndeces(sortIdx))
     }
 
     c += p :* dtMin

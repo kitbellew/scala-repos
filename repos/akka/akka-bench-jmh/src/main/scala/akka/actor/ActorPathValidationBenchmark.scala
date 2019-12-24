@@ -32,7 +32,8 @@ import org.openjdk.jmh.annotations.Warmup
 class ActorPathValidationBenchmark {
 
   final val a = "actor-1"
-  final val s = "687474703a2f2f74686566727569742e636f6d2f26683d37617165716378357926656e" * 100
+  final val s =
+    "687474703a2f2f74686566727569742e636f6d2f26683d37617165716378357926656e" * 100
 
   final val ElementRegex =
     """(?:[-\w:@&=+,.!~*'_;]|%\p{XDigit}{2})(?:[-\w:@&=+,.!~*'$_;]|%\p{XDigit}{2})*""".r

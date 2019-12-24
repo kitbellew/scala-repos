@@ -1437,7 +1437,8 @@ case class ScalaUDF(
       ctx: CodegenContext,
       index: Int): String = {
     val converterClassName = classOf[Any => Any].getName
-    val typeConvertersClassName = CatalystTypeConverters.getClass.getName + ".MODULE$"
+    val typeConvertersClassName =
+      CatalystTypeConverters.getClass.getName + ".MODULE$"
     val expressionClassName = classOf[Expression].getName
     val scalaUDFClassName = classOf[ScalaUDF].getName
 
@@ -1459,7 +1460,8 @@ case class ScalaUDF(
 
     val scalaUDFClassName = classOf[ScalaUDF].getName
     val converterClassName = classOf[Any => Any].getName
-    val typeConvertersClassName = CatalystTypeConverters.getClass.getName + ".MODULE$"
+    val typeConvertersClassName =
+      CatalystTypeConverters.getClass.getName + ".MODULE$"
     val expressionClassName = classOf[Expression].getName
 
     // Generate codes used to convert the returned value of user-defined functions to Catalyst type

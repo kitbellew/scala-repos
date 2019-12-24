@@ -220,8 +220,8 @@ private[cluster] final case class ClusterHeartbeatSenderState(
     oldReceiversNowUnreachable: Set[UniqueAddress],
     failureDetector: FailureDetectorRegistry[Address]) {
 
-  val activeReceivers
-      : Set[UniqueAddress] = ring.myReceivers union oldReceiversNowUnreachable
+  val activeReceivers: Set[UniqueAddress] =
+    ring.myReceivers union oldReceiversNowUnreachable
 
   def selfAddress = ring.selfAddress
 
@@ -242,7 +242,8 @@ private[cluster] final case class ClusterHeartbeatSenderState(
     failureDetector remove node.address
     if (newState.oldReceiversNowUnreachable(node))
       newState
-        .copy(oldReceiversNowUnreachable = newState.oldReceiversNowUnreachable - node)
+        .copy(oldReceiversNowUnreachable =
+          newState.oldReceiversNowUnreachable - node)
     else
       newState
   }

@@ -62,7 +62,8 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
       : mutable.Map[String, PartitionModificationsListener] = mutable.Map.empty
   private val stateChangeLogger = KafkaController.stateChangeLogger
 
-  this.logIdent = "[Partition state machine on Controller " + controllerId + "]: "
+  this.logIdent =
+    "[Partition state machine on Controller " + controllerId + "]: "
 
   /**
     * Invoked on successful controller election. First registers a topic change listener since that triggers all
@@ -582,7 +583,8 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
     * This is the zookeeper listener that triggers all the state transitions for a partition
     */
   class TopicChangeListener extends IZkChildListener with Logging {
-    this.logIdent = "[TopicChangeListener on Controller " + controller.config.brokerId + "]: "
+    this.logIdent =
+      "[TopicChangeListener on Controller " + controller.config.brokerId + "]: "
 
     @throws(classOf[Exception])
     def handleChildChange(
@@ -633,7 +635,8 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
     * 2. If there are topics to be deleted, it signals the delete topic thread
     */
   class DeleteTopicsListener() extends IZkChildListener with Logging {
-    this.logIdent = "[DeleteTopicsListener on " + controller.config.brokerId + "]: "
+    this.logIdent =
+      "[DeleteTopicsListener on " + controller.config.brokerId + "]: "
     val zkUtils = controllerContext.zkUtils
 
     /**
@@ -700,7 +703,8 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
       extends IZkDataListener
       with Logging {
 
-    this.logIdent = "[AddPartitionsListener on " + controller.config.brokerId + "]: "
+    this.logIdent =
+      "[AddPartitionsListener on " + controller.config.brokerId + "]: "
 
     @throws(classOf[Exception])
     def handleDataChange(dataPath: String, data: Object) {

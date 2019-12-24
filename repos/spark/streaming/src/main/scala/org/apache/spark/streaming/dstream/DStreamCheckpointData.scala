@@ -143,12 +143,13 @@ private[streaming] class DStreamCheckpointData[T: ClassTag](dstream: DStream[T])
           if (dstream.context.graph.checkpointInProgress) {
             oos.defaultWriteObject()
           } else {
-            val msg = "Object of " + this.getClass.getName + " is being serialized " +
-              " possibly as a part of closure of an RDD operation. This is because " +
-              " the DStream object is being referred to from within the closure. " +
-              " Please rewrite the RDD operation inside this DStream to avoid this. " +
-              " This has been enforced to avoid bloating of Spark tasks " +
-              " with unnecessary objects."
+            val msg =
+              "Object of " + this.getClass.getName + " is being serialized " +
+                " possibly as a part of closure of an RDD operation. This is because " +
+                " the DStream object is being referred to from within the closure. " +
+                " Please rewrite the RDD operation inside this DStream to avoid this. " +
+                " This has been enforced to avoid bloating of Spark tasks " +
+                " with unnecessary objects."
             throw new java.io.NotSerializableException(msg)
           }
         }

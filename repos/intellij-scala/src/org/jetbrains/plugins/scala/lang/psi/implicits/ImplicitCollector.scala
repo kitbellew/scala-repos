@@ -412,7 +412,8 @@ class ImplicitCollector(
               return None
             if (!fun.hasTypeParameters && withLocalTypeInference) return None
 
-            val oneImplicit = fun.effectiveParameterClauses.length == 1 && fun.effectiveParameterClauses.head.isImplicit
+            val oneImplicit =
+              fun.effectiveParameterClauses.length == 1 && fun.effectiveParameterClauses.head.isImplicit
             //to avoid checking implicit functions in case of simple implicit parameter search
             if (!oneImplicit && fun.effectiveParameterClauses.nonEmpty) {
               clazz match {
@@ -594,7 +595,8 @@ class ImplicitCollector(
                                   case (
                                       r1: ScalaResolveResult,
                                       r2: ScalaResolveResult) =>
-                                    r1.copy(importsUsed = r1.importsUsed ++ r2.importsUsed)
+                                    r1.copy(importsUsed =
+                                      r1.importsUsed ++ r2.importsUsed)
                                 }
                               }
                               Some(

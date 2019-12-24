@@ -169,7 +169,8 @@ trait DiagramDirectiveParser {
   // TODO: This could certainly be improved -- right now the only regex is *, but there's no way to match a single identifier
   private val NodeSpecRegex = "\\\"[A-Za-z\\*][A-Za-z\\.\\*]*\\\""
   private val NodeSpecPattern = Pattern.compile(NodeSpecRegex)
-  private val EdgeSpecRegex = "\\(" + NodeSpecRegex + "\\s*\\->\\s*" + NodeSpecRegex + "\\)"
+  private val EdgeSpecRegex =
+    "\\(" + NodeSpecRegex + "\\s*\\->\\s*" + NodeSpecRegex + "\\)"
   // And the composed regexes:
   private val HideNodesRegex = new Regex(
     "^hideNodes(\\s*" + NodeSpecRegex + ")+$")

@@ -112,11 +112,12 @@ trait TraceSymbolActivity {
     if (prevOwners.nonEmpty) {
       showHeader("prev owners", "symbol")
       showMapFreq(prevOwners) { k =>
-        val owners = (((allSymbols(k).owner.id, NoPhase)) :: prevOwners(k)) map {
-          case (oid, NoPhase) => "-> owned by " + ownerStr(oid)
-          case (oid, ph) =>
-            "-> owned by %s (until %s)".format(ownerStr(oid), ph)
-        }
+        val owners =
+          (((allSymbols(k).owner.id, NoPhase)) :: prevOwners(k)) map {
+            case (oid, NoPhase) => "-> owned by " + ownerStr(oid)
+            case (oid, ph) =>
+              "-> owned by %s (until %s)".format(ownerStr(oid), ph)
+          }
         signature(k) :: owners mkString "\n                "
       }
     }

@@ -903,8 +903,9 @@ class RecordTests {
         f)
     }
 
-    val rs = ("first" ->> Some(2)) :: ("second" ->> Some(true)) :: ("third" ->> Option
-      .empty[String]) :: HNil
+    val rs =
+      ("first" ->> Some(2)) :: ("second" ->> Some(true)) :: ("third" ->> Option
+        .empty[String]) :: HNil
 
     {
       val f = rs.fields
@@ -944,8 +945,9 @@ class RecordTests {
       assertTypedEquals(Map[Symbol, Any]('i -> 23, 's -> "foo", 'b -> true), m)
     }
 
-    val rs = ("first" ->> Some(2)) :: ("second" ->> Some(true)) :: ("third" ->> Option
-      .empty[String]) :: HNil
+    val rs =
+      ("first" ->> Some(2)) :: ("second" ->> Some(true)) :: ("third" ->> Option
+        .empty[String]) :: HNil
 
     {
       val m = rs.toMap

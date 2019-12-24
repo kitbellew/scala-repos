@@ -1187,8 +1187,9 @@ object ScalaPsiElementFactory {
           case (true, Some(scType)) =>
             var text = ScType.canonicalText(scType)
             if (text == "_root_.java.lang.Object") text = "AnyRef"
-            val needWhitespace = method.paramClauses.clauses.isEmpty && method.typeParameters.isEmpty && ScalaNamesUtil
-              .isIdentifier(method.name + ":")
+            val needWhitespace =
+              method.paramClauses.clauses.isEmpty && method.typeParameters.isEmpty && ScalaNamesUtil
+                .isIdentifier(method.name + ":")
             val colon = if (needWhitespace) " : " else ": "
             s"$colon$text = $body"
           case _ =>
@@ -1317,7 +1318,8 @@ object ScalaPsiElementFactory {
     val qArray = qualifiedName.split("[.]")
     val pArray = packageName.split("[.]")
     var i = 0
-    while (i < qArray.length - 1 && i < pArray.length && qArray(i) == pArray(i)) i = i + 1
+    while (i < qArray.length - 1 && i < pArray.length && qArray(i) == pArray(i)) i =
+      i + 1
     var res = ""
     while (i < qArray.length) {
       res = res + qArray(i)

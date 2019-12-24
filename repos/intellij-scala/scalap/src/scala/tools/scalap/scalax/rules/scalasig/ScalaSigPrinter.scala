@@ -311,8 +311,8 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
   }
 
   private def methodSymbolAsMethodParam(ms: MethodSymbol): String = {
-    val nameAndType = processName(ms.name) + " : " + toString(ms.infoType)(
-      TypeFlags(true))
+    val nameAndType =
+      processName(ms.name) + " : " + toString(ms.infoType)(TypeFlags(true))
     val default = if (ms.hasDefault) " = { /* compiled code */ }" else ""
     nameAndType + default
   }

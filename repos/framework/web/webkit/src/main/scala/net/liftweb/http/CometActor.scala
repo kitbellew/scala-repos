@@ -638,8 +638,8 @@ trait BaseCometActor
 
   def defaultPrefix: Box[String] = Empty
 
-  private lazy val _defaultPrefix
-      : String = (defaultPrefix or _name) openOr "comet"
+  private lazy val _defaultPrefix: String =
+    (defaultPrefix or _name) openOr "comet"
 
   /**
     * Set to 'true' if we should run "render" on every page load

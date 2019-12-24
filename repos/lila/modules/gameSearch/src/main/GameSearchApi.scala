@@ -94,7 +94,8 @@ final class GameSearchApi(client: ESClient) extends SearchReadApi[Game, Query] {
 
   private val datePattern = "yyyy-MM-dd"
   private val dateFormatter = DateTimeFormat forPattern datePattern
-  private val dateTimeFormatter = DateTimeFormat forPattern s"$datePattern HH:mm"
+  private val dateTimeFormatter =
+    DateTimeFormat forPattern s"$datePattern HH:mm"
 
   private def parseDate(str: String): Option[DateTime] =
     Try(dateFormatter parseDateTime str).toOption
@@ -125,7 +126,8 @@ final class GameSearchApi(client: ESClient) extends SearchReadApi[Game, Query] {
             client.storeBulk(games map { g =>
               Id(g.id) -> toDoc(g, analysedIds(g.id))
             }) inject {
-              val date = games.headOption.map(_.createdAt) ?? dateTimeFormatter.print
+              val date =
+                games.headOption.map(_.createdAt) ?? dateTimeFormatter.print
               val gameMs = (nowMillis - millis) / batchSize.toDouble
               logger.info(s"$date ${(1000 / gameMs).toInt} games/s")
               nowMillis

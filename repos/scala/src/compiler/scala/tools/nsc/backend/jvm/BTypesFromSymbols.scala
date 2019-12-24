@@ -295,8 +295,8 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
       else parents
     }
 
-    val allParents = classParents ++ classSym.annotations.flatMap(
-      newParentForAnnotation)
+    val allParents =
+      classParents ++ classSym.annotations.flatMap(newParentForAnnotation)
 
     // We keep the superClass when computing minimizeParents to eliminate more interfaces.
     // Example: T can be eliminated from D
@@ -680,7 +680,8 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
           ClassInfo(
             superClass = Some(ObjectRef),
             interfaces = Nil,
-            flags = asm.Opcodes.ACC_SUPER | asm.Opcodes.ACC_PUBLIC | asm.Opcodes.ACC_FINAL,
+            flags =
+              asm.Opcodes.ACC_SUPER | asm.Opcodes.ACC_PUBLIC | asm.Opcodes.ACC_FINAL,
             nestedClasses = nested,
             nestedInfo = None,
             inlineInfo = EmptyInlineInfo.copy(isEffectivelyFinal = true)

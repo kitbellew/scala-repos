@@ -235,7 +235,8 @@ trait FindMembers {
         val member = others.sym
         if (!isNewMember(member, sym))
           isNew = false
-        others = members lookupNextEntry others // next existing member with the same name.
+        others =
+          members lookupNextEntry others // next existing member with the same name.
       }
       if (isNew) members.enter(sym)
     }

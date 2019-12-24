@@ -100,7 +100,8 @@ object AndroidFacetDataService {
       configuration.myProGuardCfgFiles = new util.ArrayList[String]()
 
       if (data.proguardConfig.nonEmpty) {
-        val proguardFile = new File(module.getProject.getBasePath) / "proguard-sbt.txt"
+        val proguardFile =
+          new File(module.getProject.getBasePath) / "proguard-sbt.txt"
         FileUtil.writeToFile(
           proguardFile,
           data.proguardConfig.mkString(SystemProperties.getLineSeparator))

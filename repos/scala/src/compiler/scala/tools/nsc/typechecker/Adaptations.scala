@@ -88,10 +88,11 @@ trait Adaptations {
               "Adaptation of argument list by inserting () has been removed.",
               showAdaptation = false))
         else {
-          val msg = "Adaptation of argument list by inserting () has been deprecated: " + (if (isLeakyTarget)
-                                                                                             "leaky (Object-receiving) target makes this especially dangerous."
-                                                                                           else
-                                                                                             "this is unlikely to be what you want.")
+          val msg =
+            "Adaptation of argument list by inserting () has been deprecated: " + (if (isLeakyTarget)
+                                                                                     "leaky (Object-receiving) target makes this especially dangerous."
+                                                                                   else
+                                                                                     "this is unlikely to be what you want.")
           context.deprecationWarning(t.pos, t.symbol, adaptWarningMessage(msg))
         }
       } else if (settings.warnAdaptedArgs)

@@ -149,7 +149,8 @@ object ScalaMoveUtil {
         ASSOCIATIONS_KEY,
         if (associations.isEmpty) null else associations.get(0))
     }
-    val alreadyMoved = getMoveDestination(aClass) == aClass.getContainingFile.getContainingDirectory
+    val alreadyMoved =
+      getMoveDestination(aClass) == aClass.getContainingFile.getContainingDirectory
     aClass.getContainingFile match {
       case file: ScalaFile if !alreadyMoved =>
         collectData(aClass, file)

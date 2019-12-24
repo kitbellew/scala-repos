@@ -140,7 +140,8 @@ object PlayForkRun extends AutoPlugin {
       monitoredFiles = PlayKeys.playMonitoredFiles.value,
       targetDirectory = target.value,
       pollInterval = pollInterval.value,
-      notifyKey = thisProjectRef.value.project + "/" + playForkNotifyStart.key.label,
+      notifyKey =
+        thisProjectRef.value.project + "/" + playForkNotifyStart.key.label,
       reloadKey = thisProjectRef.value.project + "/" + playForkReload.key.label,
       compileTimeout = playForkCompileTimeout.value.toMillis,
       mainClass = (mainClass in (Compile, run)).value.get

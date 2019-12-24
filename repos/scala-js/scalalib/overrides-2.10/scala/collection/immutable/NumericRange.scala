@@ -251,7 +251,8 @@ object NumericRange {
         *  overflow turn up as an empty range.
         */
       // The second condition contradicts an empty result.
-      val isOverflow = longCount == 0 && num.lt(num.plus(start, step), end) == upward
+      val isOverflow =
+        longCount == 0 && num.lt(num.plus(start, step), end) == upward
 
       if (longCount > scala.Int.MaxValue || longCount < 0L || isOverflow) {
         val word = if (isInclusive) "to" else "until"

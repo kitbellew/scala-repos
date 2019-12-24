@@ -805,21 +805,21 @@ object Test extends Properties("HtmlFactory") {
     implicit class AssertionAwareNode(node: scala.xml.NodeSeq) {
 
       def assertTypeLink(expectedUrl: String): Boolean = {
-        val linkElement
-            : NodeSeq = node \\ "div" \@ ("id", "definition") \\ "span" \@ ("class", "permalink") \ "a"
+        val linkElement: NodeSeq =
+          node \\ "div" \@ ("id", "definition") \\ "span" \@ ("class", "permalink") \ "a"
         linkElement \@ "href" == expectedUrl
       }
 
       def assertMemberLink(
           group: String)(memberName: String, expectedUrl: String): Boolean = {
-        val linkElement
-            : NodeSeq = node \\ "div" \@ ("id", group) \\ "li" \@ ("name", memberName) \\ "span" \@ ("class", "permalink") \ "a"
+        val linkElement: NodeSeq =
+          node \\ "div" \@ ("id", group) \\ "li" \@ ("name", memberName) \\ "span" \@ ("class", "permalink") \ "a"
         linkElement \@ "href" == expectedUrl
       }
 
       def assertValuesLink(memberName: String, expectedUrl: String): Boolean = {
-        val linkElement
-            : NodeSeq = node \\ "div" \@ ("class", "values members") \\ "li" \@ ("name", memberName) \\ "span" \@ ("class", "permalink") \ "a"
+        val linkElement: NodeSeq =
+          node \\ "div" \@ ("class", "values members") \\ "li" \@ ("name", memberName) \\ "span" \@ ("class", "permalink") \ "a"
         linkElement \@ "href" == expectedUrl
       }
 

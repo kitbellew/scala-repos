@@ -180,11 +180,10 @@ class MarathonHealthCheckManager @Inject() (
 
         // add missing health checks for the current
         // reconcile all running versions of the current app
-        val appVersionsWithoutHealthChecks
-            : Set[Timestamp] = activeAppVersions -- healthCheckAppVersions
-        val res
-            : Iterator[Future[Unit]] = appVersionsWithoutHealthChecks.iterator map {
-          version =>
+        val appVersionsWithoutHealthChecks: Set[Timestamp] =
+          activeAppVersions -- healthCheckAppVersions
+        val res: Iterator[Future[Unit]] =
+          appVersionsWithoutHealthChecks.iterator map { version =>
             appRepository.app(app.id, version) map {
               case None =>
                 // FIXME: If the app version of the task is not available anymore, no health check is started.
@@ -198,7 +197,7 @@ class MarathonHealthCheckManager @Inject() (
                 log.info(s"addAllFor [$appId] version [$version]")
                 addAllFor(appVersion)
             }
-        }
+          }
         Future.sequence(res) map { _ =>
           ()
         }

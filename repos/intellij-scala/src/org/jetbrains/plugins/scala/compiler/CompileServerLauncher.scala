@@ -139,8 +139,9 @@ class CompileServerLauncher extends ApplicationComponent {
             Seq(s"-Dshutdown.delay=$shutdownDelay")
           } else Nil
 
-        val commands = jdk.executable.canonicalPath +: bootclasspathArg ++: "-cp" +: classpath +: jvmParameters ++: shutdownDelayArg ++:
-          ngRunnerFqn +: freePort.toString +: id.toString +: Nil
+        val commands =
+          jdk.executable.canonicalPath +: bootclasspathArg ++: "-cp" +: classpath +: jvmParameters ++: shutdownDelayArg ++:
+            ngRunnerFqn +: freePort.toString +: id.toString +: Nil
 
         val builder = new ProcessBuilder(commands.asJava)
 
@@ -282,8 +283,9 @@ object CompileServerLauncher {
         val useProjectHome = ScalaCompileServerSettings
           .getInstance()
           .USE_PROJECT_HOME_AS_WORKING_DIR
-        val workingDirChanged = useProjectHome && projectHome(project) != serverInstance
-          .map(_.workingDir)
+        val workingDirChanged =
+          useProjectHome && projectHome(project) != serverInstance
+            .map(_.workingDir)
         workingDirChanged || instance.bootClasspath != withTimestamps(
           bootClasspath(project))
     }

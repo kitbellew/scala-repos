@@ -74,7 +74,8 @@ final class DonationApi(
   }
 
   def progress: Fu[Progress] = {
-    val from = DateTime.now withDayOfWeek 1 withHourOfDay 0 withMinuteOfHour 0 withSecondOfMinute 0
+    val from =
+      DateTime.now withDayOfWeek 1 withHourOfDay 0 withMinuteOfHour 0 withSecondOfMinute 0
     val to = from plusWeeks 1
     coll
       .find(

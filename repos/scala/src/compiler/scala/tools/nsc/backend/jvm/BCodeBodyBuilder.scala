@@ -335,7 +335,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
         case app @ ApplyDynamic(
               qual,
               Literal(Constant(boostrapMethodRef: Symbol)) :: staticAndDynamicArgs) =>
-          val numStaticArgs = boostrapMethodRef.paramss.head.size - 3 /*JVM provided args*/
+          val numStaticArgs =
+            boostrapMethodRef.paramss.head.size - 3 /*JVM provided args*/
           val (staticArgs, dynamicArgs) =
             staticAndDynamicArgs.splitAt(numStaticArgs)
           val boostrapDescriptor = staticHandleFromSymbol(boostrapMethodRef)
@@ -708,7 +709,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
               argsSize match {
                 case 1 => bc newarray elemKind
                 case _ =>
-                  val descr = ('[' * argsSize) + elemKind.descriptor // denotes the same as: arrayN(elemKind, argsSize).descriptor
+                  val descr =
+                    ('[' * argsSize) + elemKind.descriptor // denotes the same as: arrayN(elemKind, argsSize).descriptor
                   mnode.visitMultiANewArrayInsn(descr, argsSize)
               }
 
@@ -1475,7 +1477,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
        * not using the rich equality is possible (their own equals method will do ok.)
        */
       val mustUseAnyComparator: Boolean = {
-        val areSameFinals = l.tpe.isFinalType && r.tpe.isFinalType && (l.tpe =:= r.tpe)
+        val areSameFinals =
+          l.tpe.isFinalType && r.tpe.isFinalType && (l.tpe =:= r.tpe)
         !areSameFinals && platform.isMaybeBoxed(l.tpe.typeSymbol) && platform
           .isMaybeBoxed(r.tpe.typeSymbol)
       }
@@ -1580,7 +1583,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
       val samName = sam.name.toString
       val samMethodType = methodBTypeFromSymbol(sam).toASMType
 
-      val flags = java.lang.invoke.LambdaMetafactory.FLAG_SERIALIZABLE | java.lang.invoke.LambdaMetafactory.FLAG_MARKERS
+      val flags =
+        java.lang.invoke.LambdaMetafactory.FLAG_SERIALIZABLE | java.lang.invoke.LambdaMetafactory.FLAG_MARKERS
 
       val ScalaSerializable = classBTypeFromSymbol(
         definitions.SerializableClass).toASMType

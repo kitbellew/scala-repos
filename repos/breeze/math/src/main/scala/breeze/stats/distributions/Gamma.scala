@@ -226,7 +226,8 @@ object Gamma
       val SufficientStatistic(n, meanOfLogs, mean) = stats
       def calculate(x: (Double, Double)) = {
         val (a, b) = x
-        val obj = -n * ((a - 1) * meanOfLogs - lgamma(a) - a * log(b) - mean / b)
+        val obj =
+          -n * ((a - 1) * meanOfLogs - lgamma(a) - a * log(b) - mean / b)
         val gradA = -n * (meanOfLogs - digamma(a) - log(b))
         val gradB = -n * (-a / b + mean / b / b)
         (obj, (gradA, gradB))

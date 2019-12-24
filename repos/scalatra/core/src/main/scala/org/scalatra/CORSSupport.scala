@@ -141,7 +141,8 @@ trait CorsSupport extends Handler with Initializable { self: ScalatraBase ⇒
       response.headers(AccessControlMaxAgeHeader) =
         corsConfig.preflightMaxAge.toString
     // 5.2.9
-    response.headers(AccessControlAllowMethodsHeader) = corsConfig.allowedMethods mkString ","
+    response.headers(AccessControlAllowMethodsHeader) =
+      corsConfig.allowedMethods mkString ","
     // 5.2.10
     val rh = corsConfig.allowedHeaders ++ request
       .getHeaders(AccessControlRequestHeadersHeader)
@@ -199,7 +200,8 @@ trait CorsSupport extends Handler with Initializable { self: ScalatraBase ⇒
     val matchesOrigin = originMatches
     val methodAllowed = allowsMethod
     val allowsHeaders = headersAreAllowed
-    val result = isCors && validRoute && isPreflight && enabled && matchesOrigin && methodAllowed && allowsHeaders
+    val result =
+      isCors && validRoute && isPreflight && enabled && matchesOrigin && methodAllowed && allowsHeaders
     result
   }
 

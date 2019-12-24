@@ -70,7 +70,8 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
 
   def addCallsite(callsite: Callsite): Unit = {
     val methodCallsites = callsites(callsite.callsiteMethod)
-    callsites(callsite.callsiteMethod) = methodCallsites + (callsite.callsiteInstruction -> callsite)
+    callsites(callsite.callsiteMethod) =
+      methodCallsites + (callsite.callsiteInstruction -> callsite)
   }
 
   def containsCallsite(callsite: Callsite): Boolean =
@@ -88,7 +89,8 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
 
   def addClosureInstantiation(closureInit: ClosureInstantiation) = {
     val methodClosureInits = closureInstantiations(closureInit.ownerMethod)
-    closureInstantiations(closureInit.ownerMethod) = methodClosureInits + (closureInit.lambdaMetaFactoryCall.indy -> closureInit)
+    closureInstantiations(closureInit.ownerMethod) =
+      methodClosureInits + (closureInit.lambdaMetaFactoryCall.indy -> closureInit)
   }
 
   def addClass(classNode: ClassNode): Unit = {
@@ -349,7 +351,8 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
       calleeDeclarationClassBType.info.orThrow.inlineInfo.methodInfos
         .get(methodSignature) match {
         case Some(methodInlineInfo) =>
-          val canInlineFromSource = compilerSettings.YoptInlineGlobal || calleeSource == CompilationUnit
+          val canInlineFromSource =
+            compilerSettings.YoptInlineGlobal || calleeSource == CompilationUnit
 
           val isAbstract = BytecodeUtils.isAbstractMethod(calleeMethodNode)
 

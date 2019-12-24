@@ -41,8 +41,8 @@ object Finagle extends Build {
     "org.apache.thrift" % "libthrift" % libthriftVersion intransitive (),
     "org.slf4j" % "slf4j-api" % "1.7.7" % "provided"
   )
-  val scroogeLibs = thriftLibs ++ Seq(
-    "com.twitter" %% "scrooge-core" % scroogeVersion)
+  val scroogeLibs =
+    thriftLibs ++ Seq("com.twitter" %% "scrooge-core" % scroogeVersion)
 
   def util(which: String) =
     "com.twitter" %% ("util-" + which) % utilVersion excludeAll (ExclusionRule(organization =

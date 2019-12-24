@@ -553,9 +553,10 @@ final class OnlineLDAOptimizer extends LDAOptimizer {
     val weight = rho()
     val N = gammat.rows.toDouble
     val alpha = this.alpha.toBreeze.toDenseVector
-    val logphat: BDM[Double] = sum(
-      LDAUtils.dirichletExpectation(gammat)(::, breeze.linalg.*)) / N
-    val gradf = N * (-LDAUtils.dirichletExpectation(alpha) + logphat.toDenseVector)
+    val logphat: BDM[Double] =
+      sum(LDAUtils.dirichletExpectation(gammat)(::, breeze.linalg.*)) / N
+    val gradf =
+      N * (-LDAUtils.dirichletExpectation(alpha) + logphat.toDenseVector)
 
     val c = N * trigamma(sum(alpha))
     val q = -N * trigamma(alpha)

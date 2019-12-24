@@ -44,8 +44,9 @@ class BasicAuthenticationFilter
       override def setCharacterEncoding(encoding: String) = {}
     }
 
-    val isUpdating = request.getRequestURI.endsWith("/git-receive-pack") || "service=git-receive-pack"
-      .equals(request.getQueryString)
+    val isUpdating =
+      request.getRequestURI.endsWith("/git-receive-pack") || "service=git-receive-pack"
+        .equals(request.getQueryString)
     val settings = loadSystemSettings()
 
     try {

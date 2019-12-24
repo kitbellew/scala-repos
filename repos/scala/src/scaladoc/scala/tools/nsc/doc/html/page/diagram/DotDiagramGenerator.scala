@@ -133,8 +133,8 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
 
         thisNode = _thisNode
         nodes = List()
-        edges = (thisNode -> superClasses) :: subClasses.map(
-          _ -> List(thisNode))
+        edges =
+          (thisNode -> superClasses) :: subClasses.map(_ -> List(thisNode))
         node2Index =
           (thisNode :: subClasses ::: superClasses ::: incomingImplicits ::: outgoingImplicits).zipWithIndex.toMap
         isInheritanceDiagram = true
@@ -189,9 +189,10 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
         val incomingTooltip = incomingImplicits
           .map(_.name)
           .mkString(", ") + " can be implicitly converted to " + thisNode.name
-        val outgoingTooltip = thisNode.name + " can be implicitly converted to " + outgoingImplicits
-          .map(_.name)
-          .mkString(", ")
+        val outgoingTooltip =
+          thisNode.name + " can be implicitly converted to " + outgoingImplicits
+            .map(_.name)
+            .mkString(", ")
         "subgraph clusterAll {\n" +
           "style=\"invis\"\n" +
           outgoingCluster + "\n" +
@@ -233,8 +234,9 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
         case (from, tos) =>
           tos
             .map(to => {
-              val id = "graph" + counter + "_" + node2Index(to) + "_" + node2Index(
-                from)
+              val id =
+                "graph" + counter + "_" + node2Index(to) + "_" + node2Index(
+                  from)
               // the X -> Y edge is inverted twice to keep the diagram flowing the right way
               // that is, an edge from node X to Y will result in a dot instruction nodeY -> nodeX [dir="back"]
               "node" + node2Index(to) + " -> node" + node2Index(from) +
@@ -308,7 +310,8 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
       else ""
 
     if (!img.equals("")) {
-      img = "<TD><IMG SCALE=\"TRUE\" SRC=\"" + settings.outdir.value + "/lib/" + img + "\" /></TD>"
+      img =
+        "<TD><IMG SCALE=\"TRUE\" SRC=\"" + settings.outdir.value + "/lib/" + img + "\" /></TD>"
       name = name + " "
     }
     val label = "<<TABLE BORDER=\"0\" CELLBORDER=\"0\">" +

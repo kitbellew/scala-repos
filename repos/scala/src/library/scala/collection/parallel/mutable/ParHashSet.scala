@@ -219,7 +219,8 @@ private[mutable] abstract class ParHashSetCombiner[T](
       var curEntry = table(h)
       while (null != curEntry) {
         if (curEntry == newEntry) return 0
-        h = h + 1 // we *do not* do `(h + 1) % table.length` here, because we'll never overflow!!
+        h =
+          h + 1 // we *do not* do `(h + 1) % table.length` here, because we'll never overflow!!
         if (h >= comesBefore) return -1
         curEntry = table(h)
       }
@@ -260,7 +261,8 @@ private[mutable] abstract class ParHashSetCombiner[T](
       }
       result = (totalinserts, leftover)
     }
-    private val blocksize = table.tableLength >> ParHashSetCombiner.discriminantbits
+    private val blocksize =
+      table.tableLength >> ParHashSetCombiner.discriminantbits
     private def blockStart(block: Int) = block * blocksize
     private def nextBlockStart(block: Int) = (block + 1) * blocksize
     private def fillBlock(

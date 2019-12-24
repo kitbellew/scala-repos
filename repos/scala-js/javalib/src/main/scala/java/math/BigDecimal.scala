@@ -1760,10 +1760,8 @@ class BigDecimal() extends Number with Comparable[BigDecimal] {
         val compRem = longCompareTo(Math.abs(fraction) * 2, sizeOfFraction)
         // To look if there is a carry
         val frac = java.lang.Long.signum(fraction) * (5 + compRem)
-        val intPart1 = intPart0 + roundingBehavior(
-          intPart0.toInt & 1,
-          frac,
-          mc.roundingMode)
+        val intPart1 =
+          intPart0 + roundingBehavior(intPart0.toInt & 1, frac, mc.roundingMode)
         // If after to add the increment the precision changed, we normalize the size
         if (Math.log10(Math.abs(intPart1)) >= mc.precision)
           (newScale0 - 1, intPart1 / 10)

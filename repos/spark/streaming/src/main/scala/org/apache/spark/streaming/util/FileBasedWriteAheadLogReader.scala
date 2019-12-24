@@ -37,7 +37,8 @@ private[streaming] class FileBasedWriteAheadLogReader(
     with Logging {
 
   private val instream = HdfsUtils.getInputStream(path, conf)
-  private var closed = (instream == null) // the file may be deleted as we're opening the stream
+  private var closed =
+    (instream == null) // the file may be deleted as we're opening the stream
   private var nextItem: Option[ByteBuffer] = None
 
   override def hasNext: Boolean = synchronized {

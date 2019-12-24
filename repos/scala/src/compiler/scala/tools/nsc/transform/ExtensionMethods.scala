@@ -122,7 +122,8 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
   private def normalize(stpe: Type, clazz: Symbol): Type = stpe match {
     case PolyType(tparams, restpe) =>
       // method type parameters, class type parameters
-      val (mtparams, ctparams) = tparams splitAt (tparams.length - clazz.typeParams.length)
+      val (mtparams, ctparams) =
+        tparams splitAt (tparams.length - clazz.typeParams.length)
       GenPolyType(
         mtparams,
         normalize(restpe.substSym(ctparams, clazz.typeParams), clazz))
@@ -164,7 +165,8 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
         extensionMeth: Symbol,
         origInfo: Type,
         clazz: Symbol): Type = {
-      val GenPolyType(tparamsFromMethod, methodResult) = origInfo cloneInfo extensionMeth
+      val GenPolyType(tparamsFromMethod, methodResult) =
+        origInfo cloneInfo extensionMeth
       // Start with the class type parameters - clones will be method type parameters
       // so must drop their variance.
       val tparamsFromClass = cloneSymbolsAtOwner(
@@ -225,7 +227,8 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
             if tree.symbol.isMethodWithExtension =>
           val origMeth = tree.symbol
           val origThis = currentOwner
-          val origTpeParams = tparams.map(_.symbol) ::: origThis.typeParams // method type params ++ class type params
+          val origTpeParams =
+            tparams.map(_.symbol) ::: origThis.typeParams // method type params ++ class type params
           val origParams = vparamss.flatten map (_.symbol)
           val companion = origThis.companionModule
 

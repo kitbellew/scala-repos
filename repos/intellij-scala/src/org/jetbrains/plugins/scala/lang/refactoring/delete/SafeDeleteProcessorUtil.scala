@@ -166,9 +166,8 @@ object SafeDeleteProcessorUtil {
       if (!isInside(element, allElementsToDelete) && !isInside(
             element,
             overridingMethods.map(x => x: PsiElement))) {
-        val isReferenceInImport = PsiTreeUtil.getParentOfType(
-          element,
-          classOf[ScImportStmt]) != null
+        val isReferenceInImport =
+          PsiTreeUtil.getParentOfType(element, classOf[ScImportStmt]) != null
         usages.add(
           new SafeDeleteReferenceJavaDeleteUsageInfo(
             element,

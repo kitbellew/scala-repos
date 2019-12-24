@@ -262,7 +262,8 @@ object MongoFieldSpec extends Specification with MongoTestKit with AroundEach {
     val rec = MongoFieldTypeTestRecord.createRecord
     val ttjo = TypeTestJsonObject(1, "jsonobj1", Map("x" -> "a"))
     val ttjo2 = TypeTestJsonObject(2, "jsonobj2", Map("x" -> "b"))
-    val json = ("intField" -> 1) ~ ("stringField" -> "jsonobj1") ~ ("mapField" -> (("x" -> "a")))
+    val json =
+      ("intField" -> 1) ~ ("stringField" -> "jsonobj1") ~ ("mapField" -> (("x" -> "a")))
     passBasicTests(
       ttjo,
       ttjo2,
@@ -733,8 +734,8 @@ object MongoFieldSpec extends Specification with MongoTestKit with AroundEach {
       success
     }
     "get set from JValue after BSON roundtrip" in {
-      val joftrJson
-          : JObject = ("_id" -> ("$oid" -> ObjectId.get.toString)) ~ ("mandatoryJObjectField" -> ("minutes" -> 59))
+      val joftrJson: JObject =
+        ("_id" -> ("$oid" -> ObjectId.get.toString)) ~ ("mandatoryJObjectField" -> ("minutes" -> 59))
       val fromJsonBox = JObjectFieldTestRecord.fromJValue(joftrJson)
 
       fromJsonBox.isDefined must_== true

@@ -534,7 +534,8 @@ object PlayDocsValidation {
             IO.readLines(new BufferedReader(new InputStreamReader(is))))
           .get
         val notLabel = (s: String) => !s.contains("#" + sample.segment)
-        val segment = sourceCode dropWhile (notLabel) drop (1) takeWhile (notLabel)
+        val segment =
+          sourceCode dropWhile (notLabel) drop (1) takeWhile (notLabel)
         !segment.isEmpty
       } else {
         true

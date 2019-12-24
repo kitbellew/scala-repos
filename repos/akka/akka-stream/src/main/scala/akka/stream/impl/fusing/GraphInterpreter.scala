@@ -691,7 +691,8 @@ private[stream] final class GraphInterpreter(
   private def dequeue(): Int = {
     val idx = queueHead & mask
     if (fuzzingMode) {
-      val swapWith = (ThreadLocalRandom.current.nextInt(queueTail - queueHead) + queueHead) & mask
+      val swapWith =
+        (ThreadLocalRandom.current.nextInt(queueTail - queueHead) + queueHead) & mask
       val ev = eventQueue(swapWith)
       eventQueue(swapWith) = eventQueue(idx)
       eventQueue(idx) = ev

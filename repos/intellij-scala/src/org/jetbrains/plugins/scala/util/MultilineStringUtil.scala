@@ -250,7 +250,8 @@ object MultilineStringUtil {
           .trim
           .startsWith(firstMLQuote)
         val multipleLines = endLineNumber != startLineNumber
-        val needNewLineBefore = settings.quotesOnNewLine && multipleLines && !startsOnNewLine
+        val needNewLineBefore =
+          settings.quotesOnNewLine && multipleLines && !startsOnNewLine
         val marginChar = getMarginChar(literal)
 
         extensions.inWriteAction {
@@ -258,7 +259,8 @@ object MultilineStringUtil {
           if (!needNewLineBefore) {
             val quotesIndent = settings.getSmartLength(
               document.getText.substring(startLineOffset, literalStart))
-            val marginIndent = quotesIndent + interpolatorPrefixLength(literal) + settings.marginIndent
+            val marginIndent =
+              quotesIndent + interpolatorPrefixLength(literal) + settings.marginIndent
             for (lineNumber <- startLineNumber + 1 to endLineNumber) {
               insertIndent(lineNumber, marginIndent, Some(marginChar))
             }
@@ -266,7 +268,8 @@ object MultilineStringUtil {
             val oldIndent = settings.prefixLength(
               document.getText.substring(startLineOffset, literalStart))
             val quotesIndent = oldIndent + settings.regularIndent
-            val marginIndent = quotesIndent + interpolatorPrefixLength(literal) + settings.marginIndent
+            val marginIndent =
+              quotesIndent + interpolatorPrefixLength(literal) + settings.marginIndent
             for (lineNumber <- startLineNumber + 1 to endLineNumber) {
               insertIndent(lineNumber, marginIndent, Some(marginChar))
             }

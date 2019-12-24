@@ -76,7 +76,8 @@ class StandardImageExtractor(
     */
   var matchBadImageNames: Matcher = null
   val NODE_ID_FORMAT: String = "tag: %s class: %s ID: %s"
-  val KNOWN_IMG_DOM_NAMES = "yn-story-related-media" :: "cnn_strylccimg300cntr" :: "big_photo" :: "ap-smallphoto-a" :: Nil
+  val KNOWN_IMG_DOM_NAMES =
+    "yn-story-related-media" :: "cnn_strylccimg300cntr" :: "big_photo" :: "ap-smallphoto-a" :: Nil
 
   var sb: StringBuilder = new StringBuilder
   // create negative elements

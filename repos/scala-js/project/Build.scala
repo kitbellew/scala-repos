@@ -507,7 +507,8 @@ object Build extends sbt.Build {
         "com.novocode" % "junit-interface" % "0.9" % "test"
       ),
       testOptions += Tests.Setup { () =>
-        val testOutDir = (streams.value.cacheDirectory / "scalajs-compiler-test")
+        val testOutDir =
+          (streams.value.cacheDirectory / "scalajs-compiler-test")
         IO.createDirectory(testOutDir)
         sys.props("scala.scalajs.compiler.test.output") =
           testOutDir.getAbsolutePath
@@ -1029,12 +1030,13 @@ object Build extends sbt.Build {
   lazy val jUnitPlugin = Project(
     id = "jUnitPlugin",
     base = file("junit-plugin"),
-    settings = commonSettings ++ publishSettings ++ fatalWarningsSettings ++ Seq(
-      name := "Scala.js JUnit test plugin",
-      crossVersion := CrossVersion.full,
-      libraryDependencies += "org.scala-lang" % "scala-compiler" % scalaVersion.value,
-      exportJars := true
-    )
+    settings =
+      commonSettings ++ publishSettings ++ fatalWarningsSettings ++ Seq(
+        name := "Scala.js JUnit test plugin",
+        crossVersion := CrossVersion.full,
+        libraryDependencies += "org.scala-lang" % "scala-compiler" % scalaVersion.value,
+        exportJars := true
+      )
   )
 
   // Examples
@@ -1047,7 +1049,8 @@ object Build extends sbt.Build {
     )
   ).aggregate(helloworld, reversi, testingExample)
 
-  lazy val exampleSettings = commonSettings ++ myScalaJSSettings ++ fatalWarningsSettings
+  lazy val exampleSettings =
+    commonSettings ++ myScalaJSSettings ++ fatalWarningsSettings
 
   lazy val helloworld: Project = Project(
     id = "helloworld",
@@ -1292,11 +1295,12 @@ object Build extends sbt.Build {
   lazy val testSuiteJVM: Project = Project(
     id = "testSuiteJVM",
     base = file("test-suite/jvm"),
-    settings = commonSettings ++ testSuiteCommonSettings(isJSTest = false) ++ Seq(
-      name := "Scala.js test suite on JVM",
-      libraryDependencies +=
-        "com.novocode" % "junit-interface" % "0.11" % "test"
-    )
+    settings =
+      commonSettings ++ testSuiteCommonSettings(isJSTest = false) ++ Seq(
+        name := "Scala.js test suite on JVM",
+        libraryDependencies +=
+          "com.novocode" % "junit-interface" % "0.11" % "test"
+      )
   )
 
   lazy val noIrCheckTest: Project = Project(

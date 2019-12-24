@@ -13,7 +13,8 @@ import akka.testkit.EventFilter
 import akka.remote.EndpointException
 
 object ThrottlerTransportAdapterSpec {
-  val configA: Config = ConfigFactory parseString ("""
+  val configA: Config =
+    ConfigFactory parseString ("""
     akka {
       actor.provider = "akka.remote.RemoteActorRefProvider"
 
@@ -109,7 +110,8 @@ class ThrottlerTransportAdapterSpec
   "ThrottlerTransportAdapter" must {
     "maintain average message rate" taggedAs TimingTest in {
       throttle(Direction.Send, TokenBucket(200, 500, 0, 0)) should ===(true)
-      val tester = system.actorOf(Props(classOf[ThrottlingTester], here, self)) ! "start"
+      val tester =
+        system.actorOf(Props(classOf[ThrottlingTester], here, self)) ! "start"
 
       val time =
         NANOSECONDS.toSeconds(expectMsgType[Long]((TotalTime + 3).seconds))

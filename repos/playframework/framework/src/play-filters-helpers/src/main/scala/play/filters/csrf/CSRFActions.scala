@@ -194,8 +194,8 @@ class CSRFAction(
   private def extractTokenFromFormBody(
       body: ByteString,
       tokenName: String): Option[String] = {
-    val tokenEquals = ByteString(URLEncoder.encode(tokenName, "utf-8")) ++ ByteString(
-      '=')
+    val tokenEquals =
+      ByteString(URLEncoder.encode(tokenName, "utf-8")) ++ ByteString('=')
 
     // First check if it's the first token
     if (body.startsWith(tokenEquals)) {
@@ -525,7 +525,8 @@ object CSRFAction {
               httpOnly = config.httpOnlyCookie))
       } getOrElse {
 
-        val newSession = result.session(request) + (config.tokenName -> newToken)
+        val newSession =
+          result.session(request) + (config.tokenName -> newToken)
         result.withSession(newSession)
       }
     }

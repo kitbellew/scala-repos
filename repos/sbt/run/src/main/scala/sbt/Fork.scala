@@ -329,7 +329,8 @@ object Fork {
         .map(_.getAbsolutePath)
         .mkString(File.pathSeparator)
       val mainClass = if (mainClassName.isEmpty) Nil else mainClassName :: Nil
-      val options = jvmOptions ++ (scalaClasspathString :: mainClass ::: arguments.toList)
+      val options =
+        jvmOptions ++ (scalaClasspathString :: mainClass ::: arguments.toList)
       Fork.java.fork(
         javaHome,
         options,

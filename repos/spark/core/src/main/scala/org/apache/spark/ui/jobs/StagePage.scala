@@ -431,8 +431,8 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
             case TaskUIData(_, metrics, _) =>
               metrics.get.executorRunTime.toDouble
           }
-          val serviceQuantiles = <td>Duration</td> +: getFormattedTimeQuantiles(
-            serviceTimes)
+          val serviceQuantiles =
+            <td>Duration</td> +: getFormattedTimeQuantiles(serviceTimes)
 
           val gcTimes = validTasks.map {
             case TaskUIData(_, metrics, _) =>
@@ -793,7 +793,8 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
               .getOrElse(
                 totalExecutionTime - executorOverhead - gettingResultTime)
           }
-          val executorComputingTime = executorRunTime - shuffleReadTime - shuffleWriteTime
+          val executorComputingTime =
+            executorRunTime - shuffleReadTime - shuffleWriteTime
           val executorComputingTimeProportion =
             (100 - schedulerDelayProportion - shuffleReadTimeProportion -
               shuffleWriteTimeProportion - serializationTimeProportion -

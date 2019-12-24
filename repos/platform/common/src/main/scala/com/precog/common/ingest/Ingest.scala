@@ -104,7 +104,8 @@ case class Ingest(
 object Ingest {
   implicit val eventIso = Iso.hlist(Ingest.apply _, Ingest.unapply _)
 
-  val schemaV1 = "apiKey" :: "path" :: "writeAs" :: "data" :: "jobId" :: "timestamp" :: "streamRef" :: HNil
+  val schemaV1 =
+    "apiKey" :: "path" :: "writeAs" :: "data" :: "jobId" :: "timestamp" :: "streamRef" :: HNil
   implicit def seqExtractor[A: Extractor]: Extractor[Seq[A]] =
     implicitly[Extractor[List[A]]].map(_.toSeq)
 
@@ -151,8 +152,8 @@ object Ingest {
   }
 
   implicit val decomposer: Decomposer[Ingest] = decomposerV1
-  implicit val extractor
-      : Extractor[Ingest] = extractorV1 <+> extractorV1a <+> extractorV0
+  implicit val extractor: Extractor[Ingest] =
+    extractorV1 <+> extractorV1a <+> extractorV0
 }
 
 case class Archive(
@@ -172,24 +173,26 @@ case class Archive(
 object Archive {
   implicit val archiveIso = Iso.hlist(Archive.apply _, Archive.unapply _)
 
-  val schemaV1 = "apiKey" :: "path" :: "jobId" :: ("timestamp" ||| EventMessage.defaultTimestamp) :: HNil
-  val schemaV0 = "tokenId" :: "path" :: Omit :: ("timestamp" ||| EventMessage.defaultTimestamp) :: HNil
+  val schemaV1 =
+    "apiKey" :: "path" :: "jobId" :: ("timestamp" ||| EventMessage.defaultTimestamp) :: HNil
+  val schemaV0 =
+    "tokenId" :: "path" :: Omit :: ("timestamp" ||| EventMessage.defaultTimestamp) :: HNil
 
   val decomposerV1: Decomposer[Archive] =
     decomposerV[Archive](schemaV1, Some("1.0".v))
-  val extractorV1: Extractor[Archive] = extractorV[Archive](
-    schemaV1,
-    Some("1.0".v)) <+> extractorV1a
+  val extractorV1: Extractor[Archive] =
+    extractorV[Archive](schemaV1, Some("1.0".v)) <+> extractorV1a
 
   // Support un-versioned V1 schemas and out-of-order fields due to an earlier bug
-  val extractorV1a
-      : Extractor[Archive] = extractorV[Archive](schemaV1, None) map {
-    // FIXME: This is a complete hack to work around an accidental mis-ordering of fields for serialization
-    case Archive(apiKey, path, jobId, timestamp) if (apiKey.startsWith("/")) =>
-      Archive(path.components.head.toString, Path(apiKey), jobId, timestamp)
+  val extractorV1a: Extractor[Archive] =
+    extractorV[Archive](schemaV1, None) map {
+      // FIXME: This is a complete hack to work around an accidental mis-ordering of fields for serialization
+      case Archive(apiKey, path, jobId, timestamp)
+          if (apiKey.startsWith("/")) =>
+        Archive(path.components.head.toString, Path(apiKey), jobId, timestamp)
 
-    case ok => ok
-  }
+      case ok => ok
+    }
 
   val extractorV0: Extractor[Archive] = extractorV[Archive](schemaV0, None)
 
@@ -300,7 +303,8 @@ object StoreFile {
 
   implicit val iso = Iso.hlist(StoreFile.apply _, StoreFile.unapply _)
 
-  val schemaV1 = "apiKey" :: "path" :: "writeAs" :: "jobId" :: "content" :: "timestamp" :: "streamRef" :: HNil
+  val schemaV1 =
+    "apiKey" :: "path" :: "writeAs" :: "jobId" :: "content" :: "timestamp" :: "streamRef" :: HNil
 
   implicit val decomposer: Decomposer[StoreFile] =
     decomposerV[StoreFile](schemaV1, Some("1.0".v))

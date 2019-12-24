@@ -120,7 +120,8 @@ private[yarn] class LocalityPreferredContainerPlacementStrategy(
     // and the other without locality preference.
     val requiredLocalityFreeContainerNum =
       math.max(0, numContainer - updatedLocalityAwareContainerNum)
-    val requiredLocalityAwareContainerNum = numContainer - requiredLocalityFreeContainerNum
+    val requiredLocalityAwareContainerNum =
+      numContainer - requiredLocalityFreeContainerNum
 
     val containerLocalityPreferences =
       ArrayBuffer[ContainerLocalityPreferences]()
@@ -138,7 +139,8 @@ private[yarn] class LocalityPreferredContainerPlacementStrategy(
       // number, which is used for locality preferred host calculating.
       var preferredLocalityRatio = updatedHostToContainerCount.mapValues {
         ratio =>
-          val adjustedRatio = ratio.toDouble * requiredLocalityAwareContainerNum / largestRatio
+          val adjustedRatio =
+            ratio.toDouble * requiredLocalityAwareContainerNum / largestRatio
           adjustedRatio.ceil.toInt
       }
 

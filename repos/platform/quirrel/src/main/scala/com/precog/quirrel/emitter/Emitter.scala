@@ -145,7 +145,8 @@ trait Emitter
       (is
         .foldLeft((Vector(0), 0)) {
           case ((vector, cur), instr) =>
-            val delta = (instr.operandStackDelta._2 - instr.operandStackDelta._1)
+            val delta =
+              (instr.operandStackDelta._2 - instr.operandStackDelta._1)
 
             val total = cur + delta
 
@@ -530,25 +531,25 @@ trait Emitter
                 (expr -> btrace)
               })(collection.breakOut)
 
-            val contextualDispatches
-                : Map[Expr, Set[List[ast.Dispatch]]] = btraces map {
-              case (key, pairPaths) => {
-                val paths: List[List[Expr]] = pairPaths map { pairs =>
-                  pairs map { _._2 }
+            val contextualDispatches: Map[Expr, Set[List[ast.Dispatch]]] =
+              btraces map {
+                case (key, pairPaths) => {
+                  val paths: List[List[Expr]] = pairPaths map { pairs =>
+                    pairs map { _._2 }
+                  }
+
+                  val innerDispatches = paths filter { _ contains expr } map {
+                    btrace =>
+                      btrace takeWhile (expr !=) collect {
+                        case d: ast.Dispatch
+                            if d.binding.isInstanceOf[LetBinding] =>
+                          d
+                      }
+                  } toSet
+
+                  key -> innerDispatches
                 }
-
-                val innerDispatches = paths filter { _ contains expr } map {
-                  btrace =>
-                    btrace takeWhile (expr !=) collect {
-                      case d: ast.Dispatch
-                          if d.binding.isInstanceOf[LetBinding] =>
-                        d
-                    }
-                } toSet
-
-                key -> innerDispatches
               }
-            }
 
             emitBucketSpec(expr, spec, contextualDispatches, dispatches) >>
               emitInstr(Split) >>

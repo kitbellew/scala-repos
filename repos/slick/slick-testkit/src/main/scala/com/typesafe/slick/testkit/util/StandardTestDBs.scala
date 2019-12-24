@@ -57,7 +57,8 @@ object StandardTestDBs {
 
   lazy val HsqldbDisk = new HsqlDB("hsqldbdisk") {
     val dbName = "hsqldb-" + confName
-    val url = "jdbc:hsqldb:file:" + TestkitConfig.testDBPath + "/" + dbName + ";user=SA;password=;shutdown=true;hsqldb.applog=0"
+    val url =
+      "jdbc:hsqldb:file:" + TestkitConfig.testDBPath + "/" + dbName + ";user=SA;password=;shutdown=true;hsqldb.applog=0"
     override def cleanUpBefore() = TestDB.deleteDBFiles(dbName)
     // Recreating the DB is faster than dropping everything individually
     override def dropUserArtifacts(
@@ -99,9 +100,11 @@ object StandardTestDBs {
 
   lazy val DerbyDisk = new DerbyDB("derbydisk") {
     val dbName = "derby-" + confName
-    val url = "jdbc:derby:" + TestkitConfig.testDBPath + "/" + dbName + ";create=true"
+    val url =
+      "jdbc:derby:" + TestkitConfig.testDBPath + "/" + dbName + ";create=true"
     override def cleanUpBefore() = {
-      val dropUrl = "jdbc:derby:" + TestkitConfig.testDBPath + "/" + dbName + ";shutdown=true"
+      val dropUrl =
+        "jdbc:derby:" + TestkitConfig.testDBPath + "/" + dbName + ";shutdown=true"
       try {
         await(
           profile.backend.Database

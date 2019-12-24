@@ -449,8 +449,8 @@ class DenseMatrixTest
       y === DenseMatrix((17, 22, 27), (22, 29, 36), (27, 36, 45))
         .mapValues(BigDecimal(_)))
 
-    val z: DenseMatrix[BigDecimal] = b * ((b + BigDecimal(1)): DenseMatrix[
-      BigDecimal])
+    val z: DenseMatrix[BigDecimal] =
+      b * ((b + BigDecimal(1)): DenseMatrix[BigDecimal])
     assert(
       z === DenseMatrix((164, 5, 107), (-5, 10, -27), (161, -7, 138))
         .mapValues(BigDecimal(_)))
@@ -497,16 +497,13 @@ class DenseMatrixTest
 
   test("Solve") {
     // square solve
-    val r1: DenseMatrix[Double] = DenseMatrix((1.0, 3.0), (2.0, 0.0)) \ DenseMatrix(
-      (1.0, 2.0),
-      (3.0, 4.0))
+    val r1: DenseMatrix[Double] =
+      DenseMatrix((1.0, 3.0), (2.0, 0.0)) \ DenseMatrix((1.0, 2.0), (3.0, 4.0))
     assert(r1 === DenseMatrix((1.5, 2.0), (-1.0 / 6, 0.0)))
 
     // matrix-vector solve
-    val r2
-        : DenseVector[Double] = DenseMatrix((1.0, 3.0, 4.0), (2.0, 0.0, 6.0)) \ DenseVector(
-      1.0,
-      3.0)
+    val r2: DenseVector[Double] =
+      DenseMatrix((1.0, 3.0, 4.0), (2.0, 0.0, 6.0)) \ DenseVector(1.0, 3.0)
     assert(
       norm(
         r2 - DenseVector(
@@ -516,10 +513,10 @@ class DenseMatrixTest
         inf) < 1e-5)
 
     // wide matrix solve
-    val r3
-        : DenseMatrix[Double] = DenseMatrix((1.0, 3.0, 4.0), (2.0, 0.0, 6.0)) \ DenseMatrix(
-      (1.0, 2.0),
-      (3.0, 4.0))
+    val r3: DenseMatrix[Double] =
+      DenseMatrix((1.0, 3.0, 4.0), (2.0, 0.0, 6.0)) \ DenseMatrix(
+        (1.0, 2.0),
+        (3.0, 4.0))
     matricesNearlyEqual(
       r3,
       DenseMatrix(
@@ -541,9 +538,10 @@ class DenseMatrixTest
 
   test("Solve Float") {
     // square solve
-    val r1: DenseMatrix[Float] = DenseMatrix((1.0f, 3.0f), (2.0f, 0.0f)) \ DenseMatrix(
-      (1.0f, 2.0f),
-      (3.0f, 4.0f))
+    val r1: DenseMatrix[Float] =
+      DenseMatrix((1.0f, 3.0f), (2.0f, 0.0f)) \ DenseMatrix(
+        (1.0f, 2.0f),
+        (3.0f, 4.0f))
     assert(r1 === DenseMatrix((1.5f, 2.0f), (-1.0f / 6, 0.0f)))
 
     // matrix-vector solve

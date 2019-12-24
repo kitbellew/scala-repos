@@ -389,9 +389,10 @@ abstract class TreeCheckers extends Analyzer {
               def cond(s: Symbol) = !s.isTerm || s.isMethod || s == sym.owner
 
               if (sym.owner != currentOwner) {
-                val expected = currentOwner.ownerChain find (x => cond(x)) getOrElse {
-                  fail("DefTree can't find owner: "); NoSymbol
-                }
+                val expected =
+                  currentOwner.ownerChain find (x => cond(x)) getOrElse {
+                    fail("DefTree can't find owner: "); NoSymbol
+                  }
                 if (sym.owner != expected)
                   fail(sm"""|
                             | currentOwner chain: ${currentOwner.ownerChain take 3 mkString " -> "}
@@ -428,8 +429,9 @@ abstract class TreeCheckers extends Analyzer {
           sym.isTypeParameter
             || sym.isLocalToBlock
         )
-        val referencedSymbols = (treeSym :: referencesInType(treeInfo)).distinct filter (
-            sym => isEligible(sym) && !isOk(sym))
+        val referencedSymbols =
+          (treeSym :: referencesInType(treeInfo)).distinct filter (sym =>
+            isEligible(sym) && !isOk(sym))
         def mk[T](
             what: String,
             x: T,

@@ -780,8 +780,9 @@ trait AppAndGroupFormats {
           }
           .filter(ValidationError(
             "You cannot specify both an IP address and ports")) { extra =>
-            val appWithoutPorts = extra.maybePorts.forall(_.isEmpty) && extra.maybePortDefinitions
-              .forall(_.isEmpty)
+            val appWithoutPorts =
+              extra.maybePorts.forall(_.isEmpty) && extra.maybePortDefinitions
+                .forall(_.isEmpty)
             appWithoutPorts || extra.ipAddress.isEmpty
           }
           .filter(ValidationError(
@@ -1141,8 +1142,8 @@ trait AppAndGroupFormats {
         }
         .filter(ValidationError(
           "You cannot specify both ports and port definitions")) { extra =>
-          val portDefinitionsIsEquivalentToPorts = extra.portDefinitions.map(
-            _.map(_.port)) == extra.ports
+          val portDefinitionsIsEquivalentToPorts =
+            extra.portDefinitions.map(_.map(_.port)) == extra.ports
           portDefinitionsIsEquivalentToPorts || extra.ports.isEmpty || extra.portDefinitions.isEmpty
         }
         .map { extra =>

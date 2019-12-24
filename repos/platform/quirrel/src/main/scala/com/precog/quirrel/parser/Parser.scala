@@ -295,7 +295,8 @@ trait Parser extends RegexParsers with Filters with AST {
     (n, e)
   }
 
-  private lazy val id = """[a-zA-Z]['a-zA-Z_0-9]*|_['a-zA-Z_0-9]+""".r \ keywords
+  private lazy val id =
+    """[a-zA-Z]['a-zA-Z_0-9]*|_['a-zA-Z_0-9]+""".r \ keywords
 
   private lazy val ticId = """'[a-zA-Z_0-9]['a-zA-Z_0-9]*""".r
 
@@ -311,8 +312,10 @@ trait Parser extends RegexParsers with Filters with AST {
   private[quirrel] lazy val relPathLiteralRegex =
     ("""\.""" + basePathLiteralRegex).r
 
-  private lazy val pathLiteral = (pathLiteralRegex preferred) ^^ canonicalizePath
-  private lazy val relPathLiteral = (relPathLiteralRegex preferred) ^^ canonicalizeRelPath
+  private lazy val pathLiteral =
+    (pathLiteralRegex preferred) ^^ canonicalizePath
+  private lazy val relPathLiteral =
+    (relPathLiteralRegex preferred) ^^ canonicalizeRelPath
 
   private[quirrel] lazy val strLiteralRegex = """"([^\n\r\\"]|\\.)*"""".r //"
   private lazy val strLiteral = strLiteralRegex ^^ canonicalizeStr

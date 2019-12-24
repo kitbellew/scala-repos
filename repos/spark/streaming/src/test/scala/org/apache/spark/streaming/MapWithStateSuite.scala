@@ -501,7 +501,8 @@ class MapWithStateSuite
         val dummyFunc = (key: Int, value: Option[Int], state: State[Int]) => 0
         val mapWithStateStream =
           inputStream.mapWithState(StateSpec.function(dummyFunc))
-        val internalmapWithStateStream = mapWithStateStream invokePrivate privateMethod()
+        val internalmapWithStateStream =
+          mapWithStateStream invokePrivate privateMethod()
 
         explicitCheckpointDuration.foreach { d =>
           mapWithStateStream.checkpoint(d)

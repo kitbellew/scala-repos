@@ -147,7 +147,8 @@ class ScPackagingImpl private (
 
     //If stub is not null, then we are not trying to resolve packaging reference.
     if (getStub != null || !reference.contains(lastParent)) {
-      val pName = (if (prefix.length == 0) "" else prefix + ".") + getPackageName
+      val pName =
+        (if (prefix.length == 0) "" else prefix + ".") + getPackageName
       ProgressManager.checkCanceled()
       val p = ScPackageImpl(
         JavaPsiFacade.getInstance(getProject).findPackage(pName))
@@ -199,7 +200,8 @@ class ScPackagingImpl private (
 
   def getBodyText: String = {
     if (isExplicit) {
-      val startOffset = findChildByType[PsiElement](ScalaTokenTypes.tLBRACE).getTextRange.getEndOffset - getTextRange.getStartOffset
+      val startOffset =
+        findChildByType[PsiElement](ScalaTokenTypes.tLBRACE).getTextRange.getEndOffset - getTextRange.getStartOffset
       val text = getText
       val endOffset = if (text.apply(text.length - 1) == '}') {
         text.length - 1

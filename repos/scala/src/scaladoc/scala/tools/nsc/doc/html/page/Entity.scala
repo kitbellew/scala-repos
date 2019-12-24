@@ -567,10 +567,11 @@ trait EntityPage extends HtmlPage {
           NodeSeq.Empty
         else {
           val shortComment = memberToShortCommentHtml(mbr, isSelf)
-          val longComment = memberToUseCaseCommentHtml(mbr, isSelf) ++ memberToCommentBodyHtml(
-            mbr,
-            inTpl,
-            isSelf)
+          val longComment =
+            memberToUseCaseCommentHtml(mbr, isSelf) ++ memberToCommentBodyHtml(
+              mbr,
+              inTpl,
+              isSelf)
 
           val includedLongComment =
             if (shortComment.text.trim == longComment.text.trim)
@@ -955,7 +956,8 @@ trait EntityPage extends HtmlPage {
     }
     // end attributes block vals ---
 
-    val attributesInfo = implicitInformation ++ attributes ++ definitionClasses ++ fullSignature ++ selfType ++ annotations ++ deprecation ++ migration ++ sourceLink ++ mainComment
+    val attributesInfo =
+      implicitInformation ++ attributes ++ definitionClasses ++ fullSignature ++ selfType ++ annotations ++ deprecation ++ migration ++ sourceLink ++ mainComment
     val attributesBlock =
       if (attributesInfo.isEmpty)
         NodeSeq.Empty

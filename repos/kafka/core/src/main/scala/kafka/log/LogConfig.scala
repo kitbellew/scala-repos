@@ -30,7 +30,8 @@ import org.apache.kafka.common.utils.Utils
 object Defaults {
   val SegmentSize = kafka.server.Defaults.LogSegmentBytes
   val SegmentMs = kafka.server.Defaults.LogRollHours * 60 * 60 * 1000L
-  val SegmentJitterMs = kafka.server.Defaults.LogRollJitterHours * 60 * 60 * 1000L
+  val SegmentJitterMs =
+    kafka.server.Defaults.LogRollJitterHours * 60 * 60 * 1000L
   val FlushInterval = kafka.server.Defaults.LogFlushIntervalMessages
   val FlushMs = kafka.server.Defaults.LogFlushSchedulerIntervalMs
   val RetentionSize = kafka.server.Defaults.LogRetentionBytes
@@ -73,7 +74,8 @@ case class LogConfig(props: java.util.Map[_, _])
   val fileDeleteDelayMs = getLong(LogConfig.FileDeleteDelayMsProp)
   val deleteRetentionMs = getLong(LogConfig.DeleteRetentionMsProp)
   val minCleanableRatio = getDouble(LogConfig.MinCleanableDirtyRatioProp)
-  val compact = getString(LogConfig.CleanupPolicyProp).toLowerCase != LogConfig.Delete
+  val compact =
+    getString(LogConfig.CleanupPolicyProp).toLowerCase != LogConfig.Delete
   val uncleanLeaderElectionEnable = getBoolean(
     LogConfig.UncleanLeaderElectionEnableProp)
   val minInSyncReplicas = getInt(LogConfig.MinInSyncReplicasProp)
@@ -130,8 +132,9 @@ object LogConfig {
     "The hard maximum for the size of a segment file in the log"
   val SegmentMsDoc =
     "The soft maximum on the amount of time before a new log segment is rolled"
-  val SegmentJitterMsDoc = "The maximum random jitter subtracted from segmentMs to avoid thundering herds of segment" +
-    " rolling"
+  val SegmentJitterMsDoc =
+    "The maximum random jitter subtracted from segmentMs to avoid thundering herds of segment" +
+      " rolling"
   val FlushIntervalDoc =
     "The number of messages that can be written to the log before a flush is forced"
   val FlushMsDoc =
@@ -145,18 +148,21 @@ object LogConfig {
   val IndexIntervalDoc = "The approximate number of bytes between index entries"
   val FileDeleteDelayMsDoc =
     "The time to wait before deleting a file from the filesystem"
-  val DeleteRetentionMsDoc = "The time to retain delete markers in the log. Only applicable for logs that are being" +
-    " compacted."
+  val DeleteRetentionMsDoc =
+    "The time to retain delete markers in the log. Only applicable for logs that are being" +
+      " compacted."
   val MinCleanableRatioDoc =
     "The ratio of bytes that are available for cleaning to the bytes already cleaned"
   val CompactDoc = "Should old segments in this log be deleted or deduplicated?"
   val UncleanLeaderElectionEnableDoc =
     "Indicates whether unclean leader election is enabled"
-  val MinInSyncReplicasDoc = "If number of insync replicas drops below this number, we stop accepting writes with" +
-    " -1 (or all) required acks"
-  val CompressionTypeDoc = "Specify the final compression type for a given topic. This configuration accepts the " +
-    "standard compression codecs ('gzip', 'snappy', lz4). It additionally accepts 'uncompressed' which is equivalent to " +
-    "no compression; and 'producer' which means retain the original compression codec set by the producer."
+  val MinInSyncReplicasDoc =
+    "If number of insync replicas drops below this number, we stop accepting writes with" +
+      " -1 (or all) required acks"
+  val CompressionTypeDoc =
+    "Specify the final compression type for a given topic. This configuration accepts the " +
+      "standard compression codecs ('gzip', 'snappy', lz4). It additionally accepts 'uncompressed' which is equivalent to " +
+      "no compression; and 'producer' which means retain the original compression codec set by the producer."
   val PreAllocateEnableDoc = "Should pre allocate file when create new segment?"
   val MessageFormatVersionDoc = KafkaConfig.LogMessageFormatVersionDoc
   val MessageTimestampTypeDoc = KafkaConfig.LogMessageTimestampTypeDoc

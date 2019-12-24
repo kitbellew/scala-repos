@@ -61,8 +61,8 @@ abstract class ScTemplateDefinitionElementType[TypeDef <: ScTemplateDefinition](
 
     val isImplicitObject = psi
       .isInstanceOf[ScObject] && psi.hasModifierProperty("implicit")
-    val isImplicitClass = psi.isInstanceOf[ScClass] && psi.hasModifierProperty(
-      "implicit")
+    val isImplicitClass =
+      psi.isInstanceOf[ScClass] && psi.hasModifierProperty("implicit")
 
     val javaName = psi.getName
     val additionalJavaNames = psi.additionalJavaNames

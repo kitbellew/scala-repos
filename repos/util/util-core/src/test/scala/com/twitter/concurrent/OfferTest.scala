@@ -199,7 +199,8 @@ class OfferTest extends WordSpec with MockitoSugar {
       }
 
       "retry when it aborts" in {
-        val txps = new Promise[Tx[Int]] #:: new Promise[Tx[Int]] #:: Stream.empty
+        val txps =
+          new Promise[Tx[Int]] #:: new Promise[Tx[Int]] #:: Stream.empty
         val offer = spy(new SimpleOffer(txps))
         val badTx = mock[Tx[Int]]
         val result = Future.value(Abort)

@@ -175,27 +175,29 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
     val infolog = getBoolean("infolog")
     val nFactor = getInt("nr-of-nodes-factor")
     val numberOfSeedNodes = getInt("nr-of-seed-nodes") // not scaled by nodes factor
-    val numberOfNodesJoiningToSeedNodesInitially = getInt(
-      "nr-of-nodes-joining-to-seed-initally") * nFactor
-    val numberOfNodesJoiningOneByOneSmall = getInt(
-      "nr-of-nodes-joining-one-by-one-small") * nFactor
-    val numberOfNodesJoiningOneByOneLarge = getInt(
-      "nr-of-nodes-joining-one-by-one-large") * nFactor
-    val numberOfNodesJoiningToOneNode = getInt("nr-of-nodes-joining-to-one") * nFactor
+    val numberOfNodesJoiningToSeedNodesInitially =
+      getInt("nr-of-nodes-joining-to-seed-initally") * nFactor
+    val numberOfNodesJoiningOneByOneSmall =
+      getInt("nr-of-nodes-joining-one-by-one-small") * nFactor
+    val numberOfNodesJoiningOneByOneLarge =
+      getInt("nr-of-nodes-joining-one-by-one-large") * nFactor
+    val numberOfNodesJoiningToOneNode =
+      getInt("nr-of-nodes-joining-to-one") * nFactor
     // remaining will join to seed nodes
-    val numberOfNodesJoiningToSeedNodes = (totalNumberOfNodes - numberOfSeedNodes -
-      numberOfNodesJoiningToSeedNodesInitially - numberOfNodesJoiningOneByOneSmall -
-      numberOfNodesJoiningOneByOneLarge - numberOfNodesJoiningToOneNode) requiring (_ >= 0,
-    s"too many configured nr-of-nodes-joining-*, total should be <= ${totalNumberOfNodes}")
-    val numberOfNodesLeavingOneByOneSmall = getInt(
-      "nr-of-nodes-leaving-one-by-one-small") * nFactor
-    val numberOfNodesLeavingOneByOneLarge = getInt(
-      "nr-of-nodes-leaving-one-by-one-large") * nFactor
+    val numberOfNodesJoiningToSeedNodes =
+      (totalNumberOfNodes - numberOfSeedNodes -
+        numberOfNodesJoiningToSeedNodesInitially - numberOfNodesJoiningOneByOneSmall -
+        numberOfNodesJoiningOneByOneLarge - numberOfNodesJoiningToOneNode) requiring (_ >= 0,
+      s"too many configured nr-of-nodes-joining-*, total should be <= ${totalNumberOfNodes}")
+    val numberOfNodesLeavingOneByOneSmall =
+      getInt("nr-of-nodes-leaving-one-by-one-small") * nFactor
+    val numberOfNodesLeavingOneByOneLarge =
+      getInt("nr-of-nodes-leaving-one-by-one-large") * nFactor
     val numberOfNodesLeaving = getInt("nr-of-nodes-leaving") * nFactor
-    val numberOfNodesShutdownOneByOneSmall = getInt(
-      "nr-of-nodes-shutdown-one-by-one-small") * nFactor
-    val numberOfNodesShutdownOneByOneLarge = getInt(
-      "nr-of-nodes-shutdown-one-by-one-large") * nFactor
+    val numberOfNodesShutdownOneByOneSmall =
+      getInt("nr-of-nodes-shutdown-one-by-one-small") * nFactor
+    val numberOfNodesShutdownOneByOneLarge =
+      getInt("nr-of-nodes-shutdown-one-by-one-large") * nFactor
     val numberOfNodesShutdown = getInt("nr-of-nodes-shutdown") * nFactor
     val numberOfNodesJoinRemove = getInt("nr-of-nodes-join-remove") // not scaled by nodes factor
 
@@ -203,20 +205,20 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
     val workBatchInterval = testConfig.getMillisDuration("work-batch-interval")
     val payloadSize = getInt("payload-size")
     val dFactor = getInt("duration-factor")
-    val joinRemoveDuration = testConfig.getMillisDuration(
-      "join-remove-duration") * dFactor
-    val normalThroughputDuration = testConfig.getMillisDuration(
-      "normal-throughput-duration") * dFactor
-    val highThroughputDuration = testConfig.getMillisDuration(
-      "high-throughput-duration") * dFactor
-    val supervisionDuration = testConfig.getMillisDuration(
-      "supervision-duration") * dFactor
-    val supervisionOneIteration = testConfig.getMillisDuration(
-      "supervision-one-iteration") * dFactor
-    val idleGossipDuration = testConfig.getMillisDuration(
-      "idle-gossip-duration") * dFactor
-    val expectedTestDuration = testConfig.getMillisDuration(
-      "expected-test-duration") * dFactor
+    val joinRemoveDuration =
+      testConfig.getMillisDuration("join-remove-duration") * dFactor
+    val normalThroughputDuration =
+      testConfig.getMillisDuration("normal-throughput-duration") * dFactor
+    val highThroughputDuration =
+      testConfig.getMillisDuration("high-throughput-duration") * dFactor
+    val supervisionDuration =
+      testConfig.getMillisDuration("supervision-duration") * dFactor
+    val supervisionOneIteration =
+      testConfig.getMillisDuration("supervision-one-iteration") * dFactor
+    val idleGossipDuration =
+      testConfig.getMillisDuration("idle-gossip-duration") * dFactor
+    val expectedTestDuration =
+      testConfig.getMillisDuration("expected-test-duration") * dFactor
     val treeWidth = getInt("tree-width")
     val treeLevels = getInt("tree-levels")
     val reportMetricsInterval =
@@ -1124,9 +1126,8 @@ abstract class StressSpec
 
   def exerciseJoinRemove(title: String, duration: FiniteDuration): Unit = {
     val activeRoles = roles.take(numberOfNodesJoinRemove)
-    val loopDuration = 10.seconds + convergenceWithin(
-      4.seconds,
-      nbrUsedRoles + activeRoles.size)
+    val loopDuration =
+      10.seconds + convergenceWithin(4.seconds, nbrUsedRoles + activeRoles.size)
     val rounds =
       ((duration - loopDuration).toMillis / loopDuration.toMillis).max(1).toInt
     val usedRoles = roles.take(nbrUsedRoles)
@@ -1166,7 +1167,8 @@ abstract class StressSpec
                 timeout = remainingOrDefault)
               awaitAllReachable()
             }
-            val nextAddresses = clusterView.members.map(_.address) diff usedAddresses
+            val nextAddresses =
+              clusterView.members.map(_.address) diff usedAddresses
             runOn(usedRoles: _*) {
               nextAddresses.size should ===(numberOfNodesJoinRemove)
             }

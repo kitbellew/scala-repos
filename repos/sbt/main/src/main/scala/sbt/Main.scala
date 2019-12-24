@@ -195,7 +195,8 @@ object BuiltinCommands {
       val version = e.getOpt(Keys.version) match {
         case None => ""; case Some(v) => " " + v
       }
-      val current = "The current project is " + Reference.display(e.currentRef) + version + "\n"
+      val current =
+        "The current project is " + Reference.display(e.currentRef) + version + "\n"
       val sc = aboutScala(s, e)
       val built =
         if (sc.isEmpty) ""
@@ -483,8 +484,8 @@ object BuiltinCommands {
   private[sbt] def exportParser0(s: State): Parser[() => State] = {
     val extracted = Project extract s
     import extracted.{showKey, structure}
-    val keysParser = token(flag("--last" <~ Space)) ~ Act.aggregatedKeyParser(
-      extracted)
+    val keysParser =
+      token(flag("--last" <~ Space)) ~ Act.aggregatedKeyParser(extracted)
     val show = Aggregation.ShowConfig(
       settingValues = true,
       taskValues = false,
@@ -630,9 +631,8 @@ object BuiltinCommands {
   }
 
   def projectsParser(s: State): Parser[List[URI] => List[URI]] = {
-    val addBase = token(Space ~> "add") ~> token(
-      Space ~> basicUri,
-      "<build URI>").+
+    val addBase =
+      token(Space ~> "add") ~> token(Space ~> basicUri, "<build URI>").+
     val removeBase = token(Space ~> "remove") ~> token(
       Space ~> Uri(Project.extraBuilds(s).toSet)).+
     addBase.map(toAdd => (xs: List[URI]) => (toAdd.toList ::: xs).distinct) |

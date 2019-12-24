@@ -40,7 +40,8 @@ class ForkRun(config: ForkOptions) extends ScalaRun {
       log: Logger): Option[String] = {
     log.info("Running " + mainClass + " " + options.mkString(" "))
 
-    val scalaOptions = classpathOption(classpath) ::: mainClass :: options.toList
+    val scalaOptions =
+      classpathOption(classpath) ::: mainClass :: options.toList
     val configLogged =
       if (config.outputStrategy.isDefined) config
       else config.copy(outputStrategy = Some(LoggedOutput(log)))

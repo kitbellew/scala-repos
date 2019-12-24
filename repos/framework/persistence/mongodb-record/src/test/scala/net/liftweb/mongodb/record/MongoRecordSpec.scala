@@ -53,12 +53,12 @@ class MongoRecordSpec extends Specification with MongoTestKit {
 
   "MongoRecord field introspection" should {
     val rec = MongoFieldTypeTestRecord.createRecord
-    val allExpectedFieldNames
-        : List[String] = "_id" :: "mandatoryMongoCaseClassField" ::
-      (for {
-        typeName <- "Date JsonObject ObjectId UUID".split(" ")
-        flavor <- "mandatory legacyOptional".split(" ")
-      } yield flavor + typeName + "Field").toList
+    val allExpectedFieldNames: List[String] =
+      "_id" :: "mandatoryMongoCaseClassField" ::
+        (for {
+          typeName <- "Date JsonObject ObjectId UUID".split(" ")
+          flavor <- "mandatory legacyOptional".split(" ")
+        } yield flavor + typeName + "Field").toList
 
     "introspect only the expected fields" in {
       rec
@@ -338,8 +338,8 @@ class MongoRecordSpec extends Specification with MongoTestKit {
     val joftrFieldJObject: JObject = ("minutes" -> 59)
     val joftr = JObjectFieldTestRecord.createRecord.mandatoryJObjectField(
       joftrFieldJObject)
-    val joftrJson
-        : JValue = ("_id" -> ("$oid" -> joftr.id.toString)) ~ ("mandatoryJObjectField" -> ("minutes" -> 59))
+    val joftrJson: JValue =
+      ("_id" -> ("$oid" -> joftr.id.toString)) ~ ("mandatoryJObjectField" -> ("minutes" -> 59))
 
     "save and retrieve 'standard' type fields" in {
       checkMongoIsRunning

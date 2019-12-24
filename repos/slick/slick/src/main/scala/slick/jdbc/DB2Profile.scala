@@ -157,8 +157,9 @@ trait DB2Profile extends JdbcProfile {
   class SequenceDDLBuilder[T](seq: Sequence[T])
       extends super.SequenceDDLBuilder(seq) {
     override def buildDDL: DDL = {
-      val b = new StringBuilder append "create sequence " append quoteIdentifier(
-        seq.name)
+      val b =
+        new StringBuilder append "create sequence " append quoteIdentifier(
+          seq.name)
       b append " as " append jdbcTypeFor(seq.tpe).sqlTypeName(None)
       seq._start.foreach { b append " start with " append _ }
       seq._increment.foreach { b append " increment by " append _ }

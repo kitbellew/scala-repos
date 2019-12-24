@@ -95,9 +95,10 @@ abstract class ExplicitOuter
     sym setInfo MethodType(Nil, restpe)
   }
   def newOuterField(clazz: Symbol) = {
-    val accFlags = SYNTHETIC | ARTIFACT | PARAMACCESSOR | (if (clazz.isEffectivelyFinal)
-                                                             PrivateLocal
-                                                           else PROTECTED)
+    val accFlags =
+      SYNTHETIC | ARTIFACT | PARAMACCESSOR | (if (clazz.isEffectivelyFinal)
+                                                PrivateLocal
+                                              else PROTECTED)
     val sym = clazz.newValue(nme.OUTER_LOCAL, clazz.pos, accFlags)
 
     sym setInfo clazz.outerClass.thisType

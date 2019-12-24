@@ -257,21 +257,22 @@ trait InlineParsers extends BaseParsers {
     * We look ahead if we hit the closing brace after the quotation marks to detect if the title
     * ends or not.
     */
-  val title
-      : Parser[Option[String]] = opt('"' ~> ((markdownText(Set('"'), true) ~ opt(
-    not('"' ~ ows ~ ')') ~> aChar)) *) <~ '"') ^^ {
-    case None => None
-    case Some(chunks) => {
-      val result = new StringBuilder()
-      for (chunk <- chunks) {
-        chunk match {
-          case (text) ~ None    => result.append(text)
-          case (text) ~ Some(s) => result.append(text).append(s)
+  val title: Parser[Option[String]] =
+    opt(
+      '"' ~> ((markdownText(Set('"'), true) ~ opt(
+        not('"' ~ ows ~ ')') ~> aChar)) *) <~ '"') ^^ {
+      case None => None
+      case Some(chunks) => {
+        val result = new StringBuilder()
+        for (chunk <- chunks) {
+          chunk match {
+            case (text) ~ None    => result.append(text)
+            case (text) ~ Some(s) => result.append(text).append(s)
+          }
         }
+        Some(result.toString)
       }
-      Some(result.toString)
     }
-  }
 
   /** Plaintext variant to refInline. Escapable text until a square bracket is hit.
     */

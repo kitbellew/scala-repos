@@ -97,14 +97,12 @@ trait ModelFactoryImplicitSupport {
       val context: global.analyzer.Context =
         global.analyzer.rootContext(NoCompilationUnit)
 
-      val results = global.analyzer.allViewsFrom(
-        sym.tpe_*,
-        context,
-        sym.typeParams) ++
-        global.analyzer.allViewsFrom(
-          byNameType(sym.tpe_*),
-          context,
-          sym.typeParams)
+      val results =
+        global.analyzer.allViewsFrom(sym.tpe_*, context, sym.typeParams) ++
+          global.analyzer.allViewsFrom(
+            byNameType(sym.tpe_*),
+            context,
+            sym.typeParams)
       var conversions = results.flatMap(result =>
         makeImplicitConversion(sym, result._1, result._2, context, inTpl))
       //debug(results.mkString("All views\n  ", "\n  ", "\n"))
@@ -223,7 +221,8 @@ trait ModelFactoryImplicitSupport {
           makeBoundedConstraints(sym.typeParams, constrs, inTpl)
         // TODO: no substitution constraints appear in the library and compiler scaladoc. Maybe they can be removed?
         val substConstraints = makeSubstitutionConstraints(result.subst, inTpl)
-        val constraints = implParamConstraints ::: boundsConstraints ::: substConstraints
+        val constraints =
+          implParamConstraints ::: boundsConstraints ::: substConstraints
 
         List(
           new ImplicitConversionImpl(
@@ -489,8 +488,8 @@ trait ModelFactoryImplicitSupport {
       }
 
     for (conv <- convs) {
-      val otherConvMembers
-          : Map[Name, List[MemberImpl]] = convs filterNot (_ == conv) flatMap (_.memberImpls) groupBy (_.sym.name)
+      val otherConvMembers: Map[Name, List[MemberImpl]] =
+        convs filterNot (_ == conv) flatMap (_.memberImpls) groupBy (_.sym.name)
 
       for (member <- conv.memberImpls) {
         val sym1 = member.sym

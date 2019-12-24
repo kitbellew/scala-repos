@@ -77,7 +77,8 @@ class ActorsLeakSpec
 
     "not leak actors" in {
       val ref = system.actorOf(Props[EchoActor], "echo")
-      val echoPath = RootActorPath(RARP(system).provider.getDefaultAddress) / "user" / "echo"
+      val echoPath =
+        RootActorPath(RARP(system).provider.getDefaultAddress) / "user" / "echo"
 
       val targets = List("/system/endpointManager", "/system/transports").map {
         path ⇒

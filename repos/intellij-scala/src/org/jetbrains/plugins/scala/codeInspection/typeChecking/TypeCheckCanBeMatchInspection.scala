@@ -80,9 +80,10 @@ class TypeCheckCanBeMatchInspection
       ifStmt: ScIfStmt,
       isInstOf: ScGenericCall): Boolean = {
     val chainSize = listOfIfAndIsInstOf(ifStmt, isInstOf, onlyFirst = true).size
-    val typeCastsNumber = findAsInstOfCalls(ifStmt.condition, isInstOf).size + findAsInstOfCalls(
-      ifStmt.thenBranch,
-      isInstOf).size
+    val typeCastsNumber =
+      findAsInstOfCalls(ifStmt.condition, isInstOf).size + findAsInstOfCalls(
+        ifStmt.thenBranch,
+        isInstOf).size
     chainSize > 1 || typeCastsNumber > 0
   }
 }
@@ -127,7 +128,8 @@ object TypeCheckToMatchUtil {
         val matchedExprText = expr.getText
         val (caseClausesText, renameData) =
           buildCaseClausesText(ifStmt, isInstOfUnderFix, onlyFirst)
-        val matchStmtText = s"$matchedExprText match { \n " + caseClausesText + "}"
+        val matchStmtText =
+          s"$matchedExprText match { \n " + caseClausesText + "}"
         val matchStmt = ScalaPsiElementFactory
           .createExpressionFromText(matchStmtText, ifStmt.getManager)
           .asInstanceOf[ScMatchStmt]

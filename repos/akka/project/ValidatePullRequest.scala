@@ -214,85 +214,86 @@ object ValidatePullRequest extends AutoPlugin {
     }
   )
 
-  override lazy val projectSettings = inConfig(ValidatePR)(Defaults.testTasks) ++ Seq(
-    testOptions in ValidatePR += Tests
-      .Argument(TestFrameworks.ScalaTest, "-l", "performance"),
-    testOptions in ValidatePR += Tests
-      .Argument(TestFrameworks.ScalaTest, "-l", "long-running"),
-    testOptions in ValidatePR += Tests
-      .Argument(TestFrameworks.ScalaTest, "-l", "timing"),
-    projectBuildMode in ValidatePR := {
-      val log = streams.value.log
-      log.debug(
-        s"Analysing project (for inclusion in PR validation): [${name.value}]")
-      val changedDirs = (changedDirectories in ValidatePR).value
-      val githubCommandEnforcedBuildAll =
-        (githubEnforcedBuildAll in ValidatePR).value
+  override lazy val projectSettings =
+    inConfig(ValidatePR)(Defaults.testTasks) ++ Seq(
+      testOptions in ValidatePR += Tests
+        .Argument(TestFrameworks.ScalaTest, "-l", "performance"),
+      testOptions in ValidatePR += Tests
+        .Argument(TestFrameworks.ScalaTest, "-l", "long-running"),
+      testOptions in ValidatePR += Tests
+        .Argument(TestFrameworks.ScalaTest, "-l", "timing"),
+      projectBuildMode in ValidatePR := {
+        val log = streams.value.log
+        log.debug(
+          s"Analysing project (for inclusion in PR validation): [${name.value}]")
+        val changedDirs = (changedDirectories in ValidatePR).value
+        val githubCommandEnforcedBuildAll =
+          (githubEnforcedBuildAll in ValidatePR).value
 
-      val thisProjectId =
-        CrossVersion(scalaVersion.value, scalaBinaryVersion.value)(
-          projectID.value)
+        val thisProjectId =
+          CrossVersion(scalaVersion.value, scalaBinaryVersion.value)(
+            projectID.value)
 
-      def graphFor(
-          updateReport: UpdateReport,
-          config: Configuration): (Configuration, ModuleGraph) =
-        config -> SbtUpdateReport.fromConfigurationReport(
-          updateReport.configuration(config.name).get,
-          thisProjectId)
+        def graphFor(
+            updateReport: UpdateReport,
+            config: Configuration): (Configuration, ModuleGraph) =
+          config -> SbtUpdateReport.fromConfigurationReport(
+            updateReport.configuration(config.name).get,
+            thisProjectId)
 
-      def isDependency: Boolean =
-        changedDirectoryIsDependency(
-          changedDirs,
-          name.value,
-          Seq(
-            graphFor((update in Compile).value, Compile),
-            graphFor((update in Test).value, Test),
-            graphFor((update in Runtime).value, Runtime),
-            graphFor((update in Provided).value, Provided),
-            graphFor((update in Optional).value, Optional)
-          )
-        )(log)
+        def isDependency: Boolean =
+          changedDirectoryIsDependency(
+            changedDirs,
+            name.value,
+            Seq(
+              graphFor((update in Compile).value, Compile),
+              graphFor((update in Test).value, Test),
+              graphFor((update in Runtime).value, Runtime),
+              graphFor((update in Provided).value, Provided),
+              graphFor((update in Optional).value, Optional)
+            )
+          )(log)
 
-      if (githubCommandEnforcedBuildAll.isDefined)
-        githubCommandEnforcedBuildAll.get
-      else if (changedDirs contains "project")
-        BuildProjectChangedQuick
-      else if (isDependency)
-        BuildQuick
-      else
-        BuildSkip
-    },
-    additionalTasks in ValidatePR := Seq.empty,
-    validatePullRequest := Def.taskDyn {
-      val log = streams.value.log
-      val buildMode = (projectBuildMode in ValidatePR).value
+        if (githubCommandEnforcedBuildAll.isDefined)
+          githubCommandEnforcedBuildAll.get
+        else if (changedDirs contains "project")
+          BuildProjectChangedQuick
+        else if (isDependency)
+          BuildQuick
+        else
+          BuildSkip
+      },
+      additionalTasks in ValidatePR := Seq.empty,
+      validatePullRequest := Def.taskDyn {
+        val log = streams.value.log
+        val buildMode = (projectBuildMode in ValidatePR).value
 
-      buildMode.log(name.value, log)
+        buildMode.log(name.value, log)
 
-      val validationTasks = buildMode.task.toSeq ++ (buildMode match {
-        case BuildSkip =>
-          Seq.empty // do not run the additional task if project is skipped during pr validation
-        case _ => (additionalTasks in ValidatePR).value
-      })
+        val validationTasks = buildMode.task.toSeq ++ (buildMode match {
+          case BuildSkip =>
+            Seq.empty // do not run the additional task if project is skipped during pr validation
+          case _ => (additionalTasks in ValidatePR).value
+        })
 
-      // Create a task for every validation task key and
-      // then zip all of the tasks together discarding outputs.
-      // Task failures are propagated as normal.
-      val zero: Def.Initialize[Seq[Task[Any]]] = Def.setting { Seq(task()) }
-      validationTasks
-        .map(taskKey => Def.task { taskKey.value })
-        .foldLeft(zero) { (acc, current) =>
-          acc.zipWith(current) {
-            case (taskSeq, task) =>
-              taskSeq :+ task.asInstanceOf[Task[Any]]
+        // Create a task for every validation task key and
+        // then zip all of the tasks together discarding outputs.
+        // Task failures are propagated as normal.
+        val zero: Def.Initialize[Seq[Task[Any]]] = Def.setting { Seq(task()) }
+        validationTasks
+          .map(taskKey => Def.task { taskKey.value })
+          .foldLeft(zero) { (acc, current) =>
+            acc.zipWith(current) {
+              case (taskSeq, task) =>
+                taskSeq :+ task.asInstanceOf[Task[Any]]
+            }
+          } apply { tasks: Seq[Task[Any]] =>
+          tasks.join map { seq =>
+            () /* Ignore the sequence of unit returned */
           }
-        } apply { tasks: Seq[Task[Any]] =>
-        tasks.join map { seq =>
-          () /* Ignore the sequence of unit returned */
         }
-      }
-    }.value
-  )
+      }.value
+    )
 }
 
 /**

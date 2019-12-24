@@ -30,7 +30,8 @@ class ThreadLocalRandomTest {
     val bound = max(b1, b2)
 
     // In JDK7 nextInt does not support negative arguments.
-    val executeTest = !executingInJVMOnJDK7OrLower || (least >= 0 && least < bound)
+    val executeTest =
+      !executingInJVMOnJDK7OrLower || (least >= 0 && least < bound)
 
     if (executeTest) {
       val next = tlr.nextInt(least, bound)
@@ -270,7 +271,8 @@ class ThreadLocalRandomTest {
     val bound = max(b1, b2)
 
     // In JDK7 nextLong does not support negative arguments.
-    val executeTest = !executingInJVMOnJDK7OrLower || (least >= 0 && least < bound)
+    val executeTest =
+      !executingInJVMOnJDK7OrLower || (least >= 0 && least < bound)
 
     if (executeTest) {
       val next = tlr.nextLong(least, bound)
@@ -514,7 +516,8 @@ class ThreadLocalRandomTest {
     val bound = max(b1, b2)
 
     // In JDK7 nextDouble does not support negative arguments.
-    val executeTest = !executingInJVMOnJDK7OrLower || (least >= 0 && least < bound)
+    val executeTest =
+      !executingInJVMOnJDK7OrLower || (least >= 0 && least < bound)
 
     if (executeTest) {
       val next = tlr.nextDouble(least, bound)

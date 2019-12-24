@@ -25,7 +25,8 @@ object DisplayAppScalingResults {
         (jsObject \ ScalingTestResultFiles.relativeTimestampMs).as[Long]
       val staged = (jsObject \ "tasksStaged").as[Long]
       val running = (jsObject \ "tasksRunning").as[Long]
-      val newRunningPerSecond = 1000.0 * (running - lastRunning) / (relativeTimestamp - lastTimestamp)
+      val newRunningPerSecond =
+        1000.0 * (running - lastRunning) / (relativeTimestamp - lastTimestamp)
       lastTimestamp = relativeTimestamp
       lastRunning = running
       val instances = (jsObject \ "instances").as[Long]

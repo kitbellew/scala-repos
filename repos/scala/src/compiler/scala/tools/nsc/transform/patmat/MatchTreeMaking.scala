@@ -668,9 +668,8 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
         owner: Symbol,
         matchFailGenOverride: Option[Tree => Tree]): Tree = {
       // drops SubstOnlyTreeMakers, since their effect is now contained in the TreeMakers that follow them
-      val casesNoSubstOnly = casesRaw map (propagateSubstitution(
-        _,
-        EmptySubstitution))
+      val casesNoSubstOnly =
+        casesRaw map (propagateSubstitution(_, EmptySubstitution))
       combineCasesNoSubstOnly(
         scrut,
         scrutSym,

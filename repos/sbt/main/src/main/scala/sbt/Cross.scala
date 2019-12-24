@@ -84,7 +84,8 @@ object Cross {
             (settings, excludeKeys(Set(scalaVersion.key, scalaHome.key)))
           }
 
-        val isForceGc = getOpt(Keys.forcegc in Global) getOrElse GCUtil.defaultForceGarbageCollection
+        val isForceGc =
+          getOpt(Keys.forcegc in Global) getOrElse GCUtil.defaultForceGarbageCollection
         // This is how to get the interval, but ignore it, and just forcegc
         // val gcInterval = getOpt(Keys.minForcegcInterval in Global) getOrElse GCUtil.defaultMinForcegcInterval
         if (isForceGc) {

@@ -181,7 +181,8 @@ private[deploy] object IvyTestUtils {
   private def pomArtifactWriter(
       artifact: MavenCoordinate,
       tabCount: Int = 1): String = {
-    var result = "\n" + "  " * tabCount + s"<groupId>${artifact.groupId}</groupId>"
+    var result =
+      "\n" + "  " * tabCount + s"<groupId>${artifact.groupId}</groupId>"
     result += "\n" + "  " * tabCount + s"<artifactId>${artifact.artifactId}</artifactId>"
     result += "\n" + "  " * tabCount + s"<version>${artifact.version}</version>"
     result

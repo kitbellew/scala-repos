@@ -172,8 +172,9 @@ object OpenIDSpec extends Specification with Mockito {
       val openId = new WsOpenIdClient(ws, new WsDiscovery(ws))
 
       val spoofedEndpoint = "http://evilhackerendpoint.com"
-      val responseQueryString = openIdResponse - "openid.op_endpoint" + ("openid.op_endpoint" -> Seq(
-        spoofedEndpoint))
+      val responseQueryString =
+        openIdResponse - "openid.op_endpoint" + ("openid.op_endpoint" -> Seq(
+          spoofedEndpoint))
 
       Await.result(
         openId.verifiedId(setupMockRequest(responseQueryString)),
@@ -228,8 +229,8 @@ object OpenIDSpec extends Specification with Mockito {
 
       val openId = new WsOpenIdClient(ws, new WsDiscovery(ws))
 
-      val errorResponse = (openIdResponse - "openid.mode") + ("openid.mode" -> Seq(
-        "error"))
+      val errorResponse =
+        (openIdResponse - "openid.mode") + ("openid.mode" -> Seq("error"))
 
       Await.result(openId.verifiedId(setupMockRequest(errorResponse)), dur) must throwA[
         BAD_RESPONSE.type]

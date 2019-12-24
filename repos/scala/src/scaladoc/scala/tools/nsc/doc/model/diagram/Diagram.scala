@@ -171,7 +171,8 @@ class ContentDiagramDepth(pack: ContentDiagram) extends DepthInfo {
   while (!seedNodes.isEmpty) {
     var newSeedNodes = Set[Node]()
     for (node <- seedNodes) {
-      val depth = 1 + (-1 :: directEdges(node).map(_nodeDepth.getOrElse(_, -1))).max
+      val depth =
+        1 + (-1 :: directEdges(node).map(_nodeDepth.getOrElse(_, -1))).max
       if (depth != _nodeDepth.getOrElse(node, -1)) {
         _nodeDepth += (node -> depth)
         newSeedNodes ++= invertedEdges(node)

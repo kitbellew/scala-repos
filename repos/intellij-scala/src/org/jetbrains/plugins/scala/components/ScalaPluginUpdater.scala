@@ -253,10 +253,11 @@ object ScalaPluginUpdater {
     val notification = getPlatformUpdateResult match {
       case Some(result)
           if isUpToDatePlatform(result) && !isBetaOrEAPPlatform && appSettings.ASK_PLATFORM_UPDATE => // platform is up to date - suggest eap
-        val message = s"Your IDEA is outdated to use with $branch branch.<br/>Would you like to switch IDEA channel to EAP?" +
-          s"""<p/><a href="Yes">Yes</a>\n""" +
-          s"""<p/><a href="No">Not now</a>""" +
-          s"""<p/><a href="Ignore">Ignore this update</a>"""
+        val message =
+          s"Your IDEA is outdated to use with $branch branch.<br/>Would you like to switch IDEA channel to EAP?" +
+            s"""<p/><a href="Yes">Yes</a>\n""" +
+            s"""<p/><a href="No">Not now</a>""" +
+            s"""<p/><a href="Ignore">Ignore this update</a>"""
         Some(
           GROUP.createNotification(
             "Scala Plugin Update Failed",

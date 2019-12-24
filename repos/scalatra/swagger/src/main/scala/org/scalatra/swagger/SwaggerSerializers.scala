@@ -63,8 +63,8 @@ object SwaggerSerializers {
     def withAuthorizationTypeSerializer(
         serializer: Serializer[AuthorizationType]): SwaggerFormats =
       new SwaggerFormats {
-        override val customSerializers
-            : List[Serializer[_]] = serializer :: SwaggerFormats.serializers
+        override val customSerializers: List[Serializer[_]] =
+          serializer :: SwaggerFormats.serializers
       }
 
     override def +[A](newSerializer: FieldSerializer[A]): SwaggerFormats =
@@ -113,8 +113,8 @@ object SwaggerSerializers {
           self.fieldSerializers
         override val wantsBigDecimal: Boolean = self.wantsBigDecimal
         override val primitives: Set[Type] = self.primitives
-        override val companions
-            : List[(Class[_], AnyRef)] = comps.toList ::: self.companions
+        override val companions: List[(Class[_], AnyRef)] =
+          comps.toList ::: self.companions
         override val strict: Boolean = self.strict
       }
 
@@ -172,15 +172,15 @@ object SwaggerSerializers {
         DefaultFormats.losslessDate()
     }
 
-    override val customSerializers
-        : List[Serializer[_]] = new AuthorizationTypeSerializer :: SwaggerFormats.serializers
+    override val customSerializers: List[Serializer[_]] =
+      new AuthorizationTypeSerializer :: SwaggerFormats.serializers
     override def ++(
         newSerializers: Traversable[Serializer[_]]): SwaggerFormats =
       newSerializers.foldLeft(this)(_ + _)
     override def +(newSerializer: Serializer[_]): SwaggerFormats =
       new SwaggerFormats {
-        override val customSerializers
-            : List[Serializer[_]] = newSerializer :: SwaggerFormats.this.customSerializers
+        override val customSerializers: List[Serializer[_]] =
+          newSerializer :: SwaggerFormats.this.customSerializers
       }
 
     override val dateFormat = new DateFormat {
@@ -312,8 +312,8 @@ object SwaggerSerializers {
             )
         }, {
           case x: ModelProperty =>
-            val json
-                : JValue = ("description" -> x.description) ~ ("position" -> x.position)
+            val json: JValue =
+              ("description" -> x.description) ~ ("position" -> x.position)
             (json merge writeDataType(x.`type`, "$ref")) merge Extraction
               .decompose(x.allowableValues)
         }))

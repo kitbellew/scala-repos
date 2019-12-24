@@ -64,9 +64,8 @@ object Docs {
       val filtered = raw.filter(_.getName != ".DS_Store")
       val docMappings = filtered.get pair rebase(docBase, "play/docs/content/")
 
-      val apiDocMappings = (apiBase ** "*").get pair rebase(
-        apiBase,
-        "play/docs/content/api")
+      val apiDocMappings =
+        (apiBase ** "*").get pair rebase(apiBase, "play/docs/content/api")
 
       // The play version is added so that resource paths are versioned
       val webjarMappings = webjars.*** pair rebase(
@@ -99,9 +98,8 @@ object Docs {
           // The play version is added so that resource paths are versioned
           val webjars = extractWebjars.value
           val playVersion = version.value
-          val webjarMappings = webjars.*** pair rebase(
-            webjars,
-            "webjars/" + playVersion)
+          val webjarMappings =
+            webjars.*** pair rebase(webjars, "webjars/" + playVersion)
 
           // Gather all the conf files into the project
           val referenceConfs = allConfs.value.map {

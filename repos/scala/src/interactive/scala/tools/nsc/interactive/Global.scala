@@ -927,10 +927,12 @@ with ContextTrees with RichCompilationUnits with Picklers {
       sym.isType || {
         try {
           val tp1 = pre.memberType(alt) onTypeError NoType
-          val tp2 = adaptToNewRunMap(sym.tpe) substSym (originalTypeParams, sym.owner.typeParams)
+          val tp2 =
+            adaptToNewRunMap(sym.tpe) substSym (originalTypeParams, sym.owner.typeParams)
           matchesType(tp1, tp2, alwaysMatchSimple = false) || {
             debugLog(s"findMirrorSymbol matchesType($tp1, $tp2) failed")
-            val tp3 = adaptToNewRunMap(sym.tpe) substSym (originalTypeParams, alt.owner.typeParams)
+            val tp3 =
+              adaptToNewRunMap(sym.tpe) substSym (originalTypeParams, alt.owner.typeParams)
             matchesType(tp1, tp3, alwaysMatchSimple = false) || {
               debugLog(
                 s"findMirrorSymbol fallback matchesType($tp1, $tp3) failed")

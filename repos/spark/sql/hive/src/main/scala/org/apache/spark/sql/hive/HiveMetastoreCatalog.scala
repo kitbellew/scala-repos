@@ -594,7 +594,8 @@ private[hive] class HiveMetastoreCatalog(
         Some(partitionSpec))
 
       val parquetRelation = cached.getOrElse {
-        val paths = new Path(metastoreRelation.table.storage.locationUri.get) :: Nil
+        val paths =
+          new Path(metastoreRelation.table.storage.locationUri.get) :: Nil
         val fileCatalog = new MetaStoreFileCatalog(hive, paths, partitionSpec)
         val format = new DefaultSource()
         val inferredSchema =
@@ -920,8 +921,8 @@ private[hive] case class InsertIntoHiveTable(
 
   // This is the expected schema of the table prepared to be inserted into,
   // including dynamic partition columns.
-  val tableOutput = table.attributes ++ table.partitionKeys.takeRight(
-    numDynamicPartitions)
+  val tableOutput =
+    table.attributes ++ table.partitionKeys.takeRight(numDynamicPartitions)
 
   override lazy val resolved: Boolean = childrenResolved && child.output
     .zip(tableOutput)

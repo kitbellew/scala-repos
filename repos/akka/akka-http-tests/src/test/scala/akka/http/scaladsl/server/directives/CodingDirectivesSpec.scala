@@ -158,8 +158,8 @@ class CodingDirectivesSpec extends RoutingSpec with Inside {
   }
 
   "a (decodeRequestWith(Gzip) | decodeRequestWith(NoEncoding)) compound directive" should {
-    lazy val decodeWithGzipOrNoEncoding = decodeRequestWith(Gzip) | decodeRequestWith(
-      NoCoding)
+    lazy val decodeWithGzipOrNoEncoding =
+      decodeRequestWith(Gzip) | decodeRequestWith(NoCoding)
     "decode the request content if it has encoding 'gzip'" in {
       Post("/", helloGzipped) ~> `Content-Encoding`(gzip) ~> {
         decodeWithGzipOrNoEncoding { echoRequestContent }
@@ -303,8 +303,8 @@ class CodingDirectivesSpec extends RoutingSpec with Inside {
   }
 
   "a (encodeResponse(Gzip) | encodeResponse(NoEncoding)) compound directive" should {
-    lazy val encodeGzipOrIdentity = encodeResponseWith(Gzip) | encodeResponseWith(
-      NoCoding)
+    lazy val encodeGzipOrIdentity =
+      encodeResponseWith(Gzip) | encodeResponseWith(NoCoding)
     "produce a not encoded response if the request has no Accept-Encoding header" in {
       Post() ~> {
         encodeGzipOrIdentity { completeOk }

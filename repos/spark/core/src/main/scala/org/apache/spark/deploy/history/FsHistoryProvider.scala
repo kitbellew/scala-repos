@@ -522,9 +522,8 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
     */
   private[history] def cleanLogs(): Unit = {
     try {
-      val maxAge = conf.getTimeAsSeconds(
-        "spark.history.fs.cleaner.maxAge",
-        "7d") * 1000
+      val maxAge =
+        conf.getTimeAsSeconds("spark.history.fs.cleaner.maxAge", "7d") * 1000
 
       val now = clock.getTimeMillis()
       val appsToRetain =

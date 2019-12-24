@@ -70,7 +70,8 @@ class MatchToPartialFunctionInspection
       }
     }
     for (offset <- leftBraceOffset(ms)) {
-      val endOffsetInParent = offset - fExprToReplace.getTextRange.getStartOffset
+      val endOffsetInParent =
+        offset - fExprToReplace.getTextRange.getStartOffset
       val rangeInParent = new TextRange(0, endOffsetInParent)
       val fix = new MatchToPartialFunctionQuickFix(ms, fExprToReplace)
       holder.registerProblem(

@@ -470,8 +470,8 @@ class ClientServerSpec
 
           val chunks =
             List(Chunk("abc"), Chunk("defg"), Chunk("hijkl"), LastChunk)
-          val chunkedContentType
-              : ContentType = MediaTypes.`application/base64` withCharset HttpCharsets.`UTF-8`
+          val chunkedContentType: ContentType =
+            MediaTypes.`application/base64` withCharset HttpCharsets.`UTF-8`
           val chunkedEntity =
             HttpEntity.Chunked(chunkedContentType, Source(chunks))
 

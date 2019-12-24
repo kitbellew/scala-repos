@@ -165,7 +165,8 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
 
       val erasureMap = erasure.erasure(mixinMember)
       val erasedInterfaceInfo: Type = erasureMap(mixinMember.info)
-      val specificForwardInfo = (clazz.thisType baseType mixinClass) memberInfo mixinMember
+      val specificForwardInfo =
+        (clazz.thisType baseType mixinClass) memberInfo mixinMember
       val forwarderInfo =
         if (erasureMap(specificForwardInfo) =:= erasedInterfaceInfo)
           specificForwardInfo
@@ -195,10 +196,11 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
        *  always accessors and deferred. */
       def newGetter(field: Symbol): Symbol = {
         // println("creating new getter for "+ field +" : "+ field.info +" at "+ field.locationString+(field hasFlag MUTABLE))
-        val newFlags = field.flags & ~PrivateLocal | ACCESSOR | lateDEFERRED | (if (field.isMutable)
-                                                                                  0
-                                                                                else
-                                                                                  STABLE)
+        val newFlags =
+          field.flags & ~PrivateLocal | ACCESSOR | lateDEFERRED | (if (field.isMutable)
+                                                                     0
+                                                                   else
+                                                                     STABLE)
         // TODO preserve pre-erasure info?
         clazz.newMethod(field.getterName, field.pos, newFlags) setInfo MethodType(
           Nil,
@@ -335,7 +337,8 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
               }
           }
         } else if (mixinMember.isSuperAccessor) { // mixin super accessors
-          val superAccessor = addMember(clazz, mixinMember.cloneSymbol(clazz)) setPos clazz.pos
+          val superAccessor =
+            addMember(clazz, mixinMember.cloneSymbol(clazz)) setPos clazz.pos
           assert(superAccessor.alias != NoSymbol, superAccessor)
 
           rebindSuper(clazz, mixinMember.alias, mixinClass) match {
@@ -614,7 +617,8 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
 
         def createBitmap: Symbol = {
           val bitmapKind = bitmapKindForCategory(category)
-          val sym = clazz0.newVariable(bitmapName, clazz0.pos) setInfo bitmapKind.tpe
+          val sym =
+            clazz0.newVariable(bitmapName, clazz0.pos) setInfo bitmapKind.tpe
           enteringTyper(sym addAnnotation VolatileAttr)
 
           category match {
@@ -1127,8 +1131,8 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
       tree match {
         case templ @ Template(parents, self, body) =>
           // change parents of templates to conform to parents in the symbol info
-          val parents1 = currentOwner.info.parents map (t =>
-            TypeTree(t) setPos tree.pos)
+          val parents1 =
+            currentOwner.info.parents map (t => TypeTree(t) setPos tree.pos)
           // mark fields which can be nulled afterward
           lazyValNullables = nullableFields(templ) withDefaultValue Set()
           // add all new definitions to current class or interface
@@ -1149,7 +1153,8 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
         case Assign(Apply(lhs @ Select(qual, _), List()), rhs) =>
           // assign to fields in some trait via an abstract setter in the interface.
           // Note that the case above has added the empty application.
-          val setter = lhs.symbol.setterIn(lhs.symbol.owner.tpe.typeSymbol) setPos lhs.pos
+          val setter =
+            lhs.symbol.setterIn(lhs.symbol.owner.tpe.typeSymbol) setPos lhs.pos
 
           typedPos(tree.pos)((qual DOT setter)(rhs))
 

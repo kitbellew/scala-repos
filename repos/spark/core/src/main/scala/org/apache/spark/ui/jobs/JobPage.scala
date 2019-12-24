@@ -268,9 +268,11 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
           isFairScheduler = parent.isFairScheduler)
 
       val shouldShowActiveStages = activeStages.nonEmpty
-      val shouldShowPendingStages = !isComplete && pendingOrSkippedStages.nonEmpty
+      val shouldShowPendingStages =
+        !isComplete && pendingOrSkippedStages.nonEmpty
       val shouldShowCompletedStages = completedStages.nonEmpty
-      val shouldShowSkippedStages = isComplete && pendingOrSkippedStages.nonEmpty
+      val shouldShowSkippedStages =
+        isComplete && pendingOrSkippedStages.nonEmpty
       val shouldShowFailedStages = failedStages.nonEmpty
 
       val summary: NodeSeq =

@@ -139,9 +139,8 @@ class ReceiverSchedulingPolicySuite extends SparkFunSuite {
       case (receiverId, locations) =>
         assert(locations.size == 1)
         assert(locations(0).isInstanceOf[ExecutorCacheTaskLocation])
-        numReceiversOnExecutor(locations(0)) = numReceiversOnExecutor.getOrElse(
-          locations(0),
-          0) + 1
+        numReceiversOnExecutor(locations(0)) =
+          numReceiversOnExecutor.getOrElse(locations(0), 0) + 1
     }
     assert(numReceiversOnExecutor === executors.map(_ -> 2).toMap)
   }

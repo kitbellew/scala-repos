@@ -253,8 +253,10 @@ object Utils {
           _.aggregateFunction.inputAggBufferAttributes)
       createAggregate(
         groupingExpressions = groupingAttributes,
-        aggregateExpressions = mergeAggregateExpressions ++ distinctAggregateExpressions,
-        aggregateAttributes = mergeAggregateAttributes ++ distinctAggregateAttributes,
+        aggregateExpressions =
+          mergeAggregateExpressions ++ distinctAggregateExpressions,
+        aggregateAttributes =
+          mergeAggregateAttributes ++ distinctAggregateAttributes,
         initialInputBufferOffset =
           (groupingAttributes ++ distinctAttributes).length,
         resultExpressions = partialAggregateResult,
@@ -291,8 +293,10 @@ object Utils {
       createAggregate(
         requiredChildDistributionExpressions = Some(groupingAttributes),
         groupingExpressions = groupingAttributes,
-        aggregateExpressions = finalAggregateExpressions ++ distinctAggregateExpressions,
-        aggregateAttributes = finalAggregateAttributes ++ distinctAggregateAttributes,
+        aggregateExpressions =
+          finalAggregateExpressions ++ distinctAggregateExpressions,
+        aggregateAttributes =
+          finalAggregateAttributes ++ distinctAggregateAttributes,
         initialInputBufferOffset = groupingAttributes.length,
         resultExpressions = resultExpressions,
         child = partialDistinctAggregate

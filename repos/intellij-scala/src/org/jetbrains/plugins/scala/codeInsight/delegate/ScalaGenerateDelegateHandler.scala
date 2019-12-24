@@ -123,7 +123,8 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
     }
     val typeParamsForCall: String = {
       val typeParams = prototype.typeParameters
-      val parametersAndRetType = prototype.parameters ++ prototype.returnTypeElement
+      val parametersAndRetType =
+        prototype.parameters ++ prototype.returnTypeElement
       if (typeParams.exists(!typeParameterUsedIn(_, parametersAndRetType))) {
         typeParams.map(_.nameId.getText).mkString("[", ", ", "]")
       } else ""

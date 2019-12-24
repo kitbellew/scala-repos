@@ -251,8 +251,8 @@ object TopicCommand extends Logging {
     for (topic <- topics) {
       zkUtils.getPartitionAssignmentForTopics(List(topic)).get(topic) match {
         case Some(topicPartitionAssignment) =>
-          val describeConfigs
-              : Boolean = !reportUnavailablePartitions && !reportUnderReplicatedPartitions
+          val describeConfigs: Boolean =
+            !reportUnavailablePartitions && !reportUnderReplicatedPartitions
           val describePartitions: Boolean = !reportOverriddenConfigs
           val sortedPartitions =
             topicPartitionAssignment.toList.sortWith((m1, m2) => m1._1 < m2._1)

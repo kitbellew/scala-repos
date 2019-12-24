@@ -286,7 +286,8 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
       val resourceTypes = zkUtils.getChildren(SimpleAclAuthorizer.AclZkPath)
       for (rType <- resourceTypes) {
         val resourceType = ResourceType.fromString(rType)
-        val resourceTypePath = SimpleAclAuthorizer.AclZkPath + "/" + resourceType.name
+        val resourceTypePath =
+          SimpleAclAuthorizer.AclZkPath + "/" + resourceType.name
         val resourceNames = zkUtils.getChildren(resourceTypePath)
         for (resourceName <- resourceNames) {
           val versionedAcls =

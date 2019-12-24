@@ -616,9 +616,8 @@ private[spark] class ExecutorAllocationManager(
           if (!locality.isEmpty) {
             numTasksPending += 1
             locality.foreach { location =>
-              val count = hostToLocalTaskCountPerStage.getOrElse(
-                location.host,
-                0) + 1
+              val count =
+                hostToLocalTaskCountPerStage.getOrElse(location.host, 0) + 1
               hostToLocalTaskCountPerStage(location.host) = count
             }
           }

@@ -147,8 +147,9 @@ class ScalaLoggingSpec extends Specification with Mockito {
           val resultFuture = next(request)
 
           resultFuture.foreach(result => {
-            val msg = s"method=${request.method} uri=${request.uri} remote-address=${request.remoteAddress}" +
-              s" status=${result.header.status}";
+            val msg =
+              s"method=${request.method} uri=${request.uri} remote-address=${request.remoteAddress}" +
+                s" status=${result.header.status}";
             accessLogger.info(msg)
           })
 

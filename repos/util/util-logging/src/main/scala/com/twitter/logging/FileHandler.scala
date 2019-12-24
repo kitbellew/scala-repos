@@ -281,7 +281,8 @@ class FileHandler(
 
   def roll() = synchronized {
     stream.close()
-    val newFilename = filenamePrefix + "-" + timeSuffix(new Date(openTime)) + filenameSuffix
+    val newFilename =
+      filenamePrefix + "-" + timeSuffix(new Date(openTime)) + filenameSuffix
     new File(filename).renameTo(new File(newFilename))
     openLog()
     removeOldFiles()

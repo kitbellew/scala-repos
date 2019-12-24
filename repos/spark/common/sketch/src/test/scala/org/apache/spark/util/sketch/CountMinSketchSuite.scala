@@ -69,7 +69,8 @@ class CountMinSketchSuite extends FunSuite { // scalastyle:ignore funsuite
       val probCorrect = {
         val numErrors = allItems.map { item =>
           val count = exactFreq.getOrElse(item, 0L)
-          val ratio = (sketch.estimateCount(item) - count).toDouble / numAllItems
+          val ratio =
+            (sketch.estimateCount(item) - count).toDouble / numAllItems
           if (ratio > epsOfTotalCount) 1 else 0
         }.sum
 

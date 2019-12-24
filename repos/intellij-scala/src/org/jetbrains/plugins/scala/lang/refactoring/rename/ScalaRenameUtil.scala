@@ -69,7 +69,8 @@ object ScalaRenameUtil {
       : util.Collection[PsiReference] = {
     val result = allReferences.map {
       case ref: ScStableCodeReferenceElement =>
-        val isInImport = PsiTreeUtil.getParentOfType(ref, classOf[ScImportStmt]) != null
+        val isInImport =
+          PsiTreeUtil.getParentOfType(ref, classOf[ScImportStmt]) != null
         if (isInImport && ref.resolve() == null) {
           val multiResolve = ref.multiResolve(false)
           if (multiResolve.length > 1 && multiResolve.forall(

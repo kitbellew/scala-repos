@@ -105,8 +105,8 @@ private[spark] class Client(
       }
     }
   }
-  private val fireAndForget = isClusterMode && !sparkConf.get(
-    WAIT_FOR_APP_COMPLETION)
+  private val fireAndForget =
+    isClusterMode && !sparkConf.get(WAIT_FOR_APP_COMPLETION)
 
   private var appId: ApplicationId = null
 
@@ -712,7 +712,8 @@ private[spark] class Client(
     // those will fail with an access control issue. So create new tokens with the logged in
     // user as renewer.
     val creds = new Credentials()
-    val nns = YarnSparkHadoopUtil.get.getNameNodesToAccess(sparkConf) + stagingDirPath
+    val nns =
+      YarnSparkHadoopUtil.get.getNameNodesToAccess(sparkConf) + stagingDirPath
     YarnSparkHadoopUtil.get.obtainTokensForNamenodes(
       nns,
       hadoopConf,
@@ -1058,8 +1059,8 @@ private[spark] class Client(
   }
 
   def setupCredentials(): Unit = {
-    loginFromKeytab = args.principal != null || sparkConf.contains(
-      PRINCIPAL.key)
+    loginFromKeytab =
+      args.principal != null || sparkConf.contains(PRINCIPAL.key)
     if (loginFromKeytab) {
       principal = Option(args.principal).orElse(sparkConf.get(PRINCIPAL)).get
       keytab = Option(args.keytab).orElse(sparkConf.get(KEYTAB)).orNull
@@ -1308,8 +1309,8 @@ object Client extends Logging {
   private[yarn] def populateHadoopClasspath(
       conf: Configuration,
       env: HashMap[String, String]): Unit = {
-    val classPathElementsToAdd = getYarnAppClasspath(conf) ++ getMRAppClasspath(
-      conf)
+    val classPathElementsToAdd =
+      getYarnAppClasspath(conf) ++ getMRAppClasspath(conf)
     for (c <- classPathElementsToAdd.flatten) {
       YarnSparkHadoopUtil.addPathToEnvironment(
         env,

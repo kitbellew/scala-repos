@@ -337,8 +337,9 @@ trait BlockStoreColumnarTableModule[M[+_]]
         streamId: String,
         keyRefs: List[ColumnRef],
         valRefs: List[ColumnRef]) {
-      val name = streamId + ";krefs=" + keyRefs.mkString("[", ",", "]") + ";vrefs=" + valRefs
-        .mkString("[", ",", "]")
+      val name =
+        streamId + ";krefs=" + keyRefs.mkString("[", ",", "]") + ";vrefs=" + valRefs
+          .mkString("[", ",", "]")
     }
 
     type IndexMap = Map[IndexKey, SliceSorter]
@@ -1253,7 +1254,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
           // specifically track counts on the index since some operations
           // may not use all indices (e.g. groupByN)
           val newIndex = index
-            .copy(count = index.count + (newInsertCount - jdbmState.insertCount))
+            .copy(count =
+              index.count + (newInsertCount - jdbmState.insertCount))
 
           jdbmState.copy(
             indices = jdbmState.indices + (indexMapKey -> newIndex),

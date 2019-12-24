@@ -155,7 +155,8 @@ class ScalaAnnotator
                 val typeParametersLength = t.typeParameters.length
                 val argsLength = parameterized.typeArgList.typeArgs.length
                 if (typeParametersLength != argsLength) {
-                  val error = "Wrong number of type parameters. Expected: " + typeParametersLength + ", actual: " + argsLength
+                  val error =
+                    "Wrong number of type parameters. Expected: " + typeParametersLength + ", actual: " + argsLength
                   val leftBracket = parameterized.typeArgList.getNode
                     .findChildByType(ScalaTokenTypes.tLSQBRACKET)
                   if (leftBracket != null) {

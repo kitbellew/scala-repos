@@ -89,7 +89,8 @@ class ActivatorProjectBuilder
         val contentRootDir = new File(contentPath)
         FileUtilRt createDirectory contentRootDir
 
-        val vContentRootDir = LocalFileSystem.getInstance refreshAndFindFileByIoFile contentRootDir
+        val vContentRootDir =
+          LocalFileSystem.getInstance refreshAndFindFileByIoFile contentRootDir
         if (vContentRootDir == null) return
         //todo Looks like template name can't be set without some hack (activator itself can't do it)
 

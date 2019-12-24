@@ -50,13 +50,13 @@ object ResourceServer {
       LiftRules.jsArtifacts.pathRewriter(in)
   }
 
-  @volatile var pathRewriter
-      : PartialFunction[List[String], List[String]] = rewriter orElse {
-    case "lift.js" :: Nil  => List("lift-min.js")
-    case "json.js" :: Nil  => List("json2-min.js")
-    case "json2.js" :: Nil => List("json2-min.js")
-    case xs                => xs
-  }
+  @volatile var pathRewriter: PartialFunction[List[String], List[String]] =
+    rewriter orElse {
+      case "lift.js" :: Nil  => List("lift-min.js")
+      case "json.js" :: Nil  => List("json2-min.js")
+      case "json2.js" :: Nil => List("json2-min.js")
+      case xs                => xs
+    }
 
   /**
     * The base package for serving resources.  This way, resource names can't be spoofed

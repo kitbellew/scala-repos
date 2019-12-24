@@ -131,8 +131,8 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
     }
 
     val languageId = annotation flatMap (readAttribute(_, "value"))
-    val language = languageId flatMap (it =>
-      InjectedLanguage.findLanguageById(it).toOption)
+    val language =
+      languageId flatMap (it => InjectedLanguage.findLanguageById(it).toOption)
 
     language foreach { it =>
       registrar startInjecting it
@@ -184,7 +184,8 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
         val injection = injections.next()
 
         if (injection acceptsPsiElement host) {
-          val language = InjectedLanguage findLanguageById injection.getInjectedLanguageId
+          val language =
+            InjectedLanguage findLanguageById injection.getInjectedLanguageId
           if (language != null) {
             val injectedLanguage = InjectedLanguage.create(
               injection.getInjectedLanguageId,

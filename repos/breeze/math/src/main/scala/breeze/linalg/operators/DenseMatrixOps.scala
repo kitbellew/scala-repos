@@ -352,13 +352,8 @@ trait DenseMatrixMultiplyStuff
     override def apply(
         a: DenseMatrix[Double],
         b: DenseVector[Double]): DenseVector[Double] = {
-      val rv: DenseMatrix[Double] = a \ new DenseMatrix[Double](
-        b.size,
-        1,
-        b.data,
-        b.offset,
-        b.stride,
-        true)
+      val rv: DenseMatrix[Double] =
+        a \ new DenseMatrix[Double](b.size, 1, b.data, b.offset, b.stride, true)
       new DenseVector[Double](rv.data)
     }
   }
@@ -658,13 +653,8 @@ trait DenseMatrixFloatMultiplyStuff
     override def apply(
         a: DenseMatrix[Float],
         b: DenseVector[Float]): DenseVector[Float] = {
-      val rv: DenseMatrix[Float] = a \ new DenseMatrix[Float](
-        b.size,
-        1,
-        b.data,
-        b.offset,
-        b.stride,
-        true)
+      val rv: DenseMatrix[Float] =
+        a \ new DenseMatrix[Float](b.size, 1, b.data, b.offset, b.stride, true)
       new DenseVector[Float](rv.data)
     }
   }

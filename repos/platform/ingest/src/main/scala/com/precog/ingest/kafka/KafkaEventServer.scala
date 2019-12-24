@@ -79,13 +79,13 @@ object KafkaEventServer
       new Instant(
         config[Long]("ingest.timestamp_required_after", 1363327426906L)))
 
-    val (eventStore, stoppable) = KafkaEventStore(
-      config.detach("eventStore"),
-      permissionsFinder) valueOr { errs =>
-      sys.error(
-        "Unable to build new KafkaEventStore: " + errs.list
-          .mkString("\n", "\n", ""))
-    }
+    val (eventStore, stoppable) =
+      KafkaEventStore(config.detach("eventStore"), permissionsFinder) valueOr {
+        errs =>
+          sys.error(
+            "Unable to build new KafkaEventStore: " + errs.list
+              .mkString("\n", "\n", ""))
+      }
 
     val jobManager = WebJobManager(config.detach("jobs")) valueOr { errs =>
       sys.error(
@@ -93,12 +93,12 @@ object KafkaEventServer
           .mkString("\n", "\n", ""))
     }
 
-    val serviceConfig = EventService.ServiceConfig.fromConfiguration(config) valueOr {
-      errors =>
+    val serviceConfig =
+      EventService.ServiceConfig.fromConfiguration(config) valueOr { errors =>
         sys.error(
           "Unable to obtain self-referential service locator for event service: %s"
             .format(errors.list.mkString("; ")))
-    }
+      }
 
     buildServiceState(
       serviceConfig,

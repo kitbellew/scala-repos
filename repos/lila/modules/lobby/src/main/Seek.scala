@@ -42,8 +42,8 @@ case class Seek(
 
   private def compatibilityProperties = (variant, mode, daysPerTurn)
 
-  lazy val realRatingRange
-      : Option[RatingRange] = RatingRange noneIfDefault ratingRange
+  lazy val realRatingRange: Option[RatingRange] =
+    RatingRange noneIfDefault ratingRange
 
   def rating = perfType map (_.key) flatMap user.ratingMap.get
 

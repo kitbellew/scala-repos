@@ -31,7 +31,8 @@ class StandardCompileClient extends HasCompileSocket with CompileOutputCommon {
       if (settings.preferIPv4) List("-D%s=true".format(preferIPv4Stack.key))
       else Nil
 
-    val vmArgs = settings.jvmargs.unparse ++ settings.defines.unparse ++ extraVmArgs
+    val vmArgs =
+      settings.jvmargs.unparse ++ settings.defines.unparse ++ extraVmArgs
     val fscArgs = args.toList ++ command.extraFscArgs
 
     if (settings.version) {

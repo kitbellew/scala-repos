@@ -7,8 +7,8 @@ object Sxr {
   val sxr = TaskKey[File]("sxr")
   val sourceDirectories = TaskKey[Seq[File]]("sxr-source-directories")
 
-  lazy val settings
-      : Seq[Setting[_]] = inTask(sxr)(inSxrSettings) ++ baseSettings
+  lazy val settings: Seq[Setting[_]] =
+    inTask(sxr)(inSxrSettings) ++ baseSettings
 
   def baseSettings = Seq(
     libraryDependencies += "org.scala-sbt.sxr" % "sxr_2.10" % "0.3.0" % sxrConf.name

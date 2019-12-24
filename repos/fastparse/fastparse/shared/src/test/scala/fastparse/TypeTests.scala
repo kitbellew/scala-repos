@@ -18,10 +18,10 @@ object TypeTests {
   val p3: P[Int] = P[Int] ~ P[Unit]
   val p4: P[(Char, Int)] = P[Char] ~ P[Int]
   val p5: P[(Char, Int, String)] = P[Char] ~ P[Int] ~ P[String]
-  val p6: P[(Char, Int, String)] = P[Char] ~ P[Int] ~ P[Unit] ~ P[String] ~ P[
-    Unit]
-  val p7: P[(Char, Int, String, (Int, Int))] = P[Char] ~ P[Int] ~ P[Unit] ~ P[
-    String] ~ P[Unit] ~ P[(Int, Int)]
+  val p6: P[(Char, Int, String)] =
+    P[Char] ~ P[Int] ~ P[Unit] ~ P[String] ~ P[Unit]
+  val p7: P[(Char, Int, String, (Int, Int))] =
+    P[Char] ~ P[Int] ~ P[Unit] ~ P[String] ~ P[Unit] ~ P[(Int, Int)]
   class R[T]
   val p8: P[Unit] = P[Unit].rep
   val p9: P[Seq[Int]] = P[Int].rep

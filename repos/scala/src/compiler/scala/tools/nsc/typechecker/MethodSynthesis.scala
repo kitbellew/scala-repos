@@ -67,7 +67,8 @@ trait MethodSynthesis {
         original: Symbol,
         f: Symbol => Tree,
         name: Name): Tree = {
-      val m = original.cloneSymbol(clazz, newMethodFlags(original), name) setPos clazz.pos.focus
+      val m =
+        original.cloneSymbol(clazz, newMethodFlags(original), name) setPos clazz.pos.focus
       finishMethod(clazz.info.decls enter m, f)
     }
 
@@ -419,8 +420,8 @@ trait MethodSynthesis {
       def derivedSym: Symbol = {
         // Only methods will do! Don't want to pick up any stray
         // companion objects of the same name.
-        val result = enclClass.info decl name filter (x =>
-          x.isMethod && x.isSynthetic)
+        val result =
+          enclClass.info decl name filter (x => x.isMethod && x.isSynthetic)
         if (result == NoSymbol || result.isOverloaded)
           context.error(
             tree.pos,

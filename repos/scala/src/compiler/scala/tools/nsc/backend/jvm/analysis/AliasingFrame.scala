@@ -650,9 +650,10 @@ object AliasSet {
     private def checkABCD(x: Int, num: Int): Boolean = {
       // assert(x == a && num == 1 || x == b && num == 2 || ...)
       x != -1 && {
-        val otherHasA = x == notA || x == notB || x == notC || x == notD || (notXs != null && bsContains(
-          notXs,
-          x))
+        val otherHasA =
+          x == notA || x == notB || x == notC || x == notD || (notXs != null && bsContains(
+            notXs,
+            x))
         if (otherHasA) setThisAndOther(x)
         else abcdNext = x
         (num: @switch) match {
@@ -680,8 +681,9 @@ object AliasSet {
                    // if (mask > xs(index)) we could also advance i to the next value, but that didn't pay off in benchmarks
                    val thisHasI = (xs(index) & mask) != 0L
                    !thisHasI || {
-                     val otherHasI = i == notA || i == notB || i == notC || i == notD || (notXs != null && index < notXs.length && (notXs(
-                       index) & mask) != 0L)
+                     val otherHasI =
+                       i == notA || i == notB || i == notC || i == notD || (notXs != null && index < notXs.length && (notXs(
+                         index) & mask) != 0L)
                      if (otherHasI) setThisAndOther(i)
                      otherHasI
                    }

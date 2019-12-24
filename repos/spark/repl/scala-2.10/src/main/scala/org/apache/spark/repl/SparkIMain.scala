@@ -101,8 +101,8 @@ class SparkIMain(
 
   private val conf = new SparkConf()
 
-  private val SPARK_DEBUG_REPL
-      : Boolean = (System.getenv("SPARK_DEBUG_REPL") == "1")
+  private val SPARK_DEBUG_REPL: Boolean =
+    (System.getenv("SPARK_DEBUG_REPL") == "1")
 
   /** Local directory to save .class files too */
   private[repl] val outputDir = {
@@ -1223,8 +1223,8 @@ class SparkIMain(
     def originalLine = if (_originalLine == null) line else _originalLine
 
     /** handlers for each tree in this request */
-    val handlers
-        : List[MemberHandler] = trees map (memberHandlers chooseHandler _)
+    val handlers: List[MemberHandler] =
+      trees map (memberHandlers chooseHandler _)
     def defHandlers = handlers collect { case x: MemberDefHandler => x }
 
     /** all (public) names defined by these statements */

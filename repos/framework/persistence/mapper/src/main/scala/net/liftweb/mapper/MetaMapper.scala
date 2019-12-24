@@ -1290,8 +1290,8 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
   private def createApplier(
       name: String,
       inst: AnyRef /*, clz : Class*/ ): (A, AnyRef) => Unit = {
-    val accessor = mappedColumns.get(name) orElse mappedColumns.get(
-      name.toLowerCase)
+    val accessor =
+      mappedColumns.get(name) orElse mappedColumns.get(name.toLowerCase)
     if ((accessor eq null) || accessor == None) {
       null
     } else {

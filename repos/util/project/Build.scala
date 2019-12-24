@@ -12,10 +12,11 @@ object Util extends Build {
   val zkVersion = "3.5.0-alpha"
   val zkClientVersion = "0.0.79"
   val zkGroupVersion = "0.0.90"
-  val zkDependency = "org.apache.zookeeper" % "zookeeper" % zkVersion excludeAll (
-    ExclusionRule("com.sun.jdmk", "jmxtools"),
-    ExclusionRule("com.sun.jmx", "jmxri"),
-    ExclusionRule("javax.jms", "jms")
+  val zkDependency =
+    "org.apache.zookeeper" % "zookeeper" % zkVersion excludeAll (
+      ExclusionRule("com.sun.jdmk", "jmxtools"),
+      ExclusionRule("com.sun.jmx", "jmxri"),
+      ExclusionRule("javax.jms", "jms")
   )
 
   val parserCombinators = scalaVersion { sv =>

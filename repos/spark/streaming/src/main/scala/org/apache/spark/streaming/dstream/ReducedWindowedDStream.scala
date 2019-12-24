@@ -125,7 +125,8 @@ private[streaming] class ReducedWindowedDStream[K: ClassTag, V: ClassTag](
         .getOrElse(ssc.sc.makeRDD(Seq[(K, V)]()))
 
     // Make the list of RDDs that needs to cogrouped together for reducing their reduced values
-    val allRDDs = new ArrayBuffer[RDD[(K, V)]]() += previousWindowRDD ++= oldRDDs ++= newRDDs
+    val allRDDs =
+      new ArrayBuffer[RDD[(K, V)]]() += previousWindowRDD ++= oldRDDs ++= newRDDs
 
     // Cogroup the reduced RDDs and merge the reduced values
     val cogroupedRDD = new CoGroupedRDD[K](

@@ -299,10 +299,10 @@ class FlowGraphCompileSpec extends AkkaSpec {
           b.add(Source.fromPublisher(TestPublisher.manualProbe[Apple]()))
         def fruitSource =
           b.add(Source.fromPublisher(TestPublisher.manualProbe[Fruit]()))
-        val outA = b add Sink.fromSubscriber(
-          TestSubscriber.manualProbe[Fruit]())
-        val outB = b add Sink.fromSubscriber(
-          TestSubscriber.manualProbe[Fruit]())
+        val outA =
+          b add Sink.fromSubscriber(TestSubscriber.manualProbe[Fruit]())
+        val outB =
+          b add Sink.fromSubscriber(TestSubscriber.manualProbe[Fruit]())
         val merge = b add Merge[Fruit](11)
         val unzip = b add Unzip[Int, String]()
         val whatever = b add Sink.asPublisher[Any](false)

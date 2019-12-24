@@ -168,8 +168,8 @@ object PathResolver {
       }
       def deeply(dir: Directory) = dir.deepFiles find (_.name == jarName)
 
-      val home = envOrSome("JDK_HOME", envOrNone("JAVA_HOME")) map (p =>
-        Path(p))
+      val home =
+        envOrSome("JDK_HOME", envOrNone("JAVA_HOME")) map (p => Path(p))
       val install = Some(Path(javaHome))
 
       (home flatMap jarAt) orElse (install flatMap jarAt) orElse (install map (_.parent) flatMap jarAt) orElse

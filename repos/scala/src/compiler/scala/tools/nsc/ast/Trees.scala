@@ -307,8 +307,9 @@ trait Trees extends scala.reflect.internal.Trees { self: Global =>
                 if (tpt.original != null)
                   transform(tpt.original)
                 else {
-                  val refersToLocalSymbols = tpt.tpe != null && (tpt.tpe exists (
-                      tp => locals contains tp.typeSymbol))
+                  val refersToLocalSymbols =
+                    tpt.tpe != null && (tpt.tpe exists (tp =>
+                      locals contains tp.typeSymbol))
                   val isInferred = tpt.wasEmpty
                   if (refersToLocalSymbols || isInferred) {
                     tpt.duplicate.clearType()
@@ -346,7 +347,8 @@ trait Trees extends scala.reflect.internal.Trees { self: Global =>
                 // if we move these trees into lexical contexts different from their original locations.
                 if (dupl.hasSymbolField) {
                   val sym = dupl.symbol
-                  val vetoScope = !brutally && !(locals contains sym) && !(locals contains sym.deSkolemize)
+                  val vetoScope =
+                    !brutally && !(locals contains sym) && !(locals contains sym.deSkolemize)
                   val vetoThis = dupl.isInstanceOf[This] && sym.isPackageClass
                   if (!(vetoScope || vetoThis)) dupl.symbol = NoSymbol
                 }

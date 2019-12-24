@@ -688,16 +688,16 @@ object ALSSuite {
     * This is useful for tests which need to exercise all Params, such as save/load.
     * This excludes input columns to simplify some tests.
     */
-  val allEstimatorParamSettings
-      : Map[String, Any] = allModelParamSettings ++ Map(
-    "maxIter" -> 1,
-    "rank" -> 1,
-    "regParam" -> 0.01,
-    "numUserBlocks" -> 2,
-    "numItemBlocks" -> 2,
-    "implicitPrefs" -> true,
-    "alpha" -> 0.9,
-    "nonnegative" -> true,
-    "checkpointInterval" -> 20
-  )
+  val allEstimatorParamSettings: Map[String, Any] =
+    allModelParamSettings ++ Map(
+      "maxIter" -> 1,
+      "rank" -> 1,
+      "regParam" -> 0.01,
+      "numUserBlocks" -> 2,
+      "numItemBlocks" -> 2,
+      "implicitPrefs" -> true,
+      "alpha" -> 0.9,
+      "nonnegative" -> true,
+      "checkpointInterval" -> 20
+    )
 }

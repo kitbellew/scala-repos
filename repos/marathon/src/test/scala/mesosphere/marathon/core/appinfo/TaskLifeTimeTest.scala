@@ -64,8 +64,8 @@ class TaskLifeTimeTest
 
   test("life times for task with life times ignore not yet running tasks") {
     Given("three tasks with the life times 2s, 4s, 9s")
-    val tasks = Seq(2.0, 4.0, 9.0).map(runningTaskWithLifeTime) ++ Seq(
-      stagedTask())
+    val tasks =
+      Seq(2.0, 4.0, 9.0).map(runningTaskWithLifeTime) ++ Seq(stagedTask())
     When("calculating life times")
     val lifeTimes = TaskLifeTime.forSomeTasks(now, tasks)
     Then("we get the correct stats")

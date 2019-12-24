@@ -160,7 +160,8 @@ class ScalaCodeFragmentFactory extends CodeFragmentFactory {
     val names = markupMap.collect {
       case (obj: ObjectReference, markup: ValueMarkup)
           if StringUtil.isJavaIdentifier(markup.getText) =>
-        val labelName = markup.getText + CodeFragmentFactoryContextWrapper.DEBUG_LABEL_SUFFIX
+        val labelName =
+          markup.getText + CodeFragmentFactoryContextWrapper.DEBUG_LABEL_SUFFIX
         reverseMap.put(labelName, obj)
         labelName
     }

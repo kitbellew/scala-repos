@@ -50,15 +50,14 @@ object DataTypeTestUtils {
   val numericTypes: Set[NumericType] = integralType ++ fractionalTypes
 
   // TODO: remove this once we find out how to handle decimal properly in property check
-  val numericTypeWithoutDecimal: Set[DataType] = integralType ++ Set(
-    DoubleType,
-    FloatType)
+  val numericTypeWithoutDecimal: Set[DataType] =
+    integralType ++ Set(DoubleType, FloatType)
 
   /**
     * Instances of all [[NumericType]]s and [[CalendarIntervalType]]
     */
-  val numericAndInterval
-      : Set[DataType] = numericTypeWithoutDecimal + CalendarIntervalType
+  val numericAndInterval: Set[DataType] =
+    numericTypeWithoutDecimal + CalendarIntervalType
 
   /**
     * All the types that support ordering

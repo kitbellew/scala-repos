@@ -39,8 +39,8 @@ final class ResponseHeader(
       collection.JavaConversions.mapAsScalaMap(_headers).toMap,
       reasonPhrase)
 
-  val headers: Map[String, String] = TreeMap[String, String]()(
-    CaseInsensitiveOrdered) ++ _headers
+  val headers: Map[String, String] =
+    TreeMap[String, String]()(CaseInsensitiveOrdered) ++ _headers
 
   def copy(
       status: Int = status,

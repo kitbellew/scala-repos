@@ -264,9 +264,10 @@ object PlayBuild extends Build {
       mappings in (Compile, packageSrc) ++= {
         // Add both the templates, useful for end users to read, and the Scala sources that they get compiled to,
         // so omnidoc can compile and produce scaladocs for them.
-        val twirlSources = (sources in (Compile, TwirlKeys.compileTemplates)).value pair
-          relativeTo(
-            (sourceDirectories in (Compile, TwirlKeys.compileTemplates)).value)
+        val twirlSources =
+          (sources in (Compile, TwirlKeys.compileTemplates)).value pair
+            relativeTo(
+              (sourceDirectories in (Compile, TwirlKeys.compileTemplates)).value)
 
         val twirlTarget =
           (target in (Compile, TwirlKeys.compileTemplates)).value

@@ -84,10 +84,11 @@ object OAuthRequestVerifier {
         }
 
         // Verify the signature
-        val collectedParams = oauthParams.filterNot(_._1 == "oauth_signature") ++ request.queryString.toSeq
-          .flatMap {
-            case (key, values) => values.map(value => key -> value)
-          }
+        val collectedParams =
+          oauthParams.filterNot(_._1 == "oauth_signature") ++ request.queryString.toSeq
+            .flatMap {
+              case (key, values) => values.map(value => key -> value)
+            }
         // If the body is form URL encoded, must include body parameters
         val collectedParamsWithBody = request.contentType match {
           case Some(formUrlEncoded)

@@ -299,10 +299,10 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
         else if (s1 isLess s2) -1
         else 1
     }
-    implicit lazy val powerSymbolOrdering
-        : Ordering[Symbol] = Ordering[Name] on (_.name)
-    implicit lazy val powerTypeOrdering
-        : Ordering[Type] = Ordering[Symbol] on (_.typeSymbol)
+    implicit lazy val powerSymbolOrdering: Ordering[Symbol] =
+      Ordering[Name] on (_.name)
+    implicit lazy val powerTypeOrdering: Ordering[Type] =
+      Ordering[Symbol] on (_.typeSymbol)
 
     implicit def replInternalInfo[T: ru.TypeTag: ClassTag](
         x: T): InternalInfoWrapper[T] = new InternalInfoWrapper[T](Some(x))

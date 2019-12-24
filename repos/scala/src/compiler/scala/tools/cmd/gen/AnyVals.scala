@@ -203,8 +203,9 @@ import scala.language.implicitConversions"""
     )
 
     def clumps: List[List[String]] = {
-      val xs1 = List(mkCoercions, mkUnaryOps, mkStringOps, mkShiftOps) map (
-          xs => if (xs.isEmpty) xs else xs :+ "")
+      val xs1 =
+        List(mkCoercions, mkUnaryOps, mkStringOps, mkShiftOps) map (xs =>
+          if (xs.isEmpty) xs else xs :+ "")
       val xs2 = List(
         mkBinOpsGroup(comparisonOps, numeric, _ => Z),
         mkBinOpsGroup(bitwiseOps, cardinal, this opType _),

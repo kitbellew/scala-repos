@@ -340,7 +340,8 @@ trait EvaluatorModule[M[+_]]
                 pending <- f(graph)
                 _ <- monadState.modify { state =>
                   state
-                    .copy(assume = state.assume + (graph -> (pending.table, pending.sort)))
+                    .copy(assume =
+                      state.assume + (graph -> (pending.table, pending.sort)))
                 }
               } yield pending
             }
@@ -940,7 +941,8 @@ trait EvaluatorModule[M[+_]]
 
                 _ <- monadState.modify { state =>
                   state.copy(
-                    assume = state.assume + (m -> (wrapped, IdentityOrder.empty)),
+                    assume =
+                      state.assume + (m -> (wrapped, IdentityOrder.empty)),
                     reductions = state.reductions + (m -> rvalue)
                   )
                 }
@@ -1168,9 +1170,8 @@ trait EvaluatorModule[M[+_]]
         val back = memoized(graph, evalTransSpecable)
         val endTime = System.nanoTime
 
-        val timingM = transState liftM report.timing(
-          graph.loc,
-          endTime - startTime)
+        val timingM =
+          transState liftM report.timing(graph.loc, endTime - startTime)
 
         timingM >> back
       }

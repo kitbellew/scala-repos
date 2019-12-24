@@ -18,7 +18,8 @@ final class Env(
     system: ActorSystem) {
 
   private val IncomingUrl = config getString "incoming.url"
-  private val IncomingDefaultChannel = config getString "incoming.default_channel"
+  private val IncomingDefaultChannel =
+    config getString "incoming.default_channel"
 
   lazy val api = new SlackApi(client, getLightUser)
 

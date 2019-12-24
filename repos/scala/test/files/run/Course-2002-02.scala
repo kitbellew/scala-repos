@@ -198,7 +198,8 @@ object M8 {
     product(x => 4.0 * x * x / (2 * x - 1) / (2 * x - 1))(1, 1, n) / n
   }
 
-  val pi = 2 * product(x => x * x)(2, 2, 40) / product(x => x * x)(1, 2, 40) / 40;
+  val pi =
+    2 * product(x => x * x)(2, 2, 40) / product(x => x * x)(1, 2, 40) / 40;
 
   Console.println("pi = " + productPi(20))
   Console.println("pi = " + pi)

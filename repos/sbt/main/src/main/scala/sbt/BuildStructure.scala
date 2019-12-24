@@ -175,11 +175,12 @@ final class DetectedPlugins(
     val builds: DetectedModules[Build]) {
 
   /** Sequence of import expressions for the build definition.  This includes the names of the [[Plugin]], [[Build]], and [[AutoImport]] modules, but not the [[AutoPlugin]] modules. */
-  lazy val imports: Seq[String] = BuildUtil.getImports(
-    plugins.names ++ builds.names) ++
-    BuildUtil.importAllRoot(autoImports(autoPluginAutoImports)) ++
-    BuildUtil.importAll(autoImports(topLevelAutoPluginAutoImports)) ++
-    BuildUtil.importNamesRoot(autoPlugins.map(_.name).filter(nonTopLevelPlugin))
+  lazy val imports: Seq[String] =
+    BuildUtil.getImports(plugins.names ++ builds.names) ++
+      BuildUtil.importAllRoot(autoImports(autoPluginAutoImports)) ++
+      BuildUtil.importAll(autoImports(topLevelAutoPluginAutoImports)) ++
+      BuildUtil.importNamesRoot(
+        autoPlugins.map(_.name).filter(nonTopLevelPlugin))
 
   private[this] lazy val (
     autoPluginAutoImports,

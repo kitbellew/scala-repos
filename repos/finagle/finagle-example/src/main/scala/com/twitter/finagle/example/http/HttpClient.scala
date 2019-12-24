@@ -43,7 +43,8 @@ object HttpClient {
     val handleErrors = new HandleErrors
 
     // compose the Filter with the client:
-    val client: Service[Request, Response] = handleErrors andThen clientWithoutErrorHandling
+    val client: Service[Request, Response] =
+      handleErrors andThen clientWithoutErrorHandling
 
     println("))) Issuing two requests in parallel: ")
     val request1 = makeAuthorizedRequest(client)

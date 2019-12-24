@@ -146,7 +146,8 @@ object HookConfig extends BaseHumanConfig {
         mode = Mode orDefault (r int "m"),
         allowAnon = r bool "a",
         color = Color.Random,
-        ratingRange = r strO "e" flatMap RatingRange.apply getOrElse RatingRange.default
+        ratingRange =
+          r strO "e" flatMap RatingRange.apply getOrElse RatingRange.default
       )
 
     def writes(w: BSON.Writer, o: HookConfig) =

@@ -115,10 +115,8 @@ case class FilesystemIngestFailureLog(
       message: EventMessage,
       lastKnownGood: YggCheckpoint): IngestFailureLog = {
     copy(
-      failureLog = failureLog + (message -> LogRecord(
-        offset,
-        message,
-        lastKnownGood)),
+      failureLog =
+        failureLog + (message -> LogRecord(offset, message, lastKnownGood)),
       restoreFrom = lastKnownGood min restoreFrom)
   }
 

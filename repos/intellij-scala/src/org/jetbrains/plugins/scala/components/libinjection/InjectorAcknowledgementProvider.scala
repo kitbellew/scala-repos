@@ -37,9 +37,10 @@ class UIAcknowledgementProvider(
     private val project: Project)(implicit val LOG: Logger)
     extends InjectorAcknowledgementProvider {
   override def askGlobalInjectorEnable(acceptCallback: => Any) = {
-    val message = s"Some of your project's libraries have IDEA support features.</p>Would you like to load them?" +
-      s"""<p/><a href="Yes">Yes</a> """ +
-      s"""<a href="No">No</a>"""
+    val message =
+      s"Some of your project's libraries have IDEA support features.</p>Would you like to load them?" +
+        s"""<p/><a href="Yes">Yes</a> """ +
+        s"""<a href="No">No</a>"""
     val listener = new NotificationListener {
       override def hyperlinkUpdate(
           notification: Notification,

@@ -71,8 +71,8 @@ trait ArrayLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                   // s.t. f(i) = f'(i * max + arrayI)
 
                   val finalRef = ColumnRef(CPath(ptail: _*), tpe)
-                  val colTable = acc get finalRef getOrElse (new Array[Column](
-                    maxLength))
+                  val colTable =
+                    acc get finalRef getOrElse (new Array[Column](maxLength))
 
                   colTable(idx) = col
 

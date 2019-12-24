@@ -336,8 +336,8 @@ abstract class HtmlPage extends Page { thisPage =>
       }
 
     val templatePath = templateToPath(containingTemplate)
-    val url = "../" * (templatePath.size - 1) + templatePath.reverse.mkString(
-      "/")
+    val url =
+      "../" * (templatePath.size - 1) + templatePath.reverse.mkString("/")
     url + signature.map("#" + _).getOrElse("")
   }
 }

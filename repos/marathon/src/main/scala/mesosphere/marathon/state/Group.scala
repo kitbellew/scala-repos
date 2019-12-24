@@ -138,11 +138,11 @@ case class Group(
     }
   }
 
-  lazy val transitiveApps: Set[AppDefinition] = this.apps ++ groups.flatMap(
-    _.transitiveApps)
+  lazy val transitiveApps: Set[AppDefinition] =
+    this.apps ++ groups.flatMap(_.transitiveApps)
 
-  lazy val transitiveGroups
-      : Set[Group] = groups.flatMap(_.transitiveGroups) + this
+  lazy val transitiveGroups: Set[Group] =
+    groups.flatMap(_.transitiveGroups) + this
 
   lazy val transitiveAppGroups: Set[Group] =
     transitiveGroups.filter(_.apps.nonEmpty)

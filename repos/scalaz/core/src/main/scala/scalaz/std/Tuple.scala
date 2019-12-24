@@ -913,8 +913,8 @@ private trait Tuple3Equal[A1, A2, A3] extends Equal[(A1, A2, A3)] {
   implicit def _3: Equal[A3]
   override def equal(f1: (A1, A2, A3), f2: (A1, A2, A3)) =
     _1.equal(f1._1, f2._1) && _2.equal(f1._2, f2._2) && _3.equal(f1._3, f2._3)
-  override val equalIsNatural
-      : Boolean = _1.equalIsNatural && _2.equalIsNatural && _3.equalIsNatural
+  override val equalIsNatural: Boolean =
+    _1.equalIsNatural && _2.equalIsNatural && _3.equalIsNatural
 }
 private trait Tuple4Equal[A1, A2, A3, A4] extends Equal[(A1, A2, A3, A4)] {
   implicit def _1: Equal[A1]
@@ -924,8 +924,8 @@ private trait Tuple4Equal[A1, A2, A3, A4] extends Equal[(A1, A2, A3, A4)] {
   override def equal(f1: (A1, A2, A3, A4), f2: (A1, A2, A3, A4)) =
     _1.equal(f1._1, f2._1) && _2.equal(f1._2, f2._2) && _3.equal(f1._3, f2._3) && _4
       .equal(f1._4, f2._4)
-  override val equalIsNatural
-      : Boolean = _1.equalIsNatural && _2.equalIsNatural && _3.equalIsNatural && _4.equalIsNatural
+  override val equalIsNatural: Boolean =
+    _1.equalIsNatural && _2.equalIsNatural && _3.equalIsNatural && _4.equalIsNatural
 }
 private trait Tuple5Equal[A1, A2, A3, A4, A5]
     extends Equal[(A1, A2, A3, A4, A5)] {
@@ -937,8 +937,8 @@ private trait Tuple5Equal[A1, A2, A3, A4, A5]
   override def equal(f1: (A1, A2, A3, A4, A5), f2: (A1, A2, A3, A4, A5)) =
     _1.equal(f1._1, f2._1) && _2.equal(f1._2, f2._2) && _3.equal(f1._3, f2._3) && _4
       .equal(f1._4, f2._4) && _5.equal(f1._5, f2._5)
-  override val equalIsNatural
-      : Boolean = _1.equalIsNatural && _2.equalIsNatural && _3.equalIsNatural && _4.equalIsNatural && _5.equalIsNatural
+  override val equalIsNatural: Boolean =
+    _1.equalIsNatural && _2.equalIsNatural && _3.equalIsNatural && _4.equalIsNatural && _5.equalIsNatural
 }
 private trait Tuple6Equal[A1, A2, A3, A4, A5, A6]
     extends Equal[(A1, A2, A3, A4, A5, A6)] {
@@ -953,8 +953,8 @@ private trait Tuple6Equal[A1, A2, A3, A4, A5, A6]
       f2: (A1, A2, A3, A4, A5, A6)) =
     _1.equal(f1._1, f2._1) && _2.equal(f1._2, f2._2) && _3.equal(f1._3, f2._3) && _4
       .equal(f1._4, f2._4) && _5.equal(f1._5, f2._5) && _6.equal(f1._6, f2._6)
-  override val equalIsNatural
-      : Boolean = _1.equalIsNatural && _2.equalIsNatural && _3.equalIsNatural && _4.equalIsNatural && _5.equalIsNatural && _6.equalIsNatural
+  override val equalIsNatural: Boolean =
+    _1.equalIsNatural && _2.equalIsNatural && _3.equalIsNatural && _4.equalIsNatural && _5.equalIsNatural && _6.equalIsNatural
 }
 private trait Tuple7Equal[A1, A2, A3, A4, A5, A6, A7]
     extends Equal[(A1, A2, A3, A4, A5, A6, A7)] {
@@ -971,8 +971,8 @@ private trait Tuple7Equal[A1, A2, A3, A4, A5, A6, A7]
     _1.equal(f1._1, f2._1) && _2.equal(f1._2, f2._2) && _3.equal(f1._3, f2._3) && _4
       .equal(f1._4, f2._4) && _5.equal(f1._5, f2._5) && _6.equal(f1._6, f2._6) && _7
       .equal(f1._7, f2._7)
-  override val equalIsNatural
-      : Boolean = _1.equalIsNatural && _2.equalIsNatural && _3.equalIsNatural && _4.equalIsNatural && _5.equalIsNatural && _6.equalIsNatural && _7.equalIsNatural
+  override val equalIsNatural: Boolean =
+    _1.equalIsNatural && _2.equalIsNatural && _3.equalIsNatural && _4.equalIsNatural && _5.equalIsNatural && _6.equalIsNatural && _7.equalIsNatural
 }
 private trait Tuple8Equal[A1, A2, A3, A4, A5, A6, A7, A8]
     extends Equal[(A1, A2, A3, A4, A5, A6, A7, A8)] {
@@ -990,8 +990,8 @@ private trait Tuple8Equal[A1, A2, A3, A4, A5, A6, A7, A8]
     _1.equal(f1._1, f2._1) && _2.equal(f1._2, f2._2) && _3.equal(f1._3, f2._3) && _4
       .equal(f1._4, f2._4) && _5.equal(f1._5, f2._5) && _6.equal(f1._6, f2._6) && _7
       .equal(f1._7, f2._7) && _8.equal(f1._8, f2._8)
-  override val equalIsNatural
-      : Boolean = _1.equalIsNatural && _2.equalIsNatural && _3.equalIsNatural && _4.equalIsNatural && _5.equalIsNatural && _6.equalIsNatural && _7.equalIsNatural && _8.equalIsNatural
+  override val equalIsNatural: Boolean =
+    _1.equalIsNatural && _2.equalIsNatural && _3.equalIsNatural && _4.equalIsNatural && _5.equalIsNatural && _6.equalIsNatural && _7.equalIsNatural && _8.equalIsNatural
 }
 private trait Tuple1Show[A1] extends Show[Tuple1[A1]] {
   implicit def _1: Show[A1]

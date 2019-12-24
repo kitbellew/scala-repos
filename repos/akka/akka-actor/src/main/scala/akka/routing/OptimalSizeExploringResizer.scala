@@ -293,7 +293,8 @@ case class DefaultOptimalSizeExploringResizer(
     val adjacentDispatchWaits: Map[PoolSize, Duration] = {
       def adjacency = (size: Int) ⇒ Math.abs(currentSize - size)
       val sizes = performanceLog.keys.toSeq
-      val numOfSizesEachSide = numOfAdjacentSizesToConsiderDuringOptimization / 2
+      val numOfSizesEachSide =
+        numOfAdjacentSizesToConsiderDuringOptimization / 2
       val leftBoundary = sizes
         .filter(_ < currentSize)
         .sortBy(adjacency)

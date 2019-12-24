@@ -94,8 +94,8 @@ class PresentationCompilerCompleter(intp: IMain) extends Completion {
           val tabAfterCommonPrefixCompletion = lastCommonPrefixCompletion
             .contains(buf.substring(0, cursor)) && matching.exists(
             _.symNameDropLocal == r.name)
-          val doubleTab = tabCount > 0 && matching.forall(
-            _.symNameDropLocal == r.name)
+          val doubleTab =
+            tabCount > 0 && matching.forall(_.symNameDropLocal == r.name)
           if (tabAfterCommonPrefixCompletion || doubleTab)
             defStringCandidates(matching, r.name)
           else if (matching.isEmpty) {

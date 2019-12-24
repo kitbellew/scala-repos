@@ -74,9 +74,8 @@ private[spark] class EventLoggingListener(
   private val shouldOverwrite =
     sparkConf.getBoolean("spark.eventLog.overwrite", false)
   private val testing = sparkConf.getBoolean("spark.eventLog.testing", false)
-  private val outputBufferSize = sparkConf.getInt(
-    "spark.eventLog.buffer.kb",
-    100) * 1024
+  private val outputBufferSize =
+    sparkConf.getInt("spark.eventLog.buffer.kb", 100) * 1024
   private val fileSystem = Utils.getHadoopFileSystem(logBaseDir, hadoopConf)
   private val compressionCodec =
     if (shouldCompress) {

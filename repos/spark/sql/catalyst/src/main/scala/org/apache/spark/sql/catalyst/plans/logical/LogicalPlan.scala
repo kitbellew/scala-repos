@@ -109,8 +109,8 @@ abstract class LogicalPlan extends QueryPlan[LogicalPlan] with Logging {
     * [[org.apache.spark.sql.catalyst.analysis.UnresolvedRelation UnresolvedRelation]]
     * should return `false`).
     */
-  lazy val resolved
-      : Boolean = expressions.forall(_.resolved) && childrenResolved
+  lazy val resolved: Boolean =
+    expressions.forall(_.resolved) && childrenResolved
 
   override protected def statePrefix = if (!resolved) "'" else super.statePrefix
 
@@ -315,7 +315,8 @@ abstract class UnaryNode extends LogicalPlan {
     val childRowSize = child.output.map(_.dataType.defaultSize).sum + 8
     val outputRowSize = output.map(_.dataType.defaultSize).sum + 8
     // Assume there will be the same number of rows as child has.
-    var sizeInBytes = (child.statistics.sizeInBytes * outputRowSize) / childRowSize
+    var sizeInBytes =
+      (child.statistics.sizeInBytes * outputRowSize) / childRowSize
     if (sizeInBytes == 0) {
       // sizeInBytes can't be zero, or sizeInBytes of BinaryNode will also be zero
       // (product of children).

@@ -727,8 +727,8 @@ final case class TypedProps[T <: AnyRef] protected[TypedProps] (
     * or if the interface class is not an interface, all the interfaces it implements.
     */
   def withoutInterface(interface: Class[_ >: T]): TypedProps[T] =
-    this.copy(interfaces = interfaces diff TypedProps.extractInterfaces(
-      interface))
+    this.copy(interfaces =
+      interfaces diff TypedProps.extractInterfaces(interface))
 
   /**
     * Returns the akka.actor.Props representation of this TypedProps

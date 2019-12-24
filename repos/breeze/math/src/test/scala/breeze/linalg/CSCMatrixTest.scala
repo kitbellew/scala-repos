@@ -474,9 +474,8 @@ class CSCMatrixTest extends FunSuite with Checkers {
   }
 
   test("CSCMatrix Solve") {
-    val r2: DenseVector[Double] = CSCMatrix((1.0, 3.0, 4.0), (2.0, 0.0, 6.0)) \ DenseVector(
-      1.0,
-      3.0)
+    val r2: DenseVector[Double] =
+      CSCMatrix((1.0, 3.0, 4.0), (2.0, 0.0, 6.0)) \ DenseVector(1.0, 3.0)
     import breeze.numerics.inf
     assert(
       norm(

@@ -91,13 +91,12 @@ trait RandomLibrary extends Library {
     .toMap
     .values
     .toSet //make sure no duplicate opcodes
-  lazy val libReduction = reductions ++ containerOfN[Set, Reduction](
-    30,
-    genReduction).sample.get
-    .map(op => (op.opcode, op))
-    .toMap
-    .values
-    .toSet //make sure no duplicate opcodes
+  lazy val libReduction =
+    reductions ++ containerOfN[Set, Reduction](30, genReduction).sample.get
+      .map(op => (op.opcode, op))
+      .toMap
+      .values
+      .toSet //make sure no duplicate opcodes
 
   lazy val expandGlob = Morphism1(Vector("std", "fs"), "expandGlob", 0x0004)
 

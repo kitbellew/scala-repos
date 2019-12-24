@@ -52,12 +52,15 @@ class SplitElseIfIntention extends PsiElementBaseIntentionAction {
     if (ifStmt == null || !ifStmt.isValid) return
 
     val start = ifStmt.getTextRange.getStartOffset
-    val startIndex = ifStmt.thenBranch.get.getTextRange.getEndOffset - ifStmt.getTextRange.getStartOffset
-    val endIndex = ifStmt.elseBranch.get.getTextRange.getStartOffset - ifStmt.getTextRange.getStartOffset
+    val startIndex =
+      ifStmt.thenBranch.get.getTextRange.getEndOffset - ifStmt.getTextRange.getStartOffset
+    val endIndex =
+      ifStmt.elseBranch.get.getTextRange.getStartOffset - ifStmt.getTextRange.getStartOffset
     val elseIndex = ifStmt.getText
       .substring(startIndex, endIndex)
       .indexOf("else") - 1
-    val diff = editor.getCaretModel.getOffset - ifStmt.thenBranch.get.getTextRange.getEndOffset - elseIndex
+    val diff =
+      editor.getCaretModel.getOffset - ifStmt.thenBranch.get.getTextRange.getEndOffset - elseIndex
 
     val expr = new StringBuilder
     expr

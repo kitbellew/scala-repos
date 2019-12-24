@@ -183,8 +183,8 @@ final case class PluginData(
     resolvers: Option[Seq[Resolver]],
     report: Option[UpdateReport],
     scalacOptions: Seq[String]) {
-  val classpath
-      : Seq[Attributed[File]] = definitionClasspath ++ dependencyClasspath
+  val classpath: Seq[Attributed[File]] =
+    definitionClasspath ++ dependencyClasspath
 }
 object PluginData {
   @deprecated(

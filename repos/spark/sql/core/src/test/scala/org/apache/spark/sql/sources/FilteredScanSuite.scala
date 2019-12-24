@@ -119,7 +119,8 @@ case class SimpleFilteredScan(from: Int, to: Int)(
     }
 
     def eval(a: Int) = {
-      val c = (a - 1 + 'a').toChar.toString * 5 + (a - 1 + 'a').toChar.toString.toUpperCase * 5
+      val c =
+        (a - 1 + 'a').toChar.toString * 5 + (a - 1 + 'a').toChar.toString.toUpperCase * 5
       filters.forall(translateFilterOnA(_)(a)) && filters.forall(
         translateFilterOnC(_)(c))
     }

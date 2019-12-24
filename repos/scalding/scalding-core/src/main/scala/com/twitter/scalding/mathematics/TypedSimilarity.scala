@@ -186,8 +186,8 @@ object TypedSimilarity extends Serializable {
               case (node1, deg1) =>
                 rightit.iterator.flatMap {
                   case (node2, deg2) =>
-                    val weight = 1.0 / scala.math.sqrt(
-                      deg1.toDouble * deg2.toDouble)
+                    val weight =
+                      1.0 / scala.math.sqrt(deg1.toDouble * deg2.toDouble)
                     val prob = oversample * weight
                     if (prob >= 1.0) {
                       // Small degree case, just output all of them:
@@ -301,7 +301,8 @@ class DiscoInCosine[N](
 
   // The probability of being more than delta error is approx:
   // boundedProb ~ exp(-p delta^2 / 2)
-  private val oversample = (-2.0 * scala.math.log(boundedProb) / (delta * delta)) / minCos
+  private val oversample =
+    (-2.0 * scala.math.log(boundedProb) / (delta * delta)) / minCos
 
   def apply(
       graph: TypedPipe[Edge[N, InDegree]],
@@ -343,7 +344,8 @@ class DimsumInCosine[N](
 
   // The probability of being more than delta error is approx:
   // boundedProb ~ exp(-p delta^2 / 2)
-  private val oversample = (-2.0 * scala.math.log(boundedProb) / (delta * delta)) / minCos
+  private val oversample =
+    (-2.0 * scala.math.log(boundedProb) / (delta * delta)) / minCos
 
   def apply(
       graph: TypedPipe[Edge[N, (Weight, L2Norm)]],

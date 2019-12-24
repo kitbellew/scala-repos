@@ -758,8 +758,10 @@ trait Printers extends api.Printers { self: SymbolTable =>
           printPosition(tree)
           printAnnotations(vd)
           val mutableOrOverride = mods.isOverride || mods.isMutable
-          val hideCtorMods = mods.isParamAccessor && mods.isPrivateLocal && !mutableOrOverride
-          val hideCaseCtorMods = mods.isCaseAccessor && mods.isPublic && !mutableOrOverride
+          val hideCtorMods =
+            mods.isParamAccessor && mods.isPrivateLocal && !mutableOrOverride
+          val hideCaseCtorMods =
+            mods.isCaseAccessor && mods.isPublic && !mutableOrOverride
 
           if (primaryCtorParam && !(hideCtorMods || hideCaseCtorMods)) {
             printModifiers(mods, primaryCtorParam)
@@ -1146,9 +1148,10 @@ trait Printers extends api.Printers { self: SymbolTable =>
 
           if (printRootPkg && checkRootPackage(tree))
             print(s"${printedName(nme.ROOTPKG)}.")
-          val printParentheses = needsParentheses(qual)(insideAnnotated = false) || isIntLitWithDecodedOp(
-            qual,
-            name)
+          val printParentheses =
+            needsParentheses(qual)(insideAnnotated = false) || isIntLitWithDecodedOp(
+              qual,
+              name)
           if (printParentheses)
             print("(", resolveSelect(qual), ").", printedName(name))
           else print(resolveSelect(qual), ".", printedName(name))
@@ -1186,9 +1189,9 @@ trait Printers extends api.Printers { self: SymbolTable =>
               print(trQuotes)
             case _ =>
               // processing Float constants
-              val printValue = x.escapedStringValue + (if (x.value.isInstanceOf[
-                                                             Float]) "F"
-                                                       else "")
+              val printValue =
+                x.escapedStringValue + (if (x.value.isInstanceOf[Float]) "F"
+                                        else "")
               print(printValue)
           }
 

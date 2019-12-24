@@ -86,7 +86,8 @@ object AddScheduledQueryRequest {
     AddScheduledQueryRequest.apply _,
     AddScheduledQueryRequest.unapply _)
 
-  val schemaV1 = "schedule" :: "owners" :: "context" :: "source" :: "sink" :: "timeout" :: HNil
+  val schemaV1 =
+    "schedule" :: "owners" :: "context" :: "source" :: "sink" :: "timeout" :: HNil
 
   implicit val decomposer: Decomposer[AddScheduledQueryRequest] =
     decomposerV(schemaV1, Some("1.0".v))

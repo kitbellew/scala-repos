@@ -474,9 +474,10 @@ class FutureSpec
       }
 
       "firstCompletedOf" in {
-        val futures = Vector.fill[Future[Int]](10)(Promise[Int]().future) :+ Promise
-          .successful[Int](5)
-          .future
+        val futures =
+          Vector.fill[Future[Int]](10)(Promise[Int]().future) :+ Promise
+            .successful[Int](5)
+            .future
         Await.result(Future.firstCompletedOf(futures), timeout.duration) should ===(
           5)
       }

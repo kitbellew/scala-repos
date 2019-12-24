@@ -433,7 +433,8 @@ trait SwaggerSupportSyntax extends Initializable with CorsSupport {
           }
 
         case _: Servlet =>
-          val registration = ScalatraBase.getServletRegistration(this) getOrElse throwAFit
+          val registration =
+            ScalatraBase.getServletRegistration(this) getOrElse throwAFit
           //          println("Registering for mappings: " + registration.getMappings().asScala.mkString("[", ", ", "]"))
           registration.getMappings.asScala foreach registerInSwagger
 
@@ -678,11 +679,12 @@ trait SwaggerSupport
   protected def extractOperation(
       route: Route,
       method: HttpMethod): Operation = {
-    val op = route.metadata.get(Symbols.Operation) map (_.asInstanceOf[
-      Operation])
+    val op =
+      route.metadata.get(Symbols.Operation) map (_.asInstanceOf[Operation])
     op map (_.copy(method = method)) getOrElse {
-      val theParams = route.metadata.get(Symbols.Parameters) map (_.asInstanceOf[
-        List[Parameter]]) getOrElse Nil
+      val theParams =
+        route.metadata.get(Symbols.Parameters) map (_.asInstanceOf[List[
+          Parameter]]) getOrElse Nil
       val errors = route.metadata.get(Symbols.Errors) map (_.asInstanceOf[List[
         ResponseMessage[_]]]) getOrElse Nil
       val responseClass = route.metadata.get(Symbols.ResponseClass) map (_.asInstanceOf[
@@ -690,8 +692,8 @@ trait SwaggerSupport
       val summary = (route.metadata.get(Symbols.Summary) map (_.asInstanceOf[
         String])).orNull
       val notes = route.metadata.get(Symbols.Notes) map (_.asInstanceOf[String])
-      val nick = route.metadata.get(Symbols.Nickname) map (_.asInstanceOf[
-        String])
+      val nick =
+        route.metadata.get(Symbols.Nickname) map (_.asInstanceOf[String])
       val produces = route.metadata.get(Symbols.Produces) map (_.asInstanceOf[
         List[String]]) getOrElse Nil
       val consumes = route.metadata.get(Symbols.Consumes) map (_.asInstanceOf[

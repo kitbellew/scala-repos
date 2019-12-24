@@ -9,14 +9,17 @@ object SwankTestData extends EnsimeTestData {
   val typeInfoStr =
     """(:arrow-type nil :name "type1" :decl-as method :full-name "FOO.type1")"""
 
-  val typeInspectInfoStr = s"""(:type $typeInfoStr :companion-id 1 :interfaces ((:type """ + typeInfoStr + """ :via-view "DEF")) :info-type typeInspect)"""
+  val typeInspectInfoStr =
+    s"""(:type $typeInfoStr :companion-id 1 :interfaces ((:type """ + typeInfoStr + """ :via-view "DEF")) :info-type typeInspect)"""
 
-  val callCompletionInfoStr = """(:result-type """ + typeInfoStr + """ :param-sections ((:params (("ABC" """ + typeInfoStr + """)))))"""
+  val callCompletionInfoStr =
+    """(:result-type """ + typeInfoStr + """ :param-sections ((:params (("ABC" """ + typeInfoStr + """)))))"""
 
   val symbolDesignationsStr =
     s"""(:file $symFile :syms ((object 7 9) (trait 11 22)))"""
 
-  val symbolInfoStr = """(:name "name" :local-name "localName" :type """ + typeInfoStr + """)"""
+  val symbolInfoStr =
+    """(:name "name" :local-name "localName" :type """ + typeInfoStr + """)"""
 
   val implicitInfosStr =
     s"""((:type conversion :start 5 :end 6 :fun $symbolInfoStr) (:type param :start 7 :end 8 :fun $symbolInfoStr :params ($symbolInfoStr $symbolInfoStr) :fun-is-implicit t))"""
@@ -36,7 +39,8 @@ object SwankTestData extends EnsimeTestData {
   val completionInfo2Str =
     """(:name "name2" :type-sig (((("abc" "def"))) "ABC") :is-callable t :relevance 91)"""
 
-  val completionInfoListStr = "(" + completionInfoStr + " " + completionInfo2Str + ")"
+  val completionInfoListStr =
+    "(" + completionInfoStr + " " + completionInfo2Str + ")"
 
   val refactorFailureStr =
     """(:procedure-id 7 :reason "message" :status failure)"""

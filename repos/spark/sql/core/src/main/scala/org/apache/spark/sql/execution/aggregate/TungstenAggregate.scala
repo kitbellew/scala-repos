@@ -569,7 +569,8 @@ case class TungstenAggregate(
     val hashEval = BindReferences.bindReference(hashExpr, child.output).gen(ctx)
 
     val inputAttr = aggregateBufferAttributes ++ child.output
-    ctx.currentVars = new Array[ExprCode](aggregateBufferAttributes.length) ++ input
+    ctx.currentVars =
+      new Array[ExprCode](aggregateBufferAttributes.length) ++ input
     ctx.INPUT_ROW = buffer
     // TODO: support subexpression elimination
     val evals =

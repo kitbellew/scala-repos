@@ -104,7 +104,8 @@ object TimeTest {
   }
 
   def runActuarius = {
-    val markdown = readFile("/home/chris/sbt_projects/markdown_race/test.txt").mkString * 100
+    val markdown =
+      readFile("/home/chris/sbt_projects/markdown_race/test.txt").mkString * 100
     val iterations = 10
     println("==== First run to warm up the VM: ====")
     testRun(markdown, iterations)

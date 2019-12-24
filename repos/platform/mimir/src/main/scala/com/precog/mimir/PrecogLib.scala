@@ -142,16 +142,16 @@ trait PrecogLibModule[M[+_]]
           val baseOpts = Map(
             jfield("accountId", account.accountId),
             jfield("email", account.email))
-          val chunks
-              : List[((String, Map[String, JValue]), BitSet)] = chunks0 map {
-            case (row, members) =>
-              val url = urls(row)
-              val opts = options.toJValue(row) match {
-                case JObject(elems) => elems ++ baseOpts
-                case _              => baseOpts
-              }
-              ((url, opts), members)
-          }
+          val chunks: List[((String, Map[String, JValue]), BitSet)] =
+            chunks0 map {
+              case (row, members) =>
+                val url = urls(row)
+                val opts = options.toJValue(row) match {
+                  case JObject(elems) => elems ++ baseOpts
+                  case _              => baseOpts
+                }
+                ((url, opts), members)
+            }
 
           val resultsM: M[List[Result[Slice]]] = chunks traverse {
             case ((url, opts), members) =>

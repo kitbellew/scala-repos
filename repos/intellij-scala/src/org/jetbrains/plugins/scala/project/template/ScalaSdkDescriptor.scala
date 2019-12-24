@@ -84,7 +84,8 @@ trait SdkDescriptor {
 object ScalaSdkDescriptor extends SdkDescriptorCompanion {
   override protected val requiredBinaries: Set[Artifact] = Set()
 
-  override protected val libraryArtifacts = Artifact.values - Artifact.ScalaCompiler
+  override protected val libraryArtifacts =
+    Artifact.values - Artifact.ScalaCompiler
 
   override protected def createSdkDescriptor(
       version: Option[Version],
@@ -138,7 +139,8 @@ trait SdkDescriptorCompanion {
 
     val existingBinaryArtifacts = binaryComponents.map(_.artifact).toSet
 
-    val missingBinaryArtifacts = requiredBinaryArtifacts -- existingBinaryArtifacts
+    val missingBinaryArtifacts =
+      requiredBinaryArtifacts -- existingBinaryArtifacts
 
     if (missingBinaryArtifacts.isEmpty) {
       val compilerBinaries = binaryComponents.filter(it =>

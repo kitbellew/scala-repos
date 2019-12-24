@@ -523,12 +523,12 @@ object AppDefinition {
     * Until the user changed all invalid apps, the user would get weird validation
     * errors for every deployment potentially unrelated to the deployed apps.
     */
-  implicit val validAppDefinition
-      : Validator[AppDefinition] = validator[AppDefinition] { app =>
-    app.id is valid
-    app.id is PathId.absolutePathValidator
-    app.dependencies is every(PathId.validPathWithBase(app.id.parent))
-  } and validBasicAppDefinition
+  implicit val validAppDefinition: Validator[AppDefinition] =
+    validator[AppDefinition] { app =>
+      app.id is valid
+      app.id is PathId.absolutePathValidator
+      app.dependencies is every(PathId.validPathWithBase(app.id.parent))
+    } and validBasicAppDefinition
 
   /**
     * Validator for apps, which are being part of a group.

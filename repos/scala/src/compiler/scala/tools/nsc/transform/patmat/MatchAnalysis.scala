@@ -530,8 +530,8 @@ trait MatchAnalysis extends MatchApproximation {
         })
 
       val propsCasesOk = approximate(True) map caseWithoutBodyToProp
-      val propsCasesFail = approximate(False) map (t =>
-        Not(caseWithoutBodyToProp(t)))
+      val propsCasesFail =
+        approximate(False) map (t => Not(caseWithoutBodyToProp(t)))
 
       try {
         val (eqAxiomsFail, symbolicCasesFail) =
@@ -771,7 +771,8 @@ trait MatchAnalysis extends MatchApproximation {
         .sortBy(_._1.toString)
         .map {
           case (v, (trues, falses)) =>
-            val assignment = "== " + (trues mkString ("(", ", ", ")")) + "  != (" + (falses mkString (", ")) + ")"
+            val assignment =
+              "== " + (trues mkString ("(", ", ", ")")) + "  != (" + (falses mkString (", ")) + ")"
             v + "(=" + v.path + ": " + v.staticTpCheckable + ") " + assignment
         }
         .mkString("\n")

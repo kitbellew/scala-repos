@@ -820,27 +820,30 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
         case block @ (_: ScEarlyDefinitions | _: ScTemplateBody |
             _: ScPackaging | _: ScBlockExpr | _: ScMatchStmt | _: ScTryBlock |
             _: ScCatchBlock) =>
-          val oneLineNonEmpty = leftString != "{" && !getText(
-            block.getNode,
-            fileText).contains('\n')
-          val spaceInsideOneLineMethod = scalaSettings.SPACES_IN_ONE_LINE_BLOCKS &&
-            rightNode.getTreeParent.getTreeParent != null && rightNode.getTreeParent.getTreeParent.getPsi
-            .isInstanceOf[ScFunction]
-          val spaceInsideClosure = scalaSettings.SPACE_INSIDE_CLOSURE_BRACES && (leftNode.getElementType match {
-            case ScalaElementTypes.FUNCTION_EXPR => true
-            case ScalaElementTypes.CASE_CLAUSES =>
-              block.getParent.isInstanceOf[ScArgumentExprList] ||
-                block.getParent.isInstanceOf[ScInfixExpr]
-            case _ =>
-              scalaSettings.KEEP_ONE_LINE_LAMBDAS_IN_ARG_LIST &&
-                (leftPsi.isInstanceOf[ScFunctionExpr] || block
-                  .isInstanceOf[ScBlockExpr] || leftPsi
-                  .isInstanceOf[ScCaseClauses])
-          })
-          val needsSpace = (oneLineNonEmpty && (spaceInsideOneLineMethod || spaceInsideClosure ||
-            scalaSettings.SPACES_IN_ONE_LINE_BLOCKS)) ||
-            leftPsi
-              .isInstanceOf[PsiComment] && scalaSettings.KEEP_ONE_LINE_LAMBDAS_IN_ARG_LIST
+          val oneLineNonEmpty =
+            leftString != "{" && !getText(block.getNode, fileText)
+              .contains('\n')
+          val spaceInsideOneLineMethod =
+            scalaSettings.SPACES_IN_ONE_LINE_BLOCKS &&
+              rightNode.getTreeParent.getTreeParent != null && rightNode.getTreeParent.getTreeParent.getPsi
+              .isInstanceOf[ScFunction]
+          val spaceInsideClosure =
+            scalaSettings.SPACE_INSIDE_CLOSURE_BRACES && (leftNode.getElementType match {
+              case ScalaElementTypes.FUNCTION_EXPR => true
+              case ScalaElementTypes.CASE_CLAUSES =>
+                block.getParent.isInstanceOf[ScArgumentExprList] ||
+                  block.getParent.isInstanceOf[ScInfixExpr]
+              case _ =>
+                scalaSettings.KEEP_ONE_LINE_LAMBDAS_IN_ARG_LIST &&
+                  (leftPsi.isInstanceOf[ScFunctionExpr] || block
+                    .isInstanceOf[ScBlockExpr] || leftPsi
+                    .isInstanceOf[ScCaseClauses])
+            })
+          val needsSpace =
+            (oneLineNonEmpty && (spaceInsideOneLineMethod || spaceInsideClosure ||
+              scalaSettings.SPACES_IN_ONE_LINE_BLOCKS)) ||
+              leftPsi
+                .isInstanceOf[PsiComment] && scalaSettings.KEEP_ONE_LINE_LAMBDAS_IN_ARG_LIST
           val spaces = if (needsSpace) 1 else 0
 
           return Spacing.createDependentLFSpacing(

@@ -112,7 +112,8 @@ class ConsumerBroadcast(
         val deactivationListFuture = deactivationListPromise.future
 
         allActivationFutures = allActivationFutures :+ activationListFuture
-        allDeactivationFutures = allDeactivationFutures :+ deactivationListFuture
+        allDeactivationFutures =
+          allDeactivationFutures :+ deactivationListFuture
         val routee = context.actorOf(
           Props(
             classOf[Registrar],

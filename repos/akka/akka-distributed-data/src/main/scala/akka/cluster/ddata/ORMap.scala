@@ -170,8 +170,9 @@ final class ORMap[A <: ReplicatedData] private[akka] (
       (this.values.get(key), that.values.get(key)) match {
         case (Some(thisValue), Some(thatValue)) ⇒
           if (thisValue.getClass != thatValue.getClass) {
-            val errMsg = s"Wrong type for merging [$key] in [${getClass.getName}], existing type " +
-              s"[${thisValue.getClass.getName}], got [${thatValue.getClass.getName}]"
+            val errMsg =
+              s"Wrong type for merging [$key] in [${getClass.getName}], existing type " +
+                s"[${thisValue.getClass.getName}], got [${thatValue.getClass.getName}]"
             throw new IllegalArgumentException(errMsg)
           }
           // TODO can we get rid of these (safe) casts?

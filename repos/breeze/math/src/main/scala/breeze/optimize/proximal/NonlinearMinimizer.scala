@@ -146,9 +146,8 @@ class NonlinearMinimizer(
         s := u
         s *= rho
 
-        val epsPrimal = scale + reltol * max(
-          norm(resultState.x),
-          norm(residual))
+        val epsPrimal =
+          scale + reltol * max(norm(resultState.x), norm(residual))
         val epsDual = scale + reltol * norm(s)
 
         if (residualNorm < epsPrimal && sNorm < epsDual || iter > admmIters) {

@@ -114,7 +114,8 @@ object Boilerplate {
       val instances = rawContents flatMap {
         _ filter (_ startsWith "-") map (_.tail)
       }
-      val postBody = rawContents.head dropWhile (_ startsWith "|") dropWhile (_ startsWith "-") map (_.tail)
+      val postBody =
+        rawContents.head dropWhile (_ startsWith "|") dropWhile (_ startsWith "-") map (_.tail)
       (headerLines ++ preBody ++ instances ++ postBody) mkString "\n"
     }
   }
@@ -397,11 +398,13 @@ object Boilerplate {
 
     def content(tv: TemplateVals) = {
       import tv._
-      val implicitArgs = (synTypes map (a => s"cast${a}:Typeable[${a}]")) mkString ", "
+      val implicitArgs =
+        (synTypes map (a => s"cast${a}:Typeable[${a}]")) mkString ", "
       val enumerators = synTypes.zipWithIndex map {
         case (a, idx) => s"_ <- p._${idx + 1}.cast[${a}]"
       } mkString "; "
-      val castVals = (synTypes map (a => s"$${cast${a}.describe}")) mkString ", "
+      val castVals =
+        (synTypes map (a => s"$${cast${a}.describe}")) mkString ", "
 
       block"""
         |
@@ -457,8 +460,10 @@ object Boilerplate {
     def content(tv: TemplateVals) = {
       import tv._
       val typeArgs = (0 until arity) map (n => s"K${n}, V${n}") mkString ", "
-      val args = (0 until arity) map (n => s"e${n}: (K${n}, V${n})") mkString ", "
-      val witnesses = (0 until arity) map (n => s"ev${n}: R[K${n}, V${n}]") mkString ", "
+      val args =
+        (0 until arity) map (n => s"e${n}: (K${n}, V${n})") mkString ", "
+      val witnesses =
+        (0 until arity) map (n => s"ev${n}: R[K${n}, V${n}]") mkString ", "
       val mapArgs = (0 until arity) map (n => "e" + n) mkString ", "
 
       block"""

@@ -144,10 +144,11 @@ class ManifestScalaType(val manifest: Manifest[_]) extends ScalaType {
   //    _typeArgs
   //  }
 
-  val typeArgs = manifest.typeArguments.map(ta => Reflector.scalaTypeOf(ta)) ++ (
-    if (erasure.isArray) List(Reflector.scalaTypeOf(erasure.getComponentType))
-    else Nil
-  )
+  val typeArgs =
+    manifest.typeArguments.map(ta => Reflector.scalaTypeOf(ta)) ++ (
+      if (erasure.isArray) List(Reflector.scalaTypeOf(erasure.getComponentType))
+      else Nil
+    )
 
   private[this] var _typeVars: Map[TypeVariable[_], ScalaType] = null
   def typeVars = {

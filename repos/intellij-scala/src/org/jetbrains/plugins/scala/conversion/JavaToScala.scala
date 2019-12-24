@@ -480,9 +480,8 @@ object JavaToScala {
           attrResult += ((Option(attribute.getName), Option(value)))
         }
 
-        val inAnnotation = PsiTreeUtil.getParentOfType(
-          annot,
-          classOf[PsiAnnotation]) != null
+        val inAnnotation =
+          PsiTreeUtil.getParentOfType(annot, classOf[PsiAnnotation]) != null
 
         val name = Option(annot.getNameReferenceElement)
           .map(convertPsiToIntermdeiate(_, externalProperties))

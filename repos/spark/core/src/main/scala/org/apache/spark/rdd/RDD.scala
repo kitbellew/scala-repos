@@ -1873,7 +1873,8 @@ abstract class RDD[T: ClassTag](
     def firstDebugString(rdd: RDD[_]): Seq[String] = {
       val partitionStr = "(" + rdd.partitions.length + ")"
       val leftOffset = (partitionStr.length - 1) / 2
-      val nextPrefix = (" " * leftOffset) + "|" + (" " * (partitionStr.length - leftOffset))
+      val nextPrefix =
+        (" " * leftOffset) + "|" + (" " * (partitionStr.length - leftOffset))
 
       debugSelf(rdd).zipWithIndex.map {
         case (desc: String, 0) => s"$partitionStr $desc"

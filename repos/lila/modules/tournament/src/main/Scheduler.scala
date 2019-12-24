@@ -62,8 +62,10 @@ private[tournament] final class Scheduler(api: TournamentApi) extends Actor {
       val isHalloween = today.getMonthOfYear == 10 && today.getDayOfMonth == 31
 
       val std = StartingPosition.initial
-      val opening1 = isHalloween ? StartingPosition.presets.halloween | StartingPosition.randomFeaturable
-      val opening2 = isHalloween ? StartingPosition.presets.frankenstein | StartingPosition.randomFeaturable
+      val opening1 =
+        isHalloween ? StartingPosition.presets.halloween | StartingPosition.randomFeaturable
+      val opening2 =
+        isHalloween ? StartingPosition.presets.frankenstein | StartingPosition.randomFeaturable
 
       val nextSchedules: List[Schedule] = List(
         // Schedule(Marathon, Blitz, Standard, std, at(firstSundayOfCurrentMonth, 2, 0) |> orNextMonth),

@@ -698,8 +698,8 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
     if (localGossip.hasMember(node)) {
       val newReachability =
         latestGossip.overview.reachability.terminated(selfUniqueAddress, node)
-      val newOverview = localGossip.overview copy (reachability =
-        newReachability)
+      val newOverview =
+        localGossip.overview copy (reachability = newReachability)
       val newGossip = localGossip copy (overview = newOverview)
       updateLatestGossip(newGossip)
       log.warning(
@@ -1083,8 +1083,8 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
       val newSeen = localSeen diff removed
       // removing REMOVED nodes from the `reachability` table
       val newReachability = localOverview.reachability.remove(removed)
-      val newOverview = localOverview copy (seen = newSeen, reachability =
-        newReachability)
+      val newOverview =
+        localOverview copy (seen = newSeen, reachability = newReachability)
       // Clear the VectorClock when member is removed. The change made by the leader is stamped
       // and will propagate as is if there are no other changes on other nodes.
       // If other concurrent changes on other nodes (e.g. join) the pruning is also

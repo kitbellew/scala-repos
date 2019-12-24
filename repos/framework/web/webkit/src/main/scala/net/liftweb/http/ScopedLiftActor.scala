@@ -34,10 +34,8 @@ trait ScopedLiftActor extends LiftActor with LazyLoggable {
     * The session captured when the instance is created. It should be correct if the instance is created
     * in the scope of a request
     */
-  protected val _session: LiftSession = S.session openOr new LiftSession(
-    "",
-    Helpers.nextFuncName,
-    Empty)
+  protected val _session: LiftSession =
+    S.session openOr new LiftSession("", Helpers.nextFuncName, Empty)
 
   /**
     * The render version of the page that this was created in the scope of

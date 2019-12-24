@@ -111,9 +111,8 @@ private[scala] trait PropertiesTrait {
   /** The version number of the jar this was loaded from plus "version " prefix,
     *  or "version (unknown)" if it cannot be determined.
     */
-  val versionString = "version " + scalaPropOrElse(
-    "version.number",
-    "(unknown)")
+  val versionString =
+    "version " + scalaPropOrElse("version.number", "(unknown)")
   val copyrightString =
     scalaPropOrElse("copyright.string", "Copyright 2002-2016, LAMP/EPFL")
 

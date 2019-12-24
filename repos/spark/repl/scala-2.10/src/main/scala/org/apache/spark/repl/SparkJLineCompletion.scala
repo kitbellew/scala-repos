@@ -177,7 +177,8 @@ class SparkJLineCompletion(val intp: SparkIMain)
 
     override def alternativesFor(id: String): List[String] =
       debugging(id + " alternatives ==> ") {
-        val alts = members filter (x => x.isMethod && tos(x) == id) map methodSignatureString
+        val alts =
+          members filter (x => x.isMethod && tos(x) == id) map methodSignatureString
 
         if (alts.nonEmpty) "" :: alts else Nil
       }
@@ -296,11 +297,10 @@ class SparkJLineCompletion(val intp: SparkIMain)
   }
   // members of java.lang.*
   object javalang extends PackageCompletion(JavaLangPackage.tpe) {
-    override lazy val excludeEndsWith = super.excludeEndsWith ++ List(
-      "Exception",
-      "Error")
-    override lazy val excludeStartsWith = super.excludeStartsWith ++ List(
-      "CharacterData")
+    override lazy val excludeEndsWith =
+      super.excludeEndsWith ++ List("Exception", "Error")
+    override lazy val excludeStartsWith =
+      super.excludeStartsWith ++ List("CharacterData")
 
     override def completions(verbosity: Int) = verbosity match {
       case 0 => filtered(packageNames)

@@ -372,8 +372,9 @@ trait Implicits {
   /** An extractor for types of the form ? { name: (? >: argtpe <: Any*)restp }
     */
   object HasMethodMatching {
-    val dummyMethod = NoSymbol.newTermSymbol(TermName("typer$dummy")) setInfo NullaryMethodType(
-      AnyTpe)
+    val dummyMethod =
+      NoSymbol.newTermSymbol(TermName("typer$dummy")) setInfo NullaryMethodType(
+        AnyTpe)
 
     def templateArgType(argtpe: Type) =
       new BoundedWildcardType(TypeBounds.lower(argtpe))
@@ -588,7 +589,8 @@ trait Implicits {
           DivergentSearchFailure
         case None =>
           try {
-            context.openImplicits = OpenImplicit(info, pt, tree) :: context.openImplicits
+            context.openImplicits =
+              OpenImplicit(info, pt, tree) :: context.openImplicits
             // println("  "*context.openImplicits.length+"typed implicit "+info+" for "+pt) //@MDEBUG
             val result = typedImplicit0(info, ptChecked, isLocalToCallsite)
             if (result.isDivergent) {
@@ -1089,8 +1091,8 @@ trait Implicits {
         */
       val eligible = {
         val matches = iss flatMap { is =>
-          val result = is filter (info =>
-            checkValid(info.sym) && survives(info))
+          val result =
+            is filter (info => checkValid(info.sym) && survives(info))
           shadower addInfos is
           result
         }

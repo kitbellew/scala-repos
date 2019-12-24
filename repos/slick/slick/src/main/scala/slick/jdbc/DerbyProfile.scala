@@ -224,8 +224,9 @@ trait DerbyProfile extends JdbcProfile {
       import seq.integral._
       val increment = seq._increment.getOrElse(one)
       val desc = increment < zero
-      val b = new StringBuilder append "CREATE SEQUENCE " append quoteIdentifier(
-        seq.name)
+      val b =
+        new StringBuilder append "CREATE SEQUENCE " append quoteIdentifier(
+          seq.name)
       /* Set the START value explicitly because it defaults to the data type's
        * min/max value instead of the more conventional 1/-1. */
       b append " START WITH " append seq._start.getOrElse(if (desc) -1 else 1)

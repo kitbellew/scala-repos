@@ -171,8 +171,8 @@ package ll {
     import syms._
 
     exitingTyper {
-      val typeArgs = List[Type](IntClass.tpe, ListClass[Int]) ++ tparams.map(
-        _.tpe)
+      val typeArgs =
+        List[Type](IntClass.tpe, ListClass[Int]) ++ tparams.map(_.tpe)
       permute(typeArgs) foreach println
     }
     for (x <- classes ++ terms) {

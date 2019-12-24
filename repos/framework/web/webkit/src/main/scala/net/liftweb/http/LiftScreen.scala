@@ -1004,9 +1004,9 @@ trait AbstractScreen extends Factory with Loggable {
       cols: Int,
       stuff: FilterOrValidate[String]*): Field { type ValueType = String } = {
 
-    val eAttr
-        : List[SHtml.ElemAttr] = (("rows" -> rows.toString): SHtml.ElemAttr) ::
-      (("cols" -> cols.toString): SHtml.ElemAttr) :: grabParams(stuff)
+    val eAttr: List[SHtml.ElemAttr] =
+      (("rows" -> rows.toString): SHtml.ElemAttr) ::
+        (("cols" -> cols.toString): SHtml.ElemAttr) :: grabParams(stuff)
 
     makeField[String, Nothing](
       name,
@@ -1324,8 +1324,8 @@ trait ScreenWizardRendered extends Loggable {
           case Nil => basicLabel
           case _ =>
             val maxN = myNotices.map(_._1).sortWith { _.id > _.id }.head // get the maximum type of notice (Error > Warning > Notice)
-            val metaData
-                : MetaData = noticeTypeToAttr(theScreen).map(_(maxN)) openOr Null
+            val metaData: MetaData =
+              noticeTypeToAttr(theScreen).map(_(maxN)) openOr Null
             basicLabel & update(_.label, metaData)
         }
       }
@@ -1347,8 +1347,8 @@ trait ScreenWizardRendered extends Loggable {
           case xs =>
             replaceChildren(_.errors) #> xs.map {
               case (noticeType, msg, _) =>
-                val metaData: MetaData = noticeTypeToAttr(theScreen).map(
-                  _(noticeType)) openOr Null
+                val metaData: MetaData =
+                  noticeTypeToAttr(theScreen).map(_(noticeType)) openOr Null
                 nsSetChildren(_.error, msg) & update(_.error, metaData)
             }
         }
@@ -1371,8 +1371,8 @@ trait ScreenWizardRendered extends Loggable {
       case xs =>
         replaceChildren(_.globalErrors) #> xs.map {
           case (noticeType, msg, _) =>
-            val metaData: MetaData = noticeTypeToAttr(theScreen).map(
-              _(noticeType)) openOr Null
+            val metaData: MetaData =
+              noticeTypeToAttr(theScreen).map(_(noticeType)) openOr Null
             nsSetChildren(_.error, msg) & update(_.error, metaData)
         }
     }

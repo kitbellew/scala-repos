@@ -161,7 +161,8 @@ class LogTest extends JUnitSuite {
     val set = TestUtils.singleMessageSet("test".getBytes)
     val setSize = set.sizeInBytes
     val msgPerSeg = 10
-    val segmentSize = msgPerSeg * (setSize - 1) // each segment will be 10 messages
+    val segmentSize =
+      msgPerSeg * (setSize - 1) // each segment will be 10 messages
 
     val logProps = new Properties()
     logProps.put(LogConfig.SegmentBytesProp, segmentSize: java.lang.Integer)

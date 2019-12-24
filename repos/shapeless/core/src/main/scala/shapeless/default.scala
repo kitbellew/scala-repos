@@ -290,8 +290,8 @@ class DefaultMacros(val c: whitebox.Context) extends CaseClassMacros {
     // a Default instance with non-empty types / values only if that holds.
     // The apply$default$... methods below may still exist without these, if an additional
     // apply method has default parameters. We want to ignore them in this case.
-    val hasDefaults = oneOverloadWithDefaults && methodHasDefaults(
-      primaryConstructor)
+    val hasDefaults =
+      oneOverloadWithDefaults && methodHasDefaults(primaryConstructor)
 
     def wrapTpeTree(idx: Int, argTpe: Type) = {
       if (hasDefaults) {

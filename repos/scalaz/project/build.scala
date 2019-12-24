@@ -68,7 +68,8 @@ object build extends Build {
     isJSProject := true,
     scalacOptions += {
       val a = (baseDirectory in LocalRootProject).value.toURI.toString
-      val g = "https://raw.githubusercontent.com/scalaz/scalaz/" + tagOrHash.value
+      val g =
+        "https://raw.githubusercontent.com/scalaz/scalaz/" + tagOrHash.value
       s"-P:scalajs:mapSourceURI:$a->$g/"
     }
   )
@@ -134,18 +135,13 @@ object build extends Build {
     // retronym: I was seeing intermittent heap exhaustion in scalacheck based tests, so opting for determinism.
     parallelExecution in Test := false,
     testOptions in Test += {
-      val scalacheckOptions = Seq(
-        "-maxSize",
-        "5",
-        "-workers",
-        "1",
-        "-maxDiscardRatio",
-        "50") ++ {
-        if (isJSProject.value)
-          Seq("-minSuccessfulTests", "10")
-        else
-          Seq("-minSuccessfulTests", "33")
-      }
+      val scalacheckOptions =
+        Seq("-maxSize", "5", "-workers", "1", "-maxDiscardRatio", "50") ++ {
+          if (isJSProject.value)
+            Seq("-minSuccessfulTests", "10")
+          else
+            Seq("-minSuccessfulTests", "33")
+        }
       Tests.Argument(TestFrameworks.ScalaCheck, scalacheckOptions: _*)
     },
     isJSProject := isJSProject.?.value.getOrElse(false),

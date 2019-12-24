@@ -295,7 +295,8 @@ private[spark] class MesosSchedulerBackend(
           //  1. Memory requirements
           //  2. CPU requirements - need at least 1 for executor, 1 for task
           val meetsMemoryRequirements = mem >= executorMemory(sc)
-          val meetsCPURequirements = cpus >= (mesosExecutorCores + scheduler.CPUS_PER_TASK)
+          val meetsCPURequirements =
+            cpus >= (mesosExecutorCores + scheduler.CPUS_PER_TASK)
           val meetsRequirements =
             (meetsMemoryRequirements && meetsCPURequirements) ||
               (slaveIdToExecutorInfo.contains(slaveId) && cpus >= scheduler.CPUS_PER_TASK)

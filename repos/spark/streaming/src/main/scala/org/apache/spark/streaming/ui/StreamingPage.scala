@@ -326,7 +326,8 @@ private[ui] class StreamingPage(parent: StreamingTab)
 
     val numCompletedBatches = listener.retainedCompletedBatches.size
     val numActiveBatches = batchTimes.length - numCompletedBatches
-    val numReceivers = listener.numInactiveReceivers + listener.numActiveReceivers
+    val numReceivers =
+      listener.numInactiveReceivers + listener.numActiveReceivers
     val table =
       // scalastyle:off
       <table id="stat-table" class="table table-bordered" style="width: auto">

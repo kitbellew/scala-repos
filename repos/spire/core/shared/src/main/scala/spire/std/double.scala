@@ -36,7 +36,8 @@ trait DoubleIsField extends Field[Double] {
       // We trim of the power of 2s, then add back the shared portion.
       val n = spire.math.gcd(val0 >>> tz0, val1 >>> tz1) << tzShared
       // Number of bits to move the leading 1 to bit position 23.
-      val shift = numberOfLeadingZeros(n) - 11 // Number of bits to move 1 to bit 52
+      val shift =
+        numberOfLeadingZeros(n) - 11 // Number of bits to move 1 to bit 52
       val exp = (exp0 - shift).toLong
       // If exp is 0, then the value is actually just the mantissa * 2^−126,
       // so we need to adjust the *shift* accordingly.

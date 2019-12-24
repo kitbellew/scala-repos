@@ -88,8 +88,8 @@ private[deploy] object CommandUtils extends Logging {
 
     var newEnvironment =
       if (libraryPathEntries.nonEmpty && libraryPathName.nonEmpty) {
-        val libraryPaths = libraryPathEntries ++ cmdLibraryPath ++ env.get(
-          libraryPathName)
+        val libraryPaths =
+          libraryPathEntries ++ cmdLibraryPath ++ env.get(libraryPathName)
         command.environment + (
           (
             libraryPathName,

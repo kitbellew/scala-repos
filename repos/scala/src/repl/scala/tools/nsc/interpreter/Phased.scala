@@ -85,8 +85,8 @@ trait Phased {
     phs zip atMulti(phs)(body)
 
   object PhaseName {
-    implicit lazy val phaseNameOrdering
-        : Ordering[PhaseName] = Ordering[Int] on (_.id)
+    implicit lazy val phaseNameOrdering: Ordering[PhaseName] =
+      Ordering[Int] on (_.id)
 
     lazy val all = List(
       Parser,

@@ -177,8 +177,9 @@ trait HsqldbProfile extends JdbcProfile {
       val increment = seq._increment.getOrElse(one)
       val desc = increment < zero
       val start = seq._start.getOrElse(if (desc) -1 else 1)
-      val b = new StringBuilder append "CREATE SEQUENCE " append quoteIdentifier(
-        seq.name)
+      val b =
+        new StringBuilder append "CREATE SEQUENCE " append quoteIdentifier(
+          seq.name)
       seq._increment.foreach { b append " INCREMENT BY " append _ }
       seq._minValue.foreach { b append " MINVALUE " append _ }
       seq._maxValue.foreach { b append " MAXVALUE " append _ }

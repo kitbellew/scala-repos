@@ -216,9 +216,10 @@ trait SliceTransforms[M[+_]]
                   case _                                         => true
                 }
 
-                val groupedNonNum = (leftNonNum mapValues { _ :: Nil }) cogroup (rightNonNum mapValues {
-                  _ :: Nil
-                })
+                val groupedNonNum =
+                  (leftNonNum mapValues { _ :: Nil }) cogroup (rightNonNum mapValues {
+                    _ :: Nil
+                  })
 
                 val simplifiedGroupNonNum = groupedNonNum map {
                   case (_, Left3(column))  => Left(column)
@@ -301,8 +302,8 @@ trait SliceTransforms[M[+_]]
                     unifiedNonNum.isDefinedAt(row) || unifiedNum.isDefinedAt(
                       row)
                   def apply(row: Int): Boolean = {
-                    val left = !unifiedNonNum.isDefinedAt(row) || unifiedNonNum(
-                      row)
+                    val left =
+                      !unifiedNonNum.isDefinedAt(row) || unifiedNonNum(row)
                     val right = !unifiedNum.isDefinedAt(row) || unifiedNum(row)
                     left && right
                   }
@@ -745,9 +746,10 @@ trait SliceTransforms[M[+_]]
                         predC.asInstanceOf[BoolColumn].asBitSet(true, size)
                       rightMask.flip(0, size)
 
-                      val grouped = (leftS.columns mapValues { _ :: Nil }) cogroup (rightS.columns mapValues {
-                        _ :: Nil
-                      })
+                      val grouped =
+                        (leftS.columns mapValues { _ :: Nil }) cogroup (rightS.columns mapValues {
+                          _ :: Nil
+                        })
 
                       val joined: Map[ColumnRef, Column] = grouped.map({
                         case (ref, Left3(col)) =>

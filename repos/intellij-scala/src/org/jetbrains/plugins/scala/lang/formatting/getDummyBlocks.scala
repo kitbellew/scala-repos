@@ -165,8 +165,9 @@ object getDummyBlocks {
         val correctChildren = children.filter(isCorrectBlock)
         val (beforeOpenBrace, afterOpenBrace) =
           correctChildren.span(_.getElementType != ScalaTokenTypes.tLBRACE)
-        val hasValidTail = afterOpenBrace.nonEmpty && afterOpenBrace.head.getElementType == ScalaTokenTypes.tLBRACE &&
-          afterOpenBrace.last.getElementType == ScalaTokenTypes.tRBRACE
+        val hasValidTail =
+          afterOpenBrace.nonEmpty && afterOpenBrace.head.getElementType == ScalaTokenTypes.tLBRACE &&
+            afterOpenBrace.last.getElementType == ScalaTokenTypes.tRBRACE
         for (child <- if (hasValidTail) beforeOpenBrace else correctChildren) {
           subBlocks.add(
             getSubBlock(

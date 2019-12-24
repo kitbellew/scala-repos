@@ -366,7 +366,8 @@ private[sbt] object SettingCompletions {
     val applicable = all.toSeq.filter { case (k, v) => k startsWith seen }
     val prominentOnly = applicable filter { case (k, v) => prominent(k, v) }
 
-    val showAll = (level >= 3) || (level == 2 && prominentOnly.size <= detailLimit) || prominentOnly.isEmpty
+    val showAll =
+      (level >= 3) || (level == 2 && prominentOnly.size <= detailLimit) || prominentOnly.isEmpty
     val showKeys = if (showAll) applicable else prominentOnly
     val showDescriptions = (level >= 2) || (showKeys.size <= detailLimit)
     completeDescribed(seen, showDescriptions, showKeys)(s =>

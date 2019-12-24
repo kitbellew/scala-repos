@@ -100,8 +100,8 @@ class WorksheetUiConstructor(base: JComponent, project: Project) {
 
     defaultModule foreach {
       case nn =>
-        val foundModule
-            : Module = ModuleManager getInstance project findModuleByName nn
+        val foundModule: Module =
+          ModuleManager getInstance project findModuleByName nn
         if (foundModule != null) modulesBox setSelectedModule foundModule
     }
 

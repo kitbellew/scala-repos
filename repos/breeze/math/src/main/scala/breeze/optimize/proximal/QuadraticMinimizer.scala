@@ -340,9 +340,8 @@ class QuadraticMinimizer(
       s := u
       s *= rho
 
-      val epsPrimal = convergenceScale * abstol + reltol * max(
-        norm(x, 2),
-        norm(residual, 2))
+      val epsPrimal =
+        convergenceScale * abstol + reltol * max(norm(x, 2), norm(residual, 2))
       val epsDual = convergenceScale * abstol + reltol * norm(s, 2)
 
       if (residualNorm < epsPrimal && sNorm < epsDual) {

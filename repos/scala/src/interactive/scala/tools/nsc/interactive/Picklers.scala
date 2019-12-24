@@ -105,8 +105,8 @@ trait Picklers { self: Global =>
 
   lazy val noPosition = singletonPickler(NoPosition)
 
-  implicit lazy val position
-      : Pickler[Position] = transparentPosition | rangePosition | offsetPosition | noPosition
+  implicit lazy val position: Pickler[Position] =
+    transparentPosition | rangePosition | offsetPosition | noPosition
 
   implicit lazy val namePickler: Pickler[Name] =
     pkl[String].wrapped[Name] { str =>

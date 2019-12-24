@@ -115,7 +115,8 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
         val generated = generatedClassName != null && refType
           .name()
           .contains(generatedClassName)
-        lazy val sameFile = getPsiFileByReferenceType(file.getProject, refType) == file
+        lazy val sameFile =
+          getPsiFileByReferenceType(file.getProject, refType) == file
 
         generated || sameFile && locationsOfLine(refType, position).size > 0
       } catch {
@@ -134,7 +135,8 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
       if (onTheLine.isEmpty) return Collections.emptyList()
       val nonLambdaParent =
         if (isCompiledWithIndyLambdas(file)) {
-          val nonStrictParents = Iterator(onTheLine.head) ++ onTheLine.head.parentsInFile
+          val nonStrictParents =
+            Iterator(onTheLine.head) ++ onTheLine.head.parentsInFile
           nonStrictParents.find(p =>
             ScalaEvaluatorBuilderUtil.isGenerateNonAnonfunClass(p))
         } else None
@@ -468,7 +470,8 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
         val dollarTestSuffix = "$Test" //See SCL-9340
         if (originalQName.endsWith(dollarTestSuffix)) Some(originalQName)
         else if (originalQName.contains(dollarTestSuffix + "$")) {
-          val index = originalQName.indexOf(dollarTestSuffix) + dollarTestSuffix.length
+          val index =
+            originalQName.indexOf(dollarTestSuffix) + dollarTestSuffix.length
           Some(originalQName.take(index))
         } else None
       }
@@ -1020,8 +1023,8 @@ object ScalaPositionManager {
   private class NamePattern(elem: PsiElement) {
     private val containingFile = elem.getContainingFile
     private val sourceName = containingFile.getName
-    private val isGeneratedForCompilingEvaluator = containingFile.getUserData(
-      ScalaCompilingEvaluator.classNameKey) != null
+    private val isGeneratedForCompilingEvaluator =
+      containingFile.getUserData(ScalaCompilingEvaluator.classNameKey) != null
     private var compiledWithIndyLambdas = isCompiledWithIndyLambdas(
       containingFile)
     private val exactName: Option[String] = {

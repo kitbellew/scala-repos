@@ -116,10 +116,8 @@ class RewriteJoins extends Phase {
 
     case n @ Bind(s1, p @ Pure(f1, _), sel1) if !f1.isInstanceOf[Aggregate] =>
       logger.debug("Inlining Pure 'from' in:", n)
-      val res = Bind(
-        s1,
-        Pure(StructNode(ConstArray.empty)).infer(),
-        sel1.replace({
+      val res =
+        Bind(s1, Pure(StructNode(ConstArray.empty)).infer(), sel1.replace({
           case FwdPath(s :: rest) if s == s1 =>
             rest.foldLeft(f1) { case (n, s) => n.select(s) }
         }, keepType = true)) :@ n.nodeType

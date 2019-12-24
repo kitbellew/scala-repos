@@ -73,8 +73,9 @@ private[cluster] final case class Gossip(
         s"Live members must have status [${Removed}], " +
           s"got [${members.filter(_.status == Removed)}]")
 
-    val inReachabilityButNotMember = overview.reachability.allObservers diff members
-      .map(_.uniqueAddress)
+    val inReachabilityButNotMember =
+      overview.reachability.allObservers diff members
+        .map(_.uniqueAddress)
     if (inReachabilityButNotMember.nonEmpty)
       throw new IllegalArgumentException(
         "Nodes not part of cluster in reachability table, got [%s]"
@@ -132,7 +133,8 @@ private[cluster] final case class Gossip(
     * Merges the seen table of two Gossip instances.
     */
   def mergeSeen(that: Gossip): Gossip =
-    this copy (overview = overview copy (seen = overview.seen union that.overview.seen))
+    this copy (overview =
+      overview copy (seen = overview.seen union that.overview.seen))
 
   /**
     * Merges two Gossip instances including membership tables, and the VectorClock histories.

@@ -132,18 +132,19 @@ object ShardServiceCombinators extends Logging {
     }
 
     request.parameters.get('sortOn).filter(_ != null) map { paths =>
-      val parsed
-          : Validation[Error, List[CPath]] = ((Thrown(_: Throwable)) <-: JParser
-        .parseFromString(paths)) flatMap {
-        case JArray(elems) =>
-          Validation.success(
-            elems collect { case JString(path) => CPath(path) })
-        case JString(path) =>
-          Validation.success(CPath(path) :: Nil)
-        case badJVal =>
-          Validation.failure(Invalid(
-            "The sortOn query parameter was expected to be JSON string or array, but found " + badJVal))
-      }
+      val parsed: Validation[Error, List[CPath]] =
+        ((Thrown(_: Throwable)) <-: JParser
+          .parseFromString(paths)) flatMap {
+          case JArray(elems) =>
+            Validation.success(elems collect {
+              case JString(path) => CPath(path)
+            })
+          case JString(path) =>
+            Validation.success(CPath(path) :: Nil)
+          case badJVal =>
+            Validation.failure(Invalid(
+              "The sortOn query parameter was expected to be JSON string or array, but found " + badJVal))
+        }
 
       onError <-: parsed
     } getOrElse {
@@ -366,10 +367,11 @@ final class FindAccountService[A, B](accountFinder: AccountFinder[Future])(
       delegate.service(request) map {
         (f: Validation[String, (APIKey, AccountDetails)] => Future[B]) =>
           { (apiKey: APIKey) =>
-            val details = OptionT(accountFinder.findAccountByAPIKey(apiKey)) flatMap {
-              accountId =>
-                OptionT(accountFinder.findAccountDetailsById(accountId))
-            }
+            val details =
+              OptionT(accountFinder.findAccountByAPIKey(apiKey)) flatMap {
+                accountId =>
+                  OptionT(accountFinder.findAccountDetailsById(accountId))
+              }
             val result = details.fold(
               account => Success((apiKey, account)),
               Failure("Cannot find account for API key: " + apiKey))

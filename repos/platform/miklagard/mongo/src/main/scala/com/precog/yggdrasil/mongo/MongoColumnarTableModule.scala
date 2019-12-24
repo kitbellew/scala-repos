@@ -295,7 +295,8 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
 
           case objId: ObjectId =>
             // TODO: We should ensure this matches up w/ BlueEyes exactly.
-            val value = "ObjectId(\"" + Hex.encodeHexString(objId.toByteArray) + "\")"
+            val value =
+              "ObjectId(\"" + Hex.encodeHexString(objId.toByteArray) + "\")"
             val col = acc
               .getOrElseUpdate((rprefix, CString), {
                 ArrayStrColumn.empty(sliceSize)

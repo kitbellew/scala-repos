@@ -378,8 +378,9 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
           failedJobsTable
       }
 
-      val helpText = """A job is triggered by an action, like count() or saveAsTextFile().""" +
-        " Click on a job to see information about the stages of tasks inside it."
+      val helpText =
+        """A job is triggered by an action, like count() or saveAsTextFile().""" +
+          " Click on a job to see information about the stages of tasks inside it."
 
       UIUtils.headerSparkPage(
         "Spark Jobs",

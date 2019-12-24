@@ -240,7 +240,8 @@ private[cluster] final case class MetricsGossip(nodes: Set[NodeMetrics]) {
   def :+(newNodeMetrics: NodeMetrics): MetricsGossip =
     nodeMetricsFor(newNodeMetrics.address) match {
       case Some(existingNodeMetrics) ⇒
-        copy(nodes = nodes - existingNodeMetrics + (existingNodeMetrics merge newNodeMetrics))
+        copy(nodes =
+          nodes - existingNodeMetrics + (existingNodeMetrics merge newNodeMetrics))
       case None ⇒ copy(nodes = nodes + newNodeMetrics)
     }
 

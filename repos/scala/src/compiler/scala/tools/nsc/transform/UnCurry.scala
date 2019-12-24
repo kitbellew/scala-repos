@@ -180,7 +180,8 @@ abstract class UnCurry
         val restpe = meth.tpe_*.finalResultType
         val extpe = nonLocalReturnExceptionType(restpe)
         val ex = meth.newValue(nme.ex, body.pos) setInfo extpe
-        val argType = restpe withAnnotation (AnnotationInfo marker UncheckedClass.tpe)
+        val argType =
+          restpe withAnnotation (AnnotationInfo marker UncheckedClass.tpe)
         val pat =
           gen.mkBindForCase(ex, NonLocalReturnControlClass, List(argType))
         val rhs = (
@@ -263,7 +264,8 @@ abstract class UnCurry
           if (inlineFunctionExpansion || !canUseDelamdafyMethod) {
             val parents = addSerializable(
               abstractFunctionForFunctionType(fun.tpe))
-            val anonClass = fun.symbol.owner newAnonymousFunctionClass (fun.pos, inConstructorFlag) addAnnotation SerialVersionUIDAnnotation
+            val anonClass =
+              fun.symbol.owner newAnonymousFunctionClass (fun.pos, inConstructorFlag) addAnnotation SerialVersionUIDAnnotation
             // The original owner is used in the backend for the EnclosingMethod attribute. If fun is
             // nested in a value-class method, its owner was already changed to the extension method.
             // Saving the original owner allows getting the source structure from the class symbol.
@@ -514,9 +516,11 @@ abstract class UnCurry
                             withInConstructorFlag(INCONSTRUCTOR) {
                               transform(stat)
                             }
-                          val presupers = treeInfo.preSuperFields(stats) map transformInConstructor
+                          val presupers =
+                            treeInfo.preSuperFields(stats) map transformInConstructor
                           val rest = stats drop presupers.length
-                          val supercalls = rest take 1 map transformInConstructor
+                          val supercalls =
+                            rest take 1 map transformInConstructor
                           val others = rest drop 1 map transform
                           treeCopy.Block(
                             rhs,
@@ -546,7 +550,8 @@ abstract class UnCurry
                   super.transform(tree)
 
               case Apply(fn, args) =>
-                val needLift = needTryLift || !fn.symbol.isLabel // SI-6749, no need to lift in args to label jumps.
+                val needLift =
+                  needTryLift || !fn.symbol.isLabel // SI-6749, no need to lift in args to label jumps.
                 withNeedLift(needLift) {
                   val formals = fn.tpe.paramTypes
                   treeCopy.Apply(

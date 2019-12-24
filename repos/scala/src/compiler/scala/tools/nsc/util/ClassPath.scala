@@ -344,8 +344,8 @@ class MergedClassPath[T](
 
   def name = entries.head.name
   def asURLs = (entries flatMap (_.asURLs)).toList
-  lazy val sourcepaths
-      : IndexedSeq[AbstractFile] = entries flatMap (_.sourcepaths)
+  lazy val sourcepaths: IndexedSeq[AbstractFile] =
+    entries flatMap (_.sourcepaths)
 
   override def origin =
     Some(

@@ -11,7 +11,8 @@ import akka.remote.transport.FailureInjectorTransportAdapter.{One, Drop}
 import scala.concurrent.Await
 
 object AkkaProtocolStressTest {
-  val configA: Config = ConfigFactory parseString ("""
+  val configA: Config =
+    ConfigFactory parseString ("""
     akka {
       #loglevel = DEBUG
       actor.serialize-messages = off
@@ -119,7 +120,8 @@ class AkkaProtocolStressTest
           .managementCommand(One(addressB, Drop(0.1, 0.1))),
         3.seconds.dilated)
 
-      val tester = system.actorOf(Props(classOf[SequenceVerifier], here, self)) ! "start"
+      val tester =
+        system.actorOf(Props(classOf[SequenceVerifier], here, self)) ! "start"
 
       expectMsgPF(60.seconds) {
         case (received: Int, lost: Int) ⇒

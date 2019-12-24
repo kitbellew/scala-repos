@@ -52,11 +52,12 @@ object ScriptedPlugin extends Plugin {
 
   private def scriptedParser(scriptedBase: File): Parser[Seq[String]] = {
     import DefaultParsers._
-    val pairs = (scriptedBase * AllPassFilter * AllPassFilter * "test").get map {
-      (f: File) =>
-        val p = f.getParentFile
-        (p.getParentFile.getName, p.getName)
-    }
+    val pairs =
+      (scriptedBase * AllPassFilter * AllPassFilter * "test").get map {
+        (f: File) =>
+          val p = f.getParentFile
+          (p.getParentFile.getName, p.getName)
+      }
     val pairMap = pairs.groupBy(_._1).mapValues(_.map(_._2).toSet)
 
     val id = charClass(c => !c.isWhitespace && c != '/').+.string

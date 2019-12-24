@@ -79,8 +79,9 @@ final case class Comprehension(
     val fetch2 = mapOrNone(fetch)(_.infer(genScope, typeChildren))
     val offset2 = mapOrNone(offset)(_.infer(genScope, typeChildren))
     // Check if the nodes changed
-    val same = (f2 eq from) && (s2 eq select) && w2.isEmpty && g2.isEmpty && (o2 eq o) && h2.isEmpty &&
-      distinct2.isEmpty && fetch2.isEmpty && offset2.isEmpty
+    val same =
+      (f2 eq from) && (s2 eq select) && w2.isEmpty && g2.isEmpty && (o2 eq o) && h2.isEmpty &&
+        distinct2.isEmpty && fetch2.isEmpty && offset2.isEmpty
     val newType =
       if (!hasType)
         CollectionType(

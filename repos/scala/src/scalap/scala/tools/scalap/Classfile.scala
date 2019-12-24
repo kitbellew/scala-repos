@@ -30,7 +30,8 @@ class Classfile(in: ByteArrayReader) {
     var attribs: List[Attribute] = Nil
     var i = 0
     while (i < n) {
-      attribs = Attribute(in.nextChar.toInt, in.nextBytes(in.nextInt)) :: attribs
+      attribs =
+        Attribute(in.nextChar.toInt, in.nextBytes(in.nextInt)) :: attribs
       i = i + 1
     }
     attribs

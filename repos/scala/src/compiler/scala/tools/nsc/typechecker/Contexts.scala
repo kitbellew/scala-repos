@@ -255,7 +255,8 @@ trait Contexts { self: Analyzer =>
     protected def outerDepth = if (outerIsNoContext) 0 else outer.depth
 
     val depth: Int = {
-      val increasesDepth = isRootImport || outerIsNoContext || (outer.scope != scope)
+      val increasesDepth =
+        isRootImport || outerIsNoContext || (outer.scope != scope)
       (if (increasesDepth) 1 else 0) + outerDepth
     }
 

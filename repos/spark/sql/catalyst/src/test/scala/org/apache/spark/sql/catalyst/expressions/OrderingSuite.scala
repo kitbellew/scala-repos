@@ -91,7 +91,8 @@ class OrderingSuite extends SparkFunSuite with ExpressionEvalHelper {
         .add("f1", FloatType, nullable = true)
         .add("f2", ArrayType(BooleanType, containsNull = true), nullable = true)
     val arrayOfStructType = ArrayType(structType)
-    val complexTypes = ArrayType(IntegerType) :: structType :: arrayOfStructType :: Nil
+    val complexTypes =
+      ArrayType(IntegerType) :: structType :: arrayOfStructType :: Nil
     (DataTypeTestUtils.atomicTypes ++ complexTypes ++ Set(NullType)).foreach {
       dataType =>
         test(s"GenerateOrdering with $dataType") {

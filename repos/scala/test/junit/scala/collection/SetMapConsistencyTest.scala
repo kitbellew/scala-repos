@@ -408,8 +408,8 @@ class SetMapConsistencyTest {
     1397198789151L,
     -41402148014L)
   val stringKeys = intKeys.map(_.toString) ++ Array("", null)
-  val anyKeys = stringKeys.filter(_ != null) ++ Array(0L) ++ Array(true) ++ Array(
-    math.Pi)
+  val anyKeys =
+    stringKeys.filter(_ != null) ++ Array(0L) ++ Array(true) ++ Array(math.Pi)
 
   @Test
   def churnIntMaps() {
@@ -665,8 +665,8 @@ class SetMapConsistencyTest {
 
   @Test
   def testSI8264() {
-    val hs = Set(-2147483648, 1, -45023380, -1, 1971207058, -54312241,
-      -234243394) - -1
+    val hs =
+      Set(-2147483648, 1, -45023380, -1, 1971207058, -54312241, -234243394) - -1
     assert(hs.toList.toSet == hs)
     assert(hs == hs.toList.toSet)
   }

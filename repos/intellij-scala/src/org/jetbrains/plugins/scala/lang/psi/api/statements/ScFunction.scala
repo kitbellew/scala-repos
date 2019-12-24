@@ -858,8 +858,8 @@ object ScFunction {
     val Unapplies: Set[String] = Set(Unapply, UnapplySeq)
     val ForComprehensions: Set[String] =
       Set(Foreach, Map, FlatMap, Filter, WithFilter)
-    val Special
-        : Set[String] = Set(Apply, Update) ++ Unapplies ++ ForComprehensions
+    val Special: Set[String] =
+      Set(Apply, Update) ++ Unapplies ++ ForComprehensions
   }
 
   /** Is this function sometimes invoked without it's name appearing at the call site? */

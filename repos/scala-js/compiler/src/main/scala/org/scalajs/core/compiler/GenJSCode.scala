@@ -3017,12 +3017,13 @@ abstract class GenJSCode
        * Number or Character, not using the rich equality is possible (their
        * own equals method will do ok.)
        */
-      val mustUseAnyComparator
-          : Boolean = isRawJSType(ltpe) || isRawJSType(rtpe) || {
-        val areSameFinals = ltpe.isFinalType && rtpe.isFinalType && (ltpe =:= rtpe)
-        !areSameFinals && isMaybeBoxed(ltpe.typeSymbol) && isMaybeBoxed(
-          rtpe.typeSymbol)
-      }
+      val mustUseAnyComparator: Boolean =
+        isRawJSType(ltpe) || isRawJSType(rtpe) || {
+          val areSameFinals =
+            ltpe.isFinalType && rtpe.isFinalType && (ltpe =:= rtpe)
+          !areSameFinals && isMaybeBoxed(ltpe.typeSymbol) && isMaybeBoxed(
+            rtpe.typeSymbol)
+        }
 
       if (mustUseAnyComparator) {
         val equalsMethod: Symbol = {

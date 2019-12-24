@@ -101,10 +101,11 @@ class SQLContext private[sql] (
     if (!allowMultipleContexts && isRootContext) {
       SQLContext.getInstantiatedContextOption() match {
         case Some(rootSQLContext) =>
-          val errMsg = "Only one SQLContext/HiveContext may be running in this JVM. " +
-            s"It is recommended to use SQLContext.getOrCreate to get the instantiated " +
-            s"SQLContext/HiveContext. To ignore this error, " +
-            s"set ${SQLConf.ALLOW_MULTIPLE_CONTEXTS.key} = true in SparkConf."
+          val errMsg =
+            "Only one SQLContext/HiveContext may be running in this JVM. " +
+              s"It is recommended to use SQLContext.getOrCreate to get the instantiated " +
+              s"SQLContext/HiveContext. To ignore this error, " +
+              s"set ${SQLConf.ALLOW_MULTIPLE_CONTEXTS.key} = true in SparkConf."
           throw new SparkException(errMsg)
         case None => // OK
       }

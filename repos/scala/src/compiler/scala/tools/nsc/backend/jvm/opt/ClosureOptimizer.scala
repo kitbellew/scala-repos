@@ -384,7 +384,8 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
     // update maxStack
     // One slot per value is correct for long / double, see comment in the `analysis` package object.
     val numCapturedValues = localsForCapturedValues.locals.length
-    val invocationStackHeight = stackHeight + numCapturedValues - 1 // -1 because the closure is gone
+    val invocationStackHeight =
+      stackHeight + numCapturedValues - 1 // -1 because the closure is gone
     if (invocationStackHeight > ownerMethod.maxStack)
       ownerMethod.maxStack = invocationStackHeight
 
@@ -451,7 +452,8 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
       case (bodyMethodNode, bodyMethodDeclClass) =>
         val bodyDeclClassType =
           classBTypeFromParsedClassfile(bodyMethodDeclClass)
-        val canInlineFromSource = compilerSettings.YoptInlineGlobal || bodyMethodIsBeingCompiled
+        val canInlineFromSource =
+          compilerSettings.YoptInlineGlobal || bodyMethodIsBeingCompiled
         Callee(
           callee = bodyMethodNode,
           calleeDeclarationClass = bodyDeclClassType,
@@ -517,7 +519,8 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
 
     val localsForCaptures =
       LocalsList.fromTypes(firstCaptureLocal, capturedTypes)
-    closureInit.ownerMethod.maxLocals = firstCaptureLocal + localsForCaptures.size
+    closureInit.ownerMethod.maxLocals =
+      firstCaptureLocal + localsForCaptures.size
 
     insertStoreOps(indy, closureInit.ownerMethod, localsForCaptures, _ => None)
     insertLoadOps(indy, closureInit.ownerMethod, localsForCaptures)

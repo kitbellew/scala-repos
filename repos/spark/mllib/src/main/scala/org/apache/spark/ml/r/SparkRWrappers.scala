@@ -76,9 +76,9 @@ private[r] object SparkRWrappers {
   def getModelCoefficients(model: PipelineModel): Array[Double] = {
     model.stages.last match {
       case m: LinearRegressionModel => {
-        val coefficientStandardErrorsR = Array(
-          m.summary.coefficientStandardErrors.last) ++
-          m.summary.coefficientStandardErrors.dropRight(1)
+        val coefficientStandardErrorsR =
+          Array(m.summary.coefficientStandardErrors.last) ++
+            m.summary.coefficientStandardErrors.dropRight(1)
         val tValuesR = Array(m.summary.tValues.last) ++ m.summary.tValues
           .dropRight(1)
         val pValuesR = Array(m.summary.pValues.last) ++ m.summary.pValues

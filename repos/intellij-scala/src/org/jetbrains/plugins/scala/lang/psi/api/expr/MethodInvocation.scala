@@ -180,7 +180,8 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
       case _ =>
     }
 
-    val withExpectedType = useExpectedType && expectedType().isDefined //optimization to avoid except
+    val withExpectedType =
+      useExpectedType && expectedType().isDefined //optimization to avoid except
 
     if (useExpectedType)
       nonValueType = updateAccordingToExpectedType(nonValueType, check = true)

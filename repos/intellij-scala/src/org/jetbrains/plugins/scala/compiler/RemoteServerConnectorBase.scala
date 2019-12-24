@@ -67,7 +67,8 @@ abstract class RemoteServerConnectorBase(
   protected val runnersJar =
     new File(libCanonicalPath, "scala-plugin-runners.jar")
 
-  val additionalCp = compilerClasspath :+ runnersJar :+ compilerSettingsJar :+ outputDir
+  val additionalCp =
+    compilerClasspath :+ runnersJar :+ compilerSettingsJar :+ outputDir
 
   protected def worksheetArgs: Array[String] = Array()
 

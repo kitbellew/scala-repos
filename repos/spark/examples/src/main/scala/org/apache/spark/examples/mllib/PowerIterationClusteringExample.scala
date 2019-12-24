@@ -156,7 +156,8 @@ object PowerIterationClusteringExample {
     * Gaussian Similarity:  http://en.wikipedia.org/wiki/Radial_basis_function_kernel
     */
   def gaussianSimilarity(p1: (Double, Double), p2: (Double, Double)): Double = {
-    val ssquares = (p1._1 - p2._1) * (p1._1 - p2._1) + (p1._2 - p2._2) * (p1._2 - p2._2)
+    val ssquares =
+      (p1._1 - p2._1) * (p1._1 - p2._1) + (p1._2 - p2._2) * (p1._2 - p2._2)
     math.exp(-ssquares / 2.0)
   }
 }

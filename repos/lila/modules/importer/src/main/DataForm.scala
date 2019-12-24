@@ -44,7 +44,8 @@ case class ImportData(pgn: String, analyse: Option[String]) {
               tags find (_.name == which(Tag)) map (_.value)
 
             val initBoard = tag(_.FEN) flatMap Forsyth.<< map (_.board)
-            val fromPosition = initBoard.nonEmpty && tag(_.FEN) != Forsyth.initial.some
+            val fromPosition =
+              initBoard.nonEmpty && tag(_.FEN) != Forsyth.initial.some
             val variant = {
               tag(_.Variant)
                 .map(Chess960.fixVariantName)

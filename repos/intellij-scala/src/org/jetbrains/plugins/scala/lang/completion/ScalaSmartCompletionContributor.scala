@@ -150,7 +150,8 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
           if (!el.isNamedParameterOrAssignment)
             elem match {
               case fun: ScSyntheticFunction =>
-                val second = checkForSecondCompletion && fun.paramClauses.flatten.isEmpty
+                val second =
+                  checkForSecondCompletion && fun.paramClauses.flatten.isEmpty
                 checkType(fun.retType, ScSubstitutor.empty, second)
               case fun: ScFunction =>
                 if (fun.containingClass != null && fun.containingClass.qualifiedName == "scala.Predef") {
@@ -179,7 +180,8 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                   }
                 }
               case method: PsiMethod =>
-                val second = checkForSecondCompletion && method.getParameterList.getParametersCount == 0
+                val second =
+                  checkForSecondCompletion && method.getParameterList.getParametersCount == 0
                 val infer =
                   if (chainVariant) ScSubstitutor.empty
                   else ScalaPsiUtil.inferMethodTypesArgs(method, subst)
@@ -368,7 +370,8 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                   thisProjections = true) match {
                   case Success(scType, _) =>
                     import org.jetbrains.plugins.scala.lang.psi.types.Nothing
-                    val lookupString = (if (foundClazz) t.name + "." else "") + "this"
+                    val lookupString =
+                      (if (foundClazz) t.name + "." else "") + "this"
                     val el = new ScalaLookupItem(t, lookupString)
                     if (!scType.equiv(Nothing) && typez.exists(
                           scType conforms _)) {

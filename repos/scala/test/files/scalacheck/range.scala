@@ -6,9 +6,10 @@ import Arbitrary._
 class Counter(r: Range) {
   var cnt = 0L
   var last: Option[Int] = None
-  val str = "Range[" + r.start + ", " + r.end + ", " + r.step + (if (r.isInclusive)
-                                                                   "]"
-                                                                 else ")")
+  val str =
+    "Range[" + r.start + ", " + r.end + ", " + r.step + (if (r.isInclusive)
+                                                           "]"
+                                                         else ")")
   def apply(x: Int) = {
     cnt += 1L
     if (cnt % 500000000L == 0L) {

@@ -301,7 +301,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
 
     handlers.filterNot(_.importedSymbols.isEmpty).zipWithIndex foreach {
       case (handler, idx) =>
-        val (types, terms) = handler.importedSymbols partition (_.name.isTypeName)
+        val (types, terms) =
+          handler.importedSymbols partition (_.name.isTypeName)
         val imps = handler.implicitSymbols
         val found = tokens filter (handler importsSymbolNamed _)
         val typeMsg = if (types.isEmpty) "" else types.size + " types"
@@ -309,7 +310,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
         val implicitMsg = if (imps.isEmpty) "" else imps.size + " are implicit"
         val foundMsg =
           if (found.isEmpty) "" else found.mkString(" // imports: ", ", ", "")
-        val statsMsg = List(typeMsg, termMsg, implicitMsg) filterNot (_ == "") mkString ("(", ", ", ")")
+        val statsMsg =
+          List(typeMsg, termMsg, implicitMsg) filterNot (_ == "") mkString ("(", ", ", ")")
 
         intp.reporter.printMessage(
           "%2d) %-30s %s%s".format(
@@ -867,7 +869,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       case (eof, _) =>
         echo(s"// Entering paste mode (${eof getOrElse "ctrl-D"} to finish)\n")
         val delimiter = eof orElse replProps.pasteDelimiter.option
-        val input = readWhile(s => delimiter.isEmpty || delimiter.get != s) mkString "\n"
+        val input =
+          readWhile(s => delimiter.isEmpty || delimiter.get != s) mkString "\n"
         val text = (
           margin filter (_.nonEmpty) map {
             case "-" => input.lines map (_.trim) mkString "\n"
@@ -1011,10 +1014,11 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       val readerClasses = sys.props.get("scala.repl.reader").toStream ++ Stream(
         internalClass("jline"),
         internalClass("jline_embedded"))
-      val readers = readerClasses map (cls =>
-        Try { mkReader(instantiater(cls)) })
+      val readers =
+        readerClasses map (cls => Try { mkReader(instantiater(cls)) })
 
-      val reader = (readers collect { case Success(reader) => reader } headOption) getOrElse SimpleReader()
+      val reader =
+        (readers collect { case Success(reader) => reader } headOption) getOrElse SimpleReader()
 
       if (settings.debug) {
         val readerDiags = (readerClasses, readers).zipped map {

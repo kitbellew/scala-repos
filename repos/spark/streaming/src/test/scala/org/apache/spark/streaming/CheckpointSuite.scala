@@ -273,7 +273,8 @@ class CheckpointSuite
     val stateStreamCheckpointInterval = Seconds(1)
     val fs = FileSystem.getLocal(new Configuration())
     // this ensure checkpointing occurs at least once
-    val firstNumBatches = (stateStreamCheckpointInterval / batchDuration).toLong * 2
+    val firstNumBatches =
+      (stateStreamCheckpointInterval / batchDuration).toLong * 2
     val secondNumBatches = firstNumBatches
 
     // Setup the streams
@@ -495,8 +496,9 @@ class CheckpointSuite
     val n = 10
     val w = 4
     val input = (1 to n).map(_ => Seq("a")).toSeq
-    val output = Seq(Seq(("a", 1)), Seq(("a", 2)), Seq(("a", 3))) ++ (1 to (n - w + 1))
-      .map(x => Seq(("a", 4)))
+    val output =
+      Seq(Seq(("a", 1)), Seq(("a", 2)), Seq(("a", 3))) ++ (1 to (n - w + 1))
+        .map(x => Seq(("a", 4)))
     val operation = (st: DStream[String]) => {
       st.map(x => (x, 1))
         .reduceByKeyAndWindow(_ + _, _ - _, batchDuration * w, batchDuration)
@@ -1010,8 +1012,8 @@ class CheckpointSuite
         val stateRDDs = findAllMarkedRDDs(rdd)
         rdd.count()
         // Check the two state RDDs are both checkpointed
-        rddsCheckpointed = stateRDDs.size == 2 && stateRDDs.forall(
-          _.isCheckpointed)
+        rddsCheckpointed =
+          stateRDDs.size == 2 && stateRDDs.forall(_.isCheckpointed)
       }
     ssc.start()
     batchCounter.waitUntilBatchesCompleted(1, 10000)

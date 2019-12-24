@@ -70,8 +70,8 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
   type TypeEnv = immutable.Map[Symbol, Type]
   def emptyEnv: TypeEnv = Map[Symbol, Type]()
 
-  private implicit val typeOrdering
-      : Ordering[Type] = Ordering[String] on ("" + _.typeSymbol.name)
+  private implicit val typeOrdering: Ordering[Type] =
+    Ordering[String] on ("" + _.typeSymbol.name)
 
   /** TODO - this is a lot of maps.
     */
@@ -358,7 +358,8 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
       name: Name,
       tvars: immutable.Set[Symbol],
       env: TypeEnv): TermName = {
-    val (methparams, others) = tvars.toList sortBy ("" + _.name) partition (_.owner.isMethod)
+    val (methparams, others) =
+      tvars.toList sortBy ("" + _.name) partition (_.owner.isMethod)
     // debuglog("specName(" + sym + ") env: " + env + " tvars: " + tvars)
 
     specializedName(name, methparams map env, others map env)
@@ -646,8 +647,8 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
       // within 'enteringPhase(next)', which would lead to an infinite cycle otherwise
       val specializedInfoType: Type = {
         oldClassTParams = survivingParams(clazz.info.typeParams, env)
-        newClassTParams = produceTypeParameters(oldClassTParams, sClass, env) map subst(
-          env)
+        newClassTParams =
+          produceTypeParameters(oldClassTParams, sClass, env) map subst(env)
         // log("new tparams " + newClassTParams.zip(newClassTParams map {s => (s.tpe, s.tpe.bounds.hi)}) + ", in env: " + env)
 
         def applyContext(tpe: Type) =
@@ -751,7 +752,8 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
         info(om) =
           if (original.isDeferred) Forward(original)
           else Implementation(original)
-        typeEnv(om) = env ++ typeEnv(m) // add the environment for any method tparams
+        typeEnv(om) =
+          env ++ typeEnv(m) // add the environment for any method tparams
 
         newOverload(specMember, om, typeEnv(om))
         enterMember(om)
@@ -811,7 +813,8 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
             sym
           }
           def overrideIn(clazz: Symbol, sym: Symbol) = {
-            val newFlags = (sym.flags | OVERRIDE | SPECIALIZED) & ~(DEFERRED | CASEACCESSOR | PARAMACCESSOR)
+            val newFlags =
+              (sym.flags | OVERRIDE | SPECIALIZED) & ~(DEFERRED | CASEACCESSOR | PARAMACCESSOR)
             val sym1 = sym.cloneSymbol(clazz, newFlags)
             sym1 modifyInfo (_ asSeenFrom (clazz.tpe, sym1.owner))
           }
@@ -824,9 +827,10 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
           // create accessors
 
           if (nme.isLocalName(m.name)) {
-            val specGetter = mkAccessor(specVal, specVal.getterName) setInfo MethodType(
-              Nil,
-              specVal.info)
+            val specGetter =
+              mkAccessor(specVal, specVal.getterName) setInfo MethodType(
+                Nil,
+                specVal.info)
             val origGetter = overrideIn(sClass, m.getterIn(clazz))
             info(origGetter) = Forward(specGetter)
             enterMember(specGetter)
@@ -942,8 +946,8 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
       } else {
         // debuglog("normalizeMember: " + sym.fullNameAsName('.').decode)
         var specializingOn = specializedParams(sym)
-        val unusedStvars = specializingOn filterNot specializedTypeVars(
-          sym.info)
+        val unusedStvars =
+          specializingOn filterNot specializedTypeVars(sym.info)
 
         // I think the last condition should be !sym.isArtifact, but that made the
         // compiler start warning about Tuple1.scala and Tuple2.scala claiming
@@ -1706,7 +1710,8 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
         def typedOp(member: Symbol) = localTyper typedOperator newSelect(member)
         def typedTree(member: Symbol) = localTyper typed newSelect(member)
 
-        val ignoreEnv = specializedTypeVars(symbol.info).isEmpty || name == nme.CONSTRUCTOR
+        val ignoreEnv =
+          specializedTypeVars(symbol.info).isEmpty || name == nme.CONSTRUCTOR
         if (ignoreEnv) overloads(symbol) find (_ matchesSym symbol) match {
           case Some(Overload(member, _)) => typedOp(member)
           case _                         => copySelect
@@ -1861,8 +1866,9 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
 
         case Template(parents, self, body) =>
           def transformTemplate = {
-            val specMembers = makeSpecializedMembers(tree.symbol.enclClass) ::: (implSpecClasses(
-              body) map localTyper.typed)
+            val specMembers =
+              makeSpecializedMembers(tree.symbol.enclClass) ::: (implSpecClasses(
+                body) map localTyper.typed)
             if (!symbol.isPackageClass)
               (new CollectMethodBodies)(tree)
             val parents1 =
@@ -2190,7 +2196,8 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
         }
       }
       if (hasSpecializedFields) {
-        val isSpecializedInstance = sClass :: sClass.parentSymbols exists (_ hasFlag SPECIALIZED)
+        val isSpecializedInstance =
+          sClass :: sClass.parentSymbols exists (_ hasFlag SPECIALIZED)
         val sym = sClass
           .newMethod(nme.SPECIALIZED_INSTANCE, sClass.pos) setInfoAndEnter MethodType(
           Nil,

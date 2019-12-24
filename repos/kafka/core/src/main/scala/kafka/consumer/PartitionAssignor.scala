@@ -174,11 +174,13 @@ class RangeAssignor() extends PartitionAssignor with Logging {
       for (consumerThreadId <- curConsumers) {
         val myConsumerPosition = curConsumers.indexOf(consumerThreadId)
         assert(myConsumerPosition >= 0)
-        val startPart = nPartsPerConsumer * myConsumerPosition + myConsumerPosition
-          .min(nConsumersWithExtraPart)
-        val nParts = nPartsPerConsumer + (if (myConsumerPosition + 1 > nConsumersWithExtraPart)
-                                            0
-                                          else 1)
+        val startPart =
+          nPartsPerConsumer * myConsumerPosition + myConsumerPosition
+            .min(nConsumersWithExtraPart)
+        val nParts =
+          nPartsPerConsumer + (if (myConsumerPosition + 1 > nConsumersWithExtraPart)
+                                 0
+                               else 1)
 
         /**
           *   Range-partition the sorted partitions to consumers for better locality.

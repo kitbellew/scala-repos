@@ -125,8 +125,8 @@ case class Game(
   def lastMoveTimeInSeconds: Option[Int] = lastMoveTime.map(x => (x / 10).toInt)
 
   // in tenths of seconds
-  lazy val moveTimes
-      : Vector[Int] = BinaryFormat.moveTime read binaryMoveTimes take playedTurns
+  lazy val moveTimes: Vector[Int] =
+    BinaryFormat.moveTime read binaryMoveTimes take playedTurns
 
   def moveTimes(color: Color): List[Int] = {
     val pivot = if (color == startColor) 0 else 1
@@ -525,8 +525,8 @@ object Game {
     chess.variant.ThreeCheck,
     chess.variant.FromPosition)
 
-  val unanalysableVariants
-      : Set[Variant] = Variant.all.toSet -- analysableVariants
+  val unanalysableVariants: Set[Variant] =
+    Variant.all.toSet -- analysableVariants
 
   val variantsWhereWhiteIsBetter: Set[Variant] = Set(
     chess.variant.ThreeCheck,

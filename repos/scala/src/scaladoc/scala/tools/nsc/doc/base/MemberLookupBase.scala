@@ -57,10 +57,11 @@ trait MemberLookupBase {
     val fromRoot = lookupInRootPackage(pos, members)
 
     // (2) Or recursively go into each containing template.
-    val fromParents = Stream.iterate(site)(_.owner) takeWhile (!isRoot(_)) map (lookupInTemplate(
-      pos,
-      members,
-      _))
+    val fromParents =
+      Stream.iterate(site)(_.owner) takeWhile (!isRoot(_)) map (lookupInTemplate(
+        pos,
+        members,
+        _))
 
     val syms = (fromRoot +: fromParents) find (!_.isEmpty) getOrElse Nil
 

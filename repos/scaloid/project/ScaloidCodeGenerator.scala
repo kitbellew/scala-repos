@@ -142,7 +142,8 @@ class ScaloidCodeGenerator(
       concatArgs(con.implicitArgs, customConstImplicitArgs, isImplicit = true)
 
     private def constTypeParams = {
-      val argStrings = con.paramedTypes.map(paramedType(_, define = true)) :+ customConstTypeParams.trim
+      val argStrings =
+        con.paramedTypes.map(paramedType(_, define = true)) :+ customConstTypeParams.trim
       argStrings.filter(_.nonEmpty) match {
         case Nil    => ""
         case params => params.mkString("[", ", ", "]")

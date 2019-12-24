@@ -279,8 +279,9 @@ object ConcurrentLoadBalancerFactory {
 
   private[finagle] def module[Req, Rep]: Stackable[ServiceFactory[Req, Rep]] =
     new StackModule[Req, Rep] {
-      val description = "Balance requests across multiple connections on a single " +
-        "endpoint, used for pipelining protocols"
+      val description =
+        "Balance requests across multiple connections on a single " +
+          "endpoint, used for pipelining protocols"
 
       override def make(
           params: Stack.Params,

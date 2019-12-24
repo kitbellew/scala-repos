@@ -1104,36 +1104,40 @@ class LiftSession(
             val early = LiftRules.preAccessControlResponse_!!.firstFull(request)
 
             // Process but make sure we're okay, sitemap wise
-            val response
-                : Box[LiftResponse] = early or (request.testLocation match {
-              case Left(true) =>
-                checkStatelessInSiteMap(request) {
-                  cleanUpBeforeRender
+            val response: Box[LiftResponse] =
+              early or (request.testLocation match {
+                case Left(true) =>
+                  checkStatelessInSiteMap(request) {
+                    cleanUpBeforeRender
 
-                  PageName(request.uri + " -> " + request.path)
-                  LiftRules.allowParallelSnippets.doWith(() => !Props.inGAE) {
-                    (request.location.flatMap(_.earlyResponse) or LiftRules.earlyResponse
-                      .firstFull(request)) or
-                      (processTemplate(locTemplate, request, request.path, 200) or
-                        request.createNotFound {
-                          processTemplate(Empty, request, _, 404)
-                        })
+                    PageName(request.uri + " -> " + request.path)
+                    LiftRules.allowParallelSnippets.doWith(() => !Props.inGAE) {
+                      (request.location.flatMap(_.earlyResponse) or LiftRules.earlyResponse
+                        .firstFull(request)) or
+                        (processTemplate(
+                          locTemplate,
+                          request,
+                          request.path,
+                          200) or
+                          request.createNotFound {
+                            processTemplate(Empty, request, _, 404)
+                          })
+                    }
                   }
-                }
 
-              case Right(Full(resp))                    => Full(resp)
-              case _ if (LiftRules.passNotFoundToChain) => Empty
-              case _ if Props.mode == Props.RunModes.Development =>
-                request.createNotFound {
-                  processTemplate(Empty, request, _, 404)
-                } or
-                  Full(ForbiddenResponse(
-                    "The requested page was not defined in your SiteMap, so access was blocked.  (This message is displayed in development mode only)"))
-              case _ =>
-                request.createNotFound {
-                  processTemplate(Empty, request, _, 404)
-                }
-            })
+                case Right(Full(resp))                    => Full(resp)
+                case _ if (LiftRules.passNotFoundToChain) => Empty
+                case _ if Props.mode == Props.RunModes.Development =>
+                  request.createNotFound {
+                    processTemplate(Empty, request, _, 404)
+                  } or
+                    Full(ForbiddenResponse(
+                      "The requested page was not defined in your SiteMap, so access was blocked.  (This message is displayed in development mode only)"))
+                case _ =>
+                  request.createNotFound {
+                    processTemplate(Empty, request, _, 404)
+                  }
+              })
 
             // Before returning the response check for redirect and set the appropriate state.
             response.map(checkRedirect)
@@ -2103,8 +2107,8 @@ class LiftSession(
         processSnippet(page, Full(snippetInfo), metaData, elm, kids)
     }
 
-  liftTagProcessing = LiftRules.liftTagProcessing.toList ::: List(
-    _defaultLiftTagProcessing)
+  liftTagProcessing =
+    LiftRules.liftTagProcessing.toList ::: List(_defaultLiftTagProcessing)
 
   private def asNodeSeq(in: Seq[Node]): NodeSeq = in
 
@@ -2770,8 +2774,8 @@ class LiftSession(
         .asInstanceOf[T]
     }
 
-    val attemptedComet = tryo(buildWithNoArgConstructor) or tryo(
-      buildWithCreateInfoConstructor)
+    val attemptedComet =
+      tryo(buildWithNoArgConstructor) or tryo(buildWithCreateInfoConstructor)
 
     attemptedComet match {
       case fail @ Failure(_, Full(e: java.lang.NoSuchMethodException), _) =>

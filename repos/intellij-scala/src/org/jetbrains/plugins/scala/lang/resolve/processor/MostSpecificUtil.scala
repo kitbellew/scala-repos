@@ -286,9 +286,9 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
                 if (params1.length > 0) params1.last.paramType
                 else types.Nothing,
                 elem)
-            val exprs: Seq[Expression] = params1.map(p =>
-              new Expression(p.paramType, elem)) ++
-              Seq.fill(i)(default)
+            val exprs: Seq[Expression] =
+              params1.map(p => new Expression(p.paramType, elem)) ++
+                Seq.fill(i)(default)
             Compatibility.checkConformance(
               checkNames = false,
               params2,

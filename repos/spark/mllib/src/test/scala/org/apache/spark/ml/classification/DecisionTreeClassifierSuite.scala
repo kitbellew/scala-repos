@@ -391,8 +391,8 @@ class DecisionTreeClassifierSuite
     val dt = new DecisionTreeClassifier()
     val rdd = TreeTests.getTreeReadWriteData(sc)
 
-    val allParamSettings = TreeTests.allParamSettings ++ Map(
-      "impurity" -> "entropy")
+    val allParamSettings =
+      TreeTests.allParamSettings ++ Map("impurity" -> "entropy")
 
     // Categorical splits with tree depth 2
     val categoricalData: DataFrame =

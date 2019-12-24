@@ -277,9 +277,10 @@ trait Memoizer extends DAG {
       updateMap(findForcingRefs(parent, OpSide.Center(graph)), graph, force)
 
     case Morph2(_, left, right) => {
-      val merged = findForcingRefs(left, OpSide.Left(graph)) |+| findForcingRefs(
-        right,
-        OpSide.Right(graph))
+      val merged =
+        findForcingRefs(left, OpSide.Left(graph)) |+| findForcingRefs(
+          right,
+          OpSide.Right(graph))
       updateMap(merged, graph, force)
     }
 
@@ -309,9 +310,10 @@ trait Memoizer extends DAG {
     }
 
     case Assert(pred, child) => {
-      val merged = findForcingRefs(pred, OpSide.Left(graph)) |+| findForcingRefs(
-        child,
-        OpSide.Right(graph))
+      val merged =
+        findForcingRefs(pred, OpSide.Left(graph)) |+| findForcingRefs(
+          child,
+          OpSide.Right(graph))
       updateMap(merged, graph, force)
     }
 
@@ -363,23 +365,26 @@ trait Memoizer extends DAG {
     }
 
     case Observe(data, samples) => {
-      val merged = findForcingRefs(data, OpSide.Left(graph)) |+| findForcingRefs(
-        samples,
-        OpSide.Right(graph))
+      val merged =
+        findForcingRefs(data, OpSide.Left(graph)) |+| findForcingRefs(
+          samples,
+          OpSide.Right(graph))
       updateMap(merged, graph, force)
     }
 
     case IUI(_, left, right) => {
-      val merged = findForcingRefs(left, OpSide.Left(graph)) |+| findForcingRefs(
-        right,
-        OpSide.Right(graph))
+      val merged =
+        findForcingRefs(left, OpSide.Left(graph)) |+| findForcingRefs(
+          right,
+          OpSide.Right(graph))
       updateMap(merged, graph, force)
     }
 
     case Diff(left, right) => {
-      val merged = findForcingRefs(left, OpSide.Left(graph)) |+| findForcingRefs(
-        right,
-        OpSide.Right(graph))
+      val merged =
+        findForcingRefs(left, OpSide.Left(graph)) |+| findForcingRefs(
+          right,
+          OpSide.Right(graph))
       updateMap(merged, graph, force)
     }
 
@@ -391,9 +396,10 @@ trait Memoizer extends DAG {
 
     // an approximation of table heritage that *should* be accurate
     case Join(_, _, left, right) /*if left.identities != right.identities*/ => {
-      val merged = findForcingRefs(left, OpSide.Left(graph)) |+| findForcingRefs(
-        right,
-        OpSide.Right(graph))
+      val merged =
+        findForcingRefs(left, OpSide.Left(graph)) |+| findForcingRefs(
+          right,
+          OpSide.Right(graph))
       updateMap(merged, graph, force)
     }
 
@@ -409,9 +415,10 @@ trait Memoizer extends DAG {
 
     // an approximation of table heritage that *should* be accurate
     case Filter(_, target, boolean) /*if target.identities != boolean.identities*/ => {
-      val merged = findForcingRefs(target, OpSide.Left(graph)) |+| findForcingRefs(
-        boolean,
-        OpSide.Right(graph))
+      val merged =
+        findForcingRefs(target, OpSide.Left(graph)) |+| findForcingRefs(
+          boolean,
+          OpSide.Right(graph))
       updateMap(merged, graph, force)
     }
 

@@ -947,7 +947,8 @@ private class LeastSquaresAggregator(
 
         if (weight == 0.0) return this
 
-        val diff = dot(features, effectiveCoefficientsVector) - label / labelStd + offset
+        val diff =
+          dot(features, effectiveCoefficientsVector) - label / labelStd + offset
 
         if (diff != 0) {
           val localGradientSumArray = gradientSumArray

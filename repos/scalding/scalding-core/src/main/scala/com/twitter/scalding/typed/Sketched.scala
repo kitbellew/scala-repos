@@ -88,7 +88,8 @@ case class SketchJoined[K: Ordering, V, V2, R](
       fn: Int => Iterable[Int]) =
     pipe.cross(left.sketch).flatMap {
       case ((k, w), cms) =>
-        val maxPerReducer = (cms.totalCount / numReducers) * maxReducerFraction + 1
+        val maxPerReducer =
+          (cms.totalCount / numReducers) * maxReducerFraction + 1
         val maxReplicas = (cms
           .frequency(Bytes(left.serialize(k)))
           .estimate
