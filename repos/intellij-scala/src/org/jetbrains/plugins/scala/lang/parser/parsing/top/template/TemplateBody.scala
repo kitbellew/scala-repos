@@ -47,8 +47,9 @@ object TemplateBody {
                 true
               }
               case ScalaTokenTypes.tSEMICOLON => {
-                while (builder.getTokenType == ScalaTokenTypes.tSEMICOLON) builder
-                  .advanceLexer()
+                while (builder.getTokenType == ScalaTokenTypes.tSEMICOLON)
+                  builder
+                    .advanceLexer()
                 subparse()
               }
               case _ => {

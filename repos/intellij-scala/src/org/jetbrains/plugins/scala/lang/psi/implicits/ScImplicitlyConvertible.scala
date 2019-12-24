@@ -726,11 +726,11 @@ object ScImplicitlyConvertible {
         if (function == commonContext) return false
         else {
           var functionContext: PsiElement = function
-          while (functionContext.getContext != commonContext) functionContext =
-            functionContext.getContext
+          while (functionContext.getContext != commonContext)
+            functionContext = functionContext.getContext
           var placeContext: PsiElement = place
-          while (placeContext.getContext != commonContext) placeContext =
-            placeContext.getContext
+          while (placeContext.getContext != commonContext)
+            placeContext = placeContext.getContext
           (functionContext, placeContext) match {
             case (
                 functionContext: ScalaPsiElement,

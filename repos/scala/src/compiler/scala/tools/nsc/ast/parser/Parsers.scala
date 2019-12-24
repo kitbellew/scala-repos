@@ -1866,8 +1866,9 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
           t1 match {
             case Ident(_) | Select(_, _) | Apply(_, _) =>
               var app: Tree = t1
-              while (in.token == LBRACKET) app =
-                atPos(app.pos.start, in.offset)(TypeApply(app, exprTypeArgs()))
+              while (in.token == LBRACKET)
+                app = atPos(app.pos.start, in.offset)(
+                  TypeApply(app, exprTypeArgs()))
 
               simpleExprRest(app, canApply = true)
             case _ =>

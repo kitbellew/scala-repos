@@ -4404,8 +4404,8 @@ trait Typers
         dcl.isInitialized && (dcl.info contains sym)
       }) || {
         var ctx1 = ctx.outer
-        while ((ctx1 != NoContext) && (ctx1.scope eq ctx.scope)) ctx1 =
-          ctx1.outer
+        while ((ctx1 != NoContext) && (ctx1.scope eq ctx.scope))
+          ctx1 = ctx1.outer
 
         (ctx1 != NoContext) && isReferencedFrom(ctx1, sym)
       }

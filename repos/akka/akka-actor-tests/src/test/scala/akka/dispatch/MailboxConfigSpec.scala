@@ -171,10 +171,10 @@ abstract class MailboxSpec
         var r = Vector[Envelope]()
 
         while (producers
-                 .exists(_.isCompleted == false) || q.hasMessages) Option(
-          q.dequeue) foreach { message ⇒
-          r = r :+ message
-        }
+                 .exists(_.isCompleted == false) || q.hasMessages)
+          Option(q.dequeue) foreach { message ⇒
+            r = r :+ message
+          }
 
         r
       }

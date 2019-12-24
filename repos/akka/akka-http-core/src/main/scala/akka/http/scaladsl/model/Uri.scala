@@ -883,7 +883,8 @@ object Uri {
 
         var lastPercentSignIndexPlus3 = ix + 3
         while (lastPercentSignIndexPlus3 < string.length && string.charAt(
-                 lastPercentSignIndexPlus3) == '%') lastPercentSignIndexPlus3 += 3
+                 lastPercentSignIndexPlus3) == '%')
+          lastPercentSignIndexPlus3 += 3
         val bytesCount = (lastPercentSignIndexPlus3 - ix) / 3
         val bytes = new Array[Byte](bytesCount)
 

@@ -154,8 +154,8 @@ class SbtRunner(
     handler.startNotify()
 
     var processEnded = false
-    while (!processEnded && !cancellationFlag.get()) processEnded =
-      handler.waitFor(SBT_PROCESS_CHECK_TIMEOUT_MSEC)
+    while (!processEnded && !cancellationFlag.get())
+      processEnded = handler.waitFor(SBT_PROCESS_CHECK_TIMEOUT_MSEC)
 
     if (!processEnded) {
       handler.setShouldDestroyProcessRecursively(false)

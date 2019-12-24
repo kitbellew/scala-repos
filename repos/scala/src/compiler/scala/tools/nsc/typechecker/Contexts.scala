@@ -741,8 +741,8 @@ trait Contexts { self: Analyzer =>
       */
     def enclosingSubClassContext(clazz: Symbol): Context = {
       var c = this.enclClass
-      while (c != NoContext && !isSubClassOrCompanion(c.owner, clazz)) c =
-        c.outer.enclClass
+      while (c != NoContext && !isSubClassOrCompanion(c.owner, clazz))
+        c = c.outer.enclClass
       c
     }
 

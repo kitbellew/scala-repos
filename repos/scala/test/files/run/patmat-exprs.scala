@@ -91,8 +91,9 @@ trait Pattern {
     def similar(a: Iterable[T], b: Iterable[T]): Boolean = {
       val i1 = a.iterator
       val i2 = b.iterator
-      while (i1.hasNext && i2.hasNext) if (!similar(i1.next, i2.next))
-        return false;
+      while (i1.hasNext && i2.hasNext)
+        if (!similar(i1.next, i2.next))
+          return false;
       true;
     }
   }

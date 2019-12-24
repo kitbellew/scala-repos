@@ -240,7 +240,8 @@ object Long {
        * number of chunks that are necessary to parse any string.
        */
       var firstChunkStart = start
-      while (firstChunkStart < length && s.charAt(firstChunkStart) == '0') firstChunkStart += 1
+      while (firstChunkStart < length && s.charAt(firstChunkStart) == '0')
+        firstChunkStart += 1
 
       /* After that, if more than 3 chunks are necessary, it means the value
        * is too large, and does not fit in an unsigned Long.

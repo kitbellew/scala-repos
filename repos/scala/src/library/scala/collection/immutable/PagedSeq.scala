@@ -147,8 +147,8 @@ class PagedSeq[T: ClassTag] protected (
   private def page(absindex: Int) = {
     if (absindex < current.start)
       current = first1
-    while (absindex >= current.end && current.next != null) current =
-      current.next
+    while (absindex >= current.end && current.next != null)
+      current = current.next
     while (absindex >= current.end && !current.isLast) {
       current = addMore()
     }

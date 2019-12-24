@@ -353,8 +353,8 @@ object ScalaOIUtil {
       case None    => return None
     }
     var element: PsiElement = body.getContainingFile.findElementAt(offset)
-    while (element != null && element.getParent != body) element =
-      element.getParent
+    while (element != null && element.getParent != body)
+      element = element.getParent
 
     element match {
       case member: ScMember => Some(member)

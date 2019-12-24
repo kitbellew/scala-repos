@@ -1829,8 +1829,8 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
 
       if (validTo != NoPeriod) {
         // skip any infos that concern later phases
-        while (curPid < phaseId(infos.validFrom) && infos.prev != null) infos =
-          infos.prev
+        while (curPid < phaseId(infos.validFrom) && infos.prev != null)
+          infos = infos.prev
 
         if (validTo < curPeriod) {
           assertCorrectThread()
@@ -1920,8 +1920,8 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     final def hasTypeAt(pid: Phase#Id): Boolean = {
       assert(isCompilerUniverse)
       var infos = this.infos
-      while ((infos ne null) && phaseId(infos.validFrom) > pid) infos =
-        infos.prev
+      while ((infos ne null) && phaseId(infos.validFrom) > pid)
+        infos = infos.prev
       infos ne null
     }
 

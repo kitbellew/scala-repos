@@ -250,8 +250,9 @@ class ScalaImportOptimizer extends ImportOptimizer {
     val newRange: TextRange =
       if (text.isEmpty) {
         var start = range.getStartOffset
-        while (start > 0 && documentText(start - 1).isWhitespace) start =
-          start - 1
+        while (start > 0 && documentText(start - 1).isWhitespace)
+          start =
+            start - 1
         val end = range.getEndOffset
         new TextRange(start, end)
       } else range

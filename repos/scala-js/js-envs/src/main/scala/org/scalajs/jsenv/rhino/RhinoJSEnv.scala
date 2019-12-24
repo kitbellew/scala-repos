@@ -591,8 +591,8 @@ object RhinoJSEnv {
     def recvJVM(timeout: Duration): String = synchronized {
       val deadline = OptDeadline(timeout)
 
-      while (js2jvm.isEmpty && ensureOpen(_closedJS) && !deadline.isOverdue) wait(
-        deadline.millisLeft)
+      while (js2jvm.isEmpty && ensureOpen(_closedJS) && !deadline.isOverdue)
+        wait(deadline.millisLeft)
 
       if (js2jvm.isEmpty)
         throw new TimeoutException("Timeout expired")

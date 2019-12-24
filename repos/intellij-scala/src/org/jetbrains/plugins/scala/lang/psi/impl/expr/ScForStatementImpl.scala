@@ -275,8 +275,8 @@ class ScForStatementImpl(node: ASTNode)
                 var element = expr.findElementAt(patt.desugarizedPatternIndex)
                 while (element != null && (element.getTextLength < patt.getTextLength ||
                        (!element
-                         .isInstanceOf[ScPattern] && element.getTextLength == patt.getTextLength))) element =
-                  element.getParent
+                         .isInstanceOf[ScPattern] && element.getTextLength == patt.getTextLength)))
+                  element = element.getParent
                 if (element != null && element.getText == patt.getText) {
                   element match {
                     case p: ScPattern =>

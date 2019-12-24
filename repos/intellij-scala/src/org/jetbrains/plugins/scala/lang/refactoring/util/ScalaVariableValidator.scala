@@ -193,8 +193,8 @@ class ScalaVariableValidator(
           selectedElement
         }
         if (PsiTreeUtil.isAncestor(container, parent, true))
-          while (parent.getParent != null && parent.getParent != container) parent =
-            parent.getParent
+          while (parent.getParent != null && parent.getParent != container)
+            parent = parent.getParent
         else parent = container.getFirstChild
         parent
       }

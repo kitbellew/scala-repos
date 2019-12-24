@@ -1426,8 +1426,9 @@ trait Iterator[+A] extends TraversableOnce[A] {
     *  @note        Reuse: $consumesTwoIterators
     */
   def sameElements(that: Iterator[_]): Boolean = {
-    while (hasNext && that.hasNext) if (next != that.next)
-      return false
+    while (hasNext && that.hasNext)
+      if (next != that.next)
+        return false
 
     !hasNext && !that.hasNext
   }

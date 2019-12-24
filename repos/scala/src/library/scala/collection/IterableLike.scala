@@ -299,8 +299,9 @@ trait IterableLike[+A, +Repr]
   def sameElements[B >: A](that: GenIterable[B]): Boolean = {
     val these = this.iterator
     val those = that.iterator
-    while (these.hasNext && those.hasNext) if (these.next != those.next)
-      return false
+    while (these.hasNext && those.hasNext)
+      if (these.next != those.next)
+        return false
 
     !these.hasNext && !those.hasNext
   }

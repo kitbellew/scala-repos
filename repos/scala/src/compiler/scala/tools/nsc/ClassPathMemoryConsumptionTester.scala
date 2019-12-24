@@ -53,8 +53,8 @@ object ClassPathMemoryConsumptionTester {
     println("Memory consumption can be now measured")
 
     var textFromStdIn = ""
-    while (textFromStdIn.toLowerCase != "exit") textFromStdIn = readLine(
-      "Type 'exit' to close application: ")
+    while (textFromStdIn.toLowerCase != "exit")
+      textFromStdIn = readLine("Type 'exit' to close application: ")
   }
 
   /**

@@ -401,8 +401,8 @@ trait IntroduceExpressions {
         var needSemicolon = true
         var sibling = elem.getPrevSibling
         if (inParentheses) {
-          while (sibling != null && sibling.getText.trim == "") sibling =
-            sibling.getPrevSibling
+          while (sibling != null && sibling.getText.trim == "")
+            sibling = sibling.getPrevSibling
           if (sibling != null && sibling.getText.endsWith(";"))
             needSemicolon = false
           val semicolon = parent.addBefore(

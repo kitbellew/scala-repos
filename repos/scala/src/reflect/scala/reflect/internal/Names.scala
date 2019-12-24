@@ -380,7 +380,8 @@ trait Names extends api.Names {
     final def endsWith(suffix: Name, end: Int): Boolean = {
       var i = 1
       while (i <= suffix.length && i <= end &&
-             chrs(index + end - i) == chrs(suffix.start + suffix.length - i)) i += 1
+             chrs(index + end - i) == chrs(suffix.start + suffix.length - i))
+        i += 1
       i > suffix.length
     }
     final def endsWith(suffix: String, end: Int): Boolean = {

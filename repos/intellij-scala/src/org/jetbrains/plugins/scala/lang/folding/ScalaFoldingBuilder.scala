@@ -479,8 +479,8 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
 
   private def isGoodImport(node: ASTNode): Boolean = {
     var prev = node.getTreePrev
-    while (prev != null && prev.getPsi.isInstanceOf[LeafPsiElement]) prev =
-      prev.getTreePrev
+    while (prev != null && prev.getPsi.isInstanceOf[LeafPsiElement])
+      prev = prev.getTreePrev
     if (prev == null || prev.getElementType != ScalaElementTypes.IMPORT_STMT)
       true
     else false

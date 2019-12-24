@@ -297,8 +297,8 @@ class PhantomJSEnv(
     }
 
     private def receiveFrag(deadline: OptDeadline): String = {
-      while (recvBuf.isEmpty && !mgr.isClosed && !deadline.isOverdue) wait(
-        deadline.millisLeft)
+      while (recvBuf.isEmpty && !mgr.isClosed && !deadline.isOverdue)
+        wait(deadline.millisLeft)
 
       if (recvBuf.isEmpty) {
         if (mgr.isClosed)

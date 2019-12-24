@@ -49,8 +49,9 @@ class ScalaWordSelectioner extends ExtendWordSelectionHandlerBase {
         }
         result.add(new TextRange(start, end))
         def isEmptyChar(c: Char): Boolean = c == ' ' || c == '\n'
-        while (isEmptyChar(ext.getContainingFile.getText.charAt(end - 1))) end =
-          end - 1
+        while (isEmptyChar(ext.getContainingFile.getText.charAt(end - 1)))
+          end =
+            end - 1
         if (start <= end) result.add(new TextRange(start, end))
       //case for references
       case x: ScReferenceElement =>

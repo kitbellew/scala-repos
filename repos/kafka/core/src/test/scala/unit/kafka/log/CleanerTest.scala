@@ -67,8 +67,8 @@ class CleanerTest extends JUnitSuite {
       makeLog(config = LogConfig.fromProps(logConfig.originals, logProps))
 
     // append messages to the log until we have four segments
-    while (log.numberOfSegments < 4) log.append(
-      message(log.logEndOffset.toInt, log.logEndOffset.toInt))
+    while (log.numberOfSegments < 4)
+      log.append(message(log.logEndOffset.toInt, log.logEndOffset.toInt))
     val keysFound = keysInLog(log)
     assertEquals((0L until log.logEndOffset), keysFound)
 
@@ -93,8 +93,8 @@ class CleanerTest extends JUnitSuite {
       makeLog(config = LogConfig.fromProps(logConfig.originals, logProps))
 
     // append messages with the keys 0 through N
-    while (log.numberOfSegments < 2) log.append(
-      message(log.logEndOffset.toInt, log.logEndOffset.toInt))
+    while (log.numberOfSegments < 2)
+      log.append(message(log.logEndOffset.toInt, log.logEndOffset.toInt))
 
     // delete all even keys between 0 and N
     val leo = log.logEndOffset
@@ -102,8 +102,8 @@ class CleanerTest extends JUnitSuite {
       log.append(deleteMessage(key))
 
     // append some new unique keys to pad out to a new active segment
-    while (log.numberOfSegments < 4) log.append(
-      message(log.logEndOffset.toInt, log.logEndOffset.toInt))
+    while (log.numberOfSegments < 4)
+      log.append(message(log.logEndOffset.toInt, log.logEndOffset.toInt))
 
     cleaner.clean(LogToClean(TopicAndPartition("test", 0), log, 0))
     val keys = keysInLog(log).toSet
@@ -151,15 +151,15 @@ class CleanerTest extends JUnitSuite {
       makeLog(config = LogConfig.fromProps(logConfig.originals, logProps))
 
     // append unkeyed messages
-    while (log.numberOfSegments < 2) log.append(
-      unkeyedMessage(log.logEndOffset.toInt))
+    while (log.numberOfSegments < 2)
+      log.append(unkeyedMessage(log.logEndOffset.toInt))
     val numInvalidMessages = unkeyedMessageCountInLog(log)
 
     val sizeWithUnkeyedMessages = log.size
 
     // append keyed messages
-    while (log.numberOfSegments < 3) log.append(
-      message(log.logEndOffset.toInt, log.logEndOffset.toInt))
+    while (log.numberOfSegments < 3)
+      log.append(message(log.logEndOffset.toInt, log.logEndOffset.toInt))
 
     val expectedSizeAfterCleaning = log.size - sizeWithUnkeyedMessages
     cleaner.clean(LogToClean(TopicAndPartition("test", 0), log, 0))
@@ -208,8 +208,8 @@ class CleanerTest extends JUnitSuite {
       makeLog(config = LogConfig.fromProps(logConfig.originals, logProps))
 
     // append messages to the log until we have four segments
-    while (log.numberOfSegments < 4) log.append(
-      message(log.logEndOffset.toInt, log.logEndOffset.toInt))
+    while (log.numberOfSegments < 4)
+      log.append(message(log.logEndOffset.toInt, log.logEndOffset.toInt))
 
     val keys = keysInLog(log)
     val map = new FakeOffsetMap(Int.MaxValue)
@@ -312,9 +312,10 @@ class CleanerTest extends JUnitSuite {
       makeLog(config = LogConfig.fromProps(logConfig.originals, logProps))
 
     // fill up first segment
-    while (log.numberOfSegments == 1) log.append(
-      TestUtils
-        .singleMessageSet(payload = "hello".getBytes, key = "hello".getBytes))
+    while (log.numberOfSegments == 1)
+      log.append(
+        TestUtils
+          .singleMessageSet(payload = "hello".getBytes, key = "hello".getBytes))
 
     // forward offset and append message to next segment at offset Int.MaxValue
     val messageSet = new ByteBufferMessageSet(
@@ -352,9 +353,10 @@ class CleanerTest extends JUnitSuite {
     checkSegmentOrder(groups)
 
     // append more messages, creating new segments, further grouping should still occur
-    while (log.numberOfSegments < 4) log.append(
-      TestUtils
-        .singleMessageSet(payload = "hello".getBytes, key = "hello".getBytes))
+    while (log.numberOfSegments < 4)
+      log.append(
+        TestUtils
+          .singleMessageSet(payload = "hello".getBytes, key = "hello".getBytes))
 
     groups = cleaner.groupSegmentsBySize(
       log.logSegments,

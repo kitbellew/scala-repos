@@ -1019,7 +1019,8 @@ trait ContextErrors {
                 relevantElements.reverse.indexWhere(isMacroInvoker) + 1
               while (threshold != relevantElements.length && isMacroInvoker(
                        relevantElements(
-                         relevantElements.length - threshold - 1))) threshold += 1
+                         relevantElements.length - threshold - 1)))
+                threshold += 1
               relevantElements = relevantElements dropRight threshold
 
               realex.setStackTrace(relevantElements)

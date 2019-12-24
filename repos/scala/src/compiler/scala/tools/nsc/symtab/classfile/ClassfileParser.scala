@@ -764,7 +764,8 @@ abstract class ClassfileParser {
           accept(';')
           tpe
         case ARRAY_TAG =>
-          while ('0' <= sig.charAt(index) && sig.charAt(index) <= '9') index += 1
+          while ('0' <= sig.charAt(index) && sig.charAt(index) <= '9')
+            index += 1
           var elemtp = sig2type(tparams, skiptvs)
           // make unbounded Array[T] where T is a type variable into Array[T with Object]
           // (this is necessary because such arrays have a representation which is incompatible

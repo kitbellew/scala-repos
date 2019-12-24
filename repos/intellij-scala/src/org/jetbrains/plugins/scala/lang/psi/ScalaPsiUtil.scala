@@ -1438,8 +1438,8 @@ object ScalaPsiUtil {
       }
     }
     if (isAppropriatePsiElement(x)) return x
-    while (parent != null && !isAppropriatePsiElement(parent)) parent =
-      parent.getParent
+    while (parent != null && !isAppropriatePsiElement(parent))
+      parent = parent.getParent
     parent
   }
 

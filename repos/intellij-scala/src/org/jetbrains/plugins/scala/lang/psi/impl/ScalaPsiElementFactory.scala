@@ -1318,8 +1318,9 @@ object ScalaPsiElementFactory {
     val qArray = qualifiedName.split("[.]")
     val pArray = packageName.split("[.]")
     var i = 0
-    while (i < qArray.length - 1 && i < pArray.length && qArray(i) == pArray(i)) i =
-      i + 1
+    while (i < qArray.length - 1 && i < pArray.length && qArray(i) == pArray(i))
+      i =
+        i + 1
     var res = ""
     while (i < qArray.length) {
       res = res + qArray(i)

@@ -347,8 +347,8 @@ object ResolveUtils {
                            .isInstanceOf[ScObject] &&
                          !placeEnclosing
                            .asInstanceOf[ScObject]
-                           .isPackageObject) placeEnclosing = context(
-                    placeEnclosing)
+                           .isPackageObject)
+                    placeEnclosing = context(placeEnclosing)
                   if (placeEnclosing == null) return false //not Scala
                   val placePackageName = placeEnclosing match {
                     case file: ScalaFile   => ""
@@ -436,8 +436,8 @@ object ResolveUtils {
                            .isInstanceOf[ScObject] &&
                          !placeEnclosing
                            .asInstanceOf[ScObject]
-                           .isPackageObject) placeEnclosing = context(
-                    placeEnclosing)
+                           .isPackageObject)
+                    placeEnclosing = context(placeEnclosing)
                   if (placeEnclosing == null) return Some(false) //not Scala
                   val placePackageName = placeEnclosing match {
                     case file: ScalaFile   => ""

@@ -112,8 +112,8 @@ private object ScalaGoToSuperActionHandler {
       var el = file.findElementAt(offset)
       val elOrig = el
       while (el != null && !(el
-               .isInstanceOf[ScTypedDefinition] && el != elOrig)) el =
-        el.getParent
+               .isInstanceOf[ScTypedDefinition] && el != elOrig))
+        el = el.getParent
       val elements = d.declaredElements
       if (elements.isEmpty) return empty
       val supers = mutable.HashSet[NavigatablePsiElement](

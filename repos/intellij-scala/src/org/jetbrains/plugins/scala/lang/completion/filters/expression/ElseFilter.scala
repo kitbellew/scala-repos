@@ -36,8 +36,8 @@ class ElseFilter extends ElementFilter {
         }
         var text = ""
         if (ifStmt == null) {
-          while (parent != null && !parent.isInstanceOf[ScIfStmt]) parent =
-            parent.getParent
+          while (parent != null && !parent.isInstanceOf[ScIfStmt])
+            parent = parent.getParent
           if (parent == null) return false
           text = parent.getText
           text = Pattern

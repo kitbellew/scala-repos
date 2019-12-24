@@ -308,8 +308,9 @@ trait SeqLike[+A, +Repr]
   def startsWith[B](that: GenSeq[B], offset: Int): Boolean = {
     val i = this.iterator drop offset
     val j = that.iterator
-    while (j.hasNext && i.hasNext) if (i.next != j.next)
-      return false
+    while (j.hasNext && i.hasNext)
+      if (i.next != j.next)
+        return false
 
     !j.hasNext
   }
@@ -317,8 +318,9 @@ trait SeqLike[+A, +Repr]
   def endsWith[B](that: GenSeq[B]): Boolean = {
     val i = this.iterator.drop(length - that.length)
     val j = that.iterator
-    while (i.hasNext && j.hasNext) if (i.next != j.next)
-      return false
+    while (i.hasNext && j.hasNext)
+      if (i.next != j.next)
+        return false
 
     !j.hasNext
   }
@@ -600,8 +602,9 @@ trait SeqLike[+A, +Repr]
   def corresponds[B](that: GenSeq[B])(p: (A, B) => Boolean): Boolean = {
     val i = this.iterator
     val j = that.iterator
-    while (i.hasNext && j.hasNext) if (!p(i.next(), j.next()))
-      return false
+    while (i.hasNext && j.hasNext)
+      if (!p(i.next(), j.next()))
+        return false
 
     !i.hasNext && !j.hasNext
   }

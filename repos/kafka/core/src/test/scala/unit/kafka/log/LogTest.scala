@@ -292,10 +292,11 @@ class LogTest extends JUnitSuite {
       time = time)
 
     // keep appending until we have two segments with only a single message in the second segment
-    while (log.numberOfSegments == 1) log.append(
-      new ByteBufferMessageSet(
-        NoCompressionCodec,
-        messages = new Message("42".getBytes)))
+    while (log.numberOfSegments == 1)
+      log.append(
+        new ByteBufferMessageSet(
+          NoCompressionCodec,
+          messages = new Message("42".getBytes)))
 
     // now manually truncate off all but one message from the first segment to create a gap in the messages
     log.logSegments.head.truncateTo(1)

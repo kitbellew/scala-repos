@@ -24,8 +24,8 @@ class CatchFilter extends ElementFilter {
         context.getTextRange.getStartOffset - 1,
         context)
       var leaf1 = getLeafByOffset(i, context)
-      while (leaf1 != null && !leaf1.isInstanceOf[ScTryBlock]) leaf1 =
-        leaf1.getParent
+      while (leaf1 != null && !leaf1.isInstanceOf[ScTryBlock])
+        leaf1 = leaf1.getParent
       if (leaf1 == null) return false
       if (leaf1.getTextRange.getEndOffset != i + 1) return false
       i = getNextNotWhitespaceAndComment(

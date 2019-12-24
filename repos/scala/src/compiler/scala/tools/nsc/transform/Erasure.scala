@@ -523,8 +523,8 @@ abstract class Erasure
           !(other.tpe =:= member.tpe) &&
           !(deconstMap(other.tpe) =:= deconstMap(member.tpe)) && {
           var e = bridgesScope.lookupEntry(member.name)
-          while ((e ne null) && !((e.sym.tpe =:= otpe) && (bridgeTarget(e.sym) == member))) e =
-            bridgesScope.lookupNextEntry(e)
+          while ((e ne null) && !((e.sym.tpe =:= otpe) && (bridgeTarget(e.sym) == member)))
+            e = bridgesScope.lookupNextEntry(e)
           (e eq null)
         }
       )

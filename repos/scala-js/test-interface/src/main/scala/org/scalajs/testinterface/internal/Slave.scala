@@ -66,8 +66,8 @@ final class Slave(
       canSendRunnerMessage = true
 
       // Flush the queue
-      while (!messageQueue.isEmpty) sendOutboundRunnerMessage(
-        messageQueue.dequeue)
+      while (!messageQueue.isEmpty)
+        sendOutboundRunnerMessage(messageQueue.dequeue)
 
       body
     } finally {

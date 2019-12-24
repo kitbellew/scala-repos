@@ -50,7 +50,8 @@ trait Picklers { self: Global =>
   def delta(f: AbstractFile, cs: Array[Char]): Diff = {
     val bs = sourceFilesSeen(f)
     var start = 0
-    while (start < bs.length && start < cs.length && bs(start) == cs(start)) start += 1
+    while (start < bs.length && start < cs.length && bs(start) == cs(start))
+      start += 1
     var end = bs.length
     var end2 = cs.length
     while (end > start && end2 > start && bs(end - 1) == cs(end2 - 1)) {

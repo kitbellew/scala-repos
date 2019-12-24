@@ -519,8 +519,10 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
             if (lval == rval) {
               var ldups = 0
               var rdups = 0
-              while (lc + ldups < nleft && lval == left.raw(lc + ldups)) ldups += 1
-              while (rc + rdups < nright && rval == right.raw(rc + rdups)) rdups += 1
+              while (lc + ldups < nleft && lval == left.raw(lc + ldups))
+                ldups += 1
+              while (rc + rdups < nright && rval == right.raw(rc + rdups))
+                rdups += 1
               var m = 0
               while (m < ldups) {
                 var n = 0

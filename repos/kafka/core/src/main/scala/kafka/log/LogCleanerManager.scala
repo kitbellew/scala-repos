@@ -170,8 +170,9 @@ private[log] class LogCleanerManager(
                   .format(topicAndPartition, s))
           }
       }
-      while (!isCleaningInState(topicAndPartition, LogCleaningPaused)) pausedCleaningCond
-        .await(100, TimeUnit.MILLISECONDS)
+      while (!isCleaningInState(topicAndPartition, LogCleaningPaused))
+        pausedCleaningCond
+          .await(100, TimeUnit.MILLISECONDS)
     }
     info(
       "The cleaning for partition %s is aborted and paused".format(
