@@ -443,13 +443,15 @@ object Bounds {
             val newLub =
               if (stopAddingUpperBound) types.Any
               else
-                lub(Seq(upper, substed2), checkWeak)(stopAddingUpperBound = true)
+                lub(Seq(upper, substed2), checkWeak)(
+                  stopAddingUpperBound = true)
             (ScSkolemizedType(name, args, glb(lower, substed2), newLub), None)
           case (_, ScSkolemizedType(name, args, lower, upper)) =>
             val newLub =
               if (stopAddingUpperBound) types.Any
               else
-                lub(Seq(upper, substed1), checkWeak)(stopAddingUpperBound = true)
+                lub(Seq(upper, substed1), checkWeak)(
+                  stopAddingUpperBound = true)
             (ScSkolemizedType(name, args, glb(lower, substed1), newLub), None)
           case _ =>
             val newGlb = Bounds.glb(substed1, substed2)
@@ -461,8 +463,8 @@ object Bounds {
                 getTypesForLubEvaluation(substed1) ++ getTypesForLubEvaluation(
                   substed2)
               val newLub =
-                Bounds.lub(typesToCover, checkWeak = false)(stopAddingUpperBound =
-                  true)
+                Bounds.lub(typesToCover, checkWeak = false)(
+                  stopAddingUpperBound = true)
               (
                 ScTypeVariable("_$" + count),
                 Some(

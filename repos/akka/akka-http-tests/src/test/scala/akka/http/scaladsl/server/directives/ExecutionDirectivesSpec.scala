@@ -52,8 +52,8 @@ class ExecutionDirectivesSpec extends RoutingSpec {
         }
       }
     }
-    "not interfere with alternative routes" in EventFilter[MyException.type](occurrences =
-      1).intercept {
+    "not interfere with alternative routes" in EventFilter[MyException.type](
+      occurrences = 1).intercept {
       Get("/abc") ~>
         get {
           handleExceptions(handler)(reject) ~ { ctx ⇒

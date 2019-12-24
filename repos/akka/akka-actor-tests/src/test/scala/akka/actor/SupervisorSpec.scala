@@ -516,15 +516,15 @@ class SupervisorSpec
 
     "log pre-creation check failures" when {
 
-      "creating a top-level actor" in EventFilter[ActorInitializationException](occurrences =
-        1).intercept {
+      "creating a top-level actor" in EventFilter[ActorInitializationException](
+        occurrences = 1).intercept {
         val ref = system.actorOf(creator(testActor, fail = true))
         watch(ref)
         expectTerminated(ref)
       }
 
-      "creating a normal child actor" in EventFilter[ConfigurationException](occurrences =
-        1).intercept {
+      "creating a normal child actor" in EventFilter[ConfigurationException](
+        occurrences = 1).intercept {
         val top = system.actorOf(creator(testActor))
         top ! creator(testActor)
         val middle = expectMsgType[ActorRef]
@@ -543,7 +543,8 @@ class SupervisorSpec
         expectTerminated(ref)
       }
 
-      "creating a router" in EventFilter[ConfigurationException](occurrences = 1)
+      "creating a router" in EventFilter[ConfigurationException](
+        occurrences = 1)
         .intercept {
           val top = system.actorOf(creator(testActor))
           top ! creator(testActor)

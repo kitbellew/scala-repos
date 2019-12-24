@@ -33,8 +33,8 @@ object ComparingDiffCollectionKinds extends SimplificationType {
               .withHint(convertHint(side, otherKind))
               .highlightRef)
         }
-        convertSimplification(leftSide = true) ++ convertSimplification(leftSide =
-          false)
+        convertSimplification(leftSide = true) ++ convertSimplification(
+          leftSide = false)
       case _ => Seq.empty
     }
 

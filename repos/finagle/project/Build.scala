@@ -45,8 +45,8 @@ object Finagle extends Build {
     thriftLibs ++ Seq("com.twitter" %% "scrooge-core" % scroogeVersion)
 
   def util(which: String) =
-    "com.twitter" %% ("util-" + which) % utilVersion excludeAll (ExclusionRule(organization =
-      "junit"),
+    "com.twitter" %% ("util-" + which) % utilVersion excludeAll (ExclusionRule(
+      organization = "junit"),
     ExclusionRule(organization = "org.scala-tools.testing"),
     ExclusionRule(organization = "org.mockito"))
 

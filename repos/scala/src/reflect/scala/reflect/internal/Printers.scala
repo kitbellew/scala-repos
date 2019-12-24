@@ -638,9 +638,8 @@ trait Printers extends api.Printers { self: SymbolTable =>
       t match {
         // case for: 1) (if (a) b else c).meth1.meth2 or 2) 1 + 5 should be represented as (1).+(5)
         case Select(qual, name)
-            if (name.isTermName && needsParentheses(qual)(insideLabelDef = false)) || isIntLitWithDecodedOp(
-              qual,
-              name) =>
+            if (name.isTermName && needsParentheses(qual)(
+              insideLabelDef = false)) || isIntLitWithDecodedOp(qual, name) =>
           s"(${resolveSelect(qual)}).${printedName(name)}"
         case Select(qual, name) if name.isTermName =>
           s"${resolveSelect(qual)}.${printedName(name)}"

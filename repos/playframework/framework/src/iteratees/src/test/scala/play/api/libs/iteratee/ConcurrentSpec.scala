@@ -61,8 +61,8 @@ object ConcurrentSpec
       val (broadcaster, pushHere) = Concurrent.broadcast[String]
       val result1 = broadcaster |>>> Iteratee.getChunks[String]
       pushHere.end(new RuntimeException("foo"))
-      Await.result(result1, Duration.Inf) must throwA[RuntimeException](message =
-        "foo")
+      Await.result(result1, Duration.Inf) must throwA[RuntimeException](
+        message = "foo")
       pushHere.end()
       val result2 = broadcaster |>>> Iteratee.getChunks[String]
       Await.result(result2, Duration.Inf) must_== Nil
@@ -269,8 +269,8 @@ object ConcurrentSpec
         })(unicastEC)
 
         val result = enumerator |>>> Iteratee.getChunks[String]
-        Await.result(result, Duration.Inf) must throwA[RuntimeException](message =
-          "foo")
+        Await.result(result, Duration.Inf) must throwA[RuntimeException](
+          message = "foo")
       }
     }
 

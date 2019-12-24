@@ -311,8 +311,8 @@ trait FiltersSpec extends Specification with ServerIntegrationSpecification {
         Future.successful(Results.InternalServerError)
     }
 
-    "requests not matching a route should receive a RequestHeader modified by upstream filters" in withServer(errorHandler =
-      Some(CustomErrorHandler))(CustomHeaderFilter) { ws =>
+    "requests not matching a route should receive a RequestHeader modified by upstream filters" in withServer(
+      errorHandler = Some(CustomErrorHandler))(CustomHeaderFilter) { ws =>
       val response =
         Await.result(ws.url("/not-a-real-route").get(), Duration.Inf)
       response.status must_== 404

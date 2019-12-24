@@ -848,8 +848,8 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
     selectRandomNode((nodes - selfAddress).toVector) foreach gossipTo
 
   def gossipTo(address: Address): Unit = {
-    context.actorSelection(self.path.toStringWithAddress(address)) ! Status(versions =
-      myVersions)
+    context.actorSelection(self.path.toStringWithAddress(address)) ! Status(
+      versions = myVersions)
   }
 
   def selectRandomNode(

@@ -203,12 +203,12 @@ object SimplePattern extends ParserNode {
             false
           }
 
-          if (!parseSeqWildcard(withComma = false) && !parseSeqWildcardBinding(withComma =
-                false) && Pattern.parse(builder)) {
+          if (!parseSeqWildcard(withComma = false) && !parseSeqWildcardBinding(
+                withComma = false) && Pattern.parse(builder)) {
             while (builder.getTokenType == ScalaTokenTypes.tCOMMA) {
               builder.advanceLexer() // eat comma
-              if (!parseSeqWildcard(withComma = false) && !parseSeqWildcardBinding(withComma =
-                    false)) Pattern.parse(builder)
+              if (!parseSeqWildcard(withComma = false) && !parseSeqWildcardBinding(
+                    withComma = false)) Pattern.parse(builder)
             }
           }
           builder.getTokenType match {

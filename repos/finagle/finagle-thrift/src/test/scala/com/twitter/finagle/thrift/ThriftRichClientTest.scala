@@ -45,8 +45,8 @@ class ThriftRichClientTest
       .newServiceIface(any(), any(), captor.capture())
 
     val client = spy(ThriftRichClientMock)
-    client.newServiceIface("/s/tweetypie/tweetypie", "tweetypie_client")(builder =
-      mockBuilder)
+    client.newServiceIface("/s/tweetypie/tweetypie", "tweetypie_client")(
+      builder = mockBuilder)
 
     assert(
       captor.getValue.toString == "NullStatsReceiver/clnt/tweetypie_client")
