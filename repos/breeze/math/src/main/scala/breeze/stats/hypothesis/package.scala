@@ -19,7 +19,8 @@ package object hypothesis {
       implicit numeric: Numeric[T]): Double =
     tTest[TraversableOnce[Double]](
       it1.map(numeric.toDouble),
-      it2.map(numeric.toDouble)) //explicit type annotation ensures that the compiler runs the CanTraverseValues implementation of it
+      it2.map(numeric.toDouble)
+    ) //explicit type annotation ensures that the compiler runs the CanTraverseValues implementation of it
 
   def tTest[X](it1: X, it2: X)(
       implicit ct: CanTraverseValues[X, Double]): Double = {
@@ -39,7 +40,9 @@ package object hypothesis {
   }
 
   def tTest[T](it1: Traversable[T])(implicit numeric: Numeric[T]): Double =
-    tTest[TraversableOnce[Double]](it1.map(numeric.toDouble)) //explicit type annotation ensures that the compiler runs the CanTraverseValues implementation of it
+    tTest[TraversableOnce[Double]](
+      it1.map(numeric.toDouble)
+    ) //explicit type annotation ensures that the compiler runs the CanTraverseValues implementation of it
   def tTest[X](it1: X)(implicit ct: CanTraverseValues[X, Double]): Double = {
     val MeanAndVariance(mu1, var1, n1) = meanAndVariance(it1)
     val Z = mu1 / sqrt(var1 / n1)

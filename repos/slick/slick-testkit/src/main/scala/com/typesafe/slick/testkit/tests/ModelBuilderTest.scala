@@ -30,12 +30,21 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
       extends Table[(Int, String, Option[Int], Boolean, String)](tag, "posts") {
     def id = column[Int]("id")
     def title =
-      column[String]("title", O.Length(99, varying = false)) // tests Length produces valid SQL
+      column[String](
+        "title",
+        O.Length(99, varying = false)
+      ) // tests Length produces valid SQL
     def category = column[Option[Int]]("category", O.Default(Some(531)))
     def someBool =
-      column[Boolean]("some_bool", O.Default(true)) // tests boolean default values parsing
+      column[Boolean](
+        "some_bool",
+        O.Default(true)
+      ) // tests boolean default values parsing
     def someString =
-      column[String]("some_string", O.Length(111, varying = true)) // tests Length produces valid SQL
+      column[String](
+        "some_string",
+        O.Length(111, varying = true)
+      ) // tests Length produces valid SQL
     def * = (id, title, category, someBool, someString)
     def pk = primaryKey("posts_pk", (id, title))
     def categoryFK = foreignKey("category_fk", category, categories)(_.id.?)

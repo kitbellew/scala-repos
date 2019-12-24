@@ -9,6 +9,8 @@ class U extends T {
 object Test {
   def main(args: Array[String]): Unit = {
     new U()
-      .foo(null) // IllegalAccessError:  tried to access method U.foo(Lscala/Tuple1;)V from class Test$
+      .foo(
+        null
+      ) // IllegalAccessError:  tried to access method U.foo(Lscala/Tuple1;)V from class Test$
   }
 }

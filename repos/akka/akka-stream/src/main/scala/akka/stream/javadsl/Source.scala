@@ -1254,7 +1254,9 @@ final class Source[+Out, +Mat](delegate: scaladsl.Source[Out, Mat])
     */
   def groupedWithin(n: Int, d: FiniteDuration)
       : javadsl.Source[java.util.List[Out @uncheckedVariance], Mat] =
-    new Source(delegate.groupedWithin(n, d).map(_.asJava)) // TODO optimize to one step
+    new Source(
+      delegate.groupedWithin(n, d).map(_.asJava)
+    ) // TODO optimize to one step
 
   /**
     * Shifts elements emission in time by a specified amount. It allows to store elements

@@ -200,7 +200,9 @@ class BisectingKMeans private (
                 (leftChildIndex(index), left),
                 (rightChildIndex(index), right))
           }
-          .map(identity) // workaround for a Scala bug (SI-7005) that produces a not serializable map
+          .map(
+            identity
+          ) // workaround for a Scala bug (SI-7005) that produces a not serializable map
         var newClusters: Map[Long, ClusterSummary] = null
         var newAssignments: RDD[(Long, VectorWithNorm)] = null
         for (iter <- 0 until maxIterations) {

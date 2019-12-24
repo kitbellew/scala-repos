@@ -60,7 +60,9 @@ class RDDOperationGraphListenerSuite extends SparkFunSuite {
     assert(listener.jobIdToStageIds(startingJobId + 1).size === 2)
     assert(listener.jobIdToStageIds(startingJobId + 2).size === 3)
     assert(listener.jobIdToSkippedStageIds.size === 3)
-    assert(listener.jobIdToSkippedStageIds.values.forall(_.isEmpty)) // no skipped stages
+    assert(
+      listener.jobIdToSkippedStageIds.values.forall(_.isEmpty)
+    ) // no skipped stages
     assert(listener.stageIdToJobId.size === 6)
     assert(listener.stageIdToJobId(startingStageId) === startingJobId)
     assert(listener.stageIdToJobId(startingStageId + 1) === startingJobId + 1)
@@ -94,7 +96,9 @@ class RDDOperationGraphListenerSuite extends SparkFunSuite {
     assert(listener.jobIdToSkippedStageIds.size === 3)
     assert(listener.jobIdToSkippedStageIds(startingJobId).size === 1)
     assert(listener.jobIdToSkippedStageIds(startingJobId + 1).size === 2)
-    assert(listener.jobIdToSkippedStageIds(startingJobId + 2).size === 1) // 2 stages not skipped
+    assert(
+      listener.jobIdToSkippedStageIds(startingJobId + 2).size === 1
+    ) // 2 stages not skipped
     assert(listener.completedStageIds.size === 2)
 
     // The rest should be the same as before

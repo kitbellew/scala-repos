@@ -14,6 +14,7 @@ object SCL6807 {
     literal(x = 2),
     x(""),
     this x (x = 2),
-    x(x = 2)) /*end*/
+    x(x = 2)
+  ) /*end*/
 }
 //(String, Int, String, String, Int, String, String)

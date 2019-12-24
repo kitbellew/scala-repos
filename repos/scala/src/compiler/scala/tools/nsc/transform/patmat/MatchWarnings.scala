@@ -73,7 +73,8 @@ trait MatchWarnings {
         if (vpat != null)
           reporter.warning(
             cdef.body.pos,
-            "unreachable code due to " + vpat + addendum(cdef.pat)) // TODO: make configurable whether this is an error
+            "unreachable code due to " + vpat + addendum(cdef.pat)
+          ) // TODO: make configurable whether this is an error
         // If this is a default case and more cases follow, warn about this one so
         // we have a reason to mention its pattern variable name and any corresponding
         // symbol in scope.  Errors will follow from the remaining cases, at least

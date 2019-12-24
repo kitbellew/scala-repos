@@ -89,21 +89,24 @@ class ExecutorBasedEventDrivenDispatcher(
       throughput,
       throughputDeadlineTime,
       mailboxType,
-      ThreadPoolConfig()) // Needed for Java API usage
+      ThreadPoolConfig()
+    ) // Needed for Java API usage
 
   def this(_name: String, throughput: Int, mailboxType: MailboxType) =
     this(
       _name,
       throughput,
       Dispatchers.THROUGHPUT_DEADLINE_TIME_MILLIS,
-      mailboxType) // Needed for Java API usage
+      mailboxType
+    ) // Needed for Java API usage
 
   def this(_name: String, throughput: Int) =
     this(
       _name,
       throughput,
       Dispatchers.THROUGHPUT_DEADLINE_TIME_MILLIS,
-      Dispatchers.MAILBOX_TYPE) // Needed for Java API usage
+      Dispatchers.MAILBOX_TYPE
+    ) // Needed for Java API usage
 
   def this(_name: String, _config: ThreadPoolConfig) =
     this(
@@ -118,7 +121,8 @@ class ExecutorBasedEventDrivenDispatcher(
       _name,
       Dispatchers.THROUGHPUT,
       Dispatchers.THROUGHPUT_DEADLINE_TIME_MILLIS,
-      Dispatchers.MAILBOX_TYPE) // Needed for Java API usage
+      Dispatchers.MAILBOX_TYPE
+    ) // Needed for Java API usage
 
   val name = "akka:event-driven:dispatcher:" + _name
 
@@ -329,7 +333,8 @@ class PriorityExecutorBasedEventDrivenDispatcher(
       throughput,
       throughputDeadlineTime,
       mailboxType,
-      ThreadPoolConfig()) // Needed for Java API usage
+      ThreadPoolConfig()
+    ) // Needed for Java API usage
 
   def this(
       name: String,
@@ -341,7 +346,8 @@ class PriorityExecutorBasedEventDrivenDispatcher(
       comparator,
       throughput,
       Dispatchers.THROUGHPUT_DEADLINE_TIME_MILLIS,
-      mailboxType) // Needed for Java API usage
+      mailboxType
+    ) // Needed for Java API usage
 
   def this(
       name: String,
@@ -352,7 +358,8 @@ class PriorityExecutorBasedEventDrivenDispatcher(
       comparator,
       throughput,
       Dispatchers.THROUGHPUT_DEADLINE_TIME_MILLIS,
-      Dispatchers.MAILBOX_TYPE) // Needed for Java API usage
+      Dispatchers.MAILBOX_TYPE
+    ) // Needed for Java API usage
 
   def this(
       name: String,
@@ -372,7 +379,8 @@ class PriorityExecutorBasedEventDrivenDispatcher(
       comparator,
       Dispatchers.THROUGHPUT,
       Dispatchers.THROUGHPUT_DEADLINE_TIME_MILLIS,
-      Dispatchers.MAILBOX_TYPE) // Needed for Java API usage
+      Dispatchers.MAILBOX_TYPE
+    ) // Needed for Java API usage
 }
 
 /**

@@ -268,7 +268,11 @@ class MathTest {
     assertEquals(2.0, rint(2.1), 0.0)
     assertEquals(2.0, rint(2.5), 0.0)
     assertEquals(Double.MaxValue, rint(Double.MaxValue), 0.0)
-    assertEquals(4503599627370496.0, rint(4503599627370495.5), 0.0) // MaxSafeInt / 2
+    assertEquals(
+      4503599627370496.0,
+      rint(4503599627370495.5),
+      0.0
+    ) // MaxSafeInt / 2
 
     // Negative values
     assertTrue(isNegZero(rint(-0.1)))
@@ -281,6 +285,10 @@ class MathTest {
     assertEquals(-2.0, rint(-2.1), 0.0)
     assertEquals(-2.0, rint(-2.5), 0.0)
     assertEquals(Double.MinValue, rint(Double.MinValue), 0.0)
-    assertEquals(-4503599627370496.0, rint(-4503599627370495.5), 0.0) // -MaxSafeInt / 2
+    assertEquals(
+      -4503599627370496.0,
+      rint(-4503599627370495.5),
+      0.0
+    ) // -MaxSafeInt / 2
   }
 }

@@ -44,13 +44,18 @@ class ConsumerBounceTest extends IntegrationTestHarness with Logging {
   // configure the servers and clients
   this.serverConfig.setProperty(
     KafkaConfig.ControlledShutdownEnableProp,
-    "false") // speed up shutdown
+    "false"
+  ) // speed up shutdown
   this.serverConfig.setProperty(
     KafkaConfig.OffsetsTopicReplicationFactorProp,
-    "3") // don't want to lose offset
+    "3"
+  ) // don't want to lose offset
   this.serverConfig.setProperty(KafkaConfig.OffsetsTopicPartitionsProp, "1")
   this.serverConfig
-    .setProperty(KafkaConfig.GroupMinSessionTimeoutMsProp, "10") // set small enough session timeout
+    .setProperty(
+      KafkaConfig.GroupMinSessionTimeoutMsProp,
+      "10"
+    ) // set small enough session timeout
   this.producerConfig.setProperty(ProducerConfig.ACKS_CONFIG, "all")
   this.consumerConfig.setProperty(ConsumerConfig.GROUP_ID_CONFIG, "my-test")
   this.consumerConfig

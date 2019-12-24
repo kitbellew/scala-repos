@@ -42,7 +42,8 @@ package object rearranger {
     StdArrangementSettingsToken.token(
       SPLIT_INTO_UNARRANGEABLE_BLOCKS_BY_EXPRESSIONS_ID,
       SPLIT_INTO_UNARRANGEABLE_BLOCKS_BY_EXPRESSIONS_UI,
-      StdArrangementTokenType.GROUPING) //TODO: use name from bundle
+      StdArrangementTokenType.GROUPING
+    ) //TODO: use name from bundle
 
   val scalaGroupingRules = immutable.HashMap(
     SCALA_GETTERS_AND_SETTERS.getId -> SCALA_GETTERS_AND_SETTERS,

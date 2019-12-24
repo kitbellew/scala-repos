@@ -4,7 +4,10 @@ class C {
       (x: Any) match {
         case y: C =>
           () =>
-            (x, y) // used to trigger a ClassFormatError under -Ydelambdafy:method
+            (
+              x,
+              y
+            ) // used to trigger a ClassFormatError under -Ydelambdafy:method
       }
   }
 }

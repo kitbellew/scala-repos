@@ -70,7 +70,10 @@ object Test extends Properties("Division of Duration by Long") {
       val shouldFit =
         a != Long.MinValue && // must fail due to illegal duration length
           (b != Long.MinValue || a == 0) && // Long factor may only be MinValue if the duration is zero, otherwise the result will be illegal
-          (abs(b) <= Long.MaxValue / max(1, abs(a))) // check the rest against the “safe” division method
+          (abs(b) <= Long.MaxValue / max(
+            1,
+            abs(a)
+          )) // check the rest against the “safe” division method
       try {
         mul(a, b); shouldFit
       } catch { case _: IllegalArgumentException => !shouldFit }

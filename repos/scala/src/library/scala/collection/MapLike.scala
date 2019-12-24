@@ -337,7 +337,8 @@ trait MapLike[A, +B, +This <: MapLike[A, B, This] with Map[A, B]]
   override def filterNot(p: ((A, B)) => Boolean): This = {
     var res: This = repr
     for (kv <- this)
-      if (p(kv)) res = (res - kv._1).asInstanceOf[This] // !!! concrete overrides abstract problem
+      if (p(kv))
+        res = (res - kv._1).asInstanceOf[This] // !!! concrete overrides abstract problem
     res
   }
 

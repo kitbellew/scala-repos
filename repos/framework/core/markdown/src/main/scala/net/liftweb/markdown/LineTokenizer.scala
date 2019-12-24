@@ -176,7 +176,9 @@ class LineTokenizer() extends Parsers {
           case _         => p(lineParsers.otherLine)(in)
         }
       }
-    } | p(lineParsers.otherLine) //this makes sure every line is consumed, even if our guess was no good
+    } | p(
+      lineParsers.otherLine
+    ) //this makes sure every line is consumed, even if our guess was no good
 
   /** Parses link definitions and verbatim xml blocks
     */

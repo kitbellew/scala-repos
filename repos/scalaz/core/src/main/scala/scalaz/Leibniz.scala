@@ -90,7 +90,9 @@ object Leibniz extends LeibnizInstances {
       f: Leibniz[L, H, B, C],
       g: Leibniz[L, H, A, B]
   ): Leibniz[L, H, A, C] =
-    f.subst[λ[`X >: L <: H` => Leibniz[L, H, A, X]]](g) // note kind-projector 0.5.2 cannot do super/subtype bounds
+    f.subst[λ[`X >: L <: H` => Leibniz[L, H, A, X]]](
+      g
+    ) // note kind-projector 0.5.2 cannot do super/subtype bounds
 
   /** Equality is symmetric */
   def symm[L, H >: L, A >: L <: H, B >: L <: H](

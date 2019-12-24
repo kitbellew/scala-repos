@@ -202,7 +202,10 @@ private[hive] trait HiveClient {
   def loadPartition(
       loadPath: String,
       tableName: String,
-      partSpec: java.util.LinkedHashMap[String, String], // Hive relies on LinkedHashMap ordering
+      partSpec: java.util.LinkedHashMap[
+        String,
+        String
+      ], // Hive relies on LinkedHashMap ordering
       replace: Boolean,
       holdDDLTime: Boolean,
       inheritTableSpecs: Boolean,
@@ -219,7 +222,10 @@ private[hive] trait HiveClient {
   def loadDynamicPartitions(
       loadPath: String,
       tableName: String,
-      partSpec: java.util.LinkedHashMap[String, String], // Hive relies on LinkedHashMap ordering
+      partSpec: java.util.LinkedHashMap[
+        String,
+        String
+      ], // Hive relies on LinkedHashMap ordering
       replace: Boolean,
       numDP: Int,
       holdDDLTime: Boolean,

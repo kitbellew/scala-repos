@@ -33,7 +33,9 @@ trait AbstractTestConfigurationProducer {
             .getCachedClass(scope, suitePath)
             .orNull == null)) return null
     myPsiElement = location.getPsiElement
-    createConfigurationByLocation(location) //.asInstanceOf[RunnerAndConfigurationSettingsImpl]
+    createConfigurationByLocation(
+      location
+    ) //.asInstanceOf[RunnerAndConfigurationSettingsImpl]
   }
 
   def findExistingByElement(

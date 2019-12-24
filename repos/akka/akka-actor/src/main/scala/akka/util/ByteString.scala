@@ -470,7 +470,9 @@ sealed abstract class ByteString
     * @return this ByteString copied into a byte array
     */
   protected[ByteString] def toArray: Array[Byte] =
-    toArray[Byte] // protected[ByteString] == public to Java but hidden to Scala * fnizz *
+    toArray[
+      Byte
+    ] // protected[ByteString] == public to Java but hidden to Scala * fnizz *
 
   override def toArray[B >: Byte](implicit arg0: ClassTag[B]): Array[B] =
     iterator.toArray

@@ -29,7 +29,10 @@ object Test extends StoreReporterDirectTest {
         }
       }
     """)
-    assert(storeReporter.infos.isEmpty, storeReporter.infos.mkString("\n")) // Included a MissingRequirementError before.
+    assert(
+      storeReporter.infos.isEmpty,
+      storeReporter.infos.mkString("\n")
+    ) // Included a MissingRequirementError before.
   }
 
   def deleteClass(name: String) {

@@ -925,7 +925,12 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
       case fun: ScFunction if isClassOfFunction(fun) =>
         classOfFunctionEvaluator(ref)
       case synth: ScSyntheticFunction =>
-        syntheticFunctionEvaluator(synth, qualOption, ref, arguments) //todo: use matched parameters
+        syntheticFunctionEvaluator(
+          synth,
+          qualOption,
+          ref,
+          arguments
+        ) //todo: use matched parameters
       case fun: ScFunction if isArrayFunction(fun) =>
         val args =
           argumentEvaluators(fun, matchedParameters, call, ref, arguments)
@@ -1217,9 +1222,12 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
               leftEvaluator: Evaluator): Option[Evaluator] = {
             leftEvaluator match {
               case m: ScalaMethodEvaluator =>
-                Some(m.copy(
-                  _methodName = m.methodName + "_$eq",
-                  argumentEvaluators = Seq(rightEvaluator))) //todo: signature?
+                Some(
+                  m.copy(
+                    _methodName = m.methodName + "_$eq",
+                    argumentEvaluators = Seq(rightEvaluator)
+                  )
+                ) //todo: signature?
               case ScalaDuplexEvaluator(first, second) =>
                 createAssignEvaluator(first) orElse createAssignEvaluator(
                   second)
@@ -1340,12 +1348,13 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
         case _: ScXmlPattern =>
           throw EvaluationException(
             ScalaBundle
-              .message("xml.patterns.not.supported")) //todo: xml patterns
+              .message("xml.patterns.not.supported")
+          ) //todo: xml patterns
         case _ =>
           throw EvaluationException(
-            ScalaBundle.message(
-              "kind.of.patterns.not.supported",
-              pattern.getText)) //todo: xml patterns
+            ScalaBundle
+              .message("kind.of.patterns.not.supported", pattern.getText)
+          ) //todo: xml patterns
       }
     }
   }

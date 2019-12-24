@@ -104,7 +104,8 @@ private[io] class TcpOutgoingConnection(
       case ChannelConnectable ⇒
         reportConnectFailure {
           if (channel.finishConnect()) {
-            if (timeout.isDefined) context.setReceiveTimeout(Duration.Undefined) // Clear the timeout
+            if (timeout.isDefined)
+              context.setReceiveTimeout(Duration.Undefined) // Clear the timeout
             log.debug("Connection established to [{}]", remoteAddress)
             completeConnect(registration, commander, options)
           } else {
@@ -124,7 +125,8 @@ private[io] class TcpOutgoingConnection(
         }
 
       case ReceiveTimeout ⇒
-        if (timeout.isDefined) context.setReceiveTimeout(Duration.Undefined) // Clear the timeout
+        if (timeout.isDefined)
+          context.setReceiveTimeout(Duration.Undefined) // Clear the timeout
         log.debug(
           "Connect timeout expired, could not establish connection to [{}]",
           remoteAddress)

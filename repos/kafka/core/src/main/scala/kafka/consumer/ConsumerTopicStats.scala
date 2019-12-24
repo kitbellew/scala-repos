@@ -43,8 +43,9 @@ class ConsumerTopicStats(clientId: String) extends Logging {
     new ConsumerTopicMetrics(k)
   private val stats =
     new Pool[ClientIdAndTopic, ConsumerTopicMetrics](Some(valueFactory))
-  private val allTopicStats = new ConsumerTopicMetrics(new ClientIdAllTopics(
-    clientId)) // to differentiate from a topic named AllTopics
+  private val allTopicStats = new ConsumerTopicMetrics(
+    new ClientIdAllTopics(clientId)
+  ) // to differentiate from a topic named AllTopics
 
   def getConsumerAllTopicStats(): ConsumerTopicMetrics = allTopicStats
 

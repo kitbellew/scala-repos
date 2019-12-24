@@ -29,6 +29,8 @@ object Test extends StoreReporterDirectTest {
 
     // bad symbolic reference error expected (but no stack trace!)
     compileCode(C)
-    println(storeReporter.infos.mkString("\n")) // Included a NullPointerException before.
+    println(
+      storeReporter.infos.mkString("\n")
+    ) // Included a NullPointerException before.
   }
 }

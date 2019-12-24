@@ -24,7 +24,8 @@ trait JSDefinitions { self: JSGlobalAddons =>
   class JSDefinitionsClass {
 
     lazy val ScalaJSJSPackage = getPackage(
-      newTermNameCached("scala.scalajs.js")) // compat 2.10/2.11
+      newTermNameCached("scala.scalajs.js")
+    ) // compat 2.10/2.11
     lazy val JSPackage_typeOf =
       getMemberMethod(ScalaJSJSPackage, newTermName("typeOf"))
     lazy val JSPackage_constructorOf =

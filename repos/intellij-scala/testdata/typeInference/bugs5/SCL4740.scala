@@ -62,7 +62,8 @@ object PhoneCode {
         }
         /*start*/
         collectPossibleTranslations(
-          Step("", cleanString(phoneNumber), phoneNumber)) /*end*/
+          Step("", cleanString(phoneNumber), phoneNumber)
+        ) /*end*/
       })
       .toSet
     //actual solution ends here, total non comment line code: 32 (+6 for package, import, main method)

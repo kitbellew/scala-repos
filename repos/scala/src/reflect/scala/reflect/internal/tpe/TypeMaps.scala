@@ -180,7 +180,9 @@ private[internal] trait TypeMaps {
       case tv @ TypeVar(_, constr) =>
         if (constr.instValid) this(constr.inst)
         else
-          tv.applyArgs(mapOverArgs(tv.typeArgs, tv.params)) //@M !args.isEmpty implies !typeParams.isEmpty
+          tv.applyArgs(
+            mapOverArgs(tv.typeArgs, tv.params)
+          ) //@M !args.isEmpty implies !typeParams.isEmpty
       case AnnotatedType(annots, atp) =>
         val annots1 = mapOverAnnotations(annots)
         val atp1 = this(atp)
@@ -641,7 +643,10 @@ private[internal] trait TypeMaps {
         else
           nextBase match {
             case NoType =>
-              loop(NoType, clazz.owner) // backstop for SI-2797, must remove `SingletonType#isHigherKinded` and run pos/t2797.scala to get here.
+              loop(
+                NoType,
+                clazz.owner
+              ) // backstop for SI-2797, must remove `SingletonType#isHigherKinded` and run pos/t2797.scala to get here.
             case applied @ TypeRef(_, _, _) =>
               correspondingTypeArgument(classParam, applied)
             case ExistentialType(eparams, qtpe) =>
@@ -726,7 +731,10 @@ private[internal] trait TypeMaps {
       val pre1 = this(pre)
       if (pre1 eq pre) tp
       else if (pre1.isStable) singleType(pre1, sym)
-      else pre1.memberType(sym).resultType //todo: this should be rolled into existential abstraction
+      else
+        pre1
+          .memberType(sym)
+          .resultType //todo: this should be rolled into existential abstraction
     }
 
     override def toString = s"AsSeenFromMap($seenFromPrefix, $seenFromClass)"
@@ -1195,7 +1203,10 @@ private[internal] trait TypeMaps {
             "ADAPT1 pre = " + pre + ", sym = " + sym.fullLocationString + ", rebind = " + rebind0.fullLocationString)
           val bcs = pre.baseClasses.dropWhile(bc => !corresponds(bc, sym.owner))
           if (bcs.isEmpty)
-            assert(pre.typeSymbol.isRefinementClass, pre) // if pre is a refinementclass it might be a structural type => OK to leave it in.
+            assert(
+              pre.typeSymbol.isRefinementClass,
+              pre
+            ) // if pre is a refinementclass it might be a structural type => OK to leave it in.
           else
             rebind0 = pre.baseType(bcs.head).member(sym.name)
           debuglog(

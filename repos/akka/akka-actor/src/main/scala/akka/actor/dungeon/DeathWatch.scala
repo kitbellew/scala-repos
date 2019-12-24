@@ -27,7 +27,9 @@ private[akka] trait DeathWatch { this: ActorCell ⇒
     case a: InternalActorRef ⇒
       if (a != self && !watchingContains(a)) {
         maintainAddressTerminatedSubscription(a) {
-          a.sendSystemMessage(Watch(a, self)) // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
+          a.sendSystemMessage(
+            Watch(a, self)
+          ) // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
           watching += a
         }
       }
@@ -37,7 +39,9 @@ private[akka] trait DeathWatch { this: ActorCell ⇒
   override final def unwatch(subject: ActorRef): ActorRef = subject match {
     case a: InternalActorRef ⇒
       if (a != self && watchingContains(a)) {
-        a.sendSystemMessage(Unwatch(a, self)) // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
+        a.sendSystemMessage(
+          Unwatch(a, self)
+        ) // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
         maintainAddressTerminatedSubscription(a) {
           watching = removeFromSet(a, watching)
         }

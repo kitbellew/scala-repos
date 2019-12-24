@@ -942,7 +942,9 @@ abstract class PersistentActorSpec(config: Config)
       persistentActor ! Cmd("c")
       expectMsg("a")
       expectMsg("a-e1-1") // persist
-      expectMsg("a-ea2-2") // persistAsync, but ordering enforced by sync persist below
+      expectMsg(
+        "a-ea2-2"
+      ) // persistAsync, but ordering enforced by sync persist below
       expectMsg("a-e3-3") // persist
       expectMsg("b")
       expectMsg("b-e1-4")
@@ -965,13 +967,17 @@ abstract class PersistentActorSpec(config: Config)
       expectMsg("a-e1-1") // persist, must be before next command
 
       var expectInAnyOrder1 = Set("b", "a-ea2-2")
-      expectInAnyOrder1 -= expectMsgAnyOf(expectInAnyOrder1.toList: _*) // ea2 is persistAsync, b (command) can processed before it
+      expectInAnyOrder1 -= expectMsgAnyOf(
+        expectInAnyOrder1.toList: _*
+      ) // ea2 is persistAsync, b (command) can processed before it
       expectMsgAnyOf(expectInAnyOrder1.toList: _*)
 
       expectMsg("b-e1-3") // persist, must be before next command
 
       var expectInAnyOrder2 = Set("c", "b-ea2-4")
-      expectInAnyOrder2 -= expectMsgAnyOf(expectInAnyOrder2.toList: _*) // ea2 is persistAsync, b (command) can processed before it
+      expectInAnyOrder2 -= expectMsgAnyOf(
+        expectInAnyOrder2.toList: _*
+      ) // ea2 is persistAsync, b (command) can processed before it
       expectMsgAnyOf(expectInAnyOrder2.toList: _*)
 
       expectMsg("c-e1-5")

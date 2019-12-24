@@ -760,7 +760,10 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
         val ba = bSeven.slice(prevOffset, offset)
         strs ::= new java.lang.String(ubytesToCharArray(ba))
       }
-      assert(strs.size > 1, "encode instead as one String via strEncode()") // TODO too strict?
+      assert(
+        strs.size > 1,
+        "encode instead as one String via strEncode()"
+      ) // TODO too strict?
       strs.reverse.toArray
     }
 
@@ -794,8 +797,14 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
           } else {
             const.tag match {
               case StringTag =>
-                assert(const.value != null, const) // TODO this invariant isn't documented in `case class Constant`
-                av.visit(name, const.stringValue) // `stringValue` special-cases null, but that execution path isn't exercised for a const with StringTag
+                assert(
+                  const.value != null,
+                  const
+                ) // TODO this invariant isn't documented in `case class Constant`
+                av.visit(
+                  name,
+                  const.stringValue
+                ) // `stringValue` special-cases null, but that execution path isn't exercised for a const with StringTag
               case ClazzTag =>
                 av.visit(name, typeToBType(const.typeValue).toASMType)
               case EnumTag =>

@@ -219,7 +219,12 @@ object Test extends BytecodeTest {
   def testA17() = {
     val List(b, c) = innerClassNodes("A17$B$")
     assertMember(b, "A17", "B$")
-    assertMember(c, "A17$B$", "C", name = Some("A17$B$C")) // not static, has an outer pointer.
+    assertMember(
+      c,
+      "A17$B$",
+      "C",
+      name = Some("A17$B$C")
+    ) // not static, has an outer pointer.
   }
 
   def testA18() = {
@@ -349,7 +354,9 @@ object Test extends BytecodeTest {
       "()Ljava/lang/Object;")
     assertEnclosingMethod("SI_9105$L$1", "SI_9105", "bnM", "()I")
 
-    assert(innerClassNodes("SI_9105").length == 13) // the 12 local classes, plus MethodHandles$Lookup
+    assert(
+      innerClassNodes("SI_9105").length == 13
+    ) // the 12 local classes, plus MethodHandles$Lookup
   }
 
   def testSI_9124() {
@@ -404,7 +411,9 @@ object Test extends BytecodeTest {
       "ImplClassesAreTopLevel"
     )
 
-    assertNoEnclosingMethod("ImplClassesAreTopLevel$B1") // member, no encl meth attr
+    assertNoEnclosingMethod(
+      "ImplClassesAreTopLevel$B1"
+    ) // member, no encl meth attr
 
     // no encl meth, but encl class
     List(

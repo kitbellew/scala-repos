@@ -484,7 +484,9 @@ class ActorDocSpec extends AkkaSpec("""
 
       class WatchActor extends Actor {
         val child = context.actorOf(Props.empty, "child")
-        context.watch(child) // <-- this is the only call needed for registration
+        context.watch(
+          child
+        ) // <-- this is the only call needed for registration
         var lastSender = system.deadLetters
 
         def receive = {
@@ -596,7 +598,9 @@ class ActorDocSpec extends AkkaSpec("""
       case ref: ActorRef =>
         //#reply-with-sender
         sender().tell("reply", context.parent) // replies will go back to parent
-        sender().!("reply")(context.parent) // alternative syntax (beware of the parens!)
+        sender().!("reply")(
+          context.parent
+        ) // alternative syntax (beware of the parens!)
       //#reply-with-sender
       case x =>
         //#reply-without-sender

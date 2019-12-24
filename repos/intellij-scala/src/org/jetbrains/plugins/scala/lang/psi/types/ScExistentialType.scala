@@ -229,7 +229,12 @@ case class ScExistentialType(
           if (!t._1) return (false, undefinedSubst)
           undefinedSubst = t._2
         }
-        Equivalence.equivInner(skolem, ex.skolem, undefinedSubst, falseUndef) //todo: probable problems with different positions of skolemized types.
+        Equivalence.equivInner(
+          skolem,
+          ex.skolem,
+          undefinedSubst,
+          falseUndef
+        ) //todo: probable problems with different positions of skolemized types.
       case _ => (false, undefinedSubst)
     }
   }

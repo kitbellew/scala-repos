@@ -257,7 +257,12 @@ private[engine] final class HttpHeaderParser private (
       else '\u0000'
     val node = nodes(nodeIx)
     if (char == node)
-      insert(input, value)(cursor + 1, endIx, nodeIx + 1, colonIx) // fast match, descend into only subnode
+      insert(input, value)(
+        cursor + 1,
+        endIx,
+        nodeIx + 1,
+        colonIx
+      ) // fast match, descend into only subnode
     else {
       val nodeChar = node & 0xFF
       val signum = math.signum(char - nodeChar)

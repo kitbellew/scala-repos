@@ -245,7 +245,11 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
 
     def docs: Array[(Long, Vector)] =
       Array(
-        Vectors.sparse(vocabSize, Array(0, 1, 2), Array(1, 1, 1)), // apple, orange, banana
+        Vectors.sparse(
+          vocabSize,
+          Array(0, 1, 2),
+          Array(1, 1, 1)
+        ), // apple, orange, banana
         Vectors
           .sparse(vocabSize, Array(3, 4, 5), Array(1, 1, 1)) // tiger, cat, dog
       ).zipWithIndex.map {
@@ -682,7 +686,9 @@ private[clustering] object LDASuite {
     ).zipWithIndex.map {
       case (wordCounts, docId) => (docId.toLong, wordCounts)
     }
-  assert(tinyCorpus.forall(_._2.size == tinyVocabSize)) // sanity check for test data
+  assert(
+    tinyCorpus.forall(_._2.size == tinyVocabSize)
+  ) // sanity check for test data
 
   def getNonEmptyDoc(corpus: Array[(Long, Vector)]): Array[(Long, Vector)] =
     corpus.filter {

@@ -203,7 +203,8 @@ final case class ConsistentHashingRoutingLogic(
             else
               ConsistentHash(
                 routees.map(ConsistentRoutee(_, selfAddress)),
-                vnodes) // re-hash
+                vnodes
+              ) // re-hash
           // ignore, don't update, in case of CAS failure
           consistentHashRef.compareAndSet(
             oldConsistentHashTuple,

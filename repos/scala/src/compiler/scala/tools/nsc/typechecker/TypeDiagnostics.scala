@@ -558,7 +558,9 @@ trait TypeDiagnostics {
             && !targets(m)
             && !(m.name == nme.WILDCARD) // e.g. val _ = foo
             && !ignoreNames(m.name.toTermName) // serialization methods
-            && !isConstantType(m.info.resultType) // subject to constant inlining
+            && !isConstantType(
+              m.info.resultType
+            ) // subject to constant inlining
             && !treeTypes
               .exists(_ contains m) // e.g. val a = new Foo ; new a.Bar
         )
@@ -621,7 +623,9 @@ trait TypeDiagnostics {
 
       private def exprOK =
         (expr != Object_synchronized) &&
-          !(expr.isLabel && treeInfo.isSynthCaseSymbol(expr)) // it's okay to jump to matchEnd (or another case) with an argument of type nothing
+          !(expr.isLabel && treeInfo.isSynthCaseSymbol(
+            expr
+          )) // it's okay to jump to matchEnd (or another case) with an argument of type nothing
 
       private def treeOK(tree: Tree) = {
         val isLabelDef = tree match {

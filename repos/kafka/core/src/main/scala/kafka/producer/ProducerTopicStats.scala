@@ -50,8 +50,9 @@ class ProducerTopicStats(clientId: String) {
   private val valueFactory = (k: ClientIdTopic) => new ProducerTopicMetrics(k)
   private val stats =
     new Pool[ClientIdTopic, ProducerTopicMetrics](Some(valueFactory))
-  private val allTopicsStats = new ProducerTopicMetrics(new ClientIdAllTopics(
-    clientId)) // to differentiate from a topic named AllTopics
+  private val allTopicsStats = new ProducerTopicMetrics(
+    new ClientIdAllTopics(clientId)
+  ) // to differentiate from a topic named AllTopics
 
   def getProducerAllTopicsStats(): ProducerTopicMetrics = allTopicsStats
 

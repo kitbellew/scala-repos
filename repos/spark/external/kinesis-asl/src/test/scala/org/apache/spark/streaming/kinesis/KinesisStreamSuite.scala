@@ -64,7 +64,9 @@ abstract class KinesisStreamTests(aggregateTestData: Boolean)
   override def beforeAll(): Unit = {
     val conf = new SparkConf()
       .setMaster("local[4]")
-      .setAppName("KinesisStreamSuite") // Setting Spark app name to Kinesis app name
+      .setAppName(
+        "KinesisStreamSuite"
+      ) // Setting Spark app name to Kinesis app name
     sc = new SparkContext(conf)
 
     runIfTestsEnabled("Prepare KinesisTestUtils") {
@@ -331,7 +333,9 @@ abstract class KinesisStreamTests(aggregateTestData: Boolean)
       }
     })
 
-    ssc.remember(Minutes(60)) // remember all the batches so that they are all saved in checkpoint
+    ssc.remember(
+      Minutes(60)
+    ) // remember all the batches so that they are all saved in checkpoint
     ssc.start()
 
     def numBatchesWithData: Int =
@@ -347,7 +351,8 @@ abstract class KinesisStreamTests(aggregateTestData: Boolean)
       testUtils.pushData(1 to 5, aggregateTestData)
       assert(isCheckpointPresent && numBatchesWithData > 10)
     }
-    ssc.stop(stopSparkContext = true) // stop the SparkContext so that the blocks are not reused
+    ssc.stop(stopSparkContext = true
+    ) // stop the SparkContext so that the blocks are not reused
 
     // Restart the context from checkpoint and verify whether the
     logInfo("Restarting from checkpoint")

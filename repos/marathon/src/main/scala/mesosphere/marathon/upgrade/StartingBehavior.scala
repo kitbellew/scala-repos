@@ -55,7 +55,10 @@ trait StartingBehavior { this: Actor with ActorLogging =>
     val behavior =
       if (withHealthChecks) checkForHealthy
       else checkForRunning
-    behavior orElse commonBehavior: PartialFunction[Any, Unit] // type annotation makes Intellij happy
+    behavior orElse commonBehavior: PartialFunction[
+      Any,
+      Unit
+    ] // type annotation makes Intellij happy
   }
 
   final def checkForHealthy: Receive = {
@@ -79,7 +82,9 @@ trait StartingBehavior { this: Actor with ActorLogging =>
         VersionString,
         _,
         _)
-        if !startedRunningTasks(taskId.idString) => // scalastyle:off line.size.limit
+        if !startedRunningTasks(
+          taskId.idString
+        ) => // scalastyle:off line.size.limit
       startedRunningTasks += taskId.idString
       log.info(
         s"New task $taskId now running during app ${app.id.toString} scaling, " +
@@ -99,7 +104,8 @@ trait StartingBehavior { this: Actor with ActorLogging =>
         _,
         VersionString,
         _,
-        _) => // scalastyle:off line.size.limit
+        _
+        ) => // scalastyle:off line.size.limit
       log.warning(
         s"New task [$taskId] failed during app ${app.id.toString} scaling, queueing another task")
       startedRunningTasks -= taskId.idString

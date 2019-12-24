@@ -134,7 +134,8 @@ class IndexScript(universe: doc.Universe) extends Page {
           "tail" -> memberTail(m),
           "kind" -> memberKindToString(m), // modifiers i.e. "abstract def"
           "link" -> memberToUrl(m)
-        )) // permalink to the member
+        )
+      ) // permalink to the member
 
     mbr match {
       case d: Def => jsonObject(d)

@@ -183,7 +183,10 @@ class ScalaBlock(
           else Indent.getContinuationWithoutFirstIndent,
           this.getAlignment)
       case _: ScValue =>
-        new ChildAttributes(Indent.getNormalIndent, this.getAlignment) //by default suppose there will be simple expr
+        new ChildAttributes(
+          Indent.getNormalIndent,
+          this.getAlignment
+        ) //by default suppose there will be simple expr
       case _: ScArgumentExprList =>
         new ChildAttributes(Indent.getNormalIndent, this.getAlignment)
       case _ => new ChildAttributes(Indent.getNoneIndent, null)

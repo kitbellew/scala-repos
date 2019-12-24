@@ -180,7 +180,10 @@ class RandomForestSuite extends SparkFunSuite with MLlibTestSparkContext {
             rng)
 
         assert(nodesForGroup.size === numTrees, failString)
-        assert(nodesForGroup.values.forall(_.size == 1), failString) // 1 node per tree
+        assert(
+          nodesForGroup.values.forall(_.size == 1),
+          failString
+        ) // 1 node per tree
 
         if (numFeaturesPerNode == numFeatures) {
           // featureSubset values should all be None

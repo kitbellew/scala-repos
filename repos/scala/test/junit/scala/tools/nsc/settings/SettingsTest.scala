@@ -114,8 +114,9 @@ class SettingsTest {
   @Test def xLintInvalidChoices(): Unit = {
     assertThrows[IllegalArgumentException](
       check("-Xlint:-_")(_.warnAdaptedArgs))
-    assertThrows[IllegalArgumentException](check("-Xlint:-warn-adapted-args")(
-      _.warnAdaptedArgs)) // "warn-" should not be there
+    assertThrows[IllegalArgumentException](
+      check("-Xlint:-warn-adapted-args")(_.warnAdaptedArgs)
+    ) // "warn-" should not be there
   }
 
   @Test def xLintNonColonated(): Unit = {
@@ -129,7 +130,9 @@ class SettingsTest {
         s => s.warnMissingInterpolator && s.warnAdaptedArgs))
     assertThrows[IllegalArgumentException](
       check("-Xlint", "adapted-args", "-missing-interpolator")(
-        _.warnAdaptedArgs)) // non-colonated: cannot provide negative args
+        _.warnAdaptedArgs
+      )
+    ) // non-colonated: cannot provide negative args
   }
 
   @Test def xLintContainsValues(): Unit = {
@@ -206,7 +209,9 @@ class SettingsTest {
     // expanding options don't end up in the value set, only the terminal ones
     assertTrue(check("-m:ab,ac")(_.value == Set(a, b, c)))
     assertTrue(check("-m:_")(_.value == Set(a, b, c, d)))
-    assertTrue(check("-m:uber,ac")(_.value == Set(a, b, c, d))) // recursive expansion of uber
+    assertTrue(
+      check("-m:uber,ac")(_.value == Set(a, b, c, d))
+    ) // recursive expansion of uber
 
     // explicit nays
     assertTrue(check("-m:_,-b")(_.value == Set(a, c, d)))

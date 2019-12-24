@@ -567,7 +567,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
   }
 
   private def ensureUpToDate(unit: RichCompilationUnit) =
-    if (!unit.isUpToDate && unit.status != JustParsed) reset(unit) // reparse previously typechecked units.
+    if (!unit.isUpToDate && unit.status != JustParsed)
+      reset(unit) // reparse previously typechecked units.
 
   /** Compile all loaded source files in the order given by `allSources`.
     */
@@ -1271,7 +1272,9 @@ with ContextTrees with RichCompilationUnits with Picklers {
             .getterIn(member.sym.owner)
             .isStable
         def isJunk =
-          symbol.name.isEmpty || !isIdentifierStart(member.sym.name.charAt(0)) // e.g. <byname>
+          symbol.name.isEmpty || !isIdentifierStart(
+            member.sym.name.charAt(0)
+          ) // e.g. <byname>
         !isJunk && member.accessible && !symbol.isConstructor && (name.isEmpty || matcher(
           member.sym.name) && (symbol.name.isTermName == name.isTermName || name.isTypeName && isStable))
       }

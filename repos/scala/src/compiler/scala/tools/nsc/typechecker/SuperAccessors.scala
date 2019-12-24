@@ -331,7 +331,8 @@ abstract class SuperAccessors
                     })
                     .asInstanceOf[Select]
                   debuglog(
-                    s"alias replacement: $sym --> ${sym.alias} / $tree ==> $result"); //debug
+                    s"alias replacement: $sym --> ${sym.alias} / $tree ==> $result"
+                  ); //debug
                   localTyper.typed(
                     gen.maybeMkAsInstanceOf(
                       transformSuperSelect(result),

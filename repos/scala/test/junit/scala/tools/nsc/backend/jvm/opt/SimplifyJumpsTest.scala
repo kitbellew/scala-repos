@@ -62,7 +62,10 @@ class SimplifyJumpsTest {
     val initialInstrs = List(
       Label(1),
       Op(ACONST_NULL),
-      Jump(GOTO, Label(3)), // not by ATHROW (would move the ATHROW into a try block)
+      Jump(
+        GOTO,
+        Label(3)
+      ), // not by ATHROW (would move the ATHROW into a try block)
       Label(2),
       Op(ICONST_1), // need some code, otherwise removeJumpToSuccessor kicks in
       Op(POP),
@@ -174,7 +177,10 @@ class SimplifyJumpsTest {
       Jump(GOTO, Label(target3)),
       Label(1),
       Jump(GOTO, Label(target2)), // initially 2, then 3
-      VarOp(ILOAD, 1), // some code to prevent jumpToSuccessor optimization (once target2 is replaced by 3)
+      VarOp(
+        ILOAD,
+        1
+      ), // some code to prevent jumpToSuccessor optimization (once target2 is replaced by 3)
       Op(RETURN),
       Label(3),
       VarOp(ILOAD, 1),

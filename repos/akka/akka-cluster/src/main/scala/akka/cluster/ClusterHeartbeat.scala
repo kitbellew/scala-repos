@@ -342,9 +342,17 @@ private[cluster] final case class HeartbeatNodeRing(
           val next = iter.next()
           val isUnreachable = unreachable(next)
           if (isUnreachable && acc.size >= monitoredByNrOfMembers)
-            take(n, iter, acc) // skip the unreachable, since we have already picked `monitoredByNrOfMembers`
+            take(
+              n,
+              iter,
+              acc
+            ) // skip the unreachable, since we have already picked `monitoredByNrOfMembers`
           else if (isUnreachable)
-            take(n, iter, acc + next) // include the unreachable, but don't count it
+            take(
+              n,
+              iter,
+              acc + next
+            ) // include the unreachable, but don't count it
           else
             take(n - 1, iter, acc + next) // include the reachable
         }

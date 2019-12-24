@@ -809,7 +809,10 @@ object ScalaPsiElementFactory {
     val beforeColon = if (ScalaNamesUtil.isOpCharacter(name.last)) " " else ""
     val typeText =
       if (typeName != null && typeName != "") {
-        createTypeElementFromText(typeName, manager) //throws an exception if type name is incorrect
+        createTypeElementFromText(
+          typeName,
+          manager
+        ) //throws an exception if type name is incorrect
         s"$beforeColon: $typeName"
       } else ""
     val keyword: String = if (isVariable) "var" else "val"

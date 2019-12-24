@@ -36,7 +36,9 @@ class CompositionDocSpec extends AkkaSpec {
       Source
         .single(0) // An atomic source
         .map(_ + 1) // an atomic processing stage
-        .named("nestedSource") // wraps up the current Source and gives it a name
+        .named(
+          "nestedSource"
+        ) // wraps up the current Source and gives it a name
 
     val nestedFlow =
       Flow[Int]
@@ -59,7 +61,9 @@ class CompositionDocSpec extends AkkaSpec {
       Source
         .single(0) // An atomic source
         .map(_ + 1) // an atomic processing stage
-        .named("nestedSource") // wraps up the current Source and gives it a name
+        .named(
+          "nestedSource"
+        ) // wraps up the current Source and gives it a name
 
     val nestedFlow =
       Flow[Int]

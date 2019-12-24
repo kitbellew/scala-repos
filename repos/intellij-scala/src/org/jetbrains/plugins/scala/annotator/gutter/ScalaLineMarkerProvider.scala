@@ -92,7 +92,8 @@ class ScalaLineMarkerProvider(
     if (element.getNode.getElementType == ScalaTokenTypes.tIDENTIFIER) {
       val offset = element.getTextRange.getStartOffset
 
-      if (element.getParent.isInstanceOf[ScReferenceElement]) return null // e.g type A = /*Int*/
+      if (element.getParent.isInstanceOf[ScReferenceElement])
+        return null // e.g type A = /*Int*/
 
       def getParent: PsiElement = {
         var e = element

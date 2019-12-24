@@ -125,7 +125,9 @@ private case class ExceptionInjectingOperator(child: SparkPlan)
     extends UnaryNode {
   override protected def doExecute(): RDD[InternalRow] = {
     child.execute().map { x =>
-      assert(TaskContext.get() != null) // Make sure that TaskContext is defined.
+      assert(
+        TaskContext.get() != null
+      ) // Make sure that TaskContext is defined.
       Thread.sleep(1000) // This sleep gives the external process time to start.
       throw new IllegalArgumentException("intentional exception")
     }

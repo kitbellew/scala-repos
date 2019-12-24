@@ -123,7 +123,9 @@ class ScFunctionDefinitionImpl protected (
 
   override def getBody: FakePsiCodeBlock = body match {
     case Some(b) =>
-      new FakePsiCodeBlock(b) // Needed so that LineBreakpoint.canAddLineBreakpoint allows line breakpoints on one-line method definitions
+      new FakePsiCodeBlock(
+        b
+      ) // Needed so that LineBreakpoint.canAddLineBreakpoint allows line breakpoints on one-line method definitions
     case None => null
   }
 

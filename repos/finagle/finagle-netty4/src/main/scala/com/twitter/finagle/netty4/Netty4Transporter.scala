@@ -42,7 +42,10 @@ private[netty4] object Netty4Transporter {
           .option(ChannelOption.ALLOCATOR, UnpooledByteBufAllocator.DEFAULT)
           .option[JBool](ChannelOption.TCP_NODELAY, noDelay)
           .option[JBool](ChannelOption.SO_REUSEADDR, reuseAddr)
-          .option[JBool](ChannelOption.AUTO_READ, false) // backpressure! no reads on transport => no reads on the socket
+          .option[JBool](
+            ChannelOption.AUTO_READ,
+            false
+          ) // backpressure! no reads on transport => no reads on the socket
           .option[JInt](
             ChannelOption.CONNECT_TIMEOUT_MILLIS,
             compensatedConnectTimeoutMs.toInt)

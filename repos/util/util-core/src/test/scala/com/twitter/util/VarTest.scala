@@ -346,7 +346,9 @@ class VarTest extends FunSuite with GeneratorDrivenPropertyChecks {
 
     assert(Var.sample(result) == 1) // invertX is observed briefly
     x() = 0
-    assert(Var.sample(result) == 0) // but invertX is not being observed here so we're ok
+    assert(
+      Var.sample(result) == 0
+    ) // but invertX is not being observed here so we're ok
   }
 
   test("Var.Sampled") {

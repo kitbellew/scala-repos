@@ -217,7 +217,10 @@ object CValue {
           compareValues(atpe(a), btpe(b))
       } find (_ != 0) getOrElse (as.size - bs.size)
     case (a: CNumericValue[_], b: CNumericValue[_]) =>
-      compareValues(a.toCNum, b.toCNum) // The only safe way to compare any mix of the 3 types.
+      compareValues(
+        a.toCNum,
+        b.toCNum
+      ) // The only safe way to compare any mix of the 3 types.
     case (a: CNullValue, b: CNullValue) if a.cType == b.cType => 0
     case (a, b)                                               => a.cType.typeIndex - b.cType.typeIndex
   }

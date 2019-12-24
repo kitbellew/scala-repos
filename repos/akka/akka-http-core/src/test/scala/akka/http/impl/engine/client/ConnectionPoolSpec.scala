@@ -262,8 +262,14 @@ class ConnectionPoolSpec
         shutdownCompletedPromise) = gateway.currentState
       shutdownStartedPromise.isCompleted shouldEqual false
       shutdownCompletedPromise.isCompleted shouldEqual false
-      Await.result(shutdownStartedPromise.future, 1500.millis) // verify shutdown start (after idle)
-      Await.result(shutdownCompletedPromise.future, 1500.millis) // verify shutdown completed
+      Await.result(
+        shutdownStartedPromise.future,
+        1500.millis
+      ) // verify shutdown start (after idle)
+      Await.result(
+        shutdownCompletedPromise.future,
+        1500.millis
+      ) // verify shutdown completed
     }
 
     "transparently restart after idle shutdown" in new TestSetup() {
@@ -273,7 +279,10 @@ class ConnectionPoolSpec
       val gateway = Await.result(hcp.gatewayFuture, 500.millis)
       val PoolGateway.Running(_, _, shutdownCompletedPromise) =
         gateway.currentState
-      Await.result(shutdownCompletedPromise.future, 1500.millis) // verify shutdown completed
+      Await.result(
+        shutdownCompletedPromise.future,
+        1500.millis
+      ) // verify shutdown completed
 
       requestIn.sendNext(HttpRequest(uri = "/") -> 42)
 

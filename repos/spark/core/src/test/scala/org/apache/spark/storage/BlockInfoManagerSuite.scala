@@ -120,7 +120,9 @@ class BlockInfoManagerSuite extends SparkFunSuite with BeforeAndAfterEach {
         blockInfoManager.lockNewBlockForWriting("block", newBlockInfo())
       }
     }
-    Thread.sleep(300) // Hack to try to ensure that both future tasks are waiting
+    Thread.sleep(
+      300
+    ) // Hack to try to ensure that both future tasks are waiting
     withTaskId(0) {
       blockInfoManager.downgradeLock("block")
     }
@@ -146,7 +148,9 @@ class BlockInfoManagerSuite extends SparkFunSuite with BeforeAndAfterEach {
         blockInfoManager.lockNewBlockForWriting("block", newBlockInfo())
       }
     }
-    Thread.sleep(300) // Hack to try to ensure that both future tasks are waiting
+    Thread.sleep(
+      300
+    ) // Hack to try to ensure that both future tasks are waiting
     withTaskId(0) {
       blockInfoManager.removeBlock("block")
     }
@@ -265,7 +269,9 @@ class BlockInfoManagerSuite extends SparkFunSuite with BeforeAndAfterEach {
         blockInfoManager.lockForReading("block")
       }
     }
-    Thread.sleep(300) // Hack to try to ensure that both future tasks are waiting
+    Thread.sleep(
+      300
+    ) // Hack to try to ensure that both future tasks are waiting
     withTaskId(0) {
       blockInfoManager.unlock("block")
     }
@@ -290,7 +296,9 @@ class BlockInfoManagerSuite extends SparkFunSuite with BeforeAndAfterEach {
         blockInfoManager.lockForWriting("block")
       }
     }
-    Thread.sleep(300) // Hack to try to ensure that both future tasks are waiting
+    Thread.sleep(
+      300
+    ) // Hack to try to ensure that both future tasks are waiting
     withTaskId(0) {
       blockInfoManager.unlock("block")
     }
@@ -353,7 +361,9 @@ class BlockInfoManagerSuite extends SparkFunSuite with BeforeAndAfterEach {
         blockInfoManager.lockForWriting("block")
       }
     }
-    Thread.sleep(300) // Hack to try to ensure that both future tasks are waiting
+    Thread.sleep(
+      300
+    ) // Hack to try to ensure that both future tasks are waiting
     withTaskId(0) {
       blockInfoManager.removeBlock("block")
     }

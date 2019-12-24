@@ -44,7 +44,9 @@ trait PresentationCompilerRequestsWorkingMode extends TestResources {
     val buf = new scala.collection.mutable.ListBuffer[Position]
     var pos = source.content.indexOfSlice(str)
     while (pos >= 0) {
-      buf += source.position(pos - 1) // we need the position before the first character of this marker
+      buf += source.position(
+        pos - 1
+      ) // we need the position before the first character of this marker
       pos = source.content.indexOfSlice(str, pos + 1)
     }
     buf.toList

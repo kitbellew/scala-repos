@@ -84,7 +84,10 @@ case class RuleTrace(
         case NonTerminal(Named(_), _) :: tail ⇒
           rec(tail, if (named.isEmpty) current else named)
         case NonTerminal(RuleCall, _) :: tail ⇒
-          rec(tail, named) // RuleCall elements allow the name to be carried over
+          rec(
+            tail,
+            named
+          ) // RuleCall elements allow the name to be carried over
         case NonTerminal(Atomic, _) :: tail ⇒ if (named.isEmpty) tail else named
         case x :: tail ⇒
           if (x.offset >= 0 && named.nonEmpty) named else rec(tail, Nil)
@@ -121,9 +124,14 @@ object RuleTrace {
               case Named(_) ⇒
                 rec(tail, if (namedIx >= 0) namedIx else ix, ix + 1)
               case RuleCall ⇒
-                rec(tail, namedIx, ix + 1) // RuleCall elements allow the name to be carried over
+                rec(
+                  tail,
+                  namedIx,
+                  ix + 1
+                ) // RuleCall elements allow the name to be carried over
               case Atomic ⇒
-                if (namedIx >= 0) namedIx else ix // Atomic elements always terminate a common prefix
+                if (namedIx >= 0) namedIx
+                else ix // Atomic elements always terminate a common prefix
               case _ ⇒
                 rec(tail, -1, ix + 1) // otherwise the name chain is broken
             }

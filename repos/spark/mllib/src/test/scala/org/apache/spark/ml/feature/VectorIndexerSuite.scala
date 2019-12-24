@@ -190,7 +190,9 @@ class VectorIndexerSuite
           val targetValueIndexSet = Range(0, origValueSet.size).toSet
           val catMap = categoryMaps(feature)
           assert(catMap.keys.toSet === origValueSet) // Correct categories
-          assert(catMap.values.toSet === targetValueIndexSet) // Correct category indices
+          assert(
+            catMap.values.toSet === targetValueIndexSet
+          ) // Correct category indices
           if (origValueSet.contains(0.0)) {
             assert(catMap(0.0) === 0) // value 0 gets index 0
           }
@@ -264,7 +266,9 @@ class VectorIndexerSuite
         case (orig: SparseVector, indexed: SparseVector) =>
           assert(orig.indices.length == indexed.indices.length)
         case _ =>
-          throw new UnknownError("Unit test has a bug in it.") // should never happen
+          throw new UnknownError(
+            "Unit test has a bug in it."
+          ) // should never happen
       }
     }
     checkSparsity(sparsePoints1, maxCategories = 2)

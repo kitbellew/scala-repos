@@ -554,8 +554,12 @@ private[akka] class LocalActorRefProvider private[akka] (
         causeOfTermination.trySuccess(
           Terminated(provider.rootGuardian)(
             existenceConfirmed = true,
-            addressTerminated = true)) //Idempotent
-        terminationPromise.tryCompleteWith(causeOfTermination.future) // Signal termination downstream, idempotent
+            addressTerminated = true
+          )
+        ) //Idempotent
+        terminationPromise.tryCompleteWith(
+          causeOfTermination.future
+        ) // Signal termination downstream, idempotent
       }
 
       @deprecated(

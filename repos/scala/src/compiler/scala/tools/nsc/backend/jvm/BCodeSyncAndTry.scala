@@ -263,7 +263,10 @@ abstract class BCodeSyncAndTry extends BCodeBodyBuilder {
         ch match {
           case NamelessEH(typeToDrop, caseBody) =>
             bc drop typeToDrop
-            genLoad(caseBody, kind) // adapts caseBody to `kind`, thus it can be stored, if `guardResult`, in `tmp`.
+            genLoad(
+              caseBody,
+              kind
+            ) // adapts caseBody to `kind`, thus it can be stored, if `guardResult`, in `tmp`.
             nopIfNeeded(startHandler)
             endHandler = currProgramPoint()
             excType = typeToDrop
@@ -343,7 +346,11 @@ abstract class BCodeSyncAndTry extends BCodeBodyBuilder {
 
       markProgramPoint(postHandlers)
       if (hasFinally) {
-        emitFinalizer(finalizer, tmp, isDuplicate = false) // the only invocation of emitFinalizer with `isDuplicate == false`
+        emitFinalizer(
+          finalizer,
+          tmp,
+          isDuplicate = false
+        ) // the only invocation of emitFinalizer with `isDuplicate == false`
       }
 
       kind

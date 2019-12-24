@@ -328,8 +328,14 @@ class ActorGraphInterpreterSpec extends AkkaSpec {
               fail(shape.out0, te)
             }
 
-            setHandler(shape.out0, ignoreTerminateOutput) //We fail in preStart anyway
-            setHandler(shape.out1, ignoreTerminateOutput) //We fail in preStart anyway
+            setHandler(
+              shape.out0,
+              ignoreTerminateOutput
+            ) //We fail in preStart anyway
+            setHandler(
+              shape.out1,
+              ignoreTerminateOutput
+            ) //We fail in preStart anyway
             passAlong(shape.in, shape.out1)
           }
       }

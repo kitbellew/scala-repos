@@ -770,7 +770,10 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
       def createDocTemplate(
           bSym: Symbol,
           inTpl: DocTemplateImpl): DocTemplateImpl = {
-        assert(!modelFinished, (bSym, inTpl)) // only created BEFORE the model is finished
+        assert(
+          !modelFinished,
+          (bSym, inTpl)
+        ) // only created BEFORE the model is finished
         if (bSym.isAliasType && bSym != AnyRefClass)
           new DocTemplateImpl(bSym, inTpl) with AliasImpl with AliasType {
             override def isAliasType = true
@@ -967,7 +970,10 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
     else {
       val allSyms = useCases(aSym, inTpl.sym) map {
         case (bSym, bComment, bPos) =>
-          docComments.put(bSym, DocComment(bComment, bPos)) // put the comment in the list, don't parse it yet, closes SI-4898
+          docComments.put(
+            bSym,
+            DocComment(bComment, bPos)
+          ) // put the comment in the list, don't parse it yet, closes SI-4898
           bSym
       }
 

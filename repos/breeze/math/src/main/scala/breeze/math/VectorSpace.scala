@@ -119,8 +119,11 @@ trait MutableInnerProductModule[V, S]
 // Vector Spaces
 trait VectorSpace[V, S] extends Module[V, S] {
   implicit def scalars: Field[S]
-  implicit def divVS
-      : OpDiv.Impl2[V, S, V] // Inverse module operator since Fields have multiplicative inverse
+  implicit def divVS: OpDiv.Impl2[
+    V,
+    S,
+    V
+  ] // Inverse module operator since Fields have multiplicative inverse
 }
 
 trait MutableVectorSpace[V, S]

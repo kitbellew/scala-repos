@@ -3,7 +3,10 @@ object Bug {
     type T
 
     def chain(constant: String) =
-      new FConstant[this.type](constant, this) //removing [this.type], everything compiles
+      new FConstant[this.type](
+        constant,
+        this
+      ) //removing [this.type], everything compiles
   }
 
   case class FConstant[E <: FChain](constant: String, tail: E) extends FChain {

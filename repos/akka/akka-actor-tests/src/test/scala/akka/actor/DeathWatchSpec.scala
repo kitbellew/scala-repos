@@ -110,7 +110,9 @@ trait DeathWatchSpec { this: AkkaSpec with ImplicitSender with DefaultTimeout â‡
 
       monitor2 ! "ping"
 
-      expectMsg("pong") //Needs to be here since watch and unwatch are asynchronous
+      expectMsg(
+        "pong"
+      ) //Needs to be here since watch and unwatch are asynchronous
 
       terminal ! PoisonPill
 

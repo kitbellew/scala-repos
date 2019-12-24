@@ -30,7 +30,8 @@ class FastFuture[A](val future: Future[A]) extends AnyVal {
       if (pred(r)) future
       else
         throw new NoSuchElementException(
-          "Future.filter predicate is not satisfied") // FIXME: avoid stack trace generation
+          "Future.filter predicate is not satisfied"
+        ) // FIXME: avoid stack trace generation
     }
 
   def foreach(f: A ⇒ Unit)(implicit ec: ExecutionContext): Unit = map(f)

@@ -200,7 +200,9 @@ class ReceiverSuite extends TestSuiteBase with Timeouts with Serializable {
     */
   test("write ahead log - generating and cleaning") {
     val sparkConf = new SparkConf()
-      .setMaster("local[4]") // must be at least 3 as we are going to start 2 receivers
+      .setMaster(
+        "local[4]"
+      ) // must be at least 3 as we are going to start 2 receivers
       .setAppName(framework)
       .set("spark.ui.enabled", "true")
       .set("spark.streaming.receiver.writeAheadLog.enable", "true")

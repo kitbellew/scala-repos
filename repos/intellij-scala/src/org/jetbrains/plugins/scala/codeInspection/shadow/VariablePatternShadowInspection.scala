@@ -37,7 +37,8 @@ class VariablePatternShadowInspection
           refPat.getContext.getContext,
           refPat)
 
-      if (dummyRef == null) return //can happen in invalid code, e.g. if ')' is absent in case pattern
+      if (dummyRef == null)
+        return //can happen in invalid code, e.g. if ')' is absent in case pattern
       val proc = new ResolveProcessor(StdKinds.valuesRef, dummyRef, refPat.name)
       val results = dummyRef
         .asInstanceOf[ResolvableStableCodeReferenceElement]

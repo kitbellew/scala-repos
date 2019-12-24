@@ -125,7 +125,9 @@ object Test {
       depth: Int, // how many levels we still need to 'add' around the current body
       body: String, // the body of one test, so far
       trigger: String, // the code that needs to be invoked to run the test so far
-      nested: List[Contexts.Value], // the path from the innermost to the outermost context
+      nested: List[
+        Contexts.Value
+      ], // the path from the innermost to the outermost context
       p: List[Contexts.Value] => Boolean, // a predicate for filtering problematic cases
       privateObj: Boolean = false) { // are we using a private object?
 

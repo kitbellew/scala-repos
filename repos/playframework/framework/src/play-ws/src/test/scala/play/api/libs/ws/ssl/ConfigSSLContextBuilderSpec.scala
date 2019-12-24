@@ -75,7 +75,9 @@ class ConfigSSLContextBuilderSpec extends Specification with Mockito {
 
       val keyStore = KeyStore.getInstance("PKCS12")
       val keyPairGenerator = KeyPairGenerator.getInstance("RSA")
-      keyPairGenerator.initialize(2048) // 2048 is the NIST acceptable key length until 2030
+      keyPairGenerator.initialize(
+        2048
+      ) // 2048 is the NIST acceptable key length until 2030
       val keyPair = keyPairGenerator.generateKeyPair()
       val cert = FakeKeyStore.createSelfSignedCertificate(keyPair)
       val password = "changeit" // cannot have a null password for PKCS12 in 1.6
@@ -311,7 +313,9 @@ class ConfigSSLContextBuilderSpec extends Specification with Mockito {
 
       // Generate the key pair
       val keyPairGenerator = KeyPairGenerator.getInstance("RSA")
-      keyPairGenerator.initialize(2048) // 2048 is the NIST acceptable key length until 2030
+      keyPairGenerator.initialize(
+        2048
+      ) // 2048 is the NIST acceptable key length until 2030
       val keyPair = keyPairGenerator.generateKeyPair()
 
       // Generate a self signed certificate
@@ -348,7 +352,9 @@ class ConfigSSLContextBuilderSpec extends Specification with Mockito {
 
       // Generate the key pair
       val keyPairGenerator = KeyPairGenerator.getInstance("RSA")
-      keyPairGenerator.initialize(2048) // 2048 is the NIST acceptable key length until 2030
+      keyPairGenerator.initialize(
+        2048
+      ) // 2048 is the NIST acceptable key length until 2030
       val keyPair = keyPairGenerator.generateKeyPair()
 
       // Generate a self signed certificate

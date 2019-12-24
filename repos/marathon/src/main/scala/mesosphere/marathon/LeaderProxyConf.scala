@@ -21,6 +21,7 @@ trait LeaderProxyConf extends ScallopConf {
     "leader_proxy_read_timeout",
     descr =
       "Maximum time, in milliseconds, for reading from the current Marathon leader.",
-    default = Some(10000)) // 10 seconds
+    default = Some(10000)
+  ) // 10 seconds
 
 }

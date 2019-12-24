@@ -608,7 +608,8 @@ private[parquet] object CatalystSchemaConverter {
     Math
       .round( // convert double to long
         Math.floor(Math.log10( // number of base-10 digits
-          Math.pow(2, 8 * numBytes - 1) - 1))) // max value stored in numBytes
+          Math.pow(2, 8 * numBytes - 1) - 1))
+      ) // max value stored in numBytes
       .asInstanceOf[Int]
   }
 }

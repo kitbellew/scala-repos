@@ -703,7 +703,10 @@ private[kafka] class ZookeeperConsumerConnector(
             lock.lock()
             try {
               if (!isWatcherTriggered)
-                cond.await(1000, TimeUnit.MILLISECONDS) // wake up periodically so that it can check the shutdown flag
+                cond.await(
+                  1000,
+                  TimeUnit.MILLISECONDS
+                ) // wake up periodically so that it can check the shutdown flag
             } finally {
               doRebalance = isWatcherTriggered
               isWatcherTriggered = false

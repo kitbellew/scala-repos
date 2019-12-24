@@ -50,7 +50,8 @@ abstract class AbstractFetcherThread(
 
   private val partitionMap = new mutable.HashMap[
     TopicAndPartition,
-    PartitionFetchState] // a (topic, partition) -> partitionFetchState map
+    PartitionFetchState
+  ] // a (topic, partition) -> partitionFetchState map
   private val partitionMapLock = new ReentrantLock
   private val partitionMapCond = partitionMapLock.newCondition()
 

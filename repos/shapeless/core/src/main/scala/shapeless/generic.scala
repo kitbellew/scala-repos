@@ -704,7 +704,9 @@ trait CaseClassMacros extends ReprTypes {
     if (cSym != NoSymbol)
       global.gen.mkAttributedRef(pre, cSym).asInstanceOf[Tree]
     else
-      Ident(tpe.typeSymbol.name.toTermName) // Attempt to refer to local companion
+      Ident(
+        tpe.typeSymbol.name.toTermName
+      ) // Attempt to refer to local companion
   }
 
   def isAccessible(pre: Type, sym: Symbol): Boolean = {

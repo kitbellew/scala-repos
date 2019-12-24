@@ -154,7 +154,9 @@ private[http] object FrameEventParser extends ByteStringParser[FrameEvent] {
         invalid("close reason message is invalid UTF8")
       else Some((code, message.get))
     } else if (data.length == 1)
-      invalid("close code must be length 2 but was 1") // must be >= length 2 if not empty
+      invalid(
+        "close code must be length 2 but was 1"
+      ) // must be >= length 2 if not empty
     else None
   }
 

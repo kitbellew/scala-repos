@@ -54,7 +54,9 @@ private[akka] trait BatchingExecutor extends Executor {
     @tailrec final def processBatch(batch: AbstractBatch): Unit =
       if ((batch eq this) && !batch.isEmpty) {
         batch.poll().run()
-        processBatch(_tasksLocal.get) // If this is null, then we have been using managed blocking, so bail out
+        processBatch(
+          _tasksLocal.get
+        ) // If this is null, then we have been using managed blocking, so bail out
       }
 
     protected final def resubmitUnbatched(): Boolean = {
@@ -123,12 +125,18 @@ private[akka] trait BatchingExecutor extends Executor {
           val newBatch: AbstractBatch =
             if (resubmitOnBlock) new BlockableBatch() else new Batch()
           newBatch.add(runnable)
-          unbatchedExecute(newBatch) // If we aren't in batching mode yet, enqueue batch
+          unbatchedExecute(
+            newBatch
+          ) // If we aren't in batching mode yet, enqueue batch
         case batch ⇒
-          batch.add(runnable) // If we are already in batching mode, add to batch
+          batch.add(
+            runnable
+          ) // If we are already in batching mode, add to batch
       }
     } else
-      unbatchedExecute(runnable) // If not batchable, just delegate to underlying
+      unbatchedExecute(
+        runnable
+      ) // If not batchable, just delegate to underlying
   }
 
   /** Override this to define which runnables will be batched. */

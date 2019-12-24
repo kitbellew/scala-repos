@@ -458,7 +458,9 @@ object WebHookService {
       with WebHookPayload {
     val compare = commits.size match {
       case 0 =>
-        ApiPath(s"/${repository.full_name}") // maybe test hook on un-initalied repository
+        ApiPath(
+          s"/${repository.full_name}"
+        ) // maybe test hook on un-initalied repository
       case 1 => ApiPath(s"/${repository.full_name}/commit/${after}")
       case _ if before.filterNot(_ == '0').isEmpty =>
         ApiPath(

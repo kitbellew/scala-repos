@@ -246,7 +246,9 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
         new java.util.Date(lastModifiedTime))
       val madr = new MetadataArtifactDownloadReport(pom)
       madr.setSearched(true)
-      madr.setDownloadStatus(DownloadStatus.SUCCESSFUL) // TODO - Figure this things out for this report.
+      madr.setDownloadStatus(
+        DownloadStatus.SUCCESSFUL
+      ) // TODO - Figure this things out for this report.
       val rmr =
         new ResolvedModuleRevision(this, this, desc, madr, false /* Force */ )
 

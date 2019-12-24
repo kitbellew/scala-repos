@@ -92,7 +92,10 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(
       mapSideCombine: Boolean = true,
       serializer: Serializer = null)(implicit ct: ClassTag[C]): RDD[(K, C)] =
     self.withScope {
-      require(mergeCombiners != null, "mergeCombiners must be defined") // required as of Spark 0.9.0
+      require(
+        mergeCombiners != null,
+        "mergeCombiners must be defined"
+      ) // required as of Spark 0.9.0
       if (keyClass.isArray) {
         if (mapSideCombine) {
           throw new SparkException(

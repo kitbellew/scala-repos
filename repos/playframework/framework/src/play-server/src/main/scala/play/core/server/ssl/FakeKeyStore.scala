@@ -63,7 +63,9 @@ object FakeKeyStore {
 
       // Generate the key pair
       val keyPairGenerator = KeyPairGenerator.getInstance("RSA")
-      keyPairGenerator.initialize(2048) // 2048 is the NIST acceptable key length until 2030
+      keyPairGenerator.initialize(
+        2048
+      ) // 2048 is the NIST acceptable key length until 2030
       val keyPair = keyPairGenerator.generateKeyPair()
 
       // Generate a self signed certificate

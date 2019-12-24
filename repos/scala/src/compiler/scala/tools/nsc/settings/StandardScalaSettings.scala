@@ -39,7 +39,8 @@ trait StandardScalaSettings {
   val sourcepath = PathSetting(
     "-sourcepath",
     "Specify location(s) of source files.",
-    "") // Defaults.scalaSourcePath
+    ""
+  ) // Defaults.scalaSourcePath
 
   /** Other settings.
     */

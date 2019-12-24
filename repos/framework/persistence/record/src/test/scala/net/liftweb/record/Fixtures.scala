@@ -271,7 +271,9 @@ class FieldTypeTestRecord private () extends Record[FieldTypeTestRecord] {
   def fieldsToCompare = {
     fields
       .filterNot(_.name == "mandatoryBinaryField") // binarys don't compare
-      .filterNot(_.name == "mandatoryDateTimeField") // toInternetDate is lossy (doesn't retain time to ms precision)
+      .filterNot(
+        _.name == "mandatoryDateTimeField"
+      ) // toInternetDate is lossy (doesn't retain time to ms precision)
   }
 
   override def equals(other: Any): Boolean = other match {

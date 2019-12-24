@@ -670,7 +670,9 @@ class ShardRegion(
 
   private def tryCompleteGracefulShutdown() =
     if (gracefulShutdownInProgress && shards.isEmpty && shardBuffers.isEmpty)
-      context.stop(self) // all shards have been rebalanced, complete graceful shutdown
+      context.stop(
+        self
+      ) // all shards have been rebalanced, complete graceful shutdown
 
   def register(): Unit = {
     coordinatorSelection.foreach(_ ! registrationMessage)

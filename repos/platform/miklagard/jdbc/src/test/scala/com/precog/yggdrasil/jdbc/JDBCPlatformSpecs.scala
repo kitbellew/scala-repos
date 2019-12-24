@@ -234,7 +234,10 @@ trait JDBCPlatformSpecs
   object yggConfig extends YggConfig
 
   override def controlTimeout =
-    Duration(10, "minutes") // it's just unreasonable to run tests longer than this
+    Duration(
+      10,
+      "minutes"
+    ) // it's just unreasonable to run tests longer than this
 
   implicit val M: Monad[Future] with Comonad[Future] =
     new blueeyes.bkka.UnsafeFutureComonad(

@@ -302,9 +302,13 @@ object CPathTraversal {
       def order(p1: CPathPosition, p2: CPathPosition): scalaz.Ordering =
         (p1, p2) match {
           case (CPathPoint(CPathIndex(i)), CPathRange(_, l, r)) =>
-            if (i < l) LT else if (i > l) GT else EQ //if (r map (_ == i) getOrElse false) EQ else GT
+            if (i < l) LT
+            else if (i > l) GT
+            else EQ //if (r map (_ == i) getOrElse false) EQ else GT
           case (CPathRange(_, l, r), CPathPoint(CPathIndex(i))) =>
-            if (i < l) GT else if (i > l) LT else EQ //if (r map (_ == i) getOrElse false) EQ else LT
+            if (i < l) GT
+            else if (i > l) LT
+            else EQ //if (r map (_ == i) getOrElse false) EQ else LT
           case (CPathRange(_, l1, r1), CPathRange(_, l2, r2)) =>
             if (l1 < l2) LT
             else if (l2 < l1) GT

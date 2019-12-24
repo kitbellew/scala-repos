@@ -54,7 +54,9 @@ class FileMessageSet private[kafka] (
   /* the size of the message set in bytes */
   private val _size =
     if (isSlice)
-      new AtomicInteger(end - start) // don't check the file size if this is just a slice view
+      new AtomicInteger(
+        end - start
+      ) // don't check the file size if this is just a slice view
     else
       new AtomicInteger(math.min(channel.size().toInt, end) - start)
 

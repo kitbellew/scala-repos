@@ -13,7 +13,10 @@ object Test extends BytecodeTest {
       val methodNode = getMethod(classNode, "b")
       val instrs = instructionsFromMethod(methodNode)
       val ops = methodNode.instructions.iterator.asScala.map(_.getOpcode).toList
-      assert(!ops.contains(asm.Opcodes.NEW), instrs) // should be allocation free if the closure is eliminated
+      assert(
+        !ops.contains(asm.Opcodes.NEW),
+        instrs
+      ) // should be allocation free if the closure is eliminated
     }
     test("b")
   }

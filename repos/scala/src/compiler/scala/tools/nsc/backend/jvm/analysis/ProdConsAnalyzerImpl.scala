@@ -265,7 +265,9 @@ trait ProdConsAnalyzerImpl {
     } else
       (copyOp.getOpcode: @switch) match {
         case DUP =>
-          stackValue(0) // the current stack top is the source of both produced values
+          stackValue(
+            0
+          ) // the current stack top is the source of both produced values
 
         case DUP_X1 =>
           dupX1Case

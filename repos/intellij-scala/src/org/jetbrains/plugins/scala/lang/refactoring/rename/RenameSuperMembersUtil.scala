@@ -179,7 +179,8 @@ object RenameSuperMembersUtil {
     if (ApplicationManager.getApplication.isUnitTestMode) {
       processor.execute(
         if (oneSuperClass) classes(0)
-        else renameAllMarkerObject) //in unit tests uses base member or all base members
+        else renameAllMarkerObject
+      ) //in unit tests uses base member or all base members
       return
     }
     if (editor != null) popup.showInBestPositionFor(editor)

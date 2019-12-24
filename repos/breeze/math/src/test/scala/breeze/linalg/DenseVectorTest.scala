@@ -564,9 +564,15 @@ class DenseVectorOps_DoubleTest
       } yield {
         (
           DenseVector
-            .fill(n * stride + offset)(math.random * x), //.apply(offset until (n * stride + offset) by stride),
-          DenseVector.fill(n * stride + offset)(math.random * y), //.apply(offset until (n * stride + offset) by stride),
-          DenseVector.fill(n * stride + offset)(math.random * z) //.apply(offset until (n * stride + offset) by stride)
+            .fill(n * stride + offset)(
+              math.random * x
+            ), //.apply(offset until (n * stride + offset) by stride),
+          DenseVector.fill(n * stride + offset)(
+            math.random * y
+          ), //.apply(offset until (n * stride + offset) by stride),
+          DenseVector.fill(n * stride + offset)(
+            math.random * z
+          ) //.apply(offset until (n * stride + offset) by stride)
         )
       }
     }

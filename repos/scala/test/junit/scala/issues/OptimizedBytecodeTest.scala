@@ -429,6 +429,10 @@ class OptimizedBytecodeTest extends ClearAfterClass {
       compile(newCompiler(extraArgs = "-optimise -deprecation"))(
         code,
         allowMessage = _.msg.contains("is deprecated")))
-    assertInvoke(getSingleMethod(c, "t"), "C", "C$$$anonfun$1") // range-foreach inlined from classpath
+    assertInvoke(
+      getSingleMethod(c, "t"),
+      "C",
+      "C$$$anonfun$1"
+    ) // range-foreach inlined from classpath
   }
 }

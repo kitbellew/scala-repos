@@ -785,7 +785,9 @@ object Execution {
                     futCounters
                   case Nil =>
                     Future
-                      .successful(ExecutionCounters.empty) // No work to do, provide a fulled set of 0 counters to operate on
+                      .successful(
+                        ExecutionCounters.empty
+                      ) // No work to do, provide a fulled set of 0 counters to operate on
                 }
 
               failFastZip(otherResult, localFlowDefCountersFuture).map {

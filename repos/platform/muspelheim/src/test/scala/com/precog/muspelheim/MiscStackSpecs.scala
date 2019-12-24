@@ -2274,7 +2274,10 @@ trait MiscStackSpecs extends EvalStackSpecs {
         SObject(
           Map(
             "timeZone" -> SString("+12:00"),
-            "ratio" -> SDecimal(BigDecimal("33.0"))))) //TODO: this should be 33.3333 - find out why precision is hosed
+            "ratio" -> SDecimal(BigDecimal("33.0"))
+          )
+        )
+      ) //TODO: this should be 33.3333 - find out why precision is hosed
       results must contain(
         SObject(
           Map(

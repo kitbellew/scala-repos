@@ -185,8 +185,9 @@ abstract class MailboxSpec
       val cs = consumers.map(Await.result(_, remainingOrDefault))
 
       ps.map(_.size).sum should ===(enqueueN) //Must have produced 1000 messages
-      cs.map(_.size)
-        .sum should ===(dequeueN) //Must have consumed all produced messages
+      cs.map(_.size).sum should ===(
+        dequeueN
+      ) //Must have consumed all produced messages
       //No message is allowed to be consumed by more than one consumer
       cs.flatten.distinct.size should ===(dequeueN)
       //All consumed messages should have been produced

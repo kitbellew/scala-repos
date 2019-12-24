@@ -47,7 +47,9 @@ class Utf8CodingSpecs
   }
 
   def encodeUtf8(str: String): ByteString =
-    Source(str.map(ch ⇒ new String(Array(ch)))) // chunk in smallest chunks possible
+    Source(
+      str.map(ch ⇒ new String(Array(ch)))
+    ) // chunk in smallest chunks possible
       .transform(() ⇒ new Utf8Encoder)
       .runFold(ByteString.empty)(_ ++ _)
       .awaitResult(1.second)

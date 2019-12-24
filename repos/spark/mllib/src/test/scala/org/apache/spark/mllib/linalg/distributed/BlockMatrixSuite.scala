@@ -160,7 +160,10 @@ class BlockMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
       ((0, 1), new DenseMatrix(2, 2, Array(0.0, 1.0, 0.0, 0.0))),
       ((1, 0), new DenseMatrix(2, 2, Array(3.0, 0.0, 1.0, 1.0))),
       ((1, 1), new DenseMatrix(2, 2, Array(1.0, 2.0, 0.0, 1.0))),
-      ((2, 0), new DenseMatrix(1, 2, Array(1.0, 0.0))), // Added block that doesn't exist in A
+      (
+        (2, 0),
+        new DenseMatrix(1, 2, Array(1.0, 0.0))
+      ), // Added block that doesn't exist in A
       ((2, 1), new DenseMatrix(1, 2, Array(1.0, 5.0)))
     )
     val rdd = sc.parallelize(blocks, numPartitions)
@@ -208,7 +211,10 @@ class BlockMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
       ((0, 1), new DenseMatrix(2, 2, Array(0.0, 1.0, 0.0, 0.0))),
       ((1, 0), new DenseMatrix(2, 2, Array(3.0, 0.0, 1.0, 1.0))),
       ((1, 1), new DenseMatrix(2, 2, Array(1.0, 2.0, 0.0, 1.0))),
-      ((2, 0), new DenseMatrix(1, 2, Array(1.0, 0.0))), // Added block that doesn't exist in A
+      (
+        (2, 0),
+        new DenseMatrix(1, 2, Array(1.0, 0.0))
+      ), // Added block that doesn't exist in A
       ((2, 1), new DenseMatrix(1, 2, Array(1.0, 5.0)))
     )
     val rdd = sc.parallelize(blocks, numPartitions)

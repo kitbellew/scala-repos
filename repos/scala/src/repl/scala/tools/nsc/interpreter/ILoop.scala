@@ -480,7 +480,10 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
   // return false if repl should exit
   def processLine(line: String): Boolean = {
     import scala.concurrent.duration._
-    Await.ready(globalFuture, 10.minutes) // Long timeout here to avoid test failures under heavy load.
+    Await.ready(
+      globalFuture,
+      10.minutes
+    ) // Long timeout here to avoid test failures under heavy load.
 
     command(line) match {
       case Result(false, _)      => false
@@ -541,7 +544,9 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       echo("Nothing to replay.")
     else
       for (cmd <- replayCommands) {
-        echo("Replaying: " + cmd) // flush because maybe cmd will have its own output
+        echo(
+          "Replaying: " + cmd
+        ) // flush because maybe cmd will have its own output
         command(cmd)
         echo("")
       }
@@ -766,7 +771,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
     if (!f.exists) echo(s"The path '$f' doesn't seem to exist.")
     else if (exists)
       echo(
-        s"The path '$f' cannot be loaded, because existing classpath entries conflict.") // TODO tell me which one
+        s"The path '$f' cannot be loaded, because existing classpath entries conflict."
+      ) // TODO tell me which one
     else {
       addedClasspath = ClassPath.join(addedClasspath, f.path)
       intp.addUrlsToClassPath(f.toURI.toURL)

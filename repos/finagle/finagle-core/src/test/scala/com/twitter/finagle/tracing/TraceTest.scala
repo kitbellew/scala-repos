@@ -380,7 +380,9 @@ class TraceTest
         assert(!Trace.isActivelyTracing)
         Trace.enable()
         when(tracer.sampleTrace(any[TraceId])).thenReturn(Some(false))
-        assert(Trace.isActivelyTracing) // false/true again prefer the id's opinion
+        assert(
+          Trace.isActivelyTracing
+        ) // false/true again prefer the id's opinion
       }
     }
   }

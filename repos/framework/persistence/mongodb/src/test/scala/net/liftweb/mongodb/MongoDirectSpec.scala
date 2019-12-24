@@ -118,7 +118,9 @@ class MongoDirectSpec extends Specification with MongoTestKit {
       }
 
       // create an index
-      coll.createIndex(new BasicDBObject("i", 1)) // create index on "i", ascending
+      coll.createIndex(
+        new BasicDBObject("i", 1)
+      ) // create index on "i", ascending
 
       // count the docs
       coll.getCount must_== 100

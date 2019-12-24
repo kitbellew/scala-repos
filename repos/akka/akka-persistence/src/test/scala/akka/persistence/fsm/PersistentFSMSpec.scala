@@ -200,7 +200,9 @@ abstract class PersistentFSMSpec(config: Config)
       expectMsg(CurrentState(fsmRef, LookingAround, None))
       expectMsg(Transition(fsmRef, LookingAround, Shopping, Some(1 second)))
 
-      expectNoMsg(0.6 seconds) // arbitrarily chosen delay, less than the timeout, before stopping the FSM
+      expectNoMsg(
+        0.6 seconds
+      ) // arbitrarily chosen delay, less than the timeout, before stopping the FSM
       fsmRef ! PoisonPill
       expectTerminated(fsmRef)
 
@@ -216,7 +218,9 @@ abstract class PersistentFSMSpec(config: Config)
           Transition(recoveredFsmRef, Shopping, Inactive, Some(2 seconds)))
       }
 
-      expectNoMsg(0.6 seconds) // arbitrarily chosen delay, less than the timeout, before stopping the FSM
+      expectNoMsg(
+        0.6 seconds
+      ) // arbitrarily chosen delay, less than the timeout, before stopping the FSM
       recoveredFsmRef ! PoisonPill
       expectTerminated(recoveredFsmRef)
 
@@ -235,7 +239,10 @@ abstract class PersistentFSMSpec(config: Config)
       val fsmRef =
         system.actorOf(SimpleTransitionFSM.props(persistenceId, probe.ref))
 
-      probe.expectMsg(3.seconds, "LookingAround -> LookingAround") // caused by initialize(), OK
+      probe.expectMsg(
+        3.seconds,
+        "LookingAround -> LookingAround"
+      ) // caused by initialize(), OK
 
       fsmRef ! "goto(the same state)" // causes goto()
       probe.expectMsg(3.seconds, "LookingAround -> LookingAround")
@@ -280,13 +287,19 @@ abstract class PersistentFSMSpec(config: Config)
         system.actorOf(PersistentEventsStreamer.props(persistenceId, testActor))
 
       expectMsg(ItemAdded(Item("1", "Shirt", 59.99f)))
-      expectMsgType[StateChangeEvent] //because a timeout is defined, State Change is persisted
+      expectMsgType[
+        StateChangeEvent
+      ] //because a timeout is defined, State Change is persisted
 
       expectMsg(ItemAdded(Item("2", "Shoes", 89.99f)))
-      expectMsgType[StateChangeEvent] //because a timeout is defined, State Change is persisted
+      expectMsgType[
+        StateChangeEvent
+      ] //because a timeout is defined, State Change is persisted
 
       expectMsg(ItemAdded(Item("3", "Coat", 119.99f)))
-      expectMsgType[StateChangeEvent] //because a timeout is defined, State Change is persisted
+      expectMsgType[
+        StateChangeEvent
+      ] //because a timeout is defined, State Change is persisted
 
       expectMsg(OrderExecuted)
       expectMsgType[StateChangeEvent]

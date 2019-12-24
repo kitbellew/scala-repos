@@ -175,7 +175,8 @@ class ConsumerIntegrationTest
       camel.template
         .asyncSendBody("direct:manual-ack", "some message")
         .get(defaultTimeoutDuration.toSeconds, TimeUnit.SECONDS) should ===(
-        null) //should not timeout
+        null
+      ) //should not timeout
       stop(ref)
     }
 

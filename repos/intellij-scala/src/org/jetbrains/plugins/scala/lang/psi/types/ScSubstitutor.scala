@@ -272,7 +272,9 @@ class ScSubstitutor(
         }
         result = updateThisType match {
           case Some(oldTp)
-              if !hasRecursiveThisType(oldTp) => //todo: hack to avoid infinite recursion during type substitution
+              if !hasRecursiveThisType(
+                oldTp
+              ) => //todo: hack to avoid infinite recursion during type substitution
             var tp = oldTp
             def update(typez: ScType): ScType = {
               ScType.extractDesignated(typez, withoutAliases = true) match {
@@ -624,7 +626,8 @@ class ScUndefinedSubstitutor(
                   case 0 =>
                     (
                       true,
-                      absLower /*ScSkolemizedType(s"_$$${index += 1; index}", Nil, absLower, upper)*/ ) //todo: why this is right?
+                      absLower /*ScSkolemizedType(s"_$$${index += 1; index}", Nil, absLower, upper)*/
+                    ) //todo: why this is right?
                 }
               case ScSkolemizedType(_, _, skoLower, upper) =>
                 i match {
@@ -687,7 +690,9 @@ class ScUndefinedSubstitutor(
                           s"_$$${ index += 1; index }",
                           Nil,
                           lower,
-                          absUpper)) //todo: why this is right?
+                          absUpper
+                        )
+                      ) //todo: why this is right?
                   }
                 case ScSkolemizedType(_, _, lower, skoUpper) =>
                   i match {

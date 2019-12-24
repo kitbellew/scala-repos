@@ -112,7 +112,8 @@ class LBFGSB(
     val ff = LineSearch.functionFromSearchDirection(f, x, direction)
     val wolfeRuleSearch = new StrongWolfeLineSearch(
       maxZoomIter,
-      maxLineSearchIter) // TODO: Need good default values here.
+      maxLineSearchIter
+    ) // TODO: Need good default values here.
     wolfeRuleSearch.minimize(ff, 1.0)
   }
 

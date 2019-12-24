@@ -58,7 +58,9 @@ private[execution] sealed trait HashedRelation {
   // This is a helper method to implement Externalizable, and is used by
   // GeneralHashedRelation and UniqueKeyHashedRelation
   protected def writeBytes(out: ObjectOutput, serialized: Array[Byte]): Unit = {
-    out.writeInt(serialized.length) // Write the length of serialized bytes first
+    out.writeInt(
+      serialized.length
+    ) // Write the length of serialized bytes first
     out.write(serialized)
   }
 

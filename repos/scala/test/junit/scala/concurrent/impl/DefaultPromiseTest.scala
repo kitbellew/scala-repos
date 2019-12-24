@@ -171,7 +171,10 @@ class DefaultPromiseTest {
         case (Right(result), Left(handlers)) =>
           (HandlersFired(result, handlers), Merge(Right(result)))
         case (Right(_), Right(_)) if (cidA == cidB) =>
-          (MaybeIllegalThrown, NoMerge) // Won't be thrown if happen to link a promise to itself
+          (
+            MaybeIllegalThrown,
+            NoMerge
+          ) // Won't be thrown if happen to link a promise to itself
         case (Right(_), Right(_)) =>
           (IllegalThrown, NoMerge)
       }

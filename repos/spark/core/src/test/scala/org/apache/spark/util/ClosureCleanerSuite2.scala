@@ -221,7 +221,9 @@ class ClosureCleanerSuite2
     assert(outerClasses4.size === 2)
     assert(isClosure(outerClasses3(0)))
     assert(isClosure(outerClasses4(0)))
-    assert(outerClasses3(0) === outerClasses4(0)) // part of the same "FunSuite#test" scope
+    assert(
+      outerClasses3(0) === outerClasses4(0)
+    ) // part of the same "FunSuite#test" scope
     assert(outerClasses3(1) === this.getClass)
     assert(outerClasses4(1) === this.getClass)
     assert(outerObjects3(1) === this)
@@ -267,8 +269,12 @@ class ClosureCleanerSuite2
       assert(isClosure(outerClasses3(0)))
       assert(isClosure(outerClasses2(1)))
       assert(isClosure(outerClasses3(1)))
-      assert(outerClasses2(0) === outerClasses3(0)) // part of the same "test2" scope
-      assert(outerClasses2(1) === outerClasses3(1)) // part of the same "FunSuite#test" scope
+      assert(
+        outerClasses2(0) === outerClasses3(0)
+      ) // part of the same "test2" scope
+      assert(
+        outerClasses2(1) === outerClasses3(1)
+      ) // part of the same "FunSuite#test" scope
       assert(outerClasses2(2) === this.getClass)
       assert(outerClasses3(2) === this.getClass)
       assert(outerObjects2(2) === this)
@@ -351,9 +357,15 @@ class ClosureCleanerSuite2
       // "test1" < parameter of "FunSuite#test" < ClosureCleanerSuite2
       assert(fields2.size === 3)
       // Since we do not find fields transitively here, we do not look into what `def a` references
-      assert(fields2(outerClasses2(0)).isEmpty) // This corresponds to the "test1" scope
-      assert(fields2(outerClasses2(1)).isEmpty) // This corresponds to the "FunSuite#test" scope
-      assert(fields2(outerClasses2(2)).isEmpty) // This corresponds to the ClosureCleanerSuite2
+      assert(
+        fields2(outerClasses2(0)).isEmpty
+      ) // This corresponds to the "test1" scope
+      assert(
+        fields2(outerClasses2(1)).isEmpty
+      ) // This corresponds to the "FunSuite#test" scope
+      assert(
+        fields2(outerClasses2(2)).isEmpty
+      ) // This corresponds to the ClosureCleanerSuite2
       assert(fields3.size === 3)
       // Note that `localValue` is a field of the "test1" scope because `def a` references it,
       // but NOT a field of the "FunSuite#test" scope because it is only a local variable there
@@ -381,7 +393,9 @@ class ClosureCleanerSuite2
         findAccessedFields(closure4, outerClasses4, findTransitively = true)
       assert(fields1t.isEmpty)
       assert(fields2t.size === 3)
-      assert(fields2t(outerClasses2(0)).size === 1) // `def a` references `localValue`
+      assert(
+        fields2t(outerClasses2(0)).size === 1
+      ) // `def a` references `localValue`
       assert(fields2t(outerClasses2(0)).head.contains("localValue"))
       assert(fields2t(outerClasses2(1)).isEmpty)
       assert(fields2t(outerClasses2(2)).isEmpty)

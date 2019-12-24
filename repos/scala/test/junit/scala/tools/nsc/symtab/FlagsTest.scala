@@ -66,13 +66,15 @@ class FlagsTest {
       val f = 1L << i
       assertEquals(
         withFlagMask(AllFlags)(sym.setFlag(f << LateShift).flags & f),
-        0) // not treated as late flag
+        0
+      ) // not treated as late flag
     }
     for (i <- 4 to 8) {
       val f = 1L << i
       assertEquals(
         withFlagMask(AllFlags)(sym.setFlag(f << LateShift).flags & f),
-        f) // treated as late flag
+        f
+      ) // treated as late flag
     }
   }
 
@@ -82,13 +84,15 @@ class FlagsTest {
       val f = 1L << i
       assertEquals(
         withFlagMask(AllFlags)(sym.setFlag(f | (f << AntiShift)).flags & f),
-        0) // negated flags
+        0
+      ) // negated flags
     }
     for (i <- 3 to 7) {
       val f = 1L << i
       assertEquals(
         withFlagMask(AllFlags)(sym.setFlag(f | (f << AntiShift)).flags & f),
-        f) // not negated
+        f
+      ) // not negated
     }
   }
 

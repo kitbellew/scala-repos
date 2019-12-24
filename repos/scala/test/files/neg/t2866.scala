@@ -39,7 +39,9 @@ object Test {
     import A.one
     assert(implicitly[Int] == 1)
     implicit val two = 2
-    assert(implicitly[Int] == 2) // !!! Not ambiguous in 2.8.0. Ambiguous in 2.7.6
+    assert(
+      implicitly[Int] == 2
+    ) // !!! Not ambiguous in 2.8.0. Ambiguous in 2.7.6
   }
 
   locally {
@@ -47,13 +49,17 @@ object Test {
     assert(implicitly[Int] == 1)
     implicit val two = 2
     import A.{one => _}
-    assert(implicitly[Int] == 2) // !!! Not ambiguous in 2.8.0. Ambiguous in 2.7.6
+    assert(
+      implicitly[Int] == 2
+    ) // !!! Not ambiguous in 2.8.0. Ambiguous in 2.7.6
   }
 
   locally {
     import A.{one => _, _}
     implicit val two = 2
-    assert(implicitly[Int] == 2) // not ambiguous in 2.8.0 nor im ambiguous in 2.7.6
+    assert(
+      implicitly[Int] == 2
+    ) // not ambiguous in 2.8.0 nor im ambiguous in 2.7.6
   }
 
 }

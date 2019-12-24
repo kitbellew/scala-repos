@@ -28,7 +28,9 @@ trait SprayJsonSupport {
         val input =
           if (charset == HttpCharsets.`UTF-8`) ParserInput(data.toArray)
           else
-            ParserInput(data.decodeString(charset.nioCharset.name)) // FIXME: identify charset by instance, not by name!
+            ParserInput(
+              data.decodeString(charset.nioCharset.name)
+            ) // FIXME: identify charset by instance, not by name!
         JsonParser(input)
       }
 

@@ -136,7 +136,8 @@ abstract class QueryServiceHandler[A](implicit M: Monad[Future])
             account,
             path,
             Path.Root,
-            new DateTime) //CLOCK!!!!!!
+            new DateTime
+          ) //CLOCK!!!!!!
           result <- executor.execute(query, ctx, opts)
           httpResponse <- EitherT.right(
             extractResponse(request, result, opts.output))

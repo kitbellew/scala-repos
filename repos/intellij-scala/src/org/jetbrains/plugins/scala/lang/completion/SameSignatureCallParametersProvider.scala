@@ -268,7 +268,8 @@ class SameSignatureCallParametersProvider extends ScalaCompletionContributor {
                 .getContextOfType(element, classOf[ScArgumentExprList])
               if (exprs == null) return
               context.getEditor.getCaretModel.moveToOffset(
-                exprs.getTextRange.getEndOffset) // put caret after )
+                exprs.getTextRange.getEndOffset
+              ) // put caret after )
             }
           })
         element.putUserData(

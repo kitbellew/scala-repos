@@ -288,16 +288,25 @@ trait Memoizer extends DAG {
       updateMap(findForcingRefs(parent, OpSide.Center(graph)), graph, force)
 
     case AbsoluteLoad(parent, _) =>
-      findForcingRefs(parent, OpSide.Center(graph)) // load is a forcing point, but not a memo candidate
+      findForcingRefs(
+        parent,
+        OpSide.Center(graph)
+      ) // load is a forcing point, but not a memo candidate
 
     case RelativeLoad(parent, _) =>
-      findForcingRefs(parent, OpSide.Center(graph)) // load is a forcing point, but not a memo candidate
+      findForcingRefs(
+        parent,
+        OpSide.Center(graph)
+      ) // load is a forcing point, but not a memo candidate
 
     case Operate(_, parent) =>
       findForcingRefs(parent, force)
 
     case Reduce(_, parent) =>
-      findForcingRefs(parent, OpSide.Center(graph)) // reduce is a forcing point, but not a memo candidate
+      findForcingRefs(
+        parent,
+        OpSide.Center(graph)
+      ) // reduce is a forcing point, but not a memo candidate
 
     case MegaReduce(_, parent) =>
       updateMap(findForcingRefs(parent, OpSide.Center(graph)), graph, force)
@@ -414,7 +423,11 @@ trait Memoizer extends DAG {
     }
 
     // an approximation of table heritage that *should* be accurate
-    case Filter(_, target, boolean) /*if target.identities != boolean.identities*/ => {
+    case Filter(
+        _,
+        target,
+        boolean
+        ) /*if target.identities != boolean.identities*/ => {
       val merged =
         findForcingRefs(target, OpSide.Left(graph)) |+| findForcingRefs(
           boolean,
@@ -429,7 +442,10 @@ trait Memoizer extends DAG {
       findForcingRefs(parent, OpSide.Center(graph))
 
     case Memoize(parent, _) =>
-      findForcingRefs(parent, OpSide.Center(graph)) // memoize is a forcing point, but not a memo candidate
+      findForcingRefs(
+        parent,
+        OpSide.Center(graph)
+      ) // memoize is a forcing point, but not a memo candidate
   }
 
   private def updateMap(

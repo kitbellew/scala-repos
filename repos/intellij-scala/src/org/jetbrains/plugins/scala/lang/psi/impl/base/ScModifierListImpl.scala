@@ -257,7 +257,10 @@ class ScModifierListImpl private (
     getAnnotations.find(_.getQualifiedName == name) match {
       case None if name == "java.lang.Override" =>
         val factory = JavaPsiFacade.getInstance(getProject).getElementFactory
-        factory.createAnnotationFromText("@" + name, this); // hack to disable AddOverrideAnnotationAction,
+        factory.createAnnotationFromText(
+          "@" + name,
+          this
+        ); // hack to disable AddOverrideAnnotationAction,
       case None    => null
       case Some(x) => x
     }

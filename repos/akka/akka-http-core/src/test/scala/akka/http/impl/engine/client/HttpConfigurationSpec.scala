@@ -76,7 +76,9 @@ class HttpConfigurationSpec extends AkkaSpec {
           pool.connectionSettings.idleTimeout should ===(1337.seconds)
 
           val server = ServerSettings(sys)
-          server.idleTimeout should ===(60.seconds) // no change, default akka.http.server.idle-timeout
+          server.idleTimeout should ===(
+            60.seconds
+          ) // no change, default akka.http.server.idle-timeout
       }
     }
     "set `akka.http.server.idle-timeout` only" in {

@@ -7,12 +7,9 @@ trait SCL10006 {
     Either[String, Int],
     Either,
     String,
-    Int]#M[List[Unapply.Aux2Right[
-    Applicative,
-    Either[String, Int],
-    Either,
-    String,
-    Int]#A]] /*end*/
+    Int]#M[List[
+    Unapply.Aux2Right[Applicative, Either[String, Int], Either, String, Int]#A
+  ]] /*end*/
 }
 /*
 trait SCL10006 {

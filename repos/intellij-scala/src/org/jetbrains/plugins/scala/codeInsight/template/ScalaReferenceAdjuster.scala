@@ -65,7 +65,8 @@ class ScalaReferenceAdjuster extends ReferenceAdjuster {
       useFqInJavadoc: Boolean,
       useFqInCode: Boolean): Unit = {
     val psi = element.getPsi
-    if (psi.getLanguage != ScalaFileType.SCALA_LANGUAGE) return //do not process other languages
+    if (psi.getLanguage != ScalaFileType.SCALA_LANGUAGE)
+      return //do not process other languages
     val buffer = new ArrayBuffer[ScalaPsiElement]()
     val visitor = new ScalaRecursiveElementVisitor {
       override def visitElement(element: ScalaPsiElement): Unit = {

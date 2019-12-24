@@ -181,7 +181,8 @@ object PlatformBuild extends Build {
       common,
       ragnarok,
       dvergr,
-      ratatoskr) //, mongo, jdbc, desktop)
+      ratatoskr
+    ) //, mongo, jdbc, desktop)
 
   lazy val util = Project(id = "util", base = file("util"))
     .settings(commonNexusSettings: _*) dependsOn (logging % "test->test")

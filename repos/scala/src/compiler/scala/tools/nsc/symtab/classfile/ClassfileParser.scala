@@ -317,7 +317,11 @@ abstract class ClassfileParser {
     def getType(sym: Symbol, index: Int): Type =
       sigToType(sym, getExternalName(index))
     def getSuperClass(index: Int): Symbol =
-      if (index == 0) AnyClass else getClassSymbol(index) // the only classfile that is allowed to have `0` in the super_class is java/lang/Object (see jvm spec)
+      if (index == 0) AnyClass
+      else
+        getClassSymbol(
+          index
+        ) // the only classfile that is allowed to have `0` in the super_class is java/lang/Object (see jvm spec)
 
     private def createConstant(index: Int): Constant = {
       val start = starts(index)
@@ -464,7 +468,9 @@ abstract class ClassfileParser {
         u2 // skip superclass
         val ifaces = u2
         in.bp += ifaces * 2 // .. and iface count interfaces
-        List(AnyRefTpe) // dummy superclass, will be replaced by pickled information
+        List(
+          AnyRefTpe
+        ) // dummy superclass, will be replaced by pickled information
       } else
         raiseLoaderLevel {
           val superType = if (jflags.isAnnotation) {
@@ -845,7 +851,10 @@ abstract class ClassfileParser {
         classTParams = tparams
         val parents = new ListBuffer[Type]()
         while (index < end) {
-          parents += sig2type(tparams, skiptvs = false) // here the variance doesn't matter
+          parents += sig2type(
+            tparams,
+            skiptvs = false
+          ) // here the variance doesn't matter
         }
         ClassInfoType(parents.toList, instanceScope, sym)
       }

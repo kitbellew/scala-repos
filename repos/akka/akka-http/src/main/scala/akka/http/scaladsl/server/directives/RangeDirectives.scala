@@ -174,7 +174,9 @@ trait RangeDirectives {
                   }
                 case None ⇒
                   // Ranges not supported for Chunked or CloseDelimited responses
-                  ctx.reject(UnsatisfiableRangeRejection(ranges, -1)) // FIXME: provide better error
+                  ctx.reject(
+                    UnsatisfiableRangeRejection(ranges, -1)
+                  ) // FIXME: provide better error
               }
           }
         }

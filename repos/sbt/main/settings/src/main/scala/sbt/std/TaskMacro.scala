@@ -458,7 +458,9 @@ object TaskMacro {
         val vd = util.freshValDef(tpe, qual.symbol.pos, functionSym) // val $x: <tpe>
         result = Some((qual, tpe, vd))
         val tree = util.refVal(original, vd) // $x
-        tree.setPos(qual.pos) // position needs to be set so that wrapKey passes the position onto the wrapper
+        tree.setPos(
+          qual.pos
+        ) // position needs to be set so that wrapKey passes the position onto the wrapper
         assert(tree.tpe != null, "Null type: " + tree)
         tree.setType(tpe)
         tree

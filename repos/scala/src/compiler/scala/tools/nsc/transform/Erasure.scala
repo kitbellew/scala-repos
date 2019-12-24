@@ -590,7 +590,9 @@ abstract class Erasure
           val guardExtractor =
             (// can't statically know which member is going to be selected, so don't let this depend on member.isSynthetic
             (member.name == nme.unapply || member.name == nme.unapplySeq)
-              && !exitingErasure((member.tpe <:< other.tpe))) // no static guarantees (TODO: is the subtype test ever true?)
+              && !exitingErasure(
+                (member.tpe <:< other.tpe)
+              )) // no static guarantees (TODO: is the subtype test ever true?)
 
           import CODE._
           val _false = FALSE
@@ -1223,7 +1225,8 @@ abstract class Erasure
                   treeCopy.Select(
                     tree,
                     gen.mkAttributedCast(qual, qual.tpe.widen),
-                    name) //)
+                    name
+                  ) //)
                 } else tree
             }
           } else tree

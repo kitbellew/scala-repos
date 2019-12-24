@@ -125,7 +125,8 @@ private[akka] class ActorRefSourceActor(
       // totalDemand is tracked by super
       while (totalDemand > 0L && !buffer.isEmpty) onNext(buffer.dequeue())
 
-      if (buffer.isEmpty) context.stop(self) // will complete the stream successfully
+      if (buffer.isEmpty)
+        context.stop(self) // will complete the stream successfully
 
     case elem if isActive ⇒
       log.debug(

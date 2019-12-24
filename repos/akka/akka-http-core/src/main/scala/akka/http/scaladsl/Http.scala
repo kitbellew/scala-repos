@@ -724,8 +724,13 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
               throw e
           }
         val fastFuture = FastFuture.successful(gateway)
-        hostPoolCache.put(setup, fastFuture) // optimize subsequent gateway accesses
-        gatewayPromise.success(gateway) // satisfy everyone who got a hold of our promise while we were starting up
+        hostPoolCache.put(
+          setup,
+          fastFuture
+        ) // optimize subsequent gateway accesses
+        gatewayPromise.success(
+          gateway
+        ) // satisfy everyone who got a hold of our promise while we were starting up
         whenShuttingDown.future.onComplete(_ ⇒
           hostPoolCache.remove(setup, fastFuture))(fm.executionContext)
         fastFuture

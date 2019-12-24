@@ -103,7 +103,8 @@ class ScalaRearranger
       -1
     } else {
       val codeStyleSettings = settings.getCommonSettings(
-        ScalaFileType.SCALA_LANGUAGE) //probably this will not work
+        ScalaFileType.SCALA_LANGUAGE
+      ) //probably this will not work
       val targetType = target.getType
       if (targetType == VAL || targetType == VAR || targetType == TYPE) {
         codeStyleSettings.BLANK_LINES_AROUND_FIELD

@@ -32,7 +32,9 @@ object Opt {
 
     def --? : Boolean // --opt is set
     def -->(body: => Unit): Boolean // if --opt is set, execute body
-    def --| : Option[String] // --opt <arg: String> is optional, result is Option[String]
+    def --| : Option[
+      String
+    ] // --opt <arg: String> is optional, result is Option[String]
     def --^[T: FromString]
         : Option[T] // --opt <arg: T> is optional, result is Option[T]
 

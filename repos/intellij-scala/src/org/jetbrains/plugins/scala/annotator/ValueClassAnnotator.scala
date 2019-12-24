@@ -53,8 +53,14 @@ trait ValueClassAnnotator {
       containingClass: Option[ScTemplateDefinition]): Unit = {
     containingClass match {
       case Some(obj: ScObject) =>
-        annotateContainingClass(valueClass, holder, Option(obj.containingClass)) //keep going
-      case Some(_) => //value class is inside a trait or a class, need to highlight it
+        annotateContainingClass(
+          valueClass,
+          holder,
+          Option(obj.containingClass)
+        ) //keep going
+      case Some(
+          _
+          ) => //value class is inside a trait or a class, need to highlight it
         holder.createErrorAnnotation(
           valueClass.nameId,
           ScalaBundle.message(

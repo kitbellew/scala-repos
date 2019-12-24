@@ -225,8 +225,12 @@ trait NamesDefaults { self: Analyzer =>
           if (module == NoSymbol) None
           else {
             val ref = atPos(pos.focus)(gen.mkAttributedRef(pre, module))
-            if (treeInfo.admitsTypeSelection(ref)) // fixes #4524. the type checker does the same for
-              ref.setType(singleType(pre, module)) // typedSelect, it calls "stabilize" on the result.
+            if (treeInfo.admitsTypeSelection(
+                  ref
+                )) // fixes #4524. the type checker does the same for
+              ref.setType(
+                singleType(pre, module)
+              ) // typedSelect, it calls "stabilize" on the result.
             Some(ref)
           }
         }
@@ -372,7 +376,9 @@ trait NamesDefaults { self: Analyzer =>
             typedApp match {
               case Apply(expr, typedArgs)
                   if (typedApp :: typedArgs).exists(_.isErrorTyped) =>
-                setError(tree) // bail out with and erroneous Apply *or* erroneous arguments, see SI-7238, SI-7509
+                setError(
+                  tree
+                ) // bail out with and erroneous Apply *or* erroneous arguments, see SI-7238, SI-7509
               case Apply(expr, typedArgs) =>
                 // Extract the typed arguments, restore the call-site evaluation order (using
                 // ValDef's in the block), change the arguments to these local values.

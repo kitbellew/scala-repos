@@ -1649,7 +1649,10 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
   def getActualBaseField(
       actual: A,
       protoField: BaseOwnedMappedField[A]): BaseOwnedMappedField[A] =
-    ??(_mappedFields(protoField.name), actual) // .asInstanceOf[MappedField[T,A]]
+    ??(
+      _mappedFields(protoField.name),
+      actual
+    ) // .asInstanceOf[MappedField[T,A]]
 
   /**
     * The name of the database table.  Override this method if you

@@ -168,6 +168,8 @@ class SubexpressionEliminationSuite extends SparkFunSuite {
     equivalence.addExprTree(add, true)
     // the `two` inside `explode` should not be added
     assert(equivalence.getAllEquivalentExprs.count(_.size > 1) == 0)
-    assert(equivalence.getAllEquivalentExprs.count(_.size == 1) == 3) // add, two, explode
+    assert(
+      equivalence.getAllEquivalentExprs.count(_.size == 1) == 3
+    ) // add, two, explode
   }
 }

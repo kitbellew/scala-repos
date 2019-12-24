@@ -78,9 +78,14 @@ object PythonRunner {
     val env = builder.environment()
     env.put("PYTHONPATH", pythonPath)
     // This is equivalent to setting the -u flag; we use it because ipython doesn't support -u:
-    env.put("PYTHONUNBUFFERED", "YES") // value is needed to be set to a non-empty string
+    env.put(
+      "PYTHONUNBUFFERED",
+      "YES"
+    ) // value is needed to be set to a non-empty string
     env.put("PYSPARK_GATEWAY_PORT", "" + gatewayServer.getListeningPort)
-    builder.redirectErrorStream(true) // Ugly but needed for stdout and stderr to synchronize
+    builder.redirectErrorStream(
+      true
+    ) // Ugly but needed for stdout and stderr to synchronize
     try {
       val process = builder.start()
 

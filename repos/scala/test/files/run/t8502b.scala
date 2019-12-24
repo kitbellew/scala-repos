@@ -32,7 +32,10 @@ object Test extends StoreReporterDirectTest {
         def f(o: Outer): Outer = o
       }
     """)
-    assert(storeReporter.infos.isEmpty, storeReporter.infos.mkString("\n")) // Included a MissingRequirementError before.
+    assert(
+      storeReporter.infos.isEmpty,
+      storeReporter.infos.mkString("\n")
+    ) // Included a MissingRequirementError before.
   }
 
   def deletePackage(name: String) {

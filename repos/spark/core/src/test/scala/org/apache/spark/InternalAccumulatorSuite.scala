@@ -285,7 +285,9 @@ class InternalAccumulatorSuite extends SparkFunSuite with LocalSparkContext {
     // Register asserts in job completion callback to avoid flakiness
     listener.registerJobCompletionCallback { () =>
       val stageInfos = listener.getCompletedStageInfos
-      assert(stageInfos.size === 4) // 1 shuffle map stage + 1 result stage, both are retried
+      assert(
+        stageInfos.size === 4
+      ) // 1 shuffle map stage + 1 result stage, both are retried
       val mapStageId = stageInfos.head.stageId
       val mapStageInfo1stAttempt = stageInfos.head
       val mapStageInfo2ndAttempt = {

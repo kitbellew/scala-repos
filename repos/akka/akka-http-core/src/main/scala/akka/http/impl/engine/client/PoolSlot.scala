@@ -148,7 +148,8 @@ private object PoolSlot {
           waitingForDemandFromConnection(connInport, connOutport, rc))
 
       case Request(_) ⇒
-        if (remainingRequested == 0) request(1) // ask for first request if necessary
+        if (remainingRequested == 0)
+          request(1) // ask for first request if necessary
 
       case OnComplete ⇒ onComplete()
       case OnError(e) ⇒ onError(e)

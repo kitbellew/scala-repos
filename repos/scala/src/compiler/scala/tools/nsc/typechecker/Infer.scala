@@ -321,7 +321,9 @@ trait Infer extends Checkable {
           case sym if context.owner.isTermMacro && (sym hasFlag LOCKED) =>
             throw CyclicReference(sym, CheckAccessibleMacroCycle)
           case sym =>
-            val sym1 = if (sym.isTerm) sym.cookJavaRawInfo() else sym // xform java rawtypes into existentials
+            val sym1 =
+              if (sym.isTerm) sym.cookJavaRawInfo()
+              else sym // xform java rawtypes into existentials
             val owntype =
               (
                 try pre memberType sym1
@@ -941,7 +943,9 @@ trait Infer extends Checkable {
           typesCompatible(argtpes0) // fast track if no named arguments are used
         case x if x > 0 => tryWithArgs(argsTupled) // too many args, try tupling
         case _ =>
-          tryWithArgs(argsPlusDefaults) // too few args, try adding defaults or tupling
+          tryWithArgs(
+            argsPlusDefaults
+          ) // too few args, try adding defaults or tupling
       }
     }
 
@@ -1198,7 +1202,9 @@ trait Infer extends Checkable {
         treeTp0: Type = null,
         keepNothings: Boolean = true,
         useWeaklyCompatible: Boolean = false): List[Symbol] = {
-      val treeTp = if (treeTp0 eq null) tree.tpe else treeTp0 // can't refer to tree in default for treeTp0
+      val treeTp =
+        if (treeTp0 eq null) tree.tpe
+        else treeTp0 // can't refer to tree in default for treeTp0
       val tvars = tparams map freshVar
       val targs = exprTypeArgs(tvars, tparams, treeTp, pt, useWeaklyCompatible)
       def infer_s =
@@ -1763,13 +1769,22 @@ trait Infer extends Checkable {
                 competing,
                 argtpes,
                 pt,
-                isLastTry) // ambiguous
+                isLastTry
+              ) // ambiguous
             case best :: Nil =>
               tree setSymbol best setType (pre memberType best) // success
             case Nil if pt.isWildcard =>
-              NoBestMethodAlternativeError(tree, argtpes, pt, isLastTry) // failed
+              NoBestMethodAlternativeError(
+                tree,
+                argtpes,
+                pt,
+                isLastTry
+              ) // failed
             case Nil =>
-              bestForExpectedType(WildcardType, isLastTry) // failed, but retry with WildcardType
+              bestForExpectedType(
+                WildcardType,
+                isLastTry
+              ) // failed, but retry with WildcardType
           }
         }
 

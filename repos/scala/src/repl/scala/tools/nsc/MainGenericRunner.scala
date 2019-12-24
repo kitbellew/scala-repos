@@ -108,7 +108,10 @@ class MainGenericRunner {
       } else
         runTarget() match {
           case Left(ex) =>
-            errorFn("", Some(ex)) // there must be a useful message of hope to offer here
+            errorFn(
+              "",
+              Some(ex)
+            ) // there must be a useful message of hope to offer here
           case Right(b) => b
         }
     }

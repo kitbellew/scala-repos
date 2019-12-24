@@ -310,7 +310,8 @@ trait ScReferenceElement
             qual = qual.qualifier.get.asInstanceOf[T]
           val resolve: Array[ResolveResult] = qual.multiResolve(false)
           def isOk: Boolean = {
-            if (packagePart == "java.util") return true //todo: fix possible clashes?
+            if (packagePart == "java.util")
+              return true //todo: fix possible clashes?
             if (resolve.length == 0) true
             else if (resolve.length > 1) false
             else {

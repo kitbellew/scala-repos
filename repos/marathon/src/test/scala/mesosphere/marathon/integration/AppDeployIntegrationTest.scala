@@ -215,7 +215,9 @@ class AppDeployIntegrationTest
     result.code should be(201) //Created
     extractDeploymentIds(result) should have size 1
     waitForEvent("deployment_success")
-    check.pingSince(5.seconds) should be(true) //make sure, the app has really started
+    check.pingSince(5.seconds) should be(
+      true
+    ) //make sure, the app has really started
   }
 
   test(
@@ -239,7 +241,9 @@ class AppDeployIntegrationTest
     result.code should be(201) //Created
     extractDeploymentIds(result) should have size 1
     waitForEvent("deployment_success")
-    check.pingSince(5.seconds) should be(true) //make sure, the app has really started
+    check.pingSince(5.seconds) should be(
+      true
+    ) //make sure, the app has really started
   }
 
   test("create a simple app with tcp health checks") {
@@ -346,7 +350,9 @@ class AppDeployIntegrationTest
     update.code should be(200)
     waitForEvent("deployment_success")
     waitForTasks(appId, before.value.size)
-    check.pingSince(5.seconds) should be(true) //make sure, the new version is alive
+    check.pingSince(5.seconds) should be(
+      true
+    ) //make sure, the new version is alive
   }
 
   test("scale an app up and down") {

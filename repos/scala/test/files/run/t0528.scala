@@ -12,5 +12,7 @@ class RichStr extends Sequ[Char] {
 object Test extends App {
   val x: RichStr = new RichStr
 
-  println((x: Sequ[Char]).toArray.deep) // calling through the bridge misses unboxing
+  println(
+    (x: Sequ[Char]).toArray.deep
+  ) // calling through the bridge misses unboxing
 }

@@ -110,7 +110,10 @@ object Previous {
       (cache in Global) zip Def.validated(skey, selfRefOk = true) zip (references in Global)
     inputs {
       case ((prevTask, resolved), refs) =>
-        refs.recordReference(resolved, format) // always evaluated on project load
+        refs.recordReference(
+          resolved,
+          format
+        ) // always evaluated on project load
         import std.TaskExtra._
         prevTask.map(_ get resolved) // evaluated if this task is evaluated
     }

@@ -289,7 +289,10 @@ trait Interface extends ast.TreeDSL {
         if (containsSym) {
           if (to.forall(_.isInstanceOf[Ident]))
             tree.duplicate
-              .substituteSymbols(from, to.map(_.symbol)) // SI-7459 catches `case t => new t.Foo`
+              .substituteSymbols(
+                from,
+                to.map(_.symbol)
+              ) // SI-7459 catches `case t => new t.Foo`
           else
             substIdentsForTrees.transform(tree)
         } else tree
@@ -304,7 +307,8 @@ trait Interface extends ast.TreeDSL {
         new Substitution(
           other.from ++ fromFiltered,
           other.to
-            .map(apply) ++ toFiltered) // a quick benchmarking run indicates the `.map(apply)` is not too costly
+            .map(apply) ++ toFiltered
+        ) // a quick benchmarking run indicates the `.map(apply)` is not too costly
       }
       override def toString =
         (from.map(_.name) zip to) mkString ("Substitution(", ", ", ")")

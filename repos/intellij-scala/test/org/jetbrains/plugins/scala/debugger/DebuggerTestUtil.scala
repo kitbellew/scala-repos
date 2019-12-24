@@ -72,7 +72,9 @@ object DebuggerTestUtil {
         .exists(x => x.getName == "javac.exe" || x.getName == "javac")
     }
     def inJvm(path: String, suffix: String) = {
-      val postfix = if (path.startsWith("/Library")) "/Contents/Home" else "" // mac workaround
+      val postfix =
+        if (path.startsWith("/Library")) "/Contents/Home"
+        else "" // mac workaround
       Option(new File(path))
         .filter(_.exists())
         .flatMap(

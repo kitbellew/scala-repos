@@ -167,7 +167,8 @@ private object PoolConductor {
               val wasBlocked = nextSlot == -1
               nextSlot = bestSlot()
               val nowUnblocked = nextSlot != -1
-              if (wasBlocked && nowUnblocked) pull(ctxIn) // get next request context
+              if (wasBlocked && nowUnblocked)
+                pull(ctxIn) // get next request context
             }
           }
         )

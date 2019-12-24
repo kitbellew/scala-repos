@@ -2773,7 +2773,8 @@ abstract class GenJSCode
                       callTrg,
                       arguments(0),
                       arguments(1)),
-                    js.Undefined()) // Boxed Unit
+                    js.Undefined()
+                  ) // Boxed Unit
                 case nme.apply =>
                   genRTCall(
                     currentRun.runDefinitions.arrayApplyMethod,

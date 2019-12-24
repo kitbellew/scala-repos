@@ -52,7 +52,8 @@ object Test extends ScaladocModelTest {
       Api.members.filter(_.inDefinitionTemplates.head == Api).length == 2,
       Api.members
         .filter(_.inDefinitionTemplates.head == Api)
-        .length + " == 2") // FooApi and override type T
+        .length + " == 2"
+    ) // FooApi and override type T
     assert(
       Api.members.collect { case d: DocTemplateEntity => d }.length == 5,
       Api.members.collect { case d: DocTemplateEntity => d }.length == 5)

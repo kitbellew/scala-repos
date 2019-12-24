@@ -244,7 +244,9 @@ trait TraversableLike[+A, +Repr]
   def flatMap[B, That](f: A => GenTraversableOnce[B])(
       implicit bf: CanBuildFrom[Repr, B, That]): That = {
     def builder =
-      bf(repr) // extracted to keep method size under 35 bytes, so that it can be JIT-inlined
+      bf(
+        repr
+      ) // extracted to keep method size under 35 bytes, so that it can be JIT-inlined
     val b = builder
     for (x <- this) b ++= f(x).seq
     b.result

@@ -120,7 +120,9 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
       def pos = body.pos
 
       def chainBefore(next: Tree)(casegen: Casegen): Tree = // assert(next eq EmptyTree)
-        atPos(body.pos)(casegen.one(substitution(body))) // since SubstOnly treemakers are dropped, need to do it here
+        atPos(body.pos)(
+          casegen.one(substitution(body))
+        ) // since SubstOnly treemakers are dropped, need to do it here
       override def toString = "B" + ((body, matchPt))
     }
 
@@ -557,9 +559,14 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
         else
           expectedTp match {
             case SingleType(_, sym) =>
-              mkEqTest(gen.mkAttributedQualifier(expectedTp)) // SI-4577, SI-4897
+              mkEqTest(
+                gen.mkAttributedQualifier(expectedTp)
+              ) // SI-4577, SI-4897
             case ThisType(sym) if sym.isModule =>
-              and(mkEqualsTest(CODE.REF(sym)), mkTypeTest) // must use == to support e.g. List() == Nil
+              and(
+                mkEqualsTest(CODE.REF(sym)),
+                mkTypeTest
+              ) // must use == to support e.g. List() == Nil
             case ConstantType(Constant(null)) if isAnyRef =>
               mkEqTest(expTp(CODE.NULL))
             case ConstantType(const) => mkEqualsTest(expTp(Literal(const)))

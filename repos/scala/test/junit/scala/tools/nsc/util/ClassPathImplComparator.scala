@@ -184,7 +184,9 @@ object ClassPathImplComparator {
       case (res, classToCheck) =>
         val found = classPath.findClass(classToCheck).isDefined
         if (!found)
-          println(s"Class $classToCheck not found") // of course in this case the measured time will be affected by IO operation
+          println(
+            s"Class $classToCheck not found"
+          ) // of course in this case the measured time will be affected by IO operation
         found
     }
 }

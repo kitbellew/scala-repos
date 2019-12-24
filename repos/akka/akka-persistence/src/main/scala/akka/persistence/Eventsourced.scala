@@ -75,7 +75,8 @@ private[persistence] trait Eventsourced
   private var pendingStashingPersistInvocations: Long = 0
   // Holds user-supplied callbacks for persist/persistAsync calls
   private val pendingInvocations = new java.util.LinkedList[
-    PendingHandlerInvocation]() // we only append / isEmpty / get(0) on it
+    PendingHandlerInvocation
+  ]() // we only append / isEmpty / get(0) on it
   private var eventBatch: List[PersistentEnvelope] = Nil
 
   private val internalStash = createStash()

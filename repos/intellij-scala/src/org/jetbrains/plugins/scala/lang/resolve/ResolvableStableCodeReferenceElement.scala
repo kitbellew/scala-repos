@@ -205,7 +205,10 @@ trait ResolvableStableCodeReferenceElement
           s.subst(ScType.create(field.getType, getProject, getResolveScope)),
           this)
       case ScalaResolveResult(clazz: PsiClass, s) =>
-        processor.processType(new ScDesignatorType(clazz, true), this) //static Java import
+        processor.processType(
+          new ScDesignatorType(clazz, true),
+          this
+        ) //static Java import
       case ScalaResolveResult(pack: ScPackage, s) =>
         pack.processDeclarations(
           processor,

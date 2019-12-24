@@ -485,7 +485,9 @@ abstract class Pickler extends SubComponent {
         case StaticallyAnnotatedType(annots, tp) =>
           writeRef(tp); writeRefs(annots)
         case AnnotatedType(_, tp) =>
-          writeTypeBody(tp) // write the underlying type if there are no static annotations
+          writeTypeBody(
+            tp
+          ) // write the underlying type if there are no static annotations
         case CompoundType(parents, _, clazz) =>
           writeRef(clazz); writeRefs(parents)
       }
