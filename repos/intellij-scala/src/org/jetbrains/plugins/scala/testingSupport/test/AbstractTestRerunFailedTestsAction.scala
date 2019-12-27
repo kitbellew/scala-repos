@@ -58,11 +58,12 @@ class AbstractTestRerunFailedTestsAction(
         val failedTests = getFailedTests(configuration.getProject)
         val buffer = new ArrayBuffer[(String, String)]
         val classNames = patcher.getClasses
-          .map(s => {
-            val i = s.lastIndexOf(".")
-            if (i < 0) s
-            else s.substring(i + 1)
-          } -> s)
+          .map(s =>
+            {
+              val i = s.lastIndexOf(".")
+              if (i < 0) s
+              else s.substring(i + 1)
+            } -> s)
           .toMap
         import scala.collection.JavaConversions._
         for (failed <- failedTests) { //todo: fix after adding location API
