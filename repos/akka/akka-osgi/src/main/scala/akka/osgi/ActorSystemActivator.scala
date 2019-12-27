@@ -70,10 +70,11 @@ abstract class ActorSystemActivator extends BundleActivator {
     context.addServiceListener(logServiceListner, filter)
 
     //Small trick to create an event if the service is registered before this start listing for
-    Option(context.getServiceReference(classOf[LogService].getName)).foreach(x ⇒ {
-      logServiceListner.serviceChanged(
-        new ServiceEvent(ServiceEvent.REGISTERED, x))
-    })
+    Option(context.getServiceReference(classOf[LogService].getName)).foreach(
+      x ⇒ {
+        logServiceListner.serviceChanged(
+          new ServiceEvent(ServiceEvent.REGISTERED, x))
+      })
   }
 
   /**
