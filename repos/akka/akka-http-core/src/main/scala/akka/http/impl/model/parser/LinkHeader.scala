@@ -70,11 +70,8 @@ private[parser] trait LinkHeader {
   }
 
   def `link-media-type` = rule {
-    `media-type` ~> (
-        (
-            mt,
-            st,
-            pm) ⇒ getMediaType(mt, st, pm contains "charset", pm.toMap))
+    `media-type` ~> ((mt, st, pm) ⇒
+      getMediaType(mt, st, pm contains "charset", pm.toMap))
   }
 
   // filter out subsequent `rel`, `media`, `title`, `type` and `type*` params

@@ -391,7 +391,7 @@ trait ScalaSettings
     "-Ymacro-no-expand",
     "Don't expand macros. Might be useful for scaladoc and presentation compiler, but will crash anything which uses macros and gets past typer."
   ) withDeprecationMessage (s"Use ${Ymacroexpand.name}:${MacroExpand.None}") withPostSetHook (
-      _ => Ymacroexpand.value = MacroExpand.None)
+    _ => Ymacroexpand.value = MacroExpand.None)
   val Yreplsync = BooleanSetting(
     "-Yrepl-sync",
     "Do not use asynchronous code for repl startup")

@@ -213,10 +213,8 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
   // ******************************************************************************************
 
   def `entity-tag` = rule {
-    ("W/" ~ push(true) | push(false)) ~ `opaque-tag` ~> (
-        (
-            weak,
-            tag) ⇒ EntityTag(tag, weak))
+    ("W/" ~ push(true) | push(false)) ~ `opaque-tag` ~> ((weak, tag) ⇒
+      EntityTag(tag, weak))
   }
 
   def `opaque-tag` = rule {
@@ -242,10 +240,8 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
   }
 
   def `generic-credentials` = rule {
-    `challenge-or-credentials` ~> (
-        (
-            scheme,
-            params) ⇒ GenericHttpCredentials(scheme, params.toMap))
+    `challenge-or-credentials` ~> ((scheme, params) ⇒
+      GenericHttpCredentials(scheme, params.toMap))
   }
 
   /**

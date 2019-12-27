@@ -278,13 +278,10 @@ private[internal] trait GlbLubs {
   )
 
   def numericLub(ts: List[Type]) =
-    ts reduceLeft (
-        (
-            t1,
-            t2) =>
-          if (isNumericSubType(t1, t2)) t2
-          else if (isNumericSubType(t2, t1)) t1
-          else IntTpe)
+    ts reduceLeft ((t1, t2) =>
+      if (isNumericSubType(t1, t2)) t2
+      else if (isNumericSubType(t2, t1)) t1
+      else IntTpe)
 
   private val _lubResults = new mutable.HashMap[(Depth, List[Type]), Type]
   def lubResults = _lubResults

@@ -155,8 +155,8 @@ trait Infer extends Checkable {
     if (tvars.isEmpty) Nil
     else {
       printTyping(
-        "solving for " + parentheses(
-          (tparams, tvars).zipped map ((p, tv) => s"${p.name}: $tv")))
+        "solving for " + parentheses((tparams, tvars).zipped map ((p, tv) =>
+          s"${p.name}: $tv")))
       // !!! What should be done with the return value of "solve", which is at present ignored?
       // The historical commentary says "no panic, it's good enough to just guess a solution,
       // we'll find out later whether it works", meaning don't issue an error here when types
@@ -725,13 +725,12 @@ trait Infer extends Checkable {
         tuplingAllowed: Boolean): Boolean = followApply(tpe) match {
       case OverloadedType(pre, alts) =>
         // followApply may return an OverloadedType (tpe is a value type with multiple `apply` methods)
-        alts exists (
-            alt =>
-              isApplicableBasedOnArity(
-                pre memberType alt,
-                argsCount,
-                varargsStar,
-                tuplingAllowed))
+        alts exists (alt =>
+          isApplicableBasedOnArity(
+            pre memberType alt,
+            argsCount,
+            varargsStar,
+            tuplingAllowed))
       case _ =>
         val paramsCount = tpe.params.length
         // simpleMatch implies we're not using defaults

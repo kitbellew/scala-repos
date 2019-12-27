@@ -1320,14 +1320,10 @@ trait ContextErrors {
         if (explaintypes) {
           val bounds = tparams map (tp =>
             tp.info.instantiateTypeParams(tparams, targs).bounds)
-          (targs, bounds).zipped foreach (
-              (
-                  targ,
-                  bound) => explainTypes(bound.lo, targ))
-          (targs, bounds).zipped foreach (
-              (
-                  targ,
-                  bound) => explainTypes(targ, bound.hi))
+          (targs, bounds).zipped foreach ((targ, bound) =>
+            explainTypes(bound.lo, targ))
+          (targs, bounds).zipped foreach ((targ, bound) =>
+            explainTypes(targ, bound.hi))
           ()
         }
 

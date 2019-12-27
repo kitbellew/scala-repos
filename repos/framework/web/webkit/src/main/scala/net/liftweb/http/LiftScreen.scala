@@ -1243,7 +1243,7 @@ trait ScreenWizardRendered extends Loggable {
     def templateFields: List[CssBindFunc] =
       List(
         sel(_.fieldContainer, ".%s") #> (fieldsWithStyle(Template, true) map (
-            field => bindField(field))))
+          field => bindField(field))))
 
     def selfFields: List[CssBindFunc] =
       for ((bindingInfo, field) <- bindingInfoWithFields(Self))

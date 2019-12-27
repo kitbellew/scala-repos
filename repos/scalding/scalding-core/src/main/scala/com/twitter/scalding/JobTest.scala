@@ -133,11 +133,10 @@ class JobTest(cons: (Args) => Job) {
      * you also modify the `finalize` function accordingly.
      */
     sinkSet += s
-    callbacks += (
-        () =>
-          op(buffer.map { tup =>
-            conv(new TupleEntry(tup))
-          }))
+    callbacks += (() =>
+      op(buffer.map { tup =>
+        conv(new TupleEntry(tup))
+      }))
     this
   }
 

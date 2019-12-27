@@ -245,13 +245,13 @@ trait SymbolTables {
           if (sym != NoSymbol)
             result ++= cumulativeAliases.distinct filter (alias =>
               alias._1 == sym && alias._2 != currtab.symName(sym)) map (
-                alias => {
-                  val canonicalName = currtab.symName(sym)
-                  val aliasName = alias._2
-                  ValDef(NoMods, aliasName, TypeTree(), Ident(canonicalName)) updateAttachment ReifyAliasAttachment(
-                    sym,
-                    aliasName)
-                })
+              alias => {
+                val canonicalName = currtab.symName(sym)
+                val aliasName = alias._2
+                ValDef(NoMods, aliasName, TypeTree(), Ident(canonicalName)) updateAttachment ReifyAliasAttachment(
+                  sym,
+                  aliasName)
+              })
           result.toList
         })
 

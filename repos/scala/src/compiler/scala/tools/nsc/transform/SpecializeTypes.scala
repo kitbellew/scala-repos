@@ -437,7 +437,7 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
     // If we don't exclude the "all AnyRef" specialization, we will
     // incur duplicate members and crash during mixin.
     loop(keys map concreteTypes) filterNot (_ forall (_ <:< AnyRefTpe)) map (
-        xss => Map(keys zip xss: _*))
+      xss => Map(keys zip xss: _*))
   }
 
   /** Does the given 'sym' need to be specialized in the environment 'env'?

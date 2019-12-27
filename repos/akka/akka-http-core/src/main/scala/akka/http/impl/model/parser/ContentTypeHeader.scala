@@ -12,11 +12,8 @@ private[parser] trait ContentTypeHeader {
 
   // http://tools.ietf.org/html/rfc7231#section-3.1.1.5
   def `content-type` = rule {
-    `media-type` ~ EOI ~> (
-        (
-            main,
-            sub,
-            params) ⇒ headers.`Content-Type`(contentType(main, sub, params)))
+    `media-type` ~ EOI ~> ((main, sub, params) ⇒
+      headers.`Content-Type`(contentType(main, sub, params)))
   }
 
   @tailrec private def contentType(

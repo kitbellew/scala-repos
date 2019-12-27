@@ -263,11 +263,11 @@ trait SyntheticMethods extends ast.TreeDSL {
     // methods for both classes and objects
     def productMethods = {
       List(
-        Product_productPrefix -> (
-            () => constantNullary(nme.productPrefix, clazz.name.decode)),
+        Product_productPrefix -> (() =>
+          constantNullary(nme.productPrefix, clazz.name.decode)),
         Product_productArity -> (() => constantNullary(nme.productArity, arity)),
-        Product_productElement -> (
-            () => perElementMethod(nme.productElement, AnyTpe)(mkThisSelect)),
+        Product_productElement -> (() =>
+          perElementMethod(nme.productElement, AnyTpe)(mkThisSelect)),
         Product_iterator -> (() => productIteratorMethod),
         Product_canEqual -> (() => canEqualMethod)
         // This is disabled pending a reimplementation which doesn't add any
@@ -333,10 +333,10 @@ trait SyntheticMethods extends ast.TreeDSL {
       )
 
     def caseObjectMethods = productMethods ++ Seq(
-      Object_hashCode -> (
-          () => constantMethod(nme.hashCode_, clazz.name.decode.hashCode)),
-      Object_toString -> (
-          () => constantMethod(nme.toString_, clazz.name.decode))
+      Object_hashCode -> (() =>
+        constantMethod(nme.hashCode_, clazz.name.decode.hashCode)),
+      Object_toString -> (() =>
+        constantMethod(nme.toString_, clazz.name.decode))
       // Not needed, as reference equality is the default.
       // Object_equals   -> (() => createMethod(Object_equals)(m => This(clazz) ANY_EQ Ident(m.firstParam)))
     )

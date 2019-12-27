@@ -1474,26 +1474,25 @@ trait Typers
         case Apply(tree1, args) if (tree1 eq tree) && args.nonEmpty =>
           (silent(_.typedArgs(args.map(_.duplicate), mode))
             filter (xs => !(xs exists (_.isErrorTyped)))
-            map (
-                xs =>
-                  adaptToArguments(
-                    qual,
-                    name,
-                    xs,
-                    WildcardType,
-                    reportAmbiguous,
-                    saveErrors))
+            map (xs =>
+              adaptToArguments(
+                qual,
+                name,
+                xs,
+                WildcardType,
+                reportAmbiguous,
+                saveErrors))
             orElse (_ => reportError))
         case _ =>
           reportError
       }
 
       silent(_.adaptToMember(qual, HasMember(name), reportAmbiguous = false)) orElse (
-          errs =>
-            onError {
-              if (reportAmbiguous) errs foreach (context issue _)
-              setError(tree)
-            })
+        errs =>
+          onError {
+            if (reportAmbiguous) errs foreach (context issue _)
+            setError(tree)
+          })
     }
 
     /** Try to apply an implicit conversion to `qual` to that it contains a

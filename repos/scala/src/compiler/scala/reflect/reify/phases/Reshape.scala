@@ -412,15 +412,15 @@ trait Reshape {
     private def trimSyntheticCaseClassCompanions(
         stats: List[Tree]): List[Tree] =
       stats diff (stats collect { case moddef: ModuleDef => moddef } filter (
-          moddef => {
-            val isSynthetic = moddef.symbol.isSynthetic
-            // this doesn't work for local classes, e.g. for ones that are top-level to a quasiquote (see comments to companionClass)
-            // that's why I replace the check with an assumption that all synthetic modules are, in fact, companions of case classes
-            // val isCaseCompanion = moddef.symbol.companionClass.isCaseClass
-            val isCaseCompanion = true
-            if (isSynthetic && isCaseCompanion && reifyDebug)
-              println("discarding synthetic case class companion: " + moddef)
-            isSynthetic && isCaseCompanion
-          }))
+        moddef => {
+          val isSynthetic = moddef.symbol.isSynthetic
+          // this doesn't work for local classes, e.g. for ones that are top-level to a quasiquote (see comments to companionClass)
+          // that's why I replace the check with an assumption that all synthetic modules are, in fact, companions of case classes
+          // val isCaseCompanion = moddef.symbol.companionClass.isCaseClass
+          val isCaseCompanion = true
+          if (isSynthetic && isCaseCompanion && reifyDebug)
+            println("discarding synthetic case class companion: " + moddef)
+          isSynthetic && isCaseCompanion
+        }))
   }
 }

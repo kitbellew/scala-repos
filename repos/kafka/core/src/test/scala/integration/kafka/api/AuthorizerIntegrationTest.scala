@@ -111,15 +111,14 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
     )
 
   val RequestKeyToErrorCode = Map[Short, (Nothing) => Short](
-    ApiKeys.METADATA.id -> (
-        (resp: requests.MetadataResponse) =>
-          resp
-            .errors()
-            .asScala
-            .find(_._1 == topic)
-            .getOrElse(("test", Errors.NONE))
-            ._2
-            .code()),
+    ApiKeys.METADATA.id -> ((resp: requests.MetadataResponse) =>
+      resp
+        .errors()
+        .asScala
+        .find(_._1 == topic)
+        .getOrElse(("test", Errors.NONE))
+        ._2
+        .code()),
     ApiKeys.PRODUCE.id -> ((resp: requests.ProduceResponse) =>
       resp.responses().asScala.find(_._1 == tp).get._2.errorCode),
     ApiKeys.FETCH.id -> ((resp: requests.FetchResponse) =>
@@ -131,9 +130,9 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
     ApiKeys.OFFSET_FETCH.id -> ((resp: requests.OffsetFetchResponse) =>
       resp.responseData().asScala.find(_._1 == tp).get._2.errorCode),
     ApiKeys.GROUP_COORDINATOR.id -> (
-        (resp: requests.GroupCoordinatorResponse) => resp.errorCode()),
+      (resp: requests.GroupCoordinatorResponse) => resp.errorCode()),
     ApiKeys.UPDATE_METADATA_KEY.id -> (
-        (resp: requests.UpdateMetadataResponse) => resp.errorCode()),
+      (resp: requests.UpdateMetadataResponse) => resp.errorCode()),
     ApiKeys.JOIN_GROUP.id -> ((resp: JoinGroupResponse) => resp.errorCode()),
     ApiKeys.SYNC_GROUP.id -> ((resp: SyncGroupResponse) => resp.errorCode()),
     ApiKeys.HEARTBEAT.id -> ((resp: HeartbeatResponse) => resp.errorCode()),
@@ -143,7 +142,7 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
     ApiKeys.STOP_REPLICA.id -> ((resp: requests.StopReplicaResponse) =>
       resp.responses().asScala.find(_._1 == tp).get._2),
     ApiKeys.CONTROLLED_SHUTDOWN_KEY.id -> (
-        (resp: requests.ControlledShutdownResponse) => resp.errorCode())
+      (resp: requests.ControlledShutdownResponse) => resp.errorCode())
   )
 
   val RequestKeysToAcls = Map[Short, Map[Resource, Set[Acl]]](

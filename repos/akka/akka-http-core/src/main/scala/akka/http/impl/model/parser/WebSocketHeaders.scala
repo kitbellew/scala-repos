@@ -54,9 +54,7 @@ private[parser] trait WebSocketHeaders {
   private def `extension-param`: Rule1[(String, String)] =
     rule {
       token ~ optional(ws("=") ~ word) ~> (
-          (
-              name: String,
-              value: Option[String]) ⇒ (name, value.getOrElse("")))
+        (name: String, value: Option[String]) ⇒ (name, value.getOrElse("")))
     }
 
   private def version = rule {
