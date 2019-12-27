@@ -243,7 +243,7 @@ case class Window(
                     subexpressionEliminationEnabled),
                 offset)
 
-            // Growing Frame.
+          // Growing Frame.
           case ("AGGREGATE", frameType, None, Some(high)) =>
             target: MutableRow => {
               new UnboundedPrecedingWindowFunctionFrame(
