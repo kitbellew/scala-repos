@@ -391,22 +391,24 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(
         "reduceByKeyLocally() does not support array keys")
     }
 
-    val reducePartition = (iter: Iterator[(K, V)]) => {
-      val map = new JHashMap[K, V]
-      iter.foreach { pair =>
-        val old = map.get(pair._1)
-        map.put(pair._1, if (old == null) pair._2 else cleanedF(old, pair._2))
-      }
-      Iterator(map)
-    }: Iterator[JHashMap[K, V]]
+    val reducePartition = (iter: Iterator[(K, V)]) =>
+      {
+        val map = new JHashMap[K, V]
+        iter.foreach { pair =>
+          val old = map.get(pair._1)
+          map.put(pair._1, if (old == null) pair._2 else cleanedF(old, pair._2))
+        }
+        Iterator(map)
+      }: Iterator[JHashMap[K, V]]
 
-    val mergeMaps = (m1: JHashMap[K, V], m2: JHashMap[K, V]) => {
-      m2.asScala.foreach { pair =>
-        val old = m1.get(pair._1)
-        m1.put(pair._1, if (old == null) pair._2 else cleanedF(old, pair._2))
-      }
-      m1
-    }: JHashMap[K, V]
+    val mergeMaps = (m1: JHashMap[K, V], m2: JHashMap[K, V]) =>
+      {
+        m2.asScala.foreach { pair =>
+          val old = m1.get(pair._1)
+          m1.put(pair._1, if (old == null) pair._2 else cleanedF(old, pair._2))
+        }
+        m1
+      }: JHashMap[K, V]
 
     self.mapPartitions(reducePartition).reduce(mergeMaps).asScala
   }
@@ -1053,13 +1055,14 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(
     self.partitioner match {
       case Some(p) =>
         val index = p.getPartition(key)
-        val process = (it: Iterator[(K, V)]) => {
-          val buf = new ArrayBuffer[V]
-          for (pair <- it if pair._1 == key) {
-            buf += pair._2
-          }
-          buf
-        }: Seq[V]
+        val process = (it: Iterator[(K, V)]) =>
+          {
+            val buf = new ArrayBuffer[V]
+            for (pair <- it if pair._1 == key) {
+              buf += pair._2
+            }
+            buf
+          }: Seq[V]
         val res = self.context.runJob(self, process, Array(index))
         res(0)
       case None =>
@@ -1237,55 +1240,56 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(
       jobFormat.checkOutputSpecs(job)
     }
 
-    val writeShard = (context: TaskContext, iter: Iterator[(K, V)]) => {
-      val config = wrappedConf.value
-      /* "reduce task" <split #> <attempt # = spark task #> */
-      val attemptId = new TaskAttemptID(
-        jobtrackerID,
-        stageId,
-        TaskType.REDUCE,
-        context.partitionId,
-        context.attemptNumber)
-      val hadoopContext = new TaskAttemptContextImpl(config, attemptId)
-      val format = outfmt.newInstance
-      format match {
-        case c: Configurable => c.setConf(config)
-        case _               => ()
-      }
-      val committer = format.getOutputCommitter(hadoopContext)
-      committer.setupTask(hadoopContext)
-
-      val outputMetricsAndBytesWrittenCallback
-          : Option[(OutputMetrics, () => Long)] =
-        initHadoopOutputMetrics(context)
-
-      val writer = format
-        .getRecordWriter(hadoopContext)
-        .asInstanceOf[NewRecordWriter[K, V]]
-      require(writer != null, "Unable to obtain RecordWriter")
-      var recordsWritten = 0L
-      Utils.tryWithSafeFinallyAndFailureCallbacks {
-        while (iter.hasNext) {
-          val pair = iter.next()
-          writer.write(pair._1, pair._2)
-
-          // Update bytes written metric every few records
-          maybeUpdateOutputMetrics(
-            outputMetricsAndBytesWrittenCallback,
-            recordsWritten)
-          recordsWritten += 1
+    val writeShard = (context: TaskContext, iter: Iterator[(K, V)]) =>
+      {
+        val config = wrappedConf.value
+        /* "reduce task" <split #> <attempt # = spark task #> */
+        val attemptId = new TaskAttemptID(
+          jobtrackerID,
+          stageId,
+          TaskType.REDUCE,
+          context.partitionId,
+          context.attemptNumber)
+        val hadoopContext = new TaskAttemptContextImpl(config, attemptId)
+        val format = outfmt.newInstance
+        format match {
+          case c: Configurable => c.setConf(config)
+          case _               => ()
         }
-      } {
-        writer.close(hadoopContext)
-      }
-      committer.commitTask(hadoopContext)
-      outputMetricsAndBytesWrittenCallback.foreach {
-        case (om, callback) =>
-          om.setBytesWritten(callback())
-          om.setRecordsWritten(recordsWritten)
-      }
-      1
-    }: Int
+        val committer = format.getOutputCommitter(hadoopContext)
+        committer.setupTask(hadoopContext)
+
+        val outputMetricsAndBytesWrittenCallback
+            : Option[(OutputMetrics, () => Long)] =
+          initHadoopOutputMetrics(context)
+
+        val writer = format
+          .getRecordWriter(hadoopContext)
+          .asInstanceOf[NewRecordWriter[K, V]]
+        require(writer != null, "Unable to obtain RecordWriter")
+        var recordsWritten = 0L
+        Utils.tryWithSafeFinallyAndFailureCallbacks {
+          while (iter.hasNext) {
+            val pair = iter.next()
+            writer.write(pair._1, pair._2)
+
+            // Update bytes written metric every few records
+            maybeUpdateOutputMetrics(
+              outputMetricsAndBytesWrittenCallback,
+              recordsWritten)
+            recordsWritten += 1
+          }
+        } {
+          writer.close(hadoopContext)
+        }
+        committer.commitTask(hadoopContext)
+        outputMetricsAndBytesWrittenCallback.foreach {
+          case (om, callback) =>
+            om.setBytesWritten(callback())
+            om.setRecordsWritten(recordsWritten)
+        }
+        1
+      }: Int
 
     val jobAttemptId =
       new TaskAttemptID(jobtrackerID, stageId, TaskType.MAP, 0, 0)

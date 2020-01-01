@@ -464,15 +464,16 @@ abstract class RDD[T: ClassTag](
     if (shuffle) {
 
       /** Distributes elements evenly across output partitions, starting from a random partition. */
-      val distributePartition = (index: Int, items: Iterator[T]) => {
-        var position = (new Random(index)).nextInt(numPartitions)
-        items.map { t =>
-          // Note that the hash code of the key will just be the key itself. The HashPartitioner
-          // will mod it with the number of total partitions.
-          position = position + 1
-          (position, t)
-        }
-      }: Iterator[(Int, T)]
+      val distributePartition = (index: Int, items: Iterator[T]) =>
+        {
+          var position = (new Random(index)).nextInt(numPartitions)
+          items.map { t =>
+            // Note that the hash code of the key will just be the key itself. The HashPartitioner
+            // will mod it with the number of total partitions.
+            position = position + 1
+            (position, t)
+          }
+        }: Iterator[(Int, T)]
 
       // include a shuffle step so that our upstream tasks are still distributed
       new CoalescedRDD(

@@ -2017,14 +2017,15 @@ object LiftScreenRules extends Factory with FormVendor {
       : FactoryMaker[List[String]] = new FactoryMaker[List[String]](() =>
     List("templates-hidden", "wizard-all")) {}
   val messageStyles: FactoryMaker[NoticeType.Value => MetaData] =
-    new FactoryMaker[NoticeType.Value => MetaData](() => {
-      case NoticeType.Notice =>
-        new UnprefixedAttribute("class", "lift_notice", Null)
-      case NoticeType.Warning =>
-        new UnprefixedAttribute("class", "lift_warning", Null)
-      case NoticeType.Error =>
-        new UnprefixedAttribute("class", "lift_error", Null)
-    }: PartialFunction[NoticeType.Value, MetaData]) {}
+    new FactoryMaker[NoticeType.Value => MetaData](() =>
+      {
+        case NoticeType.Notice =>
+          new UnprefixedAttribute("class", "lift_notice", Null)
+        case NoticeType.Warning =>
+          new UnprefixedAttribute("class", "lift_warning", Null)
+        case NoticeType.Error =>
+          new UnprefixedAttribute("class", "lift_error", Null)
+      }: PartialFunction[NoticeType.Value, MetaData]) {}
 
 }
 
