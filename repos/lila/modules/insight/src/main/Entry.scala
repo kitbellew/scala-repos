@@ -62,7 +62,9 @@ case class Move(
     role: Role,
     eval: Option[Int], // before the move was played, relative to player
     mate: Option[Int], // before the move was played, relative to player
-    cpl: Option[Int], // eval diff caused by the move, relative to player, mate ~= 10
+    cpl: Option[
+      Int
+    ], // eval diff caused by the move, relative to player, mate ~= 10
     material: Int, // material imbalance, relative to player
     opportunism: Option[Boolean],
     luck: Option[Boolean])

@@ -1526,7 +1526,8 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
           ScalaTokenTypes.tFUNTYPE,
           ScalaElementTypes.PARAM_CLAUSES,
           ScalaElementTypes.FUNCTION_EXPR,
-          _) //TODO: is this even ever used?
+          _
+          ) //TODO: is this even ever used?
           if !scalaSettings.PLACE_CLOSURE_PARAMETERS_ON_NEW_LINE =>
         if (rightString.startsWith("{")) WITH_SPACING
         else if (leftNode.getTreeParent.getTextRange

@@ -283,7 +283,9 @@ class IMain(
   def addUrlsToClassPath(urls: URL*): Unit = {
     new Run //  force some initialization
     urls.foreach(_runtimeClassLoader.addURL) // Add jars to runtime classloader
-    global.extendCompilerClassPath(urls: _*) // Add jars to compile-time classpath
+    global.extendCompilerClassPath(
+      urls: _*
+    ) // Add jars to compile-time classpath
   }
 
   /** Parent classloader.  Overridable. */

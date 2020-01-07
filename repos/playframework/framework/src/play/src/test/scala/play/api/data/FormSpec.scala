@@ -107,7 +107,9 @@ object FormSpec extends Specification {
         f2.errors must beEmpty
 
         val f3 = ScalaForms.form.bind(Map("foo" -> "50"))
-        f3.errors must haveSize(1) // Only one error because "number.42" can’t be applied since wrapped bind failed
+        f3.errors must haveSize(
+          1
+        ) // Only one error because "number.42" can’t be applied since wrapped bind failed
         f3.errors.find(_.message == "first.digit") must beSome
 
         val f4 = ScalaForms.form.bind(Map("foo" -> "333"))

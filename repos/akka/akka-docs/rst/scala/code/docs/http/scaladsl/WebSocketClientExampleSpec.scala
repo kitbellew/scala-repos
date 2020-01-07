@@ -130,7 +130,9 @@ class WebSocketClientExampleSpec extends WordSpec with Matchers {
     // and closed is a Future[Done] with the stream completion from the incoming sink
     val (upgradeResponse, closed) =
       outgoing
-        .viaMat(webSocketFlow)(Keep.right) // keep the materialized Future[WebSocketUpgradeResponse]
+        .viaMat(webSocketFlow)(
+          Keep.right
+        ) // keep the materialized Future[WebSocketUpgradeResponse]
         .toMat(incoming)(Keep.both) // also keep the Future[Done]
         .run()
 

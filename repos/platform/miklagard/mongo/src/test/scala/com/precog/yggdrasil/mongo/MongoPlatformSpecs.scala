@@ -177,7 +177,10 @@ trait MongoPlatformSpecs
   }
 
   override def controlTimeout =
-    Duration(10, "minutes") // it's just unreasonable to run tests longer than this
+    Duration(
+      10,
+      "minutes"
+    ) // it's just unreasonable to run tests longer than this
 
   def includeIdField = false
 

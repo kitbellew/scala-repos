@@ -129,11 +129,27 @@ class NullnessAnalyzerTest extends ClearAfterClass {
     for ((insn, index, nullness) <- List(
            ("+NEW", 2, UnknownValue1), // new value at slot 2 on the stack
            ("+DUP", 3, UnknownValue1),
-           ("+INVOKESPECIAL java/lang/Object", 2, NotNullValue), // after calling the initializer on 3, the value at 2 becomes NotNull
+           (
+             "+INVOKESPECIAL java/lang/Object",
+             2,
+             NotNullValue
+           ), // after calling the initializer on 3, the value at 2 becomes NotNull
            ("ASTORE 1", 1, UnknownValue1), // before the ASTORE 1, nullness of the value in local 1 is Unknown
-           ("+ASTORE 1", 1, NotNullValue), // after storing the value at 2 in local 1, the local 1 is NotNull
-           ("+ALOAD 1", 2, NotNullValue), // loading the value 1 puts a NotNull value on the stack (at 2)
-           ("+INVOKEVIRTUAL java/lang/Object.toString", 2, UnknownValue1) // nullness of value returned by `toString` is Unknown
+           (
+             "+ASTORE 1",
+             1,
+             NotNullValue
+           ), // after storing the value at 2 in local 1, the local 1 is NotNull
+           (
+             "+ALOAD 1",
+             2,
+             NotNullValue
+           ), // loading the value 1 puts a NotNull value on the stack (at 2)
+           (
+             "+INVOKEVIRTUAL java/lang/Object.toString",
+             2,
+             UnknownValue1
+           ) // nullness of value returned by `toString` is Unknown
          )) testNullness(a, m, insn, index, nullness)
   }
 
@@ -218,8 +234,16 @@ class NullnessAnalyzerTest extends ClearAfterClass {
            (trim, 4, NullValue), // c
            (trim, 5, UnknownValue1), // d
            (toSt, 2, UnknownValue1), // a, still the same
-           (toSt, 3, UnknownValue1), // b, was re-assinged in both branches to Unknown
-           (toSt, 4, UnknownValue1), // c, was re-assigned in one branch to Unknown
+           (
+             toSt,
+             3,
+             UnknownValue1
+           ), // b, was re-assinged in both branches to Unknown
+           (
+             toSt,
+             4,
+             UnknownValue1
+           ), // c, was re-assigned in one branch to Unknown
            (toSt, 5, NullValue), // d, was assigned to null in both branches
            (end, 2, NotNullValue), // a, NotNull (alias of b)
            (end, 3, NotNullValue), // b, receiver of toString

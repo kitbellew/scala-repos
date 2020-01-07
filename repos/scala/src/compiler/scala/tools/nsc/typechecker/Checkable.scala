@@ -115,7 +115,9 @@ trait Checkable {
   )
   private def isUnwarnableTypeArg(arg: Type) = (
     uncheckedOk(arg) // @unchecked T
-      || isUnwarnableTypeArgSymbol(arg.typeSymbolDirect) // has to be direct: see pos/t1439
+      || isUnwarnableTypeArgSymbol(
+        arg.typeSymbolDirect
+      ) // has to be direct: see pos/t1439
   )
   private def uncheckedOk(tp: Type) = tp hasAnnotation UncheckedClass
 
@@ -255,7 +257,9 @@ trait Checkable {
     private def isEffectivelyFinal(sym: Symbol): Boolean = (
       // initialization important
       sym.initialize.isEffectivelyFinalOrNotOverridden || (
-        settings.future && isTupleSymbol(sym) // SI-7294 step into the future and treat TupleN as final.
+        settings.future && isTupleSymbol(
+          sym
+        ) // SI-7294 step into the future and treat TupleN as final.
       )
     )
 

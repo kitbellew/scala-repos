@@ -30,7 +30,9 @@ class LocationOfLineTest_212
 
   override def testMultilevel(): Unit = {
     checkLocationsOfLine(
-      Set(Loc("Multilevel$This$1", "<init>", 18)), //location for constructor is customized
+      Set(
+        Loc("Multilevel$This$1", "<init>", 18)
+      ), //location for constructor is customized
       Set(Loc("Multilevel$This$1", "<init>", 4)),
       Set(Loc("Multilevel$This$1", "foo", 6)),
       Set(Loc("Multilevel$This$1$$anon$1", "<init>", 6)),
@@ -189,7 +191,9 @@ abstract class LocationsOfLineTestBase extends PositionManagerTestBase {
   )
   def testMultilevel(): Unit = {
     checkLocationsOfLine(
-      Set(Loc("Multilevel$This$1", "<init>", 18)), //location for constructor is customized
+      Set(
+        Loc("Multilevel$This$1", "<init>", 18)
+      ), //location for constructor is customized
       Set(Loc("Multilevel$This$1", "<init>", 4)),
       Set(Loc("Multilevel$This$1", "foo", 6)),
       Set(Loc("Multilevel$This$1$$anon$1", "<init>", 6)),

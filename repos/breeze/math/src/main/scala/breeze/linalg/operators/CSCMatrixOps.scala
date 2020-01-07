@@ -120,7 +120,9 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
           apStop = a.colPtrs(ci1)
           bpStop = b.colPtrs(ci1)
           while (ap < apStop || bp < bpStop) {
-            val ari = if (ap < apStop) a.rowIndices(ap) else rows // row index [0 ... rows)
+            val ari =
+              if (ap < apStop) a.rowIndices(ap)
+              else rows // row index [0 ... rows)
             val bri = if (bp < bpStop) b.rowIndices(bp) else rows
             if (ari == bri) {
               // column and row match, this cell goes into result matrix
@@ -253,7 +255,9 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
             apStop = a.colPtrs(ci1)
             bpStop = b.colPtrs(ci1)
             while (ap < apStop || bp < bpStop) {
-              val ari = if (ap < apStop) a.rowIndices(ap) else rows // row index [0 ... rows)
+              val ari =
+                if (ap < apStop) a.rowIndices(ap)
+                else rows // row index [0 ... rows)
               val bri = if (bp < bpStop) b.rowIndices(bp) else rows
               if (ari == bri) {
                 // column and row match, this cell goes into result matrix
@@ -304,7 +308,9 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
           var ap = apStop
           apStop = a.colPtrs(ci1)
           while (ap < apStop) {
-            val ari = if (ap < apStop) a.rowIndices(ap) else rows // row index [0 ... rows)
+            val ari =
+              if (ap < apStop) a.rowIndices(ap)
+              else rows // row index [0 ... rows)
             b(ari, ci) = a.data(ap)
             ap += 1
           }
@@ -333,7 +339,9 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
           var ap = apStop
           apStop = a.colPtrs(ci1)
           while (ap < apStop) {
-            val ari = if (ap < apStop) a.rowIndices(ap) else rows // row index [0 ... rows)
+            val ari =
+              if (ap < apStop) a.rowIndices(ap)
+              else rows // row index [0 ... rows)
             b(ari, ci) += a.data(ap)
             ap += 1
           }
@@ -362,7 +370,9 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
           var ap = apStop
           apStop = a.colPtrs(ci1)
           while (ap < apStop) {
-            val ari = if (ap < apStop) a.rowIndices(ap) else rows // row index [0 ... rows)
+            val ari =
+              if (ap < apStop) a.rowIndices(ap)
+              else rows // row index [0 ... rows)
             b(ari, ci) -= a.data(ap)
             ap += 1
           }
@@ -445,7 +455,9 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
           var ap = apStop
           apStop = a.colPtrs(ci1)
           while (ap < apStop) {
-            val ari = if (ap < apStop) a.rowIndices(ap) else rows // row index [0 ... rows)
+            val ari =
+              if (ap < apStop) a.rowIndices(ap)
+              else rows // row index [0 ... rows)
             res(ari, ci) = semi.+(res(ari, ci), a.data(ap))
             ap += 1
           }
@@ -490,7 +502,9 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
             apStop = a.colPtrs(ci1)
             bpStop = b.colPtrs(ci1)
             while (ap < apStop || bp < bpStop) {
-              val ari = if (ap < apStop) a.rowIndices(ap) else rows // row index [0 ... rows)
+              val ari =
+                if (ap < apStop) a.rowIndices(ap)
+                else rows // row index [0 ... rows)
               val bri = if (bp < bpStop) b.rowIndices(bp) else rows
               if (ari == bri) {
                 // column and row match, this cell goes into result matrix
@@ -545,7 +559,9 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
             apStop = a.colPtrs(ci1)
             bpStop = b.colPtrs(ci1)
             while (ap < apStop || bp < bpStop) {
-              val ari = if (ap < apStop) a.rowIndices(ap) else rows // row index [0 ... rows)
+              val ari =
+                if (ap < apStop) a.rowIndices(ap)
+                else rows // row index [0 ... rows)
               val bri = if (bp < bpStop) b.rowIndices(bp) else rows
               if (ari == bri) {
                 // column and row match, this cell goes into result matrix
@@ -949,7 +965,9 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
           apStop = a.colPtrs(ci1)
           bpStop = b.colPtrs(ci1)
           while (ap < apStop || bp < bpStop) {
-            val ari = if (ap < apStop) a.rowIndices(ap) else rows // row index [0 ... rows)
+            val ari =
+              if (ap < apStop) a.rowIndices(ap)
+              else rows // row index [0 ... rows)
             val bri = if (bp < bpStop) b.rowIndices(bp) else rows
             if (ari == bri) {
               // column and row match, this cell goes into result matrix
@@ -1383,7 +1401,9 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
             apStop = a.colPtrs(ci1)
             bpStop = b.colPtrs(ci1)
             while (ap < apStop || bp < bpStop) {
-              val ari = if (ap < apStop) a.rowIndices(ap) else rows // row index [0 ... rows)
+              val ari =
+                if (ap < apStop) a.rowIndices(ap)
+                else rows // row index [0 ... rows)
               val bri = if (bp < bpStop) b.rowIndices(bp) else rows
               if (ari == bri) {
                 // column and row match, this cell goes into result matrix
@@ -1436,7 +1456,9 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
             apStop = a.colPtrs(ci1)
             bpStop = b.colPtrs(ci1)
             while (ap < apStop || bp < bpStop) {
-              val ari = if (ap < apStop) a.rowIndices(ap) else rows // row index [0 ... rows)
+              val ari =
+                if (ap < apStop) a.rowIndices(ap)
+                else rows // row index [0 ... rows)
               val bri = if (bp < bpStop) b.rowIndices(bp) else rows
               if (ari == bri) {
                 // column and row match, this cell goes into result matrix
@@ -1491,7 +1513,9 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
             apStop = a.colPtrs(ci1)
             bpStop = b.colPtrs(ci1)
             while (ap < apStop || bp < bpStop) {
-              val ari = if (ap < apStop) a.rowIndices(ap) else rows // row index [0 ... rows)
+              val ari =
+                if (ap < apStop) a.rowIndices(ap)
+                else rows // row index [0 ... rows)
               val bri = if (bp < bpStop) b.rowIndices(bp) else rows
               if (ari == bri) {
                 // column and row match, this cell goes into result matrix

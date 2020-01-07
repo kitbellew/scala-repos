@@ -426,8 +426,12 @@ class SparkIMain(
   @DeveloperApi
   def addUrlsToClassPath(urls: URL*): Unit = {
     new Run // Needed to force initialization of "something" to correctly load Scala classes from jars
-    urls.foreach(_runtimeClassLoader.addNewUrl) // Add jars/classes to runtime for execution
-    updateCompilerClassPath(urls: _*) // Add jars/classes to compile time for compiling
+    urls.foreach(
+      _runtimeClassLoader.addNewUrl
+    ) // Add jars/classes to runtime for execution
+    updateCompilerClassPath(
+      urls: _*
+    ) // Add jars/classes to compile time for compiling
   }
 
   private def updateCompilerClassPath(urls: URL*): Unit = {

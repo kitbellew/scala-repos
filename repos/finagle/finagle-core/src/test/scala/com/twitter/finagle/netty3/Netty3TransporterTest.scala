@@ -280,7 +280,9 @@ class Netty3TransporterTest extends FunSpec with MockitoSugar with Eventually {
 
         val pipeline = transporter.newPipeline(null, NullStatsReceiver)
         val channel = transporter.newChannel(pipeline)
-        new ChannelTransport[Any, Any](channel) // adds itself to the channel's pipeline
+        new ChannelTransport[Any, Any](
+          channel
+        ) // adds itself to the channel's pipeline
         val closeNotify = new UpstreamMessageEvent(channel, cb, null)
 
         assert(channel.isOpen)

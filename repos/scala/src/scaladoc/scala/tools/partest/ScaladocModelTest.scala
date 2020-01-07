@@ -88,7 +88,10 @@ abstract class ScaladocModelTest extends DirectTest {
     settings = new doc.Settings(_ => ())
     settings.scaladocQuietRun = true // yaay, no more "model contains X documentable templates"!
     val args = extraSettings + " " + scaladocSettings
-    new ScalaDoc.Command((CommandLineParser tokenize (args)), settings) // side-effecting, I think
+    new ScalaDoc.Command(
+      (CommandLineParser tokenize (args)),
+      settings
+    ) // side-effecting, I think
     val docFact = new DocFactory(new ConsoleReporter(settings), settings)
     docFact
   }

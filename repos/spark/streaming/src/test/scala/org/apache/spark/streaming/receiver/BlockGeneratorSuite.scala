@@ -86,7 +86,9 @@ class BlockGeneratorSuite extends SparkFunSuite with BeforeAndAfter {
     data1.foreach { blockGenerator.addData _ }
     withClue(
       "callbacks called on adding data without metadata and without block generation") {
-      assert(listener.onAddDataCalled === false) // should be called only with addDataWithCallback()
+      assert(
+        listener.onAddDataCalled === false
+      ) // should be called only with addDataWithCallback()
       assert(listener.onGenerateBlockCalled === false)
       assert(listener.onPushBlockCalled === false)
     }
@@ -98,7 +100,9 @@ class BlockGeneratorSuite extends SparkFunSuite with BeforeAndAfter {
       }
     }
     listener.pushedData.asScala.toSeq should contain theSameElementsInOrderAs (data1)
-    assert(listener.onAddDataCalled === false) // should be called only with addDataWithCallback()
+    assert(
+      listener.onAddDataCalled === false
+    ) // should be called only with addDataWithCallback()
 
     // Verify addDataWithCallback() add data+metadata and and callbacks are called correctly
     val data2 = 11 to 20
@@ -168,7 +172,9 @@ class BlockGeneratorSuite extends SparkFunSuite with BeforeAndAfter {
     // - First, stop receiving new data
     // - Second, wait for final block with all buffered data to be generated
     // - Finally, wait for all blocks to be pushed
-    clock.advance(1) // to make sure that the timer for another interval to complete
+    clock.advance(
+      1
+    ) // to make sure that the timer for another interval to complete
     val thread = stopBlockGenerator(blockGenerator)
     eventually(timeout(1 second), interval(10 milliseconds)) {
       assert(blockGenerator.isActive() === false)
@@ -201,13 +207,17 @@ class BlockGeneratorSuite extends SparkFunSuite with BeforeAndAfter {
 
     // Verify that the final data is present in the final generated block and
     // pushed before complete stop
-    assert(blockGenerator.isStopped() === false) // generator has not stopped yet
+    assert(
+      blockGenerator.isStopped() === false
+    ) // generator has not stopped yet
     eventually(timeout(10 seconds), interval(10 milliseconds)) {
       // Keep calling `advance` to avoid blocking forever in `clock.waitTillTime`
       clock.advance(blockIntervalMs)
       assert(thread.isAlive === false)
     }
-    assert(blockGenerator.isStopped() === true) // generator has finally been completely stopped
+    assert(
+      blockGenerator.isStopped() === true
+    ) // generator has finally been completely stopped
     assert(
       listener.pushedData.asScala.toSeq === data,
       "All data not pushed by stop()")

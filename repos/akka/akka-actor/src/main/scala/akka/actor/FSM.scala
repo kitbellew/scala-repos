@@ -195,9 +195,11 @@ object FSM {
     def forMax(timeout: Duration): State[S, D] = timeout match {
       case f: FiniteDuration ⇒ copy(timeout = Some(f))
       case Duration.Inf ⇒
-        copy(timeout = SomeMaxFiniteDuration) // we map the Infinite duration to a special marker,
+        copy(timeout = SomeMaxFiniteDuration
+        ) // we map the Infinite duration to a special marker,
       case _ ⇒
-        copy(timeout = None) // that means "cancel stateTimeout". This marker is needed
+        copy(timeout = None
+        ) // that means "cancel stateTimeout". This marker is needed
     } // so we do not have to break source/binary compat.
     // TODO: Can be removed once we can break State#timeout signature to `Option[Duration]`
 
@@ -420,7 +422,9 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
     */
   final def stay(): State =
     goto(currentState.stateName)
-      .withNotification(false) // cannot directly use currentState because of the timeout field
+      .withNotification(
+        false
+      ) // cannot directly use currentState because of the timeout field
 
   /**
     * Produce change descriptor to stop this FSM actor with reason "Normal".

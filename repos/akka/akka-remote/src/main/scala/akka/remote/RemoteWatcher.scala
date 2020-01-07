@@ -326,6 +326,8 @@ private[akka] class RemoteWatcher(
     } {
       val watcher = self.asInstanceOf[InternalActorRef]
       log.debug("Re-watch [{} -> {}]", watcher.path, watchee.path)
-      watchee.sendSystemMessage(Watch(watchee, watcher)) // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
+      watchee.sendSystemMessage(
+        Watch(watchee, watcher)
+      ) // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
     }
 }

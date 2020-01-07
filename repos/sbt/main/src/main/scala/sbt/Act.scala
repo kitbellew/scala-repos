@@ -125,7 +125,10 @@ object Act {
   def selectByConfig(ss: Seq[ParsedKey]): Seq[ParsedKey] =
     ss match {
       case Seq() => Nil
-      case Seq(x, tail @ _*) => // select the first configuration containing a valid key
+      case Seq(
+          x,
+          tail @ _*
+          ) => // select the first configuration containing a valid key
         tail.takeWhile(_.key.scope.config == x.key.scope.config) match {
           case Seq() => x :: Nil
           case xs    => x +: xs

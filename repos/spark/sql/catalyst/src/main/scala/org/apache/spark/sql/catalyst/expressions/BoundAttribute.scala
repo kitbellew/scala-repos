@@ -108,6 +108,8 @@ object BindReferences extends Logging {
             }
           }
       }
-      .asInstanceOf[A] // Kind of a hack, but safe.  TODO: Tighten return type when possible.
+      .asInstanceOf[
+        A
+      ] // Kind of a hack, but safe.  TODO: Tighten return type when possible.
   }
 }

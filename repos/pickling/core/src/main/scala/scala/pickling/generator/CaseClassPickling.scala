@@ -185,7 +185,10 @@ class CaseClassPickling(
                           Nil,
                           tpe,
                           Some(x),
-                          allowReflection))) // TODO - This should be `allow runtime pickler lookup`.
+                          allowReflection
+                        )
+                      )
+                    ) // TODO - This should be `allow runtime pickler lookup`.
                   case x => x
                 }
                 .asInstanceOf[PickleUnpickleImplementation]
@@ -200,7 +203,12 @@ class CaseClassPickling(
               IrAst
                 .transform(b) {
                   case x: PickleEntry =>
-                    SubclassDispatch(Nil, tpe, Some(x), allowReflection) // TODO - This should be `allow runtime pickler lookup`.
+                    SubclassDispatch(
+                      Nil,
+                      tpe,
+                      Some(x),
+                      allowReflection
+                    ) // TODO - This should be `allow runtime pickler lookup`.
                   case x: UnpickleBehavior =>
                     UnpickleBehavior(
                       Seq(
@@ -208,7 +216,10 @@ class CaseClassPickling(
                           Nil,
                           tpe,
                           Some(x),
-                          allowReflection))) // TODO - This should be `allow runtime pickler lookup`.
+                          allowReflection
+                        )
+                      )
+                    ) // TODO - This should be `allow runtime pickler lookup`.
                   case x => x
                 }
                 .asInstanceOf[PickleUnpickleImplementation]

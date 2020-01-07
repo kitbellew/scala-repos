@@ -505,7 +505,10 @@ class TcpSpec
       val serverAddress = temporaryServerAddress()
       val (bindingFuture, echoServerFinish) =
         Tcp()
-          .bind(serverAddress.getHostName, serverAddress.getPort) // TODO getHostString in Java7
+          .bind(
+            serverAddress.getHostName,
+            serverAddress.getPort
+          ) // TODO getHostString in Java7
           .toMat(echoHandler)(Keep.both)
           .run()
 
@@ -528,7 +531,10 @@ class TcpSpec
       val serverAddress = temporaryServerAddress()
       val (bindingFuture, echoServerFinish) =
         Tcp()
-          .bind(serverAddress.getHostName, serverAddress.getPort) // TODO getHostString in Java7
+          .bind(
+            serverAddress.getHostName,
+            serverAddress.getPort
+          ) // TODO getHostString in Java7
           .toMat(echoHandler)(Keep.both)
           .run()
 

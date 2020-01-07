@@ -110,7 +110,9 @@ class SexpParser(val input: ParserInput) extends Parser with StringBuilding {
       | 'n' ~ appendSB('\n')
       | 'r' ~ appendSB('\r')
       | 't' ~ appendSB('\t')
-      | ' ' ~ appendSB("") // special emacs magic for comments \<space< and \<newline> are removed
+      | ' ' ~ appendSB(
+        ""
+      ) // special emacs magic for comments \<space< and \<newline> are removed
       | '\n' ~ appendSB("")
       | 'a' ~ appendSB('\u0007') // bell
       | 'v' ~ appendSB('\u000b') // vertical tab

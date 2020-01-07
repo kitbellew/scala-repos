@@ -139,7 +139,10 @@ class ClusterClientTest
           zookeeperClient,
           ZooKeeperUtils.EVERYONE_READ_CREATOR_ALL,
           zkPath))
-    Await.result(mycluster.ready, TimeOut) // give it sometime for the cluster to get the initial set of memberships
+    Await.result(
+      mycluster.ready,
+      TimeOut
+    ) // give it sometime for the cluster to get the initial set of memberships
     val client = Client(mycluster)
 
     val count = 100

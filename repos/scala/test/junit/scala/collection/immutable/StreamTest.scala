@@ -39,7 +39,8 @@ class StreamTest {
     def gcAndThrowIfCollected(n: Int): Unit = {
       System.gc() // try to GC
       Thread.sleep(10) // give it 10 ms
-      if (ref.get.isEmpty) throw new RuntimeException(msgSuccessGC) // we're done if head collected
+      if (ref.get.isEmpty)
+        throw new RuntimeException(msgSuccessGC) // we're done if head collected
       f(n)
     }
 

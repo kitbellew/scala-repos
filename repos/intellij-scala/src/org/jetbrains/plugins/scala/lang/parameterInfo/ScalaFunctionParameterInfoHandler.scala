@@ -319,7 +319,10 @@ class ScalaFunctionParameterInfoHandler
                 canBeNaming = true,
                 isImplicit = false)
             }
-          case (sign: PhysicalSignature, i: Int) => //i  can be -1 (it's update method)
+          case (
+              sign: PhysicalSignature,
+              i: Int
+              ) => //i  can be -1 (it's update method)
             val subst = sign.substitutor
             sign.method match {
               case method: ScFunction =>
@@ -628,7 +631,8 @@ class ScalaFunctionParameterInfoHandler
                             count - 1))
                       case _ =>
                         for (typez <- call.getEffectiveInvokedExpr.getType(
-                               TypingContext.empty)) //todo: implicit conversions
+                               TypingContext.empty
+                             )) //todo: implicit conversions
                           { collectForType(typez) }
                     }
                   } else {
@@ -657,7 +661,8 @@ class ScalaFunctionParameterInfoHandler
                           val typez = subst.subst(
                             typed
                               .getType(TypingContext.empty)
-                              .getOrNothing) //todo: implicit conversions
+                              .getOrNothing
+                          ) //todo: implicit conversions
                           collectForType(typez)
                         case _ =>
                       }

@@ -40,12 +40,20 @@ class HeartbeatNodeRingSpec extends WordSpec with Matchers {
         monitoredByNrOfMembers = 3)
       ring.myReceivers should ===(ring.receivers(cc))
 
-      ring.receivers(aa) should ===(Set(bb, cc, dd, ff)) // unreachable ee skipped
-      ring.receivers(bb) should ===(Set(cc, dd, ee, ff)) // unreachable aa skipped
-      ring.receivers(cc) should ===(Set(dd, ee, ff, bb)) // unreachable aa skipped
+      ring.receivers(aa) should ===(
+        Set(bb, cc, dd, ff)
+      ) // unreachable ee skipped
+      ring.receivers(bb) should ===(
+        Set(cc, dd, ee, ff)
+      ) // unreachable aa skipped
+      ring.receivers(cc) should ===(
+        Set(dd, ee, ff, bb)
+      ) // unreachable aa skipped
       ring.receivers(dd) should ===(Set(ee, ff, aa, bb, cc))
       ring.receivers(ee) should ===(Set(ff, aa, bb, cc))
-      ring.receivers(ff) should ===(Set(aa, bb, cc)) // unreachable dd and ee skipped
+      ring.receivers(ff) should ===(
+        Set(aa, bb, cc)
+      ) // unreachable dd and ee skipped
     }
 
     "pick all except own as receivers when less than total number of nodes" in {

@@ -454,7 +454,8 @@ abstract class ScTypeDefinitionImpl protected (
   override def getNameIdentifier: PsiIdentifier = {
     Predef.assert(
       nameId != null,
-      "Class hase null nameId. Class text: " + getText) //diagnostic for EA-20122
+      "Class hase null nameId. Class text: " + getText
+    ) //diagnostic for EA-20122
     new JavaIdentifier(nameId)
   }
 

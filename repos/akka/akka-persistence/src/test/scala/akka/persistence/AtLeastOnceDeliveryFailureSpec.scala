@@ -196,7 +196,10 @@ class AtLeastOnceDeliveryFailureSpec
       expectDone() // by sender
       expectDone() // by destination
 
-      system.actorOf(Props(classOf[ChaosApp], testActor), "chaosApp2") // recovery of new instance should have same outcome
+      system.actorOf(
+        Props(classOf[ChaosApp], testActor),
+        "chaosApp2"
+      ) // recovery of new instance should have same outcome
       expectDone() // by sender
       // destination doesn't receive messages again because all have been confirmed already
     }

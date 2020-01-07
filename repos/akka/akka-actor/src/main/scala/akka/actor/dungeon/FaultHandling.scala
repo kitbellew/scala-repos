@@ -252,7 +252,9 @@ private[akka] trait FaultHandling { this: ActorCell ⇒
         addressTerminated = false))
     finally try stopFunctionRefs()
     finally try tellWatchersWeDied()
-    finally try unwatchWatchedActors(a) // stay here as we expect an emergency stop from handleInvokeFailure
+    finally try unwatchWatchedActors(
+      a
+    ) // stay here as we expect an emergency stop from handleInvokeFailure
     finally {
       if (system.settings.DebugLifecycle)
         publish(Debug(self.path.toString, clazz(a), "stopped"))
@@ -273,7 +275,12 @@ private[akka] trait FaultHandling { this: ActorCell ⇒
 
       val freshActor = newActor()
       actor = freshActor // this must happen before postRestart has a chance to fail
-      if (freshActor eq failedActor) setActorFields(freshActor, this, self) // If the creator returns the same instance, we need to restore our nulled out fields.
+      if (freshActor eq failedActor)
+        setActorFields(
+          freshActor,
+          this,
+          self
+        ) // If the creator returns the same instance, we need to restore our nulled out fields.
 
       freshActor.aroundPostRestart(cause)
       if (system.settings.DebugLifecycle)
@@ -291,7 +298,10 @@ private[akka] trait FaultHandling { this: ActorCell ⇒
               "restarting " + child))
         })
     } catch handleNonFatalOrInterruptedException { e ⇒
-      clearActorFields(actor, recreate = false) // in order to prevent preRestart() from happening again
+      clearActorFields(
+        actor,
+        recreate = false
+      ) // in order to prevent preRestart() from happening again
       handleInvokeFailure(survivors, new PostRestartException(self, e, cause))
     }
   }

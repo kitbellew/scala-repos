@@ -397,22 +397,41 @@ sealed abstract class LongMap[+T]
           that @ (LongMap.Bin(p2, m2, l2, r2))) =>
         if (shorter(m1, m2)) {
           if (!hasMatch(p2, p1, m1))
-            join[S](p1, this, p2, that) // TODO: remove [S] when SI-5548 is fixed
+            join[S](
+              p1,
+              this,
+              p2,
+              that
+            ) // TODO: remove [S] when SI-5548 is fixed
           else if (zero(p2, m1)) LongMap.Bin(p1, m1, l1.unionWith(that, f), r1)
           else LongMap.Bin(p1, m1, l1, r1.unionWith(that, f))
         } else if (shorter(m2, m1)) {
           if (!hasMatch(p1, p2, m2))
-            join[S](p1, this, p2, that) // TODO: remove [S] when SI-5548 is fixed
+            join[S](
+              p1,
+              this,
+              p2,
+              that
+            ) // TODO: remove [S] when SI-5548 is fixed
           else if (zero(p1, m2)) LongMap.Bin(p2, m2, this.unionWith(l2, f), r2)
           else LongMap.Bin(p2, m2, l2, this.unionWith(r2, f))
         } else {
           if (p1 == p2)
             LongMap.Bin(p1, m1, l1.unionWith(l2, f), r1.unionWith(r2, f))
           else
-            join[S](p1, this, p2, that) // TODO: remove [S] when SI-5548 is fixed
+            join[S](
+              p1,
+              this,
+              p2,
+              that
+            ) // TODO: remove [S] when SI-5548 is fixed
         }
       case (LongMap.Tip(key, value), x) =>
-        x.updateWith[S](key, value, (x, y) => f(key, y, x)) // TODO: remove [S] when SI-5548 is fixed
+        x.updateWith[S](
+          key,
+          value,
+          (x, y) => f(key, y, x)
+        ) // TODO: remove [S] when SI-5548 is fixed
       case (x, LongMap.Tip(key, value)) =>
         x.updateWith[S](key, value, (x, y) => f(key, x, y))
       case (LongMap.Nil, x) => x

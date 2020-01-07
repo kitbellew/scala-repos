@@ -128,15 +128,17 @@ class TaskOpProcessorImplTest
     var result: Try[Unit] =
       Failure(new RuntimeException("test executing failed"))
     val logs = CaptureLogEvents.forBlock {
-      result = Try(f.processor
-        .process(
-          TaskOpProcessor.Operation(
-            deadline,
-            testActor,
-            taskState.taskId,
-            TaskOpProcessor.Action.Update(taskState))
-        )
-        .futureValue) // we need to complete the future here to get all the logs
+      result = Try(
+        f.processor
+          .process(
+            TaskOpProcessor.Operation(
+              deadline,
+              testActor,
+              taskState.taskId,
+              TaskOpProcessor.Action.Update(taskState))
+          )
+          .futureValue
+      ) // we need to complete the future here to get all the logs
     }
 
     Then("it calls store")
@@ -178,15 +180,17 @@ class TaskOpProcessorImplTest
     var result: Try[Unit] =
       Failure(new RuntimeException("test executing failed"))
     val logs = CaptureLogEvents.forBlock {
-      result = Try(f.processor
-        .process(
-          TaskOpProcessor.Operation(
-            deadline,
-            testActor,
-            taskState.taskId,
-            TaskOpProcessor.Action.Update(taskState))
-        )
-        .futureValue) // we need to complete the future here to get all the logs
+      result = Try(
+        f.processor
+          .process(
+            TaskOpProcessor.Operation(
+              deadline,
+              testActor,
+              taskState.taskId,
+              TaskOpProcessor.Action.Update(taskState))
+          )
+          .futureValue
+      ) // we need to complete the future here to get all the logs
     }
 
     Then("it calls store")
@@ -231,15 +235,17 @@ class TaskOpProcessorImplTest
     var result: Try[Unit] =
       Failure(new RuntimeException("test executing failed"))
     val logs = CaptureLogEvents.forBlock {
-      result = Try(f.processor
-        .process(
-          TaskOpProcessor.Operation(
-            deadline,
-            testActor,
-            taskState.taskId,
-            TaskOpProcessor.Action.Update(taskState))
-        )
-        .futureValue) // we need to complete the future here to get all the logs
+      result = Try(
+        f.processor
+          .process(
+            TaskOpProcessor.Operation(
+              deadline,
+              testActor,
+              taskState.taskId,
+              TaskOpProcessor.Action.Update(taskState))
+          )
+          .futureValue
+      ) // we need to complete the future here to get all the logs
     }
 
     Then("it calls store")
@@ -279,7 +285,9 @@ class TaskOpProcessorImplTest
     )
 
     Then("it replies with unit immediately")
-    result.futureValue should be(()) // first we make sure that the call completes
+    result.futureValue should be(
+      ()
+    ) // first we make sure that the call completes
 
     And("it calls expunge")
     verify(f.taskRepository).expunge(taskId)
@@ -311,7 +319,9 @@ class TaskOpProcessorImplTest
     )
 
     Then("it replies with unit immediately")
-    result.futureValue should be(()) // first we make sure that the call completes
+    result.futureValue should be(
+      ()
+    ) // first we make sure that the call completes
 
     And("it calls expunge")
     verify(f.taskRepository).expunge(taskId.idString)
@@ -351,7 +361,9 @@ class TaskOpProcessorImplTest
     )
 
     Then("it replies with unit immediately")
-    result.futureValue should be(()) // first we make sure that the call completes
+    result.futureValue should be(
+      ()
+    ) // first we make sure that the call completes
 
     And("it calls expunge")
     verify(f.taskRepository).expunge(taskId)
@@ -391,7 +403,9 @@ class TaskOpProcessorImplTest
     )
 
     Then("it replies with unit immediately")
-    result.futureValue should be(()) // first we make sure that the call completes
+    result.futureValue should be(
+      ()
+    ) // first we make sure that the call completes
 
     And("it calls expunge")
     verify(f.statusUpdateResolver).resolve(Task.Id(taskId), update)

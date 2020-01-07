@@ -47,7 +47,9 @@ class TracingTest extends FunSuite {
     assert(stripped == "/1/lists/statuses.json")
 
     val invalid = stripParameters("\\")
-    assert(invalid == "\\") // request path doesn't throw exceptions if url is invalid
+    assert(
+      invalid == "\\"
+    ) // request path doesn't throw exceptions if url is invalid
   }
 
   test("parse header") {

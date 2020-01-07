@@ -110,7 +110,9 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
       path("sample") {
         extractExecutionContext { implicit executor =>
           complete {
-            Future(s"Run on ${executor.##}!") // uses the `executor` ExecutionContext
+            Future(
+              s"Run on ${executor.##}!"
+            ) // uses the `executor` ExecutionContext
           }
         }
       }
@@ -137,7 +139,9 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
       path("sample") {
         extractExecutionContext { implicit executor =>
           complete {
-            Future(s"Run on ${executor.##}!") // uses the `executor` ExecutionContext
+            Future(
+              s"Run on ${executor.##}!"
+            ) // uses the `executor` ExecutionContext
           }
         }
       }

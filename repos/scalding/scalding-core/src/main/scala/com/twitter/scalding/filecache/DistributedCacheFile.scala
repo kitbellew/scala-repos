@@ -120,7 +120,10 @@ final case class UncachedFile private[scalding] (source: Either[String, URI]) {
       makeQualified(new Path(path), conf)
 
     def makeQualifiedURI(uri: URI, conf: Configuration): URI =
-      makeQualified(new Path(uri.toString), conf) // uri.toString because hadoop 0.20.2 doesn't take a URI
+      makeQualified(
+        new Path(uri.toString),
+        conf
+      ) // uri.toString because hadoop 0.20.2 doesn't take a URI
 
     def makeQualified(p: Path, conf: Configuration): URI =
       p.makeQualified(p.getFileSystem(conf))

@@ -309,7 +309,9 @@ class SubSource[+Out, +Mat](
     * '''Cancels when''' downstream cancels
     */
   def grouped(n: Int): SubSource[java.util.List[Out @uncheckedVariance], Mat] =
-    new SubSource(delegate.grouped(n).map(_.asJava)) // TODO optimize to one step
+    new SubSource(
+      delegate.grouped(n).map(_.asJava)
+    ) // TODO optimize to one step
 
   /**
     * Apply a sliding window over the stream and return the windows as groups of elements, with the last group
@@ -382,7 +384,9 @@ class SubSource[+Out, +Mat](
   def sliding(
       n: Int,
       step: Int = 1): SubSource[java.util.List[Out @uncheckedVariance], Mat] =
-    new SubSource(delegate.sliding(n, step).map(_.asJava)) // TODO optimize to one step
+    new SubSource(
+      delegate.sliding(n, step).map(_.asJava)
+    ) // TODO optimize to one step
 
   /**
     * Similar to `fold` but is not a terminal operation,
@@ -521,7 +525,9 @@ class SubSource[+Out, +Mat](
     */
   def groupedWithin(n: Int, d: FiniteDuration)
       : SubSource[java.util.List[Out @uncheckedVariance], Mat] =
-    new SubSource(delegate.groupedWithin(n, d).map(_.asJava)) // TODO optimize to one step
+    new SubSource(
+      delegate.groupedWithin(n, d).map(_.asJava)
+    ) // TODO optimize to one step
 
   /**
     * Discard the given number of elements at the beginning of the stream.

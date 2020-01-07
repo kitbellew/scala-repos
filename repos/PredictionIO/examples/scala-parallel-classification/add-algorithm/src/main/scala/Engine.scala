@@ -18,7 +18,8 @@ object ClassificationEngine extends IEngineFactory {
       classOf[Preparator],
       Map(
         "naive" -> classOf[NaiveBayesAlgorithm],
-        "randomforest" -> classOf[RandomForestAlgorithm]), // ADDED
+        "randomforest" -> classOf[RandomForestAlgorithm]
+      ), // ADDED
       classOf[Serving])
   }
 }

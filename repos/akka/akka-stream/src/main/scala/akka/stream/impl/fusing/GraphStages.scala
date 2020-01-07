@@ -419,7 +419,10 @@ object GraphStages {
               case scala.util.Failure(t) ⇒ failStage(t)
             }.invoke _
             future.onComplete(cb)(ExecutionContexts.sameThreadExecutionContext)
-            setHandler(out, eagerTerminateOutput) // After first pull we won't produce anything more
+            setHandler(
+              out,
+              eagerTerminateOutput
+            ) // After first pull we won't produce anything more
           }
         }
       )

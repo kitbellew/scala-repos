@@ -155,7 +155,8 @@ class ScalaInlineHandler extends InlineHandler {
             .reformatRange(
               newValue.getContainingFile,
               newValue.getTextRange.getStartOffset - 1,
-              newValue.getTextRange.getEndOffset + 1) //to prevent situations like this 2 ++2 (+2 was inlined)
+              newValue.getTextRange.getEndOffset + 1
+            ) //to prevent situations like this 2 ++2 (+2 was inlined)
         }
       }
 

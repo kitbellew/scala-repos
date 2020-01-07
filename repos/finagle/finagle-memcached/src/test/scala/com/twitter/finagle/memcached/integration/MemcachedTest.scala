@@ -93,7 +93,12 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
           }
       val expected =
         Map(
-          "foos" -> (("xyz", "1")), // the "cas unique" values are predictable from a fresh memcached
+          "foos" -> (
+            (
+              "xyz",
+              "1"
+            )
+          ), // the "cas unique" values are predictable from a fresh memcached
           "bazs" -> (("zyx", "3"))
         )
       assert(result == expected)
@@ -164,7 +169,8 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
     intercept[ClientError] { Await.result(client.set("    ", Buf.Utf8("bar"))) }
 
     assert(
-      Await.result(client.set("\t", Buf.Utf8("bar")).liftToTry) == Return.Unit) // "\t" is a valid key
+      Await.result(client.set("\t", Buf.Utf8("bar")).liftToTry) == Return.Unit
+    ) // "\t" is a valid key
     intercept[ClientError] { Await.result(client.set("\r", Buf.Utf8("bar"))) }
     intercept[ClientError] { Await.result(client.set("\n", Buf.Utf8("bar"))) }
     intercept[ClientError] {

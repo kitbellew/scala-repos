@@ -277,9 +277,11 @@ object MapTest extends SpecLite {
   "==>> insertion" should {
     "insert" in {
       fromList(List(5 -> "a", 3 -> "b")).insert(5, "x") must_=== (fromList(
-        List(3 -> "b", 5 -> "x"))) // Replacement
+        List(3 -> "b", 5 -> "x")
+      )) // Replacement
       fromList(List((5, "a"), (3, "b"))).insert(7, "x") must_=== (fromList(
-        List((3, "b"), (5, "a"), (7, "x")))) // Addition of new key
+        List((3, "b"), (5, "a"), (7, "x"))
+      )) // Addition of new key
       empty.insert(5, "x") must_=== (singleton(5, "x"))
     }
 

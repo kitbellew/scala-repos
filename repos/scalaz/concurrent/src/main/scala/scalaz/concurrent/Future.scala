@@ -378,7 +378,9 @@ object Future {
                       case (i, _, rf, _, _) if i != ind => rf
                     }))
                   else {
-                    Trampoline.done(()) // noop; another thread will have already invoked `cb` w/ our residual
+                    Trampoline.done(
+                      ()
+                    ) // noop; another thread will have already invoked `cb` w/ our residual
                   }
                 val notifyListener =
                   if (listener.compareAndSet(null, finishedCallback))

@@ -424,7 +424,9 @@ class ReplicaManager(
               new PartitionResponse(
                 result.errorCode,
                 result.info.firstOffset,
-                result.info.timestamp)) // response status
+                result.info.timestamp
+              )
+            ) // response status
       }
 
       if (delayedRequestRequired(

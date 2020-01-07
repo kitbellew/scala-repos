@@ -552,9 +552,12 @@ trait Definitions extends api.StandardDefinitions {
       getMemberMethod(ArrayModule, nme.apply)
     def ArrayModule_genericApply =
       ArrayModule_overloadedApply.suchThat(
-        _.paramss.flatten.last.tpe.typeSymbol == ClassTagClass) // [T: ClassTag](xs: T*): Array[T]
+        _.paramss.flatten.last.tpe.typeSymbol == ClassTagClass
+      ) // [T: ClassTag](xs: T*): Array[T]
     def ArrayModule_apply(tp: Type) =
-      ArrayModule_overloadedApply.suchThat(_.tpe.resultType =:= arrayType(tp)) // (p1: AnyVal1, ps: AnyVal1*): Array[AnyVal1]
+      ArrayModule_overloadedApply.suchThat(
+        _.tpe.resultType =:= arrayType(tp)
+      ) // (p1: AnyVal1, ps: AnyVal1*): Array[AnyVal1]
     lazy val ArrayClass = getRequiredClass("scala.Array") // requiredClass[scala.Array[_]]
     lazy val Array_apply = getMemberMethod(ArrayClass, nme.apply)
     lazy val Array_update = getMemberMethod(ArrayClass, nme.update)
@@ -599,7 +602,8 @@ trait Definitions extends api.StandardDefinitions {
     lazy val ReflectPackage = requiredModule[scala.reflect.`package`.type]
     lazy val ReflectApiPackage = getPackageObjectIfDefined("scala.reflect.api") // defined in scala-reflect.jar, so we need to be careful
     lazy val ReflectRuntimePackage = getPackageObjectIfDefined(
-      "scala.reflect.runtime") // defined in scala-reflect.jar, so we need to be careful
+      "scala.reflect.runtime"
+    ) // defined in scala-reflect.jar, so we need to be careful
     def ReflectRuntimeUniverse =
       ReflectRuntimePackage.map(sym => getMemberValue(sym, nme.universe))
     def ReflectRuntimeCurrentMirror =
@@ -629,26 +633,33 @@ trait Definitions extends api.StandardDefinitions {
 
     lazy val ApiUniverseClass = getClassIfDefined("scala.reflect.api.Universe") // defined in scala-reflect.jar, so we need to be careful
     lazy val JavaUniverseClass = getClassIfDefined(
-      "scala.reflect.api.JavaUniverse") // defined in scala-reflect.jar, so we need to be careful
+      "scala.reflect.api.JavaUniverse"
+    ) // defined in scala-reflect.jar, so we need to be careful
 
     lazy val MirrorClass = getClassIfDefined("scala.reflect.api.Mirror") // defined in scala-reflect.jar, so we need to be careful
 
     lazy val TypeCreatorClass = getClassIfDefined(
-      "scala.reflect.api.TypeCreator") // defined in scala-reflect.jar, so we need to be careful
+      "scala.reflect.api.TypeCreator"
+    ) // defined in scala-reflect.jar, so we need to be careful
     lazy val TreeCreatorClass = getClassIfDefined(
-      "scala.reflect.api.TreeCreator") // defined in scala-reflect.jar, so we need to be careful
+      "scala.reflect.api.TreeCreator"
+    ) // defined in scala-reflect.jar, so we need to be careful
 
     private def Context_210 =
       if (settings.isScala211) NoSymbol
       else
-        getClassIfDefined("scala.reflect.macros.Context") // needed under -Xsource:2.10
+        getClassIfDefined(
+          "scala.reflect.macros.Context"
+        ) // needed under -Xsource:2.10
     lazy val BlackboxContextClass =
       getClassIfDefined("scala.reflect.macros.blackbox.Context").orElse(
-        Context_210) // defined in scala-reflect.jar, so we need to be careful
+        Context_210
+      ) // defined in scala-reflect.jar, so we need to be careful
 
     lazy val WhiteboxContextClass =
       getClassIfDefined("scala.reflect.macros.whitebox.Context").orElse(
-        Context_210) // defined in scala-reflect.jar, so we need to be careful
+        Context_210
+      ) // defined in scala-reflect.jar, so we need to be careful
     def MacroContextPrefix =
       BlackboxContextClass.map(sym => getMemberMethod(sym, nme.prefix))
     def MacroContextPrefixType =
@@ -1042,7 +1053,9 @@ trait Definitions extends api.StandardDefinitions {
           tp membersBasedOnFlags (excludedFlags = BridgeAndPrivateFlags, requiredFlags =
             METHOD)
             filter (mem =>
-              mem.isDeferredNotJavaDefault && !isUniversalMember(mem)) // TODO: test
+              mem.isDeferredNotJavaDefault && !isUniversalMember(
+                mem
+              )) // TODO: test
         )
 
         // if there is only one, it's monomorphic and has a single argument list
@@ -1814,7 +1827,10 @@ trait Definitions extends api.StandardDefinitions {
       )
       lazy val TagSymbols = TagMaterializers.keySet
       lazy val Predef_conforms = (getMemberIfDefined(PredefModule, nme.conforms)
-        orElse getMemberMethod(PredefModule, TermName("conforms"))) // TODO: predicate on -Xsource:2.10 (for now, needed for transition from M8 -> RC1)
+        orElse getMemberMethod(
+          PredefModule,
+          TermName("conforms")
+        )) // TODO: predicate on -Xsource:2.10 (for now, needed for transition from M8 -> RC1)
       lazy val Predef_classOf = getMemberMethod(PredefModule, nme.classOf)
       lazy val Predef_implicitly = getMemberMethod(PredefModule, nme.implicitly)
       lazy val Predef_wrapRefArray =

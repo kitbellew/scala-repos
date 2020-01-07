@@ -359,7 +359,8 @@ class AliasingFrame[V <: Value](nLocals: Int, nStack: Int)
       0,
       aliases,
       0,
-      aliases.length) // also quick
+      aliases.length
+    ) // also quick
 
     val newSets = mutable.HashMap.empty[AliasSet, AliasSet]
 

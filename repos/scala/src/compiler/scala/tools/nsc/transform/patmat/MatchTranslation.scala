@@ -324,7 +324,10 @@ trait MatchTranslation {
 
             List(atPos(pos) {
               CaseDef(
-                Bind(exSym, Ident(nme.WILDCARD)), // TODO: does this need fixing upping?
+                Bind(
+                  exSym,
+                  Ident(nme.WILDCARD)
+                ), // TODO: does this need fixing upping?
                 EmptyTree,
                 combineCasesNoSubstOnly(
                   REF(exSym),
@@ -440,9 +443,17 @@ trait MatchTranslation {
       // TODO: check unargs == args
       def apply(tree: Tree): ExtractorCall = tree match {
         case UnApply(unfun, args) =>
-          new ExtractorCallRegular(alignPatterns(context, tree), unfun, args) // extractor
+          new ExtractorCallRegular(
+            alignPatterns(context, tree),
+            unfun,
+            args
+          ) // extractor
         case Apply(fun, args) =>
-          new ExtractorCallProd(alignPatterns(context, tree), fun, args) // case class
+          new ExtractorCallProd(
+            alignPatterns(context, tree),
+            fun,
+            args
+          ) // case class
       }
     }
 
@@ -633,7 +644,9 @@ trait MatchTranslation {
         if (accessors isDefinedAt (i - 1))
           gen.mkAttributedStableRef(binder) DOT accessors(i - 1)
         else
-          codegen.tupleSel(binder)(i) // this won't type check for case classes, as they do not inherit ProductN
+          codegen.tupleSel(binder)(
+            i
+          ) // this won't type check for case classes, as they do not inherit ProductN
       }
     }
 

@@ -63,7 +63,9 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
   }
 
   private def companionModuleForce(sym: Symbol) = {
-    sym.andAlso(_.owner.initialize) // See SI-6976. `companionModule` only calls `rawInfo`. (Why?)
+    sym.andAlso(
+      _.owner.initialize
+    ) // See SI-6976. `companionModule` only calls `rawInfo`. (Why?)
     sym.companionModule
   }
 
@@ -241,7 +243,9 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
                 origMeth.flags & ~OVERRIDE & ~PROTECTED & ~PRIVATE & ~LOCAL | FINAL)
                 setAnnotations origMeth.annotations
             )
-            origMeth.removeAnnotation(TailrecClass) // it's on the extension method, now.
+            origMeth.removeAnnotation(
+              TailrecClass
+            ) // it's on the extension method, now.
             companion.info.decls.enter(extensionMeth)
           }
 
@@ -275,7 +279,8 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
             else
               gen.mkCastPreservingAnnotations(
                 extensionBody,
-                extensionMono.finalResultType) // SI-7818 e.g. mismatched existential skolems
+                extensionMono.finalResultType
+              ) // SI-7818 e.g. mismatched existential skolems
 
           // Record the extension method. Later, in `Extender#transformStats`, these will be added to the companion object.
           extensionDefs(companion) += DefDef(extensionMeth, castBody)

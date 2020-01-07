@@ -100,7 +100,9 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
           .get)
       genLoad(expr, thrownKind)
       lineNumber(expr)
-      emit(asm.Opcodes.ATHROW) // ICode enters here into enterIgnoreMode, we'll rely instead on DCE at ClassNode level.
+      emit(
+        asm.Opcodes.ATHROW
+      ) // ICode enters here into enterIgnoreMode, we'll rely instead on DCE at ClassNode level.
 
       srNothingRef // always returns the same, the invoker should know :)
     }
@@ -518,8 +520,13 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
         case UnitTag => ()
 
         case StringTag =>
-          assert(const.value != null, const) // TODO this invariant isn't documented in `case class Constant`
-          mnode.visitLdcInsn(const.stringValue) // `stringValue` special-cases null, but not for a const with StringTag
+          assert(
+            const.value != null,
+            const
+          ) // TODO this invariant isn't documented in `case class Constant`
+          mnode.visitLdcInsn(
+            const.stringValue
+          ) // `stringValue` special-cases null, but not for a const with StringTag
 
         case NullTag => emit(asm.Opcodes.ACONST_NULL)
 
@@ -1255,7 +1262,9 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
 
     /* Generate the scala ## method. */
     def genScalaHash(tree: Tree, applyPos: Position): BType = {
-      genLoadModule(ScalaRunTimeModule) // TODO why load ScalaRunTimeModule if ## has InvokeStyle of Static(false) ?
+      genLoadModule(
+        ScalaRunTimeModule
+      ) // TODO why load ScalaRunTimeModule if ## has InvokeStyle of Static(false) ?
       genLoad(tree, ObjectRef)
       genCallMethod(hashMethodSym, InvokeStyle.Static, applyPos)
       INT
@@ -1407,7 +1416,9 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
 
           // lhs and rhs of test
           lazy val Select(lhs, _) = fun
-          val rhs = if (args.isEmpty) EmptyTree else args.head // args.isEmpty only for ZNOT
+          val rhs =
+            if (args.isEmpty) EmptyTree
+            else args.head // args.isEmpty only for ZNOT
 
           def genZandOrZor(and: Boolean) {
             // reaching "keepGoing" indicates the rhs should be evaluated too (ie not short-circuited).

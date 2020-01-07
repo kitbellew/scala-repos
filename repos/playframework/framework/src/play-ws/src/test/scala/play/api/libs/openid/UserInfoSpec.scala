@@ -36,7 +36,8 @@ object UserInfoSpec extends Specification {
         createDefaultResponseWithAttributeExchange ++ Map[String, Seq[String]](
           "openid.ext1.type.email" -> "http://schema.openid.net/contact/email",
           "openid.ext1.value.email" -> "user@example.com",
-          "openid.signed" -> defaultSigned) // the email attribute is not in the list of signed fields
+          "openid.signed" -> defaultSigned
+        ) // the email attribute is not in the list of signed fields
       val userInfo = UserInfo(requestParams)
       userInfo.attributes.get("email") must beNone
     }

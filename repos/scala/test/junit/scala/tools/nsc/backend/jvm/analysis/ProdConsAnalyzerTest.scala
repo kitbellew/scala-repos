@@ -69,10 +69,16 @@ class ProdConsAnalyzerTest extends ClearAfterClass {
     val a = new ProdConsAnalyzer(m, "C")
     val call = findInstr(m, "INVOKEVIRTUAL").head
 
-    testSingleInsn(a.producersForValueAt(call, 1), "ALOAD 0") // producer of stack value
+    testSingleInsn(
+      a.producersForValueAt(call, 1),
+      "ALOAD 0"
+    ) // producer of stack value
     testSingleInsn(a.producersForInputsOf(call), "ALOAD 0")
 
-    testSingleInsn(a.consumersOfValueAt(call.getNext, 1), "ARETURN") // consumer of `toString` result
+    testSingleInsn(
+      a.consumersOfValueAt(call.getNext, 1),
+      "ARETURN"
+    ) // consumer of `toString` result
     testSingleInsn(a.consumersOfOutputsFrom(call), "ARETURN")
 
     testSingleInsn(a.ultimateConsumersOfValueAt(call.getNext, 1), "ARETURN")
@@ -211,9 +217,15 @@ class ProdConsAnalyzerTest extends ClearAfterClass {
     testSingleInsn(a.consumersOfValueAt(dup2.getNext, 5), "IADD")
     testMultiInsns(a.consumersOfOutputsFrom(dup2), List("IADD", "SWAP"))
 
-    testSingleInsn(a.ultimateConsumersOfOutputsFrom(dup2), "IADD") // the 'store' is not here: it's a copying instr, so not an ultimate consumer.
+    testSingleInsn(
+      a.ultimateConsumersOfOutputsFrom(dup2),
+      "IADD"
+    ) // the 'store' is not here: it's a copying instr, so not an ultimate consumer.
     testMultiInsns(a.consumersOfOutputsFrom(swap), List("IRETURN", "ISTORE"))
-    testSingleInsn(a.ultimateConsumersOfOutputsFrom(swap), "IRETURN") // again, no store
+    testSingleInsn(
+      a.ultimateConsumersOfOutputsFrom(swap),
+      "IRETURN"
+    ) // again, no store
     testSingleInsn(a.initialProducersForInputsOf(add), "ParameterProducer(1)")
 
     testMultiInsns(a.producersForInputsOf(swap), List("IADD", "DUP2"))
@@ -242,7 +254,10 @@ class ProdConsAnalyzerTest extends ClearAfterClass {
     testSingleInsn(a.producersForInputsOf(inc), "ParameterProducer(1)")
     testSingleInsn(a.consumersOfOutputsFrom(inc), "ILOAD")
     testSingleInsn(a.ultimateConsumersOfOutputsFrom(inc), "IRETURN")
-    testSingleInsn(a.consumersOfValueAt(inc, 1), "IINC") // parameter value has a single consumer, the IINC
+    testSingleInsn(
+      a.consumersOfValueAt(inc, 1),
+      "IINC"
+    ) // parameter value has a single consumer, the IINC
     testSingleInsn(a.ultimateConsumersOfValueAt(inc, 1), "IINC")
 
     testSingleInsn(a.producersForInputsOf(load), "IINC")

@@ -126,7 +126,9 @@ class NettyTransportSpec extends WordSpec with Matchers with BindBehaviour {
         ActorSystem("sys", bindConfig.withFallback(commonConfig))
 
       getInternal.flatMap(_.port) should contain(getExternal.port.get)
-      getInternal.map(_.host.get should include regex "0.0.0.0".r) // regexp dot is intentional to match IPv4 and 6 addresses
+      getInternal.map(
+        _.host.get should include regex "0.0.0.0".r
+      ) // regexp dot is intentional to match IPv4 and 6 addresses
 
       Await.result(sys.terminate(), Duration.Inf)
     }

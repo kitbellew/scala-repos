@@ -265,7 +265,9 @@ private final class TrapExit(delegateManager: SecurityManager)
       try execute()
       catch {
         case x: Throwable =>
-          exitCode.set(1) //exceptions in the main thread cause the exit code to be 1
+          exitCode.set(
+            1
+          ) //exceptions in the main thread cause the exit code to be 1
           throw x
       }
     }
@@ -504,10 +506,14 @@ private final class TrapExit(delegateManager: SecurityManager)
     val allFrames = java.awt.Frame.getFrames
     if (allFrames.nonEmpty) {
       log.debug(s"Disposing ${allFrames.length} top-level windows...")
-      allFrames.foreach(_.dispose) // dispose all top-level windows, which will cause the AWT-EventQueue-* threads to exit
+      allFrames.foreach(
+        _.dispose
+      ) // dispose all top-level windows, which will cause the AWT-EventQueue-* threads to exit
       val waitSeconds = 2
       log.debug(s"Waiting $waitSeconds s to let AWT thread exit.")
-      Thread.sleep(waitSeconds * 1000) // AWT Thread doesn't exit immediately, so wait to interrupt it
+      Thread.sleep(
+        waitSeconds * 1000
+      ) // AWT Thread doesn't exit immediately, so wait to interrupt it
     }
   }
 

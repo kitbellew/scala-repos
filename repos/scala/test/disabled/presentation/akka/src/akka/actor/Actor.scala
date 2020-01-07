@@ -515,7 +515,9 @@ trait Actor {
             processingBehavior.isDefinedAt(msg) =>
         processingBehavior.apply(msg)
       case unknown =>
-        unhandled(unknown) //This is the only line that differs from processingbehavior
+        unhandled(
+          unknown
+        ) //This is the only line that differs from processingbehavior
     }
   }
 

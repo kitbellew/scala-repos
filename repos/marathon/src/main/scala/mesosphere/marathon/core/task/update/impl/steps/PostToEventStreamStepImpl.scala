@@ -42,7 +42,9 @@ class PostToEventStreamStepImpl @Inject() (
       case Terminated(_) =>
         postEvent(timestamp, status, task)
       case TASK_RUNNING
-          if task.launched.exists(!_.hasStartedRunning) => // staged, not running
+          if task.launched.exists(
+            !_.hasStartedRunning
+          ) => // staged, not running
         postEvent(timestamp, status, task)
 
       case state: TaskState =>

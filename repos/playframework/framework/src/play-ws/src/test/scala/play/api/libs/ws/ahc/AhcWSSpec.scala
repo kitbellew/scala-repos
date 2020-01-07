@@ -162,11 +162,15 @@ object AhcWSSpec extends PlaySpecification with Mockito {
       import scala.collection.JavaConverters._
       val req: AHCRequest = WS
         .url("http://playframework.com/")
-        .withHeaders("Content-Type" -> "application/x-www-form-urlencoded") // set content type by hand
+        .withHeaders(
+          "Content-Type" -> "application/x-www-form-urlencoded"
+        ) // set content type by hand
         .withBody("HELLO WORLD") // and body is set to string (see #5221)
         .asInstanceOf[AhcWSRequest]
         .buildRequest()
-      (new String(req.getByteData, "UTF-8")) must be_==("HELLO WORLD") // should result in byte data.
+      (new String(req.getByteData, "UTF-8")) must be_==(
+        "HELLO WORLD"
+      ) // should result in byte data.
     }
 
     "Have form params on POST of content type application/x-www-form-urlencoded when signed" in new WithApplication {
@@ -197,11 +201,15 @@ object AhcWSSpec extends PlaySpecification with Mockito {
       val req: AHCRequest = WS
         .url("http://playframework.com/")
         .withBody(Map("param1" -> Seq("value1")))
-        .withHeaders("Content-Length" -> "9001") // add a meaningless content length here...
+        .withHeaders(
+          "Content-Length" -> "9001"
+        ) // add a meaningless content length here...
         .asInstanceOf[AhcWSRequest]
         .buildRequest()
 
-      (new String(req.getByteData, "UTF-8")) must be_==("param1=value1") // should result in byte data.
+      (new String(req.getByteData, "UTF-8")) must be_==(
+        "param1=value1"
+      ) // should result in byte data.
 
       val headers = req.getHeaders
       headers.get("Content-Length") must_== ("9001")
@@ -215,8 +223,12 @@ object AhcWSSpec extends PlaySpecification with Mockito {
       val req: AHCRequest = WS
         .url("http://playframework.com/")
         .withBody(Map("param1" -> Seq("value1")))
-        .withHeaders("Content-Length" -> "9001") // add a meaningless content length here...
-        .sign(calc) // this is signed, so content length is no longer valid per #5221
+        .withHeaders(
+          "Content-Length" -> "9001"
+        ) // add a meaningless content length here...
+        .sign(
+          calc
+        ) // this is signed, so content length is no longer valid per #5221
         .asInstanceOf[AhcWSRequest]
         .buildRequest()
 
@@ -243,7 +255,9 @@ object AhcWSSpec extends PlaySpecification with Mockito {
       val req: AHCRequest = WS
         .url("http://playframework.com/")
         .withHeaders("Content-Type" -> "application/json")
-        .withHeaders("Content-Type" -> "application/xml") // second content type header is ignored
+        .withHeaders(
+          "Content-Type" -> "application/xml"
+        ) // second content type header is ignored
         .withBody("HELLO WORLD")
         .asInstanceOf[AhcWSRequest]
         .buildRequest()

@@ -91,7 +91,9 @@ object RRunner {
             "R_PROFILE_USER",
             Seq(rPackageDir(0), "SparkR", "profile", "general.R")
               .mkString(File.separator))
-          builder.redirectErrorStream(true) // Ugly but needed for stdout and stderr to synchronize
+          builder.redirectErrorStream(
+            true
+          ) // Ugly but needed for stdout and stderr to synchronize
           val process = builder.start()
 
           new RedirectThread(

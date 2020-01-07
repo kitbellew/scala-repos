@@ -443,7 +443,10 @@ trait ProtoUser {
           "LostPassword" + menuNameSuffix,
           lostPasswordPath,
           S.?("lost.password"),
-          lostPasswordMenuLocParams ::: globalUserLocParams))) // not logged in
+          lostPasswordMenuLocParams ::: globalUserLocParams
+        )
+      )
+    ) // not logged in
 
   /**
     * The LocParams for the menu item for lost password.
@@ -464,7 +467,10 @@ trait ProtoUser {
           "ResetPassword" + menuNameSuffix,
           (passwordResetPath, true),
           S.?("reset.password"),
-          resetPasswordMenuLocParams ::: globalUserLocParams))) //not Logged in
+          resetPasswordMenuLocParams ::: globalUserLocParams
+        )
+      )
+    ) //not Logged in
 
   /**
     * The LocParams for the menu item for resetting the password.

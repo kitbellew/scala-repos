@@ -395,7 +395,9 @@ private[streaming] class FileGeneratingThread(
     var fs = testDir.getFileSystem(new Configuration())
     val maxTries = 3
     try {
-      Thread.sleep(5000) // To make sure that all the streaming context has been set up
+      Thread.sleep(
+        5000
+      ) // To make sure that all the streaming context has been set up
       for (i <- 0 until input.size) {
         // Write the data to a local file and then move it to the target test directory
         val localFile = new File(localTestDir, (i + 1).toString)

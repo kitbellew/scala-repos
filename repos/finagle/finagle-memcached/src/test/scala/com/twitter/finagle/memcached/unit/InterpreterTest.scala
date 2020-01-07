@@ -62,7 +62,9 @@ class InterpreterTest extends FunSuite {
 
     Time.withTimeAt(now) { control =>
       interpreter(Set(key, 0, now + 10.seconds, value)) // set with an expiry...
-      interpreter(Set(noExpiry, 0, Time.epoch, value)) // set without an expiry...
+      interpreter(
+        Set(noExpiry, 0, Time.epoch, value)
+      ) // set without an expiry...
       atomicMap.lock(key) { data =>
         assert(data.contains(key) == true)
       }

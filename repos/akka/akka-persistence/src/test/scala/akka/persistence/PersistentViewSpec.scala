@@ -387,7 +387,9 @@ abstract class PersistentViewSpec(config: Config)
         Props(classOf[StashingPersistentView], name, viewProbe.ref))
       view ! "other"
       view ! "unstash"
-      viewProbe.expectMsg("a-2") // note that the lastSequenceNumber is 2, since we have replayed b-2
+      viewProbe.expectMsg(
+        "a-2"
+      ) // note that the lastSequenceNumber is 2, since we have replayed b-2
       viewProbe.expectMsg("b-2")
       viewProbe.expectMsg("other-2")
     }

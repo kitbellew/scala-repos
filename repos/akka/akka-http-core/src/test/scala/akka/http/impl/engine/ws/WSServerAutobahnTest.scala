@@ -34,7 +34,9 @@ object WSServerAutobahnTest extends App {
           req.header[UpgradeToWebSocket] match {
             case Some(upgrade) ⇒
               upgrade
-                .handleMessages(echoWebSocketService) // needed for running the autobahn test suite
+                .handleMessages(
+                  echoWebSocketService
+                ) // needed for running the autobahn test suite
             case None ⇒
               HttpResponse(400, entity = "Not a valid websocket request!")
           }

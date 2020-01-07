@@ -53,7 +53,8 @@ class CountVectorizerSuite
           (
             4,
             split("a notInDict d"),
-            Vectors.sparse(4, Seq((0, 1.0), (3, 1.0)))) // with words not in vocabulary
+            Vectors.sparse(4, Seq((0, 1.0), (3, 1.0)))
+          ) // with words not in vocabulary
         ))
       .toDF("id", "words", "expected")
     val cv = new CountVectorizerModel(Array("a", "b", "c", "d"))

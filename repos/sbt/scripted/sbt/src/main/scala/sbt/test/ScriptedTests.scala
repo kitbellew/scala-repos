@@ -178,7 +178,8 @@ class ScriptedRunner {
       ConsoleLogger(),
       bootProperties,
       launchOpts,
-      emptyCallback) //new FullLogger(Logger.xlog2Log(log)))
+      emptyCallback
+    ) //new FullLogger(Logger.xlog2Log(log)))
 
   // This is called by project/Scripted.scala
   // Using java.util.List[File] to encode File => Unit
@@ -197,7 +198,8 @@ class ScriptedRunner {
       bootProperties,
       launchOpts, { f: File =>
         prescripted.add(f); ()
-      }) //new FullLogger(Logger.xlog2Log(log)))
+      }
+    ) //new FullLogger(Logger.xlog2Log(log)))
 
   @deprecated("No longer used", "0.13.9")
   def run(

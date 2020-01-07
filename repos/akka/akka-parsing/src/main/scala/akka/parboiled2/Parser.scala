@@ -31,7 +31,8 @@ abstract class Parser(
 
   require(
     maxValueStackSize <= 65536,
-    "`maxValueStackSize` > 2^16 is not supported") // due to current snapshot design
+    "`maxValueStackSize` > 2^16 is not supported"
+  ) // due to current snapshot design
 
   /**
     * The input this parser instance is running against.

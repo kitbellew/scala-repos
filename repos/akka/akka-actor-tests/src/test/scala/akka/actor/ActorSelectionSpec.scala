@@ -101,7 +101,9 @@ class ActorSelectionSpec
       identify(system / "c1") should ===(Some(c1))
       identify(system / "c2") should ===(Some(c2))
       identify(system / "c2" / "c21") should ===(Some(c21))
-      identify(system child "c2" child "c21") should ===(Some(c21)) // test Java API
+      identify(system child "c2" child "c21") should ===(
+        Some(c21)
+      ) // test Java API
       identify(system / Seq("c2", "c21")) should ===(Some(c21))
 
       import scala.collection.JavaConverters._

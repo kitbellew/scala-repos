@@ -109,5 +109,8 @@ class WebSocketDirectivesSpec extends RoutingSpec {
 
   def echo: Flow[Message, Message, Any] =
     Flow[Message]
-      .buffer(1, OverflowStrategy.backpressure) // needed because a noop flow hasn't any buffer that would start processing
+      .buffer(
+        1,
+        OverflowStrategy.backpressure
+      ) // needed because a noop flow hasn't any buffer that would start processing
 }

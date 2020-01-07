@@ -282,7 +282,9 @@ class BigDecimalTest {
       // the default rounding mode is HALF_UP
       assert(
         (BigDecimal(1.23f, new MC(3)) + BigDecimal("0.005")).rounded == BigDecimal(
-          "1.24")) // deprecated api
+          "1.24"
+        )
+      ) // deprecated api
       assert(
         (BigDecimal(1.23d, new MC(3)) + BigDecimal("0.005")).rounded == BigDecimal(
           "1.24"))

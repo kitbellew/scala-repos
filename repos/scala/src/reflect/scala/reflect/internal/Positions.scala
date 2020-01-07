@@ -315,7 +315,9 @@ trait Positions extends api.Positions { self: SymbolTable =>
       if (!t.canHaveAttrs) ()
       else if (t.pos == NoPosition) {
         t.setPos(pos)
-        super.traverse(t) // TODO: bug? shouldn't the traverse be outside of the if?
+        super.traverse(
+          t
+        ) // TODO: bug? shouldn't the traverse be outside of the if?
         // @PP: it's pruning whenever it encounters a node with a
         // position, which I interpret to mean that (in the author's
         // mind at least) either the children of a positioned node will

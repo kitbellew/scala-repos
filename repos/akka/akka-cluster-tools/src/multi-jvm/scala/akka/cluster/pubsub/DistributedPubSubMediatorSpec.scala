@@ -403,7 +403,10 @@ class DistributedPubSubMediatorSpec
       enterBarrier("11-registered")
 
       runOn(third) {
-        chatUser("u5") ! TalkToOthers("/user/u11", "hi") // sendToAll to all other nodes
+        chatUser("u5") ! TalkToOthers(
+          "/user/u11",
+          "hi"
+        ) // sendToAll to all other nodes
       }
 
       runOn(first, second) {

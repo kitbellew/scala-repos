@@ -76,7 +76,8 @@ class IdeaIncrementalBuilder(category: BuilderCategory)
     val sources = collectSources(context, chunk, dirtyFilesHolder)
     if (sources.isEmpty) return ExitCode.NOTHING_DONE
 
-    if (hasBuildModules(chunk)) return ExitCode.NOTHING_DONE // *.scala files in SBT "build" modules are rightly excluded from compilation
+    if (hasBuildModules(chunk))
+      return ExitCode.NOTHING_DONE // *.scala files in SBT "build" modules are rightly excluded from compilation
 
     if (!hasScalaModules(chunk)) {
       val message =

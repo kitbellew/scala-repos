@@ -319,7 +319,9 @@ trait RecordTypeMode extends PrimitiveTypeMode {
           }
           val outMapperOption: Option[OutMapper[Enumeration#Value]] =
             enumOption map { e: EnumType#Value =>
-              outMapperFromEnumValue(e): OutMapper[Enumeration#Value] /*crashes scala 2.9.1 without explicit type */
+              outMapperFromEnumValue(e): OutMapper[
+                Enumeration#Value
+              ] /*crashes scala 2.9.1 without explicit type */
             }
           outMapperOption.orNull
         }) with EnumExpression[Enumeration#Value]

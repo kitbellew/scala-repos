@@ -33,7 +33,9 @@ object KestrelClient {
         ClientBuilder()
           .codec(Kestrel())
           .hosts(host)
-          .hostConnectionLimit(1) // process at most 1 item per connection concurrently
+          .hostConnectionLimit(
+            1
+          ) // process at most 1 item per connection concurrently
           .buildFactory())
     }
 

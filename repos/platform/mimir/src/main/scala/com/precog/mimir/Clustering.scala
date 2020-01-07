@@ -549,7 +549,9 @@ trait KMediansCoreSetClustering {
     }
 
     override def equals(that: Any): Boolean = that match {
-      case GridPoint(thatPoint) => //Eq[Array[Double]].eqv(this.point, thatPoint)
+      case GridPoint(
+          thatPoint
+          ) => //Eq[Array[Double]].eqv(this.point, thatPoint)
         if (this.point.length != thatPoint.length) return false
         var i = 0
         while (i < this.point.length) {

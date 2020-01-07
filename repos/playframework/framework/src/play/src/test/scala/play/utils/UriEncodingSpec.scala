@@ -38,7 +38,9 @@ object UriEncodingSpec extends Specification {
         return PercentEncodedButDecodeDifferent(encoded, decodedEncoded)
       try {
         decodePathSegment(in, inCharset)
-        return PercentEncodedButDecodedInvalid(encoded) // Decoding should have failed
+        return PercentEncodedButDecodedInvalid(
+          encoded
+        ) // Decoding should have failed
       } catch {
         case _: InvalidUriEncodingException => () // This is expected behaviour
       }
@@ -201,9 +203,13 @@ RFC 3986 - Uniform Resource Identifier (URI): Generic Syntax
     // "application/x-www-form-urlencoded". One difference is the encoding
     // of the "+" and space characters.
     "percent-encode spaces, but not + characters" in {
-      encodingFor(" ", "US-ASCII") must_== PercentEncoded("%20") // vs "+" for query strings
+      encodingFor(" ", "US-ASCII") must_== PercentEncoded(
+        "%20"
+      ) // vs "+" for query strings
       encodingFor("+", "US-ASCII") must_== NotEncoded // vs "%2B" for query strings
-      encodingFor(" +", "US-ASCII") must_== PercentEncoded("%20+") // vs "+%2B" for query strings
+      encodingFor(" +", "US-ASCII") must_== PercentEncoded(
+        "%20+"
+      ) // vs "+%2B" for query strings
       encodingFor("1+2=3", "US-ASCII") must_== NotEncoded
       encodingFor("1 + 2 = 3", "US-ASCII") must_== PercentEncoded(
         "1%20+%202%20=%203")

@@ -239,7 +239,10 @@ trait Types
         result =
           result.normalize match { // necessary to deal with erasures of HK types, typeConstructor won't work
             case PolyType(undets, underlying) =>
-              existentialAbstraction(undets, underlying) // we don't want undets in the result
+              existentialAbstraction(
+                undets,
+                underlying
+              ) // we don't want undets in the result
             case _ => result
           }
         // erasure screws up all ThisTypes for modules into PackageTypeRefs
@@ -2393,7 +2396,10 @@ trait Types
       val tpars = initializedTypeParams
       if (tpars.isEmpty) this
       else
-        typeFunAnon(tpars, copyTypeRef(this, pre, sym, tpars map (_.tpeHK))) // todo: also beta-reduce?
+        typeFunAnon(
+          tpars,
+          copyTypeRef(this, pre, sym, tpars map (_.tpeHK))
+        ) // todo: also beta-reduce?
     }
 
     // only need to rebind type aliases, as typeRef already handles abstract types
@@ -2745,7 +2751,10 @@ trait Types
       extends Type
       with PolyTypeApi {
     //assert(!(typeParams contains NoSymbol), this)
-    assert(typeParams.nonEmpty, this) // used to be a marker for nullary method type, illegal now (see @NullaryMethodType)
+    assert(
+      typeParams.nonEmpty,
+      this
+    ) // used to be a marker for nullary method type, illegal now (see @NullaryMethodType)
 
     override def paramSectionCount: Int = resultType.paramSectionCount
     override def paramss: List[List[Symbol]] = resultType.paramss
@@ -3578,7 +3587,12 @@ trait Types
       // to never be resumed with the current implementation
       assert(!suspended, this)
       TypeVar.trace("clone", originLocation)(
-        TypeVar(origin, constr.cloneInternal, typeArgs, params) // @M TODO: clone args/params?
+        TypeVar(
+          origin,
+          constr.cloneInternal,
+          typeArgs,
+          params
+        ) // @M TODO: clone args/params?
       )
     }
   }
@@ -3946,9 +3960,15 @@ trait Types
       case st: SingletonType =>
         appliedType(st.widen, args) // @M TODO: what to do? see bug1
       case RefinedType(parents, decls) =>
-        RefinedType(parents map (appliedType(_, args)), decls) // @PP: Can this be right?
+        RefinedType(
+          parents map (appliedType(_, args)),
+          decls
+        ) // @PP: Can this be right?
       case TypeBounds(lo, hi) =>
-        TypeBounds(appliedType(lo, args), appliedType(hi, args)) // @PP: Can this be right?
+        TypeBounds(
+          appliedType(lo, args),
+          appliedType(hi, args)
+        ) // @PP: Can this be right?
       case tv @ TypeVar(_, _) => tv.applyArgs(args)
       case AnnotatedType(annots, underlying) =>
         AnnotatedType(annots, appliedType(underlying, args))
@@ -3999,7 +4019,10 @@ trait Types
   def genPolyType(params: List[Symbol], tpe: Type): Type =
     GenPolyType(params, tpe)
 
-  @deprecated("use genPolyType(...) instead", "2.10.0") // Used in reflection API
+  @deprecated(
+    "use genPolyType(...) instead",
+    "2.10.0"
+  ) // Used in reflection API
   def polyType(params: List[Symbol], tpe: Type): Type = GenPolyType(params, tpe)
 
   /** A creator for anonymous type functions, where the symbol for the type function still needs to be created.
@@ -4419,7 +4442,9 @@ trait Types
     *  types which can be used as type arguments (e.g. type constructors.)
     */
   def isUseableAsTypeArg(tp: Type) = (
-    isInternalTypeUsedAsTypeArg(tp) // the subset of internal types which can be type args
+    isInternalTypeUsedAsTypeArg(
+      tp
+    ) // the subset of internal types which can be type args
       || isHKTypeRef(tp) // not a value type, but ok as a type arg
       || isValueElseNonValue(tp) // otherwise only value types
   )
@@ -4522,7 +4547,11 @@ trait Types
       tparams: List[Symbol],
       depth: Depth): Boolean = {
     def isSubArg(t1: Type, t2: Type, variance: Variance) = (
-      (variance.isCovariant || isSubType(t2, t1, depth)) // The order of these two checks can be material for performance (SI-8478)
+      (variance.isCovariant || isSubType(
+        t2,
+        t1,
+        depth
+      )) // The order of these two checks can be material for performance (SI-8478)
         && (variance.isContravariant || isSubType(t1, t2, depth))
     )
 
@@ -4642,7 +4671,10 @@ trait Types
         }
       case mt1 @ NullaryMethodType(res1) =>
         tp2 match {
-          case mt2 @ MethodType(Nil, res2) => // could never match if params nonEmpty, and !mt2.isImplicit is implied by empty param list
+          case mt2 @ MethodType(
+                Nil,
+                res2
+              ) => // could never match if params nonEmpty, and !mt2.isImplicit is implied by empty param list
             matchesType(res1, res2, alwaysMatchSimple)
           case NullaryMethodType(res2) =>
             matchesType(res1, res2, alwaysMatchSimple)

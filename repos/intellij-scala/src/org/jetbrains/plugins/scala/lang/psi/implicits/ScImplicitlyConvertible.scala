@@ -619,7 +619,8 @@ class ScImplicitlyConvertible(
                       case tp: ScType if hasTypeParametersInType => (true, tp)
                       case tp: ScType                            => (false, tp)
                     }
-                    if (hasTypeParametersInType) return true //looks like it's not working in compiler 2.10, so it's faster to avoid it
+                    if (hasTypeParametersInType)
+                      return true //looks like it's not working in compiler 2.10, so it's faster to avoid it
                   }
                 }
               }
@@ -722,7 +723,8 @@ object ScImplicitlyConvertible {
             place,
             false)) {
         val commonContext = PsiTreeUtil.findCommonContext(function, place)
-        if (place == commonContext) return true //weird case, it covers situation, when function comes from object, not treeWalkUp
+        if (place == commonContext)
+          return true //weird case, it covers situation, when function comes from object, not treeWalkUp
         if (function == commonContext) return false
         else {
           var functionContext: PsiElement = function

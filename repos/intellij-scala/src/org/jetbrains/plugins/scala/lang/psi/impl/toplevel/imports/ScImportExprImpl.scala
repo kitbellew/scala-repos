@@ -149,6 +149,8 @@ class ScImportExprImpl private (
     if (stub != null) stub.asInstanceOf[ScImportExprStub].reference
     else
       getFirstChild
-        .asOptionOf[ScStableCodeReferenceElement] /*findChild(classOf[ScStableCodeReferenceElement])*/
+        .asOptionOf[
+          ScStableCodeReferenceElement
+        ] /*findChild(classOf[ScStableCodeReferenceElement])*/
   }
 }

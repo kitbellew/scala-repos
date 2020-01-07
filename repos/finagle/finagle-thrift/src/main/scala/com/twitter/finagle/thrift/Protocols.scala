@@ -35,7 +35,9 @@ object Protocols {
                     return k.cast(x)
                   }
                 }
-                throw new NoSuchFieldException("the Unsafe") // fall through to the catch block below
+                throw new NoSuchFieldException(
+                  "the Unsafe"
+                ) // fall through to the catch block below
               }
             })
         } catch {

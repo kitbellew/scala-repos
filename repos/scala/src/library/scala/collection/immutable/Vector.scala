@@ -259,7 +259,11 @@ final class Vector[+A] private[immutable] (
     val s = new Vector[B](startIndex, endIndex, idx)
     s.initFrom(this)
     s.dirty = dirty
-    s.gotoPosWritable(focus, idx, focus ^ idx) // if dirty commit changes; go to new pos and prepare for writing
+    s.gotoPosWritable(
+      focus,
+      idx,
+      focus ^ idx
+    ) // if dirty commit changes; go to new pos and prepare for writing
     s.display0(idx & 0x1f) = elem.asInstanceOf[AnyRef]
     s
   }
@@ -321,7 +325,8 @@ final class Vector[+A] private[immutable] (
             s.gotoFreshPosWritable(
               newFocus,
               newBlockIndex,
-              newFocus ^ newBlockIndex) // maybe create pos; prepare for writing
+              newFocus ^ newBlockIndex
+            ) // maybe create pos; prepare for writing
             s.display0(lo) = value.asInstanceOf[AnyRef]
             //assert(depth == s.depth)
             s
@@ -339,7 +344,11 @@ final class Vector[+A] private[immutable] (
             s.initFrom(this)
             s.dirty = dirty
             s.shiftTopLevel(0, shiftBlocks) // shift right by n elements
-            s.gotoPosWritable(newFocus, newBlockIndex, newFocus ^ newBlockIndex) // prepare for writing
+            s.gotoPosWritable(
+              newFocus,
+              newBlockIndex,
+              newFocus ^ newBlockIndex
+            ) // prepare for writing
             s.display0(shift - 1) = value.asInstanceOf[AnyRef]
             s.debug()
             s
@@ -360,7 +369,8 @@ final class Vector[+A] private[immutable] (
           s.gotoFreshPosWritable(
             newFocus,
             newBlockIndex,
-            newFocus ^ newBlockIndex) // could optimize: we know it will create a whole branch
+            newFocus ^ newBlockIndex
+          ) // could optimize: we know it will create a whole branch
           s.display0(lo) = value.asInstanceOf[AnyRef]
           s.debug()
           //assert(s.depth == depth+1)
@@ -768,7 +778,8 @@ final class VectorBuilder[A]()
       return Vector.empty
     val s = new Vector[A](0, size, 0) // should focus front or back?
     s.initFrom(this)
-    if (depth > 1) s.gotoPos(0, size - 1) // we're currently focused to size - 1, not size!
+    if (depth > 1)
+      s.gotoPos(0, size - 1) // we're currently focused to size - 1, not size!
     s
   }
 

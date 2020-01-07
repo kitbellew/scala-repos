@@ -382,7 +382,10 @@ final class BaseLinker(
         This()(currentClassType),
         superClassType,
         ctorIdent,
-        params.map(_.ref))(NoType))(OptimizerHints.empty, inheritedMDef.hash) // over-approximation
+        params.map(_.ref))(NoType))(
+      OptimizerHints.empty,
+      inheritedMDef.hash
+    ) // over-approximation
   }
 
   private def synthesizeReflectiveProxy(

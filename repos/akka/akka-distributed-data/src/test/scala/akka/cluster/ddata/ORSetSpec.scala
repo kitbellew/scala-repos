@@ -287,7 +287,8 @@ class ORSetSpec extends WordSpec with Matchers {
       val acc: Map[Any, VersionVector] = Map("K1" -> VersionVector(nodeA, 3L))
       val expectedDots = acc ++ Map(
         "K3" -> VersionVector(nodeA, 4L),
-        "K4" -> VersionVector(nodeD, 8L)) // "a" -> 3 removed, optimized to include only those unseen
+        "K4" -> VersionVector(nodeD, 8L)
+      ) // "a" -> 3 removed, optimized to include only those unseen
 
       ORSet.mergeDisjointKeys(keys, elements, vvector, acc) should be(
         expectedDots)

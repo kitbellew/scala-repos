@@ -56,21 +56,24 @@ class ExecutorBasedEventDrivenWorkStealingDispatcher(
       throughput,
       throughputDeadlineTime,
       mailboxType,
-      ThreadPoolConfig()) // Needed for Java API usage
+      ThreadPoolConfig()
+    ) // Needed for Java API usage
 
   def this(_name: String, throughput: Int, mailboxType: MailboxType) =
     this(
       _name,
       throughput,
       Dispatchers.THROUGHPUT_DEADLINE_TIME_MILLIS,
-      mailboxType) // Needed for Java API usage
+      mailboxType
+    ) // Needed for Java API usage
 
   def this(_name: String, throughput: Int) =
     this(
       _name,
       throughput,
       Dispatchers.THROUGHPUT_DEADLINE_TIME_MILLIS,
-      Dispatchers.MAILBOX_TYPE) // Needed for Java API usage
+      Dispatchers.MAILBOX_TYPE
+    ) // Needed for Java API usage
 
   def this(_name: String, _config: ThreadPoolConfig) =
     this(
@@ -85,14 +88,16 @@ class ExecutorBasedEventDrivenWorkStealingDispatcher(
       _name,
       Dispatchers.THROUGHPUT,
       Dispatchers.THROUGHPUT_DEADLINE_TIME_MILLIS,
-      Dispatchers.MAILBOX_TYPE) // Needed for Java API usage
+      Dispatchers.MAILBOX_TYPE
+    ) // Needed for Java API usage
 
   def this(_name: String, mailboxType: MailboxType) =
     this(
       _name,
       Dispatchers.THROUGHPUT,
       Dispatchers.THROUGHPUT_DEADLINE_TIME_MILLIS,
-      mailboxType) // Needed for Java API usage
+      mailboxType
+    ) // Needed for Java API usage
 
   @volatile
   private var actorType: Option[Class[_]] = None

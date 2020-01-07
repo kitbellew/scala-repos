@@ -61,7 +61,9 @@ class DynamicSynonymFilter(input: TokenStream, engine: SynonymEngine)
   override def incrementToken(): Boolean = {
     if (stack.nonEmpty) {
       val synonym = stack.pop()
-      restoreState(current) // brings us back to the original token in case of multiple synonyms
+      restoreState(
+        current
+      ) // brings us back to the original token in case of multiple synonyms
       termAtt.setEmpty()
       termAtt.append(synonym)
       posIncrAtt.setPositionIncrement(0)

@@ -472,7 +472,8 @@ object WorksheetSourceProcessor {
         isObjectOk(psi.getNextSibling)
       case obj: ScObject =>
         obj.extendsBlock.templateParents.isEmpty && isObjectOk(
-          obj.getNextSibling) //isOk(psi.getNextSibling) - for compatibility with Eclipse. Its worksheet proceeds with expressions inside first object found
+          obj.getNextSibling
+        ) //isOk(psi.getNextSibling) - for compatibility with Eclipse. Its worksheet proceeds with expressions inside first object found
       case _: PsiClass if isEclipseMode => isObjectOk(psi.getNextSibling)
       case null                         => true
       case _                            => false

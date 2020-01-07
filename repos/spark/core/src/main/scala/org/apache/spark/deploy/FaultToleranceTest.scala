@@ -78,7 +78,10 @@ private object FaultToleranceTest extends App with Logging {
   private val containerSparkHome = "/opt/spark"
   private val dockerMountDir = "%s:%s".format(sparkHome, containerSparkHome)
 
-  System.setProperty("spark.driver.host", "172.17.42.1") // default docker host ip
+  System.setProperty(
+    "spark.driver.host",
+    "172.17.42.1"
+  ) // default docker host ip
 
   private def afterEach() {
     if (sc != null) {

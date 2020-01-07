@@ -221,7 +221,9 @@ class ActorCreationPerfSpec
             propsCreator)
         }
 
-        avgMem.add(heapUsed.used / nrOfActors) // average actor size, over nrOfRepeats
+        avgMem.add(
+          heapUsed.used / nrOfActors
+        ) // average actor size, over nrOfRepeats
         // time is handled by the histogram already
       }
 

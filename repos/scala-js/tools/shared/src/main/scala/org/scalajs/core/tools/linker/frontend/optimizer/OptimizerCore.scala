@@ -2281,9 +2281,13 @@ private[optimizer] abstract class OptimizerCore(
               else negCond
 
             case (_, BooleanLiteral(false), _) =>
-              foldIf(negCond, elsep, BooleanLiteral(false))(tpe) // canonical && form
+              foldIf(negCond, elsep, BooleanLiteral(false))(
+                tpe
+              ) // canonical && form
             case (_, _, BooleanLiteral(true)) =>
-              foldIf(negCond, BooleanLiteral(true), thenp)(tpe) // canonical || form
+              foldIf(negCond, BooleanLiteral(true), thenp)(
+                tpe
+              ) // canonical || form
 
             /* if (lhs === null) rhs === null else lhs === rhs
              * -> lhs === rhs

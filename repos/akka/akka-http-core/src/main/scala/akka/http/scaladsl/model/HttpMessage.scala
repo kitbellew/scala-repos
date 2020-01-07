@@ -137,7 +137,9 @@ sealed trait HttpMessage extends jm.HttpMessage {
   /** Java API */
   def getHeader(headerName: String): Optional[jm.HttpHeader] = {
     val lowerCased = headerName.toRootLowerCase
-    Util.convertOption(headers.find(_.is(lowerCased))) // Upcast because of invariance
+    Util.convertOption(
+      headers.find(_.is(lowerCased))
+    ) // Upcast because of invariance
   }
 
   /** Java API */

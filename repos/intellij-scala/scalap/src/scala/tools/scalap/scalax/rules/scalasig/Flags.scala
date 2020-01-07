@@ -33,7 +33,9 @@ trait Flags {
   def isContravariant = hasFlag(0x00020000)
   def isLabel = hasFlag(0x00020000) // method symbol is a label. Set by TailCall
   def isInConstructor =
-    hasFlag(0x00020000) // class symbol is defined in this/superclass constructor
+    hasFlag(
+      0x00020000
+    ) // class symbol is defined in this/superclass constructor
 
   def isAbstractOverride = hasFlag(0x00040000)
   def isLocal = hasFlag(0x00080000)
@@ -55,11 +57,15 @@ trait Flags {
   def isModuleVar =
     hasFlag(0x40000000) // for variables: is the variable caching a module value
   def isSyntheticMethod =
-    hasFlag(0x40000000) // for methods: synthetic method, but without SYNTHETIC flag
+    hasFlag(
+      0x40000000
+    ) // for methods: synthetic method, but without SYNTHETIC flag
   def isMonomorphic =
     hasFlag(0x40000000) // for type symbols: does not have type parameters
   def isLazy =
-    hasFlag(0x80000000L) // symbol is a lazy val. can't have MUTABLE unless transformed by typer
+    hasFlag(
+      0x80000000L
+    ) // symbol is a lazy val. can't have MUTABLE unless transformed by typer
 
   def isError = hasFlag(0x100000000L)
   def isOverloaded = hasFlag(0x200000000L)

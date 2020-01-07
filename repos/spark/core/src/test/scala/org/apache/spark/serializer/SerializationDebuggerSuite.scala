@@ -190,8 +190,12 @@ class SerializationDebuggerSuite extends SparkFunSuite with BeforeAndAfterEach {
     val e = SerializationDebugger.improveException(
       new SerializableClass2(new NotSerializable),
       new NotSerializableException("someClass"))
-    assert(e.getMessage.contains("someClass")) // original exception message should be present
-    assert(e.getMessage.contains("SerializableClass2")) // found debug trace should be present
+    assert(
+      e.getMessage.contains("someClass")
+    ) // original exception message should be present
+    assert(
+      e.getMessage.contains("SerializableClass2")
+    ) // found debug trace should be present
   }
 
   test("improveException with error in debugger") {

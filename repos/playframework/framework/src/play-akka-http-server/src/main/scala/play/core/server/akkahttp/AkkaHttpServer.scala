@@ -156,7 +156,9 @@ class AkkaHttpServer(
         (
           newRequestHeader,
           handler,
-          Success(newApp) // TODO: Change getHandlerFor to use the app that we already had
+          Success(
+            newApp
+          ) // TODO: Change getHandlerFor to use the app that we already had
         )
     }
   }

@@ -126,7 +126,9 @@ object ConcurrentSpec
             Cont[Long, List[Long]] {
               case Input.El(e) => Done(List(e), Input.Empty)
               case in =>
-                throw new MatchError(in) // Shouldn't occur, but here to suppress compiler warning
+                throw new MatchError(
+                  in
+                ) // Shouldn't occur, but here to suppress compiler warning
             },
             Duration(100, MILLISECONDS)
           ))

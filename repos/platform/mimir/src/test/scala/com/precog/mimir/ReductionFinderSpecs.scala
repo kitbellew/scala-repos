@@ -587,7 +587,9 @@ trait ReductionFinderSpecs[M[+_]]
       val parent = Filter(
         IdentitySort,
         nums,
-        Join(Lt, Cross(None), nums, SplitParam(0, id)(line))(line))(line) //TODO need a window function
+        Join(Lt, Cross(None), nums, SplitParam(0, id)(line))(line))(
+        line
+      ) //TODO need a window function
 
       val megaR =
         MegaReduce(List((trans.Leaf(trans.Source), List(reduction))), parent)

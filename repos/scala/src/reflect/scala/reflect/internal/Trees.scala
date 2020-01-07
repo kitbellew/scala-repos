@@ -1644,7 +1644,12 @@ trait Trees extends api.Trees {
             transform(rhs))
         }
       case LabelDef(name, params, rhs) =>
-        treeCopy.LabelDef(tree, name, transformIdents(params), transform(rhs)) //bq: Martin, once, atOwner(...) works, also change `LambdaLifter.proxy'
+        treeCopy.LabelDef(
+          tree,
+          name,
+          transformIdents(params),
+          transform(rhs)
+        ) //bq: Martin, once, atOwner(...) works, also change `LambdaLifter.proxy'
       case PackageDef(pid, stats) =>
         treeCopy.PackageDef(
           tree,
@@ -1673,7 +1678,11 @@ trait Trees extends api.Trees {
       case Star(elem) =>
         treeCopy.Star(tree, transform(elem))
       case UnApply(fun, args) =>
-        treeCopy.UnApply(tree, transform(fun), transformTrees(args)) // bq: see test/.../unapplyContexts2.scala
+        treeCopy.UnApply(
+          tree,
+          transform(fun),
+          transformTrees(args)
+        ) // bq: see test/.../unapplyContexts2.scala
       case ArrayValue(elemtpt, trees) =>
         treeCopy.ArrayValue(tree, transform(elemtpt), transformTrees(trees))
       case ApplyDynamic(qual, args) =>

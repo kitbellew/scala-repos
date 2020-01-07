@@ -100,17 +100,25 @@ class StateMapSuite extends SparkFunSuite {
 
     // Remove items
     map.remove(4)
-    assert(map.get(4) === None) // item added in this map, then removed in this map
+    assert(
+      map.get(4) === None
+    ) // item added in this map, then removed in this map
     map.remove(2)
-    assert(map.get(2) === None) // item removed in parent map, then added in this map
+    assert(
+      map.get(2) === None
+    ) // item removed in parent map, then added in this map
     assert(map.getAll().toSet === Set((3, 300, 3)))
     assert(parentMap.getAll().toSet === Set((2, 200, 2)))
 
     // Update items
     map.put(1, 1000, 100)
-    assert(map.get(1) === Some(1000)) // item removed in parent map, then added in this map
+    assert(
+      map.get(1) === Some(1000)
+    ) // item removed in parent map, then added in this map
     map.put(2, 2000, 200)
-    assert(map.get(2) === Some(2000)) // item added in parent map, then removed + added in this map
+    assert(
+      map.get(2) === Some(2000)
+    ) // item added in parent map, then removed + added in this map
     map.put(3, 3000, 300)
     assert(map.get(3) === Some(3000)) // item added + updated in this map
     map.put(4, 4000, 400)
@@ -121,14 +129,22 @@ class StateMapSuite extends SparkFunSuite {
         Set((1, 1000, 100), (2, 2000, 200), (3, 3000, 300), (4, 4000, 400)))
     assert(parentMap.getAll().toSet === Set((2, 200, 2)))
 
-    map.remove(2) // remove item present in parent map, so that its not visible in child map
+    map.remove(
+      2
+    ) // remove item present in parent map, so that its not visible in child map
 
     // Create child map and see availability of items
     val childMap = map.copy()
     assert(childMap.getAll().toSet === map.getAll().toSet)
-    assert(childMap.get(1) === Some(1000)) // item removed in grandparent, but added in parent map
-    assert(childMap.get(2) === None) // item added in grandparent, but removed in parent map
-    assert(childMap.get(3) === Some(3000)) // item added and updated in parent map
+    assert(
+      childMap.get(1) === Some(1000)
+    ) // item removed in grandparent, but added in parent map
+    assert(
+      childMap.get(2) === None
+    ) // item added in grandparent, but removed in parent map
+    assert(
+      childMap.get(3) === Some(3000)
+    ) // item added and updated in parent map
 
     childMap.put(2, 20000, 200)
     assert(childMap.get(2) === Some(20000)) // item map

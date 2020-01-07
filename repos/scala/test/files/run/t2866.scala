@@ -38,7 +38,9 @@ object Test extends App {
   locally {
     import A.{one => _, _}
     implicit val two = 2
-    assert(implicitly[Int] == 2) // not ambiguous in 2.8.0 nor im ambiguous in 2.7.6
+    assert(
+      implicitly[Int] == 2
+    ) // not ambiguous in 2.8.0 nor im ambiguous in 2.7.6
   }
 
 }

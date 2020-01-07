@@ -410,7 +410,9 @@ object Vectors {
         if (v.offset == 0 && v.stride == 1 && v.length == v.data.length) {
           new DenseVector(v.data)
         } else {
-          new DenseVector(v.toArray) // Can't use underlying array directly, so make a new one
+          new DenseVector(
+            v.toArray
+          ) // Can't use underlying array directly, so make a new one
         }
       case v: BSV[Double] =>
         if (v.index.length == v.used) {

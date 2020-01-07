@@ -2686,7 +2686,9 @@ object Classpaths {
           val target = parseList(y, depConfs);
           for (a <- parseList(x, masterConfs)) yield (a, target)
         case _ =>
-          sys.error("Invalid configuration '" + confString + "'") // shouldn't get here
+          sys.error(
+            "Invalid configuration '" + confString + "'"
+          ) // shouldn't get here
       }
     val m = ms.toMap
     s => m.getOrElse(s, Nil)

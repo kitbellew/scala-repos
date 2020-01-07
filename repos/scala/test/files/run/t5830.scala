@@ -13,7 +13,9 @@ object Test extends App {
   def ifThenElse(ch: Char, eof: Boolean) = (ch: @switch) match {
     case 'a' if eof => println("a with oef") // then branch
     case 'a' if eof =>
-      println("a with oef2") // unreachable, but the analysis is not that sophisticated
+      println(
+        "a with oef2"
+      ) // unreachable, but the analysis is not that sophisticated
     case 'a' => println("a") // else-branch
     case 'c' =>
   }
@@ -26,7 +28,9 @@ object Test extends App {
   def defaults(ch: Char, eof: Boolean) = (ch: @switch) match {
     case _ if eof => println("def with oef") // then branch
     case _ if eof =>
-      println("def with oef2") // unreachable, but the analysis is not that sophisticated
+      println(
+        "def with oef2"
+      ) // unreachable, but the analysis is not that sophisticated
     case _ => println("def") // else-branch
   }
 

@@ -30,7 +30,9 @@ trait ScAnnotationsHolder extends ScalaPsiElement with PsiAnnotationOwner {
     val stub: StubElement[_ <: PsiElement] = this match {
       case st: StubBasedPsiElement[_] if st.getStub != null =>
         st.getStub
-          .asInstanceOf[StubElement[_ <: PsiElement]] // !!! Appeasing an unexplained compile error
+          .asInstanceOf[StubElement[
+            _ <: PsiElement
+          ]] // !!! Appeasing an unexplained compile error
       case file: PsiFileImpl if file.getStub != null => file.getStub
       case _                                         => null
     }

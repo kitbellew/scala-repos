@@ -93,7 +93,10 @@ class ActorPathSpec extends WordSpec with Matchers {
 
     "not allow path separators in RootActorPath's name" in {
       intercept[IllegalArgumentException] {
-        RootActorPath(Address("akka.tcp", "mysys"), "/user/boom/*") // illegally pass in a path where name is expected
+        RootActorPath(
+          Address("akka.tcp", "mysys"),
+          "/user/boom/*"
+        ) // illegally pass in a path where name is expected
       }.getMessage should include("is a path separator")
 
       // sanity check that creating such path still works

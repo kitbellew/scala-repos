@@ -508,7 +508,9 @@ trait Iteratee[E, +A] {
     */
   def pureFold[B](folder: Step[E, A] => B)(
       implicit ec: ExecutionContext): Future[B] =
-    fold(s => eagerFuture(folder(s)))(ec) // Use eagerFuture because fold will ensure folder is run in ec
+    fold(s => eagerFuture(folder(s)))(
+      ec
+    ) // Use eagerFuture because fold will ensure folder is run in ec
 
   /**
     * A version of `pureFold` that runs `folder` in the current thread rather than in a

@@ -113,7 +113,9 @@ object ScalaBuilder {
     val incrType = settings.getIncrementalityType
     previousIncrementalType match {
       case _
-          if JavaBuilderUtil.isForcedRecompilationAllJavaModules(context) => //isRebiuld
+          if JavaBuilderUtil.isForcedRecompilationAllJavaModules(
+            context
+          ) => //isRebiuld
         setPreviousIncrementalType(incrType)
       case None =>
       //        ScalaBuilderDelegate.Log.info("scala: cannot find type of the previous incremental compiler, full rebuild may be required")
@@ -150,7 +152,9 @@ object ScalaBuilder {
 
   def hasBuildModules(chunk: ModuleChunk): Boolean = {
     import _root_.scala.collection.JavaConversions._
-    chunk.getModules.exists(_.getName.endsWith("-build")) // gen-idea doesn't use the SBT module type
+    chunk.getModules.exists(
+      _.getName.endsWith("-build")
+    ) // gen-idea doesn't use the SBT module type
   }
 
   def projectSettings(context: CompileContext) =

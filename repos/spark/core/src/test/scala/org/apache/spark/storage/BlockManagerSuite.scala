@@ -1387,7 +1387,9 @@ class BlockManagerSuite
       "unroll",
       bigList.iterator,
       StorageLevel.MEMORY_ONLY)
-    assert(memoryStore.currentUnrollMemoryForThisTask > 0) // we returned an iterator
+    assert(
+      memoryStore.currentUnrollMemoryForThisTask > 0
+    ) // we returned an iterator
     assert(!memoryStore.contains("someBlock2"))
     assert(putResult.isLeft)
     bigList.iterator.zip(putResult.left.get).foreach {
@@ -1443,7 +1445,9 @@ class BlockManagerSuite
     assert(!memoryStore.contains("b2"))
     assert(memoryStore.contains("b3"))
     assert(!memoryStore.contains("b4"))
-    assert(memoryStore.currentUnrollMemoryForThisTask > 0) // we returned an iterator
+    assert(
+      memoryStore.currentUnrollMemoryForThisTask > 0
+    ) // we returned an iterator
   }
 
   /**
@@ -1489,9 +1493,13 @@ class BlockManagerSuite
     assert(!memoryStore.contains("b2"))
     assert(memoryStore.contains("b3"))
     assert(!memoryStore.contains("b4"))
-    assert(memoryStore.currentUnrollMemoryForThisTask > 0) // we returned an iterator
+    assert(
+      memoryStore.currentUnrollMemoryForThisTask > 0
+    ) // we returned an iterator
     result4.left.get.close()
-    assert(memoryStore.currentUnrollMemoryForThisTask === 0) // close released the unroll memory
+    assert(
+      memoryStore.currentUnrollMemoryForThisTask === 0
+    ) // close released the unroll memory
   }
 
   test("multiple unrolls by the same thread") {

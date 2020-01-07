@@ -132,9 +132,9 @@ object CreateFromUsageUtil {
       fun: ScFunction,
       builder: TemplateBuilder): Unit = {
     fun.returnTypeElement match {
-      case Some(ScParameterizedTypeElement(
-            _,
-            Seq(tuple: ScTupleTypeElement))) => //Option[(A, B)]
+      case Some(
+          ScParameterizedTypeElement(_, Seq(tuple: ScTupleTypeElement))
+          ) => //Option[(A, B)]
         tuple.components.foreach(te => builder.replaceElement(te, te.getText))
       case Some(ScParameterizedTypeElement(_, args)) =>
         args.foreach(te => builder.replaceElement(te, te.getText))

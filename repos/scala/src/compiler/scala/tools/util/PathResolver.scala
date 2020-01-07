@@ -286,10 +286,14 @@ abstract class PathResolverBase[
     def basis = List[Traversable[BaseClassPathType]](
       classesInPath(javaBootClassPath), // 1. The Java bootstrap class path.
       contentsOfDirsInPath(javaExtDirs), // 2. The Java extension class path.
-      classesInExpandedPath(javaUserClassPath), // 3. The Java application class path.
+      classesInExpandedPath(
+        javaUserClassPath
+      ), // 3. The Java application class path.
       classesInPath(scalaBootClassPath), // 4. The Scala boot class path.
       contentsOfDirsInPath(scalaExtDirs), // 5. The Scala extension class path.
-      classesInExpandedPath(userClassPath), // 6. The Scala application class path.
+      classesInExpandedPath(
+        userClassPath
+      ), // 6. The Scala application class path.
       classesInManifest(useManifestClassPath), // 8. The Manifest class path.
       sourcesInPath(sourcePath) // 7. The Scala source path.
     )

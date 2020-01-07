@@ -190,7 +190,9 @@ class DIMSUMAlgorithm(val ap: DIMSUMAlgorithmParams)
                           // keep this item if has ovelap categories with the query
                           !(itemCat.toSet.intersect(cat).isEmpty)
                         }
-                        .getOrElse(false) // discard this item if it has no categories
+                        .getOrElse(
+                          false
+                        ) // discard this item if it has no categories
                     }
                     .getOrElse(true)
             }

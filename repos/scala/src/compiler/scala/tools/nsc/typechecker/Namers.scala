@@ -129,7 +129,9 @@ trait Namers extends MethodSynthesis {
     private def deriveAccessorsInClass(vd: ValDef) =
       !vd.mods.isPrivateLocal && // note, private[this] lazy vals do get accessors -- see outer disjunction of deriveAccessors
         !(vd.name startsWith nme.OUTER) && // outer accessors are added later, in explicitouter
-        !isEnumConstant(vd) // enums can only occur in classes, so only check here
+        !isEnumConstant(
+          vd
+        ) // enums can only occur in classes, so only check here
 
     /** Determines whether this field holds an enum constant.
       * To qualify, the following conditions must be met:

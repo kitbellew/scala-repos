@@ -450,7 +450,9 @@ class Inliner[BT <: BTypes](val btypes: BT) {
 
     for (argTp <- calleeParamTypes) {
       val opc = argTp.getOpcode(ISTORE) // returns the correct xSTORE instruction for argTp
-      argStores.insert(new VarInsnNode(opc, nextLocalIndex)) // "insert" is "prepend" - the last argument is on the top of the stack
+      argStores.insert(
+        new VarInsnNode(opc, nextLocalIndex)
+      ) // "insert" is "prepend" - the last argument is on the top of the stack
       nextLocalIndex += argTp.getSize
     }
 

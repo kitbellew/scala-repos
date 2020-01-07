@@ -464,7 +464,9 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
         output.size === numExpectedOutput,
         "Unexpected number of outputs generated")
 
-      Thread.sleep(100) // Give some time for the forgetting old RDDs to complete
+      Thread.sleep(
+        100
+      ) // Give some time for the forgetting old RDDs to complete
     } finally {
       ssc.stop(stopSparkContext = true)
     }

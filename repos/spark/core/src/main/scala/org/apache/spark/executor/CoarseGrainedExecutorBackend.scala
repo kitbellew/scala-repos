@@ -69,7 +69,9 @@ private[spark] class CoarseGrainedExecutorBackend(
         // This is a very fast action so we can use "ThreadUtils.sameThread"
         case Success(msg) =>
           Utils.tryLogNonFatalError {
-            Option(self).foreach(_.send(msg)) // msg must be RegisterExecutorResponse
+            Option(self).foreach(
+              _.send(msg)
+            ) // msg must be RegisterExecutorResponse
           }
         case Failure(e) => {
           logError(s"Cannot register with driver: $driverUrl", e)

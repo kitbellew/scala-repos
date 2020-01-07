@@ -95,8 +95,14 @@ private[http] object CharacterClasses {
   val colonSlashEOI = CharPredicate(':', '/', akka.parboiled2.EOI)
   val `date-sep` = CharPredicate("""- """)
 
-  require(`qdtext-base`.isMaskBased) // make sure we didn't introduce any non-7bit-chars by accident which
-  require(`ctext-base`.isMaskBased) // would make the CharPredicate fall back to the much slower
-  require(`quotable-base`.isMaskBased) // ArrayBasedPredicate or GeneralCharPredicate implementations
+  require(
+    `qdtext-base`.isMaskBased
+  ) // make sure we didn't introduce any non-7bit-chars by accident which
+  require(
+    `ctext-base`.isMaskBased
+  ) // would make the CharPredicate fall back to the much slower
+  require(
+    `quotable-base`.isMaskBased
+  ) // ArrayBasedPredicate or GeneralCharPredicate implementations
   require(CTL.isMaskBased)
 }

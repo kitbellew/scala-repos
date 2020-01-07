@@ -193,7 +193,8 @@ object TypedActor
             serializedParameters(i) = (
               s.identifier,
               m,
-              s toBinary parameters(i)) //Mutable for the sake of sanity
+              s toBinary parameters(i)
+            ) //Mutable for the sake of sanity
           }
 
           SerializedMethodCall(

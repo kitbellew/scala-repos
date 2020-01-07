@@ -843,7 +843,8 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
 
           Const.unique(
             narrowTp,
-            new ValueConst(narrowTp, checkableType(wideTp), toString)) // must make wide type checkable so that it is comparable to types from TypeConst
+            new ValueConst(narrowTp, checkableType(wideTp), toString)
+          ) // must make wide type checkable so that it is comparable to types from TypeConst
         }
       }
     }

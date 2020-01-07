@@ -195,9 +195,9 @@ class MongoQueryExecutor(
         userUID: String,
         path: Path,
         cpath: CPath): Future[Validation[String, JObject]] = Promise.successful(
-      Success(JObject(Map(
-        "children" -> JArray.empty,
-        "types" -> JObject.empty))) // TODO: How to implement this?
+      Success(
+        JObject(Map("children" -> JArray.empty, "types" -> JObject.empty))
+      ) // TODO: How to implement this?
     )
 
     def currentVersion(apiKey: APIKey, path: Path) = Promise.successful(None)

@@ -32,7 +32,9 @@ class BTypesFromClassfileTest {
   def duringBackend[T](f: => T) = compiler.exitingDelambdafy(f)
 
   val run = new compiler.Run() // initializes some of the compiler
-  duringBackend(compiler.scalaPrimitives.init()) // needed: it's only done when running the backend, and we don't actually run the compiler
+  duringBackend(
+    compiler.scalaPrimitives.init()
+  ) // needed: it's only done when running the backend, and we don't actually run the compiler
   duringBackend(bTypes.initializeCoreBTypes())
 
   def clearCache() = bTypes.classBTypeFromInternalName.clear()

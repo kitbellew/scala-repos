@@ -97,6 +97,8 @@ object Test extends ScaladocModelTest {
     assert(incomingSubclass.length == 2) // F and G
     assert(incomingImplicit.length == 0)
 
-    assert(EDiag.nodes.length == 6) // E, B and C, F and G and the implicit conversion to T
+    assert(
+      EDiag.nodes.length == 6
+    ) // E, B and C, F and G and the implicit conversion to T
   }
 }

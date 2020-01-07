@@ -324,7 +324,10 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
     val pluginDispatcherId = pluginConfig.getString("plugin-dispatcher")
     val pluginActorArgs =
       try {
-        Reflect.findConstructor(pluginClass, List(pluginConfig)) // will throw if not found
+        Reflect.findConstructor(
+          pluginClass,
+          List(pluginConfig)
+        ) // will throw if not found
         List(pluginConfig)
       } catch { case NonFatal(_) ⇒ Nil } // otherwise use empty constructor
     val pluginActorProps = Props(

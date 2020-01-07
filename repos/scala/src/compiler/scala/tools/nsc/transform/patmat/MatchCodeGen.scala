@@ -80,7 +80,9 @@ trait MatchCodeGen extends Interface {
       import CODE._
       def fun(arg: Symbol, body: Tree): Tree = Function(List(ValDef(arg)), body)
       def tupleSel(binder: Symbol)(i: Int): Tree =
-        (REF(binder) DOT nme.productAccessorName(i)) // make tree that accesses the i'th component of the tuple referenced by binder
+        (REF(binder) DOT nme.productAccessorName(
+          i
+        )) // make tree that accesses the i'th component of the tuple referenced by binder
       def index(tgt: Tree)(i: Int): Tree = tgt APPLY (LIT(i))
 
       // Right now this blindly calls drop on the result of the unapplySeq
@@ -120,7 +122,8 @@ trait MatchCodeGen extends Interface {
             Literal(Constant(null)),
             tp,
             any = true,
-            wrapInApply = false) // the magic incantation is true/false here
+            wrapInApply = false
+          ) // the magic incantation is true/false here
         case const => Literal(const)
       }
     }

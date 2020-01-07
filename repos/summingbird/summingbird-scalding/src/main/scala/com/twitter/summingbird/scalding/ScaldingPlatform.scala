@@ -256,7 +256,9 @@ object Scalding {
         toDateRange(timeSpan).right.map { dr =>
           val mappable = factory(dr)
           ((timeSpan, mode), Reader { (fdM: (FlowDef, Mode)) =>
-            mappable.validateTaps(fdM._2) //This can throw, but that is what this caller wants
+            mappable.validateTaps(
+              fdM._2
+            ) //This can throw, but that is what this caller wants
             TypedPipe
               .from(mappable)
               .flatMap { t =>
@@ -517,7 +519,10 @@ object Scalding {
                   .map { del =>
                     leftPf.join(del).map {
                       case (ftpA, ftpB) =>
-                        Scalding.joinFP(ftpA, ftpB) // extra producer for store, join the two FlowToPipes
+                        Scalding.joinFP(
+                          ftpA,
+                          ftpB
+                        ) // extra producer for store, join the two FlowToPipes
                     }
                   }
                   .getOrElse(leftPf.map { p =>

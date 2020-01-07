@@ -91,10 +91,12 @@ class UriSpec extends WordSpec with Matchers {
       // Full length
       Host("[2001:0db8:0100:f101:0210:a4ff:fee3:9566]") shouldEqual IPv6Host(
         "20010db80100f1010210a4fffee39566",
-        "2001:0db8:0100:f101:0210:a4ff:fee3:9566") // lower hex
+        "2001:0db8:0100:f101:0210:a4ff:fee3:9566"
+      ) // lower hex
       Host("[2001:0DB8:0100:F101:0210:A4FF:FEE3:9566]") shouldEqual IPv6Host(
         "20010db80100f1010210a4fffee39566",
-        "2001:0DB8:0100:F101:0210:A4FF:FEE3:9566") // Upper hex
+        "2001:0DB8:0100:F101:0210:A4FF:FEE3:9566"
+      ) // Upper hex
       Host("[2001:db8:100:f101:210:a4ff:fee3:9566]") shouldEqual IPv6Host(
         "20010db80100f1010210a4fffee39566",
         "2001:db8:100:f101:210:a4ff:fee3:9566")
@@ -117,10 +119,12 @@ class UriSpec extends WordSpec with Matchers {
         "::ffff:1.2.3.4")
       Host("[::0.0.0.0]") shouldEqual IPv6Host(
         "00000000000000000000000000000000",
-        "::0.0.0.0") // Min IPv4
+        "::0.0.0.0"
+      ) // Min IPv4
       Host("[::255.255.255.255]") shouldEqual IPv6Host(
         "000000000000000000000000FFFFFFFF",
-        "::255.255.255.255") // Max IPv4
+        "::255.255.255.255"
+      ) // Max IPv4
 
       // Zipper position
       Host("[::1:2:3:4:5:6:7]") shouldEqual IPv6Host(
@@ -169,10 +173,12 @@ class UriSpec extends WordSpec with Matchers {
         "1::1")
       Host("[::1]") shouldEqual IPv6Host(
         "00000000000000000000000000000001",
-        "::1") // == localhost
+        "::1"
+      ) // == localhost
       Host("[::]") shouldEqual IPv6Host(
         "00000000000000000000000000000000",
-        "::") // == all addresses
+        "::"
+      ) // == all addresses
 
       // A few more variations
       Host("[21ff:abcd::1]") shouldEqual IPv6Host(
@@ -264,15 +270,33 @@ class UriSpec extends WordSpec with Matchers {
       a[IllegalUriException] should be thrownBy Host("[0:0:0:0:0:0:0:0:0]")
 
       // Invalid IPv4 part
-      a[IllegalUriException] should be thrownBy Host("[::ffff:001.02.03.004]") // Leading zeros
-      a[IllegalUriException] should be thrownBy Host("[::ffff:1.2.3.1111]") // Four char octet
-      a[IllegalUriException] should be thrownBy Host("[::ffff:1.2.3.256]") // > 255
-      a[IllegalUriException] should be thrownBy Host("[::ffff:311.2.3.4]") // > 155
-      a[IllegalUriException] should be thrownBy Host("[::ffff:1.2.3:4]") // Not a dot
-      a[IllegalUriException] should be thrownBy Host("[::ffff:1.2.3]") // Missing octet
-      a[IllegalUriException] should be thrownBy Host("[::ffff:1.2.3.]") // Missing octet
-      a[IllegalUriException] should be thrownBy Host("[::ffff:1.2.3a.4]") // Hex in octet
-      a[IllegalUriException] should be thrownBy Host("[::ffff:1.2.3.4:123]") // Crap input
+      a[IllegalUriException] should be thrownBy Host(
+        "[::ffff:001.02.03.004]"
+      ) // Leading zeros
+      a[IllegalUriException] should be thrownBy Host(
+        "[::ffff:1.2.3.1111]"
+      ) // Four char octet
+      a[IllegalUriException] should be thrownBy Host(
+        "[::ffff:1.2.3.256]"
+      ) // > 255
+      a[IllegalUriException] should be thrownBy Host(
+        "[::ffff:311.2.3.4]"
+      ) // > 155
+      a[IllegalUriException] should be thrownBy Host(
+        "[::ffff:1.2.3:4]"
+      ) // Not a dot
+      a[IllegalUriException] should be thrownBy Host(
+        "[::ffff:1.2.3]"
+      ) // Missing octet
+      a[IllegalUriException] should be thrownBy Host(
+        "[::ffff:1.2.3.]"
+      ) // Missing octet
+      a[IllegalUriException] should be thrownBy Host(
+        "[::ffff:1.2.3a.4]"
+      ) // Hex in octet
+      a[IllegalUriException] should be thrownBy Host(
+        "[::ffff:1.2.3.4:123]"
+      ) // Crap input
 
       // Nonhex
       a[IllegalUriException] should be thrownBy Host("[g:0:0:0:0:0:0]")

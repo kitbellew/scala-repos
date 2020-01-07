@@ -93,7 +93,11 @@ trait SystemSettingsService {
         getValue(props, Ssh, false),
         getOptionValue[String](props, SshHost, None).map(_.trim),
         getOptionValue(props, SshPort, Some(DefaultSshPort)),
-        getValue(props, UseSMTP, getValue(props, Notification, false)), // handle migration scenario from only notification to useSMTP
+        getValue(
+          props,
+          UseSMTP,
+          getValue(props, Notification, false)
+        ), // handle migration scenario from only notification to useSMTP
         if (getValue(props, UseSMTP, getValue(props, Notification, false))) {
           Some(
             Smtp(

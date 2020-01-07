@@ -16,6 +16,8 @@ object Build extends Build {
       Resolver.file("real-local", ivyHome / "local")(Resolver.ivyStylePatterns)
     },
     resolvers += Resolver
-      .typesafeIvyRepo("releases") // not sure why this isn't included by default
+      .typesafeIvyRepo(
+        "releases"
+      ) // not sure why this isn't included by default
   )
 }

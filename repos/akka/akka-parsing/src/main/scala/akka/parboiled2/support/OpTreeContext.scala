@@ -660,7 +660,8 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
         case q"RunResult.this.Aux.forFHList[$il, $r, $in, $out]($a)" ⇒
           c.abort(
             argTree.pos,
-            "`run` with a function taking an HList is not yet implemented") // TODO: implement
+            "`run` with a function taking an HList is not yet implemented"
+          ) // TODO: implement
 
         case x ⇒ c.abort(rrTree.pos, "Unexpected RunResult.Aux: " + show(x))
       }

@@ -373,7 +373,9 @@ private[spark] class ExternalSorter[K, V, C](
       override def compare(x: Iter, y: Iter): Int =
         -comparator.compare(x.head._1, y.head._1)
     })
-    heap.enqueue(bufferedIters: _*) // Will contain only the iterators with hasNext = true
+    heap.enqueue(
+      bufferedIters: _*
+    ) // Will contain only the iterators with hasNext = true
     new Iterator[Product2[K, C]] {
       override def hasNext: Boolean = !heap.isEmpty
 

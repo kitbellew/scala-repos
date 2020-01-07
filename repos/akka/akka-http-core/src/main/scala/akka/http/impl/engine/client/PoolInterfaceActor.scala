@@ -154,7 +154,9 @@ private class PoolInterfaceActor(
             s"Exceeded configured max-open-requests value of [${inputBuffer.capacity}]"))
         } else inputBuffer.enqueue(x)
       } else dispatchRequest(x) // if we can dispatch right now, do it
-      request(1) // for every incoming request we demand one response from the pool
+      request(
+        1
+      ) // for every incoming request we demand one response from the pool
 
     case PoolRequest(request, responsePromise) ⇒
       // we have already started shutting down, i.e. this pool is not usable anymore

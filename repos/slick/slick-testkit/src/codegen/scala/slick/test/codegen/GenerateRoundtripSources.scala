@@ -111,13 +111,21 @@ class Tables(val profile: JdbcProfile) {
     def a = column[Option[Int]]("val") // scala keyword collision
     def s = column[Double]("schema_name") // slick Table no-arg method collision
     def sx =
-      column[String]("schema_name_x") // column name collision after disambiguation
+      column[String](
+        "schema_name_x"
+      ) // column name collision after disambiguation
     def t_ag =
-      column[Option[String]]("tag") // column name collision after disambiguation
+      column[Option[String]](
+        "tag"
+      ) // column name collision after disambiguation
     def tt =
-      column[Option[String]]("_table_tag") // column name collision after disambiguation
+      column[Option[String]](
+        "_table_tag"
+      ) // column name collision after disambiguation
     def _underscore =
-      column[Option[String]]("_underscore") // column name collision after disambiguation
+      column[Option[String]](
+        "_underscore"
+      ) // column name collision after disambiguation
     def * = (pk, pk2, a, c, s, sx, i1, p, t_ag, tt, _underscore)
     def idx1 = index("", i1) // idx column collision
     def idx2 = index("i2", i1) // idx column collision

@@ -49,7 +49,9 @@ object Test {
       val mapResult = data map lastHexDigit
       assert(result == mapResult)
       assert((result drop numUnconserved) eq (data drop numUnconserved))
-      assert(callCount == 2 * length) // map, mapConserve call transform for each element in the list
+      assert(
+        callCount == 2 * length
+      ) // map, mapConserve call transform for each element in the list
 
       // Behaves like existing mapConserve with respect to  eq
       checkBehaviourUnchanged(

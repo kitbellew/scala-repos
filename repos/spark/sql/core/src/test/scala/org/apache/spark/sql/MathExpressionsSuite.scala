@@ -199,7 +199,8 @@ class MathExpressionsSuite extends QueryTest with SharedSQLContext {
     checkAnswer(df.selectExpr("""conv("-10", 16, -10)"""), Row("-16"))
     checkAnswer(
       df.selectExpr("""conv("9223372036854775807", 36, -16)"""),
-      Row("-1")) // for overflow
+      Row("-1")
+    ) // for overflow
   }
 
   test("floor") {

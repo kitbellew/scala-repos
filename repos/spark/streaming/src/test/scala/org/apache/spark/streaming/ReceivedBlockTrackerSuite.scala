@@ -65,7 +65,9 @@ class ReceivedBlockTrackerSuite
 
   test("block addition, and block to batch allocation") {
     val receivedBlockTracker = createTracker(setCheckpointDir = false)
-    receivedBlockTracker.isWriteAheadLogEnabled should be(false) // should be disable by default
+    receivedBlockTracker.isWriteAheadLogEnabled should be(
+      false
+    ) // should be disable by default
     receivedBlockTracker.getUnallocatedBlocks(streamId) shouldEqual Seq.empty
 
     val blockInfos = generateBlockInfos()

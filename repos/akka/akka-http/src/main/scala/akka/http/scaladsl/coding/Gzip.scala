@@ -90,13 +90,19 @@ class GzipDecompressor(maxBytesPerChunk: Int = Decoder.MaxBytesPerChunkDefault)
       override def parse(
           reader: ByteStringParser.ByteReader): ParseResult[ByteString] = {
         import reader._
-        if (readByte() != 0x1F || readByte() != 0x8B) fail("Not in GZIP format") // check magic header
-        if (readByte() != 8) fail("Unsupported GZIP compression method") // check compression method
+        if (readByte() != 0x1F || readByte() != 0x8B)
+          fail("Not in GZIP format") // check magic header
+        if (readByte() != 8)
+          fail(
+            "Unsupported GZIP compression method"
+          ) // check compression method
         val flags = readByte()
         skip(6) // skip MTIME, XFL and OS fields
         if ((flags & 4) > 0) skip(readShortLE()) // skip optional extra fields
-        if ((flags & 8) > 0) skipZeroTerminatedString() // skip optional file name
-        if ((flags & 16) > 0) skipZeroTerminatedString() // skip optional file comment
+        if ((flags & 8) > 0)
+          skipZeroTerminatedString() // skip optional file name
+        if ((flags & 16) > 0)
+          skipZeroTerminatedString() // skip optional file comment
         if ((flags & 2) > 0 && crc16(fromStartToHere) != readShortLE())
           fail("Corrupt GZIP header")
 

@@ -22,7 +22,8 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.patterns.{
 object Generator {
   def parse(builder: ScalaPsiBuilder): Boolean = {
     val genMarker = builder.mark
-    if (builder.getTokenType == ScalaTokenTypes.kVAL) builder.advanceLexer() //deprecated
+    if (builder.getTokenType == ScalaTokenTypes.kVAL)
+      builder.advanceLexer() //deprecated
     if (!Pattern1.parse(builder)) {
       genMarker.drop()
       return false

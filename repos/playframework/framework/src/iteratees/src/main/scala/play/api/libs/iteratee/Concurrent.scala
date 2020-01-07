@@ -877,7 +877,9 @@ object Concurrent {
               ref() = newRef
               newRef
             }
-            e |>> refIteratee(newRef) //TODO maybe do something if the enumerator is done, maybe not
+            e |>> refIteratee(
+              newRef
+            ) //TODO maybe do something if the enumerator is done, maybe not
             false
           })
         }

@@ -388,7 +388,9 @@ class MacroOrderingProperties
     val input = arbInput.sample.get
     val hashes = input.map(ord.hash(_))
 
-    assert(input.distinct.size - hashes.distinct.size <= 3) //generously allow upto 3 collision
+    assert(
+      input.distinct.size - hashes.distinct.size <= 3
+    ) //generously allow upto 3 collision
   }
 
   test("Test out Unit") {

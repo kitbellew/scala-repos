@@ -41,7 +41,8 @@ class HDFSStateLaws extends WordSpec {
       val state = HDFSState(
         path,
         startTime = Some(startDate),
-        numBatches = numBatches) //startDate is specified for the first run
+        numBatches = numBatches
+      ) //startDate is specified for the first run
       val preparedState = state.begin
       val requested = preparedState.requested
 

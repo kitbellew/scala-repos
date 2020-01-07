@@ -181,8 +181,12 @@ class BypassMergeSortShuffleWriterSuite
     writer.stop( /* success = */ true)
     assert(temporaryFilesCreated.nonEmpty)
     assert(writer.getPartitionLengths.sum === outputFile.length())
-    assert(writer.getPartitionLengths.count(_ == 0L) === 4) // should be 4 zero length files
-    assert(temporaryFilesCreated.count(_.exists()) === 0) // check that temporary files were deleted
+    assert(
+      writer.getPartitionLengths.count(_ == 0L) === 4
+    ) // should be 4 zero length files
+    assert(
+      temporaryFilesCreated.count(_.exists()) === 0
+    ) // check that temporary files were deleted
     val shuffleWriteMetrics = taskContext.taskMetrics().shuffleWriteMetrics.get
     assert(shuffleWriteMetrics.bytesWritten === outputFile.length())
     assert(shuffleWriteMetrics.recordsWritten === records.length)
@@ -222,7 +226,9 @@ class BypassMergeSortShuffleWriterSuite
     assert(temporaryFilesCreated.count(_.exists()) === 3)
 
     writer.stop( /* success = */ false)
-    assert(temporaryFilesCreated.count(_.exists()) === 0) // check that temporary files were deleted
+    assert(
+      temporaryFilesCreated.count(_.exists()) === 0
+    ) // check that temporary files were deleted
   }
 
   test("cleanup of intermediate files after errors") {

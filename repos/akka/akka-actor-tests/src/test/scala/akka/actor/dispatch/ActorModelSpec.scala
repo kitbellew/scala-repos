@@ -559,7 +559,9 @@ abstract class ActorModelSpec(config: String)
           intercept[ActorInterruptedException](
             Await.result(f5, timeout.duration)).getCause.getMessage === "Ping!")
         c.cancel()
-        Thread.sleep(300) // give the EventFilters a chance of catching all messages
+        Thread.sleep(
+          300
+        ) // give the EventFilters a chance of catching all messages
       }
     }
 

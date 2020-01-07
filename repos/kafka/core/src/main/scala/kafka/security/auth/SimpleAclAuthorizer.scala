@@ -372,7 +372,10 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
       true
     } else {
       debug(s"Updated ACLs for $resource, no change was made")
-      updateCache(resource, newVersionedAcls) // Even if no change, update the version
+      updateCache(
+        resource,
+        newVersionedAcls
+      ) // Even if no change, update the version
       false
     }
   }

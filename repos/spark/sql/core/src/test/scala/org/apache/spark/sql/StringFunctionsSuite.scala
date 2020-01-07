@@ -251,15 +251,21 @@ class StringFunctionsSuite extends QueryTest with SharedSQLContext {
     checkAnswer(df.select(format_number(lit(5L), 4)), Row("5.0000"))
 
     checkAnswer(
-      df.select(format_number(lit(1.toByte), 4)), // convert the 1st argument to integer
+      df.select(
+        format_number(lit(1.toByte), 4)
+      ), // convert the 1st argument to integer
       Row("1.0000"))
 
     checkAnswer(
-      df.select(format_number(lit(2.toShort), 4)), // convert the 1st argument to integer
+      df.select(
+        format_number(lit(2.toShort), 4)
+      ), // convert the 1st argument to integer
       Row("2.0000"))
 
     checkAnswer(
-      df.select(format_number(lit(3.1322.toFloat), 4)), // convert the 1st argument to double
+      df.select(
+        format_number(lit(3.1322.toFloat), 4)
+      ), // convert the 1st argument to double
       Row("3.1322"))
 
     checkAnswer(
@@ -275,15 +281,21 @@ class StringFunctionsSuite extends QueryTest with SharedSQLContext {
       Row("6.4817"))
 
     checkAnswer(
-      df.select(format_number(lit(BigDecimal(7.128381)), 4)), // not convert anything
+      df.select(
+        format_number(lit(BigDecimal(7.128381)), 4)
+      ), // not convert anything
       Row("7.1284"))
 
     intercept[AnalysisException] {
-      df.select(format_number(lit("aa"), 4)) // string type of the 1st argument is unacceptable
+      df.select(
+        format_number(lit("aa"), 4)
+      ) // string type of the 1st argument is unacceptable
     }
 
     intercept[AnalysisException] {
-      df.selectExpr("format_number(4, 6.48173)") // non-integral type 2nd argument is unacceptable
+      df.selectExpr(
+        "format_number(4, 6.48173)"
+      ) // non-integral type 2nd argument is unacceptable
     }
 
     // for testing the mutable state of the expression in code gen.

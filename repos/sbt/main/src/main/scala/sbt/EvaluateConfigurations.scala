@@ -274,7 +274,10 @@ object EvaluateConfigurations {
     * @return A method that given an sbt classloader, can return the actual Seq[Setting[_]] defined by
     *         the expression.
     */
-  @deprecated("Build DSL now includes non-Setting[_] type settings.", "0.13.6") // Note: This method is used by the SET command, so we may want to evaluate that sucker a bit.
+  @deprecated(
+    "Build DSL now includes non-Setting[_] type settings.",
+    "0.13.6"
+  ) // Note: This method is used by the SET command, so we may want to evaluate that sucker a bit.
   def evaluateSetting(
       eval: Eval,
       name: String,
@@ -390,7 +393,10 @@ object Index {
     val pairs =
       for (scope <- data.scopes;
            AttributeEntry(key, value: Task[_]) <- data.data(scope).entries)
-        yield (value, ScopedKey(scope, key.asInstanceOf[AttributeKey[Task[_]]])) // unclear why this cast is needed even with a type test in the above filter
+        yield (
+          value,
+          ScopedKey(scope, key.asInstanceOf[AttributeKey[Task[_]]])
+        ) // unclear why this cast is needed even with a type test in the above filter
     pairs.toMap[Task[_], ScopedKey[Task[_]]]
   }
   def allKeys(settings: Seq[Setting[_]]): Set[ScopedKey[_]] =

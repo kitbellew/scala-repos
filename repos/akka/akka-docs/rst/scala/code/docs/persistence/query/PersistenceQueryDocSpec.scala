@@ -162,7 +162,9 @@ object PersistenceQueryDocSpec {
       .map(envelope => envelope.event)
       .map(convertToReadSideTypes) // convert to datatype
       .grouped(20) // batch inserts into groups of 20
-      .runWith(Sink.fromSubscriber(dbBatchWriter)) // write batches to read-side database
+      .runWith(
+        Sink.fromSubscriber(dbBatchWriter)
+      ) // write batches to read-side database
     //#projection-into-different-store-rs
   }
 

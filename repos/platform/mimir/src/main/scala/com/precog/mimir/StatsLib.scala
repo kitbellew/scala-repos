@@ -101,9 +101,9 @@ trait StatsLibModule[M[+_]]
           median <- if (count % 2 == 0) {
             val middleValues = sortedTable.takeRange((count.toLong / 2) - 1, 2)
             val transformedTable =
-              middleValues.transform(trans.DerefObjectStatic(
-                Leaf(Source),
-                paths.Value)) //todo make function for this
+              middleValues.transform(
+                trans.DerefObjectStatic(Leaf(Source), paths.Value)
+              ) //todo make function for this
             Mean(transformedTable, ctx)
           } else {
             val middleValue =

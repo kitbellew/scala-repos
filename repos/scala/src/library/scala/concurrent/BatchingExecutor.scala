@@ -71,10 +71,14 @@ private[concurrent] trait BatchingExecutor extends Executor {
                   // up to the invoking executor
                   val remaining = _tasksLocal.get
                   _tasksLocal set Nil
-                  unbatchedExecute(new Batch(remaining)) //TODO what if this submission fails?
+                  unbatchedExecute(
+                    new Batch(remaining)
+                  ) //TODO what if this submission fails?
                   throw t // rethrow
               }
-              processBatch(_tasksLocal.get) // since head.run() can add entries, always do _tasksLocal.get here
+              processBatch(
+                _tasksLocal.get
+              ) // since head.run() can add entries, always do _tasksLocal.get here
           }
 
           processBatch(initial)
@@ -106,12 +110,18 @@ private[concurrent] trait BatchingExecutor extends Executor {
     if (batchable(runnable)) { // If we can batch the runnable
       _tasksLocal.get match {
         case null =>
-          unbatchedExecute(new Batch(List(runnable))) // If we aren't in batching mode yet, enqueue batch
+          unbatchedExecute(
+            new Batch(List(runnable))
+          ) // If we aren't in batching mode yet, enqueue batch
         case some =>
-          _tasksLocal.set(runnable :: some) // If we are already in batching mode, add to batch
+          _tasksLocal.set(
+            runnable :: some
+          ) // If we are already in batching mode, add to batch
       }
     } else
-      unbatchedExecute(runnable) // If not batchable, just delegate to underlying
+      unbatchedExecute(
+        runnable
+      ) // If not batchable, just delegate to underlying
   }
 
   /** Override this to define which runnables will be batched. */

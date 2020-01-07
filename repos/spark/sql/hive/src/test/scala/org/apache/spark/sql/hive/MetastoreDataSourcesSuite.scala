@@ -624,7 +624,9 @@ class MetastoreDataSourcesSuite
         .toDF("a")
         .write
         .mode(SaveMode.Append)
-        .saveAsTable("arrayInParquet") // This one internally calls df2.insertInto.
+        .saveAsTable(
+          "arrayInParquet"
+        ) // This one internally calls df2.insertInto.
 
       (Tuple1(Seq(Int.box(6), null: Integer)) :: Nil)
         .toDF("a")
@@ -684,7 +686,9 @@ class MetastoreDataSourcesSuite
         .write
         .format("parquet")
         .mode(SaveMode.Append)
-        .saveAsTable("mapInParquet") // This one internally calls df2.insertInto.
+        .saveAsTable(
+          "mapInParquet"
+        ) // This one internally calls df2.insertInto.
 
       (Tuple1(Map(6 -> null.asInstanceOf[Integer])) :: Nil)
         .toDF("a")

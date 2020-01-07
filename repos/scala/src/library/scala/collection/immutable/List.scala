@@ -80,7 +80,9 @@ import java.io.{ObjectOutputStream, ObjectInputStream}
   *  @define mayNotTerminateInf
   *  @define willNotTerminateInf
   */
-@SerialVersionUID(-6084104484083858598L) // value computed by serialver for 2.11.2, annotation added in 2.11.4
+@SerialVersionUID(
+  -6084104484083858598L
+) // value computed by serialver for 2.11.2, annotation added in 2.11.4
 sealed abstract class List[+A]
     extends AbstractSeq[A]
     with LinearSeq[A]
@@ -440,7 +442,9 @@ case object Nil extends List[Nothing] {
   *  @version 1.0, 15/07/2003
   *  @since   2.8
   */
-@SerialVersionUID(509929039250432923L) // value computed by serialver for 2.11.2, annotation added in 2.11.4
+@SerialVersionUID(
+  509929039250432923L
+) // value computed by serialver for 2.11.2, annotation added in 2.11.4
 final case class ::[B](override val head: B, private[scala] var tl: List[B])
     extends List[B] {
   override def tail: List[B] = tl

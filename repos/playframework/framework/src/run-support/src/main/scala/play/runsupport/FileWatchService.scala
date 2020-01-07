@@ -441,7 +441,8 @@ private[runsupport] object GlobalStaticVar {
       null, // no attributes
       null, // no constructors
       Array(getInfo), // the operation
-      null); // no notifications
+      null
+    ); // no notifications
 
     val mmb = new RequiredModelMBean(mmbi)
     mmb.setManagedResource(reference, "ObjectReference")

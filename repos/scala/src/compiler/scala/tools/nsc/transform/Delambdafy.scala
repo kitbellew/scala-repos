@@ -269,7 +269,9 @@ abstract class Delambdafy
           if (thisProxy.exists)
             Select(gen.mkAttributedThis(newClass), thisProxy)
           else
-            gen.mkAttributedThis(oldClass) // sort of a lie, EmptyTree.<static method> would be more honest, but the backend chokes on that.
+            gen.mkAttributedThis(
+              oldClass
+            ) // sort of a lie, EmptyTree.<static method> would be more honest, but the backend chokes on that.
 
         val body = localTyper typed Apply(Select(qual, target), oldParams)
         body.substituteSymbols(
@@ -546,7 +548,8 @@ abstract class Delambdafy
         val (needsAdapt, adaptedTree) = adapt(tree, pt)
         val trans = postErasure.newTransformer(unit)
         val postErasedTree = trans.atOwner(currentOwner)(
-          trans.transform(adaptedTree)) // SI-8017 eliminates ErasedValueTypes
+          trans.transform(adaptedTree)
+        ) // SI-8017 eliminates ErasedValueTypes
         (needsAdapt, postErasedTree)
       }
 

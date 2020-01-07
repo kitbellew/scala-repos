@@ -362,7 +362,9 @@ object Project extends ProjectExtra {
     lazy val delegates = delegates0
     lazy val settings = settings0
 
-    Dag.topologicalSort(configurations)(_.extendsConfigs) // checks for cyclic references here instead of having to do it in Scope.delegates
+    Dag.topologicalSort(configurations)(
+      _.extendsConfigs
+    ) // checks for cyclic references here instead of having to do it in Scope.delegates
   }
 
   // TODO: add parameter for plugins in 0.14.0
@@ -386,7 +388,8 @@ object Project extends ProjectExtra {
       configurations,
       auto,
       Plugins.empty,
-      Nil) // Note: JvmModule/IvyModule auto included...
+      Nil
+    ) // Note: JvmModule/IvyModule auto included...
 
   /** This is a variation of def apply that mixes in GeneratedRootProject. */
   private[sbt] def mkGeneratedRoot(

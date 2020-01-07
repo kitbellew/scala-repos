@@ -56,7 +56,9 @@ case class HealthCheck(
         if (proto.hasPortIndex)
           Some(proto.getPortIndex)
         else if (!proto.hasPort && proto.getProtocol != Protocol.COMMAND)
-          Some(0) // backward compatibility, this used to be the default value in marathon.proto
+          Some(
+            0
+          ) // backward compatibility, this used to be the default value in marathon.proto
         else
           None,
       command =

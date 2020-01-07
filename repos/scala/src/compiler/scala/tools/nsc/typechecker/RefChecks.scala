@@ -1128,7 +1128,8 @@ abstract class RefChecks
             if fun.symbol == currentRun.runDefinitions.Option_apply =>
           reporter.warning(
             pos,
-            s"Suspicious application of an implicit view (${view.fun}) in the argument to Option.apply.") // SI-6567
+            s"Suspicious application of an implicit view (${view.fun}) in the argument to Option.apply."
+          ) // SI-6567
         case _ =>
       }
 
@@ -1264,7 +1265,9 @@ abstract class RefChecks
           nonSensiblyNeq()
       } else if (isNumeric(receiver)) {
         if (!isNumeric(actual))
-          if (isUnit(actual) || isBoolean(actual) || !isMaybeValue(actual)) // 5 == "abc"
+          if (isUnit(actual) || isBoolean(actual) || !isMaybeValue(
+                actual
+              )) // 5 == "abc"
             nonSensiblyNeq()
       } else if (isWarnable && !isCaseEquals) {
         if (isNew(qual)) // new X == y
@@ -1799,7 +1802,10 @@ abstract class RefChecks
 
       tree foreach {
         case i @ Ident(_) =>
-          enterReference(i.pos, i.symbol) // SI-5390 need to `enterReference` for `a` in `a.B()`
+          enterReference(
+            i.pos,
+            i.symbol
+          ) // SI-5390 need to `enterReference` for `a` in `a.B()`
         case _ =>
       }
       loop(tree)
@@ -1973,7 +1979,9 @@ abstract class RefChecks
             if (tpt.original != null) {
               tpt.original foreach {
                 case dc @ TypeTreeWithDeferredRefCheck() =>
-                  transform(dc.check()) // #2416 -- only call transform to do refchecks, but discard results
+                  transform(
+                    dc.check()
+                  ) // #2416 -- only call transform to do refchecks, but discard results
                 // tpt has the right type if the deferred checks are ok
                 case _ =>
               }
@@ -2039,7 +2047,8 @@ abstract class RefChecks
             if (name != nme.WILDCARD && name != tpnme.WILDCARD_STAR) {
               assert(
                 sym != NoSymbol,
-                "transformCaseApply: name = " + name.debugString + " tree = " + tree + " / " + tree.getClass) //debug
+                "transformCaseApply: name = " + name.debugString + " tree = " + tree + " / " + tree.getClass
+              ) //debug
               enterReference(tree.pos, sym)
             }
             tree
@@ -2048,7 +2057,9 @@ abstract class RefChecks
             transformSelect(x)
 
           case UnApply(fun, args) =>
-            transform(fun) // just make sure we enterReference for unapply symbols, note that super.transform(tree) would not transform(fun)
+            transform(
+              fun
+            ) // just make sure we enterReference for unapply symbols, note that super.transform(tree) would not transform(fun)
             // transformTrees(args) // TODO: is this necessary? could there be forward references in the args??
             // probably not, until we allow parameterised extractors
             tree
@@ -2084,7 +2095,9 @@ abstract class RefChecks
               super.transform(result)
             }
           case ValDef(_, _, _, _) if treeInfo.hasSynthCaseSymbol(result) =>
-            deriveValDef(result)(transform) // SI-7716 Don't refcheck the tpt of the synthetic val that holds the selector.
+            deriveValDef(result)(
+              transform
+            ) // SI-7716 Don't refcheck the tpt of the synthetic val that holds the selector.
           case _ =>
             super.transform(result)
         }

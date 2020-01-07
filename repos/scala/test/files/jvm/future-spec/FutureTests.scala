@@ -892,7 +892,10 @@ class FutureTests extends MinimalScalaTest {
         blocking {
           val nested = Future(())
           for (_ <- nested) l1.open()
-          Await.ready(l1, TestLatch.DefaultTimeout) // make sure nested is completed
+          Await.ready(
+            l1,
+            TestLatch.DefaultTimeout
+          ) // make sure nested is completed
           for (_ <- nested) l2.open()
           Await.ready(l2, TestLatch.DefaultTimeout)
         }

@@ -92,7 +92,9 @@ private class DeploymentActor(
       eventBus.publish(DeploymentStatus(plan, step))
 
       val futures = step.actions.map { action =>
-        healthCheckManager.addAllFor(action.app) // ensure health check actors are in place before tasks are launched
+        healthCheckManager.addAllFor(
+          action.app
+        ) // ensure health check actors are in place before tasks are launched
         action match {
           case StartApplication(app, scaleTo) => startApp(app, scaleTo)
           case ScaleApplication(app, scaleTo, toKill) =>

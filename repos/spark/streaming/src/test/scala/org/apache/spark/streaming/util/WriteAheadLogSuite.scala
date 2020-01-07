@@ -639,7 +639,9 @@ class BatchedWriteAheadLogSuite
     eventually(timeout(1 second)) {
       assert(walBatchingThreadPool.getActiveCount === 3)
       assert(blockingWal.isBlocked)
-      assert(batchedWal.invokePrivate(queueLength()) === 2) // event1 is being written
+      assert(
+        batchedWal.invokePrivate(queueLength()) === 2
+      ) // event1 is being written
     }
 
     val writePromises = Seq(promise1, promise2, promise3)
@@ -647,7 +649,9 @@ class BatchedWriteAheadLogSuite
     batchedWal.close()
     eventually(timeout(1 second)) {
       assert(writePromises.forall(_.isCompleted))
-      assert(writePromises.forall(_.future.value.get.isFailure)) // all should have failed
+      assert(
+        writePromises.forall(_.future.value.get.isFailure)
+      ) // all should have failed
     }
   }
 }

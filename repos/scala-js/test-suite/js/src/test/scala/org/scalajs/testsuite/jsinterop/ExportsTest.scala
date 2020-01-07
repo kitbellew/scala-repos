@@ -1393,7 +1393,9 @@ object ExportNameHolder {
 
 @JSExport
 @JSExport("TheExportedObject")
-@JSExport("qualified.testobject.ExportedObject") // purposefully halfway the same as ExportedClass
+@JSExport(
+  "qualified.testobject.ExportedObject"
+) // purposefully halfway the same as ExportedClass
 @JSExport(ExportNameHolder.objectName)
 object ExportedObject {
   @JSExport
@@ -1415,7 +1417,9 @@ protected object ProtectedExportedObject {
 
 @JSExport
 @JSExport("TheExportedClass")
-@JSExport("qualified.testclass.ExportedClass") // purposefully halfway the same as ExportedObject
+@JSExport(
+  "qualified.testclass.ExportedClass"
+) // purposefully halfway the same as ExportedObject
 @JSExport(ExportNameHolder.className)
 class ExportedClass(_x: Int) {
   @JSExport

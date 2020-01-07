@@ -396,7 +396,9 @@ class ExecutorAllocationManagerSuite
     assert(firstRemoveTime === clock.getTimeMillis + executorIdleTimeout * 1000)
     clock.advance(100L)
     onExecutorIdle(manager, "1")
-    assert(removeTimes(manager)("1") === firstRemoveTime) // timer is already started
+    assert(
+      removeTimes(manager)("1") === firstRemoveTime
+    ) // timer is already started
     clock.advance(200L)
     onExecutorIdle(manager, "1")
     assert(removeTimes(manager)("1") === firstRemoveTime)
@@ -424,7 +426,9 @@ class ExecutorAllocationManagerSuite
     val secondRemoveTime = removeTimes(manager)("1")
     assert(
       secondRemoveTime === clock.getTimeMillis + executorIdleTimeout * 1000)
-    assert(removeTimes(manager)("1") === secondRemoveTime) // timer is already started
+    assert(
+      removeTimes(manager)("1") === secondRemoveTime
+    ) // timer is already started
     assert(removeTimes(manager)("1") !== firstRemoveTime)
     assert(firstRemoveTime !== secondRemoveTime)
   }
@@ -525,7 +529,9 @@ class ExecutorAllocationManagerSuite
     clock.advance(executorIdleTimeout * 1000)
     schedule(manager)
     assert(removeTimes(manager).isEmpty) // idle threshold exceeded
-    assert(executorsPendingToRemove(manager).size === 2) // limit reached (1 executor remaining)
+    assert(
+      executorsPendingToRemove(manager).size === 2
+    ) // limit reached (1 executor remaining)
 
     // Mark a subset as busy - only idle executors should be removed
     onExecutorAdded(manager, "executor-4")
@@ -533,10 +539,15 @@ class ExecutorAllocationManagerSuite
     onExecutorAdded(manager, "executor-6")
     onExecutorAdded(manager, "executor-7")
     assert(removeTimes(manager).size === 5) // 5 active executors
-    assert(executorsPendingToRemove(manager).size === 2) // 2 pending to be removed
+    assert(
+      executorsPendingToRemove(manager).size === 2
+    ) // 2 pending to be removed
     onExecutorBusy(manager, "executor-4")
     onExecutorBusy(manager, "executor-5")
-    onExecutorBusy(manager, "executor-6") // 3 busy and 2 idle (of the 5 active ones)
+    onExecutorBusy(
+      manager,
+      "executor-6"
+    ) // 3 busy and 2 idle (of the 5 active ones)
     schedule(manager)
     assert(removeTimes(manager).size === 2) // remove only idle executors
     assert(!removeTimes(manager).contains("executor-4"))
@@ -564,7 +575,9 @@ class ExecutorAllocationManagerSuite
     clock.advance(executorIdleTimeout * 1000)
     schedule(manager)
     assert(removeTimes(manager).isEmpty)
-    assert(executorsPendingToRemove(manager).size === 6) // limit reached (1 executor remaining)
+    assert(
+      executorsPendingToRemove(manager).size === 6
+    ) // limit reached (1 executor remaining)
   }
 
   test("listeners trigger add executors correctly") {
@@ -648,7 +661,9 @@ class ExecutorAllocationManagerSuite
         createTaskInfo(2, 2, "executor-2"),
         new TaskMetrics))
     assert(removeTimes(manager).size === 4)
-    assert(!removeTimes(manager).contains("executor-1")) // executor-1 has not finished yet
+    assert(
+      !removeTimes(manager).contains("executor-1")
+    ) // executor-1 has not finished yet
     assert(removeTimes(manager).contains("executor-2"))
     sc.listenerBus.postToAll(
       SparkListenerTaskEnd(
@@ -659,7 +674,9 @@ class ExecutorAllocationManagerSuite
         createTaskInfo(1, 1, "executor-1"),
         new TaskMetrics))
     assert(removeTimes(manager).size === 5)
-    assert(removeTimes(manager).contains("executor-1")) // executor-1 has now finished
+    assert(
+      removeTimes(manager).contains("executor-1")
+    ) // executor-1 has now finished
   }
 
   test("listeners trigger add and remove executor callbacks correctly") {

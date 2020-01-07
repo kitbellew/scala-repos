@@ -188,7 +188,10 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         .flatMap(_.validated[BlobMetadata])
         .disjunction
         .map { metadata =>
-          FileBlobResource(new File(versionDir, "data"), metadata) //(actorSystem.dispatcher)
+          FileBlobResource(
+            new File(versionDir, "data"),
+            metadata
+          ) //(actorSystem.dispatcher)
         } leftMap {
         ResourceError.fromExtractorError(
           "Error reading metadata from versionDir %s".format(

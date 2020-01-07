@@ -459,7 +459,8 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
         case logical @ LogicalRelation(
               parquetRelation: HadoopFsRelation,
               _,
-              _) => // OK
+              _
+            ) => // OK
         case other =>
           fail(
             "The cached test_parquet should be a Parquet Relation. " +

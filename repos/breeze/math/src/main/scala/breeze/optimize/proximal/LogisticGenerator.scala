@@ -23,7 +23,9 @@ object LogisticGenerator {
         val gradient = brzData * gradientMultiplier
         val loss =
           if (labels(i) > 0) {
-            math.log1p(math.exp(margin)) // log1p is log(1+p) but more accurate for small p
+            math.log1p(
+              math.exp(margin)
+            ) // log1p is log(1+p) but more accurate for small p
           } else {
             math.log1p(math.exp(margin)) - margin
           }

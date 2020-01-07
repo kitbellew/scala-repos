@@ -48,7 +48,9 @@ class ParamGridBuilderSuite extends SparkFunSuite {
     validateGrid(maps0, expected0)
 
     val maps1 = new ParamGridBuilder()
-      .baseOn(ParamMap(maxIter -> 5, inputCol -> "input")) // will be overwritten
+      .baseOn(
+        ParamMap(maxIter -> 5, inputCol -> "input")
+      ) // will be overwritten
       .addGrid(maxIter, Array(10, 20))
       .addGrid(inputCol, Array("input0", "input1"))
       .build()

@@ -499,7 +499,8 @@ private[twitter] object Message {
             (
               SpanId(buf.readLong()), // spanId
               SpanId(buf.readLong()), // parentId
-              SpanId(buf.readLong())) // traceId
+              SpanId(buf.readLong())
+            ) // traceId
           )
 
         case Treq.Keys.TraceFlag =>

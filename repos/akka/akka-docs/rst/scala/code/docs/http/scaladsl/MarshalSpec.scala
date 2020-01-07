@@ -32,7 +32,10 @@ class MarshalSpec extends AkkaSpec {
     val responseText = "Plaintext"
     val respFuture = Marshal(responseText).toResponseFor(request) // with content negotiation!
     a[Marshal.UnacceptableResponseContentTypeException] should be thrownBy {
-      Await.result(respFuture, 1.second) // client requested JSON, we only have text/plain!
+      Await.result(
+        respFuture,
+        1.second
+      ) // client requested JSON, we only have text/plain!
     }
   }
 

@@ -188,7 +188,9 @@ class MacroExpandAction extends AnAction {
             PsiManager.getInstance(e.getProject))
         reformatCode(newPsi)
         newPsi.firstChild match {
-          case Some(block: ScBlock) => // insert content of block expression(annotation can generate >1 expression)
+          case Some(
+              block: ScBlock
+              ) => // insert content of block expression(annotation can generate >1 expression)
             val children = block.getChildren
             block.children
               .find(_.isInstanceOf[ScalaPsiElement])

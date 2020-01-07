@@ -153,7 +153,9 @@ trait ScTypeDefinition
       obj.setSyntheticObject()
       obj.members.foreach {
         case s: ScFunctionDefinition =>
-          s.setSynthetic(this) // So we find the `apply` method in ScalaPsiUtil.syntheticParamForParam
+          s.setSynthetic(
+            this
+          ) // So we find the `apply` method in ScalaPsiUtil.syntheticParamForParam
           this match {
             case clazz: ScClass if clazz.isCase =>
               s.syntheticCaseClass = Some(clazz)
