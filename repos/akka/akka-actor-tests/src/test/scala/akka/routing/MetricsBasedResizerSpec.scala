@@ -127,7 +127,8 @@ class MetricsBasedResizerSpec
       resizer.record.totalQueueLength shouldBe 0
 
       router.sendToAll(await = true)
-      router.mockSend(await = false
+      router.mockSend(await =
+        false
       ) // test one message in mailbox and one in each ActorCell
 
       resizer.reportMessageCount(router.routees, router.msgs.size)

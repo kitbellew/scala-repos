@@ -394,7 +394,8 @@ trait Contexts { self: Analyzer =>
             // immediate reporting of ambiguous errors is suppressed, so that they are buffered
             inSilentMode {
               try {
-                set(disable = ImplicitsEnabled | EnrichmentEnabled
+                set(disable =
+                  ImplicitsEnabled | EnrichmentEnabled
                 ) // restored by inSilentMode
                 tryOnce(false)
                 reporter.hasErrors
