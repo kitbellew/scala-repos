@@ -97,8 +97,8 @@ class BlockJoinPipeTest extends WordSpec with Matchers {
     }
 
     "throw an exception when used with OuterJoin" in {
-      an[InvalidJoinModeException] should be thrownBy runJobWithArguments(joiner =
-        "o") { _ =>
+      an[InvalidJoinModeException] should be thrownBy runJobWithArguments(
+        joiner = "o") { _ =>
       }
     }
 

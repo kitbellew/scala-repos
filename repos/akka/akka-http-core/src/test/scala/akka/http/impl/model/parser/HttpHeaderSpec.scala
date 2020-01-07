@@ -83,8 +83,8 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
     }
 
     "Access-Control-Allow-Credentials" in {
-      "Access-Control-Allow-Credentials: true" =!= `Access-Control-Allow-Credentials`(allow =
-        true)
+      "Access-Control-Allow-Credentials: true" =!= `Access-Control-Allow-Credentials`(
+        allow = true)
     }
 
     "Access-Control-Allow-Headers" in {
@@ -565,8 +565,8 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
     }
 
     "Strict-Transport-Security" in {
-      "Strict-Transport-Security: max-age=31536000" =!= `Strict-Transport-Security`(maxAge =
-        31536000)
+      "Strict-Transport-Security: max-age=31536000" =!= `Strict-Transport-Security`(
+        maxAge = 31536000)
       "Strict-Transport-Security: max-age=31536000" =!= `Strict-Transport-Security`(
         maxAge = 31536000,
         includeSubDomains = false)

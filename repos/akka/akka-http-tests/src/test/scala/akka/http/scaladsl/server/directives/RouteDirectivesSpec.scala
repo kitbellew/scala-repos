@@ -48,8 +48,8 @@ class RouteDirectivesSpec extends FreeSpec with GenericRoutingSpec {
           responseAs[String] shouldEqual "yes"
         }
       }
-      "for failed futures and marshalling" in EventFilter[RuntimeException](occurrences =
-        1).intercept {
+      "for failed futures and marshalling" in EventFilter[RuntimeException](
+        occurrences = 1).intercept {
         object TestException extends RuntimeException
         Get() ~> complete(Promise.failed[String](TestException).future) ~>
           check {

@@ -77,7 +77,8 @@ class ClientServerSpec
       sub.cancel()
     }
 
-    "report failure if bind fails" in EventFilter[BindException](occurrences = 2)
+    "report failure if bind fails" in EventFilter[BindException](
+      occurrences = 2)
       .intercept {
         val (_, hostname, port) = TestUtils.temporaryServerHostnameAndPort()
         val binding = Http().bind(hostname, port)

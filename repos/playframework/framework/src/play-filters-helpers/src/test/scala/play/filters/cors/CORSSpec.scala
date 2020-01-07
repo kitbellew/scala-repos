@@ -42,8 +42,8 @@ object CORSFilterSpec extends CORSCommonSpec {
     val restrictPaths =
       Map("play.filters.cors.pathPrefixes" -> Seq("/foo", "/bar"))
 
-    "pass through a cors request that doesn't match the path prefixes" in withApplication(conf =
-      restrictPaths) {
+    "pass through a cors request that doesn't match the path prefixes" in withApplication(
+      conf = restrictPaths) {
       val result = route(
         fakeRequest("GET", "/baz")
           .withHeaders(ORIGIN -> "http://localhost")).get
@@ -383,8 +383,8 @@ trait CORSCommonSpec extends PlaySpecification {
     val noCredentialsConf = Map(
       "play.filters.cors.supportsCredentials" -> "false")
 
-    "handle a preflight request with credentials support off" in withApplication(conf =
-      noCredentialsConf) {
+    "handle a preflight request with credentials support off" in withApplication(
+      conf = noCredentialsConf) {
       val result = route(
         fakeRequest("OPTIONS", "/").withHeaders(
           ORIGIN -> "http://localhost",
@@ -399,8 +399,8 @@ trait CORSCommonSpec extends PlaySpecification {
       header(ACCESS_CONTROL_MAX_AGE, result) must beSome("3600")
     }
 
-    "handle a simple cross-origin request with credentials support off" in withApplication(conf =
-      noCredentialsConf) {
+    "handle a simple cross-origin request with credentials support off" in withApplication(
+      conf = noCredentialsConf) {
       val result = route(
         fakeRequest("GET", "/").withHeaders(ORIGIN -> "http://localhost")).get
 
@@ -416,8 +416,8 @@ trait CORSCommonSpec extends PlaySpecification {
     val noPreflightCache = Map(
       "play.filters.cors.preflightMaxAge" -> "0 seconds")
 
-    "handle a preflight request with preflight caching off" in withApplication(conf =
-      noPreflightCache) {
+    "handle a preflight request with preflight caching off" in withApplication(
+      conf = noPreflightCache) {
       val result = route(
         fakeRequest("OPTIONS", "/").withHeaders(
           ORIGIN -> "http://localhost",
@@ -436,8 +436,8 @@ trait CORSCommonSpec extends PlaySpecification {
 
     val customMaxAge = Map("play.filters.cors.preflightMaxAge" -> "30 minutes")
 
-    "handle a preflight request with custom preflight cache max age" in withApplication(conf =
-      customMaxAge) {
+    "handle a preflight request with custom preflight cache max age" in withApplication(
+      conf = customMaxAge) {
       val result = route(
         fakeRequest("OPTIONS", "/").withHeaders(
           ORIGIN -> "http://localhost",
@@ -457,8 +457,8 @@ trait CORSCommonSpec extends PlaySpecification {
     val restrictMethods = Map(
       "play.filters.cors.allowedHttpMethods" -> Seq("GET", "HEAD", "POST"))
 
-    "forbid a preflight request with a retricted request method" in withApplication(conf =
-      restrictMethods) {
+    "forbid a preflight request with a retricted request method" in withApplication(
+      conf = restrictMethods) {
       val result = route(
         fakeRequest("OPTIONS", "/").withHeaders(
           ORIGIN -> "http://localhost",
@@ -471,8 +471,8 @@ trait CORSCommonSpec extends PlaySpecification {
     val restrictHeaders = Map(
       "play.filters.cors.allowedHttpHeaders" -> Seq("X-Header1"))
 
-    "forbid a preflight request with a retricted request header" in withApplication(conf =
-      restrictHeaders) {
+    "forbid a preflight request with a retricted request header" in withApplication(
+      conf = restrictHeaders) {
       val result = route(
         fakeRequest("OPTIONS", "/").withHeaders(
           ORIGIN -> "http://localhost",
@@ -486,8 +486,8 @@ trait CORSCommonSpec extends PlaySpecification {
     val exposeHeaders = Map(
       "play.filters.cors.exposedHeaders" -> Seq("X-Header1", "X-Header2"))
 
-    "handle a cors request with exposed headers configured" in withApplication(conf =
-      exposeHeaders) {
+    "handle a cors request with exposed headers configured" in withApplication(
+      conf = exposeHeaders) {
       val result =
         route(fakeRequest().withHeaders(ORIGIN -> "http://localhost")).get
 
@@ -508,8 +508,8 @@ trait CORSCommonSpec extends PlaySpecification {
         "http://example.org",
         "http://localhost:9000"))
 
-    "forbid a preflight request with a retricted origin" in withApplication(conf =
-      restrictOrigins) {
+    "forbid a preflight request with a retricted origin" in withApplication(
+      conf = restrictOrigins) {
       val result = route(
         fakeRequest("OPTIONS", "/").withHeaders(
           ORIGIN -> "http://localhost",
