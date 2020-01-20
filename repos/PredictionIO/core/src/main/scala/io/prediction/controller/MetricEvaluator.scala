@@ -193,8 +193,10 @@ class MetricEvaluator[EI, Q, P, A, R](
       id = s"$evalClassName $now",
       description = "",
       engineFactory = evalClassName,
-      datasource = new MetricEvaluator.NameParams(engineParams.dataSourceParams),
-      preparator = new MetricEvaluator.NameParams(engineParams.preparatorParams),
+      datasource =
+        new MetricEvaluator.NameParams(engineParams.dataSourceParams),
+      preparator =
+        new MetricEvaluator.NameParams(engineParams.preparatorParams),
       algorithms = engineParams.algorithmParamsList.map(np =>
         new MetricEvaluator.NameParams(np)),
       serving = new MetricEvaluator.NameParams(engineParams.servingParams)

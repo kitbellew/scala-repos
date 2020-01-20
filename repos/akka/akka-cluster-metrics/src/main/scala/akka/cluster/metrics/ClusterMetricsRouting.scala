@@ -147,7 +147,8 @@ final case class AdaptiveLoadBalancingPool(
 
   def this(config: Config, dynamicAccess: DynamicAccess) =
     this(
-      nrOfInstances = ClusterRouterSettingsBase.getMaxTotalNrOfInstances(config),
+      nrOfInstances =
+        ClusterRouterSettingsBase.getMaxTotalNrOfInstances(config),
       metricsSelector = MetricsSelector.fromConfig(config, dynamicAccess),
       usePoolDispatcher = config.hasPath("pool-dispatcher"))
 

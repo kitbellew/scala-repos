@@ -364,7 +364,8 @@ class ExtractionsTest {
     val article = TestUtils.getArticle(url, html)
     TestUtils.runArticleAssertions(
       article = article,
-      expectedStart = "If the newest Census Bureau estimates stay close to form")
+      expectedStart =
+        "If the newest Census Bureau estimates stay close to form")
   }
   @Test
   def businessinsider1() {
@@ -463,7 +464,8 @@ class ExtractionsTest {
     val article = TestUtils.getArticle(url, html)
     TestUtils.runArticleAssertions(
       article = article,
-      expectedStart = "Opposition to a proposal to remove certain personal data",
+      expectedStart =
+        "Opposition to a proposal to remove certain personal data",
       expectedImage = null)
   }
 

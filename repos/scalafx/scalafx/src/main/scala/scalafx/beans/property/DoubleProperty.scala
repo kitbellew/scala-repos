@@ -45,8 +45,9 @@ object DoubleProperty {
     new DoubleProperty(new jfxbp.SimpleDoubleProperty(value))
 }
 
-class DoubleProperty(override val delegate: jfxbp.DoubleProperty =
-  new jfxbp.SimpleDoubleProperty)
+class DoubleProperty(
+    override val delegate: jfxbp.DoubleProperty =
+      new jfxbp.SimpleDoubleProperty)
     extends ReadOnlyDoubleProperty(delegate)
     with Property[Double, Number]
     with SFXDelegate[jfxbp.DoubleProperty] {

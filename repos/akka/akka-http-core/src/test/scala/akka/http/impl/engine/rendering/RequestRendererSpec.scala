@@ -360,7 +360,8 @@ class RequestRendererSpec
   class TestSetup(
       val userAgent: Option[`User-Agent`] = Some(
         `User-Agent`("akka-http/1.0.0")),
-      serverAddress: InetSocketAddress = new InetSocketAddress("test.com", 8080))
+      serverAddress: InetSocketAddress =
+        new InetSocketAddress("test.com", 8080))
       extends HttpRequestRendererFactory(
         userAgent,
         requestHeaderSizeHint = 64,

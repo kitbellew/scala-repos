@@ -348,7 +348,8 @@ trait JdbcBackend extends RelationalBackend {
     final def prepareStatement(
         sql: String,
         defaultType: ResultSetType = ResultSetType.ForwardOnly,
-        defaultConcurrency: ResultSetConcurrency = ResultSetConcurrency.ReadOnly,
+        defaultConcurrency: ResultSetConcurrency =
+          ResultSetConcurrency.ReadOnly,
         defaultHoldability: ResultSetHoldability = ResultSetHoldability.Default)
         : PreparedStatement = {
       JdbcBackend.logStatement("Preparing statement", sql)
@@ -405,7 +406,8 @@ trait JdbcBackend extends RelationalBackend {
 
     final def createStatement(
         defaultType: ResultSetType = ResultSetType.ForwardOnly,
-        defaultConcurrency: ResultSetConcurrency = ResultSetConcurrency.ReadOnly,
+        defaultConcurrency: ResultSetConcurrency =
+          ResultSetConcurrency.ReadOnly,
         defaultHoldability: ResultSetHoldability = ResultSetHoldability.Default)
         : Statement = {
       val s = loggingStatement(
@@ -429,7 +431,8 @@ trait JdbcBackend extends RelationalBackend {
     final def withPreparedStatement[T](
         sql: String,
         defaultType: ResultSetType = ResultSetType.ForwardOnly,
-        defaultConcurrency: ResultSetConcurrency = ResultSetConcurrency.ReadOnly,
+        defaultConcurrency: ResultSetConcurrency =
+          ResultSetConcurrency.ReadOnly,
         defaultHoldability: ResultSetHoldability = ResultSetHoldability.Default)(
         f: (PreparedStatement => T)): T = {
       val st = prepareStatement(
@@ -463,7 +466,8 @@ trait JdbcBackend extends RelationalBackend {
     /** A wrapper around the JDBC Connection's createStatement method, that automatically closes the statement. */
     final def withStatement[T](
         defaultType: ResultSetType = ResultSetType.ForwardOnly,
-        defaultConcurrency: ResultSetConcurrency = ResultSetConcurrency.ReadOnly,
+        defaultConcurrency: ResultSetConcurrency =
+          ResultSetConcurrency.ReadOnly,
         defaultHoldability: ResultSetHoldability = ResultSetHoldability.Default)(
         f: (Statement => T)): T = {
       val st =

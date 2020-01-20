@@ -983,7 +983,8 @@ class MetastoreDataSourcesSuite
       partitionColumns = Array.empty[String],
       bucketSpec = None,
       provider = "parquet",
-      options = Map("path" -> "just a dummy path", "skipHiveMetadata" -> "true"),
+      options =
+        Map("path" -> "just a dummy path", "skipHiveMetadata" -> "true"),
       isExternal = false
     )
 

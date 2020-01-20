@@ -43,7 +43,8 @@ case class OffsetConfig(
       OffsetConfig.DefaultOffsetsRetentionCheckIntervalMs,
     offsetsTopicNumPartitions: Int =
       OffsetConfig.DefaultOffsetsTopicNumPartitions,
-    offsetsTopicSegmentBytes: Int = OffsetConfig.DefaultOffsetsTopicSegmentBytes,
+    offsetsTopicSegmentBytes: Int =
+      OffsetConfig.DefaultOffsetsTopicSegmentBytes,
     offsetsTopicReplicationFactor: Short =
       OffsetConfig.DefaultOffsetsTopicReplicationFactor,
     offsetsTopicCompressionCodec: CompressionCodec =

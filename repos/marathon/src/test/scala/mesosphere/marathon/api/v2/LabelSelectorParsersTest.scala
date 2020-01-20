@@ -90,8 +90,9 @@ class LabelSelectorParsersTest extends MarathonSpec with Matchers {
     val combined = parser.parsed(
       """\{\{\{ in (\*\*\*, \&\&\&, \$\$\$), \^\^\^ notin (\-\-\-, \!\!\!, \@\@\@), \#\#\#""")
     combined.selectors should have size 3
-    combined.matches(AppDefinition(labels =
-      Map("{{{" -> "&&&", "^^^" -> "&&&", "###" -> "&&&"))) should be(true)
+    combined.matches(
+      AppDefinition(labels =
+        Map("{{{" -> "&&&", "^^^" -> "&&&", "###" -> "&&&"))) should be(true)
     combined.matches(AppDefinition(labels = Map("^^^" -> "---"))) should be(
       false)
     combined.matches(AppDefinition(labels = Map("###" -> "four"))) should be(

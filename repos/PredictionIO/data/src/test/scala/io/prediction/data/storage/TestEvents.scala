@@ -119,7 +119,8 @@ trait TestEvents {
 
   val u3e3 = u3e1.copy(
     event = "$set",
-    properties = DataMap("""{"b" : "value10", "f": "new12", "d" : [1, 3, 2]}"""),
+    properties =
+      DataMap("""{"b" : "value10", "f": "new12", "d" : [1, 3, 2]}"""),
     eventTime = u3BaseTime.plusDays(2)
   )
 

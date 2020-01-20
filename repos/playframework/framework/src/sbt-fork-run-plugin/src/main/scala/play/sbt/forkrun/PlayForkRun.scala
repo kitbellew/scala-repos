@@ -128,7 +128,8 @@ object PlayForkRun extends AutoPlugin {
     ForkConfig(
       projectDirectory = baseDirectory.value,
       javaOptions = (javaOptions in Runtime).value,
-      dependencyClasspath = PlayInternalKeys.playDependencyClasspath.value.files,
+      dependencyClasspath =
+        PlayInternalKeys.playDependencyClasspath.value.files,
       allAssets = PlayInternalKeys.playAllAssets.value,
       docsClasspath = (managedClasspath in PlayRun.DocsApplication).value.files,
       docsJar = PlayKeys.playDocsJar.value,

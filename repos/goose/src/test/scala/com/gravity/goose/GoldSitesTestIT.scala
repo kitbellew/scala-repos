@@ -392,7 +392,8 @@ class GoldSitesTestIT {
     val article = TestUtils.getArticle(url)
     TestUtils.runArticleAssertions(
       article = article,
-      expectedStart = "Opposition to a proposal to remove certain personal data")
+      expectedStart =
+        "Opposition to a proposal to remove certain personal data")
 
   }
   @Test
@@ -715,7 +716,8 @@ class GoldSitesTestIT {
     val article = TestUtils.getArticle(url)
     TestUtils.runArticleAssertions(
       article = article,
-      expectedStart = "If the newest Census Bureau estimates stay close to form",
+      expectedStart =
+        "If the newest Census Bureau estimates stay close to form",
       expectedImage =
         "http://images.politico.com/global/news/100927_obama22_ap_328.jpg"
     )

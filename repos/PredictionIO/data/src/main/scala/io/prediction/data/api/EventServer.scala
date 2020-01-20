@@ -398,7 +398,8 @@ class EventServiceActor(
                                     eventNames = eventName.map(List(_)),
                                     targetEntityType =
                                       targetEntityType.map(Some(_)),
-                                    targetEntityId = targetEntityId.map(Some(_)),
+                                    targetEntityId =
+                                      targetEntityId.map(Some(_)),
                                     limit = limit.orElse(Some(20)),
                                     reversed = reversed
                                   )

@@ -109,7 +109,8 @@ object ForkRun {
       reloadCompile = reloadCompile,
       reloaderClassLoader = Reloader.createDelegatedResourcesClassLoader,
       assetsClassLoader = Reloader.assetsClassLoader(config.allAssets),
-      commonClassLoader = Reloader.commonClassLoader(config.dependencyClasspath),
+      commonClassLoader =
+        Reloader.commonClassLoader(config.dependencyClasspath),
       monitoredFiles = config.monitoredFiles,
       fileWatchService = watchService,
       docsClasspath = config.docsClasspath,

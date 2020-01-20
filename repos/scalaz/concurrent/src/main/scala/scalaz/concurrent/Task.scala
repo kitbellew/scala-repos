@@ -425,8 +425,9 @@ object Task {
     new Task(Future.async(register))
 
   def schedule[A](a: => A, delay: Duration)(
-      implicit pool: ScheduledExecutorService = Strategy.DefaultTimeoutScheduler)
-      : Task[A] = new Task(Future.schedule(Try(a), delay))
+      implicit pool: ScheduledExecutorService =
+        Strategy.DefaultTimeoutScheduler): Task[A] =
+    new Task(Future.schedule(Try(a), delay))
 
   /**
     * Like `Nondeterminism[Task].gatherUnordered`, but if `exceptionCancels` is true,

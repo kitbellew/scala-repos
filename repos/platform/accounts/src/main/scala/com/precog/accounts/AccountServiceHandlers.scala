@@ -389,9 +389,11 @@ class AccountServiceHandlers(
               }
 
             case _ =>
-              Promise.successful(HttpResponse[JValue](
-                HttpStatus(NotFound),
-                content = Some(JString("Unable to find account " + accountId))))
+              Promise.successful(
+                HttpResponse[JValue](
+                  HttpStatus(NotFound),
+                  content =
+                    Some(JString("Unable to find account " + accountId))))
           }
         } getOrElse {
           Future(badRequest("Missing account Id"))
@@ -732,7 +734,8 @@ class AccountServiceHandlers(
                     .format(account.accountId, remoteIpFrom(request)))
                 HttpResponse[JValue](
                   OK,
-                  content = Some(jobject(jfield("type", account.plan.planType))))
+                  content =
+                    Some(jobject(jfield("type", account.plan.planType))))
               case _ =>
                 logger.error(
                   "Account plan for %s deletion by %s failed"

@@ -80,7 +80,8 @@ private[hive] object HiveSerDe {
             Option("org.apache.hadoop.mapred.SequenceFileOutputFormat")),
       "rcfile" ->
         HiveSerDe(
-          inputFormat = Option("org.apache.hadoop.hive.ql.io.RCFileInputFormat"),
+          inputFormat =
+            Option("org.apache.hadoop.hive.ql.io.RCFileInputFormat"),
           outputFormat =
             Option("org.apache.hadoop.hive.ql.io.RCFileOutputFormat"),
           serde =
@@ -373,7 +374,8 @@ private[hive] class HiveMetastoreCatalog(
         name = TableIdentifier(tblName, Option(dbName)),
         tableType = tableType,
         storage = CatalogStorageFormat(
-          locationUri = Some(relation.location.paths.map(_.toUri.toString).head),
+          locationUri =
+            Some(relation.location.paths.map(_.toUri.toString).head),
           inputFormat = serde.inputFormat,
           outputFormat = serde.outputFormat,
           serde = serde.serde,

@@ -296,7 +296,8 @@ object SQLConf {
     booleanConf(
       "spark.sql.inMemoryColumnarStorage.partitionPruning",
       defaultValue = Some(true),
-      doc = "When true, enable partition pruning for in-memory columnar tables.",
+      doc =
+        "When true, enable partition pruning for in-memory columnar tables.",
       isPublic = false
     )
 

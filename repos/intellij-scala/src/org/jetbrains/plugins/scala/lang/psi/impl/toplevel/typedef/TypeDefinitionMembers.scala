@@ -987,7 +987,8 @@ object TypeDefinitionMembers {
       types: Lazy[TypeNodes.Map],
       isSupers: Boolean,
       isObject: Boolean,
-      signaturesForJava: Lazy[SignatureNodes.Map] = () => new SignatureNodes.Map,
+      signaturesForJava: Lazy[SignatureNodes.Map] = () =>
+        new SignatureNodes.Map,
       syntheticMethods: Lazy[Seq[(Signature, SignatureNodes.Node)]] = () =>
         Seq.empty): Boolean = {
     val substK = state.get(ScSubstitutor.key)

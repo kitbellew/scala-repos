@@ -73,7 +73,8 @@ object Trophy {
           key = "marathonSurvivor",
           name = "Marathon #1 survivor",
           icon = ",".some,
-          url = "http://lichess.org/blog/VXF45yYAAPQgLH4d/chess-marathon-1".some,
+          url =
+            "http://lichess.org/blog/VXF45yYAAPQgLH4d/chess-marathon-1".some,
           "fire_trophy".some)
 
     object BongcloudWarrior

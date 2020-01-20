@@ -56,7 +56,8 @@ object EnsimeConfigFixture {
 
   // not completely empty, has a reference to the scala-library jar
   lazy val EmptyTestProject: EnsimeConfig = EnsimeTestProject.copy(
-    subprojects = EnsimeTestProject.subprojects.filter(_.name == "testingEmpty"),
+    subprojects =
+      EnsimeTestProject.subprojects.filter(_.name == "testingEmpty"),
     javaLibs = Nil
   )
   lazy val SimpleTestProject: EnsimeConfig = EnsimeTestProject.copy(

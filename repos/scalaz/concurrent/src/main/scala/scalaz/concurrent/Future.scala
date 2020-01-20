@@ -493,8 +493,8 @@ object Future {
 
   /** Create a `Future` that will evaluate `a` after at least the given delay. */
   def schedule[A](a: => A, delay: Duration)(
-      implicit pool: ScheduledExecutorService = Strategy.DefaultTimeoutScheduler)
-      : Future[A] =
+      implicit pool: ScheduledExecutorService =
+        Strategy.DefaultTimeoutScheduler): Future[A] =
     Async { cb =>
       pool.schedule(new Callable[Unit] {
         def call = cb(a).run

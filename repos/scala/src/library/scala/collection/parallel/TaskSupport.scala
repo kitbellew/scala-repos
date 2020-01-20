@@ -81,7 +81,8 @@ class ThreadPoolTaskSupport(
   *
   *  @see [[scala.collection.parallel.TaskSupport]] for more information.
   */
-class ExecutionContextTaskSupport(val environment: ExecutionContext =
-  scala.concurrent.ExecutionContext.global)
+class ExecutionContextTaskSupport(
+    val environment: ExecutionContext =
+      scala.concurrent.ExecutionContext.global)
     extends TaskSupport
     with ExecutionContextTasks

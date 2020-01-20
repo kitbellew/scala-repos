@@ -1364,7 +1364,8 @@ trait Contexts { self: Analyzer =>
     *  To handle nested contexts, reporters share buffers. TODO: only buffer in BufferingReporter, emit immediately in ImmediateReporter
     */
   abstract class ContextReporter(
-      private[this] var _errorBuffer: mutable.LinkedHashSet[AbsTypeError] = null,
+      private[this] var _errorBuffer: mutable.LinkedHashSet[AbsTypeError] =
+        null,
       private[this] var _warningBuffer: mutable.LinkedHashSet[
         (Position, String)] = null)
       extends Reporter {
