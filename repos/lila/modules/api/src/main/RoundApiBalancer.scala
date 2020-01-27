@@ -46,14 +46,14 @@ private[api] final class RoundApiBalancer(
           val logger = RoundApiBalancer.this.logger
           def process = {
             case Player(pov, apiVersion, ctx) => {
-              api.player(pov, apiVersion)(ctx) addFailureEffect { e =>
-                logger.error(pov.toString, e)
-              }
-            }.chronometer
-              .logIfSlow(500, logger) { _ =>
-                s"inner player $pov"
-              }
-              .result
+                api.player(pov, apiVersion)(ctx) addFailureEffect { e =>
+                  logger.error(pov.toString, e)
+                }
+              }.chronometer
+                .logIfSlow(500, logger) { _ =>
+                  s"inner player $pov"
+                }
+                .result
             case Watcher(
                 pov,
                 apiVersion,

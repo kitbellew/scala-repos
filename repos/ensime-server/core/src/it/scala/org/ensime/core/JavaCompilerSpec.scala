@@ -178,15 +178,15 @@ class JavaCompilerSpec
                   if f.getName == "Test2.java" =>
             }
           case "7" => {}
-          info.name shouldBe "org.example.Test1.compute(int,int)"
-          info.localName shouldBe "compute"
-          info.`type`.name shouldBe "(int,int)int"
-          info.isCallable shouldBe true
-          info.declPos should matchPattern {
-            case Some(OffsetSourcePosition(f, 481))
-                if f.getName == "Test1.java" =>
-          }
-        case "8" =>
+            info.name shouldBe "org.example.Test1.compute(int,int)"
+            info.localName shouldBe "compute"
+            info.`type`.name shouldBe "(int,int)int"
+            info.isCallable shouldBe true
+            info.declPos should matchPattern {
+              case Some(OffsetSourcePosition(f, 481))
+                  if f.getName == "Test1.java" =>
+            }
+          case "8" =>
             info.name shouldBe "org.example.Test1.CONST"
             info.localName shouldBe "CONST"
             info.`type`.name shouldBe "int"

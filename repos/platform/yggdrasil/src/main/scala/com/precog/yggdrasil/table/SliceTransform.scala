@@ -926,14 +926,14 @@ trait SliceTransforms[M[+_]]
         case (Identity, stb) =>
           SliceTransform1S((sta.initial, stb.initial), {
             case ((_, b0), s0) => { (b: B) =>
-              (sta.initial, b)
-            } <-: stb.f0(b0, s0)
+                (sta.initial, b)
+              } <-: stb.f0(b0, s0)
           })
         case (sta, Identity) =>
           SliceTransform1S((sta.initial, stb.initial), {
             case ((a0, _), s0) => { (a: A) =>
-              (a, stb.initial)
-            } <-: sta.f0(a0, s0)
+                (a, stb.initial)
+              } <-: sta.f0(a0, s0)
           })
         case (SliceTransform1S(i1, f1), SliceTransform1S(i2, f2)) =>
           SliceTransform1S((i1, i2), {
@@ -1256,8 +1256,8 @@ trait SliceTransforms[M[+_]]
         case (sta, SliceTransform1.Identity) =>
           SliceTransform2S((sta.initial, stb.initial), {
             case ((a0, _), sl0, sr0) => { (a: A) =>
-              (a, stb.initial)
-            } <-: sta.f0(a0, sl0, sr0)
+                (a, stb.initial)
+              } <-: sta.f0(a0, sl0, sr0)
           })
         case (SliceTransform2S(i1, f1), SliceTransform1S(i2, f2)) =>
           SliceTransform2S((i1, i2), {
