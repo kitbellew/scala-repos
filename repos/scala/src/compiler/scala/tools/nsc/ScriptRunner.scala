@@ -193,7 +193,8 @@ class ScriptRunner extends HasCompileSocket {
     if (File(scriptFile).isFile)
       withCompiledScript(settings, scriptFile) {
         runCompiled(settings, _, scriptArgs)
-      } else
+      }
+    else
       throw new IOException("no such file: " + scriptFile)
   }
 

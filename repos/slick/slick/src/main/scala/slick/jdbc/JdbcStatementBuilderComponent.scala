@@ -381,7 +381,8 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
         if (n.volatileHint || !ti.hasLiteralForm) b +?= { (p, idx, param) =>
           if (option) ti.setOption(v.asInstanceOf[Option[Any]], p, idx)
           else ti.setValue(v, p, idx)
-        } else b += valueToSQLLiteral(v, n.nodeType)
+        }
+        else b += valueToSQLLiteral(v, n.nodeType)
       case ProductNode(ch) =>
         b"\("
         b.sep(ch, ", ")(expr(_))

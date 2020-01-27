@@ -973,9 +973,9 @@ abstract class Erasure
           (fn: @unchecked) match {
             case TypeApply(Select(qual, _), List(targ)) =>
               if (qual.tpe <:< targ.tpe)
-                atPos(tree.pos) { Typed(qual, TypeTree(targ.tpe)) } else if (isNumericValueClass(
-                                                                               qual.tpe.typeSymbol) && isNumericValueClass(
-                                                                               targ.tpe.typeSymbol))
+                atPos(tree.pos) { Typed(qual, TypeTree(targ.tpe)) }
+              else if (isNumericValueClass(qual.tpe.typeSymbol) && isNumericValueClass(
+                         targ.tpe.typeSymbol))
                 atPos(tree.pos)(numericConversion(qual, targ.tpe.typeSymbol))
               else
                 tree

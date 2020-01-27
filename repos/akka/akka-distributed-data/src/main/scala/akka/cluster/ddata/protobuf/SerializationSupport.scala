@@ -133,7 +133,8 @@ trait SerializationSupport {
     if (Serialization.currentTransportInformation.value == null)
       Serialization.currentTransportInformation.withValue(transportInformation) {
         buildOther()
-      } else
+      }
+    else
       buildOther()
   }
 

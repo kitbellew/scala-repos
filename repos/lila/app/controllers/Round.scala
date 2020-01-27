@@ -131,7 +131,8 @@ object Round extends LilaController with TheftPrevention {
     OptionFuResult(GameRepo pov fullId) { currentPov =>
       if (currentPov.isMyTurn) fuccess {
         Ok(Json.obj("nope" -> true))
-      } else
+      }
+      else
         otherPovs(currentPov.game) map getNext(currentPov.game) map { next =>
           Ok(Json.obj("next" -> next.map(_.fullId)))
         }

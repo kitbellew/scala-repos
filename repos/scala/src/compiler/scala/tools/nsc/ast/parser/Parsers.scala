@@ -1040,7 +1040,8 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
           val ts = functionTypes()
           accept(RPAREN)
           if (in.token == ARROW)
-            atPos(start, in.skipToken()) { makeFunctionTypeTree(ts, typ()) } else {
+            atPos(start, in.skipToken()) { makeFunctionTypeTree(ts, typ()) }
+          else {
             ts foreach checkNotByNameOrVarargs
             val tuple = atPos(start) { makeSafeTupleType(ts, start) }
             infixTypeRest(

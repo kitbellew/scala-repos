@@ -52,7 +52,8 @@ class SbtResolverIndex private (
       using(SbtMavenRepoIndexer(root, indexDir)) { indexer =>
         indexer.update(progressIndicator)
         indexer.foreach(processArtifact, progressIndicator)
-      } else
+      }
+    else
       new SbtIvyCacheIndexer(new File(root)).artifacts.foreach(processArtifact)
 
     progressIndicator foreach { _.checkCanceled() }

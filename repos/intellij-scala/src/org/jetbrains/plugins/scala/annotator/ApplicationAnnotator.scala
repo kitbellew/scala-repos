@@ -126,7 +126,8 @@ trait ApplicationAnnotator {
                           holder.createErrorAnnotation(expression, message)
                         annotation.registerFix(ReportHighlightingErrorQuickFix)
                         addCreateFromUsagesQuickFixes(reference, holder)
-                      } else {
+                      }
+                    else {
                       //TODO investigate case when expression is null. It's possible when new Expression(ScType)
                     }
                   case MissedValueParameter(_) => // simultaneously handled above

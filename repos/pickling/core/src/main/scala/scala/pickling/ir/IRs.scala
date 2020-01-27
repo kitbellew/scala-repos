@@ -360,7 +360,8 @@ class IRs[U <: Universe with Singleton](val uni: U) {
         if (transientAccessors.exists(acc =>
               acc.name.toString == sym.name.toString)) List()
         else List(sym.asTerm)
-      } else Nil
+      }
+      else Nil
 
     val (paramAccessors, otherAccessors) =
       allAccessors.partition(_.isParamAccessor)

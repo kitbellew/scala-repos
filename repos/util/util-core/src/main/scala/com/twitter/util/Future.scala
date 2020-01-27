@@ -1203,7 +1203,8 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
     def loop(): Future[Unit] = {
       if (p) f flatMap { _ =>
         loop()
-      } else Future.Unit
+      }
+      else Future.Unit
     }
 
     loop()

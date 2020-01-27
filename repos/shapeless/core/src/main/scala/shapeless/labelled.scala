@@ -97,9 +97,11 @@ class LabelledMacros(val c: whitebox.Context)
     val labels: List[String] =
       if (isProduct(tTpe)) fieldsOf(tTpe).map { f =>
         nameAsString(f._1)
-      } else if (isCoproduct(tTpe)) ctorsOf(tTpe).map { tpe =>
+      }
+      else if (isCoproduct(tTpe)) ctorsOf(tTpe).map { tpe =>
         nameAsString(nameOf(tpe))
-      } else
+      }
+      else
         c.abort(
           c.enclosingPosition,
           s"$tTpe is not case class like or the root of a sealed family of types")

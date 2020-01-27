@@ -487,7 +487,8 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
                 if (taken) List(new JumpInsnNode(GOTO, ji.label)) else Nil
               toReplace(ji) = getPop(1) :: jump
             }
-          } else {
+          }
+          else {
             val isIfEq = ji.getOpcode == IF_ACMPEQ
             val isIfNe = ji.getOpcode == IF_ACMPNE
             if (isIfEq || isIfNe) for (frame <- frameAt(ji)) {

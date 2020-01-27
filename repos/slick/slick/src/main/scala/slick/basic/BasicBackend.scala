@@ -211,7 +211,8 @@ trait BasicBackend { self =>
                 i += 1
               }
               b.result()
-            } else
+            }
+            else
               runInContext(actions(pos), ctx, false, pos == 0).flatMap {
                 (v: Any) =>
                   results.set(pos, v)

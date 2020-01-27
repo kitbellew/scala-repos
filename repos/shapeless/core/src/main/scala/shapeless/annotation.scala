@@ -206,7 +206,8 @@ class AnnotationMacros(val c: whitebox.Context) extends CaseClassMacros {
             case ann if ann.tree.tpe =:= annTpe =>
               construct0(ann.tree.children.tail)
           }
-        } else
+        }
+      else
         abort(
           s"$tpe is not case class like or the root of a sealed family of types")
 

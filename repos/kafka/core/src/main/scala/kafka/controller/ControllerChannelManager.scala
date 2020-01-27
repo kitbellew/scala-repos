@@ -475,7 +475,8 @@ class ControllerBrokerRequestBatch(controller: KafkaController)
         updateMetadataRequestMap.getOrElseUpdate(
           brokerId,
           mutable.Map.empty[TopicPartition, PartitionStateInfo])
-      } else
+      }
+    else
       filteredPartitions.foreach(partition =>
         updateMetadataRequestMapFor(partition, beingDeleted = false))
 

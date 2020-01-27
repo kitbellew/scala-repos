@@ -828,7 +828,8 @@ trait GroupSolver
       val results = bfs(kernels)
 
       if (results.size == 1)
-        results.headOption map { _.expr } else
+        results.headOption map { _.expr }
+      else
         None
     }
   }

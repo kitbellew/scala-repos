@@ -577,7 +577,8 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
                     Nil,
                     if (b.tpe != null) b.tpe else pt)
                   LabelDef(defaultLabel, Nil, b)
-                } else cd
+                }
+                else cd
 
               val last = collapsed.last
               if (isDefault(last)) {

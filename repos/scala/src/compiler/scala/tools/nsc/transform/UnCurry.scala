@@ -546,7 +546,8 @@ abstract class UnCurry
                   throw new IllegalStateException(
                     "Encountered Valdef without symbol: " + tree + " in " + unit)
                 if (!sym.owner.isSourceMethod)
-                  withNeedLift(needLift = true) { super.transform(tree) } else
+                  withNeedLift(needLift = true) { super.transform(tree) }
+                else
                   super.transform(tree)
 
               case Apply(fn, args) =>

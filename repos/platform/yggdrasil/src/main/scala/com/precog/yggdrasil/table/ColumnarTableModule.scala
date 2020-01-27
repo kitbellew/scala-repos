@@ -2254,7 +2254,8 @@ trait ColumnarTableModule[M[+_]]
           .point[M])
       val sliceEffect = if (logger.isTraceEnabled) slices map { s =>
         logger.trace(logPrefix + " " + f(s)); s
-      } else slices
+      }
+      else slices
       Table(preludeEffect ++ sliceEffect ++ appendixEffect, size)
     }
 

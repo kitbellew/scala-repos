@@ -32,7 +32,8 @@ private[report] final class ReportApi {
                   .get - "processedBy" - "_id"))
             ) flatMap { res =>
               (res.n == 0) ?? $insert(report)
-            } else $insert(report)
+            }
+          else $insert(report)
         }
       } >>- monitorUnprocessed
   }

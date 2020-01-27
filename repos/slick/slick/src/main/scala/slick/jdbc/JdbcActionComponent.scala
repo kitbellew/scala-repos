@@ -790,7 +790,8 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
           compiled.updateInsert.converter.set(value, st)
           st.executeUpdate()
           retOneInsertOrUpdateFromUpdate
-        } else
+        }
+        else
           preparedInsert(insertSql, session) { st =>
             st.clearParameters()
             compiled.standardInsert.converter.set(value, st)

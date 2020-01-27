@@ -1328,7 +1328,8 @@ trait Implicits {
                         infoMapCache(sym) = result
                         result
                     }
-                  } else
+                  }
+                else
                   getClassParts(tp)
                 args foreach getParts
               }

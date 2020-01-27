@@ -33,7 +33,8 @@ object Tournament extends LilaController {
           repo.finishedPaginator(maxPerPage = 30, page = page)
         if (HTTPRequest isXhr ctx.req) finishedPaginator map { pag =>
           Ok(html.tournament.finishedPaginator(pag))
-        } else
+        }
+        else
           env.api.fetchVisibleTournaments zip
             repo.scheduledDedup zip
             finishedPaginator zip

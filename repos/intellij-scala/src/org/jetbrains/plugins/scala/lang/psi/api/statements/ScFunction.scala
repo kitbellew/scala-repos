@@ -283,7 +283,8 @@ trait ScFunction
             new ScMethodType(tp, clause.getSmartParameters, clause.isImplicit)(
               getProject,
               getResolveScope)
-        } else
+        }
+      else
         new ScMethodType(resultType, Seq.empty, false)(
           getProject,
           getResolveScope)
@@ -572,7 +573,8 @@ trait ScFunction
         .getOrElse(return Seq.empty)
         .supers
         .filter(_.info.isInstanceOf[PhysicalSignature])
-        .map { _.info.asInstanceOf[PhysicalSignature].method } else Seq.empty
+        .map { _.info.asInstanceOf[PhysicalSignature].method }
+    else Seq.empty
   }
 
   def superMethod: Option[PsiMethod] = superMethodAndSubstitutor.map(_._1)

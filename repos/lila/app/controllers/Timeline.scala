@@ -19,7 +19,8 @@ object Timeline extends LilaController {
           if (HTTPRequest.isXhr(ctx.req))
             Env.timeline.entryRepo.userEntries(me.id) map {
               html.timeline.entries(_)
-            } else {
+            }
+          else {
             val entries = Env.timeline.entryRepo.moreUserEntries(me.id, nb)
             entries map { html.timeline.more(_) }
           }

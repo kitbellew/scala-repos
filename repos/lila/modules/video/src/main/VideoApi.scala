@@ -228,7 +228,8 @@ private[video] final class VideoApi(videoColl: Coll, viewColl: Coll) {
         val allPaths =
           if (filterTags.isEmpty) allPopular map { tags =>
             tags.filterNot(_.isNumeric)
-          } else
+          }
+          else
             videoColl
               .aggregate(
                 Match(

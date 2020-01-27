@@ -391,7 +391,8 @@ class ScalaControlFlowBuilder(
     }
     if (isNodeNeeded) startNode(Some(ret)) { rs =>
       addPendingEdge(null, myHead)
-    } else addPendingEdge(null, myHead)
+    }
+    else addPendingEdge(null, myHead)
 
     // add edge to finally block
     getClosestFinallyInfo.map { finfo =>
@@ -487,7 +488,8 @@ class ScalaControlFlowBuilder(
     throwStmt.body.map(_.accept(this))
     if (isNodeNeeded) startNode(Some(throwStmt)) { rs =>
       addPendingEdge(null, myHead)
-    } else addPendingEdge(null, myHead)
+    }
+    else addPendingEdge(null, myHead)
     interruptFlow()
   }
 

@@ -35,7 +35,8 @@ final class PlaybanApi(coll: Coll, isRematch: String => Boolean) {
     blameable(pov.game) ?? {
       if (pov.game olderThan 45) pov.game.playerWhoDidNotMove map {
         Blame(_, Outcome.NoPlay)
-      } else if (pov.game olderThan 15) none
+      }
+      else if (pov.game olderThan 15) none
       else pov.player.some map { Blame(_, Outcome.Abort) }
     } ?? {
       case Blame(player, outcome) => player.userId.??(save(outcome))

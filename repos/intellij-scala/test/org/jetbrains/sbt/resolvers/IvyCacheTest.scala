@@ -34,7 +34,8 @@ class IvyCacheTest extends IndexingTestCase with UsefulTestCaseHelper {
             SbtResolver.Kind.Ivy,
             "Test repo",
             "C:\\non-existent-dir"))
-      } else
+      }
+    else
       assertException[InvalidRepository](
         Some(
           SbtBundle(

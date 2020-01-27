@@ -839,7 +839,8 @@ object Uri {
             collapseDotSegments(p),
             query,
             fragment)
-        } else
+        }
+      else
         create(
           base.scheme,
           userinfo,

@@ -1427,7 +1427,8 @@ object Build extends sbt.Build {
               true,
               Array()
             ))
-        } else {
+        }
+        else {
           Def.task(Seq())
         }
       }

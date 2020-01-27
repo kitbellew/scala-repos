@@ -33,7 +33,8 @@ private final class MoveDB {
         acc.fold(m) { a =>
           if (m.createdAt isBefore a.createdAt) m else a
         }
-      } else acc
+      }
+      else acc
   }
 
   def updateOrGiveUp(move: Move) =

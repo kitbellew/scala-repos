@@ -550,7 +550,8 @@ case class IdentityValueSortedReduce[K, V1](
           gb.mapStream[Boxed[V1], V1](Grouped.valueField -> Grouped.valueField) {
             it: Iterator[Boxed[V1]] =>
               it.map(_.get)
-          } else
+          }
+        else
           gb
 
       mappedGB

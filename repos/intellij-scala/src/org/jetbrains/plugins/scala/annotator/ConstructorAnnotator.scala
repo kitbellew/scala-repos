@@ -61,7 +61,8 @@ trait ConstructorAnnotator {
                 val annotation =
                   holder.createErrorAnnotation(expression, message)
                 annotation.registerFix(ReportHighlightingErrorQuickFix)
-              } else {
+              }
+            else {
               //TODO investigate case when expression is null. It's possible when new Expression(ScType)
             }
           case MissedValueParameter(_) => // simultaneously handled above

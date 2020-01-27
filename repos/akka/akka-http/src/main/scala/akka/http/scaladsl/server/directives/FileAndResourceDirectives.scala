@@ -64,7 +64,8 @@ trait FileAndResourceDirectives {
                 }
             }
           } else complete(HttpEntity.Empty)
-        } else reject
+        }
+      else reject
     }
 
   private def conditionalFor(length: Long, lastModified: Long): Directive0 =
@@ -116,7 +117,8 @@ trait FileAndResourceDirectives {
             }
           case _ ⇒ reject // not found or directory
         }
-      } else reject // don't serve the content of resource "directories"
+      }
+    else reject // don't serve the content of resource "directories"
 
   /**
     * Completes GET requests with the content of a file underneath the given directory.

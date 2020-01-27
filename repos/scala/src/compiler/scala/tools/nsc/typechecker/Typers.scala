@@ -6065,7 +6065,8 @@ trait Typers
         val args1 = if (sameLength(args, tparams)) map2Conserve(args, tparams) {
           (arg, tparam) =>
             typedHigherKindedType(arg, mode, Kind.FromParams(tparam.typeParams))
-        } else {
+        }
+        else {
           //@M  this branch is correctly hit for an overloaded polymorphic type. It also has to handle erroneous cases.
           // Until the right alternative for an overloaded method is known, be very liberal,
           // typedTypeApply will find the right alternative and then do the same check as

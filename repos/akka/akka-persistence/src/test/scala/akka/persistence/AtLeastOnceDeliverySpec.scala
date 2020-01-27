@@ -96,7 +96,8 @@ object AtLeastOnceDeliverySpec {
             persistAsync(AcceptedReq(payload, destination)) { evt ⇒
               updateState(evt)
               sender() ! ReqAck
-            } else
+            }
+          else
             persist(AcceptedReq(payload, destination)) { evt ⇒
               updateState(evt)
               sender() ! ReqAck
@@ -109,7 +110,8 @@ object AtLeastOnceDeliverySpec {
           if (async)
             persistAsync(ReqDone(id)) { evt ⇒
               updateState(evt)
-            } else
+            }
+          else
             persist(ReqDone(id)) { evt ⇒
               updateState(evt)
             }

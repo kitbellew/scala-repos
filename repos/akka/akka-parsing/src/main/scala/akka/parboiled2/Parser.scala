@@ -449,7 +449,8 @@ abstract class Parser(
               NonTerminal(StringMatch(string), -ix) :: Nil,
               CharMatch(string charAt ix))
         }
-      } else true
+      }
+    else true
 
   /**
     * THIS IS NOT PUBLIC API and might become hidden in future. Use only if you know what you are doing!
@@ -484,7 +485,8 @@ abstract class Parser(
               NonTerminal(IgnoreCaseString(string), -ix) :: Nil,
               IgnoreCaseChar(string charAt ix))
         }
-      } else true
+      }
+    else true
 
   /**
     * THIS IS NOT PUBLIC API and might become hidden in future. Use only if you know what you are doing!

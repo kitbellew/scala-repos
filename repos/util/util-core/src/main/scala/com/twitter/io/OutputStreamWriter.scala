@@ -59,7 +59,8 @@ private[io] class OutputStreamWriter(out: OutputStream, bufsize: Int)
   def close(deadline: Time): Future[Unit] =
     if (done.updateIfEmpty(Throw(CloseExc))) FuturePool.unboundedPool {
       out.close()
-    } else Future.Done
+    }
+    else Future.Done
 }
 
 private object OutputStreamWriter {

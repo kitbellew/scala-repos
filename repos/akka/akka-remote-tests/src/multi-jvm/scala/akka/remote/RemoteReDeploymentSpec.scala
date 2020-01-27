@@ -135,7 +135,8 @@ abstract class RemoteReDeploymentMultiJvmSpec
           within(sleepAfterKill) {
             expectMsg("PostStop")
             expectNoMsg()
-          } else expectNoMsg(sleepAfterKill)
+          }
+        else expectNoMsg(sleepAfterKill)
         awaitAssert(node(second), 10.seconds, 100.millis)
       }
 

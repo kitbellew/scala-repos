@@ -139,7 +139,8 @@ class JsonExporter(registry: Metrics, timer: Timer)
     if (vals.nonEmpty)
       vals.exists { v =>
         v == "1" || v == "true"
-      } else
+      }
+    else
       default
   }
 

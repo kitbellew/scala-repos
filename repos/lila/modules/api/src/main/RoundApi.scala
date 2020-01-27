@@ -127,7 +127,8 @@ private[api] final class RoundApi(
       if (pov.forecastable) fco.fold[JsValue](Json.obj("none" -> true)) { fc =>
         import Forecast.forecastJsonWriter
         Json toJson fc
-      } else Json.obj("onMyTurn" -> true)
+      }
+      else Json.obj("onMyTurn" -> true)
     })
     else json
 

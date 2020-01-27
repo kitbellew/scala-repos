@@ -108,7 +108,8 @@ object Setup extends LilaController with TheftPrevention {
       env.forms.hookFilled(timeModeString = get("time")) map {
         html.setup.hook(_)
       }
-    } else
+    }
+    else
       fuccess {
         Redirect(routes.Lobby.home + "#hook")
       }

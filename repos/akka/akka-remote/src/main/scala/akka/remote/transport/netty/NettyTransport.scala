@@ -668,7 +668,8 @@ class NettyTransport(
                 throw new NettyTransportException(
                   s"Unknown outbound remote address type [${unknown.getClass.getName}]")
             }
-          } else
+          }
+        else
           readyChannel.getPipeline.get(classOf[ClientHandler]).statusFuture
       } yield handle) recover {
         case c: CancellationException ⇒

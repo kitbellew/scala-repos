@@ -25,7 +25,8 @@ class LongOverflowArithTest extends WordSpec {
         if (bigC.abs > Long.MaxValue)
           intercept[LongOverflowException] {
             LongOverflowArith.add(a, b)
-          } else
+          }
+        else
           assert(LongOverflowArith.add(a, b) == bigC.toLong)
       }
 
@@ -40,7 +41,8 @@ class LongOverflowArithTest extends WordSpec {
         if (bigC.abs > Long.MaxValue)
           intercept[LongOverflowException] {
             LongOverflowArith.sub(a, b)
-          } else
+          }
+        else
           assert(LongOverflowArith.sub(a, b) == bigC.toLong)
       }
 
@@ -96,7 +98,8 @@ class LongOverflowArithTest extends WordSpec {
         if (bigC.abs > Long.MaxValue)
           intercept[LongOverflowException] {
             LongOverflowArith.mul(a, b)
-          } else
+          }
+        else
           assert(LongOverflowArith.mul(a, b) == bigC.toLong)
       }
 

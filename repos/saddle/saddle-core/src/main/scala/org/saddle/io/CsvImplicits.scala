@@ -123,7 +123,8 @@ object CsvImplicits {
         if (settings.useQuote)
           seq.map { s =>
             if (s.contains(separ)) "%s%s%s".format(quote, s, quote) else s
-          } else
+          }
+        else
           seq
       }
 

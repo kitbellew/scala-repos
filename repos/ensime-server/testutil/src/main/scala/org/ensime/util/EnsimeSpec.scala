@@ -43,7 +43,8 @@ trait EnsimeSpec
   // taggedAs(org.scalatest.tagobject.Retryable)
   // will be retried (don't abuse it)
   override def withFixture(test: NoArgTest) = {
-    if (isRetryable(test)) withRetry { super.withFixture(test) } else
+    if (isRetryable(test)) withRetry { super.withFixture(test) }
+    else
       super.withFixture(test)
   }
 

@@ -523,7 +523,8 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
       if (isClass) members collect { case d: Constructor => d }
       else Nil
     def primaryConstructor: Option[MemberImpl with Constructor] =
-      if (isClass) constructors find { _.isPrimary } else None
+      if (isClass) constructors find { _.isPrimary }
+      else None
     override def valueParams =
       // we don't want params on a class (non case class) signature
       if (isCaseClass) primaryConstructor match {

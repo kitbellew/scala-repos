@@ -54,7 +54,8 @@ class JsonpFilter[Req <: Request] extends SimpleFilter[Req, Response] {
           Some(sanitizedCallback)
         else
           None
-      } else
+      }
+    else
       None
   }
 }

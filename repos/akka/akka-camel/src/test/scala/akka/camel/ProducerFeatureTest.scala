@@ -370,7 +370,8 @@ object ProducerFeatureTest {
           val upperMsg = body.toUpperCase
           lastSender = Some(sender())
           lastMessage = Some(upperMsg)
-        } else msg
+        }
+        else msg
     }
 
     override def postStop() {
@@ -393,7 +394,8 @@ object ProducerFeatureTest {
       case msg: CamelMessage ⇒
         if (upper) msg.mapBody { body: String ⇒
           body.toUpperCase
-        } else msg
+        }
+        else msg
     }
   }
 

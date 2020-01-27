@@ -32,7 +32,8 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration)
     if (startsOnApplicationBoot)
       context.system.scheduler.scheduleOnce(1 second) {
         lilaBus.publish(lila.socket.SocketHub.Open(self), 'socket)
-      } else lilaBus.publish(lila.socket.SocketHub.Open(self), 'socket)
+      }
+    else lilaBus.publish(lila.socket.SocketHub.Open(self), 'socket)
   }
 
   override def postStop() {

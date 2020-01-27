@@ -124,7 +124,8 @@ class JavaCopyPastePostProcessor
               it.endOffset + shift,
               it.qClassName,
               it.staticMemberName)
-          } else Seq.empty
+          }
+        else Seq.empty
       }
 
       val associationsHelper = new ListBuffer[AssociationHelper]()

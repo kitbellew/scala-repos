@@ -390,7 +390,8 @@ object Scalding {
       if (forceFanOut || fanOuts(producer))
         p.map { flowP =>
           flowP.map { _.fork }
-        } else
+        }
+      else
         p
 
     built.get(producer) match {

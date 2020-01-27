@@ -185,7 +185,8 @@ class ScalaVariableValidator(
     if (element != container)
       for (child <- element.getChildren) {
         buf ++= validateDown(child, name, allOcc)
-      } else {
+      }
+    else {
       var from = {
         var parent: PsiElement = if (allOcc) {
           selectedElement //todo:

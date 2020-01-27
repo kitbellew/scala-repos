@@ -45,12 +45,14 @@ object KetamaClientStress extends App {
       op() ensure {
         throughput_count.incrementAndGet()
         proc(op, 0)
-      } else if (qps > 0)
+      }
+    else if (qps > 0)
       loadTask = timer.schedule(Time.now, 1.seconds) {
         1 to qps foreach { _ =>
           op() ensure { throughput_count.incrementAndGet() }
         }
-      } else
+      }
+    else
       1 to (qps * -1) foreach { _ =>
         proc(op, 0)
       }
