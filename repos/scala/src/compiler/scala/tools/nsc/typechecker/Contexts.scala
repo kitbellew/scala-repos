@@ -1074,29 +1074,28 @@ trait Contexts { self: Analyzer =>
 
       if (!ambiguous || !imp2Symbol.exists) Some(imp1)
       else if (!imp1Symbol.exists) Some(imp2)
-      else
-        (
-          // The symbol names are checked rather than the symbols themselves because
-          // each time an overloaded member is looked up it receives a new symbol.
-          // So foo.member("x") != foo.member("x") if x is overloaded.  This seems
-          // likely to be the cause of other bugs too...
-          if (t1 =:= t2 && imp1Symbol.name == imp2Symbol.name) {
-            log(
-              s"Suppressing ambiguous import: $t1 =:= $t2 && $imp1Symbol == $imp2Symbol")
-            Some(imp1)
-          }
-          // Monomorphism restriction on types is in part because type aliases could have the
-          // same target type but attach different variance to the parameters. Maybe it can be
-          // relaxed, but doesn't seem worth it at present.
-          else if (mt1 =:= mt2 && name.isTypeName && imp1Symbol.isMonomorphicType && imp2Symbol.isMonomorphicType) {
-            log(
-              s"Suppressing ambiguous import: $mt1 =:= $mt2 && $imp1Symbol and $imp2Symbol are equivalent")
-            Some(imp1)
-          } else {
-            log(s"Import is genuinely ambiguous:\n  " + characterize)
-            None
-          }
-        )
+      else (
+        // The symbol names are checked rather than the symbols themselves because
+        // each time an overloaded member is looked up it receives a new symbol.
+        // So foo.member("x") != foo.member("x") if x is overloaded.  This seems
+        // likely to be the cause of other bugs too...
+        if (t1 =:= t2 && imp1Symbol.name == imp2Symbol.name) {
+          log(
+            s"Suppressing ambiguous import: $t1 =:= $t2 && $imp1Symbol == $imp2Symbol")
+          Some(imp1)
+        }
+        // Monomorphism restriction on types is in part because type aliases could have the
+        // same target type but attach different variance to the parameters. Maybe it can be
+        // relaxed, but doesn't seem worth it at present.
+        else if (mt1 =:= mt2 && name.isTypeName && imp1Symbol.isMonomorphicType && imp2Symbol.isMonomorphicType) {
+          log(
+            s"Suppressing ambiguous import: $mt1 =:= $mt2 && $imp1Symbol and $imp2Symbol are equivalent")
+          Some(imp1)
+        } else {
+          log(s"Import is genuinely ambiguous:\n  " + characterize)
+          None
+        }
+      )
     }
 
     /** The symbol with name `name` imported via the import in `imp`,
