@@ -173,8 +173,7 @@ trait ShardService
             } ~
               options {
                 (request: HttpRequest[ByteChunk]) =>
-                  (a: (APIKey, AccountDetails), p: Path) =>
-                    optionsResponse
+                  (a: (APIKey, AccountDetails), p: Path) => optionsResponse
               }
           }
         } ~
@@ -290,9 +289,7 @@ trait ShardService
                 }
             }
           } ->
-          stop { state: ShardState =>
-            state.stoppable
-          }
+          stop { state: ShardState => state.stoppable }
       }
     }
   }

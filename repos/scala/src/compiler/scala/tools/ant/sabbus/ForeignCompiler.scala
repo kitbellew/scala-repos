@@ -22,9 +22,7 @@ class ForeignCompiler {
     nsc
   }
 
-  private val error: (String => Nothing) = { msg =>
-    throw new Exception(msg)
-  }
+  private val error: (String => Nothing) = { msg => throw new Exception(msg) }
 
   private def settings = new scala.tools.nsc.Settings(error)
 

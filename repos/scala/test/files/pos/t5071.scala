@@ -1,7 +1,5 @@
 // abstract
-trait Foo[@specialized A, Repr] {
-  self: Repr =>
-}
+trait Foo[@specialized A, Repr] { self: Repr => }
 trait Bar[A] extends Foo[A, Object] {}
 class Baz extends Foo[Int, Baz] {}
 

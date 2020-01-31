@@ -141,9 +141,7 @@ class SimpleClientTest extends FunSuite with BeforeAndAfter {
       val stats = Await.result(client.stats())
       assert(stats != null)
       assert(!stats.isEmpty)
-      stats.foreach { stat =>
-        assert(stat.startsWith("STAT"))
-      }
+      stats.foreach { stat => assert(stat.startsWith("STAT")) }
     }
   }
 

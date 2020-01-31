@@ -789,9 +789,7 @@ trait Printers extends api.Printers { self: SymbolTable =>
 
     override def printAnnotations(tree: MemberDef) = {
       val annots = tree.mods.annotations
-      annots foreach { annot =>
-        printAnnot(annot); print(" ")
-      }
+      annots foreach { annot => printAnnot(annot); print(" ") }
     }
 
     protected def printAnnot(tree: Tree) = {

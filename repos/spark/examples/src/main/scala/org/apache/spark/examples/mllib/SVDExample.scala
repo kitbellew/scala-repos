@@ -54,9 +54,7 @@ object SVDExample {
     // $example off$
     val collect = U.rows.collect()
     println("U factor is:")
-    collect.foreach { vector =>
-      println(vector)
-    }
+    collect.foreach { vector => println(vector) }
     println(s"Singular values are: $s")
     println(s"V factor is:\n$V")
   }

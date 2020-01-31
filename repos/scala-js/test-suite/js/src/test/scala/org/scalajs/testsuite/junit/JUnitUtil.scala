@@ -13,9 +13,7 @@ object JUnitUtil {
     try {
       fullName
         .split('.')
-        .foldLeft(js.Dynamic.global) { (obj, n) =>
-          obj.selectDynamic(n)
-        }
+        .foldLeft(js.Dynamic.global) { (obj, n) => obj.selectDynamic(n) }
         .apply()
         .asInstanceOf[JUnitTestBootstrapper]
     } catch {

@@ -1956,9 +1956,7 @@ private[spark] object Utils extends Logging {
     } else {
       paths
         .split(",")
-        .map { p =>
-          Utils.resolveURI(p)
-        }
+        .map { p => Utils.resolveURI(p) }
         .mkString(",")
     }
   }
@@ -2037,12 +2035,8 @@ private[spark] object Utils extends Logging {
   def getDefaultPropertiesFile(env: Map[String, String] = sys.env): String = {
     env
       .get("SPARK_CONF_DIR")
-      .orElse(env.get("SPARK_HOME").map { t =>
-        s"$t${File.separator}conf"
-      })
-      .map { t =>
-        new File(s"$t${File.separator}spark-defaults.conf")
-      }
+      .orElse(env.get("SPARK_HOME").map { t => s"$t${File.separator}conf" })
+      .map { t => new File(s"$t${File.separator}spark-defaults.conf") }
       .filter(_.isFile)
       .map(_.getAbsolutePath)
       .orNull

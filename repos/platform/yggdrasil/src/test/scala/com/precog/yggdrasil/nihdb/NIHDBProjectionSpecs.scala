@@ -79,9 +79,7 @@ class NIHDBProjectionSpecs
         Duration(60, "seconds"),
         txLogScheduler)(actorSystem)
       .unsafePerformIO
-      .valueOr { e =>
-        throw new Exception(e.message)
-      }
+      .valueOr { e => throw new Exception(e.message) }
 
   val maxDuration = Duration(60, "seconds")
 

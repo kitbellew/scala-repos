@@ -32,18 +32,12 @@ case class HealthCheck(
       .setMaxConsecutiveFailures(this.maxConsecutiveFailures)
       .setIgnoreHttp1Xx(this.ignoreHttp1xx)
 
-    command foreach { c =>
-      builder.setCommand(c.toProto)
-    }
+    command foreach { c => builder.setCommand(c.toProto) }
 
     path foreach builder.setPath
 
-    portIndex foreach { p =>
-      builder.setPortIndex(p.toInt)
-    }
-    port foreach { p =>
-      builder.setPort(p.toInt)
-    }
+    portIndex foreach { p => builder.setPortIndex(p.toInt) }
+    port foreach { p => builder.setPort(p.toInt) }
 
     builder.build
   }

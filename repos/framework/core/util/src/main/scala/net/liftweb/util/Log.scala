@@ -66,9 +66,7 @@ object LoggingAutoConfigurer {
 
     // Try to configure logback
     findClass("Logger", List("ch.qos.logback.classic")) map { _ =>
-      findTheFile("logback.xml") map { url =>
-        Logback.withFile(url)()
-      }
+      findTheFile("logback.xml") map { url => Logback.withFile(url)() }
     }
     ()
   }

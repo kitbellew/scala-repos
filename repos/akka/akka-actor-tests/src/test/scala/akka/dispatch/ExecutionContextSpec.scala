@@ -107,9 +107,7 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
         // this needs to be within an OnCompleteRunnable so that things are added to the batch
         val p = Future.successful(42)
         // we need the callback list to be non-empty when the blocking{} call is executing
-        p.onComplete { _ ⇒
-          ()
-        }
+        p.onComplete { _ ⇒ () }
         val r = p.map { _ ⇒
           // trigger the resubmitUnbatched() call
           blocking { () }
@@ -118,9 +116,7 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
           // now try again to blockOn()
           blocking { () }
         }
-        p.onComplete { _ ⇒
-          ()
-        }
+        p.onComplete { _ ⇒ () }
         r
       }
       Await.result(f, 3.seconds) should be(())
@@ -243,9 +239,7 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
       }
 
       val total = 1000
-      1 to total foreach { _ ⇒
-        perform(_ + 1)
-      }
+      1 to total foreach { _ ⇒ perform(_ + 1) }
       sec.size() should ===(total)
       sec.resume()
       awaitCond(counter.get == total)
@@ -262,9 +256,7 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
         def run = counter.set(f(counter.get))
       }
 
-      1 to total foreach { i ⇒
-        perform(c ⇒ if (c == (i - 1)) c + 1 else c)
-      }
+      1 to total foreach { i ⇒ perform(c ⇒ if (c == (i - 1)) c + 1 else c) }
       awaitCond(counter.get == total)
       sec.isEmpty should ===(true)
     }
@@ -287,9 +279,7 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
         def run = counter.set(f(counter.get))
       }
       perform(_ + 1)
-      1 to 10 foreach { _ ⇒
-        perform(identity)
-      }
+      1 to 10 foreach { _ ⇒ perform(identity) }
       perform(x ⇒ { sec.suspend(); x * 2 })
       perform(_ + 8)
       sec.size should ===(13)

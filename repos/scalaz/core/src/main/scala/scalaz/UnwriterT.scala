@@ -61,9 +61,7 @@ final case class UnwriterT[F[_], U, A](run: F[(U, A)]) { self =>
   }
 
   def foldRight[B](z: => B)(f: (A, => B) => B)(implicit F: Foldable[F]) =
-    F.foldr(run, z) { a => b =>
-      f(a._2, b)
-    }
+    F.foldr(run, z) { a => b => f(a._2, b) }
 
   def bimap[C, D](f: U => C, g: A => D)(implicit F: Functor[F]) =
     unwriterT[F, C, D](F.map(run)({

@@ -10,8 +10,7 @@ object MyBuild extends Build {
       scalaVersion := "2.9.0-1",
       check <<= checkTask,
       managedClasspath in Provided <<= (classpathTypes, update) map {
-        (cpts, report) =>
-          Classpaths.managedJars(Provided, cpts, report)
+        (cpts, report) => Classpaths.managedJars(Provided, cpts, report)
       }
   )
 
@@ -40,9 +39,7 @@ object MyBuild extends Build {
   def cp(c: Configuration): Parser[Configuration] = c.name ^^^ c
   def checkClasspath(cp: Seq[Attributed[File]], names: Set[String]) = {
     val fs = cp.files filter { _.getName endsWith ".jar" }
-    val intersect = fs filter { f =>
-      names exists { f.getName startsWith _ }
-    }
+    val intersect = fs filter { f => names exists { f.getName startsWith _ } }
     assert(
       intersect == fs,
       "Expected:" + seqStr(names.toSeq) + "Got: " + seqStr(fs))

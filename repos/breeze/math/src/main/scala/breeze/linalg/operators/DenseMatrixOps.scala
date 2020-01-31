@@ -674,10 +674,9 @@ trait DenseMatrixOps { this: DenseMatrix.type =>
   implicit def dm_dm_UpdateOp[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpAdd, OpSub, OpMulScalar, OpDiv, OpSet, OpMod, OpPow) Op <: OpType](
-      implicit @expand.sequence[Op](
-        { _ + _ }, { _ - _ }, { _ * _ }, { _ / _ }, { (a, b) =>
-          b
-        }, { _ % _ }, { _ pow _ }) op: Op.Impl2[T, T, T],
+      implicit @expand.sequence[Op]({ _ + _ }, { _ - _ }, { _ * _ }, { _ / _ }, {
+        (a, b) => b
+      }, { _ % _ }, { _ pow _ }) op: Op.Impl2[T, T, T],
       @expand.sequence[Op]({ _ += _ }, { _ -= _ }, { _ :*= _ }, { _ :/= _ }, {
         _ := _
       }, { _ %= _ }, { _ :^= _ }) vecOp: Op.Impl2[T, T, T])
@@ -782,12 +781,10 @@ trait DenseMatrixOps { this: DenseMatrix.type =>
         OpDiv,
         OpSet,
         OpMod,
-        OpPow) Op <: OpType](
-      implicit @expand.sequence[Op](
-        { _ + _ }, { _ - _ }, { _ * _ }, { _ * _ }, { _ / _ }, { (a, b) =>
-          b
-        }, { _ % _ }, { _ pow _ }) op: Op.Impl2[T, T, T])
-      : Op.InPlaceImpl2[DenseMatrix[T], T] =
+        OpPow) Op <: OpType](implicit @expand.sequence[Op](
+    { _ + _ }, { _ - _ }, { _ * _ }, { _ * _ }, { _ / _ }, { (a, b) => b }, {
+      _ % _
+    }, { _ pow _ }) op: Op.Impl2[T, T, T]): Op.InPlaceImpl2[DenseMatrix[T], T] =
     new Op.InPlaceImpl2[DenseMatrix[T], T] {
       def apply(a: DenseMatrix[T], b: T): Unit = {
 
@@ -1384,9 +1381,7 @@ trait LowPriorityDenseMatrix1 {
       def apply(from: DenseMatrix[V], axis: Axis._0.type)(
           f: (DenseVector[V]) => R): Transpose[DenseVector[R]] = {
         val result = DenseVector.zeros[R](from.cols)
-        cforRange(0 until from.cols) { c =>
-          result(c) = f(from(::, c))
-        }
+        cforRange(0 until from.cols) { c => result(c) = f(from(::, c)) }
         result.t
       }
     }

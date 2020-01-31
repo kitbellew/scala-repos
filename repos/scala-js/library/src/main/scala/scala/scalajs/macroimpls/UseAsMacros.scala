@@ -207,9 +207,7 @@ private[scalajs] object UseAsMacros {
           val name = defaultName(sym)
           if (name == "apply") JSMemberCall
           else JSNamedMember(name)
-        } { name =>
-          JSNamedMember(name)
-        }
+        } { name => JSNamedMember(name) }
       }
     }
 

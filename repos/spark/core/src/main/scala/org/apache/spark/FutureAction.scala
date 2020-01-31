@@ -134,9 +134,7 @@ class SimpleFutureAction[T] private[spark] (
 
   override def onComplete[U](func: (Try[T]) => U)(
       implicit executor: ExecutionContext) {
-    jobWaiter.completionFuture onComplete { _ =>
-      func(value.get)
-    }
+    jobWaiter.completionFuture onComplete { _ => func(value.get) }
   }
 
   override def isCompleted: Boolean = jobWaiter.jobFinished
@@ -144,9 +142,7 @@ class SimpleFutureAction[T] private[spark] (
   override def isCancelled: Boolean = _cancelled
 
   override def value: Option[Try[T]] =
-    jobWaiter.completionFuture.value.map { res =>
-      res.map(_ => resultFunc)
-    }
+    jobWaiter.completionFuture.value.map { res => res.map(_ => resultFunc) }
 
   def jobIds: Seq[Int] = Seq(jobWaiter.jobId)
 }

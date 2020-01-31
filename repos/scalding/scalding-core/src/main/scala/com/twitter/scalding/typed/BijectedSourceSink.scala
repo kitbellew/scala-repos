@@ -39,9 +39,7 @@ class BijectedSourceSink[T, U](parent: BijectedSourceSink.SourceSink[T])(
   def setter[V <: U] = parent.setter.contraMap(lockedBij.get.invert(_))
 
   override def converter[W >: U] =
-    parent.converter.andThen { t: T =>
-      lockedBij.get(t)
-    }: TupleConverter[W]
+    parent.converter.andThen { t: T => lockedBij.get(t) }: TupleConverter[W]
 
   override def read(implicit flowDef: FlowDef, mode: Mode): Pipe = parent.read
   override def writeFrom(pipe: Pipe)(implicit flowDef: FlowDef, mode: Mode) =

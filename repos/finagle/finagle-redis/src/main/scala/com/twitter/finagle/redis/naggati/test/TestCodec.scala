@@ -29,11 +29,10 @@ class Counter {
 object TestCodec {
   def apply[A: Manifest](firstStage: Stage, encoder: Encoder[A]) = {
     val counter = new Counter()
-    val codec = new Codec(firstStage, encoder, { n =>
-      counter.readBytes += n
-    }, { n =>
-      counter.writtenBytes += n
-    })
+    val codec =
+      new Codec(firstStage, encoder, { n => counter.readBytes += n }, { n =>
+        counter.writtenBytes += n
+      })
     val testCodec = new TestCodec(codec)
     (testCodec, counter)
   }

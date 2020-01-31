@@ -1667,9 +1667,7 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
       }
 
     override def transform(tree: Tree): Tree =
-      reportError { transform1(tree) } { _ =>
-        tree
-      }
+      reportError { transform1(tree) } { _ => tree }
 
     def transform1(tree: Tree) = {
       val symbol = tree.symbol
@@ -1978,9 +1976,7 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
                   debuglog("created " + t)
                   reportError {
                     localTyper.typed(t)
-                  } { _ =>
-                    super.transform(tree)
-                  }
+                  } { _ => super.transform(tree) }
 
                 case fwd @ Forward(_) =>
                   debuglog("forward: " + fwd + ", " + ddef)
@@ -1992,9 +1988,7 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
                     "-->d completed forwarder to specialized overload: " + fwd.target + ": " + rhs1)
                   reportError {
                     localTyper.typed(deriveDefDef(tree)(_ => rhs1))
-                  } { _ =>
-                    super.transform(tree)
-                  }
+                  } { _ => super.transform(tree) }
 
                 case SpecializedAccessor(target) =>
                   val rhs1 =
@@ -2074,9 +2068,7 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
           localTyper.typed(
             Block(
               norm.tail.map(sym =>
-                DefDef(sym, { vparamss: List[List[Symbol]] =>
-                  EmptyTree
-                })),
+                DefDef(sym, { vparamss: List[List[Symbol]] => EmptyTree })),
               ddef))
         } else
           tree
@@ -2195,9 +2187,7 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
               mmap(List(vparams))(ValDef.apply),
               EmptyTree)
           } else {
-            mbrs += DefDef(m, { paramss: List[List[Symbol]] =>
-              EmptyTree
-            })
+            mbrs += DefDef(m, { paramss: List[List[Symbol]] => EmptyTree })
           }
         } else if (m.isValue) {
           mbrs += ValDef(m).setType(NoType)

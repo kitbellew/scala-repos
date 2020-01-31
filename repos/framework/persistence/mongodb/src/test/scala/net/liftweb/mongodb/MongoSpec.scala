@@ -40,9 +40,7 @@ class MongoSpec extends Specification {
 
     // make sure mongo is running
     try {
-      MongoDB.use(id) { db =>
-        db.getCollectionNames
-      }
+      MongoDB.use(id) { db => db.getCollectionNames }
     } catch {
       case e: Exception => skipped("MongoDB is not running")
     }

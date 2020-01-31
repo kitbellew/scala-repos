@@ -51,8 +51,7 @@ final class LinkerFrontend(
       logger: Logger): LinkingUnit = {
 
     val preOptimizerRequirements = optOptimizer.fold(symbolRequirements) {
-      optimizer =>
-        symbolRequirements ++ optimizer.symbolRequirements
+      optimizer => symbolRequirements ++ optimizer.symbolRequirements
     }
 
     val linkResult = logger.time("Basic Linking") {

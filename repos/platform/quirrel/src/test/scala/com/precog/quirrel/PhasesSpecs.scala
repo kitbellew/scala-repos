@@ -51,9 +51,7 @@ object PhasesSpecs
         | """.stripMargin
 
       val forest = compile(input)
-      val validForest = forest filter { tree =>
-        tree.errors forall isWarning
-      }
+      val validForest = forest filter { tree => tree.errors forall isWarning }
 
       validForest must beEmpty
     }

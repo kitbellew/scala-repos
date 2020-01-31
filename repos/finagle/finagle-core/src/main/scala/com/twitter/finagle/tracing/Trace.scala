@@ -270,9 +270,7 @@ object Trace {
     * Record a raw record without checking if it's sampled/enabled/etc.
     */
   private[this] def uncheckedRecord(rec: Record): Unit = {
-    tracers.distinct.foreach { t: Tracer =>
-      t.record(rec)
-    }
+    tracers.distinct.foreach { t: Tracer => t.record(rec) }
   }
 
   /**

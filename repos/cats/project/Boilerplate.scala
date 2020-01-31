@@ -96,9 +96,7 @@ object Boilerplate {
     def content(tv: TemplateVals) = {
       import tv._
 
-      val tpes = synTypes map { tpe =>
-        s"F[$tpe]"
-      }
+      val tpes = synTypes map { tpe => s"F[$tpe]" }
       val tpesString = synTypes mkString ", "
       val params = (synVals zip tpes) map { case (v, t) => s"$v:$t" } mkString ", "
       val next = if (arity + 1 <= maxArity) {
@@ -165,9 +163,7 @@ object Boilerplate {
     def content(tv: TemplateVals) = {
       import tv._
 
-      val tpes = synTypes map { tpe =>
-        s"F[$tpe]"
-      }
+      val tpes = synTypes map { tpe => s"F[$tpe]" }
       val fargs = (0 until arity) map { "f" + _ }
       val fparams = (fargs zip tpes) map { case (v, t) => s"$v:$t" } mkString ", "
 
@@ -215,9 +211,7 @@ object Boilerplate {
     def content(tv: TemplateVals) = {
       import tv._
 
-      val tpes = synTypes map { tpe =>
-        s"F[$tpe]"
-      }
+      val tpes = synTypes map { tpe => s"F[$tpe]" }
       val fargs = (0 until arity) map { "f" + _ }
       val fparams = (fargs zip tpes) map { case (v, t) => s"$v:$t" } mkString ", "
       val fargsS = fargs mkString ", "

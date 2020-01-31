@@ -37,9 +37,7 @@ private[round] final class SocketHandler(
 
     member.playerIdOption.fold[Handler.Controller]({
       case ("p", o) =>
-        o int "v" foreach { v =>
-          socket ! PingVersion(uid, v)
-        }
+        o int "v" foreach { v => socket ! PingVersion(uid, v) }
       case ("talk", o) =>
         o str "d" foreach { text =>
           messenger.watcher(gameId, member, text, socket)
@@ -48,9 +46,7 @@ private[round] final class SocketHandler(
     }) { playerId =>
       {
         case ("p", o) =>
-          o int "v" foreach { v =>
-            socket ! PingVersion(uid, v)
-          }
+          o int "v" foreach { v => socket ! PingVersion(uid, v) }
         case ("move", o) =>
           parseMove(o) foreach {
             case (move, blur, lag) =>

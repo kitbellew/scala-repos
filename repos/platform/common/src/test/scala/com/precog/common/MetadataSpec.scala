@@ -150,8 +150,7 @@ trait MetadataGenerators extends util.ArbitraryJValue {
     for (cnt <- choose(0, 10); l <- listOfN(cnt, genMetadata)) yield { l }
 
   def genMetadataMap: Gen[Map[MetadataType, Metadata]] = genMetadataList map {
-    l =>
-      Map(l.map(m => (m.metadataType, m)): _*)
+    l => Map(l.map(m => (m.metadataType, m)): _*)
   }
 
   def genMetadata: Gen[Metadata] =

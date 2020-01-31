@@ -1200,9 +1200,7 @@ trait EvaluatorModule[M[+_]]
             graph: DepGraph): EvaluatorStateT[DepGraph] = {
           for {
             state <- monadState gets identity
-            optPoint = toEval find { g =>
-              !(state.assume contains g)
-            }
+            optPoint = toEval find { g => !(state.assume contains g) }
 
             optBack = optPoint map { point =>
               for {
@@ -1415,9 +1413,7 @@ trait EvaluatorModule[M[+_]]
       if (nodes.size == 1) {
         nodes.headOption
       } else {
-        val kernels = nodes map { n =>
-          Kernel(Set(n), Set(n))
-        }
+        val kernels = nodes map { n => Kernel(Set(n), Set(n)) }
         val results = bfs(kernels)
 
         if (results.size == 1)

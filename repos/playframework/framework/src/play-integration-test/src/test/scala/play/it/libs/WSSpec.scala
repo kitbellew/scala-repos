@@ -48,9 +48,7 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
   "WS@java" should {
 
     def withServer[T](block: play.libs.ws.WSClient => T) = {
-      Server.withApplication(app) { implicit port =>
-        withClient(block)
-      }
+      Server.withApplication(app) { implicit port => withClient(block) }
     }
 
     def withEchoServer[T](block: play.libs.ws.WSClient => T) = {
@@ -63,20 +61,14 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
 
       Server.withRouter() {
         case _ =>
-          Action(echo) { req =>
-            Ok.chunked(req.body)
-          }
-      } { implicit port =>
-        withClient(block)
-      }
+          Action(echo) { req => Ok.chunked(req.body) }
+      } { implicit port => withClient(block) }
     }
 
     def withResult[T](result: Result)(block: play.libs.ws.WSClient => T) = {
       Server.withRouter() {
         case _ => Action(result)
-      } { implicit port =>
-        withClient(block)
-      }
+      } { implicit port => withClient(block) }
     }
 
     def withClient[T](block: play.libs.ws.WSClient => T)(
@@ -259,20 +251,14 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
 
       Server.withRouter() {
         case _ =>
-          Action(echo) { req =>
-            Ok.chunked(req.body)
-          }
-      } { implicit port =>
-        WsTestClient.withClient(block)
-      }
+          Action(echo) { req => Ok.chunked(req.body) }
+      } { implicit port => WsTestClient.withClient(block) }
     }
 
     def withResult[T](result: Result)(block: play.api.libs.ws.WSClient => T) = {
       Server.withRouter() {
         case _ => Action(result)
-      } { implicit port =>
-        WsTestClient.withClient(block)
-      }
+      } { implicit port => WsTestClient.withClient(block) }
     }
 
     "make GET Requests" in withServer { ws =>

@@ -424,9 +424,8 @@ class SetMapConsistencyTest {
       () => boxIlm[Int],
       () => boxItm[Int]
     )
-    assert(maps.sliding(2).forall { ms =>
-      churn(ms(0)(), ms(1)(), intKeys, 2000)
-    })
+    assert(
+      maps.sliding(2).forall { ms => churn(ms(0)(), ms(1)(), intKeys, 2000) })
   }
 
   @Test
@@ -442,9 +441,8 @@ class SetMapConsistencyTest {
       () => boxIhm[Long],
       () => boxIlm[Long]
     )
-    assert(maps.sliding(2).forall { ms =>
-      churn(ms(0)(), ms(1)(), longKeys, 10000)
-    })
+    assert(
+      maps.sliding(2).forall { ms => churn(ms(0)(), ms(1)(), longKeys, 10000) })
   }
 
   @Test
@@ -473,9 +471,8 @@ class SetMapConsistencyTest {
       () => boxIhm[Any],
       () => boxIlm[Any]
     )
-    assert(maps.sliding(2).forall { ms =>
-      churn(ms(0)(), ms(1)(), anyKeys, 10000)
-    })
+    assert(
+      maps.sliding(2).forall { ms => churn(ms(0)(), ms(1)(), anyKeys, 10000) })
   }
 
   @Test

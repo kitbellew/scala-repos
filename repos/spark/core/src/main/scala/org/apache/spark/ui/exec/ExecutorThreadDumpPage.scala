@@ -30,9 +30,7 @@ private[ui] class ExecutorThreadDumpPage(parent: ExecutorsTab)
 
   def render(request: HttpServletRequest): Seq[Node] = {
     val executorId = Option(request.getParameter("executorId"))
-      .map { executorId =>
-        UIUtils.decodeURLParameter(executorId)
-      }
+      .map { executorId => UIUtils.decodeURLParameter(executorId) }
       .getOrElse {
         throw new IllegalArgumentException(s"Missing executorId parameter")
       }

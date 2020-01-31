@@ -214,9 +214,7 @@ object DeploymentPlan {
         Seq(vertex)
       else
         outgoingEdges
-          .map { e =>
-            vertex +: longestPathFromVertex(g, g.getEdgeTarget(e))
-          }
+          .map { e => vertex +: longestPathFromVertex(g, g.getEdgeTarget(e)) }
           .maxBy(_.length)
 
     }
@@ -306,9 +304,7 @@ object DeploymentPlan {
     // 1. Destroy apps that do not exist in the target.
     steps += DeploymentStep(
       (originalApps -- targetApps.keys).valuesIterator
-        .map { oldApp =>
-          StopApplication(oldApp)
-        }
+        .map { oldApp => StopApplication(oldApp) }
         .to[Seq]
     )
 
@@ -317,9 +313,7 @@ object DeploymentPlan {
     //    steps that follow.
     steps += DeploymentStep(
       (targetApps -- originalApps.keys).valuesIterator
-        .map { newApp =>
-          StartApplication(newApp, 0)
-        }
+        .map { newApp => StartApplication(newApp, 0) }
         .to[Seq]
     )
 

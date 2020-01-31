@@ -349,9 +349,7 @@ class ActorPublisherSpec
           snd ! n
         }
 
-        (4 to 500 by 2) foreach { n ⇒
-          probe.expectMsg("elem-" + n)
-        }
+        (4 to 500 by 2) foreach { n ⇒ probe.expectMsg("elem-" + n) }
 
         watch(snd)
         rcv ! PoisonPill

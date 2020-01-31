@@ -49,9 +49,7 @@ class Netty4ListenerTest
   }
 
   // the /dev/null of dispatchers
-  val nopDispatch = { _: Transport[ByteBuf, ByteBuf] =>
-    ()
-  }
+  val nopDispatch = { _: Transport[ByteBuf, ByteBuf] => () }
 
   private[this] trait StatsCtx {
     val sr: InMemoryStatsReceiver = new InMemoryStatsReceiver
@@ -67,9 +65,7 @@ class Netty4ListenerTest
     val p = Params.empty + Label("test") + Stats(sr)
     val listener = Netty4Listener[ByteBuf, ByteBuf](
       p,
-      transportFactory = { _: SocketChannel =>
-        new NullTransport
-      }
+      transportFactory = { _: SocketChannel => new NullTransport }
     )
   }
 
@@ -128,9 +124,7 @@ class Netty4ListenerTest
     val p = Params.empty + Label("srv") + Stats(sr)
     val listener = Netty4Listener[ByteBuf, ByteBuf](
       p,
-      transportFactory = { _: SocketChannel =>
-        new NullTransport
-      }
+      transportFactory = { _: SocketChannel => new NullTransport }
     )
     val server1 = listener.listen(
       new InetSocketAddress(InetAddress.getLoopbackAddress, 0))(nopDispatch)

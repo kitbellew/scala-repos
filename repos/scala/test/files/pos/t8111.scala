@@ -14,9 +14,7 @@ trait T {
     foo((u: Any) => ma)()
 
     {
-      { (u: Any) =>
-        ma
-      }; this
+      { (u: Any) => ma }; this
     }.foo(0)()
 
     foo({ def foo = ma; 0 })()

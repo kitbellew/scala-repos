@@ -77,9 +77,7 @@ final class Env(
 
   def jsonFromVersion(v: Int): Fu[JsValue] = {
     import tube.translationTube
-    TranslationRepo findFrom v map { ts =>
-      Json toJson ts
-    }
+    TranslationRepo findFrom v map { ts => Json toJson ts }
   }
 
   def cli = new lila.common.Cli {

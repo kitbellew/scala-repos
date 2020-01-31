@@ -64,9 +64,7 @@ class RowFormatSpec
       case Nil =>
         prev.reverse
       case a :: _ =>
-        val bs = as takeWhile { b =>
-          f(a) == f(b)
-        }
+        val bs = as takeWhile { b => f(a) == f(b) }
         build(as drop bs.size, bs :: prev)
     }
 
@@ -122,9 +120,8 @@ class RowFormatSpec
   }
 
   private def identityCols(len: Int): List[ColumnRef] =
-    (0 until len).map({ i =>
-      ColumnRef(CPath(CPathIndex(i)), CLong)
-    })(scala.collection.breakOut)
+    (0 until len).map({ i => ColumnRef(CPath(CPathIndex(i)), CLong) })(
+      scala.collection.breakOut)
 
   "IdentitiesRowFormat" should {
     "round-trip CLongs" in {

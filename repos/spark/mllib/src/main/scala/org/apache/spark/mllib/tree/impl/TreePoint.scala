@@ -63,9 +63,7 @@ private[spark] object TreePoint {
         metadata.featureArity.getOrElse(featureIndex, 0)
       featureIndex += 1
     }
-    input.map { x =>
-      TreePoint.labeledPointToTreePoint(x, bins, featureArity)
-    }
+    input.map { x => TreePoint.labeledPointToTreePoint(x, bins, featureArity) }
   }
 
   /**

@@ -124,9 +124,7 @@ trait Pattern {
 
     /** Folds all subexpressions in this expression in depth-first order */
     def fold[A](v: A)(f: (A, Expr[_]) => A): A =
-      f(args.foldLeft(v) { (a, b) =>
-        b.fold(a)(f)
-      }, this)
+      f(args.foldLeft(v) { (a, b) => b.fold(a)(f) }, this)
 
     /** Replaces all occurrences of one subexpression with another one */
     def replace(from: Expr[_], to: Expr[_]): Expr[T] =

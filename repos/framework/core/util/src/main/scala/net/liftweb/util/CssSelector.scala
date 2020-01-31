@@ -268,9 +268,7 @@ object CssSelectorParser extends PackratParsers with ImplicitConversions {
     }) |
       (opt('*') ~ '[' ~> attrName <~ '!' ~ ']' ^^ { name =>
         AttrRemoveSubNode(name)
-      }) | (opt('*') ~ '[' ~> attrName <~ ']' ^^ { name =>
-      AttrSubNode(name)
-    }) |
+      }) | (opt('*') ~ '[' ~> attrName <~ ']' ^^ { name => AttrSubNode(name) }) |
 
       ('!' ~ '!' ^^ (a => DontMergeAttributes)) |
       ('<' ~ '*' ~ '>') ^^ (a => SurroundKids()) |

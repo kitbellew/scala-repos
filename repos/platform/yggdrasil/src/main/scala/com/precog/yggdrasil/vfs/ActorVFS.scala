@@ -421,9 +421,7 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         (projectionsActor ? FindPathMetadata(path)).mapTo[MetadataResult] map {
           case PathChildren(_, children) =>
             children.headOption flatMap { pm =>
-              (pm.path - path) map { p0 =>
-                pm.copy(path = p0)
-              }
+              (pm.path - path) map { p0 => pm.copy(path = p0) }
             } toRightDisjunction {
               ResourceError.notFound(
                 "Cannot return metadata for path %s".format(path.path))
@@ -521,11 +519,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
           "Received request to find metadata for path %s".format(path.path))
         val requestor = sender
         val eio = VFSPathUtils.currentPathMetadata(baseDir, path) map {
-          pathMetadata =>
-            requestor ! PathChildren(path, Set(pathMetadata))
-        } leftMap { error =>
-          requestor ! PathOpFailure(path, error)
-        }
+          pathMetadata => requestor ! PathChildren(path, Set(pathMetadata))
+        } leftMap { error => requestor ! PathOpFailure(path, error) }
 
         eio.run.unsafePerformIO
 
@@ -663,9 +658,7 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
               resource <- EitherT {
                 openf(dir) flatMap {
                   _ tap { resourceV =>
-                    IO(resourceV foreach { r =>
-                      versions += (version -> r)
-                    })
+                    IO(resourceV foreach { r => versions += (version -> r) })
                   }
                 }
               }
@@ -698,9 +691,7 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
 
           case NIHDBData(data) =>
             resourceBuilder.createNIHDB(versionDir(version), writeAs) flatMap {
-              _ traverse { nihdbr =>
-                nihdbr tap { _.db.insert(data) }
-              }
+              _ traverse { nihdbr => nihdbr tap { _.db.insert(data) } }
             }
         }
         _ <- created traverse { resource =>
@@ -942,9 +933,7 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
 
         case (offset, ArchiveMessage(apiKey, path, jobId, _, timestamp)) =>
           versionLog.clearHead >> IO(requestor ! UpdateSuccess(path))
-      } map { _ =>
-        PrecogUnit
-      }
+      } map { _ => PrecogUnit }
     }
 
     def versionOpt(version: Version) = version match {

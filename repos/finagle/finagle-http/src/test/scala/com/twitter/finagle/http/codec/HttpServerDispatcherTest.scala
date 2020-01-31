@@ -28,9 +28,7 @@ class HttpServerDispatcherTest extends FunSuite {
 
   test("invalid message") {
     val (in, out) = mkPair[Any, Any]
-    val service = Service.mk { req: Request =>
-      Future.value(Response())
-    }
+    val service = Service.mk { req: Request => Future.value(Response()) }
     val disp = new HttpServerDispatcher(out, service)
 
     in.write("invalid")
@@ -40,9 +38,7 @@ class HttpServerDispatcherTest extends FunSuite {
 
   test("bad request") {
     val (in, out) = mkPair[Any, Any]
-    val service = Service.mk { req: Request =>
-      Future.value(Response())
-    }
+    val service = Service.mk { req: Request => Future.value(Response()) }
     val disp = new HttpServerDispatcher(out, service)
 
     in.write(BadHttpRequest(new Exception()))
@@ -51,9 +47,7 @@ class HttpServerDispatcherTest extends FunSuite {
   }
 
   test("streaming request body") {
-    val service = Service.mk { req: Request =>
-      ok(req.reader)
-    }
+    val service = Service.mk { req: Request => ok(req.reader) }
     val (in, out) = mkPair[Any, Any]
     val disp = new HttpServerDispatcher(out, service)
 
@@ -69,9 +63,7 @@ class HttpServerDispatcherTest extends FunSuite {
 
   test("client abort before dispatch") {
     val promise = new Promise[Response]
-    val service = Service.mk { _: Request =>
-      promise
-    }
+    val service = Service.mk { _: Request => promise }
 
     val (in, out) = mkPair[Any, Any]
     val disp = new HttpServerDispatcher(out, service)
@@ -86,9 +78,7 @@ class HttpServerDispatcherTest extends FunSuite {
   test("client abort after dispatch") {
     val req = Request()
     val res = req.response
-    val service = Service.mk { _: Request =>
-      Future.value(res)
-    }
+    val service = Service.mk { _: Request => Future.value(res) }
 
     val (in, out) = mkPair[Any, Any]
     val disp = new HttpServerDispatcher(out, service)

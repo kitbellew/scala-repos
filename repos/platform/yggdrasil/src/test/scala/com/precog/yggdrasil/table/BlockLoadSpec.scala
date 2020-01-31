@@ -125,9 +125,7 @@ trait BlockLoadSpec[M[+_]]
 
   def checkLoadDense = {
     implicit val gen = sample(objectSchema(_, 3))
-    check { (sample: SampleData) =>
-      testLoadDense(sample)
-    }
+    check { (sample: SampleData) => testLoadDense(sample) }
   }
 
   def testLoadSample1 = {

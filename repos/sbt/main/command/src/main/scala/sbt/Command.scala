@@ -96,9 +96,7 @@ object Command {
       effect: (State, T) => State): State => Parser[() => State] =
     s => applyEffect(parser(s))(t => effect(s, t))
   def applyEffect[T](p: Parser[T])(f: T => State): Parser[() => State] =
-    p map { t => () =>
-      f(t)
-    }
+    p map { t => () => f(t) }
 
   def combine(cmds: Seq[Command]): State => Parser[() => State] = {
     val (simple, arbs) = separateCommands(cmds)

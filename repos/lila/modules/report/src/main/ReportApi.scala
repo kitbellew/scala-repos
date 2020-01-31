@@ -30,9 +30,7 @@ private[report] final class ReportApi {
                 "$set" -> (reportTube
                   .toMongo(report)
                   .get - "processedBy" - "_id"))
-            ) flatMap { res =>
-              (res.n == 0) ?? $insert(report)
-            }
+            ) flatMap { res => (res.n == 0) ?? $insert(report) }
           else $insert(report)
         }
       } >>- monitorUnprocessed

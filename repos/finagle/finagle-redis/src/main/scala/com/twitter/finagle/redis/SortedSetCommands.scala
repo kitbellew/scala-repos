@@ -57,9 +57,7 @@ trait SortedSets { self: BaseClient =>
   def zAddMulti(
       key: ChannelBuffer,
       members: Seq[(JDouble, ChannelBuffer)]): Future[JLong] = {
-    doRequest(ZAdd(key, members.map { m =>
-      ZMember(m._1, m._2)
-    })) {
+    doRequest(ZAdd(key, members.map { m => ZMember(m._1, m._2) })) {
       case IntegerReply(n) => Future.value(n)
     }
   }

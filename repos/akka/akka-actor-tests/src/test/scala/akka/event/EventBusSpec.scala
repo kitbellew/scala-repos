@@ -83,9 +83,7 @@ abstract class EventBusSpec(
     }
 
     "allow to add multiple subscribers" in {
-      val subscribers = (1 to 10) map { _ ⇒
-        createNewSubscriber()
-      }
+      val subscribers = (1 to 10) map { _ ⇒ createNewSubscriber() }
       val events = createEvents(10)
       val classifiers = events map getClassifierFor
       subscribers.zip(classifiers) forall { case (s, c) ⇒ bus.subscribe(s, c) } should ===(
@@ -124,13 +122,9 @@ abstract class EventBusSpec(
     "publish the given event to all intended subscribers" in {
       val range = 0 until 10
       val subscribers = range map (_ ⇒ createNewSubscriber())
-      subscribers foreach { s ⇒
-        bus.subscribe(s, classifier) should ===(true)
-      }
+      subscribers foreach { s ⇒ bus.subscribe(s, classifier) should ===(true) }
       bus.publish(event)
-      range foreach { _ ⇒
-        expectMsg(event)
-      }
+      range foreach { _ ⇒ expectMsg(event) }
       subscribers foreach { s ⇒
         bus.unsubscribe(s, classifier) should ===(true);
         disposeSubscriber(system, s)

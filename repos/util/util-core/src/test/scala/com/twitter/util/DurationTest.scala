@@ -228,9 +228,7 @@ class DurationTest extends { val ops = Duration } with TimeLikeSpec[Duration] {
         Duration.Bottom,
         Duration.Top,
         Duration.Undefined
-      ) foreach { d =>
-        assert(Duration.parse(d.toString) == d)
-      }
+      ) foreach { d => assert(Duration.parse(d.toString) == d) }
     }
 
     "parse" in {
@@ -275,9 +273,7 @@ class DurationTest extends { val ops = Duration } with TimeLikeSpec[Duration] {
           "98 milliseconds",
           "98 millisecons",
           "99.minutes +"
-        ) foreach { s =>
-          Duration.parse(s)
-        }
+        ) foreach { s => Duration.parse(s) }
       }
     }
   }

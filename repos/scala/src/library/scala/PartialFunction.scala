@@ -263,9 +263,7 @@ object PartialFunction {
     */
   def apply[A, B](f: A => B): PartialFunction[A, B] = { case x => f(x) }
 
-  private[this] val constFalse: Any => Boolean = { _ =>
-    false
-  }
+  private[this] val constFalse: Any => Boolean = { _ => false }
 
   private[this] val empty_pf: PartialFunction[Any, Nothing] =
     new PartialFunction[Any, Nothing] with Serializable {

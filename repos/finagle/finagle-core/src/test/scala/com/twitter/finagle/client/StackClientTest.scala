@@ -139,9 +139,7 @@ class StackClientTest
       var stack = ctx.client
         .configured(param.Label(name))
         .withStack(stk)
-      failFastOn.foreach { ffOn =>
-        stack = stack.configured(FailFast(ffOn))
-      }
+      failFastOn.foreach { ffOn => stack = stack.configured(FailFast(ffOn)) }
       val client = stack.newClient("/$/inet/localhost/0")
       new FactoryToService[String, String](client)
     }
@@ -473,9 +471,7 @@ class StackClientTest
   }
 
   test("StackClient binds to a local service via exp.Address.ServiceFactory") {
-    val reverser = Service.mk[String, String] { in =>
-      Future.value(in.reverse)
-    }
+    val reverser = Service.mk[String, String] { in => Future.value(in.reverse) }
     val sf = ServiceFactory(() => Future.value(reverser))
     val addr = exp.Address(sf)
     val name = Name.bound(addr)
@@ -486,9 +482,7 @@ class StackClientTest
   }
 
   test("filtered composes filters atop the stack") {
-    val echoServer = Service.mk[String, String] { in =>
-      Future.value(in)
-    }
+    val echoServer = Service.mk[String, String] { in => Future.value(in) }
     val sf = ServiceFactory(() => Future.value(echoServer))
     val addr = exp.Address(sf)
     val name = Name.bound(addr)

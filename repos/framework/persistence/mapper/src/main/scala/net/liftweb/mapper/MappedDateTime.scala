@@ -145,9 +145,7 @@ abstract class MappedDateTime[T <: Mapper[T]](val fieldOwner: T)
     * Create an input field for the item
     */
   override def _toForm: Box[NodeSeq] =
-    S.fmapFunc({ s: List[String] =>
-      this.setFromAny(s)
-    }) { funcName =>
+    S.fmapFunc({ s: List[String] => this.setFromAny(s) }) { funcName =>
       Full(appendFieldId(<input type={formInputType}
                      name={funcName}
                      value={

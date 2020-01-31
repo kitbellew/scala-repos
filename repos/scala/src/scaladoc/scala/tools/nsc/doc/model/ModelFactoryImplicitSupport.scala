@@ -438,9 +438,7 @@ trait ModelFactoryImplicitSupport {
       debug("   -> full type: " + toType)
       if (constraints.length != 0) {
         debug("   -> constraints: ")
-        constraints foreach { constr =>
-          debug("      - " + constr)
-        }
+        constraints foreach { constr => debug("      - " + constr) }
       }
       debug("   -> members:")
       memberSyms foreach (sym =>

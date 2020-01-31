@@ -233,9 +233,7 @@ abstract class KinesisStreamTests(aggregateTestData: Boolean)
 
     val collected = new mutable.HashSet[Int]
     stream
-      .map { bytes =>
-        new String(bytes).toInt
-      }
+      .map { bytes => new String(bytes).toInt }
       .foreachRDD { rdd =>
         collected.synchronized {
           collected ++= rdd.collect()
@@ -323,9 +321,7 @@ abstract class KinesisStreamTests(aggregateTestData: Boolean)
     kinesisStream.foreachRDD((rdd: RDD[Array[Byte]], time: Time) => {
       val kRdd = rdd.asInstanceOf[KinesisBackedBlockRDD[Array[Byte]]]
       val data = rdd
-        .map { bytes =>
-          new String(bytes).toInt
-        }
+        .map { bytes => new String(bytes).toInt }
         .collect()
         .toSeq
       collectedData.synchronized {
@@ -384,9 +380,7 @@ abstract class KinesisStreamTests(aggregateTestData: Boolean)
         // Verify the recovered data
         assert(
           rdd
-            .map { bytes =>
-              new String(bytes).toInt
-            }
+            .map { bytes => new String(bytes).toInt }
             .collect()
             .toSeq === data)
       }

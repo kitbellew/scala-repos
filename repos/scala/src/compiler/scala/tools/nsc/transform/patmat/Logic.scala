@@ -385,9 +385,7 @@ trait Logic extends Debugging {
         // exactly one of the types (and whatever it implies, imposed separately) must be chosen
         // consider X ::= A | B | C, and A => B
         // coverage is formulated as: A \/ B \/ C and the implications are
-        v.domainSyms foreach { dsyms =>
-          addAxiom(\/(dsyms))
-        }
+        v.domainSyms foreach { dsyms => addAxiom(\/(dsyms)) }
 
         // when this variable cannot be null the equality corresponding to the type test `(x: T)`, where T is x's static type,
         // is always true; when the variable may be null we use the implication `(x != null) => (x: T)` for the axiom

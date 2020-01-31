@@ -142,9 +142,7 @@ class DynamicTest {
 
     val y = obj(
       inner = obj(name = "inner obj"),
-      fun = { () =>
-        42
-      }
+      fun = { () => 42 }
     )
     val y_inner_name = y.inner.name
     assertEquals("inner obj", y_inner_name)

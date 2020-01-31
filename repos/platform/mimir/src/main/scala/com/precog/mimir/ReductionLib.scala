@@ -367,16 +367,12 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
             // TODO: exactness + overflow
             case col: DoubleColumn =>
               var t = 0.0
-              var seen = RangeUtil.loopDefined(range, col) { i =>
-                t += col(i)
-              }
+              var seen = RangeUtil.loopDefined(range, col) { i => t += col(i) }
               if (seen) Some(BigDecimal(t)) else None
 
             case col: NumColumn =>
               var t = BigDecimal(0)
-              val seen = RangeUtil.loopDefined(range, col) { i =>
-                t += col(i)
-              }
+              val seen = RangeUtil.loopDefined(range, col) { i => t += col(i) }
               if (seen) Some(t) else None
 
             case _ => None
@@ -706,9 +702,7 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
               val bc = c.asInstanceOf[BoolColumn]
               var acc = back
 
-              val idef = RangeUtil.loopDefined(range, bc) { i =>
-                acc &&= bc(i)
-              }
+              val idef = RangeUtil.loopDefined(range, bc) { i => acc &&= bc(i) }
 
               back &&= acc
 
@@ -759,9 +753,7 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
               val bc = c.asInstanceOf[BoolColumn]
               var acc = back
 
-              val idef = RangeUtil.loopDefined(range, bc) { i =>
-                acc ||= bc(i)
-              }
+              val idef = RangeUtil.loopDefined(range, bc) { i => acc ||= bc(i) }
 
               back ||= acc
 

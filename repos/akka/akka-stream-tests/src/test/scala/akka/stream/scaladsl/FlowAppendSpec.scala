@@ -58,9 +58,7 @@ trait River { self: Matchers ⇒
 
     val subscription = subscriber.expectSubscription()
     subscription.request(elements.size)
-    elements.foreach { el ⇒
-      subscriber.expectNext() shouldBe el.toString
-    }
+    elements.foreach { el ⇒ subscriber.expectNext() shouldBe el.toString }
     subscription.request(1)
     subscriber.expectComplete()
   }

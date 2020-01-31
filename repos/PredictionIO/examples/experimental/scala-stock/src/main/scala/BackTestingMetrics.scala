@@ -207,9 +207,7 @@ class BacktestingEvaluator(val params: BacktestingParams)
       overall = overall
     )
 
-    params.optOutputPath.map { path =>
-      MV.save(result, path)
-    }
+    params.optOutputPath.map { path => MV.save(result, path) }
 
     result
   }

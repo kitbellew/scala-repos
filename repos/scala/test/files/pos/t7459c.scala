@@ -12,9 +12,7 @@ object Test {
   (null: Mirror[_]).universe match {
     case ju: JavaUniverse =>
       val ju1 = ju
-      val f = { () =>
-        (null: ju.TypeTag[Nothing]).tpe
-      }
+      val f = { () => (null: ju.TypeTag[Nothing]).tpe }
   }
   trait M[A]
 }

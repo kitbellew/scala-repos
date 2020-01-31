@@ -95,9 +95,7 @@ package scalaguide.http.scalaresults {
         action: Action[A],
         expectedResponse: Int = OK,
         request: Request[A] = FakeRequest()) = {
-      assertAction(action, expectedResponse, request) { result =>
-        success
-      }
+      assertAction(action, expectedResponse, request) { result => success }
     }
 
     def assertAction[A, T: AsResult](

@@ -47,9 +47,7 @@ object QueueLaws extends Properties("Queue") {
   }
   property("Queue works with finished futures") = forAll { (items: List[Int]) =>
     val q = Queue.linkedBlocking[(Int, Try[Int])]
-    items.foreach { i =>
-      q.put((i, Try(i * i)))
-    }
+    items.foreach { i => q.put((i, Try(i * i))) }
     q.foldLeft((0, true)) {
       case ((cnt, good), (i, ti)) =>
         ti match {
@@ -60,9 +58,7 @@ object QueueLaws extends Properties("Queue") {
   }
   property("Queue.linkedNonBlocking works") = forAll { (items: List[Int]) =>
     val q = Queue.linkedNonBlocking[(Int, Try[Int])]
-    items.foreach { i =>
-      q.put((i, Try(i * i)))
-    }
+    items.foreach { i => q.put((i, Try(i * i))) }
     q.foldLeft((0, true)) {
       case ((cnt, good), (i, ti)) =>
         ti match {
@@ -74,9 +70,7 @@ object QueueLaws extends Properties("Queue") {
   property("Queue foreach works") = forAll { (items: List[Int]) =>
     // Make sure we can fit everything
     val q = Queue.arrayBlocking[(Int, Try[Int])](items.size + 1)
-    items.foreach { i =>
-      q.put((i, Try(i * i)))
-    }
+    items.foreach { i => q.put((i, Try(i * i))) }
     var works = true
     q.foreach {
       case (i, Return(ii)) =>
@@ -87,9 +81,7 @@ object QueueLaws extends Properties("Queue") {
   property("Queue foldLeft works") = forAll { (items: List[Int]) =>
     // Make sure we can fit everything
     val q = Queue.arrayBlocking[(Int, Try[Int])](items.size + 1)
-    items.foreach { i =>
-      q.put((i, Try(i * i)))
-    }
+    items.foreach { i => q.put((i, Try(i * i))) }
     q.foldLeft(true) {
       case (works, (i, Return(ii))) =>
         (ii == i * i)
@@ -119,10 +111,7 @@ object QueueLaws extends Properties("Queue") {
     (q.trimTo(0).toList == items) && {
       val q2 = Queue[Int]()
       q2.putAll(items)
-      q2.foldLeft(List[Int]()) { (l, it) =>
-          it :: l
-        }
-        .reverse == items
+      q2.foldLeft(List[Int]()) { (l, it) => it :: l }.reverse == items
     }
   }
   property("toSeq works") = forAll { (items: List[Int]) =>

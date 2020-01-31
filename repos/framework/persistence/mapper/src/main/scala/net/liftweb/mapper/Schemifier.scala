@@ -319,9 +319,7 @@ object Schemifier extends Loggable {
       if (!connection.driverType.pkDefinedByIndexColumn_?) {
         // Add primary key only when it has not been created by the index field itself.
         table.mappedFields
-          .filter { f =>
-            f.dbPrimaryKey_?
-          }
+          .filter { f => f.dbPrimaryKey_? }
           .foreach { pkField =>
             connection.driverType.primaryKeySetup(
               table._dbTableNameLC,
@@ -452,9 +450,7 @@ object Schemifier extends Loggable {
     //rs.close
 
     val single = table.mappedFields
-      .filter { f =>
-        f.dbIndexed_?
-      }
+      .filter { f => f.dbIndexed_? }
       .toList
       .flatMap { field =>
         if (!indexedFields.contains(List(field._dbColumnNameLC.toLowerCase))) {

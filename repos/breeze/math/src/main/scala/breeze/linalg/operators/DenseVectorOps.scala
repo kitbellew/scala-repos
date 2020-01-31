@@ -21,10 +21,9 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
   implicit def dv_v_Op[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpAdd, OpSub, OpMulScalar, OpDiv, OpSet, OpMod, OpPow) Op <: OpType](
-      implicit @expand.sequence[Op](
-        { _ + _ }, { _ - _ }, { _ * _ }, { _ / _ }, { (a, b) =>
-          b
-        }, { _ % _ }, { _ pow _ })
+      implicit @expand.sequence[Op]({ _ + _ }, { _ - _ }, { _ * _ }, { _ / _ }, {
+        (a, b) => b
+      }, { _ % _ }, { _ pow _ })
       op: Op.Impl2[T, T, T])
       : BinaryRegistry[DenseVector[T], Vector[T], Op.type, DenseVector[T]] =
     new BinaryRegistry[DenseVector[T], Vector[T], Op.type, DenseVector[T]] {
@@ -54,9 +53,9 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
   implicit def dv_v_InPlaceOp[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpMulScalar, OpDiv, OpSet, OpMod, OpPow) Op <: OpType](
-      implicit @expand.sequence[Op]({ _ * _ }, { _ / _ }, { (a, b) =>
-        b
-      }, { _ % _ }, { _ pow _ })
+      implicit @expand.sequence[Op]({ _ * _ }, { _ / _ }, { (a, b) => b }, {
+        _ % _
+      }, { _ pow _ })
       op: Op.Impl2[T, T, T])
       : BinaryUpdateRegistry[DenseVector[T], Vector[T], Op.type] =
     new BinaryUpdateRegistry[DenseVector[T], Vector[T], Op.type] {
@@ -114,12 +113,11 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
         OpDiv,
         OpSet,
         OpMod,
-        OpPow) Op <: OpType](
-      implicit @expand.sequence[Op](
-        { _ + _ }, { _ - _ }, { _ * _ }, { _ * _ }, { _ / _ }, { (a, b) =>
-          b
-        }, { _ % _ }, { _ pow _ })
-      op: Op.Impl2[T, T, T]): Op.Impl2[DenseVector[T], T, DenseVector[T]] =
+        OpPow) Op <: OpType](implicit @expand.sequence[Op](
+    { _ + _ }, { _ - _ }, { _ * _ }, { _ * _ }, { _ / _ }, { (a, b) => b }, {
+      _ % _
+    }, { _ pow _ })
+  op: Op.Impl2[T, T, T]): Op.Impl2[DenseVector[T], T, DenseVector[T]] =
     new Op.Impl2[DenseVector[T], T, DenseVector[T]] {
       def apply(a: DenseVector[T], b: T): DenseVector[T] = {
         val ad = a.data
@@ -131,13 +129,9 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
         // https://wikis.oracle.com/display/HotSpotInternals/RangeCheckElimination
         if (stride == 1) {
           if (aoff == 0) {
-            cforRange(0 until rd.length) { j =>
-              rd(j) = op(ad(j), b)
-            }
+            cforRange(0 until rd.length) { j => rd(j) = op(ad(j), b) }
           } else {
-            cforRange(0 until rd.length) { j =>
-              rd(j) = op(ad(j + aoff), b)
-            }
+            cforRange(0 until rd.length) { j => rd(j) = op(ad(j + aoff), b) }
           }
         } else {
           var i = 0
@@ -167,12 +161,11 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
         OpDiv,
         OpSet,
         OpMod,
-        OpPow) Op <: OpType](
-      implicit @expand.sequence[Op](
-        { _ + _ }, { _ - _ }, { _ * _ }, { _ * _ }, { _ / _ }, { (a, b) =>
-          b
-        }, { _ % _ }, { _ pow _ })
-      op: Op.Impl2[T, T, T]): Op.Impl2[T, DenseVector[T], DenseVector[T]] =
+        OpPow) Op <: OpType](implicit @expand.sequence[Op](
+    { _ + _ }, { _ - _ }, { _ * _ }, { _ * _ }, { _ / _ }, { (a, b) => b }, {
+      _ % _
+    }, { _ pow _ })
+  op: Op.Impl2[T, T, T]): Op.Impl2[T, DenseVector[T], DenseVector[T]] =
     new Op.Impl2[T, DenseVector[T], DenseVector[T]] {
       def apply(a: T, b: DenseVector[T]): DenseVector[T] = {
         val bd = b.data
@@ -197,10 +190,9 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
   implicit def dv_dv_Op[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpAdd, OpSub, OpMulScalar, OpDiv, OpSet, OpMod, OpPow) Op <: OpType](
-      implicit @expand.sequence[Op](
-        { _ + _ }, { _ - _ }, { _ * _ }, { _ / _ }, { (a, b) =>
-          b
-        }, { _ % _ }, { _ pow _ })
+      implicit @expand.sequence[Op]({ _ + _ }, { _ - _ }, { _ * _ }, { _ / _ }, {
+        (a, b) => b
+      }, { _ % _ }, { _ pow _ })
       op: Op.Impl2[T, T, T])
       : Op.Impl2[DenseVector[T], DenseVector[T], DenseVector[T]] = {
     new Op.Impl2[DenseVector[T], DenseVector[T], DenseVector[T]] {
@@ -213,9 +205,7 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
         val rd = result.data
 
         if (a.noOffsetOrStride && b.noOffsetOrStride) {
-          cforRange(0 until a.length) { j =>
-            rd(j) = op(ad(j), bd(j))
-          }
+          cforRange(0 until a.length) { j => rd(j) = op(ad(j), bd(j)) }
         } else if (a.stride == 1 && b.stride == 1) {
           cforRange(0 until a.length) { j =>
             rd(j) = op(ad(j + aoff), bd(j + boff))
@@ -241,10 +231,9 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
   implicit def dv_dv_UpdateOp[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpAdd, OpSub, OpMulScalar, OpDiv, OpSet, OpMod, OpPow) Op <: OpType](
-      implicit @expand.sequence[Op](
-        { _ + _ }, { _ - _ }, { _ * _ }, { _ / _ }, { (a, b) =>
-          b
-        }, { _ % _ }, { _ pow _ })
+      implicit @expand.sequence[Op]({ _ + _ }, { _ - _ }, { _ * _ }, { _ / _ }, {
+        (a, b) => b
+      }, { _ % _ }, { _ pow _ })
       op: Op.Impl2[T, T, T]): Op.InPlaceImpl2[DenseVector[T], DenseVector[T]] =
     new Op.InPlaceImpl2[DenseVector[T], DenseVector[T]] {
       def apply(a: DenseVector[T], b: DenseVector[T]): Unit = {
@@ -258,9 +247,7 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
         val length = a.length
 
         if (a.noOffsetOrStride && b.noOffsetOrStride) {
-          cforRange(0 until length) { j =>
-            ad(j) = op(ad(j), bd(j))
-          }
+          cforRange(0 until length) { j => ad(j) = op(ad(j), bd(j)) }
         } else if (astride == 1 && bstride == 1) {
           cforRange(0 until length) { j =>
             ad(j + aoff) = op(ad(j + aoff), bd(j + boff))
@@ -281,10 +268,9 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
   implicit def dv_s_UpdateOp[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpAdd, OpSub, OpMulScalar, OpMulMatrix, OpDiv, OpSet, OpMod) Op <: OpType](
-      implicit @expand.sequence[Op](
-        { _ + _ }, { _ - _ }, { _ * _ }, { _ * _ }, { _ / _ }, { (a, b) =>
-          b
-        }, { _ % _ })
+      implicit @expand.sequence[Op]({ _ + _ }, { _ - _ }, { _ * _ }, { _ * _ }, {
+        _ / _
+      }, { (a, b) => b }, { _ % _ })
       op: Op.Impl2[T, T, T]): Op.InPlaceImpl2[DenseVector[T], T] =
     new Op.InPlaceImpl2[DenseVector[T], T] {
       def apply(a: DenseVector[T], b: T): Unit = {
@@ -305,15 +291,11 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
       }
 
       private def fastPath(b: T, ad: Array[T], length: Int): Unit = {
-        cforRange(0 until length) { j =>
-          ad(j) = op(ad(j), b)
-        }
+        cforRange(0 until length) { j => ad(j) = op(ad(j), b) }
       }
 
       private def medPath(ad: Array[T], aoff: Int, b: T, length: Int): Unit = {
-        cforRange(0 until length) { j =>
-          ad(j + aoff) = op(ad(j + aoff), b)
-        }
+        cforRange(0 until length) { j => ad(j + aoff) = op(ad(j + aoff), b) }
       }
 
       private def slowPath(
@@ -481,13 +463,9 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
         if (x.noOffsetOrStride && y.noOffsetOrStride) {
           val ad = x.data
           val bd = y.data
-          cforRange(0 until x.length) { i =>
-            bd(i) += ad(i) * s
-          }
+          cforRange(0 until x.length) { i => bd(i) += ad(i) * s }
         } else {
-          cforRange(0 until x.length) { i =>
-            y(i) += x(i) * s
-          }
+          cforRange(0 until x.length) { i => y(i) += x(i) * s }
         }
       }
       implicitly[TernaryUpdateRegistry[Vector[V], V, Vector[V], scaleAdd.type]]
@@ -681,9 +659,7 @@ trait DenseVector_SpecialOps extends DenseVectorOps { this: DenseVector.type =>
         val ad = x.data
         val bd = y.data
 
-        cforRange(0 until x.length) { i =>
-          bd(i) += ad(i) * a
-        }
+        cforRange(0 until x.length) { i => bd(i) += ad(i) * a }
 
       } else {
         slowPath(y, a, x)
@@ -694,9 +670,7 @@ trait DenseVector_SpecialOps extends DenseVectorOps { this: DenseVector.type =>
         y: DenseVector[Float],
         a: Float,
         x: DenseVector[Float]): Unit = {
-      cforRange(0 until x.length) { i =>
-        y(i) += x(i) * a
-      }
+      cforRange(0 until x.length) { i => y(i) += x(i) * a }
     }
   }
   implicitly[

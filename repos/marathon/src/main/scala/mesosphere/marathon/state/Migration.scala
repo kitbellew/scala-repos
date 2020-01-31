@@ -132,9 +132,7 @@ class Migration @Inject() (
         case Some(entity) => store.update(entity.withNewContent(bytes))
         case None         => store.create(storageVersionName, bytes)
       }
-      .map { _ =>
-        StorageVersions.current
-      }
+      .map { _ => StorageVersions.current }
   }
 }
 
@@ -308,9 +306,7 @@ class MigrationTo0_13(taskRepository: TaskRepository, store: PersistentStore) {
           f.flatMap(_ => migrateKey(nextKey))
         }
       }
-      .map { _ =>
-        log.info("Completed 0.13 migration")
-      }
+      .map { _ => log.info("Completed 0.13 migration") }
   }
 
   // including 0.12, task keys are in format task:appId:taskId – the appId is
@@ -400,9 +396,7 @@ class MigrationTo0_16(
     val apps = rootGroup.transitiveApps
 
     apps.foldLeft(Future.successful(())) { (future, app) =>
-      future.flatMap { _ =>
-        updateAllAppVersions(app.id)
-      }
+      future.flatMap { _ => updateAllAppVersions(app.id) }
     }
   }
 

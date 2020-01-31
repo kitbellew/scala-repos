@@ -121,12 +121,8 @@ class Summer[Key, Value: Semigroup, Event, S, D, RC](
           (
             tups,
             beforeF
-              .flatMap { before =>
-                lockedOp.get.apply((k, (before, delta)))
-              }
-              .onSuccess { _ =>
-                successHandlerOpt.get.handlerFn.apply()
-              })
+              .flatMap { before => lockedOp.get.apply((k, (before, delta))) }
+              .onSuccess { _ => successHandlerOpt.get.handlerFn.apply() })
       }
       .toList
 

@@ -235,9 +235,7 @@ class BaseReplicationClient(
         }
         InconsistentReplication(transformed)
       case FailedReplication(fs) =>
-        FailedReplication(fs map { t =>
-          Throw(t.e)
-        })
+        FailedReplication(fs map { t => Throw(t.e) })
     }
 
   /**

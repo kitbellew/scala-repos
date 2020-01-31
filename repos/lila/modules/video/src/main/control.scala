@@ -30,9 +30,7 @@ case class UserControl(
     List(
       filter.tags.nonEmpty option s"tags=${filter.tags.sorted mkString "^"}"
         .replace(" ", "+"),
-      query.map { q =>
-        s"q=$q"
-      }
+      query.map { q => s"q=$q" }
     ).flatten mkString "&"
 
   def queryStringUnlessBot = !bot ?? queryString

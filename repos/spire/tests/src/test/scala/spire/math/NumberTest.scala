@@ -13,34 +13,20 @@ class NumberPropertiesTest
     with Matchers
     with GeneratorDrivenPropertyChecks {
   property("Number.apply(Long)") {
-    forAll { (n: Long) =>
-      Number(n) shouldBe n
-    }
-    forAll { (n: Long) =>
-      Number(n) shouldBe SafeLong(n)
-    }
+    forAll { (n: Long) => Number(n) shouldBe n }
+    forAll { (n: Long) => Number(n) shouldBe SafeLong(n) }
     // we need to do (n - 1).abs to ensure we don't get a negative number
-    forAll { (n: Long) =>
-      Number((n - 1).abs) shouldBe Natural((n - 1).abs)
-    }
+    forAll { (n: Long) => Number((n - 1).abs) shouldBe Natural((n - 1).abs) }
   }
 
   property("Number.apply(BigInt)") {
-    forAll { (n: BigInt) =>
-      Number(n) shouldBe n
-    }
-    forAll { (n: BigInt) =>
-      Number(n) shouldBe SafeLong(n)
-    }
-    forAll { (n: BigInt) =>
-      Number(n.abs) shouldBe Natural(n.abs)
-    }
+    forAll { (n: BigInt) => Number(n) shouldBe n }
+    forAll { (n: BigInt) => Number(n) shouldBe SafeLong(n) }
+    forAll { (n: BigInt) => Number(n.abs) shouldBe Natural(n.abs) }
   }
 
   property("Number.apply(BigDecimal)") {
-    forAll { (n: BigDecimal) =>
-      Number(n) shouldBe n
-    }
+    forAll { (n: BigDecimal) => Number(n) shouldBe n }
   }
 
   property("Number.apply(Rational)") {
@@ -57,27 +43,19 @@ class NumberPropertiesTest
   }
 
   property("RationalNumber == Int") {
-    forAll { (n: Int) =>
-      bothEq(Number(Rational(n)), n)
-    }
+    forAll { (n: Int) => bothEq(Number(Rational(n)), n) }
   }
 
   property("RationalNumber == Long") {
-    forAll { (n: Long) =>
-      bothEq(Number(Rational(n)), n)
-    }
+    forAll { (n: Long) => bothEq(Number(Rational(n)), n) }
   }
 
   property("RationalNumber == Double") {
-    forAll { (n: Double) =>
-      bothEq(Number(Rational(n)), n)
-    }
+    forAll { (n: Double) => bothEq(Number(Rational(n)), n) }
   }
 
   property("RationalNumber == BigInt") {
-    forAll { (n: BigInt) =>
-      Number(Rational(n)) shouldBe n
-    }
+    forAll { (n: BigInt) => Number(Rational(n)) shouldBe n }
   }
 
   property("Long + Long") {

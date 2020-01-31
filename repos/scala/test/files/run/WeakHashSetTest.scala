@@ -66,9 +66,7 @@ package scala.reflect.internal.util {
       val hs = new WeakHashSet[String]()
       val elements = (0 until size).toList map ("a" + _)
       elements foreach (hs += _)
-      elements foreach { i =>
-        assert(hs contains i)
-      }
+      elements foreach { i => assert(hs contains i) }
       hs.diagnostics.fullyValidate
     }
 
@@ -76,13 +74,9 @@ package scala.reflect.internal.util {
     def checkRehashCollisions {
       val size = 200
       val hs = new WeakHashSet[Collider]()
-      val elements = (0 until size).toList map { x =>
-        Collider("a" + x)
-      }
+      val elements = (0 until size).toList map { x => Collider("a" + x) }
       elements foreach (hs += _)
-      elements foreach { i =>
-        assert(hs contains i)
-      }
+      elements foreach { i => assert(hs contains i) }
       hs.diagnostics.fullyValidate
     }
 
@@ -91,9 +85,7 @@ package scala.reflect.internal.util {
     def checkRemoveUnreferencedObjects {
       val size = 200
       val hs = new WeakHashSet[Collider]()
-      val elements = (0 until size).toList map { x =>
-        Collider("a" + x)
-      }
+      val elements = (0 until size).toList map { x => Collider("a" + x) }
       elements foreach (hs += _)
       // don't throw the following into a retained collection so gc
       // can remove them
@@ -103,9 +95,7 @@ package scala.reflect.internal.util {
       System.gc()
       Thread.sleep(1000)
       assert(hs.size == 200)
-      elements foreach { i =>
-        assert(hs contains i)
-      }
+      elements foreach { i => assert(hs contains i) }
       for (i <- 0 until size) {
         assert(!(hs contains Collider("b" + i)))
       }
@@ -116,12 +106,8 @@ package scala.reflect.internal.util {
     def checkFindOrUpdate {
       val size = 200
       val hs = new WeakHashSet[Collider]()
-      val elements = (0 until size).toList map { x =>
-        Collider("a" + x)
-      }
-      elements foreach { x =>
-        assert(hs findEntryOrUpdate x eq x)
-      }
+      val elements = (0 until size).toList map { x => Collider("a" + x) }
+      elements foreach { x => assert(hs findEntryOrUpdate x eq x) }
       for (i <- 0 until size) {
         // when we do a lookup the result should be the same reference we
         // original put in
@@ -165,9 +151,7 @@ package scala.reflect.internal.util {
       elements foreach (hs += _)
       hs.clear()
       assert(hs.size == 0)
-      elements foreach { i =>
-        assert(!(hs contains i))
-      }
+      elements foreach { i => assert(!(hs contains i)) }
       hs.diagnostics.fullyValidate
     }
 
@@ -183,9 +167,7 @@ package scala.reflect.internal.util {
     // check that the iterator covers all the contents even when there is a collision
     def checkIteratorCollisions {
       val hs = new WeakHashSet[Collider]
-      val elements = (0 until 20).toList map { x =>
-        Collider("a" + x)
-      }
+      val elements = (0 until 20).toList map { x => Collider("a" + x) }
       elements foreach (hs += _)
       assert(elements.iterator.toList.sorted == elements.sorted)
       hs.diagnostics.fullyValidate

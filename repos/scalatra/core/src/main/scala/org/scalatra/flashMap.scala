@@ -69,9 +69,7 @@ class FlashMap extends MutableMapWithIndifferentAccess[Any] with Serializable {
     * Removes all flagged entries.
     */
   def sweep(): Unit = {
-    flagged foreach { key =>
-      m -= key
-    }
+    flagged foreach { key => m -= key }
   }
 
   /**

@@ -109,9 +109,7 @@ object CsvParser {
       nln += 1
     }
 
-    val columns = bufdata map { b =>
-      Vec(b.toArray)
-    }
+    val columns = bufdata map { b => Vec(b.toArray) }
 
     Frame(columns: _*).row(params.skipLines -> *)
   }

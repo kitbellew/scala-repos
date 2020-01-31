@@ -343,9 +343,7 @@ object BuiltinCommands {
   }
 
   def taskStrings(key: AttributeKey[_]): Option[(String, String)] =
-    key.description map { d =>
-      (key.label, d)
-    }
+    key.description map { d => (key.label, d) }
 
   def defaults = Command.command(DefaultsCommand) { s =>
     s.copy(definedCommands = DefaultCommands)
@@ -684,9 +682,7 @@ object BuiltinCommands {
       Nil
   def loadProject =
     Command(LoadProject, LoadProjectBrief, LoadProjectDetailed)(
-      loadProjectParser) { (s, arg) =>
-      loadProjectCommands(arg) ::: s
-    }
+      loadProjectParser) { (s, arg) => loadProjectCommands(arg) ::: s }
   private[this] def loadProjectParser =
     (s: State) => matched(Project.loadActionParser)
   private[this] def loadProjectCommand(command: String, arg: String): String =

@@ -23,9 +23,7 @@ class PersistentService[Req, Rep](factory: ServiceFactory[Req, Rep])
 
   def apply(req: Req) =
     currentService flatMap { service =>
-      service(req) onFailure { _ =>
-        currentService = factory()
-      }
+      service(req) onFailure { _ => currentService = factory() }
     }
 }
 

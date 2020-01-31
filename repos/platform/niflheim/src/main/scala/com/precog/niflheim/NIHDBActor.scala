@@ -93,9 +93,7 @@ object NIHDB {
       cookThreshold,
       timeout,
       txLogScheduler) map {
-      _ map { actor =>
-        new NIHDBImpl(actor, timeout, authorities)
-      }
+      _ map { actor => new NIHDBImpl(actor, timeout, authorities) }
     }
   }
 
@@ -203,9 +201,7 @@ private[niflheim] class NIHDBImpl private[niflheim] (
     IO(actor ! Quiesce)
 
   def close(implicit actorSystem: ActorSystem): Future[PrecogUnit] =
-    gracefulStop(actor, timeout.duration)(actorSystem).map { _ =>
-      PrecogUnit
-    }
+    gracefulStop(actor, timeout.duration)(actorSystem).map { _ => PrecogUnit }
 }
 
 private[niflheim] object NIHDBActor extends Logging {
@@ -437,9 +433,7 @@ private[niflheim] class NIHDBActor private (
   private def computeBlockMap(current: BlockState) = {
     val allBlocks: List[StorageReader] =
       (current.cooked ++ current.pending.values :+ current.rawLog)
-    SortedMap(allBlocks.map { r =>
-      r.id -> r
-    }.toSeq: _*)
+    SortedMap(allBlocks.map { r => r.id -> r }.toSeq: _*)
   }
 
   def updatedThresholds(
@@ -571,8 +565,7 @@ private[niflheim] object ProjectionState {
 
   def fromFile(input: File): IO[Validation[Error, ProjectionState]] = IO {
     JParser.parseFromFile(input).bimap(Extractor.Thrown(_), x => x).flatMap {
-      jv =>
-        jv.validated[ProjectionState]
+      jv => jv.validated[ProjectionState]
     }
   }
 

@@ -48,9 +48,7 @@ object RuntimeReducerEstimator {
         .filter { t =>
           t.taskType == "REDUCE" && t.status == "SUCCEEDED" && t.finishTime > t.startTime
         }
-        .map { t =>
-          (t.finishTime - t.startTime).toDouble
-        }
+        .map { t => (t.finishTime - t.startTime).toDouble }
     }
 }
 

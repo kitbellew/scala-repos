@@ -186,9 +186,7 @@ private[remote] class Remoting(
           case Failure(e) ⇒
             notifyError("Failure during shutdown of remoting.", e)
             finalize()
-        } map { _ ⇒
-          Done
-        } // RARP needs only akka.Done, not a boolean
+        } map { _ ⇒ Done } // RARP needs only akka.Done, not a boolean
       case None ⇒
         log.warning("Remoting is not running. Ignoring shutdown attempt.")
         Future successful Done

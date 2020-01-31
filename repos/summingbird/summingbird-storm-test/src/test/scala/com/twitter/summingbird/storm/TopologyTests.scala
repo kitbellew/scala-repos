@@ -62,9 +62,7 @@ class TopologyTests extends WordSpec {
     * ScalaCheck, as we need to know the number of tuples that the
     * flatMap will produce.
     */
-  val testFn = { i: Int =>
-    List((i -> i))
-  }
+  val testFn = { i: Int => List((i -> i)) }
 
   implicit val storm = Storm.local()
 

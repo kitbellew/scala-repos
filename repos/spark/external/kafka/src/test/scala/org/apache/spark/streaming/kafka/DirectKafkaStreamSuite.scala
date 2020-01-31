@@ -291,9 +291,7 @@ class DirectKafkaStreamSuite
           kafkaParams,
           Set(topic))
     }
-    val keyedStream = kafkaStream.map { v =>
-      "key" -> v._2.toInt
-    }
+    val keyedStream = kafkaStream.map { v => "key" -> v._2.toInt }
     val stateStream = keyedStream.updateStateByKey {
       (values: Seq[Int], state: Option[Int]) =>
         Some(values.sum + state.getOrElse(0))

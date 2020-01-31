@@ -10,9 +10,7 @@ private[tournament] final class Cached(
 
   private val nameCache = MixedCache[String, Option[String]](
     ((id: String) =>
-      TournamentRepo byId id map2 { (tour: Tournament) =>
-        tour.fullName
-      }),
+      TournamentRepo byId id map2 { (tour: Tournament) => tour.fullName }),
     timeToLive = 6 hours,
     default = _ => none,
     logger = logger)

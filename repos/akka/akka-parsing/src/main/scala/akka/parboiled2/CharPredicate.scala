@@ -127,8 +127,7 @@ object CharPredicate {
     }
 
   def apply(magnets: ApplyMagnet*): CharPredicate = (Empty /: magnets) {
-    (a, m) ⇒
-      a ++ m.predicate
+    (a, m) ⇒ a ++ m.predicate
   }
 
   class ApplyMagnet(val predicate: CharPredicate)

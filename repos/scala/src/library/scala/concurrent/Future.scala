@@ -430,9 +430,7 @@ trait Future[+T] extends Awaitable[T] {
     */
   def zip[U](that: Future[U]): Future[(T, U)] = {
     implicit val ec = internalExecutor
-    flatMap { r1 =>
-      that.map(r2 => (r1, r2))
-    }
+    flatMap { r1 => that.map(r2 => (r1, r2)) }
   }
 
   /** Zips the values of `this` and `that` future using a function `f`,
@@ -787,9 +785,7 @@ object Future {
       op: (R, T) => R)(implicit executor: ExecutionContext): Future[R] =
     if (!i.hasNext) successful(prevValue)
     else
-      i.next().flatMap { value =>
-        foldNext(i, op(prevValue, value), op)
-      }
+      i.next().flatMap { value => foldNext(i, op(prevValue, value), op) }
 
   /** A non-blocking, asynchronous fold over the specified futures, with the start value of the given zero.
     *  The fold is performed on the thread where the last future is completed,
@@ -858,9 +854,7 @@ object Future {
       failed(
         new NoSuchElementException("reduceLeft attempted on empty collection"))
     else
-      i.next() flatMap { v =>
-        foldNext(i, v, op)
-      }
+      i.next() flatMap { v => foldNext(i, v, op) }
   }
 
   /** Asynchronously and non-blockingly transforms a `TraversableOnce[A]` into a `Future[TraversableOnce[B]]`
@@ -923,6 +917,4 @@ object Future {
   * All callbacks provided to a `Future` end up going through `onComplete`, so this allows an
   * `ExecutionContext` to special-case callbacks that were executed by `Future` if desired.
   */
-trait OnCompleteRunnable {
-  self: Runnable =>
-}
+trait OnCompleteRunnable { self: Runnable => }

@@ -40,9 +40,7 @@ private[bookmark] final class PaginatorBuilder(maxPerPage: Int) {
         games ← lila.game.tube.gameTube |> { implicit t =>
           $find.byOrderedIds[Game](gameIds)
         }
-      } yield games map { g =>
-        Bookmark(g, user)
-      }
+      } yield games map { g => Bookmark(g, user) }
 
     private def selector = BookmarkRepo userIdQuery user.id
     private def sorting = $sort desc "d"

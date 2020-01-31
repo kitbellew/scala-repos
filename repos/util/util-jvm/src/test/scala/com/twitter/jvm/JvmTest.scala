@@ -95,8 +95,7 @@ class JvmTest extends WordSpec with TestLogging {
 
           traceLogger(Level.DEBUG)
 
-          jvm foreachGc { _ => /*ignore*/
-          }
+          jvm foreachGc { _ => /*ignore*/ }
           assert(jvm.executor.schedules.size == 1)
           val Seq((r, _, _, _)) = jvm.executor.schedules
           val gc = Gc(0, "pcopy", Time.now, 1.millisecond)

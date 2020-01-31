@@ -105,9 +105,7 @@ class SortingSuite
     val partitions = sorted.collectPartitions()
     logInfo("Partition lengths: " + partitions.map(_.length).mkString(", "))
     val lengthArr = partitions.map(_.length)
-    lengthArr.foreach { len =>
-      assert(len > 100 && len < 400)
-    }
+    lengthArr.foreach { len => assert(len > 100 && len < 400) }
     partitions(0).last should be < partitions(1).head
     partitions(1).last should be < partitions(2).head
     partitions(2).last should be < partitions(3).head
@@ -120,9 +118,7 @@ class SortingSuite
     val partitions = sorted.collectPartitions()
     logInfo("partition lengths: " + partitions.map(_.length).mkString(", "))
     val lengthArr = partitions.map(_.length)
-    lengthArr.foreach { len =>
-      assert(len > 100 && len < 400)
-    }
+    lengthArr.foreach { len => assert(len > 100 && len < 400) }
     partitions(0).last should be > partitions(1).head
     partitions(1).last should be > partitions(2).head
     partitions(2).last should be > partitions(3).head

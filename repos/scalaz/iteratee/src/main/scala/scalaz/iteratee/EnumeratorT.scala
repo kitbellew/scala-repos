@@ -37,11 +37,7 @@ trait EnumeratorT[E, F[_]] { self =>
     val iter = fold[G[EnumeratorT[B, F]], F, G[EnumeratorT[B, F]]](
       G.point(EnumeratorT.empty[B, F])) {
       case (acc, concat) =>
-        G.bind(acc) { en =>
-          G.map(concat) { append =>
-            en |+| append
-          }
-        }
+        G.bind(acc) { en => G.map(concat) { append => en |+| append } }
     }
 
     (iter &= self.map(f)).run
@@ -146,10 +142,7 @@ trait EnumeratorTFunctions {
   def perform[E, F[_]: Monad, B](f: F[B]): EnumeratorT[E, F] =
     new EnumeratorT[E, F] {
       def apply[A] =
-        s =>
-          iterateeT(Monad[F].bind(f) { _ =>
-            s.pointI.value
-          })
+        s => iterateeT(Monad[F].bind(f) { _ => s.pointI.value })
     }
 
   def enumOne[E, F[_]: Applicative](e: E): EnumeratorT[E, F] =

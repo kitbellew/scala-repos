@@ -27,8 +27,7 @@ trait BitVectorOps {
   @expand.valify
   implicit def bv_bv_UpdateOp[@expand.args(OpAnd, OpOr, OpXor, OpSet) Op <: OpType](
       implicit @expand.sequence[Op]({ _ and _ }, { _ or _ }, { _ xor _ }, {
-        (a, b) =>
-          a.clear(); a.or(b)
+        (a, b) => a.clear(); a.or(b)
       })
       op: Op.InPlaceImpl2[java.util.BitSet, java.util.BitSet])
       : Op.InPlaceImpl2[BitVector, BitVector] =

@@ -191,9 +191,7 @@ package object util {
         implicit cbf: CanBuildFrom[java.util.BitSet, U, C]) = {
       val r: mutable.Builder[U, C] = cbf(bs)
       r.sizeHint(bs.size)
-      iterator foreach { i =>
-        r += f(i)
-      }
+      iterator foreach { i => r += f(i) }
 
       r.result()
     }

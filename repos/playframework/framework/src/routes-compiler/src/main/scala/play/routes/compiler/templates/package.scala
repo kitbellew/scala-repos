@@ -49,9 +49,7 @@ package object templates {
     if (seq.isEmpty) {
       Nil
     } else {
-      Seq(f(seq.head), seq.tail.map { t =>
-        Seq(sep, f(t))
-      })
+      Seq(f(seq.head), seq.tail.map { t => Seq(sep, f(t)) })
     }
   }
 
@@ -67,9 +65,7 @@ package object templates {
       s"${r.call.packageName}.${r.call.controller}.${r.call.method}"
     }
     val paramPart = r.call.parameters
-      .map { params =>
-        params.map(paramFormat).mkString(", ")
-      }
+      .map { params => params.map(paramFormat).mkString(", ") }
       .map("(" + _ + ")")
       .getOrElse("")
     methodPart + paramPart
@@ -88,9 +84,7 @@ package object templates {
       s"$ident.${r.call.method}"
     }
     val paramPart = r.call.parameters
-      .map { params =>
-        params.map(paramFormat).mkString(", ")
-      }
+      .map { params => params.map(paramFormat).mkString(", ") }
       .map("(" + _ + ")")
       .getOrElse("")
     methodPart + paramPart
@@ -136,9 +130,7 @@ package object templates {
   def tupleNames(route: Route) =
     route.call.parameters
       .filterNot(_.isEmpty)
-      .map { params =>
-        params.map(x => safeKeyword(x.name)).mkString(", ")
-      }
+      .map { params => params.map(x => safeKeyword(x.name)).mkString(", ") }
       .map("(" + _ + ") =>")
       .getOrElse("")
 
@@ -271,12 +263,8 @@ package object templates {
       localNames: Map[String, String]) = {
     route.call.parameters
       .getOrElse(Nil)
-      .filter { p =>
-        localNames.contains(p.name) && p.fixed.isDefined
-      }
-      .map { p =>
-        p.name + " == " + p.fixed.get
-      } match {
+      .filter { p => localNames.contains(p.name) && p.fixed.isDefined }
+      .map { p => p.name + " == " + p.fixed.get } match {
       case Nil      => ""
       case nonEmpty => "if " + nonEmpty.mkString(" && ")
     }
@@ -416,9 +404,7 @@ package object templates {
       localNames: Map[String, String]): Option[String] = {
     Option(route.call.parameters
       .getOrElse(Nil)
-      .filter { p =>
-        localNames.contains(p.name) && p.fixed.isDefined
-      }
+      .filter { p => localNames.contains(p.name) && p.fixed.isDefined }
       .map { p =>
         localNames(p.name) + " == \"\"\" + implicitly[JavascriptLiteral[" + p.typeName + "]].to(" + p.fixed.get + ") + \"\"\""
       }).filterNot(_.isEmpty).map(_.mkString(" && "))

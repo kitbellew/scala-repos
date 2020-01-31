@@ -43,9 +43,7 @@ class RouteTestServlet extends ScalatraServlet {
   }
 
   get("/dot-outside-named-param/:file.:ext") {
-    List("file", "ext") foreach { x =>
-      response.setHeader(x, params(x))
-    }
+    List("file", "ext") foreach { x => response.setHeader(x, params(x)) }
   }
 
   get("/literal.dot.in.path") {

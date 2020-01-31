@@ -24,8 +24,6 @@ private[chat] final class FrontActor(api: ChatApi) extends Actor {
   }
 
   def publish(chatId: String, replyTo: ActorRef)(lineOption: Option[Line]) {
-    lineOption foreach { line =>
-      replyTo ! ChatLine(chatId, line)
-    }
+    lineOption foreach { line => replyTo ! ChatLine(chatId, line) }
   }
 }

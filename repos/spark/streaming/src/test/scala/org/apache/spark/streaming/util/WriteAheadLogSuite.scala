@@ -681,9 +681,7 @@ object WriteAheadLogSuite {
     if (allowBatching) {
       writeToStream(wrapArrayArrayByte(data.toArray[String]).array())
     } else {
-      data.foreach { item =>
-        writeToStream(Utils.serialize(item))
-      }
+      data.foreach { item => writeToStream(Utils.serialize(item)) }
     }
     writer.close()
     segments
@@ -696,9 +694,7 @@ object WriteAheadLogSuite {
       filePath: String,
       data: Seq[String]): Seq[FileBasedWriteAheadLogSegment] = {
     val writer = new FileBasedWriteAheadLogWriter(filePath, hadoopConf)
-    val segments = data.map { item =>
-      writer.write(item)
-    }
+    val segments = data.map { item => writer.write(item) }
     writer.close()
     segments
   }
@@ -834,9 +830,7 @@ object WriteAheadLogSuite {
         data.flatMap(byteArray => byteArray.map(Utils.deserialize[String]))
       }
     } else {
-      logFiles.flatMap { file =>
-        readDataManually[String](file)
-      }
+      logFiles.flatMap { file => readDataManually[String](file) }
     }
   }
 

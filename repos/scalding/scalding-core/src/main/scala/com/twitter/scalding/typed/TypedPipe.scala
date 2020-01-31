@@ -295,9 +295,7 @@ trait TypedPipe[+T] extends Serializable {
       def plus(a: T, b: T) = b
     }
 
-    val op = map { tup =>
-      (fn(tup), tup)
-    }.sumByKey
+    val op = map { tup => (fn(tup), tup) }.sumByKey
     val reduced = numReducers match {
       case Some(red) => op.withReducers(red)
       case None      => op
@@ -317,9 +315,7 @@ trait TypedPipe[+T] extends Serializable {
       implicit ev: T <:< (K, V)): TypedPipe[(K, Either[V, R])] =
     mapValues { (v: V) =>
       Left(v)
-    } ++ (that.mapValues { (r: R) =>
-      Right(r)
-    })
+    } ++ (that.mapValues { (r: R) => Right(r) })
 
   /**
     * If you are going to create two branches or forks,
@@ -340,9 +336,7 @@ trait TypedPipe[+T] extends Serializable {
     groupAll.bufferedTake(count).values
 
   /** Transform each element via the function f */
-  def map[U](f: T => U): TypedPipe[U] = flatMap { t =>
-    Iterator(f(t))
-  }
+  def map[U](f: T => U): TypedPipe[U] = flatMap { t => Iterator(f(t)) }
 
   /** Transform only the values (sometimes requires giving the types due to scala type inference) */
   def mapValues[K, V, U](f: V => U)(
@@ -354,18 +348,14 @@ trait TypedPipe[+T] extends Serializable {
       implicit ev: T <:< (K, V)): TypedPipe[(K, U)] =
     raiseTo[(K, V)].flatMap {
       case (k, v) =>
-        f(v).map { v2 =>
-          k -> v2
-        }
+        f(v).map { v2 => k -> v2 }
     }
 
   /**
     * Keep only items that satisfy this predicate
     */
   def filter(f: T => Boolean): TypedPipe[T] =
-    flatMap { t =>
-      if (f(t)) Iterator(t) else Iterator.empty
-    }
+    flatMap { t => if (f(t)) Iterator(t) else Iterator.empty }
 
   // This is just to appease for comprehension
   def withFilter(f: T => Boolean): TypedPipe[T] = filter(f)
@@ -378,9 +368,7 @@ trait TypedPipe[+T] extends Serializable {
     */
   def filterKeys[K](fn: K => Boolean)(
       implicit ev: T <:< (K, Any)): TypedPipe[T] =
-    filter { ka =>
-      fn(ka.asInstanceOf[(K, Any)]._1)
-    }
+    filter { ka => fn(ka.asInstanceOf[(K, Any)]._1) }
 
   /**
     * Keep only items that don't satisfy the predicate.
@@ -441,9 +429,7 @@ trait TypedPipe[+T] extends Serializable {
 
   /** Given a key function, add the key, then call .group */
   def groupBy[K](g: T => K)(implicit ord: Ordering[K]): Grouped[K, T] =
-    map { t =>
-      (g(t), t)
-    }.group
+    map { t => (g(t), t) }.group
 
   /** Group using an explicit Ordering on the key. */
   def groupWith[K, V](ord: Ordering[K])(
@@ -461,9 +447,7 @@ trait TypedPipe[+T] extends Serializable {
   def groupRandomly(partitions: Int): Grouped[Int, T] = {
     // Make it lazy so all mappers get their own:
     lazy val rng = new java.util.Random(123) // seed this so it is repeatable
-    groupBy { _ =>
-      rng.nextInt(partitions)
-    }(TypedPipe.identityOrdering)
+    groupBy { _ => rng.nextInt(partitions) }(TypedPipe.identityOrdering)
       .withReducers(partitions)
   }
 
@@ -525,9 +509,9 @@ trait TypedPipe[+T] extends Serializable {
       val msr = new MapsideReduce(sg, 'key, 'value, None)(
         singleConverter[V],
         singleSetter[V])
-      TypedPipe.from[(K, V)](pipe.eachTo(fields -> fields) { _ =>
-        msr
-      }, fields)(fd, mode, tuple2Converter)
+      TypedPipe.from[(K, V)](
+        pipe.eachTo(fields -> fields) { _ => msr },
+        fields)(fd, mode, tuple2Converter)
     })
   }
 
@@ -898,9 +882,7 @@ final case class IterablePipe[T](iterable: Iterable[T]) extends TypedPipe[T] {
   }
 
   override def cross[U](tiny: TypedPipe[U]) =
-    tiny.flatMap { u =>
-      iterable.map { (_, u) }
-    }
+    tiny.flatMap { u => iterable.map { (_, u) } }
 
   override def filter(f: T => Boolean): TypedPipe[T] =
     iterable.filter(f) match {
@@ -1106,9 +1088,7 @@ class TypedPipeInst[T] private[scalding] (
     case EmptyTypedPipe        => EmptyTypedPipe
     case MergedTypedPipe(l, r) => MergedTypedPipe(cross(l), cross(r))
     case IterablePipe(iter) =>
-      flatMap { t =>
-        iter.map { (t, _) }
-      }
+      flatMap { t => iter.map { (t, _) } }
     // This should work for any, TODO, should we just call this?
     case _ => map(((), _)).hashJoin(tiny.groupAll).values
   }
@@ -1157,20 +1137,21 @@ class TypedPipeInst[T] private[scalding] (
     val destFields: Fields = ('key, 'value)
     val selfKV = raiseTo[(K, V)]
 
-    TypedPipeFactory({ (fd, mode) =>
-      checkMode(mode)
+    TypedPipeFactory({
+        (fd, mode) =>
+          checkMode(mode)
 
-      val msr = new TypedMapsideReduce[K, V](
-        flatMapFn.asInstanceOf[FlatMapFn[(K, V)]],
-        sg,
-        fields,
-        'key,
-        'value,
-        None)(tup2Setter)
-      TypedPipe.from[(K, V)](inpipe.eachTo(fields -> destFields) { _ =>
-        msr
-      }, destFields)(fd, mode, tuple2Converter)
-    })
+          val msr = new TypedMapsideReduce[K, V](
+            flatMapFn.asInstanceOf[FlatMapFn[(K, V)]],
+            sg,
+            fields,
+            'key,
+            'value,
+            None)(tup2Setter)
+          TypedPipe.from[(K, V)](inpipe.eachTo(fields -> destFields) { _ =>
+            msr
+          }, destFields)(fd, mode, tuple2Converter)
+      })
   }
 
   override def toIterableExecution: Execution[Iterable[T]] =

@@ -97,9 +97,7 @@ class BinomialHeap[T <% Ordered[T]]
     }
   }
 
-  private val comp = { (x: T, y: T) =>
-    x compare y
-  }
+  private val comp = { (x: T, y: T) => x compare y }
   def iterator: Iterator[T] =
     Iterators.merge((trees map treeIterator): _*)(comp)
 

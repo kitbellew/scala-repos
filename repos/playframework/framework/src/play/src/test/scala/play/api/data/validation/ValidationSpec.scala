@@ -27,9 +27,7 @@ object ValidationSpec extends Specification {
         .fold(
           formWithErrors => {
             formWithErrors.errors.head.message must equalTo("error.maxLength")
-          }, { textData =>
-            "The mapping should fail." must equalTo("Error")
-          }
+          }, { textData => "The mapping should fail." must equalTo("Error") }
         )
     }
 
@@ -47,9 +45,7 @@ object ValidationSpec extends Specification {
         .fold(
           formWithErrors => {
             formWithErrors.errors.head.message must equalTo("error.minLength")
-          }, { textData =>
-            "The mapping should fail." must equalTo("Error")
-          }
+          }, { textData => "The mapping should fail." must equalTo("Error") }
         )
     }
   }
@@ -61,9 +57,7 @@ object ValidationSpec extends Specification {
         .fold(
           formWithErrors => {
             formWithErrors.errors.head.message must equalTo("error.required")
-          }, { textData =>
-            "The mapping should fail." must equalTo("Error")
-          }
+          }, { textData => "The mapping should fail." must equalTo("Error") }
         )
     }
   }
@@ -112,9 +106,7 @@ object ValidationSpec extends Specification {
           Form("value" -> email)
             .bind(Map("value" -> addr))
             .fold(
-              formWithErrors => false, { _ =>
-                true
-              }
+              formWithErrors => false, { _ => true }
             )
         }
         .exists(_.unary_!) must beFalse
@@ -134,9 +126,7 @@ object ValidationSpec extends Specification {
           Form("value" -> email)
             .bind(Map("value" -> addr))
             .fold(
-              formWithErrors => true, { _ =>
-                false
-              }
+              formWithErrors => true, { _ => false }
             )
         }
         .exists(_.unary_!) must beFalse
@@ -150,9 +140,7 @@ object ValidationSpec extends Specification {
         .fold(
           formWithErrors => {
             "The mapping should not fail." must equalTo("Error")
-          }, { number =>
-            number must equalTo(5)
-          }
+          }, { number => number must equalTo(5) }
         )
     }
 
@@ -162,9 +150,7 @@ object ValidationSpec extends Specification {
         .fold(
           formWithErrors => {
             formWithErrors.errors.head.message must equalTo("error.max")
-          }, { number =>
-            "The mapping should fail." must equalTo("Error")
-          }
+          }, { number => "The mapping should fail." must equalTo("Error") }
         )
     }
   }
@@ -176,9 +162,7 @@ object ValidationSpec extends Specification {
         .fold(
           formWithErrors => {
             "The mapping should not fail." must equalTo("Error")
-          }, { number =>
-            number must equalTo(12345678902L)
-          }
+          }, { number => number must equalTo(12345678902L) }
         )
     }
 
@@ -188,9 +172,7 @@ object ValidationSpec extends Specification {
         .fold(
           formWithErrors => {
             formWithErrors.errors.head.message must equalTo("error.min")
-          }, { number =>
-            "The mapping should fail." must equalTo("Error")
-          }
+          }, { number => "The mapping should fail." must equalTo("Error") }
         )
     }
   }
@@ -202,9 +184,7 @@ object ValidationSpec extends Specification {
         .fold(
           formWithErrors => {
             "The mapping should not fail." must equalTo("Error")
-          }, { str =>
-            str must equalTo("Toto")
-          }
+          }, { str => str must equalTo("Toto") }
         )
     }
 
@@ -214,9 +194,7 @@ object ValidationSpec extends Specification {
         .fold(
           formWithErrors => {
             formWithErrors.errors.head.message must equalTo("error.min")
-          }, { str =>
-            "The mapping should fail." must equalTo("Error")
-          }
+          }, { str => "The mapping should fail." must equalTo("Error") }
         )
     }
   }
@@ -228,9 +206,7 @@ object ValidationSpec extends Specification {
         .fold(
           formWithErrors => {
             "The mapping should not fail." must equalTo("Error")
-          }, { number =>
-            number must equalTo(10.2)
-          }
+          }, { number => number must equalTo(10.2) }
         )
     }
 
@@ -240,9 +216,7 @@ object ValidationSpec extends Specification {
         .fold(
           formWithErrors => {
             formWithErrors.errors.head.message must equalTo("error.max")
-          }, { number =>
-            "The mapping should fail." must equalTo("Error")
-          }
+          }, { number => "The mapping should fail." must equalTo("Error") }
         )
     }
   }
@@ -254,9 +228,7 @@ object ValidationSpec extends Specification {
         .fold(
           formWithErrors => {
             "The mapping should not fail." must equalTo("Error")
-          }, { number =>
-            number must equalTo(5)
-          }
+          }, { number => number must equalTo(5) }
         )
     }
 
@@ -266,9 +238,7 @@ object ValidationSpec extends Specification {
         .fold(
           formWithErrors => {
             "The mapping should not fail." must equalTo("Error")
-          }, { number =>
-            number must equalTo(5)
-          }
+          }, { number => number must equalTo(5) }
         )
     }
 
@@ -278,9 +248,7 @@ object ValidationSpec extends Specification {
         .fold(
           formWithErrors => {
             formWithErrors.errors.head.message must equalTo("error.min.strict")
-          }, { number =>
-            "The mapping should fail." must equalTo("Error")
-          }
+          }, { number => "The mapping should fail." must equalTo("Error") }
         )
     }
 
@@ -290,9 +258,7 @@ object ValidationSpec extends Specification {
         .fold(
           formWithErrors => {
             formWithErrors.errors.head.message must equalTo("error.required")
-          }, { text =>
-            "The mapping should fail." must equalTo("Error")
-          }
+          }, { text => "The mapping should fail." must equalTo("Error") }
         )
     }
   }

@@ -226,9 +226,7 @@ class ExecutorAllocationManagerSuite
   test("remove executors") {
     sc = createSparkContext(5, 10, 5)
     val manager = sc.executorAllocationManager.get
-    (1 to 10).map(_.toString).foreach { id =>
-      onExecutorAdded(manager, id)
-    }
+    (1 to 10).map(_.toString).foreach { id => onExecutorAdded(manager, id) }
 
     // Keep removing until the limit is reached
     assert(executorsPendingToRemove(manager).isEmpty)
@@ -627,9 +625,7 @@ class ExecutorAllocationManagerSuite
     assert(removeTimes(manager).isEmpty)
 
     // Added executors should start the remove timers for each executor
-    (1 to 5).map("executor-" + _).foreach { id =>
-      onExecutorAdded(manager, id)
-    }
+    (1 to 5).map("executor-" + _).foreach { id => onExecutorAdded(manager, id) }
     assert(removeTimes(manager).size === 5)
 
     // Starting a task cancel the remove timer for that executor
@@ -777,9 +773,7 @@ class ExecutorAllocationManagerSuite
     assert(addExecutors(manager) === 4)
     assert(addExecutors(manager) === 8)
     assert(numExecutorsTarget(manager) === 15)
-    (0 until 15).foreach { i =>
-      onExecutorAdded(manager, s"executor-$i")
-    }
+    (0 until 15).foreach { i => onExecutorAdded(manager, s"executor-$i") }
     assert(executorIds(manager).size === 15)
     sc.listenerBus.postToAll(SparkListenerStageCompleted(stage1))
 
@@ -825,9 +819,7 @@ class ExecutorAllocationManagerSuite
     schedule(manager)
     // Verify the initial number of executors is kept when no pending tasks
     assert(numExecutorsTarget(manager) === 3)
-    (0 until 3).foreach { i =>
-      onExecutorAdded(manager, s"executor-$i")
-    }
+    (0 until 3).foreach { i => onExecutorAdded(manager, s"executor-$i") }
 
     clock.advance(executorIdleTimeout * 1000)
 

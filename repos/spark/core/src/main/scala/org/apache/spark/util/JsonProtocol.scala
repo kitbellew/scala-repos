@@ -310,12 +310,8 @@ private[spark] object JsonProtocol {
     val name = accumulableInfo.name
     ("ID" -> accumulableInfo.id) ~
       ("Name" -> name) ~
-      ("Update" -> accumulableInfo.update.map { v =>
-        accumValueToJson(name, v)
-      }) ~
-      ("Value" -> accumulableInfo.value.map { v =>
-        accumValueToJson(name, v)
-      }) ~
+      ("Update" -> accumulableInfo.update.map { v => accumValueToJson(name, v) }) ~
+      ("Value" -> accumulableInfo.value.map { v => accumValueToJson(name, v) }) ~
       ("Internal" -> accumulableInfo.internal) ~
       ("Count Failed Values" -> accumulableInfo.countFailedValues) ~
       ("Metadata" -> accumulableInfo.metadata)
@@ -507,9 +503,7 @@ private[spark] object JsonProtocol {
 
   def propertiesToJson(properties: Properties): JValue = {
     Option(properties)
-      .map { p =>
-        mapToJson(p.asScala)
-      }
+      .map { p => mapToJson(p.asScala) }
       .getOrElse(JNothing)
   }
 
@@ -765,9 +759,7 @@ private[spark] object JsonProtocol {
       (json \ "RDD Info").extract[List[JValue]].map(rddInfoFromJson)
     val parentIds = Utils
       .jsonOption(json \ "Parent IDs")
-      .map { l =>
-        l.extract[List[JValue]].map(_.extract[Int])
-      }
+      .map { l => l.extract[List[JValue]].map(_.extract[Int]) }
       .getOrElse(Seq.empty)
     val details = (json \ "Details").extractOpt[String].getOrElse("")
     val submissionTime =
@@ -838,12 +830,10 @@ private[spark] object JsonProtocol {
   def accumulableInfoFromJson(json: JValue): AccumulableInfo = {
     val id = (json \ "ID").extract[Long]
     val name = (json \ "Name").extractOpt[String]
-    val update = Utils.jsonOption(json \ "Update").map { v =>
-      accumValueFromJson(name, v)
-    }
-    val value = Utils.jsonOption(json \ "Value").map { v =>
-      accumValueFromJson(name, v)
-    }
+    val update =
+      Utils.jsonOption(json \ "Update").map { v => accumValueFromJson(name, v) }
+    val value =
+      Utils.jsonOption(json \ "Value").map { v => accumValueFromJson(name, v) }
     val internal = (json \ "Internal").extractOpt[Boolean].getOrElse(false)
     val countFailedValues =
       (json \ "Count Failed Values").extractOpt[Boolean].getOrElse(false)
@@ -1082,9 +1072,7 @@ private[spark] object JsonProtocol {
       Utils.jsonOption(json \ "Callsite").map(_.extract[String]).getOrElse("")
     val parentIds = Utils
       .jsonOption(json \ "Parent IDs")
-      .map { l =>
-        l.extract[List[JValue]].map(_.extract[Int])
-      }
+      .map { l => l.extract[List[JValue]].map(_.extract[Int]) }
       .getOrElse(Seq.empty)
     val storageLevel = storageLevelFromJson(json \ "Storage Level")
     val numPartitions = (json \ "Number of Partitions").extract[Int]

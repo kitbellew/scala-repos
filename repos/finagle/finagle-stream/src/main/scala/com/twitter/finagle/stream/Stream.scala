@@ -33,9 +33,7 @@ private[stream] class DelayedReleaseService[Req](
             res.release()
           }
         }
-      } onFailure { _ =>
-        p.setDone()
-      }
+      } onFailure { _ => p.setDone() }
     }
   }
 

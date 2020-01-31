@@ -191,8 +191,7 @@ class ParameterDirectivesSpec
     "supply the default value if an optional parameter is missing" in {
       Get("/?name=Parsons&FirstName=Ellen") ~> {
         parameters("name".?, 'FirstName, 'age ? "29", 'eyes.?) {
-          (name, firstName, age, eyes) ⇒
-            complete(firstName + name + age + eyes)
+          (name, firstName, age, eyes) ⇒ complete(firstName + name + age + eyes)
         }
       } ~> check { responseAs[String] shouldEqual "EllenSome(Parsons)29None" }
     }

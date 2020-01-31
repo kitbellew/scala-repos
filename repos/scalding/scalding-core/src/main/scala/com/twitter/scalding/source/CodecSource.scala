@@ -36,9 +36,7 @@ object BytesWritableCodec {
   def get =
     Bijection.build[Array[Byte], BytesWritable] { arr =>
       new BytesWritable(arr)
-    } { w =>
-      Arrays.copyOfRange(w.getBytes, 0, w.getLength)
-    }
+    } { w => Arrays.copyOfRange(w.getBytes, 0, w.getLength) }
 }
 
 object CodecSource {

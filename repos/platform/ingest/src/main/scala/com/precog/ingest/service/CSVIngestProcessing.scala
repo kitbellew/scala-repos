@@ -254,9 +254,7 @@ class CSVIngestProcessing(
           file.delete()
           result
         }
-      } valueOr { errors =>
-        M.point(NotIngested(errors.list.mkString("; ")))
-      }
+      } valueOr { errors => M.point(NotIngested(errors.list.mkString("; "))) }
     }
   }
 }

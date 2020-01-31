@@ -8,10 +8,7 @@ trait Exprs {
   class Expr[T]
 }
 
-trait Reifiers {
-  self: Universe =>
-
-}
+trait Reifiers { self: Universe => }
 
 trait Universe extends Exprs with Reifiers {
   def reify[T](expr: T): Expr[T] = macro Impls.reify[T]

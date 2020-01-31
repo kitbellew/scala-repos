@@ -127,18 +127,14 @@ trait InterfaceImplicits {
   implicit def func2ScaloidViewOnClickListener[F](
       f: (View) => F): ViewOnClickListener =
     new ViewOnClickListener() {
-      def func = { v =>
-        f(v): Unit
-      }
+      def func = { v => f(v): Unit }
       def onClickListener = func2ViewOnClickListener(f)
     }
 
   implicit def lazy2ScaloidViewOnClickListener[F](
       f: => F): ViewOnClickListener =
     new ViewOnClickListener() {
-      def func = { v =>
-        f: Unit
-      }
+      def func = { v => f: Unit }
       def onClickListener = lazy2ViewOnClickListener(f)
     }
 

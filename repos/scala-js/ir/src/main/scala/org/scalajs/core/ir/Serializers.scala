@@ -173,9 +173,7 @@ object Serializers {
           writeByte(TagMatch)
           writeTree(selector)
           writeInt(cases.size)
-          cases foreach { caze =>
-            writeTrees(caze._1); writeTree(caze._2)
-          }
+          cases foreach { caze => writeTrees(caze._1); writeTree(caze._2) }
           writeTree(default)
           writeType(tree.tpe)
 

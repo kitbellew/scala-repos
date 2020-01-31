@@ -169,9 +169,7 @@ class UISeleniumSuite
       // Regression test for SPARK-3021
       intercept[SparkException] {
         sc.parallelize(1 to 10)
-          .map { x =>
-            throw new Exception()
-          }
+          .map { x => throw new Exception() }
           .collect()
       }
       eventually(timeout(5 seconds), interval(50 milliseconds)) {
@@ -189,9 +187,7 @@ class UISeleniumSuite
       val unserializableObject = new NotSerializable
       intercept[SparkException] {
         sc.parallelize(1 to 10)
-          .map { x =>
-            unserializableObject
-          }
+          .map { x => unserializableObject }
           .collect()
       }
       eventually(timeout(5 seconds), interval(50 milliseconds)) {
@@ -211,9 +207,7 @@ class UISeleniumSuite
     def hasKillLink: Boolean = find(className("kill-link")).isDefined
     def runSlowJob(sc: SparkContext) {
       sc.parallelize(1 to 10)
-        .map { x =>
-          Thread.sleep(10000); x
-        }
+        .map { x => Thread.sleep(10000); x }
         .countAsync()
     }
 
@@ -517,9 +511,7 @@ class UISeleniumSuite
 
     withSpark(newSparkContext(killEnabled = true)) { sc =>
       sc.parallelize(1 to 10)
-        .map { x =>
-          Thread.sleep(10000); x
-        }
+        .map { x => Thread.sleep(10000); x }
         .countAsync()
       eventually(timeout(5 seconds), interval(50 milliseconds)) {
         val url = new URL(

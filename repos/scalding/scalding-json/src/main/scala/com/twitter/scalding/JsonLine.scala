@@ -49,8 +49,7 @@ case class JsonLine(
   import JsonLine._
 
   override def transformForWrite(pipe: Pipe) = pipe.mapTo(fields -> 'json) {
-    t: TupleEntry =>
-      mapper.writeValueAsString(TupleConverter.ToMap(t))
+    t: TupleEntry => mapper.writeValueAsString(TupleConverter.ToMap(t))
   }
 
   override def transformForRead(pipe: Pipe) = {

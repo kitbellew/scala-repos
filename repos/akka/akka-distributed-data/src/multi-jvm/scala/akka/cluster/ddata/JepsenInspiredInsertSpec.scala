@@ -105,9 +105,7 @@ class JepsenInspiredInsertSpec
       }
 
       runOn(controller) {
-        nodes.foreach { n ⇒
-          enterBarrier(n.name + "-joined")
-        }
+        nodes.foreach { n ⇒ enterBarrier(n.name + "-joined") }
       }
 
       enterBarrier("after-setup")

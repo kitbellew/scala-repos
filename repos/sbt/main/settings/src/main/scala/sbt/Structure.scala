@@ -130,9 +130,7 @@ sealed abstract class TaskKey[T]
 
   private[this] def make[S](other: Initialize[Task[S]], source: SourcePosition)(
       f: (T, S) => T): Setting[Task[T]] =
-    set((this, other) { (a, b) =>
-      (a, b) map f.tupled
-    }, source)
+    set((this, other) { (a, b) => (a, b) map f.tupled }, source)
 }
 
 /**

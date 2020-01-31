@@ -157,8 +157,7 @@ case class ExceptionFailure(
   }
 
   def exception: Option[Throwable] = exceptionWrapper.flatMap {
-    (w: ThrowableSerializationWrapper) =>
-      Option(w.exception)
+    (w: ThrowableSerializationWrapper) => Option(w.exception)
   }
 
   override def toErrorString: String =
@@ -265,9 +264,7 @@ case class ExecutorLostFailure(
     }
     s"ExecutorLostFailure (executor ${execId} exited ${exitBehavior})" +
       reason
-        .map { r =>
-          s" Reason: $r"
-        }
+        .map { r => s" Reason: $r" }
         .getOrElse("")
   }
 

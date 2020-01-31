@@ -161,9 +161,7 @@ object ScalaSigParsers extends RulesWithState with MemoisableRules {
 
   def parseEntry[A](parser: ScalaSigEntryParsers.EntryParser[A])(
       index: Int): Parser[A] =
-    entry(index) -~ parser >> { a => entry =>
-      Success(entry.scalaSig, a)
-    }
+    entry(index) -~ parser >> { a => entry => Success(entry.scalaSig, a) }
 
   def allEntries[A](f: ScalaSigEntryParsers.EntryParser[A]) = size >> { n =>
     anyOf((0 until n) map parseEntry(f))
@@ -187,8 +185,7 @@ object ScalaSigEntryParsers extends RulesWithState with MemoisableRules {
 
   implicit def byteCodeEntryParser[A](
       rule: ScalaSigAttributeParsers.Parser[A]): EntryParser[A] = apply {
-    entry =>
-      rule(entry.byteCode) mapOut (entry setByteCode _)
+    entry => rule(entry.byteCode) mapOut (entry setByteCode _)
   }
 
   def toEntry[A](index: Int) = apply { sigEntry =>

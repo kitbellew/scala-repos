@@ -130,9 +130,7 @@ object Dist {
       preserveLastModified: Boolean = false,
       setExecutable: Boolean = false): Set[File] = {
     IO.createDirectory(target)
-    val sources = files map { f =>
-      (f, target / f.name)
-    }
+    val sources = files map { f => (f, target / f.name) }
     copyMapped(sources, overwrite, preserveLastModified, setExecutable)
   }
 

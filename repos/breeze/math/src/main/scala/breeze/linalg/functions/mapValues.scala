@@ -62,9 +62,7 @@ object mapValues extends UFunc with mapValuesLowPrio {
     /**Maps all values from the given collection. */
     def apply(from: Array[A], fn: (A) => B): Array[B] = {
       val arr = new Array[B](from.length)
-      cforRange(0 until from.length) { i =>
-        arr(i) = fn(from(i))
-      }
+      cforRange(0 until from.length) { i => arr(i) = fn(from(i)) }
       arr
     }
   }

@@ -70,8 +70,7 @@ object StringHelpersSpec extends Specification with ScalaCheck with StringGen {
         camelify(name).charAt(correspondingIndexInCamelCase(name, i))
 
       val doesntContainUnderscores = forAll(underscoredStrings) {
-        ((name: String) =>
-          !camelify(name).contains("_"))
+        ((name: String) => !camelify(name).contains("_"))
       }
       val isCamelCased = forAll(underscoredStrings)((name: String) => {
         name.forall(_ == '_') && camelify(name).isEmpty ||
@@ -95,9 +94,7 @@ object StringHelpersSpec extends Specification with ScalaCheck with StringGen {
       camelify(null) must_== ""
     }
     "leave a CamelCased name untouched" in {
-      forAll(camelCasedStrings) { (name: String) =>
-        camelify(name) == name
-      }
+      forAll(camelCasedStrings) { (name: String) => camelify(name) == name }
     }
   }
 

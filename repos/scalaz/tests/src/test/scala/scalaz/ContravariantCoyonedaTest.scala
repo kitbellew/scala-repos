@@ -37,9 +37,7 @@ object ContravariantCoyonedaGens {
     else (1, x)
   }
 
-  val negated = CtCoOrder { x: Int =>
-    -x
-  }
+  val negated = CtCoOrder { x: Int => -x }
 
   val probablePrime = CtCoOrder { x: Int =>
     ((x - 1: BigInt) isProbablePrime 5, x)

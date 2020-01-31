@@ -68,9 +68,7 @@ class TestStore[K, V](
   val batches: Map[BatchID, Mappable[(K, V)]] =
     BatchID
       .range(initBatch, lastBatch)
-      .map { b =>
-        (b, mockFor(b))
-      }
+      .map { b => (b, mockFor(b)) }
       .toMap
 
   // Needed to init the Test mode:
@@ -102,9 +100,7 @@ class TestStore[K, V](
     } else {
       val batch = candidates.max
       val mappable = batches(batch)
-      val rdr = Reader { (fd: (FlowDef, Mode)) =>
-        TypedPipe.from(mappable)
-      }
+      val rdr = Reader { (fd: (FlowDef, Mode)) => TypedPipe.from(mappable) }
       Right((batch, rdr))
     }
   }

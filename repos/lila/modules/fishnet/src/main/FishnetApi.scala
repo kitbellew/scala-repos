@@ -142,9 +142,7 @@ final class FishnetApi(
       }
     }.chronometer
       .mon(_.fishnet.analysis.post)
-      .logIfSlow(200, logger) { res =>
-        s"post analysis for ${res.??(_.id)}"
-      }
+      .logIfSlow(200, logger) { res => s"post analysis for ${res.??(_.id)}" }
       .result
       .flatMap { _ ?? saveAnalysis }
 
@@ -185,8 +183,7 @@ final class FishnetApi(
     Client.Skill.byKey(skill).fold(fufail[Unit](s"Invalid skill $skill")) {
       sk =>
         repo getClient key flatten s"No client with key $key" flatMap {
-          client =>
-            repo updateClient client.copy(skill = sk)
+          client => repo updateClient client.copy(skill = sk)
         }
     }
 }

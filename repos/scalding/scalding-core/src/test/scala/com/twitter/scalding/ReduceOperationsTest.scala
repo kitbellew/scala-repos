@@ -32,8 +32,7 @@ class SortWithTakeJob(args: Args) extends Job(args) {
       }
       .map('top_items -> 'top_items) {
         //used to test that types are correct
-        topItems: List[(Long, Double)] =>
-          topItems
+        topItems: List[(Long, Double)] => topItems
       }
       .project('key, 'top_items)
       .write(Tsv("output0"))
@@ -50,8 +49,7 @@ class SortedReverseTakeJob(args: Args) extends Job(args) {
       }
       .map('top_items -> 'top_items) {
         //used to test that types are correct
-        topItems: List[(Long, Double)] =>
-          topItems
+        topItems: List[(Long, Double)] => topItems
       }
       .project('key, 'top_items)
       .write(Tsv("output0"))
@@ -68,8 +66,7 @@ class SortedTakeJob(args: Args) extends Job(args) {
       }
       .map('top_items -> 'top_items) {
         //used to test that types are correct
-        topItems: List[(Long, Double)] =>
-          topItems
+        topItems: List[(Long, Double)] => topItems
       }
       .project('key, 'top_items)
       .write(Tsv("output0"))
@@ -86,9 +83,7 @@ class ApproximateUniqueCountJob(args: Args) extends Job(args) {
       .groupBy('category) {
         _.approximateUniqueCount[String]('os -> 'os_count)
       }
-      .map('os_count -> 'os_count) { osCount: Double =>
-        osCount.toLong
-      }
+      .map('os_count -> 'os_count) { osCount: Double => osCount.toLong }
       .write(Tsv("output0"))
   } catch {
     case e: Exception => e.printStackTrace()

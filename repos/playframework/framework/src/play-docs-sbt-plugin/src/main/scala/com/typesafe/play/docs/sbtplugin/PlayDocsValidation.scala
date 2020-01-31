@@ -401,9 +401,9 @@ object PlayDocsValidation {
         .get
         ._2
         .toEither
-        .fold({ incomplete =>
-          throw incomplete.directCause.get
-        }, result => result)
+        .fold(
+          { incomplete => throw incomplete.directCause.get },
+          result => result)
     } else {
       file
     }

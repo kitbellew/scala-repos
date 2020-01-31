@@ -148,9 +148,7 @@ class SubFlow[-In, +Out, +Mat](
     */
   def mapConcat[T](
       f: function.Function[Out, java.lang.Iterable[T]]): SubFlow[In, T, Mat] =
-    new SubFlow(delegate.mapConcat { elem ⇒
-      Util.immutableSeq(f(elem))
-    })
+    new SubFlow(delegate.mapConcat { elem ⇒ Util.immutableSeq(f(elem)) })
 
   /**
     * Transform each input element into an `Iterable` of output elements that is

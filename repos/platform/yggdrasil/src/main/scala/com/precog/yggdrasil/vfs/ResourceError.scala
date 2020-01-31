@@ -56,8 +56,7 @@ object ResourceError {
   )
 
   def fromExtractorError(msg: String): Extractor.Error => ResourceError = {
-    error =>
-      Corrupt("%s:\n%s" format (msg, error.message))
+    error => Corrupt("%s:\n%s" format (msg, error.message))
   }
 
   sealed trait FatalError { self: ResourceError =>

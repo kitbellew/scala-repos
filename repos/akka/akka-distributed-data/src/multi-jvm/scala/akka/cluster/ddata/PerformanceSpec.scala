@@ -121,9 +121,7 @@ class PerformanceSpec
   def awaitReplicated(
       keys: Iterable[ORSetKey[Int]],
       expectedData: Set[Int]): Unit =
-    keys.foreach { key ⇒
-      awaitReplicated(key, expectedData)
-    }
+    keys.foreach { key ⇒ awaitReplicated(key, expectedData) }
 
   def awaitReplicated(key: ORSetKey[Int], expectedData: Set[Int]): Unit = {
     within(20.seconds) {

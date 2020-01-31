@@ -44,9 +44,7 @@ trait Reads[A] { self =>
   def reads(json: JsValue): JsResult[A]
 
   def map[B](f: A => B): Reads[B] =
-    Reads[B] { json =>
-      self.reads(json).map(f)
-    }
+    Reads[B] { json => self.reads(json).map(f) }
 
   def flatMap[B](f: A => Reads[B]): Reads[B] = Reads[B] { json =>
     // Do not flatMap result to avoid repath
@@ -57,34 +55,22 @@ trait Reads[A] { self =>
   }
 
   def filter(f: A => Boolean): Reads[A] =
-    Reads[A] { json =>
-      self.reads(json).filter(f)
-    }
+    Reads[A] { json => self.reads(json).filter(f) }
 
   def filter(error: ValidationError)(f: A => Boolean): Reads[A] =
-    Reads[A] { json =>
-      self.reads(json).filter(JsError(error))(f)
-    }
+    Reads[A] { json => self.reads(json).filter(JsError(error))(f) }
 
   def filterNot(f: A => Boolean): Reads[A] =
-    Reads[A] { json =>
-      self.reads(json).filterNot(f)
-    }
+    Reads[A] { json => self.reads(json).filterNot(f) }
 
   def filterNot(error: ValidationError)(f: A => Boolean): Reads[A] =
-    Reads[A] { json =>
-      self.reads(json).filterNot(JsError(error))(f)
-    }
+    Reads[A] { json => self.reads(json).filterNot(JsError(error))(f) }
 
   def collect[B](error: ValidationError)(f: PartialFunction[A, B]) =
-    Reads[B] { json =>
-      self.reads(json).collect(error)(f)
-    }
+    Reads[B] { json => self.reads(json).collect(error)(f) }
 
   def orElse(v: Reads[A]): Reads[A] =
-    Reads[A] { json =>
-      self.reads(json).orElse(v.reads(json))
-    }
+    Reads[A] { json => self.reads(json).orElse(v.reads(json)) }
 
   def compose[B <: JsValue](rb: Reads[B]): Reads[A] =
     Reads[A] { js =>
@@ -114,9 +100,7 @@ object Reads extends ConstraintReads with PathReads with DefaultReads {
       implicit applicativeJsResult: Applicative[JsResult]): Applicative[Reads] =
     new Applicative[Reads] {
 
-      def pure[A](a: A): Reads[A] = Reads[A] { _ =>
-        JsSuccess(a)
-      }
+      def pure[A](a: A): Reads[A] = Reads[A] { _ => JsSuccess(a) }
 
       def map[A, B](m: Reads[A], f: A => B): Reads[B] = m.map(f)
 

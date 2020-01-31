@@ -354,9 +354,7 @@ class TaskMetrics private[spark] (initialAccums: Seq[Accumulator[_]])
     * not the aggregated value across multiple tasks.
     */
   def accumulatorUpdates(): Seq[AccumulableInfo] = {
-    accums.map { a =>
-      a.toInfo(Some(a.localValue), None)
-    }
+    accums.map { a => a.toInfo(Some(a.localValue), None) }
   }
 
   // If we are reconstructing this TaskMetrics on the driver, some metrics may already be set.
@@ -365,9 +363,7 @@ class TaskMetrics private[spark] (initialAccums: Seq[Accumulator[_]])
     var (hasShuffleRead, hasShuffleWrite, hasInput, hasOutput) =
       (false, false, false, false)
     initialAccums
-      .filter { a =>
-        a.localValue != a.zero
-      }
+      .filter { a => a.localValue != a.zero }
       .foreach { a =>
         a.name.get match {
           case sr if sr.startsWith(SHUFFLE_READ_METRICS_PREFIX) =>

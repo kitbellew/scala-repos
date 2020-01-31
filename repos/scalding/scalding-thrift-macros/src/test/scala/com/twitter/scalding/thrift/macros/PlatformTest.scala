@@ -32,9 +32,7 @@ class CompareJob[T: OrderedSerialization](in: Iterable[T], args: Args)
     extends Job(args) {
   TypedPipe
     .from(in)
-    .flatMap { i =>
-      (0 until 1).map(_ => i)
-    }
+    .flatMap { i => (0 until 1).map(_ => i) }
     .map(_ -> 1L)
     .sumByKey
     .map {
@@ -68,9 +66,7 @@ class PlatformTest
 
   def runCompareTest[T: OrderedSerialization](
       implicit iprov: InstanceProvider[T]) {
-    val input = (0 until 10000).map { idx =>
-      iprov.g(idx % 50)
-    }
+    val input = (0 until 10000).map { idx => iprov.g(idx % 50) }
 
     HadoopPlatformJobTest(new CompareJob[T](input, _), cluster)
       .sink(TypedTsv[(Int, Long)]("output")) { out =>

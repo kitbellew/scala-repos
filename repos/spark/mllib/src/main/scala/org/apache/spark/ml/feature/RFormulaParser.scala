@@ -89,11 +89,7 @@ private[ml] case class ParsedRFormula(label: ColumnRef, terms: Seq[Term]) {
     val rest = expandInteraction(schema, terms.tail)
     val validInteractions = (terms.head match {
       case Dot =>
-        expandDot(schema).flatMap { t =>
-          rest.map { r =>
-            Seq(t) ++ r
-          }
-        }
+        expandDot(schema).flatMap { t => rest.map { r => Seq(t) ++ r } }
       case ColumnRef(value) =>
         rest.map(Seq(value) ++ _)
     }).map(_.distinct)

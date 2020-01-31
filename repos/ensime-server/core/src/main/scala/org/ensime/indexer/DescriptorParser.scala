@@ -80,15 +80,12 @@ class DescriptorParser(val input: ParserInput) extends Parser {
 
   private def Package: Rule1[PackageName] = rule {
     zeroOrMore(capture(oneOrMore(DescriptorParser.PackageNamePredicate)) ~ '/') ~> {
-      seq: Seq[String] =>
-        PackageName(seq.toList)
+      seq: Seq[String] => PackageName(seq.toList)
     }
   }
 
   private def Array: Rule1[DescriptorType] = rule {
-    '[' ~ Type ~> { c =>
-      ArrayDescriptor(c)
-    }
+    '[' ~ Type ~> { c => ArrayDescriptor(c) }
   }
 
   private def Boolean: Rule1[ClassName] = rule { 'Z' ~ push(PrimitiveBoolean) }

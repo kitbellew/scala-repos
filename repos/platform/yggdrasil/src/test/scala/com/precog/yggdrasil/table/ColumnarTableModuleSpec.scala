@@ -232,9 +232,7 @@ trait ColumnarTableModuleSpec[M[+_]]
     "verify renderJson round tripping" in {
       implicit val gen = sample(schema)
 
-      check { data: SampleData =>
-        testRenderJson(data.data)
-      }.set(
+      check { data: SampleData => testRenderJson(data.data) }.set(
         minTestsOk -> 20000,
         workers -> Runtime.getRuntime.availableProcessors)
     }
@@ -598,8 +596,7 @@ trait ColumnarTableModuleSpec[M[+_]]
     "run" in {
       testSimpleCogroup(t =>
         t.logged(xlogger, "test-logging", "start stream", "end stream") {
-          slice =>
-            "size: " + slice.size
+          slice => "size: " + slice.size
         })
     }
   }
@@ -747,9 +744,7 @@ object ColumnarTableModuleSpec
       override def point[A](a: => A) = freeMonad[Function0].point(a)
       override def bind[A, B](m: Free.Trampoline[A])(
           f: A => Free.Trampoline[B]) = freeMonad[Function0].bind(m)(f)
-      override def copoint[A](m: Free.Trampoline[A]) = m go { f =>
-        f()
-      }
+      override def copoint[A](m: Free.Trampoline[A]) = m go { f => f() }
       override def cojoin[A](m: Free.Trampoline[A]) = point(m)
     }
 

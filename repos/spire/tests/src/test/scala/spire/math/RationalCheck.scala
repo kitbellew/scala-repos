@@ -40,46 +40,26 @@ class RationalCheck
       }
     }
 
-  rat1("x + 0 == x") { x: Q =>
-    x + Rational(0) shouldBe x
-  }
-  rat1("x * 1 == x") { x: Q =>
-    x * Rational(1) shouldBe x
-  }
-  rat1("x * 0 == 0") { x: Q =>
-    x * Rational(0) shouldBe Rational(0)
-  }
+  rat1("x + 0 == x") { x: Q => x + Rational(0) shouldBe x }
+  rat1("x * 1 == x") { x: Q => x * Rational(1) shouldBe x }
+  rat1("x * 0 == 0") { x: Q => x * Rational(0) shouldBe Rational(0) }
 
   rat1("x.floor <= x.round <= x.ceil") { x: Q =>
     x.floor should be <= x.round
     x.round should be <= x.ceil
   }
 
-  rat1("x + x == 2x") { x: Q =>
-    (x + x) shouldBe 2 * x
-  }
-  rat1("x - x == 0") { x: Q =>
-    x - x shouldBe Rational(0)
-  }
-  rat1("x * x == x^2") { x: Q =>
-    (x * x) shouldBe x.pow(2)
-  }
+  rat1("x + x == 2x") { x: Q => (x + x) shouldBe 2 * x }
+  rat1("x - x == 0") { x: Q => x - x shouldBe Rational(0) }
+  rat1("x * x == x^2") { x: Q => (x * x) shouldBe x.pow(2) }
   rat1("(x^-1)^3 == x^-3") { x: Q =>
     if (x != 0) x.reciprocal.pow(3) shouldBe x.pow(-3)
   }
-  rat1("x / x == 1") { x: Q =>
-    if (x != 0) x / x shouldBe Rational(1)
-  }
+  rat1("x / x == 1") { x: Q => if (x != 0) x / x shouldBe Rational(1) }
 
-  rat2("x + y == y + x") { (x: Q, y: Q) =>
-    x + y shouldBe y + x
-  }
-  rat2("x - y == -y + x") { (x: Q, y: Q) =>
-    x - y shouldBe -y + x
-  }
-  rat2("x + y - x == y") { (x: Q, y: Q) =>
-    (x + y) - x shouldBe y
-  }
+  rat2("x + y == y + x") { (x: Q, y: Q) => x + y shouldBe y + x }
+  rat2("x - y == -y + x") { (x: Q, y: Q) => x - y shouldBe -y + x }
+  rat2("x + y - x == y") { (x: Q, y: Q) => (x + y) - x shouldBe y }
   rat2("x / y == x * (y^-1)") { (x: Q, y: Q) =>
     if (y != 0) x / y shouldBe x * y.reciprocal
   }
@@ -88,17 +68,13 @@ class RationalCheck
     (x + y) * z shouldBe x * z + y * z
   }
 
-  rat1("Round-trip to Real") { (x: Q) =>
-    x.toReal.toRational shouldBe x
-  }
+  rat1("Round-trip to Real") { (x: Q) => x.toReal.toRational shouldBe x }
 
   rat1("Round-trip to Algebraic") { (x: Q) =>
     x.toAlgebraic.toRational shouldBe Some(x)
   }
 
   property("Round-trip Double") {
-    forAll("x") { (n: Double) =>
-      Rational(n).toDouble == n
-    }
+    forAll("x") { (n: Double) => Rational(n).toDouble == n }
   }
 }

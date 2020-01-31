@@ -96,7 +96,5 @@ private[forum] final class CategApi(env: Env) {
     } yield ()
 
   def denormalize: Funit =
-    $find.all[Categ] flatMap { categs =>
-      categs.map(denormalize).sequenceFu
-    } void
+    $find.all[Categ] flatMap { categs => categs.map(denormalize).sequenceFu } void
 }

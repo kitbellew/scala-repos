@@ -215,15 +215,9 @@ trait PrecogLibModule[M[+_]]
             case Failure(errors) =>
               val messages = errors.toList map (_.fold({ httpError =>
                 "Error making HTTP request: " + httpError.userMessage
-              }, { jsonError =>
-                "Error parsing JSON: " + jsonError.message
-              }))
+              }, { jsonError => "Error parsing JSON: " + jsonError.message }))
               val units: M[List[Unit]] = messages traverse (ctx.logger.error(_))
-              units flatMap { _ =>
-                ctx.logger.die() map { _ =>
-                  Map.empty
-                }
-              }
+              units flatMap { _ => ctx.logger.die() map { _ => Map.empty } }
           }
         }
       }

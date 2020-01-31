@@ -204,9 +204,7 @@ class TaskReplaceActorTest
     watch(ref)
 
     eventually { verify(driver, times(2)).killTask(_) }
-    eventually { app: AppDefinition =>
-      verify(queue, times(2)).add(app)
-    }
+    eventually { app: AppDefinition => verify(queue, times(2)).add(app) }
 
     ref ! MesosStatusUpdateEvent(
       "",
@@ -290,9 +288,7 @@ class TaskReplaceActorTest
     watch(ref)
 
     // all new tasks are queued directly
-    eventually { app: AppDefinition =>
-      verify(queue, times(3)).add(app)
-    }
+    eventually { app: AppDefinition => verify(queue, times(3)).add(app) }
 
     // ceiling(minimumHealthCapacity * 3) = 2 are left running
     assert(oldTaskCount == 2)

@@ -30,9 +30,7 @@ private final class MoveDB {
   def oldestNonAcquired = coll.foldLeft(none[Move]) {
     case (acc, (_, m)) =>
       if (m.nonAcquired) Some {
-        acc.fold(m) { a =>
-          if (m.createdAt isBefore a.createdAt) m else a
-        }
+        acc.fold(m) { a => if (m.createdAt isBefore a.createdAt) m else a }
       }
       else acc
   }

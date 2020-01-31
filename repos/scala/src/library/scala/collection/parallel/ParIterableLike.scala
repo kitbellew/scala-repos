@@ -698,8 +698,7 @@ trait ParIterableLike[
   def partition(pred: T => Boolean): (Repr, Repr) = {
     tasksupport.executeAndWaitResult(
       new Partition(pred, combinerFactory, combinerFactory, splitter) mapResult {
-        p =>
-          (p._1.resultWithTaskSupport, p._2.resultWithTaskSupport)
+        p => (p._1.resultWithTaskSupport, p._2.resultWithTaskSupport)
       }
     )
   }
@@ -777,8 +776,7 @@ trait ParIterableLike[
   def splitAt(n: Int): (Repr, Repr) = {
     tasksupport.executeAndWaitResult(
       new SplitAt(n, combinerFactory, combinerFactory, splitter) mapResult {
-        p =>
-          (p._1.resultWithTaskSupport, p._2.resultWithTaskSupport)
+        p => (p._1.resultWithTaskSupport, p._2.resultWithTaskSupport)
       }
     )
   }
@@ -875,9 +873,7 @@ trait ParIterableLike[
       val copyys = new Copy(combinerFactory, ys.splitter) mapResult {
         _.resultWithTaskSupport
       }
-      val copyall = (copyxs parallel copyys) { (xr, yr) =>
-        (xr, yr)
-      }
+      val copyall = (copyxs parallel copyys) { (xr, yr) => (xr, yr) }
       tasksupport.executeAndWaitResult(copyall)
     } else {
       val cntx = new DefaultSignalling with AtomicIndexFlag
@@ -1597,9 +1593,7 @@ trait ParIterableLike[
       val pits = pit.splitWithSignalling
       val sizes = pits.map(_.remaining)
       val opits = othpit.psplitWithSignalling(sizes: _*)
-      (pits zip opits) map { p =>
-        new Zip(pbf, p._1, p._2)
-      }
+      (pits zip opits) map { p => new Zip(pbf, p._1, p._2) }
     }
     override def merge(that: Zip[U, S, That]) =
       result = result combine that.result

@@ -63,9 +63,8 @@ trait LowPriorityProductFormats {
       r: Lazy[HListFormat[R]]
   ): SexpFormat[T] = new SexpFormat[T] {
 
-    private val keys = k().toList[Symbol].map { sym =>
-      SexpSymbol(":" + toWireName(sym.name))
-    }
+    private val keys =
+      k().toList[Symbol].map { sym => SexpSymbol(":" + toWireName(sym.name)) }
 
     def write(x: T): Sexp =
       if (keys.isEmpty) SexpNil

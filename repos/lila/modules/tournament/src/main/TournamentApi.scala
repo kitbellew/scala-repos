@@ -161,9 +161,7 @@ private[tournament] final class TournamentApi(
             sendTo(tour.id, Reload)
             publish()
             PlayerRepo withPoints tour.id foreach {
-              _ foreach { p =>
-                UserRepo.incToints(p.userId, p.score)
-              }
+              _ foreach { p => UserRepo.incToints(p.userId, p.score) }
             }
             awardTrophies(tour)
             indexLeaderboard(tour)

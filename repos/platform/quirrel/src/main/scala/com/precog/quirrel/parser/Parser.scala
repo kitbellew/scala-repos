@@ -84,8 +84,7 @@ trait Parser extends RegexParsers with Filters with AST {
       }
 
       | """observe\b""".r ~ "(" ~ expr ~ "," ~ expr ~ ")" ^# {
-        (loc, _, _, e1, _, e2, _) =>
-          Observe(loc, e1, e2)
+        (loc, _, _, e1, _, e2, _) => Observe(loc, e1, e2)
       }
 
       | """import\b""".r ~ importSpec ~ expr ^# { (loc, _, s, e) =>
@@ -96,16 +95,10 @@ trait Parser extends RegexParsers with Filters with AST {
         Assert(loc, e1, e2)
       }
 
-      | """new\b""".r ~ expr ^# { (loc, _, e) =>
-        New(loc, e)
-      }
-      | relations ~ expr ^# { (loc, es, e) =>
-        buildDeepRelate(loc, es, e)
-      }
+      | """new\b""".r ~ expr ^# { (loc, _, e) => New(loc, e) }
+      | relations ~ expr ^# { (loc, es, e) => buildDeepRelate(loc, es, e) }
 
-      | namespacedId ^# { (loc, id) =>
-        Dispatch(loc, id, Vector())
-      }
+      | namespacedId ^# { (loc, id) => Dispatch(loc, id, Vector()) }
       | ticId ^# TicVar
 
       | pathLiteral ^# { (loc, str) =>
@@ -125,37 +118,24 @@ trait Parser extends RegexParsers with Filters with AST {
       | strLiteral ^# StrLit
       | numLiteral ^# NumLit
       | boolLiteral ^# BoolLit
-      | undefinedLiteral ^# { (loc, _) =>
-        UndefinedLit(loc)
-      }
-      | nullLiteral ^# { (loc, _) =>
-        NullLit(loc)
-      }
+      | undefinedLiteral ^# { (loc, _) => UndefinedLit(loc) }
+      | nullLiteral ^# { (loc, _) => NullLit(loc) }
 
-      | "{" ~ properties ~ "}" ^# { (loc, _, ps, _) =>
-        ObjectDef(loc, ps)
-      }
-      | "[" ~ nullableActuals ~ "]" ^# { (loc, _, as, _) =>
-        ArrayDef(loc, as)
-      }
+      | "{" ~ properties ~ "}" ^# { (loc, _, ps, _) => ObjectDef(loc, ps) }
+      | "[" ~ nullableActuals ~ "]" ^# { (loc, _, as, _) => ArrayDef(loc, as) }
 
-      | expr ~ "." ~ propertyName ^# { (loc, e, _, p) =>
-        Descent(loc, e, p)
-      }
+      | expr ~ "." ~ propertyName ^# { (loc, e, _, p) => Descent(loc, e, p) }
       | expr ~ "@" ~ propertyName ^# { (loc, e, _, p) =>
         MetaDescent(loc, e, p)
       }
-      | expr ~ "[" ~ expr ~ "]" ^# { (loc, e1, _, e2, _) =>
-        Deref(loc, e1, e2)
-      }
+      | expr ~ "[" ~ expr ~ "]" ^# { (loc, e1, _, e2, _) => Deref(loc, e1, e2) }
 
       | namespacedId ~ "(" ~ actuals ~ ")" ^# { (loc, id, _, as, _) =>
         Dispatch(loc, id, as)
       }
 
       | """if\b""".r ~ expr ~ """then\b""".r ~ expr ~ """else\b""".r ~ expr ^# {
-        (loc, _, e1, _, e2, _, e3) =>
-          Cond(loc, e1, e2, e3)
+        (loc, _, e1, _, e2, _, e3) => Cond(loc, e1, e2, e3)
       }
 
       | expr ~ """where\b""".r ~ expr ^# { (loc, e1, _, e2) =>
@@ -174,62 +154,28 @@ trait Parser extends RegexParsers with Filters with AST {
         Difference(loc, e1, e2)
       }
 
-      | expr ~ "+" ~ expr ^# { (loc, e1, _, e2) =>
-        Add(loc, e1, e2)
-      }
-      | expr ~ "-" ~ expr ^# { (loc, e1, _, e2) =>
-        Sub(loc, e1, e2)
-      }
-      | expr ~ "*" ~ expr ^# { (loc, e1, _, e2) =>
-        Mul(loc, e1, e2)
-      }
-      | expr ~ "/" ~ expr ^# { (loc, e1, _, e2) =>
-        Div(loc, e1, e2)
-      }
-      | expr ~ "%" ~ expr ^# { (loc, e1, _, e2) =>
-        Mod(loc, e1, e2)
-      }
-      | expr ~ "^" ~ expr ^# { (loc, e1, _, e2) =>
-        Pow(loc, e1, e2)
-      }
+      | expr ~ "+" ~ expr ^# { (loc, e1, _, e2) => Add(loc, e1, e2) }
+      | expr ~ "-" ~ expr ^# { (loc, e1, _, e2) => Sub(loc, e1, e2) }
+      | expr ~ "*" ~ expr ^# { (loc, e1, _, e2) => Mul(loc, e1, e2) }
+      | expr ~ "/" ~ expr ^# { (loc, e1, _, e2) => Div(loc, e1, e2) }
+      | expr ~ "%" ~ expr ^# { (loc, e1, _, e2) => Mod(loc, e1, e2) }
+      | expr ~ "^" ~ expr ^# { (loc, e1, _, e2) => Pow(loc, e1, e2) }
 
-      | expr ~ "<" ~ expr ^# { (loc, e1, _, e2) =>
-        Lt(loc, e1, e2)
-      }
-      | expr ~ "<=" ~ expr ^# { (loc, e1, _, e2) =>
-        LtEq(loc, e1, e2)
-      }
-      | expr ~ ">" ~ expr ^# { (loc, e1, _, e2) =>
-        Gt(loc, e1, e2)
-      }
-      | expr ~ ">=" ~ expr ^# { (loc, e1, _, e2) =>
-        GtEq(loc, e1, e2)
-      }
+      | expr ~ "<" ~ expr ^# { (loc, e1, _, e2) => Lt(loc, e1, e2) }
+      | expr ~ "<=" ~ expr ^# { (loc, e1, _, e2) => LtEq(loc, e1, e2) }
+      | expr ~ ">" ~ expr ^# { (loc, e1, _, e2) => Gt(loc, e1, e2) }
+      | expr ~ ">=" ~ expr ^# { (loc, e1, _, e2) => GtEq(loc, e1, e2) }
 
-      | expr ~ "=" ~ expr ^# { (loc, e1, _, e2) =>
-        Eq(loc, e1, e2)
-      }
-      | expr ~ "!=" ~ expr ^# { (loc, e1, _, e2) =>
-        NotEq(loc, e1, e2)
-      }
+      | expr ~ "=" ~ expr ^# { (loc, e1, _, e2) => Eq(loc, e1, e2) }
+      | expr ~ "!=" ~ expr ^# { (loc, e1, _, e2) => NotEq(loc, e1, e2) }
 
-      | expr ~ "&" ~ expr ^# { (loc, e1, _, e2) =>
-        And(loc, e1, e2)
-      }
-      | expr ~ "|" ~ expr ^# { (loc, e1, _, e2) =>
-        Or(loc, e1, e2)
-      }
+      | expr ~ "&" ~ expr ^# { (loc, e1, _, e2) => And(loc, e1, e2) }
+      | expr ~ "|" ~ expr ^# { (loc, e1, _, e2) => Or(loc, e1, e2) }
 
-      | "!" ~ expr ^# { (loc, _, e) =>
-        Comp(loc, e)
-      }
-      | """neg\b""".r ~ expr ^# { (loc, _, e) =>
-        Neg(loc, e)
-      }
+      | "!" ~ expr ^# { (loc, _, e) => Comp(loc, e) }
+      | """neg\b""".r ~ expr ^# { (loc, _, e) => Neg(loc, e) }
 
-      | "(" ~ expr ~ ")" ^# { (loc, _, e, _) =>
-        Paren(loc, e)
-      }
+      | "(" ~ expr ~ ")" ^# { (loc, _, e, _) => Paren(loc, e) }
   ) filter (precedence & arrayDefDeref & relateRelate)
 
   private lazy val importSpec: Parser[ImportSpec] = (
@@ -243,9 +189,7 @@ trait Parser extends RegexParsers with Filters with AST {
     namespace ~ "::" ~ id ^^ { (ns, _, id) =>
       Identifier(ns, id)
     }
-      | id ^^ { str =>
-        Identifier(Vector(), str)
-      }
+      | id ^^ { str => Identifier(Vector(), str) }
   )
 
   private lazy val namespace: Parser[Vector[String]] = (
@@ -266,9 +210,7 @@ trait Parser extends RegexParsers with Filters with AST {
     relations ~ "~" ~ expr ^^ { (es, _, e) =>
       es :+ e
     }
-      | expr ~ "~" ~ expr ^^ { (e1, _, e2) =>
-        Vector(e1, e2)
-      }
+      | expr ~ "~" ~ expr ^^ { (e1, _, e2) => Vector(e1, e2) }
   )
 
   private lazy val actuals: Parser[Vector[Expr]] = (
@@ -388,9 +330,7 @@ trait Parser extends RegexParsers with Filters with AST {
       relations: Vector[Expr],
       e: Expr): Expr = {
     val builders = relations zip (relations drop 1) map {
-      case (e1, e2) => { e3: Expr =>
-        Relate(loc, e1, e2, e3)
-      }
+      case (e1, e2) => { e3: Expr => Relate(loc, e1, e2, e3) }
     }
 
     builders.foldRight(e) { _(_) }
@@ -467,9 +407,7 @@ trait Parser extends RegexParsers with Filters with AST {
             if (back contains None)
               UniversalCharSet
             else
-              back flatMap { x =>
-                x
-              }
+              back flatMap { x => x }
           }
 
           Parsers.keySet filterNot { _.first intersect first isEmpty } map Parsers
@@ -480,9 +418,7 @@ trait Parser extends RegexParsers with Filters with AST {
       }
 
       val expectedCountPS = expectedPowerSet map { set =>
-        Map(set map { str =>
-          str -> 1
-        } toSeq: _*)
+        Map(set map { str => str -> 1 } toSeq: _*)
       }
 
       val expectedCounts = expectedCountPS.fold(Map()) { (left, right) =>

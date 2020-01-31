@@ -71,9 +71,7 @@ object PhysicalNode {
       with PhysicalNode[Nothing] {
     def run(implicit ec: ExecutionContext): Future[Unit] =
       Future
-        .sequence(data.map { o =>
-          next.push(o)
-        })
+        .sequence(data.map { o => next.push(o) })
         .map(_ => ())
 
     def push(item: Nothing)(implicit ec: ExecutionContext) =

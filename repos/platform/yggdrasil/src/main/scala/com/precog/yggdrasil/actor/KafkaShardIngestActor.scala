@@ -564,9 +564,7 @@ abstract class KafkaShardIngestActor(
                   }
               }
 
-            msTime({ t =>
-              logger.debug("Batch built in %d ms".format(t))
-            }) {
+            msTime({ t => logger.debug("Batch built in %d ms".format(t)) }) {
               buildBatch(updatedMessages, Vector.empty, fromCheckpoint)
             }
           }

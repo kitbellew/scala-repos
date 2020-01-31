@@ -138,9 +138,7 @@ final class ScriptedTests(
 }
 
 object ScriptedTests extends ScriptedRunner {
-  val emptyCallback: File => Unit = { _ =>
-    ()
-  }
+  val emptyCallback: File => Unit = { _ => () }
   def main(args: Array[String]): Unit = {
     val directory = new File(args(0))
     val buffer = args(1).toBoolean
@@ -196,9 +194,7 @@ class ScriptedRunner {
       tests,
       ConsoleLogger(),
       bootProperties,
-      launchOpts, { f: File =>
-        prescripted.add(f); ()
-      }
+      launchOpts, { f: File => prescripted.add(f); () }
     ) //new FullLogger(Logger.xlog2Log(log)))
 
   @deprecated("No longer used", "0.13.9")

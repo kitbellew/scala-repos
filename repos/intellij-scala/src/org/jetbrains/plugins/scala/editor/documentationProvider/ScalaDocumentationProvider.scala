@@ -359,9 +359,7 @@ object ScalaDocumentationProvider {
 
   private class MacroFinderImpl(
       comment: ScDocComment,
-      handler: PsiElement => String = { element =>
-        element.getText
-      })
+      handler: PsiElement => String = { element => element.getText })
       extends MacroFinder {
     private val myCache = mutable.HashMap[String, String]()
     private var lastProcessedComment: Option[PsiDocComment] = None

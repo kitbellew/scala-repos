@@ -356,8 +356,7 @@ object NonlinearMinimizer {
       regularizedGram,
       q,
       nlProxResult.z) + lambdaL1 * nlProxResult.z.foldLeft(0.0) {
-      (agg, entry) =>
-        agg + abs(entry)
+      (agg, entry) => agg + abs(entry)
     }
 
     println(

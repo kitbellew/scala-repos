@@ -94,63 +94,43 @@ class PolynomialCheck
     val one = Polynomial.one[A]
 
     property(s"$name p = p") {
-      forAll { (p: P) =>
-        p shouldBe p
-      }
+      forAll { (p: P) => p shouldBe p }
     }
 
     property(s"$name p + 0 = p") {
-      forAll { (p: P) =>
-        p + zero shouldBe p
-      }
+      forAll { (p: P) => p + zero shouldBe p }
     }
 
     property(s"$name p + (-p) = 0") {
-      forAll { (p: P) =>
-        p + (-p) shouldBe zero
-      }
+      forAll { (p: P) => p + (-p) shouldBe zero }
     }
 
     property(s"$name p * 0 = 0") {
-      forAll { (p: P) =>
-        p * zero shouldBe zero
-      }
+      forAll { (p: P) => p * zero shouldBe zero }
     }
 
     property(s"$name p * 1 = p") {
-      forAll { (p: P) =>
-        p * one shouldBe p
-      }
+      forAll { (p: P) => p * one shouldBe p }
     }
 
     property(s"$name p /~ 1 = p") {
-      forAll { (p: P) =>
-        p /~ one shouldBe p
-      }
+      forAll { (p: P) => p /~ one shouldBe p }
     }
 
     property(s"$name p /~ p = 1") {
-      forAll { (p: P) =>
-        if (!p.isZero) p /~ p shouldBe one
-      }
+      forAll { (p: P) => if (!p.isZero) p /~ p shouldBe one }
     }
 
     property(s"$name p % p = 0") {
-      forAll { (p: P) =>
-        if (!p.isZero) p % p shouldBe zero
-      }
+      forAll { (p: P) => if (!p.isZero) p % p shouldBe zero }
     }
 
     property(s"$name x + y = y + x") {
-      forAll { (x: P, y: P) =>
-        x + y shouldBe y + x
-      }
+      forAll { (x: P, y: P) => x + y shouldBe y + x }
     }
 
     property(s"$name x * y = y * x") {
-      forAll { (x: P, y: P) =>
-        x * y shouldBe y * x
-      }
+      forAll { (x: P, y: P) => x * y shouldBe y * x }
     }
 
     property(s"$name (x /~ y) * y + (x % y) = x") {
@@ -160,9 +140,7 @@ class PolynomialCheck
     }
 
     property(s"$name p = p.reductum + p.maxTerm") {
-      forAll { (p: P) =>
-        p shouldBe p.reductum + Polynomial(p.maxTerm :: Nil)
-      }
+      forAll { (p: P) => p shouldBe p.reductum + Polynomial(p.maxTerm :: Nil) }
     }
   }
 
@@ -221,15 +199,11 @@ class PolynomialCheck
   }
 
   property("p.toSparse.toDense = p") {
-    forAll { (p: PolyDense[Rational]) =>
-      p.toSparse.toDense shouldBe p
-    }
+    forAll { (p: PolyDense[Rational]) => p.toSparse.toDense shouldBe p }
   }
 
   property("p.toDense.toSparse = p") {
-    forAll { (p: PolySparse[Rational]) =>
-      p.toDense.toSparse shouldBe p
-    }
+    forAll { (p: PolySparse[Rational]) => p.toDense.toSparse shouldBe p }
   }
 
   property("apply(p.toString).toDense = p") {
@@ -239,9 +213,7 @@ class PolynomialCheck
   }
 
   property("apply(p.toString) = p") {
-    forAll { (p: PolyDense[Rational]) =>
-      Polynomial(p.toString) shouldBe p
-    }
+    forAll { (p: PolyDense[Rational]) => Polynomial(p.toString) shouldBe p }
   }
 
   property("apply(r, 0) = r") {
@@ -273,9 +245,7 @@ class PolynomialCheck
       Arbitrary(for {
         ts <- Gen.listOf(for {
           c <- arbitrary[Rational]
-          e <- arbitrary[Int] map { n =>
-            (n % 10).abs
-          }
+          e <- arbitrary[Int] map { n => (n % 10).abs }
         } yield (e, c))
       } yield {
         Polynomial(ts.toMap).toDense

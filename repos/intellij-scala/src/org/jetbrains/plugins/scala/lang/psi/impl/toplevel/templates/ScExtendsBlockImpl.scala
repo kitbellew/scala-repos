@@ -83,9 +83,7 @@ class ScExtendsBlockImpl private (
 
   def selfType = {
     val res = wrap(selfTypeElement) flatMap { ste =>
-      wrap(ste.typeElement) flatMap { te =>
-        te.getType(TypingContext.empty)
-      }
+      wrap(ste.typeElement) flatMap { te => te.getType(TypingContext.empty) }
     } match {
       case Success(t, _) => Some(t)
       case _             => None
@@ -232,13 +230,10 @@ class ScExtendsBlockImpl private (
     }
     templateParents match {
       case Some(parents: ScTemplateParents) =>
-        parents.supers foreach { t =>
-          addClass(t)
-        }
+        parents.supers foreach { t => addClass(t) }
       case _ =>
         ScTemplateParents.extractSupers(syntheticTypeElements, getProject) foreach {
-          t =>
-            addClass(t)
+          t => addClass(t)
         }
     }
     if (isUnderCaseClass) {
@@ -352,9 +347,7 @@ class ScExtendsBlockImpl private (
     case Some(body) => body.functions
   }
 
-  def selfTypeElement = templateBody flatMap { body =>
-    body.selfTypeElement
-  }
+  def selfTypeElement = templateBody flatMap { body => body.selfTypeElement }
 
   def templateParents: Option[ScTemplateParents] = {
     val stub = getStub

@@ -151,15 +151,11 @@ private[sbt] final class Execute[A[_] <: AnyRef](
     results(node) = result
     state(node) = Done
     progressState = progress.completed(progressState, node, result)
-    remove(reverse, node) foreach { dep =>
-      notifyDone(node, dep)
-    }
+    remove(reverse, node) foreach { dep => notifyDone(node, dep) }
     callers.remove(node).toList.flatten.foreach { c =>
       retire(c, callerResult(c, result))
     }
-    triggeredBy(node) foreach { t =>
-      addChecked(t)
-    }
+    triggeredBy(node) foreach { t => addChecked(t) }
 
     post {
       assert(done(node))

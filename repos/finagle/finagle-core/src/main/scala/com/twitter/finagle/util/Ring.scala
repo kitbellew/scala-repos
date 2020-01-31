@@ -153,9 +153,7 @@ object Ring {
     require(numSlices > 0)
     require(width >= numSlices, "ring not wide enough")
     val unit = width / numSlices.toDouble
-    val positions = Array.tabulate(numSlices) { i =>
-      ((i + 1) * unit).toInt
-    }
+    val positions = Array.tabulate(numSlices) { i => ((i + 1) * unit).toInt }
     new Ring(positions)
   }
 }

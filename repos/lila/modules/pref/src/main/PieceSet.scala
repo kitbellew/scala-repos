@@ -17,9 +17,7 @@ sealed trait PieceSetObject {
 
   lazy val listString = list mkString " "
 
-  lazy val allByName = list map { c =>
-    c.name -> c
-  } toMap
+  lazy val allByName = list map { c => c.name -> c } toMap
 
   lazy val default = all.head
 
@@ -42,9 +40,7 @@ object PieceSet extends PieceSetObject {
     "fantasy",
     "spatial",
     "shapes"
-  ) map { name =>
-    new PieceSet(name)
-  }
+  ) map { name => new PieceSet(name) }
 }
 
 object PieceSet3d extends PieceSetObject {
@@ -58,7 +54,5 @@ object PieceSet3d extends PieceSetObject {
     "ModernWood",
     "Glass",
     "Trimmed",
-    "Experimental") map { name =>
-    new PieceSet(name)
-  }
+    "Experimental") map { name => new PieceSet(name) }
 }

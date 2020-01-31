@@ -27,9 +27,7 @@ object GlobalPlugin {
     Seq[Setting[_]](
       projectDescriptors ~= { _ ++ gp.descriptors },
       projectDependencies ++= gp.projectID +: gp.dependencies,
-      resolvers <<= resolvers { rs =>
-        (rs ++ gp.resolvers).distinct
-      },
+      resolvers <<= resolvers { rs => (rs ++ gp.resolvers).distinct },
       globalPluginUpdate := gp.updateReport,
       // TODO: these shouldn't be required (but are): the project* settings above should take care of this
       injectInternalClasspath(Runtime, gp.internalClasspath),
@@ -38,9 +36,7 @@ object GlobalPlugin {
   private[this] def injectInternalClasspath(
       config: Configuration,
       cp: Seq[Attributed[File]]): Setting[_] =
-    internalDependencyClasspath in config ~= { prev =>
-      (prev ++ cp).distinct
-    }
+    internalDependencyClasspath in config ~= { prev => (prev ++ cp).distinct }
 
   def build(
       base: File,

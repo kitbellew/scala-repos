@@ -62,14 +62,10 @@ trait Helpers { self: Global =>
     if (isArrowType(tpe)) {
       CompletionSignature(
         tpe.paramss.map { sect =>
-          sect.map { p =>
-            (p.name.toString, typeFullName(p.tpe, true))
-          }
+          sect.map { p => (p.name.toString, typeFullName(p.tpe, true)) }
         },
         typeFullName(tpe.finalResultType, true),
-        tpe.paramss.exists { sect =>
-          sect.exists(_.isImplicit)
-        }
+        tpe.paramss.exists { sect => sect.exists(_.isImplicit) }
       )
     } else CompletionSignature(List.empty, typeFullName(tpe, true), false)
   }
@@ -250,9 +246,7 @@ trait Helpers { self: Global =>
     symbolByName(
       if (path.endsWith("$")) path else path + "$",
       RootPackage
-    ).find { s =>
-      s.hasPackageFlag
-    }
+    ).find { s => s.hasPackageFlag }
   }
 
   /*

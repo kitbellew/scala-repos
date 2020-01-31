@@ -111,9 +111,7 @@ object Finagle extends Build {
 
     // Sonatype publishing
     publishArtifact in Test := false,
-    pomIncludeRepository := { _ =>
-      false
-    },
+    pomIncludeRepository := { _ => false },
     publishMavenStyle := true,
     autoAPIMappings := true,
     apiURL := Some(url("https://twitter.github.io/finagle/docs/")),

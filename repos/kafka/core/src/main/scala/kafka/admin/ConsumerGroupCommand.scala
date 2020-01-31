@@ -225,9 +225,7 @@ object ConsumerGroupCommand {
           .readDataMaybeNull(
             groupDirs.consumerOwnerDir + "/" + topicPartition.partition)
           ._1
-          .map { owner =>
-            topicPartition -> owner
-          }
+          .map { owner => topicPartition -> owner }
       }.toMap
       val partitionOffsets = getPartitionOffsets(
         group,

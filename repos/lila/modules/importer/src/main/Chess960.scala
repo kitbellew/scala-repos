@@ -7,9 +7,7 @@ object Chess960 {
   def isStartPosition(board: Board) = board valid true && {
 
     def rankMatches(f: Option[Piece] => Boolean)(rank: Int) =
-      (1 to 8) forall { file =>
-        f(board(file, rank))
-      }
+      (1 to 8) forall { file => f(board(file, rank)) }
 
     rankMatches {
       case Some(Piece(White, King | Queen | Rook | Knight | Bishop)) => true

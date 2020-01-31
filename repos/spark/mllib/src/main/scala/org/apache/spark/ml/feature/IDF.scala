@@ -126,9 +126,7 @@ class IDFModel private[ml] (
 
   override def transform(dataset: DataFrame): DataFrame = {
     transformSchema(dataset.schema, logging = true)
-    val idf = udf { vec: Vector =>
-      idfModel.transform(vec)
-    }
+    val idf = udf { vec: Vector => idfModel.transform(vec) }
     dataset.withColumn($(outputCol), idf(col($(inputCol))))
   }
 

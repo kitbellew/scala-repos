@@ -51,13 +51,9 @@ final class Env(
   def cli = new lila.common.Cli {
     def process = {
       case "puzzle" :: "export" :: nbStr :: Nil =>
-        parseIntOption(nbStr) ?? { nb =>
-          Export(api, nb)
-        }
+        parseIntOption(nbStr) ?? { nb => Export(api, nb) }
       case "puzzle" :: "disable" :: id :: Nil =>
-        parseIntOption(id) ?? { id =>
-          api.puzzle disable id inject "Done"
-        }
+        parseIntOption(id) ?? { id => api.puzzle disable id inject "Done" }
     }
   }
 

@@ -81,9 +81,7 @@ class PeriodicGraphCheckpointerSuite
     }
 
     checkpointer.deleteAllCheckpoints()
-    graphsToCheck.foreach { graph =>
-      confirmCheckpointRemoved(graph.graph)
-    }
+    graphsToCheck.foreach { graph => confirmCheckpointRemoved(graph.graph) }
 
     Utils.deleteRecursively(tempDir)
   }
@@ -104,9 +102,7 @@ private object PeriodicGraphCheckpointerSuite {
   }
 
   def checkPersistence(graphs: Seq[GraphToCheck], iteration: Int): Unit = {
-    graphs.foreach { g =>
-      checkPersistence(g.graph, g.gIndex, iteration)
-    }
+    graphs.foreach { g => checkPersistence(g.graph, g.gIndex, iteration) }
   }
 
   /**

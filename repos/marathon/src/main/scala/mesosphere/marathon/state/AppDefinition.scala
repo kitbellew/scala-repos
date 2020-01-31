@@ -136,9 +136,7 @@ case class AppDefinition(
       .addAllStoreUrls(storeUrls.asJava)
       .addAllLabels(appLabels.asJava)
 
-    ipAddress.foreach { ip =>
-      builder.setIpAddress(ip.toProto)
-    }
+    ipAddress.foreach { ip => builder.setIpAddress(ip.toProto) }
 
     container.foreach { c =>
       builder.setContainer(ContainerSerializer.toProto(c))
@@ -254,9 +252,8 @@ case class AppDefinition(
       healthChecks = proto.getHealthChecksList.asScala
         .map(new HealthCheck().mergeFromProto)
         .toSet,
-      labels = proto.getLabelsList.asScala.map { p =>
-        p.getKey -> p.getValue
-      }.toMap,
+      labels =
+        proto.getLabelsList.asScala.map { p => p.getKey -> p.getValue }.toMap,
       versionInfo = versionInfoFromProto,
       upgradeStrategy =
         if (proto.hasUpgradeStrategy)
@@ -543,8 +540,7 @@ object AppDefinition {
 
   private val definesCorrectResidencyCombination: Validator[AppDefinition] =
     isTrue("AppDefinition must contain persistent volumes and define residency") {
-      app =>
-        !(app.residency.isDefined ^ app.persistentVolumes.nonEmpty)
+      app => !(app.residency.isDefined ^ app.persistentVolumes.nonEmpty)
     }
 
   private val containsCmdArgsOrContainer: Validator[AppDefinition] =

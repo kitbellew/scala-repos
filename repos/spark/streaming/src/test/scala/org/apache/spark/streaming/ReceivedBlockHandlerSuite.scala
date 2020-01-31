@@ -134,9 +134,7 @@ class ReceivedBlockHandlerSuite
   }
 
   test("BlockManagerBasedBlockHandler - handle errors in storing block") {
-    withBlockManagerBasedBlockHandler { handler =>
-      testErrorHandling(handler)
-    }
+    withBlockManagerBasedBlockHandler { handler => testErrorHandling(handler) }
   }
 
   test("WriteAheadLogBasedBlockHandler - store blocks") {
@@ -179,16 +177,12 @@ class ReceivedBlockHandlerSuite
   }
 
   test("WriteAheadLogBasedBlockHandler - handle errors in storing block") {
-    withWriteAheadLogBasedBlockHandler { handler =>
-      testErrorHandling(handler)
-    }
+    withWriteAheadLogBasedBlockHandler { handler => testErrorHandling(handler) }
   }
 
   test("WriteAheadLogBasedBlockHandler - clean old blocks") {
     withWriteAheadLogBasedBlockHandler { handler =>
-      val blocks = Seq.tabulate(10) { i =>
-        IteratorBlock(Iterator(1 to i))
-      }
+      val blocks = Seq.tabulate(10) { i => IteratorBlock(Iterator(1 to i)) }
       storeBlocks(handler, blocks)
 
       val preCleanupLogFiles = getWriteAheadLogFiles()
@@ -428,12 +422,8 @@ class ReceivedBlockHandlerSuite
 
     val blocks = data.grouped(10).toSeq
 
-    storeAndVerify(blocks.map { b =>
-      IteratorBlock(b.toIterator)
-    })
-    storeAndVerify(blocks.map { b =>
-      ArrayBufferBlock(new ArrayBuffer ++= b)
-    })
+    storeAndVerify(blocks.map { b => IteratorBlock(b.toIterator) })
+    storeAndVerify(blocks.map { b => ArrayBufferBlock(new ArrayBuffer ++= b) })
     storeAndVerify(blocks.map { b =>
       ByteBufferBlock(dataToByteBuffer(b).toByteBuffer)
     })

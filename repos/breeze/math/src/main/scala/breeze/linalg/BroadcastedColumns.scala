@@ -39,9 +39,7 @@ case class BroadcastedColumns[T, ColType](underlying: T)
       implicit canTraverseAxis: CanTraverseAxis[T, Axis._0.type, ColType])
       : B = {
     var acc = z
-    canTraverseAxis(underlying, Axis._0) { c =>
-      acc = f(acc, c)
-    }
+    canTraverseAxis(underlying, Axis._0) { c => acc = f(acc, c) }
     acc
   }
 

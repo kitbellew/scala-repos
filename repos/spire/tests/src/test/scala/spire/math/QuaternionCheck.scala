@@ -30,27 +30,19 @@ class QuaternionCheck
   }
 
   property("q + -q = 0") {
-    forAll { (q: H) =>
-      q + (-q) shouldBe zero
-    }
+    forAll { (q: H) => q + (-q) shouldBe zero }
   }
 
   property("q1 + -q2 = q1 - q2") {
-    forAll { (q1: H, q2: H) =>
-      q1 + (-q2) shouldBe q1 - q2
-    }
+    forAll { (q1: H, q2: H) => q1 + (-q2) shouldBe q1 - q2 }
   }
 
   property("q1 + q2 = q2 + q1") {
-    forAll { (q1: H, q2: H) =>
-      q1 + q2 shouldBe q2 + q1
-    }
+    forAll { (q1: H, q2: H) => q1 + q2 shouldBe q2 + q1 }
   }
 
   property("(q1 + q2) + a3 = q1 + (q2 + q3)") {
-    forAll { (q1: H, q2: H, q3: H) =>
-      (q1 + q2) + q3 shouldBe q1 + (q2 + q3)
-    }
+    forAll { (q1: H, q2: H, q3: H) => (q1 + q2) + q3 shouldBe q1 + (q2 + q3) }
   }
 
   property("q * 0 = q") {
@@ -68,9 +60,7 @@ class QuaternionCheck
   }
 
   property("q * 2 = q + q") {
-    forAll { (q: H) =>
-      q * Real(2) shouldBe q + q
-    }
+    forAll { (q: H) => q * Real(2) shouldBe q + q }
   }
 
   property("q1 * (q2 + q3) = q1 * q2 + q1 * q3") {
@@ -80,27 +70,19 @@ class QuaternionCheck
   }
 
   property("(q1 * q2) * a3 = q1 * (q2 * q3)") {
-    forAll { (q1: H, q2: H, q3: H) =>
-      (q1 * q2) * q3 shouldBe q1 * (q2 * q3)
-    }
+    forAll { (q1: H, q2: H, q3: H) => (q1 * q2) * q3 shouldBe q1 * (q2 * q3) }
   }
 
   property("q * q.reciprocal = 1") {
-    forAll { (q: H) =>
-      if (q != zero) (q * q.reciprocal) shouldBe one
-    }
+    forAll { (q: H) => if (q != zero) (q * q.reciprocal) shouldBe one }
   }
 
   property("1 / q = 1.reciprocal") {
-    forAll { (q: H) =>
-      if (q != zero) (one / q) shouldBe q.reciprocal
-    }
+    forAll { (q: H) => if (q != zero) (one / q) shouldBe q.reciprocal }
   }
 
   property("q.pow(2) = q * q") {
-    forAll { (q: H) =>
-      q.pow(2) shouldBe q * q
-    }
+    forAll { (q: H) => q.pow(2) shouldBe q * q }
   }
 
   // exact checking isn't quite working in all cases, ugh
@@ -178,9 +160,7 @@ class QuaternionCheck
   // }
 
   property("q = q.r iff q.isReal") {
-    forAll { (q: H) =>
-      q == q.r shouldBe q.isReal
-    }
+    forAll { (q: H) => q == q.r shouldBe q.isReal }
   }
 
   property("q.hashCode = c.hashCode") {

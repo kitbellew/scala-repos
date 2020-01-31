@@ -569,9 +569,7 @@ class LazyMacros(val c: whitebox.Context)
 
     def mkInstances(state: State)(primaryTpe: Type): (Tree, Type) = {
       val instances = state.dict.values.toList
-      val (from, to) = instances.map { d =>
-        (d.symbol, NoSymbol)
-      }.unzip
+      val (from, to) = instances.map { d => (d.symbol, NoSymbol) }.unzip
 
       def clean(inst: Tree) = {
         val cleanInst =

@@ -13,9 +13,7 @@ trait PredefinedToRequestMarshallers {
   implicit val fromRequest: TRM[HttpRequest] = Marshaller.opaque(conforms)
 
   implicit def fromUri: TRM[Uri] =
-    Marshaller strict { uri ⇒
-      Marshalling.Opaque(() ⇒ HttpRequest(uri = uri))
-    }
+    Marshaller strict { uri ⇒ Marshalling.Opaque(() ⇒ HttpRequest(uri = uri)) }
 
   implicit def fromMethodAndUriAndValue[S, T](
       implicit mt: ToEntityMarshaller[T]): TRM[(HttpMethod, Uri, T)] =

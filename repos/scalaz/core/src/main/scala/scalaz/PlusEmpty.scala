@@ -58,9 +58,7 @@ object PlusEmpty {
     new PlusEmpty[λ[α => M[N[α]]]] {
       def empty[A] = M.point(P.empty[A])
       def plus[A](a: M[N[A]], b: => M[N[A]]): M[N[A]] =
-        M.bind(a) { a0 =>
-          M.map(b) { P.plus(a0, _) }
-        }
+        M.bind(a) { a0 => M.map(b) { P.plus(a0, _) } }
     }
   ////
 }

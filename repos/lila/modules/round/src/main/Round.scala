@@ -74,9 +74,7 @@ private[round] final class Round(
       } >>- monitorMove(none)
 
     case Abort(playerId) =>
-      handle(playerId) { pov =>
-        pov.game.abortable ?? finisher.abort(pov)
-      }
+      handle(playerId) { pov => pov.game.abortable ?? finisher.abort(pov) }
 
     case Resign(playerId) =>
       handle(playerId) { pov =>
@@ -124,9 +122,7 @@ private[round] final class Round(
       }
 
     case Outoftime =>
-      handle { game =>
-        game.outoftime(lags.get) ?? outOfTime(game)
-      }
+      handle { game => game.outoftime(lags.get) ?? outOfTime(game) }
 
     // exceptionally we don't block nor publish events
     // if the game is abandoned, then nobody is around to see it
@@ -156,9 +152,7 @@ private[round] final class Round(
     case Threefold =>
       GameRepo game gameId flatMap {
         _ ?? drawer.autoThreefold map {
-          _ foreach { pov =>
-            self ! DrawClaim(pov.player.id)
-          }
+          _ foreach { pov => self ! DrawClaim(pov.player.id) }
         }
       }
 

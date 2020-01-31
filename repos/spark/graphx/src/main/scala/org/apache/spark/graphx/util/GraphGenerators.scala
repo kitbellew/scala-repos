@@ -168,9 +168,7 @@ object GraphGenerators extends Logging {
   private def outDegreeFromEdges[ED: ClassTag](
       edges: RDD[Edge[ED]]): Graph[Int, ED] = {
     val vertices = edges
-      .flatMap { edge =>
-        List((edge.srcId, 1))
-      }
+      .flatMap { edge => List((edge.srcId, 1)) }
       .reduceByKey(_ + _)
       .map { case (vid, degree) => (vid, degree) }
     Graph(vertices, edges, 0)

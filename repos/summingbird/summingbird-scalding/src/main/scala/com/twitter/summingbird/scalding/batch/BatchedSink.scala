@@ -76,9 +76,8 @@ trait BatchedSink[T] extends Sink[T] {
       // This object combines some common scalding batching operations:
       val batchOps = new BatchedOperations(batcher)
 
-      val batchStreams = batchOps.coverIt(timeSpan).map { b =>
-        (b, readStream(b, mode))
-      }
+      val batchStreams =
+        batchOps.coverIt(timeSpan).map { b => (b, readStream(b, mode)) }
 
       // Maybe an inclusive interval of batches to pull from incoming
       val batchesToWrite: Option[(BatchID, BatchID)] = batchStreams
@@ -112,9 +111,7 @@ trait BatchedSink[T] extends Sink[T] {
         val (aBatches, aFlows) = existing.unzip
         val flows = aFlows ++ (optBuilt.map { _._2 })
         val batches = aBatches ++ (optBuilt
-          .map { pair =>
-            BatchID.toIterable(pair._1)
-          }
+          .map { pair => BatchID.toIterable(pair._1) }
           .getOrElse(Iterable.empty))
 
         if (flows.isEmpty)

@@ -138,8 +138,7 @@ class ObservableBufferSpec[T]
     val buffer = ObservableBuffer("a", "b", "c")
     buffer onChange {
       // Verification
-      (list, changes) =>
-        list should be(buffer.delegate)
+      (list, changes) => list should be(buffer.delegate)
     }
 
     // Execution

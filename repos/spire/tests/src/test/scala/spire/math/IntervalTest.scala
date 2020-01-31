@@ -307,9 +307,7 @@ class IntervalCheck
     with GeneratorDrivenPropertyChecks {
 
   property("x ⊆ x") {
-    forAll { (x: Interval[Rational]) =>
-      (x isSupersetOf x) shouldBe true
-    }
+    forAll { (x: Interval[Rational]) => (x isSupersetOf x) shouldBe true }
   }
 
   property("x ⊆ (x | y) && y ⊆ (x | y)") {
@@ -348,9 +346,7 @@ class IntervalCheck
   }
 
   property("(x -- x) = Ø") {
-    forAll { (x: Interval[Rational]) =>
-      (x -- x) shouldBe Nil
-    }
+    forAll { (x: Interval[Rational]) => (x -- x) shouldBe Nil }
   }
 
   property("(x -- (-∞, ∞)) = Ø") {
@@ -439,9 +435,7 @@ class IntervalCheck
   property("sampled binop vmax") { testBinop(_ vmax _)(_ max _) }
 
   property("toString/apply") {
-    forAll { (x: Interval[Rational]) =>
-      Interval(x.toString) shouldBe x
-    }
+    forAll { (x: Interval[Rational]) => Interval(x.toString) shouldBe x }
   }
 
   property("points compare as scalars") {

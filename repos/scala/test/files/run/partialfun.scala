@@ -7,9 +7,7 @@ object Test {
       implicit bf: CanBuildFrom[Repr, B, That]): That = {
     val repr: Repr = _this.asInstanceOf[Repr]
     val b = bf(repr)
-    _this foreach { x =>
-      if (pf isDefinedAt x) b += pf(x)
-    }
+    _this foreach { x => if (pf isDefinedAt x) b += pf(x) }
     b.result
   }
 

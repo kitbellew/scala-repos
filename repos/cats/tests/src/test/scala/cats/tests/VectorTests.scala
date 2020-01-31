@@ -36,9 +36,7 @@ class VectorTests extends CatsSuite {
 
     Vector.empty[Int].show should ===("Vector()")
 
-    forAll { vec: Vector[String] =>
-      vec.show should ===(vec.toString)
-    }
+    forAll { vec: Vector[String] => vec.show should ===(vec.toString) }
   }
 
 }

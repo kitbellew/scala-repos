@@ -96,9 +96,7 @@ class LEventsSpec extends Specification with TestEvents {
       .zip(insertedEventId)
       .map { case (e, id) => Some(e.copy(eventId = Some(id))) }
 
-    val getResp = insertedEventId.map { id =>
-      eventClient.get(id, appId)
-    }
+    val getResp = insertedEventId.map { id => eventClient.get(id, appId) }
 
     val getEvents = getResp
 
@@ -116,9 +114,7 @@ class LEventsSpec extends Specification with TestEvents {
       .zip(insertedEventId)
       .map { case (e, id) => Some(e.copy(eventId = Some(id))) }
 
-    val getResp = insertedEventId.map { id =>
-      eventClient.get(id, appId)
-    }
+    val getResp = insertedEventId.map { id => eventClient.get(id, appId) }
 
     val getEvents = getResp
 

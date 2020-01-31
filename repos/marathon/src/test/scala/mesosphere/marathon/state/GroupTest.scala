@@ -626,9 +626,7 @@ class GroupTest extends FunSpec with GivenWhenThen with Matchers {
       val app =
         AppDefinition("/test/service/test/app".toPath, cmd = Some("Foobar"))
       val group = Group(PathId("/"), Set(app))
-      val updatedGroup = group.updateApp(app.id, { a =>
-        app
-      }, Timestamp.zero)
+      val updatedGroup = group.updateApp(app.id, { a => app }, Timestamp.zero)
       val ids = updatedGroup.transitiveGroups.map(_.id)
 
       Then("All non existing subgroups should be created")

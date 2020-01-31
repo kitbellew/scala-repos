@@ -156,9 +156,7 @@ object Bounds {
             val superTypes: Seq[ScType] = drv match {
               case td: ScTemplateDefinition => td.superTypes
               case _ =>
-                drv.getSuperTypes.map { t =>
-                  ScType.create(t, drv.getProject)
-                }
+                drv.getSuperTypes.map { t => ScType.create(t, drv.getProject) }
             }
             val iterator = superTypes.iterator
             while (iterator.hasNext) {

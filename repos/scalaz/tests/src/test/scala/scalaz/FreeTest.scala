@@ -29,9 +29,7 @@ object FreeList extends FreeListInstances {
       FreeList(Monad[Free[List, ?]].point(a))
 
     def bind[A, B](fa: FreeList[A])(f: A => FreeList[B]): FreeList[B] =
-      FreeList(Monad[Free[List, ?]].bind(fa.f) { a =>
-        f(a).f
-      })
+      FreeList(Monad[Free[List, ?]].bind(fa.f) { a => f(a).f })
 
     def tailrecM[A, B](f: A => FreeList[A \/ B])(a: A): FreeList[B] =
       FreeList(BindRec[Free[List, ?]].tailrecM((x: A) => f(x).f)(a))
@@ -78,14 +76,10 @@ object FreeOption {
         FreeOption(Functor[Free[Option, ?]].map(fa.f)(f))
 
       def tailrecM[A, B](f: A => FreeOption[A \/ B])(a: A): FreeOption[B] =
-        FreeOption(BindRec[Free[Option, ?]].tailrecM[A, B] { a =>
-          f(a).f
-        }(a))
+        FreeOption(BindRec[Free[Option, ?]].tailrecM[A, B] { a => f(a).f }(a))
 
       def bind[A, B](fa: FreeOption[A])(f: A => FreeOption[B]): FreeOption[B] =
-        FreeOption(Bind[Free[Option, ?]].bind(fa.f) { a =>
-          f(a).f
-        })
+        FreeOption(Bind[Free[Option, ?]].bind(fa.f) { a => f(a).f })
     }
 
   implicit def freeOptionArb[A](

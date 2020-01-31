@@ -101,9 +101,7 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
     "allow external triggering of empty completion" in Utils
       .assertAllStagesStopped {
         val neverSource = Source.maybe[Int].filter(_ ⇒ false)
-        val counterSink = Sink.fold[Int, Int](0) { (acc, _) ⇒
-          acc + 1
-        }
+        val counterSink = Sink.fold[Int, Int](0) { (acc, _) ⇒ acc + 1 }
 
         val (neverPromise, counterFuture) =
           neverSource.toMat(counterSink)(Keep.both).run()
@@ -130,9 +128,7 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
 
     "allow external triggering of onError" in Utils.assertAllStagesStopped {
       val neverSource = Source.maybe[Int]
-      val counterSink = Sink.fold[Int, Int](0) { (acc, _) ⇒
-        acc + 1
-      }
+      val counterSink = Sink.fold[Int, Int](0) { (acc, _) ⇒ acc + 1 }
 
       val (neverPromise, counterFuture) =
         neverSource.toMat(counterSink)(Keep.both).run()

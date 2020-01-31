@@ -33,18 +33,12 @@ class FlowGroupedWithinSpec extends AkkaSpec with ScriptedTest {
       val cSub = c.expectSubscription
       cSub.request(100)
       val demand1 = pSub.expectRequest.toInt
-      (1 to demand1) foreach { _ ⇒
-        pSub.sendNext(input.next())
-      }
+      (1 to demand1) foreach { _ ⇒ pSub.sendNext(input.next()) }
       val demand2 = pSub.expectRequest.toInt
-      (1 to demand2) foreach { _ ⇒
-        pSub.sendNext(input.next())
-      }
+      (1 to demand2) foreach { _ ⇒ pSub.sendNext(input.next()) }
       val demand3 = pSub.expectRequest.toInt
       c.expectNext((1 to (demand1 + demand2).toInt).toVector)
-      (1 to demand3) foreach { _ ⇒
-        pSub.sendNext(input.next())
-      }
+      (1 to demand3) foreach { _ ⇒ pSub.sendNext(input.next()) }
       c.expectNoMsg(300.millis)
       c.expectNext(
         ((demand1 + demand2 + 1).toInt to (demand1 + demand2 + demand3).toInt).toVector)
@@ -84,14 +78,10 @@ class FlowGroupedWithinSpec extends AkkaSpec with ScriptedTest {
       val cSub = c.expectSubscription
       cSub.request(1)
       val demand1 = pSub.expectRequest.toInt
-      (1 to demand1) foreach { _ ⇒
-        pSub.sendNext(input.next())
-      }
+      (1 to demand1) foreach { _ ⇒ pSub.sendNext(input.next()) }
       c.expectNext((1 to demand1).toVector)
       val demand2 = pSub.expectRequest.toInt
-      (1 to demand2) foreach { _ ⇒
-        pSub.sendNext(input.next())
-      }
+      (1 to demand2) foreach { _ ⇒ pSub.sendNext(input.next()) }
       c.expectNoMsg(300.millis)
       cSub.request(1)
       c.expectNext(((demand1 + 1) to (demand1 + demand2)).toVector)
@@ -138,9 +128,7 @@ class FlowGroupedWithinSpec extends AkkaSpec with ScriptedTest {
       downstream.request(2)
       downstream.expectNoMsg(1000.millis)
 
-      (1 to 4) foreach { _ ⇒
-        upstream.sendNext(inputs.next())
-      }
+      (1 to 4) foreach { _ ⇒ upstream.sendNext(inputs.next()) }
       downstream.within(1000.millis) {
         downstream.expectNext((1 to 3).toVector)
       }

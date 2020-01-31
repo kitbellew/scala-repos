@@ -215,9 +215,7 @@ class TwitterStreamQuickstartDocSpec extends AkkaSpec {
 
     val sum: Future[Int] = counterRunnableGraph.run()
 
-    sum.map { c =>
-      println(s"Total tweets processed: $c")
-    }
+    sum.map { c => println(s"Total tweets processed: $c") }
   }
 
 }

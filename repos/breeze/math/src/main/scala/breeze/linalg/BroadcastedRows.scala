@@ -21,9 +21,7 @@ case class BroadcastedRows[T, RowType](underlying: T)
       implicit canTraverseAxis: CanTraverseAxis[T, Axis._1.type, RowType])
       : B = {
     var acc = z
-    canTraverseAxis(underlying, Axis._1) { c =>
-      acc = f(acc, c)
-    }
+    canTraverseAxis(underlying, Axis._1) { c => acc = f(acc, c) }
     acc
   }
 }

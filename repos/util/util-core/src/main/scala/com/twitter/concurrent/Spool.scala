@@ -161,9 +161,7 @@ sealed trait Spool[+A] {
   def mapFuture[B](f: A => Future[B]): Future[Spool[B]] = {
     if (isEmpty) Future.value(empty[B])
     else {
-      f(head) map { h =>
-        new LazyCons(h, tail flatMap (_ mapFuture f))
-      }
+      f(head) map { h => new LazyCons(h, tail flatMap (_ mapFuture f)) }
     }
   }
 
@@ -265,18 +263,14 @@ sealed trait Spool[+A] {
     val as = new ArrayBuffer[A]
     foreach { a =>
       as += a
-    } map { _ =>
-      as
-    }
+    } map { _ => as }
   }
 
   /**
     * Eagerly executes all computation represented by this Spool (presumably for
     * side-effects), and returns a Future representing its completion.
     */
-  def force: Future[Unit] = foreach { _ =>
-    ()
-  }
+  def force: Future[Unit] = foreach { _ => () }
 }
 
 /**

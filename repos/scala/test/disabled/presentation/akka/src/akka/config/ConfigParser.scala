@@ -40,9 +40,7 @@ class ConfigParser(
 
   def value: Parser[Any] = number | string | list | boolean
   def number = numberToken
-  def string = stringToken ^^ { s =>
-    s.substring(1, s.length - 1)
-  }
+  def string = stringToken ^^ { s => s.substring(1, s.length - 1) }
   def list = "[" ~> repsep(string | numberToken, opt(",")) <~ (opt(",") ~ "]")
   def boolean = booleanToken
 

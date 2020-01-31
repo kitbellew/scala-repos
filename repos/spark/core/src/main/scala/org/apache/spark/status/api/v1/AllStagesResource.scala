@@ -178,9 +178,7 @@ private[v1] object AllStagesResource {
     val rawMetrics = allTaskData.flatMap { _.taskMetrics }.toSeq
 
     def metricQuantiles(f: InternalTaskMetrics => Double): IndexedSeq[Double] =
-      Distribution(rawMetrics.map { d =>
-        f(d)
-      }).get.getQuantiles(quantiles)
+      Distribution(rawMetrics.map { d => f(d) }).get.getQuantiles(quantiles)
 
     // We need to do a lot of similar munging to nested metrics here.  For each one,
     // we want (a) extract the values for nested metrics (b) make a distribution for each metric
@@ -354,9 +352,7 @@ private[v1] abstract class MetricHelper[I, O](
 
   /** applies the given function to all input metrics, and returns the quantiles */
   def submetricQuantiles(f: I => Double): IndexedSeq[Double] = {
-    Distribution(data.map { d =>
-      f(d)
-    }).get.getQuantiles(quantiles)
+    Distribution(data.map { d => f(d) }).get.getQuantiles(quantiles)
   }
 
   def metricOption: Option[O] = {

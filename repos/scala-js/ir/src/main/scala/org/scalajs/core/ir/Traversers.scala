@@ -175,9 +175,7 @@ object Traversers {
         items foreach traverse
 
       case JSObjectConstr(fields) =>
-        fields foreach { f =>
-          traverse(f._2)
-        }
+        fields foreach { f => traverse(f._2) }
 
       // Atomic expressions
 

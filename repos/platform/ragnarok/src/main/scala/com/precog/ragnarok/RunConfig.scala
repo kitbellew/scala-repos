@@ -151,9 +151,7 @@ object RunConfig {
       fromCommandLine(
         args,
         config map { config =>
-          val g = { (path: List[String], _: Any) =>
-            path contains test
-          }
+          val g = { (path: List[String], _: Any) => path contains test }
           val select = config.select map {
             f => (path: List[String], test: PerfTest) =>
               (f(path, test) || g(path, test))

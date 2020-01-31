@@ -128,9 +128,7 @@ object CreateServer extends Logging {
       opt[String]("engine-variant") required () action { (x, c) =>
         c.copy(engineVariant = x)
       } text ("Engine variant JSON.")
-      opt[String]("ip") action { (x, c) =>
-        c.copy(ip = x)
-      }
+      opt[String]("ip") action { (x, c) => c.copy(ip = x) }
       opt[String]("env") action { (x, c) =>
         c.copy(env = Some(x))
       } text ("Comma-separated list of environmental variables (in 'FOO=BAR' " +
@@ -153,15 +151,9 @@ object CreateServer extends Logging {
       opt[String]("accesskey") action { (x, c) =>
         c.copy(accessKey = Some(x))
       } text ("Event server access key.")
-      opt[String]("log-url") action { (x, c) =>
-        c.copy(logUrl = Some(x))
-      }
-      opt[String]("log-prefix") action { (x, c) =>
-        c.copy(logPrefix = Some(x))
-      }
-      opt[String]("log-file") action { (x, c) =>
-        c.copy(logFile = Some(x))
-      }
+      opt[String]("log-url") action { (x, c) => c.copy(logUrl = Some(x)) }
+      opt[String]("log-prefix") action { (x, c) => c.copy(logPrefix = Some(x)) }
+      opt[String]("log-file") action { (x, c) => c.copy(logFile = Some(x)) }
       opt[Unit]("verbose") action { (x, c) =>
         c.copy(verbose = true)
       } text ("Enable verbose output.")

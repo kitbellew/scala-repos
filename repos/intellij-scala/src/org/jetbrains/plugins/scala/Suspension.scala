@@ -7,9 +7,7 @@ import scala.language.implicitConversions
   */
 class Suspension[T](fun: () => T) {
   def this(t: T) =
-    this({ () =>
-      t
-    })
+    this({ () => t })
 
   lazy val v = fun()
 }

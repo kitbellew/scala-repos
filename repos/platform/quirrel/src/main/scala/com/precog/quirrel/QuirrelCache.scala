@@ -306,19 +306,13 @@ trait QuirrelCache extends AST { parser: Parser =>
 
     def repl(expr: Expr): BindingS[Expr] = expr match {
       case lit @ BoolLit(loc, _) =>
-        pop map { b =>
-          BoolLit(updateLoc(loc), b.value == "true")
-        }
+        pop map { b => BoolLit(updateLoc(loc), b.value == "true") }
 
       case lit @ NumLit(loc, _) =>
-        pop map { b =>
-          NumLit(updateLoc(loc), b.value)
-        }
+        pop map { b => NumLit(updateLoc(loc), b.value) }
 
       case lit @ StrLit(loc, _) =>
-        pop map { b =>
-          StrLit(updateLoc(loc), b.value)
-        }
+        pop map { b => StrLit(updateLoc(loc), b.value) }
 
       case Let(loc, name, params, lchild0, rchild0) =>
         for (lchild <- repl(lchild0); rchild <- repl(rchild0))
@@ -479,9 +473,8 @@ trait QuirrelCache extends AST { parser: Parser =>
 
     val result = for {
       expr <- repl(expr0)
-      _ <- StateT { s: List[Binding] =>
-        s.isEmpty.option((Nil, ()))
-      }: BindingS[Unit]
+      _ <- StateT { s: List[Binding] => s.isEmpty.option((Nil, ())) }: BindingS[
+        Unit]
     } yield expr
 
     result.eval(bindings)

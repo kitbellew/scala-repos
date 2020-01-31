@@ -42,25 +42,19 @@ object SimpleFunction {
       fname: String,
       fn: Boolean = false): (Rep[T1] => Rep[R]) = {
     val f = apply(fname, fn);
-    { t1: Rep[T1] =>
-      f(Seq(t1))
-    }
+    { t1: Rep[T1] => f(Seq(t1)) }
   }
   def binary[T1, T2, R: TypedType](
       fname: String,
       fn: Boolean = false): ((Rep[T1], Rep[T2]) => Rep[R]) = {
     val f = apply(fname, fn);
-    { (t1: Rep[T1], t2: Rep[T2]) =>
-      f(Seq(t1, t2))
-    }
+    { (t1: Rep[T1], t2: Rep[T2]) => f(Seq(t1, t2)) }
   }
   def ternary[T1, T2, T3, R: TypedType](
       fname: String,
       fn: Boolean = false): ((Rep[T1], Rep[T2], Rep[T3]) => Rep[R]) = {
     val f = apply(fname, fn);
-    { (t1: Rep[T1], t2: Rep[T2], t3: Rep[T3]) =>
-      f(Seq(t1, t2, t3))
-    }
+    { (t1: Rep[T1], t2: Rep[T2], t3: Rep[T3]) => f(Seq(t1, t2, t3)) }
   }
 }
 
@@ -123,8 +117,7 @@ object SimpleExpression {
   def nullary[R: TypedType](
       f: JdbcStatementBuilderComponent#QueryBuilder => Unit): Rep[R] = {
     val g = apply({
-      (ch: Seq[Node], qb: JdbcStatementBuilderComponent#QueryBuilder) =>
-        f(qb)
+      (ch: Seq[Node], qb: JdbcStatementBuilderComponent#QueryBuilder) => f(qb)
     });
     g.apply(Seq())
   }
@@ -136,9 +129,7 @@ object SimpleExpression {
       (ch: Seq[Node], qb: JdbcStatementBuilderComponent#QueryBuilder) =>
         f(ch(0), qb)
     });
-    { t1: Rep[T1] =>
-      g(Seq(t1))
-    }
+    { t1: Rep[T1] => g(Seq(t1)) }
   }
 
   def binary[T1, T2, R: TypedType](
@@ -148,9 +139,7 @@ object SimpleExpression {
       (ch: Seq[Node], qb: JdbcStatementBuilderComponent#QueryBuilder) =>
         f(ch(0), ch(1), qb)
     });
-    { (t1: Rep[T1], t2: Rep[T2]) =>
-      g(Seq(t1, t2))
-    }
+    { (t1: Rep[T1], t2: Rep[T2]) => g(Seq(t1, t2)) }
   }
 
   def ternary[T1, T2, T3, R: TypedType](
@@ -160,8 +149,6 @@ object SimpleExpression {
       (ch: Seq[Node], qb: JdbcStatementBuilderComponent#QueryBuilder) =>
         f(ch(0), ch(1), ch(2), qb)
     });
-    { (t1: Rep[T1], t2: Rep[T2], t3: Rep[T3]) =>
-      g(Seq(t1, t2, t3))
-    }
+    { (t1: Rep[T1], t2: Rep[T2], t3: Rep[T3]) => g(Seq(t1, t2, t3)) }
   }
 }

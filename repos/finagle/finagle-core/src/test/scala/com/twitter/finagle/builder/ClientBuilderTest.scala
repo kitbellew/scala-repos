@@ -116,8 +116,7 @@ class ClientBuilderTest
     when(ctx.m.codec.protocolLibraryName).thenReturn("fancy")
 
     val cfClient: CodecFactory[String, String]#Client = {
-      (_: ClientCodecConfig) =>
-        ctx.m.codec
+      (_: ClientCodecConfig) => ctx.m.codec
     }
 
     ClientBuilder()
@@ -133,8 +132,7 @@ class ClientBuilderTest
     when(ctx.m.codec.protocolLibraryName).thenReturn("fancy")
 
     val cfClient: CodecFactory[String, String]#Client = {
-      (_: ClientCodecConfig) =>
-        ctx.m.codec
+      (_: ClientCodecConfig) => ctx.m.codec
     }
 
     val stk = ClientBuilder.stackClientOfCodec(cfClient)

@@ -56,15 +56,11 @@ private[round] final class Player(
                               round ! TakebackNo(pov.player.id)
                             moveOrDrop.left.toOption
                               .ifTrue(pov.game.forecastable)
-                              .foreach { move =>
-                                round ! ForecastPlay(move)
-                              }
+                              .foreach { move => round ! ForecastPlay(move) }
                         } inject progress.events
                       }
                     ) >>- promiseOption.foreach(_.success(()))
-              } addFailureEffect { e =>
-              promiseOption.foreach(_ failure e)
-            }
+              } addFailureEffect { e => promiseOption.foreach(_ failure e) }
           case Pov(game, _) if game.finished =>
             fufail(ClientError(s"$pov game is finished"))
           case Pov(game, _) if game.aborted =>

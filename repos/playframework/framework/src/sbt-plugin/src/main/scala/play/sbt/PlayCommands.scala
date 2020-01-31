@@ -25,9 +25,7 @@ object PlayCommands {
     import extracted._
 
     (name in currentRef get structure.data)
-      .map { name =>
-        "[" + Colors.cyan(name) + "] $ "
-      }
+      .map { name => "[" + Colors.cyan(name) + "] $ " }
       .getOrElse("> ")
 
   }

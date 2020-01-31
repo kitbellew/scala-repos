@@ -30,12 +30,10 @@ class SkewJoinJob(args: Args) extends Job(args) {
       SkewReplicationB()
 
   val in0 = Tsv("input0").read.mapTo((0, 1, 2) -> ('x1, 'y1, 's1)) {
-    input: (Int, Int, Int) =>
-      input
+    input: (Int, Int, Int) => input
   }
   val in1 = Tsv("input1").read.mapTo((0, 1, 2) -> ('x2, 'y2, 's2)) {
-    input: (Int, Int, Int) =>
-      input
+    input: (Int, Int, Int) => input
   }
 
   in0
@@ -55,9 +53,7 @@ object JoinTestHelper {
   val rng = new java.util.Random
   def generateInput(size: Int, max: Int): List[(String, String, String)] = {
     def next: String = rng.nextInt(max).toString
-    (0 to size).map { i =>
-      (next, next, next)
-    }.toList
+    (0 to size).map { i => (next, next, next) }.toList
   }
 
   type JoinResult = (Int, Int, Int, Int, Int, Int)
@@ -176,12 +172,10 @@ class CollidingKeySkewJoinJob(args: Args) extends Job(args) {
       SkewReplicationB()
 
   val in0 = Tsv("input0").read.mapTo((0, 1, 2) -> ('k1, 'k3, 'v1)) {
-    input: (Int, Int, Int) =>
-      input
+    input: (Int, Int, Int) => input
   }
   val in1 = Tsv("input1").read.mapTo((0, 1, 2) -> ('k2, 'k3, 'v2)) {
-    input: (Int, Int, Int) =>
-      input
+    input: (Int, Int, Int) => input
   }
 
   in0

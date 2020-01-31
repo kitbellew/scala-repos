@@ -152,9 +152,7 @@ abstract class ServiceFactory[-Req, +Rep]
     new ServiceFactory[Req1, Rep1] {
       def apply(conn: ClientConnection): Future[Service[Req1, Rep1]] =
         self(conn) flatMap { service =>
-          f(service) onFailure { _ =>
-            service.close()
-          }
+          f(service) onFailure { _ => service.close() }
         }
       def close(deadline: Time) = self.close(deadline)
       override def status: Status = self.status
@@ -167,9 +165,7 @@ abstract class ServiceFactory[-Req, +Rep]
     */
   def map[Req1, Rep1](
       f: Service[Req, Rep] => Service[Req1, Rep1]): ServiceFactory[Req1, Rep1] =
-    flatMap { s =>
-      Future.value(f(s))
-    }
+    flatMap { s => Future.value(f(s)) }
 
   /**
     * Make a service that after dispatching a request on that service,

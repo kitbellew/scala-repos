@@ -125,16 +125,10 @@ object JsonApi {
   }
 
   object writers {
-    implicit val VariantWrites = Writes[Variant] { v =>
-      JsString(v.key)
-    }
-    implicit val FENWrites = Writes[FEN] { fen =>
-      JsString(fen.value)
-    }
+    implicit val VariantWrites = Writes[Variant] { v => JsString(v.key) }
+    implicit val FENWrites = Writes[FEN] { fen => JsString(fen.value) }
     implicit val GameWrites = Json.writes[Game]
-    implicit val WorkIdWrites = Writes[Work.Id] { id =>
-      JsString(id.value)
-    }
+    implicit val WorkIdWrites = Writes[Work.Id] { id => JsString(id.value) }
     implicit val WorkWrites = OWrites[Work] { work =>
       Json.obj(
         "work" -> (work match {

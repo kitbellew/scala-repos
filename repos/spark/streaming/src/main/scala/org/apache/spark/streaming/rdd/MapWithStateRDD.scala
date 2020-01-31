@@ -236,9 +236,7 @@ private[streaming] object MapWithStateRDD {
       partitioner: Partitioner,
       updateTime: Time): MapWithStateRDD[K, V, S, E] = {
 
-    val pairRDD = rdd.map { x =>
-      (x._1, (x._2, x._3))
-    }
+    val pairRDD = rdd.map { x => (x._1, (x._2, x._3)) }
     val stateRDD = pairRDD
       .partitionBy(partitioner)
       .mapPartitions(

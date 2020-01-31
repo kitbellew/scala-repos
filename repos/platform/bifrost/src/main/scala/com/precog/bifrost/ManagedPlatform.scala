@@ -193,9 +193,7 @@ trait ManagedExecution
       Future,
       EvaluationError,
       (Option[JobId], StreamT[Future, Slice])] = {
-      result map { stream =>
-        M.jobId -> completeJob(stream)
-      }
+      result map { stream => M.jobId -> completeJob(stream) }
     }
   }
 

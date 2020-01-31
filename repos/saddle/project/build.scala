@@ -128,9 +128,7 @@ object Shared {
     organization := "org.scala-saddle",
     publishMavenStyle := true,
     publishArtifact in Test := false,
-    pomIncludeRepository := { x =>
-      false
-    },
+    pomIncludeRepository := { x => false },
     pomExtra := (
       <url>http://saddle.github.io/</url>
       <licenses>

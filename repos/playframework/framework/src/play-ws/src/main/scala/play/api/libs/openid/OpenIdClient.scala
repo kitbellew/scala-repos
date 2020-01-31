@@ -68,9 +68,7 @@ object UserInfo {
       case (result, (key, values)) =>
         extractAxAttribute.lift(key) flatMap {
           case (fullKey, shortKey) if signedFields.contains(fullKey) =>
-            values.headOption map { value =>
-              Map(shortKey -> value)
-            }
+            values.headOption map { value => Map(shortKey -> value) }
           case _ => None
         } map (result ++ _) getOrElse result
     }
@@ -345,8 +343,7 @@ private[openid] object Discovery {
     private def findUriWithType(xml: Node)(typeId: String) =
       (xml \ "XRD" \ "Service" find (node =>
         (node \ "Type").find(inner => inner.text == typeId).isDefined)).map {
-        node =>
-          (typeId, (node \ "URI").text.trim)
+        node => (typeId, (node \ "URI").text.trim)
       }
   }
 

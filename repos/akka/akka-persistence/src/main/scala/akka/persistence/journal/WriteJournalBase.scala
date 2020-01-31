@@ -29,9 +29,7 @@ private[akka] trait WriteJournalBase {
     eventAdapters
       .get(repr.payload.getClass)
       .fromJournal(repr.payload, repr.manifest)
-      .events map { adaptedPayload ⇒
-      repr.withPayload(adaptedPayload)
-    }
+      .events map { adaptedPayload ⇒ repr.withPayload(adaptedPayload) }
 
   /** INTERNAL API */
   private[akka] final def adaptToJournal(

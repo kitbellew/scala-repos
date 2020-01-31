@@ -295,14 +295,11 @@ abstract class FileSource
       }
 
       case Local(strict) => {
-        val files = localPaths.map { p =>
-          new java.io.File(p)
-        }
+        val files = localPaths.map { p => new java.io.File(p) }
         if (strict && !files.forall(_.exists)) {
           throw new InvalidSourceException(
-            "[" + this.toString + s"] Data is missing from: ${localPaths.filterNot { p =>
-              new java.io.File(p).exists
-            }}")
+            "[" + this.toString + s"] Data is missing from: ${localPaths
+              .filterNot { p => new java.io.File(p).exists }}")
         } else if (!files.exists(_.exists)) {
           throw new InvalidSourceException(
             "[" + this.toString + "] No good paths in: " + hdfsPaths.toString)

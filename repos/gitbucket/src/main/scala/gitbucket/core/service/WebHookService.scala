@@ -42,9 +42,7 @@ trait WebHookService {
     WebHooks
       .filter(_.byRepository(owner, repository))
       .innerJoin(WebHookEvents)
-      .on { (w, t) =>
-        t.byWebHook(w)
-      }
+      .on { (w, t) => t.byWebHook(w) }
       .map { case (w, t) => w -> t.event }
       .list
       .groupBy(_._1)
@@ -60,9 +58,7 @@ trait WebHookService {
     WebHooks
       .filter(_.byRepository(owner, repository))
       .innerJoin(WebHookEvents)
-      .on { (wh, whe) =>
-        whe.byWebHook(wh)
-      }
+      .on { (wh, whe) => whe.byWebHook(wh) }
       .filter { case (wh, whe) => whe.event === event.bind }
       .map { case (wh, whe) => wh }
       .list
@@ -74,9 +70,7 @@ trait WebHookService {
     WebHooks
       .filter(_.byPrimaryKey(owner, repository, url))
       .innerJoin(WebHookEvents)
-      .on { (w, t) =>
-        t.byWebHook(w)
-      }
+      .on { (w, t) => t.byWebHook(w) }
       .map { case (w, t) => w -> t.event }
       .list
       .groupBy(_._1)

@@ -90,9 +90,7 @@ class AgentSpec extends AkkaSpec {
 
     "be readable within a transaction" in {
       val agent = Agent(5)
-      val value = atomic { t ⇒
-        agent()
-      }
+      val value = atomic { t ⇒ agent() }
       value should ===(5)
     }
 
@@ -100,9 +98,7 @@ class AgentSpec extends AkkaSpec {
       val countDown = new CountDownFunction[Int]
 
       val agent = Agent(5)
-      atomic { t ⇒
-        agent send (_ * 2)
-      }
+      atomic { t ⇒ agent send (_ * 2) }
       agent send countDown
 
       countDown.await(5 seconds)

@@ -3,9 +3,7 @@ object Test {
     def this() = this(null)
 
     println("hello?")
-    if (f == null) f = { _ =>
-      false
-    }
+    if (f == null) f = { _ => false }
   }
 
   def main(args: Array[String]) {

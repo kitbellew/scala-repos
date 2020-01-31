@@ -24,9 +24,7 @@ object SCL3555 {
     def param_spec = (nonQuotedParam | quotedParam)
 
     // any param w/out quotes
-    def nonQuotedParam = noquoteparam ^^ { s =>
-      Param(s)
-    }
+    def nonQuotedParam = noquoteparam ^^ { s => Param(s) }
 
     // a string literal
     def quotedParam = stringLiteral ^^ { s =>

@@ -29,9 +29,7 @@ private[graphx] class VertexAttributeBlock[VD: ClassTag](
     val attrs: Array[VD])
     extends Serializable {
   def iterator: Iterator[(VertexId, VD)] =
-    (0 until vids.length).iterator.map { i =>
-      (vids(i), attrs(i))
-    }
+    (0 until vids.length).iterator.map { i => (vids(i), attrs(i)) }
 }
 
 private[graphx] object ShippableVertexPartition {
@@ -63,9 +61,7 @@ private[graphx] object ShippableVertexPartition {
       mergeFunc: (VD, VD) => VD): ShippableVertexPartition[VD] = {
     val map = new GraphXPrimitiveKeyOpenHashMap[VertexId, VD]
     // Merge the given vertices using mergeFunc
-    iter.foreach { pair =>
-      map.setMerge(pair._1, pair._2, mergeFunc)
-    }
+    iter.foreach { pair => map.setMerge(pair._1, pair._2, mergeFunc) }
     // Fill in missing vertices mentioned in the routing table
     routingTable.iterator.foreach { vid =>
       map.changeValue(vid, defaultVal, identity)

@@ -265,9 +265,7 @@ object Messages {
   def parse(messageSource: MessageSource, messageSourceName: String)
       : Either[PlayException.ExceptionSource, Map[String, String]] = {
     new Messages.MessagesParser(messageSource, "").parse.right.map { messages =>
-      messages.map { message =>
-        message.key -> message.pattern
-      }.toMap
+      messages.map { message => message.key -> message.pattern }.toMap
     }
   }
 
@@ -616,9 +614,7 @@ class DefaultMessagesApi @Inject() (
   protected def loadAllMessages: Map[String, Map[String, String]] = {
     langs.availables
       .map(_.code)
-      .map { lang =>
-        (lang, loadMessages("messages." + lang))
-      }
+      .map { lang => (lang, loadMessages("messages." + lang)) }
       .toMap
       .+("default" -> loadMessages("messages"))
       .+("default.play" -> loadMessages("messages.default"))

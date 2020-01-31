@@ -104,9 +104,7 @@ class MarathonStoreTest extends MarathonSpec with Matchers {
       metrics,
       () => AppDefinition(),
       "app:")
-    val res = store.modify("testApp") { _ =>
-      newAppDef
-    }
+    val res = store.modify("testApp") { _ => newAppDef }
 
     assert(
       newAppDef == Await.result(res, 5.seconds),
@@ -138,9 +136,7 @@ class MarathonStoreTest extends MarathonSpec with Matchers {
       metrics,
       () => AppDefinition(),
       "app:")
-    val res = store.modify("testApp") { _ =>
-      newAppDef
-    }
+    val res = store.modify("testApp") { _ => newAppDef }
 
     intercept[StoreCommandFailedException] {
       Await.result(res, 5.seconds)

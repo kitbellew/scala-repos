@@ -376,9 +376,7 @@ class StateMapSuite extends SparkFunSuite {
       // Assert all the data is same as the reference map
       assert(
         mapToTest.getAll().toSet ===
-          refMapToTestWith.iterator.map { x =>
-            (x._1, x._2._1, x._2._2)
-          }.toSet)
+          refMapToTestWith.iterator.map { x => (x._1, x._2._1, x._2._2) }.toSet)
 
       // Assert that get on every key returns the right value
       for (keyId <- refMapToTestWith.keys) {

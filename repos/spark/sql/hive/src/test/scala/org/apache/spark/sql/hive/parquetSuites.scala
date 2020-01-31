@@ -845,9 +845,7 @@ abstract class ParquetPartitioningTest
     * @param tableNames tables to drop
     */
   def dropTables(tableNames: String*): Unit = {
-    tableNames.foreach { name =>
-      sql(s"DROP TABLE IF EXISTS $name")
-    }
+    tableNames.foreach { name => sql(s"DROP TABLE IF EXISTS $name") }
   }
 
   Seq(

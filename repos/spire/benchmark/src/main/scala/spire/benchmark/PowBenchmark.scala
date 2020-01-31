@@ -28,57 +28,43 @@ class PowBenchmarks extends MyBenchmark {
 
   def timeLongPowForInt(reps: Int) = run(reps) {
     var t = 0
-    ints.foreach { n =>
-      t += spire.math.pow(n.toLong, 2.toLong).toInt
-    }
+    ints.foreach { n => t += spire.math.pow(n.toLong, 2.toLong).toInt }
     t
   }
 
   def timeDoublePowForInt(reps: Int) = run(reps) {
     var t = 0
-    ints.foreach { n =>
-      t += spire.math.pow(n.toDouble, 2.0).toInt
-    }
+    ints.foreach { n => t += spire.math.pow(n.toDouble, 2.0).toInt }
     t
   }
 
   def timeBigIntPowForInt(reps: Int) = run(reps) {
     var t = 0
-    ints.foreach { n =>
-      t += (BigInt(n) pow 2).toInt
-    }
+    ints.foreach { n => t += (BigInt(n) pow 2).toInt }
     t
   }
 
   def timeLongPowForLong(reps: Int) = run(reps) {
     var t = 0L
-    longs.foreach { n =>
-      t += spire.math.pow(n, 2L)
-    }
+    longs.foreach { n => t += spire.math.pow(n, 2L) }
     t
   }
 
   def timeDoublePowForLong(reps: Int) = run(reps) {
     var t = 0L
-    longs.foreach { n =>
-      t += spire.math.pow(n.toDouble, 2.0).toLong
-    }
+    longs.foreach { n => t += spire.math.pow(n.toDouble, 2.0).toLong }
     t
   }
 
   def timeBigIntPowForLong(reps: Int) = run(reps) {
     var t = 0L
-    longs.foreach { n =>
-      t += (BigInt(n) pow 2).toLong
-    }
+    longs.foreach { n => t += (BigInt(n) pow 2).toLong }
     t
   }
 
   def timeDoublePowForDouble(reps: Int) = run(reps) {
     var t = 0.0
-    longs.foreach { n =>
-      t += spire.math.pow(n, 2.0)
-    }
+    longs.foreach { n => t += spire.math.pow(n, 2.0) }
     t
   }
 }

@@ -60,8 +60,7 @@ object ResourceMatcher {
           else {
             import scala.collection.JavaConverters._
             resource.getReservation.getLabels.getLabelsList.asScala.iterator.map {
-              label =>
-                label.getKey -> label.getValue
+              label => label.getKey -> label.getValue
             }.toMap
           }
         requiredLabels.labels.forall {

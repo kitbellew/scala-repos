@@ -81,18 +81,14 @@ class MetricsStatsReceiverTest
     import MetricsStatsReceiver.CounterIncr
     def id(e: events.Event) =
       CounterIncr.serialize(e).flatMap(CounterIncr.deserialize).get
-    forAll(genCounterIncr) { event =>
-      assert(id(event) == event)
-    }
+    forAll(genCounterIncr) { event => assert(id(event) == event) }
   }
 
   test("StatAdd: serialize andThen deserialize = identity") {
     import MetricsStatsReceiver.StatAdd
     def id(e: events.Event) =
       StatAdd.serialize(e).flatMap(StatAdd.deserialize).get
-    forAll(genStatAdd) { event =>
-      assert(id(event) == event)
-    }
+    forAll(genStatAdd) { event => assert(id(event) == event) }
   }
 }
 

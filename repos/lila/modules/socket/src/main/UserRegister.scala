@@ -43,8 +43,6 @@ private final class UserRegister extends Actor {
   }
 
   private def sendTo(userId: String, msg: JsObject) {
-    users get userId foreach { members =>
-      members.values foreach (_ push msg)
-    }
+    users get userId foreach { members => members.values foreach (_ push msg) }
   }
 }

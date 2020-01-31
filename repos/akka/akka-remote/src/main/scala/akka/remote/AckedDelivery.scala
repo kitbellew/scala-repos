@@ -111,14 +111,12 @@ final case class AckedSendBuffer[T <: HasSequenceNumber](
     val newNacked =
       if (ack.nacks.isEmpty) Vector.empty
       else
-        (nacked ++ nonAcked) filter { m ⇒
-          ack.nacks(m.seq)
-        }
+        (nacked ++ nonAcked) filter { m ⇒ ack.nacks(m.seq) }
     if (newNacked.size < ack.nacks.size) throw new ResendUnfulfillableException
     else
-      this.copy(nonAcked = nonAcked.filter { m ⇒
-        m.seq > ack.cumulativeAck
-      }, nacked = newNacked)
+      this.copy(
+        nonAcked = nonAcked.filter { m ⇒ m.seq > ack.cumulativeAck },
+        nacked = newNacked)
   }
 
   /**

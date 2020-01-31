@@ -281,8 +281,7 @@ object HiveThriftServer2 extends Logging {
       if (executionList.size > retainedStatements) {
         val toRemove = math.max(retainedStatements / 10, 1)
         executionList.filter(_._2.finishTimestamp != 0).take(toRemove).foreach {
-          s =>
-            executionList.remove(s._1)
+          s => executionList.remove(s._1)
         }
       }
     }
@@ -291,8 +290,7 @@ object HiveThriftServer2 extends Logging {
       if (sessionList.size > retainedSessions) {
         val toRemove = math.max(retainedSessions / 10, 1)
         sessionList.filter(_._2.finishTimestamp != 0).take(toRemove).foreach {
-          s =>
-            sessionList.remove(s._1)
+          s => sessionList.remove(s._1)
         }
       }
 

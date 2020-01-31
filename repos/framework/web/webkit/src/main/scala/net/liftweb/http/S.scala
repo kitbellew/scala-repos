@@ -445,9 +445,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
 
   def location: Box[sitemap.Loc[_]] = CurrentLocation.is or {
     //try again in case CurrentLocation was accessed before the request was available
-    request flatMap { r =>
-      CurrentLocation(r.location)
-    }
+    request flatMap { r => CurrentLocation(r.location) }
   }
 
   /**
@@ -3258,9 +3256,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     *
     */
   def respondAsync(f: => Box[LiftResponse]): () => Box[LiftResponse] = {
-    RestContinuation.async { reply =>
-      reply(f.openOr(EmptyResponse))
-    }
+    RestContinuation.async { reply => reply(f.openOr(EmptyResponse)) }
   }
 
   /**

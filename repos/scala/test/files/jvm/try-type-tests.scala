@@ -23,9 +23,7 @@ trait TryStandard {
 
   def testFlatMapFailure(): Unit = {
     val t = Failure(new Exception("foo"))
-    val n = t.flatMap { x =>
-      assert(false); Try(())
-    }
+    val n = t.flatMap { x => assert(false); Try(()) }
   }
 
   def testMapSuccess(): Unit = {
@@ -57,9 +55,7 @@ trait TryStandard {
 
   def testFilterFailure(): Unit = {
     val t = Failure(new Exception("foo"))
-    val n = t.filter { x =>
-      assert(false); true
-    }
+    val n = t.filter { x => assert(false); true }
   }
 
   def testRescueSuccess(): Unit = {

@@ -166,13 +166,9 @@ trait FieldConversions extends LowPriorityFieldConversions {
       (right, rightPipe)
     } else {
       // Rename the collisions with random integer names:
-      val leftSetSyms = leftSet.map { f =>
-        Symbol(f.toString)
-      }
+      val leftSetSyms = leftSet.map { f => Symbol(f.toString) }
       val (_, reversedRename) = asList(right)
-        .map { f =>
-          Symbol(f.toString)
-        }
+        .map { f => Symbol(f.toString) }
         .foldLeft((leftSetSyms, List[Symbol]())) { (takenRename, name) =>
           val (taken, renames) = takenRename
           val newName = newSymbol(taken, name)
@@ -271,9 +267,7 @@ trait FieldConversions extends LowPriorityFieldConversions {
 
 case class RichFields(val toFieldList: List[Field[_]])
     extends Fields(toFieldList.map { _.id }: _*) {
-  toFieldList.foreach { field: Field[_] =>
-    setComparator(field.id, field.ord)
-  }
+  toFieldList.foreach { field: Field[_] => setComparator(field.id, field.ord) }
 }
 
 object RichFields {

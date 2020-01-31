@@ -438,9 +438,7 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
             seen.toVector
               .sorted(Member.addressOrdering)
               .map(addressToProto)
-              .foreach { a ⇒
-                b.addSeen(a)
-              }
+              .foreach { a ⇒ b.addSeen(a) }
             b.setPerformed(false)
           case PruningState.PruningPerformed ⇒
             b.setPerformed(true)

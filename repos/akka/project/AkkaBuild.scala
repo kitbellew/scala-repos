@@ -566,9 +566,7 @@ object AkkaBuild extends Build {
     super.settings ++
       buildSettings ++
       Seq(
-        shellPrompt := { s =>
-          Project.extract(s).currentProject.id + " > "
-        }
+        shellPrompt := { s => Project.extract(s).currentProject.id + " > " }
       ) ++
       resolverSettings
 

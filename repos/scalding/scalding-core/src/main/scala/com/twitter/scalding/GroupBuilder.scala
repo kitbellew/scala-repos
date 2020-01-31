@@ -124,9 +124,7 @@ class GroupBuilder(val groupFields: Fields)
 
   protected def overrideReducers(p: Pipe): Pipe = {
     numReducers
-      .map { r =>
-        RichPipe.setReducers(p, r)
-      }
+      .map { r => RichPipe.setReducers(p, r) }
       .getOrElse(p)
   }
 
@@ -345,9 +343,7 @@ class GroupBuilder(val groupFields: Fields)
         //In this case we cannot aggregate, so group:
         val start: Pipe = groupedPipeOf(name, maybeProjectedPipe)
         // Time to schedule the Every operations
-        evs.foldRight(start) { (op: (Pipe => Every), p) =>
-          op(p)
-        }
+        evs.foldRight(start) { (op: (Pipe => Every), p) => op(p) }
 
       case IdentityMode =>
         //This is the case where the group function is identity: { g => g }
@@ -398,9 +394,7 @@ class GroupBuilder(val groupFields: Fields)
     * An identity function that keeps all the tuples. A hack to implement
     * groupAll and groupRandomly.
     */
-  def pass: GroupBuilder = takeWhile(0) { (t: TupleEntry) =>
-    true
-  }
+  def pass: GroupBuilder = takeWhile(0) { (t: TupleEntry) => true }
 
   /**
     * beginning of block with access to expensive nonserializable state. The state object should

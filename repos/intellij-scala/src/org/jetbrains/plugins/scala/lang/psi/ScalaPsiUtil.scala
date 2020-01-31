@@ -877,9 +877,7 @@ object ScalaPsiUtil {
       def collectSupers(clazz: PsiClass, subst: ScSubstitutor) {
         clazz match {
           case td: ScTemplateDefinition =>
-            td.superTypes.foreach { tp =>
-              collectParts(subst.subst(tp))
-            }
+            td.superTypes.foreach { tp => collectParts(subst.subst(tp)) }
           case clazz: PsiClass =>
             clazz.getSuperTypes.foreach { tp =>
               val stp = ScType.create(tp, project, scope)
@@ -1202,9 +1200,7 @@ object ScalaPsiUtil {
         parent: PsiElement,
         k: List[PsiElement] => List[PsiElement]): List[PsiElement] = {
       if (parent != topLevel && parent != null)
-        inner(parent.getParent, { l =>
-          parent :: k(l)
-        })
+        inner(parent.getParent, { l => parent :: k(l) })
       else k(Nil)
     }
     inner(elem, (l: List[PsiElement]) => l)

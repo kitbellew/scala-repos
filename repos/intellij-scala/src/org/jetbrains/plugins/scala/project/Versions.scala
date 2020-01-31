@@ -50,9 +50,7 @@ trait Versions {
   protected def loadVersionsFrom(
       url: String,
       filter: PartialFunction[String, String]): Try[Seq[String]] = {
-    loadLinesFrom(url).map { lines =>
-      lines.collect(filter)
-    }
+    loadLinesFrom(url).map { lines => lines.collect(filter) }
   }
 
   private def loadLinesFrom(url: String): Try[Seq[String]] = {

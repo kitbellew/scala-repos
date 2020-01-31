@@ -17,9 +17,7 @@ class SingleSourceSpecTest extends WordSpec with Matchers with BddDsl {
             'col2))
       } When { pipe: RichPipe =>
         {
-          pipe.map('col1 -> 'col1_transf) { col1: String =>
-            col1 + "_transf"
-          }
+          pipe.map('col1 -> 'col1_transf) { col1: String => col1 + "_transf" }
         }
       } Then { buffer: Buffer[(String, String, String)] =>
         {
@@ -38,9 +36,7 @@ class SingleSourceSpecTest extends WordSpec with Matchers with BddDsl {
             'col2))
       } When { pipe: Pipe =>
         {
-          pipe.map('col1 -> 'col1_transf) { col1: String =>
-            col1 + "_transf"
-          }
+          pipe.map('col1 -> 'col1_transf) { col1: String => col1 + "_transf" }
         }
       } Then { buffer: Buffer[(String, String, String)] =>
         {
@@ -59,9 +55,7 @@ class SingleSourceSpecTest extends WordSpec with Matchers with BddDsl {
             'col2))
       } When { pipe: RichPipe =>
         {
-          pipe.map('col1 -> 'col1_transf) { col1: String =>
-            col1 + "_transf"
-          }
+          pipe.map('col1 -> 'col1_transf) { col1: String => col1 + "_transf" }
         }
       } Then { buffer: Buffer[Tuple] =>
         {
@@ -75,9 +69,7 @@ class SingleSourceSpecTest extends WordSpec with Matchers with BddDsl {
         List("col1_1", "col1_2") withSchema ('col1)
       } When { pipe: RichPipe =>
         {
-          pipe.map('col1 -> 'col1_transf) { col1: String =>
-            col1 + "_transf"
-          }
+          pipe.map('col1 -> 'col1_transf) { col1: String => col1 + "_transf" }
         }
       } Then { buffer: Buffer[Tuple] =>
         {
@@ -94,9 +86,7 @@ class SingleSourceSpecTest extends WordSpec with Matchers with BddDsl {
             'col2))
       } When { pipe: RichPipe =>
         {
-          pipe.map('col1 -> 'col1_transf) { col1: String =>
-            col1 + "_transf"
-          }
+          pipe.map('col1 -> 'col1_transf) { col1: String => col1 + "_transf" }
         }
       } Then { buffer: Buffer[Tuple] =>
         {

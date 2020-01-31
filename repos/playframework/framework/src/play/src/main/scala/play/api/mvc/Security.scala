@@ -47,9 +47,7 @@ object Security {
 
     EssentialAction { request =>
       userinfo(request)
-        .map { user =>
-          action(user)(request)
-        }
+        .map { user => action(user)(request) }
         .getOrElse {
           Accumulator.done(onUnauthorized(request))
         }

@@ -104,9 +104,7 @@ trait Var[+T] { self =>
     */
   lazy val changes: Event[T] = new Event[T] {
     def register(s: Witness[T]) =
-      self.observe { newv =>
-        s.notify(newv)
-      }
+      self.observe { newv => s.notify(newv) }
   }
 
   /**

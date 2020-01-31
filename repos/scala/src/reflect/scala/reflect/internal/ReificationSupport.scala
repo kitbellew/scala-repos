@@ -169,9 +169,7 @@ trait ReificationSupport { self: SymbolTable =>
         argss: List[List[Tree]],
         extraFlags: FlagSet = NoFlags,
         excludeFlags: FlagSet = DEFERRED): List[List[ValDef]] =
-      argss.map { args =>
-        args.map { mkParam(_, extraFlags, excludeFlags) }
-      }
+      argss.map { args => args.map { mkParam(_, extraFlags, excludeFlags) } }
 
     def mkParam(
         tree: Tree,
@@ -891,9 +889,7 @@ trait ReificationSupport { self: SymbolTable =>
     def UnliftListOfListsElementwise[T](unliftable: Unliftable[T]) =
       new UnliftListOfListsElementwise[T] {
         def unapply(lst: List[List[Tree]]): Option[List[List[T]]] = {
-          val unlifted = lst.map { l =>
-            l.flatMap { unliftable.unapply(_) }
-          }
+          val unlifted = lst.map { l => l.flatMap { unliftable.unapply(_) } }
           if (unlifted.flatten.length == lst.flatten.length) Some(unlifted)
           else None
         }

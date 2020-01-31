@@ -155,9 +155,7 @@ class ReceiverInputDStreamSuite extends TestSuiteBase with BeforeAndAfterAll {
     val receiverStream = new ReceiverInputDStream[Int](ssc) {
       override def getReceiver(): Receiver[Int] = null
     }
-    withStreamingContext(ssc) { ssc =>
-      body(receiverStream)
-    }
+    withStreamingContext(ssc) { ssc => body(receiverStream) }
   }
 
   /**

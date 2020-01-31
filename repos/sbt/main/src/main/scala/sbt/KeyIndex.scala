@@ -160,9 +160,7 @@ private final class KeyIndex0(val data: BuildIndex) extends ExtendableKeyIndex {
       conf: Option[String],
       key: String): Set[AttributeKey[_]] = keyIndex(proj, conf).tasks(key)
   def keys(proj: Option[ResolvedReference]): Set[String] =
-    (Set.empty[String] /: optConfigs(proj)) { (s, c) =>
-      s ++ keys(proj, c)
-    }
+    (Set.empty[String] /: optConfigs(proj)) { (s, c) => s ++ keys(proj, c) }
   def keys(proj: Option[ResolvedReference], conf: Option[String]): Set[String] =
     keyIndex(proj, conf).allKeys
   def keys(

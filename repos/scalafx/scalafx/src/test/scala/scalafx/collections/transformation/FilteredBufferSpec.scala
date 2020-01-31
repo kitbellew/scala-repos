@@ -59,9 +59,7 @@ class FilteredBufferSpec[E]
 
   it should "assing comparator correctly" in {
 
-    val sb = new FilteredBuffer(ObservableBuffer(3, 4, 1), { _: Int =>
-      true
-    })
+    val sb = new FilteredBuffer(ObservableBuffer(3, 4, 1), { _: Int => true })
 
     sb.toList should equal(List(3, 4, 1))
 

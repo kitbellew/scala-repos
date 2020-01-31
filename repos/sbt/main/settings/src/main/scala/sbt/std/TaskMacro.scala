@@ -342,9 +342,7 @@ object TaskMacro {
   private[this] def inputTaskMacro0[T: c.WeakTypeTag](c: Context)(
       t: c.Expr[T]): c.Expr[Initialize[InputTask[T]]] =
     iInitializeMacro(c)(t) { et =>
-      val pt = iParserMacro(c)(et) { pt =>
-        iTaskMacro(c)(pt)
-      }
+      val pt = iParserMacro(c)(et) { pt => iTaskMacro(c)(pt) }
       c.universe.reify { InputTask.make(pt.splice) }
     }
 

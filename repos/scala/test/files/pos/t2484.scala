@@ -19,8 +19,6 @@ class Admin extends javax.swing.JApplet {
 // t2630.scala
 object Test {
   def meh(xs: List[Any]) {
-    xs map { x =>
-      (new AnyRef {})
-    }
+    xs map { x => (new AnyRef {}) }
   }
 }

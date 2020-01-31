@@ -99,8 +99,7 @@ private[spark] class CoalescedRDD[T: ClassTag](
       partition: Partition,
       context: TaskContext): Iterator[T] = {
     partition.asInstanceOf[CoalescedRDDPartition].parents.iterator.flatMap {
-      parentPartition =>
-        firstParent[T].iterator(parentPartition, context)
+      parentPartition => firstParent[T].iterator(parentPartition, context)
     }
   }
 

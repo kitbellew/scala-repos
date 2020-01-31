@@ -258,9 +258,7 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
       building(FromPart) {
         from match {
           case Nil | Seq((_, Pure(ProductNode(ConstArray()), _))) =>
-            scalarFrom.foreach { s =>
-              b"\nfrom $s"
-            }
+            scalarFrom.foreach { s => b"\nfrom $s" }
           case from =>
             b"\nfrom "
             b.sep(from, ", ") {
@@ -327,9 +325,7 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
         n: Node,
         alias: Option[TermSymbol],
         skipParens: Boolean = false): Unit = building(FromPart) {
-      def addAlias = alias foreach { s =>
-        b += ' ' += symbolName(s)
-      }
+      def addAlias = alias foreach { s => b += ' ' += symbolName(s) }
       n match {
         case t: TableNode =>
           b += quoteTableName(t)
@@ -679,9 +675,7 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
   class UpsertBuilder(ins: Insert) extends InsertBuilder(ins) {
     protected lazy val (pkSyms, softSyms) =
       syms.toSeq.partition(_.options.contains(ColumnOption.PrimaryKey))
-    protected lazy val pkNames = pkSyms.map { fs =>
-      quoteIdentifier(fs.name)
-    }
+    protected lazy val pkNames = pkSyms.map { fs => quoteIdentifier(fs.name) }
     protected lazy val softNames = softSyms.map { fs =>
       quoteIdentifier(fs.name)
     }

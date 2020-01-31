@@ -162,8 +162,7 @@ object Test extends Properties("NaN-Ordering") {
   }
 
   property("Double reverse.lteq") = forAll(specDoubles, specDoubles) {
-    (d1, d2) =>
-      numDouble.reverse.lteq(d1, d2) == d2 <= d1
+    (d1, d2) => numDouble.reverse.lteq(d1, d2) == d2 <= d1
   }
 
   property("Double reverse.gt") = forAll(specDoubles, specDoubles) { (d1, d2) =>
@@ -171,12 +170,10 @@ object Test extends Properties("NaN-Ordering") {
   }
 
   property("Double reverse.gteq") = forAll(specDoubles, specDoubles) {
-    (d1, d2) =>
-      numDouble.reverse.gteq(d1, d2) == d2 >= d1
+    (d1, d2) => numDouble.reverse.gteq(d1, d2) == d2 >= d1
   }
 
   property("Double reverse.equiv") = forAll(specDoubles, specDoubles) {
-    (d1, d2) =>
-      numDouble.reverse.equiv(d1, d2) == (d1 == d2)
+    (d1, d2) => numDouble.reverse.equiv(d1, d2) == (d1 == d2)
   }
 }

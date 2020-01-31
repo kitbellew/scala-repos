@@ -165,9 +165,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     val df = Seq(Tuple1("a b c"), Tuple1("d e")).toDF("words")
 
     checkAnswer(
-      df.explode("words", "word") { word: String =>
-          word.split(" ").toSeq
-        }
+      df.explode("words", "word") { word: String => word.split(" ").toSeq }
         .select('word),
       Row("a") :: Row("b") :: Row("c") :: Row("d") :: Row("e") :: Nil
     )
@@ -1385,8 +1383,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
 
     // passing null into the UDF that could handle it
     val boxedUDF = udf[java.lang.Integer, java.lang.Integer] {
-      (i: java.lang.Integer) =>
-        if (i == null) -10 else null
+      (i: java.lang.Integer) => if (i == null) -10 else null
     }
     checkAnswer(df.select(boxedUDF($"age")), Row(null) :: Row(-10) :: Nil)
 

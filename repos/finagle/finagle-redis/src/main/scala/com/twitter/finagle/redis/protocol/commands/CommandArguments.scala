@@ -87,9 +87,8 @@ object Weights {
           argLength > 1,
           "WEIGHTS requires additional arguments")
         val weights: Array[Double] = RequireClientProtocol.safe {
-          args.tail.map { item =>
-            NumberFormat.toDouble(item)
-          }(collection.breakOut)
+          args.tail.map { item => NumberFormat.toDouble(item) }(
+            collection.breakOut)
         }
         Some(new Weights(weights))
       case _ => None

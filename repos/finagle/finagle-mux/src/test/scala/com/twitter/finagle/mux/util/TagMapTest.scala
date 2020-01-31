@@ -45,9 +45,7 @@ class TagMapTest extends FunSuite with GeneratorDrivenPropertyChecks {
 
       for (i <- range) assert(ints.map(-i) == Some(i))
 
-      assert(ints.sameElements(range.map { i =>
-        (i, -i)
-      }))
+      assert(ints.sameElements(range.map { i => (i, -i) }))
 
       ints.unmap(3 + range.start)
       ints.unmap(8 + range.start)

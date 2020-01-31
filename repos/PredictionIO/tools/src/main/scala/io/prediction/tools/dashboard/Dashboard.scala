@@ -48,9 +48,7 @@ object Dashboard extends Logging with SSLConfiguration {
       } text ("Port to bind to (default: 9000).")
     }
 
-    parser.parse(args, DashboardConfig()) map { dc =>
-      createDashboard(dc)
-    }
+    parser.parse(args, DashboardConfig()) map { dc => createDashboard(dc) }
   }
 
   def createDashboard(dc: DashboardConfig): Unit = {

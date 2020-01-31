@@ -50,9 +50,7 @@ object DateParser {
     def parse(s: String)(implicit tz: TimeZone) =
       DateOps
         .getDateParser(s)
-        .map { p =>
-          p.parse(s)
-        }
+        .map { p => p.parse(s) }
         .getOrElse(Failure(
           new IllegalArgumentException("Could not find parser for: " + s)))
   }

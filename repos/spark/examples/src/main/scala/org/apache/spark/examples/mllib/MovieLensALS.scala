@@ -200,9 +200,7 @@ object MovieLensALS {
     val predictions: RDD[Rating] =
       model.predict(data.map(x => (x.user, x.product)))
     val predictionsAndRatings = predictions
-      .map { x =>
-        ((x.user, x.product), mapPredictedRating(x.rating))
-      }
+      .map { x => ((x.user, x.product), mapPredictedRating(x.rating)) }
       .join(data.map(x => ((x.user, x.product), x.rating)))
       .values
     math.sqrt(

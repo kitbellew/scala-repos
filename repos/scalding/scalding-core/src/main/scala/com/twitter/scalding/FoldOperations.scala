@@ -43,9 +43,7 @@ trait FoldOperations[+Self <: FoldOperations[Self]]
       setter: TupleSetter[R]): Self = {
     if (sorting.isDefined) {
       //the list is built in reverse order so we need to reverse it here
-      super.mapList[T, R](fieldDef) { l =>
-        fn(l.reverse)
-      }(conv, setter)
+      super.mapList[T, R](fieldDef) { l => fn(l.reverse) }(conv, setter)
     } else {
       // Ordering doesn't matter, so skip the reversal
       super.mapList[T, R](fieldDef)(fn)(conv, setter)

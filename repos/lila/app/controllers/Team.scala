@@ -42,9 +42,7 @@ object Team extends LilaController {
 
   def show(id: String, page: Int) = Open { implicit ctx =>
     NotForKids {
-      OptionFuOk(api team id) { team =>
-        renderTeam(team, page)
-      }
+      OptionFuOk(api team id) { team => renderTeam(team, page) }
     }
   }
 
@@ -134,9 +132,7 @@ object Team extends LilaController {
           },
         data =>
           api.create(data, me) ?? {
-            _ map { team =>
-              Redirect(routes.Team.show(team.id)): Result
-            }
+            _ map { team => Redirect(routes.Team.show(team.id)): Result }
           }
       )
     }
@@ -209,9 +205,7 @@ object Team extends LilaController {
   }
 
   def quit(id: String) = Auth { implicit ctx => implicit me =>
-    OptionResult(api quit id) { team =>
-      Redirect(routes.Team.show(team.id))
-    }
+    OptionResult(api quit id) { team => Redirect(routes.Team.show(team.id)) }
   }
 
   private def OnePerWeek[A <: Result](me: UserModel)(a: => Fu[A])(

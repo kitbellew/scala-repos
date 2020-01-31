@@ -33,11 +33,7 @@ object Joiner extends java.io.Serializable {
   }
 
   def inner2[K, V, U] = { (key: K, itv: Iterator[V], itu: Iterable[U]) =>
-    itv.flatMap { v =>
-      itu.map { u =>
-        (v, u)
-      }
-    }
+    itv.flatMap { v => itu.map { u => (v, u) } }
   }
   def asOuter[U](it: Iterator[U]): Iterator[Option[U]] = {
     if (it.isEmpty) {
@@ -50,25 +46,13 @@ object Joiner extends java.io.Serializable {
     if (itv.isEmpty && itu.isEmpty) {
       Iterator.empty
     } else {
-      asOuter(itv).flatMap { v =>
-        asOuter(itu.iterator).map { u =>
-          (v, u)
-        }
-      }
+      asOuter(itv).flatMap { v => asOuter(itu.iterator).map { u => (v, u) } }
     }
   }
   def left2[K, V, U] = { (key: K, itv: Iterator[V], itu: Iterable[U]) =>
-    itv.flatMap { v =>
-      asOuter(itu.iterator).map { u =>
-        (v, u)
-      }
-    }
+    itv.flatMap { v => asOuter(itu.iterator).map { u => (v, u) } }
   }
   def right2[K, V, U] = { (key: K, itv: Iterator[V], itu: Iterable[U]) =>
-    asOuter(itv).flatMap { v =>
-      itu.map { u =>
-        (v, u)
-      }
-    }
+    asOuter(itv).flatMap { v => itu.map { u => (v, u) } }
   }
 }

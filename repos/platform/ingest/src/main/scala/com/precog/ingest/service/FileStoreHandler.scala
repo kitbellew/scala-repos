@@ -99,17 +99,14 @@ class FileStoreHandler(
                 "\"%s\" is not a valid file name; please do not use characters which require URL encoding."
                   .format(fn0))
             }
-        } yield { (dir: Path) =>
-          dir / Path(fn0)
-        }
+        } yield { (dir: Path) => dir / Path(fn0) }
 
       case AccessMode.Replace =>
         fileName
           .toFailure(())
           .leftMap(_ =>
             "X-File-Name header not respected for PUT requests; please specify the resource to update via the URL.") map {
-          _ => (resource: Path) =>
-            resource
+          _ => (resource: Path) => resource
         }
     }
   }

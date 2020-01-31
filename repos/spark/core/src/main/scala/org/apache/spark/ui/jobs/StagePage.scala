@@ -112,9 +112,7 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
 
       val taskPage = Option(parameterTaskPage).map(_.toInt).getOrElse(1)
       val taskSortColumn = Option(parameterTaskSortColumn)
-        .map { sortColumn =>
-          UIUtils.decodeURLParameter(sortColumn)
-        }
+        .map { sortColumn => UIUtils.decodeURLParameter(sortColumn) }
         .getOrElse("Index")
       val taskSortDesc =
         Option(parameterTaskSortDesc).map(_.toBoolean).getOrElse(false)
@@ -1132,9 +1130,7 @@ private[ui] class TaskDataSource(
     val writeTimeSortable = maybeWriteTime.getOrElse(0L)
     val writeTimeReadable = maybeWriteTime
       .map(t => t / (1000 * 1000))
-      .map { ms =>
-        if (ms == 0) "" else UIUtils.formatDuration(ms)
-      }
+      .map { ms => if (ms == 0) "" else UIUtils.formatDuration(ms) }
       .getOrElse("")
 
     val maybeMemoryBytesSpilled = metrics.map(_.memoryBytesSpilled)

@@ -142,9 +142,7 @@ object EventValidation {
     )
     require(
       e.targetEntityType
-        .map { t =>
-          (!isReservedPrefix(t) || isBuiltinEntityTypes(t))
-        }
+        .map { t => (!isReservedPrefix(t) || isBuiltinEntityTypes(t)) }
         .getOrElse(true),
       s"The targetEntityType ${e.targetEntityType.get} is not allowed. " +
         s"'pio_' is a reserved name prefix."

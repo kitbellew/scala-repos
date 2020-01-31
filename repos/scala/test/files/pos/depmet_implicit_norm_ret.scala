@@ -26,7 +26,5 @@ object Test {
   // bug: inferred return type = (Stream[A]) => java.lang.Object with Test.ZipWith[B]{type T = Stream[B]}#T
   // this seems incompatible with vvvvvvvvvvvvvvvvvvvvvv   -- #3731
   def map[A, B](f: A => B) /* : Stream[A] => Stream[B]*/ = ZipWith(f)
-  val tst: Stream[Int] = map { x: String =>
-    x.length
-  }(Stream("a"))
+  val tst: Stream[Int] = map { x: String => x.length }(Stream("a"))
 }

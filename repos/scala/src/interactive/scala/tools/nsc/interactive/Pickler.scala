@@ -250,11 +250,7 @@ object Pickler {
     */
   def singletonPickler[T <: AnyRef](x: T): CondPickler[T] =
     unitPickler
-      .wrapped { _ =>
-        x
-      } { x =>
-        ()
-      }
+      .wrapped { _ => x } { x => () }
       .labelled(x.getClass.getName)
       .cond(x eq _.asInstanceOf[AnyRef])
 
@@ -265,9 +261,9 @@ object Pickler {
     */
   def javaInstancePickler[T <: AnyRef]: Pickler[T] =
     (stringPickler labelled "$new")
-      .wrapped { name =>
-        Class.forName(name).newInstance().asInstanceOf[T]
-      } { _.getClass.getName }
+      .wrapped { name => Class.forName(name).newInstance().asInstanceOf[T] } {
+        _.getClass.getName
+      }
 
   /** A picklers that handles iterators. It pickles all values
     *  returned by an iterator separated by commas.

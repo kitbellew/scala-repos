@@ -21,16 +21,12 @@ class ExecutionDirectivesSpec extends RoutingSpec {
   "The `handleExceptions` directive" should {
     "handle an exception strictly thrown in the inner route with the supplied exception handler" in {
       exceptionShouldBeHandled {
-        handleExceptions(handler) { ctx ⇒
-          throw MyException
-        }
+        handleExceptions(handler) { ctx ⇒ throw MyException }
       }
     }
     "handle an Future.failed RouteResult with the supplied exception handler" in {
       exceptionShouldBeHandled {
-        handleExceptions(handler) { ctx ⇒
-          Future.failed(MyException)
-        }
+        handleExceptions(handler) { ctx ⇒ Future.failed(MyException) }
       }
     }
     "handle an eventually failed Future[RouteResult] with the supplied exception handler" in {
@@ -56,9 +52,7 @@ class ExecutionDirectivesSpec extends RoutingSpec {
       occurrences = 1).intercept {
       Get("/abc") ~>
         get {
-          handleExceptions(handler)(reject) ~ { ctx ⇒
-            throw MyException
-          }
+          handleExceptions(handler)(reject) ~ { ctx ⇒ throw MyException }
         } ~> check {
         status shouldEqual StatusCodes.InternalServerError
         responseAs[String] shouldEqual "There was an internal server error."

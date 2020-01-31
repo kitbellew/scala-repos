@@ -200,9 +200,7 @@ private[camel] class ActorProducer(val endpoint: ActorEndpoint, camel: Camel)
           .ask(messageFor(exchange))(Timeout(endpoint.replyTimeout))
         catch { case NonFatal(e) ⇒ Future.failed(e) }
       implicit val ec = camel.system.dispatcher // FIXME which ExecutionContext should be used here?
-      async.onComplete(action andThen { _ ⇒
-        callback.done(false)
-      })
+      async.onComplete(action andThen { _ ⇒ callback.done(false) })
       false
     }
 

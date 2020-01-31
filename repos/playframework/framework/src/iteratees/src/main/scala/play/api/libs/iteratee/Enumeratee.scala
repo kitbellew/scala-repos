@@ -846,9 +846,7 @@ object Enumeratee {
     val pec = ec.prepare()
 
     def applyOn[A](iteratee: Iteratee[E, A]): Iteratee[E, Iteratee[E, A]] =
-      passAlong[E](iteratee).map(_.map { a =>
-        action(); a
-      }(pec))(dec)
+      passAlong[E](iteratee).map(_.map { a => action(); a }(pec))(dec)
 
   }
 
@@ -916,9 +914,7 @@ object Enumeratee {
                 case other => Done(other.it, in)
               }(dec)
               .unflatten
-              .map({ s =>
-                s.it
-              })(dec)
+              .map({ s => s.it })(dec)
               .recover({
                 case NonFatal(e) =>
                   f(e, in)

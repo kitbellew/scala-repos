@@ -424,9 +424,7 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
     }
     val q2 = bs
       .map { case b => b.id :: b.b :: (b.s ++ b.s) :: HNil }
-      .filter { h =>
-        !h(1)
-      }
+      .filter { h => !h(1) }
       .sortBy { case _ :: _ :: ss :: HNil => ss }
       .map { case id :: b :: ss :: HNil => id :: ss :: (42 :: HNil) :: HNil }
 

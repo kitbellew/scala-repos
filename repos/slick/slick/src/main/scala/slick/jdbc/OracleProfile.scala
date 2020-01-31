@@ -458,9 +458,7 @@ trait OracleProfile extends JdbcProfile {
     val name = "removeSubqueryOrdering"
 
     def apply(state: CompilerState) =
-      state.map { n =>
-        ClientSideOp.mapServerSide(n)(n => rewrite(n, false))
-      }
+      state.map { n => ClientSideOp.mapServerSide(n)(n => rewrite(n, false)) }
 
     def rewrite(n: Node, inScalar: Boolean): Node = n match {
       case n: Comprehension if inScalar && n.orderBy.nonEmpty =>

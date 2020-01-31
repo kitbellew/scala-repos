@@ -90,9 +90,7 @@ trait ZNode {
     zkClient.retrying { zk =>
       val result = new StringCallbackPromise
       zk.create(creatingPath, data, acls.asJava, mode, result, null)
-      result map { newPath =>
-        zkClient(newPath)
-      }
+      result map { newPath => zkClient(newPath) }
     }
   }
 
@@ -100,9 +98,7 @@ trait ZNode {
   def delete(version: Int = 0): Future[ZNode] = zkClient.retrying { zk =>
     val result = new UnitCallbackPromise
     zk.delete(path, version, result, null)
-    result map { _ =>
-      this
-    }
+    result map { _ => this }
   }
 
   /** Returns a Future that is satisfied with this ZNode with its metadata and data */
@@ -117,9 +113,7 @@ trait ZNode {
   def sync(): Future[ZNode] = zkClient.retrying { zk =>
     val result = new UnitCallbackPromise
     zk.sync(path, result, null)
-    result map { _ =>
-      this
-    }
+    result map { _ => this }
   }
 
   /** Provides access to this node's children. */

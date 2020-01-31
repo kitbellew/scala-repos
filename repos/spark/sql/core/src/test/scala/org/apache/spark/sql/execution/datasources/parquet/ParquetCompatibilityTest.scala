@@ -40,9 +40,7 @@ private[sql] abstract class ParquetCompatibilityTest
     extends QueryTest
     with ParquetTest {
   protected def readParquetSchema(path: String): MessageType = {
-    readParquetSchema(path, { path =>
-      !path.getName.startsWith("_")
-    })
+    readParquetSchema(path, { path => !path.getName.startsWith("_") })
   }
 
   protected def readParquetSchema(

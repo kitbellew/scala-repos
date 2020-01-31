@@ -65,16 +65,16 @@ object Account extends LilaController {
 
   def passwdApply = AuthBody { implicit ctx => me =>
     implicit val req = ctx.body
-    FormFuResult(forms.passwd) { err =>
-      fuccess(html.account.passwd(me, err))
-    } { data =>
-      for {
-        ok ← UserRepo.checkPasswordById(me.id, data.oldPasswd)
-        _ ← ok ?? UserRepo.passwd(me.id, data.newPasswd1)
-      } yield {
-        val content = html.account.passwd(me, forms.passwd.fill(data), ok.some)
-        ok.fold(Ok(content), BadRequest(content))
-      }
+    FormFuResult(forms.passwd) { err => fuccess(html.account.passwd(me, err)) } {
+      data =>
+        for {
+          ok ← UserRepo.checkPasswordById(me.id, data.oldPasswd)
+          _ ← ok ?? UserRepo.passwd(me.id, data.newPasswd1)
+        } yield {
+          val content =
+            html.account.passwd(me, forms.passwd.fill(data), ok.some)
+          ok.fold(Ok(content), BadRequest(content))
+        }
     }
   }
 
@@ -85,9 +85,7 @@ object Account extends LilaController {
   }
 
   def email = Auth { implicit ctx => me =>
-    emailForm(me) map { form =>
-      Ok(html.account.email(me, form))
-    }
+    emailForm(me) map { form => Ok(html.account.email(me, form)) }
   }
 
   def emailApply = AuthBody { implicit ctx => me =>
@@ -141,9 +139,7 @@ object Account extends LilaController {
       Env.tournament.api.withdrawAll(user) >>
       (Env.security disconnect user.id)
 
-  def kid = Auth { implicit ctx => me =>
-    Ok(html.account.kid(me)).fuccess
-  }
+  def kid = Auth { implicit ctx => me => Ok(html.account.kid(me)).fuccess }
 
   def kidConfirm = Auth { ctx => me =>
     implicit val req = ctx.req

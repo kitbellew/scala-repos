@@ -325,9 +325,7 @@ final class Eval(
     private[this] var vals = List[String]()
     def getVals(t: Tree): List[String] = { vals = Nil; traverse(t); vals }
     def isAcceptableType(tpe: Type): Boolean = {
-      tpe.baseClasses.exists { sym =>
-        tpes.contains(sym.fullName)
-      }
+      tpe.baseClasses.exists { sym => tpes.contains(sym.fullName) }
     }
     override def traverse(tree: Tree): Unit = tree match {
       case ValDef(_, n, actualTpe, _)

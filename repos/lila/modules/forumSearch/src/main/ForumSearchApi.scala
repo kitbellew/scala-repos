@@ -18,9 +18,7 @@ final class ForumSearchApi(client: ESClient, postApi: PostApi)
     client.count(query) map (_.count)
 
   def store(post: Post) = postApi liteView post flatMap {
-    _ ?? { view =>
-      client.store(Id(view.post.id), toDoc(view))
-    }
+    _ ?? { view => client.store(Id(view.post.id), toDoc(view)) }
   }
 
   private def toDoc(view: PostLiteView) =

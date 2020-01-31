@@ -628,8 +628,7 @@ trait Reifiers { self: Quasiquotes =>
         append(l, fallback(r))
       }
       def prepended(lst: List[Any], init: Tree) = lst.foldRight(init) {
-        (l, r) =>
-          cons(fallback(l), r)
+        (l, r) => cons(fallback(l), r)
       }
       grouped match {
         case init :: List(hole) :: last :: Nil if fill.isDefinedAt(hole) =>

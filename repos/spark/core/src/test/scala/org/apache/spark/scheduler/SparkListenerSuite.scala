@@ -247,14 +247,10 @@ class SparkListenerSuite
     listener.stageInfos.size should be(1)
 
     val d2 = d
-      .map { i =>
-        w(i) -> i * 2
-      }
+      .map { i => w(i) -> i * 2 }
       .setName("shuffle input 1")
     val d3 = d
-      .map { i =>
-        w(i) -> (0 to (i % 5))
-      }
+      .map { i => w(i) -> (0 to (i % 5)) }
       .setName("shuffle input 2")
     val d4 = d2.cogroup(d3, numSlices).map {
       case (k, (v1, v2)) =>
@@ -319,9 +315,7 @@ class SparkListenerSuite
     assert(maxRpcMessageSize === 1024 * 1024)
     val result = sc
       .parallelize(Seq(1), 1)
-      .map { x =>
-        1.to(maxRpcMessageSize).toArray
-      }
+      .map { x => 1.to(maxRpcMessageSize).toArray }
       .reduce { case (x, y) => x }
     assert(result === 1.to(maxRpcMessageSize).toArray)
 
@@ -359,9 +353,7 @@ class SparkListenerSuite
     val numTasks = 10
     val f = sc
       .parallelize(1 to 10000, numTasks)
-      .map { i =>
-        Thread.sleep(10); i
-      }
+      .map { i => Thread.sleep(10); i }
       .countAsync()
     // Wait until one task has started (because we want to make sure that any tasks that are started
     // have corresponding end events sent to the listener).

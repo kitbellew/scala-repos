@@ -32,13 +32,9 @@ object Schema {
     case JArrayFixedT(indices) if indices.isEmpty => Set(CEmptyArray)
     case JObjectFixedT(fields) if fields.isEmpty  => Set(CEmptyObject)
     case JArrayFixedT(indices) =>
-      indices.values.toSet.flatMap { tpe: JType =>
-        ctypes(tpe)
-      }
+      indices.values.toSet.flatMap { tpe: JType => ctypes(tpe) }
     case JObjectFixedT(fields) =>
-      fields.values.toSet.flatMap { tpe: JType =>
-        ctypes(tpe)
-      }
+      fields.values.toSet.flatMap { tpe: JType => ctypes(tpe) }
     case JArrayHomogeneousT(elemType) =>
       ctypes(elemType) collect {
         case cType: CValueType[_] => CArrayType(cType)

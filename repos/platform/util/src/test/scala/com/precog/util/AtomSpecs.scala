@@ -149,9 +149,7 @@ object AtomSpecs extends Specification with ScalaCheck {
     "self-populate once on access using +=" in check { xs: Set[Int] =>
       lazy val a: Atom[Set[Int]] = atom[Set[Int]] {
         a ++= Set[Int]()
-        xs foreach { x =>
-          a += x
-        }
+        xs foreach { x => a += x }
       }
 
       a() mustEqual xs
@@ -185,9 +183,7 @@ object AtomSpecs extends Specification with ScalaCheck {
           a += marker
         }
 
-        xs foreach { x =>
-          a += x
-        }
+        xs foreach { x => a += x }
         a() mustEqual (xs + marker)
     }
 
@@ -208,9 +204,7 @@ object AtomSpecs extends Specification with ScalaCheck {
         a ++= Set[Int]()
       }
 
-      xs foreach { x =>
-        a += x
-      }
+      xs foreach { x => a += x }
 
       a() mustEqual xs
       a() mustEqual xs

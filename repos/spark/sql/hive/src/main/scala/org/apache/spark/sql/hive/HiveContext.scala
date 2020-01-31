@@ -578,9 +578,7 @@ class HiveContext private[hive] (
     * all supported Hive DDLs itself.
     */
   protected[sql] override def runNativeSql(sqlText: String): Seq[Row] = {
-    runSqlHive(sqlText).map { s =>
-      Row(s)
-    }
+    runSqlHive(sqlText).map { s => Row(s) }
   }
 
   /** Extends QueryExecution with hive specific features. */

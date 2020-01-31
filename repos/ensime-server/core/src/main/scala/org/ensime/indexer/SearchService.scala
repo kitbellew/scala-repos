@@ -127,8 +127,7 @@ class SearchService(
       val checksLookup: Map[String, FileCheck] =
         checks.map(check => (check.filename -> check)).toMap
       val basesWithChecks: Set[(FileObject, Option[FileCheck])] = bases.map {
-        base =>
-          (base, checksLookup.get(base.getName().getURI()))
+        base => (base, checksLookup.get(base.getName().getURI()))
       }
       Future
         .sequence(basesWithChecks.map {
@@ -166,9 +165,7 @@ class SearchService(
       blocking { index.persist(check, symbols, commitIndex) }
     }
     val dwork = db.persist(check, symbols)
-    iwork.flatMap { _ =>
-      dwork
-    }
+    iwork.flatMap { _ => dwork }
   }
 
   def extractSymbolsFromClassOrJar(file: FileObject): Future[List[FqnSymbol]] =

@@ -153,9 +153,7 @@ object TestBuild {
   final class Build(val uri: URI, val projects: Seq[Proj]) {
     override def toString =
       "Build " + uri.toString + " :\n    " + projects.mkString("\n    ")
-    val allProjects = projects map { p =>
-      (ProjectRef(uri, p.id), p)
-    }
+    val allProjects = projects map { p => (ProjectRef(uri, p.id), p) }
     val root = projects.head
     val projectMap = mapBy(projects)(_.id)
   }
@@ -183,9 +181,7 @@ object TestBuild {
   }
 
   def mapBy[K, T](s: Seq[T])(f: T => K): Map[K, T] =
-    s map { t =>
-      (f(t), t)
-    } toMap;
+    s map { t => (f(t), t) } toMap;
 
   implicit lazy val arbKeys: Arbitrary[Keys] = Arbitrary(keysGen)
   lazy val keysGen: Gen[Keys] =
@@ -270,8 +266,7 @@ object TestBuild {
     for (u <- uGen; ps <- pGen(u)) yield new Build(u, ps)
 
   def nGen[T](igen: Gen[Int])(implicit g: Gen[T]): Gen[List[T]] = igen flatMap {
-    ig =>
-      listOfN(ig, g)
+    ig => listOfN(ig, g)
   }
 
   implicit def genProjects(build: URI)(
@@ -281,9 +276,7 @@ object TestBuild {
       confs: Gen[Seq[Config]]): Gen[Seq[Proj]] =
     genAcyclic(maxDeps, genID, count) { (id: String) =>
       for (cs <- confs) yield { (deps: Seq[Proj]) =>
-        new Proj(id, deps.map { dep =>
-          ProjectRef(build, dep.id)
-        }, cs)
+        new Proj(id, deps.map { dep => ProjectRef(build, dep.id) }, cs)
       }
     }
   def genConfigs(
@@ -302,9 +295,7 @@ object TestBuild {
   def genAcyclicDirect[A, T](maxDeps: Gen[Int], keyGen: Gen[T], max: Gen[Int])(
       make: (T, Seq[A]) => A): Gen[Seq[A]] =
     genAcyclic[A, T](maxDeps, keyGen, max) { t =>
-      Gen.const { deps =>
-        make(t, deps)
-      }
+      Gen.const { deps => make(t, deps) }
     }
 
   def genAcyclic[A, T](maxDeps: Gen[Int], keyGen: Gen[T], max: Gen[Int])(
@@ -330,9 +321,7 @@ object TestBuild {
       key: T,
       deps: Seq[T],
       make: T => Gen[Seq[A] => A]): Gen[Inputs[A, T]] =
-    make(key) map { (mk: Seq[A] => A) =>
-      (key, deps, mk)
-    }
+    make(key) map { (mk: Seq[A] => A) => (key, deps, mk) }
 
   def genAcyclic[T](
       maxDeps: Gen[Int],
@@ -347,9 +336,7 @@ object TestBuild {
         genAcyclic(maxDeps, xs, next :: acc)
     }
   def sequence[T](gs: Seq[Gen[T]]): Gen[Seq[T]] = Gen.parameterized { prms =>
-    wrap(gs map { g =>
-      g(prms) getOrElse sys.error("failed generator")
-    })
+    wrap(gs map { g => g(prms) getOrElse sys.error("failed generator") })
   }
   type Inputs[A, T] = (T, Seq[T], Seq[A] => A)
 }

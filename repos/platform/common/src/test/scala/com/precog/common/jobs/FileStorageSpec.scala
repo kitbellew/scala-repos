@@ -48,24 +48,19 @@ trait FileStorageSpec[M[+_]] extends Specification {
 
   lazy val data1: FileData[M] = {
     val strings = "Hello" :: "," :: " " :: "world!" :: StreamT.empty[M, String]
-    val data = strings map { s =>
-      s.getBytes("UTF-8")
-    }
+    val data = strings map { s => s.getBytes("UTF-8") }
     FileData(Some(TEXT), data)
   }
 
   lazy val data2: FileData[M] = {
     val strings = "Goodbye" :: "," :: " " :: "cruel world." :: StreamT
       .empty[M, String]
-    val data = strings map { s =>
-      s.getBytes("UTF-8")
-    }
+    val data = strings map { s => s.getBytes("UTF-8") }
     FileData(Some(HTML), data)
   }
 
   def encode(s: StreamT[M, Array[Byte]]): M[String] = s.foldLeft("") {
-    (acc, bytes) =>
-      acc + new String(bytes, "UTF-8")
+    (acc, bytes) => acc + new String(bytes, "UTF-8")
   }
 
   "File storage" should {

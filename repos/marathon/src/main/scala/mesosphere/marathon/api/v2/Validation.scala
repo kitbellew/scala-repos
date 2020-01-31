@@ -163,9 +163,7 @@ object Validation {
   def elementsAreUniqueBy[A, B](
       fn: A => B,
       errorMessage: String = "Elements must be unique.",
-      filter: B => Boolean = { _: B =>
-        true
-      }): Validator[Seq[A]] = {
+      filter: B => Boolean = { _: B => true }): Validator[Seq[A]] = {
     new Validator[Seq[A]] {
       def apply(seq: Seq[A]) =
         areUnique(seq.map(fn).filter(filter), errorMessage)
@@ -175,9 +173,7 @@ object Validation {
   def elementsAreUniqueByOptional[A, B](
       fn: A => GenTraversableOnce[B],
       errorMessage: String = "Elements must be unique.",
-      filter: B => Boolean = { _: B =>
-        true
-      }): Validator[Seq[A]] = {
+      filter: B => Boolean = { _: B => true }): Validator[Seq[A]] = {
     new Validator[Seq[A]] {
       def apply(seq: Seq[A]) =
         areUnique(seq.flatMap(fn).filter(filter), errorMessage)
@@ -241,8 +237,7 @@ object Validation {
   def configValueSet[T <: AnyRef](config: String*): Validator[T] =
     isTrue(
       s"""You have to supply ${config.mkString(", ")} on the command line.""") {
-      _ =>
-        config.forall(AllConf.suppliedOptionNames)
+      _ => config.forall(AllConf.suppliedOptionNames)
     }
 
   def isTrue[T](constraint: String)(test: T => Boolean): Validator[T] =

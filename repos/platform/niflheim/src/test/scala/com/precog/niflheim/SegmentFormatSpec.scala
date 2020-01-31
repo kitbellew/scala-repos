@@ -163,15 +163,11 @@ trait SegmentFormatSpec
     }
     "roundtrip arbitrary small segments" in {
       implicit val arbSegment = Arbitrary(genSegment(100))
-      check { (segment: Segment) =>
-        surviveRoundTrip(segment)
-      }
+      check { (segment: Segment) => surviveRoundTrip(segment) }
     }
     "roundtrip arbitrary large segments" in {
       implicit val arbSegment = Arbitrary(genSegment(10000))
-      check { (segment: Segment) =>
-        surviveRoundTrip(segment)
-      }
+      check { (segment: Segment) => surviveRoundTrip(segment) }
     }
   }
 }

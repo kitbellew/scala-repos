@@ -33,9 +33,7 @@ class CircuitBreakerMTSpec extends AkkaSpec {
           remainingOrDefault)
 
       // fire some failing calls
-      1 to (maxFailures + 1) foreach { _ ⇒
-        failingCall()
-      }
+      1 to (maxFailures + 1) foreach { _ ⇒ failingCall() }
       // and then continue with failing calls until the breaker is open
       awaitCond(failingCall())
     }

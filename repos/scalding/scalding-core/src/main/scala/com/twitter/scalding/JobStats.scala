@@ -38,9 +38,7 @@ object JobStats {
         stats
           .getCountersFor(group)
           .asScala
-          .map { counter =>
-            (counter, stats.getCounterValue(group, counter))
-          }
+          .map { counter => (counter, stats.getCounterValue(group, counter)) }
           .toMap)
     }.toMap
 

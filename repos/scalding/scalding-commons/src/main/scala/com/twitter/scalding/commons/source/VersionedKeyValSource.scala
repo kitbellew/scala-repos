@@ -210,8 +210,7 @@ class VersionedKeyValSource[K, V](
 
   override def transformForRead(pipe: Pipe): Pipe = {
     pipe.flatMap((keyField, valField) -> (keyField, valField)) {
-      pair: (Array[Byte], Array[Byte]) =>
-        checkedInversion(pair)
+      pair: (Array[Byte], Array[Byte]) => checkedInversion(pair)
     }
   }
 

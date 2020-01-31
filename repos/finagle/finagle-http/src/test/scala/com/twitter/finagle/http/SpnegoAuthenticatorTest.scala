@@ -93,9 +93,7 @@ class SpnegoAuthenticatorTest extends FunSuite with MockitoSugar {
 
     val client =
       clientSrc
-        .map { src =>
-          new ClientFilter(src) andThen rawClient
-        }
+        .map { src => new ClientFilter(src) andThen rawClient }
         .getOrElse {
           rawClient
         }

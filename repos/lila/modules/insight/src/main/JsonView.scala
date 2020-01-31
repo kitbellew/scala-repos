@@ -18,9 +18,7 @@ final class JsonView {
       "description" -> D.Opening.description.body,
       "values" -> Dimension
         .valuesOf(D.Opening)
-        .filter { o =>
-          ecos contains o.eco
-        }
+        .filter { o => ecos contains o.eco }
         .map(Dimension.valueToJson(D.Opening))
     )
 

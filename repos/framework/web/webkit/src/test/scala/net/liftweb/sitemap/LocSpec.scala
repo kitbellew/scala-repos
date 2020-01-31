@@ -58,9 +58,7 @@ object LocSpec extends Specification {
       val mockReq = new MockHttpServletRequest("http://test/foo/bar/123")
 
       testS(mockReq) {
-        testReq(mockReq) { req =>
-          testLoc.doesMatch_?(req) mustEqual false
-        }
+        testReq(mockReq) { req => testLoc.doesMatch_?(req) mustEqual false }
       }
     }
 
@@ -73,9 +71,7 @@ object LocSpec extends Specification {
       val mockReq = new MockHttpServletRequest("http://test/foo/bar/123")
 
       testS(mockReq) {
-        testReq(mockReq) { req =>
-          testLoc.doesMatch_?(req) mustEqual true
-        }
+        testReq(mockReq) { req => testLoc.doesMatch_?(req) mustEqual true }
       }
     }
 

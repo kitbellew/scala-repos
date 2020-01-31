@@ -57,9 +57,7 @@ class StressTest {
     VersionedSegmentFormat(Map(1 -> V1SegmentFormat))
   )
 
-  val chefs = (1 to 4).map { _ =>
-    actorSystem.actorOf(Props(makechef))
-  }
+  val chefs = (1 to 4).map { _ => actorSystem.actorOf(Props(makechef)) }
 
   val chef =
     actorSystem.actorOf(Props[Chef].withRouter(RoundRobinRouter(chefs)))
@@ -82,9 +80,7 @@ class StressTest {
         Duration(60, "seconds"),
         txLogScheduler)(actorSystem)
       .unsafePerformIO
-      .valueOr { e =>
-        throw new Exception(e.message)
-      }
+      .valueOr { e => throw new Exception(e.message) }
 
   implicit val M = new FutureMonad(actorSystem.dispatcher)
 

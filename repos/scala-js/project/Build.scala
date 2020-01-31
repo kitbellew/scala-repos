@@ -273,9 +273,7 @@ object Build extends sbt.Build {
             </developer>
           </developers>
     ),
-    pomIncludeRepository := { _ =>
-      false
-    }
+    pomIncludeRepository := { _ => false }
   )
 
   val fatalWarningsSettings = Seq(

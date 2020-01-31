@@ -60,9 +60,7 @@ class RandomDataGeneratorSuite extends SparkFunSuite {
       epsilon: Double = 0.01) {
     for (seed <- 0 until 5) {
       gen.setSeed(seed.toLong)
-      val sample = (0 until 100000).map { _ =>
-        gen.nextValue()
-      }
+      val sample = (0 until 100000).map { _ => gen.nextValue() }
       val stats = new StatCounter(sample)
       assert(math.abs(stats.mean - mean) < epsilon)
       assert(math.abs(stats.stdev - stddev) < epsilon)

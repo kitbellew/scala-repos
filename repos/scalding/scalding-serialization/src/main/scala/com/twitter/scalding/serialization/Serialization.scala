@@ -134,9 +134,7 @@ object Serialization {
     * forAll(roundTripLaw[T]) in a valid test in scalacheck style
     */
   def roundTripLaw[T: Serialization]: Law1[T] =
-    Law1("roundTrip", { (t: T) =>
-      equiv(roundTrip(t), t)
-    })
+    Law1("roundTrip", { (t: T) => equiv(roundTrip(t), t) })
 
   /**
     * If two items are equal, they should serialize byte for byte equivalently
@@ -152,9 +150,7 @@ object Serialization {
     })
 
   def reflexivity[T: Serialization]: Law1[T] =
-    Law1("equiv(a, a) == true", { (t1: T) =>
-      equiv(t1, t1)
-    })
+    Law1("equiv(a, a) == true", { (t1: T) => equiv(t1, t1) })
 
   /**
     * The sizes must match and be correct if they are present

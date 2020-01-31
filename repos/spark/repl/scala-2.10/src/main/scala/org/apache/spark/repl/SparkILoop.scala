@@ -215,9 +215,7 @@ class SparkILoop(
         }
       } else {
         // We need new URI(jar).getPath here for the case that `jar` includes encoded white space (%20).
-        SparkILoop.getAddedJars.map { jar =>
-          new URI(jar).getPath
-        }
+        SparkILoop.getAddedJars.map { jar => new URI(jar).getPath }
       }
     // work around for Scala bug
     val totalClassPath = addedJars.foldLeft(settings.classpath.value)((l, r) =>

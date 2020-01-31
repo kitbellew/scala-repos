@@ -16,8 +16,7 @@ object MPrimaryKey {
       : BasicStreamingAction[Vector[MPrimaryKey], MPrimaryKey, Effect.Read] =
     ResultSetAction[MPrimaryKey](
       _.metaData.getPrimaryKeys(table.catalog_?, table.schema_?, table.name)) {
-      r =>
-        MPrimaryKey(MQName.from(r), r.<<, r.<<, r.<<)
+      r => MPrimaryKey(MQName.from(r), r.<<, r.<<, r.<<)
     }
   def getPrimaryKeys(table: String)
       : BasicStreamingAction[Vector[MPrimaryKey], MPrimaryKey, Effect.Read] =

@@ -73,9 +73,7 @@ class ScaldingSerializationSpecs extends WordSpec {
 
       val summer = TestGraphs.singleStepJob[Scalding, (Long, Int), Int, Int](
         source,
-        testStore) { tup =>
-        List((1 -> tup._2))
-      }
+        testStore) { tup => List((1 -> tup._2)) }
 
       val mode = HadoopTest(new Configuration, {
         case x: ScaldingSource => buffer.get(x)

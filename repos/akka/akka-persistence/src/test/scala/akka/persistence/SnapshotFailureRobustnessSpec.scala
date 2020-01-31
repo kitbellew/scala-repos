@@ -65,9 +65,7 @@ object SnapshotFailureRobustnessSpec {
 
     override def receiveCommand = {
       case Cmd(payload) ⇒
-        persist(payload) { _ ⇒
-          probe ! s"${payload}-${lastSequenceNr}"
-        }
+        persist(payload) { _ ⇒ probe ! s"${payload}-${lastSequenceNr}" }
       case SnapshotOffer(md, s) ⇒ probe ! ((md, s))
       case other ⇒ probe ! other
     }

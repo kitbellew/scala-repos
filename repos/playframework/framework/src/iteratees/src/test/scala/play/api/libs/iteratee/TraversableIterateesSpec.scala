@@ -14,9 +14,7 @@ object TraversableIterateesSpec
 
     "yield input while predicate is satisfied" in {
       mustExecute(1) { splitEC =>
-        val e = Traversable.splitOnceAt[String, Char] { c =>
-          c != 'e'
-        }(
+        val e = Traversable.splitOnceAt[String, Char] { c => c != 'e' }(
           implicitly[String => scala.collection.TraversableLike[Char, String]],
           splitEC)
         mustTransformTo("hello", "there")("h")(e)

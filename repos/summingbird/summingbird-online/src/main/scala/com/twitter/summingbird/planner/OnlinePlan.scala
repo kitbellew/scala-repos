@@ -258,8 +258,7 @@ class OnlinePlan[P <: Platform[P], V](tail: Producer[P, V]) {
             mergeCollapse(dependantProducer, rootMerge = true)
           val newCurrentBolt = otherMergeNodes.foldLeft(currentBolt)(_.add(_))
           val visitedWithOther = otherMergeNodes.foldLeft(visitedWithN) {
-            (visited, n) =>
-              visited + n
+            (visited, n) => visited + n
           }
 
           // Recurse down all the newly generated dependencies
@@ -289,8 +288,7 @@ object OnlinePlan {
     // We also drop all Nodes with no members(may occur when we visit a node already seen and its the first in that Node)
     val reversedNodeSet =
       nodesSet.filter(_.members.size > 0).foldLeft(List[Node[P]]()) {
-        (nodes, n) =>
-          n.reverse :: nodes
+        (nodes, n) => n.reverse :: nodes
       }
     Dag(tail, nameMap, strippedTail, reversedNodeSet)
   }

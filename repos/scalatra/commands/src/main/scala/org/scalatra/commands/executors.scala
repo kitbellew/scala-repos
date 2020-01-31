@@ -67,9 +67,7 @@ abstract class BlockingExecutor[T <: Command, S](
           def plur(count: Int) = if (count == 1) "failure" else "failures"
           val resultLog = r.fold({ failures ⇒
             s"with ${failures.size} ${plur(failures.size)}\n${failures.list}"
-          }, { _ ⇒
-            "successfully"
-          })
+          }, { _ ⇒ "successfully" })
           logger.debug(s"Command [${cmd.getClass.getName}] executed $resultLog")
           r
         case Fail(t) ⇒
@@ -133,9 +131,7 @@ abstract class AsyncExecutor[T <: Command, S](
           def plur(count: Int) = if (count == 1) "failure" else "failures"
           val resultLog = r.fold({ failures ⇒
             s"with ${failures.size} ${plur(failures.size)}.\n${failures.list}"
-          }, { _ ⇒
-            "successfully"
-          })
+          }, { _ ⇒ "successfully" })
           logger.debug(s"Command [${cmd.getClass.getName}] executed $resultLog")
       }
 

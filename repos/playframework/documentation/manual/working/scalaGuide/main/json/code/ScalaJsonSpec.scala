@@ -325,9 +325,7 @@ class ScalaJsonSpec extends Specification {
           })
           None
         },
-        valid = { name =>
-          Some(name)
-        }
+        valid = { name => Some(name) }
       )
       //#convert-to-type-validate
       nameResult must beLike {

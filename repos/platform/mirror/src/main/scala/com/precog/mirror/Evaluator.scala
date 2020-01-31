@@ -73,9 +73,7 @@ trait EvaluatorModule
         val init = IdGen.nextInt()
         inits += (path -> init)
 
-        0 until raw.length foreach { _ =>
-          IdGen.nextInt()
-        } // ew....
+        0 until raw.length foreach { _ => IdGen.nextInt() } // ew....
 
         init
       }
@@ -117,9 +115,7 @@ trait EvaluatorModule
             val init = IdGen.nextInt()
             news += (expr -> init)
 
-            0 until raw.length foreach { _ =>
-              IdGen.nextInt()
-            } // ew....
+            0 until raw.length foreach { _ => IdGen.nextInt() } // ew....
 
             init
           }
@@ -298,9 +294,7 @@ trait EvaluatorModule
               val result =
                 values collect red.prepare reduceOption red orElse red.zero
 
-              result.toSeq map { v =>
-                (Vector(), v)
-              }
+              result.toSeq map { v => (Vector(), v) }
             }
 
             case _ => sys.error("todo")

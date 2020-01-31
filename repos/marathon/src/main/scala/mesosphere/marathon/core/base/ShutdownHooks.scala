@@ -19,9 +19,7 @@ private[base] class BaseShutdownHooks extends ShutdownHooks {
   private[this] var shutdownHooks = List.empty[() => Unit]
 
   override def onShutdown(block: => Unit): Unit = {
-    shutdownHooks +:= { () =>
-      block
-    }
+    shutdownHooks +:= { () => block }
   }
 
   override def shutdown(): Unit = {

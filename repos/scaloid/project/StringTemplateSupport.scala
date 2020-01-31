@@ -31,9 +31,7 @@ class StringTemplateSupport(
     val maybeSTG =
       Option(new File(templateFile.absolutePath + ".stg"))
         .filter(_.exists)
-        .map { cf =>
-          new STGroupFile(cf.absolutePath, '$', '$')
-        }
+        .map { cf => new STGroupFile(cf.absolutePath, '$', '$') }
     new STCompanionTemplate(maybeSTG)
   }
 

@@ -92,9 +92,7 @@ class SQLMetricsSuite extends SparkFunSuite with SharedSQLContext {
       val metricValues = sqlContext.listener.getExecutionMetrics(executionId)
       val actualMetrics = SparkPlanGraph(
         SparkPlanInfo.fromSparkPlan(df.queryExecution.executedPlan)).allNodes
-        .filter { node =>
-          expectedMetrics.contains(node.id)
-        }
+        .filter { node => expectedMetrics.contains(node.id) }
         .map { node =>
           val nodeMetrics = node.metrics.map { metric =>
             val metricValue = metricValues(metric.accumulatorId)

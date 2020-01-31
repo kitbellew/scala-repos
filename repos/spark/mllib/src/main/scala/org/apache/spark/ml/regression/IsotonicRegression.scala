@@ -94,9 +94,7 @@ private[regression] trait IsotonicRegressionBase
     val f =
       if (dataset.schema($(featuresCol)).dataType.isInstanceOf[VectorUDT]) {
         val idx = $(featureIndex)
-        val extract = udf { v: Vector =>
-          v(idx)
-        }
+        val extract = udf { v: Vector => v(idx) }
         extract(col($(featuresCol)))
       } else {
         col($(featuresCol))
@@ -263,14 +261,10 @@ class IsotonicRegressionModel private[ml] (
   override def transform(dataset: DataFrame): DataFrame = {
     val predict = dataset.schema($(featuresCol)).dataType match {
       case DoubleType =>
-        udf { feature: Double =>
-          oldModel.predict(feature)
-        }
+        udf { feature: Double => oldModel.predict(feature) }
       case _: VectorUDT =>
         val idx = $(featureIndex)
-        udf { features: Vector =>
-          oldModel.predict(features(idx))
-        }
+        udf { features: Vector => oldModel.predict(features(idx)) }
     }
     dataset.withColumn($(predictionCol), predict(col($(featuresCol))))
   }

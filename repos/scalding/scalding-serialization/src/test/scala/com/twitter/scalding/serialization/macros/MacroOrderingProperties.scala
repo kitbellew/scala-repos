@@ -278,9 +278,7 @@ class MacroOrderingProperties
     import JavaStreamEnrichments._
 
     val baos = new ByteArrayOutputStream
-    t.foreach({ e =>
-      orderedBuffer.write(baos, e)
-    })
+    t.foreach({ e => orderedBuffer.write(baos, e) })
     baos.toInputStream
   }
 
@@ -314,8 +312,7 @@ class MacroOrderingProperties
   }
 
   def checkMany[T: Arbitrary](implicit obuf: OrderedSerialization[T]) = forAll {
-    i: List[(T, T)] =>
-      checkManyExplicit(i)
+    i: List[(T, T)] => checkManyExplicit(i)
   }
 
   def checkWithInputs[T](a: T, b: T)(implicit obuf: OrderedSerialization[T]) {
@@ -376,9 +373,7 @@ class MacroOrderingProperties
 
   def check[T: Arbitrary](implicit obuf: OrderedSerialization[T]) = {
     Checkers.check(LawTester(OrderedSerialization.allLaws))
-    forAll(minSuccessful(500)) { (a: T, b: T) =>
-      checkWithInputs(a, b)
-    }
+    forAll(minSuccessful(500)) { (a: T, b: T) => checkWithInputs(a, b) }
   }
 
   def checkCollisions[T: Arbitrary: OrderedSerialization] = {
@@ -403,32 +398,24 @@ class MacroOrderingProperties
     check[Boolean]
   }
   test("Test out jl.Boolean") {
-    implicit val a = arbMap { b: Boolean =>
-      java.lang.Boolean.valueOf(b)
-    }
+    implicit val a = arbMap { b: Boolean => java.lang.Boolean.valueOf(b) }
     check[java.lang.Boolean]
   }
   test("Test out Byte") { check[Byte] }
   test("Test out jl.Byte") {
-    implicit val a = arbMap { b: Byte =>
-      java.lang.Byte.valueOf(b)
-    }
+    implicit val a = arbMap { b: Byte => java.lang.Byte.valueOf(b) }
     check[java.lang.Byte]
     checkCollisions[java.lang.Byte]
   }
   test("Test out Short") { check[Short] }
   test("Test out jl.Short") {
-    implicit val a = arbMap { b: Short =>
-      java.lang.Short.valueOf(b)
-    }
+    implicit val a = arbMap { b: Short => java.lang.Short.valueOf(b) }
     check[java.lang.Short]
     checkCollisions[java.lang.Short]
   }
   test("Test out Char") { check[Char] }
   test("Test out jl.Char") {
-    implicit val a = arbMap { b: Char =>
-      java.lang.Character.valueOf(b)
-    }
+    implicit val a = arbMap { b: Char => java.lang.Character.valueOf(b) }
     check[java.lang.Character]
     checkCollisions[java.lang.Character]
   }
@@ -463,34 +450,26 @@ class MacroOrderingProperties
   }
 
   test("Test out jl.Integer") {
-    implicit val a = arbMap { b: Int =>
-      java.lang.Integer.valueOf(b)
-    }
+    implicit val a = arbMap { b: Int => java.lang.Integer.valueOf(b) }
     check[java.lang.Integer]
     checkCollisions[java.lang.Integer]
 
   }
   test("Test out Float") { check[Float] }
   test("Test out jl.Float") {
-    implicit val a = arbMap { b: Float =>
-      java.lang.Float.valueOf(b)
-    }
+    implicit val a = arbMap { b: Float => java.lang.Float.valueOf(b) }
     check[java.lang.Float]
     checkCollisions[java.lang.Float]
   }
   test("Test out Long") { check[Long] }
   test("Test out jl.Long") {
-    implicit val a = arbMap { b: Long =>
-      java.lang.Long.valueOf(b)
-    }
+    implicit val a = arbMap { b: Long => java.lang.Long.valueOf(b) }
     check[java.lang.Long]
     checkCollisions[java.lang.Long]
   }
   test("Test out Double") { check[Double] }
   test("Test out jl.Double") {
-    implicit val a = arbMap { b: Double =>
-      java.lang.Double.valueOf(b)
-    }
+    implicit val a = arbMap { b: Double => java.lang.Double.valueOf(b) }
     check[java.lang.Double]
     checkCollisions[java.lang.Double]
   }
@@ -619,9 +598,7 @@ class MacroOrderingProperties
     val c = List(
       Map(9223372036854775807L -> Set[Int]()),
       Map(-1L -> Set[Int](-2043106012)))
-    checkManyExplicit(c.map { i =>
-      (i, i)
-    })
+    checkManyExplicit(c.map { i => (i, i) })
     checkMany[Map[Long, Set[Int]]]
     checkCollisions[Map[Long, Set[Int]]]
   }
@@ -677,14 +654,10 @@ class MacroOrderingProperties
       "좃ఱ䨻綛糔唄࿁劸酊᫵橻쩳괊筆ݓ淤숪輡斋靑耜঄骐冠㝑⧠떅漫곡祈䵾ᳺ줵됵↲搸虂㔢Ꝅ芆٠풐쮋炞哙⨗쾄톄멛癔짍避쇜畾㣕剼⫁়╢ꅢ澛氌ᄚ㍠ꃫᛔ匙㜗詇閦單錖⒅瘧崥",
       "獌癚畇"
     )
-    checkManyExplicit(c.map { i =>
-      (i, i)
-    })
+    checkManyExplicit(c.map { i => (i, i) })
 
     val c2 = List("聸", "")
-    checkManyExplicit(c2.map { i =>
-      (i, i)
-    })
+    checkManyExplicit(c2.map { i => (i, i) })
   }
 
   test("Test out Option[Int]") {
@@ -763,9 +736,7 @@ class MacroOrderingProperties
 
   test("test specific tuple 3") {
     val c = List(("", None, ""), ("a", Some(1), "b"))
-    checkManyExplicit(c.map { i =>
-      (i, i)
-    })
+    checkManyExplicit(c.map { i => (i, i) })
   }
 
   test("Test out TestCC") {

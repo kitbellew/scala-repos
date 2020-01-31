@@ -44,8 +44,7 @@ trait StandardLiftables { self: Universe =>
       TypeTree(tpe)
     }
     implicit def liftTypeTag[T <: WeakTypeTag[_]]: Liftable[T] = Liftable {
-      ttag =>
-        TypeTree(ttag.tpe)
+      ttag => TypeTree(ttag.tpe)
     }
     implicit def liftConstant[T <: Constant]: Liftable[T] = Liftable { const =>
       Literal(const)
@@ -55,8 +54,7 @@ trait StandardLiftables { self: Universe =>
       callScala(stdnme.Array)(arr.map(lift(_)).toList)
     }
     implicit def liftVector[T: Liftable]: Liftable[Vector[T]] = Liftable {
-      vect =>
-        callCollection(stdnme.Vector)(vect.map(lift(_)).toList)
+      vect => callCollection(stdnme.Vector)(vect.map(lift(_)).toList)
     }
     implicit def liftList[T: Liftable]: Liftable[List[T]] = Liftable { lst =>
       callCollection(stdnme.List)(lst.map(lift(_)))
@@ -65,9 +63,7 @@ trait StandardLiftables { self: Universe =>
       selectScala(stdnme.collection, stdnme.immutable, stdnme.Nil)
     }
     implicit def liftMap[K: Liftable, V: Liftable]: Liftable[Map[K, V]] =
-      Liftable { m =>
-        callCollection(stdnme.Map)(m.toList.map(lift(_)))
-      }
+      Liftable { m => callCollection(stdnme.Map)(m.toList.map(lift(_))) }
     implicit def liftSet[T: Liftable]: Liftable[Set[T]] = Liftable { s =>
       callCollection(stdnme.Set)(s.toList.map(lift(_)))
     }

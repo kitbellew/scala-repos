@@ -93,9 +93,7 @@ trait RandomCompanion[G <: Generator] { self =>
 
   def stringOfSize(n: Int): Random[String, G] =
     char
-      .foldLeftOfSize(n)(new StringBuilder) { (sb, c) =>
-        sb.append(c); sb
-      }
+      .foldLeftOfSize(n)(new StringBuilder) { (sb, c) => sb.append(c); sb }
       .map(_.toString)
 
   implicit class RandomOps[A](lhs: R[A]) {
@@ -105,9 +103,7 @@ trait RandomCompanion[G <: Generator] { self =>
 
     def collectionOfSize[CC[_]](n: Int)(
         implicit cbf: CanBuildFrom[CC[A], A, CC[A]]): Random[CC[A], G] =
-      foldLeftOfSize(n)(cbf()) { (b, a) =>
-        b += a; b
-      }.map(_.result)
+      foldLeftOfSize(n)(cbf()) { (b, a) => b += a; b }.map(_.result)
 
     def foldLeftOfSize[B](n: Int)(init: => B)(f: (B, A) => B): Random[B, G] = {
       def loop(n: Int, ma: Op[A]): Op[B] =

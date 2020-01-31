@@ -129,9 +129,7 @@ class ObservableMapSpec[K, V]
   it should "return changed map" in {
     // Preparation
     val map = ObservableMap((1, "one"), (2, "two"))
-    map onChange { (sourceMap, change) =>
-      sourceMap should be(map)
-    }
+    map onChange { (sourceMap, change) => sourceMap should be(map) }
 
     // Execution
     map(3) = "three"

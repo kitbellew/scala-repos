@@ -71,9 +71,7 @@ object InputTask {
 
   /** Constructs an InputTask that accepts no user input. */
   def createFree[T](action: Initialize[Task[T]]): Initialize[InputTask[T]] =
-    action { tsk =>
-      free(emptyParser)(const(tsk))
-    }
+    action { tsk => free(emptyParser)(const(tsk)) }
 
   /**
     * Constructs an InputTask from:
@@ -106,9 +104,7 @@ object InputTask {
     val (marker, dummy) = dummyTask[I]
     val it =
       action(TaskKey(dummyKey)) mapConstant subResultForDummy(dummyKey, dummy)
-    val act = it { tsk => (value: I) =>
-      subForDummy(marker, value, tsk)
-    }
+    val act = it { tsk => (value: I) => subForDummy(marker, value, tsk) }
     separate(p)(act)
   }
 

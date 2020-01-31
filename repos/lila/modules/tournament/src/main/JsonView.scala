@@ -36,9 +36,7 @@ final class JsonView(
         case (Some(i), _) => standing(tour, i.page)
         case _            => standing(tour, 1)
       }
-      playerInfoJson <- playerInfoExt ?? { pie =>
-        playerInfo(pie).map(_.some)
-      }
+      playerInfoJson <- playerInfoExt ?? { pie => playerInfo(pie).map(_.some) }
     } yield Json
       .obj(
         "id" -> tour.id,
@@ -299,9 +297,7 @@ final class JsonView(
                 "nb" -> sheetNbs(player.userId, sheet, pairings),
                 "performance" -> tpr)
           }.sequenceFu
-        } map { l =>
-          JsArray(l).some
-        }
+        } map { l => JsArray(l).some }
       }
     }
 

@@ -1107,8 +1107,7 @@ sealed abstract class MapInstances extends MapInstances0 {
             G.point(Tip())
           case Bin(kx, x, l, r) =>
             G.apply3(traverseImpl(l)(f), f(x), traverseImpl(r)(f)) {
-              (l2, x2, r2) =>
-                Bin(kx, x2, l2, r2)
+              (l2, x2, r2) => Bin(kx, x2, l2, r2)
             }
         }
 
@@ -1193,9 +1192,7 @@ object ==>> extends MapInstances {
 
   /* List operations */
   final def fromList[A: Order, B](l: List[(A, B)]): A ==>> B =
-    l.foldLeft(empty[A, B]) { (t, x) =>
-      t.insert(x._1, x._2)
-    }
+    l.foldLeft(empty[A, B]) { (t, x) => t.insert(x._1, x._2) }
 
   final def fromListWith[A: Order, B](l: List[(A, B)])(
       f: (B, B) => B): A ==>> B =
@@ -1207,9 +1204,7 @@ object ==>> extends MapInstances {
 
   /* Foldable operations */
   final def fromFoldable[F[_]: Foldable, A: Order, B](fa: F[(A, B)]): A ==>> B =
-    Foldable[F].foldLeft(fa, empty[A, B]) { (t, x) =>
-      t.insert(x._1, x._2)
-    }
+    Foldable[F].foldLeft(fa, empty[A, B]) { (t, x) => t.insert(x._1, x._2) }
 
   final def fromFoldableWith[F[_]: Foldable, A: Order, B](fa: F[(A, B)])(
       f: (B, B) => B): A ==>> B =

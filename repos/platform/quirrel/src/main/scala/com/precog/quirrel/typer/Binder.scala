@@ -47,9 +47,7 @@ trait Binder extends parser.AST {
         }
 
         if (!dups.isEmpty) {
-          dups map { id =>
-            Error(b, MultiplyDefinedTicVariable(id))
-          }
+          dups map { id => Error(b, MultiplyDefinedTicVariable(id)) }
         } else {
           val ids = formals map { Identifier(Vector(), _) }
           val names2 = ids.foldLeft(env.names) { (m, s) =>
@@ -80,9 +78,7 @@ trait Binder extends parser.AST {
           _ ++ _
         }
 
-        val bindings = ids map { id =>
-          id -> SolveBinding(b)
-        }
+        val bindings = ids map { id => id -> SolveBinding(b) }
         loop(child, env.copy(vars = env.vars ++ bindings)) ++ constErrors ++ errors
       }
 
@@ -242,9 +238,8 @@ trait Binder extends parser.AST {
       libMorphism2.map(Morphism2Binding) ++
       Set(LoadBinding, RelLoadBinding, DistinctBinding, ExpandGlobBinding)
 
-    val env = Env(Map(), builtIns.map({ b =>
-      b.name -> b
-    })(collection.breakOut))
+    val env =
+      Env(Map(), builtIns.map({ b => b.name -> b })(collection.breakOut))
 
     loop(tree, env)
   }

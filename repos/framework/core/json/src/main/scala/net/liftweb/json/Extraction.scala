@@ -103,9 +103,7 @@ object Extraction {
         case x if (x.getClass.isArray) =>
           JArray(x.asInstanceOf[Array[_]].toList map decompose)
         case x: Option[_] =>
-          x.flatMap[JValue] { y =>
-              Some(decompose(y))
-            }
+          x.flatMap[JValue] { y => Some(decompose(y)) }
             .getOrElse(JNothing)
         case x =>
           val fields = getDeclaredFields(x.getClass)

@@ -93,9 +93,7 @@ object Scalding {
     }
 
   def emptyFlowProducer[T]: FlowProducer[TypedPipe[T]] =
-    Reader({ implicit fdm: (FlowDef, Mode) =>
-      TypedPipe.empty
-    })
+    Reader({ implicit fdm: (FlowDef, Mode) => TypedPipe.empty })
 
   def getCommutativity(
       names: List[String],
@@ -288,9 +286,7 @@ object Scalding {
   def limitTimes[T](
       range: Interval[Timestamp],
       in: FlowToPipe[T]): FlowToPipe[T] =
-    in.map { pipe =>
-      pipe.filter { case (time, _) => range(time) }
-    }
+    in.map { pipe => pipe.filter { case (time, _) => range(time) } }
 
   private[scalding] def joinFP[T, U](
       left: FlowToPipe[T],
@@ -322,11 +318,7 @@ object Scalding {
     */
   def memoize[T](pf: PipeFactory[T]): PipeFactory[T] = {
     val memo = new Memo[T]
-    pf.map { rdr =>
-      Reader({ i =>
-        memo.getOrElseUpdate(i, rdr)
-      })
-    }
+    pf.map { rdr => Reader({ i => memo.getOrElseUpdate(i, rdr) }) }
   }
 
   private def getOrElse[T <: AnyRef: ClassTag](
@@ -388,9 +380,7 @@ object Scalding {
       */
     def forceNode[U](p: PipeFactory[U]): PipeFactory[U] =
       if (forceFanOut || fanOuts(producer))
-        p.map { flowP =>
-          flowP.map { _.fork }
-        }
+        p.map { flowP => flowP.map { _.fork } }
       else
         p
 
@@ -526,9 +516,9 @@ object Scalding {
                         ) // extra producer for store, join the two FlowToPipes
                     }
                   }
-                  .getOrElse(leftPf.map { p =>
-                    p.map((_, TypedPipe.empty))
-                  }) // no extra producer for store
+                  .getOrElse(
+                    leftPf.map { p => p.map((_, TypedPipe.empty)) }
+                  ) // no extra producer for store
                 servOut = flowToPipe.map {
                   case (lpipe, dpipe) =>
                     InternalService.loopJoin[Timestamp, K, V, U](
@@ -568,9 +558,7 @@ object Scalding {
               flowP.map { typedPipe =>
                 typedPipe.flatMap {
                   case (time, (k, v)) =>
-                    op(v).map { u =>
-                      (time, (k, u))
-                    }
+                    op(v).map { u => (time, (k, u)) }
                 }
               }
             }, m)
@@ -609,9 +597,7 @@ object Scalding {
               flowP.map { typedPipe =>
                 typedPipe.flatMap {
                   case (time, (k, v)) =>
-                    op(k).map { newK =>
-                      (time, (newK, v))
-                    }
+                    op(k).map { newK => (time, (newK, v)) }
                 }
               }
             }, m)

@@ -166,10 +166,7 @@ trait TaskExtra {
       def andFinally(fin: => Unit): Task[S] =
         mapR(x => Result.tryValue[S]({ fin; x }))
       def doFinally(t: Task[Unit]): Task[S] =
-        flatMapR(x =>
-          t.mapR { tx =>
-            Result.tryValues[S](tx :: Nil, x)
-          })
+        flatMapR(x => t.mapR { tx => Result.tryValues[S](tx :: Nil, x) })
       def ||[T >: S](alt: Task[T]): Task[T] = flatMapR {
         case Value(v) => task(v); case Inc(i) => alt
       }
@@ -210,9 +207,7 @@ trait TaskExtra {
     private def pipe0[T](
         sid: Option[String],
         f: BufferedInputStream => T): Task[T] =
-      streams map { s =>
-        f(s.readBinary(key(in), sid))
-      }
+      streams map { s => f(s.readBinary(key(in), sid)) }
 
     private def toFile(f: File) = (in: InputStream) => IO.transfer(in, f)
   }
@@ -224,9 +219,7 @@ trait TaskExtra {
       pipe0(Some(sid), f)
 
     private def pipe0[T](sid: Option[String], f: BufferedReader => T): Task[T] =
-      streams map { s =>
-        f(s.readText(key(in), sid))
-      }
+      streams map { s => f(s.readText(key(in), sid)) }
   }
   final implicit def linesTask[Key](in: Task[_])(
       implicit streams: Task[TaskStreams[Key]],
@@ -235,9 +228,7 @@ trait TaskExtra {
     def lines(sid: String): Task[List[String]] = lines0(Some(sid))
 
     private def lines0[T](sid: Option[String]): Task[List[String]] =
-      streams map { s =>
-        IO.readLines(s.readText(key(in), sid))
-      }
+      streams map { s => IO.readLines(s.readText(key(in), sid)) }
   }
   implicit def processToTask(p: ProcessBuilder)(
       implicit streams: Task[TaskStreams[_]]): Task[Int] = streams map { s =>

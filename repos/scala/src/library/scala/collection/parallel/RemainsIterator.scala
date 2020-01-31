@@ -575,9 +575,7 @@ trait IterableSplitter[+T]
       val selfs = self.split
       val sizes = selfs.map(_.remaining)
       val thats = that.psplit(sizes: _*)
-      (selfs zip thats) map { p =>
-        p._1 zipParSeq p._2
-      }
+      (selfs zip thats) map { p => p._1 zipParSeq p._2 }
     }
   }
 
@@ -663,9 +661,7 @@ trait SeqSplitter[+T]
     override def split: Seq[SeqSplitter[T]] =
       super.split.asInstanceOf[Seq[SeqSplitter[T]]]
     def psplit(sizes: Int*): Seq[SeqSplitter[T]] =
-      takeSeq(self.psplit(sizes: _*)) { (p, n) =>
-        p.take(n)
-      }
+      takeSeq(self.psplit(sizes: _*)) { (p, n) => p.take(n) }
   }
   override private[collection] def newTaken(until: Int): Taken =
     new Taken(until)

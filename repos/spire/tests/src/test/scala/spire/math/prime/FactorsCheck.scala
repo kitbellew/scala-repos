@@ -28,9 +28,7 @@ class FactorsCheck
     Arbitrary(arbitrary[SafeLong].map(n => Factors(n)))
 
   property("Factors(n).value = n") {
-    forAll { (n: Long) =>
-      Factors(n).value shouldBe n
-    }
+    forAll { (n: Long) => Factors(n).value shouldBe n }
   }
 
   property("Factors(n) + Factors(m) = n + m") {

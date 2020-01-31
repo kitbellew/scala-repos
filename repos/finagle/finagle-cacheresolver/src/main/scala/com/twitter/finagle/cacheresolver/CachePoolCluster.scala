@@ -354,8 +354,7 @@ class ZookeeperCachePoolCluster private[cacheresolver] (
   backupPool foreach { pool =>
     if (!pool.isEmpty) {
       ready within (CachePoolCluster.timer, BackupPoolFallBackTimeout) onFailure {
-        _ =>
-          updatePool(pool)
+        _ => updatePool(pool)
       }
     }
   }

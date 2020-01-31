@@ -116,9 +116,7 @@ class FutureDocSpec extends AkkaSpec {
     val f1 = Future {
       "Hello" + "World"
     }
-    val f2 = f1 map { x =>
-      x.length
-    }
+    val f2 = f1 map { x => x.length }
     f2 foreach println
     //#map
     val result = Await.result(f2, 3 seconds)
@@ -132,11 +130,7 @@ class FutureDocSpec extends AkkaSpec {
       "Hello" + "World"
     }
     val f2 = Future.successful(3)
-    val f3 = f1 map { x =>
-      f2 map { y =>
-        x.length * y
-      }
-    }
+    val f3 = f1 map { x => f2 map { y => x.length * y } }
     f3 foreach println
     //#wrong-nested-map
     Await.ready(f3, 3 seconds)
@@ -148,11 +142,7 @@ class FutureDocSpec extends AkkaSpec {
       "Hello" + "World"
     }
     val f2 = Future.successful(3)
-    val f3 = f1 flatMap { x =>
-      f2 map { y =>
-        x.length * y
-      }
-    }
+    val f3 = f1 flatMap { x => f2 map { y => x.length * y } }
     f3 foreach println
     //#flat-map
     val result = Await.result(f3, 3 seconds)

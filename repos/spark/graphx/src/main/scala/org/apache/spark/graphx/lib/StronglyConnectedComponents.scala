@@ -68,14 +68,11 @@ object StronglyConnectedComponents {
         // get all vertices to be removed
         val finalVertices = sccWorkGraph.vertices
           .filter { case (vid, (scc, isFinal)) => isFinal }
-          .mapValues { (vid, data) =>
-            data._1
-          }
+          .mapValues { (vid, data) => data._1 }
 
         // write values to sccGraph
         sccGraph = sccGraph.outerJoinVertices(finalVertices) {
-          (vid, scc, opt) =>
-            opt.getOrElse(scc)
+          (vid, scc, opt) => opt.getOrElse(scc)
         }
         // only keep vertices that are not final
         sccWorkGraph =

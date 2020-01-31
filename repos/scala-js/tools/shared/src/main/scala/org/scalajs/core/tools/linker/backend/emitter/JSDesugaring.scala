@@ -753,9 +753,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
 
         def recs(args: List[Tree])(implicit env: Env): List[Tree] = {
           // This is a right-to-left map
-          args.foldRight[List[Tree]](Nil) { (arg, acc) =>
-            rec(arg) :: acc
-          }
+          args.foldRight[List[Tree]](Nil) { (arg, acc) => rec(arg) :: acc }
         }
 
         val newArgs = recs(args)
@@ -1241,9 +1239,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
             }
 
           case UnaryOp(op, lhs) =>
-            unnest(lhs) { (newLhs, env) =>
-              redo(UnaryOp(op, newLhs))(env)
-            }
+            unnest(lhs) { (newLhs, env) => redo(UnaryOp(op, newLhs))(env) }
 
           case BinaryOp(op, lhs, rhs) =>
             unnest(lhs, rhs) { (newLhs, newRhs, env) =>
@@ -1290,9 +1286,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
             }
 
           case GetClass(expr) =>
-            unnest(expr) { (newExpr, env) =>
-              redo(GetClass(newExpr))(env)
-            }
+            unnest(expr) { (newExpr, env) => redo(GetClass(newExpr))(env) }
 
           case CallHelper(helper, args) =>
             unnest(args) { (newArgs, env) =>
@@ -1397,9 +1391,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
             }
 
           case JSUnaryOp(op, lhs) =>
-            unnest(lhs) { (newLhs, env) =>
-              redo(JSUnaryOp(op, newLhs))(env)
-            }
+            unnest(lhs) { (newLhs, env) => redo(JSUnaryOp(op, newLhs))(env) }
 
           case JSBinaryOp(JSBinaryOp.&&, lhs, rhs) =>
             if (lhs.tpe == BooleanType) {
@@ -1979,9 +1971,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
         case This() =>
           thisIdent.fold[js.Tree] {
             js.This()
-          } { ident =>
-            js.VarRef(ident)
-          }
+          } { ident => js.VarRef(ident) }
 
         case Closure(captureParams, params, body, captureValues) =>
           val innerFunction =
@@ -2237,8 +2227,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
     } else {
       require(linkedClass.jsName.isDefined)
       linkedClass.jsName.get.split("\\.").foldLeft(envField("g")) {
-        (prev, part) =>
-          genBracketSelect(prev, js.StringLiteral(part))
+        (prev, part) => genBracketSelect(prev, js.StringLiteral(part))
       }
     }
   }

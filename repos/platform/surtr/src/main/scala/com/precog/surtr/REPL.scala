@@ -289,9 +289,7 @@ trait REPL
     expr ^^ { t =>
       Eval(t)
     }
-      | ":tree" ~ expr ^^ { (_, t) =>
-        PrintTree(t)
-      }
+      | ":tree" ~ expr ^^ { (_, t) => PrintTree(t) }
       | ":help" ^^^ Help
       | ":quit" ^^^ Quit
   )

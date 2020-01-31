@@ -204,9 +204,7 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
               }.map(_ ⇒ highSeqNr)
             }
           }
-          .map { highSeqNr ⇒
-            RecoverySuccess(highSeqNr)
-          }
+          .map { highSeqNr ⇒ RecoverySuccess(highSeqNr) }
           .recover {
             case e ⇒ ReplayMessagesFailure(e)
           }

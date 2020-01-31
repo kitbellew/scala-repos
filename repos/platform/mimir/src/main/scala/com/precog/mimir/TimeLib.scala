@@ -245,8 +245,7 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
           }
 
           val baseDefined = BitSetUtil.filteredRange(range.start, range.end) {
-            i =>
-              Column.isDefinedAtAll(rawCols, i)
+            i => Column.isDefinedAtAll(rawCols, i)
           }
 
           val definedRange = range.filter(baseDefined(_))

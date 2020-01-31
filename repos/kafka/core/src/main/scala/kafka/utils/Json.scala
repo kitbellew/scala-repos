@@ -24,9 +24,7 @@ import util.parsing.json.JSON
   *  A wrapper that synchronizes JSON in scala, which is not threadsafe.
   */
 object Json extends Logging {
-  val myConversionFunc = { input: String =>
-    input.toInt
-  }
+  val myConversionFunc = { input: String => input.toInt }
   JSON.globalNumberParser = myConversionFunc
   val lock = new Object
 

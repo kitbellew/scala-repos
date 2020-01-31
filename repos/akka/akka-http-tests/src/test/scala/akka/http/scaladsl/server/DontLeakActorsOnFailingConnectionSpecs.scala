@@ -58,8 +58,7 @@ class DontLeakActorsOnFailingConnectionSpecs
             impl.supervisor.tell(StreamSupervisor.GetChildren, probe.ref)
             val children =
               probe.expectMsgType[StreamSupervisor.Children].children.filter {
-                c ⇒
-                  c.path.toString contains name
+                c ⇒ c.path.toString contains name
               }
             assert(
               children.isEmpty,

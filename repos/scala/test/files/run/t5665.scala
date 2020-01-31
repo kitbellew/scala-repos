@@ -1,9 +1,7 @@
 object O {
   trait T {
     private[this] val c: Int = 42
-    def f = { x: Int =>
-      c
-    }
+    def f = { x: Int => c }
   }
 }
 

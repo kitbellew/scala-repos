@@ -54,9 +54,7 @@ class DStreamClosureSuite extends SparkFunSuite with BeforeAndAfterAll {
 
   test("user provided closures are actually cleaned") {
     val dstream = new DummyInputDStream(ssc)
-    val pairDstream = dstream.map { i =>
-      (i, i)
-    }
+    val pairDstream = dstream.map { i => (i, i) }
     // DStream
     testMap(dstream)
     testFlatMap(dstream)
@@ -98,25 +96,17 @@ class DStreamClosureSuite extends SparkFunSuite with BeforeAndAfterAll {
 
   // DStream operations
   private def testMap(ds: DStream[Int]): Unit = expectCorrectException {
-    ds.map { _ =>
-      return; 1
-    }
+    ds.map { _ => return; 1 }
   }
   private def testFlatMap(ds: DStream[Int]): Unit = expectCorrectException {
-    ds.flatMap { _ =>
-      return; Seq.empty
-    }
+    ds.flatMap { _ => return; Seq.empty }
   }
   private def testFilter(ds: DStream[Int]): Unit = expectCorrectException {
-    ds.filter { _ =>
-      return; true
-    }
+    ds.filter { _ => return; true }
   }
   private def testMapPartitions(ds: DStream[Int]): Unit =
     expectCorrectException {
-      ds.mapPartitions { _ =>
-        return; Seq.empty.toIterator
-      }
+      ds.mapPartitions { _ => return; Seq.empty.toIterator }
     }
   private def testReduce(ds: DStream[Int]): Unit = expectCorrectException {
     ds.reduce { case (_, _) => return; 1 }
@@ -161,9 +151,7 @@ class DStreamClosureSuite extends SparkFunSuite with BeforeAndAfterAll {
   private def testCombineByKey(ds: DStream[(Int, Int)]): Unit = {
     expectCorrectException {
       ds.combineByKey[Int](
-        { _: Int =>
-          return; 1
-        },
+        { _: Int => return; 1 },
         { case (_: Int, _: Int) => return; 1 },
         { case (_: Int, _: Int) => return; 1 },
         new HashPartitioner(5)
@@ -205,9 +193,7 @@ class DStreamClosureSuite extends SparkFunSuite with BeforeAndAfterAll {
     val updateF2 = (_: Iterator[(Int, Seq[Int], Option[Int])]) => {
       return; Seq((1, 1)).toIterator
     }
-    val initialRDD = ds.ssc.sparkContext.emptyRDD[Int].map { i =>
-      (i, i)
-    }
+    val initialRDD = ds.ssc.sparkContext.emptyRDD[Int].map { i => (i, i) }
     expectCorrectException { ds.updateStateByKey(updateF1) }
     expectCorrectException { ds.updateStateByKey(updateF1, 5) }
     expectCorrectException {
@@ -225,15 +211,11 @@ class DStreamClosureSuite extends SparkFunSuite with BeforeAndAfterAll {
   }
   private def testMapValues(ds: DStream[(Int, Int)]): Unit =
     expectCorrectException {
-      ds.mapValues { _ =>
-        return; 1
-      }
+      ds.mapValues { _ => return; 1 }
     }
   private def testFlatMapValues(ds: DStream[(Int, Int)]): Unit =
     expectCorrectException {
-      ds.flatMapValues { _ =>
-        return; Seq.empty
-      }
+      ds.flatMapValues { _ => return; Seq.empty }
     }
 
   // StreamingContext operations

@@ -145,9 +145,7 @@ package object time {
         field: DateTimeField,
         isTime: Boolean = false): Vec[Int] =
       if (chrono != ISO_CHRONO_UTC || !isTime)
-        times.map { (ms: Long) =>
-          field.get(ms)
-        }
+        times.map { (ms: Long) => field.get(ms) }
       else
         getFieldFast(field)
 

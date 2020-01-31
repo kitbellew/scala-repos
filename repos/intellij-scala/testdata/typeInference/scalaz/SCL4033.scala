@@ -5,8 +5,6 @@ object ScalazProblem {
   val y: Validation[String, Int] = "wrong".fail
 
   /*start*/
-  (x |@| y) { (a, b) =>
-    a + b
-  } /*end*/
+  (x |@| y) { (a, b) => a + b } /*end*/
 }
 //Validation[String, Int]

@@ -89,9 +89,7 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
     */
   val largeSource: Source[ByteString, _] = {
     val source = Source.single(ByteString("abcdefghij" * 100))
-    (1 to 9).foldLeft(source) { (acc, _) =>
-      (acc ++ source)
-    }
+    (1 to 9).foldLeft(source) { (acc, _) => (acc ++ source) }
   }
 
   "WS" should {
@@ -276,8 +274,7 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
         implicit val personReads = Json.reads[Person]
 
         val futureResult: Future[JsResult[Person]] = ws.url(url).get().map {
-          response =>
-            (response.json \ "person").validate[Person]
+          response => (response.json \ "person").validate[Person]
         }
         // #scalaws-process-json-with-implicit
 
@@ -297,10 +294,8 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
           }
       } { ws =>
         // #scalaws-process-xml
-        val futureResult: Future[scala.xml.NodeSeq] = ws.url(url).get().map {
-          response =>
-            response.xml \ "message"
-        }
+        val futureResult: Future[scala.xml.NodeSeq] =
+          ws.url(url).get().map { response => response.xml \ "message" }
         // #scalaws-process-xml
         await(futureResult).text must_== "Hello"
       }
@@ -468,9 +463,7 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
     "map to async result" in withSimpleServer { ws =>
       //#async-result
       def wsAction = Action.async {
-        ws.url(url).get().map { response =>
-          Ok(response.body)
-        }
+        ws.url(url).get().map { response => Ok(response.body) }
       }
       status(wsAction(FakeRequest())) must_== OK
       //#async-result

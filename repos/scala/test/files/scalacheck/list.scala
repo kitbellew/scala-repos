@@ -8,9 +8,7 @@ object Test extends Properties("List") {
   property("concat size") = forAll { (l1: List[Int], l2: List[Int]) =>
     (l1.size + l2.size) == (l1 ::: l2).size
   }
-  property("reverse") = forAll { (l1: List[Int]) =>
-    l1.reverse.reverse == l1
-  }
+  property("reverse") = forAll { (l1: List[Int]) => l1.reverse.reverse == l1 }
   property("toSet") = forAll { (l1: List[Int]) =>
     sorted(l1.toSet.toList) sameElements sorted(l1).distinct
   }

@@ -406,15 +406,11 @@ object ScaloidCodeGenerator {
   )
 
   val genericArgs: PredefinedCodeMappings = List(
-    "ArrayAdapter" -> { _ =>
-      "[V <: android.view.View, T <: AnyRef]"
-    }
+    "ArrayAdapter" -> { _ => "[V <: android.view.View, T <: AnyRef]" }
   )
 
   val simpleGenericArgs: PredefinedCodeMappings = List(
-    "ArrayAdapter" -> { _ =>
-      "[V, T]"
-    }
+    "ArrayAdapter" -> { _ => "[V, T]" }
   )
 
   val ClassExplicitArgs: PredefinedCodeMappings = List(
@@ -424,21 +420,15 @@ object ScaloidCodeGenerator {
   )
 
   val BaseClassArgs: PredefinedCodeMappings = List(
-    "ArrayAdapter" -> { _ =>
-      "context, textViewResourceId, items"
-    }
+    "ArrayAdapter" -> { _ => "context, textViewResourceId, items" }
   )
 
   val ClassImplicitArgs: PredefinedCodeMappings = List(
-    "View" -> { _ =>
-      "parentVGroup: TraitViewGroup[_] = null"
-    }
+    "View" -> { _ => "parentVGroup: TraitViewGroup[_] = null" }
   )
 
   val CustomClassBodies: PredefinedCodeMappings = List(
-    "View" -> { _ =>
-      "override val parentViewGroup = parentVGroup"
-    },
+    "View" -> { _ => "override val parentViewGroup = parentVGroup" },
     "TextView" -> { _ =>
       s"""|def this(text: CharSequence)(implicit context: Context) = {
           |  this()
@@ -480,15 +470,11 @@ object ScaloidCodeGenerator {
   )
 
   val ConstImplicitArgs: PredefinedCodeMappings = List(
-    "View" -> { cls =>
-      s"defaultLayoutParam: S${cls.name} => LP"
-    }
+    "View" -> { cls => s"defaultLayoutParam: S${cls.name} => LP" }
   )
 
   val ConstImplicitBodies: PredefinedCodeMappings = List(
-    "View" -> { _ =>
-      "v.<<.parent.+=(v)"
-    }
+    "View" -> { _ => "v.<<.parent.+=(v)" }
   )
 
   val companionObjectExtends: PredefinedCodeMappings = List(

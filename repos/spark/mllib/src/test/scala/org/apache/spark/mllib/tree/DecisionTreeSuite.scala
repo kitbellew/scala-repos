@@ -998,9 +998,7 @@ class DecisionTreeSuite extends SparkFunSuite with MLlibTestSparkContext {
     assert(model.topNode.isLeaf)
     assert(model.topNode.predict.predict == 0.0)
     val predicts = rdd.map(p => model.predict(p.features)).collect()
-    predicts.foreach { predict =>
-      assert(predict == 0.0)
-    }
+    predicts.foreach { predict => assert(predict == 0.0) }
 
     // test when no valid split can be found
     val rootNode = model.topNode
@@ -1056,9 +1054,7 @@ class DecisionTreeSuite extends SparkFunSuite with MLlibTestSparkContext {
     assert(model.topNode.isLeaf)
     assert(model.topNode.predict.predict == 0.0)
     val predicts = input.map(p => model.predict(p.features)).collect()
-    predicts.foreach { predict =>
-      assert(predict == 0.0)
-    }
+    predicts.foreach { predict => assert(predict == 0.0) }
 
     // test when no valid split can be found
     val rootNode = model.topNode

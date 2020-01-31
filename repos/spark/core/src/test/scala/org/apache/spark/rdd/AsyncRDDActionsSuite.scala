@@ -69,9 +69,7 @@ class AsyncRDDActionsSuite
 
     val accum = sc.accumulator(0)
     sc.parallelize(1 to 1000, 3)
-      .foreachAsync { i =>
-        accum += 1
-      }
+      .foreachAsync { i => accum += 1 }
       .get()
     assert(accum.value === 1000)
   }
@@ -81,9 +79,7 @@ class AsyncRDDActionsSuite
 
     val accum = sc.accumulator(0)
     sc.parallelize(1 to 1000, 9)
-      .foreachPartitionAsync { iter =>
-        accum += 1
-      }
+      .foreachPartitionAsync { iter => accum += 1 }
       .get()
     assert(accum.value === 9)
   }
@@ -162,9 +158,7 @@ class AsyncRDDActionsSuite
   test("async failure handling") {
     val f = sc
       .parallelize(1 to 10, 2)
-      .map { i =>
-        throw new Exception("intentional"); i
-      }
+      .map { i => throw new Exception("intentional"); i }
       .countAsync()
 
     // Use a semaphore to make sure onFailure and onComplete's failure path will be called.

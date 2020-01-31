@@ -83,9 +83,7 @@ class SecurityDirectivesSpec extends RoutingSpec {
       EventFilter[TestException.type](occurrences = 1).intercept {
         Get() ~> Authorization(BasicHttpCredentials("Alice", "")) ~> {
           Route.seal {
-            doBasicAuth { _ ⇒
-              throw TestException
-            }
+            doBasicAuth { _ ⇒ throw TestException }
           }
         } ~> check { status shouldEqual StatusCodes.InternalServerError }
       }
@@ -145,9 +143,7 @@ class SecurityDirectivesSpec extends RoutingSpec {
       EventFilter[TestException.type](occurrences = 1).intercept {
         Get() ~> Authorization(OAuth2BearerToken("myToken")) ~> {
           Route.seal {
-            doOAuth2Auth { _ ⇒
-              throw TestException
-            }
+            doOAuth2Auth { _ ⇒ throw TestException }
           }
         } ~> check { status shouldEqual StatusCodes.InternalServerError }
       }

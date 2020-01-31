@@ -140,9 +140,7 @@ sealed trait Matrix2[R, C, V] extends Serializable {
       }
       .group // TODO we could be lazy with this group and combine with a sum
       .sum
-      .filter { kv =>
-        mon.isNonZero(kv._2)
-      }
+      .filter { kv => mon.isNonZero(kv._2) }
       .map { case ((r, c2), v) => (r, c2, v) }
     MatrixLiteral(resultPipe, this.sizeHint)
   }
@@ -168,9 +166,7 @@ sealed trait Matrix2[R, C, V] extends Serializable {
             ring.zero
           })
       }
-      .filter { kv =>
-        ring.isNonZero(kv._3)
-      }
+      .filter { kv => ring.isNonZero(kv._3) }
     MatrixLiteral(newPipe, this.sizeHint)
   }
 
@@ -291,9 +287,7 @@ class DefaultMatrixJoiner(sizeRatioThreshold: Long) extends MatrixJoiner2 {
     val sizeTwo = right.sizeHint.total.getOrElse(BigInt(1L))
 
     def swapInner[M, N](t: TypedPipe[(C, (M, N))]): TypedPipe[(C, (N, M))] =
-      t.mapValues { t: (M, N) =>
-        t.swap
-      }
+      t.mapValues { t: (M, N) => t.swap }
     // TODO:
     // use block join on tall skinny times skinny tall (or skewed): the result really big,
     // but the direct approach can't get much parallelism.
@@ -381,9 +375,7 @@ case class Product[R, C, C2, V](
                   })
       .mapValues { _._3 }
       .sum(localRing)
-      .filter { kv =>
-        localRing.isNonZero(kv._2)
-      }
+      .filter { kv => localRing.isNonZero(kv._2) }
 
     if (leftMatrix) {
       joined
@@ -428,9 +420,7 @@ case class Product[R, C, C2, V](
         .groupBy(w => (w._1, w._2))
         .mapValues { _._3 }
         .sum(localRing)
-        .filter { kv =>
-          localRing.isNonZero(kv._2)
-        }
+        .filter { kv => localRing.isNonZero(kv._2) }
         .map { case ((r, c), v) => (r, c, v) }
     }
   }
@@ -544,9 +534,7 @@ case class Sum[R, C, V](
         .groupBy(x => (x._1, x._2))
         .mapValues { _._3 }
         .sum(mon)
-        .filter { kv =>
-          mon.isNonZero(kv._2)
-        }
+        .filter { kv => mon.isNonZero(kv._2) }
         .map { case ((r, c), v) => (r, c, v) }
     }
   }
@@ -602,9 +590,7 @@ case class HadamardProduct[R, C, V](
         .groupBy(x => (x._1, x._2))
         .mapValues { _._3 }
         .reduce((x, y) => (ring.times(x._1, y._1), true))
-        .filter { kv =>
-          kv._2._2 && ring.isNonZero(kv._2._1)
-        }
+        .filter { kv => kv._2._2 && ring.isNonZero(kv._2._1) }
         .map { case ((r, c), v) => (r, c, v._1) }
     }
   }

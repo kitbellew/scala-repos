@@ -176,9 +176,7 @@ object TestGraphs {
       fnA: T => TraversableOnce[(K1, V)],
       fnB: K1 => TraversableOnce[K2]): Map[K2, V] =
     MapAlgebra.sumByKey(
-      source.flatMap(fnA).flatMap { x =>
-        fnB(x._1).map((_, x._2))
-      }
+      source.flatMap(fnA).flatMap { x => fnB(x._1).map((_, x._2)) }
     )
 
   def singleStepMapKeysJob[P <: Platform[P], T, K1, K2, V: Monoid](
@@ -254,9 +252,7 @@ object TestGraphs {
         .map { case (k, v) => (k, (v, service(k))) }
         .flatMap {
           case (k, v) =>
-            postJoinFn(v).map { v =>
-              (k, v)
-            }
+            postJoinFn(v).map { v => (k, v) }
         }
     )
 
@@ -308,9 +304,7 @@ object TestGraphs {
         .mapValues {
           _.map { case (time, (k, joinedu)) => (k, joinedu) }
             .groupBy(_._1)
-            .mapValues { l =>
-              scanSum(l.iterator.map(_._2)).toList
-            }
+            .mapValues { l => scanSum(l.iterator.map(_._2)).toList }
             .toIterable
             .flatMap {
               case (k, lv) => lv.map { case (optju, ju) => (k, (optju, ju)) }
@@ -659,9 +653,7 @@ object TestGraphs {
     source.lookup(srv).collectValues { case Some(v) => v }.write(sink)
 
   def lookupJobInScala[T, U](in: List[T], srv: (T) => Option[U]): List[(T, U)] =
-    in.map { t =>
-        (t, srv(t))
-      }
+    in.map { t => (t, srv(t)) }
       .collect { case (t, Some(u)) => (t, u) }
 
   def twoSumByKey[P <: Platform[P], K, V: Monoid, K2](
@@ -681,9 +673,7 @@ object TestGraphs {
     val sum1 = MapAlgebra.sumByKey(in)
     val sumStream = in
       .groupBy(_._1)
-      .mapValues { l =>
-        scanSum(l.iterator.map(_._2)).toList
-      }
+      .mapValues { l => scanSum(l.iterator.map(_._2)).toList }
       .toIterable
       .flatMap { case (k, lv) => lv.map((k, _)) }
     val v2 = sumStream.map { case (k, (_, v)) => fn(k).map { (_, v) } }.flatten
@@ -701,16 +691,10 @@ object TestGraphs {
     val fmCounter = Counter(Group("counter.test"), Name("fm_counter"))
     val fltrCounter = Counter(Group("counter.test"), Name("fltr_counter"))
     source
-      .flatMap { x =>
-        origCounter.incr; fn(x)
-      }
+      .flatMap { x => origCounter.incr; fn(x) }
       .name("FM")
-      .filter { x =>
-        fmCounter.incrBy(2); true
-      }
-      .map { x =>
-        fltrCounter.incr; x
-      }
+      .filter { x => fmCounter.incrBy(2); true }
+      .map { x => fltrCounter.incr; x }
       .sumByKey(store)
   }
 }

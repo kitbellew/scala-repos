@@ -35,5 +35,4 @@ trait ScalatestUtils extends MarshallingTestUtils {
 trait ScalatestRouteTest
     extends RouteTest
     with TestFrameworkInterface.Scalatest
-    with ScalatestUtils { this: Suite ⇒
-}
+    with ScalatestUtils { this: Suite ⇒ }

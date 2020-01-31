@@ -43,9 +43,7 @@ case class Perfs(
     )
 
   def bestPerf: Option[(PerfType, Perf)] = {
-    val ps = PerfType.nonPuzzle map { pt =>
-      pt -> apply(pt)
-    }
+    val ps = PerfType.nonPuzzle map { pt => pt -> apply(pt) }
     val minNb = math.max(1, ps.foldLeft(0)(_ + _._2.nb) / 10)
     ps.foldLeft(none[(PerfType, Perf)]) {
       case (ro, p) if p._2.nb >= minNb =>

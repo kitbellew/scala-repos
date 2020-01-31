@@ -13,9 +13,7 @@ object MSchema {
     ResultSetAction[MSchema] { s =>
       try s.metaData.getSchemas(catalog.orNull, schemaPattern.orNull)
       catch { case _: AbstractMethodError => null }
-    } { r =>
-      MSchema(r.<<, r.<<?)
-    }
+    } { r => MSchema(r.<<, r.<<?) }
   }
 
   def getSchemas = ResultSetAction[MSchema](_.metaData.getSchemas()) { r =>

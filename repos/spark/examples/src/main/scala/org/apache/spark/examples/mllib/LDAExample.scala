@@ -115,9 +115,7 @@ object LDAExample {
 
     parser
       .parse(args, defaultParams)
-      .map { params =>
-        run(params)
-      }
+      .map { params => run(params) }
       .getOrElse {
         parser.showUsageAsError
         sys.exit(1)

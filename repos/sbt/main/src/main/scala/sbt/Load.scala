@@ -779,8 +779,7 @@ object Load {
     // HERE we pull out the defined vals from memoSettings and unify them all so
     // we can use them later.
     val valDefinitions = memoSettings.values.foldLeft(DefinedSbtValues.empty) {
-      (prev, sbtFile) =>
-        prev.zip(sbtFile.definitions)
+      (prev, sbtFile) => prev.zip(sbtFile.definitions)
     }
     val loadedDefs = new sbt.LoadedDefinitions(
       defDir,
@@ -873,9 +872,7 @@ object Load {
       discoverProjects(auto, base, plugins, eval, memoSettings)
     // Step two, Finalize a project with all its settings/configuration.
     def finalizeProject(p: Project, configFiles: Seq[File]): Project = {
-      val loadedFiles = configFiles flatMap { f =>
-        memoSettings.get(f)
-      }
+      val loadedFiles = configFiles flatMap { f => memoSettings.get(f) }
       resolveProject(p, loadedFiles, plugins, injectSettings, memoSettings, log)
     }
     // Discover any new project definition for the base directory of this project, and load all settings.
@@ -1189,9 +1186,7 @@ object Load {
       cp: Seq[Attributed[File]],
       remove: Seq[Attributed[File]]): Seq[Attributed[File]] = {
     val files = data(remove).toSet
-    cp filter { f =>
-      !files.contains(f.data)
-    }
+    cp filter { f => !files.contains(f.data) }
   }
 
   def enableSbtPlugin(
@@ -1296,9 +1291,7 @@ object Load {
 
   @deprecated("Use ModuleUtilities.getCheckedObjects[Build].", "0.13.2")
   def loadDefinitions(loader: ClassLoader, defs: Seq[String]): Seq[Build] =
-    defs map { definition =>
-      loadDefinition(loader, definition)
-    }
+    defs map { definition => loadDefinition(loader, definition) }
 
   @deprecated("Use ModuleUtilities.getCheckedObject[Build].", "0.13.2")
   def loadDefinition(loader: ClassLoader, definition: String): Build =

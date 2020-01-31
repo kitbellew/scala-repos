@@ -87,14 +87,10 @@ class KryoTest extends WordSpec with Matchers {
 
   //These are analogous to how Hadoop will serialize
   def serialize(ins: List[AnyRef]) = {
-    ins.map { v =>
-      (v.getClass, serObj(v))
-    }
+    ins.map { v => (v.getClass, serObj(v)) }
   }
   def deserialize(input: List[(Class[_], Array[Byte])]) = {
-    input.map { tup =>
-      deserObj[AnyRef](tup._1, tup._2)
-    }
+    input.map { tup => deserObj[AnyRef](tup._1, tup._2) }
   }
   def serializationRT(ins: List[AnyRef]) = deserialize(serialize(ins))
 

@@ -43,9 +43,7 @@ trait CrossSpec[M[+_]]
           case JField(s, v) if v != JUndefined => JField(s, removeUndefined(v))
         })
       case JArray(jvs) =>
-        JArray(jvs map { jv =>
-          removeUndefined(jv)
-        })
+        JArray(jvs map { jv => removeUndefined(jv) })
       case v => v
     }
 

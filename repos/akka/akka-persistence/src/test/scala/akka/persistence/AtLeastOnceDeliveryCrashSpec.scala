@@ -51,14 +51,11 @@ object AtLeastOnceDeliveryCrashSpec {
     override def receiveCommand: Receive = {
       case Message ⇒ persist(Message)(_ ⇒ send())
       case CrashMessage ⇒
-        persist(CrashMessage) { evt ⇒
-        }
+        persist(CrashMessage) { evt ⇒ }
     }
 
     def send() = {
-      deliver(testProbe.path) { id ⇒
-        SendingMessage(id, false)
-      }
+      deliver(testProbe.path) { id ⇒ SendingMessage(id, false) }
     }
   }
 

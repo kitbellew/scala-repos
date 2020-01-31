@@ -60,8 +60,7 @@ object Transform {
       (dirs ** (-DirectoryFilter)).get),
     fileMappings in transformSources <<= transformSourceMappings,
     transformSources <<= (fileMappings in transformSources, sourceProperties) map {
-      (rs, props) =>
-        rs map { case (in, out) => transform(in, out, props) }
+      (rs, props) => rs map { case (in, out) => transform(in, out, props) }
     },
     sourceGenerators <+= transformSources
   )

@@ -283,22 +283,19 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
 
   def `expires-av` = rule {
     ignoreCase("expires=") ~ OWS ~ `HTTP-date` ~> {
-      (c: HttpCookie, dt: DateTime) ⇒
-        c.copy(expires = Some(dt))
+      (c: HttpCookie, dt: DateTime) ⇒ c.copy(expires = Some(dt))
     }
   }
 
   def `max-age-av` = rule {
     ignoreCase("max-age=") ~ OWS ~ longNumberCappedAtIntMaxValue ~> {
-      (c: HttpCookie, seconds: Long) ⇒
-        c.copy(maxAge = Some(seconds))
+      (c: HttpCookie, seconds: Long) ⇒ c.copy(maxAge = Some(seconds))
     }
   }
 
   def `domain-av` = rule {
     ignoreCase("domain=") ~ OWS ~ `domain-value` ~> {
-      (c: HttpCookie, domainName: String) ⇒
-        c.copy(domain = Some(domainName))
+      (c: HttpCookie, domainName: String) ⇒ c.copy(domain = Some(domainName))
     }
   }
 
@@ -312,8 +309,7 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
 
   def `path-av` = rule {
     ignoreCase("path=") ~ OWS ~ `path-value` ~> {
-      (c: HttpCookie, pathValue: String) ⇒
-        c.copy(path = Some(pathValue))
+      (c: HttpCookie, pathValue: String) ⇒ c.copy(path = Some(pathValue))
     }
   }
 

@@ -82,9 +82,7 @@ object JasmineRunner {
         .literal(
           configurable = false,
           enumerable = false,
-          get = { (self: js.Dynamic) =>
-            self.stackdata && self.stackdata.stack
-          }: js.ThisFunction
+          get = { (self: js.Dynamic) => self.stackdata && self.stackdata.stack }: js.ThisFunction
         )
         .asInstanceOf[js.PropertyDescriptor]
     )

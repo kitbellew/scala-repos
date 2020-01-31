@@ -178,9 +178,7 @@ object gen {
   def freeMonoid[A: Arbitrary]: Gen[FreeMonoid[A]] =
     for {
       as <- arbitrary[List[A]]
-    } yield as.foldLeft(FreeMonoid.id[A]) { (acc, a) =>
-      acc |+| FreeMonoid(a)
-    }
+    } yield as.foldLeft(FreeMonoid.id[A]) { (acc, a) => acc |+| FreeMonoid(a) }
 
   def freeGroup[A: Arbitrary]: Gen[FreeGroup[A]] =
     for {

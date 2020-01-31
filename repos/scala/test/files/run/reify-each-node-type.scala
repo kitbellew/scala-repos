@@ -55,9 +55,7 @@ object s {
       try 0
       finally println("") /* Try */
     })
-    act(reify { (x: Int) =>
-      x /* Function */
-    })
+    act(reify { (x: Int) => x /* Function */ })
     act(reify { var v = 1; v = 2 /* Assign */ })
     act(reify { class A() { def this(x: A) = this() } /* This */ })
     act(reify { new List[Int] /* New */ })

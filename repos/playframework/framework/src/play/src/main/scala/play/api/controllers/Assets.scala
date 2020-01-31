@@ -510,8 +510,7 @@ class AssetsBuilder(errorHandler: HttpErrorHandler) extends Controller {
       path: String,
       file: String,
       aggressiveCaching: Boolean = false): Action[AnyContent] = Action.async {
-    implicit request =>
-      assetAt(path, file, aggressiveCaching)
+    implicit request => assetAt(path, file, aggressiveCaching)
   }
 
   private def assetAt(path: String, file: String, aggressiveCaching: Boolean)(
@@ -519,8 +518,7 @@ class AssetsBuilder(errorHandler: HttpErrorHandler) extends Controller {
     import Implicits.trampoline
     val assetName: Option[String] = resourceNameAt(path, file)
     val assetInfoFuture: Future[Option[(AssetInfo, Boolean)]] = assetName.map {
-      name =>
-        assetInfoForRequest(request, name)
+      name => assetInfoForRequest(request, name)
     } getOrElse Future.successful(None)
 
     def notFound =

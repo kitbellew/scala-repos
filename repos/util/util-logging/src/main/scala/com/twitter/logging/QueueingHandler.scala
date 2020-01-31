@@ -142,9 +142,7 @@ class QueueingHandler(
 
   override def flush(): Unit = {
     // Publish all records in queue
-    queue.drain().map { records =>
-      records.foreach(doPublish)
-    }
+    queue.drain().map { records => records.foreach(doPublish) }
 
     // Propagate flush
     super.flush()

@@ -16,8 +16,7 @@ abstract class A {
   protected val data: List[A]
 }
 
-trait B[T <: B[T]] extends A { self: T =>
-}
+trait B[T <: B[T]] extends A { self: T => }
 
 abstract class C extends A {
   // commenting out the following line (only) leads to successful compilation

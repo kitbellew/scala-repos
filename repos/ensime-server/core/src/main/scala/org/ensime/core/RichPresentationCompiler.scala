@@ -142,9 +142,7 @@ trait RichCompilerControl
             ).map { _.sym }
             val restOfPath = nameSegs.drop(1).mkString(".")
             val syms = roots.flatMap { symbolByName(restOfPath, _) }
-            syms.find(_.tpe != NoType).map { sym =>
-              TypeInfo(sym.tpe)
-            }
+            syms.find(_.tpe != NoType).map { sym => TypeInfo(sym.tpe) }
           }) yield infos).flatten
   }
 
@@ -306,9 +304,7 @@ class RichPresentationCompiler(
   def activeUnits(): List[CompilationUnit] = {
     val invalidSet = toBeRemoved.synchronized { toBeRemoved.toSet }
     unitOfFile
-      .filter { kv =>
-        !invalidSet.contains(kv._1)
-      }
+      .filter { kv => !invalidSet.contains(kv._1) }
       .values
       .toList
   }
@@ -609,9 +605,7 @@ class RichPresentationCompiler(
 
   protected def reloadAndTypeFiles(sources: Iterable[SourceFile]) = {
     wrapReloadSources(sources.toList)
-    sources.foreach { s =>
-      wrapTypedTree(s, forceReload = true)
-    }
+    sources.foreach { s => wrapTypedTree(s, forceReload = true) }
   }
 
   override def askShutdown(): Unit = {

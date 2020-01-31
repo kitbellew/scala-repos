@@ -43,26 +43,18 @@ trait PublisherEvents[T] {
   }
 
   def onSubscribe()(implicit ec: ExecutionContext): Unit = {
-    forSubscription { sn =>
-      sn.sr.onSubscribe(sn)
-    }
+    forSubscription { sn => sn.sr.onSubscribe(sn) }
   }
 
   def onNext(element: T)(implicit ec: ExecutionContext): Unit = {
-    forSubscription { sn =>
-      sn.onNext(element)
-    }
+    forSubscription { sn => sn.onNext(element) }
   }
 
   def onError(t: Throwable)(implicit ec: ExecutionContext): Unit = {
-    forSubscription { sn =>
-      sn.sr.onError(t)
-    }
+    forSubscription { sn => sn.sr.onError(t) }
   }
 
   def onComplete()(implicit ec: ExecutionContext): Unit = {
-    forSubscription { sn =>
-      sn.sr.onComplete()
-    }
+    forSubscription { sn => sn.sr.onComplete() }
   }
 }

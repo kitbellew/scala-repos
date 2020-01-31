@@ -62,9 +62,7 @@ class JobTest(cons: (Args) => Job) {
   private val statsCallbacks = Buffer[(CascadingStats) => Unit]()
   // TODO: Switch the following maps and sets from Source to String keys
   // to guard for scala equality bugs
-  private var sourceMap: (Source) => Option[Buffer[Tuple]] = { _ =>
-    None
-  }
+  private var sourceMap: (Source) => Option[Buffer[Tuple]] = { _ => None }
   private var sinkSet = Set[Source]()
   private var fileSet = Set[String]()
   private var validateJob = false
@@ -82,9 +80,7 @@ class JobTest(cons: (Args) => Job) {
   private def sourceBuffer[T: TupleSetter](
       s: Source,
       tups: Iterable[T]): JobTest = {
-    source { src =>
-      if (src == s) Some(tups) else None
-    }
+    source { src => if (src == s) Some(tups) else None }
     this
   }
 
@@ -133,10 +129,7 @@ class JobTest(cons: (Args) => Job) {
      * you also modify the `finalize` function accordingly.
      */
     sinkSet += s
-    callbacks += (() =>
-      op(buffer.map { tup =>
-        conv(new TupleEntry(tup))
-      }))
+    callbacks += (() => op(buffer.map { tup => conv(new TupleEntry(tup)) }))
     this
   }
 
@@ -266,12 +259,8 @@ class JobTest(cons: (Args) => Job) {
           case _ => ()
         }
         // Now it is time to check the test conditions:
-        callbacks.foreach { cb =>
-          cb()
-        }
-        statsCallbacks.foreach { cb =>
-          cb(job.scaldingCascadingStats.get)
-        }
+        callbacks.foreach { cb => cb() }
+        statsCallbacks.foreach { cb => cb(job.scaldingCascadingStats.get) }
       }
     }
   }

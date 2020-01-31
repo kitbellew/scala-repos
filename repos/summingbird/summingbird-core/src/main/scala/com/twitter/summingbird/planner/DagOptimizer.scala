@@ -51,8 +51,7 @@ trait DagOptimizer[P <: Platform[P]] {
     IdentityKeyedProducer(prod)
   }
   protected def mkOptMap[T, U](fn: T => Option[U]): (Prod[T] => Prod[U]) = {
-    prod =>
-      OptionMappedProducer(prod, fn)
+    prod => OptionMappedProducer(prod, fn)
   }
   protected def mkFlatMapped[T, U](
       fn: T => TraversableOnce[U]): (Prod[T] => Prod[U]) = { prod =>
@@ -67,13 +66,11 @@ trait DagOptimizer[P <: Platform[P]] {
     ValueFlatMappedProducer(prod, fn)
   }
   protected def mkWritten[T, U >: T](sink: P#Sink[U]): (Prod[T] => Prod[T]) = {
-    prod =>
-      WrittenProducer[P, T, U](prod, sink)
+    prod => WrittenProducer[P, T, U](prod, sink)
   }
   protected def mkSrv[K, T, V](
       serv: P#Service[K, V]): (Prod[(K, T)] => Prod[(K, (T, Option[V]))]) = {
-    prod =>
-      LeftJoinedProducer(prod, serv)
+    prod => LeftJoinedProducer(prod, serv)
   }
   protected def mkSum[K, V](
       store: P#Store[K, V],
@@ -220,9 +217,7 @@ trait DagOptimizer[P <: Platform[P]] {
     */
   def expressionDag[T](p: Producer[P, T]): (ExpressionDag[Prod], Id[T]) = {
     val prodToLit = new GenFunction[Prod, LitProd] {
-      def apply[T] = { p =>
-        toLiteral(p)
-      }
+      def apply[T] = { p => toLiteral(p) }
     }
     ExpressionDag[T, Prod](p, prodToLit)
   }

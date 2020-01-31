@@ -17,9 +17,7 @@ class RewriteBooleans extends Phase {
   val name = "rewriteBooleans"
 
   def apply(state: CompilerState) =
-    state.map { n =>
-      ClientSideOp.mapServerSide(n)(rewriteRec)
-    }
+    state.map { n => ClientSideOp.mapServerSide(n)(rewriteRec) }
 
   def rewriteRec(n: Node): Node = {
     val n2 = n.mapChildren(rewriteRec, true)

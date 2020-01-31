@@ -109,9 +109,7 @@ object OneVsRestExample {
     }
     parser
       .parse(args, defaultParams)
-      .map { params =>
-        run(params)
-      }
+      .map { params => run(params) }
       .getOrElse {
         sys.exit(1)
       }

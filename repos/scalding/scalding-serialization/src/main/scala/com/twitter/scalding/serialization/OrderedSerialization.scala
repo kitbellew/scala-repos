@@ -196,9 +196,7 @@ object OrderedSerialization {
     * will be broken
     */
   def orderingTotality[T](implicit ordb: OrderedSerialization[T]): Law2[T] =
-    Law2("totality", { (a: T, b: T) =>
-      (ordb.lteq(a, b) || ordb.lteq(b, a))
-    })
+    Law2("totality", { (a: T, b: T) => (ordb.lteq(a, b) || ordb.lteq(b, a)) })
 
   def allLaws[T: OrderedSerialization]: Iterable[Law[T]] =
     Serialization.allLaws ++ List(

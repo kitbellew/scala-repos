@@ -310,9 +310,7 @@ class QueueTransport[In, Out](writeq: AsyncQueue[In], readq: AsyncQueue[Out])
   }
 
   def read(): Future[Out] =
-    readq.poll() onFailure { exc =>
-      closep.updateIfEmpty(Throw(exc))
-    }
+    readq.poll() onFailure { exc => closep.updateIfEmpty(Throw(exc)) }
 
   def status = if (closep.isDefined) Status.Closed else Status.Open
   def close(deadline: Time) = {

@@ -100,9 +100,7 @@ object pinv extends UFunc with pinvLowPrio {
       // http://en.wikipedia.org/wiki/Singular_value_decomposition#Applications_of_the_SVD
       override def apply(v: DenseMatrix[T]): DenseMatrix[T] = {
         val svd.SVD(s, svs, d) = svd(v)
-        val vi = svs.map { v =>
-          if (v == 0.0) 0.0f else 1 / v
-        }
+        val vi = svs.map { v => if (v == 0.0) 0.0f else 1 / v }
 
         val svDiag = DenseMatrix.tabulate[T](s.cols, d.rows) { (i, j) =>
           if (i == j && i < math.min(s.cols, d.rows)) vi(i)

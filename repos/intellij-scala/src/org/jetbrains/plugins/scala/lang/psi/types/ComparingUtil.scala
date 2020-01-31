@@ -37,9 +37,7 @@ object ComparingUtil {
       }
       def childrenAreIrreconcilable =
         inheritorsInSameFile(clazz1).forall { c1 =>
-          inheritorsInSameFile(clazz2).forall { c2 =>
-            isNeverSubClass(c1, c2)
-          }
+          inheritorsInSameFile(clazz2).forall { c2 => isNeverSubClass(c1, c2) }
         }
       areSealed && childrenAreIrreconcilable
     }

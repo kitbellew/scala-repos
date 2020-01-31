@@ -90,8 +90,7 @@ class WeightedPageRank(args: Args) extends Job(args) {
       case Hdfs(_, conf) => {
         SequenceFile(fileName).read
           .mapTo((0, 1, 2, 3) -> ('src_id, 'dst_ids, 'weights, 'mass_prior)) {
-            input: (Int, Array[Int], Array[Float], Double) =>
-              input
+            input: (Int, Array[Int], Array[Float], Double) => input
           }
       }
       case _ => {
@@ -125,9 +124,7 @@ class WeightedPageRank(args: Args) extends Job(args) {
     */
   def getNumNodes(fileName: String) = {
     Tsv(fileName).read
-      .mapTo(0 -> 'size) { input: Int =>
-        input
-      }
+      .mapTo(0 -> 'size) { input: Int => input }
   }
 
   /**
@@ -175,9 +172,7 @@ class WeightedPageRank(args: Args) extends Job(args) {
               } else {
                 // equal distribution
                 val dist: Double = args._3 / args._1.length
-                args._1.map { id: Int =>
-                  (id, dist)
-                }
+                args._1.map { id: Int => (id, dist) }
               }
             } else {
               //Here is a node that points to no other nodes (dangling)

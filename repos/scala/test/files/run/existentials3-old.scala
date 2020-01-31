@@ -8,13 +8,9 @@ object Test {
   def f3 = { class Bar() extends ToS; object Bar extends ToS; Bar }
   def f4 = { class Bar() extends ToS; new Bar() }
   def f5 = { object Bar extends ToS; Bar }
-  def f6 = { () =>
-    { object Bar extends ToS; Bar }
-  }
+  def f6 = { () => { object Bar extends ToS; Bar } }
   def f7 = {
-    val f = { () =>
-      { object Bar extends ToS; Bar }
-    }; f
+    val f = { () => { object Bar extends ToS; Bar } }; f
   }
 
   def f8 = { trait A; trait B extends A; class C extends B with ToS; new C {} }
@@ -31,13 +27,9 @@ object Test {
   val g3 = { class Bar() extends ToS; object Bar extends ToS; Bar }
   val g4 = { class Bar() extends ToS; new Bar() }
   val g5 = { object Bar extends ToS; Bar }
-  val g6 = { () =>
-    { object Bar extends ToS; Bar }
-  }
+  val g6 = { () => { object Bar extends ToS; Bar } }
   val g7 = {
-    val f = { () =>
-      { object Bar extends ToS; Bar }
-    }; f
+    val f = { () => { object Bar extends ToS; Bar } }; f
   }
 
   val g8 = { trait A; trait B extends A; class C extends B with ToS; new C {} }

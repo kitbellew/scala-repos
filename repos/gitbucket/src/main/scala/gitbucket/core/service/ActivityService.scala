@@ -9,8 +9,7 @@ trait ActivityService {
 
   def deleteOldActivities(limit: Int)(implicit s: Session): Int = {
     Activities.map(_.activityId).sortBy(_ desc).drop(limit).firstOption.map {
-      id =>
-        Activities.filter(_.activityId <= id.bind).delete
+      id => Activities.filter(_.activityId <= id.bind).delete
     } getOrElse 0
   }
 
@@ -227,9 +226,7 @@ trait ActivityService {
       s"[user:${activityUserName}] pushed to [branch:${userName}/${repositoryName}#${branchName}] at [repo:${userName}/${repositoryName}]",
       Some(
         commits
-          .map { commit =>
-            commit.id + ":" + commit.shortMessage
-          }
+          .map { commit => commit.id + ":" + commit.shortMessage }
           .mkString("\n")),
       currentDate
     )

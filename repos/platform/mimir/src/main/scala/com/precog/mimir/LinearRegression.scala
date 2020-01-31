@@ -199,9 +199,7 @@ trait LinearRegressionLibModule[M[+_]]
           values: Array[Double],
           indices0: Array[Int]): Array[Double] = {
         val vlength = values.length
-        val indices = indices0 filter { i =>
-          (i >= 0) && (i < vlength)
-        }
+        val indices = indices0 filter { i => (i >= 0) && (i < vlength) }
 
         if (indices.isEmpty) {
           values
@@ -227,9 +225,7 @@ trait LinearRegressionLibModule[M[+_]]
               if c.tpe.manifest.erasure == classOf[Array[Double]] =>
             val mapped = range.toArray filter { r =>
               c.isDefinedAt(r)
-            } map { i =>
-              c.asInstanceOf[HomogeneousArrayColumn[Double]](i)
-            }
+            } map { i => c.asInstanceOf[HomogeneousArrayColumn[Double]](i) }
             Some(mapped)
           case other =>
             logger.warn(
@@ -271,9 +267,7 @@ trait LinearRegressionLibModule[M[+_]]
 
           val (xs, y0) = makeArrays(features, range)
 
-          val matrixX0 = xs map { arr =>
-            new Matrix(arr)
-          }
+          val matrixX0 = xs map { arr => new Matrix(arr) }
 
           // FIXME ultimately we do not want to throw an IllegalArgumentException here
           // once the framework is in place, we will return the empty set and issue a warning to the user
@@ -420,9 +414,7 @@ trait LinearRegressionLibModule[M[+_]]
 
             val yMean = y0.flatten.sum / y0.flatten.size
 
-            val tss = y0.flatten map { y =>
-              math.pow(y - yMean, 2d)
-            } sum
+            val tss = y0.flatten map { y => math.pow(y - yMean, 2d) } sum
 
             StdErrorAcc(rss, tss, matrixProduct)
           }
@@ -529,9 +521,7 @@ trait LinearRegressionLibModule[M[+_]]
           val schemas: M[Seq[JType]] = table.schemas map { _.toSeq }
 
           val specs: M[Seq[TransSpec1]] = schemas map {
-            _ map { jtype =>
-              trans.Typed(TransSpec1.Id, jtype)
-            }
+            _ map { jtype => trans.Typed(TransSpec1.Id, jtype) }
           }
 
           val tables: M[Seq[Table]] = specs map { _ map { table.transform } }

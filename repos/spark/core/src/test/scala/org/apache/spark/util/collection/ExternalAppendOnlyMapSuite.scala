@@ -54,9 +54,7 @@ class ExternalAppendOnlyMapSuite extends SparkFunSuite with LocalSparkContext {
     conf.set("spark.serializer", "org.apache.spark.serializer.JavaSerializer")
     conf.set("spark.shuffle.spill.compress", codec.isDefined.toString)
     conf.set("spark.shuffle.compress", codec.isDefined.toString)
-    codec.foreach { c =>
-      conf.set("spark.io.compression.codec", c)
-    }
+    codec.foreach { c => conf.set("spark.io.compression.codec", c) }
     // Ensure that we actually have multiple batches per spill file
     conf.set("spark.shuffle.spill.batchSize", "10")
     conf
@@ -240,9 +238,7 @@ class ExternalAppendOnlyMapSuite extends SparkFunSuite with LocalSparkContext {
       // We need to catch Throwable here because assertion failures are not covered by Exceptions
       case t: Throwable =>
         val compressionMessage = lastCompressionCodec
-          .map { c =>
-            "with compression using codec " + c
-          }
+          .map { c => "with compression using codec " + c }
           .getOrElse("without compression")
         val newException =
           new Exception(s"Test failed $compressionMessage:\n\n${t.getMessage}")
@@ -267,9 +263,7 @@ class ExternalAppendOnlyMapSuite extends SparkFunSuite with LocalSparkContext {
     assertSpilled(sc, "reduceByKey") {
       val result = sc
         .parallelize(0 until size)
-        .map { i =>
-          (i / 2, i)
-        }
+        .map { i => (i / 2, i) }
         .reduceByKey(math.max)
         .collect()
       assert(result.length === size / 2)
@@ -285,9 +279,7 @@ class ExternalAppendOnlyMapSuite extends SparkFunSuite with LocalSparkContext {
     assertSpilled(sc, "groupByKey") {
       val result = sc
         .parallelize(0 until size)
-        .map { i =>
-          (i / 2, i)
-        }
+        .map { i => (i / 2, i) }
         .groupByKey()
         .collect()
       assert(result.length == size / 2)
@@ -302,12 +294,8 @@ class ExternalAppendOnlyMapSuite extends SparkFunSuite with LocalSparkContext {
     }
 
     assertSpilled(sc, "cogroup") {
-      val rdd1 = sc.parallelize(0 until size).map { i =>
-        (i / 2, i)
-      }
-      val rdd2 = sc.parallelize(0 until size).map { i =>
-        (i / 2, i)
-      }
+      val rdd1 = sc.parallelize(0 until size).map { i => (i / 2, i) }
+      val rdd2 = sc.parallelize(0 until size).map { i => (i / 2, i) }
       val result = rdd1.cogroup(rdd2).collect()
       assert(result.length === size / 2)
       result.foreach {
@@ -427,9 +415,7 @@ class ExternalAppendOnlyMapSuite extends SparkFunSuite with LocalSparkContext {
     sc = new SparkContext("local-cluster[1,1,1024]", "test", conf)
     val map = createExternalMap[Int]
 
-    (1 to size).foreach { i =>
-      map.insert(i, i)
-    }
+    (1 to size).foreach { i => map.insert(i, i) }
     map.insert(Int.MaxValue, Int.MaxValue)
     assert(map.numSpills > 0, "map did not spill")
 
@@ -481,9 +467,7 @@ class ExternalAppendOnlyMapSuite extends SparkFunSuite with LocalSparkContext {
       "external map without spilling") {
       assertNotSpilled(sc, "verify peak memory") {
         sc.parallelize(1 to spillThreshold / 2, 2)
-          .map { i =>
-            (i, i)
-          }
+          .map { i => (i, i) }
           .reduceByKey(_ + _)
           .count()
       }
@@ -494,9 +478,7 @@ class ExternalAppendOnlyMapSuite extends SparkFunSuite with LocalSparkContext {
       "external map with spilling") {
       assertSpilled(sc, "verify peak memory") {
         sc.parallelize(1 to spillThreshold * 3, 2)
-          .map { i =>
-            (i, i)
-          }
+          .map { i => (i, i) }
           .reduceByKey(_ + _)
           .count()
       }

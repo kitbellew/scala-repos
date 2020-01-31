@@ -131,9 +131,7 @@ class VertexRDDSuite extends SparkFunSuite with LocalSparkContext {
       // leftJoin with another VertexRDD
       assert(
         verts
-          .leftJoin(evens) { (id, a, bOpt) =>
-            a - bOpt.getOrElse(0)
-          }
+          .leftJoin(evens) { (id, a, bOpt) => a - bOpt.getOrElse(0) }
           .collect()
           .toSet ===
           (0 to n by 2).map(x => (x.toLong, 0)).toSet ++ (1 to n by 2)
@@ -143,9 +141,7 @@ class VertexRDDSuite extends SparkFunSuite with LocalSparkContext {
       val evensRDD = evens.map(identity)
       assert(
         verts
-          .leftJoin(evensRDD) { (id, a, bOpt) =>
-            a - bOpt.getOrElse(0)
-          }
+          .leftJoin(evensRDD) { (id, a, bOpt) => a - bOpt.getOrElse(0) }
           .collect()
           .toSet ===
           (0 to n by 2).map(x => (x.toLong, 0)).toSet ++ (1 to n by 2)
@@ -181,9 +177,7 @@ class VertexRDDSuite extends SparkFunSuite with LocalSparkContext {
       // innerJoin with another VertexRDD
       assert(
         verts
-          .innerJoin(evens) { (id, a, b) =>
-            a - b
-          }
+          .innerJoin(evens) { (id, a, b) => a - b }
           .collect()
           .toSet ===
           (0 to n by 2).map(x => (x.toLong, 0)).toSet)
@@ -191,9 +185,7 @@ class VertexRDDSuite extends SparkFunSuite with LocalSparkContext {
       val evensRDD = evens.map(identity)
       assert(
         verts
-          .innerJoin(evensRDD) { (id, a, b) =>
-            a - b
-          }
+          .innerJoin(evensRDD) { (id, a, b) => a - b }
           .collect()
           .toSet ===
           (0 to n by 2).map(x => (x.toLong, 0)).toSet)

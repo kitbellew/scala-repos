@@ -24,9 +24,7 @@ class HistogramJob(args: Args) extends Job(args) {
       .groupAll { _.histogram('n -> 'hist) }
 
     hist
-      .flatMapTo('hist -> ('bin, 'cdf)) { h: Histogram =>
-        h.cdf
-      }
+      .flatMapTo('hist -> ('bin, 'cdf)) { h: Histogram => h.cdf }
       .write(Tsv("cdf-output"))
 
     hist

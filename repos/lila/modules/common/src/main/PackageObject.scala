@@ -170,9 +170,7 @@ trait WithPlay { self: PackageObject =>
     def logFailure(
         logger: => lila.log.Logger,
         msg: Exception => String): Fu[A] =
-      addFailureEffect { e =>
-        logger.warn(msg(e), e)
-      }
+      addFailureEffect { e => logger.warn(msg(e), e) }
     def logFailure(logger: => lila.log.Logger): Fu[A] =
       logFailure(logger, _.toString)
 
@@ -244,9 +242,7 @@ trait WithPlay { self: PackageObject =>
     }
 
     def orElse(other: => Fu[Option[A]]): Fu[Option[A]] = fua flatMap {
-      _.fold(other) { x =>
-        fuccess(x.some)
-      }
+      _.fold(other) { x => fuccess(x.some) }
     }
 
     def getOrElse(other: => Fu[A]): Fu[A] = fua flatMap {

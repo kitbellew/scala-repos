@@ -74,9 +74,7 @@ abstract class ShuffleSuite
     val NUM_BLOCKS = 3
 
     val a = sc.parallelize(1 to 10, 2)
-    val b = a.map { x =>
-      (x, new NonJavaSerializableClass(x * 2))
-    }
+    val b = a.map { x => (x, new NonJavaSerializableClass(x * 2)) }
     // If the Kryo serializer is not used correctly, the shuffle would fail because the
     // default Java serializer cannot handle the non serializable class.
     val c =
@@ -102,9 +100,7 @@ abstract class ShuffleSuite
     // Use a local cluster with 2 processes to make sure there are both local and remote blocks
     sc = new SparkContext("local-cluster[2,1,1024]", "test", conf)
     val a = sc.parallelize(1 to 10, 2)
-    val b = a.map { x =>
-      (x, new NonJavaSerializableClass(x * 2))
-    }
+    val b = a.map { x => (x, new NonJavaSerializableClass(x * 2)) }
     // If the Kryo serializer is not used correctly, the shuffle would fail because the
     // default Java serializer cannot handle the non serializable class.
     val c =
@@ -180,9 +176,7 @@ abstract class ShuffleSuite
     val results =
       new ShuffledRDD[Int, Int, Int](pairs, new HashPartitioner(2)).collect()
 
-    data.foreach { pair =>
-      results should contain((pair._1, pair._2))
-    }
+    data.foreach { pair => results should contain((pair._1, pair._2)) }
   }
 
   test("sorting on mutable pairs") {
@@ -252,9 +246,7 @@ abstract class ShuffleSuite
       .set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
     sc = new SparkContext("local-cluster[2,1,1024]", "test", myConf)
     val a = sc.parallelize(1 to 10, 2)
-    val b = a.map { x =>
-      (new NonJavaSerializableClass(x), x)
-    }
+    val b = a.map { x => (new NonJavaSerializableClass(x), x) }
     // If the Kryo serializer is not used correctly, the shuffle would fail because the
     // default Java serializer cannot handle the non serializable class.
     val c = b.sortByKey().map(x => x._2)
@@ -265,9 +257,7 @@ abstract class ShuffleSuite
     // Use a local cluster with 2 processes to make sure there are both local and remote blocks
     sc = new SparkContext("local-cluster[2,1,1024]", "test", conf)
     val a = sc.parallelize(1 to 10, 2)
-    val b = a.map { x =>
-      (new NonJavaSerializableClass(x), x)
-    }
+    val b = a.map { x => (new NonJavaSerializableClass(x), x) }
     // default Java serializer cannot handle the non serializable class.
     val thrown = intercept[SparkException] {
       b.sortByKey().collect()
@@ -386,9 +376,7 @@ abstract class ShuffleSuite
         taskMemoryManager,
         metricsSystem,
         InternalAccumulator.create(sc)))
-    val data1 = (1 to 10).map { x =>
-      x -> x
-    }
+    val data1 = (1 to 10).map { x => x -> x }
 
     // second attempt -- also successful.  We'll write out different data,
     // just to simulate the fact that the records may get written differently
@@ -404,9 +392,7 @@ abstract class ShuffleSuite
         taskMemoryManager,
         metricsSystem,
         InternalAccumulator.create(sc)))
-    val data2 = (11 to 20).map { x =>
-      x -> x
-    }
+    val data2 = (11 to 20).map { x => x -> x }
 
     // interleave writes of both attempts -- we want to test that both attempts can occur
     // simultaneously, and everything is still OK

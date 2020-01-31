@@ -190,9 +190,7 @@ class AlgebraicTest extends SpireProperties {
     // to drop the limits and just give it a bit of time to run.
     forAll(genRationalPoly, minSuccessful(20), maxSize(6)) { poly =>
       val apoly = poly.map(Algebraic(_))
-      Algebraic.roots(poly).forall { root =>
-        apoly(root).isZero
-      }
+      Algebraic.roots(poly).forall { root => apoly(root).isZero }
     }
   }
 
@@ -259,9 +257,7 @@ class AlgebraicTest extends SpireProperties {
       } yield RationalAlgebraic(Algebraic(x), Rational(x))
 
     def genLeaf: Gen[RationalAlgebraic] = Gen.oneOf(
-      genRational.map { q =>
-        RationalAlgebraic(Algebraic(q), q)
-      },
+      genRational.map { q => RationalAlgebraic(Algebraic(q), q) },
       genBigDecimal,
       genDouble,
       genLong

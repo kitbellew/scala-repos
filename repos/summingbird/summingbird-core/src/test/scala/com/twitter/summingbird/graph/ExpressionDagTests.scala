@@ -91,9 +91,7 @@ object ExpressionDagTests extends Properties("ExpressionDag") {
             case inc @ Inc(_, _) =>
               def makeLit[T1](i: Inc[T1]) = {
                 val (m1, f1) = recurse(memo, i.in)
-                val lit = UnaryLit(f1, { f: Formula[T1] =>
-                  Inc(f, i.by)
-                })
+                val lit = UnaryLit(f1, { f: Formula[T1] => Inc(f, i.by) })
                 (m1 + (i -> lit), lit)
               }
               makeLit(inc)
@@ -102,8 +100,7 @@ object ExpressionDagTests extends Properties("ExpressionDag") {
                 val (m1, fl) = recurse(memo, s.left)
                 val (m2, fr) = recurse(m1, s.right)
                 val lit = BinaryLit(fl, fr, {
-                  (f: Formula[T1], g: Formula[T1]) =>
-                    Sum(f, g)
+                  (f: Formula[T1], g: Formula[T1]) => Sum(f, g)
                 })
                 (m2 + (s -> lit), lit)
               }
@@ -113,8 +110,7 @@ object ExpressionDagTests extends Properties("ExpressionDag") {
                 val (m1, fl) = recurse(memo, p.left)
                 val (m2, fr) = recurse(m1, p.right)
                 val lit = BinaryLit(fl, fr, {
-                  (f: Formula[T1], g: Formula[T1]) =>
-                    Product(f, g)
+                  (f: Formula[T1], g: Formula[T1]) => Product(f, g)
                 })
                 (m2 + (p -> lit), lit)
               }
@@ -144,8 +140,7 @@ object ExpressionDagTests extends Properties("ExpressionDag") {
   //Check the Node[T] <=> Id[T] is an Injection for all nodes reachable from the root
 
   property("toLiteral/Literal.evaluate is a bijection") = forAll(genForm) {
-    form =>
-      toLiteral.apply(form).evaluate == form
+    form => toLiteral.apply(form).evaluate == form
   }
 
   property("Going to ExpressionDag round trips") = forAll(genForm) { form =>

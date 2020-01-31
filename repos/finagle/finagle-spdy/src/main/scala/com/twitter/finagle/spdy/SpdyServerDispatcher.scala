@@ -24,9 +24,7 @@ class SpdyServerDispatcher(
       }
     } flatMap { rep =>
       trans.write(rep)
-    } onFailure { _ =>
-      trans.close()
-    }
+    } onFailure { _ => trans.close() }
   }
 
   Local.letClear { loop() }

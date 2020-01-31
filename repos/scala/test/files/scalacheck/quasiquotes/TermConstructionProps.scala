@@ -7,8 +7,7 @@ object TermConstructionProps extends QuasiquoteProperties("term construction") {
   }
 
   property("unquote trees into if expression") = forAll {
-    (t1: Tree, t2: Tree, t3: Tree) =>
-      q"if($t1) $t2 else $t3" ≈ If(t1, t2, t3)
+    (t1: Tree, t2: Tree, t3: Tree) => q"if($t1) $t2 else $t3" ≈ If(t1, t2, t3)
   }
 
   property("unquote trees into ascriptiopn") = forAll { (t1: Tree, t2: Tree) =>
@@ -16,13 +15,11 @@ object TermConstructionProps extends QuasiquoteProperties("term construction") {
   }
 
   property("unquote trees into apply") = forAll {
-    (t1: Tree, t2: Tree, t3: Tree) =>
-      q"$t1($t2, $t3)" ≈ Apply(t1, List(t2, t3))
+    (t1: Tree, t2: Tree, t3: Tree) => q"$t1($t2, $t3)" ≈ Apply(t1, List(t2, t3))
   }
 
   property("unquote trees with .. rank into apply") = forAll {
-    (ts: List[Tree]) =>
-      q"f(..$ts)" ≈ Apply(q"f", ts)
+    (ts: List[Tree]) => q"f(..$ts)" ≈ Apply(q"f", ts)
   }
 
   property("unquote iterable into apply") = forAll { (trees: List[Tree]) =>
@@ -37,8 +34,7 @@ object TermConstructionProps extends QuasiquoteProperties("term construction") {
   }
 
   property("unquote term name into assign") = forAll {
-    (name: TermName, t: Tree) =>
-      q"$name = $t" ≈ Assign(Ident(name), t)
+    (name: TermName, t: Tree) => q"$name = $t" ≈ Assign(Ident(name), t)
   }
 
   property("unquote trees into block") = forAll {
@@ -61,8 +57,7 @@ object TermConstructionProps extends QuasiquoteProperties("term construction") {
   }
 
   property("unquote a list of arguments") = forAll {
-    (fun: Tree, args: List[Tree]) =>
-      q"$fun(..$args)" ≈ Apply(fun, args)
+    (fun: Tree, args: List[Tree]) => q"$fun(..$args)" ≈ Apply(fun, args)
   }
 
   property("unquote list and non-list fun arguments") = forAll {
@@ -134,8 +129,7 @@ object TermConstructionProps extends QuasiquoteProperties("term construction") {
     })
 
   property("unquote list of trees into block (1)") = forAll {
-    (trees: List[Tree]) =>
-      blockInvariant(q"{ ..$trees }", trees)
+    (trees: List[Tree]) => blockInvariant(q"{ ..$trees }", trees)
   }
 
   property("unquote list of trees into block (2)") = forAll {
@@ -265,17 +259,13 @@ object TermConstructionProps extends QuasiquoteProperties("term construction") {
 
   property("SI-7275 c1") = test {
     object O
-    implicit val liftO = Liftable[O.type] { _ =>
-      q"foo; bar"
-    }
+    implicit val liftO = Liftable[O.type] { _ => q"foo; bar" }
     assertEqAst(q"f(..$O)", "f(foo, bar)")
   }
 
   property("SI-7275 c2") = test {
     object O
-    implicit val liftO = Liftable[O.type] { _ =>
-      q"{ foo; bar }; { baz; bax }"
-    }
+    implicit val liftO = Liftable[O.type] { _ => q"{ foo; bar }; { baz; bax }" }
     assertEqAst(q"f(...$O)", "f(foo, bar)(baz, bax)")
   }
 

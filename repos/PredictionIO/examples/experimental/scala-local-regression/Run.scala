@@ -67,12 +67,8 @@ case class LocalPreparator(val pp: PreparatorParams = PreparatorParams())
     val xyi: Vector[(Vector[Double], Double)] = td.x
       .zip(td.y)
       .zipWithIndex
-      .filter { e =>
-        (e._2 % pp.n) != pp.k
-      }
-      .map { e =>
-        (e._1._1, e._1._2)
-      }
+      .filter { e => (e._2 % pp.n) != pp.k }
+      .map { e => (e._1._1, e._1._2) }
     TrainingData(xyi.map(_._1), xyi.map(_._2))
   }
 }

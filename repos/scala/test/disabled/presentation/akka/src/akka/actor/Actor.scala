@@ -19,8 +19,7 @@ import java.lang.reflect.InvocationTargetException
 sealed trait LifeCycleMessage extends Serializable
 
 /* Marker trait to show which Messages are automatically handled by Akka */
-sealed trait AutoReceivedMessage { self: LifeCycleMessage =>
-}
+sealed trait AutoReceivedMessage { self: LifeCycleMessage => }
 
 case class HotSwap(code: ActorRef => Actor.Receive, discardOld: Boolean = true)
     extends AutoReceivedMessage

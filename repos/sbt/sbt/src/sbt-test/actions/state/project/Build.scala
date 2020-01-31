@@ -16,9 +16,7 @@ object MyBuild extends Build {
   val check = InputKey[Unit]("check")
   val sample = AttributeKey[Int]("demo-key")
 
-  def updateDemoInit = state map { s =>
-    (s get sample getOrElse 9) + 1
-  }
+  def updateDemoInit = state map { s => (s get sample getOrElse 9) + 1 }
 
   lazy val root = Project("root", file(".")) settings (
     updateDemo <<= updateDemoInit updateState demoState,
@@ -64,10 +62,7 @@ object MyBuild extends Build {
     InputTask(resolvedScoped(ctx => (s: State) => f(ctx, s)))(dummyTask)
 
   def dummyTask =
-    (key: Any) =>
-      maxErrors map { _ =>
-        ()
-      }
+    (key: Any) => maxErrors map { _ => () }
   def str(o: Option[Int]) = o match {
     case None => "blue"; case Some(i) => i.toString
   }

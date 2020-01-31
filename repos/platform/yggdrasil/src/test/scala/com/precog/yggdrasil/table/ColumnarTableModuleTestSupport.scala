@@ -100,9 +100,7 @@ trait ColumnarTableModuleTestSupport[M[+_]]
     val lib = Map[String, CF1](
       "negate" -> cf.math.Negate,
       "coerceToDouble" -> cf.util.CoerceToDouble,
-      "true" -> CF1("testing::true") { _ =>
-        Some(Column.const(true))
-      }
+      "true" -> CF1("testing::true") { _ => Some(Column.const(true)) }
     )
 
     lib(name)

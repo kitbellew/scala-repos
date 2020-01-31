@@ -41,9 +41,7 @@ class TestJob1(env: Env) extends AbstractJob(env) {
   try {
     EventSource[Long](Some(null), None)
       .withTime(new java.util.Date(_))
-      .map { e =>
-        (e % 2, e)
-      }
+      .map { e => (e % 2, e) }
       .groupAndSumTo(CompoundStore.fromOffline[Long, Long](
         new InitialBatchedStore(BatchID(12L), null)))
       .set(BMonoidIsCommutative(true))

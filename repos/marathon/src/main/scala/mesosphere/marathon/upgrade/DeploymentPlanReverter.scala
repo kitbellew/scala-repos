@@ -30,9 +30,7 @@ private[upgrade] object DeploymentPlanReverter {
     def changesOnIds[T](originalSet: Set[T], targetSet: Set[T])(
         id: T => PathId): Seq[(Option[T], Option[T])] = {
       def mapById(entities: Set[T]): Map[PathId, T] =
-        entities.map { entity =>
-          id(entity) -> entity
-        }.toMap
+        entities.map { entity => id(entity) -> entity }.toMap
 
       val originalById = mapById(originalSet)
       val targetById = mapById(targetSet)
@@ -40,9 +38,7 @@ private[upgrade] object DeploymentPlanReverter {
       val ids = originalById.keys ++ targetById.keys
 
       ids.iterator
-        .map { id =>
-          originalById.get(id) -> targetById.get(id)
-        }
+        .map { id => originalById.get(id) -> targetById.get(id) }
         .to[Seq]
     }
 

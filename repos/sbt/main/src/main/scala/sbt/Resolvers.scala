@@ -35,9 +35,7 @@ object Resolvers {
     val url = info.uri.toURL
     val to = uniqueSubdirectoryFor(info.uri, in = info.staging)
 
-    Some { () =>
-      creates(to) { IO.unzipURL(url, to) }
-    }
+    Some { () => creates(to) { IO.unzipURL(url, to) } }
   }
 
   val subversion: Resolver = (info: ResolveInfo) => {
@@ -118,9 +116,7 @@ object Resolvers {
           }
         }
       } else
-        Some { () =>
-          creates(localCopy) { clone(from, to = localCopy) }
-        }
+        Some { () => creates(localCopy) { clone(from, to = localCopy) } }
     }
 
     private def normalized(uri: URI) = uri.copy(scheme = scheme)

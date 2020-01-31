@@ -8,12 +8,8 @@ object Test extends App {
     // This is currently correctly disallowed
     // val y : (D with E)#T = y
     val y: D with E = y
-    var sneak = { () =>
-      y.x
-    }
-    sneak = { () =>
-      new B {}
-    }
+    var sneak = { () => y.x }
+    sneak = { () => new B {} }
   }
 
   class F extends C {

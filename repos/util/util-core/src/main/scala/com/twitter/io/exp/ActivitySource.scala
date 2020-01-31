@@ -83,9 +83,7 @@ class CachingActivitySource[T](underlying: ActivitySource[T])
     */
   def get(name: String): Activity[T] = synchronized {
     gc()
-    Option(forward.get(name)) flatMap { wr =>
-      Option(wr.get())
-    } match {
+    Option(forward.get(name)) flatMap { wr => Option(wr.get()) } match {
       case Some(v) => v
       case None =>
         val v = underlying.get(name)
@@ -151,9 +149,7 @@ class FilePollingActivitySource private[exp] (
         }
       }
 
-      Closable.make { _ =>
-        Future { timerTask.cancel() }
-      }
+      Closable.make { _ => Future { timerTask.cancel() } }
     }
 
     Activity(v)

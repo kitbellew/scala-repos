@@ -131,9 +131,7 @@ object DependencyResolver {
       else if (coll.tail.isEmpty) coll.head :: acc
       else {
         val (selected, pending) = coll.partition { x =>
-          coll forall { y =>
-            (x eq y) || !y.dependencies.contains(x.relPath)
-          }
+          coll forall { y => (x eq y) || !y.dependencies.contains(x.relPath) }
         }
 
         if (selected.nonEmpty)

@@ -201,9 +201,7 @@ final class DecisionTreeRegressionModel private[ml] (
   }
 
   override protected def transformImpl(dataset: DataFrame): DataFrame = {
-    val predictUDF = udf { (features: Vector) =>
-      predict(features)
-    }
+    val predictUDF = udf { (features: Vector) => predict(features) }
     val predictVarianceUDF = udf { (features: Vector) =>
       predictVariance(features)
     }

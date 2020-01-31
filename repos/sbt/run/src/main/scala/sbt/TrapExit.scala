@@ -107,9 +107,7 @@ object TrapExit {
       originalHandler: Thread.UncaughtExceptionHandler)
       extends Thread.UncaughtExceptionHandler {
     def uncaughtException(thread: Thread, e: Throwable): Unit = {
-      withCause[InterruptedException, Unit](e) { interrupted =>
-        ()
-      } { other =>
+      withCause[InterruptedException, Unit](e) { interrupted => () } { other =>
         originalHandler.uncaughtException(thread, e)
       }
       thread.setUncaughtExceptionHandler(originalHandler)

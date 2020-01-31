@@ -147,9 +147,7 @@ object PythonRunner {
       .getOrElse("")
       .split(",")
       .filter(_.nonEmpty)
-      .map { p =>
-        formatPath(p, testWindows)
-      }
+      .map { p => formatPath(p, testWindows) }
   }
 
 }

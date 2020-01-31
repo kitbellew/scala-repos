@@ -184,8 +184,7 @@ trait FileUploadSupport extends ServletBase with HasMultipartConfig {
 
       override def getParameterMap: JMap[String, Array[String]] = {
         (new JHashMap[String, Array[String]].asScala ++ (formMap transform {
-          (k, v) =>
-            v.toArray
+          (k, v) => v.toArray
         })).asJava
       }
     }
@@ -278,9 +277,7 @@ case class FileItem(part: Part) {
   def getCharset: Option[String] = charset.orElse(null)
 
   def write(file: File): Unit = {
-    using(new FileOutputStream(file)) { out =>
-      io.copy(getInputStream, out)
-    }
+    using(new FileOutputStream(file)) { out => io.copy(getInputStream, out) }
   }
 
   def write(fileName: String): Unit = {

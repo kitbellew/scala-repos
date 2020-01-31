@@ -175,9 +175,7 @@ object Auth extends LilaController {
   }
 
   def checkYourEmail(name: String) = Open { implicit ctx =>
-    OptionOk(UserRepo named name) { user =>
-      html.auth.checkYourEmail(user)
-    }
+    OptionOk(UserRepo named name) { user => html.auth.checkYourEmail(user) }
   }
 
   def signupConfirmEmail(token: String) = Open { implicit ctx =>

@@ -97,8 +97,7 @@ object ScriptedPlugin extends Plugin {
     scriptedTests <<= scriptedTestsTask,
     scriptedRun <<= scriptedRunTask,
     scriptedDependencies <<= (compile in Test, publishLocal) map {
-      (analysis, pub) =>
-        Unit
+      (analysis, pub) => Unit
     },
     scriptedLaunchOpts := Seq(),
     scripted <<= scriptedTask

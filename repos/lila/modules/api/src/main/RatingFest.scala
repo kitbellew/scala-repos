@@ -60,9 +60,7 @@ object RatingFest {
               "blitz",
               "classical",
               "correspondence"
-            ).map { name =>
-              s"perfs.$name" -> BSONBoolean(true)
-            }
+            ).map { name => s"perfs.$name" -> BSONBoolean(true) }
           )),
         multi = true
       )

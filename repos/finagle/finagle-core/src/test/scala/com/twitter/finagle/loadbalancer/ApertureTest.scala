@@ -85,9 +85,7 @@ private trait ApertureTesting {
     def apply(i: Int) = factories.getOrElseUpdate(i, new Factory(i))
 
     def range(n: Int): Traversable[ServiceFactory[Unit, Unit]] =
-      Traversable.tabulate(n) { i =>
-        apply(i)
-      }
+      Traversable.tabulate(n) { i => apply(i) }
   }
 
 }

@@ -56,9 +56,7 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
       job: JobUIData): (String, String) = {
     val lastStageInfo = Option(job.stageIds)
       .filter(_.nonEmpty)
-      .flatMap { ids =>
-        parent.jobProgresslistener.stageIdToInfo.get(ids.max)
-      }
+      .flatMap { ids => parent.jobProgresslistener.stageIdToInfo.get(ids.max) }
     val lastStageData = lastStageInfo.flatMap { s =>
       parent.jobProgresslistener.stageIdToData.get((s.stageId, s.attemptId))
     }

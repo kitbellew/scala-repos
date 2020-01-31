@@ -115,9 +115,7 @@ final class SinatraRouteMatcher(pattern: String)
       }
 
     private def named: Parser[Builder => Builder] =
-      ":" ~> """\w+""".r ^^ { str => builder =>
-        builder addNamed str
-      }
+      ":" ~> """\w+""".r ^^ { str => builder => builder addNamed str }
 
     private def literal: Parser[Builder => Builder] =
       ("""[\.\+\(\)\$]""".r | ".".r) ^^ { str => builder =>
@@ -186,14 +184,10 @@ final class RailsRouteMatcher(pattern: String)
       param | glob | optional | static
 
     private def param: Parser[Builder => Builder] =
-      ":" ~> identifier ^^ { str => builder =>
-        builder addParam str
-      }
+      ":" ~> identifier ^^ { str => builder => builder addParam str }
 
     private def glob: Parser[Builder => Builder] =
-      "*" ~> identifier ^^ { str => builder =>
-        builder addParam str
-      }
+      "*" ~> identifier ^^ { str => builder => builder addParam str }
 
     private def optional: Parser[Builder => Builder] =
       "(" ~> tokens <~ ")" ^^ { subBuilder => builder =>
@@ -201,9 +195,7 @@ final class RailsRouteMatcher(pattern: String)
       }
 
     private def static: Parser[Builder => Builder] =
-      (escaped | char) ^^ { str => builder =>
-        builder addStatic str
-      }
+      (escaped | char) ^^ { str => builder => builder addStatic str }
 
     private def identifier: Regex = """[a-zA-Z_]\w*""".r
 

@@ -27,7 +27,6 @@ final class UserSearch(
     UserRepo named username map (_.toList)
 
   private def searchEmail(email: String) = emailAddress.validate(email) ?? {
-    fixed =>
-      UserRepo byEmail fixed map (_.toList)
+    fixed => UserRepo byEmail fixed map (_.toList)
   }
 }

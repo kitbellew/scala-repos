@@ -100,16 +100,12 @@ class HDFSCheckpointStore(val config: HDFSState.Config)(
     BatchID.toIterable(batcher.batchesCoveredBy(intersection))
 
   override def checkpointSuccessfulRun(runningBatches: Iterable[BatchID]) =
-    runningBatches.foreach { b =>
-      versionedStore.succeedVersion(version(b))
-    }
+    runningBatches.foreach { b => versionedStore.succeedVersion(version(b)) }
 
   override def checkpointFailure(
       runningBatches: Iterable[BatchID],
       err: Throwable) =
-    runningBatches.foreach { b =>
-      versionedStore.deleteVersion(version(b))
-    }
+    runningBatches.foreach { b => versionedStore.deleteVersion(version(b)) }
 
   override def checkpointPlanFailure(err: Throwable) = throw err
 

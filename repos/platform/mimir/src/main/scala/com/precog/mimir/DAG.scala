@@ -1634,9 +1634,7 @@ trait DAG extends Instructions {
 
       private def findMatch(specs: Vector[IdentitySpec])(
           spec: (IdentitySpec, Int)): Option[(IdentitySpec, (Int, Int))] = {
-        val idx = specs indexWhere { s =>
-          intersects(spec._1, s)
-        }
+        val idx = specs indexWhere { s => intersects(spec._1, s) }
         if (idx < 0) None
         else Some((union(spec._1, specs(idx)), (spec._2, idx)))
       }

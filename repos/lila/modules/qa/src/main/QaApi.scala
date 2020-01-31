@@ -307,9 +307,7 @@ final class QaApi(
           case Left(q) => notifier.createQuestionComment(q, c, user)
           case Right(a) =>
             question findById a.questionId foreach {
-              _ foreach { q =>
-                notifier.createAnswerComment(q, a, c, user)
-              }
+              _ foreach { q => notifier.createAnswerComment(q, a, c, user) }
             }
         }
       } inject c

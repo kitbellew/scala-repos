@@ -44,10 +44,8 @@ object Cors {
   /** A CORS policy that lets you do whatever you want.  Don't use this in production. */
   val UnsafePermissivePolicy: Policy = Policy(allowsOrigin = { origin =>
     Some(origin)
-  }, allowsMethods = { method =>
-    Some(method :: Nil)
-  }, allowsHeaders = { headers =>
-    Some(headers)
+  }, allowsMethods = { method => Some(method :: Nil) }, allowsHeaders = {
+    headers => Some(headers)
   }, supportsCredentials = true)
 
   /**
@@ -261,12 +259,9 @@ object CorsFilter {
     val methodList = Some(sep.split(methods).toSeq)
     val headerList = Some(sep.split(headers).toSeq)
     val exposeList = sep.split(exposes).toSeq
-    new Cors.HttpFilter(Cors.Policy({ _ =>
-      Some(origin)
-    }, { _ =>
-      methodList
-    }, { _ =>
-      headerList
-    }, exposeList))
+    new Cors.HttpFilter(
+      Cors.Policy({ _ => Some(origin) }, { _ => methodList }, { _ =>
+        headerList
+      }, exposeList))
   }
 }

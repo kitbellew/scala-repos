@@ -60,9 +60,7 @@ trait ClusteringLibSpecs[M[+_]]
       centers: Array[Array[Double]]): Double = {
     points.foldLeft(0.0) { (cost, p) =>
       cost + centers
-        .map({ c =>
-          (p - c).norm
-        })
+        .map({ c => (p - c).norm })
         .qmin
     }
   }
@@ -235,12 +233,8 @@ trait ClusteringLibSpecs[M[+_]]
       val GeneratedPointSet(pointsA, centersA) = genPoints(5000, dimensionA, k)
       val GeneratedPointSet(pointsB, centersB) = genPoints(5000, dimensionB, k)
 
-      val jvalsA = pointsToJson(pointsA) map { v =>
-        RObject(Map("a" -> v))
-      }
-      val jvalsB = pointsToJson(pointsB) map { v =>
-        RObject(Map("b" -> v))
-      }
+      val jvalsA = pointsToJson(pointsA) map { v => RObject(Map("a" -> v)) }
+      val jvalsB = pointsToJson(pointsB) map { v => RObject(Map("b" -> v)) }
       val jvals = Random.shuffle(jvalsA ++ jvalsB)
 
       writeRValuesToDataset(jvals) { dataset =>
@@ -325,9 +319,7 @@ trait ClusteringLibSpecs[M[+_]]
       points: Array[Array[Double]],
       centers: Array[Array[Double]]): Map[RValue, String] = {
     points.map { p =>
-      val id = (0 until centers.length) minBy { i =>
-        (p - centers(i)).norm
-      }
+      val id = (0 until centers.length) minBy { i => (p - centers(i)).norm }
       pointToJson(p) -> ("cluster" + (id + 1))
     }.toMap
   }

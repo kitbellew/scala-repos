@@ -41,9 +41,7 @@ object HMapTests extends Properties("HMap") {
 
   implicit def hmapGen: Gen[HMap[Key, Value]] =
     Gen.listOf(zip(keyGen, valGen)).map { list =>
-      list.foldLeft(HMap.empty[Key, Value]) { (hm, kv) =>
-        hm + kv
-      }
+      list.foldLeft(HMap.empty[Key, Value]) { (hm, kv) => hm + kv }
     }
 
   implicit def arb[T](implicit g: Gen[T]): Arbitrary[T] = Arbitrary(g)

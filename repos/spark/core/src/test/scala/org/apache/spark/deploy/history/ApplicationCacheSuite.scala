@@ -448,9 +448,7 @@ class ApplicationCacheSuite
       operations.putAppUI(appId, attempt1, true, t, t, t)
     }
     // now go through them in sequence reading them, expect evictions
-    ids.foreach { id =>
-      cache.get(id, attempt1)
-    }
+    ids.foreach { id => cache.get(id, attempt1) }
     logInfo(cache.toString)
     val metrics = cache.metrics
 

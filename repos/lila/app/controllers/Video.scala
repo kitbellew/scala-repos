@@ -29,8 +29,7 @@ object Video extends LilaController {
       control.query match {
         case Some(query) =>
           env.api.video.search(ctx.me, query, getInt("page") | 1) map {
-            videos =>
-              Ok(html.video.search(videos, control))
+            videos => Ok(html.video.search(videos, control))
           }
         case None =>
           env.api.video
@@ -69,9 +68,7 @@ object Video extends LilaController {
 
   def tags = Open { implicit ctx =>
     WithUserControl { control =>
-      env.api.tag.allPopular map { tags =>
-        Ok(html.video.tags(tags, control))
-      }
+      env.api.tag.allPopular map { tags => Ok(html.video.tags(tags, control)) }
     }
   }
 }

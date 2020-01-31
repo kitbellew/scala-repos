@@ -883,9 +883,7 @@ class SQLConf
     sqlConfEntries.synchronized {
       sqlConfEntries.values.asScala
         .filter(_.isPublic)
-        .map { entry =>
-          (entry.key, entry.defaultValueString, entry.doc)
-        }
+        .map { entry => (entry.key, entry.defaultValueString, entry.doc) }
         .toSeq
     }
 

@@ -83,9 +83,7 @@ class appTest extends JUnitSuite with ShouldMatchers {
   def testAlertDialog(): Unit = {
     val activity = Robolectric.buildActivity(classOf[SActivityImpl]).create.get
     val alert = activity.alertDialog
-      .positiveButton("POS", { (di: DialogInterface, id: Int) =>
-        di.dismiss
-      })
+      .positiveButton("POS", { (di: DialogInterface, id: Int) => di.dismiss })
       .show()
     alert shouldBe a('showing)
 

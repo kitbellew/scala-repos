@@ -77,9 +77,7 @@ object Combinatorics {
     (1 to k).foldLeft(res)((a, b) => {
       val myname = Symbol("n" + b)
       val newname = Symbol("k" + b)
-      a.map(myname -> newname) { inpc: Int =>
-          input(inpc - 1)
-        }
+      a.map(myname -> newname) { inpc: Int => input(inpc - 1) }
         .discard(myname)
     })
 
@@ -118,9 +116,7 @@ object Combinatorics {
     (1 to k).foldLeft(res)((a, b) => {
       val myname = Symbol("n" + b)
       val newname = Symbol("k" + b)
-      a.map(myname -> newname) { inpc: Int =>
-          input(inpc - 1)
-        }
+      a.map(myname -> newname) { inpc: Int => input(inpc - 1) }
         .discard(myname)
     })
 
@@ -228,9 +224,7 @@ object Combinatorics {
       .foldLeft(res)((a, b) => {
         val (num, wt) = b
         val myname = Symbol("k" + num)
-        a.map(myname -> myname) { x: Int =>
-          (x / wt).toInt
-        }
+        a.map(myname -> myname) { x: Int => (x / wt).toInt }
       })
   }
 

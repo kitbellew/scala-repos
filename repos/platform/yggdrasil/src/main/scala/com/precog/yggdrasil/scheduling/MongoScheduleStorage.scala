@@ -70,8 +70,7 @@ object MongoScheduleStorage {
 
     val dbStop =
       Stoppable.fromFuture(database.disconnect.fallbackTo(Future(())) flatMap {
-        _ =>
-          mongo.close
+        _ => mongo.close
       })
 
     (storage, dbStop)
@@ -93,14 +92,12 @@ class MongoScheduleStorage private[MongoScheduleStorage] (
   database(ensureIndex("report_index").on(".id").in(settings.reports))
 
   def addTask(task: ScheduledTask) =
-    EitherT.right(insertTask(-\/(task), settings.tasks)) map { _ =>
-      task
-    }
+    EitherT.right(insertTask(-\/(task), settings.tasks)) map { _ => task }
 
   private def insertTask(task: ScheduledTask \/ JObject, collection: String) =
-    database(insert(task.valueOr { st =>
-      st.serialize.asInstanceOf[JObject]
-    }).into(collection))
+    database(
+      insert(task.valueOr { st => st.serialize.asInstanceOf[JObject] })
+        .into(collection))
 
   def deleteTask(id: UUID) = EitherT {
     database(selectOne().from(settings.tasks).where(".id" === id.toString)) flatMap {
@@ -124,9 +121,7 @@ class MongoScheduleStorage private[MongoScheduleStorage] (
   def reportRun(report: ScheduledRunReport) =
     database(
       insert(report.serialize.asInstanceOf[JObject])
-        .into(settings.reports)) map { _ =>
-      PrecogUnit
-    }
+        .into(settings.reports)) map { _ => PrecogUnit }
 
   def statusFor(id: UUID, limit: Option[Int]) = {
     database(selectOne().from(settings.tasks).where(".id" === id.toString)) flatMap {

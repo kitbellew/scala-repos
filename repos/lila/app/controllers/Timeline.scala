@@ -27,9 +27,7 @@ object Timeline extends LilaController {
         },
         _ => {
           val entries = Env.timeline.entryRepo.moreUserEntries(me.id, nb)
-          entries map { es =>
-            Ok(Json.obj("entries" -> es))
-          }
+          entries map { es => Ok(Json.obj("entries" -> es)) }
         }
       )
   }

@@ -69,8 +69,7 @@ object JavaStreamEnrichmentsProperties
     writeRead(implicitly[Arbitrary[T]].arbitrary, w, r)
 
   property("Can (read/write)Size") = writeRead(Gen.chooseNum(0, Int.MaxValue), {
-    (i: Int, os) =>
-      os.writePosVarInt(i)
+    (i: Int, os) => os.writePosVarInt(i)
   }, { _.readPosVarInt })
 
   property("Can (read/write)Float") = writeRead({ (i: Float, os) =>

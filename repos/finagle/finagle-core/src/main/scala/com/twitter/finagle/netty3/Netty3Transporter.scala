@@ -91,9 +91,7 @@ private[netty3] class ChannelConnector[In, Out](
       }
     })
 
-    promise onFailure { _ =>
-      Channels.close(ch)
-    }
+    promise onFailure { _ => Channels.close(ch) }
   }
 }
 

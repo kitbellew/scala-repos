@@ -105,9 +105,7 @@ private[mux] class ClientServerTest(canDispatch: Boolean)
     import ctx._
 
     val p1, p2, p3 = new Promise[Response]
-    val reqs = (1 to 3) map { i =>
-      Request(Path.empty, buf(i.toByte))
-    }
+    val reqs = (1 to 3) map { i => Request(Path.empty, buf(i.toByte)) }
     when(service(reqs(0))).thenReturn(p1)
     when(service(reqs(1))).thenReturn(p2)
     when(service(reqs(2))).thenReturn(p3)
@@ -122,9 +120,7 @@ private[mux] class ClientServerTest(canDispatch: Boolean)
     for (f <- Seq(f1, f2, f3))
       assert(f.poll == None)
 
-    val reps = Seq(10, 20, 9) map { i =>
-      Response(buf(i.toByte))
-    }
+    val reps = Seq(10, 20, 9) map { i => Response(buf(i.toByte)) }
     p2.setValue(reps(1))
     assert(f1.poll == None)
     assert(f2.poll == Some(Return(reps(1))))

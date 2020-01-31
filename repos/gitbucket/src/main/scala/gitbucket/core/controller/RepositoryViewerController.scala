@@ -655,8 +655,7 @@ trait RepositoryViewerControllerBase extends ControllerBase {
     val newBranchName = params.getOrElse("new", halt(400))
     val fromBranchName = params.getOrElse("from", halt(400))
     using(Git.open(getRepositoryDir(repository.owner, repository.name))) {
-      git =>
-        JGitUtil.createBranch(git, fromBranchName, newBranchName)
+      git => JGitUtil.createBranch(git, fromBranchName, newBranchName)
     } match {
       case Right(message) =>
         flash += "info" -> message
@@ -765,8 +764,7 @@ trait RepositoryViewerControllerBase extends ControllerBase {
   }
 
   private val readmeFiles = PluginRegistry().renderableExtensions.map {
-    extension =>
-      s"readme.${extension}"
+    extension => s"readme.${extension}"
   } ++ Seq("readme.txt", "readme")
 
   /**

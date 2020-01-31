@@ -173,11 +173,7 @@ class NestingTest extends AsyncTest[RelationalTestDB] {
     // Use Option.map
     val q1d = q1.map(_.map(_.a))
     val q1d2 = q1.map(_.map(x => (x.a, x.b, x.c)))
-    val q2d = q2.map { io: Rep[Option[Int]] =>
-      io.map { i: Rep[Int] =>
-        i + 1
-      }
-    }
+    val q2d = q2.map { io: Rep[Option[Int]] => io.map { i: Rep[Int] => i + 1 } }
     val q3d = q3.map(_.map(s => (s, s, 1)))
     val q4d = q4.map(_.filter(_.isDefined).map(_.getOrElse(0)))
     val q1dt: Query[Rep[Option[Int]], _, Seq] = q1d
@@ -214,36 +210,20 @@ class NestingTest extends AsyncTest[RelationalTestDB] {
     )
 
     // Use Option.flatMap
-    val q1e1 = q1.map { to =>
-      to.flatMap { t =>
-        Rep.Some(t.b)
-      }
-    }
-    val q1e2 = q1.map { to =>
-      to.flatMap { t =>
-        t.c
-      }
-    }
+    val q1e1 = q1.map { to => to.flatMap { t => Rep.Some(t.b) } }
+    val q1e2 = q1.map { to => to.flatMap { t => t.c } }
     val q1e3 = q1.map(to => Rep.Some(to)).map(_.flatMap(identity))
-    val q2e = q2.map { io =>
-      io.flatMap { i =>
-        Rep.Some(i)
-      }
-    }
+    val q2e = q2.map { io => io.flatMap { i => Rep.Some(i) } }
     val q1e1t: Query[Rep[Option[String]], _, Seq] = q1e1
     val q1e2t: Query[Rep[Option[Int]], _, Seq] = q1e2
     val q2et: Query[Rep[Option[Int]], _, Seq] = q2e
 
     lazy val t5 = seq(
       mark("q1e1", q1e1.result).map(_ shouldBe r.map(t => Some(t)).map { to =>
-        to.flatMap { t =>
-          Some(t._2)
-        }
+        to.flatMap { t => Some(t._2) }
       }),
       mark("q1e2", q1e2.result).map(_ shouldBe r.map(t => Some(t)).map { to =>
-        to.flatMap { t =>
-          t._3
-        }
+        to.flatMap { t => t._3 }
       }),
       mark("q1e3", q1e3.result).map(
         _ shouldBe r
@@ -251,34 +231,20 @@ class NestingTest extends AsyncTest[RelationalTestDB] {
           .map(to => Some(to))
           .map(_.flatMap(identity))),
       mark("q2e", q2e.result).map(_ shouldBe r.map(t => Some(t._1)).map { io =>
-        io.flatMap { i =>
-          Some(i)
-        }
+        io.flatMap { i => Some(i) }
       })
     )
 
     // Use Option.flatten
-    val q1f1 = q1.map { to =>
-      Rep.Some(to)
-    }
-    val q1f2 = q1.map { to =>
-      Rep.Some(to).flatten
-    }
+    val q1f1 = q1.map { to => Rep.Some(to) }
+    val q1f2 = q1.map { to => Rep.Some(to).flatten }
     val q1f3 = q1
-      .map { to =>
-        Rep.Some(to)
-      }
+      .map { to => Rep.Some(to) }
       .map(_.flatten)
-    val q2f1 = q2.map { io =>
-      Rep.Some(io)
-    }
-    val q2f2 = q2.map { io =>
-      Rep.Some(io).flatten
-    }
+    val q2f1 = q2.map { io => Rep.Some(io) }
+    val q2f2 = q2.map { io => Rep.Some(io).flatten }
     val q2f3 = q2
-      .map { io =>
-        Rep.Some(io)
-      }
+      .map { io => Rep.Some(io) }
       .map(_.flatten)
     val q1f1t: Query[Rep[Option[Option[X]]], _, Seq] = q1f1
     val q1f2t: Query[Rep[Option[X]], _, Seq] = q1f2
@@ -297,36 +263,26 @@ class NestingTest extends AsyncTest[RelationalTestDB] {
             Some(Some((3, "3", None))))),
       q1f2.result
         .named("q1f2")
-        .map(_ shouldBe r.map(t => Some(t)).map { to =>
-          Some(to).flatten
-        }),
+        .map(_ shouldBe r.map(t => Some(t)).map { to => Some(to).flatten }),
       q1f3.result
         .named("q1f3")
         .map(
           _ shouldBe r
             .map(t => Some(t))
-            .map { to =>
-              Some(to)
-            }
+            .map { to => Some(to) }
             .map(_.flatten)),
       q2f1.result
         .named("q2f1")
-        .map(_ shouldBe r.map(t => Some(t._1)).map { io =>
-          Some(io)
-        }),
+        .map(_ shouldBe r.map(t => Some(t._1)).map { io => Some(io) }),
       q2f2.result
         .named("q2f2")
-        .map(_ shouldBe r.map(t => Some(t._1)).map { io =>
-          Some(io).flatten
-        }),
+        .map(_ shouldBe r.map(t => Some(t._1)).map { io => Some(io).flatten }),
       q2f3.result
         .named("q2f3")
         .map(
           _ shouldBe r
             .map(t => Some(t._1))
-            .map { io =>
-              Some(io)
-            }
+            .map { io => Some(io) }
             .map(_.flatten))
     )
 

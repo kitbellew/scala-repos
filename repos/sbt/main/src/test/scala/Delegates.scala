@@ -19,14 +19,10 @@ object Delegates extends Properties("delegates") {
   }
 
   property("no duplicate scopes") = forAll { (keys: Keys) =>
-    allDelegates(keys) { (_, ds) =>
-      ds.distinct.size == ds.size
-    }
+    allDelegates(keys) { (_, ds) => ds.distinct.size == ds.size }
   }
   property("delegates non-empty") = forAll { (keys: Keys) =>
-    allDelegates(keys) { (_, ds) =>
-      ds.nonEmpty
-    }
+    allDelegates(keys) { (_, ds) => ds.nonEmpty }
   }
 
   property("An initially Global axis is Global in all delegates") = allAxes(
@@ -48,14 +44,10 @@ object Delegates extends Properties("delegates") {
     allAxes(globalCombinations)
 
   property("initial scope first") = forAll { (keys: Keys) =>
-    allDelegates(keys) { (scope, ds) =>
-      ds.head == scope
-    }
+    allDelegates(keys) { (scope, ds) => ds.head == scope }
   }
   property("global scope last") = forAll { (keys: Keys) =>
-    allDelegates(keys) { (_, ds) =>
-      ds.last == Scope.GlobalScope
-    }
+    allDelegates(keys) { (_, ds) => ds.last == Scope.GlobalScope }
   }
 
   def allAxes(f: (Scope, Seq[Scope], Scope => ScopeAxis[_]) => Prop): Prop =
@@ -82,9 +74,7 @@ object Delegates extends Properties("delegates") {
       ds: Seq[Scope],
       axis: Scope => ScopeAxis[_]): Prop =
     (axis(s) != Global) ||
-      all(ds map { d =>
-        (axis(d) == Global): Prop
-      }: _*)
+      all(ds map { d => (axis(d) == Global): Prop }: _*)
   def globalCombinations(
       s: Scope,
       ds: Seq[Scope],

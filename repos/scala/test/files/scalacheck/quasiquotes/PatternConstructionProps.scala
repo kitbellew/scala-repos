@@ -3,17 +3,14 @@ import scala.reflect.runtime.universe._, Flag._
 
 object PatternConstructionProps
     extends QuasiquoteProperties("pattern construction") {
-  property("unquote bind") = forAll { (bind: Bind) =>
-    pq"$bind" ≈ bind
-  }
+  property("unquote bind") = forAll { (bind: Bind) => pq"$bind" ≈ bind }
 
   property("unquote name into bind") = forAll { (name: TermName) =>
     pq"$name" ≈ Bind(name, Ident(termNames.WILDCARD))
   }
 
   property("unquote name and tree into bind") = forAll {
-    (name: TermName, tree: Tree) =>
-      pq"$name @ $tree" ≈ Bind(name, tree)
+    (name: TermName, tree: Tree) => pq"$name @ $tree" ≈ Bind(name, tree)
   }
 
   property("unquote type name into typed") = forAll { (name: TypeName) =>

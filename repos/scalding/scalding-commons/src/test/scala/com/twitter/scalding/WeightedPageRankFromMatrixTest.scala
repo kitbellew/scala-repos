@@ -73,9 +73,9 @@ class WeightedPageRankFromMatrixSpec extends WordSpec with Matchers {
       .sink[(Int, Double)](Tsv("root/constants/priorVector")) { outputBuffer =>
         outputBuffer should have size 5
         val expectedValue = ((1 - d) / 2) * d
-        assertVectorsEqual(new Array[Double](5).map { v =>
-          expectedValue
-        }, outputBuffer.map(_._2).toArray)
+        assertVectorsEqual(
+          new Array[Double](5).map { v => expectedValue },
+          outputBuffer.map(_._2).toArray)
       }
       .sink[(Int, Double)](Tsv("root/iterations/1")) { outputBuffer =>
         outputBuffer should have size 5
@@ -122,15 +122,11 @@ object WeightedPageRankFromMatrixSpec {
 
   def toSparseMap[Row, Col, V](
       iterable: Iterable[(Row, Col, V)]): Map[(Row, Col), V] =
-    iterable.map { entry =>
-      ((entry._1, entry._2), entry._3)
-    }.toMap
+    iterable.map { entry => ((entry._1, entry._2), entry._3) }.toMap
 
   def filledColumnVector(value: Double, size: Int): List[(Int, Double)] = {
     val vector = mutable.ListBuffer[(Int, Double)]()
-    (0 until size).foreach { row =>
-      vector += new Tuple2(row, value)
-    }
+    (0 until size).foreach { row => vector += new Tuple2(row, value) }
 
     vector.toList
   }

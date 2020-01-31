@@ -105,8 +105,7 @@ object LookupJoin extends Serializable {
       gate: (T, T) => Boolean): TypedPipe[(T, (K, (V, Option[JoinedV])))] = {
 
     implicit val keepNew: Semigroup[JoinedV] = Semigroup.from {
-      (older, newer) =>
-        newer
+      (older, newer) => newer
     }
     withWindowRightSumming(left, right, reducers)(gate)
   }

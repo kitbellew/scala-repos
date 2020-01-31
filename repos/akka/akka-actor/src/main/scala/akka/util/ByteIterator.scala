@@ -538,9 +538,7 @@ abstract class ByteIterator extends BufferedIterator[Byte] {
 
   override def foldLeft[@specialized B](z: B)(op: (B, Byte) ⇒ B): B = {
     var acc = z
-    foreach { byte ⇒
-      acc = op(acc, byte)
-    }
+    foreach { byte ⇒ acc = op(acc, byte) }
     acc
   }
 

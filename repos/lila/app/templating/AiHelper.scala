@@ -13,9 +13,7 @@ trait AiHelper { self: I18nHelper =>
       implicit ctx: UserContext): String = {
     val name = trans.aiNameLevelAiLevel.str(aiName, level)
     val rating = withRating ?? {
-      aiRating(level) ?? { r =>
-        s"&nbsp;($r)"
-      }
+      aiRating(level) ?? { r => s"&nbsp;($r)" }
     }
     s"$name$rating"
   }

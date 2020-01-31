@@ -48,9 +48,7 @@ object ApplicationBuild extends Build {
       checkLogContains))
 
   val compileIgnoreErrorsTask = TaskKey[Unit]("compileIgnoreErrors") <<= state
-    .map { state =>
-      Project.runTask(compile in Compile, state)
-    }
+    .map { state => Project.runTask(compile in Compile, state) }
 
   val main = Project(appName, file("."))
     .enablePlugins(PlayScala)

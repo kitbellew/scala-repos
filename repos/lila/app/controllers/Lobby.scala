@@ -24,9 +24,7 @@ object Lobby extends LilaController {
   }
 
   def handleStatus(req: RequestHeader, status: Results.Status): Fu[Result] = {
-    reqToCtx(req) flatMap { ctx =>
-      renderHome(status)(ctx)
-    }
+    reqToCtx(req) flatMap { ctx => renderHome(status)(ctx) }
   }
 
   def renderHome(status: Results.Status)(implicit ctx: Context): Fu[Result] = {
@@ -43,8 +41,7 @@ object Lobby extends LilaController {
       html = fuccess(NotFound),
       api = _ =>
         ctx.me.fold(Env.lobby.seekApi.forAnon)(Env.lobby.seekApi.forUser) map {
-          seeks =>
-            Ok(JsArray(seeks.map(_.render)))
+          seeks => Ok(JsArray(seeks.map(_.render)))
         }
     )
   }

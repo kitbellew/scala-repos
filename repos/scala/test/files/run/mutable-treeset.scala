@@ -9,9 +9,7 @@ object Test extends App {
   val min = list.min
   val max = list.max
   val nonlist = ((min - 10) until (max + 20) filterNot list.contains).toList
-  val sublist = list filter { x =>
-    x >= (min + 1) && x < max
-  }
+  val sublist = list filter { x => x >= (min + 1) && x < max }
   val distinctSublist = sublist.distinct
   val subnonlist = min :: max :: nonlist
   val subsorted = distinctSublist.sorted
@@ -19,9 +17,7 @@ object Test extends App {
   // subsublist for a 2nd level of slicing
   val almostmin = sublist.min
   val almostmax = sublist.max
-  val subsublist = sublist filter { x =>
-    x >= (almostmin + 1) && x < almostmax
-  }
+  val subsublist = sublist filter { x => x >= (almostmin + 1) && x < almostmax }
   val distinctSubsublist = subsublist.distinct
   val subsubnonlist = almostmin :: almostmax :: subnonlist
   val subsubsorted = distinctSubsublist.sorted

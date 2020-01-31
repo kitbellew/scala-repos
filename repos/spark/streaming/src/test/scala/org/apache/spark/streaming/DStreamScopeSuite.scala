@@ -86,12 +86,8 @@ class DStreamScopeSuite
 
   test("scoping simple operations") {
     val inputStream = new DummyInputDStream(ssc)
-    val mappedStream = inputStream.map { i =>
-      i + 1
-    }
-    val filteredStream = mappedStream.filter { i =>
-      i % 2 == 0
-    }
+    val mappedStream = inputStream.map { i => i + 1 }
+    val filteredStream = mappedStream.filter { i => i % 2 == 0 }
     filteredStream.initialize(Time(0))
 
     val mappedScopeBase = mappedStream.baseScope.map(RDDOperationScope.fromJson)

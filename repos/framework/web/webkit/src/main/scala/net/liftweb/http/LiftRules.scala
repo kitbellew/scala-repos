@@ -579,9 +579,7 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * For each unload hook registered, run them during destroy()
     */
   private[http] def runUnloadHooks() {
-    unloadHooks.toList.foreach { f =>
-      tryo { f() }
-    }
+    unloadHooks.toList.foreach { f => tryo { f() } }
   }
 
   /**
@@ -2326,9 +2324,7 @@ private[http] case object DefaultBootstrap extends Bootable {
     val f = createInvoker(
       "boot",
       Class.forName("bootstrap.liftweb.Boot").newInstance.asInstanceOf[AnyRef])
-    f.map { f =>
-      f()
-    }
+    f.map { f => f() }
   }
 }
 

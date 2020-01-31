@@ -106,9 +106,7 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
       testUtils.endpointUrl,
       fakeBlockIds(1),
       Array(SequenceNumberRanges(allRanges.toArray)))
-      .map { bytes =>
-        new String(bytes).toInt
-      }
+      .map { bytes => new String(bytes).toInt }
       .collect()
     assert(receivedData1.toSet === testData.toSet)
 
@@ -118,12 +116,8 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
       testUtils.regionName,
       testUtils.endpointUrl,
       fakeBlockIds(allRanges.size),
-      allRanges.map { range =>
-        SequenceNumberRanges(Array(range))
-      }.toArray)
-      .map { bytes =>
-        new String(bytes).toInt
-      }
+      allRanges.map { range => SequenceNumberRanges(Array(range)) }.toArray)
+      .map { bytes => new String(bytes).toInt }
       .collect()
     assert(receivedData2.toSet === testData.toSet)
 
@@ -133,12 +127,8 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
       testUtils.regionName,
       testUtils.endpointUrl,
       fakeBlockIds(allRanges.size),
-      allRanges.map { range =>
-        SequenceNumberRanges(Array(range))
-      }.toArray)
-      .map { bytes =>
-        new String(bytes).toInt
-      }
+      allRanges.map { range => SequenceNumberRanges(Array(range)) }.toArray)
+      .map { bytes => new String(bytes).toInt }
       .collectPartitions()
     assert(receivedData3.length === allRanges.size)
     for (i <- 0 until allRanges.size) {
@@ -294,9 +284,7 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
       blockIds,
       ranges)
     val collectedData = rdd
-      .map { bytes =>
-        new String(bytes).toInt
-      }
+      .map { bytes => new String(bytes).toInt }
       .collect()
     assert(collectedData.toSet === testData.toSet)
 
@@ -333,9 +321,7 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
       rdd.removeBlocks()
       assert(
         rdd
-          .map { bytes =>
-            new String(bytes).toInt
-          }
+          .map { bytes => new String(bytes).toInt }
           .collect()
           .toSet === testData.toSet)
     }
@@ -343,9 +329,7 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
 
   /** Generate fake block ids */
   private def fakeBlockIds(num: Int): Array[BlockId] = {
-    Array.tabulate(num) { i =>
-      new StreamBlockId(0, i)
-    }
+    Array.tabulate(num) { i => new StreamBlockId(0, i) }
   }
 }
 

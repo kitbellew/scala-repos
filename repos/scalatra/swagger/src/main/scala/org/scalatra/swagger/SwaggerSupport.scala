@@ -85,9 +85,7 @@ object SwaggerSupportSyntax {
         }
 
       private def named: Parser[Builder => Builder] =
-        ":" ~> """\w+""".r ^^ { str => builder =>
-          builder addNamed str
-        }
+        ":" ~> """\w+""".r ^^ { str => builder => builder addNamed str }
 
       private def literal: Parser[Builder => Builder] =
         ("""[\.\+\(\)\$]""".r | ".".r) ^^ { str => builder =>
@@ -129,14 +127,10 @@ object SwaggerSupportSyntax {
         param | glob | optional | static
 
       private def param: Parser[Builder => Builder] =
-        ":" ~> identifier ^^ { str => builder =>
-          builder addParam str
-        }
+        ":" ~> identifier ^^ { str => builder => builder addParam str }
 
       private def glob: Parser[Builder => Builder] =
-        "*" ~> identifier ^^ { str => builder =>
-          builder addParam str
-        }
+        "*" ~> identifier ^^ { str => builder => builder addParam str }
 
       private def optional: Parser[Builder => Builder] =
         "(" ~> tokens <~ ")" ^^ { subBuilder => builder =>
@@ -144,9 +138,7 @@ object SwaggerSupportSyntax {
         }
 
       private def static: Parser[Builder => Builder] =
-        (escaped | char) ^^ { str => builder =>
-          builder addStatic str
-        }
+        (escaped | char) ^^ { str => builder => builder addStatic str }
 
       private def identifier = """[a-zA-Z_]\w*""".r
 
@@ -557,9 +549,7 @@ trait SwaggerSupportSyntax extends Initializable with CorsSupport {
     if (st.isOption) b.optional
     if (st.isCollection) b.multiValued
 
-    Swagger.modelToSwagger[T] foreach { m =>
-      b.description(m.description)
-    }
+    Swagger.modelToSwagger[T] foreach { m => b.description(m.description) }
     b
   }
   private[this] def swaggerParam(
@@ -604,8 +594,7 @@ trait SwaggerSupportSyntax extends Initializable with CorsSupport {
     swaggerMeta(Symbols.Operation, op)
 
   protected def swaggerMeta(s: Symbol, v: Any): RouteTransformer = {
-    (route: Route) ⇒
-      route.copy(metadata = route.metadata + (s -> v))
+    (route: Route) ⇒ route.copy(metadata = route.metadata + (s -> v))
   }
   implicit def dataType2string(dt: DataType) = dt.name
 

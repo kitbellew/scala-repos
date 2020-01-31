@@ -617,9 +617,7 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
       }
 
     def sendJobs(): Unit = {
-      0 until settings.workBatchSize foreach { _ ⇒
-        send(createJob())
-      }
+      0 until settings.workBatchSize foreach { _ ⇒ send(createJob()) }
     }
 
     def createJob(): Job = {
@@ -1152,9 +1150,7 @@ abstract class StressSpec
           reportResult {
             val nextAS =
               if (activeRoles contains myself) {
-                previousAS foreach { as ⇒
-                  TestKit.shutdownActorSystem(as)
-                }
+                previousAS foreach { as ⇒ TestKit.shutdownActorSystem(as) }
                 val sys = ActorSystem(system.name, system.settings.config)
                 muteLog(sys)
                 Cluster(sys).joinSeedNodes(seedNodes.toIndexedSeq map address)
@@ -1184,9 +1180,7 @@ abstract class StressSpec
       }
     }
 
-    loop(1, None, Set.empty) foreach { as ⇒
-      TestKit.shutdownActorSystem(as)
-    }
+    loop(1, None, Set.empty) foreach { as ⇒ TestKit.shutdownActorSystem(as) }
     within(loopDuration) {
       runOn(usedRoles: _*) {
         awaitMembersUp(nbrUsedRoles, timeout = remainingOrDefault)

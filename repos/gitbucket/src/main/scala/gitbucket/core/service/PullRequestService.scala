@@ -21,9 +21,7 @@ trait PullRequestService { self: IssuesService =>
       PullRequests
         .filter(_.byPrimaryKey(owner, repository, issueId))
         .firstOption
-        .map { pullreq =>
-          (issue, pullreq)
-        }
+        .map { pullreq => (issue, pullreq) }
     }
 
   def updateCommitId(
@@ -56,9 +54,7 @@ trait PullRequestService { self: IssuesService =>
       .map { case (userName, t) => userName -> t.length }
       .sortBy(_._2 desc)
       .list
-      .map { x =>
-        PullRequestCount(x._1, x._2)
-      }
+      .map { x => PullRequestCount(x._1, x._2) }
 
 //  def getAllPullRequestCountGroupByUser(closed: Boolean, userName: String)(implicit s: Session): List[PullRequestCount] =
 //    PullRequests
@@ -246,8 +242,7 @@ object PullRequestService {
       state -> summary
     }
     lazy val statusesAndRequired: List[(CommitStatus, Boolean)] = statuses.map {
-      s =>
-        s -> branchProtection.contexts.exists(_ == s.context)
+      s => s -> branchProtection.contexts.exists(_ == s.context)
     }
     lazy val isAllSuccess = commitStateSummary._1 == CommitState.SUCCESS
   }

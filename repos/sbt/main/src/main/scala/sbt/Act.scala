@@ -167,9 +167,7 @@ object Act {
   def optionalAxis[T](
       p: Parser[T],
       ifNone: ScopeAxis[T]): Parser[ScopeAxis[T]] =
-    p.? map { opt =>
-      toAxis(opt, ifNone)
-    }
+    p.? map { opt => toAxis(opt, ifNone) }
   def toAxis[T](opt: Option[T], ifNone: ScopeAxis[T]): ScopeAxis[T] =
     opt match { case Some(t) => Select(t); case None => ifNone }
 
@@ -213,8 +211,7 @@ object Act {
       keys.filterNot(Util.hasHyphen)
     def keyParser(keys: Set[String]): Parser[AttributeKey[_]] =
       token(ID !!! "Expected key" examples dropHyphenated(keys)) flatMap {
-        keyString =>
-          getKey(keyMap, keyString, idFun)
+        keyString => getKey(keyMap, keyString, idFun)
       }
     keyParser(index.keys(proj, conf, task))
   }
@@ -317,9 +314,7 @@ object Act {
       trailing: Parser[_]): Parser[ResolvedReference] = {
     def projectID(uri: URI) =
       token(examplesStrict(ID, index projects uri, "project ID") <~ trailing)
-    def projectRef(uri: URI) = projectID(uri) map { id =>
-      ProjectRef(uri, id)
-    }
+    def projectRef(uri: URI) = projectID(uri) map { id => ProjectRef(uri, id) }
 
     val uris = index.buildURIs
     val resolvedURI =

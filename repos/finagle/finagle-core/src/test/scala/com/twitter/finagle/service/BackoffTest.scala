@@ -13,9 +13,7 @@ import org.scalatest.prop.GeneratorDrivenPropertyChecks
 class BackoffTest extends FunSuite with GeneratorDrivenPropertyChecks {
   test("exponential") {
     val backoffs = Backoff.exponential(1.seconds, 2) take 10
-    assert(backoffs.force.toSeq == (0 until 10 map { i =>
-      (1 << i).seconds
-    }))
+    assert(backoffs.force.toSeq == (0 until 10 map { i => (1 << i).seconds }))
   }
 
   test("exponential with upper limit") {
@@ -135,9 +133,7 @@ class BackoffTest extends FunSuite with GeneratorDrivenPropertyChecks {
 
   test("const") {
     val backoffs = Backoff.const(10.seconds) take 10
-    assert(backoffs.force.toSeq == (0 until 10 map { _ =>
-      10.seconds
-    }))
+    assert(backoffs.force.toSeq == (0 until 10 map { _ => 10.seconds }))
   }
 
   test("from function") {
@@ -148,9 +144,7 @@ class BackoffTest extends FunSuite with GeneratorDrivenPropertyChecks {
       }
       val backoffs =
         Backoff.fromFunction(f).take(10).force.toSeq.map(_.inNanoseconds)
-      backoffs.foreach { b =>
-        assert(b == rng.nextLong(10))
-      }
+      backoffs.foreach { b => assert(b == rng.nextLong(10)) }
     }
   }
 }

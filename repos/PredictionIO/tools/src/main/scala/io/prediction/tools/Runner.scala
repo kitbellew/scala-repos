@@ -139,8 +139,7 @@ object Runner extends Logging {
     // Extra JARs that are needed by the driver
     val driverClassPathPrefix =
       argumentValue(ca.common.sparkPassThrough, "--driver-class-path") map {
-        v =>
-          Seq(v)
+        v => Seq(v)
       } getOrElse {
         Nil
       }

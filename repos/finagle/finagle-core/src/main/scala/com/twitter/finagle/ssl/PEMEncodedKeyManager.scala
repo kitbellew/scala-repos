@@ -30,9 +30,7 @@ object PEMEncodedKeyManager {
     makeKeystore(
       Files.readBytes(new File(certificatePath)),
       Files.readBytes(new File(keyPath)),
-      caCertPath map { filename =>
-        Files.readBytes(new File(filename))
-      }
+      caCertPath map { filename => Files.readBytes(new File(filename)) }
     )
 
   private[this] def secret(length: Int): Array[Char] = {

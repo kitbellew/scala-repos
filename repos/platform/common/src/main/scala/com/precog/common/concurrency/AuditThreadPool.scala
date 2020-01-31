@@ -35,9 +35,7 @@ class AuditExecutor(
     idleTimeout: Long)
     extends Executor {
   private[this] val workQueue: BlockingQueue[Runnable] = maxQueueDepth
-    .map { depth =>
-      new ArrayBlockingQueue[Runnable](depth)
-    }
+    .map { depth => new ArrayBlockingQueue[Runnable](depth) }
     .getOrElse(new LinkedBlockingQueue[Runnable]())
 
   private[this] val threadCount = new AtomicInteger(minThreads)
@@ -46,9 +44,7 @@ class AuditExecutor(
 
   private[this] final val threadUpdateLock = new AnyRef()
 
-  private[this] var workers = (1 to minThreads).map { i =>
-    new WorkerThread(i)
-  }.toSet
+  private[this] var workers = (1 to minThreads).map { i => new WorkerThread(i) }.toSet
   workers.foreach(_.start())
 
   private val threadMXBean = ManagementFactory.getThreadMXBean

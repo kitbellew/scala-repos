@@ -53,9 +53,7 @@ object KetamaClientStress extends App {
         }
       }
     else
-      1 to (qps * -1) foreach { _ =>
-        proc(op, 0)
-      }
+      1 to (qps * -1) foreach { _ => proc(op, 0) }
   }
 
   private[this] def randomString(length: Int): String = {

@@ -746,12 +746,8 @@ package com.twitter.scalding {
 
     def operate(flowProcess: FlowProcess[_], call: BufferCall[Any]) {
       val oc = call.getOutputCollector
-      val in = call.getArgumentsIterator.asScala.map { entry =>
-        conv(entry)
-      }
-      iterfn.get(initCopy, in).foreach { x =>
-        oc.add(set(x))
-      }
+      val in = call.getArgumentsIterator.asScala.map { entry => conv(entry) }
+      iterfn.get(initCopy, in).foreach { x => oc.add(set(x)) }
     }
   }
 
@@ -775,12 +771,8 @@ package com.twitter.scalding {
     def operate(flowProcess: FlowProcess[_], call: BufferCall[C]) {
       val context = call.getContext
       val oc = call.getOutputCollector
-      val in = call.getArgumentsIterator.asScala.map { entry =>
-        conv(entry)
-      }
-      iterfn.get(initCopy, context, in).foreach { x =>
-        oc.add(set(x))
-      }
+      val in = call.getArgumentsIterator.asScala.map { entry => conv(entry) }
+      iterfn.get(initCopy, context, in).foreach { x => oc.add(set(x)) }
     }
   }
 

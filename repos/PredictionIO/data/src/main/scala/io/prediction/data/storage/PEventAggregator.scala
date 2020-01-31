@@ -94,8 +94,7 @@ private[prediction] case class EventOp(
 
   def ++(that: EventOp): EventOp = {
     val firstUp = (this.firstUpdated ++ that.firstUpdated).reduceOption {
-      (a, b) =>
-        if (b.getMillis < a.getMillis) b else a
+      (a, b) => if (b.getMillis < a.getMillis) b else a
     }
     val lastUp = (this.lastUpdated ++ that.lastUpdated).reduceOption { (a, b) =>
       if (b.getMillis > a.getMillis) b else a

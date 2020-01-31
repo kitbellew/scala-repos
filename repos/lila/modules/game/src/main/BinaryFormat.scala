@@ -52,9 +52,7 @@ object BinaryFormat {
 
     def read(ba: ByteArray): Vector[MT] = {
       def dec(x: Int) = decodeMap get x getOrElse decodeMap(size - 1)
-      ba.value map toInt flatMap { k =>
-        Array(dec(k >> 4), dec(k & 15))
-      }
+      ba.value map toInt flatMap { k => Array(dec(k >> 4), dec(k & 15)) }
     }.toVector
   }
 
@@ -193,9 +191,7 @@ object BinaryFormat {
           if from != to
         } yield from -> to,
         lastMoveTime = readInt24(b3, b4, b5).some filter (0 !=),
-        check = b6 flatMap { x =>
-          posAt(x >> 3, x & 7)
-        }
+        check = b6 flatMap { x => posAt(x >> 3, x & 7) }
       )
   }
 

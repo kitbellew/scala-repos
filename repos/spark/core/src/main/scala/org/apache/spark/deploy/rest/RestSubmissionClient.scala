@@ -381,9 +381,7 @@ private[spark] class RestSubmissionClient(master: String) extends Logging {
           case _ =>
         }
         // Log exception stack trace, if present
-        exception.foreach { e =>
-          logError(e)
-        }
+        exception.foreach { e => logError(e) }
         return
       }
       Thread.sleep(REPORT_DRIVER_STATUS_INTERVAL)

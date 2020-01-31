@@ -154,9 +154,7 @@ object Commands {
     PEXPIRE -> { PExpire(_) },
     PEXPIREAT -> { PExpireAt(_) },
     PTTL -> { PTtl(_) },
-    RANDOMKEY -> { _ =>
-      Randomkey()
-    },
+    RANDOMKEY -> { _ => Randomkey() },
     RENAME -> { Rename(_) },
     RENAMENX -> { RenameNx(_) },
     SCAN -> { Scan(_) },
@@ -207,18 +205,12 @@ object Commands {
     BREM -> { BRem(_) },
     BGET -> { BGet(_) },
     // miscellaneous
-    FLUSHALL -> { _ =>
-      FlushAll
-    },
-    FLUSHDB -> { _ =>
-      FlushDB
-    },
+    FLUSHALL -> { _ => FlushAll },
+    FLUSHDB -> { _ => FlushDB },
     SELECT -> { Select(_) },
     AUTH -> { Auth(_) },
     INFO -> { Info(_) },
-    QUIT -> { _ =>
-      Quit
-    },
+    QUIT -> { _ => Quit },
     SLAVEOF -> { SlaveOf(_) },
     CONFIG -> { Config(_) },
     // hash sets
@@ -256,18 +248,10 @@ object Commands {
     SRANDMEMBER -> { SRandMember(_) },
     SINTER -> { SInter(_) },
     // transactions
-    DISCARD -> { _ =>
-      Discard
-    },
-    EXEC -> { _ =>
-      Exec
-    },
-    MULTI -> { _ =>
-      Multi
-    },
-    UNWATCH -> { _ =>
-      UnWatch
-    },
+    DISCARD -> { _ => Discard },
+    EXEC -> { _ => Exec },
+    MULTI -> { _ => Multi },
+    UNWATCH -> { _ => UnWatch },
     WATCH -> { Watch(_) },
     // HyperLogLogs
     PFADD -> { PFAdd(_) },
@@ -440,9 +424,7 @@ class CommandCodec extends UnifiedProtocolCodec {
   val decode = readBytes(1) { bytes =>
     bytes(0) match {
       case ARG_COUNT_MARKER =>
-        val doneFn = { lines =>
-          commandDecode(lines)
-        }
+        val doneFn = { lines => commandDecode(lines) }
         RequireClientProtocol.safe {
           readLine { line =>
             decodeUnifiedFormat(NumberFormat.toLong(line), doneFn)
@@ -454,9 +436,8 @@ class CommandCodec extends UnifiedProtocolCodec {
   }
 
   def decodeInlineRequest(c: Char) = readLine { line =>
-    val listOfArrays = (c + line).split(' ').toList.map { args =>
-      args.getBytes(Charsets.Utf8)
-    }
+    val listOfArrays =
+      (c + line).split(' ').toList.map { args => args.getBytes(Charsets.Utf8) }
     val cmd = commandDecode(listOfArrays)
     emit(cmd)
   }

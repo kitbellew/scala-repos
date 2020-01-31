@@ -226,9 +226,7 @@ trait APIKeyManager[M[+_]] extends Logging { self =>
     deriveGrant(name, description, issuerKey, perms, expiration) flatMap {
       case Some(grant) =>
         addGrants(recipientKey, Set(grant.grantId)) map {
-          _ map { _ =>
-            grant
-          }
+          _ map { _ => grant }
         }
       case None => none[Grant].point[M]
     }

@@ -137,9 +137,7 @@ class JsonExporter(registry: Metrics, timer: Timer)
   ): Boolean = {
     val vals = params.getAll(name)
     if (vals.nonEmpty)
-      vals.exists { v =>
-        v == "1" || v == "true"
-      }
+      vals.exists { v => v == "1" || v == "true" }
     else
       default
   }

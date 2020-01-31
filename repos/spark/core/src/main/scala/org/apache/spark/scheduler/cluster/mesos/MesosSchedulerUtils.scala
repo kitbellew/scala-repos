@@ -74,12 +74,8 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
     val fwInfoBuilder =
       FrameworkInfo.newBuilder().setUser(sparkUser).setName(appName)
     val credBuilder = Credential.newBuilder()
-    webuiUrl.foreach { url =>
-      fwInfoBuilder.setWebuiUrl(url)
-    }
-    checkpoint.foreach { checkpoint =>
-      fwInfoBuilder.setCheckpoint(checkpoint)
-    }
+    webuiUrl.foreach { url => fwInfoBuilder.setWebuiUrl(url) }
+    checkpoint.foreach { checkpoint => fwInfoBuilder.setCheckpoint(checkpoint) }
     failoverTimeout.foreach { timeout =>
       fwInfoBuilder.setFailoverTimeout(timeout)
     }
@@ -184,9 +180,7 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
       .setType(Value.Type.SCALAR)
       .setScalar(Value.Scalar.newBuilder().setValue(amount).build())
 
-    role.foreach { r =>
-      builder.setRole(r)
-    }
+    role.foreach { r => builder.setRole(r) }
 
     builder.build()
   }

@@ -123,9 +123,7 @@ object CreateFromUsageUtil {
     elem.depthFirst
       .filterByType(classOf[ScReferenceExpression])
       .filter(_.getText == Q_MARKS)
-      .foreach { qmarks =>
-        builder.replaceElement(qmarks, Q_MARKS)
-      }
+      .foreach { qmarks => builder.replaceElement(qmarks, Q_MARKS) }
   }
 
   def addUnapplyResultTypesToTemplate(

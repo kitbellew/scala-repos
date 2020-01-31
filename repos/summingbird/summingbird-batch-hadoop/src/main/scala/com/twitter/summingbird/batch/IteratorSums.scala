@@ -110,9 +110,7 @@ private[summingbird] object IteratorSums extends java.io.Serializable {
 
     def flush = {
       // sumOption is highly optimized
-      val res = Semigroup.sumOption(buffer).flatMap { sv =>
-        lastK.map((_, sv))
-      }
+      val res = Semigroup.sumOption(buffer).flatMap { sv => lastK.map((_, sv)) }
       buffer.clear
       res
     }

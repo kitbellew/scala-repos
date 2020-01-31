@@ -27,14 +27,11 @@ object IteratorSumLaws extends Properties("IteratorSumLaws") {
   import IteratorSums._
 
   property("groupedSum never increases size") = forAll {
-    (in: List[(Int, Long)]) =>
-      groupedSum(in.iterator).size <= in.size
+    (in: List[(Int, Long)]) => groupedSum(in.iterator).size <= in.size
   }
   property("groupedSum on a single key is <= 1 size") = forAll {
     (key0: Int, in: List[Long]) =>
-      groupedSum(in.iterator.map { v =>
-        (key0, v)
-      }).size <= 1
+      groupedSum(in.iterator.map { v => (key0, v) }).size <= 1
   }
   property("groupedSum never empty if input is non-empty") = forAll {
     (in: List[(Int, Long)]) =>
@@ -45,8 +42,7 @@ object IteratorSumLaws extends Properties("IteratorSumLaws") {
     (in: List[(Int, Long)]) =>
       val sorted = in.sorted
       groupedSum(sorted.iterator).toMap == in.groupBy { _._1 }.mapValues {
-        kvs =>
-          kvs.map(_._2).sum
+        kvs => kvs.map(_._2).sum
       }
   }
   property("partials passes through keys-values") = forAll {

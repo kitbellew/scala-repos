@@ -128,9 +128,7 @@ class DistributedSuite
     failAfter(Span(100000, Millis)) {
       val thrown = intercept[SparkException] {
         // One of the tasks always fails.
-        sc.parallelize(1 to 10, 2).foreach { x =>
-          if (x == 1) System.exit(42)
-        }
+        sc.parallelize(1 to 10, 2).foreach { x => if (x == 1) System.exit(42) }
       }
       assert(thrown.getClass === classOf[SparkException])
       assert(thrown.getMessage.contains("failed 4 times"))

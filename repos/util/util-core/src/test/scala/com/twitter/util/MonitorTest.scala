@@ -53,9 +53,7 @@ class MonitorTest extends WordSpec with MockitoSugar {
         when(m.handle(any[Throwable])) thenReturn (false)
       }
       assert(m.handle(exc) == false)
-      Seq(m0, m1, m2) foreach { m =>
-        verify(m).handle(exc)
-      }
+      Seq(m0, m1, m2) foreach { m => verify(m).handle(exc) }
     }
 
     "wrap Monitor exceptions and pass them on" in {

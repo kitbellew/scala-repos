@@ -632,9 +632,7 @@ trait TestPlatform extends ManagedPlatform { self =>
           EitherT[JobQueryTF, EvaluationError, StreamT[JobQueryTF, Slice]] {
             shardQueryMonad
               .liftM[Future, EvaluationError \/ StreamT[JobQueryTF, Slice]] {
-                mu map { _ =>
-                  \/.right(toSlice(JObject("value" -> JNum(2))))
-                }
+                mu map { _ => \/.right(toSlice(JObject("value" -> JNum(2)))) }
               }
           }
         } else {

@@ -51,8 +51,6 @@ object StatusStreamer {
       store: P#Store[String, Long]) =
     source
       .filter(_.getText != null)
-      .flatMap { tweet: Status =>
-        tokenize(tweet.getText).map(_ -> 1L)
-      }
+      .flatMap { tweet: Status => tokenize(tweet.getText).map(_ -> 1L) }
       .sumByKey(store)
 }

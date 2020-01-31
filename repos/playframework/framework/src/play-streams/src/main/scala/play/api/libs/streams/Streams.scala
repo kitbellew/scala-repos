@@ -193,9 +193,7 @@ object Streams {
       override def applyOn[U](
           inner: Iteratee[B, U]): Iteratee[A, Iteratee[B, U]] = {
         import play.api.libs.iteratee.Execution.Implicits.trampoline
-        iter.map { _ =>
-          Iteratee.flatten(enum(inner))
-        }
+        iter.map { _ => Iteratee.flatten(enum(inner)) }
       }
     }
   }

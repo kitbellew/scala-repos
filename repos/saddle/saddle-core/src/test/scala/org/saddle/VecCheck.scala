@@ -99,9 +99,7 @@ class VecCheck extends Specification with ScalaCheck {
     }
 
     "zipmap works" in {
-      forAll { (v: Vec[Double]) =>
-        v.zipMap(v)(_ + _) must_== v * 2.0
-      }
+      forAll { (v: Vec[Double]) => v.zipMap(v)(_ + _) must_== v * 2.0 }
     }
 
     "dropNA works" in {
@@ -176,9 +174,7 @@ class VecCheck extends Specification with ScalaCheck {
     "forall works" in {
       forAll { (v: Vec[Double]) =>
         var c = 0
-        v.forall(_ > 0.5) { i =>
-          if (!i.isNaN) c += 1
-        }
+        v.forall(_ > 0.5) { i => if (!i.isNaN) c += 1 }
         val exp = v.filter(_ > 0.5).count
         c must_== exp
       }
@@ -187,9 +183,7 @@ class VecCheck extends Specification with ScalaCheck {
     "foreach works" in {
       forAll { (v: Vec[Double]) =>
         var c = 0
-        v.foreach { i =>
-          if (!i.isNaN) c += 1
-        }
+        v.foreach { i => if (!i.isNaN) c += 1 }
         val exp = v.count
         c must_== exp
       }
@@ -377,9 +371,7 @@ class VecCheck extends Specification with ScalaCheck {
     }
 
     "serialization works" in {
-      forAll { v: Vec[Double] =>
-        v must_== serializedCopy(v)
-      }
+      forAll { v: Vec[Double] => v must_== serializedCopy(v) }
     }
 
   }

@@ -57,8 +57,7 @@ object Util {
       s: TaskStreams): Seq[File] = {
     def gen() = generateAPI(defs, cp, out, main, run, s)
     val f = FileFunction.cached(s.cacheDirectory / "gen-api", FilesInfo.hash) {
-      _ =>
-        gen().toSet
+      _ => gen().toSet
     } // TODO: check if output directory changed
     f(defs.toSet).toSeq
   }
@@ -137,8 +136,7 @@ object Util {
   }
 
   def excludePomDependency(node: scala.xml.Node) = node \ "artifactId" exists {
-    n =>
-      excludePomArtifact(n.text)
+    n => excludePomArtifact(n.text)
   }
 
   def excludePomArtifact(artifactId: String) =

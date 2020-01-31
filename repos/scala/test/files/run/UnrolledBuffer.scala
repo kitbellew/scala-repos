@@ -31,9 +31,7 @@ object Test {
     u1 concat UnrolledBuffer(5, 7, 9)
     assert(u1 == UnrolledBuffer(1, 3, 5, 7, 9))
 
-    val u2 = u1 map { x =>
-      (x - 1) / 2
-    }
+    val u2 = u1 map { x => (x - 1) / 2 }
     assert(u2 == UnrolledBuffer(0, 1, 2, 3, 4))
 
     u1.clear
@@ -56,9 +54,7 @@ object Test {
     u1 concat UnrolledBuffer()
     assertCorrect(u1)
 
-    val u3 = u1 map { x =>
-      x
-    }
+    val u3 = u1 map { x => x }
     var i = 0
     for (elem <- u1) {
       assert(elem == u3(i))

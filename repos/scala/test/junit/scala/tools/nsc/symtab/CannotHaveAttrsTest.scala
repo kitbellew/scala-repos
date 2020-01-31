@@ -23,9 +23,7 @@ class CannotHaveAttrsTest {
 
   @Test
   def canHaveAttrsIsFalse =
-    attrlessTrees.foreach { t =>
-      assertFalse(t.canHaveAttrs)
-    }
+    attrlessTrees.foreach { t => assertFalse(t.canHaveAttrs) }
 
   @Test
   def defaultPosAssignment =

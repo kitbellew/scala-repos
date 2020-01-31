@@ -243,9 +243,7 @@ trait Config extends Serializable {
 
   def getUniqueIds: Set[UniqueID] =
     get(UniqueID.UNIQUE_JOB_ID)
-      .map { str =>
-        str.split(",").toSet[String].map(UniqueID(_))
-      }
+      .map { str => str.split(",").toSet[String].map(UniqueID(_)) }
       .getOrElse(Set.empty)
 
   /**
@@ -300,9 +298,7 @@ trait Config extends Serializable {
       .+(ScaldingFlowClassSignature -> Config.md5Identifier(clazz))
 
   def getSubmittedTimestamp: Option[RichDate] =
-    get(ScaldingFlowSubmittedTimestamp).map { ts =>
-      RichDate(ts.toLong)
-    }
+    get(ScaldingFlowSubmittedTimestamp).map { ts => RichDate(ts.toLong) }
   /*
    * Sets the timestamp only if it was not already set. This is here
    * to prevent overwriting the submission time if it was set by an
@@ -571,9 +567,7 @@ object Config {
    */
   def fromHadoop(conf: Configuration): Config =
     // use `conf.get` to force JobConf to evaluate expressions
-    Config(conf.asScala.map { e =>
-      e.getKey -> conf.get(e.getKey)
-    }.toMap)
+    Config(conf.asScala.map { e => e.getKey -> conf.get(e.getKey) }.toMap)
 
   /*
    * For everything BUT SERIALIZATION, this prefers values in conf,

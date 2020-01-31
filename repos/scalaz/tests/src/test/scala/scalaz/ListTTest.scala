@@ -53,9 +53,7 @@ object ListTTest extends SpecLite {
     ()
   }
 
-  "listT" ! forAll { (ass: Option[List[Int]]) =>
-    ListT.listT(ass).run == ass
-  }
+  "listT" ! forAll { (ass: Option[List[Int]]) => ListT.listT(ass).run == ass }
 
   checkAll(equal.laws[ListTOpt[Int]])
   checkAll(monoid.laws[ListTOpt[Int]])

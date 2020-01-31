@@ -14,8 +14,6 @@ object MClientInfoProperty {
     ResultSetAction[MClientInfoProperty] { s =>
       try s.metaData.getClientInfoProperties()
       catch { case _: AbstractMethodError => null }
-    } { r =>
-      MClientInfoProperty(r.<<, r.<<, r.<<, r.<<)
-    }
+    } { r => MClientInfoProperty(r.<<, r.<<, r.<<, r.<<) }
   }
 }

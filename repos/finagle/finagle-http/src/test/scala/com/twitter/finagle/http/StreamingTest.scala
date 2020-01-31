@@ -150,9 +150,7 @@ class StreamingTest extends FunSuite with Eventually {
     // note: while the server is configured with a max concurrency of 1,
     // the requests flow through the transport before that. this means
     // that these requests must be sequenced.
-    val f2 = f1.flatMap { _ =>
-      client2(req2)
-    }
+    val f2 = f1.flatMap { _ => client2(req2) }
 
     val res = await(f1)
 
@@ -203,9 +201,7 @@ class StreamingTest extends FunSuite with Eventually {
     // note: while the server is configured with a max concurrency of 1,
     // the requests flow through the transport before that. this means
     // that these requests must be sequenced.
-    val f2 = f1.flatMap { _ =>
-      client2(req2)
-    }
+    val f2 = f1.flatMap { _ => client2(req2) }
 
     val res = await(f1)
 
@@ -247,9 +243,7 @@ class StreamingTest extends FunSuite with Eventually {
     val req1 = get("/")
     val req2 = get("abc")
     val f1 = client1(req1)
-    val f2 = f1.flatMap { _ =>
-      client2(req2)
-    }
+    val f2 = f1.flatMap { _ => client2(req2) }
 
     val res = await(f1)
 
@@ -288,9 +282,7 @@ class StreamingTest extends FunSuite with Eventually {
     val req1 = get("/")
     val req2 = get("abc")
     val f1 = client1(req1)
-    val f2 = f1.flatMap { _ =>
-      client2(req2)
-    }
+    val f2 = f1.flatMap { _ => client2(req2) }
 
     val res = await(f1)
 

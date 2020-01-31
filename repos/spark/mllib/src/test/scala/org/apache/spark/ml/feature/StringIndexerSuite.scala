@@ -65,9 +65,7 @@ class StringIndexerSuite
     val output = transformed
       .select("id", "labelIndex")
       .rdd
-      .map { r =>
-        (r.getInt(0), r.getDouble(1))
-      }
+      .map { r => (r.getInt(0), r.getDouble(1)) }
       .collect()
       .toSet
     // a -> 0, b -> 2, c -> 1
@@ -103,9 +101,7 @@ class StringIndexerSuite
     val output = transformed
       .select("id", "labelIndex")
       .rdd
-      .map { r =>
-        (r.getInt(0), r.getDouble(1))
-      }
+      .map { r => (r.getInt(0), r.getDouble(1)) }
       .collect()
       .toSet
     // a -> 1, b -> 0
@@ -130,9 +126,7 @@ class StringIndexerSuite
     val output = transformed
       .select("id", "labelIndex")
       .rdd
-      .map { r =>
-        (r.getInt(0), r.getDouble(1))
-      }
+      .map { r => (r.getInt(0), r.getDouble(1)) }
       .collect()
       .toSet
     // 100 -> 0, 200 -> 2, 300 -> 1

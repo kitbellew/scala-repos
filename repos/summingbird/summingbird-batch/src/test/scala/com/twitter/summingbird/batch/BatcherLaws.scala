@@ -95,9 +95,7 @@ object BatcherLaws extends Properties("Batcher") {
   property("UnitBatcher should always return the same batch") = {
     val batcher = Batcher.unit
     val ident = batchIdIdentity(batcher)
-    forAll { batchID: BatchID =>
-      ident(batchID) == BatchID(0)
-    }
+    forAll { batchID: BatchID => ident(batchID) == BatchID(0) }
   }
 
   property("Unit obeys laws") = batcherLaws(Batcher.unit)

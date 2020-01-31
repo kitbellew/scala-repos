@@ -29,8 +29,7 @@ object Supervision {
       maxRestartsHandler: (
           ActorRef,
           MaximumNumberOfRestartsWithinTimeRangeReached) => Unit = {
-        (aRef, max) =>
-          ()
+        (aRef, max) => ()
       })
       extends Server {
     //Java API

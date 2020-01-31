@@ -656,8 +656,7 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
             }
 
             val treesM: M[List[DecisionTree[A]]] = trainingSamples traverse {
-              table =>
-                withData(table)(makeTree)
+              table => withData(table)(makeTree)
             }
 
             def variance(values: List[Double]): Double = {
@@ -786,9 +785,7 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
           t1.transform(trans.DerefObjectStatic(TransSpec1.Id, paths.Value))
         val forestsM = makeForests(trainingTable)
 
-        forestsM map { forests =>
-          (t2, morph1Apply(forests))
-        }
+        forestsM map { forests => (t2, morph1Apply(forests)) }
       }
     }
   }

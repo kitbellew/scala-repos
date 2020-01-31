@@ -27,9 +27,7 @@ private[sbt] final class TaskTimings extends ExecuteProgress[Task] {
   def workStarting(task: Task[_]) = timings.put(task, System.nanoTime)
   def workFinished[T](task: Task[T], result: Either[Task[T], Result[T]]) = {
     timings.put(task, System.nanoTime - timings.get(task))
-    result.left.foreach { t =>
-      calledBy.put(t, task)
-    }
+    result.left.foreach { t => calledBy.put(t, task) }
   }
   def completed[T](state: Unit, task: Task[T], result: Result[T]) = ()
   def allCompleted(state: Unit, results: RMap[Task, Result]) = {

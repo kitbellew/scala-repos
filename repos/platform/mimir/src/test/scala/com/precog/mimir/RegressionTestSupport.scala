@@ -75,9 +75,7 @@ trait RegressionTestSupport[M[+_]] {
   def stdDevMean(values: List[Double]): (Double, Double) = {
     val count = values.size
     val sum = values.sum
-    val sumsq = values map { x =>
-      math.pow(x, 2)
-    } sum
+    val sumsq = values map { x => math.pow(x, 2) } sum
 
     val stdDev = math.sqrt(count * sumsq - sum * sum) / count
     val mean = sum / count
@@ -105,9 +103,7 @@ trait RegressionTestSupport[M[+_]] {
 
     val median = computeMedian(values)
 
-    val diffs = values map { v =>
-      math.abs(v - median)
-    }
+    val diffs = values map { v => math.abs(v - median) }
     val mad = computeMedian(diffs) / constant
 
     (mad, median)

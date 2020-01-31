@@ -111,9 +111,7 @@ class EdgePartitionSuite extends SparkFunSuite {
     val b = makeEdgePartition(bList)
 
     assert(
-      a.innerJoin(b) { (src, dst, a, b) =>
-          a
-        }
+      a.innerJoin(b) { (src, dst, a, b) => a }
         .iterator
         .map(_.copy())
         .toList ===

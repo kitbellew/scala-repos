@@ -74,8 +74,7 @@ class HasManyThrough[
 
   override def beforeDelete {
     through.findAll(By(throughFromField, owner.primaryKeyField.get)).foreach {
-      toDelete =>
-        toDelete.delete_!
+      toDelete => toDelete.delete_!
     }
   }
 

@@ -183,9 +183,7 @@ object WebSocket {
               case BinaryMessage(data) =>
                 closeOnException(Json.parse(data.iterator.asInputStream))
               case TextMessage(text) => closeOnException(Json.parse(text))
-            })(flow map { json =>
-            TextMessage(Json.stringify(json))
-          })
+            })(flow map { json => TextMessage(Json.stringify(json)) })
         }
       }
     }
@@ -294,9 +292,7 @@ object WebSocket {
   def acceptOrResult[In, Out](
       f: RequestHeader => Future[Either[Result, Flow[In, Out, _]]])(
       implicit transformer: MessageFlowTransformer[In, Out]): WebSocket = {
-    WebSocket { request =>
-      f(request).map(_.right.map(transformer.transform))
-    }
+    WebSocket { request => f(request).map(_.right.map(transformer.transform)) }
   }
 
   /**

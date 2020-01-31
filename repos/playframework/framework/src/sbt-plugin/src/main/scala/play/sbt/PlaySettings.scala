@@ -40,8 +40,7 @@ object PlaySettings {
   /** Ask SBT to manage the classpath for the given configuration. */
   def manageClasspath(config: Configuration) =
     managedClasspath in config <<= (classpathTypes in config, update) map {
-      (ct, report) =>
-        Classpaths.managedJars(config, ct, report)
+      (ct, report) => Classpaths.managedJars(config, ct, report)
     }
 
   lazy val defaultSettings = Seq[Setting[_]](
@@ -78,8 +77,7 @@ object PlaySettings {
       "--ignore-runners=org.specs2.runner.JUnitRunner"),
     // Adds app directory's source files to continuous hot reloading
     watchSources <++= (sourceDirectory in Compile, sourceDirectory in Assets) map {
-      (sources, assets) =>
-        (sources ** "*" --- assets ** "*").get
+      (sources, assets) => (sources ** "*" --- assets ** "*").get
     },
     commands ++= {
       import PlayCommands._

@@ -187,13 +187,9 @@ sealed abstract class TreeInstances {
           f(\&/(ta.rootLabel, tb.rootLabel)),
           Align[Stream].alignWith[Tree[A], Tree[B], Tree[C]]({
             case \&/.This(sta) ⇒
-              sta map { a ⇒
-                f(\&/.This(a))
-              }
+              sta map { a ⇒ f(\&/.This(a)) }
             case \&/.That(stb) ⇒
-              stb map { b ⇒
-                f(\&/.That(b))
-              }
+              stb map { b ⇒ f(\&/.That(b)) }
             case \&/(sta, stb) ⇒ align(sta, stb)
           })(ta.subForest, tb.subForest)
         )

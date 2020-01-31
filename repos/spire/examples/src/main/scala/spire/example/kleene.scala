@@ -143,9 +143,7 @@ object KleeneDemo {
       val n = dim.n
       val arr = new Array[A](n * n)
       cfor(0)(_ < n, _ + 1) { y =>
-        cfor(0)(_ < n, _ + 1) { x =>
-          arr(y * n + x) = f(x, y)
-        }
+        cfor(0)(_ < n, _ + 1) { x => arr(y * n + x) = f(x, y) }
       }
       new ArrayMatrix(arr)
     }
@@ -256,8 +254,7 @@ object KleeneDemo {
   }
   object LabeledGraph {
     def apply(m: Matrix[Boolean])(implicit dim: Dim) = Matrix[Option[Edge]] {
-      (x, y) =>
-        if (m(x, y)) Some(Edge(y, x)) else None
+      (x, y) => if (m(x, y)) Some(Edge(y, x)) else None
     }
   }
 

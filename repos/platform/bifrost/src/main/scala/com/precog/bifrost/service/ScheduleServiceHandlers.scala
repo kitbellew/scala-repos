@@ -254,9 +254,7 @@ class ScheduledQueryStatusServiceHandler[A](scheduler: Scheduler[Future])(
           val nextTime: Option[DateTime] = task.repeat.flatMap {
             sched: CronExpression =>
               Option(sched.getNextValidTimeAfter(new java.util.Date))
-          } map { d =>
-            new DateTime(d)
-          }
+          } map { d => new DateTime(d) }
 
           val body: JValue = JObject(
             "task" -> task.serialize,

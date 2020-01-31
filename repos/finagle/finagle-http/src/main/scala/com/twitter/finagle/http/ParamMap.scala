@@ -135,9 +135,7 @@ object MapParamMap {
     new MapParamMap(MapParamMap.tuplesToMultiMap(params))
 
   def apply(map: Map[String, String]): MapParamMap =
-    new MapParamMap(map.mapValues { value =>
-      Seq(value)
-    })
+    new MapParamMap(map.mapValues { value => Seq(value) })
 
   private[http] def tuplesToMultiMap(
       tuples: Seq[Tuple2[String, String]]
@@ -242,9 +240,7 @@ class RequestParamMap(val request: Request) extends ParamMap {
   private def jiterator(
       params: JMap[String, JList[String]]): Iterator[(String, String)] =
     params.entrySet.asScala.flatMap { entry =>
-      entry.getValue.asScala map { value =>
-        (entry.getKey, value)
-      }
+      entry.getValue.asScala map { value => (entry.getKey, value) }
     }.toIterator
 }
 

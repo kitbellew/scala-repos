@@ -81,15 +81,11 @@ class TemplateTest extends AsyncTest[RelationalTestDB] {
     }
     val byIdAndSC = Compiled(byIdAndS)
     val byIdAndFixedSC = byIdAndSC.map(f => f((_: Rep[Int]), "b"))
-    val byIdC = Compiled { id: Rep[Int] =>
-      ts.filter(_.id === id)
-    }
+    val byIdC = Compiled { id: Rep[Int] => ts.filter(_.id === id) }
     val byId = byIdC.extract
     val byIdC3 = byIdC(3)
     val byId3 = byIdC3.extract
-    val countBelow = { (id: Rep[Int]) =>
-      ts.filter(_.id < id).length
-    }
+    val countBelow = { (id: Rep[Int]) => ts.filter(_.id < id).length }
     val countBelowC = Compiled(countBelow)
     val joinC = Compiled { id: Rep[Int] =>
       ts.filter(_.id === id).join(ts.filter(_.id === id))

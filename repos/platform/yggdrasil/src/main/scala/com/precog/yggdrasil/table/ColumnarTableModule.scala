@@ -582,9 +582,7 @@ trait ColumnarTableModule[M[+_]]
         }
 
       def mkProjections(spec: GroupKeySpec) =
-        toVector(dnf(spec)).map(sources(_).map { s =>
-          (s.key, s.spec)
-        })
+        toVector(dnf(spec)).map(sources(_).map { s => (s.key, s.spec) })
 
       case class IndexedSource(
           groupId: GroupId,
@@ -849,8 +847,7 @@ trait ColumnarTableModule[M[+_]]
       val specTransform = SliceTransform.composeSliceTransform(spec)
       val compactTransform = {
         SliceTransform.composeSliceTransform(Leaf(Source)).zip(specTransform) {
-          (s1, s2) =>
-            s1.compact(s2, definedness)
+          (s1, s2) => s1.compact(s2, definedness)
         }
       }
       Table(Table.transformStream(compactTransform, slices), size).normalize
@@ -2118,13 +2115,9 @@ trait ColumnarTableModule[M[+_]]
         def fresh(paths: List[CPathNode], leaf: JType): Option[JType] =
           paths match {
             case CPathField(field) :: paths =>
-              fresh(paths, leaf) map { tpe =>
-                JObjectFixedT(Map(field -> tpe))
-              }
+              fresh(paths, leaf) map { tpe => JObjectFixedT(Map(field -> tpe)) }
             case CPathIndex(i) :: paths =>
-              fresh(paths, leaf) map { tpe =>
-                JArrayFixedT(Map(i -> tpe))
-              }
+              fresh(paths, leaf) map { tpe => JArrayFixedT(Map(i -> tpe)) }
             case CPathArray :: paths =>
               fresh(paths, leaf) map (JArrayHomogeneousT(_))
             case CPathMeta(field) :: _ => None
@@ -2227,9 +2220,7 @@ trait ColumnarTableModule[M[+_]]
           StreamT
             .Skip({
               println(prelude);
-              slices map { s =>
-                println(f(s)); s
-              }
+              slices map { s => println(f(s)); s }
             })
             .point[M]),
         size)
@@ -2263,15 +2254,11 @@ trait ColumnarTableModule[M[+_]]
       slicePrinter(prelude)(s => s.toJsonString(flag))
 
     def toStrings: M[Iterable[String]] = {
-      toEvents { (slice, row) =>
-        slice.toString(row)
-      }
+      toEvents { (slice, row) => slice.toString(row) }
     }
 
     def toJson: M[Iterable[JValue]] = {
-      toEvents { (slice, row) =>
-        slice.toJson(row)
-      }
+      toEvents { (slice, row) => slice.toJson(row) }
     }
 
     private def toEvents[A](f: (Slice, RowId) => Option[A]): M[Iterable[A]] = {

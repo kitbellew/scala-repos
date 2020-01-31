@@ -13,9 +13,7 @@ class SoftmaxBenchmark extends BreezeBenchmark {
 
   def timeSoftmaxFloat(reps: Int) = {
     var sum = 0.0
-    cforRange(0 until reps) { _ =>
-      sum += softmax(dv)
-    }
+    cforRange(0 until reps) { _ => sum += softmax(dv) }
 
     sum
   }

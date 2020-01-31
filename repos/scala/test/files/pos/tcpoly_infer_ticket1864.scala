@@ -2,9 +2,7 @@ import scala.collection.mutable.{Buffer, ArrayBuffer}
 
 class RichBuffer[T, B[U] <: Buffer[U]](buffer: Buffer[T]) {
   def mymap[S](f: T => S)(implicit rv: B[S]): B[S] = {
-    buffer.foreach { e =>
-      rv += f(e)
-    }
+    buffer.foreach { e => rv += f(e) }
     rv
   }
 }
@@ -12,24 +10,18 @@ class RichBuffer[T, B[U] <: Buffer[U]](buffer: Buffer[T]) {
 object App {
   def mymap2[T, B[U] <: Buffer[U], S](buffer: B[T], f: T => S)(
       implicit rv: B[S]): B[S] = {
-    buffer.foreach { e =>
-      rv += f(e)
-    }
+    buffer.foreach { e => rv += f(e) }
     rv
   }
 
   def mymap3[T, B <: Buffer[T], S](buffer: B, f: T => T)(implicit rv: B): B = {
-    buffer.foreach { e =>
-      rv += f(e)
-    }
+    buffer.foreach { e => rv += f(e) }
     rv
   }
 
   def mymap4[T, B[U] <: Buffer[U], S](buffer: B[T])(f: T => S)(
       implicit rv: B[S]): B[S] = {
-    buffer.foreach { e =>
-      rv += f(e)
-    }
+    buffer.foreach { e => rv += f(e) }
     rv
   }
 

@@ -37,14 +37,10 @@ trait Function1[@specialized -T1, @specialized +R] extends AnyRef { self =>
 
   /** (f compose g)(x) ==  f(g(x))
     */
-  def compose[A](g: A => T1): A => R = { x =>
-    apply(g(x))
-  }
+  def compose[A](g: A => T1): A => R = { x => apply(g(x)) }
 
   /** (f andThen g)(x) ==  g(f(x))
     */
-  def andThen[A](g: R => A): T1 => A = { x =>
-    g(apply(x))
-  }
+  def andThen[A](g: R => A): T1 => A = { x => g(apply(x)) }
 
 }

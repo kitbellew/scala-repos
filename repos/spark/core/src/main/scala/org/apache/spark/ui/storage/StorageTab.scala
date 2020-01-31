@@ -79,9 +79,7 @@ class StorageListener(storageStatusListener: StorageStatusListener)
   override def onStageSubmitted(
       stageSubmitted: SparkListenerStageSubmitted): Unit = synchronized {
     val rddInfos = stageSubmitted.stageInfo.rddInfos
-    rddInfos.foreach { info =>
-      _rddInfoMap.getOrElseUpdate(info.id, info)
-    }
+    rddInfos.foreach { info => _rddInfoMap.getOrElseUpdate(info.id, info) }
   }
 
   override def onStageCompleted(

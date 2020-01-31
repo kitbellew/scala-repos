@@ -166,9 +166,7 @@ sealed trait Execution[+T] extends java.io.Serializable {
       conf.setScaldingExecutionId(java.util.UUID.randomUUID.toString)
     val result = runStats(confWithId, mode, ec)(cec).map(_._1)
     // When the final future in complete we stop the submit thread
-    result.onComplete { _ =>
-      ec.finished()
-    }
+    result.onComplete { _ => ec.finished() }
     // wait till the end to start the thread in case the above throws
     ec.start()
     result
@@ -761,9 +759,7 @@ object Execution {
           val cacheLookup: List[(
               ToWrite,
               Either[Promise[ExecutionCounters], Future[ExecutionCounters]])] =
-            (head :: tail).map { tw =>
-              (tw, cache.getOrLock(conf, tw))
-            }
+            (head :: tail).map { tw => (tw, cache.getOrLock(conf, tw)) }
           val (weDoOperation, someoneElseDoesOperation) =
             unwrapListEither(cacheLookup)
 
@@ -844,9 +840,7 @@ object Execution {
     * time run is called.
     */
   def from[T](t: => T): Execution[T] = fromTry(Try(t))
-  def fromTry[T](t: => Try[T]): Execution[T] = fromFuture { _ =>
-    toFuture(t)
-  }
+  def fromTry[T](t: => Try[T]): Execution[T] = fromFuture { _ => toFuture(t) }
 
   /**
     * The call to fn will happen when the run method on the result is called.
@@ -930,9 +924,7 @@ object Execution {
     * to get Args, which are in the Config
     */
   def withArgs[T](fn: Args => Execution[T]): Execution[T] =
-    getConfig.flatMap { conf =>
-      fn(conf.getArgs)
-    }
+    getConfig.flatMap { conf => fn(conf.getArgs) }
 
   /**
     * Use this to use counters/stats with Execution. You do this:
@@ -954,9 +946,7 @@ object Execution {
    */
   def run[C](flow: Flow[C]): Future[JobStats] =
     // This is in Java because of the cascading API's raw types on FlowListener
-    FlowListenerPromise.start(flow, { f: Flow[C] =>
-      JobStats(f.getFlowStats)
-    })
+    FlowListenerPromise.start(flow, { f: Flow[C] => JobStats(f.getFlowStats) })
 
   /*
    * This blocks the current thread until the job completes with either success or
@@ -1082,9 +1072,7 @@ trait ExecutionCounters {
     */
   def get(key: StatKey): Option[Long]
   def toMap: Map[StatKey, Long] =
-    keys.map { k =>
-      (k, get(k).getOrElse(0L))
-    }.toMap
+    keys.map { k => (k, get(k).getOrElse(0L)) }.toMap
 }
 
 /**
@@ -1157,9 +1145,8 @@ object ExecutionCounters {
       override def isNonZero(that: ExecutionCounters) = that.keys.nonEmpty
       def zero = ExecutionCounters.empty
       def plus(left: ExecutionCounters, right: ExecutionCounters) = {
-        fromMap((left.keys ++ right.keys).map { k =>
-          (k, left(k) + right(k))
-        }.toMap)
+        fromMap(
+          (left.keys ++ right.keys).map { k => (k, left(k) + right(k)) }.toMap)
       }
     }
 }

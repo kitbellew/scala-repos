@@ -730,9 +730,7 @@ class EndToEndTest
       Await.result(OldPlainPipeliningThriftClient.newClient(server)())
     val client =
       new TestService.FinagledClient(service, Protocols.binaryFactory())
-    val reqs = 1 to nreqs map { i =>
-      client.query("ok" + i)
-    }
+    val reqs = 1 to nreqs map { i => client.query("ok" + i) }
     // Although the requests are pipelined in the client, they must be
     // received by the service serially.
     1 to nreqs foreach { i =>

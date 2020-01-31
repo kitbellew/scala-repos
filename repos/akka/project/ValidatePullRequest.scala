@@ -102,9 +102,7 @@ object ValidatePullRequest extends AutoPlugin {
       case (ivyScope, deps) =>
         log.debug(s"Analysing [$ivyScope] scoped dependencies...")
 
-        deps.nodes.foreach { m ⇒
-          log.debug(" -> " + m.id)
-        }
+        deps.nodes.foreach { m ⇒ log.debug(" -> " + m.id) }
 
         // if this project depends on a modified module, we must test it
         deps.nodes.exists { m =>

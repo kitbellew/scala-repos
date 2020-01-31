@@ -43,9 +43,7 @@ class JDBCModels(client: String, config: StorageClientConfig, prefix: String)
 
   def get(id: String): Option[Model] = DB readOnly { implicit session =>
     sql"select id, models from $tableName where id = $id"
-      .map { r =>
-        Model(id = r.string("id"), models = r.bytes("models"))
-      }
+      .map { r => Model(id = r.string("id"), models = r.bytes("models")) }
       .single()
       .apply()
   }

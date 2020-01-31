@@ -287,9 +287,7 @@ private[finagle] class TrafficDistributor[Req, Rep](
     meanWeight =
       if (size != 0)
         classes
-          .map { c =>
-            c.weight * c.size
-          }
+          .map { c => c.weight * c.size }
           .sum
           .toFloat / size
       else 0.0f

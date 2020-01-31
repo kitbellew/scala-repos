@@ -65,9 +65,7 @@ object BatchID {
     */
   def toInterval(iter: TraversableOnce[BatchID]): Option[Interval[BatchID]] =
     iter
-      .map { b =>
-        (b, b, 1L)
-      }
+      .map { b => (b, b, 1L) }
       .reduceOption { (left, right) =>
         val (lmin, lmax, lcnt) = left
         val (rmin, rmax, rcnt) = right

@@ -154,9 +154,7 @@ private[kafka] class KafkaTestUtils extends Logging {
       server = null
     }
 
-    brokerConf.logDirs.foreach { f =>
-      Utils.deleteRecursively(new File(f))
-    }
+    brokerConf.logDirs.foreach { f => Utils.deleteRecursively(new File(f)) }
 
     if (zkClient != null) {
       zkClient.close()

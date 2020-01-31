@@ -69,9 +69,7 @@ class StablePriorityDispatcherSpec
 
           val acc = scala.collection.mutable.ListBuffer[Int]()
 
-          shuffled foreach { m ⇒
-            self ! m
-          }
+          shuffled foreach { m ⇒ self ! m }
 
           self.tell('Result, testActor)
 

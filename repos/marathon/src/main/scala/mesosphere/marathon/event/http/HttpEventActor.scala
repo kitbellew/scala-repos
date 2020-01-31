@@ -98,9 +98,7 @@ class HttpEventActor(
     import context.dispatcher
     (subscribersKeeper ? GetSubscribers)
       .mapTo[EventSubscribers]
-      .map { subscribers =>
-        me ! Broadcast(event, subscribers)
-      }
+      .map { subscribers => me ! Broadcast(event, subscribers) }
       .onFailure {
         case NonFatal(e) =>
           log.error("While trying to resolve subscribers for event {}", event)

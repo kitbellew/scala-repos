@@ -176,8 +176,7 @@ object Dag {
       tail: TailProducer[P, Any],
       registry: List[Node[P]]): Dag[P] =
     apply[P, T](originalTail, producerToPriorityNames, tail, registry, {
-      (s: String) =>
-        s.replaceAll("""[\[\]]|\-""", "|")
+      (s: String) => s.replaceAll("""[\[\]]|\-""", "|")
     })
 
   def apply[P <: Platform[P], T](
@@ -254,9 +253,7 @@ object Dag {
     }
 
     def allTails(dag: Dag[P]): List[Node[P]] = {
-      dag.nodes.filter { m =>
-        dag.dependantsOf(m).size == 0
-      }
+      dag.nodes.filter { m => dag.dependantsOf(m).size == 0 }
     }
 
     //start with the true tail

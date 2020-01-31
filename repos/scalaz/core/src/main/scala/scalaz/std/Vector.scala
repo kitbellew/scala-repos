@@ -46,8 +46,7 @@ trait VectorInstances extends VectorInstances0 {
     def traverseImpl[F[_], A, B](v: Vector[A])(f: A => F[B])(
         implicit F: Applicative[F]) = {
       DList.fromIList(IList.fromFoldable(v)).foldr(F.point(empty[B])) {
-        (a, fbs) =>
-          F.apply2(f(a), fbs)(_ +: _)
+        (a, fbs) => F.apply2(f(a), fbs)(_ +: _)
       }
     }
 

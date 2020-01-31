@@ -82,9 +82,7 @@ private[netty4] class ByteBufSnooper(val name: String) extends ChannelSnooper {
     val rawStr =
       buf.toString(buf.readerIndex, buf.readableBytes, Charset.forName("UTF-8"))
     val str = rawStr.replaceAll("\r", "\\\\r").replaceAll("\n", "\\\\n")
-    val asciiStr = str.map { c =>
-      if (c >= 32 && c < 128) c else '?'
-    }
+    val asciiStr = str.map { c => if (c >= 32 && c < 128) c else '?' }
 
     for (i <- 0 until asciiStr.length by 60)
       printer(ch, asciiStr.slice(i, i + 60).lines.mkString("\\n"))

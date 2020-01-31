@@ -49,9 +49,7 @@ abstract class TemplateEmailer(
     javaMailProps: Option[Properties],
     workDir: Option[File]) {
   val engine = new TemplateEngine
-  workDir.foreach { dir =>
-    engine.workingDirectory = dir
-  }
+  workDir.foreach { dir => engine.workingDirectory = dir }
 
   private val mailProps = javaMailProps.getOrElse {
     val props = new Properties
@@ -86,9 +84,7 @@ abstract class TemplateEmailer(
     msg.addRecipients(
       Message.RecipientType.TO,
       recipients.map(new InternetAddress(_).asInstanceOf[Address]).toArray)
-    from.foreach { fa =>
-      msg.setFrom(new InternetAddress(fa))
-    }
+    from.foreach { fa => msg.setFrom(new InternetAddress(fa)) }
 
     val templateParams = defaultParameters ++ parameters
 

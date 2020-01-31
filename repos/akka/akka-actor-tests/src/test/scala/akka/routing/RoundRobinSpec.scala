@@ -196,9 +196,7 @@ class RoundRobinSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
         }
       })
 
-      (1 to connectionCount) foreach { _ ⇒
-        actor ! childProps
-      }
+      (1 to connectionCount) foreach { _ ⇒ actor ! childProps }
 
       for (_ ← 1 to iterationCount; _ ← 1 to connectionCount) {
         val id = Await.result((actor ? "hit").mapTo[String], timeout.duration)

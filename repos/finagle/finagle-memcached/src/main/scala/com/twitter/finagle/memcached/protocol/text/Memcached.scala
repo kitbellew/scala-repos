@@ -104,9 +104,7 @@ private class MemcachedTracingFilter extends SimpleFilter[Command, Response] {
                   keyStr
               }
               val misses: immutable.Set[String] = keys -- hits
-              misses foreach { k: String =>
-                Trace.recordBinary(k, "Miss")
-              }
+              misses foreach { k: String => Trace.recordBinary(k, "Miss") }
             case _ =>
           }
         case _ =>

@@ -783,9 +783,7 @@ class LiftServlet extends Loggable {
                   .flatMap { entries =>
                     entries
                       .find(_.requestVersion == handlerVersion)
-                      .map { entry =>
-                        (entry, Right(entry.responseFuture))
-                      }
+                      .map { entry => (entry, Right(entry.responseFuture)) }
                   }
                   .getOrElse {
                     val entry = newRequestInfo

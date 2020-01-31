@@ -330,9 +330,7 @@ private[spark] class MesosClusterScheduler(
   def start(): Unit = {
     // TODO: Implement leader election to make sure only one framework running in the cluster.
     val fwId = schedulerState.fetch[String]("frameworkId")
-    fwId.foreach { id =>
-      frameworkId = id
-    }
+    fwId.foreach { id => frameworkId = id }
     recoverState()
     metricsSystem.registerSource(new MesosClusterSchedulerSource(this))
     metricsSystem.start()
@@ -460,9 +458,7 @@ private[spark] class MesosClusterScheduler(
     val appArguments = desc.command.arguments.mkString(" ")
     builder.setValue(s"$executable $cmdOptions $primaryResource $appArguments")
     builder.setEnvironment(envBuilder.build())
-    conf.getOption("spark.mesos.uris").map { uris =>
-      setupUris(uris, builder)
-    }
+    conf.getOption("spark.mesos.uris").map { uris => setupUris(uris, builder) }
     desc.schedulerProperties.get("spark.mesos.uris").map { uris =>
       setupUris(uris, builder)
     }
@@ -500,9 +496,7 @@ private[spark] class MesosClusterScheduler(
     desc.schedulerProperties.get("spark.submit.pyFiles").map { pyFiles =>
       val formattedFiles = pyFiles
         .split(",")
-        .map { path =>
-          new File(sandboxPath, path.split("/").last).toString()
-        }
+        .map { path => new File(sandboxPath, path.split("/").last).toString() }
         .mkString(",")
       options ++= Seq("--py-files", formattedFiles)
     }

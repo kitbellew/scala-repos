@@ -336,9 +336,7 @@ object SparkBuild extends PomBuild {
     ).contains(x)
   }
 
-  mimaProjects.foreach { x =>
-    enable(MimaBuild.mimaSettings(sparkHome, x))(x)
-  }
+  mimaProjects.foreach { x => enable(MimaBuild.mimaSettings(sparkHome, x))(x) }
 
   /* Unsafe settings */
   enable(Unsafe.settings)(unsafe)
@@ -459,9 +457,7 @@ object DependencyOverrides {
   */
 object ExcludedDependencies {
   lazy val settings = Seq(
-    libraryDependencies ~= { libs =>
-      libs.filterNot(_.name == "groovy-all")
-    }
+    libraryDependencies ~= { libs => libs.filterNot(_.name == "groovy-all") }
   )
 }
 
@@ -474,9 +470,7 @@ object OldDeps {
 
   lazy val allPreviousArtifactKeys = Def.settingDyn[Seq[Option[ModuleID]]] {
     SparkBuild.mimaProjects
-      .map { project =>
-        MimaKeys.previousArtifact in project
-      }
+      .map { project => MimaKeys.previousArtifact in project }
       .map(k => Def.setting(k.value))
       .join
   }
@@ -640,8 +634,7 @@ object Assembly {
         }
     },
     jarName in (Test, assembly) <<= (version, moduleName, hadoopVersion) map {
-      (v, mName, hv) =>
-        s"${mName}-test-${v}.jar"
+      (v, mName, hv) => s"${mName}-test-${v}.jar"
     },
     mergeStrategy in assembly := {
       case PathList("org", "datanucleus", xs @ _*)    => MergeStrategy.discard
@@ -882,9 +875,7 @@ object CopyDependencies {
 
       (dependencyClasspath in Compile).value
         .map(_.data)
-        .filter { jar =>
-          jar.isFile()
-        }
+        .filter { jar => jar.isFile() }
         .foreach { jar =>
           val destJar = new File(dest, jar.getName())
           if (destJar.isFile()) {
@@ -955,9 +946,7 @@ object TestSettings {
         .map { tags =>
           tags
             .split(",")
-            .flatMap { tag =>
-              Seq("-l", tag)
-            }
+            .flatMap { tag => Seq("-l", tag) }
             .toSeq
         }
         .getOrElse(Nil): _*),
@@ -965,9 +954,7 @@ object TestSettings {
       TestFrameworks.JUnit,
       sys.props
         .get("test.exclude.tags")
-        .map { tags =>
-          Seq("--exclude-categories=" + tags)
-        }
+        .map { tags => Seq("--exclude-categories=" + tags) }
         .getOrElse(Nil): _*),
     // Show full stack trace and duration in test cases.
     testOptions in Test += Tests.Argument("-oDF"),

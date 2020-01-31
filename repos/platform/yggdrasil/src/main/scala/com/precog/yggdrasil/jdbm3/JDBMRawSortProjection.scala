@@ -98,9 +98,7 @@ class JDBMRawSortProjection[M[+_]] private[yggdrasil] (
       }
 
       val constrainedMap = id
-        .map { idKey =>
-          index.tailMap(idKey)
-        }
+        .map { idKey => index.tailMap(idKey) }
         .getOrElse(index)
       val iteratorSetup = () => {
         val rawIterator = constrainedMap.entrySet.iterator.asScala

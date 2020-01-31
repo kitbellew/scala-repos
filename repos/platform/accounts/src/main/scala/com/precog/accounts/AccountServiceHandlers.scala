@@ -313,8 +313,7 @@ class AccountServiceHandlers(
                             Some("Root key for account " + accountId),
                             Some(
                               "This is your master API key. Keep it secure!")) map {
-                            details =>
-                              details.apiKey
+                            details => details.apiKey
                           }
                       } map { account =>
                         logger.debug(

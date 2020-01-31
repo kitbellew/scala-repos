@@ -73,15 +73,13 @@ class SexpParser(val input: ParserInput) extends Parser with StringBuilding {
 
   private def SexpConsP: Rule1[SexpCons] = rule {
     LeftBrace ~ SexpP ~ Whitespace ~ '.' ~ Whitespace ~ SexpP ~ RightBrace ~> {
-      (x: Sexp, y: Sexp) =>
-        SexpCons(x, y)
+      (x: Sexp, y: Sexp) => SexpCons(x, y)
     }
   }
 
   private def SexpListP: Rule1[Sexp] = rule {
     LeftBrace ~ SexpP ~ zeroOrMore(Whitespace ~ SexpP) ~ RightBrace ~> {
-      (head: Sexp, tail: Seq[Sexp]) =>
-        { SexpList(head :: tail.toList) }
+      (head: Sexp, tail: Seq[Sexp]) => { SexpList(head :: tail.toList) }
     }
   }
 
@@ -151,9 +149,7 @@ class SexpParser(val input: ParserInput) extends Parser with StringBuilding {
   }
 
   private def SexpQuotedP: Rule1[Sexp] = rule {
-    '\'' ~ SexpP ~> { v: Sexp =>
-      SexpCons(SexpQuote, v)
-    }
+    '\'' ~ SexpP ~> { v: Sexp => SexpCons(SexpQuote, v) }
   }
 
   private def SexpSymbolP: Rule1[SexpAtom] = rule {

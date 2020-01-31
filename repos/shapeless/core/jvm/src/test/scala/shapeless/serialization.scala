@@ -94,9 +94,7 @@ object SerializationTestDefns {
   }
 
   object selInt extends Poly1 {
-    implicit def ci = at[Int] { x =>
-      x
-    }
+    implicit def ci = at[Int] { x => x }
   }
 
   object smear extends Poly {

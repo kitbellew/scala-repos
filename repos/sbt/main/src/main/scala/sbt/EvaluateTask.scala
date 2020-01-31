@@ -434,9 +434,7 @@ object EvaluateTask {
     val keyed =
       for (Incomplete(Some(key: ScopedKey[_]), _, msg, _, ex) <- all)
         yield (key, msg, ex)
-    val un = all.filter { i =>
-      i.node.isEmpty || i.message.isEmpty
-    }
+    val un = all.filter { i => i.node.isEmpty || i.message.isEmpty }
 
     import ExceptionCategory._
     for ((key, msg, Some(ex)) <- keyed) {
@@ -640,9 +638,7 @@ object EvaluateTask {
       result: Result[T],
       log: Logger,
       show: Boolean = false): T =
-    onResult(result, log) { v =>
-      if (show) println("Result: " + v); v
-    }
+    onResult(result, log) { v => if (show) println("Result: " + v); v }
   def onResult[T, S](result: Result[T], log: Logger)(f: T => S): S =
     result match {
       case Value(v) => f(v)

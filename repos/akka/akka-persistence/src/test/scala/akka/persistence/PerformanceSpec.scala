@@ -136,9 +136,7 @@ class PerformanceSpec
     failAt foreach { persistentActor ! FailAt(_) }
     val m = new Measure(loadCycles)
     m.startMeasure()
-    1 to loadCycles foreach { i ⇒
-      persistentActor ! s"msg${i}"
-    }
+    1 to loadCycles foreach { i ⇒ persistentActor ! s"msg${i}" }
     persistentActor ! StopMeasure
     expectMsg(100.seconds, StopMeasure)
     println(f"\nthroughput = ${m.stopMeasure()}%.2f $description per second")

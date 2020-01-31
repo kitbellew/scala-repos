@@ -86,9 +86,7 @@ object CircuitBreakerProxy {
       callTimeout: Timeout,
       resetTimeout: Timeout,
       circuitEventListener: Option[ActorRef] = None,
-      failureDetector: Any ⇒ Boolean = { _ ⇒
-        false
-      },
+      failureDetector: Any ⇒ Boolean = { _ ⇒ false },
       openCircuitFailureConverter: CircuitOpenFailure ⇒ Any = identity) {
 
     def withMaxFailures(value: Int) = copy(maxFailures = value)

@@ -141,17 +141,13 @@ class ExecutionTest extends WordSpec with Matchers {
     "If either fails, zip fails, else we get success" in {
       val neverHappens = Promise[Int]().future
       Execution
-        .fromFuture { _ =>
-          neverHappens
-        }
+        .fromFuture { _ => neverHappens }
         .zip(Execution.failed(new Exception("oh no")))
         .shouldFail()
 
       Execution
         .failed(new Exception("oh no"))
-        .zip(Execution.fromFuture { _ =>
-          neverHappens
-        })
+        .zip(Execution.fromFuture { _ => neverHappens })
         .shouldFail()
       // If both are good, we succeed:
       Execution
@@ -183,9 +179,7 @@ class ExecutionTest extends WordSpec with Matchers {
 
       doesNotHaveVariable(
         "Should not see variable before we've started transforming")
-        .flatMap { _ =>
-          Execution.withConfig(hasVariable)(addOption)
-        }
+        .flatMap { _ => Execution.withConfig(hasVariable)(addOption) }
         .flatMap(_ =>
           doesNotHaveVariable(
             "Should not see variable in flatMap's after the isolation"))
@@ -208,9 +202,7 @@ class ExecutionTest extends WordSpec with Matchers {
 
       // Here we run without the option, with the option, and finally without again.
       incrementor
-        .flatMap { _ =>
-          Execution.withConfig(incrementor)(addOption)
-        }
+        .flatMap { _ => Execution.withConfig(incrementor)(addOption) }
         .flatMap(_ => incrementor)
         .map(_ => true)
         .shouldSucceed() shouldBe true
@@ -246,9 +238,7 @@ class ExecutionTest extends WordSpec with Matchers {
       val (oldCounters, newCounters) = operationTP
         .flatMap { oc =>
           writeNums(List(1, 2, 3, 4, 5, 6, 7))
-          Execution.withConfig(operationTP)(addOption).map { nc =>
-            (oc, nc)
-          }
+          Execution.withConfig(operationTP)(addOption).map { nc => (oc, nc) }
         }
         .shouldSucceed()
 
@@ -300,9 +290,7 @@ class ExecutionTest extends WordSpec with Matchers {
         second += 1
         Execution.from(2 * x)
       }
-      val e3 = e1.map { x =>
-        third += 1; x * 3
-      }
+      val e3 = e1.map { x => third += 1; x * 3 }
 
       /**
         * Notice both e3 and e2 need to evaluate e1.
@@ -427,9 +415,7 @@ class ExecutionTest extends WordSpec with Matchers {
 
       val res = fde1
         .zip(fde2)
-        .flatMap { _ =>
-          fde1
-        }
+        .flatMap { _ => fde1 }
         .flatMap(_.toIterableExecution)
 
       res.shouldSucceed()
@@ -496,9 +482,7 @@ class ExecutionTest extends WordSpec with Matchers {
         .map { i =>
           Execution
             .from[Int](i)
-            .map { i =>
-              Thread.sleep(10 - i); i
-            }
+            .map { i => Thread.sleep(10 - i); i }
             .onComplete(t => updateSeen(t.get))
         }
         .toList

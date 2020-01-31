@@ -103,8 +103,7 @@ object AccumulatorSpec extends Specification {
     }
 
     "be able to be composed in a left to right asociate way" in withMaterializer {
-      implicit m =>
-        await(source ~>: Flow[Int].map(_ * 2) ~>: sum) must_== 12
+      implicit m => await(source ~>: Flow[Int].map(_ * 2) ~>: sum) must_== 12
     }
 
     "be flattenable from a future of itself" in {

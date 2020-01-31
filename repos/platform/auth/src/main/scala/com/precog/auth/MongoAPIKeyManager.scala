@@ -93,8 +93,7 @@ object MongoAPIKeyManager extends Logging {
 
     val dbStop =
       Stoppable.fromFuture(database.disconnect.fallbackTo(Future(())) flatMap {
-        _ =>
-          mongo.close
+        _ => mongo.close
       })
 
     (
@@ -203,9 +202,7 @@ class MongoAPIKeyManager(
       false)
     database(
       insert(apiKey.serialize.asInstanceOf[JObject])
-        .into(settings.apiKeys)) map { _ =>
-      apiKey
-    }
+        .into(settings.apiKeys)) map { _ => apiKey }
   }
 
   def createGrant(
@@ -226,8 +223,7 @@ class MongoAPIKeyManager(
       expiration)
     logger.debug("Adding grant: " + ng)
     database(insert(ng.serialize.asInstanceOf[JObject]).into(settings.grants)) map {
-      _ =>
-        logger.debug("Add complete for " + ng); ng
+      _ => logger.debug("Add complete for " + ng); ng
     }
   }
 
@@ -332,9 +328,7 @@ class MongoAPIKeyManager(
             database {
               val updateObj = nt.serialize.asInstanceOf[JObject]
               update(settings.apiKeys).set(updateObj).where("apiKey" === apiKey)
-            }.map { _ =>
-              Some(nt)
-            }
+            }.map { _ => Some(nt) }
           case _ => Future(Some(t))
         }
       case None => Future(None)

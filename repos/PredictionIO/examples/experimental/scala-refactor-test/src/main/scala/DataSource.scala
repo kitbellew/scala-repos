@@ -36,9 +36,7 @@ class DataSource
         new EmptyEvaluationInfo(),
         sc.parallelize(
           (0 until 20)
-            .map { i =>
-              (Query(i), new ActualResult())
-            }))
+            .map { i => (Query(i), new ActualResult()) }))
     }
   }
 }

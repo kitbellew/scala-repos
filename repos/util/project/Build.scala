@@ -75,9 +75,7 @@ object Util extends Build {
     parallelExecution in Test := false,
     // Sonatype publishing
     publishArtifact in Test := false,
-    pomIncludeRepository := { _ =>
-      false
-    },
+    pomIncludeRepository := { _ => false },
     publishMavenStyle := true,
     autoAPIMappings := true,
     apiURL := Some(url("https://twitter.github.io/util/docs/")),

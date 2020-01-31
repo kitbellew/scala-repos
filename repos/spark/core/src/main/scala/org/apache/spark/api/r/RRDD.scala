@@ -356,12 +356,8 @@ private[r] class BufferedStreamThread(
 
   def getLines(): String = synchronized {
     (0 until errBufferSize)
-      .filter { x =>
-        lines((x + lineIdx) % errBufferSize) != null
-      }
-      .map { x =>
-        lines((x + lineIdx) % errBufferSize)
-      }
+      .filter { x => lines((x + lineIdx) % errBufferSize) != null }
+      .map { x => lines((x + lineIdx) % errBufferSize) }
       .mkString("\n")
   }
 }
@@ -403,9 +399,7 @@ private[r] object RRDD {
     }
 
     val jsc = new JavaSparkContext(sparkConf)
-    jars.foreach { jar =>
-      jsc.addJar(jar)
-    }
+    jars.foreach { jar => jsc.addJar(jar) }
     jsc
   }
 

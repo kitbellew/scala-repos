@@ -19,9 +19,7 @@ final case class WriterT[F[_], L, V](run: F[(L, V)]) {
 
   def map[Z](fn: V => Z)(implicit functorF: Functor[F]): WriterT[F, L, Z] =
     WriterT {
-      functorF.map(run) { z =>
-        (z._1, fn(z._2))
-      }
+      functorF.map(run) { z => (z._1, fn(z._2)) }
     }
 
   def flatMap[U](f: V => WriterT[F, L, U])(

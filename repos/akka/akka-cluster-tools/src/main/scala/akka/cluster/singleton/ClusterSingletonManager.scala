@@ -309,9 +309,7 @@ object ClusterSingletonManager {
 
       def remove(m: Member): Unit = {
         if (matchingRole(m))
-          trackChange { () ⇒
-            membersByAge -= m
-          }
+          trackChange { () ⇒ membersByAge -= m }
       }
 
       def sendFirstChange(): Unit = {

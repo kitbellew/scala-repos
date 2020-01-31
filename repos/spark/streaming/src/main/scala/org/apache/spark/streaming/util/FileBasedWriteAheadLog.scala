@@ -282,9 +282,7 @@ private[streaming] object FileBasedWriteAheadLog {
     Thread.currentThread
       .getStackTrace()
       .map(_.getClassName)
-      .find { c =>
-        !blacklist.exists(c.contains)
-      }
+      .find { c => !blacklist.exists(c.contains) }
       .flatMap(_.split("\\.").lastOption)
       .flatMap(_.split("\\$\\$").headOption)
   }

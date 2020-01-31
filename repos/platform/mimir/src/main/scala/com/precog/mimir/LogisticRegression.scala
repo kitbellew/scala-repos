@@ -165,9 +165,7 @@ trait LogisticRegressionLibModule[M[+_]]
       }
 
       def reduceDouble(seq0: Seq[ColumnValues]): Result = {
-        val seq = seq0 filter { arr =>
-          arr.last == 0 || arr.last == 1
-        }
+        val seq = seq0 filter { arr => arr.last == 0 || arr.last == 1 }
 
         if (seq.isEmpty) None
         else Some(seq)

@@ -44,8 +44,7 @@ object RandomForestExample extends App {
     println(
       s"Cross-validating ${dataset.name} with random forest classification...")
     val accuracy = crossValidateClassification(dataset) {
-      implicit space => data =>
-        RandomForest.classification(data, opts)
+      implicit space => data => RandomForest.classification(data, opts)
     }
     println("... accuracy of %.2f%%\n" format (real.toDouble(accuracy) * 100))
   }
@@ -145,9 +144,7 @@ trait RandomForest[V, @sp(Double) F, @sp(Double) K] {
 
     def predictors(): Array[Int] = {
       val indices = new Array[Int](opts.numAxesSample)
-      cfor(0)(_ < indices.length, _ + 1) { i =>
-        indices(i) = i
-      }
+      cfor(0)(_ < indices.length, _ + 1) { i => indices(i) = i }
       cfor(V.dimensions - 1)(_ >= indices.length, _ - 1) { i =>
         val j = nextInt(i + 1)
         if (j < indices.length)
@@ -172,9 +169,7 @@ trait RandomForest[V, @sp(Double) F, @sp(Double) K] {
 
     def region(members: Array[Int]): Region = {
       var d = Region.empty
-      cfor(0)(_ < members.length, _ + 1) { i =>
-        d += outputs(members(i))
-      }
+      cfor(0)(_ < members.length, _ + 1) { i => d += outputs(members(i)) }
       d
     }
 
@@ -253,9 +248,7 @@ trait RandomForest[V, @sp(Double) F, @sp(Double) K] {
     if (opts.parallel) {
       Forest(
         (1 to opts.numTrees).toList.par
-          .map({ _ =>
-            growTree(sample())
-          })
+          .map({ _ => growTree(sample()) })
           .toList)
     } else {
       Forest(List.fill(opts.numTrees)(growTree(sample())))

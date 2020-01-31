@@ -213,8 +213,7 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
         val newInstanceDef = genNewInstanceDef(clazz.symbol, bootSym)
         val invokeJUnitMethodDef = {
           val annotatedMethods = modDefOption.fold(List.empty[MethodSymbol]) {
-            mod =>
-              jUnitAnnotatedMethods(mod.symbol.asClass)
+            mod => jUnitAnnotatedMethods(mod.symbol.asClass)
           }
           mkInvokeJUnitMethodOnModuleDef(
             annotatedMethods,

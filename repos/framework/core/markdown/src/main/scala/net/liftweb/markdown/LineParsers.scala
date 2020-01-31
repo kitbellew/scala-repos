@@ -187,9 +187,7 @@ trait LineParsers extends InlineParsers {
   def linkDefinitionTitle: Parser[String] =
     ows ~> ("""\"[^\n]*["]""".r |
       """\'[^\n]*\'""".r |
-      """\([^\n]*\)""".r) <~ ows ^^ { s =>
-      s.substring(1, s.length - 1)
-    }
+      """\([^\n]*\)""".r) <~ ows ^^ { s => s.substring(1, s.length - 1) }
 
   /** A link definition that later gets stripped from the output.
     * Either a link definition on one line or the first line of a two line link definition.

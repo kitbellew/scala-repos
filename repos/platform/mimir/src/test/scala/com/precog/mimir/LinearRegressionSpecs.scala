@@ -56,9 +56,7 @@ trait LinearRegressionTestSupport[M[+_]]
       actualThetas: Array[Double]): Seq[(Array[Double], Double)] = {
     val testSeqX = {
       def createXs: Array[Double] = {
-        Seq.fill(length - 1)(Random.nextDouble) map { x =>
-          x * 2.0 - 1.0
-        } toArray
+        Seq.fill(length - 1)(Random.nextDouble) map { x => x * 2.0 - 1.0 } toArray
       }
 
       Seq.fill(noSamples)(createXs)
@@ -143,15 +141,11 @@ trait LinearRegressionSpecs[M[+_]]
   }
 
   def computeRSquared(ys: List[Seq[Double]]) = {
-    val yMeans = ys map { seq =>
-      seq.sum / seq.size
-    }
+    val yMeans = ys map { seq => seq.sum / seq.size }
 
     val ssTotals = ys.zip(yMeans) map {
       case (ys, yMean) =>
-        val diffs = ys map { y =>
-          math.pow(y - yMean, 2d)
-        }
+        val diffs = ys map { y => math.pow(y - yMean, 2d) }
         diffs.sum
     }
     val ssTotal = ssTotals.sum / ssTotals.size
@@ -222,9 +216,7 @@ trait LinearRegressionSpecs[M[+_]]
     val allThetas = actualThetas zip combinedThetas
     val okThetas = allThetas map { case (t, ts) => isOk(t, ts) }
 
-    val actualErrors = combinedThetas map { t =>
-      madMedian(t)._1
-    }
+    val actualErrors = combinedThetas map { t => madMedian(t)._1 }
 
     val allErrors = actualErrors zip combinedErrors
 
@@ -332,9 +324,7 @@ trait LinearRegressionSpecs[M[+_]]
     val allThetas = actualThetas zip combineResults(num, thetas)
     val okThetas = allThetas map { case (t, ts) => isOk(t, ts) }
 
-    val actualErrors = combinedThetas map { t =>
-      madMedian(t)._1
-    }
+    val actualErrors = combinedThetas map { t => madMedian(t)._1 }
 
     val allErrors = actualErrors zip combinedErrors
     val okErrors = allErrors map { case (e, es) => isOk(e, es) } toArray
@@ -481,9 +471,7 @@ trait LinearRegressionSpecs[M[+_]]
     }
 
     val actualErrors: List[Seq[Double]] = thetas map { ts =>
-      combineResults(num, ts) map { arr =>
-        madMedian(arr)._1
-      }
+      combineResults(num, ts) map { arr => madMedian(arr)._1 }
     }
 
     val zipped = actualErrors zip errors

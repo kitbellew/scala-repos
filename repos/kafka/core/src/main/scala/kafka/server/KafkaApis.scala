@@ -321,8 +321,7 @@ class KafkaApis(
           new Resource(Group, offsetCommitRequest.groupId))) {
       val errorCode = new JShort(Errors.GROUP_AUTHORIZATION_FAILED.code)
       val results = offsetCommitRequest.offsetData.keySet.asScala.map {
-        topicPartition =>
-          (topicPartition, errorCode)
+        topicPartition => (topicPartition, errorCode)
       }.toMap
       val responseHeader = new ResponseHeader(header.correlationId)
       val responseBody = new OffsetCommitResponse(results.asJava)
@@ -1034,8 +1033,7 @@ class KafkaApis(
           "",
           Errors.GROUP_AUTHORIZATION_FAILED.code)
         val results = offsetFetchRequest.partitions.asScala.map {
-          topicPartition =>
-            (topicPartition, unauthorizedGroupResponse)
+          topicPartition => (topicPartition, unauthorizedGroupResponse)
         }.toMap
         new OffsetFetchResponse(results.asJava)
       } else {

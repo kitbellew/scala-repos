@@ -40,17 +40,14 @@ trait Rule[-In, +Out, +A, +X] extends (In => Result[Out, A, X]) {
       case err @ Error(_)  => err
     }
 
-  def map[B](fa2b: A => B) = flatMap { a => out =>
-    Success(out, fa2b(a))
-  }
+  def map[B](fa2b: A => B) = flatMap { a => out => Success(out, fa2b(a)) }
 
   def filter(f: A => Boolean) = flatMap { a => out =>
     if (f(a)) Success(out, a) else Failure
   }
 
   def mapResult[Out2, B, Y](f: Result[Out, A, X] => Result[Out2, B, Y]) = rule {
-    in: In =>
-      f(apply(in))
+    in: In => f(apply(in))
   }
 
   def orElse[In2 <: In, Out2 >: Out, A2 >: A, X2 >: X](
@@ -71,9 +68,7 @@ trait Rule[-In, +Out, +A, +X] extends (In => Result[Out, A, X]) {
 
   def ??(pf: PartialFunction[A, Any]) = filter(pf.isDefinedAt(_))
 
-  def -^[B](b: B) = map { any =>
-    b
-  }
+  def -^[B](b: B) = map { any => b }
 
   /** Maps an Error */
   def !^[Y](fx2y: X => Y) = mapResult {
@@ -86,18 +81,14 @@ trait Rule[-In, +Out, +A, +X] extends (In => Result[Out, A, X]) {
     flatMap(fa2ruleb)
 
   def >->[Out2, B, X2 >: X](fa2resultb: A => Result[Out2, B, X2]) = flatMap {
-    a => any =>
-      fa2resultb(a)
+    a => any => fa2resultb(a)
   }
 
   def >>?[Out2, B, X2 >: X](pf: PartialFunction[A, Rule[Out, Out2, B, X2]]) =
     filter(pf isDefinedAt _) flatMap pf
 
   def >>&[B, X2 >: X](fa2ruleb: A => Out => Result[Any, B, X2]) = flatMap {
-    a => out =>
-      fa2ruleb(a)(out) mapOut { any =>
-        out
-      }
+    a => out => fa2ruleb(a)(out) mapOut { any => out }
   }
 
   def ~[Out2, B, X2 >: X](next: => Rule[Out, Out2, B, X2]) =
@@ -140,8 +131,7 @@ trait Rule[-In, +Out, +A, +X] extends (In => Result[Out, A, X]) {
   /** ^~~^(f) is equivalent to ^^ { case b1 ~ b2 ~ b3 => f(b1, b2, b3) }
     */
   def ^~~^[B1, B2, B3, B >: A <% B1 ~ B2 ~ B3, C](f: (B1, B2, B3) => C) = map {
-    a =>
-      (a: B1 ~ B2 ~ B3) match { case b1 ~ b2 ~ b3 => f(b1, b2, b3) }
+    a => (a: B1 ~ B2 ~ B3) match { case b1 ~ b2 ~ b3 => f(b1, b2, b3) }
   }
 
   /** ^~~~^(f) is equivalent to ^^ { case b1 ~ b2 ~ b3 ~ b4 => f(b1, b2, b3, b4) }

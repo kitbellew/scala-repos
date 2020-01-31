@@ -492,9 +492,9 @@ class FutureSpec
       }
 
       "fold" in {
-        Await.result(Future.fold((1 to 10).toList map { i ⇒
-          Future(i)
-        })(0)(_ + _), remainingOrDefault) should ===(55)
+        Await.result(
+          Future.fold((1 to 10).toList map { i ⇒ Future(i) })(0)(_ + _),
+          remainingOrDefault) should ===(55)
       }
 
       "zip" in {
@@ -530,9 +530,7 @@ class FutureSpec
       }
 
       "fold by composing" in {
-        val futures = (1 to 10).toList map { i ⇒
-          Future(i)
-        }
+        val futures = (1 to 10).toList map { i ⇒ Future(i) }
         Await.result(
           futures.foldLeft(Future(0))((fr, fa) ⇒
             for (r ← fr; a ← fa) yield (r + a)),
@@ -577,9 +575,7 @@ class FutureSpec
       }
 
       "reduce results" in {
-        val futures = (1 to 10).toList map { i ⇒
-          Future(i)
-        }
+        val futures = (1 to 10).toList map { i ⇒ Future(i) }
         assert(
           Await
             .result(Future.reduce(futures)(_ + _), remainingOrDefault) === 55)

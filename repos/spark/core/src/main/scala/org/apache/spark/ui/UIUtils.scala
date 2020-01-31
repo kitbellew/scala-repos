@@ -469,9 +469,7 @@ private[spark] object UIUtils extends Logging {
         throw new IllegalArgumentException(
           "Only HTML anchors allowed in job descriptions\n" +
             illegalNodes
-              .map { n =>
-                s"${n.label} in $n"
-              }
+              .map { n => s"${n.label} in $n" }
               .mkString("\n\t"))
       }
 

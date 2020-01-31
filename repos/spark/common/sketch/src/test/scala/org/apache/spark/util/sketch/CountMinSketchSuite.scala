@@ -139,9 +139,7 @@ class CountMinSketchSuite extends FunSuite { // scalastyle:ignore funsuite
 
   testItemType[Long]("Long") { _.nextLong() }
 
-  testItemType[String]("String") { r =>
-    r.nextString(r.nextInt(20))
-  }
+  testItemType[String]("String") { r => r.nextString(r.nextInt(20)) }
 
   test("incompatible merge") {
     intercept[IncompatibleMergeException] {

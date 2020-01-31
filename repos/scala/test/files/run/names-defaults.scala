@@ -405,9 +405,7 @@ object Test extends App {
     inner(c = "/")
   }
   def test5(argName: Unit) = println("test5")
-  def test6(x: Int) = { () =>
-    x
-  }
+  def test6(x: Int) = { () => x }
   def test7(s: String) = List(1).foreach(_ => println(s))
 
   def test8(x: Int = 1)(implicit y: Int, z: String = "kldfj") = z + x + y

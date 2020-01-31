@@ -141,9 +141,7 @@ private[finagle] object Handshake {
           Future.const(t.cast[Transport[Message, Message]])
       }
 
-    handshake.onFailure { _ =>
-      msgTrans.close()
-    }
+    handshake.onFailure { _ => msgTrans.close() }
     new DeferredTransport(msgTrans, handshake)
   }
 
@@ -215,9 +213,7 @@ private[finagle] object Handshake {
         case Throw(_) => Future.value(msgTrans)
       }
 
-    handshake.onFailure { _ =>
-      msgTrans.close()
-    }
+    handshake.onFailure { _ => msgTrans.close() }
     new DeferredTransport(msgTrans, handshake)
   }
 }

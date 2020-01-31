@@ -16,9 +16,7 @@ object NotEmpty {
   }
 
   def unapply(o: Option[String]): Option[String] = {
-    o flatMap { s =>
-      unapply(s)
-    }
+    o flatMap { s => unapply(s) }
   }
 
 }

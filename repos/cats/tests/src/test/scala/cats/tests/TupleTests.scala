@@ -16,9 +16,7 @@ class TupleTests extends CatsSuite {
   test("show") {
     (1, 2).show should ===("(1,2)")
 
-    forAll { fs: (String, String) =>
-      fs.show should ===(fs.toString)
-    }
+    forAll { fs: (String, String) => fs.show should ===(fs.toString) }
 
     // Provide some "non-standard" Show instances to make sure the tuple2 is actually use the Show instances for the
     // relevant types instead of blindly calling toString

@@ -33,9 +33,7 @@ class DefaultServerTest extends FunSpec with MockitoSugar {
         case (transport, service) =>
           val f = transport.read() flatMap { num =>
             service(num)
-          } respond { result =>
-            transport.write(result.flatten)
-          }
+          } respond { result => transport.write(result.flatten) }
           service
       }
 
@@ -116,9 +114,7 @@ class DefaultServerTest extends FunSpec with MockitoSugar {
       val socket = new InetSocketAddress(InetAddress.getLoopbackAddress, 0)
 
       val p = Promise[Try[Int]]
-      val svc = Service.mk[Try[Int], Try[Int]] { _ =>
-        p
-      }
+      val svc = Service.mk[Try[Int], Try[Int]] { _ => p }
       val factory = ServiceFactory.const(svc)
       val listeningServer: ListeningServer = server.serve(socket, factory)
 

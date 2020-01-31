@@ -20,9 +20,7 @@ class C1492 {
   def foo(x: X => X) {}
 
   foo(implicit x => implicitly[X])
-  foo { implicit x =>
-    implicitly[X]
-  }
+  foo { implicit x => implicitly[X] }
 }
 
 // #1579

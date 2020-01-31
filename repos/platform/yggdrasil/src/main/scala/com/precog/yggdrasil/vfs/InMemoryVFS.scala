@@ -76,13 +76,9 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
       M point {
         id match {
           case Some(i) =>
-            slices.lift(i + 1) map { s =>
-              BlockProjectionData(i + 1, i + 1, s)
-            }
+            slices.lift(i + 1) map { s => BlockProjectionData(i + 1, i + 1, s) }
           case None =>
-            slices.headOption map { s =>
-              BlockProjectionData(0, 0, s)
-            }
+            slices.headOption map { s => BlockProjectionData(0, 0, s) }
         }
       }
   }

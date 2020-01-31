@@ -100,12 +100,8 @@ class Code extends UsefulStuff {
     )
   }
 
-  val methodsOneGen = methodsOne map { x =>
-    objects1(x)
-  }
-  val methodsTwoGen = methodsTwo map { x =>
-    objects2(x)
-  }
+  val methodsOneGen = methodsOne map { x => objects1(x) }
+  val methodsTwoGen = methodsTwo map { x => objects2(x) }
   val methodsAll = methodsOneGen ++ methodsTwoGen
 
   val trees = imports :: trait1 :: trait2 :: Nil

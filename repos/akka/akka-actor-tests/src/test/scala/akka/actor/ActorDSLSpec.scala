@@ -180,9 +180,7 @@ class ActorDSLSpec extends AkkaSpec {
           case "die" ⇒ throw new Exception
         }
         whenFailing { case m @ (cause, msg) ⇒ testActor ! m }
-        whenRestarted { cause ⇒
-          testActor ! cause
-        }
+        whenRestarted { cause ⇒ testActor ! cause }
       })
       //#failing-actor
 
@@ -203,8 +201,7 @@ class ActorDSLSpec extends AkkaSpec {
         })
         //#supervise-with
         val child = actor("child")(new Act {
-          whenFailing { (_, _) ⇒
-          }
+          whenFailing { (_, _) ⇒ }
           become {
             case ref: ActorRef ⇒ whenStopping(ref ! "stopped")
             case ex: Exception ⇒ throw ex

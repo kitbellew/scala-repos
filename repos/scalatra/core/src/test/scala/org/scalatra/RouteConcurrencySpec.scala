@@ -22,9 +22,7 @@ class RouteConcurrencyServlet extends ScalatraServlet {
     route <- postRoutes.take(250)
     x = Future { post(false) {}; post(false) {} } // add some more routes while we're removing
     y = Future {
-      route.foreach { route =>
-        removeRoute("POST", route)
-      }
+      route.foreach { route => removeRoute("POST", route) }
     }
   } yield (x, y)
   Await.result(

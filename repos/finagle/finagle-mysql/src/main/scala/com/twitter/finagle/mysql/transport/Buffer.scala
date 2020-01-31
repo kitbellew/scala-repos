@@ -287,9 +287,7 @@ trait BufferWriter extends Buffer {
     * @param b Byte used to fill.
     */
   def fill(n: Int, b: Byte) = {
-    (offset until offset + n) foreach { j =>
-      writeByte(b)
-    }
+    (offset until offset + n) foreach { j => writeByte(b) }
     this
   }
 

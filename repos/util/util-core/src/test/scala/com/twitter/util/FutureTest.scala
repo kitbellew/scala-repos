@@ -79,9 +79,7 @@ class FutureTest
           }
           iteration onSuccess { _ =>
             complete = true
-          } onFailure { f =>
-            failure = true
-          }
+          } onFailure { f => failure = true }
           assert(complete == false)
           assert(failure == false)
         }
@@ -159,9 +157,7 @@ class FutureTest
 
           iteration onSuccess { _ =>
             complete = true
-          } onFailure { f =>
-            failure = true
-          }
+          } onFailure { f => failure = true }
           assert(complete == false)
           assert(failure == false)
         }
@@ -941,9 +937,7 @@ class FutureTest
 
       "map" which {
         "when it's all chill" in {
-          val f = Future(1) map { x =>
-            x + 1
-          }
+          val f = Future(1) map { x => x + 1 }
           assert(Await.result(f) == 2)
         }
 
@@ -988,9 +982,7 @@ class FutureTest
           def ret(): String = {
             val f = const.value(1).transform {
               case Return(v) =>
-                val fn = { () =>
-                  return "OK"
-                }
+                val fn = { () => return "OK" }
                 fn()
                 Future.value(ret())
               case Throw(t) => const.value(0)
@@ -1160,18 +1152,11 @@ class FutureTest
         }
       }
 
-      testSequence(
-        "flatMap",
-        (a, next) =>
-          a flatMap { _ =>
-            next()
-          })
+      testSequence("flatMap", (a, next) => a flatMap { _ => next() })
       testSequence("before", (a, next) => a before next())
 
       "flatMap (values)" should {
-        val f = Future(1) flatMap { x =>
-          Future(x + 1)
-        }
+        val f = Future(1) flatMap { x => Future(x + 1) }
 
         "apply" which {
           assert(Await.result(f) == 2)
@@ -1291,9 +1276,7 @@ class FutureTest
       "foreach" in {
         var wasCalledWith: Option[Int] = None
         val f = Future(1)
-        f foreach { i =>
-          wasCalledWith = Some(i)
-        }
+        f foreach { i => wasCalledWith = Some(i) }
         assert(wasCalledWith == Some(1))
       }
 
@@ -1311,9 +1294,7 @@ class FutureTest
         "when the result has not yet arrived it buffers computations" in {
           var wasCalledWith: Option[Int] = None
           val f = new Promise[Int]
-          f foreach { i =>
-            wasCalledWith = Some(i)
-          }
+          f foreach { i => wasCalledWith = Some(i) }
           assert(wasCalledWith == None)
           f() = Return(1)
           assert(wasCalledWith == Some(1))
@@ -1399,9 +1380,7 @@ class FutureTest
         val promise = new Promise[Option[Int]]
 
         local() = 123
-        val done = promise map { otherValue =>
-          (otherValue, local())
-        }
+        val done = promise map { otherValue => (otherValue, local()) }
 
         val t = new Thread {
           override def run() {
@@ -1825,9 +1804,7 @@ class FutureTest
         val i = Random.nextInt(ps.length)
         val e = new Exception("sad panda")
         val t = if (fail) Throw(e) else Return(i)
-        f respond { _ =>
-          ()
-        }
+        f respond { _ => () }
         assert(ps.map(_.waitqLength).sum == n)
         ps(i).update(t)
         assert(ps.map(_.waitqLength).sum == 0)
@@ -1887,9 +1864,7 @@ class FutureTest
         val i = Random.nextInt(ps.length)
         val e = new Exception("sad panda")
         val t = if (fail) Throw(e) else Return(i)
-        f respond { _ =>
-          ()
-        }
+        f respond { _ => () }
         assert(ps.map(_.waitqLength).sum == n)
         ps(i).update(t)
         assert(ps.map(_.waitqLength).sum == 0)
@@ -1954,9 +1929,7 @@ class FutureTest
     "terminate when 'next' throws" in {
       val exc = new Exception
       def next(): Future[Int] = throw exc
-      val done = Future.each(next()) { _ =>
-        throw exc
-      }
+      val done = Future.each(next()) { _ => throw exc }
 
       assert(done.poll == Some(Throw(Future.NextThrewException(exc))))
     }

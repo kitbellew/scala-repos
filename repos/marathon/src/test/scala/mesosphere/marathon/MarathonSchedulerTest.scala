@@ -43,9 +43,7 @@ class MarathonSchedulerTest
   var eventBus: EventStream = _
   var offerProcessor: OfferProcessor = _
   var taskStatusProcessor: TaskStatusUpdateProcessor = _
-  var suicideFn: (Boolean) => Unit = { _ =>
-    ()
-  }
+  var suicideFn: (Boolean) => Unit = { _ => () }
 
   before {
     repo = mock[AppRepository]

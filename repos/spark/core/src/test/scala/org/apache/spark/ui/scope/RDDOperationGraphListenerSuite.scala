@@ -132,12 +132,8 @@ class RDDOperationGraphListenerSuite extends SparkFunSuite {
       // End some, but not all, stages that belong to this job
       // This is to ensure that we have both completed and skipped stages
       (startingStageIdForJob until stageIdCounter)
-        .filter { i =>
-          i % 2 == 0
-        }
-        .foreach { i =>
-          endStage(i, listener)
-        }
+        .filter { i => i % 2 == 0 }
+        .foreach { i => endStage(i, listener) }
       // End all jobs
       endJob(jobId, listener)
     }
@@ -180,14 +176,10 @@ class RDDOperationGraphListenerSuite extends SparkFunSuite {
     startJob(5, listener)
     startJob(1, listener)
     startJob(2, listener)
-    (0 until 8).foreach { i =>
-      startStage(i + startingStageId, listener)
-    }
+    (0 until 8).foreach { i => startStage(i + startingStageId, listener) }
     endStage(startingStageId + 3, listener)
     endStage(startingStageId + 4, listener)
-    (0 until 3).foreach { i =>
-      endJob(i + startingJobId, listener)
-    }
+    (0 until 3).foreach { i => endJob(i + startingJobId, listener) }
 
     // First, assert the old stuff
     assert(listener.jobIdToStageIds.size === 3)
@@ -228,9 +220,7 @@ class RDDOperationGraphListenerSuite extends SparkFunSuite {
     val jobId = jobIdCounter
     listener.onJobStart(new SparkListenerJobStart(jobId, 0, stageInfos))
     // Also start all stages that belong to this job
-    stageInfos.map(_.stageId).foreach { sid =>
-      startStage(sid, listener)
-    }
+    stageInfos.map(_.stageId).foreach { sid => startStage(sid, listener) }
     jobIdCounter += 1
     jobId
   }

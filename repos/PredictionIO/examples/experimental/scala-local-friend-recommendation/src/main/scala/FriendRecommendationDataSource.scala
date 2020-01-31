@@ -44,9 +44,7 @@ class FriendRecommendationDataSource(
       val data = line.split("\\s")
       itemIdMap += (data(0).toInt -> internalId)
       var keywordMap = new HashMap[Int, Double]()
-      data(2).split(";").foreach { term =>
-        keywordMap += (term.toInt -> 1.0)
-      }
+      data(2).split(";").foreach { term => keywordMap += (term.toInt -> 1.0) }
       itemKeyword(internalId) = keywordMap
       internalId += 1
     }

@@ -41,23 +41,17 @@ class GaussMixtureBenchmark extends BreezeBenchmark {
 
   def timeCenterMat(reps: Int) = {
     val matrix = DenseMatrix.fill(n, 10)(5.0)
-    (0 until reps).foreach { i =>
-      matrix(*, ::) - c
-    }
+    (0 until reps).foreach { i => matrix(*, ::) - c }
   }
 
   def timeCenterMatColMajor(reps: Int) = {
     val matrix = DenseMatrix.fill(10, n)(5.0)
-    (0 until reps).foreach { i =>
-      matrix(::, *) - c
-    }
+    (0 until reps).foreach { i => matrix(::, *) - c }
   }
 
   def timeCenterVector(reps: Int) = {
     val denseVectors = IndexedSeq.fill(n)(x)
-    (0 until reps).foreach { i =>
-      denseVectors.foreach(_ - c)
-    }
+    (0 until reps).foreach { i => denseVectors.foreach(_ - c) }
   }
 
 }

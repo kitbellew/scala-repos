@@ -399,9 +399,7 @@ private[spark] object StatsReportListener extends Logging {
       heading: String,
       dOpt: Option[Distribution],
       formatNumber: Double => String) {
-    dOpt.foreach { d =>
-      showDistribution(heading, d, formatNumber)
-    }
+    dOpt.foreach { d => showDistribution(heading, d, formatNumber) }
   }
 
   def showDistribution(
@@ -433,9 +431,7 @@ private[spark] object StatsReportListener extends Logging {
   }
 
   def showBytesDistribution(heading: String, dOpt: Option[Distribution]) {
-    dOpt.foreach { dist =>
-      showBytesDistribution(heading, dist)
-    }
+    dOpt.foreach { dist => showBytesDistribution(heading, dist) }
   }
 
   def showBytesDistribution(heading: String, dist: Distribution) {

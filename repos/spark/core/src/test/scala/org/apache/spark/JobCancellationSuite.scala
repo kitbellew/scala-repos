@@ -137,9 +137,7 @@ class JobCancellationSuite
     val jobA = Future {
       sc.setJobGroup("jobA", "this is a job to be cancelled")
       sc.parallelize(1 to 10000, 2)
-        .map { i =>
-          Thread.sleep(10); i
-        }
+        .map { i => Thread.sleep(10); i }
         .count()
     }
 
@@ -174,9 +172,7 @@ class JobCancellationSuite
       override def run(): Unit = {
         exception = intercept[SparkException] {
           sc.parallelize(1 to 10000, 2)
-            .map { i =>
-              Thread.sleep(10); i
-            }
+            .map { i => Thread.sleep(10); i }
             .count()
         }
       }
@@ -213,9 +209,7 @@ class JobCancellationSuite
         "this is a job to be cancelled",
         interruptOnCancel = true)
       sc.parallelize(1 to 10000, 2)
-        .map { i =>
-          Thread.sleep(100000); i
-        }
+        .map { i => Thread.sleep(100000); i }
         .count()
     }
 
@@ -274,9 +268,7 @@ class JobCancellationSuite
     {
       val f = sc
         .parallelize(1 to 10000, 2)
-        .map { i =>
-          Thread.sleep(10); i
-        }
+        .map { i => Thread.sleep(10); i }
         .countAsync()
       Future { f.cancel() }
       val e = intercept[SparkException] { f.get() }
@@ -296,9 +288,7 @@ class JobCancellationSuite
 
       val f = sc
         .parallelize(1 to 10000, 2)
-        .map { i =>
-          Thread.sleep(10); i
-        }
+        .map { i => Thread.sleep(10); i }
         .countAsync()
       Future {
         // Wait until some tasks were launched before we cancel the job.
@@ -316,9 +306,7 @@ class JobCancellationSuite
     {
       val f = sc
         .parallelize(1 to 10000, 2)
-        .map { i =>
-          Thread.sleep(10); i
-        }
+        .map { i => Thread.sleep(10); i }
         .takeAsync(5000)
       Future { f.cancel() }
       val e = intercept[SparkException] { f.get() }
@@ -337,9 +325,7 @@ class JobCancellationSuite
       })
       val f = sc
         .parallelize(1 to 10000, 2)
-        .map { i =>
-          Thread.sleep(10); i
-        }
+        .map { i => Thread.sleep(10); i }
         .takeAsync(5000)
       Future {
         sem.acquire()

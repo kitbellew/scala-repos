@@ -49,9 +49,8 @@ class ChiSquaredTest
   def fromDouble(x: Double) = x
 
   implicit def arbDistr = Arbitrary {
-    for (shape <- arbitrary[Double].map { x =>
-           math.abs(x) % 1000.0 + 4.2
-         }) yield new ChiSquared(shape)(new RandBasis(new MersenneTwister(0)))
+    for (shape <- arbitrary[Double].map { x => math.abs(x) % 1000.0 + 4.2 })
+      yield new ChiSquared(shape)(new RandBasis(new MersenneTwister(0)))
   }
 
   override val VARIANCE_TOLERANCE: Double = 1e-2

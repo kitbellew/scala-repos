@@ -96,9 +96,7 @@ trait RackAwareTest {
       case (brokerId, rack) =>
         BrokerMetadata(brokerId, Some(rack))
     } ++ brokersWithoutRack
-      .map { brokerId =>
-        BrokerMetadata(brokerId, None)
-      }
+      .map { brokerId => BrokerMetadata(brokerId, None) }
       .sortBy(_.id)
 
 }

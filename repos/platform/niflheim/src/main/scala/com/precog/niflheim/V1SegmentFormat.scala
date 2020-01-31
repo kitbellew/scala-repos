@@ -69,9 +69,7 @@ object V1SegmentFormat extends SegmentFormat {
           val defined = Codec.BitSetCodec.read(buffer)
           val codec = getCodecFor(ctype)
           val values = ctype.manifest.newArray(length)
-          defined.foreach { row =>
-            values(row) = codec.read(buffer)
-          }
+          defined.foreach { row => values(row) = codec.read(buffer) }
           (defined, values)
         }
 

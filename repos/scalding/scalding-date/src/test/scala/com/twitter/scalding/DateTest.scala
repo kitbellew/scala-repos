@@ -413,9 +413,7 @@ class DateTest extends WordSpec {
         //See that each path is matched by exactly one glob:
         assert(
           splits
-            .map { path =>
-              globed.filter { globMatchesDate(_)(path) }.size
-            }
+            .map { path => globed.filter { globMatchesDate(_)(path) }.size }
             .forall { _ == 1 })
       }
     }

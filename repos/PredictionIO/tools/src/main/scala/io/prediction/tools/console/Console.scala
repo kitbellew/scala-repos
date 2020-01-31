@@ -180,22 +180,17 @@ object Console extends Logging {
       note("")
       cmd("version")
         .text("Displays the version of this command line console.")
-        .action { (_, c) =>
-          c.copy(commands = c.commands :+ "version")
-        }
+        .action { (_, c) => c.copy(commands = c.commands :+ "version") }
       note("")
       cmd("help").action { (_, c) =>
         c.copy(commands = c.commands :+ "help")
       } children (
         arg[String]("<command>") optional ()
-          action { (x, c) =>
-            c.copy(commands = c.commands :+ x)
-          }
+          action { (x, c) => c.copy(commands = c.commands :+ x) }
       )
       note("")
       cmd("build").text("Build an engine at the current directory.").action {
-        (_, c) =>
-          c.copy(commands = c.commands :+ "build")
+        (_, c) => c.copy(commands = c.commands :+ "build")
       } children (
         opt[String]("sbt-extra") action { (x, c) =>
           c.copy(build = c.build.copy(sbtExtra = Some(x)))
@@ -216,9 +211,7 @@ object Console extends Logging {
       note("")
       cmd("unregister")
         .text("Unregister an engine at the current directory.")
-        .action { (_, c) =>
-          c.copy(commands = c.commands :+ "unregister")
-        }
+        .action { (_, c) => c.copy(commands = c.commands :+ "unregister") }
       note("")
       cmd("train")
         .text(
@@ -443,9 +436,7 @@ object Console extends Logging {
       note("")
       cmd("status")
         .text("Displays status information about the PredictionIO system.")
-        .action { (_, c) =>
-          c.copy(commands = c.commands :+ "status")
-        }
+        .action { (_, c) => c.copy(commands = c.commands :+ "status") }
       note("")
       cmd("upgrade").text("Upgrade tool").action { (_, c) =>
         c.copy(commands = c.commands :+ "upgrade")
@@ -468,8 +459,7 @@ object Console extends Logging {
         c.copy(commands = c.commands :+ "app")
       } children (
         cmd("new").text("Create a new app key to app ID mapping.").action {
-          (_, c) =>
-            c.copy(commands = c.commands :+ "new")
+          (_, c) => c.copy(commands = c.commands :+ "new")
         } children (
           opt[Int]("id") action { (x, c) =>
             c.copy(app = c.app.copy(id = Some(x)))
@@ -526,8 +516,7 @@ object Console extends Logging {
         ),
         note(""),
         cmd("channel-new").text("Create a new channel for the app.").action {
-          (_, c) =>
-            c.copy(commands = c.commands :+ "channel-new")
+          (_, c) => c.copy(commands = c.commands :+ "channel-new")
         } children (
           arg[String]("<name>") action { (x, c) =>
             c.copy(app = c.app.copy(name = x))
@@ -538,8 +527,7 @@ object Console extends Logging {
         ),
         note(""),
         cmd("channel-delete").text("Delete a channel of the app.").action {
-          (_, c) =>
-            c.copy(commands = c.commands :+ "channel-delete")
+          (_, c) => c.copy(commands = c.commands :+ "channel-delete")
         } children (
           arg[String]("<name>") action { (x, c) =>
             c.copy(app = c.app.copy(name = x))
@@ -557,8 +545,7 @@ object Console extends Logging {
         c.copy(commands = c.commands :+ "accesskey")
       } children (
         cmd("new").text("Add allowed event(s) to an access key.").action {
-          (_, c) =>
-            c.copy(commands = c.commands :+ "new")
+          (_, c) => c.copy(commands = c.commands :+ "new")
         } children (
           opt[String]("key") action { (x, c) =>
             c.copy(accessKey = c.accessKey.copy(accessKey = x))
@@ -613,9 +600,7 @@ object Console extends Logging {
             c.copy(template = c.template.copy(email = Some(x)))
           }
         ),
-        cmd("list").action { (_, c) =>
-          c.copy(commands = c.commands :+ "list")
-        }
+        cmd("list").action { (_, c) => c.copy(commands = c.commands :+ "list") }
       )
       cmd("export").action { (_, c) =>
         c.copy(commands = c.commands :+ "export")
@@ -794,9 +779,7 @@ object Console extends Logging {
       error("No engine found. Your build might have failed. Aborting.")
       return 1
     }
-    jarFiles foreach { f =>
-      info(s"Found ${f.getName}")
-    }
+    jarFiles foreach { f => info(s"Found ${f.getName}") }
     RegisterEngine.registerEngine(ca.common.manifestJson, jarFiles, false)
     info("Your engine is ready for training.")
     0
@@ -811,9 +794,7 @@ object Console extends Logging {
     withRegisteredManifest(
       ca.common.manifestJson,
       ca.common.engineId,
-      ca.common.engineVersion) { em =>
-      RunWorkflow.newRunWorkflow(ca, em)
-    }
+      ca.common.engineVersion) { em => RunWorkflow.newRunWorkflow(ca, em) }
   }
 
   def deploy(ca: ConsoleArgs): Int = {
@@ -982,9 +963,7 @@ object Console extends Logging {
   }
 
   private def outputSbtError(line: String): Unit = {
-    """\[.*error.*\]""".r findFirstIn line foreach { _ =>
-      error(line)
-    }
+    """\[.*error.*\]""".r findFirstIn line foreach { _ => error(line) }
   }
 
   def run(ca: ConsoleArgs): Int = {
@@ -993,9 +972,7 @@ object Console extends Logging {
     val extraFiles = WorkflowUtils.thirdPartyConfFiles
 
     val jarFiles = jarFilesForScala
-    jarFiles foreach { f =>
-      info(s"Found JAR: ${f.getName}")
-    }
+    jarFiles foreach { f => info(s"Found JAR: ${f.getName}") }
     val allJarFiles = jarFiles.map(_.getCanonicalPath)
     val cmd = s"${getSparkHome(ca.common.sparkHome)}/bin/spark-submit --jars " +
       s"${allJarFiles.mkString(",")} " +

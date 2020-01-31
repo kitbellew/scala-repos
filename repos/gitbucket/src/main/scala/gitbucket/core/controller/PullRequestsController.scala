@@ -174,9 +174,7 @@ trait PullRequestsControllerBase extends ControllerBase {
                   JGitUtil.getShaByRef(owner, name, pullreq.branch) != Some(
                     pullreq.commitIdFrom),
                 needStatusCheck = context.loginAccount
-                  .map { u =>
-                    branchProtection.needStatusCheck(u.userName)
-                  }
+                  .map { u => branchProtection.needStatusCheck(u.userName) }
                   .getOrElse(true),
                 hasUpdatePermission = hasWritePermission(
                   pullreq.requestUserName,
@@ -808,9 +806,7 @@ trait PullRequestsControllerBase extends ControllerBase {
         .call
         .iterator
         .asScala
-        .map { revCommit =>
-          new CommitInfo(revCommit)
-        }
+        .map { revCommit => new CommitInfo(revCommit) }
         .toList
         .splitWith { (commit1, commit2) =>
           helpers.date(commit1.commitTime) == view.helpers.date(

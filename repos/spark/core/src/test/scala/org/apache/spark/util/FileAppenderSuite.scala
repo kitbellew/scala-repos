@@ -171,9 +171,7 @@ class FileAppenderSuite extends SparkFunSuite with BeforeAndAfter with Logging {
 
       // Set spark conf properties
       val conf = new SparkConf
-      properties.foreach { p =>
-        conf.set(p._1, p._2)
-      }
+      properties.foreach { p => conf.set(p._1, p._2) }
 
       // Create and test file appender
       val testOutputStream = new PipedOutputStream()
@@ -340,9 +338,7 @@ class FileAppenderSuite extends SparkFunSuite with BeforeAndAfter with Logging {
     logInfo("Filtered files: \n" + generatedFiles.mkString("\n"))
     assert(generatedFiles.size > 1)
     val allText = generatedFiles
-      .map { file =>
-        Files.toString(file, StandardCharsets.UTF_8)
-      }
+      .map { file => Files.toString(file, StandardCharsets.UTF_8) }
       .mkString("")
     assert(allText === expectedText)
     generatedFiles
@@ -351,9 +347,7 @@ class FileAppenderSuite extends SparkFunSuite with BeforeAndAfter with Logging {
   /** Delete all the generated rolledover files */
   def cleanup() {
     testFile.getParentFile.listFiles
-      .filter { file =>
-        file.getName.startsWith(testFile.getName)
-      }
+      .filter { file => file.getName.startsWith(testFile.getName) }
       .foreach { _.delete() }
   }
 

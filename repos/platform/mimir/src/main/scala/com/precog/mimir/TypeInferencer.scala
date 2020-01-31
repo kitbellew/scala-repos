@@ -119,14 +119,18 @@ trait TypeInferencer extends DAG {
               right)
 
           case Join(DerefObject, Cross(_), left, right @ ConstString(str)) =>
-            inner(jtpe map { jtpe0 =>
-              JObjectFixedT(Map(str -> jtpe0))
-            }, typing, splits, left)
+            inner(
+              jtpe map { jtpe0 => JObjectFixedT(Map(str -> jtpe0)) },
+              typing,
+              splits,
+              left)
 
           case Join(DerefArray, Cross(_), left, right @ ConstDecimal(d)) =>
-            inner(jtpe map { jtpe0 =>
-              JArrayFixedT(Map(d.toInt -> jtpe0))
-            }, typing, splits, left)
+            inner(
+              jtpe map { jtpe0 => JArrayFixedT(Map(d.toInt -> jtpe0)) },
+              typing,
+              splits,
+              left)
 
           case Join(WrapObject, Cross(_), ConstString(str), right) => {
             val jtpe2 = jtpe map {

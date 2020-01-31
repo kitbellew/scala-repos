@@ -34,9 +34,7 @@ object CustomRuntime {
 
         (coll: Traversable[_]).asInstanceOf[Traversable[AnyRef]].foreach {
           (elem: AnyRef) =>
-            builder putElement { b =>
-              elemPickler.pickle(elem, b)
-            }
+            builder putElement { b => elemPickler.pickle(elem, b) }
         }
 
         builder.popHints()

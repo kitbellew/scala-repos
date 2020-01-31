@@ -596,9 +596,7 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
       val inRealTpl = conversion.flatMap { conv =>
         nonRootTemplate(conv.toType.typeSymbol)
       } orElse nonRootTemplate(sym.owner) orElse Option(inTpl)
-      inRealTpl flatMap { tpl =>
-        thisFactory.comment(sym, tpl, tpl)
-      }
+      inRealTpl flatMap { tpl => thisFactory.comment(sym, tpl, tpl) }
     }
 
     override def inDefinitionTemplates =
@@ -813,8 +811,7 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
           override def isRootPackage = true
           override lazy val memberSyms =
             (bSym.info.members ++ EmptyPackage.info.members).toList filter {
-              s =>
-                s != EmptyPackage && s != RootPackage
+              s => s != EmptyPackage && s != RootPackage
             }
         })
       else if (bSym.hasPackageFlag) // (2)

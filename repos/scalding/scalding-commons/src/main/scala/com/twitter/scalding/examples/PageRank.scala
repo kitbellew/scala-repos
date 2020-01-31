@@ -42,9 +42,7 @@ class PageRank(args: Args) extends Job(args) {
      * The first step is to append that value.  We also need to have a column for the degree.
      * It doesn't matter what the initial degree is, we recompute below
      */
-    .map(() -> ('rowtype, 'd_src)) { (u: Unit) =>
-      (NODESET, -1)
-    }
+    .map(() -> ('rowtype, 'd_src)) { (u: Unit) => (NODESET, -1) }
     .thenDo(doPageRank(STEPS) _)
     .thenDo(computeError _)
     .thenDo(output _)
@@ -96,8 +94,7 @@ class PageRank(args: Args) extends Job(args) {
     Tsv(args("input")).read
     //Just to name the columns:
       .mapTo((0, 1, 2) -> (nodeCol, neighCol, pageRank)) {
-        input: (Long, String, Double) =>
-          input
+        input: (Long, String, Double) => input
       }
   }
 
@@ -114,13 +111,9 @@ class PageRank(args: Args) extends Job(args) {
     } else {
       val nodeRows = pagerank
       //remove any EDGE rows from the previous loop
-        .filter('rowtype) { (rowtype: Int) =>
-          rowtype == NODESET
-        }
+        .filter('rowtype) { (rowtype: Int) => rowtype == NODESET }
       //compute the incremental rank due to the random jump:
-      val randomJump = nodeRows.map('rank -> 'rank) { (rank: Double) =>
-        ALPHA
-      }
+      val randomJump = nodeRows.map('rank -> 'rank) { (rank: Double) => ALPHA }
       //expand the neighbor list inte an edge list and out-degree of the src
       val edges = nodeRows
         .flatMap(('dst, 'd_src) -> ('dst, 'd_src)) { args: (String, Long) =>
@@ -128,9 +121,7 @@ class PageRank(args: Args) extends Job(args) {
             val dsts = args._1.split(",")
             //Ignore the old degree:
             val deg = dsts.size
-            dsts.map { str =>
-              (str.toLong, deg)
-            }
+            dsts.map { str => (str.toLong, deg) }
           } else {
             //Here is a node that points to no other nodes (dangling)
             Nil

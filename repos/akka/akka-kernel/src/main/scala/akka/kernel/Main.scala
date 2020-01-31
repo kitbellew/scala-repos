@@ -127,9 +127,7 @@ object Main {
 
     val urls = (jars ++ nestedJars) map { _.toURI.toURL }
 
-    urls foreach { url ⇒
-      log("Deploying " + url)
-    }
+    urls foreach { url ⇒ log("Deploying " + url) }
 
     new URLClassLoader(urls, Thread.currentThread.getContextClassLoader)
   }

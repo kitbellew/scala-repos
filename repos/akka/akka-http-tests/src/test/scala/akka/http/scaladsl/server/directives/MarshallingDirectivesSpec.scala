@@ -32,9 +32,7 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
     Marshaller.oneOf[MediaType.NonBinary, Int, MessageEntity](
       `application/xhtml+xml`,
       `text/xxml`) { mediaType ⇒
-      nodeSeqMarshaller(mediaType).wrap(mediaType) { (i: Int) ⇒
-        <int>{i}</int>
-      }
+      nodeSeqMarshaller(mediaType).wrap(mediaType) { (i: Int) ⇒ <int>{i}</int> }
     }
 
   "The 'entityAs' directive" should {
@@ -71,16 +69,12 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
         entity(as[NodeSeq]) { _ ⇒
           completeOk
         } ~
-          entity(as[String]) { _ ⇒
-            validate(false, "Problem") { completeOk }
-          }
+          entity(as[String]) { _ ⇒ validate(false, "Problem") { completeOk } }
       } ~> check { rejection shouldEqual ValidationRejection("Problem") }
     }
     "return a ValidationRejection if the request entity is semantically invalid (IllegalArgumentException)" in {
       Put("/", HttpEntity(ContentType(`text/xml`, iso88592), "<int>-3</int>")) ~> {
-        entity(as[Int]) { _ ⇒
-          completeOk
-        }
+        entity(as[Int]) { _ ⇒ completeOk }
       } ~> check {
         inside(rejection) {
           case ValidationRejection(
@@ -93,9 +87,7 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
       Put(
         "/",
         HttpEntity(ContentTypes.`text/xml(UTF-8)`, "<foo attr='illegal xml'")) ~> {
-        entity(as[NodeSeq]) { _ ⇒
-          completeOk
-        }
+        entity(as[NodeSeq]) { _ ⇒ completeOk }
       } ~> check {
         rejection shouldEqual MalformedRequestContentRejection(
           "XML document structures must start and end within the same entity.",
@@ -156,9 +148,7 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
 
   "The 'completeWith' directive" should {
     "provide a completion function converting custom objects to an HttpEntity using the in-scope marshaller" in {
-      Get() ~> completeWith(instanceOf[Int]) { prod ⇒
-        prod(42)
-      } ~> check {
+      Get() ~> completeWith(instanceOf[Int]) { prod ⇒ prod(42) } ~> check {
         responseEntity shouldEqual HttpEntity(
           ContentType(`application/xhtml+xml`, `UTF-8`),
           "<int>42</int>")
@@ -174,8 +164,7 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
     }
     "convert the response content to an accepted charset" in {
       Get() ~> `Accept-Charset`(`UTF-8`) ~> completeWith(instanceOf[String]) {
-        prod ⇒
-          prod("Hällö")
+        prod ⇒ prod("Hällö")
       } ~> check {
         responseEntity shouldEqual HttpEntity(
           ContentType(`text/plain`, `UTF-8`),

@@ -27,9 +27,7 @@ class CoyonedaTests extends CatsSuite {
     SerializableTests.serializable(Functor[Coyoneda[Option, ?]]))
 
   test("toYoneda and then toCoyoneda is identity") {
-    forAll { (y: Coyoneda[Option, Int]) =>
-      y.toYoneda.toCoyoneda should ===(y)
-    }
+    forAll { (y: Coyoneda[Option, Int]) => y.toYoneda.toCoyoneda should ===(y) }
   }
 
   test("transform and run is same as applying natural trans") {

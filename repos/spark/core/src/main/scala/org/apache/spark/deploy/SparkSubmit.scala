@@ -692,12 +692,8 @@ object SparkSubmit {
         if (args.supervise) {
           childArgs += "--supervise"
         }
-        Option(args.driverMemory).foreach { m =>
-          childArgs += ("--memory", m)
-        }
-        Option(args.driverCores).foreach { c =>
-          childArgs += ("--cores", c)
-        }
+        Option(args.driverMemory).foreach { m => childArgs += ("--memory", m) }
+        Option(args.driverCores).foreach { c => childArgs += ("--cores", c) }
         childArgs += "launch"
         childArgs += (args.master, args.primaryResource, args.mainClass)
       }
@@ -755,9 +751,7 @@ object SparkSubmit {
         childArgs += ("--class", args.mainClass)
       }
       if (args.childArgs != null) {
-        args.childArgs.foreach { arg =>
-          childArgs += ("--arg", arg)
-        }
+        args.childArgs.foreach { arg => childArgs += ("--arg", arg) }
       }
     }
 

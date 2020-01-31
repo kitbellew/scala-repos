@@ -237,9 +237,7 @@ object Defaults extends BuildCommon {
         try onUnload.value(s)
         finally IO.delete(taskTemporaryDirectory.value)
       },
-      extraLoggers :== { _ =>
-        Nil
-      },
+      extraLoggers :== { _ => Nil },
       watchSources :== Nil,
       skip :== false,
       taskTemporaryDirectory := {
@@ -476,9 +474,7 @@ object Defaults extends BuildCommon {
       val structure = Project structure state
       val configurations =
         Project.getProject(ref, structure).toList.flatMap(_.configurations)
-      configurations.flatMap { conf =>
-        key in (ref, conf) get structure.data
-      } join
+      configurations.flatMap { conf => key in (ref, conf) get structure.data } join
     }
   def watchTransitiveSourcesTask: Initialize[Task[Seq[File]]] = {
     import ScopeFilter.Make.{inDependencies => inDeps, _}
@@ -719,8 +715,7 @@ object Defaults extends BuildCommon {
 
   def testExecutionTask(task: Scoped): Initialize[Task[Tests.Execution]] =
     (testOptions in task, parallelExecution in task, tags in task) map {
-      (opts, par, ts) =>
-        new Tests.Execution(opts, par, ts)
+      (opts, par, ts) => new Tests.Execution(opts, par, ts)
     }
 
   def testQuickFilter: Initialize[Task[Seq[String] => Seq[String => Boolean]]] =
@@ -906,9 +901,7 @@ object Defaults extends BuildCommon {
     if (includeFilters.isEmpty && excludeArgs.isEmpty) {
       Seq(const(true))
     } else if (includeFilters.isEmpty) {
-      Seq({ (s: String) =>
-        !matches(excludeFilters, s)
-      })
+      Seq({ (s: String) => !matches(excludeFilters, s) })
     } else {
       includeFilters.map { f => (s: String) =>
         (f.accept(s) && !matches(excludeFilters, s))
@@ -1245,8 +1238,7 @@ object Defaults extends BuildCommon {
 
   def consoleProjectTask =
     (state, streams, initialCommands in consoleProject) map {
-      (state, s, extra) =>
-        ConsoleProject(state, extra)(s.log); println()
+      (state, s, extra) => ConsoleProject(state, extra)(s.log); println()
     }
   def consoleTask: Initialize[Task[Unit]] = consoleTask(fullClasspath, console)
   def consoleQuickTask = consoleTask(externalDependencyClasspath, consoleQuick)
@@ -1584,8 +1576,7 @@ object Classpaths {
   def concatDistinct[T](
       a: ScopedTaskable[Seq[T]],
       b: ScopedTaskable[Seq[T]]): Initialize[Task[Seq[T]]] = (a, b) map {
-    (x, y) =>
-      (x ++ y).distinct
+    (x, y) => (x ++ y).distinct
   }
   def concat[T](
       a: ScopedTaskable[Seq[T]],
@@ -2542,8 +2533,7 @@ object Classpaths {
 
   private[this] def productsImplTask: Initialize[Task[Seq[File]]] =
     (products.task, packageBin.task, exportJars) flatMap {
-      (psTask, pkgTask, useJars) =>
-        if (useJars) Seq(pkgTask).join else psTask
+      (psTask, pkgTask, useJars) => if (useJars) Seq(pkgTask).join else psTask
     }
 
   def constructBuildDependencies: Initialize[BuildDependencies] =
@@ -3119,8 +3109,7 @@ trait BuildExtra extends BuildCommon with DefExtra {
       mainClass: String,
       arguments: String*): Initialize[Task[Unit]] =
     (fullClasspath in config, runner in (config, run), streams) map {
-      (cp, r, s) =>
-        toError(r.run(mainClass, data(cp), arguments, s.log))
+      (cp, r, s) => toError(r.run(mainClass, data(cp), arguments, s.log))
     }
 
   def fullRunInputTask(
@@ -3218,9 +3207,7 @@ trait BuildCommon {
     val overridden = configurations map { conf =>
       newByName.getOrElse(conf.name, conf)
     }
-    val newConfigs = cs filter { c =>
-      !existingName(c.name)
-    }
+    val newConfigs = cs filter { c => !existingName(c.name) }
     overridden ++ newConfigs
   }
 
@@ -3261,14 +3248,10 @@ trait BuildCommon {
   // these are for use for constructing Tasks
   def loadPrevious[T](task: TaskKey[T])(
       implicit f: sbinary.Format[T]): Initialize[Task[Option[T]]] =
-    (state, resolvedScoped) map { (s, ctx) =>
-      loadFromContext(task, ctx, s)(f)
-    }
+    (state, resolvedScoped) map { (s, ctx) => loadFromContext(task, ctx, s)(f) }
 
   def getPrevious[T](task: TaskKey[T]): Initialize[Task[Option[T]]] =
-    (state, resolvedScoped) map { (s, ctx) =>
-      getFromContext(task, ctx, s)
-    }
+    (state, resolvedScoped) map { (s, ctx) => getFromContext(task, ctx, s) }
 
   private[sbt] def derive[T](s: Setting[T]): Setting[T] =
     Def.derive(

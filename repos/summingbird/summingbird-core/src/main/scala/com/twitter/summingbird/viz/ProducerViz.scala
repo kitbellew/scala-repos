@@ -62,9 +62,7 @@ case class ProducerViz[P <: Platform[P]](tail: Producer[P, _]) {
           .getOrElse(sys.error(
             "Invalid node: %s, unable to find dependants".format(evalNode)))
         val nodeName = getName(evalNode)
-        children.map { c =>
-          "\"%s\" -> \"%s\"\n".format(nodeName, getName(c))
-        }
+        children.map { c => "\"%s\" -> \"%s\"\n".format(nodeName, getName(c)) }
       }
       .mkString("")
     base + graphStr + "\n}"

@@ -13,9 +13,7 @@ object PersistentActorFailureExample extends App {
       case "print" => println(s"received ${received.reverse}")
       case "boom"  => throw new Exception("boom")
       case payload: String =>
-        persist(payload) { p =>
-          received = p :: received
-        }
+        persist(payload) { p => received = p :: received }
 
     }
 

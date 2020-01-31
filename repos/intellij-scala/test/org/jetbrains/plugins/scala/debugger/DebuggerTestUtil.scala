@@ -108,9 +108,7 @@ object DebuggerTestUtil {
     if (priorityPaths.exists(_.isDefined)) {
       priorityPaths.flatten.headOption
     } else {
-      val fullSearchPaths = paths flatMap { p =>
-        versionStrings.map((p, _))
-      }
+      val fullSearchPaths = paths flatMap { p => versionStrings.map((p, _)) }
       for ((path, ver) <- fullSearchPaths) {
         inJvm(path, ver) match {
           case x @ Some(p) => return x

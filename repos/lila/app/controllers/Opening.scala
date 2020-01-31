@@ -68,9 +68,7 @@ object Opening extends LilaController {
 
   def history = Auth { implicit ctx => me =>
     XhrOnly {
-      env userInfos me map { ui =>
-        Ok(views.html.opening.history(ui))
-      }
+      env userInfos me map { ui => Ok(views.html.opening.history(ui)) }
     }
   }
 

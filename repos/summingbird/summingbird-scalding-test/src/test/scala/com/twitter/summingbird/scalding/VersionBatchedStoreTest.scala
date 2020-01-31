@@ -121,9 +121,7 @@ class VersionedBatchedStoreTest extends WordSpec {
       val packFn = { (bid: BatchID, kv: (Int, Int)) =>
         ((bid.id, kv._1), kv._2)
       }
-      val unpackFn = { kv: ((Long, Int), Int) =>
-        (kv._1._2, kv._2)
-      }
+      val unpackFn = { kv: ((Long, Int), Int) => (kv._1._2, kv._2) }
       implicit val tupEncoder: Injection[(Long, Int), Array[Byte]] =
         Bufferable.injectionOf[(Long, Int)]
       val conf = new org.apache.hadoop.conf.Configuration
@@ -163,9 +161,7 @@ class VersionedBatchedStoreTest extends WordSpec {
           .multipleSummerJob[Scalding, (Long, Int), Int, Int, Int, Int, Int](
             source,
             testStoreA,
-            testStoreB)({ t =>
-            fnA(t._2)
-          }, fnB, fnC)
+            testStoreB)({ t => fnA(t._2) }, fnB, fnC)
         val scald = Scalding("scalaCheckMultipleSumJob")
         val ws = new LoopState(intr)
         scald.run(ws, mode, scald.plan(tail))
@@ -178,9 +174,7 @@ class VersionedBatchedStoreTest extends WordSpec {
           .multipleSummerJob[Scalding, (Long, Int), Int, Int, Int, Int, Int](
             source,
             testStoreC,
-            testStoreB)({ t =>
-            fnA(t._2)
-          }, fnB, fnC)
+            testStoreB)({ t => fnA(t._2) }, fnB, fnC)
         val scald = Scalding("scalaCheckMultipleSumJob")
         val ws = new LoopState(intr)
         scald.run(ws, mode, scald.plan(tail))
@@ -194,9 +188,7 @@ class VersionedBatchedStoreTest extends WordSpec {
           .multipleSummerJob[Scalding, (Long, Int), Int, Int, Int, Int, Int](
             source,
             testStoreC,
-            testStoreB)({ t =>
-            fnA(t._2)
-          }, fnB, fnC)
+            testStoreB)({ t => fnA(t._2) }, fnB, fnC)
         val scald = Scalding("scalaCheckMultipleSumJob")
         val ws = new LoopState(intr)
         scald.run(ws, mode, scald.plan(tail))

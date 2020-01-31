@@ -61,8 +61,7 @@ class TypedFieldsTest extends WordSpec with Matchers {
       .source(
         TextLine("inputFile"),
         List("0" -> "5,foo", "1" -> "6,bar", "2" -> "9,foo"))
-      .sink[(Opaque, Int)](Tsv("outputFile")) { _ =>
-      }
+      .sink[(Opaque, Int)](Tsv("outputFile")) { _ => }
       .run
       .finish
   }

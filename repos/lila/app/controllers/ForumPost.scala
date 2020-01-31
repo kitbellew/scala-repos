@@ -15,8 +15,7 @@ object ForumPost extends LilaController with ForumController {
       text.trim.isEmpty.fold(
         Redirect(routes.ForumCateg.index).fuccess,
         Env.forumSearch(text, page, isGranted(_.StaffForum), ctx.troll) map {
-          paginator =>
-            html.forum.search(text, paginator)
+          paginator => html.forum.search(text, paginator)
         }
       )
     }

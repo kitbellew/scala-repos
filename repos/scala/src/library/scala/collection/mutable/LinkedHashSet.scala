@@ -122,9 +122,7 @@ class LinkedHashSet[A]
   }
 
   private def writeObject(out: java.io.ObjectOutputStream) {
-    serializeTo(out, { e =>
-      out.writeObject(e.key)
-    })
+    serializeTo(out, { e => out.writeObject(e.key) })
   }
 
   private def readObject(in: java.io.ObjectInputStream) {

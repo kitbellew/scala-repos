@@ -103,9 +103,7 @@ class WebSocketBoilerplateSpec extends EnsimeSpec with SharedTestKitFixture {
       import tk.system.dispatcher
       implicit val mat = ActorMaterializer()
 
-      val user = Flow[Foo].map { _ =>
-        bar
-      }
+      val user = Flow[Foo].map { _ => bar }
       val endpoints = jsonMarshalledMessageFlow(user)
 
       val input = TextMessage.Strict("""{}""")

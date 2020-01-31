@@ -85,9 +85,7 @@ class RandomSamplerSuite extends SparkFunSuite with Matchers {
   // increasing integers: {0, 1, 2, ...}.  This works because that is how I generate them,
   // and the samplers preserve their input order
   def gaps(data: Iterator[Int]): Iterator[Int] = {
-    data.sliding(2).withPartial(false).map { x =>
-      x(1) - x(0)
-    }
+    data.sliding(2).withPartial(false).map { x => x(1) - x(0) }
   }
 
   // Returns the cumulative distribution from a histogram
@@ -123,9 +121,7 @@ class RandomSamplerSuite extends SparkFunSuite with Matchers {
     assert(cdf2(n - 1) == 1.0)
     cdf1
       .zip(cdf2)
-      .map { x =>
-        Math.abs(x._1 - x._2)
-      }
+      .map { x => Math.abs(x._1 - x._2) }
       .max
   }
 

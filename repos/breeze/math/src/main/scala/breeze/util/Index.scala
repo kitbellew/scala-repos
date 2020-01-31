@@ -345,9 +345,7 @@ class OptionIndex[T](inner: Index[T]) extends Index[Option[T]] {
   */
 final class CompositeIndex[U](indices: Index[_ <: U]*) extends Index[(Int, U)] {
   private val offsets: Array[Int] = indices
-    .unfold(0) { (n, i) =>
-      n + i.size
-    }
+    .unfold(0) { (n, i) => n + i.size }
     .toArray
 
   /** If you know which component, and which index in that component,
@@ -382,16 +380,12 @@ final class CompositeIndex[U](indices: Index[_ <: U]*) extends Index[(Int, U)] {
   def pairs =
     indices.iterator.zipWithIndex.flatMap {
       case (index, i) =>
-        index.iterator.map { t =>
-          (i, t: U)
-        }
+        index.iterator.map { t => (i, t: U) }
     }.zipWithIndex
 
   def iterator = indices.iterator.zipWithIndex.flatMap {
     case (index, i) =>
-      index.iterator.map { t =>
-        (i -> t)
-      }
+      index.iterator.map { t => (i -> t) }
   }
 
   override def size: Int = offsets(offsets.length - 1)

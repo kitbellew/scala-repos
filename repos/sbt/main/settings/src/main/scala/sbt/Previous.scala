@@ -120,7 +120,6 @@ object Previous {
   }
 
   private[sbt] def cacheSetting = (streamsManagerKey, references) map {
-    (s, refs) =>
-      new Previous(s, refs.getReferences)
+    (s, refs) => new Previous(s, refs.getReferences)
   }
 }

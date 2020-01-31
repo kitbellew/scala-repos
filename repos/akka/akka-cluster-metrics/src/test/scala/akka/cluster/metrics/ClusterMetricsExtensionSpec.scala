@@ -112,9 +112,7 @@ class MetricsExtensionSpec
 
       }
 
-      (1 to 3) foreach { step ⇒
-        cycle()
-      }
+      (1 to 3) foreach { step ⇒ cycle() }
 
     }
 

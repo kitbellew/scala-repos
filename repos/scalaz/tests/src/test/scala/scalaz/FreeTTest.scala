@@ -20,9 +20,8 @@ object FreeTListOption {
 
       def bind[A, B](fa: FreeTListOption[A])(
           f: A => FreeTListOption[B]): FreeTListOption[B] =
-        FreeTListOption(Monad[FreeT[List, Option, ?]].bind(fa.f) { a =>
-          f(a).f
-        })
+        FreeTListOption(
+          Monad[FreeT[List, Option, ?]].bind(fa.f) { a => f(a).f })
 
       def tailrecM[A, B](f: A => FreeTListOption[A \/ B])(
           a: A): FreeTListOption[B] =

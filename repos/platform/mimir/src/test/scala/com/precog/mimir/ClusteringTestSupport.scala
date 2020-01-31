@@ -43,9 +43,7 @@ trait ClusteringTestSupport {
 
     val s = math.pow(2 * k, 1.0 / dimension)
     val centers = (1 to k)
-      .map({ _ =>
-        genPoint(nextDouble * s)
-      })
+      .map({ _ => genPoint(nextDouble * s) })
       .toArray
     val points = (1 to n)
       .map({ _ =>

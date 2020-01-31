@@ -44,9 +44,7 @@ class ValidationSupportSpec extends Specification {
 
       ageValidatedForm.isValid must beFalse
 
-      ageValidatedForm.errors must contain { x: Binding =>
-        x.name == "age"
-      }
+      ageValidatedForm.errors must contain { x: Binding => x.name == "age" }
 
       ageValidatedForm.legalAge.validation aka "the validation result" must_== Failure(
         ValidationError(

@@ -68,13 +68,9 @@ trait JoinAlgorithms {
     * Use at your own risk.
     */
   def crossWithTiny(tiny: Pipe) = {
-    val tinyJoin = tiny.map(() -> '__joinTiny__) { (u: Unit) =>
-      1
-    }
+    val tinyJoin = tiny.map(() -> '__joinTiny__) { (u: Unit) => 1 }
     pipe
-      .map(() -> '__joinBig__) { (u: Unit) =>
-        1
-      }
+      .map(() -> '__joinBig__) { (u: Unit) => 1 }
       .joinWithTiny('__joinBig__ -> '__joinTiny__, tinyJoin)
       .discard('__joinBig__, '__joinTiny__)
   }
@@ -85,13 +81,9 @@ trait JoinAlgorithms {
     * Prefer crossWithTiny
     */
   def crossWithSmaller(p: Pipe, replication: Int = 20) = {
-    val smallJoin = p.map(() -> '__joinSmall__) { (u: Unit) =>
-      1
-    }
+    val smallJoin = p.map(() -> '__joinSmall__) { (u: Unit) => 1 }
     pipe
-      .map(() -> '__joinBig__) { (u: Unit) =>
-        1
-      }
+      .map(() -> '__joinBig__) { (u: Unit) => 1 }
       .blockJoinWithSmaller(
         '__joinBig__ -> '__joinSmall__,
         smallJoin,
@@ -410,9 +402,7 @@ trait JoinAlgorithms {
       "Replication counts must be >= 1")
 
     val rand = r.nextInt(otherReplication)
-    (0 until replication).map { rep =>
-      (rand, rep)
-    }
+    (0 until replication).map { rep => (rand, rep) }
   }
 
   private def assertValidJoinMode(

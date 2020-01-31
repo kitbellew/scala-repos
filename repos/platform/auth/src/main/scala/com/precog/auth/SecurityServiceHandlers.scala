@@ -451,8 +451,7 @@ class SecurityServiceHandlers(
           case Success(at) =>
             apiKeyManager.validGrants(authAPIKey, Some(at)) map { grants =>
               val pathPermissions = grants flatMap (_.permissions) filter {
-                perm =>
-                  (perm.path == path) || path.isChildOf(perm.path)
+                perm => (perm.path == path) || path.isChildOf(perm.path)
               }
               ok(Some(pathPermissions))
             }

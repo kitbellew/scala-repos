@@ -64,9 +64,8 @@ trait Helpers extends UnsafeHelpers with SLF4JLogging {
   }
 
   private def parseFqnAsClass(s: String): Option[JavaFqn] = {
-    val (front, back) = s.split("\\.").partition { s =>
-      s.forall(Character.isLowerCase)
-    }
+    val (front, back) =
+      s.split("\\.").partition { s => s.forall(Character.isLowerCase) }
     Some(JavaFqn(front.mkString("."), back.mkString("."), None))
   }
 

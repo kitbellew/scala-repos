@@ -55,9 +55,7 @@ class NRootTest extends FunSuite {
   val roots = Seq(2, 3, 6, 9, 23, 53)
 
   test("BigDecimal NRoot") {
-    bases foreach { x =>
-      roots foreach (checkNRoot(x, _))
-    }
+    bases foreach { x => roots foreach (checkNRoot(x, _)) }
 
     bases map (-_) foreach { x =>
       roots filter (_ % 2 == 1) foreach (checkNRoot(x, _))

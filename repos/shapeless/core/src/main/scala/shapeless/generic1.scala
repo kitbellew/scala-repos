@@ -453,9 +453,7 @@ class Split1Macros(val c: whitebox.Context) extends CaseClassMacros {
         .find(_.contains(lParam))
         .map { pivot =>
           !(pivot =:= lParamTpe) &&
-          args.forall { arg =>
-            arg =:= pivot || !arg.contains(lParam)
-          }
+          args.forall { arg => arg =:= pivot || !arg.contains(lParam) }
         }
         .getOrElse(false)
 
@@ -465,8 +463,7 @@ class Split1Macros(val c: whitebox.Context) extends CaseClassMacros {
           val Some(pivot) = args.find(_.contains(lParam))
           val oPoly = c.internal
             .polyType(List(lParam), appliedType(tpe.typeConstructor, args.map {
-              arg =>
-                if (arg =:= pivot) lParamTpe else arg
+              arg => if (arg =:= pivot) lParamTpe else arg
             }))
           val oTpt = appliedTypTree1(oPoly, lParamTpe, nme)
           val iPoly = c.internal.polyType(List(lParam), pivot)

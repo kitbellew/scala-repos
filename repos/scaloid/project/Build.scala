@@ -35,9 +35,7 @@ object ScaloidBuild extends Build {
       else
         Some("releases" at nexus + "service/local/staging/deploy/maven2")
     },
-    pomIncludeRepository := { _ =>
-      false
-    },
+    pomIncludeRepository := { _ => false },
     pomExtra :=
       <url>http://scaloid.org</url>
         <licenses>
@@ -73,9 +71,7 @@ object ScaloidBuild extends Build {
 
   // configure prompt to show current project
   override lazy val settings = super.settings :+ {
-    shellPrompt := { s =>
-      Project.extract(s).currentProject.id + "> "
-    }
+    shellPrompt := { s => Project.extract(s).currentProject.id + "> " }
   }
 
   //  root project

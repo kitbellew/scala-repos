@@ -22,27 +22,19 @@ trait NonFatalTests {
     )
 
   def testFatalsUsingApply(): Unit = {
-    fatals foreach { t =>
-      assert(NonFatal(t) == false)
-    }
+    fatals foreach { t => assert(NonFatal(t) == false) }
   }
 
   def testNonFatalsUsingApply(): Unit = {
-    nonFatals foreach { t =>
-      assert(NonFatal(t) == true)
-    }
+    nonFatals foreach { t => assert(NonFatal(t) == true) }
   }
 
   def testFatalsUsingUnapply(): Unit = {
-    fatals foreach { t =>
-      assert(NonFatal.unapply(t).isEmpty)
-    }
+    fatals foreach { t => assert(NonFatal.unapply(t).isEmpty) }
   }
 
   def testNonFatalsUsingUnapply(): Unit = {
-    nonFatals foreach { t =>
-      assert(NonFatal.unapply(t).isDefined)
-    }
+    nonFatals foreach { t => assert(NonFatal.unapply(t).isDefined) }
   }
 
   testFatalsUsingApply()

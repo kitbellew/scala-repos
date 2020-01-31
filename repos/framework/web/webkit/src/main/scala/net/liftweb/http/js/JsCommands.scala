@@ -693,8 +693,7 @@ trait HtmlFixer {
     def unapply(in: NodeSeq): Option[Elem] = in match {
       case e: Elem => {
         e.attribute("type").map(_.text).filter(_ == "text/javascript").flatMap {
-          a =>
-            if (e.attribute("src").isEmpty) Some(e) else None
+          a => if (e.attribute("src").isEmpty) Some(e) else None
         }
       }
       case _ => None

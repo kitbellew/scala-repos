@@ -19,9 +19,7 @@ sealed trait ThemeObject {
 
   lazy val listString = list mkString " "
 
-  lazy val allByName = list map { c =>
-    c.name -> c
-  } toMap
+  lazy val allByName = list map { c => c.name -> c } toMap
 
   def apply(name: String) = (allByName get name) | default
 
@@ -47,9 +45,7 @@ object Theme extends ThemeObject {
     "metal",
     "olive",
     "purple"
-  ) map { name =>
-    new Theme(name)
-  }
+  ) map { name => new Theme(name) }
 
   lazy val default = allByName get "brown" err "Can't find default theme D:"
 }
@@ -72,9 +68,7 @@ object Theme3d extends ThemeObject {
     "Wax",
     "Jade",
     "Woodi"
-  ) map { name =>
-    new Theme(name)
-  }
+  ) map { name => new Theme(name) }
 
   lazy val default = allByName get "Woodi" err "Can't find default theme D:"
 }

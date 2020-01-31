@@ -103,9 +103,7 @@ trait BatchedService[K, V] extends ExternalService[K, V] {
           val (startingBatch, init) = batchLastFlow
           val streamBatches =
             BatchID.range(startingBatch.next, coveringBatches.max)
-          val batchStreams = streamBatches.map { b =>
-            (b, readStream(b, mode))
-          }
+          val batchStreams = streamBatches.map { b => (b, readStream(b, mode)) }
           // only produce continuous output, so stop at the first none:
           val existing = batchStreams
             .takeWhile { _._2.isDefined }

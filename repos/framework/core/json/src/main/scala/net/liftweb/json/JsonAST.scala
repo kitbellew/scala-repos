@@ -344,9 +344,7 @@ object JsonAST {
               case (a, JField(name, value)) => value.fold(a)(f)
             }
           case JArray(l) =>
-            l.foldLeft(newAcc) { (a, e) =>
-              e.fold(a)(f)
-            }
+            l.foldLeft(newAcc) { (a, e) => e.fold(a)(f) }
           case _ => newAcc
         }
       }
@@ -395,9 +393,7 @@ object JsonAST {
     def map(f: JValue => JValue): JValue = {
       def rec(v: JValue): JValue = v match {
         case JObject(l) =>
-          f(JObject(l.map { field =>
-            field.copy(value = rec(field.value))
-          }))
+          f(JObject(l.map { field => field.copy(value = rec(field.value)) }))
         case JArray(l) => f(JArray(l.map(rec)))
         case x         => f(x)
       }
@@ -422,9 +418,7 @@ object JsonAST {
     def mapField(f: JField => JField): JValue = {
       def rec(v: JValue): JValue = v match {
         case JObject(l) =>
-          JObject(l.map { field =>
-            f(field.copy(value = rec(field.value)))
-          })
+          JObject(l.map { field => f(field.copy(value = rec(field.value))) })
         case JArray(l) => JArray(l.map(rec))
         case x         => x
       }
@@ -442,8 +436,7 @@ object JsonAST {
       * }}}
       */
     def transformField(f: PartialFunction[JField, JField]): JValue = mapField {
-      x =>
-        if (f.isDefinedAt(x)) f(x) else x
+      x => if (f.isDefinedAt(x)) f(x) else x
     }
 
     /**
@@ -1139,9 +1132,7 @@ trait Implicits {
 object JsonDSL extends JsonDSL
 trait JsonDSL extends Implicits {
   implicit def seq2jvalue[A <% JValue](s: Traversable[A]) =
-    JArray(s.toList.map { a =>
-      val v: JValue = a; v
-    })
+    JArray(s.toList.map { a => val v: JValue = a; v })
 
   implicit def map2jvalue[A <% JValue](m: Map[String, A]) =
     JObject(m.toList.map { case (k, v) => JField(k, v) })

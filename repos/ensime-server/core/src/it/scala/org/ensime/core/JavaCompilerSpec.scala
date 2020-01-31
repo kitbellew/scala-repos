@@ -27,8 +27,7 @@ class JavaCompilerSpec
         "import java.io.File;",
         "class Test1 {",
         "  ksjdfkdjsf @1@",
-        "}") { (sf, p, label, cc) =>
-      }
+        "}") { (sf, p, label, cc) => }
       store.notes should not be empty
     }
   }

@@ -127,9 +127,7 @@ case class RichRequest(r: HttpServletRequest) extends AttributesMap {
     }
 
     def iterator: Iterator[(String, String)] = {
-      r.getHeaderNames.asScala map { name =>
-        (name, r.getHeader(name))
-      }
+      r.getHeaderNames.asScala map { name => (name, r.getHeader(name)) }
     }
 
   }

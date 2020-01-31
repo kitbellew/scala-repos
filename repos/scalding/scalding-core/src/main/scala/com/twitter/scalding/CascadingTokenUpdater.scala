@@ -31,9 +31,7 @@ object CascadingTokenUpdater {
         .toIterator
         .map(_.split("="))
         .filter(_.size == 2)
-        .map { ary =>
-          (ary(0).toInt, ary(1))
-        }
+        .map { ary => (ary(0).toInt, ary(1)) }
         .toMap
 
   // does the inverse of the previous function, given a Map of index to class

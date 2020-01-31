@@ -97,9 +97,7 @@ class SinatraPathPatternParser extends RegexPathPatternParser {
     PartialPathPattern("\\" + c)
   }
 
-  private def normalChar = ".".r ^^ { c =>
-    PartialPathPattern(c)
-  }
+  private def normalChar = ".".r ^^ { c => PartialPathPattern(c) }
 
 }
 
@@ -141,13 +139,10 @@ class RailsPathPatternParser extends RegexPathPatternParser {
   }
 
   private def optional: Parser[PartialPathPattern] = "(" ~> expr <~ ")" ^^ {
-    e =>
-      PartialPathPattern("(?:" + e.regex + ")?", e.captureGroupNames)
+    e => PartialPathPattern("(?:" + e.regex + ")?", e.captureGroupNames)
   }
 
-  private def static = (escaped | char) ^^ { str =>
-    PartialPathPattern(str)
-  }
+  private def static = (escaped | char) ^^ { str => PartialPathPattern(str) }
 
   private def escaped = literal("\\") ~> (char | paren)
 

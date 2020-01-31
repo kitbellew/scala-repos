@@ -357,8 +357,7 @@ trait MatchApproximation
 
           val okSubst = Substitution(unboundFrom, unboundTo map (normalize(_))) // it's important substitution does not duplicate trees here -- it helps to keep hash consing simple, anyway
           pointsToBound ++= ((okSubst.from, okSubst.to).zipped filter {
-            (f, t) =>
-              pointsToBound exists (sym => t.exists(_.symbol == sym))
+            (f, t) => pointsToBound exists (sym => t.exists(_.symbol == sym))
           })._1
           // debug.patmat("pointsToBound: "+ pointsToBound)
 
@@ -757,9 +756,7 @@ trait MatchAnalysis extends MatchApproximation {
     // equal and notEqual symbols
     def modelToVarAssignment(model: Model): Map[Var, (Seq[Const], Seq[Const])] =
       model.toSeq
-        .groupBy { f =>
-          f match { case (sym, value) => sym.variable }
-        }
+        .groupBy { f => f match { case (sym, value) => sym.variable } }
         .mapValues { xs =>
           val (trues, falses) = xs.partition(_._2)
           (trues map (_._1.const), falses map (_._1.const))

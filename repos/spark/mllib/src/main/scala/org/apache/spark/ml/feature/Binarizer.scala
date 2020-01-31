@@ -76,9 +76,7 @@ final class Binarizer(override val uid: String)
     val inputType = schema($(inputCol)).dataType
     val td = $(threshold)
 
-    val binarizerDouble = udf { in: Double =>
-      if (in > td) 1.0 else 0.0
-    }
+    val binarizerDouble = udf { in: Double => if (in > td) 1.0 else 0.0 }
     val binarizerVector = udf { (data: Vector) =>
       val indices = ArrayBuilder.make[Int]
       val values = ArrayBuilder.make[Double]

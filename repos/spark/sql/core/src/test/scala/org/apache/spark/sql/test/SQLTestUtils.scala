@@ -174,9 +174,7 @@ private[sql] trait SQLTestUtils
   protected def withView(viewNames: String*)(f: => Unit): Unit = {
     try f
     finally {
-      viewNames.foreach { name =>
-        sqlContext.sql(s"DROP VIEW IF EXISTS $name")
-      }
+      viewNames.foreach { name => sqlContext.sql(s"DROP VIEW IF EXISTS $name") }
     }
   }
 

@@ -148,9 +148,7 @@ sealed trait ExpressionDag[N[_]] { self =>
     val goodIds = reachableIds
     type BoolT[t] = Boolean
     val toKeepI2E = idToExp.filter(new GenFunction[HMap[Id, E]#Pair, BoolT] {
-      def apply[T] = { idExp =>
-        goodIds(idExp._1)
-      }
+      def apply[T] = { idExp => goodIds(idExp._1) }
     })
     copy(id2Exp = toKeepI2E)
   }

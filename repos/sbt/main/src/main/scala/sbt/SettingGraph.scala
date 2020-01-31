@@ -41,9 +41,7 @@ object SettingGraph {
         Project.scopedKeyData(structure, scope, key),
         key.description,
         basedir,
-        depends map { (x: ScopedKey[_]) =>
-          loop(x, generation + 1)
-        })
+        depends map { (x: ScopedKey[_]) => loop(x, generation + 1) })
     }
     loop(scoped, generation)
   }

@@ -26,9 +26,7 @@ class WriterTTests extends CatsSuite {
   Eq[Writer[Int, Int]]
 
   test("double swap is a noop") {
-    forAll { w: WriterT[List, Int, Int] =>
-      w.swap.swap should ===(w)
-    }
+    forAll { w: WriterT[List, Int, Int] => w.swap.swap should ===(w) }
   }
 
   test("reset on pure is a noop") {
@@ -46,21 +44,15 @@ class WriterTTests extends CatsSuite {
   }
 
   test("tell + written is identity") {
-    forAll { (i: Int) =>
-      WriterT.tell[Id, Int](i).written should ===(i)
-    }
+    forAll { (i: Int) => WriterT.tell[Id, Int](i).written should ===(i) }
   }
 
   test("value + value is identity") {
-    forAll { (i: Int) =>
-      WriterT.value[Id, Int, Int](i).value should ===(i)
-    }
+    forAll { (i: Int) => WriterT.value[Id, Int, Int](i).value should ===(i) }
   }
 
   test("valueT + value is identity") {
-    forAll { (i: Int) =>
-      WriterT.valueT[Id, Int, Int](i).value should ===(i)
-    }
+    forAll { (i: Int) => WriterT.valueT[Id, Int, Int](i).value should ===(i) }
   }
 
   test("show") {

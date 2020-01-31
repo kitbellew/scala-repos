@@ -50,21 +50,13 @@ object Test {
 
   def main(args: Array[String]) {
     println("Ranges:")
-    ranges.foreach { range =>
-      println(range.sum)
-    }
+    ranges.foreach { range => println(range.sum) }
     println("IntRanges:")
-    numericIntRanges.foreach { range =>
-      println(range.sum)
-    }
+    numericIntRanges.foreach { range => println(range.sum) }
     println("LongRanges:")
-    numericLongRanges.foreach { range =>
-      println(range.sum)
-    }
+    numericLongRanges.foreach { range => println(range.sum) }
     println("BigIntRanges:")
-    numericBigIntRanges.foreach { range =>
-      println(range.sum)
-    }
+    numericBigIntRanges.foreach { range => println(range.sum) }
     println(
       "BigInt agrees with Long: " +
         (numericLongRanges zip numericBigIntRanges).forall {

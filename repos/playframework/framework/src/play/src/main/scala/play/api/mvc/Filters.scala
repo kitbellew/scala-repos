@@ -129,9 +129,7 @@ object FilterChain {
       action: EssentialAction,
       filters: List[EssentialFilter]): EssentialAction = new EssentialAction {
     def apply(rh: RequestHeader): Accumulator[ByteString, Result] = {
-      val chain = filters.reverse.foldLeft(action) { (a, i) =>
-        i(a)
-      }
+      val chain = filters.reverse.foldLeft(action) { (a, i) => i(a) }
       chain(rh)
     }
   }

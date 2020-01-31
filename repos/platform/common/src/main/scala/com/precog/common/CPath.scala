@@ -49,9 +49,7 @@ sealed trait CPath { self =>
   def combine(paths: Seq[CPath]): Seq[CPath] = {
     if (paths.isEmpty) Seq(this)
     else
-      paths map { path =>
-        CPath(this.nodes ++ path.nodes)
-      }
+      paths map { path => CPath(this.nodes ++ path.nodes) }
   }
 
   def \(that: CPath): CPath = CPath(self.nodes ++ that.nodes)

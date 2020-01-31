@@ -58,9 +58,7 @@ class ShardCoordinator(zk: ZkClient, path: String, numShards: Int) {
   def acquire(): Future[ShardPermit] = {
     semaphore.acquire flatMap { permit =>
       shardNodes() map { nodes =>
-        nodes map { node =>
-          shardIdOf(node.path)
-        }
+        nodes map { node => shardIdOf(node.path) }
       } map { ids =>
         (0 until numShards) filterNot { ids contains _ }
       } flatMap { availableIds =>
@@ -86,9 +84,7 @@ class ShardCoordinator(zk: ZkClient, path: String, numShards: Int) {
         case err: PermitMismatchException =>
           Future.exception(SemaphoreError(err))
         case err: PermitNodeException => Future.exception(SemaphoreError(err))
-      } onFailure { err =>
-        permit.release()
-      }
+      } onFailure { err => permit.release() }
     }
   }
 

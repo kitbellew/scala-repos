@@ -295,9 +295,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
     // The TestContext is shared by all the test cases, some functions may be registered before
     // this, so we check that all the builtin functions are returned.
     val allFunctions = sql("SHOW functions").collect().map(r => r(0))
-    allBuiltinFunctions.foreach { f =>
-      assert(allFunctions.contains(f))
-    }
+    allBuiltinFunctions.foreach { f => assert(allFunctions.contains(f)) }
     checkAnswer(sql("SHOW functions abs"), Row("abs"))
     checkAnswer(sql("SHOW functions 'abs'"), Row("abs"))
     checkAnswer(sql("SHOW functions abc.abs"), Row("abs"))
@@ -932,9 +930,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
   }
 
   test("test script transform for stdout") {
-    val data = (1 to 100000).map { i =>
-      (i, i, i)
-    }
+    val data = (1 to 100000).map { i => (i, i, i) }
     data.toDF("d1", "d2", "d3").registerTempTable("script_trans")
     assert(100000 ===
       sql(
@@ -943,9 +939,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
   }
 
   test("test script transform for stderr") {
-    val data = (1 to 100000).map { i =>
-      (i, i, i)
-    }
+    val data = (1 to 100000).map { i => (i, i, i) }
     data.toDF("d1", "d2", "d3").registerTempTable("script_trans")
     assert(
       0 ===
@@ -955,9 +949,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
   }
 
   test("test script transform data type") {
-    val data = (1 to 5).map { i =>
-      (i, i)
-    }
+    val data = (1 to 5).map { i => (i, i) }
     data.toDF("key", "value").registerTempTable("test")
     checkAnswer(
       sql("""FROM
@@ -1349,9 +1341,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
 
   test("SPARK-7269 Check analysis failed in case in-sensitive") {
     Seq(1, 2, 3)
-      .map { i =>
-        (i.toString, i.toString)
-      }
+      .map { i => (i.toString, i.toString) }
       .toDF("key", "value")
       .registerTempTable("df_analysis")
     sql("SELECT kEy from df_analysis group by key").collect()

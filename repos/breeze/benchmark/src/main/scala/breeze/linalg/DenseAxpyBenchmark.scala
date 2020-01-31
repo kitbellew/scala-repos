@@ -16,9 +16,7 @@ class DenseAxpyBenchmark extends BreezeBenchmark {
   val fv, fv2 = DenseVector.rand(5000, Rand.uniform.map(_.toFloat))
 
   def timeSaxpy(reps: Int) = {
-    cforRange(0 until reps) { _ =>
-      axpy(0.042f, fv, fv2)
-    }
+    cforRange(0 until reps) { _ => axpy(0.042f, fv, fv2) }
   }
 
   def timeBlasSaxpy(reps: Int) = {
@@ -37,9 +35,7 @@ class DenseAxpyBenchmark extends BreezeBenchmark {
     cforRange(0 until reps) { rep =>
       val ad = fv.data
       val bd = fv2.data
-      cforRange(0 until fv.length) { i =>
-        bd(i) += 0.042f * ad(i)
-      }
+      cforRange(0 until fv.length) { i => bd(i) += 0.042f * ad(i) }
     }
     dv2
   }

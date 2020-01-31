@@ -239,9 +239,7 @@ class QuadraticMinimizer(
       scale.update(i, entryScale)
     }
     if (linearEquality > 0)
-      cforRange(0 until beq.length) { i =>
-        scale.update(nGram + i, beq(i))
-      }
+      cforRange(0 until beq.length) { i => scale.update(nGram + i, beq(i)) }
 
     // TO DO : Use LDL' based solver for quasi definite / sparse gram
     if (linearEquality > 0) {
@@ -253,9 +251,7 @@ class QuadraticMinimizer(
       // Step 2 : R * x = y
       QuadraticMinimizer.dpotrs(R, scale)
     }
-    cforRange(0 until x.length) { i =>
-      x.update(i, scale(i))
-    }
+    cforRange(0 until x.length) { i => x.update(i, scale(i)) }
   }
 
   /**
@@ -395,9 +391,7 @@ class QuadraticMinimizer(
       q: DenseVector[Double],
       initialState: State): State = {
     val rho = computeRho(wsH)
-    cforRange(0 until q.length) { i =>
-      wsH.update(i, i, wsH(i, i) + rho)
-    }
+    cforRange(0 until q.length) { i => wsH.update(i, i, wsH(i, i) + rho) }
     minimizeAndReturnState(q, rho, initialState)
   }
 

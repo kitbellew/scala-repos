@@ -40,9 +40,7 @@ object LineNumber {
     stack
       .drop(2)
       .dropWhile { ste =>
-        classPrefixes.exists { prefix =>
-          ste.getClassName.startsWith(prefix)
-        }
+        classPrefixes.exists { prefix => ste.getClassName.startsWith(prefix) }
       }
       .headOption
 
@@ -78,9 +76,7 @@ object LineNumber {
 
     val scaldingJobCaller = headOption(
       stack.iterator
-        .filter { se =>
-          se.getClassName.startsWith(scaldingPrefix)
-        }
+        .filter { se => se.getClassName.startsWith(scaldingPrefix) }
         .filter { se =>
           val cls = Class.forName(se.getClassName)
           jobClass.isAssignableFrom(cls)

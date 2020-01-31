@@ -104,9 +104,7 @@ object Output {
     if (lines.isEmpty)
       lines
     else {
-      val (first, tail) = lines.span { line =>
-        !(line startsWith tailDelim)
-      }
+      val (first, tail) = lines.span { line => !(line startsWith tailDelim) }
       if (first.isEmpty) headLines(tail drop 1, tailDelim) else first
     }
 }

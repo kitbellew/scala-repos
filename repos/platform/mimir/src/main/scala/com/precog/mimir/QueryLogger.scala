@@ -119,9 +119,7 @@ trait JobQueryLogger[M[+_], P] extends QueryLogger[M, P] {
   }
 
   private def send(channel: String, pos: P, msg: String): M[Unit] =
-    jobManager.addMessage(jobId, channel, mkMessage(pos, msg)) map { _ =>
-      ()
-    }
+    jobManager.addMessage(jobId, channel, mkMessage(pos, msg)) map { _ => () }
 
   def die(): M[Unit] =
     for {

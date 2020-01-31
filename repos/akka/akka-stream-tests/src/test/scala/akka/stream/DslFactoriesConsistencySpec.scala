@@ -251,9 +251,7 @@ class DslFactoriesConsistencySpec extends WordSpec with Matchers {
       if (matches.length == 0) {
         warnings += 1
         alert("No match for " + row._1)
-        row._2 foreach { m ⇒
-          alert(s" > ${m.j.toString}: ${m.reason}")
-        }
+        row._2 foreach { m ⇒ alert(s" > ${m.j.toString}: ${m.reason}") }
       } else if (matches.length == 1) {
         info(
           "Matched: Scala:" + row._1.name + "(" + row._1.parameterTypes
@@ -266,19 +264,13 @@ class DslFactoriesConsistencySpec extends WordSpec with Matchers {
       } else {
         warnings += 1
         alert("Multiple matches for " + row._1 + "!")
-        matches foreach { m ⇒
-          alert(s" > ${m.j.toString}")
-        }
+        matches foreach { m ⇒ alert(s" > ${m.j.toString}") }
       }
     }
 
     if (warnings > 0) {
-      jMethods foreach { m ⇒
-        info("  java: " + m + ": " + returnTypeString(m))
-      }
-      sMethods foreach { m ⇒
-        info(" scala: " + m + ": " + returnTypeString(m))
-      }
+      jMethods foreach { m ⇒ info("  java: " + m + ": " + returnTypeString(m)) }
+      sMethods foreach { m ⇒ info(" scala: " + m + ": " + returnTypeString(m)) }
       fail("Warnings were issued! Fix name / type mappings or delegation code!")
     }
   }

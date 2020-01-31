@@ -119,9 +119,7 @@ object Conneg {
 
     if (all.isEmpty) None
     else
-      Some(all.reduce { (a, b) =>
-        if (a.q < b.q) b else a
-      }.value)
+      Some(all.reduce { (a, b) => if (a.q < b.q) b else a }.value)
   }
 
   // - Encoding --------------------------------------------------------------------------------------------------------
@@ -145,9 +143,7 @@ object Conneg {
   val AcceptCharset: String = "Accept-Charset"
 
   implicit object CharsetFormat extends Format[Charset] {
-    override def entry = token ^^ { s =>
-      Try(Charset.forName(s)).toOption
-    }
+    override def entry = token ^^ { s => Try(Charset.forName(s)).toOption }
   }
 
   def preferredCharset(implicit req: HttpServletRequest): Option[Charset] =

@@ -80,14 +80,10 @@ trait SliceTransforms[M[+_]]
       SliceTransform2.liftM[A](initial, (a: A, sl: Slice, sr: Slice) => (a, sr))
 
     def liftM(f: Slice => Slice): SliceTransform1[Unit] =
-      SliceTransform1.liftM[Unit]((), { (u, s) =>
-        (u, f(s))
-      })
+      SliceTransform1.liftM[Unit]((), { (u, s) => (u, f(s)) })
 
     def lift(f: Slice => M[Slice]): SliceTransform1[Unit] =
-      SliceTransform1[Unit]((), { (_, s) =>
-        f(s) map { ((), _) }
-      })
+      SliceTransform1[Unit]((), { (_, s) => f(s) map { ((), _) } })
 
     def composeSliceTransform(spec: TransSpec1): SliceTransform1[_] = {
       composeSliceTransform2(spec).parallel
@@ -901,9 +897,7 @@ trait SliceTransforms[M[+_]]
       SliceTransform1M(init, f)
 
     private[table] val Identity: SliceTransform1S[Unit] =
-      SliceTransform1S[Unit]((), { (u, s) =>
-        (u, s)
-      })
+      SliceTransform1S[Unit]((), { (u, s) => (u, s) })
 
     private[table] def mapS[A](st: SliceTransform1S[A])(
         f: Slice => Slice): SliceTransform1S[A] =
@@ -925,15 +919,13 @@ trait SliceTransforms[M[+_]]
       (sta, stb) match {
         case (Identity, stb) =>
           SliceTransform1S((sta.initial, stb.initial), {
-            case ((_, b0), s0) => { (b: B) =>
-                (sta.initial, b)
-              } <-: stb.f0(b0, s0)
+            case ((_, b0), s0) =>
+              { (b: B) => (sta.initial, b) } <-: stb.f0(b0, s0)
           })
         case (sta, Identity) =>
           SliceTransform1S((sta.initial, stb.initial), {
-            case ((a0, _), s0) => { (a: A) =>
-                (a, stb.initial)
-              } <-: sta.f0(a0, s0)
+            case ((a0, _), s0) =>
+              { (a: A) => (a, stb.initial) } <-: sta.f0(a0, s0)
           })
         case (SliceTransform1S(i1, f1), SliceTransform1S(i2, f2)) =>
           SliceTransform1S((i1, i2), {
@@ -1025,9 +1017,7 @@ trait SliceTransforms[M[+_]]
       override def unlift = Some(f0)
       val f: (A, Slice) => M[(A, Slice)] = { case (a, s) => M point f0(a, s) }
       def advance(s: Slice): M[(SliceTransform1[A], Slice)] =
-        M point ({ (a: A) =>
-          SliceTransform1S[A](a, f0)
-        } <-: f0(initial, s))
+        M point ({ (a: A) => SliceTransform1S[A](a, f0) } <-: f0(initial, s))
     }
 
     private[table] case class SliceTransform1M[A](
@@ -1204,13 +1194,9 @@ trait SliceTransforms[M[+_]]
 
     def parallel: SliceTransform1[A] = this match {
       case (st: SliceTransform2S[_]) =>
-        SliceTransform1.liftM[A](initial, { (a, s) =>
-          st.f0(a, s, s)
-        })
+        SliceTransform1.liftM[A](initial, { (a, s) => st.f0(a, s, s) })
       case _ =>
-        SliceTransform1[A](initial, { (a, s) =>
-          f(a, s, s)
-        })
+        SliceTransform1[A](initial, { (a, s) => f(a, s, s) })
     }
   }
 
@@ -1255,9 +1241,8 @@ trait SliceTransforms[M[+_]]
       (sta, stb) match {
         case (sta, SliceTransform1.Identity) =>
           SliceTransform2S((sta.initial, stb.initial), {
-            case ((a0, _), sl0, sr0) => { (a: A) =>
-                (a, stb.initial)
-              } <-: sta.f0(a0, sl0, sr0)
+            case ((a0, _), sl0, sr0) =>
+              { (a: A) => (a, stb.initial) } <-: sta.f0(a0, sl0, sr0)
           })
         case (SliceTransform2S(i1, f1), SliceTransform1S(i2, f2)) =>
           SliceTransform2S((i1, i2), {
@@ -1320,9 +1305,10 @@ trait SliceTransforms[M[+_]]
         case (a, sl, sr) => M point f0(a, sl, sr)
       }
       def advance(sl: Slice, sr: Slice): M[(SliceTransform2[A], Slice)] =
-        M point ({ (a: A) =>
-          SliceTransform2S[A](a, f0)
-        } <-: f0(initial, sl, sr))
+        M point ({ (a: A) => SliceTransform2S[A](a, f0) } <-: f0(
+          initial,
+          sl,
+          sr))
     }
 
     private case class SliceTransform2M[A](

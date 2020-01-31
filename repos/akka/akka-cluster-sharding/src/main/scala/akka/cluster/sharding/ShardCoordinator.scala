@@ -654,9 +654,7 @@ abstract class ShardCoordinator(
             case _ ⇒
               // continue when future is completed
               shardsFuture
-                .map { shards ⇒
-                  RebalanceResult(shards)
-                }
+                .map { shards ⇒ RebalanceResult(shards) }
                 .recover {
                   case _ ⇒ RebalanceResult(Set.empty)
                 }
@@ -800,9 +798,7 @@ abstract class ShardCoordinator(
   def regionTerminated(ref: ActorRef): Unit =
     if (state.regions.contains(ref)) {
       log.debug("ShardRegion terminated: [{}]", ref)
-      state.regions(ref).foreach { s ⇒
-        self ! GetShardHome(s)
-      }
+      state.regions(ref).foreach { s ⇒ self ! GetShardHome(s) }
 
       update(ShardRegionTerminated(ref)) { evt ⇒
         state = state.updated(evt)
@@ -1106,9 +1102,7 @@ class DDataShardCoordinator(
       CoordinatorStateKey,
       LWWRegister(initEmptyState),
       WriteMajority(updatingStateTimeout),
-      Some(evt)) { reg ⇒
-      reg.withValue(s)
-    }
+      Some(evt)) { reg ⇒ reg.withValue(s) }
   }
 
 }

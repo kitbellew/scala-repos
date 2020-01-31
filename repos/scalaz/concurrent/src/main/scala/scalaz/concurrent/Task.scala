@@ -45,9 +45,7 @@ class Task[+A](val get: Future[Throwable \/ A]) {
 
   def map[B](f: A => B): Task[B] =
     new Task(get map {
-      _ flatMap { a =>
-        Task.Try(f(a))
-      }
+      _ flatMap { a => Task.Try(f(a)) }
     })
 
   /** 'Catches' exceptions in the given task and returns them as values. */

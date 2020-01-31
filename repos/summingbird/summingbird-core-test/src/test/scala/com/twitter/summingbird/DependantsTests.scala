@@ -191,9 +191,7 @@ object DependantsTest extends Properties("Dependants") {
           .collect {
             case t: TailProducer[_, _] => t
           }
-          .flatMap { n =>
-            n :: Producer.transitiveDependenciesOf(n)
-          }
+          .flatMap { n => n :: Producer.transitiveDependenciesOf(n) }
           .toSet
 
         depTillWrite

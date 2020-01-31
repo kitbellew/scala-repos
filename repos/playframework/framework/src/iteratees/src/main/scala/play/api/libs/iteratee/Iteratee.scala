@@ -145,12 +145,11 @@ object Iteratee {
         implicit t: E => TraversableOnce[B],
         bf: scala.collection.generic.CanBuildFrom[E, B, That])
         : Iteratee[E, That] = {
-      fold[E, Seq[E]](Seq.empty) { (els, chunk) =>
-        chunk +: els
-      }(dec).map { elts =>
-        val builder = bf()
-        elts.reverse.foreach(builder ++= _)
-        builder.result()
+      fold[E, Seq[E]](Seq.empty) { (els, chunk) => chunk +: els }(dec).map {
+        elts =>
+          val builder = bf()
+          elts.reverse.foreach(builder ++= _)
+          builder.result()
       }(dec)
     }
   }
@@ -172,9 +171,8 @@ object Iteratee {
     * Consume all the chunks from the stream, and return a list.
     */
   def getChunks[E]: Iteratee[E, List[E]] =
-    fold[E, List[E]](Nil) { (els, chunk) =>
-      chunk +: els
-    }(dec).map(_.reverse)(dec)
+    fold[E, List[E]](Nil) { (els, chunk) => chunk +: els }(dec)
+      .map(_.reverse)(dec)
 
   /**
     * Read up to n chunks from the stream stopping when that number of chunks have
@@ -872,9 +870,7 @@ private final class FutureIteratee[E, A](itFut: Future[Iteratee[E, A]])
   def fold[B](folder: Step[E, A] => Future[B])(
       implicit ec: ExecutionContext): Future[B] = {
     implicit val pec = ec.prepare()
-    itFut.flatMap { it =>
-      it.fold(folder)(pec)
-    }(dec)
+    itFut.flatMap { it => it.fold(folder)(pec) }(dec)
   }
 
 }

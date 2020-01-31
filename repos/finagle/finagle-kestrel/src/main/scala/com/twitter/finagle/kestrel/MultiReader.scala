@@ -109,9 +109,7 @@ private[finagle] object MultiReaderHelper {
       // We sequence here to ensure that `close` gets priority over reads.
       Offer
         .prioritize(
-          close.recv { _ =>
-            onClose(handles)
-          },
+          close.recv { _ => onClose(handles) },
           Offer.choose(queues: _*) { m =>
             messages ! trackMessage(m)
             loop(handles)

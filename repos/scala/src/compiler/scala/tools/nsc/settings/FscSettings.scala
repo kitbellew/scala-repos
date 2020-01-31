@@ -67,9 +67,7 @@ class FscSettings(error: String => Unit) extends Settings(error) {
       processAll: Boolean): (Boolean, List[String]) = {
     val (r, args) = super.processArguments(arguments, processAll)
     // we need to ensure the files specified with relative locations are absolutized based on the currentDir
-    (r, args map { a =>
-      absolutizePath(a)
-    })
+    (r, args map { a => absolutizePath(a) })
   }
 
   /**

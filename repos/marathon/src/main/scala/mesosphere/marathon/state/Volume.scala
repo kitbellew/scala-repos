@@ -114,8 +114,7 @@ case class PersistentVolumeInfo(size: Long)
 
 object PersistentVolumeInfo {
   implicit val validPersistentVolumeInfo = validator[PersistentVolumeInfo] {
-    info =>
-      info.size should be > 0L
+    info => info.size should be > 0L
   }
 }
 

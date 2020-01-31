@@ -187,9 +187,7 @@ object ServerResultUtils {
       headers.to[Seq].flatMap {
         case (SET_COOKIE, value) =>
           val cookieParts = Cookies.SetCookieHeaderSeparatorRegex.split(value)
-          cookieParts.map { cookiePart =>
-            SET_COOKIE -> cookiePart
-          }
+          cookieParts.map { cookiePart => SET_COOKIE -> cookiePart }
         case (name, value) =>
           Seq((name, value))
       }

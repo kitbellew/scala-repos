@@ -81,9 +81,7 @@ object GenProductTypes {
   def unary(op: String) = method(op, DelegateArg :: Nil)
   def binary(op: String) = method(op, DelegateArg :: DelegateArg :: Nil)
 
-  def endTrait: Block = { tpe =>
-    "}"
-  }
+  def endTrait: Block = { tpe => "}" }
 
   def constructor: Block = { tpe =>
     import tpe._

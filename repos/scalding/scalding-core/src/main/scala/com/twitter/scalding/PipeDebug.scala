@@ -41,9 +41,7 @@ case class PipeDebug(
 
   def toDebug: Debug = {
     val debug = new Debug(output, prefix, printFieldsEvery.isDefined)
-    printFieldsEvery.foreach { x =>
-      debug.setPrintFieldsEvery(x)
-    }
+    printFieldsEvery.foreach { x => debug.setPrintFieldsEvery(x) }
     debug.setPrintTupleEvery(printTuplesEvery)
     debug
   }

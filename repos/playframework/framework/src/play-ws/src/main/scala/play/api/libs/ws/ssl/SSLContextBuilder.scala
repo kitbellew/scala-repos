@@ -181,9 +181,7 @@ class ConfigSSLContextBuilder(
   def keyStoreBuilder(ksc: KeyStoreConfig): KeyStoreBuilder = {
     val password = ksc.password.map(_.toCharArray)
     ksc.filePath
-      .map { f =>
-        fileBuilder(ksc.storeType, f, password)
-      }
+      .map { f => fileBuilder(ksc.storeType, f, password) }
       .getOrElse {
         val data = ksc.data.getOrElse(
           throw new IllegalStateException("No keystore builder found!"))
@@ -193,9 +191,7 @@ class ConfigSSLContextBuilder(
 
   def trustStoreBuilder(tsc: TrustStoreConfig): KeyStoreBuilder = {
     tsc.filePath
-      .map { f =>
-        fileBuilder(tsc.storeType, f, None)
-      }
+      .map { f => fileBuilder(tsc.storeType, f, None) }
       .getOrElse {
         val data = tsc.data.getOrElse(
           throw new IllegalStateException("No truststore builder found!"))
@@ -287,9 +283,7 @@ class ConfigSSLContextBuilder(
   // Should anyone have any interest in implementing this feature at all, they can implement this method and
   // submit a patch.
   def certificateRevocationList(sslConfig: SSLConfig): Option[Seq[CRL]] = {
-    sslConfig.revocationLists.map { urls =>
-      urls.map(generateCRLFromURL)
-    }
+    sslConfig.revocationLists.map { urls => urls.map(generateCRLFromURL) }
   }
 
   def generateCRL(inputStream: InputStream): CRL = {

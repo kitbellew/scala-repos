@@ -83,8 +83,7 @@ object Main extends LilaController {
   }
 
   def mobileRegister(platform: String, deviceId: String) = Auth {
-    implicit ctx => me =>
-      Env.push.registerDevice(me, platform, deviceId)
+    implicit ctx => me => Env.push.registerDevice(me, platform, deviceId)
   }
 
   def mobileUnregister = Auth { implicit ctx => me =>

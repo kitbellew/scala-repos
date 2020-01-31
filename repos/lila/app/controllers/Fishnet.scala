@@ -36,8 +36,7 @@ object Fishnet extends LilaController {
   }
 
   def abort(workId: String) = ClientAction[JsonApi.Request.Acquire] {
-    req => client =>
-      api.abort(Work.Id(workId), client) inject none
+    req => client => api.abort(Work.Id(workId), client) inject none
   }
 
   private def ClientAction[A <: JsonApi.Request](

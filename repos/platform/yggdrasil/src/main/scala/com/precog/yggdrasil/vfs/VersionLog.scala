@@ -196,9 +196,7 @@ class VersionLog(
         IOUtils.writeToFile(
           version.serialize.renderCompact + "\n",
           completedFile)
-      } map { _ =>
-        PrecogUnit
-      }
+      } map { _ => PrecogUnit }
     } else {
       IO.throwIO(
         new IllegalStateException(
@@ -211,17 +209,14 @@ class VersionLog(
       allVersions.find(_.id == newHead) traverse { entry =>
         logger.debug("Setting HEAD to " + newHead)
         IOUtils.writeToFile(entry.serialize.renderCompact + "\n", headFile) map {
-          _ =>
-            currentVersion = Some(entry);
+          _ => currentVersion = Some(entry);
         }
       } flatMap {
         _.isEmpty.whenM(
           IO.throwIO(new IllegalStateException(
             "Attempt to set head to nonexistent version %s" format newHead)))
       }
-    } map { _ =>
-      PrecogUnit
-    }
+    } map { _ => PrecogUnit }
   }
 
   def clearHead = IOUtils.writeToFile(unsetSentinelJV, headFile).map { _ =>

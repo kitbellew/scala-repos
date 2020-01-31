@@ -69,9 +69,7 @@ class MongoRecordSpec extends Specification with MongoTestKit {
 
     "correctly look up fields by name" in {
       val fields =
-        allExpectedFieldNames.flatMap { name =>
-          rec.fieldByName(name)
-        }
+        allExpectedFieldNames.flatMap { name => rec.fieldByName(name) }
 
       fields.length must_== allExpectedFieldNames.length
     }
@@ -349,9 +347,7 @@ class MongoRecordSpec extends Specification with MongoTestKit {
 
         val fttrFromDb = FieldTypeTestRecord.find(fttr.id.value)
         fttrFromDb.isDefined must_== true
-        fttrFromDb foreach { tr =>
-          tr mustEqual fttr
-        }
+        fttrFromDb foreach { tr => tr mustEqual fttr }
 
         bftr.save()
 
@@ -379,49 +375,37 @@ class MongoRecordSpec extends Specification with MongoTestKit {
 
       val mfttrFromDb = MongoFieldTypeTestRecord.find(mfttr.id.value)
       mfttrFromDb.isDefined must_== true
-      mfttrFromDb foreach { tr =>
-        tr mustEqual mfttr
-      }
+      mfttrFromDb foreach { tr => tr mustEqual mfttr }
 
       pftr.save()
 
       val pftrFromDb = PatternFieldTestRecord.find(pftr.id.value)
       pftrFromDb.isDefined must_== true
-      pftrFromDb foreach { tr =>
-        tr mustEqual pftr
-      }
+      pftrFromDb foreach { tr => tr mustEqual pftr }
 
       ltr.save()
 
       val ltrFromDb = ListTestRecord.find(ltr.id.value)
       ltrFromDb.isDefined must_== true
-      ltrFromDb foreach { tr =>
-        tr mustEqual ltr
-      }
+      ltrFromDb foreach { tr => tr mustEqual ltr }
 
       mtr.save()
 
       val mtrFromDb = MapTestRecord.find(mtr.id.value)
       mtrFromDb.isDefined must_== true
-      mtrFromDb foreach { tr =>
-        tr mustEqual mtr
-      }
+      mtrFromDb foreach { tr => tr mustEqual mtr }
 
       srtr.save()
 
       val srtrFromDb = SubRecordTestRecord.find(srtr.id.value)
       srtrFromDb.isDefined must_== true
-      srtrFromDb foreach { tr =>
-        tr mustEqual srtr
-      }
+      srtrFromDb foreach { tr => tr mustEqual srtr }
 
       joftr.save()
 
       val joftrFromDb = JObjectFieldTestRecord.find(joftr.id.get)
       joftrFromDb.isDefined must_== true
-      joftrFromDb foreach { tr =>
-        tr must_== joftr
-      }
+      joftrFromDb foreach { tr => tr must_== joftr }
       success
     }
 
@@ -431,54 +415,42 @@ class MongoRecordSpec extends Specification with MongoTestKit {
 
       val mfttrFromDb = MongoFieldTypeTestRecord.find(mfttrDef.id.value)
       mfttrFromDb.isDefined must_== true
-      mfttrFromDb foreach { tr =>
-        tr mustEqual mfttrDef
-      }
+      mfttrFromDb foreach { tr => tr mustEqual mfttrDef }
 
       val pftrDef = PatternFieldTestRecord.createRecord
       pftrDef.save()
 
       val pftrFromDb = PatternFieldTestRecord.find(pftrDef.id.value)
       pftrFromDb.isDefined must_== true
-      pftrFromDb foreach { tr =>
-        tr mustEqual pftrDef
-      }
+      pftrFromDb foreach { tr => tr mustEqual pftrDef }
 
       val ltrDef = ListTestRecord.createRecord
       ltrDef.save()
 
       val ltrFromDb = ListTestRecord.find(ltrDef.id.value)
       ltrFromDb.isDefined must_== true
-      ltrFromDb foreach { tr =>
-        tr mustEqual ltrDef
-      }
+      ltrFromDb foreach { tr => tr mustEqual ltrDef }
 
       val mtrDef = MapTestRecord.createRecord
       mtrDef.save()
 
       val mtrFromDb = MapTestRecord.find(mtrDef.id.value)
       mtrFromDb.isDefined must_== true
-      mtrFromDb foreach { tr =>
-        tr mustEqual mtrDef
-      }
+      mtrFromDb foreach { tr => tr mustEqual mtrDef }
 
       val srtrDef = SubRecordTestRecord.createRecord
       srtrDef.save()
 
       val srtrFromDb = SubRecordTestRecord.find(srtrDef.id.value)
       srtrFromDb.isDefined must_== true
-      srtrFromDb.toList map { tr =>
-        tr mustEqual srtrDef
-      }
+      srtrFromDb.toList map { tr => tr mustEqual srtrDef }
 
       val joftrDef = JObjectFieldTestRecord.createRecord
       joftrDef.save()
 
       val joftrFromDb = JObjectFieldTestRecord.find(joftrDef.id.value)
       joftrFromDb.isDefined must_== true
-      joftrFromDb foreach { tr =>
-        tr mustEqual joftrDef
-      }
+      joftrFromDb foreach { tr => tr mustEqual joftrDef }
       success
     }
 
@@ -515,28 +487,20 @@ class MongoRecordSpec extends Specification with MongoTestKit {
       val mfftrFromJson =
         MongoFieldTypeTestRecord.fromJsonString(compactRender(mfttrJson))
       mfftrFromJson.isDefined must_== true
-      mfftrFromJson foreach { tr =>
-        tr mustEqual mfttr
-      }
+      mfftrFromJson foreach { tr => tr mustEqual mfttr }
 
       val pftrFromJson =
         PatternFieldTestRecord.fromJsonString(compactRender(pftrJson))
       pftrFromJson.isDefined must_== true
-      pftrFromJson foreach { tr =>
-        tr mustEqual pftr
-      }
+      pftrFromJson foreach { tr => tr mustEqual pftr }
 
       val ltrFromJson = ListTestRecord.fromJsonString(compactRender(ltrJson))
       ltrFromJson.isDefined must_== true
-      ltrFromJson foreach { tr =>
-        tr mustEqual ltr
-      }
+      ltrFromJson foreach { tr => tr mustEqual ltr }
 
       val mtrFromJson = MapTestRecord.fromJsonString(compactRender(mtrJson))
       mtrFromJson.isDefined must_== true
-      mtrFromJson.toList map { tr =>
-        tr mustEqual mtr
-      }
+      mtrFromJson.toList map { tr => tr mustEqual mtr }
 
       val joftrFromJson =
         JObjectFieldTestRecord.fromJsonString(compactRender(joftrJson))
@@ -660,9 +624,7 @@ class MongoRecordSpec extends Specification with MongoTestKit {
         val builder = BasicDBObjectBuilder.start
           .add("_id", missingFieldDocId)
 
-        FieldTypeTestRecord.useColl { coll =>
-          coll.save(builder.get)
-        }
+        FieldTypeTestRecord.useColl { coll => coll.save(builder.get) }
 
         val recFromDb = FieldTypeTestRecord.find(missingFieldDocId)
 

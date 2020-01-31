@@ -420,9 +420,7 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
     }
 
     test(name + ": transport closure propagates to request stream producer") {
-      val s = Service.mk[Request, Response] { _ =>
-        Future.value(Response())
-      }
+      val s = Service.mk[Request, Response] { _ => Future.value(Response()) }
       val client = connect(s)
       val req = Request()
       req.setChunked(true)
@@ -456,9 +454,7 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
 
       Await.result(req.writer.write(buf("hello")))
 
-      val contentf = resf flatMap { res =>
-        Reader.readAll(res.reader)
-      }
+      val contentf = resf flatMap { res => Reader.readAll(res.reader) }
       assert(Await.result(contentf) == Buf.Utf8("hello"))
 
       // drip should terminate because the request is discarded.
@@ -495,9 +491,7 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
     }
 
     test(name + ": two fixed-length requests") {
-      val svc = Service.mk[Request, Response] { _ =>
-        Future.value(Response())
-      }
+      val svc = Service.mk[Request, Response] { _ => Future.value(Response()) }
       val client = connect(svc)
       Await.result(client(Request()))
       Await.result(client(Request()))
@@ -505,9 +499,7 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
     }
 
     test(name + ": does not measure payload size") {
-      val svc = Service.mk[Request, Response] { _ =>
-        Future.value(Response())
-      }
+      val svc = Service.mk[Request, Response] { _ => Future.value(Response()) }
       val client = connect(svc)
       Await.result(client(Request()))
 

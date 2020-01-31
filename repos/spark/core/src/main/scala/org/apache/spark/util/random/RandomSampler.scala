@@ -175,9 +175,7 @@ class BernoulliSampler[T: ClassTag](fraction: Double)
     } else if (fraction <= RandomSampler.defaultMaxGapSamplingFraction) {
       new GapSamplingIterator(items, fraction, rng, RandomSampler.rngEpsilon)
     } else {
-      items.filter { _ =>
-        rng.nextDouble() <= fraction
-      }
+      items.filter { _ => rng.nextDouble() <= fraction }
     }
   }
 

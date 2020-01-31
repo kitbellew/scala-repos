@@ -22,9 +22,7 @@ package scalaguide.xml.scalaxmlrequests {
             .map { xml =>
               (xml \\ "name" headOption)
                 .map(_.text)
-                .map { name =>
-                  Ok("Hello " + name)
-                }
+                .map { name => Ok("Hello " + name) }
                 .getOrElse {
                   BadRequest("Missing parameter [name]")
                 }
@@ -44,9 +42,7 @@ package scalaguide.xml.scalaxmlrequests {
         def sayHello = Action(parse.xml) { request =>
           (request.body \\ "name" headOption)
             .map(_.text)
-            .map { name =>
-              Ok("Hello " + name)
-            }
+            .map { name => Ok("Hello " + name) }
             .getOrElse {
               BadRequest("Missing parameter [name]")
             }
@@ -64,9 +60,7 @@ package scalaguide.xml.scalaxmlrequests {
         def sayHello = Action(parse.xml) { request =>
           (request.body \\ "name" headOption)
             .map(_.text)
-            .map { name =>
-              Ok(<message status="OK">Hello {name}</message>)
-            }
+            .map { name => Ok(<message status="OK">Hello {name}</message>) }
             .getOrElse {
               BadRequest(
                 <message status="KO">Missing parameter [name]</message>)

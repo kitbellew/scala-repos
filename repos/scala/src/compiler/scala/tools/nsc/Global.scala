@@ -692,8 +692,7 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
   ) withDefaultValue ""
 
   protected def computePlatformPhases() = platform.platformPhases foreach {
-    sub =>
-      addToPhasesSet(sub, otherPhaseDescriptions(sub.phaseName))
+    sub => addToPhasesSet(sub, otherPhaseDescriptions(sub.phaseName))
   }
 
   // sequences the phase assembly

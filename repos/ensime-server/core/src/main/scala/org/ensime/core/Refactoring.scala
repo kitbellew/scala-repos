@@ -195,9 +195,8 @@ trait RefactoringImpl { self: RichPresentationCompiler =>
       val refactoring = new Rename with GlobalIndexes {
         val global = RefactoringImpl.this
         val invalidSet = toBeRemoved.synchronized { toBeRemoved.toSet }
-        val cuIndexes = this.global.activeUnits().map { u =>
-          CompilationUnitIndex(u.body)
-        }
+        val cuIndexes =
+          this.global.activeUnits().map { u => CompilationUnitIndex(u.body) }
         val index = GlobalIndex(cuIndexes.toList)
       }
       val result = performRefactoring(procId, tpe, name)
@@ -213,9 +212,8 @@ trait RefactoringImpl { self: RichPresentationCompiler =>
     new RefactoringEnvironment(file.getPath, start, end) {
       val refactoring = new ExtractMethod with GlobalIndexes {
         val global = RefactoringImpl.this
-        val cuIndexes = this.global.activeUnits().map { u =>
-          CompilationUnitIndex(u.body)
-        }
+        val cuIndexes =
+          this.global.activeUnits().map { u => CompilationUnitIndex(u.body) }
         val index = GlobalIndex(cuIndexes.toList)
       }
       val result = performRefactoring(procId, tpe, name)
@@ -231,9 +229,8 @@ trait RefactoringImpl { self: RichPresentationCompiler =>
     new RefactoringEnvironment(file.getPath, start, end) {
       val refactoring = new ExtractLocal with GlobalIndexes {
         val global = RefactoringImpl.this
-        val cuIndexes = this.global.activeUnits().map { u =>
-          CompilationUnitIndex(u.body)
-        }
+        val cuIndexes =
+          this.global.activeUnits().map { u => CompilationUnitIndex(u.body) }
         val index = GlobalIndex(cuIndexes.toList)
       }
       val result = performRefactoring(procId, tpe, name)
@@ -248,9 +245,8 @@ trait RefactoringImpl { self: RichPresentationCompiler =>
     new RefactoringEnvironment(file.getPath, start, end) {
       val refactoring = new InlineLocal with GlobalIndexes {
         val global = RefactoringImpl.this
-        val cuIndexes = this.global.activeUnits().map { u =>
-          CompilationUnitIndex(u.body)
-        }
+        val cuIndexes =
+          this.global.activeUnits().map { u => CompilationUnitIndex(u.body) }
         val index = GlobalIndex(cuIndexes.toList)
       }
       val result =

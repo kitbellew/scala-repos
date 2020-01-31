@@ -45,9 +45,7 @@ class RouteRegistry {
     * HEAD must be identical to GET without a body, so GET implies HEAD.
     */
   def matchingMethods(requestPath: String): Set[HttpMethod] =
-    matchingMethodsExcept(requestPath) { _ =>
-      false
-    }
+    matchingMethodsExcept(requestPath) { _ => false }
 
   /**
     * Returns a set of methods with a matching route minus a specified
@@ -61,10 +59,8 @@ class RouteRegistry {
       method: HttpMethod,
       requestPath: String): Set[HttpMethod] = {
     val p: HttpMethod => Boolean = method match {
-      case Get | Head => { m =>
-        m == Get || m == Head
-      }
-      case _ => { _ == method }
+      case Get | Head => { m => m == Get || m == Head }
+      case _          => { _ == method }
     }
     matchingMethodsExcept(requestPath)(p)
   }

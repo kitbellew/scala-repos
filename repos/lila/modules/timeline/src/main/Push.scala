@@ -34,9 +34,7 @@ private[timeline] final class Push(
       } foreach { users =>
         if (users.nonEmpty)
           makeEntry(users, data) >>-
-            (users foreach { u =>
-              lobbySocket ! ReloadTimeline(u)
-            })
+            (users foreach { u => lobbySocket ! ReloadTimeline(u) })
         lila.mon.timeline.notification(users.size)
       }
   }

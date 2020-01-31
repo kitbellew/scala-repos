@@ -66,8 +66,7 @@ class ScalaControlFlowBuilder(
   }
 
   def emptyNode() {
-    startNode(None) { _ =>
-    }
+    startNode(None) { _ => }
   }
 
   def startNode(element: Option[ScalaPsiElement])(
@@ -204,9 +203,7 @@ class ScalaControlFlowBuilder(
   override def visitDoStatement(stmt: ScDoStmt) {
     startNode(Some(stmt)) { doStmtInstr =>
       checkPendingEdges(doStmtInstr)
-      stmt.getExprBody map { e =>
-        e.accept(this)
-      }
+      stmt.getExprBody map { e => e.accept(this) }
       stmt.condition map { c =>
         c.accept(this)
         if (myHead != null) {
@@ -262,9 +259,7 @@ class ScalaControlFlowBuilder(
       // for breaks
       //addPendingEdge(ws, myHead)
       ws.condition.foreach(_.accept(this))
-      ws.body.foreach { b =>
-        b.accept(this)
-      }
+      ws.body.foreach { b => b.accept(this) }
       checkPendingEdges(instr)
       // add backward edge
       if (myHead != null) addEdge(myHead, instr)

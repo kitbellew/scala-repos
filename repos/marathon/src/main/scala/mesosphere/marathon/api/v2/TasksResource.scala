@@ -163,9 +163,7 @@ class TasksResource @Inject() (
           case (taskId, appId) =>
             taskTracker.tasksByAppSync.task(Task.Id(taskId))
         }
-        .groupBy { task =>
-          task.taskId.appId
-        }
+        .groupBy { task => task.taskId.appId }
         .map { case (appId, tasks) => appId -> tasks }
 
       if (scale) scaleAppWithKill(tasksByAppId)

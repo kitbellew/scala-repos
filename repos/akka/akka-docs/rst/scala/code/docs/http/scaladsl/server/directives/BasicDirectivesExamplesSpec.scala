@@ -26,9 +26,7 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
     //#0extract
     val uriLength = extract(_.request.uri.toString.length)
     val route =
-      uriLength { len =>
-        complete(s"The length of the request URI is $len")
-      }
+      uriLength { len => complete(s"The length of the request URI is $len") }
 
     // tests:
     Get("/abcdef") ~> route ~> check {
@@ -544,9 +542,7 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
 
     val route =
       replaceRequest {
-        extractRequest { req =>
-          complete(req.method.value)
-        }
+        extractRequest { req => complete(req.method.value) }
       }
 
     // tests:
@@ -645,9 +641,7 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
     def providePrefixedString(value: String): Directive1[String] =
       provide("prefix:" + value)
     val route =
-      providePrefixedString("test") { value =>
-        complete(value)
-      }
+      providePrefixedString("test") { value => complete(value) }
 
     // tests:
     Get("/") ~> route ~> check {
@@ -766,9 +760,7 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
   "extractUri-example" in {
     //#extractUri-example
     val route =
-      extractUri { uri =>
-        complete(s"Full URI: $uri")
-      }
+      extractUri { uri => complete(s"Full URI: $uri") }
 
     // tests:
     Get("/") ~> route ~> check {

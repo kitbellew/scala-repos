@@ -143,9 +143,7 @@ class JavaWriter(classfile: Classfile, writer: Writer)
       case Some(cf.Attribute(_, data)) =>
         val n = ((data(0) & 0xff) << 8) + (data(1) & 0xff)
         indent.print("throws ")
-        for (i <- Iterator.range(0, n) map { x =>
-               2 * (x + 1)
-             }) {
+        for (i <- Iterator.range(0, n) map { x => 2 * (x + 1) }) {
           val inx = ((data(i) & 0xff) << 8) + (data(i + 1) & 0xff)
           if (i > 2) print(", ")
           print(getClassName(inx).trim())
@@ -163,9 +161,7 @@ class JavaWriter(classfile: Classfile, writer: Writer)
       if (cf.pool(cf.superclass) != null)
         print(" extends " + nameToClass0(getName(cf.superclass)))
     }
-    cf.interfaces foreach { n =>
-      print(" with " + getClassName(n))
-    }
+    cf.interfaces foreach { n => print(" with " + getClassName(n)) }
   }
 
   def printClass() {

@@ -29,8 +29,7 @@ final class Api(
   )
 
   def preview(userId: String): Fu[List[Thread]] = unreadCache(userId) flatMap {
-    ids =>
-      $find byOrderedIds ids
+    ids => $find byOrderedIds ids
   }
 
   def thread(id: String, me: User): Fu[Option[Thread]] =

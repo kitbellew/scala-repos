@@ -77,8 +77,7 @@ object Test {
     }
     List("Test", "Test$") foreach { className =>
       List("f5", "f6", "f7", "f8", "f9", "fa", "fb", "fc", "fd", "fe") foreach {
-        methodName =>
-          Class.forName(className).getMethod(methodName)
+        methodName => Class.forName(className).getMethod(methodName)
       }
     }
   }

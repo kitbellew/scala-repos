@@ -20,8 +20,7 @@ object Form {
   }
 
   def optionsDouble(it: Iterable[Double], format: Double => String) = it map {
-    d =>
-      d -> format(d)
+    d => d -> format(d)
   }
 
   def numberIn(choices: Iterable[(Int, String)]) =

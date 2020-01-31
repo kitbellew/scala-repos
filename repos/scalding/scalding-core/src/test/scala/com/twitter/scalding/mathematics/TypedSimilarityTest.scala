@@ -34,17 +34,10 @@ class TypedCosineSimJob(args: Args) extends Job(args) {
       .map { case (from, to) => Edge(from, to, ()) }
   }
   // Just keep the degree
-    .map { edge =>
-      edge.mapData { _._2 }
-    }
+    .map { edge => edge.mapData { _._2 } }
 
-  simOf(graph, { n: Int =>
-    n % 2 == 0
-  }, { n: Int =>
-    n % 2 == 1
-  }).map { edge =>
-      (edge.from, edge.to, edge.data)
-    }
+  simOf(graph, { n: Int => n % 2 == 0 }, { n: Int => n % 2 == 1 })
+    .map { edge => (edge.from, edge.to, edge.data) }
     .write(TypedTsv[(Int, Int, Double)]("out"))
 }
 
@@ -56,13 +49,8 @@ class TypedDimsumCosineSimJob(args: Args) extends Job(args) {
       .map { case (from, to, weight) => Edge(from, to, Weight(weight)) }
   }
 
-  simOf(graph, { n: Int =>
-    n % 2 == 0
-  }, { n: Int =>
-    n % 2 == 1
-  }).map { edge =>
-      (edge.from, edge.to, edge.data)
-    }
+  simOf(graph, { n: Int => n % 2 == 0 }, { n: Int => n % 2 == 1 })
+    .map { edge => (edge.from, edge.to, edge.data) }
     .toPipe('from, 'to, 'data)
     .write(TypedTsv[(Int, Int, Double)]("out"))
 }

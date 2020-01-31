@@ -184,9 +184,7 @@ private[spark] object TestUtils {
       baseClass: String = null,
       classpathUrls: Seq[URL] = Seq()): File = {
     val extendsText = Option(baseClass)
-      .map { c =>
-        s" extends ${c}"
-      }
+      .map { c => s" extends ${c}" }
       .getOrElse("")
     val sourceFile = new JavaSourceFromString(
       className,

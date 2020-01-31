@@ -73,9 +73,7 @@ class AllPersistenceIdsSpec
         probe.expectNext("e")
 
         val more = (1 to 100).map("f" + _)
-        more.foreach { p ⇒
-          system.actorOf(TestActor.props(p)) ! p
-        }
+        more.foreach { p ⇒ system.actorOf(TestActor.props(p)) ! p }
 
         probe.request(100)
         probe.expectNextUnorderedN(more)

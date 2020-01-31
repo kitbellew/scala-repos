@@ -112,9 +112,7 @@ trait DB extends Loggable {
     )
 
     first(toTry)(f =>
-      tryo { t: Throwable =>
-        logger.trace("JNDI Lookup failed: " + t)
-      }(f())) or {
+      tryo { t: Throwable => logger.trace("JNDI Lookup failed: " + t) }(f())) or {
       logger.trace(
         "Unable to obtain Connection for JNDI name %s".format(name.jndiName))
       Empty
@@ -302,9 +300,7 @@ trait DB extends Loggable {
                   }
 
                 case x :: xs =>
-                  DB.use(x) { ignore =>
-                    recurseMe(xs)
-                  }
+                  DB.use(x) { ignore => recurseMe(xs) }
               }
               recurseMe(in)
             } else {
@@ -447,9 +443,7 @@ trait DB extends Loggable {
   }
 
   def exec[T](db: SuperConnection, query: String)(f: (ResultSet) => T): T =
-    statement(db) { st =>
-      f(st.executeQuery(query))
-    }
+    statement(db) { st => f(st.executeQuery(query)) }
 
   private def asString(
       pos: Int,
@@ -1365,9 +1359,7 @@ trait ProtoDBVendor extends ConnectionManager {
     logger.info("Closing all connections")
     if (poolSize <= 0 || cnt > 10) ()
     else {
-      pool.foreach { c =>
-        tryo(c.close); poolSize -= 1
-      }
+      pool.foreach { c => tryo(c.close); poolSize -= 1 }
       pool = Nil
 
       if (poolSize > 0) wait(250)

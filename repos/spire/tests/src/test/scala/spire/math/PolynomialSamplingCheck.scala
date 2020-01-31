@@ -86,9 +86,7 @@ class PolynomialSamplingCheck
     property(s"$name binop -") { testBinop(_ - _)(_ - _) }
     property(s"$name binop *") { testBinop(_ * _)(_ * _) }
     property(s"$name binop /~ and %") {
-      testBinopNonzero({ (x, y) =>
-        (x /~ y) * y + (x % y)
-      })({ (a, b) =>
+      testBinopNonzero({ (x, y) => (x /~ y) * y + (x % y) })({ (a, b) =>
         (a /~ b) * b + (a % b)
       })
     }

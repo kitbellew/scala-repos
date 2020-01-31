@@ -451,9 +451,7 @@ class ALS(@Since("1.4.0") override val uid: String)
         col($(itemCol)).cast(IntegerType),
         r)
       .rdd
-      .map { row =>
-        Rating(row.getInt(0), row.getInt(1), row.getFloat(2))
-      }
+      .map { row => Rating(row.getInt(0), row.getInt(1), row.getFloat(2)) }
     val (userFactors, itemFactors) = ALS.train(
       ratings,
       rank = $(rank),
@@ -1310,9 +1308,7 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
             }
             i += 1
           }
-          activeIds.map { x =>
-            x.result()
-          }
+          activeIds.map { x => x.result() }
       }
       .setName(prefix + "OutBlocks")
       .persist(storageLevel)

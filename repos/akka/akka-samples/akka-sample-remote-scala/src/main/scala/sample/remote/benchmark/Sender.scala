@@ -131,9 +131,7 @@ class Sender(path: String, totalMessages: Int, burstSize: Int, payloadSize: Int)
     */
   def sendBatch(actor: ActorRef, remaining: Int): Int = {
     val batchSize = math.min(remaining, burstSize)
-    (1 to batchSize) foreach { x =>
-      actor ! payload
-    }
+    (1 to batchSize) foreach { x => actor ! payload }
     remaining - batchSize
   }
 }

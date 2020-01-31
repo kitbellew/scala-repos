@@ -201,9 +201,7 @@ class FsHistoryProviderSuite
     logFile2.setReadable(false, false)
 
     val provider = new FsHistoryProvider(createTestConf())
-    updateAndCheck(provider) { list =>
-      list.size should be(1)
-    }
+    updateAndCheck(provider) { list => list.size should be(1) }
   }
 
   test("history file is renamed from inprogress to completed") {
@@ -239,9 +237,7 @@ class FsHistoryProviderSuite
 
     val logFile1 = newLogFile("app1", None, inProgress = true)
     writeFile(logFile1, true, None, SparkListenerLogStart("1.4"))
-    updateAndCheck(provider) { list =>
-      list.size should be(0)
-    }
+    updateAndCheck(provider) { list => list.size should be(0) }
   }
 
   test("SPARK-5582: empty log directory") {
@@ -404,9 +400,7 @@ class FsHistoryProviderSuite
     // Do the same for the other log.
     clock.advance(maxAge)
 
-    updateAndCheck(provider) { list =>
-      list.size should be(0)
-    }
+    updateAndCheck(provider) { list => list.size should be(0) }
     assert(!log2.exists())
   }
 
@@ -464,9 +458,7 @@ class FsHistoryProviderSuite
     val logFile1 = newLogFile("app1", None, inProgress = true)
     writeFile(logFile1, true, None, SparkListenerLogStart("1.4"))
 
-    updateAndCheck(provider) { list =>
-      list.size should be(0)
-    }
+    updateAndCheck(provider) { list => list.size should be(0) }
   }
 
   test("provider correctly checks whether fs is in safe mode") {

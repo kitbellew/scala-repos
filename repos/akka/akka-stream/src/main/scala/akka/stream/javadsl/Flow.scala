@@ -323,9 +323,7 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
     */
   def mapConcat[T](f: function.Function[Out, java.lang.Iterable[T]])
       : javadsl.Flow[In, T, Mat] =
-    new Flow(delegate.mapConcat { elem ⇒
-      Util.immutableSeq(f(elem))
-    })
+    new Flow(delegate.mapConcat { elem ⇒ Util.immutableSeq(f(elem)) })
 
   /**
     * Transform each input element into an `Iterable` of output elements that is

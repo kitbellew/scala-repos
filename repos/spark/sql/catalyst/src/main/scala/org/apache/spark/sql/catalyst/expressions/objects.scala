@@ -240,9 +240,7 @@ case class NewInstance(
        """.stripMargin
 
     val constructorCall = outer
-      .map { gen =>
-        s"""${gen.value}.new ${cls.getSimpleName}($argString)"""
-      }
+      .map { gen => s"""${gen.value}.new ${cls.getSimpleName}($argString)""" }
       .getOrElse {
         s"new $className($argString)"
       }

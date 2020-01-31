@@ -513,9 +513,7 @@ object Codec {
       } + 5
 
     def encodedSize(as: IndexedSeq[A]): Int = {
-      val size = as.foldLeft(0) { (acc, a) =>
-        acc + elemCodec.encodedSize(a)
-      }
+      val size = as.foldLeft(0) { (acc, a) => acc + elemCodec.encodedSize(a) }
       size + sizePackedInt(as.size)
     }
 
@@ -555,9 +553,7 @@ object Codec {
       ((0 until readPackedInt(src)) map (_ => elemCodec.read(src))).toIndexedSeq
 
     override def skip(buf: ByteBuffer) {
-      (0 until readPackedInt(buf)) foreach { _ =>
-        elemCodec.skip(buf)
-      }
+      (0 until readPackedInt(buf)) foreach { _ => elemCodec.skip(buf) }
     }
   }
 

@@ -28,9 +28,7 @@ object CORSFilterSpec extends CORSCommonSpec {
       _.configure(conf).overrides(
         bind[Router].to(Router.from {
           case p"/error" =>
-            Action { req =>
-              throw sys.error("error")
-            }
+            Action { req => throw sys.error("error") }
           case _ => Action(Results.Ok)
         }),
         bind[HttpFilters].to[Filters]
@@ -74,9 +72,7 @@ object CORSWithCSRFSpec extends CORSCommonSpec {
       _.configure(conf).overrides(
         bind[Router].to(Router.from {
           case p"/error" =>
-            Action { req =>
-              throw sys.error("error")
-            }
+            Action { req => throw sys.error("error") }
           case _ => CSRFCheck(Action(Results.Ok))
         }),
         bind[HttpFilters].to(filters)
@@ -124,8 +120,7 @@ object CORSActionBuilderSpec extends CORSCommonSpec {
     running(_.routes {
       case (_, "/error") =>
         CORSActionBuilder(Configuration.reference ++ Configuration.from(conf)) {
-          req =>
-            throw sys.error("error")
+          req => throw sys.error("error")
         }
       case _ =>
         CORSActionBuilder(Configuration.reference ++ Configuration.from(conf))(
@@ -140,9 +135,7 @@ object CORSActionBuilderSpec extends CORSCommonSpec {
       case (_, "/error") =>
         CORSActionBuilder(
           Configuration.reference ++ Configuration.from(conf),
-          configPath = configPath) { req =>
-          throw sys.error("error")
-        }
+          configPath = configPath) { req => throw sys.error("error") }
       case _ =>
         CORSActionBuilder(
           Configuration.reference ++ Configuration.from(conf),

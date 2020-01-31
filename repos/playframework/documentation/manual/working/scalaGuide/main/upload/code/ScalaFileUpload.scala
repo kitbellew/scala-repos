@@ -111,9 +111,7 @@ package scalaguide.upload.fileupload {
       }
       //#upload-file-directly-action
 
-      def index = Action { request =>
-        Ok("Upload failed")
-      }
+      def index = Action { request => Ok("Upload failed") }
 
     }
   }

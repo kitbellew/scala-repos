@@ -52,15 +52,9 @@ object Utility {
         c = it.next()
         if (c == '#') {
           c = it.next()
-          val theChar = parseCharRef({ () =>
-            c
-          }, { () =>
-            c = it.next()
-          }, { s =>
-            throw new RuntimeException(s)
-          }, { s =>
-            throw new RuntimeException(s)
-          })
+          val theChar = parseCharRef({ () => c }, { () => c = it.next() }, {
+            s => throw new RuntimeException(s)
+          }, { s => throw new RuntimeException(s) })
           sb.append(theChar)
         } else {
           if (rfb eq null) rfb = new StringBuilder()

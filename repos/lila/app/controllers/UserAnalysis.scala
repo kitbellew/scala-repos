@@ -46,9 +46,7 @@ object UserAnalysis extends LilaController with TheftPrevention {
       ctx.pref,
       decodedFen,
       orientation,
-      owner = false) map { data =>
-      Ok(html.board.userAnalysis(data, pov))
-    }
+      owner = false) map { data => Ok(html.board.userAnalysis(data, pov)) }
   }
 
   private def makePov(from: SituationPlus) =
@@ -104,9 +102,7 @@ object UserAnalysis extends LilaController with TheftPrevention {
                   ctx.pref,
                   initialFen = none,
                   pov.color,
-                  owner = false) map { data =>
-                  Ok(data)
-                }
+                  owner = false) map { data => Ok(data) }
               }
             )
       )

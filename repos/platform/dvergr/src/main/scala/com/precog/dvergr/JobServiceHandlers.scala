@@ -568,8 +568,7 @@ class GetResultHandler(jobs: JobManager[Future])(implicit ctx: ExecutionContext)
               HttpResponse[ByteChunk](NoContent)
             case Right((mimeType, data)) =>
               val headers = mimeType.foldLeft(HttpHeaders.Empty) {
-                (headers, mimeType) =>
-                  headers + `Content-Type`(mimeType)
+                (headers, mimeType) => headers + `Content-Type`(mimeType)
               }
               HttpResponse[ByteChunk](OK, headers, Some(Right(data)))
           }

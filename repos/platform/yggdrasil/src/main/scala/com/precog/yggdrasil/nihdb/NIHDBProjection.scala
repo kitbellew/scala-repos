@@ -100,7 +100,6 @@ final class NIHDBProjection(
 
 object NIHDBProjection {
   def wrap(nihdb: NIHDB): Future[NIHDBProjection] = nihdb.getSnapshot map {
-    snap =>
-      new NIHDBProjection(snap, nihdb.authorities, nihdb.projectionId)
+    snap => new NIHDBProjection(snap, nihdb.authorities, nihdb.projectionId)
   }
 }

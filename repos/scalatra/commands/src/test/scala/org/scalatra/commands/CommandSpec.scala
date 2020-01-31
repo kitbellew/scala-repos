@@ -218,9 +218,7 @@ class CommandSupportSpec extends Specification with Mockito {
       val page = new ScalatraPage
       val instance = new CommandSample
       val key = page.commandRequestKey[CommandSample]
-      mockRequest.getAttribute(key) answers { k =>
-        instance
-      }
+      mockRequest.getAttribute(key) answers { k => instance }
       page.commandOption[CommandSample] must beSome[CommandSample]
       page.commandOption[CommandSample].get must_== instance
     }

@@ -41,9 +41,7 @@ trait EntityRepository[T <: MarathonState[_, T]]
   protected def current(): Future[Iterable[T]] = timedRead {
     allIds().flatMap { names =>
       Future
-        .sequence(names.map { name =>
-          currentVersion(name)
-        })
+        .sequence(names.map { name => currentVersion(name) })
         .map { _.flatten }
     }
   }

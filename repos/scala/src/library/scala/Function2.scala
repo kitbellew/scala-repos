@@ -47,9 +47,7 @@ trait Function2[
     *  @return   a function `f` such that `f(x1)(x2) == apply(x1, x2)`
     */
   @annotation.unspecialized
-  def curried: T1 => T2 => R = { (x1: T1) => (x2: T2) =>
-    apply(x1, x2)
-  }
+  def curried: T1 => T2 => R = { (x1: T1) => (x2: T2) => apply(x1, x2) }
 
   /** Creates a tupled version of this function: instead of 2 arguments,
     *  it accepts a single [[scala.Tuple2]] argument.

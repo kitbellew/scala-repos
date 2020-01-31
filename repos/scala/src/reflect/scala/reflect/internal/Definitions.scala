@@ -734,8 +734,7 @@ trait Definitions extends api.StandardDefinitions {
       private val offset = countFrom - init.size
       private def isDefinedAt(i: Int) = i < seq.length + offset && i >= offset
       val seq: IndexedSeq[ClassSymbol] = (init ++: countFrom.to(maxArity).map {
-        i =>
-          getRequiredClass("scala." + name + i)
+        i => getRequiredClass("scala." + name + i)
       }).toVector
       def apply(i: Int) = if (isDefinedAt(i)) seq(i - offset) else NoSymbol
       def specificType(args: List[Type], others: Type*): Type = {

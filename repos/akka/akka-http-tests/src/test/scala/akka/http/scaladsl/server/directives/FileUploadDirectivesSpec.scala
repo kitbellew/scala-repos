@@ -61,9 +61,7 @@ class FileUploadDirectivesSpec extends RoutingSpec {
             }
 
             // sum all individual file sizes
-            onSuccess(allBytesF) { allBytes ⇒
-              complete(allBytes)
-            }
+            onSuccess(allBytesF) { allBytes ⇒ complete(allBytes) }
         }
       }
 
@@ -127,9 +125,7 @@ class FileUploadDirectivesSpec extends RoutingSpec {
               }
 
               // sum all individual file sizes
-              onSuccess(allBytesF) { allBytes ⇒
-                complete(allBytes)
-              }
+              onSuccess(allBytesF) { allBytes ⇒ complete(allBytes) }
           }
         }
 

@@ -110,9 +110,7 @@ case class GetsResult(getResult: GetResult) {
   def misses = getResult.misses
   def failures = getResult.failures
   def values = getResult.values
-  lazy val valuesWithTokens = hits.mapValues { v =>
-    (v.value, v.casUnique.get)
-  }
+  lazy val valuesWithTokens = hits.mapValues { v => (v.value, v.casUnique.get) }
   def ++(o: GetsResult) = GetsResult(getResult ++ o.getResult)
 }
 
@@ -1375,8 +1373,7 @@ case class RubyMemCacheClientBuilder(
 
   def nodes(hostPortWeights: String): RubyMemCacheClientBuilder =
     copy(_nodes = CacheNodeGroup(hostPortWeights).members.map {
-      node: CacheNode =>
-        (node.host, node.port, node.weight)
+      node: CacheNode => (node.host, node.port, node.weight)
     }.toSeq)
 
   def clientBuilder(clientBuilder: ClientBuilder[_, _, _, _, ClientConfig.Yes])
@@ -1427,8 +1424,7 @@ case class PHPMemCacheClientBuilder(
 
   def nodes(hostPortWeights: String): PHPMemCacheClientBuilder =
     copy(_nodes = CacheNodeGroup(hostPortWeights).members.map {
-      node: CacheNode =>
-        (node.host, node.port, node.weight)
+      node: CacheNode => (node.host, node.port, node.weight)
     }.toSeq)
 
   def hashName(hashName: String): PHPMemCacheClientBuilder =

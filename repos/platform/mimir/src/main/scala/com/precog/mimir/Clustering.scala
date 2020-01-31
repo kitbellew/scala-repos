@@ -645,9 +645,7 @@ trait ClusteringLibModule[M[+_]]
                   if c.tpe.manifest.erasure == classOf[Array[Double]] =>
                 val mapped = range.toArray filter { r =>
                   c.isDefinedAt(r)
-                } map { i =>
-                  c.asInstanceOf[HomogeneousArrayColumn[Double]](i)
-                }
+                } map { i => c.asInstanceOf[HomogeneousArrayColumn[Double]](i) }
                 mapped
             }
 
@@ -678,9 +676,7 @@ trait ClusteringLibModule[M[+_]]
           Table.fromRValues(Stream(RArray(pt.map(CNum(_)).toList)))
         }
 
-        val transformedTables = tables map { table =>
-          table.transform(spec)
-        }
+        val transformedTables = tables map { table => table.transform(spec) }
 
         val wrappedTables = transformedTables.zipWithIndex map {
           case (tbl, idx) =>
@@ -718,9 +714,7 @@ trait ClusteringLibModule[M[+_]]
             val schemas: M[Seq[JType]] = table.schemas map { _.toSeq }
 
             val specs: M[Seq[(TransSpec1, JType)]] = schemas map {
-              _ map { jtype =>
-                (trans.Typed(TransSpec1.Id, jtype), jtype)
-              }
+              _ map { jtype => (trans.Typed(TransSpec1.Id, jtype), jtype) }
             }
 
             val tables: StreamT[M, (Table, JType)] = StreamT.wrapEffect {
@@ -779,9 +773,7 @@ trait ClusteringLibModule[M[+_]]
       }
 
       def alignCustom(t1: Table, t2: Table): M[(Table, Morph1Apply)] =
-        t2.reduce(reducerKS) map { ks =>
-          (t1, morph1Apply(ks))
-        }
+        t2.reduce(reducerKS) map { ks => (t1, morph1Apply(ks)) }
     }
 
     object AssignClusters

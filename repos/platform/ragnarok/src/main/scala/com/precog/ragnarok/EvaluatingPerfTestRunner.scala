@@ -136,9 +136,7 @@ trait EvaluatingPerfTestRunner[M[+_], T]
   private def countStream[A](str: StreamT[M, A]): M[Int] = {
     for {
       optTail <- str.uncons
-      res = optTail map { _._2 } map { tail =>
-        countStream(tail) map (1 +)
-      }
+      res = optTail map { _._2 } map { tail => countStream(tail) map (1 +) }
 
       back <- res getOrElse M.point(0)
     } yield back

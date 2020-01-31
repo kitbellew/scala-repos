@@ -49,8 +49,7 @@ object DataSet {
   }
 
   private def readDataSet(path: String): List[String] = withResource(path) {
-    reader =>
-      Stream.continually(reader.readLine()).takeWhile(_ != null).toList
+    reader => Stream.continually(reader.readLine()).takeWhile(_ != null).toList
   }
 
   type Output[+K] = (Int, String => K)
@@ -191,9 +190,7 @@ object Variable {
     def apply() = new Builder[String, String => List[F]] {
       def +=(s: String) = this
       def clear(): Unit = ()
-      def result() = { s =>
-        f(s) :: Nil
-      }
+      def result() = { s => f(s) :: Nil }
     }
   }
 
@@ -242,9 +239,7 @@ object Variable {
         }
         val mostCommon = occurences.maxBy(_._2)._1
 
-        { s =>
-          if (s == sentinel) mostCommon else real(s)
-        }
+        { s => if (s == sentinel) mostCommon else real(s) }
       }
     }
   }

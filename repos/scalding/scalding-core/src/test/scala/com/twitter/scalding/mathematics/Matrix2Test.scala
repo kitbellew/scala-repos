@@ -311,14 +311,10 @@ class Matrix2Test extends WordSpec with Matchers {
 
   def toSparseMat[Row, Col, V](
       iter: Iterable[(Row, Col, V)]): Map[(Row, Col), V] = {
-    iter.map { it =>
-      ((it._1, it._2), it._3)
-    }.toMap
+    iter.map { it => ((it._1, it._2), it._3) }.toMap
   }
   def oneDtoSparseMat[Idx, V](iter: Iterable[(Idx, V)]): Map[(Idx, Idx), V] = {
-    iter.map { it =>
-      ((it._1, it._1), it._2)
-    }.toMap
+    iter.map { it => ((it._1, it._1), it._2) }.toMap
   }
 
   "A MatrixSum job" should {

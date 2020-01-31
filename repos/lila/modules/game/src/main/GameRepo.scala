@@ -36,9 +36,7 @@ object GameRepo {
     $find.one($select(gameId) ++ Query.finished)
 
   def player(gameId: ID, color: Color): Fu[Option[Player]] =
-    $find byId gameId map2 { (game: Game) =>
-      game player color
-    }
+    $find byId gameId map2 { (game: Game) => game player color }
 
   def player(gameId: ID, playerId: ID): Fu[Option[Player]] =
     $find byId gameId map { gameOption =>
@@ -49,9 +47,7 @@ object GameRepo {
     player(playerRef.gameId, playerRef.playerId)
 
   def pov(gameId: ID, color: Color): Fu[Option[Pov]] =
-    $find byId gameId map2 { (game: Game) =>
-      Pov(game, game player color)
-    }
+    $find byId gameId map2 { (game: Game) => Pov(game, game player color) }
 
   def pov(gameId: ID, color: String): Fu[Option[Pov]] =
     Color(color) ?? (pov(gameId, _))
@@ -499,9 +495,7 @@ object GameRepo {
         )
       )
       .map(_.documents.flatMap { obj =>
-        obj.getAs[Int]("nb") map { nb =>
-          UidNb(~obj.getAs[String]("_id"), nb)
-        }
+        obj.getAs[Int]("nb") map { nb => UidNb(~obj.getAs[String]("_id"), nb) }
       })
   }
 

@@ -103,18 +103,14 @@ trait FutureCombinators extends TestBase {
 
   def testMapSuccess(): Unit = once { done =>
     val f = Future { 5 }
-    val g = f map { x =>
-      "result: " + x
-    }
+    val g = f map { x => "result: " + x }
     g onSuccess { case s => done(s == "result: 5") }
     g onFailure { case _ => done(false) }
   }
 
   def testMapFailure(): Unit = once { done =>
     val f = Future[Unit] { throw new Exception("exception message") }
-    val g = f map { x =>
-      "result: " + x
-    }
+    val g = f map { x => "result: " + x }
     g onSuccess { case _ => done(false) }
     g onFailure { case t => done(t.getMessage() == "exception message") }
   }
@@ -252,18 +248,14 @@ trait FutureCombinators extends TestBase {
 
   def testFlatMapSuccess(): Unit = once { done =>
     val f = Future { 5 }
-    val g = f flatMap { _ =>
-      Future { 10 }
-    }
+    val g = f flatMap { _ => Future { 10 } }
     g onSuccess { case x => done(x == 10) }
     g onFailure { case _ => done(false) }
   }
 
   def testFlatMapFailure(): Unit = once { done =>
     val f = Future[Unit] { throw new Exception("expected") }
-    val g = f flatMap { _ =>
-      Future { 10 }
-    }
+    val g = f flatMap { _ => Future { 10 } }
     g onSuccess { case _ => done(false) }
     g onFailure { case t => done(t.getMessage() == "expected") }
   }
@@ -308,9 +300,7 @@ trait FutureCombinators extends TestBase {
   def testForeachSuccess(): Unit = once { done =>
     val p = Promise[Int]()
     val f = Future[Int] { 5 }
-    f foreach { x =>
-      p.success(x * 2)
-    }
+    f foreach { x => p.success(x * 2) }
     val g = p.future
 
     g.onSuccess { case res: Int => done(res == 10) }
@@ -320,9 +310,7 @@ trait FutureCombinators extends TestBase {
   def testForeachFailure(): Unit = once { done =>
     val p = Promise[Int]()
     val f = Future[Int] { throw new Exception }
-    f foreach { x =>
-      p.success(x * 2)
-    }
+    f foreach { x => p.success(x * 2) }
     f onFailure { case _ => p.failure(new Exception) }
     val g = p.future
 
@@ -771,9 +759,7 @@ trait CustomExecutionContext extends TestBase {
       blocking {
         once { done =>
           assertNoEC()
-          val addOne = { x: Int =>
-            assertEC(); x + 1
-          }
+          val addOne = { x: Int => assertEC(); x + 1 }
           val f = Promise.successful(10).future
           f.map(addOne).filter { x =>
             assertEC()
@@ -847,9 +833,7 @@ trait ExecutionContextPrepare extends TestBase {
   def testMap(): Unit = once { done =>
     theLocal.set("secret2")
     val fut = Future { 42 }
-    fut map { x =>
-      done(theLocal.get == "secret2")
-    }
+    fut map { x => done(theLocal.get == "secret2") }
   }
 
   testOnComplete()

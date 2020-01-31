@@ -135,9 +135,7 @@ object BSONHandlers {
       status -> o.status,
       turns -> o.turns,
       startedAtTurn -> w.intO(o.startedAtTurn),
-      clock -> (o.clock map { c =>
-        clockBSONWrite(o.createdAt, c)
-      }),
+      clock -> (o.clock map { c => clockBSONWrite(o.createdAt, c) }),
       positionHashes -> w.bytesO(o.positionHashes),
       checkCount -> o.checkCount.nonEmpty.option(o.checkCount),
       castleLastMoveTime -> CastleLastMoveTime.castleLastMoveTimeBSONHandler

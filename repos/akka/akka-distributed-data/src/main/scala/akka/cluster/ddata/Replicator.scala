@@ -1312,13 +1312,9 @@ final class Replicator(settings: ReplicatorSettings)
 
   def receiveTerminated(ref: ActorRef): Unit = {
     val keys1 = subscribers.collect { case (k, s) if s.contains(ref) ⇒ k }
-    keys1.foreach { key ⇒
-      subscribers.removeBinding(key, ref)
-    }
+    keys1.foreach { key ⇒ subscribers.removeBinding(key, ref) }
     val keys2 = newSubscribers.collect { case (k, s) if s.contains(ref) ⇒ k }
-    keys2.foreach { key ⇒
-      newSubscribers.removeBinding(key, ref)
-    }
+    keys2.foreach { key ⇒ newSubscribers.removeBinding(key, ref) }
 
     (keys1 ++ keys2).foreach { key ⇒
       if (!subscribers.contains(key) && !newSubscribers.contains(key))

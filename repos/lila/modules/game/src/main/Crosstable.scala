@@ -97,9 +97,7 @@ object Crosstable {
     }
 
     def writeResult(result: Result, u1: String): String =
-      result.gameId + (result.winnerId ?? { w =>
-        if (w == u1) "+" else "-"
-      })
+      result.gameId + (result.winnerId ?? { w => if (w == u1) "+" else "-" })
 
     def writes(w: BSON.Writer, o: Crosstable) =
       BSONDocument(

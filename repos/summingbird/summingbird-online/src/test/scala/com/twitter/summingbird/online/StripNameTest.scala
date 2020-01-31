@@ -21,9 +21,7 @@ class StripNameTest extends FunSuite {
      */
     val store = MMap[Int, Int]()
     val input = List(1, 2, 4)
-    val fn = { k: Int =>
-      Some((k % 2, k * k))
-    }
+    val fn = { k: Int => Some((k % 2, k * k)) }
 
     val src = Producer.source[Memory, Int](input)
     val mapped = src
@@ -73,12 +71,8 @@ class StripNameTest extends FunSuite {
     val store = MMap[Int, Int]()
     val input0 = List(1, 2, 4)
     val input1 = List("100", "200", "400")
-    val fn0 = { k: Int =>
-      Some((k % 2, k * k))
-    }
-    val fn1 = { kstr: String =>
-      val k = kstr.toInt; Some((k % 2, k * k))
-    }
+    val fn0 = { k: Int => Some((k % 2, k * k)) }
+    val fn1 = { kstr: String => val k = kstr.toInt; Some((k % 2, k * k)) }
 
     val src0 = Producer.source[Memory, Int](input0)
     val mapped0 = src0
@@ -145,12 +139,8 @@ class StripNameTest extends FunSuite {
     val store0 = MMap[Int, Int]()
     val store1 = MMap[Int, Int]()
     val input = List(1, 2, 4)
-    val fn0 = { k: Int =>
-      Some((k % 2, k * k))
-    }
-    val fn1 = { k: Int =>
-      Some((k % 3, k * k * k))
-    }
+    val fn0 = { k: Int => Some((k % 2, k * k)) }
+    val fn1 = { k: Int => Some((k % 3, k * k * k)) }
     // Here is the graph
     val src = Producer.source[Memory, Int](input)
     val nameSrc = src.name("source")

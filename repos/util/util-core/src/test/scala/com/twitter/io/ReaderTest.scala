@@ -411,9 +411,7 @@ class ReaderTest
   test("Reader.writable - close not satisfied until reads are fulfilled") {
     val rw = Reader.writable()
     val rf = rw.read(6)
-    val cf = rf.flatMap { _ =>
-      rw.close()
-    }
+    val cf = rf.flatMap { _ => rw.close() }
     assert(!rf.isDefined)
     assert(!cf.isDone)
 
@@ -477,9 +475,7 @@ class ReaderTest
 
   test("Reader.concat") {
     forAll { (ss: List[String]) =>
-      val readers = ss map { s =>
-        BufReader(Buf.Utf8(s))
-      }
+      val readers = ss map { s => BufReader(Buf.Utf8(s)) }
       val buf = Reader.readAll(Reader.concat(AsyncStream.fromSeq(readers)))
       Await.result(buf) should equal(Buf.Utf8(ss.mkString))
     }

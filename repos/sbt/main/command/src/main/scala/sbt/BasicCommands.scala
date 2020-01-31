@@ -53,9 +53,7 @@ object BasicCommands {
   def nop = Command.custom(s => success(() => s))
   def ignore = Command.command(FailureWall)(idFun)
 
-  def early = Command.arb(earlyParser, earlyHelp) { (s, other) =>
-    other :: s
-  }
+  def early = Command.arb(earlyParser, earlyHelp) { (s, other) => other :: s }
   private[this] def earlyParser =
     (s: State) => token(EarlyCommand).flatMap(_ => otherCommandParser(s))
   private[this] def earlyHelp =
@@ -129,8 +127,7 @@ object BasicCommands {
 
   def ifLast =
     Command(IfLast, Help.more(IfLast, IfLastDetailed))(otherCommandParser) {
-      (s, arg) =>
-        if (s.remainingCommands.isEmpty) arg :: s else s
+      (s, arg) => if (s.remainingCommands.isEmpty) arg :: s else s
     }
   def append =
     Command(AppendCommand, Help.more(AppendCommand, AppendLastDetailed))(
@@ -140,9 +137,7 @@ object BasicCommands {
 
   def setOnFailure =
     Command(OnFailure, Help.more(OnFailure, OnFailureDetailed))(
-      otherCommandParser) { (s, arg) =>
-      s.copy(onFailure = Some(arg))
-    }
+      otherCommandParser) { (s, arg) => s.copy(onFailure = Some(arg)) }
   private[sbt] def compatCommands = Seq(
     Command.command(Compat.ClearOnFailure) { s =>
       s.log.warn(Compat.ClearOnFailureDeprecated)
@@ -176,9 +171,7 @@ object BasicCommands {
 
   def reboot =
     Command(RebootCommand, Help.more(RebootCommand, RebootDetailed))(
-      rebootParser) { (s, full) =>
-      s.reboot(full)
-    }
+      rebootParser) { (s, full) => s.reboot(full) }
   def rebootParser(s: State) = token(Space ~> "full" ^^^ true) ?? false
 
   def call =

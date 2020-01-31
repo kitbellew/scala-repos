@@ -54,9 +54,7 @@ class BindingFactoryTest
   after {
     Dtab.base = saveBase
     NameInterpreter.global = DefaultInterpreter
-    TestNamer.f = { _ =>
-      Activity.value(NameTree.Neg)
-    }
+    TestNamer.f = { _ => Activity.value(NameTree.Neg) }
   }
 
   trait Ctx {
@@ -90,9 +88,7 @@ class BindingFactoryTest
           news += 1
           def apply(conn: ClientConnection) = {
             tcOpt.foreach(_.advance(1234.microseconds))
-            Future.value(Service.mk { _ =>
-              Future.value(bound.addr)
-            })
+            Future.value(Service.mk { _ => Future.value(bound.addr) })
           }
 
           def close(deadline: Time) = {
@@ -148,9 +144,7 @@ class BindingFactoryTest
       override val tcOpt = Some(tc)
 
       val v = Var[Activity.State[NameTree[Name]]](Activity.Pending)
-      TestNamer.f = { _ =>
-        Activity(v)
-      }
+      TestNamer.f = { _ => Activity(v) }
       val f =
         Dtab.unwind {
           Dtab.local = Dtab.read(
@@ -399,9 +393,7 @@ class BindingFactoryTest
   test("BindingFactory.Module: filters with bound residual paths") {
     val module = new BindingFactory.Module[Path, Path] {
       protected[this] def boundPathFilter(path: Path) =
-        Filter.mk { (in, service) =>
-          service(path ++ in)
-        }
+        Filter.mk { (in, service) => service(path ++ in) }
     }
 
     val name = Name.Bound(Var(Addr.Pending), "id", Path.read("/alpha"))

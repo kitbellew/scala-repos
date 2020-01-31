@@ -60,9 +60,7 @@ private[controllers] trait LilaController
 
   protected def SocketEither[A: FrameFormatter](
       f: Context => Fu[Either[Result, (Iteratee[A, _], Enumerator[A])]]) =
-    WebSocket.tryAccept[A] { req =>
-      reqToCtx(req) flatMap f
-    }
+    WebSocket.tryAccept[A] { req => reqToCtx(req) flatMap f }
 
   protected def SocketOption[A: FrameFormatter](
       f: Context => Fu[Option[(Iteratee[A, _], Enumerator[A])]]) =
@@ -221,16 +219,11 @@ private[controllers] trait LilaController
   protected def JsonOptionFuOk[A, B: Writes](fua: Fu[Option[A]])(
       op: A => Fu[B])(implicit ctx: Context) =
     fua flatMap {
-      _.fold(notFound(ctx))(a =>
-        op(a) map { b =>
-          Ok(Json toJson b) as JSON
-        })
+      _.fold(notFound(ctx))(a => op(a) map { b => Ok(Json toJson b) as JSON })
     }
 
   protected def JsOk(fua: Fu[String], headers: (String, String)*) =
-    fua map { a =>
-      Ok(a) as JAVASCRIPT withHeaders (headers: _*)
-    }
+    fua map { a => Ok(a) as JAVASCRIPT withHeaders (headers: _*) }
 
   protected def FormResult[A](form: Form[A])(op: A => Fu[Result])(
       implicit req: Request[_]): Fu[Result] =
@@ -248,9 +241,7 @@ private[controllers] trait LilaController
 
   protected def OptionOk[A, B: Writeable: ContentTypeOf](fua: Fu[Option[A]])(
       op: A => B)(implicit ctx: Context): Fu[Result] =
-    OptionFuOk(fua) { a =>
-      fuccess(op(a))
-    }
+    OptionFuOk(fua) { a => fuccess(op(a)) }
 
   protected def OptionFuOk[A, B: Writeable: ContentTypeOf](fua: Fu[Option[A]])(
       op: A => Fu[B])(implicit ctx: Context) =
@@ -259,26 +250,18 @@ private[controllers] trait LilaController
   protected def OptionFuRedirect[A](fua: Fu[Option[A]])(op: A => Fu[Call])(
       implicit ctx: Context) =
     fua flatMap {
-      _.fold(notFound(ctx))(a =>
-        op(a) map { b =>
-          Redirect(b)
-        })
+      _.fold(notFound(ctx))(a => op(a) map { b => Redirect(b) })
     }
 
   protected def OptionFuRedirectUrl[A](fua: Fu[Option[A]])(op: A => Fu[String])(
       implicit ctx: Context) =
     fua flatMap {
-      _.fold(notFound(ctx))(a =>
-        op(a) map { b =>
-          Redirect(b)
-        })
+      _.fold(notFound(ctx))(a => op(a) map { b => Redirect(b) })
     }
 
   protected def OptionResult[A](fua: Fu[Option[A]])(op: A => Result)(
       implicit ctx: Context) =
-    OptionFuResult(fua) { a =>
-      fuccess(op(a))
-    }
+    OptionFuResult(fua) { a => fuccess(op(a)) }
 
   protected def OptionFuResult[A](fua: Fu[Option[A]])(op: A => Fu[Result])(
       implicit ctx: Context) =

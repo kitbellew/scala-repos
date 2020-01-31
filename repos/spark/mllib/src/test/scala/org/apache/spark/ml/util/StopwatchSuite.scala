@@ -61,9 +61,7 @@ class StopwatchSuite extends SparkFunSuite with MLlibTestSparkContext {
     val sw = new DistributedStopwatch(sc, "sw")
     val rdd = sc.parallelize(0 until 4, 4)
     val acc = sc.accumulator(0L)
-    rdd.foreach { i =>
-      acc += checkStopwatch(sw)
-    }
+    rdd.foreach { i => acc += checkStopwatch(sw) }
     assert(!sw.isRunning)
     val elapsed = sw.elapsed()
     assert(elapsed === acc.value)

@@ -298,9 +298,7 @@ class RemotingSpec
       }
 
       // then we shutdown all but one system to simulate broken connections
-      moreSystems foreach { sys ⇒
-        shutdown(sys)
-      }
+      moreSystems foreach { sys ⇒ shutdown(sys) }
 
       1 to n foreach { x ⇒
         aliveEcho ! "ping"
@@ -309,9 +307,7 @@ class RemotingSpec
 
       // ping messages to aliveEcho should go through even though we use many different broken connections
       within(5.seconds) {
-        receiveN(n) foreach { reply ⇒
-          reply should ===(("pong", testActor))
-        }
+        receiveN(n) foreach { reply ⇒ reply should ===(("pong", testActor)) }
       }
     }
 

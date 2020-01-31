@@ -122,14 +122,10 @@ object LEventAggregator {
           Prop(
             dm = dataMapAggregator(p.dm, e),
             firstUpdated = p.firstUpdated
-              .map { t =>
-                first(t, e.eventTime)
-              }
+              .map { t => first(t, e.eventTime) }
               .orElse(Some(e.eventTime)),
             lastUpdated = p.lastUpdated
-              .map { t =>
-                last(t, e.eventTime)
-              }
+              .map { t => last(t, e.eventTime) }
               .orElse(Some(e.eventTime))
           )
         }

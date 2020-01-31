@@ -63,9 +63,7 @@ private[scalding] class VersionedState(
           val thisMeta = meta(vers)
           thisMeta
             .get[String]
-            .flatMap { str =>
-              ScalaTry(BatchID(str))
-            } match {
+            .flatMap { str => ScalaTry(BatchID(str)) } match {
             case Success(batchID) => Some(batchID)
             case Failure(ex) =>
               logger.warn(

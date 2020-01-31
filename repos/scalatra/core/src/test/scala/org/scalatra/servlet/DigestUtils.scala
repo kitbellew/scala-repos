@@ -12,9 +12,7 @@ object DigestUtils {
 
   def hexEncode(bytes: List[Byte]): String = {
     bytes
-      .map { b =>
-        String.format("%02X", java.lang.Byte.valueOf(b))
-      }
+      .map { b => String.format("%02X", java.lang.Byte.valueOf(b)) }
       .mkString("")
       .toLowerCase
   }

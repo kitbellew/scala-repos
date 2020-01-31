@@ -19,9 +19,7 @@ abstract class Generator {
 
   /** Outputs documentation (as a side effect). */
   def generate(): Unit = {
-    assert(checks forall { check =>
-      check()
-    })
+    assert(checks forall { check => check() })
     generateImpl()
   }
 

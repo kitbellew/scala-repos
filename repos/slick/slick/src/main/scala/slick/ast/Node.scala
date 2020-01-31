@@ -756,9 +756,7 @@ object Path {
 object FwdPath {
   def apply(ch: List[TermSymbol]): PathElement = {
     var p: PathElement = Ref(ch.head)
-    ch.tail.foreach { sym =>
-      p = Select(p, sym)
-    }
+    ch.tail.foreach { sym => p = Select(p, sym) }
     p
   }
   def unapply(n: PathElement): Option[List[TermSymbol]] = {

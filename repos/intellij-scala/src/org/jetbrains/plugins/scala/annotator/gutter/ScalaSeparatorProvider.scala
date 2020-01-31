@@ -35,9 +35,7 @@ trait ScalaSeparatorProvider {
       if (g.get >= MultilineLevel) {
         true
       } else {
-        g != getGroupAbove(element) { _ =>
-          true
-        }
+        g != getGroupAbove(element) { _ => true }
       }
     } else false
   }

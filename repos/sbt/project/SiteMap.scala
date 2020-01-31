@@ -18,9 +18,7 @@ object SiteMap {
     def entries(files: PathFinder) =
       relativize(files) flatMap {
         case (f, path) =>
-          entry(f, path).toList map { e =>
-            entryXML(e, f, path)
-          }
+          entry(f, path).toList map { e => entryXML(e, f, path) }
       }
     def entriesXML(entries: Seq[xml.Node]): xml.Elem = {
       assert(

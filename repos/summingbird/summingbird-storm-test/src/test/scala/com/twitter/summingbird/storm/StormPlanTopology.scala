@@ -69,9 +69,7 @@ object StormPlanTopology extends Properties("StormDag") {
   implicit def genProducer: Arbitrary[TailProducer[Storm, Any]] =
     Arbitrary(genDag)
 
-  val testFn = { i: Int =>
-    List((i -> i))
-  }
+  val testFn = { i: Int => List((i -> i)) }
 
   def sample[T: Arbitrary]: T = Arbitrary.arbitrary[T].sample.get
 

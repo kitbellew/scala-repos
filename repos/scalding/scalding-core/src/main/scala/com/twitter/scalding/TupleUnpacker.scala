@@ -51,9 +51,7 @@ object ReflectionUtils {
     */
   def fieldsOf[T](c: Class[T]): List[String] =
     c.getDeclaredFields
-      .map { f =>
-        f.getName
-      }
+      .map { f => f.getName }
       .toList
       .distinct
 
@@ -110,9 +108,7 @@ class ReflectionSetter[T](fields: Fields)(implicit m: Manifest[T])
   def methodMap =
     m.runtimeClass.getDeclaredMethods
     // Keep only methods with 0 parameter types
-      .filter { m =>
-        m.getParameterTypes.length == 0
-      }
+      .filter { m => m.getParameterTypes.length == 0 }
       .groupBy { _.getName }
       .mapValues { _.head }
 
@@ -134,9 +130,7 @@ class ReflectionSetter[T](fields: Fields)(implicit m: Manifest[T])
   def validate = makeSetters
 
   override def apply(input: T): Tuple = {
-    val values = setters.map { setFn =>
-      setFn(input)
-    }
+    val values = setters.map { setFn => setFn(input) }
     new Tuple(values: _*)
   }
 
@@ -151,15 +145,11 @@ class ReflectionSetter[T](fields: Fields)(implicit m: Manifest[T])
   }
 
   private def getValueFromField(fieldName: String): Option[(T => AnyRef)] = {
-    fieldMap.get(fieldName).map { f => (x: T) =>
-      f.get(x)
-    }
+    fieldMap.get(fieldName).map { f => (x: T) => f.get(x) }
   }
 
   private def getValueFromMethod(methodName: String): Option[(T => AnyRef)] = {
-    methodMap.get(methodName).map { m => (x: T) =>
-      m.invoke(x)
-    }
+    methodMap.get(methodName).map { m => (x: T) => m.invoke(x) }
   }
 
   private def upperFirst(s: String) =

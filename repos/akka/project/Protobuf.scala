@@ -96,9 +96,7 @@ object Protobuf {
       protoc: String,
       protocVersion: String,
       log: Logger): Unit = {
-    val res = callProtoc(protoc, Seq("--version"), log, { (p, l) =>
-      p !! l
-    })
+    val res = callProtoc(protoc, Seq("--version"), log, { (p, l) => p !! l })
     val version = res.split(" ").last.trim
     if (version != protocVersion) {
       sys.error(
@@ -121,9 +119,7 @@ object Protobuf {
         log.info(
           "Generating %d protobuf files from %s to %s"
             .format(protoFiles.size, srcDir, targetDir))
-        protoFiles.foreach { proto =>
-          log.info("Compiling %s" format proto)
-        }
+        protoFiles.foreach { proto => log.info("Compiling %s" format proto) }
 
         val exitCode = callProtoc(
           protoc,
@@ -131,9 +127,7 @@ object Protobuf {
             "-I" + srcDir.absolutePath,
             "--java_out=%s" format targetDir.absolutePath) ++
             protoFiles.map(_.absolutePath),
-          log, { (p, l) =>
-            p ! l
-          })
+          log, { (p, l) => p ! l })
         if (exitCode != 0)
           sys.error("protoc returned exit code: %d" format exitCode)
       }

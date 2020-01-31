@@ -241,8 +241,7 @@ object Tests {
     def fj(actions: Iterable[() => Unit]): Task[Unit] =
       nop.dependsOn(actions.toSeq.fork(_()): _*)
     def partApp(actions: Iterable[ClassLoader => Unit]) = actions.toSeq map {
-      a => () =>
-        a(loader)
+      a => () => a(loader)
     }
 
     val (frameworkSetup, runnables, frameworkCleanup) =
@@ -264,9 +263,7 @@ object Tests {
     taggedMainTasks map processResults flatMap { results =>
       val cleanupTasks =
         fj(partApp(userCleanup) :+ frameworkCleanup(results.overall))
-      cleanupTasks map { _ =>
-        results
-      }
+      cleanupTasks map { _ => results }
     }
   }
   type TestRunnable = (String, TestFunction)
@@ -377,14 +374,10 @@ object Tests {
           acc: List[Output]): Task[List[Output]] = tasks match {
         case Nil => task(acc.reverse)
         case hd :: tl =>
-          hd flatMap { out =>
-            sequence(tl, out :: acc)
-          }
+          hd flatMap { out => sequence(tl, out :: acc) }
       }
       sequence(results.toList, List()) map { ress =>
-        val (rs, ms) = ress.unzip { e =>
-          (e.overall, e.events)
-        }
+        val (rs, ms) = ress.unzip { e => (e.overall, e.events) }
         Output(overall(rs), ms reduce (_ ++ _), Iterable.empty)
       }
     }

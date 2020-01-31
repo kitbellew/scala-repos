@@ -142,9 +142,7 @@ abstract class ScalaLightCodeInsightFixtureTestAdapter
       text: String,
       assumedText: String,
       charTyped: Char) {
-    performTest(text, assumedText) { () =>
-      myFixture.`type`(charTyped)
-    }
+    performTest(text, assumedText) { () => myFixture.`type`(charTyped) }
   }
 
   protected def checkGeneratedTextAfterBackspace(

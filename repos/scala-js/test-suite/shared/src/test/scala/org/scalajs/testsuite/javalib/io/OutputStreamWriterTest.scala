@@ -97,21 +97,21 @@ class OutputStreamWriterTest {
   }
 
   @Test def write_surrogate_pairs_spread_across_multiple_writes(): Unit = {
-    testW({ osw =>
-      osw.write('\ud83d'); osw.write('\udca9')
-    }, Array(0xf0, 0x9f, 0x92, 0xa9))
+    testW(
+      { osw => osw.write('\ud83d'); osw.write('\udca9') },
+      Array(0xf0, 0x9f, 0x92, 0xa9))
 
-    testW({ osw =>
-      osw.write('\ud83d'); osw.flush(); osw.write('\udca9')
-    }, Array(0xf0, 0x9f, 0x92, 0xa9))
+    testW(
+      { osw => osw.write('\ud83d'); osw.flush(); osw.write('\udca9') },
+      Array(0xf0, 0x9f, 0x92, 0xa9))
 
-    testW({ osw =>
-      osw.write("ab\ud83d"); osw.write('\udca9')
-    }, Array('a', 'b', 0xf0, 0x9f, 0x92, 0xa9))
+    testW(
+      { osw => osw.write("ab\ud83d"); osw.write('\udca9') },
+      Array('a', 'b', 0xf0, 0x9f, 0x92, 0xa9))
 
-    testW({ osw =>
-      osw.write("ab\ud83d"); osw.write("\udca9cd")
-    }, Array('a', 'b', 0xf0, 0x9f, 0x92, 0xa9, 'c', 'd'))
+    testW(
+      { osw => osw.write("ab\ud83d"); osw.write("\udca9cd") },
+      Array('a', 'b', 0xf0, 0x9f, 0x92, 0xa9, 'c', 'd'))
 
     testW({ osw =>
       osw.write("ab\ud83dzz", 1, 2); osw.write("ww\udca9cd", 2, 2)
@@ -124,26 +124,26 @@ class OutputStreamWriterTest {
   }
 
   @Test def write_malformed_surrogates_spread_across_multiple_writes(): Unit = {
-    testW({ osw =>
-      osw.write('\ud83d'); osw.write('a')
-    }, Array('?', 'a'))
+    testW({ osw => osw.write('\ud83d'); osw.write('a') }, Array('?', 'a'))
 
-    testW({ osw =>
-      osw.write("ab\ud83d"); osw.write("\ud83d")
-    }, Array('a', 'b', '?'))
+    testW(
+      { osw => osw.write("ab\ud83d"); osw.write("\ud83d") },
+      Array('a', 'b', '?'))
 
-    testW({ osw =>
-      osw.write("ab\ud83d"); osw.write("\ud83dc")
-    }, Array('a', 'b', '?', '?', 'c'))
+    testW(
+      { osw => osw.write("ab\ud83d"); osw.write("\ud83dc") },
+      Array('a', 'b', '?', '?', 'c'))
   }
 
   @Test def write_malformed_surrogates_at_end_of_input(): Unit = {
-    testW({ osw =>
-      osw.write('\ud83d'); osw.close()
-    }, Array('?'), alreadyFlushed = true)
+    testW(
+      { osw => osw.write('\ud83d'); osw.close() },
+      Array('?'),
+      alreadyFlushed = true)
 
-    testW({ osw =>
-      osw.write("ab\ud83d"); osw.close()
-    }, Array('a', 'b', '?'), alreadyFlushed = true)
+    testW(
+      { osw => osw.write("ab\ud83d"); osw.close() },
+      Array('a', 'b', '?'),
+      alreadyFlushed = true)
   }
 }

@@ -51,9 +51,7 @@ case class TreePrinter(
         val p = prefix2 + Iterator
           .fill(name.length + (if (name.length == 0) 0 else 2))(' ')
           .mkString + cYellow + multi2 + cNormal
-        lines.foreach { l =>
-          out.println(p + l)
-        }
+        lines.foreach { l => out.println(p + l) }
       } else {
         out.println(
           di.mainInfo + (if (di.attrInfo.isEmpty) ""

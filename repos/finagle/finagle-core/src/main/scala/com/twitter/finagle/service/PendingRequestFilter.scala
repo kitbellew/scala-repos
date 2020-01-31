@@ -51,9 +51,7 @@ private[finagle] class PendingRequestFilter[Req, Rep](limit: Int)
       s"request limit must be greater than zero, saw $limit")
 
   private[this] val pending = new AtomicInteger(0)
-  private[this] val decFn: Any => Unit = { _: Any =>
-    pending.decrementAndGet()
-  }
+  private[this] val decFn: Any => Unit = { _: Any => pending.decrementAndGet() }
 
   def apply(req: Req, service: Service[Req, Rep]): Future[Rep] =
     // N.B. There's a race on the sad path of this filter when we increment and

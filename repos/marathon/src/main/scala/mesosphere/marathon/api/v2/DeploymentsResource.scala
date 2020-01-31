@@ -33,9 +33,7 @@ class DeploymentsResource @Inject() (
     implicit identity =>
       val infos = result(service.listRunningDeployments())
         .filter(_.plan.affectedApplications.exists(isAuthorized(ViewApp, _)))
-        .map { currentStep =>
-          toInfo(currentStep.plan, currentStep)
-        }
+        .map { currentStep => toInfo(currentStep.plan, currentStep) }
       ok(jsonString(infos))
   }
 

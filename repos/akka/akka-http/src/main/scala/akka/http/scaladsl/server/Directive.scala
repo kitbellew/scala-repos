@@ -64,20 +64,14 @@ abstract class Directive[L](implicit val ev: Tuple[L]) {
     */
   def tmap[R](f: L ⇒ R)(implicit tupler: Tupler[R]): Directive[tupler.Out] =
     Directive[tupler.Out] { inner ⇒
-      tapply { values ⇒
-        inner(tupler(f(values)))
-      }
+      tapply { values ⇒ inner(tupler(f(values))) }
     }(tupler.OutIsTuple)
 
   /**
     * Flatmaps this directive using the given function.
     */
   def tflatMap[R: Tuple](f: L ⇒ Directive[R]): Directive[R] =
-    Directive[R] { inner ⇒
-      tapply { values ⇒
-        f(values) tapply inner
-      }
-    }
+    Directive[R] { inner ⇒ tapply { values ⇒ f(values) tapply inner } }
 
   /**
     * Creates a new [[akka.http.scaladsl.server.Directive0]], which passes if the given predicate matches the current
@@ -107,13 +101,12 @@ abstract class Directive[L](implicit val ev: Tuple[L]) {
     Directive[R] { inner ⇒ ctx ⇒
       import ctx.executionContext
       @volatile var rejectedFromInnerRoute = false
-      tapply({ list ⇒ c ⇒
-        rejectedFromInnerRoute = true; inner(list)(c)
-      })(ctx).fast.flatMap {
-        case RouteResult.Rejected(rejections) if !rejectedFromInnerRoute ⇒
-          recovery(rejections).tapply(inner)(ctx)
-        case x ⇒ FastFuture.successful(x)
-      }
+      tapply({ list ⇒ c ⇒ rejectedFromInnerRoute = true; inner(list)(c) })(ctx).fast
+        .flatMap {
+          case RouteResult.Rejected(rejections) if !rejectedFromInnerRoute ⇒
+            recovery(rejections).tapply(inner)(ctx)
+          case x ⇒ FastFuture.successful(x)
+        }
     }
 
   /**
@@ -192,9 +185,7 @@ object ConjunctionMagnet {
       def apply(underlying: Directive[L]) =
         Directive[join.Out] { inner ⇒
           underlying.tapply { prefix ⇒
-            other.tapply { suffix ⇒
-              inner(join(prefix, suffix))
-            }
+            other.tapply { suffix ⇒ inner(join(prefix, suffix)) }
           }
         }(Tuple.yes) // we know that join will only ever produce tuples
     }

@@ -153,9 +153,7 @@ trait ScFunction
   def removeAllClauses() {
     paramClauses.clauses.headOption
       .zip(paramClauses.clauses.lastOption)
-      .foreach { p =>
-        paramClauses.deleteChildRange(p._1, p._2)
-      }
+      .foreach { p => paramClauses.deleteChildRange(p._1, p._2) }
   }
 
   def isNative: Boolean = {

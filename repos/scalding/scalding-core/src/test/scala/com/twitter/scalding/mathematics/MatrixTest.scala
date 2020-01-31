@@ -61,13 +61,9 @@ class MatrixSum(args: Args) extends Job(args) {
   import Matrix._
 
   val mat1 = Tsv("mat1", ('x1, 'y1, 'v1))
-    .mapToMatrix('x1, 'y1, 'v1) { rowColVal: (Int, Int, Double) =>
-      rowColVal
-    }
+    .mapToMatrix('x1, 'y1, 'v1) { rowColVal: (Int, Int, Double) => rowColVal }
   val mat2 = Tsv("mat2", ('x2, 'y2, 'v2))
-    .mapToMatrix('x2, 'y2, 'v2) { rowColVal: (Int, Int, Double) =>
-      rowColVal
-    }
+    .mapToMatrix('x2, 'y2, 'v2) { rowColVal: (Int, Int, Double) => rowColVal }
 
   val sum = mat1 + mat2
   sum.pipe.write(Tsv("sum"))
@@ -187,14 +183,10 @@ class MatrixMapWithVal(args: Args) extends Job(args) {
   val row = TypedTsv[(Int, Double)]("row").toRow
 
   mat
-    .mapWithIndex { (v, r, c) =>
-      if (r == c) v else 0
-    }
+    .mapWithIndex { (v, r, c) => if (r == c) v else 0 }
     .write(Tsv("diag"))
   row
-    .mapWithIndex { (v, c) =>
-      if (c == 0) v else 0.0
-    }
+    .mapWithIndex { (v, c) => if (c == 0) v else 0.0 }
     .write(Tsv("first"))
 }
 
@@ -448,14 +440,10 @@ class MatrixTest extends WordSpec with Matchers {
 
   def toSparseMat[Row, Col, V](
       iter: Iterable[(Row, Col, V)]): Map[(Row, Col), V] = {
-    iter.map { it =>
-      ((it._1, it._2), it._3)
-    }.toMap
+    iter.map { it => ((it._1, it._2), it._3) }.toMap
   }
   def oneDtoSparseMat[Idx, V](iter: Iterable[(Idx, V)]): Map[(Idx, Idx), V] = {
-    iter.map { it =>
-      ((it._1, it._1), it._2)
-    }.toMap
+    iter.map { it => ((it._1, it._1), it._2) }.toMap
   }
 
   "A MatrixProd job" should {
@@ -585,9 +573,7 @@ class MatrixTest extends WordSpec with Matchers {
             // doubles are hard to compare
             grp
               .minus(pMap, exact)
-              .mapValues { x =>
-                x * x
-              }
+              .mapValues { x => x * x }
               .map { _._2 }
               .sum should be < 0.0001
           }

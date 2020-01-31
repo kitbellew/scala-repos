@@ -532,9 +532,7 @@ trait BodyParsers {
                 // Otherwise, there should be no default, it will be detected by the XML parser.
               }
             )
-            .foreach { charset =>
-              inputSource.setEncoding(charset)
-            }
+            .foreach { charset => inputSource.setEncoding(charset) }
           Play.XML.load(inputSource)
       }
 
@@ -802,8 +800,7 @@ trait BodyParsers {
     private def createBadResult(
         msg: String,
         statusCode: Int = BAD_REQUEST): RequestHeader => Future[Result] = {
-      request =>
-        LazyHttpErrorHandler.onClientError(request, statusCode, msg)
+      request => LazyHttpErrorHandler.onClientError(request, statusCode, msg)
     }
 
     /**

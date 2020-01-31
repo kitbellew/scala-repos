@@ -154,9 +154,7 @@ class ActorSubscriberSpec extends AkkaSpec with ImplicitSender {
       ref ! "ready"
       ref ! "ready"
       ref ! "boom"
-      (3 to 6) foreach { n ⇒
-        expectMsg(OnNext(n))
-      }
+      (3 to 6) foreach { n ⇒ expectMsg(OnNext(n)) }
       expectNoMsg(200.millis)
       ref ! "ready"
       expectMsg(OnNext(7))

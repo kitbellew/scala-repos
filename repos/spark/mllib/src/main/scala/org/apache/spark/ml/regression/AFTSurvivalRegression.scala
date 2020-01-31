@@ -325,9 +325,7 @@ class AFTSurvivalRegressionModel private[ml] (
   @Since("1.6.0")
   override def transform(dataset: DataFrame): DataFrame = {
     transformSchema(dataset.schema)
-    val predictUDF = udf { features: Vector =>
-      predict(features)
-    }
+    val predictUDF = udf { features: Vector => predict(features) }
     val predictQuantilesUDF = udf { features: Vector =>
       predictQuantiles(features)
     }

@@ -132,9 +132,7 @@ object CaseClassBasedSetterImpl {
             accessorMethod.returnType
               .asSeenFrom(outerTpe, outerTpe.typeSymbol.asClass))
 
-          ({ pTree: Tree =>
-            q"""$pTree.$accessorMethod"""
-          }, fieldType)
+          ({ pTree: Tree => q"""$pTree.$accessorMethod""" }, fieldType)
         }
         .toVector
 

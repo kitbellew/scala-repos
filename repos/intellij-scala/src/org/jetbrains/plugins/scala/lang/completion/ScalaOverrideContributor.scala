@@ -110,9 +110,7 @@ class ScalaOverrideContributor extends ScalaCompletionContributor {
       classMembers,
       clazz,
       (classMember, clazz) => createText(classMember, clazz, full = true),
-      resultSet) { classMember =>
-      new MyInsertHandler()
-    }
+      resultSet) { classMember => new MyInsertHandler() }
   }
 
   private def addCompletionsAfterOverride(
@@ -149,9 +147,7 @@ class ScalaOverrideContributor extends ScalaCompletionContributor {
       membersToRender,
       clazz,
       (classMember, clazz) => createText(classMember, clazz),
-      resultSet) { classMember =>
-      new MyInsertHandler()
-    }
+      resultSet) { classMember => new MyInsertHandler() }
   }
 
   class MyInsertHandler() extends InsertHandler[LookupElement] {

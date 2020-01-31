@@ -750,9 +750,7 @@ class SparkIMain(
   // at a '*'.  So look at each subtree and find the earliest of all positions.
   private def earliestPosition(tree: Tree): Int = {
     var pos = Int.MaxValue
-    tree foreach { t =>
-      pos = math.min(pos, safePos(t, Int.MaxValue))
-    }
+    tree foreach { t => pos = math.min(pos, safePos(t, Int.MaxValue)) }
     pos
   }
 

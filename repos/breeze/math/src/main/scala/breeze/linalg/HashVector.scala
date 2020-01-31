@@ -243,9 +243,9 @@ object HashVector
   implicit def dv_hv_UpdateOp[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpMulScalar, OpDiv, OpSet, OpMod, OpPow) Op <: OpType](
-      implicit @expand.sequence[Op]({ _ * _ }, { _ / _ }, { (a, b) =>
-        b
-      }, { _ % _ }, { _ pow _ })
+      implicit @expand.sequence[Op]({ _ * _ }, { _ / _ }, { (a, b) => b }, {
+        _ % _
+      }, { _ pow _ })
       op: Op.Impl2[T, T, T]): Op.InPlaceImpl2[DenseVector[T], HashVector[T]] =
     new Op.InPlaceImpl2[DenseVector[T], HashVector[T]] {
       def apply(a: DenseVector[T], b: HashVector[T]): Unit = {

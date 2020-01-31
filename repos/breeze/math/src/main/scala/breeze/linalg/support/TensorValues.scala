@@ -23,9 +23,8 @@ package support
 class TensorValues[K, V, +This](
     private val tensor: This,
     active: Boolean = false,
-    f: (V) => Boolean = { (x: Any) =>
-      true
-    })(implicit ev: This <:< Tensor[K, V]) {
+    f: (V) => Boolean = { (x: Any) => true })(
+    implicit ev: This <:< Tensor[K, V]) {
   def size = tensor.size
 
   def iterator = {

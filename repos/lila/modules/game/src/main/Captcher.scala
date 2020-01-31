@@ -95,9 +95,7 @@ private final class Captcher extends Actor {
           moves filter { move =>
             (move.after situationOf !game.player).checkMate
           }
-      } map { move =>
-        s"${move.orig} ${move.dest}"
-      } toNel
+      } map { move => s"${move.orig} ${move.dest}" } toNel
 
     private def rewind(game: Game, moves: List[String]): Option[ChessGame] =
       pgn.Reader.movesWithSans(moves, safeInit, tags = Nil) map (_.state) toOption

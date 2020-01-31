@@ -56,9 +56,7 @@ object JsonTransSpec extends Specification {
     "copy input JSON and update a branch (merge the updated branch with input JSON)" in {
       js.transform(
           (__ \ 'field3).json.update(
-            __.read[JsObject].map { o =>
-              o ++ Json.obj("field33" -> false)
-            }
+            __.read[JsObject].map { o => o ++ Json.obj("field33" -> false) }
           )
         )
         .get must beEqualTo(

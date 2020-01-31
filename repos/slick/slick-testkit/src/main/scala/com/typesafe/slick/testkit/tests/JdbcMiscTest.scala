@@ -41,9 +41,7 @@ class JdbcMiscTest extends AsyncTest[JdbcTestDB] {
 
   def testStatementParameters = {
     def check(sp: JdbcBackend.StatementParameters) =
-      GetStatementParameters.map { csp =>
-        csp shouldBe sp
-      }
+      GetStatementParameters.map { csp => csp shouldBe sp }
 
     DBIO.seq(
       check(

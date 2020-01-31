@@ -234,9 +234,7 @@ trait ModelBuilders { self: RichPresentationCompiler =>
   object ParamSectionInfo {
     def apply(params: Iterable[Symbol]): ParamSectionInfo = {
       new ParamSectionInfo(
-        params.map { s =>
-          (s.nameString, TypeInfo(s.tpe))
-        },
+        params.map { s => (s.nameString, TypeInfo(s.tpe)) },
         params.exists(_.isImplicit)
       )
     }

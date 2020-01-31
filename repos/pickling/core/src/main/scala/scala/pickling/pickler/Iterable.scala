@@ -27,9 +27,7 @@ trait IterablePicklers {
     val generator =
       TravPickler.generate(
         implicitly[CanBuildFrom[List[Any], Any, List[Any]]],
-        identity[List[Any]]) { tpe =>
-        TravPickler.oneArgumentTagExtractor(tpe)
-      } _
+        identity[List[Any]]) { tpe => TravPickler.oneArgumentTagExtractor(tpe) } _
     currentRuntime.picklers.registerPicklerUnpicklerGenerator(
       "scala.collection.immutable.List",
       generator)
@@ -128,10 +126,7 @@ object TravPickler {
         }
 
         (coll: Traversable[_]).asInstanceOf[Traversable[T]].foreach {
-          (elem: T) =>
-            builder putElement { b =>
-              elemPickler.pickle(elem, b)
-            }
+          (elem: T) => builder putElement { b => elemPickler.pickle(elem, b) }
         }
 
         builder.popHints()

@@ -1909,9 +1909,7 @@ trait Types
     private def computeRefs() {
       refs = Array(Map(), Map())
       typeSymbol.typeParams foreach { tparam =>
-        parents foreach { p =>
-          enterRefs.enter(tparam, p)
-        }
+        parents foreach { p => enterRefs.enter(tparam, p) }
       }
       state = Initializing
     }
@@ -2865,9 +2863,7 @@ trait Types
 
     // Is this existential of the form: T[Q1, ..., QN] forSome { type Q1 >: L1 <: U1, ..., QN >: LN <: UN}
     private def isStraightApplication =
-      (quantified corresponds underlying.typeArgs) { (q, a) =>
-        q.tpe =:= a
-      }
+      (quantified corresponds underlying.typeArgs) { (q, a) => q.tpe =:= a }
 
     /** [SI-6169, SI-8197 -- companion to SI-1786]
       *
@@ -4063,9 +4059,7 @@ trait Types
       while (tparams1 != tparams0) {
         tparams0 = tparams1
         tparams1 = tparams filter { p =>
-          tparams1 exists { p1 =>
-            p1 == p || (p1.info contains p)
-          }
+          tparams1 exists { p1 => p1 == p || (p1.info contains p) }
         }
       }
       newExistentialType(tparams1, tpe1)

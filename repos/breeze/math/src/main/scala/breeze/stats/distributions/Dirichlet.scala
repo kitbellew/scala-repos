@@ -98,9 +98,7 @@ object Dirichlet {
     * Creates a new symmetric Dirichlet of dimension k
     */
   def sym(alpha: Double, k: Int) =
-    this(Array.tabulate(k) { x =>
-      alpha
-    })
+    this(Array.tabulate(k) { x => alpha })
 
   def apply(arr: Array[Double]): Dirichlet[DenseVector[Double], Int] =
     Dirichlet(new DenseVector[Double](arr))

@@ -125,9 +125,7 @@ object Ratatoskr {
     if (args.length > 0) {
       commandMap
         .get(args(0))
-        .map { c =>
-          c.run(args.slice(1, args.length))
-        }
+        .map { c => c.run(args.slice(1, args.length)) }
         .getOrElse {
           die(usage("Unknown command: [%s]".format(args(0))))
         }
@@ -179,8 +177,7 @@ object KafkaTools extends Command {
         "i",
         "trackInterval",
         "When running a usage report, stats will be emitted every <interval> messages. Default = 50000", {
-          (i: Int) =>
-            config.trackInterval = i
+          (i: Int) => config.trackInterval = i
         })
       opt("l", "local", "dump local kafka file(s)", {
         config.operation = Some(DumpLocal)
@@ -361,9 +358,7 @@ object KafkaTools extends Command {
              case JString(date) =>
                // Dirty hack for trying variations of ISO8601 in use by customers
                List(date, date.replaceFirst(":", "-").replaceFirst(":", "-"))
-                 .flatMap { date =>
-                   List(date, date + ".000Z")
-                 }
+                 .flatMap { date => List(date, date + ".000Z") }
              case _ => None
            }
            .flatMap { date =>
@@ -474,9 +469,7 @@ object KafkaTools extends Command {
                       if (path.length > 0) {
                         //println("Deleting from path " + path)
                         ReportState(index + 1, currentPathSize + (path -> 0L))
-                          .unsafeTap { newState =>
-                            trackState(newState)
-                          }
+                          .unsafeTap { newState => trackState(newState) }
                       } else {
                         state.inc
                       }
@@ -687,8 +680,7 @@ object ZookeeperTools extends Command {
         config.zkConn = s
       })
       opt("c", "checkpoints", "Show bifrost checkpoint state with prefix", {
-        s: String =>
-          config.showCheckpoints = Some(s)
+        s: String => config.showCheckpoints = Some(s)
       })
       opt("a", "agents", "Show ingest agent state with prefix", { s: String =>
         config.showAgents = Some(s)
@@ -700,8 +692,7 @@ object ZookeeperTools extends Command {
           config.updateCheckpoint = Some(s)
         })
       opt("ua", "update_agents", "Update agent state. Format = path:json", {
-        s: String =>
-          config.updateAgent = Some(s)
+        s: String => config.updateAgent = Some(s)
       })
     }
     if (parser.parse(args)) {
@@ -838,16 +829,14 @@ object IngestTools extends Command {
         "limit",
         "<sync-limit-messages>",
         "if sync is greater than the specified limit an error will occur", {
-          s: Int =>
-            config.limit = s
+          s: Int => config.limit = s
         })
       intOpt(
         "l",
         "lag",
         "<time-lag-minutes>",
         "if update lag is greater than the specified value an error will occur", {
-          l: Int =>
-            config.lag = l
+          l: Int => config.lag = l
         })
       opt("z", "zookeeper", "The zookeeper host:port", { s: String =>
         config.zkConn = s
@@ -982,8 +971,7 @@ object ImportTools extends Command with Logging {
           config.accountId = s
         })
       opt("s", "storage", "<storage root>", "directory containing data files", {
-        s: String =>
-          config.storageRoot = new File(s)
+        s: String => config.storageRoot = new File(s)
       })
       opt(
         "a",
@@ -1260,8 +1248,7 @@ object APIKeyTools extends Command with AkkaDefaults with Logging {
         config.delete = Some(s)
       })
       opt("d", "database", "APIKey database name (ie: beta_auth_v1)", {
-        s: String =>
-          config.database = s
+        s: String => config.database = s
       })
       opt("t", "tokens", "APIKeys collection name", { s: String =>
         config.collection = s
@@ -1305,8 +1292,7 @@ object APIKeyTools extends Command with AkkaDefaults with Logging {
 
     val dbStop =
       Stoppable.fromFuture(database.disconnect.fallbackTo(Future(())) flatMap {
-        _ =>
-          mongo.close
+        _ => mongo.close
       })
 
     val rootKey: Future[APIKeyRecord] = if (config.createRoot) {

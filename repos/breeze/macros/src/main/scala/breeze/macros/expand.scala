@@ -80,8 +80,7 @@ object expand {
         val shouldValify = checkValify(c)(mods)
 
         val typesToUnrollAs: Map[c.Name, List[c.Type]] = typesToExpand.map {
-          td =>
-            (td.name: Name) -> typeMappings(c)(td)
+          td => (td.name: Name) -> typeMappings(c)(td)
         }.toMap
 
         val (valsToExpand, valsToLeave) =
@@ -92,9 +91,7 @@ object expand {
         val configurations =
           makeTypeMaps(c)(typesToUnrollAs).filterNot(exclusions.toSet)
         val valExpansions = valsToExpand2
-          .map { v =>
-            v.name -> solveSequence(c)(v, typesToUnrollAs)
-          }
+          .map { v => v.name -> solveSequence(c)(v, typesToUnrollAs) }
           .asInstanceOf[List[(c.Name, (c.Name, Map[c.Type, c.Tree]))]]
           .toMap
 

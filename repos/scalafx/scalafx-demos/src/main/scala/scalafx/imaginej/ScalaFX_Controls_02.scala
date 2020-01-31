@@ -80,23 +80,17 @@ object ScalaFX_Controls_02 extends JFXApp {
     graphic = okImageView
     text = "Accept"
     style = "-fx-font: 22 arial; -fx-base: #b6e7c9;"
-    onAction = { (_: ActionEvent) =>
-      label.text = "Accepted"
-    }
+    onAction = { (_: ActionEvent) => label.text = "Accepted" }
   }
 
   val okButton2 = new Button {
     text = "Accept"
-    onAction = { (_: ActionEvent) =>
-      label.text = "Accepted"
-    }
+    onAction = { (_: ActionEvent) => label.text = "Accepted" }
   }
 
   val koButton1 = new Button {
     text = "Decline"
-    onAction = { (_: ActionEvent) =>
-      label.text = "Declined"
-    }
+    onAction = { (_: ActionEvent) => label.text = "Declined" }
   }
 
   koButton1 addOnMouseEnteredHandler { (_: MouseEvent) =>
@@ -119,16 +113,12 @@ object ScalaFX_Controls_02 extends JFXApp {
 
   val okButton3 = new Button {
     graphic = okImageView
-    onAction = { (_: ActionEvent) =>
-      label.text = "Accepted"
-    }
+    onAction = { (_: ActionEvent) => label.text = "Accepted" }
   }
 
   val koButton2 = new Button {
     graphic = koImageView
-    onAction = { (_: ActionEvent) =>
-      label.text = "Declined"
-    }
+    onAction = { (_: ActionEvent) => label.text = "Declined" }
   }
 
   val hBox2 = new HBox {

@@ -112,9 +112,7 @@ class Mailer(private val smtp: Smtp) extends Notifier {
                 email.setAuthenticator(
                   new DefaultAuthenticator(user, smtp.password.getOrElse("")))
               }
-              smtp.ssl.foreach { ssl =>
-                email.setSSLOnConnect(ssl)
-              }
+              smtp.ssl.foreach { ssl => email.setSSLOnConnect(ssl) }
               smtp.fromAddress
                 .map(_ -> smtp.fromName.getOrElse(
                   context.loginAccount.get.userName))

@@ -365,9 +365,7 @@ class Index[K <: AnyRef, V <: AnyRef: ArrayTag] {
     */
   def foreach(fun: (K, V) => Unit) {
     import scala.collection.JavaConversions._
-    container.entrySet foreach { (e) =>
-      e.getValue.foreach(fun(e.getKey, _))
-    }
+    container.entrySet foreach { (e) => e.getValue.foreach(fun(e.getKey, _)) }
   }
 
   /**

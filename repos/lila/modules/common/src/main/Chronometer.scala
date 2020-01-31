@@ -20,9 +20,7 @@ object Chronometer {
     }
 
     def mon(path: lila.mon.RecPath) = {
-      lap foreach { l =>
-        lila.mon.recPath(path)(l.nanos)
-      }
+      lap foreach { l => lila.mon.recPath(path)(l.nanos) }
       this
     }
 

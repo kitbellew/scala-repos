@@ -202,9 +202,7 @@ object TestFramework {
     val map = new HashMap[Framework, Set[TestDefinition]]
     def assignTest(test: TestDefinition): Unit = {
       def isTestForFramework(framework: Framework) =
-        getFingerprints(framework).exists { t =>
-          matches(t, test.fingerprint)
-        }
+        getFingerprints(framework).exists { t => matches(t, test.fingerprint) }
       for (framework <- frameworks.find(isTestForFramework))
         map.getOrElseUpdate(framework, new HashSet[TestDefinition]) += test
     }

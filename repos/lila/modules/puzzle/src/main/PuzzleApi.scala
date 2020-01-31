@@ -47,9 +47,7 @@ private[puzzle] final class PuzzleApi(
       puzzles match {
         case Nil => fuccess(Nil)
         case Failure(err) :: rest =>
-          insertPuzzles(rest) map { ps =>
-            (Failure(err): Try[PuzzleId]) :: ps
-          }
+          insertPuzzles(rest) map { ps => (Failure(err): Try[PuzzleId]) :: ps }
         case Success(puzzle) :: rest =>
           lila.db.Util findNextId puzzleColl flatMap { id =>
             val p = puzzle(id)

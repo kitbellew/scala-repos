@@ -73,9 +73,7 @@ trait Paginator[T] extends Loggable {
       List(curPage - 1020, curPage - 120, curPage - 20) ++
         (curPage - 10 to curPage + 10) ++
         List(curPage + 20, curPage + 120, curPage + 1020)
-    ) filter { n =>
-      n >= 0 && n < numPages
-    }
+    ) filter { n => n >= 0 && n < numPages }
 }
 
 /**
@@ -241,9 +239,7 @@ trait PaginatorSnippet[T] extends Paginator[T] {
     * Generates links to multiple pages with arbitrary XML delimiting them.
     */
   def pagesXml(pages: Seq[Int])(sep: NodeSeq): NodeSeq = {
-    pages.toList map { n =>
-      pageXml(n * itemsPerPage, Text((n + 1).toString))
-    } match {
+    pages.toList map { n => pageXml(n * itemsPerPage, Text((n + 1).toString)) } match {
       case one :: Nil => one
       case first :: rest =>
         rest.foldLeft(first) {

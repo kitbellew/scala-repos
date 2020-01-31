@@ -122,9 +122,7 @@ trait Managed[+T] { selfT =>
     }
   }
 
-  def map[U](f: T => U): Managed[U] = flatMap { t =>
-    Managed.const(f(t))
-  }
+  def map[U](f: T => U): Managed[U] = flatMap { t => Managed.const(f(t)) }
 
   /**
     * Builds a resource.

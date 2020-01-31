@@ -42,9 +42,7 @@ trait ScalatraParamsImplicits {
 
     def getAs[T <: Any](name: String)(
         implicit tc: TypeConverter[String, T]): Option[Seq[T]] = {
-      multiParams.get(name) map { s =>
-        s.flatMap(tc.apply(_))
-      }
+      multiParams.get(name) map { s => s.flatMap(tc.apply(_)) }
     }
 
     def getAs[T <: Date](nameAndFormat: (String, String)): Option[Seq[Date]] = {

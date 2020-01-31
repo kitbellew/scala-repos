@@ -3,7 +3,8 @@ trait T[A] {
   def apply(a: A): A
 }
 
-object Test { (x: C[Any]) => { println(s"f($x)"); x } // okay
+object Test { (x: C[Any]) =>
+  { println(s"f($x)"); x } // okay
 new T[C[Any]] { def apply(a: C[Any]) = a } // okay
 
 // we can't rename the specific apply method to avoid the clash

@@ -213,14 +213,10 @@ class HoistClientOps extends Phase {
   def unwrap(n: Node, topLevel: Boolean): (Node, (Node => Node)) = n match {
     case GetOrElse(ch, default) =>
       val (recCh, recTr) = unwrap(ch, topLevel)
-      (recCh, { sym =>
-        GetOrElse(recTr(sym), default)
-      })
+      (recCh, { sym => GetOrElse(recTr(sym), default) })
     case OptionApply(ch) =>
       val (recCh, recTr) = unwrap(ch, topLevel)
-      (recCh, { sym =>
-        OptionApply(recTr(sym))
-      })
+      (recCh, { sym => OptionApply(recTr(sym)) })
     case IfThenElse(
           ConstArray(
             Library.==(ch, LiteralNode(null)),
@@ -239,9 +235,7 @@ class HoistClientOps extends Phase {
         })
     case Library.SilentCast(ch) :@ tpe if !topLevel =>
       val (recCh, recTr) = unwrap(ch, topLevel)
-      (recCh, { n =>
-        Library.SilentCast.typed(tpe, recTr(n))
-      })
+      (recCh, { n => Library.SilentCast.typed(tpe, recTr(n)) })
     case n => (n, identity)
   }
 

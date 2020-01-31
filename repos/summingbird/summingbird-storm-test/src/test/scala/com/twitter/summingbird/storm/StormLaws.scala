@@ -80,9 +80,7 @@ object StormLaws {
           Memory#Sink[Int]) => TailProducer[Memory, Int]): List[Int] = {
     val memory = new Memory
     val outputList = ArrayBuffer[Int]()
-    val sink: (Int) => Unit = { x: Int =>
-      outputList += x
-    }
+    val sink: (Int) => Unit = { x: Int => outputList += x }
 
     val job = mkJob(
       Memory.toSource(original),
@@ -104,9 +102,7 @@ object StormLaws {
 
     val job = mkJob(
       Storm.source(TraversableSpout(original)),
-      Storm.sink[Int]({ (x: Int) =>
-        append(x); Future.Unit
-      })
+      Storm.sink[Int]({ (x: Int) => append(x); Future.Unit })
     )
 
     StormTestRun(job)
@@ -151,9 +147,7 @@ class StormLaws extends WordSpec {
 
   "FlatMap to nothing" in {
     val original = sample[List[Int]]
-    val fn = { (x: Int) =>
-      List[(Int, Int)]()
-    }
+    val fn = { (x: Int) => List[(Int, Int)]() }
     val returnedState =
       StormTestRun.simpleRun[Int, Int, Int](
         original,
@@ -187,9 +181,7 @@ class StormLaws extends WordSpec {
 
   "OptionMap to nothing and FlatMap" in {
     val original = sample[List[Int]]
-    val fnA = { (x: Int) =>
-      None
-    }
+    val fnA = { (x: Int) => None }
     val fnB = sample[Int => List[(Int, Int)]]
 
     val returnedState =
@@ -247,9 +239,7 @@ class StormLaws extends WordSpec {
 
   "StormPlatform matches Scala for left join jobs" in {
     val original = sample[List[Int]]
-    val staticFunc = { i: Int =>
-      List((i -> i))
-    }
+    val staticFunc = { i: Int => List((i -> i)) }
     val returnedState =
       StormTestRun.simpleRun[Int, Int, Int](
         original,
@@ -265,9 +255,7 @@ class StormLaws extends WordSpec {
 
   "StormPlatform matches Scala for left join with flatMapValues jobs" in {
     val original = sample[List[Int]]
-    val staticFunc = { i: Int =>
-      List((i -> i))
-    }
+    val staticFunc = { i: Int => List((i -> i)) }
 
     val returnedState =
       StormTestRun.simpleRun[Int, Int, Int](
@@ -287,9 +275,7 @@ class StormLaws extends WordSpec {
 
   "StormPlatform matches Scala for repeated tuple leftJoin jobs" in {
     val original = sample[List[Int]]
-    val staticFunc = { i: Int =>
-      List((i -> i))
-    }
+    val staticFunc = { i: Int => List((i -> i)) }
     val returnedState =
       StormTestRun.simpleRun[Int, Int, Int](
         original,
@@ -330,9 +316,7 @@ class StormLaws extends WordSpec {
 
   "StormPlatform matches Scala for MapOnly/NoSummer" in {
     val original = sample[List[Int]]
-    val doubler = { x: Int =>
-      List(x * 2)
-    }
+    val doubler = { x: Int => List(x * 2) }
 
     val stormOutputList =
       runWithOutSummer(original)(
@@ -350,12 +334,8 @@ class StormLaws extends WordSpec {
     val original =
       List(1, 2, 3, 4, 5, 6, 7, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 41,
         1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 41) // sample[List[Int]]
-    val doubler = { (x): (Int) =>
-      List((x -> x * 2))
-    }
-    val simpleOp = { (x): (Int) =>
-      List(x * 10)
-    }
+    val doubler = { (x): (Int) => List((x -> x * 2)) }
+    val simpleOp = { (x): (Int) => List(x * 10) }
 
     val source = Storm.source(TraversableSpout(original))
     val (store1Id, store1) = genStore
