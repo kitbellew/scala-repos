@@ -2801,15 +2801,19 @@ class LiftSession(
     <html xmlns:lift="http://liftweb.net" xmlns="http://www.w3.org/1999/xhtml">
         <head/>
       <body>
-        {Helpers.errorDiv(<div>Error locating template.
+        {
+      Helpers.errorDiv(<div>Error locating template.
             <br/>
           Message:
           <b>
             {in.msg}
-          </b> <br/>{in.exception.map(e => <pre>
+          </b> <br/>{
+        in.exception.map(e => <pre>
           {e.toString}{e.getStackTrace.map(_.toString).mkString("\n")}
-        </pre>).openOr(NodeSeq.Empty)}
-        </div>) openOr NodeSeq.Empty}
+        </pre>).openOr(NodeSeq.Empty)
+      }
+        </div>) openOr NodeSeq.Empty
+    }
       </body>
     </html>
 

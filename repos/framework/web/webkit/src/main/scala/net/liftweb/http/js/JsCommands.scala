@@ -725,11 +725,13 @@ object JsCmds {
 
   object Script {
     def apply(script: JsCmd): Node =
-      <script type="text/javascript">{Unparsed("""
+      <script type="text/javascript">{
+        Unparsed("""
 // <![CDATA[
 """ + fixEndScriptTag(script.toJsCmd) + """
 // ]]>
-""")}</script>
+""")
+      }</script>
 
     private def fixEndScriptTag(in: String): String =
       """\<\/script\>""".r.replaceAllIn(in, """<\\/script>""")

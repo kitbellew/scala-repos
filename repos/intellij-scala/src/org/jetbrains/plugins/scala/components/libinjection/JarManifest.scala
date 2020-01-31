@@ -42,9 +42,11 @@ case class JarManifest(
             <psi-injector version={version.toString} ifnterface={iface} implementation={
               impl
             }>
-          {for (src <- srcs) <source>
+          {
+              for (src <- srcs) <source>
           {src}
-        </source>}
+        </source>
+            }
         </psi-injector>
           }
         }

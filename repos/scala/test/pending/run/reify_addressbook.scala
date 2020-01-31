@@ -21,10 +21,12 @@ object Test extends App {
             <th>Name</th>
             <th>Age</th>
           </tr>
-          {for (p <- people) yield <tr>
+          {
+          for (p <- people) yield <tr>
                 <td> {p.name} </td>
                 <td> {p.age.toString()} </td>
-              </tr>}
+              </tr>
+        }
         </table>;
     }
 

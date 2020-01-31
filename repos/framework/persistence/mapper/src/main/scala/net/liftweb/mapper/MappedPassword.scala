@@ -208,8 +208,10 @@ abstract class MappedPassword[T <: Mapper[T]](val fieldOwner: T)
     S.fmapFunc({ s: List[String] =>
       this.setFromAny(s)
     }) { funcName =>
-      Full(<span>{appendFieldId(<input type={formInputType} name={funcName}
-            value={get.toString}/>)}&nbsp;{S.?("repeat")}&nbsp;<input
+      Full(<span>{
+        appendFieldId(<input type={formInputType} name={funcName}
+            value={get.toString}/>)
+      }&nbsp;{S.?("repeat")}&nbsp;<input
             type={formInputType} name={funcName}
             value={get.toString}/></span>)
     }
