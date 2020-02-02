@@ -161,7 +161,7 @@ private[akka] class RemoteWatcher(
       val watchSet = watching.iterator
         .flatMap {
           case (wee, wers) ⇒
-            wers.map { wer ⇒ wee → wer }
+            wers.map(wer ⇒ wee → wer)
         }
         .toSet[(ActorRef, ActorRef)]
       sender() ! Stats(

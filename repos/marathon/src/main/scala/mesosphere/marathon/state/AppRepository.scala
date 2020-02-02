@@ -54,6 +54,6 @@ class AppRepository(
     * Returns a map from PathIds to current app timestamps.
     */
   def currentAppVersions(): Future[Map[PathId, Timestamp]] =
-    for (as <- apps()) yield as.map { a => a.id -> a.version }.toMap
+    for (as <- apps()) yield as.map(a => a.id -> a.version).toMap
 
 }

@@ -14,5 +14,5 @@ object MSuperTable {
       _.metaData.getSuperTables(
         tablePattern.catalog_?,
         tablePattern.schema_?,
-        tablePattern.name)) { r => MSuperTable(MQName.from(r), r.<<) }
+        tablePattern.name))(r => MSuperTable(MQName.from(r), r.<<))
 }

@@ -16,12 +16,12 @@ trait Hashable[-T, +R] extends (T => R) { self =>
 trait LowPriorityHashable {
   // XOR the high 32 bits into the low to get a int:
   implicit def toInt[T](implicit h: Hashable[T, Long]): Hashable[T, Int] =
-    h.andThen { long => (long >> 32).toInt ^ long.toInt }
+    h.andThen(long => (long >> 32).toInt ^ long.toInt)
 
   // Get the UTF-8 bytes of a string to hash it
   implicit def fromString[T](
       implicit h: Hashable[Array[Byte], T]): Hashable[String, T] =
-    h.compose { s: String => s.getBytes }
+    h.compose(s: String => s.getBytes)
 }
 
 object Hashable extends LowPriorityHashable {

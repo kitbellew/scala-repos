@@ -39,7 +39,7 @@ object UnionLike {
       .foldLeft(Option.empty[Tree]) {
         case (existing, (idx, tpe, optiTBuf)) =>
           val commonCmp: Tree = optiTBuf
-            .map { tBuf => tBuf.compareBinary(inputStreamA, inputStreamB) }
+            .map(tBuf => tBuf.compareBinary(inputStreamA, inputStreamB))
             .getOrElse[Tree](q"0")
 
           existing match {

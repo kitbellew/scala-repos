@@ -59,7 +59,7 @@ class ReceivedBlockTrackerSuite
   }
 
   after {
-    allReceivedBlockTrackers.foreach { _.stop() }
+    allReceivedBlockTrackers.foreach(_.stop())
     Utils.deleteRecursively(checkpointDirectory)
   }
 
@@ -395,7 +395,7 @@ class ReceivedBlockTrackerSuite
   def getWriteAheadLogFiles(): Seq[String] = {
     import ReceivedBlockTracker._
     val logDir = checkpointDirToLogDir(checkpointDirectory.toString)
-    getLogFilesInDirectory(logDir).map { _.toString }
+    getLogFilesInDirectory(logDir).map(_.toString)
   }
 
   /** Create batch allocation object from the given info */

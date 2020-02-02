@@ -28,7 +28,7 @@ object isClose extends UFunc {
       base: Impl3[V1, V2, Double, Boolean]): Impl3[A, B, Double, Boolean] =
     new Impl3[A, B, Double, Boolean] {
       override def apply(a: A, b: B, tol: Double): Boolean =
-        czv(a, b).forall { (v1, v2) => base(v1, v2, tol) }
+        czv(a, b).forall((v1, v2) => base(v1, v2, tol))
     }
 
 }

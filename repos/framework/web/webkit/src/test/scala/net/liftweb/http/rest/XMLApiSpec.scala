@@ -43,7 +43,7 @@ object XmlApiSpec extends Specification {
       case "true"  => true
       case "false" => false
       // Tests canBoolToResponse
-      case s: String => tryo[Boolean] { s.toInt > 5 }
+      case s: String => tryo[Boolean](s.toInt > 5)
       // Tests pairToResponse
       case i: Int if i == 42 => (true, "But what is the question?")
       // These test the listElemToResponse conversion

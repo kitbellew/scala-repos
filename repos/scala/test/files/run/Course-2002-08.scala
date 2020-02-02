@@ -186,7 +186,7 @@ object M5 {
     }
 
     def run: Unit = {
-      afterDelay(0) { () => Console.println("*** simulation started ***"); }
+      afterDelay(0)(() => Console.println("*** simulation started ***");)
       while (!agenda.isEmpty) next
     }
   }
@@ -200,7 +200,7 @@ object M5 {
     def inverter(input: Wire, output: Wire): Unit = {
       def invertAction() = {
         val inputSig = input.getSignal;
-        afterDelay(InverterDelay) { () => output.setSignal(!inputSig) };
+        afterDelay(InverterDelay)(() => output.setSignal(!inputSig));
       }
       input addAction invertAction
     }
@@ -209,7 +209,7 @@ object M5 {
       def andAction() = {
         val a1Sig = a1.getSignal;
         val a2Sig = a2.getSignal;
-        afterDelay(AndGateDelay) { () => output.setSignal(a1Sig & a2Sig) };
+        afterDelay(AndGateDelay)(() => output.setSignal(a1Sig & a2Sig));
       }
       a1 addAction andAction;
       a2 addAction andAction;
@@ -219,7 +219,7 @@ object M5 {
       def orAction() = {
         val o1Sig = o1.getSignal;
         val o2Sig = o2.getSignal;
-        afterDelay(OrGateDelay) { () => output.setSignal(o1Sig | o2Sig) };
+        afterDelay(OrGateDelay)(() => output.setSignal(o1Sig | o2Sig));
       }
       o1 addAction orAction;
       o2 addAction orAction;
@@ -436,7 +436,7 @@ class Simulator() {
   protected def currentTime: Int = curtime;
 
   def run = {
-    afterDelay(0) { () => Console.println("*** simulation started ***"); }
+    afterDelay(0)(() => Console.println("*** simulation started ***");)
     while (!agenda.isEmpty) next
   }
 }
@@ -471,7 +471,7 @@ abstract class BasicCircuitSimulator() extends Simulator() {
   def inverter(input: Wire, output: Wire) = {
     def invertAction() = {
       val inputSig = input.getSignal;
-      afterDelay(InverterDelay) { () => output.setSignal(!inputSig) };
+      afterDelay(InverterDelay)(() => output.setSignal(!inputSig));
     }
     input addAction invertAction
   }
@@ -480,7 +480,7 @@ abstract class BasicCircuitSimulator() extends Simulator() {
     def andAction() = {
       val a1Sig = a1.getSignal;
       val a2Sig = a2.getSignal;
-      afterDelay(AndGateDelay) { () => output.setSignal(a1Sig & a2Sig) };
+      afterDelay(AndGateDelay)(() => output.setSignal(a1Sig & a2Sig));
     }
     a1 addAction andAction;
     a2 addAction andAction
@@ -490,7 +490,7 @@ abstract class BasicCircuitSimulator() extends Simulator() {
     def orAction() = {
       val a1Sig = a1.getSignal;
       val a2Sig = a2.getSignal;
-      afterDelay(OrGateDelay) { () => output.setSignal(a1Sig | a2Sig) };
+      afterDelay(OrGateDelay)(() => output.setSignal(a1Sig | a2Sig));
     }
     a1 addAction orAction;
     a2 addAction orAction

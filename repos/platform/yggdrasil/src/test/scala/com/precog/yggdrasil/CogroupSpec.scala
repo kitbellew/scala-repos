@@ -90,7 +90,7 @@ trait CogroupSpec[M[+_]]
             val (rightSpan, rightRemain) = r.partition(ord.order(_, rh) == EQ)
 
             val cartesian = leftSpan.flatMap { lv =>
-              rightSpan.map { rv => middle3((lv, rv)) }
+              rightSpan.map(rv => middle3((lv, rv)))
             }
 
             computeCogroup(leftRemain, rightRemain, acc ++ cartesian)

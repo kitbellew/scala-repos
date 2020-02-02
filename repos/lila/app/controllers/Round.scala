@@ -92,7 +92,7 @@ object Round extends LilaController with TheftPrevention {
         else
           Env.api.roundApi
             .player(pov, apiVersion)
-            .map { Ok(_) }
+            .map(Ok(_))
             .mon(_.http.response.player.mobile)
       }
     ) map NoCache
@@ -228,11 +228,11 @@ object Round extends LilaController with TheftPrevention {
   }
 
   def sidesWatcher(gameId: String, color: String) = Open { implicit ctx =>
-    OptionFuResult(GameRepo.pov(gameId, color)) { sides(_, false) }
+    OptionFuResult(GameRepo.pov(gameId, color))(sides(_, false))
   }
 
   def sidesPlayer(gameId: String, color: String) = Open { implicit ctx =>
-    OptionFuResult(GameRepo.pov(gameId, color)) { sides(_, true) }
+    OptionFuResult(GameRepo.pov(gameId, color))(sides(_, true))
   }
 
   def writeNote(gameId: String) = AuthBody { implicit ctx => me =>
@@ -271,11 +271,11 @@ object Round extends LilaController with TheftPrevention {
   }
 
   def mini(gameId: String, color: String) = Open { implicit ctx =>
-    OptionOk(GameRepo.pov(gameId, color)) { pov => html.game.mini(pov) }
+    OptionOk(GameRepo.pov(gameId, color))(pov => html.game.mini(pov))
   }
 
   def miniFullId(fullId: String) = Open { implicit ctx =>
-    OptionOk(GameRepo pov fullId) { pov => html.game.mini(pov) }
+    OptionOk(GameRepo pov fullId)(pov => html.game.mini(pov))
   }
 
   def atom(gameId: String, color: String) = Action.async { implicit req =>

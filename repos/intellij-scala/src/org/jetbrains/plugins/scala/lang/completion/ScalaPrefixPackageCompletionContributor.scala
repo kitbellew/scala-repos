@@ -104,7 +104,7 @@ object ScalaPrefixPackageCompletionContributor {
         resolveResult,
         isInImport = false,
         shouldImport = true)
-      lookupElems.foreach { le => le.elementToImport = pckg }
+      lookupElems.foreach(le => le.elementToImport = pckg)
       result.addAllElements(lookupElems.asJava)
     }
 

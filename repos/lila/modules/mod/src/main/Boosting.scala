@@ -59,7 +59,7 @@ final class BoostingApi(
         && game.winnerColor.isDefined
         && variants.contains(game.variant)
         && !game.isCorrespondence
-        && game.clock.fold(false) { _.limitInMinutes >= 1 })
+        && game.clock.fold(false)(_.limitInMinutes >= 1))
       game.winnerColor match {
         case Some(a) =>
           val result: GameResult = a match {

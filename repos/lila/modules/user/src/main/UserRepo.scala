@@ -89,7 +89,7 @@ object UserRepo {
       .cursor[BSONDocument](ReadPreference.secondaryPreferred)
       .collect[List](nb)
       .map {
-        _.flatMap { _.getAs[String]("_id") }
+        _.flatMap(_.getAs[String]("_id"))
       }
 
   def allSortToints(nb: Int) = $find($query.all sort ($sort desc F.toints), nb)

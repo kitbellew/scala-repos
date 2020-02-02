@@ -37,7 +37,7 @@ object Executor {
 
     storm
       .withRegistrars(config.registrars)
-      .withConfigUpdater { c => c.updated(config.transformConfig(c.toMap)) }
+      .withConfigUpdater(c => c.updated(config.transformConfig(c.toMap)))
       .run(config.graph, config.name)
   }
 }

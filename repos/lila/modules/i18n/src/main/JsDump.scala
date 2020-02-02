@@ -9,7 +9,7 @@ import play.api.libs.json.{JsString, JsObject}
 private[i18n] final class JsDump(path: String, pool: I18nPool, keys: I18nKeys) {
 
   def keysToObject(keys: Seq[I18nKey], lang: Lang) = JsObject {
-    keys.map { k => k.key -> JsString(k.to(lang)()) }
+    keys.map(k => k.key -> JsString(k.to(lang)()))
   }
 
   def apply: Funit =
@@ -77,7 +77,7 @@ private[i18n] final class JsDump(path: String, pool: I18nPool, keys: I18nKeys) {
 
   private def dumpFromKey(messages: List[I18nKey], lang: Lang): String =
     messages
-      .map { key => """"%s":"%s"""".format(key.key, escape(key.to(lang)())) }
+      .map(key => """"%s":"%s"""".format(key.key, escape(key.to(lang)())))
       .mkString("{", ",", "}")
 
   private def writeRefs {

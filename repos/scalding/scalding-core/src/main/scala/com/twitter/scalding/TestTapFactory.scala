@@ -63,12 +63,12 @@ object TestTapFactory extends Serializable {
 class TestTapFactory(src: Source, sinkMode: SinkMode) extends Serializable {
   def sourceFields: Fields =
     hdfsScheme
-      .map { _.getSourceFields }
+      .map(_.getSourceFields)
       .getOrElse(sys.error("No sourceFields defined"))
 
   def sinkFields: Fields =
     hdfsScheme
-      .map { _.getSinkFields }
+      .map(_.getSinkFields)
       .getOrElse(sys.error("No sinkFields defined"))
 
   def hdfsScheme: Option[

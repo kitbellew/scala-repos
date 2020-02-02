@@ -595,7 +595,7 @@ trait ProvenanceChecker extends parser.AST with Binder {
                 loop(_, relations, constraints)
               } unzip
 
-              val actualErrors = errorsVec.fold(Set[Error]()) { _ ++ _ }
+              val actualErrors = errorsVec.fold(Set[Error]())(_ ++ _)
               val actualConstr = constrVec.fold(Set[ProvConstraint]()) {
                 _ ++ _
               }

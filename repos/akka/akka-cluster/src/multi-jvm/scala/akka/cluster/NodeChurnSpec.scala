@@ -79,7 +79,7 @@ abstract class NodeChurnSpec
   def awaitRemoved(additionaSystems: Vector[ActorSystem]): Unit = {
     awaitMembersUp(roles.size, timeout = 40.seconds)
     awaitAssert {
-      additionaSystems.foreach { s ⇒ Cluster(s).isTerminated should be(true) }
+      additionaSystems.foreach(s ⇒ Cluster(s).isTerminated should be(true))
     }
   }
 

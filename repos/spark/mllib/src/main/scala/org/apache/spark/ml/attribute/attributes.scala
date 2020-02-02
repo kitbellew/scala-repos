@@ -38,7 +38,7 @@ sealed abstract class Attribute extends Serializable {
   name.foreach { n =>
     require(n.nonEmpty, "Cannot have an empty string for name.")
   }
-  index.foreach { i => require(i >= 0, s"Index cannot be negative but got $i") }
+  index.foreach(i => require(i >= 0, s"Index cannot be negative but got $i"))
 
   /** Attribute type. */
   def attrType: AttributeType

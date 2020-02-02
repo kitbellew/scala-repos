@@ -82,7 +82,7 @@ object Puzzle extends LilaController {
     env userInfos me flatMap { ui =>
       negotiate(
         html = XhrOnly {
-          fuccess { Ok(views.html.puzzle.history(ui)) }
+          fuccess(Ok(views.html.puzzle.history(ui)))
         },
         api = _ =>
           fuccess {

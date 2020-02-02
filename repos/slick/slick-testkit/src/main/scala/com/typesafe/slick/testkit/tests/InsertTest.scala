@@ -23,8 +23,8 @@ class InsertTest extends AsyncTest[JdbcTestDB] {
     println("Insert 2: " + dst2.forceInsertStatementFor(q2))
     val q3 = (42, "X".bind)
     println("Insert 3: " + dst2.forceInsertStatementFor(q3))
-    val q4comp = Compiled { dst2.filter(_.id < 10) }
-    val dst3comp = Compiled { dst3 }
+    val q4comp = Compiled(dst2.filter(_.id < 10))
+    val dst3comp = Compiled(dst3)
 
     DBIO.sequence(
       Seq(

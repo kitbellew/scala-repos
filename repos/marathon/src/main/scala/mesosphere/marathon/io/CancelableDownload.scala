@@ -30,7 +30,7 @@ final class CancelableDownload(
   lazy val get: Future[CancelableDownload] = Future {
     log.info(s"Download started from $url to path $path")
     IO.using(url.openStream()) { in =>
-      tempItem.store { out => IO.transfer(in, out, close = false, !canceled) }
+      tempItem.store(out => IO.transfer(in, out, close = false, !canceled))
     }
     if (!canceled) {
       log.info(s"Download finished from $url to path $path")

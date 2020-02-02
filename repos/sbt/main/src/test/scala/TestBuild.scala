@@ -32,8 +32,8 @@ object TestBuild {
   def chooseShrinkable(min: Int, max: Int): Gen[Int] =
     sized(sz => choose(min, (max min sz) max 1))
 
-  implicit val cGen = Arbitrary { genConfigs(idGen, MaxDepsGen, MaxConfigsGen) }
-  implicit val tGen = Arbitrary { genTasks(idGen, MaxDepsGen, MaxTasksGen) }
+  implicit val cGen = Arbitrary(genConfigs(idGen, MaxDepsGen, MaxConfigsGen))
+  implicit val tGen = Arbitrary(genTasks(idGen, MaxDepsGen, MaxTasksGen))
 
   final class Keys(val env: Env, val scopes: Seq[Scope]) {
     override def toString =
@@ -207,7 +207,7 @@ object TestBuild {
   def makeParser(structure: Structure): Parser[ScopedKey[_]] = {
     import structure._
     def confs(uri: URI) =
-      env.buildMap.get(uri).toList.flatMap { _.root.configurations.map(_.name) }
+      env.buildMap.get(uri).toList.flatMap(_.root.configurations.map(_.name))
     val defaultConfs: Option[ResolvedReference] => Seq[String] = {
       case None                  => confs(env.root.uri)
       case Some(BuildRef(uri))   => confs(uri)
@@ -276,7 +276,7 @@ object TestBuild {
       confs: Gen[Seq[Config]]): Gen[Seq[Proj]] =
     genAcyclic(maxDeps, genID, count) { (id: String) =>
       for (cs <- confs) yield { (deps: Seq[Proj]) =>
-        new Proj(id, deps.map { dep => ProjectRef(build, dep.id) }, cs)
+        new Proj(id, deps.map(dep => ProjectRef(build, dep.id)), cs)
       }
     }
   def genConfigs(
@@ -295,7 +295,7 @@ object TestBuild {
   def genAcyclicDirect[A, T](maxDeps: Gen[Int], keyGen: Gen[T], max: Gen[Int])(
       make: (T, Seq[A]) => A): Gen[Seq[A]] =
     genAcyclic[A, T](maxDeps, keyGen, max) { t =>
-      Gen.const { deps => make(t, deps) }
+      Gen.const(deps => make(t, deps))
     }
 
   def genAcyclic[A, T](maxDeps: Gen[Int], keyGen: Gen[T], max: Gen[Int])(

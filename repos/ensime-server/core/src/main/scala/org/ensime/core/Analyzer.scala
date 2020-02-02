@@ -295,7 +295,7 @@ class Analyzer(
     val (existing, missingFiles) = files.partition(FileUtils.exists)
     if (missingFiles.nonEmpty) {
       val missingFilePaths = missingFiles
-        .map { f => "\"" + f.file + "\"" }
+        .map(f => "\"" + f.file + "\"")
         .mkString(",")
       EnsimeServerError(s"file(s): $missingFilePaths do not exist")
     } else {

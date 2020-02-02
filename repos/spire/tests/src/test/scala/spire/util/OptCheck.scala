@@ -18,16 +18,16 @@ class OptCheck extends FunSuite {
     assert(!Opt.empty[Int].isDefined)
     assert(!Opt.empty[String].isDefined)
 
-    assertResult("Opt.empty") { Opt.empty[Int].toString }
-    assertResult("Opt.empty") { Opt.empty[String].toString }
+    assertResult("Opt.empty")(Opt.empty[Int].toString)
+    assertResult("Opt.empty")(Opt.empty[String].toString)
 
-    assertResult("Opt.empty") { customToString(Opt.empty[Int]) }
-    assertResult("Opt.empty") { customToString(Opt.empty[String]) }
-    assertResult("Opt.empty") { intToString(Opt.empty[Int]) }
-    assertResult("Opt.empty") { strToString(Opt.empty[String]) }
+    assertResult("Opt.empty")(customToString(Opt.empty[Int]))
+    assertResult("Opt.empty")(customToString(Opt.empty[String]))
+    assertResult("Opt.empty")(intToString(Opt.empty[Int]))
+    assertResult("Opt.empty")(strToString(Opt.empty[String]))
 
-    intercept[NoSuchElementException] { Opt.empty[Int].get }
-    intercept[NoSuchElementException] { Opt.empty[String].get }
+    intercept[NoSuchElementException](Opt.empty[Int].get)
+    intercept[NoSuchElementException](Opt.empty[String].get)
   }
 
   test("Opt Equality") {
@@ -47,16 +47,16 @@ class OptCheck extends FunSuite {
     assert(!Opt(1).isEmpty)
     assert(!Opt("abc").isEmpty)
 
-    assertResult("Opt(1)") { Opt(1).toString }
-    assertResult("Opt(abc)") { Opt("abc").toString }
+    assertResult("Opt(1)")(Opt(1).toString)
+    assertResult("Opt(abc)")(Opt("abc").toString)
 
-    assertResult("Opt(1)") { customToString(Opt(1)) }
-    assertResult("Opt(abc)") { customToString(Opt("abc")) }
-    assertResult("Opt(1)") { intToString(Opt(1)) }
-    assertResult("Opt(abc)") { strToString(Opt("abc")) }
+    assertResult("Opt(1)")(customToString(Opt(1)))
+    assertResult("Opt(abc)")(customToString(Opt("abc")))
+    assertResult("Opt(1)")(intToString(Opt(1)))
+    assertResult("Opt(abc)")(strToString(Opt("abc")))
 
-    assertResult(1) { Opt(1).get }
-    assertResult("abc") { Opt("abc").get }
+    assertResult(1)(Opt(1).get)
+    assertResult("abc")(Opt("abc").get)
   }
 
   test("for comprehension") {

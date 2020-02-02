@@ -493,7 +493,7 @@ abstract class ResourceEvolutionsReader extends EvolutionsReader {
             .reverse
             .drop(1)
             .groupBy(i => i._1)
-            .mapValues { _.map(_._2).mkString("\n").trim }
+            .mapValues(_.map(_._2).mkString("\n").trim)
 
           Evolution(
             revision,

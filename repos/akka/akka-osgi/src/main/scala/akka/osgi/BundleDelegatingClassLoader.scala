@@ -48,7 +48,7 @@ class BundleDelegatingClassLoader(
     @tailrec def find(remaining: List[Bundle]): Class[_] =
       if (remaining.isEmpty) throw new ClassNotFoundException(name)
       else
-        Try { remaining.head.loadClass(name) } match {
+        Try(remaining.head.loadClass(name)) match {
           case Success(cls) ⇒ cls
           case Failure(_) ⇒ find(remaining.tail)
         }
@@ -59,7 +59,7 @@ class BundleDelegatingClassLoader(
     @tailrec def find(remaining: List[Bundle]): URL =
       if (remaining.isEmpty) getParent.getResource(name)
       else
-        Option { remaining.head.getResource(name) } match {
+        Option(remaining.head.getResource(name)) match {
           case Some(r) ⇒ r
           case None ⇒ find(remaining.tail)
         }
@@ -68,7 +68,7 @@ class BundleDelegatingClassLoader(
 
   override def findResources(name: String): Enumeration[URL] = {
     val resources = bundles.flatMap { bundle ⇒
-      Option(bundle.getResources(name)).map { _.asScala.toList }.getOrElse(Nil)
+      Option(bundle.getResources(name)).map(_.asScala.toList).getOrElse(Nil)
     }
     java.util.Collections.enumeration(resources.asJava)
   }

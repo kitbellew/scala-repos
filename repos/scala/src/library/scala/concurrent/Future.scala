@@ -216,7 +216,7 @@ trait Future[+T] extends Awaitable[T] {
     *               the return value of `f` will be discarded.
     */
   def foreach[U](f: T => U)(implicit executor: ExecutionContext): Unit =
-    onComplete { _ foreach f }
+    onComplete(_ foreach f)
 
   /** Creates a new future by applying the 's' function to the successful result of
     *  this future, or the 'f' function to the failed result. If there is any non-fatal
@@ -390,7 +390,7 @@ trait Future[+T] extends Awaitable[T] {
     */
   def recover[U >: T](pf: PartialFunction[Throwable, U])(
       implicit executor: ExecutionContext): Future[U] =
-    transform { _ recover pf }
+    transform(_ recover pf)
 
   /** Creates a new future that will handle any matching throwable that this
     *  future might contain by assigning it a value of another future.
@@ -430,7 +430,7 @@ trait Future[+T] extends Awaitable[T] {
     */
   def zip[U](that: Future[U]): Future[(T, U)] = {
     implicit val ec = internalExecutor
-    flatMap { r1 => that.map(r2 => (r1, r2)) }
+    flatMap(r1 => that.map(r2 => (r1, r2)))
   }
 
   /** Zips the values of `this` and `that` future using a function `f`,
@@ -778,7 +778,7 @@ object Future {
       op: (R, T) => R)(implicit executor: ExecutionContext): Future[R] =
     if (!i.hasNext) successful(prevValue)
     else
-      i.next().flatMap { value => foldNext(i, op(prevValue, value), op) }
+      i.next().flatMap(value => foldNext(i, op(prevValue, value), op))
 
   /** A non-blocking, asynchronous fold over the specified futures, with the start value of the given zero.
     *  The fold is performed on the thread where the last future is completed,

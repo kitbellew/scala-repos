@@ -69,7 +69,7 @@ class MongoRecordSpec extends Specification with MongoTestKit {
 
     "correctly look up fields by name" in {
       val fields =
-        allExpectedFieldNames.flatMap { name => rec.fieldByName(name) }
+        allExpectedFieldNames.flatMap(name => rec.fieldByName(name))
 
       fields.length must_== allExpectedFieldNames.length
     }
@@ -624,7 +624,7 @@ class MongoRecordSpec extends Specification with MongoTestKit {
         val builder = BasicDBObjectBuilder.start
           .add("_id", missingFieldDocId)
 
-        FieldTypeTestRecord.useColl { coll => coll.save(builder.get) }
+        FieldTypeTestRecord.useColl(coll => coll.save(builder.get))
 
         val recFromDb = FieldTypeTestRecord.find(missingFieldDocId)
 

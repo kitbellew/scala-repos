@@ -230,7 +230,7 @@ object ParserInput {
         wrap[Task[T]](c)(inputParser(c)(e), pos)
       } else if (tpe <:< c.weakTypeOf[Initialize[InputTask[T]]]) {
         val e = c.Expr[Initialize[InputTask[T]]](p.tree)
-        wrapInit[Task[T]](c)(reify { Def.toIParser(e.splice) }, pos)
+        wrapInit[Task[T]](c)(reify(Def.toIParser(e.splice)), pos)
       } else
         c.abort(
           pos,
@@ -244,12 +244,12 @@ object ParserInput {
       val tpe = p.tree.tpe
       if (tpe <:< c.weakTypeOf[Parser[T]]) {
         val e = c.Expr[Parser[T]](p.tree)
-        wrap[T](c)(reify { Def.toSParser(e.splice) }, pos)
+        wrap[T](c)(reify(Def.toSParser(e.splice)), pos)
       } else if (tpe <:< c.weakTypeOf[State => Parser[T]])
         wrap[T](c)(p, pos)
       else if (tpe <:< c.weakTypeOf[Initialize[Parser[T]]]) {
         val e = c.Expr[Initialize[Parser[T]]](p.tree)
-        val es = reify { Def.toISParser(e.splice) }
+        val es = reify(Def.toISParser(e.splice))
         wrapInit[T](c)(es, pos)
       } else if (tpe <:< c.weakTypeOf[Initialize[State => Parser[T]]])
         wrapInit[T](c)(p, pos)

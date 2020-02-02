@@ -69,8 +69,8 @@ class DateTest extends WordSpec {
     }
     "throw an exception when trying to parse illegal strings" in {
       // Natty is *really* generous about what it accepts
-      intercept[IllegalArgumentException] { RichDate("jhbjhvhjv") }
-      intercept[IllegalArgumentException] { RichDate("99-99-99") }
+      intercept[IllegalArgumentException](RichDate("jhbjhvhjv"))
+      intercept[IllegalArgumentException](RichDate("99-99-99"))
     }
     "be able to deal with arithmetic operations with whitespace" in {
       val rd1: RichDate = RichDate("2010-10-02") + Seconds(1)
@@ -409,8 +409,8 @@ class DateTest extends WordSpec {
         //See that each path is matched by exactly one glob:
         assert(
           splits
-            .map { path => globed.filter { globMatchesDate(_)(path) }.size }
-            .forall { _ == 1 })
+            .map(path => globed.filter(globMatchesDate(_)(path)).size)
+            .forall(_ == 1))
       }
     }
   }

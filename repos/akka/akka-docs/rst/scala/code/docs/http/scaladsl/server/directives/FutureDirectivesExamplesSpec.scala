@@ -57,7 +57,7 @@ class FutureDirectivesExamplesSpec extends RoutingSpec {
   "onSuccess" in {
     val route =
       path("success") {
-        onSuccess(Future { "Ok" }) { extraction =>
+        onSuccess(Future("Ok")) { extraction =>
           complete(extraction)
         }
       } ~
@@ -81,7 +81,7 @@ class FutureDirectivesExamplesSpec extends RoutingSpec {
   "completeOrRecoverWith" in {
     val route =
       path("success") {
-        completeOrRecoverWith(Future { "Ok" }) { extraction =>
+        completeOrRecoverWith(Future("Ok")) { extraction =>
           failWith(extraction) // not executed.
         }
       } ~

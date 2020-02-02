@@ -32,7 +32,7 @@ object MyRejectionHandler {
         val names = methodRejections.map(_.supported.name)
         complete((MethodNotAllowed, s"Can't do that! Supported: ${names mkString " or "}!"))
       }
-      .handleNotFound { complete((NotFound, "Not here!")) }
+      .handleNotFound(complete((NotFound, "Not here!")))
       .result()
 
   object MyApp extends App {

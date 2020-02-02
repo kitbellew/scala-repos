@@ -180,11 +180,11 @@ object Pack {
       case Literal(Constant(i: Int)) =>
         if (0 <= i && i < 4) {
           val offset = c.Expr[Int](Literal(Constant(24 - i * 8)))
-          reify { ((n.splice >>> offset.splice) & 0xff).toByte }
+          reify(((n.splice >>> offset.splice) & 0xff).toByte)
         } else
           c.abort(c.enclosingPosition, "index outside of 0-3")
       case _ =>
-        reify { Pack.intToByteRuntime(n.splice)(index.splice) }
+        reify(Pack.intToByteRuntime(n.splice)(index.splice))
     }
   }
 
@@ -201,11 +201,11 @@ object Pack {
       case Literal(Constant(i: Int)) =>
         if (0 <= i && i < 8) {
           val offset = c.Expr[Int](Literal(Constant(56 - i * 8)))
-          reify { ((n.splice >>> offset.splice) & 0xff).toByte }
+          reify(((n.splice >>> offset.splice) & 0xff).toByte)
         } else
           c.abort(c.enclosingPosition, "index outside of 0-7")
       case _ =>
-        reify { Pack.longToByteRuntime(n.splice)(index.splice) }
+        reify(Pack.longToByteRuntime(n.splice)(index.splice))
     }
   }
 }

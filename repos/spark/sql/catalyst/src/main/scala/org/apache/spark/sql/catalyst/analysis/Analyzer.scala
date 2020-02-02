@@ -232,7 +232,7 @@ class Analyzer(
      *  represented as the bit masks.
      */
     def bitmasks(r: Rollup): Seq[Int] =
-      Seq.tabulate(r.groupByExprs.length + 1) { idx => (1 << idx) - 1 }
+      Seq.tabulate(r.groupByExprs.length + 1)(idx => (1 << idx) - 1)
 
     /*
      *  GROUP BY a, b, c WITH CUBE
@@ -607,7 +607,7 @@ class Analyzer(
           case expr =>
             deserializerToAttributes
               .get(new TreeNodeRef(expr))
-              .map { attributes => resolveDeserializer(expr, attributes) }
+              .map(attributes => resolveDeserializer(expr, attributes))
               .getOrElse(expr)
         }
 
@@ -685,7 +685,7 @@ class Analyzer(
     // Else, throw exception.
     try expr transformUp {
       case u @ UnresolvedAttribute(nameParts) =>
-        withPosition(u) { plan.resolve(nameParts, resolver).getOrElse(u) }
+        withPosition(u)(plan.resolve(nameParts, resolver).getOrElse(u))
       case UnresolvedExtractValue(child, fieldName) if child.resolved =>
         ExtractValue(child, fieldName, resolver)
     } catch {

@@ -189,7 +189,7 @@ private[sbt] final class Execute[A[_] <: AnyRef](
   def addChecked[T](node: A[T])(implicit strategy: Strategy): Unit = {
     if (!added(node)) addNew(node)
 
-    post { addedInv(node) }
+    post(addedInv(node))
   }
 
   /**
@@ -198,7 +198,7 @@ private[sbt] final class Execute[A[_] <: AnyRef](
     * The node's dependencies will be added (transitively) if they are not already registered.
     */
   def addNew[T](node: A[T])(implicit strategy: Strategy): Unit = {
-    pre { newPre(node) }
+    pre(newPre(node))
 
     val v = register(node)
     val deps = dependencies(v) ++ runBefore(node)
@@ -319,8 +319,8 @@ private[sbt] final class Execute[A[_] <: AnyRef](
       def onOpt[T](o: Option[T])(f: T => Boolean) = o match {
         case None => false; case Some(x) => f(x)
       }
-      def checkForward = onOpt(forward.get(node)) { _ contains dep }
-      def checkReverse = onOpt(reverse.get(dep)) { _.exists(_ == node) }
+      def checkForward = onOpt(forward.get(node))(_ contains dep)
+      def checkReverse = onOpt(reverse.get(dep))(_.exists(_ == node))
       assert(done(dep) ^ (checkForward && checkReverse))
     }
   def pendingInv(node: A[_]): Unit = {

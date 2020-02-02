@@ -170,7 +170,7 @@ object PlayRun {
     @tailrec def shouldTerminate: Boolean =
       (System.in.available > 0) && (isEOF(System.in.read()) || shouldTerminate)
 
-    val sourcesFinder = PathFinder { watched watchPaths state }
+    val sourcesFinder = PathFinder(watched watchPaths state)
     val watchState =
       ws.getOrElse(state get ContinuousState getOrElse WatchState.empty)
 

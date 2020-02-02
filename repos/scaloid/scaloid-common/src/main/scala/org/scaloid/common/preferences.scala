@@ -169,7 +169,7 @@ class Extra(val activity: SActivity) extends AnyVal with Dynamic {
       }
     }
 
-  def remove(name: String) = activity.intent.foreach { _.removeExtra(name) }
+  def remove(name: String) = activity.intent.foreach(_.removeExtra(name))
 }
 
 object Extra {

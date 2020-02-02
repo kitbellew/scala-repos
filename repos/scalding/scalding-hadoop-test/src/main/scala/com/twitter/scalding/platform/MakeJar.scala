@@ -54,7 +54,7 @@ object MakeJar {
         target.putNextEntry(entry)
         target.closeEntry()
       }
-      source.listFiles.foreach { add(parent, _, target) }
+      source.listFiles.foreach(add(parent, _, target))
     } else {
       val entry = new JarEntry(name)
       entry.setTime(source.lastModified)

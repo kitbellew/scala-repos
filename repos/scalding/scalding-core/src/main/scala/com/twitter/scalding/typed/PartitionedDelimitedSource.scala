@@ -72,7 +72,7 @@ case class PartitionedDelimitedSource[P, T](
   val types: Array[Class[_]] = {
     if (classOf[scala.Product].isAssignableFrom(mt.runtimeClass))
       //Assume this is a Tuple:
-      mt.typeArguments.map { _.runtimeClass }.toArray
+      mt.typeArguments.map(_.runtimeClass).toArray
     else
       //Assume there is only a single item
       Array(mt.runtimeClass)

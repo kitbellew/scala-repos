@@ -174,7 +174,7 @@ object SslConnectHandler {
     val checker = HostnameChecker.getInstance(HostnameChecker.TYPE_TLS)
     val isValid = session.getPeerCertificates.headOption.exists {
       case x509: X509Certificate =>
-        Try { checker.`match`(hostname, x509) }.isReturn
+        Try(checker.`match`(hostname, x509)).isReturn
       case _ => false
     }
 

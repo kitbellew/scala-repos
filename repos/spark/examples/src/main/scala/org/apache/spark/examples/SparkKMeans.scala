@@ -83,7 +83,7 @@ object SparkKMeans {
       }
 
       val newPoints = pointStats
-        .map { pair => (pair._1, pair._2._1 * (1.0 / pair._2._2)) }
+        .map(pair => (pair._1, pair._2._1 * (1.0 / pair._2._2)))
         .collectAsMap()
 
       tempDist = 0.0

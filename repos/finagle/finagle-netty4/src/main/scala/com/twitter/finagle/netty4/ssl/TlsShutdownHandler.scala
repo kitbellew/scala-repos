@@ -13,7 +13,7 @@ private[netty4] class TlsShutdownHandler(o: Object)
     }
 
   private[this] def shutdownAfterChannelClosure(): Unit =
-    shutdownMethod.foreach { method => method.invoke(o) }
+    shutdownMethod.foreach(method => method.invoke(o))
 
   override def exceptionCaught(
       ctx: ChannelHandlerContext,

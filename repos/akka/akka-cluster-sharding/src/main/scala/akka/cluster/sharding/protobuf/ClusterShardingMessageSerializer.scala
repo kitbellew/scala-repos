@@ -227,7 +227,7 @@ private[akka] class ClusterShardingMessageSerializer(
     state.regionProxies.foreach { ref ⇒
       builder.addRegionProxies(Serialization.serializedActorPath(ref))
     }
-    state.unallocatedShards.foreach { builder.addUnallocatedShards }
+    state.unallocatedShards.foreach(builder.addUnallocatedShards)
 
     builder.build()
   }

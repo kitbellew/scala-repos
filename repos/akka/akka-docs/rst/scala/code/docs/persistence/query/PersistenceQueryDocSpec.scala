@@ -213,7 +213,7 @@ class PersistenceQueryDocSpec(s: String) extends AkkaSpec(s) {
 
     // materialize stream, consuming events
     implicit val mat = ActorMaterializer()
-    source.runForeach { event => println("Event: " + event) }
+    source.runForeach(event => println("Event: " + event))
     //#basic-usage
 
     //#all-persistence-ids-live
@@ -257,7 +257,7 @@ class PersistenceQueryDocSpec(s: String) extends AkkaSpec(s) {
             s"ordered deterministically: ${meta.deterministicOrder}, " +
             s"infinite: ${meta.infinite}")
       }
-      .map { event => println(s"Event payload: ${event.payload}") }
+      .map(event => println(s"Event payload: ${event.payload}"))
       .runWith(Sink.ignore)
 
     //#advanced-journal-query-usage
@@ -290,7 +290,7 @@ class PersistenceQueryDocSpec(s: String) extends AkkaSpec(s) {
         .mapAsync(8) { envelope =>
           (writer ? envelope.event).map(_ => envelope.offset)
         }
-        .mapAsync(1) { offset => bidProjection.saveProgress(offset) }
+        .mapAsync(1)(offset => bidProjection.saveProgress(offset))
         .runWith(Sink.ignore)
     }
     //#projection-into-different-store-actor-run
@@ -312,7 +312,7 @@ class PersistenceQueryDocSpec(s: String) extends AkkaSpec(s) {
 
     readJournal
       .eventsByTag("bid")
-      .mapAsync(1) { e => store.save(e) }
+      .mapAsync(1)(e => store.save(e))
       .runWith(Sink.ignore)
     //#projection-into-different-store-simple
   }

@@ -94,7 +94,7 @@ private[spark] class TimeStampedHashMap[A, B](
   }
 
   override def apply(key: A): B =
-    get(key).getOrElse { throw new NoSuchElementException() }
+    get(key).getOrElse(throw new NoSuchElementException())
 
   override def filter(p: ((A, B)) => Boolean): mutable.Map[A, B] =
     internalMap.asScala

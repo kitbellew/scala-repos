@@ -602,7 +602,9 @@ trait Typers
           //
           // TODO SI-6609 Eliminate this special case once the old pattern matcher is removed.
           def dealias(sym: Symbol) =
-            (atPos(tree.pos.makeTransparent) { gen.mkAttributedRef(sym) } setPos tree.pos, sym.owner.thisType)
+            (
+              atPos(tree.pos.makeTransparent)(gen.mkAttributedRef(sym)) setPos tree.pos,
+              sym.owner.thisType)
           sym.name match {
             case nme.List => return dealias(ListModule)
             case nme.Seq  => return dealias(SeqModule)
@@ -5015,7 +5017,7 @@ trait Typers
               tree,
               selector1,
               (cases map duplicateAndKeepPositions).asInstanceOf[List[CaseDef]])
-            typed1(atPos(tree.pos) { Function(params, body) }, mode, pt)
+            typed1(atPos(tree.pos)(Function(params, body)), mode, pt)
           }
         else
           virtualizedMatch(

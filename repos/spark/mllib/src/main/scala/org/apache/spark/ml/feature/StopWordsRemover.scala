@@ -415,7 +415,7 @@ class StopWordsRemover(override val uid: String)
     val outputSchema = transformSchema(dataset.schema)
     val t = if ($(caseSensitive)) {
       val stopWordsSet = $(stopWords).toSet
-      udf { terms: Seq[String] => terms.filter(s => !stopWordsSet.contains(s)) }
+      udf(terms: Seq[String] => terms.filter(s => !stopWordsSet.contains(s)))
     } else {
       val toLower = (s: String) => if (s != null) s.toLowerCase else s
       val lowerStopWords = $(stopWords).map(toLower(_)).toSet

@@ -120,7 +120,7 @@ trait MappedForeignKey[
   /**
     * Is the obj field cached
     */
-  def cached_? : Boolean = synchronized { _calcedObj }
+  def cached_? : Boolean = synchronized(_calcedObj)
 
   override protected def dirty_?(b: Boolean) = synchronized { // issue 165
     // invalidate if the primary key has changed Issue 370

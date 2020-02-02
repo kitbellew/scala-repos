@@ -177,7 +177,7 @@ object Multipart {
           case _ => throw new UnsupportedOperationException()
         }
         renderDisposition(f, key, filename)
-        contentType.foreach { ct => renderContentType(f, ct) }
+        contentType.foreach(ct => renderContentType(f, ct))
         renderBuffer(f)
         ctx.push(completePartFormatting())
       }
@@ -217,7 +217,7 @@ object Multipart {
       contentDisposition: String,
       filename: Option[String]): Unit = {
     f ~~ "Content-Disposition: form-data; name=" ~~ '"' ~~ contentDisposition ~~ '"'
-    filename.foreach { name => f ~~ "; filename=" ~~ '"' ~~ name ~~ '"' }
+    filename.foreach(name => f ~~ "; filename=" ~~ '"' ~~ name ~~ '"')
     f ~~ CrLf
   }
 

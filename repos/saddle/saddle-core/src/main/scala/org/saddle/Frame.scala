@@ -998,7 +998,7 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     * @tparam B Result type of function
     */
   def rolling[B: ST](winSz: Int, f: Series[RX, T] => B): Frame[RX, CX, B] = {
-    val tmp = values.map { v => Series(v, rowIx).rolling(winSz, f).values }
+    val tmp = values.map(v => Series(v, rowIx).rolling(winSz, f).values)
     Frame(tmp, rowIx.slice(winSz - 1, values.numRows), colIx)
   }
 

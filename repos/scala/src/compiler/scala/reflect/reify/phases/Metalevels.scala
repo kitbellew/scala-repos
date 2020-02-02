@@ -148,7 +148,7 @@ trait Metalevels {
                 .format(tree, (breaches map (_.symbol)).distinct mkString ", "))
           CannotReifyRuntimeSplice(tree)
         } else
-          withinSplice { super.transform(tree) }
+          withinSplice(super.transform(tree))
       // todo. also inline usages of `inlineableBindings` in the symtab itself
       // e.g. a free$Foo can well use free$x, if Foo is path-dependent w.r.t x
       // FreeRef(_, _) check won't work, because metalevels of symbol table and body are different, hence, freerefs in symbol table look different from freerefs in body

@@ -40,7 +40,7 @@ class DriverSuite extends SparkFunSuite with Timeouts {
         new File(sparkHome),
         Map("SPARK_TESTING" -> "1", "SPARK_HOME" -> sparkHome)
       )
-      failAfter(60 seconds) { process.waitFor() }
+      failAfter(60 seconds)(process.waitFor())
       // Ensure we still kill the process in case it timed out
       process.destroy()
     }

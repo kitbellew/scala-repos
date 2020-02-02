@@ -235,7 +235,7 @@ class FileHandlerTest extends WordSpec with TempFolder {
         }
 
         // the target, 1 rotated file, and the short file should all remain
-        (1 to 5).foreach { _ => flush() }
+        (1 to 5).foreach(_ => flush())
         val fileSet = new File(folderName).list().toSet
         assert(fileSet.contains(name) == true)
         assert(fileSet.contains(namePrefix) == true)

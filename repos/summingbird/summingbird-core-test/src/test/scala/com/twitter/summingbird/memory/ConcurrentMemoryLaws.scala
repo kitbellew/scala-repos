@@ -243,7 +243,7 @@ class ConcurrentMemoryLaws extends WordSpec {
       val sink: ConcurrentMemory#Sink[Int] = new LinkedBlockingQueue[Int]()
 
       val summed = source
-        .map { v => (v, v) }
+        .map(v => (v, v))
         .sumByKey(store)
         .map {
           case (_, (None, currentEvent))      => currentEvent

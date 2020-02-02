@@ -129,7 +129,7 @@ object IOUtils extends Logging {
           sys.error("Error on tmpdir creation: rename to prefixed failed")
         newTmpDir
       }
-      .getOrElse { sys.error("Error on tmpdir creation: no parent dir found") }
+      .getOrElse(sys.error("Error on tmpdir creation: no parent dir found"))
   }
 
   def copyFile(src: File, dest: File): IO[PrecogUnit] = IO {

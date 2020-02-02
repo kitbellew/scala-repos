@@ -1609,7 +1609,7 @@ class BlockManagerSuite
     // make sure we have more than maxFailuresBeforeLocationRefresh locations
     // so that we have a chance to do location refresh
     val blockManagerIds = (0 to maxFailuresBeforeLocationRefresh)
-      .map { i => BlockManagerId(s"id-$i", s"host-$i", i + 1) }
+      .map(i => BlockManagerId(s"id-$i", s"host-$i", i + 1))
     when(mockBlockManagerMaster.getLocations(mc.any[BlockId]))
       .thenReturn(blockManagerIds)
     store = makeBlockManager(

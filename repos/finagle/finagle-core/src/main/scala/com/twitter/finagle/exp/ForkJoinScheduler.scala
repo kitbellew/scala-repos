@@ -54,15 +54,15 @@ private class ForkJoinScheduler(
 
   private[this] val gauges = Seq(
     // The number of currently active managed blocking operations.
-    statsReceiver.addGauge("active_blocks") { activeBlocks.get },
+    statsReceiver.addGauge("active_blocks")(activeBlocks.get),
     // Returns an estimate of the number of threads that are
     // currently stealing or executing tasks.
-    statsReceiver.addGauge("active_threads") { pool.getActiveThreadCount() },
+    statsReceiver.addGauge("active_threads")(pool.getActiveThreadCount()),
     // Returns the targeted parallelism level of this pool.
-    statsReceiver.addGauge("parallelism") { pool.getParallelism() },
+    statsReceiver.addGauge("parallelism")(pool.getParallelism()),
     // Returns the number of worker threads that have started
     // but not yet terminated.
-    statsReceiver.addGauge("pool_size") { pool.getPoolSize() },
+    statsReceiver.addGauge("pool_size")(pool.getPoolSize()),
     // Returns an estimate of the number of tasks submitted to this
     // pool that have not yet begun executing.
     statsReceiver.addGauge("queued_submissions") {
@@ -71,15 +71,15 @@ private class ForkJoinScheduler(
     // Returns an estimate of the total number of tasks currently
     // held in queues by worker threads (but not including tasks
     // submitted to the pool that have not begun executing).
-    statsReceiver.addGauge("queued_tasks") { pool.getQueuedTaskCount() },
+    statsReceiver.addGauge("queued_tasks")(pool.getQueuedTaskCount()),
     // Returns an estimate of the number of worker threads that are not
     // blocked waiting to join tasks or for other managed synchronization.
-    statsReceiver.addGauge("running_threads") { pool.getRunningThreadCount() },
+    statsReceiver.addGauge("running_threads")(pool.getRunningThreadCount()),
     // Returns an estimate of the total number of tasks stolen from one thread's
     // work queue by another.
-    statsReceiver.addGauge("steals") { pool.getStealCount() },
+    statsReceiver.addGauge("steals")(pool.getStealCount()),
     // The number of tasks that were split off a local schedule.
-    statsReceiver.addGauge("splits") { splitCount.get }
+    statsReceiver.addGauge("splits")(splitCount.get)
   )
 
   def submit(r: Runnable) {

@@ -78,7 +78,7 @@ class ActorGraphInterpreterSpec extends AkkaSpec {
 
       val identity = BidiFlow
         .fromGraph(identityBidi)
-        .join(Flow[Int].map { x ⇒ x })
+        .join(Flow[Int].map(x ⇒ x))
 
       Await.result(
         Source(1 to 10).via(identity).grouped(100).runWith(Sink.head),
@@ -127,7 +127,7 @@ class ActorGraphInterpreterSpec extends AkkaSpec {
 
       val identityBidiF = BidiFlow.fromGraph(identityBidi)
       val identity = (identityBidiF atop identityBidiF atop identityBidiF)
-        .join(Flow[Int].map { x ⇒ x })
+        .join(Flow[Int].map(x ⇒ x))
 
       Await.result(
         Source(1 to 10).via(identity).grouped(100).runWith(Sink.head),
@@ -176,7 +176,7 @@ class ActorGraphInterpreterSpec extends AkkaSpec {
 
       val identityBidiF = BidiFlow.fromGraph(identityBidi)
       val identity = (identityBidiF atop identityBidiF atop identityBidiF)
-        .join(Flow[Int].map { x ⇒ x })
+        .join(Flow[Int].map(x ⇒ x))
 
       Await.result(
         Source(1 to 10).via(identity).grouped(100).runWith(Sink.head),

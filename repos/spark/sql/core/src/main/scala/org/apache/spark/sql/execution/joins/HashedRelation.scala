@@ -687,7 +687,7 @@ private[execution] case class HashedRelationBroadcastMode(
   }
 
   private lazy val canonicalizedKeys: Seq[Expression] =
-    keys.map { e => BindReferences.bindReference(e.canonicalized, attributes) }
+    keys.map(e => BindReferences.bindReference(e.canonicalized, attributes))
 
   override def compatibleWith(other: BroadcastMode): Boolean = other match {
     case m: HashedRelationBroadcastMode =>

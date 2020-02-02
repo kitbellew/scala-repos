@@ -35,7 +35,7 @@ class FrameCheck extends Specification with ScalaCheck {
     "frame sortedRowsBy" in {
       forAll { (f: Frame[Int, Int, Double]) =>
         if (f.numCols > 0) {
-          val res = f.sortedRowsBy { x => x.at(0) }
+          val res = f.sortedRowsBy(x => x.at(0))
           val ord = array.argsort(f.colAt(0).toVec)
           val exp = f.rowAt(ord)
           res must_== exp
@@ -79,7 +79,7 @@ class FrameCheck extends Specification with ScalaCheck {
     }
 
     "serialization works" in {
-      forAll { f: Frame[Int, Int, Double] => f must_== serializedCopy(f) }
+      forAll(f: Frame[Int, Int, Double] => f must_== serializedCopy(f))
     }
 
   }

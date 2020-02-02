@@ -78,7 +78,7 @@ class VarTest extends FunSuite with GeneratorDrivenPropertyChecks {
   }
 
   test("flatMap") {
-    val us = Seq.fill(5) { U(0) }
+    val us = Seq.fill(5)(U(0))
     def short(us: Seq[Var[Int]]): Var[Int] = us match {
       case Seq(hd, tl @ _*) =>
         hd flatMap {
@@ -206,7 +206,7 @@ class VarTest extends FunSuite with GeneratorDrivenPropertyChecks {
   }
 
   test("Var.collect[Seq]") {
-    def ranged(n: Int) = Seq.tabulate(n) { i => Var(i) }
+    def ranged(n: Int) = Seq.tabulate(n)(i => Var(i))
 
     for (i <- 1 to 10) {
       val vars = ranged(i)
@@ -225,7 +225,7 @@ class VarTest extends FunSuite with GeneratorDrivenPropertyChecks {
   test("Var.collect[Set]") {
     val vars = Seq(Var(1), Var(2), Var(3))
 
-    val coll = Var.collect(vars.map { v => v: Var[Int] }.toSet)
+    val coll = Var.collect(vars.map(v => v: Var[Int]).toSet)
     val ref = new AtomicReference[Set[Int]]
     coll.changes.register(Witness(ref))
     assert(ref.get == Set(1, 2, 3))

@@ -38,7 +38,7 @@ class RingTest extends FunSuite {
     val r = Ring(numSlices, W)
 
     for (off <- Seq(0, W / 2, W)) {
-      val histo = run { Seq(r.pick(rng, off, W)) }
+      val histo = run(Seq(r.pick(rng, off, W)))
       assertBalanced(numSlices, histo)
     }
   }

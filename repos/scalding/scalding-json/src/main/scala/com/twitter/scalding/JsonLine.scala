@@ -75,7 +75,7 @@ case class JsonLine(
     pipe.collectTo[String, Tuple]('line -> fields) {
       case line: String if failOnEmptyLines || line.trim.nonEmpty =>
         val fs: Map[String, AnyRef] = mapper.readValue(line, mapTypeReference)
-        val values = splitFields.map { nestedRetrieval(Option(fs), _) }
+        val values = splitFields.map(nestedRetrieval(Option(fs), _))
         new cascading.tuple.Tuple(values: _*)
     }
   }

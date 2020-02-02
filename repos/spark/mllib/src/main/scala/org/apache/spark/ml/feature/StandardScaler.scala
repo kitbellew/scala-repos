@@ -154,7 +154,7 @@ class StandardScalerModel private[ml] (
     transformSchema(dataset.schema, logging = true)
     val scaler =
       new feature.StandardScalerModel(std, mean, $(withStd), $(withMean))
-    val scale = udf { scaler.transform _ }
+    val scale = udf(scaler.transform _)
     dataset.withColumn($(outputCol), scale(col($(inputCol))))
   }
 

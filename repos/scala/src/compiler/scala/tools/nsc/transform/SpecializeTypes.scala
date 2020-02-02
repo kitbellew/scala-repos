@@ -1649,7 +1649,7 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
       }
 
     override def transform(tree: Tree): Tree =
-      reportError { transform1(tree) } { _ => tree }
+      reportError(transform1(tree))(_ => tree)
 
     def transform1(tree: Tree) = {
       val symbol = tree.symbol
@@ -1956,7 +1956,7 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
                   debuglog("created " + t)
                   reportError {
                     localTyper.typed(t)
-                  } { _ => super.transform(tree) }
+                  }(_ => super.transform(tree))
 
                 case fwd @ Forward(_) =>
                   debuglog("forward: " + fwd + ", " + ddef)
@@ -1968,7 +1968,7 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
                     "-->d completed forwarder to specialized overload: " + fwd.target + ": " + rhs1)
                   reportError {
                     localTyper.typed(deriveDefDef(tree)(_ => rhs1))
-                  } { _ => super.transform(tree) }
+                  }(_ => super.transform(tree))
 
                 case SpecializedAccessor(target) =>
                   val rhs1 =
@@ -2217,7 +2217,7 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
       receiver: Tree,
       paramss: List[List[ValDef]]): Tree = {
     val argss = mmap(paramss)(x => Ident(x.symbol))
-    atPos(pos) { (receiver /: argss)(Apply.apply) }
+    atPos(pos)((receiver /: argss)(Apply.apply))
   }
 
   /** Forward to the generic class constructor. If the current class initializes
@@ -2263,7 +2263,7 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
         gen.mkAsInstanceOf(Literal(Constant(null)), x.symbol.tpe)
       else
         Ident(x.symbol))
-    atPos(pos) { (receiver /: argss)(Apply.apply) }
+    atPos(pos)((receiver /: argss)(Apply.apply))
   }
 
   /** Add method m to the set of symbols for which we need an implementation tree

@@ -240,7 +240,7 @@ trait TestManagedPlatform
                 }.liftM[JobQueryT]
 
               case _ =>
-                shardQueryMonad.point { None }
+                shardQueryMonad.point(None)
             }
           }.liftM[JobQueryT]
         }
@@ -261,6 +261,6 @@ trait TestManagedPlatform
       val executionContext = self.executionContext
     }))
 
-  def startup = Future { true }
+  def startup = Future(true)
   def shutdown = Future { actorSystem.shutdown; true }
 }

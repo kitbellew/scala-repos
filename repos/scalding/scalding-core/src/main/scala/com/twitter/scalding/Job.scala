@@ -255,9 +255,9 @@ class Job(val args: Args) extends FieldConversions with java.io.Serializable {
     executionContext
       .flatMap(_.buildFlow)
       .map { flow =>
-        listeners.foreach { flow.addListener(_) }
-        stepListeners.foreach { flow.addStepListener(_) }
-        skipStrategy.foreach { flow.setFlowSkipStrategy(_) }
+        listeners.foreach(flow.addListener(_))
+        stepListeners.foreach(flow.addStepListener(_))
+        skipStrategy.foreach(flow.setFlowSkipStrategy(_))
         stepStrategy.foreach { strategy =>
           val existing = flow.getFlowStepStrategy
           val composed =

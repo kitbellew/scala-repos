@@ -244,7 +244,7 @@ class ClientDispatcherTest extends FunSuite {
     import ctx._
     // offer an ill-formed packet
     clientq.offer(Packet(0, Buffer(Array[Byte]())))
-    intercept[LostSyncException] { Await.result(service(PingRequest)) }
+    intercept[LostSyncException](Await.result(service(PingRequest)))
     assert(!service.isAvailable)
     assert(trans.onClose.isDefined)
   }
@@ -255,7 +255,7 @@ class ClientDispatcherTest extends FunSuite {
       new QueueTransport[Packet, Packet](new AsyncQueue[Packet](), clientq)
     val service = new ClientDispatcher(trans, handshake)
     clientq.offer(Packet(0, Buffer(Array[Byte]())))
-    intercept[LostSyncException] { Await.result(service(PingRequest)) }
+    intercept[LostSyncException](Await.result(service(PingRequest)))
     assert(!service.isAvailable)
     assert(trans.onClose.isDefined)
   }

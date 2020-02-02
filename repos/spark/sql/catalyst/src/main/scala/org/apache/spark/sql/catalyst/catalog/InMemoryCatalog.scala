@@ -52,7 +52,7 @@ class InMemoryCatalog extends ExternalCatalog {
       names: Seq[String],
       pattern: String): Seq[String] = {
     val regex = pattern.replaceAll("\\*", ".*").r
-    names.filter { funcName => regex.pattern.matcher(funcName).matches() }
+    names.filter(funcName => regex.pattern.matcher(funcName).matches())
   }
 
   private def existsFunction(db: String, funcName: String): Boolean = {
@@ -236,7 +236,7 @@ class InMemoryCatalog extends ExternalCatalog {
             s"'$db' table '$table':\n$dupSpecsStr")
       }
     }
-    parts.foreach { p => existingParts.put(p.spec, p) }
+    parts.foreach(p => existingParts.put(p.spec, p))
   }
 
   override def dropPartitions(

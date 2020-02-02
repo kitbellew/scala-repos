@@ -115,7 +115,7 @@ object Conneg {
 
     if (all.isEmpty) None
     else
-      Some(all.reduce { (a, b) => if (a.q < b.q) b else a }.value)
+      Some(all.reduce((a, b) => if (a.q < b.q) b else a).value)
   }
 
   // - Encoding --------------------------------------------------------------------------------------------------------

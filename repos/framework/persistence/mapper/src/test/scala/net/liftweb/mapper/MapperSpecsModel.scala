@@ -346,7 +346,7 @@ object Thing extends Thing with KeyedMetaMapper[String, Thing] {
 
   import java.util.UUID
   override def beforeCreate =
-    List { (thing: Thing) => thing.thing_id(UUID.randomUUID().toString()) }
+    List((thing: Thing) => thing.thing_id(UUID.randomUUID().toString()))
 }
 
 class Thing extends KeyedMapper[String, Thing] {

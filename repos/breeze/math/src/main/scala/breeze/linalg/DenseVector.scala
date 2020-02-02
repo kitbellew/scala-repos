@@ -190,7 +190,7 @@ class DenseVector[@spec(Double, Int, Float, Long) V](
     */
   override def foreach[@spec(Unit) U](fn: (V) => U): Unit =
     if (stride == 1) // ABCE stuff
-      cforRange(offset until (offset + length)) { j => fn(data(j)) }
+      cforRange(offset until (offset + length))(j => fn(data(j)))
     else {
       var i = offset
       cforRange(0 until length) { j =>
@@ -407,13 +407,13 @@ object DenseVector
           fn: (V) => V2,
           data: Array[V],
           off: Int): Unit =
-        cforRange(0 until out.length) { j => out(j) = fn(data(j + off)) }
+        cforRange(0 until out.length)(j => out(j) = fn(data(j + off)))
 
       private def fastestPath(
           out: Array[V2],
           fn: (V) => V2,
           data: Array[V]): Unit =
-        cforRange(0 until out.length) { j => out(j) = fn(data(j)) }
+        cforRange(0 until out.length)(j => out(j) = fn(data(j)))
 
       final private def slowPath(
           out: Array[V2],
@@ -492,7 +492,7 @@ object DenseVector
 
         val offset = from.offset
         if (stride == 1)
-          cforRange(offset until offset + length) { j => data(j) = fn(data(j)) }
+          cforRange(offset until offset + length)(j => data(j) = fn(data(j)))
         else
           slowPath(fn, data, length, stride, offset)
       }
@@ -655,9 +655,9 @@ object DenseVector
       if (x.noOffsetOrStride && y.noOffsetOrStride) {
         val ad = x.data
         val bd = y.data
-        cforRange(0 until x.length) { i => bd(i) += ad(i) * a }
+        cforRange(0 until x.length)(i => bd(i) += ad(i) * a)
       } else
-        cforRange(0 until x.length) { i => y(i) += x(i) * a }
+        cforRange(0 until x.length)(i => y(i) += x(i) * a)
     }
 
   }

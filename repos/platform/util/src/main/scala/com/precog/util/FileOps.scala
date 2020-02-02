@@ -41,9 +41,9 @@ trait FileOps {
 }
 
 object FilesystemFileOps extends FileOps {
-  def exists(src: File) = IO { src.exists() }
+  def exists(src: File) = IO(src.exists())
 
-  def rename(src: File, dest: File) = IO { src.renameTo(dest) }
+  def rename(src: File, dest: File) = IO(src.renameTo(dest))
   def moveDir(src: File, dest: File) = IO {
     if (!src.isDirectory)
       throw new IOException(
@@ -63,6 +63,6 @@ object FilesystemFileOps extends FileOps {
   def read(src: File) = IOUtils.readFileToString(src)
   def write(dest: File, content: String) = IOUtils.writeToFile(content, dest)
 
-  def mkdir(dir: File): IO[Boolean] = IO { dir.mkdirs() }
+  def mkdir(dir: File): IO[Boolean] = IO(dir.mkdirs())
 }
 // vim: set ts=4 sw=4 et:

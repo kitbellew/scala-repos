@@ -286,7 +286,7 @@ object HistoryServer extends Logging {
     val server = new HistoryServer(conf, provider, securityManager, port)
     server.bind()
 
-    ShutdownHookManager.addShutdownHook { () => server.stop() }
+    ShutdownHookManager.addShutdownHook(() => server.stop())
 
     // Wait until the end of the world... or if the HistoryServer process is manually stopped
     while (true) Thread.sleep(Int.MaxValue)
@@ -309,7 +309,7 @@ object HistoryServer extends Logging {
       appId: String,
       attemptId: Option[String]): String = {
     val attemptSuffix = attemptId
-      .map { id => s"/$id" }
+      .map(id => s"/$id")
       .getOrElse("")
     s"${HistoryServer.UI_PATH_PREFIX}/$appId$attemptSuffix"
   }

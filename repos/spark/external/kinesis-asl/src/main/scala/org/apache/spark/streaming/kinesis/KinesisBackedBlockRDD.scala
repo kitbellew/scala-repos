@@ -120,7 +120,7 @@ private[kinesis] class KinesisBackedBlockRDD[T: ClassTag](
       }
     }
     if (partition.isBlockIdValid)
-      getBlockFromBlockManager().getOrElse { getBlockFromKinesis() }
+      getBlockFromBlockManager().getOrElse(getBlockFromKinesis())
     else
       getBlockFromKinesis()
   }

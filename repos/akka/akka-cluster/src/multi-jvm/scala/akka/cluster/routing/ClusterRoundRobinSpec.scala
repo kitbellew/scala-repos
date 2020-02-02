@@ -228,7 +228,7 @@ abstract class ClusterRoundRobinSpec
 
         val replies = receiveReplies(PoolRoutee, iterationCount)
 
-        replies.values.foreach { _ should be > (0) }
+        replies.values.foreach(_ should be > (0))
         replies.values.sum should ===(iterationCount)
       }
 
@@ -249,7 +249,7 @@ abstract class ClusterRoundRobinSpec
 
         val replies = receiveReplies(GroupRoutee, iterationCount)
 
-        replies.values.foreach { _ should be > (0) }
+        replies.values.foreach(_ should be > (0))
         replies.values.sum should ===(iterationCount)
       }
 

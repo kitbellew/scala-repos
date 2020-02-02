@@ -276,9 +276,9 @@ class FileBasedWriteAheadLogSuite
         val atInstant = value.incrementAndGet()
         if (atInstant > max) max = atInstant
       }
-      def decrement(): Unit = synchronized { value.decrementAndGet() }
-      def get(): Int = synchronized { value.get() }
-      def getMax(): Int = synchronized { max }
+      def decrement(): Unit = synchronized(value.decrementAndGet())
+      def get(): Int = synchronized(value.get())
+      def getMax(): Int = synchronized(max)
     }
     try {
       // If Jenkins is slow, we may not have a chance to run many threads simultaneously. Having
@@ -670,7 +670,7 @@ object WriteAheadLogSuite {
     if (allowBatching)
       writeToStream(wrapArrayArrayByte(data.toArray[String]).array())
     else
-      data.foreach { item => writeToStream(Utils.serialize(item)) }
+      data.foreach(item => writeToStream(Utils.serialize(item)))
     writer.close()
     segments
   }
@@ -682,7 +682,7 @@ object WriteAheadLogSuite {
       filePath: String,
       data: Seq[String]): Seq[FileBasedWriteAheadLogSegment] = {
     val writer = new FileBasedWriteAheadLogWriter(filePath, hadoopConf)
-    val segments = data.map { item => writer.write(item) }
+    val segments = data.map(item => writer.write(item))
     writer.close()
     segments
   }
@@ -771,7 +771,7 @@ object WriteAheadLogSuite {
         fileSystem.getFileStatus(logDirectoryPath).isDirectory)
       fileSystem
         .listStatus(logDirectoryPath)
-        .map { _.getPath() }
+        .map(_.getPath())
         .sortBy {
           _.getName().split("-")(1).toLong
         }
@@ -798,7 +798,7 @@ object WriteAheadLogSuite {
   }
 
   def generateRandomData(): Seq[String] =
-    (1 to 100).map { _.toString }
+    (1 to 100).map(_.toString)
 
   def readAndDeserializeDataManually(
       logFiles: Seq[String],
@@ -809,7 +809,7 @@ object WriteAheadLogSuite {
         data.flatMap(byteArray => byteArray.map(Utils.deserialize[String]))
       }
     else
-      logFiles.flatMap { file => readDataManually[String](file) }
+      logFiles.flatMap(file => readDataManually[String](file))
 
   implicit def stringToByteBuffer(str: String): ByteBuffer =
     ByteBuffer.wrap(Utils.serialize(str))

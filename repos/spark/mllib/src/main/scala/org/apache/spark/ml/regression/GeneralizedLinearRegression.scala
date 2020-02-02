@@ -922,7 +922,7 @@ class GeneralizedLinearRegressionSummary private[regression] (
   }
 
   private lazy val pearsonResiduals: DataFrame = {
-    val prUDF = udf { mu: Double => family.variance(mu) }
+    val prUDF = udf(mu: Double => family.variance(mu))
     val w =
       if (model.getWeightCol.isEmpty) lit(1.0) else col(model.getWeightCol)
     predictions.select(
@@ -934,7 +934,7 @@ class GeneralizedLinearRegressionSummary private[regression] (
   }
 
   private lazy val workingResiduals: DataFrame = {
-    val wrUDF = udf { (y: Double, mu: Double) => (y - mu) * link.deriv(mu) }
+    val wrUDF = udf((y: Double, mu: Double) => (y - mu) * link.deriv(mu))
     predictions.select(
       wrUDF(col(model.getLabelCol), col(predictionCol)).as("workingResiduals"))
   }
@@ -1057,7 +1057,7 @@ class GeneralizedLinearRegressionSummary private[regression] (
         Array.concat(model.coefficients.toArray, Array(model.intercept))
       else
         model.coefficients.toArray
-    estimate.zip(coefficientStandardErrors).map { x => x._1 / x._2 }
+    estimate.zip(coefficientStandardErrors).map(x => x._1 / x._2)
   }
 
   /**

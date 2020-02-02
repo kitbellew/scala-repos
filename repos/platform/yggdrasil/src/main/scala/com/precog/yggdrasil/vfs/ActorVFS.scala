@@ -226,7 +226,7 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         }
 
       for {
-        _ <- IOT { IOUtils.makeDirectory(versionDir) }
+        _ <- IOT(IOUtils.makeDirectory(versionDir))
         file = (new File(versionDir, "data"))
         _ = logger.debug("Creating new blob at " + file)
         writeResult <- write(new FileOutputStream(file), 0L, data)
@@ -360,7 +360,7 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
       extends VFS {
 
     def writeAll(data: Seq[(Long, EventMessage)]): IO[PrecogUnit] =
-      IO { projectionsActor ! IngestData(data) }
+      IO(projectionsActor ! IngestData(data))
 
     def writeAllSync(data: Seq[(Long, EventMessage)])
         : EitherT[Future, ResourceError, PrecogUnit] = EitherT {
@@ -499,7 +499,7 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         } except {
           case t: Throwable =>
             logger.error("Error obtaining path children for " + path, t)
-            IO { sender ! PathOpFailure(path, IOError(t)) }
+            IO(sender ! PathOpFailure(path, IOError(t)))
         } unsafePerformIO
 
       case FindPathMetadata(path) =>
@@ -517,7 +517,7 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         val io = targetActor(op.path) map { _.tell(op, requestor) } except {
           case t: Throwable =>
             logger.error("Error obtaining path actor for " + op.path, t)
-            IO { requestor ! PathOpFailure(op.path, IOError(t)) }
+            IO(requestor ! PathOpFailure(op.path, IOError(t)))
         }
 
         io.unsafePerformIO
@@ -681,7 +681,7 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         }
         _ <- created traverse { resource =>
           for {
-            _ <- IO { versions += (version -> resource) }
+            _ <- IO(versions += (version -> resource))
             _ <- complete.whenM(
               versionLog.completeVersion(version) >> versionLog
                 .setHead(version) >> maybeExpireCache(apiKey, resource))

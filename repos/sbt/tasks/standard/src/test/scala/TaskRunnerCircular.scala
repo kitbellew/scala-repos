@@ -10,7 +10,7 @@ object TaskRunnerCircularTest extends Properties("TaskRunner Circular") {
     checkCircularReferences _
   }
   property("Allows references to completed tasks") =
-    forAllNoShrink(MaxTasksGen, MaxWorkersGen) { allowedReference _ }
+    forAllNoShrink(MaxTasksGen, MaxWorkersGen)(allowedReference _)
   final def allowedReference(intermediate: Int, workers: Int) = {
     val top = task(intermediate).named("top")
     def iterate(tk: Task[Int]): Task[Int] =

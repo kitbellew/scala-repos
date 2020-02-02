@@ -21,7 +21,7 @@ case class BroadcastedRows[T, RowType](underlying: T)
       implicit canTraverseAxis: CanTraverseAxis[T, Axis._1.type, RowType])
       : B = {
     var acc = z
-    canTraverseAxis(underlying, Axis._1) { c => acc = f(acc, c) }
+    canTraverseAxis(underlying, Axis._1)(c => acc = f(acc, c))
     acc
   }
 }
@@ -41,7 +41,7 @@ object BroadcastedRows {
       def apply(
           from: BroadcastedRows[T, RowType],
           fn: (RowType) => ResultRow): Result =
-        cc(from.underlying, Axis._1) { fn }
+        cc(from.underlying, Axis._1)(fn)
     }
 
   implicit def scalarOf[T, RowType]
@@ -54,7 +54,7 @@ object BroadcastedRows {
       : UImpl[Op, BroadcastedRows[T, RowType], Result] =
     new UImpl[Op, BroadcastedRows[T, RowType], Result] {
       def apply(v: BroadcastedRows[T, RowType]): Result =
-        cc(v.underlying, Axis._1) { op(_) }
+        cc(v.underlying, Axis._1)(op(_))
     }
 
   implicit def broadcastInplaceOp[Op, T, RowType, RHS, OpResult](
@@ -64,7 +64,7 @@ object BroadcastedRows {
       : InPlaceImpl[Op, BroadcastedRows[T, RowType]] =
     new InPlaceImpl[Op, BroadcastedRows[T, RowType]] {
       def apply(v: BroadcastedRows[T, RowType]) {
-        cc(v.underlying, Axis._1) { op(_) }
+        cc(v.underlying, Axis._1)(op(_))
       }
     }
 
@@ -75,7 +75,7 @@ object BroadcastedRows {
       : UImpl2[Op, BroadcastedRows[T, RowType], RHS, Result] =
     new UImpl2[Op, BroadcastedRows[T, RowType], RHS, Result] {
       def apply(v: BroadcastedRows[T, RowType], v2: RHS): Result =
-        cc(v.underlying, Axis._1) { op(_, v2) }
+        cc(v.underlying, Axis._1)(op(_, v2))
     }
 
   implicit def broadcastInplaceOp2[Op, T, RowType, RHS, OpResult](
@@ -85,7 +85,7 @@ object BroadcastedRows {
       : InPlaceImpl2[Op, BroadcastedRows[T, RowType], RHS] =
     new InPlaceImpl2[Op, BroadcastedRows[T, RowType], RHS] {
       def apply(v: BroadcastedRows[T, RowType], v2: RHS) {
-        cc(v.underlying, Axis._1) { op(_, v2) }
+        cc(v.underlying, Axis._1)(op(_, v2))
       }
     }
 

@@ -140,7 +140,7 @@ object Grouped {
   def tuple2Conv[K, V](ord: Ordering[K]): TupleConverter[(K, V)] =
     ord match {
       case _: OrderedSerialization[_] =>
-        tuple2Converter[Boxed[K], V].andThen { kv => (kv._1.get, kv._2) }
+        tuple2Converter[Boxed[K], V].andThen(kv => (kv._1.get, kv._2))
       case _ => tuple2Converter[K, V]
     }
 
@@ -240,7 +240,7 @@ sealed trait ReduceStep[K, V1] extends KeyedPipe[K] {
                         new CascadingBinaryComparator(boxordSer))
                       val ts2 = tupleSetter
                         .asInstanceOf[TupleSetter[(K, Boxed[V1])]]
-                        .contraMap { kv1: (K, V1) => (kv1._1, boxfn(kv1._2)) }
+                        .contraMap(kv1: (K, V1) => (kv1._1, boxfn(kv1._2)))
                       (Some(valueF), ts2)
                     case _ =>
                       (Some(Grouped.valueSorting(vs)), tupleSetter)
@@ -335,7 +335,7 @@ case class IdentityReduce[K, V1](
     case None       => mapped // free case
     case Some(reds) =>
       // This is weird, but it is sometimes used to force a partition
-      groupOp { _.reducers(reds).setDescriptions(descriptions) }
+      groupOp(_.reducers(reds).setDescriptions(descriptions))
   }
 
   /** This is just an identity that casts the result to V1 */
@@ -367,11 +367,11 @@ case class UnsortedIdentityReduce[K, V1](
       // Note, this is going to bias toward low hashcode items.
       // If you care which items you take, you should sort by a random number
       // or the value itself.
-      val fakeOrdering: Ordering[V1] = Ordering.by { v: V1 => v.hashCode }
+      val fakeOrdering: Ordering[V1] = Ordering.by(v: V1 => v.hashCode)
       implicit val mon = new PriorityQueueMonoid[V1](n)(fakeOrdering)
       // Do the heap-sort on the mappers:
       val pretake: TypedPipe[(K, V1)] = mapped
-        .mapValues { v: V1 => mon.build(v) }
+        .mapValues(v: V1 => mon.build(v))
         .sumByLocalKeys
         .flatMap { case (k, vs) => vs.iterator.asScala.map((k, _)) }
       // We have removed the priority queues, so serialization is not greater
@@ -430,7 +430,7 @@ case class UnsortedIdentityReduce[K, V1](
     case None       => mapped // free case
     case Some(reds) =>
       // This is weird, but it is sometimes used to force a partition
-      groupOp { _.reducers(reds).setDescriptions(descriptions) }
+      groupOp(_.reducers(reds).setDescriptions(descriptions))
   }
 
   /** This is just an identity that casts the result to V1 */
@@ -506,7 +506,7 @@ case class IdentityValueSortedReduce[K, V1](
         new PriorityQueueMonoid[V1](n)(valueSort.asInstanceOf[Ordering[V1]])
       // Do the heap-sort on the mappers:
       val pretake: TypedPipe[(K, V1)] = mapped
-        .mapValues { v: V1 => mon.build(v) }
+        .mapValues(v: V1 => mon.build(v))
         .sumByLocalKeys
         .flatMap { case (k, vs) => vs.iterator.asScala.map((k, _)) }
       // Now finish on the reducers

@@ -151,13 +151,13 @@ class MongoQueryExecutor(
             val finalNames = dbs
               .foldLeft(dbs.toSet) {
                 case (acc, dbName) =>
-                  acc.filterNot { t => t.startsWith(dbName) && t != dbName }
+                  acc.filterNot(t => t.startsWith(dbName) && t != dbName)
               }
               .toList
               .sorted
             Success(
               finalNames
-                .map { d => d + "/" }
+                .map(d => d + "/")
                 .serialize
                 .asInstanceOf[JArray])
 
@@ -167,7 +167,7 @@ class MongoQueryExecutor(
               if (db == null) JArray(Nil)
               else
                 db.getCollectionNames.asScala
-                  .map { d => d + "/" }
+                  .map(d => d + "/")
                   .toList
                   .sorted
                   .serialize

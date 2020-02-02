@@ -83,9 +83,9 @@ class ReplyCodec extends UnifiedProtocolCodec {
   val decode = readBytes(1) { bytes =>
     bytes(0) match {
       case STATUS_REPLY =>
-        readLine { line => emit(StatusReply(line)) }
+        readLine(line => emit(StatusReply(line)))
       case ERROR_REPLY =>
-        readLine { line => emit(ErrorReply(line)) }
+        readLine(line => emit(ErrorReply(line)))
       case INTEGER_REPLY =>
         readLine { line =>
           RequireServerProtocol.safe {
@@ -96,7 +96,7 @@ class ReplyCodec extends UnifiedProtocolCodec {
         decodeBulkReply
       case MBULK_REPLY =>
         RequireServerProtocol.safe {
-          readLine { line => decodeMBulkReply(NumberFormat.toLong(line)) }
+          readLine(line => decodeMBulkReply(NumberFormat.toLong(line)))
         }
       case b: Byte =>
         throw new ServerError(

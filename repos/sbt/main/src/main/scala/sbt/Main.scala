@@ -679,7 +679,7 @@ object BuiltinCommands {
       Nil
   def loadProject =
     Command(LoadProject, LoadProjectBrief, LoadProjectDetailed)(
-      loadProjectParser) { (s, arg) => loadProjectCommands(arg) ::: s }
+      loadProjectParser)((s, arg) => loadProjectCommands(arg) ::: s)
   private[this] def loadProjectParser =
     (s: State) => matched(Project.loadActionParser)
   private[this] def loadProjectCommand(command: String, arg: String): String =

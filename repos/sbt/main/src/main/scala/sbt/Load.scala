@@ -519,7 +519,7 @@ object Load {
       case Nil => loaders
       case x :: xs =>
         import Alternatives._
-        val resolver = (x /: xs) { _ | _ }
+        val resolver = (x /: xs)(_ | _)
         if (isRoot) loaders.setRoot(resolver)
         else loaders.addNonRoot(unit.uri, resolver)
     }
@@ -1107,7 +1107,7 @@ object Load {
         0)(loader)
     // How to merge SbtFiles we read into one thing
     def merge(ls: Seq[LoadedSbtFile]): LoadedSbtFile =
-      (LoadedSbtFile.empty /: ls) { _ merge _ }
+      (LoadedSbtFile.empty /: ls)(_ merge _)
     // Loads a given file, or pulls from the cache.
 
     def memoLoadSettingsFile(src: File): LoadedSbtFile =

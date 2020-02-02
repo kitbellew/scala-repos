@@ -214,7 +214,7 @@ class GroupManager @Singleton @Inject() (
               storeUrls = Seq.empty)
             val appDownloads: Map[URL, String] =
               app.storeUrls.flatMap { url =>
-                downloads.remove(url).map { path => new URL(url) -> path }
+                downloads.remove(url).map(path => new URL(url) -> path)
               }.toMap
             if (appDownloads.nonEmpty)
               actions += ResolveArtifacts(resolved, appDownloads)

@@ -7,7 +7,7 @@ trait Foo[-A <: AnyRef, +B <: AnyRef] {
 trait Xs[+A] {
   { List(1, 2, 3) contains "a" } // only this warns
   { List(1, 2, 3) contains 1 }
-  identity(List(1, 2, 3) contains 1) { List("a") foreach println }
+  identity(List(1, 2, 3) contains 1)(List("a") foreach println)
 }
 
 trait Ys[+A] {

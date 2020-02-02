@@ -776,7 +776,7 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
       logTermination(reason)
       for (timer ← timers.values) timer.cancel()
       timers.clear()
-      timeoutFuture.foreach { _.cancel() }
+      timeoutFuture.foreach(_.cancel())
       currentState = nextState
 
       val stopEvent =

@@ -48,8 +48,8 @@ private[finagle] object StabilizingAddr {
     @volatile var nq = 0
     @volatile var healthStat = Healthy.id
 
-    val health = statsReceiver.addGauge("health") { healthStat }
-    val limbo = statsReceiver.addGauge("limbo") { nq }
+    val health = statsReceiver.addGauge("health")(healthStat)
+    val limbo = statsReceiver.addGauge("limbo")(nq)
     val stabilized = new Broker[Addr]
 
     /**

@@ -50,7 +50,7 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
   implicit val arbTimestamp: Arbitrary[Timestamp] = Arbitrary {
     Gen
       .choose(1L, 100000L)
-      .map { Timestamp(_) }
+      .map(Timestamp(_))
   }
 
   implicit val arbitraryPipeFactory: Arbitrary[PipeFactory[Nothing]] =

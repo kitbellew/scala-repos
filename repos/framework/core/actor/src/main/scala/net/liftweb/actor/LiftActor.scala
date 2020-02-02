@@ -290,7 +290,7 @@ trait SpecializedLiftActor[T] extends SimpleActor[T] {
                 }
             }
           }
-          .openOr { keepOnDoingHighPriory = false }
+          .openOr(keepOnDoingHighPriory = false)
       }
 
       val pf = messageHandler

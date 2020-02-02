@@ -105,7 +105,7 @@ class SparkConfSuite
     assert(conf.contains("k1"), "conf did not contain k1")
     assert(!conf.contains("k4"), "conf contained k4")
     assert(conf.get("k1") === "v4")
-    intercept[Exception] { conf.get("k4") }
+    intercept[Exception](conf.get("k4"))
     assert(conf.get("k4", "not found") === "not found")
     assert(conf.getOption("k1") === Some("v4"))
     assert(conf.getOption("k4") === None)
@@ -113,17 +113,17 @@ class SparkConfSuite
 
   test("creating SparkContext without master and app name") {
     val conf = new SparkConf(false)
-    intercept[SparkException] { sc = new SparkContext(conf) }
+    intercept[SparkException](sc = new SparkContext(conf))
   }
 
   test("creating SparkContext without master") {
     val conf = new SparkConf(false).setAppName("My app")
-    intercept[SparkException] { sc = new SparkContext(conf) }
+    intercept[SparkException](sc = new SparkContext(conf))
   }
 
   test("creating SparkContext without app name") {
     val conf = new SparkConf(false).setMaster("local")
-    intercept[SparkException] { sc = new SparkContext(conf) }
+    intercept[SparkException](sc = new SparkContext(conf))
   }
 
   test("creating SparkContext with both master and app name") {

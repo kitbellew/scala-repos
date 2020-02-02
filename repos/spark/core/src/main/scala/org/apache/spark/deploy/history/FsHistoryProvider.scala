@@ -94,7 +94,7 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
 
   private val logDir = conf
     .getOption("spark.history.fs.logDirectory")
-    .map { d => Utils.resolveURI(d).toString }
+    .map(d => Utils.resolveURI(d).toString)
     .getOrElse(DEFAULT_LOG_DIR)
 
   private val hadoopConf = SparkHadoopUtil.get.newConfiguration(conf)
@@ -296,7 +296,7 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
           try {
             val prevFileSize = fileToAppInfo
               .get(entry.getPath())
-              .map { _.fileSize }
+              .map(_.fileSize)
               .getOrElse(0L)
             !entry.isDirectory() && prevFileSize < entry.getLen()
           } catch {
@@ -307,7 +307,7 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
               false
           }
         }
-        .flatMap { entry => Some(entry) }
+        .flatMap(entry => Some(entry))
         .sortWith {
           case (entry1, entry2) =>
             entry1.getModificationTime() >= entry2.getModificationTime()

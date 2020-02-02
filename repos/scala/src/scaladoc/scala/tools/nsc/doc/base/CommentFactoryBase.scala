@@ -672,7 +672,7 @@ trait CommentFactoryBase { this: MemberLookupBase =>
       }
 
       do {
-        val str = readUntil { char == safeTagMarker || char == endOfText }
+        val str = readUntil(char == safeTagMarker || char == endOfText)
         nextChar()
 
         list += str
@@ -808,7 +808,7 @@ trait CommentFactoryBase { this: MemberLookupBase =>
       jump("[[")
       val parens = 2 + repeatJump('[')
       val stop = "]" * parens
-      val target = readUntil { check(stop) || isWhitespaceOrNewLine(char) }
+      val target = readUntil(check(stop) || isWhitespaceOrNewLine(char))
       val title =
         if (!check(stop)) Some({
           jumpWhitespaceOrNewLine()

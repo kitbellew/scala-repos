@@ -22,6 +22,6 @@ private[play] class StateMachine[S](initialState: S) {
     * Exclusive access to the state. The state is read and passed to
     * f. Inside f it is safe to modify the state, if desired.
     */
-  def exclusive(f: S => Unit) = mutex.exclusive { f(state) }
+  def exclusive(f: S => Unit) = mutex.exclusive(f(state))
 
 }

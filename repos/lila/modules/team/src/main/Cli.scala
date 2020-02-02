@@ -22,7 +22,7 @@ private[team] final class Cli(api: TeamApi) extends lila.common.Cli {
 
   private def perform(teamId: String)(op: Team => Funit): Fu[String] =
     $find byId teamId flatMap {
-      _.fold(fufail[String]("Team not found")) { u => op(u) inject "Success" }
+      _.fold(fufail[String]("Team not found"))(u => op(u) inject "Success")
     }
 
   private def perform(teamId: String, userIds: List[String])(

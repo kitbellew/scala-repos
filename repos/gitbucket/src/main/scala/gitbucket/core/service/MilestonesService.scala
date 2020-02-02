@@ -64,7 +64,7 @@ trait MilestonesService {
       .filter { t =>
         (t.byRepository(owner, repository)) && (t.milestoneId.? isDefined)
       }
-      .groupBy { t => t.milestoneId -> t.closed }
+      .groupBy(t => t.milestoneId -> t.closed)
       .map { case (t1, t2) => t1._1 -> t1._2 -> t2.length }
       .toMap
 

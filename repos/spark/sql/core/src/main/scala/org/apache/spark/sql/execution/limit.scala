@@ -61,7 +61,7 @@ trait BaseLimit extends UnaryNode with CodegenSupport {
   override def outputOrdering: Seq[SortOrder] = child.outputOrdering
   override def outputPartitioning: Partitioning = child.outputPartitioning
   protected override def doExecute(): RDD[InternalRow] =
-    child.execute().mapPartitions { iter => iter.take(limit) }
+    child.execute().mapPartitions(iter => iter.take(limit))
 
   override def upstreams(): Seq[RDD[InternalRow]] =
     child.asInstanceOf[CodegenSupport].upstreams()

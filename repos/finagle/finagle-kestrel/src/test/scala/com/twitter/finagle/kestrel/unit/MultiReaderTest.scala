@@ -371,7 +371,7 @@ class MultiReaderTest
 
       // 0, 3, 6 ...
       eventually {
-        assert(messages == sentMessages.grouped(N).map { _.head }.toSet)
+        assert(messages == sentMessages.grouped(N).map(_.head).toSet)
       }
       messages.clear()
 
@@ -379,7 +379,7 @@ class MultiReaderTest
 
       // 1, 2, 4, 5, ...
       eventually {
-        assert(messages == sentMessages.grouped(N).map { _.tail }.flatten.toSet)
+        assert(messages == sentMessages.grouped(N).map(_.tail).flatten.toSet)
       }
     }
   }
@@ -427,7 +427,7 @@ class MultiReaderTest
             assert(
               messages == sentMessages
                 .grouped(N)
-                .map { _.take(expectFirstN) }
+                .map(_.take(expectFirstN))
                 .flatten
                 .toSet)
           }
@@ -537,15 +537,15 @@ class MultiReaderTest
 
       // 0, 3, 6 ...
       eventually {
-        assert(messages == sentMessages.grouped(N).map { _.head }.toSet)
+        assert(messages == sentMessages.grouped(N).map(_.head).toSet)
       }
       messages.clear()
 
-      rest.foreach { host => cluster.add(host) }
+      rest.foreach(host => cluster.add(host))
 
       // 1, 2, 4, 5, ...
       eventually {
-        assert(messages == sentMessages.grouped(N).map { _.tail }.flatten.toSet)
+        assert(messages == sentMessages.grouped(N).map(_.tail).flatten.toSet)
       }
     }
   }
@@ -593,7 +593,7 @@ class MultiReaderTest
             assert(
               messages == sentMessages
                 .grouped(N)
-                .map { _.take(expectFirstN) }
+                .map(_.take(expectFirstN))
                 .flatten
                 .toSet)
           }
@@ -624,7 +624,7 @@ class MultiReaderTest
       assert(messages.size == 0) // cluster not ready
       assert(errors.isDefined == false)
 
-      hosts.foreach { host => cluster.add(host) }
+      hosts.foreach(host => cluster.add(host))
 
       eventually {
         assert(messages == sentMessages.toSet)
@@ -640,7 +640,7 @@ class MultiReaderTest
         .clientBuilder(mockClientBuilder)
         .build()
       val e = (handle.error ?)
-      hosts.foreach { host => cluster.del(host) }
+      hosts.foreach(host => cluster.del(host))
 
       assert(e.isDefined == true)
       assert(Await.result(e) == AllHandlesDiedException)

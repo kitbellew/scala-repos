@@ -72,7 +72,7 @@ class FutureBenchmark extends StdBenchAnnotations {
     var sum = 0
     var i = 0
     while (i < state.depth) {
-      next = next.ensure { sum += 1 }
+      next = next.ensure(sum += 1)
       i += 1
     }
     p
@@ -124,7 +124,8 @@ object FutureBenchmark {
 
     @Setup
     def prepare() {
-      stream = (0 until FutureBenchmark.N * 100).map { i => Future.value(i) }.toStream
+      stream =
+        (0 until FutureBenchmark.N * 100).map(i => Future.value(i)).toStream
     }
   }
 
@@ -149,14 +150,14 @@ object FutureBenchmark {
   class SelectState {
     val p = new Promise[Unit]
     val futures: Seq[Future[Unit]] =
-      Seq.fill(NumToSelect - 1) { p } :+ Future.Done
+      Seq.fill(NumToSelect - 1)(p) :+ Future.Done
   }
 
   @State(Scope.Benchmark)
   class SelectIndexState {
     val p = new Promise[Unit]
     val futures: IndexedSeq[Future[Unit]] =
-      IndexedSeq.fill(NumToSelect - 1) { p } :+ Future.Done
+      IndexedSeq.fill(NumToSelect - 1)(p) :+ Future.Done
   }
 
 }

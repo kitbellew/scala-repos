@@ -85,7 +85,7 @@ private trait ApertureTesting {
     def apply(i: Int) = factories.getOrElseUpdate(i, new Factory(i))
 
     def range(n: Int): Traversable[ServiceFactory[Unit, Unit]] =
-      Traversable.tabulate(n) { i => apply(i) }
+      Traversable.tabulate(n)(i => apply(i))
   }
 
 }
@@ -160,7 +160,7 @@ private class ApertureTest extends FunSuite with ApertureTesting {
   test("Empty vectors") {
     val bal = new Bal
 
-    intercept[Empty] { Await.result(bal.apply()) }
+    intercept[Empty](Await.result(bal.apply()))
   }
 
   test("Nonavailable vectors") {
@@ -230,7 +230,7 @@ private class LoadBandTest extends FunSuite with ApertureTesting {
 
       for (i <- 0 to 1000) {
         counts.clear()
-        val factories = Seq.fill(c) { Await.result(bal.apply()) }
+        val factories = Seq.fill(c)(Await.result(bal.apply()))
         for (f <- counts if f.n > 0) avgLoad.update(f.p)
         // no need to avg ap, it's independent of the load distribution
         ap = bal.aperturex

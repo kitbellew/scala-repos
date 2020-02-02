@@ -40,7 +40,7 @@ object TestHelper extends Matchers {
 
   def deserializeSeq[T](items: Int, buf: InputStream)(
       implicit orderedBuffer: OrderedSerialization[T]): Seq[T] =
-    (0 until items).map { _ => orderedBuffer.read(buf).get }.toList
+    (0 until items).map(_ => orderedBuffer.read(buf).get).toList
 
   def serialize[T](t: T)(
       implicit orderedBuffer: OrderedSerialization[T]): InputStream =
@@ -70,7 +70,7 @@ object TestHelper extends Matchers {
       : OrderedSerialization.Result = {
     val bufA = serializeSeq[T]((0 until 20).map(_ => a))
     val bufB = serializeSeq[T]((0 until 20).map(_ => b))
-    val r = (0 until 20).map { _ => orderedBuffer.compareBinary(bufA, bufB) }
+    val r = (0 until 20).map(_ => orderedBuffer.compareBinary(bufA, bufB))
     if (r.distinct.size == 1) r.head
     else sys.error("Results are inconsistent.." + r)
   }

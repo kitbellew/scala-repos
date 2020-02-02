@@ -31,7 +31,7 @@ private[video] final class VideoApi(videoColl: Coll, viewColl: Coll) {
       }
     case Some(user) =>
       view.seenVideoIds(user, videos) map { ids =>
-        videos.map { v => VideoView(v, ids contains v.id) }
+        videos.map(v => VideoView(v, ids contains v.id))
       }
   }
 

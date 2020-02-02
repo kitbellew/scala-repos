@@ -31,7 +31,7 @@ class ListTests extends CatsSuite {
   checkAll("Traverse[List]", SerializableTests.serializable(Traverse[List]))
 
   test("nel => list => nel returns original nel")(
-    forAll { fa: NonEmptyList[Int] => fa.unwrap.toNel should ===(Some(fa)) }
+    forAll(fa: NonEmptyList[Int] => fa.unwrap.toNel should ===(Some(fa)))
   )
 
   test("toNel on empty list returns None") {
@@ -41,6 +41,6 @@ class ListTests extends CatsSuite {
   test("show") {
     List(1, 2, 3).show should ===("List(1, 2, 3)")
     (Nil: List[Int]).show should ===("List()")
-    forAll { l: List[String] => l.show should ===(l.toString) }
+    forAll(l: List[String] => l.show should ===(l.toString))
   }
 }

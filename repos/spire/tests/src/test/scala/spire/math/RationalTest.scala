@@ -206,7 +206,7 @@ class RationalTest extends FunSuite {
     }
   }
 
-  test("longValue") { assert(Rational("5000000000").toLong === 5000000000L) }
+  test("longValue")(assert(Rational("5000000000").toLong === 5000000000L))
   test("intValue") {
     assert(Rational(3).toInt === 3)
     assert(Rational(-5, 2).toInt === -2)

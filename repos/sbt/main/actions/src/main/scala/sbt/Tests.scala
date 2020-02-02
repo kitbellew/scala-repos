@@ -316,7 +316,7 @@ object Tests {
       name: String,
       fun: TestFunction,
       tags: Seq[(Tag, Int)]): Task[Map[String, SuiteResult]] = {
-    val base = task { (name, fun.apply()) }
+    val base = task((name, fun.apply()))
     val taggedBase =
       base.tagw(tags: _*).tag(fun.tags.map(ConcurrentRestrictions.Tag(_)): _*)
     taggedBase flatMap {
@@ -354,14 +354,14 @@ object Tests {
         case Nil => acc
       }
 
-    task { processRunnable(runnables.toList, List.empty) } dependsOn (setupTasks)
+    task(processRunnable(runnables.toList, List.empty)) dependsOn (setupTasks)
   }
 
   def processResults(results: Iterable[(String, SuiteResult)]): Output =
     Output(overall(results.map(_._2.result)), results.toMap, Iterable.empty)
   def foldTasks(results: Seq[Task[Output]], parallel: Boolean): Task[Output] =
     if (results.isEmpty)
-      task { Output(TestResult.Passed, Map.empty, Nil) }
+      task(Output(TestResult.Passed, Map.empty, Nil))
     else if (parallel)
       reduced(results.toIndexedSeq, {
         case (Output(v1, m1, _), Output(v2, m2, _)) =>
@@ -376,7 +376,7 @@ object Tests {
           hd flatMap { out => sequence(tl, out :: acc) }
       }
       sequence(results.toList, List()) map { ress =>
-        val (rs, ms) = ress.unzip { e => (e.overall, e.events) }
+        val (rs, ms) = ress.unzip(e => (e.overall, e.events))
         Output(overall(rs), ms reduce (_ ++ _), Iterable.empty)
       }
     }

@@ -264,7 +264,7 @@ class EventTest extends FunSuite {
     val exc = new Exception
     f.raise(exc)
     assert(f.isDefined)
-    val caught = intercept[Exception] { Await.result(f) }
+    val caught = intercept[Exception](Await.result(f))
     assert(caught == exc)
   }
 
@@ -325,7 +325,7 @@ class EventTest extends FunSuite {
     val e = Event[Int]()
     val ref = new AtomicReference[IndexedSeq[Int]]
 
-    e.dedupWith { (a, b) => a >= b }
+    e.dedupWith((a, b) => a >= b)
       .build
       .register(Witness(ref))
     e.notify(0)

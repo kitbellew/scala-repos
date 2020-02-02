@@ -94,7 +94,7 @@ private[finagle] object MultiReaderHelper {
         return
       }
 
-      val queues = handles.map { _.messages }.toSeq
+      val queues = handles.map(_.messages).toSeq
       val errors = handles.map { h =>
         h.error map { e =>
           logger.warning(
@@ -107,7 +107,7 @@ private[finagle] object MultiReaderHelper {
       // We sequence here to ensure that `close` gets priority over reads.
       Offer
         .prioritize(
-          close.recv { _ => onClose(handles) },
+          close.recv(_ => onClose(handles)),
           Offer.choose(queues: _*) { m =>
             messages ! trackMessage(m)
             loop(handles)

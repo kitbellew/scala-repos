@@ -98,7 +98,7 @@ object svdr extends UFunc {
       nIter: Int): DenseMatrix[Double] = {
     val R = DenseMatrix.rand(M.cols, size, rand = Rand.gaussian)
     val Y = M * R
-    cforRange(0 until nIter) { _ => Y := M * (M.t * Y) }
+    cforRange(0 until nIter)(_ => Y := M * (M.t * Y))
     val q = qr.reduced.justQ(Y)
     q
   }

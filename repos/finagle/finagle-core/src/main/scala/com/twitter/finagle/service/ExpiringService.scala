@@ -98,7 +98,7 @@ abstract class ExpiringService[Req, Rep](
 
   private[this] def startTimer(duration: Option[Duration], counter: Counter) =
     duration map { t: Duration =>
-      timer.schedule(t.fromNow) { expire(counter) }
+      timer.schedule(t.fromNow)(expire(counter))
     } getOrElse NullTimerTask
 
   private[this] def expire(counter: Counter) {

@@ -42,7 +42,7 @@ class Issue070Spec extends FlatSpec with RunOnApplicationThread {
     val expectedResult = "Hello"
 
     // Setup a simple task that returns a string
-    val task = Task[String] { expectedResult }
+    val task = Task[String](expectedResult)
 
     // Add simple event handler that ignores event value
     // Issue 70 prevent following code from compiling with "error: ambiguous reference to overloaded definition"
@@ -69,7 +69,7 @@ class Issue070Spec extends FlatSpec with RunOnApplicationThread {
     val expectedResult = "Hello"
 
     // Setup a simple task that returns a string
-    val task = Task[String] { expectedResult }
+    val task = Task[String](expectedResult)
 
     // Add simple event filter that ignores event value
     // Issue 70 prevent following code from compiling with "error: ambiguous reference to overloaded definition"

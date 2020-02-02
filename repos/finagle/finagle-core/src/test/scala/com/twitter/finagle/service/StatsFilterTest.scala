@@ -84,7 +84,7 @@ class StatsFilterTest extends FunSuite {
     }
     assert(sourced.size == 0)
 
-    val unsourced = receiver.counters.filterKeys { _.exists(_ == "failures") }
+    val unsourced = receiver.counters.filterKeys(_.exists(_ == "failures"))
     assert(unsourced.size == 2)
     assert(unsourced(Seq("failures")) == 1)
     assert(
@@ -115,7 +115,7 @@ class StatsFilterTest extends FunSuite {
     assert(
       sourced(Seq("sourcedfailures", "bogus", classOf[Failure].getName())) == 1)
 
-    val unsourced = receiver.counters.filterKeys { _.exists(_ == "failures") }
+    val unsourced = receiver.counters.filterKeys(_.exists(_ == "failures"))
     assert(unsourced.size == 2)
     assert(unsourced(Seq("failures")) == 1)
     assert(unsourced(Seq("failures", classOf[Failure].getName())) == 1)
@@ -202,7 +202,7 @@ class StatsFilterTest extends FunSuite {
     promise.setException(e)
     val res = statsService("foo")
 
-    val unsourced = receiver.counters.filterKeys { _.exists(_ == "failures") }
+    val unsourced = receiver.counters.filterKeys(_.exists(_ == "failures"))
 
     assert(unsourced.size == 3)
     assert(unsourced(Seq("failures")) == 1)
@@ -245,7 +245,7 @@ class StatsFilterTest extends FunSuite {
     assert(1 == failure())
 
     // able to categorize Throws as success
-    intercept[RuntimeException] { Await.result(service(-5), 1.second) }
+    intercept[RuntimeException](Await.result(service(-5), 1.second))
     assert(2 == sr.counter("requests")())
     assert(1 == sr.counter("success")())
     assert(1 == sr.counter("failures")())

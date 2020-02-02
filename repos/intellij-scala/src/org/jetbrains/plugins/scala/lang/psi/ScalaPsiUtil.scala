@@ -860,7 +860,7 @@ object ScalaPsiUtil {
       def collectSupers(clazz: PsiClass, subst: ScSubstitutor) {
         clazz match {
           case td: ScTemplateDefinition =>
-            td.superTypes.foreach { tp => collectParts(subst.subst(tp)) }
+            td.superTypes.foreach(tp => collectParts(subst.subst(tp)))
           case clazz: PsiClass =>
             clazz.getSuperTypes.foreach { tp =>
               val stp = ScType.create(tp, project, scope)
@@ -1329,9 +1329,9 @@ object ScalaPsiUtil {
     var res: Seq[Signature] = (sigs.get(s): @unchecked) match {
       //partial match
       case Some(node) if !withSelfType || node.info.namedElement == x =>
-        node.supers.map { _.info }
+        node.supers.map(_.info)
       case Some(node) =>
-        node.supers.map { _.info }.filter { _.namedElement != x } :+ node.info
+        node.supers.map(_.info).filter(_.namedElement != x) :+ node.info
       case None =>
         //this is possible case: private member of library source class.
         //Problem is that we are building signatures over decompiled class.
@@ -1345,10 +1345,10 @@ object ScalaPsiUtil {
       (sigs.get(new PhysicalSignature(method, ScSubstitutor.empty)): @unchecked) match {
         //partial match
         case Some(node) if !withSelfType || node.info.namedElement == method =>
-          res ++= node.supers.map { _.info }
+          res ++= node.supers.map(_.info)
         case Some(node) =>
           res +:= node.info
-          res ++= node.supers.map { _.info }.filter { _.namedElement != method }
+          res ++= node.supers.map(_.info).filter(_.namedElement != method)
         case None =>
       }
     }
@@ -1381,7 +1381,7 @@ object ScalaPsiUtil {
       //partial match
       case Some(x) if !withSelfType || x.info == element => x.supers
       case Some(x) =>
-        x.supers.filter { _.info != element } :+ x
+        x.supers.filter(_.info != element) :+ x
       case None =>
         //this is possible case: private member of library source class.
         //Problem is that we are building types over decompiled class.

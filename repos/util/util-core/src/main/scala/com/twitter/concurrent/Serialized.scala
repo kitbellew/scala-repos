@@ -15,7 +15,7 @@ import com.twitter.util.{Future, Promise, Try}
 trait Serialized {
   protected case class Job[T](promise: Promise[T], doItToIt: () => T) {
     def apply() {
-      promise.update { Try { doItToIt() } }
+      promise.update(Try(doItToIt()))
     }
   }
 
@@ -29,7 +29,7 @@ trait Serialized {
     serializedQueue add { Job(result, () => f) }
 
     if (nwaiters.getAndIncrement() == 0)
-      do Try { serializedQueue.remove()() } while (nwaiters
+      do Try(serializedQueue.remove()()) while (nwaiters
         .decrementAndGet() > 0)
 
     result

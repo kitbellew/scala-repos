@@ -139,7 +139,7 @@ class Interpreter(map: AtomicMap[Buf, Entry]) {
           }
         }
       case Decr(key, value) =>
-        map.lock(key) { data => apply(Incr(key, -value)) }
+        map.lock(key)(data => apply(Incr(key, -value)))
       case Quit() =>
         NoOp()
     }
@@ -151,7 +151,7 @@ class Interpreter(map: AtomicMap[Buf, Entry]) {
         map.lock(key) { data =>
           data
             .get(key)
-            .filter { entry => entry.valid }
+            .filter(entry => entry.valid)
             .map { entry =>
               val value = entry.value
               Value(key, value, Some(generateCasUnique(value)))

@@ -115,7 +115,7 @@ class LoadingFutureCacheTest extends FunSuite {
     val ctx = new Ctx {}
     import ctx._
 
-    val result = cache.getOrElseUpdate("key") { Future.value(1234) }
+    val result = cache.getOrElseUpdate("key")(Future.value(1234))
     assert(Await.result(result) == 1234)
     assert(cacheLoaderCount == 0)
   }

@@ -245,7 +245,7 @@ class ZookeeperSystemCoordinationSpec extends Specification {
     private val offline = new Skipped("SKIP - ZOOKEEPER NOT AVAILABLE")
 
     private def cleanup() {
-      clients.foreach { _.close }
+      clients.foreach(_.close)
       val client = factory()
       client.deleteRecursive("/precog-test")
       client.close

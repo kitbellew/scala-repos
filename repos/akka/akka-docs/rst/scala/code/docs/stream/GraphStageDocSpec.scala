@@ -291,7 +291,7 @@ class GraphStageDocSpec extends AkkaSpec {
         new GraphStageLogic(shape) {
 
           override def preStart(): Unit = {
-            val callback = getAsyncCallback[Unit] { (_) => completeStage() }
+            val callback = getAsyncCallback[Unit]((_) => completeStage())
             switch.foreach(callback.invoke)
           }
 

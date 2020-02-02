@@ -313,7 +313,7 @@ class YahooDataSource(val params: YahooDataSource.Params)
           math.min(idx + dsp.maxTestingWindowSize, dsp.untilIdx - 1)
 
         val queries = (idx until testingUntilIdx)
-          .map { idx => (QueryDate(idx), None) }
+          .map(idx => (QueryDate(idx), None))
         (trainingData, queries)
       }
 

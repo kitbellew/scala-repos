@@ -131,9 +131,9 @@ object PairingSystem extends AbstractPairingSystem {
 
     def nextCombos(combo: Combination): List[Combination] =
       players
-        .filterNot { p => combo.exists(c => c._1 == p || c._2 == p) } match {
+        .filterNot(p => combo.exists(c => c._1 == p || c._2 == p)) match {
         case a :: rest =>
-          rest.map { b => (a, b) :: combo }
+          rest.map(b => (a, b) :: combo)
         case _ => Nil
       }
 

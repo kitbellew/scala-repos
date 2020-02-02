@@ -188,7 +188,7 @@ trait ZNode {
       val result = new ExistsCallbackPromise(ZNode.this)
       val update = new EventPromise
       zk.exists(path, update, result, null)
-      result.liftNoNode.map { ZNode.Watch(_, update) }
+      result.liftNoNode.map(ZNode.Watch(_, update))
     }
   }
 

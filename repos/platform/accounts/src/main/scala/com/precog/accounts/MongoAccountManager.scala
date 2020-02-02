@@ -235,5 +235,5 @@ abstract class MongoAccountManager(
     }
 
   def close() =
-    database.disconnect.fallbackTo(M.point(())).flatMap { _ => mongo.close }
+    database.disconnect.fallbackTo(M.point(())).flatMap(_ => mongo.close)
 }

@@ -441,7 +441,7 @@ object EnumerateesSpec
         val eventuallyInput = Promise[Input[Int]]()
         val result = Enumerator(0, 2, 4) &> Enumeratee.recover[Int] {
           (_, input) => eventuallyInput.success(input)
-        }(recoverEC) &> Enumeratee.map[Int] { i => 8 / i }(mapEC) |>>> Iteratee.getChunks // => List(4, 2)
+        }(recoverEC) &> Enumeratee.map[Int](i => 8 / i)(mapEC) |>>> Iteratee.getChunks // => List(4, 2)
 
         Await.result(result, Duration.Inf) must equalTo(List(4, 2))
         Await.result(eventuallyInput.future, Duration.Inf) must equalTo(

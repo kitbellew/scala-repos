@@ -420,7 +420,7 @@ case class ScTypeParameterType(
       case _               => ptp.name
     }, ptp match {
       case tp: ScTypeParam =>
-        tp.typeParameters.toList.map { new ScTypeParameterType(_, s) }
+        tp.typeParameters.toList.map(new ScTypeParameterType(_, s))
       case _ => ptp.getTypeParameters.toList.map(new ScTypeParameterType(_, s))
     }, ptp match {
       case tp: ScTypeParam =>

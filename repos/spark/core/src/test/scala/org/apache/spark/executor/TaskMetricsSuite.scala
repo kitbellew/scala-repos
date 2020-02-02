@@ -86,7 +86,7 @@ class TaskMetricsSuite extends SparkFunSuite {
     import shuffleRead._
     val accums = InternalAccumulator
       .createShuffleReadAccums()
-      .map { a => (a.name.get, a) }
+      .map(a => (a.name.get, a))
       .toMap[String, Accumulator[_]]
     accums(REMOTE_BLOCKS_FETCHED).setValueAny(1)
     accums(LOCAL_BLOCKS_FETCHED).setValueAny(2)
@@ -107,7 +107,7 @@ class TaskMetricsSuite extends SparkFunSuite {
     import shuffleWrite._
     val accums = InternalAccumulator
       .createShuffleWriteAccums()
-      .map { a => (a.name.get, a) }
+      .map(a => (a.name.get, a))
       .toMap[String, Accumulator[_]]
     accums(BYTES_WRITTEN).setValueAny(1L)
     accums(RECORDS_WRITTEN).setValueAny(2L)
@@ -122,7 +122,7 @@ class TaskMetricsSuite extends SparkFunSuite {
     import input._
     val accums = InternalAccumulator
       .createInputAccums()
-      .map { a => (a.name.get, a) }
+      .map(a => (a.name.get, a))
       .toMap[String, Accumulator[_]]
     accums(BYTES_READ).setValueAny(1L)
     accums(RECORDS_READ).setValueAny(2L)
@@ -137,7 +137,7 @@ class TaskMetricsSuite extends SparkFunSuite {
     import output._
     val accums = InternalAccumulator
       .createOutputAccums()
-      .map { a => (a.name.get, a) }
+      .map(a => (a.name.get, a))
       .toMap[String, Accumulator[_]]
     accums(BYTES_WRITTEN).setValueAny(1L)
     accums(RECORDS_WRITTEN).setValueAny(2L)
@@ -495,7 +495,7 @@ class TaskMetricsSuite extends SparkFunSuite {
     acc2 += 2
     val newUpdates = tm
       .accumulatorUpdates()
-      .map { a => (a.id, a) }
+      .map(a => (a.id, a))
       .toMap
     assert(newUpdates.contains(acc1.id))
     assert(newUpdates.contains(acc2.id))

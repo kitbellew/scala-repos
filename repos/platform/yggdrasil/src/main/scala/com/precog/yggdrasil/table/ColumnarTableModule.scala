@@ -579,7 +579,7 @@ trait ColumnarTableModule[M[+_]]
         }
 
       def mkProjections(spec: GroupKeySpec) =
-        toVector(dnf(spec)).map(sources(_).map { s => (s.key, s.spec) })
+        toVector(dnf(spec)).map(sources(_).map(s => (s.key, s.spec)))
 
       case class IndexedSource(
           groupId: GroupId,
@@ -2184,10 +2184,10 @@ trait ColumnarTableModule[M[+_]]
       slicePrinter(prelude)(s => s.toJsonString(flag))
 
     def toStrings: M[Iterable[String]] =
-      toEvents { (slice, row) => slice.toString(row) }
+      toEvents((slice, row) => slice.toString(row))
 
     def toJson: M[Iterable[JValue]] =
-      toEvents { (slice, row) => slice.toJson(row) }
+      toEvents((slice, row) => slice.toJson(row))
 
     private def toEvents[A](f: (Slice, RowId) => Option[A]): M[Iterable[A]] =
       for (stream <- self.compact(Leaf(Source)).slices.toStream)

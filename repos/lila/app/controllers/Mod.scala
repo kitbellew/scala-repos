@@ -150,7 +150,7 @@ object Mod extends LilaController {
     )
 
   def ipIntel(ip: String) = Secure(_.IpBan) { ctx => me =>
-    ipIntelCache(ip).map { Ok(_) }
+    ipIntelCache(ip).map(Ok(_))
   }
 
   def redirect(username: String, mod: Boolean = true) =

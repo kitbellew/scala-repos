@@ -39,7 +39,7 @@ class CommonConnectorTest extends WordSpec with BeforeAndAfter {
   }
 
   // A simple live test
-  Option { System.getProperty("com.twitter.zk.TEST_CONNECT") } foreach {
+  Option(System.getProperty("com.twitter.zk.TEST_CONNECT")) foreach {
     connectString =>
       val address = InetSocketAddressHelper.parse(connectString)
 

@@ -115,7 +115,7 @@ final case class AckedSendBuffer[T <: HasSequenceNumber](
     if (newNacked.size < ack.nacks.size) throw new ResendUnfulfillableException
     else
       this.copy(
-        nonAcked = nonAcked.filter { m ⇒ m.seq > ack.cumulativeAck },
+        nonAcked = nonAcked.filter(m ⇒ m.seq > ack.cumulativeAck),
         nacked = newNacked)
   }
 
@@ -217,9 +217,9 @@ final case class AckedReceiveBuffer[T <: HasSequenceNumber](
     this.copy(
       lastDelivered = mergedLastDelivered,
       cumulativeAck = max(this.cumulativeAck, that.cumulativeAck),
-      buf = (this.buf union that.buf).filter { _.seq > mergedLastDelivered }
+      buf = (this.buf union that.buf).filter(_.seq > mergedLastDelivered)
     )
   }
 
-  override def toString = buf.map { _.seq }.mkString("[", ", ", "]")
+  override def toString = buf.map(_.seq).mkString("[", ", ", "]")
 }

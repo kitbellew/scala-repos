@@ -184,7 +184,7 @@ class FSMActorSpec
       lazy val fsm = new Actor with FSM[Int, Null] {
         override def preStart = started.countDown
         startWith(1, null)
-        when(1) { FSM.NullFunction }
+        when(1)(FSM.NullFunction)
         onTermination {
           case x ⇒ testActor ! x
         }

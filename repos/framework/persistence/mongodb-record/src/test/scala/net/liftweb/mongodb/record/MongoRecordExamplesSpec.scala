@@ -134,7 +134,7 @@ package mongotestrecords {
         value.foreach { m =>
           val dbo = new BasicDBObject
 
-          m.keys.foreach { k => dbo.put(k.toString, m.getOrElse(k, "")) }
+          m.keys.foreach(k => dbo.put(k.toString, m.getOrElse(k, "")))
 
           dbl.add(dbo)
         }

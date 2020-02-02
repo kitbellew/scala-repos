@@ -74,11 +74,11 @@ object DefaultDateTimeConverter extends DateTimeConverter {
   /**  Uses Helpers.hourFormat which includes seconds but not time zone */
   def formatTime(d: Date) = hourFormat.format(d)
 
-  def parseDateTime(s: String) = tryo { internetDateFormat.parse(s) }
-  def parseDate(s: String) = tryo { dateFormat.parse(s) }
+  def parseDateTime(s: String) = tryo(internetDateFormat.parse(s))
+  def parseDate(s: String) = tryo(dateFormat.parse(s))
 
   /** Tries Helpers.hourFormat and Helpers.timeFormat */
-  def parseTime(s: String) = tryo { hourFormat.parse(s) } or tryo {
+  def parseTime(s: String) = tryo(hourFormat.parse(s)) or tryo {
     timeFormat.parse(s)
   }
 }

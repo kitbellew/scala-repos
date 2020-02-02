@@ -99,7 +99,7 @@ class MapInnerProductSpace[K, V: Field]
     with InnerProductSpace[Map[K, V], V]
     with Serializable {
   def dot(x: Map[K, V], y: Map[K, V]): V =
-    times(x, y).foldLeft(scalar.zero) { (a, b) => scalar.plus(a, b._2) }
+    times(x, y).foldLeft(scalar.zero)((a, b) => scalar.plus(a, b._2))
 }
 
 @SerialVersionUID(0L)

@@ -164,8 +164,8 @@ trait ShardService
             })#λ] {
               query[QueryResult] {
                 {
-                  get { queryService } ~
-                    post { queryService }
+                  get(queryService) ~
+                    post(queryService)
                 }
               }
             } ~
@@ -285,7 +285,7 @@ trait ShardService
                 }
             }
           } ->
-          stop { state: ShardState => state.stoppable }
+          stop(state: ShardState => state.stoppable)
       }
     }
   }

@@ -64,7 +64,7 @@ class FileJobManagerSpec extends Specification {
   })
 
   override def map(fs: => Fragments) =
-    Step { IOUtils.recursiveDelete(tempDir).unsafePerformIO } ^ fs
+    Step(IOUtils.recursiveDelete(tempDir).unsafePerformIO) ^ fs
 }
 
 class WebJobManagerSpec extends TestJobService { self =>

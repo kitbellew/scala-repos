@@ -118,7 +118,7 @@ object Protobuf {
         log.info(
           "Generating %d protobuf files from %s to %s"
             .format(protoFiles.size, srcDir, targetDir))
-        protoFiles.foreach { proto => log.info("Compiling %s" format proto) }
+        protoFiles.foreach(proto => log.info("Compiling %s" format proto))
 
         val exitCode = callProtoc(
           protoc,

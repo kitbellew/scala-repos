@@ -63,7 +63,7 @@ private class HealthyQueue[A](
   0.until(numItems) foreach { _ => self += makeItem() }
 
   override def +=(item: Future[A]) = {
-    synchronized { self += item }
+    synchronized(self += item)
     this
   }
 

@@ -35,7 +35,7 @@ object ToHeadUsages extends Specification {
 
   private def reachableLocalAddress = {
     val l = InetAddress.getLocalHost
-    tryo { l.isReachable(50) } match {
+    tryo(l.isReachable(50)) match {
       case Full(true) => l.getHostAddress
       case _          => "127.0.0.1"
     }

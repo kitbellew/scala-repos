@@ -84,7 +84,7 @@ class ScalaDirectClassInheritorsSearcher
 
     for (candidate <- candidates if candidate.showAsInheritor) {
       ProgressManager.checkCanceled()
-      if (inReadAction { candidate.isInheritor(clazz, deep = false) })
+      if (inReadAction(candidate.isInheritor(clazz, deep = false)))
         add(candidate)
     }
 

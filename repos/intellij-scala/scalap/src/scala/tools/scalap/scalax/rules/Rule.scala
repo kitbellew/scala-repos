@@ -40,7 +40,7 @@ trait Rule[-In, +Out, +A, +X] extends (In => Result[Out, A, X]) {
       case err @ Error(_)  => err
     }
 
-  def map[B](fa2b: A => B) = flatMap { a => out => Success(out, fa2b(a)) }
+  def map[B](fa2b: A => B) = flatMap(a => out => Success(out, fa2b(a)))
 
   def filter(f: A => Boolean) = flatMap { a => out =>
     if (f(a)) Success(out, a) else Failure
@@ -68,7 +68,7 @@ trait Rule[-In, +Out, +A, +X] extends (In => Result[Out, A, X]) {
 
   def ??(pf: PartialFunction[A, Any]) = filter(pf.isDefinedAt(_))
 
-  def -^[B](b: B) = map { any => b }
+  def -^[B](b: B) = map(any => b)
 
   /** Maps an Error */
   def !^[Y](fx2y: X => Y) = mapResult {

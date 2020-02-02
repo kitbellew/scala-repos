@@ -201,7 +201,7 @@ trait Polynomial[@sp(Double) C] { lhs =>
     */
   def foreachNonZero[U](
       f: (Int, C) => U)(implicit ring: Semiring[C], eq: Eq[C]): Unit =
-    foreach { (e, c) => if (c =!= ring.zero) f(e, c) }
+    foreach((e, c) => if (c =!= ring.zero) f(e, c))
 
   /**
     * Returns the coefficients in little-endian order. So, the i-th element is
@@ -214,7 +214,7 @@ trait Polynomial[@sp(Double) C] { lhs =>
     */
   def terms(implicit ring: Semiring[C], eq: Eq[C]): List[Term[C]] = {
     val lb = new scala.collection.mutable.ListBuffer[Term[C]]
-    foreachNonZero { (e, c) => lb += Term(c, e) }
+    foreachNonZero((e, c) => lb += Term(c, e))
     lb.result()
   }
 
@@ -233,7 +233,7 @@ trait Polynomial[@sp(Double) C] { lhs =>
   def data(implicit ring: Semiring[C], eq: Eq[C]): Map[Int, C] = {
     val bldr = new scala.collection.mutable.MapBuilder[Int, C, Map[Int, C]](
       Map.empty[Int, C])
-    foreachNonZero { (e, c) => bldr += ((e, c)) }
+    foreachNonZero((e, c) => bldr += ((e, c)))
     bldr.result()
   }
 
@@ -270,7 +270,7 @@ trait Polynomial[@sp(Double) C] { lhs =>
     * it is zero. If this polynomial is zero, then this returns a zero term.
     */
   def minTerm(implicit ring: Semiring[C], eq: Eq[C]): Term[C] = {
-    foreachNonZero { (n, c) => return Term(c, n) }
+    foreachNonZero((n, c) => return Term(c, n))
     Term(ring.zero, 0)
   }
 
@@ -482,7 +482,7 @@ trait Polynomial[@sp(Double) C] { lhs =>
       "(0)"
     else {
       val bldr = ArrayBuilder.make[Term[C]]()
-      foreach { (e, c) => bldr += Term(c, e) }
+      foreach((e, c) => bldr += Term(c, e))
 
       val ts = bldr.result()
       QuickSort.sort(ts)(Order[Term[C]].reverse, implicitly[ClassTag[Term[C]]])

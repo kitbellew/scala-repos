@@ -75,7 +75,7 @@ class ThreadPoolSchedulerTest
       def run() { p.setDone() }
     })
 
-    eventually { p.isDone }
+    eventually(p.isDone)
 
     scheduler.shutdown()
   }

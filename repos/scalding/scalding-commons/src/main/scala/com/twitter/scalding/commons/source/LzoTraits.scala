@@ -41,10 +41,10 @@ trait LzoCodec[T]
     HadoopSchemeInstance(
       (new LzoByteArrayScheme).asInstanceOf[Scheme[_, _, _, _, _]])
   override def transformForRead(pipe: Pipe) =
-    pipe.flatMap(0 -> 0) { fromBytes(_: Array[Byte]) }
+    pipe.flatMap(0 -> 0)(fromBytes(_: Array[Byte]))
 
   override def transformForWrite(pipe: Pipe) =
-    pipe.mapTo(0 -> 0) { injection.apply(_: T) }
+    pipe.mapTo(0 -> 0)(injection.apply(_: T))
 
   protected def fromBytes(b: Array[Byte]): Option[T] =
     Some(injection.invert(b).get)
@@ -146,7 +146,7 @@ trait LzoTypedTsv[T]
   override val types: Array[Class[_]] = {
     if (classOf[scala.Product].isAssignableFrom(mf.runtimeClass))
       //Assume this is a Tuple:
-      mf.typeArguments.map { _.runtimeClass }.toArray
+      mf.typeArguments.map(_.runtimeClass).toArray
     else
       //Assume there is only a single item
       Array(mf.runtimeClass)

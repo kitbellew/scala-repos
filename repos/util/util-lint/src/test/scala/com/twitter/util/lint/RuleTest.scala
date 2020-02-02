@@ -8,7 +8,7 @@ import org.scalatest.junit.JUnitRunner
 class RuleTest extends FunSuite {
 
   private def withName(name: String): Rule =
-    Rule(Category.Performance, name, "descriptive description") { Nil }
+    Rule(Category.Performance, name, "descriptive description")(Nil)
 
   private def idOfNamed(name: String): String =
     withName(name).id

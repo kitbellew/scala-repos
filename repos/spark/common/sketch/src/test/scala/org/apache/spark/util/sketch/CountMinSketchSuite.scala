@@ -129,15 +129,15 @@ class CountMinSketchSuite extends FunSuite { // scalastyle:ignore funsuite
     testMergeInPlace[T](typeName)(itemGenerator)
   }
 
-  testItemType[Byte]("Byte") { _.nextInt().toByte }
+  testItemType[Byte]("Byte")(_.nextInt().toByte)
 
-  testItemType[Short]("Short") { _.nextInt().toShort }
+  testItemType[Short]("Short")(_.nextInt().toShort)
 
-  testItemType[Int]("Int") { _.nextInt() }
+  testItemType[Int]("Int")(_.nextInt())
 
-  testItemType[Long]("Long") { _.nextLong() }
+  testItemType[Long]("Long")(_.nextLong())
 
-  testItemType[String]("String") { r => r.nextString(r.nextInt(20)) }
+  testItemType[String]("String")(r => r.nextString(r.nextInt(20)))
 
   test("incompatible merge") {
     intercept[IncompatibleMergeException] {

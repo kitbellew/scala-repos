@@ -98,8 +98,8 @@ abstract class ReadHandle {
           }
         else
           Offer.never,
-        ack.recv { _ => loop(nwait - 1, closed) },
-        closeReq.recv { _ => loop(nwait, true) }
+        ack.recv(_ => loop(nwait - 1, closed)),
+        closeReq.recv(_ => loop(nwait, true))
       )
     }
 
@@ -145,9 +145,9 @@ object ReadHandle {
     * of the underlying ones.
     */
   def merged(handles: Seq[ReadHandle]): ReadHandle = new ReadHandle {
-    val messages = Offer.choose(handles.map { _.messages }.toSeq: _*)
-    val error = Offer.choose(handles.map { _.error }.toSeq: _*)
-    def close() = handles.foreach { _.close() }
+    val messages = Offer.choose(handles.map(_.messages).toSeq: _*)
+    val error = Offer.choose(handles.map(_.error).toSeq: _*)
+    def close() = handles.foreach(_.close())
   }
 
   /**
@@ -280,7 +280,7 @@ trait Client {
           handle.error { t =>
             backoffs match {
               case delay #:: rest =>
-                timer.schedule(delay.fromNow) { loop(read(queueName), rest) }
+                timer.schedule(delay.fromNow)(loop(read(queueName), rest))
               case _ =>
                 error ! OutOfRetriesException
             }
@@ -386,8 +386,8 @@ ItemId](underlying: CommandExecutorFactory[CommandExecutor])
                       close.recv { t =>
                         service.close(); error ! ReadClosedException
                       },
-                      ack.recv { id => recv(service, closeAndOpenCommand(id)) },
-                      abort.recv { id => recv(service, abortCommand(id)) }
+                      ack.recv(id => recv(service, closeAndOpenCommand(id))),
+                      abort.recv(id => recv(service, abortCommand(id)))
                     )
                     .sync()
                 case Return(None) =>
@@ -536,7 +536,7 @@ protected[kestrel] class FinagledClientFactory(
     underlying: ServiceFactory[ThriftClientRequest, Array[Byte]])
     extends CommandExecutorFactory[FinagledClosableClient] {
   def apply(): Future[FinagledClosableClient] =
-    underlying().map { s => new FinagledClosableClient(s) }
+    underlying().map(s => new FinagledClosableClient(s))
 
   def close(deadline: Time): Future[Unit] = underlying.close(deadline)
 }
@@ -565,11 +565,11 @@ protected[kestrel] class ThriftConnectedClient(
 
   def flush(queueName: String): Future[Response] =
     withClient[Values](client =>
-      client.flushQueue(queueName).map { _ => Values(Nil) })
+      client.flushQueue(queueName).map(_ => Values(Nil)))
 
   def delete(queueName: String): Future[Response] =
     withClient[Response](client =>
-      client.deleteQueue(queueName).map { _ => Deleted() })
+      client.deleteQueue(queueName).map(_ => Deleted()))
 
   def set(
       queueName: String,
@@ -579,7 +579,7 @@ protected[kestrel] class ThriftConnectedClient(
     withClient[Response](client =>
       client
         .put(queueName, List(Buf.ByteBuffer.Owned.extract(value)), timeout)
-        .map { _ => Stored() })
+        .map(_ => Stored()))
   }
 
   def get(

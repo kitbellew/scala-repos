@@ -92,7 +92,7 @@ trait BlockAlignSpec[M[+_]]
 
   def checkAlign = {
     implicit val gen = sample(objectSchema(_, 3))
-    check { (sample: SampleData) => testAlign(sample.sortBy(_ \ "key")) }
+    check((sample: SampleData) => testAlign(sample.sortBy(_ \ "key")))
   }
 
   def alignSimple = {

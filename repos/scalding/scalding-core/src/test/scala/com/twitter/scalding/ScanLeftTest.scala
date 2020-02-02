@@ -15,7 +15,7 @@ class AddRankingWithScanLeft(args: Args) extends Job(args) {
       }
     }
     // scanLeft generates an extra line per group, thus remove it
-    .filter('height) { x: String => x != null }
+    .filter('height)(x: String => x != null)
     .debug
     .write(Tsv("result1"))
 }

@@ -166,7 +166,9 @@ private[spark] class BlockManagerMasterEndpoint(
     // The dispatcher is used as an implicit argument into the Future sequence construction.
     val removeMsg = RemoveRdd(rddId)
     Future.sequence(
-      blockManagerInfo.values.map { bm => bm.slaveEndpoint.ask[Int](removeMsg) }.toSeq
+      blockManagerInfo.values
+        .map(bm => bm.slaveEndpoint.ask[Int](removeMsg))
+        .toSeq
     )
   }
 
@@ -193,7 +195,9 @@ private[spark] class BlockManagerMasterEndpoint(
       removeFromDriver || !info.blockManagerId.isDriver
     }
     Future.sequence(
-      requiredBlockManagers.map { bm => bm.slaveEndpoint.ask[Int](removeMsg) }.toSeq
+      requiredBlockManagers
+        .map(bm => bm.slaveEndpoint.ask[Int](removeMsg))
+        .toSeq
     )
   }
 
@@ -287,7 +291,7 @@ private[spark] class BlockManagerMasterEndpoint(
         if (askSlaves)
           info.slaveEndpoint.ask[Option[BlockStatus]](getBlockStatus)
         else
-          Future { info.getStatus(blockId) }
+          Future(info.getStatus(blockId))
       (info.blockManagerId, blockStatusFuture)
     }.toMap
   }
@@ -311,7 +315,7 @@ private[spark] class BlockManagerMasterEndpoint(
             if (askSlaves)
               info.slaveEndpoint.ask[Seq[BlockId]](getMatchingBlockIds)
             else
-              Future { info.blocks.asScala.keys.filter(filter).toSeq }
+              Future(info.blocks.asScala.keys.filter(filter).toSeq)
           future
         }
       )
@@ -406,8 +410,8 @@ private[spark] class BlockManagerMasterEndpoint(
     val blockManagerIds = blockManagerInfo.keySet
     if (blockManagerIds.contains(blockManagerId))
       blockManagerIds
-        .filterNot { _.isDriver }
-        .filterNot { _ == blockManagerId }
+        .filterNot(_.isDriver)
+        .filterNot(_ == blockManagerId)
         .toSeq
     else
       Seq.empty

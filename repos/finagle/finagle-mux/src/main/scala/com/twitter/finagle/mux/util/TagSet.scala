@@ -61,12 +61,12 @@ private[mux] object TagSet {
       def hasNext: Boolean = _next != -1
       def next(): Int = {
         val cur = _next
-        _next = self.synchronized { bits.nextSetBit(_next + 1) }
+        _next = self.synchronized(bits.nextSetBit(_next + 1))
         cur
       }
     }
 
     // for performance
-    override def isEmpty: Boolean = synchronized { bits.isEmpty }
+    override def isEmpty: Boolean = synchronized(bits.isEmpty)
   }
 }

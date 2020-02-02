@@ -140,7 +140,7 @@ private[orc] class OrcOutputWriter(
     table.setProperty(
       "columns.types",
       dataSchema
-        .map { f => HiveMetastoreTypes.toMetastoreType(f.dataType) }
+        .map(f => HiveMetastoreTypes.toMetastoreType(f.dataType))
         .mkString(":"))
 
     val serde = new OrcSerde

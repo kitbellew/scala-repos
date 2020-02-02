@@ -414,9 +414,9 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
               in match {
                 case Nil =>
                   WizardRules.deregisterWizardSession(CurrentSession.is)
-                  VisitedScreens.foreach { s => s.finish() }
+                  VisitedScreens.foreach(s => s.finish())
                   finish()
-                  VisitedScreens.foreach { s => s.postFinish() }
+                  VisitedScreens.foreach(s => s.postFinish())
 
                 case x :: xs =>
                   x.apply {

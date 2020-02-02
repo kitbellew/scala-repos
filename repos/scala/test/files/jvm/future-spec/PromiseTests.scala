@@ -266,7 +266,7 @@ class PromiseTests extends MinimalScalaTest {
 
     "retain exception with filter" in {
       f { (future, message) =>
-        intercept[E] { Await.result(future filter (_ => true), defaultTimeout) }.getMessage mustBe (message)
+        intercept[E](Await.result(future filter (_ => true), defaultTimeout)).getMessage mustBe (message)
         intercept[E] {
           Await.result(future filter (_ => false), defaultTimeout)
         }.getMessage mustBe (message)

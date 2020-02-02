@@ -208,11 +208,11 @@ object FoldableTests {
 
   def anyConsistent[F[_], A](
       f: A => Boolean)(implicit F: Foldable[F], fa: Arbitrary[F[A]]) =
-    forAll { fa: F[A] => F.any(fa)(f) === F.toList(fa).exists(f) }
+    forAll(fa: F[A] => F.any(fa)(f) === F.toList(fa).exists(f))
 
   def allConsistent[F[_], A](
       f: A => Boolean)(implicit F: Foldable[F], fa: Arbitrary[F[A]]) =
-    forAll { fa: F[A] => F.all(fa)(f) === F.toList(fa).forall(f) }
+    forAll(fa: F[A] => F.all(fa)(f) === F.toList(fa).forall(f))
 
   def anyAndAllLazy[F[_]](implicit fa: Arbitrary[F[Int]], F: Foldable[F]) = {
     val p = new Properties("foldable")

@@ -75,9 +75,9 @@ class JobQueryLoggerSpec extends Specification {
       (report, msg) => report.info((), msg)
     }
     "report warn messages to the correct channel" in testChannel(
-      channels.Warning) { (report, msg) => report.warn((), msg) }
+      channels.Warning)((report, msg) => report.warn((), msg))
     "report error messages to the correct channel" in testChannel(
-      channels.Error) { (report, msg) => report.error((), msg) }
+      channels.Error)((report, msg) => report.error((), msg))
     "cancel jobs on a die" in {
       withReport { report =>
         val reason = "Arrrgggggggggggghhhhhhh....."

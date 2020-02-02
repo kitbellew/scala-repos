@@ -99,18 +99,18 @@ private[reflect] trait SynchronizedTypes extends internal.Types {
    */
 
   override protected def defineUnderlyingOfSingleType(tpe: SingleType) =
-    gilSynchronized { super.defineUnderlyingOfSingleType(tpe) }
+    gilSynchronized(super.defineUnderlyingOfSingleType(tpe))
 
   override protected def defineBaseTypeSeqOfCompoundType(tpe: CompoundType) =
-    gilSynchronized { super.defineBaseTypeSeqOfCompoundType(tpe) }
+    gilSynchronized(super.defineBaseTypeSeqOfCompoundType(tpe))
 
   override protected def defineBaseClassesOfCompoundType(tpe: CompoundType) =
-    gilSynchronized { super.defineBaseClassesOfCompoundType(tpe) }
+    gilSynchronized(super.defineBaseClassesOfCompoundType(tpe))
 
   override protected def defineParentsOfTypeRef(tpe: TypeRef) =
-    gilSynchronized { super.defineParentsOfTypeRef(tpe) }
+    gilSynchronized(super.defineParentsOfTypeRef(tpe))
 
   override protected def defineBaseTypeSeqOfTypeRef(tpe: TypeRef) =
-    gilSynchronized { super.defineBaseTypeSeqOfTypeRef(tpe) }
+    gilSynchronized(super.defineBaseTypeSeqOfTypeRef(tpe))
 
 }

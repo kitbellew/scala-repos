@@ -303,7 +303,7 @@ object MarkovChain {
     */
   def metropolisHastings[T](init: T, proposal: T => (Density[T] with Rand[T]))(
       logMeasure: T => Double) =
-    MarkovChain(init) { Kernels.metropolisHastings(proposal) { logMeasure } };
+    MarkovChain(init)(Kernels.metropolisHastings(proposal)(logMeasure));
 
   /**
     * Creates a slice sampler for a function. logMeasure should be an (unnormalized) log pdf.

@@ -158,12 +158,12 @@ private[streaming] class BlockGenerator(
     // Stop generating blocks and set the state for block pushing thread to start draining the queue
     logInfo("Stopping BlockGenerator")
     blockIntervalTimer.stop(interruptTimer = false)
-    synchronized { state = StoppedGeneratingBlocks }
+    synchronized(state = StoppedGeneratingBlocks)
 
     // Wait for the queue to drain and mark generated as stopped
     logInfo("Waiting for block pushing thread to terminate")
     blockPushingThread.join()
-    synchronized { state = StoppedAll }
+    synchronized(state = StoppedAll)
     logInfo("Stopped BlockGenerator")
   }
 

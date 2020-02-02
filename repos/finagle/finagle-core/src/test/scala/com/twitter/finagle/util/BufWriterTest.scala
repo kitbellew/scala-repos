@@ -12,14 +12,14 @@ class BufWriterTest extends FunSuite with GeneratorDrivenPropertyChecks {
   test("writeByte")(forAll { byte: Byte =>
     val bw = BufWriter.fixed(1)
     val buf = bw.writeByte(byte).owned()
-    intercept[OverflowException] { bw.writeByte(byte) }
+    intercept[OverflowException](bw.writeByte(byte))
     assert(buf == Buf.ByteArray.Owned(Array(byte)))
   })
 
   test("writeShortBE")(forAll { short: Short =>
     val bw = BufWriter.fixed(2)
     val buf = bw.writeShortBE(short).owned()
-    intercept[OverflowException] { bw.writeByte(0xff) }
+    intercept[OverflowException](bw.writeByte(0xff))
     val arr = Array[Byte](
       ((short >> 8) & 0xff).toByte,
       (short & 0xff).toByte
@@ -30,7 +30,7 @@ class BufWriterTest extends FunSuite with GeneratorDrivenPropertyChecks {
   test("writeIntBE")(forAll { int: Int =>
     val bw = BufWriter.fixed(4)
     val buf = bw.writeIntBE(int).owned()
-    intercept[OverflowException] { bw.writeByte(0xff) }
+    intercept[OverflowException](bw.writeByte(0xff))
     val arr = Array[Byte](
       ((int >> 24) & 0xff).toByte,
       ((int >> 16) & 0xff).toByte,
@@ -43,7 +43,7 @@ class BufWriterTest extends FunSuite with GeneratorDrivenPropertyChecks {
   test("writeLongBE")(forAll { long: Long =>
     val bw = BufWriter.fixed(8)
     val buf = bw.writeLongBE(long).owned()
-    intercept[OverflowException] { bw.writeByte(0xff) }
+    intercept[OverflowException](bw.writeByte(0xff))
     val arr = Array[Byte](
       ((long >> 56) & 0xff).toByte,
       ((long >> 48) & 0xff).toByte,
@@ -60,7 +60,7 @@ class BufWriterTest extends FunSuite with GeneratorDrivenPropertyChecks {
   test("writeBytes")(forAll { bytes: Array[Byte] =>
     val bw = BufWriter.fixed(bytes.length)
     val buf = bw.writeBytes(bytes).owned()
-    intercept[OverflowException] { bw.writeByte(0xff) }
+    intercept[OverflowException](bw.writeByte(0xff))
     assert(buf == Buf.ByteArray.Owned(bytes))
   })
 }

@@ -18,7 +18,7 @@ class RefreshTest extends FunSuite with MockitoSugar {
       .thenReturn(Future.value(2))
 
     val ttl = 1.minute
-    val memoizedFuture = Refresh.every(ttl) { provider() }
+    val memoizedFuture = Refresh.every(ttl)(provider())
   }
 
   test("it should call through on first request") {
@@ -103,8 +103,8 @@ class RefreshTest extends FunSuite with MockitoSugar {
 
     promise.setException(new RuntimeException)
 
-    intercept[RuntimeException] { Await.result(result1) }
-    intercept[RuntimeException] { Await.result(result2) }
+    intercept[RuntimeException](Await.result(result1))
+    intercept[RuntimeException](Await.result(result2))
 
     verify(provider, times(1))()
 

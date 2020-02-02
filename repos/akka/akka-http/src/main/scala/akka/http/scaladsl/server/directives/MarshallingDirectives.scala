@@ -76,7 +76,7 @@ trait MarshallingDirectives {
   def handleWith[A, B](f: A ⇒ B)(
       implicit um: FromRequestUnmarshaller[A],
       m: ToResponseMarshaller[B]): Route =
-    entity(um) { a ⇒ complete(f(a)) }
+    entity(um)(a ⇒ complete(f(a)))
 }
 
 object MarshallingDirectives extends MarshallingDirectives

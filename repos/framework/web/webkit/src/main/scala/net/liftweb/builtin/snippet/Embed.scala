@@ -38,7 +38,7 @@ object Embed extends DispatchSnippet {
   private object BindAtWithName {
     def unapply(in: Elem): Option[(Elem, String)] =
       if (in.prefix == "lift" && in.label == "bind-at")
-        in.attribute("name").map { nameNode => (in, nameNode.text) }
+        in.attribute("name").map(nameNode => (in, nameNode.text))
       else
         None
   }

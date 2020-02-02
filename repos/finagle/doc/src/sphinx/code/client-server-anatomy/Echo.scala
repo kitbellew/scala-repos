@@ -96,7 +96,7 @@ object SimpleListenerExample {
     val listener = Netty3Listener[String, String](
       StringServerPipeline,
       StackServer.defaultParams)
-    val server = listener.listen(address) { serveTransport(_) }
+    val server = listener.listen(address)(serveTransport(_))
     //#simplelisten
 
     Await.ready(Future.never)

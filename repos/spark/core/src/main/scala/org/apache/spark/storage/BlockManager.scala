@@ -1269,7 +1269,7 @@ private[spark] class BlockManager(
     val blocksToRemove = blockInfoManager.entries.map(_._1).collect {
       case bid @ BroadcastBlockId(`broadcastId`, _) => bid
     }
-    blocksToRemove.foreach { blockId => removeBlock(blockId, tellMaster) }
+    blocksToRemove.foreach(blockId => removeBlock(blockId, tellMaster))
     blocksToRemove.size
   }
 

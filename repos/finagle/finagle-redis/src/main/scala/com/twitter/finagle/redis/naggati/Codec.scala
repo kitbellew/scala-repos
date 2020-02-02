@@ -79,7 +79,7 @@ object Codec {
 
     override def toString =
       super.toString + flags
-        .map { _.toString }
+        .map(_.toString)
         .mkString(" with Signalling(", ", ", ")")
   }
 }
@@ -109,7 +109,7 @@ class Codec[A: Manifest](
 
   private[this] def encode(obj: A): Option[ChannelBuffer] = {
     val buffer = encoder.encode(obj)
-    buffer.foreach { b => bytesWrittenCounter(b.readableBytes) }
+    buffer.foreach(b => bytesWrittenCounter(b.readableBytes))
     buffer
   }
 

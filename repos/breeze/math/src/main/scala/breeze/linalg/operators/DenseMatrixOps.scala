@@ -1381,7 +1381,7 @@ trait LowPriorityDenseMatrix1 {
       def apply(from: DenseMatrix[V], axis: Axis._0.type)(
           f: (DenseVector[V]) => R): Transpose[DenseVector[R]] = {
         val result = DenseVector.zeros[R](from.cols)
-        cforRange(0 until from.cols) { c => result(c) = f(from(::, c)) }
+        cforRange(0 until from.cols)(c => result(c) = f(from(::, c)))
         result.t
       }
     }

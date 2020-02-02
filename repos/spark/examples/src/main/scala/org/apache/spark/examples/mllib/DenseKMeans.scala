@@ -74,7 +74,7 @@ object DenseKMeans {
 
     parser
       .parse(args, defaultParams)
-      .map { params => run(params) }
+      .map(params => run(params))
       .getOrElse {
         sys.exit(1)
       }
@@ -88,7 +88,7 @@ object DenseKMeans {
 
     val examples = sc
       .textFile(params.input)
-      .map { line => Vectors.dense(line.split(' ').map(_.toDouble)) }
+      .map(line => Vectors.dense(line.split(' ').map(_.toDouble)))
       .cache()
 
     val numExamples = examples.count()

@@ -189,7 +189,7 @@ abstract class MixinNodes {
         supersMerged: MultiMap): NodesMap = {
       val primarySupers = new NodesMap
       for ((key, nodes) <- supersMerged) {
-        val primarySuper = nodes.find { n => !isAbstract(n.info) } match {
+        val primarySuper = nodes.find(n => !isAbstract(n.info)) match {
           case None           => nodes.toList(0)
           case Some(concrete) => concrete
         }

@@ -530,11 +530,11 @@ object ZipperTest extends SpecLite {
 
   "positions should return a zippers with all possible positions of a zipper" ! forAll {
     z: Zipper[Int] =>
-      val indeces = z.positions.map { _.index }.toStream
+      val indeces = z.positions.map(_.index).toStream
       indeces.min must_=== (0)
       indeces.max must_=== (z.length - 1)
       indeces.sorted must_=== (indeces)
-      z.positions.map { _.toStream }.toStream.distinct.length must_=== (1)
+      z.positions.map(_.toStream).toStream.distinct.length must_=== (1)
   }
 
   "index returns the position of the focus" ! forAll {

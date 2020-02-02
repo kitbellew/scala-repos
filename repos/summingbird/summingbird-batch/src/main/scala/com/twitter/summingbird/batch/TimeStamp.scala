@@ -55,12 +55,12 @@ object Timestamp {
     Monoid.from(Timestamp.Min)(orderingOnTimestamp.max(_, _))
 
   implicit val timestamp2Date: Bijection[Timestamp, Date] =
-    Bijection.build[Timestamp, Date] { ts => new Date(ts.milliSinceEpoch) } {
+    Bijection.build[Timestamp, Date](ts => new Date(ts.milliSinceEpoch)) {
       fromDate(_)
     }
 
   implicit val timestamp2Long: Bijection[Timestamp, Long] =
-    Bijection.build[Timestamp, Long] { _.milliSinceEpoch } { Timestamp(_) }
+    Bijection.build[Timestamp, Long](_.milliSinceEpoch)(Timestamp(_))
 
   implicit val timestampSuccessible: Successible[Timestamp] =
     new Successible[Timestamp] {

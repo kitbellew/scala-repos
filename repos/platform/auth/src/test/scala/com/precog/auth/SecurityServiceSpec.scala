@@ -622,7 +622,7 @@ class SecurityServiceSpec
           user1Grant.grantId)
         afterDelete = jgs.deserialize[Set[v1.GrantDetails]]
       } yield !afterDelete.exists(_.grantId == details.grantId)) must awaited(
-        to) { beTrue }
+        to)(beTrue)
     }
 
     "retrieve permissions for a given path owned by user" in {

@@ -94,7 +94,7 @@ private trait Balancer[Req, Rep] extends ServiceFactory[Req, Rep] { self =>
     statsReceiver.addGauge("load") {
       dist.vector.map(_.pending).sum
     },
-    statsReceiver.addGauge("size") { dist.vector.size }
+    statsReceiver.addGauge("size")(dist.vector.size)
   )
 
   private[this] val adds = statsReceiver.counter("adds")

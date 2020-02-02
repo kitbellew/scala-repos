@@ -465,12 +465,12 @@ class CleanerTester(
 
   val cleanerListener = new CleanerListener {
     def rddCleaned(rddId: Int): Unit = {
-      toBeCleanedRDDIds.synchronized { toBeCleanedRDDIds -= rddId }
+      toBeCleanedRDDIds.synchronized(toBeCleanedRDDIds -= rddId)
       logInfo("RDD " + rddId + " cleaned")
     }
 
     def shuffleCleaned(shuffleId: Int): Unit = {
-      toBeCleanedShuffleIds.synchronized { toBeCleanedShuffleIds -= shuffleId }
+      toBeCleanedShuffleIds.synchronized(toBeCleanedShuffleIds -= shuffleId)
       logInfo("Shuffle " + shuffleId + " cleaned")
     }
 
@@ -485,7 +485,7 @@ class CleanerTester(
       logInfo("Cleaned accId " + accId + " cleaned")
 
     def checkpointCleaned(rddId: Long): Unit = {
-      toBeCheckpointIds.synchronized { toBeCheckpointIds -= rddId }
+      toBeCheckpointIds.synchronized(toBeCheckpointIds -= rddId)
       logInfo("checkpoint  " + rddId + " cleaned")
     }
   }
@@ -614,10 +614,10 @@ class CleanerTester(
   }
 
   private def isAllCleanedUp =
-    toBeCleanedRDDIds.synchronized { toBeCleanedRDDIds.isEmpty } &&
-      toBeCleanedShuffleIds.synchronized { toBeCleanedShuffleIds.isEmpty } &&
-      toBeCleanedBroadcstIds.synchronized { toBeCleanedBroadcstIds.isEmpty } &&
-      toBeCheckpointIds.synchronized { toBeCheckpointIds.isEmpty }
+    toBeCleanedRDDIds.synchronized(toBeCleanedRDDIds.isEmpty) &&
+      toBeCleanedShuffleIds.synchronized(toBeCleanedShuffleIds.isEmpty) &&
+      toBeCleanedBroadcstIds.synchronized(toBeCleanedBroadcstIds.isEmpty) &&
+      toBeCheckpointIds.synchronized(toBeCheckpointIds.isEmpty)
 
   private def getRDDBlocks(rddId: Int): Seq[BlockId] =
     blockManager.master.getMatchingBlockIds(_ match {

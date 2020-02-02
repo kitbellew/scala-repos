@@ -692,7 +692,7 @@ class LinearRegressionSummary private[regression] (
   /** Residuals (label - predicted value) */
   @Since("1.5.0")
   @transient lazy val residuals: DataFrame = {
-    val t = udf { (pred: Double, label: Double) => label - pred }
+    val t = udf((pred: Double, label: Double) => label - pred)
     predictions.select(t(col(predictionCol), col(labelCol)).as("residuals"))
   }
 
@@ -770,7 +770,7 @@ class LinearRegressionSummary private[regression] (
           Array.concat(model.coefficients.toArray, Array(model.intercept))
         else
           model.coefficients.toArray
-      estimate.zip(coefficientStandardErrors).map { x => x._1 / x._2 }
+      estimate.zip(coefficientStandardErrors).map(x => x._1 / x._2)
     }
   }
 

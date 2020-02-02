@@ -202,7 +202,7 @@ class LocalScheduler(lifo: Boolean) extends Scheduler {
   def flush(): Unit = get().flush()
 
   private[this] def activationsSum(f: Activation => Long): Long =
-    activations.synchronized { activations.keysIterator.map(f).sum }
+    activations.synchronized(activations.keysIterator.map(f).sum)
 
   def numDispatches: Long = activationsSum(_.numDispatches)
 

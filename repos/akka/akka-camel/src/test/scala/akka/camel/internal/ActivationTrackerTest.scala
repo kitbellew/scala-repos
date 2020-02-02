@@ -136,7 +136,7 @@ class ActivationTrackerTest
       probe.expectMsg(EndpointActivated(actor.ref))
     }
     def verifyDeActivated()(implicit timeout: FiniteDuration) =
-      within(timeout) { probe.expectMsg(EndpointDeActivated(actor.ref)) }
+      within(timeout)(probe.expectMsg(EndpointDeActivated(actor.ref)))
 
     def verifyFailedToActivate()(implicit timeout: FiniteDuration) =
       within(timeout) {

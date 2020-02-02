@@ -26,13 +26,13 @@ class RangeDirectivesSpec extends RoutingSpec with Inspectors with Inside {
     def completeWithRangedBytes(length: Byte) = wrs(complete(bytes(length)))
 
     "return an Accept-Ranges(bytes) header for GET requests" in {
-      Get() ~> { wrs { complete("any") } } ~> check {
+      Get() ~> { wrs(complete("any")) } ~> check {
         headers should contain(`Accept-Ranges`(RangeUnits.Bytes))
       }
     }
 
     "not return an Accept-Ranges(bytes) header for non-GET requests" in {
-      Put() ~> { wrs { complete("any") } } ~> check {
+      Put() ~> { wrs(complete("any")) } ~> check {
         headers should not contain `Accept-Ranges`(RangeUnits.Bytes)
       }
     }
@@ -107,7 +107,7 @@ class RangeDirectivesSpec extends RoutingSpec with Inspectors with Inside {
     "return a 'multipart/byteranges' for a ranged request with multiple coalesced ranges and expect ranges in ascending order" in {
       Get() ~> addHeader(
         Range(ByteRange(5, 10), ByteRange(0, 1), ByteRange(1, 2))) ~> {
-        wrs { complete("Some random and not super short entity.") }
+        wrs(complete("Some random and not super short entity."))
       } ~> check {
         header[`Content-Range`] should be(None)
         val parts = Await.result(

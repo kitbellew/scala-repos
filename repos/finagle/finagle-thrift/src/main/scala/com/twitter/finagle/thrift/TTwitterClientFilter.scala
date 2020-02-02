@@ -45,7 +45,7 @@ private[thrift] class TTwitterClientFilter(
 
     val traceId = Trace.id
     header.setSpan_id(traceId.spanId.toLong)
-    traceId._parentId.foreach { id => header.setParent_span_id(id.toLong) }
+    traceId._parentId.foreach(id => header.setParent_span_id(id.toLong))
     header.setTrace_id(traceId.traceId.toLong)
     header.setFlags(traceId.flags.toLong)
 

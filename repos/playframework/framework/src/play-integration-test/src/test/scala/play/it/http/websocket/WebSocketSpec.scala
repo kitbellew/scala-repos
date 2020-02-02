@@ -83,7 +83,7 @@ trait WebSocketSpec
   def consumeFrames[A]: Sink[A, Future[List[A]]] =
     Sink
       .fold[List[A], A](Nil)((result, next) => next :: result)
-      .mapMaterializedValue { future => future.map(_.reverse) }
+      .mapMaterializedValue(future => future.map(_.reverse))
 
   def onFramesConsumed[A](onDone: List[A] => Unit): Sink[A, _] =
     consumeFrames[A].mapMaterializedValue { future =>
@@ -351,7 +351,7 @@ trait WebSocketSpec
       }
 
       "close when the consumer is done" in closeWhenTheConsumerIsDone { _ =>
-        WebSocket.using[String] { req => (Done(()), Enumerator.empty) }
+        WebSocket.using[String](req => (Done(()), Enumerator.empty))
       }
 
       "clean up when closed" in cleanUpWhenClosed { app => cleanedUp =>
@@ -399,7 +399,7 @@ trait WebSocketSpec
           import app.materializer
           WebSocket.acceptWithActor[String, String] { req => out =>
             Props(new Actor() {
-              messages.foreach { msg => out ! msg }
+              messages.foreach(msg => out ! msg)
               out ! Status.Success(())
               def receive = PartialFunction.empty
             })
@@ -529,7 +529,7 @@ trait WebSocketSpec
       "allow sending messages" in allowSendingMessages { _ => messages =>
         new LegacyWebSocket[String] {
           def onReady(in: In[String], out: Out[String]) = {
-            messages.foreach { msg => out.write(msg) }
+            messages.foreach(msg => out.write(msg))
             out.close()
           }
         }
@@ -554,7 +554,7 @@ trait WebSocketSpec
           JWebSocket.withActor[String](new Function[ActorRef, Props]() {
             def apply(out: ActorRef) =
               Props(new Actor() {
-                messages.foreach { msg => out ! msg }
+                messages.foreach(msg => out ! msg)
                 out ! Status.Success(())
                 def receive = {
                   case msg: Message => ()

@@ -402,7 +402,7 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
     withParquetFile(data) { file =>
       val newData = (11 to 20).map(i => (i, i.toString))
       newData.toDF().write.format("parquet").mode(SaveMode.Ignore).save(file)
-      readParquetFile(file) { df => checkAnswer(df, data.map(Row.fromTuple)) }
+      readParquetFile(file)(df => checkAnswer(df, data.map(Row.fromTuple)))
     }
   }
 

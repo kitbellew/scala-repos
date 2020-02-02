@@ -396,8 +396,8 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
       "Locality preferences are dropped")
 
     // RDD with locality preferences spread (non-randomly) over 6 machines, m0 through m5
-    val data = sc.makeRDD(
-      (1 to 9).map(i => (i, (i to (i + 2)).map { j => "m" + (j % 6) })))
+    val data =
+      sc.makeRDD((1 to 9).map(i => (i, (i to (i + 2)).map(j => "m" + (j % 6)))))
     val coalesced1 = data.coalesce(3)
     assert(
       coalesced1.collect().toList.sorted === (1 to 9).toList,
@@ -418,7 +418,7 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
       !x.isEmpty && (y.isEmpty || (x(0) < y(0)))
     }
     assert(
-      sortedList === (1 to 9).map { x => List(x) }.toList,
+      sortedList === (1 to 9).map(x => List(x)).toList,
       "Tried coalescing 9 partitions to 20 but didn't get 9 back")
   }
 
@@ -815,14 +815,14 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
     val n = 10
     val data = sc.parallelize(0 until n, 3)
     val ranked = data.zipWithIndex()
-    ranked.collect().foreach { x => assert(x._1 === x._2) }
+    ranked.collect().foreach(x => assert(x._1 === x._2))
   }
 
   test("zipWithIndex with a single partition") {
     val n = 10
     val data = sc.parallelize(0 until n, 1)
     val ranked = data.zipWithIndex()
-    ranked.collect().foreach { x => assert(x._1 === x._2) }
+    ranked.collect().foreach(x => assert(x._1 === x._2))
   }
 
   test("zipWithIndex chained with other RDDs (SPARK-4433)") {
@@ -1064,8 +1064,8 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
       }
       assert(thrown.getMessage.contains("stopped"))
     }
-    assertFails { sc.parallelize(1 to 100) }
-    assertFails { sc.textFile("/nonexistent-path") }
+    assertFails(sc.parallelize(1 to 100))
+    assertFails(sc.textFile("/nonexistent-path"))
   }
 
 }

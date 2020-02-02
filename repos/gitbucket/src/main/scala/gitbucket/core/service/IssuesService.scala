@@ -55,7 +55,7 @@ trait IssuesService {
       implicit s: Session) =
     IssueLabels
       .innerJoin(Labels)
-      .on { (t1, t2) => t1.byLabel(t2.userName, t2.repositoryName, t2.labelId) }
+      .on((t1, t2) => t1.byLabel(t2.userName, t2.repositoryName, t2.labelId))
       .filter(_._1.byIssue(owner, repository, issueId))
       .map(_._2)
       .list
@@ -99,7 +99,7 @@ trait IssuesService {
       condition.copy(labels = Set.empty),
       false)
       .innerJoin(IssueLabels)
-      .on { (t1, t2) => t1.byIssue(t2.userName, t2.repositoryName, t2.issueId) }
+      .on((t1, t2) => t1.byIssue(t2.userName, t2.repositoryName, t2.issueId))
       .innerJoin(Labels)
       .on {
         case ((t1, t2), t3) =>
@@ -305,7 +305,7 @@ trait IssuesService {
       repos: Seq[(String, String)])(implicit s: Session) =
     searchIssueQuery(repos, condition, pullRequest)
       .innerJoin(IssueOutline)
-      .on { (t1, t2) => t1.byIssue(t2.userName, t2.repositoryName, t2.issueId) }
+      .on((t1, t2) => t1.byIssue(t2.userName, t2.repositoryName, t2.issueId))
       .sortBy {
         case (t1, t2) =>
           (condition.sort match {
@@ -443,7 +443,7 @@ trait IssuesService {
       content: Option[String])(implicit s: Session) =
     Issues
       .filter(_.byPrimaryKey(owner, repository, issueId))
-      .map { t => (t.title, t.content.?, t.updatedDate) }
+      .map(t => (t.title, t.content.?, t.updatedDate))
       .update(title, content, currentDate)
 
   def updateAssignedUserName(
@@ -469,7 +469,7 @@ trait IssuesService {
   def updateComment(commentId: Int, content: String)(implicit s: Session) =
     IssueComments
       .filter(_.byPrimaryKey(commentId))
-      .map { t => t.content -> t.updatedDate }
+      .map(t => t.content -> t.updatedDate)
       .update(content, currentDate)
 
   def deleteComment(commentId: Int)(implicit s: Session) =
@@ -482,7 +482,7 @@ trait IssuesService {
       closed: Boolean)(implicit s: Session) =
     Issues
       .filter(_.byPrimaryKey(owner, repository, issueId))
-      .map { t => t.closed -> t.updatedDate }
+      .map(t => t.closed -> t.updatedDate)
       .update(closed, currentDate)
 
   /**

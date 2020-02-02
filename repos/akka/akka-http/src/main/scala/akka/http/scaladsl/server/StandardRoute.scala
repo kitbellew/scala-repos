@@ -24,5 +24,5 @@ object StandardRoute {
     * (and always returns its underlying route).
     */
   implicit def toDirective[L: Tuple](route: StandardRoute): Directive[L] =
-    Directive[L] { _ ⇒ route }
+    Directive[L](_ ⇒ route)
 }

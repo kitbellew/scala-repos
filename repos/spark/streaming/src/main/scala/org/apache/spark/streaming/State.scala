@@ -125,7 +125,7 @@ sealed abstract class State[S] {
   @inline final def getOption(): Option[S] = if (exists) Some(get()) else None
 
   @inline final override def toString(): String =
-    getOption.map { _.toString }.getOrElse("<state not set>")
+    getOption.map(_.toString).getOrElse("<state not set>")
 }
 
 /** Internal implementation of the [[State]] interface */

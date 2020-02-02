@@ -86,7 +86,7 @@ trait ProdConsAnalyzerImpl {
       val outputNumber = outputValueSlots(prod).indexOf(slot)
       _consumersOfOutputsFrom
         .get(prod)
-        .map { v => v(outputNumber) }
+        .map(v => v(outputNumber))
         .getOrElse(Set.empty)
     }
 

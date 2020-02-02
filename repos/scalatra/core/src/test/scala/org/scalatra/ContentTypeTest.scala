@@ -142,7 +142,7 @@ class ContentTypeTest extends ScalatraFunSuite with BeforeAndAfterAll {
     class RequestActor extends Actor {
       def receive = {
         case i: Int =>
-          val res = get("/concurrent/" + i) { response }
+          val res = get("/concurrent/" + i)(response)
           sender ! (i, res.mediaType)
       }
     }

@@ -61,9 +61,9 @@ trait Vector[@spec(Int, Double, Float) V] extends VectorLike[V, Vector[V]] {
   def length: Int
   override def size = length
 
-  def iterator = Iterator.range(0, size).map { i => i -> apply(i) }
+  def iterator = Iterator.range(0, size).map(i => i -> apply(i))
 
-  def valuesIterator = Iterator.range(0, size).map { i => apply(i) }
+  def valuesIterator = Iterator.range(0, size).map(i => apply(i))
 
   def keysIterator = Iterator.range(0, size)
 
@@ -1067,7 +1067,7 @@ trait VectorConstructors[Vec[T] <: Vector[T]] {
     require(end - start > step)
     val size: Int = math.floor((end - start) / step).toInt
     val data = new Array[Float](size)
-    cfor(0)(i => i < size, i => i + 1) { i => data(i) = (start + i * step) }
+    cfor(0)(i => i < size, i => i + 1)(i => data(i) = (start + i * step))
     apply(data)
   }
 
@@ -1077,7 +1077,7 @@ trait VectorConstructors[Vec[T] <: Vector[T]] {
     require(end - start > step)
     val size: Int = math.floor((end - start) / step).toInt
     val data = new Array[Double](size)
-    cfor(0)(i => i < size, i => i + 1) { i => data(i) = (start + i * step) }
+    cfor(0)(i => i < size, i => i + 1)(i => data(i) = (start + i * step))
     apply(data)
   }
 }

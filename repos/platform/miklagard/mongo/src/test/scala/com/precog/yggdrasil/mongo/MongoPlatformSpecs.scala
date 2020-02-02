@@ -147,7 +147,7 @@ object MongoPlatformSpecEngine extends Logging {
         }
     }
 
-    (new File(dataDirURL.toURI)).listFiles.foreach { f => loadFile("", f) }
+    (new File(dataDirURL.toURI)).listFiles.foreach(f => loadFile("", f))
   }
 }
 

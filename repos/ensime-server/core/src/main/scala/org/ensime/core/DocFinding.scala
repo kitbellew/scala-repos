@@ -113,7 +113,7 @@ trait DocFinding { self: RichPresentationCompiler =>
                         if (sym.paramLists.isEmpty) ""
                         else
                           sym.paramLists
-                            .flatMap(_.map { sym => javaFqn(sym.tpe).mkString })
+                            .flatMap(_.map(sym => javaFqn(sym.tpe).mkString))
                             .mkString("(", ", ", ")")
                       else sym.signatureString.replaceAll("[\\s]", ""))
 

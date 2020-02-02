@@ -127,7 +127,7 @@ object Future {
       return Future.Done
 
     val p = new Promise[Unit]
-    val task = timer.schedule(howlong.fromNow) { p.setDone() }
+    val task = timer.schedule(howlong.fromNow)(p.setDone())
     p.setInterruptHandler {
       case e =>
         if (p.updateIfEmpty(Throw(e)))
@@ -1409,7 +1409,7 @@ abstract class Future[+A] extends Awaitable[A] {
     * @see [[respond]] if you need the result of the computation for
     *     usage in the side-effect.
     */
-  def ensure(f: => Unit): Future[A] = respond { _ => f }
+  def ensure(f: => Unit): Future[A] = respond(_ => f)
 
   /**
     * Block indefinitely, wait for the result of the Future to be available.
@@ -1571,7 +1571,7 @@ abstract class Future[+A] extends Awaitable[A] {
       return this
 
     val p = Promise.interrupts[A](this)
-    timer.schedule(howlong.fromNow) { p.become(this) }
+    timer.schedule(howlong.fromNow)(p.become(this))
     p
   }
 
@@ -1661,7 +1661,7 @@ abstract class Future[+A] extends Awaitable[A] {
     */
   def map[B](f: A => B): Future[B] =
     transform {
-      case Return(r)   => Future { f(r) }
+      case Return(r)   => Future(f(r))
       case t: Throw[_] => Future.const[B](t.cast[B])
     }
 
@@ -1830,7 +1830,7 @@ abstract class Future[+A] extends Awaitable[A] {
     if (other.isDefined)
       throw new IllegalStateException(
         s"Cannot call proxyTo on an already satisfied Promise: ${Await.result(other.liftToTry)}")
-    respond { other() = _ }
+    respond(other() = _)
   }
 
   /**
@@ -1888,7 +1888,7 @@ abstract class Future[+A] extends Awaitable[A] {
     * Converts a `Future[Future[B]]` into a `Future[B]`.
     */
   def flatten[B](implicit ev: A <:< Future[B]): Future[B] =
-    flatMap[B] { x => x }
+    flatMap[B](x => x)
 
   /**
     * Returns an identical future except that it ignores interrupts which match a predicate
@@ -1914,7 +1914,7 @@ abstract class Future[+A] extends Awaitable[A] {
     */
   def willEqual[B](that: Future[B]): Future[Boolean] =
     this.transform { thisResult =>
-      that.transform { thatResult => Future.value(thisResult == thatResult) }
+      that.transform(thatResult => Future.value(thisResult == thatResult))
     }
 
   /**

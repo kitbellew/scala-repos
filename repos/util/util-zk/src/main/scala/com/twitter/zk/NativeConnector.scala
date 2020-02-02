@@ -172,7 +172,7 @@ object NativeConnector {
       */
     def apply(): Future[ZooKeeper] = {
       assert(!releasePromise.isDefined)
-      zookeeper = zookeeper orElse Some { mkZooKeeper }
+      zookeeper = zookeeper orElse Some(mkZooKeeper)
       connected
     }
 

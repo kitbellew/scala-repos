@@ -40,7 +40,7 @@ private[parser] trait LinkHeader {
         .separatedBy(oneOrMore(SP)) ~> (_.mkString(" ")) ~ ws('"')
         | `relation-type` ~ OWS)
 
-  def `relation-type` = rule { `reg-rel-type` | `ext-rel-type` }
+  def `relation-type` = rule(`reg-rel-type` | `ext-rel-type`)
 
   def `reg-rel-type` = rule {
     capture(LOWER_ALPHA ~ zeroOrMore(`reg-rel-type-octet`)) ~ !VCHAR

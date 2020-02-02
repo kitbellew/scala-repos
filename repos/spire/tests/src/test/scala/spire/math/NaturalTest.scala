@@ -67,14 +67,14 @@ class NaturalTest
   }
 
   property("x.toString") {
-    forAll { x: N => Natural(x.num).toString shouldBe x.num.toString }
+    forAll(x: N => Natural(x.num).toString shouldBe x.num.toString)
   }
 
   property("x.toBigInt") {
-    forAll { x: N => Natural(x.num).toBigInt shouldBe x.num }
+    forAll(x: N => Natural(x.num).toBigInt shouldBe x.num)
   }
 
   property("x.toLong") {
-    forAll { x: N => Natural(x.num).toLong shouldBe x.num.toLong }
+    forAll(x: N => Natural(x.num).toLong shouldBe x.num.toLong)
   }
 }

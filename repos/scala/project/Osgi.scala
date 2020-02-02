@@ -76,7 +76,7 @@ object Osgi {
     builder.getProperties.foreach { case (k, v) => log.debug(s"bnd: $k: $v") }
     // builder.build is not thread-safe because it uses a static SimpleDateFormat.  This ensures
     // that all calls to builder.build are serialized.
-    val jar = synchronized { builder.build }
+    val jar = synchronized(builder.build)
     builder.getWarnings.foreach(s => log.warn(s"bnd: $s"))
     builder.getErrors.foreach(s => log.error(s"bnd: $s"))
     IO.createDirectory(artifactPath.getParentFile)

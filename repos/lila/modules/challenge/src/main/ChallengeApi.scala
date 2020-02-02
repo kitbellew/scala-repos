@@ -45,7 +45,7 @@ final class ChallengeApi(
     repo statusById id flatMap {
       case Some(Status.Created) => repo setSeen id
       case Some(Status.Offline) =>
-        (repo setSeenAgain id) >> byId(id).flatMap { _ ?? uncacheAndNotify }
+        (repo setSeenAgain id) >> byId(id).flatMap(_ ?? uncacheAndNotify)
       case _ => fuccess(socketReload(id))
     }
 

@@ -125,13 +125,13 @@ object ParameterDirectives extends ParameterDirectives {
       }
     implicit def forString(
         implicit fsu: FSU[String]): ParamDefAux[String, Directive1[String]] =
-      extractParameter[String, String] { string ⇒ filter(string, fsu) }
+      extractParameter[String, String](string ⇒ filter(string, fsu))
     implicit def forSymbol(
         implicit fsu: FSU[String]): ParamDefAux[Symbol, Directive1[String]] =
-      extractParameter[Symbol, String] { symbol ⇒ filter(symbol.name, fsu) }
+      extractParameter[Symbol, String](symbol ⇒ filter(symbol.name, fsu))
     implicit def forNR[T](
         implicit fsu: FSU[T]): ParamDefAux[NameReceptacle[T], Directive1[T]] =
-      extractParameter[NameReceptacle[T], T] { nr ⇒ filter(nr.name, fsu) }
+      extractParameter[NameReceptacle[T], T](nr ⇒ filter(nr.name, fsu))
     implicit def forNUR[T]
         : ParamDefAux[NameUnmarshallerReceptacle[T], Directive1[T]] =
       extractParameter[NameUnmarshallerReceptacle[T], T] { nr ⇒
@@ -228,7 +228,7 @@ object ParameterDirectives extends ParameterDirectives {
         Directive[TA],
         P,
         ConvertParamDefAndConcatenate.type] { type Out = Directive[ev.Out] } =
-        at[Directive[TA], P] { (a, t) ⇒ a & pdef(t) }
+        at[Directive[TA], P]((a, t) ⇒ a & pdef(t))
     }
   }
 }

@@ -17,9 +17,9 @@ object TimeTest extends SpecLite {
   implicit val DurationArbitrary: Arbitrary[Duration] =
     Arbitrary(
       Gen.oneOf(
-        gen[Long].map { Duration.ofNanos },
-        gen[Long].map { Duration.ofMillis },
-        gen[Int].map { Duration.ofSeconds(_) }
+        gen[Long].map(Duration.ofNanos),
+        gen[Long].map(Duration.ofMillis),
+        gen[Int].map(Duration.ofSeconds(_))
       ))
 
   implicit val PeriodArbitrary: Arbitrary[Period] =

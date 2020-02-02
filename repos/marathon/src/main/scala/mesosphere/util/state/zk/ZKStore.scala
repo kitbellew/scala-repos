@@ -60,7 +60,7 @@ class ZKStore(
     node
       .create(data.toProto(compressionConf).toByteArray)
       .asScala
-      .map { n => ZKEntity(n, data, Some(0)) } //first version after create is 0
+      .map(n => ZKEntity(n, data, Some(0))) //first version after create is 0
       .recover(exceptionTransform(s"Can not create entity $key"))
   }
 
@@ -78,7 +78,7 @@ class ZKStore(
     zk.node
       .setData(zk.data.toProto(compressionConf).toByteArray, version)
       .asScala
-      .map { data => zk.copy(version = Some(data.stat.getVersion)) }
+      .map(data => zk.copy(version = Some(data.stat.getVersion)))
       .recover(exceptionTransform(s"Can not update entity $entity"))
   }
 
@@ -91,7 +91,7 @@ class ZKStore(
     node
       .exists()
       .asScala
-      .flatMap { d => node.delete(d.stat.getVersion).asScala.map(_ => true) }
+      .flatMap(d => node.delete(d.stat.getVersion).asScala.map(_ => true))
       .recover { case ex: NoNodeException => false }
       .recover(exceptionTransform(s"Can not delete entity $key"))
   }

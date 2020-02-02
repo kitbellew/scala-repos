@@ -21,7 +21,7 @@ case class HDFSStorageItem(
     extends StorageItem {
 
   def store(fn: (OutputStream) => Unit): StorageItem = {
-    IO.using(fs.create(fsPath, true)) { fn }
+    IO.using(fs.create(fsPath, true))(fn)
     this
   }
 

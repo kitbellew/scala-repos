@@ -9,8 +9,8 @@ class ZooKeeperClientTest extends FunSuite {
   test("ZooKeeperReader.patToPathAndPrefix") {
     import ZooKeeperReader.{patToPathAndPrefix => p}
 
-    intercept[IllegalArgumentException] { p("") }
-    intercept[IllegalArgumentException] { p("foo/bar") }
+    intercept[IllegalArgumentException](p(""))
+    intercept[IllegalArgumentException](p("foo/bar"))
 
     assert(p("/") == (("/", "")))
     assert(p("/foo") == (("/", "foo")))

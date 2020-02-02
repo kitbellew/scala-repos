@@ -170,7 +170,7 @@ object PortMappingSerializer {
       proto.getServicePort,
       proto.getProtocol,
       if (proto.hasName) Some(proto.getName) else None,
-      proto.getLabelsList.asScala.map { p => p.getKey -> p.getValue }.toMap
+      proto.getLabelsList.asScala.map(p => p.getKey -> p.getValue).toMap
     )
 
   def toMesos(mapping: Container.Docker.PortMapping)

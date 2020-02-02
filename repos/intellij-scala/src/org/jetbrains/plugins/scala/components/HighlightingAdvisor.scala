@@ -82,7 +82,7 @@ class HighlightingAdvisor(project: Project)
 
   def projectClosed() {
     project.scalaEvents.removeScalaProjectListener(ScalaListener)
-    statusBar.foreach { bar => configureWidget(bar) }
+    statusBar.foreach(bar => configureWidget(bar))
   }
 
   def getState = settings

@@ -16,7 +16,7 @@ class GcPredictor(
     estimator: Estimator[Double]) {
   private[this] def loop() {
     for (bps <- pool.estimateAllocRate(period, timer)) {
-      synchronized { estimator.measure(bps.toDouble) }
+      synchronized(estimator.measure(bps.toDouble))
       loop()
     }
   }

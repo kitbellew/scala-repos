@@ -8,7 +8,7 @@ object Test extends App {
     lazy val y = { counter += 1; counter }
     val code = reify {
       def foo = y // ensures that y is the first freevar we find
-      val bar = reify { println(y * x) }
+      val bar = reify(println(y * x))
       bar.eval
       println(x)
       println(y)

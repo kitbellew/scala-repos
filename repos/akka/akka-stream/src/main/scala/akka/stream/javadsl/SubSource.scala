@@ -146,7 +146,7 @@ class SubSource[+Out, +Mat](
     */
   def mapConcat[T](
       f: function.Function[Out, java.lang.Iterable[T]]): SubSource[T, Mat] =
-    new SubSource(delegate.mapConcat { elem ⇒ Util.immutableSeq(f(elem)) })
+    new SubSource(delegate.mapConcat(elem ⇒ Util.immutableSeq(f(elem))))
 
   /**
     * Transform each input element into an `Iterable` of output elements that is

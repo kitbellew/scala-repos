@@ -48,7 +48,7 @@ object RuntimeReducerEstimator {
         .filter { t =>
           t.taskType == "REDUCE" && t.status == "SUCCEEDED" && t.finishTime > t.startTime
         }
-        .map { t => (t.finishTime - t.startTime).toDouble }
+        .map(t => (t.finishTime - t.startTime).toDouble)
     }
 }
 
@@ -145,7 +145,7 @@ trait InputScaledRuntimeReducerEstimator extends HistoryReducerEstimator {
     // time-to-byte ratio for a step = time per reducer * number of reducers / number of bytes
     val timeToByteRatios: Seq[Double] =
       jobTimes
-        .zip { history.map(_.hdfsBytesRead) }
+        .zip(history.map(_.hdfsBytesRead))
         .collect { case (Some(time), bytes) => time / bytes }
 
     // time-to-byte ratio, averaged over all the steps

@@ -222,7 +222,7 @@ trait LinearRegressionSpecs[M[+_]]
     okThetas mustEqual Array.fill(num)(true)
     okErrors mustEqual Array.fill(num)(true)
 
-    val ys = sampleValues map { _.map { _._2 } }
+    val ys = sampleValues map { _.map(_._2) }
     val expectedRSquared = computeRSquared(ys)
 
     isOk(expectedRSquared, rSquareds) mustEqual true
@@ -329,7 +329,7 @@ trait LinearRegressionSpecs[M[+_]]
     okThetas mustEqual Array.fill(num)(true)
     okErrors mustEqual Array.fill(num)(true)
 
-    val ys = sampleValues map { _.map { _._2 } }
+    val ys = sampleValues map { _.map(_._2) }
     val expectedRSquared = computeRSquared(ys)
 
     isOk(expectedRSquared, rSquareds) mustEqual true
@@ -489,7 +489,7 @@ trait LinearRegressionSpecs[M[+_]]
     resultErrors(1).toArray mustEqual expected
     resultErrors(2).toArray mustEqual expected
 
-    val ys = sampleValues map { _.map { _._2 } }
+    val ys = sampleValues map { _.map(_._2) }
     val expectedRSquared = computeRSquared(ys)
 
     isOk(expectedRSquared, rSquaredsSchema1) mustEqual true

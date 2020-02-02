@@ -42,7 +42,7 @@ trait SummingbirdConfig { self =>
         else None
     }
     val newWithoutRemoved = removedKeys.foldLeft(self)(_.remove(_))
-    changedOrAddedKeys.foldLeft(newWithoutRemoved) { _ + _ }
+    changedOrAddedKeys.foldLeft(newWithoutRemoved)(_ + _)
   }
 }
 

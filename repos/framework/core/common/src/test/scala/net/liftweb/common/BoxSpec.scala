@@ -252,7 +252,7 @@ class BoxSpec extends Specification with ScalaCheck with BoxGenerator {
     }
     "return itself if filtered with a predicate" in {
       val empty: Box[Int] = Empty
-      empty.filter { _ > 0 } must beEmpty
+      empty.filter(_ > 0) must beEmpty
     }
     "define an 'exists' method returning false" in {
       val empty: Box[Int] = Empty

@@ -755,7 +755,7 @@ class DAGSchedulerSuite
     // Confirm job finished successfully
     sc.listenerBus.waitUntilEmpty(1000)
     assert(ended === true)
-    assert(results === (0 until parts).map { idx => idx -> 42 }.toMap)
+    assert(results === (0 until parts).map(idx => idx -> 42).toMap)
     assertDataStructuresEmpty()
   }
 
@@ -1801,7 +1801,7 @@ class DAGSchedulerSuite
     })
 
     // Run this on executors
-    sc.parallelize(1 to 10, 2).foreach { item => acc.add(1) }
+    sc.parallelize(1 to 10, 2).foreach(item => acc.add(1))
 
     // Make sure we can still run commands
     assert(sc.parallelize(1 to 10, 2).count() === 10)
@@ -1977,7 +1977,7 @@ class DAGSchedulerSuite
   test("Spark exceptions should include call site in stack trace") {
     val e = intercept[SparkException] {
       sc.parallelize(1 to 10, 2)
-        .map { _ => throw new RuntimeException("uh-oh!") }
+        .map(_ => throw new RuntimeException("uh-oh!"))
         .count()
     }
 
@@ -2351,7 +2351,7 @@ class DAGSchedulerSuite
       taskInfo: TaskInfo = createFakeTaskInfo()): CompletionEvent = {
     val accumUpdates = reason match {
       case Success =>
-        task.initialAccumulators.map { a => a.toInfo(Some(a.zero), None) }
+        task.initialAccumulators.map(a => a.toInfo(Some(a.zero), None))
       case ef: ExceptionFailure => ef.accumUpdates
       case _                    => Seq.empty[AccumulableInfo]
     }

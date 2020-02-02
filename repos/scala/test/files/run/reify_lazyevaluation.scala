@@ -49,7 +49,7 @@ object Test extends App {
     println("s     = " + s) // show that the value is saved
     println("2 + s = " + (2 + s)) // implicit call to force()
 
-    val sl = delay { Some(3) }
+    val sl = delay(Some(3))
     val sl1: Susp[Some[Int]] = sl
     val sl2: Susp[Option[Int]] = sl1 // the type is covariant
 

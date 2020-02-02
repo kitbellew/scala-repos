@@ -427,7 +427,7 @@ private[deploy] class Master(
 
     case AttachCompletedRebuildUI(appId) =>
       // An asyncRebuildSparkUI has completed, so need to attach to master webUi
-      Option(appIdToUI.get(appId)).foreach { ui => webUi.attachSparkUI(ui) }
+      Option(appIdToUI.get(appId)).foreach(ui => webUi.attachSparkUI(ui))
   }
 
   override def receiveAndReply(
@@ -512,7 +512,7 @@ private[deploy] class Master(
               // We just notify the worker to kill the driver here. The final bookkeeping occurs
               // on the return path when the worker submits a state change back to the master
               // to notify it that the driver was successfully killed.
-              d.worker.foreach { w => w.endpoint.send(KillDriver(driverId)) }
+              d.worker.foreach(w => w.endpoint.send(KillDriver(driverId)))
             // TODO: It would be nice for this to be a synchronous response
             val msg = s"Kill request for $driverId submitted"
             logInfo(msg)
@@ -781,7 +781,7 @@ private[deploy] class Master(
     // If the number of cores per executor is specified, we divide the cores assigned
     // to this worker evenly among the executors with no remainder.
     // Otherwise, we launch a single executor that grabs all the assignedCores on this worker.
-    val numExecutors = coresPerExecutor.map { assignedCores / _ }.getOrElse(1)
+    val numExecutors = coresPerExecutor.map(assignedCores / _).getOrElse(1)
     val coresToAssign = coresPerExecutor.getOrElse(assignedCores)
     for (i <- 1 to numExecutors) {
       val exec = app.addExecutor(worker, coresToAssign)
@@ -849,7 +849,7 @@ private[deploy] class Master(
       .filter { w =>
         (w.host == worker.host && w.port == worker.port) && (w.state == WorkerState.DEAD)
       }
-      .foreach { w => workers -= w }
+      .foreach(w => workers -= w)
 
     val workerAddress = worker.endpoint.address
     if (addressToWorker.contains(workerAddress)) {
@@ -965,7 +965,7 @@ private[deploy] class Master(
       schedule()
 
       // Tell all workers that the application has finished, so they can clean up any app state.
-      workers.foreach { w => w.endpoint.send(ApplicationFinished(app.id)) }
+      workers.foreach(w => w.endpoint.send(ApplicationFinished(app.id)))
     }
   }
 

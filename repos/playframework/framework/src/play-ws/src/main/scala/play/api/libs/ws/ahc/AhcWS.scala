@@ -457,7 +457,7 @@ class AhcWSAPI @Inject() (
 
     val client = AhcWSClient(clientConfig)
 
-    lifecycle.addStopHook { () => Future.successful(client.close()) }
+    lifecycle.addStopHook(() => Future.successful(client.close()))
     client
   }
 

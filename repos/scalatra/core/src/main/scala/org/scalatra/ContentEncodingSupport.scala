@@ -21,7 +21,7 @@ trait ContentEncodingSupport extends Handler { self: ScalatraBase =>
     Conneg.preferredEncoding
       .map { encoding =>
         val encoded = encoding(res)
-        ScalatraBase.onRenderedCompleted { _ => encoded.end() }
+        ScalatraBase.onRenderedCompleted(_ => encoded.end())
         encoded
       }
       .getOrElse(res)

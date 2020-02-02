@@ -18,8 +18,8 @@ class FlagTest extends FunSuite {
     assert(Flaggable.ofBoolean.parse("true"))
     assert(!Flaggable.ofBoolean.parse("false"))
 
-    intercept[Throwable] { Flaggable.ofBoolean.parse("") }
-    intercept[Throwable] { Flaggable.ofBoolean.parse("gibberish") }
+    intercept[Throwable](Flaggable.ofBoolean.parse(""))
+    intercept[Throwable](Flaggable.ofBoolean.parse("gibberish"))
   }
 
   test("Flaggable: parse strings") {

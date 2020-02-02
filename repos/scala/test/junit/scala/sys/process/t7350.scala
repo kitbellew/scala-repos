@@ -219,7 +219,7 @@ class PipeSourceSinkTest {
       val field = classOf[Process.PipeSink].getDeclaredField("pipe")
       field.setAccessible(true)
       val pipe = field.get(this).asInstanceOf[PipedInputStream]
-      !this.isAlive && throwsIOException { pipe.read() }
+      !this.isAlive && throwsIOException(pipe.read())
     }
   }
 
@@ -231,7 +231,7 @@ class PipeSourceSinkTest {
       val field = classOf[Process.PipeSource].getDeclaredField("pipe")
       field.setAccessible(true)
       val pipe = field.get(this).asInstanceOf[PipedOutputStream]
-      !this.isAlive && throwsIOException { pipe.write(1) }
+      !this.isAlive && throwsIOException(pipe.write(1))
     }
   }
 

@@ -46,8 +46,8 @@ object SwaggerCommandSupportSpec {
       apiOperation[Unit]("all").parametersFromCommand[SimpleCommand]
     val newOperation =
       apiOperation[Unit]("new").parametersFromCommand(new SimpleCommand)
-    get("/all", endpoint("all"), operation(allOperation)) { "OK" }
-    get("/new", endpoint("new"), operation(newOperation)) { "OK" }
+    get("/all", endpoint("all"), operation(allOperation))("OK")
+    get("/new", endpoint("new"), operation(newOperation))("OK")
 
     protected def applicationDescription: String = "The command support servlet"
 

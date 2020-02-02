@@ -41,7 +41,7 @@ class TimerTest {
     private[this] val completed = new AtomicBoolean(false)
     def run(): Unit =
       if (completed.compareAndSet(false, true)) {
-        output.synchronized { output += id }
+        output.synchronized(output += id)
         latch.countDown()
       }
   }
@@ -122,11 +122,11 @@ class TimerTest {
       }
 
     // randomly submit requests
-    Random.shuffle(tasks.toSeq).foreach { task => timer.add(task) }
+    Random.shuffle(tasks.toSeq).foreach(task => timer.add(task))
 
     while (timer.advanceClock(1000)) {}
 
-    latches.foreach { latch => latch.await() }
+    latches.foreach(latch => latch.await())
 
     assertEquals("output should match", ids.sorted, output.toSeq)
   }

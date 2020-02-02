@@ -199,7 +199,7 @@ Usage:
     val data = IOUtils.readFileToString(new File(datafile)).unsafePerformIO
     val json = JParser.parseUnsafe(data)
     json match {
-      case JArray(elements) => elements.foreach { send(url, apiKey, _) }
+      case JArray(elements) => elements.foreach(send(url, apiKey, _))
       case _ =>
         println(
           "Error the input file must contain an array of elements to insert")

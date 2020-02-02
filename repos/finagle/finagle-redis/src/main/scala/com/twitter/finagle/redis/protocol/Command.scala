@@ -437,7 +437,7 @@ class CommandCodec extends UnifiedProtocolCodec {
 
   def decodeInlineRequest(c: Char) = readLine { line =>
     val listOfArrays =
-      (c + line).split(' ').toList.map { args => args.getBytes(Charsets.Utf8) }
+      (c + line).split(' ').toList.map(args => args.getBytes(Charsets.Utf8))
     val cmd = commandDecode(listOfArrays)
     emit(cmd)
   }

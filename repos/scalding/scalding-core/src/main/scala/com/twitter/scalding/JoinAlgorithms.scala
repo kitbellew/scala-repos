@@ -67,9 +67,9 @@ trait JoinAlgorithms {
     * Use at your own risk.
     */
   def crossWithTiny(tiny: Pipe) = {
-    val tinyJoin = tiny.map(() -> '__joinTiny__) { (u: Unit) => 1 }
+    val tinyJoin = tiny.map(() -> '__joinTiny__)((u: Unit) => 1)
     pipe
-      .map(() -> '__joinBig__) { (u: Unit) => 1 }
+      .map(() -> '__joinBig__)((u: Unit) => 1)
       .joinWithTiny('__joinBig__ -> '__joinTiny__, tinyJoin)
       .discard('__joinBig__, '__joinTiny__)
   }
@@ -80,9 +80,9 @@ trait JoinAlgorithms {
     * Prefer crossWithTiny
     */
   def crossWithSmaller(p: Pipe, replication: Int = 20) = {
-    val smallJoin = p.map(() -> '__joinSmall__) { (u: Unit) => 1 }
+    val smallJoin = p.map(() -> '__joinSmall__)((u: Unit) => 1)
     pipe
-      .map(() -> '__joinBig__) { (u: Unit) => 1 }
+      .map(() -> '__joinBig__)((u: Unit) => 1)
       .blockJoinWithSmaller(
         '__joinBig__ -> '__joinSmall__,
         smallJoin,
@@ -104,7 +104,7 @@ trait JoinAlgorithms {
     // convert to list, so we are explicit that ordering is fixed below:
     val renaming = collisions.toList
     val orig = new Fields(renaming: _*)
-    val temp = new Fields(renaming.map { rename }: _*)
+    val temp = new Fields(renaming.map(rename): _*)
     // Now construct the new join keys, where we check for a rename
     // otherwise use the original key:
     val newJoinKeys = new Fields(
@@ -389,7 +389,7 @@ trait JoinAlgorithms {
       "Replication counts must be >= 1")
 
     val rand = r.nextInt(otherReplication)
-    (0 until replication).map { rep => (rand, rep) }
+    (0 until replication).map(rep => (rand, rep))
   }
 
   private def assertValidJoinMode(joiner: Joiner, left: Int, right: Int): Unit =
@@ -460,10 +460,10 @@ trait JoinAlgorithms {
       */
     val sampledLeft = pipe
       .sample(sampleRate, Seed)
-      .groupBy(fs._1) { _.size(leftSampledCountField) }
+      .groupBy(fs._1)(_.size(leftSampledCountField))
     val sampledRight = rightPipe
       .sample(sampleRate, Seed)
-      .groupBy(rightResolvedJoinFields) { _.size(rightSampledCountField) }
+      .groupBy(rightResolvedJoinFields)(_.size(rightSampledCountField))
     val sampledCounts = sampledLeft
       .joinWithSmaller(
         fs._1 -> rightResolvedJoinFields,

@@ -108,7 +108,7 @@ class VM(
 
   def start(): Unit = {
     evtQ.start()
-    monitor.foreach { _.start() }
+    monitor.foreach(_.start())
   }
 
   def exit(exitCode: Int): Unit =
@@ -118,7 +118,7 @@ class VM(
     try {
       evtQ.finished = true
       vm.dispose()
-      monitor.foreach { _.finished = true }
+      monitor.foreach(_.finished = true)
     } catch {
       case e: VMDisconnectedException =>
     }

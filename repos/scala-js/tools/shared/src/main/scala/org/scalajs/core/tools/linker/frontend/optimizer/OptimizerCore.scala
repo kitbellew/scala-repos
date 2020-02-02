@@ -713,7 +713,7 @@ private[optimizer] abstract class OptimizerCore(
     trees match {
       case first :: rest =>
         pretransformExpr(first) { tfirst =>
-          pretransformExprs(rest) { trest => cont(tfirst :: trest) }
+          pretransformExprs(rest)(trest => cont(tfirst :: trest))
         }
 
       case Nil =>
@@ -727,7 +727,7 @@ private[optimizer] abstract class OptimizerCore(
       cont: (PreTransform, PreTransform) => TailRec[Tree])(
       implicit scope: Scope): TailRec[Tree] =
     pretransformExpr(tree1) { ttree1 =>
-      pretransformExpr(tree2) { ttree2 => cont(ttree1, ttree2) }
+      pretransformExpr(tree2)(ttree2 => cont(ttree1, ttree2))
     }
 
   /** Pretransforms a tree and a list of trees as [[PreTransform]]s.
@@ -737,7 +737,7 @@ private[optimizer] abstract class OptimizerCore(
       cont: (PreTransform, List[PreTransform]) => TailRec[Tree])(
       implicit scope: Scope): TailRec[Tree] =
     pretransformExpr(first) { tfirst =>
-      pretransformExprs(rest) { trest => cont(tfirst, trest) }
+      pretransformExprs(rest)(trest => cont(tfirst, trest))
     }
 
   /** Pretransforms a tree to get a refined type while avoiding to force
@@ -1143,7 +1143,7 @@ private[optimizer] abstract class OptimizerCore(
   private def pretransformNoLocalDef(tree: Tree)(
       cont: PreTransGenTree => TailRec[Tree])(
       implicit scope: Scope): TailRec[Tree] =
-    pretransformExpr(tree) { ttree => cont(resolveLocalDef(ttree)) }
+    pretransformExpr(tree)(ttree => cont(resolveLocalDef(ttree)))
 
   /** Finishes a pretransform, either a statement or an expression. */
   private def finishTransform(isStat: Boolean): PreTransCont = { preTrans =>

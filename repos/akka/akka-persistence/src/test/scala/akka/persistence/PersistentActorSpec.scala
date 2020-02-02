@@ -37,7 +37,7 @@ object PersistentActorSpec {
       case "boom" ⇒ throw new TestException("boom")
       case GetState ⇒ sender() ! events.reverse
       case Delete(toSequenceNr) ⇒
-        persist(Some(sender())) { s ⇒ askedForDelete = s }
+        persist(Some(sender()))(s ⇒ askedForDelete = s)
         deleteMessages(toSequenceNr)
     }
 
@@ -400,41 +400,41 @@ object PersistentActorSpec {
       extends ExamplePersistentActor(name) {
     val receiveCommand: Receive = {
       case Cmd(data) ⇒
-        deferAsync("d-1") { sender() ! _ }
-        persist(s"$data-2") { sender() ! _ }
-        deferAsync("d-3") { sender() ! _ }
-        deferAsync("d-4") { sender() ! _ }
+        deferAsync("d-1")(sender() ! _)
+        persist(s"$data-2")(sender() ! _)
+        deferAsync("d-3")(sender() ! _)
+        deferAsync("d-4")(sender() ! _)
     }
   }
   class DeferringWithAsyncPersistActor(name: String)
       extends ExamplePersistentActor(name) {
     val receiveCommand: Receive = {
       case Cmd(data) ⇒
-        deferAsync(s"d-$data-1") { sender() ! _ }
-        persistAsync(s"pa-$data-2") { sender() ! _ }
-        deferAsync(s"d-$data-3") { sender() ! _ }
-        deferAsync(s"d-$data-4") { sender() ! _ }
+        deferAsync(s"d-$data-1")(sender() ! _)
+        persistAsync(s"pa-$data-2")(sender() ! _)
+        deferAsync(s"d-$data-3")(sender() ! _)
+        deferAsync(s"d-$data-4")(sender() ! _)
     }
   }
   class DeferringMixedCallsPPADDPADPersistActor(name: String)
       extends ExamplePersistentActor(name) {
     val receiveCommand: Receive = {
       case Cmd(data) ⇒
-        persist(s"p-$data-1") { sender() ! _ }
-        persistAsync(s"pa-$data-2") { sender() ! _ }
-        deferAsync(s"d-$data-3") { sender() ! _ }
-        deferAsync(s"d-$data-4") { sender() ! _ }
-        persistAsync(s"pa-$data-5") { sender() ! _ }
-        deferAsync(s"d-$data-6") { sender() ! _ }
+        persist(s"p-$data-1")(sender() ! _)
+        persistAsync(s"pa-$data-2")(sender() ! _)
+        deferAsync(s"d-$data-3")(sender() ! _)
+        deferAsync(s"d-$data-4")(sender() ! _)
+        persistAsync(s"pa-$data-5")(sender() ! _)
+        deferAsync(s"d-$data-6")(sender() ! _)
     }
   }
   class DeferringWithNoPersistCallsPersistActor(name: String)
       extends ExamplePersistentActor(name) {
     val receiveCommand: Receive = {
       case Cmd(data) ⇒
-        deferAsync("d-1") { sender() ! _ }
-        deferAsync("d-2") { sender() ! _ }
-        deferAsync("d-3") { sender() ! _ }
+        deferAsync("d-1")(sender() ! _)
+        deferAsync("d-2")(sender() ! _)
+        deferAsync("d-3")(sender() ! _)
     }
   }
 
@@ -459,11 +459,11 @@ object PersistentActorSpec {
         probe ! s
         persist(s + "-outer-1") { outer ⇒
           probe ! outer
-          persist(s + "-inner-1") { inner ⇒ probe ! inner }
+          persist(s + "-inner-1")(inner ⇒ probe ! inner)
         }
         persist(s + "-outer-2") { outer ⇒
           probe ! outer
-          persist(s + "-inner-2") { inner ⇒ probe ! inner }
+          persist(s + "-inner-2")(inner ⇒ probe ! inner)
         }
     }
   }
@@ -474,11 +474,11 @@ object PersistentActorSpec {
         probe ! s
         persistAsync(s + "-outer-1") { outer ⇒
           probe ! outer
-          persistAsync(s + "-inner-1") { inner ⇒ probe ! inner }
+          persistAsync(s + "-inner-1")(inner ⇒ probe ! inner)
         }
         persistAsync(s + "-outer-2") { outer ⇒
           probe ! outer
-          persistAsync(s + "-inner-2") { inner ⇒ probe ! inner }
+          persistAsync(s + "-inner-2")(inner ⇒ probe ! inner)
         }
     }
   }
@@ -511,11 +511,11 @@ object PersistentActorSpec {
         probe ! s
         persist(s + "-outer-1") { outer ⇒
           probe ! outer
-          persistAsync(s + "-inner-async-1") { inner ⇒ probe ! inner }
+          persistAsync(s + "-inner-async-1")(inner ⇒ probe ! inner)
         }
         persist(s + "-outer-2") { outer ⇒
           probe ! outer
-          persistAsync(s + "-inner-async-2") { inner ⇒ probe ! inner }
+          persistAsync(s + "-inner-async-2")(inner ⇒ probe ! inner)
         }
     }
   }
@@ -526,11 +526,11 @@ object PersistentActorSpec {
         probe ! s
         persistAsync(s + "-outer-async-1") { outer ⇒
           probe ! outer
-          persist(s + "-inner-1") { inner ⇒ probe ! inner }
+          persist(s + "-inner-1")(inner ⇒ probe ! inner)
         }
         persistAsync(s + "-outer-async-2") { outer ⇒
           probe ! outer
-          persist(s + "-inner-2") { inner ⇒ probe ! inner }
+          persist(s + "-inner-2")(inner ⇒ probe ! inner)
         }
     }
   }

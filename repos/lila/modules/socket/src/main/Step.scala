@@ -80,7 +80,7 @@ object Step {
             case (orig, dests) => s"${orig.piotr}${dests.map(_.piotr).mkString}"
           }.mkString(" ")
         }) _ compose
-        add("drops", drops.map { drops => JsString(drops.map(_.key).mkString) }) _ compose
+        add("drops", drops.map(drops => JsString(drops.map(_.key).mkString))) _ compose
         add("crazy", crazyData)
     )(
       Json.obj(
@@ -95,5 +95,5 @@ object Step {
     if (cond) o + (k -> writes.writes(v)) else o
 
   private def add[A: Writes](k: String, v: Option[A]): JsObject => JsObject =
-    v.fold(identity[JsObject] _) { add(k, _, true) _ }
+    v.fold(identity[JsObject] _)(add(k, _, true) _)
 }

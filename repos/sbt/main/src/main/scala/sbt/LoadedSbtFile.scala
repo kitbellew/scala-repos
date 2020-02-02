@@ -47,7 +47,7 @@ private[sbt] final class DefinedSbtValues(
     sbtFiles flatMap (_ values parent)
 
   def classloader(parent: ClassLoader): ClassLoader =
-    sbtFiles.foldLeft(parent) { (cl, e) => e.loader(cl) }
+    sbtFiles.foldLeft(parent)((cl, e) => e.loader(cl))
 
   def imports: Seq[String] =
     // TODO - Sanity check duplicates and such, so users get a nice warning rather

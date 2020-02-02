@@ -120,7 +120,7 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
         else AppliedTypeTree(Ident(clazz), targs map TypeTree)))
 
   def wildcardStar(tree: Tree) =
-    atPos(tree.pos) { Typed(tree, Ident(tpnme.WILDCARD_STAR)) }
+    atPos(tree.pos)(Typed(tree, Ident(tpnme.WILDCARD_STAR)))
 
   def paramToArg(vparam: Symbol): Tree =
     paramToArg(Ident(vparam), isRepeatedParamType(vparam.tpe))

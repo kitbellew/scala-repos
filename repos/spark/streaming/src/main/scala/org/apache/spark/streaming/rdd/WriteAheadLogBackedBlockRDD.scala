@@ -174,7 +174,7 @@ private[streaming] class WriteAheadLogBackedBlockRDD[T: ClassTag](
     }
 
     if (partition.isBlockIdValid)
-      getBlockFromBlockManager().getOrElse { getBlockFromWriteAheadLog() }
+      getBlockFromBlockManager().getOrElse(getBlockFromWriteAheadLog())
     else
       getBlockFromWriteAheadLog()
   }

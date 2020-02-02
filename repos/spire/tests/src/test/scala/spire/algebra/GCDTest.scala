@@ -50,10 +50,10 @@ class GCDTest extends FunSuite with Checkers {
     assert(spire.math.gcd(x / d, y / d) === 1f)
   }
 
-  test("Int GCD")(check(forAll { (a: Int, b: Int) => testGcd(a, b) }))
-  test("Long GCD")(check(forAll { (a: Long, b: Long) => testGcd(a, b) }))
-  test("Float GCD")(check(forAll { (a: Float, b: Float) => testGcd(a, b) }))
-  test("Double GCD")(check(forAll { (a: Double, b: Double) => testGcd(a, b) }))
+  test("Int GCD")(check(forAll((a: Int, b: Int) => testGcd(a, b))))
+  test("Long GCD")(check(forAll((a: Long, b: Long) => testGcd(a, b))))
+  test("Float GCD")(check(forAll((a: Float, b: Float) => testGcd(a, b))))
+  test("Double GCD")(check(forAll((a: Double, b: Double) => testGcd(a, b))))
   // Disabled. Getting unexplainable OOM errors, even with isWhole commented out.
   // test("BigDecimal GCD")(check(forAll { (a: BigDecimal, b: BigDecimal) => testGcd(a, b) }))
   test("Rational GCD")(check(forAll { (a: Rational, b: Rational) =>

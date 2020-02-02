@@ -48,7 +48,7 @@ private final class Monitor(
     def avgOf(f: JsonApi.Request.Evaluation => Option[Int]): Option[Int] = {
       val (sum, nb) = metaMovesSample.foldLeft(0 -> 0) {
         case ((sum, nb), move) =>
-          f(move).fold(sum -> nb) { v => (sum + v, nb + 1) }
+          f(move).fold(sum -> nb)(v => (sum + v, nb + 1))
       }
       (nb > 0) option (sum / nb)
     }
@@ -150,8 +150,8 @@ private final class Monitor(
     queued(Move.key)(moveDb.count(_.nonAcquired))
     acquired(Move.key)(moveDb.count(_.isAcquired))
 
-    repo.countAnalysis(acquired = false).map { queued(Analysis.key)(_) } >>
-      repo.countAnalysis(acquired = true).map { acquired(Analysis.key)(_) }
+    repo.countAnalysis(acquired = false).map(queued(Analysis.key)(_)) >>
+      repo.countAnalysis(acquired = true).map(acquired(Analysis.key)(_))
 
   } andThenAnyway scheduleWork
 

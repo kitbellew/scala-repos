@@ -250,7 +250,7 @@ object Pickler {
     */
   def singletonPickler[T <: AnyRef](x: T): CondPickler[T] =
     unitPickler
-      .wrapped { _ => x } { x => () }
+      .wrapped(_ => x)(x => ())
       .labelled(x.getClass.getName)
       .cond(x eq _.asInstanceOf[AnyRef])
 
@@ -261,7 +261,7 @@ object Pickler {
     */
   def javaInstancePickler[T <: AnyRef]: Pickler[T] =
     (stringPickler labelled "$new")
-      .wrapped { name => Class.forName(name).newInstance().asInstanceOf[T] } {
+      .wrapped(name => Class.forName(name).newInstance().asInstanceOf[T]) {
         _.getClass.getName
       }
 
@@ -321,7 +321,7 @@ object Pickler {
     tokenPickler("integer literal") { case IntLit(s) => s.toLong }
 
   /** A pickler for values of type `Int`, represented as integer literals */
-  implicit val intPickler: Pickler[Int] = longPickler.wrapped { _.toInt } {
+  implicit val intPickler: Pickler[Int] = longPickler.wrapped(_.toInt) {
     _.toLong
   }
 
@@ -374,7 +374,7 @@ object Pickler {
 
   /** A pickler for list values */
   implicit def listPickler[T: Pickler]: Pickler[List[T]] =
-    iterPickler[T].wrapped { _.toList } { _.iterator }.labelled("scala.List")
+    iterPickler[T].wrapped(_.toList)(_.iterator).labelled("scala.List")
 }
 
 /** A subclass of Pickler can indicate whether a particular value can be pickled by instances

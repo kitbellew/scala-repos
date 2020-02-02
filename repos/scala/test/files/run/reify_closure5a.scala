@@ -5,7 +5,7 @@ import scala.tools.reflect.ToolBox
 
 object Test extends App {
   def foo[T: TypeTag](ys: List[T]): Int => Int = {
-    val fun = reify { (x: Int) => x + ys.length }
+    val fun = reify((x: Int) => x + ys.length)
 
     val toolbox = cm.mkToolBox()
     val dyn = toolbox.eval(fun.tree)

@@ -50,7 +50,7 @@ object StateTTest extends SpecLite {
   }
 
   "monadState.gets" in {
-    instances.monadState[Int].gets { _ + 1 }.run(10) must_=== ((10, 11))
+    instances.monadState[Int].gets(_ + 1).run(10) must_=== ((10, 11))
   }
 
   "monadState.put" in {
@@ -58,7 +58,7 @@ object StateTTest extends SpecLite {
   }
 
   "monadState.modify" in {
-    instances.monadState[Int].modify { _ + 1 }.run(10) must_=== ((11, ()))
+    instances.monadState[Int].modify(_ + 1).run(10) must_=== ((11, ()))
   }
 
   "monadPlus.empty (List)" in {

@@ -422,7 +422,7 @@ class SingletonTypeMacros(val c: whitebox.Context)
     }
 
   def mkSingletonOps(t: Tree): Tree =
-    extractResult(t) { (tpe, tree) => mkOps(tpe, mkWitness(tpe, tree)) }
+    extractResult(t)((tpe, tree) => mkOps(tpe, mkWitness(tpe, tree)))
 
   def narrowSymbol[S <: String: WeakTypeTag](t: Tree): Tree =
     (weakTypeOf[S], t) match {

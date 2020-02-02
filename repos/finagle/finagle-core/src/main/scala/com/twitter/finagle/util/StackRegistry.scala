@@ -16,7 +16,7 @@ object StackRegistry {
     // reflection of params to case classes.
     // TODO: we might be able to make this avoid reflection with Showable
     val modules: Seq[Module] = stack.tails.map { node =>
-      val raw = node.head.parameters.map { p => params(p) }
+      val raw = node.head.parameters.map(p => params(p))
       val reflected = raw.foldLeft(Seq.empty[(String, String)]) {
         case (seq, p: Product) =>
           // TODO: many case classes have a $outer field because they close over an outside scope.
@@ -150,7 +150,7 @@ trait StackRegistry {
   def size: Int = numEntries.get
 
   /** Returns a list of all entries. */
-  def registrants: Iterable[Entry] = synchronized { registry.values }
+  def registrants: Iterable[Entry] = synchronized(registry.values)
 
   // added for tests
   private[finagle] def clear(): Unit = synchronized {

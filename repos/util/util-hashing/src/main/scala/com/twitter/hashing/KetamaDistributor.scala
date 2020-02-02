@@ -19,7 +19,7 @@ class KetamaDistributor[A](
     val continuum = new TreeMap[Long, KetamaNode[A]]()
 
     val nodeCount = _nodes.size
-    val totalWeight = _nodes.foldLeft(0) { _ + _.weight }
+    val totalWeight = _nodes.foldLeft(0)(_ + _.weight)
 
     _nodes foreach { node =>
       val pointsOnRing = if (oldLibMemcachedVersionComplianceMode) {

@@ -86,7 +86,7 @@ object Xml {
       def descendant(n: Node): List[Node] = n match {
         case g: Group => g.nodes.toList.flatMap(x => x :: descendant(x))
         case _ =>
-          n.child.toList.flatMap { x => x :: descendant(x) }
+          n.child.toList.flatMap(x => x :: descendant(x))
       }
 
       !descendant(node).find(_.isInstanceOf[Elem]).isDefined

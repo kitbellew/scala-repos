@@ -73,7 +73,7 @@ final class LeaderboardApi(coll: Coll, maxPerPage: Int) {
   private def withTournaments(entries: Seq[Entry]): Fu[Seq[TourEntry]] =
     TournamentRepo byIds entries.map(_.tourId) map { tours =>
       entries.flatMap { entry =>
-        tours.find(_.id == entry.tourId).map { TourEntry(_, entry) }
+        tours.find(_.id == entry.tourId).map(TourEntry(_, entry))
       }
     }
 }

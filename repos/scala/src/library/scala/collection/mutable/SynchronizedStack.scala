@@ -31,7 +31,7 @@ class SynchronizedStack[A] extends Stack[A] {
     *
     *  @return true, iff there is no element on the stack
     */
-  override def isEmpty: Boolean = synchronized { super.isEmpty }
+  override def isEmpty: Boolean = synchronized(super.isEmpty)
 
   /** Pushes a single element on top of the stack.
     *
@@ -50,7 +50,7 @@ class SynchronizedStack[A] extends Stack[A] {
     *  @return           the stack with the new elements on top.
     */
   override def push(elem1: A, elem2: A, elems: A*): this.type =
-    synchronized[this.type] { super.push(elem1, elem2, elems: _*) }
+    synchronized[this.type](super.push(elem1, elem2, elems: _*))
 
   /** Pushes all elements provided by a traversable object
     *  on top of the stack. The elements are pushed in the order the
@@ -59,7 +59,7 @@ class SynchronizedStack[A] extends Stack[A] {
     *  @param  xs        a traversable object
     */
   override def pushAll(xs: TraversableOnce[A]): this.type =
-    synchronized[this.type] { super.pushAll(elems) }
+    synchronized[this.type](super.pushAll(elems))
 
   /** Returns the top element of the stack. This method will not remove
     *  the element from the stack. An error is signaled if there is no
@@ -67,17 +67,17 @@ class SynchronizedStack[A] extends Stack[A] {
     *
     *  @return the top element
     */
-  override def top: A = synchronized { super.top }
+  override def top: A = synchronized(super.top)
 
   /** Removes the top element from the stack.
     */
-  override def pop(): A = synchronized { super.pop() }
+  override def pop(): A = synchronized(super.pop())
 
   /**
     * Removes all elements from the stack. After this operation completed,
     * the stack will be empty.
     */
-  override def clear(): Unit = synchronized { super.clear() }
+  override def clear(): Unit = synchronized(super.clear())
 
   /** Returns an iterator over all elements on the stack. This iterator
     *  is stable with respect to state changes in the stack object; i.e.
@@ -87,17 +87,17 @@ class SynchronizedStack[A] extends Stack[A] {
     *
     *  @return an iterator over all stack elements.
     */
-  override def iterator: Iterator[A] = synchronized { super.iterator }
+  override def iterator: Iterator[A] = synchronized(super.iterator)
 
   /** Creates a list of all stack elements in FIFO order.
     *
     *  @return the created list.
     */
-  override def toList: List[A] = synchronized { super.toList }
+  override def toList: List[A] = synchronized(super.toList)
 
   /** Returns a textual representation of a stack as a string.
     *
     *  @return the string representation of this stack.
     */
-  override def toString = synchronized { super.toString }
+  override def toString = synchronized(super.toString)
 }

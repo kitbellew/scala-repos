@@ -50,12 +50,12 @@ trait Rules {
     val factory = Rules.this
   }
 
-  def success[Out, A](out: Out, a: A) = rule { in: Any => Success(out, a) }
+  def success[Out, A](out: Out, a: A) = rule(in: Any => Success(out, a))
 
-  def failure = rule { in: Any => Failure }
+  def failure = rule(in: Any => Failure)
 
-  def error[In] = rule { in: In => Error(in) }
-  def error[X](err: X) = rule { in: Any => Error(err) }
+  def error[In] = rule(in: In => Error(in))
+  def error[X](err: X) = rule(in: Any => Error(err))
 
   def oneOf[In, Out, A, X](rules: Rule[In, Out, A, X]*): Rule[In, Out, A, X] =
     new Choice[In, Out, A, X] {
@@ -103,13 +103,13 @@ trait StateRules {
 
   def apply[A, X](f: S => Result[S, A, X]) = rule(f)
 
-  def unit[A](a: => A) = apply { s => Success(s, a) }
-  def read[A](f: S => A) = apply { s => Success(s, f(s)) }
+  def unit[A](a: => A) = apply(s => Success(s, a))
+  def read[A](f: S => A) = apply(s => Success(s, f(s)))
 
-  def get = apply { s => Success(s, s) }
-  def set(s: => S) = apply { oldS => Success(s, oldS) }
+  def get = apply(s => Success(s, s))
+  def set(s: => S) = apply(oldS => Success(s, oldS))
 
-  def update(f: S => S) = apply { s => Success(s, f(s)) }
+  def update(f: S => S) = apply(s => Success(s, f(s)))
 
   def nil = unit(Nil)
   def none = unit(None)

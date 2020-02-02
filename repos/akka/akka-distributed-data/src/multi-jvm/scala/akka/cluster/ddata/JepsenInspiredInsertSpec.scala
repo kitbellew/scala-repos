@@ -93,7 +93,7 @@ class JepsenInspiredInsertSpec
 
     "setup cluster" in {
       runOn(nodes: _*) {
-        nodes.foreach { join(_, n1) }
+        nodes.foreach(join(_, n1))
 
         within(10.seconds) {
           awaitAssert {
@@ -104,7 +104,7 @@ class JepsenInspiredInsertSpec
       }
 
       runOn(controller) {
-        nodes.foreach { n ⇒ enterBarrier(n.name + "-joined") }
+        nodes.foreach(n ⇒ enterBarrier(n.name + "-joined"))
       }
 
       enterBarrier("after-setup")

@@ -28,8 +28,8 @@ class RouteDirectivesSpec extends FreeSpec with GenericRoutingSpec {
     "be lazy in its argument evaluation, independently of application style" in {
       var i = 0
       Put() ~> {
-        get { complete { i += 1; "get" } } ~
-          put { complete { i += 1; "put" } } ~
+        get(complete { i += 1; "get" }) ~
+          put(complete { i += 1; "put" }) ~
           (post & complete { i += 1; "post" })
       } ~> check {
         responseAs[String] shouldEqual "put"
@@ -41,7 +41,7 @@ class RouteDirectivesSpec extends FreeSpec with GenericRoutingSpec {
         Get() ~> {
           get & complete(
             Promise.successful(HttpResponse(entity = "yup")).future)
-        } ~> check { responseAs[String] shouldEqual "yup" }
+        } ~> check(responseAs[String] shouldEqual "yup")
       }
       "for successful futures and marshalling" in {
         Get() ~> complete(Promise.successful("yes").future) ~> check {

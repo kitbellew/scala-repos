@@ -89,7 +89,7 @@ object SampledRDDs {
     println()
 
     // Example: RDD.sampleByKey() and RDD.sampleByKeyExact()
-    val keyedRDD = examples.map { lp => (lp.label.toInt, lp.features) }
+    val keyedRDD = examples.map(lp => (lp.label.toInt, lp.features))
     println(s"  Keyed data using label (Int) as key ==> Orig")
     //  Count examples per label in original data.
     val keyCounts = keyedRDD.countByKey()

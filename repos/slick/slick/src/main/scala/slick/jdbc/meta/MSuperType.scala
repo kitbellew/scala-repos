@@ -13,5 +13,5 @@ object MSuperType {
       _.metaData.getSuperTypes(
         typePattern.catalog_?,
         typePattern.schema_?,
-        typePattern.name)) { r => MSuperType(MQName.from(r), MQName.from(r)) }
+        typePattern.name))(r => MSuperType(MQName.from(r), MQName.from(r)))
 }

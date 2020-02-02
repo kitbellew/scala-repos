@@ -51,7 +51,7 @@ case class IterableSource[+T](
   override def converter[U >: T] = TupleConverter.asSuperConverter[T, U](conv)
 
   @transient
-  private val asBuffer: Buffer[Tuple] = iter.map { set(_) }.toBuffer
+  private val asBuffer: Buffer[Tuple] = iter.map(set(_)).toBuffer
 
   private lazy val hdfsTap: Tap[_, _, _] =
     new MemorySourceTap(asBuffer.asJava, fields)

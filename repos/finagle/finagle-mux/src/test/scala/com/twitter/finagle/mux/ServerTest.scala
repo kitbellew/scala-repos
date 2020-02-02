@@ -438,7 +438,7 @@ class ServerTest extends FunSuite with MockitoSugar with AssertionsForJUnit {
         override def write(in: Message) = writep
       }
 
-    val svc = Service.mk { req: Request => Future.value(Response.empty) }
+    val svc = Service.mk(req: Request => Future.value(Response.empty))
     val server = ServerDispatcher.newRequestResponse(transport, svc)
 
     clientToServer.offer(
@@ -469,7 +469,7 @@ class ServerTest extends FunSuite with MockitoSugar with AssertionsForJUnit {
 
     val sr = new InMemoryStatsReceiver
 
-    val svc = Service.mk { req: Request => Future.value(Response.empty) }
+    val svc = Service.mk(req: Request => Future.value(Response.empty))
     val server = ServerDispatcher.newRequestResponse(
       transport,
       svc,

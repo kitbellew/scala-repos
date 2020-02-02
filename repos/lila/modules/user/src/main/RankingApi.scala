@@ -52,9 +52,10 @@ final class RankingApi(
       coll
         .remove(
           BSONDocument(
-            "_id" -> BSONDocument("$in" -> PerfType.leaderboardable
-              .filter { pt => user.perfs(pt).nonEmpty }
-              .map { pt => s"${user.id}:${pt.id}" })
+            "_id" -> BSONDocument(
+              "$in" -> PerfType.leaderboardable
+                .filter(pt => user.perfs(pt).nonEmpty)
+                .map(pt => s"${user.id}:${pt.id}"))
           ))
         .void
     }
@@ -153,7 +154,7 @@ final class RankingApi(
                 nb <- obj.getAs[NbUsers]("nb")
               } yield rating -> nb
             }.toMap
-            (800 to 2800 by Stat.group).map { r => hash.getOrElse(r, 0) }.toList
+            (800 to 2800 by Stat.group).map(r => hash.getOrElse(r, 0)).toList
           }
       }
   }

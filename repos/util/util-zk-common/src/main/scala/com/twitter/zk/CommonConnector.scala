@@ -16,8 +16,8 @@ class CommonConnector(
     extends Connector {
   underlying.register(sessionBroker)
 
-  def apply() = pool { underlying.get(timeout.toLongAmount) }
-  def release() = pool { underlying.close() }
+  def apply() = pool(underlying.get(timeout.toLongAmount))
+  def release() = pool(underlying.close())
 }
 
 object CommonConnector {

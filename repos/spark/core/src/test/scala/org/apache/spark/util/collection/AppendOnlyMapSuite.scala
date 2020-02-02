@@ -179,11 +179,11 @@ class AppendOnlyMapSuite extends SparkFunSuite {
     }
 
     // All subsequent calls to apply, update, changeValue and iterator should throw exception
-    intercept[AssertionError] { map.apply("1") }
-    intercept[AssertionError] { map.update("1", "2013") }
+    intercept[AssertionError](map.apply("1"))
+    intercept[AssertionError](map.update("1", "2013"))
     intercept[AssertionError] {
       map.changeValue("1", (hadValue, oldValue) => "2014")
     }
-    intercept[AssertionError] { map.iterator }
+    intercept[AssertionError](map.iterator)
   }
 }

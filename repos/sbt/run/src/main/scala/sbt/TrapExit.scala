@@ -107,7 +107,7 @@ object TrapExit {
       originalHandler: Thread.UncaughtExceptionHandler)
       extends Thread.UncaughtExceptionHandler {
     def uncaughtException(thread: Thread, e: Throwable): Unit = {
-      withCause[InterruptedException, Unit](e) { interrupted => () } { other =>
+      withCause[InterruptedException, Unit](e)(interrupted => ()) { other =>
         originalHandler.uncaughtException(thread, e)
       }
       thread.setUncaughtExceptionHandler(originalHandler)
@@ -528,8 +528,8 @@ private final class TrapExit(delegateManager: SecurityManager)
 /** A thread-safe, write-once, optional cell for tracking an application's exit code.*/
 private final class ExitCode {
   private var code: Option[Int] = None
-  def set(c: Int): Unit = synchronized { code = code orElse Some(c) }
-  def value: Option[Int] = synchronized { code }
+  def set(c: Int): Unit = synchronized(code = code orElse Some(c))
+  def value: Option[Int] = synchronized(code)
 }
 
 /**

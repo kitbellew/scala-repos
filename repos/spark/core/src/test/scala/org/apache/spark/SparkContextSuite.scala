@@ -44,7 +44,7 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
       .set("spark.driver.allowMultipleContexts", "false")
     sc = new SparkContext(conf)
     // A SparkContext is already running, so we shouldn't be able to create a second one
-    intercept[SparkException] { new SparkContext(conf) }
+    intercept[SparkException](new SparkContext(conf))
     // After stopping the running context, we should be able to create a new one
     resetSparkContext()
     sc = new SparkContext(conf)
@@ -216,7 +216,7 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
       sc =
         new SparkContext(new SparkConf().setAppName("test").setMaster("local"))
       val future =
-        sc.parallelize(Seq(0)).foreachAsync { _ => Thread.sleep(1000L) }
+        sc.parallelize(Seq(0)).foreachAsync(_ => Thread.sleep(1000L))
       sc.cancelJobGroup("nonExistGroupId")
       Await.ready(future, Duration(2, TimeUnit.SECONDS))
 

@@ -41,8 +41,8 @@ object CsrfTokenSupport {
   */
 trait CsrfTokenSupport { this: ScalatraBase =>
 
-  before(isForged) { handleForgery() }
-  before() { prepareCsrfToken() }
+  before(isForged)(handleForgery())
+  before()(prepareCsrfToken())
 
   /**
     * Tests whether a request with a unsafe method is a potential cross-site
@@ -112,7 +112,7 @@ trait XsrfTokenSupport { this: ScalatraBase =>
       handleForgery()
     }
 
-  before() { prepareXsrfToken() }
+  before()(prepareXsrfToken())
 
   /**
     * Tests whether a request with a unsafe method is a potential cross-site

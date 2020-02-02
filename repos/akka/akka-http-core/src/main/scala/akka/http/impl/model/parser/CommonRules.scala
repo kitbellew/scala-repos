@@ -16,33 +16,37 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
   // http://tools.ietf.org/html/rfc7230#section-1.2 referencing
   // http://tools.ietf.org/html/rfc5234#appendix-B.1
   // ******************************************************************************************
-  def CRLF = rule { CR ~ LF }
+  def CRLF = rule(CR ~ LF)
 
-  def OCTET = rule { ANY }
+  def OCTET = rule(ANY)
 
   // ******************************************************************************************
   // http://tools.ietf.org/html/rfc7230#section-3.2.3
   // ******************************************************************************************
 
-  def OWS = rule { zeroOrMore(optional(CRLF) ~ oneOrMore(WSP)) } // extended with `obs-fold`
+  def OWS =
+    rule(
+      zeroOrMore(optional(CRLF) ~ oneOrMore(WSP))
+    ) // extended with `obs-fold`
 
-  def RWS = rule { oneOrMore(optional(CRLF) ~ oneOrMore(WSP)) } // extended with `obs-fold`
+  def RWS =
+    rule(oneOrMore(optional(CRLF) ~ oneOrMore(WSP))) // extended with `obs-fold`
 
   // ******************************************************************************************
   // http://tools.ietf.org/html/rfc7230#section-3.2.6
   // ******************************************************************************************
-  def word = rule { token | `quoted-string` }
+  def word = rule(token | `quoted-string`)
 
-  def token: Rule1[String] = rule { capture(token0) ~ OWS }
+  def token: Rule1[String] = rule(capture(token0) ~ OWS)
 
   def `quoted-string`: Rule1[String] = rule {
     DQUOTE ~ clearSB() ~ zeroOrMore(qdtext ~ appendSB() | `quoted-pair`) ~ push(
       sb.toString) ~ DQUOTE ~ OWS
   }
 
-  def qdtext = rule { `qdtext-base` | `obs-text` }
+  def qdtext = rule(`qdtext-base` | `obs-text`)
 
-  def `obs-text` = rule { "\u0080" - "\uFFFE" }
+  def `obs-text` = rule("\u0080" - "\uFFFE")
 
   def `quoted-pair` = rule {
     '\\' ~ (`quotable-base` | `obs-text`) ~ appendSB()
@@ -62,7 +66,7 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
     }
   }
 
-  def ctext = rule { (`ctext-base` | `obs-text`) ~ appendSB() }
+  def ctext = rule((`ctext-base` | `obs-text`) ~ appendSB())
 
   def `quoted-cpair` = `quoted-pair`
 
@@ -88,9 +92,9 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
       "Sun" ~ push(0) | "Mon" ~ push(1) | "Tue" ~ push(2) | "Wed" ~ push(3) | "Thu" ~ push(
         4) | "Fri" ~ push(5) | "Sat" ~ push(6))
 
-  def date1 = rule { day ~ `date-sep` ~ month ~ `date-sep` ~ year }
+  def date1 = rule(day ~ `date-sep` ~ month ~ `date-sep` ~ year)
 
-  def day = rule { digit2 }
+  def day = rule(digit2)
 
   def month =
     rule("Jan" ~ push(1) | "Feb" ~ push(2) | "Mar" ~ push(3) | "Apr" ~ push(4) | "May" ~ push(
@@ -98,12 +102,12 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
       "Aug" ~ push(8) | "Sep" ~ push(9) | "Oct" ~ push(10) | "Nov" ~ push(11) | "Dec" ~ push(
       12))
 
-  def year = rule { digit4 }
+  def year = rule(digit4)
 
-  def `time-of-day` = rule { hour ~ ':' ~ minute ~ ':' ~ second }
-  def hour = rule { digit2 }
-  def minute = rule { digit2 }
-  def second = rule { digit2 }
+  def `time-of-day` = rule(hour ~ ':' ~ minute ~ ':' ~ second)
+  def hour = rule(digit2)
+  def minute = rule(digit2)
+  def second = rule(digit2)
 
   // def `obs-date` = rule { `rfc850-date` | `asctime-date` }
 
@@ -128,13 +132,16 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
     }
   }
 
-  def date3 = rule { month ~ ' ' ~ (digit2 | ' ' ~ digit) }
+  def date3 = rule(month ~ ' ' ~ (digit2 | ' ' ~ digit))
 
   // ******************************************************************************************
   // http://tools.ietf.org/html/rfc7231#section-5.3.1
   // ******************************************************************************************
 
-  def weight = rule { ws(';') ~ ws('q') ~ ws('=') ~ qvalue } // a bit more lenient than the spec
+  def weight =
+    rule(
+      ws(';') ~ ws('q') ~ ws('=') ~ qvalue
+    ) // a bit more lenient than the spec
 
   def qvalue = rule { // a bit more lenient than the spec
     capture(
@@ -152,15 +159,15 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
       `type` ~ '/' ~ subtype ~ zeroOrMore(ws(';') ~ parameter)
     }
 
-  def `type` = rule { token }
+  def `type` = rule(token)
 
-  def subtype = rule { token }
+  def subtype = rule(token)
 
-  def parameter = rule { attribute ~ ws('=') ~ value ~> ((_, _)) }
+  def parameter = rule(attribute ~ ws('=') ~ value ~> ((_, _)))
 
-  def attribute = rule { token }
+  def attribute = rule(token)
 
-  def value = rule { word }
+  def value = rule(word)
 
   // ******************************************************************************************
   // http://tools.ietf.org/html/rfc4647#section-2.1
@@ -169,17 +176,17 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
     `primary-tag` ~ zeroOrMore('-' ~ `sub-tag`) ~> (Language(_, _: _*))
   }
 
-  def `primary-tag` = rule { capture(oneOrMore(ALPHA)) ~ OWS }
+  def `primary-tag` = rule(capture(oneOrMore(ALPHA)) ~ OWS)
 
-  def `sub-tag` = rule { capture(oneOrMore(ALPHANUM)) ~ OWS }
+  def `sub-tag` = rule(capture(oneOrMore(ALPHANUM)) ~ OWS)
 
   // ******************************************************************************************
   // http://tools.ietf.org/html/rfc4647#section-2.1
   // ******************************************************************************************
 
-  def `auth-scheme` = rule { token }
+  def `auth-scheme` = rule(token)
 
-  def `auth-param` = rule { token ~ ws('=') ~ word }
+  def `auth-param` = rule(token ~ ws('=') ~ word)
 
   def `token68` = rule {
     capture(oneOrMore(`token68-start`) ~ zeroOrMore('=')) ~ OWS
@@ -206,7 +213,7 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
   // http://tools.ietf.org/html/rfc7234#section-1.2.1
   // ******************************************************************************************
 
-  def `delta-seconds` = rule { longNumberCappedAtIntMaxValue }
+  def `delta-seconds` = rule(longNumberCappedAtIntMaxValue)
 
   // ******************************************************************************************
   // http://tools.ietf.org/html/rfc7232#section-2.3
@@ -232,7 +239,7 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
     ignoreCase("basic") ~ OWS ~ `basic-cookie` ~> (BasicHttpCredentials(_))
   }
 
-  def `basic-cookie` = rule { `token68` }
+  def `basic-cookie` = rule(`token68`)
 
   // http://tools.ietf.org/html/rfc6750#section-2.1
   def `oauth2-bearer-token` = rule {
@@ -259,7 +266,7 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
     `cookie-name` ~ ws('=') ~ `cookie-value` ~> (createCookiePair _)
   }
 
-  def `cookie-name` = rule { token }
+  def `cookie-name` = rule(token)
 
   // abstract methods need to be implemented depending on actual cookie parsing mode
   def `cookie-value`: Rule1[String]
@@ -386,35 +393,35 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
     `bytes-unit` ~ ws('=') ~ `byte-range-set`
   }
 
-  def `bytes-unit` = rule { "bytes" ~ OWS ~ push(RangeUnits.Bytes) }
+  def `bytes-unit` = rule("bytes" ~ OWS ~ push(RangeUnits.Bytes))
 
-  def `complete-length` = rule { longNumberCapped }
+  def `complete-length` = rule(longNumberCapped)
 
-  def `first-byte-pos` = rule { longNumberCapped }
+  def `first-byte-pos` = rule(longNumberCapped)
 
-  def `last-byte-pos` = rule { longNumberCapped }
+  def `last-byte-pos` = rule(longNumberCapped)
 
-  def `other-content-range` = rule { `other-range-unit` ~ `other-range-resp` }
+  def `other-content-range` = rule(`other-range-unit` ~ `other-range-resp`)
 
   def `other-range-resp` = rule {
     capture(zeroOrMore(ANY)) ~> ContentRange.Other
   }
 
-  def `other-range-set` = rule { oneOrMore(VCHAR) ~ OWS }
+  def `other-range-set` = rule(oneOrMore(VCHAR) ~ OWS)
 
-  def `other-range-unit` = rule { token ~> RangeUnits.Other }
+  def `other-range-unit` = rule(token ~> RangeUnits.Other)
 
   def `other-ranges-specifier` = rule {
     `other-range-unit` ~ ws('=') ~ `other-range-set`
   }
 
-  def `range-unit` = rule { `bytes-unit` | `other-range-unit` }
+  def `range-unit` = rule(`bytes-unit` | `other-range-unit`)
 
   def `suffix-byte-range-spec` = rule {
     '-' ~ `suffix-length` ~> (ByteRange.suffix(_))
   }
 
-  def `suffix-length` = rule { longNumberCapped }
+  def `suffix-length` = rule(longNumberCapped)
 
   def `unsatisfied-range` = rule {
     '*' ~ '/' ~ `complete-length` ~> (ContentRange.Unsatisfiable(_))
@@ -424,9 +431,9 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
   // http://tools.ietf.org/html/rfc7231#section-5.5.3
   // ******************************************************************************************
 
-  def product = rule { token ~ (ws('/') ~ `product-version` | push("")) }
+  def product = rule(token ~ (ws('/') ~ `product-version` | push("")))
 
-  def `product-version` = rule { token }
+  def `product-version` = rule(token)
 
   def `product-or-comment` =
     rule(
@@ -455,16 +462,16 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
       .Extension(_, _))
   }
 
-  def `transfer-parameter` = rule { token ~ ws('=') ~ word ~> (_ -> _) }
+  def `transfer-parameter` = rule(token ~ ws('=') ~ word ~> (_ -> _))
 
   // ******************************************************************************************
   //                                    helpers
   // ******************************************************************************************
-  def token0 = rule { oneOrMore(tchar) }
+  def token0 = rule(oneOrMore(tchar))
 
-  def listSep = rule { ',' ~ OWS }
+  def listSep = rule(',' ~ OWS)
 
-  def digit = rule { DIGIT ~ push(digitInt(lastChar)) }
+  def digit = rule(DIGIT ~ push(digitInt(lastChar)))
 
   def digit2 = rule {
     DIGIT ~ DIGIT ~ push(digitInt(charAt(-2)) * 10 + digitInt(lastChar))
@@ -476,8 +483,8 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
         charAt(-2)) * 10 + digitInt(lastChar))
   }
 
-  def ws(c: Char) = rule { c ~ OWS }
-  def ws(s: String) = rule { s ~ OWS }
+  def ws(c: Char) = rule(c ~ OWS)
+  def ws(s: String) = rule(s ~ OWS)
 
   // parses a potentially long series of digits and extracts its Long value capping at Int.MaxValue in case of overflows
   def longNumberCappedAtIntMaxValue = rule {

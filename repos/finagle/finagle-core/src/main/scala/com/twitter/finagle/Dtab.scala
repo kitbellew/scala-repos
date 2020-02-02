@@ -32,7 +32,7 @@ case class Dtab(dentries0: IndexedSeq[Dentry]) extends IndexedSeq[Dentry] {
     val matches = dentries.collect {
       case Dentry(prefix, dst) if path.startsWith(prefix) =>
         val suff = path.drop(prefix.size)
-        dst.map { pfx => Name.Path(pfx ++ suff) }
+        dst.map(pfx => Name.Path(pfx ++ suff))
     }
 
     matches.size match {

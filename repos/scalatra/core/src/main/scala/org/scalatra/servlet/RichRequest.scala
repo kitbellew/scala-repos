@@ -234,7 +234,7 @@ case class RichRequest(r: HttpServletRequest) extends AttributesMap {
     val rr = Option(r.getCookies)
       .getOrElse(Array())
       .toSeq
-      .groupBy { _.getName }
+      .groupBy(_.getName)
       .transform { case (k, v) => v map { _.getValue } }
       .withDefaultValue(Seq.empty)
     MultiMap(rr)

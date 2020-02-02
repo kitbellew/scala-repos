@@ -74,7 +74,7 @@ trait StorageItem {
     * Store this item with given item input.
     */
   def store(from: StorageItem): StorageItem =
-    IO.using(from.inputStream()) { in => store(out => IO.transfer(in, out)) }
+    IO.using(from.inputStream())(in => store(out => IO.transfer(in, out)))
 
   /**
     * Store this item with given input stream.

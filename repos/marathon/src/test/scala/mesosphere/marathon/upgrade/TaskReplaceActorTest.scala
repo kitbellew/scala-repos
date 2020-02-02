@@ -203,8 +203,8 @@ class TaskReplaceActorTest
 
     watch(ref)
 
-    eventually { verify(driver, times(2)).killTask(_) }
-    eventually { app: AppDefinition => verify(queue, times(2)).add(app) }
+    eventually(verify(driver, times(2)).killTask(_))
+    eventually(app: AppDefinition => verify(queue, times(2)).add(app))
 
     ref ! MesosStatusUpdateEvent(
       "",
@@ -229,7 +229,7 @@ class TaskReplaceActorTest
 
     Await.result(promise.future, 5.seconds)
 
-    eventually { verify(driver, times(3)).killTask(_) }
+    eventually(verify(driver, times(3)).killTask(_))
     verify(queue).resetDelay(app)
 
     expectTerminated(ref)
@@ -288,7 +288,7 @@ class TaskReplaceActorTest
     watch(ref)
 
     // all new tasks are queued directly
-    eventually { app: AppDefinition => verify(queue, times(3)).add(app) }
+    eventually(app: AppDefinition => verify(queue, times(3)).add(app))
 
     // ceiling(minimumHealthCapacity * 3) = 2 are left running
     assert(oldTaskCount == 2)
@@ -299,7 +299,7 @@ class TaskReplaceActorTest
       Task.Id(s"task_0"),
       app.version,
       alive = true)
-    eventually { oldTaskCount should be(1) }
+    eventually(oldTaskCount should be(1))
 
     // second new task becomes healthy and the last old task is killed
     ref ! HealthStatusChanged(
@@ -307,7 +307,7 @@ class TaskReplaceActorTest
       Task.Id(s"task_1"),
       app.version,
       alive = true)
-    eventually { oldTaskCount should be(0) }
+    eventually(oldTaskCount should be(0))
 
     // third new task becomes healthy
     ref ! HealthStatusChanged(
@@ -381,7 +381,7 @@ class TaskReplaceActorTest
 
     // only one task is queued directly
     val queueOrder = org.mockito.Mockito.inOrder(queue)
-    eventually { queueOrder.verify(queue).add(_: AppDefinition, 1) }
+    eventually(queueOrder.verify(queue).add(_: AppDefinition, 1))
 
     // ceiling(minimumHealthCapacity * 3) = 2 are left running
     assert(oldTaskCount == 2)
@@ -392,8 +392,8 @@ class TaskReplaceActorTest
       Task.Id("task_0"),
       app.version,
       alive = true)
-    eventually { oldTaskCount should be(1) }
-    eventually { queueOrder.verify(queue).add(_: AppDefinition, 1) }
+    eventually(oldTaskCount should be(1))
+    eventually(queueOrder.verify(queue).add(_: AppDefinition, 1))
 
     // second new task becomes healthy and the last old task is killed
     ref ! HealthStatusChanged(
@@ -401,8 +401,8 @@ class TaskReplaceActorTest
       Task.Id("task_1"),
       app.version,
       alive = true)
-    eventually { oldTaskCount should be(0) }
-    eventually { queueOrder.verify(queue).add(_: AppDefinition, 1) }
+    eventually(oldTaskCount should be(0))
+    eventually(queueOrder.verify(queue).add(_: AppDefinition, 1))
 
     // third new task becomes healthy
     ref ! HealthStatusChanged(
@@ -477,7 +477,7 @@ class TaskReplaceActorTest
 
     // only one task is queued directly, all old still running
     val queueOrder = org.mockito.Mockito.inOrder(queue)
-    eventually { queueOrder.verify(queue).add(_: AppDefinition, 1) }
+    eventually(queueOrder.verify(queue).add(_: AppDefinition, 1))
     assert(oldTaskCount == 3)
 
     // first new task becomes healthy and another old task is killed
@@ -486,8 +486,8 @@ class TaskReplaceActorTest
       Task.Id("task_0"),
       app.version,
       alive = true)
-    eventually { oldTaskCount should be(2) }
-    eventually { queueOrder.verify(queue).add(_: AppDefinition, 1) }
+    eventually(oldTaskCount should be(2))
+    eventually(queueOrder.verify(queue).add(_: AppDefinition, 1))
 
     // second new task becomes healthy and another old task is killed
     ref ! HealthStatusChanged(
@@ -495,8 +495,8 @@ class TaskReplaceActorTest
       Task.Id("task_1"),
       app.version,
       alive = true)
-    eventually { oldTaskCount should be(1) }
-    eventually { queueOrder.verify(queue).add(_: AppDefinition, 1) }
+    eventually(oldTaskCount should be(1))
+    eventually(queueOrder.verify(queue).add(_: AppDefinition, 1))
 
     // third new task becomes healthy and last old task is killed
     ref ! HealthStatusChanged(
@@ -504,7 +504,7 @@ class TaskReplaceActorTest
       Task.Id("task_2"),
       app.version,
       alive = true)
-    eventually { oldTaskCount should be(0) }
+    eventually(oldTaskCount should be(0))
     queueOrder.verify(queue, never()).add(_: AppDefinition, 1)
 
     Await.result(promise.future, 5.seconds)
@@ -571,7 +571,7 @@ class TaskReplaceActorTest
 
     // two tasks are queued directly, all old still running
     val queueOrder = org.mockito.Mockito.inOrder(queue)
-    eventually { queueOrder.verify(queue).add(_: AppDefinition, 2) }
+    eventually(queueOrder.verify(queue).add(_: AppDefinition, 2))
     assert(oldTaskCount == 3)
 
     // first new task becomes healthy and another old task is killed
@@ -580,8 +580,8 @@ class TaskReplaceActorTest
       Task.Id("task_0"),
       app.version,
       alive = true)
-    eventually { oldTaskCount should be(2) }
-    eventually { queueOrder.verify(queue).add(_: AppDefinition, 1) }
+    eventually(oldTaskCount should be(2))
+    eventually(queueOrder.verify(queue).add(_: AppDefinition, 1))
 
     // second new task becomes healthy and another old task is killed
     ref ! HealthStatusChanged(
@@ -589,7 +589,7 @@ class TaskReplaceActorTest
       Task.Id("task_1"),
       app.version,
       alive = true)
-    eventually { oldTaskCount should be(1) }
+    eventually(oldTaskCount should be(1))
     queueOrder.verify(queue, never()).add(_: AppDefinition, 1)
 
     // third new task becomes healthy and last old task is killed
@@ -598,7 +598,7 @@ class TaskReplaceActorTest
       Task.Id("task_2"),
       app.version,
       alive = true)
-    eventually { oldTaskCount should be(0) }
+    eventually(oldTaskCount should be(0))
     queueOrder.verify(queue, never()).add(_: AppDefinition, 1)
 
     Await.result(promise.future, 5.seconds)

@@ -58,5 +58,5 @@ private[finagle] class ZkClientFactory(val sessionTimeout: Duration) {
       (client, healthHandler.pulse.recv)
     }
 
-  private[zookeeper] def clear() = synchronized { zkClients.clear() }
+  private[zookeeper] def clear() = synchronized(zkClients.clear())
 }

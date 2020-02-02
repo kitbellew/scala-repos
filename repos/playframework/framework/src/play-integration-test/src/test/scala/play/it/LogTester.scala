@@ -51,7 +51,7 @@ class LogBuffer extends AppenderBase[ILoggingEvent] {
       logger: Option[String] = None,
       messageContains: Option[String] = None): List[ILoggingEvent] =
     buffer.synchronized {
-      val byLevel = level.fold(buffer) { l => buffer.filter(_.getLevel == l) }
+      val byLevel = level.fold(buffer)(l => buffer.filter(_.getLevel == l))
       val byLogger = logger.fold(byLevel) { l =>
         byLevel.filter(_.getLoggerName == l)
       }

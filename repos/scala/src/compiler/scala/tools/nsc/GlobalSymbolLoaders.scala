@@ -22,7 +22,7 @@ abstract class GlobalSymbolLoaders extends symtab.SymbolLoaders {
     if (currentRun.typerPhase eq null)
       lookup
     else
-      enteringTyper { lookup }
+      enteringTyper(lookup)
   }
 
   protected def compileLate(srcfile: io.AbstractFile): Unit =

@@ -21,14 +21,14 @@ object KMeans {
 
   // normal scalar multiplication
   private def scale(s: Double, v: Vector[Double]): Vector[Double] =
-    v.map { x => s * x }
+    v.map(x => s * x)
 
   // Here we return the centroid of some vectors
   private def centroidOf(
       vecs: TraversableOnce[Vector[Double]]): Vector[Double] = {
     val (vec, count) = vecs
     // add a 1 to each value to count the number of vectors in one pass:
-      .map { v => (v, 1) }
+      .map(v => (v, 1))
       // Here we add both the count and the vectors:
       .reduce { (ll, rr) =>
         val (l, lc) = ll
@@ -87,7 +87,7 @@ object KMeans {
           pipe.group
           // There is no need to use more than k reducers
             .withReducers(k)
-            .mapValueStream { vectors => Iterator(centroidOf(vectors)) }
+            .mapValueStream(vectors => Iterator(centroidOf(vectors)))
             // Now collect them all into one big
             .groupAll
             .toList
@@ -102,7 +102,7 @@ object KMeans {
     val rng = new java.util.Random(123)
     // take a random k vectors:
     val clusters = points
-      .map { v => (rng.nextDouble, v) }
+      .map(v => (rng.nextDouble, v))
       .groupAll
       .sortedTake(k)(Ordering.by(_._1))
       .mapValues { randk =>
@@ -111,7 +111,7 @@ object KMeans {
       .values
 
     // attach a random cluster to each vector
-    val labeled = points.map { v => (rng.nextInt(k), v) }
+    val labeled = points.map(v => (rng.nextInt(k), v))
 
     (ComputedValue(clusters), labeled)
   }
@@ -142,7 +142,7 @@ object KMeans {
             else go(s, nextC, nextP, step + 1)
         }
 
-    Execution.withId { implicit uid => go(Stat(key), clusters, points, 0) }
+    Execution.withId(implicit uid => go(Stat(key), clusters, points, 0))
   }
 
   def apply(k: Int, points: TypedPipe[Vector[Double]]): Execution[

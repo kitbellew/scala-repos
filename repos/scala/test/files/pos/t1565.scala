@@ -11,8 +11,8 @@ object Bug1565 {
   val xs = List(1, 2, 3)
   xs.filter(x => x < 2)
   xs.filter((x) => x < 2)
-  xs.filter { x => x < 2 }
-  xs.filter { _ < 2 }
+  xs.filter(x => x < 2)
+  xs.filter(_ < 2)
   xs.filter(_ < 2)
   xs.foreach { e =>
     val buf0 = e + 1

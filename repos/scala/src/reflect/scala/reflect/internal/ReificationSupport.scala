@@ -169,7 +169,7 @@ trait ReificationSupport { self: SymbolTable =>
         argss: List[List[Tree]],
         extraFlags: FlagSet = NoFlags,
         excludeFlags: FlagSet = DEFERRED): List[List[ValDef]] =
-      argss.map { args => args.map { mkParam(_, extraFlags, excludeFlags) } }
+      argss.map(args => args.map(mkParam(_, extraFlags, excludeFlags)))
 
     def mkParam(
         tree: Tree,
@@ -637,7 +637,7 @@ trait ReificationSupport { self: SymbolTable =>
     }
     protected object TupleClassRef extends ScalaMemberRef(TupleClass.seq)
     protected object TupleCompanionRef
-        extends ScalaMemberRef(TupleClass.seq.map { _.companionModule })
+        extends ScalaMemberRef(TupleClass.seq.map(_.companionModule))
     protected object UnitClassRef extends ScalaMemberRef(Seq(UnitClass))
     protected object FunctionClassRef extends ScalaMemberRef(FunctionClass.seq)
 
@@ -749,7 +749,7 @@ trait ReificationSupport { self: SymbolTable =>
       def apply(params: List[Tree], body: Tree): Function = {
         val params0 :: Nil = mkParam(params :: Nil, PARAM)
         require(
-          params0.forall { _.rhs.isEmpty },
+          params0.forall(_.rhs.isEmpty),
           "anonymous functions don't support parameters with default values")
         Function(params0, body)
       }
@@ -881,7 +881,7 @@ trait ReificationSupport { self: SymbolTable =>
     def UnliftListElementwise[T](unliftable: Unliftable[T]) =
       new UnliftListElementwise[T] {
         def unapply(lst: List[Tree]): Option[List[T]] = {
-          val unlifted = lst.flatMap { unliftable.unapply(_) }
+          val unlifted = lst.flatMap(unliftable.unapply(_))
           if (unlifted.length == lst.length) Some(unlifted) else None
         }
       }
@@ -889,7 +889,7 @@ trait ReificationSupport { self: SymbolTable =>
     def UnliftListOfListsElementwise[T](unliftable: Unliftable[T]) =
       new UnliftListOfListsElementwise[T] {
         def unapply(lst: List[List[Tree]]): Option[List[List[T]]] = {
-          val unlifted = lst.map { l => l.flatMap { unliftable.unapply(_) } }
+          val unlifted = lst.map(l => l.flatMap(unliftable.unapply(_)))
           if (unlifted.flatten.length == lst.flatten.length) Some(unlifted)
           else None
         }

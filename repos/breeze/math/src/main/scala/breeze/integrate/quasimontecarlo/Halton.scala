@@ -73,7 +73,7 @@ class BaseUniformHaltonGenerator(val dimension: Int)
   val permutations: Array[Array[Long]] =
     (0 to dimension).map { i =>
       val vv = new Array[Long](Halton.PRIMES(i))
-      cfor(0)(j => j < Halton.PRIMES(i), j => j + 1) { j => vv(j) = j }
+      cfor(0)(j => j < Halton.PRIMES(i), j => j + 1)(j => vv(j) = j)
       shuffle(vv)
       vv
     }.toArray

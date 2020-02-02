@@ -116,7 +116,7 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
     def blankExpr = Ident(nme.WILDCARD)
 
     def makePackaging(pkg: RefTree, stats: List[Tree]): PackageDef =
-      atPos(pkg.pos) { PackageDef(pkg, stats) }
+      atPos(pkg.pos)(PackageDef(pkg, stats))
 
     def makeTemplate(parents: List[Tree], stats: List[Tree]) =
       Template(
@@ -246,17 +246,17 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
     // -------------------- specific parsing routines ------------------
 
     def qualId(): RefTree = {
-      var t: RefTree = atPos(in.currentPos) { Ident(ident()) }
+      var t: RefTree = atPos(in.currentPos)(Ident(ident()))
       while (in.token == DOT) {
         in.nextToken()
-        t = atPos(in.currentPos) { Select(t, ident()) }
+        t = atPos(in.currentPos)(Select(t, ident()))
       }
       t
     }
 
     def optArrayBrackets(tpt: Tree): Tree =
       if (in.token == LBRACKET) {
-        val tpt1 = atPos(in.pos) { arrayOf(tpt) }
+        val tpt1 = atPos(in.pos)(arrayOf(tpt))
         in.nextToken()
         accept(RBRACKET)
         optArrayBrackets(tpt1)
@@ -321,7 +321,7 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
               TypeBoundsTree(lo, hi))
           }
           wildcards += tdef
-          atPos(pos) { Ident(tdef.name) }
+          atPos(pos)(Ident(tdef.name))
         } else
           typ()
       if (in.token == LT) {

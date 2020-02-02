@@ -100,7 +100,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       Array[(Int, Double)]()
     } else
       model.productFeatures
-        .mapValues { f ⇒ queryFeatures.map(cosine(_, f)).reduce(_ + _) }
+        .mapValues(f ⇒ queryFeatures.map(cosine(_, f)).reduce(_ + _))
         .filter(_._2 > 0) // keep items with score > 0
         .collect()
 

@@ -155,7 +155,7 @@ private[spark] object SerDeUtil extends Logging {
     * PySpark.
     */
   private[spark] def javaToPython(jRDD: JavaRDD[_]): JavaRDD[Array[Byte]] =
-    jRDD.rdd.mapPartitions { iter => new AutoBatchedPickler(iter) }
+    jRDD.rdd.mapPartitions(iter => new AutoBatchedPickler(iter))
 
   /**
     * Convert an RDD of serialized Python objects to RDD of objects, that is usable by PySpark.

@@ -105,9 +105,7 @@ object MergeOperations {
       : Future[Set[(K, BatchID)]] =
     for {
       collected <- collect(
-        ks.map { k =>
-          lookup(k).map { k -> expand(_, nowBatch, batchesToKeep) }
-        }
+        ks.map(k => lookup(k).map(k -> expand(_, nowBatch, batchesToKeep)))
       )
     } yield pivot.invert(collected.toMap).toSet
 }

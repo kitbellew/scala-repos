@@ -137,9 +137,9 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
         // https://wikis.oracle.com/display/HotSpotInternals/RangeCheckElimination
         if (stride == 1)
           if (aoff == 0)
-            cforRange(0 until rd.length) { j => rd(j) = op(ad(j), b) }
+            cforRange(0 until rd.length)(j => rd(j) = op(ad(j), b))
           else
-            cforRange(0 until rd.length) { j => rd(j) = op(ad(j + aoff), b) }
+            cforRange(0 until rd.length)(j => rd(j) = op(ad(j + aoff), b))
         else {
           var i = 0
           var j = aoff
@@ -223,7 +223,7 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
         val rd = result.data
 
         if (a.noOffsetOrStride && b.noOffsetOrStride)
-          cforRange(0 until a.length) { j => rd(j) = op(ad(j), bd(j)) }
+          cforRange(0 until a.length)(j => rd(j) = op(ad(j), bd(j)))
         else if (a.stride == 1 && b.stride == 1)
           cforRange(0 until a.length) { j =>
             rd(j) = op(ad(j + aoff), bd(j + boff))
@@ -269,7 +269,7 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
         val length = a.length
 
         if (a.noOffsetOrStride && b.noOffsetOrStride)
-          cforRange(0 until length) { j => ad(j) = op(ad(j), bd(j)) }
+          cforRange(0 until length)(j => ad(j) = op(ad(j), bd(j)))
         else if (astride == 1 && bstride == 1)
           cforRange(0 until length) { j =>
             ad(j + aoff) = op(ad(j + aoff), bd(j + boff))
@@ -316,10 +316,10 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
       }
 
       private def fastPath(b: T, ad: Array[T], length: Int): Unit =
-        cforRange(0 until length) { j => ad(j) = op(ad(j), b) }
+        cforRange(0 until length)(j => ad(j) = op(ad(j), b))
 
       private def medPath(ad: Array[T], aoff: Int, b: T, length: Int): Unit =
-        cforRange(0 until length) { j => ad(j + aoff) = op(ad(j + aoff), b) }
+        cforRange(0 until length)(j => ad(j + aoff) = op(ad(j + aoff), b))
 
       private def slowPath(
           ad: Array[T],
@@ -480,9 +480,9 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
         if (x.noOffsetOrStride && y.noOffsetOrStride) {
           val ad = x.data
           val bd = y.data
-          cforRange(0 until x.length) { i => bd(i) += ad(i) * s }
+          cforRange(0 until x.length)(i => bd(i) += ad(i) * s)
         } else
-          cforRange(0 until x.length) { i => y(i) += x(i) * s }
+          cforRange(0 until x.length)(i => y(i) += x(i) * s)
       }
       implicitly[TernaryUpdateRegistry[Vector[V], V, Vector[V], scaleAdd.type]]
         .register(this)
@@ -642,7 +642,7 @@ trait DenseVector_SpecialOps extends DenseVectorOps { this: DenseVector.type =>
         val ad = x.data
         val bd = y.data
 
-        cforRange(0 until x.length) { i => bd(i) += ad(i) * a }
+        cforRange(0 until x.length)(i => bd(i) += ad(i) * a)
 
       } else
         slowPath(y, a, x)
@@ -652,7 +652,7 @@ trait DenseVector_SpecialOps extends DenseVectorOps { this: DenseVector.type =>
         y: DenseVector[Float],
         a: Float,
         x: DenseVector[Float]): Unit =
-      cforRange(0 until x.length) { i => y(i) += x(i) * a }
+      cforRange(0 until x.length)(i => y(i) += x(i) * a)
   }
   implicitly[
     TernaryUpdateRegistry[Vector[Float], Float, Vector[Float], scaleAdd.type]]

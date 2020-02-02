@@ -78,7 +78,7 @@ class ApproximateUniqueCountJob(args: Args) extends Job(args) {
     .groupBy('category) {
       _.approximateUniqueCount[String]('os -> 'os_count)
     }
-    .map('os_count -> 'os_count) { osCount: Double => osCount.toLong }
+    .map('os_count -> 'os_count)(osCount: Double => osCount.toLong)
     .write(Tsv("output0"))
   catch {
     case e: Exception => e.printStackTrace()

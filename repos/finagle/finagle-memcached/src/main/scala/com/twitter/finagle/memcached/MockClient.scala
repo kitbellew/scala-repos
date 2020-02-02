@@ -54,7 +54,7 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
     * Note: expiry and flags are ignored.
     */
   def set(key: String, flags: Int, expiry: Time, value: Buf) = {
-    map.synchronized { map(key) = value }
+    map.synchronized(map(key) = value)
     Future.Unit
   }
 

@@ -52,7 +52,7 @@ class EndToEndTest
   // turn off failure detector since we don't need it for these tests.
   override def test(testName: String, testTags: Tag*)(f: => Unit) {
     super.test(testName, testTags: _*) {
-      mux.sessionFailureDetector.let("none") { f }
+      mux.sessionFailureDetector.let("none")(f)
     }
   }
 
@@ -961,10 +961,10 @@ class EndToEndTest
         "client")
 
     val f = client.query("ok")
-    intercept[Exception] { Await.result(f, 1.second) }
+    intercept[Exception](Await.result(f, 1.second))
 
     val close = server.close(1.minute) // up to a minute
-    intercept[Exception] { Await.result(close, 1.second) }
+    intercept[Exception](Await.result(close, 1.second))
 
     response.setValue("done")
 

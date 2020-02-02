@@ -549,7 +549,7 @@ class ScalaChangeSignatureDialog(
             val fields = UIUtil
               .findComponentsOfType(comp, classOf[EditorTextField])
               .asScala
-            fields.foreach { f => f.setFont(f.getFont.deriveFont(Font.BOLD)) }
+            fields.foreach(f => f.setFont(f.getFont.deriveFont(Font.BOLD)))
           }
 
           val color =

@@ -3,9 +3,9 @@ package org.scalatra
 import org.scalatra.test.scalatest.ScalatraFunSuite
 
 class MethodOverrideTestServlet extends ScalatraServlet with MethodOverride {
-  put("/foo") { "PUT" }
-  post("/foo") { "POST" }
-  get("/foo") { "GET" }
+  put("/foo")("PUT")
+  post("/foo")("POST")
+  get("/foo")("GET")
 }
 
 class MethodOverrideTest extends ScalatraFunSuite {

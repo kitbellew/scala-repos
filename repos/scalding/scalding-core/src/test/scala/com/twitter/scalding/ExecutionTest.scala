@@ -141,13 +141,13 @@ class ExecutionTest extends WordSpec with Matchers {
     "If either fails, zip fails, else we get success" in {
       val neverHappens = Promise[Int]().future
       Execution
-        .fromFuture { _ => neverHappens }
+        .fromFuture(_ => neverHappens)
         .zip(Execution.failed(new Exception("oh no")))
         .shouldFail()
 
       Execution
         .failed(new Exception("oh no"))
-        .zip(Execution.fromFuture { _ => neverHappens })
+        .zip(Execution.fromFuture(_ => neverHappens))
         .shouldFail()
       // If both are good, we succeed:
       Execution
@@ -179,7 +179,7 @@ class ExecutionTest extends WordSpec with Matchers {
 
       doesNotHaveVariable(
         "Should not see variable before we've started transforming")
-        .flatMap { _ => Execution.withConfig(hasVariable)(addOption) }
+        .flatMap(_ => Execution.withConfig(hasVariable)(addOption))
         .flatMap(_ =>
           doesNotHaveVariable(
             "Should not see variable in flatMap's after the isolation"))
@@ -202,7 +202,7 @@ class ExecutionTest extends WordSpec with Matchers {
 
       // Here we run without the option, with the option, and finally without again.
       incrementor
-        .flatMap { _ => Execution.withConfig(incrementor)(addOption) }
+        .flatMap(_ => Execution.withConfig(incrementor)(addOption))
         .flatMap(_ => incrementor)
         .map(_ => true)
         .shouldSucceed() shouldBe true
@@ -238,7 +238,7 @@ class ExecutionTest extends WordSpec with Matchers {
       val (oldCounters, newCounters) = operationTP
         .flatMap { oc =>
           writeNums(List(1, 2, 3, 4, 5, 6, 7))
-          Execution.withConfig(operationTP)(addOption).map { nc => (oc, nc) }
+          Execution.withConfig(operationTP)(addOption).map(nc => (oc, nc))
         }
         .shouldSucceed()
 
@@ -365,8 +365,8 @@ class ExecutionTest extends WordSpec with Matchers {
         }
         .fork
 
-      val fde1 = baseTp.map { _ * 3 }.writeExecution(TypedTsv("/tmp/asdf"))
-      val fde2 = baseTp.map { _ * 5 }.writeExecution(TypedTsv("/tmp/asdf2"))
+      val fde1 = baseTp.map(_ * 3).writeExecution(TypedTsv("/tmp/asdf"))
+      val fde2 = baseTp.map(_ * 5).writeExecution(TypedTsv("/tmp/asdf2"))
 
       val res = fde1.zip(fde2)
 
@@ -387,8 +387,8 @@ class ExecutionTest extends WordSpec with Matchers {
         }
         .fork
 
-      val fde1 = baseTp.map { _ * 3 }.forceToDiskExecution
-      val fde2 = baseTp.map { _ * 5 }.forceToDiskExecution
+      val fde1 = baseTp.map(_ * 3).forceToDiskExecution
+      val fde2 = baseTp.map(_ * 5).forceToDiskExecution
 
       val res = fde1.zip(fde2)
 
@@ -409,12 +409,12 @@ class ExecutionTest extends WordSpec with Matchers {
         }
         .fork
 
-      val fde1 = baseTp.map { _ * 3 }.forceToDiskExecution
-      val fde2 = baseTp.map { _ * 5 }.forceToDiskExecution
+      val fde1 = baseTp.map(_ * 3).forceToDiskExecution
+      val fde2 = baseTp.map(_ * 5).forceToDiskExecution
 
       val res = fde1
         .zip(fde2)
-        .flatMap { _ => fde1 }
+        .flatMap(_ => fde1)
         .flatMap(_.toIterableExecution)
 
       res.shouldSucceed()

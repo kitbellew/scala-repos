@@ -107,7 +107,7 @@ class ALSAlgorithm(val ap: AlgorithmParams)
     }
 
     feature
-      .map { _.swap }
+      .map(_.swap)
       .join(p)
       .map { case (up, (fi, r)) => (fi, r) }
   }

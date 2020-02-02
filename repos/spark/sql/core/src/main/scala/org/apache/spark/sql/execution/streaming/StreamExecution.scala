@@ -270,7 +270,7 @@ class StreamExecution(
 
     while (notDone) {
       logInfo(s"Waiting until $newOffset at $source")
-      awaitBatchLock.synchronized { awaitBatchLock.wait(100) }
+      awaitBatchLock.synchronized(awaitBatchLock.wait(100))
     }
     logDebug(s"Unblocked at $newOffset for $source")
   }

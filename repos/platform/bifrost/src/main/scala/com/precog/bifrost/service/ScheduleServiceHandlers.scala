@@ -206,9 +206,8 @@ class DeleteScheduledQueryServiceHandler[A](scheduler: Scheduler[Future])(
       idStr <- request.parameters
         .get('scheduleId)
         .toSuccess(DispatchError(BadRequest, "scheduleId parameter required"))
-      id <- Validation.fromTryCatch { UUID.fromString(idStr) } leftMap {
-        error =>
-          DispatchError(BadRequest, "Invalid schedule Id \"%s\"".format(idStr))
+      id <- Validation.fromTryCatch(UUID.fromString(idStr)) leftMap { error =>
+        DispatchError(BadRequest, "Invalid schedule Id \"%s\"".format(idStr))
       }
     } yield scheduler.deleteTask(id) map { _ =>
       ok[String](None)
@@ -232,7 +231,7 @@ class ScheduledQueryStatusServiceHandler[A](scheduler: Scheduler[Future])(
       idStr <- request.parameters
         .get('scheduleId)
         .toSuccess(DispatchError(BadRequest, "Missing schedule Id for status."))
-      id <- Validation.fromTryCatch { UUID.fromString(idStr) } leftMap { ex =>
+      id <- Validation.fromTryCatch(UUID.fromString(idStr)) leftMap { ex =>
         DispatchError(
           BadRequest,
           "Invalid schedule Id \"%s\"".format(idStr),

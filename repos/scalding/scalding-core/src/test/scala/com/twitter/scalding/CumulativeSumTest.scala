@@ -26,7 +26,7 @@ class AddRankingWithPartitionedCumulativeSum(args: Args) extends Job(args) {
       case (gender, height) =>
         (gender, (height, 1L))
     }
-    .cumulativeSum { h => (h / 100).floor.toLong }
+    .cumulativeSum(h => (h / 100).floor.toLong)
     .map {
       case (gender, (height, rank)) =>
         (gender, height, rank)

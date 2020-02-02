@@ -150,7 +150,7 @@ object Scalding {
         case _ => bisectingMinify(mode, desired)(factory)
       }
       available
-        .flatMap { intersect(desired, _) }
+        .flatMap(intersect(desired, _))
         .map(Right(_))
         .getOrElse(
           Left(List("available: " + available + ", desired: " + desired)))
@@ -269,7 +269,7 @@ object Scalding {
   def toDateRange(timeSpan: Interval[Timestamp]): Try[DateRange] =
     timeSpan
       .as[Option[DateRange]]
-      .map { Right(_) }
+      .map(Right(_))
       .getOrElse(Left(List(
         "only finite time ranges are supported by scalding: " + timeSpan.toString)))
 
@@ -280,7 +280,7 @@ object Scalding {
   def limitTimes[T](
       range: Interval[Timestamp],
       in: FlowToPipe[T]): FlowToPipe[T] =
-    in.map { pipe => pipe.filter { case (time, _) => range(time) } }
+    in.map(pipe => pipe.filter { case (time, _) => range(time) })
 
   private[scalding] def joinFP[T, U](
       left: FlowToPipe[T],
@@ -312,7 +312,7 @@ object Scalding {
     */
   def memoize[T](pf: PipeFactory[T]): PipeFactory[T] = {
     val memo = new Memo[T]
-    pf.map { rdr => Reader({ i => memo.getOrElseUpdate(i, rdr) }) }
+    pf.map(rdr => Reader({ i => memo.getOrElseUpdate(i, rdr) }))
   }
 
   private def getOrElse[T <: AnyRef: ClassTag](
@@ -373,7 +373,7 @@ object Scalding {
       */
     def forceNode[U](p: PipeFactory[U]): PipeFactory[U] =
       if (forceFanOut || fanOuts(producer))
-        p.map { flowP => flowP.map { _.fork } }
+        p.map(flowP => flowP.map(_.fork))
       else
         p
 
@@ -509,7 +509,7 @@ object Scalding {
                     }
                   }
                   .getOrElse(
-                    leftPf.map { p => p.map((_, TypedPipe.empty)) }
+                    leftPf.map(p => p.map((_, TypedPipe.empty)))
                   ) // no extra producer for store
                 servOut = flowToPipe.map {
                   case (lpipe, dpipe) =>
@@ -550,7 +550,7 @@ object Scalding {
               flowP.map { typedPipe =>
                 typedPipe.flatMap {
                   case (time, (k, v)) =>
-                    op(v).map { u => (time, (k, u)) }
+                    op(v).map(u => (time, (k, u)))
                 }
               }
             }, m)
@@ -589,7 +589,7 @@ object Scalding {
               flowP.map { typedPipe =>
                 typedPipe.flatMap {
                   case (time, (k, v)) =>
-                    op(k).map { newK => (time, (newK, v)) }
+                    op(k).map(newK => (time, (newK, v)))
                 }
               }
             }, m)
@@ -876,7 +876,7 @@ class Scalding(
                 runningState.succeed
               case Some(flow) =>
                 options.get(jobName).foreach { jopt =>
-                  jopt.get[WriteDot].foreach { o => flow.writeDOT(o.filename) }
+                  jopt.get[WriteDot].foreach(o => flow.writeDOT(o.filename))
                   jopt.get[WriteStepsDot].foreach { o =>
                     flow.writeStepsDOT(o.filename)
                   }

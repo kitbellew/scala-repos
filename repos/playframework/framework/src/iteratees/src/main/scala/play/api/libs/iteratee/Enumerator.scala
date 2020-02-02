@@ -282,7 +282,7 @@ object Enumerator {
               Iteratee.flatten(nextI)
             case Input.EOF =>
               if (attending.single
-                    .transformAndGet { _.map(f) }
+                    .transformAndGet(_.map(f))
                     .forall(_.forall(_ == false)))
                 p.complete(Try(Iteratee.flatten(i.feed(Input.EOF))))
               else
@@ -360,7 +360,7 @@ object Enumerator {
               }(dec)
               Iteratee.flatten(nextI)
             case Input.EOF =>
-              if (attending.single.transformAndGet { _.map(f) } == Some(
+              if (attending.single.transformAndGet(_.map(f)) == Some(
                     (false, false)))
                 p.complete(Try(Iteratee.flatten(i.feed(Input.EOF))))
               else
@@ -620,7 +620,7 @@ object Enumerator {
     implicit val pec = ec.prepare()
     generateM({
       val buffer = new Array[Byte](chunkSize)
-      val bytesRead = blocking { input.read(buffer) }
+      val bytesRead = blocking(input.read(buffer))
       val chunk = bytesRead match {
         case -1          => None
         case `chunkSize` => Some(buffer)

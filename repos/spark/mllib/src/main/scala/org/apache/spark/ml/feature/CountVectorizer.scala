@@ -159,7 +159,7 @@ class CountVectorizer(override val uid: String)
       .flatMap {
         case (tokens) =>
           val wc = new OpenHashMap[String, Long]
-          tokens.foreach { w => wc.changeValue(w, 1L, _ + 1L) }
+          tokens.foreach(w => wc.changeValue(w, 1L, _ + 1L))
           wc.map { case (word, count) => (word, (count, 1)) }
       }
       .reduceByKey {

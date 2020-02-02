@@ -400,7 +400,7 @@ final class ClusterClient(settings: ClusterClientSettings)
       else contacts
     if (log.isDebugEnabled)
       log.debug(s"""Sending GetContacts to [${sendTo.mkString(",")}]""")
-    sendTo.foreach { _ ! GetContacts }
+    sendTo.foreach(_ ! GetContacts)
   }
 
   def buffer(msg: Any): Unit =

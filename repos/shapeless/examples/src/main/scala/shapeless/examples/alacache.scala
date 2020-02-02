@@ -109,8 +109,8 @@ trait CachedFacet extends ProductISOFacet {
         c
       }
     }
-    def alive(): Long = cache.synchronized { cache.size() }
-    def aliveExtracted(): Long = uncache.synchronized { uncache.size() }
+    def alive(): Long = cache.synchronized(cache.size())
+    def aliveExtracted(): Long = uncache.synchronized(uncache.size())
   }
 
   val ops: CachedOps

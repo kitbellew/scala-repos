@@ -481,7 +481,7 @@ object Test {
 
   object ClassDefInGuard {
     val z: PartialFunction[Any, Any] = {
-      case x :: xs if xs.forall { y => y.hashCode() > 0 } =>
+      case x :: xs if xs.forall(y => y.hashCode() > 0) =>
         1
     }
 
@@ -490,7 +490,7 @@ object Test {
         case List(4 :: xs) => 1
         case List(5 :: xs) => 1
         case _ if false    =>
-        case List(3 :: xs) if List(3: Any).forall { g => g.hashCode() > 0 } =>
+        case List(3 :: xs) if List(3: Any).forall(g => g.hashCode() > 0) =>
           1
       }
       z.isDefinedAt(42)

@@ -396,7 +396,7 @@ private[sql] class JDBCRDD(
       var gotNext = false
       var nextValue: InternalRow = null
 
-      context.addTaskCompletionListener { context => close() }
+      context.addTaskCompletionListener(context => close())
       val part = thePart.asInstanceOf[JDBCPartition]
       val conn = getConnection()
       val dialect = JdbcDialects.get(url)

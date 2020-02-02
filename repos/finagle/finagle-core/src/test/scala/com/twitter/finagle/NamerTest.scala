@@ -91,7 +91,7 @@ class NamerTest extends FunSuite with AssertionsForJUnit {
 
     // Failed(exc) & Pending
     namer("/test/1").notify(Throw(exc))
-    intercept[TestException] { res.sample() }
+    intercept[TestException](res.sample())
 
     // Ok(Bound) & Ok(Bound)
     namer("/test/1").notify(Return(NameTree.read("/$/inet/0/1")))
@@ -111,7 +111,7 @@ class NamerTest extends FunSuite with AssertionsForJUnit {
 
     // Failed(exc) & Failed(exc)
     namer("/test/1").notify(Throw(exc))
-    intercept[TestException] { res.sample() }
+    intercept[TestException](res.sample())
 
     // Ok(Neg) & Ok(Neg)
     namer("/test/1").notify(Return(NameTree.Neg))
@@ -303,7 +303,7 @@ class TestNamer extends Namer {
 
 class PathServiceNamer extends ServiceNamer[Path, Path] {
   def lookupService(pfx: Path) = {
-    val svc = Service.mk[Path, Path] { req => Future.value(pfx ++ req) }
+    val svc = Service.mk[Path, Path](req => Future.value(pfx ++ req))
     Some(svc)
   }
 }

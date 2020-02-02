@@ -929,7 +929,7 @@ abstract class DStream[T: ClassTag](
 
     alignedFromTime
       .to(alignedToTime, slideDuration)
-      .flatMap { time => if (time >= zeroTime) getOrCompute(time) else None }
+      .flatMap(time => if (time >= zeroTime) getOrCompute(time) else None)
   }
 
   /**

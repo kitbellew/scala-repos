@@ -372,7 +372,7 @@ object Console extends App {
               def freshIdScanner = self.freshIdScanner
             }
 
-          def startup = IO { PrecogUnit }
+          def startup = IO(PrecogUnit)
 
           def shutdown = IO {
             Await.result(

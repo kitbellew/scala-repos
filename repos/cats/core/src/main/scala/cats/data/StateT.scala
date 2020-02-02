@@ -62,7 +62,7 @@ final class StateT[F[_], S, A](val runF: F[S => F[(S, A)]])
     * Like [[map]], but also allows the state (`S`) value to be modified.
     */
   def transform[B](f: (S, A) => (S, B))(implicit F: Monad[F]): StateT[F, S, B] =
-    transformF { fsa => F.map(fsa) { case (s, a) => f(s, a) } }
+    transformF(fsa => F.map(fsa) { case (s, a) => f(s, a) })
 
   /**
     * Like [[transform]], but allows the context to change from `F` to `G`.

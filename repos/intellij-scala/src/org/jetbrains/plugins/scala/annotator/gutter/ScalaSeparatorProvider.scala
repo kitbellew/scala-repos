@@ -34,11 +34,11 @@ trait ScalaSeparatorProvider {
       if (g.get >= MultilineLevel)
         true
       else
-        g != getGroupAbove(element) { _ => true }
+        g != getGroupAbove(element)(_ => true)
     } else false
 
   def hasElementAbove(element: PsiElement) =
-    getGroupAbove(element) { !_.isInstanceOf[ScImportStmt] }.isDefined
+    getGroupAbove(element)(!_.isInstanceOf[ScImportStmt]).isDefined
 
   def getGroup(element: PsiElement) =
     for (g <- groupOf(element))

@@ -241,7 +241,7 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
   def findAllByPreparedStatementDb[T](
       dbId: ConnectionIdentifier,
       stmt: PreparedStatement)(f: A => Box[T]): List[T] =
-    DB.exec(stmt) { rs => createInstances(dbId, rs, Empty, Empty, f) }
+    DB.exec(stmt)(rs => createInstances(dbId, rs, Empty, Empty, f))
 
   def findAllByInsecureSqlDb(
       dbId: ConnectionIdentifier,
@@ -259,7 +259,7 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
       checkedBy: IHaveValidatedThisSQL)(f: A => Box[T]): List[T] =
     DB.use(dbId) { conn =>
       DB.prepareStatement(query, conn) { st =>
-        DB.exec(st) { rs => createInstances(dbId, rs, Empty, Empty, f) }
+        DB.exec(st)(rs => createInstances(dbId, rs, Empty, Empty, f))
       }
     }
 
@@ -825,8 +825,8 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
 
   def whatToSet(toSave: A): String =
     mappedColumns
-      .filter { c => ??(c._2, toSave).dirty_? }
-      .map { c => c._1 + " = ?" }
+      .filter(c => ??(c._2, toSave).dirty_?)
+      .map(c => c._1 + " = ?")
       .toList
       .mkString("", ",", "")
 
@@ -1654,11 +1654,11 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
         case lccb: LifecycleCallbacks => f(lccb)
         case _                        =>
       })
-    toRun.foreach { tf => tf(what) }
+    toRun.foreach(tf => tf(what))
   }
   private def _beforeValidation(what: A) {
     setupInstanceForPostCommit(what);
-    eachField(what, beforeValidation) { field => field.beforeValidation }
+    eachField(what, beforeValidation)(field => field.beforeValidation)
   }
   private def _beforeValidationOnCreate(what: A) {
     eachField(what, beforeValidationOnCreate) { field =>
@@ -1671,7 +1671,7 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
     }
   }
   private def _afterValidation(what: A) {
-    eachField(what, afterValidation) { field => field.afterValidation }
+    eachField(what, afterValidation)(field => field.afterValidation)
   }
   private def _afterValidationOnCreate(what: A) {
     eachField(what, afterValidationOnCreate) { field =>
@@ -1686,31 +1686,31 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
 
   private def _beforeSave(what: A) {
     setupInstanceForPostCommit(what);
-    eachField(what, beforeSave) { field => field.beforeSave }
+    eachField(what, beforeSave)(field => field.beforeSave)
   }
   private def _beforeCreate(what: A) {
-    eachField(what, beforeCreate) { field => field.beforeCreate }
+    eachField(what, beforeCreate)(field => field.beforeCreate)
   }
   private def _beforeUpdate(what: A) {
-    eachField(what, beforeUpdate) { field => field.beforeUpdate }
+    eachField(what, beforeUpdate)(field => field.beforeUpdate)
   }
 
   private def _afterSave(what: A) {
-    eachField(what, afterSave) { field => field.afterSave }
+    eachField(what, afterSave)(field => field.afterSave)
   }
   private def _afterCreate(what: A) {
-    eachField(what, afterCreate) { field => field.afterCreate }
+    eachField(what, afterCreate)(field => field.afterCreate)
   }
   private def _afterUpdate(what: A) {
-    eachField(what, afterUpdate) { field => field.afterUpdate }
+    eachField(what, afterUpdate)(field => field.afterUpdate)
   }
 
   private def _beforeDelete(what: A) {
     setupInstanceForPostCommit(what);
-    eachField(what, beforeDelete) { field => field.beforeDelete }
+    eachField(what, beforeDelete)(field => field.beforeDelete)
   }
   private def _afterDelete(what: A) {
-    eachField(what, afterDelete) { field => field.afterDelete }
+    eachField(what, afterDelete)(field => field.afterDelete)
   }
 
   def beforeSchemifier {}

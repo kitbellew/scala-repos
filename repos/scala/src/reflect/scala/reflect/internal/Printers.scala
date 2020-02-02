@@ -107,7 +107,7 @@ trait Printers extends api.Printers { self: SymbolTable =>
 
     def printColumn(ts: List[Tree], start: String, sep: String, end: String) = {
       print(start); indent(); println()
-      printSeq(ts) { print(_) } { print(sep); println() }; undent(); println();
+      printSeq(ts)(print(_)) { print(sep); println() }; undent(); println();
       print(end)
     }
 
@@ -116,7 +116,7 @@ trait Printers extends api.Printers { self: SymbolTable =>
         start: String,
         sep: String,
         end: String): Unit = {
-      print(start); printSeq(ts) { print(_) } { print(sep) }; print(end)
+      print(start); printSeq(ts)(print(_))(print(sep)); print(end)
     }
 
     def printRow(ts: List[Tree], sep: String): Unit = printRow(ts, "", sep, "")
@@ -131,12 +131,12 @@ trait Printers extends api.Printers { self: SymbolTable =>
           else if (t.mods.hasFlag(COVARIANT))
             print("+")
           printParam(t)
-        } { print(", ") }; print("]")
+        }(print(", ")); print("]")
       }
 
     def printLabelParams(ps: List[Ident]) = {
       print("(")
-      printSeq(ps) { printLabelParam } { print(", ") }
+      printSeq(ps)(printLabelParam)(print(", "))
       print(")")
     }
 
@@ -166,7 +166,7 @@ trait Printers extends api.Printers { self: SymbolTable =>
         inParentheses: Boolean = true): Unit =
       parenthesize(inParentheses) {
         printImplicitInParamsList(ts)
-        printSeq(ts) { printParam } { print(", ") }
+        printSeq(ts)(printParam)(print(", "))
       }
 
     def printParam(tree: Tree) =
@@ -1169,7 +1169,7 @@ trait Printers extends api.Printers { self: SymbolTable =>
                 else splitValue
               val trQuotes = "\"\"\""
               print(trQuotes);
-              printSeq(multilineStringValue) { print(_) } { print(LF) };
+              printSeq(multilineStringValue)(print(_))(print(LF));
               print(trQuotes)
             case _ =>
               // processing Float constants
@@ -1181,7 +1181,7 @@ trait Printers extends api.Printers { self: SymbolTable =>
 
         case an @ Annotated(ap, tree) =>
           val printParentheses = needsParentheses(tree)()
-          parenthesize(printParentheses) { print(tree) };
+          parenthesize(printParentheses)(print(tree));
           print(if (tree.isType) " " else ": ")
           printAnnot(ap)
 

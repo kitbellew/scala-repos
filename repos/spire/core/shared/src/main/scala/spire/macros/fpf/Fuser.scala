@@ -178,10 +178,10 @@ private[spire] trait Fuser[C <: Context, A] {
   }
 
   def negate(sub: Tree)(ev: Tree): Fused =
-    resign(sub) { (apx, exact) => (q"-$apx", q"$ev.negate($exact)") }
+    resign(sub)((apx, exact) => (q"-$apx", q"$ev.negate($exact)"))
 
   def abs(sub: Tree, ev: Tree): Fused =
-    resign(sub) { (apx, exact) => (abs(apx), q"$ev.abs($exact)") }
+    resign(sub)((apx, exact) => (abs(apx), q"$ev.abs($exact)"))
 
   def sqrt(tree: Tree)(ev: Tree): Fused = {
     val fused = extract(tree)

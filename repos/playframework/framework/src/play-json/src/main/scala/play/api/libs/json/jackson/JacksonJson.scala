@@ -62,7 +62,7 @@ private[jackson] object JsValueSerializer extends JsonSerializer[JsValue] {
       case JsBoolean(v) => json.writeBoolean(v)
       case JsArray(elements) =>
         json.writeStartArray()
-        elements.foreach { t => serialize(t, json, provider) }
+        elements.foreach(t => serialize(t, json, provider))
         json.writeEndArray()
       case JsObject(values) =>
         json.writeStartObject()

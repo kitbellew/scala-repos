@@ -24,7 +24,7 @@ class ScPatternArgumentListImpl(node: ASTNode)
     val children: Seq[ScPattern] =
       findChildrenByClassScala[ScPattern](classOf[ScPattern])
     val grandChildrenInBlockExpr: Seq[ScPattern] =
-      this.getChildren.filter { _.isInstanceOf[ScBlockExpr] }.flatMap { s =>
+      this.getChildren.filter(_.isInstanceOf[ScBlockExpr]).flatMap { s =>
         s.getChildren.filter(_.isInstanceOf[ScPattern]).map {
           _.asInstanceOf[ScPattern]
         }

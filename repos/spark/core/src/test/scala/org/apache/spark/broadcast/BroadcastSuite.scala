@@ -143,7 +143,7 @@ class BroadcastSuite extends SparkFunSuite with LocalSparkContext {
   test("Forbid broadcasting RDD directly") {
     sc = new SparkContext(new SparkConf().setAppName("test").setMaster("local"))
     val rdd = sc.parallelize(1 to 4)
-    intercept[IllegalArgumentException] { sc.broadcast(rdd) }
+    intercept[IllegalArgumentException](sc.broadcast(rdd))
     sc.stop()
   }
 
@@ -265,9 +265,9 @@ class BroadcastSuite extends SparkFunSuite with LocalSparkContext {
     if (removeFromDriver) {
       // Using this variable on the executors crashes them, which hangs the test.
       // Instead, crash the driver by directly accessing the broadcast value.
-      intercept[SparkException] { broadcast.value }
-      intercept[SparkException] { broadcast.unpersist() }
-      intercept[SparkException] { broadcast.destroy(blocking = true) }
+      intercept[SparkException](broadcast.value)
+      intercept[SparkException](broadcast.unpersist())
+      intercept[SparkException](broadcast.destroy(blocking = true))
     } else {
       val results = sc
         .parallelize(1 to partitions, partitions)
@@ -285,7 +285,7 @@ package object testPackage extends Assertions {
   def runCallSiteTest(sc: SparkContext) {
     val broadcast = sc.broadcast(Array(1, 2, 3, 4))
     broadcast.destroy()
-    val thrown = intercept[SparkException] { broadcast.value }
+    val thrown = intercept[SparkException](broadcast.value)
     assert(thrown.getMessage.contains("BroadcastSuite.scala"))
   }
 

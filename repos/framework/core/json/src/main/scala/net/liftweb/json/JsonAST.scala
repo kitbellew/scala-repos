@@ -343,7 +343,7 @@ object JsonAST {
               case (a, JField(name, value)) => value.fold(a)(f)
             }
           case JArray(l) =>
-            l.foldLeft(newAcc) { (a, e) => e.fold(a)(f) }
+            l.foldLeft(newAcc)((a, e) => e.fold(a)(f))
           case _ => newAcc
         }
       }
@@ -391,7 +391,7 @@ object JsonAST {
     def map(f: JValue => JValue): JValue = {
       def rec(v: JValue): JValue = v match {
         case JObject(l) =>
-          f(JObject(l.map { field => field.copy(value = rec(field.value)) }))
+          f(JObject(l.map(field => field.copy(value = rec(field.value)))))
         case JArray(l) => f(JArray(l.map(rec)))
         case x         => f(x)
       }
@@ -416,7 +416,7 @@ object JsonAST {
     def mapField(f: JField => JField): JValue = {
       def rec(v: JValue): JValue = v match {
         case JObject(l) =>
-          JObject(l.map { field => f(field.copy(value = rec(field.value))) })
+          JObject(l.map(field => f(field.copy(value = rec(field.value)))))
         case JArray(l) => JArray(l.map(rec))
         case x         => x
       }

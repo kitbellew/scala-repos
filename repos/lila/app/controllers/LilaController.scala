@@ -60,7 +60,7 @@ private[controllers] trait LilaController
 
   protected def SocketEither[A: FrameFormatter](
       f: Context => Fu[Either[Result, (Iteratee[A, _], Enumerator[A])]]) =
-    WebSocket.tryAccept[A] { req => reqToCtx(req) flatMap f }
+    WebSocket.tryAccept[A](req => reqToCtx(req) flatMap f)
 
   protected def SocketOption[A: FrameFormatter](
       f: Context => Fu[Option[(Iteratee[A, _], Enumerator[A])]]) =
@@ -154,7 +154,7 @@ private[controllers] trait LilaController
       implicit ctx: Context): Fu[Result] =
     Env.security.firewall.accepts(ctx.req) flatMap {
       _ fold (a, {
-        fuccess { Redirect(routes.Lobby.home()) }
+        fuccess(Redirect(routes.Lobby.home()))
       })
     }
 
@@ -241,7 +241,7 @@ private[controllers] trait LilaController
 
   protected def OptionOk[A, B: Writeable: ContentTypeOf](fua: Fu[Option[A]])(
       op: A => B)(implicit ctx: Context): Fu[Result] =
-    OptionFuOk(fua) { a => fuccess(op(a)) }
+    OptionFuOk(fua)(a => fuccess(op(a)))
 
   protected def OptionFuOk[A, B: Writeable: ContentTypeOf](fua: Fu[Option[A]])(
       op: A => Fu[B])(implicit ctx: Context) =
@@ -261,7 +261,7 @@ private[controllers] trait LilaController
 
   protected def OptionResult[A](fua: Fu[Option[A]])(op: A => Result)(
       implicit ctx: Context) =
-    OptionFuResult(fua) { a => fuccess(op(a)) }
+    OptionFuResult(fua)(a => fuccess(op(a)))
 
   protected def OptionFuResult[A](fua: Fu[Option[A]])(op: A => Fu[Result])(
       implicit ctx: Context) =

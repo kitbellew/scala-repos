@@ -25,7 +25,7 @@ object BytesToString {
     new String(arg, charset)
 
   def fromList(args: Seq[Array[Byte]], charset: Charset = Charsets.Utf8) =
-    args.map { arg => BytesToString(arg, charset) }
+    args.map(arg => BytesToString(arg, charset))
 
   def fromTuples(
       args: Seq[(Array[Byte], Array[Byte])],
@@ -47,7 +47,7 @@ object StringToBytes {
   def apply(arg: String, charset: Charset = Charsets.Utf8) =
     arg.getBytes(charset)
   def fromList(args: List[String], charset: Charset = Charsets.Utf8) =
-    args.map { arg => arg.getBytes(charset) }
+    args.map(arg => arg.getBytes(charset))
 }
 object StringToChannelBuffer {
   def apply(string: String, charset: Charset = Charsets.Utf8) =
@@ -57,7 +57,7 @@ object CBToString {
   def apply(arg: ChannelBuffer, charset: Charset = Charsets.Utf8) =
     arg.toString(charset)
   def fromList(args: Seq[ChannelBuffer], charset: Charset = Charsets.Utf8) =
-    args.map { arg => CBToString(arg, charset) }
+    args.map(arg => CBToString(arg, charset))
 
   def fromTuples(
       args: Seq[(ChannelBuffer, ChannelBuffer)],

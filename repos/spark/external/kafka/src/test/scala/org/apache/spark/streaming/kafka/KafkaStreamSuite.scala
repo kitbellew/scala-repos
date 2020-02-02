@@ -88,7 +88,7 @@ class KafkaStreamSuite
     ssc.start()
 
     eventually(timeout(10000 milliseconds), interval(100 milliseconds)) {
-      assert(result.synchronized { sent === result })
+      assert(result.synchronized(sent === result))
     }
   }
 }

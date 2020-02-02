@@ -79,7 +79,7 @@ class NIHDBProjectionSpecs
         Duration(60, "seconds"),
         txLogScheduler)(actorSystem)
       .unsafePerformIO
-      .valueOr { e => throw new Exception(e.message) }
+      .valueOr(e => throw new Exception(e.message))
 
   val maxDuration = Duration(60, "seconds")
 
@@ -109,7 +109,7 @@ class NIHDBProjectionSpecs
 
     def stop =
       (for {
-        _ <- IO { close(nihdb) }
+        _ <- IO(close(nihdb))
         _ <- IOUtils.recursiveDelete(workDir)
       } yield ()).unsafePerformIO
   }
@@ -123,7 +123,7 @@ class NIHDBProjectionSpecs
 
       results.onComplete { _ =>
         ctxt.stop
-      } must awaited(maxDuration) { beNone }
+      } must awaited(maxDuration)(beNone)
     }
 
     "Insert and retrieve values below the cook threshold" in check {

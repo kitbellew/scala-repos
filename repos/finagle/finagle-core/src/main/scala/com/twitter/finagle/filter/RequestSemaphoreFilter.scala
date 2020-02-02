@@ -43,7 +43,7 @@ object RequestSemaphoreFilter {
                 sr.addGauge("request_concurrency") {
                   max - sem.numPermitsAvailable
                 },
-                sr.addGauge("request_queue_size") { sem.numWaiters }
+                sr.addGauge("request_queue_size")(sem.numWaiters)
               )
             }
             filter andThen next
@@ -64,7 +64,7 @@ class RequestSemaphoreFilter[Req, Rep](sem: AsyncSemaphore)
     extends SimpleFilter[Req, Rep] {
   def apply(req: Req, service: Service[Req, Rep]): Future[Rep] =
     sem.acquire().transform {
-      case Return(permit)  => service(req).ensure { permit.release() }
+      case Return(permit)  => service(req).ensure(permit.release())
       case Throw(noPermit) => Future.exception(Failure.rejected(noPermit))
     }
 }

@@ -47,7 +47,7 @@ class HealthCheckActor(
     )
 
   override def postStop(): Unit = {
-    nextScheduledCheck.forall { _.cancel() }
+    nextScheduledCheck.forall(_.cancel())
     log.info(
       "Stopped health check actor for app [{}] version [{}] and healthCheck [{}]",
       app.id,

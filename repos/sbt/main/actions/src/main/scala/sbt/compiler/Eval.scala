@@ -122,7 +122,7 @@ final class Eval(
         augment(parser, importTrees, tree, tpt, moduleName)
       }
       def extra(run: Run, unit: CompilationUnit) =
-        atPhase(run.typerPhase.next) { (new TypeExtractor).getType(unit.body) }
+        atPhase(run.typerPhase.next)((new TypeExtractor).getType(unit.body))
       def read(file: File) = IO.read(file)
       def write(value: String, f: File) = IO.write(f, value)
       def extraHash = ""
@@ -230,7 +230,7 @@ final class Eval(
       if (phase == null || phase == phase.next || reporter.hasErrors)
         ()
       else {
-        atPhase(phase) { phase.run }
+        atPhase(phase)(phase.run)
         compile(phase.next)
       }
     }
@@ -282,7 +282,7 @@ final class Eval(
       definitions: List[Tree],
       objectName: String): Tree = {
     val emptyTypeName = nme.EMPTY.toTypeName
-    def emptyPkg = parser.atPos(0, 0, 0) { Ident(nme.EMPTY_PACKAGE_NAME) }
+    def emptyPkg = parser.atPos(0, 0, 0)(Ident(nme.EMPTY_PACKAGE_NAME))
     def emptyInit = DefDef(
       NoMods,
       nme.CONSTRUCTOR,
@@ -321,7 +321,7 @@ final class Eval(
     private[this] var vals = List[String]()
     def getVals(t: Tree): List[String] = { vals = Nil; traverse(t); vals }
     def isAcceptableType(tpe: Type): Boolean =
-      tpe.baseClasses.exists { sym => tpes.contains(sym.fullName) }
+      tpe.baseClasses.exists(sym => tpes.contains(sym.fullName))
     override def traverse(tree: Tree): Unit = tree match {
       case ValDef(_, n, actualTpe, _)
           if isTopLevelModule(tree.symbol.owner) && isAcceptableType(

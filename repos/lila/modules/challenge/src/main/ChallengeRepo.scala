@@ -125,7 +125,7 @@ private final class ChallengeRepo(coll: Coll, maxPerUser: Int) {
         BSONDocument("status" -> true, "_id" -> false)
       )
       .one[BSONDocument]
-      .map { _.flatMap(_.getAs[Status]("status")) }
+      .map(_.flatMap(_.getAs[Status]("status")))
 
   private def setStatus(
       challenge: Challenge,
@@ -137,7 +137,7 @@ private final class ChallengeRepo(coll: Coll, maxPerUser: Int) {
         BSONDocument(
           "$set" -> BSONDocument(
             "status" -> status.id,
-            "expiresAt" -> expiresAt.fold(inTwoWeeks) { _(DateTime.now) }
+            "expiresAt" -> expiresAt.fold(inTwoWeeks)(_(DateTime.now))
           ))
       )
       .void

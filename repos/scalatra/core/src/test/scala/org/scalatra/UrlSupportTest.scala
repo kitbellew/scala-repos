@@ -25,7 +25,7 @@ class UrlSupportTest extends ScalatraFunSuite {
   )
 
   def url(url: String, params: Map[String, String] = Map.empty) =
-    get("/context/", params + ("url" -> url)) { response.body }
+    get("/context/", params + ("url" -> url))(response.body)
 
   test("a page-relative URL should not have the context path prepended") {
     url("page-relative") should equal("page-relative")
@@ -49,11 +49,11 @@ class UrlSupportTest extends ScalatraFunSuite {
   }
 
   test("a '/' should come out as /context") {
-    get("/context/strip-context?url=/") { body should equal("/context") }
+    get("/context/strip-context?url=/")(body should equal("/context"))
   }
 
   test("a '' should come out as /") {
-    get("/context/strip-context?url=") { body should equal("") }
+    get("/context/strip-context?url=")(body should equal(""))
   }
 
   test("params should be rendered as a query string") {

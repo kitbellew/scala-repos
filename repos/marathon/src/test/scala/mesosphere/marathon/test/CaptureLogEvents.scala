@@ -32,8 +32,8 @@ object CaptureLogEvents {
 
     def detachFromRootLogger(): Unit = rootLogger.detachAppender(this)
 
-    def clearEvents(): Unit = synchronized { events = Vector.empty }
-    def getEvents: Vector[ILoggingEvent] = synchronized { events }
+    def clearEvents(): Unit = synchronized(events = Vector.empty)
+    def getEvents: Vector[ILoggingEvent] = synchronized(events)
 
     override def append(eventObject: ILoggingEvent): Unit = synchronized {
       events :+= eventObject

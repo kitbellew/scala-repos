@@ -26,7 +26,7 @@ object LookupJoinedTest {
   def genList(maxTime: Int, maxKey: Int, sz: Int): List[(Int, Int, Int)] = {
     val rng = new java.util.Random
     (0 until sz).view
-      .map { _ => (rng.nextInt(maxTime), rng.nextInt(maxKey), rng.nextInt) }
+      .map(_ => (rng.nextInt(maxTime), rng.nextInt(maxKey), rng.nextInt))
       .groupBy { case (t, k, v) => (t, k) }
       .mapValues(_.headOption.toList)
       .values
@@ -72,7 +72,7 @@ class LookupJoinedTest extends WordSpec with Matchers {
       in1: Iterable[(T, K, W)]) = {
     val serv = in1.groupBy(_._2)
     def lookup(t: T, k: K): Option[W] = {
-      val ord = Ordering.by { tkw: (T, K, W) => tkw._1 }
+      val ord = Ordering.by(tkw: (T, K, W) => tkw._1)
       serv.get(k).flatMap { in1s =>
         in1s
           .filter { case (t1, _, _) => Ordering[T].lt(t1, t) }
@@ -116,7 +116,7 @@ class LookupJoinedTest extends WordSpec with Matchers {
       .toMap // Force the map
 
     def lookup(t: T, k: K): Option[W] = {
-      val ord = Ordering.by { tkw: (T, K, W) => tkw._1 }
+      val ord = Ordering.by(tkw: (T, K, W) => tkw._1)
       serv.get(k).flatMap { in1s =>
         in1s
           .filter { case (t1, _, _) => Ordering[T].lt(t1, t) }
@@ -192,7 +192,7 @@ class WindowLookupJoinedTest extends WordSpec with Matchers {
     val serv = in1.groupBy(_._2)
     // super inefficient, but easy to verify:
     def lookup(t: Int, k: K): Option[W] = {
-      val ord = Ordering.by { tkw: (Int, K, W) => tkw._1 }
+      val ord = Ordering.by(tkw: (Int, K, W) => tkw._1)
       serv.get(k).flatMap { in1s =>
         in1s
           .filter {

@@ -348,7 +348,7 @@ trait ProtoUser {
       val uri = S.uriAndQueryString
       RedirectWithState(
         loginPageURL,
-        RedirectState { () => loginRedirect.set(uri) }
+        RedirectState(() => loginRedirect.set(uri))
       )
     }
   )

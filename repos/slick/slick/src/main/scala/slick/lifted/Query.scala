@@ -452,6 +452,6 @@ object TableQueryMacroImpl {
           List(Ident(TermName("tag")))
         )
       ))
-    reify { TableQuery.apply[E](cons.splice) }
+    reify(TableQuery.apply[E](cons.splice))
   }
 }

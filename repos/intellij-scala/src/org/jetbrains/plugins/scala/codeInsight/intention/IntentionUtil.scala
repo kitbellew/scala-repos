@@ -26,7 +26,7 @@ object IntentionUtil {
         (elem.isInstanceOf[PsiComment] || elem
           .isInstanceOf[PsiWhiteSpace]) && !hasLineBreaks(elem)
 
-      it.takeWhile { a => acceptableElem(a) }
+      it.takeWhile(a => acceptableElem(a))
         .filter(a => a.isInstanceOf[PsiComment])
         .toSeq
     }

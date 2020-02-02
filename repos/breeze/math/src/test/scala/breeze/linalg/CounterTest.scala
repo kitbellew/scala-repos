@@ -129,5 +129,5 @@ class CounterOps_IntTest
     }
 
   def genScalar: Arbitrary[Int] =
-    Arbitrary(Arbitrary.arbitrary[Int].map { _ % 1000 })
+    Arbitrary(Arbitrary.arbitrary[Int].map(_ % 1000))
 }

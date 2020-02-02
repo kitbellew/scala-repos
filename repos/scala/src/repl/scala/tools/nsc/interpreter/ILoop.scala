@@ -1005,7 +1005,7 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
         internalClass("jline"),
         internalClass("jline_embedded"))
       val readers =
-        readerClasses map (cls => Try { mkReader(instantiater(cls)) })
+        readerClasses map (cls => Try(mkReader(instantiater(cls))))
 
       val reader =
         (readers collect { case Success(reader) => reader } headOption) getOrElse SimpleReader()

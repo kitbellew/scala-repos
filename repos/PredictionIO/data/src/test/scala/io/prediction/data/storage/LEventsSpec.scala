@@ -87,7 +87,7 @@ class LEventsSpec extends Specification with TestEvents {
     // events from TestEvents trait
     val listOfEvents = List(r1, r2, r3)
 
-    val insertResp = listOfEvents.map { eventClient.insert(_, appId) }
+    val insertResp = listOfEvents.map(eventClient.insert(_, appId))
 
     val insertedEventId: List[String] = insertResp
 
@@ -95,7 +95,7 @@ class LEventsSpec extends Specification with TestEvents {
       .zip(insertedEventId)
       .map { case (e, id) => Some(e.copy(eventId = Some(id))) }
 
-    val getResp = insertedEventId.map { id => eventClient.get(id, appId) }
+    val getResp = insertedEventId.map(id => eventClient.get(id, appId))
 
     val getEvents = getResp
 
@@ -105,7 +105,7 @@ class LEventsSpec extends Specification with TestEvents {
   def insertAndGetTimezone(eventClient: LEvents) = {
     val listOfEvents = List(tz1, tz2, tz3)
 
-    val insertResp = listOfEvents.map { eventClient.insert(_, appId) }
+    val insertResp = listOfEvents.map(eventClient.insert(_, appId))
 
     val insertedEventId: List[String] = insertResp
 
@@ -113,7 +113,7 @@ class LEventsSpec extends Specification with TestEvents {
       .zip(insertedEventId)
       .map { case (e, id) => Some(e.copy(eventId = Some(id))) }
 
-    val getResp = insertedEventId.map { id => eventClient.get(id, appId) }
+    val getResp = insertedEventId.map(id => eventClient.get(id, appId))
 
     val getEvents = getResp
 
@@ -140,7 +140,7 @@ class LEventsSpec extends Specification with TestEvents {
     // events from TestEvents trait
     val listOfEvents = Vector(u1e5, u2e2, u1e3, u1e1, u2e3, u2e1, u1e4, u1e2)
 
-    listOfEvents.map { eventClient.insert(_, appId) }
+    listOfEvents.map(eventClient.insert(_, appId))
 
     success
   }

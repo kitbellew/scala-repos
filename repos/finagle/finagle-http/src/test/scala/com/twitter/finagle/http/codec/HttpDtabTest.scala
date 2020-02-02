@@ -81,7 +81,7 @@ class HttpDtabTest extends FunSuite with AssertionsForJUnit {
     m.headers.set("X-Dtab-01-A", "a")
     m.headers.set("X-Dtab-02-B", "a")
     val result = HttpDtab.read(m)
-    val failure = intercept[Failure] { result.get() }
+    val failure = intercept[Failure](result.get())
     assert(failure.why == "Unmatched X-Dtab headers")
   }
 
@@ -90,7 +90,7 @@ class HttpDtabTest extends FunSuite with AssertionsForJUnit {
     m.headers.set("X-Dtab-01-A", "L2ZvbyA9PiAvZmFy") // /foo => /far
     m.headers.set("X-Dtab-01-B", "L2Zhcg==") // /far
     val result = HttpDtab.read(m)
-    val failure = intercept[Failure] { result.get() }
+    val failure = intercept[Failure](result.get())
     assert(failure.why == "Invalid path: /foo => /far")
   }
 
@@ -99,7 +99,7 @@ class HttpDtabTest extends FunSuite with AssertionsForJUnit {
     m.headers.set("X-Dtab-01-A", "L2Zvbw==") // foo
     m.headers.set("X-Dtab-01-B", "L2ZvbyA9PiAvZmFy") // /foo => /far
     val result = HttpDtab.read(m)
-    val failure = intercept[Failure] { result.get() }
+    val failure = intercept[Failure](result.get())
     assert(failure.why == "Invalid name: /foo => /far")
   }
 
@@ -109,7 +109,7 @@ class HttpDtabTest extends FunSuite with AssertionsForJUnit {
     m.headers.set("X-Dtab-01-B", "a")
     m.headers.set("X-Dtab-02-B", "a")
     val result = HttpDtab.read(m)
-    val failure = intercept[Failure] { result.get() }
+    val failure = intercept[Failure](result.get())
     assert(failure.why == "Unmatched X-Dtab headers")
   }
 
@@ -118,7 +118,7 @@ class HttpDtabTest extends FunSuite with AssertionsForJUnit {
     m.headers.set("X-Dtab-01-A", "☺")
     m.headers.set("X-Dtab-01-B", "☹")
     val result = HttpDtab.read(m)
-    val failure = intercept[Failure] { result.get() }
+    val failure = intercept[Failure](result.get())
     assert(failure.why == "Value not b64-encoded: ☺")
   }
 

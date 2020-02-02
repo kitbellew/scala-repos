@@ -22,7 +22,7 @@ object PromiseMock {
     try body(MockPromise.processQueue _)
     finally oldPromise.fold {
       global.asInstanceOf[js.Dictionary[Any]].delete("Promise")
-    } { old => global.Promise = old }
+    }(old => global.Promise = old)
   }
 
   @noinline
@@ -127,7 +127,7 @@ object PromiseMock {
           _]) =
       tryCatchAny[Unit] {
         executor(resolve _, reject _)
-      } { e => reject(e) }
+      }(e => reject(e))
 
     private[this] def fulfill(value: A): Unit = {
       assert(state == Pending)
@@ -165,7 +165,7 @@ object PromiseMock {
               val thenActionFun = thenAction.asInstanceOf[js.Function]
               enqueue(() => promiseResolveThenableJob(thenable, thenActionFun))
             }
-          } { e => reject(e) }
+          }(e => reject(e))
 
     // 25.4.2.2 PromiseResolveThenableJob
     private[this] def promiseResolveThenableJob(
@@ -193,14 +193,14 @@ object PromiseMock {
             def doFulfilled(value: A): Unit =
               tryCatchAny[Unit] {
                 innerResolve(onFulfilled(value))
-              } { e => innerReject(e) }
+              }(e => innerReject(e))
 
             def doRejected(reason: Any): Unit =
               tryCatchAny[Unit] {
                 onRejected.fold[Unit] {
                   innerReject(reason)
-                } { onRejectedFun => innerResolve(onRejectedFun(reason)) }
-              } { e => innerReject(e) }
+                }(onRejectedFun => innerResolve(onRejectedFun(reason)))
+              }(e => innerReject(e))
 
             state match {
               case Pending =>

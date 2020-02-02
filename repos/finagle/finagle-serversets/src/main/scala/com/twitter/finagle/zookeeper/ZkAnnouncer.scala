@@ -111,7 +111,7 @@ class ZkAnnouncer(factory: ZkClientFactory) extends Announcer { self =>
     } getOrElse {
       val serverSetConf =
         ServerSetConf(client, path, shardId, new ServerSetImpl(client, path))
-      synchronized { serverSets += serverSetConf }
+      synchronized(serverSets += serverSetConf)
       serverSetConf
     }
 

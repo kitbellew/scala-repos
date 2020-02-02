@@ -108,7 +108,7 @@ class OutputStreamSourceSpec extends AkkaSpec(UnboundedMailboxConfig) {
         .run
       val s = probe.expectSubscription()
 
-      (1 to 16).foreach { _ ⇒ outputStream.write(bytesArray) }
+      (1 to 16).foreach(_ ⇒ outputStream.write(bytesArray))
 
       //blocked call
       val f = Future(outputStream.write(bytesArray))

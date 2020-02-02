@@ -147,7 +147,7 @@ private[spark] object TestUtils {
       if (classpathUrls.nonEmpty)
         Seq(
           "-classpath",
-          classpathUrls.map { _.getFile }.mkString(File.pathSeparator))
+          classpathUrls.map(_.getFile).mkString(File.pathSeparator))
       else
         Seq()
     compiler
@@ -183,7 +183,7 @@ private[spark] object TestUtils {
       baseClass: String = null,
       classpathUrls: Seq[URL] = Seq()): File = {
     val extendsText = Option(baseClass)
-      .map { c => s" extends $c" }
+      .map(c => s" extends $c")
       .getOrElse("")
     val sourceFile = new JavaSourceFromString(
       className,

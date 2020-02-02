@@ -49,12 +49,12 @@ object DataFrameExample {
       opt[String]("input")
         .text(s"input path to dataframe")
         .action((x, c) => c.copy(input = x))
-      checkConfig { params => success }
+      checkConfig(params => success)
     }
 
     parser
       .parse(args, defaultParams)
-      .map { params => run(params) }
+      .map(params => run(params))
       .getOrElse {
         sys.exit(1)
       }

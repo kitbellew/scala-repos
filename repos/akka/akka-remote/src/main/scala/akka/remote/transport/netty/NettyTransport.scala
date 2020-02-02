@@ -311,8 +311,10 @@ private[transport] object NettyTransport {
       case _ ⇒ c.getChannel
     }
     for {
-      _ ← always { channel.write(ChannelBuffers.buffer(0)) } // Force flush by waiting on a final dummy write
-      _ ← always { channel.disconnect() }
+      _ ← always(
+        channel.write(ChannelBuffers.buffer(0))
+      ) // Force flush by waiting on a final dummy write
+      _ ← always(channel.disconnect())
     } channel.close()
   }
 
@@ -561,7 +563,7 @@ class NettyTransport(
     addr match {
       case Address(_, _, Some(host), Some(port)) ⇒
         Future {
-          blocking { new InetSocketAddress(InetAddress.getByName(host), port) }
+          blocking(new InetSocketAddress(InetAddress.getByName(host), port))
         }
       case _ ⇒
         Future.failed(

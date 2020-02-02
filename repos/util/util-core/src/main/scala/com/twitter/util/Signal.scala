@@ -83,7 +83,7 @@ object HandleSignal {
   def apply(posixSignal: String)(f: String => Unit) {
     if (!handlers.contains(posixSignal))
       handlers.synchronized {
-        SignalHandlerFactory().foreach { _.handle(posixSignal, handlers) }
+        SignalHandlerFactory().foreach(_.handle(posixSignal, handlers))
         handlers(posixSignal) = mutable.HashSet[String => Unit]()
       }
 

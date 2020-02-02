@@ -113,7 +113,7 @@ trait IoHelpers {
     */
   def doClose[T](is: java.io.Closeable*)(f: => T): T =
     try f
-    finally is.foreach(stream => tryo { stream.close })
+    finally is.foreach(stream => tryo(stream.close))
 }
 
 /**

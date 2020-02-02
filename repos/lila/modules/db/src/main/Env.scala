@@ -26,7 +26,7 @@ final class Env(
       registerDriverShutdownHook(driver)
       logger.info(
         s"""ReactiveMongoApi successfully started with DB '$dbUri'! Servers: ${parsedUri.hosts
-          .map { s => s"[${s._1}:${s._2}]" }
+          .map(s => s"[${s._1}:${s._2}]")
           .mkString("\n\t\t")}""")
       db
     }
@@ -35,7 +35,7 @@ final class Env(
   def apply(name: String): Coll = db(name)
 
   private def registerDriverShutdownHook(mongoDriver: MongoDriver): Unit =
-    lifecycle.addStopHook { () => Future(mongoDriver.close()) }
+    lifecycle.addStopHook(() => Future(mongoDriver.close()))
 }
 
 object Env {

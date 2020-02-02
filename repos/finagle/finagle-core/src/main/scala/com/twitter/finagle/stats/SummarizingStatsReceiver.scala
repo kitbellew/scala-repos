@@ -23,7 +23,7 @@ class SummarizingStatsReceiver extends StatsReceiverWithCumulativeGauges {
 
   // synchronized on `this`
   private[this] var _gauges = Map[Seq[String], () => Float]()
-  def gauges: Map[Seq[String], () => Float] = synchronized { _gauges }
+  def gauges: Map[Seq[String], () => Float] = synchronized(_gauges)
 
   def counter(name: String*) = new Counter {
     def incr(delta: Int) { counters.addAndGet(name, delta) }

@@ -810,7 +810,7 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(
     val data = self.collect()
     val map = new mutable.HashMap[K, V]
     map.sizeHint(data.length)
-    data.foreach { pair => map.put(pair._1, pair._2) }
+    data.foreach(pair => map.put(pair._1, pair._2))
     map
   }
 

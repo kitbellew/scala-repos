@@ -17,7 +17,7 @@ private[tests] trait CoreTestDefs
       with AskTypeCompletionAt {
 
     override def runTest() {
-      askAllSources(TypeCompletionMarker) { pos => askTypeCompletionAt(pos) } {
+      askAllSources(TypeCompletionMarker)(pos => askTypeCompletionAt(pos)) {
         (pos, members) =>
           withResponseDelimiter {
             reporter.println("[response] askTypeCompletion at " + format(pos))
@@ -43,7 +43,7 @@ private[tests] trait CoreTestDefs
       with AskScopeCompletionAt {
 
     override def runTest() {
-      askAllSources(ScopeCompletionMarker) { pos => askScopeCompletionAt(pos) } {
+      askAllSources(ScopeCompletionMarker)(pos => askScopeCompletionAt(pos)) {
         (pos, members) =>
           withResponseDelimiter {
             reporter.println("[response] askScopeCompletion at " + format(pos))
@@ -75,7 +75,7 @@ private[tests] trait CoreTestDefs
       with AskTypeAt {
 
     override def runTest() {
-      askAllSources(TypeMarker) { pos => askTypeAt(pos) } { (pos, tree) =>
+      askAllSources(TypeMarker)(pos => askTypeAt(pos)) { (pos, tree) =>
         withResponseDelimiter {
           reporter.println("[response] askTypeAt " + format(pos))
           compiler.ask(() => reporter.println(tree))
@@ -92,7 +92,7 @@ private[tests] trait CoreTestDefs
       with AskTypeCompletionAt {
 
     override def runTest() {
-      askAllSources(HyperlinkMarker) { pos => askTypeAt(pos)(NullReporter) } {
+      askAllSources(HyperlinkMarker)(pos => askTypeAt(pos)(NullReporter)) {
         (pos, tree) =>
           if (tree.symbol == compiler.NoSymbol || tree.symbol == null)
             reporter.println("\nNo symbol is associated with tree: " + tree)

@@ -347,7 +347,7 @@ class DataFrameStatPerfSuite
     }
 
     logDebug("*** Normal describe ***")
-    val t1 = seconds { df.describe() }
+    val t1 = seconds(df.describe())
     logDebug(s"T1 = $t1")
     logDebug("*** Just quantiles ***")
     val t2 = seconds {

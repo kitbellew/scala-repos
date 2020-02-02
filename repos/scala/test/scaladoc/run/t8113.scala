@@ -34,6 +34,6 @@ object Test extends ScaladocModelTest {
     }
     assert(link.isDefined)
     val expected = ("http://www.scala-lang.org", "this great website")
-    link.foreach { l => assert(l == expected, s"$l != $expected") }
+    link.foreach(l => assert(l == expected, s"$l != $expected"))
   }
 }

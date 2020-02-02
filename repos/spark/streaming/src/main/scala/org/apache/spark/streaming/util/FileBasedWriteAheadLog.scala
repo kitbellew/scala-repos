@@ -132,7 +132,7 @@ private[streaming] class FileBasedWriteAheadLog(
     * hence the implementation is kept simple.
     */
   def readAll(): JIterator[ByteBuffer] = synchronized {
-    val logFilesToRead = pastLogs.map { _.path } ++ currentLogPath
+    val logFilesToRead = pastLogs.map(_.path) ++ currentLogPath
     logInfo("Reading from the logs:\n" + logFilesToRead.mkString("\n"))
     def readFile(file: String): Iterator[ByteBuffer] = {
       logDebug(s"Creating log reader with $file")
@@ -163,13 +163,13 @@ private[streaming] class FileBasedWriteAheadLog(
     */
   def clean(threshTime: Long, waitForCompletion: Boolean): Unit = {
     val oldLogFiles = synchronized {
-      val expiredLogs = pastLogs.filter { _.endTime < threshTime }
+      val expiredLogs = pastLogs.filter(_.endTime < threshTime)
       pastLogs --= expiredLogs
       expiredLogs
     }
     logInfo(
       s"Attempting to clear ${oldLogFiles.size} old log files in $logDirectory " +
-        s"older than $threshTime: ${oldLogFiles.map { _.path }.mkString("\n")}")
+        s"older than $threshTime: ${oldLogFiles.map(_.path).mkString("\n")}")
 
     def deleteFile(walInfo: LogInfo): Unit = {
       try {
@@ -186,7 +186,7 @@ private[streaming] class FileBasedWriteAheadLog(
     oldLogFiles.foreach { logInfo =>
       if (!executionContext.isShutdown)
         try {
-          val f = Future { deleteFile(logInfo) }(executionContext)
+          val f = Future(deleteFile(logInfo))(executionContext)
           if (waitForCompletion) {
             import scala.concurrent.duration._
             Await.ready(f, 1 second)
@@ -241,7 +241,7 @@ private[streaming] class FileBasedWriteAheadLog(
     if (fileSystem.exists(logDirectoryPath) &&
         fileSystem.getFileStatus(logDirectoryPath).isDirectory) {
       val logFileInfo = logFilesTologInfo(
-        fileSystem.listStatus(logDirectoryPath).map { _.getPath })
+        fileSystem.listStatus(logDirectoryPath).map(_.getPath))
       pastLogs.clear()
       pastLogs ++= logFileInfo
       logInfo(
@@ -273,7 +273,7 @@ private[streaming] object FileBasedWriteAheadLog {
     Thread.currentThread
       .getStackTrace()
       .map(_.getClassName)
-      .find { c => !blacklist.exists(c.contains) }
+      .find(c => !blacklist.exists(c.contains))
       .flatMap(_.split("\\.").lastOption)
       .flatMap(_.split("\\$\\$").headOption)
   }
@@ -291,7 +291,7 @@ private[streaming] object FileBasedWriteAheadLog {
             None
         }
       }
-      .sortBy { _.startTime }
+      .sortBy(_.startTime)
 
   /**
     * This creates an iterator from a parallel collection, by keeping at most `n` objects in memory

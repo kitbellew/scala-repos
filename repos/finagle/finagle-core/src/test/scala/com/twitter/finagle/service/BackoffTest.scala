@@ -144,7 +144,7 @@ class BackoffTest extends FunSuite with GeneratorDrivenPropertyChecks {
       }
       val backoffs =
         Backoff.fromFunction(f).take(10).force.toSeq.map(_.inNanoseconds)
-      backoffs.foreach { b => assert(b == rng.nextLong(10)) }
+      backoffs.foreach(b => assert(b == rng.nextLong(10)))
     }
   }
 }

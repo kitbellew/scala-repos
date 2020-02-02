@@ -11,7 +11,7 @@ object IteratorSpec extends Spec {
       val it = ct.iterator
 
       it.hasNext shouldEqual (false)
-      evaluating { it.next() }.shouldProduce[NoSuchElementException]
+      evaluating(it.next()).shouldProduce[NoSuchElementException]
     }
 
     def nonEmptyIteratorCheck(sz: Int) {
@@ -26,7 +26,7 @@ object IteratorSpec extends Spec {
       }
 
       it.hasNext shouldEqual (false)
-      evaluating { it.next() }.shouldProduce[NoSuchElementException]
+      evaluating(it.next()).shouldProduce[NoSuchElementException]
       tracker.size shouldEqual (sz)
       tracker shouldEqual (ct)
     }
@@ -91,7 +91,7 @@ object IteratorSpec extends Spec {
       }
 
       it.hasNext shouldEqual (false)
-      evaluating { it.next() }.shouldProduce[NoSuchElementException]
+      evaluating(it.next()).shouldProduce[NoSuchElementException]
       tracker.size shouldEqual (sz)
       tracker shouldEqual (ct)
     }

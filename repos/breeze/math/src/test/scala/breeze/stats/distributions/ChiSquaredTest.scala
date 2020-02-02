@@ -39,7 +39,7 @@ class ChiSquaredTest
   override val numSamples = 40000
 
   def arbParameter = Arbitrary {
-    for (shape <- arbitrary[Double].map { _.abs % 200.0 + 4.2 }) yield shape
+    for (shape <- arbitrary[Double].map(_.abs % 200.0 + 4.2)) yield shape
   }
 
   def paramsClose(p: Double, b: Double) = breeze.numerics.closeTo(p, b, 5e-2)
@@ -49,7 +49,7 @@ class ChiSquaredTest
   def fromDouble(x: Double) = x
 
   implicit def arbDistr = Arbitrary {
-    for (shape <- arbitrary[Double].map { x => math.abs(x) % 1000.0 + 4.2 })
+    for (shape <- arbitrary[Double].map(x => math.abs(x) % 1000.0 + 4.2))
       yield new ChiSquared(shape)(new RandBasis(new MersenneTwister(0)))
   }
 

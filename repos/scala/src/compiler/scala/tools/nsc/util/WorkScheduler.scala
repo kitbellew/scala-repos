@@ -87,7 +87,7 @@ class WorkScheduler {
     */
   def raise(exc: Throwable) = synchronized {
     throwables enqueue exc
-    postWorkItem { new EmptyAction }
+    postWorkItem(new EmptyAction)
   }
 }
 

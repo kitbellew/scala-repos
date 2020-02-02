@@ -330,7 +330,7 @@ trait AssignClusterModule[M[+_]]
           }
           val tables: M[Seq[Table]] = (tables0.toList).sequence
 
-          tables.map(_.reduceOption { _ concat _ } getOrElse Table.empty)
+          tables.map(_.reduceOption(_ concat _) getOrElse Table.empty)
         }
       }
     }

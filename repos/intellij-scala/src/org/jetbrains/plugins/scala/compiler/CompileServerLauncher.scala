@@ -170,7 +170,7 @@ class CompileServerLauncher extends ApplicationComponent {
 
   // TODO stop server more gracefully
   def stop() {
-    serverInstance.foreach { it => it.destroyProcess() }
+    serverInstance.foreach(it => it.destroyProcess())
   }
 
   def stop(project: Project) {

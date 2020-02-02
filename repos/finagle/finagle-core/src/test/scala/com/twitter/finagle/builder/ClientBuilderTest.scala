@@ -180,7 +180,7 @@ class ClientBuilderTest
 
       val f = client("123")
 
-      eventually { assert(f.isDefined) }
+      eventually(assert(f.isDefined))
       assert(inMemory.counters(Seq("test", "tries", "requests")) == 1)
       assert(
         // 1 request and 1 retry
@@ -241,7 +241,7 @@ class ClientBuilderTest
 
       val f = client("123")
 
-      eventually { assert(f.isDefined) }
+      eventually(assert(f.isDefined))
       assert(inMemory.counters(Seq("test", "tries", "requests")) == 1)
 
       // 1 request + 1 retry

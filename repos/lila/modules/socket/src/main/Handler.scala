@@ -87,7 +87,7 @@ object Handler {
                 Json.obj(
                   "dests" -> req.dests,
                   "path" -> req.path
-                ) ++ req.opening.?? { o => Json.obj("opening" -> o) })
+                ) ++ req.opening.??(o => Json.obj("opening" -> o)))
             case None =>
               member push lila.socket.Socket
                 .makeMessage("destsFailure", "Bad dests request")

@@ -113,7 +113,7 @@ class BlockManagerReplicationSuite
   }
 
   after {
-    allStores.foreach { _.stop() }
+    allStores.foreach(_.stop())
     allStores.clear()
     rpcEnv.shutdown()
     rpcEnv.awaitTermination()
@@ -126,16 +126,16 @@ class BlockManagerReplicationSuite
     val stores = (1 to numStores - 1).map { i =>
       makeBlockManager(1000, s"store$i")
     }
-    val storeIds = stores.map { _.blockManagerId }.toSet
+    val storeIds = stores.map(_.blockManagerId).toSet
     assert(
       master.getPeers(stores(0).blockManagerId).toSet ===
-        storeIds.filterNot { _ == stores(0).blockManagerId })
+        storeIds.filterNot(_ == stores(0).blockManagerId))
     assert(
       master.getPeers(stores(1).blockManagerId).toSet ===
-        storeIds.filterNot { _ == stores(1).blockManagerId })
+        storeIds.filterNot(_ == stores(1).blockManagerId))
     assert(
       master.getPeers(stores(2).blockManagerId).toSet ===
-        storeIds.filterNot { _ == stores(2).blockManagerId })
+        storeIds.filterNot(_ == stores(2).blockManagerId))
 
     // Add driver store and test whether it is filtered out
     val driverStore = makeBlockManager(1000, SparkContext.DRIVER_IDENTIFIER)
@@ -145,15 +145,18 @@ class BlockManagerReplicationSuite
 
     // Add a new store and test whether get peers returns it
     val newStore = makeBlockManager(1000, s"store$numStores")
-    assert(master.getPeers(stores(0).blockManagerId).toSet ===
-      storeIds
-        .filterNot { _ == stores(0).blockManagerId } + newStore.blockManagerId)
-    assert(master.getPeers(stores(1).blockManagerId).toSet ===
-      storeIds
-        .filterNot { _ == stores(1).blockManagerId } + newStore.blockManagerId)
-    assert(master.getPeers(stores(2).blockManagerId).toSet ===
-      storeIds
-        .filterNot { _ == stores(2).blockManagerId } + newStore.blockManagerId)
+    assert(
+      master.getPeers(stores(0).blockManagerId).toSet ===
+        storeIds
+          .filterNot(_ == stores(0).blockManagerId) + newStore.blockManagerId)
+    assert(
+      master.getPeers(stores(1).blockManagerId).toSet ===
+        storeIds
+          .filterNot(_ == stores(1).blockManagerId) + newStore.blockManagerId)
+    assert(
+      master.getPeers(stores(2).blockManagerId).toSet ===
+        storeIds
+          .filterNot(_ == stores(2).blockManagerId) + newStore.blockManagerId)
     assert(master.getPeers(newStore.blockManagerId).toSet === storeIds)
 
     // Remove a store and test whether get peers returns it
@@ -227,7 +230,7 @@ class BlockManagerReplicationSuite
   test("block replication - deterministic node selection") {
     val blockSize = 1000
     val storeSize = 10000
-    val stores = (1 to 5).map { i => makeBlockManager(storeSize, s"store$i") }
+    val stores = (1 to 5).map(i => makeBlockManager(storeSize, s"store$i"))
     val storageLevel2x = StorageLevel.MEMORY_AND_DISK_2
     val storageLevel3x = StorageLevel(true, true, false, true, 3)
     val storageLevel4x = StorageLevel(true, true, false, true, 4)
@@ -236,8 +239,8 @@ class BlockManagerReplicationSuite
         blockId: String,
         level: StorageLevel): Set[BlockManagerId] = {
       stores.head.putSingle(blockId, new Array[Byte](blockSize), level)
-      val locations = master.getLocations(blockId).sortBy { _.executorId }.toSet
-      stores.foreach { _.removeBlock(blockId) }
+      val locations = master.getLocations(blockId).sortBy(_.executorId).toSet
+      stores.foreach(_.removeBlock(blockId))
       master.removeBlock(blockId)
       locations
     }
@@ -305,7 +308,7 @@ class BlockManagerReplicationSuite
         new Array[Byte](1000),
         StorageLevel.MEMORY_AND_DISK_2)
       val numLocations = master.getLocations(blockId).size
-      allStores.foreach { _.removeBlock(blockId) }
+      allStores.foreach(_.removeBlock(blockId))
       numLocations
     }
 
@@ -363,7 +366,7 @@ class BlockManagerReplicationSuite
         new Array[Byte](blockSize),
         storageLevel)
       val numLocations = master.getLocations(blockId).size
-      allStores.foreach { _.removeBlock(blockId) }
+      allStores.foreach(_.removeBlock(blockId))
       numLocations
     }
 
@@ -485,7 +488,7 @@ class BlockManagerReplicationSuite
                 new Array[Byte](1000),
                 MEMORY_ONLY_SER)
             }
-            (1 to 10).foreach { i => testStore.removeBlock(s"dummy-block-$i") }
+            (1 to 10).foreach(i => testStore.removeBlock(s"dummy-block-$i"))
 
             val newBlockStatusOption =
               master.getBlockStatus(blockId).get(testStore.blockManagerId)

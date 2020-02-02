@@ -97,7 +97,7 @@ private[sql] object StatFunctions extends Logging {
     val summaries =
       df.select(columns: _*).rdd.aggregate(emptySummaries)(apply, merge)
 
-    summaries.map { summary => probabilities.map(summary.query) }
+    summaries.map(summary => probabilities.map(summary.query))
   }
 
   /**

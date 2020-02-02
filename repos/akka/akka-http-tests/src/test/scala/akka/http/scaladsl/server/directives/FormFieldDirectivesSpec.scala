@@ -52,14 +52,14 @@ class FormFieldDirectivesSpec extends RoutingSpec {
         formFields('firstName, "age".as[Int], 'sex.?, "VIP" ? false) {
           (firstName, age, sex, vip) ⇒ complete(firstName + age + sex + vip)
         }
-      } ~> check { responseAs[String] shouldEqual "Mike42Nonefalse" }
+      } ~> check(responseAs[String] shouldEqual "Mike42Nonefalse")
     }
     "properly extract the value of www-urlencoded form fields when an explicit unmarshaller is given" in {
       Post("/", urlEncodedForm) ~> {
         formFields('firstName, "age".as(HexInt), 'sex.?, "VIP" ? false) {
           (firstName, age, sex, vip) ⇒ complete(firstName + age + sex + vip)
         }
-      } ~> check { responseAs[String] shouldEqual "Mike66Nonefalse" }
+      } ~> check(responseAs[String] shouldEqual "Mike66Nonefalse")
     }
     "properly extract the value of multipart form fields" in {
       Post("/", multipartForm) ~> {
@@ -86,7 +86,7 @@ class FormFieldDirectivesSpec extends RoutingSpec {
         formFields('firstName, "age", 'sex, "VIP" ? false) {
           (firstName, age, sex, vip) ⇒ complete(firstName + age + sex + vip)
         }
-      } ~> check { rejection shouldEqual MissingFormFieldRejection("sex") }
+      } ~> check(rejection shouldEqual MissingFormFieldRejection("sex"))
     }
     "properly extract the value if only a urlencoded deserializer is available for a multipart field that comes without a" +
       "Content-Type (or text/plain)" in {
@@ -120,68 +120,68 @@ class FormFieldDirectivesSpec extends RoutingSpec {
   "The 'formField' requirement directive" should {
     "block requests that do not contain the required formField" in {
       Post("/", urlEncodedForm) ~> {
-        formField('name ! "Mr. Mike") { completeOk }
-      } ~> check { handled shouldEqual false }
+        formField('name ! "Mr. Mike")(completeOk)
+      } ~> check(handled shouldEqual false)
     }
     "block requests that contain the required parameter but with an unmatching value" in {
       Post("/", urlEncodedForm) ~> {
-        formField('firstName ! "Pete") { completeOk }
-      } ~> check { handled shouldEqual false }
+        formField('firstName ! "Pete")(completeOk)
+      } ~> check(handled shouldEqual false)
     }
     "let requests pass that contain the required parameter with its required value" in {
       Post("/", urlEncodedForm) ~> {
-        formField('firstName ! "Mike") { completeOk }
-      } ~> check { response shouldEqual Ok }
+        formField('firstName ! "Mike")(completeOk)
+      } ~> check(response shouldEqual Ok)
     }
   }
 
   "The 'formField' requirement with explicit unmarshaller directive" should {
     "block requests that do not contain the required formField" in {
       Post("/", urlEncodedForm) ~> {
-        formField('oldAge.as(HexInt) ! 78) { completeOk }
-      } ~> check { handled shouldEqual false }
+        formField('oldAge.as(HexInt) ! 78)(completeOk)
+      } ~> check(handled shouldEqual false)
     }
     "block requests that contain the required parameter but with an unmatching value" in {
       Post("/", urlEncodedForm) ~> {
-        formField('age.as(HexInt) ! 78) { completeOk }
-      } ~> check { handled shouldEqual false }
+        formField('age.as(HexInt) ! 78)(completeOk)
+      } ~> check(handled shouldEqual false)
     }
     "let requests pass that contain the required parameter with its required value" in {
       Post("/", urlEncodedForm) ~> {
-        formField('age.as(HexInt) ! 66 /* hex! */ ) { completeOk }
-      } ~> check { response shouldEqual Ok }
+        formField('age.as(HexInt) ! 66 /* hex! */ )(completeOk)
+      } ~> check(response shouldEqual Ok)
     }
   }
 
   "The 'formField' repeated directive" should {
     "extract an empty Iterable when the parameter is absent" in {
       Post("/", FormData("age" -> "42")) ~> {
-        formField('hobby.*) { echoComplete }
-      } ~> check { responseAs[String] === "List()" }
+        formField('hobby.*)(echoComplete)
+      } ~> check(responseAs[String] === "List()")
     }
     "extract all occurrences into an Iterable when parameter is present" in {
       Post(
         "/",
         FormData("age" -> "42", "hobby" -> "cooking", "hobby" -> "reading")) ~> {
-        formField('hobby.*) { echoComplete }
-      } ~> check { responseAs[String] === "List(cooking, reading)" }
+        formField('hobby.*)(echoComplete)
+      } ~> check(responseAs[String] === "List(cooking, reading)")
     }
     "extract as Iterable[Int]" in {
       Post("/", FormData("age" -> "42", "number" -> "3", "number" -> "5")) ~> {
-        formField('number.as[Int].*) { echoComplete }
-      } ~> check { responseAs[String] === "List(3, 5)" }
+        formField('number.as[Int].*)(echoComplete)
+      } ~> check(responseAs[String] === "List(3, 5)")
     }
     "extract as Iterable[Int] with an explicit deserializer" in {
       Post("/", FormData("age" -> "42", "number" -> "3", "number" -> "A")) ~> {
-        formField('number.as(HexInt).*) { echoComplete }
-      } ~> check { responseAs[String] === "List(3, 10)" }
+        formField('number.as(HexInt).*)(echoComplete)
+      } ~> check(responseAs[String] === "List(3, 10)")
     }
   }
 
   "The 'formFieldMap' directive" should {
     "extract fields with different keys" in {
       Post("/", FormData("age" -> "42", "numberA" -> "3", "numberB" -> "5")) ~> {
-        formFieldMap { echoComplete }
+        formFieldMap(echoComplete)
       } ~> check {
         responseAs[String] shouldEqual "Map(age -> 42, numberA -> 3, numberB -> 5)"
       }
@@ -191,22 +191,22 @@ class FormFieldDirectivesSpec extends RoutingSpec {
   "The 'formFieldSeq' directive" should {
     "extract all fields" in {
       Post("/", FormData("age" -> "42", "number" -> "3", "number" -> "5")) ~> {
-        formFieldSeq { echoComplete }
+        formFieldSeq(echoComplete)
       } ~> check {
         responseAs[String] shouldEqual "Vector((age,42), (number,3), (number,5))"
       }
     }
     "produce empty Seq when FormData is empty" in {
       Post("/", FormData.Empty) ~> {
-        formFieldSeq { echoComplete }
-      } ~> check { responseAs[String] shouldEqual "Vector()" }
+        formFieldSeq(echoComplete)
+      } ~> check(responseAs[String] shouldEqual "Vector()")
     }
   }
 
   "The 'formFieldMultiMap' directive" should {
     "extract fields with different keys (with duplicates)" in {
       Post("/", FormData("age" -> "42", "number" -> "3", "number" -> "5")) ~> {
-        formFieldMultiMap { echoComplete }
+        formFieldMultiMap(echoComplete)
       } ~> check {
         responseAs[String] shouldEqual "Map(age -> List(42), number -> List(5, 3))"
       }

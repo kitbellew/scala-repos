@@ -426,7 +426,7 @@ class LiftSession(
 
   private[http] def withAjaxRequests[T](
       fn: (scala.collection.mutable.Map[String, List[AjaxRequestInfo]]) => T) =
-    ajaxRequests.synchronized { fn(ajaxRequests) }
+    ajaxRequests.synchronized(fn(ajaxRequests))
 
   /**
     * The synchronization lock for the postPageFunctions
@@ -838,7 +838,7 @@ class LiftSession(
     def latestPostPageFunctions =
       accessPostPageFuncs {
         val ret = postPageFunctions.get(rv)
-        ret.foreach { r => postPageFunctions += (rv -> r.updateLastSeen) }
+        ret.foreach(r => postPageFunctions += (rv -> r.updateLastSeen))
         ret
       }
 
@@ -1185,7 +1185,7 @@ class LiftSession(
     f map { fnc =>
       val func: String = {
         val funcName = Helpers.nextFuncName
-        nmessageCallback.put(funcName, S.NFuncHolder { () => fnc() })
+        nmessageCallback.put(funcName, S.NFuncHolder(() => fnc()))
         funcName
       }
       Helpers.appendFuncToURL(uri, func + "=_")

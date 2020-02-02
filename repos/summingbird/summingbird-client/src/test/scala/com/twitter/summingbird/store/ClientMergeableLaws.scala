@@ -112,7 +112,7 @@ object ClientMergeableLaws extends Properties("ClientMergeable") {
           Map((k, BatchID(1)) -> v1, (k, BatchID(2)) -> v2)
       }
 
-      val merged = keys.map { kbv => (kbv._1, machine.mergeable.merge(kbv)) }
+      val merged = keys.map(kbv => (kbv._1, machine.mergeable.merge(kbv)))
 
       Await.result(
         Future

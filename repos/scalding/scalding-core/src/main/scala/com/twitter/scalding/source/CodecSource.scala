@@ -36,7 +36,7 @@ object BytesWritableCodec {
   def get =
     Bijection.build[Array[Byte], BytesWritable] { arr =>
       new BytesWritable(arr)
-    } { w => Arrays.copyOfRange(w.getBytes, 0, w.getLength) }
+    }(w => Arrays.copyOfRange(w.getBytes, 0, w.getLength))
 }
 
 object CodecSource {
@@ -74,7 +74,7 @@ class CodecSource[T] private (
     }
 
   override def transformForWrite(pipe: Pipe) =
-    pipe.mapTo((0) -> (fieldSym)) { injectionBox.get.apply(_: T) }
+    pipe.mapTo((0) -> (fieldSym))(injectionBox.get.apply(_: T))
 
   override def toIterator(implicit config: Config, mode: Mode): Iterator[T] = {
     val tap = createTap(Read)(mode)

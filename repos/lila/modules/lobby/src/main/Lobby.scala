@@ -107,7 +107,7 @@ private[lobby] final class Lobby(
       HookRepo.truncateIfNeeded
       implicit val timeout = makeTimeout seconds 1
       (socket ? GetUids mapTo manifest[SocketUids]).chronometer
-        .logIfSlow(100, logger) { r => s"GetUids size=${r.uids.size}" }
+        .logIfSlow(100, logger)(r => s"GetUids size=${r.uids.size}")
         .mon(_.lobby.socket.getUids)
         .result
         .logFailure(logger, err => s"broom cannot get uids from socket: $err")

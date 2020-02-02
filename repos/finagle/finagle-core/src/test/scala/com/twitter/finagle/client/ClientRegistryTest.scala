@@ -152,7 +152,7 @@ class ClientRegistryTest
         "maxWaiters" -> "2147483647"
       ).map { case (key, value) => Entry(prefix :+ key, value) }
 
-      expected.foreach { entry => assert(filtered.contains(entry)) }
+      expected.foreach(entry => assert(filtered.contains(entry)))
     }
   })
 
@@ -178,7 +178,7 @@ class ClientRegistryTest
         def make(
             p: TestParam,
             l: ServiceFactory[Int, Int]): ServiceFactory[Int, Int] = l.map {
-          _.map { _ + p.p1 }
+          _.map(_ + p.p1)
         }
 
         val description: String = "description"

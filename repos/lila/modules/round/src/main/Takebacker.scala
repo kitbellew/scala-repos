@@ -71,7 +71,7 @@ private[round] final class Takebacker(
     for {
       fen ← GameRepo initialFen game
       progress ← Rewind(game, fen).future
-      _ ← fuccess { uciMemo.drop(game, 1) }
+      _ ← fuccess(uciMemo.drop(game, 1))
       events ← save(progress)
     } yield events
 
@@ -82,7 +82,7 @@ private[round] final class Takebacker(
       prog2 ← Rewind(prog1.game, fen).future map { progress =>
         prog1 withGame progress.game
       }
-      _ ← fuccess { uciMemo.drop(game, 2) }
+      _ ← fuccess(uciMemo.drop(game, 2))
       events ← save(prog2)
     } yield events
 

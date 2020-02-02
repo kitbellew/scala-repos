@@ -41,7 +41,7 @@ class Histogram(map: Map[Double, Long], binWidth: Double) {
 
   def percentile(p: Int) =
     keys
-      .find { bin => cdf(bin) * 100 >= p }
+      .find(bin => cdf(bin) * 100 >= p)
       .getOrElse(-1d)
 
   lazy val median = percentile(50)

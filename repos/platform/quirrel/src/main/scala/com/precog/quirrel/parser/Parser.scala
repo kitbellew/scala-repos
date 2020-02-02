@@ -333,7 +333,7 @@ trait Parser extends RegexParsers with Filters with AST {
       case (e1, e2) => e3: Expr => Relate(loc, e1, e2, e3)
     }
 
-    builders.foldRight(e) { _(_) }
+    builders.foldRight(e)(_(_))
   }
 
   private[quirrel] def canonicalizeStr(str: String): String = {

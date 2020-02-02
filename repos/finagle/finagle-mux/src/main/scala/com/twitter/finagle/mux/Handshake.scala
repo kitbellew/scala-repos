@@ -141,7 +141,7 @@ private[finagle] object Handshake {
           Future.const(t.cast[Transport[Message, Message]])
       }
 
-    handshake.onFailure { _ => msgTrans.close() }
+    handshake.onFailure(_ => msgTrans.close())
     new DeferredTransport(msgTrans, handshake)
   }
 
@@ -188,7 +188,7 @@ private[finagle] object Handshake {
           val msg = s"unsupported version $ver, expected $version"
           msgTrans
             .write(Message.Rerr(tag, msg))
-            .before { Future.exception(Failure(msg)) }
+            .before(Future.exception(Failure(msg)))
 
         // A marker Rerr that queries whether or not we can do handshaking.
         // Echo back the Rerr message to indicate that we can and recurse
@@ -213,7 +213,7 @@ private[finagle] object Handshake {
         case Throw(_) => Future.value(msgTrans)
       }
 
-    handshake.onFailure { _ => msgTrans.close() }
+    handshake.onFailure(_ => msgTrans.close())
     new DeferredTransport(msgTrans, handshake)
   }
 }

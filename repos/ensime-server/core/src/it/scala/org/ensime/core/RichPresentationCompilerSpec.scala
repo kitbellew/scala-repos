@@ -432,7 +432,7 @@ class RichPresentationCompilerSpec
     "object B { val x = A.@@ "
   ) { (p, cc) =>
     val result = cc.completionsAt(p, 10, caseSens = false)
-    forAtLeast(1, result.completions) { _.name shouldBe "aMethod" }
+    forAtLeast(1, result.completions)(_.name shouldBe "aMethod")
   }
 
   it should "not try to complete the declaration containing point" in withPosInCompiledSource(
@@ -440,7 +440,7 @@ class RichPresentationCompilerSpec
     "object Ab@@c {}"
   ) { (p, cc) =>
     val result = cc.completionsAt(p, 10, caseSens = false)
-    forAll(result.completions) { _.name should not be "Abc" }
+    forAll(result.completions)(_.name should not be "Abc")
   }
 
   it should "get completions on a member with a prefix" in withPosInCompiledSource(
@@ -449,7 +449,7 @@ class RichPresentationCompilerSpec
     "object B { val x = A.aMeth@@ }"
   ) { (p, cc) =>
     val result = cc.completionsAt(p, 10, caseSens = false)
-    forAtLeast(1, result.completions) { _.name shouldBe "aMethod" }
+    forAtLeast(1, result.completions)(_.name shouldBe "aMethod")
   }
 
   it should "get completions on an object name" in withPosInCompiledSource(
@@ -458,7 +458,7 @@ class RichPresentationCompilerSpec
     "object B { val x = Ab@@ }"
   ) { (p, cc) =>
     val result = cc.completionsAt(p, 10, caseSens = false)
-    forAtLeast(1, result.completions) { _.name shouldBe "Abc" }
+    forAtLeast(1, result.completions)(_.name shouldBe "Abc")
   }
 
   it should "get members for infix method call" in withPosInCompiledSource(
@@ -467,7 +467,7 @@ class RichPresentationCompilerSpec
     "object B { val x = Abc aM@@ }"
   ) { (p, cc) =>
     val result = cc.completionsAt(p, 10, caseSens = false)
-    forAtLeast(1, result.completions) { _.name shouldBe "aMethod" }
+    forAtLeast(1, result.completions)(_.name shouldBe "aMethod")
   }
 
   it should "get members for infix method call without prefix" in withPosInCompiledSource(
@@ -476,7 +476,7 @@ class RichPresentationCompilerSpec
     "object B { val x = Abc @@ }"
   ) { (p, cc) =>
     val result = cc.completionsAt(p, 10, caseSens = false)
-    forAtLeast(1, result.completions) { _.name shouldBe "aMethod" }
+    forAtLeast(1, result.completions)(_.name shouldBe "aMethod")
   }
 
   it should "complete multi-character infix operator" in withPosInCompiledSource(
@@ -484,7 +484,7 @@ class RichPresentationCompilerSpec
     "object B { val l = Nil; val ll = l +@@ }"
   ) { (p, cc) =>
     val result = cc.completionsAt(p, 10, caseSens = false)
-    forAtLeast(1, result.completions) { _.name shouldBe "++" }
+    forAtLeast(1, result.completions)(_.name shouldBe "++")
   }
 
   it should "complete top level import" in withPosInCompiledSource(
@@ -492,7 +492,7 @@ class RichPresentationCompilerSpec
     "import ja@@"
   ) { (p, cc) =>
     val result = cc.completionsAt(p, 10, caseSens = false)
-    forAtLeast(1, result.completions) { _.name shouldBe "java" }
+    forAtLeast(1, result.completions)(_.name shouldBe "java")
   }
 
   it should "complete sub-import" in withPosInCompiledSource(
@@ -500,7 +500,7 @@ class RichPresentationCompilerSpec
     "import java.ut@@"
   ) { (p, cc) =>
     val result = cc.completionsAt(p, 10, caseSens = false)
-    forAtLeast(1, result.completions) { _.name shouldBe "util" }
+    forAtLeast(1, result.completions)(_.name shouldBe "util")
   }
 
   it should "complete multi-import" in withPosInCompiledSource(
@@ -508,7 +508,7 @@ class RichPresentationCompilerSpec
     "import java.util.{ V@@ }"
   ) { (p, cc) =>
     val result = cc.completionsAt(p, 10, caseSens = false)
-    forAtLeast(1, result.completions) { _.name shouldBe "Vector" }
+    forAtLeast(1, result.completions)(_.name shouldBe "Vector")
   }
 
   it should "complete new construction" in withPosInCompiledSource(
@@ -536,9 +536,9 @@ class RichPresentationCompilerSpec
     "object A { val t = Set[String](\"a\", \"b\"); t @@ }"
   ) { (p, cc) =>
     val result = cc.completionsAt(p, 10, caseSens = false)
-    forAtLeast(1, result.completions) { _.name shouldBe "seq" }
-    forAtLeast(1, result.completions) { _.name shouldBe "|" }
-    forAtLeast(1, result.completions) { _.name shouldBe "&" }
+    forAtLeast(1, result.completions)(_.name shouldBe "seq")
+    forAtLeast(1, result.completions)(_.name shouldBe "|")
+    forAtLeast(1, result.completions)(_.name shouldBe "&")
   }
 
   it should "complete interpolated variables in strings" in withPosInCompiledSource(
@@ -547,7 +547,7 @@ class RichPresentationCompilerSpec
     s"""object B { val x = s"hello there, $${Abc.aMe@@}"}"""
   ) { (p, cc) =>
     val result = cc.completionsAt(p, 10, caseSens = false)
-    forAtLeast(1, result.completions) { _.name shouldBe "aMethod" }
+    forAtLeast(1, result.completions)(_.name shouldBe "aMethod")
   }
 
   it should "not attempt to complete symbols in strings" in withPosInCompiledSource(
@@ -742,7 +742,7 @@ class RichPresentationCompilerSpec
       Await.result(cc.search.refresh(), Duration.Inf)
 
       val scalaVersion = scala.util.Properties.versionNumberString
-      val parts = scalaVersion.split("\\.").map { _.toInt }
+      val parts = scalaVersion.split("\\.").map(_.toInt)
       if (parts(0) > 2 || (parts(0) == 2 && parts(1) > 10))
         /* in Scala 2.10, the declaration position of "pacakge object" is
        different so we just skip this test */
@@ -813,7 +813,7 @@ trait ReallyRichPresentationCompilerFixture {
   final def withPresCompiler(
       testCode: (EnsimeConfig, RichPresentationCompiler) => Any
   ): Any =
-    withRichPresentationCompiler { (_, c, cc) => testCode(c, cc) }
+    withRichPresentationCompiler((_, c, cc) => testCode(c, cc))
 
   // final def withPosInCompiledSource(lines: String*)(testCode: (OffsetPosition, RichPresentationCompiler) => Any) =
   //   withPosInCompiledSource{ (p, _, pc) => testCode(p, pc) }

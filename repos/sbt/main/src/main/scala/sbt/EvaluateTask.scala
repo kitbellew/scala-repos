@@ -433,7 +433,7 @@ object EvaluateTask {
     val keyed =
       for (Incomplete(Some(key: ScopedKey[_]), _, msg, _, ex) <- all)
         yield (key, msg, ex)
-    val un = all.filter { i => i.node.isEmpty || i.message.isEmpty }
+    val un = all.filter(i => i.node.isEmpty || i.message.isEmpty)
 
     import ExceptionCategory._
     for ((key, msg, Some(ex)) <- keyed) {

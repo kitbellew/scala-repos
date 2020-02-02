@@ -100,7 +100,7 @@ object Command {
 
   def combine(cmds: Seq[Command]): State => Parser[() => State] = {
     val (simple, arbs) = separateCommands(cmds)
-    state => (simpleParser(simple)(state) /: arbs.map(_ parser state)) { _ | _ }
+    state => (simpleParser(simple)(state) /: arbs.map(_ parser state))(_ | _)
   }
   private[this] def separateCommands(
       cmds: Seq[Command]): (Seq[SimpleCommand], Seq[ArbitraryCommand]) =

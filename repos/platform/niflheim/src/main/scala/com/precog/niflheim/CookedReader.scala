@@ -90,7 +90,7 @@ final class CookedReader(
           Array.empty[CType]
         }
 
-        tpes.map { tpe => ColumnRef(path, tpe) }.toSet
+        tpes.map(tpe => ColumnRef(path, tpe)).toSet
       }
     }
 
@@ -101,13 +101,13 @@ final class CookedReader(
     val segments: Seq[Segment] = refConstraints map { refs =>
       load(refs.toList)
         .map({ segs => segs flatMap (_._2) })
-        .valueOr { nel => throw nel.head }
+        .valueOr(nel => throw nel.head)
     } getOrElse {
       metadata.valueOr(throw _).segments map {
         case (segId, file0) =>
           val file =
             if (file0.isAbsolute) file0 else new File(baseDir, file0.getPath)
-          read(file) { channel => segmentFormat.reader.readSegment(channel) }
+          read(file)(channel => segmentFormat.reader.readSegment(channel))
             .valueOr(throw _)
       }
     }

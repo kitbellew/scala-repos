@@ -186,7 +186,7 @@ class AnnotationMacros(val c: whitebox.Context) extends CaseClassMacros {
           .asMethod
           .paramLists
           .flatten
-          .map { sym => sym.name.decodedName.toString -> sym }
+          .map(sym => sym.name.decodedName.toString -> sym)
           .toMap
 
         fieldsOf(tpe).map {

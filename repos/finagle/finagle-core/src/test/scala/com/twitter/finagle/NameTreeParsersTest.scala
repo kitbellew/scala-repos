@@ -11,14 +11,14 @@ class NameTreeParsersTest extends FunSuite with AssertionsForJUnit {
     assert(NameTreeParsers.parsePath("  /foo/bar  ") == Path.Utf8("foo", "bar"))
     assert(NameTreeParsers.parsePath("/\\x66\\x6f\\x6F") == Path.Utf8("foo"))
 
-    intercept[IllegalArgumentException] { NameTreeParsers.parsePath("") }
+    intercept[IllegalArgumentException](NameTreeParsers.parsePath(""))
     intercept[IllegalArgumentException] {
       NameTreeParsers.parsePath("/foo/bar/")
     }
-    intercept[IllegalArgumentException] { NameTreeParsers.parsePath("/{}") }
-    intercept[IllegalArgumentException] { NameTreeParsers.parsePath("/\\?") }
-    intercept[IllegalArgumentException] { NameTreeParsers.parsePath("/\\x?") }
-    intercept[IllegalArgumentException] { NameTreeParsers.parsePath("/\\x0?") }
+    intercept[IllegalArgumentException](NameTreeParsers.parsePath("/{}"))
+    intercept[IllegalArgumentException](NameTreeParsers.parsePath("/\\?"))
+    intercept[IllegalArgumentException](NameTreeParsers.parsePath("/\\x?"))
+    intercept[IllegalArgumentException](NameTreeParsers.parsePath("/\\x0?"))
   }
 
   test("error messages") {
@@ -72,8 +72,8 @@ class NameTreeParsersTest extends FunSuite with AssertionsForJUnit {
             NameTree.Weighted(0.5d, NameTree.Leaf(Path.Utf8("baz"))))
         ))
 
-    intercept[IllegalArgumentException] { NameTreeParsers.parseNameTree("") }
-    intercept[IllegalArgumentException] { NameTreeParsers.parseNameTree("#") }
+    intercept[IllegalArgumentException](NameTreeParsers.parseNameTree(""))
+    intercept[IllegalArgumentException](NameTreeParsers.parseNameTree("#"))
     intercept[IllegalArgumentException] {
       NameTreeParsers.parseNameTree("/foo &")
     }
@@ -92,7 +92,7 @@ class NameTreeParsersTest extends FunSuite with AssertionsForJUnit {
       NameTreeParsers
         .parseDentry("/ => !") == Dentry(Path.empty, NameTree.Fail))
 
-    intercept[IllegalArgumentException] { NameTreeParsers.parseDentry("/&!") }
+    intercept[IllegalArgumentException](NameTreeParsers.parseDentry("/&!"))
   }
 
   test("parseDtab") {

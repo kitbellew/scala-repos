@@ -449,7 +449,7 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
         ScType.create(array(0), project)
       case many =>
         new ScCompoundType(
-          many.map { ScType.create(_, project) },
+          many.map(ScType.create(_, project)),
           Map.empty,
           Map.empty)
     }
@@ -458,7 +458,7 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
     import org.jetbrains.plugins.scala.Misc.fun2suspension
     tp match {
       case stp: ScTypeParam =>
-        val inner = stp.typeParameters.map { typeVariable(_) }.toList
+        val inner = stp.typeParameters.map(typeVariable(_)).toList
         val lower = () => stp.lowerBound.getOrNothing
         val upper = () => stp.upperBound.getOrAny
         // todo rework for error handling!

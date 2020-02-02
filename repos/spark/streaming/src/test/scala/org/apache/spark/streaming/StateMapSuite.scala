@@ -353,7 +353,7 @@ class StateMapSuite extends SparkFunSuite {
       assert(mapToTest.getAll().toSet === refMapToTestWith.getAll().toSet)
 
       // Assert that get on every key returns the right value
-      for (keyId <- refMapToTestWith.getAll().map { _._1 })
+      for (keyId <- refMapToTestWith.getAll().map(_._1))
         assert(mapToTest.get(keyId) === refMapToTestWith.get(keyId))
 
       // Assert that every time threshold returns the correct data
@@ -372,17 +372,16 @@ class StateMapSuite extends SparkFunSuite {
       // Assert all the data is same as the reference map
       assert(
         mapToTest.getAll().toSet ===
-          refMapToTestWith.iterator.map { x => (x._1, x._2._1, x._2._2) }.toSet)
+          refMapToTestWith.iterator.map(x => (x._1, x._2._1, x._2._2)).toSet)
 
       // Assert that get on every key returns the right value
       for (keyId <- refMapToTestWith.keys)
-        assert(
-          mapToTest.get(keyId) === refMapToTestWith.get(keyId).map { _._1 })
+        assert(mapToTest.get(keyId) === refMapToTestWith.get(keyId).map(_._1))
 
       // Assert that every time threshold returns the correct data
       for (t <- 0L to (time + 1)) {
         val expectedRecords =
-          refMapToTestWith.iterator.filter { _._2._2 < t }.map { x =>
+          refMapToTestWith.iterator.filter(_._2._2 < t).map { x =>
             (x._1, x._2._1, x._2._2)
           }
         assert(mapToTest.getByTime(t).toSet === expectedRecords.toSet)

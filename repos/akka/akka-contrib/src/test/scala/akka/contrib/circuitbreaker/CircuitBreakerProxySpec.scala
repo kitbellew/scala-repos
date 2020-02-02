@@ -495,7 +495,7 @@ class CircuitBreakerProxySpec extends AkkaSpec() with GivenWhenThen {
 
       Then(
         "The response is available as result of the future returned by the askWithCircuitBreaker method")
-      whenReady(responseFuture) { response ⇒ response should be("response") }
+      whenReady(responseFuture)(response ⇒ response should be("response"))
     }
 
     "transform the response into a failure with CircuitOpenException cause if circuit is open" in new CircuitBreakerScenario {
@@ -543,7 +543,7 @@ class CircuitBreakerProxySpec extends AkkaSpec() with GivenWhenThen {
 
       Then(
         "The response is available as result of the future returned by the askWithCircuitBreaker method")
-      whenReady(responseFuture) { response ⇒ response should be("response") }
+      whenReady(responseFuture)(response ⇒ response should be("response"))
     }
 
     "transform the response into a failure with CircuitOpenException cause if circuit is open" in new CircuitBreakerScenario {

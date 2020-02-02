@@ -13,9 +13,9 @@ class PartialOrderTest extends FunSuite {
     assert(sets.pmin.toSet == Set(Set(1), Set(2), Set(3)))
     assert(sets.pmax.toSet == Set(Set(1, 2, 3), Set(1, 4)))
   }
-  test("Set(1, 2, 3) <= Set(1, 2, 3)") { assert(Set(1, 2, 3) <= Set(1, 2, 3)) }
+  test("Set(1, 2, 3) <= Set(1, 2, 3)")(assert(Set(1, 2, 3) <= Set(1, 2, 3)))
   test("not Set(1, 2, 3) < Set(1, 2, 3)") {
     assert(!(Set(1, 2, 3) < Set(1, 2, 3)))
   }
-  test("Set(1, 2, 3) > Set(1, 2)") { assert(Set(1, 2, 3) > Set(1, 2)) }
+  test("Set(1, 2, 3) > Set(1, 2)")(assert(Set(1, 2, 3) > Set(1, 2)))
 }

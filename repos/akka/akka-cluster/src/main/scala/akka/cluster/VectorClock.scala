@@ -28,7 +28,7 @@ private[cluster] object VectorClock {
     private def hash(name: String): String = {
       val digester = MessageDigest.getInstance("MD5")
       digester update name.getBytes("UTF-8")
-      digester.digest.map { h ⇒ "%02x".format(0xFF & h) }.mkString
+      digester.digest.map(h ⇒ "%02x".format(0xFF & h)).mkString
     }
   }
 

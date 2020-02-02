@@ -45,7 +45,7 @@ class ContentionSnapshot {
       if (deadlockThreadIds == null) Array.empty[ThreadInfo]
       else
         deadlockThreadIds.flatMap { id =>
-          blocked.find { threadInfo => threadInfo.getThreadId() == id }
+          blocked.find(threadInfo => threadInfo.getThreadId() == id)
         }
 
     Snapshot(

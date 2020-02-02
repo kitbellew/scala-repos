@@ -125,7 +125,7 @@ trait Reifiers { self: Quasiquotes =>
                   // q"$l && $r"
                   Apply(Select(l, nme.ZAND), List(r))
                 }
-                .getOrElse { EmptyTree }
+                .getOrElse(EmptyTree)
             // cq"$tree if $guard => $succ" :: cq"_ => $fail" :: Nil
             CaseDef(tree, guard, succ) :: CaseDef(
               Ident(nme.WILDCARD),
@@ -366,7 +366,7 @@ trait Reifiers { self: Quasiquotes =>
           if (isReifyingExpressions) Ident(n) else Bind(n, Ident(nme.WILDCARD))
         if (isReifyingPatterns) result(introduceName())
         else
-          result(nameMap.get(name).map { _.head }.getOrElse { introduceName() })
+          result(nameMap.get(name).map(_.head).getOrElse(introduceName()))
       case _ =>
         super.reifyName(name)
     }

@@ -79,7 +79,7 @@ trait VectorizedReduceUFunc extends UFunc {
           : DenseVector[T] = {
         val mat = v.underlying
         val result = helper.zerosLike(mat.rows)
-        cforRange(0 until mat.cols) { i => baseOp(result, mat(::, i)) }
+        cforRange(0 until mat.cols)(i => baseOp(result, mat(::, i)))
 //        helper.finish(result)
         result
       }

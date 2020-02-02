@@ -43,7 +43,7 @@ private[v1] class AllJobsResource(ui: SparkUI) {
       (status, jobs) <- statusToJobs
       job <- jobs if adjStatuses.contains(status)
     } yield AllJobsResource.convertJobData(job, ui.jobProgressListener, false)
-    jobInfos.sortBy { -_.jobId }
+    jobInfos.sortBy(-_.jobId)
   }
 
 }
@@ -72,14 +72,14 @@ private[v1] object AllJobsResource {
         listener.stageIdToData.get((s.stageId, s.attemptId))
       }
       val lastStageName =
-        lastStageInfo.map { _.name }.getOrElse("(Unknown Stage Name)")
-      val lastStageDescription = lastStageData.flatMap { _.description }
+        lastStageInfo.map(_.name).getOrElse("(Unknown Stage Name)")
+      val lastStageDescription = lastStageData.flatMap(_.description)
       new JobData(
         jobId = job.jobId,
         name = lastStageName,
         description = lastStageDescription,
-        submissionTime = job.submissionTime.map { new Date(_) },
-        completionTime = job.completionTime.map { new Date(_) },
+        submissionTime = job.submissionTime.map(new Date(_)),
+        completionTime = job.completionTime.map(new Date(_)),
         stageIds = job.stageIds,
         jobGroup = job.jobGroup,
         status = job.status,

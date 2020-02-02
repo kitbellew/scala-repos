@@ -2340,11 +2340,11 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     type Info = String
 
     protected def findAttr(key: String): Option[Info] =
-      currentAttrs.toList.find { _.key == key }.map(_.value.text)
+      currentAttrs.toList.find(_.key == key).map(_.value.text)
 
     protected def findAttr(prefix: String, key: String): Option[Info] =
       currentAttrs.toList
-        .find { _.prefixedKey == (prefix + ":" + key) }
+        .find(_.prefixedKey == (prefix + ":" + key))
         .map(_.value.text)
 
     protected def convert[T](in: Option[T]): Box[T] = Box(in)
@@ -3199,7 +3199,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     *
     */
   def respondAsync(f: => Box[LiftResponse]): () => Box[LiftResponse] =
-    RestContinuation.async { reply => reply(f.openOr(EmptyResponse)) }
+    RestContinuation.async(reply => reply(f.openOr(EmptyResponse)))
 
   /**
     * If you bind functions (i.e. using SHtml helpers) inside the closure passed to callOnce,

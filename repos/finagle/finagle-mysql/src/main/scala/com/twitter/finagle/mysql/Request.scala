@@ -119,7 +119,7 @@ case class HandshakeResponse(
 
   def toPacket = {
     val fixedBodySize = 34
-    val dbStrSize = database.map { _.length + 1 }.getOrElse(0)
+    val dbStrSize = database.map(_.length + 1).getOrElse(0)
     val packetBodySize =
       username
         .getOrElse("")

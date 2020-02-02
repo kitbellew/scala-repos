@@ -66,6 +66,6 @@ private[streaming] case class JobSet(
       submissionTime,
       if (hasStarted) Some(processingStartTime) else None,
       if (hasCompleted) Some(processingEndTime) else None,
-      jobs.map { job => (job.outputOpId, job.toOutputOperationInfo) }.toMap
+      jobs.map(job => (job.outputOpId, job.toOutputOperationInfo)).toMap
     )
 }

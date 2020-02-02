@@ -16,7 +16,7 @@ object Event {
 
   def unapply(
       event: WatchedEvent): Option[(EventType, KeeperState, Option[String])] =
-    Some((event.getType, event.getState, Option { event.getPath }))
+    Some((event.getType, event.getState, Option(event.getPath)))
 }
 
 sealed trait StateEvent {

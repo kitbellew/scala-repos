@@ -181,11 +181,11 @@ class Netty3TransporterTest extends FunSpec with MockitoSugar with Eventually {
         Netty3Transporter.channelFactory.newChannel(secondPipeline)
       Channels.close(firstChannel)
 
-      eventually { hasConnections("first", 0) }
+      eventually(hasConnections("first", 0))
       hasConnections("second", 1)
 
       Channels.close(secondChannel)
-      eventually { hasConnections("second", 0) }
+      eventually(hasConnections("second", 0))
     }
 
     describe("SocksConnectHandler") {

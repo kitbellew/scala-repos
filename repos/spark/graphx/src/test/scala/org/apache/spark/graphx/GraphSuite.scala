@@ -95,7 +95,7 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
         Graph.fromEdgeTuples(sc.parallelize(edges, 2), 0)
       def nonemptyParts(graph: Graph[Int, Int]): RDD[List[Edge[Int]]] =
         graph.edges.partitionsRDD
-          .mapPartitions { iter => Iterator(iter.next()._2.iterator.toList) }
+          .mapPartitions(iter => Iterator(iter.next()._2.iterator.toList))
           .filter(_.nonEmpty)
       val identicalEdges = List((0L, 1L), (0L, 1L))
       val canonicalEdges = List((0L, 1L), (1L, 0L))
@@ -343,7 +343,7 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
             List((0: VertexId, x: VertexId), (0: VertexId, x: VertexId))),
           1),
         "v")
-      val star2 = doubleStar.groupEdges { (a, b) => a }
+      val star2 = doubleStar.groupEdges((a, b) => a)
       assert(
         star2.edges
           .collect()

@@ -52,7 +52,7 @@ final class JsonView(isOnline: String => Boolean) {
 
 object JsonView {
 
-  implicit val nameWrites = Writes[User] { u => JsString(u.username) }
+  implicit val nameWrites = Writes[User](u => JsString(u.username))
 
   implicit val lightPerfWrites = OWrites[LightPerf] { l =>
     Json

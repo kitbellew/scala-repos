@@ -110,9 +110,9 @@ class ThreadUtilsSuite extends SparkFunSuite {
   test("runInNewThread") {
     import ThreadUtils._
     assert(
-      runInNewThread("thread-name") { Thread.currentThread().getName } === "thread-name")
+      runInNewThread("thread-name")(Thread.currentThread().getName) === "thread-name")
     assert(
-      runInNewThread("thread-name") { Thread.currentThread().isDaemon } === true)
+      runInNewThread("thread-name")(Thread.currentThread().isDaemon) === true)
     assert(
       runInNewThread("thread-name", isDaemon = false) {
         Thread.currentThread().isDaemon

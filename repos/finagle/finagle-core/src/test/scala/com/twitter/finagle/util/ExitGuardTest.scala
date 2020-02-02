@@ -29,7 +29,7 @@ class ExitGuardTest
     // either there should be no guards or our name should not be in the list.
     ExitGuard.guards match {
       case None =>
-        eventually { assert(!thread.isAlive, ExitGuard.explainGuards()) }
+        eventually(assert(!thread.isAlive, ExitGuard.explainGuards()))
       case Some((_, gs)) =>
         assert(!gs.map(_.reason).contains(name))
     }

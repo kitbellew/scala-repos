@@ -317,7 +317,7 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
     * Given the driver type, return a list of SQL creation strings for the columns represented by this field
     */
   def fieldCreatorString(dbType: DriverType): List[String] =
-    dbColumnNames(name).map { c => fieldCreatorString(dbType, c) }
+    dbColumnNames(name).map(c => fieldCreatorString(dbType, c))
 
   def notNullAppender() = if (dbNotNull_?) " NOT NULL " else ""
 

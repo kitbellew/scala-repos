@@ -94,7 +94,7 @@ object StringHelpersSpec extends Specification with ScalaCheck with StringGen {
       camelify(null) must_== ""
     }
     "leave a CamelCased name untouched" in {
-      forAll(camelCasedStrings) { (name: String) => camelify(name) == name }
+      forAll(camelCasedStrings)((name: String) => camelify(name) == name)
     }
   }
 

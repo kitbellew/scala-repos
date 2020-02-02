@@ -252,7 +252,7 @@ abstract class ActorTransportAdapterManager
   def receive: Receive = {
     case ListenUnderlying(listenAddress, upstreamListenerFuture) ⇒
       localAddress = listenAddress
-      upstreamListenerFuture.future.map { ListenerRegistered(_) } pipeTo self
+      upstreamListenerFuture.future.map(ListenerRegistered(_)) pipeTo self
 
     case ListenerRegistered(listener) ⇒
       associationListener = listener

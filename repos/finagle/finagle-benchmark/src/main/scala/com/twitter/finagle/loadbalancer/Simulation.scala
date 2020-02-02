@@ -117,8 +117,8 @@ private[finagle] class LatencyFactory(sr: StatsReceiver) {
       val load = new AtomicInteger(0)
       val maxload = new AtomicInteger(0)
       val gauges = Seq(
-        sr.scope("load").addGauge("" + name) { load.get() },
-        sr.scope("maxload").addGauge("" + name) { maxload.get() }
+        sr.scope("load").addGauge("" + name)(load.get()),
+        sr.scope("maxload").addGauge("" + name)(maxload.get())
       )
       val count = sr.scope("count").counter("" + name)
 
@@ -165,7 +165,7 @@ private[finagle] object Simulation extends com.twitter.app.App {
 
     val underlying = Var(stable)
     val activity: Activity[Set[ServiceFactory[Unit, Unit]]] =
-      Activity(underlying.map { facs => Activity.Ok(facs) })
+      Activity(underlying.map(facs => Activity.Ok(facs)))
 
     val factory = bal() match {
       case "p2c" =>

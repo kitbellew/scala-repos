@@ -270,7 +270,7 @@ class CoproductTests {
 
     object addSize extends Poly2 {
       implicit def default[T](implicit st: size.Case.Aux[T, Int]) =
-        at[Int, T] { (acc, t) => acc + size(t) }
+        at[Int, T]((acc, t) => acc + size(t))
     }
 
     val foo1 = Coproduct[ISB](23)

@@ -48,7 +48,7 @@ class TypedJson[T <: AnyRef: Manifest](p: String)
   @transient private[this] lazy val inj = caseClass2Json[T]
 
   override def transformForWrite(pipe: Pipe) =
-    pipe.mapTo((0) -> (fieldSym)) { inj.apply(_: T) }
+    pipe.mapTo((0) -> (fieldSym))(inj.apply(_: T))
 
   override def transformForRead(pipe: Pipe) =
     pipe.mapTo(('line) -> (fieldSym)) { (jsonStr: String) =>

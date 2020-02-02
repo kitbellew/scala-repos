@@ -25,7 +25,7 @@ object ScalaCheckBinding {
   implicit val ShrinkFunctor: InvariantFunctor[Shrink] =
     new InvariantFunctor[Shrink] {
       def xmap[A, B](ma: Shrink[A], f: A => B, g: B => A): Shrink[B] =
-        Shrink { b => ma shrink g(b) map f }
+        Shrink(b => ma shrink g(b) map f)
     }
 }
 

@@ -32,7 +32,7 @@ object TimePathedSource {
       "%1$td" -> Days(1)(tz),
       "%1$tm" -> Months(1)(tz),
       "%1$tY" -> Years(1)(tz))
-      .find { unitDur: (String, Duration) => pattern.contains(unitDur._1) }
+      .find(unitDur: (String, Duration) => pattern.contains(unitDur._1))
       .map(_._2)
 
   /**
@@ -46,7 +46,7 @@ object TimePathedSource {
     // This method is exhaustive, but too expensive for Cascading's JobConf writing.
     dateRange
       .each(duration)
-      .map { dr: DateRange => toPath(pattern, dr.start, tz) }
+      .map(dr: DateRange => toPath(pattern, dr.start, tz))
 
   /**
     * Gives all read paths in the given daterange.
@@ -83,7 +83,7 @@ abstract class TimeSeqPathedSource(
 
   override def hdfsPaths =
     patterns
-      .flatMap { pattern: String => Globifier(pattern)(tz).globify(dateRange) }
+      .flatMap(pattern: String => Globifier(pattern)(tz).globify(dateRange))
 
   /**
     * Override this if you have for instance an hourly pattern but want to run every 6 hours.
@@ -108,7 +108,7 @@ abstract class TimeSeqPathedSource(
     * (which by default checks that there is at least on file in that directory)
     */
   def getPathStatuses(conf: Configuration): Iterable[(String, Boolean)] =
-    allPaths.map { path => (path, pathIsGood(path, conf)) }
+    allPaths.map(path => (path, pathIsGood(path, conf)))
 
   // Override because we want to check UNGLOBIFIED paths that each are present.
   override def hdfsReadPathsAreGood(conf: Configuration): Boolean =
@@ -154,7 +154,7 @@ abstract class TimePathedSource(
 
   override def localPaths =
     patterns
-      .flatMap { pattern: String => Globifier(pattern)(tz).globify(dateRange) }
+      .flatMap(pattern: String => Globifier(pattern)(tz).globify(dateRange))
 }
 
 /*

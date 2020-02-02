@@ -252,7 +252,7 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
                               hsRef,
                               ArrayStrColumn.empty(yggConfig.maxSliceSize))
                             .asInstanceOf[ArrayStrColumn]
-                            .unsafeTap { c => c.update(rowId, value) }
+                            .unsafeTap(c => c.update(rowId, value))
                           buildColumns += (hsRef -> column)
 
                         case invalid =>
@@ -320,7 +320,7 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
         elements
           .map {
             case (index, childType) =>
-              val newPaths = current.map { s => s + "[" + index + "]" }
+              val newPaths = current.map(s => s + "[" + index + "]")
               jTypeToProperties(childType, newPaths)
           }
           .toSet
@@ -332,7 +332,7 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
             case (name, childType) =>
               val newPaths =
                 if (current.nonEmpty)
-                  current.map { s => s + "." + name }
+                  current.map(s => s + "." + name)
                 else
                   Set(name)
               jTypeToProperties(childType, newPaths)
@@ -461,7 +461,7 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
           var rowIndex = 0
 
           while (results.next && rowIndex < yggConfig.maxSliceSize) {
-            valColumns.foreach { dbc => dbc.extract(results, rowIndex) }
+            valColumns.foreach(dbc => dbc.extract(results, rowIndex))
 
             rowIndex += 1
           }

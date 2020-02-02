@@ -306,7 +306,7 @@ class Task[+A](val get: Future[Throwable \/ A]) {
           }
       }
     }
-    Task.async { help(delays, Stream()).unsafePerformAsync }
+    Task.async(help(delays, Stream()).unsafePerformAsync)
   }
 
   /** Ensures that the result of this Task satisfies the given predicate, or fails with the given value. */

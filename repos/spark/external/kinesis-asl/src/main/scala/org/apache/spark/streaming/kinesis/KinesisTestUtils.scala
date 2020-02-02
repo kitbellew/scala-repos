@@ -213,13 +213,13 @@ private[kinesis] object KinesisTestUtils {
   }
 
   def isAWSCredentialsPresent: Boolean =
-    Try { new DefaultAWSCredentialsProviderChain().getCredentials() }.isSuccess
+    Try(new DefaultAWSCredentialsProviderChain().getCredentials()).isSuccess
 
   def getAWSCredentials(): AWSCredentials = {
     assert(
       shouldRunTests,
       "Kinesis test not enabled, should not attempt to get AWS credentials")
-    Try { new DefaultAWSCredentialsProviderChain().getCredentials() } match {
+    Try(new DefaultAWSCredentialsProviderChain().getCredentials()) match {
       case Success(cred) => cred
       case Failure(e) =>
         throw new Exception(s"""

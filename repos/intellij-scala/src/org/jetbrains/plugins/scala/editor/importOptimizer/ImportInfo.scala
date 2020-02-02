@@ -60,8 +60,8 @@ case class ImportInfo(
     result ++= singleNames.toSeq.sorted.map { name =>
       template.copy(singleNames = Set(name))
     }
-    result ++= renames.map { rename => template.copy(renames = Map(rename)) }
-    result ++= hiddenNames.map { hidden => this.toHiddenNameInfo(hidden) }
+    result ++= renames.map(rename => template.copy(renames = Map(rename)))
+    result ++= hiddenNames.map(hidden => this.toHiddenNameInfo(hidden))
     if (hasWildcard)
       result += this.toWildcardInfo
     result

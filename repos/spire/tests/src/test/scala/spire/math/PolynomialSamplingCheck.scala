@@ -71,13 +71,13 @@ class PolynomialSamplingCheck
         }
       }
 
-    property(s"$name unop -") { testUnop(-_)(-_) }
-    property(s"$name unop pow(2)") { testUnop(_.pow(2))(_.pow(2)) }
-    property(s"$name unop pow(3)") { testUnop(_.pow(3))(_.pow(3)) }
+    property(s"$name unop -")(testUnop(-_)(-_))
+    property(s"$name unop pow(2)")(testUnop(_.pow(2))(_.pow(2)))
+    property(s"$name unop pow(3)")(testUnop(_.pow(3))(_.pow(3)))
 
-    property(s"$name binop +") { testBinop(_ + _)(_ + _) }
-    property(s"$name binop -") { testBinop(_ - _)(_ - _) }
-    property(s"$name binop *") { testBinop(_ * _)(_ * _) }
+    property(s"$name binop +")(testBinop(_ + _)(_ + _))
+    property(s"$name binop -")(testBinop(_ - _)(_ - _))
+    property(s"$name binop *")(testBinop(_ * _)(_ * _))
     property(s"$name binop /~ and %") {
       testBinopNonzero({ (x, y) => (x /~ y) * y + (x % y) })({ (a, b) =>
         (a /~ b) * b + (a % b)

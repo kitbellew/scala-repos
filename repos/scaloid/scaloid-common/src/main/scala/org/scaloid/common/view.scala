@@ -2148,7 +2148,7 @@ trait TraitViewGroup[This <: android.view.ViewGroup] extends TraitView[This] {
   def applyStyle(v: View): View = {
     var viw = v
     if (parentViewGroup != null) viw = parentViewGroup.applyStyle(viw)
-    styles.foreach { st => if (st.isDefinedAt(viw)) viw = st(viw) }
+    styles.foreach(st => if (st.isDefinedAt(viw)) viw = st(viw))
     viw
   }
 

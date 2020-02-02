@@ -224,7 +224,7 @@ class FailureSuite extends SparkFunSuite with LocalSparkContext {
     "failure cause stacktrace is sent back to driver if exception is not serializable") {
     sc = new SparkContext("local", "test")
     val thrown = intercept[SparkException] {
-      sc.makeRDD(1 to 3).foreach { _ => throw new NonSerializableUserException }
+      sc.makeRDD(1 to 3).foreach(_ => throw new NonSerializableUserException)
     }
     assert(thrown.getClass === classOf[SparkException])
     assert(thrown.getCause === null)

@@ -55,7 +55,7 @@ object EngineServerPluginContext extends Logging {
     val serviceLoader = ServiceLoader.load(classOf[EngineServerPlugin])
     val variantJson = parse(stringFromFile(engineVariant))
     (variantJson \ "plugins").extractOpt[JObject].foreach { pluginDefs =>
-      pluginDefs.obj.foreach { pluginParams += _ }
+      pluginDefs.obj.foreach(pluginParams += _)
     }
     serviceLoader foreach { service =>
       pluginParams.get(service.pluginName) map { params =>

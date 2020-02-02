@@ -63,9 +63,9 @@ object CanTraverseValues {
       import spire.syntax.cfor._
       // Standard array bounds check stuff
       if (stride == 1)
-        cforRange(offset until length + offset) { i => visit(arr(i)) }
+        cforRange(offset until length + offset)(i => visit(arr(i)))
       else
-        cforRange(0 until length) { i => visit(arr(i * stride + offset)) }
+        cforRange(0 until length)(i => visit(arr(i * stride + offset)))
     }
     def zeros(numZero: Int, zeroValue: A)
   }

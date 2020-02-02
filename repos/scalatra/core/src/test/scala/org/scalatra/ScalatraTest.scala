@@ -132,7 +132,7 @@ class ScalatraTest extends ScalatraFunSuite {
   test("redirect halts") {
     session {
       get("/redirect") {}
-      get("/redirected") { body should equal("halted") }
+      get("/redirected")(body should equal("halted"))
     }
   }
 

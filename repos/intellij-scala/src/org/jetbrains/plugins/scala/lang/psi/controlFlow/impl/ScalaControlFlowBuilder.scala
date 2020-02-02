@@ -256,7 +256,7 @@ class ScalaControlFlowBuilder(
       // for breaks
       //addPendingEdge(ws, myHead)
       ws.condition.foreach(_.accept(this))
-      ws.body.foreach { b => b.accept(this) }
+      ws.body.foreach(b => b.accept(this))
       checkPendingEdges(instr)
       // add backward edge
       if (myHead != null) addEdge(myHead, instr)

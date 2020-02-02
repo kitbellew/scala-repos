@@ -128,7 +128,7 @@ class Eval(target: Option[File]) {
     * run preprocessors on our string, returning a String that is the processed source
     */
   def sourceForString(code: String): String =
-    preprocessors.foldLeft(code) { (acc, p) => p(acc) }
+    preprocessors.foldLeft(code)((acc, p) => p(acc))
 
   /**
     * write the current checksum to a file
@@ -154,7 +154,7 @@ class Eval(target: Option[File]) {
     if (target.isDefined) {
       val targetDir = target.get
       val unprocessedSource =
-        files.map { scala.io.Source.fromFile(_).mkString }.mkString("\n")
+        files.map(scala.io.Source.fromFile(_).mkString).mkString("\n")
       val processed = sourceForString(unprocessedSource)
       val sourceChecksum = uniqueId(processed, None)
       val checksumFile = new File(targetDir, "checksum")
@@ -179,7 +179,7 @@ class Eval(target: Option[File]) {
       applyProcessed(className, processed, false)
     } else
       apply(
-        files.map { scala.io.Source.fromFile(_).mkString }.mkString("\n"),
+        files.map(scala.io.Source.fromFile(_).mkString).mkString("\n"),
         true)
 
   /**
@@ -259,7 +259,7 @@ class Eval(target: Option[File]) {
     * @throws CompilerException if not Eval-able.
     */
   def check(files: File*) {
-    val code = files.map { scala.io.Source.fromFile(_).mkString }.mkString("\n")
+    val code = files.map(scala.io.Source.fromFile(_).mkString).mkString("\n")
     check(code)
   }
 

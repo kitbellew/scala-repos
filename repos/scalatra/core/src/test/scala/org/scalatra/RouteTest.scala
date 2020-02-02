@@ -130,7 +130,7 @@ class RouteTest extends ScalatraFunSuite {
   addServlet(classOf[RouteTestServlet], "/*")
 
   addServlet(new ScalatraServlet {
-    get("/") { "root" }
+    get("/")("root")
   }, "/subcontext/*")
 
   test("routes can be a simple string") {

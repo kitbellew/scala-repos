@@ -95,13 +95,13 @@ class FilterTest extends ScalatraFunSuite with BeforeAndAfterEach {
   }
 
   test("before is called exactly once per request to a servlet") {
-    get("/before-counter") { body should equal("1") }
-    get("/before-counter") { body should equal("2") }
+    get("/before-counter")(body should equal("1"))
+    get("/before-counter")(body should equal("2"))
   }
 
   test("before is called exactly once per request to a filter") {
-    get("/before-counter") { header("filterBeforeCount") should equal("1") }
-    get("/before-counter") { header("filterBeforeCount") should equal("2") }
+    get("/before-counter")(header("filterBeforeCount") should equal("1"))
+    get("/before-counter")(header("filterBeforeCount") should equal("2"))
   }
 
   test("before is called when route is not found") {
@@ -127,8 +127,8 @@ class FilterTest extends ScalatraFunSuite with BeforeAndAfterEach {
   }
 
   test("after is called exactly once per request") {
-    get("/after-counter") { body should equal("1") }
-    get("/after-counter") { body should equal("2") }
+    get("/after-counter")(body should equal("1"))
+    get("/after-counter")(body should equal("2"))
   }
 
   test("after is called when route is not found") {

@@ -118,5 +118,5 @@ class DocumentationHandler(
   */
 class Memoise[-T, +R](f: T => R) extends (T => R) {
   private[this] val cache = scala.collection.mutable.Map.empty[T, R]
-  def apply(v: T): R = synchronized { cache.getOrElseUpdate(v, f(v)) }
+  def apply(v: T): R = synchronized(cache.getOrElseUpdate(v, f(v)))
 }

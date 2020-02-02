@@ -22,6 +22,6 @@ class EmptyService[K, V] extends ExternalService[K, V] {
   def lookup[W](
       getKeys: PipeFactory[(K, W)]): PipeFactory[(K, (W, Option[V]))] =
     getKeys.map {
-      _.map { _.map { case (t, (k, v)) => (t, (k, (v, None: Option[V]))) } }
+      _.map(_.map { case (t, (k, v)) => (t, (k, (v, None: Option[V]))) })
     }
 }

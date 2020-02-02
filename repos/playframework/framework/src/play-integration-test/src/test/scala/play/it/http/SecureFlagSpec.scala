@@ -63,13 +63,13 @@ trait SecureFlagSpec
 
     "show that requests are secure in the absence of X_FORWARDED_PROTO" in withServer(
       secureFlagAction,
-      Some(sslPort)) { _ => test(createConn(sslPort), true) }
+      Some(sslPort))(_ => test(createConn(sslPort), true))
     "show that requests are secure if X_FORWARDED_PROTO is https" in withServer(
       secureFlagAction,
-      Some(sslPort)) { _ => test(createConn(sslPort, Some("https")), true) }
+      Some(sslPort))(_ => test(createConn(sslPort, Some("https")), true))
     "not show that requests are not secure if X_FORWARDED_PROTO is http" in withServer(
       secureFlagAction,
-      Some(sslPort)) { _ => test(createConn(sslPort, Some("http")), false) }
+      Some(sslPort))(_ => test(createConn(sslPort, Some("http")), false))
   }
 
   "Play http server" should {

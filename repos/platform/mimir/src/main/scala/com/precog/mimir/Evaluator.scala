@@ -301,7 +301,7 @@ trait EvaluatorModule[M[+_]]
           for {
             state <- monadState.gets(identity)
             extraId = state.extraCount
-            _ <- monadState.modify { _.copy(extraCount = extraId + 1) }
+            _ <- monadState.modify(_.copy(extraCount = extraId + 1))
 
             liftedTrans = TransSpec.deepMap(spec) {
               case Leaf(_) => DerefObjectStatic(Leaf(Source), paths.Value)
@@ -1363,7 +1363,7 @@ trait EvaluatorModule[M[+_]]
       def bfs(kernels: Set[Kernel]): Set[DepGraph] = {
         // check for convergence
         val results = kernels flatMap { k =>
-          val results = kernels.foldLeft(k.nodes) { _ & _.seen }
+          val results = kernels.foldLeft(k.nodes)(_ & _.seen)
 
           // TODO if the below isEmpty, then can drop results from all kernels
           nodes.foldLeft(results) { (results, node) =>
@@ -1553,7 +1553,7 @@ trait EvaluatorModule[M[+_]]
         table1: StateT[N, EvaluatorState, A],
         table2: StateT[N, EvaluatorState, A])
         : StateT[N, EvaluatorState, (A, A)] =
-      monadState.apply2(table1, table2) { (_, _) }
+      monadState.apply2(table1, table2)((_, _))
 
     private case class EvaluatorState(
         assume: Map[DepGraph, (Table, TableOrder)] = Map.empty,

@@ -51,7 +51,7 @@ trait MethodOverride extends Handler with ServletApiImplicits {
       val headerKeyOpt = headers.keys.find {
         HeaderName contains _.toUpperCase()
       }
-      headerKeyOpt.flatMap { req.headers get _ }
+      headerKeyOpt.flatMap(req.headers get _)
     }
   }
 

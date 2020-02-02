@@ -317,7 +317,7 @@ sealed trait KeyedProducer[P <: Platform[P], K, V] extends Producer[P, (K, V)] {
     * the partition.
     */
   def filterValues(pred: V => Boolean): KeyedProducer[P, K, V] =
-    flatMapValues { v => if (pred(v)) Iterator(v) else Iterator.empty }
+    flatMapValues(v => if (pred(v)) Iterator(v) else Iterator.empty)
 
   /**
     * Prefer to call this method to flatMap if you are expanding only keys.
@@ -362,7 +362,7 @@ sealed trait KeyedProducer[P <: Platform[P], K, V] extends Producer[P, (K, V)] {
 
   /** Prefer this to a raw map as this may be optimized to avoid a key reshuffle */
   def mapValues[U](fn: V => U): KeyedProducer[P, K, U] =
-    flatMapValues { v => Iterator(fn(v)) }
+    flatMapValues(v => Iterator(fn(v)))
 
   /**
     * emits a KeyedProducer with a value that is the store value, just BEFORE a merge,

@@ -39,7 +39,7 @@ private final class Indexer(storage: Storage, sequencer: ActorRef) {
 
   private def fromScratch(user: User): Funit =
     fetchFirstGame(user) flatMap {
-      _.?? { g => computeFrom(user, g.createdAt, 1) }
+      _.??(g => computeFrom(user, g.createdAt, 1))
     }
 
   private def gameQuery(user: User) =

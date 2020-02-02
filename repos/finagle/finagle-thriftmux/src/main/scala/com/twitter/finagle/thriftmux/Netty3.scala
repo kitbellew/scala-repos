@@ -277,7 +277,7 @@ private[finagle] class PipelineFactory(
         e: MessageEvent): Unit = {
       val buf = e.getMessage.asInstanceOf[ChannelBuffer]
       val pipeline = ctx.getPipeline
-      Try { Message.decode(buf.duplicate()) } match {
+      Try(Message.decode(buf.duplicate())) match {
         // We assume that a bad message decode indicates an old-style
         // session. Due to Mux message numbering, a binary-encoded
         // thrift frame corresponds to an Rerr message with tag
@@ -387,7 +387,7 @@ private[finagle] class PipelineFactory(
       downgradedConnectionCount.get()
     }
   private[this] val thriftmuxConnectionGauge =
-    statsReceiver.addGauge("connections") { thriftMuxConnectionCount.get() }
+    statsReceiver.addGauge("connections")(thriftMuxConnectionCount.get())
 
   def getPipeline(): ChannelPipeline = {
     val pipeline = Netty3Framer.getPipeline()

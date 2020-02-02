@@ -261,7 +261,7 @@ package scalaguide.forms.scalaforms {
       }
       // #form-bodyparser-errors
 
-      def submit = Action { implicit request => BadRequest("Not used") }
+      def submit = Action(implicit request => BadRequest("Not used"))
 
       val userFormName = {
         //#userForm-get

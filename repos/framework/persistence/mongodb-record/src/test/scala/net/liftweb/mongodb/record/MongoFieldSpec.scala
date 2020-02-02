@@ -59,7 +59,7 @@ object MongoFieldSpec extends Specification with MongoTestKit with AroundEach {
     AsResult(t)
   }
   protected def around[T <% org.specs2.execute.Result](t: => T) =
-    S.initIfUninitted(session) { t }
+    S.initIfUninitted(session)(t)
 
   def passBasicTests[A](
       example: A,

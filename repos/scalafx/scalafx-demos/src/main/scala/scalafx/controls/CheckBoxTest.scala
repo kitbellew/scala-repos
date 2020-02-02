@@ -89,7 +89,7 @@ class CheckBoxControls(check: CheckBox)
 
   val btnFire = new Button {
     text = "Fire!"
-    onAction = handle { check.fire() }
+    onAction = handle(check.fire())
   }
 
   val txfText = new TextField {

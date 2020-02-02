@@ -88,21 +88,21 @@ class TestService[K, V](
       service + "/stream/" + b.toString)
 
   def toBuffer[T](it: Iterable[T])(implicit ts: TupleSetter[T]): Buffer[Tuple] =
-    it.map { ts(_) }.toBuffer
+    it.map(ts(_)).toBuffer
 
   override def readStream(
       batchID: BatchID,
       mode: Mode): Option[FlowToPipe[(K, Option[V])]] =
     streams.get(batchID).map { iter =>
       val mappable = streamMappable(batchID)
-      Reader { (fd: (FlowDef, Mode)) => TypedPipe.from(mappable) }
+      Reader((fd: (FlowDef, Mode)) => TypedPipe.from(mappable))
     }
   override def readLast(exclusiveUB: BatchID, mode: Mode) = {
-    val candidates = lasts.filter { _._1 < exclusiveUB }
+    val candidates = lasts.filter(_._1 < exclusiveUB)
     if (candidates.isEmpty)
       Left(List("No batches < :" + exclusiveUB.toString))
     else {
-      val (batch, _) = candidates.maxBy { _._1 }
+      val (batch, _) = candidates.maxBy(_._1)
       val mappable = lastMappable(batch)
       val rdr = Reader { (fd: (FlowDef, Mode)) =>
         TypedPipe.from(mappable).values

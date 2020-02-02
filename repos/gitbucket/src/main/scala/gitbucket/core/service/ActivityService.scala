@@ -224,7 +224,7 @@ trait ActivityService {
       s"[user:$activityUserName] pushed to [branch:$userName/$repositoryName#$branchName] at [repo:$userName/$repositoryName]",
       Some(
         commits
-          .map { commit => commit.id + ":" + commit.shortMessage }
+          .map(commit => commit.id + ":" + commit.shortMessage)
           .mkString("\n")),
       currentDate
     )

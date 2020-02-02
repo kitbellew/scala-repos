@@ -280,7 +280,7 @@ trait SchedulerSpec
       val startTime = System.nanoTime
       val n = 200
       val latch = new TestLatch(n)
-      system.scheduler.schedule(25.millis, 25.millis) { latch.countDown() }
+      system.scheduler.schedule(25.millis, 25.millis)(latch.countDown())
       Await.ready(latch, 6.seconds)
       // Rate
       n * 1000.0 / (System.nanoTime - startTime).nanos.toMillis should ===(

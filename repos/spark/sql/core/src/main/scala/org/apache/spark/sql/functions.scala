@@ -176,7 +176,7 @@ object functions {
     * @group agg_funcs
     * @since 1.3.0
     */
-  def avg(e: Column): Column = withAggregateFunction { Average(e.expr) }
+  def avg(e: Column): Column = withAggregateFunction(Average(e.expr))
 
   /**
     * Aggregate function: returns the average of the values in a group.
@@ -428,7 +428,7 @@ object functions {
     * @group agg_funcs
     * @since 1.6.0
     */
-  def kurtosis(e: Column): Column = withAggregateFunction { Kurtosis(e.expr) }
+  def kurtosis(e: Column): Column = withAggregateFunction(Kurtosis(e.expr))
 
   /**
     * Aggregate function: returns the kurtosis of the values in a group.
@@ -492,7 +492,7 @@ object functions {
     * @group agg_funcs
     * @since 1.3.0
     */
-  def max(e: Column): Column = withAggregateFunction { Max(e.expr) }
+  def max(e: Column): Column = withAggregateFunction(Max(e.expr))
 
   /**
     * Aggregate function: returns the maximum value of the column in a group.
@@ -526,7 +526,7 @@ object functions {
     * @group agg_funcs
     * @since 1.3.0
     */
-  def min(e: Column): Column = withAggregateFunction { Min(e.expr) }
+  def min(e: Column): Column = withAggregateFunction(Min(e.expr))
 
   /**
     * Aggregate function: returns the minimum value of the column in a group.
@@ -542,7 +542,7 @@ object functions {
     * @group agg_funcs
     * @since 1.6.0
     */
-  def skewness(e: Column): Column = withAggregateFunction { Skewness(e.expr) }
+  def skewness(e: Column): Column = withAggregateFunction(Skewness(e.expr))
 
   /**
     * Aggregate function: returns the skewness of the values in a group.
@@ -558,7 +558,7 @@ object functions {
     * @group agg_funcs
     * @since 1.6.0
     */
-  def stddev(e: Column): Column = withAggregateFunction { StddevSamp(e.expr) }
+  def stddev(e: Column): Column = withAggregateFunction(StddevSamp(e.expr))
 
   /**
     * Aggregate function: alias for [[stddev_samp]].
@@ -614,7 +614,7 @@ object functions {
     * @group agg_funcs
     * @since 1.3.0
     */
-  def sum(e: Column): Column = withAggregateFunction { Sum(e.expr) }
+  def sum(e: Column): Column = withAggregateFunction(Sum(e.expr))
 
   /**
     * Aggregate function: returns the sum of all values in the given column.
@@ -683,7 +683,7 @@ object functions {
     * @group agg_funcs
     * @since 1.6.0
     */
-  def var_pop(e: Column): Column = withAggregateFunction { VariancePop(e.expr) }
+  def var_pop(e: Column): Column = withAggregateFunction(VariancePop(e.expr))
 
   /**
     * Aggregate function: returns the population variance of the values in a group.
@@ -709,7 +709,7 @@ object functions {
     * @group window_funcs
     * @since 1.6.0
     */
-  def cume_dist(): Column = withExpr { new CumeDist }
+  def cume_dist(): Column = withExpr(new CumeDist)
 
   /**
     * Window function: returns the rank of rows within a window partition, without any gaps.
@@ -722,7 +722,7 @@ object functions {
     * @group window_funcs
     * @since 1.6.0
     */
-  def dense_rank(): Column = withExpr { new DenseRank }
+  def dense_rank(): Column = withExpr(new DenseRank)
 
   /**
     * Window function: returns the value that is `offset` rows before the current row, and
@@ -838,7 +838,7 @@ object functions {
     * @group window_funcs
     * @since 1.4.0
     */
-  def ntile(n: Int): Column = withExpr { new NTile(Literal(n)) }
+  def ntile(n: Int): Column = withExpr(new NTile(Literal(n)))
 
   /**
     * Window function: returns the relative rank (i.e. percentile) of rows within a window partition.
@@ -853,7 +853,7 @@ object functions {
     * @group window_funcs
     * @since 1.6.0
     */
-  def percent_rank(): Column = withExpr { new PercentRank }
+  def percent_rank(): Column = withExpr(new PercentRank)
 
   /**
     * Window function: returns the rank of rows within a window partition.
@@ -868,7 +868,7 @@ object functions {
     * @group window_funcs
     * @since 1.4.0
     */
-  def rank(): Column = withExpr { new Rank }
+  def rank(): Column = withExpr(new Rank)
 
   /**
     * Window function: returns a sequential number starting at 1 within a window partition.
@@ -876,7 +876,7 @@ object functions {
     * @group window_funcs
     * @since 1.6.0
     */
-  def row_number(): Column = withExpr { RowNumber() }
+  def row_number(): Column = withExpr(RowNumber())
 
   //////////////////////////////////////////////////////////////////////////////////////////////
   // Non-aggregate functions
@@ -888,7 +888,7 @@ object functions {
     * @group normal_funcs
     * @since 1.3.0
     */
-  def abs(e: Column): Column = withExpr { Abs(e.expr) }
+  def abs(e: Column): Column = withExpr(Abs(e.expr))
 
   /**
     * Creates a new array column. The input columns must all have the same data type.
@@ -897,7 +897,7 @@ object functions {
     * @since 1.4.0
     */
   @scala.annotation.varargs
-  def array(cols: Column*): Column = withExpr { CreateArray(cols.map(_.expr)) }
+  def array(cols: Column*): Column = withExpr(CreateArray(cols.map(_.expr)))
 
   /**
     * Creates a new array column. The input columns must all have the same data type.
@@ -934,7 +934,7 @@ object functions {
     * @since 1.3.0
     */
   @scala.annotation.varargs
-  def coalesce(e: Column*): Column = withExpr { Coalesce(e.map(_.expr)) }
+  def coalesce(e: Column*): Column = withExpr(Coalesce(e.map(_.expr)))
 
   /**
     * Creates a string column for the file name of the current Spark task.
@@ -942,7 +942,7 @@ object functions {
     * @group normal_funcs
     * @since 1.6.0
     */
-  def input_file_name(): Column = withExpr { InputFileName() }
+  def input_file_name(): Column = withExpr(InputFileName())
 
   /**
     * Return true iff the column is NaN.
@@ -950,7 +950,7 @@ object functions {
     * @group normal_funcs
     * @since 1.6.0
     */
-  def isnan(e: Column): Column = withExpr { IsNaN(e.expr) }
+  def isnan(e: Column): Column = withExpr(IsNaN(e.expr))
 
   /**
     * Return true iff the column is null.
@@ -958,7 +958,7 @@ object functions {
     * @group normal_funcs
     * @since 1.6.0
     */
-  def isnull(e: Column): Column = withExpr { IsNull(e.expr) }
+  def isnull(e: Column): Column = withExpr(IsNull(e.expr))
 
   /**
     * A column expression that generates monotonically increasing 64-bit integers.
@@ -1047,7 +1047,7 @@ object functions {
     * @group normal_funcs
     * @since 1.4.0
     */
-  def rand(seed: Long): Column = withExpr { Rand(seed) }
+  def rand(seed: Long): Column = withExpr(Rand(seed))
 
   /**
     * Generate a random column with i.i.d. samples from U[0.0, 1.0].
@@ -1065,7 +1065,7 @@ object functions {
     * @group normal_funcs
     * @since 1.4.0
     */
-  def randn(seed: Long): Column = withExpr { Randn(seed) }
+  def randn(seed: Long): Column = withExpr(Randn(seed))
 
   /**
     * Generate a column with i.i.d. samples from the standard normal distribution.
@@ -1083,7 +1083,7 @@ object functions {
     * @group normal_funcs
     * @since 1.6.0
     */
-  def spark_partition_id(): Column = withExpr { SparkPartitionID() }
+  def spark_partition_id(): Column = withExpr(SparkPartitionID())
 
   /**
     * Computes the square root of the specified float value.
@@ -1091,7 +1091,7 @@ object functions {
     * @group math_funcs
     * @since 1.3.0
     */
-  def sqrt(e: Column): Column = withExpr { Sqrt(e.expr) }
+  def sqrt(e: Column): Column = withExpr(Sqrt(e.expr))
 
   /**
     * Computes the square root of the specified float value.
@@ -1157,7 +1157,7 @@ object functions {
     * @group normal_funcs
     * @since 1.4.0
     */
-  def bitwiseNOT(e: Column): Column = withExpr { BitwiseNot(e.expr) }
+  def bitwiseNOT(e: Column): Column = withExpr(BitwiseNot(e.expr))
 
   /**
     * Parses the expression string into the column that it represents, similar to
@@ -1188,7 +1188,7 @@ object functions {
     * @group math_funcs
     * @since 1.4.0
     */
-  def acos(e: Column): Column = withExpr { Acos(e.expr) }
+  def acos(e: Column): Column = withExpr(Acos(e.expr))
 
   /**
     * Computes the cosine inverse of the given column; the returned angle is in the range
@@ -1206,7 +1206,7 @@ object functions {
     * @group math_funcs
     * @since 1.4.0
     */
-  def asin(e: Column): Column = withExpr { Asin(e.expr) }
+  def asin(e: Column): Column = withExpr(Asin(e.expr))
 
   /**
     * Computes the sine inverse of the given column; the returned angle is in the range
@@ -1223,7 +1223,7 @@ object functions {
     * @group math_funcs
     * @since 1.4.0
     */
-  def atan(e: Column): Column = withExpr { Atan(e.expr) }
+  def atan(e: Column): Column = withExpr(Atan(e.expr))
 
   /**
     * Computes the tangent inverse of the given column.
@@ -1240,7 +1240,7 @@ object functions {
     * @group math_funcs
     * @since 1.4.0
     */
-  def atan2(l: Column, r: Column): Column = withExpr { Atan2(l.expr, r.expr) }
+  def atan2(l: Column, r: Column): Column = withExpr(Atan2(l.expr, r.expr))
 
   /**
     * Returns the angle theta from the conversion of rectangular coordinates (x, y) to
@@ -1313,7 +1313,7 @@ object functions {
     * @group math_funcs
     * @since 1.5.0
     */
-  def bin(e: Column): Column = withExpr { Bin(e.expr) }
+  def bin(e: Column): Column = withExpr(Bin(e.expr))
 
   /**
     * An expression that returns the string representation of the binary value of the given long
@@ -1330,7 +1330,7 @@ object functions {
     * @group math_funcs
     * @since 1.4.0
     */
-  def cbrt(e: Column): Column = withExpr { Cbrt(e.expr) }
+  def cbrt(e: Column): Column = withExpr(Cbrt(e.expr))
 
   /**
     * Computes the cube-root of the given column.
@@ -1346,7 +1346,7 @@ object functions {
     * @group math_funcs
     * @since 1.4.0
     */
-  def ceil(e: Column): Column = withExpr { Ceil(e.expr) }
+  def ceil(e: Column): Column = withExpr(Ceil(e.expr))
 
   /**
     * Computes the ceiling of the given column.
@@ -1372,7 +1372,7 @@ object functions {
     * @group math_funcs
     * @since 1.4.0
     */
-  def cos(e: Column): Column = withExpr { Cos(e.expr) }
+  def cos(e: Column): Column = withExpr(Cos(e.expr))
 
   /**
     * Computes the cosine of the given column.
@@ -1388,7 +1388,7 @@ object functions {
     * @group math_funcs
     * @since 1.4.0
     */
-  def cosh(e: Column): Column = withExpr { Cosh(e.expr) }
+  def cosh(e: Column): Column = withExpr(Cosh(e.expr))
 
   /**
     * Computes the hyperbolic cosine of the given column.
@@ -1404,7 +1404,7 @@ object functions {
     * @group math_funcs
     * @since 1.4.0
     */
-  def exp(e: Column): Column = withExpr { Exp(e.expr) }
+  def exp(e: Column): Column = withExpr(Exp(e.expr))
 
   /**
     * Computes the exponential of the given column.
@@ -1420,7 +1420,7 @@ object functions {
     * @group math_funcs
     * @since 1.4.0
     */
-  def expm1(e: Column): Column = withExpr { Expm1(e.expr) }
+  def expm1(e: Column): Column = withExpr(Expm1(e.expr))
 
   /**
     * Computes the exponential of the given column.
@@ -1436,7 +1436,7 @@ object functions {
     * @group math_funcs
     * @since 1.5.0
     */
-  def factorial(e: Column): Column = withExpr { Factorial(e.expr) }
+  def factorial(e: Column): Column = withExpr(Factorial(e.expr))
 
   /**
     * Computes the floor of the given value.
@@ -1444,7 +1444,7 @@ object functions {
     * @group math_funcs
     * @since 1.4.0
     */
-  def floor(e: Column): Column = withExpr { Floor(e.expr) }
+  def floor(e: Column): Column = withExpr(Floor(e.expr))
 
   /**
     * Computes the floor of the given column.
@@ -1484,7 +1484,7 @@ object functions {
     * @group math_funcs
     * @since 1.5.0
     */
-  def hex(column: Column): Column = withExpr { Hex(column.expr) }
+  def hex(column: Column): Column = withExpr(Hex(column.expr))
 
   /**
     * Inverse of hex. Interprets each pair of characters as a hexadecimal number
@@ -1493,7 +1493,7 @@ object functions {
     * @group math_funcs
     * @since 1.5.0
     */
-  def unhex(column: Column): Column = withExpr { Unhex(column.expr) }
+  def unhex(column: Column): Column = withExpr(Unhex(column.expr))
 
   /**
     * Computes `sqrt(a^2^ + b^2^)` without intermediate overflow or underflow.
@@ -1501,7 +1501,7 @@ object functions {
     * @group math_funcs
     * @since 1.4.0
     */
-  def hypot(l: Column, r: Column): Column = withExpr { Hypot(l.expr, r.expr) }
+  def hypot(l: Column, r: Column): Column = withExpr(Hypot(l.expr, r.expr))
 
   /**
     * Computes `sqrt(a^2^ + b^2^)` without intermediate overflow or underflow.
@@ -1590,7 +1590,7 @@ object functions {
     * @group math_funcs
     * @since 1.4.0
     */
-  def log(e: Column): Column = withExpr { Log(e.expr) }
+  def log(e: Column): Column = withExpr(Log(e.expr))
 
   /**
     * Computes the natural logarithm of the given column.
@@ -1625,7 +1625,7 @@ object functions {
     * @group math_funcs
     * @since 1.4.0
     */
-  def log10(e: Column): Column = withExpr { Log10(e.expr) }
+  def log10(e: Column): Column = withExpr(Log10(e.expr))
 
   /**
     * Computes the logarithm of the given value in base 10.
@@ -1641,7 +1641,7 @@ object functions {
     * @group math_funcs
     * @since 1.4.0
     */
-  def log1p(e: Column): Column = withExpr { Log1p(e.expr) }
+  def log1p(e: Column): Column = withExpr(Log1p(e.expr))
 
   /**
     * Computes the natural logarithm of the given column plus one.
@@ -1657,7 +1657,7 @@ object functions {
     * @group math_funcs
     * @since 1.5.0
     */
-  def log2(expr: Column): Column = withExpr { Log2(expr.expr) }
+  def log2(expr: Column): Column = withExpr(Log2(expr.expr))
 
   /**
     * Computes the logarithm of the given value in base 2.
@@ -1673,7 +1673,7 @@ object functions {
     * @group math_funcs
     * @since 1.4.0
     */
-  def pow(l: Column, r: Column): Column = withExpr { Pow(l.expr, r.expr) }
+  def pow(l: Column, r: Column): Column = withExpr(Pow(l.expr, r.expr))
 
   /**
     * Returns the value of the first argument raised to the power of the second argument.
@@ -1749,7 +1749,7 @@ object functions {
     * @group math_funcs
     * @since 1.4.0
     */
-  def rint(e: Column): Column = withExpr { Rint(e.expr) }
+  def rint(e: Column): Column = withExpr(Rint(e.expr))
 
   /**
     * Returns the double value that is closest in value to the argument and
@@ -1818,7 +1818,7 @@ object functions {
     * @group math_funcs
     * @since 1.4.0
     */
-  def signum(e: Column): Column = withExpr { Signum(e.expr) }
+  def signum(e: Column): Column = withExpr(Signum(e.expr))
 
   /**
     * Computes the signum of the given column.
@@ -1834,7 +1834,7 @@ object functions {
     * @group math_funcs
     * @since 1.4.0
     */
-  def sin(e: Column): Column = withExpr { Sin(e.expr) }
+  def sin(e: Column): Column = withExpr(Sin(e.expr))
 
   /**
     * Computes the sine of the given column.
@@ -1850,7 +1850,7 @@ object functions {
     * @group math_funcs
     * @since 1.4.0
     */
-  def sinh(e: Column): Column = withExpr { Sinh(e.expr) }
+  def sinh(e: Column): Column = withExpr(Sinh(e.expr))
 
   /**
     * Computes the hyperbolic sine of the given column.
@@ -1866,7 +1866,7 @@ object functions {
     * @group math_funcs
     * @since 1.4.0
     */
-  def tan(e: Column): Column = withExpr { Tan(e.expr) }
+  def tan(e: Column): Column = withExpr(Tan(e.expr))
 
   /**
     * Computes the tangent of the given column.
@@ -1882,7 +1882,7 @@ object functions {
     * @group math_funcs
     * @since 1.4.0
     */
-  def tanh(e: Column): Column = withExpr { Tanh(e.expr) }
+  def tanh(e: Column): Column = withExpr(Tanh(e.expr))
 
   /**
     * Computes the hyperbolic tangent of the given column.
@@ -1898,7 +1898,7 @@ object functions {
     * @group math_funcs
     * @since 1.4.0
     */
-  def toDegrees(e: Column): Column = withExpr { ToDegrees(e.expr) }
+  def toDegrees(e: Column): Column = withExpr(ToDegrees(e.expr))
 
   /**
     * Converts an angle measured in radians to an approximately equivalent angle measured in degrees.
@@ -1914,7 +1914,7 @@ object functions {
     * @group math_funcs
     * @since 1.4.0
     */
-  def toRadians(e: Column): Column = withExpr { ToRadians(e.expr) }
+  def toRadians(e: Column): Column = withExpr(ToRadians(e.expr))
 
   /**
     * Converts an angle measured in degrees to an approximately equivalent angle measured in radians.
@@ -1935,7 +1935,7 @@ object functions {
     * @group misc_funcs
     * @since 1.5.0
     */
-  def md5(e: Column): Column = withExpr { Md5(e.expr) }
+  def md5(e: Column): Column = withExpr(Md5(e.expr))
 
   /**
     * Calculates the SHA-1 digest of a binary column and returns the value
@@ -1944,7 +1944,7 @@ object functions {
     * @group misc_funcs
     * @since 1.5.0
     */
-  def sha1(e: Column): Column = withExpr { Sha1(e.expr) }
+  def sha1(e: Column): Column = withExpr(Sha1(e.expr))
 
   /**
     * Calculates the SHA-2 family of hash functions of a binary column and
@@ -1960,7 +1960,7 @@ object functions {
     require(
       Seq(0, 224, 256, 384, 512).contains(numBits),
       s"numBits $numBits is not in the permitted values (0, 224, 256, 384, 512)")
-    withExpr { Sha2(e.expr, lit(numBits).expr) }
+    withExpr(Sha2(e.expr, lit(numBits).expr))
   }
 
   /**
@@ -1970,7 +1970,7 @@ object functions {
     * @group misc_funcs
     * @since 1.5.0
     */
-  def crc32(e: Column): Column = withExpr { Crc32(e.expr) }
+  def crc32(e: Column): Column = withExpr(Crc32(e.expr))
 
   /**
     * Calculates the hash code of given columns, and returns the result as an int column.
@@ -1994,7 +1994,7 @@ object functions {
     * @group string_funcs
     * @since 1.5.0
     */
-  def ascii(e: Column): Column = withExpr { Ascii(e.expr) }
+  def ascii(e: Column): Column = withExpr(Ascii(e.expr))
 
   /**
     * Computes the BASE64 encoding of a binary column and returns it as a string column.
@@ -2003,7 +2003,7 @@ object functions {
     * @group string_funcs
     * @since 1.5.0
     */
-  def base64(e: Column): Column = withExpr { Base64(e.expr) }
+  def base64(e: Column): Column = withExpr(Base64(e.expr))
 
   /**
     * Concatenates multiple input string columns together into a single string column.
@@ -2012,7 +2012,7 @@ object functions {
     * @since 1.5.0
     */
   @scala.annotation.varargs
-  def concat(exprs: Column*): Column = withExpr { Concat(exprs.map(_.expr)) }
+  def concat(exprs: Column*): Column = withExpr(Concat(exprs.map(_.expr)))
 
   /**
     * Concatenates multiple input string columns together into a single string column,
@@ -2084,7 +2084,7 @@ object functions {
     * @group string_funcs
     * @since 1.5.0
     */
-  def initcap(e: Column): Column = withExpr { InitCap(e.expr) }
+  def initcap(e: Column): Column = withExpr(InitCap(e.expr))
 
   /**
     * Locate the position of the first occurrence of substr column in the given string.
@@ -2106,7 +2106,7 @@ object functions {
     * @group string_funcs
     * @since 1.5.0
     */
-  def length(e: Column): Column = withExpr { Length(e.expr) }
+  def length(e: Column): Column = withExpr(Length(e.expr))
 
   /**
     * Converts a string column to lower case.
@@ -2114,7 +2114,7 @@ object functions {
     * @group string_funcs
     * @since 1.3.0
     */
-  def lower(e: Column): Column = withExpr { Lower(e.expr) }
+  def lower(e: Column): Column = withExpr(Lower(e.expr))
 
   /**
     * Computes the Levenshtein distance of the two given string columns.
@@ -2166,7 +2166,7 @@ object functions {
     * @group string_funcs
     * @since 1.5.0
     */
-  def ltrim(e: Column): Column = withExpr { StringTrimLeft(e.expr) }
+  def ltrim(e: Column): Column = withExpr(StringTrimLeft(e.expr))
 
   /**
     * Extract a specific(idx) group identified by a java regex, from the specified string column.
@@ -2196,7 +2196,7 @@ object functions {
     * @group string_funcs
     * @since 1.5.0
     */
-  def unbase64(e: Column): Column = withExpr { UnBase64(e.expr) }
+  def unbase64(e: Column): Column = withExpr(UnBase64(e.expr))
 
   /**
     * Right-padded with pad to a length of len.
@@ -2224,7 +2224,7 @@ object functions {
     * @group string_funcs
     * @since 1.5.0
     */
-  def reverse(str: Column): Column = withExpr { StringReverse(str.expr) }
+  def reverse(str: Column): Column = withExpr(StringReverse(str.expr))
 
   /**
     * Trim the spaces from right end for the specified string value.
@@ -2232,7 +2232,7 @@ object functions {
     * @group string_funcs
     * @since 1.5.0
     */
-  def rtrim(e: Column): Column = withExpr { StringTrimRight(e.expr) }
+  def rtrim(e: Column): Column = withExpr(StringTrimRight(e.expr))
 
   /**
     * * Return the soundex code for the specified expression.
@@ -2240,7 +2240,7 @@ object functions {
     * @group string_funcs
     * @since 1.5.0
     */
-  def soundex(e: Column): Column = withExpr { SoundEx(e.expr) }
+  def soundex(e: Column): Column = withExpr(SoundEx(e.expr))
 
   /**
     * Splits str around pattern (pattern is a regular expression).
@@ -2300,7 +2300,7 @@ object functions {
     * @group string_funcs
     * @since 1.5.0
     */
-  def trim(e: Column): Column = withExpr { StringTrim(e.expr) }
+  def trim(e: Column): Column = withExpr(StringTrim(e.expr))
 
   /**
     * Converts a string column to upper case.
@@ -2308,7 +2308,7 @@ object functions {
     * @group string_funcs
     * @since 1.3.0
     */
-  def upper(e: Column): Column = withExpr { Upper(e.expr) }
+  def upper(e: Column): Column = withExpr(Upper(e.expr))
 
   //////////////////////////////////////////////////////////////////////////////////////////////
   // DateTime functions
@@ -2330,7 +2330,7 @@ object functions {
     * @group datetime_funcs
     * @since 1.5.0
     */
-  def current_date(): Column = withExpr { CurrentDate() }
+  def current_date(): Column = withExpr(CurrentDate())
 
   /**
     * Returns the current timestamp as a timestamp column.
@@ -2338,7 +2338,7 @@ object functions {
     * @group datetime_funcs
     * @since 1.5.0
     */
-  def current_timestamp(): Column = withExpr { CurrentTimestamp() }
+  def current_timestamp(): Column = withExpr(CurrentTimestamp())
 
   /**
     * Converts a date/timestamp/string to a value of string in the format specified by the date
@@ -2389,42 +2389,42 @@ object functions {
     * @group datetime_funcs
     * @since 1.5.0
     */
-  def year(e: Column): Column = withExpr { Year(e.expr) }
+  def year(e: Column): Column = withExpr(Year(e.expr))
 
   /**
     * Extracts the quarter as an integer from a given date/timestamp/string.
     * @group datetime_funcs
     * @since 1.5.0
     */
-  def quarter(e: Column): Column = withExpr { Quarter(e.expr) }
+  def quarter(e: Column): Column = withExpr(Quarter(e.expr))
 
   /**
     * Extracts the month as an integer from a given date/timestamp/string.
     * @group datetime_funcs
     * @since 1.5.0
     */
-  def month(e: Column): Column = withExpr { Month(e.expr) }
+  def month(e: Column): Column = withExpr(Month(e.expr))
 
   /**
     * Extracts the day of the month as an integer from a given date/timestamp/string.
     * @group datetime_funcs
     * @since 1.5.0
     */
-  def dayofmonth(e: Column): Column = withExpr { DayOfMonth(e.expr) }
+  def dayofmonth(e: Column): Column = withExpr(DayOfMonth(e.expr))
 
   /**
     * Extracts the day of the year as an integer from a given date/timestamp/string.
     * @group datetime_funcs
     * @since 1.5.0
     */
-  def dayofyear(e: Column): Column = withExpr { DayOfYear(e.expr) }
+  def dayofyear(e: Column): Column = withExpr(DayOfYear(e.expr))
 
   /**
     * Extracts the hours as an integer from a given date/timestamp/string.
     * @group datetime_funcs
     * @since 1.5.0
     */
-  def hour(e: Column): Column = withExpr { Hour(e.expr) }
+  def hour(e: Column): Column = withExpr(Hour(e.expr))
 
   /**
     * Given a date column, returns the last day of the month which the given date belongs to.
@@ -2434,14 +2434,14 @@ object functions {
     * @group datetime_funcs
     * @since 1.5.0
     */
-  def last_day(e: Column): Column = withExpr { LastDay(e.expr) }
+  def last_day(e: Column): Column = withExpr(LastDay(e.expr))
 
   /**
     * Extracts the minutes as an integer from a given date/timestamp/string.
     * @group datetime_funcs
     * @since 1.5.0
     */
-  def minute(e: Column): Column = withExpr { Minute(e.expr) }
+  def minute(e: Column): Column = withExpr(Minute(e.expr))
 
   /*
    * Returns number of months between dates `date1` and `date2`.
@@ -2474,14 +2474,14 @@ object functions {
     * @group datetime_funcs
     * @since 1.5.0
     */
-  def second(e: Column): Column = withExpr { Second(e.expr) }
+  def second(e: Column): Column = withExpr(Second(e.expr))
 
   /**
     * Extracts the week number as an integer from a given date/timestamp/string.
     * @group datetime_funcs
     * @since 1.5.0
     */
-  def weekofyear(e: Column): Column = withExpr { WeekOfYear(e.expr) }
+  def weekofyear(e: Column): Column = withExpr(WeekOfYear(e.expr))
 
   /**
     * Converts the number of seconds from unix epoch (1970-01-01 00:00:00 UTC) to a string
@@ -2541,7 +2541,7 @@ object functions {
     * @group datetime_funcs
     * @since 1.5.0
     */
-  def to_date(e: Column): Column = withExpr { ToDate(e.expr) }
+  def to_date(e: Column): Column = withExpr(ToDate(e.expr))
 
   /**
     * Returns date truncated to the unit specified by the format.
@@ -2593,7 +2593,7 @@ object functions {
     * @group collection_funcs
     * @since 1.3.0
     */
-  def explode(e: Column): Column = withExpr { Explode(e.expr) }
+  def explode(e: Column): Column = withExpr(Explode(e.expr))
 
   /**
     * Extracts json object from a json string based on json path specified, and returns json string
@@ -2624,7 +2624,7 @@ object functions {
     * @group collection_funcs
     * @since 1.5.0
     */
-  def size(e: Column): Column = withExpr { Size(e.expr) }
+  def size(e: Column): Column = withExpr(Size(e.expr))
 
   /**
     * Sorts the input array for the given column in ascending order,

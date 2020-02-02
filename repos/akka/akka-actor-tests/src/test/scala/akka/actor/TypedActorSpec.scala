@@ -416,13 +416,13 @@ class TypedActorSpec
     "be restarted on failure" in {
       filterEvents(EventFilter[IllegalStateException]("expected")) {
         val t = newFooBar(Duration(2, "s"))
-        intercept[IllegalStateException] { t.failingOptionPigdog() }.getMessage should ===(
+        intercept[IllegalStateException](t.failingOptionPigdog()).getMessage should ===(
           "expected")
         t.optionPigdog() should ===(Some("Pigdog"))
         mustStop(t)
 
         val ta: F = TypedActor(system).typedActorOf(TypedProps[FI]())
-        intercept[IllegalStateException] { ta.f(true) }.getMessage should ===(
+        intercept[IllegalStateException](ta.f(true)).getMessage should ===(
           "expected")
         ta.f(false) should ===(1)
 

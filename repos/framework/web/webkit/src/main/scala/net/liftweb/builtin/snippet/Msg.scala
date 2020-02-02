@@ -115,7 +115,7 @@ object Msg extends DispatchSnippet {
     msgs match {
       case Nil => Text("")
       case spans =>
-        spans.reduceLeft { (output, span) => output ++ Text(", ") ++ span }
+        spans.reduceLeft((output, span) => output ++ Text(", ") ++ span)
     }
   }
 

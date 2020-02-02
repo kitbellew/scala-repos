@@ -58,7 +58,7 @@ object Assign {
   }
 
   import DefaultParsers._
-  val p = Def.setting { name.value ~> Space ~> ID }
+  val p = Def.setting(name.value ~> Space ~> ID)
   val is = Seq(
     mk := 3,
     name := "asdf",
@@ -89,14 +89,14 @@ object Assign {
     val d3 = dummy3.parsed
     val x = d3._1
     val i = d3._2
-    Def.task { tk.value + i }
+    Def.task(tk.value + i)
   }
 
   val it7 = Def.inputTask {
     it5.parsed
   }
 
-  def bool: Initialize[Boolean] = Def.setting { true }
+  def bool: Initialize[Boolean] = Def.setting(true)
   def enabledOnly[T](key: Initialize[T]): Initialize[Seq[T]] = Def.setting {
     val keys: Seq[T] = forallIn(key).value
     val enabled: Seq[Boolean] = forallIn(bool).value

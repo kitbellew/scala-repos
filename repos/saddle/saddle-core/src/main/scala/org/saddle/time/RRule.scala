@@ -90,22 +90,22 @@ case class RRule private (
     rrule.setFreq(freq.toICal)
     rrule.setInterval(interval)
 
-    wkst.foreach { w => rrule.setWkSt(w.toICal) }
-    count.foreach { rrule.setCount(_) }
-    until.foreach { dt => rrule.setUntil(dt2dtv(dt)) }
-    bysetpos.headOption.foreach { _ => rrule.setBySetPos(bysetpos.toArray) }
-    bymonth.headOption.foreach { _ => rrule.setByMonth(bymonth.toArray) }
+    wkst.foreach(w => rrule.setWkSt(w.toICal))
+    count.foreach(rrule.setCount(_))
+    until.foreach(dt => rrule.setUntil(dt2dtv(dt)))
+    bysetpos.headOption.foreach(_ => rrule.setBySetPos(bysetpos.toArray))
+    bymonth.headOption.foreach(_ => rrule.setByMonth(bymonth.toArray))
     bymonthday.headOption.foreach { _ =>
       rrule.setByMonthDay(bymonthday.toArray)
     }
-    byyearday.headOption.foreach { _ => rrule.setByYearDay(byyearday.toArray) }
-    byweekno.headOption.foreach { _ => rrule.setByWeekNo(byweekno.toArray) }
+    byyearday.headOption.foreach(_ => rrule.setByYearDay(byyearday.toArray))
+    byweekno.headOption.foreach(_ => rrule.setByWeekNo(byweekno.toArray))
     byday.headOption.foreach { _ =>
       rrule.setByDay(seqAsJavaList(byday.map(v => v.toICal)))
     }
-    byhour.headOption.foreach { _ => rrule.setByHour(byhour.toArray) }
-    byminute.headOption.foreach { _ => rrule.setByMinute(byminute.toArray) }
-    bysecond.headOption.foreach { _ => rrule.setBySecond(bysecond.toArray) }
+    byhour.headOption.foreach(_ => rrule.setByHour(byhour.toArray))
+    byminute.headOption.foreach(_ => rrule.setByMinute(byminute.toArray))
+    bysecond.headOption.foreach(_ => rrule.setBySecond(bysecond.toArray))
 
     rrule
   }
@@ -267,7 +267,7 @@ case class RRule private (
 
     val iterWithJoins = joins.foldLeft(riter) {
       case (i1, (rrule, t)) =>
-        val tmpfrom = t.map { dt2dtv } getOrElse dt2dtv(dt)
+        val tmpfrom = t.map(dt2dtv) getOrElse dt2dtv(dt)
         val tmpiter = RecurrenceIteratorFactory.createRecurrenceIterator(
           rrule.toICal,
           tmpfrom,
@@ -277,7 +277,7 @@ case class RRule private (
 
     val iterWithJoinsWithExcepts = excepts.foldLeft(iterWithJoins) {
       case (i1, (rrule, t)) =>
-        val tmpfrom = t.map { dt2dtv } getOrElse dt2dtv(dt)
+        val tmpfrom = t.map(dt2dtv) getOrElse dt2dtv(dt)
         val tmpiter = RecurrenceIteratorFactory.createRecurrenceIterator(
           rrule.toICal,
           tmpfrom,

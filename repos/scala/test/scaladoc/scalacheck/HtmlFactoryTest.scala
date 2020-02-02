@@ -146,8 +146,8 @@ object Test extends Properties("HtmlFactory") {
     case node: scala.xml.Node =>
       val comments = shortComments(node)
 
-      comments.exists { _.toString.contains(">A lazy String\n</p>") } &&
-      comments.exists { _.toString.contains(">A non-lazy String\n</p>") }
+      comments.exists(_.toString.contains(">A lazy String\n</p>")) &&
+      comments.exists(_.toString.contains(">A non-lazy String\n</p>"))
     case _ => false
   }
 

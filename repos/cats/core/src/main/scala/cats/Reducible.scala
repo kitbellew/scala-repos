@@ -131,13 +131,13 @@ trait CompositeReducible[F[_], G[_]]
   override def reduceLeftTo[A, B](fga: F[G[A]])(f: A => B)(
       g: (B, A) => B): B = {
     def toB(ga: G[A]): B = G.reduceLeftTo(ga)(f)(g)
-    F.reduceLeftTo(fga)(toB) { (b, ga) => G.foldLeft(ga, b)(g) }
+    F.reduceLeftTo(fga)(toB)((b, ga) => G.foldLeft(ga, b)(g))
   }
 
   override def reduceRightTo[A, B](fga: F[G[A]])(f: A => B)(
       g: (A, Eval[B]) => Eval[B]): Eval[B] = {
     def toB(ga: G[A]): B = G.reduceRightTo(ga)(f)(g).value
-    F.reduceRightTo(fga)(toB) { (ga, lb) => G.foldRight(ga, lb)(g) }
+    F.reduceRightTo(fga)(toB)((ga, lb) => G.foldRight(ga, lb)(g))
   }
 }
 

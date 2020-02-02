@@ -146,7 +146,7 @@ class SqDistBenchmark extends BreezeBenchmark {
 
   def timeVectorSquaredDistance(reps: Int) = {
     var sum = 0.0
-    cforRange(0 until reps) { i => sum += squaredDistance(v1, v2) }
+    cforRange(0 until reps)(i => sum += squaredDistance(v1, v2))
 
     sum
   }

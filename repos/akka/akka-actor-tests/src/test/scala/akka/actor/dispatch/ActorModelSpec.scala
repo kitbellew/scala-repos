@@ -320,7 +320,7 @@ abstract class ActorModelSpec(config: String)
       assertDispatcher(dispatcher)(stops = 2)
 
       val a2 = newTestActor(dispatcher.id)
-      val futures2 = for (i ← 1 to 10) yield Future { i }
+      val futures2 = for (i ← 1 to 10) yield Future(i)
 
       assertDispatcher(dispatcher)(stops = 2)
 

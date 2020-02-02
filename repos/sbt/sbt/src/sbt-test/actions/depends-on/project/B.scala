@@ -9,7 +9,7 @@ object B extends Build {
       if ((b / "succeed").exists) () else sys.error("fail")),
     b <<= a.task(at => nop dependsOn (at)),
     c <<= a map { _ => () },
-    d <<= a flatMap { _ => task { () } }
+    d <<= a flatMap { _ => task(()) }
   )
   lazy val a = TaskKey[Unit]("a")
   lazy val b = TaskKey[Unit]("b")

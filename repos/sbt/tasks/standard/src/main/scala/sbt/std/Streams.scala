@@ -170,7 +170,7 @@ object Streams {
 
       def key: Key = a
       def open(): Unit = ()
-      def isClosed: Boolean = synchronized { closed }
+      def isClosed: Boolean = synchronized(closed)
 
       def close(): Unit = synchronized {
         if (!closed) {

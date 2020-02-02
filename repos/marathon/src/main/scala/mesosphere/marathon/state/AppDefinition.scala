@@ -135,7 +135,7 @@ case class AppDefinition(
       .addAllStoreUrls(storeUrls.asJava)
       .addAllLabels(appLabels.asJava)
 
-    ipAddress.foreach { ip => builder.setIpAddress(ip.toProto) }
+    ipAddress.foreach(ip => builder.setIpAddress(ip.toProto))
 
     container.foreach { c =>
       builder.setContainer(ContainerSerializer.toProto(c))
@@ -252,7 +252,7 @@ case class AppDefinition(
         .map(new HealthCheck().mergeFromProto)
         .toSet,
       labels =
-        proto.getLabelsList.asScala.map { p => p.getKey -> p.getValue }.toMap,
+        proto.getLabelsList.asScala.map(p => p.getKey -> p.getValue).toMap,
       versionInfo = versionInfoFromProto,
       upgradeStrategy =
         if (proto.hasUpgradeStrategy)

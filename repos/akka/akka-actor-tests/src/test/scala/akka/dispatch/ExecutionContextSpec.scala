@@ -87,7 +87,7 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
         (1 to 100) foreach { i ⇒
           batchable {
             val deadlock = TestLatch(1)
-            batchable { deadlock.open() }
+            batchable(deadlock.open())
             Await.ready(deadlock, timeout.duration)
             latch.countDown()
           }
@@ -105,16 +105,16 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
         // this needs to be within an OnCompleteRunnable so that things are added to the batch
         val p = Future.successful(42)
         // we need the callback list to be non-empty when the blocking{} call is executing
-        p.onComplete { _ ⇒ () }
+        p.onComplete(_ ⇒ ())
         val r = p.map { _ ⇒
           // trigger the resubmitUnbatched() call
-          blocking { () }
+          blocking(())
           // make sure that the other task runs to completion before continuing
           Thread.sleep(500)
           // now try again to blockOn()
-          blocking { () }
+          blocking(())
         }
-        p.onComplete { _ ⇒ () }
+        p.onComplete(_ ⇒ ())
         r
       }
       Await.result(f, 3.seconds) should be(())

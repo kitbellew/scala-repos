@@ -147,7 +147,7 @@ class FilePollingActivitySource private[exp] (
           value() = Activity.Failed(NotFound)
       }
 
-      Closable.make { _ => Future { timerTask.cancel() } }
+      Closable.make(_ => Future(timerTask.cancel()))
     }
 
     Activity(v)

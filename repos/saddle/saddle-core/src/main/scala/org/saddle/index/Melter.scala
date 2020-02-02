@@ -60,7 +60,7 @@ trait MelterLowPriority extends MelterLowerPriority {
     (a: A, b: (B, C)) => (a, b._1, b._2)
   }
   implicit def melt1_3[A: ST: ORD, B: ST: ORD, C: ST: ORD, D: ST: ORD] =
-    makeMelter { (a: A, b: (B, C, D)) => (a, b._1, b._2, b._3) }
+    makeMelter((a: A, b: (B, C, D)) => (a, b._1, b._2, b._3))
   implicit def melt1_4[
       A: ST: ORD,
       B: ST: ORD,
@@ -116,7 +116,7 @@ trait MelterLowPriority extends MelterLowerPriority {
     (a: (A, B), b: C) => (a._1, a._2, b)
   }
   implicit def melt3_1[A: ST: ORD, B: ST: ORD, C: ST: ORD, D: ST: ORD] =
-    makeMelter { (a: (A, B, C), b: D) => (a._1, a._2, a._3, b) }
+    makeMelter((a: (A, B, C), b: D) => (a._1, a._2, a._3, b))
   implicit def melt4_1[
       A: ST: ORD,
       B: ST: ORD,
@@ -174,7 +174,7 @@ trait MelterLowPriority extends MelterLowerPriority {
   */
 object Melter extends MelterLowPriority {
   implicit def melt2_2[A: ST: ORD, B: ST: ORD, C: ST: ORD, D: ST: ORD] =
-    makeMelter { (a: (A, B), b: (C, D)) => (a._1, a._2, b._1, b._2) }
+    makeMelter((a: (A, B), b: (C, D)) => (a._1, a._2, b._1, b._2))
 
   implicit def melt2_3[
       A: ST: ORD,

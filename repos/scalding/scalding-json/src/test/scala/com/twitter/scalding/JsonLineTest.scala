@@ -157,7 +157,7 @@ class JsonLineTest extends WordSpec {
           .source(
             JsonLine("input0", ('foo, 'bar)),
             List((0, json), (1, json2), (2, ""), (3, "   ")))
-          .sink[(Int, String)](Tsv("output0")) { outBuf => outBuf.toList }
+          .sink[(Int, String)](Tsv("output0"))(outBuf => outBuf.toList)
           .run
           .finish
       }

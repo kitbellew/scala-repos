@@ -113,7 +113,7 @@ object Drv {
   def fromWeights(weights: Seq[Double]): Drv = {
     val sum = weights.sum
     if (sum == 0)
-      Drv(Seq.fill(weights.size) { 1d / weights.size })
+      Drv(Seq.fill(weights.size)(1d / weights.size))
     else
       Drv(weights map (_ / sum))
   }

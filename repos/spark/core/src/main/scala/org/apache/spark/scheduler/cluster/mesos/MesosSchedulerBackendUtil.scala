@@ -74,7 +74,7 @@ private[mesos] object MesosSchedulerBackendUtil extends Logging {
             None
         }
       }
-      .map { _.build() }
+      .map(_.build())
       .toList
 
   /**
@@ -114,7 +114,7 @@ private[mesos] object MesosSchedulerBackendUtil extends Logging {
             None
         }
       }
-      .map { _.build() }
+      .map(_.build())
       .toList
 
   /**

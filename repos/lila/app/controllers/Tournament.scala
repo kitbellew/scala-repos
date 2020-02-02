@@ -77,7 +77,7 @@ object Tournament extends LilaController {
                   html.tournament.show(tour, _, chat)
                 }
             }
-            .map { Ok(_) }
+            .map(Ok(_))
             .mon(_.http.response.tournament.show.website)
         }
       },
@@ -85,7 +85,7 @@ object Tournament extends LilaController {
         repo byId id flatMap {
           case None => NotFound(jsonError("No such tournament")).fuccess
           case Some(tour) => {
-              get("playerInfo").?? { env.api.playerInfo(tour.id, _) } zip
+              get("playerInfo").??(env.api.playerInfo(tour.id, _)) zip
                 getBool("socketVersion")
                   .??(env version tour.id map some) flatMap {
                 case (playerInfoExt, socketVersion) =>
@@ -115,7 +115,7 @@ object Tournament extends LilaController {
   }
 
   def userGameNbMini(id: String, user: String, nb: Int) = Open { implicit ctx =>
-    withUserGameNb(id, user, nb) { pov => Ok(html.tournament.miniGame(pov)) }
+    withUserGameNb(id, user, nb)(pov => Ok(html.tournament.miniGame(pov)))
   }
 
   def userGameNbShow(id: String, user: String, nb: Int) = Open { implicit ctx =>
@@ -129,7 +129,7 @@ object Tournament extends LilaController {
     val userId = lila.user.User normalize user
     OptionFuResult(PairingRepo.byTourUserNb(id, userId, nb)) { pairing =>
       GameRepo game pairing.id map {
-        _.flatMap { Pov.ofUserId(_, userId) }
+        _.flatMap(Pov.ofUserId(_, userId))
           .fold(Redirect(routes.Tournament show id))(withPov)
       }
     }

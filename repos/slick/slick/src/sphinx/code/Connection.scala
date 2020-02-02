@@ -90,7 +90,7 @@ object Connection extends App {
       //#stream
       val f =
         //#stream
-        p.foreach { s => println(s"Element: $s") }
+        p.foreach(s => println(s"Element: $s"))
       //#stream
       Await.result(f, Duration.Inf)
     };
@@ -123,7 +123,8 @@ object Connection extends App {
       val rollbackAction = (coffees ++= Seq(
         ("Cold_Drip", new SerialBlob(Array[Byte](101))),
         ("Dutch_Coffee", new SerialBlob(Array[Byte](49)))
-      )).flatMap { _ => DBIO.failed(new Exception("Roll it back")) }.transactionally
+      )).flatMap(_ => DBIO.failed(new Exception("Roll it back")))
+        .transactionally
 
       val errorHandleAction = rollbackAction.asTry.flatMap {
         case Failure(e: Throwable) => DBIO.successful(e.getMessage)

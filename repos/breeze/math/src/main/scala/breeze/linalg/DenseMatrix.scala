@@ -1123,7 +1123,7 @@ object DenseMatrix
     new CanTraverseAxis[DenseMatrix[V], Axis._0.type, DenseVector[V]] {
       def apply[A](from: DenseMatrix[V], axis: Axis._0.type)(
           f: (DenseVector[V]) => A) {
-        cforRange(0 until from.cols) { c => f(from(::, c)) }
+        cforRange(0 until from.cols)(c => f(from(::, c)))
       }
     }
 
@@ -1138,7 +1138,7 @@ object DenseMatrix
       def apply[A](from: DenseMatrix[V], axis: Axis._1.type)(
           f: (DenseVector[V]) => A) {
         val t = from.t
-        cforRange(0 until from.rows) { r => f(t(::, r)) }
+        cforRange(0 until from.rows)(r => f(t(::, r)))
       }
     }
 

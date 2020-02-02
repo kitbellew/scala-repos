@@ -2841,7 +2841,7 @@ trait Types
 
     // Is this existential of the form: T[Q1, ..., QN] forSome { type Q1 >: L1 <: U1, ..., QN >: LN <: UN}
     private def isStraightApplication =
-      (quantified corresponds underlying.typeArgs) { (q, a) => q.tpe =:= a }
+      (quantified corresponds underlying.typeArgs)((q, a) => q.tpe =:= a)
 
     /** [SI-6169, SI-8197 -- companion to SI-1786]
       *

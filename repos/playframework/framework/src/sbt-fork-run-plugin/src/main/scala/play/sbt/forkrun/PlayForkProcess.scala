@@ -96,7 +96,7 @@ object PlayForkProcess {
       outputThread.join()
       errorThread.join()
     }
-    val shutdownHook = newThread { stop() }
+    val shutdownHook = newThread(stop())
     JRuntime.getRuntime.addShutdownHook(shutdownHook)
     try process.waitFor()
     catch { case _: InterruptedException => stop() }

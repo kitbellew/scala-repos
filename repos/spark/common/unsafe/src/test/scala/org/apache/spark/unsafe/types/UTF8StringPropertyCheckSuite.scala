@@ -35,11 +35,11 @@ class UTF8StringPropertyCheckSuite
 // scalastyle:on
 
   test("toString") {
-    forAll { (s: String) => assert(toUTF8(s).toString() === s) }
+    forAll((s: String) => assert(toUTF8(s).toString() === s))
   }
 
   test("numChars") {
-    forAll { (s: String) => assert(toUTF8(s).numChars() === s.length) }
+    forAll((s: String) => assert(toUTF8(s).numChars() === s.length))
   }
 
   test("startsWith") {
@@ -131,7 +131,7 @@ class UTF8StringPropertyCheckSuite
   }
 
   test("reverse") {
-    forAll { (s: String) => assert(toUTF8(s).reverse === toUTF8(s.reverse)) }
+    forAll((s: String) => assert(toUTF8(s).reverse === toUTF8(s.reverse)))
   }
 
   test("indexOf") {

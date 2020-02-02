@@ -46,7 +46,7 @@ private[controllers] trait TheftPrevention { self: LilaController =>
             .filterNot(_.hasUser)
         }
         .filterNot(_.isAi)
-        .map { Pov(game, _) }
+        .map(Pov(game, _))
     }
 
   protected lazy val theftResponse = Unauthorized(

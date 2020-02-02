@@ -39,7 +39,7 @@ private[parser] trait WebSocketHeaders {
     capture(
       oneOrMore(`base64-data`) ~ optional(`base64-padding`) | `base64-padding`)
   }
-  private def `base64-data` = rule { 4.times(`base64-character`) }
+  private def `base64-data` = rule(4.times(`base64-character`))
   private def `base64-padding` = rule {
     2.times(`base64-character`) ~ "==" |
       3.times(`base64-character`) ~ "="

@@ -11,7 +11,7 @@ class BlacklistStatsReceiverTest extends FunSuite {
     val bsr = new BlacklistStatsReceiver(inmemory, { case _ => true })
     val ctr = bsr.counter("foo", "bar")
     ctr.incr()
-    val gauge = bsr.addGauge("foo", "baz") { 3.0f }
+    val gauge = bsr.addGauge("foo", "baz")(3.0f)
     val stat = bsr.stat("qux")
     stat.add(3)
 
@@ -25,7 +25,7 @@ class BlacklistStatsReceiverTest extends FunSuite {
     val bsr = new BlacklistStatsReceiver(inmemory, { case _ => false })
     val ctr = bsr.counter("foo", "bar")
     ctr.incr()
-    val gauge = bsr.addGauge("foo", "baz") { 3.0f }
+    val gauge = bsr.addGauge("foo", "baz")(3.0f)
     val stat = bsr.stat("qux")
     stat.add(3)
 
@@ -41,7 +41,7 @@ class BlacklistStatsReceiverTest extends FunSuite {
     })
     val ctr = bsr.counter("foo", "bar")
     ctr.incr()
-    val gauge = bsr.addGauge("foo", "baz") { 3.0f }
+    val gauge = bsr.addGauge("foo", "baz")(3.0f)
     val stat = bsr.stat("qux")
     stat.add(3)
 
@@ -57,7 +57,7 @@ class BlacklistStatsReceiverTest extends FunSuite {
     }).scope("foo")
     val ctr = bsr.counter("foo", "bar")
     ctr.incr()
-    val gauge = bsr.addGauge("foo", "baz") { 3.0f }
+    val gauge = bsr.addGauge("foo", "baz")(3.0f)
     val stat = bsr.stat("bar")
     stat.add(3)
 

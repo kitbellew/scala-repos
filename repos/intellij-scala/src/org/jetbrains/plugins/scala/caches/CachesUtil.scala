@@ -390,7 +390,7 @@ object CachesUtil {
         cur = nextElement
       }
 
-      doQueueWithLock { _ => needToCheckFuns = false }
+      doQueueWithLock(_ => needToCheckFuns = false)
     }
 
     if (needToCheckFuns && !currentThreadIsCheckingFuns.get())

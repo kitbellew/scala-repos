@@ -104,8 +104,8 @@ private[concurrent] object ExecutionContextImpl {
                   try
                   // When we block, switch out the BlockContext temporarily so that nested blocking does not created N new Threads
                   BlockContext.withBlockContext(
-                    BlockContext.defaultBlockContext) { thunk } finally isdone =
-                    true
+                    BlockContext.defaultBlockContext)(thunk)
+                  finally isdone = true
 
                 true
               }

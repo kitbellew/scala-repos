@@ -77,7 +77,7 @@ class JobTest(cons: (Args) => Job) {
   private def sourceBuffer[T: TupleSetter](
       s: Source,
       tups: Iterable[T]): JobTest = {
-    source { src => if (src == s) Some(tups) else None }
+    source(src => if (src == s) Some(tups) else None)
     this
   }
 
@@ -86,7 +86,7 @@ class JobTest(cons: (Args) => Job) {
       implicit setter: TupleSetter[T]): JobTest = {
     val oldSm = sourceMap
     val bufferTupFn = fn.andThen { optItT =>
-      optItT.map { _.map(t => setter(t)).toBuffer }
+      optItT.map(_.map(t => setter(t)).toBuffer)
     }
     // We have to memoize to return the same buffer each time
     val memo = scala.collection.mutable.Map[Source, Option[Buffer[Tuple]]]()
@@ -125,7 +125,7 @@ class JobTest(cons: (Args) => Job) {
      * you also modify the `finalize` function accordingly.
      */
     sinkSet += s
-    callbacks += (() => op(buffer.map { tup => conv(new TupleEntry(tup)) }))
+    callbacks += (() => op(buffer.map(tup => conv(new TupleEntry(tup)))))
     this
   }
 
@@ -248,12 +248,12 @@ class JobTest(cons: (Args) => Job) {
              * you also modify the `finalize` function accordingly.
              */
             // The sinks are written to disk, we need to clean them up:
-            sinkSet.foreach { hadoopTest.finalize(_) }
+            sinkSet.foreach(hadoopTest.finalize(_))
           case _ => ()
         }
         // Now it is time to check the test conditions:
-        callbacks.foreach { cb => cb() }
-        statsCallbacks.foreach { cb => cb(job.scaldingCascadingStats.get) }
+        callbacks.foreach(cb => cb())
+        statsCallbacks.foreach(cb => cb(job.scaldingCascadingStats.get))
     }
   }
 }

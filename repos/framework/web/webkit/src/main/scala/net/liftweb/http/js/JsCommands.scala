@@ -624,8 +624,9 @@ trait HtmlFixer {
     fixHtmlAndJs(uid, content) match {
       case (str, Nil) => f(str)
       case (str, cmds) =>
-        "((function() {" + cmds.reduceLeft { _ & _ }.toJsCmd + " return " + f(
-          str) + ";})())"
+        "((function() {" + cmds
+          .reduceLeft(_ & _)
+          .toJsCmd + " return " + f(str) + ";})())"
     }
 
   /**

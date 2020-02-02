@@ -81,7 +81,7 @@ class SinatraPathPatternParser extends RegexPathPatternParser {
         throw new IllegalArgumentException("Invalid path pattern: " + pattern)
     }
 
-  private def pathPattern = rep(token) ^^ { _.reduceLeft { _ + _ } }
+  private def pathPattern = rep(token) ^^ { _.reduceLeft(_ + _) }
 
   private def token = splat | namedGroup | literal
 
@@ -124,7 +124,7 @@ class RailsPathPatternParser extends RegexPathPatternParser {
     PartialPathPattern("\\A" + e.regex + "\\Z", e.captureGroupNames).toPathPattern
   }
 
-  private def expr = rep1(token) ^^ { _.reduceLeft { _ + _ } }
+  private def expr = rep1(token) ^^ { _.reduceLeft(_ + _) }
 
   private def token = param | glob | optional | static
 

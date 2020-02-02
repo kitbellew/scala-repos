@@ -33,7 +33,7 @@ class PerformanceSpec
               })).withDispatcher(executor)
 
             val ponger = Props(SelfAware[Pong](self ⇒
-              Static { msg ⇒ msg.ping ! Ping(msg.x, self, msg.report) }))
+              Static(msg ⇒ msg.ping ! Ping(msg.x, self, msg.report))))
               .withDispatcher(executor)
 
             val actors =

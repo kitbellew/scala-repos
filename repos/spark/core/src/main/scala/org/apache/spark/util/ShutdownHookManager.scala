@@ -184,7 +184,7 @@ private[util] class SparkShutdownHookManager {
   def runAll(): Unit = {
     shuttingDown = true
     var nextHook: SparkShutdownHook = null
-    while ({ nextHook = hooks.synchronized { hooks.poll() }; nextHook != null })
+    while ({ nextHook = hooks.synchronized(hooks.poll()); nextHook != null })
       Try(Utils.logUncaughtExceptions(nextHook.run()))
   }
 
@@ -199,7 +199,7 @@ private[util] class SparkShutdownHookManager {
     }
 
   def remove(ref: AnyRef): Boolean =
-    hooks.synchronized { hooks.remove(ref) }
+    hooks.synchronized(hooks.remove(ref))
 
 }
 

@@ -203,7 +203,7 @@ case class BaseBolt[I, O](
       context: TopologyContext,
       oc: OutputCollector) {
     collector = oc
-    metrics().foreach { _.register(context) }
+    metrics().foreach(_.register(context))
     executor.init(context)
     StormStatProvider.registerMetrics(jobID, context, countersForBolt)
     SummingbirdRuntimeStats.addPlatformStatProvider(StormStatProvider)

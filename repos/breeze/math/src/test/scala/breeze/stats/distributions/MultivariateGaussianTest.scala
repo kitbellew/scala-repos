@@ -31,7 +31,7 @@ class MultivariateGaussianTest extends FunSuite with Checkers {
   val N = 5
 
   implicit def genVector: Arbitrary[DenseVector[Double]] =
-    Arbitrary { Gen.wrap(DenseVector.rand(N)) }
+    Arbitrary(Gen.wrap(DenseVector.rand(N)))
 
   implicit def genMatrix: Arbitrary[DenseMatrix[Double]] =
     Arbitrary {

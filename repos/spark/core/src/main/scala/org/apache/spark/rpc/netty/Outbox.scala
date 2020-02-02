@@ -153,7 +153,7 @@ private[netty] class Outbox(nettyEnv: NettyRpcEnv, val address: RpcAddress) {
     }
     while (true) {
       try {
-        val _client = synchronized { client }
+        val _client = synchronized(client)
         if (_client != null)
           message.sendWith(_client)
         else
@@ -192,11 +192,11 @@ private[netty] class Outbox(nettyEnv: NettyRpcEnv, val address: RpcAddress) {
               // exit
               return
             case NonFatal(e) =>
-              outbox.synchronized { connectFuture = null }
+              outbox.synchronized(connectFuture = null)
               handleNetworkFailure(e)
               return
           }
-          outbox.synchronized { connectFuture = null }
+          outbox.synchronized(connectFuture = null)
           // It's possible that no thread is draining now. If we don't drain here, we cannot send the
           // messages until the next message arrives.
           drainOutbox()

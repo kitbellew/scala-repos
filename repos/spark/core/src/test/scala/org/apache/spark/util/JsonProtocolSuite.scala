@@ -600,7 +600,7 @@ class JsonProtocolSuite extends SparkFunSuite {
     val tmFieldJson: JValue = "Task Metrics" -> tmJson
     val oldExceptionFailureJson: JValue =
       exceptionFailureJson
-        .removeField { _._1 == "Accumulator Updates" }
+        .removeField(_._1 == "Accumulator Updates")
         .merge(tmFieldJson)
     val oldExceptionFailure =
       JsonProtocol

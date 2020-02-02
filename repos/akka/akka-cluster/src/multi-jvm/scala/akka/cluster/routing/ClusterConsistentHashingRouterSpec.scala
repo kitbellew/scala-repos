@@ -96,7 +96,7 @@ abstract class ClusterConsistentHashingRouterSpec
     "create routees from configuration" in {
       runOn(first) {
         // it may take some time until router receives cluster member events
-        awaitAssert { currentRoutees(router1).size should ===(4) }
+        awaitAssert(currentRoutees(router1).size should ===(4))
         val routees = currentRoutees(router1)
         routees.map { case ActorRefRoutee(ref) ⇒ fullAddress(ref) }.toSet should ===(
           Set(address(first), address(second)))
@@ -120,7 +120,7 @@ abstract class ClusterConsistentHashingRouterSpec
 
       runOn(first) {
         // it may take some time until router receives cluster member events
-        awaitAssert { currentRoutees(router1).size should ===(6) }
+        awaitAssert(currentRoutees(router1).size should ===(6))
         val routees = currentRoutees(router1)
         routees.map { case ActorRefRoutee(ref) ⇒ fullAddress(ref) }.toSet should ===(
           roles.map(address).toSet)
@@ -143,7 +143,7 @@ abstract class ClusterConsistentHashingRouterSpec
           "router2"
         )
         // it may take some time until router receives cluster member events
-        awaitAssert { currentRoutees(router2).size should ===(6) }
+        awaitAssert(currentRoutees(router2).size should ===(6))
         val routees = currentRoutees(router2)
         routees.map { case ActorRefRoutee(ref) ⇒ fullAddress(ref) }.toSet should ===(
           roles.map(address).toSet)
@@ -197,7 +197,7 @@ abstract class ClusterConsistentHashingRouterSpec
 
     def assertHashMapping(router: ActorRef): Unit = {
       // it may take some time until router receives cluster member events
-      awaitAssert { currentRoutees(router).size should ===(6) }
+      awaitAssert(currentRoutees(router).size should ===(6))
       val routees = currentRoutees(router)
       routees.map { case ActorRefRoutee(ref) ⇒ fullAddress(ref) }.toSet should ===(
         roles.map(address).toSet)

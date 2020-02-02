@@ -119,7 +119,7 @@ class PerformanceSpec
   def awaitReplicated(
       keys: Iterable[ORSetKey[Int]],
       expectedData: Set[Int]): Unit =
-    keys.foreach { key ⇒ awaitReplicated(key, expectedData) }
+    keys.foreach(key ⇒ awaitReplicated(key, expectedData))
 
   def awaitReplicated(key: ORSetKey[Int], expectedData: Set[Int]): Unit =
     within(20.seconds) {
@@ -136,7 +136,7 @@ class PerformanceSpec
   "Performance" must {
 
     "setup cluster" taggedAs PerformanceTest in {
-      roles.foreach { join(_, n1) }
+      roles.foreach(join(_, n1))
 
       within(10.seconds) {
         awaitAssert {

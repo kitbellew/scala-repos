@@ -69,7 +69,7 @@ private[orc] object OrcFileOperator extends Logging {
     }
 
     listOrcFiles(basePath, conf).iterator
-      .map { path => path -> OrcFile.createReader(fs, path) }
+      .map(path => path -> OrcFile.createReader(fs, path))
       .collectFirst {
         case (path, reader) if isWithNonEmptySchema(path, reader) => reader
       }

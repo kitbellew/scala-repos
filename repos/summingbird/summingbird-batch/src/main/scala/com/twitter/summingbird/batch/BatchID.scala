@@ -65,7 +65,7 @@ object BatchID {
     */
   def toInterval(iter: TraversableOnce[BatchID]): Option[Interval[BatchID]] =
     iter
-      .map { b => (b, b, 1L) }
+      .map(b => (b, b, 1L))
       .reduceOption { (left, right) =>
         val (lmin, lmax, lcnt) = left
         val (rmin, rmax, rcnt) = right
@@ -113,10 +113,10 @@ object BatchID {
   }
 
   implicit val batchID2String: Injection[BatchID, String] =
-    Injection.buildCatchInvert[BatchID, String] { _.toString } { BatchID(_) }
+    Injection.buildCatchInvert[BatchID, String](_.toString)(BatchID(_))
 
   implicit val batchID2Long: Bijection[BatchID, Long] =
-    Bijection.build[BatchID, Long] { _.id } { BatchID(_) }
+    Bijection.build[BatchID, Long](_.id)(BatchID(_))
 
   implicit val batchID2Bytes: Injection[BatchID, Array[Byte]] =
     Injection.connect[BatchID, Long, Array[Byte]]

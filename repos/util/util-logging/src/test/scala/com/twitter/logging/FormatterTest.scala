@@ -164,7 +164,7 @@ class FormatterTest extends WordSpec {
         in.regexSub("""FormatterTest.scala:\d+""".r) { m =>
             "FormatterTest.scala:NNN"
           }
-          .regexSub("""FormatterTest\$[\w\\$]+""".r) { m => "FormatterTest$$" }
+          .regexSub("""FormatterTest\$[\w\\$]+""".r)(m => "FormatterTest$$")
 
       "simple" in {
         val exception =
@@ -175,7 +175,7 @@ class FormatterTest extends WordSpec {
             case t: Throwable => t
           }
         assert(
-          Formatter.formatStackTrace(exception, 5).map { scrub(_) } == List(
+          Formatter.formatStackTrace(exception, 5).map(scrub(_)) == List(
             "    at com.twitter.logging.FormatterTest$$.cycle(FormatterTest.scala:NNN)",
             "    at com.twitter.logging.FormatterTest$$.cycle(FormatterTest.scala:NNN)",
             "    at com.twitter.logging.FormatterTest$$.cycle(FormatterTest.scala:NNN)",
@@ -194,7 +194,7 @@ class FormatterTest extends WordSpec {
             case t: Throwable => t
           }
         assert(
-          Formatter.formatStackTrace(exception, 2).map { scrub(_) } == List(
+          Formatter.formatStackTrace(exception, 2).map(scrub(_)) == List(
             "    at com.twitter.logging.FormatterTest$$.cycle2(FormatterTest.scala:NNN)",
             "    at com.twitter.logging.FormatterTest$$.apply$mcV$sp(FormatterTest.scala:NNN)",
             "    (...more...)",

@@ -66,7 +66,7 @@ class FileSourceSpec extends AkkaSpec(UnboundedMailboxConfig) {
   val manyLines = {
     val f = File.createTempFile(s"file-source-spec-lines_$LinesCount", "tmp")
     val w = new OutputStreamWriter(new FileOutputStream(f), UTF_8)
-    (1 to LinesCount).foreach { l ⇒ w.append("a" * l).append("\n") }
+    (1 to LinesCount).foreach(l ⇒ w.append("a" * l).append("\n"))
     w.close()
     f
   }

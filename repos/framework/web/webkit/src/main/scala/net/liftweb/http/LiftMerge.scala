@@ -52,7 +52,7 @@ private[http] trait LiftMerge {
     val allJs =
       LiftRules.javaScriptSettings
         .vend()
-        .map { settingsFn => LiftJavaScript.initCmd(settingsFn(this)) }
+        .map(settingsFn => LiftJavaScript.initCmd(settingsFn(this)))
         .toList ++
         S.jsToAppend() ++
         List(eventJs)

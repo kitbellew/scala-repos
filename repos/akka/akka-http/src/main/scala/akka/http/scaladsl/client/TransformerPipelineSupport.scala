@@ -12,7 +12,7 @@ trait TransformerPipelineSupport {
   def logValue[T](
       log: LoggingAdapter,
       level: Logging.LogLevel = Logging.DebugLevel): T ⇒ T =
-    logValue { value ⇒ log.log(level, value.toString) }
+    logValue(value ⇒ log.log(level, value.toString))
 
   def logValue[T](logFun: T ⇒ Unit): T ⇒ T = { response ⇒
     logFun(response)

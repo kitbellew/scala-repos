@@ -784,7 +784,7 @@ private[kafka] class KafkaUtilsPythonHelper {
         throw new IllegalStateException(
           s"The specified topics: ${topics.asScala.toSet.mkString(" ")} " +
             s"do not equal to the topic from offsets: ${topicsFromOffsets.mkString(" ")}")
-      Map(fromOffsets.asScala.mapValues { _.longValue() }.toSeq: _*)
+      Map(fromOffsets.asScala.mapValues(_.longValue()).toSeq: _*)
     } else {
       val kc = new KafkaCluster(Map(kafkaParams.asScala.toSeq: _*))
       KafkaUtils.getFromOffsets(

@@ -40,7 +40,7 @@ trait Event[+T] { self =>
     */
   def collect[U](f: PartialFunction[T, U]): Event[U] = new Event[U] {
     def register(s: Witness[U]): Closable =
-      self.respond { t => f.runWith(s.notify)(t) }
+      self.respond(t => f.runWith(s.notify)(t))
   }
 
   /**
@@ -106,7 +106,7 @@ trait Event[+T] { self =>
     def register(s: Witness[U]): Closable = {
       @volatile var inners = Nil: List[Closable]
       val outer = self.respond { el =>
-        inners.synchronized { inners ::= f(el).register(s) }
+        inners.synchronized(inners ::= f(el).register(s))
       }
 
       Closable.make { deadline =>
@@ -123,8 +123,8 @@ trait Event[+T] { self =>
   def select[U](other: Event[U]): Event[Either[T, U]] =
     new Event[Either[T, U]] {
       def register(s: Witness[Either[T, U]]): Closable = Closable.all(
-        self.register(s.comap { t => Left(t) }),
-        other.register(s.comap { u => Right(u) })
+        self.register(s.comap(t => Left(t))),
+        other.register(s.comap(u => Right(u)))
       )
     }
 
@@ -277,7 +277,7 @@ trait Event[+T] { self =>
       case exc =>
         p.updateIfEmpty(Throw(exc))
     }
-    p.ensure { c.close() }
+    p.ensure(c.close())
   }
 
   /**
@@ -334,7 +334,7 @@ trait Event[+T] { self =>
     * Builds a new Event by keeping only the Events where
     * the previous and current values are not `==` to each other.
     */
-  def dedup: Event[T] = dedupWith { (a, b) => a == b }
+  def dedup: Event[T] = dedupWith((a, b) => a == b)
 }
 
 /**

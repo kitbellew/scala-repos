@@ -45,10 +45,9 @@ case class LocalDataSource(val dsp: DataSourceParams)
       Source.fromFile(dsp.filepath).getLines.toSeq.map(_.split(" ", 2))
 
     // FIXME: Use different training / testing data.
-    val x = lines.map { _(1).split(' ').map { _.toDouble } }.map { e =>
-      Vector(e: _*)
-    }
-    val y = lines.map { _(0).toDouble }
+    val x =
+      lines.map(_(1).split(' ').map(_.toDouble)).map(e => Vector(e: _*))
+    val y = lines.map(_(0).toDouble)
 
     val td = TrainingData(Vector(x: _*), Vector(y: _*))
 
@@ -67,8 +66,8 @@ case class LocalPreparator(val pp: PreparatorParams = PreparatorParams())
     val xyi: Vector[(Vector[Double], Double)] = td.x
       .zip(td.y)
       .zipWithIndex
-      .filter { e => (e._2 % pp.n) != pp.k }
-      .map { e => (e._1._1, e._1._2) }
+      .filter(e => (e._2 % pp.n) != pp.k)
+      .map(e => (e._1._1, e._1._2))
     TrainingData(xyi.map(_._1), xyi.map(_._2))
   }
 }

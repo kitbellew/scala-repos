@@ -390,7 +390,7 @@ object ProducerFeatureTest {
 
     override protected def transformOutgoingMessage(msg: Any) = msg match {
       case msg: CamelMessage ⇒
-        if (upper) msg.mapBody { body: String ⇒ body.toUpperCase }
+        if (upper) msg.mapBody(body: String ⇒ body.toUpperCase)
         else msg
     }
   }

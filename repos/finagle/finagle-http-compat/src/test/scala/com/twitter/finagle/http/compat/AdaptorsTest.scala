@@ -123,7 +123,7 @@ class AdaptorsTest extends FunSuite with GeneratorDrivenPropertyChecks {
     forAll(arbRequest) {
       case (in: Request, body: String) =>
         if (in.isChunked) {
-          val exc = intercept[Exception] { Await.result(NettyAdaptor.in(in)) }
+          val exc = intercept[Exception](Await.result(NettyAdaptor.in(in)))
           assert(NettyAdaptor.NoStreaming == exc)
         } else {
           val out = Await.result(NettyAdaptor.in(in))
@@ -141,7 +141,7 @@ class AdaptorsTest extends FunSuite with GeneratorDrivenPropertyChecks {
     forAll(arbNettyResponse) {
       case (in: HttpResponse, body: String) =>
         if (in.isChunked) {
-          val exc = intercept[Exception] { Await.result(NettyAdaptor.out(in)) }
+          val exc = intercept[Exception](Await.result(NettyAdaptor.out(in)))
           assert(NettyAdaptor.NoStreaming == exc)
         } else {
           val out = Await.result(NettyAdaptor.out(in))

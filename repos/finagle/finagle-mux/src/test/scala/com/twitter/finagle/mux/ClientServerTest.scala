@@ -79,7 +79,7 @@ private[mux] class ClientServerTest(canDispatch: Boolean)
         case Message.Tdispatch(tag, _, _, _, _) if !canDispatch =>
           Future.value(Message.Rerr(tag, "Tdispatch not enabled"))
         case Message.Tping(tag) =>
-          ping().before { Future.value(Message.Rping(tag)) }
+          ping().before(Future.value(Message.Rping(tag)))
         case req => service(req)
       }
     }
@@ -282,7 +282,7 @@ private[mux] class ClientServerTest(canDispatch: Boolean)
     // This is technically racy, but would require a pretty
     // pathological test environment.
     assert(client.status == Status.Open)
-    eventually { assert(client.status == Status.Busy) }
+    eventually(assert(client.status == Status.Busy))
 
     // Now begin replying.
     def loop(): Future[Unit] = {
@@ -291,7 +291,7 @@ private[mux] class ClientServerTest(canDispatch: Boolean)
       f.before(loop())
     }
     loop()
-    eventually { assert(client.status == Status.Open) }
+    eventually(assert(client.status == Status.Open))
   }
 }
 

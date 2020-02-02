@@ -53,7 +53,7 @@ import org.slf4j.{MDC => SLF4JMDC, Marker, Logger => SLF4JLogger, LoggerFactory}
   */
 object Logger {
   private[common] lazy val ranSetup: Boolean = {
-    setup.foreach { _() }
+    setup.foreach(_())
     true
   }
 

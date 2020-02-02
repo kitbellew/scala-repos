@@ -95,9 +95,9 @@ class SexpParser(val input: ParserInput) extends Parser with StringBuilding {
     '"' ~ clearSB() ~ CharactersSB ~ '"' ~ push(SexpString(sb.toString))
   }
 
-  def CharactersSB = rule { zeroOrMore(NormalCharSB | '\\' ~ EscapedCharSB) }
+  def CharactersSB = rule(zeroOrMore(NormalCharSB | '\\' ~ EscapedCharSB))
 
-  def NormalCharSB = rule { NCCharPredicate ~ appendSB() }
+  def NormalCharSB = rule(NCCharPredicate ~ appendSB())
 
   def EscapedCharSB = rule(
     QuoteSlashBackSlash ~ appendSB()

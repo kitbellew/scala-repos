@@ -36,6 +36,6 @@ class Foo {
 object Test {
   def main(args: Array[String]) {
     val foo = new Foo
-    args.foreach { arg => foo.eval(arg) == arg.toInt }
+    args.foreach(arg => foo.eval(arg) == arg.toInt)
   }
 }

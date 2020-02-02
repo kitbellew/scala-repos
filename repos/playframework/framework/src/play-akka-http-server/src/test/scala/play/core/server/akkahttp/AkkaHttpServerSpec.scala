@@ -41,13 +41,13 @@ object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
     "send hello world" in {
       // This test experiences CI timeouts. Give it more time.
       val reallyLongTimeout = Timeout(defaultAwaitTimeout.duration * 3)
-      requestFromServer("/hello") { request => request.get() } {
+      requestFromServer("/hello")(request => request.get()) {
         case ("GET", "/hello") => Action(Ok("greetings"))
-      } { response => response.body must_== "greetings" }(reallyLongTimeout)
+      }(response => response.body must_== "greetings")(reallyLongTimeout)
     }
 
     "send responses when missing a Content-Length" in {
-      requestFromServer("/hello") { request => request.get() } {
+      requestFromServer("/hello")(request => request.get()) {
         case ("GET", "/hello") => Action(Ok("greetings"))
       } { response =>
         response.status must_== 200
@@ -59,7 +59,7 @@ object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
     }
 
     "not send chunked responses when given a Content-Length" in {
-      requestFromServer("/hello") { request => request.get() } {
+      requestFromServer("/hello")(request => request.get()) {
         case ("GET", "/hello") =>
           Action {
             Ok("greetings").withHeaders(CONTENT_LENGTH -> "9")
@@ -108,7 +108,7 @@ object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
           .get()
       } {
         case ("GET", "/abc") =>
-          Action { implicit request => Ok(request.uri) }
+          Action(implicit request => Ok(request.uri))
       } { response =>
         response.status must_== 200
         response.body must_== "/abc?foo=bar"
@@ -127,7 +127,7 @@ object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
           .get()
       } {
         case ("GET", "/abc") =>
-          Action { implicit request => Ok(request.uri) }
+          Action(implicit request => Ok(request.uri))
       } { response =>
         response.status must_== 200
         response.body must_== "/abc?foo=bar"
@@ -135,7 +135,7 @@ object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
     }
 
     "pass POST request bodies to Actions" in {
-      requestFromServer("/greet") { request => request.post("Bob") } {
+      requestFromServer("/greet")(request => request.post("Bob")) {
         case ("POST", "/greet") =>
           Action(parse.text) { implicit request =>
             val name = request.body
@@ -148,10 +148,10 @@ object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
     }
 
     "send response statüs" in {
-      requestFromServer("/def") { request => request.get() } {
+      requestFromServer("/def")(request => request.get()) {
         case ("GET", "/abc") =>
-          Action { implicit request => ??? }
-      } { response => response.status must_== 404 }
+          Action(implicit request => ???)
+      }(response => response.status must_== 404)
     }
 
     val httpServerTagRoutes: PartialFunction[(String, String), Handler] = {
@@ -163,7 +163,7 @@ object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
     }
 
     "pass tag of HTTP_SERVER->akka-http to Actions" in {
-      requestFromServer("/httpServerTag") { request => request.get() } {
+      requestFromServer("/httpServerTag")(request => request.get()) {
         case ("GET", "/httpServerTag") =>
           Action { implicit request =>
             val httpServer = request.tags.get("HTTP_SERVER")
@@ -203,7 +203,7 @@ object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
           } finally server.stop()
         }
         // Start and stop the server 20 times
-        (0 until 20) must contain { (i: Int) => testStartAndStop(i) }
+        (0 until 20) must contain((i: Int) => testStartAndStop(i))
       }
     }
 

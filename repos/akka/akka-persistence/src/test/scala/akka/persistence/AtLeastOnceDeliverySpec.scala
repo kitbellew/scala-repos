@@ -108,9 +108,9 @@ object AtLeastOnceDeliverySpec {
         log.debug("Sender got ack {}", id)
         if (confirmDelivery(id))
           if (async)
-            persistAsync(ReqDone(id)) { evt ⇒ updateState(evt) }
+            persistAsync(ReqDone(id))(evt ⇒ updateState(evt))
           else
-            persist(ReqDone(id)) { evt ⇒ updateState(evt) }
+            persist(ReqDone(id))(evt ⇒ updateState(evt))
 
       case Boom ⇒
         log.debug("Boom!")

@@ -143,7 +143,7 @@ trait Matrix[@spec(Double, Int, Float, Long) V]
     toString(Terminal.terminalHeight, Terminal.terminalWidth)
 
   def toDenseMatrix(implicit cm: ClassTag[V], zero: Zero[V]) =
-    DenseMatrix.tabulate(rows, cols) { (i, j) => apply(i, j) }
+    DenseMatrix.tabulate(rows, cols)((i, j) => apply(i, j))
 
   def copy: Matrix[V]
 

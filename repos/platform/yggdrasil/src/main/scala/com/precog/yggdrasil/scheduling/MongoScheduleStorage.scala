@@ -96,7 +96,7 @@ class MongoScheduleStorage private[MongoScheduleStorage] (
 
   private def insertTask(task: ScheduledTask \/ JObject, collection: String) =
     database(
-      insert(task.valueOr { st => st.serialize.asInstanceOf[JObject] })
+      insert(task.valueOr(st => st.serialize.asInstanceOf[JObject]))
         .into(collection))
 
   def deleteTask(id: UUID) = EitherT {

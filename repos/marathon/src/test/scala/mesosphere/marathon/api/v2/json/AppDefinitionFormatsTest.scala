@@ -142,12 +142,12 @@ class AppDefinitionFormatsTest
 
   test("FromJSON should fail for empty id") {
     val json = Json.parse(""" { "id": "" }""")
-    a[JsResultException] shouldBe thrownBy { json.as[AppDefinition] }
+    a[JsResultException] shouldBe thrownBy(json.as[AppDefinition])
   }
 
   test("FromJSON should fail when using / as an id") {
     val json = Json.parse(""" { "id": "/" }""")
-    a[JsResultException] shouldBe thrownBy { json.as[AppDefinition] }
+    a[JsResultException] shouldBe thrownBy(json.as[AppDefinition])
   }
 
   test("FromJSON should not fail when 'cpus' is greater than 0") {
@@ -189,7 +189,7 @@ class AppDefinitionFormatsTest
 
   test("FromJSON should fail when 'acceptedResourceRoles' is defined but empty") {
     val json = Json.parse(""" { "id": "test", "acceptedResourceRoles": [] }""")
-    a[JsResultException] shouldBe thrownBy { json.as[AppDefinition] }
+    a[JsResultException] shouldBe thrownBy(json.as[AppDefinition])
   }
 
   test("FromJSON should read the default upgrade strategy") {

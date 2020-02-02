@@ -48,7 +48,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
   import testImplicits._
 
   test("analysis error should be eagerly reported") {
-    intercept[Exception] { testData.select('nonExistentName) }
+    intercept[Exception](testData.select('nonExistentName))
     intercept[Exception] {
       testData.groupBy('key).agg(Map("nonExistentName" -> "sum"))
     }
@@ -165,7 +165,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     val df = Seq(Tuple1("a b c"), Tuple1("d e")).toDF("words")
 
     checkAnswer(
-      df.explode("words", "word") { word: String => word.split(" ").toSeq }
+      df.explode("words", "word")(word: String => word.split(" ").toSeq)
         .select('word),
       Row("a") :: Row("b") :: Row("c") :: Row("d") :: Row("e") :: Nil
     )

@@ -33,7 +33,7 @@ class LazilyEvictingCacheTest extends FunSuite with MockitoSugar {
     verify(cache, never).evict(any[String], any[Future[String]])
 
     val Some(failed) = fCache.get("key")
-    val thrown = intercept[Exception] { Await.result(failed) }
+    val thrown = intercept[Exception](Await.result(failed))
     assert(thrown == exn)
 
     verify(cache).evict("key", p)
@@ -112,7 +112,7 @@ class LazilyEvictingCacheTest extends FunSuite with MockitoSugar {
 
     // first lookup returns the failed Future
     val Some(x) = fCache.get("key")
-    val thrown = intercept[Exception] { Await.result(x) }
+    val thrown = intercept[Exception](Await.result(x))
     assert(thrown == exn)
 
     // second lookup returns the reloaded value after

@@ -87,17 +87,17 @@ class ClosureCleanerSuite extends SparkFunSuite {
 
     withSpark(new SparkContext("local", "test")) { sc =>
       val rdd = sc.parallelize(1 to 10)
-      val pairRdd = rdd.map { i => (i, i) }
-      expectCorrectException { TestUserClosuresActuallyCleaned.testMap(rdd) }
+      val pairRdd = rdd.map(i => (i, i))
+      expectCorrectException(TestUserClosuresActuallyCleaned.testMap(rdd))
       expectCorrectException {
         TestUserClosuresActuallyCleaned.testFlatMap(rdd)
       }
-      expectCorrectException { TestUserClosuresActuallyCleaned.testFilter(rdd) }
-      expectCorrectException { TestUserClosuresActuallyCleaned.testSortBy(rdd) }
+      expectCorrectException(TestUserClosuresActuallyCleaned.testFilter(rdd))
+      expectCorrectException(TestUserClosuresActuallyCleaned.testSortBy(rdd))
       expectCorrectException {
         TestUserClosuresActuallyCleaned.testGroupBy(rdd)
       }
-      expectCorrectException { TestUserClosuresActuallyCleaned.testKeyBy(rdd) }
+      expectCorrectException(TestUserClosuresActuallyCleaned.testKeyBy(rdd))
       expectCorrectException {
         TestUserClosuresActuallyCleaned.testMapPartitions(rdd)
       }
@@ -119,11 +119,11 @@ class ClosureCleanerSuite extends SparkFunSuite {
       expectCorrectException {
         TestUserClosuresActuallyCleaned.testForeachPartition(rdd)
       }
-      expectCorrectException { TestUserClosuresActuallyCleaned.testReduce(rdd) }
+      expectCorrectException(TestUserClosuresActuallyCleaned.testReduce(rdd))
       expectCorrectException {
         TestUserClosuresActuallyCleaned.testTreeReduce(rdd)
       }
-      expectCorrectException { TestUserClosuresActuallyCleaned.testFold(rdd) }
+      expectCorrectException(TestUserClosuresActuallyCleaned.testFold(rdd))
       expectCorrectException {
         TestUserClosuresActuallyCleaned.testAggregate(rdd)
       }
@@ -157,8 +157,8 @@ class ClosureCleanerSuite extends SparkFunSuite {
       expectCorrectException {
         TestUserClosuresActuallyCleaned.testForeachPartitionAsync(rdd)
       }
-      expectCorrectException { TestUserClosuresActuallyCleaned.testRunJob1(sc) }
-      expectCorrectException { TestUserClosuresActuallyCleaned.testRunJob2(sc) }
+      expectCorrectException(TestUserClosuresActuallyCleaned.testRunJob1(sc))
+      expectCorrectException(TestUserClosuresActuallyCleaned.testRunJob2(sc))
       expectCorrectException {
         TestUserClosuresActuallyCleaned.testRunApproximateJob(sc)
       }
@@ -343,9 +343,11 @@ private object TestUserClosuresActuallyCleaned {
       .zipPartitions(rdd, rdd, rdd) { case (it1, it2, it3, it4) => return; it1 }
       .count()
   def testForeach(rdd: RDD[Int]): Unit =
-    rdd.foreach { _ => return }
+    rdd.foreach(_ => return
+    )
   def testForeachPartition(rdd: RDD[Int]): Unit =
-    rdd.foreachPartition { _ => return }
+    rdd.foreachPartition(_ => return
+    )
   def testReduce(rdd: RDD[Int]): Unit =
     rdd.reduce { case (_, _) => return; 1 }
   def testTreeReduce(rdd: RDD[Int]): Unit =
@@ -387,9 +389,11 @@ private object TestUserClosuresActuallyCleaned {
 
   // Test async RDD actions
   def testForeachAsync(rdd: RDD[Int]): Unit =
-    rdd.foreachAsync { _ => return }
+    rdd.foreachAsync(_ => return
+    )
   def testForeachPartitionAsync(rdd: RDD[Int]): Unit =
-    rdd.foreachPartitionAsync { _ => return }
+    rdd.foreachPartitionAsync(_ => return
+    )
 
   // Test SparkContext runJob
   def testRunJob1(sc: SparkContext): Unit = {

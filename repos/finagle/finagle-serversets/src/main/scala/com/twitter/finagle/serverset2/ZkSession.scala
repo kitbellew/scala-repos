@@ -83,11 +83,11 @@ private[serverset2] class ZkSession(
     */
   private def safeRetry[T](go: => Future[T]): Future[T] = {
     def loop(): Future[T] =
-      limit { go }.rescue {
+      limit(go).rescue {
         case exc: KeeperException.ConnectionLoss =>
           logger.warning(
             s"ConnectionLoss to Zookeeper host. Session $sessionIdAsHex. Retrying")
-          retryWithDelay { loop() }
+          retryWithDelay(loop())
       }
 
     loop()
@@ -115,7 +115,7 @@ private[serverset2] class ZkSession(
           case Throw(exc) =>
             logger.error(s"Operation failed with $exc. Session $sessionIdAsHex")
             u() = Activity.Failed(exc)
-            retryWithDelay { loop() }
+            retryWithDelay(loop())
 
           case Return(Watched(value, state)) =>
             val ok = Activity.Ok(value)
@@ -141,7 +141,7 @@ private[serverset2] class ZkSession(
                 logger.info(
                   s"Reacquiring watch on $sessionState. Session: $sessionIdAsHex")
                 // We may have lost or never set our watch correctly. Retry to ensure we stay connected
-                retryWithDelay { loop() }
+                retryWithDelay(loop())
 
               case WatchState.SessionState(SessionState.Expired) =>
                 u() = Activity.Failed(new Exception("session expired"))
@@ -163,7 +163,7 @@ private[serverset2] class ZkSession(
                   s"Unexpected session state $sessionState. Session: $sessionIdAsHex")
                 u() = Activity.Failed(new Exception("" + sessionState))
                 // We don't know what happened. Retry.
-                retryWithDelay { loop() }
+                retryWithDelay(loop())
             }
         }
         Future.Done
@@ -178,11 +178,11 @@ private[serverset2] class ZkSession(
     })
 
   private val existsWatchOp = Memoize { path: String =>
-    watchedOperation { zkr.existsWatch(path) }
+    watchedOperation(zkr.existsWatch(path))
   }
 
   private val getChildrenWatchOp = Memoize { path: String =>
-    watchedOperation { zkr.getChildrenWatch(path) }
+    watchedOperation(zkr.getChildrenWatch(path))
   }
 
   /**
@@ -360,7 +360,7 @@ private[serverset2] object ZkSession {
             s"Zookeeper session ${zkSession.sessionIdAsHex} has expired. Reconnecting in $jitter")
           Future.sleep(jitter)
         }
-        .ensure { reconnect() }
+        .ensure(reconnect())
     }
 
     reconnect()

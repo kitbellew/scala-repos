@@ -191,7 +191,7 @@ class GraphImpl[VD: ClassTag, ED: ClassTag] protected (
 
   override def mask[VD2: ClassTag, ED2: ClassTag](
       other: Graph[VD2, ED2]): Graph[VD, ED] = {
-    val newVerts = vertices.innerJoin(other.vertices) { (vid, v, w) => v }
+    val newVerts = vertices.innerJoin(other.vertices)((vid, v, w) => v)
     val newEdges = replicatedVertexView.edges.innerJoin(other.edges) {
       (src, dst, v, w) => v
     }

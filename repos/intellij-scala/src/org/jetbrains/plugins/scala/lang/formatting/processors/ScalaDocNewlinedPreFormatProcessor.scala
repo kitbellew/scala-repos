@@ -39,7 +39,7 @@ class ScalaDocNewlinedPreFormatProcessor
     val scalaSettings = CodeStyleSettingsManager
       .getSettings(s.getProject)
       .getCustomSettings(classOf[ScalaCodeStyleSettings])
-    s.getChildren.foreach { fixNewlines(_, scalaSettings) }
+    s.getChildren.foreach(fixNewlines(_, scalaSettings))
   }
 
   override def visitTag(s: ScDocTag): Unit =

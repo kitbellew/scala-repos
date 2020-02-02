@@ -107,7 +107,7 @@ class ClientMergeable[K, V: Semigroup](
       val previousIsDone: Future[Unit] =
         Future.collect(firstRes.iterator.map(_._2).toIndexedSeq).unit
 
-      val fmap = previousIsDone.map { _ => multiMerge(nextCall) }
+      val fmap = previousIsDone.map(_ => multiMerge(nextCall))
       firstRes ++ FutureOps.liftFutureValues(nextCall.keySet, fmap)
     } else firstRes
   }

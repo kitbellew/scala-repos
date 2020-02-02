@@ -111,8 +111,8 @@ import scala.reflect.macros.whitebox
 trait Lazy[+T] extends Serializable {
   val value: T
 
-  def map[U](f: T => U): Lazy[U] = Lazy { f(value) }
-  def flatMap[U](f: T => Lazy[U]): Lazy[U] = Lazy { f(value).value }
+  def map[U](f: T => U): Lazy[U] = Lazy(f(value))
+  def flatMap[U](f: T => Lazy[U]): Lazy[U] = Lazy(f(value).value)
 }
 
 object Lazy {
@@ -152,8 +152,8 @@ object lazily {
 trait Strict[+T] extends Serializable {
   val value: T
 
-  def map[U](f: T => U): Strict[U] = Strict { f(value) }
-  def flatMap[U](f: T => Strict[U]): Strict[U] = Strict { f(value).value }
+  def map[U](f: T => U): Strict[U] = Strict(f(value))
+  def flatMap[U](f: T => Strict[U]): Strict[U] = Strict(f(value).value)
 }
 
 object Strict {
@@ -562,7 +562,7 @@ class LazyMacros(val c: whitebox.Context)
 
     def mkInstances(state: State)(primaryTpe: Type): (Tree, Type) = {
       val instances = state.dict.values.toList
-      val (from, to) = instances.map { d => (d.symbol, NoSymbol) }.unzip
+      val (from, to) = instances.map(d => (d.symbol, NoSymbol)).unzip
 
       def clean(inst: Tree) = {
         val cleanInst =

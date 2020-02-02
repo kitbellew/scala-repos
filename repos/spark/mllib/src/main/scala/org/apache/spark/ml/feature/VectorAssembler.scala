@@ -101,7 +101,7 @@ class VectorAssembler(override val uid: String)
     val metadata = new AttributeGroup($(outputCol), attrs).toMetadata()
 
     // Data transformation.
-    val assembleFunc = udf { r: Row => VectorAssembler.assemble(r.toSeq: _*) }
+    val assembleFunc = udf(r: Row => VectorAssembler.assemble(r.toSeq: _*))
     val args = $(inputCols).map { c =>
       schema(c).dataType match {
         case DoubleType   => dataset(c)

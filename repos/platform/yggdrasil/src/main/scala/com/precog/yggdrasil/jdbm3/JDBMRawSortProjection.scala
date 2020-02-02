@@ -96,7 +96,7 @@ class JDBMRawSortProjection[M[+_]] private[yggdrasil] (
           "No such index in DB: %s:%s".format(dbFile, indexName))
 
       val constrainedMap = id
-        .map { idKey => index.tailMap(idKey) }
+        .map(idKey => index.tailMap(idKey))
         .getOrElse(index)
       val iteratorSetup = () => {
         val rawIterator = constrainedMap.entrySet.iterator.asScala

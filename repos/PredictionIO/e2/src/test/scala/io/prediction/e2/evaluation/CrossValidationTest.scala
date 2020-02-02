@@ -87,7 +87,7 @@ class CrossValidationTest
       case (k, folds) =>
         folds.map(fold => fold._3.count() - dataCount / k)
     }
-    forAll(diffs) { foldDiffs => foldDiffs.max should be <= 1L }
+    forAll(diffs)(foldDiffs => foldDiffs.max should be <= 1L)
     diffs.map(folds => folds.sum) should be(evalKs.map(k => dataCount % k))
   }
 

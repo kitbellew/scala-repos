@@ -88,7 +88,7 @@ object EventAdapterSpec {
 
     val persistIncoming: Receive = {
       case GetState ⇒
-        state.reverse.foreach { sender() ! _ }
+        state.reverse.foreach(sender() ! _)
       case in ⇒
         persist(in) { e ⇒
           state ::= e

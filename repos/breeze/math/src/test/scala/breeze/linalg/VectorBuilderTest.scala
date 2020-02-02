@@ -32,9 +32,9 @@ class VectorBuilderTest extends FunSuite with Checkers {
       : Arbitrary[(VectorBuilder[Double], VectorBuilder[Double])] =
     Arbitrary {
       for {
-        x <- Arbitrary.arbitrary[Double].map { _ % 1e3 }
+        x <- Arbitrary.arbitrary[Double].map(_ % 1e3)
         xl <- Arbitrary.arbitrary[List[Int]]
-        y <- Arbitrary.arbitrary[Double].map { _ % 1e3 }
+        y <- Arbitrary.arbitrary[Double].map(_ % 1e3)
         yl <- Arbitrary.arbitrary[List[Int]]
       } yield (
         VectorBuilder(30)(xl.map(i => (i % 30).abs -> math.random * x): _*),
@@ -87,11 +87,11 @@ class VectorBuilderOpsTest
     (VectorBuilder[Double], VectorBuilder[Double], VectorBuilder[Double])] =
     Arbitrary {
       for {
-        x <- Arbitrary.arbitrary[Double].map { _ % 1e3 }
+        x <- Arbitrary.arbitrary[Double].map(_ % 1e3)
         xl <- Arbitrary.arbitrary[List[Int]]
-        y <- Arbitrary.arbitrary[Double].map { _ % 1e3 }
+        y <- Arbitrary.arbitrary[Double].map(_ % 1e3)
         yl <- Arbitrary.arbitrary[List[Int]]
-        z <- Arbitrary.arbitrary[Double].map { _ % 1e3 }
+        z <- Arbitrary.arbitrary[Double].map(_ % 1e3)
         zl <- Arbitrary.arbitrary[List[Int]]
       } yield (
         VectorBuilder(N)(
@@ -103,5 +103,5 @@ class VectorBuilderOpsTest
     }
 
   def genScalar: Arbitrary[Double] =
-    Arbitrary(Arbitrary.arbitrary[Double].map { _ % 1e3 })
+    Arbitrary(Arbitrary.arbitrary[Double].map(_ % 1e3))
 }

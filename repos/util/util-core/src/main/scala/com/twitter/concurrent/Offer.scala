@@ -91,7 +91,7 @@ trait Offer[+T] { self =>
   /**
     * Like {{map}}, but to a constant (call-by-name).
     */
-  def const[U](f: => U): Offer[U] = map { _ => f }
+  def const[U](f: => U): Offer[U] = map(_ => f)
 
   /**
     * Java-friendly analog of `const()`.
@@ -296,7 +296,7 @@ object Offer {
         if (deadline <= Time.now) FutureTxUnit
         else {
           val p = new Promise[Tx[Unit]]
-          val task = timer.schedule(deadline) { p.setValue(Tx.Unit) }
+          val task = timer.schedule(deadline)(p.setValue(Tx.Unit))
           p.setInterruptHandler { case _cause => task.cancel() }
           p
         }

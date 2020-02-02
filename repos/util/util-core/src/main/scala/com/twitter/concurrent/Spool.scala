@@ -76,15 +76,15 @@ sealed trait Spool[+A] {
     */
   def foreachElem[B](f: Option[A] => B): Future[Unit] =
     if (!isEmpty)
-      Future { f(Some(head)) } flatMap { _ =>
+      Future(f(Some(head))) flatMap { _ =>
         tail transform {
           case Return(s)              => s.foreachElem(f)
-          case Throw(_: EOFException) => Future { f(None) }
+          case Throw(_: EOFException) => Future(f(None))
           case Throw(cause)           => Future.exception(cause)
         }
       }
     else
-      Future { f(None) }
+      Future(f(None))
 
   def foldLeft[B](z: B)(f: (B, A) => B): Future[B] =
     if (isEmpty)
@@ -261,7 +261,7 @@ sealed trait Spool[+A] {
     * Eagerly executes all computation represented by this Spool (presumably for
     * side-effects), and returns a Future representing its completion.
     */
-  def force: Future[Unit] = foreach { _ => () }
+  def force: Future[Unit] = foreach(_ => ())
 }
 
 /**

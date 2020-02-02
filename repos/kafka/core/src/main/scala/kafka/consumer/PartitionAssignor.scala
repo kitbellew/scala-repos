@@ -114,7 +114,7 @@ class RoundRobinAssignor() extends PartitionAssignor with Logging {
             info(
               "Consumer %s rebalancing the following partitions for topic %s: %s"
                 .format(ctx.consumerId, topic, partitions))
-            partitions.map { partition => TopicAndPartition(topic, partition) }
+            partitions.map(partition => TopicAndPartition(topic, partition))
         }
         .toSeq
         .sortWith { (topicPartition1, topicPartition2) =>

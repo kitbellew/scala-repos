@@ -46,12 +46,12 @@ class MapWithStateSuite
   protected val batchDuration = Seconds(1)
 
   before {
-    StreamingContext.getActive().foreach { _.stop(stopSparkContext = false) }
+    StreamingContext.getActive().foreach(_.stop(stopSparkContext = false))
     checkpointDir = Utils.createTempDir("checkpoint")
   }
 
   after {
-    StreamingContext.getActive().foreach { _.stop(stopSparkContext = false) }
+    StreamingContext.getActive().foreach(_.stop(stopSparkContext = false))
     if (checkpointDir != null)
       Utils.deleteRecursively(checkpointDir)
   }
@@ -551,7 +551,7 @@ class MapWithStateSuite
         }
 
       val mapWithStateStream =
-        dstream.map { _ -> 1 }.mapWithState(StateSpec.function(runningCount))
+        dstream.map(_ -> 1).mapWithState(StateSpec.function(runningCount))
       // Set interval make sure there is one RDD checkpointing
       mapWithStateStream.checkpoint(checkpointDuration)
       mapWithStateStream.stateSnapshots()

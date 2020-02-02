@@ -29,7 +29,7 @@ import scala.annotation.migration
   "2.11.0")
 trait SynchronizedMap[A, B] extends Map[A, B] {
 
-  abstract override def get(key: A): Option[B] = synchronized { super.get(key) }
+  abstract override def get(key: A): Option[B] = synchronized(super.get(key))
   abstract override def iterator: Iterator[(A, B)] = synchronized {
     super.iterator
   }
@@ -40,15 +40,15 @@ trait SynchronizedMap[A, B] extends Map[A, B] {
     super.-=(key)
   }
 
-  override def size: Int = synchronized { super.size }
+  override def size: Int = synchronized(super.size)
   override def put(key: A, value: B): Option[B] = synchronized {
     super.put(key, value)
   }
   override def update(key: A, value: B): Unit = synchronized {
     super.update(key, value)
   }
-  override def remove(key: A): Option[B] = synchronized { super.remove(key) }
-  override def clear(): Unit = synchronized { super.clear() }
+  override def remove(key: A): Option[B] = synchronized(super.remove(key))
+  override def clear(): Unit = synchronized(super.clear())
   override def getOrElseUpdate(key: A, default: => B): B = synchronized {
     super.getOrElseUpdate(key, default)
   }
@@ -56,7 +56,7 @@ trait SynchronizedMap[A, B] extends Map[A, B] {
     super.transform(f)
   }
   override def retain(p: (A, B) => Boolean): this.type =
-    synchronized[this.type] { super.retain(p) }
+    synchronized[this.type](super.retain(p))
   @migration(
     "`values` returns `Iterable[B]` rather than `Iterator[B]`.",
     "2.8.0")
@@ -66,16 +66,16 @@ trait SynchronizedMap[A, B] extends Map[A, B] {
   override def valuesIterator: Iterator[B] = synchronized {
     super.valuesIterator
   }
-  override def clone(): Self = synchronized { super.clone() }
-  override def foreach[U](f: ((A, B)) => U) = synchronized { super.foreach(f) }
-  override def apply(key: A): B = synchronized { super.apply(key) }
-  override def keySet: scala.collection.Set[A] = synchronized { super.keySet }
+  override def clone(): Self = synchronized(super.clone())
+  override def foreach[U](f: ((A, B)) => U) = synchronized(super.foreach(f))
+  override def apply(key: A): B = synchronized(super.apply(key))
+  override def keySet: scala.collection.Set[A] = synchronized(super.keySet)
   @migration("`keys` returns `Iterable[A]` rather than `Iterator[A]`.", "2.8.0")
-  override def keys: scala.collection.Iterable[A] = synchronized { super.keys }
-  override def keysIterator: Iterator[A] = synchronized { super.keysIterator }
-  override def isEmpty: Boolean = synchronized { super.isEmpty }
-  override def contains(key: A): Boolean = synchronized { super.contains(key) }
-  override def isDefinedAt(key: A) = synchronized { super.isDefinedAt(key) }
+  override def keys: scala.collection.Iterable[A] = synchronized(super.keys)
+  override def keysIterator: Iterator[A] = synchronized(super.keysIterator)
+  override def isEmpty: Boolean = synchronized(super.isEmpty)
+  override def contains(key: A): Boolean = synchronized(super.contains(key))
+  override def isDefinedAt(key: A) = synchronized(super.isDefinedAt(key))
 
   // @deprecated("See Map.+ for explanation") override def +(kv: (A, B)): this.type = synchronized[this.type] { super.+(kv) }
   // can't override -, -- same type!

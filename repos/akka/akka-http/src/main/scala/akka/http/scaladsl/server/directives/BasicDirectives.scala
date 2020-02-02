@@ -18,20 +18,20 @@ import akka.http.scaladsl.util.FastFuture._
 trait BasicDirectives {
 
   def mapInnerRoute(f: Route ⇒ Route): Directive0 =
-    Directive { inner ⇒ f(inner(())) }
+    Directive(inner ⇒ f(inner(())))
 
   def mapRequestContext(f: RequestContext ⇒ RequestContext): Directive0 =
-    mapInnerRoute { inner ⇒ ctx ⇒ inner(f(ctx)) }
+    mapInnerRoute(inner ⇒ ctx ⇒ inner(f(ctx)))
 
   def mapRequest(f: HttpRequest ⇒ HttpRequest): Directive0 =
     mapRequestContext(_ mapRequest f)
 
   def mapRouteResultFuture(
       f: Future[RouteResult] ⇒ Future[RouteResult]): Directive0 =
-    Directive { inner ⇒ ctx ⇒ f(inner(())(ctx)) }
+    Directive(inner ⇒ ctx ⇒ f(inner(())(ctx)))
 
   def mapRouteResult(f: RouteResult ⇒ RouteResult): Directive0 =
-    Directive { inner ⇒ ctx ⇒ inner(())(ctx).fast.map(f)(ctx.executionContext) }
+    Directive(inner ⇒ ctx ⇒ inner(())(ctx).fast.map(f)(ctx.executionContext))
 
   def mapRouteResultWith(f: RouteResult ⇒ Future[RouteResult]): Directive0 =
     Directive { inner ⇒ ctx ⇒
@@ -86,7 +86,7 @@ trait BasicDirectives {
     * Injects the given values into a directive.
     */
   def tprovide[L: Tuple](values: L): Directive[L] =
-    Directive { _(values) }
+    Directive(_(values))
 
   /**
     * Extracts a single value using the given function.
@@ -98,7 +98,7 @@ trait BasicDirectives {
     * Extracts a number of values using the given function.
     */
   def textract[L: Tuple](f: RequestContext ⇒ L): Directive[L] =
-    Directive { inner ⇒ ctx ⇒ inner(f(ctx))(ctx) }
+    Directive(inner ⇒ ctx ⇒ inner(f(ctx))(ctx))
 
   /**
     * Adds a TransformationRejection cancelling all rejections equal to the given one

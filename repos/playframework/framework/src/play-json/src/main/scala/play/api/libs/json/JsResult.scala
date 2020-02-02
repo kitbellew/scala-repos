@@ -95,16 +95,16 @@ sealed trait JsResult[+A] { self =>
   }
 
   def filterNot(error: JsError)(p: A => Boolean): JsResult[A] =
-    this.flatMap { a => if (p(a)) error else JsSuccess(a) }
+    this.flatMap(a => if (p(a)) error else JsSuccess(a))
 
   def filterNot(p: A => Boolean): JsResult[A] =
-    this.flatMap { a => if (p(a)) JsError() else JsSuccess(a) }
+    this.flatMap(a => if (p(a)) JsError() else JsSuccess(a))
 
   def filter(p: A => Boolean): JsResult[A] =
-    this.flatMap { a => if (p(a)) JsSuccess(a) else JsError() }
+    this.flatMap(a => if (p(a)) JsSuccess(a) else JsError())
 
   def filter(otherwise: JsError)(p: A => Boolean): JsResult[A] =
-    this.flatMap { a => if (p(a)) JsSuccess(a) else otherwise }
+    this.flatMap(a => if (p(a)) JsSuccess(a) else otherwise)
 
   def collect[B](otherwise: ValidationError)(
       p: PartialFunction[A, B]): JsResult[B] = flatMap {

@@ -274,7 +274,7 @@ object WebSocket {
   def acceptOrResult[In, Out](
       f: RequestHeader => Future[Either[Result, Flow[In, Out, _]]])(
       implicit transformer: MessageFlowTransformer[In, Out]): WebSocket =
-    WebSocket { request => f(request).map(_.right.map(transformer.transform)) }
+    WebSocket(request => f(request).map(_.right.map(transformer.transform)))
 
   /**
     * A function that, given an actor to send upstream messages to, returns actor props to create an actor to handle

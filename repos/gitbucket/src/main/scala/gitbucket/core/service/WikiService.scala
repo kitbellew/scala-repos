@@ -126,7 +126,7 @@ trait WikiService {
         JGitUtil
           .getFileList(git, "master", parentPath)
           .find(_.name == fileName)
-          .map { file => git.getRepository.open(file.id).getBytes }
+          .map(file => git.getRepository.open(file.id).getBytes)
       } else None
     }
 

@@ -272,7 +272,7 @@ trait BasicTypesHelpers { self: StringHelpers with ControlHelpers =>
   /**
     * Safely convert the specified String to an Int.
     */
-  def asInt(in: String): Box[Int] = tryo { in.trim.toInt }
+  def asInt(in: String): Box[Int] = tryo(in.trim.toInt)
 
   /**
     * A helpful Int extractor
@@ -284,7 +284,7 @@ trait BasicTypesHelpers { self: StringHelpers with ControlHelpers =>
   /**
     * Safely convert the specified String to a Double.
     */
-  def asDouble(in: String): Box[Double] = tryo { in.trim.toDouble }
+  def asDouble(in: String): Box[Double] = tryo(in.trim.toDouble)
 
   /**
     * A helpful Double extractor

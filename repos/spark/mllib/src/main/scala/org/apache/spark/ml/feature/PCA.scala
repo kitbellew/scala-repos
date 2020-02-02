@@ -140,7 +140,7 @@ class PCAModel private[ml] (
   override def transform(dataset: DataFrame): DataFrame = {
     transformSchema(dataset.schema, logging = true)
     val pcaModel = new feature.PCAModel($(k), pc, explainedVariance)
-    val pcaOp = udf { pcaModel.transform _ }
+    val pcaOp = udf(pcaModel.transform _)
     dataset.withColumn($(outputCol), pcaOp(col($(inputCol))))
   }
 

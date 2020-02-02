@@ -238,8 +238,8 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
 
     val args: scala.Seq[ScTypeElement] = typeArgList.typeArgs
     if (args.isEmpty) return tr
-    val argTypesWrapped = args.map { _.getType(ctx) }
-    val argTypesgetOrElseped = argTypesWrapped.map { _.getOrAny }
+    val argTypesWrapped = args.map(_.getType(ctx))
+    val argTypesgetOrElseped = argTypesWrapped.map(_.getOrAny)
     def fails(t: ScType) =
       (for (f @ Failure(_, _) <- argTypesWrapped)
         yield f).foldLeft(Success(t, Some(this)))(_.apply(_))

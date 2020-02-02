@@ -29,7 +29,7 @@ object ExpandLibJarsGlobs {
       val existing = newArgs(libJarsIdx)
       val replacement = existing
         .split(",")
-        .flatMap { element => fromGlob(element).map(_.toString) }
+        .flatMap(element => fromGlob(element).map(_.toString))
         .mkString(",")
 
       newArgs(libJarsIdx) = replacement

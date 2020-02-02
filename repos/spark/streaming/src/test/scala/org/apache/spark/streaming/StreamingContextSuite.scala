@@ -605,7 +605,7 @@ class StreamingContextSuite
       newContextCreated = true
       val newSsc = new StreamingContext(sc, batchDuration)
       val input = addInputStream(newSsc)
-      input.foreachRDD { rdd => rdd.count }
+      input.foreachRDD(rdd => rdd.count)
       newSsc
     }
 
@@ -750,13 +750,13 @@ class StreamingContextSuite
         .set("spark.streaming.clock", "org.apache.spark.util.ManualClock"))
     ssc = new StreamingContext(sc, Seconds(1))
     val input = addInputStream(ssc)
-    input.foreachRDD { rdd => rdd.count }
+    input.foreachRDD(rdd => rdd.count)
     ssc.start()
 
     // Creating another streaming context should not create errors
     val anotherSsc = new StreamingContext(sc, Seconds(10))
     val anotherInput = addInputStream(anotherSsc)
-    anotherInput.foreachRDD { rdd => rdd.count }
+    anotherInput.foreachRDD(rdd => rdd.count)
 
     val exception = intercept[IllegalStateException] {
       anotherSsc.start()
@@ -778,8 +778,8 @@ class StreamingContextSuite
     ssc = new StreamingContext(conf, batchDuration)
     require(ssc.getState() === StreamingContextState.INITIALIZED)
     val input = addInputStream(ssc)
-    val transformed = input.map { x => x }
-    transformed.foreachRDD { rdd => rdd.count }
+    val transformed = input.map(x => x)
+    transformed.foreachRDD(rdd => rdd.count)
 
     def testForException(clue: String, expectedErrorMsg: String)(
         body: => Unit): Unit =
@@ -796,10 +796,10 @@ class StreamingContextSuite
       addInputStream(ssc)
     }
     testForException("no error on adding transformation after start", "start") {
-      input.map { x => x * 2 }
+      input.map(x => x * 2)
     }
     testForException("no error on adding output operation after start", "start") {
-      transformed.foreachRDD { rdd => rdd.collect() }
+      transformed.foreachRDD(rdd => rdd.collect())
     }
 
     ssc.stop()
@@ -808,10 +808,10 @@ class StreamingContextSuite
       addInputStream(ssc)
     }
     testForException("no error on adding transformation after stop", "stop") {
-      input.map { x => x * 2 }
+      input.map(x => x * 2)
     }
     testForException("no error on adding output operation after stop", "stop") {
-      transformed.foreachRDD { rdd => rdd.collect() }
+      transformed.foreachRDD(rdd => rdd.collect())
     }
   }
 
@@ -870,7 +870,7 @@ class StreamingContextSuite
       conf.clone.set("someKey", "someValue"),
       batchDuration)
     ssc.checkpoint(checkpointDirectory)
-    ssc.textFileStream(testDirectory).foreachRDD { rdd => rdd.count() }
+    ssc.textFileStream(testDirectory).foreachRDD(rdd => rdd.count())
     ssc.start()
     eventually(timeout(10000 millis)) {
       assert(Checkpoint.getCheckpointFiles(checkpointDirectory).size > 1)

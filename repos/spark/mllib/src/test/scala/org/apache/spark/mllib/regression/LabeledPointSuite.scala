@@ -26,7 +26,7 @@ class LabeledPointSuite extends SparkFunSuite {
     val points = Seq(
       LabeledPoint(1.0, Vectors.dense(1.0, 0.0)),
       LabeledPoint(0.0, Vectors.sparse(2, Array(1), Array(-1.0))))
-    points.foreach { p => assert(p === LabeledPoint.parse(p.toString)) }
+    points.foreach(p => assert(p === LabeledPoint.parse(p.toString)))
   }
 
   test("parse labeled points with whitespaces") {

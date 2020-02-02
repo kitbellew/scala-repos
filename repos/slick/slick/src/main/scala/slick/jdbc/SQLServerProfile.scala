@@ -122,7 +122,7 @@ trait SQLServerProfile extends JdbcProfile {
             case ("1", "Boolean") => Some(true)
           }
           .map(d => Some(d))
-          .getOrElse { super.default }
+          .getOrElse(super.default)
     }
   }
 

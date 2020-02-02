@@ -51,7 +51,7 @@ class FlowWatchTerminationSpec extends AkkaSpec {
         .run()
       p.sendNext(1)
       p.sendError(ex)
-      whenReady(future.failed) { _ shouldBe (ex) }
+      whenReady(future.failed)(_ shouldBe (ex))
     }
 
     "complete the future for an empty stream" in assertAllStagesStopped {

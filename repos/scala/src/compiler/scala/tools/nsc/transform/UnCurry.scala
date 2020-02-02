@@ -536,7 +536,7 @@ abstract class UnCurry
                   throw new IllegalStateException(
                     "Encountered Valdef without symbol: " + tree + " in " + unit)
                 if (!sym.owner.isSourceMethod)
-                  withNeedLift(needLift = true) { super.transform(tree) }
+                  withNeedLift(needLift = true)(super.transform(tree))
                 else
                   super.transform(tree)
 
@@ -553,15 +553,15 @@ abstract class UnCurry
                 }
 
               case Assign(_: RefTree, _) =>
-                withNeedLift(needLift = true) { super.transform(tree) }
+                withNeedLift(needLift = true)(super.transform(tree))
 
               case Assign(lhs, _)
                   if lhs.symbol.owner != currentMethod || lhs.symbol.hasFlag(
                     LAZY | ACCESSOR) =>
-                withNeedLift(needLift = true) { super.transform(tree) }
+                withNeedLift(needLift = true)(super.transform(tree))
 
               case ret @ Return(_) if (isNonLocalReturn(ret)) =>
-                withNeedLift(needLift = true) { super.transform(ret) }
+                withNeedLift(needLift = true)(super.transform(ret))
 
               case Try(_, Nil, _) =>
                 // try-finally does not need lifting: lifting is needed only for try-catch
@@ -587,7 +587,7 @@ abstract class UnCurry
                 mainTransform(transformFunction(fun))
 
               case Template(_, _, _) =>
-                withInConstructorFlag(0) { super.transform(tree) }
+                withInConstructorFlag(0)(super.transform(tree))
 
               case _ =>
                 val tree1 = super.transform(tree)

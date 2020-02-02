@@ -367,8 +367,8 @@ abstract class LazyVals
         Nil,
         res)
       (
-        atPos(tree.pos)(localTyper.typed { lazyDefs._1 }),
-        atPos(tree.pos)(localTyper.typed { lazyDefs._2 }))
+        atPos(tree.pos)(localTyper.typed(lazyDefs._1)),
+        atPos(tree.pos)(localTyper.typed(lazyDefs._2)))
     }
 
     private def mkSetFlag(bmp: Symbol, mask: Tree, bmpRef: Tree): Tree =

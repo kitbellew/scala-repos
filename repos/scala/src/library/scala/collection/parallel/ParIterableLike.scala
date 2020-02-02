@@ -656,7 +656,7 @@ trait ParIterableLike[
         val othtask = new other.Copy(cfactory, other.splitter)
         tasksupport.executeAndWaitResult(othtask)
       }
-      val task = (copythis parallel copythat) { _ combine _ } mapResult {
+      val task = (copythis parallel copythat)(_ combine _) mapResult {
         _.resultWithTaskSupport
       }
       tasksupport.executeAndWaitResult(task)
@@ -856,7 +856,7 @@ trait ParIterableLike[
       val copyys = new Copy(combinerFactory, ys.splitter) mapResult {
         _.resultWithTaskSupport
       }
-      val copyall = (copyxs parallel copyys) { (xr, yr) => (xr, yr) }
+      val copyall = (copyxs parallel copyys)((xr, yr) => (xr, yr))
       tasksupport.executeAndWaitResult(copyall)
     } else {
       val cntx = new DefaultSignalling with AtomicIndexFlag

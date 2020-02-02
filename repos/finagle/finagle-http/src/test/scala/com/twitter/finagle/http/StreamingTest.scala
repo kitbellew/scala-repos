@@ -81,9 +81,9 @@ class StreamingTest extends FunSuite with Eventually {
     // Simulate network failure by closing the transport.
     fail.setDone()
 
-    intercept[Reader.ReaderDiscarded] { await(writeLots(req.writer, buf)) }
+    intercept[Reader.ReaderDiscarded](await(writeLots(req.writer, buf)))
     // We call read for the collating function to notice transport failure.
-    intercept[ChannelClosedException] { await(res.reader.read(1)) }
+    intercept[ChannelClosedException](await(res.reader.read(1)))
 
     assertSecondRequestOk()
   })
@@ -97,8 +97,8 @@ class StreamingTest extends FunSuite with Eventually {
     fail.setDone()
 
     // Assert reading state suspension is interrupted by transport closure.
-    intercept[ChannelClosedException] { await(f) }
-    intercept[Reader.ReaderDiscarded] { await(writeLots(req.writer, buf)) }
+    intercept[ChannelClosedException](await(f))
+    intercept[Reader.ReaderDiscarded](await(writeLots(req.writer, buf)))
 
     assertSecondRequestOk()
   })
@@ -150,16 +150,16 @@ class StreamingTest extends FunSuite with Eventually {
     // note: while the server is configured with a max concurrency of 1,
     // the requests flow through the transport before that. this means
     // that these requests must be sequenced.
-    val f2 = f1.flatMap { _ => client2(req2) }
+    val f2 = f1.flatMap(_ => client2(req2))
 
     val res = await(f1)
 
     fail.setDone()
-    intercept[ChannelClosedException] { await(readp) }
-    intercept[Reader.ReaderDiscarded] { await(writeLots(writer, buf)) }
+    intercept[ChannelClosedException](await(readp))
+    intercept[Reader.ReaderDiscarded](await(writeLots(writer, buf)))
 
-    intercept[ChannelClosedException] { await(res.reader.read(1)) }
-    intercept[Reader.ReaderDiscarded] { await(writeLots(req1.writer, buf)) }
+    intercept[ChannelClosedException](await(res.reader.read(1)))
+    intercept[Reader.ReaderDiscarded](await(writeLots(req1.writer, buf)))
 
     val res2 = await(f2)
     await(Reader.readAll(res2.reader))
@@ -201,17 +201,17 @@ class StreamingTest extends FunSuite with Eventually {
     // note: while the server is configured with a max concurrency of 1,
     // the requests flow through the transport before that. this means
     // that these requests must be sequenced.
-    val f2 = f1.flatMap { _ => client2(req2) }
+    val f2 = f1.flatMap(_ => client2(req2))
 
     val res = await(f1)
 
     fail.setDone()
-    intercept[Reader.ReaderDiscarded] { await(writep) }
+    intercept[Reader.ReaderDiscarded](await(writep))
     // This really should be ChannelClosedException, perhaps we're too
     // indiscriminatory by calling discard on any error in the dispatcher.
-    intercept[Reader.ReaderDiscarded] { await(readp) }
-    intercept[ChannelClosedException] { await(res.reader.read(1)) }
-    intercept[Reader.ReaderDiscarded] { await(writeLots(req1.writer, buf)) }
+    intercept[Reader.ReaderDiscarded](await(readp))
+    intercept[ChannelClosedException](await(res.reader.read(1)))
+    intercept[Reader.ReaderDiscarded](await(writeLots(req1.writer, buf)))
 
     val res2 = await(f2)
     await(Reader.readAll(res2.reader))
@@ -243,13 +243,13 @@ class StreamingTest extends FunSuite with Eventually {
     val req1 = get("/")
     val req2 = get("abc")
     val f1 = client1(req1)
-    val f2 = f1.flatMap { _ => client2(req2) }
+    val f2 = f1.flatMap(_ => client2(req2))
 
     val res = await(f1)
 
     fail.setDone()
-    intercept[ChannelClosedException] { await(res.reader.read(1)) }
-    intercept[Reader.ReaderDiscarded] { await(writeLots(req1.writer, buf)) }
+    intercept[ChannelClosedException](await(res.reader.read(1)))
+    intercept[Reader.ReaderDiscarded](await(writeLots(req1.writer, buf)))
 
     val res2 = await(f2)
     await(Reader.readAll(res2.reader))
@@ -282,13 +282,13 @@ class StreamingTest extends FunSuite with Eventually {
     val req1 = get("/")
     val req2 = get("abc")
     val f1 = client1(req1)
-    val f2 = f1.flatMap { _ => client2(req2) }
+    val f2 = f1.flatMap(_ => client2(req2))
 
     val res = await(f1)
 
     fail.setDone()
-    intercept[ChannelClosedException] { await(res.reader.read(1)) }
-    intercept[Reader.ReaderDiscarded] { await(writeLots(req1.writer, buf)) }
+    intercept[ChannelClosedException](await(res.reader.read(1)))
+    intercept[Reader.ReaderDiscarded](await(writeLots(req1.writer, buf)))
 
     val res2 = await(f2)
     await(Reader.readAll(res2.reader))

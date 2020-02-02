@@ -55,7 +55,7 @@ class ClusterClientTest
   val pool = FuturePool.unboundedPool
 
   val TimeOut = 15.seconds
-  def boundedWait[T](body: => T): T = Await.result(pool { body }, TimeOut)
+  def boundedWait[T](body: => T): T = Await.result(pool(body), TimeOut)
 
   before {
     // start zookeeper server and create zookeeper client
@@ -85,7 +85,7 @@ class ClusterClientTest
           TestMemcachedServer.start() match {
             case Some(server) =>
               testServers :+= server
-              pool { zkServerSetCluster.join(server.address) }
+              pool(zkServerSetCluster.join(server.address))
             case None =>
               fail("could not start TestMemcachedServer")
           }
@@ -458,7 +458,7 @@ class ClusterClientTest
       }.get(10.seconds)()
       catch { case _: Exception => fail("it shouldn't trown an exception") }
 
-      eventually { assert(trackCacheShards(client).size == 9) }
+      eventually(assert(trackCacheShards(client).size == 9))
 
       // remove 2 cache servers and update cache pool config data, now there should be 7 shards
       try expectPoolStatus(
@@ -473,7 +473,7 @@ class ClusterClientTest
       }.get(10.seconds)()
       catch { case _: Exception => fail("it shouldn't trown an exception") }
 
-      eventually { assert(trackCacheShards(client).size == 7) }
+      eventually(assert(trackCacheShards(client).size == 7))
 
       // remove another 2 cache servers and update cache pool config data, now there should be 5 shards
       try expectPoolStatus(
@@ -488,7 +488,7 @@ class ClusterClientTest
       }.get(10.seconds)()
       catch { case _: Exception => fail("it shouldn't trown an exception") }
 
-      eventually { assert(trackCacheShards(client).size == 5) }
+      eventually(assert(trackCacheShards(client).size == 5))
 
       // add 2 more cache servers and update cache pool config data, now there should be 7 shards
       try expectPoolStatus(
@@ -502,7 +502,7 @@ class ClusterClientTest
       }.get(10.seconds)()
       catch { case _: Exception => fail("it shouldn't trown an exception") }
 
-      eventually { assert(trackCacheShards(client).size == 7) }
+      eventually(assert(trackCacheShards(client).size == 7))
 
       // add another 2 more cache servers and update cache pool config data, now there should be 9 shards
       try expectPoolStatus(
@@ -516,7 +516,7 @@ class ClusterClientTest
       }.get(10.seconds)()
       catch { case _: Exception => fail("it shouldn't trown an exception") }
 
-      eventually { assert(trackCacheShards(client).size == 9) }
+      eventually(assert(trackCacheShards(client).size == 9))
 
       // remove 2 and add 2, now there should be still 9 shards
       try expectPoolStatus(
@@ -532,7 +532,7 @@ class ClusterClientTest
       }.get(10.seconds)()
       catch { case _: Exception => fail("it shouldn't trown an exception") }
 
-      eventually { assert(trackCacheShards(client).size == 9) }
+      eventually(assert(trackCacheShards(client).size == 9))
     }
 
   if (!Option(System.getProperty("SKIP_FLAKY")).isDefined)
@@ -567,7 +567,7 @@ class ClusterClientTest
       }.get(10.seconds)()
       catch { case _: Exception => fail("it shouldn't trown an exception") }
 
-      eventually { assert(trackCacheShards(client).size == 9) }
+      eventually(assert(trackCacheShards(client).size == 9))
 
       // remove 2 cache servers and update cache pool config data, now there should be 7 shards
       try expectPoolStatus(
@@ -581,7 +581,7 @@ class ClusterClientTest
       }.get(10.seconds)()
       catch { case _: Exception => fail("it shouldn't trown an exception") }
 
-      eventually { assert(trackCacheShards(client).size == 7) }
+      eventually(assert(trackCacheShards(client).size == 7))
     }
 
   def updateCachePoolConfigData(size: Int) {

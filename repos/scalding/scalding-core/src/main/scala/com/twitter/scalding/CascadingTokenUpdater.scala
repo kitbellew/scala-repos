@@ -31,7 +31,7 @@ object CascadingTokenUpdater {
         .toIterator
         .map(_.split("="))
         .filter(_.size == 2)
-        .map { ary => (ary(0).toInt, ary(1)) }
+        .map(ary => (ary(0).toInt, ary(1)))
         .toMap
 
   // does the inverse of the previous function, given a Map of index to class
@@ -60,7 +60,7 @@ object CascadingTokenUpdater {
   def update(config: Config, clazzes: Set[Class[_]]): Config = {
     val toks = config.getCascadingSerializationTokens
     // We don't want to assign tokens to classes already in the map
-    val newClasses: Iterable[String] = clazzes.map { _.getName } -- toks.values
+    val newClasses: Iterable[String] = clazzes.map(_.getName) -- toks.values
 
     config + (Config.CascadingSerializationTokens -> toksToString(
       toks ++ assignTokens(firstAvailableToken(toks), newClasses)))

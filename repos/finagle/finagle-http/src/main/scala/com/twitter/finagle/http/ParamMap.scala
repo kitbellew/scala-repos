@@ -134,14 +134,14 @@ object MapParamMap {
     new MapParamMap(MapParamMap.tuplesToMultiMap(params))
 
   def apply(map: Map[String, String]): MapParamMap =
-    new MapParamMap(map.mapValues { value => Seq(value) })
+    new MapParamMap(map.mapValues(value => Seq(value)))
 
   private[http] def tuplesToMultiMap(
       tuples: Seq[Tuple2[String, String]]
   ): Map[String, Seq[String]] =
     tuples
       .groupBy { case (k, v) => k }
-      .mapValues { case values => values.map { _._2 } }
+      .mapValues { case values => values.map(_._2) }
 }
 
 /** Empty ParamMap */

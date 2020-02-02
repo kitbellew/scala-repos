@@ -13,7 +13,7 @@ private[serverset2] trait StatsClient extends ZooKeeperClient {
     def apply[T](result: Future[T]): Future[T] = {
       Stat
         .timeFuture(stats.stat(s"${name}_latency_ms"))(result)
-        .onSuccess { _ => success.incr() }
+        .onSuccess(_ => success.incr())
         .onFailure {
           case ke: KeeperException => stats.counter(ke.name).incr()
           case _                   => failure.incr()

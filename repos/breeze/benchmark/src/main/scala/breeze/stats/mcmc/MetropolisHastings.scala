@@ -28,7 +28,7 @@ class MetropolisHastingsBenchmark extends BreezeBenchmark {
 
   def pullAllSamples(m: Rand[Double]) = {
     var result = 0.0
-    cfor(0)(i => i < numSamples, i => i + 1) { i => result = m.draw() }
+    cfor(0)(i => i < numSamples, i => i + 1)(i => result = m.draw())
     result
   }
 

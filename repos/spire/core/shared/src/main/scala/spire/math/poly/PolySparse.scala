@@ -23,7 +23,7 @@ case class PolySparse[@sp(Double) C] private[spire] (
   def toSparse(implicit ring: Semiring[C], eq: Eq[C]): PolySparse[C] = lhs
 
   def foreach[U](f: (Int, C) => U): Unit =
-    cfor(0)(_ < exp.length, _ + 1) { i => f(exp(i), coeff(i)) }
+    cfor(0)(_ < exp.length, _ + 1)(i => f(exp(i), coeff(i)))
 
   override def foreachNonZero[U](
       f: (Int, C) => U)(implicit ring: Semiring[C], eq: Eq[C]): Unit =
@@ -53,8 +53,8 @@ case class PolySparse[@sp(Double) C] private[spire] (
       new Array[C](0)
     else {
       val cs = new Array[C](degree + 1)
-      cfor(0)(_ < cs.length, _ + 1) { i => cs(i) = ring.zero }
-      cfor(0)(_ < exp.length, _ + 1) { i => cs(exp(i)) = coeff(i) }
+      cfor(0)(_ < cs.length, _ + 1)(i => cs(i) = ring.zero)
+      cfor(0)(_ < exp.length, _ + 1)(i => cs(exp(i)) = coeff(i))
       cs
     }
 
@@ -165,7 +165,7 @@ case class PolySparse[@sp(Double) C] private[spire] (
 
   def unary_-()(implicit ring: Rng[C]): Polynomial[C] = {
     val cs = new Array[C](coeff.length)
-    cfor(0)(_ < cs.length, _ + 1) { i => cs(i) = -coeff(i) }
+    cfor(0)(_ < cs.length, _ + 1)(i => cs(i) = -coeff(i))
     new PolySparse(exp, cs)
   }
 
@@ -196,7 +196,7 @@ case class PolySparse[@sp(Double) C] private[spire] (
       PolySparse.zero[C]
     else {
       val cs = new Array[C](coeff.length)
-      cfor(0)(_ < cs.length, _ + 1) { i => cs(i) = k * coeff(i) }
+      cfor(0)(_ < cs.length, _ + 1)(i => cs(i) = k * coeff(i))
       new PolySparse(exp, cs)
     }
 }
@@ -206,7 +206,7 @@ object PolySparse {
       poly: PolyDense[C]): PolySparse[C] = {
     val cs = poly.coeffs
     val es = new Array[Int](cs.length)
-    cfor(0)(_ < es.length, _ + 1) { i => es(i) = i }
+    cfor(0)(_ < es.length, _ + 1)(i => es(i) = i)
     PolySparse.safe(es, cs)
   }
 
@@ -263,7 +263,7 @@ object PolySparse {
 
       case _ =>
         var len = 0
-        poly.foreachNonZero { (_, _) => len += 1 }
+        poly.foreachNonZero((_, _) => len += 1)
         val es = new Array[Int](len)
         val cs = new Array[C](len)
         var i = 0

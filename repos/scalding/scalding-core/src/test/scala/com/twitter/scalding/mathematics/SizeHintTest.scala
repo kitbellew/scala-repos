@@ -36,8 +36,8 @@ object SizeHintProps extends Properties("SizeHint") {
          cols <- choose(-1L, 1000000L);
          sparsity <- choose(0.0, 1.0)) yield SparseHint(sparsity, rows, cols)
 
-  implicit val finiteArb: Arbitrary[FiniteHint] = Arbitrary { finiteHintGen }
-  implicit val sparseArb: Arbitrary[SparseHint] = Arbitrary { sparseHintGen }
+  implicit val finiteArb: Arbitrary[FiniteHint] = Arbitrary(finiteHintGen)
+  implicit val sparseArb: Arbitrary[SparseHint] = Arbitrary(sparseHintGen)
   implicit val genHint: Arbitrary[SizeHint] = Arbitrary {
     oneOf(noClueGen, finiteHintGen, sparseHintGen)
   }
@@ -85,7 +85,7 @@ object SizeHintProps extends Properties("SizeHint") {
   }
 
   property("hadamard product of a finite hint to itself preserves size") =
-    forAll { (a: FiniteHint) => (a #*# a).total == a.total }
+    forAll((a: FiniteHint) => (a #*# a).total == a.total)
 
   property("adding a sparse matrix to itself doesn't decrease size") = forAll {
     (a: SparseHint) =>

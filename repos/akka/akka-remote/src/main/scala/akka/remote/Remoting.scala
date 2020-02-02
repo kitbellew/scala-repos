@@ -221,7 +221,7 @@ private[remote] class Remoting(
           } map { case (k, v) ⇒ k -> v.toSet }
 
           defaultAddress = transports.head._2
-          addresses = transports.map { _._2 }.toSet
+          addresses = transports.map(_._2).toSet
 
           log.info(
             "Remoting started; listening on addresses :" + addresses

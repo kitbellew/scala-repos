@@ -74,7 +74,7 @@ trait H2Profile extends JdbcProfile {
                 Some(java.util.UUID.fromString(v.replaceAll("[\'\"]", "")))
               ) //strip quotes
           }
-          .getOrElse { super.default }
+          .getOrElse(super.default)
       override def tpe = dbType match {
         case Some("UUID") => "java.util.UUID"
         case _            => super.tpe

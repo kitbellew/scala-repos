@@ -35,7 +35,7 @@ class SliceVectorTest extends FunSuite {
     //Following throws IllegalArgumentException, only positive end indexes for "until"
     //assert( tempDV( -3 until -1 ) == DenseVector(4, 5, 6), "Failed> tempDV( -3 until -1 ) =  " + tempDV( -3 until -1 ) )
     //Following works
-    intercept[IllegalArgumentException] { tempDV(-3 until 7) }
+    intercept[IllegalArgumentException](tempDV(-3 until 7))
     assert(
       tempDV(0 to 4 by 2) == DenseVector(0, 2, 4),
       "Failed> tempDV( 0 to 4 by 2 ) = " + tempDV(0 to 4 by 2))

@@ -250,7 +250,7 @@ object Dag {
       }
 
     def allTails(dag: Dag[P]): List[Node[P]] =
-      dag.nodes.filter { m => dag.dependantsOf(m).size == 0 }
+      dag.nodes.filter(m => dag.dependantsOf(m).size == 0)
 
     //start with the true tail
     val (nodeToName, _) = (dag.tailN :: allTails(dag))

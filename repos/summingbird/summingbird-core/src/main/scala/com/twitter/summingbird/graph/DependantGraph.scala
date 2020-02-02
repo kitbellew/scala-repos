@@ -24,7 +24,7 @@ abstract class DependantGraph[T] {
   def nodes: List[T]
   def dependenciesOf(t: T): Iterable[T]
 
-  lazy val allTails: List[T] = nodes.filter { fanOut(_).get == 0 }
+  lazy val allTails: List[T] = nodes.filter(fanOut(_).get == 0)
   private lazy val nodeSet: Set[T] = nodes.toSet
 
   /**
@@ -44,7 +44,7 @@ abstract class DependantGraph[T] {
   def dependantsOf(p: T): Option[List[T]] =
     if (isNode(p)) Some(graph(p).toList) else None
 
-  def fanOut(p: T): Option[Int] = dependantsOf(p).map { _.size }
+  def fanOut(p: T): Option[Int] = dependantsOf(p).map(_.size)
 
   /**
     * Return all dependendants of a given node.

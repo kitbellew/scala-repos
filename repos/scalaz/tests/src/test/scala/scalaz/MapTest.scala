@@ -221,7 +221,7 @@ object MapTest extends SpecLite {
     "lookupIndex" ! forAll { (a: Byte ==>> Int, n: Byte) =>
       val x = a.keys.indexOf(n)
       a.lookupIndex(n) must_=== (if (x < 0) None else Some(x))
-      a.lookupIndex(n).foreach { b => a.elemAt(b).map(_._1) must_=== Some(n) }
+      a.lookupIndex(n).foreach(b => a.elemAt(b).map(_._1) must_=== Some(n))
     }
   }
 

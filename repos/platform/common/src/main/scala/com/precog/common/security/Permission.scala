@@ -217,11 +217,11 @@ object Permission {
           }
 
         case "read" =>
-          writtenByPermission(obj, pathV) { ReadPermission.apply _ }
+          writtenByPermission(obj, pathV)(ReadPermission.apply _)
         case "reduce" =>
-          writtenByPermission(obj, pathV) { ReducePermission.apply _ }
+          writtenByPermission(obj, pathV)(ReducePermission.apply _)
         case "owner" | "delete" =>
-          writtenByPermission(obj, pathV) { DeletePermission.apply _ }
+          writtenByPermission(obj, pathV)(DeletePermission.apply _)
         case other => failure(Invalid("Unrecognized permission type: " + other))
       }
     }
@@ -253,11 +253,11 @@ object Permission {
           }
 
         case "read" =>
-          writtenByPermission(obj, pathV) { ReadPermission.apply _ }
+          writtenByPermission(obj, pathV)(ReadPermission.apply _)
         case "reduce" =>
-          writtenByPermission(obj, pathV) { ReducePermission.apply _ }
+          writtenByPermission(obj, pathV)(ReducePermission.apply _)
         case "owner" | "delete" =>
-          writtenByPermission(obj, pathV) { DeletePermission.apply _ }
+          writtenByPermission(obj, pathV)(DeletePermission.apply _)
         case other => failure(Invalid("Unrecognized permission type: " + other))
       }
     }

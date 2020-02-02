@@ -195,15 +195,15 @@ private[spark] object ClosureCleaner extends Logging {
     val declaredMethods = func.getClass.getDeclaredMethods
 
     logDebug(" + declared fields: " + declaredFields.size)
-    declaredFields.foreach { f => logDebug("     " + f) }
+    declaredFields.foreach(f => logDebug("     " + f))
     logDebug(" + declared methods: " + declaredMethods.size)
-    declaredMethods.foreach { m => logDebug("     " + m) }
+    declaredMethods.foreach(m => logDebug("     " + m))
     logDebug(" + inner classes: " + innerClasses.size)
-    innerClasses.foreach { c => logDebug("     " + c.getName) }
+    innerClasses.foreach(c => logDebug("     " + c.getName))
     logDebug(" + outer classes: " + outerClasses.size)
-    outerClasses.foreach { c => logDebug("     " + c.getName) }
+    outerClasses.foreach(c => logDebug("     " + c.getName))
     logDebug(" + outer objects: " + outerObjects.size)
-    outerObjects.foreach { o => logDebug("     " + o) }
+    outerObjects.foreach(o => logDebug("     " + o))
 
     // Fail fast if we detect return statements in closures
     getClassReader(func.getClass).accept(new ReturnStatementFinder(), 0)
@@ -226,7 +226,7 @@ private[spark] object ClosureCleaner extends Logging {
     }
 
     logDebug(s" + fields accessed by starting closure: " + accessedFields.size)
-    accessedFields.foreach { f => logDebug("     " + f) }
+    accessedFields.foreach(f => logDebug("     " + f))
 
     // List of outer (class, object) pairs, ordered from outermost to innermost
     // Note that all outer objects but the outermost one (first one in this list) must be closures

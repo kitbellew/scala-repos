@@ -64,7 +64,7 @@ private[play] object WebSocketActor {
 
     // Use a foreach iteratee to consume the WebSocket and feed it into the Actor
     // It's very important that we use the trampoline execution context here, otherwise it's possible that
-    val consumer = Iteratee.foreach[In] { msg => webSocketActor ! msg }(
+    val consumer = Iteratee.foreach[In](msg => webSocketActor ! msg)(
       play.api.libs.iteratee.Execution.trampoline)
 
     (enumerator |>> consumer).onComplete { _ =>

@@ -118,7 +118,7 @@ private[round] final class Rematcher(
     game
       .player(!color)
       .userId
-      .flatMap { id => users.find(_.id == id) }
+      .flatMap(id => users.find(_.id == id))
       .fold(player) { user =>
         player.withUser(user.id, PerfPicker.mainOrDefault(game)(user.perfs))
       }

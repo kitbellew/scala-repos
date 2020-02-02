@@ -4,7 +4,7 @@ object Test extends App {
   val q = Queryable2[CoffeesTable]()
   import scala.reflect.runtime.universe._
   import scala.reflect.runtime.{universe => ru}
-  val code = reify { q.filter(_.sales > 5) }
+  val code = reify(q.filter(_.sales > 5))
   import scala.reflect.runtime.{currentMirror => cm}
   import scala.tools.reflect.ToolBox
   val toolbox = cm.mkToolBox()

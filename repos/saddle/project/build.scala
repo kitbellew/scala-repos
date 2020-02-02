@@ -26,7 +26,7 @@ object SaddleBuild extends sbt.Build {
       id = "saddle",
       settings = Seq(
         /* 'console' in root acts as if in core. */
-        console <<= (console in core in Compile) { identity },
+        console <<= (console in core in Compile)(identity),
         assembleArtifact in packageScala := false,
         publishArtifact := false,
         mergeStrategy in assembly := {

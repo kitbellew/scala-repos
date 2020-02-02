@@ -146,7 +146,7 @@ trait Binder extends parser.AST {
         }
 
       case d @ Dispatch(_, name, actuals) =>
-        val recursive = (actuals map { loop(_, env) }).fold(Set()) { _ ++ _ }
+        val recursive = (actuals map { loop(_, env) }).fold(Set())(_ ++ _)
         if (env.names contains name) {
           val binding = env.names(name)
 
@@ -207,7 +207,7 @@ trait Binder extends parser.AST {
         }
 
       case NaryOp(_, values) =>
-        (values map { loop(_, env) }).fold(Set()) { _ ++ _ }
+        (values map { loop(_, env) }).fold(Set())(_ ++ _)
     }
 
     // Need to make sure none of the primitives in the bottom Set are

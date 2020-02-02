@@ -369,7 +369,7 @@ private[tournament] final class TournamentApi(
       nb: Int): Fu[List[Pov]] =
     PairingRepo.recentIdsByTourAndUserId(tourId, userId, nb) flatMap { ids =>
       GameRepo games ids map {
-        _.flatMap { Pov.ofUserId(_, userId) }
+        _.flatMap(Pov.ofUserId(_, userId))
       }
     }
 

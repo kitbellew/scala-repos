@@ -21,7 +21,7 @@ object SnapshotSpec {
 
     override def receiveCommand = {
       case payload: String ⇒
-        persist(payload) { _ ⇒ state = s"$payload-$lastSequenceNr" :: state }
+        persist(payload)(_ ⇒ state = s"$payload-$lastSequenceNr" :: state)
       case TakeSnapshot ⇒ saveSnapshot(state)
       case SaveSnapshotSuccess(md) ⇒ probe ! md.sequenceNr
       case GetState ⇒ probe ! state.reverse
@@ -44,7 +44,7 @@ object SnapshotSpec {
     override def receiveCommand = {
       case "done" ⇒ probe ! "done"
       case payload: String ⇒
-        persist(payload) { _ ⇒ probe ! s"$payload-$lastSequenceNr" }
+        persist(payload)(_ ⇒ probe ! s"$payload-$lastSequenceNr")
       case offer @ SnapshotOffer(md, s) ⇒ probe ! offer
       case other ⇒ probe ! other
     }

@@ -260,7 +260,7 @@ class MongoAPIKeyManager(
 
   private def findAll[A](collection: String)(
       implicit extract: Extractor[A]): Future[Seq[A]] =
-    database { selectAll.from(collection) } map {
+    database(selectAll.from(collection)) map {
       _.map(_.deserialize[A]).toSeq
     }
 
@@ -323,7 +323,7 @@ class MongoAPIKeyManager(
             database {
               val updateObj = nt.serialize.asInstanceOf[JObject]
               update(settings.apiKeys).set(updateObj).where("apiKey" === apiKey)
-            }.map { _ => Some(nt) }
+            }.map(_ => Some(nt))
           case _ => Future(Some(t))
         }
       case None => Future(None)

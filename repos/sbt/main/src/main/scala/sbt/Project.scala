@@ -988,7 +988,7 @@ object Project extends ProjectExtra {
       methodName =>
         s"""$methodName must be directly assigned to a val, such as `val x = $methodName`.""")
     val name = c.Expr[String](Literal(Constant(enclosingValName)))
-    reify { Project(name.splice, new File(name.splice)) }
+    reify(Project(name.splice, new File(name.splice)))
   }
 }
 

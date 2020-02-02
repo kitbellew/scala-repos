@@ -112,7 +112,7 @@ abstract class FormatInterpolator {
               val r = "([0-7]{1,3}).*".r
               (s0 drop e.index + 1) match {
                 case r(n) =>
-                  altOf { (0 /: n) { case (a, o) => (8 * a) + (o - '0') } }
+                  altOf((0 /: n) { case (a, o) => (8 * a) + (o - '0') })
                 case _ => ""
               }
             }
@@ -391,7 +391,7 @@ abstract class FormatInterpolator {
     override def verify = {
       def d_# =
         (cc == 'd' && hasFlag('#') &&
-          truly { badFlag('#', "# not allowed for d conversion") })
+          truly(badFlag('#', "# not allowed for d conversion")))
       def x_comma =
         (cc != 'd' && hasFlag(',') &&
           truly {
@@ -435,7 +435,7 @@ abstract class FormatInterpolator {
     import SpecifierGroups.CC
     def hasCC =
       (op.length == 2 ||
-        falsely { errorAt(CC, "Date/time conversion must have two characters") })
+        falsely(errorAt(CC, "Date/time conversion must have two characters")))
     def goodCC =
       ("HIklMSLNpzZsQBbhAaCYyjmdeRTrDFc" contains cc) ||
         falsely {

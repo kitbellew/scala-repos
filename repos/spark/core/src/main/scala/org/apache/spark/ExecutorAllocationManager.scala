@@ -688,7 +688,7 @@ private[spark] class ExecutorAllocationManager(
         if (taskEnd.reason != Success) {
           if (totalPendingTasks() == 0)
             allocationManager.onSchedulerBacklogged()
-          stageIdToTaskIndices.get(stageId).foreach { _.remove(taskIndex) }
+          stageIdToTaskIndices.get(stageId).foreach(_.remove(taskIndex))
         }
       }
     }

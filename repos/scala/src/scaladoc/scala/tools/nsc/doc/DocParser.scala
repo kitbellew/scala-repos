@@ -22,7 +22,7 @@ class DocParser(settings: nsc.Settings, reporter: Reporter)
   def this() = this(new Settings(Console println _))
 
   // the usual global initialization
-  locally { new Run() }
+  locally(new Run())
 
   override def forScaladoc = true
   override protected def computeInternalPhases() {

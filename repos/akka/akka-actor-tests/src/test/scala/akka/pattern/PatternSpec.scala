@@ -66,7 +66,7 @@ class PatternSpec extends AkkaSpec("akka.actor.serialize-messages = off") {
         Promise.failed(new IllegalStateException("Mexico")).future)
 
       val r = Future.firstCompletedOf(Seq(Promise[Int]().future, f))
-      intercept[IllegalStateException] { Await.result(r, remainingOrDefault) }.getMessage should ===(
+      intercept[IllegalStateException](Await.result(r, remainingOrDefault)).getMessage should ===(
         "Mexico")
     }
   }

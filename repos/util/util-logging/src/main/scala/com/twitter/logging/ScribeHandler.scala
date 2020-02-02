@@ -517,8 +517,8 @@ class ScribeHandler(
     val totalConnects = statsReceiver.counter("connects")
     val totalPublished = statsReceiver.counter("published")
     val totalCloses = statsReceiver.counter("closes")
-    val instances = statsReceiver.addGauge("instances") { 1 }
-    val unsentQueue = statsReceiver.addGauge("unsent_queue") { queueSize }
+    val instances = statsReceiver.addGauge("instances")(1)
+    val unsentQueue = statsReceiver.addGauge("unsent_queue")(queueSize)
 
     def incrSentRecords(count: Int): Unit = {
       sentRecords.addAndGet(count)

@@ -85,7 +85,7 @@ object KMeansExample extends App {
     // wants before we return the clusters.
 
     val bldr = cbf()
-    cfor(0)(_ < clusters.length, _ + 1) { i => bldr += clusters(i) }
+    cfor(0)(_ < clusters.length, _ + 1)(i => bldr += clusters(i))
     bldr.result()
   }
 

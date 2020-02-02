@@ -1752,7 +1752,7 @@ class Dataset[T] private[sql] (
     }
     val attrs = this.logicalPlan.output
     val colsAfterDrop = attrs
-      .filter { attr => attr != expression }
+      .filter(attr => attr != expression)
       .map(attr => Column(attr))
     select(colsAfterDrop: _*)
   }
@@ -2379,7 +2379,7 @@ class Dataset[T] private[sql] (
   private def withCallback[U](name: String, df: DataFrame)(
       action: DataFrame => U) =
     try {
-      df.queryExecution.executedPlan.foreach { plan => plan.resetMetrics() }
+      df.queryExecution.executedPlan.foreach(plan => plan.resetMetrics())
       val start = System.nanoTime()
       val result = action(df)
       val end = System.nanoTime()
@@ -2394,7 +2394,7 @@ class Dataset[T] private[sql] (
   private def withTypedCallback[A, B](name: String, ds: Dataset[A])(
       action: Dataset[A] => B) =
     try {
-      ds.queryExecution.executedPlan.foreach { plan => plan.resetMetrics() }
+      ds.queryExecution.executedPlan.foreach(plan => plan.resetMetrics())
       val start = System.nanoTime()
       val result = action(ds)
       val end = System.nanoTime()

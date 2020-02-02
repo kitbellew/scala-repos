@@ -39,7 +39,7 @@ object Backoff {
       start: Duration,
       multiplier: Int,
       maximum: Duration): Stream[Duration] =
-    Backoff(start) { prev => maximum.min(prev * multiplier) }
+    Backoff(start)(prev => maximum.min(prev * multiplier))
 
   /**
     * Create backoffs that grow exponentially by 2, capped at `maximum`,
@@ -158,7 +158,7 @@ object Backoff {
       start: Duration,
       offset: Duration,
       maximum: Duration): Stream[Duration] =
-    Backoff(start) { prev => maximum.min(prev + offset) }
+    Backoff(start)(prev => maximum.min(prev + offset))
 
   /** Alias for [[const]], which is a reserved word in Java */
   def constant(start: Duration): Stream[Duration] = const(start)

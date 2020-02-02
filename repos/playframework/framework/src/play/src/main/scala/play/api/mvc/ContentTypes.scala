@@ -524,7 +524,7 @@ trait BodyParsers {
                 // Otherwise, there should be no default, it will be detected by the XML parser.
               }
             )
-            .foreach { charset => inputSource.setEncoding(charset) }
+            .foreach(charset => inputSource.setEncoding(charset))
           Play.XML.load(inputSource)
       }
 

@@ -222,19 +222,19 @@ object StreamRef {
   case class Create(streamId: UUID, terminal: Boolean) extends StreamRef {
     def terminate = copy(terminal = true)
     def split(n: Int): Seq[StreamRef] =
-      Vector.fill(n - 1) { copy(terminal = false) } :+ this
+      Vector.fill(n - 1)(copy(terminal = false)) :+ this
   }
 
   case class Replace(streamId: UUID, terminal: Boolean) extends StreamRef {
     def terminate = copy(terminal = true)
     def split(n: Int): Seq[StreamRef] =
-      Vector.fill(n - 1) { copy(terminal = false) } :+ this
+      Vector.fill(n - 1)(copy(terminal = false)) :+ this
   }
 
   case object Append extends StreamRef {
     val terminal = false
     def terminate = this
-    def split(n: Int): Seq[StreamRef] = Vector.fill(n) { this }
+    def split(n: Int): Seq[StreamRef] = Vector.fill(n)(this)
   }
 
   implicit val decomposer: Decomposer[StreamRef] = new Decomposer[StreamRef] {

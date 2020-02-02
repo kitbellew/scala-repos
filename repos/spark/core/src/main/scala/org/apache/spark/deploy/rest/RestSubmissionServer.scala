@@ -148,7 +148,7 @@ private[rest] abstract class RestServlet extends HttpServlet with Logging {
 
   /** Return a human readable String representation of the exception. */
   protected def formatException(e: Throwable): String = {
-    val stackTraceString = e.getStackTrace.map { "\t" + _ }.mkString("\n")
+    val stackTraceString = e.getStackTrace.map("\t" + _).mkString("\n")
     s"$e\n$stackTraceString"
   }
 

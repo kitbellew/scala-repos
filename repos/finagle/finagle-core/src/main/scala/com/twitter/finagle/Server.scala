@@ -63,7 +63,7 @@ trait ListeningServer
   * }}}
   */
 object NullServer extends ListeningServer with CloseAwaitably {
-  def closeServer(deadline: Time) = closeAwaitably { Future.Done }
+  def closeServer(deadline: Time) = closeAwaitably(Future.Done)
   val boundAddress = new InetSocketAddress(0)
 }
 

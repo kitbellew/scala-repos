@@ -457,7 +457,7 @@ trait MatchApproximation
       final def approximateMatch(
           cases: List[List[TreeMaker]],
           treeMakerToProp: TreeMakerToProp = conservative) = {
-        val testss = cases.map { _ map (tm => Test(treeMakerToProp(tm), tm)) }
+        val testss = cases.map(_ map (tm => Test(treeMakerToProp(tm), tm)))
         substitutionComputed = true // a second call to approximateMatch should not re-compute the substitution (would be wrong)
         testss
       }
@@ -753,7 +753,7 @@ trait MatchAnalysis extends MatchApproximation {
     // equal and notEqual symbols
     def modelToVarAssignment(model: Model): Map[Var, (Seq[Const], Seq[Const])] =
       model.toSeq
-        .groupBy { f => f match { case (sym, value) => sym.variable } }
+        .groupBy(f => f match { case (sym, value) => sym.variable })
         .mapValues { xs =>
           val (trues, falses) = xs.partition(_._2)
           (trues map (_._1.const), falses map (_._1.const))

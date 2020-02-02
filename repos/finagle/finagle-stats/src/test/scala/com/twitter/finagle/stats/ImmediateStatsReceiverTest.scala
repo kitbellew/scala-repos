@@ -34,7 +34,7 @@ class ImmediateStatsReceiverTest extends FunSuite with BeforeAndAfter {
 
     var x = 0
     assert(metrics("gauge") == None)
-    val gauge = receiver.addGauge("gauge") { x }
+    val gauge = receiver.addGauge("gauge")(x)
     assert(metrics("gauge") == Some(0))
     x = 10
     assert(metrics("gauge") == Some(10))

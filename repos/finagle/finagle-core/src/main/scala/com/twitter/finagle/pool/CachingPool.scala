@@ -31,7 +31,7 @@ private[finagle] class CachingPool[Req, Rep](
     new Cache[Service[Req, Rep]](cacheSize, ttl, timer, Some(_.close()))
   @volatile private[this] var isOpen = true
   private[this] val sizeGauge =
-    statsReceiver.addGauge("pool_cached") { cache.size }
+    statsReceiver.addGauge("pool_cached")(cache.size)
 
   private[this] class WrappedService(underlying: Service[Req, Rep])
       extends ServiceProxy[Req, Rep](underlying) {

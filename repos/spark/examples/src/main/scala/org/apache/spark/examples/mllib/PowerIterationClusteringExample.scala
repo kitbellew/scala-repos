@@ -81,7 +81,7 @@ object PowerIterationClusteringExample {
 
     parser
       .parse(args, defaultParams)
-      .map { params => run(params) }
+      .map(params => run(params))
       .getOrElse {
         sys.exit(1)
       }
@@ -134,7 +134,8 @@ object PowerIterationClusteringExample {
       sc: SparkContext,
       nCircles: Int,
       nPoints: Int): RDD[(Long, Long, Double)] = {
-    val points = (1 to nCircles).flatMap { i => generateCircle(i, i * nPoints) }.zipWithIndex
+    val points =
+      (1 to nCircles).flatMap(i => generateCircle(i, i * nPoints)).zipWithIndex
     val rdd = sc.parallelize(points)
     val distancesRdd = rdd.cartesian(rdd).flatMap {
       case (((x0, y0), i0), ((x1, y1), i1)) =>

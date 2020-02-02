@@ -4,7 +4,7 @@ package goxbox {
   object Socks {
     val origins = Origins("boop")
 
-    def boop(x: Int): Int = origins { 5 }
+    def boop(x: Int): Int = origins(5)
   }
 }
 

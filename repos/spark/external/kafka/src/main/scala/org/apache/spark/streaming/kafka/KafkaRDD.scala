@@ -151,7 +151,7 @@ private[kafka] class KafkaRDD[
   private class KafkaRDDIterator(part: KafkaRDDPartition, context: TaskContext)
       extends NextIterator[R] {
 
-    context.addTaskCompletionListener { context => closeIfNeeded() }
+    context.addTaskCompletionListener(context => closeIfNeeded())
 
     log.info(
       s"Computing topic ${part.topic}, partition ${part.partition} " +

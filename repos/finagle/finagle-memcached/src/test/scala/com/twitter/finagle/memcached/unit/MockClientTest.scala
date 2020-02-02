@@ -91,7 +91,7 @@ class MockClientTest extends FunSuite {
     val memcache =
       new MockClient(Map("key" -> "value", "count" -> "1")).withStrings
 
-    intercept[ClientError] { Await.result(memcache.incr("key")) }
+    intercept[ClientError](Await.result(memcache.incr("key")))
 
     assert(Await.result(memcache.get("key")) == Some("value"))
 
@@ -106,7 +106,7 @@ class MockClientTest extends FunSuite {
     val memcache =
       new MockClient(Map("key" -> "value", "count" -> "1")).withStrings
 
-    intercept[ClientError] { Await.result(memcache.decr("key")) }
+    intercept[ClientError](Await.result(memcache.decr("key")))
 
     assert(Await.result(memcache.get("key")) == Some("value"))
 

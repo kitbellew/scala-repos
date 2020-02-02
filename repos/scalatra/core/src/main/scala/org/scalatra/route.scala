@@ -57,7 +57,7 @@ object Route {
       action: Action,
       contextPath: HttpServletRequest => String): Route = {
     val route = Route(action = action, contextPath = contextPath)
-    transformers.foldLeft(route) { (route, transformer) => transformer(route) }
+    transformers.foldLeft(route)((route, transformer) => transformer(route))
   }
 
   def appendMatcher(matcher: RouteMatcher): RouteTransformer = {

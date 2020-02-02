@@ -138,10 +138,10 @@ trait RichCompilerControl
               firstName,
               matchEntire = true,
               caseSens = true
-            ).map { _.sym }
+            ).map(_.sym)
             val restOfPath = nameSegs.drop(1).mkString(".")
-            val syms = roots.flatMap { symbolByName(restOfPath, _) }
-            syms.find(_.tpe != NoType).map { sym => TypeInfo(sym.tpe) }
+            val syms = roots.flatMap(symbolByName(restOfPath, _))
+            syms.find(_.tpe != NoType).map(sym => TypeInfo(sym.tpe))
           }) yield infos).flatten
   }
 
@@ -300,9 +300,9 @@ class RichPresentationCompiler(
     }
 
   def activeUnits(): List[CompilationUnit] = {
-    val invalidSet = toBeRemoved.synchronized { toBeRemoved.toSet }
+    val invalidSet = toBeRemoved.synchronized(toBeRemoved.toSet)
     unitOfFile
-      .filter { kv => !invalidSet.contains(kv._1) }
+      .filter(kv => !invalidSet.contains(kv._1))
       .values
       .toList
   }
@@ -323,8 +323,8 @@ class RichPresentationCompiler(
     * never be reloaded again.
     */
   def removeAllDeleted(): Unit = {
-    allSources = allSources.filter { _.file.exists }
-    val deleted = symsByFile.keys.filter { !_.exists }
+    allSources = allSources.filter(_.file.exists)
+    val deleted = symsByFile.keys.filter(!_.exists)
     for (f <- deleted)
       removeDeleted(f)
   }
@@ -583,7 +583,7 @@ class RichPresentationCompiler(
 
   protected def reloadAndTypeFiles(sources: Iterable[SourceFile]) = {
     wrapReloadSources(sources.toList)
-    sources.foreach { s => wrapTypedTree(s, forceReload = true) }
+    sources.foreach(s => wrapTypedTree(s, forceReload = true))
   }
 
   override def askShutdown(): Unit =

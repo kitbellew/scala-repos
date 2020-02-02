@@ -99,7 +99,7 @@ class SafeLongCheck
     forAll { (x: BigInt, k: Byte) =>
       val sx = SafeLong(x)
       if (k < 0) {
-        intercept[IllegalArgumentException] { sx pow k }
+        intercept[IllegalArgumentException](sx pow k)
         true shouldBe true
       } else {
         invariant(sx ** k) shouldBe (x pow k)
@@ -114,7 +114,7 @@ class SafeLongCheck
       val sm = SafeLong(m)
       if (!sm.isZero)
         if (k < 0)
-          intercept[IllegalArgumentException] { sx.modPow(k, sm) }
+          intercept[IllegalArgumentException](sx.modPow(k, sm))
         else
           invariant(sx.modPow(k, sm)) shouldBe (sx pow k) % m
       true shouldBe true
@@ -163,7 +163,7 @@ class SafeLongCheck
 
   property("x >> k") {
     forAll { (x: BigInt, k: Byte) =>
-      intercept[ArithmeticException] { SafeLong(x) >> Int.MinValue }
+      intercept[ArithmeticException](SafeLong(x) >> Int.MinValue)
       invariant(SafeLong(x) >> k) shouldBe SafeLong(x >> k)
     }
   }
@@ -172,7 +172,7 @@ class SafeLongCheck
     forAll { (x: Long) =>
       val sx = SafeLong(x)
 
-      intercept[IllegalArgumentException] { sx pow -1 }
+      intercept[IllegalArgumentException](sx pow -1)
 
       sx.toLong shouldBe x
       sx.getLong shouldBe Opt(x)

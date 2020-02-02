@@ -897,7 +897,7 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
     */
   def putInts(array: Array[Int], start: Int, len: Int)(
       implicit byteOrder: ByteOrder): this.type =
-    fillByteBuffer(len * 4, byteOrder) { _.asIntBuffer.put(array, start, len) }
+    fillByteBuffer(len * 4, byteOrder)(_.asIntBuffer.put(array, start, len))
 
   /**
     * Add a number of Longs from an array to this builder.
@@ -910,7 +910,7 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
     */
   def putLongs(array: Array[Long], start: Int, len: Int)(
       implicit byteOrder: ByteOrder): this.type =
-    fillByteBuffer(len * 8, byteOrder) { _.asLongBuffer.put(array, start, len) }
+    fillByteBuffer(len * 8, byteOrder)(_.asLongBuffer.put(array, start, len))
 
   /**
     * Add a number of Floats from an array to this builder.

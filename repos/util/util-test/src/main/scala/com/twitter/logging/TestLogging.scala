@@ -73,5 +73,5 @@ trait TestLogging extends BeforeAndAfter { self: WordSpec =>
     * substring somewhere inside it.
     */
   def mustLog(substring: String) =
-    assert(logLines().filter { _ contains substring }.size > 0)
+    assert(logLines().filter(_ contains substring).size > 0)
 }

@@ -14,7 +14,7 @@ class ParameterDirectivesExamplesSpec
     with PredefinedFromStringUnmarshallers {
   "example-1" in {
     val route =
-      parameter('color) { color => complete(s"The color is '$color'") }
+      parameter('color)(color => complete(s"The color is '$color'"))
 
     // tests:
     Get("/?color=blue") ~> route ~> check {

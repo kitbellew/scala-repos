@@ -15,10 +15,10 @@ trait HealthChecksSupport
 
   def checkHealth[T](name: String)(checker: => T)(
       implicit toMagnet: ToMagnet[T]) =
-    healthCheck(name) { checker }
+    healthCheck(name)(checker)
   def checkHealth[T](name: String, unhealthyMessage: String)(checker: => T)(
       implicit toMagnet: ToMagnet[T]) =
-    healthCheck(name, unhealthyMessage) { checker }
+    healthCheck(name, unhealthyMessage)(checker)
 
   def runHealthCheck(name: String) = healthCheckRegistry.runHealthCheck(name)
   def runHealthChecks() = healthCheckRegistry.runHealthChecks()

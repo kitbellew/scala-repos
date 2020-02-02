@@ -21,7 +21,7 @@ class SourceListSpecTest extends WordSpec with Matchers with BddDsl {
         } When { (pipe1: RichPipe, pipe2: RichPipe) =>
           pipe1
             .joinWithSmaller('col1 -> 'col1, pipe2)
-            .map('col1 -> 'col1_transf) { col1: String => col1 + "_transf" }
+            .map('col1 -> 'col1_transf)(col1: String => col1 + "_transf")
         } Then { buffer: Buffer[Tuple] =>
           buffer.forall(tuple => tuple.getString(2).endsWith("_transf")) shouldBe true
         }
@@ -36,7 +36,7 @@ class SourceListSpecTest extends WordSpec with Matchers with BddDsl {
       } When { (pipe1: RichPipe, pipe2: RichPipe) =>
         pipe1
           .joinWithSmaller('col1 -> 'col1, pipe2)
-          .map('col1 -> 'col1_transf) { col1: String => col1 + "_transf" }
+          .map('col1 -> 'col1_transf)(col1: String => col1 + "_transf")
           .project(('col1, 'col2, 'col1_transf))
       } Then { buffer: Buffer[Tuple] =>
         buffer.forall(tuple => tuple.getString(2).endsWith("_transf")) shouldBe true
@@ -51,7 +51,7 @@ class SourceListSpecTest extends WordSpec with Matchers with BddDsl {
       } When { (pipe1: Pipe, pipe2: Pipe) =>
         pipe1
           .joinWithSmaller('col1 -> 'col1, pipe2)
-          .map('col1 -> 'col1_transf) { col1: String => col1 + "_transf" }
+          .map('col1 -> 'col1_transf)(col1: String => col1 + "_transf")
           .project(('col1, 'col2, 'col1_transf))
       } Then { buffer: Buffer[Tuple] =>
         buffer.forall(tuple => tuple.getString(2).endsWith("_transf")) shouldBe true
@@ -66,7 +66,7 @@ class SourceListSpecTest extends WordSpec with Matchers with BddDsl {
       } When { (pipes: List[RichPipe]) =>
         pipes(0)
           .joinWithSmaller('col1 -> 'col1, pipes(1))
-          .map('col1 -> 'col1_transf) { col1: String => col1 + "_transf" }
+          .map('col1 -> 'col1_transf)(col1: String => col1 + "_transf")
           .project(('col1, 'col2, 'col1_transf))
       } Then { buffer: Buffer[Tuple] =>
         buffer.forall(tuple => tuple.getString(2).endsWith("_transf")) shouldBe true
@@ -81,7 +81,7 @@ class SourceListSpecTest extends WordSpec with Matchers with BddDsl {
       } When { (pipes: List[Pipe]) =>
         pipes(0)
           .joinWithSmaller('col1 -> 'col1, pipes(1))
-          .map('col1 -> 'col1_transf) { col1: String => col1 + "_transf" }
+          .map('col1 -> 'col1_transf)(col1: String => col1 + "_transf")
           .project(('col1, 'col2, 'col1_transf))
       } Then { buffer: Buffer[Tuple] =>
         buffer.forall(tuple => tuple.getString(2).endsWith("_transf")) shouldBe true

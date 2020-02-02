@@ -158,7 +158,7 @@ class TestkitDocSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
         case "hello" => throw new IllegalArgumentException("boom")
       }
     })
-    intercept[IllegalArgumentException] { actorRef.receive("hello") }
+    intercept[IllegalArgumentException](actorRef.receive("hello"))
     //#test-expecting-exceptions
   }
 

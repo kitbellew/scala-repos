@@ -216,7 +216,7 @@ class HistoryServerSuite
     entry should not be null
     val totalFiles =
       attemptId
-        .map { x => 1 }
+        .map(x => 1)
         .getOrElse(2)
     var filesCompared = 0
     while (entry != null) {

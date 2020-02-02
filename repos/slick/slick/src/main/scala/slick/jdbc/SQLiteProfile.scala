@@ -114,7 +114,7 @@ trait SQLiteProfile extends JdbcProfile {
           .collect {
             case ("null", _) => Some(None) // 3.7.15-M1
           }
-          .getOrElse { super.default }
+          .getOrElse(super.default)
       override def tpe = dbType match {
         case Some("DOUBLE")    => "Double"
         case Some("DATE")      => "java.sql.Date"

@@ -475,7 +475,7 @@ trait IndicesModule[M[+_]]
           case (accM, i) =>
             val arrM = keys(i)
 
-            M.apply2(accM, arrM) { (acc, arr) => acc.updated(i, arr) }
+            M.apply2(accM, arrM)((acc, arr) => acc.updated(i, arr))
         }
 
       back map { _.toArray }

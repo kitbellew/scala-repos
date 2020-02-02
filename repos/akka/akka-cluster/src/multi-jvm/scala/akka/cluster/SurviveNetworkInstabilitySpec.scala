@@ -144,8 +144,8 @@ abstract class SurviveNetworkInstabilitySpec
       }
       enterBarrier("blackhole-2")
 
-      runOn(first) { assertUnreachable(second) }
-      runOn(second) { assertUnreachable(first) }
+      runOn(first)(assertUnreachable(second))
+      runOn(second)(assertUnreachable(first))
       runOn(third, fourth, fifth) {
         assertUnreachable(first, second)
       }
@@ -175,7 +175,7 @@ abstract class SurviveNetworkInstabilitySpec
       }
       enterBarrier("blackhole-3")
 
-      runOn(first) { assertUnreachable(others: _*) }
+      runOn(first)(assertUnreachable(others: _*))
       runOn(others: _*) {
         assertUnreachable(first)
       }
@@ -227,8 +227,8 @@ abstract class SurviveNetworkInstabilitySpec
       }
       enterBarrier("blackhole-5")
 
-      runOn(first) { assertUnreachable(others: _*) }
-      runOn(others: _*) { assertUnreachable(first) }
+      runOn(first)(assertUnreachable(others: _*))
+      runOn(others: _*)(assertUnreachable(first))
 
       enterBarrier("unreachable-5")
 
@@ -241,9 +241,9 @@ abstract class SurviveNetworkInstabilitySpec
 
       enterBarrier("joined-5")
 
-      runOn((joining :+ first): _*) { assertUnreachable(others: _*) }
+      runOn((joining :+ first): _*)(assertUnreachable(others: _*))
       // others doesn't know about the joining nodes yet, no gossip passed through
-      runOn(others: _*) { assertUnreachable(first) }
+      runOn(others: _*)(assertUnreachable(first))
 
       enterBarrier("more-unreachable-5")
 
@@ -328,8 +328,8 @@ abstract class SurviveNetworkInstabilitySpec
       }
       enterBarrier("blackhole-7")
 
-      runOn(side1: _*) { assertUnreachable(side2: _*) }
-      runOn(side2: _*) { assertUnreachable(side1: _*) }
+      runOn(side1: _*)(assertUnreachable(side2: _*))
+      runOn(side2: _*)(assertUnreachable(side1: _*))
 
       enterBarrier("unreachable-7")
 

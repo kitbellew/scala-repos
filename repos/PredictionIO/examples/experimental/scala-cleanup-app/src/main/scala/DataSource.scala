@@ -64,7 +64,7 @@ class DataSource(val dsp: DataSourceParams)
       }
       .collect
 
-    var lastFuture: Future[Boolean] = Future[Boolean] { true }
+    var lastFuture: Future[Boolean] = Future[Boolean](true)
     eventsToRemove.foreach {
       case eventId =>
         if (eventId != "")

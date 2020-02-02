@@ -64,7 +64,7 @@ private[scalajs] object UseAsMacros {
           srcSym != definitions.NullClass)
         check(srcTpe, trgTpe)
 
-      reify { c.prefix.splice.x.asInstanceOf[B] }
+      reify(c.prefix.splice.x.asInstanceOf[B])
     }
 
     /** Perform the actual structural typechecking.
@@ -202,7 +202,7 @@ private[scalajs] object UseAsMacros {
           val name = defaultName(sym)
           if (name == "apply") JSMemberCall
           else JSNamedMember(name)
-        } { name => JSNamedMember(name) }
+        }(name => JSNamedMember(name))
       }
     }
 

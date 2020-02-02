@@ -66,7 +66,7 @@ trait StoppingBehavior extends Actor with ActorLogging {
         taskTracker.appTasksLaunchedSync(appId).map(_.taskId).toSet
       idsToKill = idsToKill.filter(trackerIds)
 
-      idsToKill.foreach { id => driver.killTask(id.mesosTaskId) }
+      idsToKill.foreach(id => driver.killTask(id.mesosTaskId))
 
       scheduleSynchronization()
       checkFinished()

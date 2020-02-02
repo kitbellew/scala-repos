@@ -53,7 +53,7 @@ object BasicCommands {
   def nop = Command.custom(s => success(() => s))
   def ignore = Command.command(FailureWall)(idFun)
 
-  def early = Command.arb(earlyParser, earlyHelp) { (s, other) => other :: s }
+  def early = Command.arb(earlyParser, earlyHelp)((s, other) => other :: s)
   private[this] def earlyParser =
     (s: State) => token(EarlyCommand).flatMap(_ => otherCommandParser(s))
   private[this] def earlyHelp =
@@ -137,7 +137,7 @@ object BasicCommands {
 
   def setOnFailure =
     Command(OnFailure, Help.more(OnFailure, OnFailureDetailed))(
-      otherCommandParser) { (s, arg) => s.copy(onFailure = Some(arg)) }
+      otherCommandParser)((s, arg) => s.copy(onFailure = Some(arg)))
   private[sbt] def compatCommands = Seq(
     Command.command(Compat.ClearOnFailure) { s =>
       s.log.warn(Compat.ClearOnFailureDeprecated)
@@ -171,7 +171,7 @@ object BasicCommands {
 
   def reboot =
     Command(RebootCommand, Help.more(RebootCommand, RebootDetailed))(
-      rebootParser) { (s, full) => s.reboot(full) }
+      rebootParser)((s, full) => s.reboot(full))
   def rebootParser(s: State) = token(Space ~> "full" ^^^ true) ?? false
 
   def call =
@@ -291,7 +291,7 @@ object BasicCommands {
       port: Int,
       previousSuccess: Boolean): Option[String] = {
     // split into two connections because this first connection ends the previous communication
-    xsbt.IPC.client(port) { _.send(previousSuccess.toString) }
+    xsbt.IPC.client(port)(_.send(previousSuccess.toString))
     //   and this second connection starts the next communication
     xsbt.IPC.client(port) { ipc =>
       val message = ipc.receive

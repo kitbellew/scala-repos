@@ -46,7 +46,7 @@ class ZkResolverTest extends FunSuite with BeforeAndAfter {
 
       serverSet.join(ephAddr1, Map[String, InetSocketAddress]().asJava, ALIVE)
 
-      eventually { assert(clust().size == 1) }
+      eventually(assert(clust().size == 1))
       val ep = clust().head.getServiceEndpoint
       assert(ep.getHost == "0.0.0.0")
       assert(ep.getPort == ephAddr1.getPort)
@@ -56,7 +56,7 @@ class ZkResolverTest extends FunSuite with BeforeAndAfter {
 
       serverSet.join(ephAddr2, Map[String, InetSocketAddress]().asJava, ALIVE)
 
-      eventually { assert(clust().size == 2) }
+      eventually(assert(clust().size == 2))
       assert {
         val Seq(fst) = (clust() &~ snap).toSeq
         fst.getServiceEndpoint.getPort == ephAddr2.getPort
@@ -84,7 +84,7 @@ class ZkResolverTest extends FunSuite with BeforeAndAfter {
           .update(ALIVE)
       }
 
-      eventually { assert(clust().size == 3) }
+      eventually(assert(clust().size == 3))
 
       // and 1 in a cluster filtered by shardid (== to the port in this case)
       val filteredAddr =
@@ -106,7 +106,7 @@ class ZkResolverTest extends FunSuite with BeforeAndAfter {
       val res = new ZkResolver(factory)
       val va = res.bind(
         "localhost:%d!/foo/bar/baz".format(inst.zookeeperAddress.getPort))
-      eventually { Var.sample(va) == Addr.Bound() }
+      eventually(Var.sample(va) == Addr.Bound())
 
       /*
        val inetClust = clust collect { case ia: InetSocketAddress => ia }
@@ -129,18 +129,18 @@ class ZkResolverTest extends FunSuite with BeforeAndAfter {
         ALIVE
       )
 
-      eventually { assert(Var.sample(va) == Addr.Bound(sockAddr)) }
+      eventually(assert(Var.sample(va) == Addr.Bound(sockAddr)))
       status.leave()
-      eventually { assert(Var.sample(va) == Addr.Neg) }
+      eventually(assert(Var.sample(va) == Addr.Neg))
       serverSet.join(
         sockAddr.addr,
         Map[String, InetSocketAddress]("blah" -> blahAddr.addr).asJava,
         ALIVE)
-      eventually { assert(Var.sample(va) == Addr.Bound(sockAddr)) }
+      eventually(assert(Var.sample(va) == Addr.Bound(sockAddr)))
 
       val blahVa = res.bind(
         "localhost:%d!/foo/bar/baz!blah".format(inst.zookeeperAddress.getPort))
-      eventually { assert(Var.sample(blahVa) == Addr.Bound(blahAddr)) }
+      eventually(assert(Var.sample(blahVa) == Addr.Bound(blahAddr)))
     }
 
     test("filter by endpoint") {
@@ -163,7 +163,7 @@ class ZkResolverTest extends FunSuite with BeforeAndAfter {
           .update(ALIVE)
       }
 
-      eventually { assert(clust().size == 3) }
+      eventually(assert(clust().size == 3))
 
       val filteredAddr =
         new ZkResolver(factory).resolve(

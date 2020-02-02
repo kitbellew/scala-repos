@@ -239,7 +239,7 @@ abstract class CatalogTestCases extends SparkFunSuite with BeforeAndAfterEach {
 
   test("list tables with pattern") {
     val catalog = newBasicCatalog()
-    intercept[AnalysisException] { catalog.listTables("unknown_db") }
+    intercept[AnalysisException](catalog.listTables("unknown_db"))
     assert(catalog.listTables("db1", "*").toSet == Set.empty)
     assert(catalog.listTables("db2", "*").toSet == Set("tbl1", "tbl2"))
     assert(catalog.listTables("db2", "tbl*").toSet == Set("tbl1", "tbl2"))
@@ -522,7 +522,7 @@ abstract class CatalogTestCases extends SparkFunSuite with BeforeAndAfterEach {
     val newName = "funcky"
     assert(catalog.getFunction("db2", "func1").className == funcClass)
     catalog.renameFunction("db2", "func1", newName)
-    intercept[AnalysisException] { catalog.getFunction("db2", "func1") }
+    intercept[AnalysisException](catalog.getFunction("db2", "func1"))
     assert(catalog.getFunction("db2", newName).name.funcName == newName)
     assert(catalog.getFunction("db2", newName).className == funcClass)
     intercept[AnalysisException] {

@@ -5,7 +5,7 @@ import scala.tools.reflect.Eval
 object Test extends App {
   val outer = {
     val x = 2
-    reify { x }
+    reify(x)
   }
 
   val code = reify {

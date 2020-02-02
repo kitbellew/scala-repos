@@ -253,11 +253,11 @@ class FileSourceTest extends WordSpec with Matchers {
 
   "FixedPathSource.hdfsWritePath" should {
     "crib if path == *" in {
-      intercept[AssertionError] { TestFixedPathSource("*").hdfsWritePath }
+      intercept[AssertionError](TestFixedPathSource("*").hdfsWritePath)
     }
 
     "crib if path == /*" in {
-      intercept[AssertionError] { TestFixedPathSource("/*").hdfsWritePath }
+      intercept[AssertionError](TestFixedPathSource("/*").hdfsWritePath)
     }
 
     "remove /* from a path ending in /*" in {

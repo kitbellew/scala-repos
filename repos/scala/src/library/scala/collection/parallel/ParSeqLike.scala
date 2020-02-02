@@ -260,7 +260,7 @@ trait ParSeqLike[
       }
       val copyend = new Copy[U, That](cfactory, pits(2))
       tasksupport.executeAndWaitResult(
-        ((copystart parallel copymiddle) { _ combine _ } parallel copyend) {
+        ((copystart parallel copymiddle)(_ combine _) parallel copyend) {
           _ combine _
         } mapResult {
           _.resultWithTaskSupport

@@ -32,7 +32,7 @@ object ExceptionStatsHandler {
       else
         Seq(exceptionChain, Nil)
 
-    labels.flatMap { prefix => suffixes.map { suffix => prefix ++ suffix } }
+    labels.flatMap(prefix => suffixes.map(suffix => prefix ++ suffix))
   }
 }
 
@@ -142,6 +142,6 @@ private[finagle] class MultiCategorizingExceptionStatsHandler(
     val paths: Seq[Seq[String]] = statPaths(t, labels, rollup)
 
     if (flags.nonEmpty) statsReceiver.counter(parentLabel).incr()
-    paths.foreach { path => statsReceiver.counter(path: _*).incr() }
+    paths.foreach(path => statsReceiver.counter(path: _*).incr())
   }
 }

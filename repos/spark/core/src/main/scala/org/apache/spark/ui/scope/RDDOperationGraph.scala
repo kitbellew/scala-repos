@@ -130,7 +130,7 @@ private[ui] object RDDOperationGraph extends Logging {
         // Otherwise, this RDD belongs to an inner cluster,
         // which may be nested inside of other clusters
         val rddScopes = rdd.scope
-          .map { scope => scope.getAllScopes }
+          .map(scope => scope.getAllScopes)
           .getOrElse(Seq.empty)
         val rddClusters = rddScopes.map { scope =>
           val clusterId = scope.id

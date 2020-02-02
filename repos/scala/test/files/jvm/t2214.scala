@@ -8,7 +8,7 @@ object Test {
   def main(args: Array[String]) = {
     val buf = new java.io.ByteArrayOutputStream
     val oos = new java.io.ObjectOutputStream(buf)
-    InvestmentType.values.foreach { i => oos.writeObject(i) }
+    InvestmentType.values.foreach(i => oos.writeObject(i))
     oos.flush
     oos.close
     val ois = new java.io.ObjectInputStream(

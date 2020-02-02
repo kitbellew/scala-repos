@@ -41,7 +41,7 @@ class DirectiveExamplesSpec extends RoutingSpec {
         }
       }
 
-    val route: Route = path("order" / IntNumber) { id => innerRoute(id) }
+    val route: Route = path("order" / IntNumber)(id => innerRoute(id))
     verify(route) // hide
   }
 
@@ -100,8 +100,8 @@ class DirectiveExamplesSpec extends RoutingSpec {
   }
 
   def verify(route: Route) = {
-    Get("/order/42") ~> route ~> check { responseAs[String] shouldEqual "Received GET request for order 42" }
-    Put("/order/42") ~> route ~> check { responseAs[String] shouldEqual "Received PUT request for order 42" }
-    Get("/") ~> route ~> check { handled shouldEqual false }
+    Get("/order/42") ~> route ~> check(responseAs[String] shouldEqual "Received GET request for order 42")
+    Put("/order/42") ~> route ~> check(responseAs[String] shouldEqual "Received PUT request for order 42")
+    Get("/") ~> route ~> check(handled shouldEqual false)
   }
 }

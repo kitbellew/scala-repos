@@ -147,8 +147,8 @@ histogram
             }
         }
 
-        threads.foreach { _.start }
-        threads.foreach { _.join }
+        threads.foreach(_.start)
+        threads.foreach(_.join)
       }
 
       println("load test sim")
@@ -234,8 +234,8 @@ histogram
           }
         }
 
-        threads.foreach { _.start }
-        threads.foreach { _.join }
+        threads.foreach(_.start)
+        threads.foreach(_.join)
       }
 
       val result = Performance().benchmark(test(1), benchParams, benchParams)

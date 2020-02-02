@@ -175,7 +175,7 @@ class FutureSpec
         p.future map _ + Thread.currentThread().getName()
       }
 
-      p.completeWith(Future { "Hi " }(B))
+      p.completeWith(Future("Hi ")(B))
       try Await.result(result, timeout.duration) should ===("Hi A")
       finally {
         A.shutdown()
@@ -482,7 +482,7 @@ class FutureSpec
       }
 
       "find" in {
-        val futures = for (i ← 1 to 10) yield Future { i }
+        val futures = for (i ← 1 to 10) yield Future(i)
         val result = Future.find[Int](futures)(_ == 3)
         Await.result(result, timeout.duration) should ===(Some(3))
 
@@ -644,8 +644,8 @@ class FutureSpec
         class ThrowableTest(m: String) extends Throwable(m)
 
         EventFilter[ThrowableTest](occurrences = 4) intercept {
-          val f1 = Future[Any] { throw new ThrowableTest("test") }
-          intercept[ThrowableTest] { Await.result(f1, timeout.duration) }
+          val f1 = Future[Any](throw new ThrowableTest("test"))
+          intercept[ThrowableTest](Await.result(f1, timeout.duration))
 
           val latch = new TestLatch
           val f2 = Future { FutureSpec.ready(latch, 5 seconds); "success" }
@@ -668,7 +668,7 @@ class FutureSpec
         val latch = new TestLatch
 
         val f = Future { FutureSpec.ready(latch, 5 seconds); 5 }
-        val f2 = Future { Await.result(f, timeout.duration) + 5 }
+        val f2 = Future(Await.result(f, timeout.duration) + 5)
 
         intercept[TimeoutException](FutureSpec.ready(f2, 100 millis))
         latch.open()
@@ -676,7 +676,7 @@ class FutureSpec
 
         val f3 = Promise[Int]().future
         filterException[TimeoutException] {
-          intercept[TimeoutException] { FutureSpec.ready(f3, 0 millis) }
+          intercept[TimeoutException](FutureSpec.ready(f3, 0 millis))
         }
       }
 

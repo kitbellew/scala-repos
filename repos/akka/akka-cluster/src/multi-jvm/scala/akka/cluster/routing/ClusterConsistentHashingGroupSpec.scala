@@ -95,7 +95,7 @@ abstract class ClusterConsistentHashingGroupSpec
         "router"
       )
       // it may take some time until router receives cluster member events
-      awaitAssert { currentRoutees(router).size should ===(3) }
+      awaitAssert(currentRoutees(router).size should ===(3))
       val keys = List("A", "B", "C", "D", "E", "F", "G")
       for (_ ← 1 to 10; k ← keys) router ! k
       enterBarrier("messages-sent")

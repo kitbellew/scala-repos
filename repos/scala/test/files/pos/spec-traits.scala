@@ -6,7 +6,7 @@ class C extends B
 class Lazy {
   def test[U](block: => U): Unit = block
 
-  test { lazy val x = 1 }
+  test(lazy val x = 1)
 }
 
 // issue 3307
@@ -15,7 +15,7 @@ class Bug3307 {
     block("abc")
   }
 
-  ({ () => f { implicit x => println(x) } })()
+  ({ () => f(implicit x => println(x)) })()
 }
 
 // issue 3301

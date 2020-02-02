@@ -25,7 +25,7 @@ private[parser] trait ContentDispositionHeader {
           ContentDispositionTypes.`form-data`)
         | `disp-ext-type` ~> (ContentDispositionTypes.Ext(_)))
 
-  def `disp-ext-type` = rule { token }
+  def `disp-ext-type` = rule(token)
 
   def `disposition-parm` = rule {
     (`filename-parm` | `disp-ext-parm`) ~> (_ -> _)
@@ -44,5 +44,8 @@ private[parser] trait ContentDispositionHeader {
     token ~> (s ⇒ test(s endsWith "*") ~ push(s))
   }
 
-  def `ext-value` = rule { word } // support full `ext-value` notation from http://tools.ietf.org/html/rfc5987#section-3.2.1
+  def `ext-value` =
+    rule(
+      word
+    ) // support full `ext-value` notation from http://tools.ietf.org/html/rfc5987#section-3.2.1
 }

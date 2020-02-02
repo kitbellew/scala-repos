@@ -238,7 +238,7 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
         pendingTimes.mkString(", "))
     // Reschedule jobs for these times
     val timesToReschedule = (pendingTimes ++ downTimes)
-      .filter { _ < restartTime }
+      .filter(_ < restartTime)
       .distinct
       .sorted(Time.ordering)
     logInfo(

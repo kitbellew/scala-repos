@@ -133,7 +133,7 @@ class KeyFrameSpec
 
   it should "support the at(duration) {value} syntax" in {
     val doubleProperty = new DoubleProperty(null, "sample")
-    val keyFrame = at(5 s) { doubleProperty -> 20 }
+    val keyFrame = at(5 s)(doubleProperty -> 20)
     keyFrame.time should equal(5 s)
     keyFrame.values should have size (1)
   }

@@ -413,7 +413,7 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
       case (actualLast, snapshot, deltaFlow2Pipe) =>
         val snapshotTs = batcher.latestTimeOf(actualLast)
         Scalding.merge(
-          snapshot.map { pipe => pipe.map { (snapshotTs, _) } },
+          snapshot.map(pipe => pipe.map((snapshotTs, _))),
           deltaFlow2Pipe)
     }
 

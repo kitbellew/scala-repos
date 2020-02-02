@@ -57,7 +57,7 @@ private[ui] class RDDOperationGraphListener(conf: SparkConf)
       val skippedStageIds = jobIdToSkippedStageIds.getOrElse(jobId, Seq.empty)
       val graphs = jobIdToStageIds
         .getOrElse(jobId, Seq.empty)
-        .flatMap { sid => stageIdToGraph.get(sid) }
+        .flatMap(sid => stageIdToGraph.get(sid))
       // Mark any skipped stages as such
       graphs.foreach { g =>
         val stageId = g.rootCluster.id
@@ -124,7 +124,7 @@ private[ui] class RDDOperationGraphListener(conf: SparkConf)
   private def trimStagesIfNecessary(): Unit =
     if (stageIds.size >= retainedStages) {
       val toRemove = math.max(retainedStages / 10, 1)
-      stageIds.take(toRemove).foreach { id => cleanStage(id) }
+      stageIds.take(toRemove).foreach(id => cleanStage(id))
       stageIds.trimStart(toRemove)
     }
 
@@ -132,7 +132,7 @@ private[ui] class RDDOperationGraphListener(conf: SparkConf)
   private def trimJobsIfNecessary(): Unit =
     if (jobIds.size >= retainedJobs) {
       val toRemove = math.max(retainedJobs / 10, 1)
-      jobIds.take(toRemove).foreach { id => cleanJob(id) }
+      jobIds.take(toRemove).foreach(id => cleanJob(id))
       jobIds.trimStart(toRemove)
     }
 
@@ -140,14 +140,14 @@ private[ui] class RDDOperationGraphListener(conf: SparkConf)
   private[ui] def cleanStage(stageId: Int): Unit = {
     completedStageIds.remove(stageId)
     stageIdToGraph.remove(stageId)
-    stageIdToJobId.remove(stageId).foreach { jobId => cleanJob(jobId) }
+    stageIdToJobId.remove(stageId).foreach(jobId => cleanJob(jobId))
   }
 
   /** Clean metadata for the given job and all stages that belong to it. */
   private[ui] def cleanJob(jobId: Int): Unit = {
     jobIdToSkippedStageIds.remove(jobId)
     jobIdToStageIds.remove(jobId).foreach { stageIds =>
-      stageIds.foreach { stageId => cleanStage(stageId) }
+      stageIds.foreach(stageId => cleanStage(stageId))
     }
   }
 

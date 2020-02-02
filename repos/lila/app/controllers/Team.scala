@@ -42,7 +42,7 @@ object Team extends LilaController {
 
   def show(id: String, page: Int) = Open { implicit ctx =>
     NotForKids {
-      OptionFuOk(api team id) { team => renderTeam(team, page) }
+      OptionFuOk(api team id)(team => renderTeam(team, page))
     }
   }
 
@@ -63,7 +63,7 @@ object Team extends LilaController {
 
   def edit(id: String) = Auth { implicit ctx => me =>
     OptionFuResult(api team id) { team =>
-      Owner(team) { fuccess(html.team.edit(team, forms edit team)) }
+      Owner(team)(fuccess(html.team.edit(team, forms edit team)))
     }
   }
 
@@ -204,7 +204,7 @@ object Team extends LilaController {
   }
 
   def quit(id: String) = Auth { implicit ctx => implicit me =>
-    OptionResult(api quit id) { team => Redirect(routes.Team.show(team.id)) }
+    OptionResult(api quit id)(team => Redirect(routes.Team.show(team.id)))
   }
 
   private def OnePerWeek[A <: Result](me: UserModel)(a: => Fu[A])(

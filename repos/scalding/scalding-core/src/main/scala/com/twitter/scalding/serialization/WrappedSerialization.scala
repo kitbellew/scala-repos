@@ -125,7 +125,7 @@ object WrappedSerialization {
 
   def getBinary(conf: Configuration): Map[Class[_], Serialization[_]] =
     conf.iterator.asScala
-      .map { it => (it.getKey, it.getValue) }
+      .map(it => (it.getKey, it.getValue))
       .filter(_._1.startsWith(confKey))
       .map {
         case (_, clsbuf) =>

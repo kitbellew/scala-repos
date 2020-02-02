@@ -262,7 +262,7 @@ object KetamaClientStress extends App {
                 // not expecting this to ever happen
                 replicationClient.set(key, value)
               case None =>
-                replicationClient.getsAll(key).map { casMap(key) = _ }
+                replicationClient.getsAll(key).map(casMap(key) = _)
             }
           }
         case "add" =>

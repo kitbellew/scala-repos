@@ -46,7 +46,7 @@ class Tutorial2(args: Args) extends Job(args) {
     Unlike with a normal scala map{}, we always need to specify the
     types of the arguments to the anonymous function.
     **/
-    .map('line -> 'reversed) { line: String => line.reverse }
+    .map('line -> 'reversed)(line: String => line.reverse)
     /**
     The map transformation in scalding is additive: the 'offset and 'line
     fields haven't gone away, we've just added a new 'reversed field to each

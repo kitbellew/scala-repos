@@ -751,7 +751,7 @@ class LiftServlet extends Loggable {
                   .flatMap { entries =>
                     entries
                       .find(_.requestVersion == handlerVersion)
-                      .map { entry => (entry, Right(entry.responseFuture)) }
+                      .map(entry => (entry, Right(entry.responseFuture)))
                   }
                   .getOrElse {
                     val entry = newRequestInfo
@@ -952,7 +952,7 @@ class LiftServlet extends Loggable {
     // The comet actor will already have handled the comet's version.
     S.request.flatMap(req => extractRenderVersion(req.path.partPath)) match {
       case Full(additionalVersion) =>
-        RenderVersion.doWith(additionalVersion) { jsCommands.toResponse }
+        RenderVersion.doWith(additionalVersion)(jsCommands.toResponse)
       case _ =>
         jsCommands.toResponse
     }

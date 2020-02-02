@@ -46,8 +46,7 @@ final case class ListT[M[_], A](run: M[List[A]]) {
     new ListT(M.map(run)(_.takeWhile(p)))
 
   def ++(bs: => ListT[M, A])(implicit M: Bind[M]): ListT[M, A] =
-    new ListT(
-      M.bind(run) { list1 => M.map(bs.run) { list2 => list1 ++ list2 } })
+    new ListT(M.bind(run)(list1 => M.map(bs.run)(list2 => list1 ++ list2)))
 
   def flatMap[B](f: A => ListT[M, B])(implicit M: Monad[M]): ListT[M, B] =
     new ListT(M.bind(run) { list =>
@@ -67,13 +66,13 @@ final case class ListT[M[_], A](run: M[List[A]]) {
   def tail(implicit M: Functor[M]): ListT[M, A] = new ListT(M.map(run)(_.tail))
 
   def foldLeft[B](z: => B)(f: (=> B, => A) => B)(implicit M: Functor[M]): M[B] =
-    M.map(run)(_.foldLeft(z) { (left, right) => f(left, right) })
+    M.map(run)(_.foldLeft(z)((left, right) => f(left, right)))
 
   def toList: M[List[A]] = run
 
   def foldRight[B](z: => B)(f: (=> A, => B) => B)(
       implicit M: Functor[M]): M[B] =
-    M.map(run)(_.foldRight(z) { (right, left) => f(right, left) })
+    M.map(run)(_.foldRight(z)((right, left) => f(right, left)))
 
   def length(implicit M: Functor[M]): M[Int] = M.map(run)(_.length)
 }

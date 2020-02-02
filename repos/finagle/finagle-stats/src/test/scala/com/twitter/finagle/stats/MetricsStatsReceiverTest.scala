@@ -45,7 +45,7 @@ class MetricsStatsReceiverTest
     val sr = new RollupStatsReceiver(rootReceiver)
     sr.counter("a", "b", "c").incr()
     intercept[MetricCollisionException] {
-      sr.addGauge("a", "b", "d") { 3 }
+      sr.addGauge("a", "b", "d")(3)
     }
   }
 
@@ -54,7 +54,7 @@ class MetricsStatsReceiverTest
     val newSr = sr.scope("a").scope("b")
     newSr.counter("c").incr()
     intercept[MetricCollisionException] {
-      newSr.addGauge("d") { 3 }
+      newSr.addGauge("d")(3)
     }
   }
 
@@ -81,14 +81,14 @@ class MetricsStatsReceiverTest
     import MetricsStatsReceiver.CounterIncr
     def id(e: events.Event) =
       CounterIncr.serialize(e).flatMap(CounterIncr.deserialize).get
-    forAll(genCounterIncr) { event => assert(id(event) == event) }
+    forAll(genCounterIncr)(event => assert(id(event) == event))
   }
 
   test("StatAdd: serialize andThen deserialize = identity") {
     import MetricsStatsReceiver.StatAdd
     def id(e: events.Event) =
       StatAdd.serialize(e).flatMap(StatAdd.deserialize).get
-    forAll(genStatAdd) { event => assert(id(event) == event) }
+    forAll(genStatAdd)(event => assert(id(event) == event))
   }
 }
 

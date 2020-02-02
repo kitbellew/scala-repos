@@ -323,8 +323,8 @@ class FutureDocSpec extends AkkaSpec {
   }
 
   "demonstrate usage of zip" in {
-    val future1 = Future { "foo" }
-    val future2 = Future { "bar" }
+    val future1 = Future("foo")
+    val future2 = Future("bar")
     //#zip
     val future3 = future1 zip future2 map { case (a, b) => a + " " + b }
     future3 foreach println
@@ -338,7 +338,7 @@ class FutureDocSpec extends AkkaSpec {
     def log(cause: Throwable) = ()
     def watchSomeTV(): Unit = ()
     //#and-then
-    val result = Future { loadPage(url) } andThen {
+    val result = Future(loadPage(url)) andThen {
       case Failure(exception) => log(exception)
     } andThen {
       case _ => watchSomeTV()
@@ -349,9 +349,9 @@ class FutureDocSpec extends AkkaSpec {
   }
 
   "demonstrate usage of fallbackTo" in {
-    val future1 = Future { "foo" }
-    val future2 = Future { "bar" }
-    val future3 = Future { "pigdog" }
+    val future1 = Future("foo")
+    val future2 = Future("bar")
+    val future3 = Future("pigdog")
     //#fallback-to
     val future4 = future1 fallbackTo future2 fallbackTo future3
     future4 foreach println
@@ -361,7 +361,7 @@ class FutureDocSpec extends AkkaSpec {
 
   "demonstrate usage of onSuccess & onFailure & onComplete" in {
     {
-      val future = Future { "foo" }
+      val future = Future("foo")
       //#onSuccess
       future onSuccess {
         case "bar"     => println("Got my bar alright!")
@@ -382,7 +382,7 @@ class FutureDocSpec extends AkkaSpec {
       //#onFailure
     }
     {
-      val future = Future { "foo" }
+      val future = Future("foo")
       def doSomethingOnSuccess(r: String) = ()
       def doSomethingOnFailure(t: Throwable) = ()
       //#onComplete
@@ -409,7 +409,7 @@ class FutureDocSpec extends AkkaSpec {
     promise.success("hello")
     //#promise
     Await.result(future, 3 seconds) should be("Yay!")
-    intercept[IllegalArgumentException] { Await.result(otherFuture, 3 seconds) }
+    intercept[IllegalArgumentException](Await.result(otherFuture, 3 seconds))
     Await.result(theFuture, 3 seconds) should be("hello")
   }
 
@@ -423,7 +423,7 @@ class FutureDocSpec extends AkkaSpec {
     val future = Future { Thread.sleep(1000); "foo" }
     val result = Future firstCompletedOf Seq(future, delayed)
     //#after
-    intercept[IllegalStateException] { Await.result(result, 2 second) }
+    intercept[IllegalStateException](Await.result(result, 2 second))
   }
 
   "demonstrate context.dispatcher" in {

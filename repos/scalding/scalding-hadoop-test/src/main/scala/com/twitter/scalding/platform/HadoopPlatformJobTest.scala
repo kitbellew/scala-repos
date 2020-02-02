@@ -56,7 +56,7 @@ case class HadoopPlatformJobTest(
       new Job(args) {
         TypedPipe
           .from(List(""))
-          .flatMap { _ => data }
+          .flatMap(_ => data)
           .write(out)
       }
     })
@@ -93,12 +93,12 @@ case class HadoopPlatformJobTest(
         tmpFile.delete()
     }
 
-    sourceWriters.foreach { cons => runJob(initJob(cons)) }
+    sourceWriters.foreach(cons => runJob(initJob(cons)))
   }
 
   private def checkSinks() {
     LOG.debug("Executing sinks")
-    sourceReaders.foreach { _(cluster.mode) }
+    sourceReaders.foreach(_(cluster.mode))
   }
 
   def run {

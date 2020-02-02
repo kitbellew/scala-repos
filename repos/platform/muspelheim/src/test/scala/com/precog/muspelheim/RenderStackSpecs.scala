@@ -83,7 +83,7 @@ trait RenderStackSpecs extends EvalStackSpecs with Logging {
       val stream =
         evalTable("(//tutorial/transactions).quantity").renderJson("", ",", "")
       val strings = stream map { _.toString }
-      val str = strings.foldLeft("") { _ + _ } copoint
+      val str = strings.foldLeft("")(_ + _) copoint
 
       str must contain(",")
     }

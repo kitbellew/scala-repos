@@ -7,7 +7,7 @@ object Test extends App {
   def foo(y: Int): Int => Int = {
     def y1 = y
 
-    val fun = reify { (x: Int) => x + y1 }
+    val fun = reify((x: Int) => x + y1)
 
     val toolbox = cm.mkToolBox()
     val dyn = toolbox.eval(fun.tree)

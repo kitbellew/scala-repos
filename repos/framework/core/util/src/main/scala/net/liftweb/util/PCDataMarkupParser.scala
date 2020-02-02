@@ -433,7 +433,7 @@ object PCDataXmlParser {
 
   private def apply(source: Source): Box[NodeSeq] =
     for {
-      p <- tryo { new PCDataXmlParser(source) }
+      p <- tryo(new PCDataXmlParser(source))
       _ = while (p.ch != '<' && p.curInput.hasNext)
         p.nextch // side effects, baby
       bd <- tryo(p.document)

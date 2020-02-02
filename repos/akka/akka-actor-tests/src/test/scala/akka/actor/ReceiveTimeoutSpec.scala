@@ -86,7 +86,7 @@ class ReceiveTimeoutSpec extends AkkaSpec {
         }
       }))
 
-      intercept[TimeoutException] { Await.ready(timeoutLatch, 1 second) }
+      intercept[TimeoutException](Await.ready(timeoutLatch, 1 second))
       system.stop(timeoutActor)
     }
 

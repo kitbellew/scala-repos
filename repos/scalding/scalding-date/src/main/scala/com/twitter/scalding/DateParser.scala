@@ -49,14 +49,14 @@ object DateParser {
     def parse(s: String)(implicit tz: TimeZone) =
       DateOps
         .getDateParser(s)
-        .map { p => p.parse(s) }
+        .map(p => p.parse(s))
         .getOrElse(Failure(
           new IllegalArgumentException("Could not find parser for: " + s)))
   }
 
   /** Try these Parsers in order */
   def apply(items: Iterable[DateParser]): DateParser =
-    items.reduce { _.rescueWith(_) }
+    items.reduce(_.rescueWith(_))
 
   /** Using the type-class pattern */
   def parse(s: String)(implicit tz: TimeZone, p: DateParser): Try[RichDate] =

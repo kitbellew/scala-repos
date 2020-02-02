@@ -161,15 +161,15 @@ class SparkListenerSuite
 
     sc.listenerBus.waitUntilEmpty(WAIT_TIMEOUT_MILLIS)
 
-    listener.stageInfos.size should be { 1 }
+    listener.stageInfos.size should be(1)
     val (stageInfo, taskInfoMetrics) = listener.stageInfos.head
-    stageInfo.rddInfos.size should be { 2 }
-    stageInfo.rddInfos.forall(_.numPartitions == 4) should be { true }
-    stageInfo.rddInfos.exists(_.name == "Target RDD") should be { true }
-    stageInfo.numTasks should be { 4 }
+    stageInfo.rddInfos.size should be(2)
+    stageInfo.rddInfos.forall(_.numPartitions == 4) should be(true)
+    stageInfo.rddInfos.exists(_.name == "Target RDD") should be(true)
+    stageInfo.numTasks should be(4)
     stageInfo.submissionTime should be('defined)
     stageInfo.completionTime should be('defined)
-    taskInfoMetrics.length should be { 4 }
+    taskInfoMetrics.length should be(4)
   }
 
   test("basic creation of StageInfo with shuffle") {
@@ -185,29 +185,31 @@ class SparkListenerSuite
 
     rdd1.count()
     sc.listenerBus.waitUntilEmpty(WAIT_TIMEOUT_MILLIS)
-    listener.stageInfos.size should be { 1 }
+    listener.stageInfos.size should be(1)
     val stageInfo1 = listener.stageInfos.keys.find(_.stageId == 0).get
-    stageInfo1.rddInfos.size should be { 1 } // ParallelCollectionRDD
-    stageInfo1.rddInfos.forall(_.numPartitions == 4) should be { true }
-    stageInfo1.rddInfos.exists(_.name == "Un") should be { true }
+    stageInfo1.rddInfos.size should be(1) // ParallelCollectionRDD
+    stageInfo1.rddInfos.forall(_.numPartitions == 4) should be(true)
+    stageInfo1.rddInfos.exists(_.name == "Un") should be(true)
     listener.stageInfos.clear()
 
     rdd2.count()
     sc.listenerBus.waitUntilEmpty(WAIT_TIMEOUT_MILLIS)
-    listener.stageInfos.size should be { 1 }
+    listener.stageInfos.size should be(1)
     val stageInfo2 = listener.stageInfos.keys.find(_.stageId == 1).get
-    stageInfo2.rddInfos.size should be { 3 } // ParallelCollectionRDD, FilteredRDD, MappedRDD
-    stageInfo2.rddInfos.forall(_.numPartitions == 4) should be { true }
-    stageInfo2.rddInfos.exists(_.name == "Deux") should be { true }
+    stageInfo2.rddInfos.size should be(
+      3
+    ) // ParallelCollectionRDD, FilteredRDD, MappedRDD
+    stageInfo2.rddInfos.forall(_.numPartitions == 4) should be(true)
+    stageInfo2.rddInfos.exists(_.name == "Deux") should be(true)
     listener.stageInfos.clear()
 
     rdd3.count()
     sc.listenerBus.waitUntilEmpty(WAIT_TIMEOUT_MILLIS)
-    listener.stageInfos.size should be { 2 } // Shuffle map stage + result stage
+    listener.stageInfos.size should be(2) // Shuffle map stage + result stage
     val stageInfo3 = listener.stageInfos.keys.find(_.stageId == 3).get
-    stageInfo3.rddInfos.size should be { 1 } // ShuffledRDD
-    stageInfo3.rddInfos.forall(_.numPartitions == 4) should be { true }
-    stageInfo3.rddInfos.exists(_.name == "Trois") should be { true }
+    stageInfo3.rddInfos.size should be(1) // ShuffledRDD
+    stageInfo3.rddInfos.forall(_.numPartitions == 4) should be(true)
+    stageInfo3.rddInfos.exists(_.name == "Trois") should be(true)
   }
 
   test("StageInfo with fewer tasks than partitions") {
@@ -220,11 +222,11 @@ class SparkListenerSuite
 
     sc.listenerBus.waitUntilEmpty(WAIT_TIMEOUT_MILLIS)
 
-    listener.stageInfos.size should be { 1 }
+    listener.stageInfos.size should be(1)
     val (stageInfo, _) = listener.stageInfos.head
-    stageInfo.numTasks should be { 2 }
-    stageInfo.rddInfos.size should be { 2 }
-    stageInfo.rddInfos.forall(_.numPartitions == 4) should be { true }
+    stageInfo.numTasks should be(2)
+    stageInfo.rddInfos.size should be(2)
+    stageInfo.rddInfos.forall(_.numPartitions == 4) should be(true)
   }
 
   test("local metrics") {
@@ -246,10 +248,10 @@ class SparkListenerSuite
     listener.stageInfos.size should be(1)
 
     val d2 = d
-      .map { i => w(i) -> i * 2 }
+      .map(i => w(i) -> i * 2)
       .setName("shuffle input 1")
     val d3 = d
-      .map { i => w(i) -> (0 to (i % 5)) }
+      .map(i => w(i) -> (0 to (i % 5)))
       .setName("shuffle input 2")
     val d4 = d2.cogroup(d3, numSlices).map {
       case (k, (v1, v2)) =>
@@ -314,7 +316,7 @@ class SparkListenerSuite
     assert(maxRpcMessageSize === 1024 * 1024)
     val result = sc
       .parallelize(Seq(1), 1)
-      .map { x => 1.to(maxRpcMessageSize).toArray }
+      .map(x => 1.to(maxRpcMessageSize).toArray)
       .reduce { case (x, y) => x }
     assert(result === 1.to(maxRpcMessageSize).toArray)
 

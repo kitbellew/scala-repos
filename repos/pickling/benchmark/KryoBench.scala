@@ -75,7 +75,7 @@ class KryoSerializer {
       // the builder is shared, so only one Serializer at a time should use it:
       // That the array of T is materialized, build:
       builder.clear()
-      asArray.foreach { item => builder += item.asInstanceOf[T] }
+      asArray.foreach(item => builder += item.asInstanceOf[T])
       builder.result()
     }
   }

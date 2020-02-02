@@ -56,7 +56,7 @@ private[sql] class SparkQl(conf: ParserConf = SimpleParserConf())
     props.map {
       case Token(x, keysAndValue) if x == expectedNodeText =>
         val key = keysAndValue.init
-          .map { x => unquoteString(x.text) }
+          .map(x => unquoteString(x.text))
           .mkString(".")
         val value = unquoteString(keysAndValue.last.text)
         (key, value)

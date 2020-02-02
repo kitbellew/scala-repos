@@ -93,12 +93,12 @@ class PasswordFieldControls(target: PasswordField)
     */
   val btnCopy = new Button {
     text = "Copy"
-    onAction = handle { target.copy() }
+    onAction = handle(target.copy())
   }
 
   val btnCut = new Button {
     text = "Cut"
-    onAction = handle { target.cut() }
+    onAction = handle(target.cut())
   }
 
   super.addNode("Typed Text", lblText)

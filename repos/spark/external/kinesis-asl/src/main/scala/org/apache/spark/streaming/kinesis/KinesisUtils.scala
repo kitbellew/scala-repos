@@ -480,7 +480,7 @@ object KinesisUtils {
     RegionUtils.getRegionByEndpoint(endpointUrl).getName()
 
   private def validateRegion(regionName: String): String =
-    Option(RegionUtils.getRegion(regionName)).map { _.getName }.getOrElse {
+    Option(RegionUtils.getRegion(regionName)).map(_.getName).getOrElse {
       throw new IllegalArgumentException(
         s"Region name '$regionName' is not valid")
     }

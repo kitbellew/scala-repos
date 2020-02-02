@@ -80,12 +80,12 @@ trait MongoMeta[BaseDocument] extends JsonFormats {
   /*
    * Count all documents
    */
-  def count: Long = useColl { coll => coll.getCount }
+  def count: Long = useColl(coll => coll.getCount)
 
   /*
    * Count documents by DBObject query
    */
-  def count(qry: DBObject): Long = useColl { coll => coll.getCount(qry) }
+  def count(qry: DBObject): Long = useColl(coll => coll.getCount(qry))
 
   /*
    * Count documents by JObject query
@@ -96,13 +96,13 @@ trait MongoMeta[BaseDocument] extends JsonFormats {
    * Count distinct records on a given field
    */
   def countDistinct(key: String, query: DBObject): Long =
-    useColl { coll => coll.distinct(key, query).size }
+    useColl(coll => coll.distinct(key, query).size)
 
   /*
    * Delete documents by a DBObject query
    */
   def delete(qry: DBObject): Unit =
-    useColl { coll => coll.remove(qry) }
+    useColl(coll => coll.remove(qry))
 
   // delete a document
   def delete(k: String, v: Any) {
@@ -118,14 +118,14 @@ trait MongoMeta[BaseDocument] extends JsonFormats {
   def delete(qry: JObject): Unit = delete(JObjectParser.parse(qry))
 
   /* drop this document collection */
-  def drop: Unit = useColl { coll => coll.drop }
+  def drop: Unit = useColl(coll => coll.drop)
 
   /*
    * Ensure an index exists
    */
   @deprecated("use createIndex(JObject) instead.", "2.6")
   def ensureIndex(keys: JObject): Unit =
-    useColl { coll => coll.createIndex(JObjectParser.parse(keys)) }
+    useColl(coll => coll.createIndex(JObjectParser.parse(keys)))
 
   /*
    * Ensure an index exists and make unique
@@ -134,13 +134,13 @@ trait MongoMeta[BaseDocument] extends JsonFormats {
   def ensureIndex(keys: JObject, unique: Boolean): Unit = {
     val options = new BasicDBObject
     if (unique) options.put("unique", true)
-    useColl { coll => coll.createIndex(JObjectParser.parse(keys), options) }
+    useColl(coll => coll.createIndex(JObjectParser.parse(keys), options))
   }
 
   def createIndex(keys: JObject, unique: Boolean = false): Unit = {
     val options = new BasicDBObject
     if (unique) options.put("unique", true)
-    useColl { coll => coll.createIndex(JObjectParser.parse(keys), options) }
+    useColl(coll => coll.createIndex(JObjectParser.parse(keys), options))
   }
 
   /*
@@ -187,7 +187,7 @@ trait MongoMeta[BaseDocument] extends JsonFormats {
    * Update document with a JObject query.
    */
   def update(qry: JObject, newobj: JObject, opts: UpdateOption*) {
-    useDb { db => update(qry, newobj, db, opts: _*) }
+    useDb(db => update(qry, newobj, db, opts: _*))
   }
 }
 

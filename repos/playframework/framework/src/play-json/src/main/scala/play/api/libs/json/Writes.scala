@@ -62,13 +62,13 @@ trait OWrites[-A] extends Writes[A] {
     * Transforms the resulting [[JsValue]] using transformer function
     */
   def transform(transformer: JsObject => JsObject): OWrites[A] =
-    OWrites[A] { a => transformer(this.writes(a)) }
+    OWrites[A](a => transformer(this.writes(a)))
 
   /**
     * Transforms resulting [[JsValue]] using Writes[JsValue]
     */
   def transform(transformer: OWrites[JsObject]): OWrites[A] =
-    OWrites[A] { a => transformer.writes(this.writes(a)) }
+    OWrites[A](a => transformer.writes(this.writes(a)))
 
 }
 
@@ -197,13 +197,13 @@ trait DefaultWrites {
     * Serializer for Array[T] types.
     */
   implicit def arrayWrites[T: ClassTag: Writes]: Writes[Array[T]] =
-    Writes[Array[T]] { ts => JsArray(ts.map(toJson(_)).toSeq) }
+    Writes[Array[T]](ts => JsArray(ts.map(toJson(_)).toSeq))
 
   /**
     * Serializer for Map[String,V] types.
     */
   implicit def mapWrites[V: Writes]: OWrites[Map[String, V]] =
-    OWrites[Map[String, V]] { ts => JsObject(ts.mapValues(toJson(_)).toSeq) }
+    OWrites[Map[String, V]](ts => JsObject(ts.mapValues(toJson(_)).toSeq))
 
   /**
     * Serializer for Traversables types.

@@ -140,7 +140,7 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
         }
       }.start()
     sem.acquire(2)
-    throwable.foreach { t => throw improveStackTrace(t) }
+    throwable.foreach(t => throw improveStackTrace(t))
     if (ThreadingSuiteState.failed.get()) {
       logError(
         "Waited 1 second without seeing runningThreads = 4 (it was " +
@@ -170,7 +170,7 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
     threads.foreach(_.start())
 
     sem.acquire(5)
-    throwable.foreach { t => throw improveStackTrace(t) }
+    throwable.foreach(t => throw improveStackTrace(t))
     assert(sc.getLocalProperty("test") === null)
   }
 
@@ -197,7 +197,7 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
     threads.foreach(_.start())
 
     sem.acquire(5)
-    throwable.foreach { t => throw improveStackTrace(t) }
+    throwable.foreach(t => throw improveStackTrace(t))
     assert(sc.getLocalProperty("test") === "parent")
     assert(sc.getLocalProperty("Foo") === null)
   }
@@ -219,7 +219,7 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
     sc.setLocalProperty("test", "this-should-not-be-inherited")
     thread.start()
     thread.join()
-    throwable.foreach { t => throw improveStackTrace(t) }
+    throwable.foreach(t => throw improveStackTrace(t))
     assert(threadTestValue === originalTestValue)
   }
 

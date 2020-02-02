@@ -441,7 +441,7 @@ private[spark] object UIUtils extends Logging {
         throw new IllegalArgumentException(
           "Only HTML anchors allowed in job descriptions\n" +
             illegalNodes
-              .map { n => s"${n.label} in $n" }
+              .map(n => s"${n.label} in $n")
               .mkString("\n\t"))
 
       // Verify that all links are relative links starting with "/"
@@ -449,7 +449,7 @@ private[spark] object UIUtils extends Logging {
         xml \\ "a" flatMap { _.attributes } filter _.key == "href" map {
           _.value.toString
         }
-      if (allLinks.exists { !_.startsWith("/") })
+      if (allLinks.exists(!_.startsWith("/")))
         throw new IllegalArgumentException(
           "Links in job descriptions must be root-relative:\n" + allLinks
             .mkString("\n\t"))

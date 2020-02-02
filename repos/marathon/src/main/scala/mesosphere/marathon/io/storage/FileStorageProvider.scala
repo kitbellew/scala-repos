@@ -19,7 +19,7 @@ case class FileStorageItem(
 
   def store(fn: OutputStream => Unit): FileStorageItem = {
     IO.createDirectory(file.getParentFile)
-    IO.using(new FileOutputStream(file)) { fn }
+    IO.using(new FileOutputStream(file))(fn)
     this
   }
 

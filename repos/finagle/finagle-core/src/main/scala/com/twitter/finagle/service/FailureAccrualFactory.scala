@@ -352,7 +352,7 @@ class FailureAccrualFactory[Req, Rep] private[finagle] (
 
     state = Dead
 
-    val timerTask = timer.schedule(duration.fromNow) { startProbing() }
+    val timerTask = timer.schedule(duration.fromNow)(startProbing())
 
     reviveTimerTask = Some(timerTask)
 

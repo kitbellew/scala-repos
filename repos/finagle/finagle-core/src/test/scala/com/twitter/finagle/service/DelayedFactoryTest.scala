@@ -15,7 +15,7 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class DelayedFactoryTest extends FunSuite {
   trait DelayedHelper {
-    val service = Service.mk[Int, Int] { int: Int => Future.value(int) }
+    val service = Service.mk[Int, Int](int: Int => Future.value(int))
     val future = Promise[ServiceFactory[Int, Int]]()
     val failed = new Exception("failed")
 
@@ -68,7 +68,7 @@ class DelayedFactoryTest extends FunSuite {
   def numWaitersCheckFactory(factory: ServiceFactory[Int, Int], num: Int) {
     factory.getClass.getDeclaredMethods
       .find(_.getName == "numWaiters")
-      .foreach { meth => assert(meth.invoke(factory) == num) }
+      .foreach(meth => assert(meth.invoke(factory) == num))
   }
 
   def testDelayedHelpers(helpers: Map[String, () => DelayedHelper]) {

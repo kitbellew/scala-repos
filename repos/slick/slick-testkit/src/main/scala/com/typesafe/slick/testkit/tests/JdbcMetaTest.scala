@@ -47,7 +47,7 @@ class JdbcMetaTest extends AsyncTest[JdbcTestDB] {
         MUDT.getUDTs(MQName.local("%")).named("UDTs from DatabaseMetaData"),
         MProcedure
           .getProcedures(MQName.local("%"))
-          .flatMap { ps => DBIO.sequence(ps.map(_.getProcedureColumns())) }
+          .flatMap(ps => DBIO.sequence(ps.map(_.getProcedureColumns())))
           .named("Procedures from DatabaseMetaData"),
         MTable
           .getTables(None, None, None, None)

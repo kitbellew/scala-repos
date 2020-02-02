@@ -12,7 +12,7 @@ class TryTests extends MinimalScalaTest {
   "Try()" should {
     "catch exceptions and lift into the Try type" in {
       Try[Int](1) mustEqual Success(1)
-      Try[Int] { throw e } mustEqual Failure(e)
+      Try[Int](throw e) mustEqual Failure(e)
     }
   }
 

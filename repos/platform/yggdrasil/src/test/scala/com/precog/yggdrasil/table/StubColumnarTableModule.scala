@@ -83,7 +83,7 @@ trait StubColumnarTableModule[M[+_]] extends ColumnarTableModuleTestSupport[M] {
           JValue.order.toScalaOrdering.reverse
 
       tableWithSortKey.toJson
-        .map { jvals => fromJson(jvals.toList.sortBy(_ \ "0").toStream) }
+        .map(jvals => fromJson(jvals.toList.sortBy(_ \ "0").toStream))
         .map(_.transform(DerefObjectStatic(Leaf(Source), CPathField("1"))))
     }
 

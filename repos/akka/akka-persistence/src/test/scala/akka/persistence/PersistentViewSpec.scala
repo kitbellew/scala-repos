@@ -16,7 +16,7 @@ object PersistentViewSpec {
       extends NamedPersistentActor(name) {
     def receiveCommand = {
       case msg ⇒
-        persist(msg) { m ⇒ probe ! s"$m-$lastSequenceNr" }
+        persist(msg)(m ⇒ probe ! s"$m-$lastSequenceNr")
     }
 
     override def receiveRecover: Receive = {
@@ -64,7 +64,7 @@ object PersistentViewSpec {
     }
 
     def shouldFailOn(m: Any): Boolean =
-      failAt.foldLeft(false) { (a, f) ⇒ a || (m == f) }
+      failAt.foldLeft(false)((a, f) ⇒ a || (m == f))
   }
 
   private class PassiveTestPersistentView(
@@ -96,7 +96,7 @@ object PersistentViewSpec {
     }
 
     def shouldFailOn(m: Any): Boolean =
-      failAt.foldLeft(false) { (a, f) ⇒ a || (m == f) }
+      failAt.foldLeft(false)((a, f) ⇒ a || (m == f))
 
   }
 

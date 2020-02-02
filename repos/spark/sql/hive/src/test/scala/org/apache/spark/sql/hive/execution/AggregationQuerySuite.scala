@@ -45,15 +45,15 @@ class ScalaAggregateFunction(schema: StructType)
   def deterministic: Boolean = true
 
   def initialize(buffer: MutableAggregationBuffer): Unit =
-    (0 until schema.length).foreach { i => buffer.update(i, null) }
+    (0 until schema.length).foreach(i => buffer.update(i, null))
 
   def update(buffer: MutableAggregationBuffer, input: Row): Unit =
     if (!input.isNullAt(0) && input.getInt(0) == 50)
-      (0 until schema.length).foreach { i => buffer.update(i, input.get(i)) }
+      (0 until schema.length).foreach(i => buffer.update(i, input.get(i)))
 
   def merge(buffer1: MutableAggregationBuffer, buffer2: Row): Unit =
     if (!buffer2.isNullAt(0) && buffer2.getInt(0) == 50)
-      (0 until schema.length).foreach { i => buffer1.update(i, buffer2.get(i)) }
+      (0 until schema.length).foreach(i => buffer1.update(i, buffer2.get(i)))
 
   def evaluate(buffer: Row): Any =
     Row.fromSeq(buffer.toSeq)

@@ -453,7 +453,7 @@ class Split1Macros(val c: whitebox.Context) extends CaseClassMacros {
         .find(_.contains(lParam))
         .map { pivot =>
           !(pivot =:= lParamTpe) &&
-          args.forall { arg => arg =:= pivot || !arg.contains(lParam) }
+          args.forall(arg => arg =:= pivot || !arg.contains(lParam))
         }
         .getOrElse(false)
 

@@ -110,7 +110,7 @@ object Memoize {
                   // computation, then we need to make sure we do not
                   // starve any waiters before propagating the
                   // exception.
-                  synchronized { memo = memo - a }
+                  synchronized(memo = memo - a)
                   latch.countDown()
                   throw t
               }
@@ -118,7 +118,7 @@ object Memoize {
             // Update the memo table to indicate that the work has
             // been done, and signal to any waiting threads that the
             // work is complete.
-            synchronized { memo = memo + (a -> Right(b)) }
+            synchronized(memo = memo + (a -> Right(b)))
             latch.countDown()
             b
         }

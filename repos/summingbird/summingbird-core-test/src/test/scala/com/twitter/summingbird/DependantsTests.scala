@@ -68,7 +68,7 @@ object DependantsTest extends Properties("Dependants") {
           tdepth > 0,
           (Producer
             .dependenciesOf(t)
-            .map { deps.depth(_).get }
+            .map(deps.depth(_).get)
             .max) < tdepth) &&
         implies(tdepth > 0, Producer.dependenciesOf(t).exists {
           deps.depth(_) == Some(tdepth - 1)
@@ -115,9 +115,9 @@ object DependantsTest extends Properties("Dependants") {
       import dependants._
 
       val tails = allTails.toSet
-      tails.map { dependantsOf(_) }.forall { _.get.isEmpty } && {
+      tails.map(dependantsOf(_)).forall(_.get.isEmpty) && {
         nodes
-          .filter { dependantsOf(_) == Some(Nil) }
+          .filter(dependantsOf(_) == Some(Nil))
           .forall(tails)
       }
     }
@@ -191,7 +191,7 @@ object DependantsTest extends Properties("Dependants") {
           .collect {
             case t: TailProducer[_, _] => t
           }
-          .flatMap { n => n :: Producer.transitiveDependenciesOf(n) }
+          .flatMap(n => n :: Producer.transitiveDependenciesOf(n))
           .toSet
 
         depTillWrite
@@ -210,7 +210,7 @@ object DependantsTest extends Properties("Dependants") {
             case s @ Summer(_, _, _)       => s
             case w @ WrittenProducer(_, _) => w
           }
-          .flatMap { dependants.transitiveDependantsOf(_) }
+          .flatMap(dependants.transitiveDependantsOf(_))
           .toSet[Producer[Memory, Any]]
         tillWrite
           .collectFirst { case MergedProducer(_, _) => true }

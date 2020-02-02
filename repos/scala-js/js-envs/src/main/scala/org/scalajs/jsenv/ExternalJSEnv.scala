@@ -138,7 +138,7 @@ abstract class ExternalJSEnv(
 
     /** send a bunch of JS files to a writer */
     final protected def sendJS(files: Seq[VirtualJSFile], out: Writer): Unit =
-      files.foreach { writeJSFile(_, out) }
+      files.foreach(writeJSFile(_, out))
 
     /** pipe lines from input stream to JSConsole */
     final protected def pipeToConsole(in: InputStream, console: JSConsole) = {

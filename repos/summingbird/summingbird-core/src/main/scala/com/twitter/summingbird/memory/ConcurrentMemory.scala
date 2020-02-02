@@ -71,7 +71,7 @@ object PhysicalNode {
       with PhysicalNode[Nothing] {
     def run(implicit ec: ExecutionContext): Future[Unit] =
       Future
-        .sequence(data.map { o => next.push(o) })
+        .sequence(data.map(o => next.push(o)))
         .map(_ => ())
 
     def push(item: Nothing)(implicit ec: ExecutionContext) =
@@ -168,7 +168,7 @@ class ConcurrentMemory(
 
   def counter(group: Group, name: Name): Option[Long] =
     MemoryStatProvider.getCountersForJob(jobID).flatMap {
-      _.get(group.getString + "/" + name.getString).map { _.get }
+      _.get(group.getString + "/" + name.getString).map(_.get)
     }
 
   /**

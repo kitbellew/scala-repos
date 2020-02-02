@@ -21,7 +21,7 @@ trait TournamentHelper { self: I18nHelper with DateHelper with UserHelper =>
       "version" -> version
     )
     Json stringify {
-      user.fold(data) { u => data ++ Json.obj("username" -> u.username) }
+      user.fold(data)(u => data ++ Json.obj("username" -> u.username))
     }
   }
 

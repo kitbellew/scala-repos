@@ -127,7 +127,7 @@ private[ui] class MasterPage(parent: MasterWebUI) extends WebUIPage("") {
                     <span class="rest-uri"> (cluster mode)</span>
                   </li>
           }
-          .getOrElse { Seq.empty }
+          .getOrElse(Seq.empty)
       }
               <li><strong>Alive Workers:</strong> {aliveWorkers.length}</li>
               <li><strong>Cores in use:</strong> {aliveWorkers.map(_.cores).sum} Total,

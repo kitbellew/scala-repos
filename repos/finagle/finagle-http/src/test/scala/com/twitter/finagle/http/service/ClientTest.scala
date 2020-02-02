@@ -61,7 +61,7 @@ class ClientTest extends FunSuite {
         val resolved = Try(Await.result(future, 1.second))
         assert(resolved.isThrow == true)
         val Throw(cause) = resolved
-        intercept[ChannelClosedException] { throw cause }
+        intercept[ChannelClosedException](throw cause)
       } finally client.close()
     }
   }
@@ -78,7 +78,7 @@ class ClientTest extends FunSuite {
         val resolved = Try(Await.result(future, 1.second))
         assert(resolved.isThrow == true)
         val Throw(cause) = resolved
-        intercept[ChannelClosedException] { throw cause }
+        intercept[ChannelClosedException](throw cause)
         assert(counter == 1)
       } finally client.close()
     }

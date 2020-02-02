@@ -151,12 +151,12 @@ class LAFuture[T](val scheduler: LAScheduler) {
   /**
     * Has the future been satisfied
     */
-  def isSatisfied: Boolean = synchronized { satisfied }
+  def isSatisfied: Boolean = synchronized(satisfied)
 
   /**
     * Has the future been aborted
     */
-  def isAborted: Boolean = synchronized { aborted }
+  def isAborted: Boolean = synchronized(aborted)
 
   /**
     * Abort the future.  It can never be satified

@@ -152,7 +152,7 @@ class HttpServerExampleSpec
       }
 
     serverSource
-      .runForeach { con => con.handleWith(httpEcho) }
+      .runForeach(con => con.handleWith(httpEcho))
   }
 
   "full-server-example" in compileOnlySpec {

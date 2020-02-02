@@ -59,7 +59,7 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
       case t: TableNode =>
         val dbt = db.getTable(t.tableName)
         val acc = dbt.columnIndexes
-        dbt.rows.view.map { row => new StructValue(row, acc) }
+        dbt.rows.view.map(row => new StructValue(row, acc))
       case Bind(gen, from, sel) =>
         val fromV = run(from).asInstanceOf[Coll]
         val b = from.nodeType.asCollectionType.cons.iterableSubstitute
@@ -78,7 +78,7 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
       case Join(_, _, left, right, JoinType.Zip, LiteralNode(true)) =>
         val leftV = run(left).asInstanceOf[Coll]
         val rightV = run(right).asInstanceOf[Coll]
-        (leftV, rightV).zipped.map { (l, r) => new ProductValue(Vector(l, r)) }
+        (leftV, rightV).zipped.map((l, r) => new ProductValue(Vector(l, r)))
       case Join(leftGen, rightGen, left, right, JoinType.Inner, by) =>
         val res = run(left).asInstanceOf[Coll].flatMap { l =>
           scope(leftGen) = l
@@ -88,7 +88,7 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
               scope(rightGen) = r
               asBoolean(run(by))
             }
-            .map { r => new ProductValue(Vector(l, r)) }
+            .map(r => new ProductValue(Vector(l, r)))
         }
         scope.remove(leftGen)
         scope.remove(rightGen)
@@ -102,7 +102,7 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
               scope(rightGen) = r
               asBoolean(run(by))
             }
-            .map { r => new ProductValue(Vector(l, r)) }
+            .map(r => new ProductValue(Vector(l, r)))
           if (inner.headOption.isEmpty)
             Vector(
               new ProductValue(
@@ -123,7 +123,7 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
               scope(leftGen) = l
               asBoolean(run(by))
             }
-            .map { l => new ProductValue(Vector(l, r)) }
+            .map(l => new ProductValue(Vector(l, r)))
           if (inner.headOption.isEmpty)
             Vector(
               new ProductValue(
@@ -144,7 +144,7 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
               scope(rightGen) = r
               asBoolean(run(by))
             }
-            .map { r => new ProductValue(Vector(l, r)) }
+            .map(r => new ProductValue(Vector(l, r)))
           if (inner.headOption.isEmpty)
             Vector(
               new ProductValue(

@@ -60,7 +60,7 @@ trait SequentialActor extends Actor {
               context.system)
           }
           .addFailureEffect(onFailure)
-          .andThenAnyway { self ! Done }
+          .andThenAnyway(self ! Done)
     }
   }
 }

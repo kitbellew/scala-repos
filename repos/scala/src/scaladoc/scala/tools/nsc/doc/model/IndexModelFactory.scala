@@ -34,7 +34,7 @@ object IndexModelFactory {
             immutable.SortedMap[String, SortedSet[MemberEntity]]()
           }
           val members = letter.get(d.name).getOrElse {
-            SortedSet.empty[MemberEntity](Ordering.by { _.toString })
+            SortedSet.empty[MemberEntity](Ordering.by(_.toString))
           } + d
           if (!deprecated && members.find(_.deprecation.isDefined).isDefined)
             deprecated = true

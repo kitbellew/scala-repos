@@ -139,7 +139,7 @@ object MaxLengthBodyParserSpec extends Specification with AfterAll {
             BodyParser(req =>
               BodyParsers.parse.enforceMaxLength(req, MaxLength20, parser)))
           .apply(req))
-      result must beRight.which { inner => inner must beRight(Body15) }
+      result must beRight.which(inner => inner must beRight(Body15))
       Await.result(parsed, 5.seconds) must_== ()
     }
 

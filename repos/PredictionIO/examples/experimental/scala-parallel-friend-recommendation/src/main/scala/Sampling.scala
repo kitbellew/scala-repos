@@ -72,7 +72,7 @@ object Sampling {
         val edgeCandidates = accumulateEdges(e, vertexId)
         val burnCandidate = sc
           .parallelize(edgeCandidates)
-          .filter { (e: Edge[Int]) => !sampledVertices.contains(e.dstId) }
+          .filter((e: Edge[Int]) => !sampledVertices.contains(e.dstId))
         val burnFraction = numToSample.toDouble / burnCandidate.count.toDouble
         val burnEdges =
           burnCandidate.sample(false, burnFraction, Random.nextLong)

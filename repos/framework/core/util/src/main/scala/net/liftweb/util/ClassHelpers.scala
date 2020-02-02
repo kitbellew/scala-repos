@@ -361,7 +361,7 @@ trait ClassHelpers { self: ControlHelpers =>
      */
     possibleMethods.iterator
       .filter(m => inst != null || isStatic(m.getModifiers))
-      .map((m: Method) => tryo { m.invoke(inst, params: _*) })
+      .map((m: Method) => tryo(m.invoke(inst, params: _*)))
       .find((x: Box[Any]) =>
         x match {
           case result @ Full(_)                                 => true
@@ -385,7 +385,7 @@ trait ClassHelpers { self: ControlHelpers =>
     *
     * @return a Full can with the instance or a Failure if the instance can't be created
     */
-  def instantiate[C](clz: Class[C]): Box[C] = tryo { clz.newInstance }
+  def instantiate[C](clz: Class[C]): Box[C] = tryo(clz.newInstance)
 
   /**
     * Create a function (the 'invoker') which will trigger any public, parameterless method

@@ -98,7 +98,7 @@ case class GetResult private[memcached] (
     misses: immutable.Set[String] = immutable.Set.empty,
     failures: Map[String, Throwable] = Map.empty
 ) {
-  lazy val values: Map[String, Buf] = hits.mapValues { _.value }
+  lazy val values: Map[String, Buf] = hits.mapValues(_.value)
 
   def ++(o: GetResult): GetResult =
     GetResult(hits ++ o.hits, misses ++ o.misses, failures ++ o.failures)
@@ -109,7 +109,7 @@ case class GetsResult(getResult: GetResult) {
   def misses = getResult.misses
   def failures = getResult.failures
   def values = getResult.values
-  lazy val valuesWithTokens = hits.mapValues { v => (v.value, v.casUnique.get) }
+  lazy val valuesWithTokens = hits.mapValues(v => (v.value, v.casUnique.get))
   def ++(o: GetsResult) = GetsResult(getResult ++ o.getResult)
 }
 
@@ -140,7 +140,7 @@ object GetResult {
     }
 
   private[memcached] def merged(results: Seq[GetsResult]): GetsResult = {
-    val unwrapped = results.map { _.getResult }
+    val unwrapped = results.map(_.getResult)
     GetsResult(merged(unwrapped))
   }
 }
@@ -272,7 +272,7 @@ trait BaseClient[T] {
     * string-encoded u64.
     */
   def gets(key: String): Future[Option[(T, Buf)]] =
-    gets(Seq(key)).map { _.values.headOption }
+    gets(Seq(key)).map(_.values.headOption)
 
   /**
     * Get a set of keys from the server.
@@ -283,7 +283,7 @@ trait BaseClient[T] {
       if (result.failures.nonEmpty)
         Future.exception(result.failures.values.head)
       else
-        Future.value(result.values.mapValues { bufferToType(_) })
+        Future.value(result.values.mapValues(bufferToType(_)))
     }
 
   /**
@@ -529,7 +529,7 @@ protected class ConnectedClient(
     try {
       if (keys == null)
         throw new IllegalArgumentException("Invalid keys: keys cannot be null")
-      rawGet(Gets(keys)).map { GetsResult(_) }
+      rawGet(Gets(keys)).map(GetsResult(_))
     } catch {
       case t: IllegalArgumentException =>
         Future.exception(new ClientError(t.getMessage))
@@ -695,7 +695,7 @@ trait PartitionedClient extends Client {
     if (keys.nonEmpty)
       withKeysGroupedByClient(keys) {
         _.getResult(_)
-      }.map { GetResult.merged(_) }
+      }.map(GetResult.merged(_))
     else
       Future.value(GetResult.Empty)
 
@@ -703,7 +703,7 @@ trait PartitionedClient extends Client {
     if (keys.nonEmpty)
       withKeysGroupedByClient(keys) {
         _.getsResult(_)
-      }.map { GetResult.merged(_) }
+      }.map(GetResult.merged(_))
     else
       Future.value(GetsResult(GetResult.Empty))
 

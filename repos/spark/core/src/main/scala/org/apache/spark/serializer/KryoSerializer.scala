@@ -154,7 +154,7 @@ class KryoSerializer(conf: SparkConf)
             .forName(_, true, classLoader)
             .newInstance()
             .asInstanceOf[KryoRegistrator])
-        .foreach { reg => reg.registerClasses(kryo) }
+        .foreach(reg => reg.registerClasses(kryo))
       // scalastyle:on classforname
     } catch {
       case e: Exception =>

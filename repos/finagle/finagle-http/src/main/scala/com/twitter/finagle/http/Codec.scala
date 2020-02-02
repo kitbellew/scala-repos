@@ -339,7 +339,7 @@ private object TraceInfo {
   import HttpTracing._
 
   def letTraceIdFromRequestHeaders[R](request: Request)(f: => R): R = {
-    val id = if (Header.Required.forall { request.headers.contains(_) }) {
+    val id = if (Header.Required.forall(request.headers.contains(_))) {
       val spanId = SpanId.fromString(request.headers.get(Header.SpanId))
 
       spanId map { sid =>
@@ -378,7 +378,7 @@ private object TraceInfo {
   }
 
   def setClientRequestHeaders(request: Request): Unit = {
-    Header.All.foreach { request.headers.remove(_) }
+    Header.All.foreach(request.headers.remove(_))
 
     val traceId = Trace.id
     request.headers.add(Header.TraceId, traceId.traceId.toString)
@@ -422,7 +422,7 @@ private[finagle] class HttpServerTraceInitializer[Req <: Request, Rep]
     val param.Tracer(tracer) = _tracer
     val traceInitializer = Filter.mk[Req, Rep, Req, Rep] { (req, svc) =>
       Trace.letTracer(tracer) {
-        TraceInfo.letTraceIdFromRequestHeaders(req) { svc(req) }
+        TraceInfo.letTraceIdFromRequestHeaders(req)(svc(req))
       }
     }
     traceInitializer andThen next

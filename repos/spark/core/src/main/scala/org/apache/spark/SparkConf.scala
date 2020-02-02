@@ -605,7 +605,7 @@ private[spark] object SparkConf extends Logging {
       DeprecatedConfig("spark.rpc", "2.0", "Not used any more.")
     )
 
-    Map(configs.map { cfg => (cfg.key -> cfg) }: _*)
+    Map(configs.map(cfg => (cfg.key -> cfg)): _*)
   }
 
   /**
@@ -677,7 +677,7 @@ private[spark] object SparkConf extends Logging {
     */
   private val allAlternatives: Map[String, (String, AlternateConfig)] =
     configsWithAlternatives.keys.flatMap { key =>
-      configsWithAlternatives(key).map { cfg => (cfg.key -> (key -> cfg)) }
+      configsWithAlternatives(key).map(cfg => (cfg.key -> (key -> cfg)))
     }.toMap
 
   /**

@@ -555,9 +555,9 @@ class DenseVectorOps_DoubleTest
     val N = 30
     Arbitrary {
       for {
-        x <- Arbitrary.arbitrary[Double].map { _ % 1e100 }
-        y <- Arbitrary.arbitrary[Double].map { _ % 1e100 }
-        z <- Arbitrary.arbitrary[Double].map { _ % 1e100 }
+        x <- Arbitrary.arbitrary[Double].map(_ % 1e100)
+        y <- Arbitrary.arbitrary[Double].map(_ % 1e100)
+        z <- Arbitrary.arbitrary[Double].map(_ % 1e100)
         n <- Gen.choose(1, N)
         stride <- Gen.choose(1, 4)
         offset <- Gen.choose(0, 5)
@@ -577,7 +577,7 @@ class DenseVectorOps_DoubleTest
   }
 
   def genScalar: Arbitrary[Double] =
-    Arbitrary(Arbitrary.arbitrary[Double].map { _ % 1e10 })
+    Arbitrary(Arbitrary.arbitrary[Double].map(_ % 1e10))
 }
 
 @RunWith(classOf[JUnitRunner])
@@ -590,9 +590,9 @@ class DenseVectorOps_IntTest
       : Arbitrary[(DenseVector[Int], DenseVector[Int], DenseVector[Int])] =
     Arbitrary {
       for {
-        x <- Arbitrary.arbitrary[Int].map { _ % 1000 }
-        y <- Arbitrary.arbitrary[Int].map { _ % 1000 }
-        z <- Arbitrary.arbitrary[Int].map { _ % 1000 }
+        x <- Arbitrary.arbitrary[Int].map(_ % 1000)
+        y <- Arbitrary.arbitrary[Int].map(_ % 1000)
+        z <- Arbitrary.arbitrary[Int].map(_ % 1000)
         n <- Gen.choose(1, N)
       } yield (
         DenseVector.fill(n)(math.random * x toInt),
@@ -601,7 +601,7 @@ class DenseVectorOps_IntTest
     }
 
   def genScalar: Arbitrary[Int] =
-    Arbitrary(Arbitrary.arbitrary[Int].map { _ % 1000 })
+    Arbitrary(Arbitrary.arbitrary[Int].map(_ % 1000))
 }
 
 @RunWith(classOf[JUnitRunner])
@@ -642,9 +642,9 @@ class DenseVectorOps_FloatTest
     (DenseVector[Float], DenseVector[Float], DenseVector[Float])] =
     Arbitrary {
       for {
-        x <- Arbitrary.arbitrary[Float].map { _ % 1000 }
-        y <- Arbitrary.arbitrary[Float].map { _ % 1000 }
-        z <- Arbitrary.arbitrary[Float].map { _ % 1000 }
+        x <- Arbitrary.arbitrary[Float].map(_ % 1000)
+        y <- Arbitrary.arbitrary[Float].map(_ % 1000)
+        z <- Arbitrary.arbitrary[Float].map(_ % 1000)
         n <- Gen.choose(1, N)
         stride <- Gen.choose(1, 4)
         offset <- Gen.choose(0, 5)
@@ -661,5 +661,5 @@ class DenseVectorOps_FloatTest
     }
 
   def genScalar: Arbitrary[Float] =
-    Arbitrary(Arbitrary.arbitrary[Float].map { _ % 1000 })
+    Arbitrary(Arbitrary.arbitrary[Float].map(_ % 1000))
 }

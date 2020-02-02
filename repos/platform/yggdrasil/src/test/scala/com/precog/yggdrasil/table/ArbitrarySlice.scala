@@ -66,11 +66,11 @@ trait ArbitrarySlice {
         arbitraryBitSet(size) map { s => new BitsetColumn(s) with NullColumn }
       case CDate =>
         containerOfN[Array, Long](size, arbitrary[Long]) map { longs =>
-          ArrayDateColumn(bs, longs.map { l => new DateTime(l) })
+          ArrayDateColumn(bs, longs.map(l => new DateTime(l)))
         }
       case CPeriod =>
         containerOfN[Array, Long](size, arbitrary[Long]) map { longs =>
-          ArrayPeriodColumn(bs, longs.map { l => new Period(l) })
+          ArrayPeriodColumn(bs, longs.map(l => new Period(l)))
         }
       case CEmptyObject =>
         arbitraryBitSet(size) map { s =>

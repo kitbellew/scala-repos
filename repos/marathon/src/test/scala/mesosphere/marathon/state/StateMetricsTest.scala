@@ -16,8 +16,8 @@ class StateMetricsTest
     with Matchers
     with GivenWhenThen
     with ScalaFutures {
-  test("time crashing read call") { testCrashingCall(read = true) }
-  test("time crashing write call") { testCrashingCall(read = false) }
+  test("time crashing read call")(testCrashingCall(read = true))
+  test("time crashing write call")(testCrashingCall(read = false))
 
   private[this] def testCrashingCall(read: Boolean): Unit = {
     When("doing the call (but the future is delayed)")

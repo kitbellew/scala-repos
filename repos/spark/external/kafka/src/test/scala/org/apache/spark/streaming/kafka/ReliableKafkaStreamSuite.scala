@@ -117,7 +117,7 @@ class ReliableKafkaStreamSuite
       // Verify whether received message number is equal to the sent message number.
       assert(data.size === result.size)
       // Verify whether each message is the same as the data to be verified.
-      data.keys.foreach { k => assert(data(k) === result(k).toInt) }
+      data.keys.foreach(k => assert(data(k) === result(k).toInt))
       // Verify the offset number whether it is equal to the total message number.
       assert(getCommitOffset(groupId, topic, 0) === Some(29L))
     }

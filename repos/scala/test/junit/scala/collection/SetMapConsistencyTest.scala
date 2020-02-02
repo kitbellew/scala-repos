@@ -424,8 +424,7 @@ class SetMapConsistencyTest {
       () => boxIlm[Int],
       () => boxItm[Int]
     )
-    assert(
-      maps.sliding(2).forall { ms => churn(ms(0)(), ms(1)(), intKeys, 2000) })
+    assert(maps.sliding(2).forall(ms => churn(ms(0)(), ms(1)(), intKeys, 2000)))
   }
 
   @Test
@@ -442,7 +441,7 @@ class SetMapConsistencyTest {
       () => boxIlm[Long]
     )
     assert(
-      maps.sliding(2).forall { ms => churn(ms(0)(), ms(1)(), longKeys, 10000) })
+      maps.sliding(2).forall(ms => churn(ms(0)(), ms(1)(), longKeys, 10000)))
   }
 
   @Test
@@ -472,7 +471,7 @@ class SetMapConsistencyTest {
       () => boxIlm[Any]
     )
     assert(
-      maps.sliding(2).forall { ms => churn(ms(0)(), ms(1)(), anyKeys, 10000) })
+      maps.sliding(2).forall(ms => churn(ms(0)(), ms(1)(), anyKeys, 10000)))
   }
 
   @Test
@@ -689,8 +688,8 @@ class SetMapConsistencyTest {
     type NSEE = NoSuchElementException
     val map = Map(0 -> "zero", 1 -> "one")
     val m = map.filterKeys(i => if (map contains i) true else throw new NSEE)
-    assert { (m contains 0) && (m get 0).nonEmpty }
-    assertThrows[NSEE] { m contains 2 }
-    assertThrows[NSEE] { m get 2 }
+    assert((m contains 0) && (m get 0).nonEmpty)
+    assertThrows[NSEE](m contains 2)
+    assertThrows[NSEE](m get 2)
   }
 }

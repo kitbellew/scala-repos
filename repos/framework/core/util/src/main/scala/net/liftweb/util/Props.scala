@@ -376,7 +376,7 @@ private[util] trait Props extends Logger {
         toTry.map { f =>
           val name = f() + "props"
           name -> { () =>
-            val res = tryo { getClass.getResourceAsStream(name) }
+            val res = tryo(getClass.getResourceAsStream(name))
               .filter(_ ne null)
             trace("Trying to open resource %s. Result=%s".format(name, res))
             res

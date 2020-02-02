@@ -91,7 +91,7 @@ class SnapshotSerializer(val system: ExtendedActorSystem)
     // serialize actor references with full address information (defaultAddress)
     transportInformation match {
       case Some(ti) ⇒
-        Serialization.currentTransportInformation.withValue(ti) { serialize() }
+        Serialization.currentTransportInformation.withValue(ti)(serialize())
       case None ⇒ serialize()
     }
   }

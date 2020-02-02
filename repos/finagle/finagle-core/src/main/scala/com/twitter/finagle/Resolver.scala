@@ -129,7 +129,7 @@ private[finagle] class InetResolver(
           log.warning(s"Failed to resolve $host. Error $e")
           dnsLookupFailures.incr()
         }
-        .ensure { permit.release() }
+        .ensure(permit.release())
     }
 
   /**
@@ -350,7 +350,7 @@ private[finagle] abstract class BaseResolver(f: () => Seq[Resolver]) {
     */
   @deprecated("Use Resolver.eval", "6.7.x")
   def resolve(addr: String): Try[Group[SocketAddress]] =
-    Try { eval(addr) } flatMap {
+    Try(eval(addr)) flatMap {
       case Name.Path(_) =>
         Throw(
           new IllegalArgumentException(

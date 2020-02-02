@@ -34,7 +34,7 @@ class CommandEncodingTest extends FunSuite {
     val Some((Buf.Utf8(queueName), expiry)) = extractCommand(decoded)
 
     assert(queueName == name)
-    assert(timeout.map { _.inSeconds } == expiry.map { _.inSeconds })
+    assert(timeout.map(_.inSeconds) == expiry.map(_.inSeconds))
   }
 
   private def testCommandEncodeDecode(

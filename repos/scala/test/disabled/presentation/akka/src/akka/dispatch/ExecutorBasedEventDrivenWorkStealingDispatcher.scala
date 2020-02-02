@@ -118,12 +118,12 @@ class ExecutorBasedEventDrivenWorkStealingDispatcher(
               aType))
     }
 
-    synchronized { members :+= actorRef } //Update members
+    synchronized(members :+= actorRef) //Update members
     super.register(actorRef)
   }
 
   private[akka] override def unregister(actorRef: ActorRef) = {
-    synchronized { members = members.filterNot(actorRef eq) } //Update members
+    synchronized(members = members.filterNot(actorRef eq)) //Update members
     super.unregister(actorRef)
   }
 

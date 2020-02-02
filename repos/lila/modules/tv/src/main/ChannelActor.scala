@@ -38,7 +38,7 @@ private[tv] final class ChannelActor(channel: Tv.Channel) extends Actor {
           case _ => feature(candidates) foreach elect
         }
         manyIds = candidates
-          .sortBy { g => -(~g.averageUsersRating) }
+          .sortBy(g => -(~g.averageUsersRating))
           .map(_.id)
       }
   }

@@ -143,7 +143,7 @@ abstract class AdaptiveLoadBalancingRouterSpec
       name
     )
     // it may take some time until router receives cluster member events
-    awaitAssert { currentRoutees(router).size should ===(roles.size) }
+    awaitAssert(currentRoutees(router).size should ===(roles.size))
     val routees = currentRoutees(router)
     routees.map { case ActorRefRoutee(ref) ⇒ fullAddress(ref) }.toSet should ===(
       roles.map(address).toSet)
@@ -217,7 +217,7 @@ abstract class AdaptiveLoadBalancingRouterSpec
       runOn(first) {
         val router3 = system.actorOf(FromConfig.props(Props[Memory]), "router3")
         // it may take some time until router receives cluster member events
-        awaitAssert { currentRoutees(router3).size should ===(9) }
+        awaitAssert(currentRoutees(router3).size should ===(9))
         val routees = currentRoutees(router3)
         routees.map { case ActorRefRoutee(ref) ⇒ fullAddress(ref) }.toSet should ===(
           Set(address(first)))
@@ -229,7 +229,7 @@ abstract class AdaptiveLoadBalancingRouterSpec
       runOn(first) {
         val router4 = system.actorOf(FromConfig.props(Props[Memory]), "router4")
         // it may take some time until router receives cluster member events
-        awaitAssert { currentRoutees(router4).size should ===(6) }
+        awaitAssert(currentRoutees(router4).size should ===(6))
         val routees = currentRoutees(router4)
         routees.map { case ActorRefRoutee(ref) ⇒ fullAddress(ref) }.toSet should ===(
           Set(address(first), address(second), address(third)))

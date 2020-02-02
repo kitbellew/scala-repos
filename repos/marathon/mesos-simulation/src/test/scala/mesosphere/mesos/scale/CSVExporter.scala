@@ -21,7 +21,7 @@ object CSVExporter {
       .toSeq
       .filter(_.getName.endsWith("json"))
       .sortBy(_.getName)
-      .map { f => MetricsFormat.readMetric(f.toURI.toURL) }
+      .map(f => MetricsFormat.readMetric(f.toURI.toURL))
     val countr = metrics.flatMap(_.counters.map(_.name)).distinct.sorted
     val gauges = metrics.flatMap(_.gauges.map(_.name)).distinct.sorted
     val histos = metrics.flatMap(_.histograms.map(_.name)).distinct.sorted

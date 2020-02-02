@@ -1203,16 +1203,16 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
 
     private class SyncedCompilationBuffer { self =>
       private val underlying = new mutable.ArrayBuffer[CompilationUnit]
-      def size = synchronized { underlying.size }
+      def size = synchronized(underlying.size)
       def +=(cu: CompilationUnit): this.type = {
-        synchronized { underlying += cu }; this
+        synchronized(underlying += cu); this
       }
-      def head: CompilationUnit = synchronized { underlying.head }
-      def apply(i: Int): CompilationUnit = synchronized { underlying(i) }
+      def head: CompilationUnit = synchronized(underlying.head)
+      def apply(i: Int): CompilationUnit = synchronized(underlying(i))
       def iterator: Iterator[CompilationUnit] =
         new collection.AbstractIterator[CompilationUnit] {
           private var used = 0
-          def hasNext = self.synchronized { used < underlying.size }
+          def hasNext = self.synchronized(used < underlying.size)
           def next = self.synchronized {
             if (!hasNext)
               throw new NoSuchElementException("next on empty Iterator")
@@ -1220,7 +1220,7 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
             underlying(used - 1)
           }
         }
-      def toList: List[CompilationUnit] = synchronized { underlying.toList }
+      def toList: List[CompilationUnit] = synchronized(underlying.toList)
     }
 
     private val unitbuf = new SyncedCompilationBuffer

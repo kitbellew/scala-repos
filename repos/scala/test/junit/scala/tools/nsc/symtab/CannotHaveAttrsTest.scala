@@ -23,7 +23,7 @@ class CannotHaveAttrsTest {
 
   @Test
   def canHaveAttrsIsFalse =
-    attrlessTrees.foreach { t => assertFalse(t.canHaveAttrs) }
+    attrlessTrees.foreach(t => assertFalse(t.canHaveAttrs))
 
   @Test
   def defaultPosAssignment =
@@ -49,8 +49,8 @@ class CannotHaveAttrsTest {
   def nonDefaultPosAssignmentFails = {
     val pos = new OffsetPosition(null, 0)
     attrlessTrees.foreach { t =>
-      assertThrows[IllegalArgumentException] { t.pos = pos }
-      assertThrows[IllegalArgumentException] { t.setPos(pos) }
+      assertThrows[IllegalArgumentException](t.pos = pos)
+      assertThrows[IllegalArgumentException](t.setPos(pos))
     }
   }
 
@@ -58,8 +58,8 @@ class CannotHaveAttrsTest {
   def nonDefaultTpeAssignmentFails = {
     val tpe = typeOf[Int]
     attrlessTrees.foreach { t =>
-      assertThrows[IllegalArgumentException] { t.tpe = tpe }
-      assertThrows[IllegalArgumentException] { t.setType(tpe) }
+      assertThrows[IllegalArgumentException](t.tpe = tpe)
+      assertThrows[IllegalArgumentException](t.setType(tpe))
     }
   }
 

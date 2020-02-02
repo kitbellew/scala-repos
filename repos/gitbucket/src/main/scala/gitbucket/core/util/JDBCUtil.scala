@@ -13,11 +13,11 @@ object JDBCUtil {
   implicit class RichConnection(conn: Connection) {
 
     def update(sql: String, params: Any*): Int =
-      execute(sql, params: _*) { stmt => stmt.executeUpdate() }
+      execute(sql, params: _*)(stmt => stmt.executeUpdate())
 
     def find[T](sql: String, params: Any*)(f: ResultSet => T): Option[T] =
       execute(sql, params: _*) { stmt =>
-        using(stmt.executeQuery()) { rs => if (rs.next) Some(f(rs)) else None }
+        using(stmt.executeQuery())(rs => if (rs.next) Some(f(rs)) else None)
       }
 
     def select[T](sql: String, params: Any*)(f: ResultSet => T): Seq[T] =
@@ -32,7 +32,7 @@ object JDBCUtil {
 
     def selectInt(sql: String, params: Any*): Int =
       execute(sql, params: _*) { stmt =>
-        using(stmt.executeQuery()) { rs => if (rs.next) rs.getInt(1) else 0 }
+        using(stmt.executeQuery())(rs => if (rs.next) rs.getInt(1) else 0)
       }
 
     private def execute[T](sql: String, params: Any*)(

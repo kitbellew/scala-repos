@@ -540,7 +540,7 @@ abstract class TreeGen {
       // this change works great for things that are actually templates
       // but in this degenerate case we need to perform postprocessing
       val app = treeInfo.dissectApplied(parents.head)
-      atPos(npos union cpos) { New(app.callee, app.argss) }
+      atPos(npos union cpos)(New(app.callee, app.argss))
     } else {
       val x = tpnme.ANON_CLASS_NAME
       atPos(npos union cpos) {
@@ -826,14 +826,14 @@ abstract class TreeGen {
         val rhs1 = mkFor(
           List(ValFrom(defpat1, rhs).setPos(t.pos)),
           Yield(
-            Block(pdefs, atPos(wrappingPos(ids)) { mkTuple(ids) }) setPos wrappingPos(
+            Block(pdefs, atPos(wrappingPos(ids))(mkTuple(ids))) setPos wrappingPos(
               pdefs)))
         val allpats = (pat :: pats) map (_.duplicate)
         val pos1 =
           if (t.pos == NoPosition) NoPosition
           else rangePos(t.pos.source, t.pos.start, t.pos.point, rhs1.pos.end)
         val vfrom1 =
-          ValFrom(atPos(wrappingPos(allpats)) { mkTuple(allpats) }, rhs1)
+          ValFrom(atPos(wrappingPos(allpats))(mkTuple(allpats)), rhs1)
             .setPos(pos1)
         mkFor(vfrom1 :: rest1, sugarBody)
       case _ =>

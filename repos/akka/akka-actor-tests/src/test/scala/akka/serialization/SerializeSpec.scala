@@ -335,7 +335,7 @@ class ReferenceSerializationSpec
     }
 
     "not support serialization for other classes" in {
-      intercept[NotSerializableException] { ser.serializerFor(classOf[Object]) }
+      intercept[NotSerializableException](ser.serializerFor(classOf[Object]))
     }
 
   }

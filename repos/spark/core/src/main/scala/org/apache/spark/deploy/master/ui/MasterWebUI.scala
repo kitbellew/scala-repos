@@ -106,7 +106,7 @@ private[master] class MasterWebUI(
     val state = masterPage.getMasterState
     val activeApps = state.activeApps.sortBy(_.startTime).reverse
     val completedApps = state.completedApps.sortBy(_.endTime).reverse
-    (activeApps ++ completedApps).find { _.id == appId }.flatMap {
+    (activeApps ++ completedApps).find(_.id == appId).flatMap {
       master.rebuildSparkUI
     }
   }

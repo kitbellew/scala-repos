@@ -794,7 +794,7 @@ object JGitUtil {
         .setURI(from.toURI.toString)
         .setDirectory(to)
         .setBare(true)
-        .call) { git => setReceivePack(git.getRepository) }
+        .call)(git => setReceivePack(git.getRepository))
 
   def isEmpty(git: Git): Boolean =
     git.getRepository.resolve(Constants.HEAD) == null
@@ -1186,7 +1186,7 @@ object JGitUtil {
           idLine :+= (c.name, i)
         }
         val limeMap = idLine.groupBy(_._1).mapValues(_.map(_._2).toSet)
-        blameMap.values.map { b => b.copy(lines = limeMap(b.id)) }
+        blameMap.values.map(b => b.copy(lines = limeMap(b.id)))
       }
       .getOrElse(Seq.empty)
 

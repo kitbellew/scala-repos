@@ -46,7 +46,7 @@ class MultiJoinTest extends WordSpec {
 
       val joinedFlat
           : CoGrouped[Int, (Double, Long, String, Set[Int], Map[Int, Int])] =
-        joined.mapValues { x => flattenNestedTuple(x) }
+        joined.mapValues(x => flattenNestedTuple(x))
 
       val leftJoinedFlat: CoGrouped[
         Int,
@@ -56,7 +56,7 @@ class MultiJoinTest extends WordSpec {
             Option[String],
             Option[Set[Int]],
             Option[Map[Int, Int]])] =
-        leftJoined.mapValues { x => flattenNestedTuple(x) }
+        leftJoined.mapValues(x => flattenNestedTuple(x))
 
       val outerJoinedFlat: CoGrouped[
         Int,
@@ -66,7 +66,7 @@ class MultiJoinTest extends WordSpec {
             Option[String],
             Option[Set[Int]],
             Option[Map[Int, Int]])] =
-        outerJoined.mapValues { x => flattenNestedOptionTuple(x) }
+        outerJoined.mapValues(x => flattenNestedOptionTuple(x))
     }
 
     "Have implicit flattenValueTuple methods for low arity" in {

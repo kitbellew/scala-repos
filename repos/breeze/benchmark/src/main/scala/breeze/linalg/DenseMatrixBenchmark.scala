@@ -34,7 +34,7 @@ class DenseMatrixBenchmark extends BreezeBenchmark with BuildsRandomMatrices {
       val size = 2048
       var t: Double = 0
       cfor(0)(i => i < size, i => i + 1) { i =>
-        cfor(0)(j => j < size, j => j + 1) { j => t += mat(i, j) }
+        cfor(0)(j => j < size, j => j + 1)(j => t += mat(i, j))
       }
       t
     }
@@ -44,7 +44,7 @@ class DenseMatrixBenchmark extends BreezeBenchmark with BuildsRandomMatrices {
       val size = 2048
       var t: Double = 0
       cfor(0)(i => i < size, i => i + 1) { i =>
-        cfor(0)(j => j < size, j => j + 1) { j => t += mat.unsafeValueAt(i, j) }
+        cfor(0)(j => j < size, j => j + 1)(j => t += mat.unsafeValueAt(i, j))
       }
       t
     }
@@ -54,7 +54,7 @@ class DenseMatrixBenchmark extends BreezeBenchmark with BuildsRandomMatrices {
       val size = 2048
       var t: Double = 0
       cfor(0)(j => j < size, j => j + 1) { j =>
-        cfor(0)(i => i < size, i => i + 1) { i => t += mat(i, j) }
+        cfor(0)(i => i < size, i => i + 1)(i => t += mat(i, j))
       }
       t
     }
@@ -64,7 +64,7 @@ class DenseMatrixBenchmark extends BreezeBenchmark with BuildsRandomMatrices {
       val size = 2048
       var t: Double = 0
       cfor(0)(j => j < size, j => j + 1) { j =>
-        cfor(0)(i => i < size, i => i + 1) { i => t += mat.unsafeValueAt(i, j) }
+        cfor(0)(i => i < size, i => i + 1)(i => t += mat.unsafeValueAt(i, j))
       }
       t
     }
@@ -73,7 +73,7 @@ class DenseMatrixBenchmark extends BreezeBenchmark with BuildsRandomMatrices {
     runWith(reps, randomMatrix(2048, 2048)) { (mat: DenseMatrix[Double]) =>
       val size = 2048
       cfor(0)(i => i < size, i => i + 1) { i =>
-        cfor(0)(j => j < size, j => j + 1) { j => mat.update(i, j, i + j) }
+        cfor(0)(j => j < size, j => j + 1)(j => mat.update(i, j, i + j))
       }
       mat
     }
@@ -91,7 +91,7 @@ class DenseMatrixBenchmark extends BreezeBenchmark with BuildsRandomMatrices {
     runWith(reps, randomMatrix(2048, 2048)) { (mat: DenseMatrix[Double]) =>
       val size = 2048
       cfor(0)(j => j < size, j => j + 1) { j =>
-        cfor(0)(i => i < size, i => i + 1) { i => mat.update(i, j, i + j) }
+        cfor(0)(i => i < size, i => i + 1)(i => mat.update(i, j, i + j))
       }
       mat
     }

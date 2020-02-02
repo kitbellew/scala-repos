@@ -86,11 +86,11 @@ class BitSpecParser(val input: ParserInput) extends parboiled2.Parser {
       case _ ⇒ throw new IllegalStateException()
     }
 
-  def bits: Rule1[Bits] = rule { zeroOrMore(element) ~ EOI ~> (Bits(_)) }
+  def bits: Rule1[Bits] = rule(zeroOrMore(element) ~ EOI ~> (Bits(_)))
 
   val WSChar = CharPredicate(' ', '\t', '\n')
-  def ws = rule { zeroOrMore(wsElement) }
-  def wsElement = rule { WSChar | comment }
+  def ws = rule(zeroOrMore(wsElement))
+  def wsElement = rule(WSChar | comment)
   def comment =
     rule {
       '#' ~ zeroOrMore(!'\n' ~ ANY) ~ '\n'
@@ -99,8 +99,8 @@ class BitSpecParser(val input: ParserInput) extends parboiled2.Parser {
   def element: Rule1[BitElement] = rule {
     zero | one | multi
   }
-  def zero: Rule1[BitElement] = rule { '0' ~ push(Zero) ~ ws }
-  def one: Rule1[BitElement] = rule { '1' ~ push(One) ~ ws }
+  def zero: Rule1[BitElement] = rule('0' ~ push(Zero) ~ ws)
+  def one: Rule1[BitElement] = rule('1' ~ push(One) ~ ws)
   def multi: Rule1[Multibit] = rule {
     capture(oneOrMore('x' ~ ws)) ~> (_.count(_ == 'x')) ~ '=' ~ value ~ ws ~> Multibit
   }

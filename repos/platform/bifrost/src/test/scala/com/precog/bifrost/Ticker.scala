@@ -130,5 +130,5 @@ trait SchedulableFuturesModule {
     promise.future
   }
 
-  def waitFor(n: Long): Future[Unit] = schedule(n) { () }
+  def waitFor(n: Long): Future[Unit] = schedule(n)(())
 }

@@ -125,7 +125,7 @@ class FileAppenderSuite extends SparkFunSuite with BeforeAndAfter with Logging {
 
     // send data to appender through the input stream, and wait for the data to be written
     val allGeneratedFiles = new HashSet[String]()
-    val items = (1 to 10).map { _.toString * 10000 }
+    val items = (1 to 10).map(_.toString * 10000)
     for (i <- 0 until items.size) {
       testOutputStream.write(items(i).getBytes(StandardCharsets.UTF_8))
       testOutputStream.flush()
@@ -143,7 +143,7 @@ class FileAppenderSuite extends SparkFunSuite with BeforeAndAfter with Logging {
 
     // verify whether the earliest file has been deleted
     val rolledOverFiles =
-      allGeneratedFiles.filter { _ != testFile.toString }.toArray.sorted
+      allGeneratedFiles.filter(_ != testFile.toString).toArray.sorted
     logInfo(
       s"All rolled over files generated:${rolledOverFiles.size}\n" +
         rolledOverFiles.mkString("\n"))
@@ -171,7 +171,7 @@ class FileAppenderSuite extends SparkFunSuite with BeforeAndAfter with Logging {
 
       // Set spark conf properties
       val conf = new SparkConf
-      properties.foreach { p => conf.set(p._1, p._2) }
+      properties.foreach(p => conf.set(p._1, p._2))
 
       // Create and test file appender
       val testOutputStream = new PipedOutputStream()
@@ -337,7 +337,7 @@ class FileAppenderSuite extends SparkFunSuite with BeforeAndAfter with Logging {
     logInfo("Filtered files: \n" + generatedFiles.mkString("\n"))
     assert(generatedFiles.size > 1)
     val allText = generatedFiles
-      .map { file => Files.toString(file, StandardCharsets.UTF_8) }
+      .map(file => Files.toString(file, StandardCharsets.UTF_8))
       .mkString("")
     assert(allText === expectedText)
     generatedFiles
@@ -346,8 +346,8 @@ class FileAppenderSuite extends SparkFunSuite with BeforeAndAfter with Logging {
   /** Delete all the generated rolledover files */
   def cleanup() {
     testFile.getParentFile.listFiles
-      .filter { file => file.getName.startsWith(testFile.getName) }
-      .foreach { _.delete() }
+      .filter(file => file.getName.startsWith(testFile.getName))
+      .foreach(_.delete())
   }
 
   /** Used to synchronize when read is called on a stream */

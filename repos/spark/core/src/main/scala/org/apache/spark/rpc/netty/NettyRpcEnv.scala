@@ -253,7 +253,7 @@ private[netty] class NettyRpcEnv(
         timeout.duration.toNanos,
         TimeUnit.NANOSECONDS
       )
-      promise.future.onComplete { v => timeoutCancelable.cancel(true) }(
+      promise.future.onComplete(v => timeoutCancelable.cancel(true))(
         ThreadUtils.sameThread)
     } catch {
       case NonFatal(e) =>
@@ -271,7 +271,7 @@ private[netty] class NettyRpcEnv(
       client: TransportClient,
       bytes: ByteBuffer): T =
     NettyRpcEnv.currentClient.withValue(client) {
-      deserialize { () => javaSerializerInstance.deserialize[T](bytes) }
+      deserialize(() => javaSerializerInstance.deserialize[T](bytes))
     }
 
   override def endpointRef(endpoint: RpcEndpoint): RpcEndpointRef =

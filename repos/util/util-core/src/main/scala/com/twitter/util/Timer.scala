@@ -360,7 +360,7 @@ class MockTimer extends Timer {
       throw new IllegalStateException("timer is stopped already")
 
     val now = Time.now
-    val (toRun, toQueue) = tasks.partition { task => task.when <= now }
+    val (toRun, toQueue) = tasks.partition(task => task.when <= now)
     tasks = toQueue
     toRun.filterNot(_.isCancelled).foreach(_.runner())
   }
@@ -387,12 +387,12 @@ class MockTimer extends Timer {
 
     def runAndReschedule(): Unit = MockTimer.this.synchronized {
       if (!isCancelled) {
-        schedule(Time.now + period) { runAndReschedule() }
+        schedule(Time.now + period)(runAndReschedule())
         f
       }
     }
 
-    schedule(when) { runAndReschedule() } // discard
+    schedule(when)(runAndReschedule()) // discard
     task
   }
 

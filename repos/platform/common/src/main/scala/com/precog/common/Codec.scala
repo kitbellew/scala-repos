@@ -502,7 +502,7 @@ object Codec {
       } + 5
 
     def encodedSize(as: IndexedSeq[A]): Int = {
-      val size = as.foldLeft(0) { (acc, a) => acc + elemCodec.encodedSize(a) }
+      val size = as.foldLeft(0)((acc, a) => acc + elemCodec.encodedSize(a))
       size + sizePackedInt(as.size)
     }
 

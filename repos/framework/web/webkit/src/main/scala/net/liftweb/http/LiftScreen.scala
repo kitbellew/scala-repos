@@ -1316,7 +1316,7 @@ trait ScreenWizardRendered extends Loggable {
         myNotices match {
           case Nil => basicLabel
           case _ =>
-            val maxN = myNotices.map(_._1).sortWith { _.id > _.id }.head // get the maximum type of notice (Error > Warning > Notice)
+            val maxN = myNotices.map(_._1).sortWith(_.id > _.id).head // get the maximum type of notice (Error > Warning > Notice)
             val metaData: MetaData =
               noticeTypeToAttr(theScreen).map(_(maxN)) openOr Null
             basicLabel & update(_.label, metaData)

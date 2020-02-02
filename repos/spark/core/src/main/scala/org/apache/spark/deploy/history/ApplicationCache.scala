@@ -321,7 +321,7 @@ private[history] class ApplicationCache(
           throw new NoSuchElementException(
             s"no application with application Id '$appId'" +
               attemptId
-                .map { id => s" attemptId '$id'" }
+                .map(id => s" attemptId '$id'")
                 .getOrElse(" and no attempt Id"))
       }
     }
@@ -355,7 +355,7 @@ private[history] class ApplicationCache(
       appId: String,
       attemptId: Option[String]): String =
     appId + attemptId
-      .map { id => s"/$id" }
+      .map(id => s"/$id")
       .getOrElse("")
 
   /**
@@ -412,7 +412,7 @@ private[history] final case class CacheKey(
 
   override def toString: String =
     appId + attemptId
-      .map { id => s"/$id" }
+      .map(id => s"/$id")
       .getOrElse("")
 }
 

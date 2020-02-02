@@ -743,7 +743,7 @@ private[math] class JetAlgebra[@sp(Float, Double) T](
   def dot(x: Jet[T], y: Jet[T]): T =
     x.infinitesimal
       .zip(y.infinitesimal)
-      .foldLeft { scalar.times(x.real, y.real) } { (xx, yy) =>
+      .foldLeft(scalar.times(x.real, y.real)) { (xx, yy) =>
         scalar.plus(xx, scalar.times(yy._1, yy._2))
       }
 }

@@ -56,10 +56,10 @@ case class KetamaShardingServiceBuilder[Req, Rep](
 ) {
 
   def nodesAndWeights(nodes: Seq[(String, Int, Service[Req, Rep])]) =
-    copy(_nodes = Some(nodes map Function.tupled { KetamaNode(_, _, _) }))
+    copy(_nodes = Some(nodes map Function.tupled(KetamaNode(_, _, _))))
 
   def nodes(services: Seq[(String, Service[Req, Rep])]) =
-    nodesAndWeights(services map Function.tupled { (_, 1, _) })
+    nodesAndWeights(services map Function.tupled((_, 1, _)))
 
   def numReps(numReps: Int) =
     copy(_numReps = numReps)

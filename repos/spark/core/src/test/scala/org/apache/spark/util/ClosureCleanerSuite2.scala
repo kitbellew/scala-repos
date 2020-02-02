@@ -121,7 +121,7 @@ class ClosureCleanerSuite2
       outerClasses: Seq[Class[_]],
       findTransitively: Boolean): Map[Class[_], Set[String]] = {
     val fields = new mutable.HashMap[Class[_], mutable.Set[String]]
-    outerClasses.foreach { c => fields(c) = new mutable.HashSet[String] }
+    outerClasses.foreach(c => fields(c) = new mutable.HashSet[String])
     ClosureCleaner
       .getClassReader(closure.getClass)
       .accept(new FieldAccessFinder(fields, findTransitively), 0)
@@ -150,13 +150,11 @@ class ClosureCleanerSuite2
     val closure2 = () => { () => 1 }
     val closure3 = (i: Int) => {
       (1 to i)
-        .map { x => x + 1 }
-        .filter { x => x > 5 }
+        .map(x => x + 1)
+        .filter(x => x > 5)
     }
     val closure4 = (j: Int) => {
-      (1 to j).flatMap { x =>
-        (1 to x).flatMap { y => (1 to y).map { z => z + 1 } }
-      }
+      (1 to j).flatMap(x => (1 to x).flatMap(y => (1 to y).map(z => z + 1)))
     }
     val inner1 = getInnerClosureClasses(closure1)
     val inner2 = getInnerClosureClasses(closure2)
@@ -471,17 +469,17 @@ class ClosureCleanerSuite2
   test("clean basic nested serializable closures") {
     val localValue = someSerializableValue
     val closure1 = (i: Int) => {
-      (1 to i).map { x => x + localValue } // 1 level of nesting
+      (1 to i).map(x => x + localValue) // 1 level of nesting
     }
     val closure2 = (j: Int) => {
       (1 to j).flatMap { x =>
-        (1 to x).map { y => y + localValue } // 2 levels
+        (1 to x).map(y => y + localValue) // 2 levels
       }
     }
     val closure3 = (k: Int, l: Int, m: Int) => {
       (1 to k).flatMap(closure2) ++ // 4 levels
         (1 to l).flatMap(closure1) ++ // 3 levels
-        (1 to m).map { x => x + 1 } // 2 levels
+        (1 to m).map(x => x + 1) // 2 levels
     }
     val closure1r = closure1(1)
     val closure2r = closure2(2)
@@ -512,24 +510,22 @@ class ClosureCleanerSuite2
     // These closures ultimately reference the ClosureCleanerSuite2
     // Note that even accessing `val` that is an instance variable involves a method call
     val closure1 = (i: Int) => {
-      (1 to i).map { x => x + someSerializableValue }
+      (1 to i).map(x => x + someSerializableValue)
     }
     val closure2 = (j: Int) => {
-      (1 to j).map { x => x + someSerializableMethod() }
+      (1 to j).map(x => x + someSerializableMethod())
     }
     val closure4 = (k: Int) => {
-      (1 to k).map { x => x + localSerializableMethod() }
+      (1 to k).map(x => x + localSerializableMethod())
     }
     // This closure references a local non-serializable value
     val closure3 = (l: Int) => {
-      (1 to l).map { x => localNonSerializableValue }
+      (1 to l).map(x => localNonSerializableValue)
     }
     // This is non-serializable no matter how many levels we nest it
     val closure5 = (m: Int) => {
       (1 to m).foreach { x =>
-        (1 to x).foreach { y =>
-          (1 to y).foreach { z => someSerializableValue }
-        }
+        (1 to x).foreach(y => (1 to y).foreach(z => someSerializableValue))
       }
     }
 
@@ -566,7 +562,7 @@ class ClosureCleanerSuite2
       val a = 1
       (1 to i).flatMap { x =>
         val b = a + 1
-        (1 to x).map { y => y + a + b + localValue }
+        (1 to x).map(y => y + a + b + localValue)
       }
     }
 

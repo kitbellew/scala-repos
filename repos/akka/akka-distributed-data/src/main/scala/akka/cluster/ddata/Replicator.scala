@@ -1145,7 +1145,7 @@ final class Replicator(settings: ReplicatorSettings)
           val msg =
             if (envelope.data == DeletedData) DataDeleted(key)
             else Changed(key)(envelope.data)
-          subs.foreach { _ ! msg }
+          subs.foreach(_ ! msg)
         case None ⇒
       }
     }
@@ -1160,7 +1160,7 @@ final class Replicator(settings: ReplicatorSettings)
     if (newSubscribers.nonEmpty) {
       for ((key, subs) ← newSubscribers) {
         notify(key, subs)
-        subs.foreach { subscribers.addBinding(key, _) }
+        subs.foreach(subscribers.addBinding(key, _))
       }
       newSubscribers.clear()
     }
@@ -1303,9 +1303,9 @@ final class Replicator(settings: ReplicatorSettings)
 
   def receiveTerminated(ref: ActorRef): Unit = {
     val keys1 = subscribers.collect { case (k, s) if s.contains(ref) ⇒ k }
-    keys1.foreach { key ⇒ subscribers.removeBinding(key, ref) }
+    keys1.foreach(key ⇒ subscribers.removeBinding(key, ref))
     val keys2 = newSubscribers.collect { case (k, s) if s.contains(ref) ⇒ k }
-    keys2.foreach { key ⇒ newSubscribers.removeBinding(key, ref) }
+    keys2.foreach(key ⇒ newSubscribers.removeBinding(key, ref))
 
     (keys1 ++ keys2).foreach { key ⇒
       if (!subscribers.contains(key) && !newSubscribers.contains(key))
@@ -1578,7 +1578,7 @@ private[akka] class WriteAggregator(
   val writeMsg = Write(key.id, envelope)
 
   override def preStart(): Unit = {
-    primaryNodes.foreach { replica(_) ! writeMsg }
+    primaryNodes.foreach(replica(_) ! writeMsg)
 
     if (remaining.size == doneWhenRemainingSize)
       reply(ok = true)
@@ -1592,7 +1592,7 @@ private[akka] class WriteAggregator(
       if (remaining.size == doneWhenRemainingSize)
         reply(ok = true)
     case SendToSecondary ⇒
-      secondaryNodes.foreach { replica(_) ! writeMsg }
+      secondaryNodes.foreach(replica(_) ! writeMsg)
     case ReceiveTimeout ⇒ reply(ok = false)
   }
 
@@ -1661,7 +1661,7 @@ private[akka] class ReadAggregator(
   val readMsg = Read(key.id)
 
   override def preStart(): Unit = {
-    primaryNodes.foreach { replica(_) ! readMsg }
+    primaryNodes.foreach(replica(_) ! readMsg)
 
     if (remaining.size == doneWhenRemainingSize)
       reply(ok = true)
@@ -1681,7 +1681,7 @@ private[akka] class ReadAggregator(
       if (remaining.size == doneWhenRemainingSize)
         reply(ok = true)
     case SendToSecondary ⇒
-      secondaryNodes.foreach { replica(_) ! readMsg }
+      secondaryNodes.foreach(replica(_) ! readMsg)
     case ReceiveTimeout ⇒ reply(ok = false)
   }
 

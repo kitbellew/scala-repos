@@ -10,7 +10,7 @@ object InfoTest extends Build {
     ivyXML <<= (customInfo, organization, moduleName, version) apply inlineXML,
     scalaVersion := "2.9.1",
     projectID ~= (_ cross false),
-    customInfo <<= baseDirectory { _ / "info" exists },
+    customInfo <<= baseDirectory(_ / "info" exists),
     TaskKey[Unit]("check-download") <<= checkDownload,
     delivered <<= deliverLocal map XML.loadFile,
     TaskKey[Unit]("check-info") <<= checkInfo

@@ -82,7 +82,7 @@ class BlockGeneratorSuite extends SparkFunSuite with BeforeAndAfter {
 
     // Verify whether addData() adds data that is present in generated blocks
     val data1 = 1 to 10
-    data1.foreach { blockGenerator.addData _ }
+    data1.foreach(blockGenerator.addData _)
     withClue(
       "callbacks called on adding data without metadata and without block generation") {
       assert(
@@ -105,7 +105,7 @@ class BlockGeneratorSuite extends SparkFunSuite with BeforeAndAfter {
 
     // Verify addDataWithCallback() add data+metadata and and callbacks are called correctly
     val data2 = 11 to 20
-    val metadata2 = data2.map { _.toString }
+    val metadata2 = data2.map(_.toString)
     data2.zip(metadata2).foreach {
       case (d, m) => blockGenerator.addDataWithCallback(d, m)
     }
@@ -165,7 +165,7 @@ class BlockGeneratorSuite extends SparkFunSuite with BeforeAndAfter {
     assert(blockGenerator.isStopped() === false)
 
     val data = 1 to 1000
-    data.foreach { blockGenerator.addData _ }
+    data.foreach(blockGenerator.addData _)
 
     // Verify that stop() shutdowns everything in the right order
     // - First, stop receiving new data

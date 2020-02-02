@@ -70,7 +70,7 @@ private[streaming] class MapWithStateDStreamImpl[
 
   override def compute(validTime: Time): Option[RDD[MappedType]] =
     internalStream.getOrCompute(validTime).map {
-      _.flatMap[MappedType] { _.mappedData }
+      _.flatMap[MappedType](_.mappedData)
     }
 
   /**

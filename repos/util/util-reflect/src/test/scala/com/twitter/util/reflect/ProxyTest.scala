@@ -202,7 +202,7 @@ class ProxyTest extends WordSpec {
       val t2 = benchmark {
         for (i <- 1 to repTimes) { proxy2.foo; proxy2.bar(2) }
       }
-      val t3 = benchmark { for (i <- 1 to repTimes) { obj.foo; obj.bar(2) } }
+      val t3 = benchmark(for (i <- 1 to repTimes) { obj.foo; obj.bar(2) })
 
       // println("proxy invocation")
       // println(t1)

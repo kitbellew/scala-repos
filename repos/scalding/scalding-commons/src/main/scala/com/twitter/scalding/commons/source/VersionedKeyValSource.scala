@@ -286,10 +286,10 @@ class TypedRichPipeEx[K: Ordering, V: Monoid](pipe: TypedPipe[(K, V)])
         val newPairs = pipe.sumByLocalKeys.map { case (k, v) => (k, v, 1) }
 
         (oldPairs ++ newPairs)
-          .groupBy { _._1 }
+          .groupBy(_._1)
           .withReducers(reducers)
-          .sortBy { _._3 }
-          .mapValues { _._2 }
+          .sortBy(_._3)
+          .mapValues(_._2)
           .sum
           .toTypedPipe
       }
@@ -323,7 +323,7 @@ class RichPipeEx(pipe: Pipe) extends java.io.Serializable {
         val newPairs = appendToken(pipe, 1)
 
         (oldPairs ++ newPairs)
-          .groupBy('key) { _.reducers(reducers).sortBy('isNew).sum[V]('value) }
+          .groupBy('key)(_.reducers(reducers).sortBy('isNew).sum[V]('value))
           .project(('key, 'value))
           .rename(('key, 'value) -> fields)
       }

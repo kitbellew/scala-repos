@@ -118,7 +118,7 @@ object TaskTest extends SpecLite {
 
   "catches exceptions in parallel execution" ! forAll { (x: Int, y: Int) =>
     val t1 = Task { Thread.sleep(10); throw FailWhale; 42 }
-    val t2 = Task { 43 }
+    val t2 = Task(43)
     Nondeterminism[Task].both(t1, t2).unsafePerformSyncAttempt == -\/(FailWhale)
   }
 
@@ -217,9 +217,9 @@ object TaskTest extends SpecLite {
       val es3 = Executors.newFixedThreadPool(3)
 
       // NB: Task can only be interrupted in between steps (before the `map`)
-      val t1 = fork { sleep(1000); now(()) }.map { _ => t1v.set(1) }
-      val t2 = fork { now(throw ex) }
-      val t3 = fork { sleep(1000); now(()) }.map { _ => t3v.set(3) }
+      val t1 = fork { sleep(1000); now(()) }.map(_ => t1v.set(1))
+      val t2 = fork(now(throw ex))
+      val t3 = fork { sleep(1000); now(()) }.map(_ => t3v.set(3))
 
       val t = fork(
         Task.gatherUnordered(Seq(t1, t2, t3), exceptionCancels = true))(es3)
@@ -242,9 +242,9 @@ object TaskTest extends SpecLite {
       implicit val es3 = Executors.newFixedThreadPool(3)
 
       // NB: Task can only be interrupted in between steps (before the `map`)
-      val t1 = fork { sleep(1000); now(()) }.map { _ => t1v.set(1) }
+      val t1 = fork { sleep(1000); now(()) }.map(_ => t1v.set(1))
       val t2 = fork { sleep(100); now(throw ex) }
-      val t3 = fork { sleep(1000); now(()) }.map { _ => t3v.set(3) }
+      val t3 = fork { sleep(1000); now(()) }.map(_ => t3v.set(3))
 
       val t = fork(
         Task.gatherUnordered(Seq(t1, t2, t3), exceptionCancels = true))(es3)

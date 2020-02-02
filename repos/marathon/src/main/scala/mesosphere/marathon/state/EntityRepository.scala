@@ -14,7 +14,7 @@ trait EntityRepository[T <: MarathonState[_, T]]
     * Returns the most recently stored entity with the supplied id.
     */
   protected def currentVersion(id: String): Future[Option[T]] =
-    timedRead { this.store.fetch(id) }
+    timedRead(this.store.fetch(id))
 
   /**
     * Returns the entity with the supplied id and version.
@@ -41,8 +41,8 @@ trait EntityRepository[T <: MarathonState[_, T]]
   protected def current(): Future[Iterable[T]] = timedRead {
     allIds().flatMap { names =>
       Future
-        .sequence(names.map { name => currentVersion(name) })
-        .map { _.flatten }
+        .sequence(names.map(name => currentVersion(name)))
+        .map(_.flatten)
     }
   }
 

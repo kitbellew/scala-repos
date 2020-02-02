@@ -90,7 +90,7 @@ class ModeledCustomHeaderSpec extends RoutingSpec {
         case raw: RawHeader ⇒ s"raw> $raw"
       }
 
-      val routes = extractFromCustomHeader { s ⇒ complete(s) }
+      val routes = extractFromCustomHeader(s ⇒ complete(s))
 
       Get().withHeaders(RawHeader("apiKey", "TheKey")) ~> routes ~> check {
         status should ===(StatusCodes.OK)

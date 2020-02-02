@@ -70,7 +70,7 @@ object Previous {
       synchronized {
         map = map.put(key, new Referenced(key, format))
       }
-    def getReferences: IMap[ScopedTaskKey, Referenced] = synchronized { map }
+    def getReferences: IMap[ScopedTaskKey, Referenced] = synchronized(map)
   }
 
   /** Persists values of tasks t where there is some task referencing it via t.previous. */

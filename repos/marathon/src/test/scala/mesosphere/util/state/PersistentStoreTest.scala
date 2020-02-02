@@ -76,7 +76,7 @@ trait PersistentStoreTest
     whenReady(
       persistentStore
         .update(read2.get.withNewContent("Will be None".getBytes))
-        .failed) { _ shouldBe a[StoreCommandFailedException] }
+        .failed)(_ shouldBe a[StoreCommandFailedException])
     val readAgain = fetch("foo")
     readAgain.get.bytes should be("Hello again".getBytes)
   }

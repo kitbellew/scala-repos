@@ -27,7 +27,7 @@ class TestActor(override val persistenceId: String) extends PersistentActor {
       sender() ! s"$toSeqNr-deleted"
 
     case cmd: String ⇒
-      persist(cmd) { evt ⇒ sender() ! evt + "-done" }
+      persist(cmd)(evt ⇒ sender() ! evt + "-done")
   }
 
 }

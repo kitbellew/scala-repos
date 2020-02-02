@@ -253,7 +253,7 @@ object JsMacroImpl {
             }
           }
       }
-      .reduceLeft[Tree] { (acc, r) => q"$acc.and($r)" }
+      .reduceLeft[Tree]((acc, r) => q"$acc.and($r)")
 
     val applyFunction = {
       if (hasVarArgs) {

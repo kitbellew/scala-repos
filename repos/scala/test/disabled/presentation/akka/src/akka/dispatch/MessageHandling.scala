@@ -102,7 +102,7 @@ trait MessageDispatcher {
       val future = new DefaultCompletableFuture[T](timeout)
 
       if (active.isOff)
-        guard withGuard { active.switchOn { start } }
+        guard withGuard { active.switchOn(start) }
 
       executeFuture(FutureInvocation[T](future, block, futureCleanup))
       future

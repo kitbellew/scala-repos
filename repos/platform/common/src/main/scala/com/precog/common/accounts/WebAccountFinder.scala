@@ -180,6 +180,6 @@ class WebAccountFinder(
       "Basic " + new String(
         Base64.encodeBase64((user + ":" + password).getBytes("UTF-8")),
         "UTF-8"))
-    withJsonClient { client => f(client.header(auth)) }
+    withJsonClient(client => f(client.header(auth)))
   }
 }

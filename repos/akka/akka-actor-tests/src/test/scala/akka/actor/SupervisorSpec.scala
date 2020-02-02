@@ -209,7 +209,7 @@ class SupervisorSpec
   def kill(pingPongActor: ActorRef) = {
     val result = (pingPongActor.?(DieReply)(DilatedTimeout))
     expectMsg(Timeout, ExceptionMessage)
-    intercept[RuntimeException] { Await.result(result, DilatedTimeout) }
+    intercept[RuntimeException](Await.result(result, DilatedTimeout))
   }
 
   "A supervisor" must {

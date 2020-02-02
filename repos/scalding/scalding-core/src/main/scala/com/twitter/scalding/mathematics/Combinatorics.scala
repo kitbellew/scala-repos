@@ -75,7 +75,7 @@ object Combinatorics {
     (1 to k).foldLeft(res) { (a, b) =>
       val myname = Symbol("n" + b)
       val newname = Symbol("k" + b)
-      a.map(myname -> newname) { inpc: Int => input(inpc - 1) }
+      a.map(myname -> newname)(inpc: Int => input(inpc - 1))
         .discard(myname)
     }
 
@@ -102,7 +102,7 @@ object Combinatorics {
 
     // on a given row, we cannot have duplicate columns in a permutation
     val res = pipes
-      .reduceLeft { (a, b) => a.crossWithSmaller(b) }
+      .reduceLeft((a, b) => a.crossWithSmaller(b))
       .filter(allc) { x: TupleEntry =>
         Boolean
         val values = (0 until allc.size).map(i =>
@@ -114,7 +114,7 @@ object Combinatorics {
     (1 to k).foldLeft(res) { (a, b) =>
       val myname = Symbol("n" + b)
       val newname = Symbol("k" + b)
-      a.map(myname -> newname) { inpc: Int => input(inpc - 1) }
+      a.map(myname -> newname)(inpc: Int => input(inpc - 1))
         .discard(myname)
     }
 
@@ -221,7 +221,7 @@ object Combinatorics {
       .foldLeft(res) { (a, b) =>
         val (num, wt) = b
         val myname = Symbol("k" + num)
-        a.map(myname -> myname) { x: Int => (x / wt).toInt }
+        a.map(myname -> myname)(x: Int => (x / wt).toInt)
       }
   }
 

@@ -64,7 +64,7 @@ private[finagle] class Cache[A](
 
   private[this] def scheduleTimer(): Unit = synchronized {
     require(!timerTask.isDefined)
-    timerTask = Some(timer.schedule(ttl.fromNow) { timeout() })
+    timerTask = Some(timer.schedule(ttl.fromNow)(timeout()))
   }
 
   private[this] def cancelTimer() = synchronized {
@@ -131,5 +131,5 @@ private[finagle] class Cache[A](
   /**
     * The current size of the cache.
     */
-  def size = synchronized { deque.size }
+  def size = synchronized(deque.size)
 }

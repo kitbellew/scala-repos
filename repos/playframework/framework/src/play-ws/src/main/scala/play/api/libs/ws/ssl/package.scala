@@ -32,7 +32,7 @@ package object ssl {
     result.asInstanceOf[PKIXCertPathValidatorResult]
 
   def debugChain(chain: Array[X509Certificate]): Seq[String] =
-    chain.map { cert => s"${cert.getSubjectDN.getName}" }
+    chain.map(cert => s"${cert.getSubjectDN.getName}")
 
   def foldVersion[T](run16: => T, runHigher: => T): T =
     System.getProperty("java.specification.version") match {

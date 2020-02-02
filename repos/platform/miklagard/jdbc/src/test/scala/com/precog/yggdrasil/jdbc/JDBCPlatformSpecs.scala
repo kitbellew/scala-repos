@@ -203,7 +203,7 @@ object JDBCPlatformSpecEngine extends Logging {
         }
     }
 
-    (new File(dataDirURL.toURI)).listFiles.foreach { f => loadFile("", f) }
+    (new File(dataDirURL.toURI)).listFiles.foreach(f => loadFile("", f))
   }
 }
 
@@ -287,7 +287,7 @@ trait JDBCPlatformSpecs
   }
 
   override def map(fs: => Fragments): Fragments =
-    Step { startup() } ^ fs ^ Step { shutdown() }
+    Step(startup()) ^ fs ^ Step(shutdown())
 
   def Evaluator[N[+_]](
       N0: Monad[N])(implicit mn: Future ~> N, nm: N ~> Future) =

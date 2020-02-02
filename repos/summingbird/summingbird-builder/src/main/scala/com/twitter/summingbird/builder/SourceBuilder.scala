@@ -211,7 +211,7 @@ case class SourceBuilder[T: Manifest] private (
         // Set the store to reset if needed
         val batchSetStore = scalding
           .initialBatch(batcher)
-          .map { givenStore.withInitialBatch(_) }
+          .map(givenStore.withInitialBatch(_))
           .getOrElse(givenStore)
 
         val newNode = OptionalUnzip2[Scalding, Storm]()(node)._1

@@ -7,8 +7,8 @@ trait Transvaal {
 
 object Test extends App with Transvaal {
   // select a value from package
-  eval(reify { println("foo") })
-  eval(reify { println((new Object).toString == (new Object).toString) })
+  eval(reify(println("foo")))
+  eval(reify(println((new Object).toString == (new Object).toString)))
 
   // select a type from package
   eval(reify { val x: Any = 2; println(x) })
@@ -16,5 +16,5 @@ object Test extends App with Transvaal {
 
   // select a value from module
   val x = 2
-  eval(reify { println(x) })
+  eval(reify(println(x)))
 }

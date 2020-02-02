@@ -51,7 +51,7 @@ class ZipkinTracerTest
     forAll(genEvent(Trace)) { event =>
       event.objectVal match {
         case _: Annotation.BinaryAnnotation =>
-          intercept[IllegalArgumentException] { id(event) }
+          intercept[IllegalArgumentException](id(event))
         case _ => assert(id(event) == event)
       }
     }

@@ -185,7 +185,7 @@ abstract class Message extends HttpMessageProxy {
 
   /** Get Content-Length header.  Use length to get the length of actual content. */
   def contentLength: Option[Long] =
-    Option(headers.get(Fields.ContentLength)).map { _.toLong }
+    Option(headers.get(Fields.ContentLength)).map(_.toLong)
 
   /** Set Content-Length header.  Normally, this is automatically set by the
     * Codec, but this method allows you to override that. */

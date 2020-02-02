@@ -188,7 +188,7 @@ private[spark] class CoarseMesosSchedulerBackend(
     // to append to the existing value of the variable
     val prefixEnv = conf
       .getOption("spark.executor.extraLibraryPath")
-      .map { p => Utils.libraryPathEnvPrefix(Seq(p)) }
+      .map(p => Utils.libraryPathEnvPrefix(Seq(p)))
       .getOrElse("")
 
     environment.addVariables(
@@ -240,7 +240,7 @@ private[spark] class CoarseMesosSchedulerBackend(
       command.addUris(CommandInfo.URI.newBuilder().setValue(uri.get))
     }
 
-    conf.getOption("spark.mesos.uris").map { uris => setupUris(uris, command) }
+    conf.getOption("spark.mesos.uris").map(uris => setupUris(uris, command))
 
     command.build()
   }

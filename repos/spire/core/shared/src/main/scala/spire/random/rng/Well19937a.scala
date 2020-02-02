@@ -56,7 +56,7 @@ final class Well19937a protected[random] (state: Array[Int], i0: Int)
     val bytes = new Array[Byte](BYTES)
     val bb = ByteBuffer.wrap(bytes)
 
-    cfor(0)(_ < R, _ + 1) { i => bb.putInt(state(i)) }
+    cfor(0)(_ < R, _ + 1)(i => bb.putInt(state(i)))
     bb.putInt(i)
     bytes
   }
@@ -66,7 +66,7 @@ final class Well19937a protected[random] (state: Array[Int], i0: Int)
       if (bytes.length < BYTES) util.Arrays.copyOf(bytes, BYTES) else bytes
     val bb = ByteBuffer.wrap(bs)
 
-    cfor(0)(_ < R, _ + 1) { i => state(i) = bb.getInt }
+    cfor(0)(_ < R, _ + 1)(i => state(i) = bb.getInt)
     i = bb.getInt
   }
 

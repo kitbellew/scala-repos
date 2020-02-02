@@ -175,7 +175,7 @@ sealed abstract class Try[+R] {
     * chained `this` as in `respond`.
     */
   def ensure(f: => Unit): Try[R] =
-    respond { _ => f }
+    respond(_ => f)
 
   /**
     * Returns None if this is a Throw or a Some containing the value if this is a Return

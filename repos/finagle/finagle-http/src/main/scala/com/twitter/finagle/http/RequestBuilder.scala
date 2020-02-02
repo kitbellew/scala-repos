@@ -240,7 +240,7 @@ class RequestBuilder[HasUrl, HasForm] private[http] (
    */
   def add(elems: Seq[FormElement]): RequestBuilder[HasUrl, Yes] = {
     val first = this.add(elems.head)
-    elems.tail.foldLeft(first) { (b, elem) => b.add(elem) }
+    elems.tail.foldLeft(first)((b, elem) => b.add(elem))
   }
 
   /**

@@ -247,10 +247,10 @@ final class MongoJobManager(
             } map { _ => Right(newJob) }
 
           case Left(error) =>
-            Future { Left(error) }
+            Future(Left(error))
         }
 
       case None =>
-        Future { Left("Cannot find job with ID '%s'." format jobId) }
+        Future(Left("Cannot find job with ID '%s'." format jobId))
     }
 }

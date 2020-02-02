@@ -34,7 +34,7 @@ class FilterTest extends FunSuite {
 
   test(
     "Filter.andThen(Filter): lifts synchronous exceptions into Future.exception") {
-    val fail = Filter.mk[Int, Int, Int, Int] { (_, _) => throw new Exception }
+    val fail = Filter.mk[Int, Int, Int, Int]((_, _) => throw new Exception)
     val svc = (new PassThruFilter).andThen(fail).andThen(constSvc)
     val result = Await.result(svc(4).liftToTry)
     assert(result.isThrow)

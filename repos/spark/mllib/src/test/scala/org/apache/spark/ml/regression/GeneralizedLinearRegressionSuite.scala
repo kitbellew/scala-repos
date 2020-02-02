@@ -1308,7 +1308,7 @@ object GeneralizedLinearRegressionSuite {
 
     (0 until nPoints).map { _ =>
       val features =
-        Vectors.dense(coefficients.indices.map { rndElement(_) }.toArray)
+        Vectors.dense(coefficients.indices.map(rndElement(_)).toArray)
       val eta = BLAS.dot(Vectors.dense(coefficients), features) + intercept
       val mu = link match {
         case "identity" => eta

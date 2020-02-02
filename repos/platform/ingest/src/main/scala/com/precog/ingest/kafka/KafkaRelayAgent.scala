@@ -212,7 +212,7 @@ final class KafkaRelayAgent(
     val outgoing: List[Validation[Error, Future[Authorized]]] = messages map {
       msg =>
         EventEncoding.read(msg.message.payload) map { ev =>
-          deriveAuthority(ev).map { Authorized(ev, msg.offset, _) }
+          deriveAuthority(ev).map(Authorized(ev, msg.offset, _))
         }
     }
 

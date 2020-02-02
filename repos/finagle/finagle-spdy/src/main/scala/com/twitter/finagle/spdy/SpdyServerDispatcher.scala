@@ -26,7 +26,7 @@ class SpdyServerDispatcher(
       trans.write(rep)
     } onFailure { _ => trans.close() }
 
-  Local.letClear { loop() }
+  Local.letClear(loop())
 
   def close(deadline: Time) = trans.close(deadline)
 }

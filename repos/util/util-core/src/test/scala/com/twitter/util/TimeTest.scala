@@ -428,7 +428,7 @@ with Eventually with IntegrationPatience {
       val t1 = t0 + 10.minutes
       Time.withTimeAt(t0) { _ =>
         assert(Time.now == t0)
-        Time.withTimeAt(t1) { _ => assert(Time.now == t1) }
+        Time.withTimeAt(t1)(_ => assert(Time.now == t1))
         assert(Time.now == t0)
       }
       assert((Time.now.inMillis - System.currentTimeMillis).abs < 20L)
@@ -505,7 +505,7 @@ with Eventually with IntegrationPatience {
         val t = new Thread(r)
         t.start()
         assert(t.isAlive == true)
-        eventually { assert(t.getState == Thread.State.TIMED_WAITING) }
+        eventually(assert(t.getState == Thread.State.TIMED_WAITING))
         ctl.advance(5.seconds)
         t.join()
         assert(t.isAlive == false)

@@ -259,7 +259,7 @@ case class ExecutorLostFailure(
         "unrelated to the running tasks"
     s"ExecutorLostFailure (executor $execId exited $exitBehavior)" +
       reason
-        .map { r => s" Reason: $r" }
+        .map(r => s" Reason: $r")
         .getOrElse("")
   }
 

@@ -107,7 +107,7 @@ class TraceInitializationTest extends FunSuite {
         .hostConnectionLimit(1)
         .build()
       try {
-        0.until(2).foreach { _ => Await.result(client(req)) }
+        0.until(2).foreach(_ => Await.result(client(req)))
 
         assert(tracer.map(_.traceId).toSet.size == 2)
       } finally client.close()

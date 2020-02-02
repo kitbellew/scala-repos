@@ -53,7 +53,7 @@ trait HttpComponentsClient extends Client {
   private val _cookieStore = new DynamicVariable[CookieStore](null)
 
   def session[A](f: => A): A =
-    _cookieStore.withValue(new BasicCookieStore) { f }
+    _cookieStore.withValue(new BasicCookieStore)(f)
 
   def submit[A](
       method: String,
@@ -73,7 +73,7 @@ trait HttpComponentsClient extends Client {
     attachBody(req, body)
     attachHeaders(req, headers)
 
-    withResponse(HttpComponentsClientResponse(client.execute(req))) { f }
+    withResponse(HttpComponentsClientResponse(client.execute(req)))(f)
   }
 
   protected def submitMultipart[A](
@@ -89,7 +89,7 @@ trait HttpComponentsClient extends Client {
     attachMultipartBody(req, params, files)
     attachHeaders(req, headers)
 
-    withResponse(HttpComponentsClientResponse(client.execute(req))) { f }
+    withResponse(HttpComponentsClientResponse(client.execute(req)))(f)
   }
 
   protected def createClient = {

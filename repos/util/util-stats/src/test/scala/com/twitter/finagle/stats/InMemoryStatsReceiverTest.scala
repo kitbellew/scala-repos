@@ -21,7 +21,7 @@ class InMemoryStatsReceiverTest
     inMemoryStatsReceiver.stat("stat").add(2.0f)
     assert(inMemoryStatsReceiver.stat("stat")() == Seq(1.0f, 2.0f))
 
-    inMemoryStatsReceiver.addGauge("gauge") { 1 }
+    inMemoryStatsReceiver.addGauge("gauge")(1)
     assert(inMemoryStatsReceiver.gauges.contains(Seq("gauge")))
 
     inMemoryStatsReceiver.clear()
@@ -58,7 +58,7 @@ class InMemoryStatsReceiverTest
   test("ReadableGauge.toString") {
     var n = 0
     val stats = new InMemoryStatsReceiver()
-    val g = stats.addGauge("a", "b") { n }
+    val g = stats.addGauge("a", "b")(n)
     assert("Gauge(a/b=0.0)" == g.toString)
 
     n = 11

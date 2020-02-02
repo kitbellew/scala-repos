@@ -465,7 +465,7 @@ object Defaults extends BuildCommon {
   )
 
   def generate(generators: SettingKey[Seq[Task[Seq[File]]]])
-      : Initialize[Task[Seq[File]]] = generators { _.join.map(_.flatten) }
+      : Initialize[Task[Seq[File]]] = generators(_.join.map(_.flatten))
 
   @deprecated("Use the new <key>.all(<ScopeFilter>) API", "0.13.0")
   def inAllConfigurations[T](key: TaskKey[T]): Initialize[Task[Seq[T]]] =
@@ -473,14 +473,14 @@ object Defaults extends BuildCommon {
       val structure = Project structure state
       val configurations =
         Project.getProject(ref, structure).toList.flatMap(_.configurations)
-      configurations.flatMap { conf => key in (ref, conf) get structure.data } join
+      configurations.flatMap(conf => key in (ref, conf) get structure.data) join
     }
   def watchTransitiveSourcesTask: Initialize[Task[Seq[File]]] = {
     import ScopeFilter.Make.{inDependencies => inDeps, _}
     val selectDeps = ScopeFilter(
       inAggregates(ThisProject) || inDeps(ThisProject))
     val allWatched = (watchSources ?? Nil).all(selectDeps)
-    Def.task { allWatched.value.flatten }
+    Def.task(allWatched.value.flatten)
   }
 
   def transitiveUpdateTask: Initialize[Task[Seq[UpdateReport]]] = {
@@ -488,7 +488,7 @@ object Defaults extends BuildCommon {
     val selectDeps = ScopeFilter(inDeps(ThisProject, includeRoot = false))
     val allUpdates = update.?.all(selectDeps)
     // If I am a "build" (a project inside project/) then I have a globalPluginUpdate.
-    Def.task { allUpdates.value.flatten ++ globalPluginUpdate.?.value }
+    Def.task(allUpdates.value.flatten ++ globalPluginUpdate.?.value)
   }
 
   def watchSetting: Initialize[Watched] =
@@ -1613,7 +1613,7 @@ object Classpaths {
   private[this] def exportClasspath(
       s: Setting[Task[Classpath]]): Setting[Task[Classpath]] =
     s.mapInitialize(init =>
-      Def.task { exportClasspath(streams.value, init.value) })
+      Def.task(exportClasspath(streams.value, init.value)))
   private[this] def exportClasspath(
       s: TaskStreams,
       cp: Classpath): Classpath = {
@@ -1767,9 +1767,9 @@ object Classpaths {
         appResolvers,
         useJCenter) {
         case (Some(delegated), Seq(), _, _) => delegated
-        case (_, rs, Some(ars), uj)         => task { ars ++ rs }
+        case (_, rs, Some(ars), uj)         => task(ars ++ rs)
         case (_, rs, _, uj) =>
-          task { Resolver.withDefaultResolvers(rs, uj, true) }
+          task(Resolver.withDefaultResolvers(rs, uj, true))
       },
       appResolvers := {
         val ac = appConfiguration.value
@@ -2675,7 +2675,7 @@ object Classpaths {
   }
 
   def union[A, B](maps: Seq[A => Seq[B]]): A => Seq[B] =
-    a => (Seq[B]() /: maps) { _ ++ _(a) } distinct;
+    a => (Seq[B]() /: maps)(_ ++ _(a)) distinct;
 
   def parseList(s: String, allConfs: Seq[String]): Seq[String] =
     (trim(s split ",") flatMap replaceWildcard(allConfs)).distinct
@@ -2758,9 +2758,9 @@ object Classpaths {
   def unmanagedScalaLibrary: Initialize[Task[Seq[File]]] =
     Def.taskDyn {
       if (autoScalaLibrary.value && scalaHome.value.isDefined)
-        Def.task { scalaInstance.value.libraryJar :: Nil }
+        Def.task(scalaInstance.value.libraryJar :: Nil)
       else
-        Def.task { Nil }
+        Def.task(Nil)
     }
 
   import DependencyFilter._

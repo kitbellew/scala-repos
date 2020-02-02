@@ -65,7 +65,7 @@ trait TestJobService
   def authService(config: Configuration): AuthService[Future] =
     TestAuthService[Future](Set(validAPIKey))
 
-  def close(u: Unit): Future[Unit] = Future { u }
+  def close(u: Unit): Future[Unit] = Future(u)
 }
 
 class JobServiceSpec extends TestJobService {

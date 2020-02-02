@@ -109,7 +109,7 @@ class EventLoggingListenerSuite
     // Create file before writing the event log
     new FileOutputStream(new File(logPath)).close()
     // Expected IOException, since we haven't enabled log overwrite.
-    intercept[IOException] { testEventLogging() }
+    intercept[IOException](testEventLogging())
     // Try again, but enable overwriting.
     testEventLogging(extraConf = Map("spark.eventLog.overwrite" -> "true"))
   }

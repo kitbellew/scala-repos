@@ -1572,13 +1572,13 @@ object H5Store {
       withMonitor {
         if (registry.contains(v -> t)) {
           t match {
-            case H5T => allCatch { H5.H5Tclose(v) }
-            case H5A => allCatch { H5.H5Aclose(v) }
-            case H5D => allCatch { H5.H5Dclose(v) }
-            case H5S => allCatch { H5.H5Sclose(v) }
-            case H5P => allCatch { H5.H5Pclose(v) }
-            case H5G => allCatch { H5.H5Gclose(v) }
-            case H5F => allCatch { H5.H5Fclose(v) }
+            case H5T => allCatch(H5.H5Tclose(v))
+            case H5A => allCatch(H5.H5Aclose(v))
+            case H5D => allCatch(H5.H5Dclose(v))
+            case H5S => allCatch(H5.H5Sclose(v))
+            case H5P => allCatch(H5.H5Pclose(v))
+            case H5G => allCatch(H5.H5Gclose(v))
+            case H5F => allCatch(H5.H5Fclose(v))
           }
           registry -= (v -> t)
         }

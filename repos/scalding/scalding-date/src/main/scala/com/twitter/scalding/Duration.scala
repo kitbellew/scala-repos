@@ -86,9 +86,9 @@ case class Years(cnt: Int)(implicit tz: TimeZone)
 abstract class AbstractDurationList[T <: Duration](parts: List[T])
     extends Duration(-1, -1, null) {
   override def addTo(that: RichDate) =
-    parts.foldLeft(that) { (curdate, next) => next.addTo(curdate) }
+    parts.foldLeft(that)((curdate, next) => next.addTo(curdate))
   override def subtractFrom(that: RichDate) =
-    parts.foldLeft(that) { (curdate, next) => next.subtractFrom(curdate) }
+    parts.foldLeft(that)((curdate, next) => next.subtractFrom(curdate))
   //This does not make sense for a DurationList interval, pass through
   override def floorOf(that: RichDate) = that
 }

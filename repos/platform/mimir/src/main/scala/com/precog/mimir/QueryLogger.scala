@@ -139,7 +139,7 @@ trait LoggingQueryLogger[M[+_], P] extends QueryLogger[M, P] {
 
   protected val logger = LoggerFactory.getLogger("com.precog.mimir.QueryLogger")
 
-  def die(): M[Unit] = M.point { () }
+  def die(): M[Unit] = M.point(())
 
   def error(pos: P, msg: String): M[Unit] = M.point {
     logger.error(pos.toString + " - " + msg)

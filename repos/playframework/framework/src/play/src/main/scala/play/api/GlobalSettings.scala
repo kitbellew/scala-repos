@@ -146,7 +146,7 @@ trait GlobalSettings {
     * @see onHandlerNotFound
     */
   def onRouteRequest(request: RequestHeader): Option[Handler] =
-    defaultRequestHandler.flatMap { handler => handler.routeRequest(request) }
+    defaultRequestHandler.flatMap(handler => handler.routeRequest(request))
 
   /**
     * Called when an exception occurred.

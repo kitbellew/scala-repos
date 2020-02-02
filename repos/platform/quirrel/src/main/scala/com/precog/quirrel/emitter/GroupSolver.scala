@@ -156,7 +156,7 @@ trait GroupSolver
         actualErrors ++ originErrors
 
       case NaryOp(_, values) =>
-        (values map loop(dispatches)).fold(Set[Error]()) { _ ++ _ }
+        (values map loop(dispatches)).fold(Set[Error]())(_ ++ _)
     }
 
     loop(Set())(tree)
@@ -718,10 +718,10 @@ trait GroupSolver
         case FormalBinding(let) => listTicVars(b, sigma((id, let)), sigma)
         case _                  => Set[(Option[Solve], TicId)]()
       }
-      (actuals map { listTicVars(b, _, sigma) }).fold(leftSet) { _ ++ _ }
+      (actuals map { listTicVars(b, _, sigma) }).fold(leftSet)(_ ++ _)
 
     case NaryOp(_, values) =>
-      (values map { listTicVars(b, _, sigma) }).fold(Set()) { _ ++ _ }
+      (values map { listTicVars(b, _, sigma) }).fold(Set())(_ ++ _)
   }
 
   private def listSolvedVars(spec: BucketSpec): Set[TicId] = spec match {
@@ -759,7 +759,7 @@ trait GroupSolver
     def bfs(kernels: Set[Kernel]): Set[ExprWrapper] = {
       // check for convergence
       val results = kernels flatMap { k =>
-        val results = kernels.foldLeft(k.nodes) { _ & _.seen }
+        val results = kernels.foldLeft(k.nodes)(_ & _.seen)
 
         // TODO if the below isEmpty, then can drop results from all kernels
         nodes.foldLeft(results) { (results, node) =>

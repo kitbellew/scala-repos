@@ -158,7 +158,7 @@ trait TestShardService
       val defaultTimeout = Duration(90, TimeUnit.SECONDS)
       implicit val M = self.M
       implicit val IOT = new (IO ~> Future) {
-        def apply[A](io: IO[A]) = Future { io.unsafePerformIO }
+        def apply[A](io: IO[A]) = Future(io.unsafePerformIO)
       }
 
       override val jobManager = self.jobManager
@@ -289,7 +289,7 @@ trait TestShardService
 class ShardServiceSpec extends TestShardService {
   def syncClient(query: String, apiKey: Option[String] = Some(testAPIKey)) =
     apiKey
-      .map { queryService.query("apiKey", _) }
+      .map(queryService.query("apiKey", _))
       .getOrElse(queryService)
       .query("q", query)
 
@@ -307,7 +307,7 @@ class ShardServiceSpec extends TestShardService {
       apiKey: Option[String] = Some(testAPIKey),
       path: String = ""): Future[HttpResponse[QueryResult]] =
     apiKey
-      .map { asyncService.query("apiKey", _) }
+      .map(asyncService.query("apiKey", _))
       .getOrElse(asyncService)
       .query("q", query)
       .query("prefixPath", path)
@@ -318,7 +318,7 @@ class ShardServiceSpec extends TestShardService {
   def asyncQueryResults(jobId: JobId, apiKey: Option[String] = Some(testAPIKey))
       : Future[HttpResponse[QueryResult]] =
     apiKey
-      .map { asyncService.query("apiKey", _) }
+      .map(asyncService.query("apiKey", _))
       .getOrElse(asyncService)
       .get(jobId)
 
@@ -328,7 +328,7 @@ class ShardServiceSpec extends TestShardService {
   val inaccessibleAbsoluteQuery = "//inaccessible/foo"
 
   def extractResult(data: StreamT[Future, CharBuffer]): Future[JValue] =
-    data.foldLeft("") { _ + _.toString } map (JParser.parseUnsafe(_))
+    data.foldLeft("")(_ + _.toString) map (JParser.parseUnsafe(_))
 
   def extractJobId(jv: JValue): JobId =
     jv \ "jobId" match {
@@ -461,7 +461,7 @@ class ShardServiceSpec extends TestShardService {
       apiKey: Option[String] = Some(testAPIKey),
       path: String = "/test"): Future[HttpResponse[QueryResult]] =
     apiKey
-      .map { metaService.query("apiKey", _) }
+      .map(metaService.query("apiKey", _))
       .getOrElse(metadataService)
       .get(path)
 
@@ -469,7 +469,7 @@ class ShardServiceSpec extends TestShardService {
       apiKey: Option[String] = Some(testAPIKey),
       path: String = "/test"): Future[HttpResponse[QueryResult]] =
     apiKey
-      .map { metaService.query("apiKey", _) }
+      .map(metaService.query("apiKey", _))
       .getOrElse(metaService)
       .get(path)
 
@@ -478,7 +478,7 @@ class ShardServiceSpec extends TestShardService {
       path: String = "/test",
       cpath: CPath = CPath.Identity): Future[HttpResponse[QueryResult]] =
     apiKey
-      .map { metaService.query("apiKey", _) }
+      .map(metaService.query("apiKey", _))
       .getOrElse(metaService)
       .query("type", "structure")
       .query("property", cpath.toString)

@@ -90,7 +90,7 @@ private[streaming] class ReceiverSupervisorImpl(
           cleanupOldBlocks(threshTime)
         case UpdateRateLimit(eps) =>
           logInfo(s"Received a new rate limit: $eps.")
-          registeredBlockGenerators.asScala.foreach { bg => bg.updateRate(eps) }
+          registeredBlockGenerators.asScala.foreach(bg => bg.updateRate(eps))
       }
     }
   )
@@ -185,11 +185,11 @@ private[streaming] class ReceiverSupervisorImpl(
   }
 
   override protected def onStart() {
-    registeredBlockGenerators.asScala.foreach { _.start() }
+    registeredBlockGenerators.asScala.foreach(_.start())
   }
 
   override protected def onStop(message: String, error: Option[Throwable]) {
-    registeredBlockGenerators.asScala.foreach { _.stop() }
+    registeredBlockGenerators.asScala.foreach(_.stop())
     env.rpcEnv.stop(endpoint)
   }
 

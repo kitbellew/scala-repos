@@ -113,7 +113,7 @@ object DateOps extends java.io.Serializable {
       Format.DATETIME_HMS_WITHOUT_DASH
     )
 
-    formats.find { _.matches(prepare(s)) }
+    formats.find(_.matches(prepare(s)))
   }
 
   /**

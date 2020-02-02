@@ -139,7 +139,7 @@ final class ChiSqSelectorModel private[ml] (
   override def transform(dataset: DataFrame): DataFrame = {
     val transformedSchema = transformSchema(dataset.schema, logging = true)
     val newField = transformedSchema.last
-    val selector = udf { chiSqSelector.transform _ }
+    val selector = udf(chiSqSelector.transform _)
     dataset.withColumn(
       $(outputCol),
       selector(col($(featuresCol))),

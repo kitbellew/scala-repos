@@ -267,7 +267,7 @@ abstract class FileSource
 
   // This is only called when Mode.sourceStrictness is true
   protected def hdfsReadPathsAreGood(conf: Configuration) =
-    hdfsPaths.forall { pathIsGood(_, conf) }
+    hdfsPaths.forall(pathIsGood(_, conf))
 
   /*
    * This throws InvalidSourceException if:
@@ -282,17 +282,17 @@ abstract class FileSource
           throw new InvalidSourceException(
             "[" + this.toString + "] Data is missing from one or more paths in: " +
               hdfsPaths.toString)
-        else if (!hdfsPaths.exists { pathIsGood(_, conf) })
+        else if (!hdfsPaths.exists(pathIsGood(_, conf)))
           //Check that there is at least one good path:
           throw new InvalidSourceException(
             "[" + this.toString + "] No good paths in: " + hdfsPaths.toString)
 
       case Local(strict) =>
-        val files = localPaths.map { p => new java.io.File(p) }
+        val files = localPaths.map(p => new java.io.File(p))
         if (strict && !files.forall(_.exists))
           throw new InvalidSourceException(
             "[" + this.toString + s"] Data is missing from: ${localPaths
-              .filterNot { p => new java.io.File(p).exists }}")
+              .filterNot(p => new java.io.File(p).exists)}")
         else if (!files.exists(_.exists))
           throw new InvalidSourceException(
             "[" + this.toString + "] No good paths in: " + hdfsPaths.toString)
@@ -307,7 +307,7 @@ abstract class FileSource
       //we check later that all the paths are good
       case Hdfs(true, _) => hdfsPaths
       // If there are no matching paths, this is still an error, we need at least something:
-      case Hdfs(false, conf) => hdfsPaths.filter { pathIsGood(_, conf) }
+      case Hdfs(false, conf) => hdfsPaths.filter(pathIsGood(_, conf))
     }
 
   protected def createHdfsReadTap(hdfsMode: Hdfs): Tap[JobConf, _, _] = {

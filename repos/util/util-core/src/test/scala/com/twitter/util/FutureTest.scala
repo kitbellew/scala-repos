@@ -129,14 +129,14 @@ class FutureTest
 
         Await.result {
           Future.when(false) {
-            Future { i += 1 }
+            Future(i += 1)
           }
         }
         assert(i == 0)
 
         Await.result {
           Future.when(true) {
-            Future { i += 1 }
+            Future(i += 1)
           }
         }
         assert(i == 1)
@@ -207,7 +207,7 @@ class FutureTest
           p1.update(Return(str))
 
           val p2 = new Promise[String]()
-          val ex = intercept[IllegalStateException] { p2.proxyTo(p1) }
+          val ex = intercept[IllegalStateException](p2.proxyTo(p1))
           assert(ex.getMessage.contains(str))
         }
 
@@ -227,9 +227,9 @@ class FutureTest
 
           val t = new RuntimeException("wurmp")
           p2.update(Throw(t))
-          val ex1 = intercept[RuntimeException] { Await.result(p1) }
+          val ex1 = intercept[RuntimeException](Await.result(p1))
           assert(ex1.getMessage == t.getMessage)
-          val ex2 = intercept[RuntimeException] { Await.result(p2) }
+          val ex2 = intercept[RuntimeException](Await.result(p2))
           assert(ex2.getMessage == t.getMessage)
         }
       }
@@ -526,7 +526,7 @@ class FutureTest
 
           first.promise.setException(new Exception)
 
-          intercept[Exception] { Await.result(results) }
+          intercept[Exception](Await.result(results))
 
           // Since first returned an exception, second should
           // never have been called
@@ -554,7 +554,7 @@ class FutureTest
         "return with exception if the first future throws" in {
           new CollectHelper {
             p0() = Throw(new Exception)
-            intercept[Exception] { Await.result(f) }
+            intercept[Exception](Await.result(f))
           }
         }
 
@@ -563,7 +563,7 @@ class FutureTest
             p0() = Return(1)
             assert(f.isDefined == false)
             p1() = Throw(new Exception)
-            intercept[Exception] { Await.result(f) }
+            intercept[Exception](Await.result(f))
           }
         }
 
@@ -722,7 +722,7 @@ class FutureTest
           new SelectHelper {
             p0() = Throw(new Exception)
             p1() = Return(2)
-            intercept[Exception] { Await.result(f) }
+            intercept[Exception](Await.result(f))
           }
         }
 
@@ -759,7 +759,7 @@ class FutureTest
           "return with exception if the first future throws" in {
             new JoinHelper {
               p0() = Throw(new Exception)
-              intercept[Exception] { Await.result(f) }
+              intercept[Exception](Await.result(f))
             }
           }
 
@@ -768,7 +768,7 @@ class FutureTest
               p0() = Return(1)
               assert(f.isDefined == false)
               p1() = Throw(new Exception)
-              intercept[Exception] { Await.result(f) }
+              intercept[Exception](Await.result(f))
             }
           }
 
@@ -817,7 +817,7 @@ class FutureTest
           val jf = f.toJavaFuture
           val e = new RuntimeException()
           f.setException(e)
-          val actual = intercept[RuntimeException] { jf.get() }
+          val actual = intercept[RuntimeException](jf.get())
           assert(actual == e)
         }
 
@@ -881,7 +881,7 @@ class FutureTest
 
         "link" in {
           new MonitoredHelper {
-            val f = Future.monitored { inner }
+            val f = Future.monitored(inner)
             assert(inner.handled == None)
             f.raise(exc)
             assert(inner.handled == Some(exc))
@@ -915,7 +915,7 @@ class FutureTest
         implicit val timer = new JavaTimer
         val p = new Promise[Int]
         val r = p.get(50.milliseconds)
-        intercept[TimeoutException] { r() }
+        intercept[TimeoutException](r())
         timer.stop()
       }
     }
@@ -1132,7 +1132,7 @@ class FutureTest
             val g = seqop(Future[Unit](throw e), () => Future.Done)
 
             "apply" in {
-              val actual = intercept[Exception] { Await.result(g) }
+              val actual = intercept[Exception](Await.result(g))
               assert(actual == e)
             }
 
@@ -1143,7 +1143,7 @@ class FutureTest
             "when there is an exception in the passed in function" in {
               val e = new Exception
               val f = seqop(Future.Done, () => throw e)
-              val actual = intercept[Exception] { Await.result(f) }
+              val actual = intercept[Exception](Await.result(f))
               assert(actual == e)
             }
           }
@@ -1231,7 +1231,7 @@ class FutureTest
 
           "when the error handler errors" in {
             val g = Future[Int](throw e) rescue { case e => throw e; Future(2) }
-            val actual = intercept[Exception] { Await.result(g) }
+            val actual = intercept[Exception](Await.result(g))
             assert(actual == e)
           }
         }
@@ -1344,8 +1344,8 @@ class FutureTest
 
       "Future() handles exceptions" in {
         val e = new Exception
-        val f = Future[Int] { throw e }
-        val actual = intercept[Exception] { Await.result(f) }
+        val f = Future[Int](throw e)
+        val actual = intercept[Exception](Await.result(f))
         assert(actual == e)
       }
 
@@ -1600,7 +1600,7 @@ class FutureTest
         "failure" in {
           val ex = new Exception()
           val p = const(Return(Throw(ex)))
-          val ex1 = intercept[Exception] { Await.result(p.lowerFromTry) }
+          val ex1 = intercept[Exception](Await.result(p.lowerFromTry))
           assert(ex == ex1)
         }
 
@@ -1683,7 +1683,7 @@ class FutureTest
     }
 
     "always time out" in {
-      intercept[TimeoutException] { Await.ready(Future.never, 0.milliseconds) }
+      intercept[TimeoutException](Await.ready(Future.never, 0.milliseconds))
     }
   }
 
@@ -1813,7 +1813,7 @@ class FutureTest
       val f = Future.select(Nil)
       assert(f.isDefined)
       val e = new IllegalArgumentException("empty future list")
-      val actual = intercept[IllegalArgumentException] { Await.result(f) }
+      val actual = intercept[IllegalArgumentException](Await.result(f))
       assert(actual.getMessage == e.getMessage)
     }
 
@@ -1873,7 +1873,7 @@ class FutureTest
       val f = Future.selectIndex(IndexedSeq.empty)
       assert(f.isDefined)
       val e = new IllegalArgumentException("empty future list")
-      val actual = intercept[IllegalArgumentException] { Await.result(f) }
+      val actual = intercept[IllegalArgumentException](Await.result(f))
       assert(actual.getMessage == e.getMessage)
     }
 
@@ -1927,7 +1927,7 @@ class FutureTest
     "terminate when 'next' throws" in {
       val exc = new Exception
       def next(): Future[Int] = throw exc
-      val done = Future.each(next()) { _ => throw exc }
+      val done = Future.each(next())(_ => throw exc)
 
       assert(done.poll == Some(Throw(Future.NextThrewException(exc))))
     }

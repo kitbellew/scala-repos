@@ -108,7 +108,7 @@ abstract class JournalSpec(config: Config)
             AtomicWrite(persistentRepr(i))
         }
       else
-        (fromSnr to toSnr).map { i ⇒ AtomicWrite(persistentRepr(i)) }
+        (fromSnr to toSnr).map(i ⇒ AtomicWrite(persistentRepr(i)))
 
     val probe = TestProbe()
 

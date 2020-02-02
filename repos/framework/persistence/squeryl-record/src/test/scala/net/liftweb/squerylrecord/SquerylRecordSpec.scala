@@ -348,7 +348,7 @@ class SquerylRecordSpec extends Specification with AroundExample {
         bridge.save
         val company2 = Company.findForParam(id.toString)
         company2.isDefined must_== true
-        company2.foreach { c2 => c2.postCode.get must_== "10001" }
+        company2.foreach(c2 => c2.postCode.get must_== "10001")
         val allCompanies = Company.findForList(0, 1000)
         allCompanies.size must be_>(0)
         bridge.delete_!

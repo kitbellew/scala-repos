@@ -267,7 +267,7 @@ class GroupMetadataTest extends JUnitSuite {
     val states: Set[GroupState] =
       Set(Stable, PreparingRebalance, AwaitingSync, Dead)
     val otherStates = states - targetState
-    otherStates.foreach { otherState => assertFalse(group.is(otherState)) }
+    otherStates.foreach(otherState => assertFalse(group.is(otherState)))
     assertTrue(group.is(targetState))
   }
 }

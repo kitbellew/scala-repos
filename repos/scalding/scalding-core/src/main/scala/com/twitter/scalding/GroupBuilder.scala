@@ -123,7 +123,7 @@ class GroupBuilder(val groupFields: Fields)
 
   protected def overrideReducers(p: Pipe): Pipe =
     numReducers
-      .map { r => RichPipe.setReducers(p, r) }
+      .map(r => RichPipe.setReducers(p, r))
       .getOrElse(p)
 
   protected def overrideDescription(p: Pipe): Pipe =
@@ -169,7 +169,7 @@ class GroupBuilder(val groupFields: Fields)
     val beforePF = projectFields
     every(pipe => new Every(pipe, inFields, ag))
     // Update projectFields, which makes sense in a fold, but invalidated on every
-    projectFields = beforePF.map { Fields.merge(_, inFields) }
+    projectFields = beforePF.map(Fields.merge(_, inFields))
     this
   }
 
@@ -199,7 +199,7 @@ class GroupBuilder(val groupFields: Fields)
     startConv.assertArityMatches(fromFields)
     endSetter.assertArityMatches(toFields)
     // Update projectFields
-    projectFields = projectFields.map { Fields.merge(_, fromFields) }
+    projectFields = projectFields.map(Fields.merge(_, fromFields))
     val ag = new MRMAggregator[T, X, U](
       mapfn,
       redfn,
@@ -333,13 +333,13 @@ class GroupBuilder(val groupFields: Fields)
 
   def schedule(name: String, pipe: Pipe): Pipe = {
     val maybeProjectedPipe =
-      projectFields.map { pipe.project(_) }.getOrElse(pipe)
+      projectFields.map(pipe.project(_)).getOrElse(pipe)
     groupMode match {
       case GroupByMode =>
         //In this case we cannot aggregate, so group:
         val start: Pipe = groupedPipeOf(name, maybeProjectedPipe)
         // Time to schedule the Every operations
-        evs.foldRight(start) { (op: (Pipe => Every), p) => op(p) }
+        evs.foldRight(start)((op: (Pipe => Every), p) => op(p))
 
       case IdentityMode =>
         //This is the case where the group function is identity: { g => g }
@@ -375,7 +375,7 @@ class GroupBuilder(val groupFields: Fields)
     }
     sortF = Some(sort)
     // Update projectFields
-    projectFields = projectFields.map { Fields.merge(_, sort) }
+    projectFields = projectFields.map(Fields.merge(_, sort))
     this
   }
 
@@ -389,7 +389,7 @@ class GroupBuilder(val groupFields: Fields)
     * An identity function that keeps all the tuples. A hack to implement
     * groupAll and groupRandomly.
     */
-  def pass: GroupBuilder = takeWhile(0) { (t: TupleEntry) => true }
+  def pass: GroupBuilder = takeWhile(0)((t: TupleEntry) => true)
 
   /**
     * beginning of block with access to expensive nonserializable state. The state object should
@@ -439,7 +439,7 @@ class ScanLeftIterator[T, U](it: Iterator[T], init: U, fn: (U, T) => U)
   @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.OptionPartial"))
   def next = {
     prev = prev
-      .map { fn(_, it.next) }
+      .map(fn(_, it.next))
       .orElse(Some(init))
     prev.get
   }

@@ -24,7 +24,7 @@ object ConcurrentSpec
         val results = Future.sequence(
           Range(1, 20)
             .map(_ =>
-              Iteratee.fold[String, String]("") { (s, e) => s + e }(foldEC))
+              Iteratee.fold[String, String]("")((s, e) => s + e)(foldEC))
             .map(broadcaster.apply)
             .map(_.flatMap(_.run)))
         pushHere.push("beep")
@@ -311,8 +311,8 @@ object ConcurrentSpec
 
     "perform patching in the correct ExecutionContext" in {
       mustExecute(1) { ppEC =>
-        val e = Concurrent.patchPanel[Int] { pp => pp.patchIn(Enumerator.eof) }(
-          ppEC)
+        val e =
+          Concurrent.patchPanel[Int](pp => pp.patchIn(Enumerator.eof))(ppEC)
         Await.result(e |>>> Iteratee.getChunks[Int], Duration.Inf) must equalTo(
           Nil)
       }

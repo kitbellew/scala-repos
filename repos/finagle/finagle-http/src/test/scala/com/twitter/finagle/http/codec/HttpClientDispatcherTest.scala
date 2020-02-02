@@ -132,7 +132,7 @@ class HttpClientDispatcherTest extends FunSuite {
     val (in, out) = mkPair[Any, Any]
     val disp = new HttpClientDispatcher(in)
     out.write("invalid message")
-    intercept[IllegalArgumentException] { Await.result(disp(Request())) }
+    intercept[IllegalArgumentException](Await.result(disp(Request())))
   }
 
   test("not chunked") {
@@ -186,7 +186,7 @@ class HttpClientDispatcherTest extends FunSuite {
 
     val cc = reader.read(Int.MaxValue)
     out.write("something else")
-    intercept[IllegalArgumentException] { Await.result(cc, timeout) }
+    intercept[IllegalArgumentException](Await.result(cc, timeout))
     verify(inSpy, times(1)).close()
   }
 
@@ -215,7 +215,7 @@ class HttpClientDispatcherTest extends FunSuite {
     writep.setException(new Exception)
 
     assert(g.isDefined)
-    intercept[Reader.ReaderDiscarded] { Await.result(g, timeout) }
+    intercept[Reader.ReaderDiscarded](Await.result(g, timeout))
   }
 
   test("upstream interrupt: during req stream (read)") {

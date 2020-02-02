@@ -46,7 +46,7 @@ private[streaming] object MapWithStateRDDRecord {
       removeTimedoutData: Boolean
   ): MapWithStateRDDRecord[K, S, E] = {
     // Create a new state map by cloning the previous one (if it exists) or by creating an empty one
-    val newStateMap = prevRecord.map { _.stateMap.copy() }.getOrElse {
+    val newStateMap = prevRecord.map(_.stateMap.copy()).getOrElse {
       new EmptyStateMap[K, S]()
     }
 
@@ -232,7 +232,7 @@ private[streaming] object MapWithStateRDD {
       partitioner: Partitioner,
       updateTime: Time): MapWithStateRDD[K, V, S, E] = {
 
-    val pairRDD = rdd.map { x => (x._1, (x._2, x._3)) }
+    val pairRDD = rdd.map(x => (x._1, (x._2, x._3)))
     val stateRDD = pairRDD
       .partitionBy(partitioner)
       .mapPartitions(

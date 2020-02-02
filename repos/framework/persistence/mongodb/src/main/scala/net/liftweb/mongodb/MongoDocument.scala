@@ -211,7 +211,7 @@ trait MongoDocumentMeta[BaseDocument]
    * Save a document to the db
    */
   def save(in: BaseDocument) {
-    MongoDB.use(connectionIdentifier) { db => save(in, db) }
+    MongoDB.use(connectionIdentifier)(db => save(in, db))
   }
 
   /*
@@ -232,7 +232,7 @@ trait MongoDocumentMeta[BaseDocument]
    * Update document with a JObject query
    */
   def update(qry: JObject, newbd: BaseDocument, opts: UpdateOption*) {
-    MongoDB.use(connectionIdentifier) { db => update(qry, newbd, db, opts: _*) }
+    MongoDB.use(connectionIdentifier)(db => update(qry, newbd, db, opts: _*))
   }
 
 }

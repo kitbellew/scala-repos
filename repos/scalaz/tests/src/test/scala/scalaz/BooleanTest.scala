@@ -14,9 +14,9 @@ object BooleanTest extends SpecLite {
       b.disjunction(p, q) == (p || q)
     }
 
-    "nand" ! forAll { (p: Boolean, q: Boolean) => b.nand(p, q) == !(p && q) }
+    "nand" ! forAll((p: Boolean, q: Boolean) => b.nand(p, q) == !(p && q))
 
-    "nor" ! forAll { (p: Boolean, q: Boolean) => b.nor(p, q) == !(p || q) }
+    "nor" ! forAll((p: Boolean, q: Boolean) => b.nor(p, q) == !(p || q))
 
     "conditional" ! forAll { (p: Boolean, q: Boolean) =>
       b.conditional(p, q) == (!p || q)

@@ -115,12 +115,12 @@ object ClassFileParser extends ByteCodeReader {
   val utf8String = (u2 >> bytes) ^^ add1 { raw => pool =>
     raw.toUTF8StringAndBytes
   }
-  val intConstant = u4 ^^ add1 { x => pool => x }
-  val floatConstant = bytes(4) ^^ add1 { raw => pool => "Float: TODO" }
-  val longConstant = bytes(8) ^^ add2 { raw => pool => raw.toLong }
-  val doubleConstant = bytes(8) ^^ add2 { raw => pool => "Double: TODO" }
-  val classRef = u2 ^^ add1 { x => pool => "Class: " + pool(x) }
-  val stringRef = u2 ^^ add1 { x => pool => "String: " + pool(x) }
+  val intConstant = u4 ^^ add1(x => pool => x)
+  val floatConstant = bytes(4) ^^ add1(raw => pool => "Float: TODO")
+  val longConstant = bytes(8) ^^ add2(raw => pool => raw.toLong)
+  val doubleConstant = bytes(8) ^^ add2(raw => pool => "Double: TODO")
+  val classRef = u2 ^^ add1(x => pool => "Class: " + pool(x))
+  val stringRef = u2 ^^ add1(x => pool => "String: " + pool(x))
   val fieldRef = memberRef("Field")
   val methodRef = memberRef("Method")
   val interfaceMethodRef = memberRef("InterfaceMethod")

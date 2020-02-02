@@ -757,7 +757,7 @@ object Engine {
     val evalInfoMap: Map[EX, EI] = evalTupleMap.mapValues(_._2)
     val evalQAsMap: Map[EX, RDD[(QX, (Q, A))]] = evalTupleMap
       .mapValues(_._3)
-      .mapValues { _.zipWithUniqueId().map(_.swap) }
+      .mapValues(_.zipWithUniqueId().map(_.swap))
 
     val preparedMap: Map[EX, PD] = evalTrainMap.mapValues { td =>
       preparator.prepareBase(sc, td)
@@ -818,7 +818,7 @@ object Engine {
           (ex, qpaMap)
       }
 
-    (0 until evalCount).map { ex => (evalInfoMap(ex), servingQPAMap(ex)) }.toSeq
+    (0 until evalCount).map(ex => (evalInfoMap(ex), servingQPAMap(ex))).toSeq
   }
 }
 

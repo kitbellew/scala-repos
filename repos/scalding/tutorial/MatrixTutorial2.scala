@@ -27,7 +27,7 @@ class FilterOutdegreeJob(args: Args) extends Job(args) {
   // we make all non zero values into ones and then convert it back to column vector
   val outdegreeFiltered = outdegree
     .toMatrix[Int](1)
-    .filterValues { _ < args("maxOutdegree").toDouble }
+    .filterValues(_ < args("maxOutdegree").toDouble)
     .binarizeAs[Double]
     .getCol(1)
 

@@ -140,7 +140,7 @@ private[streaming] class ReceivedBlockTracker(
     synchronized {
       timeToAllocatedBlocks
         .get(batchTime)
-        .map { _.streamIdToAllocatedBlocks }
+        .map(_.streamIdToAllocatedBlocks)
         .getOrElse(Map.empty)
     }
 
@@ -193,7 +193,7 @@ private[streaming] class ReceivedBlockTracker(
 
   /** Stop the block tracker. */
   def stop() {
-    writeAheadLogOption.foreach { _.close() }
+    writeAheadLogOption.foreach(_.close())
   }
 
   /**
@@ -216,7 +216,7 @@ private[streaming] class ReceivedBlockTracker(
       logTrace(
         s"Recovery: Inserting allocated batch for time $batchTime to " +
           s"${allocatedBlocks.streamIdToAllocatedBlocks}")
-      streamIdToUnallocatedBlockQueues.values.foreach { _.clear() }
+      streamIdToUnallocatedBlockQueues.values.foreach(_.clear())
       timeToAllocatedBlocks.put(batchTime, allocatedBlocks)
       lastAllocatedBatchTime = batchTime
     }

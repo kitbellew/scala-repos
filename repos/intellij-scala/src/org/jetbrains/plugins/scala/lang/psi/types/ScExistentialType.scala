@@ -36,7 +36,7 @@ case class ScExistentialType(
     _boundNames = res
     res
   }
-  private def boundNamesInner: List[String] = wildcards.map { _.name }
+  private def boundNamesInner: List[String] = wildcards.map(_.name)
 
   @volatile
   private var _skolem: ScType = null

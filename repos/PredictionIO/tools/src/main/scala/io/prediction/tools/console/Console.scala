@@ -179,7 +179,7 @@ object Console extends Logging {
       note("")
       cmd("version")
         .text("Displays the version of this command line console.")
-        .action { (_, c) => c.copy(commands = c.commands :+ "version") }
+        .action((_, c) => c.copy(commands = c.commands :+ "version"))
       note("")
       cmd("help").action { (_, c) =>
         c.copy(commands = c.commands :+ "help")
@@ -210,7 +210,7 @@ object Console extends Logging {
       note("")
       cmd("unregister")
         .text("Unregister an engine at the current directory.")
-        .action { (_, c) => c.copy(commands = c.commands :+ "unregister") }
+        .action((_, c) => c.copy(commands = c.commands :+ "unregister"))
       note("")
       cmd("train")
         .text(
@@ -435,7 +435,7 @@ object Console extends Logging {
       note("")
       cmd("status")
         .text("Displays status information about the PredictionIO system.")
-        .action { (_, c) => c.copy(commands = c.commands :+ "status") }
+        .action((_, c) => c.copy(commands = c.commands :+ "status"))
       note("")
       cmd("upgrade").text("Upgrade tool").action { (_, c) =>
         c.copy(commands = c.commands :+ "upgrade")
@@ -599,7 +599,7 @@ object Console extends Logging {
             c.copy(template = c.template.copy(email = Some(x)))
           }
         ),
-        cmd("list").action { (_, c) => c.copy(commands = c.commands :+ "list") }
+        cmd("list").action((_, c) => c.copy(commands = c.commands :+ "list"))
       )
       cmd("export").action { (_, c) =>
         c.copy(commands = c.commands :+ "export")
@@ -790,7 +790,7 @@ object Console extends Logging {
     withRegisteredManifest(
       ca.common.manifestJson,
       ca.common.engineId,
-      ca.common.engineVersion) { em => RunWorkflow.newRunWorkflow(ca, em) }
+      ca.common.engineVersion)(em => RunWorkflow.newRunWorkflow(ca, em))
   }
 
   def deploy(ca: ConsoleArgs): Int = {

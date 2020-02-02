@@ -83,7 +83,7 @@ abstract class AbstractFutureCacheTest extends FunSuite {
     val ctx = mkCtx()
     import ctx._
 
-    val result = cache.getOrElseUpdate("key") { value }
+    val result = cache.getOrElseUpdate("key")(value)
     assert(result.poll == value.poll)
     assert(cache.size == 1)
   }

@@ -155,7 +155,7 @@ class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
     schedule(ticks) {
       jobManager
         .cancel(jobId, "Yarrrr", yggConfig.clock.now())
-        .map { _.fold(_ => false, _ => true) }
+        .map(_.fold(_ => false, _ => true))
         .copoint
     }
 
@@ -324,7 +324,7 @@ trait TestManagedQueryModule
                       }.liftM[JobQueryT]
 
                     case _ =>
-                      M0.point { None }
+                      M0.point(None)
                   }
 
                   (Tag(M0.jobId map (_ -> ticks)), completeJob(result))
@@ -336,6 +336,6 @@ trait TestManagedQueryModule
       }
     }
 
-  def startup = Applicative[TestFuture].point { true }
-  def shutdown = Applicative[TestFuture].point { true }
+  def startup = Applicative[TestFuture].point(true)
+  def shutdown = Applicative[TestFuture].point(true)
 }

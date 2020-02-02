@@ -80,7 +80,7 @@ class ChannelTransportTest
 
     val exc = new Exception("wtf")
     dsme.getFuture.setFailure(exc)
-    val exc1 = intercept[ChannelException] { Await.result(f) }
+    val exc1 = intercept[ChannelException](Await.result(f))
     assert(exc1 == ChannelException(exc, remoteAddress))
   }
 
@@ -189,7 +189,7 @@ class ChannelTransportTest
       e
     })
 
-    val exc1 = intercept[ChannelException] { Await.result(trans.read()) }
+    val exc1 = intercept[ChannelException](Await.result(trans.read()))
     assert(exc1 == ChannelException(exc, remoteAddress))
   }
 
@@ -202,7 +202,7 @@ class ChannelTransportTest
       e
     })
 
-    val exc1 = intercept[ChannelException] { Await.result(f) }
+    val exc1 = intercept[ChannelException](Await.result(f))
     assert(exc1 == ChannelException(exc, remoteAddress))
   }
 

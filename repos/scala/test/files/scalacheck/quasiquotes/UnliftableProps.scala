@@ -80,7 +80,7 @@ object UnliftableProps extends QuasiquoteProperties("unliftable") {
           implicitly[Unliftable[T]].unapply(_).nonEmpty
         } =>
       val ut = implicitly[Unliftable[T]]
-      args.flatMap { ut.unapply(_) }
+      args.flatMap(ut.unapply(_))
   }
 
   property("unlift list (1)") = test {

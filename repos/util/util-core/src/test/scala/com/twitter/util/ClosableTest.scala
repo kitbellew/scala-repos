@@ -32,7 +32,7 @@ class ClosableTest extends FunSuite with Eventually with IntegrationPatience {
       new Object {}
     )
     System.gc()
-    eventually { assert(closed) }
+    eventually(assert(closed))
   }
 
   test("Closable.all") {

@@ -454,7 +454,7 @@ class SQLContext private[sql] (
       val converter = CatalystTypeConverters.createToCatalystConverter(schema)
       rowRDD.map(converter(_).asInstanceOf[InternalRow])
     } else
-      rowRDD.map { r: Row => InternalRow.fromSeq(r.toSeq) }
+      rowRDD.map(r: Row => InternalRow.fromSeq(r.toSeq))
     val logicalPlan = LogicalRDD(schema.toAttributes, catalystRows)(self)
     Dataset.newDataFrame(this, logicalPlan)
   }

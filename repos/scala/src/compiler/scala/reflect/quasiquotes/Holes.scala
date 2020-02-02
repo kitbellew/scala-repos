@@ -241,7 +241,7 @@ trait Holes { self: Quasiquotes =>
                   s"Can't find $unliftableType[$strippedTpe], consider providing it")
               }
         }
-        .getOrElse { treeNoUnlift }
+        .getOrElse(treeNoUnlift)
   }
 
   /** Full support for unliftable implies that it's possible to interleave
@@ -261,7 +261,7 @@ trait Holes { self: Quasiquotes =>
       if (unlifter == EmptyTree) None
       else if (rank == NoDot) Some(unlifter)
       else {
-        val idx = records.indexWhere { p => p._1 =:= tpe && p._2 == rank }
+        val idx = records.indexWhere(p => p._1 =:= tpe && p._2 == rank)
         val resIdx =
           if (idx != -1) idx
           else {

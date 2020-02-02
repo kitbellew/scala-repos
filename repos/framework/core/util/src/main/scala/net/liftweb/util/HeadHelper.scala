@@ -86,7 +86,7 @@ object HeadHelper {
     val headInBody: NodeSeq =
       (for (body <- xhtml \ "body";
             head <- findElems(body)(_.label == "head"))
-        yield head.child).flatMap { e => e }
+        yield head.child).flatMap(e => e)
 
     if (headInBody.isEmpty)
       xhtml

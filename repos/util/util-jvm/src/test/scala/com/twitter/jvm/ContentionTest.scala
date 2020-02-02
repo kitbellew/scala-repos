@@ -47,7 +47,7 @@ class ContentionTest extends FunSuite with Eventually {
     p.start()
     Await.all(descartes.ready, plato.ready)
 
-    eventually { assert(c.snap().deadlocks.size == 2) }
+    eventually(assert(c.snap().deadlocks.size == 2))
     d.interrupt()
     p.interrupt()
     p.join()

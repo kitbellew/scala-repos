@@ -58,7 +58,7 @@ private[python] object Converter extends Logging {
             throw err
         }
       }
-      .getOrElse { defaultConverter }
+      .getOrElse(defaultConverter)
 }
 
 /**

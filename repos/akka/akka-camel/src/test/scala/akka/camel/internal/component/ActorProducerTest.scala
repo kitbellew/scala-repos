@@ -73,7 +73,7 @@ class ActorProducerTest
           "process the exchange" in {
             producer = given(outCapable = false, autoAck = false)
             import system.dispatcher
-            val future = Future { producer.processExchangeAdapter(exchange) }
+            val future = Future(producer.processExchangeAdapter(exchange))
             within(1 second) {
               probe.expectMsgType[CamelMessage]
               info("message sent to consumer")

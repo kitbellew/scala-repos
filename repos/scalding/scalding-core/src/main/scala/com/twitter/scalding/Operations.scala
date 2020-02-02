@@ -352,14 +352,14 @@ package com.twitter.scalding {
 
     private def getCacheSize(fp: FlowProcess[_]): Int =
       Option(fp.getStringProperty(SIZE_CONFIG_KEY))
-        .filterNot { _.isEmpty }
-        .map { _.toInt }
+        .filterNot(_.isEmpty)
+        .map(_.toInt)
         .getOrElse(DEFAULT_CACHE_SIZE)
 
     def apply[K, V: Semigroup](
         cacheSize: Option[Int],
         flowProcess: FlowProcess[_]): MapsideCache[K, V] = {
-      val size = cacheSize.getOrElse { getCacheSize(flowProcess) }
+      val size = cacheSize.getOrElse(getCacheSize(flowProcess))
       val adaptive = Option(flowProcess.getStringProperty(ADAPTIVE_CACHE_KEY)).isDefined
       if (adaptive)
         new AdaptiveMapsideCache(flowProcess, new AdaptiveCache(size))
@@ -742,8 +742,8 @@ package com.twitter.scalding {
 
     def operate(flowProcess: FlowProcess[_], call: BufferCall[Any]) {
       val oc = call.getOutputCollector
-      val in = call.getArgumentsIterator.asScala.map { entry => conv(entry) }
-      iterfn.get(initCopy, in).foreach { x => oc.add(set(x)) }
+      val in = call.getArgumentsIterator.asScala.map(entry => conv(entry))
+      iterfn.get(initCopy, in).foreach(x => oc.add(set(x)))
     }
   }
 
@@ -767,8 +767,8 @@ package com.twitter.scalding {
     def operate(flowProcess: FlowProcess[_], call: BufferCall[C]) {
       val context = call.getContext
       val oc = call.getOutputCollector
-      val in = call.getArgumentsIterator.asScala.map { entry => conv(entry) }
-      iterfn.get(initCopy, context, in).foreach { x => oc.add(set(x)) }
+      val in = call.getArgumentsIterator.asScala.map(entry => conv(entry))
+      iterfn.get(initCopy, context, in).foreach(x => oc.add(set(x)))
     }
   }
 

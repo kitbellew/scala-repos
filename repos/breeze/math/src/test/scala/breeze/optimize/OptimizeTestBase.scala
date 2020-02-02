@@ -32,7 +32,7 @@ trait OptimizeTestBaseTrait {
     val N = 100
     Arbitrary {
       for {
-        x <- Arbitrary.arbitrary[Double].map { _ % 10 }
+        x <- Arbitrary.arbitrary[Double].map(_ % 10)
         xl <- Arbitrary.arbitrary[List[Int]]
       } yield SparseVector(N)(xl.map(i => (i % N).abs -> math.random * x): _*)
     }

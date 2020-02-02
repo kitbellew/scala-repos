@@ -80,7 +80,7 @@ private[repl] trait SparkILoopInit {
   // called from main repl loop
   protected def awaitInitialized(): Boolean = {
     if (!initIsComplete)
-      withLock { while (!initIsComplete) initLoopCondition.await() }
+      withLock(while (!initIsComplete) initLoopCondition.await())
     if (initError != null) {
       // scalastyle:off println
       println(

@@ -201,7 +201,7 @@ class ActorWithStashSpec
         become {
           case "die" ⇒ throw new RuntimeException("dying")
         }
-        whenRestarted { thr ⇒ testActor ! "restarted" }
+        whenRestarted(thr ⇒ testActor ! "restarted")
       })
       EventFilter[RuntimeException]("dying", occurrences = 1) intercept {
         a ! "die"
