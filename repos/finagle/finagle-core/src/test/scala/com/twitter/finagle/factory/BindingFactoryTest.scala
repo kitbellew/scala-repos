@@ -271,10 +271,8 @@ class BindingFactoryTest
 
   test("Trace on negative resolution")(new Ctx {
     withExpectedTrace(
-      {
-        intercept[NoBrokersAvailableException] {
-          Await.result(factory())
-        }
+      intercept[NoBrokersAvailableException] {
+        Await.result(factory())
       },
       Seq(
         Annotation.BinaryAnnotation("namer.path", "/foo/bar"),

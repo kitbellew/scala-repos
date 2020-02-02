@@ -32,7 +32,7 @@ class TensorKeys[K, V, +This](
   def foreach[U](fn: K => U) = iterator foreach fn
   def filter(p: K => Boolean): TensorKeys[K, V, This] = withFilter(p)
   def withFilter(p: K => Boolean): TensorKeys[K, V, This] =
-    new TensorKeys[K, V, This](tensor, active, { (a: K) => f(a) && p(a) })(ev)
+    new TensorKeys[K, V, This](tensor, active, (a: K) => f(a) && p(a))(ev)
 
   override def toString = iterator.mkString("TensorKeys(", ",", ")")
 

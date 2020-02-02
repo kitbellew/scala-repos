@@ -72,7 +72,7 @@ trait TensorSpaceTestBase[V, I, S] extends MutableModuleTestBase[V, S] {
   test("zip map of + is the same as +") {
     check(Prop.forAll { (trip: (V, V, V)) =>
       val (a, b, _) = trip
-      zipMapValues.map(a, b, { scalars.+(_: S, _: S) }) == (a + b)
+      zipMapValues.map(a, b, scalars.+(_: S, _: S)) == (a + b)
     })
 
   }

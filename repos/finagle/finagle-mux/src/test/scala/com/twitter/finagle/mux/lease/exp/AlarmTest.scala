@@ -78,9 +78,9 @@ class AlarmTest extends FunSuite with LocalConductors {
 
       Time.withCurrentTimeFrozen { ctl =>
         localThread(conductor) {
-          Alarm.armAndExecute({ () => new DurationAlarm(5.seconds) }, { () =>
-            ctr += 1
-          })
+          Alarm.armAndExecute(
+            () => new DurationAlarm(5.seconds),
+            () => ctr += 1)
         }
 
         localThread(conductor) {

@@ -73,14 +73,13 @@ object Definitions {
   /** Encodes a class name. */
   def encodeClassName(fullName: String): String = {
     val base = fullName.replace("_", "$und").replace(".", "_")
-    val encoded = compressedClasses.getOrElse(base, {
-      compressedPrefixes collectFirst {
+    val encoded =
+      compressedClasses.getOrElse(base, compressedPrefixes collectFirst {
         case (prefix, compressed) if base.startsWith(prefix) =>
           compressed + base.substring(prefix.length)
       } getOrElse {
         "L" + base
-      }
-    })
+      })
     if (Trees.isKeyword(encoded) || encoded.charAt(0).isDigit ||
         encoded.charAt(0) == '$')
       "$" + encoded
@@ -95,16 +94,15 @@ object Definitions {
       if (encodedName.charAt(0) == '$') encodedName.substring(1)
       else encodedName
     val base = decompressedClasses.getOrElse(
-      encoded, {
-        decompressedPrefixes collectFirst {
-          case (prefix, decompressed) if encoded.startsWith(prefix) =>
-            decompressed + encoded.substring(prefix.length)
-        } getOrElse {
-          assert(
-            !encoded.isEmpty && encoded.charAt(0) == 'L',
-            s"Cannot decode invalid encoded name '$encodedName'")
-          encoded.substring(1)
-        }
+      encoded,
+      decompressedPrefixes collectFirst {
+        case (prefix, decompressed) if encoded.startsWith(prefix) =>
+          decompressed + encoded.substring(prefix.length)
+      } getOrElse {
+        assert(
+          !encoded.isEmpty && encoded.charAt(0) == 'L',
+          s"Cannot decode invalid encoded name '$encodedName'")
+        encoded.substring(1)
       }
     )
     base.replace("_", ".").replace("$und", "_")

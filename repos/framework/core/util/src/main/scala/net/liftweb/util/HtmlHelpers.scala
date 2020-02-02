@@ -272,9 +272,10 @@ trait HtmlHelpers extends CssBindImplicits {
     * returned without an id.
     */
   def deepEnsureUniqueId(in: NodeSeq): NodeSeq =
-    ensureUniqueIdHelper(List(in), { (element, stripUniqueId) =>
-      element.copy(child = element.child.map(stripUniqueId))
-    }).head
+    ensureUniqueIdHelper(
+      List(in),
+      (element, stripUniqueId) =>
+        element.copy(child = element.child.map(stripUniqueId))).head
 
   /**
     * Ensure that the first Element has the specified ID

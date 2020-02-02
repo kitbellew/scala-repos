@@ -1279,19 +1279,17 @@ abstract class GenJSCode
 
             js.Labeled(
               blockLabelIdent,
-              bodyType, {
-                js.While(
-                  js.BooleanLiteral(true), {
-                    if (bodyType == jstpe.NoType)
-                      js.Block(
-                        genStat(rhs),
-                        js.Return(js.Undefined(), Some(blockLabelIdent)))
-                    else
-                      js.Return(genExpr(rhs), Some(blockLabelIdent))
-                  },
-                  Some(labelIdent)
-                )
-              }
+              bodyType,
+              js.While(
+                js.BooleanLiteral(true),
+                if (bodyType == jstpe.NoType)
+                  js.Block(
+                    genStat(rhs),
+                    js.Return(js.Undefined(), Some(blockLabelIdent)))
+                else
+                  js.Return(genExpr(rhs), Some(blockLabelIdent)),
+                Some(labelIdent)
+              )
             )
           }
       }
@@ -1345,12 +1343,11 @@ abstract class GenJSCode
             val valDef = js.VarDef(
               freshLocalIdent("e"),
               encodeClassType(ThrowableClass),
-              mutable = false, {
-                genApplyMethod(
-                  genLoadModule(RuntimePackageModule),
-                  Runtime_wrapJavaScriptException,
-                  List(origExceptVar))
-              }
+              mutable = false,
+              genApplyMethod(
+                genLoadModule(RuntimePackageModule),
+                Runtime_wrapJavaScriptException,
+                List(origExceptVar))
             )
             (valDef, valDef.ref)
           } else
@@ -2720,32 +2717,28 @@ abstract class GenJSCode
           val isArrayTree =
             genRTCall(ScalaRunTime_isArray, callTrg, js.IntLiteral(1))
           callStatement = js.If(
-            isArrayTree, {
-              sym.name match {
-                case nme.update =>
-                  js.Block(
-                    genRTCall(
-                      currentRun.runDefinitions.arrayUpdateMethod,
-                      callTrg,
-                      arguments(0),
-                      arguments(1)),
-                    js.Undefined()
-                  ) // Boxed Unit
-                case nme.apply =>
+            isArrayTree,
+            sym.name match {
+              case nme.update =>
+                js.Block(
                   genRTCall(
-                    currentRun.runDefinitions.arrayApplyMethod,
+                    currentRun.runDefinitions.arrayUpdateMethod,
                     callTrg,
-                    arguments(0))
-                case nme.length =>
-                  genRTCall(
-                    currentRun.runDefinitions.arrayLengthMethod,
-                    callTrg)
-                case nme.clone_ =>
-                  genApplyMethod(callTrg, Object_clone, arguments)
-              }
-            }, {
-              callStatement
-            }
+                    arguments(0),
+                    arguments(1)),
+                  js.Undefined()
+                ) // Boxed Unit
+              case nme.apply =>
+                genRTCall(
+                  currentRun.runDefinitions.arrayApplyMethod,
+                  callTrg,
+                  arguments(0))
+              case nme.length =>
+                genRTCall(currentRun.runDefinitions.arrayLengthMethod, callTrg)
+              case nme.clone_ =>
+                genApplyMethod(callTrg, Object_clone, arguments)
+            },
+            callStatement
           )(jstpe.AnyType)
         }
 
@@ -2759,53 +2752,51 @@ abstract class GenJSCode
           implMethodSym = matchingSymIn(reflBoxClass)
           if implMethodSym != NoSymbol && implMethodSym.isPublic
         } callStatement = js.If(
-          genIsInstanceOf(callTrg, rtClass.tpe), {
-            if (implMethodSym.owner == ObjectClass)
-              // If the method is defined on Object, we can call it normally.
-              genApplyMethod(callTrg, implMethodSym, arguments)
-            else if (rtClass == StringClass) {
-              val (rtModuleClass, methodIdent) =
-                encodeRTStringMethodSym(implMethodSym)
-              val retTpe = implMethodSym.tpe.resultType
-              val castCallTrg =
-                fromAny(callTrg, StringClass.toTypeConstructor)
-              val rawApply = genApplyMethod(
-                genLoadModule(rtModuleClass),
-                methodIdent,
-                castCallTrg :: arguments,
-                toIRType(retTpe))
-              // Box the result of the implementing method if required
-              if (isPrimitiveValueType(retTpe))
-                makePrimitiveBox(rawApply, retTpe)
-              else
-                rawApply
-            } else {
-              val reflBoxClassPatched = {
-                def isIntOrLongKind(kind: TypeKind) = kind match {
-                  case _: INT | LONG => true
-                  case _             => false
-                }
-                if (rtClass == BoxedDoubleClass &&
-                    toTypeKind(implMethodSym.tpe.resultType) == DoubleKind &&
-                    isIntOrLongKind(toTypeKind(sym.tpe.resultType)))
-                  // This must be an Int, and not a Double
-                  IntegerReflectiveCallClass
-                else
-                  reflBoxClass
+          genIsInstanceOf(callTrg, rtClass.tpe),
+          if (implMethodSym.owner == ObjectClass)
+            // If the method is defined on Object, we can call it normally.
+            genApplyMethod(callTrg, implMethodSym, arguments)
+          else if (rtClass == StringClass) {
+            val (rtModuleClass, methodIdent) =
+              encodeRTStringMethodSym(implMethodSym)
+            val retTpe = implMethodSym.tpe.resultType
+            val castCallTrg =
+              fromAny(callTrg, StringClass.toTypeConstructor)
+            val rawApply = genApplyMethod(
+              genLoadModule(rtModuleClass),
+              methodIdent,
+              castCallTrg :: arguments,
+              toIRType(retTpe))
+            // Box the result of the implementing method if required
+            if (isPrimitiveValueType(retTpe))
+              makePrimitiveBox(rawApply, retTpe)
+            else
+              rawApply
+          } else {
+            val reflBoxClassPatched = {
+              def isIntOrLongKind(kind: TypeKind) = kind match {
+                case _: INT | LONG => true
+                case _             => false
               }
-              val castCallTrg =
-                fromAny(
-                  callTrg,
-                  reflBoxClassPatched.primaryConstructor.tpe.params.head.tpe)
-              val reflBox = genNew(
-                reflBoxClassPatched,
-                reflBoxClassPatched.primaryConstructor,
-                List(castCallTrg))
-              genApplyMethod(reflBox, proxyIdent, arguments, jstpe.AnyType)
+              if (rtClass == BoxedDoubleClass &&
+                  toTypeKind(implMethodSym.tpe.resultType) == DoubleKind &&
+                  isIntOrLongKind(toTypeKind(sym.tpe.resultType)))
+                // This must be an Int, and not a Double
+                IntegerReflectiveCallClass
+              else
+                reflBoxClass
             }
-          }, { // else
-            callStatement
-          }
+            val castCallTrg =
+              fromAny(
+                callTrg,
+                reflBoxClassPatched.primaryConstructor.tpe.params.head.tpe)
+            val reflBox = genNew(
+              reflBoxClassPatched,
+              reflBoxClassPatched.primaryConstructor,
+              List(castCallTrg))
+            genApplyMethod(reflBox, proxyIdent, arguments, jstpe.AnyType)
+          }, // else
+          callStatement
         )(jstpe.AnyType)
 
         js.Block(callTrgVarDef, callStatement)

@@ -25,7 +25,7 @@ class ChannelSnooperTest extends FunSuite with MockitoSugar {
           buf: ByteBuf): Unit = {
         messageCount += 1
         assert(buf == msgBuffer)
-        super.dump({ (_: Channel, m: String) => assert(msg == m) }, ch, buf)
+        super.dump((_: Channel, m: String) => assert(msg == m), ch, buf)
       }
     }
 

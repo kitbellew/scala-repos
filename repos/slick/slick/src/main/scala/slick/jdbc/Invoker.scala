@@ -23,7 +23,7 @@ trait Invoker[+R] { self =>
     * in Some, or None if the result set is empty. */
   final def firstOption(implicit session: JdbcBackend#Session): Option[R] = {
     var res: Option[R] = None
-    foreach({ x => res = Some(x) }, 1)
+    foreach(x => res = Some(x), 1)
     res
   }
 
@@ -41,7 +41,7 @@ trait Invoker[+R] { self =>
       implicit session: JdbcBackend#Session,
       canBuildFrom: CanBuildFrom[Nothing, R, C[R @uV]]): C[R @uV] = {
     val b = canBuildFrom()
-    foreach({ x => b += x }, 0)
+    foreach(x => b += x, 0)
     b.result()
   }
 

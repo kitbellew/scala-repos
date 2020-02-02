@@ -67,7 +67,7 @@ class AsyncQueryResultServiceHandler(jobManager: JobManager[Future])(
                     errors <- jobManager
                       .listMessages(jobId, channels.Error, None)
                   } yield result.fold(
-                    { _ => HttpResponse[ByteChunk](NotFound) }, {
+                    _ => HttpResponse[ByteChunk](NotFound), {
                       case (mimeType0, data0) =>
                         val mimeType =
                           mimeType0 getOrElse (MimeTypes.application / MimeTypes.json)

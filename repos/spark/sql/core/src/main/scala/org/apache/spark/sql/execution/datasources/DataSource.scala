@@ -134,9 +134,9 @@ case class DataSource(
 
       case format: FileFormat =>
         val caseInsensitiveOptions = new CaseInsensitiveMap(options)
-        val path = caseInsensitiveOptions.getOrElse("path", {
-          throw new IllegalArgumentException("'path' is not specified")
-        })
+        val path = caseInsensitiveOptions.getOrElse(
+          "path",
+          throw new IllegalArgumentException("'path' is not specified"))
         val metadataPath =
           caseInsensitiveOptions.getOrElse("metadataPath", s"$path/_metadata")
 
@@ -294,9 +294,10 @@ case class DataSource(
         //  3. It's OK that the output path doesn't exist yet;
         val caseInsensitiveOptions = new CaseInsensitiveMap(options)
         val outputPath = {
-          val path = new Path(caseInsensitiveOptions.getOrElse("path", {
-            throw new IllegalArgumentException("'path' is not specified")
-          }))
+          val path = new Path(
+            caseInsensitiveOptions.getOrElse(
+              "path",
+              throw new IllegalArgumentException("'path' is not specified")))
           val fs =
             path.getFileSystem(sqlContext.sparkContext.hadoopConfiguration)
           path.makeQualified(fs.getUri, fs.getWorkingDirectory)

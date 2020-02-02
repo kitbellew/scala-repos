@@ -150,7 +150,7 @@ object Ticket522 {
       }
   }
 
-  App({ x: Int => x }, 5) match {
+  App(x: Int => x, 5) match {
     case App(arg, a) =>
   }
 }

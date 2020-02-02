@@ -245,7 +245,7 @@ trait OptimizationSpaceTest[M, V, S] extends TensorSpaceTestBase[V, Int, S] {
   test("zip map of + is the same as + - Matrix") {
     check(Prop.forAll { (trip: (M, M, M)) =>
       val (a, b, _) = trip
-      zipMapValuesM.map(a, b, { scalars.+(_: S, _: S) }) == (a + b)
+      zipMapValuesM.map(a, b, scalars.+(_: S, _: S)) == (a + b)
     })
 
   }

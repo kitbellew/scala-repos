@@ -293,9 +293,11 @@ object EvaluateTask {
       extracted: Extracted,
       structure: BuildStructure,
       state: State): TaskCancellationStrategy =
-    getSetting(Keys.taskCancelStrategy, { (_: State) =>
-      TaskCancellationStrategy.Null
-    }, extracted, structure)(state)
+    getSetting(
+      Keys.taskCancelStrategy,
+      (_: State) => TaskCancellationStrategy.Null,
+      extracted,
+      structure)(state)
 
   private[sbt] def executeProgress(
       extracted: Extracted,

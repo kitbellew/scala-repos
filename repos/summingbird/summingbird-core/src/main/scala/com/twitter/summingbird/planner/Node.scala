@@ -172,9 +172,12 @@ object Dag {
       producerToPriorityNames: Map[Producer[P, Any], List[String]],
       tail: TailProducer[P, Any],
       registry: List[Node[P]]): Dag[P] =
-    apply[P, T](originalTail, producerToPriorityNames, tail, registry, {
-      (s: String) => s.replaceAll("""[\[\]]|\-""", "|")
-    })
+    apply[P, T](
+      originalTail,
+      producerToPriorityNames,
+      tail,
+      registry,
+      (s: String) => s.replaceAll("""[\[\]]|\-""", "|"))
 
   def apply[P <: Platform[P], T](
       originalTail: TailProducer[P, Any],

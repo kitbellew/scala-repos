@@ -51,18 +51,20 @@ class ParquetInteroperabilitySuite
           |}
         """.stripMargin
 
-      writeDirect(avroStylePath, avroStyleSchema, { rc =>
-        rc.message {
-          rc.field("f", 0) {
-            rc.group {
-              rc.field("array", 0) {
-                rc.addInteger(0)
-                rc.addInteger(1)
+      writeDirect(
+        avroStylePath,
+        avroStyleSchema,
+        rc =>
+          rc.message {
+            rc.field("f", 0) {
+              rc.group {
+                rc.field("array", 0) {
+                  rc.addInteger(0)
+                  rc.addInteger(1)
+                }
               }
             }
-          }
-        }
-      })
+          })
 
       logParquetSchema(avroStylePath)
 
@@ -72,14 +74,16 @@ class ParquetInteroperabilitySuite
           |}
         """.stripMargin
 
-      writeDirect(protobufStylePath, protobufStyleSchema, { rc =>
-        rc.message {
-          rc.field("f", 0) {
-            rc.addInteger(2)
-            rc.addInteger(3)
-          }
-        }
-      })
+      writeDirect(
+        protobufStylePath,
+        protobufStyleSchema,
+        rc =>
+          rc.message {
+            rc.field("f", 0) {
+              rc.addInteger(2)
+              rc.addInteger(3)
+            }
+          })
 
       logParquetSchema(protobufStylePath)
 

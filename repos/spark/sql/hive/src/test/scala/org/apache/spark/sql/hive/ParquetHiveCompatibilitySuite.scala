@@ -37,9 +37,10 @@ class ParquetHiveCompatibilitySuite
   private val stagingDir = new HiveConf().getVar(HiveConf.ConfVars.STAGINGDIR)
 
   override protected def logParquetSchema(path: String): Unit = {
-    val schema = readParquetSchema(path, { path =>
-      !path.getName.startsWith("_") && !path.getName.startsWith(stagingDir)
-    })
+    val schema = readParquetSchema(
+      path,
+      path =>
+        !path.getName.startsWith("_") && !path.getName.startsWith(stagingDir))
 
     logInfo(s"""Schema of the Parquet file written by parquet-avro:
          |$schema

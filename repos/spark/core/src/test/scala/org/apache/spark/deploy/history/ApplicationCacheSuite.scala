@@ -152,7 +152,7 @@ class ApplicationCacheSuite
       detachCount += 1
       var name = ui.getAppName
       val key = CacheKey(appId, attemptId)
-      attached.getOrElse(key, { throw new java.util.NoSuchElementException() })
+      attached.getOrElse(key, throw new java.util.NoSuchElementException())
       attached -= key
     }
 

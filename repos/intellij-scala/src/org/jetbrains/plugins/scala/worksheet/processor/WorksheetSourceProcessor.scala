@@ -334,19 +334,18 @@ object WorksheetSourceProcessor {
 
     rootChildren foreach {
       case tpe: ScTypeAlias =>
-        withPrecomputeLines(tpe, {
-          objectRes append withPrint(s"defined type alias ${tpe.name}")
-        })
+        withPrecomputeLines(
+          tpe,
+          objectRes append withPrint(s"defined type alias ${tpe.name}"))
       case fun: ScFunction =>
         val hadMods =
           fun.getModifierList.accessModifier map (_.modifierFormattedText) getOrElse ""
 
         withPrecomputeLines(
-          fun, {
-            objectRes append (printMethodName + "(\"" + fun.getName + ": \" + " + macroPrinterName +
-              s".printGeneric({import $instanceName._ ;" + fun.getText
-              .stripPrefix(hadMods) + " })" + eraseClassName + ")\n")
-          }
+          fun,
+          objectRes append (printMethodName + "(\"" + fun.getName + ": \" + " + macroPrinterName +
+            s".printGeneric({import $instanceName._ ;" + fun.getText
+            .stripPrefix(hadMods) + " })" + eraseClassName + ")\n")
         )
       case tpeDef: ScTypeDefinition =>
         withPrecomputeLines(
@@ -362,16 +361,15 @@ object WorksheetSourceProcessor {
         )
       case valDef: ScPatternDefinition =>
         withPrecomputeLines(
-          valDef, {
-            valDef.bindings foreach {
-              case p =>
-                val pName = p.name
-                val defName = variableInstanceName(pName)
+          valDef,
+          valDef.bindings foreach {
+            case p =>
+              val pName = p.name
+              val defName = variableInstanceName(pName)
 
-                classRes append s"def $defName = $pName;$END_GENERATED_MARKER"
-                objectRes append (printMethodName + "(\"" + startText + pName + ": \" + " + withTempVar(
-                  defName) + ")\n")
-            }
+              classRes append s"def $defName = $pName;$END_GENERATED_MARKER"
+              objectRes append (printMethodName + "(\"" + startText + pName + ": \" + " + withTempVar(
+                defName) + ")\n")
           }
         )
       case varDef: ScVariableDefinition =>

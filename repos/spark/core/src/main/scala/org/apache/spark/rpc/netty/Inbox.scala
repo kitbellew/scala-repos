@@ -104,10 +104,11 @@ private[netty] class Inbox(
           case RpcMessage(_sender, content, context) =>
             try endpoint
               .receiveAndReply(context)
-              .applyOrElse[Any, Unit](content, { msg =>
-                throw new SparkException(
-                  s"Unsupported message $message from ${_sender}")
-              })
+              .applyOrElse[Any, Unit](
+                content,
+                msg =>
+                  throw new SparkException(
+                    s"Unsupported message $message from ${_sender}"))
             catch {
               case NonFatal(e) =>
                 context.sendFailure(e)
@@ -117,10 +118,11 @@ private[netty] class Inbox(
             }
 
           case OneWayMessage(_sender, content) =>
-            endpoint.receive.applyOrElse[Any, Unit](content, { msg =>
-              throw new SparkException(
-                s"Unsupported message $message from ${_sender}")
-            })
+            endpoint.receive.applyOrElse[Any, Unit](
+              content,
+              msg =>
+                throw new SparkException(
+                  s"Unsupported message $message from ${_sender}"))
 
           case OnStart =>
             endpoint.onStart()

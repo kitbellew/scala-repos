@@ -44,21 +44,20 @@ private[round] final class Player(
                     progress.game.finished.fold(
                       moveFinish(progress.game, color) map {
                         progress.events ::: _
-                      }, {
-                        cheatDetector(progress.game) addEffect {
-                          case Some(color) => round ! Cheat(color)
-                          case None =>
-                            if (progress.game.playableByAi)
-                              requestFishnet(progress.game)
-                            if (pov.opponent.isOfferingDraw)
-                              round ! DrawNo(pov.player.id)
-                            if (pov.player.isProposingTakeback)
-                              round ! TakebackNo(pov.player.id)
-                            moveOrDrop.left.toOption
-                              .ifTrue(pov.game.forecastable)
-                              .foreach { move => round ! ForecastPlay(move) }
-                        } inject progress.events
-                      }
+                      },
+                      cheatDetector(progress.game) addEffect {
+                        case Some(color) => round ! Cheat(color)
+                        case None =>
+                          if (progress.game.playableByAi)
+                            requestFishnet(progress.game)
+                          if (pov.opponent.isOfferingDraw)
+                            round ! DrawNo(pov.player.id)
+                          if (pov.player.isProposingTakeback)
+                            round ! TakebackNo(pov.player.id)
+                          moveOrDrop.left.toOption
+                            .ifTrue(pov.game.forecastable)
+                            .foreach { move => round ! ForecastPlay(move) }
+                      } inject progress.events
                     ) >>- promiseOption.foreach(_.success(()))
               } addFailureEffect { e => promiseOption.foreach(_ failure e) }
           case Pov(game, _) if game.finished =>

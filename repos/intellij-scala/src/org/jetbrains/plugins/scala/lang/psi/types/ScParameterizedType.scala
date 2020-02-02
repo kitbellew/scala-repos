@@ -424,31 +424,31 @@ case class ScTypeParameterType(
       case _ => ptp.getTypeParameters.toList.map(new ScTypeParameterType(_, s))
     }, ptp match {
       case tp: ScTypeParam =>
-        new Suspension[ScType]({ () => s.subst(tp.lowerBound.getOrNothing) })
+        new Suspension[ScType](() => s.subst(tp.lowerBound.getOrNothing))
       case _ =>
-        new Suspension[ScType]({ () =>
-          s.subst(
-            ScCompoundType(
-              ptp.getExtendsListTypes
-                .map(ScType.create(_, ptp.getProject))
-                .toSeq ++
-                ptp.getImplementsListTypes
+        new Suspension[ScType](
+          () =>
+            s.subst(
+              ScCompoundType(
+                ptp.getExtendsListTypes
                   .map(ScType.create(_, ptp.getProject))
-                  .toSeq,
-              Map.empty,
-              Map.empty
-            ))
-        })
+                  .toSeq ++
+                  ptp.getImplementsListTypes
+                    .map(ScType.create(_, ptp.getProject))
+                    .toSeq,
+                Map.empty,
+                Map.empty
+              )))
     }, ptp match {
       case tp: ScTypeParam =>
-        new Suspension[ScType]({ () => s.subst(tp.upperBound.getOrAny) })
+        new Suspension[ScType](() => s.subst(tp.upperBound.getOrAny))
       case _ =>
-        new Suspension[ScType]({ () =>
-          s.subst(
-            ScalaPsiManager
-              .instance(ptp.getProject)
-              .psiTypeParameterUpperType(ptp))
-        })
+        new Suspension[ScType](
+          () =>
+            s.subst(
+              ScalaPsiManager
+                .instance(ptp.getProject)
+                .psiTypeParameterUpperType(ptp)))
     }, ptp)
   }
 

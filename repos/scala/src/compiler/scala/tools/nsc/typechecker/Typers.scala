@@ -2090,15 +2090,15 @@ trait Typers
           || clazz.isSerializable
       )
       val impl1 = newTyper(context.make(mdef.impl, clazz, newScope))
-        .typedTemplate(mdef.impl, {
+        .typedTemplate(
+          mdef.impl,
           typedParentTypes(mdef.impl) ++ (
             if (noSerializable) Nil
             else {
               clazz.makeSerializable()
               List(TypeTree(SerializableTpe) setPos clazz.pos.focus)
             }
-          )
-        })
+          ))
 
       val impl2 = finishMethodSynthesis(impl1, clazz, context)
 

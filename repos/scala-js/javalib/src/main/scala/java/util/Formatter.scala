@@ -234,23 +234,21 @@ final class Formatter(private val dest: Appendable)
                 with_+(numberArg.toFixed(Math.max(p - sig, 0)))
               } else sciNotation(p - 1)
             case 'f' =>
-              with_+({
+              with_+(
                 // JavaDoc: 6 is default precision
-                numberArg.toFixed(if (hasPrecision) precision else 6)
-              }, numberArg.isNaN || numberArg.isInfinite)
+                numberArg.toFixed(if (hasPrecision) precision else 6),
+                numberArg.isNaN || numberArg.isInfinite)
           }
 
           def sciNotation(precision: Int) = {
             val exp = numberArg.toExponential(precision)
             with_+(
-              {
-                // check if we need additional 0 padding in exponent
-                // JavaDoc: at least 2 digits
-                if ('e' == exp.charAt(exp.length - 3))
-                  exp.substring(0, exp.length - 1) + "0" +
-                    exp.charAt(exp.length - 1)
-                else exp
-              },
+              // check if we need additional 0 padding in exponent
+              // JavaDoc: at least 2 digits
+              if ('e' == exp.charAt(exp.length - 3))
+                exp.substring(0, exp.length - 1) + "0" +
+                  exp.charAt(exp.length - 1)
+              else exp,
               numberArg.isNaN || numberArg.isInfinite
             )
           }

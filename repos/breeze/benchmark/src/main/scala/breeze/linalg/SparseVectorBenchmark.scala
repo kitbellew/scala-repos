@@ -35,9 +35,9 @@ class SparseVectorBenchmark extends BreezeBenchmark with BuildsRandomVectors {
       size: Int,
       sparsity1: Double,
       sparsity2: Double): Double =
-    runWith(reps, {
-      (randomSparseVector(size, sparsity1), randomSparseVector(size, sparsity2))
-    }) {
+    runWith(
+      reps,
+      (randomSparseVector(size, sparsity1), randomSparseVector(size, sparsity2))) {
       case (a, b) =>
         a dot b
     }

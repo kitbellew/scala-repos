@@ -154,17 +154,18 @@ class CSRFAction(
     Accumulator(
       Flow[ByteString]
         .transform(() =>
-          new BodyHandler(config, { body =>
-            if (extractor(body, tokenName).fold(false)(
-                  tokenProvider.compareTokens(_, tokenFromHeader))) {
-              filterLogger.trace("[CSRF] Valid token found in body")
-              true
-            } else {
-              filterLogger.trace(
-                "[CSRF] Check failed because no or invalid token found in body")
-              false
-            }
-          }))
+          new BodyHandler(
+            config,
+            body =>
+              if (extractor(body, tokenName).fold(false)(
+                    tokenProvider.compareTokens(_, tokenFromHeader))) {
+                filterLogger.trace("[CSRF] Valid token found in body")
+                true
+              } else {
+                filterLogger.trace(
+                  "[CSRF] Check failed because no or invalid token found in body")
+                false
+              }))
         .splitWhen(_ => false)
         .prefixAndTail(0)
         .map(_._2)

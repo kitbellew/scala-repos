@@ -480,12 +480,11 @@ class MockHttpServletRequest(
 
     Helpers
       .tryo(
-        handler, {
-          // Have to use internetDateFormatter directly since parseInternetDate returns the epoch date on failure
-          Box
-            .!!(getHeader(h))
-            .map(Helpers.internetDateFormatter.parse(_).getTime)
-        }
+        handler,
+        // Have to use internetDateFormatter directly since parseInternetDate returns the epoch date on failure
+        Box
+          .!!(getHeader(h))
+          .map(Helpers.internetDateFormatter.parse(_).getTime)
       )
       .flatMap(x => x) openOr -1L
   }

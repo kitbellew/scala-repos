@@ -18,15 +18,15 @@ class ClientCancellationSpec extends AkkaSpec("""
 
   "Http client connections" must {
     val address = TestUtils.temporaryServerAddress()
-    Http().bindAndHandleSync({ req ⇒
-      HttpResponse(headers = headers.Connection("close") :: Nil)
-    }, address.getHostName, address.getPort)(noncheckedMaterializer)
+    Http().bindAndHandleSync(
+      req ⇒ HttpResponse(headers = headers.Connection("close") :: Nil),
+      address.getHostName,
+      address.getPort)(noncheckedMaterializer)
 
     val addressTls = TestUtils.temporaryServerAddress()
     Http().bindAndHandleSync(
-      { req ⇒
-        HttpResponse()
-      }, // TLS client does full-close, no need for the connection:close header
+      req ⇒
+        HttpResponse(), // TLS client does full-close, no need for the connection:close header
       addressTls.getHostName,
       addressTls.getPort,
       connectionContext = ConnectionContext.https(SSLContext.getDefault)

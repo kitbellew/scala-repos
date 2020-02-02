@@ -35,13 +35,12 @@ object CharEncoding {
       case in @ Input.El(chars) =>
         it.pureFlatFold[From, Inner[A]] {
           case Step.Cont(k) =>
-            code(concat(initial, chars), false).fold({ result =>
-              Error(s"coding error: $result", in)
-            }, {
-              case (bytes, remaining) =>
-                val newIt = Iteratee.flatten(it.feed(Input.El(bytes)))
-                Cont(step(remaining)(newIt))
-            })
+            code(concat(initial, chars), false)
+              .fold(result => Error(s"coding error: $result", in), {
+                case (bytes, remaining) =>
+                  val newIt = Iteratee.flatten(it.feed(Input.El(bytes)))
+                  Cont(step(remaining)(newIt))
+              })
           case _ => Done(it)
         }(defaultExecutionContext)
       case in @ Input.Empty =>
@@ -49,7 +48,7 @@ object CharEncoding {
         Cont(step(initial)(newIt))
       case in @ Input.EOF =>
         code(initial, true).fold(
-          { result => Error(s"coding error: $result", in) }, {
+          result => Error(s"coding error: $result", in), {
             case (string, remaining) =>
               val newIt = Iteratee.flatten(
                 it.feed(Input.El(string))

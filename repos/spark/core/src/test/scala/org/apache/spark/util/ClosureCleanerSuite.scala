@@ -413,7 +413,7 @@ private object TestUserClosuresActuallyCleaned {
       rdd, { _ => return; 1 }: Iterator[Int] => Int,
       Seq.empty,
       { case (_, _) => return }: (Int, Int) => Unit,
-      { return }
+      return
     )
   }
 }

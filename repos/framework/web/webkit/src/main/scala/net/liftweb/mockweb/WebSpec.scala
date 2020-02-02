@@ -211,15 +211,15 @@ abstract class WebSpec(boot: () => Any = () => {})
 
     def in(expectations: => Result) =
       addFragments(
-        fragmentFactory.example(description, {
+        fragmentFactory.example(
+          description,
           LiftRulesMocker.devTestLiftRulesInstance.doWith(liftRules) {
             MockWeb.useLiftRules.doWith(true) {
               MockWeb.testS(req, session) {
                 expectations
               }
             }
-          }
-        }) ^
+          }) ^
           fragmentFactory.break
       )
   }
@@ -235,13 +235,13 @@ abstract class WebSpec(boot: () => Any = () => {})
 
     def in(expectations: Req => Result) =
       addFragments(
-        fragmentFactory.example(description, {
+        fragmentFactory.example(
+          description,
           LiftRulesMocker.devTestLiftRulesInstance.doWith(liftRules) {
             MockWeb.useLiftRules.doWith(true) {
               MockWeb.testReq(req)(expectations)
             }
-          }
-        }) ^
+          }) ^
           fragmentFactory.break
       )
   }
@@ -265,17 +265,16 @@ abstract class WebSpec(boot: () => Any = () => {})
     def in(expectations: Box[NodeSeq] => Result) =
       addFragments(
         fragmentFactory.example(
-          description, {
-            LiftRulesMocker.devTestLiftRulesInstance.doWith(liftRules) {
-              MockWeb.useLiftRules.doWith(true) {
-                MockWeb.testS(req, session) {
-                  S.request match {
-                    case Full(sReq) =>
-                      expectations(S.runTemplate(sReq.path.partPath))
-                    case other =>
-                      failure("Error: withTemplateFor call did not result in " +
-                        "request initialization (S.request = " + other + ")")
-                  }
+          description,
+          LiftRulesMocker.devTestLiftRulesInstance.doWith(liftRules) {
+            MockWeb.useLiftRules.doWith(true) {
+              MockWeb.testS(req, session) {
+                S.request match {
+                  case Full(sReq) =>
+                    expectations(S.runTemplate(sReq.path.partPath))
+                  case other =>
+                    failure("Error: withTemplateFor call did not result in " +
+                      "request initialization (S.request = " + other + ")")
                 }
               }
             }
