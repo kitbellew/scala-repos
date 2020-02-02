@@ -835,7 +835,7 @@ abstract class RefChecks
 
           // Check the remainder for invalid absoverride.
           for (member <- rest;
-               if (member.isAbstractOverride && member.isIncompleteIn(clazz))) {
+               if member.isAbstractOverride && member.isIncompleteIn(clazz)) {
             val other = member.superSymbolIn(clazz)
             val explanation =
               if (other != NoSymbol)

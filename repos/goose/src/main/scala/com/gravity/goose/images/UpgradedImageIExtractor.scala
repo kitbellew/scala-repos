@@ -230,14 +230,14 @@ class UpgradedImageIExtractor(
           locallyStoredImage <- getLocallyStoredImage(
             buildImagePath(image.attr("src")))
           width = locallyStoredImage.width
-          if (width > MIN_WIDTH)
+          if width > MIN_WIDTH
           height = locallyStoredImage.height
-          if (height > MIN_HEIGHT)
+          if height > MIN_HEIGHT
           fileExtension = locallyStoredImage.fileExtension
-          if (fileExtension != ".gif" && fileExtension != "NA")
+          if fileExtension != ".gif" && fileExtension != "NA"
           imageSrc = locallyStoredImage.imgSrc
-          if ((depthLevel >= 1 && locallyStoredImage.width > 300) || depthLevel < 1)
-          if (!isBannerDimensions(width, height))
+          if (depthLevel >= 1 && locallyStoredImage.width > 300) || depthLevel < 1
+          if !isBannerDimensions(width, height)
         } {
           val sequenceScore: Float = 1.0f / cnt
           val area: Float = width * height
@@ -495,7 +495,7 @@ class UpgradedImageIExtractor(
     var knownImageElem: Element = null
     trace("Checking for known images from large sites")
 
-    for (knownName <- KNOWN_IMG_DOM_NAMES; if (knownImageElem == null)) {
+    for (knownName <- KNOWN_IMG_DOM_NAMES; if knownImageElem == null) {
       var known: Element = article.rawDoc.getElementById(knownName)
       if (known == null)
         known = article.rawDoc.getElementsByClass(knownName).first

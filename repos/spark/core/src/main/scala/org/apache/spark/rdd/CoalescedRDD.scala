@@ -332,7 +332,7 @@ private class PartitionCoalescer(
         }
     else
       for (p <- prev.partitions
-           if (!initialHash.contains(p))) // throw every partition into group
+           if !initialHash.contains(p)) // throw every partition into group
         pickBin(p).arr += p
   }
 

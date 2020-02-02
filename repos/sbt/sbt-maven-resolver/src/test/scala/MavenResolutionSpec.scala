@@ -101,7 +101,7 @@ class MavenResolutionSpec extends BaseIvySpecification {
         conf <- report.configurations
         if conf.configuration == Compile.name
         m <- conf.modules
-        if (m.module.name contains "stringtemplate")
+        if m.module.name contains "stringtemplate"
         (a, f) <- m.artifacts
         if a.extension == "jar"
       } yield f
@@ -120,7 +120,7 @@ class MavenResolutionSpec extends BaseIvySpecification {
         conf <- report.configurations
         if conf.configuration == ScalaTool.name
         m <- conf.modules
-        if (m.module.name contains "scala-compiler")
+        if m.module.name contains "scala-compiler"
         (a, f) <- m.artifacts
         if a.extension == "jar"
       } yield f
@@ -141,7 +141,7 @@ class MavenResolutionSpec extends BaseIvySpecification {
         conf <- report.configurations
         if conf.configuration == "compile"
         m <- conf.modules
-        if (m.module.name contains "sbt-idea")
+        if m.module.name contains "sbt-idea"
         (a, f) <- m.artifacts
         if a.extension == "jar"
       } yield (f, sha(f))
